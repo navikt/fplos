@@ -1,0 +1,4 @@
+*
+!web/webapp/target
+!web/klient/target
+!*.sh

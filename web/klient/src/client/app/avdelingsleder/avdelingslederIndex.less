@@ -1,0 +1,75 @@
+.statusAksjonspunkt {
+  animation-duration: 1s;
+  animation-name: fadein;
+  animation-timing-function: ease-out;
+  border-color: #ffa733;
+  border-left-style: solid;
+}
+
+.statusOk {
+  animation-duration: 1s;
+  animation-name: fadein;
+  animation-timing-function: ease-out;
+}
+
+.panelPadding {
+  padding: 20px;
+}
+
+.marginBottom {
+  margin-bottom: 24px;
+}
+
+@import '@{coreModulePath}nav-frontend-core/less/_variabler';
+
+.linkElement() {
+  text-decoration: none;
+}
+
+.disabled {
+  .linkElement();
+  color: @navGra40;
+  pointer-events: none;
+
+  &:focus {
+    outline: none;
+  }
+}
+
+.link {
+  .linkElement();
+  background-color: #d8d8d8;
+  color: black;
+  padding: 0.5rem 2.5rem 0.5rem 2.5rem;
+
+  &.isActive,
+  &:active {
+    color: @navDypBla;
+    padding: 0.7rem 2.5rem 0.5rem 2.5rem;
+    text-decoration: none;
+
+    &:focus {
+      color: @navLilla;
+      text-decoration: none;
+    }
+  }
+
+  &.isActive {
+    background-color: white;
+    pointer-events: none;
+  }
+
+  &:focus {
+    color: @navBla;
+    padding: 0.5rem 2.5rem 0.5rem 2.5rem;
+    text-decoration: none;
+
+    &:hover {
+      color: @navBla;
+    }
+  }
+
+  &:hover {
+    color: @navBla;
+  }
+}

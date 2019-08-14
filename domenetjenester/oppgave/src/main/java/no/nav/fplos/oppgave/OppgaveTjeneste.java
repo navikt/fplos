@@ -1,0 +1,55 @@
+package no.nav.fplos.oppgave;
+
+import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
+
+import no.nav.foreldrepenger.loslager.aktør.TpsPersonDto;
+import no.nav.foreldrepenger.loslager.oppgave.Oppgave;
+import no.nav.foreldrepenger.loslager.oppgave.OppgaveFiltrering;
+import no.nav.foreldrepenger.loslager.oppgave.Reservasjon;
+
+public interface OppgaveTjeneste {
+
+    List<Oppgave> hentOppgaver(Long sakslisteId);
+
+    List<Oppgave> hentNesteOppgaver(Long sakslisteId);
+
+    List<Oppgave> hentOppgaverForSaksnummer(Long fagsakSaksnummer);
+
+    List<Oppgave> hentAktiveOppgaverForSaksnummer(Collection<Long> fagsakSaksnummerListe);
+
+    List<Reservasjon> hentReserverteOppgaver();
+
+    Reservasjon reserverOppgave(Long oppgaveId);
+
+    Reservasjon hentReservasjon(Long oppgaveId);
+
+    Reservasjon frigiOppgave(Long oppgaveId, String begrunnelse);
+
+    Reservasjon forlengReservasjonPåOppgave(Long oppgaveId);
+
+    Reservasjon flyttReservasjon(Long oppgaveId, String brukernavn, String begrunnelse);
+
+    List<OppgaveFiltrering> hentAlleOppgaveFiltrering(String brukerIdent);
+
+    List<OppgaveFiltrering> hentOppgaveFiltreringerForPåloggetBruker();
+
+    TpsPersonDto hentPersonInfo(long aktørId);
+
+    Optional<TpsPersonDto> hentPersonInfoOptional(long aktørId);
+
+    Integer hentAntallOppgaver(Long behandlingsKø);
+
+    boolean harForandretOppgaver(List<Long> oppgaveIder);
+
+    List<SaksbehandlerinformasjonDto> hentSakslistensSaksbehandlere(Long sakslisteId);
+
+    List<Oppgave> hentSisteReserverteOppgaver();
+
+    SaksbehandlerinformasjonDto hentSaksbehandlerNavnOgAvdelinger(String ident);
+
+    String hentNavnHvisReservertAvAnnenSaksbehandler(Reservasjon reservasjon);
+
+    String hentNavnHvisFlyttetAvSaksbehandler(String flyttetAv);
+}

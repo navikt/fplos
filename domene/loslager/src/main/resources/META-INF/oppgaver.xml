@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entity-mappings xmlns="http://xmlns.jcp.org/xml/ns/persistence/orm"
+                 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                 xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence/orm
+      http://xmlns.jcp.org/xml/ns/persistence/orm_2_1.xsd"
+                 version="2.1">
+
+    <sequence-generator name="SEQ_OPPGAVE" allocation-size="50" sequence-name="SEQ_OPPGAVE"/>
+    <sequence-generator name="SEQ_RESERVASJON" allocation-size="50" sequence-name="SEQ_RESERVASJON"/>
+    <sequence-generator name="SEQ_LISTE" allocation-size="50" sequence-name="SEQ_LISTE"/>
+    <sequence-generator name="SEQ_FILTR_BEHANDLING_TYPE" allocation-size="50" sequence-name="SEQ_FILTR_BEHANDLING_TYPE"/>
+    <sequence-generator name="SEQ_FILTRERING_YTELSE_TYPE" allocation-size="50" sequence-name="SEQ_FILTRERING_YTELSE_TYPE"/>
+    <sequence-generator name="SEQ_AVDELING" allocation-size="50" sequence-name="SEQ_AVDELING"/>
+    <sequence-generator name="SEQ_SAKSBEHANDLER" allocation-size="50" sequence-name="SEQ_SAKSBEHANDLER"/>
+    <entity class="no.nav.foreldrepenger.loslager.oppgave.EventmottakFeillogg"/>
+    <entity class="no.nav.foreldrepenger.loslager.oppgave.Oppgave"/>
+    <entity class="no.nav.foreldrepenger.loslager.oppgave.OppgaveEgenskap"/>
+    <entity class="no.nav.foreldrepenger.loslager.oppgave.OppgaveEventLogg"/>
+    <entity class="no.nav.foreldrepenger.loslager.oppgave.Reservasjon"/>
+    <entity class="no.nav.foreldrepenger.loslager.oppgave.ReservasjonEventLogg"/>
+    <entity class="no.nav.foreldrepenger.loslager.oppgave.OppgaveFiltrering"/>
+    <entity class="no.nav.foreldrepenger.loslager.oppgave.OppgaveFiltreringOppdaterer"/>
+    <entity class="no.nav.foreldrepenger.loslager.oppgave.FiltreringBehandlingType"/>
+    <entity class="no.nav.foreldrepenger.loslager.oppgave.FiltreringYtelseType"/>
+    <entity class="no.nav.foreldrepenger.loslager.oppgave.FiltreringAndreKriterierType"/>
+    <entity class="no.nav.foreldrepenger.loslager.organisasjon.Avdeling"/>
+    <entity class="no.nav.foreldrepenger.loslager.organisasjon.Saksbehandler"/>
+
+    <entity class="no.nav.foreldrepenger.loslager.oppgave.BehandlingType"/>
+    <entity class="no.nav.foreldrepenger.loslager.oppgave.AndreKriterierType"/>
+    <entity class="no.nav.foreldrepenger.loslager.oppgave.FagsakYtelseType"/>
+    <entity class="no.nav.foreldrepenger.loslager.oppgave.EventmottakStatus"/>
+
+</entity-mappings>
