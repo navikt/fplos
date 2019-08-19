@@ -32,9 +32,9 @@ public class AvdelingslederSaksbehandlerTjenesteImpl implements AvdelingslederSa
 
     @Inject
     public AvdelingslederSaksbehandlerTjenesteImpl(OppgaveRepositoryProvider oppgaveRepositoryProvider, OrganisasjonRessursEnhetTjeneste organisasjonRessursEnhetTjeneste) {
-        organisasjonRepository = oppgaveRepositoryProvider.getOrganisasjonRepository();
+        this.organisasjonRepository = oppgaveRepositoryProvider.getOrganisasjonRepository();
         this.organisasjonRessursEnhetTjeneste = organisasjonRessursEnhetTjeneste;
-        oppgaveRepository = oppgaveRepositoryProvider.getOppgaveRepository();
+        this.oppgaveRepository = oppgaveRepositoryProvider.getOppgaveRepository();
     }
 
     @Override
@@ -44,19 +44,24 @@ public class AvdelingslederSaksbehandlerTjenesteImpl implements AvdelingslederSa
 
     @Override
     public void leggTilSaksbehandler(String saksbehandlerIdent, String avdelingEnhet) {
-        Saksbehandler saksbehandler;
-        Optional<Saksbehandler> optionalSaksbehandler = organisasjonRepository.hentMuligSaksbehandler(saksbehandlerIdent);
-        if (!optionalSaksbehandler.isPresent()){
-            organisasjonRepository.lagre(new Saksbehandler(saksbehandlerIdent.toUpperCase()));
-            saksbehandler = organisasjonRepository.hentSaksbehandler(saksbehandlerIdent);
-        }else{
-            saksbehandler = optionalSaksbehandler.get();
-        }
-        Avdeling avdeling = organisasjonRepository.hentAvdelingFraEnhet(avdelingEnhet);
+        Saksbehandler saksbehandler = hentEllerLagreSaksbehandler(saksbehandlerIdent);
+        Avdeling avdeling = hentAvdeling(avdelingEnhet);
         saksbehandler.leggTilAvdeling(avdeling);
-
         organisasjonRepository.lagre(saksbehandler);
         organisasjonRepository.refresh(avdeling);
+    }
+
+    private Avdeling hentAvdeling(String avdelingEnhet) {
+        return organisasjonRepository.hentAvdelingFraEnhet(avdelingEnhet);
+    }
+
+    private Saksbehandler hentEllerLagreSaksbehandler(String saksbehandlerIdent) {
+        Optional<Saksbehandler> optionalSaksbehandler = organisasjonRepository.hentMuligSaksbehandler(saksbehandlerIdent);
+        if (optionalSaksbehandler.isEmpty()) {
+            organisasjonRepository.lagre(saksbehandlerFra(saksbehandlerIdent));
+            return organisasjonRepository.hentSaksbehandler(saksbehandlerIdent);
+        }
+        return optionalSaksbehandler.get();
     }
 
     @Override
@@ -65,9 +70,9 @@ public class AvdelingslederSaksbehandlerTjenesteImpl implements AvdelingslederSa
         saksbehandler.fjernAvdeling(organisasjonRepository.hentAvdelingFraEnhet(avdelingEnhet));
         organisasjonRepository.lagre(saksbehandler);
 
-        Avdeling avdeling = organisasjonRepository.hentAvdelingFraEnhet(avdelingEnhet);
+        Avdeling avdeling = hentAvdeling(avdelingEnhet);
         List<OppgaveFiltrering> oppgaveFiltreringList = avdeling.getOppgaveFiltrering();
-        for(OppgaveFiltrering oppgaveFiltrering: oppgaveFiltreringList){
+        for (OppgaveFiltrering oppgaveFiltrering : oppgaveFiltreringList) {
             oppgaveFiltrering.fjernSaksbehandler(saksbehandler);
             oppgaveRepository.lagre(oppgaveFiltrering);
         }
@@ -75,18 +80,22 @@ public class AvdelingslederSaksbehandlerTjenesteImpl implements AvdelingslederSa
     }
 
     @Override
-    public String hentSaksbehandlerNavn(String saksbehandlerIdent) {
+    public Optional<String> hentSaksbehandlerNavn(String saksbehandlerIdent) {
         try {
             LdapBruker ldapBruker = new LdapBrukeroppslag().hentBrukerinformasjon(saksbehandlerIdent);
-            return ldapBruker.getDisplayName();
+            return Optional.ofNullable(ldapBruker.getDisplayName());
         } catch (Exception e) {
             AvdelingslederSaksbehandlerTjenesteFeil.FACTORY.feil(LDAP, e);
-            return null;
+            return Optional.empty();
         }
     }
 
     @Override
     public List<OrganisasjonsEnhet> hentSaksbehandlersAvdelinger(String saksbehandlerIdent) {
         return organisasjonRessursEnhetTjeneste.hentEnhetListe(saksbehandlerIdent);
+    }
+
+    private Saksbehandler saksbehandlerFra(String saksbehandlerIdent) {
+        return new Saksbehandler(saksbehandlerIdent.toUpperCase());
     }
 }

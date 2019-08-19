@@ -81,10 +81,7 @@ public class ForeldrepengerBehandlingRestKlient {
             hentUttakKontrollerFaktaPerioder(behandlingId, builder, links);
             loginContext.logout();
             return builder.build();
-        } catch (URISyntaxException e) {
-            LOGGER.error("Feilet å hente behandling fra FPSAK for behandlingId: " + behandlingId, e);
-            return null;
-        } catch (IntegrasjonException e) {
+        } catch (URISyntaxException | IntegrasjonException e) {
             LOGGER.error("Feilet å hente behandling fra FPSAK for behandlingId: " + behandlingId, e);
             return null;
         }
@@ -140,7 +137,6 @@ public class ForeldrepengerBehandlingRestKlient {
 
     private <T> Optional<T> hentFraResourceLink(ResourceLink resourceLink, Class<T> clazz) {
         URI uri = URI.create(endpointFpsakRestBase + resourceLink.getHref());
-
         return "POST".equals(resourceLink.getType().name()) ? oidcRestClient.postReturnsOptional(uri, resourceLink.getRequestPayload(), clazz)
                 : oidcRestClient.getReturnsOptional(uri, clazz);
     }
@@ -179,7 +175,7 @@ public class ForeldrepengerBehandlingRestKlient {
         }
     }
 
-    private static Boolean harGraderingFra(KontrollerFaktaDataDto faktaDataDto) {
+    private static boolean harGraderingFra(KontrollerFaktaDataDto faktaDataDto) {
         return faktaDataDto.getPerioder().stream()
                 .map(KontrollerFaktaPeriodeDto::getArbeidstidsprosent)
                 .filter(Objects::nonNull)
@@ -188,8 +184,7 @@ public class ForeldrepengerBehandlingRestKlient {
 
     private static boolean harRefusjonskravFra(InntektArbeidYtelseDto inntektArbeidYtelseDto) {
         return inntektArbeidYtelseDto.getInntektsmeldinger().stream()
-                .anyMatch(e -> e.getGetRefusjonBeløpPerMnd() != null
-                        && e.getGetRefusjonBeløpPerMnd().getVerdi().intValue() > 0);
+                .anyMatch(e -> e.getGetRefusjonBeløpPerMnd() != null && e.getGetRefusjonBeløpPerMnd().getVerdi().intValue() > 0);
     }
 
     private static Optional<ResourceLink> velgLink(List<ResourceLink> links, String typeLink) {
