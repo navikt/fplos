@@ -1,7 +1,6 @@
 package no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.saksbehandler;
 
 import static no.nav.vedtak.sikkerhet.abac.BeskyttetRessursActionAttributt.READ;
-import static no.nav.vedtak.sikkerhet.abac.BeskyttetRessursResourceAttributt.OPPGAVESTYRING;
 import static no.nav.vedtak.sikkerhet.abac.BeskyttetRessursResourceAttributt.OPPGAVESTYRING_AVDELINGENHET;
 
 import java.util.List;
@@ -26,6 +25,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.dto.AvdelingEnhetDto;
 import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.dto.SaksbehandlerOgAvdelingDto;
+import no.nav.foreldrepenger.loslager.aktør.OrganisasjonsEnhet;
 import no.nav.foreldrepenger.loslager.organisasjon.Saksbehandler;
 import no.nav.foreldrepenger.los.web.app.tjenester.felles.dto.SaksbehandlerDto;
 import no.nav.foreldrepenger.los.web.app.tjenester.felles.dto.SaksbehandlerBrukerIdentDto;
@@ -34,6 +34,8 @@ import no.nav.vedtak.felles.jpa.Transaction;
 import no.nav.vedtak.sikkerhet.abac.BeskyttetRessurs;
 import no.nav.vedtak.sikkerhet.abac.BeskyttetRessursActionAttributt;
 import no.nav.vedtak.sikkerhet.abac.BeskyttetRessursResourceAttributt;
+
+import no.nav.foreldrepenger.los.web.app.util.StringUtils;
 
 @Api(tags = "Avdelingsleder")
 @Path("avdelingsleder/saksbehandlere")
@@ -61,17 +63,8 @@ public class AvdelingslederSaksbehandlerRestTjeneste {
     public List<SaksbehandlerDto> hentAvdelingensSaksbehandlere(@NotNull @QueryParam("avdelingEnhet") @Valid AvdelingEnhetDto avdelingEnhetDto) {
         return avdelingslederSaksbehandlerTjeneste.hentAvdelingensSaksbehandlere(avdelingEnhetDto.getAvdelingEnhet())
                 .stream()
-                .map(saksbehandler -> lagSaksbehandlerDto(saksbehandler))
+                .map(this::saksbehandlerDtoFra)
                 .collect(Collectors.toList());
-    }
-
-    private SaksbehandlerDto lagSaksbehandlerDto(Saksbehandler saksbehandler) {
-        String saksbehandlerIdent = saksbehandler.getSaksbehandlerIdent();
-        List<String> organisasjonsEnhetsNavn = avdelingslederSaksbehandlerTjeneste.hentSaksbehandlersAvdelinger(saksbehandlerIdent.toUpperCase())
-                .stream().map(org -> org.getEnhetNavn()).collect(Collectors.toList());
-        return new SaksbehandlerDto(new SaksbehandlerBrukerIdentDto(saksbehandlerIdent),
-                avdelingslederSaksbehandlerTjeneste.hentSaksbehandlerNavn(saksbehandlerIdent.toUpperCase()),
-                organisasjonsEnhetsNavn);
     }
 
     @POST
@@ -79,16 +72,10 @@ public class AvdelingslederSaksbehandlerRestTjeneste {
     @Path("/sok")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @ApiOperation(value = "Søk etter saksbehandlere", notes = (""))
+    @ApiOperation(value = "Søk etter saksbehandler", notes = (""))
     @BeskyttetRessurs(action = BeskyttetRessursActionAttributt.READ, ressurs = BeskyttetRessursResourceAttributt.OPPGAVESTYRING_AVDELINGENHET)
     public SaksbehandlerDto søkAvdelingensSaksbehandlere(@NotNull @ApiParam("Brukeridentifikasjon") @Valid SaksbehandlerBrukerIdentDto brukerIdent) {
-        String ident = brukerIdent.getVerdi().toUpperCase();
-        if(avdelingslederSaksbehandlerTjeneste.hentSaksbehandlerNavn(ident) != null) {
-            List<String> organisasjonsEnhetsNavn = avdelingslederSaksbehandlerTjeneste.hentSaksbehandlersAvdelinger(ident)
-                    .stream().map(org -> org.getEnhetNavn()).collect(Collectors.toList());
-            return new SaksbehandlerDto(brukerIdent, avdelingslederSaksbehandlerTjeneste.hentSaksbehandlerNavn(ident), organisasjonsEnhetsNavn);
-        }
-        return null;
+        return saksbehandlerDtoFra(brukerIdent);
     }
 
     @POST
@@ -100,7 +87,8 @@ public class AvdelingslederSaksbehandlerRestTjeneste {
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
     public void leggTilNySaksbehandler(
             @NotNull @ApiParam("Brukeridentifikasjon og avdelingsid") @Valid SaksbehandlerOgAvdelingDto saksbehandlerOgAvdeling) {
-        avdelingslederSaksbehandlerTjeneste.leggTilSaksbehandler(saksbehandlerOgAvdeling.getBrukerIdent().getVerdi(),saksbehandlerOgAvdeling.getAvdelingEnhet().getAvdelingEnhet());
+        avdelingslederSaksbehandlerTjeneste.leggTilSaksbehandler(saksbehandlerOgAvdeling.getBrukerIdent().getVerdi(),
+                saksbehandlerOgAvdeling.getAvdelingEnhet().getAvdelingEnhet());
     }
 
     @POST
@@ -113,5 +101,29 @@ public class AvdelingslederSaksbehandlerRestTjeneste {
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
     public void slettSaksbehandler( @NotNull @ApiParam("Brukeridentifikasjon og avdelingsid") @Valid SaksbehandlerOgAvdelingDto saksbehandlerOgAvdeling) {
         avdelingslederSaksbehandlerTjeneste.slettSaksbehandler(saksbehandlerOgAvdeling.getBrukerIdent().getVerdi(), saksbehandlerOgAvdeling.getAvdelingEnhet().getAvdelingEnhet());
+    }
+
+    private SaksbehandlerDto saksbehandlerDtoFra(Saksbehandler saksbehandler) {
+        return saksbehandlerDtoFra(new SaksbehandlerBrukerIdentDto(saksbehandler.getSaksbehandlerIdent().toUpperCase()));
+    }
+
+    private SaksbehandlerDto saksbehandlerDtoFra(SaksbehandlerBrukerIdentDto brukerIdent) {
+        return new SaksbehandlerDto(brukerIdent, hentSaksbehandlersNavn(brukerIdent), tilgjengeligeEnheterFor(brukerIdent));
+    }
+
+    private String hentSaksbehandlersNavn(SaksbehandlerBrukerIdentDto brukerIdentDto) {
+        return hentSaksbehandlersNavn(brukerIdentDto.getVerdi().toUpperCase());
+    }
+
+    private String hentSaksbehandlersNavn(String ident) {
+        return avdelingslederSaksbehandlerTjeneste.hentSaksbehandlerNavn(ident)
+                .map(StringUtils::capitalizeNavn)
+                .orElse("Ukjent navn");
+    }
+
+    private List<String> tilgjengeligeEnheterFor(SaksbehandlerBrukerIdentDto brukerIdent) {
+        return avdelingslederSaksbehandlerTjeneste.hentSaksbehandlersAvdelinger(brukerIdent.getVerdi().toUpperCase()).stream()
+                .map(OrganisasjonsEnhet::getEnhetNavn)
+                .collect(Collectors.toList());
     }
 }
