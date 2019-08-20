@@ -138,18 +138,16 @@ public class OppgaveRestTjeneste {
     @BeskyttetRessurs(action = READ, ressurs = FAGSAK)
     public List<OppgaveDto> getOppgaverTilBehandling(@NotNull @QueryParam("sakslisteId") @Valid SakslisteIdDto sakslisteId) {
         List<Oppgave> nesteOppgaver = oppgaveTjeneste.hentNesteOppgaver(sakslisteId.getVerdi());
-
         List<OppgaveDto> oppgaveDtos = new ArrayList<>();
         int funnetOppgaver = 0;
-        for(int i = 0; i<nesteOppgaver.size() && funnetOppgaver < 3; i++){
+        for (int i = 0; i < nesteOppgaver.size() && funnetOppgaver < 3; i++) {
             Oppgave oppgave = nesteOppgaver.get(i);
             Optional<TpsPersonDto> personDto = oppgaveTjeneste.hentPersonInfoOptional(oppgave.getAktorId());
-            if(personDto.isPresent()){
+            if (personDto.isPresent()) {
                 oppgaveDtos.add(new OppgaveDto(oppgave, personDto.get()));
                 funnetOppgaver++;
             }
         }
-
         return oppgaveDtos;
     }
 
@@ -219,7 +217,16 @@ public class OppgaveRestTjeneste {
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
     public List<OppgaveDto> getReserverteOppgaver() {
         List<Reservasjon> reserveringer = oppgaveTjeneste.hentReserverteOppgaver();
-        return reserveringer.stream().map(s -> new OppgaveDto(s.getOppgave(), oppgaveTjeneste.hentPersonInfo(s.getOppgave().getAktorId()), null, oppgaveTjeneste.hentNavnHvisFlyttetAvSaksbehandler(s.getFlyttetAv()))).collect(Collectors.toList());
+        return reserveringer.stream()
+                .map(this::oppgaveDtoFra)
+                .collect(Collectors.toList());
+    }
+
+    private OppgaveDto oppgaveDtoFra(Reservasjon reservasjon) {
+        return new OppgaveDto(reservasjon.getOppgave(),
+                oppgaveTjeneste.hentPersonInfo(reservasjon.getOppgave().getAktorId()),
+                null,
+                oppgaveTjeneste.hentNavnHvisFlyttetAvSaksbehandler(reservasjon.getFlyttetAv()));
     }
 
     @GET
@@ -260,7 +267,9 @@ public class OppgaveRestTjeneste {
     @BeskyttetRessurs(action = BeskyttetRessursActionAttributt.CREATE, ressurs = BeskyttetRessursResourceAttributt.FAGSAK)
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
     public OppgaveStatusDto flyttOppgaveReservasjon(@NotNull @ApiParam("id, begrunnelse og brukerident") @Valid OppgaveFlyttingDto oppgaveFlyttingId) {
-        Reservasjon reservasjon = oppgaveTjeneste.flyttReservasjon(oppgaveFlyttingId.getOppgaveId().getVerdi(), oppgaveFlyttingId.getBrukerIdent().getVerdi(), oppgaveFlyttingId.getBegrunnelse());
+        Reservasjon reservasjon = oppgaveTjeneste.flyttReservasjon(oppgaveFlyttingId.getOppgaveId().getVerdi(),
+                oppgaveFlyttingId.getBrukerIdent().getVerdi(),
+                oppgaveFlyttingId.getBegrunnelse());
         LOGGER.info("Reservasjon flyttet: {}", oppgaveFlyttingId);
         return OppgaveStatusDto.reservert(reservasjon);
     }

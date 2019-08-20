@@ -116,6 +116,6 @@ public class Reservasjon extends BaseEntitet {
     }
 
     public boolean erAktiv() {
-        return reservertTil.isAfter(LocalDateTime.now());
+        return reservertTil != null && reservertTil.isAfter(LocalDateTime.now());
     }
 }
