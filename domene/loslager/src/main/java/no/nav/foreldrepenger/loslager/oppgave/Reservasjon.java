@@ -35,7 +35,7 @@ public class Reservasjon extends BaseEntitet {
     @Column(name = "FLYTTET_AV")
     private String flyttetAv;
 
-   @Column(name = "FLYTTET_TIDSPUNKT")
+    @Column(name = "FLYTTET_TIDSPUNKT")
     private LocalDateTime flyttetTidspunkt;
 
     @Column(name = "BEGRUNNELSE")
@@ -82,23 +82,19 @@ public class Reservasjon extends BaseEntitet {
         begrunnelse = null;
     }
 
-    public void reserverOppgaveFraTidligereReservasjon(LocalDateTime reservertTilTidspunkt,
-                                                       String brukernavn, String flyttetAvIdent,
-                                                       LocalDateTime tidspunktForFlytting,
-                                                       String begrunnelseForFlytting){
-        reservertTil = reservertTilTidspunkt;
-        reservertAv = brukernavn;
-        flyttetAv = flyttetAvIdent;
-        flyttetTidspunkt = tidspunktForFlytting;
-        begrunnelse = begrunnelseForFlytting;
+    public void reserverOppgaveFraTidligereReservasjon(Reservasjon other) {
+        this.reservertTil = other.reservertTil;
+        this.reservertAv = other.reservertAv;
     }
 
-    public void frigiOppgave(String reservertAvForFrigi, String begrunnelseForFrigiOppgave) {
+    public void frigiReservasjon(String begrunnelse) {
         reservertTil = LocalDateTime.now().minusSeconds(1);
-        reservertAv = reservertAvForFrigi != null ? reservertAvForFrigi : finnBrukernavn();
+        if (reservertAv == null) {
+            reservertAv = finnBrukernavn();
+        }
         flyttetAv = null;
         flyttetTidspunkt = null;
-        begrunnelse = begrunnelseForFrigiOppgave;
+        this.begrunnelse = begrunnelse;
     }
 
     public void forlengReservasjonPåOppgave() {
@@ -117,5 +113,9 @@ public class Reservasjon extends BaseEntitet {
     private static String finnBrukernavn() {
         String brukerident = SubjectHandler.getSubjectHandler().getUid();
         return brukerident != null ? brukerident.toUpperCase() : BRUKERNAVN_NÅR_SIKKERHETSKONTEKST_IKKE_FINNES;
+    }
+
+    public boolean erAktiv() {
+        return reservertTil.isAfter(LocalDateTime.now());
     }
 }

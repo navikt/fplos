@@ -215,14 +215,10 @@ public class OppgaveRepositoryImpl implements OppgaveRepository {
     @Override
     public void reserverOppgaveFraTidligereReservasjon(Long oppgaveId, Reservasjon tidligereReservasjon){
         Reservasjon reservasjon = hentReservasjon(oppgaveId);
-        reservasjon.reserverOppgaveFraTidligereReservasjon(tidligereReservasjon.getReservertTil(),
-                tidligereReservasjon.getReservertAv(),
-                reservasjon.getFlyttetAv(),
-                reservasjon.getFlyttetTidspunkt(),
-                reservasjon.getBegrunnelse());
+        reservasjon.reserverOppgaveFraTidligereReservasjon(tidligereReservasjon);
         lagre(reservasjon);
         refresh(reservasjon.getOppgave());
-        lagre(new ReservasjonEventLogg(oppgaveId, reservasjon));
+        lagre(new ReservasjonEventLogg(reservasjon));
     }
 
     @Override
@@ -367,13 +363,13 @@ public class OppgaveRepositoryImpl implements OppgaveRepository {
     @Override
     public void avsluttOppgave(Long behandlingId) {
         List<Oppgave> oppgaver = hentOppgaver(behandlingId);
-        if(oppgaver.isEmpty())return;
+        if (oppgaver.isEmpty()) return;
         Oppgave oppgave = oppgaver.get(0);
         Reservasjon reservasjon = oppgave.getReservasjon();
-        if(reservasjon != null && reservasjon.getReservertTil().isAfter(LocalDateTime.now())) {
-            reservasjon.frigiOppgave(reservasjon.getReservertAv(), "Oppgave avsluttet");
+        if (reservasjon != null && reservasjon.erAktiv()) {
+            reservasjon.frigiReservasjon("Oppgave avsluttet");
             lagre(reservasjon);
-            lagre(new ReservasjonEventLogg(oppgave.getId(), reservasjon));
+            lagre(new ReservasjonEventLogg(reservasjon));
         }
         oppgave.avsluttOppgave();
         internLagre(oppgave);
@@ -382,7 +378,7 @@ public class OppgaveRepositoryImpl implements OppgaveRepository {
 
     @Override
     public List<Oppgave> hentSisteReserverteOppgaver(String uid) {
-         return getEntityManager().createQuery("SELECT o FROM Oppgave o " +
+        return getEntityManager().createQuery("SELECT o FROM Oppgave o " +
                 "INNER JOIN Reservasjon r ON r.oppgave = o " +
                 "WHERE upper(r.reservertAv) = upper( :uid ) ORDER BY coalesce(r.endretTidspunkt,r.opprettetTidspunkt) DESC ", Oppgave.class) //$NON-NLS-1$
                 .setParameter("uid", uid).setMaxResults(10).getResultList();

@@ -1,6 +1,5 @@
 package no.nav.foreldrepenger.loslager.repository;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -94,8 +93,8 @@ public class AdminRepositoryImpl implements AdminRepository {
     public Oppgave deaktiverOppgave(Long oppgaveId) {
         Oppgave oppgave = hentOppgave(oppgaveId);
         Reservasjon reservasjon = oppgave.getReservasjon();
-        if (reservasjon != null && reservasjon.getReservertTil().isAfter(LocalDateTime.now())) {
-            reservasjon.frigiOppgave(reservasjon.getReservertAv(), "Oppgave er avsluttet fra admin REST-tjeneste");
+        if (reservasjon != null && reservasjon.erAktiv()) {
+            reservasjon.frigiReservasjon("Oppgave er avsluttet fra admin REST-tjeneste");
             lagreReservasjon(reservasjon);
         }
         oppgave.avsluttOppgave();

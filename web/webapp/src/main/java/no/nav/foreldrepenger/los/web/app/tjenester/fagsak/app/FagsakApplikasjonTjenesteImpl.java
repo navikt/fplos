@@ -65,7 +65,7 @@ public class FagsakApplikasjonTjenesteImpl implements FagsakApplikasjonTjeneste{
         if(oppgave.getReservasjon() != null &&
                 oppgave.getReservasjon().getReservertAv() != null &&
                 oppgave.getReservasjon().getReservertTil() != null &&
-                oppgave.getReservasjon().getReservertTil().isAfter(LocalDateTime.now())) {
+                oppgave.getReservasjon().erAktiv()) {
             String oppgaveReservertAv = oppgave.getReservasjon().getReservertAv();
             boolean reservertAvAnnenSaksbehandler = !oppgaveReservertAv.equalsIgnoreCase(innloggetBruker);
             return reservertAvAnnenSaksbehandler ? ansattTjeneste.hentAnsattNavn(oppgaveReservertAv) : null;

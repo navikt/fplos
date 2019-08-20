@@ -36,7 +36,9 @@ public class OppgaveStatusDto {
 
     //FIXME Denne dto'en bør truleg lagast på ein annan måte, sidan ein treng blant anna reservertAvNavn
     public static OppgaveStatusDto reservert(Reservasjon reservasjon, String reservertAvNavn, String navnFlyttetAv) {
-        if(reservasjon == null || reservasjon.getReservertTil().isBefore(LocalDateTime.now())) return ikkeReservert();
+        if (reservasjon == null || !reservasjon.erAktiv()) {
+            return ikkeReservert();
+        }
         ReservasjonDto reservasjonDto = new ReservasjonDto(reservasjon, reservertAvNavn, navnFlyttetAv);
         return new OppgaveStatusDto(true, reservasjonDto);
     }

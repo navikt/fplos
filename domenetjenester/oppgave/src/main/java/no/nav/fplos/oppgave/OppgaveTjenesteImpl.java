@@ -2,7 +2,6 @@ package no.nav.fplos.oppgave;
 
 import static no.nav.foreldrepenger.loslager.BaseEntitet.BRUKERNAVN_NÅR_SIKKERHETSKONTEKST_IKKE_FINNES;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -90,14 +89,14 @@ public class OppgaveTjenesteImpl implements OppgaveTjeneste {
     }
 
 
-    public Reservasjon reserverOppgave(Long oppgaveId){
+    public Reservasjon reserverOppgave(Long oppgaveId) {
         Reservasjon reservasjon = oppgaveRepository.hentReservasjon(oppgaveId);
-        if(reservasjon.getReservertTil() == null || reservasjon.getReservertTil().isBefore(LocalDateTime.now())) {
+        if (reservasjon.getReservertTil() == null || !reservasjon.erAktiv()) {
             reservasjon.reserverNormalt();
         }
         oppgaveRepository.lagre(reservasjon);
         oppgaveRepository.refresh(reservasjon.getOppgave());
-        oppgaveRepository.lagre(new ReservasjonEventLogg(oppgaveId, reservasjon));
+        oppgaveRepository.lagre(new ReservasjonEventLogg(reservasjon));
         return reservasjon;
     }
 
@@ -109,19 +108,19 @@ public class OppgaveTjenesteImpl implements OppgaveTjeneste {
     public Reservasjon frigiOppgave(Long oppgaveId, String begrunnelse){
         Reservasjon reservasjon = oppgaveRepository.hentReservasjon(oppgaveId);
         Oppgave oppgave = reservasjon.getOppgave();
-        reservasjon.frigiOppgave(reservasjon.getReservertAv(), begrunnelse);
+        reservasjon.frigiReservasjon(begrunnelse);
         oppgaveRepository.lagre(reservasjon);
         oppgaveRepository.refresh(oppgave);
-        oppgaveRepository.lagre(new ReservasjonEventLogg(oppgaveId, reservasjon));
+        oppgaveRepository.lagre(new ReservasjonEventLogg(reservasjon));
         return reservasjon;
     }
 
     public Reservasjon forlengReservasjonPåOppgave(Long oppgaveId){
-        Reservasjon oppgave = oppgaveRepository.hentReservasjon(oppgaveId);
-        oppgave.forlengReservasjonPåOppgave();
-        oppgaveRepository.lagre(oppgave);
-        oppgaveRepository.lagre(new ReservasjonEventLogg(oppgaveId, oppgave));
-        return oppgave;
+        Reservasjon reservasjon = oppgaveRepository.hentReservasjon(oppgaveId);
+        reservasjon.forlengReservasjonPåOppgave();
+        oppgaveRepository.lagre(reservasjon);
+        oppgaveRepository.lagre(new ReservasjonEventLogg(reservasjon));
+        return reservasjon;
     }
 
     @Override
@@ -130,7 +129,7 @@ public class OppgaveTjenesteImpl implements OppgaveTjeneste {
         reservasjon.flyttReservasjon(brukernavn, begrunnelse);
         oppgaveRepository.lagre(reservasjon);
         oppgaveRepository.refresh(reservasjon.getOppgave());
-        oppgaveRepository.lagre(new ReservasjonEventLogg(oppgaveId, reservasjon));
+        oppgaveRepository.lagre(new ReservasjonEventLogg(reservasjon));
         return reservasjon;
     }
 
@@ -215,7 +214,7 @@ public class OppgaveTjenesteImpl implements OppgaveTjeneste {
                 reservasjon.getReservertAv() != null &&
                 !reservasjon.getReservertAv().equalsIgnoreCase(innloggetBruker) &&
                 reservasjon.getReservertTil() != null &&
-                reservasjon.getReservertTil().isAfter(LocalDateTime.now());
+                reservasjon.erAktiv();
         return reservertAvAnnenSaksbehandler ? ansattTjeneste.hentAnsattNavn(reservasjon.getReservertAv()) : null;
     }
 
