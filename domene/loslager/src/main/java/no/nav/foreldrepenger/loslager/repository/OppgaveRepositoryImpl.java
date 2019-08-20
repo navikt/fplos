@@ -213,7 +213,7 @@ public class OppgaveRepositoryImpl implements OppgaveRepository {
     }
 
     @Override
-    public Reservasjon reserverOppgaveFraTidligereReservasjon(Long oppgaveId, Reservasjon tidligereReservasjon){
+    public void reserverOppgaveFraTidligereReservasjon(Long oppgaveId, Reservasjon tidligereReservasjon){
         Reservasjon reservasjon = hentReservasjon(oppgaveId);
         reservasjon.reserverOppgaveFraTidligereReservasjon(tidligereReservasjon.getReservertTil(),
                 tidligereReservasjon.getReservertAv(),
@@ -223,7 +223,6 @@ public class OppgaveRepositoryImpl implements OppgaveRepository {
         lagre(reservasjon);
         refresh(reservasjon.getOppgave());
         lagre(new ReservasjonEventLogg(oppgaveId, reservasjon));
-        return reservasjon;
     }
 
     @Override
