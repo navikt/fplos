@@ -41,9 +41,9 @@ public class ReservasjonEventLogg extends BaseEntitet{
         //For automatisk generering
     }
 
-    public ReservasjonEventLogg(Long oppgaveId, Reservasjon reservasjon) {
+    public ReservasjonEventLogg(Reservasjon reservasjon) {
         this.reservasjonId = reservasjon.getId();
-        this.oppgaveId = oppgaveId;
+        this.oppgaveId = reservasjon.getOppgave().getId();
         this.reservertTil = reservasjon.getReservertTil();
         this.reservertAv = reservasjon.getReservertAv();
         this.flyttetAv = reservasjon.getFlyttetAv();

@@ -34,7 +34,7 @@ public interface OppgaveRepository {
 
     Reservasjon hentReservasjon(Long oppgaveId);
 
-    Reservasjon reserverOppgaveFraTidligereReservasjon(Long oppgaveId, Reservasjon tidligereReservasjon);
+    void reserverOppgaveFraTidligereReservasjon(Long oppgaveId, Reservasjon tidligereReservasjon);
 
     List<OppgaveFiltrering> hentAlleLister(Long avdelingsId);
 
