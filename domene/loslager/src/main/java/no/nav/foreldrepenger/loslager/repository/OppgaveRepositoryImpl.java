@@ -28,6 +28,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
 
 import static no.nav.foreldrepenger.loslager.BaseEntitet.BRUKERNAVN_NÅR_SIKKERHETSKONTEKST_IKKE_FINNES;
@@ -353,27 +354,39 @@ public class OppgaveRepositoryImpl implements OppgaveRepository {
 
     @Override
     public Oppgave gjenåpneOppgave(Long behandlingId) {
-        Oppgave oppgave = hentOppgaver(behandlingId).get(0);
-        oppgave.gjenåpneOppgave();
-        internLagre(oppgave);
-        entityManager.refresh(oppgave);
-        return oppgave;
+        List<Oppgave> oppgaver = hentOppgaver(behandlingId);
+        Oppgave sisteOppgave = oppgaver.stream()
+                .max(Comparator.comparing(Oppgave::getOpprettetTidspunkt))
+                .orElse(null);
+        if (sisteOppgave != null) {
+            sisteOppgave.gjenåpneOppgave();
+            internLagre(sisteOppgave);
+            entityManager.refresh(sisteOppgave);
+        }
+        return sisteOppgave;
     }
 
     @Override
     public void avsluttOppgave(Long behandlingId) {
         List<Oppgave> oppgaver = hentOppgaver(behandlingId);
-        if (oppgaver.isEmpty()) return;
-        Oppgave oppgave = oppgaver.get(0);
-        Reservasjon reservasjon = oppgave.getReservasjon();
+        if (oppgaver.isEmpty()) {
+            return;
+        }
+        Oppgave nyesteOppgave = oppgaver.stream()
+                .max(Comparator.comparing(Oppgave::getOpprettetTidspunkt))
+                .orElse(null);
+        frigiEventuellReservasjon(nyesteOppgave.getReservasjon());
+        nyesteOppgave.avsluttOppgave();
+        internLagre(nyesteOppgave);
+        entityManager.refresh(nyesteOppgave);
+    }
+
+    private void frigiEventuellReservasjon(Reservasjon reservasjon) {
         if (reservasjon != null && reservasjon.erAktiv()) {
             reservasjon.frigiReservasjon("Oppgave avsluttet");
             lagre(reservasjon);
             lagre(new ReservasjonEventLogg(reservasjon));
         }
-        oppgave.avsluttOppgave();
-        internLagre(oppgave);
-        entityManager.refresh(oppgave);
     }
 
     @Override
@@ -421,9 +434,8 @@ public class OppgaveRepositoryImpl implements OppgaveRepository {
 
     private List<Oppgave> hentOppgaver(Long behandlingId) {
         return getEntityManager().createQuery(SELECT_FRA_OPPGAVE +
-                "WHERE o.behandlingId = :behandlingId " +
-                "ORDER BY o.id desc ", Oppgave.class)
-                .setParameter("behandlingId",behandlingId)
+                "WHERE o.behandlingId = :behandlingId ", Oppgave.class)
+                .setParameter("behandlingId", behandlingId)
                 .getResultList();
     }
 
