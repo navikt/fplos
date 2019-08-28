@@ -89,7 +89,7 @@ public class FpsakEventHandler {
             case LUKK_OPPGAVE:
                 log.info("Lukker oppgave for behandlingId {}", behandlingId);
                 avsluttOppgave(behandlingId);
-                loggEvent(behandlingId, OppgaveEventType.LUKKET, AndreKriterierType.UKJENT, bpeDto.getBehandlendeEnhet(), Optional.empty());
+                loggEvent(behandlingId, OppgaveEventType.LUKKET, AndreKriterierType.UKJENT, bpeDto.getBehandlendeEnhet());
                 break;
             case LUKK_OPPGAVE_VENT:
                 log.info("Lukker oppgave ved vent for behandlingId {}", behandlingId);
@@ -106,7 +106,7 @@ public class FpsakEventHandler {
                 Oppgave oppgave = opprettOppgave(bpeDto, fraFpsak, prosesserFraAdmin);
                 reserverOppgaveFraTidligereReservasjon(prosesserFraAdmin, reservasjon, oppgave);
                 log.info("Oppgave {} opprettet og populert med informasjon fra FPSAK for behandlingId {}", oppgave.getId(), behandlingId);
-                loggEvent(behandlingId, OppgaveEventType.OPPRETTET, AndreKriterierType.UKJENT, bpeDto.getBehandlendeEnhet(), Optional.empty());
+                loggEvent(behandlingId, OppgaveEventType.OPPRETTET, AndreKriterierType.UKJENT, bpeDto.getBehandlendeEnhet());
                 opprettOppgaveEgenskaper(fraFpsak, aksjonspunktListe, oppgave);
                 break;
             case OPPRETT_BESLUTTER_OPPGAVE:
@@ -115,7 +115,7 @@ public class FpsakEventHandler {
                 reserverOppgaveFraTidligereReservasjon(prosesserFraAdmin, reservasjon, beslutterOppgave);
                 log.info("Oppgave {} opprettet til beslutter og populert med informasjon fra FPSAK for behandlingId {}", beslutterOppgave.getId(), behandlingId);
                 oppgaveRepository.lagre(new OppgaveEgenskap(beslutterOppgave, AndreKriterierType.TIL_BESLUTTER, fraFpsak.getAnsvarligSaksbehandler()));
-                loggEvent(behandlingId, OppgaveEventType.OPPRETTET, AndreKriterierType.TIL_BESLUTTER, bpeDto.getBehandlendeEnhet(), Optional.empty());
+                loggEvent(behandlingId, OppgaveEventType.OPPRETTET, AndreKriterierType.TIL_BESLUTTER, bpeDto.getBehandlendeEnhet());
                 opprettOppgaveEgenskaper(fraFpsak, aksjonspunktListe, beslutterOppgave);
                 break;
             case OPPRETT_PAPIRSØKNAD_OPPGAVE:
@@ -124,13 +124,13 @@ public class FpsakEventHandler {
                 reserverOppgaveFraTidligereReservasjon(prosesserFraAdmin, reservasjon, papirsøknadOppgave);
                 log.info("Oppgave {} opprettet fra papirsøknad og populert med informasjon fra FPSAK for behandlingId {}", papirsøknadOppgave.getId(), behandlingId);
                 oppgaveRepository.lagre(new OppgaveEgenskap(papirsøknadOppgave, AndreKriterierType.PAPIRSØKNAD));
-                loggEvent(behandlingId, OppgaveEventType.OPPRETTET, AndreKriterierType.PAPIRSØKNAD, bpeDto.getBehandlendeEnhet(),Optional.empty());
+                loggEvent(behandlingId, OppgaveEventType.OPPRETTET, AndreKriterierType.PAPIRSØKNAD, bpeDto.getBehandlendeEnhet());
                 opprettOppgaveEgenskaper(fraFpsak, aksjonspunktListe, papirsøknadOppgave);
                 break;
             case GJENÅPNE_OPPGAVE:
                 Oppgave gjenåpnetOppgave = gjenåpneOppgave(bpeDto);
                 log.info("Gjenåpnet oppgave for behandlingId {}", behandlingId);
-                loggEvent(behandlingId, OppgaveEventType.GJENAPNET, AndreKriterierType.UKJENT, bpeDto.getBehandlendeEnhet(), Optional.empty());
+                loggEvent(behandlingId, OppgaveEventType.GJENAPNET, AndreKriterierType.UKJENT, bpeDto.getBehandlendeEnhet());
                 opprettOppgaveEgenskaper(fraFpsak, aksjonspunktListe, gjenåpnetOppgave);
                 break;
         }
@@ -160,13 +160,17 @@ public class FpsakEventHandler {
 
     private void avsluttOppgaveHvisÅpen(Long behandlingId, List<OppgaveEventLogg> oppgaveEventLogger, String behandlendeEnhet) {
         if (!oppgaveEventLogger.isEmpty() && ÅPNINGS_EVENTER.contains(oppgaveEventLogger.get(0).getEventType())){
-            loggEvent(behandlingId, OppgaveEventType.LUKKET, AndreKriterierType.UKJENT, behandlendeEnhet, Optional.empty());
+            loggEvent(behandlingId, OppgaveEventType.LUKKET, AndreKriterierType.UKJENT, behandlendeEnhet);
             oppgaveRepository.avsluttOppgave(behandlingId);
         }
     }
 
     private Oppgave gjenåpneOppgave(BehandlingProsessEventDto bpeDto) {
         return oppgaveRepository.gjenåpneOppgave(bpeDto.getBehandlingId());
+    }
+
+    private void loggEvent(Long behandlingId, OppgaveEventType oppgaveEventType, AndreKriterierType andreKriterierType, String behandlendeEnhet) {
+        loggEvent(behandlingId, oppgaveEventType, andreKriterierType, behandlendeEnhet, Optional.empty());
     }
 
     private void loggEvent(Long behandlingId, OppgaveEventType oppgaveEventType, AndreKriterierType andreKriterierType, String behandlendeEnhet, Optional<AksjonspunktDto> aksjonspunktDto) {

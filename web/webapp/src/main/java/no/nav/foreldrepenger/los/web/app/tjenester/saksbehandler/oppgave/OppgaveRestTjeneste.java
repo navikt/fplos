@@ -119,7 +119,9 @@ public class OppgaveRestTjeneste {
             URI uri = new URI("/saksbehandler/oppgaver/status?sakslisteId=" +  sakslisteId.getVerdi() + "&oppgaveIder=" + ider);
             AsyncPollingStatus status = new AsyncPollingStatus(AsyncPollingStatus.Status.PENDING, "", 1000);
             status.setLocation(uri);
-            return Response.status(status.getStatus().getHttpStatus()).entity(status).build();
+            return Response.status(status.getStatus().getHttpStatus())
+                    .entity(status)
+                    .build();
         }
 
         URI uri = new URI("/saksbehandler/oppgaver/resultat?sakslisteId=" +  sakslisteId.getVerdi());

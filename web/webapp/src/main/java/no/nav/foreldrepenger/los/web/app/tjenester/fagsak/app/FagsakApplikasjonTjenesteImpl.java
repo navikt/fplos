@@ -75,7 +75,7 @@ public class FagsakApplikasjonTjenesteImpl implements FagsakApplikasjonTjeneste{
 
     private List<FagsakDto> hentSakerForFnr(PersonIdent fnr) {
         Optional<TpsPersonDto> funnetNavBruker = tpsTjeneste.hentBrukerForFnr(fnr);
-        if (!funnetNavBruker.isPresent()) {
+        if (funnetNavBruker.isEmpty()) {
             return Collections.emptyList();
         }
 
