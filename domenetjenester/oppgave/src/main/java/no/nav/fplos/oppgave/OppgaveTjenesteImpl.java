@@ -26,6 +26,7 @@ import no.nav.foreldrepenger.loslager.repository.OrganisasjonRepository;
 import no.nav.fplos.ansatt.AnsattTjeneste;
 import no.nav.fplos.avdelingsleder.AvdelingslederTjeneste;
 import no.nav.fplos.person.api.TpsTjeneste;
+import no.nav.vedtak.exception.IntegrasjonException;
 import no.nav.vedtak.sikkerhet.context.SubjectHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -62,8 +63,8 @@ public class OppgaveTjenesteImpl implements OppgaveTjeneste {
         try {
             OppgaveFiltrering oppgaveFiltrering = oppgaveRepository.hentListe(sakslisteId);
             oppgaver = oppgaveRepository.hentOppgaver(new OppgavespørringDto(oppgaveFiltrering));
-        }catch (Exception e){
-            log.error("Henting av oppgave feilet",e);
+        } catch (Exception e) {
+            log.error("Henting av oppgave feilet", e);
         }
         return oppgaver;
     }
@@ -196,11 +197,11 @@ public class OppgaveTjenesteImpl implements OppgaveTjeneste {
     @Override
     public SaksbehandlerinformasjonDto hentSaksbehandlerNavnOgAvdelinger(String ident) {
         List<Saksbehandler> saksbehandlere = organisasjonRepository.hentAlleSaksbehandlere();
-        if(saksbehandlere.stream().noneMatch(saksbehandler -> saksbehandler.getSaksbehandlerIdent().equals(ident))) {
+        if (saksbehandlere.stream().noneMatch(saksbehandler -> saksbehandler.getSaksbehandlerIdent().equals(ident))) {
             return null;
         }
 
-        if(hentAlleOppgaveFiltrering(ident).isEmpty()) {
+        if (hentAlleOppgaveFiltrering(ident).isEmpty()) {
             return null;
         }
 
@@ -225,7 +226,16 @@ public class OppgaveTjenesteImpl implements OppgaveTjeneste {
     }
 
     private SaksbehandlerinformasjonDto lagSaksbehandlerinformasjonDto(String ident) {
-        return new SaksbehandlerinformasjonDto(ident, ansattTjeneste.hentAnsattNavn(ident), ansattTjeneste.hentAvdelingerNavnForAnsatt(ident));
+        return new SaksbehandlerinformasjonDto(ident, hentSaksbehandlerNavn(ident), ansattTjeneste.hentAvdelingerNavnForAnsatt(ident));
+    }
+
+    private String hentSaksbehandlerNavn(String ident) {
+        try {
+            return ansattTjeneste.hentAnsattNavn(ident);
+        } catch (IntegrasjonException e) {
+            log.warn("Henting av ansattnavn feilet, fortsetter med ukjent navn.", e);
+            return "Ukjent ansatt";
+        }
     }
 
 }
