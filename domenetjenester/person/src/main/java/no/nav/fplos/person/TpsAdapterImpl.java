@@ -79,7 +79,7 @@ public class TpsAdapterImpl implements TpsAdapter {
             throw TpsFeilmeldinger.FACTORY.fantIkkePerson(e).toException();
         } catch (HentPersonSikkerhetsbegrensning e) {
             //TODO Etter at kode6/7 meldingene er filtrert ved hjelp av ABAC istedenfor direkte kall mot TPS her, throw TpsFeilmeldinger.FACTORY.tpsUtilgjengeligSikkerhetsbegrensning(e).toException() og ikke returner null
-            log.info("Kall mot TPS feilet",e);
+            log.info("Kall mot TPS feilet", e);
             return null;
         }
     }

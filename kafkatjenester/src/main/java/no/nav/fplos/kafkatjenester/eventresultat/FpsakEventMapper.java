@@ -22,10 +22,10 @@ import static no.nav.fplos.kafkatjenester.eventresultat.EventResultat.OPPRETT_PA
 
 public class FpsakEventMapper {
 
-    private static final String BESLUTTER_AKSJONSPUNKTSKODE = "5016";
-    public static final String MANUELT_SATT_PÅ_VENT_AKSJONSPUNKTSKODE = "7001";
-    private static final List<String> REGISTRER_PAPIRSØKNAD_AKSJONSPUNKTSKODE = asList("5012","5040","5057");
     public static final String AUTOMATISK_MARKERING_AV_UTENLANDSSAK_AKSJONSPUNKTSKODE = "5068";
+    public static final String MANUELT_SATT_PÅ_VENT_AKSJONSPUNKTSKODE = "7001";
+    private static final String BESLUTTER_AKSJONSPUNKTSKODE = "5016";
+    private static final List<String> REGISTRER_PAPIRSØKNAD_AKSJONSPUNKTSKODE = asList("5012", "5040", "5057");
     private static final String PÅ_VENT_AKSJONSPUNKT_GRUPPE_STARTER_MED = "7";
 
     private static final List<String> aktiveAksjonspunktkoder = Collections.singletonList("OPPR");
