@@ -171,6 +171,30 @@ public class OppgaveRepositoryImplTest {
         assertThat(repository.hentAlle(Oppgave.class)).hasSize(2);
     }
 
+    @Test
+    public void avsluttSistOpprettetOppgave() {
+        Oppgave første = lagOppgave(AVDELING_DRAMMEN_ENHET);
+        oppgaveRepository.opprettOppgave(første);
+        Oppgave siste = lagOppgave(AVDELING_DRAMMEN_ENHET);
+        oppgaveRepository.opprettOppgave(siste);
+        assertThat(repository.hentAlle(Oppgave.class)).hasSize(2);
+        assertThat(første()).isEqualTo(første);
+        assertThat(siste().getAktiv()).isTrue();
+        assertThat(første().getOpprettetTidspunkt()).isBefore(siste().getOpprettetTidspunkt());
+
+        oppgaveRepository.avsluttOppgave(første.getBehandlingId());
+        assertThat(første().getAktiv()).isTrue();
+        assertThat(siste().getAktiv()).isFalse();
+    }
+
+    private Oppgave første() {
+        return repository.hentAlle(Oppgave.class).get(0);
+    }
+
+    private Oppgave siste() {
+        return repository.hentAlle(Oppgave.class).get(1);
+    }
+
     private Oppgave lagOppgave(String behandlendeEnhet){
         return Oppgave.builder().medBehandlingId(1L).medFagsakSaksnummer(1337L)
                 .medAktorId(5000000L).medBehandlendeEnhet(behandlendeEnhet)
