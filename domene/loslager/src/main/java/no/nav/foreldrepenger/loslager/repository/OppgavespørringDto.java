@@ -29,10 +29,10 @@ public class OppgavespørringDto {
     public OppgavespørringDto(OppgaveFiltrering oppgaveFiltrering){
          sortering = oppgaveFiltrering.getSortering();
          id = oppgaveFiltrering.getAvdeling().getId();
-         behandlingTyper = oppgaveFiltrering.getFiltreringBehandlingTyper().stream().map(FiltreringBehandlingType::getBehandlingType).collect(Collectors.toList());
-         ytelseTyper = oppgaveFiltrering.getFiltreringYtelseTyper().stream().map(FiltreringYtelseType::getFagsakYtelseType).collect(Collectors.toList());
-         inkluderAndreKriterierTyper = oppgaveFiltrering.getFiltreringAndreKriterierTyper().stream().filter(FiltreringAndreKriterierType::isInkluder).map(FiltreringAndreKriterierType::getAndreKriterierType).collect(Collectors.toList());
-         ekskluderAndreKriterierTyper = oppgaveFiltrering.getFiltreringAndreKriterierTyper().stream().filter(FiltreringAndreKriterierType::isEkskluder).map(FiltreringAndreKriterierType::getAndreKriterierType).collect(Collectors.toList());
+         behandlingTyper = behandlingTypeFra(oppgaveFiltrering);
+         ytelseTyper = ytelseType(oppgaveFiltrering);
+         inkluderAndreKriterierTyper = inkluderAndreKriterierTyperFra(oppgaveFiltrering);
+         ekskluderAndreKriterierTyper = ekskluderAndreKriterierTyperFra(oppgaveFiltrering);
          erDynamiskPeriode = oppgaveFiltrering.getErDynamiskPeriode();
          filtrerFomDato = oppgaveFiltrering.getFomDato();
          filtrerTomDato = oppgaveFiltrering.getTomDato();
@@ -99,5 +99,31 @@ public class OppgavespørringDto {
 
     public Long getFiltrerTomDager() {
         return filtrerTomDager;
+    }
+
+    private List<AndreKriterierType> ekskluderAndreKriterierTyperFra(OppgaveFiltrering oppgaveFiltrering) {
+        return oppgaveFiltrering.getFiltreringAndreKriterierTyper().stream()
+                .filter(FiltreringAndreKriterierType::isEkskluder)
+                .map(FiltreringAndreKriterierType::getAndreKriterierType)
+                .collect(Collectors.toList());
+    }
+
+    private List<AndreKriterierType> inkluderAndreKriterierTyperFra(OppgaveFiltrering oppgaveFiltrering) {
+        return oppgaveFiltrering.getFiltreringAndreKriterierTyper().stream()
+                .filter(FiltreringAndreKriterierType::isInkluder)
+                .map(FiltreringAndreKriterierType::getAndreKriterierType)
+                .collect(Collectors.toList());
+    }
+
+    private List<FagsakYtelseType> ytelseType(OppgaveFiltrering oppgaveFiltrering) {
+        return oppgaveFiltrering.getFiltreringYtelseTyper().stream()
+                .map(FiltreringYtelseType::getFagsakYtelseType)
+                .collect(Collectors.toList());
+    }
+
+    private List<BehandlingType> behandlingTypeFra(OppgaveFiltrering oppgaveFiltrering) {
+        return oppgaveFiltrering.getFiltreringBehandlingTyper().stream()
+                .map(FiltreringBehandlingType::getBehandlingType)
+                .collect(Collectors.toList());
     }
 }
