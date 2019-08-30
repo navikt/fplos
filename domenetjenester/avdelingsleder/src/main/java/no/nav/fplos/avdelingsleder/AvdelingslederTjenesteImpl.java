@@ -19,6 +19,8 @@ import no.nav.foreldrepenger.loslager.organisasjon.Saksbehandler;
 import no.nav.foreldrepenger.loslager.repository.OppgaveRepository;
 import no.nav.foreldrepenger.loslager.repository.OppgaveRepositoryProvider;
 import no.nav.foreldrepenger.loslager.repository.OrganisasjonRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 @ApplicationScoped
@@ -26,6 +28,8 @@ public class AvdelingslederTjenesteImpl implements AvdelingslederTjeneste {
 
     private OrganisasjonRepository organisasjonRepository;
     private OppgaveRepository oppgaveRepository;
+    private static final Logger log = LoggerFactory.getLogger(AvdelingslederTjenesteImpl.class);
+
 
     AvdelingslederTjenesteImpl() {
         // for CDI proxy
@@ -61,6 +65,7 @@ public class AvdelingslederTjenesteImpl implements AvdelingslederTjeneste {
 
     @Override
     public void slettOppgaveFiltrering(Long oppgavefiltreringId) {
+        log.info("Sletter oppgavefilter " + oppgavefiltreringId);
         oppgaveRepository.slettListe(oppgavefiltreringId);
     }
 
