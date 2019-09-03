@@ -112,13 +112,7 @@ public class AvdelingslederSaksbehandlerRestTjeneste {
     }
 
     private String hentSaksbehandlersNavn(SaksbehandlerBrukerIdentDto brukerIdentDto) {
-        return hentSaksbehandlersNavn(brukerIdentDto.getVerdi().toUpperCase());
-    }
-
-    private String hentSaksbehandlersNavn(String ident) {
-        return avdelingslederSaksbehandlerTjeneste.hentSaksbehandlerNavn(ident)
-                .map(StringUtils::capitalizeNavn)
-                .orElse("Ukjent navn");
+        return avdelingslederSaksbehandlerTjeneste.hentSaksbehandlerNavn(brukerIdentDto.getVerdi().toUpperCase());
     }
 
     private List<String> tilgjengeligeEnheterFor(SaksbehandlerBrukerIdentDto brukerIdent) {

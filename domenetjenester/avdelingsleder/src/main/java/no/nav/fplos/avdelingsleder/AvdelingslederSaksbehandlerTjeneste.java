@@ -13,7 +13,7 @@ public interface AvdelingslederSaksbehandlerTjeneste {
 
     void slettSaksbehandler(String verdi, String avdelingEnhet);
 
-    Optional<String> hentSaksbehandlerNavn(String saksbehandlerIdent);
+    String hentSaksbehandlerNavn(String saksbehandlerIdent);
 
     List<OrganisasjonsEnhet> hentSaksbehandlersAvdelinger(String saksbehandlerIdent);
 }

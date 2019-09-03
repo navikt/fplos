@@ -80,13 +80,13 @@ public class AvdelingslederSaksbehandlerTjenesteImpl implements AvdelingslederSa
     }
 
     @Override
-    public Optional<String> hentSaksbehandlerNavn(String saksbehandlerIdent) {
+    public String hentSaksbehandlerNavn(String saksbehandlerIdent) {
         try {
             LdapBruker ldapBruker = new LdapBrukeroppslag().hentBrukerinformasjon(saksbehandlerIdent);
-            return Optional.ofNullable(ldapBruker.getDisplayName());
+            return ldapBruker.getDisplayName();
         } catch (Exception e) {
             AvdelingslederSaksbehandlerTjenesteFeil.FACTORY.feil(LDAP, e);
-            return Optional.empty();
+            return null;
         }
     }
 

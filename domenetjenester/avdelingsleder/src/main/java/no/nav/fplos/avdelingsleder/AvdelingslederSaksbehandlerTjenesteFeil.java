@@ -14,3 +14,4 @@ public interface AvdelingslederSaksbehandlerTjenesteFeil extends DeklarerteFeil 
     Feil feil(String tjeneste, Exception e);
 
 }
+
