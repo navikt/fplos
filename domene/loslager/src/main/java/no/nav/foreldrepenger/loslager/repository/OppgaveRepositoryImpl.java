@@ -175,7 +175,7 @@ public class OppgaveRepositoryImpl implements OppgaveRepository {
     }
 
     @Override
-    public List<Reservasjon> hentReserverteOppgaver(String uid){
+    public List<Reservasjon> hentReservasjonerTilknyttetAktiveOppgaver(String uid){
         TypedQuery<Reservasjon> oppgaveTypedQuery = getEntityManager().createQuery("Select r from Reservasjon r " +
                 "INNER JOIN Oppgave o ON r.oppgave = o " +
                 "WHERE r.reservertTil > :naa AND upper(r.reservertAv) = upper( :uid ) AND o.aktiv = true", Reservasjon.class) //$NON-NLS-1$
@@ -393,7 +393,7 @@ public class OppgaveRepositoryImpl implements OppgaveRepository {
     public List<Oppgave> hentSisteReserverteOppgaver(String uid) {
         return getEntityManager().createQuery("SELECT o FROM Oppgave o " +
                 "INNER JOIN Reservasjon r ON r.oppgave = o " +
-                "WHERE upper(r.reservertAv) = upper( :uid ) ORDER BY coalesce(r.endretTidspunkt,r.opprettetTidspunkt) DESC ", Oppgave.class) //$NON-NLS-1$
+                "WHERE upper(r.reservertAv) = upper( :uid ) ORDER BY coalesce(r.endretTidspunkt, r.opprettetTidspunkt) DESC ", Oppgave.class) //$NON-NLS-1$
                 .setParameter("uid", uid).setMaxResults(10).getResultList();
     }
 

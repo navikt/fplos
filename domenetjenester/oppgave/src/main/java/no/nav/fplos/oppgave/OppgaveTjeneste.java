@@ -19,7 +19,7 @@ public interface OppgaveTjeneste {
 
     List<Oppgave> hentAktiveOppgaverForSaksnummer(Collection<Long> fagsakSaksnummerListe);
 
-    List<Reservasjon> hentReserverteOppgaver();
+    List<Reservasjon> hentReservasjonerTilknyttetAktiveOppgaver();
 
     Reservasjon reserverOppgave(Long oppgaveId);
 

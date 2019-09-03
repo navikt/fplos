@@ -31,6 +31,10 @@ public class OppgaveDto {
         leggTilPersonInformasjon(personDto);
     }
 
+    public OppgaveDto(Oppgave oppgave, TpsPersonDto personDto, String flyttetAvNavn) {
+        this(oppgave, personDto, null, flyttetAvNavn);
+    }
+
     public OppgaveDto(Oppgave oppgave, TpsPersonDto personDto, String annenSaksbehandlernavn, String flyttetAvNavn){
         leggTilOppgaveInformasjon(oppgave, annenSaksbehandlernavn, flyttetAvNavn);
         leggTilPersonInformasjon(personDto);

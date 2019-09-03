@@ -218,18 +218,22 @@ public class OppgaveRestTjeneste {
     @BeskyttetRessurs(action = BeskyttetRessursActionAttributt.READ, ressurs = BeskyttetRessursResourceAttributt.FAGSAK)
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
     public List<OppgaveDto> getReserverteOppgaver() {
-        List<Reservasjon> reserveringer = oppgaveTjeneste.hentReserverteOppgaver();
+        List<Reservasjon> reserveringer = oppgaveTjeneste.hentReservasjonerTilknyttetAktiveOppgaver();
         return reserveringer.stream()
                 .map(this::oppgaveDtoFra)
                 .collect(Collectors.toList());
     }
 
     private OppgaveDto oppgaveDtoFra(Reservasjon reservasjon) {
-        return new OppgaveDto(reservasjon.getOppgave(),
-                oppgaveTjeneste.hentPersonInfo(reservasjon.getOppgave().getAktorId()),
-                null,
+        return oppgaveDtoFra(reservasjon.getOppgave(), reservasjon);
+    }
+    private OppgaveDto oppgaveDtoFra(Oppgave oppgave, Reservasjon reservasjon) {
+        return new OppgaveDto(
+                oppgave,
+                oppgaveTjeneste.hentPersonInfo(oppgave.getAktorId()),
                 oppgaveTjeneste.hentNavnHvisFlyttetAvSaksbehandler(reservasjon.getFlyttetAv()));
     }
+
 
     @GET
     @Timed
@@ -240,8 +244,12 @@ public class OppgaveRestTjeneste {
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
     public List<OppgaveDto> getBehandledeOppgaver() {
         List<Oppgave> sistReserverteOppgaver = oppgaveTjeneste.hentSisteReserverteOppgaver();
-        return sistReserverteOppgaver.stream().map(o -> new OppgaveDto(o, oppgaveTjeneste.hentPersonInfo(o.getAktorId()), null, oppgaveTjeneste.hentNavnHvisFlyttetAvSaksbehandler(o.getReservasjon().getFlyttetAv()))).collect(Collectors.toList());
+        return sistReserverteOppgaver.stream()
+                .map(o -> oppgaveDtoFra(o, o.getReservasjon()))
+                .collect(Collectors.toList());
     }
+
+
 
     @POST
     @Timed
