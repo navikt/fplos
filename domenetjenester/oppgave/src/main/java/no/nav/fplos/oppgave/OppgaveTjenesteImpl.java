@@ -63,6 +63,7 @@ public class OppgaveTjenesteImpl implements OppgaveTjeneste {
         try {
             OppgaveFiltrering oppgaveFiltrering = oppgaveRepository.hentListe(sakslisteId);
             oppgaver = oppgaveRepository.hentOppgaver(new OppgavespørringDto(oppgaveFiltrering));
+            log.info("Antall oppgaver hentet: " + oppgaver.size());
         } catch (Exception e) {
             log.error("Henting av oppgave feilet", e);
         }
@@ -147,14 +148,17 @@ public class OppgaveTjenesteImpl implements OppgaveTjeneste {
 
     @Override
     public Optional<TpsPersonDto> hentPersonInfoOptional(long aktørId) {
-        AktørId aktørIdFromLong = new AktørId(aktørId);
-        return tpsTjeneste.hentBrukerForAktør(aktørIdFromLong);
+        return tpsTjeneste.hentBrukerForAktør(aktørIdFra(aktørId));
+    }
+
+    private AktørId aktørIdFra(long aktørId) {
+        return new AktørId(aktørId);
     }
 
     @Override
     public TpsPersonDto hentPersonInfo(long aktørId) {
-        AktørId aktørIdFromLong = new AktørId(aktørId);
-        return tpsTjeneste.hentBrukerForAktør(aktørIdFromLong)
+        AktørId aktørIdFromLong = aktørIdFra(aktørId);
+        return tpsTjeneste.hentBrukerForAktør(aktørIdFra(aktørId))
                 .orElseThrow(() -> OppgaveFeilmeldinger.FACTORY.identIkkeFunnet(aktørIdFromLong).toException());
     }
 
