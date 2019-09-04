@@ -85,8 +85,7 @@ public class AvdelingslederSaksbehandlerTjenesteImpl implements AvdelingslederSa
             LdapBruker ldapBruker = new LdapBrukeroppslag().hentBrukerinformasjon(saksbehandlerIdent);
             return ldapBruker.getDisplayName();
         } catch (Exception e) {
-            AvdelingslederSaksbehandlerTjenesteFeil.FACTORY.feil(LDAP, e);
-            return null;
+            throw AvdelingslederSaksbehandlerTjenesteFeil.FACTORY.feil(LDAP, e).toException();
         }
     }
 
