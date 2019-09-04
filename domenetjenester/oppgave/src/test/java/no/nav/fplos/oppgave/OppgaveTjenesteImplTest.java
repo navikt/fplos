@@ -118,8 +118,8 @@ public class OppgaveTjenesteImplTest {
     @Test
     public void testFiltreringerpåAndreKriteriertype(){
         Long listeId = leggeInnEtSettMedAndreKriterierOppgaver();
-        avdelingslederTjeneste.endreFiltreringAndreKriterierTypeType(listeId, AndreKriterierType.TIL_BESLUTTER, true, true);
-        avdelingslederTjeneste.endreFiltreringAndreKriterierTypeType(listeId, AndreKriterierType.PAPIRSØKNAD, true, true);
+        avdelingslederTjeneste.endreFiltreringAndreKriterierType(listeId, AndreKriterierType.TIL_BESLUTTER, true, true);
+        avdelingslederTjeneste.endreFiltreringAndreKriterierType(listeId, AndreKriterierType.PAPIRSØKNAD, true, true);
         List<Oppgave> oppgaver = oppgaveTjeneste.hentOppgaver(listeId);
         assertThat(oppgaver).hasSize(1);
     }
@@ -191,8 +191,8 @@ public class OppgaveTjenesteImplTest {
         entityManager.persist(saksbehandler);
         entityManager.flush();
 
-        avdelingslederTjeneste.leggSaksbehandlerTilOppgaveFiltrering(lagtInnLister.get(0).getId(), saksbehandler.getSaksbehandlerIdent());
-        avdelingslederTjeneste.leggSaksbehandlerTilOppgaveFiltrering(lagtInnLister.get(2).getId(), saksbehandler.getSaksbehandlerIdent());
+        avdelingslederTjeneste.leggSaksbehandlerTilListe(lagtInnLister.get(0).getId(), saksbehandler.getSaksbehandlerIdent());
+        avdelingslederTjeneste.leggSaksbehandlerTilListe(lagtInnLister.get(2).getId(), saksbehandler.getSaksbehandlerIdent());
         entityManager.refresh(saksbehandler);
 
         List<OppgaveFiltrering> oppgaveFiltrerings = oppgaveTjeneste.hentAlleOppgaveFiltrering(saksbehandler.getSaksbehandlerIdent());
@@ -247,7 +247,7 @@ public class OppgaveTjenesteImplTest {
 
         List<OppgaveFiltrering> lagtInnLister = leggInnEtSettMedLister(1);
 
-        avdelingslederTjeneste.leggSaksbehandlerTilOppgaveFiltrering(lagtInnLister.get(0).getId(), saksbehandler1.getSaksbehandlerIdent());
+        avdelingslederTjeneste.leggSaksbehandlerTilListe(lagtInnLister.get(0).getId(), saksbehandler1.getSaksbehandlerIdent());
         entityManager.refresh(saksbehandler1);
 
         assertThat(oppgaveTjeneste.hentSaksbehandlerNavnOgAvdelinger(saksbehandler3Ident)).isNull();

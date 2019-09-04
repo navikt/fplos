@@ -1,10 +1,8 @@
 package no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.saksliste;
 
 import static no.nav.vedtak.sikkerhet.abac.BeskyttetRessursActionAttributt.READ;
-import static no.nav.vedtak.sikkerhet.abac.BeskyttetRessursResourceAttributt.OPPGAVESTYRING;
 import static no.nav.vedtak.sikkerhet.abac.BeskyttetRessursResourceAttributt.OPPGAVESTYRING_AVDELINGENHET;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -35,7 +33,6 @@ import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.saksliste.dto.
 import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.saksliste.dto.SakslisteSorteringDto;
 import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.saksliste.dto.SakslisteSorteringIntervallDagerDto;
 import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.saksliste.dto.SakslisteSorteringIntervallDatoDto;
-import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.saksliste.dto.SorteringDto;
 import no.nav.foreldrepenger.los.web.app.tjenester.felles.dto.SakslisteDto;
 import no.nav.foreldrepenger.los.web.app.tjenester.felles.dto.SakslisteIdDto;
 import no.nav.foreldrepenger.loslager.oppgave.OppgaveFiltrering;
@@ -133,8 +130,9 @@ public class AvdelingslederSakslisteRestTjeneste {
     @BeskyttetRessurs(action = BeskyttetRessursActionAttributt.CREATE, ressurs = BeskyttetRessursResourceAttributt.OPPGAVESTYRING_AVDELINGENHET)
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
     public void lagreFagsakYtelseType(@NotNull @ApiParam("Sakslistens ytelsetype") @Valid SakslisteFagsakYtelseTypeDto sakslisteFagsakYtelseTypeDto) {
-        avdelingslederTjeneste.endreFiltreringYtelseType(sakslisteFagsakYtelseTypeDto.getSakslisteId()
-                ,sakslisteFagsakYtelseTypeDto.getFagsakYtelseType());
+        avdelingslederTjeneste.endreFiltreringYtelseType(
+                sakslisteFagsakYtelseTypeDto.getSakslisteId(),
+                sakslisteFagsakYtelseTypeDto.getFagsakYtelseType());
     }
 
     @POST
@@ -146,8 +144,11 @@ public class AvdelingslederSakslisteRestTjeneste {
     @BeskyttetRessurs(action = BeskyttetRessursActionAttributt.CREATE, ressurs = BeskyttetRessursResourceAttributt.OPPGAVESTYRING_AVDELINGENHET)
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
     public void lagreAndreKriterierType(@NotNull @ApiParam("Sakslistens 'andre kriterier'") @Valid SakslisteAndreKriterierDto sakslisteAndreKriterierDto) {
-        avdelingslederTjeneste.endreFiltreringAndreKriterierTypeType(sakslisteAndreKriterierDto.getSakslisteId()
-                ,sakslisteAndreKriterierDto.getAndreKriterierType(), sakslisteAndreKriterierDto.isChecked(), sakslisteAndreKriterierDto.isInkluder());
+        avdelingslederTjeneste.endreFiltreringAndreKriterierType(
+                    sakslisteAndreKriterierDto.getSakslisteId(),
+                    sakslisteAndreKriterierDto.getAndreKriterierType(),
+                    sakslisteAndreKriterierDto.isChecked(),
+                    sakslisteAndreKriterierDto.isInkluder());
     }
 
     @POST
@@ -159,7 +160,8 @@ public class AvdelingslederSakslisteRestTjeneste {
     @BeskyttetRessurs(action = BeskyttetRessursActionAttributt.CREATE, ressurs = BeskyttetRessursResourceAttributt.OPPGAVESTYRING_AVDELINGENHET)
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
     public void lagreSortering(@NotNull @ApiParam("Sakslistens sortering") @Valid SakslisteSorteringDto sakslisteSortering) {
-        avdelingslederTjeneste.settSortering(sakslisteSortering.getSakslisteId(), sakslisteSortering.getSakslisteSorteringValg());
+        avdelingslederTjeneste.settSortering(sakslisteSortering.getSakslisteId(),
+                sakslisteSortering.getSakslisteSorteringValg());
     }
 
     @POST
@@ -171,7 +173,9 @@ public class AvdelingslederSakslisteRestTjeneste {
     @BeskyttetRessurs(action = BeskyttetRessursActionAttributt.CREATE, ressurs = BeskyttetRessursResourceAttributt.OPPGAVESTYRING_AVDELINGENHET)
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
     public void lagreSorteringTidsintervallDato(@NotNull @ApiParam("Sakslistens sorteringsintervall gitt datoer") @Valid SakslisteSorteringIntervallDatoDto sakslisteSorteringIntervallDato) {
-        avdelingslederTjeneste.settSorteringTidsintervallDato(sakslisteSorteringIntervallDato.getSakslisteId(), sakslisteSorteringIntervallDato.getFomDato(), sakslisteSorteringIntervallDato.getTomDato());
+        avdelingslederTjeneste.settSorteringTidsintervallDato(sakslisteSorteringIntervallDato.getSakslisteId(),
+                sakslisteSorteringIntervallDato.getFomDato(),
+                sakslisteSorteringIntervallDato.getTomDato());
     }
 
     @POST
@@ -183,7 +187,9 @@ public class AvdelingslederSakslisteRestTjeneste {
     @BeskyttetRessurs(action = BeskyttetRessursActionAttributt.CREATE, ressurs = BeskyttetRessursResourceAttributt.OPPGAVESTYRING_AVDELINGENHET)
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
     public void lagreSorteringTidsintervallDager(@NotNull @ApiParam("Sakslistens sortering gitt dagar") @Valid SakslisteSorteringIntervallDagerDto sakslisteSorteringIntervallDager) {
-        avdelingslederTjeneste.settSorteringTidsintervallDager(sakslisteSorteringIntervallDager.getSakslisteId(), sakslisteSorteringIntervallDager.getFomDager(), sakslisteSorteringIntervallDager.getTomDager());
+        avdelingslederTjeneste.settSorteringTidsintervallDager(sakslisteSorteringIntervallDager.getSakslisteId(),
+                sakslisteSorteringIntervallDager.getFomDager(),
+                sakslisteSorteringIntervallDager.getTomDager());
     }
 
     @POST
@@ -196,7 +202,8 @@ public class AvdelingslederSakslisteRestTjeneste {
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
     public void lagreSorteringTidsintervallValg(@NotNull @ApiParam("id til sakslisten") @Valid SakslisteOgAvdelingDto sakslisteOgAvdelingDto) {
         OppgaveFiltrering oppgaveFiltrering = avdelingslederTjeneste.hentOppgaveFiltering(sakslisteOgAvdelingDto.getSakslisteId().getVerdi());
-        avdelingslederTjeneste.settSorteringTidsintervallValg(sakslisteOgAvdelingDto.getSakslisteId().getVerdi(), !oppgaveFiltrering.getErDynamiskPeriode());
+        avdelingslederTjeneste.settSorteringTidsintervallValg(sakslisteOgAvdelingDto.getSakslisteId().getVerdi(),
+                !oppgaveFiltrering.getErDynamiskPeriode());
     }
 
     @POST
@@ -209,9 +216,9 @@ public class AvdelingslederSakslisteRestTjeneste {
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
     public void leggSaksbehandlerTilSaksliste(@NotNull @ApiParam("Knytning mellom saksbehandler og saksliste") @Valid SakslisteSaksbehandlerDto sakslisteSaksbehandler) {
         if(sakslisteSaksbehandler.isChecked()) {
-            avdelingslederTjeneste.leggSaksbehandlerTilOppgaveFiltrering(sakslisteSaksbehandler.getSakslisteId(), sakslisteSaksbehandler.getBrukerIdent().getVerdi());
+            avdelingslederTjeneste.leggSaksbehandlerTilListe(sakslisteSaksbehandler.getSakslisteId(), sakslisteSaksbehandler.getBrukerIdent().getVerdi());
         }else{
-            avdelingslederTjeneste.fjernSaksbehandlerFraOppgaveFiltrering(sakslisteSaksbehandler.getSakslisteId(), sakslisteSaksbehandler.getBrukerIdent().getVerdi());
+            avdelingslederTjeneste.fjernSaksbehandlerFraListe(sakslisteSaksbehandler.getSakslisteId(), sakslisteSaksbehandler.getBrukerIdent().getVerdi());
         }
     }
 }

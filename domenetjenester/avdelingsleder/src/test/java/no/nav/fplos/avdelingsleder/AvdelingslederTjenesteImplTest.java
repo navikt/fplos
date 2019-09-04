@@ -122,11 +122,11 @@ public class AvdelingslederTjenesteImplTest {
         OppgaveFiltrering oppgaveFiltrering = OppgaveFiltrering.nyTomOppgaveFiltrering(avdelingDrammen);
         entityManager.persist(oppgaveFiltrering);
         entityManager.flush();
-        avdelingslederTjeneste.endreFiltreringAndreKriterierTypeType(oppgaveFiltrering.getId(), AndreKriterierType.TIL_BESLUTTER, true, true);
+        avdelingslederTjeneste.endreFiltreringAndreKriterierType(oppgaveFiltrering.getId(), AndreKriterierType.TIL_BESLUTTER, true, true);
         entityManager.refresh(oppgaveFiltrering);
         assertThat(oppgaveFiltrering.getFiltreringAndreKriterierTyper()).isNotEmpty();
         assertThat(oppgaveFiltrering.getFiltreringAndreKriterierTyper().get(0).getAndreKriterierType()).isEqualTo(AndreKriterierType.TIL_BESLUTTER);
-        avdelingslederTjeneste.endreFiltreringAndreKriterierTypeType(oppgaveFiltrering.getId(), AndreKriterierType.TIL_BESLUTTER, false, true );
+        avdelingslederTjeneste.endreFiltreringAndreKriterierType(oppgaveFiltrering.getId(), AndreKriterierType.TIL_BESLUTTER, false, true );
         entityManager.refresh(oppgaveFiltrering);
         assertThat(oppgaveFiltrering.getFiltreringAndreKriterierTyper()).isEmpty();
     }
