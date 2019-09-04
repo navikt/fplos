@@ -27,11 +27,11 @@ public interface AvdelingslederTjeneste {
 
     void endreFiltreringYtelseType(Long sakslisteId, FagsakYtelseType behandlingType);
 
-    void endreFiltreringAndreKriterierTypeType(Long sakslisteId, AndreKriterierType behandlingType, boolean checked, boolean inkluder);
+    void endreFiltreringAndreKriterierType(Long sakslisteId, AndreKriterierType behandlingType, boolean checked, boolean inkluder);
 
-    void leggSaksbehandlerTilOppgaveFiltrering(Long oppgaveFiltreringId, String saksbehandlerIdent);
+    void leggSaksbehandlerTilListe(Long oppgaveFiltreringId, String saksbehandlerIdent);
 
-    void fjernSaksbehandlerFraOppgaveFiltrering(Long oppgaveFiltreringId, String saksbehandlerIdent);
+    void fjernSaksbehandlerFraListe(Long oppgaveFiltreringId, String saksbehandlerIdent);
 
     List<Avdeling> hentAvdelinger();
 

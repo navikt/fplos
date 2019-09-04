@@ -28,8 +28,10 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 
 import static no.nav.foreldrepenger.loslager.BaseEntitet.BRUKERNAVN_NÅR_SIKKERHETSKONTEKST_IKKE_FINNES;
 
@@ -233,11 +235,16 @@ public class OppgaveRepositoryImpl implements OppgaveRepository {
 
     @Override
     public OppgaveFiltrering hentListe(Long listeId) {
+        return hentListeOptional(listeId).orElse(null);
+
+    }
+
+    public Optional<OppgaveFiltrering> hentListeOptional(Long listeId) {
         TypedQuery<OppgaveFiltrering> listeTypedQuery = getEntityManager()
                 .createQuery("FROM OppgaveFiltrering l WHERE l.id = :id " +
                         OPPGAVEFILTRERING_SORTERING_NAVN, OppgaveFiltrering.class)
                 .setParameter("id", listeId);
-        return listeTypedQuery.getResultList().get(0);
+        return listeTypedQuery.getResultList().stream().findFirst();
     }
 
     @Override
