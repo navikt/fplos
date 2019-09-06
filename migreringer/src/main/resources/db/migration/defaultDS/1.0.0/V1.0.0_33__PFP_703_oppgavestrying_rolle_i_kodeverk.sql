@@ -1,2 +1,0 @@
-INSERT INTO KONFIG_VERDI_KODE (kode, navn, konfig_gruppe, konfig_type, beskrivelse) VALUES ('bruker.gruppenavn.oppgavestyrer', 'Gruppenavn for rolle oppgavestyrer', 'INGEN', 'STRING', 'Gruppenavn for rolle egen oppgavestyrer');
-INSERT INTO KONFIG_VERDI (id, konfig_kode, konfig_gruppe, konfig_verdi, gyldig_fom) VALUES (SEQ_KONFIG_VERDI.nextval, 'bruker.gruppenavn.oppgavestyrer', 'INGEN', '0000-GA-fpsak-Oppgavestyrer', to_date('01.01.2016', 'dd.mm.yyyy'));
