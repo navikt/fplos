@@ -77,10 +77,10 @@ public class AvdelingslederTjenesteImpl implements AvdelingslederTjeneste {
     @Override
     public void endreFiltreringBehandlingType(Long oppgavefiltreringId, BehandlingType behandlingType, boolean checked) {
         OppgaveFiltrering oppgaveFiltrering = oppgaveRepository.hentListe(oppgavefiltreringId);
-        if (checked){
+        if (checked) {
             oppgaveRepository.lagre(new FiltreringBehandlingType(oppgaveFiltrering, behandlingType));
-        }else{
-            oppgaveRepository.slettFiltreringBehandlingType(oppgavefiltreringId,behandlingType);
+        } else {
+            oppgaveRepository.slettFiltreringBehandlingType(oppgavefiltreringId, behandlingType);
         }
         oppgaveRepository.refresh(oppgaveFiltrering);
     }
@@ -89,39 +89,47 @@ public class AvdelingslederTjenesteImpl implements AvdelingslederTjeneste {
     public void endreFiltreringYtelseType(Long oppgavefiltreringId, FagsakYtelseType fagsakYtelseType) {
         OppgaveFiltrering oppgaveFiltrering = oppgaveRepository.hentListe(oppgavefiltreringId);
         oppgaveFiltrering.getFiltreringYtelseTyper().forEach(ytelseType -> oppgaveRepository.slettFiltreringYtelseType(oppgavefiltreringId, ytelseType.getFagsakYtelseType()));
-        if (fagsakYtelseType != null){
+        if (fagsakYtelseType != null) {
             oppgaveRepository.lagre(new FiltreringYtelseType(oppgaveFiltrering, fagsakYtelseType));
         }
         oppgaveRepository.refresh(oppgaveFiltrering);
     }
 
     @Override
-    public void endreFiltreringAndreKriterierTypeType(Long oppgavefiltreringId, AndreKriterierType andreKriterierType, boolean checked, boolean inkluder) {
+    public void endreFiltreringAndreKriterierType(Long oppgavefiltreringId, AndreKriterierType andreKriterierType, boolean checked, boolean inkluder) {
         OppgaveFiltrering oppgaveFiltrering = oppgaveRepository.hentListe(oppgavefiltreringId);
-        if (checked){
+        if (checked) {
             oppgaveRepository.slettFiltreringAndreKriterierType(oppgavefiltreringId, andreKriterierType);
             oppgaveRepository.lagre(new FiltreringAndreKriterierType(oppgaveFiltrering, andreKriterierType, inkluder));
-        }else{
+        } else {
             oppgaveRepository.slettFiltreringAndreKriterierType(oppgavefiltreringId, andreKriterierType);
         }
         oppgaveRepository.refresh(oppgaveFiltrering);
     }
 
     @Override
-    public void leggSaksbehandlerTilOppgaveFiltrering(Long oppgaveFiltreringId, String saksbehandlerIdent){
-        OppgaveFiltrering oppgaveFiltrering = oppgaveRepository.hentListe(oppgaveFiltreringId);
+    public void leggSaksbehandlerTilListe(Long oppgaveFiltreringId, String saksbehandlerIdent){
+        OppgaveFiltrering oppgaveListe = oppgaveRepository.hentListe(oppgaveFiltreringId);
+        if (oppgaveListe == null) {
+            log.warn(String.format("Fant ikke oppgavefiltreringsliste basert på id %s, saksbehandler %s legges ikke til oppgavefiltrering", oppgaveFiltreringId, saksbehandlerIdent));
+            return;
+        }
         Saksbehandler saksbehandler = organisasjonRepository.hentSaksbehandler(saksbehandlerIdent);
-        oppgaveFiltrering.leggTilSaksbehandler(saksbehandler);
-        oppgaveRepository.lagre(oppgaveFiltrering);
+        oppgaveListe.leggTilSaksbehandler(saksbehandler);
+        oppgaveRepository.lagre(oppgaveListe);
         oppgaveRepository.refresh(saksbehandler);
     }
 
     @Override
-    public void fjernSaksbehandlerFraOppgaveFiltrering(Long oppgaveFiltreringId, String saksbehandlerIdent){
-        OppgaveFiltrering oppgaveFiltrering = oppgaveRepository.hentListe(oppgaveFiltreringId);
+    public void fjernSaksbehandlerFraListe(Long oppgaveFiltreringId, String saksbehandlerIdent){
+        OppgaveFiltrering oppgaveListe = oppgaveRepository.hentListe(oppgaveFiltreringId);
+        if (oppgaveListe == null) {
+            log.warn(String.format("Fant ikke oppgavefiltreringsliste basert på id %s, saksbehandler %s fjernes ikke fra oppgavefiltrering", oppgaveFiltreringId, saksbehandlerIdent));
+            return;
+        }
         Saksbehandler saksbehandler = organisasjonRepository.hentSaksbehandler(saksbehandlerIdent);
-        oppgaveFiltrering.fjernSaksbehandler(saksbehandler);
-        oppgaveRepository.lagre(oppgaveFiltrering);
+        oppgaveListe.fjernSaksbehandler(saksbehandler);
+        oppgaveRepository.lagre(oppgaveListe);
         oppgaveRepository.refresh(saksbehandler);
     }
 

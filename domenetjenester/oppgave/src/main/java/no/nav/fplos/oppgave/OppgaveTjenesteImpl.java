@@ -59,15 +59,18 @@ public class OppgaveTjenesteImpl implements OppgaveTjeneste {
 
     @Override
     public List<Oppgave> hentOppgaver(Long sakslisteId){
-        List<Oppgave> oppgaver = new ArrayList<>();
         try {
-            OppgaveFiltrering oppgaveFiltrering = oppgaveRepository.hentListe(sakslisteId);
-            oppgaver = oppgaveRepository.hentOppgaver(new OppgavespørringDto(oppgaveFiltrering));
+            OppgaveFiltrering oppgaveListe = oppgaveRepository.hentListe(sakslisteId);
+            if (oppgaveListe == null) {
+                return Collections.emptyList();
+            }
+            List<Oppgave> oppgaver = oppgaveRepository.hentOppgaver(new OppgavespørringDto(oppgaveListe));
             log.info("Antall oppgaver hentet: " + oppgaver.size());
+            return oppgaver;
         } catch (Exception e) {
-            log.error("Henting av oppgave feilet", e);
+            log.error("Henting av oppgave feilet, returnerer en tom oppgaveliste", e);
+            return Collections.emptyList();
         }
-        return oppgaver;
     }
 
     @Override
@@ -167,7 +170,9 @@ public class OppgaveTjenesteImpl implements OppgaveTjeneste {
         int antallOppgaver = 0;
         try {
             OppgaveFiltrering oppgaveFiltrering = oppgaveRepository.hentListe(behandlingsKø);
-            antallOppgaver = oppgaveRepository.hentAntallOppgaver(new OppgavespørringDto(oppgaveFiltrering));
+            if (oppgaveFiltrering != null) {
+                antallOppgaver = oppgaveRepository.hentAntallOppgaver(new OppgavespørringDto(oppgaveFiltrering));
+            }
         } catch (Exception e) {
             log.error("Henting av oppgave feilet", e);
         }

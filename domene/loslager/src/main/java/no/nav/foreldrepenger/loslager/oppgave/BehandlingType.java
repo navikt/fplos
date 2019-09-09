@@ -21,6 +21,7 @@ public class BehandlingType extends Kodeliste {
     public static final BehandlingType KLAGE = new BehandlingType("BT-003"); //$NON-NLS-1$
     public static final BehandlingType REVURDERING = new BehandlingType("BT-004"); //$NON-NLS-1$
     public static final BehandlingType INNSYN = new BehandlingType("BT-006"); //$NON-NLS-1$
+    public static final BehandlingType ANKE = new BehandlingType("BT-008"); //$NON-NLS-1$
 
     /**
      * Alle kodeverk må ha en verdi, det kan ikke være null i databasen. Denne koden gjør samme nytten.
