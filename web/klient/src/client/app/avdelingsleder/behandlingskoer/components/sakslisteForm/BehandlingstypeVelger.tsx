@@ -53,7 +53,7 @@ BehandlingstypeVelger.propTypes = {
   valgtAvdelingEnhet: PropTypes.string.isRequired,
 };
 
-const behandlingstypeOrder = [behandlingType.FORSTEGANGSSOKNAD, behandlingType.REVURDERING, behandlingType.KLAGE, behandlingType.DOKUMENTINNSYN];
+const behandlingstypeOrder = Object.values(behandlingType);
 
 const getFiltrerteOgSorterteBehandlingstyper = createSelector(
   [getKodeverk(kodeverkTyper.BEHANDLING_TYPE)], behandlingsTyper => behandlingstypeOrder.map(kode => behandlingsTyper.find(bt => bt.kode === kode)),
