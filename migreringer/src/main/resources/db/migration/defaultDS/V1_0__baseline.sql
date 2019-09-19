@@ -5,77 +5,77 @@
 --  DDL for Sequence SEQ_AVDELING
 --------------------------------------------------------
 
-   CREATE SEQUENCE  "SEQ_AVDELING"  MINVALUE 1 MAXVALUE 9999999999999999999999999999 INCREMENT BY 50 START WITH 451 NOCACHE  NOORDER  NOCYCLE  NOKEEP  NOSCALE  GLOBAL ;
+   CREATE SEQUENCE  "SEQ_AVDELING"  MINVALUE 1 INCREMENT BY 50 START WITH 451 NOCACHE NOCYCLE ;
 --------------------------------------------------------
 --  DDL for Sequence SEQ_EVENTMOTTAK_FEILLOGG
 --------------------------------------------------------
 
-   CREATE SEQUENCE  "SEQ_EVENTMOTTAK_FEILLOGG"  MINVALUE 1 MAXVALUE 9999999999999999999999999999 INCREMENT BY 50 START WITH 1 NOCACHE  NOORDER  NOCYCLE  NOKEEP  NOSCALE  GLOBAL ;
+   CREATE SEQUENCE  "SEQ_EVENTMOTTAK_FEILLOGG"  MINVALUE 1 INCREMENT BY 50 START WITH 1 NOCACHE NOCYCLE ;
 --------------------------------------------------------
 --  DDL for Sequence SEQ_FILTR_BEHANDLING_TYPE
 --------------------------------------------------------
 
-   CREATE SEQUENCE  "SEQ_FILTR_BEHANDLING_TYPE"  MINVALUE 1 MAXVALUE 9999999999999999999999999999 INCREMENT BY 50 START WITH 1 NOCACHE  NOORDER  NOCYCLE  NOKEEP  NOSCALE  GLOBAL ;
+   CREATE SEQUENCE  "SEQ_FILTR_BEHANDLING_TYPE"  MINVALUE 1 INCREMENT BY 50 START WITH 1 NOCACHE NOCYCLE ;
 --------------------------------------------------------
 --  DDL for Sequence SEQ_FILTRERING_ANDRE_KRIT
 --------------------------------------------------------
 
-   CREATE SEQUENCE  "SEQ_FILTRERING_ANDRE_KRIT"  MINVALUE 1 MAXVALUE 9999999999999999999999999999 INCREMENT BY 50 START WITH 1 NOCACHE  NOORDER  NOCYCLE  NOKEEP  NOSCALE  GLOBAL ;
+   CREATE SEQUENCE  "SEQ_FILTRERING_ANDRE_KRIT"  MINVALUE 1 INCREMENT BY 50 START WITH 1 NOCACHE NOCYCLE ;
 --------------------------------------------------------
 --  DDL for Sequence SEQ_FILTRERING_YTELSE_TYPE
 --------------------------------------------------------
 
-   CREATE SEQUENCE  "SEQ_FILTRERING_YTELSE_TYPE"  MINVALUE 1 MAXVALUE 9999999999999999999999999999 INCREMENT BY 50 START WITH 1 NOCACHE  NOORDER  NOCYCLE  NOKEEP  NOSCALE  GLOBAL ;
+   CREATE SEQUENCE  "SEQ_FILTRERING_YTELSE_TYPE"  MINVALUE 1 INCREMENT BY 50 START WITH 1 NOCACHE NOCYCLE ;
 --------------------------------------------------------
 --  DDL for Sequence SEQ_KODELISTE
 --------------------------------------------------------
 
-   CREATE SEQUENCE  "SEQ_KODELISTE"  MINVALUE 1 MAXVALUE 9999999999999999999999999999 INCREMENT BY 50 START WITH 1007850 NOCACHE  NOORDER  NOCYCLE  NOKEEP  NOSCALE  GLOBAL ;
+   CREATE SEQUENCE  "SEQ_KODELISTE"  MINVALUE 1 INCREMENT BY 50 START WITH 1007850 NOCACHE NOCYCLE ;
 --------------------------------------------------------
 --  DDL for Sequence SEQ_KODELISTE_NAVN_I18N
 --------------------------------------------------------
 
-   CREATE SEQUENCE  "SEQ_KODELISTE_NAVN_I18N"  MINVALUE 1 MAXVALUE 9999999999999999999999999999 INCREMENT BY 50 START WITH 2751 NOCACHE  NOORDER  NOCYCLE  NOKEEP  NOSCALE  GLOBAL ;
+   CREATE SEQUENCE  "SEQ_KODELISTE_NAVN_I18N"  MINVALUE 1 INCREMENT BY 50 START WITH 2751 NOCACHE NOCYCLE ;
 --------------------------------------------------------
 --  DDL for Sequence SEQ_KONFIG_VERDI
 --------------------------------------------------------
 
-   CREATE SEQUENCE  "SEQ_KONFIG_VERDI"  MINVALUE 1 MAXVALUE 9999999999999999999999999999 INCREMENT BY 50 START WITH 100700 NOCACHE  NOORDER  NOCYCLE  NOKEEP  NOSCALE  GLOBAL ;
+   CREATE SEQUENCE  "SEQ_KONFIG_VERDI"  MINVALUE 1 INCREMENT BY 50 START WITH 100700 NOCACHE NOCYCLE ;
 --------------------------------------------------------
 --  DDL for Sequence SEQ_OPPGAVE
 --------------------------------------------------------
 
-   CREATE SEQUENCE  "SEQ_OPPGAVE"  MINVALUE 1 MAXVALUE 9999999999999999999999999999 INCREMENT BY 50 START WITH 1 NOCACHE  ORDER  NOCYCLE  NOKEEP  NOSCALE  GLOBAL ;
+   CREATE SEQUENCE  "SEQ_OPPGAVE"  MINVALUE 1 INCREMENT BY 50 START WITH 1 NOCACHE  ORDER  NOCYCLE ;
 --------------------------------------------------------
 --  DDL for Sequence SEQ_OPPGAVE_EGENSKAP
 --------------------------------------------------------
 
-   CREATE SEQUENCE  "SEQ_OPPGAVE_EGENSKAP"  MINVALUE 1 MAXVALUE 9999999999999999999999999999 INCREMENT BY 50 START WITH 1 NOCACHE  ORDER  NOCYCLE  NOKEEP  NOSCALE  GLOBAL ;
+   CREATE SEQUENCE  "SEQ_OPPGAVE_EGENSKAP"  MINVALUE 1 INCREMENT BY 50 START WITH 1 NOCACHE  ORDER  NOCYCLE ;
 --------------------------------------------------------
 --  DDL for Sequence SEQ_OPPGAVE_EVENT_LOGG
 --------------------------------------------------------
 
-   CREATE SEQUENCE  "SEQ_OPPGAVE_EVENT_LOGG"  MINVALUE 1 MAXVALUE 9999999999999999999999999999 INCREMENT BY 50 START WITH 1 NOCACHE  ORDER  NOCYCLE  NOKEEP  NOSCALE  GLOBAL ;
+   CREATE SEQUENCE  "SEQ_OPPGAVE_EVENT_LOGG"  MINVALUE 1 INCREMENT BY 50 START WITH 1 NOCACHE  ORDER  NOCYCLE  ;
 --------------------------------------------------------
 --  DDL for Sequence SEQ_OPPGAVE_FILTRERING
 --------------------------------------------------------
 
-   CREATE SEQUENCE  "SEQ_OPPGAVE_FILTRERING"  MINVALUE 1 MAXVALUE 9999999999999999999999999999 INCREMENT BY 200 START WITH 551 NOCACHE  NOORDER  NOCYCLE  NOKEEP  NOSCALE  GLOBAL ;
+   CREATE SEQUENCE  "SEQ_OPPGAVE_FILTRERING"  MINVALUE 1 INCREMENT BY 200 START WITH 551 NOCACHE NOCYCLE ;
 --------------------------------------------------------
 --  DDL for Sequence SEQ_RESERVASJON
 --------------------------------------------------------
 
-   CREATE SEQUENCE  "SEQ_RESERVASJON"  MINVALUE 1 MAXVALUE 9999999999999999999999999999 INCREMENT BY 50 START WITH 1 NOCACHE  NOORDER  NOCYCLE  NOKEEP  NOSCALE  GLOBAL ;
+   CREATE SEQUENCE  "SEQ_RESERVASJON"  MINVALUE 1 INCREMENT BY 50 START WITH 1 NOCACHE NOCYCLE ;
 --------------------------------------------------------
 --  DDL for Sequence SEQ_RESERVASJON_EVENT_LOGG
 --------------------------------------------------------
 
-   CREATE SEQUENCE  "SEQ_RESERVASJON_EVENT_LOGG"  MINVALUE 1 MAXVALUE 9999999999999999999999999999 INCREMENT BY 50 START WITH 1 NOCACHE  NOORDER  NOCYCLE  NOKEEP  NOSCALE  GLOBAL ;
+   CREATE SEQUENCE  "SEQ_RESERVASJON_EVENT_LOGG"  MINVALUE 1 INCREMENT BY 50 START WITH 1 NOCACHE NOCYCLE ;
 --------------------------------------------------------
 --  DDL for Sequence SEQ_SAKSBEHANDLER
 --------------------------------------------------------
 
-   CREATE SEQUENCE  "SEQ_SAKSBEHANDLER"  MINVALUE 1 MAXVALUE 9999999999999999999999999999 INCREMENT BY 50 START WITH 1 NOCACHE  NOORDER  NOCYCLE  NOKEEP  NOSCALE  GLOBAL ;
+   CREATE SEQUENCE  "SEQ_SAKSBEHANDLER"  MINVALUE 1 INCREMENT BY 50 START WITH 1 NOCACHE NOCYCLE ;
 --------------------------------------------------------
 --  DDL for Table AVDELING
 --------------------------------------------------------
@@ -575,7 +575,7 @@
    COMMENT ON TABLE "SAKSBEHANDLER"  IS 'Tabell som inneholder saksbehandleren som kan løse oppgaver';
    COMMENT ON COLUMN "SAKSBEHANDLER"."ID" IS 'PK';
    COMMENT ON COLUMN "SAKSBEHANDLER"."SAKSBEHANDLER_IDENT" IS 'Saksbehandlerident';
-REM INSERTING into AVDELING
+-- INSERTING into AVDELING
 SET DEFINE OFF;
 Insert into AVDELING (ID,AVDELING_ENHET,NAVN) values (SEQ_AVDELING.nextval,'4806','NAV Familie- og pensjonsytelser Drammen');
 Insert into AVDELING (ID,AVDELING_ENHET,NAVN) values (SEQ_AVDELING.nextval,'4842','NAV Familie- og pensjonsytelser Stord');
@@ -587,7 +587,7 @@ Insert into AVDELING (ID,AVDELING_ENHET,NAVN) values (SEQ_AVDELING.nextval,'4292
 Insert into AVDELING (ID,AVDELING_ENHET,NAVN) values (SEQ_AVDELING.nextval,'4802','NAV Familie- og pensjonsytelser Bærum');
 Insert into AVDELING (ID,AVDELING_ENHET,NAVN) values (SEQ_AVDELING.nextval,'2103','NAV Viken');
 
-REM INSERTING into KODELISTE
+-- INSERTING into KODELISTE
 SET DEFINE OFF;
 Insert into KODELISTE (ID,KODEVERK,KODE,OFFISIELL_KODE,BESKRIVELSE,GYLDIG_FOM,GYLDIG_TOM) values (seq_kodeliste.nextval,'ARKIV_FILTYPE','PDF','PDF','Filtype PDF',to_date('01.07.2006','DD.MM.RRRR'),to_date('31.12.9999','DD.MM.RRRR'));
 Insert into KODELISTE (ID,KODEVERK,KODE,OFFISIELL_KODE,BESKRIVELSE,GYLDIG_FOM,GYLDIG_TOM) values (seq_kodeliste.nextval,'ARKIV_FILTYPE','PDFA','PDFA','Filtype PDFA',to_date('01.07.2006','DD.MM.RRRR'),to_date('31.12.9999','DD.MM.RRRR'));
@@ -698,7 +698,7 @@ Insert into KODELISTE (ID,KODEVERK,KODE,OFFISIELL_KODE,BESKRIVELSE,GYLDIG_FOM,GY
 Insert into KODELISTE (ID,KODEVERK,KODE,OFFISIELL_KODE,BESKRIVELSE,GYLDIG_FOM,GYLDIG_TOM) VALUES (seq_kodeliste.nextval, 'BEHANDLING_TYPE', 'BT-008', 'ae0046', 'Anke', to_date('01.07.2019', 'DD.MM.RRRR'), to_date('31.12.9999', 'DD.MM.RRRR'));
 
 
-REM INSERTING into KODELISTE_NAVN_I18N
+-- INSERTING into KODELISTE_NAVN_I18N
 SET DEFINE OFF;
 Insert into KODELISTE_NAVN_I18N (ID,KL_KODEVERK,KL_KODE,SPRAK,NAVN) values (SEQ_KODELISTE_NAVN_I18N.nextval,'ARKIV_FILTYPE','PDF','NB','PDF');
 Insert into KODELISTE_NAVN_I18N (ID,KL_KODEVERK,KL_KODE,SPRAK,NAVN) values (SEQ_KODELISTE_NAVN_I18N.nextval,'ARKIV_FILTYPE','PDFA','NB','PDFA');
@@ -807,48 +807,48 @@ Insert into KODELISTE_NAVN_I18N (ID,KL_KODEVERK,KL_KODE,SPRAK,NAVN) values (SEQ_
 Insert into KODELISTE_NAVN_I18N (ID,KL_KODEVERK,KL_KODE,SPRAK,NAVN) values (SEQ_KODELISTE_NAVN_I18N.nextval,'FAGSAK_YTELSE','SVP','NB','Svangerskapspenger');
 Insert into KODELISTE_NAVN_I18N (ID,KL_KODEVERK,KL_KODE,SPRAK,NAVN) values (SEQ_KODELISTE_NAVN_I18N.nextval,'ANDRE_KRITERIER','SOKT_GRADERING','NB','Søkt gradering');
 Insert into KODELISTE_NAVN_I18N (ID,KL_KODEVERK,KL_KODE,SPRAK,NAVN) VALUES (seq_kodeliste.nextval, 'BEHANDLING_TYPE', 'BT-008', 'NB', 'Anke');
-REM INSERTING into KODEVERK
+-- INSERTING into KODEVERK
 SET DEFINE OFF;
-Insert into KODEVERK (KODE,KODEVERK_EIER,KODEVERK_EIER_REF,KODEVERK_EIER_VER,KODEVERK_EIER_NAVN,KODEVERK_SYNK_NYE,KODEVERK_SYNK_EKSISTERENDE,NAVN,BESKRIVELSE,SAMMENSATT) values ('BEHANDLING_TEMA','Kodeverkforvaltning','http://nav.no/kodeverk/Kodeverk/Behandlingstema','9','Behandlingstema','N','N','Behandlingstema','NAV Behandlingstema''N');
-Insert into KODEVERK (KODE,KODEVERK_EIER,KODEVERK_EIER_REF,KODEVERK_EIER_VER,KODEVERK_EIER_NAVN,KODEVERK_SYNK_NYE,KODEVERK_SYNK_EKSISTERENDE,NAVN,BESKRIVELSE,SAMMENSATT) values ('TEMA','Kodeverkforvaltning','http://nav.no/kodeverk/Kodeverk/Tema','2','Tema','N','N','Tema','NAV Tema''N');
-Insert into KODEVERK (KODE,KODEVERK_EIER,KODEVERK_EIER_REF,KODEVERK_EIER_VER,KODEVERK_EIER_NAVN,KODEVERK_SYNK_NYE,KODEVERK_SYNK_EKSISTERENDE,NAVN,BESKRIVELSE,SAMMENSATT) values ('DOKUMENT_TYPE_ID','Kodeverkforvaltning','http://nav.no/kodeverk/Kodeverk/DokumentTypeId-er','2','DokumentTypeId-er','J','N','DokumentTypeId-er','Typen til et mottatt dokument. Dette er et subset av DokumentTyper; inngÃ¥ende dokumenter, for eksempel sÃ¸knad, terminbekreftelse o.l''N');
-Insert into KODEVERK (KODE,KODEVERK_EIER,KODEVERK_EIER_REF,KODEVERK_EIER_VER,KODEVERK_EIER_NAVN,KODEVERK_SYNK_NYE,KODEVERK_SYNK_EKSISTERENDE,NAVN,BESKRIVELSE,SAMMENSATT) values ('ARKIV_FILTYPE','Kodeverkforvaltning','http://nav.no/kodeverk/Kodeverk/Arkivfiltyper','3','Arkivfiltyper','N','N','Arkivfiltyper','NAV Arkivfiltyper''N');
-Insert into KODEVERK (KODE,KODEVERK_EIER,KODEVERK_EIER_REF,KODEVERK_EIER_VER,KODEVERK_EIER_NAVN,KODEVERK_SYNK_NYE,KODEVERK_SYNK_EKSISTERENDE,NAVN,BESKRIVELSE,SAMMENSATT) values ('KONFIG_VERDI_GRUPPE','VL',null,null,null,'N','N','KonfigVerdiGruppe','Angir en gruppe konfigurerbare verdier tilhører. Det åpner for å kunne ha lister og Maps av konfigurerbare verdier''N');
-Insert into KODEVERK (KODE,KODEVERK_EIER,KODEVERK_EIER_REF,KODEVERK_EIER_VER,KODEVERK_EIER_NAVN,KODEVERK_SYNK_NYE,KODEVERK_SYNK_EKSISTERENDE,NAVN,BESKRIVELSE,SAMMENSATT) values ('KONFIG_VERDI_TYPE','VL',null,null,null,'N','N','KonfigVerdiType','Angir type den konfigurerbare verdien er av slik at dette kan brukes til validering og fremstilling.''N');
-Insert into KODEVERK (KODE,KODEVERK_EIER,KODEVERK_EIER_REF,KODEVERK_EIER_VER,KODEVERK_EIER_NAVN,KODEVERK_SYNK_NYE,KODEVERK_SYNK_EKSISTERENDE,NAVN,BESKRIVELSE,SAMMENSATT) values ('DOKUMENT_KATEGORI','Kodeverkforvaltning','http://nav.no/kodeverk/Kodeverk/Dokumentkategorier','1','Dokumentkategorier','N','N','Dokumentkategorier','NAV Dokumentkategorier''N');
-Insert into KODEVERK (KODE,KODEVERK_EIER,KODEVERK_EIER_REF,KODEVERK_EIER_VER,KODEVERK_EIER_NAVN,KODEVERK_SYNK_NYE,KODEVERK_SYNK_EKSISTERENDE,NAVN,BESKRIVELSE,SAMMENSATT) values ('FAGSYSTEM','VL',null,null,'Fagsystemer','N','N','Fagsystemer','NAV Fagsystemer''N');
-Insert into KODEVERK (KODE,KODEVERK_EIER,KODEVERK_EIER_REF,KODEVERK_EIER_VER,KODEVERK_EIER_NAVN,KODEVERK_SYNK_NYE,KODEVERK_SYNK_EKSISTERENDE,NAVN,BESKRIVELSE,SAMMENSATT) values ('MOTTAK_KANAL','Kodeverkforvaltning','http://nav.no/kodeverk/Kodeverk/Mottakskanaler','1','Mottakskanaler','N','N','Mottakskanaler','NAV Mottakskanaler''N');
-Insert into KODEVERK (KODE,KODEVERK_EIER,KODEVERK_EIER_REF,KODEVERK_EIER_VER,KODEVERK_EIER_NAVN,KODEVERK_SYNK_NYE,KODEVERK_SYNK_EKSISTERENDE,NAVN,BESKRIVELSE,SAMMENSATT) values ('VARIANT_FORMAT','Kodeverkforvaltning','http://nav.no/kodeverk/Kodeverk/Variantformater','1','Variantformater','N','N','Variantformater','NAV Variantformater''N');
-Insert into KODEVERK (KODE,KODEVERK_EIER,KODEVERK_EIER_REF,KODEVERK_EIER_VER,KODEVERK_EIER_NAVN,KODEVERK_SYNK_NYE,KODEVERK_SYNK_EKSISTERENDE,NAVN,BESKRIVELSE,SAMMENSATT) values ('RELATERT_YTELSE_TEMA','Arena',null,null,null,'N','N','RelatertYtelseTema','Kodeverk for tema på relaterte ytelser.''N');
-Insert into KODEVERK (KODE,KODEVERK_EIER,KODEVERK_EIER_REF,KODEVERK_EIER_VER,KODEVERK_EIER_NAVN,KODEVERK_SYNK_NYE,KODEVERK_SYNK_EKSISTERENDE,NAVN,BESKRIVELSE,SAMMENSATT) values ('RELATERT_YTELSE_BEH_TEMA','Arena',null,null,null,'N','N','RelatertYtelseBehandlingTema','Kodeverk for behandlingstema på relaterte ytelser''N');
-Insert into KODEVERK (KODE,KODEVERK_EIER,KODEVERK_EIER_REF,KODEVERK_EIER_VER,KODEVERK_EIER_NAVN,KODEVERK_SYNK_NYE,KODEVERK_SYNK_EKSISTERENDE,NAVN,BESKRIVELSE,SAMMENSATT) values ('BEHANDLING_TYPE','Kodeverkforvaltning','http://nav.no/kodeverk/Kodeverk/Arkivfiltyper','5','Behandlingstyper','N','N','Behandlingstyper','Internt kodeverk for behandlingstyper.''N');
-Insert into KODEVERK (KODE,KODEVERK_EIER,KODEVERK_EIER_REF,KODEVERK_EIER_VER,KODEVERK_EIER_NAVN,KODEVERK_SYNK_NYE,KODEVERK_SYNK_EKSISTERENDE,NAVN,BESKRIVELSE,SAMMENSATT) values ('KO_SORTERING','FPLOS',null,null,null,'J','J','Valgt sortering for kø','Mulige sorteringer for saksbehandleres køer''N');
-Insert into KODEVERK (KODE,KODEVERK_EIER,KODEVERK_EIER_REF,KODEVERK_EIER_VER,KODEVERK_EIER_NAVN,KODEVERK_SYNK_NYE,KODEVERK_SYNK_EKSISTERENDE,NAVN,BESKRIVELSE,SAMMENSATT) values ('FAGSAK_YTELSE','VL',null,null,null,'J','J','FagsakYtelseType','Internt kodeverk for ytelsestype.''N');
-Insert into KODEVERK (KODE,KODEVERK_EIER,KODEVERK_EIER_REF,KODEVERK_EIER_VER,KODEVERK_EIER_NAVN,KODEVERK_SYNK_NYE,KODEVERK_SYNK_EKSISTERENDE,NAVN,BESKRIVELSE,SAMMENSATT) values ('ANDRE_KRITERIER','VLLOS',null,null,null,'J','J','ANDRE_KRITERIER','Internt kodeverk for andre kriterier for filtrering.','VLLOS',to_timestamp('06.09.2019 13.25.31,004000000','DD.MM.RRRR HH24.MI.SSXFF'),null,null,'N');
-Insert into KODEVERK (KODE,KODEVERK_EIER,KODEVERK_EIER_REF,KODEVERK_EIER_VER,KODEVERK_EIER_NAVN,KODEVERK_SYNK_NYE,KODEVERK_SYNK_EKSISTERENDE,NAVN,BESKRIVELSE,SAMMENSATT) values ('EVENTMOTTAK_STATUS','VLLOS',null,null,null,'J','J','EVENTMOTTAK_STATUS','Internt kodeverk for status på eventmottak.','VLLOS',to_timestamp('06.09.2019 13.25.31,137000000','DD.MM.RRRR HH24.MI.SSXFF'),null,null,'N');
-Insert into KODEVERK (KODE,KODEVERK_EIER,KODEVERK_EIER_REF,KODEVERK_EIER_VER,KODEVERK_EIER_NAVN,KODEVERK_SYNK_NYE,KODEVERK_SYNK_EKSISTERENDE,NAVN,BESKRIVELSE,SAMMENSATT) values ('OPPGAVE_EVENT_TYPE','VLLOS',null,null,null,'J','J','OPPGAVE_EVENT_TYPE','Internt kodeverk for hva som har skjedd med oppgaver.','VLLOS',to_timestamp('06.09.2019 13.25.31,238000000','DD.MM.RRRR HH24.MI.SSXFF'),null,null,'N');
-Insert into KODEVERK (KODE,KODEVERK_EIER,KODEVERK_EIER_REF,KODEVERK_EIER_VER,KODEVERK_EIER_NAVN,KODEVERK_SYNK_NYE,KODEVERK_SYNK_EKSISTERENDE,NAVN,BESKRIVELSE,SAMMENSATT) values ('FAGSAK_STATUS','VL',null,null,null,'J','J','FagsakStatus','Internt kodeverk for statuser på fagsaker.''N');
-Insert into KODEVERK (KODE,KODEVERK_EIER,KODEVERK_EIER_REF,KODEVERK_EIER_VER,KODEVERK_EIER_NAVN,KODEVERK_SYNK_NYE,KODEVERK_SYNK_EKSISTERENDE,NAVN,BESKRIVELSE,SAMMENSATT) values ('BEHANDLING_STATUS','VL',null,null,null,'J','J','BehandlingStatus','Internt kodeverk for behandling status.''N');
-REM INSERTING into KONFIG_VERDI
+Insert into KODEVERK (KODE,KODEVERK_EIER,KODEVERK_EIER_REF,KODEVERK_EIER_VER,KODEVERK_EIER_NAVN,KODEVERK_SYNK_NYE,KODEVERK_SYNK_EKSISTERENDE,NAVN,BESKRIVELSE,SAMMENSATT) values ('BEHANDLING_TEMA','Kodeverkforvaltning','http://nav.no/kodeverk/Kodeverk/Behandlingstema','9','Behandlingstema','N','N','Behandlingstema','NAV Behandlingstema', 'N');
+Insert into KODEVERK (KODE,KODEVERK_EIER,KODEVERK_EIER_REF,KODEVERK_EIER_VER,KODEVERK_EIER_NAVN,KODEVERK_SYNK_NYE,KODEVERK_SYNK_EKSISTERENDE,NAVN,BESKRIVELSE,SAMMENSATT) values ('TEMA','Kodeverkforvaltning','http://nav.no/kodeverk/Kodeverk/Tema','2','Tema','N','N','Tema','NAV Tema', 'N');
+Insert into KODEVERK (KODE,KODEVERK_EIER,KODEVERK_EIER_REF,KODEVERK_EIER_VER,KODEVERK_EIER_NAVN,KODEVERK_SYNK_NYE,KODEVERK_SYNK_EKSISTERENDE,NAVN,BESKRIVELSE,SAMMENSATT) values ('DOKUMENT_TYPE_ID','Kodeverkforvaltning','http://nav.no/kodeverk/Kodeverk/DokumentTypeId-er','2','DokumentTypeId-er','J','N','DokumentTypeId-er','Typen til et mottatt dokument. Dette er et subset av DokumentTyper; inngÃ¥ende dokumenter, for eksempel sÃ¸knad, terminbekreftelse o.l', 'N');
+Insert into KODEVERK (KODE,KODEVERK_EIER,KODEVERK_EIER_REF,KODEVERK_EIER_VER,KODEVERK_EIER_NAVN,KODEVERK_SYNK_NYE,KODEVERK_SYNK_EKSISTERENDE,NAVN,BESKRIVELSE,SAMMENSATT) values ('ARKIV_FILTYPE','Kodeverkforvaltning','http://nav.no/kodeverk/Kodeverk/Arkivfiltyper','3','Arkivfiltyper','N','N','Arkivfiltyper','NAV Arkivfiltyper', 'N');
+Insert into KODEVERK (KODE,KODEVERK_EIER,KODEVERK_EIER_REF,KODEVERK_EIER_VER,KODEVERK_EIER_NAVN,KODEVERK_SYNK_NYE,KODEVERK_SYNK_EKSISTERENDE,NAVN,BESKRIVELSE,SAMMENSATT) values ('KONFIG_VERDI_GRUPPE','VL',null,null,null,'N','N','KonfigVerdiGruppe','Angir en gruppe konfigurerbare verdier tilhører. Det åpner for å kunne ha lister og Maps av konfigurerbare verdier', 'N');
+Insert into KODEVERK (KODE,KODEVERK_EIER,KODEVERK_EIER_REF,KODEVERK_EIER_VER,KODEVERK_EIER_NAVN,KODEVERK_SYNK_NYE,KODEVERK_SYNK_EKSISTERENDE,NAVN,BESKRIVELSE,SAMMENSATT) values ('KONFIG_VERDI_TYPE','VL',null,null,null,'N','N','KonfigVerdiType','Angir type den konfigurerbare verdien er av slik at dette kan brukes til validering og fremstilling.', 'N');
+Insert into KODEVERK (KODE,KODEVERK_EIER,KODEVERK_EIER_REF,KODEVERK_EIER_VER,KODEVERK_EIER_NAVN,KODEVERK_SYNK_NYE,KODEVERK_SYNK_EKSISTERENDE,NAVN,BESKRIVELSE,SAMMENSATT) values ('DOKUMENT_KATEGORI','Kodeverkforvaltning','http://nav.no/kodeverk/Kodeverk/Dokumentkategorier','1','Dokumentkategorier','N','N','Dokumentkategorier','NAV Dokumentkategorier', 'N');
+Insert into KODEVERK (KODE,KODEVERK_EIER,KODEVERK_EIER_REF,KODEVERK_EIER_VER,KODEVERK_EIER_NAVN,KODEVERK_SYNK_NYE,KODEVERK_SYNK_EKSISTERENDE,NAVN,BESKRIVELSE,SAMMENSATT) values ('FAGSYSTEM','VL',null,null,'Fagsystemer','N','N','Fagsystemer','NAV Fagsystemer', 'N');
+Insert into KODEVERK (KODE,KODEVERK_EIER,KODEVERK_EIER_REF,KODEVERK_EIER_VER,KODEVERK_EIER_NAVN,KODEVERK_SYNK_NYE,KODEVERK_SYNK_EKSISTERENDE,NAVN,BESKRIVELSE,SAMMENSATT) values ('MOTTAK_KANAL','Kodeverkforvaltning','http://nav.no/kodeverk/Kodeverk/Mottakskanaler','1','Mottakskanaler','N','N','Mottakskanaler','NAV Mottakskanaler', 'N');
+Insert into KODEVERK (KODE,KODEVERK_EIER,KODEVERK_EIER_REF,KODEVERK_EIER_VER,KODEVERK_EIER_NAVN,KODEVERK_SYNK_NYE,KODEVERK_SYNK_EKSISTERENDE,NAVN,BESKRIVELSE,SAMMENSATT) values ('VARIANT_FORMAT','Kodeverkforvaltning','http://nav.no/kodeverk/Kodeverk/Variantformater','1','Variantformater','N','N','Variantformater','NAV Variantformater', 'N');
+Insert into KODEVERK (KODE,KODEVERK_EIER,KODEVERK_EIER_REF,KODEVERK_EIER_VER,KODEVERK_EIER_NAVN,KODEVERK_SYNK_NYE,KODEVERK_SYNK_EKSISTERENDE,NAVN,BESKRIVELSE,SAMMENSATT) values ('RELATERT_YTELSE_TEMA','Arena',null,null,null,'N','N','RelatertYtelseTema','Kodeverk for tema på relaterte ytelser.', 'N');
+Insert into KODEVERK (KODE,KODEVERK_EIER,KODEVERK_EIER_REF,KODEVERK_EIER_VER,KODEVERK_EIER_NAVN,KODEVERK_SYNK_NYE,KODEVERK_SYNK_EKSISTERENDE,NAVN,BESKRIVELSE,SAMMENSATT) values ('RELATERT_YTELSE_BEH_TEMA','Arena',null,null,null,'N','N','RelatertYtelseBehandlingTema','Kodeverk for behandlingstema på relaterte ytelser', 'N');
+Insert into KODEVERK (KODE,KODEVERK_EIER,KODEVERK_EIER_REF,KODEVERK_EIER_VER,KODEVERK_EIER_NAVN,KODEVERK_SYNK_NYE,KODEVERK_SYNK_EKSISTERENDE,NAVN,BESKRIVELSE,SAMMENSATT) values ('BEHANDLING_TYPE','Kodeverkforvaltning','http://nav.no/kodeverk/Kodeverk/Arkivfiltyper','5','Behandlingstyper','N','N','Behandlingstyper','Internt kodeverk for behandlingstyper.', 'N');
+Insert into KODEVERK (KODE,KODEVERK_EIER,KODEVERK_EIER_REF,KODEVERK_EIER_VER,KODEVERK_EIER_NAVN,KODEVERK_SYNK_NYE,KODEVERK_SYNK_EKSISTERENDE,NAVN,BESKRIVELSE,SAMMENSATT) values ('KO_SORTERING','FPLOS',null,null,null,'J','J','Valgt sortering for kø','Mulige sorteringer for saksbehandleres køer', 'N');
+Insert into KODEVERK (KODE,KODEVERK_EIER,KODEVERK_EIER_REF,KODEVERK_EIER_VER,KODEVERK_EIER_NAVN,KODEVERK_SYNK_NYE,KODEVERK_SYNK_EKSISTERENDE,NAVN,BESKRIVELSE,SAMMENSATT) values ('FAGSAK_YTELSE','VL',null,null,null,'J','J','FagsakYtelseType','Internt kodeverk for ytelsestype.', 'N');
+Insert into KODEVERK (KODE,KODEVERK_EIER,KODEVERK_EIER_REF,KODEVERK_EIER_VER,KODEVERK_EIER_NAVN,KODEVERK_SYNK_NYE,KODEVERK_SYNK_EKSISTERENDE,NAVN,BESKRIVELSE,SAMMENSATT) values ('ANDRE_KRITERIER','VLLOS',null,null,null,'J','J','ANDRE_KRITERIER','Internt kodeverk for andre kriterier for filtrering.','N');
+Insert into KODEVERK (KODE,KODEVERK_EIER,KODEVERK_EIER_REF,KODEVERK_EIER_VER,KODEVERK_EIER_NAVN,KODEVERK_SYNK_NYE,KODEVERK_SYNK_EKSISTERENDE,NAVN,BESKRIVELSE,SAMMENSATT) values ('EVENTMOTTAK_STATUS','VLLOS',null,null,null,'J','J','EVENTMOTTAK_STATUS','Internt kodeverk for status på eventmottak.','N');
+Insert into KODEVERK (KODE,KODEVERK_EIER,KODEVERK_EIER_REF,KODEVERK_EIER_VER,KODEVERK_EIER_NAVN,KODEVERK_SYNK_NYE,KODEVERK_SYNK_EKSISTERENDE,NAVN,BESKRIVELSE,SAMMENSATT) values ('OPPGAVE_EVENT_TYPE','VLLOS',null,null,null,'J','J','OPPGAVE_EVENT_TYPE','Internt kodeverk for hva som har skjedd med oppgaver.','N');
+Insert into KODEVERK (KODE,KODEVERK_EIER,KODEVERK_EIER_REF,KODEVERK_EIER_VER,KODEVERK_EIER_NAVN,KODEVERK_SYNK_NYE,KODEVERK_SYNK_EKSISTERENDE,NAVN,BESKRIVELSE,SAMMENSATT) values ('FAGSAK_STATUS','VL',null,null,null,'J','J','FagsakStatus','Internt kodeverk for statuser på fagsaker.', 'N');
+Insert into KODEVERK (KODE,KODEVERK_EIER,KODEVERK_EIER_REF,KODEVERK_EIER_VER,KODEVERK_EIER_NAVN,KODEVERK_SYNK_NYE,KODEVERK_SYNK_EKSISTERENDE,NAVN,BESKRIVELSE,SAMMENSATT) values ('BEHANDLING_STATUS','VL',null,null,null,'J','J','BehandlingStatus','Internt kodeverk for behandling status.', 'N');
+-- INSERTING into KONFIG_VERDI
 SET DEFINE OFF;
-Insert into KONFIG_VERDI (ID,KONFIG_KODE,KONFIG_GRUPPE,KONFIG_VERDI,GYLDIG_FOM) values (SEQ_KONFIG_VERDI.nextval,'behandling.venter.frist.lengde','INGEN','P2W',to_date('01.01.2016','DD.MM.RRRR'),to_date('31.12.9999','DD.MM.RRRR'));
-Insert into KONFIG_VERDI (ID,KONFIG_KODE,KONFIG_GRUPPE,KONFIG_VERDI,GYLDIG_FOM) values (SEQ_KONFIG_VERDI.nextval,'virtuell.saksbehandler.navn','INGEN','Vedtaksløsning Prosess',to_date('01.01.2016','DD.MM.RRRR'),to_date('31.12.9999','DD.MM.RRRR'));
-Insert into KONFIG_VERDI (ID,KONFIG_KODE,KONFIG_GRUPPE,KONFIG_VERDI,GYLDIG_FOM) values (SEQ_KONFIG_VERDI.nextval,'relaterte.ytelser.periode.start','INGEN','P10M',to_date('01.01.2016','DD.MM.RRRR'),to_date('31.12.9999','DD.MM.RRRR'));
-Insert into KONFIG_VERDI (ID,KONFIG_KODE,KONFIG_GRUPPE,KONFIG_VERDI,GYLDIG_FOM) values (SEQ_KONFIG_VERDI.nextval,'vedtak.klagefrist.uker','INGEN','6',to_date('01.01.2016','DD.MM.RRRR'),to_date('31.12.9999','DD.MM.RRRR'));
-Insert into KONFIG_VERDI (ID,KONFIG_KODE,KONFIG_GRUPPE,KONFIG_VERDI,GYLDIG_FOM) values (SEQ_KONFIG_VERDI.nextval,'rettskilde.url','INGEN','https://www.nav.no/rettskildene-intern/',to_date('01.01.2017','DD.MM.RRRR'),to_date('31.12.9999','DD.MM.RRRR'));
-Insert into KONFIG_VERDI (ID,KONFIG_KODE,KONFIG_GRUPPE,KONFIG_VERDI,GYLDIG_FOM) values (SEQ_KONFIG_VERDI.nextval,'bruker.gruppenavn.saksbehandler','INGEN','0000-GA-fpsak-saksbehandler',to_date('01.01.2016','DD.MM.RRRR'),to_date('31.12.9999','DD.MM.RRRR'));
-Insert into KONFIG_VERDI (ID,KONFIG_KODE,KONFIG_GRUPPE,KONFIG_VERDI,GYLDIG_FOM) values (SEQ_KONFIG_VERDI.nextval,'bruker.gruppenavn.veileder','INGEN','0000-GA-fpsak-veileder',to_date('01.01.2016','DD.MM.RRRR'),to_date('31.12.9999','DD.MM.RRRR'));
-Insert into KONFIG_VERDI (ID,KONFIG_KODE,KONFIG_GRUPPE,KONFIG_VERDI,GYLDIG_FOM) values (SEQ_KONFIG_VERDI.nextval,'bruker.gruppenavn.beslutter','INGEN','0000-GA-fpsak-beslutter',to_date('01.01.2016','DD.MM.RRRR'),to_date('31.12.9999','DD.MM.RRRR'));
-Insert into KONFIG_VERDI (ID,KONFIG_KODE,KONFIG_GRUPPE,KONFIG_VERDI,GYLDIG_FOM) values (SEQ_KONFIG_VERDI.nextval,'bruker.gruppenavn.overstyrer','INGEN','0000-GA-fpsak-manuelt-overstyrer',to_date('01.01.2016','DD.MM.RRRR'),to_date('31.12.9999','DD.MM.RRRR'));
-Insert into KONFIG_VERDI (ID,KONFIG_KODE,KONFIG_GRUPPE,KONFIG_VERDI,GYLDIG_FOM) values (SEQ_KONFIG_VERDI.nextval,'bruker.gruppenavn.egenansatt','INGEN','0000-GA-GOSYS_UTVIDET',to_date('01.01.2016','DD.MM.RRRR'),to_date('31.12.9999','DD.MM.RRRR'));
-Insert into KONFIG_VERDI (ID,KONFIG_KODE,KONFIG_GRUPPE,KONFIG_VERDI,GYLDIG_FOM) values (SEQ_KONFIG_VERDI.nextval,'bruker.gruppenavn.kode6','INGEN','0000-GA-GOSYS_KODE6',to_date('01.01.2016','DD.MM.RRRR'),to_date('31.12.9999','DD.MM.RRRR'));
-Insert into KONFIG_VERDI (ID,KONFIG_KODE,KONFIG_GRUPPE,KONFIG_VERDI,GYLDIG_FOM) values (SEQ_KONFIG_VERDI.nextval,'bruker.gruppenavn.kode7','INGEN','0000-GA-GOSYS_KODE7',to_date('01.01.2016','DD.MM.RRRR'),to_date('31.12.9999','DD.MM.RRRR'));
-Insert into KONFIG_VERDI (ID,KONFIG_KODE,KONFIG_GRUPPE,KONFIG_VERDI,GYLDIG_FOM) values (SEQ_KONFIG_VERDI.nextval,'systemrutine.url','INGEN','https://navet.adeo.no/ansatt/Fag/Regelverk+og+rutiner/Saksbehandling',to_date('01.01.2016','DD.MM.RRRR'),to_date('31.12.9999','DD.MM.RRRR'));
-Insert into KONFIG_VERDI (ID,KONFIG_KODE,KONFIG_GRUPPE,KONFIG_VERDI,GYLDIG_FOM) values (SEQ_KONFIG_VERDI.nextval,'bruker.gruppenavn.oppgavestyrer','INGEN','0000-GA-fpsak-Oppgavestyrer',to_date('01.01.2016','DD.MM.RRRR'),to_date('31.12.9999','DD.MM.RRRR'));
-REM INSERTING into KONFIG_VERDI_GRUPPE
+Insert into KONFIG_VERDI (ID,KONFIG_KODE,KONFIG_GRUPPE,KONFIG_VERDI,GYLDIG_FOM) values (SEQ_KONFIG_VERDI.nextval,'behandling.venter.frist.lengde','INGEN','P2W',to_date('01.01.2016','DD.MM.RRRR'));
+Insert into KONFIG_VERDI (ID,KONFIG_KODE,KONFIG_GRUPPE,KONFIG_VERDI,GYLDIG_FOM) values (SEQ_KONFIG_VERDI.nextval,'virtuell.saksbehandler.navn','INGEN','Vedtaksløsning Prosess',to_date('01.01.2016','DD.MM.RRRR'));
+Insert into KONFIG_VERDI (ID,KONFIG_KODE,KONFIG_GRUPPE,KONFIG_VERDI,GYLDIG_FOM) values (SEQ_KONFIG_VERDI.nextval,'relaterte.ytelser.periode.start','INGEN','P10M',to_date('01.01.2016','DD.MM.RRRR'));
+Insert into KONFIG_VERDI (ID,KONFIG_KODE,KONFIG_GRUPPE,KONFIG_VERDI,GYLDIG_FOM) values (SEQ_KONFIG_VERDI.nextval,'vedtak.klagefrist.uker','INGEN','6',to_date('01.01.2016','DD.MM.RRRR'));
+Insert into KONFIG_VERDI (ID,KONFIG_KODE,KONFIG_GRUPPE,KONFIG_VERDI,GYLDIG_FOM) values (SEQ_KONFIG_VERDI.nextval,'rettskilde.url','INGEN','https://www.nav.no/rettskildene-intern/',to_date('01.01.2017','DD.MM.RRRR'));
+Insert into KONFIG_VERDI (ID,KONFIG_KODE,KONFIG_GRUPPE,KONFIG_VERDI,GYLDIG_FOM) values (SEQ_KONFIG_VERDI.nextval,'bruker.gruppenavn.saksbehandler','INGEN','0000-GA-fpsak-saksbehandler',to_date('01.01.2016','DD.MM.RRRR'));
+Insert into KONFIG_VERDI (ID,KONFIG_KODE,KONFIG_GRUPPE,KONFIG_VERDI,GYLDIG_FOM) values (SEQ_KONFIG_VERDI.nextval,'bruker.gruppenavn.veileder','INGEN','0000-GA-fpsak-veileder',to_date('01.01.2016','DD.MM.RRRR'));
+Insert into KONFIG_VERDI (ID,KONFIG_KODE,KONFIG_GRUPPE,KONFIG_VERDI,GYLDIG_FOM) values (SEQ_KONFIG_VERDI.nextval,'bruker.gruppenavn.beslutter','INGEN','0000-GA-fpsak-beslutter',to_date('01.01.2016','DD.MM.RRRR'));
+Insert into KONFIG_VERDI (ID,KONFIG_KODE,KONFIG_GRUPPE,KONFIG_VERDI,GYLDIG_FOM) values (SEQ_KONFIG_VERDI.nextval,'bruker.gruppenavn.overstyrer','INGEN','0000-GA-fpsak-manuelt-overstyrer',to_date('01.01.2016','DD.MM.RRRR'));
+Insert into KONFIG_VERDI (ID,KONFIG_KODE,KONFIG_GRUPPE,KONFIG_VERDI,GYLDIG_FOM) values (SEQ_KONFIG_VERDI.nextval,'bruker.gruppenavn.egenansatt','INGEN','0000-GA-GOSYS_UTVIDET',to_date('01.01.2016','DD.MM.RRRR'));
+Insert into KONFIG_VERDI (ID,KONFIG_KODE,KONFIG_GRUPPE,KONFIG_VERDI,GYLDIG_FOM) values (SEQ_KONFIG_VERDI.nextval,'bruker.gruppenavn.kode6','INGEN','0000-GA-GOSYS_KODE6',to_date('01.01.2016','DD.MM.RRRR'));
+Insert into KONFIG_VERDI (ID,KONFIG_KODE,KONFIG_GRUPPE,KONFIG_VERDI,GYLDIG_FOM) values (SEQ_KONFIG_VERDI.nextval,'bruker.gruppenavn.kode7','INGEN','0000-GA-GOSYS_KODE7',to_date('01.01.2016','DD.MM.RRRR'));
+Insert into KONFIG_VERDI (ID,KONFIG_KODE,KONFIG_GRUPPE,KONFIG_VERDI,GYLDIG_FOM) values (SEQ_KONFIG_VERDI.nextval,'systemrutine.url','INGEN','https://navet.adeo.no/ansatt/Fag/Regelverk+og+rutiner/Saksbehandling',to_date('01.01.2016','DD.MM.RRRR'));
+Insert into KONFIG_VERDI (ID,KONFIG_KODE,KONFIG_GRUPPE,KONFIG_VERDI,GYLDIG_FOM) values (SEQ_KONFIG_VERDI.nextval,'bruker.gruppenavn.oppgavestyrer','INGEN','0000-GA-fpsak-Oppgavestyrer',to_date('01.01.2016','DD.MM.RRRR'));
+-- INSERTING into KONFIG_VERDI_GRUPPE
 SET DEFINE OFF;
 Insert into KONFIG_VERDI_GRUPPE (KODE,NAVN,BESKRIVELSE) values ('INGEN','-','Ingen gruppe definert (default).  Brukes istdf. NULL siden dette inngår i en Primary Key. Koder som ikke er del av en gruppe må alltid være unike.');
-REM INSERTING into KONFIG_VERDI_KODE
+-- INSERTING into KONFIG_VERDI_KODE
 SET DEFINE OFF;
 Insert into KONFIG_VERDI_KODE (KODE,KONFIG_GRUPPE,NAVN,KONFIG_TYPE,BESKRIVELSE) values ('behandling.venter.frist.lengde','INGEN','Frist - Behandling venter','PERIOD','Sett behandling på vent  (i en angitt periode, eks. P2W = 2 uker');
 Insert into KONFIG_VERDI_KODE (KODE,KONFIG_GRUPPE,NAVN,KONFIG_TYPE,BESKRIVELSE) values ('virtuell.saksbehandler.navn','INGEN','Virtuell saksbehandler navn','STRING','Setter saksbehandler navn når prosessen er gått automatisk. Kun for visning internt i løsning');
@@ -864,14 +864,14 @@ Insert into KONFIG_VERDI_KODE (KODE,KONFIG_GRUPPE,NAVN,KONFIG_TYPE,BESKRIVELSE) 
 Insert into KONFIG_VERDI_KODE (KODE,KONFIG_GRUPPE,NAVN,KONFIG_TYPE,BESKRIVELSE) values ('bruker.gruppenavn.kode7','INGEN','Gruppenavn for rolle kode 7','STRING','Gruppenavn for rolle kode 7');
 Insert into KONFIG_VERDI_KODE (KODE,KONFIG_GRUPPE,NAVN,KONFIG_TYPE,BESKRIVELSE) values ('systemrutine.url','INGEN','Systemrutiner URL','URI','Lenke til systemrutiner');
 Insert into KONFIG_VERDI_KODE (KODE,KONFIG_GRUPPE,NAVN,KONFIG_TYPE,BESKRIVELSE) values ('bruker.gruppenavn.oppgavestyrer','INGEN','Gruppenavn for rolle oppgavestyrer','STRING','Gruppenavn for rolle egen oppgavestyrer');
-REM INSERTING into KONFIG_VERDI_TYPE
+-- INSERTING into KONFIG_VERDI_TYPE
 SET DEFINE OFF;
-Insert into KONFIG_VERDI_TYPE (KODE,NAVN,BESKRIVELSE,OPPRETTET_AV,OPPRETTET_TID,ENDRET_AV,ENDRET_TID) values ('BOOLEAN','Boolske verdier','Støtter J(a) / N(ei) flagg');
-Insert into KONFIG_VERDI_TYPE (KODE,NAVN,BESKRIVELSE,OPPRETTET_AV,OPPRETTET_TID,ENDRET_AV,ENDRET_TID) values ('PERIOD','Periode verdier','ISO 8601 Periode verdier.  Eks. P10M (10 måneder), P1D (1 dag) ');
-Insert into KONFIG_VERDI_TYPE (KODE,NAVN,BESKRIVELSE,OPPRETTET_AV,OPPRETTET_TID,ENDRET_AV,ENDRET_TID) values ('DURATION','Periode verdier','ISO 8601 Duration (tid) verdier.  Eks. PT1H (1 time), PT1M (1 minutt) ');
-Insert into KONFIG_VERDI_TYPE (KODE,NAVN,BESKRIVELSE,OPPRETTET_AV,OPPRETTET_TID,ENDRET_AV,ENDRET_TID) values ('INTEGER','Heltall','Heltallsverdier (positiv/negativ)');
-Insert into KONFIG_VERDI_TYPE (KODE,NAVN,BESKRIVELSE,OPPRETTET_AV,OPPRETTET_TID,ENDRET_AV,ENDRET_TID) values ('STRING','Streng verdier',null);
-Insert into KONFIG_VERDI_TYPE (KODE,NAVN,BESKRIVELSE,OPPRETTET_AV,OPPRETTET_TID,ENDRET_AV,ENDRET_TID) values ('URI','Uniform Resource Identifier','URI for å angi id til en ressurs');
+Insert into KONFIG_VERDI_TYPE (KODE,NAVN,BESKRIVELSE) values ('BOOLEAN','Boolske verdier','Støtter J(a) / N(ei) flagg');
+Insert into KONFIG_VERDI_TYPE (KODE,NAVN,BESKRIVELSE) values ('PERIOD','Periode verdier','ISO 8601 Periode verdier.  Eks. P10M (10 måneder), P1D (1 dag) ');
+Insert into KONFIG_VERDI_TYPE (KODE,NAVN,BESKRIVELSE) values ('DURATION','Periode verdier','ISO 8601 Duration (tid) verdier.  Eks. PT1H (1 time), PT1M (1 minutt) ');
+Insert into KONFIG_VERDI_TYPE (KODE,NAVN,BESKRIVELSE) values ('INTEGER','Heltall','Heltallsverdier (positiv/negativ)');
+Insert into KONFIG_VERDI_TYPE (KODE,NAVN,BESKRIVELSE) values ('STRING','Streng verdier',null);
+Insert into KONFIG_VERDI_TYPE (KODE,NAVN,BESKRIVELSE) values ('URI','Uniform Resource Identifier','URI for å angi id til en ressurs');
 
 --------------------------------------------------------
 --  DDL for Index IDX_AVDELING_SAKSBEHANDLER_1
@@ -1237,8 +1237,8 @@ Insert into KONFIG_VERDI_TYPE (KODE,NAVN,BESKRIVELSE,OPPRETTET_AV,OPPRETTET_TID,
 --  DDL for Index UIDX_KODELISTE_1
 --------------------------------------------------------
 
-  CREATE UNIQUE INDEX "UIDX_KODELISTE_1" ON "KODELISTE" ("KODE", "KODEVERK")
-  ;
+--  CREATE UNIQUE INDEX "UIDX_KODELISTE_1" ON "KODELISTE" ("KODE", "KODEVERK")
+--  ;
 --------------------------------------------------------
 --  DDL for Index UIDX_KONFIG_VERDI_1
 --------------------------------------------------------
