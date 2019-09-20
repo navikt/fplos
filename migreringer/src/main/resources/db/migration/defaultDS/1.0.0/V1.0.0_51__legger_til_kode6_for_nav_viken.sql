@@ -1,1 +1,0 @@
-UPDATE AVDELING SET krever_kode_6 = 'J' where AVDELING_ENHET = '2103';
