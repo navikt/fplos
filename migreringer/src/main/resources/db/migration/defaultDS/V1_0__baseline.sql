@@ -1620,3 +1620,23 @@ Insert into KONFIG_VERDI_TYPE (KODE,NAVN,BESKRIVELSE) values ('URI','Uniform Res
 
   ALTER TABLE "RESERVASJON" ADD CONSTRAINT "FK_RESERVASJON_1" FOREIGN KEY ("OPPGAVE_ID")
 	  REFERENCES "OPPGAVE" ("ID") ENABLE;
+
+	  
+/* Justeringer for baseline før migrering til Postgress.
+-- 1.
+
+declare 
+   inst_rank number;
+begin
+    select max("installed_rank")+1 into inst_rank from "schema_version";
+    Insert into "schema_version" ("installed_rank","version","description","type","script","checksum","installed_by","execution_time","success") values (inst_rank,'2','<< Flyway Baseline >>','BASELINE','<< Flyway Baseline >>',null,'FPLOS',0,'1');
+end;
+/
+
+ -- 2. 
+create table "schema_version_history"  as SELECT * FROM "schema_version" where "version" < to_char('2');
+ 
+-- 3.
+delete from  "schema_version" where "version" < to_char('2');
+commit;
+*/
