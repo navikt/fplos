@@ -1,0 +1,15 @@
+{
+  "uuid": "uuidstring-text",
+  "aktoerer": {"3489234098349":  "SØKER"},
+  "fagsystem": "TILBAKE",
+  "fagsystemSaksnummer": "92348092348",
+  "ytelsestype": "FP",
+  "behandlingType": "TILBAKEKREVING",
+  "hendelseTid": "2012-04-23T18:25:43.511Z",
+  "oppgaveAktiveres": true,
+  "attributter": {
+    "attributt1": "verdi1"
+  },
+  "behandlendeEnhet": "8390",
+  "url": "https://riktig.adresse.no"
+}

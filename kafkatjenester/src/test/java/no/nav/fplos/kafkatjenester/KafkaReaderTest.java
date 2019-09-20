@@ -8,6 +8,7 @@ import no.nav.foreldrepenger.loslager.repository.OppgaveRepositoryProviderImpl;
 import no.nav.fplos.foreldrepengerbehandling.BehandlingFpsak;
 import no.nav.fplos.foreldrepengerbehandling.ForeldrepengerBehandlingRestKlient;
 import no.nav.fplos.foreldrepengerbehandling.dto.aksjonspunkt.AksjonspunktDto;
+import no.nav.fplos.kafkatjenester.genereltgrensesnitt.OppgaveEvent;
 import no.nav.vedtak.felles.integrasjon.kafka.BehandlingProsessEventDto;
 import org.junit.Rule;
 import org.junit.Test;
@@ -16,9 +17,15 @@ import javax.persistence.EntityManager;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.net.URISyntaxException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.Collections;
 
+import static no.nav.fplos.kafkatjenester.Deserialiser.deserialiser;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.mock;
@@ -54,6 +61,19 @@ public class KafkaReaderTest {
         assertThat(repoRule.getRepository().hentAlle(EventmottakFeillogg.class)).hasSize(1);
     }
 
+    @Test
+    public void testDeserialingOppgaveEvent() throws IOException, URISyntaxException {
+        String json = readFile("oppgaveevent.json");
+        OppgaveEvent event = deserialiser(json, OppgaveEvent.class);
+        System.out.println(event.toString());
+
+    }
+
+    public String readFile(String filename) throws URISyntaxException, IOException {
+        Path path = Paths.get(getClass().getClassLoader().getResource(filename).toURI());
+        return Files.readString(path);
+    }
+
     private String getJson(BehandlingProsessEventDto produksjonstyringEventDto) throws IOException {
         Writer jsonWriter = new StringWriter();
         objectMapper.writeValue(jsonWriter, produksjonstyringEventDto);
@@ -72,4 +92,7 @@ public class KafkaReaderTest {
                         .build()))
                 .build();
     }
+
+
+
 }
