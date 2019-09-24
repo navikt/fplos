@@ -67,6 +67,10 @@ public class KafkaReaderTest {
         OppgaveEvent event = deserialiser(json, OppgaveEvent.class);
         System.out.println(event.toString());
 
+
+
+
+
     }
 
     public String readFile(String filename) throws URISyntaxException, IOException {

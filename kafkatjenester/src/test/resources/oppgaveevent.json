@@ -6,9 +6,9 @@
   "ytelsestype": "FP",
   "behandlingType": "TILBAKEKREVING",
   "hendelseTid": "2012-04-23T18:25:43.511Z",
-  "oppgaveAktiveres": true,
+  "aktiverOppgave": true,
   "attributter": {
-    "attributt1": "verdi1"
+    "FEILUTBETALT_BELØP": 1500
   },
   "behandlendeEnhet": "8390",
   "url": "https://riktig.adresse.no"

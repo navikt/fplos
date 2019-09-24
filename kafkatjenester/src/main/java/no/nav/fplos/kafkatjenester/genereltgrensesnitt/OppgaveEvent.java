@@ -7,14 +7,13 @@ import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import no.nav.foreldrepenger.domene.typer.AktørId;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
 public class OppgaveEvent {
 
     private String uuid; //partisjoneres på denne
-    private Map<AktørId, String> aktoerer;
+    private Map<AktørId, AktørRolle> aktoerer;
     private String fagsystem;
     private String fagsystemSaksnummer;
     private String ytelsestype;
@@ -26,7 +25,7 @@ public class OppgaveEvent {
             using = LocalDateTimeDeserializer.class
     )
     private LocalDateTime hendelseTid; // representerer tidspunkt hendelsen oppstod lokalt for fagsystem
-    private boolean oppgaveAktiveres; //verdi styrer om fplos oppretter/gjenåpner eller lukker oppgave
+    private boolean aktiverOppgave; //verdi styrer om fplos oppretter/gjenåpner eller lukker oppgave
     private Map attributter;
     private String behandlendeEnhet;
     private String url;
@@ -35,7 +34,7 @@ public class OppgaveEvent {
         return uuid;
     }
 
-    public Map<AktørId, String> getAktoerer() {
+    public Map<AktørId, AktørRolle> getAktoerer() {
         return aktoerer;
     }
 
@@ -59,8 +58,8 @@ public class OppgaveEvent {
         return hendelseTid;
     }
 
-    public boolean isOppgaveAktiveres() {
-        return oppgaveAktiveres;
+    public boolean isAktiverOppgave() {
+        return aktiverOppgave;
     }
 
     public Map getAttributter() {
@@ -85,11 +84,15 @@ public class OppgaveEvent {
                 ", ytelsestype='" + ytelsestype + '\'' +
                 ", behandlingType='" + behandlingType + '\'' +
                 ", hendelseTid=" + hendelseTid +
-                ", oppgaveAktiveres=" + oppgaveAktiveres +
+                ", aktiverOppgave=" + aktiverOppgave +
                 ", attributter=" + attributter +
                 ", behandlendeEnhet='" + behandlendeEnhet + '\'' +
                 ", url='" + url + '\'' +
                 '}';
+    }
+
+    private enum AktørRolle {
+        SØKER, ANNEN_AKTØR
     }
 
     public static final class Builder {
@@ -108,7 +111,7 @@ public class OppgaveEvent {
             return this;
         }
 
-        public OppgaveEvent.Builder withAktoerId(Map<AktørId, String> aktoerId) {
+        public OppgaveEvent.Builder withAktoerId(Map<AktørId, AktørRolle> aktoerId) {
             this.oppgaveEvent.aktoerer = aktoerId;
             return this;
         }
@@ -139,7 +142,7 @@ public class OppgaveEvent {
         }
 
         public OppgaveEvent.Builder withOppgaveAktiveres(boolean oppgaveAktiveres) {
-            this.oppgaveEvent.oppgaveAktiveres = oppgaveAktiveres;
+            this.oppgaveEvent.aktiverOppgave = oppgaveAktiveres;
             return this;
         }
 
@@ -169,7 +172,7 @@ public class OppgaveEvent {
             event.behandlingType = this.oppgaveEvent.behandlingType;
             event.uuid = this.oppgaveEvent.uuid;
             event.fagsystemSaksnummer = this.oppgaveEvent.fagsystemSaksnummer;
-            event.oppgaveAktiveres = this.oppgaveEvent.oppgaveAktiveres;
+            event.aktiverOppgave = this.oppgaveEvent.aktiverOppgave;
             event.attributter = this.oppgaveEvent.attributter;
 
             Objects.requireNonNull(event.behandlendeEnhet);
@@ -180,7 +183,7 @@ public class OppgaveEvent {
             Objects.requireNonNull(event.behandlingType);
             Objects.requireNonNull(event.uuid);
             Objects.requireNonNull(event.fagsystemSaksnummer);
-            Objects.requireNonNull(event.oppgaveAktiveres);
+            Objects.requireNonNull(event.aktiverOppgave);
             Objects.requireNonNull(event.attributter);
 
             return event;
