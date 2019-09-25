@@ -7,26 +7,20 @@ import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import no.nav.foreldrepenger.domene.typer.AktørId;
 
 import java.time.LocalDateTime;
-import java.util.Map;
-import java.util.Objects;
+import java.util.List;
 
 public class OppgaveEvent {
-
     private String uuid; //partisjoneres på denne
-    private Map<AktørId, AktørRolle> aktoerer;
+    private List<OppgaveAktør> aktører;
     private String fagsystem;
-    private String fagsystemSaksnummer;
+    private String saksnummer;
     private String ytelsestype;
     private String behandlingType;
-    @JsonSerialize(
-            using = ToStringSerializer.class
-    )
-    @JsonDeserialize(
-            using = LocalDateTimeDeserializer.class
-    )
-    private LocalDateTime hendelseTid; // representerer tidspunkt hendelsen oppstod lokalt for fagsystem
-    private boolean aktiverOppgave; //verdi styrer om fplos oppretter/gjenåpner eller lukker oppgave
-    private Map attributter;
+    @JsonSerialize(using = ToStringSerializer.class)
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+    private LocalDateTime hendelseTid; //representerer tidspunkt hendelsen oppstod lokalt for produsent
+    private boolean aktiv; //verdi styrer om fplos oppretter/gjenåpner eller lukker oppgave
+    private List<Attributt> attributter;
     private String behandlendeEnhet;
     private String url;
 
@@ -34,16 +28,16 @@ public class OppgaveEvent {
         return uuid;
     }
 
-    public Map<AktørId, AktørRolle> getAktoerer() {
-        return aktoerer;
+    public List<OppgaveAktør> getAktører() {
+        return aktører;
     }
 
     public String getFagsystem() {
         return fagsystem;
     }
 
-    public String getFagsystemSaksnummer() {
-        return fagsystemSaksnummer;
+    public String getSaksnummer() {
+        return saksnummer;
     }
 
     public String getYtelsestype() {
@@ -58,11 +52,11 @@ public class OppgaveEvent {
         return hendelseTid;
     }
 
-    public boolean isAktiverOppgave() {
-        return aktiverOppgave;
+    public boolean isAktiv() {
+        return aktiv;
     }
 
-    public Map getAttributter() {
+    public List<Attributt> getAttributter() {
         return attributter;
     }
 
@@ -74,131 +68,155 @@ public class OppgaveEvent {
         return url;
     }
 
+    public enum AktørRolle {
+        SØKER, ANNEN_AKTØR;
+
+    }
+    public static final class OppgaveAktør {
+        private AktørId aktørId;
+        private AktørRolle rolle;
+
+        public OppgaveAktør() { super(); }
+
+        public AktørId getAktørId() {
+            return aktørId;
+        }
+
+        public AktørRolle getRolle() {
+            return rolle;
+        }
+
+        @Override
+        public String toString() {
+            return "OppgaveAktør{" +
+                    "aktørId=" + aktørId +
+                    ", rolle=" + rolle +
+                    '}';
+        }
+    }
+
     @Override
     public String toString() {
         return "OppgaveEvent{" +
                 "uuid='" + uuid + '\'' +
-                ", aktoerer=" + aktoerer +
+                ", aktører=" + aktører +
                 ", fagsystem='" + fagsystem + '\'' +
-                ", fagsystemSaksnummer='" + fagsystemSaksnummer + '\'' +
+                ", saksnummer='" + saksnummer + '\'' +
                 ", ytelsestype='" + ytelsestype + '\'' +
                 ", behandlingType='" + behandlingType + '\'' +
                 ", hendelseTid=" + hendelseTid +
-                ", aktiverOppgave=" + aktiverOppgave +
+                ", aktiv=" + aktiv +
                 ", attributter=" + attributter +
                 ", behandlendeEnhet='" + behandlendeEnhet + '\'' +
                 ", url='" + url + '\'' +
                 '}';
     }
-
-    private enum AktørRolle {
-        SØKER, ANNEN_AKTØR
-    }
-
-    public static final class Builder {
-        
-        private OppgaveEvent oppgaveEvent = new OppgaveEvent();
-
-        private Builder() {
-        }
-
-        public static OppgaveEvent.Builder anOppgaveEvent() {
-            return new OppgaveEvent.Builder();
-        }
-
-        public OppgaveEvent.Builder withUuid(String uuid) {
-            this.oppgaveEvent.uuid = uuid;
-            return this;
-        }
-
-        public OppgaveEvent.Builder withAktoerId(Map<AktørId, AktørRolle> aktoerId) {
-            this.oppgaveEvent.aktoerer = aktoerId;
-            return this;
-        }
-
-        public OppgaveEvent.Builder withFagsystem(String fagsystem) {
-            this.oppgaveEvent.fagsystem = fagsystem;
-            return this;
-        }
-
-        public OppgaveEvent.Builder withFagsystemSaksnummer(String fagsystemSaksnummer) {
-            this.oppgaveEvent.fagsystemSaksnummer = fagsystemSaksnummer;
-            return this;
-        }
-
-        public OppgaveEvent.Builder withYtelsestype(String ytelsestype) {
-            this.oppgaveEvent.ytelsestype = ytelsestype;
-            return this;
-        }
-
-        public OppgaveEvent.Builder withBehandlingType(String behandlingType) {
-            this.oppgaveEvent.behandlingType = behandlingType;
-            return this;
-        }
-
-        public OppgaveEvent.Builder withHendelseTid(LocalDateTime hendelseTid) {
-            this.oppgaveEvent.hendelseTid = hendelseTid;
-            return this;
-        }
-
-        public OppgaveEvent.Builder withOppgaveAktiveres(boolean oppgaveAktiveres) {
-            this.oppgaveEvent.aktiverOppgave = oppgaveAktiveres;
-            return this;
-        }
-
-        public OppgaveEvent.Builder withAttributter(Map attributter) {
-            this.oppgaveEvent.attributter = attributter;
-            return this;
-        }
-
-        public OppgaveEvent.Builder withBehandlendeEnhet(String behandlendeEnhet) {
-            this.oppgaveEvent.behandlendeEnhet = behandlendeEnhet;
-            return this;
-        }
-
-        public OppgaveEvent.Builder withUrl(String url) {
-            this.oppgaveEvent.url = url;
-            return this;
-        }
-
-        public OppgaveEvent build() {
-            OppgaveEvent event = new OppgaveEvent();
-            event.behandlendeEnhet = this.oppgaveEvent.behandlendeEnhet;
-            event.aktoerer = this.oppgaveEvent.aktoerer;
-            event.url = this.oppgaveEvent.url;
-            event.ytelsestype = this.oppgaveEvent.ytelsestype;
-            event.fagsystem = this.oppgaveEvent.fagsystem;
-            event.hendelseTid = this.oppgaveEvent.hendelseTid;
-            event.behandlingType = this.oppgaveEvent.behandlingType;
-            event.uuid = this.oppgaveEvent.uuid;
-            event.fagsystemSaksnummer = this.oppgaveEvent.fagsystemSaksnummer;
-            event.aktiverOppgave = this.oppgaveEvent.aktiverOppgave;
-            event.attributter = this.oppgaveEvent.attributter;
-
-            Objects.requireNonNull(event.behandlendeEnhet);
-            Objects.requireNonNull(event.aktoerer);
-            Objects.requireNonNull(event.ytelsestype);
-            Objects.requireNonNull(event.fagsystem);
-            Objects.requireNonNull(event.hendelseTid);
-            Objects.requireNonNull(event.behandlingType);
-            Objects.requireNonNull(event.uuid);
-            Objects.requireNonNull(event.fagsystemSaksnummer);
-            Objects.requireNonNull(event.aktiverOppgave);
-            Objects.requireNonNull(event.attributter);
-
-            return event;
-        }
-    }
 }
 
+//    public static final class Builder {
+//
+//        private OppgaveEvent oppgaveEvent = new OppgaveEvent();
+//
+//        private Builder() {
+//        }
+//
+//        public static OppgaveEvent.Builder anOppgaveEvent() {
+//            return new OppgaveEvent.Builder();
+//        }
+//
+//        public OppgaveEvent.Builder withUuid(String uuid) {
+//            this.oppgaveEvent.uuid = uuid;
+//            return this;
+//        }
+//
+//        public OppgaveEvent.Builder withAktoerId(List<OppgaveAktør> aktoerId) {
+//            this.oppgaveEvent.aktører = aktoerId;
+//            return this;
+//        }
+//
+//        public OppgaveEvent.Builder withFagsystem(String fagsystem) {
+//            this.oppgaveEvent.fagsystem = fagsystem;
+//            return this;
+//        }
+//
+//        public OppgaveEvent.Builder withFagsystemSaksnummer(String fagsystemSaksnummer) {
+//            this.oppgaveEvent.saksnummer = fagsystemSaksnummer;
+//            return this;
+//        }
+//
+//        public OppgaveEvent.Builder withYtelsestype(String ytelsestype) {
+//            this.oppgaveEvent.ytelsestype = ytelsestype;
+//            return this;
+//        }
+//
+//        public OppgaveEvent.Builder withBehandlingType(String behandlingType) {
+//            this.oppgaveEvent.behandlingType = behandlingType;
+//            return this;
+//        }
+//
+//        public OppgaveEvent.Builder withHendelseTid(LocalDateTime hendelseTid) {
+//            this.oppgaveEvent.hendelseTid = hendelseTid;
+//            return this;
+//        }
+//
+//        public OppgaveEvent.Builder withOppgaveAktiveres(boolean oppgaveAktiveres) {
+//            this.oppgaveEvent.aktiv = oppgaveAktiveres;
+//            return this;
+//        }
+//
+//        public OppgaveEvent.Builder withAttributter(Map attributter) {
+//            this.oppgaveEvent.attributter = attributter;
+//            return this;
+//        }
+//
+//        public OppgaveEvent.Builder withBehandlendeEnhet(String behandlendeEnhet) {
+//            this.oppgaveEvent.behandlendeEnhet = behandlendeEnhet;
+//            return this;
+//        }
+//
+//        public OppgaveEvent.Builder withUrl(String url) {
+//            this.oppgaveEvent.url = url;
+//            return this;
+//        }
+//
+//        public OppgaveEvent build() {
+//            OppgaveEvent event = new OppgaveEvent();
+//            event.behandlendeEnhet = this.oppgaveEvent.behandlendeEnhet;
+//            event.aktører = this.oppgaveEvent.aktører;
+//            event.url = this.oppgaveEvent.url;
+//            event.ytelsestype = this.oppgaveEvent.ytelsestype;
+//            event.fagsystem = this.oppgaveEvent.fagsystem;
+//            event.hendelseTid = this.oppgaveEvent.hendelseTid;
+//            event.behandlingType = this.oppgaveEvent.behandlingType;
+//            event.uuid = this.oppgaveEvent.uuid;
+//            event.saksnummer = this.oppgaveEvent.saksnummer;
+//            event.aktiv = this.oppgaveEvent.aktiv;
+//            event.attributter = this.oppgaveEvent.attributter;
+//
+//            Objects.requireNonNull(event.behandlendeEnhet);
+//            Objects.requireNonNull(event.aktører);
+//            Objects.requireNonNull(event.ytelsestype);
+//            Objects.requireNonNull(event.fagsystem);
+//            Objects.requireNonNull(event.hendelseTid);
+//            Objects.requireNonNull(event.behandlingType);
+//            Objects.requireNonNull(event.uuid);
+//            Objects.requireNonNull(event.saksnummer);
+//            Objects.requireNonNull(event.aktiv);
+//            Objects.requireNonNull(event.attributter);
+//
+//            return event;
+//        }
+//    }
+//}
+//
 
 
 
 /*
  "fagsystem": "fptilbake", // navn på fagsystem
-         "fagsystemSaksnummer": "123",
+         "saksnummer": "123",
          "uuid": "asdfasfasdfasdf-asdf-asdfas-sdf", // unik id som representerer hele behandlingen.
-         "aktoerer": 1234, // aktoerer for person saken gjelder, brukes for å hente navn og tilgangsstyre kode 6/7
+         "aktører": 1234, // aktører for person saken gjelder, brukes for å hente navn og tilgangsstyre kode 6/7
          "fagsakYtelsestype": "ES", // ytelsestype
          "behandlendeEnhet": "4415", // eierenhet
          "url": "https://sadfas", // url som tar saksbehandler til korrekt kontekst

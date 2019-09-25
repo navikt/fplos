@@ -1,15 +1,24 @@
 {
   "uuid": "uuidstring-text",
-  "aktoerer": {"3489234098349":  "SØKER"},
+  "aktører": [
+    {
+      "aktørId": "3489234098349",
+      "rolle": "SØKER"
+    }
+  ],
   "fagsystem": "TILBAKE",
-  "fagsystemSaksnummer": "92348092348",
+  "saksnummer": "92348092348",
   "ytelsestype": "FP",
   "behandlingType": "TILBAKEKREVING",
   "hendelseTid": "2012-04-23T18:25:43.511Z",
-  "aktiverOppgave": true,
-  "attributter": {
-    "FEILUTBETALT_BELØP": 1500
-  },
+  "aktiv": true,
+  "attributter": [
+    {
+      "felt": "Feilutbetalt beløp",
+      "verdi": 1500,
+      "type": "heltall"
+    }
+  ],
   "behandlendeEnhet": "8390",
   "url": "https://riktig.adresse.no"
 }

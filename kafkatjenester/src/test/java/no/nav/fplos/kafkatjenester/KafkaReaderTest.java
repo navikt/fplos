@@ -24,6 +24,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.Collections;
+import java.util.Map;
 
 import static no.nav.fplos.kafkatjenester.Deserialiser.deserialiser;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -65,11 +66,8 @@ public class KafkaReaderTest {
     public void testDeserialingOppgaveEvent() throws IOException, URISyntaxException {
         String json = readFile("oppgaveevent.json");
         OppgaveEvent event = deserialiser(json, OppgaveEvent.class);
+        //assertThat(event.getAttributter()).isEqualTo(Map.of("FEILUTBETALT_BELØP", 1500));
         System.out.println(event.toString());
-
-
-
-
 
     }
 
