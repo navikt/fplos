@@ -12,13 +12,13 @@
   "behandlingType": "TILBAKEKREVING",
   "hendelseTid": "2012-04-23T18:25:43.511Z",
   "aktiv": true,
+  "behandlendeEnhet": "8390",
+  "url": "https://riktig.adresse.no",
   "attributter": [
     {
       "felt": "Feilutbetalt beløp",
       "verdi": 1500,
       "type": "heltall"
     }
-  ],
-  "behandlendeEnhet": "8390",
-  "url": "https://riktig.adresse.no"
+  ]
 }
