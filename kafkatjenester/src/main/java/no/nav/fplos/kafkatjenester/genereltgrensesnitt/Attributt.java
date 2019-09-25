@@ -21,6 +21,10 @@ public abstract class Attributt {
         this.felt = felt;
     }
 
+    String getFelt() {
+        return felt;
+    }
+
     @Override
     public String toString() {
         return "Attributt{" +

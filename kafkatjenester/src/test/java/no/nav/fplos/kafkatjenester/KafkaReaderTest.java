@@ -8,6 +8,8 @@ import no.nav.foreldrepenger.loslager.repository.OppgaveRepositoryProviderImpl;
 import no.nav.fplos.foreldrepengerbehandling.BehandlingFpsak;
 import no.nav.fplos.foreldrepengerbehandling.ForeldrepengerBehandlingRestKlient;
 import no.nav.fplos.foreldrepengerbehandling.dto.aksjonspunkt.AksjonspunktDto;
+import no.nav.fplos.kafkatjenester.genereltgrensesnitt.Attributt;
+import no.nav.fplos.kafkatjenester.genereltgrensesnitt.HeltallAttributt;
 import no.nav.fplos.kafkatjenester.genereltgrensesnitt.OppgaveEvent;
 import no.nav.vedtak.felles.integrasjon.kafka.BehandlingProsessEventDto;
 import org.junit.Rule;
@@ -67,6 +69,12 @@ public class KafkaReaderTest {
         String json = readFile("oppgaveevent.json");
         OppgaveEvent event = deserialiser(json, OppgaveEvent.class);
         //assertThat(event.getAttributter()).isEqualTo(Map.of("FEILUTBETALT_BELØP", 1500));
+        for (Attributt attributt : event.getAttributter()) {
+            if (attributt instanceof HeltallAttributt) {
+                var heltall = HeltallAttributt.class.cast(attributt);
+                System.out.println(heltall);
+            }
+        }
         System.out.println(event.toString());
 
     }

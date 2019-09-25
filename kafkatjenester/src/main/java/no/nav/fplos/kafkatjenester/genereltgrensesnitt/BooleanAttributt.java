@@ -17,7 +17,7 @@ public class BooleanAttributt extends Attributt {
     @Override
     public String toString() {
         return "BooleanAttributt{" +
-                "felt=" + super.toString() +
+                "felt='" + super.getFelt() + '\'' +
                 "verdi=" + verdi +
                 '}';
     }

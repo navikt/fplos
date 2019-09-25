@@ -12,4 +12,12 @@ public class HeltallAttributt extends Attributt {
         super(felt);
         this.verdi = verdi;
     }
+
+    @Override
+    public String toString() {
+        return "HeltallAttributt{" +
+                "felt='" + super.getFelt() + '\'' +
+                ", verdi=" + verdi +
+                '}';
+    }
 }
