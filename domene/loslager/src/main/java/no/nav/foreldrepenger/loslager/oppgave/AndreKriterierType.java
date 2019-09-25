@@ -16,6 +16,7 @@ public class AndreKriterierType extends Kodeliste {
     public static final AndreKriterierType UTLANDSSAK = new AndreKriterierType("UTLANDSSAK"); //$NON-NLS-1$
     public static final AndreKriterierType SOKT_GRADERING = new AndreKriterierType("SOKT_GRADERING"); //$NON-NLS-1$
     public static final AndreKriterierType UKJENT = new AndreKriterierType("-"); //$NON-NLS-1$
+    public static final AndreKriterierType FEILUTBETALT_BELØP = new AndreKriterierType("FEILUTBETALT_BELØP");
 
     AndreKriterierType() {
         // Hibernate trenger den
