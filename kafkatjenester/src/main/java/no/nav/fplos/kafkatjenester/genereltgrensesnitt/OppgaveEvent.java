@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
-import no.nav.foreldrepenger.domene.typer.AktørId;
+import no.nav.fplos.kafkatjenester.genereltgrensesnitt.attributt.Attributt;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -69,33 +69,6 @@ public class OppgaveEvent {
         return url;
     }
 
-    public enum AktørRolle {
-        SØKER, ANNEN_AKTØR
-
-    }
-    public static final class OppgaveAktør {
-        private AktørId aktørId;
-        private AktørRolle rolle;
-
-        public OppgaveAktør() { super(); }
-
-        public AktørId getAktørId() {
-            return aktørId;
-        }
-
-        public AktørRolle getRolle() {
-            return rolle;
-        }
-
-        @Override
-        public String toString() {
-            return "OppgaveAktør{" +
-                    "aktørId=" + aktørId +
-                    ", rolle=" + rolle +
-                    '}';
-        }
-    }
-
     @Override
     public String toString() {
         return "OppgaveEvent{" +
@@ -120,7 +93,7 @@ public class OppgaveEvent {
         private Builder() {
         }
 
-        public static OppgaveEvent.Builder anOppgaveEvent() {
+        public static OppgaveEvent.Builder newBuilder() {
             return new OppgaveEvent.Builder();
         }
 
@@ -206,4 +179,28 @@ public class OppgaveEvent {
             return event;
         }
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        OppgaveEvent that = (OppgaveEvent) o;
+        return aktiv == that.aktiv &&
+                Objects.equals(uuid, that.uuid) &&
+                Objects.equals(aktører, that.aktører) &&
+                Objects.equals(fagsystem, that.fagsystem) &&
+                Objects.equals(saksnummer, that.saksnummer) &&
+                Objects.equals(ytelsestype, that.ytelsestype) &&
+                Objects.equals(behandlingType, that.behandlingType) &&
+                Objects.equals(hendelseTid, that.hendelseTid) &&
+                Objects.equals(attributter, that.attributter) &&
+                Objects.equals(behandlendeEnhet, that.behandlendeEnhet) &&
+                Objects.equals(url, that.url);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(uuid, aktører, fagsystem, saksnummer, ytelsestype, behandlingType, hendelseTid, aktiv, attributter, behandlendeEnhet, url);
+    }
+
 }

@@ -1,4 +1,4 @@
-package no.nav.fplos.kafkatjenester.genereltgrensesnitt;
+package no.nav.fplos.kafkatjenester.genereltgrensesnitt.attributt;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -19,6 +19,10 @@ public class TimestampAttributt extends Attributt {
                             @JsonProperty("verdi") LocalDateTime verdi) {
         super(felt);
         this.verdi = verdi;
+    }
+
+    public LocalDateTime getVerdi() {
+        return verdi;
     }
 
     @Override

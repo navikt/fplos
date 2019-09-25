@@ -1,9 +1,10 @@
-package no.nav.fplos.kafkatjenester.genereltgrensesnitt;
+package no.nav.fplos.kafkatjenester.genereltgrensesnitt.attributt;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+
+import java.util.Objects;
+
 import static com.fasterxml.jackson.annotation.JsonTypeInfo.As.PROPERTY;
 import static com.fasterxml.jackson.annotation.JsonTypeInfo.Id.NAME;
 
@@ -16,12 +17,11 @@ import static com.fasterxml.jackson.annotation.JsonTypeInfo.Id.NAME;
 public abstract class Attributt {
     private String felt;
 
-    @JsonCreator
-    public Attributt(@JsonProperty("felt") String felt) {
+    Attributt(String felt) {
         this.felt = felt;
     }
 
-    String getFelt() {
+    public String getFelt() {
         return felt;
     }
 
