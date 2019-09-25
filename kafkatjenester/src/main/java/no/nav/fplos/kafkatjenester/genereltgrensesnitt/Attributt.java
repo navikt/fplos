@@ -9,7 +9,7 @@ import static com.fasterxml.jackson.annotation.JsonTypeInfo.Id.NAME;
 
 @JsonTypeInfo(use = NAME, include = PROPERTY, property = "type")
 @JsonSubTypes({
-        @JsonSubTypes.Type(value = TimestampAttributt.class, name = "typenavn"),
+        @JsonSubTypes.Type(value = TimestampAttributt.class, name = "timestamp"),
         @JsonSubTypes.Type(value = HeltallAttributt.class, name = "heltall"),
         @JsonSubTypes.Type(value = BooleanAttributt.class, name = "boolean")
 })

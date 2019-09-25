@@ -18,7 +18,7 @@ public class BooleanAttributt extends Attributt {
     public String toString() {
         return "BooleanAttributt{" +
                 "felt='" + super.getFelt() + '\'' +
-                "verdi=" + verdi +
+                ", verdi=" + verdi +
                 '}';
     }
 }

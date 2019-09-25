@@ -19,6 +19,11 @@
       "felt": "Feilutbetalt beløp",
       "verdi": 1500,
       "type": "heltall"
+    },
+    {
+      "felt": "Dato for første feilutbetaling",
+      "verdi": "2018-04-23T18:25:43.511Z",
+      "type": "timestamp"
     }
   ]
 }
