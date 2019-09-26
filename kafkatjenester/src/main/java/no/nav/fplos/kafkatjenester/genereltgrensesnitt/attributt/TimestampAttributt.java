@@ -32,4 +32,20 @@ public class TimestampAttributt extends Attributt {
                 ", verdi=" + verdi +
                 '}';
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        TimestampAttributt other = (TimestampAttributt) o;
+        return this.verdi.equals(other.verdi);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + (verdi != null ? verdi.hashCode() : 0);
+        return result;
+    }
 }

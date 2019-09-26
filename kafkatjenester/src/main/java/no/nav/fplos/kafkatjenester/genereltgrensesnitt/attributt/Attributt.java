@@ -3,8 +3,6 @@ package no.nav.fplos.kafkatjenester.genereltgrensesnitt.attributt;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
-import java.util.Objects;
-
 import static com.fasterxml.jackson.annotation.JsonTypeInfo.As.PROPERTY;
 import static com.fasterxml.jackson.annotation.JsonTypeInfo.Id.NAME;
 
@@ -30,5 +28,18 @@ public abstract class Attributt {
         return "Attributt{" +
                 "felt='" + felt + '\'' +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Attributt other = (Attributt) o;
+        return this.felt != null ? this.felt.equals(other.felt) : other.felt == null;
+    }
+
+    @Override
+    public int hashCode() {
+        return felt != null ? felt.hashCode() : 0;
     }
 }

@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import no.nav.fplos.kafkatjenester.genereltgrensesnitt.OppgaveAktør;
+import no.nav.fplos.kafkatjenester.genereltgrensesnitt.attributt.BooleanAttributt;
 import no.nav.fplos.kafkatjenester.genereltgrensesnitt.attributt.HeltallAttributt;
 import no.nav.fplos.kafkatjenester.genereltgrensesnitt.OppgaveEvent;
 import org.junit.Test;
@@ -40,7 +41,7 @@ public class OppgaveEventTest {
                 .withFagsystem("FAGSYSTEM")
                 .withFagsystemSaksnummer("SAKSNUMMER")
                 .withOppgaveAktiveres(true)
-                .withAttributter(List.of(new HeltallAttributt("Utestående beløp", 8437)))
+                .withAttributter(List.of(new HeltallAttributt("Utestående beløp", 8437), new BooleanAttributt("Til beslutter", true)))
                 .withUrl("https://app.adeo.no/fplos/4932934")
                 .withYtelsestype("FP")
                 .withHendelseTid(LocalDateTime.now())

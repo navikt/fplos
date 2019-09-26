@@ -22,14 +22,19 @@ public class HeltallAttributt extends Attributt {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        HeltallAttributt that = (HeltallAttributt) o;
-        return verdi.equals(that.verdi);
+        if (o == null || this.getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        HeltallAttributt other = (HeltallAttributt) o;
+        return this.verdi.equals(other.verdi);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(verdi);
+        int begge = Objects.hash(super.getFelt(), this.verdi);
+        int kunHeltall = Objects.hash(this.verdi);
+        System.out.println("super + heltall: " + begge);
+        System.out.println("kun heltall: " + kunHeltall);
+        return begge;
     }
 
     @Override

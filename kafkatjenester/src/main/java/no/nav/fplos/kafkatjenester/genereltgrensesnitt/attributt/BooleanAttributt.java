@@ -4,8 +4,6 @@ package no.nav.fplos.kafkatjenester.genereltgrensesnitt.attributt;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import java.util.Objects;
-
 public class BooleanAttributt extends Attributt {
     private boolean verdi;
 
@@ -29,7 +27,18 @@ public class BooleanAttributt extends Attributt {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        BooleanAttributt other = (BooleanAttributt) o;
+        return this.verdi == other.verdi;
+    }
+
+    @Override
     public int hashCode() {
-        return Objects.hash(verdi);
+        int result = super.hashCode();
+        result = 31 * result + (verdi ? 1 : 0);
+        return result;
     }
 }
