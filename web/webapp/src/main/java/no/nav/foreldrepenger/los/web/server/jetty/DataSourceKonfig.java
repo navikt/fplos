@@ -30,7 +30,7 @@ class DataSourceKonfig {
         config.setPassword(PropertyUtil.getProperty(dataSourceName + ".password")); // NOSONAR false positive
 
         config.setConnectionTimeout(1000);
-        config.setMinimumIdle(1);
+        config.setMinimumIdle(5);
         config.setMaximumPoolSize(30);
         config.setConnectionTestQuery("select 1 from dual");
         config.setDriverClassName("oracle.jdbc.OracleDriver");
