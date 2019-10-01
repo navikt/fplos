@@ -13,6 +13,7 @@ import java.util.Objects;
 public class OppgaveEvent {
     private String uuid; //partisjoneres på denne
     private List<OppgaveAktør> aktører;
+    private List<OppgaveSaksbehandler> saksbehandlereUtenTilgang; //liste over saksbehandlere som ikke har adgang til å behandle oppgaven - gjelder typisk siste saksbehandler før TIL_BESLUTTER
     private String fagsystem;
     private String saksnummer;
     private String ytelsestype;
@@ -24,13 +25,16 @@ public class OppgaveEvent {
     private List<Attributt> attributter;
     private String behandlendeEnhet;
     private String url;
-
     public String getUuid() {
         return uuid;
     }
 
     public List<OppgaveAktør> getAktører() {
         return aktører;
+    }
+
+    public List<OppgaveSaksbehandler> getSaksbehandlereUtenTilgang() {
+        return saksbehandlereUtenTilgang;
     }
 
     public String getFagsystem() {
@@ -73,7 +77,8 @@ public class OppgaveEvent {
     public String toString() {
         return "OppgaveEvent{" +
                 "uuid='" + uuid + '\'' +
-                ", aktører=" + aktører +
+                ", aktører=" + aktører + '\'' +
+                ", saksbehandlerUtenTilgang=" + saksbehandlereUtenTilgang + '\'' +
                 ", fagsystem='" + fagsystem + '\'' +
                 ", saksnummer='" + saksnummer + '\'' +
                 ", ytelsestype='" + ytelsestype + '\'' +
@@ -117,6 +122,11 @@ public class OppgaveEvent {
             return this;
         }
 
+        public OppgaveEvent.Builder withSaksbehandlereUtenTilgang(List<OppgaveSaksbehandler> saksbehandlere) {
+            this.oppgaveEvent.saksbehandlereUtenTilgang = saksbehandlere;
+            return this;
+        }
+
         public OppgaveEvent.Builder withYtelsestype(String ytelsestype) {
             this.oppgaveEvent.ytelsestype = ytelsestype;
             return this;
@@ -132,8 +142,8 @@ public class OppgaveEvent {
             return this;
         }
 
-        public OppgaveEvent.Builder withOppgaveAktiveres(boolean oppgaveAktiveres) {
-            this.oppgaveEvent.aktiv = oppgaveAktiveres;
+        public OppgaveEvent.Builder withAktiv(boolean oppgaveAktiv) {
+            this.oppgaveEvent.aktiv = oppgaveAktiv;
             return this;
         }
 
@@ -155,6 +165,7 @@ public class OppgaveEvent {
         public OppgaveEvent build() {
             OppgaveEvent event = new OppgaveEvent();
             event.behandlendeEnhet = this.oppgaveEvent.behandlendeEnhet;
+            event.saksbehandlereUtenTilgang = this.oppgaveEvent.saksbehandlereUtenTilgang;
             event.aktører = this.oppgaveEvent.aktører;
             event.url = this.oppgaveEvent.url;
             event.ytelsestype = this.oppgaveEvent.ytelsestype;
@@ -174,7 +185,6 @@ public class OppgaveEvent {
             Objects.requireNonNull(event.behandlingType);
             Objects.requireNonNull(event.uuid);
             Objects.requireNonNull(event.saksnummer);
-            Objects.requireNonNull(event.attributter);
 
             return event;
         }
@@ -190,6 +200,7 @@ public class OppgaveEvent {
                 Objects.equals(aktører, that.aktører) &&
                 Objects.equals(fagsystem, that.fagsystem) &&
                 Objects.equals(saksnummer, that.saksnummer) &&
+                Objects.equals(saksbehandlereUtenTilgang, that.saksbehandlereUtenTilgang) &&
                 Objects.equals(ytelsestype, that.ytelsestype) &&
                 Objects.equals(behandlingType, that.behandlingType) &&
                 Objects.equals(hendelseTid, that.hendelseTid) &&
@@ -200,7 +211,8 @@ public class OppgaveEvent {
 
     @Override
     public int hashCode() {
-        return Objects.hash(uuid, aktører, fagsystem, saksnummer, ytelsestype, behandlingType, hendelseTid, aktiv, attributter, behandlendeEnhet, url);
+        return Objects.hash(uuid, aktører, fagsystem, saksnummer, saksbehandlereUtenTilgang,
+                ytelsestype, behandlingType, hendelseTid, aktiv, attributter, behandlendeEnhet, url);
     }
 
 }

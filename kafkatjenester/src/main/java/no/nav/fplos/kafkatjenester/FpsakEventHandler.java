@@ -239,19 +239,19 @@ public class FpsakEventHandler {
         }
     }
 
-    private void aktiverEllerLeggTilOppgaveEgenskap(OppgaveEgenskap kriterieTilknyttetOppgave, Oppgave oppgave, AndreKriterierType andreKriterierType) {
-        if (kriterieTilknyttetOppgave != null) {
-            kriterieTilknyttetOppgave.aktiverOppgaveEgenskap();
-            oppgaveRepository.lagre(kriterieTilknyttetOppgave);
+    private void aktiverEllerLeggTilOppgaveEgenskap(OppgaveEgenskap egenskap, Oppgave oppgave, AndreKriterierType andreKriterierType) {
+        if (egenskap != null) {
+            egenskap.aktiverOppgaveEgenskap();
+            oppgaveRepository.lagre(egenskap);
         } else {
             oppgaveRepository.lagre(new OppgaveEgenskap(oppgave, andreKriterierType));
         }
     }
 
-    private void deaktiverOppgaveEgenskap(OppgaveEgenskap kriterieTilknyttetOppgave) {
-        if (kriterieTilknyttetOppgave != null) {
-            kriterieTilknyttetOppgave.deaktiverOppgaveEgenskap();
-            oppgaveRepository.lagre(kriterieTilknyttetOppgave);
+    private void deaktiverOppgaveEgenskap(OppgaveEgenskap egenskap) {
+        if (egenskap != null) {
+            egenskap.deaktiverOppgaveEgenskap();
+            oppgaveRepository.lagre(egenskap);
         }
     }
 

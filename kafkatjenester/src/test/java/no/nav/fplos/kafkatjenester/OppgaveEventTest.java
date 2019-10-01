@@ -5,9 +5,11 @@ import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import no.nav.fplos.kafkatjenester.genereltgrensesnitt.OppgaveAktør;
+import no.nav.fplos.kafkatjenester.genereltgrensesnitt.OppgaveSaksbehandler;
 import no.nav.fplos.kafkatjenester.genereltgrensesnitt.attributt.BooleanAttributt;
 import no.nav.fplos.kafkatjenester.genereltgrensesnitt.attributt.HeltallAttributt;
 import no.nav.fplos.kafkatjenester.genereltgrensesnitt.OppgaveEvent;
+import no.nav.fplos.kafkatjenester.genereltgrensesnitt.attributt.TimestampAttributt;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -40,11 +42,16 @@ public class OppgaveEventTest {
                 .withBehandlingType("TILBAKEKREVING")
                 .withFagsystem("FAGSYSTEM")
                 .withFagsystemSaksnummer("SAKSNUMMER")
-                .withOppgaveAktiveres(true)
-                .withAttributter(List.of(new HeltallAttributt("Utestående beløp", 8437), new BooleanAttributt("Til beslutter", true)))
+                .withAktiv(true)
+                .withAttributter(List.of(
+                        new HeltallAttributt("Utestående beløp", 8437),
+                        new BooleanAttributt("Til beslutter", true),
+                        new HeltallAttributt("Foreldet beløp", 12848),
+                        new TimestampAttributt("Foreldelsesdato", LocalDateTime.now())))
                 .withUrl("https://app.adeo.no/fplos/4932934")
                 .withYtelsestype("FP")
                 .withHendelseTid(LocalDateTime.now())
+                .withSaksbehandlereUtenTilgang(List.of(new OppgaveSaksbehandler("Z99999")))
                 .build();
         String json = serialiserToJson(event);
         System.out.println(json);

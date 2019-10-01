@@ -64,7 +64,7 @@ public class FpsakEventMapper {
                         ? GJENÅPNE_OPPGAVE
                         : OPPRETT_BESLUTTER_OPPGAVE;
             }
-            if (!fraAdmin && harKriterie(sisteEvent, AndreKriterierType.TIL_BESLUTTER)
+            if (!fraAdmin && harKriterie(sisteEvent, AndreKriterierType.TIL_BESLUTTER) // denne er vel duplikat av den over...
                     && erSammeEnhet(sisteEvent.getBehandlendeEnhet(), behandlendeEnhet)) {
                 return GJENÅPNE_OPPGAVE;
             }
