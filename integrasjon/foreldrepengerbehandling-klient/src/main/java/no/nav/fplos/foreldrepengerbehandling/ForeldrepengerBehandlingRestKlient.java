@@ -62,9 +62,8 @@ public class ForeldrepengerBehandlingRestKlient {
         loginContext.login();
 
         try {
-            LOGGER.info("GET " + uriBuilder.build());
+            LOGGER.info("Slår opp i fpsak for behandlingId {} per GET-kall til {}", behandlingId, uriBuilder.build());
             UtvidetBehandlingDto response = oidcRestClient.get(uriBuilder.build(), UtvidetBehandlingDto.class);
-
             BehandlingFpsak.Builder builder = BehandlingFpsak.builder()
                     .medBehandlingId(response.getId())
                     .medType(response.getType().getKode())
@@ -79,11 +78,12 @@ public class ForeldrepengerBehandlingRestKlient {
             hentInntektRest(behandlingId, builder, links);
             hentYtelsefordelingRest(behandlingId, builder, links);
             hentUttakKontrollerFaktaPerioder(behandlingId, builder, links);
-            loginContext.logout();
             return builder.build();
         } catch (URISyntaxException | IntegrasjonException e) {
             LOGGER.error("Feilet å hente behandling fra FPSAK for behandlingId: " + behandlingId, e);
             return null;
+        } finally {
+            loginContext.logout();
         }
     }
 
@@ -149,12 +149,12 @@ public class ForeldrepengerBehandlingRestKlient {
 
         try {
             FagsakDto fagsakDtos = oidcRestClient.get(uriBuilder.build(), FagsakDto.class);
-            loginContext.logout();
             return Collections.singletonList(fagsakDtos);
         } catch (URISyntaxException e) {
             LOGGER.error("Feilet å hente Fagsak fra FPSAK for saksnummer: " + saksnummer, e);
-            loginContext.logout();
             return Collections.emptyList();
+        } finally {
+            loginContext.logout();
         }
     }
 
@@ -166,12 +166,12 @@ public class ForeldrepengerBehandlingRestKlient {
 
         try {
             FagsakDto[] fagsakDtos = oidcRestClient.post(uriBuilder.build(), sokefeltDto, FagsakDto[].class);
-            loginContext.logout();
             return Arrays.asList(fagsakDtos);
         } catch (URISyntaxException e) {
             LOGGER.error("Feilet å hente Fagsak fra FPSAK for en fødselsnummer", e);
-            loginContext.logout();
             return Collections.emptyList();
+        } finally {
+            loginContext.logout();
         }
     }
 

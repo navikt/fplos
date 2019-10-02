@@ -71,19 +71,17 @@ public class FpsakEventHandler {
         prosesser(bpeDto, reservasjon, true);
     }
 
-    private void prosesser(BehandlingProsessEventDto bpeDto, Reservasjon reservasjon, boolean prosesserFraAdmin){
+    private void prosesser(BehandlingProsessEventDto bpeDto, Reservasjon reservasjon, boolean prosesserFraAdmin) {
         Long behandlingId = bpeDto.getBehandlingId();
-        List<OppgaveEventLogg> oppgaveEventLogger = oppgaveRepository.hentEventer(behandlingId);
-
         BehandlingFpsak fraFpsak = foreldrePengerBehandlingRestKlient.getBehandling(behandlingId);
-        log.info("Følgende er hentet fra FPSAK {} for behandlingId {}", fraFpsak, behandlingId);
 
+        List<OppgaveEventLogg> pastOppgaveEvents = oppgaveRepository.hentEventer(behandlingId);
         List<AksjonspunktDto> aksjonspunktListe = new ArrayList<>();
         fraFpsak.getAksjonspunkter().forEach(aksjonspunkt -> aksjonspunktListe.add(aksjonspunkt));
 
         EventResultat event = prosesserFraAdmin
                 ? FpsakEventMapper.signifikantEventForAdminFra(aksjonspunktListe)
-                : FpsakEventMapper.signifikantEventFra(aksjonspunktListe, oppgaveEventLogger, bpeDto.getBehandlendeEnhet());
+                : FpsakEventMapper.signifikantEventFra(aksjonspunktListe, pastOppgaveEvents, bpeDto.getBehandlendeEnhet());
 
         switch (event) {
             case LUKK_OPPGAVE:
@@ -102,7 +100,7 @@ public class FpsakEventHandler {
                 loggEvent(behandlingId, OppgaveEventType.MANU_VENT, AndreKriterierType.UKJENT, bpeDto.getBehandlendeEnhet(), finnManuellAksjonspunkt(aksjonspunktListe));
                 break;
             case OPPRETT_OPPGAVE:
-                avsluttOppgaveHvisÅpen(behandlingId, oppgaveEventLogger, bpeDto.getBehandlendeEnhet());
+                avsluttOppgaveHvisÅpen(behandlingId, pastOppgaveEvents, bpeDto.getBehandlendeEnhet());
                 Oppgave oppgave = opprettOppgave(bpeDto, fraFpsak, prosesserFraAdmin);
                 reserverOppgaveFraTidligereReservasjon(prosesserFraAdmin, reservasjon, oppgave);
                 log.info("Oppgave {} opprettet og populert med informasjon fra FPSAK for behandlingId {}", oppgave.getId(), behandlingId);
@@ -110,7 +108,7 @@ public class FpsakEventHandler {
                 opprettOppgaveEgenskaper(fraFpsak, aksjonspunktListe, oppgave);
                 break;
             case OPPRETT_BESLUTTER_OPPGAVE:
-                avsluttOppgaveHvisÅpen(behandlingId, oppgaveEventLogger, bpeDto.getBehandlendeEnhet());
+                avsluttOppgaveHvisÅpen(behandlingId, pastOppgaveEvents, bpeDto.getBehandlendeEnhet());
                 Oppgave beslutterOppgave = opprettOppgave(bpeDto, fraFpsak, prosesserFraAdmin);
                 reserverOppgaveFraTidligereReservasjon(prosesserFraAdmin, reservasjon, beslutterOppgave);
                 log.info("Oppgave {} opprettet til beslutter og populert med informasjon fra FPSAK for behandlingId {}", beslutterOppgave.getId(), behandlingId);
@@ -119,7 +117,7 @@ public class FpsakEventHandler {
                 opprettOppgaveEgenskaper(fraFpsak, aksjonspunktListe, beslutterOppgave);
                 break;
             case OPPRETT_PAPIRSØKNAD_OPPGAVE:
-                avsluttOppgaveHvisÅpen(behandlingId, oppgaveEventLogger, bpeDto.getBehandlendeEnhet());
+                avsluttOppgaveHvisÅpen(behandlingId, pastOppgaveEvents, bpeDto.getBehandlendeEnhet());
                 Oppgave papirsøknadOppgave = opprettOppgave(bpeDto, fraFpsak, prosesserFraAdmin);
                 reserverOppgaveFraTidligereReservasjon(prosesserFraAdmin, reservasjon, papirsøknadOppgave);
                 log.info("Oppgave {} opprettet fra papirsøknad og populert med informasjon fra FPSAK for behandlingId {}", papirsøknadOppgave.getId(), behandlingId);
