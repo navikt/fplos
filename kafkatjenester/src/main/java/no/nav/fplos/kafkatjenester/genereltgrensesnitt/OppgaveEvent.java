@@ -1,5 +1,6 @@
 package no.nav.fplos.kafkatjenester.genereltgrensesnitt;
 
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
@@ -10,21 +11,22 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
+@JsonPropertyOrder( {"uuid", "hendelseTid", "aktører", "fagsystem", "saksnummer", "ytelsestype", "behandlingstype", "behandlendeEnhet", "url", "attributter", "saksbehandlereUtenTilgang" } )
 public class OppgaveEvent {
     private Uuid uuid; //partisjoneres på denne
+    @JsonSerialize(using = ToStringSerializer.class)
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+    private LocalDateTime hendelseTid; //representerer tidspunkt hendelsen oppstod lokalt for produsent
     private List<OppgaveAktør> aktører;
-    private List<OppgaveSaksbehandler> saksbehandlereUtenTilgang; //liste over saksbehandlere som ikke har adgang til å behandle oppgaven - gjelder typisk siste saksbehandler før TIL_BESLUTTER
     private Fagsystem fagsystem;
     private String saksnummer;
     private YtelseType ytelsestype;
     private BehandlingsType behandlingsType;
-    @JsonSerialize(using = ToStringSerializer.class)
-    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
-    private LocalDateTime hendelseTid; //representerer tidspunkt hendelsen oppstod lokalt for produsent
+    private String behandlendeEnhet;
     private boolean aktiv; //verdi styrer om fplos oppretter/gjenåpner eller lukker oppgave
     private List<Attributt> attributter;
-    private String behandlendeEnhet;
     private String url;
+    private List<OppgaveSaksbehandler> ekskluderSaksbehandlere; //liste over saksbehandlere som ikke har adgang til å behandle oppgaven - gjelder typisk siste saksbehandler før TIL_BESLUTTER
 
     public Uuid getUuid() {
         return uuid;
@@ -34,8 +36,8 @@ public class OppgaveEvent {
         return aktører;
     }
 
-    public List<OppgaveSaksbehandler> getSaksbehandlereUtenTilgang() {
-        return saksbehandlereUtenTilgang;
+    public List<OppgaveSaksbehandler> getEkskluderSaksbehandlere() {
+        return ekskluderSaksbehandlere;
     }
 
     public Fagsystem getFagsystem() {
@@ -79,7 +81,7 @@ public class OppgaveEvent {
         return "OppgaveEvent{" +
                 "uuid='" + uuid + '\'' +
                 ", aktører=" + aktører + '\'' +
-                ", saksbehandlerUtenTilgang=" + saksbehandlereUtenTilgang + '\'' +
+                ", saksbehandlerUtenTilgang=" + ekskluderSaksbehandlere + '\'' +
                 ", fagsystem='" + fagsystem + '\'' +
                 ", saksnummer='" + saksnummer + '\'' +
                 ", ytelsestype='" + ytelsestype + '\'' +
@@ -124,7 +126,7 @@ public class OppgaveEvent {
         }
 
         public OppgaveEvent.Builder withSaksbehandlereUtenTilgang(List<OppgaveSaksbehandler> saksbehandlere) {
-            this.oppgaveEvent.saksbehandlereUtenTilgang = saksbehandlere;
+            this.oppgaveEvent.ekskluderSaksbehandlere = saksbehandlere;
             return this;
         }
 
@@ -166,7 +168,7 @@ public class OppgaveEvent {
         public OppgaveEvent build() {
             OppgaveEvent event = new OppgaveEvent();
             event.behandlendeEnhet = this.oppgaveEvent.behandlendeEnhet;
-            event.saksbehandlereUtenTilgang = this.oppgaveEvent.saksbehandlereUtenTilgang;
+            event.ekskluderSaksbehandlere = this.oppgaveEvent.ekskluderSaksbehandlere;
             event.aktører = this.oppgaveEvent.aktører;
             event.url = this.oppgaveEvent.url;
             event.ytelsestype = this.oppgaveEvent.ytelsestype;
@@ -201,7 +203,7 @@ public class OppgaveEvent {
                 Objects.equals(aktører, that.aktører) &&
                 Objects.equals(fagsystem, that.fagsystem) &&
                 Objects.equals(saksnummer, that.saksnummer) &&
-                Objects.equals(saksbehandlereUtenTilgang, that.saksbehandlereUtenTilgang) &&
+                Objects.equals(ekskluderSaksbehandlere, that.ekskluderSaksbehandlere) &&
                 Objects.equals(ytelsestype, that.ytelsestype) &&
                 Objects.equals(behandlingsType, that.behandlingsType) &&
                 Objects.equals(hendelseTid, that.hendelseTid) &&
@@ -212,7 +214,7 @@ public class OppgaveEvent {
 
     @Override
     public int hashCode() {
-        return Objects.hash(uuid, aktører, fagsystem, saksnummer, saksbehandlereUtenTilgang,
+        return Objects.hash(uuid, aktører, fagsystem, saksnummer, ekskluderSaksbehandlere,
                 ytelsestype, behandlingsType, hendelseTid, aktiv, attributter, behandlendeEnhet, url);
     }
 
