@@ -2,15 +2,17 @@ package no.nav.fplos.kafkatjenester.genereltgrensesnitt;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonValue;
 
 public class OppgaveSaksbehandler {
     private String saksbehandler;
 
     @JsonCreator
-    public OppgaveSaksbehandler(@JsonProperty("saksbehandlereUtenTilgang") String saksbehandler) {
+    public OppgaveSaksbehandler(String saksbehandler) {
         this.saksbehandler = saksbehandler;
     }
 
+    @JsonValue
     public String getSaksbehandler() {
         return saksbehandler;
     }

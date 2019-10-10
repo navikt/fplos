@@ -5,29 +5,29 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
-import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
-public class TimestampAttributt extends Attributt {
+public class DatoAttributt extends Attributt {
     @JsonSerialize(using = ToStringSerializer.class)
-    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
-    private LocalDateTime verdi;
+    @JsonDeserialize(using = LocalDateDeserializer.class)
+    private LocalDate verdi;
 
     @JsonCreator
-    public TimestampAttributt(@JsonProperty("felt") String felt,
-                            @JsonProperty("verdi") LocalDateTime verdi) {
+    public DatoAttributt(@JsonProperty("felt") String felt,
+                         @JsonProperty("verdi") LocalDate verdi) {
         super(felt);
         this.verdi = verdi;
     }
 
-    public LocalDateTime getVerdi() {
+    public LocalDate getVerdi() {
         return verdi;
     }
 
     @Override
     public String toString() {
-        return "TimestampAttributt{" +
+        return "DatoAttributt{" +
                 "felt='" + super.getFelt() + '\'' +
                 ", verdi=" + verdi +
                 '}';
@@ -38,7 +38,7 @@ public class TimestampAttributt extends Attributt {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
-        TimestampAttributt other = (TimestampAttributt) o;
+        DatoAttributt other = (DatoAttributt) o;
         return this.verdi.equals(other.verdi);
     }
 

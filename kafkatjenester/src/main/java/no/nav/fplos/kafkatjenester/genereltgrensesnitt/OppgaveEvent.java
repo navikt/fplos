@@ -11,13 +11,13 @@ import java.util.List;
 import java.util.Objects;
 
 public class OppgaveEvent {
-    private String uuid; //partisjoneres på denne
+    private Uuid uuid; //partisjoneres på denne
     private List<OppgaveAktør> aktører;
     private List<OppgaveSaksbehandler> saksbehandlereUtenTilgang; //liste over saksbehandlere som ikke har adgang til å behandle oppgaven - gjelder typisk siste saksbehandler før TIL_BESLUTTER
-    private String fagsystem;
+    private Fagsystem fagsystem;
     private String saksnummer;
-    private String ytelsestype;
-    private String behandlingType;
+    private YtelseType ytelsestype;
+    private BehandlingsType behandlingsType;
     @JsonSerialize(using = ToStringSerializer.class)
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     private LocalDateTime hendelseTid; //representerer tidspunkt hendelsen oppstod lokalt for produsent
@@ -25,7 +25,8 @@ public class OppgaveEvent {
     private List<Attributt> attributter;
     private String behandlendeEnhet;
     private String url;
-    public String getUuid() {
+
+    public Uuid getUuid() {
         return uuid;
     }
 
@@ -37,7 +38,7 @@ public class OppgaveEvent {
         return saksbehandlereUtenTilgang;
     }
 
-    public String getFagsystem() {
+    public Fagsystem getFagsystem() {
         return fagsystem;
     }
 
@@ -45,12 +46,12 @@ public class OppgaveEvent {
         return saksnummer;
     }
 
-    public String getYtelsestype() {
+    public YtelseType getYtelsestype() {
         return ytelsestype;
     }
 
-    public String getBehandlingType() {
-        return behandlingType;
+    public BehandlingsType getBehandlingsType() {
+        return behandlingsType;
     }
 
     public LocalDateTime getHendelseTid() {
@@ -82,7 +83,7 @@ public class OppgaveEvent {
                 ", fagsystem='" + fagsystem + '\'' +
                 ", saksnummer='" + saksnummer + '\'' +
                 ", ytelsestype='" + ytelsestype + '\'' +
-                ", behandlingType='" + behandlingType + '\'' +
+                ", behandlingsType='" + behandlingsType + '\'' +
                 ", hendelseTid=" + hendelseTid +
                 ", aktiv=" + aktiv +
                 ", attributter=" + attributter +
@@ -102,7 +103,7 @@ public class OppgaveEvent {
             return new OppgaveEvent.Builder();
         }
 
-        public OppgaveEvent.Builder withUuid(String uuid) {
+        public OppgaveEvent.Builder withUuid(Uuid uuid) {
             this.oppgaveEvent.uuid = uuid;
             return this;
         }
@@ -112,7 +113,7 @@ public class OppgaveEvent {
             return this;
         }
 
-        public OppgaveEvent.Builder withFagsystem(String fagsystem) {
+        public OppgaveEvent.Builder withFagsystem(Fagsystem fagsystem) {
             this.oppgaveEvent.fagsystem = fagsystem;
             return this;
         }
@@ -127,13 +128,13 @@ public class OppgaveEvent {
             return this;
         }
 
-        public OppgaveEvent.Builder withYtelsestype(String ytelsestype) {
+        public OppgaveEvent.Builder withYtelsestype(YtelseType ytelsestype) {
             this.oppgaveEvent.ytelsestype = ytelsestype;
             return this;
         }
 
-        public OppgaveEvent.Builder withBehandlingType(String behandlingType) {
-            this.oppgaveEvent.behandlingType = behandlingType;
+        public OppgaveEvent.Builder withBehandlingType(BehandlingsType behandlingsType) {
+            this.oppgaveEvent.behandlingsType = behandlingsType;
             return this;
         }
 
@@ -171,7 +172,7 @@ public class OppgaveEvent {
             event.ytelsestype = this.oppgaveEvent.ytelsestype;
             event.fagsystem = this.oppgaveEvent.fagsystem;
             event.hendelseTid = this.oppgaveEvent.hendelseTid;
-            event.behandlingType = this.oppgaveEvent.behandlingType;
+            event.behandlingsType = this.oppgaveEvent.behandlingsType;
             event.uuid = this.oppgaveEvent.uuid;
             event.saksnummer = this.oppgaveEvent.saksnummer;
             event.aktiv = this.oppgaveEvent.aktiv;
@@ -182,7 +183,7 @@ public class OppgaveEvent {
             Objects.requireNonNull(event.ytelsestype);
             Objects.requireNonNull(event.fagsystem);
             Objects.requireNonNull(event.hendelseTid);
-            Objects.requireNonNull(event.behandlingType);
+            Objects.requireNonNull(event.behandlingsType);
             Objects.requireNonNull(event.uuid);
             Objects.requireNonNull(event.saksnummer);
 
@@ -202,7 +203,7 @@ public class OppgaveEvent {
                 Objects.equals(saksnummer, that.saksnummer) &&
                 Objects.equals(saksbehandlereUtenTilgang, that.saksbehandlereUtenTilgang) &&
                 Objects.equals(ytelsestype, that.ytelsestype) &&
-                Objects.equals(behandlingType, that.behandlingType) &&
+                Objects.equals(behandlingsType, that.behandlingsType) &&
                 Objects.equals(hendelseTid, that.hendelseTid) &&
                 Objects.equals(attributter, that.attributter) &&
                 Objects.equals(behandlendeEnhet, that.behandlendeEnhet) &&
@@ -212,7 +213,7 @@ public class OppgaveEvent {
     @Override
     public int hashCode() {
         return Objects.hash(uuid, aktører, fagsystem, saksnummer, saksbehandlereUtenTilgang,
-                ytelsestype, behandlingType, hendelseTid, aktiv, attributter, behandlendeEnhet, url);
+                ytelsestype, behandlingsType, hendelseTid, aktiv, attributter, behandlendeEnhet, url);
     }
 
 }
