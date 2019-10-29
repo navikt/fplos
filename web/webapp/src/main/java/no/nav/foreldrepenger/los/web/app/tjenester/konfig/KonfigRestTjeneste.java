@@ -25,14 +25,17 @@ import static no.nav.vedtak.sikkerhet.abac.BeskyttetRessursResourceAttributt.APP
 public class KonfigRestTjeneste {
 
     private String fpsakFrontendUrl;
+    private String fptilbakeFrontendUrl;
 
     public KonfigRestTjeneste() {
         //NOSONAR
     }
 
     @Inject
-    public KonfigRestTjeneste(@KonfigVerdi("fpsak.frontend.url") String fpsakFrontendUrl) {
+    public KonfigRestTjeneste(@KonfigVerdi("fpsak.frontend.url") String fpsakFrontendUrl,
+                              @KonfigVerdi("fptilbake.frontend.url") String fptilbakeFrontendUrl) {
         this.fpsakFrontendUrl = fpsakFrontendUrl;
+        this.fptilbakeFrontendUrl = fptilbakeFrontendUrl;
     }
 
     @GET
@@ -44,6 +47,17 @@ public class KonfigRestTjeneste {
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
     public Konfig hentFpsakUrl() {
         return new Konfig(fpsakFrontendUrl);
+    }
+
+    @GET
+    @Timed
+    @Path("/fptilbake-url")
+    @Produces("application/json")
+    @ApiOperation(value = "Henter basis lenke til FPTILBAKE.")
+    @BeskyttetRessurs(action = READ, ressurs = APPLIKASJON, sporingslogg = false)
+    @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
+    public Konfig hentFptilbakeUrl() {
+        return new Konfig(fptilbakeFrontendUrl);
     }
 
     @GET
