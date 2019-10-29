@@ -26,6 +26,7 @@ describe('<OppgaverTabell>', () => {
       behandlingId: 2,
       personnummer: '123456789',
       navn: 'Espen Utvikler',
+      system: 'FPSAK',
       behandlingstype: {
         kode: behandlingType.FORSTEGANGSSOKNAD,
         navn: 'Førstegangssøknad',
@@ -50,6 +51,7 @@ describe('<OppgaverTabell>', () => {
       behandlingId: 2,
       personnummer: '657643535',
       navn: 'Espen Solstråle',
+      system: 'FPSAK',
       behandlingstype: {
         kode: behandlingType.FORSTEGANGSSOKNAD,
         navn: 'Førstegangssøknad far',
@@ -109,6 +111,7 @@ describe('<OppgaverTabell>', () => {
       behandlingId: 2,
       personnummer: '123456789',
       navn: 'Espen Utvikler',
+      system: 'FPSAK',
       behandlingstype: {
         kode: behandlingType.FORSTEGANGSSOKNAD,
         navn: 'Førstegangssøknad',
@@ -134,6 +137,7 @@ describe('<OppgaverTabell>', () => {
       behandlingId: 2,
       personnummer: '657643535',
       navn: 'Espen Solstråle',
+      system: 'FPSAK',
       behandlingstype: {
         kode: behandlingType.FORSTEGANGSSOKNAD,
         navn: 'Førstegangssøknad far',
@@ -221,6 +225,7 @@ describe('<OppgaverTabell>', () => {
       behandlingId: 2,
       personnummer: '657643535',
       navn: 'Espen Solstråle',
+      system: 'FPSAK',
       behandlingstype: {
         kode: behandlingType.FORSTEGANGSSOKNAD,
         navn: 'Førstegangssøknad far',

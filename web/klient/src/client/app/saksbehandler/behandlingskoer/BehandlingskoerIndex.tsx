@@ -4,10 +4,10 @@ import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
 
 import fpLosApi from 'data/fpLosApi';
-import { getFpsakHref } from 'app/paths';
+import { getFpsakHref, getFptilbakeHref } from 'app/paths';
 import sakslistePropType from 'saksbehandler/behandlingskoer/sakslistePropType';
 import { Saksliste } from 'saksbehandler/behandlingskoer/sakslisteTsType';
-import { getFpsakUrl } from 'app/duck';
+import { getFpsakUrl, getFptilbakeUrl } from 'app/duck';
 import { OppgaveStatus } from 'saksbehandler/oppgaveStatusTsType';
 import { Oppgave } from 'saksbehandler/oppgaveTsType';
 import OppgaveErReservertAvAnnenModal from 'saksbehandler/components/OppgaveErReservertAvAnnenModal';
@@ -30,6 +30,7 @@ type TsProps = Readonly<{
   flyttReservasjon: (oppgaveId: number, brukerident: string, begrunnelse: string) => Promise<string>;
   sakslister: Saksliste[];
   fpsakUrl: string;
+  fptilbakeUrl: string;
   goToUrl: (url: string) => void;
   harTimeout: boolean;
   setValgtSakslisteId: (sakslisteId: number) => void;
@@ -60,6 +61,7 @@ export class BehandlingskoerIndex extends Component<TsProps, StateProps> {
     flyttReservasjon: PropTypes.func.isRequired,
     sakslister: PropTypes.arrayOf(sakslistePropType),
     fpsakUrl: PropTypes.string.isRequired,
+    fptilbakeUrl: PropTypes.string.isRequired,
     goToUrl: PropTypes.func.isRequired,
     harTimeout: PropTypes.bool.isRequired,
     setValgtSakslisteId: PropTypes.func.isRequired,
@@ -101,21 +103,32 @@ export class BehandlingskoerIndex extends Component<TsProps, StateProps> {
     });
   }
 
+  openSak = (oppgave: Oppgave) => {
+    if (oppgave.system === 'FPSAK') this.openFagsak(oppgave);
+    else if (oppgave.system === 'FPTILBAKE') this.openTilbakesak(oppgave);
+    else throw new Error('Fagsystemet for oppgaven er ukjent');
+  }
+
   openFagsak = (oppgave: Oppgave) => {
     const { fpsakUrl, goToUrl } = this.props;
     goToUrl(getFpsakHref(fpsakUrl, oppgave.saksnummer, oppgave.behandlingId));
   }
 
+  openTilbakesak = (oppgave: Oppgave) => {
+    const { fptilbakeUrl, goToUrl } = this.props;
+    goToUrl(getFptilbakeHref(fptilbakeUrl, oppgave.saksnummer, oppgave.eksternId));
+  }
+
   reserverOppgaveOgApne = (oppgave: Oppgave) => {
     if (oppgave.status.erReservert) {
-      this.openFagsak(oppgave);
+      this.openSak(oppgave);
     } else {
       const { reserverOppgave: reserver } = this.props;
 
       reserver(oppgave.id).then((data: {payload: OppgaveStatus }) => {
         const nyOppgaveStatus = data.payload;
         if (nyOppgaveStatus.erReservert && nyOppgaveStatus.erReservertAvInnloggetBruker) {
-          this.openFagsak(oppgave);
+          this.openSak(oppgave);
         } else if (nyOppgaveStatus.erReservert && !nyOppgaveStatus.erReservertAvInnloggetBruker) {
           this.setState(prevState => ({
             ...prevState,
@@ -162,7 +175,7 @@ export class BehandlingskoerIndex extends Component<TsProps, StateProps> {
     this.setState(prevState => ({
       ...prevState, reservertAvAnnenSaksbehandler: false, reservertOppgave: undefined, reservertOppgaveStatus: undefined,
     }));
-    this.openFagsak(oppgave);
+    this.openSak(oppgave);
   }
 
   render = () => {
@@ -203,6 +216,7 @@ export class BehandlingskoerIndex extends Component<TsProps, StateProps> {
 
 const mapStateToProps = state => ({
   fpsakUrl: getFpsakUrl(state),
+  fptilbakeUrl: getFptilbakeUrl(state),
   harTimeout: harOppgaverTilBehandlingTimeout(state),
   sakslister: getSakslisteResult(state),
   goToUrl: url => window.location.assign(url),

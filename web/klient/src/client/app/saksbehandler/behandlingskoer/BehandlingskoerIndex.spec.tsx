@@ -49,6 +49,7 @@ describe('<BehandlingskoerIndex>', () => {
     behandlingId: 1,
     personnummer: 1234567891,
     navn: 'Espen Uteligger',
+    system: 'FPSAK',
     behandlingstype: {
       kode: 'TEST',
       navn: 'test',
@@ -66,6 +67,7 @@ describe('<BehandlingskoerIndex>', () => {
     const fetchSakslister = sinon.spy();
     const wrapper = shallow(<BehandlingskoerIndex
       fpsakUrl="www.fpsak.no"
+      fptilbakeUrl="www.fptilbake.no"
       fetchOppgaverTilBehandling={sinon.spy()}
       fetchReserverteOppgaver={sinon.spy()}
       fetchAlleSakslister={fetchSakslister}
@@ -88,6 +90,7 @@ describe('<BehandlingskoerIndex>', () => {
     const fetchSakslister = sinon.spy();
     const wrapper = shallow(<BehandlingskoerIndex
       fpsakUrl="www.fpsak.no"
+      fptilbakeUrl="www.fptilbake.no"
       fetchOppgaverTilBehandling={sinon.spy()}
       fetchReserverteOppgaver={sinon.spy()}
       fetchAlleSakslister={fetchSakslister}
@@ -116,6 +119,7 @@ describe('<BehandlingskoerIndex>', () => {
     const goToUrl = sinon.spy();
     const wrapper = shallow(<BehandlingskoerIndex
       fpsakUrl="www.fpsak.no"
+      fptilbakeUrl="www.fptilbake.no"
       fetchOppgaverTilBehandling={sinon.spy()}
       fetchReserverteOppgaver={sinon.spy()}
       fetchAlleSakslister={sinon.spy()}
@@ -147,6 +151,7 @@ describe('<BehandlingskoerIndex>', () => {
     const goToUrl = sinon.spy();
     const wrapper = shallow(<BehandlingskoerIndex
       fpsakUrl="www.fpsak.no"
+      fptilbakeUrl="www.fptilbake.no"
       fetchOppgaverTilBehandling={sinon.spy()}
       fetchReserverteOppgaver={sinon.spy()}
       fetchAlleSakslister={sinon.spy()}
@@ -197,6 +202,7 @@ describe('<BehandlingskoerIndex>', () => {
 
     const wrapper = shallow(<BehandlingskoerIndex
       fpsakUrl="www.fpsak.no"
+      fptilbakeUrl="www.fptilbake.no"
       fetchOppgaverTilBehandling={fetchOppgaverTilBehandlingFn}
       fetchReserverteOppgaver={fetchReserverteOppgaverFn}
       fetchAlleSakslister={sinon.spy()}
@@ -233,6 +239,7 @@ describe('<BehandlingskoerIndex>', () => {
     const fetchReserverteOppgaverFn = sinon.spy();
     const wrapper = shallow(<BehandlingskoerIndex
       fpsakUrl="www.fpsak.no"
+      fptilbakeUrl="www.fptilbake.no"
       fetchOppgaverTilBehandling={sinon.spy()}
       fetchReserverteOppgaver={fetchReserverteOppgaverFn}
       fetchAlleSakslister={sinon.spy()}
@@ -273,6 +280,7 @@ describe('<BehandlingskoerIndex>', () => {
     const fetchReserverteOppgaverFn = sinon.spy();
     const wrapper = shallow(<BehandlingskoerIndex
       fpsakUrl="www.fpsak.no"
+      fptilbakeUrl="www.fptilbake.no"
       fetchOppgaverTilBehandling={sinon.spy()}
       fetchReserverteOppgaver={fetchReserverteOppgaverFn}
       fetchAlleSakslister={sinon.spy()}
@@ -311,6 +319,7 @@ describe('<BehandlingskoerIndex>', () => {
     const fetchReserverteOppgaverFn = sinon.spy();
     const wrapper = shallow(<BehandlingskoerIndex
       fpsakUrl="www.fpsak.no"
+      fptilbakeUrl="www.fptilbake.no"
       fetchOppgaverTilBehandling={sinon.spy()}
       fetchReserverteOppgaver={fetchReserverteOppgaverFn}
       fetchAlleSakslister={sinon.spy()}
@@ -352,6 +361,7 @@ describe('<BehandlingskoerIndex>', () => {
     const fetchSakslister = sinon.spy();
     const wrapper = shallow(<BehandlingskoerIndex
       fpsakUrl="www.fpsak.no"
+      fptilbakeUrl="www.fptilbake.no"
       fetchOppgaverTilBehandling={sinon.spy()}
       fetchReserverteOppgaver={sinon.spy()}
       fetchAlleSakslister={fetchSakslister}

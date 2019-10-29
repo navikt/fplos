@@ -81,6 +81,9 @@ public class Oppgave extends BaseEntitet {
     @Column(name = "UTFORT_FRA_ADMIN")
     private Boolean utfortFraAdmin = Boolean.FALSE;
 
+    @Column(name = "EKSTERN_ID")
+    private String eksternId;
+
     @OneToOne(mappedBy = "oppgave")
     private Reservasjon reservasjon;
 
@@ -118,6 +121,10 @@ public class Oppgave extends BaseEntitet {
 
     public String getSystem() {
         return system;
+    }
+
+    public String getEksternId() {
+        return eksternId;
     }
 
     public LocalDateTime getBehandlingsfrist() {
@@ -171,6 +178,11 @@ public class Oppgave extends BaseEntitet {
 
         public Builder medBehandlingId(Long behandlingId){
             tempOppgave.behandlingId = behandlingId;
+            return this;
+        }
+
+        public Builder medEksternId(String eksternId){
+            tempOppgave.eksternId = eksternId;
             return this;
         }
 
