@@ -13,6 +13,7 @@ type TsProps = Readonly<{
   fetchLanguageFile: () => void;
   fetchKodeverk: () => void;
   fetchFpsakUrl: () => void;
+  fetchFptilbakeUrl: () => void;
   fetchFeatureToggles: () => void;
 }>
 
@@ -24,6 +25,7 @@ class AppConfigResolver extends Component<TsProps> {
     fetchLanguageFile: PropTypes.func.isRequired,
     fetchKodeverk: PropTypes.func.isRequired,
     fetchFpsakUrl: PropTypes.func.isRequired,
+    fetchFptilbakeUrl: PropTypes.func.isRequired,
     fetchFeatureToggles: PropTypes.func.isRequired,
   };
 
@@ -38,6 +40,7 @@ class AppConfigResolver extends Component<TsProps> {
       fetchLanguageFile,
       fetchKodeverk,
       fetchFpsakUrl,
+      fetchFptilbakeUrl,
       fetchFeatureToggles,
     } = this.props;
 
@@ -45,6 +48,7 @@ class AppConfigResolver extends Component<TsProps> {
     fetchLanguageFile();
     fetchKodeverk();
     fetchFpsakUrl();
+    fetchFptilbakeUrl();
     fetchFeatureToggles();
   }
 
@@ -63,6 +67,7 @@ const mapStateToProps = (state: any) => {
     fpLosApi.LANGUAGE_FILE.getRestApiFinished()(state),
     fpLosApi.KODEVERK.getRestApiFinished()(state),
     fpLosApi.FPSAK_URL.getRestApiFinished()(state),
+    fpLosApi.FPTILBAKE_URL.getRestApiFinished()(state),
     fpLosApi.FEATURE_TOGGLES.getRestApiFinished()(state),
   ];
   return {
@@ -75,6 +80,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => bindActionCreators({
   fetchLanguageFile: fpLosApi.LANGUAGE_FILE.makeRestApiRequest(),
   fetchKodeverk: fpLosApi.KODEVERK.makeRestApiRequest(),
   fetchFpsakUrl: fpLosApi.FPSAK_URL.makeRestApiRequest(),
+  fetchFptilbakeUrl: fpLosApi.FPTILBAKE_URL.makeRestApiRequest(),
   fetchFeatureToggles: fpLosApi.FEATURE_TOGGLES.makeRestApiRequest(),
 }, dispatch);
 

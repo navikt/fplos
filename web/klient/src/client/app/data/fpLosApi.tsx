@@ -10,6 +10,7 @@ const fpLosApiKeys = {
   SEARCH_FAGSAK: 'SEARCH_FAGSAK',
   BEHANDLEDE_OPPGAVER: 'BEHANDLEDE_OPPGAVER',
   FPSAK_URL: 'FPSAK_URL',
+  FPTILBAKE_URL: 'FPTILBAKE_URL',
   FEATURE_TOGGLES: 'FEATURE_TOGGLES',
   SAKSLISTE: 'SAKSLISTE',
   RESERVER_OPPGAVE: 'RESERVER_OPPGAVE',
@@ -108,8 +109,9 @@ const endpoints = new RestApiConfigBuilder()
   .withGet('/api/avdelingsleder/nokkeltall/behandlinger-forste-stonadsdag', fpLosApiKeys.HENT_OPPGAVER_PER_FORSTE_STONADSDAG)
 
   /* /api/konfig */
-  .withGet('/api/konfig/fpsak-url', fpLosApiKeys.FPSAK_URL)
-  .withGet('/api/konfig/feature-toggles', fpLosApiKeys.FEATURE_TOGGLES)
+    .withGet('/api/konfig/fpsak-url', fpLosApiKeys.FPSAK_URL)
+    .withGet('/api/konfig/fptilbake-url', fpLosApiKeys.FPTILBAKE_URL)
+    .withGet('/api/konfig/feature-toggles', fpLosApiKeys.FEATURE_TOGGLES)
 
   /* /api/kodeverk */
   .withGet('/api/kodeverk', fpLosApiKeys.KODEVERK)
