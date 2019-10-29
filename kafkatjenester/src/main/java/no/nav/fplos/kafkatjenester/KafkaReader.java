@@ -67,7 +67,7 @@ public class KafkaReader {
                         tilbakekrevingEventHandler.prosesser(behandlingProsessEventDto);
                         return;
                     default:
-                        throw new Exception("Kan ikke behandle fagsystem");
+                        throw new RuntimeException("BehandlingProsessEventDto har ikke gyldig verdi for fagsystem. Fagsystem " + behandlingProsessEventDto.getFagsystem() + " er ikke støttet i fplos");
                 }
             }
 
