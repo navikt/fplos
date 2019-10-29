@@ -28,6 +28,7 @@ describe('<OppgaveErReservertAvAnnenModal>', () => {
     behandlingId: 2,
     personnummer: '1234567',
     navn: 'Espen Utvikler',
+    system: 'FPSAK',
     behandlingstype: {
       kode: behandlingType.FORSTEGANGSSOKNAD,
       navn: '',

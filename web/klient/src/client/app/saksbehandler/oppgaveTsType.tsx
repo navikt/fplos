@@ -10,10 +10,12 @@ export type Oppgave = Readonly<{
   behandlingId: number;
   personnummer: string;
   navn: string;
+  system: string;
   behandlingstype: Kodeverk;
   behandlingStatus: Kodeverk;
   opprettetTidspunkt: string;
   behandlingsfrist: string;
   fagsakYtelseType: Kodeverk;
   erTilSaksbehandling: boolean;
+  eksternId: string;
 }>

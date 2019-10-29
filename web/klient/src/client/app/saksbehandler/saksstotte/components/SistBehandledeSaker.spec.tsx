@@ -17,6 +17,7 @@ describe('<SistBehandledeSaker>', () => {
       behandlingId: 1,
       personnummer: '123456789',
       navn: 'Espen Utvikler',
+      system: 'FPSAK',
       behandlingstype: {
         kode: 'test',
         navn: 'test',
@@ -41,6 +42,7 @@ describe('<SistBehandledeSaker>', () => {
       behandlingId: 2,
       personnummer: '657643535',
       navn: 'Espen Solstråle',
+      system: 'FPSAK',
       behandlingstype: {
         kode: 'test',
         navn: 'test',

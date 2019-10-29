@@ -15,6 +15,7 @@ public class OppgaveDto {
     private Long behandlingId;
     private Long saksnummer;
     private String navn;
+    private String system;
     private String personnummer;
     private BehandlingType behandlingstype;
     private FagsakYtelseType fagsakYtelseType;
@@ -22,6 +23,7 @@ public class OppgaveDto {
     private Boolean erTilSaksbehandling;
     private LocalDateTime opprettetTidspunkt;
     private LocalDateTime behandlingsfrist;
+    private String eksternId;
 
     public OppgaveDto() {
         // Injiseres i test
@@ -49,6 +51,8 @@ public class OppgaveDto {
         this.status = OppgaveStatusDto.reservert(oppgave.getReservasjon(), reservertAvNavn, flyttetAvNavn);
         this.saksnummer = oppgave.getFagsakSaksnummer();
         this.behandlingId = oppgave.getBehandlingId();
+        this.eksternId = oppgave.getEksternId();
+        this.system = oppgave.getSystem();
         this.behandlingStatus = oppgave.getBehandlingStatus();
 
         this.fagsakYtelseType = oppgave.getFagsakYtelseType();
@@ -78,12 +82,20 @@ public class OppgaveDto {
         return behandlingId;
     }
 
+    public String getEksternId() {
+        return eksternId;
+    }
+
     public Long getSaksnummer() {
         return saksnummer;
     }
 
     public String getNavn() {
         return navn;
+    }
+
+    public String getSystem() {
+        return system;
     }
 
     public String getPersonnummer() {
@@ -121,8 +133,10 @@ public class OppgaveDto {
                 ", status=" + status.isErReservert() + //$NON-NLS-1$
                 ", saksnummer=" + saksnummer+ //$NON-NLS-1$
                 ", behandlingId=" + behandlingId+ //$NON-NLS-1$
+                ", eksternId=" + eksternId+ //$NON-NLS-1$
                 ", navn=" + navn + //$NON-NLS-1$
                 ", personnummer=" + personnummer + //$NON-NLS-1$
+                ", system=" + system + //$NON-NLS-1$
                 ", behandlingstype=" + behandlingstype + //$NON-NLS-1$
                 ", opprettetTidspunkt=" + opprettetTidspunkt + //$NON-NLS-1$
                 ", behandlingsfrist=" + behandlingsfrist + //$NON-NLS-1$
