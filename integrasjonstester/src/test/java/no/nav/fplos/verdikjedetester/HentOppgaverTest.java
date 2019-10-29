@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 
+import no.nav.fplos.kafkatjenester.*;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Rule;
@@ -38,10 +39,6 @@ import no.nav.foreldrepenger.loslager.repository.OppgaveRepositoryProviderImpl;
 import no.nav.fplos.ansatt.AnsattTjeneste;
 import no.nav.fplos.avdelingsleder.AvdelingslederTjeneste;
 import no.nav.fplos.foreldrepengerbehandling.ForeldrepengerBehandlingRestKlient;
-import no.nav.fplos.kafkatjenester.AksjonspunktMeldingConsumer;
-import no.nav.fplos.kafkatjenester.FpsakEventHandler;
-import no.nav.fplos.kafkatjenester.JsonOppgaveHandler;
-import no.nav.fplos.kafkatjenester.KafkaReader;
 import no.nav.fplos.oppgave.OppgaveTjeneste;
 import no.nav.fplos.oppgave.OppgaveTjenesteImpl;
 import no.nav.fplos.person.api.TpsTjeneste;
@@ -70,8 +67,9 @@ public class HentOppgaverTest {
 
     @Before
     public void before(){
-        kafkaReader = new KafkaReader(meldingConsumer, new JsonOppgaveHandler(oppgaveRepositoryProvider, foreldrepengerBehandlingRestKlient)
-                , new FpsakEventHandler(oppgaveRepositoryProvider, foreldrepengerBehandlingRestKlient),oppgaveRepositoryProvider);
+        kafkaReader = new KafkaReader(meldingConsumer,
+                new FpsakEventHandler(oppgaveRepositoryProvider, foreldrepengerBehandlingRestKlient),
+                new TilbakekrevingEventHandler(oppgaveRepositoryProvider),oppgaveRepositoryProvider);
         List<Avdeling> avdelings = repoRule.getRepository().hentAlle(Avdeling.class);
         avdelingDrammen = avdelings.stream().filter(avdeling -> Avdeling.AVDELING_DRAMMEN_ENHET.equals(avdeling.getAvdelingEnhet())).findFirst().orElseThrow();
         oppgaveFiltrering = OppgaveFiltrering.builder().medNavn("FRIST").medSortering(KøSortering.BEHANDLINGSFRIST).medAvdeling(avdelingDrammen).build();

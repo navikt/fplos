@@ -185,6 +185,7 @@ public class FpsakEventHandler {
 
     private Oppgave opprettOppgave(BehandlingProsessEventDto bpeDto, BehandlingFpsak fraFpsak, boolean prosesserFraAdmin) {
         return oppgaveRepository.opprettOppgave(Oppgave.builder()
+                .medSystem(bpeDto.getFagsystem())
                 .medBehandlingId(bpeDto.getBehandlingId())
                 .medFagsakSaksnummer(Long.valueOf(bpeDto.getSaksnummer()))
                 .medAktorId(Long.valueOf(bpeDto.getAktørId()))
