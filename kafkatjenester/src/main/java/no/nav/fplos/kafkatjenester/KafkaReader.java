@@ -6,7 +6,6 @@ import no.nav.foreldrepenger.loslager.oppgave.EventmottakFeillogg;
 import no.nav.foreldrepenger.loslager.oppgave.EventmottakStatus;
 import no.nav.foreldrepenger.loslager.repository.OppgaveRepository;
 import no.nav.foreldrepenger.loslager.repository.OppgaveRepositoryProvider;
-import no.nav.fplos.kafkatjenester.jsonoppgave.JsonOppgave;
 import no.nav.vedtak.felles.integrasjon.kafka.BehandlingProsessEventDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,7 +22,7 @@ public class KafkaReader {
     private static final Logger log = LoggerFactory.getLogger(KafkaReader.class);
     private OppgaveRepository  oppgaveRepository;
     private FpsakEventHandler fpsakEventHandler;
-    private JsonOppgaveHandler jsonOppgaveHandler;
+    private TilbakekrevingEventHandler tilbakekrevingEventHandler;
     private AksjonspunktMeldingConsumer meldingConsumer;
     private StringBuilder feilmelding;
 
@@ -33,11 +32,12 @@ public class KafkaReader {
 
     @Inject
     public KafkaReader(AksjonspunktMeldingConsumer meldingConsumer,
-                       JsonOppgaveHandler jsonOppgaveHandler, FpsakEventHandler fpsakEventHandler,
+                       FpsakEventHandler fpsakEventHandler,
+                       TilbakekrevingEventHandler tilbakekrevingEventHandler,
                        OppgaveRepositoryProvider oppgaveRepositoryProvider){
         this.meldingConsumer = meldingConsumer;
-        this.jsonOppgaveHandler = jsonOppgaveHandler;
         this.fpsakEventHandler = fpsakEventHandler;
+        this.tilbakekrevingEventHandler = tilbakekrevingEventHandler;
         this.oppgaveRepository = oppgaveRepositoryProvider.getOppgaveRepository();
     }
 
@@ -59,15 +59,18 @@ public class KafkaReader {
         try {
             BehandlingProsessEventDto behandlingProsessEventDto = deserialiser(melding, BehandlingProsessEventDto.class);
             if (behandlingProsessEventDto != null) {
-                fpsakEventHandler.prosesser(behandlingProsessEventDto);
-                return;
+                switch(behandlingProsessEventDto.getFagsystem()){
+                    case "FPSAK":
+                        fpsakEventHandler.prosesser(behandlingProsessEventDto);
+                        return;
+                    case "FPTILBAKE":
+                        tilbakekrevingEventHandler.prosesser(behandlingProsessEventDto);
+                        return;
+                    default:
+                        throw new Exception("Kan ikke behandle fagsystem");
+                }
             }
-            JsonOppgave jsonOppgave = deserialiser(melding, JsonOppgave.class);
-            if (jsonOppgave != null) {
-                log.info("Kaller JsonOppgaveHandler"); // antar JsonOppgave er legacy for de eldste meldingene
-                jsonOppgaveHandler.prosesser(jsonOppgave);
-                return;
-            }
+
             loggFeiletDeserialisering(melding);
             log.error("Klarte ikke å deserialisere meldingen");
         } catch (Exception tekniskException) {

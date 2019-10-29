@@ -34,10 +34,7 @@ import no.nav.fplos.avdelingsleder.AvdelingslederTjenesteImpl;
 import no.nav.fplos.domene.organisasjonsinformasjon.organisasjonressursenhet.impl.OrganisasjonRessursEnhetTjenesteImpl;
 import no.nav.fplos.foreldrepengerbehandling.BehandlingFpsak;
 import no.nav.fplos.foreldrepengerbehandling.ForeldrepengerBehandlingRestKlient;
-import no.nav.fplos.kafkatjenester.AksjonspunktMeldingConsumer;
-import no.nav.fplos.kafkatjenester.FpsakEventHandler;
-import no.nav.fplos.kafkatjenester.JsonOppgaveHandler;
-import no.nav.fplos.kafkatjenester.KafkaReader;
+import no.nav.fplos.kafkatjenester.*;
 import no.nav.fplos.oppgave.OppgaveTjenesteImpl;
 import no.nav.fplos.person.api.TpsTjeneste;
 import no.nav.fplos.verdikjedetester.mock.MeldingsTestInfo;
@@ -99,8 +96,9 @@ public class VerdikjedetestAvdelingslederTest {
 
     @Before
     public void before(){
-        kafkaReader = new KafkaReader(meldingConsumer, new JsonOppgaveHandler(oppgaveRepositoryProvider, foreldrepengerBehandlingRestKlient)
-                , new FpsakEventHandler(oppgaveRepositoryProvider, foreldrepengerBehandlingRestKlient),oppgaveRepositoryProvider);
+        kafkaReader = new KafkaReader(meldingConsumer,
+                new FpsakEventHandler(oppgaveRepositoryProvider, foreldrepengerBehandlingRestKlient),
+                new TilbakekrevingEventHandler(oppgaveRepositoryProvider),oppgaveRepositoryProvider);
         entityManager.flush();
         avdelingDrammen = avdelingslederRestTjeneste.hentAvdelinger().stream()
                 .filter(avdeling -> AVDELING_DRAMMEN.equals(avdeling.getAvdelingEnhet())).findFirst().orElseThrow();

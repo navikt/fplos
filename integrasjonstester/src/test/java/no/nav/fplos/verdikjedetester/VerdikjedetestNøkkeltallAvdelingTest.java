@@ -9,10 +9,7 @@ import no.nav.foreldrepenger.loslager.repository.OppgaveRepositoryProviderImpl;
 import no.nav.fplos.foreldrepengerbehandling.BehandlingFpsak;
 import no.nav.fplos.foreldrepengerbehandling.ForeldrepengerBehandlingRestKlient;
 import no.nav.fplos.foreldrepengerbehandling.dto.aksjonspunkt.AksjonspunktDto;
-import no.nav.fplos.kafkatjenester.AksjonspunktMeldingConsumer;
-import no.nav.fplos.kafkatjenester.FpsakEventHandler;
-import no.nav.fplos.kafkatjenester.JsonOppgaveHandler;
-import no.nav.fplos.kafkatjenester.KafkaReader;
+import no.nav.fplos.kafkatjenester.*;
 import no.nav.fplos.statistikk.StatistikkTjeneste;
 import no.nav.fplos.statistikk.StatistikkTjenesteImpl;
 import no.nav.fplos.verdikjedetester.mock.AksjonspunkteventTestInfo;
@@ -56,8 +53,8 @@ public class VerdikjedetestNøkkeltallAvdelingTest {
     @Before
     public void before() {
         kafkaReader = new KafkaReader(meldingConsumer,
-                new JsonOppgaveHandler(oppgaveRepositoryProvider, foreldrepengerBehandlingRestKlient),
                 new FpsakEventHandler(oppgaveRepositoryProvider, foreldrepengerBehandlingRestKlient),
+                new TilbakekrevingEventHandler(oppgaveRepositoryProvider),
                 oppgaveRepositoryProvider);
     }
 
