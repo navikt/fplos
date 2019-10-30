@@ -50,7 +50,6 @@ import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -70,6 +69,7 @@ public class VerdikjedetestEventhåndteringSaksbehandlerTest {
 
     @Rule
     public UnittestRepositoryRule repoRule = new UnittestRepositoryRule();
+    private JsonOppgaveHandler jsonOppgaveHandler = new JsonOppgaveHandler();
     private EntityManager entityManager = repoRule.getEntityManager();
     private OppgaveRepositoryProvider oppgaveRepositoryProvider = new OppgaveRepositoryProviderImpl(entityManager );
     private TpsTjeneste tpsTjeneste = mock(TpsTjeneste.class);
@@ -99,7 +99,7 @@ public class VerdikjedetestEventhåndteringSaksbehandlerTest {
         kafkaReader = new KafkaReader(meldingConsumer,
                 new FpsakEventHandler(oppgaveRepositoryProvider, foreldrepengerBehandlingRestKlient),
                 new TilbakekrevingEventHandler(oppgaveRepositoryProvider),
-                oppgaveRepositoryProvider);
+                oppgaveRepositoryProvider, jsonOppgaveHandler);
         avdelingDrammen = avdelingslederRestTjeneste.hentAvdelinger().stream()
                 .filter(avdeling -> AVDELING_DRAMMEN.equals(avdeling.getAvdelingEnhet()))
                 .findFirst().orElseThrow();
@@ -134,7 +134,7 @@ public class VerdikjedetestEventhåndteringSaksbehandlerTest {
         assertThat(verifiserAtErReservert(melding).getStatus().getReservertTilTidspunkt().until(LocalDateTime.now().plusHours(2), MINUTES)).isLessThan(2L);
 
         oppgaveRestTjeneste.forlengOppgaveReservasjon(new OppgaveIdDto(oppgaveDto.getId()));
-        
+
         assertThat(verifiserAtErReservert(melding).getStatus().getReservertTilTidspunkt().until(LocalDateTime.now().plusHours(24), MINUTES)).isLessThan(2L);
 
         oppgaveRestTjeneste.opphevOppgaveReservasjon(new OppgaveOpphevingDto(new OppgaveIdDto(oppgaveDto.getId()),"Begrunnelse"));

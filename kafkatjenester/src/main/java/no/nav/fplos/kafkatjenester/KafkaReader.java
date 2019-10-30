@@ -6,6 +6,7 @@ import no.nav.foreldrepenger.loslager.oppgave.EventmottakFeillogg;
 import no.nav.foreldrepenger.loslager.oppgave.EventmottakStatus;
 import no.nav.foreldrepenger.loslager.repository.OppgaveRepository;
 import no.nav.foreldrepenger.loslager.repository.OppgaveRepositoryProvider;
+import no.nav.fplos.kafkatjenester.jsonoppgave.JsonOppgave;
 import no.nav.vedtak.felles.integrasjon.kafka.BehandlingProsessEventDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,6 +26,7 @@ public class KafkaReader {
     private TilbakekrevingEventHandler tilbakekrevingEventHandler;
     private AksjonspunktMeldingConsumer meldingConsumer;
     private StringBuilder feilmelding;
+    private JsonOppgaveHandler jsonOppgaveHandler;
 
     public KafkaReader(){
         //to make proxyable
@@ -34,11 +36,12 @@ public class KafkaReader {
     public KafkaReader(AksjonspunktMeldingConsumer meldingConsumer,
                        FpsakEventHandler fpsakEventHandler,
                        TilbakekrevingEventHandler tilbakekrevingEventHandler,
-                       OppgaveRepositoryProvider oppgaveRepositoryProvider){
+                       OppgaveRepositoryProvider oppgaveRepositoryProvider, JsonOppgaveHandler jsonOppgaveHandler){
         this.meldingConsumer = meldingConsumer;
         this.fpsakEventHandler = fpsakEventHandler;
         this.tilbakekrevingEventHandler = tilbakekrevingEventHandler;
         this.oppgaveRepository = oppgaveRepositoryProvider.getOppgaveRepository();
+        this.jsonOppgaveHandler = jsonOppgaveHandler;
     }
 
     public void hentOgLagreMeldingene() {
@@ -67,9 +70,13 @@ public class KafkaReader {
                         tilbakekrevingEventHandler.prosesser(behandlingProsessEventDto);
                         return;
                     default:
-                        throw new RuntimeException("BehandlingProsessEventDto har ikke gyldig verdi for fagsystem. Fagsystem " + behandlingProsessEventDto.getFagsystem() + " er ikke støttet i fplos");
+                        log.warn("BehandlingProsessEventDto har ikke gyldig verdi for fagsystem. Fagsystem {} er ikke støttet i fplos",
+                                behandlingProsessEventDto.getFagsystem());
                 }
             }
+
+            JsonOppgave oppgaveJson = deserialiser(melding, JsonOppgave.class);
+            if (oppgaveJson != null) { jsonOppgaveHandler.prosesser(oppgaveJson); }
 
             loggFeiletDeserialisering(melding);
             log.error("Klarte ikke å deserialisere meldingen");
