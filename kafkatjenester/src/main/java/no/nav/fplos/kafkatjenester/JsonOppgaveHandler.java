@@ -28,7 +28,7 @@ public class JsonOppgaveHandler {
 
     @Inject
     public JsonOppgaveHandler(OppgaveRepositoryProvider oppgaveRepositoryProvider,
-                                ForeldrepengerBehandlingRestKlient foreldrepengerBehandlingRestKlient){
+                              ForeldrepengerBehandlingRestKlient foreldrepengerBehandlingRestKlient){
         this.oppgaveRepository = oppgaveRepositoryProvider.getOppgaveRepository();
         this.foreldrepengerBehandlingRestKlient = foreldrepengerBehandlingRestKlient;
     }

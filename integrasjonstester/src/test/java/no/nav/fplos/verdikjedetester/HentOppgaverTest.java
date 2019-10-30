@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 
+import no.nav.fplos.kafkatjenester.JsonOppgaveHandler;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Rule;
@@ -67,12 +68,13 @@ public class HentOppgaverTest {
     private Avdeling avdelingDrammen = null;
     private OppgaveFiltrering oppgaveFiltrering;
     private ForeldrepengerBehandlingRestKlient foreldrepengerBehandlingRestKlient = mock(ForeldrepengerBehandlingRestKlient.class);
+    private JsonOppgaveHandler jsonOppgaveHandler = new JsonOppgaveHandler();
 
     @Before
     public void before(){
         kafkaReader = new KafkaReader(meldingConsumer,
                 new FpsakEventHandler(oppgaveRepositoryProvider, foreldrepengerBehandlingRestKlient),
-                new TilbakekrevingEventHandler(oppgaveRepositoryProvider),oppgaveRepositoryProvider);
+                new TilbakekrevingEventHandler(oppgaveRepositoryProvider),oppgaveRepositoryProvider, jsonOppgaveHandler);
         List<Avdeling> avdelings = repoRule.getRepository().hentAlle(Avdeling.class);
         avdelingDrammen = avdelings.stream().filter(avdeling -> Avdeling.AVDELING_DRAMMEN_ENHET.equals(avdeling.getAvdelingEnhet())).findFirst().orElseThrow();
         oppgaveFiltrering = OppgaveFiltrering.builder().medNavn("FRIST").medSortering(KøSortering.BEHANDLINGSFRIST).medAvdeling(avdelingDrammen).build();

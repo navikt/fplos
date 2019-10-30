@@ -37,6 +37,7 @@ import no.nav.fplos.foreldrepengerbehandling.dto.aksjonspunkt.AksjonspunktDto;
 
 import no.nav.fplos.kafkatjenester.AksjonspunktMeldingConsumer;
 import no.nav.fplos.kafkatjenester.FpsakEventHandler;
+import no.nav.fplos.kafkatjenester.JsonOppgaveHandler;
 import no.nav.fplos.kafkatjenester.KafkaReader;
 import no.nav.fplos.kafkatjenester.TilbakekrevingEventHandler;
 import no.nav.fplos.oppgave.OppgaveTjenesteImpl;
@@ -71,6 +72,7 @@ public class VerdikjedetestEventhåndteringAvdelingslederTest {
 
     @Rule
     public UnittestRepositoryRule repoRule = new UnittestRepositoryRule();
+    private JsonOppgaveHandler jsonOppgaveHandler = new JsonOppgaveHandler();
     private EntityManager entityManager = repoRule.getEntityManager();
     private OppgaveRepositoryProvider oppgaveRepositoryProvider = new OppgaveRepositoryProviderImpl(entityManager );
     private TpsTjeneste tpsTjeneste = mock(TpsTjeneste.class);
@@ -100,11 +102,12 @@ public class VerdikjedetestEventhåndteringAvdelingslederTest {
     private String SAKSBEHANDLER_IDENT_2 = "IDENT2";
     private LocalDateTime aksjonspunktFrist = null;
 
+
     @Before
     public void before(){
         kafkaReader = new KafkaReader(meldingConsumer,
                 new FpsakEventHandler(oppgaveRepositoryProvider, foreldrepengerBehandlingRestKlientMock),
-                new TilbakekrevingEventHandler(oppgaveRepositoryProvider),oppgaveRepositoryProvider);
+                new TilbakekrevingEventHandler(oppgaveRepositoryProvider),oppgaveRepositoryProvider, jsonOppgaveHandler);
         entityManager.flush();
         avdelingDrammen = avdelingslederRestTjeneste.hentAvdelinger().stream()
                 .filter(avdeling -> AVDELING_DRAMMEN.equals(avdeling.getAvdelingEnhet())).findFirst().orElseThrow();

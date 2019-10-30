@@ -32,7 +32,8 @@ public class KafkaReaderTest {
     private ForeldrepengerBehandlingRestKlient foreldrepengerBehandlingRestKlient = mock(ForeldrepengerBehandlingRestKlient.class);
     private FpsakEventHandler fpsakEventHandler = new FpsakEventHandler(oppgaveRepositoryProvider, foreldrepengerBehandlingRestKlient);
     private TilbakekrevingEventHandler tilbakekrevingEventHandler = new TilbakekrevingEventHandler(oppgaveRepositoryProvider);
-    private KafkaReader kafkaReader = new KafkaReader(null, fpsakEventHandler, tilbakekrevingEventHandler, oppgaveRepositoryProvider);
+    private JsonOppgaveHandler jsonOppgaveHandler = new JsonOppgaveHandler();
+    private KafkaReader kafkaReader = new KafkaReader(null, fpsakEventHandler, tilbakekrevingEventHandler, oppgaveRepositoryProvider, jsonOppgaveHandler);
     private FpsakEventHandlerTest fpsakEventHandlerTest = new FpsakEventHandlerTest();
     private ObjectMapper objectMapper = new ObjectMapper();
 
