@@ -1,9 +1,6 @@
 package no.nav.fplos.verdikjedetester.mock;
 
-import static java.time.temporal.ChronoUnit.MILLIS;
 import static org.assertj.core.api.Assertions.assertThat;
-
-import java.time.LocalDateTime;
 
 import no.nav.foreldrepenger.loslager.oppgave.BehandlingType;
 import no.nav.foreldrepenger.los.web.app.tjenester.felles.dto.OppgaveDto;
@@ -11,11 +8,10 @@ import no.nav.foreldrepenger.los.web.app.tjenester.felles.dto.OppgaveDto;
 public class MeldingsTestInfo {
 
     private final Long behandlingId;
-    private final Long fagsakId;
-    private final LocalDateTime behandlingsfrist;
-    private final Boolean aktiv;
-    private final BehandlingType behandlingType;
-    private String avdeling;
+    private final String saksnummer;
+    private final String fagsystem = "FPSAK";
+    private final String behandlingTypeKode;
+    private String behandlendeEnhet;
     private String fagsakYtelseType;
 
     private final String DEFAULT = "DEFAULT_TEST";
@@ -23,20 +19,18 @@ public class MeldingsTestInfo {
     private static Long DEFAULT_ID_COUNTER = -1L;
 
 
-    MeldingsTestInfo(Long behandlingId, Long fagsakId, LocalDateTime behandlingsfrist, Boolean aktiv, BehandlingType behandlingType) {
+    MeldingsTestInfo(Long behandlingId, String saksnummer, BehandlingType behandlingTypeKode) {
         this.behandlingId = behandlingId;
-        this.fagsakId = fagsakId;
-        this.behandlingsfrist = behandlingsfrist.truncatedTo(MILLIS);
-        this.aktiv = aktiv;
-        this.behandlingType = behandlingType;
+        this.saksnummer = saksnummer;
+        this.behandlingTypeKode = behandlingTypeKode.getKode();
     }
 
     MeldingsTestInfo(Long behandlingId){
         this.behandlingId = behandlingId;
-        this.fagsakId = hentNesteId();
-        behandlingsfrist = LocalDateTime.now().truncatedTo(MILLIS);
-        aktiv = Boolean.TRUE;
-        behandlingType = BehandlingType.FØRSTEGANGSSØKNAD;
+        this.saksnummer = hentNesteId().toString();
+        //behandlingsfrist = LocalDateTime.now().truncatedTo(MILLIS);
+        //aktiv = Boolean.TRUE;
+        behandlingTypeKode = BehandlingType.FØRSTEGANGSSØKNAD.getKode();
     }
 
     private Long hentNesteId() {
@@ -47,32 +41,28 @@ public class MeldingsTestInfo {
 
 
     String tilmeldingstekst(){
-        return "{ \"behandlingId\": "+behandlingId+", \"fagsakId\": "+fagsakId+",\"behandlingsfrist\": \"" + behandlingsfrist + "\",\"aktiv\": \""+aktiv.toString()+"\", \"behandlingType\":\""+behandlingType.getKode()+"\"}";
+        return "{ \"behandlingId\": "+behandlingId +
+                ", \"fagsystem\": "+  "\"" + fagsystem + "\"" +
+                ", \"saksnummer\": "+saksnummer+
+                //",\"behandlingsfrist\": \"" + behandlingsfrist +
+                //"\",\"aktiv\": \""+aktiv.toString()+
+                ", \"behandlingTypeKode\":\"" + behandlingTypeKode + "\"}";
     }
 
     public Long getBehandlingId() {
         return behandlingId;
     }
 
-    public Long getFagsakId() {
-        return fagsakId;
+    public String getFagsakId() {
+        return saksnummer;
     }
 
-    public LocalDateTime getBehandlingsfrist() {
-        return behandlingsfrist;
-    }
-
-    public Boolean getAktiv() {
-        return aktiv;
-    }
-
-    public BehandlingType getBehandlingType() {
-        return behandlingType;
+    public String getBehandlingTypeKode() {
+        return behandlingTypeKode;
     }
 
     public void sammenligne(OppgaveDto oppgave) {
         assertThat(oppgave.getBehandlingId()).isEqualTo(behandlingId);
-        assertThat(oppgave.getBehandlingsfrist()).isEqualTo(behandlingsfrist);
-        assertThat(oppgave.getBehandlingstype()).isEqualTo(behandlingType);
+        assertThat(oppgave.getBehandlingstype()).isEqualTo(behandlingTypeKode);
     }
 }

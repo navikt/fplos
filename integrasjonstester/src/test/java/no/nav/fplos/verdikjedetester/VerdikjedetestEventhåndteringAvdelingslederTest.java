@@ -34,7 +34,11 @@ import no.nav.fplos.domene.organisasjonsinformasjon.organisasjonressursenhet.imp
 import no.nav.fplos.foreldrepengerbehandling.BehandlingFpsak;
 import no.nav.fplos.foreldrepengerbehandling.ForeldrepengerBehandlingRestKlient;
 import no.nav.fplos.foreldrepengerbehandling.dto.aksjonspunkt.AksjonspunktDto;
-import no.nav.fplos.kafkatjenester.*;
+
+import no.nav.fplos.kafkatjenester.AksjonspunktMeldingConsumer;
+import no.nav.fplos.kafkatjenester.FpsakEventHandler;
+import no.nav.fplos.kafkatjenester.KafkaReader;
+import no.nav.fplos.kafkatjenester.TilbakekrevingEventHandler;
 import no.nav.fplos.oppgave.OppgaveTjenesteImpl;
 import no.nav.fplos.person.api.TpsTjeneste;
 import no.nav.fplos.verdikjedetester.mock.AksjonspunkteventTestInfo;

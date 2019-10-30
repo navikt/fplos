@@ -31,7 +31,10 @@ import no.nav.fplos.avdelingsleder.AvdelingslederTjenesteImpl;
 import no.nav.fplos.domene.organisasjonsinformasjon.organisasjonressursenhet.impl.OrganisasjonRessursEnhetTjenesteImpl;
 import no.nav.fplos.foreldrepengerbehandling.BehandlingFpsak;
 import no.nav.fplos.foreldrepengerbehandling.ForeldrepengerBehandlingRestKlient;
-import no.nav.fplos.kafkatjenester.*;
+import no.nav.fplos.kafkatjenester.AksjonspunktMeldingConsumer;
+import no.nav.fplos.kafkatjenester.FpsakEventHandler;
+import no.nav.fplos.kafkatjenester.KafkaReader;
+import no.nav.fplos.kafkatjenester.TilbakekrevingEventHandler;
 import no.nav.fplos.oppgave.OppgaveTjenesteImpl;
 import no.nav.fplos.person.api.TpsTjeneste;
 import no.nav.fplos.verdikjedetester.mock.MeldingsTestInfo;
@@ -119,7 +122,7 @@ public class VerdikjedetestSaksbehandlerTest {
         assertThat(verifiserAtErReservert(melding).getStatus().getReservertTilTidspunkt().until(LocalDateTime.now().plusHours(2), MINUTES)).isLessThan(2L);
 
         oppgaveRestTjeneste.forlengOppgaveReservasjon(new OppgaveIdDto(oppgaveDto.getId()));
-        
+
         assertThat(verifiserAtErReservert(melding).getStatus().getReservertTilTidspunkt().until(LocalDateTime.now().plusHours(24), MINUTES)).isLessThan(2L);
 
         oppgaveRestTjeneste.opphevOppgaveReservasjon(new OppgaveOpphevingDto(new OppgaveIdDto(oppgaveDto.getId()),"Begrunnelse"));

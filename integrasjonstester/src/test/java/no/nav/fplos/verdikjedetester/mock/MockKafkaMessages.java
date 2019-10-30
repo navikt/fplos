@@ -13,13 +13,13 @@ public class MockKafkaMessages {
     static List<String> messages = new ArrayList<>();
 
     public static Map<Long,MeldingsTestInfo> førstegangsbehandlingMeldinger = Map.of(
-            1L,new MeldingsTestInfo(1L,1L, LocalDateTime.now(),true, BehandlingType.FØRSTEGANGSSØKNAD),
-            2L, new MeldingsTestInfo(2L,2L, LocalDateTime.now(),true,BehandlingType.FØRSTEGANGSSØKNAD),
-            3L,new MeldingsTestInfo(3L,3L, LocalDateTime.now(),true,BehandlingType.FØRSTEGANGSSØKNAD) );
+            1L,new MeldingsTestInfo(1L,"1", BehandlingType.FØRSTEGANGSSØKNAD),
+            2L, new MeldingsTestInfo(2L,"2", BehandlingType.FØRSTEGANGSSØKNAD),
+            3L,new MeldingsTestInfo(3L,"3", BehandlingType.FØRSTEGANGSSØKNAD) );
 
     public static Map<Long,MeldingsTestInfo> innsynMeldinger = Map.of(
-            4L,new MeldingsTestInfo(4L,4L, LocalDateTime.now(),true, BehandlingType.INNSYN),
-            5L, new MeldingsTestInfo(5L,5L, LocalDateTime.now(),true,BehandlingType.INNSYN));
+            4L,new MeldingsTestInfo(4L,"4", BehandlingType.INNSYN),
+            5L, new MeldingsTestInfo(5L,"5", BehandlingType.INNSYN));
 
 
     public static Map<Long,MeldingsTestInfo> defaultførstegangsbehandlingMelding = Map.of(
@@ -38,7 +38,7 @@ public class MockKafkaMessages {
     }
 
     public static void sendAvsluttetFørstegangsbehandlingOppgave(Long behandlingId){
-        MeldingsTestInfo meldingsTestInfo = new MeldingsTestInfo(behandlingId, 1L,  LocalDateTime.now(), false, BehandlingType.FØRSTEGANGSSØKNAD);
+        MeldingsTestInfo meldingsTestInfo = new MeldingsTestInfo(behandlingId, "1", BehandlingType.FØRSTEGANGSSØKNAD);
         messages.add(meldingsTestInfo.tilmeldingstekst());
     }
 }

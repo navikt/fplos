@@ -12,7 +12,6 @@ import java.util.stream.Collectors;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 
-import no.nav.fplos.kafkatjenester.*;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Rule;
@@ -43,6 +42,10 @@ import no.nav.fplos.oppgave.OppgaveTjeneste;
 import no.nav.fplos.oppgave.OppgaveTjenesteImpl;
 import no.nav.fplos.person.api.TpsTjeneste;
 import no.nav.fplos.verdikjedetester.mock.MockKafkaMessages;
+import no.nav.fplos.kafkatjenester.AksjonspunktMeldingConsumer;
+import no.nav.fplos.kafkatjenester.FpsakEventHandler;
+import no.nav.fplos.kafkatjenester.KafkaReader;
+import no.nav.fplos.kafkatjenester.TilbakekrevingEventHandler;
 import no.nav.vedtak.felles.testutilities.cdi.CdiRunner;
 
 @RunWith(CdiRunner.class)
