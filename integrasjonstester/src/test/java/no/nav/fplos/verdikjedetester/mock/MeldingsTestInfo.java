@@ -2,8 +2,14 @@ package no.nav.fplos.verdikjedetester.mock;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import no.nav.foreldrepenger.loslager.oppgave.BehandlingType;
 import no.nav.foreldrepenger.los.web.app.tjenester.felles.dto.OppgaveDto;
+
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Collections;
+import java.util.Map;
 
 public class MeldingsTestInfo {
 
@@ -13,6 +19,9 @@ public class MeldingsTestInfo {
     private final String behandlingTypeKode;
     private String behandlendeEnhet;
     private String fagsakYtelseType;
+    private String opprettetBehandling = LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+    private Map<String, String> aksjonspunktKoderMedStatusListe = Map.of("7001", "OPPR");
+
 
     private final String DEFAULT = "DEFAULT_TEST";
     //Der id-er ikke har noe å si genererer vi negative ID-er.
@@ -43,6 +52,8 @@ public class MeldingsTestInfo {
     String tilmeldingstekst(){
         return "{ \"behandlingId\": "+behandlingId +
                 ", \"fagsystem\": "+  "\"" + fagsystem + "\"" +
+                ", \"opprettetBehandling\": "+  "\"" + opprettetBehandling + "\"" +
+                ", \"aksjonspunktKoderMedStatusListe\": "+  "{\"5015\":\"OPPR\"}" +
                 ", \"saksnummer\": "+saksnummer+
                 //",\"behandlingsfrist\": \"" + behandlingsfrist +
                 //"\",\"aktiv\": \""+aktiv.toString()+
@@ -59,6 +70,30 @@ public class MeldingsTestInfo {
 
     public String getBehandlingTypeKode() {
         return behandlingTypeKode;
+    }
+
+    public String getSaksnummer() {
+        return saksnummer;
+    }
+
+    public String getFagsystem() {
+        return fagsystem;
+    }
+
+    public String getBehandlendeEnhet() {
+        return behandlendeEnhet;
+    }
+
+    public String getFagsakYtelseType() {
+        return fagsakYtelseType;
+    }
+
+    public String getOpprettetBehandling() {
+        return opprettetBehandling;
+    }
+
+    public Map<String, String> getAksjonspunktKoderMedStatusListe() {
+        return aksjonspunktKoderMedStatusListe;
     }
 
     public void sammenligne(OppgaveDto oppgave) {

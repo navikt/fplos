@@ -35,6 +35,7 @@ import no.nav.fplos.domene.organisasjonsinformasjon.organisasjonressursenhet.imp
 import no.nav.fplos.foreldrepengerbehandling.BehandlingFpsak;
 import no.nav.fplos.foreldrepengerbehandling.ForeldrepengerBehandlingRestKlient;
 
+import no.nav.fplos.foreldrepengerbehandling.dto.aksjonspunkt.AksjonspunktDto;
 import no.nav.fplos.kafkatjenester.AksjonspunktMeldingConsumer;
 import no.nav.fplos.kafkatjenester.FpsakEventHandler;
 import no.nav.fplos.kafkatjenester.KafkaReader;
@@ -244,6 +245,7 @@ public class VerdikjedetestAvdelingslederTest {
 
     private BehandlingFpsak lagBehandlingDto(){
         return BehandlingFpsak.builder()
+                .medAksjonspunkter(List.of(new AksjonspunktDto.Builder().medDefinisjon("5080").medStatus("AVBR").build()))
                 .medBehandlendeEnhetNavn("NAV")
                 .medStatus("-")
                 .build();
