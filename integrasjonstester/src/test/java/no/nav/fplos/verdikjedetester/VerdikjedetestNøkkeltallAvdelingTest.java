@@ -15,7 +15,6 @@ import no.nav.fplos.kafkatjenester.FpsakEventHandler;
 import no.nav.fplos.kafkatjenester.JsonOppgaveHandler;
 import no.nav.fplos.kafkatjenester.KafkaReader;
 import no.nav.fplos.kafkatjenester.TilbakekrevingEventHandler;
-import no.nav.fplos.kafkatjenester.jsonoppgave.JsonOppgave;
 import no.nav.fplos.statistikk.StatistikkTjeneste;
 import no.nav.fplos.statistikk.StatistikkTjenesteImpl;
 import no.nav.fplos.verdikjedetester.mock.AksjonspunkteventTestInfo;
