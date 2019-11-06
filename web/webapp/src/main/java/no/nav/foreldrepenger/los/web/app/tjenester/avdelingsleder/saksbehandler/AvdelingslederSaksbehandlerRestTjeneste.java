@@ -4,6 +4,7 @@ import static no.nav.vedtak.sikkerhet.abac.BeskyttetRessursActionAttributt.READ;
 import static no.nav.vedtak.sikkerhet.abac.BeskyttetRessursResourceAttributt.OPPGAVESTYRING_AVDELINGENHET;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.enterprise.context.RequestScoped;
@@ -34,8 +35,6 @@ import no.nav.vedtak.felles.jpa.Transaction;
 import no.nav.vedtak.sikkerhet.abac.BeskyttetRessurs;
 import no.nav.vedtak.sikkerhet.abac.BeskyttetRessursActionAttributt;
 import no.nav.vedtak.sikkerhet.abac.BeskyttetRessursResourceAttributt;
-
-import no.nav.foreldrepenger.los.web.app.util.StringUtils;
 
 @Api(tags = "Avdelingsleder")
 @Path("avdelingsleder/saksbehandlere")
@@ -112,7 +111,9 @@ public class AvdelingslederSaksbehandlerRestTjeneste {
     }
 
     private String hentSaksbehandlersNavn(SaksbehandlerBrukerIdentDto brukerIdentDto) {
-        return avdelingslederSaksbehandlerTjeneste.hentSaksbehandlerNavn(brukerIdentDto.getVerdi().toUpperCase());
+        return Optional.ofNullable(avdelingslederSaksbehandlerTjeneste.hentSaksbehandlerNavn(brukerIdentDto.getVerdi()))
+                .map(String::toUpperCase)
+                .orElse("UKJENT SAKSBEHANDLER");
     }
 
     private List<String> tilgjengeligeEnheterFor(SaksbehandlerBrukerIdentDto brukerIdent) {
