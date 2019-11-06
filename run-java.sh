@@ -1,10 +1,10 @@
 #!/usr/bin/env sh
 set -eu
 
-export JAVA_OPTS="${JAVA_OPTS:-} -Djava.security.egd=file:/dev/./urandom"
+export JAVA_OPTS="${JAVA_OPTS:-} -Xmx1024m -Xms128m -Djava.security.egd=file:/dev/./urandom"
 
 # hvor skal gc log, heap dump etc kunne skrives til med Docker?
-export todo_JAVA_OPTS="${JAVA_OPTS}  -Xmx1024m -Xms128m -XX:ErrorFile=./hs_err_pid<pid>.log -XX:HeapDumpPath=./java_pid<pid>.hprof -XX:-HeapDumpOnOutOfMemoryError -Xloggc:<filename>"
+export todo_JAVA_OPTS="${JAVA_OPTS} -XX:ErrorFile=./hs_err_pid<pid>.log -XX:HeapDumpPath=./java_pid<pid>.hprof -XX:-HeapDumpOnOutOfMemoryError -Xloggc:<filename>"
 export STARTUP_CLASS=${STARTUP_CLASS:-"no.nav.foreldrepenger.los.web.server.jetty.JettyServer"}
 export LOGBACK_CONFIG=${LOGBACK_CONFIG:-"./conf/logback.xml"}
 
