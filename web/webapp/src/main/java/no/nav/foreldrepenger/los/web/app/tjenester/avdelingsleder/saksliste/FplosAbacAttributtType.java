@@ -7,6 +7,12 @@ public enum FplosAbacAttributtType implements AbacAttributtType {
     OPPGAVESTYRING_ENHET,
     SAKER_MED_FNR;
 
+    private final String sporingsloggEksternKode;
+
+    FplosAbacAttributtType() {
+        sporingsloggEksternKode = "UNDEFINED_" + name();
+    }
+
     @Override
     public boolean getMaskerOutput() {
         return false;
@@ -19,6 +25,6 @@ public enum FplosAbacAttributtType implements AbacAttributtType {
 
     @Override
     public String getSporingsloggKode() {
-        return null;
+        return sporingsloggEksternKode;
     }
 }
