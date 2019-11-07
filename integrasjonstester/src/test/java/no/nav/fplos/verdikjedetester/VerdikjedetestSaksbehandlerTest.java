@@ -76,7 +76,6 @@ public class VerdikjedetestSaksbehandlerTest {
     private AvdelingslederSaksbehandlerRestTjeneste avdelingslederSaksbehandlerRestTjeneste =
             new AvdelingslederSaksbehandlerRestTjeneste(new AvdelingslederSaksbehandlerTjenesteImpl(oppgaveRepositoryProvider, new OrganisasjonRessursEnhetTjenesteImpl()));
     private ForeldrepengerBehandlingRestKlient foreldrepengerBehandlingRestKlient = mock(ForeldrepengerBehandlingRestKlient.class);
-    private JsonOppgaveHandler jsonOppgaveHandler = new JsonOppgaveHandler();
 
     @Inject
     private AksjonspunktMeldingConsumer meldingConsumer;
@@ -90,7 +89,8 @@ public class VerdikjedetestSaksbehandlerTest {
     public void before(){
         kafkaReader = new KafkaReader(meldingConsumer,
                 new FpsakEventHandler(oppgaveRepositoryProvider, foreldrepengerBehandlingRestKlient),
-                new TilbakekrevingEventHandler(oppgaveRepositoryProvider), oppgaveRepositoryProvider, jsonOppgaveHandler);
+                new TilbakekrevingEventHandler(oppgaveRepositoryProvider), oppgaveRepositoryProvider,
+                new JsonOppgaveHandler(oppgaveRepositoryProvider, foreldrepengerBehandlingRestKlient));
         avdelingDrammen = avdelingslederRestTjeneste.hentAvdelinger().stream()
                 .filter(avdeling -> AVDELING_DRAMMEN.equals(avdeling.getAvdelingEnhet())).findFirst().orElseThrow();
         sakslisteDrammenFPFørstegangsIdDto = avdelingslederSakslisteRestTjeneste.opprettNySaksliste(new AvdelingEnhetDto(avdelingDrammen.getAvdelingEnhet()));
