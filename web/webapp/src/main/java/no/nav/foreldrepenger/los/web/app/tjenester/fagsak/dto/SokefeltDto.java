@@ -1,10 +1,8 @@
 package no.nav.foreldrepenger.los.web.app.tjenester.fagsak.dto;
 
 import no.nav.foreldrepenger.domene.typer.Saksnummer;
-import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.saksliste.FplosAbacAttributtType;
 import no.nav.vedtak.sikkerhet.abac.AbacDataAttributter;
 import no.nav.vedtak.sikkerhet.abac.AbacDto;
-import no.nav.vedtak.sikkerhet.abac.StandardAbacAttributtType;
 
 import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotNull;
@@ -36,10 +34,10 @@ public class SokefeltDto implements AbacDto {
         AbacDataAttributter attributter = AbacDataAttributter.opprett();
         if (searchString.length() == 11 /* guess - fødselsnummer */) {
             attributter
-                    .leggTil(StandardAbacAttributtType.FNR, searchString)
-                    .leggTil(FplosAbacAttributtType.SAKER_MED_FNR, searchString);
+                    .leggTilFødselsnummer(searchString)
+                    .leggTilFnrForSøkeEtterSaker(searchString);
         } else {
-            attributter.leggTil(StandardAbacAttributtType.SAKSNUMMER, searchString);
+            attributter.leggTilSaksnummer(searchString);
         }
         return attributter;
     }

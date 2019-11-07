@@ -1,10 +1,8 @@
 package no.nav.foreldrepenger.web.app.tjenester.fagsak.dto;
 
 import no.nav.foreldrepenger.domene.typer.Saksnummer;
-import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.saksliste.FplosAbacAttributtType;
 import no.nav.foreldrepenger.los.web.app.tjenester.fagsak.dto.SokefeltDto;
 import no.nav.vedtak.sikkerhet.abac.AbacDataAttributter;
-import no.nav.vedtak.sikkerhet.abac.StandardAbacAttributtType;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -17,8 +15,8 @@ public class SokefeltDtoTest {
         SokefeltDto dto = new SokefeltDto(fnr);
 
         assertThat(dto.abacAttributter()).isEqualTo(AbacDataAttributter.opprett()
-                .leggTil(StandardAbacAttributtType.FNR, fnr)
-                .leggTil(FplosAbacAttributtType.SAKER_MED_FNR, fnr)
+            .leggTilFødselsnummer(fnr)
+            .leggTilFnrForSøkeEtterSaker(fnr)
         );
     }
 
@@ -27,6 +25,6 @@ public class SokefeltDtoTest {
         Saksnummer saksnummer  = new Saksnummer("123123123123");
         SokefeltDto dto = new SokefeltDto(saksnummer);
 
-        assertThat(dto.abacAttributter()).isEqualTo(AbacDataAttributter.opprett().leggTil(StandardAbacAttributtType.SAKSNUMMER,saksnummer.getVerdi()));
+        assertThat(dto.abacAttributter()).isEqualTo(AbacDataAttributter.opprett().leggTilSaksnummer(saksnummer.getVerdi()));
     }
 }
