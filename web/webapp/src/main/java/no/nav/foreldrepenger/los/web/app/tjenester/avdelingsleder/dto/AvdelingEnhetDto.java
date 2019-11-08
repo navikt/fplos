@@ -1,6 +1,7 @@
 package no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.saksliste.FplosAbacAttributtType;
 import no.nav.vedtak.sikkerhet.abac.AbacDataAttributter;
 import no.nav.vedtak.sikkerhet.abac.AbacDto;
 
@@ -35,7 +36,7 @@ public class AvdelingEnhetDto implements AbacDto {
 
     @Override
     public AbacDataAttributter abacAttributter() {
-        return AbacDataAttributter.opprett().leggTilOppgavestyringEnhet(avdelingEnhet);
+        return AbacDataAttributter.opprett().leggTil(FplosAbacAttributtType.OPPGAVESTYRING_ENHET, avdelingEnhet);
     }
 }
 

@@ -95,13 +95,11 @@
 
         <dependency>
             <groupId>no.nav.foreldrepenger.felles.integrasjon</groupId>
-            <artifactId>felles-integrasjon-bom</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.apache.logging.log4j</groupId>
-                    <artifactId>log4j-api</artifactId>
-                </exclusion>
-            </exclusions>
+            <artifactId>arbeidsfordeling-klient</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>no.nav.foreldrepenger.felles.integrasjon</groupId>
+            <artifactId>organisasjon-klient</artifactId>
         </dependency>
 
         <!-- REST + WebService -->
@@ -254,6 +252,12 @@
         <dependency>
             <groupId>org.glassfish</groupId>
             <artifactId>javax.el</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>javax.ws.rs</groupId>
+            <artifactId>jsr311-api</artifactId>
+            <version>1.1.1</version>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
 
