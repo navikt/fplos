@@ -1,17 +1,5 @@
 package no.nav.foreldrepenger.loslager.repository;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.persistence.EntityManager;
-
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-
 import no.nav.foreldrepenger.dbstoette.UnittestRepositoryRule;
 import no.nav.foreldrepenger.loslager.oppgave.AndreKriterierType;
 import no.nav.foreldrepenger.loslager.oppgave.BehandlingType;
@@ -23,6 +11,17 @@ import no.nav.foreldrepenger.loslager.oppgave.OppgaveFiltrering;
 import no.nav.foreldrepenger.loslager.oppgave.Reservasjon;
 import no.nav.foreldrepenger.loslager.organisasjon.Avdeling;
 import no.nav.vedtak.felles.testutilities.db.Repository;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
+
+import javax.persistence.EntityManager;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertNull;
 
 public class OppgaveRepositoryImplTest {
 
@@ -186,6 +185,13 @@ public class OppgaveRepositoryImplTest {
         assertThat(første().getAktiv()).isTrue();
         assertThat(siste().getAktiv()).isFalse();
     }
+
+    @Test
+    public void fårTomtSvarFraOppgaveFiltrering() {
+        OppgaveFiltrering filtrering = oppgaveRepository.hentListe(0L);
+        assertNull(filtrering);
+    }
+
 
     private Oppgave første() {
         return repository.hentAlle(Oppgave.class).get(0);
