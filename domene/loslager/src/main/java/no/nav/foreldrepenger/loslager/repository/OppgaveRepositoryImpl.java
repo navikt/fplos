@@ -244,7 +244,7 @@ public class OppgaveRepositoryImpl implements OppgaveRepository {
                 .createQuery("FROM OppgaveFiltrering l WHERE l.id = :id " +
                         OPPGAVEFILTRERING_SORTERING_NAVN, OppgaveFiltrering.class)
                 .setParameter("id", listeId);
-        return listeTypedQuery.getResultList().stream().findFirst();
+        return (!listeTypedQuery.getResultList().isEmpty())?listeTypedQuery.getResultList().stream().findFirst():Optional.empty();
     }
 
     @Override
