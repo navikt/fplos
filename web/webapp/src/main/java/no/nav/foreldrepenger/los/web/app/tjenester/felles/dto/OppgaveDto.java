@@ -23,7 +23,7 @@ public class OppgaveDto {
     private Boolean erTilSaksbehandling;
     private LocalDateTime opprettetTidspunkt;
     private LocalDateTime behandlingsfrist;
-    private String eksternId;
+    private Long eksternId;
 
     public OppgaveDto() {
         // Injiseres i test
@@ -82,7 +82,7 @@ public class OppgaveDto {
         return behandlingId;
     }
 
-    public String getEksternId() {
+    public Long getEksternId() {
         return eksternId;
     }
 

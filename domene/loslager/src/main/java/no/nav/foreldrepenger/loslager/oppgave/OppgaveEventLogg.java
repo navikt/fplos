@@ -1,5 +1,9 @@
 package no.nav.foreldrepenger.loslager.oppgave;
 
+import no.nav.foreldrepenger.loslager.BaseEntitet;
+import org.hibernate.annotations.JoinColumnOrFormula;
+import org.hibernate.annotations.JoinFormula;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -8,12 +12,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-
-import org.hibernate.annotations.JoinColumnOrFormula;
-import org.hibernate.annotations.JoinFormula;
-
-import no.nav.foreldrepenger.loslager.BaseEntitet;
-
 import java.time.LocalDateTime;
 
 @Entity(name = "oppgaveEventLogg")
@@ -47,10 +45,7 @@ public class OppgaveEventLogg extends BaseEntitet{
     }
 
     public OppgaveEventLogg(Long behandlingId, OppgaveEventType eventType, AndreKriterierType andreKriterierType, String behandlendeEnhet, LocalDateTime fristTid) {
-        this.behandlingId = behandlingId;
-        this.eventType = eventType;
-        this.andreKriterierType = andreKriterierType;
-        this.behandlendeEnhet = behandlendeEnhet;
+        this(behandlingId, eventType, andreKriterierType, behandlendeEnhet);
         this.fristTid = fristTid;
     }
 

@@ -1,7 +1,11 @@
 package no.nav.foreldrepenger.loslager.oppgave;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
+import no.nav.foreldrepenger.loslager.BaseEntitet;
+import no.nav.vedtak.felles.jpa.converters.BooleanToStringConverter;
+import org.hibernate.annotations.JoinColumnOrFormula;
+import org.hibernate.annotations.JoinFormula;
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
 
 import javax.persistence.Column;
 import javax.persistence.Convert;
@@ -13,14 +17,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
-
-import org.hibernate.annotations.JoinColumnOrFormula;
-import org.hibernate.annotations.JoinFormula;
-
-import no.nav.foreldrepenger.loslager.BaseEntitet;
-import no.nav.vedtak.felles.jpa.converters.BooleanToStringConverter;
-import org.hibernate.annotations.NotFound;
-import org.hibernate.annotations.NotFoundAction;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity(name = "Oppgave")
 @Table(name = "OPPGAVE")
@@ -82,7 +80,7 @@ public class Oppgave extends BaseEntitet {
     private Boolean utfortFraAdmin = Boolean.FALSE;
 
     @Column(name = "EKSTERN_ID")
-    private String eksternId;
+    private Long eksternId;
 
     @OneToOne(mappedBy = "oppgave")
     private Reservasjon reservasjon;
@@ -123,7 +121,7 @@ public class Oppgave extends BaseEntitet {
         return system;
     }
 
-    public String getEksternId() {
+    public Long getEksternId() {
         return eksternId;
     }
 
@@ -181,7 +179,7 @@ public class Oppgave extends BaseEntitet {
             return this;
         }
 
-        public Builder medEksternId(String eksternId){
+        public Builder medEksternId(Long eksternId){
             tempOppgave.eksternId = eksternId;
             return this;
         }
