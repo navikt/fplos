@@ -151,13 +151,6 @@ public class StatistikkTjenesteImplTest {
 
     private void leggInnEttSettMedOppgaveEventer() {
 
-        /*entityManager.persist(new EksternIdentifikator("FPSAK", "1"));
-        entityManager.persist(new EksternIdentifikator("FPSAK", "2"));
-        entityManager.persist(new EksternIdentifikator("FPSAK", "3"));
-        entityManager.persist(new EksternIdentifikator("FPSAK", "4"));
-        entityManager.persist(new EksternIdentifikator("FPSAK", "5"));
-        entityManager.persist(new EksternIdentifikator("FPSAK", "6"));
-        entityManager.flush();*/
         EksternIdentifikator ekstId1 = repositoryProvider.getEksternIdentifikatorRepository().finnEllerOpprettEksternId("FPSAK","1");
         EksternIdentifikator ekstId2 = repositoryProvider.getEksternIdentifikatorRepository().finnEllerOpprettEksternId("FPSAK","2");
         EksternIdentifikator ekstId3 = repositoryProvider.getEksternIdentifikatorRepository().finnEllerOpprettEksternId("FPSAK","3");
