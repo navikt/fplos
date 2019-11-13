@@ -3,6 +3,7 @@ package no.nav.fplos.foreldrepengerbehandling;
 import java.math.BigDecimal;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -91,13 +92,27 @@ public class ForeldrepengerBehandlingRestKlient {
     private void hentAksjonspunkterRest(Long behandlingId, BehandlingFpsak.Builder builder, List<ResourceLink> links) {
         Optional<ResourceLink> aksjonspunkterLink = velgLink(links, AKSJONSPUNKTER_LINK);
         if (aksjonspunkterLink.isPresent()) {
-            Optional<AksjonspunktDto[]> aksjonspunkter = hentFraResourceLink(aksjonspunkterLink.get(), AksjonspunktDto[].class);
-            if (aksjonspunkter.isPresent()) {
-                builder.medAksjonspunkter(Arrays.asList(aksjonspunkter.get()));
+            Optional<AksjonspunktDto[]> aksjonspunktDtos = hentFraResourceLink(aksjonspunkterLink.get(), AksjonspunktDto[].class);
+            if (aksjonspunktDtos.isPresent()) {
+                builder.medAksjonspunkter(aksjonspunktFra(aksjonspunktDtos.get()));
             } else {
                 LOGGER.error("Feilet å hente aksjonspunkter for behandlingId " + behandlingId);
             }
         }
+    }
+
+    private static List<Aksjonspunkt> aksjonspunktFra(AksjonspunktDto[] aksjonspunktDtos) {
+        List<Aksjonspunkt> liste = new ArrayList<>();
+        for (AksjonspunktDto aksjonspunktDto : aksjonspunktDtos) {
+            Aksjonspunkt aksjonspunkt = Aksjonspunkt.builder()
+                    .medDefinisjon(aksjonspunktDto.getDefinisjon().getKode())
+                    .medStatus(aksjonspunktDto.getStatus().getKode())
+                    .medBegrunnelse(aksjonspunktDto.getBegrunnelse())
+                    .medFristTid(aksjonspunktDto.getFristTid())
+                    .build();
+            liste.add(aksjonspunkt);
+        }
+        return liste;
     }
 
     private void hentInntektRest(Long behandlingId, BehandlingFpsak.Builder builder, List<ResourceLink> links) {

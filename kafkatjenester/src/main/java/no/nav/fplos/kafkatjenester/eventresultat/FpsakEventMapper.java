@@ -3,6 +3,7 @@ package no.nav.fplos.kafkatjenester.eventresultat;
 import no.nav.foreldrepenger.loslager.oppgave.AndreKriterierType;
 import no.nav.foreldrepenger.loslager.oppgave.OppgaveEventLogg;
 import no.nav.foreldrepenger.loslager.oppgave.OppgaveEventType;
+import no.nav.fplos.foreldrepengerbehandling.Aksjonspunkt;
 import no.nav.fplos.foreldrepengerbehandling.dto.aksjonspunkt.AksjonspunktDto;
 
 import java.util.List;
@@ -20,24 +21,24 @@ import static no.nav.fplos.kafkatjenester.eventresultat.EventResultat.OPPRETT_PA
 
 public class FpsakEventMapper {
 
-    public static EventResultat signifikantEventForAdminFra(List<AksjonspunktDto> aksjonspunktListe) {
+    public static EventResultat signifikantEventForAdminFra(List<Aksjonspunkt> aksjonspunktListe) {
         return signifikantEventFra(aksjonspunktListe, null, null, true);
     }
 
-    public static EventResultat signifikantEventFra(List<AksjonspunktDto> aksjonspunktListe,
+    public static EventResultat signifikantEventFra(List<Aksjonspunkt> aksjonspunktListe,
                                                     List<OppgaveEventLogg> oppgaveEventLogger, String behandlendeEnhet) {
         return signifikantEventFra(aksjonspunktListe, oppgaveEventLogger, behandlendeEnhet, false);
     }
 
-    private static EventResultat signifikantEventFra(List<AksjonspunktDto> aksjonspunktListe, List<OppgaveEventLogg> oppgaveEventLogger,
+    private static EventResultat signifikantEventFra(List<Aksjonspunkt> aksjonspunktListe, List<OppgaveEventLogg> oppgaveEventLogger,
                                                      String behandlendeEnhet, boolean fraAdmin) {
-        Set<AksjonspunktDto> åpneAksjonspunkter = aksjonspunktListe.stream()
-                .filter(AksjonspunktDto::erAktiv)
+        Set<Aksjonspunkt> åpneAksjonspunkter = aksjonspunktListe.stream()
+                .filter(Aksjonspunkt::erAktiv)
                 .collect(Collectors.toSet());
         return signifikantEventFra(åpneAksjonspunkter, sisteOpprettedeEvent(oppgaveEventLogger), behandlendeEnhet, fraAdmin);
     }
 
-    private static EventResultat signifikantEventFra(Set<AksjonspunktDto> åpneAksjonspunkt, OppgaveEventLogg sisteEvent,
+    private static EventResultat signifikantEventFra(Set<Aksjonspunkt> åpneAksjonspunkt, OppgaveEventLogg sisteEvent,
                                                      String behandlendeEnhet, boolean fraAdmin) {
         if (åpneAksjonspunkt.isEmpty()){
             return LUKK_OPPGAVE;
@@ -95,23 +96,23 @@ public class FpsakEventMapper {
         return (sisteEvent.getAndreKriterierType() != null && sisteEvent.getAndreKriterierType().equals(kriterie));
     }
 
-    private static boolean påVent(Set<AksjonspunktDto> åpneAksjonspunkt) {
+    private static boolean påVent(Set<Aksjonspunkt> åpneAksjonspunkt) {
         return åpneAksjonspunkt.stream()
-                .anyMatch(AksjonspunktDto::erPåVent);
+                .anyMatch(Aksjonspunkt::erPåVent);
     }
 
-    private static boolean tilBeslutter(Set<AksjonspunktDto> aksjonspunkt) {
+    private static boolean tilBeslutter(Set<Aksjonspunkt> aksjonspunkt) {
         return aksjonspunkt.stream()
-                .anyMatch(AksjonspunktDto::tilBeslutter);
+                .anyMatch(Aksjonspunkt::tilBeslutter);
     }
 
-    private static boolean manueltSattPåVent(Set<AksjonspunktDto> aksjonspunkt) {
+    private static boolean manueltSattPåVent(Set<Aksjonspunkt> aksjonspunkt) {
         return aksjonspunkt.stream()
-                .anyMatch(AksjonspunktDto::erManueltPåVent);
+                .anyMatch(Aksjonspunkt::erManueltPåVent);
     }
 
-    private static boolean erRegistrerPapirsøknad(Set<AksjonspunktDto> aksjonspunkt) {
+    private static boolean erRegistrerPapirsøknad(Set<Aksjonspunkt> aksjonspunkt) {
         return aksjonspunkt.stream()
-                .anyMatch(AksjonspunktDto::erRegistrerPapirSøknad);
+                .anyMatch(Aksjonspunkt::erRegistrerPapirSøknad);
     }
 }

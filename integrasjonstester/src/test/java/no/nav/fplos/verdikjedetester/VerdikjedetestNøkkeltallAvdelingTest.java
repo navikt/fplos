@@ -6,6 +6,7 @@ import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.nøkkeltall.N�
 import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.nøkkeltall.dto.OppgaverForAvdelingSattManueltPaaVentDto;
 import no.nav.foreldrepenger.loslager.repository.OppgaveRepositoryProvider;
 import no.nav.foreldrepenger.loslager.repository.OppgaveRepositoryProviderImpl;
+import no.nav.fplos.foreldrepengerbehandling.Aksjonspunkt;
 import no.nav.fplos.foreldrepengerbehandling.BehandlingFpsak;
 import no.nav.fplos.foreldrepengerbehandling.ForeldrepengerBehandlingRestKlient;
 import no.nav.fplos.foreldrepengerbehandling.dto.aksjonspunkt.AksjonspunktDto;
@@ -61,17 +62,23 @@ public class VerdikjedetestNøkkeltallAvdelingTest {
 
     @Test
     public void manuellSattPåVentVisesRiktigeDatoer(){
-        AksjonspunktDto.Builder builder1 = new AksjonspunktDto.Builder();
-        AksjonspunktDto aksjonspunktDto = builder1.medDefinisjon("5025").medStatus("OPPR").build();
-        when(foreldrepengerBehandlingRestKlient.getBehandling(anyLong())).thenReturn(lagBehandlingDto(Collections.singletonList(aksjonspunktDto)));
+        Aksjonspunkt.Builder builder1 = Aksjonspunkt.builder();
+        Aksjonspunkt aksjonspunkt = builder1.medDefinisjon("5025").medStatus("OPPR").build();
+        when(foreldrepengerBehandlingRestKlient.getBehandling(anyLong())).thenReturn(lagBehandlingDto(Collections.singletonList(aksjonspunkt)));
         Map<Long, AksjonspunkteventTestInfo> melding = MockEventKafkaMessages.førstegangsbehandlingMeldinger;
         MockEventKafkaMessages.sendNyeOppgaver(melding);
         kafkaReader.hentOgLagreMeldingene();
 
-        AksjonspunktDto aksjonspunktDtoMedManuellSattPaaVentUtenFrist = new AksjonspunktDto.Builder().medDefinisjon("7001")
-                .medStatus("OPPR").medFristTid(aksjonspunktFristTom).build();
-        AksjonspunktDto aksjonspunktDtoMedManuellSattPaaVentOgFrist = new AksjonspunktDto.Builder().medDefinisjon("7001")
-                .medStatus("OPPR").medFristTid(NOW.plusDays(10)).build();
+        Aksjonspunkt aksjonspunktDtoMedManuellSattPaaVentUtenFrist = Aksjonspunkt.builder()
+                .medDefinisjon("7001")
+                .medStatus("OPPR")
+                .medFristTid(aksjonspunktFristTom)
+                .build();
+        Aksjonspunkt aksjonspunktDtoMedManuellSattPaaVentOgFrist = Aksjonspunkt.builder()
+                .medDefinisjon("7001")
+                .medStatus("OPPR")
+                .medFristTid(NOW.plusDays(10))
+                .build();
         when(foreldrepengerBehandlingRestKlient.getBehandling(MockEventKafkaMessages.BEHANDLING_ID_1))
                 .thenReturn(lagBehandlingDto(Collections.singletonList(aksjonspunktDtoMedManuellSattPaaVentOgFrist)));
         when(foreldrepengerBehandlingRestKlient.getBehandling(MockEventKafkaMessages.BEHANDLING_ID_2))
@@ -86,13 +93,13 @@ public class VerdikjedetestNøkkeltallAvdelingTest {
                 .containsExactlyInAnyOrder(NOW.toLocalDate().plusDays(10), NOW.toLocalDate().plusDays(28));
     }
 
-    private BehandlingFpsak lagBehandlingDto(List<AksjonspunktDto> aksjonspunktDtoer){
+    private BehandlingFpsak lagBehandlingDto(List<Aksjonspunkt> aksjonspunkter){
         return BehandlingFpsak.builder()
                 .medBehandlendeEnhetNavn("NAV")
                 .medAnsvarligSaksbehandler("VLLOS")
                 .medStatus("-")
                 .medHarRefusjonskrav(false)
-                .medAksjonspunkter(aksjonspunktDtoer)
+                .medAksjonspunkter(aksjonspunkter)
                 .build();
     }
 }

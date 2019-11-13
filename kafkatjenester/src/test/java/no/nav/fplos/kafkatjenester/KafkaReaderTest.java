@@ -5,6 +5,7 @@ import no.nav.foreldrepenger.dbstoette.UnittestRepositoryRule;
 import no.nav.foreldrepenger.loslager.oppgave.EventmottakFeillogg;
 import no.nav.foreldrepenger.loslager.repository.OppgaveRepositoryProvider;
 import no.nav.foreldrepenger.loslager.repository.OppgaveRepositoryProviderImpl;
+import no.nav.fplos.foreldrepengerbehandling.Aksjonspunkt;
 import no.nav.fplos.foreldrepengerbehandling.BehandlingFpsak;
 import no.nav.fplos.foreldrepengerbehandling.ForeldrepengerBehandlingRestKlient;
 import no.nav.fplos.foreldrepengerbehandling.dto.aksjonspunkt.AksjonspunktDto;
@@ -65,7 +66,7 @@ public class KafkaReaderTest {
         return BehandlingFpsak.builder()
                 .medBehandlendeEnhetNavn("NAV")
                 .medHarRefusjonskrav(false)
-                .medAksjonspunkter(Collections.singletonList(new AksjonspunktDto.Builder()
+                .medAksjonspunkter(Collections.singletonList(new Aksjonspunkt.Builder()
                         .medDefinisjon("5401")
                         .medStatus("UTRED")
                         .medFristTid(aksjonspunktFrist)

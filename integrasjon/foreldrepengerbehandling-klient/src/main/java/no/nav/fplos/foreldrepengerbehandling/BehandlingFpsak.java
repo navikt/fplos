@@ -1,6 +1,5 @@
 package no.nav.fplos.foreldrepengerbehandling;
 
-import no.nav.fplos.foreldrepengerbehandling.dto.aksjonspunkt.AksjonspunktDto;
 import no.nav.vedtak.sikkerhet.abac.AbacDataAttributter;
 
 import java.time.LocalDate;
@@ -19,7 +18,7 @@ public class BehandlingFpsak {
     private String ansvarligSaksbehandler;
     private LocalDate førsteUttaksdag;
     private List<String> inntektsmeldinger;
-    private List<AksjonspunktDto> aksjonspunkter;
+    private List<Aksjonspunkt> aksjonspunkter;
     private Boolean harRefusjonskravFraArbeidsgiver;
     private Boolean harGradering;
     private Boolean erUtlandssak;
@@ -64,7 +63,7 @@ public class BehandlingFpsak {
         return inntektsmeldinger;
     }
 
-    public List<AksjonspunktDto> getAksjonspunkter() {
+    public List<Aksjonspunkt> getAksjonspunkter() {
         return aksjonspunkter;
     }
 
@@ -78,7 +77,7 @@ public class BehandlingFpsak {
 
     public boolean getErUtlandssak() {
         return aksjonspunkter.stream()
-                .anyMatch(AksjonspunktDto::erUtenlandssak);
+                .anyMatch(Aksjonspunkt::erUtenlandssak);
     }
 
     public static BehandlingFpsak.Builder builder() {
@@ -137,7 +136,7 @@ public class BehandlingFpsak {
             return this;
         }
 
-        public BehandlingFpsak.Builder medAksjonspunkter(List<AksjonspunktDto> aksjonspunktDtos) {
+        public BehandlingFpsak.Builder medAksjonspunkter(List<Aksjonspunkt> aksjonspunktDtos) {
             behandlingDtoMal.aksjonspunkter = aksjonspunktDtos;
             return this;
         }

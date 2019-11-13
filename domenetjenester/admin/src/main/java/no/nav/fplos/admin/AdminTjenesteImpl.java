@@ -147,7 +147,7 @@ public class AdminTjenesteImpl implements AdminTjeneste {
 
         Map<String, String> aksjonspunktKoderMedStatusListe = new HashMap<>();
         fraFpsak.getAksjonspunkter()
-                .forEach(aksjonspunkt -> aksjonspunktKoderMedStatusListe.put(aksjonspunkt.getDefinisjon().getKode(), aksjonspunkt.getStatus().getKode()));
+                .forEach(aksjonspunkt -> aksjonspunktKoderMedStatusListe.put(aksjonspunkt.getDefinisjonKode(), aksjonspunkt.getStatusKode()));
 
         return BehandlingProsessEventDto.builder()
                 .medFagsystem(eksisterendeOppgave.getSystem())
