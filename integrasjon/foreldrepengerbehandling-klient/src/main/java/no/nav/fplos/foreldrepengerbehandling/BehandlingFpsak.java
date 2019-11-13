@@ -8,11 +8,6 @@ import java.util.List;
 
 public class BehandlingFpsak {
 
-    private static final String MANUELL_MARKERING_AV_UTLAND_SAKSTYPE_AKSJONSPUNKT_KODE = "6068";
-
-    private static final String EØS_BOSATT_NORGE = "EØS_BOSATT_NORGE";
-    private static final String BOSATT_UTLAND = "BOSATT_UTLAND";
-
     private Long behandlingId;
     private String status;
     private LocalDate behandlingstidFrist;
@@ -81,10 +76,9 @@ public class BehandlingFpsak {
         return harGradering;
     }
 
-    public Boolean getErUtlandssak() {
+    public boolean getErUtlandssak() {
         return aksjonspunkter.stream()
-                .anyMatch(e -> e.getDefinisjon().getKode().equals(MANUELL_MARKERING_AV_UTLAND_SAKSTYPE_AKSJONSPUNKT_KODE)
-                        && (e.getBegrunnelse().equals(EØS_BOSATT_NORGE) || e.getBegrunnelse().equals(BOSATT_UTLAND)));
+                .anyMatch(AksjonspunktDto::erUtenlandssak);
     }
 
     public static BehandlingFpsak.Builder builder() {

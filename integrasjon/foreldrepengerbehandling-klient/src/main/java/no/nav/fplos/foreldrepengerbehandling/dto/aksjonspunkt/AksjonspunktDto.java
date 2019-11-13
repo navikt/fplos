@@ -16,7 +16,11 @@ public class AksjonspunktDto {
     private static final String PÅ_VENT_KODEGRUPPE_STARTS_WITH = "7";
     private static final String TIL_BESLUTTER_KODE = "5016";
     private static final List<String> REGISTRER_PAPIRSØKNAD_KODE = asList("5012", "5040", "5057", "5096");
-    public static final String AUTOMATISK_MARKERING_SOM_UTENLANDSSAK_KODE = "5068";
+
+    public static final String AUTOMATISK_MARKERING_SOM_UTLAND_KODE = "5068";
+    private static final String MANUELL_MARKERING_SOM_UTLAND_KODE = "6068";
+    private static final String EØS_BOSATT_NORGE = "EØS_BOSATT_NORGE";
+    private static final String BOSATT_UTLAND = "BOSATT_UTLAND";
 
     private KodeDto definisjon;
     private KodeDto status;
@@ -66,8 +70,17 @@ public class AksjonspunktDto {
         return REGISTRER_PAPIRSØKNAD_KODE.contains(definisjon.getKode()) && erAktiv();
     }
 
-    public boolean erAutomatiskMarkertSomUtenlandssak() {
-        return AUTOMATISK_MARKERING_SOM_UTENLANDSSAK_KODE.equals(definisjon.getKode()) && !erAvbrutt();
+    private boolean erAutomatiskMarkertSomUtenlandssak() {
+        return AUTOMATISK_MARKERING_SOM_UTLAND_KODE.equals(definisjon.getKode()) && !erAvbrutt();
+    }
+
+    private boolean erManueltMarkertSomUtenlandssak() {
+        return definisjon.getKode().equals(MANUELL_MARKERING_SOM_UTLAND_KODE)
+                && (begrunnelse.equals(EØS_BOSATT_NORGE) || begrunnelse.equals(BOSATT_UTLAND));
+    }
+
+    public boolean erUtenlandssak() {
+        return erAutomatiskMarkertSomUtenlandssak() || erManueltMarkertSomUtenlandssak();
     }
 
     public static AksjonspunktDto.Builder builder() {

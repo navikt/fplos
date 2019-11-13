@@ -132,7 +132,7 @@ public class FpsakEventHandler {
 
     private void opprettOppgaveEgenskaper(BehandlingFpsak behandling, List<AksjonspunktDto> aksjonspunktListe, Oppgave oppgave) {
         håndterOppgaveEgenskapUtbetalingTilBruker(behandling.getHarRefusjonskravFraArbeidsgiver(), oppgave);
-        håndterOppgaveEgenskapUtlandssak(avgjørOmUtlandsak(aksjonspunktListe, behandling.getErUtlandssak()), oppgave);
+        håndterOppgaveEgenskapUtlandssak(behandling.getErUtlandssak(), oppgave);
         håndterOppgaveEgenskapGradering(behandling.getHarGradering(), oppgave);
     }
 
@@ -196,13 +196,6 @@ public class FpsakEventHandler {
                 .medBehandlingsfrist(hentBehandlingstidFrist(fraFpsak.getBehandlingstidFrist()))
                 .medBehandlingStatus(kodeverkRepository.finn(BehandlingStatus.class, fraFpsak.getStatus()))
                 .build());
-    }
-
-    public Boolean avgjørOmUtlandsak(List<AksjonspunktDto> aksjonspunktKoderMedStatusListe, Boolean erMarkertManueltSomUtlandssak) {
-        boolean erAutomatiskMarkertSomUtlandssak = aksjonspunktKoderMedStatusListe.stream()
-                .anyMatch(AksjonspunktDto::erAutomatiskMarkertSomUtenlandssak);
-        boolean erManueltMarkert = erMarkertManueltSomUtlandssak != null ? erMarkertManueltSomUtlandssak : false;
-        return erAutomatiskMarkertSomUtlandssak || erManueltMarkert;
     }
 
     public void håndterOppgaveEgenskapUtbetalingTilBruker(Boolean harRefusjonskrav, Oppgave oppgave) {
