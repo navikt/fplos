@@ -25,9 +25,12 @@ public class TilbakekrevingEventHandler {
     }
 
     public void prosesser(BehandlingProsessEventDto bpeDto){
-
+        prosesser(bpeDto, null,false);
     }
     private void prosesser(BehandlingProsessEventDto bpeDto, Reservasjon reservasjon, boolean prosesserFraAdmin) {
         //String eksternId = bpeDto
+
+        //List<OppgaveEventLogg> pastOppgaveEvents = oppgaveRepository.hentEventer(behandlingId);
+
     }
 }

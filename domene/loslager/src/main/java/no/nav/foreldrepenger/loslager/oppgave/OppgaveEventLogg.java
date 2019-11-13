@@ -40,20 +40,24 @@ public class OppgaveEventLogg extends BaseEntitet{
     @Column(name = "FRIST_TID")
     private LocalDateTime fristTid;
 
+    @Column(name = "EKSTERN_ID")
+    private Long eksternId;
+
     public OppgaveEventLogg(){
         //For automatisk generering
     }
 
-    public OppgaveEventLogg(Long behandlingId, OppgaveEventType eventType, AndreKriterierType andreKriterierType, String behandlendeEnhet, LocalDateTime fristTid) {
-        this(behandlingId, eventType, andreKriterierType, behandlendeEnhet);
+    public OppgaveEventLogg(Long behandlingId, Long eksternId, OppgaveEventType eventType, AndreKriterierType andreKriterierType, String behandlendeEnhet, LocalDateTime fristTid) {
+        this(behandlingId, eksternId, eventType, andreKriterierType, behandlendeEnhet);
         this.fristTid = fristTid;
     }
 
-    public OppgaveEventLogg(Long behandlingId, OppgaveEventType eventType, AndreKriterierType andreKriterierType, String behandlendeEnhet) {
+    public OppgaveEventLogg(Long behandlingId, Long eksternId, OppgaveEventType eventType, AndreKriterierType andreKriterierType, String behandlendeEnhet) {
         this.behandlingId = behandlingId;
         this.eventType = eventType;
         this.andreKriterierType = andreKriterierType;
         this.behandlendeEnhet = behandlendeEnhet;
+        this.eksternId = eksternId;
     }
     public Long getBehandlingId() {
         return behandlingId;
@@ -69,6 +73,10 @@ public class OppgaveEventLogg extends BaseEntitet{
 
     public String getBehandlendeEnhet() {
         return behandlendeEnhet;
+    }
+
+    public Long getEksternId() {
+        return eksternId;
     }
 
     public LocalDateTime getFristTid() {

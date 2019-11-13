@@ -23,6 +23,15 @@ public class EksternIdentifikator extends BaseEntitet {
     @Column(name = "EKSTERN_REF_ID")
     private String eksternRefId;
 
+    public EksternIdentifikator(){
+
+    }
+
+    public EksternIdentifikator(String system, String eksternRefId) {
+        this.system = system;
+        this.eksternRefId = eksternRefId;
+    }
+
     public Long getId() {
         return id;
     }

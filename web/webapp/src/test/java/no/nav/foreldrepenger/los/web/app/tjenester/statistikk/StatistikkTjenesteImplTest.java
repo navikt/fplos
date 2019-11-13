@@ -1,24 +1,13 @@
 package no.nav.foreldrepenger.los.web.app.tjenester.statistikk;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-import java.time.LocalDate;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import javax.persistence.EntityManager;
-
+import no.nav.foreldrepenger.dbstoette.UnittestRepositoryRule;
 import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.nøkkeltall.dto.OppgaverForAvdelingDto;
 import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.nøkkeltall.dto.OppgaverForAvdelingPerDatoDto;
-import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.nøkkeltall.dto.OppgaverForFørsteStønadsdagDto;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-
-import no.nav.foreldrepenger.dbstoette.UnittestRepositoryRule;
 import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.nøkkeltall.dto.OppgaverForAvdelingSattManueltPaaVentDto;
+import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.nøkkeltall.dto.OppgaverForFørsteStønadsdagDto;
 import no.nav.foreldrepenger.loslager.oppgave.AndreKriterierType;
 import no.nav.foreldrepenger.loslager.oppgave.BehandlingType;
+import no.nav.foreldrepenger.loslager.oppgave.EksternIdentifikator;
 import no.nav.foreldrepenger.loslager.oppgave.FagsakYtelseType;
 import no.nav.foreldrepenger.loslager.oppgave.Oppgave;
 import no.nav.foreldrepenger.loslager.oppgave.OppgaveEgenskap;
@@ -30,6 +19,16 @@ import no.nav.foreldrepenger.loslager.repository.OppgaveRepositoryProviderImpl;
 import no.nav.foreldrepenger.loslager.repository.StatistikkRepository;
 import no.nav.fplos.statistikk.StatistikkTjeneste;
 import no.nav.fplos.statistikk.StatistikkTjenesteImpl;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
+
+import javax.persistence.EntityManager;
+import java.time.LocalDate;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class StatistikkTjenesteImplTest {
 
@@ -152,18 +151,33 @@ public class StatistikkTjenesteImplTest {
 
     private void leggInnEttSettMedOppgaveEventer() {
 
-        entityManager.persist(Oppgave.builder().dummyOppgave(AVDELING_DRAMMEN_ENHET).medBehandlingId(1L).build());
-        entityManager.persist(Oppgave.builder().dummyOppgave(AVDELING_DRAMMEN_ENHET).medBehandlingId(2L).build());
-        entityManager.persist(Oppgave.builder().dummyOppgave(AVDELING_DRAMMEN_ENHET).medBehandlingId(3L).build());
-        entityManager.persist(Oppgave.builder().dummyOppgave(AVDELING_DRAMMEN_ENHET).medBehandlingId(4L).build());
-        entityManager.persist(Oppgave.builder().dummyOppgave(AVDELING_DRAMMEN_ENHET).medBehandlingId(5L).build());
-        entityManager.persist(Oppgave.builder().dummyOppgave(AVDELING_DRAMMEN_ENHET).medFagsakYtelseType(FagsakYtelseType.ENGANGSTØNAD).medBehandlingId(6L).build());
+        /*entityManager.persist(new EksternIdentifikator("FPSAK", "1"));
+        entityManager.persist(new EksternIdentifikator("FPSAK", "2"));
+        entityManager.persist(new EksternIdentifikator("FPSAK", "3"));
+        entityManager.persist(new EksternIdentifikator("FPSAK", "4"));
+        entityManager.persist(new EksternIdentifikator("FPSAK", "5"));
+        entityManager.persist(new EksternIdentifikator("FPSAK", "6"));
+        entityManager.flush();*/
+        EksternIdentifikator ekstId1 = repositoryProvider.getEksternIdentifikatorRepository().finnEllerOpprettEksternId("FPSAK","1");
+        EksternIdentifikator ekstId2 = repositoryProvider.getEksternIdentifikatorRepository().finnEllerOpprettEksternId("FPSAK","2");
+        EksternIdentifikator ekstId3 = repositoryProvider.getEksternIdentifikatorRepository().finnEllerOpprettEksternId("FPSAK","3");
+        EksternIdentifikator ekstId4 = repositoryProvider.getEksternIdentifikatorRepository().finnEllerOpprettEksternId("FPSAK","4");
+        EksternIdentifikator ekstId5 = repositoryProvider.getEksternIdentifikatorRepository().finnEllerOpprettEksternId("FPSAK","5");
+        EksternIdentifikator ekstId6 = repositoryProvider.getEksternIdentifikatorRepository().finnEllerOpprettEksternId("FPSAK","6");
+        entityManager.flush();
 
-        entityManager.persist(new OppgaveEventLogg(1L, OppgaveEventType.OPPRETTET,AndreKriterierType.UKJENT, AVDELING_DRAMMEN_ENHET));
-        entityManager.persist(new OppgaveEventLogg(2L, OppgaveEventType.OPPRETTET,AndreKriterierType.UKJENT, AVDELING_DRAMMEN_ENHET));
-        entityManager.persist(new OppgaveEventLogg(3L, OppgaveEventType.OPPRETTET,AndreKriterierType.UKJENT, AVDELING_DRAMMEN_ENHET));
-        entityManager.persist(new OppgaveEventLogg(4L, OppgaveEventType.MANU_VENT,AndreKriterierType.UKJENT, AVDELING_DRAMMEN_ENHET));
-        entityManager.persist(new OppgaveEventLogg(5L, OppgaveEventType.GJENAPNET,AndreKriterierType.UKJENT, AVDELING_DRAMMEN_ENHET));
+        entityManager.persist(Oppgave.builder().dummyOppgave(AVDELING_DRAMMEN_ENHET).medBehandlingId(1L).medSystem("FPSAK").medEksternId(ekstId1.getId()).build());
+        entityManager.persist(Oppgave.builder().dummyOppgave(AVDELING_DRAMMEN_ENHET).medBehandlingId(2L).medSystem("FPSAK").medEksternId(ekstId2.getId()).build());
+        entityManager.persist(Oppgave.builder().dummyOppgave(AVDELING_DRAMMEN_ENHET).medBehandlingId(3L).medSystem("FPSAK").medEksternId(ekstId3.getId()).build());
+        entityManager.persist(Oppgave.builder().dummyOppgave(AVDELING_DRAMMEN_ENHET).medBehandlingId(4L).medSystem("FPSAK").medEksternId(ekstId4.getId()).build());
+        entityManager.persist(Oppgave.builder().dummyOppgave(AVDELING_DRAMMEN_ENHET).medBehandlingId(5L).medSystem("FPSAK").medEksternId(ekstId5.getId()).build());
+        entityManager.persist(Oppgave.builder().dummyOppgave(AVDELING_DRAMMEN_ENHET).medFagsakYtelseType(FagsakYtelseType.ENGANGSTØNAD).medBehandlingId(6L).medSystem("FPSAK").medEksternId(ekstId6.getId()).build());
+
+        entityManager.persist(new OppgaveEventLogg(1L, ekstId1.getId(), OppgaveEventType.OPPRETTET,AndreKriterierType.UKJENT, AVDELING_DRAMMEN_ENHET));
+        entityManager.persist(new OppgaveEventLogg(2L, ekstId2.getId(), OppgaveEventType.OPPRETTET,AndreKriterierType.UKJENT, AVDELING_DRAMMEN_ENHET));
+        entityManager.persist(new OppgaveEventLogg(3L, ekstId3.getId(), OppgaveEventType.OPPRETTET,AndreKriterierType.UKJENT, AVDELING_DRAMMEN_ENHET));
+        entityManager.persist(new OppgaveEventLogg(4L, ekstId4.getId(), OppgaveEventType.MANU_VENT,AndreKriterierType.UKJENT, AVDELING_DRAMMEN_ENHET));
+        entityManager.persist(new OppgaveEventLogg(5L, ekstId5.getId(), OppgaveEventType.GJENAPNET,AndreKriterierType.UKJENT, AVDELING_DRAMMEN_ENHET));
 
         //for å ungå samtidighetsproblemer med opprettettidspunkt
         entityManager.flush();
@@ -171,12 +185,12 @@ public class StatistikkTjenesteImplTest {
         entityManager.flush();
         repoRule.getRepository().hentAlle(OppgaveEventLogg.class).forEach(oppgave -> entityManager.refresh(oppgave));
 
-        entityManager.persist(new OppgaveEventLogg(1L, OppgaveEventType.LUKKET,AndreKriterierType.UKJENT, AVDELING_DRAMMEN_ENHET));
-        entityManager.persist(new OppgaveEventLogg(2L, OppgaveEventType.MANU_VENT,AndreKriterierType.UKJENT, AVDELING_DRAMMEN_ENHET));
-        entityManager.persist(new OppgaveEventLogg(3L, OppgaveEventType.VENT,AndreKriterierType.UKJENT, AVDELING_DRAMMEN_ENHET));
-        entityManager.persist(new OppgaveEventLogg(4L, OppgaveEventType.OPPRETTET,AndreKriterierType.UKJENT, AVDELING_DRAMMEN_ENHET));
-        entityManager.persist(new OppgaveEventLogg(5L, OppgaveEventType.MANU_VENT,AndreKriterierType.UKJENT, AVDELING_DRAMMEN_ENHET));
-        entityManager.persist(new OppgaveEventLogg(6L, OppgaveEventType.MANU_VENT,AndreKriterierType.UKJENT, AVDELING_DRAMMEN_ENHET));
+        entityManager.persist(new OppgaveEventLogg(1L, ekstId1.getId(), OppgaveEventType.LUKKET,AndreKriterierType.UKJENT, AVDELING_DRAMMEN_ENHET));
+        entityManager.persist(new OppgaveEventLogg(2L, ekstId2.getId(), OppgaveEventType.MANU_VENT,AndreKriterierType.UKJENT, AVDELING_DRAMMEN_ENHET));
+        entityManager.persist(new OppgaveEventLogg(3L, ekstId3.getId(), OppgaveEventType.VENT,AndreKriterierType.UKJENT, AVDELING_DRAMMEN_ENHET));
+        entityManager.persist(new OppgaveEventLogg(4L, ekstId4.getId(), OppgaveEventType.OPPRETTET,AndreKriterierType.UKJENT, AVDELING_DRAMMEN_ENHET));
+        entityManager.persist(new OppgaveEventLogg(5L, ekstId5.getId(), OppgaveEventType.MANU_VENT,AndreKriterierType.UKJENT, AVDELING_DRAMMEN_ENHET));
+        entityManager.persist(new OppgaveEventLogg(6L, ekstId6.getId(), OppgaveEventType.MANU_VENT,AndreKriterierType.UKJENT, AVDELING_DRAMMEN_ENHET));
 
         entityManager.flush();
     }

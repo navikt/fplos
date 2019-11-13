@@ -416,10 +416,10 @@ public class OppgaveRepositoryImpl implements OppgaveRepository {
     }
 
     @Override
-    public List<OppgaveEventLogg> hentEventer(Long behandlingId) {
+    public List<OppgaveEventLogg> hentEventer(Long eksternId) {
         return getEntityManager().createQuery("FROM oppgaveEventLogg oel " +
-                "where oel.behandlingId = :behandlingId ORDER BY oel.id desc", OppgaveEventLogg.class)
-                .setParameter("behandlingId", behandlingId).getResultList();
+                "where oel.eksternId = :eksternId ORDER BY oel.id desc", OppgaveEventLogg.class)
+                .setParameter("eksternId", eksternId).getResultList();
     }
 
     @Override
