@@ -28,7 +28,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -46,13 +45,10 @@ public class FpsakEventHandler {
     private OppgaveRepository oppgaveRepository;
     private ForeldrepengerBehandlingRestKlient foreldrePengerBehandlingRestKlient;
 
-    private static final List<String> aktiveAksjonspunktkoder = Collections.singletonList("OPPR");
-    private static final List<String> avbruttAksjonspunktkoder = Collections.singletonList("AVBR");
-
     private static final List<OppgaveEventType> ÅPNINGS_EVENTER = Arrays.asList(OppgaveEventType.OPPRETTET, OppgaveEventType.GJENAPNET);
 
     public FpsakEventHandler(){
-        //to make poroxyable
+        //to make proxyable
     }
 
     @Inject
@@ -140,14 +136,16 @@ public class FpsakEventHandler {
         håndterOppgaveEgenskapGradering(behandling.getHarGradering(), oppgave);
     }
 
-    private Optional<AksjonspunktDto> finnVentAksjonspunkt(List<AksjonspunktDto> aksjonspunktListe) {
-        return aksjonspunktListe.stream().filter(aksjonspunkt -> aksjonspunkt.getDefinisjon().getKode().startsWith("7")
-                && aktiveAksjonspunktkoder.contains(aksjonspunkt.getStatus().getKode())).findFirst();
+    private static Optional<AksjonspunktDto> finnVentAksjonspunkt(List<AksjonspunktDto> aksjonspunktListe) {
+        return aksjonspunktListe.stream()
+                .filter(AksjonspunktDto::erPåVent)
+                .findFirst();
     }
 
     private Optional<AksjonspunktDto> finnManuellAksjonspunkt(List<AksjonspunktDto> aksjonspunktListe) {
-       return aksjonspunktListe.stream().filter(entry -> FpsakEventMapper.MANUELT_SATT_PÅ_VENT_AKSJONSPUNKTSKODE.equals(entry.getDefinisjon().getKode())
-               && aktiveAksjonspunktkoder.contains(entry.getStatus().getKode())).findFirst();
+       return aksjonspunktListe.stream()
+               .filter(AksjonspunktDto::erManueltPåVent)
+               .findFirst();
     }
 
     private void reserverOppgaveFraTidligereReservasjon(boolean reserverOppgave, Reservasjon reservasjon, Oppgave oppgave) {
@@ -201,11 +199,10 @@ public class FpsakEventHandler {
     }
 
     public Boolean avgjørOmUtlandsak(List<AksjonspunktDto> aksjonspunktKoderMedStatusListe, Boolean erMarkertManueltSomUtlandssak) {
-        Set<AksjonspunktDto> aksjonspunkter = aksjonspunktKoderMedStatusListe.stream()
-                .filter(entry -> !avbruttAksjonspunktkoder.contains(entry.getDefinisjon().getKode())).collect(Collectors.toSet());
-        boolean erAutomatiskMarkertSomUtlandssak = aksjonspunkter.stream().anyMatch(entry -> FpsakEventMapper.AUTOMATISK_MARKERING_AV_UTENLANDSSAK_AKSJONSPUNKTSKODE.contains(entry.getDefinisjon().getKode()));
-        boolean erManueltMarkertSomUtlandssak = erMarkertManueltSomUtlandssak != null ? erMarkertManueltSomUtlandssak : false;
-        return erAutomatiskMarkertSomUtlandssak || erManueltMarkertSomUtlandssak;
+        boolean erAutomatiskMarkertSomUtlandssak = aksjonspunktKoderMedStatusListe.stream()
+                .anyMatch(AksjonspunktDto::erAutomatiskMarkertSomUtenlandssak);
+        boolean erManueltMarkert = erMarkertManueltSomUtlandssak != null ? erMarkertManueltSomUtlandssak : false;
+        return erAutomatiskMarkertSomUtlandssak || erManueltMarkert;
     }
 
     public void håndterOppgaveEgenskapUtbetalingTilBruker(Boolean harRefusjonskrav, Oppgave oppgave) {

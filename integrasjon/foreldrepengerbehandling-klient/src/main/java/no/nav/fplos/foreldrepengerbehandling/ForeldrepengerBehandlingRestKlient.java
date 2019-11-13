@@ -8,6 +8,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -137,7 +138,8 @@ public class ForeldrepengerBehandlingRestKlient {
 
     private <T> Optional<T> hentFraResourceLink(ResourceLink resourceLink, Class<T> clazz) {
         URI uri = URI.create(endpointFpsakRestBase + resourceLink.getHref());
-        return "POST".equals(resourceLink.getType().name()) ? oidcRestClient.postReturnsOptional(uri, resourceLink.getRequestPayload(), clazz)
+        return "POST".equals(resourceLink.getType().name())
+                ? oidcRestClient.postReturnsOptional(uri, resourceLink.getRequestPayload(), clazz)
                 : oidcRestClient.getReturnsOptional(uri, clazz);
     }
 

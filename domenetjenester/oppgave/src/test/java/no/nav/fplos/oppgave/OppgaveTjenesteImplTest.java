@@ -88,14 +88,14 @@ public class OppgaveTjenesteImplTest {
     }
 
     private List<OppgaveFiltrering> leggInnEtSettMedLister(int antallLister){
-        List<OppgaveFiltrering> oppgaveFiltrerings = new ArrayList<>();
+        List<OppgaveFiltrering> filtre = new ArrayList<>();
         for(int i = 0; i< antallLister; i++) {
             OppgaveFiltrering oppgaveFiltrering = OppgaveFiltrering.builder().medNavn("Test " + i).medSortering(KøSortering.BEHANDLINGSFRIST).medAvdeling(avdelingDrammen).build();
             entityManager.persist(oppgaveFiltrering);
-            oppgaveFiltrerings.add(oppgaveFiltrering);
+            filtre.add(oppgaveFiltrering);
         }
         entityManager.flush();
-        return oppgaveFiltrerings;
+        return filtre;
     }
 
     @Test
