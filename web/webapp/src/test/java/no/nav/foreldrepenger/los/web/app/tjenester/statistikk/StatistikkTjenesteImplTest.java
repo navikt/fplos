@@ -151,13 +151,12 @@ public class StatistikkTjenesteImplTest {
 
     private void leggInnEttSettMedOppgaveEventer() {
 
-        EksternIdentifikator ekstId1 = repositoryProvider.getEksternIdentifikatorRepository().finnEllerOpprettEksternId("FPSAK","1");
-        EksternIdentifikator ekstId2 = repositoryProvider.getEksternIdentifikatorRepository().finnEllerOpprettEksternId("FPSAK","2");
-        EksternIdentifikator ekstId3 = repositoryProvider.getEksternIdentifikatorRepository().finnEllerOpprettEksternId("FPSAK","3");
-        EksternIdentifikator ekstId4 = repositoryProvider.getEksternIdentifikatorRepository().finnEllerOpprettEksternId("FPSAK","4");
-        EksternIdentifikator ekstId5 = repositoryProvider.getEksternIdentifikatorRepository().finnEllerOpprettEksternId("FPSAK","5");
-        EksternIdentifikator ekstId6 = repositoryProvider.getEksternIdentifikatorRepository().finnEllerOpprettEksternId("FPSAK","6");
-        entityManager.flush();
+        EksternIdentifikator ekstId1 = repositoryProvider.getEksternIdentifikatorRepository().lagre(new EksternIdentifikator("FPSAK","1"));
+        EksternIdentifikator ekstId2 = repositoryProvider.getEksternIdentifikatorRepository().lagre(new EksternIdentifikator("FPSAK","2"));
+        EksternIdentifikator ekstId3 = repositoryProvider.getEksternIdentifikatorRepository().lagre(new EksternIdentifikator("FPSAK","3"));
+        EksternIdentifikator ekstId4 = repositoryProvider.getEksternIdentifikatorRepository().lagre(new EksternIdentifikator("FPSAK","4"));
+        EksternIdentifikator ekstId5 = repositoryProvider.getEksternIdentifikatorRepository().lagre(new EksternIdentifikator("FPSAK","5"));
+        EksternIdentifikator ekstId6 = repositoryProvider.getEksternIdentifikatorRepository().lagre(new EksternIdentifikator("FPSAK","6"));
 
         entityManager.persist(Oppgave.builder().dummyOppgave(AVDELING_DRAMMEN_ENHET).medBehandlingId(1L).medSystem("FPSAK").medEksternId(ekstId1.getId()).build());
         entityManager.persist(Oppgave.builder().dummyOppgave(AVDELING_DRAMMEN_ENHET).medBehandlingId(2L).medSystem("FPSAK").medEksternId(ekstId2.getId()).build());
