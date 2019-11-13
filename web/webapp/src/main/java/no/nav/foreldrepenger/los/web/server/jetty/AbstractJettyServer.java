@@ -27,7 +27,7 @@ import org.eclipse.jetty.webapp.WebXmlConfiguration;
 import no.nav.vedtak.sikkerhetsfilter.SecurityFilter;
 
 abstract class AbstractJettyServer {
-    
+
     /**
      * @see AbstractNetworkConnector#getHost()
      */
@@ -110,21 +110,21 @@ abstract class AbstractJettyServer {
     protected WebAppContext createContext(AppKonfigurasjon appKonfigurasjon) throws IOException {
         WebAppContext webAppContext = new WebAppContext();
         webAppContext.setParentLoaderPriority(true);
-        
+
         // må hoppe litt bukk for å hente web.xml fra classpath i stedet for fra filsystem.
-        String descriptor = Resource.newClassPathResource("/WEB-INF/web.xml").getURI().toURL().toExternalForm();
+        String descriptor;
+        try (var resource = Resource.newClassPathResource("/WEB-INF/web.xml")) {
+            descriptor = resource.getURI().toURL().toExternalForm();
+        }
         webAppContext.setDescriptor(descriptor);
         webAppContext.setBaseResource(createResourceCollection());
         webAppContext.setContextPath(appKonfigurasjon.getContextPath());
         webAppContext.setConfigurations(CONFIGURATIONS);
-    //    webAppContext.setAttribute("org.eclipse.jetty.server.webapp.ContainerIncludeJarPattern", "^.*resteasy-.*.jar$|^.*felles-.*.jar$");
-        webAppContext.setAttribute("org.eclipse.jetty.server.webapp.ContainerIncludeJarPattern", ".*resteasy-.*.jar.*|.*felles-.*.jar.*|.*app.*jar.*|.*/classes/.*");
-        webAppContext.setAttribute("org.eclipse.jetty.annotations.multiThreaded", false);
+        webAppContext.setAttribute("org.eclipse.jetty.server.webapp.WebInfIncludeJarPattern", "^.*resteasy-.*.jar$|^.*felles-.*.jar$");
         webAppContext.setSecurityHandler(createSecurityHandler());
-
         return webAppContext;
     }
-    
+
 
     protected HttpConfiguration createHttpConfiguration() {
         // Create HTTP Config
