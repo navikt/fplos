@@ -10,6 +10,9 @@ import org.junit.Test;
 import javax.persistence.EntityManager;
 import java.util.Optional;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -27,21 +30,61 @@ public class EksternIdentifikatorRepositoryImplTest {
     }
 
     @Test
-    public void testFinnIdentifikator(){
+    public void testFinnEksisterendeIdentifikator(){
         leggInnEttSettMedEksterneIdentifikatorer();
         Optional<EksternIdentifikator> eksternId = eksternIdentifikatorRepository.finnIdentifikator("FPSAK", "2");
         assertTrue(eksternId.isPresent());
+        assertNotNull(eksternId.get().getId());
+    }
+
+    @Test
+    public void testFinnerIkkeIdentifikator(){
+        leggInnEttSettMedEksterneIdentifikatorer();
+        Optional<EksternIdentifikator> eksternId = eksternIdentifikatorRepository.finnIdentifikator("FPSAK", "6");
+        assertTrue(eksternId.isEmpty());
+        assertFalse(eksternId.isPresent());
     }
 
     @Test
     public void testFinnEllerOpprettEksternId(){
         leggInnEttSettMedEksterneIdentifikatorer();
-        EksternIdentifikator ekststerendeEksternId = eksternIdentifikatorRepository.finnEllerOpprettEksternId("FPSAK", "2");
-        assertNotNull(ekststerendeEksternId);
+        EksternIdentifikator eksisterendeEksternId = eksternIdentifikatorRepository.finnEllerOpprettEksternId("FPSAK", "2");
+        assertNotNull(eksisterendeEksternId);
+        assertNotNull(eksisterendeEksternId.getId());
 
         EksternIdentifikator nyEksternId = eksternIdentifikatorRepository.finnEllerOpprettEksternId("FPSAK", "6");
         assertNotNull(nyEksternId);
+        assertNotNull(nyEksternId.getId());
     }
+
+    @Test
+    public void testIdentifikatorMedSammeEksternRefFraUlikeSystemErUlike(){
+        leggInnEttSettMedEksterneIdentifikatorer();
+        EksternIdentifikator fpsakEksternId = eksternIdentifikatorRepository.finnEllerOpprettEksternId("FPSAK", "3");
+        assertNotNull(fpsakEksternId);
+        assertNotNull(fpsakEksternId.getId());
+        EksternIdentifikator fptilbakeEksternId = eksternIdentifikatorRepository.finnEllerOpprettEksternId("FPTILBAKE", "3");
+        assertNotNull(fptilbakeEksternId);
+        assertNotNull(fptilbakeEksternId.getId());
+        assertNotEquals(fpsakEksternId.getId(),fptilbakeEksternId.getId());
+    }
+
+    @Test
+    public void testFinnIdentifikatorOgFinnEllerOpprettEksternIdReturnererSammeVerdiForEksisterendeEksternId() {
+        leggInnEttSettMedEksterneIdentifikatorer();
+
+        Optional<EksternIdentifikator> eksisterendeEksternId_1 = eksternIdentifikatorRepository.finnIdentifikator("FPSAK", "2");
+        assertTrue(eksisterendeEksternId_1.isPresent());
+        assertNotNull(eksisterendeEksternId_1.get().getId());
+
+        EksternIdentifikator eksisterendeEksternId_2 = eksternIdentifikatorRepository.finnEllerOpprettEksternId("FPSAK", "2");
+        assertNotNull(eksisterendeEksternId_2);
+        assertNotNull(eksisterendeEksternId_2.getId());
+
+        assertEquals(eksisterendeEksternId_1.get().getId(), eksisterendeEksternId_2.getId());
+
+    }
+
 
     private void leggInnEttSettMedEksterneIdentifikatorer() {
         eksternIdentifikatorRepository.lagre(new EksternIdentifikator("FPSAK", "1"));
