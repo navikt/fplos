@@ -235,16 +235,11 @@ public class OppgaveRepositoryImpl implements OppgaveRepository {
 
     @Override
     public OppgaveFiltrering hentListe(Long listeId) {
-        return hentListeOptional(listeId).orElse(null);
-
-    }
-
-    public Optional<OppgaveFiltrering> hentListeOptional(Long listeId) {
         TypedQuery<OppgaveFiltrering> listeTypedQuery = getEntityManager()
                 .createQuery("FROM OppgaveFiltrering l WHERE l.id = :id " +
                         OPPGAVEFILTRERING_SORTERING_NAVN, OppgaveFiltrering.class)
                 .setParameter("id", listeId);
-        return listeTypedQuery.getResultList().stream().findFirst();
+        return listeTypedQuery.getResultStream().findFirst().orElse(null);
     }
 
     @Override
