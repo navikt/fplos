@@ -3,6 +3,7 @@ package no.nav.fplos.foreldrepengerbehandling;
 import java.math.BigDecimal;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -65,6 +66,7 @@ public class ForeldrepengerBehandlingRestKlient {
         try {
             LOGGER.info("Slår opp i fpsak for behandlingId {} per GET-kall til {}", behandlingId, uriBuilder.build());
             UtvidetBehandlingDto response = oidcRestClient.get(uriBuilder.build(), UtvidetBehandlingDto.class);
+            List<ResourceLink> links = response.getLinks();
             BehandlingFpsak.Builder builder = BehandlingFpsak.builder()
                     .medBehandlingId(response.getId())
                     .medType(response.getType().getKode())
@@ -72,12 +74,11 @@ public class ForeldrepengerBehandlingRestKlient {
                     .medBehandlendeEnhetNavn(response.getBehandlendeEnhetNavn())
                     .medStatus(response.getStatus().getKode())
                     .medAnsvarligSaksbehandler(response.getAnsvarligSaksbehandler())
-                    .medBehandlingstidFrist(response.getBehandlingsfristTid());
+                    .medBehandlingstidFrist(response.getBehandlingsfristTid())
+                    .medFørsteUttaksdag(hentFørsteUttaksdato(links))
+                    .medHarRefusjonskrav(hentHarRefusjonskrav(links))
+                    .medAksjonspunkter(hentAksjonspunkter(links));
 
-            List<ResourceLink> links = response.getLinks();
-            hentAksjonspunkterRest(behandlingId, builder, links);
-            hentInntektRest(behandlingId, builder, links);
-            hentYtelsefordelingRest(behandlingId, builder, links);
             hentUttakKontrollerFaktaPerioder(behandlingId, builder, links);
             return builder.build();
         } catch (URISyntaxException | IntegrasjonException e) {
@@ -88,16 +89,11 @@ public class ForeldrepengerBehandlingRestKlient {
         }
     }
 
-    private void hentAksjonspunkterRest(Long behandlingId, BehandlingFpsak.Builder builder, List<ResourceLink> links) {
-        Optional<ResourceLink> aksjonspunkterLink = velgLink(links, AKSJONSPUNKTER_LINK);
-        if (aksjonspunkterLink.isPresent()) {
-            Optional<AksjonspunktDto[]> aksjonspunktDtos = hentFraResourceLink(aksjonspunkterLink.get(), AksjonspunktDto[].class);
-            if (aksjonspunktDtos.isPresent()) {
-                builder.medAksjonspunkter(aksjonspunktFra(aksjonspunktDtos.get()));
-            } else {
-                LOGGER.error("Feilet å hente aksjonspunkter for behandlingId " + behandlingId);
-            }
-        }
+    private List<Aksjonspunkt> hentAksjonspunkter(List<ResourceLink> links) {
+        return velgLink(links, AKSJONSPUNKTER_LINK)
+                .flatMap(ap -> hentFraResourceLink(ap, AksjonspunktDto[].class))
+                .map(ForeldrepengerBehandlingRestKlient::aksjonspunktFra)
+                .orElse(Collections.emptyList());
     }
 
     private static List<Aksjonspunkt> aksjonspunktFra(AksjonspunktDto[] aksjonspunktDtos) {
@@ -114,28 +110,18 @@ public class ForeldrepengerBehandlingRestKlient {
         return liste;
     }
 
-    private void hentInntektRest(Long behandlingId, BehandlingFpsak.Builder builder, List<ResourceLink> links) {
-        Optional<ResourceLink> inntekterLink = velgLink(links, INNTEKT_ARBEID_YTELSE_LINK);
-        if (inntekterLink.isPresent()) {
-            Optional<InntektArbeidYtelseDto> iay = hentFraResourceLink(inntekterLink.get(), InntektArbeidYtelseDto.class);
-            if (iay.isPresent()) {
-                builder.medHarRefusjonskrav(harRefusjonskravFra(iay.get()));
-            } else {
-                LOGGER.error("Feilet å hente inntekt for behandlingId " + behandlingId);
-            }
-        }
+    private Boolean hentHarRefusjonskrav(List<ResourceLink> links) {
+        return velgLink(links, INNTEKT_ARBEID_YTELSE_LINK)
+                .flatMap(iay -> hentFraResourceLink(iay, InntektArbeidYtelseDto.class))
+                .map(ForeldrepengerBehandlingRestKlient::harRefusjonskravFra)
+                .orElse(null);
     }
 
-    private void hentYtelsefordelingRest(Long behandlingId, BehandlingFpsak.Builder builder, List<ResourceLink> links) {
-        Optional<ResourceLink> ytelseFordelingLink = velgLink(links, YTELSEFORDELING_LINK);
-        if (ytelseFordelingLink.isPresent()) {
-            Optional<YtelseFordelingDto> ytelseFordeling = hentFraResourceLink(ytelseFordelingLink.get(), YtelseFordelingDto.class);
-            if (ytelseFordeling.isPresent()) {
-                builder.medFørsteUttaksdag(ytelseFordeling.get().getFørsteUttaksdato());
-            } else {
-                LOGGER.error("Feilet å hente ytelsefordeling for behandlingId " + behandlingId);
-            }
-        }
+    private LocalDate hentFørsteUttaksdato(List<ResourceLink> links) {
+        return velgLink(links, YTELSEFORDELING_LINK)
+                .flatMap(yf -> hentFraResourceLink(yf, YtelseFordelingDto.class))
+                .map(YtelseFordelingDto::getFørsteUttaksdato)
+                .orElse(null);
     }
 
     private void hentUttakKontrollerFaktaPerioder(Long behandlingId, BehandlingFpsak.Builder builder, List<ResourceLink> links) {
