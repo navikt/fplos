@@ -106,11 +106,11 @@ public class ForeldrepengerBehandlingRestKlient {
         return liste;
     }
 
-    private Boolean hentHarRefusjonskrav(List<ResourceLink> links) {
+    private boolean hentHarRefusjonskrav(List<ResourceLink> links) {
         return velgLink(links, INNTEKT_ARBEID_YTELSE_LINK)
                 .flatMap(iay -> hentFraResourceLink(iay, InntektArbeidYtelseDto.class))
                 .map(ForeldrepengerBehandlingRestKlient::harRefusjonskravFra)
-                .orElse(null);
+                .orElse(false);
     }
 
     private LocalDate hentFørsteUttaksdato(List<ResourceLink> links) {

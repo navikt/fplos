@@ -144,13 +144,17 @@ public class FpsakEventHandler {
                .findFirst();
     }
 
-    private void reserverOppgaveFraTidligereReservasjon(boolean reserverOppgave, Reservasjon reservasjon, Oppgave oppgave) {
+    private void reserverOppgaveFraTidligereReservasjon(boolean reserverOppgave,
+                                                        Reservasjon reservasjon,
+                                                        Oppgave oppgave) {
         if (reserverOppgave && reservasjon != null) {
             oppgaveRepository.reserverOppgaveFraTidligereReservasjon(oppgave.getId(), reservasjon);
         }
     }
 
-    private void avsluttOppgaveHvisÅpen(Long behandlingId, List<OppgaveEventLogg> oppgaveEventLogger, String behandlendeEnhet) {
+    private void avsluttOppgaveHvisÅpen(Long behandlingId,
+                                        List<OppgaveEventLogg> oppgaveEventLogger,
+                                        String behandlendeEnhet) {
         if (!oppgaveEventLogger.isEmpty() && ÅPNINGS_EVENTER.contains(oppgaveEventLogger.get(0).getEventType())){
             loggEvent(behandlingId, OppgaveEventType.LUKKET, AndreKriterierType.UKJENT, behandlendeEnhet);
             oppgaveRepository.avsluttOppgave(behandlingId);
@@ -161,15 +165,24 @@ public class FpsakEventHandler {
         return oppgaveRepository.gjenåpneOppgave(bpeDto.getBehandlingId());
     }
 
-    private void loggEvent(Long behandlingId, OppgaveEventType oppgaveEventType, AndreKriterierType andreKriterierType, String behandlendeEnhet) {
+    private void loggEvent(Long behandlingId,
+                           OppgaveEventType oppgaveEventType,
+                           AndreKriterierType andreKriterierType,
+                           String behandlendeEnhet) {
         loggEvent(behandlingId, oppgaveEventType, andreKriterierType, behandlendeEnhet, Optional.empty());
     }
 
-    private void loggEvent(Long behandlingId, OppgaveEventType oppgaveEventType, AndreKriterierType andreKriterierType, String behandlendeEnhet, Optional<Aksjonspunkt> aksjonspunktDto) {
+    private void loggEvent(Long behandlingId,
+                           OppgaveEventType oppgaveEventType,
+                           AndreKriterierType andreKriterierType,
+                           String behandlendeEnhet,
+                           Optional<Aksjonspunkt> aksjonspunktDto) {
         if (aksjonspunktDto.isPresent() && aksjonspunktDto.get().getFristTid() != null) {
-            oppgaveRepository.lagre(new OppgaveEventLogg(behandlingId, oppgaveEventType, andreKriterierType, behandlendeEnhet, aksjonspunktDto.get().getFristTid()));
+            oppgaveRepository.lagre(new OppgaveEventLogg(behandlingId, oppgaveEventType,
+                    andreKriterierType, behandlendeEnhet, aksjonspunktDto.get().getFristTid()));
         } else {
-            oppgaveRepository.lagre(new OppgaveEventLogg(behandlingId, oppgaveEventType, andreKriterierType, behandlendeEnhet));
+            oppgaveRepository.lagre(new OppgaveEventLogg(behandlingId, oppgaveEventType,
+                    andreKriterierType, behandlendeEnhet));
         }
     }
 
@@ -194,13 +207,13 @@ public class FpsakEventHandler {
                 .build());
     }
 
-    public void håndterOppgaveEgenskapUtbetalingTilBruker(Boolean harRefusjonskrav, Oppgave oppgave) {
+    public void håndterOppgaveEgenskapUtbetalingTilBruker(boolean harRefusjonskrav, Oppgave oppgave) {
         List<OppgaveEgenskap> oppgaveEgenskaper = oppgaveRepository.hentOppgaveEgenskaper(oppgave.getId());
-        OppgaveEgenskap kriterieTilknyttetOppgave = eksisterendeOppgaveEgenskapForKriterium(oppgaveEgenskaper, AndreKriterierType.UTBETALING_TIL_BRUKER);
-        if (harRefusjonskrav != null && !harRefusjonskrav) {
-            aktiverEllerLeggTilOppgaveEgenskap(kriterieTilknyttetOppgave, oppgave, AndreKriterierType.UTBETALING_TIL_BRUKER);
+        OppgaveEgenskap utbetalingTilBruker = eksisterendeOppgaveEgenskapForKriterium(oppgaveEgenskaper, AndreKriterierType.UTBETALING_TIL_BRUKER);
+        if (!harRefusjonskrav) {
+            aktiverEllerLeggTilOppgaveEgenskap(utbetalingTilBruker, oppgave, AndreKriterierType.UTBETALING_TIL_BRUKER);
         } else {
-            deaktiverOppgaveEgenskap(kriterieTilknyttetOppgave);
+            deaktiverOppgaveEgenskap(utbetalingTilBruker);
         }
     }
 
@@ -224,12 +237,14 @@ public class FpsakEventHandler {
         }
     }
 
-    private void aktiverEllerLeggTilOppgaveEgenskap(OppgaveEgenskap kriterieTilknyttetOppgave, Oppgave oppgave, AndreKriterierType andreKriterierType) {
-        if (kriterieTilknyttetOppgave != null) {
-            kriterieTilknyttetOppgave.aktiverOppgaveEgenskap();
-            oppgaveRepository.lagre(kriterieTilknyttetOppgave);
+    private void aktiverEllerLeggTilOppgaveEgenskap(OppgaveEgenskap kriteriumEksisterende,
+                                                    Oppgave oppgave,
+                                                    AndreKriterierType kriterium) {
+        if (kriteriumEksisterende != null) {
+            kriteriumEksisterende.aktiverOppgaveEgenskap();
+            oppgaveRepository.lagre(kriteriumEksisterende);
         } else {
-            oppgaveRepository.lagre(new OppgaveEgenskap(oppgave, andreKriterierType));
+            oppgaveRepository.lagre(new OppgaveEgenskap(oppgave, kriterium));
         }
     }
 
@@ -240,7 +255,8 @@ public class FpsakEventHandler {
         }
     }
 
-    private static OppgaveEgenskap eksisterendeOppgaveEgenskapForKriterium(List<OppgaveEgenskap> oppgaveEgenskaper, AndreKriterierType targetKriterium) {
+    private static OppgaveEgenskap eksisterendeOppgaveEgenskapForKriterium(List<OppgaveEgenskap> oppgaveEgenskaper,
+                                                                           AndreKriterierType targetKriterium) {
         return safeStream(oppgaveEgenskaper)
                 .filter(e -> e.getAndreKriterierType().equals(targetKriterium))
                 .findAny()
