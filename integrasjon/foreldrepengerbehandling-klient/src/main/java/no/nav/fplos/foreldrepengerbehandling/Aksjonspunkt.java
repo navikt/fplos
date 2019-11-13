@@ -1,5 +1,7 @@
 package no.nav.fplos.foreldrepengerbehandling;
 
+import no.nav.fplos.foreldrepengerbehandling.dto.aksjonspunkt.AksjonspunktDto;
+
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -77,6 +79,15 @@ public class Aksjonspunkt {
 
     public boolean erUtenlandssak() {
         return erAutomatiskMarkertSomUtenlandssak() || erManueltMarkertSomUtenlandssak();
+    }
+
+    public static Aksjonspunkt aksjonspunktFra(AksjonspunktDto aksjonspunktDto) {
+        return Aksjonspunkt.builder()
+                .medDefinisjon(aksjonspunktDto.getDefinisjon().getKode())
+                .medStatus(aksjonspunktDto.getStatus().getKode())
+                .medBegrunnelse(aksjonspunktDto.getBegrunnelse())
+                .medFristTid(aksjonspunktDto.getFristTid())
+                .build();
     }
 
     public static Aksjonspunkt.Builder builder() {

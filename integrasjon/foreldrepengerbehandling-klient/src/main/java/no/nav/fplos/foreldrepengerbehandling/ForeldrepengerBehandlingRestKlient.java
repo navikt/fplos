@@ -31,6 +31,8 @@ import org.apache.http.client.utils.URIBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static no.nav.fplos.foreldrepengerbehandling.Aksjonspunkt.aksjonspunktFra;
+
 @ApplicationScoped
 public class ForeldrepengerBehandlingRestKlient {
     private static final Logger LOGGER = LoggerFactory.getLogger(ForeldrepengerBehandlingRestKlient.class);
@@ -92,20 +94,14 @@ public class ForeldrepengerBehandlingRestKlient {
     private List<Aksjonspunkt> hentAksjonspunkter(List<ResourceLink> links) {
         return velgLink(links, AKSJONSPUNKTER_LINK)
                 .flatMap(ap -> hentFraResourceLink(ap, AksjonspunktDto[].class))
-                .map(ForeldrepengerBehandlingRestKlient::aksjonspunktFra)
+                .map(ForeldrepengerBehandlingRestKlient::aksjonspunktFraDto)
                 .orElse(Collections.emptyList());
     }
 
-    private static List<Aksjonspunkt> aksjonspunktFra(AksjonspunktDto[] aksjonspunktDtos) {
+    private static List<Aksjonspunkt> aksjonspunktFraDto(AksjonspunktDto[] aksjonspunktDtos) {
         List<Aksjonspunkt> liste = new ArrayList<>();
         for (AksjonspunktDto aksjonspunktDto : aksjonspunktDtos) {
-            Aksjonspunkt aksjonspunkt = Aksjonspunkt.builder()
-                    .medDefinisjon(aksjonspunktDto.getDefinisjon().getKode())
-                    .medStatus(aksjonspunktDto.getStatus().getKode())
-                    .medBegrunnelse(aksjonspunktDto.getBegrunnelse())
-                    .medFristTid(aksjonspunktDto.getFristTid())
-                    .build();
-            liste.add(aksjonspunkt);
+            liste.add(aksjonspunktFra(aksjonspunktDto));
         }
         return liste;
     }
