@@ -47,12 +47,26 @@ public class OppgaveEventLogg extends BaseEntitet{
         //For automatisk generering
     }
 
-    public OppgaveEventLogg(Long behandlingId, Long eksternId, OppgaveEventType eventType, AndreKriterierType andreKriterierType, String behandlendeEnhet, LocalDateTime fristTid) {
-        this(behandlingId, eksternId, eventType, andreKriterierType, behandlendeEnhet);
+    public OppgaveEventLogg(Long eksternId, OppgaveEventType eventType, AndreKriterierType andreKriterierType, String behandlendeEnhet, LocalDateTime fristTid) {
+        this(eksternId, eventType, andreKriterierType, behandlendeEnhet);
         this.fristTid = fristTid;
     }
 
-    public OppgaveEventLogg(Long behandlingId, Long eksternId, OppgaveEventType eventType, AndreKriterierType andreKriterierType, String behandlendeEnhet) {
+    public OppgaveEventLogg(Long eksternId, OppgaveEventType eventType, AndreKriterierType andreKriterierType, String behandlendeEnhet ) {
+        this.eventType = eventType;
+        this.andreKriterierType = andreKriterierType;
+        this.behandlendeEnhet = behandlendeEnhet;
+        this.eksternId = eksternId;
+    }
+
+    @Deprecated
+    public OppgaveEventLogg(Long eksternId, OppgaveEventType eventType, AndreKriterierType andreKriterierType, String behandlendeEnhet, LocalDateTime fristTid, Long behandlingId) {
+        this(eksternId, eventType, andreKriterierType, behandlendeEnhet, behandlingId);
+        this.fristTid = fristTid;
+    }
+
+    @Deprecated
+    public OppgaveEventLogg(Long eksternId, OppgaveEventType eventType, AndreKriterierType andreKriterierType, String behandlendeEnhet, Long behandlingId ) {
         this.behandlingId = behandlingId;
         this.eventType = eventType;
         this.andreKriterierType = andreKriterierType;

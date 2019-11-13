@@ -165,11 +165,11 @@ public class StatistikkTjenesteImplTest {
         entityManager.persist(Oppgave.builder().dummyOppgave(AVDELING_DRAMMEN_ENHET).medBehandlingId(5L).medSystem("FPSAK").medEksternId(ekstId5.getId()).build());
         entityManager.persist(Oppgave.builder().dummyOppgave(AVDELING_DRAMMEN_ENHET).medFagsakYtelseType(FagsakYtelseType.ENGANGSTØNAD).medBehandlingId(6L).medSystem("FPSAK").medEksternId(ekstId6.getId()).build());
 
-        entityManager.persist(new OppgaveEventLogg(1L, ekstId1.getId(), OppgaveEventType.OPPRETTET,AndreKriterierType.UKJENT, AVDELING_DRAMMEN_ENHET));
-        entityManager.persist(new OppgaveEventLogg(2L, ekstId2.getId(), OppgaveEventType.OPPRETTET,AndreKriterierType.UKJENT, AVDELING_DRAMMEN_ENHET));
-        entityManager.persist(new OppgaveEventLogg(3L, ekstId3.getId(), OppgaveEventType.OPPRETTET,AndreKriterierType.UKJENT, AVDELING_DRAMMEN_ENHET));
-        entityManager.persist(new OppgaveEventLogg(4L, ekstId4.getId(), OppgaveEventType.MANU_VENT,AndreKriterierType.UKJENT, AVDELING_DRAMMEN_ENHET));
-        entityManager.persist(new OppgaveEventLogg(5L, ekstId5.getId(), OppgaveEventType.GJENAPNET,AndreKriterierType.UKJENT, AVDELING_DRAMMEN_ENHET));
+        entityManager.persist(new OppgaveEventLogg( ekstId1.getId(), OppgaveEventType.OPPRETTET,AndreKriterierType.UKJENT, AVDELING_DRAMMEN_ENHET, 1L));
+        entityManager.persist(new OppgaveEventLogg( ekstId2.getId(), OppgaveEventType.OPPRETTET,AndreKriterierType.UKJENT, AVDELING_DRAMMEN_ENHET, 2L));
+        entityManager.persist(new OppgaveEventLogg( ekstId3.getId(), OppgaveEventType.OPPRETTET,AndreKriterierType.UKJENT, AVDELING_DRAMMEN_ENHET, 3L));
+        entityManager.persist(new OppgaveEventLogg( ekstId4.getId(), OppgaveEventType.MANU_VENT,AndreKriterierType.UKJENT, AVDELING_DRAMMEN_ENHET, 4L));
+        entityManager.persist(new OppgaveEventLogg( ekstId5.getId(), OppgaveEventType.GJENAPNET,AndreKriterierType.UKJENT, AVDELING_DRAMMEN_ENHET, 5L));
 
         //for å ungå samtidighetsproblemer med opprettettidspunkt
         entityManager.flush();
@@ -177,12 +177,12 @@ public class StatistikkTjenesteImplTest {
         entityManager.flush();
         repoRule.getRepository().hentAlle(OppgaveEventLogg.class).forEach(oppgave -> entityManager.refresh(oppgave));
 
-        entityManager.persist(new OppgaveEventLogg(1L, ekstId1.getId(), OppgaveEventType.LUKKET,AndreKriterierType.UKJENT, AVDELING_DRAMMEN_ENHET));
-        entityManager.persist(new OppgaveEventLogg(2L, ekstId2.getId(), OppgaveEventType.MANU_VENT,AndreKriterierType.UKJENT, AVDELING_DRAMMEN_ENHET));
-        entityManager.persist(new OppgaveEventLogg(3L, ekstId3.getId(), OppgaveEventType.VENT,AndreKriterierType.UKJENT, AVDELING_DRAMMEN_ENHET));
-        entityManager.persist(new OppgaveEventLogg(4L, ekstId4.getId(), OppgaveEventType.OPPRETTET,AndreKriterierType.UKJENT, AVDELING_DRAMMEN_ENHET));
-        entityManager.persist(new OppgaveEventLogg(5L, ekstId5.getId(), OppgaveEventType.MANU_VENT,AndreKriterierType.UKJENT, AVDELING_DRAMMEN_ENHET));
-        entityManager.persist(new OppgaveEventLogg(6L, ekstId6.getId(), OppgaveEventType.MANU_VENT,AndreKriterierType.UKJENT, AVDELING_DRAMMEN_ENHET));
+        entityManager.persist(new OppgaveEventLogg(ekstId1.getId(), OppgaveEventType.LUKKET,AndreKriterierType.UKJENT, AVDELING_DRAMMEN_ENHET,1L));
+        entityManager.persist(new OppgaveEventLogg(ekstId2.getId(), OppgaveEventType.MANU_VENT,AndreKriterierType.UKJENT, AVDELING_DRAMMEN_ENHET,2L));
+        entityManager.persist(new OppgaveEventLogg(ekstId3.getId(), OppgaveEventType.VENT,AndreKriterierType.UKJENT, AVDELING_DRAMMEN_ENHET,3L));
+        entityManager.persist(new OppgaveEventLogg(ekstId4.getId(), OppgaveEventType.OPPRETTET,AndreKriterierType.UKJENT, AVDELING_DRAMMEN_ENHET,4L));
+        entityManager.persist(new OppgaveEventLogg(ekstId5.getId(), OppgaveEventType.MANU_VENT,AndreKriterierType.UKJENT, AVDELING_DRAMMEN_ENHET,5L));
+        entityManager.persist(new OppgaveEventLogg(ekstId6.getId(), OppgaveEventType.MANU_VENT,AndreKriterierType.UKJENT, AVDELING_DRAMMEN_ENHET,6L));
 
         entityManager.flush();
     }

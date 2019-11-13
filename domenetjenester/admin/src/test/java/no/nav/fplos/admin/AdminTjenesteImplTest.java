@@ -64,7 +64,7 @@ public class AdminTjenesteImplTest {
 
     @Test
     public void testHentEvent(){
-        oppgaveRepository.lagre(new OppgaveEventLogg(førstegangOppgave.getBehandlingId(), førstegangOppgave.getEksternId(), OppgaveEventType.OPPRETTET, null, null));
+        oppgaveRepository.lagre(new OppgaveEventLogg(førstegangOppgave.getEksternId(), OppgaveEventType.OPPRETTET, null, null, førstegangOppgave.getBehandlingId()));
         List<OppgaveEventLogg> oppgave = adminTjeneste.hentEventer(førstegangOppgave.getBehandlingId());
         assertThat(oppgave).isNotEmpty();
     }

@@ -359,7 +359,11 @@ public class OppgaveRepositoryImpl implements OppgaveRepository {
         return oppgave;
     }
 
+    /**
+     * @deprecated Bruk gjenåpneOppgaveForEksternId(Long) i stedet
+     */
     @Override
+    @Deprecated
     public Oppgave gjenåpneOppgave(Long behandlingId) {
         List<Oppgave> oppgaver = hentOppgaver(behandlingId);
         Oppgave sisteOppgave = oppgaver.stream()
@@ -374,8 +378,41 @@ public class OppgaveRepositoryImpl implements OppgaveRepository {
     }
 
     @Override
+    public Oppgave gjenåpneOppgaveForEksternId(Long eksternId) {
+        List<Oppgave> oppgaver = hentOppgaverForEksternId(eksternId);
+        Oppgave sisteOppgave = oppgaver.stream()
+                .max(Comparator.comparing(Oppgave::getOpprettetTidspunkt))
+                .orElse(null);
+        if (sisteOppgave != null) {
+            sisteOppgave.gjenåpneOppgave();
+            internLagre(sisteOppgave);
+            entityManager.refresh(sisteOppgave);
+        }
+        return sisteOppgave;
+    }
+
+    /**
+     * @deprecated Bruk avsluttOppgaveForEksternId(Long) i stedet
+     */
+    @Override
+    @Deprecated
     public void avsluttOppgave(Long behandlingId) {
         List<Oppgave> oppgaver = hentOppgaver(behandlingId);
+        if (oppgaver.isEmpty()) {
+            return;
+        }
+        Oppgave nyesteOppgave = oppgaver.stream()
+                .max(Comparator.comparing(Oppgave::getOpprettetTidspunkt))
+                .orElse(null);
+        frigiEventuellReservasjon(nyesteOppgave.getReservasjon());
+        nyesteOppgave.avsluttOppgave();
+        internLagre(nyesteOppgave);
+        entityManager.refresh(nyesteOppgave);
+    }
+
+    @Override
+    public void avsluttOppgaveForEksternId(Long eksternId) {
+        List<Oppgave> oppgaver = hentOppgaverForEksternId(eksternId);
         if (oppgaver.isEmpty()) {
             return;
         }
@@ -415,8 +452,19 @@ public class OppgaveRepositoryImpl implements OppgaveRepository {
         internLagre(eventmottakFeillogg);
     }
 
+    /**
+     * @deprecated Bruk hentEventerForEksternId(Long) i stedet
+     */
+    @Deprecated
     @Override
-    public List<OppgaveEventLogg> hentEventer(Long eksternId) {
+    public List<OppgaveEventLogg> hentEventer(Long behandlingId) {
+        return getEntityManager().createQuery("FROM oppgaveEventLogg oel " +
+                "where oel.behandlingId = :behandlingId ORDER BY oel.id desc", OppgaveEventLogg.class)
+                .setParameter("behandlingId", behandlingId).getResultList();
+    }
+
+    @Override
+    public List<OppgaveEventLogg> hentEventerForEksternId(Long eksternId) {
         return getEntityManager().createQuery("FROM oppgaveEventLogg oel " +
                 "where oel.eksternId = :eksternId ORDER BY oel.id desc", OppgaveEventLogg.class)
                 .setParameter("eksternId", eksternId).getResultList();
@@ -439,10 +487,22 @@ public class OppgaveRepositoryImpl implements OppgaveRepository {
         internLagre(reservasjonEventLogg);
     }
 
+
+    /**
+     * @deprecated Bruk hentOppgaverForEksternId(Long) i stedet
+     */
+    @Deprecated
     private List<Oppgave> hentOppgaver(Long behandlingId) {
         return getEntityManager().createQuery(SELECT_FRA_OPPGAVE +
                 "WHERE o.behandlingId = :behandlingId ", Oppgave.class)
                 .setParameter("behandlingId", behandlingId)
+                .getResultList();
+    }
+
+    private List<Oppgave> hentOppgaverForEksternId(Long eksternId) {
+        return getEntityManager().createQuery(SELECT_FRA_OPPGAVE +
+                "WHERE o.eksternId = :eksternId ", Oppgave.class)
+                .setParameter("eksternId", eksternId)
                 .getResultList();
     }
 

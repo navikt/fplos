@@ -1,0 +1,83 @@
+package no.nav.fplos.kafkatjenester;
+
+import no.nav.foreldrepenger.loslager.oppgave.AndreKriterierType;
+import no.nav.foreldrepenger.loslager.oppgave.EksternIdentifikator;
+import no.nav.foreldrepenger.loslager.oppgave.Oppgave;
+import no.nav.foreldrepenger.loslager.oppgave.OppgaveEventLogg;
+import no.nav.foreldrepenger.loslager.oppgave.OppgaveEventType;
+import no.nav.foreldrepenger.loslager.repository.EksternIdentifikatorRepository;
+import no.nav.foreldrepenger.loslager.repository.OppgaveRepository;
+import no.nav.foreldrepenger.loslager.repository.OppgaveRepositoryProvider;
+import no.nav.fplos.foreldrepengerbehandling.dto.aksjonspunkt.AksjonspunktDto;
+import no.nav.vedtak.felles.integrasjon.kafka.BehandlingProsessEventDto;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+public abstract class FpEventHandler {
+
+    private static final Logger log = LoggerFactory.getLogger(FpEventHandler.class);
+
+    private OppgaveRepository oppgaveRepository;
+    private EksternIdentifikatorRepository eksternIdentifikatorRespository;
+
+    protected FpEventHandler() {
+    }
+
+    public FpEventHandler(OppgaveRepositoryProvider oppgaveRepositoryProvider) {
+        this.oppgaveRepository = oppgaveRepositoryProvider.getOppgaveRepository();
+        this.eksternIdentifikatorRespository = oppgaveRepositoryProvider.getEksternIdentifikatorRepository();
+    }
+
+    protected OppgaveRepository getOppgaveRepository() {
+        return oppgaveRepository;
+    }
+
+    protected EksternIdentifikatorRepository getEksternIdentifikatorRespository() {
+        return eksternIdentifikatorRespository;
+    }
+
+    protected void loggEvent(Long eksternId, OppgaveEventType oppgaveEventType, AndreKriterierType andreKriterierType, String behandlendeEnhet) {
+        oppgaveRepository.lagre(new OppgaveEventLogg(eksternId, oppgaveEventType, andreKriterierType, behandlendeEnhet));
+    }
+
+    protected void loggEvent(Long eksternId, OppgaveEventType oppgaveEventType, AndreKriterierType andreKriterierType, String behandlendeEnhet, LocalDateTime frist) {
+        oppgaveRepository.lagre(new OppgaveEventLogg(eksternId, oppgaveEventType, andreKriterierType, behandlendeEnhet, frist));
+    }
+
+    protected void avsluttOppgaveForEksternId(Long externId) {
+        oppgaveRepository.avsluttOppgaveForEksternId(externId);
+    }
+
+    protected void avsluttOppgaveOgLoggEvent(BehandlingProsessEventDto bpeDto, OppgaveEventType eventType, AksjonspunktDto aksjonspunkt){
+        Optional<EksternIdentifikator> eksternId = getEksternIdentifikatorRespository().finnIdentifikator(bpeDto.getFagsystem(), bpeDto.getId());
+        if(eksternId.isPresent()) {
+            avsluttOppgaveForEksternId(eksternId.get().getId());
+            loggEvent(eksternId.get().getId(), eventType, AndreKriterierType.UKJENT, bpeDto.getBehandlendeEnhet(), aksjonspunkt.getFristTid());
+        } else log.warn("Fant ikke eksternId som indikerer at der ikke finnes noen oppgave som kan avsluttes. Prosesshendelsen hadde ekstern referanse id {} for fagsystemet {}", bpeDto.getId(), bpeDto.getFagsystem() );
+    }
+
+    protected List<OppgaveEventLogg> hentEventerVedEksternId(String fagsystem, String eksternRefId) {
+        Optional<EksternIdentifikator> eksternId = getEksternIdentifikatorRespository().finnIdentifikator(fagsystem, eksternRefId);
+        if(eksternId.isPresent()){
+            return getOppgaveRepository().hentEventerForEksternId(eksternId.get().getId());
+        }
+        else return new ArrayList<>();
+    }
+
+    protected Oppgave gjenåpneOppgaveForEksternId(BehandlingProsessEventDto bpeDto) {
+        Optional<EksternIdentifikator> eksternId = eksternIdentifikatorRespository.finnIdentifikator(bpeDto.getFagsystem(), bpeDto.getId());
+        if(eksternId.isPresent()){
+            return oppgaveRepository.gjenåpneOppgaveForEksternId(eksternId.get().getId());
+        } else {
+            log.debug("Fant ikke eksternId som indikerer at der ikke finnes eksisterende oppgaver som kan gjenåpnes");
+            return null;
+        }
+    }
+
+    public abstract void prosesser(BehandlingProsessEventDto bpeDto);
+}
