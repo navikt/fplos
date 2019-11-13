@@ -8,6 +8,7 @@ import org.junit.Rule;
 import org.junit.Test;
 
 import javax.persistence.EntityManager;
+import javax.persistence.PersistenceException;
 import java.util.Optional;
 
 import static org.junit.Assert.assertEquals;
@@ -85,6 +86,11 @@ public class EksternIdentifikatorRepositoryImplTest {
 
     }
 
+    @Test(expected = PersistenceException.class)
+    public void testDobbeltlagringFeiler() {
+        eksternIdentifikatorRepository.lagre(new EksternIdentifikator("FPSAK", "1"));
+        eksternIdentifikatorRepository.lagre(new EksternIdentifikator("FPSAK", "1"));
+    }
 
     private void leggInnEttSettMedEksterneIdentifikatorer() {
         eksternIdentifikatorRepository.lagre(new EksternIdentifikator("FPSAK", "1"));
