@@ -38,11 +38,7 @@ public class FpsakEventHandler extends FpEventHandler {
 
     private static final Logger log = LoggerFactory.getLogger(FpsakEventHandler.class);
 
-    private KodeverkRepository kodeverkRepository;
-
     private ForeldrepengerBehandlingRestKlient foreldrePengerBehandlingRestKlient;
-
-    private static final List<OppgaveEventType> ÅPNINGS_EVENTER = Arrays.asList(OppgaveEventType.OPPRETTET, OppgaveEventType.GJENAPNET);
 
     public FpsakEventHandler(){
         //to make proxyable
@@ -52,7 +48,6 @@ public class FpsakEventHandler extends FpEventHandler {
     public FpsakEventHandler(OppgaveRepositoryProvider oppgaveRepositoryProvider,
                              ForeldrepengerBehandlingRestKlient foreldrePengerBehandlingRestKlient){
         super(oppgaveRepositoryProvider);
-        this.kodeverkRepository = oppgaveRepositoryProvider.getKodeverkRepository();
         this.foreldrePengerBehandlingRestKlient = foreldrePengerBehandlingRestKlient;
     }
 
@@ -157,16 +152,10 @@ public class FpsakEventHandler extends FpEventHandler {
                .getFristTid();
     }
 
-    private void reserverOppgaveFraTidligereReservasjon(boolean reserverOppgave,
-                                                        Reservasjon reservasjon,
-                                                        Oppgave oppgave) {
-        if (reserverOppgave && reservasjon != null) {
-            getOppgaveRepository().reserverOppgaveFraTidligereReservasjon(oppgave.getId(), reservasjon);
-        }
-    }
+
 
     private void avsluttOppgaveHvisÅpen(Long behandlingId, String fagsystem, List<OppgaveEventLogg> oppgaveEventLogger, String behandlendeEnhet) {
-        if (!oppgaveEventLogger.isEmpty() && ÅPNINGS_EVENTER.contains(oppgaveEventLogger.get(0).getEventType())){
+        if (!oppgaveEventLogger.isEmpty() && OppgaveEventType.åpningseventtyper().contains(oppgaveEventLogger.get(0).getEventType())){
             Optional<EksternIdentifikator> eksternId = getEksternIdentifikatorRespository().finnIdentifikator(fagsystem, behandlingId.toString());
             if(eksternId.isPresent()) {
                 loggEvent(behandlingId, eksternId.get().getId(), OppgaveEventType.LUKKET, AndreKriterierType.UKJENT, behandlendeEnhet);
@@ -225,13 +214,13 @@ public class FpsakEventHandler extends FpEventHandler {
                 .medFagsakSaksnummer(Long.valueOf(bpeDto.getSaksnummer()))
                 .medAktorId(Long.valueOf(bpeDto.getAktørId()))
                 .medBehandlendeEnhet(bpeDto.getBehandlendeEnhet())
-                .medBehandlingType(kodeverkRepository.finn(BehandlingType.class, bpeDto.getBehandlingTypeKode()))
-                .medFagsakYtelseType(kodeverkRepository.finn(FagsakYtelseType.class, bpeDto.getYtelseTypeKode()))
+                .medBehandlingType(getKodeverkRepository().finn(BehandlingType.class, bpeDto.getBehandlingTypeKode()))
+                .medFagsakYtelseType(getKodeverkRepository().finn(FagsakYtelseType.class, bpeDto.getYtelseTypeKode()))
                 .medAktiv(true).medBehandlingOpprettet(bpeDto.getOpprettetBehandling())
                 .medForsteStonadsdag(fraFpsak.getFørsteUttaksdag())
                 .medUtfortFraAdmin(prosesserFraAdmin)
                 .medBehandlingsfrist(hentBehandlingstidFrist(fraFpsak.getBehandlingstidFrist()))
-                .medBehandlingStatus(kodeverkRepository.finn(BehandlingStatus.class, fraFpsak.getStatus()))
+                .medBehandlingStatus(getKodeverkRepository().finn(BehandlingStatus.class, fraFpsak.getStatus()))
                 .medEksternId(eksternId.getId())
                 .build());
     }

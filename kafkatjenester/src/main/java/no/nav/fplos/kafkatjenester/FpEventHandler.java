@@ -5,9 +5,11 @@ import no.nav.foreldrepenger.loslager.oppgave.EksternIdentifikator;
 import no.nav.foreldrepenger.loslager.oppgave.Oppgave;
 import no.nav.foreldrepenger.loslager.oppgave.OppgaveEventLogg;
 import no.nav.foreldrepenger.loslager.oppgave.OppgaveEventType;
+import no.nav.foreldrepenger.loslager.oppgave.Reservasjon;
 import no.nav.foreldrepenger.loslager.repository.EksternIdentifikatorRepository;
 import no.nav.foreldrepenger.loslager.repository.OppgaveRepository;
 import no.nav.foreldrepenger.loslager.repository.OppgaveRepositoryProvider;
+import no.nav.fplos.kodeverk.KodeverkRepository;
 import no.nav.vedtak.felles.integrasjon.kafka.BehandlingProsessEventDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,6 +23,7 @@ public abstract class FpEventHandler {
 
     private static final Logger log = LoggerFactory.getLogger(FpEventHandler.class);
 
+    private KodeverkRepository kodeverkRepository;
     private OppgaveRepository oppgaveRepository;
     private EksternIdentifikatorRepository eksternIdentifikatorRespository;
 
@@ -30,6 +33,7 @@ public abstract class FpEventHandler {
     public FpEventHandler(OppgaveRepositoryProvider oppgaveRepositoryProvider) {
         this.oppgaveRepository = oppgaveRepositoryProvider.getOppgaveRepository();
         this.eksternIdentifikatorRespository = oppgaveRepositoryProvider.getEksternIdentifikatorRepository();
+        this.kodeverkRepository = oppgaveRepositoryProvider.getKodeverkRepository();
     }
 
     protected OppgaveRepository getOppgaveRepository() {
@@ -38,6 +42,10 @@ public abstract class FpEventHandler {
 
     protected EksternIdentifikatorRepository getEksternIdentifikatorRespository() {
         return eksternIdentifikatorRespository;
+    }
+
+    protected KodeverkRepository getKodeverkRepository() {
+        return kodeverkRepository;
     }
 
     protected void loggEvent(Long eksternId, OppgaveEventType oppgaveEventType, AndreKriterierType andreKriterierType, String behandlendeEnhet) {
@@ -51,8 +59,10 @@ public abstract class FpEventHandler {
     protected void avsluttOppgaveForEksternId(Long externId) {
         oppgaveRepository.avsluttOppgaveForEksternId(externId);
     }
-/*
-    protected void avsluttOppgaveOgLoggEventVedEksternId(BehandlingProsessEventDto bpeDto, OppgaveEventType eventType, LocalDateTime fristTid){
+
+
+
+    /*protected void avsluttOppgaveOgLoggEventVedEksternId(BehandlingProsessEventDto bpeDto, OppgaveEventType eventType, LocalDateTime fristTid){
         Optional<EksternIdentifikator> eksternId = getEksternIdentifikatorRespository().finnIdentifikator(bpeDto.getFagsystem(), bpeDto.getId());
         if(eksternId.isPresent()) {
             avsluttOppgaveForEksternId(eksternId.get().getId());
@@ -62,8 +72,14 @@ public abstract class FpEventHandler {
             log.warn( message +"Prosesshendelsen hadde ekstern referanse id {} for fagsystemet {}", bpeDto.getId(), bpeDto.getFagsystem() );
             //throw new RuntimeException(message);
         }
+    }*/
+    protected void reserverOppgaveFraTidligereReservasjon(boolean reserverOppgave,
+                                                        Reservasjon reservasjon,
+                                                        Oppgave oppgave) {
+        if (reserverOppgave && reservasjon != null) {
+            getOppgaveRepository().reserverOppgaveFraTidligereReservasjon(oppgave.getId(), reservasjon);
+        }
     }
-*/
     protected List<OppgaveEventLogg> hentEventerVedEksternId(String fagsystem, String eksternRefId) {
         Optional<EksternIdentifikator> eksternId = getEksternIdentifikatorRespository().finnIdentifikator(fagsystem, eksternRefId);
         if(eksternId.isPresent()){
