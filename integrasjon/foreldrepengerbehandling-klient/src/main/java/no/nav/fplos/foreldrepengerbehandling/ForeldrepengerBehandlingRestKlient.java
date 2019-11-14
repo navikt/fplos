@@ -21,7 +21,9 @@ import no.nav.fplos.foreldrepengerbehandling.dto.aksjonspunkt.AksjonspunktDto;
 import no.nav.fplos.foreldrepengerbehandling.dto.behandling.ResourceLink;
 import no.nav.fplos.foreldrepengerbehandling.dto.behandling.UtvidetBehandlingDto;
 import no.nav.fplos.foreldrepengerbehandling.dto.fagsak.FagsakDto;
+import no.nav.fplos.foreldrepengerbehandling.dto.inntektarbeidytelse.Beløp;
 import no.nav.fplos.foreldrepengerbehandling.dto.inntektarbeidytelse.InntektArbeidYtelseDto;
+import no.nav.fplos.foreldrepengerbehandling.dto.inntektarbeidytelse.InntektsmeldingDto;
 import no.nav.fplos.foreldrepengerbehandling.dto.ytelsefordeling.YtelseFordelingDto;
 import no.nav.vedtak.exception.IntegrasjonException;
 import no.nav.vedtak.felles.integrasjon.rest.OidcRestClient;
@@ -98,18 +100,10 @@ public class ForeldrepengerBehandlingRestKlient {
                 .orElse(Collections.emptyList());
     }
 
-    private static List<Aksjonspunkt> aksjonspunktFraDto(AksjonspunktDto[] aksjonspunktDtos) {
-        List<Aksjonspunkt> liste = new ArrayList<>();
-        for (AksjonspunktDto aksjonspunktDto : aksjonspunktDtos) {
-            liste.add(aksjonspunktFra(aksjonspunktDto));
-        }
-        return liste;
-    }
-
     private boolean hentHarRefusjonskrav(List<ResourceLink> links) {
         return velgLink(links, INNTEKT_ARBEID_YTELSE_LINK)
                 .flatMap(iay -> hentFraResourceLink(iay, InntektArbeidYtelseDto.class))
-                .map(ForeldrepengerBehandlingRestKlient::harRefusjonskravFra)
+                .map(ForeldrepengerBehandlingRestKlient::harRefusjonskrav)
                 .orElse(false);
     }
 
@@ -180,9 +174,19 @@ public class ForeldrepengerBehandlingRestKlient {
                 .anyMatch(a -> a.compareTo(BigDecimal.ZERO) != 0);
     }
 
-    private static boolean harRefusjonskravFra(InntektArbeidYtelseDto inntektArbeidYtelseDto) {
+    private static boolean harRefusjonskrav(InntektArbeidYtelseDto inntektArbeidYtelseDto) {
         return inntektArbeidYtelseDto.getInntektsmeldinger().stream()
-                .anyMatch(e -> e.getGetRefusjonBeløpPerMnd() != null && e.getGetRefusjonBeløpPerMnd().getVerdi().intValue() > 0);
+                .map(InntektsmeldingDto::getGetRefusjonBeløpPerMnd)
+                .filter(Objects::nonNull)
+                .anyMatch(refusjonsbeløp -> refusjonsbeløp.compareTo(Beløp.ZERO) > 0);
+    }
+
+    private static List<Aksjonspunkt> aksjonspunktFraDto(AksjonspunktDto[] aksjonspunktDtos) {
+        List<Aksjonspunkt> liste = new ArrayList<>();
+        for (AksjonspunktDto aksjonspunktDto : aksjonspunktDtos) {
+            liste.add(aksjonspunktFra(aksjonspunktDto));
+        }
+        return liste;
     }
 
     private static Optional<ResourceLink> velgLink(List<ResourceLink> links, String typeLink) {

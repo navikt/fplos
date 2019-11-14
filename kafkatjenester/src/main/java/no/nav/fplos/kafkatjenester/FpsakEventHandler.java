@@ -209,7 +209,7 @@ public class FpsakEventHandler {
 
     public void håndterOppgaveEgenskapUtbetalingTilBruker(boolean harRefusjonskrav, Oppgave oppgave) {
         List<OppgaveEgenskap> oppgaveEgenskaper = oppgaveRepository.hentOppgaveEgenskaper(oppgave.getId());
-        OppgaveEgenskap utbetalingTilBruker = eksisterendeOppgaveEgenskapForKriterium(oppgaveEgenskaper, AndreKriterierType.UTBETALING_TIL_BRUKER);
+        OppgaveEgenskap utbetalingTilBruker = kriteriumHvisEksisterer(oppgaveEgenskaper, AndreKriterierType.UTBETALING_TIL_BRUKER);
         if (!harRefusjonskrav) {
             aktiverEllerLeggTilOppgaveEgenskap(utbetalingTilBruker, oppgave, AndreKriterierType.UTBETALING_TIL_BRUKER);
         } else {
@@ -219,7 +219,7 @@ public class FpsakEventHandler {
 
     public void håndterOppgaveEgenskapUtlandssak(Boolean erUtlandsak, Oppgave oppgave) {
         List<OppgaveEgenskap> oppgaveEgenskaper = oppgaveRepository.hentOppgaveEgenskaper(oppgave.getId());
-        OppgaveEgenskap kriterieTilknyttetOppgave = eksisterendeOppgaveEgenskapForKriterium(oppgaveEgenskaper, AndreKriterierType.UTLANDSSAK);
+        OppgaveEgenskap kriterieTilknyttetOppgave = kriteriumHvisEksisterer(oppgaveEgenskaper, AndreKriterierType.UTLANDSSAK);
         if (erUtlandsak != null && erUtlandsak) {
             aktiverEllerLeggTilOppgaveEgenskap(kriterieTilknyttetOppgave, oppgave, AndreKriterierType.UTLANDSSAK);
         } else {
@@ -229,7 +229,7 @@ public class FpsakEventHandler {
 
     public void håndterOppgaveEgenskapGradering(Boolean harGradering, Oppgave oppgave) {
         List<OppgaveEgenskap> oppgaveEgenskaper = oppgaveRepository.hentOppgaveEgenskaper(oppgave.getId());
-        OppgaveEgenskap eksisterendeEgenskap = eksisterendeOppgaveEgenskapForKriterium(oppgaveEgenskaper, AndreKriterierType.SOKT_GRADERING);
+        OppgaveEgenskap eksisterendeEgenskap = kriteriumHvisEksisterer(oppgaveEgenskaper, AndreKriterierType.SOKT_GRADERING);
         if (harGradering != null && harGradering) {
             aktiverEllerLeggTilOppgaveEgenskap(eksisterendeEgenskap, oppgave, AndreKriterierType.SOKT_GRADERING);
         } else {
@@ -255,8 +255,8 @@ public class FpsakEventHandler {
         }
     }
 
-    private static OppgaveEgenskap eksisterendeOppgaveEgenskapForKriterium(List<OppgaveEgenskap> oppgaveEgenskaper,
-                                                                           AndreKriterierType targetKriterium) {
+    private static OppgaveEgenskap kriteriumHvisEksisterer(List<OppgaveEgenskap> oppgaveEgenskaper,
+                                                           AndreKriterierType targetKriterium) {
         return safeStream(oppgaveEgenskaper)
                 .filter(e -> e.getAndreKriterierType().equals(targetKriterium))
                 .findAny()
