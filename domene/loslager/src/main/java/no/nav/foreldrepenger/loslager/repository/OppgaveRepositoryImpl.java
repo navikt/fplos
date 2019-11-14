@@ -358,7 +358,7 @@ public class OppgaveRepositoryImpl implements OppgaveRepository {
      * @deprecated Bruk gjenåpneOppgaveForEksternId(Long) i stedet
      */
     @Override
-    @Deprecated
+    @Deprecated(since = "14.11.2019")
     public Oppgave gjenåpneOppgave(Long behandlingId) {
         List<Oppgave> oppgaver = hentOppgaver(behandlingId);
         Oppgave sisteOppgave = oppgaver.stream()
@@ -390,7 +390,7 @@ public class OppgaveRepositoryImpl implements OppgaveRepository {
      * @deprecated Bruk avsluttOppgaveForEksternId(Long) i stedet
      */
     @Override
-    @Deprecated
+    @Deprecated(since = "14.11.2019")
     public void avsluttOppgave(Long behandlingId) {
         List<Oppgave> oppgaver = hentOppgaver(behandlingId);
         if (oppgaver.isEmpty()) {
@@ -450,7 +450,7 @@ public class OppgaveRepositoryImpl implements OppgaveRepository {
     /**
      * @deprecated Bruk hentEventerForEksternId(Long) i stedet
      */
-    @Deprecated
+    @Deprecated(since = "14.11.2019")
     @Override
     public List<OppgaveEventLogg> hentEventer(Long behandlingId) {
         return getEntityManager().createQuery("FROM oppgaveEventLogg oel " +
@@ -486,7 +486,7 @@ public class OppgaveRepositoryImpl implements OppgaveRepository {
     /**
      * @deprecated Bruk hentOppgaverForEksternId(Long) i stedet
      */
-    @Deprecated
+    @Deprecated(since = "14.11.2019")
     private List<Oppgave> hentOppgaver(Long behandlingId) {
         return getEntityManager().createQuery(SELECT_FRA_OPPGAVE +
                 "WHERE o.behandlingId = :behandlingId ", Oppgave.class)

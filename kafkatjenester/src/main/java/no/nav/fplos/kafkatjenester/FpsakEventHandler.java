@@ -65,14 +65,6 @@ public class FpsakEventHandler extends FpEventHandler {
         prosesser(bpeDto, reservasjon, true);
     }
 
-    /**
-     * @deprecated Bruk hentEventerVedEksternId(String, String) og benytt eksternRefId( finnes som bpeDto.getId() ) i stedet
-     */
-    @Deprecated(since = "14.11.2019")
-    private List<OppgaveEventLogg> hentEventer(String fagsystem, Long behandlingId) {
-        return getOppgaveRepository().hentEventer(behandlingId);
-    }
-
     private void prosesser(BehandlingProsessEventDto bpeDto, Reservasjon reservasjon, boolean prosesserFraAdmin) {
         Long behandlingId = bpeDto.getBehandlingId();
         BehandlingFpsak behandling = foreldrePengerBehandlingRestKlient.getBehandling(behandlingId);
