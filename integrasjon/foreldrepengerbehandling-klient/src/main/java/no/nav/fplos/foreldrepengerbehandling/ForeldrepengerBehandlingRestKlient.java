@@ -100,11 +100,11 @@ public class ForeldrepengerBehandlingRestKlient {
                 .orElse(Collections.emptyList());
     }
 
-    private boolean hentHarRefusjonskrav(List<ResourceLink> links) {
+    private Boolean hentHarRefusjonskrav(List<ResourceLink> links) {
         return velgLink(links, INNTEKT_ARBEID_YTELSE_LINK)
                 .flatMap(iay -> hentFraResourceLink(iay, InntektArbeidYtelseDto.class))
                 .map(ForeldrepengerBehandlingRestKlient::harRefusjonskrav)
-                .orElse(false);
+                .orElse(null); // har ikke inntektsmelding enda, kan ikke vurdere refusjonskrav
     }
 
     private LocalDate hentFørsteUttaksdato(List<ResourceLink> links) {

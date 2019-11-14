@@ -207,10 +207,10 @@ public class FpsakEventHandler {
                 .build());
     }
 
-    public void håndterOppgaveEgenskapUtbetalingTilBruker(boolean harRefusjonskrav, Oppgave oppgave) {
+    public void håndterOppgaveEgenskapUtbetalingTilBruker(Boolean harRefusjonskrav, Oppgave oppgave) {
         List<OppgaveEgenskap> oppgaveEgenskaper = oppgaveRepository.hentOppgaveEgenskaper(oppgave.getId());
         OppgaveEgenskap utbetalingTilBruker = kriteriumHvisEksisterer(oppgaveEgenskaper, AndreKriterierType.UTBETALING_TIL_BRUKER);
-        if (!harRefusjonskrav) {
+        if (harRefusjonskrav != null && !harRefusjonskrav) {
             aktiverEllerLeggTilOppgaveEgenskap(utbetalingTilBruker, oppgave, AndreKriterierType.UTBETALING_TIL_BRUKER);
         } else {
             deaktiverOppgaveEgenskap(utbetalingTilBruker);

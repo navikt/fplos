@@ -19,7 +19,7 @@ public class BehandlingFpsak {
     private LocalDate førsteUttaksdag;
     private List<String> inntektsmeldinger;
     private List<Aksjonspunkt> aksjonspunkter;
-    private boolean harRefusjonskravFraArbeidsgiver;
+    private Boolean harRefusjonskravFraArbeidsgiver;
     private Boolean harGradering;
     private Boolean erUtlandssak;
 
@@ -146,7 +146,7 @@ public class BehandlingFpsak {
             return this;
         }
 
-        public BehandlingFpsak.Builder medHarRefusjonskrav(boolean harRefusjonskravFraArbeidsgiver) {
+        public BehandlingFpsak.Builder medHarRefusjonskrav(Boolean harRefusjonskravFraArbeidsgiver) {
             behandlingDtoMal.harRefusjonskravFraArbeidsgiver = harRefusjonskravFraArbeidsgiver;
             return this;
         }
