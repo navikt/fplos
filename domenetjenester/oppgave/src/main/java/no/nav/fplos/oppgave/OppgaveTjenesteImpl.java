@@ -140,8 +140,9 @@ public class OppgaveTjenesteImpl implements OppgaveTjeneste {
 
     @Override
     public List<OppgaveFiltrering> hentAlleOppgaveFiltrering(String brukerIdent) {
-        Optional<Saksbehandler> saksbehandler = organisasjonRepository.hentMuligSaksbehandler(brukerIdent);
-        return saksbehandler.isPresent() ? saksbehandler.get().getOppgaveFiltreringer() : Collections.emptyList();
+        return organisasjonRepository.hentMuligSaksbehandler(brukerIdent)
+                .map(Saksbehandler::getOppgaveFiltreringer)
+                .orElse(Collections.emptyList());
     }
 
     @Override
@@ -189,7 +190,7 @@ public class OppgaveTjenesteImpl implements OppgaveTjeneste {
         OppgaveFiltrering oppgaveFiltrering = avdelingslederTjeneste.hentOppgaveFiltering(sakslisteId);
         return oppgaveFiltrering.getSaksbehandlere()
                 .stream()
-                .map(saksbehandler -> lagSaksbehandlerinformasjonDto(saksbehandler.getSaksbehandlerIdent()))
+                .map(s -> lagSaksbehandlerinformasjonDto(s.getSaksbehandlerIdent()))
                 .collect(Collectors.toList());
     }
 

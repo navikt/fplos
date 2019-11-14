@@ -1,12 +1,5 @@
 package no.nav.fplos.admin;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-
 import no.nav.foreldrepenger.loslager.oppgave.EventmottakFeillogg;
 import no.nav.foreldrepenger.loslager.oppgave.EventmottakStatus;
 import no.nav.foreldrepenger.loslager.oppgave.Oppgave;
@@ -20,6 +13,12 @@ import no.nav.fplos.kafkatjenester.KafkaReader;
 import no.nav.vedtak.felles.integrasjon.kafka.BehandlingProsessEventDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @ApplicationScoped
 public class AdminTjenesteImpl implements AdminTjeneste {
@@ -133,8 +132,7 @@ public class AdminTjenesteImpl implements AdminTjeneste {
 
     private void leggTilOppgaveEgenskapHvisUtlandssak(Oppgave oppgave) {
         BehandlingFpsak behandlingDto = foreldrepengerBehandlingRestKlient.getBehandling(oppgave.getBehandlingId());
-        Boolean erUtlandssak = fpsakEventHandler.avgjørOmUtlandsak(behandlingDto.getAksjonspunkter(), behandlingDto.getErUtlandssak());
-        fpsakEventHandler.håndterOppgaveEgenskapUtlandssak(erUtlandssak, oppgave);
+        fpsakEventHandler.håndterOppgaveEgenskapUtlandssak(behandlingDto.getErUtlandssak(), oppgave);
     }
 
     private void leggTilOppgaveEgenskapHvisGradering(Oppgave oppgave) {
@@ -148,7 +146,7 @@ public class AdminTjenesteImpl implements AdminTjeneste {
 
         Map<String, String> aksjonspunktKoderMedStatusListe = new HashMap<>();
         fraFpsak.getAksjonspunkter()
-                .forEach(aksjonspunkt -> aksjonspunktKoderMedStatusListe.put(aksjonspunkt.getDefinisjon().getKode(), aksjonspunkt.getStatus().getKode()));
+                .forEach(aksjonspunkt -> aksjonspunktKoderMedStatusListe.put(aksjonspunkt.getDefinisjonKode(), aksjonspunkt.getStatusKode()));
 
         return BehandlingProsessEventDto.builder()
                 .medFagsystem(eksisterendeOppgave.getSystem())

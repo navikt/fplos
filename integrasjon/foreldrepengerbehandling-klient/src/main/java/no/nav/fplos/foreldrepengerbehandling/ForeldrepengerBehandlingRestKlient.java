@@ -3,6 +3,8 @@ package no.nav.fplos.foreldrepengerbehandling;
 import java.math.BigDecimal;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -19,7 +21,9 @@ import no.nav.fplos.foreldrepengerbehandling.dto.aksjonspunkt.AksjonspunktDto;
 import no.nav.fplos.foreldrepengerbehandling.dto.behandling.ResourceLink;
 import no.nav.fplos.foreldrepengerbehandling.dto.behandling.UtvidetBehandlingDto;
 import no.nav.fplos.foreldrepengerbehandling.dto.fagsak.FagsakDto;
+import no.nav.fplos.foreldrepengerbehandling.dto.inntektarbeidytelse.Beløp;
 import no.nav.fplos.foreldrepengerbehandling.dto.inntektarbeidytelse.InntektArbeidYtelseDto;
+import no.nav.fplos.foreldrepengerbehandling.dto.inntektarbeidytelse.InntektsmeldingDto;
 import no.nav.fplos.foreldrepengerbehandling.dto.ytelsefordeling.YtelseFordelingDto;
 import no.nav.vedtak.exception.IntegrasjonException;
 import no.nav.vedtak.felles.integrasjon.rest.OidcRestClient;
@@ -28,6 +32,8 @@ import no.nav.vedtak.sikkerhet.loginmodule.ContainerLogin;
 import org.apache.http.client.utils.URIBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static no.nav.fplos.foreldrepengerbehandling.Aksjonspunkt.aksjonspunktFra;
 
 @ApplicationScoped
 public class ForeldrepengerBehandlingRestKlient {
@@ -64,6 +70,7 @@ public class ForeldrepengerBehandlingRestKlient {
         try {
             LOGGER.info("Slår opp i fpsak for behandlingId {} per GET-kall til {}", behandlingId, uriBuilder.build());
             UtvidetBehandlingDto response = oidcRestClient.get(uriBuilder.build(), UtvidetBehandlingDto.class);
+            List<ResourceLink> links = response.getLinks();
             BehandlingFpsak.Builder builder = BehandlingFpsak.builder()
                     .medBehandlingId(response.getId())
                     .medType(response.getType().getKode())
@@ -71,12 +78,11 @@ public class ForeldrepengerBehandlingRestKlient {
                     .medBehandlendeEnhetNavn(response.getBehandlendeEnhetNavn())
                     .medStatus(response.getStatus().getKode())
                     .medAnsvarligSaksbehandler(response.getAnsvarligSaksbehandler())
-                    .medBehandlingstidFrist(response.getBehandlingsfristTid());
+                    .medBehandlingstidFrist(response.getBehandlingsfristTid())
+                    .medFørsteUttaksdag(hentFørsteUttaksdato(links))
+                    .medHarRefusjonskrav(hentHarRefusjonskrav(links))
+                    .medAksjonspunkter(hentAksjonspunkter(links));
 
-            List<ResourceLink> links = response.getLinks();
-            hentAksjonspunkterRest(behandlingId, builder, links);
-            hentInntektRest(behandlingId, builder, links);
-            hentYtelsefordelingRest(behandlingId, builder, links);
             hentUttakKontrollerFaktaPerioder(behandlingId, builder, links);
             return builder.build();
         } catch (URISyntaxException | IntegrasjonException e) {
@@ -87,40 +93,25 @@ public class ForeldrepengerBehandlingRestKlient {
         }
     }
 
-    private void hentAksjonspunkterRest(Long behandlingId, BehandlingFpsak.Builder builder, List<ResourceLink> links) {
-        Optional<ResourceLink> aksjonspunkterLink = velgLink(links, AKSJONSPUNKTER_LINK);
-        if (aksjonspunkterLink.isPresent()) {
-            Optional<AksjonspunktDto[]> aksjonspunkter = hentFraResourceLink(aksjonspunkterLink.get(), AksjonspunktDto[].class);
-            if (aksjonspunkter.isPresent()) {
-                builder.medAksjonspunkter(Arrays.asList(aksjonspunkter.get()));
-            } else {
-                LOGGER.error("Feilet å hente aksjonspunkter for behandlingId " + behandlingId);
-            }
-        }
+    private List<Aksjonspunkt> hentAksjonspunkter(List<ResourceLink> links) {
+        return velgLink(links, AKSJONSPUNKTER_LINK)
+                .flatMap(ap -> hentFraResourceLink(ap, AksjonspunktDto[].class))
+                .map(ForeldrepengerBehandlingRestKlient::aksjonspunktFraDto)
+                .orElse(Collections.emptyList());
     }
 
-    private void hentInntektRest(Long behandlingId, BehandlingFpsak.Builder builder, List<ResourceLink> links) {
-        Optional<ResourceLink> inntekterLink = velgLink(links, INNTEKT_ARBEID_YTELSE_LINK);
-        if (inntekterLink.isPresent()) {
-            Optional<InntektArbeidYtelseDto> iay = hentFraResourceLink(inntekterLink.get(), InntektArbeidYtelseDto.class);
-            if (iay.isPresent()) {
-                builder.medHarRefusjonskrav(harRefusjonskravFra(iay.get()));
-            } else {
-                LOGGER.error("Feilet å hente inntekt for behandlingId " + behandlingId);
-            }
-        }
+    private Boolean hentHarRefusjonskrav(List<ResourceLink> links) {
+        return velgLink(links, INNTEKT_ARBEID_YTELSE_LINK)
+                .flatMap(iay -> hentFraResourceLink(iay, InntektArbeidYtelseDto.class))
+                .map(ForeldrepengerBehandlingRestKlient::harRefusjonskrav)
+                .orElse(null); // har ikke inntektsmelding enda, kan ikke vurdere refusjonskrav
     }
 
-    private void hentYtelsefordelingRest(Long behandlingId, BehandlingFpsak.Builder builder, List<ResourceLink> links) {
-        Optional<ResourceLink> ytelseFordelingLink = velgLink(links, YTELSEFORDELING_LINK);
-        if (ytelseFordelingLink.isPresent()) {
-            Optional<YtelseFordelingDto> ytelseFordeling = hentFraResourceLink(ytelseFordelingLink.get(), YtelseFordelingDto.class);
-            if (ytelseFordeling.isPresent()) {
-                builder.medFørsteUttaksdag(ytelseFordeling.get().getFørsteUttaksdato());
-            } else {
-                LOGGER.error("Feilet å hente ytelsefordeling for behandlingId " + behandlingId);
-            }
-        }
+    private LocalDate hentFørsteUttaksdato(List<ResourceLink> links) {
+        return velgLink(links, YTELSEFORDELING_LINK)
+                .flatMap(yf -> hentFraResourceLink(yf, YtelseFordelingDto.class))
+                .map(YtelseFordelingDto::getFørsteUttaksdato)
+                .orElse(null);
     }
 
     private void hentUttakKontrollerFaktaPerioder(Long behandlingId, BehandlingFpsak.Builder builder, List<ResourceLink> links) {
@@ -137,7 +128,8 @@ public class ForeldrepengerBehandlingRestKlient {
 
     private <T> Optional<T> hentFraResourceLink(ResourceLink resourceLink, Class<T> clazz) {
         URI uri = URI.create(endpointFpsakRestBase + resourceLink.getHref());
-        return "POST".equals(resourceLink.getType().name()) ? oidcRestClient.postReturnsOptional(uri, resourceLink.getRequestPayload(), clazz)
+        return "POST".equals(resourceLink.getType().name())
+                ? oidcRestClient.postReturnsOptional(uri, resourceLink.getRequestPayload(), clazz)
                 : oidcRestClient.getReturnsOptional(uri, clazz);
     }
 
@@ -182,9 +174,19 @@ public class ForeldrepengerBehandlingRestKlient {
                 .anyMatch(a -> a.compareTo(BigDecimal.ZERO) != 0);
     }
 
-    private static boolean harRefusjonskravFra(InntektArbeidYtelseDto inntektArbeidYtelseDto) {
+    private static boolean harRefusjonskrav(InntektArbeidYtelseDto inntektArbeidYtelseDto) {
         return inntektArbeidYtelseDto.getInntektsmeldinger().stream()
-                .anyMatch(e -> e.getGetRefusjonBeløpPerMnd() != null && e.getGetRefusjonBeløpPerMnd().getVerdi().intValue() > 0);
+                .map(InntektsmeldingDto::getGetRefusjonBeløpPerMnd)
+                .filter(Objects::nonNull)
+                .anyMatch(refusjonsbeløp -> refusjonsbeløp.compareTo(Beløp.ZERO) > 0);
+    }
+
+    private static List<Aksjonspunkt> aksjonspunktFraDto(AksjonspunktDto[] aksjonspunktDtos) {
+        List<Aksjonspunkt> liste = new ArrayList<>();
+        for (AksjonspunktDto aksjonspunktDto : aksjonspunktDtos) {
+            liste.add(aksjonspunktFra(aksjonspunktDto));
+        }
+        return liste;
     }
 
     private static Optional<ResourceLink> velgLink(List<ResourceLink> links, String typeLink) {

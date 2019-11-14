@@ -32,10 +32,10 @@ import no.nav.fplos.avdelingsleder.AvdelingslederSaksbehandlerTjenesteImpl;
 import no.nav.fplos.avdelingsleder.AvdelingslederTjeneste;
 import no.nav.fplos.avdelingsleder.AvdelingslederTjenesteImpl;
 import no.nav.fplos.domene.organisasjonsinformasjon.organisasjonressursenhet.impl.OrganisasjonRessursEnhetTjenesteImpl;
+import no.nav.fplos.foreldrepengerbehandling.Aksjonspunkt;
 import no.nav.fplos.foreldrepengerbehandling.BehandlingFpsak;
 import no.nav.fplos.foreldrepengerbehandling.ForeldrepengerBehandlingRestKlient;
 
-import no.nav.fplos.foreldrepengerbehandling.dto.aksjonspunkt.AksjonspunktDto;
 import no.nav.fplos.kafkatjenester.AksjonspunktMeldingConsumer;
 import no.nav.fplos.kafkatjenester.FpsakEventHandler;
 import no.nav.fplos.kafkatjenester.JsonOppgaveHandler;
@@ -250,7 +250,7 @@ public class VerdikjedetestAvdelingslederTest {
 
     private BehandlingFpsak lagBehandlingDto(){
         return BehandlingFpsak.builder()
-                .medAksjonspunkter(List.of(new AksjonspunktDto.Builder().medDefinisjon("5080").medStatus("AVBR").build()))
+                .medAksjonspunkter(List.of(new Aksjonspunkt.Builder().medDefinisjon("5080").medStatus("AVBR").build()))
                 .medBehandlendeEnhetNavn("NAV")
                 .medStatus("-")
                 .build();

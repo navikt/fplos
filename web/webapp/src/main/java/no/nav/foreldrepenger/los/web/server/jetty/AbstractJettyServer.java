@@ -1,13 +1,6 @@
 package no.nav.foreldrepenger.los.web.server.jetty;
 
-import java.io.File;
-import java.io.IOException;
-import java.security.Security;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.security.auth.message.config.AuthConfigFactory;
-
+import no.nav.vedtak.sikkerhetsfilter.SecurityFilter;
 import org.apache.geronimo.components.jaspi.AuthConfigFactoryImpl;
 import org.eclipse.jetty.annotations.AnnotationConfiguration;
 import org.eclipse.jetty.jaas.JAASLoginService;
@@ -17,17 +10,27 @@ import org.eclipse.jetty.security.ConstraintSecurityHandler;
 import org.eclipse.jetty.security.DefaultIdentityService;
 import org.eclipse.jetty.security.SecurityHandler;
 import org.eclipse.jetty.security.jaspi.JaspiAuthenticatorFactory;
-import org.eclipse.jetty.server.*;
+import org.eclipse.jetty.server.AbstractNetworkConnector;
+import org.eclipse.jetty.server.Connector;
+import org.eclipse.jetty.server.HttpConfiguration;
+import org.eclipse.jetty.server.HttpConnectionFactory;
+import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.util.resource.Resource;
 import org.eclipse.jetty.webapp.Configuration;
 import org.eclipse.jetty.webapp.WebAppContext;
 import org.eclipse.jetty.webapp.WebInfConfiguration;
 import org.eclipse.jetty.webapp.WebXmlConfiguration;
 
-import no.nav.vedtak.sikkerhetsfilter.SecurityFilter;
+import javax.security.auth.message.config.AuthConfigFactory;
+import java.io.File;
+import java.io.IOException;
+import java.security.Security;
+import java.util.ArrayList;
+import java.util.List;
 
 abstract class AbstractJettyServer {
-    
+
     /**
      * @see AbstractNetworkConnector#getHost()
      */
@@ -110,21 +113,21 @@ abstract class AbstractJettyServer {
     protected WebAppContext createContext(AppKonfigurasjon appKonfigurasjon) throws IOException {
         WebAppContext webAppContext = new WebAppContext();
         webAppContext.setParentLoaderPriority(true);
-        
+
         // må hoppe litt bukk for å hente web.xml fra classpath i stedet for fra filsystem.
-        String descriptor = Resource.newClassPathResource("/WEB-INF/web.xml").getURI().toURL().toExternalForm();
+        String descriptor;
+        try (var resource = Resource.newClassPathResource("/WEB-INF/web.xml")) {
+            descriptor = resource.getURI().toURL().toExternalForm();
+        }
         webAppContext.setDescriptor(descriptor);
         webAppContext.setBaseResource(createResourceCollection());
         webAppContext.setContextPath(appKonfigurasjon.getContextPath());
         webAppContext.setConfigurations(CONFIGURATIONS);
-    //    webAppContext.setAttribute("org.eclipse.jetty.server.webapp.ContainerIncludeJarPattern", "^.*resteasy-.*.jar$|^.*felles-.*.jar$");
-        webAppContext.setAttribute("org.eclipse.jetty.server.webapp.ContainerIncludeJarPattern", ".*resteasy-.*.jar.*|.*felles-.*.jar.*|.*app.*jar.*|.*/classes/.*");
-        webAppContext.setAttribute("org.eclipse.jetty.annotations.multiThreaded", false);
+        webAppContext.setAttribute("org.eclipse.jetty.server.webapp.WebInfIncludeJarPattern", "^.*resteasy-.*.jar$|^.*felles-.*.jar$");
         webAppContext.setSecurityHandler(createSecurityHandler());
-
         return webAppContext;
     }
-    
+
 
     protected HttpConfiguration createHttpConfiguration() {
         // Create HTTP Config

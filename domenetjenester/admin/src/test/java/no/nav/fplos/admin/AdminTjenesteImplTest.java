@@ -10,9 +10,9 @@ import no.nav.foreldrepenger.loslager.repository.OppgaveRepository;
 import no.nav.foreldrepenger.loslager.repository.OppgaveRepositoryImpl;
 import no.nav.foreldrepenger.loslager.repository.OppgaveRepositoryProvider;
 import no.nav.foreldrepenger.loslager.repository.OppgaveRepositoryProviderImpl;
+import no.nav.fplos.foreldrepengerbehandling.Aksjonspunkt;
 import no.nav.fplos.foreldrepengerbehandling.BehandlingFpsak;
 import no.nav.fplos.foreldrepengerbehandling.ForeldrepengerBehandlingRestKlient;
-import no.nav.fplos.foreldrepengerbehandling.dto.aksjonspunkt.AksjonspunktDto;
 import no.nav.fplos.kafkatjenester.FpsakEventHandler;
 import no.nav.fplos.kafkatjenester.KafkaReader;
 import org.junit.Rule;
@@ -105,7 +105,7 @@ public class AdminTjenesteImplTest {
     private BehandlingFpsak lagBehandlingMedUtlandssakDto() {
         return BehandlingFpsak.builder()
                 .medErUtlandssak(true)
-                .medAksjonspunkter(Collections.singletonList(new AksjonspunktDto
+                .medAksjonspunkter(Collections.singletonList(new Aksjonspunkt
                         .Builder()
                         .medDefinisjon("5068")
                         .medStatus("OPPR")

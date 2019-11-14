@@ -10,9 +10,9 @@ import no.nav.foreldrepenger.loslager.oppgave.OppgaveEventLogg;
 import no.nav.foreldrepenger.loslager.oppgave.OppgaveEventType;
 import no.nav.foreldrepenger.loslager.repository.OppgaveRepositoryProvider;
 import no.nav.foreldrepenger.loslager.repository.OppgaveRepositoryProviderImpl;
+import no.nav.fplos.foreldrepengerbehandling.Aksjonspunkt;
 import no.nav.fplos.foreldrepengerbehandling.BehandlingFpsak;
 import no.nav.fplos.foreldrepengerbehandling.ForeldrepengerBehandlingRestKlient;
-import no.nav.fplos.foreldrepengerbehandling.dto.aksjonspunkt.AksjonspunktDto;
 import no.nav.vedtak.felles.integrasjon.kafka.BehandlingProsessEventDto;
 import org.junit.Rule;
 import org.junit.Test;
@@ -55,32 +55,34 @@ public class FpsakEventHandlerTest {
     private Map<String, String> aksjonspunktKoderSkalPåVent = new HashMap<>(){{put("5012","AVBR");put("7002","OPPR");}};
     private Map<String, String> aksjonspunktKoderUtland = new HashMap<>(){{put("5068","OPPR");}};
 
-    private List<AksjonspunktDto> aksjonspunktKoderSkalHaOppgaveDto = Collections.singletonList(aksjonspunktDtoFra("5015","OPPR",aksjonspunktFrist));
-    private List<AksjonspunktDto> aksjonspunktKoderSkalLukkeOppgaveDto = Collections.singletonList(aksjonspunktDtoFra("5015","UTFO",aksjonspunktFrist));
-    private List<AksjonspunktDto> aksjonspunktKoderPåVentDto = Arrays.asList(aksjonspunktDtoFra("5015","OPPR",aksjonspunktFrist), aksjonspunktDtoFra("7002","OPPR",aksjonspunktFrist));
-    private List<AksjonspunktDto> aksjonspunktKoderTilBeslutterDto = Collections.singletonList(aksjonspunktDtoFra("5016","OPPR",aksjonspunktFrist));
-    private List<AksjonspunktDto> aksjonspunktKoderPapirsøknadESDto = Arrays.asList(aksjonspunktDtoFra("5012","OPPR",aksjonspunktFrist), aksjonspunktDtoFra("5010","OPPR",aksjonspunktFrist), aksjonspunktDtoFra("5005","UTFO",aksjonspunktFrist));
-    private List<AksjonspunktDto> aksjonspunktKoderPapirsøknadFPDto = Arrays.asList(aksjonspunktDtoFra("5040","OPPR",aksjonspunktFrist), aksjonspunktDtoFra("5012","AVBR",aksjonspunktFrist));
-    private List<AksjonspunktDto> aksjonspunktKoderPapirsøknadEndringFPDto = Collections.singletonList(aksjonspunktDtoFra("5057","OPPR",aksjonspunktFrist));
-    private List<AksjonspunktDto> aksjonspunktKoderSkalPåManueltVentDto = Arrays.asList(aksjonspunktDtoFra("5012","OPPR",aksjonspunktFrist), aksjonspunktDtoFra("7001","OPPR",aksjonspunktFrist));
-    private List<AksjonspunktDto> aksjonspunktKoderSkalPåVentDto = Arrays.asList(aksjonspunktDtoFra("5012","AVBR",aksjonspunktFrist), aksjonspunktDtoFra("7002","OPPR",aksjonspunktFrist));
-    private List<AksjonspunktDto> aksjonspunktKoderUtlandAutomatiskDto = Collections.singletonList(aksjonspunktMedBegrunnelseDtoFra("5068","OPPR",aksjonspunktFrist,"BOSATT_UTLAND"));
-    private List<AksjonspunktDto> aksjonspunktKoderUtlandManuellDto = Collections.singletonList(aksjonspunktMedBegrunnelseDtoFra("6068","OPPR",aksjonspunktFrist, "BOSATT_UTLAND"));
+    private List<Aksjonspunkt> aksjonspunktKoderSkalHaOppgaveDto = Collections.singletonList(aksjonspunktDtoFra("5015","OPPR",aksjonspunktFrist));
+    private List<Aksjonspunkt> aksjonspunktKoderSkalLukkeOppgaveDto = Collections.singletonList(aksjonspunktDtoFra("5015","UTFO",aksjonspunktFrist));
+    private List<Aksjonspunkt> aksjonspunktKoderPåVentDto = Arrays.asList(aksjonspunktDtoFra("5015","OPPR",aksjonspunktFrist), aksjonspunktDtoFra("7002","OPPR",aksjonspunktFrist));
+    private List<Aksjonspunkt> aksjonspunktKoderTilBeslutterDto = Collections.singletonList(aksjonspunktDtoFra("5016","OPPR",aksjonspunktFrist));
+    private List<Aksjonspunkt> aksjonspunktKoderPapirsøknadESDto = Arrays.asList(aksjonspunktDtoFra("5012","OPPR",aksjonspunktFrist), aksjonspunktDtoFra("5010","OPPR",aksjonspunktFrist), aksjonspunktDtoFra("5005","UTFO",aksjonspunktFrist));
+    private List<Aksjonspunkt> aksjonspunktKoderPapirsøknadFPDto = Arrays.asList(aksjonspunktDtoFra("5040","OPPR",aksjonspunktFrist), aksjonspunktDtoFra("5012","AVBR",aksjonspunktFrist));
+    private List<Aksjonspunkt> aksjonspunktKoderPapirsøknadEndringFPDto = Collections.singletonList(aksjonspunktDtoFra("5057","OPPR", aksjonspunktFrist));
+    private List<Aksjonspunkt> aksjonspunktKoderSkalPåManueltVentDto = Arrays.asList(aksjonspunktDtoFra("5012","OPPR",aksjonspunktFrist), aksjonspunktDtoFra("7001","OPPR",aksjonspunktFrist));
+    private List<Aksjonspunkt> aksjonspunktKoderSkalPåVentDto = Arrays.asList(aksjonspunktDtoFra("5012","AVBR",aksjonspunktFrist), aksjonspunktDtoFra("7002","OPPR",aksjonspunktFrist));
+    private List<Aksjonspunkt> aksjonspunktKoderUtlandAutomatiskDto = Collections.singletonList(aksjonspunktMedBegrunnelseDtoFra("5068","OPPR",aksjonspunktFrist,"BOSATT_UTLAND"));
+    private List<Aksjonspunkt> aksjonspunktKoderUtlandManuellDto = Collections.singletonList(aksjonspunktMedBegrunnelseDtoFra("6068","OPPR",aksjonspunktFrist, "BOSATT_UTLAND"));
 
     BehandlingProsessEventDto eventDrammenFra(Map<String, String> aksjonspunktmap){
         return prosessBuilderFra(aksjonspunktmap)
+                //.medId("EKSTERN_ID")
                 .medBehandlendeEnhet("4802")
                 .build();
     }
 
     private BehandlingProsessEventDto eventStordFra(Map<String, String> aksjonspunktmap){
         return prosessBuilderFra(aksjonspunktmap)
+                //.medId("EKSTERN_ID")
                 .medBehandlendeEnhet("4842")
                 .build();
     }
 
-    private AksjonspunktDto aksjonspunktMedBegrunnelseDtoFra(String aksjonspunkKode, String status, LocalDateTime aksjonspunktFrist, String begrunnelse){
-        return AksjonspunktDto.builder()
+    private Aksjonspunkt aksjonspunktMedBegrunnelseDtoFra(String aksjonspunkKode, String status, LocalDateTime aksjonspunktFrist, String begrunnelse){
+        return Aksjonspunkt.builder()
                 .medDefinisjon(aksjonspunkKode)
                 .medStatus(status)
                 .medFristTid(aksjonspunktFrist)
@@ -88,8 +90,8 @@ public class FpsakEventHandlerTest {
                 .build();
     }
 
-    private AksjonspunktDto aksjonspunktDtoFra(String aksjonspunkKode, String status, LocalDateTime aksjonspunktFrist){
-        return AksjonspunktDto.builder()
+    private Aksjonspunkt aksjonspunktDtoFra(String aksjonspunkKode, String status, LocalDateTime aksjonspunktFrist){
+        return Aksjonspunkt.builder()
                 .medDefinisjon(aksjonspunkKode)
                 .medStatus(status)
                 .medFristTid(aksjonspunktFrist)
@@ -98,6 +100,7 @@ public class FpsakEventHandlerTest {
 
     private BehandlingProsessEventDto.Builder prosessBuilderFra(Map<String, String> aksjonspunktmap){
         return BehandlingProsessEventDto.builder()
+                //.medId("EKSTERN_ID")
                 .medFagsystem(fagsystem)
                 .medBehandlingId(behandlingId)
                 .medSaksnummer("135701264")
@@ -112,20 +115,20 @@ public class FpsakEventHandlerTest {
 
     }
 
-    private static BehandlingFpsak behandlingDtoFra(List<AksjonspunktDto> aksjonspunkter) {
+    private static BehandlingFpsak behandlingDtoFra(List<Aksjonspunkt> aksjonspunkter) {
         return behandlingBuilderMal()
                 .medAksjonspunkter(aksjonspunkter)
                 .build();
     }
 
-    private static BehandlingFpsak behandlingDtoMedManueltMarkertUtlandsakFra(List<AksjonspunktDto> aksjonspunkter){
+    private static BehandlingFpsak behandlingDtoMedManueltMarkertUtlandsakFra(List<Aksjonspunkt> aksjonspunkter){
         return behandlingBuilderMal()
                 .medErUtlandssak(true)
                 .medAksjonspunkter(aksjonspunkter)
                 .build();
     }
 
-    private BehandlingFpsak lagBehandlingDtoMedHarGradering(List<AksjonspunktDto> aksjonspunkter){
+    private BehandlingFpsak lagBehandlingDtoMedHarGradering(List<Aksjonspunkt> aksjonspunkter){
         return behandlingBuilderMal()
                 .medHarGradering(true)
                 .medAksjonspunkter(aksjonspunkter)

@@ -8,7 +8,9 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Objects;
 
-@JsonAutoDetect(getterVisibility = JsonAutoDetect.Visibility.NONE, setterVisibility = JsonAutoDetect.Visibility.NONE, fieldVisibility = JsonAutoDetect.Visibility.ANY)
+@JsonAutoDetect(getterVisibility = JsonAutoDetect.Visibility.NONE,
+        setterVisibility = JsonAutoDetect.Visibility.NONE,
+        fieldVisibility = JsonAutoDetect.Visibility.ANY)
 public class ResourceLink {
 
     @JsonProperty("href")
