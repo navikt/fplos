@@ -1,17 +1,11 @@
 package no.nav.fplos.foreldrepengerbehandling;
 
-import no.nav.fplos.foreldrepengerbehandling.dto.aksjonspunkt.AksjonspunktDto;
 import no.nav.vedtak.sikkerhet.abac.AbacDataAttributter;
 
 import java.time.LocalDate;
 import java.util.List;
 
 public class BehandlingFpsak {
-
-    private static final String MANUELL_MARKERING_AV_UTLAND_SAKSTYPE_AKSJONSPUNKT_KODE = "6068";
-
-    private static final String EØS_BOSATT_NORGE = "EØS_BOSATT_NORGE";
-    private static final String BOSATT_UTLAND = "BOSATT_UTLAND";
 
     private Long behandlingId;
     private String status;
@@ -24,7 +18,7 @@ public class BehandlingFpsak {
     private String ansvarligSaksbehandler;
     private LocalDate førsteUttaksdag;
     private List<String> inntektsmeldinger;
-    private List<AksjonspunktDto> aksjonspunkter;
+    private List<Aksjonspunkt> aksjonspunkter;
     private Boolean harRefusjonskravFraArbeidsgiver;
     private Boolean harGradering;
     private Boolean erUtlandssak;
@@ -69,7 +63,7 @@ public class BehandlingFpsak {
         return inntektsmeldinger;
     }
 
-    public List<AksjonspunktDto> getAksjonspunkter() {
+    public List<Aksjonspunkt> getAksjonspunkter() {
         return aksjonspunkter;
     }
 
@@ -81,10 +75,9 @@ public class BehandlingFpsak {
         return harGradering;
     }
 
-    public Boolean getErUtlandssak() {
+    public boolean getErUtlandssak() {
         return aksjonspunkter.stream()
-                .anyMatch(e -> e.getDefinisjon().getKode().equals(MANUELL_MARKERING_AV_UTLAND_SAKSTYPE_AKSJONSPUNKT_KODE)
-                        && (e.getBegrunnelse().equals(EØS_BOSATT_NORGE) || e.getBegrunnelse().equals(BOSATT_UTLAND)));
+                .anyMatch(Aksjonspunkt::erUtenlandssak);
     }
 
     public static BehandlingFpsak.Builder builder() {
@@ -143,7 +136,7 @@ public class BehandlingFpsak {
             return this;
         }
 
-        public BehandlingFpsak.Builder medAksjonspunkter(List<AksjonspunktDto> aksjonspunktDtos) {
+        public BehandlingFpsak.Builder medAksjonspunkter(List<Aksjonspunkt> aksjonspunktDtos) {
             behandlingDtoMal.aksjonspunkter = aksjonspunktDtos;
             return this;
         }

@@ -3,14 +3,12 @@ package no.nav.fplos.kafkatjenester.eventresultat;
 import no.nav.foreldrepenger.loslager.oppgave.AndreKriterierType;
 import no.nav.foreldrepenger.loslager.oppgave.OppgaveEventLogg;
 import no.nav.foreldrepenger.loslager.oppgave.OppgaveEventType;
-import no.nav.fplos.foreldrepengerbehandling.dto.aksjonspunkt.AksjonspunktDto;
+import no.nav.fplos.foreldrepengerbehandling.Aksjonspunkt;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static java.util.Arrays.asList;
 import static no.nav.fplos.kafkatjenester.eventresultat.EventResultat.GJENÅPNE_OPPGAVE;
 import static no.nav.fplos.kafkatjenester.eventresultat.EventResultat.LUKK_OPPGAVE;
 import static no.nav.fplos.kafkatjenester.eventresultat.EventResultat.LUKK_OPPGAVE_MANUELT_VENT;
@@ -22,43 +20,32 @@ import static no.nav.fplos.kafkatjenester.eventresultat.EventResultat.OPPRETT_PA
 
 public class FpsakEventMapper {
 
-    public static final String AUTOMATISK_MARKERING_AV_UTENLANDSSAK_AKSJONSPUNKTSKODE = "5068";
-    public static final String MANUELT_SATT_PÅ_VENT_AKSJONSPUNKTSKODE = "7001";
-    private static final String BESLUTTER_AKSJONSPUNKTSKODE = "5016";
-    private static final List<String> REGISTRER_PAPIRSØKNAD_AKSJONSPUNKTSKODE = asList("5012", "5040", "5057", "5096");
-    private static final String PÅ_VENT_AKSJONSPUNKT_GRUPPE_STARTER_MED = "7";
-
-    private static final List<String> aktiveAksjonspunktkoder = Collections.singletonList("OPPR");
-    private static final List<String> avbruttAksjonspunktkoder = Collections.singletonList("AVBR");
-
-    public static EventResultat signifikantEventForAdminFra(List<AksjonspunktDto> aksjonspunktListe) {
+    public static EventResultat signifikantEventForAdminFra(List<Aksjonspunkt> aksjonspunktListe) {
         return signifikantEventFra(aksjonspunktListe, null, null, true);
     }
 
-    public static EventResultat signifikantEventFra(List<AksjonspunktDto> aksjonspunktListe,
+    public static EventResultat signifikantEventFra(List<Aksjonspunkt> aksjonspunktListe,
                                                     List<OppgaveEventLogg> oppgaveEventLogger, String behandlendeEnhet) {
         return signifikantEventFra(aksjonspunktListe, oppgaveEventLogger, behandlendeEnhet, false);
     }
 
-    private static EventResultat signifikantEventFra(List<AksjonspunktDto> aksjonspunktListe, List<OppgaveEventLogg> oppgaveEventLogger,
+    private static EventResultat signifikantEventFra(List<Aksjonspunkt> aksjonspunktListe, List<OppgaveEventLogg> oppgaveEventLogger,
                                                      String behandlendeEnhet, boolean fraAdmin) {
-        Set<AksjonspunktDto> åpneAksjonspunkter = aksjonspunktListe.stream()
-                .filter(entry -> aktiveAksjonspunktkoder.contains(entry.getStatus().getKode()))
+        Set<Aksjonspunkt> åpneAksjonspunkter = aksjonspunktListe.stream()
+                .filter(Aksjonspunkt::erAktiv)
                 .collect(Collectors.toSet());
         return signifikantEventFra(åpneAksjonspunkter, sisteOpprettedeEvent(oppgaveEventLogger), behandlendeEnhet, fraAdmin);
     }
 
-    private static EventResultat signifikantEventFra(Set<AksjonspunktDto> åpneAksjonspunkt, OppgaveEventLogg sisteEvent,
+    private static EventResultat signifikantEventFra(Set<Aksjonspunkt> åpneAksjonspunkt, OppgaveEventLogg sisteEvent,
                                                      String behandlendeEnhet, boolean fraAdmin) {
         if (åpneAksjonspunkt.isEmpty()){
             return LUKK_OPPGAVE;
         }
-        if (finnesPåVentAksjonspunktI(åpneAksjonspunkt)) {
-            return aksjonspunktFinnes(åpneAksjonspunkt, MANUELT_SATT_PÅ_VENT_AKSJONSPUNKTSKODE)
-                    ? LUKK_OPPGAVE_MANUELT_VENT
-                    : LUKK_OPPGAVE_VENT;
+        if (påVent(åpneAksjonspunkt)) {
+            return manueltSattPåVent(åpneAksjonspunkt) ? LUKK_OPPGAVE_MANUELT_VENT : LUKK_OPPGAVE_VENT;
         }
-        if (aksjonspunktFinnes(åpneAksjonspunkt, BESLUTTER_AKSJONSPUNKTSKODE)) {
+        if (tilBeslutter(åpneAksjonspunkt)) {
             if (!fraAdmin && harKriterie(sisteEvent, AndreKriterierType.TIL_BESLUTTER)) {
                 return erSammeEnhet(sisteEvent.getBehandlendeEnhet(), behandlendeEnhet)
                         ? GJENÅPNE_OPPGAVE
@@ -70,7 +57,7 @@ public class FpsakEventMapper {
             }
             return OPPRETT_BESLUTTER_OPPGAVE;
         }
-        if (aksjonspunktFinnes(åpneAksjonspunkt, REGISTRER_PAPIRSØKNAD_AKSJONSPUNKTSKODE)) {
+        if (erRegistrerPapirsøknad(åpneAksjonspunkt)) {
             if (!fraAdmin && harKriterie(sisteEvent, AndreKriterierType.PAPIRSØKNAD)) {
                 return erSammeEnhet(sisteEvent.getBehandlendeEnhet(), behandlendeEnhet)
                         ? GJENÅPNE_OPPGAVE
@@ -108,20 +95,23 @@ public class FpsakEventMapper {
         return (sisteEvent.getAndreKriterierType() != null && sisteEvent.getAndreKriterierType().equals(kriterie));
     }
 
-    private static boolean finnesPåVentAksjonspunktI(Set<AksjonspunktDto> åpneAksjonspunkt) {
+    private static boolean påVent(Set<Aksjonspunkt> åpneAksjonspunkt) {
         return åpneAksjonspunkt.stream()
-                .anyMatch(entry -> entry.getDefinisjon().getKode().startsWith(PÅ_VENT_AKSJONSPUNKT_GRUPPE_STARTER_MED));
+                .anyMatch(Aksjonspunkt::erPåVent);
     }
 
-    private static boolean aksjonspunktFinnes(Set<AksjonspunktDto> aksjonspunkt, String target) {
+    private static boolean tilBeslutter(Set<Aksjonspunkt> aksjonspunkt) {
         return aksjonspunkt.stream()
-                .anyMatch(a -> a.getDefinisjon().getKode().equals(target));
+                .anyMatch(Aksjonspunkt::tilBeslutter);
     }
 
-    private static boolean aksjonspunktFinnes(Set<AksjonspunktDto> aksjonspunkt, List<String> targets) {
+    private static boolean manueltSattPåVent(Set<Aksjonspunkt> aksjonspunkt) {
         return aksjonspunkt.stream()
-                .map(a -> a.getDefinisjon().getKode())
-                .anyMatch(targets::contains);
+                .anyMatch(Aksjonspunkt::erManueltPåVent);
     }
 
+    private static boolean erRegistrerPapirsøknad(Set<Aksjonspunkt> aksjonspunkt) {
+        return aksjonspunkt.stream()
+                .anyMatch(Aksjonspunkt::erRegistrerPapirSøknad);
+    }
 }

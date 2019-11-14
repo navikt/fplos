@@ -30,9 +30,9 @@ import no.nav.fplos.avdelingsleder.AvdelingslederSaksbehandlerTjenesteImpl;
 import no.nav.fplos.avdelingsleder.AvdelingslederTjeneste;
 import no.nav.fplos.avdelingsleder.AvdelingslederTjenesteImpl;
 import no.nav.fplos.domene.organisasjonsinformasjon.organisasjonressursenhet.impl.OrganisasjonRessursEnhetTjenesteImpl;
+import no.nav.fplos.foreldrepengerbehandling.Aksjonspunkt;
 import no.nav.fplos.foreldrepengerbehandling.BehandlingFpsak;
 import no.nav.fplos.foreldrepengerbehandling.ForeldrepengerBehandlingRestKlient;
-import no.nav.fplos.foreldrepengerbehandling.dto.aksjonspunkt.AksjonspunktDto;
 import no.nav.fplos.kafkatjenester.*;
 import no.nav.fplos.oppgave.OppgaveTjenesteImpl;
 import no.nav.fplos.person.api.TpsTjeneste;
@@ -119,8 +119,8 @@ public class VerdikjedetestEventhåndteringSaksbehandlerTest {
         Map<Long, AksjonspunkteventTestInfo> melding = MockEventKafkaMessages.defaultførstegangsbehandlingMelding;
         MockEventKafkaMessages.sendNyeOppgaver(melding);
 
-        AksjonspunktDto.Builder builder = new AksjonspunktDto.Builder();
-        AksjonspunktDto aksjonspunktDto = builder.medDefinisjon("5025").medStatus("OPPR").medFristTid(aksjonspunktFrist).build();
+        Aksjonspunkt.Builder builder = Aksjonspunkt.builder();
+        Aksjonspunkt aksjonspunktDto = builder.medDefinisjon("5025").medStatus("OPPR").medFristTid(aksjonspunktFrist).build();
 
         when(foreldrepengerBehandlingRestKlient.getBehandling(anyLong())).thenReturn(lagBehandlingDto(Collections.singletonList(aksjonspunktDto)));
         kafkaReader.hentOgLagreMeldingene();
@@ -147,8 +147,8 @@ public class VerdikjedetestEventhåndteringSaksbehandlerTest {
     public void saksbehandlerForskjelligeReservasjonslister(){
         Map<Long, AksjonspunkteventTestInfo> melding = MockEventKafkaMessages.defaultførstegangsbehandlingMelding;
         MockEventKafkaMessages.sendNyeOppgaver(melding);
-        AksjonspunktDto.Builder builder = new AksjonspunktDto.Builder();
-        AksjonspunktDto aksjonspunktDto = builder.medDefinisjon("5025").medStatus("OPPR").medFristTid(aksjonspunktFrist).build();
+        Aksjonspunkt.Builder builder = Aksjonspunkt.builder();
+        Aksjonspunkt aksjonspunktDto = builder.medDefinisjon("5025").medStatus("OPPR").medFristTid(aksjonspunktFrist).build();
         when(foreldrepengerBehandlingRestKlient.getBehandling(anyLong())).thenReturn(lagBehandlingDto(Collections.singletonList(aksjonspunktDto)));
         kafkaReader.hentOgLagreMeldingene();
 
@@ -184,8 +184,8 @@ public class VerdikjedetestEventhåndteringSaksbehandlerTest {
         Map<Long, AksjonspunkteventTestInfo> melding = MockEventKafkaMessages.tilBeslutter;
         MockEventKafkaMessages.sendNyeOppgaver(melding);
 
-        AksjonspunktDto.Builder builder = new AksjonspunktDto.Builder();
-        AksjonspunktDto aksjonspunktDto = builder.medDefinisjon("5025").medStatus("OPPR").medFristTid(aksjonspunktFrist).build();
+        Aksjonspunkt.Builder builder = Aksjonspunkt.builder();
+        Aksjonspunkt aksjonspunktDto = builder.medDefinisjon("5025").medStatus("OPPR").medFristTid(aksjonspunktFrist).build();
         when(foreldrepengerBehandlingRestKlient.getBehandling(anyLong())).thenReturn(lagBehandlingAnnenBrukerDto(Collections.singletonList(aksjonspunktDto)));
         kafkaReader.hentOgLagreMeldingene();
 
@@ -201,8 +201,8 @@ public class VerdikjedetestEventhåndteringSaksbehandlerTest {
         //Act
         MockEventKafkaMessages.sendNyeOppgaver(MockEventKafkaMessages.førstegangsbehandlingMeldinger);
         MockEventKafkaMessages.sendNyeOppgaver(MockEventKafkaMessages.innsynMeldinger);
-        AksjonspunktDto.Builder builder = new AksjonspunktDto.Builder();
-        AksjonspunktDto aksjonspunktDto = builder.medDefinisjon("5025").medStatus("OPPR").medFristTid(aksjonspunktFrist).build();
+        Aksjonspunkt.Builder builder = Aksjonspunkt.builder();
+        Aksjonspunkt aksjonspunktDto = builder.medDefinisjon("5025").medStatus("OPPR").medFristTid(aksjonspunktFrist).build();
         when(foreldrepengerBehandlingRestKlient.getBehandling(anyLong())).thenReturn(lagBehandlingDto(Collections.singletonList(aksjonspunktDto)));
         kafkaReader.hentOgLagreMeldingene();
 
@@ -215,8 +215,8 @@ public class VerdikjedetestEventhåndteringSaksbehandlerTest {
         SakslisteIdDto sakslisteIdDto = avdelingslederSakslisteRestTjeneste.opprettNySaksliste(new AvdelingEnhetDto(avdelingDrammen.getAvdelingEnhet()));
         MockEventKafkaMessages.sendNyeOppgaver(MockEventKafkaMessages.førstegangsbehandlingMeldinger);
         MockEventKafkaMessages.sendNyeOppgaver(MockEventKafkaMessages.innsynMeldinger);
-        AksjonspunktDto.Builder builder = new AksjonspunktDto.Builder();
-        AksjonspunktDto aksjonspunktDto = builder.medDefinisjon("5025").medStatus("OPPR").medFristTid(aksjonspunktFrist).build();
+        Aksjonspunkt.Builder builder = Aksjonspunkt.builder();
+        Aksjonspunkt aksjonspunktDto = builder.medDefinisjon("5025").medStatus("OPPR").medFristTid(aksjonspunktFrist).build();
         when(foreldrepengerBehandlingRestKlient.getBehandling(anyLong())).thenReturn(lagBehandlingDto(Collections.singletonList(aksjonspunktDto)));
         kafkaReader.hentOgLagreMeldingene();
         assertThat(oppgaveRestTjeneste.getBehandledeOppgaver()).hasSize(0);
@@ -252,8 +252,8 @@ public class VerdikjedetestEventhåndteringSaksbehandlerTest {
     public void lukkeFerdigeAksjonspunkt(){
         Map<Long, AksjonspunkteventTestInfo> melding = MockEventKafkaMessages.førstegangsbehandlingMeldinger;
         MockEventKafkaMessages.sendNyeOppgaver(melding);
-        AksjonspunktDto.Builder builder1 = new AksjonspunktDto.Builder();
-        AksjonspunktDto aksjonspunktDto1 = builder1.medDefinisjon("5025").medStatus("OPPR").medFristTid(aksjonspunktFrist).build();
+        Aksjonspunkt.Builder builder1 = Aksjonspunkt.builder();
+        Aksjonspunkt aksjonspunktDto1 = builder1.medDefinisjon("5025").medStatus("OPPR").medFristTid(aksjonspunktFrist).build();
         doReturn(lagBehandlingDto(Collections.singletonList(aksjonspunktDto1))).when(foreldrepengerBehandlingRestKlient).getBehandling(anyLong());
        // when(foreldrepengerBehandlingRestKlient.get(anyLong())).thenReturn(lagBehandlingDto(Collections.singletonList(aksjonspunktDto1)));
         kafkaReader.hentOgLagreMeldingene();
@@ -263,8 +263,8 @@ public class VerdikjedetestEventhåndteringSaksbehandlerTest {
         verifiserAtErReservert(new HashMap<>(){{put(oppgaveDto.getBehandlingId(),melding.get(oppgaveDto.getBehandlingId()));}});
 
         MockEventKafkaMessages.clearMessages();
-        AksjonspunktDto.Builder builder2 = new AksjonspunktDto.Builder();
-        AksjonspunktDto aksjonspunktDto2 = builder2.medDefinisjon("5025").medStatus("UTFO").medFristTid(aksjonspunktFrist).build();
+        Aksjonspunkt.Builder builder2 = Aksjonspunkt.builder();
+        Aksjonspunkt aksjonspunktDto2 = builder2.medDefinisjon("5025").medStatus("UTFO").medFristTid(aksjonspunktFrist).build();
         doReturn(lagBehandlingDto(Collections.singletonList(aksjonspunktDto2))).when(foreldrepengerBehandlingRestKlient).getBehandling(anyLong());
         MockEventKafkaMessages.sendNyeOppgaver(MockEventKafkaMessages.avsluttførstegangsbehandlingMeldinger);
         kafkaReader.hentOgLagreMeldingene();
@@ -274,8 +274,8 @@ public class VerdikjedetestEventhåndteringSaksbehandlerTest {
 
         //Sender nye meldinger for at aksjonspunktene er åpnet igjen
         MockEventKafkaMessages.clearMessages();
-        AksjonspunktDto.Builder builder3 = new AksjonspunktDto.Builder();
-        AksjonspunktDto aksjonspunktDto3 = builder3.medDefinisjon("5025").medStatus("OPPR").medFristTid(aksjonspunktFrist).build();
+        Aksjonspunkt.Builder builder3 = Aksjonspunkt.builder();
+        Aksjonspunkt aksjonspunktDto3 = builder3.medDefinisjon("5025").medStatus("OPPR").medFristTid(aksjonspunktFrist).build();
         doReturn(lagBehandlingDto(Collections.singletonList(aksjonspunktDto3))).when(foreldrepengerBehandlingRestKlient).getBehandling(anyLong());
         MockEventKafkaMessages.sendNyeOppgaver(melding);
         kafkaReader.hentOgLagreMeldingene();
@@ -326,7 +326,7 @@ public class VerdikjedetestEventhåndteringSaksbehandlerTest {
         when(tpsTjeneste.hentBrukerForAktør(new AktørId(3L))).thenReturn(Optional.of(personDto));
     }
 
-    private BehandlingFpsak lagBehandlingDto(List<AksjonspunktDto> aksjonspunktDtoer){
+    private BehandlingFpsak lagBehandlingDto(List<Aksjonspunkt> aksjonspunktDtoer){
         return BehandlingFpsak.builder()
                 .medBehandlendeEnhetNavn("NAV")
                 .medAnsvarligSaksbehandler("VLLOS")
@@ -336,7 +336,7 @@ public class VerdikjedetestEventhåndteringSaksbehandlerTest {
                 .build();
     }
 
-    private BehandlingFpsak lagBehandlingAnnenBrukerDto(List<AksjonspunktDto> aksjonspunktDtoer){
+    private BehandlingFpsak lagBehandlingAnnenBrukerDto(List<Aksjonspunkt> aksjonspunktDtoer){
         return BehandlingFpsak.builder()
                 .medBehandlendeEnhetNavn("NAV")
                 .medAnsvarligSaksbehandler("IKKE_VLLOS")

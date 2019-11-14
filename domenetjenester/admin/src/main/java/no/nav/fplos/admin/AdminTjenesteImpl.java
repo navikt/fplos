@@ -133,8 +133,7 @@ public class AdminTjenesteImpl implements AdminTjeneste {
 
     private void leggTilOppgaveEgenskapHvisUtlandssak(Oppgave oppgave) {
         BehandlingFpsak behandlingDto = foreldrepengerBehandlingRestKlient.getBehandling(oppgave.getBehandlingId());
-        Boolean erUtlandssak = fpsakEventHandler.avgjørOmUtlandsak(behandlingDto.getAksjonspunkter(), behandlingDto.getErUtlandssak());
-        fpsakEventHandler.håndterOppgaveEgenskapUtlandssak(erUtlandssak, oppgave);
+        fpsakEventHandler.håndterOppgaveEgenskapUtlandssak(behandlingDto.getErUtlandssak(), oppgave);
     }
 
     private void leggTilOppgaveEgenskapHvisGradering(Oppgave oppgave) {
@@ -148,7 +147,7 @@ public class AdminTjenesteImpl implements AdminTjeneste {
 
         Map<String, String> aksjonspunktKoderMedStatusListe = new HashMap<>();
         fraFpsak.getAksjonspunkter()
-                .forEach(aksjonspunkt -> aksjonspunktKoderMedStatusListe.put(aksjonspunkt.getDefinisjon().getKode(), aksjonspunkt.getStatus().getKode()));
+                .forEach(aksjonspunkt -> aksjonspunktKoderMedStatusListe.put(aksjonspunkt.getDefinisjonKode(), aksjonspunkt.getStatusKode()));
 
         return BehandlingProsessEventDto.builder()
                 .medFagsystem(eksisterendeOppgave.getSystem())

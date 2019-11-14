@@ -31,9 +31,9 @@ import no.nav.fplos.avdelingsleder.AvdelingslederSaksbehandlerTjenesteImpl;
 import no.nav.fplos.avdelingsleder.AvdelingslederTjeneste;
 import no.nav.fplos.avdelingsleder.AvdelingslederTjenesteImpl;
 import no.nav.fplos.domene.organisasjonsinformasjon.organisasjonressursenhet.impl.OrganisasjonRessursEnhetTjenesteImpl;
+import no.nav.fplos.foreldrepengerbehandling.Aksjonspunkt;
 import no.nav.fplos.foreldrepengerbehandling.BehandlingFpsak;
 import no.nav.fplos.foreldrepengerbehandling.ForeldrepengerBehandlingRestKlient;
-import no.nav.fplos.foreldrepengerbehandling.dto.aksjonspunkt.AksjonspunktDto;
 
 import no.nav.fplos.kafkatjenester.AksjonspunktMeldingConsumer;
 import no.nav.fplos.kafkatjenester.FpsakEventHandler;
@@ -240,7 +240,7 @@ public class VerdikjedetestEventhåndteringAvdelingslederTest {
                 .medBehandlendeEnhetNavn("NAV")
                 .medStatus("-")
                 .medHarRefusjonskrav(false)
-                .medAksjonspunkter(Collections.singletonList(new AksjonspunktDto.Builder()
+                .medAksjonspunkter(Collections.singletonList(Aksjonspunkt.builder()
                         .medDefinisjon("5025")
                         .medStatus("OPPR")
                         .medFristTid(aksjonspunktFrist).build()))
