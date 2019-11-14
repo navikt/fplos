@@ -8,8 +8,10 @@ import no.nav.foreldrepenger.loslager.repository.AdminRepository;
 import no.nav.foreldrepenger.loslager.repository.OppgaveRepositoryProvider;
 import no.nav.fplos.foreldrepengerbehandling.BehandlingFpsak;
 import no.nav.fplos.foreldrepengerbehandling.ForeldrepengerBehandlingRestKlient;
+import no.nav.fplos.kafkatjenester.Fagsystem;
 import no.nav.fplos.kafkatjenester.FpsakEventHandler;
 import no.nav.fplos.kafkatjenester.KafkaReader;
+import no.nav.fplos.kafkatjenester.TilbakekrevingEventHandler;
 import no.nav.vedtak.felles.integrasjon.kafka.BehandlingProsessEventDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,6 +31,7 @@ public class AdminTjenesteImpl implements AdminTjeneste {
     private ForeldrepengerBehandlingRestKlient foreldrepengerBehandlingRestKlient;
     private AdminRepository adminRepository;
     private FpsakEventHandler fpsakEventHandler;
+    private TilbakekrevingEventHandler tilbakekrevingEventHandler;
     private KafkaReader kafaReader;
 
     public AdminTjenesteImpl(){
@@ -39,10 +42,12 @@ public class AdminTjenesteImpl implements AdminTjeneste {
     public AdminTjenesteImpl(OppgaveRepositoryProvider oppgaveRepositoryProvider,
                              ForeldrepengerBehandlingRestKlient foreldrepengerBehandlingRestKlient,
                              FpsakEventHandler fpsakEventHandler,
+                             TilbakekrevingEventHandler tilbakekrevingEventHandler,
                              KafkaReader kafaReader) {
         adminRepository = oppgaveRepositoryProvider.getAdminRepository();
         this.foreldrepengerBehandlingRestKlient = foreldrepengerBehandlingRestKlient;
         this.fpsakEventHandler = fpsakEventHandler;
+        this.tilbakekrevingEventHandler = tilbakekrevingEventHandler;
         this.kafaReader = kafaReader;
     }
 
@@ -75,7 +80,16 @@ public class AdminTjenesteImpl implements AdminTjeneste {
     @Override
     public int oppdaterAktiveOppgaver() {
         List<Oppgave> aktiveOppgaver = adminRepository.hentAlleAktiveOppgaver();
-        aktiveOppgaver.forEach(oppgave -> fpsakEventHandler.prosesserFraAdmin(mapTilBehandlingProsessEventDto(oppgave.getBehandlingId()), oppgave.getReservasjon()));
+        aktiveOppgaver.stream().forEach(oppgave -> {
+            switch(Fagsystem.valueOf(oppgave.getSystem())){
+                case FPSAK :
+                    fpsakEventHandler.prosesserFraAdmin(mapTilBehandlingProsessEventDto(oppgave.getBehandlingId()), oppgave.getReservasjon());
+                    break;
+                case FPTILBAKE :
+                    tilbakekrevingEventHandler.prosesserFraAdmin(mapTilBehandlingProsessEventDto(oppgave.getBehandlingId()), oppgave.getReservasjon());
+                    break;
+            }
+        });
         return aktiveOppgaver.size();
     }
 

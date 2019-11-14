@@ -15,6 +15,7 @@ import no.nav.fplos.foreldrepengerbehandling.BehandlingFpsak;
 import no.nav.fplos.foreldrepengerbehandling.ForeldrepengerBehandlingRestKlient;
 import no.nav.fplos.kafkatjenester.FpsakEventHandler;
 import no.nav.fplos.kafkatjenester.KafkaReader;
+import no.nav.fplos.kafkatjenester.TilbakekrevingEventHandler;
 import org.junit.Rule;
 import org.junit.Test;
 
@@ -36,8 +37,9 @@ public class AdminTjenesteImplTest {
     private final OppgaveRepositoryProvider repositoryProvider = new OppgaveRepositoryProviderImpl(entityManager);
     private ForeldrepengerBehandlingRestKlient foreldrepengerBehandlingRestKlient = mock(ForeldrepengerBehandlingRestKlient.class);
     private FpsakEventHandler fpsakEventHandler = new FpsakEventHandler(repositoryProvider, foreldrepengerBehandlingRestKlient);
+    private TilbakekrevingEventHandler tilbakekrevingEventHandler = new TilbakekrevingEventHandler(repositoryProvider);
     private KafkaReader kafkaReader = mock(KafkaReader.class);
-    private AdminTjenesteImpl adminTjeneste = new AdminTjenesteImpl(repositoryProvider, foreldrepengerBehandlingRestKlient, fpsakEventHandler, kafkaReader);
+    private AdminTjenesteImpl adminTjeneste = new AdminTjenesteImpl(repositoryProvider, foreldrepengerBehandlingRestKlient, fpsakEventHandler, tilbakekrevingEventHandler, kafkaReader);
     private OppgaveRepository oppgaveRepository = new OppgaveRepositoryImpl(entityManager);
 
     private static String AVDELING_DRAMMEN_ENHET = "4806";

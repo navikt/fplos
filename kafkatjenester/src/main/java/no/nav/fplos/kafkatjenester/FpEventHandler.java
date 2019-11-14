@@ -87,7 +87,7 @@ public abstract class FpEventHandler {
         }
         else return new ArrayList<>();
     }
-
+/*
     protected Oppgave gjenåpneOppgaveVedEksternId(String fagsystem, String eksternRefId) {
         Optional<EksternIdentifikator> eksternId = eksternIdentifikatorRespository.finnIdentifikator(fagsystem, eksternRefId);
         if(eksternId.isPresent()){
@@ -97,6 +97,6 @@ public abstract class FpEventHandler {
             return null;
         }
     }
-
+*/
     public abstract void prosesser(BehandlingProsessEventDto bpeDto);
 }
