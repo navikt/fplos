@@ -16,7 +16,6 @@ import no.nav.fplos.foreldrepengerbehandling.BehandlingFpsak;
 import no.nav.fplos.foreldrepengerbehandling.ForeldrepengerBehandlingRestKlient;
 import no.nav.fplos.kafkatjenester.eventresultat.EventResultat;
 import no.nav.fplos.kafkatjenester.eventresultat.FpsakEventMapper;
-import no.nav.fplos.kodeverk.KodeverkRepository;
 import no.nav.vedtak.felles.integrasjon.kafka.BehandlingProsessEventDto;
 import no.nav.vedtak.felles.jpa.Transaction;
 import org.slf4j.Logger;
@@ -26,7 +25,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -65,7 +64,8 @@ public class FpsakEventHandler extends FpEventHandler {
         BehandlingFpsak behandling = foreldrePengerBehandlingRestKlient.getBehandling(behandlingId);
 
         List<OppgaveEventLogg> pastOppgaveEvents = getOppgaveRepository().hentEventer(behandlingId);
-        List<Aksjonspunkt> aksjonspunkt = behandling.getAksjonspunkter();
+        List<Aksjonspunkt> aksjonspunkt = Optional.ofNullable(behandling.getAksjonspunkter())
+                .orElse(Collections.emptyList());
 
         EventResultat event = prosesserFraAdmin
                 ? FpsakEventMapper.signifikantEventForAdminFra(aksjonspunkt)
@@ -226,57 +226,49 @@ public class FpsakEventHandler extends FpEventHandler {
     }
 
     public void håndterOppgaveEgenskapUtbetalingTilBruker(Boolean harRefusjonskrav, Oppgave oppgave) {
-        List<OppgaveEgenskap> oppgaveEgenskaper = getOppgaveRepository().hentOppgaveEgenskaper(oppgave.getId());
-        OppgaveEgenskap utbetalingTilBruker = kriteriumHvisEksisterer(oppgaveEgenskaper, AndreKriterierType.UTBETALING_TIL_BRUKER);
-        if (harRefusjonskrav != null && !harRefusjonskrav) {
-            aktiverEllerLeggTilOppgaveEgenskap(utbetalingTilBruker, oppgave, AndreKriterierType.UTBETALING_TIL_BRUKER);
-        } else {
-            deaktiverOppgaveEgenskap(utbetalingTilBruker);
-        }
+        //Skal ikke ha egenskap når harRefusjonskrav er true eller null. Vi avventer inntektsmelding før vi legger på egenskapen.
+        boolean skalHaEgenskap = harRefusjonskrav != null && !harRefusjonskrav;
+        håndterOppgaveEgenskap(skalHaEgenskap, oppgave, AndreKriterierType.UTBETALING_TIL_BRUKER);
     }
 
-    public void håndterOppgaveEgenskapUtlandssak(Boolean erUtlandsak, Oppgave oppgave) {
-        List<OppgaveEgenskap> oppgaveEgenskaper = getOppgaveRepository().hentOppgaveEgenskaper(oppgave.getId());
-        OppgaveEgenskap kriterieTilknyttetOppgave = kriteriumHvisEksisterer(oppgaveEgenskaper, AndreKriterierType.UTLANDSSAK);
-        if (erUtlandsak != null && erUtlandsak) {
-            aktiverEllerLeggTilOppgaveEgenskap(kriterieTilknyttetOppgave, oppgave, AndreKriterierType.UTLANDSSAK);
-        } else {
-            deaktiverOppgaveEgenskap(kriterieTilknyttetOppgave);
-        }
+    public void håndterOppgaveEgenskapUtlandssak(boolean erUtlandsak, Oppgave oppgave) {
+        håndterOppgaveEgenskap(erUtlandsak, oppgave, AndreKriterierType.UTLANDSSAK);
     }
 
     public void håndterOppgaveEgenskapGradering(Boolean harGradering, Oppgave oppgave) {
-        List<OppgaveEgenskap> oppgaveEgenskaper = getOppgaveRepository().hentOppgaveEgenskaper(oppgave.getId());
-        OppgaveEgenskap eksisterendeEgenskap = kriteriumHvisEksisterer(oppgaveEgenskaper, AndreKriterierType.SOKT_GRADERING);
-        if (harGradering != null && harGradering) {
-            aktiverEllerLeggTilOppgaveEgenskap(eksisterendeEgenskap, oppgave, AndreKriterierType.SOKT_GRADERING);
+        håndterOppgaveEgenskap(harGradering, oppgave, AndreKriterierType.SOKT_GRADERING);
+    }
+
+    private void håndterOppgaveEgenskap(Boolean status, Oppgave oppgave, AndreKriterierType kriterieType) {
+        if (status != null && status) {
+            aktiverEgenskap(oppgave, kriterieType);
         } else {
-            deaktiverOppgaveEgenskap(eksisterendeEgenskap);
+            deaktiverEgenskap(oppgave, kriterieType);
         }
     }
 
-    private void aktiverEllerLeggTilOppgaveEgenskap(OppgaveEgenskap kriteriumEksisterende,
-                                                    Oppgave oppgave,
-                                                    AndreKriterierType kriterium) {
-        if (kriteriumEksisterende != null) {
-            kriteriumEksisterende.aktiverOppgaveEgenskap();
-            getOppgaveRepository().lagre(kriteriumEksisterende);
+    private void aktiverEgenskap(Oppgave oppgave, AndreKriterierType kriterieType) {
+        OppgaveEgenskap eksisterende = hentEksisterendeEgenskap(kriterieType, oppgave);
+        if (eksisterende != null) {
+            eksisterende.aktiverOppgaveEgenskap();
+            getOppgaveRepository().lagre(eksisterende);
         } else {
-            getOppgaveRepository().lagre(new OppgaveEgenskap(oppgave, kriterium));
+            getOppgaveRepository().lagre(new OppgaveEgenskap(oppgave, kriterieType));
         }
     }
 
-    private void deaktiverOppgaveEgenskap(OppgaveEgenskap kriterieTilknyttetOppgave) {
-        if (kriterieTilknyttetOppgave != null) {
-            kriterieTilknyttetOppgave.deaktiverOppgaveEgenskap();
-            getOppgaveRepository().lagre(kriterieTilknyttetOppgave);
+    private void deaktiverEgenskap(Oppgave oppgave, AndreKriterierType kriterieType) {
+        OppgaveEgenskap eksisterendeEgenskap = hentEksisterendeEgenskap(kriterieType, oppgave);
+        if (eksisterendeEgenskap != null) {
+            eksisterendeEgenskap.deaktiverOppgaveEgenskap();
+            getOppgaveRepository().lagre(eksisterendeEgenskap);
         }
     }
 
-    private static OppgaveEgenskap kriteriumHvisEksisterer(List<OppgaveEgenskap> oppgaveEgenskaper,
-                                                           AndreKriterierType targetKriterium) {
-        return safeStream(oppgaveEgenskaper)
-                .filter(e -> e.getAndreKriterierType().equals(targetKriterium))
+    private OppgaveEgenskap hentEksisterendeEgenskap(AndreKriterierType kriterieType, Oppgave oppgave) {
+        List<OppgaveEgenskap> eksisterendeEgenskaper = getOppgaveRepository().hentOppgaveEgenskaper(oppgave.getId());
+        return safeStream(eksisterendeEgenskaper)
+                .filter(e -> e.getAndreKriterierType().equals(kriterieType))
                 .findAny()
                 .orElse(null);
     }
