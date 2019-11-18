@@ -19,6 +19,7 @@ import no.nav.foreldrepenger.loslager.organisasjon.Saksbehandler;
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
+import java.util.UUID;
 
 public interface OppgaveRepository {
 
@@ -81,7 +82,7 @@ public interface OppgaveRepository {
     @Deprecated
     Oppgave gjenåpneOppgave(Long behandlingId);
 
-    Oppgave gjenåpneOppgaveForEksternId(Long eksternId);
+    Oppgave gjenåpneOppgaveForEksternId(UUID eksternId);
 
     /**
      * @deprecated Bruk avsluttOppgaveForEksternId(Long) i stedet
@@ -89,7 +90,7 @@ public interface OppgaveRepository {
     @Deprecated
     void avsluttOppgave(Long behandlingId);
 
-    void avsluttOppgaveForEksternId(Long externId);
+    void avsluttOppgaveForEksternId(UUID eksternId);
 
     List<Oppgave> hentSisteReserverteOppgaver(String uid);
 
@@ -103,7 +104,7 @@ public interface OppgaveRepository {
     @Deprecated
     List<OppgaveEventLogg> hentEventer(Long behandlingId);
 
-    List<OppgaveEventLogg> hentEventerForEksternId(Long eksternId);
+    List<OppgaveEventLogg> hentEventerForEksternId(UUID eksternId);
 
     List<OppgaveEgenskap> hentOppgaveEgenskaper(Long oppgaveId);
 

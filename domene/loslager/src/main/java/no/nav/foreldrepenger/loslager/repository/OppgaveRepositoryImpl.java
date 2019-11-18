@@ -28,10 +28,9 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Optional;
+import java.util.UUID;
 
 import static no.nav.foreldrepenger.loslager.BaseEntitet.BRUKERNAVN_NÅR_SIKKERHETSKONTEKST_IKKE_FINNES;
 
@@ -373,7 +372,7 @@ public class OppgaveRepositoryImpl implements OppgaveRepository {
     }
 
     @Override
-    public Oppgave gjenåpneOppgaveForEksternId(Long eksternId) {
+    public Oppgave gjenåpneOppgaveForEksternId(UUID eksternId) {
         List<Oppgave> oppgaver = hentOppgaverForEksternId(eksternId);
         Oppgave sisteOppgave = oppgaver.stream()
                 .max(Comparator.comparing(Oppgave::getOpprettetTidspunkt))
@@ -406,7 +405,7 @@ public class OppgaveRepositoryImpl implements OppgaveRepository {
     }
 
     @Override
-    public void avsluttOppgaveForEksternId(Long eksternId) {
+    public void avsluttOppgaveForEksternId(UUID eksternId) {
         List<Oppgave> oppgaver = hentOppgaverForEksternId(eksternId);
         if (oppgaver.isEmpty()) {
             return;
@@ -459,7 +458,7 @@ public class OppgaveRepositoryImpl implements OppgaveRepository {
     }
 
     @Override
-    public List<OppgaveEventLogg> hentEventerForEksternId(Long eksternId) {
+    public List<OppgaveEventLogg> hentEventerForEksternId(UUID eksternId) {
         return getEntityManager().createQuery("FROM oppgaveEventLogg oel " +
                 "where oel.eksternId = :eksternId ORDER BY oel.id desc", OppgaveEventLogg.class)
                 .setParameter("eksternId", eksternId).getResultList();
@@ -494,7 +493,7 @@ public class OppgaveRepositoryImpl implements OppgaveRepository {
                 .getResultList();
     }
 
-    private List<Oppgave> hentOppgaverForEksternId(Long eksternId) {
+    private List<Oppgave> hentOppgaverForEksternId(UUID eksternId) {
         return getEntityManager().createQuery(SELECT_FRA_OPPGAVE +
                 "WHERE o.eksternId = :eksternId ", Oppgave.class)
                 .setParameter("eksternId", eksternId)
@@ -549,4 +548,5 @@ public class OppgaveRepositoryImpl implements OppgaveRepository {
         entityManager.persist(objektTilLagring);
         entityManager.flush();
     }
+
 }

@@ -2,7 +2,6 @@ package no.nav.fplos.kafkatjenester;
 
 import no.nav.foreldrepenger.loslager.oppgave.AndreKriterierType;
 import no.nav.foreldrepenger.loslager.oppgave.BehandlingType;
-import no.nav.foreldrepenger.loslager.oppgave.EksternIdentifikator;
 import no.nav.foreldrepenger.loslager.oppgave.FagsakYtelseType;
 import no.nav.foreldrepenger.loslager.oppgave.Oppgave;
 import no.nav.foreldrepenger.loslager.oppgave.OppgaveEventLogg;
@@ -21,6 +20,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @ApplicationScoped
 @Transaction
@@ -46,10 +46,10 @@ public class TilbakekrevingEventHandler extends FpEventHandler {
 
     private void prosesser(BehandlingProsessEventDto bpeDto, Reservasjon reservasjon, boolean prosesserFraAdmin) {
         //TODO: bruk bpeDto.getId() når den er tilgjengelig
-        String eksternRefId = "EKSTERN";//bpeDto.getId();
-        EksternIdentifikator eksternId = getEksternIdentifikatorRespository().finnEllerOpprettEksternId(bpeDto.getFagsystem(), eksternRefId);
+        UUID eksternId = UUID.randomUUID();//bpeDto.getId();
+        //EksternIdentifikator eksternId = getEksternIdentifikatorRespository().finnEllerOpprettEksternId(bpeDto.getFagsystem(), eksternRefId);
 
-        List<OppgaveEventLogg> pastOppgaveEvents = getOppgaveRepository().hentEventerForEksternId(eksternId.getId());
+        List<OppgaveEventLogg> pastOppgaveEvents = getOppgaveRepository().hentEventerForEksternId(eksternId);
 
         //TODO: Dersom annen info skal populeres i Oppgave (frister, status o.l.) eller OppgaveEgenskaper så behøver vi et restkall mot fptilbake
         //BehandlingFptilbake behandling = fptilbakeBehandlingRestKlient.getBehandling(eksternRefId);
@@ -67,22 +67,22 @@ public class TilbakekrevingEventHandler extends FpEventHandler {
                 // eksternreferanseidentifikator som ikke refereres i noen oppgave ettersom der er gjort kall til
                 // finnEllerOpprettEksternId for eksternId. Det er dog kanskje ikke feil at denne iden blir opprettet
                 // slik at man har et spor av hendelsen.
-                log.info("Lukker oppgave med eksternRefId {} ", eksternRefId);
-                avsluttOppgaveForEksternId(eksternId.getId());
-                loggEvent(eksternId.getId(), OppgaveEventType.LUKKET, AndreKriterierType.UKJENT, bpeDto.getBehandlendeEnhet(), null);
+                log.info("Lukker oppgave med eksternRefId {} ", eksternId.toString());
+                avsluttOppgaveForEksternId(eksternId);
+                loggEvent(eksternId, OppgaveEventType.LUKKET, AndreKriterierType.UKJENT, bpeDto.getBehandlendeEnhet(), null);
                 break;
             case OPPRETT_OPPGAVE:
-                avsluttOppgaveHvisÅpen(eksternId.getId(), pastOppgaveEvents, bpeDto.getBehandlendeEnhet());
-                Oppgave oppgave = opprettOppgave(eksternId.getId(), bpeDto, prosesserFraAdmin);
+                avsluttOppgaveHvisÅpen(eksternId, pastOppgaveEvents, bpeDto.getBehandlendeEnhet());
+                Oppgave oppgave = opprettOppgave(eksternId, bpeDto, prosesserFraAdmin);
                 reserverOppgaveFraTidligereReservasjon(prosesserFraAdmin, reservasjon, oppgave);
-                log.info("Oppgave {} opprettet og populert med informasjon fra FPTILBAKE for eksternId {}", oppgave.getId(), eksternId.getId());
+                log.info("Oppgave {} opprettet og populert med informasjon fra FPTILBAKE for eksternId {}", oppgave.getId(), eksternId);
                 loggEvent(oppgave.getEksternId(), OppgaveEventType.OPPRETTET, AndreKriterierType.UKJENT, bpeDto.getBehandlendeEnhet());
                 //opprettOppgaveEgenskaper(behandling, oppgave);
                 break;
             case GJENÅPNE_OPPGAVE:
                 //Oppgave gjenåpnetOppgave = gjenåpneOppgaveForEksternId(bpeDto);
-                Oppgave gjenåpnetOppgave = getOppgaveRepository().gjenåpneOppgaveForEksternId(eksternId.getId());
-                log.info("Gjenåpnet oppgave for eksternId {}", eksternId.getId());
+                Oppgave gjenåpnetOppgave = getOppgaveRepository().gjenåpneOppgaveForEksternId(eksternId);
+                log.info("Gjenåpnet oppgave for eksternId {}", eksternId);
                 loggEvent(gjenåpnetOppgave.getEksternId(), OppgaveEventType.GJENAPNET, AndreKriterierType.UKJENT, bpeDto.getBehandlendeEnhet());
                 //opprettOppgaveEgenskaper(behandling, gjenåpnetOppgave);
                 break;
@@ -90,13 +90,13 @@ public class TilbakekrevingEventHandler extends FpEventHandler {
 
     }
 
-    private void avsluttOppgaveHvisÅpen(Long eksternId, List<OppgaveEventLogg> oppgaveEventLogger, String behandlendeEnhet) {
+    private void avsluttOppgaveHvisÅpen(UUID eksternId, List<OppgaveEventLogg> oppgaveEventLogger, String behandlendeEnhet) {
         if (!oppgaveEventLogger.isEmpty() && OppgaveEventType.åpningseventtyper().contains(oppgaveEventLogger.get(0).getEventType())){
             loggEvent(eksternId, OppgaveEventType.LUKKET, AndreKriterierType.UKJENT, behandlendeEnhet);
             getOppgaveRepository().avsluttOppgaveForEksternId(eksternId);
         }
     }
-    private Oppgave opprettOppgave(Long eksternId, BehandlingProsessEventDto bpeDto, boolean prosesserFraAdmin) {
+    private Oppgave opprettOppgave(UUID eksternId, BehandlingProsessEventDto bpeDto, boolean prosesserFraAdmin) {
         return getOppgaveRepository().opprettOppgave(Oppgave.builder()
                 .medSystem(bpeDto.getFagsystem())
                 .medBehandlingId(bpeDto.getBehandlingId())

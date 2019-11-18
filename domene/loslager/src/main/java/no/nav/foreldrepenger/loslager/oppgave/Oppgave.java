@@ -19,6 +19,7 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Entity(name = "Oppgave")
 @Table(name = "OPPGAVE")
@@ -80,7 +81,7 @@ public class Oppgave extends BaseEntitet {
     private Boolean utfortFraAdmin = Boolean.FALSE;
 
     @Column(name = "EKSTERN_ID")
-    private Long eksternId;
+    private UUID eksternId;
 
     @OneToOne(mappedBy = "oppgave")
     private Reservasjon reservasjon;
@@ -121,7 +122,7 @@ public class Oppgave extends BaseEntitet {
         return system;
     }
 
-    public Long getEksternId() {
+    public UUID getEksternId() {
         return eksternId;
     }
 
@@ -179,7 +180,7 @@ public class Oppgave extends BaseEntitet {
             return this;
         }
 
-        public Builder medEksternId(Long eksternId){
+        public Builder medEksternId(UUID eksternId){
             tempOppgave.eksternId = eksternId;
             return this;
         }

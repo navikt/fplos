@@ -8,8 +8,6 @@ public interface OppgaveRepositoryProvider {
 
     OppgaveRepository getOppgaveRepository();
 
-    EksternIdentifikatorRepository getEksternIdentifikatorRepository();
-
     OrganisasjonRepository getOrganisasjonRepository();
 
     StatistikkRepository getStatisikkRepository();

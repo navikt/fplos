@@ -15,7 +15,6 @@ public class OppgaveRepositoryProviderImpl implements OppgaveRepositoryProvider 
 
     private KodeverkRepositoryImpl kodeverkRepository;
     private OppgaveRepository oppgaveRepository;
-    private EksternIdentifikatorRepository eksternIdentifikatorRepository;
     private OrganisasjonRepository organisasjonRepository;
     private StatistikkRepository statistikkRepository;
     private AdminRepositoryImpl adminRepository;
@@ -29,7 +28,6 @@ public class OppgaveRepositoryProviderImpl implements OppgaveRepositoryProvider 
         Objects.requireNonNull(entityManager, "entityManager"); //$NON-NLS-1$
         this.kodeverkRepository = new KodeverkRepositoryImpl(entityManager);
         this.oppgaveRepository = new OppgaveRepositoryImpl(entityManager);
-        this.eksternIdentifikatorRepository = new EksternIdentifikatorRepositoryImpl(entityManager);
         this.organisasjonRepository = new OrganisasjonRepositoryImpl(entityManager);
         this.statistikkRepository = new StatiskikkRepositoryImpl(entityManager);
         this.adminRepository = new AdminRepositoryImpl(entityManager);
@@ -44,11 +42,6 @@ public class OppgaveRepositoryProviderImpl implements OppgaveRepositoryProvider 
     @Override
     public OppgaveRepository getOppgaveRepository() {
         return oppgaveRepository;
-    }
-
-    @Override
-    public EksternIdentifikatorRepository getEksternIdentifikatorRepository() {
-        return eksternIdentifikatorRepository;
     }
 
     @Override

@@ -13,6 +13,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Entity(name = "oppgaveEventLogg")
 @Table(name = "OPPGAVE_EVENT_LOGG")
@@ -41,18 +42,18 @@ public class OppgaveEventLogg extends BaseEntitet{
     private LocalDateTime fristTid;
 
     @Column(name = "EKSTERN_ID")
-    private Long eksternId;
+    private UUID eksternId;
 
     public OppgaveEventLogg(){
         //For automatisk generering
     }
 
-    public OppgaveEventLogg(Long eksternId, OppgaveEventType eventType, AndreKriterierType andreKriterierType, String behandlendeEnhet, LocalDateTime fristTid) {
+    public OppgaveEventLogg(UUID eksternId, OppgaveEventType eventType, AndreKriterierType andreKriterierType, String behandlendeEnhet, LocalDateTime fristTid) {
         this(eksternId, eventType, andreKriterierType, behandlendeEnhet);
         this.fristTid = fristTid;
     }
 
-    public OppgaveEventLogg(Long eksternId, OppgaveEventType eventType, AndreKriterierType andreKriterierType, String behandlendeEnhet ) {
+    public OppgaveEventLogg(UUID eksternId, OppgaveEventType eventType, AndreKriterierType andreKriterierType, String behandlendeEnhet ) {
         this.eventType = eventType;
         this.andreKriterierType = andreKriterierType;
         this.behandlendeEnhet = behandlendeEnhet;
@@ -60,13 +61,13 @@ public class OppgaveEventLogg extends BaseEntitet{
     }
 
     @Deprecated
-    public OppgaveEventLogg(Long eksternId, OppgaveEventType eventType, AndreKriterierType andreKriterierType, String behandlendeEnhet, LocalDateTime fristTid, Long behandlingId) {
+    public OppgaveEventLogg(UUID eksternId, OppgaveEventType eventType, AndreKriterierType andreKriterierType, String behandlendeEnhet, LocalDateTime fristTid, Long behandlingId) {
         this(eksternId, eventType, andreKriterierType, behandlendeEnhet, behandlingId);
         this.fristTid = fristTid;
     }
 
     @Deprecated
-    public OppgaveEventLogg(Long eksternId, OppgaveEventType eventType, AndreKriterierType andreKriterierType, String behandlendeEnhet, Long behandlingId ) {
+    public OppgaveEventLogg(UUID eksternId, OppgaveEventType eventType, AndreKriterierType andreKriterierType, String behandlendeEnhet, Long behandlingId ) {
         this.behandlingId = behandlingId;
         this.eventType = eventType;
         this.andreKriterierType = andreKriterierType;
@@ -89,7 +90,7 @@ public class OppgaveEventLogg extends BaseEntitet{
         return behandlendeEnhet;
     }
 
-    public Long getEksternId() {
+    public UUID getEksternId() {
         return eksternId;
     }
 

@@ -1,19 +1,5 @@
 package no.nav.fplos.foreldrepengerbehandling;
 
-import java.math.BigDecimal;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-
 import no.nav.fplos.foreldrepengerbehandling.dto.KontrollerFaktaDataDto;
 import no.nav.fplos.foreldrepengerbehandling.dto.KontrollerFaktaPeriodeDto;
 import no.nav.fplos.foreldrepengerbehandling.dto.SokefeltDto;
@@ -32,6 +18,19 @@ import no.nav.vedtak.sikkerhet.loginmodule.ContainerLogin;
 import org.apache.http.client.utils.URIBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import java.math.BigDecimal;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 import static no.nav.fplos.foreldrepengerbehandling.Aksjonspunkt.aksjonspunktFra;
 
@@ -73,6 +72,7 @@ public class ForeldrepengerBehandlingRestKlient {
             List<ResourceLink> links = response.getLinks();
             BehandlingFpsak.Builder builder = BehandlingFpsak.builder()
                     .medBehandlingId(response.getId())
+                    .medUuid(response.getUuid())
                     .medType(response.getType().getKode())
                     .medBehandlendeEnhet(response.getBehandlendeEnhetId())
                     .medBehandlendeEnhetNavn(response.getBehandlendeEnhetNavn())

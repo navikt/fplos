@@ -8,6 +8,7 @@ import no.nav.foreldrepenger.loslager.oppgave.Oppgave;
 
 import java.time.LocalDateTime;
 import java.util.Locale;
+import java.util.UUID;
 
 public class OppgaveDto {
     private Long id;
@@ -23,7 +24,7 @@ public class OppgaveDto {
     private Boolean erTilSaksbehandling;
     private LocalDateTime opprettetTidspunkt;
     private LocalDateTime behandlingsfrist;
-    private Long eksternId;
+    private UUID eksternId;
 
     public OppgaveDto() {
         // Injiseres i test
@@ -82,7 +83,7 @@ public class OppgaveDto {
         return behandlingId;
     }
 
-    public Long getEksternId() {
+    public UUID getEksternId() {
         return eksternId;
     }
 

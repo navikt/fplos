@@ -9,11 +9,13 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class BehandlingDto {
 
     private Long id;
+    private UUID uuid;
     private Long versjon;
     private BehandlingType type;
     private BehandlingStatus status;
@@ -40,6 +42,10 @@ public class BehandlingDto {
 
     public Long getId() {
         return id;
+    }
+
+    public UUID getUuid() {
+        return uuid;
     }
 
     public Long getVersjon() {
@@ -94,6 +100,10 @@ public class BehandlingDto {
 
     void setId(Long id) {
         this.id = id;
+    }
+
+    public void setUuid(UUID uuid) {
+        this.uuid = uuid;
     }
 
     void setVersjon(Long versjon) {
