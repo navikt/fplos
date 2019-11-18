@@ -61,6 +61,11 @@ public class FpsakEventHandler extends FpEventHandler {
 
     private void prosesser(BehandlingProsessEventDto bpeDto, Reservasjon reservasjon, boolean prosesserFraAdmin) {
         Long behandlingId = bpeDto.getBehandlingId();
+
+        //TODO: bruk bpeDto.getId() når den er tilgjengelig
+        String eksternRefId = "EKSTERN";//bpeDto.getId();
+        EksternIdentifikator eksternId = getEksternIdentifikatorRespository().finnEllerOpprettEksternId(bpeDto.getFagsystem(), eksternRefId);
+
         BehandlingFpsak behandling = foreldrePengerBehandlingRestKlient.getBehandling(behandlingId);
 
         List<OppgaveEventLogg> pastOppgaveEvents = getOppgaveRepository().hentEventer(behandlingId);
