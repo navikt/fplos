@@ -13,7 +13,6 @@ import no.nav.fplos.kodeverk.KodeverkRepository;
 @ApplicationScoped
 public class StatistikkTjenesteImpl implements StatistikkTjeneste {
 
-    private KodeverkRepository kodeverkRepository;
     private StatistikkRepository statisikkRepository;
 
     StatistikkTjenesteImpl() {
@@ -23,20 +22,19 @@ public class StatistikkTjenesteImpl implements StatistikkTjeneste {
     @Inject
     public StatistikkTjenesteImpl(OppgaveRepositoryProvider oppgaveRepositoryProvider) {
         statisikkRepository = oppgaveRepositoryProvider.getStatisikkRepository();
-        kodeverkRepository = oppgaveRepositoryProvider.getKodeverkRepository();
     }
 
     @Override
-    public List<OppgaverForAvdeling>  hentAlleOppgaverForAvdeling(String avdeling) {
+    public List<OppgaverForAvdeling> hentAlleOppgaverForAvdeling(String avdeling) {
         return (List<OppgaverForAvdeling>) statisikkRepository.hentAlleOppgaverForAvdeling(avdeling).stream() // NOSONAR
-                .map(resultat -> new OppgaverForAvdeling((Object[])resultat, kodeverkRepository))
+                .map(resultat -> new OppgaverForAvdeling((Object[]) resultat))
                 .collect(Collectors.toList()); // NOSONAR
     }
 
     @Override
-    public List<OppgaverForAvdelingPerDato>  hentAntallOppgaverForAvdelingPerDato(String avdeling) {
+    public List<OppgaverForAvdelingPerDato> hentAntallOppgaverForAvdelingPerDato(String avdeling) {
         return (List<OppgaverForAvdelingPerDato>) statisikkRepository.hentAlleOppgaverForAvdelingPerDato(avdeling).stream() // NOSONAR
-                .map(resultat -> new OppgaverForAvdelingPerDato((Object[])resultat, kodeverkRepository))
+                .map(resultat -> new OppgaverForAvdelingPerDato((Object[]) resultat))
                 .collect(Collectors.toList()); // NOSONAR
     }
 
@@ -49,15 +47,15 @@ public class StatistikkTjenesteImpl implements StatistikkTjeneste {
 
     @Override
     public List<NyeOgFerdigstilteOppgaver> hentNyeOgFerdigstilteOppgaver(Long sakslisteId) {
-        return (List<NyeOgFerdigstilteOppgaver>)statisikkRepository.hentNyeOgFerdigstilteOppgaver(sakslisteId).stream() // NOSONAR
-                .map(result -> new NyeOgFerdigstilteOppgaver((Object[])result, kodeverkRepository))
+        return (List<NyeOgFerdigstilteOppgaver>) statisikkRepository.hentNyeOgFerdigstilteOppgaver(sakslisteId).stream() // NOSONAR
+                .map(result -> new NyeOgFerdigstilteOppgaver((Object[]) result))
                 .collect(Collectors.toList()); // NOSONAR
     }
 
     @Override
     public List<OppgaverForFørsteStønadsdag> hentOppgaverPerFørsteStønadsdag(String avdeling) {
-        return (List<OppgaverForFørsteStønadsdag>)statisikkRepository.hentOppgaverPerFørsteStønadsdag(avdeling).stream() // NOSONAR
-                .map(result -> new OppgaverForFørsteStønadsdag((Object[])result))
+        return (List<OppgaverForFørsteStønadsdag>) statisikkRepository.hentOppgaverPerFørsteStønadsdag(avdeling).stream() // NOSONAR
+                .map(result -> new OppgaverForFørsteStønadsdag((Object[]) result))
                 .collect(Collectors.toList()); // NOSONAR
     }
 }

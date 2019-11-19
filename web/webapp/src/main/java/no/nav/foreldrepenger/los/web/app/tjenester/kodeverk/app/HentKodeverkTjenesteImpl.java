@@ -23,7 +23,6 @@ class HentKodeverkTjenesteImpl implements HentKodeverkTjeneste {
     private KodeverkRepository kodeverkRepository;
 
     private static List<Class<? extends Kodeliste>> KODEVERK_SOM_BRUKES_PÅ_KLIENT = Arrays.asList(
-            BehandlingType.class,
             KøSortering.class,
             FagsakStatus.class,
             AndreKriterierType.class

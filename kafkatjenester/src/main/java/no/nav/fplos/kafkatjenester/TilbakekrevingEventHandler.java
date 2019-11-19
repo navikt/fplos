@@ -103,7 +103,7 @@ public class TilbakekrevingEventHandler extends FpEventHandler {
                 .medFagsakSaksnummer(Long.valueOf(bpeDto.getSaksnummer()))
                 .medAktorId(Long.valueOf(bpeDto.getAktørId()))
                 .medBehandlendeEnhet(bpeDto.getBehandlendeEnhet())
-                .medBehandlingType(getKodeverkRepository().finn(BehandlingType.class, bpeDto.getBehandlingTypeKode()))
+                .medBehandlingType(BehandlingType.fraKode(bpeDto.getBehandlingTypeKode()))
                 .medFagsakYtelseType(FagsakYtelseType.fraKode(bpeDto.getYtelseTypeKode()))
                 .medAktiv(true).medBehandlingOpprettet(bpeDto.getOpprettetBehandling())
                 //.medForsteStonadsdag(fraFpsak.getFørsteUttaksdag())

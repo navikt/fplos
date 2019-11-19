@@ -1,62 +1,58 @@
 package no.nav.foreldrepenger.loslager.oppgave;
 
-import javax.persistence.DiscriminatorValue;
-import javax.persistence.Entity;
-import javax.persistence.Transient;
+import javax.persistence.AttributeConverter;
+import javax.persistence.Converter;
 
-import no.nav.fplos.kodeverk.Kodeliste;
-import no.nav.vedtak.felles.jpa.converters.BooleanToStringConverter;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
 
-@Entity(name = "BehandlingType")
-@DiscriminatorValue(BehandlingType.DISCRIMINATOR)
-public class BehandlingType extends Kodeliste {
+public enum BehandlingType {
+    FØRSTEGANGSSØKNAD ("BT-002"),
+    KLAGE("BT-003"),
+    REVURDERING("BT-004"),
+    INNSYN("BT-006"),
+    ANKEe("BT-008");
 
-    public static final String DISCRIMINATOR = "BEHANDLING_TYPE";
+    private String value;
 
-    /**
-     * Konstanter for å skrive ned kodeverdi. For å hente ut andre data konfigurert, må disse leses fra databasen (eks.
-     * for å hente offisiell kode for et Nav kodeverk).
-     */
-    public static final BehandlingType FØRSTEGANGSSØKNAD = new BehandlingType("BT-002"); //$NON-NLS-1$
-    public static final BehandlingType KLAGE = new BehandlingType("BT-003"); //$NON-NLS-1$
-    public static final BehandlingType REVURDERING = new BehandlingType("BT-004"); //$NON-NLS-1$
-    public static final BehandlingType INNSYN = new BehandlingType("BT-006"); //$NON-NLS-1$
-    public static final BehandlingType ANKE = new BehandlingType("BT-008"); //$NON-NLS-1$
+    private static final Map<String, BehandlingType> kodeMap = Collections.unmodifiableMap(initializeMapping());
 
-    /**
-     * Alle kodeverk må ha en verdi, det kan ikke være null i databasen. Denne koden gjør samme nytten.
-     */
-    public static final BehandlingType UDEFINERT = new BehandlingType("-"); //$NON-NLS-1$
-
-    @Transient
-    private Integer behandlingstidFristUker;
-    @Transient
-    private Boolean behandlingstidVarselbrev;
-
-    BehandlingType() {
-        // Hibernate trenger den
-    }
-
-    protected BehandlingType(String kode) {
-        super(kode, DISCRIMINATOR);
-    }
-
-    public int getBehandlingstidFristUker() {
-        if (behandlingstidFristUker == null) {
-            String behandlingstidFristUkerStr = getJsonField("behandlingstidFristUker");
-            behandlingstidFristUker = Integer.parseInt(behandlingstidFristUkerStr);
+    private static HashMap<String, BehandlingType> initializeMapping() {
+        HashMap<String, BehandlingType> map = new HashMap<>();
+        for (var v : values()) {
+            map.putIfAbsent(v.value, v);
         }
-        return behandlingstidFristUker;
+        return map;
     }
 
-    public boolean isBehandlingstidVarselbrev() {
-        if (behandlingstidVarselbrev == null) {
-            behandlingstidVarselbrev = false;
-            String behandlingstidVarselbrevStr = getJsonField("behandlingstidVarselbrev");
-            if (behandlingstidVarselbrevStr != null) {
-                this.behandlingstidVarselbrev = new BooleanToStringConverter().convertToEntityAttribute(behandlingstidVarselbrevStr);
-            }
-        }
-        return behandlingstidVarselbrev;
+    BehandlingType(String value) {
+        this.value = value;
     }
+
+    public static BehandlingType fraKode(String value) {
+        return Optional.ofNullable(kodeMap.get(value))
+                .orElse(null);
+    }
+
+    public String getKode() { return value; }
+
+    @Converter(autoApply = true)
+    public static class KodeverdiConverter implements AttributeConverter<BehandlingType, String> {
+        @Override
+        public String convertToDatabaseColumn(BehandlingType attribute) {
+            return Optional.ofNullable(attribute)
+                    .map(BehandlingType::getKode)
+                    .orElse(null);
+        }
+
+        @Override
+        public BehandlingType convertToEntityAttribute(String dbData) {
+            return Optional.ofNullable(dbData)
+                    .map(BehandlingType::fraKode)
+                    .orElse(null);
+        }
+    }
+
 }

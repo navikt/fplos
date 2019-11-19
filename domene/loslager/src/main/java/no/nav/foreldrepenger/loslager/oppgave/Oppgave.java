@@ -58,9 +58,8 @@ public class Oppgave extends BaseEntitet {
     @JoinColumnOrFormula(formula = @JoinFormula(referencedColumnName = "kodeverk", value = "'" + BehandlingStatus.DISCRIMINATOR + "'"))
     private BehandlingStatus behandlingStatus = BehandlingStatus.UDEFINERT;
 
-    @ManyToOne(optional = false)
-    @JoinColumnOrFormula(column = @JoinColumn(name = "behandling_type", referencedColumnName = "kode", nullable = false))
-    @JoinColumnOrFormula(formula = @JoinFormula(referencedColumnName = "kodeverk", value = "'" + BehandlingType.DISCRIMINATOR + "'"))
+    @Convert(converter = BehandlingType.KodeverdiConverter.class)
+    @Column(name = "BEHANDLING_TYPE")
     private BehandlingType behandlingType = BehandlingType.INNSYN;
 
     @Convert(converter = FagsakYtelseType.KodeverdiConverter.class)
