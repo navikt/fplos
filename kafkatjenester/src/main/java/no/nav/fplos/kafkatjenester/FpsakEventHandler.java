@@ -26,6 +26,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -126,7 +127,6 @@ public class FpsakEventHandler extends FpEventHandler {
     }
 
     /**
-     *
      * @deprecated Bruk avsluttOppgaveOgLoggEventVedEksternId(BehandlingProsessEventDto, OppgaveEventType, LocalDateTime) i stedet
      */
     @Deprecated(since = "14.11.2019")
@@ -143,19 +143,21 @@ public class FpsakEventHandler extends FpEventHandler {
     }
 
     private static LocalDateTime finnVentAksjonspunktFrist(List<Aksjonspunkt> aksjonspunktListe) {
-        return aksjonspunktListe.stream()
+        return safeStream(aksjonspunktListe)
                 .filter(Aksjonspunkt::erPåVent)
+                .map(Aksjonspunkt::getFristTid)
+                .filter(Objects::nonNull)
                 .findFirst()
-                .orElse(null)
-                .getFristTid();
+                .orElse(null);
     }
 
     private LocalDateTime finnManuellAksjonspunktFrist(List<Aksjonspunkt> aksjonspunktListe) {
-       return aksjonspunktListe.stream()
+       return safeStream(aksjonspunktListe)
                .filter(Aksjonspunkt::erManueltPåVent)
+               .map(Aksjonspunkt::getFristTid)
+               .filter(Objects::nonNull)
                .findFirst()
-               .orElse(null)
-               .getFristTid();
+               .orElse(null);
     }
 
 
@@ -179,7 +181,6 @@ public class FpsakEventHandler extends FpEventHandler {
     }
 
     /**
-     *
      * @deprecated Bruk loggEvent(Long, OppgaveEventType, AndreKriterierType, String) og anvend eksternId
      */
     @Deprecated(since = "14.11.2019")
@@ -189,7 +190,6 @@ public class FpsakEventHandler extends FpEventHandler {
 
 
     /**
-     *
      * @deprecated Bruk loggEvent(Long, OppgaveEventType, AndreKriterierType, String, AksjonspunktDto) og anvend eksternId i stedet for behandlingId
      */
     @Deprecated(since = "14.11.2019")
@@ -201,9 +201,7 @@ public class FpsakEventHandler extends FpEventHandler {
         }
     }
 
-
     /**
-     *
      * @deprecated Bruk avsluttOppgaveForEksternId(Long) i stedet
      */
     @Deprecated(since = "14.11.2019")
