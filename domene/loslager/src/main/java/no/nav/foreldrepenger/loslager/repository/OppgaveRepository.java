@@ -1,9 +1,5 @@
 package no.nav.foreldrepenger.loslager.repository;
 
-import java.time.LocalDate;
-import java.util.Collection;
-import java.util.List;
-
 import no.nav.foreldrepenger.loslager.oppgave.AndreKriterierType;
 import no.nav.foreldrepenger.loslager.oppgave.BehandlingType;
 import no.nav.foreldrepenger.loslager.oppgave.EventmottakFeillogg;
@@ -19,6 +15,11 @@ import no.nav.foreldrepenger.loslager.oppgave.Reservasjon;
 import no.nav.foreldrepenger.loslager.oppgave.ReservasjonEventLogg;
 import no.nav.foreldrepenger.loslager.organisasjon.Avdeling;
 import no.nav.foreldrepenger.loslager.organisasjon.Saksbehandler;
+
+import java.time.LocalDate;
+import java.util.Collection;
+import java.util.List;
+import java.util.UUID;
 
 public interface OppgaveRepository {
 
@@ -75,10 +76,21 @@ public interface OppgaveRepository {
     List<Oppgave> sjekkOmOppgaverFortsattErTilgjengelige(List<Long> oppgaveIder);
 
     Oppgave opprettOppgave(Oppgave build);
-
+    /**
+     * @deprecated Bruk gjenåpneOppgaveForEksternId(Long) i stedet
+     */
+    @Deprecated
     Oppgave gjenåpneOppgave(Long behandlingId);
 
+    Oppgave gjenåpneOppgaveForEksternId(UUID eksternId);
+
+    /**
+     * @deprecated Bruk avsluttOppgaveForEksternId(Long) i stedet
+     */
+    @Deprecated
     void avsluttOppgave(Long behandlingId);
+
+    void avsluttOppgaveForEksternId(UUID eksternId);
 
     List<Oppgave> hentSisteReserverteOppgaver(String uid);
 
@@ -86,7 +98,13 @@ public interface OppgaveRepository {
 
     void lagre(EventmottakFeillogg eventmottakFeillogg);
 
+    /**
+     * @deprecated Bruk hentEventerForEksternId(Long) i stedet
+     */
+    @Deprecated
     List<OppgaveEventLogg> hentEventer(Long behandlingId);
+
+    List<OppgaveEventLogg> hentEventerForEksternId(UUID eksternId);
 
     List<OppgaveEgenskap> hentOppgaveEgenskaper(Long oppgaveId);
 

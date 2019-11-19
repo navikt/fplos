@@ -62,11 +62,11 @@ public class KafkaReader {
         try {
             BehandlingProsessEventDto behandlingProsessEventDto = deserialiser(melding, BehandlingProsessEventDto.class);
             if (behandlingProsessEventDto != null) {
-                switch(behandlingProsessEventDto.getFagsystem()){
-                    case "FPSAK":
+                switch(Fagsystem.valueOf(behandlingProsessEventDto.getFagsystem())){
+                    case FPSAK:
                         fpsakEventHandler.prosesser(behandlingProsessEventDto);
                         return;
-                    case "FPTILBAKE":
+                    case FPTILBAKE:
                         tilbakekrevingEventHandler.prosesser(behandlingProsessEventDto);
                         return;
                     default:

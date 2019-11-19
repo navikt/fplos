@@ -1,13 +1,13 @@
 package no.nav.fplos.foreldrepengerbehandling;
 
-import no.nav.vedtak.sikkerhet.abac.AbacDataAttributter;
-
 import java.time.LocalDate;
 import java.util.List;
+import java.util.UUID;
 
 public class BehandlingFpsak {
 
     private Long behandlingId;
+    private UUID uuid;
     private String status;
     private LocalDate behandlingstidFrist;
     private String type;
@@ -22,6 +22,10 @@ public class BehandlingFpsak {
     private Boolean harRefusjonskravFraArbeidsgiver;
     private Boolean harGradering;
     private Boolean erUtlandssak;
+
+    public UUID getUuid() {
+        return uuid;
+    }
 
     public String getStatus() {
         return status;
@@ -161,6 +165,11 @@ public class BehandlingFpsak {
             return this;
         }
 
+        public BehandlingFpsak.Builder medUuid(UUID uuid){
+            behandlingDtoMal.uuid = uuid;
+            return this;
+        }
+
         public BehandlingFpsak build() {
             return behandlingDtoMal;
         }
@@ -170,6 +179,7 @@ public class BehandlingFpsak {
     public String toString() {
         return "BehandlingFpsak{" +
                 "behandlingId=" + behandlingId +
+                ", uuid='" + uuid + '\'' +
                 ", status='" + status + '\'' +
                 ", behandlingstidFrist=" + behandlingstidFrist +
                 ", type='" + type + '\'' +
