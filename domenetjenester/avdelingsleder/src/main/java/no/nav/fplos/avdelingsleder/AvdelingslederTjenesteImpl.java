@@ -76,35 +76,36 @@ public class AvdelingslederTjenesteImpl implements AvdelingslederTjeneste {
 
     @Override
     public void endreFiltreringBehandlingType(Long oppgavefiltreringId, BehandlingType behandlingType, boolean checked) {
-        OppgaveFiltrering oppgaveFiltrering = oppgaveRepository.hentListe(oppgavefiltreringId);
+        OppgaveFiltrering filtre = oppgaveRepository.hentListe(oppgavefiltreringId);
         if (checked) {
-            oppgaveRepository.lagre(new FiltreringBehandlingType(oppgaveFiltrering, behandlingType));
+            oppgaveRepository.lagre(new FiltreringBehandlingType(filtre, behandlingType));
         } else {
             oppgaveRepository.slettFiltreringBehandlingType(oppgavefiltreringId, behandlingType);
         }
-        oppgaveRepository.refresh(oppgaveFiltrering);
+        oppgaveRepository.refresh(filtre);
     }
 
     @Override
     public void endreFiltreringYtelseType(Long oppgavefiltreringId, FagsakYtelseType fagsakYtelseType) {
-        OppgaveFiltrering oppgaveFiltrering = oppgaveRepository.hentListe(oppgavefiltreringId);
-        oppgaveFiltrering.getFiltreringYtelseTyper().forEach(ytelseType -> oppgaveRepository.slettFiltreringYtelseType(oppgavefiltreringId, ytelseType.getFagsakYtelseType()));
+        OppgaveFiltrering filtre = oppgaveRepository.hentListe(oppgavefiltreringId);
+        filtre.getFiltreringYtelseTyper()
+                .forEach(ytelseType -> oppgaveRepository.slettFiltreringYtelseType(oppgavefiltreringId, ytelseType.getFagsakYtelseType()));
         if (fagsakYtelseType != null) {
-            oppgaveRepository.lagre(new FiltreringYtelseType(oppgaveFiltrering, fagsakYtelseType));
+            oppgaveRepository.lagre(new FiltreringYtelseType(filtre, fagsakYtelseType));
         }
-        oppgaveRepository.refresh(oppgaveFiltrering);
+        oppgaveRepository.refresh(filtre);
     }
 
     @Override
     public void endreFiltreringAndreKriterierType(Long oppgavefiltreringId, AndreKriterierType andreKriterierType, boolean checked, boolean inkluder) {
-        OppgaveFiltrering oppgaveFiltrering = oppgaveRepository.hentListe(oppgavefiltreringId);
+        OppgaveFiltrering filtre = oppgaveRepository.hentListe(oppgavefiltreringId);
         if (checked) {
             oppgaveRepository.slettFiltreringAndreKriterierType(oppgavefiltreringId, andreKriterierType);
-            oppgaveRepository.lagre(new FiltreringAndreKriterierType(oppgaveFiltrering, andreKriterierType, inkluder));
+            oppgaveRepository.lagre(new FiltreringAndreKriterierType(filtre, andreKriterierType, inkluder));
         } else {
             oppgaveRepository.slettFiltreringAndreKriterierType(oppgavefiltreringId, andreKriterierType);
         }
-        oppgaveRepository.refresh(oppgaveFiltrering);
+        oppgaveRepository.refresh(filtre);
     }
 
     @Override

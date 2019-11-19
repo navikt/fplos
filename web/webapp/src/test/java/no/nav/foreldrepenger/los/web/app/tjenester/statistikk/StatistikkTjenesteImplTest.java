@@ -54,10 +54,12 @@ public class StatistikkTjenesteImplTest {
     @Before
     public void setup() {
         List<Avdeling> avdelings = repoRule.getRepository().hentAlle(Avdeling.class);
-        avdelingDrammen = avdelings.stream().filter(avdeling -> AVDELING_DRAMMEN_ENHET.equals(avdeling.getAvdelingEnhet())).findFirst().orElseThrow();
+        avdelingDrammen = avdelings.stream()
+                .filter(avdeling -> AVDELING_DRAMMEN_ENHET.equals(avdeling.getAvdelingEnhet()))
+                .findFirst().orElseThrow();
     }
 
-    private void leggInnEttSettMedOppgaver(){
+    private void leggInnEttSettMedOppgaver() {
         entityManager.persist(førstegangOppgave);
         entityManager.persist(førstegangOppgave2);
         entityManager.persist(klageOppgave);
@@ -77,8 +79,11 @@ public class StatistikkTjenesteImplTest {
     @Test
     public void hentAlleOppgaverForAvdelingTest(){
         leggInnEttSettMedOppgaver();
-        List<OppgaverForAvdelingDto>  resultater = statistikkTjeneste.hentAlleOppgaverForAvdeling(AVDELING_DRAMMEN_ENHET)
-                .stream().map(resultat -> new OppgaverForAvdelingDto(resultat)).collect(Collectors.toList());
+        var resultater = statistikkTjeneste.hentAlleOppgaverForAvdeling(AVDELING_DRAMMEN_ENHET)
+                .stream()
+                .map(OppgaverForAvdelingDto::new)
+                .collect(Collectors.toList());
+
         assertThat(resultater).hasSize(4);
         assertThat(resultater.get(0).getFagsakYtelseType()).isEqualTo(FagsakYtelseType.FORELDREPENGER);
         assertThat(resultater.get(0).getBehandlingType()).isEqualTo(BehandlingType.FØRSTEGANGSSØKNAD);
@@ -99,7 +104,9 @@ public class StatistikkTjenesteImplTest {
     public void hentAntallOppgaverForAvdelingPerDatoTest(){
         leggInnEttSettMedOppgaver();
         List<OppgaverForAvdelingPerDatoDto> resultater = statistikkTjeneste.hentAntallOppgaverForAvdelingPerDato(AVDELING_DRAMMEN_ENHET)
-                        .stream().map(resultat -> new OppgaverForAvdelingPerDatoDto(resultat)).collect(Collectors.toList());
+                .stream()
+                .map(OppgaverForAvdelingPerDatoDto::new)
+                .collect(Collectors.toList());
         assertThat(resultater).hasSize(3);
         assertThat(resultater.get(0).getFagsakYtelseType()).isEqualTo(FagsakYtelseType.FORELDREPENGER);
         assertThat(resultater.get(0).getBehandlingType()).isEqualTo(BehandlingType.FØRSTEGANGSSØKNAD);
@@ -117,7 +124,9 @@ public class StatistikkTjenesteImplTest {
         leggTilOppgave(annenAvdeling, 10,4);//skal ikke komme i resultatssettet
         leggTilOppgave(klageOppgave, 10, 4);
         List<OppgaverForAvdelingPerDatoDto>  resultater = statistikkTjeneste.hentAntallOppgaverForAvdelingPerDato(AVDELING_DRAMMEN_ENHET)
-                        .stream().map(resultat -> new OppgaverForAvdelingPerDatoDto(resultat)).collect(Collectors.toList());
+                .stream()
+                .map(OppgaverForAvdelingPerDatoDto::new)
+                .collect(Collectors.toList());
         assertThat(resultater).hasSize(8);
         assertThat(resultater.get(0).getFagsakYtelseType()).isEqualTo(FagsakYtelseType.FORELDREPENGER);
         assertThat(resultater.get(0).getOpprettetDato()).isEqualTo(LocalDate.now().minusDays(27));
@@ -129,7 +138,9 @@ public class StatistikkTjenesteImplTest {
     public void hentHentStatistikkForManueltPåVent(){
         leggInnEttSettMedOppgaveEventer();
         List<OppgaverForAvdelingSattManueltPaaVentDto> resultater = statistikkTjeneste.hentAntallOppgaverForAvdelingSattManueltPåVent(AVDELING_DRAMMEN_ENHET)
-                .stream().map(resultat -> new OppgaverForAvdelingSattManueltPaaVentDto(resultat)).collect(Collectors.toList());
+                .stream()
+                .map(OppgaverForAvdelingSattManueltPaaVentDto::new)
+                .collect(Collectors.toList());
         assertThat(resultater).hasSize(2);
         OppgaverForAvdelingSattManueltPaaVentDto resultatDto = resultater.get(1);
         assertThat(resultatDto.getAntall()).isEqualTo(2L);
@@ -142,15 +153,13 @@ public class StatistikkTjenesteImplTest {
     public void hentOppgaverPerFørsteStønadsdag(){
         leggInnEttSettMedOppgaver();
         List<OppgaverForFørsteStønadsdagDto> resultater = statistikkTjeneste.hentOppgaverPerFørsteStønadsdag(AVDELING_DRAMMEN_ENHET)
-                .stream().map(resultat -> new OppgaverForFørsteStønadsdagDto(resultat)).collect(Collectors.toList());
+                .stream().map(OppgaverForFørsteStønadsdagDto::new).collect(Collectors.toList());
         assertThat(resultater).hasSize(1);
         assertThat(resultater.get(0).getForsteStonadsdag()).isEqualTo(LocalDate.now().plusMonths(1));
         assertThat(resultater.get(0).getAntall()).isEqualTo(6L);
     }
 
-
     private void leggInnEttSettMedOppgaveEventer() {
-
         UUID ekstId1 = UUID.randomUUID();
         UUID ekstId2 = UUID.randomUUID();
         UUID ekstId3 = UUID.randomUUID();

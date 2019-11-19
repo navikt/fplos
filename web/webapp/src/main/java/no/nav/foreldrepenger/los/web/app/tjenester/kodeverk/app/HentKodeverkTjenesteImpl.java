@@ -13,7 +13,6 @@ import static java.util.stream.Collectors.toList;
 import no.nav.foreldrepenger.loslager.oppgave.AndreKriterierType;
 import no.nav.foreldrepenger.loslager.oppgave.BehandlingType;
 import no.nav.foreldrepenger.loslager.oppgave.FagsakStatus;
-import no.nav.foreldrepenger.loslager.oppgave.FagsakYtelseType;
 import no.nav.foreldrepenger.loslager.oppgave.KøSortering;
 import no.nav.fplos.kodeverk.Kodeliste;
 import no.nav.fplos.kodeverk.KodeverkRepository;
@@ -26,9 +25,7 @@ class HentKodeverkTjenesteImpl implements HentKodeverkTjeneste {
     private static List<Class<? extends Kodeliste>> KODEVERK_SOM_BRUKES_PÅ_KLIENT = Arrays.asList(
             BehandlingType.class,
             KøSortering.class,
-            FagsakYtelseType.class,
             FagsakStatus.class,
-            FagsakYtelseType.class,
             AndreKriterierType.class
     );
 

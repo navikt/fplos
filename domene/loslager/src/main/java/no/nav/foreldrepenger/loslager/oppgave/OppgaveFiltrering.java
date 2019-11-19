@@ -130,7 +130,11 @@ public class OppgaveFiltrering extends BaseEntitet{
     }
 
     public static OppgaveFiltrering nyTomOppgaveFiltrering(Avdeling avdeling){
-        return new Builder().medAvdeling(avdeling).medNavn("Ny liste").medSortering(KøSortering.BEHANDLINGSFRIST).build();
+        return new Builder()
+                .medAvdeling(avdeling)
+                .medNavn("Ny liste")
+                .medSortering(KøSortering.BEHANDLINGSFRIST)
+                .build();
     }
 
     public static OppgaveFiltrering.Builder builder(){

@@ -226,6 +226,9 @@ public class OppgaveRepositoryImplTest {
         return Oppgave.builder().medBehandlingId(1L).medFagsakSaksnummer(1337L)
                 .medAktorId(5000000L).medBehandlendeEnhet(behandlendeEnhet)
                 .medBehandlingType(BehandlingType.FØRSTEGANGSSØKNAD)
-                .medFagsakYtelseType(FagsakYtelseType.FORELDREPENGER).medAktiv(true).medBehandlingsfrist(LocalDateTime.now()).build();
+                .medFagsakYtelseType(FagsakYtelseType.FORELDREPENGER)
+                .medAktiv(true)
+                .medBehandlingsfrist(LocalDateTime.now())
+                .build();
     }
 }

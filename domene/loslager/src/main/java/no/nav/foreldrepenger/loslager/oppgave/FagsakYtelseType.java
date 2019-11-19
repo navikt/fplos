@@ -1,27 +1,54 @@
 package no.nav.foreldrepenger.loslager.oppgave;
 
-import javax.persistence.DiscriminatorValue;
-import javax.persistence.Entity;
+import javax.persistence.AttributeConverter;
+import javax.persistence.Converter;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
 
-import no.nav.fplos.kodeverk.Kodeliste;
+public enum FagsakYtelseType {
+    ENGANGSTØNAD("ES"),
+    FORELDREPENGER("FP"),
+    SVANGERSKAPSPENGER("SVP");
 
-@Entity(name = "FagsakYtelseType")
-@DiscriminatorValue(FagsakYtelseType.DISCRIMINATOR)
-public class FagsakYtelseType extends Kodeliste {
+    private String value;
 
-    public static final String DISCRIMINATOR = "FAGSAK_YTELSE"; //$NON-NLS-1$
-    public static final FagsakYtelseType ENGANGSTØNAD = new FagsakYtelseType("ES"); //$NON-NLS-1$
-    public static final FagsakYtelseType FORELDREPENGER = new FagsakYtelseType("FP"); //$NON-NLS-1$
-    public static final FagsakYtelseType SVANGERSKAPSPENGER = new FagsakYtelseType("SVP"); //$NON-NLS-1$
+    private static final Map<String, FagsakYtelseType> kodeMap = Collections.unmodifiableMap(initializeMapping());
 
-    public static final FagsakYtelseType UDEFINERT = new FagsakYtelseType("-"); //$NON-NLS-1$
-
-    FagsakYtelseType() {
-        // Hibernate trenger den
+    private static HashMap<String, FagsakYtelseType> initializeMapping() {
+        HashMap<String, FagsakYtelseType> map = new HashMap<>();
+        for (var v : values()) {
+            map.putIfAbsent(v.value, v);
+        }
+        return map;
     }
 
-    protected FagsakYtelseType(String kode) {
-        super(kode, DISCRIMINATOR);
+    FagsakYtelseType(String value) {
+        this.value = value;
     }
 
+    public static FagsakYtelseType fraKode(String value) {
+        return Optional.ofNullable(kodeMap.get(value))
+                .orElse(null);
+    }
+
+    public String getKode() { return value; }
+
+    @Converter(autoApply = true)
+    public static class KodeverdiConverter implements AttributeConverter<FagsakYtelseType, String> {
+        @Override
+        public String convertToDatabaseColumn(FagsakYtelseType attribute) {
+            return Optional.ofNullable(attribute)
+                .map(FagsakYtelseType::getKode)
+                .orElse(null);
+        }
+
+        @Override
+        public FagsakYtelseType convertToEntityAttribute(String dbData) {
+            return Optional.ofNullable(dbData)
+                    .map(FagsakYtelseType::fraKode)
+                    .orElse(null);
+        }
+    }
 }

@@ -62,8 +62,7 @@ public class AvdelingslederTjenesteImplTest {
     @Test
     public void testSettNyttNavnPåListe(){
         OppgaveFiltrering oppgaveFiltrering = OppgaveFiltrering.nyTomOppgaveFiltrering(avdelingDrammen);
-        entityManager.persist(oppgaveFiltrering);
-        entityManager.flush();
+        persistAndFlush(oppgaveFiltrering);
         avdelingslederTjeneste.giListeNyttNavn(oppgaveFiltrering.getId(), NYTT_NAVN);
         entityManager.refresh(oppgaveFiltrering);
         assertThat(oppgaveFiltrering.getNavn()).isEqualTo(NYTT_NAVN);
@@ -72,8 +71,7 @@ public class AvdelingslederTjenesteImplTest {
     @Test
     public void testSlettListe()throws IllegalArgumentException {
         OppgaveFiltrering liste = OppgaveFiltrering.nyTomOppgaveFiltrering(avdelingDrammen);
-        entityManager.persist(liste);
-        entityManager.flush();
+        persistAndFlush(liste);
         avdelingslederTjeneste.slettOppgaveFiltrering(liste.getId());
         entityManager.flush();
         assertThat(oppgaveRepository.hentAlleLister(AVDELING_DRAMMEN)).isEmpty();
@@ -82,8 +80,7 @@ public class AvdelingslederTjenesteImplTest {
     @Test
     public void testSettSorteringPåListe() {
         OppgaveFiltrering liste = OppgaveFiltrering.nyTomOppgaveFiltrering(avdelingDrammen);
-        entityManager.persist(liste);
-        entityManager.flush();
+        persistAndFlush(liste);
         avdelingslederTjeneste.settSortering(liste.getId(), KøSortering.BEHANDLINGSFRIST);
         entityManager.refresh(liste);
         assertThat(liste.getSortering()).isEqualTo(KøSortering.BEHANDLINGSFRIST);
@@ -92,8 +89,7 @@ public class AvdelingslederTjenesteImplTest {
     @Test
     public void leggTilBehandlingtypeFiltrering(){
         OppgaveFiltrering oppgaveFiltrering = OppgaveFiltrering.nyTomOppgaveFiltrering(avdelingDrammen);
-        entityManager.persist(oppgaveFiltrering);
-        entityManager.flush();
+        persistAndFlush(oppgaveFiltrering);
         avdelingslederTjeneste.endreFiltreringBehandlingType(oppgaveFiltrering.getId(), BehandlingType.FØRSTEGANGSSØKNAD, true);
         entityManager.refresh(oppgaveFiltrering);
         assertThat(oppgaveFiltrering.getFiltreringBehandlingTyper()).isNotEmpty();
@@ -106,8 +102,7 @@ public class AvdelingslederTjenesteImplTest {
     @Test
     public void leggTilYtelsetypeFiltrering(){
         OppgaveFiltrering oppgaveFiltrering = OppgaveFiltrering.nyTomOppgaveFiltrering(avdelingDrammen);
-        entityManager.persist(oppgaveFiltrering);
-        entityManager.flush();
+        persistAndFlush(oppgaveFiltrering);
         avdelingslederTjeneste.endreFiltreringYtelseType(oppgaveFiltrering.getId(), FagsakYtelseType.ENGANGSTØNAD);
         entityManager.refresh(oppgaveFiltrering);
         assertThat(oppgaveFiltrering.getFiltreringYtelseTyper()).isNotEmpty();
@@ -120,8 +115,7 @@ public class AvdelingslederTjenesteImplTest {
     @Test
     public void leggTilAndreKriterierFiltrering(){
         OppgaveFiltrering oppgaveFiltrering = OppgaveFiltrering.nyTomOppgaveFiltrering(avdelingDrammen);
-        entityManager.persist(oppgaveFiltrering);
-        entityManager.flush();
+        persistAndFlush(oppgaveFiltrering);
         avdelingslederTjeneste.endreFiltreringAndreKriterierType(oppgaveFiltrering.getId(), AndreKriterierType.TIL_BESLUTTER, true, true);
         entityManager.refresh(oppgaveFiltrering);
         assertThat(oppgaveFiltrering.getFiltreringAndreKriterierTyper()).isNotEmpty();
@@ -136,5 +130,10 @@ public class AvdelingslederTjenesteImplTest {
         List<Avdeling> avdelinger = avdelingslederTjeneste.hentAvdelinger();
         assertThat(avdelinger).isNotEmpty();
         assertThat(avdelinger.size()).isGreaterThan(1);
+    }
+
+    private void persistAndFlush(OppgaveFiltrering oppgaveFiltrering) {
+        entityManager.persist(oppgaveFiltrering);
+        entityManager.flush();
     }
 }
