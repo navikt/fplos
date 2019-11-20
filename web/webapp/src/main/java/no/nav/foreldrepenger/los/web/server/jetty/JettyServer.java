@@ -117,7 +117,10 @@ public class JettyServer extends AbstractJettyServer {
 
     @Override
     protected ResourceCollection createResourceCollection() throws IOException {
-        return new ResourceCollection(Resource.newClassPathResource("/web"));
+        return new ResourceCollection(
+                Resource.newResource(System.getProperty("klient", "./klient")),
+                Resource.newClassPathResource("/web"),
+                Resource.newClassPathResource("/META-INF/resources")/** i18n */);
     }
 
 }
