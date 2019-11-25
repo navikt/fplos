@@ -1,28 +1,84 @@
 package no.nav.foreldrepenger.loslager.oppgave;
 
-import javax.persistence.DiscriminatorValue;
-import javax.persistence.Entity;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import no.nav.fplos.kodeverk.Kodeverdi;
 
-import no.nav.fplos.kodeverk.Kodeliste;
+import javax.persistence.AttributeConverter;
+import javax.persistence.Converter;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
-@Entity(name = "AndreKriterierType")
-@DiscriminatorValue(AndreKriterierType.DISCRIMINATOR)
-public class AndreKriterierType extends Kodeliste {
+@JsonFormat(shape = JsonFormat.Shape.OBJECT)
+public enum AndreKriterierType implements Kodeverdi {
 
-    public static final String DISCRIMINATOR = "ANDRE_KRITERIER"; //$NON-NLS-1$
-    public static final AndreKriterierType TIL_BESLUTTER = new AndreKriterierType("TIL_BESLUTTER"); //$NON-NLS-1$
-    public static final AndreKriterierType PAPIRSØKNAD = new AndreKriterierType("PAPIRSOKNAD"); //$NON-NLS-1$
-    public static final AndreKriterierType UTBETALING_TIL_BRUKER = new AndreKriterierType("UTBETALING_TIL_BRUKER"); //$NON-NLS-1$
-    public static final AndreKriterierType UTLANDSSAK = new AndreKriterierType("UTLANDSSAK"); //$NON-NLS-1$
-    public static final AndreKriterierType SOKT_GRADERING = new AndreKriterierType("SOKT_GRADERING"); //$NON-NLS-1$
-    public static final AndreKriterierType UKJENT = new AndreKriterierType("-"); //$NON-NLS-1$
+    TIL_BESLUTTER("TIL_BESLUTTER", "Til beslutter"),
+    PAPIRSØKNAD("PAPIRSOKNAD", "Registrer papirsøknad"),
+    UTBETALING_TIL_BRUKER("UTBETALING_TIL_BRUKER", "Utbetaling til bruker"),
+    UTLANDSSAK("UTLANDSSAK", "Utland"),
+    SOKT_GRADERING("SOKT_GRADERING", "Søkt gradering");
 
-    AndreKriterierType() {
-        // Hibernate trenger den
+    private String kode;
+    private final String navn;
+    public static final String KODEVERK = "ANDRE_KRITERIER";
+
+    private static final Map<String, AndreKriterierType> kodeMap = Collections.unmodifiableMap(initializeMapping());
+
+    private static HashMap<String, AndreKriterierType> initializeMapping() {
+        HashMap<String, AndreKriterierType> map = new HashMap<>();
+        for (var v : values()) {
+            map.putIfAbsent(v.kode, v);
+        }
+        return map;
     }
 
-    protected AndreKriterierType(String kode) {
-        super(kode, DISCRIMINATOR);
+    AndreKriterierType(String kode, String navn) {
+        this.kode = kode;
+        this.navn = navn;
     }
+
+    public static AndreKriterierType fraKode(String value) {
+        return Optional.ofNullable(kodeMap.get(value))
+                .orElse(null);
+    }
+
+    public static List<AndreKriterierType> getEnums() {
+        return Arrays.stream(values())
+                .collect(Collectors.toList());
+    }
+
+    public String getNavn() {
+        return navn;
+    }
+
+    public String getKode() { return kode; }
+
+    public String getKodeverk() {
+        return KODEVERK;
+    }
+
+    @Converter(autoApply = true)
+    public static class KodeverdiConverter implements AttributeConverter<AndreKriterierType, String> {
+        @Override
+        public String convertToDatabaseColumn(AndreKriterierType attribute) {
+            return Optional.ofNullable(attribute)
+                    .map(AndreKriterierType::getKode)
+                    .orElse(null);
+        }
+
+        @Override
+        public AndreKriterierType convertToEntityAttribute(String dbData) {
+            return Optional.ofNullable(dbData)
+                    .map(AndreKriterierType::fraKode)
+                    .orElse(null);
+        }
+    }
+
+
+
 
 }

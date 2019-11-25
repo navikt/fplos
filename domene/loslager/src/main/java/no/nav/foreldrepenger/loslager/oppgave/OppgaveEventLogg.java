@@ -5,6 +5,7 @@ import org.hibernate.annotations.JoinColumnOrFormula;
 import org.hibernate.annotations.JoinFormula;
 
 import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -30,10 +31,9 @@ public class OppgaveEventLogg extends BaseEntitet{
     @JoinColumnOrFormula(formula = @JoinFormula(referencedColumnName = "kodeverk", value = "'" + OppgaveEventType.DISCRIMINATOR + "'"))
     private OppgaveEventType eventType;
 
-    @ManyToOne
-    @JoinColumnOrFormula(column = @JoinColumn(name = "ANDRE_KRITERIER_TYPE", referencedColumnName = "kode"))
-    @JoinColumnOrFormula(formula = @JoinFormula(referencedColumnName = "kodeverk", value = "'" + AndreKriterierType.DISCRIMINATOR + "'"))
-    private AndreKriterierType andreKriterierType = AndreKriterierType.UKJENT;
+    @Column(name = "ANDRE_KRITERIER_TYPE")
+    @Convert(converter = AndreKriterierType.KodeverdiConverter.class)
+    private AndreKriterierType andreKriterierType;
 
     @Column(name = "BEHANDLENDE_ENHET")
     private String behandlendeEnhet;

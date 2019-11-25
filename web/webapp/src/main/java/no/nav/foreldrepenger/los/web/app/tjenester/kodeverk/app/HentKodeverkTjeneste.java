@@ -1,11 +1,11 @@
 package no.nav.foreldrepenger.los.web.app.tjenester.kodeverk.app;
 
-import java.util.List;
+import java.util.Collection;
 import java.util.Map;
 
-import no.nav.fplos.kodeverk.Kodeliste;
+import no.nav.fplos.kodeverk.Kodeverdi;
 
 public interface HentKodeverkTjeneste {
 
-    Map<String, List<Kodeliste>> hentGruppertKodeliste();
+    Map<String, Collection<? extends Kodeverdi>> hentGruppertKodeliste();
 }

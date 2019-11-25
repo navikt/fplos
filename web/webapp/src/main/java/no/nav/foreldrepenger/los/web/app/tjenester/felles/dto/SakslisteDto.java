@@ -8,7 +8,10 @@ import java.util.stream.Collectors;
 import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.saksliste.dto.SorteringDto;
 import no.nav.foreldrepenger.loslager.oppgave.BehandlingType;
 import no.nav.foreldrepenger.loslager.oppgave.FagsakYtelseType;
+import no.nav.foreldrepenger.loslager.oppgave.FiltreringBehandlingType;
+import no.nav.foreldrepenger.loslager.oppgave.FiltreringYtelseType;
 import no.nav.foreldrepenger.loslager.oppgave.OppgaveFiltrering;
+import no.nav.foreldrepenger.loslager.organisasjon.Saksbehandler;
 
 public class SakslisteDto {
 
@@ -19,23 +22,33 @@ public class SakslisteDto {
     private SorteringDto sortering;
     private List<FagsakYtelseType> fagsakYtelseTyper = new ArrayList<>();
     private List<AndreKriterierDto> andreKriterier = new ArrayList<>();
-    private List<String> saksbehandlerIdenter = new ArrayList<>();
+    private List<String> saksbehandlerIdenter;
 
     public SakslisteDto(OppgaveFiltrering o) {
         sakslisteId = new SakslisteIdDto(o.getId());
         navn = o.getNavn();
-        sistEndret = null == o.getEndretTidspunkt() ? o.getOpprettetTidspunkt().toLocalDate() : o.getEndretTidspunkt().toLocalDate();
-        if(!o.getFiltreringBehandlingTyper().isEmpty()){
-            behandlingTyper = o.getFiltreringBehandlingTyper().stream().map(filtreringbt -> filtreringbt.getBehandlingType()).collect(Collectors.toList());
+        sistEndret = o.getEndretTidspunkt() == null
+                ? o.getOpprettetTidspunkt().toLocalDate()
+                : o.getEndretTidspunkt().toLocalDate();
+        if (!o.getFiltreringBehandlingTyper().isEmpty()) {
+            behandlingTyper = o.getFiltreringBehandlingTyper().stream()
+                    .map(FiltreringBehandlingType::getBehandlingType)
+                    .collect(Collectors.toList());
         }
-        if(!o.getFiltreringYtelseTyper().isEmpty()){
-            fagsakYtelseTyper = o.getFiltreringYtelseTyper().stream().map(filtreringbt -> filtreringbt.getFagsakYtelseType()).collect(Collectors.toList());
+        if (!o.getFiltreringYtelseTyper().isEmpty()) {
+            fagsakYtelseTyper = o.getFiltreringYtelseTyper().stream()
+                    .map(FiltreringYtelseType::getFagsakYtelseType)
+                    .collect(Collectors.toList());
         }
-        if(!o.getFiltreringAndreKriterierTyper().isEmpty()){
-            andreKriterier = o.getFiltreringAndreKriterierTyper().stream().map(filtreringandrekrit -> new AndreKriterierDto(filtreringandrekrit)).collect(Collectors.toList());
+        if (!o.getFiltreringAndreKriterierTyper().isEmpty()) {
+            andreKriterier = o.getFiltreringAndreKriterierTyper().stream()
+                    .map(AndreKriterierDto::new)
+                    .collect(Collectors.toList());
         }
-        this.sortering = new SorteringDto( o.getSortering(), o.getFomDager(), o.getTomDager(), o.getFomDato(), o.getTomDato(), o.getErDynamiskPeriode());
-        saksbehandlerIdenter = o.getSaksbehandlere().stream().map(s -> s.getSaksbehandlerIdent()).collect(Collectors.toList());
+        this.sortering = new SorteringDto(o.getSortering(), o.getFomDager(), o.getTomDager(), o.getFomDato(), o.getTomDato(), o.getErDynamiskPeriode());
+        saksbehandlerIdenter = o.getSaksbehandlere().stream()
+                .map(Saksbehandler::getSaksbehandlerIdent)
+                .collect(Collectors.toList());
     }
 
     public Long getSakslisteId() {

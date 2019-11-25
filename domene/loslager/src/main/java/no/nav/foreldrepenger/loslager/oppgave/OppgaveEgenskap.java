@@ -2,6 +2,7 @@ package no.nav.foreldrepenger.loslager.oppgave;
 
 import javax.persistence.Column;
 import javax.persistence.Convert;
+import javax.persistence.Converter;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -30,12 +31,8 @@ public class OppgaveEgenskap extends BaseEntitet{
     @Column(name = "OPPGAVE_ID", updatable = false, insertable = false)
     private Long oppgaveId;
 
+    @Convert(converter = AndreKriterierType.KodeverdiConverter.class)
     @Column(name = "ANDRE_KRITERIER_TYPE", updatable = false, insertable = false)
-    private String andreKriterier;
-
-    @ManyToOne(optional = false)
-    @JoinColumnOrFormula(column = @JoinColumn(name = "ANDRE_KRITERIER_TYPE", referencedColumnName = "kode", nullable = false))
-    @JoinColumnOrFormula(formula = @JoinFormula(referencedColumnName = "kodeverk", value = "'" + AndreKriterierType.DISCRIMINATOR + "'"))
     private AndreKriterierType andreKriterierType;
 
     @Column(name = "SISTE_SAKSBEHANDLER_FOR_TOTR")

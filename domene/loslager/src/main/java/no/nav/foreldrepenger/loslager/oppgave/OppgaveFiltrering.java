@@ -38,9 +38,8 @@ public class OppgaveFiltrering extends BaseEntitet{
     @Column(name = "navn", updatable = false)
     private String navn;
 
-    @ManyToOne(optional = false)
-    @JoinColumnOrFormula(column = @JoinColumn(name = "sortering", referencedColumnName = "kode", nullable = false))
-    @JoinColumnOrFormula(formula = @JoinFormula(referencedColumnName = "kodeverk", value = "'" + KøSortering.DISCRIMINATOR + "'"))
+    @Column(name = "sortering", updatable = false)
+    @Convert(converter = KøSortering.KodeverdiConverter.class)
     private KøSortering sortering;
 
     @OneToMany(mappedBy = "oppgaveFiltrering")

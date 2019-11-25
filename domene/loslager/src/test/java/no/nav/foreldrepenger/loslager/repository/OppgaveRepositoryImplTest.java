@@ -56,10 +56,10 @@ public class OppgaveRepositoryImplTest {
     @Test
     public void testHentingAvOppgaver(){
         lagStandardSettMedOppgaver();
-        List<Oppgave> oppgaves = oppgaveRepository.hentOppgaver(new OppgavespørringDto(AVDELING_DRAMMEN, KøSortering.UDEFINERT,
-                new ArrayList<>(), new ArrayList<>(), new ArrayList<>(),new ArrayList<>(), false, null, null, null, null));
+        List<Oppgave> oppgaves = oppgaveRepository.hentOppgaver(new OppgavespørringDto(AVDELING_DRAMMEN, null,
+                new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), false, null, null, null, null));
         assertThat(oppgaves).hasSize(4);
-        assertThat(oppgaveRepository.hentAntallOppgaver(new OppgavespørringDto(AVDELING_DRAMMEN, KøSortering.UDEFINERT,
+        assertThat(oppgaveRepository.hentAntallOppgaver(new OppgavespørringDto(AVDELING_DRAMMEN, null,
                 new ArrayList<>(), new ArrayList<>(), new ArrayList<>(),new ArrayList<>(), false, null, null, null, null))).isEqualTo(4);
         assertThat(oppgaves).first().hasFieldOrPropertyWithValue("behandlendeEnhet", AVDELING_DRAMMEN_ENHET);
     }
@@ -75,26 +75,26 @@ public class OppgaveRepositoryImplTest {
     @Test
     public void testEkskluderingOgInkluderingAvOppgaver(){
         lagStandardSettMedOppgaver();
-        List<Oppgave> oppgaver = oppgaveRepository.hentOppgaver(new OppgavespørringDto(AVDELING_DRAMMEN, KøSortering.UDEFINERT,
+        List<Oppgave> oppgaver = oppgaveRepository.hentOppgaver(new OppgavespørringDto(AVDELING_DRAMMEN, null,
                 new ArrayList<>(), new ArrayList<>(), java.util.Arrays.asList(AndreKriterierType.TIL_BESLUTTER,AndreKriterierType.PAPIRSØKNAD),new ArrayList<>(), false, null, null, null, null));
         assertThat(oppgaver).hasSize(1);
 
-        oppgaver = oppgaveRepository.hentOppgaver(new OppgavespørringDto(AVDELING_DRAMMEN, KøSortering.UDEFINERT, new ArrayList<>(), new ArrayList<>(),
+        oppgaver = oppgaveRepository.hentOppgaver(new OppgavespørringDto(AVDELING_DRAMMEN, null, new ArrayList<>(), new ArrayList<>(),
                 java.util.Arrays.asList(AndreKriterierType.TIL_BESLUTTER),new ArrayList<>(), false, null, null, null, null));
         assertThat(oppgaver).hasSize(2);
 
-        oppgaver = oppgaveRepository.hentOppgaver(new OppgavespørringDto(AVDELING_DRAMMEN, KøSortering.UDEFINERT, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(),
+        oppgaver = oppgaveRepository.hentOppgaver(new OppgavespørringDto(AVDELING_DRAMMEN, null, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(),
                 java.util.Arrays.asList(AndreKriterierType.TIL_BESLUTTER,AndreKriterierType.PAPIRSØKNAD), false, null, null, null, null));
         assertThat(oppgaver).hasSize(1);
 
-        oppgaver = oppgaveRepository.hentOppgaver(new OppgavespørringDto(AVDELING_DRAMMEN, KøSortering.UDEFINERT, new ArrayList<>(), new ArrayList<>(),
+        oppgaver = oppgaveRepository.hentOppgaver(new OppgavespørringDto(AVDELING_DRAMMEN, null, new ArrayList<>(), new ArrayList<>(),
                 new ArrayList<>(),java.util.Arrays.asList(AndreKriterierType.TIL_BESLUTTER), false, null, null, null, null));
         assertThat(oppgaver).hasSize(2);
 
-        oppgaver = oppgaveRepository.hentOppgaver(new OppgavespørringDto(AVDELING_DRAMMEN, KøSortering.UDEFINERT, new ArrayList<>(), new ArrayList<>(),
+        oppgaver = oppgaveRepository.hentOppgaver(new OppgavespørringDto(AVDELING_DRAMMEN, null, new ArrayList<>(), new ArrayList<>(),
                 java.util.Arrays.asList(AndreKriterierType.PAPIRSØKNAD),java.util.Arrays.asList(AndreKriterierType.TIL_BESLUTTER), false, null, null, null, null));
         assertThat(oppgaver).hasSize(1);
-        int andtallOppgaver = oppgaveRepository.hentAntallOppgaver(new OppgavespørringDto(AVDELING_DRAMMEN, KøSortering.UDEFINERT, new ArrayList<>(), new ArrayList<>(),
+        int andtallOppgaver = oppgaveRepository.hentAntallOppgaver(new OppgavespørringDto(AVDELING_DRAMMEN, null, new ArrayList<>(), new ArrayList<>(),
                 java.util.Arrays.asList(AndreKriterierType.PAPIRSØKNAD),java.util.Arrays.asList(AndreKriterierType.TIL_BESLUTTER), false, null, null, null, null));
         assertThat(andtallOppgaver).isEqualTo(1);
     }

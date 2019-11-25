@@ -47,7 +47,7 @@ public class KodeverkRestTjeneste {
     public Map<String, Object> hentGruppertKodeliste() {
         Map<String, Object> kodelisterGruppertPåType = new HashMap<>();
 
-        Map<String, List<Kodeliste>> grupperteKodelister = hentKodeverkTjeneste.hentGruppertKodeliste();
+        var grupperteKodelister = hentKodeverkTjeneste.hentGruppertKodeliste();
         grupperteKodelister.forEach(kodelisterGruppertPåType::put);
 
         return kodelisterGruppertPåType;
