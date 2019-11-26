@@ -88,23 +88,23 @@ public class OppgaveRepositoryImpl implements OppgaveRepository {
         String filtrerBehandlingType = queryDto.getBehandlingTyper().isEmpty() ? "": " o.behandlingType in :behtyper AND ";
         String filtrerYtelseType = queryDto.getYtelseTyper().isEmpty() ? "": " o.fagsakYtelseType in :fagsakYtelseType AND ";
 
-        StringBuilder inkluderKriterier = new StringBuilder();
-        for (var inkluder : queryDto.getInkluderAndreKriterierTyper()) {
-            inkluderKriterier.append("EXISTS ( SELECT 1 FROM OppgaveEgenskap oe WHERE o = oe.oppgave AND oe.aktiv = true AND oe.andreKriterierType = '")
-                    .append(inkluder.getKode()).append("' ) AND ");
+        StringBuilder filtrerInkluderAndreKriterier = new StringBuilder();
+        for (var kriterie : queryDto.getInkluderAndreKriterierTyper()) {
+            filtrerInkluderAndreKriterier.append("EXISTS ( SELECT  1 FROM OppgaveEgenskap oe WHERE o = oe.oppgave AND oe.aktiv = true AND oe.andreKriterier = '" + kriterie.getKode() + "' ) AND ");
         }
 
-        String ekskluderingsKriterie = queryDto.getEkskluderAndreKriterierTyper().size() > 0
-                ? "NOT EXISTS ( SELECT 1 FROM OppgaveEgenskap oe WHERE o = oe.oppgave AND oe.aktiv = true AND oe.andreKriterierType IN :ekskluderingsliste ) AND "
-                : "";
+        StringBuilder filtrerEkskluderAndreKriterier = new StringBuilder();
+        for (var kriterie : queryDto.getEkskluderAndreKriterierTyper()) {
+            filtrerEkskluderAndreKriterier.append("NOT EXISTS (select 1 from OppgaveEgenskap oen WHERE o = oen.oppgave AND oen.aktiv = true AND oen.andreKriterier = '" + kriterie.getKode() + "') AND ");
+        }
 
         TypedQuery<T> query = getEntityManager().createQuery(selection + //$NON-NLS-1$ // NOSONAR
                 "INNER JOIN avdeling a ON a.avdelingEnhet = o.behandlendeEnhet " +
                 "WHERE " +
                 filtrerBehandlingType +
                 filtrerYtelseType +
-                inkluderKriterier +
-                ekskluderingsKriterie +
+                filtrerInkluderAndreKriterier +
+                filtrerEkskluderAndreKriterier +
                 "NOT EXISTS (select r from Reservasjon r where r.oppgave = o and r.reservertTil > :naa) AND " +
                 "NOT EXISTS (select oetilbesl from OppgaveEgenskap oetilbesl " +
                     "where o.id = oetilbesl.oppgaveId AND oetilbesl.aktiv = true AND oetilbesl.andreKriterierType = :tilbeslutter " +
@@ -134,21 +134,8 @@ public class OppgaveRepositoryImpl implements OppgaveRepository {
         if (queryDto.getFiltrerTomDato() != null) {
             query.setParameter("filterTomDato", KøSortering.FORSTE_STONADSDAG.equals(queryDto.getSortering()) ? queryDto.getFiltrerTomDato() : queryDto.getFiltrerTomDato().atTime(LocalTime.MAX));
         }
-        if (!ekskluderingsKriterie.equals("")) {
-            query.setParameter("ekskluderingsliste", queryDto.getEkskluderAndreKriterierTyper());
-        }
 
         return query;
-    }
-
-    private String ekskluderKriterier(List<AndreKriterierType> andreKriterier) {
-        if (andreKriterier != null && andreKriterier.size() > 0) {
-            String joined = andreKriterier.stream()
-                    .map(AndreKriterierType::getKode)
-                    .collect(Collectors.joining("','"));
-            return String.format("NOT EXISTS (select 1 from OppgaveEgenskap oen WHERE o = oen.oppgave AND oen.aktiv = true AND oen.andreKriterierType in ('%s')) AND ", joined);
-        }
-        return "";
     }
 
     private String sortering(OppgavespørringDto oppgavespørringDto) {
