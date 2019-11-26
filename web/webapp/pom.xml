@@ -253,12 +253,12 @@
             <groupId>org.glassfish</groupId>
             <artifactId>javax.el</artifactId>
         </dependency>
-        <dependency>
-            <groupId>javax.ws.rs</groupId>
-            <artifactId>jsr311-api</artifactId>
-            <version>1.1.1</version>
-            <scope>compile</scope>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>javax.ws.rs</groupId>-->
+<!--            <artifactId>jsr311-api</artifactId>-->
+<!--            <version>1.1.1</version>-->
+<!--            <scope>compile</scope>-->
+<!--        </dependency>-->
     </dependencies>
 
     <dependencyManagement>
@@ -277,7 +277,7 @@
                 <!-- bør ha samme versjon som CXF ellers -->
                 <groupId>org.apache.cxf</groupId>
                 <artifactId>cxf-rt-transports-http-jetty</artifactId>
-                <version>3.2.5</version>
+                <version>3.3.4</version>
             </dependency>
             <dependency>
                 <groupId>ch.qos.logback</groupId>

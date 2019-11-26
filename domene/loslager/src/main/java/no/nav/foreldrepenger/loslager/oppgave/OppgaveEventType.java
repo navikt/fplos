@@ -1,9 +1,11 @@
 package no.nav.foreldrepenger.loslager.oppgave;
 
+import no.nav.fplos.kodeverk.Kodeliste;
+
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
-
-import no.nav.fplos.kodeverk.Kodeliste;
+import java.util.Arrays;
+import java.util.List;
 
 @Entity(name = "oppgaveEventType")
 @DiscriminatorValue(OppgaveEventType.DISCRIMINATOR)
@@ -23,6 +25,10 @@ public class OppgaveEventType extends Kodeliste {
 
     protected OppgaveEventType(String kode) {
         super(kode, DISCRIMINATOR);
+    }
+
+    public static List<OppgaveEventType> åpningseventtyper(){
+        return Arrays.asList(OPPRETTET, GJENAPNET);
     }
 
 }

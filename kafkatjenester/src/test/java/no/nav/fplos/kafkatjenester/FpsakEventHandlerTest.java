@@ -40,6 +40,8 @@ public class FpsakEventHandlerTest {
     private ForeldrepengerBehandlingRestKlient foreldrepengerBehandlingRestKlient = mock(ForeldrepengerBehandlingRestKlient.class);
     private FpsakEventHandler fpsakEventHandler = new FpsakEventHandler(oppgaveRepositoryProvider, foreldrepengerBehandlingRestKlient);
     private static Long behandlingId = 1073051L;
+    private static String fagsystem = "FPSAK";
+
     private LocalDateTime aksjonspunktFrist = null;
 
     Map<String, String> aksjonspunktKoderSkalHaOppgave = new HashMap<>(){{put("5015","OPPR");}};
@@ -67,12 +69,14 @@ public class FpsakEventHandlerTest {
 
     BehandlingProsessEventDto eventDrammenFra(Map<String, String> aksjonspunktmap){
         return prosessBuilderFra(aksjonspunktmap)
+                //.medId("EKSTERN_ID")
                 .medBehandlendeEnhet("4802")
                 .build();
     }
 
     private BehandlingProsessEventDto eventStordFra(Map<String, String> aksjonspunktmap){
         return prosessBuilderFra(aksjonspunktmap)
+                //.medId("EKSTERN_ID")
                 .medBehandlendeEnhet("4842")
                 .build();
     }
@@ -96,7 +100,8 @@ public class FpsakEventHandlerTest {
 
     private BehandlingProsessEventDto.Builder prosessBuilderFra(Map<String, String> aksjonspunktmap){
         return BehandlingProsessEventDto.builder()
-                .medFagsystem("FPSAK")
+                //.medId("EKSTERN_ID")
+                .medFagsystem(fagsystem)
                 .medBehandlingId(behandlingId)
                 .medSaksnummer("135701264")
                 .medAktørId("9000000030703")
@@ -107,6 +112,7 @@ public class FpsakEventHandlerTest {
                 .medBehandlingTypeKode(BehandlingType.FØRSTEGANGSSØKNAD.getKode())
                 .medOpprettetBehandling(LocalDateTime.now())
                 .medAksjonspunktKoderMedStatusListe(aksjonspunktmap);
+
     }
 
     private static BehandlingFpsak behandlingDtoFra(List<Aksjonspunkt> aksjonspunkter) {
@@ -171,6 +177,9 @@ public class FpsakEventHandlerTest {
 
         //Sjekker at det siste eventet er å opprette og at det rett før er lukker.
         List<OppgaveEventLogg> oppgaveEventLogg = oppgaveRepositoryProvider.getOppgaveRepository().hentEventer(behandlingId);
+
+        /*Optional<EksternIdentifikator> eksternId = oppgaveRepositoryProvider.getEksternIdentifikatorRepository().finnIdentifikator("FPSAK", behandlingId.toString());
+        List<OppgaveEventLogg> oppgaveEventLogg = oppgaveRepositoryProvider.getOppgaveRepository().hentEventerForEksternId(eksternId.get().getId());*/
         assertThat(oppgaveEventLogg.get(0).getEventType()).isEqualTo(OppgaveEventType.OPPRETTET);
         assertThat(oppgaveEventLogg.get(1).getEventType()).isEqualTo(OppgaveEventType.LUKKET);
     }
@@ -293,7 +302,10 @@ public class FpsakEventHandlerTest {
 
 
     private void sjekkEventLoggInneholder(Long behandlingId, OppgaveEventType eventType, AndreKriterierType kriterierType) {
+        /*Optional<EksternIdentifikator> eksternIdentifikator = oppgaveRepositoryProvider.getEksternIdentifikatorRepository().finnIdentifikator(fagsystem, behandlingId.toString());
+        List<OppgaveEventLogg> oppgaveEventLoggs = oppgaveRepositoryProvider.getOppgaveRepository().hentEventerForEksternId(eksternIdentifikator.get().getId());*/
         List<OppgaveEventLogg> oppgaveEventLoggs = oppgaveRepositoryProvider.getOppgaveRepository().hentEventer(behandlingId);
+
         assertThat(oppgaveEventLoggs.get(0).getEventType()).isEqualTo(eventType);
         if (kriterierType != null) {
             assertThat(oppgaveEventLoggs.get(0).getAndreKriterierType()).isEqualTo(kriterierType);

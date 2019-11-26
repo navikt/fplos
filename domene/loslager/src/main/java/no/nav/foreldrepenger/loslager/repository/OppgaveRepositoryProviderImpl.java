@@ -1,14 +1,13 @@
 package no.nav.foreldrepenger.loslager.repository;
 
-import java.util.Objects;
+import no.nav.fplos.kodeverk.KodeverkRepository;
+import no.nav.fplos.kodeverk.KodeverkRepositoryImpl;
+import no.nav.vedtak.felles.jpa.VLPersistenceUnit;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
-
-import no.nav.fplos.kodeverk.KodeverkRepository;
-import no.nav.fplos.kodeverk.KodeverkRepositoryImpl;
-import no.nav.vedtak.felles.jpa.VLPersistenceUnit;
+import java.util.Objects;
 
 /** Provider for å enklere å kunne hente ut ulike repository uten for mange injection points. */
 @ApplicationScoped
