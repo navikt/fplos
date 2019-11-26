@@ -50,8 +50,8 @@
         <junit.version>5.2.0</junit.version>
         <logstash.version>4.10</logstash.version>
         <mockito.version>3.1.0</mockito.version>
-        <swagger.version>1.5.17</swagger.version>
-        <metrics.version>3.2.5</metrics.version>
+        <swagger.version>1.6.0</swagger.version>
+        <metrics.version>4.1.1</metrics.version>
         <metrics.cdi.version>1.4.0</metrics.cdi.version>
         <!-- Transitive avh. versjoner for å sikre unikhet (enforcer dependencyConvergence). Skal ikke benyttes direkte av vår egen kode. -->
         <jasypt.version>1.9.2</jasypt.version>
@@ -476,7 +476,7 @@
                 <!-- clasher med javax.annotations-api -->
                 <groupId>org.jboss.spec.javax.annotation</groupId>
                 <artifactId>jboss-annotations-api_1.2_spec</artifactId>
-                <version>1.0.1.Final</version>
+                <version>1.0.2.Final</version>
                 <scope>provided</scope>
             </dependency>
             <dependency>
