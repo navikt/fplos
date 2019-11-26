@@ -95,7 +95,7 @@ public class OppgaveRepositoryImpl implements OppgaveRepository {
 
         StringBuilder filtrerEkskluderAndreKriterier = new StringBuilder();
         for (var kriterie : queryDto.getEkskluderAndreKriterierTyper()) {
-            filtrerEkskluderAndreKriterier.append("NOT EXISTS (select 1 from OppgaveEgenskap oen WHERE o = oen.oppgave AND oen.aktiv = true AND oen.andreKriterier = '" + kriterie.getKode() + "') AND ");
+            filtrerEkskluderAndreKriterier.append("NOT EXISTS (select 1 from OppgaveEgenskap oen WHERE o = oen.oppgave AND oen.aktiv = true AND oen.andreKriterier = '").append(kriterie.getKode()).append("') AND ");
         }
 
         TypedQuery<T> query = getEntityManager().createQuery(selection + //$NON-NLS-1$ // NOSONAR
