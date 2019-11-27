@@ -19,11 +19,6 @@ public enum FplosAbacAttributtType implements AbacAttributtType {
     }
 
     @Override
-    public boolean getValider() {
-        return false;
-    }
-
-    @Override
     public String getSporingsloggKode() {
         return sporingsloggEksternKode;
     }

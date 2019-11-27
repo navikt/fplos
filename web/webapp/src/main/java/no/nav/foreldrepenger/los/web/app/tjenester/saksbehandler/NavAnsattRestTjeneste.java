@@ -40,13 +40,13 @@ public class NavAnsattRestTjeneste {
 
     @Inject
     public NavAnsattRestTjeneste(
-        @KonfigVerdi(value = "bruker.gruppenavn.saksbehandler") String gruppenavnSaksbehandler,
-        @KonfigVerdi(value = "bruker.gruppenavn.veileder") String gruppenavnVeileder,
-        @KonfigVerdi(value = "bruker.gruppenavn.beslutter") String gruppenavnBeslutter,
-        @KonfigVerdi(value = "bruker.gruppenavn.egenansatt") String gruppenavnEgenAnsatt,
-        @KonfigVerdi(value = "bruker.gruppenavn.kode6") String gruppenavnKode6,
-        @KonfigVerdi(value = "bruker.gruppenavn.kode7") String gruppenavnKode7,
-        @KonfigVerdi(value = "bruker.gruppenavn.oppgavestyrer") String gruppenavnOppgavestyrer
+        @KonfigVerdi(value = "bruker.gruppenavn.saksbehandler", defaultVerdi="0000-GA-fpsak-saksbehandler") String gruppenavnSaksbehandler,
+        @KonfigVerdi(value = "bruker.gruppenavn.veileder", defaultVerdi="0000-GA-fpsak-veileder") String gruppenavnVeileder,
+        @KonfigVerdi(value = "bruker.gruppenavn.beslutter", defaultVerdi="0000-GA-fpsak-beslutter") String gruppenavnBeslutter,
+        @KonfigVerdi(value = "bruker.gruppenavn.egenansatt", defaultVerdi="0000-GA-GOSYS_UTVIDET") String gruppenavnEgenAnsatt,
+        @KonfigVerdi(value = "bruker.gruppenavn.kode6", defaultVerdi="0000-GA-GOSYS_KODE6") String gruppenavnKode6,
+        @KonfigVerdi(value = "bruker.gruppenavn.kode7", defaultVerdi="0000-GA-GOSYS_KODE7") String gruppenavnKode7,
+        @KonfigVerdi(value = "bruker.gruppenavn.oppgavestyrer", defaultVerdi="0000-GA-fpsak-Oppgavestyrer") String gruppenavnOppgavestyrer
     ) {
         this.gruppenavnSaksbehandler = gruppenavnSaksbehandler;
         this.gruppenavnVeileder = gruppenavnVeileder;
