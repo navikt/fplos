@@ -63,9 +63,6 @@ public class FpsakEventHandler extends FpEventHandler {
     private void prosesser(BehandlingProsessEventDto bpeDto, Reservasjon reservasjon, boolean prosesserFraAdmin) {
         Long behandlingId = bpeDto.getBehandlingId();
 
-        //TODO: bruk UUID fra FpSak når den er tilgjengelig
-        //UUID eksternId = UUID.nameUUIDFromBytes(behandlingId.toString().getBytes());//bpeDto.getId();
-
         BehandlingFpsak behandling = foreldrePengerBehandlingRestKlient.getBehandling(behandlingId);
 
         UUID eksternId = behandling.getUuid();
