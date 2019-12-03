@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(path = "/oppdaterUUID")
+@RequestMapping(path = "/")
 public class UUIDSyncRestController {
     private UUIDSyncService uuidSyncService;
 
@@ -17,7 +17,7 @@ public class UUIDSyncRestController {
         this.uuidSyncService = uuidSyncService;
     }
 
-    @GetMapping(path="/", produces = "application/json")
+    @GetMapping(path="/oppdater", produces = "application/json")
     public ResponseEntity oppdaterUUID(){
         uuidSyncService.oppdaterUUID();
         return ResponseEntity.ok().build();

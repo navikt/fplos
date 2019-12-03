@@ -63,7 +63,7 @@
     </servlet>
     <servlet-mapping>
         <servlet-name>spring-dispatcher</servlet-name>
-        <url-pattern>/spring/*</url-pattern>
+        <url-pattern>/uuid/*</url-pattern>
     </servlet-mapping>
 
     <servlet-mapping>
@@ -75,6 +75,7 @@
         <web-resource-collection>
             <web-resource-name>Ubeskyttet</web-resource-name>
             <url-pattern>/cb</url-pattern>
+            <url-pattern>/uuid/oppdater</url-pattern>
             <url-pattern>/internal/isAlive</url-pattern>
             <url-pattern>/internal/isReady</url-pattern>
             <url-pattern>/internal/selftest</url-pattern>
