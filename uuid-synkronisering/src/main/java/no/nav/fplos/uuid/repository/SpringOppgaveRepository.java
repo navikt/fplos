@@ -1,7 +1,7 @@
-package no.nav.fplos.batch.repository;
+package no.nav.fplos.uuid.repository;
 
 
-import no.nav.fplos.batch.dao.Oppgave;
+import no.nav.fplos.uuid.dao.Oppgave;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;

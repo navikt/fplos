@@ -1,4 +1,4 @@
-package no.nav.fplos.batch.dao;
+package no.nav.fplos.uuid.dao;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
