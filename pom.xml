@@ -40,7 +40,7 @@
         <assertj.version>3.7.0</assertj.version>
         <cxf.version>3.3.4</cxf.version>
         <woodstox.version>6.0.2</woodstox.version>
-        <surefire.version>2.21.0</surefire.version>
+        <surefire.version>2.22.2</surefire.version>
         <asm.version>6.2.1</asm.version>
 
         <geronimo.jaspi.version>2.0.0</geronimo.jaspi.version>
