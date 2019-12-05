@@ -169,9 +169,9 @@ public class Oppgave extends BaseEntitet {
     }
 
     public static class Builder {
-        private Oppgave tempOppgave;
+        protected Oppgave tempOppgave;
 
-        private Builder(){
+        protected Builder(){
             tempOppgave = new Oppgave();
         }
 

@@ -13,6 +13,7 @@ import no.nav.foreldrepenger.loslager.oppgave.OppgaveEventLogg;
 import no.nav.foreldrepenger.loslager.oppgave.OppgaveFiltrering;
 import no.nav.foreldrepenger.loslager.oppgave.Reservasjon;
 import no.nav.foreldrepenger.loslager.oppgave.ReservasjonEventLogg;
+import no.nav.foreldrepenger.loslager.oppgave.TilbakekrevingOppgave;
 import no.nav.foreldrepenger.loslager.organisasjon.Avdeling;
 import no.nav.foreldrepenger.loslager.organisasjon.Saksbehandler;
 
@@ -45,6 +46,8 @@ public interface OppgaveRepository {
 
     void lagre(Oppgave oppgave);
 
+    void lagre(TilbakekrevingOppgave oppgave);
+
     Long lagre(OppgaveFiltrering oppgaveFiltrering);
 
     void oppdaterNavn(Long sakslisteId, String navn);
@@ -76,6 +79,8 @@ public interface OppgaveRepository {
     List<Oppgave> sjekkOmOppgaverFortsattErTilgjengelige(List<Long> oppgaveIder);
 
     Oppgave opprettOppgave(Oppgave build);
+
+    TilbakekrevingOppgave opprettTilbakekrevingOppgave(TilbakekrevingOppgave oppgave);
     /**
      * @deprecated Bruk gjenåpneOppgaveForEksternId(Long) i stedet
      */

@@ -12,6 +12,7 @@ import no.nav.fplos.kafkatjenester.Fagsystem;
 import no.nav.fplos.kafkatjenester.FpsakEventHandler;
 import no.nav.fplos.kafkatjenester.KafkaReader;
 import no.nav.fplos.kafkatjenester.TilbakekrevingEventHandler;
+import no.nav.fplos.kafkatjenester.dto.TilbakekrevingBehandlingProsessEventDto;
 import no.nav.vedtak.felles.integrasjon.kafka.BehandlingProsessEventDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -86,7 +87,7 @@ public class AdminTjenesteImpl implements AdminTjeneste {
                     fpsakEventHandler.prosesserFraAdmin(mapTilBehandlingProsessEventDto(oppgave.getBehandlingId()), oppgave.getReservasjon());
                     break;
                 case FPTILBAKE :
-                    tilbakekrevingEventHandler.prosesserFraAdmin(mapTilBehandlingProsessEventDto(oppgave.getBehandlingId()), oppgave.getReservasjon());
+                    tilbakekrevingEventHandler.prosesserFraAdmin((TilbakekrevingBehandlingProsessEventDto) mapTilBehandlingProsessEventDto(oppgave.getBehandlingId()), oppgave.getReservasjon());
                     break;
             }
         });

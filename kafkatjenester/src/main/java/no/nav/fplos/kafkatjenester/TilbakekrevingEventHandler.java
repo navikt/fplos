@@ -7,8 +7,10 @@ import no.nav.foreldrepenger.loslager.oppgave.Oppgave;
 import no.nav.foreldrepenger.loslager.oppgave.OppgaveEventLogg;
 import no.nav.foreldrepenger.loslager.oppgave.OppgaveEventType;
 import no.nav.foreldrepenger.loslager.oppgave.Reservasjon;
+import no.nav.foreldrepenger.loslager.oppgave.TilbakekrevingOppgave;
 import no.nav.foreldrepenger.loslager.repository.OppgaveRepositoryProvider;
 import no.nav.fplos.foreldrepengerbehandling.Aksjonspunkt;
+import no.nav.fplos.kafkatjenester.dto.TilbakekrevingBehandlingProsessEventDto;
 import no.nav.fplos.kafkatjenester.eventresultat.EventResultat;
 import no.nav.fplos.kafkatjenester.eventresultat.FpsakEventMapper;
 import no.nav.vedtak.felles.integrasjon.kafka.BehandlingProsessEventDto;
@@ -37,14 +39,14 @@ public class TilbakekrevingEventHandler extends FpEventHandler {
 
     @Override
     public void prosesser(BehandlingProsessEventDto bpeDto){
-        prosesser(bpeDto, null,false);
+        prosesser((TilbakekrevingBehandlingProsessEventDto)bpeDto, null,false);
     }
 
-    public void prosesserFraAdmin(BehandlingProsessEventDto bpeDto, Reservasjon reservasjon){
+    public void prosesserFraAdmin(TilbakekrevingBehandlingProsessEventDto bpeDto, Reservasjon reservasjon){
         prosesser(bpeDto, reservasjon, true);
     }
 
-    private void prosesser(BehandlingProsessEventDto bpeDto, Reservasjon reservasjon, boolean prosesserFraAdmin) {
+    private void prosesser(TilbakekrevingBehandlingProsessEventDto bpeDto, Reservasjon reservasjon, boolean prosesserFraAdmin) {
         //TODO: bruk bpeDto.getId() når den er tilgjengelig
         UUID eksternId = UUID.randomUUID();//bpeDto.getId();
         //EksternIdentifikator eksternId = getEksternIdentifikatorRespository().finnEllerOpprettEksternId(bpeDto.getFagsystem(), eksternRefId);
@@ -73,7 +75,7 @@ public class TilbakekrevingEventHandler extends FpEventHandler {
                 break;
             case OPPRETT_OPPGAVE:
                 avsluttOppgaveHvisÅpen(eksternId, pastOppgaveEvents, bpeDto.getBehandlendeEnhet());
-                Oppgave oppgave = opprettOppgave(eksternId, bpeDto, prosesserFraAdmin);
+                Oppgave oppgave = opprettTilbakekrevingOppgave(eksternId, bpeDto, prosesserFraAdmin);
                 reserverOppgaveFraTidligereReservasjon(prosesserFraAdmin, reservasjon, oppgave);
                 log.info("Oppgave {} opprettet og populert med informasjon fra FPTILBAKE for eksternId {}", oppgave.getId(), eksternId);
                 loggEvent(oppgave.getEksternId(), OppgaveEventType.OPPRETTET, AndreKriterierType.UKJENT, bpeDto.getBehandlendeEnhet());
@@ -96,8 +98,8 @@ public class TilbakekrevingEventHandler extends FpEventHandler {
             getOppgaveRepository().avsluttOppgaveForEksternId(eksternId);
         }
     }
-    private Oppgave opprettOppgave(UUID eksternId, BehandlingProsessEventDto bpeDto, boolean prosesserFraAdmin) {
-        return getOppgaveRepository().opprettOppgave(Oppgave.builder()
+    private TilbakekrevingOppgave opprettTilbakekrevingOppgave(UUID eksternId, TilbakekrevingBehandlingProsessEventDto bpeDto, boolean prosesserFraAdmin) {
+        return getOppgaveRepository().opprettTilbakekrevingOppgave(TilbakekrevingOppgave.builder()
                 .medSystem(bpeDto.getFagsystem())
                 .medBehandlingId(bpeDto.getBehandlingId())
                 .medFagsakSaksnummer(Long.valueOf(bpeDto.getSaksnummer()))
@@ -111,6 +113,7 @@ public class TilbakekrevingEventHandler extends FpEventHandler {
                 //.medBehandlingsfrist(hentBehandlingstidFrist(fraFpsak.getBehandlingstidFrist()))
                 //.medBehandlingStatus(getKodeverkRepository().finn(BehandlingStatus.class, fraFpsak.getStatus()))
                 .medEksternId(eksternId)
+                .medBelop(bpeDto.getBeløp())
                 .build());
     }
 
