@@ -112,18 +112,19 @@ public class OppgaveRepositoryImplTest {
                 BEHANDLINGSFRIST,
                 Collections.emptyList(),
                 Collections.emptyList(),
-                //List.of(AndreKriterierType.UTLANDSSAK), // inkluderes
-                Collections.emptyList(),
-                List.of(AndreKriterierType.SOKT_GRADERING), // ekskluderes
+                List.of(AndreKriterierType.UTLANDSSAK), // inkluderes
                 //Collections.emptyList(),
+                List.of(AndreKriterierType.SOKT_GRADERING), // ekskluderes
+                //Collections.emptyList(), //ekskluderes
                 false,
                 null,
                 null,
                 null,
                 null);
+        //List<Oppgave> alleOppgaver = oppgaveRepository.hentOppgaver(alleOppgaverQuery);
         List<Oppgave> oppgaver = oppgaveRepository.hentOppgaver(oppgaveQuery);
         assertThat(oppgaver.size()).isEqualTo(1);
-        //assertThat(oppgaver.get(0).getFagsakSaksnummer()).isEqualTo(saksnummerHit);
+        assertThat(oppgaver.get(0).getFagsakSaksnummer()).isEqualTo(saksnummerHit);
     }
 
     @Test

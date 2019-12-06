@@ -88,14 +88,12 @@ public class OppgaveRepositoryImpl implements OppgaveRepository {
         String filtrerBehandlingType = queryDto.getBehandlingTyper().isEmpty() ? "": " o.behandlingType in :behtyper AND ";
         String filtrerYtelseType = queryDto.getYtelseTyper().isEmpty() ? "": " o.fagsakYtelseType in :fagsakYtelseType AND ";
 
-        StringBuilder filtrerInkluderAndreKriterier = new StringBuilder();
+        StringBuilder ekskluderInkluderAndreKriterier = new StringBuilder();
         for (var kriterie : queryDto.getInkluderAndreKriterierTyper()) {
-            filtrerInkluderAndreKriterier.append("EXISTS ( SELECT  1 FROM OppgaveEgenskap oe WHERE o = oe.oppgave AND oe.aktiv = true AND oe.andreKriterier = '" + kriterie.getKode() + "' ) AND ");
+            ekskluderInkluderAndreKriterier.append("EXISTS ( SELECT  1 FROM OppgaveEgenskap oe WHERE o = oe.oppgave AND oe.aktiv = true AND oe.andreKriterierType = '" + kriterie.getKode() + "' ) AND ");
         }
-
-        StringBuilder filtrerEkskluderAndreKriterier = new StringBuilder();
         for (var kriterie : queryDto.getEkskluderAndreKriterierTyper()) {
-            filtrerEkskluderAndreKriterier.append("NOT EXISTS (select 1 from OppgaveEgenskap oen WHERE o = oen.oppgave AND oen.aktiv = true AND oen.andreKriterier = '").append(kriterie.getKode()).append("') AND ");
+            ekskluderInkluderAndreKriterier.append("NOT EXISTS (select 1 from OppgaveEgenskap oen WHERE o = oen.oppgave AND oen.aktiv = true AND oen.andreKriterierType = '").append(kriterie.getKode()).append("') AND ");
         }
 
         TypedQuery<T> query = getEntityManager().createQuery(selection + //$NON-NLS-1$ // NOSONAR
@@ -103,8 +101,7 @@ public class OppgaveRepositoryImpl implements OppgaveRepository {
                 "WHERE " +
                 filtrerBehandlingType +
                 filtrerYtelseType +
-                filtrerInkluderAndreKriterier +
-                filtrerEkskluderAndreKriterier +
+                ekskluderInkluderAndreKriterier +
                 "NOT EXISTS (select r from Reservasjon r where r.oppgave = o and r.reservertTil > :naa) AND " +
                 "NOT EXISTS (select oetilbesl from OppgaveEgenskap oetilbesl " +
                     "where o.id = oetilbesl.oppgaveId AND oetilbesl.aktiv = true AND oetilbesl.andreKriterierType = :tilbeslutter " +

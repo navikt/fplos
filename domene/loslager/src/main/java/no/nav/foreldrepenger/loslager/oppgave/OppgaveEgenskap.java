@@ -32,7 +32,7 @@ public class OppgaveEgenskap extends BaseEntitet{
     private Long oppgaveId;
 
     @Convert(converter = AndreKriterierType.KodeverdiConverter.class)
-    @Column(name = "ANDRE_KRITERIER_TYPE", updatable = false, nullable = false)
+    @Column(name = "ANDRE_KRITERIER_TYPE", nullable = false)
     private AndreKriterierType andreKriterierType;
 
     @Column(name = "SISTE_SAKSBEHANDLER_FOR_TOTR")
