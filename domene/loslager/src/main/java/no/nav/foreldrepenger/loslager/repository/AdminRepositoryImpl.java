@@ -1,20 +1,21 @@
 package no.nav.foreldrepenger.loslager.repository;
 
-import java.util.List;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.NoResultException;
-
 import no.nav.foreldrepenger.loslager.oppgave.EventmottakFeillogg;
 import no.nav.foreldrepenger.loslager.oppgave.EventmottakStatus;
 import no.nav.foreldrepenger.loslager.oppgave.Oppgave;
 import no.nav.foreldrepenger.loslager.oppgave.OppgaveEventLogg;
 import no.nav.foreldrepenger.loslager.oppgave.Reservasjon;
+import no.nav.foreldrepenger.loslager.oppgave.TilbakekrevingOppgave;
 import no.nav.vedtak.felles.jpa.VLPersistenceUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
+import java.util.List;
+import java.util.UUID;
 
 @ApplicationScoped
 public class AdminRepositoryImpl implements AdminRepository {
@@ -53,6 +54,20 @@ public class AdminRepositoryImpl implements AdminRepository {
             getEntityManager().refresh(oppgave);
         } catch (NoResultException nre) {
             log.info("Fant ingen oppgave tilknyttet behandling med id {}", behandlingId, nre);
+        }
+        return oppgave;
+    }
+
+    @Override
+    public TilbakekrevingOppgave hentSisteTilbakekrevingOppgave(UUID uuid) {
+        TilbakekrevingOppgave oppgave = null;
+        try {
+            oppgave = getEntityManager().createQuery("Select to FROM TilbakekrevingOppgave to where to.eksternId = :eksternId ORDER BY to.opprettetTidspunkt desc", TilbakekrevingOppgave.class)
+                    .setParameter("eksternId", uuid)
+                    .setMaxResults(1).getSingleResult();
+            getEntityManager().refresh(oppgave);
+        } catch (NoResultException nre) {
+            log.info("Fant ingen oppgave tilknyttet behandling med id {}", uuid, nre);
         }
         return oppgave;
     }
