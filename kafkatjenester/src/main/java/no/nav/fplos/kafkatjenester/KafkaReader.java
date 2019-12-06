@@ -6,7 +6,6 @@ import no.nav.foreldrepenger.loslager.oppgave.EventmottakFeillogg;
 import no.nav.foreldrepenger.loslager.oppgave.EventmottakStatus;
 import no.nav.foreldrepenger.loslager.repository.OppgaveRepository;
 import no.nav.foreldrepenger.loslager.repository.OppgaveRepositoryProvider;
-import no.nav.fplos.kafkatjenester.dto.TilbakekrevingBehandlingProsessEventDto;
 import no.nav.fplos.kafkatjenester.jsonoppgave.JsonOppgave;
 import no.nav.vedtak.felles.integrasjon.kafka.BehandlingProsessEventDto;
 import org.slf4j.Logger;
@@ -15,7 +14,6 @@ import org.slf4j.LoggerFactory;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -64,29 +62,6 @@ public class KafkaReader {
         try {
             BehandlingProsessEventDto behandlingProsessEventDto = deserialiser(melding, BehandlingProsessEventDto.class);
             if (behandlingProsessEventDto != null) {
-                //TODO: Dette er bare en test av tilbakekrevingEventHandler og skal ikke sjekkes inn
-                if(1000443L == behandlingProsessEventDto.getBehandlingId()){
-                    TilbakekrevingBehandlingProsessEventDto tilbakekrevingbehandlingProsessEventDto = TilbakekrevingBehandlingProsessEventDto.builder()
-                            .medAksjonspunktKoderMedStatusListe(behandlingProsessEventDto.getAksjonspunktKoderMedStatusListe())
-                            .medAktørId(behandlingProsessEventDto.getAktørId())
-                            .medBehandlendeEnhet(behandlingProsessEventDto.getBehandlendeEnhet())
-                            .medBehandlingId(behandlingProsessEventDto.getBehandlingId())
-                            .medBehandlingSteg(behandlingProsessEventDto.getBehandlingSteg())
-                            .medBehandlingTypeKode(behandlingProsessEventDto.getBehandlingTypeKode())
-                            .medBehandlinStatus(behandlingProsessEventDto.getBehandlinStatus())
-                            .medBeløp(BigDecimal.valueOf(123456))
-                            .medEventHendelse(behandlingProsessEventDto.getEventHendelse())
-                            .medFagsystem(behandlingProsessEventDto.getFagsystem())
-                            .medOpprettetBehandling(behandlingProsessEventDto.getOpprettetBehandling())
-                            .medSaksnummer(behandlingProsessEventDto.getSaksnummer())
-                            .medYtelseTypeKode(behandlingProsessEventDto.getYtelseTypeKode())
-                            .build();
-                    tilbakekrevingEventHandler.prosesser(tilbakekrevingbehandlingProsessEventDto);
-                    return;
-                }
-
-
-
                 switch(Fagsystem.valueOf(behandlingProsessEventDto.getFagsystem())){
                     case FPSAK:
                         fpsakEventHandler.prosesser(behandlingProsessEventDto);
