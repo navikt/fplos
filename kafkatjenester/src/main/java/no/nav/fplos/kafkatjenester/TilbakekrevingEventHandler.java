@@ -7,7 +7,7 @@ import no.nav.foreldrepenger.loslager.oppgave.Oppgave;
 import no.nav.foreldrepenger.loslager.oppgave.OppgaveEventLogg;
 import no.nav.foreldrepenger.loslager.oppgave.OppgaveEventType;
 import no.nav.foreldrepenger.loslager.oppgave.Reservasjon;
-import no.nav.foreldrepenger.loslager.oppgave.TilbakekrevingEgenskaper;
+import no.nav.foreldrepenger.loslager.oppgave.TilbakekrevingOppgave;
 import no.nav.foreldrepenger.loslager.repository.OppgaveRepositoryProvider;
 import no.nav.fplos.foreldrepengerbehandling.Aksjonspunkt;
 import no.nav.fplos.kafkatjenester.dto.TilbakekrevingBehandlingProsessEventDto;
@@ -20,7 +20,6 @@ import org.slf4j.LoggerFactory;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -64,7 +63,7 @@ public class TilbakekrevingEventHandler extends FpEventHandler {
                 ? FpsakEventMapper.signifikantEventForAdminFra(aksjonspunkt)
                 :FpsakEventMapper.signifikantEventFra(aksjonspunkt, pastOppgaveEvents, bpeDto.getBehandlendeEnhet());
 
-/*        switch (event) {
+        switch (event) {
             case LUKK_OPPGAVE:
                 // Dersom oppgaven som skal avsluttes ikke blir identifisert, vil man her ende opp med en
                 // eksternreferanseidentifikator som ikke refereres i noen oppgave ettersom der er gjort kall til
@@ -74,14 +73,14 @@ public class TilbakekrevingEventHandler extends FpEventHandler {
                 avsluttOppgaveForEksternId(eksternId);
                 loggEvent(eksternId, OppgaveEventType.LUKKET, AndreKriterierType.UKJENT, bpeDto.getBehandlendeEnhet(), null);
                 break;
-            case OPPRETT_OPPGAVE:*/
+            case OPPRETT_OPPGAVE:
                 avsluttOppgaveHvisÅpen(eksternId, pastOppgaveEvents, bpeDto.getBehandlendeEnhet());
                 Oppgave oppgave = opprettTilbakekrevingOppgave(eksternId, bpeDto, prosesserFraAdmin);
                 reserverOppgaveFraTidligereReservasjon(prosesserFraAdmin, reservasjon, oppgave.getId());
                 log.info("Oppgave {} opprettet og populert med informasjon fra FPTILBAKE for eksternId {}", oppgave.getId(), eksternId);
                 loggEvent(oppgave.getEksternId(), OppgaveEventType.OPPRETTET, AndreKriterierType.UKJENT, bpeDto.getBehandlendeEnhet());
                 //opprettOppgaveEgenskaper(behandling, oppgave);
-/*                break;
+                break;
             case GJENÅPNE_OPPGAVE:
                 //Oppgave gjenåpnetOppgave = gjenåpneOppgaveForEksternId(bpeDto);
                 Oppgave gjenåpnetOppgave = getOppgaveRepository().gjenåpneOppgaveForEksternId(eksternId);
@@ -89,7 +88,7 @@ public class TilbakekrevingEventHandler extends FpEventHandler {
                 loggEvent(gjenåpnetOppgave.getEksternId(), OppgaveEventType.GJENAPNET, AndreKriterierType.UKJENT, bpeDto.getBehandlendeEnhet());
                 //opprettOppgaveEgenskaper(behandling, gjenåpnetOppgave);
                 break;
-        }*/
+        }
 
     }
 
@@ -100,28 +99,22 @@ public class TilbakekrevingEventHandler extends FpEventHandler {
         }
     }
 
-    private Oppgave opprettTilbakekrevingOppgave(UUID eksternId, TilbakekrevingBehandlingProsessEventDto bpeDto, boolean prosesserFraAdmin) {
-        Oppgave oppgave = opprettOppgave(eksternId,bpeDto, prosesserFraAdmin);
-        opprettTilbakekrevingEgenskaper(oppgave, bpeDto.getBeløp());
+    private TilbakekrevingOppgave opprettTilbakekrevingOppgave(UUID eksternId, TilbakekrevingBehandlingProsessEventDto bpeDto, boolean prosesserFraAdmin) {
+        TilbakekrevingOppgave oppgave =
+                getOppgaveRepository().opprettTilbakekrevingEgenskaper(TilbakekrevingOppgave.tbuilder()
+                        .medBelop(bpeDto.getBeløp())
+                        .medSystem(bpeDto.getFagsystem())
+                        .medBehandlingId(bpeDto.getBehandlingId())
+                        .medFagsakSaksnummer(Long.valueOf(bpeDto.getSaksnummer()))
+                        .medAktorId(Long.valueOf(bpeDto.getAktørId()))
+                        .medBehandlendeEnhet(bpeDto.getBehandlendeEnhet())
+                        .medBehandlingType(getKodeverkRepository().finn(BehandlingType.class, bpeDto.getBehandlingTypeKode()))
+                        .medFagsakYtelseType(getKodeverkRepository().finn(FagsakYtelseType.class, bpeDto.getYtelseTypeKode()))
+                        .medAktiv(true).medBehandlingOpprettet(bpeDto.getOpprettetBehandling())
+                        .medUtfortFraAdmin(prosesserFraAdmin)
+                        .medEksternId(eksternId)
+                        .build());
         return oppgave;
     }
 
-    private void opprettTilbakekrevingEgenskaper(Oppgave oppgave, BigDecimal beløp) {
-        getOppgaveRepository().opprettTilbakekrevingEgenskaper(new TilbakekrevingEgenskaper(oppgave, beløp));
-    }
-
-    private Oppgave opprettOppgave(UUID eksternId, BehandlingProsessEventDto bpeDto, boolean prosesserFraAdmin) {
-        return getOppgaveRepository().opprettOppgave(Oppgave.builder()
-                .medSystem(bpeDto.getFagsystem())
-                .medBehandlingId(bpeDto.getBehandlingId())
-                .medFagsakSaksnummer(Long.valueOf(bpeDto.getSaksnummer()))
-                .medAktorId(Long.valueOf(bpeDto.getAktørId()))
-                .medBehandlendeEnhet(bpeDto.getBehandlendeEnhet())
-                .medBehandlingType(getKodeverkRepository().finn(BehandlingType.class, bpeDto.getBehandlingTypeKode()))
-                .medFagsakYtelseType(getKodeverkRepository().finn(FagsakYtelseType.class, bpeDto.getYtelseTypeKode()))
-                .medAktiv(true).medBehandlingOpprettet(bpeDto.getOpprettetBehandling())
-                .medUtfortFraAdmin(prosesserFraAdmin)
-                .medEksternId(eksternId)
-                .build());
-    }
 }

@@ -1,21 +1,8 @@
 package no.nav.foreldrepenger.loslager.oppgave;
 
-import no.nav.foreldrepenger.loslager.BaseEntitet;
-import no.nav.vedtak.felles.jpa.converters.BooleanToStringConverter;
-import org.hibernate.annotations.JoinColumnOrFormula;
-import org.hibernate.annotations.JoinFormula;
-import org.hibernate.annotations.NotFound;
-import org.hibernate.annotations.NotFoundAction;
-
 import javax.persistence.Column;
-import javax.persistence.Convert;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
+import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -23,147 +10,21 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity(name = "TilbakekrevingOppgave")
-@Table(name = "TILBAKEKREVING_OPPGAVE")
-public class TilbakekrevingOppgave extends BaseEntitet {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_OPPGAVE")
-    private Long id;
-
-
-    @Column(name = "BEHANDLING_ID")
-    private Long behandlingId;
-
-    @Column(name = "FAGSAK_SAKSNR")
-    private Long fagsakSaksnummer;
-
-    @Column(name = "AKTOR_ID")
-    private Long aktorId;
-
-    @Column(name = "BEHANDLENDE_ENHET")
-    private String behandlendeEnhet;
-
-    @Column(name = "BEHANDLINGSFRIST")
-    private LocalDateTime behandlingsfrist;
-
-    @Column(name = "BEHANDLING_OPPRETTET")
-    private LocalDateTime behandlingOpprettet;
-
-    @Column(name = "FORSTE_STONADSDAG")
-    private LocalDate forsteStonadsdag;
-
-    @NotFound(action= NotFoundAction.IGNORE)
-    @ManyToOne(optional = false)
-    @JoinColumnOrFormula(column = @JoinColumn(name = "BEHANDLING_STATUS", referencedColumnName = "kode", nullable = false))
-    @JoinColumnOrFormula(formula = @JoinFormula(referencedColumnName = "kodeverk", value = "'" + BehandlingStatus.DISCRIMINATOR + "'"))
-    private BehandlingStatus behandlingStatus = BehandlingStatus.UDEFINERT;
-
-    @ManyToOne(optional = false)
-    @JoinColumnOrFormula(column = @JoinColumn(name = "BEHANDLING_TYPE", referencedColumnName = "kode", nullable = false))
-    @JoinColumnOrFormula(formula = @JoinFormula(referencedColumnName = "kodeverk", value = "'" + BehandlingType.DISCRIMINATOR + "'"))
-    private BehandlingType behandlingType = BehandlingType.INNSYN;
-
-    @ManyToOne(optional = false)
-    @JoinColumnOrFormula(column = @JoinColumn(name = "FAGSAK_YTELSE_TYPE", referencedColumnName = "kode", nullable = false))
-    @JoinColumnOrFormula(formula = @JoinFormula(referencedColumnName = "kodeverk", value = "'" + FagsakYtelseType.DISCRIMINATOR + "'"))
-    private FagsakYtelseType fagsakYtelseType = FagsakYtelseType.UDEFINERT;
-
-    @Convert(converter = BooleanToStringConverter.class)
-    @Column(name = "AKTIV")
-    private Boolean aktiv = Boolean.TRUE;
-
-    @Column(name = "SYSTEM")
-    private String system;
-
-    @Column(name = "OPPGAVE_AVSLUTTET")
-    private LocalDateTime oppgaveAvsluttet;
-
-    @Convert(converter = BooleanToStringConverter.class)
-    @Column(name = "UTFORT_FRA_ADMIN")
-    private Boolean utfortFraAdmin = Boolean.FALSE;
-
-    @Column(name = "EKSTERN_ID")
-    private UUID eksternId;
-
-    @OneToOne(mappedBy = "oppgave")
-    private Reservasjon reservasjon;
+@PrimaryKeyJoinColumn(name = "OPPGAVE_ID")
+@Table(name = "TILBAKEKREVING_EGENSKAPER")
+public class TilbakekrevingOppgave extends Oppgave{
 
     @Column(name = "BELOP")
     private BigDecimal belop;
-
-    public Long getId() {
-        return id;
-    }
-
-    public Long getBehandlingId() {
-        return behandlingId;
-    }
-
-    public Long getFagsakSaksnummer() {
-        return fagsakSaksnummer;
-    }
-
-    public Long getAktorId() {
-        return aktorId;
-    }
-
-    public BehandlingType getBehandlingType() {
-        return behandlingType;
-    }
-
-    public FagsakYtelseType getFagsakYtelseType() {
-        return fagsakYtelseType;
-    }
-
-    public String getBehandlendeEnhet() {
-        return behandlendeEnhet;
-    }
-
-    public Boolean getAktiv() {
-        return aktiv;
-    }
-
-    public String getSystem() {
-        return system;
-    }
-
-    public UUID getEksternId() {
-        return eksternId;
-    }
-
-    public LocalDateTime getBehandlingsfrist() {
-        return behandlingsfrist;
-    }
-
-    public LocalDateTime getBehandlingOpprettet() {
-        return behandlingOpprettet;
-    }
-
-    public LocalDate getForsteStonadsdag() {
-        return forsteStonadsdag;
-    }
-
-    public BehandlingStatus getBehandlingStatus() {
-        return behandlingStatus;
-    }
-
-    public LocalDateTime getOppgaveAvsluttet() {
-        return oppgaveAvsluttet;
-    }
-
-    public Boolean getUtfortFraAdmin() {
-        return utfortFraAdmin;
-    }
-
-    public Reservasjon getReservasjon() {
-        return reservasjon;
-    }
 
     public BigDecimal getBelop() {
         return belop;
     }
 
-    public static TilbakekrevingOppgave.Builder builder() {
+    public TilbakekrevingOppgave() {
+    }
+
+    public static TilbakekrevingOppgave.Builder tbuilder() {
         return new TilbakekrevingOppgave.Builder();
     }
 
@@ -258,7 +119,4 @@ public class TilbakekrevingOppgave extends BaseEntitet {
             return (TilbakekrevingOppgave)this.tempOppgave;
         }
     }
-
-
 }
-

@@ -15,7 +15,7 @@ import no.nav.foreldrepenger.loslager.oppgave.OppgaveFiltrering;
 import no.nav.foreldrepenger.loslager.oppgave.OppgaveFiltreringOppdaterer;
 import no.nav.foreldrepenger.loslager.oppgave.Reservasjon;
 import no.nav.foreldrepenger.loslager.oppgave.ReservasjonEventLogg;
-import no.nav.foreldrepenger.loslager.oppgave.TilbakekrevingEgenskaper;
+import no.nav.foreldrepenger.loslager.oppgave.TilbakekrevingOppgave;
 import no.nav.foreldrepenger.loslager.organisasjon.Avdeling;
 import no.nav.foreldrepenger.loslager.organisasjon.Saksbehandler;
 import no.nav.vedtak.felles.jpa.VLPersistenceUnit;
@@ -253,7 +253,7 @@ public class OppgaveRepositoryImpl implements OppgaveRepository {
     }
 
     @Override
-    public void lagre(TilbakekrevingEgenskaper egenskaper){
+    public void lagre(TilbakekrevingOppgave egenskaper){
         internLagre(egenskaper);
     }
 
@@ -360,7 +360,7 @@ public class OppgaveRepositoryImpl implements OppgaveRepository {
     }
 
     @Override
-    public TilbakekrevingEgenskaper opprettTilbakekrevingEgenskaper(TilbakekrevingEgenskaper egenskaper) {
+    public TilbakekrevingOppgave opprettTilbakekrevingEgenskaper(TilbakekrevingOppgave egenskaper) {
         internLagre(egenskaper);
         entityManager.refresh(egenskaper);
         return egenskaper;
