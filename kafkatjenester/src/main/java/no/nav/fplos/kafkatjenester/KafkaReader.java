@@ -65,7 +65,7 @@ public class KafkaReader {
             BehandlingProsessEventDto behandlingProsessEventDto = deserialiser(melding, BehandlingProsessEventDto.class);
             if (behandlingProsessEventDto != null) {
                 //TODO: Dette er bare en test av tilbakekrevingEventHandler og skal ikke sjekkes inn
-                if(1000152L == behandlingProsessEventDto.getBehandlingId()){
+                if(1000443L == behandlingProsessEventDto.getBehandlingId()){
                     TilbakekrevingBehandlingProsessEventDto tilbakekrevingbehandlingProsessEventDto = TilbakekrevingBehandlingProsessEventDto.builder()
                             .medAksjonspunktKoderMedStatusListe(behandlingProsessEventDto.getAksjonspunktKoderMedStatusListe())
                             .medAktørId(behandlingProsessEventDto.getAktørId())

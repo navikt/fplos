@@ -1,7 +1,21 @@
 package no.nav.foreldrepenger.loslager.oppgave;
 
+import no.nav.foreldrepenger.loslager.BaseEntitet;
+import no.nav.vedtak.felles.jpa.converters.BooleanToStringConverter;
+import org.hibernate.annotations.JoinColumnOrFormula;
+import org.hibernate.annotations.JoinFormula;
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
+
 import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -10,10 +24,140 @@ import java.util.UUID;
 
 @Entity(name = "TilbakekrevingOppgave")
 @Table(name = "TILBAKEKREVING_OPPGAVE")
-public class TilbakekrevingOppgave extends Oppgave{
+public class TilbakekrevingOppgave extends BaseEntitet {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_OPPGAVE")
+    private Long id;
+
+
+    @Column(name = "BEHANDLING_ID")
+    private Long behandlingId;
+
+    @Column(name = "FAGSAK_SAKSNR")
+    private Long fagsakSaksnummer;
+
+    @Column(name = "AKTOR_ID")
+    private Long aktorId;
+
+    @Column(name = "BEHANDLENDE_ENHET")
+    private String behandlendeEnhet;
+
+    @Column(name = "BEHANDLINGSFRIST")
+    private LocalDateTime behandlingsfrist;
+
+    @Column(name = "BEHANDLING_OPPRETTET")
+    private LocalDateTime behandlingOpprettet;
+
+    @Column(name = "FORSTE_STONADSDAG")
+    private LocalDate forsteStonadsdag;
+
+    @NotFound(action= NotFoundAction.IGNORE)
+    @ManyToOne(optional = false)
+    @JoinColumnOrFormula(column = @JoinColumn(name = "BEHANDLING_STATUS", referencedColumnName = "kode", nullable = false))
+    @JoinColumnOrFormula(formula = @JoinFormula(referencedColumnName = "kodeverk", value = "'" + BehandlingStatus.DISCRIMINATOR + "'"))
+    private BehandlingStatus behandlingStatus = BehandlingStatus.UDEFINERT;
+
+    @ManyToOne(optional = false)
+    @JoinColumnOrFormula(column = @JoinColumn(name = "BEHANDLING_TYPE", referencedColumnName = "kode", nullable = false))
+    @JoinColumnOrFormula(formula = @JoinFormula(referencedColumnName = "kodeverk", value = "'" + BehandlingType.DISCRIMINATOR + "'"))
+    private BehandlingType behandlingType = BehandlingType.INNSYN;
+
+    @ManyToOne(optional = false)
+    @JoinColumnOrFormula(column = @JoinColumn(name = "FAGSAK_YTELSE_TYPE", referencedColumnName = "kode", nullable = false))
+    @JoinColumnOrFormula(formula = @JoinFormula(referencedColumnName = "kodeverk", value = "'" + FagsakYtelseType.DISCRIMINATOR + "'"))
+    private FagsakYtelseType fagsakYtelseType = FagsakYtelseType.UDEFINERT;
+
+    @Convert(converter = BooleanToStringConverter.class)
+    @Column(name = "AKTIV")
+    private Boolean aktiv = Boolean.TRUE;
+
+    @Column(name = "SYSTEM")
+    private String system;
+
+    @Column(name = "OPPGAVE_AVSLUTTET")
+    private LocalDateTime oppgaveAvsluttet;
+
+    @Convert(converter = BooleanToStringConverter.class)
+    @Column(name = "UTFORT_FRA_ADMIN")
+    private Boolean utfortFraAdmin = Boolean.FALSE;
+
+    @Column(name = "EKSTERN_ID")
+    private UUID eksternId;
+
+    @OneToOne(mappedBy = "oppgave")
+    private Reservasjon reservasjon;
 
     @Column(name = "BELOP")
     private BigDecimal belop;
+
+    public Long getId() {
+        return id;
+    }
+
+    public Long getBehandlingId() {
+        return behandlingId;
+    }
+
+    public Long getFagsakSaksnummer() {
+        return fagsakSaksnummer;
+    }
+
+    public Long getAktorId() {
+        return aktorId;
+    }
+
+    public BehandlingType getBehandlingType() {
+        return behandlingType;
+    }
+
+    public FagsakYtelseType getFagsakYtelseType() {
+        return fagsakYtelseType;
+    }
+
+    public String getBehandlendeEnhet() {
+        return behandlendeEnhet;
+    }
+
+    public Boolean getAktiv() {
+        return aktiv;
+    }
+
+    public String getSystem() {
+        return system;
+    }
+
+    public UUID getEksternId() {
+        return eksternId;
+    }
+
+    public LocalDateTime getBehandlingsfrist() {
+        return behandlingsfrist;
+    }
+
+    public LocalDateTime getBehandlingOpprettet() {
+        return behandlingOpprettet;
+    }
+
+    public LocalDate getForsteStonadsdag() {
+        return forsteStonadsdag;
+    }
+
+    public BehandlingStatus getBehandlingStatus() {
+        return behandlingStatus;
+    }
+
+    public LocalDateTime getOppgaveAvsluttet() {
+        return oppgaveAvsluttet;
+    }
+
+    public Boolean getUtfortFraAdmin() {
+        return utfortFraAdmin;
+    }
+
+    public Reservasjon getReservasjon() {
+        return reservasjon;
+    }
 
     public BigDecimal getBelop() {
         return belop;
@@ -23,88 +167,90 @@ public class TilbakekrevingOppgave extends Oppgave{
         return new TilbakekrevingOppgave.Builder();
     }
 
-    public static class Builder extends Oppgave.Builder{
+    public static class Builder {
+        private TilbakekrevingOppgave tempOppgave;
 
         private Builder() {
             tempOppgave = new TilbakekrevingOppgave();
         }
+
         public TilbakekrevingOppgave.Builder medBelop(BigDecimal belop) {
             ((TilbakekrevingOppgave)this.tempOppgave).belop = belop;
             return this;
         }
 
-        public TilbakekrevingOppgave.Builder medEksternId(UUID eksternId){
-            super.medEksternId(eksternId);
+        public Builder medBehandlingId(Long behandlingId){
+            tempOppgave.behandlingId = behandlingId;
             return this;
         }
 
-        public TilbakekrevingOppgave.Builder medSystem(String fagsystem) {
-            super.medSystem(fagsystem);
+        public Builder medEksternId(UUID eksternId){
+            tempOppgave.eksternId = eksternId;
             return this;
         }
 
-        public TilbakekrevingOppgave.Builder medBehandlingId(Long behandlingId) {
-            super.medBehandlingId(behandlingId);
+        public Builder medFagsakSaksnummer(Long faksagSaksnummer){
+            tempOppgave.fagsakSaksnummer = faksagSaksnummer;
             return this;
         }
 
-        public TilbakekrevingOppgave.Builder medFagsakSaksnummer(Long saksnummer) {
-            super.medFagsakSaksnummer(saksnummer);
+        public Builder medAktorId(Long aktorId){
+            tempOppgave.aktorId = aktorId;
             return this;
         }
 
-        public TilbakekrevingOppgave.Builder medAktorId(Long aktorId) {
-            super.medAktorId(aktorId);
+        public Builder medBehandlendeEnhet(String behandlendeEnhet){
+            tempOppgave.behandlendeEnhet = behandlendeEnhet;
             return this;
         }
 
-        public TilbakekrevingOppgave.Builder medAktiv(Boolean aktiv){
-            super.medAktiv(aktiv);
+        public Builder medAktiv(Boolean aktiv){
+            tempOppgave.aktiv = aktiv;
             return this;
         }
 
-        public TilbakekrevingOppgave.Builder medBehandlingStatus(BehandlingStatus behandlingStatus) {
-            super.medBehandlingStatus(behandlingStatus);
+        public Builder medBehandlingType(BehandlingType behandlingType){
+            tempOppgave.behandlingType = behandlingType;
             return this;
         }
 
-        public TilbakekrevingOppgave.Builder medBehandlendeEnhet(String behandlendeEnhet) {
-            super.medBehandlendeEnhet(behandlendeEnhet);
+        public Builder medSystem(String system){
+            tempOppgave.system = system;
             return this;
         }
 
-        public TilbakekrevingOppgave.Builder medFagsakYtelseType(FagsakYtelseType fagsakYtelseType) {
-            super.medFagsakYtelseType(fagsakYtelseType);
+        public Builder medBehandlingsfrist(LocalDateTime behandlingsfrist){
+            tempOppgave.behandlingsfrist = behandlingsfrist;
             return this;
         }
 
-        public TilbakekrevingOppgave.Builder medBehandlingType(BehandlingType behandlingType) {
-            super.medBehandlingType(behandlingType);
+        public Builder medBehandlingOpprettet(LocalDateTime behandlingOpprettet){
+            tempOppgave.behandlingOpprettet = behandlingOpprettet;
             return this;
         }
 
-        public TilbakekrevingOppgave.Builder medBehandlingOpprettet(LocalDateTime behandlingOpprettet) {
-            super.medBehandlingOpprettet(behandlingOpprettet);
+        public Builder medForsteStonadsdag(LocalDate forsteStonadsdag){
+            tempOppgave.forsteStonadsdag = forsteStonadsdag;
+            return this;
+        }
+        public Builder medBehandlingStatus(BehandlingStatus behandlingStatus){
+            tempOppgave.behandlingStatus = behandlingStatus;
             return this;
         }
 
-        public TilbakekrevingOppgave.Builder medBehandlingsfrist(LocalDateTime behandlingsfrist){
-            super.medBehandlingsfrist(behandlingsfrist);
+
+        public Builder medOppgaveAvsluttet(LocalDateTime oppgaveAvsluttet){
+            tempOppgave.oppgaveAvsluttet = oppgaveAvsluttet;
             return this;
         }
 
-        public TilbakekrevingOppgave.Builder medForsteStonadsdag(LocalDate forsteStonadsdag){
-            super.medForsteStonadsdag(forsteStonadsdag);
+        public Builder medUtfortFraAdmin(Boolean utfortFraAdmin){
+            tempOppgave.utfortFraAdmin = utfortFraAdmin;
             return this;
         }
 
-        public TilbakekrevingOppgave.Builder medOppgaveAvsluttet(LocalDateTime oppgaveAvsluttet){
-            super.medOppgaveAvsluttet(oppgaveAvsluttet);
-            return this;
-        }
-
-        public TilbakekrevingOppgave.Builder medUtfortFraAdmin(Boolean utfortFraAdmin){
-            super.medUtfortFraAdmin(utfortFraAdmin);
+        public Builder medFagsakYtelseType(FagsakYtelseType fagsakYtelseType){
+            tempOppgave.fagsakYtelseType = fagsakYtelseType;
             return this;
         }
 
@@ -115,3 +261,4 @@ public class TilbakekrevingOppgave extends Oppgave{
 
 
 }
+

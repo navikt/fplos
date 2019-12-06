@@ -91,7 +91,7 @@ public class FpsakEventHandler extends FpEventHandler {
             case OPPRETT_OPPGAVE:
                 avsluttOppgaveHvisÅpen(behandlingId, eksternId, pastOppgaveEvents, bpeDto.getBehandlendeEnhet());
                 Oppgave oppgave = opprettOppgave(eksternId, bpeDto, behandling, prosesserFraAdmin);
-                reserverOppgaveFraTidligereReservasjon(prosesserFraAdmin, reservasjon, oppgave);
+                reserverOppgaveFraTidligereReservasjon(prosesserFraAdmin, reservasjon, oppgave.getId());
                 log.info("Oppgave {} opprettet og populert med informasjon fra FPSAK for behandlingId {}", oppgave.getId(), behandlingId);
                 loggEvent(behandlingId, oppgave.getEksternId(), OppgaveEventType.OPPRETTET, AndreKriterierType.UKJENT, bpeDto.getBehandlendeEnhet());
                 opprettOppgaveEgenskaper(behandling, oppgave);
@@ -99,7 +99,7 @@ public class FpsakEventHandler extends FpEventHandler {
             case OPPRETT_BESLUTTER_OPPGAVE:
                 avsluttOppgaveHvisÅpen(behandlingId, eksternId, pastOppgaveEvents, bpeDto.getBehandlendeEnhet());
                 Oppgave beslutterOppgave = opprettOppgave(eksternId, bpeDto, behandling, prosesserFraAdmin);
-                reserverOppgaveFraTidligereReservasjon(prosesserFraAdmin, reservasjon, beslutterOppgave);
+                reserverOppgaveFraTidligereReservasjon(prosesserFraAdmin, reservasjon, beslutterOppgave.getId());
                 log.info("Oppgave {} opprettet til beslutter og populert med informasjon fra FPSAK for behandlingId {}", beslutterOppgave.getId(), behandlingId);
                 getOppgaveRepository().lagre(new OppgaveEgenskap(beslutterOppgave, AndreKriterierType.TIL_BESLUTTER, behandling.getAnsvarligSaksbehandler()));
                 loggEvent(behandlingId, beslutterOppgave.getEksternId(), OppgaveEventType.OPPRETTET, AndreKriterierType.TIL_BESLUTTER, bpeDto.getBehandlendeEnhet());
@@ -108,7 +108,7 @@ public class FpsakEventHandler extends FpEventHandler {
             case OPPRETT_PAPIRSØKNAD_OPPGAVE:
                 avsluttOppgaveHvisÅpen(behandlingId, eksternId, pastOppgaveEvents, bpeDto.getBehandlendeEnhet());
                 Oppgave papirsøknadOppgave = opprettOppgave(eksternId, bpeDto, behandling, prosesserFraAdmin);
-                reserverOppgaveFraTidligereReservasjon(prosesserFraAdmin, reservasjon, papirsøknadOppgave);
+                reserverOppgaveFraTidligereReservasjon(prosesserFraAdmin, reservasjon, papirsøknadOppgave.getId());
                 log.info("Oppgave {} opprettet fra papirsøknad og populert med informasjon fra FPSAK for behandlingId {}", papirsøknadOppgave.getId(), behandlingId);
                 getOppgaveRepository().lagre(new OppgaveEgenskap(papirsøknadOppgave, AndreKriterierType.PAPIRSØKNAD));
                 loggEvent(behandlingId, papirsøknadOppgave.getEksternId(), OppgaveEventType.OPPRETTET, AndreKriterierType.PAPIRSØKNAD, bpeDto.getBehandlendeEnhet());

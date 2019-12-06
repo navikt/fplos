@@ -13,7 +13,7 @@ import no.nav.foreldrepenger.loslager.oppgave.OppgaveEventLogg;
 import no.nav.foreldrepenger.loslager.oppgave.OppgaveFiltrering;
 import no.nav.foreldrepenger.loslager.oppgave.Reservasjon;
 import no.nav.foreldrepenger.loslager.oppgave.ReservasjonEventLogg;
-import no.nav.foreldrepenger.loslager.oppgave.TilbakekrevingOppgave;
+import no.nav.foreldrepenger.loslager.oppgave.TilbakekrevingEgenskaper;
 import no.nav.foreldrepenger.loslager.organisasjon.Avdeling;
 import no.nav.foreldrepenger.loslager.organisasjon.Saksbehandler;
 
@@ -46,7 +46,7 @@ public interface OppgaveRepository {
 
     void lagre(Oppgave oppgave);
 
-    void lagre(TilbakekrevingOppgave oppgave);
+    void lagre(TilbakekrevingEgenskaper egenskaper);
 
     Long lagre(OppgaveFiltrering oppgaveFiltrering);
 
@@ -80,7 +80,7 @@ public interface OppgaveRepository {
 
     Oppgave opprettOppgave(Oppgave build);
 
-    TilbakekrevingOppgave opprettTilbakekrevingOppgave(TilbakekrevingOppgave oppgave);
+    TilbakekrevingEgenskaper opprettTilbakekrevingEgenskaper(TilbakekrevingEgenskaper egenskaper);
     /**
      * @deprecated Bruk gjenåpneOppgaveForEksternId(Long) i stedet
      */
