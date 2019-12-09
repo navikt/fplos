@@ -105,7 +105,7 @@ public class OppgaveRepositoryImpl implements OppgaveRepository {
                 "NOT EXISTS (select r from Reservasjon r where r.oppgave = o and r.reservertTil > :naa) AND " +
                 "NOT EXISTS (select oetilbesl from OppgaveEgenskap oetilbesl " +
                     "where o.id = oetilbesl.oppgaveId AND oetilbesl.aktiv = true AND oetilbesl.andreKriterierType = :tilbeslutter " +
-                    "AND upper( oetilbesl.sisteSaksbehandlerForTotrinn) = upper( :uid ) ) " +
+                    "AND oetilbesl.sisteSaksbehandlerForTotrinn = upper( :uid ) ) " +
                 "AND a.id = :enhet " +
                 "AND o.aktiv = true " + sortering(queryDto), oppgaveClass)
                 .setParameter("naa", LocalDateTime.now())
