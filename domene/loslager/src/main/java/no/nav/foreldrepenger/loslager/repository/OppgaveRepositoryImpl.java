@@ -44,6 +44,7 @@ public class OppgaveRepositoryImpl implements OppgaveRepository {
     private static final String BEHANDLINGSFRIST = "o.behandlingsfrist";
     private static final String BEHANDLINGOPPRETTET = "o.behandlingOpprettet";
     private static final String FORSTE_STONADSDAG = "o.forsteStonadsdag";
+    private static final String BELOP = "o.belop";
     private static final String OPPGAVEFILTRERING_SORTERING_NAVN = "ORDER BY l.navn";
 
     private EntityManager entityManager;
@@ -140,6 +141,8 @@ public class OppgaveRepositoryImpl implements OppgaveRepository {
             return oppgavespørringDto.isErDynamiskPeriode()
                     ? filtrerDynamisk(FORSTE_STONADSDAG, oppgavespørringDto.getFiltrerFomDager(), oppgavespørringDto.getFiltrerTomDager())
                     : filtrerStatisk(FORSTE_STONADSDAG, oppgavespørringDto.getFiltrerFomDato(), oppgavespørringDto.getFiltrerTomDato());
+        } else if (KøSortering.BELOP.equals(sortering)) {
+            return filtrerDynamisk(BELOP, oppgavespørringDto.getFiltrerFomDager(), oppgavespørringDto.getFiltrerTomDager());
         } else if (KøSortering.UDEFINERT.equals(sortering)) {
             return SORTERING + BEHANDLINGOPPRETTET;
         } else {
