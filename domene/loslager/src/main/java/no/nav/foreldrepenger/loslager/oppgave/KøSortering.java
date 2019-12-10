@@ -1,5 +1,6 @@
 package no.nav.foreldrepenger.loslager.oppgave;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import no.nav.fplos.kodeverk.Kodeverdi;
@@ -41,6 +42,7 @@ public enum KøSortering implements Kodeverdi {
         return map;
     }
 
+
     public static KøSortering fraKode(String value) {
         return Optional.ofNullable(kodeMap.get(value))
                 .orElse(null);
@@ -78,5 +80,12 @@ public enum KøSortering implements Kodeverdi {
                     .map(KøSortering::fraKode)
                     .orElse(null);
         }
+    }
+
+    @JsonCreator
+    static KøSortering findValue(@JsonProperty("kode") String kode,
+                                    @JsonProperty("navn") String navn,
+                                    @JsonProperty("kodeverk") String kodeverk) {
+        return fraKode(kode);
     }
 }

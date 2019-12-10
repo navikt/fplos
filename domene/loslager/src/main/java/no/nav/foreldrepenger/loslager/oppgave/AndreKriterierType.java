@@ -1,6 +1,8 @@
 package no.nav.foreldrepenger.loslager.oppgave;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import no.nav.fplos.kodeverk.Kodeverdi;
 
 import javax.persistence.AttributeConverter;
@@ -78,7 +80,11 @@ public enum AndreKriterierType implements Kodeverdi {
         }
     }
 
-
-
+    @JsonCreator
+    static AndreKriterierType findValue(@JsonProperty("kode") String kode,
+                                      @JsonProperty("navn") String navn,
+                                      @JsonProperty("kodeverk") String kodeverk) {
+        return fraKode(kode);
+    }
 
 }
