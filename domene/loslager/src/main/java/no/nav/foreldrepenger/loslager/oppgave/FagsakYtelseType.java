@@ -1,6 +1,8 @@
 package no.nav.foreldrepenger.loslager.oppgave;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import no.nav.fplos.kodeverk.Kodeverdi;
 
 import javax.persistence.AttributeConverter;
@@ -76,5 +78,10 @@ public enum FagsakYtelseType implements Kodeverdi {
                     .map(FagsakYtelseType::fraKode)
                     .orElse(null);
         }
+    }
+
+    @JsonCreator
+    static FagsakYtelseType findValue(@JsonProperty("kode") String kode) {
+        return fraKode(kode);
     }
 }
