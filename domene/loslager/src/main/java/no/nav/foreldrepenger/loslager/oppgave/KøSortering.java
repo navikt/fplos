@@ -83,9 +83,8 @@ public enum KøSortering implements Kodeverdi {
     }
 
     @JsonCreator
-    static KøSortering findValue(@JsonProperty("kode") String kode,
-                                    @JsonProperty("navn") String navn,
-                                    @JsonProperty("kodeverk") String kodeverk) {
+    static KøSortering findValue(@JsonProperty("kode") String kode) {
         return fraKode(kode);
     }
+
 }
