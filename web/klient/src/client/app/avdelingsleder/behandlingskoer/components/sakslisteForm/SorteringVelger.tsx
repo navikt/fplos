@@ -19,6 +19,7 @@ import { getKodeverk } from 'kodeverk/duck';
 import { Kodeverk } from 'kodeverk/kodeverkTsType';
 import kodeverkPropType from 'kodeverk/kodeverkPropType';
 import kodeverkTyper from 'kodeverk/kodeverkTyper';
+import { KoSorteringType } from 'kodeverk/KoSorteringTsType';
 import AutoLagringVedBlur from './AutoLagringVedBlur';
 import {
   lagreSakslisteSortering as lagreSakslisteSorteringActionCreator,
@@ -99,6 +100,7 @@ export const SorteringVelger = ({
             <Undertekst>
               <FormattedMessage id="SorteringVelger.FiltrerPaTidsintervall" />
             </Undertekst>
+
             {erDynamiskPeriode && (
             <>
               <AutoLagringVedBlur

@@ -17,22 +17,33 @@ import java.util.stream.Collectors;
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum KøSortering implements Kodeverdi {
 
-    BEHANDLINGSFRIST("BEHFRIST", "Dato for første stønadsdag"),
-    OPPRETT_BEHANDLING("OPPRBEH", "Dato for første stønadsdag"),
-    FORSTE_STONADSDAG("FORSTONAD", "Dato for første stønadsdag");
+    BEHANDLINGSFRIST("BEHFRIST", "Dato for behandlingsfrist"),
+    OPPRETT_BEHANDLING("OPPRBEH", "Dato for opprettelse av behandling"),
+    FORSTE_STONADSDAG("FORSTONAD", "Dato for første stønadsdag"),
+    BELOP("BELOP", "Beløp");
 
     @JsonProperty("kode")
     private String kode;
     @JsonProperty("navn")
     private final String navn;
+    /*@JsonProperty("felttype")
+    private final String felttype;
+*/
     public static final String KODEVERK = "KO_SORTERING";
     private static final Map<String, KøSortering> kodeMap = Collections.unmodifiableMap(initializeMapping());
 
     KøSortering(String kode, String navn) {
         this.kode = kode;
         this.navn = navn;
+        //this.felttype = "DATO";
     }
-
+/*
+    KøSortering(String kode, String navn, String felttype) {
+        this.kode = kode;
+        this.navn = navn;
+        this.felttype = felttype;
+    }
+*/
     private static HashMap<String, KøSortering> initializeMapping() {
         HashMap<String, KøSortering> map = new HashMap<>();
         for (var v : values()) {

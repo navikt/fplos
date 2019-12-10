@@ -151,6 +151,8 @@ public class OppgaveRepositoryImpl implements OppgaveRepository {
             return oppgavespørringDto.isErDynamiskPeriode()
                     ? filtrerDynamisk(FORSTE_STONADSDAG, oppgavespørringDto.getFiltrerFomDager(), oppgavespørringDto.getFiltrerTomDager())
                     : filtrerStatisk(FORSTE_STONADSDAG, oppgavespørringDto.getFiltrerFomDato(), oppgavespørringDto.getFiltrerTomDato());
+        } else if (KøSortering.BELOP.equals(sortering)) {
+            return filtrerDynamisk(BELOP, oppgavespørringDto.getFiltrerFomDager(), oppgavespørringDto.getFiltrerTomDager());
         } else {
             return SORTERING + BEHANDLINGOPPRETTET;
         }
