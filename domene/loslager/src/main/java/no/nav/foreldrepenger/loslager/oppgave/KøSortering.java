@@ -18,8 +18,8 @@ import java.util.stream.Collectors;
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum KøSortering implements Kodeverdi {
 
-    BEHANDLINGSFRIST("BEHFRIST", "Dato for første stønadsdag"),
-    OPPRETT_BEHANDLING("OPPRBEH", "Dato for første stønadsdag"),
+    BEHANDLINGSFRIST("BEHFRIST", "Dato for behandlingsfrist"),
+    OPPRETT_BEHANDLING("OPPRBEH", "Dato for opprettelse av behandling"),
     FORSTE_STONADSDAG("FORSTONAD", "Dato for første stønadsdag");
 
     @JsonProperty("kode")
