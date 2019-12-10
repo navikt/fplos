@@ -1,6 +1,7 @@
 package no.nav.foreldrepenger.loslager.repository;
 
 import no.nav.foreldrepenger.dbstoette.UnittestRepositoryRule;
+import no.nav.foreldrepenger.loslager.BaseEntitet;
 import no.nav.foreldrepenger.loslager.oppgave.AndreKriterierType;
 import no.nav.foreldrepenger.loslager.oppgave.BehandlingType;
 import no.nav.foreldrepenger.loslager.oppgave.FagsakYtelseType;
@@ -20,9 +21,13 @@ import org.junit.Test;
 import javax.persistence.EntityManager;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
+import static no.nav.foreldrepenger.loslager.oppgave.KøSortering.BEHANDLINGSFRIST;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -56,10 +61,10 @@ public class OppgaveRepositoryImplTest {
     @Test
     public void testHentingAvOppgaver(){
         lagStandardSettMedOppgaver();
-        List<Oppgave> oppgaves = oppgaveRepository.hentOppgaver(new OppgavespørringDto(AVDELING_DRAMMEN, KøSortering.UDEFINERT,
-                new ArrayList<>(), new ArrayList<>(), new ArrayList<>(),new ArrayList<>(), false, null, null, null, null));
+        List<Oppgave> oppgaves = oppgaveRepository.hentOppgaver(new OppgavespørringDto(AVDELING_DRAMMEN, null,
+                new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), false, null, null, null, null));
         assertThat(oppgaves).hasSize(4);
-        assertThat(oppgaveRepository.hentAntallOppgaver(new OppgavespørringDto(AVDELING_DRAMMEN, KøSortering.UDEFINERT,
+        assertThat(oppgaveRepository.hentAntallOppgaver(new OppgavespørringDto(AVDELING_DRAMMEN, null,
                 new ArrayList<>(), new ArrayList<>(), new ArrayList<>(),new ArrayList<>(), false, null, null, null, null))).isEqualTo(4);
         assertThat(oppgaves).first().hasFieldOrPropertyWithValue("behandlendeEnhet", AVDELING_DRAMMEN_ENHET);
     }
@@ -72,37 +77,89 @@ public class OppgaveRepositoryImplTest {
         assertEquals(uuid1, events.get(0).getEksternId());
     }
 
+    private Long setupOppgaveMedEgenskaper(AndreKriterierType... kriterier) {
+        List<BaseEntitet> entiteter = new ArrayList<>();
+        Long saksnummer = (long) (Math.random() * 10000);
+        Oppgave oppgave = Oppgave.builder().dummyOppgave(AVDELING_DRAMMEN_ENHET).medFagsakSaksnummer(saksnummer).build();
+        entiteter.add(oppgave);
+        for (var kriterie : kriterier) {
+            entiteter.add(new OppgaveEgenskap(oppgave, kriterie));
+        }
+        repository.lagre(entiteter);
+        repository.flush();
+        return saksnummer;
+    }
+
+    @Test
+    public void testLagringAvOppgaveEgenskaper() {
+        Long saksnummerOppgaveEn = setupOppgaveMedEgenskaper(AndreKriterierType.UTLANDSSAK, AndreKriterierType.PAPIRSØKNAD);
+        List<Oppgave> lagredeOppgaver = oppgaveRepository.hentOppgaverForSaksnummer(saksnummerOppgaveEn);
+        List<OppgaveEgenskap> lagredeEgenskaper = oppgaveRepository.hentOppgaveEgenskaper(lagredeOppgaver.get(0).getId());
+        List<AndreKriterierType> lagredeKriterier = lagredeEgenskaper.stream()
+                .map(OppgaveEgenskap::getAndreKriterierType)
+                .collect(Collectors.toList());
+
+        assertThat(lagredeKriterier).containsExactlyInAnyOrder(AndreKriterierType.UTLANDSSAK, AndreKriterierType.PAPIRSØKNAD);
+    }
+
+    @Test
+    public void testOppgaveSpørringMedEgenskaperfiltrering() {
+        Long saksnummerHit = setupOppgaveMedEgenskaper(AndreKriterierType.UTLANDSSAK, AndreKriterierType.UTBETALING_TIL_BRUKER);
+        Long saksnummerMiss = setupOppgaveMedEgenskaper(AndreKriterierType.PAPIRSØKNAD);
+        OppgavespørringDto oppgaveQuery = new OppgavespørringDto(AVDELING_DRAMMEN,
+                BEHANDLINGSFRIST,
+                Collections.emptyList(),
+                Collections.emptyList(),
+                List.of(AndreKriterierType.UTLANDSSAK), // inkluderes
+                //Collections.emptyList(),
+                List.of(AndreKriterierType.SOKT_GRADERING), // ekskluderes
+                //Collections.emptyList(), //ekskluderes
+                false,
+                null,
+                null,
+                null,
+                null);
+        //List<Oppgave> alleOppgaver = oppgaveRepository.hentOppgaver(alleOppgaverQuery);
+        List<Oppgave> oppgaver = oppgaveRepository.hentOppgaver(oppgaveQuery);
+        assertThat(oppgaver.size()).isEqualTo(1);
+        assertThat(oppgaver.get(0).getFagsakSaksnummer()).isEqualTo(saksnummerHit);
+    }
+
     @Test
     public void testEkskluderingOgInkluderingAvOppgaver(){
         lagStandardSettMedOppgaver();
-        List<Oppgave> oppgaver = oppgaveRepository.hentOppgaver(new OppgavespørringDto(AVDELING_DRAMMEN, KøSortering.UDEFINERT,
-                new ArrayList<>(), new ArrayList<>(), java.util.Arrays.asList(AndreKriterierType.TIL_BESLUTTER,AndreKriterierType.PAPIRSØKNAD),new ArrayList<>(), false, null, null, null, null));
+        List<Oppgave> oppgaver = oppgaveRepository.hentOppgaver(new OppgavespørringDto(AVDELING_DRAMMEN, null,
+                new ArrayList<>(), new ArrayList<>(), Arrays.asList(AndreKriterierType.TIL_BESLUTTER, AndreKriterierType.PAPIRSØKNAD),
+                new ArrayList<>(), false, null, null, null, null));
         assertThat(oppgaver).hasSize(1);
 
-        oppgaver = oppgaveRepository.hentOppgaver(new OppgavespørringDto(AVDELING_DRAMMEN, KøSortering.UDEFINERT, new ArrayList<>(), new ArrayList<>(),
-                java.util.Arrays.asList(AndreKriterierType.TIL_BESLUTTER),new ArrayList<>(), false, null, null, null, null));
+        oppgaver = oppgaveRepository.hentOppgaver(new OppgavespørringDto(AVDELING_DRAMMEN, null, new ArrayList<>(), new ArrayList<>(),
+                Arrays.asList(AndreKriterierType.TIL_BESLUTTER), new ArrayList<>(), false, null, null, null, null));
         assertThat(oppgaver).hasSize(2);
 
-        oppgaver = oppgaveRepository.hentOppgaver(new OppgavespørringDto(AVDELING_DRAMMEN, KøSortering.UDEFINERT, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(),
-                java.util.Arrays.asList(AndreKriterierType.TIL_BESLUTTER,AndreKriterierType.PAPIRSØKNAD), false, null, null, null, null));
+        oppgaver = oppgaveRepository.hentOppgaver(new OppgavespørringDto(AVDELING_DRAMMEN, null, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(),
+                Arrays.asList(AndreKriterierType.TIL_BESLUTTER, AndreKriterierType.PAPIRSØKNAD), // ekskluder andreKriterierType
+                false, null, null, null, null));
         assertThat(oppgaver).hasSize(1);
 
-        oppgaver = oppgaveRepository.hentOppgaver(new OppgavespørringDto(AVDELING_DRAMMEN, KøSortering.UDEFINERT, new ArrayList<>(), new ArrayList<>(),
-                new ArrayList<>(),java.util.Arrays.asList(AndreKriterierType.TIL_BESLUTTER), false, null, null, null, null));
+        oppgaver = oppgaveRepository.hentOppgaver(new OppgavespørringDto(AVDELING_DRAMMEN, null, new ArrayList<>(), new ArrayList<>(),
+                new ArrayList<>(),
+                Arrays.asList(AndreKriterierType.TIL_BESLUTTER),  // ekskluderAndreKriterierType
+                false, null, null, null, null));
         assertThat(oppgaver).hasSize(2);
 
-        oppgaver = oppgaveRepository.hentOppgaver(new OppgavespørringDto(AVDELING_DRAMMEN, KøSortering.UDEFINERT, new ArrayList<>(), new ArrayList<>(),
-                java.util.Arrays.asList(AndreKriterierType.PAPIRSØKNAD),java.util.Arrays.asList(AndreKriterierType.TIL_BESLUTTER), false, null, null, null, null));
+        oppgaver = oppgaveRepository.hentOppgaver(new OppgavespørringDto(AVDELING_DRAMMEN, null, new ArrayList<>(), new ArrayList<>(),
+                Arrays.asList(AndreKriterierType.PAPIRSØKNAD),Arrays.asList(AndreKriterierType.TIL_BESLUTTER), false, null, null, null, null));
         assertThat(oppgaver).hasSize(1);
-        int andtallOppgaver = oppgaveRepository.hentAntallOppgaver(new OppgavespørringDto(AVDELING_DRAMMEN, KøSortering.UDEFINERT, new ArrayList<>(), new ArrayList<>(),
-                java.util.Arrays.asList(AndreKriterierType.PAPIRSØKNAD),java.util.Arrays.asList(AndreKriterierType.TIL_BESLUTTER), false, null, null, null, null));
+        int andtallOppgaver = oppgaveRepository.hentAntallOppgaver(new OppgavespørringDto(AVDELING_DRAMMEN, null, new ArrayList<>(), new ArrayList<>(),
+                Arrays.asList(AndreKriterierType.PAPIRSØKNAD),Arrays.asList(AndreKriterierType.TIL_BESLUTTER), false, null, null, null, null));
         assertThat(andtallOppgaver).isEqualTo(1);
     }
 
     @Test
     public void testFiltreringDynamiskAvOppgaverIntervall() {
         lagStandardSettMedOppgaver();
-        List<Oppgave> oppgaves = oppgaveRepository.hentOppgaver(new OppgavespørringDto(AVDELING_DRAMMEN, KøSortering.BEHANDLINGSFRIST,
+        List<Oppgave> oppgaves = oppgaveRepository.hentOppgaver(new OppgavespørringDto(AVDELING_DRAMMEN, BEHANDLINGSFRIST,
                 new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), true, null, null, 1L, 10L));
         assertThat(oppgaves).hasSize(2);
     }
@@ -110,7 +167,7 @@ public class OppgaveRepositoryImplTest {
     @Test
     public void testFiltreringDynamiskAvOppgaverBareFomDato() {
         lagStandardSettMedOppgaver();
-        List<Oppgave> oppgaves = oppgaveRepository.hentOppgaver(new OppgavespørringDto(AVDELING_DRAMMEN, KøSortering.BEHANDLINGSFRIST,
+        List<Oppgave> oppgaves = oppgaveRepository.hentOppgaver(new OppgavespørringDto(AVDELING_DRAMMEN, BEHANDLINGSFRIST,
                 new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), true, null, null, 15L, null));
         assertThat(oppgaves).hasSize(1);
     }
@@ -118,7 +175,7 @@ public class OppgaveRepositoryImplTest {
     @Test
     public void testFiltreringDynamiskAvOppgaverBareTomDato() {
         lagStandardSettMedOppgaver();
-        List<Oppgave> oppgaves = oppgaveRepository.hentOppgaver(new OppgavespørringDto(AVDELING_DRAMMEN, KøSortering.BEHANDLINGSFRIST,
+        List<Oppgave> oppgaves = oppgaveRepository.hentOppgaver(new OppgavespørringDto(AVDELING_DRAMMEN, BEHANDLINGSFRIST,
                 new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), true, null, null, null, 15L));
         assertThat(oppgaves).hasSize(4);
     }
@@ -129,18 +186,18 @@ public class OppgaveRepositoryImplTest {
         Oppgave førsteOppgave = Oppgave.builder().dummyOppgave(AVDELING_DRAMMEN_ENHET).medEksternId(uuid2).medFagsakSaksnummer(222L).medBehandlingOpprettet(LocalDateTime.now().minusDays(10)).medBehandlingsfrist(LocalDateTime.now().plusDays(10)).build();
         Oppgave tredjeOppgave = Oppgave.builder().dummyOppgave(AVDELING_DRAMMEN_ENHET).medEksternId(uuid3).medFagsakSaksnummer(333L).medBehandlingOpprettet(LocalDateTime.now().minusDays(8)).medBehandlingsfrist(LocalDateTime.now().plusDays(15)).build();
         Oppgave fjerdeOppgave = Oppgave.builder().dummyOppgave(AVDELING_DRAMMEN_ENHET).medEksternId(uuid4).medFagsakSaksnummer(444L).medBehandlingOpprettet(LocalDateTime.now()).medBehandlingsfrist(LocalDateTime.now()).build();
-        repository.lagre(tredjeOppgave);
         repository.lagre(førsteOppgave);
         repository.lagre(andreOppgave);
+        repository.lagre(tredjeOppgave);
         repository.lagre(fjerdeOppgave);
         repository.lagre(new OppgaveEgenskap(førsteOppgave, AndreKriterierType.PAPIRSØKNAD));
-        repository.lagre(new OppgaveEgenskap(andreOppgave, AndreKriterierType.TIL_BESLUTTER));
+        repository.lagre(new OppgaveEgenskap(andreOppgave, AndreKriterierType.TIL_BESLUTTER, "Jodajoda"));
         repository.lagre(new OppgaveEgenskap(tredjeOppgave, AndreKriterierType.PAPIRSØKNAD));
         repository.lagre(new OppgaveEgenskap(tredjeOppgave, AndreKriterierType.TIL_BESLUTTER));
         repository.lagre(new OppgaveEventLogg(uuid1, OppgaveEventType.OPPRETTET, AndreKriterierType.PAPIRSØKNAD, AVDELING_DRAMMEN_ENHET,1L ));
         repository.lagre(new OppgaveEventLogg(uuid2, OppgaveEventType.OPPRETTET, AndreKriterierType.TIL_BESLUTTER, AVDELING_DRAMMEN_ENHET,2L));
         repository.lagre(new OppgaveEventLogg(uuid3, OppgaveEventType.OPPRETTET, AndreKriterierType.PAPIRSØKNAD, AVDELING_DRAMMEN_ENHET,3L));
-        repository.lagre(new OppgaveEventLogg(uuid4, OppgaveEventType.OPPRETTET, AndreKriterierType.TIL_BESLUTTER, AVDELING_DRAMMEN_ENHET,4L));
+        repository.lagre(new OppgaveEventLogg(uuid3, OppgaveEventType.OPPRETTET, AndreKriterierType.TIL_BESLUTTER, AVDELING_DRAMMEN_ENHET,3L));
         repository.flush();
 
     }
@@ -157,7 +214,7 @@ public class OppgaveRepositoryImplTest {
     @Test
     public void hentAlleLister(){
         OppgaveFiltrering førsteOppgaveFiltrering = OppgaveFiltrering.builder().medNavn("OPPRETTET").medSortering(KøSortering.OPPRETT_BEHANDLING).medAvdeling(avdelingDrammen).build();
-        OppgaveFiltrering andreOppgaveFiltrering = OppgaveFiltrering.builder().medNavn("BEHANDLINGSFRIST").medSortering(KøSortering.BEHANDLINGSFRIST).medAvdeling(avdelingDrammen).build();
+        OppgaveFiltrering andreOppgaveFiltrering = OppgaveFiltrering.builder().medNavn("BEHANDLINGSFRIST").medSortering(BEHANDLINGSFRIST).medAvdeling(avdelingDrammen).build();
 
         repository.lagre(førsteOppgaveFiltrering);
         repository.lagre(andreOppgaveFiltrering);
@@ -167,7 +224,7 @@ public class OppgaveRepositoryImplTest {
 
         assertThat(lister).extracting(OppgaveFiltrering::getNavn).contains("OPPRETTET", "BEHANDLINGSFRIST");
         assertThat(lister).extracting(OppgaveFiltrering::getAvdeling).contains(avdelingDrammen);
-        assertThat(lister).extracting(OppgaveFiltrering::getSortering).contains(KøSortering.BEHANDLINGSFRIST,KøSortering.OPPRETT_BEHANDLING);
+        assertThat(lister).extracting(OppgaveFiltrering::getSortering).contains(BEHANDLINGSFRIST,KøSortering.OPPRETT_BEHANDLING);
     }
 
     @Test
@@ -226,6 +283,9 @@ public class OppgaveRepositoryImplTest {
         return Oppgave.builder().medBehandlingId(1L).medFagsakSaksnummer(1337L)
                 .medAktorId(5000000L).medBehandlendeEnhet(behandlendeEnhet)
                 .medBehandlingType(BehandlingType.FØRSTEGANGSSØKNAD)
-                .medFagsakYtelseType(FagsakYtelseType.FORELDREPENGER).medAktiv(true).medBehandlingsfrist(LocalDateTime.now()).build();
+                .medFagsakYtelseType(FagsakYtelseType.FORELDREPENGER)
+                .medAktiv(true)
+                .medBehandlingsfrist(LocalDateTime.now())
+                .build();
     }
 }

@@ -97,11 +97,17 @@ public class StatiskikkRepositoryImpl implements StatistikkRepository {
         }
 
         if (!oppgavespørringDto.getBehandlingTyper().isEmpty()) {
-            filtrerBehandlingType = filtrerBehandlingType.replace(":behtyper", oppgavespørringDto.getBehandlingTyper().stream().map(BehandlingType::getKode).collect(Collectors.joining("','", "'", "'")));
+            filtrerBehandlingType = filtrerBehandlingType
+                    .replace(":behtyper", oppgavespørringDto.getBehandlingTyper().stream()
+                            .map(BehandlingType::getKode)
+                            .collect(Collectors.joining("','", "'", "'")));
         }
 
         if (!oppgavespørringDto.getYtelseTyper().isEmpty()) {
-            filtrerYtelseType = filtrerYtelseType.replace(":fagsakytelsetype",  oppgavespørringDto.getYtelseTyper().stream().map(FagsakYtelseType::getKode).collect(Collectors.joining("','", "'", "'")));
+            filtrerYtelseType = filtrerYtelseType
+                    .replace(":fagsakytelsetype",  oppgavespørringDto.getYtelseTyper().stream()
+                            .map(FagsakYtelseType::getKode)
+                            .collect(Collectors.joining("','", "'", "'")));
         }
 
         Query query = getEntityManager().createNativeQuery("SELECT " +

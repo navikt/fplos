@@ -1,35 +1,82 @@
 package no.nav.foreldrepenger.loslager.oppgave;
 
-import no.nav.fplos.kodeverk.Kodeliste;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import no.nav.fplos.kodeverk.Kodeverdi;
 
-import javax.persistence.DiscriminatorValue;
-import javax.persistence.Entity;
+import javax.persistence.AttributeConverter;
+import javax.persistence.Converter;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
-@Entity(name = "KoSortering")
-@DiscriminatorValue(KøSortering.DISCRIMINATOR)
-public class KøSortering extends Kodeliste {
+@JsonFormat(shape = JsonFormat.Shape.OBJECT)
+public enum KøSortering implements Kodeverdi {
 
-    public static final String DISCRIMINATOR = "KO_SORTERING";
+    BEHANDLINGSFRIST("BEHFRIST", "Dato for første stønadsdag"),
+    OPPRETT_BEHANDLING("OPPRBEH", "Dato for første stønadsdag"),
+    FORSTE_STONADSDAG("FORSTONAD", "Dato for første stønadsdag");
 
-    /**
-     * Konstanter for å skrive ned kodeverdi. For å hente ut andre data konfigurert, må disse leses fra databasen (eks.
-     * for å hente offisiell kode for et Nav kodeverk).
-     */
-    public static final KøSortering BEHANDLINGSFRIST = new KøSortering( "BEHFRIST");
-    public static final KøSortering OPPRETT_BEHANDLING = new KøSortering( "OPPRBEH");
-    public static final KøSortering FORSTE_STONADSDAG = new KøSortering( "FORSTONAD");
-    public static final KøSortering BELOP = new KøSortering( "BELOP");
+    @JsonProperty("kode")
+    private String kode;
+    @JsonProperty("navn")
+    private final String navn;
+    public static final String KODEVERK = "KO_SORTERING";
+    private static final Map<String, KøSortering> kodeMap = Collections.unmodifiableMap(initializeMapping());
 
-    /**
-     * Alle kodeverk må ha en verdi, det kan ikke være null i databasen. Denne koden gjør samme nytten.
-     */
-    public static final KøSortering UDEFINERT = new KøSortering("-"); //$NON-NLS-1$
-
-    KøSortering() {
-        // Hibernate trenger den
+    KøSortering(String kode, String navn) {
+        this.kode = kode;
+        this.navn = navn;
     }
 
-    protected KøSortering(String kode) {
-        super(kode, DISCRIMINATOR);
+    private static HashMap<String, KøSortering> initializeMapping() {
+        HashMap<String, KøSortering> map = new HashMap<>();
+        for (var v : values()) {
+            map.putIfAbsent(v.kode, v);
+        }
+        return map;
+    }
+
+    public static KøSortering fraKode(String value) {
+        return Optional.ofNullable(kodeMap.get(value))
+                .orElse(null);
+    }
+
+    public static List<KøSortering> getEnums() {
+        return Arrays.stream(values())
+                .collect(Collectors.toList());
+    }
+
+    public String getNavn() {
+        return navn;
+    }
+
+    public String getKode() {
+        return kode;
+    }
+
+    public String getKodeverk() {
+        return KODEVERK;
+    }
+
+    @Converter(autoApply = true)
+    public static class KodeverdiConverter implements AttributeConverter<KøSortering, String> {
+        @Override
+        public String convertToDatabaseColumn(KøSortering attribute) {
+            return Optional.ofNullable(attribute)
+                    .map(KøSortering::getKode)
+                    .orElse(null);
+        }
+
+        @Override
+        public KøSortering convertToEntityAttribute(String dbData) {
+            return Optional.ofNullable(dbData)
+                    .map(KøSortering::fraKode)
+                    .orElse(null);
+        }
     }
 }

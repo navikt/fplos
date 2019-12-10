@@ -61,15 +61,13 @@ public class Oppgave extends BaseEntitet {
     @JoinColumnOrFormula(formula = @JoinFormula(referencedColumnName = "kodeverk", value = "'" + BehandlingStatus.DISCRIMINATOR + "'"))
     protected BehandlingStatus behandlingStatus = BehandlingStatus.UDEFINERT;
 
-    @ManyToOne(optional = false)
-    @JoinColumnOrFormula(column = @JoinColumn(name = "behandling_type", referencedColumnName = "kode", nullable = false))
-    @JoinColumnOrFormula(formula = @JoinFormula(referencedColumnName = "kodeverk", value = "'" + BehandlingType.DISCRIMINATOR + "'"))
+    @Convert(converter = BehandlingType.KodeverdiConverter.class)
+    @Column(name = "BEHANDLING_TYPE")
     protected BehandlingType behandlingType = BehandlingType.INNSYN;
 
-    @ManyToOne(optional = false)
-    @JoinColumnOrFormula(column = @JoinColumn(name = "FAGSAK_YTELSE_TYPE", referencedColumnName = "kode", nullable = false))
-    @JoinColumnOrFormula(formula = @JoinFormula(referencedColumnName = "kodeverk", value = "'" + FagsakYtelseType.DISCRIMINATOR + "'"))
-    protected FagsakYtelseType fagsakYtelseType = FagsakYtelseType.UDEFINERT;
+    @Convert(converter = FagsakYtelseType.KodeverdiConverter.class)
+    @Column(name = "FAGSAK_YTELSE_TYPE")
+    protected FagsakYtelseType fagsakYtelseType;
 
     @Convert(converter = BooleanToStringConverter.class)
     @Column(name = "AKTIV")
@@ -255,20 +253,24 @@ public class Oppgave extends BaseEntitet {
             return this;
         }
 
-        public Oppgave.Builder dummyOppgave(String enhet){
-            return medBehandlingId(331133L).
-            medFagsakSaksnummer(3478293L).
-            medAktorId(770099L).
-            medFagsakYtelseType(FagsakYtelseType.FORELDREPENGER).
-            medBehandlingType(BehandlingType.FØRSTEGANGSSØKNAD).
-            medBehandlendeEnhet(enhet).
-            medBehandlingsfrist(LocalDateTime.now()).
-            medBehandlingOpprettet(LocalDateTime.now()).
-            medForsteStonadsdag(LocalDate.now().plusMonths(1)).
-            medBehandlingStatus(BehandlingStatus.UTREDES);
+        public Builder dummyOppgave(String enhet){
+            tempOppgave.behandlingId = 331133L;
+            tempOppgave.fagsakSaksnummer = 3478293L;
+            tempOppgave.aktorId = 770099L;
+            tempOppgave.fagsakYtelseType = FagsakYtelseType.FORELDREPENGER;
+            tempOppgave.behandlingType = BehandlingType.FØRSTEGANGSSØKNAD;
+            tempOppgave.behandlendeEnhet = enhet;
+            tempOppgave.behandlingsfrist = LocalDateTime.now();
+            tempOppgave.behandlingOpprettet = LocalDateTime.now();
+            tempOppgave.forsteStonadsdag = LocalDate.now().plusMonths(1);
+            tempOppgave.behandlingStatus = BehandlingStatus.UTREDES;
+            return this;
         }
-        public Oppgave build() {
-            return this.tempOppgave;
+
+        public Oppgave build(){
+            Oppgave oppgave = tempOppgave;
+            tempOppgave = new Oppgave();
+            return oppgave;
         }
     }
 }

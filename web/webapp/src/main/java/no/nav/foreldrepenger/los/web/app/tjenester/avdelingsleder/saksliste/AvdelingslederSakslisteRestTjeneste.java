@@ -67,8 +67,10 @@ public class AvdelingslederSakslisteRestTjeneste {
     @BeskyttetRessurs(action = READ, ressurs = OPPGAVESTYRING_AVDELINGENHET, sporingslogg = false)
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
     public List<SakslisteDto> hentAvdelingensSakslister(@NotNull @QueryParam("avdelingEnhet") @Valid AvdelingEnhetDto avdelingEnhet) {
-        List<OppgaveFiltrering> oppgaveFiltrerings = avdelingslederTjeneste.hentOppgaveFiltreringer(avdelingEnhet.getAvdelingEnhet());
-        return oppgaveFiltrerings.stream().map(SakslisteDto::new).collect(Collectors.toList());
+        List<OppgaveFiltrering> filtersett = avdelingslederTjeneste.hentOppgaveFiltreringer(avdelingEnhet.getAvdelingEnhet());
+        return filtersett.stream()
+                .map(SakslisteDto::new)
+                .collect(Collectors.toList());
     }
 
     @POST

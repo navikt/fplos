@@ -18,7 +18,7 @@ public class SakslisteBehandlingstypeDto implements AbacDto {
     private SakslisteIdDto sakslisteId;
 
     @NotNull
-    @ValidKodeverk
+    //@ValidKodeverk
     private BehandlingType behandlingType;
 
     private boolean checked;

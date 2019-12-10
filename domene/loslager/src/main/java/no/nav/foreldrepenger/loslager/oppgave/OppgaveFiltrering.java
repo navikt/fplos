@@ -38,9 +38,8 @@ public class OppgaveFiltrering extends BaseEntitet{
     @Column(name = "navn", updatable = false)
     private String navn;
 
-    @ManyToOne(optional = false)
-    @JoinColumnOrFormula(column = @JoinColumn(name = "sortering", referencedColumnName = "kode", nullable = false))
-    @JoinColumnOrFormula(formula = @JoinFormula(referencedColumnName = "kodeverk", value = "'" + KøSortering.DISCRIMINATOR + "'"))
+    @Column(name = "sortering", updatable = false)
+    @Convert(converter = KøSortering.KodeverdiConverter.class)
     private KøSortering sortering;
 
     @OneToMany(mappedBy = "oppgaveFiltrering")
@@ -130,7 +129,11 @@ public class OppgaveFiltrering extends BaseEntitet{
     }
 
     public static OppgaveFiltrering nyTomOppgaveFiltrering(Avdeling avdeling){
-        return new Builder().medAvdeling(avdeling).medNavn("Ny liste").medSortering(KøSortering.BEHANDLINGSFRIST).build();
+        return new Builder()
+                .medAvdeling(avdeling)
+                .medNavn("Ny liste")
+                .medSortering(KøSortering.BEHANDLINGSFRIST)
+                .build();
     }
 
     public static OppgaveFiltrering.Builder builder(){
