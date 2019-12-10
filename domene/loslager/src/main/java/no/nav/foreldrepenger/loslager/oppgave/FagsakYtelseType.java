@@ -81,9 +81,7 @@ public enum FagsakYtelseType implements Kodeverdi {
     }
 
     @JsonCreator
-    static FagsakYtelseType findValue(@JsonProperty("kode") String kode,
-                                 @JsonProperty("navn") String navn,
-                                 @JsonProperty("kodeverk") String kodeverk) {
+    static FagsakYtelseType findValue(@JsonProperty("kode") String kode) {
         return fraKode(kode);
     }
 }
