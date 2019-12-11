@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum FagsakYtelseType implements Kodeverdi {
     ENGANGSTØNAD("ES", "Engangsstønad"),
-    FORELDREPENGER("FP", "Engangsstønad"),
+    FORELDREPENGER("FP", "Foreldrepenger"),
     SVANGERSKAPSPENGER("SVP", "Svangerskapsspenger");
 
     public static final String KODEVERK = "FAGSAK_YTELSE_TYPE";
