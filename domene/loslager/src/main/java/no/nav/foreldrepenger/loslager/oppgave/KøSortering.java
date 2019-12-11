@@ -21,30 +21,30 @@ public enum KøSortering implements Kodeverdi {
     BEHANDLINGSFRIST("BEHFRIST", "Dato for behandlingsfrist"),
     OPPRETT_BEHANDLING("OPPRBEH", "Dato for opprettelse av behandling"),
     FORSTE_STONADSDAG("FORSTONAD", "Dato for første stønadsdag"),
-    BELOP("BELOP", "Beløp");
+    BELOP("BELOP", "Beløp", "HELTALL");
 
     @JsonProperty("kode")
     private String kode;
     @JsonProperty("navn")
     private final String navn;
-    /*@JsonProperty("felttype")
+    @JsonProperty("felttype")
     private final String felttype;
-*/
+
     public static final String KODEVERK = "KO_SORTERING";
     private static final Map<String, KøSortering> kodeMap = Collections.unmodifiableMap(initializeMapping());
 
     KøSortering(String kode, String navn) {
         this.kode = kode;
         this.navn = navn;
-        //this.felttype = "DATO";
+        this.felttype = "DATO";
     }
-/*
+
     KøSortering(String kode, String navn, String felttype) {
         this.kode = kode;
         this.navn = navn;
         this.felttype = felttype;
     }
-*/
+
     private static HashMap<String, KøSortering> initializeMapping() {
         HashMap<String, KøSortering> map = new HashMap<>();
         for (var v : values()) {
@@ -74,6 +74,10 @@ public enum KøSortering implements Kodeverdi {
 
     public String getKodeverk() {
         return KODEVERK;
+    }
+
+    public String getFelttype() {
+        return felttype;
     }
 
     @Converter(autoApply = true)
