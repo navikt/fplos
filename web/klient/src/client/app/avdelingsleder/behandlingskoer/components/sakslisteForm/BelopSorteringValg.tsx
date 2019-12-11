@@ -20,7 +20,7 @@ interface TsProps {
     tom: number;
 }
 
-export const BeløpSorteringValg = ({
+export const BelopSorteringValg = ({
     intl,
     valgtSakslisteId,
     valgtAvdelingEnhet,
@@ -44,7 +44,7 @@ export const BeløpSorteringValg = ({
             <InputField
               name="fom"
               className={styles.dato}
-              label={intl.formatMessage({ id: 'SorteringVelger.Fom' })}
+              placeholder={intl.formatMessage({ id: 'SorteringVelger.Fra' })}
               validate={[hasValidPosOrNegInteger]}
               onBlurValidation
               bredde="XS"
@@ -52,7 +52,7 @@ export const BeløpSorteringValg = ({
 
           </FlexColumn>
           <FlexColumn>
-            <Undertekst className={styles.dager}>
+            <Undertekst className={styles.beløp}>
               <FormattedMessage id="SorteringVelger.Valuta" />
             </Undertekst>
           </FlexColumn>
@@ -60,14 +60,14 @@ export const BeløpSorteringValg = ({
             <InputField
               name="tom"
               className={styles.dato}
-              label={intl.formatMessage({ id: 'SorteringVelger.Tom' })}
+              placeholder={intl.formatMessage({ id: 'SorteringVelger.Til' })}
               validate={[hasValidPosOrNegInteger]}
               onBlurValidation
               bredde="XS"
             />
           </FlexColumn>
           <FlexColumn>
-            <Undertekst className={styles.dagerMedBindestrek}>
+            <Undertekst className={styles.beløp}>
               <FormattedMessage id="SorteringVelger.Valuta" />
             </Undertekst>
           </FlexColumn>
@@ -77,4 +77,4 @@ export const BeløpSorteringValg = ({
     <VerticalSpacer eightPx />
   </ArrowBox>
 );
-export default BeløpSorteringValg;
+export default BelopSorteringValg;

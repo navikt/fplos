@@ -14,6 +14,7 @@ import { getKodeverk } from 'kodeverk/duck';
 import kodeverkPropType from 'kodeverk/kodeverkPropType';
 import kodeverkTyper from 'kodeverk/kodeverkTyper';
 import { KoSorteringType } from 'kodeverk/KoSorteringTsType';
+import { Kodeverk } from 'kodeverk/kodeverkTsType';
 import {
   lagreSakslisteSortering as lagreSakslisteSorteringActionCreator,
   lagreSakslisteSorteringErDynamiskPeriode as lagreSakslisteSorteringErDynamiskPeriodeActionCreator,
@@ -21,7 +22,7 @@ import {
   lagreSakslisteSorteringTidsintervallDager as lagreSakslisteSorteringTidsintervallDagerActionCreator,
 } from '../../duck';
 import DatoSorteringValg from './DatoSorteringValg';
-import BeløpSorteringValg from './BeløpSorteringValg';
+import BelopSorteringValg from './BelopSorteringValg';
 
 const finnDato = antallDager => moment().add(antallDager, 'd').format();
 
@@ -30,6 +31,7 @@ interface TsProps {
   intl: any;
   koSorteringTyper: KoSorteringType[];
   valgtSakslisteId: number;
+  valgteBehandlingtyper: Kodeverk[];
   lagreSakslisteSortering: (sakslisteId: number, sakslisteSorteringValg: KoSorteringType, avdelingEnhet: string) => void;
   lagreSakslisteSorteringErDynamiskPeriode: (sakslisteId: number, avdelingEnhet: string) => void;
   lagreSakslisteSorteringTidsintervallDato: (sakslisteId: number, fomDato: string, tomDato: string, avdelingEnhet: string) => void;
@@ -49,6 +51,7 @@ export const SorteringVelger = ({
   intl,
   koSorteringTyper,
   valgtSakslisteId,
+  valgteBehandlingtyper,
   lagreSakslisteSortering,
   lagreSakslisteSorteringErDynamiskPeriode,
   valgtAvdelingEnhet,
@@ -71,11 +74,13 @@ export const SorteringVelger = ({
       onChange={sorteringType => lagreSakslisteSortering(valgtSakslisteId, sorteringType, valgtAvdelingEnhet)}
     >
       {koSorteringTyper.map(koSortering => (
+        (koSortering.kode != 'BELOP' || (valgteBehandlingtyper.length == 1 && valgteBehandlingtyper[0].kode == 'BT-009')) && (
         <RadioOption
           key={koSortering.kode}
           value={koSortering.kode}
           label={koSortering.navn}
         >
+
           {(koSortering.felttype === 'DATO') && (
 
           <DatoSorteringValg
@@ -91,9 +96,9 @@ export const SorteringVelger = ({
             fomDato={fomDato}
             tomDato={tomDato}
           />
-)}
+          )}
           {(koSortering.felttype === 'HELTALL') && (
-          <BeløpSorteringValg
+          <BelopSorteringValg
             intl={intl}
             valgtSakslisteId={valgtSakslisteId}
             lagreSakslisteSorteringNumerisk={lagreSakslisteSorteringTidsintervallDager}
@@ -103,6 +108,7 @@ export const SorteringVelger = ({
           />
           )}
         </RadioOption>
+          )
       ))}
     </RadioGroupField>
   </>

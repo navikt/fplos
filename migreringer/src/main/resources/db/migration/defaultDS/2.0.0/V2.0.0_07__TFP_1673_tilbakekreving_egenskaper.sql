@@ -73,3 +73,5 @@ COMMENT ON COLUMN "TILBAKEKREVING_OPPGAVE"."UTFORT_FRA_ADMIN" IS 'Settes til tru
 COMMENT ON COLUMN "TILBAKEKREVING_OPPGAVE"."OPPGAVE_AVSLUTTET" IS 'Tidspunkt for avslutting av Oppgave';
 COMMENT ON COLUMN "TILBAKEKREVING_OPPGAVE"."EKSTERN_ID" IS 'Ekstern ID som identifiserer behandling i fagsystem.';
 COMMENT ON COLUMN "TILBAKEKREVING_OPPGAVE"."BELOP" IS 'Beløpet som henvendelsen gjelder';
+
+Insert into KODELISTE (ID,KODEVERK,KODE,OFFISIELL_KODE,BESKRIVELSE,GYLDIG_FOM,GYLDIG_TOM) values (seq_kodeliste.nextval,'BEHANDLING_TYPE','BT-009','ae0044','Tilbakebetaling',to_date('01.07.2006','DD.MM.RRRR'),to_date('31.12.9999','DD.MM.RRRR'));

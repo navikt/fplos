@@ -179,6 +179,7 @@ export class UtvalgskriterierForSakslisteForm extends Component<TsProps> {
               <Column xs="4">
                 <SorteringVelger
                   valgtSakslisteId={valgtSaksliste.sakslisteId}
+                  valgteBehandlingtyper={valgtSaksliste.behandlingTyper}
                   valgtAvdelingEnhet={valgtAvdelingEnhet}
                   erDynamiskPeriode={values.erDynamiskPeriode}
                   fomDager={finnDagerSomTall(values.fomDager)}

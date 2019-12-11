@@ -1,4 +1,5 @@
 import { Kodeverk } from 'kodeverk/kodeverkTsType';
+import {KoSorteringType} from "kodeverk/KoSorteringTsType";
 
 type AnnetKriterie = Readonly<{
   andreKriterierType: Kodeverk;
@@ -14,11 +15,12 @@ export type Saksliste = Readonly<{
   fagsakYtelseTyper?: Kodeverk[];
   sistEndret: string;
   sortering?: {
-    sorteringType: Kodeverk;
+    sorteringType: KoSorteringType;
     fomDager?: number;
     tomDager?: number;
     fomDato?: string;
     tomDato?: string;
+    belop?: number;
     erDynamiskPeriode: boolean;
   };
   andreKriterier?: AnnetKriterie[];

@@ -2,13 +2,11 @@ package no.nav.foreldrepenger.loslager.oppgave;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import no.nav.fplos.kodeverk.Kodeverdi;
 
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;
-
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -24,7 +22,8 @@ public enum BehandlingType implements Kodeverdi {
     REVURDERING("BT-004", "Revurdering"),
     SØKNAD("BT-005", "Søknad"),
     INNSYN("BT-006", "Innsyn"),
-    ANKE("BT-008", "Anke");
+    ANKE("BT-008", "Anke"),
+    TILBAKEBETALING ("BT-009", "Tilbakebetaling");
 
     private String kode;
     private final String navn;
