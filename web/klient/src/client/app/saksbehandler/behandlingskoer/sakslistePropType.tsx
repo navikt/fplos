@@ -13,8 +13,8 @@ const sakslistePropType = PropTypes.shape({
   })),
   sortering: PropTypes.shape({
     sorteringType: kodeverkPropType.isRequired,
-    fomDager: PropTypes.number,
-    tomDager: PropTypes.number,
+    fra: PropTypes.number,
+    til: PropTypes.number,
     fomDato: PropTypes.string,
     tomDato: PropTypes.string,
     erDynamiskPeriode: PropTypes.bool.isRequired,

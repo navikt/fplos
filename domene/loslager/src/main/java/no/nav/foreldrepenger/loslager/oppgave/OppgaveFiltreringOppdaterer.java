@@ -1,14 +1,13 @@
 package no.nav.foreldrepenger.loslager.oppgave;
 
+import no.nav.foreldrepenger.loslager.BaseEntitet;
+import no.nav.vedtak.felles.jpa.converters.BooleanToStringConverter;
+
 import javax.persistence.Column;
 import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
-
-import no.nav.foreldrepenger.loslager.BaseEntitet;
-import no.nav.vedtak.felles.jpa.converters.BooleanToStringConverter;
-
 import java.time.LocalDate;
 
 @Entity(name = "OppgaveFiltreringOppdaterer")
@@ -34,10 +33,10 @@ public class OppgaveFiltreringOppdaterer extends BaseEntitet{
     private LocalDate tomDato;
 
     @Column(name = "FOM_DAGER")
-    private Long fomDager;
+    private Long fra;
 
     @Column(name = "TOM_DAGER")
-    private Long tomDager;
+    private Long til;
 
     public OppgaveFiltreringOppdaterer endreNavn(String nyttNavn) {
         this.navn = nyttNavn;
@@ -64,13 +63,13 @@ public class OppgaveFiltreringOppdaterer extends BaseEntitet{
         return this;
     }
 
-    public OppgaveFiltreringOppdaterer endreFomDager(Long fomDager){
-        this.fomDager = fomDager;
+    public OppgaveFiltreringOppdaterer endreFraVerdi(Long fra){
+        this.fra = fra;
         return this;
     }
 
-    public OppgaveFiltreringOppdaterer endreTomDager(Long tomDager){
-        this.tomDager = tomDager;
+    public OppgaveFiltreringOppdaterer endreTilVerdi(Long til){
+        this.til = til;
         return this;
     }
 

@@ -1,9 +1,5 @@
 package no.nav.foreldrepenger.loslager.repository;
 
-import java.time.LocalDate;
-import java.util.List;
-import java.util.stream.Collectors;
-
 import no.nav.foreldrepenger.loslager.oppgave.AndreKriterierType;
 import no.nav.foreldrepenger.loslager.oppgave.BehandlingType;
 import no.nav.foreldrepenger.loslager.oppgave.FagsakYtelseType;
@@ -12,6 +8,10 @@ import no.nav.foreldrepenger.loslager.oppgave.FiltreringBehandlingType;
 import no.nav.foreldrepenger.loslager.oppgave.FiltreringYtelseType;
 import no.nav.foreldrepenger.loslager.oppgave.KøSortering;
 import no.nav.foreldrepenger.loslager.oppgave.OppgaveFiltrering;
+
+import java.time.LocalDate;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class OppgavespørringDto {
     private KøSortering sortering;
@@ -23,8 +23,8 @@ public class OppgavespørringDto {
     private boolean erDynamiskPeriode;
     private LocalDate filtrerFomDato;
     private LocalDate filtrerTomDato;
-    private Long filtrerFomDager;
-    private Long filtrerTomDager;
+    private Long filtrerFra;
+    private Long filtrerTil;
 
     public OppgavespørringDto(OppgaveFiltrering oppgaveFiltrering){
          sortering = oppgaveFiltrering.getSortering();
@@ -36,14 +36,14 @@ public class OppgavespørringDto {
          erDynamiskPeriode = oppgaveFiltrering.getErDynamiskPeriode();
          filtrerFomDato = oppgaveFiltrering.getFomDato();
          filtrerTomDato = oppgaveFiltrering.getTomDato();
-         filtrerFomDager = oppgaveFiltrering.getFomDager();
-         filtrerTomDager = oppgaveFiltrering.getTomDager();
+         filtrerFra = oppgaveFiltrering.getFra();
+         filtrerTil = oppgaveFiltrering.getTil();
     }
 
     public OppgavespørringDto(Long id, KøSortering sortering, List<BehandlingType> behandlingTyper,
                               List<FagsakYtelseType> ytelseTyper, List<AndreKriterierType> inkluderAndreKriterierTyper,
                               List<AndreKriterierType> ekskluderAndreKriterierTyper, boolean erDynamiskPeriode,
-                              LocalDate filtrerFomDato, LocalDate filtrerTomDato, Long filtrerFomDager, Long filtrerTomDager) {
+                              LocalDate filtrerFomDato, LocalDate filtrerTomDato, Long filtrerFra, Long filtrerTil) {
         this.sortering = sortering;
         this.id = id;
         this.behandlingTyper = behandlingTyper;
@@ -53,8 +53,8 @@ public class OppgavespørringDto {
         this.erDynamiskPeriode = erDynamiskPeriode;
         this.filtrerFomDato = filtrerFomDato;
         this.filtrerTomDato = filtrerTomDato;
-        this.filtrerFomDager = filtrerFomDager;
-        this.filtrerTomDager = filtrerTomDager;
+        this.filtrerFra = filtrerFra;
+        this.filtrerTil = filtrerTil;
     }
 
     public KøSortering getSortering() {
@@ -93,12 +93,12 @@ public class OppgavespørringDto {
         return filtrerTomDato;
     }
 
-    public Long getFiltrerFomDager() {
-        return filtrerFomDager;
+    public Long getFiltrerFra() {
+        return filtrerFra;
     }
 
-    public Long getFiltrerTomDager() {
-        return filtrerTomDager;
+    public Long getFiltrerTil() {
+        return filtrerTil;
     }
 
     private List<AndreKriterierType> ekskluderAndreKriterierTyperFra(OppgaveFiltrering oppgaveFiltrering) {

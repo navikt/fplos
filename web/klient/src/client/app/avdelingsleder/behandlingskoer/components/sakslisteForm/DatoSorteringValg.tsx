@@ -38,8 +38,8 @@ interface TsProps {
     lagreSakslisteSorteringTidsintervallDager: (sakslisteId: number, fomDagr: number, tomDagr: number, avdelingEnhet: string) => void;
     valgtAvdelingEnhet: string;
     erDynamiskPeriode: boolean;
-    fomDager: number;
-    tomDager: number;
+    fra: number;
+    til: number;
     fomDato: string;
     tomDato: string;
 }
@@ -52,8 +52,8 @@ export const DatoSorteringValg = ({
           erDynamiskPeriode,
           lagreSakslisteSorteringTidsintervallDato,
           lagreSakslisteSorteringTidsintervallDager,
-          fomDager,
-          tomDager,
+          fra,
+          til,
           fomDato,
           tomDato,
       }: TsProps) => (
@@ -66,23 +66,23 @@ export const DatoSorteringValg = ({
           {erDynamiskPeriode && (
           <>
             <AutoLagringVedBlur
-              lagre={values => lagreSakslisteSorteringTidsintervallDager(valgtSakslisteId, values.fomDager, values.tomDager, valgtAvdelingEnhet)}
-              fieldNames={['fomDager', 'tomDager']}
+              lagre={values => lagreSakslisteSorteringTidsintervallDager(valgtSakslisteId, values.fra, values.til, valgtAvdelingEnhet)}
+              fieldNames={['fra', 'til']}
             />
             <FlexContainer>
               <FlexRow>
                 <FlexColumn>
                   <InputField
-                    name="fomDager"
+                    name="fra"
                     className={styles.dato}
                     label={intl.formatMessage({ id: 'SorteringVelger.Fom' })}
                     validate={[hasValidPosOrNegInteger]}
                     onBlurValidation
                     bredde="XS"
                   />
-                  {(fomDager || fomDager === 0) && (
+                  {(fra || fra === 0) && (
                   <Undertekst>
-                    <DateLabel dateString={finnDato(fomDager)} />
+                    <DateLabel dateString={finnDato(fra)} />
                   </Undertekst>
                             )}
                 </FlexColumn>
@@ -93,16 +93,16 @@ export const DatoSorteringValg = ({
                 </FlexColumn>
                 <FlexColumn>
                   <InputField
-                    name="tomDager"
+                    name="til"
                     className={styles.dato}
                     label={intl.formatMessage({ id: 'SorteringVelger.Tom' })}
                     validate={[hasValidPosOrNegInteger]}
                     onBlurValidation
                     bredde="XS"
                   />
-                  {(tomDager || tomDager === 0) && (
+                  {(til || til === 0) && (
                   <Undertekst>
-                    <DateLabel dateString={finnDato(tomDager)} />
+                    <DateLabel dateString={finnDato(til)} />
                   </Undertekst>
                             )}
                 </FlexColumn>

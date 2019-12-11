@@ -24,7 +24,7 @@ describe('<SorteringVelger>', () => {
       lagreSakslisteSortering={sinon.spy()}
       lagreSakslisteSorteringErDynamiskPeriode={sinon.spy()}
       lagreSakslisteSorteringTidsintervallDato={sinon.spy()}
-      lagreSakslisteSorteringTidsintervallDager={sinon.spy()}
+      lagreSakslisteSorteringNumeriskIntervall={sinon.spy()}
       valgtAvdelingEnhet="1"
       erDynamiskPeriode={false}
     />);
@@ -52,7 +52,7 @@ describe('<SorteringVelger>', () => {
       lagreSakslisteSortering={lagreSorteringFn}
       lagreSakslisteSorteringErDynamiskPeriode={sinon.spy()}
       lagreSakslisteSorteringTidsintervallDato={sinon.spy()}
-      lagreSakslisteSorteringTidsintervallDager={sinon.spy()}
+      lagreSakslisteSorteringNumeriskIntervall={sinon.spy()}
       valgtAvdelingEnhet="3"
       erDynamiskPeriode={false}
     />);

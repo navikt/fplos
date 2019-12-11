@@ -20,16 +20,11 @@ import no.nav.foreldrepenger.loslager.organisasjon.Avdeling;
 import no.nav.foreldrepenger.loslager.organisasjon.Saksbehandler;
 import no.nav.vedtak.felles.jpa.VLPersistenceUnit;
 import no.nav.vedtak.sikkerhet.context.SubjectHandler;
-import org.hibernate.Criteria;
-import org.hibernate.query.criteria.HibernateCriteriaBuilder;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -37,7 +32,6 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 import static no.nav.foreldrepenger.loslager.BaseEntitet.BRUKERNAVN_NÅR_SIKKERHETSKONTEKST_IKKE_FINNES;
 
@@ -121,11 +115,11 @@ public class OppgaveRepositoryImpl implements OppgaveRepository {
         if (!queryDto.getYtelseTyper().isEmpty()) {
             query.setParameter("fagsakYtelseType", queryDto.getYtelseTyper());
         }
-        if (queryDto.getFiltrerFomDager() != null) {
-            query.setParameter("filterFomDager", KøSortering.FORSTE_STONADSDAG.equals(queryDto.getSortering()) ? LocalDate.now().plusDays(queryDto.getFiltrerFomDager()) : LocalDateTime.now().plusDays(queryDto.getFiltrerFomDager()).with(LocalTime.MIN));
+        if (queryDto.getFiltrerFra() != null) {
+            query.setParameter("filterFomDager", KøSortering.FORSTE_STONADSDAG.equals(queryDto.getSortering()) ? LocalDate.now().plusDays(queryDto.getFiltrerFra()) : LocalDateTime.now().plusDays(queryDto.getFiltrerFra()).with(LocalTime.MIN));
         }
-        if (queryDto.getFiltrerTomDager() != null) {
-            query.setParameter("filterTomDager", KøSortering.FORSTE_STONADSDAG.equals(queryDto.getSortering()) ? LocalDate.now().plusDays(queryDto.getFiltrerTomDager()) : LocalDateTime.now().plusDays(queryDto.getFiltrerTomDager()).with(LocalTime.MAX));
+        if (queryDto.getFiltrerTil() != null) {
+            query.setParameter("filterTomDager", KøSortering.FORSTE_STONADSDAG.equals(queryDto.getSortering()) ? LocalDate.now().plusDays(queryDto.getFiltrerTil()) : LocalDateTime.now().plusDays(queryDto.getFiltrerTil()).with(LocalTime.MAX));
         }
         if (queryDto.getFiltrerFomDato() != null) {
             query.setParameter("filterFomDato", KøSortering.FORSTE_STONADSDAG.equals(queryDto.getSortering()) ? queryDto.getFiltrerFomDato() : queryDto.getFiltrerFomDato().atTime(LocalTime.MIN));
@@ -141,18 +135,18 @@ public class OppgaveRepositoryImpl implements OppgaveRepository {
         KøSortering sortering = oppgavespørringDto.getSortering();
         if (KøSortering.BEHANDLINGSFRIST.equals(sortering)) {
             return oppgavespørringDto.isErDynamiskPeriode()
-                    ? filtrerDynamisk(BEHANDLINGSFRIST, oppgavespørringDto.getFiltrerFomDager(), oppgavespørringDto.getFiltrerTomDager())
+                    ? filtrerDynamisk(BEHANDLINGSFRIST, oppgavespørringDto.getFiltrerFra(), oppgavespørringDto.getFiltrerTil())
                     : filtrerStatisk(BEHANDLINGSFRIST, oppgavespørringDto.getFiltrerFomDato(), oppgavespørringDto.getFiltrerTomDato());
         } else if (KøSortering.OPPRETT_BEHANDLING.equals(sortering)) {
             return oppgavespørringDto.isErDynamiskPeriode()
-                    ? filtrerDynamisk(BEHANDLINGOPPRETTET, oppgavespørringDto.getFiltrerFomDager(), oppgavespørringDto.getFiltrerTomDager())
+                    ? filtrerDynamisk(BEHANDLINGOPPRETTET, oppgavespørringDto.getFiltrerFra(), oppgavespørringDto.getFiltrerTil())
                     : filtrerStatisk(BEHANDLINGOPPRETTET, oppgavespørringDto.getFiltrerFomDato(), oppgavespørringDto.getFiltrerTomDato());
         } else if (KøSortering.FORSTE_STONADSDAG.equals(sortering)) {
             return oppgavespørringDto.isErDynamiskPeriode()
-                    ? filtrerDynamisk(FORSTE_STONADSDAG, oppgavespørringDto.getFiltrerFomDager(), oppgavespørringDto.getFiltrerTomDager())
+                    ? filtrerDynamisk(FORSTE_STONADSDAG, oppgavespørringDto.getFiltrerFra(), oppgavespørringDto.getFiltrerTil())
                     : filtrerStatisk(FORSTE_STONADSDAG, oppgavespørringDto.getFiltrerFomDato(), oppgavespørringDto.getFiltrerTomDato());
         } else if (KøSortering.BELOP.equals(sortering)) {
-            return filtrerDynamisk(BELOP, oppgavespørringDto.getFiltrerFomDager(), oppgavespørringDto.getFiltrerTomDager());
+            return filtrerDynamisk(BELOP, oppgavespørringDto.getFiltrerFra(), oppgavespørringDto.getFiltrerTil());
         } else {
             return SORTERING + BEHANDLINGOPPRETTET;
         }
@@ -532,8 +526,8 @@ public class OppgaveRepositoryImpl implements OppgaveRepository {
                         .endreErDynamiskPeriode(false)
                         .endreFomDato(null)
                         .endreTomDato(null)
-                        .endreFomDager(null)
-                        .endreTomDager(null));
+                        .endreFraVerdi(null)
+                        .endreTilVerdi(null));
         entityManager.flush();
     }
 
@@ -547,11 +541,11 @@ public class OppgaveRepositoryImpl implements OppgaveRepository {
     }
 
     @Override
-    public void settSorteringTidsintervallDager(Long oppgaveFiltreringId, Long fomDager, Long tomDager){
+    public void settSorteringNumeriskIntervall(Long oppgaveFiltreringId, Long fra, Long til){
         getEntityManager().persist(
                 getEntityManager().find(OppgaveFiltreringOppdaterer.class, oppgaveFiltreringId)
-                        .endreFomDager(fomDager)
-                        .endreTomDager(tomDager));
+                        .endreFraVerdi(fra)
+                        .endreTilVerdi(til));
         entityManager.flush();
     }
 
@@ -562,8 +556,8 @@ public class OppgaveRepositoryImpl implements OppgaveRepository {
                         .endreErDynamiskPeriode(erDynamiskPeriode)
                         .endreFomDato(null)
                         .endreTomDato(null)
-                        .endreFomDager(null)
-                        .endreTomDager(null));
+                        .endreFraVerdi(null)
+                        .endreTilVerdi(null));
         entityManager.flush();
     }
 

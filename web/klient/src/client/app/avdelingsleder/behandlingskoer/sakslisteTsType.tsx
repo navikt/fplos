@@ -16,8 +16,8 @@ export type Saksliste = Readonly<{
   sistEndret: string;
   sortering?: {
     sorteringType: KoSorteringType;
-    fomDager?: number;
-    tomDager?: number;
+    fra?: number;
+    til?: number;
     fomDato?: string;
     tomDato?: string;
     belop?: number;

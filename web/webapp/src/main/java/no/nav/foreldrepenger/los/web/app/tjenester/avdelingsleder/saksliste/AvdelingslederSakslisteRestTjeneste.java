@@ -189,9 +189,9 @@ public class AvdelingslederSakslisteRestTjeneste {
     @BeskyttetRessurs(action = BeskyttetRessursActionAttributt.CREATE, ressurs = BeskyttetRessursResourceAttributt.OPPGAVESTYRING_AVDELINGENHET)
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
     public void lagreSorteringTidsintervallDager(@NotNull @ApiParam("Sakslistens sortering gitt dagar") @Valid SakslisteSorteringIntervallDagerDto sakslisteSorteringIntervallDager) {
-        avdelingslederTjeneste.settSorteringTidsintervallDager(sakslisteSorteringIntervallDager.getSakslisteId(),
-                sakslisteSorteringIntervallDager.getFomDager(),
-                sakslisteSorteringIntervallDager.getTomDager());
+        avdelingslederTjeneste.settSorteringNumeriskIntervall(sakslisteSorteringIntervallDager.getSakslisteId(),
+                sakslisteSorteringIntervallDager.getFra(),
+                sakslisteSorteringIntervallDager.getTil());
     }
 
     @POST

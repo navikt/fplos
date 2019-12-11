@@ -16,10 +16,10 @@ public class SakslisteSorteringIntervallDagerDto implements AbacDto {
     private SakslisteIdDto sakslisteId;
 
     @Valid
-    private Long fomDager;
+    private Long fra;
 
     @Valid
-    private Long tomDager;
+    private Long til;
 
     @NotNull
     @Valid
@@ -28,10 +28,10 @@ public class SakslisteSorteringIntervallDagerDto implements AbacDto {
     public SakslisteSorteringIntervallDagerDto() {
     }
 
-    public SakslisteSorteringIntervallDagerDto(SakslisteIdDto sakslisteId, Long fomDager, Long tomDager, AvdelingEnhetDto avdelingEnhet) {
+    public SakslisteSorteringIntervallDagerDto(SakslisteIdDto sakslisteId, Long fra, Long til, AvdelingEnhetDto avdelingEnhet) {
         this.sakslisteId = sakslisteId;
-        this.fomDager = fomDager;
-        this.tomDager = tomDager;
+        this.fra = fra;
+        this.til = til;
         this.avdelingEnhet = avdelingEnhet;
     }
 
@@ -39,12 +39,12 @@ public class SakslisteSorteringIntervallDagerDto implements AbacDto {
         return sakslisteId.getVerdi();
     }
 
-    public Long getFomDager() {
-        return fomDager;
+    public Long getFra() {
+        return fra;
     }
 
-    public Long getTomDager() {
-        return tomDager;
+    public Long getTil() {
+        return til;
     }
 
     public AvdelingEnhetDto getAvdelingEnhet(){
@@ -55,8 +55,8 @@ public class SakslisteSorteringIntervallDagerDto implements AbacDto {
     public String toString() {
         return "SakslisteSorteringDto{" +
                 "sakslisteId='" + sakslisteId + '\'' +
-                "fomDager='" + fomDager + '\'' +
-                "tomDager='" + tomDager + '\'' +
+                "fra='" + fra + '\'' +
+                "til='" + til + '\'' +
                 '}';
     }
 

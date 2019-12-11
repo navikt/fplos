@@ -144,8 +144,8 @@ public class AvdelingslederTjenesteImpl implements AvdelingslederTjeneste {
     }
 
     @Override
-    public void settSorteringTidsintervallDager(Long oppgaveFiltreringId, Long fomDager, Long tomDager){
-        oppgaveRepository.settSorteringTidsintervallDager(oppgaveFiltreringId, fomDager, tomDager);
+    public void settSorteringNumeriskIntervall(Long oppgaveFiltreringId, Long fra, Long til){
+        oppgaveRepository.settSorteringNumeriskIntervall(oppgaveFiltreringId, fra, til);
     }
 
     @Override

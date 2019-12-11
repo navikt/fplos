@@ -1,9 +1,9 @@
 package no.nav.foreldrepenger.loslager.oppgave;
 
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import no.nav.foreldrepenger.loslager.BaseEntitet;
+import no.nav.foreldrepenger.loslager.organisasjon.Avdeling;
+import no.nav.foreldrepenger.loslager.organisasjon.Saksbehandler;
+import no.nav.vedtak.felles.jpa.converters.BooleanToStringConverter;
 
 import javax.persistence.Column;
 import javax.persistence.Convert;
@@ -18,14 +18,10 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
-
-import no.nav.foreldrepenger.loslager.organisasjon.Saksbehandler;
-import no.nav.vedtak.felles.jpa.converters.BooleanToStringConverter;
-import org.hibernate.annotations.JoinColumnOrFormula;
-import org.hibernate.annotations.JoinFormula;
-
-import no.nav.foreldrepenger.loslager.BaseEntitet;
-import no.nav.foreldrepenger.loslager.organisasjon.Avdeling;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 @Entity(name = "OppgaveFiltrering")
 @Table(name = "OPPGAVE_FILTRERING")
@@ -69,10 +65,10 @@ public class OppgaveFiltrering extends BaseEntitet{
     private LocalDate tomDato;
 
     @Column(name = "FOM_DAGER")
-    private Long fomDager;
+    private Long fra;
 
     @Column(name = "TOM_DAGER")
-    private Long tomDager;
+    private Long til;
 
     @ManyToMany
     @JoinTable(name = "FILTRERING_SAKSBEHANDLER",
@@ -120,12 +116,12 @@ public class OppgaveFiltrering extends BaseEntitet{
         return tomDato;
     }
 
-    public Long getFomDager() {
-        return fomDager;
+    public Long getFra() {
+        return fra;
     }
 
-    public Long getTomDager() {
-        return tomDager;
+    public Long getTil() {
+        return til;
     }
 
     public static OppgaveFiltrering nyTomOppgaveFiltrering(Avdeling avdeling){
@@ -189,13 +185,13 @@ public class OppgaveFiltrering extends BaseEntitet{
             return this;
         }
 
-        public Builder medFomDager(Long fomDager){
-            tempOppgaveFiltrering.fomDager = fomDager;
+        public Builder medFraVerdi(Long fra){
+            tempOppgaveFiltrering.fra = fra;
             return this;
         }
 
-        public Builder medTomDager(Long tomDager){
-            tempOppgaveFiltrering.tomDager = tomDager;
+        public Builder medTilVerdi(Long til){
+            tempOppgaveFiltrering.til = til;
             return this;
         }
 

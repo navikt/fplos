@@ -1,23 +1,21 @@
-import DatoSorteringValg from 'avdelingsleder/behandlingskoer/components/sakslisteForm/DatoSorteringValg';
 import { Undertekst } from 'nav-frontend-typografi';
 import { FormattedMessage } from 'react-intl';
 import ArrowBox from 'sharedComponents/ArrowBox';
 import React from 'react';
-import AutoLagringVedBlur from 'avdelingsleder/behandlingskoer/components/sakslisteForm/AutoLagringVedBlur';
 import { FlexColumn, FlexContainer, FlexRow } from 'sharedComponents/flexGrid';
 import { InputField } from 'form/FinalFields';
-import styles from 'avdelingsleder/behandlingskoer/components/sakslisteForm/sorteringVelger.less';
 import { hasValidPosOrNegInteger } from 'utils/validation/validators';
-import DateLabel from 'sharedComponents/DateLabel';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
+import styles from './sorteringVelger.less';
+import AutoLagringVedBlur from './AutoLagringVedBlur';
 
 interface TsProps {
     intl: any;
     valgtSakslisteId: number;
-    lagreSakslisteSorteringNumerisk: (sakslisteId: number, fom: number, tom: number, avdelingEnhet: string) => void;
+    lagreSakslisteSorteringNumerisk: (sakslisteId: number, fra: number, til: number, avdelingEnhet: string) => void;
     valgtAvdelingEnhet: string;
-    fom: number;
-    tom: number;
+    fra: number;
+    til: number;
 }
 
 export const BelopSorteringValg = ({
@@ -25,8 +23,8 @@ export const BelopSorteringValg = ({
     valgtSakslisteId,
     valgtAvdelingEnhet,
     lagreSakslisteSorteringNumerisk,
-    fom,
-    tom,
+    fra,
+    til,
 }: TsProps) => (
   <ArrowBox>
     <Undertekst>
@@ -35,14 +33,14 @@ export const BelopSorteringValg = ({
 
     <>
       <AutoLagringVedBlur
-        lagre={values => lagreSakslisteSorteringNumerisk(valgtSakslisteId, values.fom, values.tom, valgtAvdelingEnhet)}
-        fieldNames={['fom', 'tom']}
+        lagre={values => lagreSakslisteSorteringNumerisk(valgtSakslisteId, values.fra, values.til, valgtAvdelingEnhet)}
+        fieldNames={['fra', 'til']}
       />
       <FlexContainer>
         <FlexRow>
           <FlexColumn>
             <InputField
-              name="fom"
+              name="fra"
               className={styles.dato}
               placeholder={intl.formatMessage({ id: 'SorteringVelger.Fra' })}
               validate={[hasValidPosOrNegInteger]}
@@ -58,7 +56,7 @@ export const BelopSorteringValg = ({
           </FlexColumn>
           <FlexColumn>
             <InputField
-              name="tom"
+              name="til"
               className={styles.dato}
               placeholder={intl.formatMessage({ id: 'SorteringVelger.Til' })}
               validate={[hasValidPosOrNegInteger]}

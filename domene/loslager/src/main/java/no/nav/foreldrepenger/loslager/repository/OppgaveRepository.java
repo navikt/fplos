@@ -119,7 +119,7 @@ public interface OppgaveRepository {
 
     void settSorteringTidsintervallDato(Long oppgaveFiltreringId, LocalDate fomDato, LocalDate tomDato);
 
-    void settSorteringTidsintervallDager(Long oppgaveFiltreringId, Long fomDager, Long tomDager);
+    void settSorteringNumeriskIntervall(Long oppgaveFiltreringId, Long fra, Long til);
 
     void settSorteringTidsintervallValg(Long oppgaveFiltreringId, boolean erDynamiskPeriode);
 }

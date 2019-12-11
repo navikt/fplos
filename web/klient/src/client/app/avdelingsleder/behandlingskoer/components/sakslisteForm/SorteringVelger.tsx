@@ -19,7 +19,7 @@ import {
   lagreSakslisteSortering as lagreSakslisteSorteringActionCreator,
   lagreSakslisteSorteringErDynamiskPeriode as lagreSakslisteSorteringErDynamiskPeriodeActionCreator,
   lagreSakslisteSorteringTidsintervallDato as lagreSakslisteSorteringTidsintervallDatoActionCreator,
-  lagreSakslisteSorteringTidsintervallDager as lagreSakslisteSorteringTidsintervallDagerActionCreator,
+  lagreSakslisteSorteringNumeriskIntervall as lagreSakslisteSorteringNumeriskIntervallActionCreator,
 } from '../../duck';
 import DatoSorteringValg from './DatoSorteringValg';
 import BelopSorteringValg from './BelopSorteringValg';
@@ -35,11 +35,11 @@ interface TsProps {
   lagreSakslisteSortering: (sakslisteId: number, sakslisteSorteringValg: KoSorteringType, avdelingEnhet: string) => void;
   lagreSakslisteSorteringErDynamiskPeriode: (sakslisteId: number, avdelingEnhet: string) => void;
   lagreSakslisteSorteringTidsintervallDato: (sakslisteId: number, fomDato: string, tomDato: string, avdelingEnhet: string) => void;
-  lagreSakslisteSorteringTidsintervallDager: (sakslisteId: number, fomDagr: number, tomDagr: number, avdelingEnhet: string) => void;
+  lagreSakslisteSorteringNumeriskIntervall: (sakslisteId: number, fra: number, til: number, avdelingEnhet: string) => void;
   valgtAvdelingEnhet: string;
   erDynamiskPeriode: boolean;
-  fomDager: number;
-  tomDager: number;
+  fra: number;
+  til: number;
   fomDato: string;
   tomDato: string;
 }
@@ -57,9 +57,9 @@ export const SorteringVelger = ({
   valgtAvdelingEnhet,
   erDynamiskPeriode,
   lagreSakslisteSorteringTidsintervallDato,
-  lagreSakslisteSorteringTidsintervallDager,
-  fomDager,
-  tomDager,
+  lagreSakslisteSorteringNumeriskIntervall,
+  fra,
+  til,
   fomDato,
   tomDato,
 }: TsProps) => (
@@ -88,11 +88,11 @@ export const SorteringVelger = ({
             valgtSakslisteId={valgtSakslisteId}
             lagreSakslisteSorteringErDynamiskPeriode={lagreSakslisteSorteringErDynamiskPeriode}
             lagreSakslisteSorteringTidsintervallDato={lagreSakslisteSorteringTidsintervallDato}
-            lagreSakslisteSorteringTidsintervallDager={lagreSakslisteSorteringTidsintervallDager}
+            lagreSakslisteSorteringTidsintervallDager={lagreSakslisteSorteringNumeriskIntervall}
             valgtAvdelingEnhet={valgtAvdelingEnhet}
             erDynamiskPeriode={erDynamiskPeriode}
-            fomDager={fomDager}
-            tomDager={tomDager}
+            fra={fra}
+            til={til}
             fomDato={fomDato}
             tomDato={tomDato}
           />
@@ -101,10 +101,10 @@ export const SorteringVelger = ({
           <BelopSorteringValg
             intl={intl}
             valgtSakslisteId={valgtSakslisteId}
-            lagreSakslisteSorteringNumerisk={lagreSakslisteSorteringTidsintervallDager}
+            lagreSakslisteSorteringNumerisk={lagreSakslisteSorteringNumeriskIntervall}
             valgtAvdelingEnhet={valgtAvdelingEnhet}
-            fom={fomDager}
-            tom={tomDager}
+            fra={fra}
+            til={til}
           />
           )}
         </RadioOption>
@@ -121,18 +121,18 @@ SorteringVelger.propTypes = {
   lagreSakslisteSortering: PropTypes.func.isRequired,
   lagreSakslisteSorteringErDynamiskPeriode: PropTypes.func.isRequired,
   lagreSakslisteSorteringTidsintervallDato: PropTypes.func.isRequired,
-  lagreSakslisteSorteringTidsintervallDager: PropTypes.func.isRequired,
+  lagreSakslisteSorteringNumeriskIntervall: PropTypes.func.isRequired,
   valgtAvdelingEnhet: PropTypes.string.isRequired,
   erDynamiskPeriode: PropTypes.bool.isRequired,
-  fomDager: PropTypes.number,
-  tomDager: PropTypes.number,
+  fra: PropTypes.number,
+  til: PropTypes.number,
   fomDato: PropTypes.string,
   tomDato: PropTypes.string,
 };
 
 SorteringVelger.defaultProps = {
-  fomDager: undefined,
-  tomDager: undefined,
+  fra: undefined,
+  til: undefined,
   fomDato: undefined,
   tomDato: undefined,
 };
@@ -146,7 +146,7 @@ const mapDispatchToProps = (dispatch: Dispatch<any>) => ({
     lagreSakslisteSortering: lagreSakslisteSorteringActionCreator,
     lagreSakslisteSorteringErDynamiskPeriode: lagreSakslisteSorteringErDynamiskPeriodeActionCreator,
     lagreSakslisteSorteringTidsintervallDato: lagreSakslisteSorteringTidsintervallDatoActionCreator,
-    lagreSakslisteSorteringTidsintervallDager: lagreSakslisteSorteringTidsintervallDagerActionCreator,
+    lagreSakslisteSorteringNumeriskIntervall: lagreSakslisteSorteringNumeriskIntervallActionCreator,
   }, dispatch),
 });
 
