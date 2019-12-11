@@ -93,7 +93,7 @@ public class FpsakEventHandler extends FpEventHandler {
                 Oppgave oppgave = opprettOppgave(eksternId, bpeDto, behandling, prosesserFraAdmin);
                 reserverOppgaveFraTidligereReservasjon(prosesserFraAdmin, reservasjon, oppgave);
                 log.info("Oppgave {} opprettet og populert med informasjon fra FPSAK for behandlingId {}", oppgave.getId(), behandlingId);
-                loggEvent(behandlingId, oppgave.getEksternId(), OppgaveEventType.OPPRETTET, AndreKriterierType.UKJENT, bpeDto.getBehandlendeEnhet());
+                loggEvent(behandlingId, oppgave.getEksternId(), OppgaveEventType.OPPRETTET, null, bpeDto.getBehandlendeEnhet());
                 opprettOppgaveEgenskaper(behandling, oppgave);
                 break;
             case OPPRETT_BESLUTTER_OPPGAVE:
@@ -117,7 +117,7 @@ public class FpsakEventHandler extends FpEventHandler {
             case GJENÅPNE_OPPGAVE:
                 Oppgave gjenåpnetOppgave = gjenåpneOppgave(bpeDto);
                 log.info("Gjenåpnet oppgave for behandlingId {}", behandlingId);
-                loggEvent(behandlingId, gjenåpnetOppgave.getEksternId(), OppgaveEventType.GJENAPNET, AndreKriterierType.UKJENT, bpeDto.getBehandlendeEnhet());
+                loggEvent(behandlingId, gjenåpnetOppgave.getEksternId(), OppgaveEventType.GJENAPNET, null, bpeDto.getBehandlendeEnhet());
                 opprettOppgaveEgenskaper(behandling, gjenåpnetOppgave);
                 break;
         }
@@ -130,7 +130,7 @@ public class FpsakEventHandler extends FpEventHandler {
     private void avsluttOppgaveOgLoggEvent(UUID eksternId, BehandlingProsessEventDto bpeDto, OppgaveEventType eventType, LocalDateTime frist){
         //Long eksisterendeEksternId = getEksternIdentifikatorRespository().finnEllerOpprettEksternId(bpeDto.getFagsystem(), bpeDto.getBehandlingId().toString()).getId();
         avsluttOppgave(bpeDto.getBehandlingId());
-        loggEvent(bpeDto.getBehandlingId(), eksternId, eventType, AndreKriterierType.UKJENT, bpeDto.getBehandlendeEnhet(), frist);
+        loggEvent(bpeDto.getBehandlingId(), eksternId, eventType, null, bpeDto.getBehandlendeEnhet(), frist);
     }
 
     private void opprettOppgaveEgenskaper(BehandlingFpsak behandling, Oppgave oppgave) {
@@ -163,7 +163,7 @@ public class FpsakEventHandler extends FpEventHandler {
         if (!oppgaveEventLogger.isEmpty() && OppgaveEventType.åpningseventtyper().contains(oppgaveEventLogger.get(0).getEventType())){
             //Optional<EksternIdentifikator> eksternId = getEksternIdentifikatorRespository().finnIdentifikator(fagsystem, behandlingId.toString());
             if(eksternId != null) {
-                loggEvent(behandlingId, eksternId, OppgaveEventType.LUKKET, AndreKriterierType.UKJENT, behandlendeEnhet);
+                loggEvent(behandlingId, eksternId, OppgaveEventType.LUKKET, null, behandlendeEnhet);
             }
             getOppgaveRepository().avsluttOppgave(behandlingId);
         }
@@ -215,8 +215,8 @@ public class FpsakEventHandler extends FpEventHandler {
                 .medFagsakSaksnummer(Long.valueOf(bpeDto.getSaksnummer()))
                 .medAktorId(Long.valueOf(bpeDto.getAktørId()))
                 .medBehandlendeEnhet(bpeDto.getBehandlendeEnhet())
-                .medBehandlingType(getKodeverkRepository().finn(BehandlingType.class, bpeDto.getBehandlingTypeKode()))
-                .medFagsakYtelseType(getKodeverkRepository().finn(FagsakYtelseType.class, bpeDto.getYtelseTypeKode()))
+                .medBehandlingType(BehandlingType.fraKode(bpeDto.getBehandlingTypeKode()))
+                .medFagsakYtelseType(FagsakYtelseType.fraKode(bpeDto.getYtelseTypeKode()))
                 .medAktiv(true).medBehandlingOpprettet(bpeDto.getOpprettetBehandling())
                 .medForsteStonadsdag(fraFpsak.getFørsteUttaksdag())
                 .medUtfortFraAdmin(prosesserFraAdmin)

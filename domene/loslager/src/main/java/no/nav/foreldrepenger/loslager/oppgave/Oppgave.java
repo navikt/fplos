@@ -10,6 +10,8 @@ import org.hibernate.annotations.NotFoundAction;
 import javax.persistence.Column;
 import javax.persistence.Convert;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -56,15 +58,13 @@ public class Oppgave extends BaseEntitet {
     @JoinColumnOrFormula(formula = @JoinFormula(referencedColumnName = "kodeverk", value = "'" + BehandlingStatus.DISCRIMINATOR + "'"))
     private BehandlingStatus behandlingStatus = BehandlingStatus.UDEFINERT;
 
-    @ManyToOne(optional = false)
-    @JoinColumnOrFormula(column = @JoinColumn(name = "behandling_type", referencedColumnName = "kode", nullable = false))
-    @JoinColumnOrFormula(formula = @JoinFormula(referencedColumnName = "kodeverk", value = "'" + BehandlingType.DISCRIMINATOR + "'"))
+    @Convert(converter = BehandlingType.KodeverdiConverter.class)
+    @Column(name = "BEHANDLING_TYPE")
     private BehandlingType behandlingType = BehandlingType.INNSYN;
 
-    @ManyToOne(optional = false)
-    @JoinColumnOrFormula(column = @JoinColumn(name = "FAGSAK_YTELSE_TYPE", referencedColumnName = "kode", nullable = false))
-    @JoinColumnOrFormula(formula = @JoinFormula(referencedColumnName = "kodeverk", value = "'" + FagsakYtelseType.DISCRIMINATOR + "'"))
-    private FagsakYtelseType fagsakYtelseType = FagsakYtelseType.UDEFINERT;
+    @Convert(converter = FagsakYtelseType.KodeverdiConverter.class)
+    @Column(name = "FAGSAK_YTELSE_TYPE")
+    private FagsakYtelseType fagsakYtelseType;
 
     @Convert(converter = BooleanToStringConverter.class)
     @Column(name = "AKTIV")

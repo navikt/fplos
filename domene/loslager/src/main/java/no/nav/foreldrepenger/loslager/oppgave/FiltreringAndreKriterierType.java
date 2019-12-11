@@ -1,5 +1,8 @@
 package no.nav.foreldrepenger.loslager.oppgave;
 
+import no.nav.foreldrepenger.loslager.BaseEntitet;
+import no.nav.vedtak.felles.jpa.converters.BooleanToStringConverter;
+
 import javax.persistence.Column;
 import javax.persistence.Convert;
 import javax.persistence.Entity;
@@ -9,12 +12,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-
-import org.hibernate.annotations.JoinColumnOrFormula;
-import org.hibernate.annotations.JoinFormula;
-
-import no.nav.foreldrepenger.loslager.BaseEntitet;
-import no.nav.vedtak.felles.jpa.converters.BooleanToStringConverter;
 
 @Entity(name = "FiltreringAndreKriterier")
 @Table(name = "FILTRERING_ANDRE_KRITERIER")
@@ -33,9 +30,8 @@ public class FiltreringAndreKriterierType extends BaseEntitet{
     @Column(name = "ANDRE_KRITERIER_TYPE", updatable = false, insertable = false)
     private String andreKriterier;
 
-    @ManyToOne(optional = false)
-    @JoinColumnOrFormula(column = @JoinColumn(name = "ANDRE_KRITERIER_TYPE", referencedColumnName = "kode", nullable = false))
-    @JoinColumnOrFormula(formula = @JoinFormula(referencedColumnName = "kodeverk", value = "'" + AndreKriterierType.DISCRIMINATOR + "'"))
+    @Column(name = "ANDRE_KRITERIER_TYPE", nullable = false)
+    @Convert(converter = AndreKriterierType.KodeverdiConverter.class)
     private AndreKriterierType andreKriterierType;
 
     //Verdi som viser om filtreringen skal inkludere eller ekskludere oppgaver med det gitte innslaget.

@@ -19,11 +19,16 @@ import no.nav.foreldrepenger.loslager.organisasjon.Avdeling;
 import no.nav.foreldrepenger.loslager.organisasjon.Saksbehandler;
 import no.nav.vedtak.felles.jpa.VLPersistenceUnit;
 import no.nav.vedtak.sikkerhet.context.SubjectHandler;
+import org.hibernate.Criteria;
+import org.hibernate.query.criteria.HibernateCriteriaBuilder;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -31,6 +36,7 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import static no.nav.foreldrepenger.loslager.BaseEntitet.BRUKERNAVN_NÅR_SIKKERHETSKONTEKST_IKKE_FINNES;
 
@@ -71,58 +77,62 @@ public class OppgaveRepositoryImpl implements OppgaveRepository {
         return oppgaveTypedQuery.getResultList();
     }
 
-    private <T> TypedQuery<T> lagOppgavespørring(String selection, Class<T> oppgaveClass, OppgavespørringDto oppgavespørringDto) {
-        String filtrerBehandlingType = oppgavespørringDto.getBehandlingTyper().isEmpty() ? "": " o.behandlingType in :behtyper AND ";
-        String filtrerYtelseType = oppgavespørringDto.getYtelseTyper().isEmpty() ? "": " o.fagsakYtelseType in :fagsakYtelseType AND ";
+//    private <T> CriteriaQuery<T> lagOppgaveSpørring(Class<T> cls, OppgavespørringDto queryDto) {
+//        CriteriaBuilder builder = entityManager.getCriteriaBuilder();
+//        CriteriaQuery<T> cq = builder.createQuery(cls);
+//        Root<T> entityRoot = cq.from(cls);
+//        cq.select(entityRoot);
+//    }
 
-        StringBuilder filtrerInkluderAndreKriterier = new StringBuilder();
-        for(AndreKriterierType andreKriterierType : oppgavespørringDto.getInkluderAndreKriterierTyper()) {
-            filtrerInkluderAndreKriterier.append("EXISTS ( SELECT  1 FROM OppgaveEgenskap oe WHERE o = oe.oppgave AND oe.aktiv = true AND oe.andreKriterier = '" + andreKriterierType.getKode() + "' ) AND ");
+    private <T> TypedQuery<T> lagOppgavespørring(String selection, Class<T> oppgaveClass, OppgavespørringDto queryDto) {
+        String filtrerBehandlingType = queryDto.getBehandlingTyper().isEmpty() ? "": " o.behandlingType in :behtyper AND ";
+        String filtrerYtelseType = queryDto.getYtelseTyper().isEmpty() ? "": " o.fagsakYtelseType in :fagsakYtelseType AND ";
+
+        StringBuilder ekskluderInkluderAndreKriterier = new StringBuilder();
+        for (var kriterie : queryDto.getInkluderAndreKriterierTyper()) {
+            ekskluderInkluderAndreKriterier.append("EXISTS ( SELECT  1 FROM OppgaveEgenskap oe WHERE o = oe.oppgave AND oe.aktiv = true AND oe.andreKriterierType = '" + kriterie.getKode() + "' ) AND ");
+        }
+        for (var kriterie : queryDto.getEkskluderAndreKriterierTyper()) {
+            ekskluderInkluderAndreKriterier.append("NOT EXISTS (select 1 from OppgaveEgenskap oen WHERE o = oen.oppgave AND oen.aktiv = true AND oen.andreKriterierType = '").append(kriterie.getKode()).append("') AND ");
         }
 
-        StringBuilder filtrerEkskluderAndreKriterier = new StringBuilder();
-        for(AndreKriterierType andreKriterierType : oppgavespørringDto.getEkskluderAndreKriterierTyper()) {
-            filtrerEkskluderAndreKriterier.append("NOT EXISTS (select 1 from OppgaveEgenskap oen WHERE o = oen.oppgave AND oen.aktiv = true AND oen.andreKriterier = '" + andreKriterierType.getKode() + "') AND ");
-        }
-
-        TypedQuery<T> oppgaveTypedQuery = getEntityManager().createQuery(selection + //$NON-NLS-1$ // NOSONAR
+        TypedQuery<T> query = getEntityManager().createQuery(selection + //$NON-NLS-1$ // NOSONAR
                 "INNER JOIN avdeling a ON a.avdelingEnhet = o.behandlendeEnhet " +
                 "WHERE " +
                 filtrerBehandlingType +
                 filtrerYtelseType +
-                filtrerInkluderAndreKriterier +
-                filtrerEkskluderAndreKriterier +
+                ekskluderInkluderAndreKriterier +
                 "NOT EXISTS (select r from Reservasjon r where r.oppgave = o and r.reservertTil > :naa) AND " +
-                "NOT EXISTS (select oetilbesl from OppgaveEgenskap oetilbesl " +
-                    "where o.id = oetilbesl.oppgaveId AND oetilbesl.aktiv = true AND oetilbesl.andreKriterierType = :tilbeslutter " +
-                    "AND upper( oetilbesl.sisteSaksbehandlerForTotrinn) = upper( :uid ) ) " +
+                "NOT EXISTS (select oetilbesl.oppgave from OppgaveEgenskap oetilbesl " +
+                    "where oetilbesl.oppgave = o AND oetilbesl.aktiv = true AND oetilbesl.andreKriterierType = :tilbeslutter " +
+                    "AND upper(oetilbesl.sisteSaksbehandlerForTotrinn) = upper( :uid ) ) " +
                 "AND a.id = :enhet " +
-                "AND o.aktiv = true " + sortering(oppgavespørringDto), oppgaveClass)
+                "AND o.aktiv = true " + sortering(queryDto), oppgaveClass)
                 .setParameter("naa", LocalDateTime.now())
-                .setParameter("enhet", oppgavespørringDto.getId())
+                .setParameter("enhet", queryDto.getId())
                 .setParameter("tilbeslutter", AndreKriterierType.TIL_BESLUTTER)
                 .setParameter("uid", finnBrukernavn());
 
-        if (!oppgavespørringDto.getBehandlingTyper().isEmpty()) {
-            oppgaveTypedQuery.setParameter("behtyper", oppgavespørringDto.getBehandlingTyper());
+        if (!queryDto.getBehandlingTyper().isEmpty()) {
+            query.setParameter("behtyper", queryDto.getBehandlingTyper());
         }
-        if (!oppgavespørringDto.getYtelseTyper().isEmpty()) {
-            oppgaveTypedQuery.setParameter("fagsakYtelseType", oppgavespørringDto.getYtelseTyper());
+        if (!queryDto.getYtelseTyper().isEmpty()) {
+            query.setParameter("fagsakYtelseType", queryDto.getYtelseTyper());
         }
-        if (oppgavespørringDto.getFiltrerFomDager() != null) {
-            oppgaveTypedQuery.setParameter("filterFomDager", KøSortering.FORSTE_STONADSDAG.equals(oppgavespørringDto.getSortering()) ? LocalDate.now().plusDays(oppgavespørringDto.getFiltrerFomDager()) : LocalDateTime.now().plusDays(oppgavespørringDto.getFiltrerFomDager()).with(LocalTime.MIN));
+        if (queryDto.getFiltrerFomDager() != null) {
+            query.setParameter("filterFomDager", KøSortering.FORSTE_STONADSDAG.equals(queryDto.getSortering()) ? LocalDate.now().plusDays(queryDto.getFiltrerFomDager()) : LocalDateTime.now().plusDays(queryDto.getFiltrerFomDager()).with(LocalTime.MIN));
         }
-        if (oppgavespørringDto.getFiltrerTomDager() != null) {
-            oppgaveTypedQuery.setParameter("filterTomDager", KøSortering.FORSTE_STONADSDAG.equals(oppgavespørringDto.getSortering()) ? LocalDate.now().plusDays(oppgavespørringDto.getFiltrerTomDager()) : LocalDateTime.now().plusDays(oppgavespørringDto.getFiltrerTomDager()).with(LocalTime.MAX));
+        if (queryDto.getFiltrerTomDager() != null) {
+            query.setParameter("filterTomDager", KøSortering.FORSTE_STONADSDAG.equals(queryDto.getSortering()) ? LocalDate.now().plusDays(queryDto.getFiltrerTomDager()) : LocalDateTime.now().plusDays(queryDto.getFiltrerTomDager()).with(LocalTime.MAX));
         }
-        if (oppgavespørringDto.getFiltrerFomDato() != null) {
-            oppgaveTypedQuery.setParameter("filterFomDato", KøSortering.FORSTE_STONADSDAG.equals(oppgavespørringDto.getSortering()) ? oppgavespørringDto.getFiltrerFomDato() : oppgavespørringDto.getFiltrerFomDato().atTime(LocalTime.MIN));
+        if (queryDto.getFiltrerFomDato() != null) {
+            query.setParameter("filterFomDato", KøSortering.FORSTE_STONADSDAG.equals(queryDto.getSortering()) ? queryDto.getFiltrerFomDato() : queryDto.getFiltrerFomDato().atTime(LocalTime.MIN));
         }
-        if (oppgavespørringDto.getFiltrerTomDato() != null) {
-            oppgaveTypedQuery.setParameter("filterTomDato", KøSortering.FORSTE_STONADSDAG.equals(oppgavespørringDto.getSortering()) ? oppgavespørringDto.getFiltrerTomDato() : oppgavespørringDto.getFiltrerTomDato().atTime(LocalTime.MAX));
+        if (queryDto.getFiltrerTomDato() != null) {
+            query.setParameter("filterTomDato", KøSortering.FORSTE_STONADSDAG.equals(queryDto.getSortering()) ? queryDto.getFiltrerTomDato() : queryDto.getFiltrerTomDato().atTime(LocalTime.MAX));
         }
 
-        return oppgaveTypedQuery;
+        return query;
     }
 
     private String sortering(OppgavespørringDto oppgavespørringDto) {
@@ -139,8 +149,6 @@ public class OppgaveRepositoryImpl implements OppgaveRepository {
             return oppgavespørringDto.isErDynamiskPeriode()
                     ? filtrerDynamisk(FORSTE_STONADSDAG, oppgavespørringDto.getFiltrerFomDager(), oppgavespørringDto.getFiltrerTomDager())
                     : filtrerStatisk(FORSTE_STONADSDAG, oppgavespørringDto.getFiltrerFomDato(), oppgavespørringDto.getFiltrerTomDato());
-        } else if (KøSortering.UDEFINERT.equals(sortering)) {
-            return SORTERING + BEHANDLINGOPPRETTET;
         } else {
             return SORTERING + BEHANDLINGOPPRETTET;
         }
