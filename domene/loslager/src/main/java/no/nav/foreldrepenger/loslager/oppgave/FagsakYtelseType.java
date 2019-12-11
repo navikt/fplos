@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 public enum FagsakYtelseType implements Kodeverdi {
     ENGANGSTØNAD("ES", "Engangsstønad"),
     FORELDREPENGER("FP", "Foreldrepenger"),
-    SVANGERSKAPSPENGER("SVP", "Svangerskapsspenger");
+    SVANGERSKAPSPENGER("SVP", "Svangerskapspenger");
 
     public static final String KODEVERK = "FAGSAK_YTELSE_TYPE";
     private final String kode;
