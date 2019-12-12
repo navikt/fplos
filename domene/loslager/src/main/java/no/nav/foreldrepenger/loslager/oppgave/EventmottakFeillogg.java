@@ -27,27 +27,25 @@ public class EventmottakFeillogg extends BaseEntitet {
     private String melding;
 
     @Column(name = "STATUS")
-    private String status;
+    private String status = FEILET;
 
     @Column(name = "ANTALL_FEILEDE_FORSOK")
     private Long antallFeiledeForsøk = 0L;
 
     @Column(name = "SISTE_KJORING_TS", nullable = false)
-    private LocalDateTime sisteKjøringTS;
+    private LocalDateTime sisteKjøringTS = LocalDateTime.now();
 
     @Lob
     @Column(name = "FEILMELDING_SISTE_KJORING")
-    private String feilmeldingSisteKjøring;
+    private String feilmelding;
 
     EventmottakFeillogg() {
         //For å kunne automatisk generere
     }
 
-    public EventmottakFeillogg(String melding, LocalDateTime sisteKjøringTS, String feilmeldingSisteKjøring) {
+    public EventmottakFeillogg(String melding, String feilmelding) {
         this.melding = melding;
-        this.status = FEILET;
-        this.sisteKjøringTS = sisteKjøringTS;
-        this.feilmeldingSisteKjøring = feilmeldingSisteKjøring;
+        this.feilmelding = feilmelding;
     }
 
     public Long getId() {
@@ -70,8 +68,8 @@ public class EventmottakFeillogg extends BaseEntitet {
         return sisteKjøringTS;
     }
 
-    public String getFeilmeldingSisteKjøring() {
-        return feilmeldingSisteKjøring;
+    public String getFeilmelding() {
+        return feilmelding;
     }
 
     public EventmottakFeillogg markerFerdig() {
