@@ -1,7 +1,5 @@
 package no.nav.foreldrepenger.loslager.oppgave;
 
-import java.time.LocalDateTime;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -29,18 +27,20 @@ public class EventmottakFeillogg extends BaseEntitet {
     @Column(name = "STATUS")
     private String status = FEILET;
 
-    @Column(name = "ANTALL_FEILEDE_FORSOK")
-    private Long antallFeiledeForsøk = 0L;
+    // todo: fjern denne + databasekolonnen i contract. ingenting inkrementerer denne.. ubrukt funksjonalitet
+    //@Column(name = "ANTALL_FEILEDE_FORSOK")
+    //private Long antallFeiledeForsøk = 0L;
 
-    @Column(name = "SISTE_KJORING_TS", nullable = false)
-    private LocalDateTime sisteKjøringTS = LocalDateTime.now();
+    // todo: fjern fra db. Gitt punkt over dekkes denne av TID_OPPRETTET i BaseEntitet
+    //@Column(name = "SISTE_KJORING_TS", nullable = false)
+    //private LocalDateTime sisteKjøringTS = LocalDateTime.now();
 
     @Lob
     @Column(name = "FEILMELDING_SISTE_KJORING")
     private String feilmelding;
 
     EventmottakFeillogg() {
-        //For å kunne automatisk generere
+        // Rammeverk
     }
 
     public EventmottakFeillogg(String melding, String feilmelding) {
@@ -60,13 +60,13 @@ public class EventmottakFeillogg extends BaseEntitet {
         return status;
     }
 
-    public Long getAntallFeiledeForsøk() {
-        return antallFeiledeForsøk;
-    }
+    //public Long getAntallFeiledeForsøk() {
+        //return antallFeiledeForsøk;
+    //}
 
-    public LocalDateTime getSisteKjøringTS() {
-        return sisteKjøringTS;
-    }
+//    public LocalDateTime getSisteKjøringTS() {
+//        return sisteKjøringTS;
+//    }
 
     public String getFeilmelding() {
         return feilmelding;
