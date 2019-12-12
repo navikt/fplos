@@ -1,6 +1,8 @@
 package no.nav.foreldrepenger.loslager.oppgave;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import no.nav.fplos.kodeverk.Kodeverdi;
 
 import java.util.Arrays;
@@ -60,5 +62,10 @@ public enum FagsakStatus implements Kodeverdi {
 
     public String getKodeverk() {
         return KODEVERK;
+    }
+
+    @JsonCreator
+    static FagsakStatus findValue(@JsonProperty("kode") String kode) {
+        return fraKode(kode);
     }
 }
