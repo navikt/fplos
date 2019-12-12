@@ -27,25 +27,18 @@ public enum KøSortering implements Kodeverdi {
     @JsonProperty("navn")
     private final String navn;
     public static final String KODEVERK = "KO_SORTERING";
-    private static final Map<String, KøSortering> kodeMap = Collections.unmodifiableMap(initializeMapping());
 
     KøSortering(String kode, String navn) {
         this.kode = kode;
         this.navn = navn;
     }
 
-    private static HashMap<String, KøSortering> initializeMapping() {
-        HashMap<String, KøSortering> map = new HashMap<>();
-        for (var v : values()) {
-            map.putIfAbsent(v.kode, v);
-        }
-        return map;
-    }
 
-
-    public static KøSortering fraKode(String value) {
-        return Optional.ofNullable(kodeMap.get(value))
-                .orElse(null);
+    public static KøSortering fraKode(String kode) {
+        return Arrays.stream(values())
+                .filter(v -> v.kode.equals(kode))
+                .findFirst()
+                .orElseThrow();
     }
 
     public static List<KøSortering> getEnums() {

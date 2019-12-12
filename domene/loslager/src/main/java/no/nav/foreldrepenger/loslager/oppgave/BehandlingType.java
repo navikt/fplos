@@ -30,24 +30,16 @@ public enum BehandlingType implements Kodeverdi {
     private final String navn;
     public static final String kodeverk = "BEHANDLING_TYPE";
 
-    private static final Map<String, BehandlingType> kodeMap = Collections.unmodifiableMap(initializeMapping());
-
-    private static HashMap<String, BehandlingType> initializeMapping() {
-        HashMap<String, BehandlingType> map = new HashMap<>();
-        for (var v : values()) {
-            map.putIfAbsent(v.kode, v);
-        }
-        return map;
-    }
-
     BehandlingType(String kode, String navn) {
         this.kode = kode;
         this.navn = navn;
     }
 
     public static BehandlingType fraKode(String kode) {
-        return Optional.ofNullable(kodeMap.get(kode))
-                .orElse(null);
+        return Arrays.stream(values())
+                .filter(v -> v.kode.equals(kode))
+                .findFirst()
+                .orElseThrow();
     }
 
     public static List<BehandlingType> getEnums() {

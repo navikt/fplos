@@ -6,17 +6,11 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import no.nav.fplos.kodeverk.Kodeverdi;
 
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum FagsakStatus implements Kodeverdi {
-
-    //TODO: kan ikke se at denne enumtypen er brukt noe sted i basen. Brukes til dels i fpsak-klienten. Vurder fjerning eller flytting.
 
     OPPRETTET("OPPR", "Opprettet"),
     UNDER_BEHANDLING("UBEH", "Under behandling"),
@@ -32,19 +26,11 @@ public enum FagsakStatus implements Kodeverdi {
         this.navn = navn;
     }
 
-    private static final Map<String, FagsakStatus> kodeMap = Collections.unmodifiableMap(initializeMapping());
-
-    private static HashMap<String, FagsakStatus> initializeMapping() {
-        HashMap<String, FagsakStatus> map = new HashMap<>();
-        for (var v : values()) {
-            map.putIfAbsent(v.kode, v);
-        }
-        return map;
-    }
-
-    public static FagsakStatus fraKode(String value) {
-        return Optional.ofNullable(kodeMap.get(value))
-                .orElse(null);
+    public static FagsakStatus fraKode(String kode) {
+        return Arrays.stream(values())
+                .filter(v -> v.kode.equals(kode))
+                .findFirst()
+                .orElseThrow();
     }
 
     public static List<FagsakStatus> getEnums() {

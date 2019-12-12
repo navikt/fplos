@@ -28,25 +28,17 @@ public enum AndreKriterierType implements Kodeverdi {
     private final String navn;
     public static final String KODEVERK = "ANDRE_KRITERIER";
 
-    private static final Map<String, AndreKriterierType> kodeMap = Collections.unmodifiableMap(initializeMapping());
-
-    private static HashMap<String, AndreKriterierType> initializeMapping() {
-        HashMap<String, AndreKriterierType> map = new HashMap<>();
-        for (var v : values()) {
-            map.putIfAbsent(v.kode, v);
-        }
-        return map;
-    }
-
     AndreKriterierType(String kode, String navn) {
         this.kode = kode;
         this.navn = navn;
     }
 
-    public static AndreKriterierType fraKode(String value) {
-        return Optional.ofNullable(kodeMap.get(value))
-                .orElse(null);
-    }
+    public static AndreKriterierType fraKode(String kode) {
+            return Arrays.stream(values())
+                    .filter(v -> v.kode.equals(kode))
+                    .findFirst()
+                    .orElseThrow();
+        }
 
     public static List<AndreKriterierType> getEnums() {
         return Arrays.stream(values())
