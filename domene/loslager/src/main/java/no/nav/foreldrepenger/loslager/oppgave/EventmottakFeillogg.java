@@ -7,19 +7,17 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-
-import org.hibernate.annotations.JoinColumnOrFormula;
-import org.hibernate.annotations.JoinFormula;
 
 import no.nav.foreldrepenger.loslager.BaseEntitet;
 
 @Entity(name = "eventmottakFeillogg")
 @Table(name = "EVENTMOTTAK_FEILLOGG")
-public class EventmottakFeillogg extends BaseEntitet{
+public class EventmottakFeillogg extends BaseEntitet {
+    private static final String FERDIG = "FERDIG";
+    private static final String FEILET = "FEILET";
+
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_EVENTMOTTAK_FEILLOGG")
     private Long id;
@@ -28,10 +26,8 @@ public class EventmottakFeillogg extends BaseEntitet{
     @Column(name = "MELDING", nullable = false)
     private String melding;
 
-    @ManyToOne(optional = false)
-    @JoinColumnOrFormula(column = @JoinColumn(name = "STATUS", referencedColumnName = "kode", nullable = false))
-    @JoinColumnOrFormula(formula = @JoinFormula(referencedColumnName = "kodeverk", value = "'" + EventmottakStatus.DISCRIMINATOR + "'"))
-    private EventmottakStatus status;
+    @Column(name = "STATUS")
+    private String status;
 
     @Column(name = "ANTALL_FEILEDE_FORSOK")
     private Long antallFeiledeForsøk = 0L;
@@ -43,13 +39,13 @@ public class EventmottakFeillogg extends BaseEntitet{
     @Column(name = "FEILMELDING_SISTE_KJORING")
     private String feilmeldingSisteKjøring;
 
-    EventmottakFeillogg(){
+    EventmottakFeillogg() {
         //For å kunne automatisk generere
     }
 
-    public EventmottakFeillogg(String melding, EventmottakStatus status, LocalDateTime sisteKjøringTS, String feilmeldingSisteKjøring) {
+    public EventmottakFeillogg(String melding, LocalDateTime sisteKjøringTS, String feilmeldingSisteKjøring) {
         this.melding = melding;
-        this.status = status;
+        this.status = FEILET;
         this.sisteKjøringTS = sisteKjøringTS;
         this.feilmeldingSisteKjøring = feilmeldingSisteKjøring;
     }
@@ -62,7 +58,7 @@ public class EventmottakFeillogg extends BaseEntitet{
         return melding;
     }
 
-    public EventmottakStatus getStatus() {
+    public String getStatus() {
         return status;
     }
 
@@ -78,8 +74,8 @@ public class EventmottakFeillogg extends BaseEntitet{
         return feilmeldingSisteKjøring;
     }
 
-    public EventmottakFeillogg endreStatus(EventmottakStatus nyStatus) {
-        this.status = nyStatus;
+    public EventmottakFeillogg markerFerdig() {
+        this.status = FERDIG;
         return this;
     }
 }
