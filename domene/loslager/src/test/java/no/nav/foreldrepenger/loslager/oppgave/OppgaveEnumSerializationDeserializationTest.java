@@ -8,15 +8,13 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.junit.Test;
-
-
 import static org.junit.Assert.*;
 
 public class OppgaveEnumSerializationDeserializationTest {
     private static final ObjectMapper mapper = getObjectMapper();
 
     @Test
-    public void fagsakStatus_roundtrip() throws Exception {
+    public void fagsakStatus() throws Exception {
         testRoundtrip(FagsakStatus.LØPENDE);
     }
 
@@ -52,7 +50,8 @@ public class OppgaveEnumSerializationDeserializationTest {
 
     private void testRoundtrip(Object initiell) throws JsonProcessingException {
         String json = toJson(initiell);
-        assertEquals(initiell, fromJson(json, initiell.getClass()));
+        Object roundtripped = fromJson(json, initiell.getClass());
+        assertEquals(initiell, roundtripped);
     }
 
     static String toJson(Object dto) throws JsonProcessingException {
