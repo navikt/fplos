@@ -50,6 +50,7 @@ public class OppgaveEnumSerializationDeserializationTest {
 
     private void testRoundtrip(Object initiell) throws JsonProcessingException {
         String json = toJson(initiell);
+        System.out.println(json);
         Object roundtripped = fromJson(json, initiell.getClass());
         assertEquals(initiell, roundtripped);
     }
