@@ -2,6 +2,8 @@ package no.nav.foreldrepenger.loslager.oppgave;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -13,8 +15,6 @@ import no.nav.foreldrepenger.loslager.BaseEntitet;
 @Entity(name = "eventmottakFeillogg")
 @Table(name = "EVENTMOTTAK_FEILLOGG")
 public class EventmottakFeillogg extends BaseEntitet {
-    private static final String FERDIG = "FERDIG";
-    private static final String FEILET = "FEILET";
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_EVENTMOTTAK_FEILLOGG")
@@ -25,7 +25,8 @@ public class EventmottakFeillogg extends BaseEntitet {
     private String melding;
 
     @Column(name = "STATUS")
-    private String status = FEILET;
+    @Enumerated(EnumType.STRING)
+    private Status status = Status.FEILET;
 
     // todo: fjern denne + databasekolonnen i contract. ingenting inkrementerer denne.. ubrukt funksjonalitet
     //@Column(name = "ANTALL_FEILEDE_FORSOK")
@@ -57,7 +58,7 @@ public class EventmottakFeillogg extends BaseEntitet {
     }
 
     public String getStatus() {
-        return status;
+        return status.name();
     }
 
     //public Long getAntallFeiledeForsøk() {
@@ -73,7 +74,11 @@ public class EventmottakFeillogg extends BaseEntitet {
     }
 
     public EventmottakFeillogg markerFerdig() {
-        this.status = FERDIG;
+        this.status = Status.FERDIG;
         return this;
+    }
+
+    public enum Status {
+        FEILET, FERDIG;
     }
 }

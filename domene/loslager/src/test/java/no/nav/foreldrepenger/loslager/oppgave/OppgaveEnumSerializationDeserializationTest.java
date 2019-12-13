@@ -34,23 +34,12 @@ public class OppgaveEnumSerializationDeserializationTest {
     }
 
     @Test
-    public void eventMottak() throws Exception {
-        testRoundtrip(EventmottakStatus.FEILET);
-    }
-
-    @Test
-    public void fagsystem() throws Exception {
-        testRoundtrip(Fagsystem.INFOTRYGD);
-    }
-
-    @Test
     public void køSortering() throws Exception {
         testRoundtrip(KøSortering.FORSTE_STONADSDAG);
     }
 
     private void testRoundtrip(Object initiell) throws JsonProcessingException {
         String json = toJson(initiell);
-        System.out.println(json);
         Object roundtripped = fromJson(json, initiell.getClass());
         assertEquals(initiell, roundtripped);
     }
