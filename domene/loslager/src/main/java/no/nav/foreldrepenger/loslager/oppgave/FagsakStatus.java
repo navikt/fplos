@@ -6,8 +6,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import no.nav.fplos.kodeverk.Kodeverdi;
 
 import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum FagsakStatus implements Kodeverdi {
