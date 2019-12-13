@@ -29,6 +29,7 @@ const headerTextCodes = [
   'GjeldendeSakslisterTabell.Stonadstype',
   'GjeldendeSakslisterTabell.Behandlingtype',
   'GjeldendeSakslisterTabell.AntallSaksbehandlere',
+  'GjeldendeSakslisterTabell.AntallBehandlinger',
   'GjeldendeSakslisterTabell.SistEndret',
   'EMPTY_1',
 ];
@@ -175,6 +176,7 @@ export class GjeldendeSakslisterTabell extends Component<TsProps, StateTsProps> 
               <TableColumn>{this.formatStonadstyper(saksliste.fagsakYtelseTyper)}</TableColumn>
               <TableColumn>{this.formatBehandlingstyper(saksliste.behandlingTyper)}</TableColumn>
               <TableColumn>{saksliste.saksbehandlerIdenter.length > 0 ? saksliste.saksbehandlerIdenter.length : ''}</TableColumn>
+              <TableColumn>{saksliste.antallBehandlinger}</TableColumn>
               <TableColumn>
                 <DateLabel dateString={saksliste.sistEndret} />
               </TableColumn>

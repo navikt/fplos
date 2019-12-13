@@ -84,11 +84,11 @@ describe('<GjeldendeSakslisterTabell>', () => {
     expect(rader).to.have.length(2);
 
     const kolonnerForRad1 = rader.first().find(TableColumn);
-    expect(kolonnerForRad1).to.have.length(6);
+    expect(kolonnerForRad1).to.have.length(7);
     expect(kolonnerForRad1.first().childAt(0).text()).to.eql('Nyansatte');
 
     const kolonnerForRad2 = rader.last().find(TableColumn);
-    expect(kolonnerForRad2).to.have.length(6);
+    expect(kolonnerForRad2).to.have.length(7);
     expect(kolonnerForRad2.first().childAt(0).text()).to.eql('Kun foreldrepenger');
   });
 
@@ -325,7 +325,7 @@ describe('<GjeldendeSakslisterTabell>', () => {
     expect(rader).to.have.length(1);
 
     const kolonnerForRad = rader.first().find(TableColumn);
-    expect(kolonnerForRad).to.have.length(6);
+    expect(kolonnerForRad).to.have.length(7);
     expect(kolonnerForRad.at(3).childAt(0).text()).to.eql('1');
   });
 });

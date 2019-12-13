@@ -82,7 +82,7 @@ public class VerdikjedetestAvdelingslederTest {
     private OppgaveRestTjeneste oppgaveRestTjeneste = new OppgaveRestTjeneste(new OppgaveTjenesteImpl(oppgaveRepositoryProvider, tpsTjeneste, avdelingslederTjeneste, ansattTjeneste), fagsakApplikasjonTjeneste);
     private AvdelingslederRestTjeneste avdelingslederRestTjeneste = new AvdelingslederRestTjeneste(new AvdelingslederTjenesteImpl(oppgaveRepositoryProvider));
     private AvdelingslederSakslisteRestTjeneste avdelingslederSakslisteRestTjeneste = new AvdelingslederSakslisteRestTjeneste(
-            new AvdelingslederTjenesteImpl(oppgaveRepositoryProvider));
+            new AvdelingslederTjenesteImpl(oppgaveRepositoryProvider), new OppgaveTjenesteImpl(oppgaveRepositoryProvider, tpsTjeneste, avdelingslederTjeneste, ansattTjeneste));
     private AvdelingslederSaksbehandlerRestTjeneste avdelingslederSaksbehandlerRestTjeneste =
             new AvdelingslederSaksbehandlerRestTjeneste(new AvdelingslederSaksbehandlerTjenesteImpl(oppgaveRepositoryProvider, new OrganisasjonRessursEnhetTjenesteImpl()));
     private SaksbehandlerSakslisteRestTjeneste saksbehandlerSakslisteRestTjeneste =
