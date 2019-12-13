@@ -39,8 +39,9 @@ public enum FagsakYtelseType implements Kodeverdi {
         return map;
     }
 
-    public static FagsakYtelseType fraKode(String value) {
-        return Optional.ofNullable(kodeMap.get(value))
+    @JsonCreator
+    public static FagsakYtelseType fraKode(@JsonProperty("kode") String kode) {
+        return Optional.ofNullable(kodeMap.get(kode))
                 .orElse(null);
     }
 
@@ -80,8 +81,4 @@ public enum FagsakYtelseType implements Kodeverdi {
         }
     }
 
-    @JsonCreator
-    static FagsakYtelseType findValue(@JsonProperty("kode") String kode) {
-        return fraKode(kode);
-    }
 }
