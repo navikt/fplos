@@ -12,7 +12,7 @@ import configureStore from './store';
 const environment = window.location.hostname;
 
 init({
-  dsn: 'https://a9c4a0ca9c2147bd82b524fbab2c92df@sentry.nav.no/3',
+  dsn: 'https://d863105541bf4d0cb030dd4c6bfb4d05@sentry.gc.nav.no/10',
   environment,
 });
 
