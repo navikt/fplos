@@ -42,11 +42,12 @@ describe('<GjeldendeSakslisterTabell>', () => {
       behandlingTyper={behandlingstyper}
       fagsakYtelseTyper={fagsakYtelseTyper}
       valgtAvdelingEnhet="2"
+      hentAntallOppgaverForAvdeling={sinon.spy()}
     />);
 
     const tekstComp = wrapper.find(FormattedMessage);
-    expect(tekstComp).to.have.length(3);
-    expect(tekstComp.at(1).prop('id')).to.eql('GjeldendeSakslisterTabell.IngenLister');
+    expect(tekstComp).to.have.length(4);
+    expect(tekstComp.at(2).prop('id')).to.eql('GjeldendeSakslisterTabell.IngenLister');
 
     expect(wrapper.find(Table)).to.have.length(0);
   });
@@ -76,9 +77,10 @@ describe('<GjeldendeSakslisterTabell>', () => {
       behandlingTyper={behandlingstyper}
       fagsakYtelseTyper={fagsakYtelseTyper}
       valgtAvdelingEnhet="2"
+      hentAntallOppgaverForAvdeling={sinon.spy()}
     />);
 
-    expect(wrapper.find(FormattedMessage)).to.have.length(6);
+    expect(wrapper.find(FormattedMessage)).to.have.length(7);
     expect(wrapper.find(Table)).to.have.length(1);
     const rader = wrapper.find(TableRow);
     expect(rader).to.have.length(2);
@@ -104,6 +106,7 @@ describe('<GjeldendeSakslisterTabell>', () => {
       behandlingTyper={behandlingstyper}
       fagsakYtelseTyper={fagsakYtelseTyper}
       valgtAvdelingEnhet="2"
+      hentAntallOppgaverForAvdeling={sinon.spy()}
     />);
 
     const div = wrapper.find('div');
@@ -126,6 +129,7 @@ describe('<GjeldendeSakslisterTabell>', () => {
       behandlingTyper={behandlingstyper}
       fagsakYtelseTyper={fagsakYtelseTyper}
       valgtAvdelingEnhet="2"
+      hentAntallOppgaverForAvdeling={sinon.spy()}
     />);
 
     const div = wrapper.find('div');
@@ -150,6 +154,7 @@ describe('<GjeldendeSakslisterTabell>', () => {
       behandlingTyper={behandlingstyper}
       fagsakYtelseTyper={fagsakYtelseTyper}
       valgtAvdelingEnhet="2"
+      hentAntallOppgaverForAvdeling={sinon.spy()}
     />);
 
     const div = wrapper.find('div');
@@ -181,6 +186,7 @@ describe('<GjeldendeSakslisterTabell>', () => {
       behandlingTyper={behandlingstyper}
       fagsakYtelseTyper={fagsakYtelseTyper}
       valgtAvdelingEnhet="2"
+      hentAntallOppgaverForAvdeling={sinon.spy()}
     />);
 
     const rader = wrapper.find(TableRow);
@@ -208,6 +214,7 @@ describe('<GjeldendeSakslisterTabell>', () => {
       behandlingTyper={behandlingstyper}
       fagsakYtelseTyper={fagsakYtelseTyper}
       valgtAvdelingEnhet="2"
+      hentAntallOppgaverForAvdeling={sinon.spy()}
     />);
 
     const rader = wrapper.find(TableRow);
@@ -242,6 +249,7 @@ describe('<GjeldendeSakslisterTabell>', () => {
       behandlingTyper={behandlingstyper}
       fagsakYtelseTyper={fagsakYtelseTyper}
       valgtAvdelingEnhet="2"
+      hentAntallOppgaverForAvdeling={sinon.spy()}
     />);
 
     const rader = wrapper.find(TableRow);
@@ -277,6 +285,7 @@ describe('<GjeldendeSakslisterTabell>', () => {
       behandlingTyper={behandlingstyper}
       fagsakYtelseTyper={fagsakYtelseTyper}
       valgtAvdelingEnhet="2"
+      hentAntallOppgaverForAvdeling={sinon.spy()}
     />);
 
     const rader = wrapper.find(TableRow);
@@ -318,6 +327,7 @@ describe('<GjeldendeSakslisterTabell>', () => {
       behandlingTyper={behandlingstyper}
       fagsakYtelseTyper={fagsakYtelseTyper}
       valgtAvdelingEnhet="2"
+      hentAntallOppgaverForAvdeling={sinon.spy()}
     />);
 
     expect(wrapper.find(Table)).to.have.length(1);

@@ -3,7 +3,9 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
-import { Normaltekst, Undertekst, Element } from 'nav-frontend-typografi';
+import {
+ Normaltekst, Undertekst, Element, Undertittel,
+} from 'nav-frontend-typografi';
 
 import { getValgtAvdelingEnhet } from 'app/duck';
 import { getKodeverk } from 'kodeverk/duck';
@@ -18,9 +20,11 @@ import TableColumn from 'sharedComponents/TableColumn';
 import DateLabel from 'sharedComponents/DateLabel';
 import addCircleIcon from 'images/add-circle.svg';
 import removeIcon from 'images/remove.svg';
+import { Column, Row } from 'nav-frontend-grid';
 import SletteSakslisteModal from './SletteSakslisteModal';
 import { Saksliste } from '../sakslisteTsType';
 import sakslistePropType from '../sakslistePropType';
+import { getAntallOppgaverForAvdelingResultat } from '../duck';
 
 import styles from './gjeldendeSakslisterTabell.less';
 
@@ -43,6 +47,8 @@ interface TsProps {
   behandlingTyper: Kodeverk[];
   fagsakYtelseTyper: Kodeverk[];
   valgtAvdelingEnhet: string;
+  oppgaverForAvdeling?: number;
+  hentAntallOppgaverForAvdeling: (avdelingEnhet: string) => Promise<string>;
 }
 
 interface StateTsProps {
@@ -64,6 +70,8 @@ export class GjeldendeSakslisterTabell extends Component<TsProps, StateTsProps> 
     behandlingTyper: PropTypes.arrayOf(kodeverkPropType).isRequired,
     fagsakYtelseTyper: PropTypes.arrayOf(kodeverkPropType).isRequired,
     valgtAvdelingEnhet: PropTypes.string.isRequired,
+    oppgaverForAvdeling: PropTypes.number,
+    hentAntallOppgaverForAvdeling: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
@@ -77,6 +85,13 @@ export class GjeldendeSakslisterTabell extends Component<TsProps, StateTsProps> 
       valgtSaksliste: undefined,
     };
     this.nodes = [];
+  }
+
+  componentDidMount = () => {
+    const {
+      hentAntallOppgaverForAvdeling, valgtAvdelingEnhet,
+    } = this.props;
+    hentAntallOppgaverForAvdeling(valgtAvdelingEnhet);
   }
 
   setValgtSaksliste = async (event: Event, id: number) => {
@@ -145,7 +160,7 @@ export class GjeldendeSakslisterTabell extends Component<TsProps, StateTsProps> 
 
   render = () => {
     const {
-      sakslister, valgtSakslisteId, lagNySaksliste, valgtAvdelingEnhet,
+      sakslister, valgtSakslisteId, lagNySaksliste, valgtAvdelingEnhet, oppgaverForAvdeling,
     } = this.props;
     const {
       valgtSaksliste,
@@ -153,7 +168,22 @@ export class GjeldendeSakslisterTabell extends Component<TsProps, StateTsProps> 
 
     return (
       <>
-        <Element><FormattedMessage id="GjeldendeSakslisterTabell.GjeldendeLister" /></Element>
+
+        <Row>
+          <Column xs="8">
+            <Element>
+              <FormattedMessage id="GjeldendeSakslisterTabell.GjeldendeLister" />
+            </Element>
+          </Column>
+          <Column xs="4">
+            <div className={styles.grayBox}>
+              <Normaltekst>
+                <FormattedMessage id="GjeldendeSakslisterTabell.OppgaverForAvdeling" />
+                <Undertittel>{oppgaverForAvdeling || '0'}</Undertittel>
+              </Normaltekst>
+            </div>
+          </Column>
+        </Row>
         {sakslister.length === 0 && (
           <>
             <VerticalSpacer eightPx />
@@ -223,6 +253,7 @@ const mapStateToProps = state => ({
   behandlingTyper: getKodeverk(kodeverkTyper.BEHANDLING_TYPE)(state),
   fagsakYtelseTyper: getKodeverk(kodeverkTyper.FAGSAK_YTELSE_TYPE)(state),
   valgtAvdelingEnhet: getValgtAvdelingEnhet(state),
+  oppgaverForAvdeling: getAntallOppgaverForAvdelingResultat(state),
 });
 
 export default connect(mapStateToProps)(GjeldendeSakslisterTabell);

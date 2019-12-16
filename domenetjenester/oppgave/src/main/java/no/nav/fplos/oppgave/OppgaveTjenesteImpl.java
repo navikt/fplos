@@ -1,23 +1,12 @@
 package no.nav.fplos.oppgave;
 
-import static no.nav.foreldrepenger.loslager.BaseEntitet.BRUKERNAVN_NÅR_SIKKERHETSKONTEKST_IKKE_FINNES;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-
 import no.nav.foreldrepenger.domene.typer.AktørId;
 import no.nav.foreldrepenger.loslager.aktør.TpsPersonDto;
 import no.nav.foreldrepenger.loslager.oppgave.Oppgave;
 import no.nav.foreldrepenger.loslager.oppgave.OppgaveFiltrering;
 import no.nav.foreldrepenger.loslager.oppgave.Reservasjon;
 import no.nav.foreldrepenger.loslager.oppgave.ReservasjonEventLogg;
+import no.nav.foreldrepenger.loslager.organisasjon.Avdeling;
 import no.nav.foreldrepenger.loslager.organisasjon.Saksbehandler;
 import no.nav.foreldrepenger.loslager.repository.OppgaveRepository;
 import no.nav.foreldrepenger.loslager.repository.OppgaveRepositoryProvider;
@@ -30,6 +19,16 @@ import no.nav.vedtak.exception.IntegrasjonException;
 import no.nav.vedtak.sikkerhet.context.SubjectHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import static no.nav.foreldrepenger.loslager.BaseEntitet.BRUKERNAVN_NÅR_SIKKERHETSKONTEKST_IKKE_FINNES;
 
 @ApplicationScoped
 public class OppgaveTjenesteImpl implements OppgaveTjeneste {
@@ -178,6 +177,12 @@ public class OppgaveTjenesteImpl implements OppgaveTjeneste {
             log.error("Henting av oppgave feilet", e);
         }
         return antallOppgaver;
+    }
+
+    @Override
+    public Integer hentAntallOppgaverForAvdeling(String avdelingsEnhet) {
+        Avdeling avdeling = organisasjonRepository.hentAvdelingFraEnhet(avdelingsEnhet);
+        return oppgaveRepository.hentAntallOppgaverForAvdeling(avdeling.getId());
     }
 
     public boolean harForandretOppgaver(List<Long> oppgaveIder) {
