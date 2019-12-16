@@ -94,7 +94,7 @@ public class FpsakEventHandler extends FpEventHandler {
                 reserverOppgaveFraTidligereReservasjon(prosesserFraAdmin, reservasjon, oppgave);
                 log.info("Oppgave {} opprettet og populert med informasjon fra FPSAK for behandlingId {}", oppgave.getId(), behandlingId);
                 loggEvent(behandlingId, oppgave.getEksternId(), OppgaveEventType.OPPRETTET, null, bpeDto.getBehandlendeEnhet());
-                opprettOppgaveEgenskaper(behandling, oppgave);
+                opprettOppgaveEgenskaper(behandling, oppgave, aksjonspunkt);
                 break;
             case OPPRETT_BESLUTTER_OPPGAVE:
                 avsluttOppgaveHvisÅpen(behandlingId, eksternId, pastOppgaveEvents, bpeDto.getBehandlendeEnhet());
@@ -103,7 +103,7 @@ public class FpsakEventHandler extends FpEventHandler {
                 log.info("Oppgave {} opprettet til beslutter og populert med informasjon fra FPSAK for behandlingId {}", beslutterOppgave.getId(), behandlingId);
                 getOppgaveRepository().lagre(new OppgaveEgenskap(beslutterOppgave, AndreKriterierType.TIL_BESLUTTER, behandling.getAnsvarligSaksbehandler()));
                 loggEvent(behandlingId, beslutterOppgave.getEksternId(), OppgaveEventType.OPPRETTET, AndreKriterierType.TIL_BESLUTTER, bpeDto.getBehandlendeEnhet());
-                opprettOppgaveEgenskaper(behandling, beslutterOppgave);
+                opprettOppgaveEgenskaper(behandling, beslutterOppgave, aksjonspunkt);
                 break;
             case OPPRETT_PAPIRSØKNAD_OPPGAVE:
                 avsluttOppgaveHvisÅpen(behandlingId, eksternId, pastOppgaveEvents, bpeDto.getBehandlendeEnhet());
@@ -112,13 +112,13 @@ public class FpsakEventHandler extends FpEventHandler {
                 log.info("Oppgave {} opprettet fra papirsøknad og populert med informasjon fra FPSAK for behandlingId {}", papirsøknadOppgave.getId(), behandlingId);
                 getOppgaveRepository().lagre(new OppgaveEgenskap(papirsøknadOppgave, AndreKriterierType.PAPIRSØKNAD));
                 loggEvent(behandlingId, papirsøknadOppgave.getEksternId(), OppgaveEventType.OPPRETTET, AndreKriterierType.PAPIRSØKNAD, bpeDto.getBehandlendeEnhet());
-                opprettOppgaveEgenskaper(behandling, papirsøknadOppgave);
+                opprettOppgaveEgenskaper(behandling, papirsøknadOppgave, aksjonspunkt);
                 break;
             case GJENÅPNE_OPPGAVE:
                 Oppgave gjenåpnetOppgave = gjenåpneOppgave(bpeDto);
                 log.info("Gjenåpnet oppgave for behandlingId {}", behandlingId);
                 loggEvent(behandlingId, gjenåpnetOppgave.getEksternId(), OppgaveEventType.GJENAPNET, null, bpeDto.getBehandlendeEnhet());
-                opprettOppgaveEgenskaper(behandling, gjenåpnetOppgave);
+                opprettOppgaveEgenskaper(behandling, gjenåpnetOppgave, aksjonspunkt);
                 break;
         }
     }
@@ -133,10 +133,11 @@ public class FpsakEventHandler extends FpEventHandler {
         loggEvent(bpeDto.getBehandlingId(), eksternId, eventType, null, bpeDto.getBehandlendeEnhet(), frist);
     }
 
-    private void opprettOppgaveEgenskaper(BehandlingFpsak behandling, Oppgave oppgave) {
+    private void opprettOppgaveEgenskaper(BehandlingFpsak behandling, Oppgave oppgave, List<Aksjonspunkt> aksjonspunkt) {
         håndterOppgaveEgenskapUtbetalingTilBruker(behandling.getHarRefusjonskravFraArbeidsgiver(), oppgave);
         håndterOppgaveEgenskapUtlandssak(behandling.getErUtlandssak(), oppgave);
         håndterOppgaveEgenskapGradering(behandling.getHarGradering(), oppgave);
+        håndterOppgaveEgenskap(finnSelvstendigFrilans(aksjonspunkt), oppgave, AndreKriterierType.SELVSTENDIG_FRILANSER);
     }
 
     private static LocalDateTime finnVentAksjonspunktFrist(List<Aksjonspunkt> aksjonspunktListe) {
@@ -155,6 +156,11 @@ public class FpsakEventHandler extends FpEventHandler {
                .filter(Objects::nonNull)
                .findFirst()
                .orElse(null);
+    }
+
+    private static boolean finnSelvstendigFrilans(List<Aksjonspunkt> aksjonspunktListe) {
+        return safeStream(aksjonspunktListe)
+                .anyMatch(Aksjonspunkt::erSelvstendigEllerFrilanser);
     }
 
 

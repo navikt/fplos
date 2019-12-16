@@ -61,14 +61,6 @@ public class EventmottakFeillogg extends BaseEntitet {
         return status.name();
     }
 
-    //public Long getAntallFeiledeForsøk() {
-        //return antallFeiledeForsøk;
-    //}
-
-//    public LocalDateTime getSisteKjøringTS() {
-//        return sisteKjøringTS;
-//    }
-
     public String getFeilmelding() {
         return feilmelding;
     }
