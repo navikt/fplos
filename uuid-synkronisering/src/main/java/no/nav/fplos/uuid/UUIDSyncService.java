@@ -17,7 +17,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-@PropertySource("classpath:application.properties")
+@PropertySource("classpath:spring-application.properties")
 @EnableAutoConfiguration(exclude = {FlywayAutoConfiguration.class})
 public class UUIDSyncService {
 
