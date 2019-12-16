@@ -30,5 +30,4 @@ public class OppgaveEventType extends Kodeliste {
     public static List<OppgaveEventType> åpningseventtyper(){
         return Arrays.asList(OPPRETTET, GJENAPNET);
     }
-
 }

@@ -18,7 +18,7 @@ public class SakslisteSorteringDto implements AbacDto {
     private SakslisteIdDto sakslisteId;
 
     @NotNull
-    @ValidKodeverk
+    //@ValidKodeverk
     private KøSortering sakslisteSorteringValg;
 
     @NotNull

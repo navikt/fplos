@@ -1,25 +1,21 @@
 package no.nav.foreldrepenger.loslager.oppgave;
 
-import java.time.LocalDateTime;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-
-import org.hibernate.annotations.JoinColumnOrFormula;
-import org.hibernate.annotations.JoinFormula;
 
 import no.nav.foreldrepenger.loslager.BaseEntitet;
 
 @Entity(name = "eventmottakFeillogg")
 @Table(name = "EVENTMOTTAK_FEILLOGG")
-public class EventmottakFeillogg extends BaseEntitet{
+public class EventmottakFeillogg extends BaseEntitet {
+    private static final String FERDIG = "FERDIG";
+    private static final String FEILET = "FEILET";
+
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_EVENTMOTTAK_FEILLOGG")
     private Long id;
@@ -28,30 +24,28 @@ public class EventmottakFeillogg extends BaseEntitet{
     @Column(name = "MELDING", nullable = false)
     private String melding;
 
-    @ManyToOne(optional = false)
-    @JoinColumnOrFormula(column = @JoinColumn(name = "STATUS", referencedColumnName = "kode", nullable = false))
-    @JoinColumnOrFormula(formula = @JoinFormula(referencedColumnName = "kodeverk", value = "'" + EventmottakStatus.DISCRIMINATOR + "'"))
-    private EventmottakStatus status;
+    @Column(name = "STATUS")
+    private String status = FEILET;
 
-    @Column(name = "ANTALL_FEILEDE_FORSOK")
-    private Long antallFeiledeForsøk = 0L;
+    // todo: fjern denne + databasekolonnen i contract. ingenting inkrementerer denne.. ubrukt funksjonalitet
+    //@Column(name = "ANTALL_FEILEDE_FORSOK")
+    //private Long antallFeiledeForsøk = 0L;
 
-    @Column(name = "SISTE_KJORING_TS", nullable = false)
-    private LocalDateTime sisteKjøringTS;
+    // todo: fjern fra db. Gitt punkt over dekkes denne av TID_OPPRETTET i BaseEntitet
+    //@Column(name = "SISTE_KJORING_TS", nullable = false)
+    //private LocalDateTime sisteKjøringTS = LocalDateTime.now();
 
     @Lob
     @Column(name = "FEILMELDING_SISTE_KJORING")
-    private String feilmeldingSisteKjøring;
+    private String feilmelding;
 
-    EventmottakFeillogg(){
-        //For å kunne automatisk generere
+    EventmottakFeillogg() {
+        // Rammeverk
     }
 
-    public EventmottakFeillogg(String melding, EventmottakStatus status, LocalDateTime sisteKjøringTS, String feilmeldingSisteKjøring) {
+    public EventmottakFeillogg(String melding, String feilmelding) {
         this.melding = melding;
-        this.status = status;
-        this.sisteKjøringTS = sisteKjøringTS;
-        this.feilmeldingSisteKjøring = feilmeldingSisteKjøring;
+        this.feilmelding = feilmelding;
     }
 
     public Long getId() {
@@ -62,24 +56,24 @@ public class EventmottakFeillogg extends BaseEntitet{
         return melding;
     }
 
-    public EventmottakStatus getStatus() {
+    public String getStatus() {
         return status;
     }
 
-    public Long getAntallFeiledeForsøk() {
-        return antallFeiledeForsøk;
+    //public Long getAntallFeiledeForsøk() {
+        //return antallFeiledeForsøk;
+    //}
+
+//    public LocalDateTime getSisteKjøringTS() {
+//        return sisteKjøringTS;
+//    }
+
+    public String getFeilmelding() {
+        return feilmelding;
     }
 
-    public LocalDateTime getSisteKjøringTS() {
-        return sisteKjøringTS;
-    }
-
-    public String getFeilmeldingSisteKjøring() {
-        return feilmeldingSisteKjøring;
-    }
-
-    public EventmottakFeillogg endreStatus(EventmottakStatus nyStatus) {
-        this.status = nyStatus;
+    public EventmottakFeillogg markerFerdig() {
+        this.status = FERDIG;
         return this;
     }
 }

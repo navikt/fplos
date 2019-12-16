@@ -1,7 +1,6 @@
 package no.nav.fplos.admin;
 
 import no.nav.foreldrepenger.loslager.oppgave.EventmottakFeillogg;
-import no.nav.foreldrepenger.loslager.oppgave.EventmottakStatus;
 import no.nav.foreldrepenger.loslager.oppgave.Oppgave;
 import no.nav.foreldrepenger.loslager.oppgave.OppgaveEventLogg;
 import no.nav.foreldrepenger.loslager.repository.AdminRepository;
@@ -98,7 +97,7 @@ public class AdminTjenesteImpl implements AdminTjeneste {
         List<EventmottakFeillogg> feillogg = adminRepository.hentAlleMeldingerFraFeillogg();
         for (EventmottakFeillogg innslag : feillogg) {
             kafaReader.prosesser(innslag.getMelding());
-            adminRepository.oppdaterStatus(innslag.getId(), EventmottakStatus.FERDIG);
+            adminRepository.markerFerdig(innslag.getId());
         }
         return feillogg.size();
     }

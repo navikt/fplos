@@ -243,7 +243,7 @@ public class OppgaveTjenesteImpl implements OppgaveTjeneste {
         try {
             return ansattTjeneste.hentAnsattNavn(ident);
         } catch (IntegrasjonException e) {
-            log.warn("Henting av ansattnavn feilet, fortsetter med ukjent navn.", e);
+            log.info("Henting av ansattnavn feilet, fortsetter med ukjent navn.", e);
             return "Ukjent ansatt";
         }
     }

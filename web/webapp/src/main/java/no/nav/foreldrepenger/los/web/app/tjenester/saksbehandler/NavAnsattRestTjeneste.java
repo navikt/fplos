@@ -40,13 +40,13 @@ public class NavAnsattRestTjeneste {
 
     @Inject
     public NavAnsattRestTjeneste(
-        @KonfigVerdi(value = "bruker.gruppenavn.saksbehandler") String gruppenavnSaksbehandler,
-        @KonfigVerdi(value = "bruker.gruppenavn.veileder") String gruppenavnVeileder,
-        @KonfigVerdi(value = "bruker.gruppenavn.beslutter") String gruppenavnBeslutter,
-        @KonfigVerdi(value = "bruker.gruppenavn.egenansatt") String gruppenavnEgenAnsatt,
-        @KonfigVerdi(value = "bruker.gruppenavn.kode6") String gruppenavnKode6,
-        @KonfigVerdi(value = "bruker.gruppenavn.kode7") String gruppenavnKode7,
-        @KonfigVerdi(value = "bruker.gruppenavn.oppgavestyrer") String gruppenavnOppgavestyrer
+        @KonfigVerdi("bruker.gruppenavn.saksbehandler") String gruppenavnSaksbehandler,
+        @KonfigVerdi("bruker.gruppenavn.veileder") String gruppenavnVeileder,
+        @KonfigVerdi("bruker.gruppenavn.beslutter") String gruppenavnBeslutter,
+        @KonfigVerdi("bruker.gruppenavn.egenansatt") String gruppenavnEgenAnsatt,
+        @KonfigVerdi("bruker.gruppenavn.kode6") String gruppenavnKode6,
+        @KonfigVerdi("bruker.gruppenavn.kode7") String gruppenavnKode7,
+        @KonfigVerdi("bruker.gruppenavn.oppgavestyrer") String gruppenavnOppgavestyrer
     ) {
         this.gruppenavnSaksbehandler = gruppenavnSaksbehandler;
         this.gruppenavnVeileder = gruppenavnVeileder;

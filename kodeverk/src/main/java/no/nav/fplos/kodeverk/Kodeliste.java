@@ -266,6 +266,8 @@ public abstract class Kodeliste extends KodeverkBaseEntitet implements Comparabl
         return kodeVerdier(Arrays.asList(entries));
     }
 
+
+
     public static List<String> kodeVerdier(Collection<? extends Kodeliste> entries) {
         return entries.stream().map(k -> k.getKode()).collect(Collectors.toList());
     }

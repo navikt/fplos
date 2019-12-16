@@ -1,27 +1,57 @@
 package no.nav.foreldrepenger.loslager.oppgave;
 
-import no.nav.fplos.kodeverk.Kodeliste;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import no.nav.fplos.kodeverk.Kodeverdi;
 
-import javax.persistence.DiscriminatorValue;
-import javax.persistence.Entity;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
-@Entity(name = "FagsakStatus")
-@DiscriminatorValue(FagsakStatus.DISCRIMINATOR)
-public class FagsakStatus extends Kodeliste {
+@JsonFormat(shape = JsonFormat.Shape.OBJECT)
+public enum FagsakStatus implements Kodeverdi {
 
-    public static final String DISCRIMINATOR = "FAGSAK_STATUS";
-    public static final FagsakStatus OPPRETTET = new FagsakStatus("OPPR");
-    public static final FagsakStatus UNDER_BEHANDLING = new FagsakStatus("UBEH");
-    public static final FagsakStatus LØPENDE = new FagsakStatus("LOP");
-    public static final FagsakStatus AVSLUTTET = new FagsakStatus("AVSLU");
-    public static final FagsakStatus DEFAULT = OPPRETTET;
+    OPPRETTET("OPPR", "Opprettet"),
+    UNDER_BEHANDLING("UBEH", "Under behandling"),
+    LØPENDE("LOP", "Løpende"),
+    AVSLUTTET("AVSLU", "Avsluttet");
 
-    FagsakStatus() {
-        // Hibernate trenger den
+    private String kode;
+    private final String navn;
+    public static final String KODEVERK = "FAGSAK_STATUS";
+
+    FagsakStatus(String kode, String navn) {
+        this.kode = kode;
+        this.navn = navn;
     }
 
-    FagsakStatus(String kode) {
-        super(kode, DISCRIMINATOR);
+    public static FagsakStatus fraKode(String kode) {
+        return Arrays.stream(values())
+                .filter(v -> v.kode.equals(kode))
+                .findFirst()
+                .orElseThrow();
     }
 
+    public static List<FagsakStatus> getEnums() {
+        return Arrays.stream(values())
+                .collect(Collectors.toList());
+    }
+
+    public String getNavn() {
+        return navn;
+    }
+
+    public String getKode() {
+        return kode;
+    }
+
+    public String getKodeverk() {
+        return KODEVERK;
+    }
+
+    @JsonCreator
+    static FagsakStatus findValue(@JsonProperty("kode") String kode) {
+        return fraKode(kode);
+    }
 }

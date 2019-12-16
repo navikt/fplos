@@ -100,7 +100,7 @@ public class KafkaReader {
     }
 
     private void loggFeiletDeserialisering(String melding){
-        oppgaveRepository.lagre(new EventmottakFeillogg(melding, EventmottakStatus.FEILET, LocalDateTime.now(), feilmelding.toString()));
+        oppgaveRepository.lagre(new EventmottakFeillogg(melding, feilmelding.toString()));
     }
 
 }

@@ -15,9 +15,9 @@ public class OppgaverForAvdeling {
     private Long antall;
 
 
-    public OppgaverForAvdeling(Object[] resultat, KodeverkRepository kodeverkRepository) {
-        fagsakYtelseType = kodeverkRepository.finn(FagsakYtelseType.class, (String) resultat[0]); // NOSONAR
-        behandlingType = kodeverkRepository.finn(BehandlingType.class, (String) resultat[1]); // NOSONAR
+    public OppgaverForAvdeling(Object[] resultat) {
+        fagsakYtelseType = FagsakYtelseType.fraKode((String) resultat[0]); // NOSONAR
+        behandlingType = BehandlingType.fraKode((String) resultat[1]); // NOSONAR
         tilBeslutter = new BooleanToStringConverter().convertToEntityAttribute((String) resultat[2]); // NOSONAR
         antall = ((BigDecimal)resultat[3]).longValue(); // NOSONAR
     }

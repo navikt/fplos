@@ -246,7 +246,8 @@ public class FpsakEventHandlerTest {
 
     @Test
     public void opprettingOppgaveMedEgenskapPapirsøknadEndringFPTest(){
-        when(foreldrepengerBehandlingRestKlient.getBehandling(anyLong())).thenReturn(behandlingDtoFra(aksjonspunktKoderPapirsøknadEndringFPDto));
+        when(foreldrepengerBehandlingRestKlient.getBehandling(anyLong()))
+                .thenReturn(behandlingDtoFra(aksjonspunktKoderPapirsøknadEndringFPDto));
         fpsakEventHandler.prosesser(eventDrammenFra(aksjonspunktKoderPapirsøknadEndringFP));
         sjekkForEnOppgaveOgEgenskap(AndreKriterierType.PAPIRSØKNAD);
         sjekkEventLoggInneholder(behandlingId, OppgaveEventType.OPPRETTET, AndreKriterierType.PAPIRSØKNAD);

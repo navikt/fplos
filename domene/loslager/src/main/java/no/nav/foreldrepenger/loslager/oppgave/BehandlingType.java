@@ -1,62 +1,83 @@
 package no.nav.foreldrepenger.loslager.oppgave;
 
-import javax.persistence.DiscriminatorValue;
-import javax.persistence.Entity;
-import javax.persistence.Transient;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import no.nav.fplos.kodeverk.Kodeverdi;
 
-import no.nav.fplos.kodeverk.Kodeliste;
-import no.nav.vedtak.felles.jpa.converters.BooleanToStringConverter;
+import javax.persistence.AttributeConverter;
+import javax.persistence.Converter;
 
-@Entity(name = "BehandlingType")
-@DiscriminatorValue(BehandlingType.DISCRIMINATOR)
-public class BehandlingType extends Kodeliste {
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
-    public static final String DISCRIMINATOR = "BEHANDLING_TYPE";
+@JsonFormat(shape = JsonFormat.Shape.OBJECT)
+public enum BehandlingType implements Kodeverdi {
+    FØRSTEGANGSSØKNAD ("BT-002", "Førstegangsbehandling"),
+    KLAGE("BT-003", "Klage"),
+    REVURDERING("BT-004", "Revurdering"),
+    SØKNAD("BT-005", "Søknad"),
+    INNSYN("BT-006", "Innsyn"),
+    ANKE("BT-008", "Anke");
 
-    /**
-     * Konstanter for å skrive ned kodeverdi. For å hente ut andre data konfigurert, må disse leses fra databasen (eks.
-     * for å hente offisiell kode for et Nav kodeverk).
-     */
-    public static final BehandlingType FØRSTEGANGSSØKNAD = new BehandlingType("BT-002"); //$NON-NLS-1$
-    public static final BehandlingType KLAGE = new BehandlingType("BT-003"); //$NON-NLS-1$
-    public static final BehandlingType REVURDERING = new BehandlingType("BT-004"); //$NON-NLS-1$
-    public static final BehandlingType INNSYN = new BehandlingType("BT-006"); //$NON-NLS-1$
-    public static final BehandlingType ANKE = new BehandlingType("BT-008"); //$NON-NLS-1$
+    private String kode;
+    private final String navn;
+    public static final String kodeverk = "BEHANDLING_TYPE";
 
-    /**
-     * Alle kodeverk må ha en verdi, det kan ikke være null i databasen. Denne koden gjør samme nytten.
-     */
-    public static final BehandlingType UDEFINERT = new BehandlingType("-"); //$NON-NLS-1$
-
-    @Transient
-    private Integer behandlingstidFristUker;
-    @Transient
-    private Boolean behandlingstidVarselbrev;
-
-    BehandlingType() {
-        // Hibernate trenger den
+    BehandlingType(String kode, String navn) {
+        this.kode = kode;
+        this.navn = navn;
     }
 
-    protected BehandlingType(String kode) {
-        super(kode, DISCRIMINATOR);
+    public static BehandlingType fraKode(String kode) {
+        return Arrays.stream(values())
+                .filter(v -> v.kode.equals(kode))
+                .findFirst()
+                .orElseThrow();
     }
 
-    public int getBehandlingstidFristUker() {
-        if (behandlingstidFristUker == null) {
-            String behandlingstidFristUkerStr = getJsonField("behandlingstidFristUker");
-            behandlingstidFristUker = Integer.parseInt(behandlingstidFristUkerStr);
+    public static List<BehandlingType> getEnums() {
+        return Arrays.stream(values())
+                .collect(Collectors.toList());
+    }
+
+    public String getNavn() {
+        return navn;
+    }
+
+    public String getKode() { return kode; }
+
+    public String getKodeverk() {
+        return kodeverk;
+    }
+
+    @Converter(autoApply = true)
+    public static class KodeverdiConverter implements AttributeConverter<BehandlingType, String> {
+        @Override
+        public String convertToDatabaseColumn(BehandlingType attribute) {
+            return Optional.ofNullable(attribute)
+                    .map(BehandlingType::getKode)
+                    .orElse(null);
         }
-        return behandlingstidFristUker;
+
+        @Override
+        public BehandlingType convertToEntityAttribute(String dbData) {
+            return Optional.ofNullable(dbData)
+                    .map(BehandlingType::fraKode)
+                    .orElse(null);
+        }
     }
 
-    public boolean isBehandlingstidVarselbrev() {
-        if (behandlingstidVarselbrev == null) {
-            behandlingstidVarselbrev = false;
-            String behandlingstidVarselbrevStr = getJsonField("behandlingstidVarselbrev");
-            if (behandlingstidVarselbrevStr != null) {
-                this.behandlingstidVarselbrev = new BooleanToStringConverter().convertToEntityAttribute(behandlingstidVarselbrevStr);
-            }
-        }
-        return behandlingstidVarselbrev;
+    @JsonCreator
+    static BehandlingType findValue(@JsonProperty("kode") String kode,
+                                    @JsonProperty("navn") String navn,
+                                    @JsonProperty("kodeverk") String kodeverk) {
+        return fraKode(kode);
     }
 }

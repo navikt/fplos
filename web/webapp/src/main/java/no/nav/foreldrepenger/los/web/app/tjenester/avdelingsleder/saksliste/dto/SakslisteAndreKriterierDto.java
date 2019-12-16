@@ -18,7 +18,7 @@ public class SakslisteAndreKriterierDto implements AbacDto {
     private SakslisteIdDto sakslisteId;
 
     @NotNull
-    @ValidKodeverk
+    //@ValidKodeverk
     private AndreKriterierType andreKriterierType;
 
     private boolean checked;
