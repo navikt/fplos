@@ -85,9 +85,8 @@ public class ForeldrepengerBehandlingRestKlient {
 
             hentUttakKontrollerFaktaPerioder(behandlingId, builder, links);
             return builder.build();
-        } catch (URISyntaxException | IntegrasjonException e) {
-            LOGGER.error("Feilet å hente behandling fra FPSAK for behandlingId: " + behandlingId, e);
-            return null;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         } finally {
             loginContext.logout();
         }

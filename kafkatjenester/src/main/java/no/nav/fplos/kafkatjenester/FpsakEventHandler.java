@@ -52,11 +52,11 @@ public class FpsakEventHandler extends FpEventHandler {
     }
 
     @Override
-    public void prosesser(BehandlingProsessEventDto bpeDto){
+    public void prosesser(BehandlingProsessEventDto bpeDto) {
         prosesser(bpeDto, null,false);
     }
 
-    public void prosesserFraAdmin(BehandlingProsessEventDto bpeDto, Reservasjon reservasjon){
+    public void prosesserFraAdmin(BehandlingProsessEventDto bpeDto, Reservasjon reservasjon) {
         prosesser(bpeDto, reservasjon, true);
     }
 

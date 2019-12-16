@@ -102,8 +102,13 @@ public class HentOppgaverTest {
         List<OppgaveDto> oppgaverTilBehandling = oppgaveRestTjeneste.getOppgaverTilBehandling(new SakslisteIdDto(oppgaveFiltrering.getId()));
 
         assertThat(oppgaverTilBehandling).hasSize(3);
-        assertThat(oppgaverTilBehandling).extracting(OppgaveDto::getBehandlingId).containsAll(MockKafkaMessages.førstegangsbehandlingMeldinger.values().stream().map(m -> m.getBehandlingId()).collect(Collectors.toList()));
-        oppgaverTilBehandling.forEach(oppgave -> MockKafkaMessages.førstegangsbehandlingMeldinger.get(oppgave.getBehandlingId()).sammenligne(oppgave));
+        assertThat(oppgaverTilBehandling)
+                .extracting(OppgaveDto::getBehandlingId)
+                .containsAll(MockKafkaMessages.førstegangsbehandlingMeldinger.values().stream()
+                        .map(m -> m.getBehandlingId())
+                        .collect(Collectors.toList()));
+        oppgaverTilBehandling.forEach(oppgave -> MockKafkaMessages.førstegangsbehandlingMeldinger.get(oppgave.getBehandlingId())
+                .sammenligne(oppgave));
 
         MockKafkaMessages.clearMessages();
         MockKafkaMessages.sendAvsluttetFørstegangsbehandlingOppgave(1L);

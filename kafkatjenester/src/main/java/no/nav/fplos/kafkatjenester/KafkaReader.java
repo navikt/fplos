@@ -3,7 +3,6 @@ package no.nav.fplos.kafkatjenester;
 import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import no.nav.foreldrepenger.loslager.oppgave.EventmottakFeillogg;
-import no.nav.foreldrepenger.loslager.oppgave.EventmottakStatus;
 import no.nav.foreldrepenger.loslager.repository.OppgaveRepository;
 import no.nav.foreldrepenger.loslager.repository.OppgaveRepositoryProvider;
 import no.nav.fplos.kafkatjenester.jsonoppgave.JsonOppgave;
@@ -14,7 +13,6 @@ import org.slf4j.LoggerFactory;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import java.io.IOException;
-import java.time.LocalDateTime;
 import java.util.List;
 
 @ApplicationScoped
@@ -25,7 +23,7 @@ public class KafkaReader {
     private FpsakEventHandler fpsakEventHandler;
     private TilbakekrevingEventHandler tilbakekrevingEventHandler;
     private AksjonspunktMeldingConsumer meldingConsumer;
-    private StringBuilder feilmelding;
+    private StringBuilder feilmelding = new StringBuilder();
     private JsonOppgaveHandler jsonOppgaveHandler;
 
     public KafkaReader(){
@@ -58,32 +56,31 @@ public class KafkaReader {
 
     public void prosesser(String melding) {
         log.info("Mottatt melding med start :" + melding.substring(0, Math.min(melding.length() - 1, 1000)));
-        feilmelding = new StringBuilder();
         try {
-            BehandlingProsessEventDto behandlingProsessEventDto = deserialiser(melding, BehandlingProsessEventDto.class);
-            if (behandlingProsessEventDto != null) {
-                switch(Fagsystem.valueOf(behandlingProsessEventDto.getFagsystem())){
+            BehandlingProsessEventDto event = deserialiser(melding, BehandlingProsessEventDto.class);
+            if (event != null) {
+                switch (Fagsystem.valueOf(event.getFagsystem())) {
                     case FPSAK:
-                        fpsakEventHandler.prosesser(behandlingProsessEventDto);
+                        fpsakEventHandler.prosesser(event);
                         return;
                     case FPTILBAKE:
-                        tilbakekrevingEventHandler.prosesser(behandlingProsessEventDto);
+                        tilbakekrevingEventHandler.prosesser(event);
                         return;
                     default:
-                        log.warn("BehandlingProsessEventDto har ikke gyldig verdi for fagsystem. Fagsystem {} er ikke støttet i fplos",
-                                behandlingProsessEventDto.getFagsystem());
+                        log.warn("BehandlingProsessEventDto har ikke gyldig verdi for fagsystem. Fagsystem {} er ikke støttet.",
+                                event.getFagsystem());
                 }
             }
 
             JsonOppgave oppgaveJson = deserialiser(melding, JsonOppgave.class);
             if (oppgaveJson != null) { jsonOppgaveHandler.prosesser(oppgaveJson); }
 
-            loggFeiletDeserialisering(melding);
-            log.error("Klarte ikke å deserialisere meldingen");
-        } catch (Exception tekniskException) {
-            feilmelding.append(tekniskException.getMessage());
-            log.warn("Feil ved deserialisering lagt til i logg", tekniskException);
-            loggFeiletDeserialisering(melding);
+            lagreFeiletMelding(melding);
+            log.warn("Kunne ikke deserialisere meldingen");
+        } catch (Exception e) {
+            log.warn("Behandling av event feilet. Lagret melding til EventMottakFeillogg for rekjøring.", e);
+            feilmelding.append(e.getMessage());
+            lagreFeiletMelding(melding);
         }
     }
 
@@ -99,7 +96,7 @@ public class KafkaReader {
         }
     }
 
-    private void loggFeiletDeserialisering(String melding){
+    private void lagreFeiletMelding(String melding){
         oppgaveRepository.lagre(new EventmottakFeillogg(melding, feilmelding.toString()));
     }
 

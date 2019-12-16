@@ -53,7 +53,6 @@ public abstract class FpEventHandler {
     }
 
 
-
     /*protected void avsluttOppgaveOgLoggEventVedEksternId(BehandlingProsessEventDto bpeDto, OppgaveEventType eventType, LocalDateTime fristTid){
         Optional<EksternIdentifikator> eksternId = getEksternIdentifikatorRespository().finnIdentifikator(bpeDto.getFagsystem(), bpeDto.getId());
         if(eksternId.isPresent()) {
@@ -66,28 +65,29 @@ public abstract class FpEventHandler {
         }
     }*/
     protected void reserverOppgaveFraTidligereReservasjon(boolean reserverOppgave,
-                                                        Reservasjon reservasjon,
-                                                        Oppgave oppgave) {
+                                                          Reservasjon reservasjon,
+                                                          Oppgave oppgave) {
         if (reserverOppgave && reservasjon != null) {
             getOppgaveRepository().reserverOppgaveFraTidligereReservasjon(oppgave.getId(), reservasjon);
         }
     }
+
     protected List<OppgaveEventLogg> hentEventerVedEksternId(UUID eksternId) {
-        if(eksternId != null){
+        if (eksternId != null) {
             return getOppgaveRepository().hentEventerForEksternId(eksternId);
-        }
-        else return new ArrayList<>();
+        } else return new ArrayList<>();
     }
-/*
-    protected Oppgave gjenåpneOppgaveVedEksternId(String fagsystem, String eksternRefId) {
-        Optional<EksternIdentifikator> eksternId = eksternIdentifikatorRespository.finnIdentifikator(fagsystem, eksternRefId);
-        if(eksternId.isPresent()){
-            return oppgaveRepository.gjenåpneOppgaveForEksternId(eksternId.get().getId());
-        } else {
-            log.debug("Fant ikke eksternId som indikerer at der ikke finnes eksisterende oppgaver som kan gjenåpnes");
-            return null;
+
+    /*
+        protected Oppgave gjenåpneOppgaveVedEksternId(String fagsystem, String eksternRefId) {
+            Optional<EksternIdentifikator> eksternId = eksternIdentifikatorRespository.finnIdentifikator(fagsystem, eksternRefId);
+            if(eksternId.isPresent()){
+                return oppgaveRepository.gjenåpneOppgaveForEksternId(eksternId.get().getId());
+            } else {
+                log.debug("Fant ikke eksternId som indikerer at der ikke finnes eksisterende oppgaver som kan gjenåpnes");
+                return null;
+            }
         }
-    }
-*/
+    */
     public abstract void prosesser(BehandlingProsessEventDto bpeDto);
 }
