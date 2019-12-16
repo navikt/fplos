@@ -226,6 +226,7 @@ export class GjeldendeSakslisterTabell extends Component<TsProps, StateTsProps> 
         </Table>
         )}
         <div
+          id="leggTilListe"
           role="button"
           tabIndex={0}
           className={styles.addPeriode}

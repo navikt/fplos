@@ -109,10 +109,10 @@ describe('<GjeldendeSakslisterTabell>', () => {
       hentAntallOppgaverForAvdeling={sinon.spy()}
     />);
 
-    const div = wrapper.find('div');
-    expect(div).to.have.length(1);
+    const leggTilListe = wrapper.find('div#leggTilListe');
+    expect(leggTilListe).to.have.length(1);
 
-    div.prop('onClick')();
+    leggTilListe.prop('onClick')();
 
     expect(lagNySakslisteFn.calledOnce).to.be.true;
   });
@@ -132,10 +132,10 @@ describe('<GjeldendeSakslisterTabell>', () => {
       hentAntallOppgaverForAvdeling={sinon.spy()}
     />);
 
-    const div = wrapper.find('div');
-    expect(div).to.have.length(1);
+    const leggTilListe = wrapper.find('div#leggTilListe');
+    expect(leggTilListe).to.have.length(1);
 
-    div.prop('onKeyDown')({
+    leggTilListe.prop('onKeyDown')({
       keyCode: 13,
     });
 
@@ -157,10 +157,10 @@ describe('<GjeldendeSakslisterTabell>', () => {
       hentAntallOppgaverForAvdeling={sinon.spy()}
     />);
 
-    const div = wrapper.find('div');
-    expect(div).to.have.length(1);
+    const leggTilListe = wrapper.find('div#leggTilListe');
+    expect(leggTilListe).to.have.length(1);
 
-    div.prop('onKeyDown')({
+    leggTilListe.prop('onKeyDown')({
       keyCode: 10,
     });
 
