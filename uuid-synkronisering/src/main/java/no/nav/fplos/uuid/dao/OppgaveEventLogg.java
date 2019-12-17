@@ -1,7 +1,5 @@
 package no.nav.fplos.uuid.dao;
 
-import no.nav.foreldrepenger.loslager.BaseEntitet;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -10,7 +8,7 @@ import java.util.UUID;
 
 @Entity(name = "OppgaveEventLogg")
 @Table(name = "OPPGAVE_EVENT_LOGG")
-public class OppgaveEventLogg extends BaseEntitet {
+public class OppgaveEventLogg {
     @Id
     private Long id;
 
@@ -32,7 +30,4 @@ public class OppgaveEventLogg extends BaseEntitet {
         return id;
     }
 
-    public void setEksternId(UUID eksternId) {
-        this.eksternId = eksternId;
-    }
 }
