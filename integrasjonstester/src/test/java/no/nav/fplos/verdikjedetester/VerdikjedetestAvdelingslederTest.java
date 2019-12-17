@@ -221,18 +221,18 @@ public class VerdikjedetestAvdelingslederTest {
     }
 
     private OppgaveDto verifiserAtEksaktFinnes(SakslisteIdDto sakslisteIdDto, Map<Long, MeldingsTestInfo> meldinger, List<OppgaveDto> oppgaverTilBehandling) {
-        assertThat(oppgaverTilBehandling).withFailMessage("Oppgavene til behandling antall '"+oppgaverTilBehandling.size()+
-                "' har ikke samme antall som meldingene antall '"+meldinger.size()+"'" )
-                .hasSize(Math.min(meldinger.size(),3));
+        assertThat(oppgaverTilBehandling).withFailMessage("Oppgavene til behandling antall '" + oppgaverTilBehandling.size() +
+                "' har ikke samme antall som meldingene antall '" + meldinger.size() + "'")
+                .hasSize(Math.min(meldinger.size(), 3));
         Integer antallOppgaverForSaksliste = avdelingslederOppgaveRestTjeneste.hentAntallOppgaverForSaksliste(sakslisteIdDto, new AvdelingEnhetDto(avdelingDrammen.getAvdelingEnhet()));
-        assertThat(antallOppgaverForSaksliste.intValue()).withFailMessage("AntallOppgaverForSaksliste gir antallet "+
-                antallOppgaverForSaksliste+" mens antall fra meldinger er "+meldinger.size())
+        assertThat(antallOppgaverForSaksliste.intValue()).withFailMessage("AntallOppgaverForSaksliste gir antallet " +
+                antallOppgaverForSaksliste + " mens antall fra meldinger er " + meldinger.size())
                 .isEqualTo(meldinger.size());
-        for (OppgaveDto oppgave :oppgaverTilBehandling) {
-            assertThat(meldinger.get(oppgave.getBehandlingId())).withFailMessage("Finner ikke oppgaven med behandlingId:"+oppgave.getBehandlingId()+" i settet funnet i databasen").isNotNull();
+        for (OppgaveDto oppgave : oppgaverTilBehandling) {
+            assertThat(meldinger.get(oppgave.getBehandlingId())).withFailMessage("Finner ikke oppgaven med behandlingId:" + oppgave.getBehandlingId() + " i settet funnet i databasen").isNotNull();
             meldinger.get(oppgave.getBehandlingId()).sammenligne(oppgave);
         }
-        if (oppgaverTilBehandling.isEmpty())return null;
+        if (oppgaverTilBehandling.isEmpty()) return null;
         return oppgaverTilBehandling.get(0);
     }
 

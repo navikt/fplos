@@ -102,17 +102,17 @@ public class OppgaveRepositoryImpl implements OppgaveRepository {
                 filtrerBehandlingType +
                 filtrerYtelseType +
                 ekskluderInkluderAndreKriterier +
-                "NOT EXISTS (select r from Reservasjon r where r.oppgave = o and r.reservertTil > :naa) AND " +
-                "NOT EXISTS (select oetilbesl.oppgave from OppgaveEgenskap oetilbesl " +
-                    "where oetilbesl.oppgave = o AND oetilbesl.aktiv = true AND oetilbesl.andreKriterierType = :tilbeslutter " +
-                    "AND upper(oetilbesl.sisteSaksbehandlerForTotrinn) = upper( :uid ) ) " +
+                "NOT EXISTS (select r from Reservasjon r where r.oppgave = o and r.reservertTil > :naa) " +
+                tilBeslutter(queryDto) +
                 "AND a.id = :enhet " +
                 "AND o.aktiv = true " + sortering(queryDto), oppgaveClass)
                 .setParameter("naa", LocalDateTime.now())
-                .setParameter("enhet", queryDto.getId())
-                .setParameter("tilbeslutter", AndreKriterierType.TIL_BESLUTTER)
-                .setParameter("uid", finnBrukernavn());
+                .setParameter("enhet", queryDto.getId());
 
+        if (!queryDto.getForAvdelingsleder()) {
+            query.setParameter("tilbeslutter", AndreKriterierType.TIL_BESLUTTER)
+                    .setParameter("uid", finnBrukernavn());
+        }
         if (!queryDto.getBehandlingTyper().isEmpty()) {
             query.setParameter("behtyper", queryDto.getBehandlingTyper());
         }
@@ -133,6 +133,13 @@ public class OppgaveRepositoryImpl implements OppgaveRepository {
         }
 
         return query;
+    }
+
+    private String tilBeslutter(OppgavespørringDto dto) {
+        return dto.getForAvdelingsleder() ? ""
+                : "AND NOT EXISTS (select oetilbesl.oppgave from OppgaveEgenskap oetilbesl " +
+                "where oetilbesl.oppgave = o AND oetilbesl.aktiv = true AND oetilbesl.andreKriterierType = :tilbeslutter " +
+                "AND upper(oetilbesl.sisteSaksbehandlerForTotrinn) = upper( :uid ) )";
     }
 
     private String sortering(OppgavespørringDto oppgavespørringDto) {

@@ -47,6 +47,6 @@ public class AvdelingslederOppgaveRestTjeneste {
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
     public Integer hentAntallOppgaverForSaksliste(@NotNull @QueryParam("sakslisteId") @Valid SakslisteIdDto sakslisteId,
                                                   @NotNull @QueryParam("avdelingEnhet") @Valid AvdelingEnhetDto avdelingEnhetDto) {
-        return oppgaveTjeneste.hentAntallOppgaver(sakslisteId.getVerdi());
+        return oppgaveTjeneste.hentAntallOppgaver(sakslisteId.getVerdi(), true);
     }
 }

@@ -58,7 +58,7 @@ public class OppgaveTjenesteImpl implements OppgaveTjeneste {
     }
 
     @Override
-    public List<Oppgave> hentOppgaver(Long sakslisteId){
+    public List<Oppgave> hentOppgaver(Long sakslisteId) {
         try {
             OppgaveFiltrering oppgaveListe = oppgaveRepository.hentListe(sakslisteId);
             if (oppgaveListe == null) {
@@ -74,7 +74,7 @@ public class OppgaveTjenesteImpl implements OppgaveTjeneste {
     }
 
     @Override
-    public List<Oppgave> hentNesteOppgaver(Long sakslisteId){
+    public List<Oppgave> hentNesteOppgaver(Long sakslisteId) {
         return hentOppgaver(sakslisteId);
     }
 
@@ -89,7 +89,7 @@ public class OppgaveTjenesteImpl implements OppgaveTjeneste {
     }
 
 
-    public List<Reservasjon> hentReservasjonerTilknyttetAktiveOppgaver(){
+    public List<Reservasjon> hentReservasjonerTilknyttetAktiveOppgaver() {
         return oppgaveRepository.hentReservasjonerTilknyttetAktiveOppgaver(finnBrukernavn());
     }
 
@@ -105,12 +105,12 @@ public class OppgaveTjenesteImpl implements OppgaveTjeneste {
         return reservasjon;
     }
 
-    public Reservasjon hentReservasjon(Long oppgaveId){
+    public Reservasjon hentReservasjon(Long oppgaveId) {
         return oppgaveRepository.hentReservasjon(oppgaveId);
     }
 
     @Override
-    public Reservasjon frigiOppgave(Long oppgaveId, String begrunnelse){
+    public Reservasjon frigiOppgave(Long oppgaveId, String begrunnelse) {
         Reservasjon reservasjon = oppgaveRepository.hentReservasjon(oppgaveId);
         Oppgave oppgave = reservasjon.getOppgave();
         reservasjon.frigiReservasjon(begrunnelse);
@@ -120,7 +120,7 @@ public class OppgaveTjenesteImpl implements OppgaveTjeneste {
         return reservasjon;
     }
 
-    public Reservasjon forlengReservasjonPåOppgave(Long oppgaveId){
+    public Reservasjon forlengReservasjonPåOppgave(Long oppgaveId) {
         Reservasjon reservasjon = oppgaveRepository.hentReservasjon(oppgaveId);
         reservasjon.forlengReservasjonPåOppgave();
         oppgaveRepository.lagre(reservasjon);
@@ -167,12 +167,14 @@ public class OppgaveTjenesteImpl implements OppgaveTjeneste {
     }
 
     @Override
-    public Integer hentAntallOppgaver(Long behandlingsKø) {
+    public Integer hentAntallOppgaver(Long behandlingsKø, boolean forAvdelingsleder) {
         int antallOppgaver = 0;
         try {
             OppgaveFiltrering oppgaveFiltrering = oppgaveRepository.hentListe(behandlingsKø);
             if (oppgaveFiltrering != null) {
-                antallOppgaver = oppgaveRepository.hentAntallOppgaver(new OppgavespørringDto(oppgaveFiltrering));
+                var queryDto = new OppgavespørringDto(oppgaveFiltrering);
+                queryDto.setForAvdelingsleder(forAvdelingsleder);
+                antallOppgaver = oppgaveRepository.hentAntallOppgaver(queryDto);
             }
         } catch (Exception e) {
             log.error("Henting av oppgave feilet", e);
