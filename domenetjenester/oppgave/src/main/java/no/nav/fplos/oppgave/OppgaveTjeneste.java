@@ -39,7 +39,7 @@ public interface OppgaveTjeneste {
 
     Optional<TpsPersonDto> hentPersonInfoOptional(long aktørId);
 
-    Integer hentAntallOppgaver(Long behandlingsKø);
+    Integer hentAntallOppgaver(Long behandlingsKø, boolean forAvdelingsleder);
 
     Integer hentAntallOppgaverForAvdeling(String avdelingEnhet);
 
