@@ -39,10 +39,8 @@ public class UUIDSyncService {
         List<Oppgave> oppgaveBehandlinger = oppgaveRepository.finnOppgaverUtenEksternId();
         oppgaveBehandlinger.stream().forEach(oppgave -> settUuidPåOppgaveFraBehandlingsId(oppgave));
 
-        if(oppgaveBehandlinger.isEmpty()) {
-            List<OppgaveEventLogg> oppgaveEventBehandlinger = oppgaveEventLoggRepository.finnOppgaveEventerUtenEksternId();
-            oppgaveEventBehandlinger.stream().forEach(oppgaveEvent -> settUuidPåOppgaveEventFraBehandlingsId(oppgaveEvent));
-        }
+        List<OppgaveEventLogg> oppgaveEventBehandlinger = oppgaveEventLoggRepository.finnOppgaveEventerUtenEksternId();
+        oppgaveEventBehandlinger.stream().forEach(oppgaveEvent -> settUuidPåOppgaveEventFraBehandlingsId(oppgaveEvent));
     }
 
     private void settUuidPåOppgaveFraBehandlingsId(Oppgave oppgave) {
