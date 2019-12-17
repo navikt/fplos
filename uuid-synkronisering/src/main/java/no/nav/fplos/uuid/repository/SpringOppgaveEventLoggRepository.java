@@ -14,8 +14,8 @@ import java.util.UUID;
 @Repository
 public interface SpringOppgaveEventLoggRepository extends CrudRepository<OppgaveEventLogg, Long> {
 
-    @Query("SELECT distinct oe.behandlingId FROM OppgaveEventLogg oe WHERE oe.eksternId is null")
-   List<Long> finnBehandlingIdForOppgaveEventerUtenEksternId();
+    @Query("SELECT oe FROM OppgaveEventLogg oe WHERE oe.eksternId is null")
+   List<OppgaveEventLogg> finnOppgaveEventerUtenEksternId();
 
     @Modifying
     @Query("UPDATE OppgaveEventLogg oe set oe.eksternId = :eksternId where oe.behandlingId = :behandlingId AND oe.eksternId is null")

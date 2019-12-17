@@ -8,7 +8,7 @@ import java.util.UUID;
 
 @Entity(name = "Oppgave")
 @Table(name = "OPPGAVE")
-public class Oppgave {
+public class Oppgave extends BaseEntitet{
 
     @Id
     private Long id;
@@ -31,4 +31,7 @@ public class Oppgave {
         return eksternId;
     }
 
+    public void setEksternId(UUID eksternId) {
+        this.eksternId = eksternId;
+    }
 }

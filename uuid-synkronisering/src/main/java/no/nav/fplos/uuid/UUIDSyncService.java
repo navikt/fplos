@@ -2,6 +2,8 @@ package no.nav.fplos.uuid;
 
 import no.nav.fplos.foreldrepengerbehandling.BehandlingFpsak;
 import no.nav.fplos.foreldrepengerbehandling.ForeldrepengerBehandlingRestKlient;
+import no.nav.fplos.uuid.dao.Oppgave;
+import no.nav.fplos.uuid.dao.OppgaveEventLogg;
 import no.nav.fplos.uuid.repository.SpringOppgaveEventLoggRepository;
 import no.nav.fplos.uuid.repository.SpringOppgaveRepository;
 import no.nav.vedtak.felles.integrasjon.rest.OidcRestClient;
@@ -34,27 +36,28 @@ public class UUIDSyncService {
         this.foreldrePengerBehandlingRestKlient = new ForeldrepengerBehandlingRestKlient(restClient,  fpsakUrl);
     }
     public void oppdaterUUID() {
-        List<Long> oppgaveBehandlinger = oppgaveRepository.finnBehandlingIdForOppgaverUtenEksternId();
-        oppgaveBehandlinger.stream().forEach(behandlingId -> settUuidPåOppgaveFraBehandlingsId(behandlingId));
+        List<Oppgave> oppgaveBehandlinger = oppgaveRepository.finnOppgaverUtenEksternId();
+        oppgaveBehandlinger.stream().forEach(oppgave -> settUuidPåOppgaveFraBehandlingsId(oppgave));
 
         if(oppgaveBehandlinger.isEmpty()) {
-            List<Long> oppgaveEventBehandlinger = oppgaveEventLoggRepository.finnBehandlingIdForOppgaveEventerUtenEksternId();
-            oppgaveEventBehandlinger.stream().forEach(behandlingId -> settUuidPåOppgaveEventFraBehandlingsId(behandlingId));
+            List<OppgaveEventLogg> oppgaveEventBehandlinger = oppgaveEventLoggRepository.finnOppgaveEventerUtenEksternId();
+            oppgaveEventBehandlinger.stream().forEach(oppgaveEvent -> settUuidPåOppgaveEventFraBehandlingsId(oppgaveEvent));
         }
     }
 
-    private void settUuidPåOppgaveFraBehandlingsId(Long behandlingId) {
-        BehandlingFpsak sak = foreldrePengerBehandlingRestKlient.getBehandling(behandlingId);
+    private void settUuidPåOppgaveFraBehandlingsId(Oppgave oppgave) {
+        BehandlingFpsak sak = foreldrePengerBehandlingRestKlient.getBehandling(oppgave.getBehandlingId());
         if(sak != null) {
-            oppgaveRepository.settInnUUIDForOppgaverMedBehandlingId(behandlingId, sak.getUuid());
-            oppgaveEventLoggRepository.settInnUUIDForOppgaveEventerMedBehandlingId(behandlingId, sak.getUuid());
+            oppgave.setEksternId(sak.getUuid());
+            oppgaveRepository.save(oppgave);
         }
     }
 
-    private void settUuidPåOppgaveEventFraBehandlingsId(Long behandlingId) {
-        BehandlingFpsak sak = foreldrePengerBehandlingRestKlient.getBehandling(behandlingId);
+    private void settUuidPåOppgaveEventFraBehandlingsId(OppgaveEventLogg oppgaveEvent) {
+        BehandlingFpsak sak = foreldrePengerBehandlingRestKlient.getBehandling(oppgaveEvent.getBehandlingId());
         if(sak != null) {
-            oppgaveEventLoggRepository.settInnUUIDForOppgaveEventerMedBehandlingId(behandlingId, sak.getUuid());
+            oppgaveEvent.setEksternId(sak.getUuid());
+            oppgaveEventLoggRepository.save(oppgaveEvent);
         }
     }
 }

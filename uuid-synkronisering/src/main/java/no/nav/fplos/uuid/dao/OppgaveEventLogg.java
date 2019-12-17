@@ -8,7 +8,7 @@ import java.util.UUID;
 
 @Entity(name = "OppgaveEventLogg")
 @Table(name = "OPPGAVE_EVENT_LOGG")
-public class OppgaveEventLogg {
+public class OppgaveEventLogg extends BaseEntitet {
     @Id
     private Long id;
 
@@ -30,4 +30,7 @@ public class OppgaveEventLogg {
         return id;
     }
 
+    public void setEksternId(UUID eksternId) {
+        this.eksternId = eksternId;
+    }
 }

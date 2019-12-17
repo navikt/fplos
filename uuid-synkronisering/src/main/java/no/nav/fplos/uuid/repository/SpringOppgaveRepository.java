@@ -16,8 +16,8 @@ import java.util.UUID;
 @Repository
 public interface SpringOppgaveRepository extends CrudRepository<Oppgave, Long> {
 
-    @Query("SELECT distinct o.behandlingId FROM Oppgave o WHERE o.eksternId is null")
-    List<Long> finnBehandlingIdForOppgaverUtenEksternId();
+    @Query("SELECT o FROM Oppgave o WHERE o.eksternId is null")
+    List<Oppgave> finnOppgaverUtenEksternId();
 
     @Modifying
     @Query("UPDATE Oppgave o set o.eksternId = :eksternId where o.behandlingId = :behandlingId and o.eksternId is null")
