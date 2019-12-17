@@ -147,7 +147,7 @@ public class OppgaveRepositoryImpl implements OppgaveRepository {
         return dto.getForAvdelingsleder() ? ""
                 : "AND NOT EXISTS (select oetilbesl.oppgave from OppgaveEgenskap oetilbesl " +
                 "where oetilbesl.oppgave = o AND oetilbesl.aktiv = true AND oetilbesl.andreKriterierType = :tilbeslutter " +
-                "AND upper(oetilbesl.sisteSaksbehandlerForTotrinn) = upper( :uid ) )";
+                "AND upper(oetilbesl.sisteSaksbehandlerForTotrinn) = upper( :uid ) ) ";
     }
 
     private String sortering(OppgavespørringDto oppgavespørringDto) {
