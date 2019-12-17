@@ -47,6 +47,7 @@ interface TsProps {
   behandlingTyper: Kodeverk[];
   fagsakYtelseTyper: Kodeverk[];
   valgtAvdelingEnhet: string;
+  hentAvdelingensSakslister: (avdelingEnhet: string) => Saksliste[];
   oppgaverForAvdeling?: number;
   hentAntallOppgaverForAvdeling: (avdelingEnhet: string) => Promise<string>;
 }
@@ -70,6 +71,7 @@ export class GjeldendeSakslisterTabell extends Component<TsProps, StateTsProps> 
     behandlingTyper: PropTypes.arrayOf(kodeverkPropType).isRequired,
     fagsakYtelseTyper: PropTypes.arrayOf(kodeverkPropType).isRequired,
     valgtAvdelingEnhet: PropTypes.string.isRequired,
+    hentAvdelingensSakslister: PropTypes.func.isRequired,
     oppgaverForAvdeling: PropTypes.number,
     hentAntallOppgaverForAvdeling: PropTypes.func.isRequired,
   };
@@ -95,7 +97,7 @@ export class GjeldendeSakslisterTabell extends Component<TsProps, StateTsProps> 
   }
 
   setValgtSaksliste = async (event: Event, id: number) => {
-    const { setValgtSakslisteId } = this.props;
+    const { setValgtSakslisteId, hentAvdelingensSakslister, valgtAvdelingEnhet } = this.props;
     if (this.nodes.some(node => node && node.contains(event.target))) {
       return;
     }
@@ -105,6 +107,7 @@ export class GjeldendeSakslisterTabell extends Component<TsProps, StateTsProps> 
     await wait(100);
 
     setValgtSakslisteId(id);
+    hentAvdelingensSakslister(valgtAvdelingEnhet);
   }
 
   lagNySaksliste = (event: KeyboardEvent) => {
@@ -170,12 +173,12 @@ export class GjeldendeSakslisterTabell extends Component<TsProps, StateTsProps> 
       <>
 
         <Row>
-          <Column xs="8">
+          <Column xs="9">
             <Element>
               <FormattedMessage id="GjeldendeSakslisterTabell.GjeldendeLister" />
             </Element>
           </Column>
-          <Column xs="4">
+          <Column xs="3">
             <div className={styles.grayBox}>
               <Normaltekst>
                 <FormattedMessage id="GjeldendeSakslisterTabell.OppgaverForAvdeling" />

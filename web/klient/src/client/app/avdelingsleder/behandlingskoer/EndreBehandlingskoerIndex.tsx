@@ -78,6 +78,7 @@ export class EndreBehandlingskoerIndex extends Component<TsProps> {
       fjernSaksliste: fjernListe, lagreSakslisteNavn: lagreListeNavn, lagreSakslisteBehandlingstype: lagreListeBehandlingstype,
       knyttSaksbehandlerTilSaksliste: knyttSaksbehandlerTilListe,
       lagreSakslisteFagsakYtelseType: lagreListeFagsakYtelseType,
+      fetchAvdelingensSakslister: hentAvdelingensSakslister,
       fetchAntallOppgaverForSaksliste: hentAntallOppgaverForSaksliste,
       fetchAntallOppgaverForAvdeling: hentAntallOppgaverForAvdeling,
       lagreSakslisteAndreKriterier: lagreAndreKriterier,
@@ -94,6 +95,7 @@ export class EndreBehandlingskoerIndex extends Component<TsProps> {
         lagreSakslisteFagsakYtelseType={lagreListeFagsakYtelseType}
         lagreSakslisteAndreKriterier={lagreAndreKriterier}
         knyttSaksbehandlerTilSaksliste={knyttSaksbehandlerTilListe}
+        hentAvdelingensSakslister={hentAvdelingensSakslister}
         hentAntallOppgaverForSaksliste={hentAntallOppgaverForSaksliste}
         hentAntallOppgaverForAvdeling={hentAntallOppgaverForAvdeling}
       />
