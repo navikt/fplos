@@ -25,6 +25,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -34,12 +35,17 @@ import java.util.List;
 import java.util.UUID;
 
 import static no.nav.foreldrepenger.loslager.BaseEntitet.BRUKERNAVN_NÅR_SIKKERHETSKONTEKST_IKKE_FINNES;
+import static no.nav.foreldrepenger.loslager.oppgave.KøSortering.FT_DATO;
+import static no.nav.foreldrepenger.loslager.oppgave.KøSortering.FT_HELTALL;
 
 @ApplicationScoped
 public class OppgaveRepositoryImpl implements OppgaveRepository {
 
     private static final String COUNT_FRA_OPPGAVE = "SELECT count(1) from Oppgave o ";
     private static final String SELECT_FRA_OPPGAVE = "SELECT o from Oppgave o ";
+    private static final String COUNT_FRA_TILBAKEKREVING_OPPGAVE = "SELECT count(1) from TilbakekrevingOppgave o ";
+    private static final String SELECT_FRA_TILBAKEKREVING_OPPGAVE = "SELECT o from TilbakekrevingOppgave o ";
+
     private static final String SORTERING = "ORDER BY ";
     private static final String BEHANDLINGSFRIST = "o.behandlingsfrist";
     private static final String BEHANDLINGOPPRETTET = "o.behandlingOpprettet";
@@ -63,13 +69,35 @@ public class OppgaveRepositoryImpl implements OppgaveRepository {
 
     @Override
     public int hentAntallOppgaver(OppgavespørringDto oppgavespørringDto) {
-        TypedQuery<Long> oppgaveTypedQuery = lagOppgavespørring(COUNT_FRA_OPPGAVE, Long.class, oppgavespørringDto);
+        String selection = COUNT_FRA_OPPGAVE;
+        if(oppgavespørringDto.getSortering() != null) {
+            switch (oppgavespørringDto.getSortering().getFeltkategori()) {
+                case KøSortering.FK_TILBAKEKREVING:
+                    selection = COUNT_FRA_TILBAKEKREVING_OPPGAVE;
+                    break;
+                case KøSortering.FK_UNIVERSAL:
+                    selection = COUNT_FRA_OPPGAVE;
+                    break;
+            }
+        }
+        TypedQuery<Long> oppgaveTypedQuery = lagOppgavespørring(selection, Long.class, oppgavespørringDto);
         return oppgaveTypedQuery.getSingleResult().intValue();
     }
 
     @Override
     public List<Oppgave> hentOppgaver(OppgavespørringDto oppgavespørringDto) {
-        TypedQuery<Oppgave> oppgaveTypedQuery = lagOppgavespørring(SELECT_FRA_OPPGAVE, Oppgave.class, oppgavespørringDto);
+        String selection = SELECT_FRA_OPPGAVE;
+        if(oppgavespørringDto.getSortering() != null) {
+            switch (oppgavespørringDto.getSortering().getFeltkategori()) {
+                case KøSortering.FK_TILBAKEKREVING:
+                    selection = SELECT_FRA_TILBAKEKREVING_OPPGAVE;
+                    break;
+                case KøSortering.FK_UNIVERSAL:
+                    selection = SELECT_FRA_OPPGAVE;
+                    break;
+            }
+        }
+        TypedQuery<Oppgave> oppgaveTypedQuery = lagOppgavespørring(selection, Oppgave.class, oppgavespørringDto);
         return oppgaveTypedQuery.getResultList();
     }
 
@@ -115,17 +143,28 @@ public class OppgaveRepositoryImpl implements OppgaveRepository {
         if (!queryDto.getYtelseTyper().isEmpty()) {
             query.setParameter("fagsakYtelseType", queryDto.getYtelseTyper());
         }
-        if (queryDto.getFiltrerFra() != null) {
-            query.setParameter("filterFomDager", KøSortering.FORSTE_STONADSDAG.equals(queryDto.getSortering()) ? LocalDate.now().plusDays(queryDto.getFiltrerFra()) : LocalDateTime.now().plusDays(queryDto.getFiltrerFra()).with(LocalTime.MIN));
-        }
-        if (queryDto.getFiltrerTil() != null) {
-            query.setParameter("filterTomDager", KøSortering.FORSTE_STONADSDAG.equals(queryDto.getSortering()) ? LocalDate.now().plusDays(queryDto.getFiltrerTil()) : LocalDateTime.now().plusDays(queryDto.getFiltrerTil()).with(LocalTime.MAX));
-        }
-        if (queryDto.getFiltrerFomDato() != null) {
-            query.setParameter("filterFomDato", KøSortering.FORSTE_STONADSDAG.equals(queryDto.getSortering()) ? queryDto.getFiltrerFomDato() : queryDto.getFiltrerFomDato().atTime(LocalTime.MIN));
-        }
-        if (queryDto.getFiltrerTomDato() != null) {
-            query.setParameter("filterTomDato", KøSortering.FORSTE_STONADSDAG.equals(queryDto.getSortering()) ? queryDto.getFiltrerTomDato() : queryDto.getFiltrerTomDato().atTime(LocalTime.MAX));
+        if(queryDto.getSortering() != null) {
+            if (FT_HELTALL.equalsIgnoreCase(queryDto.getSortering().getFelttype())) {
+                if (queryDto.getFiltrerFra() != null) {
+                    query.setParameter("filterFra", BigDecimal.valueOf(queryDto.getFiltrerFra()));
+                }
+                if (queryDto.getFiltrerTil() != null) {
+                    query.setParameter("filterTil", BigDecimal.valueOf(queryDto.getFiltrerTil()));
+                }
+            } else if (FT_DATO.equalsIgnoreCase(queryDto.getSortering().getFelttype())) {
+                if (queryDto.getFiltrerFra() != null) {
+                    query.setParameter("filterFomDager", KøSortering.FORSTE_STONADSDAG.equals(queryDto.getSortering()) ? LocalDate.now().plusDays(queryDto.getFiltrerFra()) : LocalDateTime.now().plusDays(queryDto.getFiltrerFra()).with(LocalTime.MIN));
+                }
+                if (queryDto.getFiltrerTil() != null) {
+                    query.setParameter("filterTomDager", KøSortering.FORSTE_STONADSDAG.equals(queryDto.getSortering()) ? LocalDate.now().plusDays(queryDto.getFiltrerTil()) : LocalDateTime.now().plusDays(queryDto.getFiltrerTil()).with(LocalTime.MAX));
+                }
+                if (queryDto.getFiltrerFomDato() != null) {
+                    query.setParameter("filterFomDato", KøSortering.FORSTE_STONADSDAG.equals(queryDto.getSortering()) ? queryDto.getFiltrerFomDato() : queryDto.getFiltrerFomDato().atTime(LocalTime.MIN));
+                }
+                if (queryDto.getFiltrerTomDato() != null) {
+                    query.setParameter("filterTomDato", KøSortering.FORSTE_STONADSDAG.equals(queryDto.getSortering()) ? queryDto.getFiltrerTomDato() : queryDto.getFiltrerTomDato().atTime(LocalTime.MAX));
+                }
+            }
         }
 
         return query;
@@ -146,10 +185,22 @@ public class OppgaveRepositoryImpl implements OppgaveRepository {
                     ? filtrerDynamisk(FORSTE_STONADSDAG, oppgavespørringDto.getFiltrerFra(), oppgavespørringDto.getFiltrerTil())
                     : filtrerStatisk(FORSTE_STONADSDAG, oppgavespørringDto.getFiltrerFomDato(), oppgavespørringDto.getFiltrerTomDato());
         } else if (KøSortering.BELOP.equals(sortering)) {
-            return filtrerDynamisk(BELOP, oppgavespørringDto.getFiltrerFra(), oppgavespørringDto.getFiltrerTil());
+            return filtrerNumerisk(BELOP, oppgavespørringDto.getFiltrerFra(), oppgavespørringDto.getFiltrerTil());
         } else {
             return SORTERING + BEHANDLINGOPPRETTET;
         }
+    }
+
+    private String filtrerNumerisk(String sortering, Long fra, Long til) {
+        String datoFiltrering = "";
+        if (fra != null && til != null) {
+            datoFiltrering = "AND " + sortering + " >= :filterFra AND " + sortering + " <= :filterTil ";
+        } else if (fra != null) {
+            datoFiltrering = "AND " + sortering + " >= :filterFra ";
+        } else if (til != null) {
+            datoFiltrering = "AND " + sortering + " <= :filterTil ";
+        }
+        return datoFiltrering + SORTERING + sortering;
     }
 
     private String filtrerDynamisk(String sortering, Long fomDager, Long tomDager) {
