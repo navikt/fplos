@@ -27,17 +27,18 @@ export const fetchAvdelingensSakslister = (avdelingEnhet: string) => (dispatch: 
 
 export const getAvdelingensSakslister = fpLosApi.SAKSLISTER_FOR_AVDELING.getRestApiData();
 
-export const fetchAntallOppgaverForSaksliste = (sakslisteId: number, avdelingEnhet: string) => (dispatch: Dispatch) => dispatch(
-  fpLosApi.OPPGAVE_ANTALL.makeRestApiRequest()({ sakslisteId, avdelingEnhet }),
-).then(() => dispatch(fetchAntallOppgaverForAvdeling(avdelingEnhet)));
-
 export const fetchAntallOppgaverForAvdeling = (avdelingEnhet: string) => (dispatch: Dispatch) => dispatch(
     fpLosApi.OPPGAVE_AVDELING_ANTALL.makeRestApiRequest()({ avdelingEnhet }),
 );
 
-export const getAntallOppgaverForSakslisteResultat = fpLosApi.OPPGAVE_ANTALL.getRestApiData();
+export const fetchAntallOppgaverForSaksliste = (sakslisteId: number, avdelingEnhet: string) => (dispatch: Dispatch) => dispatch(
+    fpLosApi.OPPGAVE_ANTALL.makeRestApiRequest()({ sakslisteId, avdelingEnhet }),
+).then(() => dispatch(fetchAntallOppgaverForAvdeling(avdelingEnhet)));
+
 
 export const getAntallOppgaverForAvdelingResultat = fpLosApi.OPPGAVE_AVDELING_ANTALL.getRestApiData();
+
+export const getAntallOppgaverForSakslisteResultat = fpLosApi.OPPGAVE_ANTALL.getRestApiData();
 
 // fpLosApi.OPPGAVE_ANTALL.getRestApiData();
 

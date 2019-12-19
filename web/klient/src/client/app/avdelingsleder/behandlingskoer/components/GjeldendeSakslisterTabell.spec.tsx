@@ -42,6 +42,7 @@ describe('<GjeldendeSakslisterTabell>', () => {
       behandlingTyper={behandlingstyper}
       fagsakYtelseTyper={fagsakYtelseTyper}
       valgtAvdelingEnhet="2"
+      hentAvdelingensSakslister={sinon.spy()}
       hentAntallOppgaverForAvdeling={sinon.spy()}
     />);
 
@@ -77,6 +78,7 @@ describe('<GjeldendeSakslisterTabell>', () => {
       behandlingTyper={behandlingstyper}
       fagsakYtelseTyper={fagsakYtelseTyper}
       valgtAvdelingEnhet="2"
+      hentAvdelingensSakslister={sinon.spy()}
       hentAntallOppgaverForAvdeling={sinon.spy()}
     />);
 
@@ -106,6 +108,7 @@ describe('<GjeldendeSakslisterTabell>', () => {
       behandlingTyper={behandlingstyper}
       fagsakYtelseTyper={fagsakYtelseTyper}
       valgtAvdelingEnhet="2"
+      hentAvdelingensSakslister={sinon.spy()}
       hentAntallOppgaverForAvdeling={sinon.spy()}
     />);
 
@@ -129,6 +132,7 @@ describe('<GjeldendeSakslisterTabell>', () => {
       behandlingTyper={behandlingstyper}
       fagsakYtelseTyper={fagsakYtelseTyper}
       valgtAvdelingEnhet="2"
+      hentAvdelingensSakslister={sinon.spy()}
       hentAntallOppgaverForAvdeling={sinon.spy()}
     />);
 
@@ -154,6 +158,7 @@ describe('<GjeldendeSakslisterTabell>', () => {
       behandlingTyper={behandlingstyper}
       fagsakYtelseTyper={fagsakYtelseTyper}
       valgtAvdelingEnhet="2"
+      hentAvdelingensSakslister={sinon.spy()}
       hentAntallOppgaverForAvdeling={sinon.spy()}
     />);
 
@@ -186,6 +191,7 @@ describe('<GjeldendeSakslisterTabell>', () => {
       behandlingTyper={behandlingstyper}
       fagsakYtelseTyper={fagsakYtelseTyper}
       valgtAvdelingEnhet="2"
+      hentAvdelingensSakslister={sinon.spy()}
       hentAntallOppgaverForAvdeling={sinon.spy()}
     />);
 
@@ -214,6 +220,7 @@ describe('<GjeldendeSakslisterTabell>', () => {
       behandlingTyper={behandlingstyper}
       fagsakYtelseTyper={fagsakYtelseTyper}
       valgtAvdelingEnhet="2"
+      hentAvdelingensSakslister={sinon.spy()}
       hentAntallOppgaverForAvdeling={sinon.spy()}
     />);
 
@@ -249,6 +256,7 @@ describe('<GjeldendeSakslisterTabell>', () => {
       behandlingTyper={behandlingstyper}
       fagsakYtelseTyper={fagsakYtelseTyper}
       valgtAvdelingEnhet="2"
+      hentAvdelingensSakslister={sinon.spy()}
       hentAntallOppgaverForAvdeling={sinon.spy()}
     />);
 
@@ -285,6 +293,7 @@ describe('<GjeldendeSakslisterTabell>', () => {
       behandlingTyper={behandlingstyper}
       fagsakYtelseTyper={fagsakYtelseTyper}
       valgtAvdelingEnhet="2"
+      hentAvdelingensSakslister={sinon.spy()}
       hentAntallOppgaverForAvdeling={sinon.spy()}
     />);
 
@@ -327,6 +336,7 @@ describe('<GjeldendeSakslisterTabell>', () => {
       behandlingTyper={behandlingstyper}
       fagsakYtelseTyper={fagsakYtelseTyper}
       valgtAvdelingEnhet="2"
+      hentAvdelingensSakslister={sinon.spy()}
       hentAntallOppgaverForAvdeling={sinon.spy()}
     />);
 
