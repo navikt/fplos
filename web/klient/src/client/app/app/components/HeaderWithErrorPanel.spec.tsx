@@ -3,11 +3,11 @@ import sinon from 'sinon';
 import { shallow } from 'enzyme';
 import { expect } from 'chai';
 
-import Header from './Header';
+import HeaderWithErrorPanel from './HeaderWithErrorPanel';
 
-describe('<Header>', () => {
+describe('<HeaderWithErrorPanel>', () => {
   it('skal sjekke at navn blir vist', () => {
-    const wrapper = shallow(<Header
+    const wrapper = shallow(<HeaderWithErrorPanel
       navAnsattName="Per"
       removeErrorMessage={() => undefined}
       queryStrings={{}}
@@ -28,7 +28,7 @@ describe('<Header>', () => {
       kreverKode6: false,
     }];
 
-    const wrapper = shallow(<Header
+    const wrapper = shallow(<HeaderWithErrorPanel
       navAnsattName="Per"
       removeErrorMessage={() => undefined}
       queryStrings={{}}
@@ -55,7 +55,7 @@ describe('<Header>', () => {
       kreverKode6: false,
     }];
 
-    const wrapper = shallow(<Header
+    const wrapper = shallow(<HeaderWithErrorPanel
       navAnsattName="Per"
       removeErrorMessage={() => undefined}
       queryStrings={{}}
@@ -83,7 +83,7 @@ describe('<Header>', () => {
       kreverKode6: false,
     }];
 
-    shallow(<Header
+    shallow(<HeaderWithErrorPanel
       navAnsattName="Per"
       removeErrorMessage={() => undefined}
       queryStrings={{}}
@@ -101,7 +101,7 @@ describe('<Header>', () => {
     const setValgtAvdelingFn = sinon.spy();
     const avdelinger = [];
 
-    shallow(<Header
+    shallow(<HeaderWithErrorPanel
       navAnsattName="Per"
       removeErrorMessage={() => undefined}
       queryStrings={{}}
@@ -124,7 +124,7 @@ describe('<Header>', () => {
       kreverKode6: false,
     }];
 
-    shallow(<Header
+    shallow(<HeaderWithErrorPanel
       navAnsattName="Per"
       removeErrorMessage={() => undefined}
       queryStrings={{}}
