@@ -64,7 +64,7 @@ public class KafkaReaderTest {
     private BehandlingFpsak lagBehandlingDto() {
         return BehandlingFpsak.builder()
                 .medBehandlendeEnhetNavn("NAV")
-                .medHarRefusjonskrav(false)
+                .medHarRefusjonskravFraArbeidsgiver(false)
                 .medAksjonspunkter(Collections.singletonList(new Aksjonspunkt.Builder()
                         .medDefinisjon("5401")
                         .medStatus("UTRED")

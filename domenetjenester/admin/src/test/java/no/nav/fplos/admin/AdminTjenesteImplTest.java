@@ -97,7 +97,7 @@ public class AdminTjenesteImplTest {
 
     private BehandlingFpsak lagBehandlingMedUtlandssakDto() {
         return BehandlingFpsak.builder()
-                .medErUtlandssak(true)
+                .medErUtenlandssak(true)
                 .medAksjonspunkter(Collections.singletonList(new Aksjonspunkt
                         .Builder()
                         .medDefinisjon("5068")

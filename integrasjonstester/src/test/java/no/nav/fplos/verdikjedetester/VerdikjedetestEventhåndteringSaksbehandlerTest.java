@@ -334,7 +334,7 @@ public class VerdikjedetestEventhåndteringSaksbehandlerTest {
                 .medBehandlendeEnhetNavn("NAV")
                 .medAnsvarligSaksbehandler("VLLOS")
                 .medStatus("-")
-                .medHarRefusjonskrav(false)
+                .medHarRefusjonskravFraArbeidsgiver(false)
                 .medAksjonspunkter(aksjonspunktDtoer)
                 .build();
     }
@@ -344,7 +344,7 @@ public class VerdikjedetestEventhåndteringSaksbehandlerTest {
                 .medBehandlendeEnhetNavn("NAV")
                 .medAnsvarligSaksbehandler("IKKE_VLLOS")
                 .medStatus("-")
-                .medHarRefusjonskrav(false)
+                .medHarRefusjonskravFraArbeidsgiver(false)
                 .medAksjonspunkter(aksjonspunktDtoer)
                 .build();
     }

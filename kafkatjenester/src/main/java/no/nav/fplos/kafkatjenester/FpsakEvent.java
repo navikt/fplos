@@ -26,6 +26,8 @@ public class FpsakEvent {
 
         if (harGradering(behandling)) this.andreKriterier.add(AndreKriterierType.SOKT_GRADERING);
         if (utbetalingTilBruker(behandling)) this.andreKriterier.add(AndreKriterierType.UTBETALING_TIL_BRUKER);
+        if (erOverførtGrunnetSykdom(behandling)) this.andreKriterier.add(AndreKriterierType.OVERFØRING_GRUNNET_SYKDOM);
+
         andreKriterier.addAll(fpsakAksjonspunkt.getKriterier());
     }
 
@@ -39,6 +41,10 @@ public class FpsakEvent {
 
     public OppgaveEventLogg getSisteEvent() {
         return sisteEvent;
+    }
+
+    private static boolean erOverførtGrunnetSykdom(BehandlingFpsak behandling) {
+        return behandling.getHarOverføringPgaSykdom() != null && behandling.getHarOverføringPgaSykdom();
     }
 
     private static OppgaveEventLogg sisteOpprettetEventFra(List<OppgaveEventLogg> logg) {
@@ -57,7 +63,4 @@ public class FpsakEvent {
     private static boolean harGradering(BehandlingFpsak behandling) {
         return behandling.getHarGradering() != null && behandling.getHarGradering();
     }
-
-
-
 }
