@@ -22,7 +22,7 @@ public interface AdminRepository {
 
     List<EventmottakFeillogg> hentAlleMeldingerFraFeillogg();
 
-    void oppdaterStatus(Long feilloggId, EventmottakStatus status);
+    void markerFerdig(Long feilloggId);
 
     List<Oppgave> hentAlleOppgaverForBehandling(Long behandlingId);
 

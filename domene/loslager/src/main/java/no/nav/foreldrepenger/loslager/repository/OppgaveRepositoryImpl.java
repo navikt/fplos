@@ -20,11 +20,16 @@ import no.nav.foreldrepenger.loslager.organisasjon.Avdeling;
 import no.nav.foreldrepenger.loslager.organisasjon.Saksbehandler;
 import no.nav.vedtak.felles.jpa.VLPersistenceUnit;
 import no.nav.vedtak.sikkerhet.context.SubjectHandler;
+import org.hibernate.Criteria;
+import org.hibernate.query.criteria.HibernateCriteriaBuilder;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -33,6 +38,7 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import static no.nav.foreldrepenger.loslager.BaseEntitet.BRUKERNAVN_NÅR_SIKKERHETSKONTEKST_IKKE_FINNES;
 import static no.nav.foreldrepenger.loslager.oppgave.KøSortering.FT_DATO;

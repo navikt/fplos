@@ -11,7 +11,6 @@ import no.nav.fplos.foreldrepengerbehandling.dto.inntektarbeidytelse.Beløp;
 import no.nav.fplos.foreldrepengerbehandling.dto.inntektarbeidytelse.InntektArbeidYtelseDto;
 import no.nav.fplos.foreldrepengerbehandling.dto.inntektarbeidytelse.InntektsmeldingDto;
 import no.nav.fplos.foreldrepengerbehandling.dto.ytelsefordeling.YtelseFordelingDto;
-import no.nav.vedtak.exception.IntegrasjonException;
 import no.nav.vedtak.felles.integrasjon.rest.OidcRestClient;
 import no.nav.vedtak.konfig.KonfigVerdi;
 import no.nav.vedtak.sikkerhet.loginmodule.ContainerLogin;
@@ -85,9 +84,8 @@ public class ForeldrepengerBehandlingRestKlient {
 
             hentUttakKontrollerFaktaPerioder(behandlingId, builder, links);
             return builder.build();
-        } catch (URISyntaxException | IntegrasjonException e) {
-            LOGGER.error("Feilet å hente behandling fra FPSAK for behandlingId: " + behandlingId, e);
-            return null;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         } finally {
             loginContext.logout();
         }

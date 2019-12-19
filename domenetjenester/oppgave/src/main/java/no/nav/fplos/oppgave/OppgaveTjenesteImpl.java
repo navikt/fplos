@@ -1,17 +1,5 @@
 package no.nav.fplos.oppgave;
 
-import static no.nav.foreldrepenger.loslager.BaseEntitet.BRUKERNAVN_NÅR_SIKKERHETSKONTEKST_IKKE_FINNES;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-
 import no.nav.foreldrepenger.domene.typer.AktørId;
 import no.nav.foreldrepenger.loslager.aktør.TpsPersonDto;
 import no.nav.foreldrepenger.loslager.oppgave.Oppgave;
@@ -30,6 +18,16 @@ import no.nav.vedtak.exception.IntegrasjonException;
 import no.nav.vedtak.sikkerhet.context.SubjectHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import static no.nav.foreldrepenger.loslager.BaseEntitet.BRUKERNAVN_NÅR_SIKKERHETSKONTEKST_IKKE_FINNES;
 
 @ApplicationScoped
 public class OppgaveTjenesteImpl implements OppgaveTjeneste {
@@ -243,7 +241,7 @@ public class OppgaveTjenesteImpl implements OppgaveTjeneste {
         try {
             return ansattTjeneste.hentAnsattNavn(ident);
         } catch (IntegrasjonException e) {
-            log.warn("Henting av ansattnavn feilet, fortsetter med ukjent navn.", e);
+            log.info("Henting av ansattnavn feilet, fortsetter med ukjent navn.", e);
             return "Ukjent ansatt";
         }
     }

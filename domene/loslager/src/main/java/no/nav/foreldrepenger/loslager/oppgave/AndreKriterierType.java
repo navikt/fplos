@@ -8,10 +8,7 @@ import no.nav.fplos.kodeverk.Kodeverdi;
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -22,45 +19,43 @@ public enum AndreKriterierType implements Kodeverdi {
     PAPIRSØKNAD("PAPIRSOKNAD", "Registrer papirsøknad"),
     UTBETALING_TIL_BRUKER("UTBETALING_TIL_BRUKER", "Utbetaling til bruker"),
     UTLANDSSAK("UTLANDSSAK", "Utland"),
-    SOKT_GRADERING("SOKT_GRADERING", "Søkt gradering");
+    SOKT_GRADERING("SOKT_GRADERING", "Søkt gradering"),
+    SELVSTENDIG_FRILANSER("SELVSTENDIG_FRILANSER", "Selvstendig næringsdrivende eller frilanser"),
+    UKJENT("-", "Placeholder"); // todo: fjern verdier i tabell og relevant kode i contract-fasen
 
     private String kode;
     private final String navn;
     public static final String KODEVERK = "ANDRE_KRITERIER";
-
-    private static final Map<String, AndreKriterierType> kodeMap = Collections.unmodifiableMap(initializeMapping());
-
-    private static HashMap<String, AndreKriterierType> initializeMapping() {
-        HashMap<String, AndreKriterierType> map = new HashMap<>();
-        for (var v : values()) {
-            map.putIfAbsent(v.kode, v);
-        }
-        return map;
-    }
 
     AndreKriterierType(String kode, String navn) {
         this.kode = kode;
         this.navn = navn;
     }
 
-    public static AndreKriterierType fraKode(String value) {
-        return Optional.ofNullable(kodeMap.get(value))
-                .orElse(null);
-    }
-
-    public static List<AndreKriterierType> getEnums() {
-        return Arrays.stream(values())
-                .collect(Collectors.toList());
-    }
-
     public String getNavn() {
         return navn;
     }
 
-    public String getKode() { return kode; }
+    public String getKode() {
+        return kode;
+    }
 
     public String getKodeverk() {
         return KODEVERK;
+    }
+
+    public static List<AndreKriterierType> filteredEnums() { // fjern i contract
+        return Arrays.stream(values())
+                .filter(v -> !v.equals(UKJENT))
+                .collect(Collectors.toList());
+    }
+
+    @JsonCreator
+    public static AndreKriterierType fraKode(@JsonProperty("kode") String kode) {
+        return Arrays.stream(values())
+                .filter(v -> v.kode.equals(kode))
+                .findFirst()
+                .orElseThrow();
     }
 
     @Converter(autoApply = true)
@@ -79,12 +74,4 @@ public enum AndreKriterierType implements Kodeverdi {
                     .orElse(null);
         }
     }
-
-    @JsonCreator
-    static AndreKriterierType findValue(@JsonProperty("kode") String kode,
-                                      @JsonProperty("navn") String navn,
-                                      @JsonProperty("kodeverk") String kodeverk) {
-        return fraKode(kode);
-    }
-
 }

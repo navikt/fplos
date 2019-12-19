@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 public enum FagsakYtelseType implements Kodeverdi {
     ENGANGSTØNAD("ES", "Engangsstønad"),
     FORELDREPENGER("FP", "Foreldrepenger"),
-    SVANGERSKAPSPENGER("SVP", "Svangerskapsspenger");
+    SVANGERSKAPSPENGER("SVP", "Svangerskapspenger");
 
     public static final String KODEVERK = "FAGSAK_YTELSE_TYPE";
     private final String kode;
@@ -39,8 +39,9 @@ public enum FagsakYtelseType implements Kodeverdi {
         return map;
     }
 
-    public static FagsakYtelseType fraKode(String value) {
-        return Optional.ofNullable(kodeMap.get(value))
+    @JsonCreator
+    public static FagsakYtelseType fraKode(@JsonProperty("kode") String kode) {
+        return Optional.ofNullable(kodeMap.get(kode))
                 .orElse(null);
     }
 
@@ -80,8 +81,4 @@ public enum FagsakYtelseType implements Kodeverdi {
         }
     }
 
-    @JsonCreator
-    static FagsakYtelseType findValue(@JsonProperty("kode") String kode) {
-        return fraKode(kode);
-    }
 }

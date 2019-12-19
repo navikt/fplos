@@ -8,12 +8,7 @@ import no.nav.fplos.kodeverk.Kodeverdi;
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum KøSortering implements Kodeverdi {
@@ -40,8 +35,6 @@ public enum KøSortering implements Kodeverdi {
     public static final String FK_UNIVERSAL = "UNIVERSAL";
     public static final String FK_TILBAKEKREVING = "TILBAKEKREVING";
 
-    private static final Map<String, KøSortering> kodeMap = Collections.unmodifiableMap(initializeMapping());
-
     KøSortering(String kode, String navn) {
         this.kode = kode;
         this.navn = navn;
@@ -54,25 +47,6 @@ public enum KøSortering implements Kodeverdi {
         this.navn = navn;
         this.felttype = felttype;
         this.feltkategori = feltkategori;
-    }
-
-    private static HashMap<String, KøSortering> initializeMapping() {
-        HashMap<String, KøSortering> map = new HashMap<>();
-        for (var v : values()) {
-            map.putIfAbsent(v.kode, v);
-        }
-        return map;
-    }
-
-
-    public static KøSortering fraKode(String value) {
-        return Optional.ofNullable(kodeMap.get(value))
-                .orElse(null);
-    }
-
-    public static List<KøSortering> getEnums() {
-        return Arrays.stream(values())
-                .collect(Collectors.toList());
     }
 
     public String getNavn() {
@@ -95,6 +69,14 @@ public enum KøSortering implements Kodeverdi {
         return feltkategori;
     }
 
+    @JsonCreator
+    public static KøSortering fraKode(@JsonProperty("kode") String kode) {
+        return Arrays.stream(values())
+                .filter(v -> v.kode.equals(kode))
+                .findFirst()
+                .orElseThrow();
+    }
+
     @Converter(autoApply = true)
     public static class KodeverdiConverter implements AttributeConverter<KøSortering, String> {
         @Override
@@ -111,10 +93,4 @@ public enum KøSortering implements Kodeverdi {
                     .orElse(null);
         }
     }
-
-    @JsonCreator
-    static KøSortering findValue(@JsonProperty("kode") String kode) {
-        return fraKode(kode);
-    }
-
 }
