@@ -34,16 +34,6 @@ public class OppgaveEnumSerializationDeserializationTest {
     }
 
     @Test
-    public void eventMottak() throws Exception {
-        testRoundtrip(EventmottakStatus.FEILET);
-    }
-
-    @Test
-    public void fagsystem() throws Exception {
-        testRoundtrip(Fagsystem.INFOTRYGD);
-    }
-
-    @Test
     public void køSortering() throws Exception {
         testRoundtrip(KøSortering.FORSTE_STONADSDAG);
     }

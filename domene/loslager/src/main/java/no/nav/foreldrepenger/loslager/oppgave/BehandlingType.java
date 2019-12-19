@@ -35,7 +35,18 @@ public enum BehandlingType implements Kodeverdi {
         this.navn = navn;
     }
 
-    public static BehandlingType fraKode(String kode) {
+    public String getNavn() {
+        return navn;
+    }
+
+    public String getKode() { return kode; }
+
+    public String getKodeverk() {
+        return kodeverk;
+    }
+
+    @JsonCreator
+    public static BehandlingType fraKode(@JsonProperty("kode") String kode) {
         return Arrays.stream(values())
                 .filter(v -> v.kode.equals(kode))
                 .findFirst()
@@ -45,16 +56,6 @@ public enum BehandlingType implements Kodeverdi {
     public static List<BehandlingType> getEnums() {
         return Arrays.stream(values())
                 .collect(Collectors.toList());
-    }
-
-    public String getNavn() {
-        return navn;
-    }
-
-    public String getKode() { return kode; }
-
-    public String getKodeverk() {
-        return kodeverk;
     }
 
     @Converter(autoApply = true)
@@ -72,12 +73,5 @@ public enum BehandlingType implements Kodeverdi {
                     .map(BehandlingType::fraKode)
                     .orElse(null);
         }
-    }
-
-    @JsonCreator
-    static BehandlingType findValue(@JsonProperty("kode") String kode,
-                                    @JsonProperty("navn") String navn,
-                                    @JsonProperty("kodeverk") String kodeverk) {
-        return fraKode(kode);
     }
 }

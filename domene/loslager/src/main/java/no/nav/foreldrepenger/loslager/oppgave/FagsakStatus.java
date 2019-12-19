@@ -6,8 +6,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import no.nav.fplos.kodeverk.Kodeverdi;
 
 import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum FagsakStatus implements Kodeverdi {
@@ -26,18 +24,6 @@ public enum FagsakStatus implements Kodeverdi {
         this.navn = navn;
     }
 
-    public static FagsakStatus fraKode(String kode) {
-        return Arrays.stream(values())
-                .filter(v -> v.kode.equals(kode))
-                .findFirst()
-                .orElseThrow();
-    }
-
-    public static List<FagsakStatus> getEnums() {
-        return Arrays.stream(values())
-                .collect(Collectors.toList());
-    }
-
     public String getNavn() {
         return navn;
     }
@@ -51,7 +37,10 @@ public enum FagsakStatus implements Kodeverdi {
     }
 
     @JsonCreator
-    static FagsakStatus findValue(@JsonProperty("kode") String kode) {
-        return fraKode(kode);
+    public static FagsakStatus fraKode(@JsonProperty("kode") String kode) {
+        return Arrays.stream(values())
+                .filter(v -> v.kode.equals(kode))
+                .findFirst()
+                .orElseThrow();
     }
 }

@@ -17,6 +17,7 @@
         <module>kafkatjenester</module>
         <module>integrasjon</module>
         <module>integrasjonstester</module>
+        <module>uuid-synkronisering</module>
     </modules>
 
     <properties>
@@ -49,7 +50,7 @@
         <jandex.version>2.1.2.Final</jandex.version>
         <junit.version>5.2.0</junit.version>
         <logstash.version>4.10</logstash.version>
-        <mockito.version>3.1.0</mockito.version>
+        <mockito.version>3.2.4</mockito.version>
         <swagger.version>1.6.0</swagger.version>
         <metrics.version>4.1.1</metrics.version>
         <metrics.cdi.version>1.4.0</metrics.cdi.version>
@@ -62,7 +63,8 @@
         <swagger.spec-parser.version>1.0.28</swagger.spec-parser.version>
 
         <owaspencoder.version>1.2.1</owaspencoder.version>
-
+        <spring.version>5.2.0.RELEASE</spring.version>
+        <spring-boot.version>2.2.1.RELEASE</spring-boot.version>
         <!-- Dupliserte properties fra vl-felles. Pass på å oppdatere begge steder. Disse trengs for definisjon av videre plugins -->
         <!-- <flyway.version>5.1.4</flyway.version> FIXME: støtter ikke oracle 11, se på hva som skal til for å kjøre på 12 -->
         <flyway.version>4.2.0</flyway.version>
@@ -262,6 +264,12 @@
                 <version>${project.version}</version>
                 <type>war</type>
             </dependency>
+            <dependency>
+                <groupId>no.nav.foreldrepenger.los</groupId>
+                <artifactId>uuid-synkronisering</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
 
             <!-- Felles biblioteker og sikkerhet -->
             <dependency>

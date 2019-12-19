@@ -33,19 +33,6 @@ public enum KøSortering implements Kodeverdi {
         this.navn = navn;
     }
 
-
-    public static KøSortering fraKode(String kode) {
-        return Arrays.stream(values())
-                .filter(v -> v.kode.equals(kode))
-                .findFirst()
-                .orElseThrow();
-    }
-
-    public static List<KøSortering> getEnums() {
-        return Arrays.stream(values())
-                .collect(Collectors.toList());
-    }
-
     public String getNavn() {
         return navn;
     }
@@ -56,6 +43,14 @@ public enum KøSortering implements Kodeverdi {
 
     public String getKodeverk() {
         return KODEVERK;
+    }
+
+    @JsonCreator
+    public static KøSortering fraKode(@JsonProperty("kode") String kode) {
+        return Arrays.stream(values())
+                .filter(v -> v.kode.equals(kode))
+                .findFirst()
+                .orElseThrow();
     }
 
     @Converter(autoApply = true)
@@ -74,10 +69,4 @@ public enum KøSortering implements Kodeverdi {
                     .orElse(null);
         }
     }
-
-    @JsonCreator
-    static KøSortering findValue(@JsonProperty("kode") String kode) {
-        return fraKode(kode);
-    }
-
 }

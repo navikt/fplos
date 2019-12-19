@@ -71,7 +71,7 @@ public class AdminRepositoryImpl implements AdminRepository {
 
     @Override
     public List<EventmottakFeillogg> hentAlleMeldingerFraFeillogg() {
-        return getEntityManager().createQuery("Select ef FROM eventmottakFeillogg ef where ef.Status = :status", EventmottakFeillogg.class).setParameter("status", EventmottakStatus.FEILET).getResultList();
+        return getEntityManager().createQuery("Select ef FROM eventmottakFeillogg ef where ef.Status = :status", EventmottakFeillogg.class).setParameter("status", EventmottakFeillogg.Status.FEILET).getResultList();
     }
 
     @Override
