@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.UUID;
 
 public class BehandlingFpsak {
-
     private Long behandlingId;
     private UUID uuid;
     private String status;
@@ -19,9 +18,14 @@ public class BehandlingFpsak {
     private LocalDate førsteUttaksdag;
     private List<String> inntektsmeldinger;
     private List<Aksjonspunkt> aksjonspunkter;
+    private Boolean erUtenlandssak;
     private Boolean harRefusjonskravFraArbeidsgiver;
     private Boolean harGradering;
-    private Boolean erUtlandssak;
+    private Boolean harOverføringPgaSykdom;
+
+    public Long getBehandlingId() {
+        return behandlingId;
+    }
 
     public UUID getUuid() {
         return uuid;
@@ -79,99 +83,145 @@ public class BehandlingFpsak {
         return harGradering;
     }
 
-    public boolean getErUtlandssak() {
-        return aksjonspunkter.stream()
-                .anyMatch(Aksjonspunkt::erUtenlandssak);
+    public Boolean getErUtlandssak() {
+        return erUtenlandssak;
     }
 
-    public static BehandlingFpsak.Builder builder() {
-        return new BehandlingFpsak.Builder();
+    public Boolean getHarOverføringPgaSykdom() {
+        return harOverføringPgaSykdom;
     }
 
-    public static class Builder {
-        private BehandlingFpsak behandlingDtoMal;
+    public static Builder builder() {
+        return new Builder();
+    }
 
-        public Builder() {
-            behandlingDtoMal = new BehandlingFpsak();
+    public static final class Builder {
+        private Long behandlingId;
+        private UUID uuid;
+        private String status;
+        private LocalDate behandlingstidFrist;
+        private String type;
+        private String tema;
+        private String årsak;
+        private String behandlendeEnhet;
+        private String behandlendeEnhetNavn;
+        private String ansvarligSaksbehandler;
+        private LocalDate førsteUttaksdag;
+        private List<String> inntektsmeldinger;
+        private List<Aksjonspunkt> aksjonspunkter;
+        private Boolean harRefusjonskravFraArbeidsgiver;
+        private Boolean harGradering;
+        private Boolean harOverføringPgaSykdom;
+        private Boolean erUtenlandssak;
+
+        private Builder() {
         }
 
-        public BehandlingFpsak.Builder medBehandlingId(Long behandlingId) {
-            behandlingDtoMal.behandlingId = behandlingId;
+        public Builder medBehandlingId(Long behandlingId) {
+            this.behandlingId = behandlingId;
             return this;
         }
 
-        public BehandlingFpsak.Builder medStatus(String status) {
-            behandlingDtoMal.status = status;
+        public Builder medUuid(UUID uuid) {
+            this.uuid = uuid;
             return this;
         }
 
-        public BehandlingFpsak.Builder medBehandlingstidFrist(LocalDate behandlingstidFrist) {
-            behandlingDtoMal.behandlingstidFrist = behandlingstidFrist;
+        public Builder medStatus(String status) {
+            this.status = status;
             return this;
         }
 
-        public BehandlingFpsak.Builder medType(String type) {
-            behandlingDtoMal.type = type;
+        public Builder medBehandlingstidFrist(LocalDate behandlingstidFrist) {
+            this.behandlingstidFrist = behandlingstidFrist;
             return this;
         }
 
-        public BehandlingFpsak.Builder medTema(String tema) {
-            behandlingDtoMal.tema = tema;
+        public Builder medType(String type) {
+            this.type = type;
             return this;
         }
 
-        public BehandlingFpsak.Builder medÅrsak(String årsak) {
-            behandlingDtoMal.årsak = årsak;
+        public Builder medTema(String tema) {
+            this.tema = tema;
             return this;
         }
 
-        public BehandlingFpsak.Builder medBehandlendeEnhet(String behandlendeEnhet) {
-            behandlingDtoMal.behandlendeEnhet = behandlendeEnhet;
+        public Builder medÅrsak(String årsak) {
+            this.årsak = årsak;
             return this;
         }
 
-        public BehandlingFpsak.Builder medBehandlendeEnhetNavn(String behandlendeEnhetNavn) {
-            behandlingDtoMal.behandlendeEnhetNavn = behandlendeEnhetNavn;
+        public Builder medBehandlendeEnhet(String behandlendeEnhet) {
+            this.behandlendeEnhet = behandlendeEnhet;
             return this;
         }
 
-        public BehandlingFpsak.Builder medAnsvarligSaksbehandler(String ansvarligSaksbehandler) {
-            behandlingDtoMal.ansvarligSaksbehandler = ansvarligSaksbehandler;
+        public Builder medBehandlendeEnhetNavn(String behandlendeEnhetNavn) {
+            this.behandlendeEnhetNavn = behandlendeEnhetNavn;
             return this;
         }
 
-        public BehandlingFpsak.Builder medAksjonspunkter(List<Aksjonspunkt> aksjonspunktDtos) {
-            behandlingDtoMal.aksjonspunkter = aksjonspunktDtos;
+        public Builder medAnsvarligSaksbehandler(String ansvarligSaksbehandler) {
+            this.ansvarligSaksbehandler = ansvarligSaksbehandler;
             return this;
         }
 
-        public BehandlingFpsak.Builder medFørsteUttaksdag(LocalDate førsteUttaksdag) {
-            behandlingDtoMal.førsteUttaksdag = førsteUttaksdag;
+        public Builder medFørsteUttaksdag(LocalDate førsteUttaksdag) {
+            this.førsteUttaksdag = førsteUttaksdag;
             return this;
         }
 
-        public BehandlingFpsak.Builder medHarRefusjonskrav(Boolean harRefusjonskravFraArbeidsgiver) {
-            behandlingDtoMal.harRefusjonskravFraArbeidsgiver = harRefusjonskravFraArbeidsgiver;
+        public Builder medInntektsmeldinger(List<String> inntektsmeldinger) {
+            this.inntektsmeldinger = inntektsmeldinger;
             return this;
         }
 
-        public BehandlingFpsak.Builder medHarGradering(Boolean harGradering) {
-            behandlingDtoMal.harGradering = harGradering;
+        public Builder medAksjonspunkter(List<Aksjonspunkt> aksjonspunkter) {
+            this.aksjonspunkter = aksjonspunkter;
             return this;
         }
 
-        public BehandlingFpsak.Builder medErUtlandssak(Boolean erUtlandssak) {
-            behandlingDtoMal.erUtlandssak = erUtlandssak;
+        public Builder medHarRefusjonskravFraArbeidsgiver(Boolean harRefusjonskravFraArbeidsgiver) {
+            this.harRefusjonskravFraArbeidsgiver = harRefusjonskravFraArbeidsgiver;
             return this;
         }
 
-        public BehandlingFpsak.Builder medUuid(UUID uuid){
-            behandlingDtoMal.uuid = uuid;
+        public Builder medErUtenlandssak(Boolean erUtenlandssak) {
+            this.erUtenlandssak = erUtenlandssak;
+            return this;
+        }
+
+        public Builder medHarGradering(Boolean harGradering) {
+            this.harGradering = harGradering;
+            return this;
+        }
+
+        public Builder medHarOverføringPgaSykdom(Boolean harOverføringPgaSykdom) {
+            this.harOverføringPgaSykdom = harOverføringPgaSykdom;
             return this;
         }
 
         public BehandlingFpsak build() {
-            return behandlingDtoMal;
+            BehandlingFpsak behandlingFpsak = new BehandlingFpsak();
+            behandlingFpsak.tema = this.tema;
+            behandlingFpsak.førsteUttaksdag = this.førsteUttaksdag;
+            behandlingFpsak.behandlingId = this.behandlingId;
+            behandlingFpsak.type = this.type;
+            behandlingFpsak.ansvarligSaksbehandler = this.ansvarligSaksbehandler;
+            behandlingFpsak.harRefusjonskravFraArbeidsgiver = this.harRefusjonskravFraArbeidsgiver;
+            behandlingFpsak.aksjonspunkter = this.aksjonspunkter;
+            behandlingFpsak.status = this.status;
+            behandlingFpsak.årsak = this.årsak;
+            behandlingFpsak.inntektsmeldinger = this.inntektsmeldinger;
+            behandlingFpsak.behandlendeEnhetNavn = this.behandlendeEnhetNavn;
+            behandlingFpsak.uuid = this.uuid;
+            behandlingFpsak.harOverføringPgaSykdom = this.harOverføringPgaSykdom;
+            behandlingFpsak.behandlingstidFrist = this.behandlingstidFrist;
+            behandlingFpsak.harGradering = this.harGradering;
+            behandlingFpsak.erUtenlandssak = this.erUtenlandssak;
+            behandlingFpsak.behandlendeEnhet = this.behandlendeEnhet;
+            return behandlingFpsak;
         }
     }
 
@@ -192,8 +242,8 @@ public class BehandlingFpsak {
                 ", inntektsmeldinger=" + inntektsmeldinger +
                 ", aksjonspunkter=" + aksjonspunkter +
                 ", harRefusjonskravFraArbeidsgiver=" + harRefusjonskravFraArbeidsgiver +
-                ", erUtlandssak=" + erUtlandssak +
+                ", harOverføringPgaSykdom='" + harOverføringPgaSykdom + '\'' +
+                ", erUtlandssak=" + erUtenlandssak +
                 '}';
     }
-
 }

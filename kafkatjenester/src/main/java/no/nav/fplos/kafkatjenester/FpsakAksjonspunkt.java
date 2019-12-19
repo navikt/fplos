@@ -33,10 +33,6 @@ public class FpsakAksjonspunkt {
         return kriterier;
     }
 
-    public List<Aksjonspunkt> getAksjonspunkt() {
-        return aksjonspunkt;
-    }
-
 //    private boolean erSelvstendigEllerFrilans() {
 //        return safeStream(aksjonspunkt).anyMatch(Aksjonspunkt::erSelvstendigEllerFrilanser);
 //    }

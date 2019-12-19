@@ -243,7 +243,7 @@ public class VerdikjedetestEventhåndteringAvdelingslederTest {
         return BehandlingFpsak.builder()
                 .medBehandlendeEnhetNavn("NAV")
                 .medStatus("-")
-                .medHarRefusjonskrav(false)
+                .medHarRefusjonskravFraArbeidsgiver(false)
                 .medAksjonspunkter(Collections.singletonList(Aksjonspunkt.builder()
                         .medDefinisjon("5025")
                         .medStatus("OPPR")
