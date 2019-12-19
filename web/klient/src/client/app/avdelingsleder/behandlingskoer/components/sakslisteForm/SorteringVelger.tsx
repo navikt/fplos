@@ -74,13 +74,12 @@ export const SorteringVelger = ({
       onChange={sorteringType => lagreSakslisteSortering(valgtSakslisteId, sorteringType, valgtAvdelingEnhet)}
     >
       {koSorteringTyper.map(koSortering => (
-        (koSortering.kode !== 'BELOP' || (valgteBehandlingtyper.length === 1 && valgteBehandlingtyper[0].kode === 'BT-009')) && (
+        (koSortering.feltkategori !== 'TILBAKEKREVING' || (valgteBehandlingtyper.length === 1 && valgteBehandlingtyper[0].kode === 'BT-009')) && (
         <RadioOption
           key={koSortering.kode}
           value={koSortering.kode}
           label={koSortering.navn}
         >
-
           {(koSortering.felttype === 'DATO') && (
 
           <DatoSorteringValg

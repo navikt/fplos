@@ -21,7 +21,8 @@ public enum KøSortering implements Kodeverdi {
     BEHANDLINGSFRIST("BEHFRIST", "Dato for behandlingsfrist"),
     OPPRETT_BEHANDLING("OPPRBEH", "Dato for opprettelse av behandling"),
     FORSTE_STONADSDAG("FORSTONAD", "Dato for første stønadsdag"),
-    BELOP("BELOP", "Beløp", "HELTALL", "TILBAKEKREVING");
+    BELOP("BELOP", "Beløp", "HELTALL", "TILBAKEKREVING"),
+    UTLOPSFRIST("UTLOPSFRIST", "Utløpsfrist", "DATO", "TILBAKEKREVING");
 
     @JsonProperty("kode")
     private String kode;
@@ -31,7 +32,6 @@ public enum KøSortering implements Kodeverdi {
     private final String felttype;
     @JsonProperty("feltkategori")
     private final String feltkategori;
-
 
     public static final String KODEVERK = "KO_SORTERING";
     public static final String FT_HELTALL = "HELTALL";

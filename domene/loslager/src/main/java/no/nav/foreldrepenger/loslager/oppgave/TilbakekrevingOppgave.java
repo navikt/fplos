@@ -21,6 +21,13 @@ public class TilbakekrevingOppgave extends Oppgave{
         return belop;
     }
 
+    @Column(name = "UTLOPSFRIST")
+    protected LocalDateTime utlopsfrist;
+
+    public LocalDateTime getUtlopsfrist() {
+        return utlopsfrist;
+    }
+
     public TilbakekrevingOppgave() {
     }
 
@@ -37,6 +44,11 @@ public class TilbakekrevingOppgave extends Oppgave{
 
         public TilbakekrevingOppgave.Builder medBelop(BigDecimal belop) {
             ((TilbakekrevingOppgave)this.tempOppgave).belop = belop;
+            return this;
+        }
+
+        public TilbakekrevingOppgave.Builder medUtlopsfrist(LocalDateTime utlopsfrist) {
+            ((TilbakekrevingOppgave)this.tempOppgave).utlopsfrist = utlopsfrist;
             return this;
         }
 
