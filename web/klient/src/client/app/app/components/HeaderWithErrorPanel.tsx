@@ -109,10 +109,11 @@ class HeaderWithErrorPanel extends Component<TsProps> {
             onClick={index => this.setValgtAvdeling(avdelinger[index].avdelingEnhet)}
             items={avdelinger.map(avdeling => ({
               name: `${avdeling.avdelingEnhet} ${avdeling.navn}`,
-              selected: valgtAvdelingEnhet === avdeling.navn,
+              selected: valgtAvdelingEnhet === avdeling.avdelingEnhet,
             }))}
           />
         ),
+        userUnit: valgtAvdelingEnhet,
       };
     }
 
