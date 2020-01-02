@@ -18,13 +18,12 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-
 @Service
 @PropertySource("classpath:spring-application.properties")
 @EnableAutoConfiguration(exclude = {FlywayAutoConfiguration.class})
 public class UUIDSyncService {
 
-    private static final Logger log = LoggerFactory.getLogger(UUIDSyncService.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(UUIDSyncService.class);
     private ForeldrepengerBehandlingRestKlient foreldrePengerBehandlingRestKlient;
 
     private no.nav.fplos.uuid.repository.SpringOppgaveRepository oppgaveRepository;
@@ -53,11 +52,11 @@ public class UUIDSyncService {
                 oppgaveRepository.settInnUUIDForOppgaverMedBehandlingId(behandlingId, behandlingUUID.get());
                 oppgaveEventLoggRepository.settInnUUIDForOppgaveEventerMedBehandlingId(behandlingId, behandlingUUID.get());
             } else {
-                log.debug("Fant ingen UUID for behandling med ID : " + behandlingId);
+                LOGGER.info("Fant ingen UUID for behandling med ID : " + behandlingId);
             }
 
         }catch(RuntimeException re){
-            log.debug("Feil ved kall til fpsak for behandling med ID : " + behandlingId + " . Feilmelding : " + re.getMessage());
+            LOGGER.info("Feil ved kall til fpsak for behandling med ID : " + behandlingId + " . Feilmelding : " + re.getMessage());
         }
 
     }
@@ -68,11 +67,11 @@ public class UUIDSyncService {
             if(behandlingUUID.isPresent()) {
                 oppgaveEventLoggRepository.settInnUUIDForOppgaveEventerMedBehandlingId(behandlingId, behandlingUUID.get());
             } else {
-                log.debug("Fant ingen UUID for behandling med ID : " + behandlingId);
+                LOGGER.info("Fant ingen UUID for behandling med ID : " + behandlingId);
             }
 
         }catch(RuntimeException re){
-            log.debug("Feil ved kall til fpsak for behandling med ID : " + behandlingId + " . Feilmelding : " + re.getMessage());
+            LOGGER.info("Feil ved kall til fpsak for behandling med ID : " + behandlingId + " . Feilmelding : " + re.getMessage());
         }
     }
 }
