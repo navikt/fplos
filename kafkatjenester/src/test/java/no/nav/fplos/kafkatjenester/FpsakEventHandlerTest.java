@@ -255,12 +255,12 @@ public class FpsakEventHandlerTest {
         sjekkEventLoggInneholder(behandlingId, OppgaveEventType.OPPRETTET, AndreKriterierType.PAPIRSØKNAD);
     }
 
-    @Test
-    public void opprettingOppgaveMedEgenskapSelvstendigFrilanserFPTest() {
-        when(foreldrepengerBehandlingRestKlient.getBehandling(anyLong())).thenReturn(behandlingDtoFra(aksjonspunktKoderSelvstendigFrilanserFPDto));
-        fpsakEventHandler.prosesser(eventDrammenFra(aksjonspunktKoderSelvstendigFrilanserFP));
-        sjekkForEnOppgaveOgEgenskap(AndreKriterierType.SELVSTENDIG_FRILANSER);
-    }
+//    @Test
+//    public void opprettingOppgaveMedEgenskapSelvstendigFrilanserFPTest() {
+//        when(foreldrepengerBehandlingRestKlient.getBehandling(anyLong())).thenReturn(behandlingDtoFra(aksjonspunktKoderSelvstendigFrilanserFPDto));
+//        fpsakEventHandler.prosesser(eventDrammenFra(aksjonspunktKoderSelvstendigFrilanserFP));
+//        sjekkForEnOppgaveOgEgenskap(AndreKriterierType.SELVSTENDIG_FRILANSER);
+//    }
 
     @Test
     public void opprettingOppgavemedEgenskapHarGraderingFPTest() {

@@ -137,7 +137,7 @@ public class FpsakEventHandler extends FpEventHandler {
         håndterOppgaveEgenskapUtbetalingTilBruker(behandling.getHarRefusjonskravFraArbeidsgiver(), oppgave);
         håndterOppgaveEgenskapUtlandssak(behandling.getErUtlandssak(), oppgave);
         håndterOppgaveEgenskapGradering(behandling.getHarGradering(), oppgave);
-        håndterOppgaveEgenskap(finnSelvstendigFrilans(aksjonspunkt), oppgave, AndreKriterierType.SELVSTENDIG_FRILANSER);
+        //håndterOppgaveEgenskap(finnSelvstendigFrilans(aksjonspunkt), oppgave, AndreKriterierType.SELVSTENDIG_FRILANSER);
     }
 
     private static LocalDateTime finnVentAksjonspunktFrist(List<Aksjonspunkt> aksjonspunktListe) {
@@ -158,12 +158,10 @@ public class FpsakEventHandler extends FpEventHandler {
                .orElse(null);
     }
 
-    private static boolean finnSelvstendigFrilans(List<Aksjonspunkt> aksjonspunktListe) {
-        return safeStream(aksjonspunktListe)
-                .anyMatch(Aksjonspunkt::erSelvstendigEllerFrilanser);
-    }
-
-
+//    private static boolean finnSelvstendigFrilans(List<Aksjonspunkt> aksjonspunktListe) {
+//        return safeStream(aksjonspunktListe)
+//                .anyMatch(Aksjonspunkt::erSelvstendigEllerFrilanser);
+//    }
 
     private void avsluttOppgaveHvisÅpen(Long behandlingId, UUID eksternId, List<OppgaveEventLogg> oppgaveEventLogger, String behandlendeEnhet) {
         if (!oppgaveEventLogger.isEmpty() && OppgaveEventType.åpningseventtyper().contains(oppgaveEventLogger.get(0).getEventType())){
