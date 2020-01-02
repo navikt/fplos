@@ -57,16 +57,12 @@ public class UUIDSyncService {
             }
 
         }catch(RuntimeException re){
-            log.debug("Feil ved kall til fpsak for behandling med ID : " + behandlingId);
+            log.debug("Feil ved kall til fpsak for behandling med ID : " + behandlingId + " . Feilmelding : " + re.getMessage());
         }
 
     }
 
     private void settUuidPåOppgaveEventFraBehandlingsId(Long behandlingId) {
-        /*BehandlingFpsak sak = foreldrePengerBehandlingRestKlient.getBehandling(behandlingId);
-        if(sak != null) {
-            oppgaveEventLoggRepository.settInnUUIDForOppgaveEventerMedBehandlingId(behandlingId, sak.getUuid());
-        }*/
         try {
             Optional<UUID> behandlingUUID = foreldrePengerBehandlingRestKlient.getBehandlingUUID(behandlingId);
             if(behandlingUUID.isPresent()) {
@@ -76,7 +72,7 @@ public class UUIDSyncService {
             }
 
         }catch(RuntimeException re){
-            log.debug("Feil ved kall til fpsak for behandling med ID : " + behandlingId);
+            log.debug("Feil ved kall til fpsak for behandling med ID : " + behandlingId + " . Feilmelding : " + re.getMessage());
         }
     }
 }
