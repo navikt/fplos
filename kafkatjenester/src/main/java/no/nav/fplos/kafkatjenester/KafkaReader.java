@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import no.nav.foreldrepenger.loslager.oppgave.EventmottakFeillogg;
 import no.nav.foreldrepenger.loslager.repository.OppgaveRepository;
-import no.nav.foreldrepenger.loslager.repository.OppgaveRepositoryProvider;
 import no.nav.fplos.kafkatjenester.jsonoppgave.JsonOppgave;
 import no.nav.vedtak.felles.integrasjon.kafka.BehandlingProsessEventDto;
 import org.slf4j.Logger;
@@ -34,11 +33,11 @@ public class KafkaReader {
     public KafkaReader(AksjonspunktMeldingConsumer meldingConsumer,
                        FpsakEventHandler fpsakEventHandler,
                        TilbakekrevingEventHandler tilbakekrevingEventHandler,
-                       OppgaveRepositoryProvider oppgaveRepositoryProvider, JsonOppgaveHandler jsonOppgaveHandler){
+                       OppgaveRepository oppgaveRepository, JsonOppgaveHandler jsonOppgaveHandler){
         this.meldingConsumer = meldingConsumer;
         this.fpsakEventHandler = fpsakEventHandler;
         this.tilbakekrevingEventHandler = tilbakekrevingEventHandler;
-        this.oppgaveRepository = oppgaveRepositoryProvider.getOppgaveRepository();
+        this.oppgaveRepository = oppgaveRepository;
         this.jsonOppgaveHandler = jsonOppgaveHandler;
     }
 

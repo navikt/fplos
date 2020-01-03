@@ -9,7 +9,6 @@ import no.nav.foreldrepenger.loslager.oppgave.ReservasjonEventLogg;
 import no.nav.foreldrepenger.loslager.organisasjon.Avdeling;
 import no.nav.foreldrepenger.loslager.organisasjon.Saksbehandler;
 import no.nav.foreldrepenger.loslager.repository.OppgaveRepository;
-import no.nav.foreldrepenger.loslager.repository.OppgaveRepositoryProvider;
 import no.nav.foreldrepenger.loslager.repository.OppgavespørringDto;
 import no.nav.foreldrepenger.loslager.repository.OrganisasjonRepository;
 import no.nav.fplos.ansatt.AnsattTjeneste;
@@ -45,12 +44,13 @@ public class OppgaveTjenesteImpl implements OppgaveTjeneste {
     }
 
     @Inject
-    public OppgaveTjenesteImpl(OppgaveRepositoryProvider oppgaveRepositoryProvider,
+    public OppgaveTjenesteImpl(OppgaveRepository oppgaveRepository,
+                               OrganisasjonRepository organisasjonRepository,
                                TpsTjeneste tpsTjeneste,
                                AvdelingslederTjeneste avdelingslederTjeneste,
                                AnsattTjeneste ansattTjeneste) {
-        this.oppgaveRepository = oppgaveRepositoryProvider.getOppgaveRepository();
-        this.organisasjonRepository = oppgaveRepositoryProvider.getOrganisasjonRepository();
+        this.oppgaveRepository = oppgaveRepository;
+        this.organisasjonRepository = organisasjonRepository;
         this.tpsTjeneste = tpsTjeneste;
         this.avdelingslederTjeneste = avdelingslederTjeneste;
         this.ansattTjeneste = ansattTjeneste;

@@ -4,7 +4,6 @@ import no.nav.foreldrepenger.loslager.oppgave.EventmottakFeillogg;
 import no.nav.foreldrepenger.loslager.oppgave.Oppgave;
 import no.nav.foreldrepenger.loslager.oppgave.OppgaveEventLogg;
 import no.nav.foreldrepenger.loslager.repository.AdminRepository;
-import no.nav.foreldrepenger.loslager.repository.OppgaveRepositoryProvider;
 import no.nav.fplos.foreldrepengerbehandling.BehandlingFpsak;
 import no.nav.fplos.foreldrepengerbehandling.ForeldrepengerBehandlingRestKlient;
 import no.nav.fplos.kafkatjenester.Fagsystem;
@@ -38,12 +37,12 @@ public class AdminTjenesteImpl implements AdminTjeneste {
     }
 
     @Inject
-    public AdminTjenesteImpl(OppgaveRepositoryProvider oppgaveRepositoryProvider,
+    public AdminTjenesteImpl(AdminRepository adminRepository,
                              ForeldrepengerBehandlingRestKlient foreldrepengerBehandlingRestKlient,
                              FpsakEventHandler fpsakEventHandler,
                              TilbakekrevingEventHandler tilbakekrevingEventHandler,
                              KafkaReader kafaReader) {
-        adminRepository = oppgaveRepositoryProvider.getAdminRepository();
+        this.adminRepository = adminRepository;
         this.foreldrepengerBehandlingRestKlient = foreldrepengerBehandlingRestKlient;
         this.fpsakEventHandler = fpsakEventHandler;
         this.tilbakekrevingEventHandler = tilbakekrevingEventHandler;
