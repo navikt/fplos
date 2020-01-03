@@ -67,7 +67,6 @@ export const lagreSakslisteBehandlingstype = (sakslisteId: number, behandlingTyp
     checked: isChecked,
   }),
 ).then(() => dispatch(fetchAntallOppgaverForSaksliste(sakslisteId, avdelingEnhet)))
-    .then(() => dispatch(fetchAntallOppgaverForAvdeling(avdelingEnhet)))
     .then(() => dispatch(fetchAvdelingensSakslister(avdelingEnhet)));
 
 export const lagreSakslisteFagsakYtelseType = (sakslisteId: number, fagsakYtelseType: string, avdelingEnhet: string) => (dispatch: Dispatch) => {
