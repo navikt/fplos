@@ -91,11 +91,12 @@ public class TilbakekrevingEventHandler extends FpEventHandler {
     }
 
     private void avsluttOppgaveHvisÅpen(UUID eksternId, List<OppgaveEventLogg> oppgaveEventLogger, String behandlendeEnhet) {
-        if (!oppgaveEventLogger.isEmpty() && OppgaveEventType.åpningseventtyper().contains(oppgaveEventLogger.get(0).getEventType())){
+        if (!oppgaveEventLogger.isEmpty() && oppgaveEventLogger.get(0).getEventType().erÅpningsevent()) {
             loggEvent(eksternId, OppgaveEventType.LUKKET, null, behandlendeEnhet);
             getOppgaveRepository().avsluttOppgaveForEksternId(eksternId);
         }
     }
+
     private Oppgave opprettOppgave(UUID eksternId, BehandlingProsessEventDto bpeDto, boolean prosesserFraAdmin) {
         return getOppgaveRepository().opprettOppgave(Oppgave.builder()
                 .medSystem(bpeDto.getFagsystem())

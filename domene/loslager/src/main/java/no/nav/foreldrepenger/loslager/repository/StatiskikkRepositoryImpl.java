@@ -74,7 +74,7 @@ public class StatiskikkRepositoryImpl implements StatistikkRepository {
                         "GROUP BY COALESCE(trunc(oel.FRIST_TID), trunc(oel.OPPRETTET_TID + 28)),o.FAGSAK_YTELSE_TYPE " +
                         "ORDER BY COALESCE(trunc(oel.FRIST_TID), trunc(oel.OPPRETTET_TID + 28)),o.FAGSAK_YTELSE_TYPE ")
                 .setParameter("behandlendeEnhet", avdelingEnhet)
-                .setParameter("eventType", OppgaveEventType.MANU_VENT.getKode());
+                .setParameter("eventType", OppgaveEventType.MANU_VENT.name());
         return query.getResultList();
     }
 

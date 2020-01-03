@@ -7,7 +7,7 @@ import java.time.LocalDate;
 
 public class OppgaverForAvdelingSattManueltPaaVentDto {
     private FagsakYtelseType fagsakYtelseType;
-    private java.time.LocalDate behandlingFrist;
+    private LocalDate behandlingFrist;
     private Long antall;
 
 
