@@ -1,10 +1,5 @@
 package no.nav.foreldrepenger.los.web.app.tjenester.felles.dto;
 
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
-
 import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.saksliste.dto.SorteringDto;
 import no.nav.foreldrepenger.loslager.oppgave.BehandlingType;
 import no.nav.foreldrepenger.loslager.oppgave.FagsakYtelseType;
@@ -12,6 +7,11 @@ import no.nav.foreldrepenger.loslager.oppgave.FiltreringBehandlingType;
 import no.nav.foreldrepenger.loslager.oppgave.FiltreringYtelseType;
 import no.nav.foreldrepenger.loslager.oppgave.OppgaveFiltrering;
 import no.nav.foreldrepenger.loslager.organisasjon.Saksbehandler;
+
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class SakslisteDto {
 
@@ -23,8 +23,9 @@ public class SakslisteDto {
     private List<FagsakYtelseType> fagsakYtelseTyper = new ArrayList<>();
     private List<AndreKriterierDto> andreKriterier = new ArrayList<>();
     private List<String> saksbehandlerIdenter;
+    private Integer antallBehandlinger;
 
-    public SakslisteDto(OppgaveFiltrering o) {
+    public SakslisteDto(OppgaveFiltrering o, Integer antallBehandlinger) {
         sakslisteId = new SakslisteIdDto(o.getId());
         navn = o.getNavn();
         sistEndret = o.getEndretTidspunkt() == null
@@ -49,6 +50,8 @@ public class SakslisteDto {
         saksbehandlerIdenter = o.getSaksbehandlere().stream()
                 .map(Saksbehandler::getSaksbehandlerIdent)
                 .collect(Collectors.toList());
+
+        this.antallBehandlinger = antallBehandlinger;
     }
 
     public Long getSakslisteId() {
@@ -81,5 +84,9 @@ public class SakslisteDto {
 
     public List<String> getSaksbehandlerIdenter() {
         return saksbehandlerIdenter;
+    }
+
+    public Integer getAntallBehandlinger() {
+        return antallBehandlinger;
     }
 }

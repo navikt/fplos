@@ -23,6 +23,7 @@ describe('<EndreBehandlingskoerIndex>', () => {
       fetchAvdelingensSaksbehandlere={fetchAvdelingensSaksbehandlereFn}
       valgtAvdelingEnhet="1"
       fetchAntallOppgaverForSaksliste={sinon.spy()}
+      fetchAntallOppgaverForAvdeling={sinon.spy()}
     />);
 
     expect(wrapper.find(EndreSakslisterPanel)).to.have.length(1);

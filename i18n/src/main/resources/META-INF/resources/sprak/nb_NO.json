@@ -83,6 +83,8 @@
   "GjeldendeSakslisterTabell.Stonadstype": "Stønadstype",
   "GjeldendeSakslisterTabell.Alle": "Alle",
   "GjeldendeSakslisterTabell.AntallSaksbehandlere": "Antall saksbehandlere",
+  "GjeldendeSakslisterTabell.AntallBehandlinger": "Antall behandlinger",
+  "GjeldendeSakslisterTabell.OppgaverForAvdeling": "Antall åpne behandlinger totalt",
 
   "Header.Foreldrepenger": "Foreldrepenger, engangsstønad og svangerskapspenger",
   "Header.NavAnsatt": "NAV-ansatt",

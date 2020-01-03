@@ -8,10 +8,7 @@ import no.nav.fplos.kodeverk.Kodeverdi;
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -29,29 +26,9 @@ public enum BehandlingType implements Kodeverdi {
     private final String navn;
     public static final String kodeverk = "BEHANDLING_TYPE";
 
-    private static final Map<String, BehandlingType> kodeMap = Collections.unmodifiableMap(initializeMapping());
-
-    private static HashMap<String, BehandlingType> initializeMapping() {
-        HashMap<String, BehandlingType> map = new HashMap<>();
-        for (var v : values()) {
-            map.putIfAbsent(v.kode, v);
-        }
-        return map;
-    }
-
     BehandlingType(String kode, String navn) {
         this.kode = kode;
         this.navn = navn;
-    }
-
-    public static BehandlingType fraKode(String kode) {
-        return Optional.ofNullable(kodeMap.get(kode))
-                .orElse(null);
-    }
-
-    public static List<BehandlingType> getEnums() {
-        return Arrays.stream(values())
-                .collect(Collectors.toList());
     }
 
     public String getNavn() {
@@ -62,6 +39,19 @@ public enum BehandlingType implements Kodeverdi {
 
     public String getKodeverk() {
         return kodeverk;
+    }
+
+    @JsonCreator
+    public static BehandlingType fraKode(@JsonProperty("kode") String kode) {
+        return Arrays.stream(values())
+                .filter(v -> v.kode.equals(kode))
+                .findFirst()
+                .orElseThrow();
+    }
+
+    public static List<BehandlingType> getEnums() {
+        return Arrays.stream(values())
+                .collect(Collectors.toList());
     }
 
     @Converter(autoApply = true)
@@ -79,12 +69,5 @@ public enum BehandlingType implements Kodeverdi {
                     .map(BehandlingType::fraKode)
                     .orElse(null);
         }
-    }
-
-    @JsonCreator
-    static BehandlingType findValue(@JsonProperty("kode") String kode,
-                                    @JsonProperty("navn") String navn,
-                                    @JsonProperty("kodeverk") String kodeverk) {
-        return fraKode(kode);
     }
 }

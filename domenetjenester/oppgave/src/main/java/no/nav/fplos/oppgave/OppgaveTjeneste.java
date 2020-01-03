@@ -1,13 +1,13 @@
 package no.nav.fplos.oppgave;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
-
 import no.nav.foreldrepenger.loslager.aktør.TpsPersonDto;
 import no.nav.foreldrepenger.loslager.oppgave.Oppgave;
 import no.nav.foreldrepenger.loslager.oppgave.OppgaveFiltrering;
 import no.nav.foreldrepenger.loslager.oppgave.Reservasjon;
+
+import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
 
 public interface OppgaveTjeneste {
 
@@ -40,6 +40,8 @@ public interface OppgaveTjeneste {
     Optional<TpsPersonDto> hentPersonInfoOptional(long aktørId);
 
     Integer hentAntallOppgaver(Long behandlingsKø);
+
+    Integer hentAntallOppgaverForAvdeling(String avdelingEnhet);
 
     boolean harForandretOppgaver(List<Long> oppgaveIder);
 

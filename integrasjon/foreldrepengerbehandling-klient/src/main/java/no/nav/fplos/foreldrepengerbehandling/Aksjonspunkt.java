@@ -8,15 +8,18 @@ import java.util.List;
 import static java.util.Arrays.asList;
 
 public class Aksjonspunkt {
-    private static final String AKTIV_STATUS = "OPPR";
-    private static final String AVBRUTT_STATUS = "AVBR";
+    private static final String STATUSKODE_AKTIV = "OPPR";
+    private static final String STATUSKODE_AVBRUTT = "AVBR";
+
     private static final String MANUELT_SATT_PÅ_VENT_KODE = "7001";
     private static final String PÅ_VENT_KODEGRUPPE_STARTS_WITH = "7";
     private static final String TIL_BESLUTTER_KODE = "5016";
     private static final List<String> REGISTRER_PAPIRSØKNAD_KODE = asList("5012", "5040", "5057", "5096");
+    //private static final List<String> SELVSTENDIG_FRILANSER_GRUPPE = asList("5038", "5039", "5042", "7072");
+    private static final List<String> SELVSTENDIG_FRILANSER_GRUPPE = asList("5038", "5049");
 
-    private static final String AUTOMATISK_MARKERING_SOM_UTLAND_KODE = "5068";
-    private static final String MANUELL_MARKERING_SOM_UTLAND_KODE = "6068";
+    private static final String AUTOMATISK_MARKERING_SOM_UTLAND = "5068";
+    private static final String MANUELL_MARKERING_SOM_UTLAND = "6068";
     private static final String EØS_BOSATT_NORGE = "EØS_BOSATT_NORGE";
     private static final String BOSATT_UTLAND = "BOSATT_UTLAND";
 
@@ -53,11 +56,11 @@ public class Aksjonspunkt {
     }
 
     public boolean erAktiv() {
-        return AKTIV_STATUS.equals(statusKode);
+        return STATUSKODE_AKTIV.equals(statusKode);
     }
 
     public boolean erAvbrutt() {
-        return AVBRUTT_STATUS.equals(definisjonKode);
+        return STATUSKODE_AVBRUTT.equals(definisjonKode);
     }
 
     public boolean tilBeslutter() {
@@ -69,17 +72,21 @@ public class Aksjonspunkt {
     }
 
     private boolean erAutomatiskMarkertSomUtenlandssak() {
-        return AUTOMATISK_MARKERING_SOM_UTLAND_KODE.equals(definisjonKode) && !erAvbrutt();
+        return AUTOMATISK_MARKERING_SOM_UTLAND.equals(definisjonKode) && !erAvbrutt();
     }
 
     private boolean erManueltMarkertSomUtenlandssak() {
-        return definisjonKode.equals(MANUELL_MARKERING_SOM_UTLAND_KODE)
+        return definisjonKode.equals(MANUELL_MARKERING_SOM_UTLAND)
                 && (begrunnelse.equals(EØS_BOSATT_NORGE) || begrunnelse.equals(BOSATT_UTLAND));
     }
 
     public boolean erUtenlandssak() {
         return erAutomatiskMarkertSomUtenlandssak() || erManueltMarkertSomUtenlandssak();
     }
+
+//    public boolean erSelvstendigEllerFrilanser() {
+//        return SELVSTENDIG_FRILANSER_GRUPPE.contains(definisjonKode) && erAktiv();
+//    }
 
     public static Aksjonspunkt aksjonspunktFra(AksjonspunktDto aksjonspunktDto) {
         return Aksjonspunkt.builder()
