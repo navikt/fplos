@@ -11,7 +11,6 @@ import no.nav.fplos.foreldrepengerbehandling.dto.inntektarbeidytelse.Beløp;
 import no.nav.fplos.foreldrepengerbehandling.dto.inntektarbeidytelse.InntektArbeidYtelseDto;
 import no.nav.fplos.foreldrepengerbehandling.dto.inntektarbeidytelse.InntektsmeldingDto;
 import no.nav.fplos.foreldrepengerbehandling.dto.ytelsefordeling.YtelseFordelingDto;
-import no.nav.vedtak.exception.IntegrasjonException;
 import no.nav.vedtak.felles.integrasjon.rest.OidcRestClient;
 import no.nav.vedtak.konfig.KonfigVerdi;
 import no.nav.vedtak.sikkerhet.loginmodule.ContainerLogin;
@@ -31,6 +30,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.UUID;
 
 import static no.nav.fplos.foreldrepengerbehandling.Aksjonspunkt.aksjonspunktFra;
 
@@ -85,6 +85,23 @@ public class ForeldrepengerBehandlingRestKlient {
 
             hentUttakKontrollerFaktaPerioder(behandlingId, builder, links);
             return builder.build();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        } finally {
+            loginContext.logout();
+        }
+    }
+
+    public Optional<UUID> getBehandlingUUID(Long behandlingId) {
+        URIBuilder uriBuilder = new URIBuilder(URI.create(endpointFpsakRestBase + FPSAK_BEHANDLINGER));
+        uriBuilder.setParameter("behandlingId", String.valueOf(behandlingId));
+        ContainerLogin loginContext = new ContainerLogin();
+        loginContext.login();
+
+        try {
+            LOGGER.info("Slår opp UUID i fpsak for behandlingId {} per GET-kall til {}", behandlingId, uriBuilder.build());
+            UtvidetBehandlingDto response = oidcRestClient.get(uriBuilder.build(), UtvidetBehandlingDto.class);
+            return Optional.ofNullable(response.getUuid());
         } catch (Exception e) {
             throw new RuntimeException(e);
         } finally {
