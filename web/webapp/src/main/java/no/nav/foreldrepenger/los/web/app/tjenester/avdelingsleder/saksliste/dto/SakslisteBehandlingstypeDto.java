@@ -4,7 +4,6 @@ import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.dto.AvdelingEn
 import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.saksliste.FplosAbacAttributtType;
 import no.nav.foreldrepenger.los.web.app.tjenester.felles.dto.SakslisteIdDto;
 import no.nav.foreldrepenger.loslager.oppgave.BehandlingType;
-import no.nav.foreldrepenger.los.web.app.validering.ValidKodeverk;
 import no.nav.vedtak.sikkerhet.abac.AbacDataAttributter;
 import no.nav.vedtak.sikkerhet.abac.AbacDto;
 
@@ -18,7 +17,6 @@ public class SakslisteBehandlingstypeDto implements AbacDto {
     private SakslisteIdDto sakslisteId;
 
     @NotNull
-    //@ValidKodeverk
     private BehandlingType behandlingType;
 
     private boolean checked;
