@@ -22,8 +22,10 @@ import no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.oppgave.dto.Opp
 import no.nav.foreldrepenger.loslager.aktør.TpsPersonDto;
 import no.nav.foreldrepenger.loslager.oppgave.BehandlingType;
 import no.nav.foreldrepenger.loslager.oppgave.FagsakYtelseType;
-import no.nav.foreldrepenger.loslager.repository.OppgaveRepositoryProvider;
-import no.nav.foreldrepenger.loslager.repository.OppgaveRepositoryProviderImpl;
+import no.nav.foreldrepenger.loslager.repository.OppgaveRepository;
+import no.nav.foreldrepenger.loslager.repository.OppgaveRepositoryImpl;
+import no.nav.foreldrepenger.loslager.repository.OrganisasjonRepository;
+import no.nav.foreldrepenger.loslager.repository.OrganisasjonRepositoryImpl;
 import no.nav.fplos.ansatt.AnsattTjeneste;
 import no.nav.fplos.avdelingsleder.AvdelingslederSaksbehandlerTjenesteImpl;
 import no.nav.fplos.avdelingsleder.AvdelingslederTjeneste;
@@ -64,17 +66,18 @@ public class VerdikjedetestSaksbehandlerTest {
     @Rule
     public UnittestRepositoryRule repoRule = new UnittestRepositoryRule();
     private EntityManager entityManager = repoRule.getEntityManager();
-    private OppgaveRepositoryProvider oppgaveRepositoryProvider = new OppgaveRepositoryProviderImpl(entityManager );
+    private OppgaveRepository oppgaveRepository = new OppgaveRepositoryImpl(entityManager);
+    private OrganisasjonRepository organisasjonRepository = new OrganisasjonRepositoryImpl(entityManager);
     private TpsTjeneste tpsTjeneste = mock(TpsTjeneste.class);
     private AvdelingslederTjeneste avdelingslederTjeneste = mock(AvdelingslederTjeneste.class);
     private AnsattTjeneste ansattTjeneste = mock(AnsattTjeneste.class);
     private FagsakApplikasjonTjeneste fagsakApplikasjonTjeneste = mock(FagsakApplikasjonTjeneste.class);
-    private OppgaveRestTjeneste oppgaveRestTjeneste = new OppgaveRestTjeneste(new OppgaveTjenesteImpl(oppgaveRepositoryProvider, tpsTjeneste, avdelingslederTjeneste, ansattTjeneste), fagsakApplikasjonTjeneste);
-    private AvdelingslederRestTjeneste avdelingslederRestTjeneste = new AvdelingslederRestTjeneste(new AvdelingslederTjenesteImpl(oppgaveRepositoryProvider));
+    private OppgaveRestTjeneste oppgaveRestTjeneste = new OppgaveRestTjeneste(new OppgaveTjenesteImpl(oppgaveRepository, organisasjonRepository, tpsTjeneste, avdelingslederTjeneste, ansattTjeneste), fagsakApplikasjonTjeneste);
+    private AvdelingslederRestTjeneste avdelingslederRestTjeneste = new AvdelingslederRestTjeneste(new AvdelingslederTjenesteImpl(oppgaveRepository, organisasjonRepository));
     private AvdelingslederSakslisteRestTjeneste avdelingslederSakslisteRestTjeneste = new AvdelingslederSakslisteRestTjeneste(
-            new AvdelingslederTjenesteImpl(oppgaveRepositoryProvider), new OppgaveTjenesteImpl(oppgaveRepositoryProvider, tpsTjeneste, avdelingslederTjeneste, ansattTjeneste));
+            new AvdelingslederTjenesteImpl(oppgaveRepository, organisasjonRepository), new OppgaveTjenesteImpl(oppgaveRepository, organisasjonRepository, tpsTjeneste, avdelingslederTjeneste, ansattTjeneste));
     private AvdelingslederSaksbehandlerRestTjeneste avdelingslederSaksbehandlerRestTjeneste =
-            new AvdelingslederSaksbehandlerRestTjeneste(new AvdelingslederSaksbehandlerTjenesteImpl(oppgaveRepositoryProvider, new OrganisasjonRessursEnhetTjenesteImpl()));
+            new AvdelingslederSaksbehandlerRestTjeneste(new AvdelingslederSaksbehandlerTjenesteImpl(oppgaveRepository, organisasjonRepository, new OrganisasjonRessursEnhetTjenesteImpl()));
     private ForeldrepengerBehandlingRestKlient foreldrepengerBehandlingRestKlient = mock(ForeldrepengerBehandlingRestKlient.class);
 
     @Inject
@@ -88,9 +91,9 @@ public class VerdikjedetestSaksbehandlerTest {
     @Before
     public void before(){
         kafkaReader = new KafkaReader(meldingConsumer,
-                new FpsakEventHandler(oppgaveRepositoryProvider, foreldrepengerBehandlingRestKlient),
-                new TilbakekrevingEventHandler(oppgaveRepositoryProvider), oppgaveRepositoryProvider,
-                new JsonOppgaveHandler(oppgaveRepositoryProvider, foreldrepengerBehandlingRestKlient));
+                new FpsakEventHandler(oppgaveRepository, foreldrepengerBehandlingRestKlient),
+                new TilbakekrevingEventHandler(oppgaveRepository), oppgaveRepository,
+                new JsonOppgaveHandler(oppgaveRepository, foreldrepengerBehandlingRestKlient));
         avdelingDrammen = avdelingslederRestTjeneste.hentAvdelinger().stream()
                 .filter(avdeling -> AVDELING_DRAMMEN.equals(avdeling.getAvdelingEnhet())).findFirst().orElseThrow();
         sakslisteDrammenFPFørstegangsIdDto = avdelingslederSakslisteRestTjeneste.opprettNySaksliste(new AvdelingEnhetDto(avdelingDrammen.getAvdelingEnhet()));

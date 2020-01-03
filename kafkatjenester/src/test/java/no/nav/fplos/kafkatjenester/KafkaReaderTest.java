@@ -3,8 +3,8 @@ package no.nav.fplos.kafkatjenester;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import no.nav.foreldrepenger.dbstoette.UnittestRepositoryRule;
 import no.nav.foreldrepenger.loslager.oppgave.EventmottakFeillogg;
-import no.nav.foreldrepenger.loslager.repository.OppgaveRepositoryProvider;
-import no.nav.foreldrepenger.loslager.repository.OppgaveRepositoryProviderImpl;
+import no.nav.foreldrepenger.loslager.repository.OppgaveRepository;
+import no.nav.foreldrepenger.loslager.repository.OppgaveRepositoryImpl;
 import no.nav.fplos.foreldrepengerbehandling.Aksjonspunkt;
 import no.nav.fplos.foreldrepengerbehandling.BehandlingFpsak;
 import no.nav.fplos.foreldrepengerbehandling.ForeldrepengerBehandlingRestKlient;
@@ -28,12 +28,12 @@ public class KafkaReaderTest {
     @Rule
     public UnittestRepositoryRule repoRule = new UnittestRepositoryRule();
     private EntityManager entityManager = repoRule.getEntityManager();
-    private OppgaveRepositoryProvider oppgaveRepositoryProvider = new OppgaveRepositoryProviderImpl(entityManager );
+    private OppgaveRepository oppgaveRepository = new OppgaveRepositoryImpl(entityManager);
     private ForeldrepengerBehandlingRestKlient foreldrepengerBehandlingRestKlient = mock(ForeldrepengerBehandlingRestKlient.class);
-    private FpsakEventHandler fpsakEventHandler = new FpsakEventHandler(oppgaveRepositoryProvider, foreldrepengerBehandlingRestKlient);
-    private TilbakekrevingEventHandler tilbakekrevingEventHandler = new TilbakekrevingEventHandler(oppgaveRepositoryProvider);
+    private FpsakEventHandler fpsakEventHandler = new FpsakEventHandler(oppgaveRepository, foreldrepengerBehandlingRestKlient);
+    private TilbakekrevingEventHandler tilbakekrevingEventHandler = new TilbakekrevingEventHandler(oppgaveRepository);
     private JsonOppgaveHandler jsonOppgaveHandler = new JsonOppgaveHandler();
-    private KafkaReader kafkaReader = new KafkaReader(null, fpsakEventHandler, tilbakekrevingEventHandler, oppgaveRepositoryProvider, jsonOppgaveHandler);
+    private KafkaReader kafkaReader = new KafkaReader(null, fpsakEventHandler, tilbakekrevingEventHandler, oppgaveRepository, jsonOppgaveHandler);
     private FpsakEventHandlerTest fpsakEventHandlerTest = new FpsakEventHandlerTest();
     private ObjectMapper objectMapper = new ObjectMapper();
 

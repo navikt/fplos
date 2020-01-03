@@ -1,12 +1,5 @@
 package no.nav.foreldrepenger.loslager.repository;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
-import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.Query;
-
 import no.nav.foreldrepenger.loslager.oppgave.AndreKriterierType;
 import no.nav.foreldrepenger.loslager.oppgave.BehandlingType;
 import no.nav.foreldrepenger.loslager.oppgave.FagsakYtelseType;
@@ -14,7 +7,15 @@ import no.nav.foreldrepenger.loslager.oppgave.OppgaveEventType;
 import no.nav.foreldrepenger.loslager.oppgave.OppgaveFiltrering;
 import no.nav.vedtak.felles.jpa.VLPersistenceUnit;
 
-public class StatiskikkRepositoryImpl implements StatistikkRepository {
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
+import java.util.List;
+import java.util.stream.Collectors;
+
+@ApplicationScoped
+public class StatistikkRepositoryImpl implements StatistikkRepository {
 
     private static final String AVDELING_ENHET = "avdelingEnhet";
     private static final String TIL_BESLUTTER = "tilBeslutter";
@@ -22,11 +23,11 @@ public class StatiskikkRepositoryImpl implements StatistikkRepository {
     private EntityManager entityManager;
 
     @Inject
-    public StatiskikkRepositoryImpl(@VLPersistenceUnit EntityManager entityManager) {
+    public StatistikkRepositoryImpl(@VLPersistenceUnit EntityManager entityManager) {
         this.entityManager = entityManager;
     }
 
-    StatiskikkRepositoryImpl(){
+    StatistikkRepositoryImpl(){
         //CDI
     }
 

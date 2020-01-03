@@ -9,7 +9,7 @@ import no.nav.foreldrepenger.loslager.oppgave.OppgaveEgenskap;
 import no.nav.foreldrepenger.loslager.oppgave.OppgaveEventLogg;
 import no.nav.foreldrepenger.loslager.oppgave.OppgaveEventType;
 import no.nav.foreldrepenger.loslager.oppgave.Reservasjon;
-import no.nav.foreldrepenger.loslager.repository.OppgaveRepositoryProvider;
+import no.nav.foreldrepenger.loslager.repository.OppgaveRepository;
 import no.nav.fplos.foreldrepengerbehandling.Aksjonspunkt;
 import no.nav.fplos.foreldrepengerbehandling.BehandlingFpsak;
 import no.nav.fplos.foreldrepengerbehandling.ForeldrepengerBehandlingRestKlient;
@@ -45,9 +45,9 @@ public class FpsakEventHandler extends FpEventHandler {
     }
 
     @Inject
-    public FpsakEventHandler(OppgaveRepositoryProvider oppgaveRepositoryProvider,
+    public FpsakEventHandler(OppgaveRepository oppgaveRepository,
                              ForeldrepengerBehandlingRestKlient foreldrePengerBehandlingRestKlient){
-        super(oppgaveRepositoryProvider);
+        super(oppgaveRepository);
         this.foreldrePengerBehandlingRestKlient = foreldrePengerBehandlingRestKlient;
     }
 

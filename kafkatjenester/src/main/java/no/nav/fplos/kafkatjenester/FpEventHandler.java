@@ -6,8 +6,6 @@ import no.nav.foreldrepenger.loslager.oppgave.OppgaveEventLogg;
 import no.nav.foreldrepenger.loslager.oppgave.OppgaveEventType;
 import no.nav.foreldrepenger.loslager.oppgave.Reservasjon;
 import no.nav.foreldrepenger.loslager.repository.OppgaveRepository;
-import no.nav.foreldrepenger.loslager.repository.OppgaveRepositoryProvider;
-import no.nav.fplos.kodeverk.KodeverkRepository;
 import no.nav.vedtak.felles.integrasjon.kafka.BehandlingProsessEventDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,8 +24,8 @@ public abstract class FpEventHandler {
     protected FpEventHandler() {
     }
 
-    protected FpEventHandler(OppgaveRepositoryProvider oppgaveRepositoryProvider) {
-        this.oppgaveRepository = oppgaveRepositoryProvider.getOppgaveRepository();
+    protected FpEventHandler(OppgaveRepository oppgaveRepository) {
+        this.oppgaveRepository = oppgaveRepository;
     }
 
     protected OppgaveRepository getOppgaveRepository() {

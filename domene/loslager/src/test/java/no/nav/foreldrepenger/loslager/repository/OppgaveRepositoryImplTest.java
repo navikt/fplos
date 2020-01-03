@@ -38,7 +38,6 @@ public class OppgaveRepositoryImplTest {
     public final UnittestRepositoryRule repoRule = new UnittestRepositoryRule();
     private final Repository repository = repoRule.getRepository();
     private final EntityManager entityManager = repoRule.getEntityManager();
-    private final OppgaveRepositoryProvider repositoryProvider = new OppgaveRepositoryProviderImpl(entityManager);
     private OppgaveRepository oppgaveRepository = new OppgaveRepositoryImpl(entityManager);
     private Avdeling avdelingDrammen = null;
     private static String AVDELING_DRAMMEN_ENHET = "4806";
