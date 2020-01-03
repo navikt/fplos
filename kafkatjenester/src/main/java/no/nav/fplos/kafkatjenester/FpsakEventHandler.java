@@ -225,7 +225,7 @@ public class FpsakEventHandler extends FpEventHandler {
                 .medForsteStonadsdag(fraFpsak.getFørsteUttaksdag())
                 .medUtfortFraAdmin(prosesserFraAdmin)
                 .medBehandlingsfrist(hentBehandlingstidFrist(fraFpsak.getBehandlingstidFrist()))
-                .medBehandlingStatus(getKodeverkRepository().finn(BehandlingStatus.class, fraFpsak.getStatus()))
+                .medBehandlingStatus(BehandlingStatus.fraKode(fraFpsak.getStatus()))
                 .medEksternId(eksternId)
                 .build());
     }

@@ -52,11 +52,9 @@ public class Oppgave extends BaseEntitet {
     @Column(name = "FORSTE_STONADSDAG")
     private LocalDate forsteStonadsdag;
 
-    @NotFound(action= NotFoundAction.IGNORE)
-    @ManyToOne(optional = false)
-    @JoinColumnOrFormula(column = @JoinColumn(name = "BEHANDLING_STATUS", referencedColumnName = "kode", nullable = false))
-    @JoinColumnOrFormula(formula = @JoinFormula(referencedColumnName = "kodeverk", value = "'" + BehandlingStatus.DISCRIMINATOR + "'"))
-    private BehandlingStatus behandlingStatus = BehandlingStatus.UDEFINERT;
+    @Convert(converter = BehandlingStatus.KodeverdiConverter.class)
+    @Column(name = "BEHANDLING_STATUS")
+    private BehandlingStatus behandlingStatus;
 
     @Convert(converter = BehandlingType.KodeverdiConverter.class)
     @Column(name = "BEHANDLING_TYPE")
