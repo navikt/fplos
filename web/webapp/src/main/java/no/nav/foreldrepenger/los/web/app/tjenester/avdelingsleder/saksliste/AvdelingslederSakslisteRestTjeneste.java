@@ -37,6 +37,7 @@ import no.nav.foreldrepenger.los.web.app.tjenester.felles.dto.SakslisteDto;
 import no.nav.foreldrepenger.los.web.app.tjenester.felles.dto.SakslisteIdDto;
 import no.nav.foreldrepenger.loslager.oppgave.OppgaveFiltrering;
 import no.nav.fplos.avdelingsleder.AvdelingslederTjeneste;
+import no.nav.fplos.oppgave.OppgaveTjeneste;
 import no.nav.vedtak.felles.jpa.Transaction;
 import no.nav.vedtak.sikkerhet.abac.BeskyttetRessurs;
 import no.nav.vedtak.sikkerhet.abac.BeskyttetRessursActionAttributt;
@@ -49,11 +50,12 @@ import no.nav.vedtak.sikkerhet.abac.BeskyttetRessursResourceAttributt;
 public class AvdelingslederSakslisteRestTjeneste {
 
     private AvdelingslederTjeneste avdelingslederTjeneste;
-
+    private OppgaveTjeneste oppgaveTjeneste;
 
     @Inject
-    public AvdelingslederSakslisteRestTjeneste(AvdelingslederTjeneste avdelingslederTjeneste) {
+    public AvdelingslederSakslisteRestTjeneste(AvdelingslederTjeneste avdelingslederTjeneste, OppgaveTjeneste oppgaveTjeneste) {
         this.avdelingslederTjeneste = avdelingslederTjeneste;
+        this.oppgaveTjeneste = oppgaveTjeneste;
     }
 
     public AvdelingslederSakslisteRestTjeneste() {
@@ -69,7 +71,7 @@ public class AvdelingslederSakslisteRestTjeneste {
     public List<SakslisteDto> hentAvdelingensSakslister(@NotNull @QueryParam("avdelingEnhet") @Valid AvdelingEnhetDto avdelingEnhet) {
         List<OppgaveFiltrering> filtersett = avdelingslederTjeneste.hentOppgaveFiltreringer(avdelingEnhet.getAvdelingEnhet());
         return filtersett.stream()
-                .map(SakslisteDto::new)
+                .map(o-> new SakslisteDto(o,oppgaveTjeneste.hentAntallOppgaver(o.getId())))
                 .collect(Collectors.toList());
     }
 

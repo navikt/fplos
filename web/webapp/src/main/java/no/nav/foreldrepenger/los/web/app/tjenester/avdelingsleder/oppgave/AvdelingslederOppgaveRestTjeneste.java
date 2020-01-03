@@ -49,4 +49,15 @@ public class AvdelingslederOppgaveRestTjeneste {
                                                   @NotNull @QueryParam("avdelingEnhet") @Valid AvdelingEnhetDto avdelingEnhetDto) {
         return oppgaveTjeneste.hentAntallOppgaver(sakslisteId.getVerdi());
     }
+
+    @GET
+    @Timed
+    @Path("/avdelingantall")
+    @Produces("application/json")
+    @ApiOperation(value = "Henter antall oppgaver knyttet til avdelingen")
+    @BeskyttetRessurs(action = READ, ressurs = OPPGAVESTYRING_AVDELINGENHET, sporingslogg = false)
+    @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
+    public Integer hentAntallOppgaverForAvdeling(@NotNull @QueryParam("avdelingEnhet") @Valid AvdelingEnhetDto avdelingEnhetDto) {
+        return oppgaveTjeneste.hentAntallOppgaverForAvdeling(avdelingEnhetDto.getAvdelingEnhet());
+    }
 }
