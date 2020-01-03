@@ -71,16 +71,6 @@
         <url-pattern>internal/metrics</url-pattern>
     </servlet-mapping>
 
-    <filter>
-        <filter-name>AuthenticationFilter</filter-name>
-        <filter-class>no.nav.fplos.uuid.rest.AuthenticationFilter</filter-class>
-    </filter>
-
-    <filter-mapping>
-        <filter-name>AuthenticationFilter</filter-name>
-        <url-pattern>/uuid/*</url-pattern>
-    </filter-mapping>
-
     <security-constraint>
         <web-resource-collection>
             <web-resource-name>Ubeskyttet</web-resource-name>
