@@ -25,7 +25,4 @@
     <entity class="no.nav.foreldrepenger.loslager.oppgave.FiltreringAndreKriterierType"/>
     <entity class="no.nav.foreldrepenger.loslager.organisasjon.Avdeling"/>
     <entity class="no.nav.foreldrepenger.loslager.organisasjon.Saksbehandler"/>
-
-    <entity class="no.nav.foreldrepenger.loslager.oppgave.EventmottakStatus"/>
-
 </entity-mappings>

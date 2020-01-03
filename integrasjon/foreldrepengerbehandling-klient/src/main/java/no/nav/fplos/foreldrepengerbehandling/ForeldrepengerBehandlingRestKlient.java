@@ -82,7 +82,6 @@ public class ForeldrepengerBehandlingRestKlient {
                     .medFørsteUttaksdag(hentFørsteUttaksdato(links))
                     .medHarRefusjonskrav(hentHarRefusjonskrav(links))
                     .medAksjonspunkter(hentAksjonspunkter(links));
-
             hentUttakKontrollerFaktaPerioder(behandlingId, builder, links);
             return builder.build();
         } catch (Exception e) {

@@ -164,7 +164,7 @@ public class FpsakEventHandler extends FpEventHandler {
 //    }
 
     private void avsluttOppgaveHvisÅpen(Long behandlingId, UUID eksternId, List<OppgaveEventLogg> oppgaveEventLogger, String behandlendeEnhet) {
-        if (!oppgaveEventLogger.isEmpty() && OppgaveEventType.åpningseventtyper().contains(oppgaveEventLogger.get(0).getEventType())){
+        if (!oppgaveEventLogger.isEmpty() && oppgaveEventLogger.get(0).getEventType().erÅpningsevent()){
             //Optional<EksternIdentifikator> eksternId = getEksternIdentifikatorRespository().finnIdentifikator(fagsystem, behandlingId.toString());
             if(eksternId != null) {
                 loggEvent(behandlingId, eksternId, OppgaveEventType.LUKKET, null, behandlendeEnhet);
@@ -225,7 +225,7 @@ public class FpsakEventHandler extends FpEventHandler {
                 .medForsteStonadsdag(fraFpsak.getFørsteUttaksdag())
                 .medUtfortFraAdmin(prosesserFraAdmin)
                 .medBehandlingsfrist(hentBehandlingstidFrist(fraFpsak.getBehandlingstidFrist()))
-                .medBehandlingStatus(getKodeverkRepository().finn(BehandlingStatus.class, fraFpsak.getStatus()))
+                .medBehandlingStatus(BehandlingStatus.fraKode(fraFpsak.getStatus()))
                 .medEksternId(eksternId)
                 .build());
     }
