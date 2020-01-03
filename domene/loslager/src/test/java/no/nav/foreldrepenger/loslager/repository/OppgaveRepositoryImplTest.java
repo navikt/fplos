@@ -151,9 +151,22 @@ public class OppgaveRepositoryImplTest {
         oppgaver = oppgaveRepository.hentOppgaver(new OppgavespørringDto(AVDELING_DRAMMEN, null, new ArrayList<>(), new ArrayList<>(),
                 Arrays.asList(AndreKriterierType.PAPIRSØKNAD),Arrays.asList(AndreKriterierType.TIL_BESLUTTER), false, null, null, null, null));
         assertThat(oppgaver).hasSize(1);
-        int andtallOppgaver = oppgaveRepository.hentAntallOppgaver(new OppgavespørringDto(AVDELING_DRAMMEN, null, new ArrayList<>(), new ArrayList<>(),
+        int antallOppgaver = oppgaveRepository.hentAntallOppgaver(new OppgavespørringDto(AVDELING_DRAMMEN, null, new ArrayList<>(), new ArrayList<>(),
                 Arrays.asList(AndreKriterierType.PAPIRSØKNAD),Arrays.asList(AndreKriterierType.TIL_BESLUTTER), false, null, null, null, null));
-        assertThat(andtallOppgaver).isEqualTo(1);
+        assertThat(antallOppgaver).isEqualTo(1);
+
+        int antallOppgaverForAvdeling = oppgaveRepository.hentAntallOppgaverForAvdeling(AVDELING_DRAMMEN);
+        assertThat(antallOppgaverForAvdeling).isEqualTo(4);
+
+    }
+
+    @Test
+    public void testAntallOppgaverForAvdeling(){
+        int antallOppgaverForAvdeling = oppgaveRepository.hentAntallOppgaverForAvdeling(AVDELING_DRAMMEN);
+        assertThat(antallOppgaverForAvdeling).isEqualTo(0);
+        lagStandardSettMedOppgaver();
+        antallOppgaverForAvdeling = oppgaveRepository.hentAntallOppgaverForAvdeling(AVDELING_DRAMMEN);
+        assertThat(antallOppgaverForAvdeling).isEqualTo(4);
     }
 
     @Test

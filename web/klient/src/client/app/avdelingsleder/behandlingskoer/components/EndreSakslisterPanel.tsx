@@ -27,7 +27,9 @@ interface TsProps {
   lagreSakslisteAndreKriterier: (sakslisteId: number, andreKriterierType: Kodeverk, isChecked: boolean, skalInkludere: boolean, avdelingEnhet: string) => void;
   knyttSaksbehandlerTilSaksliste: (sakslisteId: number, brukerIdent: string, isChecked: boolean, avdelingEnhet: string) => void;
   valgtSakslisteId?: number;
+  hentAvdelingensSakslister: (avdelingEnhet: string) => Saksliste[];
   hentAntallOppgaverForSaksliste: (sakslisteId: number, avdelingEnhet: string) => Promise<string>;
+  hentAntallOppgaverForAvdeling: (avdelingEnhet: string) => Promise<string>;
 }
 
 /**
@@ -44,7 +46,9 @@ const EndreSakslisterPanel = ({
   lagreSakslisteFagsakYtelseType,
   lagreSakslisteAndreKriterier,
   knyttSaksbehandlerTilSaksliste,
+  hentAvdelingensSakslister,
   hentAntallOppgaverForSaksliste,
+  hentAntallOppgaverForAvdeling,
 }: TsProps) => {
   const valgtSaksliste = sakslister.find(s => s.sakslisteId === valgtSakslisteId);
   return (
@@ -55,6 +59,8 @@ const EndreSakslisterPanel = ({
         valgtSakslisteId={valgtSakslisteId}
         lagNySaksliste={lagNySaksliste}
         fjernSaksliste={fjernSaksliste}
+        hentAvdelingensSakslister={hentAvdelingensSakslister}
+        hentAntallOppgaverForAvdeling={hentAntallOppgaverForAvdeling}
       />
       <VerticalSpacer sixteenPx />
       {valgtSakslisteId && valgtSaksliste && (
@@ -98,6 +104,7 @@ EndreSakslisterPanel.propTypes = {
   lagreSakslisteAndreKriterier: PropTypes.func.isRequired,
   valgtSakslisteId: PropTypes.number,
   hentAntallOppgaverForSaksliste: PropTypes.func.isRequired,
+  hentAntallOppgaverForAvdeling: PropTypes.func.isRequired,
 };
 
 EndreSakslisterPanel.defaultProps = {

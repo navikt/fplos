@@ -34,6 +34,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
@@ -87,6 +88,13 @@ public class OppgaveRepositoryImpl implements OppgaveRepository {
             }
         }
         TypedQuery<Long> oppgaveTypedQuery = lagOppgavespørring(selection, Long.class, oppgavespørringDto);
+        return oppgaveTypedQuery.getSingleResult().intValue();
+    }
+
+    @Override
+    public int hentAntallOppgaverForAvdeling(Long avdelingsId) {
+        OppgavespørringDto oppgavespørringDto = new OppgavespørringDto(avdelingsId,KøSortering.BEHANDLINGSFRIST,new ArrayList<>(), new ArrayList<>(),new ArrayList<>(),new ArrayList<>(),false,null,null,null,null);
+        TypedQuery<Long> oppgaveTypedQuery = lagOppgavespørring(COUNT_FRA_OPPGAVE, Long.class, oppgavespørringDto);
         return oppgaveTypedQuery.getSingleResult().intValue();
     }
 

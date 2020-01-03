@@ -28,6 +28,8 @@ public interface OppgaveRepository {
 
     int hentAntallOppgaver(OppgavespørringDto oppgavespørringDto);
 
+    int hentAntallOppgaverForAvdeling(Long avdelingsId);
+
     List<Reservasjon> hentReservasjonerTilknyttetAktiveOppgaver(String uid);
 
     List<Oppgave> hentOppgaverForSaksnummer(Long fagsakSaksnummer);

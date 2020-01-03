@@ -6,6 +6,7 @@ import no.nav.foreldrepenger.loslager.oppgave.Oppgave;
 import no.nav.foreldrepenger.loslager.oppgave.OppgaveFiltrering;
 import no.nav.foreldrepenger.loslager.oppgave.Reservasjon;
 import no.nav.foreldrepenger.loslager.oppgave.ReservasjonEventLogg;
+import no.nav.foreldrepenger.loslager.organisasjon.Avdeling;
 import no.nav.foreldrepenger.loslager.organisasjon.Saksbehandler;
 import no.nav.foreldrepenger.loslager.repository.OppgaveRepository;
 import no.nav.foreldrepenger.loslager.repository.OppgaveRepositoryProvider;
@@ -176,6 +177,12 @@ public class OppgaveTjenesteImpl implements OppgaveTjeneste {
             log.error("Henting av oppgave feilet", e);
         }
         return antallOppgaver;
+    }
+
+    @Override
+    public Integer hentAntallOppgaverForAvdeling(String avdelingsEnhet) {
+        Avdeling avdeling = organisasjonRepository.hentAvdelingFraEnhet(avdelingsEnhet);
+        return oppgaveRepository.hentAntallOppgaverForAvdeling(avdeling.getId());
     }
 
     public boolean harForandretOppgaver(List<Long> oppgaveIder) {

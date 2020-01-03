@@ -41,6 +41,7 @@ const fpLosApiKeys = {
   HENT_OPPGAVER_MANUELT_PA_VENT: 'HENT_OPPGAVER_MANUELT_PA_VENT',
   AVDELINGER: 'AVDELINGER',
   OPPGAVE_ANTALL: 'OPPGAVE_ANTALL',
+  OPPGAVE_AVDELING_ANTALL: 'OPPGAVE_AVDELING_ANTALL',
   OPPGAVER_FOR_FAGSAKER: 'OPPGAVER_FOR_FAGSAKER',
   FLYTT_RESERVASJON_SAKSBEHANDLER_SOK: 'FLYTT_RESERVASJON_SAKSBEHANDLER_SOK',
   FLYTT_RESERVASJON: 'FLYTT_RESERVASJON',
@@ -101,6 +102,7 @@ const endpoints = new RestApiConfigBuilder()
 
   /* /api/avdelingsleder/oppgaver */
   .withGet('/api/avdelingsleder/oppgaver/antall', fpLosApiKeys.OPPGAVE_ANTALL)
+  .withGet('/api/avdelingsleder/oppgaver/avdelingantall', fpLosApiKeys.OPPGAVE_AVDELING_ANTALL)
 
   /* /api/avdelingsleder/nokkeltall */
   .withGet('/api/avdelingsleder/nokkeltall/behandlinger-under-arbeid', fpLosApiKeys.HENT_OPPGAVER_FOR_AVDELING)

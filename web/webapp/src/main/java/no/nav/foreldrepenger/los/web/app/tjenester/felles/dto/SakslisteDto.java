@@ -23,8 +23,9 @@ public class SakslisteDto {
     private List<FagsakYtelseType> fagsakYtelseTyper = new ArrayList<>();
     private List<AndreKriterierDto> andreKriterier = new ArrayList<>();
     private List<String> saksbehandlerIdenter;
+    private Integer antallBehandlinger;
 
-    public SakslisteDto(OppgaveFiltrering o) {
+    public SakslisteDto(OppgaveFiltrering o, Integer antallBehandlinger) {
         sakslisteId = new SakslisteIdDto(o.getId());
         navn = o.getNavn();
         sistEndret = o.getEndretTidspunkt() == null
@@ -49,6 +50,8 @@ public class SakslisteDto {
         saksbehandlerIdenter = o.getSaksbehandlere().stream()
                 .map(Saksbehandler::getSaksbehandlerIdent)
                 .collect(Collectors.toList());
+
+        this.antallBehandlinger = antallBehandlinger;
     }
 
     public Long getSakslisteId() {
@@ -81,5 +84,9 @@ public class SakslisteDto {
 
     public List<String> getSaksbehandlerIdenter() {
         return saksbehandlerIdenter;
+    }
+
+    public Integer getAntallBehandlinger() {
+        return antallBehandlinger;
     }
 }

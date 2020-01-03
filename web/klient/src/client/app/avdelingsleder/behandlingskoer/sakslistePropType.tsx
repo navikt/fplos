@@ -21,6 +21,7 @@ const sakslistePropType = PropTypes.shape({
     inkluder: PropTypes.bool.isRequired,
   })),
   saksbehandlerIdenter: PropTypes.arrayOf(PropTypes.string).isRequired,
+  antallBehandlinger: PropTypes.number,
 });
 
 export default sakslistePropType;

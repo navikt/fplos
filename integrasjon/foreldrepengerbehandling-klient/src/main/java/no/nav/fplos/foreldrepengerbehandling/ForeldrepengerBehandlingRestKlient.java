@@ -30,6 +30,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.UUID;
 
 import static no.nav.fplos.foreldrepengerbehandling.Aksjonspunkt.aksjonspunktFra;
 
@@ -84,6 +85,23 @@ public class ForeldrepengerBehandlingRestKlient {
 
             hentUttakKontrollerFaktaPerioder(behandlingId, builder, links);
             return builder.build();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        } finally {
+            loginContext.logout();
+        }
+    }
+
+    public Optional<UUID> getBehandlingUUID(Long behandlingId) {
+        URIBuilder uriBuilder = new URIBuilder(URI.create(endpointFpsakRestBase + FPSAK_BEHANDLINGER));
+        uriBuilder.setParameter("behandlingId", String.valueOf(behandlingId));
+        ContainerLogin loginContext = new ContainerLogin();
+        loginContext.login();
+
+        try {
+            LOGGER.info("Slår opp UUID i fpsak for behandlingId {} per GET-kall til {}", behandlingId, uriBuilder.build());
+            UtvidetBehandlingDto response = oidcRestClient.get(uriBuilder.build(), UtvidetBehandlingDto.class);
+            return Optional.ofNullable(response.getUuid());
         } catch (Exception e) {
             throw new RuntimeException(e);
         } finally {

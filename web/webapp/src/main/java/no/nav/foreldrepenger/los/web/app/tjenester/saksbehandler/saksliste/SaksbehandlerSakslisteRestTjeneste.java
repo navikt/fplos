@@ -1,10 +1,16 @@
 package no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.saksliste;
 
-import static no.nav.vedtak.sikkerhet.abac.BeskyttetRessursActionAttributt.READ;
-import static no.nav.vedtak.sikkerhet.abac.BeskyttetRessursResourceAttributt.FAGSAK;
-
-import java.util.List;
-import java.util.stream.Collectors;
+import com.codahale.metrics.annotation.Timed;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import no.nav.foreldrepenger.los.web.app.tjenester.felles.dto.SaksbehandlerBrukerIdentDto;
+import no.nav.foreldrepenger.los.web.app.tjenester.felles.dto.SaksbehandlerDto;
+import no.nav.foreldrepenger.los.web.app.tjenester.felles.dto.SakslisteDto;
+import no.nav.foreldrepenger.los.web.app.tjenester.felles.dto.SakslisteIdDto;
+import no.nav.foreldrepenger.loslager.oppgave.OppgaveFiltrering;
+import no.nav.fplos.oppgave.OppgaveTjeneste;
+import no.nav.vedtak.felles.jpa.Transaction;
+import no.nav.vedtak.sikkerhet.abac.BeskyttetRessurs;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
@@ -14,19 +20,11 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import java.util.List;
+import java.util.stream.Collectors;
 
-import com.codahale.metrics.annotation.Timed;
-
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import no.nav.foreldrepenger.los.web.app.tjenester.felles.dto.SaksbehandlerBrukerIdentDto;
-import no.nav.foreldrepenger.los.web.app.tjenester.felles.dto.SaksbehandlerDto;
-import no.nav.foreldrepenger.los.web.app.tjenester.felles.dto.SakslisteIdDto;
-import no.nav.foreldrepenger.loslager.oppgave.OppgaveFiltrering;
-import no.nav.foreldrepenger.los.web.app.tjenester.felles.dto.SakslisteDto;
-import no.nav.fplos.oppgave.OppgaveTjeneste;
-import no.nav.vedtak.felles.jpa.Transaction;
-import no.nav.vedtak.sikkerhet.abac.BeskyttetRessurs;
+import static no.nav.vedtak.sikkerhet.abac.BeskyttetRessursActionAttributt.READ;
+import static no.nav.vedtak.sikkerhet.abac.BeskyttetRessursResourceAttributt.FAGSAK;
 
 @Api(tags = "Saksbehandler")
 @Path("/saksbehandler/saksliste")
@@ -53,7 +51,7 @@ public class SaksbehandlerSakslisteRestTjeneste {
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
     public List<SakslisteDto> hentSakslister() {
         List<OppgaveFiltrering> oppgaveFiltrerings = oppgaveTjeneste.hentOppgaveFiltreringerForPåloggetBruker();
-        return oppgaveFiltrerings.stream().map(o -> new SakslisteDto(o)).collect(Collectors.toList());
+        return oppgaveFiltrerings.stream().map(o -> new SakslisteDto(o, oppgaveTjeneste.hentAntallOppgaver(o.getId()))).collect(Collectors.toList());
     }
 
     @GET
