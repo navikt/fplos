@@ -9,6 +9,7 @@ import no.nav.foreldrepenger.los.web.app.tjenester.felles.dto.SakslisteDto;
 import no.nav.foreldrepenger.los.web.app.tjenester.felles.dto.SakslisteIdDto;
 import no.nav.foreldrepenger.loslager.oppgave.OppgaveFiltrering;
 import no.nav.fplos.oppgave.OppgaveTjeneste;
+import no.nav.fplos.oppgave.SaksbehandlerinformasjonDto;
 import no.nav.vedtak.felles.jpa.Transaction;
 import no.nav.vedtak.sikkerhet.abac.BeskyttetRessurs;
 
@@ -50,8 +51,10 @@ public class SaksbehandlerSakslisteRestTjeneste {
     @BeskyttetRessurs(action = READ, ressurs = FAGSAK, sporingslogg = false)
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
     public List<SakslisteDto> hentSakslister() {
-        List<OppgaveFiltrering> oppgaveFiltrerings = oppgaveTjeneste.hentOppgaveFiltreringerForPåloggetBruker();
-        return oppgaveFiltrerings.stream().map(o -> new SakslisteDto(o, oppgaveTjeneste.hentAntallOppgaver(o.getId()))).collect(Collectors.toList());
+        List<OppgaveFiltrering> filtre = oppgaveTjeneste.hentOppgaveFiltreringerForPåloggetBruker();
+        return filtre.stream()
+                .map(o -> new SakslisteDto(o, oppgaveTjeneste.hentAntallOppgaver(o.getId(), false)))
+                .collect(Collectors.toList());
     }
 
     @GET
@@ -64,7 +67,13 @@ public class SaksbehandlerSakslisteRestTjeneste {
     public List<SaksbehandlerDto> hentSakslistensSaksbehandlere(@NotNull @QueryParam("sakslisteId") @Valid SakslisteIdDto sakslisteId) {
         return oppgaveTjeneste.hentSakslistensSaksbehandlere(sakslisteId.getVerdi())
                 .stream()
-                .map(saksbehandler -> new SaksbehandlerDto(new SaksbehandlerBrukerIdentDto(saksbehandler.getSaksbehandlerIdent()), saksbehandler.getNavn(), saksbehandler.getAvdelinger()))
+                .map(SaksbehandlerSakslisteRestTjeneste::saksbehandlerDtoFra)
                 .collect(Collectors.toList());
+    }
+
+    private static SaksbehandlerDto saksbehandlerDtoFra(SaksbehandlerinformasjonDto saksbehandler) {
+        return new SaksbehandlerDto(new SaksbehandlerBrukerIdentDto(saksbehandler.getSaksbehandlerIdent()),
+                                                                    saksbehandler.getNavn(),
+                                                                    saksbehandler.getAvdelinger());
     }
 }

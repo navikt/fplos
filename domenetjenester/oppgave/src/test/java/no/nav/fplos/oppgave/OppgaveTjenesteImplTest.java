@@ -206,7 +206,7 @@ public class OppgaveTjenesteImplTest {
     @Test
     public void hentAntallOppgaver(){
         Long oppgaveFiltreringId = leggeInnEtSettMedOppgaver();
-        Integer antallOppgaver = oppgaveTjeneste.hentAntallOppgaver(oppgaveFiltreringId);
+        Integer antallOppgaver = oppgaveTjeneste.hentAntallOppgaver(oppgaveFiltreringId, false);
         assertThat(antallOppgaver).isEqualTo(3);
     }
 
