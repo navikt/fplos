@@ -7,6 +7,8 @@ import org.hibernate.annotations.JoinFormula;
 import javax.persistence.Column;
 import javax.persistence.Convert;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -26,9 +28,8 @@ public class OppgaveEventLogg extends BaseEntitet{
     @Column(name = "BEHANDLING_ID", nullable = false)
     private Long behandlingId;
 
-    @ManyToOne(optional = false)
-    @JoinColumnOrFormula(column = @JoinColumn(name = "EVENT_TYPE", referencedColumnName = "kode", nullable = false))
-    @JoinColumnOrFormula(formula = @JoinFormula(referencedColumnName = "kodeverk", value = "'" + OppgaveEventType.DISCRIMINATOR + "'"))
+    @Column(name = "EVENT_TYPE")
+    @Enumerated(EnumType.STRING)
     private OppgaveEventType eventType;
 
     @Column(name = "ANDRE_KRITERIER_TYPE")
