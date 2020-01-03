@@ -21,7 +21,6 @@ public abstract class FpEventHandler {
 
     private static final Logger log = LoggerFactory.getLogger(FpEventHandler.class);
 
-    private KodeverkRepository kodeverkRepository;
     private OppgaveRepository oppgaveRepository;
 
     protected FpEventHandler() {
@@ -29,15 +28,10 @@ public abstract class FpEventHandler {
 
     protected FpEventHandler(OppgaveRepositoryProvider oppgaveRepositoryProvider) {
         this.oppgaveRepository = oppgaveRepositoryProvider.getOppgaveRepository();
-        this.kodeverkRepository = oppgaveRepositoryProvider.getKodeverkRepository();
     }
 
     protected OppgaveRepository getOppgaveRepository() {
         return oppgaveRepository;
-    }
-
-    protected KodeverkRepository getKodeverkRepository() {
-        return kodeverkRepository;
     }
 
     protected void loggEvent(UUID eksternId, OppgaveEventType oppgaveEventType, AndreKriterierType andreKriterierType, String behandlendeEnhet) {

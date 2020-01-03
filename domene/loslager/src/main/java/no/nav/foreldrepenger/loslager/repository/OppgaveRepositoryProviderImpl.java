@@ -12,8 +12,6 @@ import java.util.Objects;
 /** Provider for å enklere å kunne hente ut ulike repository uten for mange injection points. */
 @ApplicationScoped
 public class OppgaveRepositoryProviderImpl implements OppgaveRepositoryProvider {
-
-    private KodeverkRepositoryImpl kodeverkRepository;
     private OppgaveRepository oppgaveRepository;
     private OrganisasjonRepository organisasjonRepository;
     private StatistikkRepository statistikkRepository;
@@ -26,16 +24,10 @@ public class OppgaveRepositoryProviderImpl implements OppgaveRepositoryProvider 
     @Inject
     public OppgaveRepositoryProviderImpl(@VLPersistenceUnit EntityManager entityManager) {
         Objects.requireNonNull(entityManager, "entityManager"); //$NON-NLS-1$
-        this.kodeverkRepository = new KodeverkRepositoryImpl(entityManager);
         this.oppgaveRepository = new OppgaveRepositoryImpl(entityManager);
         this.organisasjonRepository = new OrganisasjonRepositoryImpl(entityManager);
         this.statistikkRepository = new StatiskikkRepositoryImpl(entityManager);
         this.adminRepository = new AdminRepositoryImpl(entityManager);
-    }
-
-    @Override
-    public KodeverkRepository getKodeverkRepository() {
-        return kodeverkRepository;
     }
 
 
