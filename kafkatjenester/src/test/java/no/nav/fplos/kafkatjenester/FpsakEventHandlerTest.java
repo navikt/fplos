@@ -328,7 +328,7 @@ public class FpsakEventHandlerTest {
 
     private void sjekkForEnOppgaveOgEgenskap(AndreKriterierType egenskap, int antallOppgaver, int antallEgenskaper) {
         assertThat(repoRule.getRepository().hentAlle(Oppgave.class)).hasSize(antallOppgaver);
-        var oegenskaper = repoRule.getRepository().hentAlle(OppgaveEgenskap.class);
+        var oppgaveEgenskaper = repoRule.getRepository().hentAlle(OppgaveEgenskap.class);
         assertThat(repoRule.getRepository().hentAlle(OppgaveEgenskap.class)).hasSize(antallEgenskaper);
         assertThat(repoRule.getRepository().hentAlle(OppgaveEgenskap.class))
                 .extracting(OppgaveEgenskap::getAndreKriterierType).contains(egenskap);

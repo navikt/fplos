@@ -47,10 +47,14 @@ public class OppgaveEgenskap extends BaseEntitet{
         this.andreKriterierType = andreKriterierType;
     }
 
-    public OppgaveEgenskap(Oppgave oppgave, AndreKriterierType andreKriterierType, String sisteSaksbehandlerForTotrinn) {
+    public OppgaveEgenskap(Oppgave oppgave, AndreKriterierType type, String sisteSaksbehandlerForTotrinn) {
         this.oppgave = oppgave;
-        this.andreKriterierType = andreKriterierType;
+        this.andreKriterierType = type;
         this.sisteSaksbehandlerForTotrinn = sisteSaksbehandlerForTotrinn;
+    }
+
+    public OppgaveEgenskap beslutterEgenskapFra(Oppgave oppgave, String sisteSaksbehandlerForTotrinn) {
+        return new OppgaveEgenskap(oppgave, AndreKriterierType.TIL_BESLUTTER, sisteSaksbehandlerForTotrinn);
     }
 
     public Oppgave getOppgave() {
@@ -75,5 +79,9 @@ public class OppgaveEgenskap extends BaseEntitet{
 
     public void aktiverOppgaveEgenskap() {
         aktiv = true;
+    }
+
+    public void setSisteSaksbehandlerForTotrinn(String sisteSaksbehandlerForTotrinn) {
+        this.sisteSaksbehandlerForTotrinn = sisteSaksbehandlerForTotrinn;
     }
 }
