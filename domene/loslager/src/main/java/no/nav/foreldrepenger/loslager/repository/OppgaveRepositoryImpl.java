@@ -58,6 +58,7 @@ public class OppgaveRepositoryImpl implements OppgaveRepository {
     private static final String BEHANDLINGOPPRETTET = "o.behandlingOpprettet";
     private static final String FORSTE_STONADSDAG = "o.forsteStonadsdag";
     private static final String BELOP = "o.belop";
+    private static final String UTLOPSFRIST = "o.utlopsfrist";
     private static final String OPPGAVEFILTRERING_SORTERING_NAVN = "ORDER BY l.navn";
 
     private EntityManager entityManager;
@@ -207,21 +208,25 @@ public class OppgaveRepositoryImpl implements OppgaveRepository {
                     : filtrerStatisk(FORSTE_STONADSDAG, oppgavespørringDto.getFiltrerFomDato(), oppgavespørringDto.getFiltrerTomDato());
         } else if (KøSortering.BELOP.equals(sortering)) {
             return filtrerNumerisk(BELOP, oppgavespørringDto.getFiltrerFra(), oppgavespørringDto.getFiltrerTil());
+        } else if (KøSortering.UTLOPSFRIST.equals(sortering)) {
+            return oppgavespørringDto.isErDynamiskPeriode()
+                    ? filtrerDynamisk(UTLOPSFRIST, oppgavespørringDto.getFiltrerFra(), oppgavespørringDto.getFiltrerTil())
+                    : filtrerStatisk(UTLOPSFRIST, oppgavespørringDto.getFiltrerFomDato(), oppgavespørringDto.getFiltrerTomDato());
         } else {
             return SORTERING + BEHANDLINGOPPRETTET;
         }
     }
 
     private String filtrerNumerisk(String sortering, Long fra, Long til) {
-        String datoFiltrering = "";
+        String numeriskFiltrering = "";
         if (fra != null && til != null) {
-            datoFiltrering = "AND " + sortering + " >= :filterFra AND " + sortering + " <= :filterTil ";
+            numeriskFiltrering = "AND " + sortering + " >= :filterFra AND " + sortering + " <= :filterTil ";
         } else if (fra != null) {
-            datoFiltrering = "AND " + sortering + " >= :filterFra ";
+            numeriskFiltrering = "AND " + sortering + " >= :filterFra ";
         } else if (til != null) {
-            datoFiltrering = "AND " + sortering + " <= :filterTil ";
+            numeriskFiltrering = "AND " + sortering + " <= :filterTil ";
         }
-        return datoFiltrering + SORTERING + sortering;
+        return numeriskFiltrering + SORTERING + sortering;
     }
 
     private String filtrerDynamisk(String sortering, Long fomDager, Long tomDager) {

@@ -20,7 +20,6 @@ export type Saksliste = Readonly<{
     til?: number;
     fomDato?: string;
     tomDato?: string;
-    belop?: number;
     erDynamiskPeriode: boolean;
   };
   andreKriterier?: AnnetKriterie[];
