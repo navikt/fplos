@@ -325,6 +325,15 @@ public class OppgaveRepositoryImpl implements OppgaveRepository {
     }
 
     @Override
+    public KøSortering hentSorteringForListe(Long listeId) {
+        TypedQuery<KøSortering> listeTypedQuery = getEntityManager()
+                .createQuery("SELECT l.sortering FROM OppgaveFiltrering l WHERE l.id = :id ", KøSortering.class)
+                .setParameter("id", listeId);
+        return listeTypedQuery.getResultStream().findFirst().orElse(null);
+    }
+
+
+    @Override
     public void lagre(Reservasjon reservasjon){
         internLagre(reservasjon);
     }

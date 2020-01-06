@@ -7,6 +7,7 @@ import no.nav.foreldrepenger.loslager.oppgave.FagsakYtelseType;
 import no.nav.foreldrepenger.loslager.oppgave.FiltreringAndreKriterierType;
 import no.nav.foreldrepenger.loslager.oppgave.FiltreringBehandlingType;
 import no.nav.foreldrepenger.loslager.oppgave.FiltreringYtelseType;
+import no.nav.foreldrepenger.loslager.oppgave.KøSortering;
 import no.nav.foreldrepenger.loslager.oppgave.Oppgave;
 import no.nav.foreldrepenger.loslager.oppgave.OppgaveEgenskap;
 import no.nav.foreldrepenger.loslager.oppgave.OppgaveEventLogg;
@@ -43,6 +44,8 @@ public interface OppgaveRepository {
     List<OppgaveFiltrering> hentAlleLister(Long avdelingsId);
 
     OppgaveFiltrering hentListe(Long listeId);
+
+    KøSortering hentSorteringForListe(Long listeId);
 
     void lagre(Reservasjon oppgave);
 

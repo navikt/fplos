@@ -76,11 +76,20 @@ public class AvdelingslederTjenesteImpl implements AvdelingslederTjeneste {
     public void endreFiltreringBehandlingType(Long oppgavefiltreringId, BehandlingType behandlingType, boolean checked) {
         OppgaveFiltrering filtre = oppgaveRepository.hentListe(oppgavefiltreringId);
         if (checked) {
+            if(behandlingType != BehandlingType.TILBAKEBETALING) sjekkSorteringForTilbakekreving(oppgavefiltreringId);
             oppgaveRepository.lagre(new FiltreringBehandlingType(filtre, behandlingType));
         } else {
+            if(behandlingType == BehandlingType.TILBAKEBETALING) sjekkSorteringForTilbakekreving(oppgavefiltreringId);
             oppgaveRepository.slettFiltreringBehandlingType(oppgavefiltreringId, behandlingType);
         }
         oppgaveRepository.refresh(filtre);
+    }
+
+    private void sjekkSorteringForTilbakekreving(Long oppgavefiltreringId) {
+        KøSortering sortering = oppgaveRepository.hentSorteringForListe(oppgavefiltreringId);
+        if(sortering != null && sortering.getFeltkategori() == KøSortering.FK_TILBAKEKREVING) {
+            settSortering(oppgavefiltreringId, KøSortering.BEHANDLINGSFRIST);
+        }
     }
 
     @Override
