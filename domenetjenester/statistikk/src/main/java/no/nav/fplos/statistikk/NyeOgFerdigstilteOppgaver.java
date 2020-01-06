@@ -1,7 +1,6 @@
 package no.nav.fplos.statistikk;
 
 import no.nav.foreldrepenger.loslager.oppgave.BehandlingType;
-import no.nav.fplos.kodeverk.KodeverkRepository;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;

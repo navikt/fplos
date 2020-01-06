@@ -4,7 +4,6 @@ import java.math.BigDecimal;
 
 import no.nav.foreldrepenger.loslager.oppgave.BehandlingType;
 import no.nav.foreldrepenger.loslager.oppgave.FagsakYtelseType;
-import no.nav.fplos.kodeverk.KodeverkRepository;
 import no.nav.vedtak.felles.jpa.converters.BooleanToStringConverter;
 
 public class OppgaverForAvdeling {
