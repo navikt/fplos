@@ -25,6 +25,9 @@ public class OppgavespørringDto {
     private LocalDate filtrerTomDato;
     private Long filtrerFra;
     private Long filtrerTil;
+    private Long filtrerFomDager;
+    private Long filtrerTomDager;
+    private boolean forAvdelingsleder;
 
     public OppgavespørringDto(OppgaveFiltrering oppgaveFiltrering){
          sortering = oppgaveFiltrering.getSortering();
@@ -55,6 +58,14 @@ public class OppgavespørringDto {
         this.filtrerTomDato = filtrerTomDato;
         this.filtrerFra = filtrerFra;
         this.filtrerTil = filtrerTil;
+    }
+
+    public void setForAvdelingsleder(boolean forAvdelingsleder) {
+        this.forAvdelingsleder = forAvdelingsleder;
+    }
+
+    public boolean getForAvdelingsleder() {
+        return forAvdelingsleder;
     }
 
     public KøSortering getSortering() {

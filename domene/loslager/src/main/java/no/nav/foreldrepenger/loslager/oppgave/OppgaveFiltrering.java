@@ -23,6 +23,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import no.nav.foreldrepenger.loslager.organisasjon.Saksbehandler;
+import no.nav.vedtak.felles.jpa.converters.BooleanToStringConverter;
+import no.nav.foreldrepenger.loslager.BaseEntitet;
+import no.nav.foreldrepenger.loslager.organisasjon.Avdeling;
+
 @Entity(name = "OppgaveFiltrering")
 @Table(name = "OPPGAVE_FILTRERING")
 public class OppgaveFiltrering extends BaseEntitet{

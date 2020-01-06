@@ -8,7 +8,6 @@
         <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
         <non-jta-data-source>jdbc/defaultDS</non-jta-data-source>
 
-        <mapping-file>META-INF/kodeliste-entiteter-orm.xml</mapping-file>
         <mapping-file>META-INF/oppgaver.xml</mapping-file>
 
         <properties>

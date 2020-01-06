@@ -71,7 +71,7 @@ public class AvdelingslederSakslisteRestTjeneste {
     public List<SakslisteDto> hentAvdelingensSakslister(@NotNull @QueryParam("avdelingEnhet") @Valid AvdelingEnhetDto avdelingEnhet) {
         List<OppgaveFiltrering> filtersett = avdelingslederTjeneste.hentOppgaveFiltreringer(avdelingEnhet.getAvdelingEnhet());
         return filtersett.stream()
-                .map(o-> new SakslisteDto(o,oppgaveTjeneste.hentAntallOppgaver(o.getId())))
+                .map(o-> new SakslisteDto(o,oppgaveTjeneste.hentAntallOppgaver(o.getId(), true)))
                 .collect(Collectors.toList());
     }
 

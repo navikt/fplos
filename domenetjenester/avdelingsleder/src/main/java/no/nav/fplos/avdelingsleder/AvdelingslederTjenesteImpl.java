@@ -11,7 +11,6 @@ import no.nav.foreldrepenger.loslager.oppgave.OppgaveFiltrering;
 import no.nav.foreldrepenger.loslager.organisasjon.Avdeling;
 import no.nav.foreldrepenger.loslager.organisasjon.Saksbehandler;
 import no.nav.foreldrepenger.loslager.repository.OppgaveRepository;
-import no.nav.foreldrepenger.loslager.repository.OppgaveRepositoryProvider;
 import no.nav.foreldrepenger.loslager.repository.OrganisasjonRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,9 +34,9 @@ public class AvdelingslederTjenesteImpl implements AvdelingslederTjeneste {
     }
 
     @Inject
-    public AvdelingslederTjenesteImpl(OppgaveRepositoryProvider oppgaveRepositoryProvider) {
-        oppgaveRepository = oppgaveRepositoryProvider.getOppgaveRepository();
-        organisasjonRepository = oppgaveRepositoryProvider.getOrganisasjonRepository();
+    public AvdelingslederTjenesteImpl(OppgaveRepository oppgaveRepository, OrganisasjonRepository organisasjonRepository) {
+        this.oppgaveRepository = oppgaveRepository;
+        this.organisasjonRepository = organisasjonRepository;
     }
 
     @Override

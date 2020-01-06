@@ -6,9 +6,7 @@ import java.util.stream.Collectors;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import no.nav.foreldrepenger.loslager.repository.OppgaveRepositoryProvider;
 import no.nav.foreldrepenger.loslager.repository.StatistikkRepository;
-import no.nav.fplos.kodeverk.KodeverkRepository;
 
 @ApplicationScoped
 public class StatistikkTjenesteImpl implements StatistikkTjeneste {
@@ -20,8 +18,8 @@ public class StatistikkTjenesteImpl implements StatistikkTjeneste {
     }
 
     @Inject
-    public StatistikkTjenesteImpl(OppgaveRepositoryProvider oppgaveRepositoryProvider) {
-        statisikkRepository = oppgaveRepositoryProvider.getStatisikkRepository();
+    public StatistikkTjenesteImpl(StatistikkRepository statistikkRepository) {
+        statisikkRepository = statistikkRepository;
     }
 
     @Override

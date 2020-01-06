@@ -3,7 +3,6 @@ package no.nav.foreldrepenger.loslager.oppgave;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import no.nav.fplos.kodeverk.Kodeverdi;
 
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;

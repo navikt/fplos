@@ -78,10 +78,6 @@
             <artifactId>feed</artifactId>
         </dependency>
         <dependency>
-            <groupId>no.nav.foreldrepenger.los</groupId>
-            <artifactId>uuid-synkronisering</artifactId>
-        </dependency>
-        <dependency>
             <groupId>no.nav.foreldrepenger.felles.sikkerhet</groupId>
             <artifactId>felles-sikkerhet</artifactId>
         </dependency>

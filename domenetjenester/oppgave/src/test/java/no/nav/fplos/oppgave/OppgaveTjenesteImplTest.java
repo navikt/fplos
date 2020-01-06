@@ -10,8 +10,9 @@ import no.nav.foreldrepenger.loslager.oppgave.OppgaveFiltrering;
 import no.nav.foreldrepenger.loslager.organisasjon.Avdeling;
 import no.nav.foreldrepenger.loslager.organisasjon.Saksbehandler;
 import no.nav.foreldrepenger.loslager.repository.OppgaveRepository;
-import no.nav.foreldrepenger.loslager.repository.OppgaveRepositoryProvider;
-import no.nav.foreldrepenger.loslager.repository.OppgaveRepositoryProviderImpl;
+import no.nav.foreldrepenger.loslager.repository.OppgaveRepositoryImpl;
+import no.nav.foreldrepenger.loslager.repository.OrganisasjonRepository;
+import no.nav.foreldrepenger.loslager.repository.OrganisasjonRepositoryImpl;
 import no.nav.fplos.ansatt.AnsattTjeneste;
 import no.nav.fplos.avdelingsleder.AvdelingslederTjeneste;
 import no.nav.fplos.avdelingsleder.AvdelingslederTjenesteImpl;
@@ -36,12 +37,13 @@ public class OppgaveTjenesteImplTest {
     @Rule
     public final UnittestRepositoryRule repoRule = new UnittestRepositoryRule();
     private final EntityManager entityManager = repoRule.getEntityManager();
-    private final OppgaveRepositoryProvider repositoryProvider = new OppgaveRepositoryProviderImpl(entityManager);
-    private final OppgaveRepository oppgaveRepository = repositoryProvider.getOppgaveRepository();
+    private final OppgaveRepository oppgaveRepository = new OppgaveRepositoryImpl(entityManager);
+    private final OrganisasjonRepository organisasjonRepository = new OrganisasjonRepositoryImpl(entityManager);
+
     private TpsTjeneste tpsTjeneste = mock(TpsTjeneste.class);
-    private AvdelingslederTjeneste avdelingslederTjeneste = new AvdelingslederTjenesteImpl(repositoryProvider);
+    private AvdelingslederTjeneste avdelingslederTjeneste = new AvdelingslederTjenesteImpl(oppgaveRepository, organisasjonRepository);
     private AnsattTjeneste ansattTjeneste = mock(AnsattTjeneste.class);
-    private OppgaveTjenesteImpl oppgaveTjeneste = new OppgaveTjenesteImpl(repositoryProvider, tpsTjeneste, avdelingslederTjeneste, ansattTjeneste);
+    private OppgaveTjenesteImpl oppgaveTjeneste = new OppgaveTjenesteImpl(oppgaveRepository, organisasjonRepository, tpsTjeneste, avdelingslederTjeneste, ansattTjeneste);
 
     private static String AVDELING_DRAMMEN_ENHET = "4806";
     private static String AVDELING_BERGEN_ENHET = "4812";
@@ -206,7 +208,7 @@ public class OppgaveTjenesteImplTest {
     @Test
     public void hentAntallOppgaver(){
         Long oppgaveFiltreringId = leggeInnEtSettMedOppgaver();
-        Integer antallOppgaver = oppgaveTjeneste.hentAntallOppgaver(oppgaveFiltreringId);
+        Integer antallOppgaver = oppgaveTjeneste.hentAntallOppgaver(oppgaveFiltreringId, false);
         assertThat(antallOppgaver).isEqualTo(3);
     }
 

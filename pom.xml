@@ -12,12 +12,10 @@
         <module>domene</module>
         <module>domenetjenester</module>
         <module>web</module>
-        <module>kodeverk</module>
         <module>i18n</module>
         <module>kafkatjenester</module>
         <module>integrasjon</module>
         <module>integrasjonstester</module>
-        <module>uuid-synkronisering</module>
     </modules>
 
     <properties>
@@ -264,12 +262,6 @@
                 <version>${project.version}</version>
                 <type>war</type>
             </dependency>
-            <dependency>
-                <groupId>no.nav.foreldrepenger.los</groupId>
-                <artifactId>uuid-synkronisering</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-
 
             <!-- Felles biblioteker og sikkerhet -->
             <dependency>

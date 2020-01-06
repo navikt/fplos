@@ -15,8 +15,10 @@ import no.nav.foreldrepenger.loslager.oppgave.OppgaveEgenskap;
 import no.nav.foreldrepenger.loslager.oppgave.OppgaveEventLogg;
 import no.nav.foreldrepenger.loslager.oppgave.OppgaveFiltrering;
 import no.nav.foreldrepenger.loslager.organisasjon.Avdeling;
-import no.nav.foreldrepenger.loslager.repository.OppgaveRepositoryProvider;
-import no.nav.foreldrepenger.loslager.repository.OppgaveRepositoryProviderImpl;
+import no.nav.foreldrepenger.loslager.repository.OppgaveRepository;
+import no.nav.foreldrepenger.loslager.repository.OppgaveRepositoryImpl;
+import no.nav.foreldrepenger.loslager.repository.OrganisasjonRepository;
+import no.nav.foreldrepenger.loslager.repository.OrganisasjonRepositoryImpl;
 import no.nav.fplos.ansatt.AnsattTjeneste;
 import no.nav.fplos.avdelingsleder.AvdelingslederTjeneste;
 import no.nav.fplos.foreldrepengerbehandling.ForeldrepengerBehandlingRestKlient;
@@ -52,12 +54,13 @@ public class HentOppgaverTest {
 
     @Rule
     public UnittestRepositoryRule repoRule = new UnittestRepositoryRule();
-    private OppgaveRepositoryProvider oppgaveRepositoryProvider = new OppgaveRepositoryProviderImpl(repoRule.getEntityManager() );
+    private OppgaveRepository oppgaveRepository = new OppgaveRepositoryImpl(repoRule.getEntityManager());
+    private OrganisasjonRepository organisasjonRepository = new OrganisasjonRepositoryImpl(repoRule.getEntityManager());
     private EntityManager entityManager = repoRule.getEntityManager();
     private TpsTjeneste tpsTjeneste = mock(TpsTjeneste.class);
     private AvdelingslederTjeneste avdelingslederTjeneste = mock(AvdelingslederTjeneste.class);
     private AnsattTjeneste ansattTjeneste = mock(AnsattTjeneste.class);
-    private OppgaveTjeneste oppgaveTjeneste = new OppgaveTjenesteImpl(oppgaveRepositoryProvider, tpsTjeneste, avdelingslederTjeneste, ansattTjeneste);
+    private OppgaveTjeneste oppgaveTjeneste = new OppgaveTjenesteImpl(oppgaveRepository, organisasjonRepository, tpsTjeneste, avdelingslederTjeneste, ansattTjeneste);
     private FagsakApplikasjonTjeneste fagsakApplikasjonTjeneste = mock(FagsakApplikasjonTjeneste.class);
     private OppgaveRestTjeneste oppgaveRestTjeneste = new OppgaveRestTjeneste(oppgaveTjeneste, fagsakApplikasjonTjeneste);
     @Inject
@@ -71,8 +74,8 @@ public class HentOppgaverTest {
     @Before
     public void before(){
         kafkaReader = new KafkaReader(meldingConsumer,
-                new FpsakEventHandler(oppgaveRepositoryProvider, foreldrepengerBehandlingRestKlient),
-                new TilbakekrevingEventHandler(oppgaveRepositoryProvider),oppgaveRepositoryProvider, jsonOppgaveHandler);
+                new FpsakEventHandler(oppgaveRepository, foreldrepengerBehandlingRestKlient),
+                new TilbakekrevingEventHandler(oppgaveRepository),oppgaveRepository, jsonOppgaveHandler);
         List<Avdeling> avdelings = repoRule.getRepository().hentAlle(Avdeling.class);
         avdelingDrammen = avdelings.stream().filter(avdeling -> Avdeling.AVDELING_DRAMMEN_ENHET.equals(avdeling.getAvdelingEnhet())).findFirst().orElseThrow();
         oppgaveFiltrering = OppgaveFiltrering.builder().medNavn("FRIST").medSortering(KøSortering.BEHANDLINGSFRIST).medAvdeling(avdelingDrammen).build();

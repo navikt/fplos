@@ -7,7 +7,7 @@ import no.nav.foreldrepenger.loslager.oppgave.OppgaveEventLogg;
 import no.nav.foreldrepenger.loslager.oppgave.OppgaveEventType;
 import no.nav.foreldrepenger.loslager.oppgave.Reservasjon;
 import no.nav.foreldrepenger.loslager.oppgave.TilbakekrevingOppgave;
-import no.nav.foreldrepenger.loslager.repository.OppgaveRepositoryProvider;
+import no.nav.foreldrepenger.loslager.repository.OppgaveRepository;
 import no.nav.fplos.foreldrepengerbehandling.Aksjonspunkt;
 import no.nav.fplos.kafkatjenester.dto.TilbakekrevingBehandlingProsessEventDto;
 import no.nav.fplos.kafkatjenester.eventresultat.EventResultat;
@@ -32,8 +32,8 @@ public class TilbakekrevingEventHandler extends FpEventHandler {
     }
 
     @Inject
-    public TilbakekrevingEventHandler(OppgaveRepositoryProvider oppgaveRepositoryProvider) {
-        super(oppgaveRepositoryProvider);
+    public TilbakekrevingEventHandler(OppgaveRepository oppgaveRepository) {
+        super(oppgaveRepository);
     }
 
     @Override
@@ -92,7 +92,7 @@ public class TilbakekrevingEventHandler extends FpEventHandler {
     }
 
     private void avsluttOppgaveHvisÅpen(UUID eksternId, List<OppgaveEventLogg> oppgaveEventLogger, String behandlendeEnhet) {
-        if (!oppgaveEventLogger.isEmpty() && OppgaveEventType.åpningseventtyper().contains(oppgaveEventLogger.get(0).getEventType())){
+        if (!oppgaveEventLogger.isEmpty() && oppgaveEventLogger.get(0).getEventType().erÅpningsevent()) {
             loggEvent(eksternId, OppgaveEventType.LUKKET, null, behandlendeEnhet);
             getOppgaveRepository().avsluttOppgaveForEksternId(eksternId);
         }

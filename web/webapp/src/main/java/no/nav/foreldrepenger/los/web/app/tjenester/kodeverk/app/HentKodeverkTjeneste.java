@@ -3,7 +3,7 @@ package no.nav.foreldrepenger.los.web.app.tjenester.kodeverk.app;
 import java.util.Collection;
 import java.util.Map;
 
-import no.nav.fplos.kodeverk.Kodeverdi;
+import no.nav.foreldrepenger.loslager.oppgave.Kodeverdi;
 
 public interface HentKodeverkTjeneste {
 

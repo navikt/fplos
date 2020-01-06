@@ -2,7 +2,6 @@ package no.nav.foreldrepenger.loslager.oppgave;
 
 import javax.persistence.Column;
 import javax.persistence.Convert;
-import javax.persistence.Converter;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -12,9 +11,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import no.nav.vedtak.felles.jpa.converters.BooleanToStringConverter;
-import org.hibernate.annotations.JoinColumnOrFormula;
-import org.hibernate.annotations.JoinFormula;
-
 import no.nav.foreldrepenger.loslager.BaseEntitet;
 
 @Entity(name = "OppgaveEgenskap")

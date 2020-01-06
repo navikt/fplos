@@ -2,10 +2,6 @@ package no.nav.foreldrepenger.loslager.oppgave;
 
 import no.nav.foreldrepenger.loslager.BaseEntitet;
 import no.nav.vedtak.felles.jpa.converters.BooleanToStringConverter;
-import org.hibernate.annotations.JoinColumnOrFormula;
-import org.hibernate.annotations.JoinFormula;
-import org.hibernate.annotations.NotFound;
-import org.hibernate.annotations.NotFoundAction;
 
 import javax.persistence.Column;
 import javax.persistence.Convert;
@@ -15,8 +11,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import java.time.LocalDate;
@@ -55,11 +49,9 @@ public class Oppgave extends BaseEntitet {
     @Column(name = "FORSTE_STONADSDAG")
     protected LocalDate forsteStonadsdag;
 
-    @NotFound(action= NotFoundAction.IGNORE)
-    @ManyToOne(optional = false)
-    @JoinColumnOrFormula(column = @JoinColumn(name = "BEHANDLING_STATUS", referencedColumnName = "kode", nullable = false))
-    @JoinColumnOrFormula(formula = @JoinFormula(referencedColumnName = "kodeverk", value = "'" + BehandlingStatus.DISCRIMINATOR + "'"))
-    protected BehandlingStatus behandlingStatus = BehandlingStatus.UDEFINERT;
+    @Convert(converter = BehandlingStatus.KodeverdiConverter.class)
+    @Column(name = "BEHANDLING_STATUS")
+    protected BehandlingStatus behandlingStatus;
 
     @Convert(converter = BehandlingType.KodeverdiConverter.class)
     @Column(name = "BEHANDLING_TYPE")

@@ -13,9 +13,8 @@ import no.nav.foreldrepenger.loslager.oppgave.OppgaveEgenskap;
 import no.nav.foreldrepenger.loslager.oppgave.OppgaveEventLogg;
 import no.nav.foreldrepenger.loslager.oppgave.OppgaveEventType;
 import no.nav.foreldrepenger.loslager.organisasjon.Avdeling;
-import no.nav.foreldrepenger.loslager.repository.OppgaveRepositoryProvider;
-import no.nav.foreldrepenger.loslager.repository.OppgaveRepositoryProviderImpl;
 import no.nav.foreldrepenger.loslager.repository.StatistikkRepository;
+import no.nav.foreldrepenger.loslager.repository.StatistikkRepositoryImpl;
 import no.nav.fplos.statistikk.StatistikkTjeneste;
 import no.nav.fplos.statistikk.StatistikkTjenesteImpl;
 import org.junit.Before;
@@ -35,9 +34,8 @@ public class StatistikkTjenesteImplTest {
     @Rule
     public final UnittestRepositoryRule repoRule = new UnittestRepositoryRule();
     private final EntityManager entityManager = repoRule.getEntityManager();
-    private final OppgaveRepositoryProvider repositoryProvider = new OppgaveRepositoryProviderImpl(entityManager);
-    private final StatistikkRepository statisikkRepository = repositoryProvider.getStatisikkRepository();
-    private StatistikkTjeneste statistikkTjeneste = new StatistikkTjenesteImpl(repositoryProvider);
+    private final StatistikkRepository statisikkRepository = new StatistikkRepositoryImpl(entityManager);
+    private StatistikkTjeneste statistikkTjeneste = new StatistikkTjenesteImpl(statisikkRepository);
 
     private static String AVDELING_DRAMMEN_ENHET = "4806";
     private Avdeling avdelingDrammen = null;
