@@ -70,9 +70,13 @@ describe('<HeaderWithErrorPanel>', () => {
     expect(boxedList.prop('items')).to.eql([{
       name: `${avdelinger[0].avdelingEnhet} ${avdelinger[0].navn}`,
 <<<<<<< HEAD
+<<<<<<< HEAD
       selected: true,
 =======
       selected: false,
+>>>>>>> FIX div
+=======
+      selected: true,
 >>>>>>> FIX div
     }, {
       name: `${avdelinger[1].avdelingEnhet} ${avdelinger[1].navn}`,
