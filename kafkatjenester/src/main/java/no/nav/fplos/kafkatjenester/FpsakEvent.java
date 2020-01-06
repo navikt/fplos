@@ -21,7 +21,7 @@ public class FpsakEvent {
                       List<OppgaveEventLogg> eventHistorikk,
                       List<Aksjonspunkt> aksjonspunkt) {
         this.fpsakAksjonspunkt = new FpsakAksjonspunkt(aksjonspunkt);
-        this.sisteEvent = sisteEventFra(eventHistorikk);
+        this.sisteEvent = sisteOpprettetEventFra(eventHistorikk);
         this.saksbehandlerForTotrinn = behandling.getAnsvarligSaksbehandler();
 
         if (harGradering(behandling)) this.andreKriterier.add(AndreKriterierType.SOKT_GRADERING);
@@ -41,8 +41,8 @@ public class FpsakEvent {
         return sisteEvent;
     }
 
-    private OppgaveEventLogg sisteEventFra(List<OppgaveEventLogg> eventHistorikk) {
-        return safeStream(eventHistorikk)
+    private static OppgaveEventLogg sisteOpprettetEventFra(List<OppgaveEventLogg> logg) {
+        return safeStream(logg)
                 .filter(e -> e.getEventType().equals(OppgaveEventType.OPPRETTET))
                 .findFirst()
                 .orElse(null);

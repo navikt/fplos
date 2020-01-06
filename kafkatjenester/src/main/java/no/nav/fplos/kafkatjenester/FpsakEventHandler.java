@@ -193,11 +193,6 @@ public class FpsakEventHandler extends FpEventHandler {
                .orElse(null);
     }
 
-//    private static boolean finnSelvstendigFrilans(List<Aksjonspunkt> aksjonspunktListe) {
-//        return safeStream(aksjonspunktListe)
-//                .anyMatch(Aksjonspunkt::erSelvstendigEllerFrilanser);
-//    }
-
     private void avsluttOppgaveHvisÅpen(Long behandlingId, UUID eksternId, List<OppgaveEventLogg> oppgaveEventLogger, String behandlendeEnhet) {
         if (!oppgaveEventLogger.isEmpty() && oppgaveEventLogger.get(0).getEventType().erÅpningsevent()){
             //Optional<EksternIdentifikator> eksternId = getEksternIdentifikatorRespository().finnIdentifikator(fagsystem, behandlingId.toString());
@@ -247,7 +242,6 @@ public class FpsakEventHandler extends FpEventHandler {
 
     private Oppgave opprettOppgave(UUID eksternId, BehandlingProsessEventDto bpeDto, BehandlingFpsak fraFpsak, boolean prosesserFraAdmin) {
         //EksternIdentifikator eksternId = getEksternIdentifikatorRespository().finnEllerOpprettEksternId(bpeDto.getFagsystem(),bpeDto.getBehandlingId().toString());
-
         return getOppgaveRepository().opprettOppgave(Oppgave.builder()
                 .medSystem(bpeDto.getFagsystem())
                 .medBehandlingId(bpeDto.getBehandlingId())
@@ -263,54 +257,6 @@ public class FpsakEventHandler extends FpEventHandler {
                 .medBehandlingStatus(BehandlingStatus.fraKode(fraFpsak.getStatus()))
                 .medEksternId(eksternId)
                 .build());
-    }
-
-    public void håndterOppgaveEgenskapUtbetalingTilBruker(Boolean harRefusjonskrav, Oppgave oppgave) {
-        //Skal ikke ha egenskap når harRefusjonskrav er true eller null. Vi avventer inntektsmelding før vi legger på egenskapen.
-        boolean skalHaEgenskap = harRefusjonskrav != null && !harRefusjonskrav;
-        håndterOppgaveEgenskap(skalHaEgenskap, oppgave, AndreKriterierType.UTBETALING_TIL_BRUKER);
-    }
-
-    public void håndterOppgaveEgenskapUtlandssak(boolean erUtlandsak, Oppgave oppgave) {
-        håndterOppgaveEgenskap(erUtlandsak, oppgave, AndreKriterierType.UTLANDSSAK);
-    }
-
-    public void håndterOppgaveEgenskapGradering(Boolean harGradering, Oppgave oppgave) {
-        håndterOppgaveEgenskap(harGradering, oppgave, AndreKriterierType.SOKT_GRADERING);
-    }
-
-    private void håndterOppgaveEgenskap(Boolean status, Oppgave oppgave, AndreKriterierType kriterieType) {
-        if (status != null && status) {
-            aktiverEgenskap(oppgave, kriterieType);
-        } else {
-            deaktiverEgenskap(oppgave, kriterieType);
-        }
-    }
-
-    private void aktiverEgenskap(Oppgave oppgave, AndreKriterierType kriterieType) {
-        OppgaveEgenskap eksisterende = hentEksisterendeEgenskap(kriterieType, oppgave);
-        if (eksisterende != null) {
-            eksisterende.aktiverOppgaveEgenskap();
-            getOppgaveRepository().lagre(eksisterende);
-        } else {
-            getOppgaveRepository().lagre(new OppgaveEgenskap(oppgave, kriterieType));
-        }
-    }
-
-    private void deaktiverEgenskap(Oppgave oppgave, AndreKriterierType kriterieType) {
-        OppgaveEgenskap eksisterendeEgenskap = hentEksisterendeEgenskap(kriterieType, oppgave);
-        if (eksisterendeEgenskap != null) {
-            eksisterendeEgenskap.deaktiverOppgaveEgenskap();
-            getOppgaveRepository().lagre(eksisterendeEgenskap);
-        }
-    }
-
-    private OppgaveEgenskap hentEksisterendeEgenskap(AndreKriterierType kriterieType, Oppgave oppgave) {
-        List<OppgaveEgenskap> eksisterendeEgenskaper = getOppgaveRepository().hentOppgaveEgenskaper(oppgave.getId());
-        return safeStream(eksisterendeEgenskaper)
-                .filter(e -> e.getAndreKriterierType().equals(kriterieType))
-                .findAny()
-                .orElse(null);
     }
 
     private List<OppgaveEgenskap> hentEksisterendeEgenskaper(Oppgave oppgave) {
