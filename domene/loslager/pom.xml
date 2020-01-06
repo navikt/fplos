@@ -13,12 +13,6 @@
     <name>FPLOS :: LosLager</name>
 
     <dependencies>
-        <!-- Reaktor -->
-        <dependency>
-            <groupId>no.nav.foreldrepenger.los</groupId>
-            <artifactId>kodeverk</artifactId>
-        </dependency>
-
         <!-- Foreldrepengeprosjektet -->
         <dependency>
             <groupId>no.nav.foreldrepenger.felles</groupId>
