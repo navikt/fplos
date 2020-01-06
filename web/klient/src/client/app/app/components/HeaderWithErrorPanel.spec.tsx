@@ -58,6 +58,7 @@ describe('<HeaderWithErrorPanel>', () => {
       queryStrings={{}}
       avdelinger={avdelinger}
       setValgtAvdeling={() => undefined}
+      valgtAvdelingEnhet={avdelinger[0].avdelingEnhet}
     />);
 
     const header = wrapper.find(Header);
@@ -68,7 +69,7 @@ describe('<HeaderWithErrorPanel>', () => {
     expect(boxedList).has.length(1);
     expect(boxedList.prop('items')).to.eql([{
       name: `${avdelinger[0].avdelingEnhet} ${avdelinger[0].navn}`,
-      selected: false,
+      selected: true,
     }, {
       name: `${avdelinger[1].avdelingEnhet} ${avdelinger[1].navn}`,
       selected: false,
@@ -137,7 +138,7 @@ describe('<HeaderWithErrorPanel>', () => {
       queryStrings={{}}
       avdelinger={avdelinger}
       setValgtAvdeling={setValgtAvdelingFn}
-      valgtAvdelingEnhet="2"
+      valgtAvdelingEnhet={avdelinger[0].avdelingEnhet}
     />);
 
     expect(setValgtAvdelingFn.calledOnce).to.be.false;

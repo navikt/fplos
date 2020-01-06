@@ -102,7 +102,7 @@ class HeaderWithErrorPanel extends Component<TsProps> {
     } = this.props;
 
     let props = {};
-    if (avdelinger.length > 0) {
+    if (valgtAvdelingEnhet && avdelinger.length > 0) {
       props = {
         renderUserPopoverContent: () => (
           <BoxedListWithSelection
@@ -113,7 +113,7 @@ class HeaderWithErrorPanel extends Component<TsProps> {
             }))}
           />
         ),
-        userUnit: valgtAvdelingEnhet,
+        userUnit: `${valgtAvdelingEnhet} ${avdelinger.find(a => a.avdelingEnhet === valgtAvdelingEnhet).navn}`,
       };
     }
 
