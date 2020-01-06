@@ -21,9 +21,6 @@ import javax.persistence.Table;
 
 import no.nav.foreldrepenger.loslager.organisasjon.Saksbehandler;
 import no.nav.vedtak.felles.jpa.converters.BooleanToStringConverter;
-import org.hibernate.annotations.JoinColumnOrFormula;
-import org.hibernate.annotations.JoinFormula;
-
 import no.nav.foreldrepenger.loslager.BaseEntitet;
 import no.nav.foreldrepenger.loslager.organisasjon.Avdeling;
 
