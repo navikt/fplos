@@ -12,7 +12,6 @@
         <module>domene</module>
         <module>domenetjenester</module>
         <module>web</module>
-        <module>kodeverk</module>
         <module>i18n</module>
         <module>kafkatjenester</module>
         <module>integrasjon</module>

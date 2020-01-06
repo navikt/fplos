@@ -1,4 +1,4 @@
-package no.nav.fplos.kodeverk;
+package no.nav.foreldrepenger.loslager.oppgave;
 
 public interface Kodeverdi {
     String getNavn();
