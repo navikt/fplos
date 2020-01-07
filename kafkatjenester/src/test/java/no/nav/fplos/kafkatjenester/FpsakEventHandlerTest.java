@@ -124,7 +124,7 @@ public class FpsakEventHandlerTest {
 
     private static BehandlingFpsak behandlingDtoMedManueltMarkertUtlandsakFra(List<Aksjonspunkt> aksjonspunkter){
         return behandlingBuilderMal()
-                .medErUtlandssak(true)
+                .medErUtenlandssak(true)
                 .medAksjonspunkter(aksjonspunkter)
                 .build();
     }
