@@ -37,7 +37,6 @@ import static no.nav.fplos.kafkatjenester.util.StreamUtil.safeStream;
 public class FpsakEventHandler extends FpEventHandler {
 
     private static final Logger log = LoggerFactory.getLogger(FpsakEventHandler.class);
-
     private ForeldrepengerBehandlingRestKlient foreldrePengerBehandlingRestKlient;
 
     public FpsakEventHandler(){
@@ -70,7 +69,7 @@ public class FpsakEventHandler extends FpEventHandler {
         List<Aksjonspunkt> aksjonspunkt = Optional.ofNullable(behandling.getAksjonspunkter())
                 .orElse(Collections.emptyList());
 
-        FpsakEvent event = new FpsakEvent(behandling, tidligereEventer, aksjonspunkt);
+        OppgaveEgenskapFinner egenskapFinner = new OppgaveEgenskapFinner(behandling, tidligereEventer, aksjonspunkt);
 
         EventResultat eventResultat = prosesserFraAdmin
                 ? FpsakEventMapper.signifikantEventForAdminFra(aksjonspunkt)
@@ -95,32 +94,32 @@ public class FpsakEventHandler extends FpEventHandler {
                 reserverOppgaveFraTidligereReservasjon(prosesserFraAdmin, reservasjon, oppgave);
                 log.info("Oppretter oppgave");
                 loggEvent(behandlingId, oppgave.getEksternId(), OppgaveEventType.OPPRETTET, null, bpeDto.getBehandlendeEnhet());
-                opprettOppgaveEgenskaper(oppgave, event);
+                opprettOppgaveEgenskaper(oppgave, egenskapFinner);
                 break;
             case OPPRETT_BESLUTTER_OPPGAVE:
                 avsluttOppgaveHvisÅpen(behandlingId, eksternId, tidligereEventer, bpeDto.getBehandlendeEnhet());
                 Oppgave beslutterOppgave = opprettOppgave(eksternId, bpeDto, behandling, prosesserFraAdmin);
                 reserverOppgaveFraTidligereReservasjon(prosesserFraAdmin, reservasjon, beslutterOppgave);
                 loggEvent(behandlingId, beslutterOppgave.getEksternId(), OppgaveEventType.OPPRETTET, AndreKriterierType.TIL_BESLUTTER, bpeDto.getBehandlendeEnhet());
-                opprettOppgaveEgenskaper(beslutterOppgave, event);
+                opprettOppgaveEgenskaper(beslutterOppgave, egenskapFinner);
                 break;
             case OPPRETT_PAPIRSØKNAD_OPPGAVE:
                 avsluttOppgaveHvisÅpen(behandlingId, eksternId, tidligereEventer, bpeDto.getBehandlendeEnhet());
                 Oppgave papirsøknadOppgave = opprettOppgave(eksternId, bpeDto, behandling, prosesserFraAdmin);
                 reserverOppgaveFraTidligereReservasjon(prosesserFraAdmin, reservasjon, papirsøknadOppgave);
                 loggEvent(behandlingId, papirsøknadOppgave.getEksternId(), OppgaveEventType.OPPRETTET, AndreKriterierType.PAPIRSØKNAD, bpeDto.getBehandlendeEnhet());
-                opprettOppgaveEgenskaper(papirsøknadOppgave, event);
+                opprettOppgaveEgenskaper(papirsøknadOppgave, egenskapFinner);
                 break;
             case GJENÅPNE_OPPGAVE:
                 Oppgave gjenåpneOppgave = gjenåpneOppgave(bpeDto);
                 log.info("Gjenåpner oppgave");
                 loggEvent(behandlingId, gjenåpneOppgave.getEksternId(), OppgaveEventType.GJENAPNET, null, bpeDto.getBehandlendeEnhet());
-                opprettOppgaveEgenskaper(gjenåpneOppgave, event);
+                opprettOppgaveEgenskaper(gjenåpneOppgave, egenskapFinner);
                 break;
         }
     }
 
-    private void opprettOppgaveEgenskaper(Oppgave oppgave, FpsakEvent event) {
+    private void opprettOppgaveEgenskaper(Oppgave oppgave, OppgaveEgenskapFinner event) {
         var andreKriterier = event.getAndreKriterier();
         log.info("Legger på oppgaveegenskaper {}", andreKriterier);
         List<OppgaveEgenskap> eksisterende = hentEksisterendeEgenskaper(oppgave);
@@ -158,11 +157,10 @@ public class FpsakEventHandler extends FpEventHandler {
         if (oppgaveEgenskap.getAndreKriterierType().equals(AndreKriterierType.TIL_BESLUTTER)) {
             oppgaveEgenskap.aktiverOppgaveEgenskap();
             oppgaveEgenskap.setSisteSaksbehandlerForTotrinn(saksbehandler);
-            getOppgaveRepository().lagre(oppgaveEgenskap);
         } else {
             oppgaveEgenskap.aktiverOppgaveEgenskap();
-            getOppgaveRepository().lagre(oppgaveEgenskap);
         }
+        getOppgaveRepository().lagre(oppgaveEgenskap);
     }
 
     /**

@@ -11,21 +11,21 @@ import java.util.List;
 
 import static no.nav.fplos.kafkatjenester.util.StreamUtil.safeStream;
 
-public class FpsakEvent {
+public class OppgaveEgenskapFinner {
     private final FpsakAksjonspunkt fpsakAksjonspunkt;
     private final OppgaveEventLogg sisteEvent;
     private final List<AndreKriterierType> andreKriterier = new ArrayList<>();
     private final String saksbehandlerForTotrinn;
 
-    public FpsakEvent(BehandlingFpsak behandling,
-                      List<OppgaveEventLogg> eventHistorikk,
-                      List<Aksjonspunkt> aksjonspunkt) {
+    public OppgaveEgenskapFinner(BehandlingFpsak behandling,
+                                 List<OppgaveEventLogg> eventHistorikk,
+                                 List<Aksjonspunkt> aksjonspunkt) {
         this.fpsakAksjonspunkt = new FpsakAksjonspunkt(aksjonspunkt);
         this.sisteEvent = sisteOpprettetEventFra(eventHistorikk);
         this.saksbehandlerForTotrinn = behandling.getAnsvarligSaksbehandler();
 
         if (harGradering(behandling)) this.andreKriterier.add(AndreKriterierType.SOKT_GRADERING);
-        if (utbetalingTilBruker(behandling)) this.andreKriterier.add(AndreKriterierType.UTBETALING_TIL_BRUKER);
+        if (erUtbetalingTilBruker(behandling)) this.andreKriterier.add(AndreKriterierType.UTBETALING_TIL_BRUKER);
         if (erOverførtGrunnetSykdom(behandling)) this.andreKriterier.add(AndreKriterierType.OVERFØRING_GRUNNET_SYKDOM);
 
         andreKriterier.addAll(fpsakAksjonspunkt.getKriterier());
@@ -54,7 +54,7 @@ public class FpsakEvent {
                 .orElse(null);
     }
 
-    private static boolean utbetalingTilBruker(BehandlingFpsak behandling) {
+    private static boolean erUtbetalingTilBruker(BehandlingFpsak behandling) {
         Boolean harRefusjonskrav = behandling.getHarRefusjonskravFraArbeidsgiver();
         //Skal ikke ha egenskap når harRefusjonskrav er true eller null. Vi avventer inntektsmelding før vi legger på egenskapen.
         return harRefusjonskrav != null && !harRefusjonskrav;
