@@ -7,9 +7,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum AndreKriterierType implements Kodeverdi {
@@ -19,9 +17,8 @@ public enum AndreKriterierType implements Kodeverdi {
     UTBETALING_TIL_BRUKER("UTBETALING_TIL_BRUKER", "Utbetaling til bruker"),
     UTLANDSSAK("UTLANDSSAK", "Utland"),
     SOKT_GRADERING("SOKT_GRADERING", "Søkt gradering"),
-    OVERFØRING_GRUNNET_SYKDOM("OVERFØRING_GRUNNET_SYKDOM", "Overført grunnet sykdom"),
-    //SELVSTENDIG_FRILANSER("SELVSTENDIG_FRILANSER", "Selvstendig næringsdrivende eller frilanser"),
-    UKJENT("-", "Placeholder"); // todo: fjern verdier i tabell og relevant kode i contract-fasen
+    OVERFØRING_GRUNNET_SYKDOM("OVERFØRING_GRUNNET_SYKDOM", "Overført grunnet sykdom");
+    //SELVSTENDIG_FRILANSER("SELVSTENDIG_FRILANSER", "Selvstendig næringsdrivende eller frilanser")
 
     private String kode;
     private final String navn;
@@ -42,12 +39,6 @@ public enum AndreKriterierType implements Kodeverdi {
 
     public String getKodeverk() {
         return KODEVERK;
-    }
-
-    public static List<AndreKriterierType> filteredEnums() { // fjern i contract
-        return Arrays.stream(values())
-                .filter(v -> !v.equals(UKJENT))
-                .collect(Collectors.toList());
     }
 
     @JsonCreator
