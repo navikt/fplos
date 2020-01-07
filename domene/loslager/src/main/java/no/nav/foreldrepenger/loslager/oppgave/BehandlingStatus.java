@@ -3,6 +3,7 @@ package no.nav.foreldrepenger.loslager.oppgave;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import no.nav.foreldrepenger.EventTilOppgaveFeilmeldinger;
 
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;
@@ -35,7 +36,7 @@ public enum BehandlingStatus {
         return Arrays.stream(values())
                 .filter(v -> v.kode.equals(kode))
                 .findFirst()
-                .orElseThrow();
+                .orElseThrow(() -> EventTilOppgaveFeilmeldinger.FACTORY.ukjentEnum("BehandlingStatus", kode).toException());
     }
 
     public static List<BehandlingStatus> getEnums() {

@@ -3,6 +3,7 @@ package no.nav.foreldrepenger.loslager.oppgave;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import no.nav.foreldrepenger.EventTilOppgaveFeilmeldinger;
 
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;
@@ -41,7 +42,7 @@ public enum FagsakYtelseType implements Kodeverdi {
     @JsonCreator
     public static FagsakYtelseType fraKode(@JsonProperty("kode") String kode) {
         return Optional.ofNullable(kodeMap.get(kode))
-                .orElse(null);
+                .orElseThrow(() -> EventTilOppgaveFeilmeldinger.FACTORY.ukjentEnum("FagsakYtelseType", kode).toException());
     }
 
     public static List<FagsakYtelseType> getEnums() {

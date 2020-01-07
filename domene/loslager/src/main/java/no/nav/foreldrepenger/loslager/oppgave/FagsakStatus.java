@@ -1,10 +1,10 @@
 package no.nav.foreldrepenger.loslager.oppgave;
-
+import java.util.Arrays;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import java.util.Arrays;
+import no.nav.foreldrepenger.EventTilOppgaveFeilmeldinger;
 
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum FagsakStatus implements Kodeverdi {
@@ -40,6 +40,6 @@ public enum FagsakStatus implements Kodeverdi {
         return Arrays.stream(values())
                 .filter(v -> v.kode.equals(kode))
                 .findFirst()
-                .orElseThrow();
+                .orElseThrow(() -> EventTilOppgaveFeilmeldinger.FACTORY.ukjentEnum("FagsakStatus", kode).toException());
     }
 }

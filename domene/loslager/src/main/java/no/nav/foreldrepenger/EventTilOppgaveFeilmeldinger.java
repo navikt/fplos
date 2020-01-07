@@ -11,4 +11,7 @@ public interface EventTilOppgaveFeilmeldinger extends DeklarerteFeil { // NOSONA
 
     @TekniskFeil(feilkode = "FPLOS-666", feilmelding = "Mer enn en aktiv oppgave med behandlingId %s.", logLevel = LogLevel.WARN)
     Feil merEnnEnOppgave(Long behandlingId);
+
+    @TekniskFeil(feilkode = "FPLOS-901", feilmelding = "Ukjent %s: %s.", logLevel = LogLevel.WARN)
+    Feil ukjentEnum(String enumNavn, String kode);
 }
