@@ -1,19 +1,29 @@
 package no.nav.fplos.admin;
 
-import java.util.List;
-
 import no.nav.foreldrepenger.loslager.oppgave.Oppgave;
 import no.nav.foreldrepenger.loslager.oppgave.OppgaveEventLogg;
+
+import java.util.List;
+import java.util.UUID;
 
 public interface AdminTjeneste {
 
     Oppgave synkroniserOppgave(Long behandlingId);
 
+    @Deprecated
     Oppgave hentOppgave(Long behandlingId);
 
-    List<OppgaveEventLogg> hentEventer(Long verdi);
+    Oppgave hentOppgave(UUID uuid);
 
+    @Deprecated
+    List<OppgaveEventLogg> hentEventer(Long behandlingId);
+
+    List<OppgaveEventLogg> hentEventer(UUID uuid);
+
+    @Deprecated
     void oppdaterOppgave(Long behandlingId);
+
+    void oppdaterOppgave(UUID uuid);
 
     int oppdaterAktiveOppgaver();
 
@@ -25,7 +35,10 @@ public interface AdminTjeneste {
 
     int oppdaterAktiveOppgaverMedInformasjonHvisGradering();
 
+    @Deprecated
     List<Oppgave> hentAlleOppgaverForBehandling(Long behandlingId);
+
+    List<Oppgave> hentAlleOppgaverForBehandling(UUID uuid);
 
     Oppgave deaktiverOppgave(Long oppgaveId);
 

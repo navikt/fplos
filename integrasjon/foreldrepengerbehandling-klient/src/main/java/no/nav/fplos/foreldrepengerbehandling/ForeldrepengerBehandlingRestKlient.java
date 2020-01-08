@@ -91,6 +91,37 @@ public class ForeldrepengerBehandlingRestKlient {
         }
     }
 
+    public BehandlingFpsak getBehandling(UUID behandlingUUID) {
+        URIBuilder uriBuilder = new URIBuilder(URI.create(endpointFpsakRestBase + FPSAK_BEHANDLINGER));
+        uriBuilder.setParameter("behandlingUuid", behandlingUUID.toString());
+        ContainerLogin loginContext = new ContainerLogin();
+        loginContext.login();
+
+        try {
+            LOGGER.info("Slår opp i fpsak for behandlingUuid {} per GET-kall til {}", behandlingUUID, uriBuilder.build());
+            UtvidetBehandlingDto response = oidcRestClient.get(uriBuilder.build(), UtvidetBehandlingDto.class);
+            List<ResourceLink> links = response.getLinks();
+            BehandlingFpsak.Builder builder = BehandlingFpsak.builder()
+                    .medBehandlingId(response.getId())
+                    .medUuid(response.getUuid())
+                    .medType(response.getType().getKode())
+                    .medBehandlendeEnhet(response.getBehandlendeEnhetId())
+                    .medBehandlendeEnhetNavn(response.getBehandlendeEnhetNavn())
+                    .medStatus(response.getStatus().getKode())
+                    .medAnsvarligSaksbehandler(response.getAnsvarligSaksbehandler())
+                    .medBehandlingstidFrist(response.getBehandlingsfristTid())
+                    .medFørsteUttaksdag(hentFørsteUttaksdato(links))
+                    .medHarRefusjonskrav(hentHarRefusjonskrav(links))
+                    .medAksjonspunkter(hentAksjonspunkter(links));
+            hentUttakKontrollerFaktaPerioder(behandlingUUID, builder, links);
+            return builder.build();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        } finally {
+            loginContext.logout();
+        }
+    }
+
     public Optional<UUID> getBehandlingUUID(Long behandlingId) {
         URIBuilder uriBuilder = new URIBuilder(URI.create(endpointFpsakRestBase + FPSAK_BEHANDLINGER));
         uriBuilder.setParameter("behandlingId", String.valueOf(behandlingId));
@@ -129,6 +160,7 @@ public class ForeldrepengerBehandlingRestKlient {
                 .orElse(null);
     }
 
+    @Deprecated
     private void hentUttakKontrollerFaktaPerioder(Long behandlingId, BehandlingFpsak.Builder builder, List<ResourceLink> links) {
         Optional<ResourceLink> uttakLink = velgLink(links, UTTAK_KONTROLLER_FAKTA_PERIODER_LINK);
         if (uttakLink.isPresent()) {
@@ -137,6 +169,18 @@ public class ForeldrepengerBehandlingRestKlient {
                 builder.medHarGradering(harGraderingFra(kontrollerFaktaData.get()));
             } else {
                 LOGGER.error("Feilet å hente gradering for behandlingId " + behandlingId);
+            }
+        }
+    }
+
+    private void hentUttakKontrollerFaktaPerioder(UUID behandlingUuid, BehandlingFpsak.Builder builder, List<ResourceLink> links) {
+        Optional<ResourceLink> uttakLink = velgLink(links, UTTAK_KONTROLLER_FAKTA_PERIODER_LINK);
+        if (uttakLink.isPresent()) {
+            Optional<KontrollerFaktaDataDto> kontrollerFaktaData = hentFraResourceLink(uttakLink.get(), KontrollerFaktaDataDto.class);
+            if (kontrollerFaktaData.isPresent()) {
+                builder.medHarGradering(harGraderingFra(kontrollerFaktaData.get()));
+            } else {
+                LOGGER.error("Feilet å hente gradering for behandlingId " + behandlingUuid);
             }
         }
     }

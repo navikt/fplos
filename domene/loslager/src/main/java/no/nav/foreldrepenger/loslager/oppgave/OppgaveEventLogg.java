@@ -21,7 +21,7 @@ public class OppgaveEventLogg extends BaseEntitet{
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_EVENTMOTTAK_FEILLOGG")
     private Long id;
 
-    @Column(name = "BEHANDLING_ID", nullable = false)
+    @Column(name = "BEHANDLING_ID")
     private Long behandlingId;
 
     @Column(name = "EVENT_TYPE")
@@ -38,7 +38,7 @@ public class OppgaveEventLogg extends BaseEntitet{
     @Column(name = "FRIST_TID")
     private LocalDateTime fristTid;
 
-    @Column(name = "EKSTERN_ID")
+    @Column(name = "EKSTERN_ID", nullable = false)
     private UUID eksternId;
 
     public OppgaveEventLogg(){

@@ -56,6 +56,12 @@ public abstract class FpEventHandler {
             //throw new RuntimeException(message);
         }
     }*/
+
+    protected void avsluttOppgaveOgLoggEvent(UUID eksternId, BehandlingProsessEventDto bpeDto, OppgaveEventType eventType, LocalDateTime frist){
+        avsluttOppgaveForEksternId(eksternId);
+        loggEvent(eksternId, eventType, null, bpeDto.getBehandlendeEnhet(), frist);
+    }
+
     protected void reserverOppgaveFraTidligereReservasjon(boolean reserverOppgave,
                                                           Reservasjon reservasjon,
                                                           Oppgave oppgave) {
@@ -70,16 +76,9 @@ public abstract class FpEventHandler {
         } else return new ArrayList<>();
     }
 
-    /*
-        protected Oppgave gjenåpneOppgaveVedEksternId(String fagsystem, String eksternRefId) {
-            Optional<EksternIdentifikator> eksternId = eksternIdentifikatorRespository.finnIdentifikator(fagsystem, eksternRefId);
-            if(eksternId.isPresent()){
-                return oppgaveRepository.gjenåpneOppgaveForEksternId(eksternId.get().getId());
-            } else {
-                log.debug("Fant ikke eksternId som indikerer at der ikke finnes eksisterende oppgaver som kan gjenåpnes");
-                return null;
-            }
-        }
-    */
+    protected Oppgave gjenåpneOppgaveVedEksternId(UUID eksternId) {
+        return oppgaveRepository.gjenåpneOppgaveForEksternId(eksternId);
+    }
+
     public abstract void prosesser(BehandlingProsessEventDto bpeDto);
 }

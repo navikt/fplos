@@ -19,6 +19,7 @@ import javax.inject.Inject;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 @ApplicationScoped
 public class AdminTjenesteImpl implements AdminTjeneste {
@@ -33,7 +34,7 @@ public class AdminTjenesteImpl implements AdminTjeneste {
     private KafkaReader kafaReader;
 
     public AdminTjenesteImpl(){
-        //For automatiks laging
+        //For automatisk laging
     }
 
     @Inject
@@ -50,6 +51,7 @@ public class AdminTjenesteImpl implements AdminTjeneste {
     }
 
     @Override
+    @Deprecated
     public Oppgave synkroniserOppgave(Long behandlingId) {
         BehandlingFpsak behandlingDto = foreldrepengerBehandlingRestKlient.getBehandling(behandlingId);
         if (AVSLUTTET_STATUS.equals(behandlingDto.getStatus())) {
@@ -58,21 +60,46 @@ public class AdminTjenesteImpl implements AdminTjeneste {
         return adminRepository.hentSisteOppgave(behandlingId);
     }
 
+    public Oppgave synkroniserOppgave(UUID uuid) {
+        BehandlingFpsak behandlingDto = foreldrepengerBehandlingRestKlient.getBehandling(uuid);
+        if (AVSLUTTET_STATUS.equals(behandlingDto.getStatus())) {
+            adminRepository.deaktiverSisteOppgave(uuid);
+        }
+        return adminRepository.hentSisteOppgave(uuid);
+    }
+
     @Override
+    @Deprecated
     public Oppgave hentOppgave(Long behandlingId) {
         return adminRepository.hentSisteOppgave(behandlingId);
     }
 
+    public Oppgave hentOppgave(UUID uuid) {
+        return adminRepository.hentSisteOppgave(uuid);
+    }
+
     @Override
+    @Deprecated
     public List<OppgaveEventLogg> hentEventer(Long behandlingId) {
         return adminRepository.hentEventer(behandlingId);
     }
 
+    public List<OppgaveEventLogg> hentEventer(UUID uuid) {
+        return adminRepository.hentEventer(uuid);
+    }
+
     @Override
+    @Deprecated
     public void oppdaterOppgave(Long behandlingId) {
         LOGGER.info("Starter oppdatering av oppgave tilhørende behandling {}", behandlingId);
         fpsakEventHandler.prosesser(mapTilBehandlingProsessEventDto(behandlingId));
         LOGGER.info("Oppdatering av oppgave tilhørende behandling {} er fullført", behandlingId);
+    }
+
+    public void oppdaterOppgave(UUID uuid) {
+        LOGGER.info("Starter oppdatering av oppgave tilhørende uuid {}", uuid);
+        fpsakEventHandler.prosesser(mapTilBehandlingProsessEventDto(uuid));
+        LOGGER.info("Oppdatering av oppgave tilhørende uuid {} er fullført", uuid);
     }
 
     @Override
@@ -123,8 +150,13 @@ public class AdminTjenesteImpl implements AdminTjeneste {
     }
 
     @Override
+    @Deprecated
     public List<Oppgave> hentAlleOppgaverForBehandling(Long behandlingId) {
         return adminRepository.hentAlleOppgaverForBehandling(behandlingId);
+    }
+
+    public List<Oppgave> hentAlleOppgaverForBehandling(UUID uuid) {
+        return adminRepository.hentAlleOppgaverForBehandling(uuid);
     }
 
     @Override
@@ -138,20 +170,24 @@ public class AdminTjenesteImpl implements AdminTjeneste {
     }
 
     private void leggTilOppgaveEgenskapHvisUtbetalingTilBruker(Oppgave oppgave) {
-        BehandlingFpsak behandlingDto = foreldrepengerBehandlingRestKlient.getBehandling(oppgave.getBehandlingId());
-        fpsakEventHandler.håndterOppgaveEgenskapUtbetalingTilBruker(behandlingDto.getHarRefusjonskravFraArbeidsgiver(), oppgave);
+        //BehandlingFpsak behandlingFpsak = foreldrepengerBehandlingRestKlient.getBehandling(oppgave.getBehandlingId());
+        BehandlingFpsak behandlingFpsak = foreldrepengerBehandlingRestKlient.getBehandling(oppgave.getEksternId());
+        fpsakEventHandler.håndterOppgaveEgenskapUtbetalingTilBruker(behandlingFpsak.getHarRefusjonskravFraArbeidsgiver(), oppgave);
     }
 
     private void leggTilOppgaveEgenskapHvisUtlandssak(Oppgave oppgave) {
-        BehandlingFpsak behandlingDto = foreldrepengerBehandlingRestKlient.getBehandling(oppgave.getBehandlingId());
-        fpsakEventHandler.håndterOppgaveEgenskapUtlandssak(behandlingDto.getErUtlandssak(), oppgave);
+        //BehandlingFpsak behandlingFpsak = foreldrepengerBehandlingRestKlient.getBehandling(oppgave.getBehandlingId());
+        BehandlingFpsak behandlingFpsak = foreldrepengerBehandlingRestKlient.getBehandling(oppgave.getEksternId());
+        fpsakEventHandler.håndterOppgaveEgenskapUtlandssak(behandlingFpsak.getErUtlandssak(), oppgave);
     }
 
     private void leggTilOppgaveEgenskapHvisGradering(Oppgave oppgave) {
-        BehandlingFpsak behandlingFpsak = foreldrepengerBehandlingRestKlient.getBehandling(oppgave.getBehandlingId());
+        //BehandlingFpsak behandlingFpsak = foreldrepengerBehandlingRestKlient.getBehandling(oppgave.getBehandlingId());
+        BehandlingFpsak behandlingFpsak = foreldrepengerBehandlingRestKlient.getBehandling(oppgave.getEksternId());
         fpsakEventHandler.håndterOppgaveEgenskapGradering(behandlingFpsak.getHarGradering(), oppgave);
     }
 
+    @Deprecated
     private BehandlingProsessEventDto mapTilBehandlingProsessEventDto(Long behandlingId) {
         Oppgave eksisterendeOppgave = hentOppgave(behandlingId);
         BehandlingFpsak fraFpsak = foreldrepengerBehandlingRestKlient.getBehandling(behandlingId);
@@ -163,6 +199,29 @@ public class AdminTjenesteImpl implements AdminTjeneste {
         return BehandlingProsessEventDto.builder()
                 .medFagsystem(eksisterendeOppgave.getSystem())
                 .medBehandlingId(behandlingId)
+                .medSaksnummer(eksisterendeOppgave.getFagsakSaksnummer().toString())
+                .medAktørId(eksisterendeOppgave.getAktorId().toString())
+                .medBehandlinStatus(fraFpsak.getStatus())
+                .medBehandlendeEnhet(fraFpsak.getBehandlendeEnhet())
+                .medYtelseTypeKode(eksisterendeOppgave.getFagsakYtelseType().getKode())
+                .medBehandlingTypeKode(eksisterendeOppgave.getBehandlingType().getKode())
+                .medOpprettetBehandling(eksisterendeOppgave.getBehandlingOpprettet())
+                .medAksjonspunktKoderMedStatusListe(aksjonspunktKoderMedStatusListe)
+                .build();
+    }
+
+    /*TODO: BehandlingProsessEventDto må få uuid så snart felt er tilgjengelig */
+    private BehandlingProsessEventDto mapTilBehandlingProsessEventDto(UUID uuid) {
+        Oppgave eksisterendeOppgave = hentOppgave(uuid);
+        BehandlingFpsak fraFpsak = foreldrepengerBehandlingRestKlient.getBehandling(uuid);
+
+        Map<String, String> aksjonspunktKoderMedStatusListe = new HashMap<>();
+        fraFpsak.getAksjonspunkter()
+                .forEach(aksjonspunkt -> aksjonspunktKoderMedStatusListe.put(aksjonspunkt.getDefinisjonKode(), aksjonspunkt.getStatusKode()));
+
+        return BehandlingProsessEventDto.builder()
+                .medFagsystem(eksisterendeOppgave.getSystem())
+                .medBehandlingId(eksisterendeOppgave.getBehandlingId())
                 .medSaksnummer(eksisterendeOppgave.getFagsakSaksnummer().toString())
                 .medAktørId(eksisterendeOppgave.getAktorId().toString())
                 .medBehandlinStatus(fraFpsak.getStatus())

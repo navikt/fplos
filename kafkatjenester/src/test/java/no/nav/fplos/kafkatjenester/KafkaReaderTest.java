@@ -18,6 +18,7 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.time.LocalDateTime;
 import java.util.Collections;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -63,6 +64,7 @@ public class KafkaReaderTest {
 
     private BehandlingFpsak lagBehandlingDto() {
         return BehandlingFpsak.builder()
+                .medUuid(UUID.nameUUIDFromBytes("TEST".getBytes()))
                 .medBehandlendeEnhetNavn("NAV")
                 .medHarRefusjonskrav(false)
                 .medAksjonspunkter(Collections.singletonList(new Aksjonspunkt.Builder()

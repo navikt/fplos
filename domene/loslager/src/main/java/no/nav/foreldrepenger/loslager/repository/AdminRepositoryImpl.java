@@ -1,12 +1,5 @@
 package no.nav.foreldrepenger.loslager.repository;
 
-import java.util.List;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.NoResultException;
-
 import no.nav.foreldrepenger.loslager.oppgave.EventmottakFeillogg;
 import no.nav.foreldrepenger.loslager.oppgave.Oppgave;
 import no.nav.foreldrepenger.loslager.oppgave.OppgaveEventLogg;
@@ -14,6 +7,13 @@ import no.nav.foreldrepenger.loslager.oppgave.Reservasjon;
 import no.nav.vedtak.felles.jpa.VLPersistenceUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
+import java.util.List;
+import java.util.UUID;
 
 @ApplicationScoped
 public class AdminRepositoryImpl implements AdminRepository {
@@ -35,6 +35,7 @@ public class AdminRepositoryImpl implements AdminRepository {
     }
 
     @Override
+    @Deprecated
     public void deaktiverSisteOppgave(Long behandlingId) {
         getEntityManager().createNativeQuery("UPDATE OPPGAVE o SET o.AKTIV = 'N' WHERE o.BEHANDLING_ID = :behandlingId")
                 .setParameter("behandlingId", behandlingId)
@@ -42,7 +43,15 @@ public class AdminRepositoryImpl implements AdminRepository {
         getEntityManager().flush();
     }
 
+    public void deaktiverSisteOppgave(UUID uuid) {
+        getEntityManager().createNativeQuery("UPDATE OPPGAVE o SET o.AKTIV = 'N' WHERE o.EKSTERN_ID = :uuid")
+                .setParameter("uuid", uuid)
+                .executeUpdate();
+        getEntityManager().flush();
+    }
+
     @Override
+    @Deprecated
     public Oppgave hentSisteOppgave(Long behandlingId) {
         Oppgave oppgave = null;
         try {
@@ -56,11 +65,31 @@ public class AdminRepositoryImpl implements AdminRepository {
         return oppgave;
     }
 
+    public Oppgave hentSisteOppgave(UUID uuid) {
+        Oppgave oppgave = null;
+        try {
+            oppgave = getEntityManager().createQuery("Select o FROM Oppgave o where o.eksternId = :uuid ORDER BY o.opprettetTidspunkt desc", Oppgave.class)
+                    .setParameter("uuid", uuid)
+                    .setMaxResults(1).getSingleResult();
+            getEntityManager().refresh(oppgave);
+        } catch (NoResultException nre) {
+            log.info("Fant ingen oppgave tilknyttet behandling med uuid {}", uuid, nre);
+        }
+        return oppgave;
+    }
+
     @Override
+    @Deprecated
     public List<OppgaveEventLogg> hentEventer(Long behandlingId) {
         return getEntityManager().createQuery( "Select o FROM oppgaveEventLogg o " +
                 "where o.behandlingId = :behandlingId ORDER BY o.opprettetTidspunkt desc", OppgaveEventLogg.class)
                 .setParameter("behandlingId", behandlingId).getResultList();
+    }
+
+    public List<OppgaveEventLogg> hentEventer(UUID uuid) {
+        return getEntityManager().createQuery( "Select o FROM oppgaveEventLogg o " +
+                "where o.eksternId = :uuid ORDER BY o.opprettetTidspunkt desc", OppgaveEventLogg.class)
+                .setParameter("uuid", uuid).getResultList();
     }
 
     @Override
@@ -82,9 +111,16 @@ public class AdminRepositoryImpl implements AdminRepository {
     }
 
     @Override
+    @Deprecated
     public List<Oppgave> hentAlleOppgaverForBehandling(Long behandlingId) {
         return getEntityManager().createQuery("Select o FROM Oppgave o where o.behandlingId = :behandlingId ORDER BY o.opprettetTidspunkt desc", Oppgave.class)
                 .setParameter("behandlingId", behandlingId)
+                .getResultList();
+    }
+
+    public List<Oppgave> hentAlleOppgaverForBehandling(UUID uuid) {
+        return getEntityManager().createQuery("Select o FROM Oppgave o where o.eksternId = :uuid ORDER BY o.opprettetTidspunkt desc", Oppgave.class)
+                .setParameter("uuid", uuid)
                 .getResultList();
     }
 
