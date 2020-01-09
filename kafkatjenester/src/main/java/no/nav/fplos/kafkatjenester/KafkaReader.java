@@ -58,6 +58,7 @@ public class KafkaReader {
             }
             prosesser(record.value());
         }
+        MDCOperations.removeCallId();
         commitMelding();
     }
 
