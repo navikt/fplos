@@ -6,13 +6,17 @@ import no.nav.foreldrepenger.loslager.oppgave.EventmottakFeillogg;
 import no.nav.foreldrepenger.loslager.repository.OppgaveRepository;
 import no.nav.fplos.kafkatjenester.jsonoppgave.JsonOppgave;
 import no.nav.vedtak.felles.integrasjon.kafka.BehandlingProsessEventDto;
+import no.nav.vedtak.log.mdc.MDCOperations;
+import org.apache.kafka.clients.consumer.ConsumerRecord;
+import org.apache.kafka.clients.consumer.ConsumerRecords;
+import org.apache.kafka.common.header.Header;
+import org.apache.kafka.common.header.Headers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import java.io.IOException;
-import java.util.List;
 
 @ApplicationScoped
 public class KafkaReader {
@@ -24,6 +28,7 @@ public class KafkaReader {
     private AksjonspunktMeldingConsumer meldingConsumer;
     private StringBuilder feilmelding = new StringBuilder();
     private JsonOppgaveHandler jsonOppgaveHandler;
+    private static final String CALLID_NAME = "Nav-CallId";
 
     public KafkaReader(){
         //to make proxyable
@@ -42,9 +47,16 @@ public class KafkaReader {
     }
 
     public void hentOgLagreMeldingene() {
-        List<String> meldinger = meldingConsumer.hentConsumerMeldingene();
-        for (String melding : meldinger) {
-            prosesser(melding);
+        ConsumerRecords<String, String> records = meldingConsumer.hentConsumerMeldingene();
+        for (ConsumerRecord<String, String> record : records) {
+            Headers headers = record.headers();
+            for(Header header:headers){
+                if(CALLID_NAME.equals(header.key())) {
+                    String callId = new String(header.value());
+                    MDCOperations.putCallId(callId);
+                }
+            }
+            prosesser(record.value());
         }
         commitMelding();
     }
