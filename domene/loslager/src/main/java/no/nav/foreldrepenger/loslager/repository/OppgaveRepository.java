@@ -78,19 +78,8 @@ public interface OppgaveRepository {
     List<Oppgave> sjekkOmOppgaverFortsattErTilgjengelige(List<Long> oppgaveIder);
 
     Oppgave opprettOppgave(Oppgave build);
-    /**
-     * @deprecated Bruk gjenåpneOppgaveForEksternId(Long) i stedet
-     */
-    @Deprecated
-    Oppgave gjenåpneOppgave(Long behandlingId);
 
     Oppgave gjenåpneOppgaveForEksternId(UUID eksternId);
-
-    /**
-     * @deprecated Bruk avsluttOppgaveForEksternId(Long) i stedet
-     */
-    @Deprecated
-    void avsluttOppgave(Long behandlingId);
 
     void avsluttOppgaveForEksternId(UUID eksternId);
 
@@ -99,12 +88,6 @@ public interface OppgaveRepository {
     void lagre(OppgaveEgenskap oppgaveEgenskap);
 
     void lagre(EventmottakFeillogg eventmottakFeillogg);
-
-    /**
-     * @deprecated Bruk hentEventerForEksternId(Long) i stedet
-     */
-    @Deprecated
-    List<OppgaveEventLogg> hentEventer(Long behandlingId);
 
     List<OppgaveEventLogg> hentEventerForEksternId(UUID eksternId);
 

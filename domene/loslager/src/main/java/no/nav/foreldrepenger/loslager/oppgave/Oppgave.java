@@ -242,6 +242,7 @@ public class Oppgave extends BaseEntitet {
 
         public Builder dummyOppgave(String enhet){
             tempOppgave.behandlingId = 331133L;
+            tempOppgave.eksternId = UUID.nameUUIDFromBytes("331133L".getBytes());
             tempOppgave.fagsakSaksnummer = 3478293L;
             tempOppgave.aktorId = 770099L;
             tempOppgave.fagsakYtelseType = FagsakYtelseType.FORELDREPENGER;

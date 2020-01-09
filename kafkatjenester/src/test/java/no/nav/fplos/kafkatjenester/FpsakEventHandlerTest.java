@@ -81,7 +81,6 @@ public class FpsakEventHandlerTest {
     private BehandlingProsessEventDto eventStordFra(Map<String, String> aksjonspunktmap){
         return prosessBuilderFra(aksjonspunktmap)
                 //.medId("EKSTERN_ID")
-
                 .medBehandlendeEnhet("4842")
                 .build();
     }
@@ -122,14 +121,12 @@ public class FpsakEventHandlerTest {
 
     private static BehandlingFpsak behandlingDtoFra(List<Aksjonspunkt> aksjonspunkter) {
         return behandlingBuilderMal()
-                //.medUuid(uuid)
                 .medAksjonspunkter(aksjonspunkter)
                 .build();
     }
 
     private static BehandlingFpsak behandlingDtoMedManueltMarkertUtlandsakFra(List<Aksjonspunkt> aksjonspunkter){
         return behandlingBuilderMal()
-                //.medUuid(uuid)
                 .medErUtlandssak(true)
                 .medAksjonspunkter(aksjonspunkter)
                 .build();
@@ -137,7 +134,6 @@ public class FpsakEventHandlerTest {
 
     private BehandlingFpsak lagBehandlingDtoMedHarGradering(List<Aksjonspunkt> aksjonspunkter){
         return behandlingBuilderMal()
-                //.medUuid(uuid)
                 .medHarGradering(true)
                 .medAksjonspunkter(aksjonspunkter)
                 .build();

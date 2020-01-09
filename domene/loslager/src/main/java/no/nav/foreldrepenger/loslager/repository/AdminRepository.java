@@ -8,18 +8,10 @@ import java.util.List;
 import java.util.UUID;
 
 public interface AdminRepository {
-    @Deprecated
-    void deaktiverSisteOppgave(Long behandlingId);
 
     void deaktiverSisteOppgave(UUID uuid);
 
-    @Deprecated
-    Oppgave hentSisteOppgave(Long behandlingId);
-
     Oppgave hentSisteOppgave(UUID uuid);
-
-    @Deprecated
-    List<OppgaveEventLogg> hentEventer(Long behandlingId);
 
     List<OppgaveEventLogg> hentEventer(UUID uuid);
 
@@ -28,9 +20,6 @@ public interface AdminRepository {
     List<EventmottakFeillogg> hentAlleMeldingerFraFeillogg();
 
     void markerFerdig(Long feilloggId);
-
-    @Deprecated
-    List<Oppgave> hentAlleOppgaverForBehandling(Long behandlingId);
 
     List<Oppgave> hentAlleOppgaverForBehandling(UUID uuid);
 

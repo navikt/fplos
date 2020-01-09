@@ -34,35 +34,11 @@ public class AdminRepositoryImpl implements AdminRepository {
         return entityManager;
     }
 
-    @Override
-    @Deprecated
-    public void deaktiverSisteOppgave(Long behandlingId) {
-        getEntityManager().createNativeQuery("UPDATE OPPGAVE o SET o.AKTIV = 'N' WHERE o.BEHANDLING_ID = :behandlingId")
-                .setParameter("behandlingId", behandlingId)
-                .executeUpdate();
-        getEntityManager().flush();
-    }
-
     public void deaktiverSisteOppgave(UUID uuid) {
         getEntityManager().createNativeQuery("UPDATE OPPGAVE o SET o.AKTIV = 'N' WHERE o.EKSTERN_ID = :uuid")
                 .setParameter("uuid", uuid)
                 .executeUpdate();
         getEntityManager().flush();
-    }
-
-    @Override
-    @Deprecated
-    public Oppgave hentSisteOppgave(Long behandlingId) {
-        Oppgave oppgave = null;
-        try {
-            oppgave = getEntityManager().createQuery("Select o FROM Oppgave o where o.behandlingId = :behandlingId ORDER BY o.opprettetTidspunkt desc", Oppgave.class)
-                    .setParameter("behandlingId", behandlingId)
-                    .setMaxResults(1).getSingleResult();
-            getEntityManager().refresh(oppgave);
-        } catch (NoResultException nre) {
-            log.info("Fant ingen oppgave tilknyttet behandling med id {}", behandlingId, nre);
-        }
-        return oppgave;
     }
 
     public Oppgave hentSisteOppgave(UUID uuid) {
@@ -76,14 +52,6 @@ public class AdminRepositoryImpl implements AdminRepository {
             log.info("Fant ingen oppgave tilknyttet behandling med uuid {}", uuid, nre);
         }
         return oppgave;
-    }
-
-    @Override
-    @Deprecated
-    public List<OppgaveEventLogg> hentEventer(Long behandlingId) {
-        return getEntityManager().createQuery( "Select o FROM oppgaveEventLogg o " +
-                "where o.behandlingId = :behandlingId ORDER BY o.opprettetTidspunkt desc", OppgaveEventLogg.class)
-                .setParameter("behandlingId", behandlingId).getResultList();
     }
 
     public List<OppgaveEventLogg> hentEventer(UUID uuid) {
@@ -108,14 +76,6 @@ public class AdminRepositoryImpl implements AdminRepository {
                         .find(EventmottakFeillogg.class, feilloggId)
                         .markerFerdig());
         getEntityManager().flush();
-    }
-
-    @Override
-    @Deprecated
-    public List<Oppgave> hentAlleOppgaverForBehandling(Long behandlingId) {
-        return getEntityManager().createQuery("Select o FROM Oppgave o where o.behandlingId = :behandlingId ORDER BY o.opprettetTidspunkt desc", Oppgave.class)
-                .setParameter("behandlingId", behandlingId)
-                .getResultList();
     }
 
     public List<Oppgave> hentAlleOppgaverForBehandling(UUID uuid) {

@@ -1,44 +1,43 @@
 package no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.oppgave.dto;
 
-import java.util.Objects;
-
-import javax.validation.constraints.Digits;
-import javax.validation.constraints.NotNull;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
-
 import no.nav.vedtak.sikkerhet.abac.AbacDataAttributter;
 import no.nav.vedtak.sikkerhet.abac.AbacDto;
 
+import javax.validation.constraints.Digits;
+import javax.validation.constraints.NotNull;
+import java.util.Objects;
+import java.util.UUID;
+
 public class BehandlingIdDto implements AbacDto {
 
-    @JsonProperty("behandlingId")
+    @JsonProperty("uuid")
     @NotNull
     @Digits(integer = 18, fraction = 0)
-    private final Long behandlingId;
+    private final UUID uuid;
 
     public BehandlingIdDto() {
-        behandlingId = null; // NOSONAR
+        uuid = null; // NOSONAR
     }
 
-    public BehandlingIdDto(Long behandlingId) {
-        Objects.requireNonNull(behandlingId, "behandlingId");
-        this.behandlingId = behandlingId;
+    public BehandlingIdDto(UUID uuid) {
+        Objects.requireNonNull(uuid, "uuid");
+        this.uuid = uuid;
     }
 
-    public BehandlingIdDto(String behandlingId) {
-        this.behandlingId = Long.valueOf(behandlingId);
+    public BehandlingIdDto(String uuid) {
+        this.uuid = UUID.fromString(uuid);
     }
 
 
-    public Long getVerdi() {
-        return behandlingId;
+    public UUID getVerdi() {
+        return uuid;
     }
 
     @Override
     public String toString() {
         return "BehandlingIdDto{" +
-                "behandlingId='" + behandlingId + '\'' +
+                "uuid='" + uuid + '\'' +
                 '}';
     }
 

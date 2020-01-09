@@ -22,7 +22,6 @@ import no.nav.fplos.verdikjedetester.mock.AksjonspunkteventTestInfo;
 import no.nav.fplos.verdikjedetester.mock.MockEventKafkaMessages;
 import no.nav.vedtak.felles.testutilities.cdi.CdiRunner;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -33,10 +32,11 @@ import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import static no.nav.fplos.verdikjedetester.mock.MockEventKafkaMessages.BEHANDLENDE_ENHET;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -68,13 +68,13 @@ public class VerdikjedetestNøkkeltallAvdelingTest {
     }
 
     @Test
-    @Ignore
     public void manuellSattPåVentVisesRiktigeDatoer(){
-        /*TODO: Må fikse denne slik at lagBehandlingDto returnerer ulik uuid som samsvarer med behandlingsid eller vente til vi har UUID i BehandlingProsessEventDto*/
+        /*TODO: Må fikse denne etter vi har UUID fra BehandlingProsessEventDto*/
 
         Aksjonspunkt.Builder builder1 = Aksjonspunkt.builder();
         Aksjonspunkt aksjonspunkt = builder1.medDefinisjon("5025").medStatus("OPPR").build();
-        when(foreldrepengerBehandlingRestKlient.getBehandling(anyLong())).thenReturn(lagBehandlingDto(Collections.singletonList(aksjonspunkt)));
+        initialiserForeldrepengerBehandlingRestKlient(aksjonspunkt);
+        //when(foreldrepengerBehandlingRestKlient.getBehandling(anyLong())).thenReturn(lagBehandlingDto(Collections.singletonList(aksjonspunkt)));
         Map<Long, AksjonspunkteventTestInfo> melding = MockEventKafkaMessages.førstegangsbehandlingMeldinger;
         MockEventKafkaMessages.sendNyeOppgaver(melding);
         kafkaReader.hentOgLagreMeldingene();
@@ -89,10 +89,11 @@ public class VerdikjedetestNøkkeltallAvdelingTest {
                 .medStatus("OPPR")
                 .medFristTid(NOW.plusDays(10))
                 .build();
+        //initialiserForeldrepengerBehandlingRestKlient(aksjonspunktDtoMedManuellSattPaaVentUtenFrist);
         when(foreldrepengerBehandlingRestKlient.getBehandling(MockEventKafkaMessages.BEHANDLING_ID_1))
-                .thenReturn(lagBehandlingDto(Collections.singletonList(aksjonspunktDtoMedManuellSattPaaVentOgFrist)));
+                .thenReturn(lagBehandlingDto(Collections.singletonList(aksjonspunktDtoMedManuellSattPaaVentOgFrist),UUID.nameUUIDFromBytes("1".getBytes())));
         when(foreldrepengerBehandlingRestKlient.getBehandling(MockEventKafkaMessages.BEHANDLING_ID_2))
-                .thenReturn(lagBehandlingDto(Collections.singletonList(aksjonspunktDtoMedManuellSattPaaVentUtenFrist)));
+                .thenReturn(lagBehandlingDto(Collections.singletonList(aksjonspunktDtoMedManuellSattPaaVentUtenFrist),UUID.nameUUIDFromBytes("2".getBytes())));
 
         Map<Long, AksjonspunkteventTestInfo> meldingSattPaaVent = MockEventKafkaMessages.førstegangsbehandlingMeldinger;
         MockEventKafkaMessages.sendNyeOppgaver(meldingSattPaaVent);
@@ -102,9 +103,20 @@ public class VerdikjedetestNøkkeltallAvdelingTest {
         assertThat(antallOppgaverSattPåManuellVentForAvdeling).extracting(OppgaverForAvdelingSattManueltPaaVentDto::getBehandlingFrist)
                 .containsExactlyInAnyOrder(NOW.toLocalDate().plusDays(10), NOW.toLocalDate().plusDays(28));
     }
+    private void initialiserForeldrepengerBehandlingRestKlient(Aksjonspunkt aksjonspunktDto) {
+        doReturn(lagBehandlingDto(Collections.singletonList(aksjonspunktDto), UUID.nameUUIDFromBytes("1".getBytes()))).when(foreldrepengerBehandlingRestKlient).getBehandling(1L);
+        doReturn(lagBehandlingDto(Collections.singletonList(aksjonspunktDto),UUID.nameUUIDFromBytes("2".getBytes()))).when(foreldrepengerBehandlingRestKlient).getBehandling(2L);
+        doReturn(lagBehandlingDto(Collections.singletonList(aksjonspunktDto),UUID.nameUUIDFromBytes("3".getBytes()))).when(foreldrepengerBehandlingRestKlient).getBehandling(3L);
+        doReturn(lagBehandlingDto(Collections.singletonList(aksjonspunktDto),UUID.nameUUIDFromBytes("4".getBytes()))).when(foreldrepengerBehandlingRestKlient).getBehandling(4L);
+        doReturn(lagBehandlingDto(Collections.singletonList(aksjonspunktDto),UUID.nameUUIDFromBytes("5".getBytes()))).when(foreldrepengerBehandlingRestKlient).getBehandling(5L);
+        doReturn(lagBehandlingDto(Collections.singletonList(aksjonspunktDto),UUID.nameUUIDFromBytes("6".getBytes()))).when(foreldrepengerBehandlingRestKlient).getBehandling(6L);
+        doReturn(lagBehandlingDto(Collections.singletonList(aksjonspunktDto),UUID.nameUUIDFromBytes("7".getBytes()))).when(foreldrepengerBehandlingRestKlient).getBehandling(7L);
+        doReturn(lagBehandlingDto(Collections.singletonList(aksjonspunktDto),UUID.nameUUIDFromBytes("8".getBytes()))).when(foreldrepengerBehandlingRestKlient).getBehandling(8L);
+    }
 
-    private BehandlingFpsak lagBehandlingDto(List<Aksjonspunkt> aksjonspunkter){
+    private BehandlingFpsak lagBehandlingDto(List<Aksjonspunkt> aksjonspunkter, UUID uuid){
         return BehandlingFpsak.builder()
+                .medUuid(uuid)
                 .medBehandlendeEnhetNavn("NAV")
                 .medAnsvarligSaksbehandler("VLLOS")
                 .medStatus("-")

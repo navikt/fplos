@@ -160,7 +160,7 @@ public class ForeldrepengerBehandlingRestKlient {
                 .orElse(null);
     }
 
-    @Deprecated
+    //@Deprecated
     private void hentUttakKontrollerFaktaPerioder(Long behandlingId, BehandlingFpsak.Builder builder, List<ResourceLink> links) {
         Optional<ResourceLink> uttakLink = velgLink(links, UTTAK_KONTROLLER_FAKTA_PERIODER_LINK);
         if (uttakLink.isPresent()) {
