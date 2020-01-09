@@ -18,27 +18,26 @@ import java.util.Map;
 @Dependent
 public class MeldingConsumerMock implements AksjonspunktMeldingConsumer {
 
+    public static final String TOPIC = "topic";
+    public static final int PARTITION = 0;
+    public static final TopicPartition topicPartition  = new TopicPartition(TOPIC,PARTITION);
+
     @Override
     public ConsumerRecords<String, String> hentConsumerMeldingene() {
-        Map<TopicPartition, List<ConsumerRecord<String, String>>> msgRecordslist = new LinkedHashMap<>();
-        String topic = "topic";
-        TopicPartition topicPartition  = new TopicPartition(topic,0);
         List<ConsumerRecord<String, String>> topicPartitionEntries = new ArrayList<ConsumerRecord<String, String>>();
         ConsumerRecords<String, String> response;
-
         if (!MockEventKafkaMessages.eventer.isEmpty()) {
             for (String event : MockEventKafkaMessages.eventer){
-                topicPartitionEntries.add(new ConsumerRecord<String, String>("topic", 0, topicPartitionEntries.size(), "", event));
+                topicPartitionEntries.add(new ConsumerRecord<String, String>(TOPIC, PARTITION, topicPartitionEntries.size(), "event", event));
             }
-            //return MockEventKafkaMessages.eventer;
         } else {
             for (String msg : MockKafkaMessages.messages) {
-                topicPartitionEntries.add(new ConsumerRecord<String, String>("topic", 0, topicPartitionEntries.size(), "", msg));
+                topicPartitionEntries.add(new ConsumerRecord<String, String>(TOPIC, PARTITION, topicPartitionEntries.size(), "message", msg));
             }
         }
+        Map<TopicPartition, List<ConsumerRecord<String, String>>> msgRecordslist = new LinkedHashMap<>();
         msgRecordslist.put(topicPartition, topicPartitionEntries);
         response = new ConsumerRecords<>(msgRecordslist);
-
         return response;
     }
 
