@@ -110,27 +110,6 @@ public class AdminTjenesteImpl implements AdminTjeneste {
     }
 
     @Override
-    public int oppdaterAktiveOppgaverMedInformasjonOmRefusjonskrav() {
-        List<Oppgave> aktiveOppgaver = adminRepository.hentAlleAktiveOppgaver();
-        aktiveOppgaver.forEach(this::leggTilOppgaveEgenskapHvisUtbetalingTilBruker);
-        return aktiveOppgaver.size();
-    }
-
-    @Override
-    public int oppdaterAktiveOppgaverMedInformasjonHvisUtlandssak() {
-        List<Oppgave> aktiveOppgaver = adminRepository.hentAlleAktiveOppgaver();
-        aktiveOppgaver.forEach(this::leggTilOppgaveEgenskapHvisUtlandssak);
-        return aktiveOppgaver.size();
-    }
-
-    @Override
-    public int oppdaterAktiveOppgaverMedInformasjonHvisGradering() {
-        List<Oppgave> aktiveOppgaver = adminRepository.hentAlleAktiveOppgaver();
-        aktiveOppgaver.forEach(this::leggTilOppgaveEgenskapHvisGradering);
-        return aktiveOppgaver.size();
-    }
-
-    @Override
     public List<Oppgave> hentAlleOppgaverForBehandling(Long behandlingId) {
         return adminRepository.hentAlleOppgaverForBehandling(behandlingId);
     }
@@ -143,21 +122,6 @@ public class AdminTjenesteImpl implements AdminTjeneste {
     @Override
     public Oppgave aktiverOppgave(Long oppgaveId) {
         return adminRepository.aktiverOppgave(oppgaveId);
-    }
-
-    private void leggTilOppgaveEgenskapHvisUtbetalingTilBruker(Oppgave oppgave) {
-        BehandlingFpsak behandlingDto = foreldrepengerBehandlingRestKlient.getBehandling(oppgave.getBehandlingId());
-        fpsakEventHandler.håndterOppgaveEgenskapUtbetalingTilBruker(behandlingDto.getHarRefusjonskravFraArbeidsgiver(), oppgave);
-    }
-
-    private void leggTilOppgaveEgenskapHvisUtlandssak(Oppgave oppgave) {
-        BehandlingFpsak behandlingDto = foreldrepengerBehandlingRestKlient.getBehandling(oppgave.getBehandlingId());
-        fpsakEventHandler.håndterOppgaveEgenskapUtlandssak(behandlingDto.getErUtlandssak(), oppgave);
-    }
-
-    private void leggTilOppgaveEgenskapHvisGradering(Oppgave oppgave) {
-        BehandlingFpsak behandlingFpsak = foreldrepengerBehandlingRestKlient.getBehandling(oppgave.getBehandlingId());
-        fpsakEventHandler.håndterOppgaveEgenskapGradering(behandlingFpsak.getHarGradering(), oppgave);
     }
 
     private BehandlingProsessEventDto mapTilBehandlingProsessEventDto(Long behandlingId) {

@@ -11,35 +11,28 @@ import static no.nav.fplos.kafkatjenester.util.StreamUtil.safeStream;
 public class FpsakAksjonspunkt {
 
     private final List<Aksjonspunkt> aksjonspunkt;
-    private final List<AndreKriterierType> kriterier;
+    private final List<AndreKriterierType> kriterier = new ArrayList<>();
 
     public FpsakAksjonspunkt(List<Aksjonspunkt> aksjonspunkt) {
         this.aksjonspunkt = aksjonspunkt;
-        this.kriterier = kriterieListeFra(aksjonspunkt);
+
+        if (tilBeslutter()) kriterier.add(AndreKriterierType.TIL_BESLUTTER);
+        if (erRegistrerPapirSøknad()) kriterier.add(AndreKriterierType.PAPIRSØKNAD);
+        if (erUtenlandssak()) kriterier.add(AndreKriterierType.UTLANDSSAK);
+        if (erVurderFaresignaler()) kriterier.add(AndreKriterierType.VURDER_FARESIGNALER);
     }
 
     public List<AndreKriterierType> getKriterier() {
         return kriterier;
     }
 
-    private List<AndreKriterierType> kriterieListeFra(List<Aksjonspunkt> aksjonspunkt) {
-        List<AndreKriterierType> kriterier = new ArrayList<>();
-
-        if (tilBeslutter()) kriterier.add(AndreKriterierType.TIL_BESLUTTER);
-        if (erRegistrerPapirSøknad()) kriterier.add(AndreKriterierType.PAPIRSØKNAD);
-        if (erUtenlandssak()) kriterier.add(AndreKriterierType.UTLANDSSAK);
-        //if (erSelvstendigEllerFrilans()) kriterier.add(AndreKriterierType.SELVSTENDIG_FRILANSER);
-
-        return kriterier;
-    }
-
-    public List<Aksjonspunkt> getAksjonspunkt() {
-        return aksjonspunkt;
-    }
-
 //    private boolean erSelvstendigEllerFrilans() {
 //        return safeStream(aksjonspunkt).anyMatch(Aksjonspunkt::erSelvstendigEllerFrilanser);
 //    }
+
+    private boolean erVurderFaresignaler() {
+        return safeStream(aksjonspunkt).anyMatch(Aksjonspunkt::erVurderFaresignaler);
+    }
 
     private boolean tilBeslutter() {
         return safeStream(aksjonspunkt).anyMatch(Aksjonspunkt::tilBeslutter);

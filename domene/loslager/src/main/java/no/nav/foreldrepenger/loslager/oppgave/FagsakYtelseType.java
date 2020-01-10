@@ -7,12 +7,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum FagsakYtelseType implements Kodeverdi {
@@ -23,34 +18,18 @@ public enum FagsakYtelseType implements Kodeverdi {
     public static final String KODEVERK = "FAGSAK_YTELSE_TYPE";
     private final String kode;
     private final String navn;
-    private static final Map<String, FagsakYtelseType> kodeMap = Collections.unmodifiableMap(initializeMapping());
 
     FagsakYtelseType(String kode, String navn) {
         this.kode = kode;
         this.navn = navn;
     }
 
-    private static HashMap<String, FagsakYtelseType> initializeMapping() {
-        HashMap<String, FagsakYtelseType> map = new HashMap<>();
-        for (var v : values()) {
-            map.putIfAbsent(v.kode, v);
-        }
-        return map;
-    }
-
     @JsonCreator
     public static FagsakYtelseType fraKode(@JsonProperty("kode") String kode) {
-        return Optional.ofNullable(kodeMap.get(kode))
-                .orElse(null);
-    }
-
-    public static List<FagsakYtelseType> getEnums() {
         return Arrays.stream(values())
-                .collect(Collectors.toList());
-    }
-
-    public static Map<String, FagsakYtelseType> kodeMap() {
-        return Collections.unmodifiableMap(kodeMap());
+                .filter(v -> v.kode.equals(kode))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("Ukjent FagsakYtelseType: " + kode));
     }
 
     public String getKode() { return kode; }

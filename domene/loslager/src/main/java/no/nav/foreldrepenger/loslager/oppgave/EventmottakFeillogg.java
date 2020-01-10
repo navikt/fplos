@@ -28,14 +28,6 @@ public class EventmottakFeillogg extends BaseEntitet {
     @Enumerated(EnumType.STRING)
     private Status status = Status.FEILET;
 
-    // todo: fjern denne + databasekolonnen i contract. ingenting inkrementerer denne.. ubrukt funksjonalitet
-    //@Column(name = "ANTALL_FEILEDE_FORSOK")
-    //private Long antallFeiledeForsøk = 0L;
-
-    // todo: fjern fra db. Gitt punkt over dekkes denne av TID_OPPRETTET i BaseEntitet
-    //@Column(name = "SISTE_KJORING_TS", nullable = false)
-    //private LocalDateTime sisteKjøringTS = LocalDateTime.now();
-
     @Lob
     @Column(name = "FEILMELDING_SISTE_KJORING")
     private String feilmelding;

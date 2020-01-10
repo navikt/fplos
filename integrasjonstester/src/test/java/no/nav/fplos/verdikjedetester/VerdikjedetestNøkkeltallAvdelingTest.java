@@ -104,7 +104,7 @@ public class VerdikjedetestNøkkeltallAvdelingTest {
                 .medBehandlendeEnhetNavn("NAV")
                 .medAnsvarligSaksbehandler("VLLOS")
                 .medStatus("-")
-                .medHarRefusjonskrav(false)
+                .medHarRefusjonskravFraArbeidsgiver(false)
                 .medAksjonspunkter(aksjonspunkter)
                 .build();
     }

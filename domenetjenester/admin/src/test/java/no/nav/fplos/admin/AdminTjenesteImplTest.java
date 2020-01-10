@@ -87,15 +87,6 @@ public class AdminTjenesteImplTest {
         assertThat(oppgave.getAktiv()).isFalse();
     }
 
-    @Test
-    public void testLeggTilOppgaveEgenskapHvisUtlandssak(){
-        oppgaveRepository.lagre(førstegangOppgave);
-        assertThat(repoRule.getRepository().hentAlle(OppgaveEgenskap.class)).hasSize(0);
-        when(foreldrepengerBehandlingRestKlient.getBehandling(any())).thenReturn(lagBehandlingMedUtlandssakDto());
-        adminTjeneste.oppdaterAktiveOppgaverMedInformasjonHvisUtlandssak();
-        assertThat(repoRule.getRepository().hentAlle(OppgaveEgenskap.class)).hasSize(1);
-    }
-
     private BehandlingFpsak lagBehandlingDto(){
         return BehandlingFpsak.builder().medStatus("UTRED").build();
     }
@@ -106,7 +97,7 @@ public class AdminTjenesteImplTest {
 
     private BehandlingFpsak lagBehandlingMedUtlandssakDto() {
         return BehandlingFpsak.builder()
-                .medErUtlandssak(true)
+                .medErUtenlandssak(true)
                 .medAksjonspunkter(Collections.singletonList(new Aksjonspunkt
                         .Builder()
                         .medDefinisjon("5068")

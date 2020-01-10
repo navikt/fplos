@@ -23,12 +23,6 @@ public interface AdminTjeneste {
 
     int prosesserAlleMeldingerFraFeillogg();
 
-    int oppdaterAktiveOppgaverMedInformasjonOmRefusjonskrav();
-
-    int oppdaterAktiveOppgaverMedInformasjonHvisUtlandssak();
-
-    int oppdaterAktiveOppgaverMedInformasjonHvisGradering();
-
     List<Oppgave> hentAlleOppgaverForBehandling(Long behandlingId);
 
     Oppgave deaktiverOppgave(Long oppgaveId);

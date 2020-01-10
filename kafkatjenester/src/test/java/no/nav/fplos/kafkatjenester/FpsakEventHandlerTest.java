@@ -114,7 +114,6 @@ public class FpsakEventHandlerTest {
                 .medBehandlingTypeKode(BehandlingType.FØRSTEGANGSSØKNAD.getKode())
                 .medOpprettetBehandling(LocalDateTime.now())
                 .medAksjonspunktKoderMedStatusListe(aksjonspunktmap);
-
     }
 
     private static BehandlingFpsak behandlingDtoFra(List<Aksjonspunkt> aksjonspunkter) {
@@ -125,7 +124,7 @@ public class FpsakEventHandlerTest {
 
     private static BehandlingFpsak behandlingDtoMedManueltMarkertUtlandsakFra(List<Aksjonspunkt> aksjonspunkter){
         return behandlingBuilderMal()
-                .medErUtlandssak(true)
+                .medErUtenlandssak(true)
                 .medAksjonspunkter(aksjonspunkter)
                 .build();
     }

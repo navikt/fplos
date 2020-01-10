@@ -45,7 +45,7 @@ public enum BehandlingType implements Kodeverdi {
         return Arrays.stream(values())
                 .filter(v -> v.kode.equals(kode))
                 .findFirst()
-                .orElseThrow();
+                .orElseThrow(() -> new IllegalArgumentException("Ukjent BehandlingType: " + kode));
     }
 
     public static List<BehandlingType> getEnums() {
