@@ -206,10 +206,10 @@ public class OppgaveRepositoryImplTest {
         repository.lagre(new OppgaveEgenskap(andreOppgave, AndreKriterierType.TIL_BESLUTTER, "Jodajoda"));
         repository.lagre(new OppgaveEgenskap(tredjeOppgave, AndreKriterierType.PAPIRSØKNAD));
         repository.lagre(new OppgaveEgenskap(tredjeOppgave, AndreKriterierType.TIL_BESLUTTER));
-        repository.lagre(new OppgaveEventLogg(uuid1, OppgaveEventType.OPPRETTET, AndreKriterierType.PAPIRSØKNAD, AVDELING_DRAMMEN_ENHET ));
-        repository.lagre(new OppgaveEventLogg(uuid2, OppgaveEventType.OPPRETTET, AndreKriterierType.TIL_BESLUTTER, AVDELING_DRAMMEN_ENHET));
-        repository.lagre(new OppgaveEventLogg(uuid3, OppgaveEventType.OPPRETTET, AndreKriterierType.PAPIRSØKNAD, AVDELING_DRAMMEN_ENHET));
-        repository.lagre(new OppgaveEventLogg(uuid3, OppgaveEventType.OPPRETTET, AndreKriterierType.TIL_BESLUTTER, AVDELING_DRAMMEN_ENHET));
+        repository.lagre(new OppgaveEventLogg(uuid1, OppgaveEventType.OPPRETTET, AndreKriterierType.PAPIRSØKNAD, AVDELING_DRAMMEN_ENHET,1L ));
+        repository.lagre(new OppgaveEventLogg(uuid2, OppgaveEventType.OPPRETTET, AndreKriterierType.TIL_BESLUTTER, AVDELING_DRAMMEN_ENHET,2L));
+        repository.lagre(new OppgaveEventLogg(uuid3, OppgaveEventType.OPPRETTET, AndreKriterierType.PAPIRSØKNAD, AVDELING_DRAMMEN_ENHET,3L));
+        repository.lagre(new OppgaveEventLogg(uuid3, OppgaveEventType.OPPRETTET, AndreKriterierType.TIL_BESLUTTER, AVDELING_DRAMMEN_ENHET,3L));
         repository.flush();
 
     }

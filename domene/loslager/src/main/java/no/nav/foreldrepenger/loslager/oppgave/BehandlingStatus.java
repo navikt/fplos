@@ -35,7 +35,7 @@ public enum BehandlingStatus {
         return Arrays.stream(values())
                 .filter(v -> v.kode.equals(kode))
                 .findFirst()
-                .orElseThrow();
+                .orElseThrow(() -> new IllegalArgumentException("Ukjent BehandlingStatus: " + kode));
     }
 
     public static List<BehandlingStatus> getEnums() {

@@ -50,6 +50,7 @@ public class AdminTjenesteImpl implements AdminTjeneste {
         this.kafaReader = kafaReader;
     }
 
+    @Override
     public Oppgave synkroniserOppgave(UUID uuid) {
         BehandlingFpsak behandlingDto = foreldrepengerBehandlingRestKlient.getBehandling(uuid);
         if (AVSLUTTET_STATUS.equals(behandlingDto.getStatus())) {
@@ -58,14 +59,16 @@ public class AdminTjenesteImpl implements AdminTjeneste {
         return adminRepository.hentSisteOppgave(uuid);
     }
 
+    @Override
     public Oppgave hentOppgave(UUID uuid) {
         return adminRepository.hentSisteOppgave(uuid);
     }
 
+    @Override
     public List<OppgaveEventLogg> hentEventer(UUID uuid) {
         return adminRepository.hentEventer(uuid);
     }
-
+    @Override
     public void oppdaterOppgave(UUID uuid) {
         LOGGER.info("Starter oppdatering av oppgave tilhørende uuid {}", uuid);
         fpsakEventHandler.prosesser(mapTilBehandlingProsessEventDto(uuid));
@@ -99,26 +102,6 @@ public class AdminTjenesteImpl implements AdminTjeneste {
     }
 
     @Override
-    public int oppdaterAktiveOppgaverMedInformasjonOmRefusjonskrav() {
-        List<Oppgave> aktiveOppgaver = adminRepository.hentAlleAktiveOppgaver();
-        aktiveOppgaver.forEach(this::leggTilOppgaveEgenskapHvisUtbetalingTilBruker);
-        return aktiveOppgaver.size();
-    }
-
-    @Override
-    public int oppdaterAktiveOppgaverMedInformasjonHvisUtlandssak() {
-        List<Oppgave> aktiveOppgaver = adminRepository.hentAlleAktiveOppgaver();
-        aktiveOppgaver.forEach(this::leggTilOppgaveEgenskapHvisUtlandssak);
-        return aktiveOppgaver.size();
-    }
-
-    @Override
-    public int oppdaterAktiveOppgaverMedInformasjonHvisGradering() {
-        List<Oppgave> aktiveOppgaver = adminRepository.hentAlleAktiveOppgaver();
-        aktiveOppgaver.forEach(this::leggTilOppgaveEgenskapHvisGradering);
-        return aktiveOppgaver.size();
-    }
-
     public List<Oppgave> hentAlleOppgaverForBehandling(UUID uuid) {
         return adminRepository.hentAlleOppgaverForBehandling(uuid);
     }
@@ -131,24 +114,6 @@ public class AdminTjenesteImpl implements AdminTjeneste {
     @Override
     public Oppgave aktiverOppgave(Long oppgaveId) {
         return adminRepository.aktiverOppgave(oppgaveId);
-    }
-
-    private void leggTilOppgaveEgenskapHvisUtbetalingTilBruker(Oppgave oppgave) {
-        //BehandlingFpsak behandlingFpsak = foreldrepengerBehandlingRestKlient.getBehandling(oppgave.getBehandlingId());
-        BehandlingFpsak behandlingFpsak = foreldrepengerBehandlingRestKlient.getBehandling(oppgave.getEksternId());
-        fpsakEventHandler.håndterOppgaveEgenskapUtbetalingTilBruker(behandlingFpsak.getHarRefusjonskravFraArbeidsgiver(), oppgave);
-    }
-
-    private void leggTilOppgaveEgenskapHvisUtlandssak(Oppgave oppgave) {
-        //BehandlingFpsak behandlingFpsak = foreldrepengerBehandlingRestKlient.getBehandling(oppgave.getBehandlingId());
-        BehandlingFpsak behandlingFpsak = foreldrepengerBehandlingRestKlient.getBehandling(oppgave.getEksternId());
-        fpsakEventHandler.håndterOppgaveEgenskapUtlandssak(behandlingFpsak.getErUtlandssak(), oppgave);
-    }
-
-    private void leggTilOppgaveEgenskapHvisGradering(Oppgave oppgave) {
-        //BehandlingFpsak behandlingFpsak = foreldrepengerBehandlingRestKlient.getBehandling(oppgave.getBehandlingId());
-        BehandlingFpsak behandlingFpsak = foreldrepengerBehandlingRestKlient.getBehandling(oppgave.getEksternId());
-        fpsakEventHandler.håndterOppgaveEgenskapGradering(behandlingFpsak.getHarGradering(), oppgave);
     }
 
     /*TODO: BehandlingProsessEventDto må få uuid så snart felt er tilgjengelig */

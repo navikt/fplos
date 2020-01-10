@@ -13,6 +13,6 @@ class TestUtil {
                 .medAnsvarligSaksbehandler("VLLOS")
                 .medStatus("-")
                 .medHarGradering(null)
-                .medHarRefusjonskrav(null);
+                .medHarRefusjonskravFraArbeidsgiver(null);
     }
 }

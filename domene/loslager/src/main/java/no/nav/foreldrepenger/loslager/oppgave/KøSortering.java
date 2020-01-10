@@ -44,7 +44,7 @@ public enum KøSortering implements Kodeverdi {
         return Arrays.stream(values())
                 .filter(v -> v.kode.equals(kode))
                 .findFirst()
-                .orElseThrow();
+                .orElseThrow(() -> new IllegalArgumentException("Ukjent KøSortering: " + kode));
     }
 
     @Converter(autoApply = true)

@@ -66,7 +66,7 @@ public class KafkaReaderTest {
         return BehandlingFpsak.builder()
                 .medUuid(UUID.nameUUIDFromBytes("TEST".getBytes()))
                 .medBehandlendeEnhetNavn("NAV")
-                .medHarRefusjonskrav(false)
+                .medHarRefusjonskravFraArbeidsgiver(false)
                 .medAksjonspunkter(Collections.singletonList(new Aksjonspunkt.Builder()
                         .medDefinisjon("5401")
                         .medStatus("UTRED")

@@ -20,12 +20,6 @@ public interface AdminTjeneste {
 
     int prosesserAlleMeldingerFraFeillogg();
 
-    int oppdaterAktiveOppgaverMedInformasjonOmRefusjonskrav();
-
-    int oppdaterAktiveOppgaverMedInformasjonHvisUtlandssak();
-
-    int oppdaterAktiveOppgaverMedInformasjonHvisGradering();
-
     List<Oppgave> hentAlleOppgaverForBehandling(UUID uuid);
 
     Oppgave deaktiverOppgave(Long oppgaveId);

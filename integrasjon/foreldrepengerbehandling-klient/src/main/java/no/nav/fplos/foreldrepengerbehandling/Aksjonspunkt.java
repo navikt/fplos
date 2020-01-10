@@ -18,6 +18,7 @@ public class Aksjonspunkt {
     //private static final List<String> SELVSTENDIG_FRILANSER_GRUPPE = asList("5038", "5039", "5042", "7072");
     private static final List<String> SELVSTENDIG_FRILANSER_GRUPPE = asList("5038", "5049");
 
+    private static final String VURDER_FARESIGNALER = "5095";
     private static final String AUTOMATISK_MARKERING_SOM_UTLAND = "5068";
     private static final String MANUELL_MARKERING_SOM_UTLAND = "6068";
     private static final String EØS_BOSATT_NORGE = "EØS_BOSATT_NORGE";
@@ -84,8 +85,12 @@ public class Aksjonspunkt {
         return erAutomatiskMarkertSomUtenlandssak() || erManueltMarkertSomUtenlandssak();
     }
 
+    public boolean erVurderFaresignaler() {
+        return VURDER_FARESIGNALER.equals(definisjonKode) && erAktiv();
+    }
 //    public boolean erSelvstendigEllerFrilanser() {
 //        return SELVSTENDIG_FRILANSER_GRUPPE.contains(definisjonKode) && erAktiv();
+
 //    }
 
     public static Aksjonspunkt aksjonspunktFra(AksjonspunktDto aksjonspunktDto) {

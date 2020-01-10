@@ -3,7 +3,6 @@ package no.nav.fplos.admin;
 import no.nav.foreldrepenger.dbstoette.UnittestRepositoryRule;
 import no.nav.foreldrepenger.loslager.oppgave.BehandlingType;
 import no.nav.foreldrepenger.loslager.oppgave.Oppgave;
-import no.nav.foreldrepenger.loslager.oppgave.OppgaveEgenskap;
 import no.nav.foreldrepenger.loslager.oppgave.OppgaveEventLogg;
 import no.nav.foreldrepenger.loslager.oppgave.OppgaveEventType;
 import no.nav.foreldrepenger.loslager.repository.AdminRepository;
@@ -67,7 +66,7 @@ public class AdminTjenesteImplTest {
 
     @Test
     public void testHentEvent(){
-        oppgaveRepository.lagre(new OppgaveEventLogg(førstegangOppgave.getEksternId(), OppgaveEventType.OPPRETTET, null, null));
+        oppgaveRepository.lagre(new OppgaveEventLogg(førstegangOppgave.getEksternId(), OppgaveEventType.OPPRETTET, null, null, førstegangOppgave.getBehandlingId()));
         List<OppgaveEventLogg> oppgave = adminTjeneste.hentEventer(førstegangOppgave.getEksternId());
         assertThat(oppgave).isNotEmpty();
     }
@@ -88,15 +87,6 @@ public class AdminTjenesteImplTest {
         assertThat(oppgave.getAktiv()).isFalse();
     }
 
-    @Test
-    public void testLeggTilOppgaveEgenskapHvisUtlandssak(){
-        oppgaveRepository.lagre(førstegangOppgave);
-        assertThat(repoRule.getRepository().hentAlle(OppgaveEgenskap.class)).hasSize(0);
-        when(foreldrepengerBehandlingRestKlient.getBehandling(any(UUID.class))).thenReturn(lagBehandlingMedUtlandssakDto());
-        adminTjeneste.oppdaterAktiveOppgaverMedInformasjonHvisUtlandssak();
-        assertThat(repoRule.getRepository().hentAlle(OppgaveEgenskap.class)).hasSize(1);
-    }
-
     private BehandlingFpsak lagBehandlingDto(){
         return BehandlingFpsak.builder().medStatus("UTRED").build();
     }
@@ -107,7 +97,7 @@ public class AdminTjenesteImplTest {
 
     private BehandlingFpsak lagBehandlingMedUtlandssakDto() {
         return BehandlingFpsak.builder()
-                .medErUtlandssak(true)
+                .medErUtenlandssak(true)
                 .medAksjonspunkter(Collections.singletonList(new Aksjonspunkt
                         .Builder()
                         .medDefinisjon("5068")

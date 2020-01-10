@@ -125,42 +125,6 @@ public class AdminRestTjeneste {
 
     @GET
     @Timed
-    @Path("/oppdater-oppgaver-med-info-om-refusjon")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    @ApiOperation(value = "Oppdater alle aktive oppgaver med informasjon om direkteutbetaling/refusjonskrav", notes = ("Oppdaterer alle aktive oppgaver med informasjon om direkteutbetaling/refusjonskrav og legger til oppgave egenskap ved behov"))
-    @BeskyttetRessurs(action = READ, ressurs = OPPGAVESTYRING)
-    @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
-    public int oppdaterOppgaverMedInfoOmRefusjon() {
-        return adminTjeneste.oppdaterAktiveOppgaverMedInformasjonOmRefusjonskrav();
-    }
-
-    @GET
-    @Timed
-    @Path("/oppdater-oppgaver-med-info-om-utlandssak")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    @ApiOperation(value = "Oppdater alle aktive oppgaver med informasjon om utlandssak", notes = ("Oppdaterer alle aktive oppgaver med informasjon om utlandssak og legger til oppgave egenskap ved behov"))
-    @BeskyttetRessurs(action = READ, ressurs = OPPGAVESTYRING)
-    @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
-    public int oppdaterOppgaverMedInfoHvisUtlandssak() {
-        return adminTjeneste.oppdaterAktiveOppgaverMedInformasjonHvisUtlandssak();
-    }
-
-    @GET
-    @Timed
-    @Path("/oppdater-oppgaver-med-info-om-gradering")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    @ApiOperation(value = "Oppdater alle aktive oppgaver med informasjon om gradering", notes = ("Oppdaterer alle aktive oppgaver med informasjon om gradering og legger til oppgave egenskap ved behov"))
-    @BeskyttetRessurs(action = READ, ressurs = OPPGAVESTYRING)
-    @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
-    public int oppdaterOppgaverMedInfoOmGradering() {
-        return adminTjeneste.oppdaterAktiveOppgaverMedInformasjonHvisGradering();
-    }
-
-    @GET
-    @Timed
     @Path("/hent-alle-oppgaver-knyttet-til-behandling")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
