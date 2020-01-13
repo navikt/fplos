@@ -11,8 +11,9 @@ import no.nav.fplos.kafkatjenester.Fagsystem;
 import no.nav.fplos.kafkatjenester.FpsakEventHandler;
 import no.nav.fplos.kafkatjenester.KafkaReader;
 import no.nav.fplos.kafkatjenester.TilbakekrevingEventHandler;
-import no.nav.fplos.kafkatjenester.dto.TilbakekrevingBehandlingProsessEventDto;
 import no.nav.vedtak.felles.integrasjon.kafka.BehandlingProsessEventDto;
+import no.nav.vedtak.felles.integrasjon.kafka.FpsakBehandlingProsessEventDto;
+import no.nav.vedtak.felles.integrasjon.kafka.TilbakebetalingBehandlingProsessEventDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -132,12 +133,11 @@ public class AdminTjenesteImpl implements AdminTjeneste {
         fraFpsak.getAksjonspunkter()
                 .forEach(aksjonspunkt -> aksjonspunktKoderMedStatusListe.put(aksjonspunkt.getDefinisjonKode(), aksjonspunkt.getStatusKode()));
 
-        return BehandlingProsessEventDto.builder()
-                .medFagsystem(eksisterendeOppgave.getSystem())
-                .medBehandlingId(behandlingId)
+        return FpsakBehandlingProsessEventDto.builder()
                 .medSaksnummer(eksisterendeOppgave.getFagsakSaksnummer().toString())
+                .medBehandlingId(behandlingId)
                 .medAktørId(eksisterendeOppgave.getAktorId().toString())
-                .medBehandlinStatus(fraFpsak.getStatus())
+                .medBehandlingStatus(fraFpsak.getStatus())
                 .medBehandlendeEnhet(fraFpsak.getBehandlendeEnhet())
                 .medYtelseTypeKode(eksisterendeOppgave.getFagsakYtelseType().getKode())
                 .medBehandlingTypeKode(eksisterendeOppgave.getBehandlingType().getKode())
@@ -146,21 +146,19 @@ public class AdminTjenesteImpl implements AdminTjeneste {
                 .build();
     }
 
-    private TilbakekrevingBehandlingProsessEventDto mapTilTilbakekrevingBehandlingProsessEventDto(UUID uuid) {
+    private TilbakebetalingBehandlingProsessEventDto mapTilTilbakekrevingBehandlingProsessEventDto(UUID uuid) {
         TilbakekrevingOppgave eksisterendeOppgave = hentTilbakekrevingOppgave(uuid);
 
         Map<String, String> aksjonspunktKoderMedStatusListe = new HashMap<>();
 
-        return TilbakekrevingBehandlingProsessEventDto.builder()
-                .medFagsystem(eksisterendeOppgave.getSystem())
-                .medBehandlingId(eksisterendeOppgave.getBehandlingId())
+        return TilbakebetalingBehandlingProsessEventDto.tilbakebetalingBuilder()
                 .medSaksnummer(eksisterendeOppgave.getFagsakSaksnummer().toString())
                 .medAktørId(eksisterendeOppgave.getAktorId().toString())
                 .medYtelseTypeKode(eksisterendeOppgave.getFagsakYtelseType().getKode())
                 .medBehandlingTypeKode(eksisterendeOppgave.getBehandlingType().getKode())
                 .medOpprettetBehandling(eksisterendeOppgave.getBehandlingOpprettet())
                 .medAksjonspunktKoderMedStatusListe(aksjonspunktKoderMedStatusListe)
-                .medBeløp(eksisterendeOppgave.getBelop())
+                .medFeilutbetaltBeløp(eksisterendeOppgave.getBelop())
                 .build();
     }
 }

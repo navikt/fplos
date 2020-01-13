@@ -9,6 +9,7 @@ import no.nav.fplos.foreldrepengerbehandling.Aksjonspunkt;
 import no.nav.fplos.foreldrepengerbehandling.BehandlingFpsak;
 import no.nav.fplos.foreldrepengerbehandling.ForeldrepengerBehandlingRestKlient;
 import no.nav.vedtak.felles.integrasjon.kafka.BehandlingProsessEventDto;
+import no.nav.vedtak.felles.integrasjon.kafka.FpsakBehandlingProsessEventDto;
 import org.junit.Rule;
 import org.junit.Test;
 
@@ -18,6 +19,7 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.time.LocalDateTime;
 import java.util.Collections;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -41,7 +43,7 @@ public class KafkaReaderTest {
 
     @Test
     public void testOk() throws IOException {
-        BehandlingProsessEventDto behandlingProsessEventDto = fpsakEventHandlerTest.eventDrammenFra(fpsakEventHandlerTest.aksjonspunktKoderSkalHaOppgave);
+        FpsakBehandlingProsessEventDto behandlingProsessEventDto = fpsakEventHandlerTest.eventDrammenFra(fpsakEventHandlerTest.aksjonspunktKoderSkalHaOppgave);
         when(foreldrepengerBehandlingRestKlient.getBehandling(anyLong())).thenReturn(lagBehandlingDto());
         kafkaReader.prosesser(getJson(behandlingProsessEventDto));
         assertThat(repoRule.getRepository().hentAlle(EventmottakFeillogg.class)).hasSize(0);
@@ -63,6 +65,7 @@ public class KafkaReaderTest {
 
     private BehandlingFpsak lagBehandlingDto() {
         return BehandlingFpsak.builder()
+                .medUuid(UUID.randomUUID())
                 .medBehandlendeEnhetNavn("NAV")
                 .medHarRefusjonskravFraArbeidsgiver(false)
                 .medAksjonspunkter(Collections.singletonList(new Aksjonspunkt.Builder()

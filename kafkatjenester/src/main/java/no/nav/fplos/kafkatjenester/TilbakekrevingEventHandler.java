@@ -9,10 +9,10 @@ import no.nav.foreldrepenger.loslager.oppgave.Reservasjon;
 import no.nav.foreldrepenger.loslager.oppgave.TilbakekrevingOppgave;
 import no.nav.foreldrepenger.loslager.repository.OppgaveRepository;
 import no.nav.fplos.foreldrepengerbehandling.Aksjonspunkt;
-import no.nav.fplos.kafkatjenester.dto.TilbakekrevingBehandlingProsessEventDto;
 import no.nav.fplos.kafkatjenester.eventresultat.EventResultat;
 import no.nav.fplos.kafkatjenester.eventresultat.FpsakEventMapper;
 import no.nav.vedtak.felles.integrasjon.kafka.BehandlingProsessEventDto;
+import no.nav.vedtak.felles.integrasjon.kafka.TilbakebetalingBehandlingProsessEventDto;
 import no.nav.vedtak.felles.jpa.Transaction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,14 +38,14 @@ public class TilbakekrevingEventHandler extends FpEventHandler {
 
     @Override
     public void prosesser(BehandlingProsessEventDto bpeDto){
-        prosesser((TilbakekrevingBehandlingProsessEventDto)bpeDto, null,false);
+        prosesser((TilbakebetalingBehandlingProsessEventDto)bpeDto, null,false);
     }
 
-    public void prosesserFraAdmin(TilbakekrevingBehandlingProsessEventDto bpeDto, Reservasjon reservasjon){
+    public void prosesserFraAdmin(TilbakebetalingBehandlingProsessEventDto bpeDto, Reservasjon reservasjon){
         prosesser(bpeDto, reservasjon, true);
     }
 
-    private void prosesser(TilbakekrevingBehandlingProsessEventDto bpeDto, Reservasjon reservasjon, boolean prosesserFraAdmin) {
+    private void prosesser(TilbakebetalingBehandlingProsessEventDto bpeDto, Reservasjon reservasjon, boolean prosesserFraAdmin) {
         //TODO: bruk bpeDto.getId() når den er tilgjengelig
         UUID eksternId = UUID.randomUUID();//bpeDto.getId();
         //EksternIdentifikator eksternId = getEksternIdentifikatorRespository().finnEllerOpprettEksternId(bpeDto.getFagsystem(), eksternRefId);
@@ -98,11 +98,11 @@ public class TilbakekrevingEventHandler extends FpEventHandler {
         }
     }
 
-    private TilbakekrevingOppgave opprettTilbakekrevingOppgave(UUID eksternId, TilbakekrevingBehandlingProsessEventDto bpeDto, boolean prosesserFraAdmin) {
+    private TilbakekrevingOppgave opprettTilbakekrevingOppgave(UUID eksternId, TilbakebetalingBehandlingProsessEventDto bpeDto, boolean prosesserFraAdmin) {
         TilbakekrevingOppgave oppgave =
                 getOppgaveRepository().opprettTilbakekrevingEgenskaper(TilbakekrevingOppgave.tbuilder()
-                        .medBelop(bpeDto.getBeløp())
-                        .medSystem(bpeDto.getFagsystem())
+                        .medBelop(bpeDto.getFeilutbetaltBeløp())
+                        .medSystem(bpeDto.getFagsystem().name())
                         .medBehandlingId(bpeDto.getBehandlingId())
                         .medFagsakSaksnummer(Long.valueOf(bpeDto.getSaksnummer()))
                         .medAktorId(Long.valueOf(bpeDto.getAktørId()))
