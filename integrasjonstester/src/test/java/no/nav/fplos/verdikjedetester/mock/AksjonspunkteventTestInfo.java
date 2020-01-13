@@ -2,7 +2,6 @@ package no.nav.fplos.verdikjedetester.mock;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import no.nav.foreldrepenger.los.web.app.tjenester.felles.dto.OppgaveDto;
-import no.nav.vedtak.felles.integrasjon.kafka.BehandlingProsessEventDto;
 import no.nav.vedtak.felles.integrasjon.kafka.FpsakBehandlingProsessEventDto;
 
 import java.io.StringWriter;
@@ -17,7 +16,7 @@ public class AksjonspunkteventTestInfo {
     private String avdeling;
     private String fagsakYtelseType;
     FpsakBehandlingProsessEventDto.Builder behandlingProsessEventDtoBuilder;
-    BehandlingProsessEventDto behandlingProsessEventDto;
+    FpsakBehandlingProsessEventDto behandlingProsessEventDto;
     private ObjectMapper objectMapper = new ObjectMapper();
 
     private final String DEFAULT = "DEFAULT_TEST";

@@ -103,7 +103,6 @@ public class TilbakekrevingEventHandler extends FpEventHandler {
                 getOppgaveRepository().opprettTilbakekrevingEgenskaper(TilbakekrevingOppgave.tbuilder()
                         .medBelop(bpeDto.getFeilutbetaltBeløp())
                         .medSystem(bpeDto.getFagsystem().name())
-                        .medBehandlingId(bpeDto.getBehandlingId())
                         .medFagsakSaksnummer(Long.valueOf(bpeDto.getSaksnummer()))
                         .medAktorId(Long.valueOf(bpeDto.getAktørId()))
                         .medBehandlendeEnhet(bpeDto.getBehandlendeEnhet())

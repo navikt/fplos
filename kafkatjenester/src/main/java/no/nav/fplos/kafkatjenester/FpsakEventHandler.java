@@ -168,7 +168,7 @@ public class FpsakEventHandler extends FpEventHandler {
      * @deprecated Bruk avsluttOppgaveOgLoggEventVedEksternId(BehandlingProsessEventDto, OppgaveEventType, LocalDateTime) i stedet
      */
     @Deprecated(since = "14.11.2019")
-    private void avsluttOppgaveOgLoggEvent(UUID eksternId, BehandlingProsessEventDto bpeDto, OppgaveEventType eventType, LocalDateTime frist){
+    private void avsluttOppgaveOgLoggEvent(UUID eksternId, FpsakBehandlingProsessEventDto bpeDto, OppgaveEventType eventType, LocalDateTime frist){
         //Long eksisterendeEksternId = getEksternIdentifikatorRespository().finnEllerOpprettEksternId(bpeDto.getFagsystem(), bpeDto.getBehandlingId().toString()).getId();
         avsluttOppgave(bpeDto.getBehandlingId());
         loggEvent(bpeDto.getBehandlingId(), eksternId, eventType, null, bpeDto.getBehandlendeEnhet(), frist);
@@ -206,7 +206,7 @@ public class FpsakEventHandler extends FpEventHandler {
      * @deprecated Bruk gjenåpneOppgaveVedEksternId(String, String) i stedet
      */
     @Deprecated(since = "14.11.2019")
-    private Oppgave gjenåpneOppgave(BehandlingProsessEventDto bpeDto) {
+    private Oppgave gjenåpneOppgave(FpsakBehandlingProsessEventDto bpeDto) {
         return getOppgaveRepository().gjenåpneOppgave(bpeDto.getBehandlingId());
     }
 
@@ -239,7 +239,7 @@ public class FpsakEventHandler extends FpEventHandler {
         getOppgaveRepository().avsluttOppgave(behandlingId);
     }
 
-    private Oppgave opprettOppgave(UUID eksternId, BehandlingProsessEventDto bpeDto, BehandlingFpsak fraFpsak, boolean prosesserFraAdmin) {
+    private Oppgave opprettOppgave(UUID eksternId, FpsakBehandlingProsessEventDto bpeDto, BehandlingFpsak fraFpsak, boolean prosesserFraAdmin) {
         //EksternIdentifikator eksternId = getEksternIdentifikatorRespository().finnEllerOpprettEksternId(bpeDto.getFagsystem(),bpeDto.getBehandlingId().toString());
         return getOppgaveRepository().opprettOppgave(Oppgave.builder()
                 .medSystem(bpeDto.getFagsystem().name())
