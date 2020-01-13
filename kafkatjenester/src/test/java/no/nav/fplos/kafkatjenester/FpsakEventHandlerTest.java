@@ -13,7 +13,8 @@ import no.nav.foreldrepenger.loslager.repository.OppgaveRepositoryImpl;
 import no.nav.fplos.foreldrepengerbehandling.Aksjonspunkt;
 import no.nav.fplos.foreldrepengerbehandling.BehandlingFpsak;
 import no.nav.fplos.foreldrepengerbehandling.ForeldrepengerBehandlingRestKlient;
-import no.nav.vedtak.felles.integrasjon.kafka.BehandlingProsessEventDto;
+import no.nav.vedtak.felles.integrasjon.kafka.EventHendelse;
+import no.nav.vedtak.felles.integrasjon.kafka.FpsakBehandlingProsessEventDto;
 import org.junit.Rule;
 import org.junit.Test;
 
@@ -69,14 +70,14 @@ public class FpsakEventHandlerTest {
     private List<Aksjonspunkt> aksjonspunktKoderUtlandAutomatiskDto = Collections.singletonList(aksjonspunktMedBegrunnelseDtoFra("5068","OPPR",aksjonspunktFrist,"BOSATT_UTLAND"));
     private List<Aksjonspunkt> aksjonspunktKoderUtlandManuellDto = Collections.singletonList(aksjonspunktMedBegrunnelseDtoFra("6068","OPPR",aksjonspunktFrist, "BOSATT_UTLAND"));
 
-    BehandlingProsessEventDto eventDrammenFra(Map<String, String> aksjonspunktmap){
+    FpsakBehandlingProsessEventDto eventDrammenFra(Map<String, String> aksjonspunktmap){
         return prosessBuilderFra(aksjonspunktmap)
                 //.medId("EKSTERN_ID")
                 .medBehandlendeEnhet("4802")
                 .build();
     }
 
-    private BehandlingProsessEventDto eventStordFra(Map<String, String> aksjonspunktmap){
+    private FpsakBehandlingProsessEventDto eventStordFra(Map<String, String> aksjonspunktmap){
         return prosessBuilderFra(aksjonspunktmap)
                 //.medId("EKSTERN_ID")
                 .medBehandlendeEnhet("4842")
@@ -100,15 +101,13 @@ public class FpsakEventHandlerTest {
                 .build();
     }
 
-    private BehandlingProsessEventDto.Builder prosessBuilderFra(Map<String, String> aksjonspunktmap){
-        return BehandlingProsessEventDto.builder()
-                //.medId("EKSTERN_ID")
-                .medFagsystem(fagsystem)
+    private FpsakBehandlingProsessEventDto.Builder prosessBuilderFra(Map<String, String> aksjonspunktmap){
+        return FpsakBehandlingProsessEventDto.builder()
                 .medBehandlingId(behandlingId)
                 .medSaksnummer("135701264")
                 .medAktørId("9000000030703")
-                .medEventHendelse(BehandlingProsessEventDto.EventHendelse.AKSJONSPUNKT_OPPRETTET)
-                .medBehandlinStatus("STATUS")
+                .medEventHendelse(EventHendelse.AKSJONSPUNKT_OPPRETTET)
+                .medBehandlingStatus("STATUS")
                 .medBehandlingSteg("STEG")
                 .medYtelseTypeKode(FagsakYtelseType.FORELDREPENGER.getKode())
                 .medBehandlingTypeKode(BehandlingType.FØRSTEGANGSSØKNAD.getKode())

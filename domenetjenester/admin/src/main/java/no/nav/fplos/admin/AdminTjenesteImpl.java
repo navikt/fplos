@@ -10,7 +10,7 @@ import no.nav.fplos.kafkatjenester.Fagsystem;
 import no.nav.fplos.kafkatjenester.FpsakEventHandler;
 import no.nav.fplos.kafkatjenester.KafkaReader;
 import no.nav.fplos.kafkatjenester.TilbakekrevingEventHandler;
-import no.nav.vedtak.felles.integrasjon.kafka.BehandlingProsessEventDto;
+import no.nav.vedtak.felles.integrasjon.kafka.FpsakBehandlingProsessEventDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -116,7 +116,9 @@ public class AdminTjenesteImpl implements AdminTjeneste {
         return adminRepository.aktiverOppgave(oppgaveId);
     }
 
-    private BehandlingProsessEventDto mapTilBehandlingProsessEventDto(Long behandlingId) {
+
+    //TODO: Må lage ny versjon som støtter Fptilbake og benytter UUID
+    private FpsakBehandlingProsessEventDto mapTilBehandlingProsessEventDto(Long behandlingId) {
         Oppgave eksisterendeOppgave = hentOppgave(behandlingId);
         BehandlingFpsak fraFpsak = foreldrepengerBehandlingRestKlient.getBehandling(behandlingId);
 
@@ -124,12 +126,11 @@ public class AdminTjenesteImpl implements AdminTjeneste {
         fraFpsak.getAksjonspunkter()
                 .forEach(aksjonspunkt -> aksjonspunktKoderMedStatusListe.put(aksjonspunkt.getDefinisjonKode(), aksjonspunkt.getStatusKode()));
 
-        return BehandlingProsessEventDto.builder()
-                .medFagsystem(eksisterendeOppgave.getSystem())
+        return FpsakBehandlingProsessEventDto.builder()
                 .medBehandlingId(behandlingId)
                 .medSaksnummer(eksisterendeOppgave.getFagsakSaksnummer().toString())
                 .medAktørId(eksisterendeOppgave.getAktorId().toString())
-                .medBehandlinStatus(fraFpsak.getStatus())
+                .medBehandlingStatus(fraFpsak.getStatus())
                 .medBehandlendeEnhet(fraFpsak.getBehandlendeEnhet())
                 .medYtelseTypeKode(eksisterendeOppgave.getFagsakYtelseType().getKode())
                 .medBehandlingTypeKode(eksisterendeOppgave.getBehandlingType().getKode())
