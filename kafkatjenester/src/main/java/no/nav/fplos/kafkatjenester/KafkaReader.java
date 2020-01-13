@@ -11,6 +11,8 @@ import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.common.header.Header;
 import org.apache.kafka.common.header.Headers;
+import no.nav.vedtak.felles.integrasjon.kafka.FpsakBehandlingProsessEventDto;
+import no.nav.vedtak.felles.integrasjon.kafka.TilbakebetalingBehandlingProsessEventDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -70,22 +72,19 @@ public class KafkaReader {
         log.info("Mottatt melding med start :" + melding.substring(0, Math.min(melding.length() - 1, 1000)));
         try {
             BehandlingProsessEventDto event = deserialiser(melding, BehandlingProsessEventDto.class);
-            if (event != null) {
-                switch (Fagsystem.valueOf(event.getFagsystem())) {
-                    case FPSAK:
-                        fpsakEventHandler.prosesser(event);
-                        return;
-                    case FPTILBAKE:
-                        tilbakekrevingEventHandler.prosesser(event);
-                        return;
-                    default:
-                        log.warn("BehandlingProsessEventDto har ikke gyldig verdi for fagsystem. Fagsystem {} er ikke støttet.",
-                                event.getFagsystem());
-                }
+            if(event instanceof FpsakBehandlingProsessEventDto){
+                fpsakEventHandler.prosesser(event);
+                return;
+            }
+            else if(event instanceof TilbakebetalingBehandlingProsessEventDto) {
+                tilbakekrevingEventHandler.prosesser(event);
+                return;
             }
 
             JsonOppgave oppgaveJson = deserialiser(melding, JsonOppgave.class);
-            if (oppgaveJson != null) { jsonOppgaveHandler.prosesser(oppgaveJson); }
+            if (oppgaveJson != null) {
+                jsonOppgaveHandler.prosesser(oppgaveJson);
+            }
 
             lagreFeiletMelding(melding);
             log.warn("Kunne ikke deserialisere meldingen");
