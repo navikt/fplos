@@ -10,7 +10,7 @@ import no.nav.fplos.kafkatjenester.Fagsystem;
 import no.nav.fplos.kafkatjenester.FpsakEventHandler;
 import no.nav.fplos.kafkatjenester.KafkaReader;
 import no.nav.fplos.kafkatjenester.TilbakekrevingEventHandler;
-import no.nav.vedtak.felles.integrasjon.kafka.BehandlingProsessEventDto;
+import no.nav.vedtak.felles.integrasjon.kafka.FpsakBehandlingProsessEventDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -116,8 +116,7 @@ public class AdminTjenesteImpl implements AdminTjeneste {
         return adminRepository.aktiverOppgave(oppgaveId);
     }
 
-    /*TODO: BehandlingProsessEventDto må få uuid så snart felt er tilgjengelig */
-    private BehandlingProsessEventDto mapTilBehandlingProsessEventDto(UUID uuid) {
+    private FpsakBehandlingProsessEventDto mapTilBehandlingProsessEventDto(UUID uuid) {
         Oppgave eksisterendeOppgave = hentOppgave(uuid);
         BehandlingFpsak fraFpsak = foreldrepengerBehandlingRestKlient.getBehandling(uuid);
 
@@ -125,12 +124,12 @@ public class AdminTjenesteImpl implements AdminTjeneste {
         fraFpsak.getAksjonspunkter()
                 .forEach(aksjonspunkt -> aksjonspunktKoderMedStatusListe.put(aksjonspunkt.getDefinisjonKode(), aksjonspunkt.getStatusKode()));
 
-        return BehandlingProsessEventDto.builder()
-                .medFagsystem(eksisterendeOppgave.getSystem())
+        return FpsakBehandlingProsessEventDto.builder()
+                .medEksternId(uuid)
                 .medBehandlingId(eksisterendeOppgave.getBehandlingId())
                 .medSaksnummer(eksisterendeOppgave.getFagsakSaksnummer().toString())
                 .medAktørId(eksisterendeOppgave.getAktorId().toString())
-                .medBehandlinStatus(fraFpsak.getStatus())
+                .medBehandlingStatus(fraFpsak.getStatus())
                 .medBehandlendeEnhet(fraFpsak.getBehandlendeEnhet())
                 .medYtelseTypeKode(eksisterendeOppgave.getFagsakYtelseType().getKode())
                 .medBehandlingTypeKode(eksisterendeOppgave.getBehandlingType().getKode())
