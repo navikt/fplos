@@ -144,14 +144,14 @@ public class ForeldrepengerBehandlingRestKlient {
             Optional<KontrollerFaktaDataDto> kontrollerFaktaData = hentFraResourceLink(uttakLink.get(), KontrollerFaktaDataDto.class);
             if (kontrollerFaktaData.isPresent()) {
                 builder.medHarGradering(harGraderingFra(kontrollerFaktaData.get()));
-                builder.medHarOverføringPgaSykdom(harOverføringPgaSykdom(kontrollerFaktaData.get()));
+                builder.medHarVurderSykdom(harVurderSykdom(kontrollerFaktaData.get()));
             } else {
                 LOGGER.error("Henting av UttakKontrollerFaktaPerioder feilet for behandlingId " + behandlingId);
             }
         }
     }
 
-    private boolean harOverføringPgaSykdom(KontrollerFaktaDataDto kontrollerFaktaDataDto) {
+    private boolean harVurderSykdom(KontrollerFaktaDataDto kontrollerFaktaDataDto) {
         return kontrollerFaktaDataDto.getPerioder().stream()
                 .anyMatch(KontrollerFaktaPeriodeDto::gjelderSykdom);
     }

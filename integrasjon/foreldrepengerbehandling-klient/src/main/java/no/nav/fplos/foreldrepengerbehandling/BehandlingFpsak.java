@@ -21,7 +21,7 @@ public class BehandlingFpsak {
     private Boolean erUtenlandssak;
     private Boolean harRefusjonskravFraArbeidsgiver;
     private Boolean harGradering;
-    private Boolean harOverføringPgaSykdom;
+    private Boolean harVurderSykdom;
 
     public Long getBehandlingId() {
         return behandlingId;
@@ -87,8 +87,8 @@ public class BehandlingFpsak {
         return erUtenlandssak;
     }
 
-    public Boolean getHarOverføringPgaSykdom() {
-        return harOverføringPgaSykdom;
+    public Boolean getHarVurderSykdom() {
+        return harVurderSykdom;
     }
 
     public static Builder builder() {
@@ -197,7 +197,7 @@ public class BehandlingFpsak {
             return this;
         }
 
-        public Builder medHarOverføringPgaSykdom(Boolean harOverføringPgaSykdom) {
+        public Builder medHarVurderSykdom(Boolean harOverføringPgaSykdom) {
             this.harOverføringPgaSykdom = harOverføringPgaSykdom;
             return this;
         }
@@ -216,7 +216,7 @@ public class BehandlingFpsak {
             behandlingFpsak.inntektsmeldinger = this.inntektsmeldinger;
             behandlingFpsak.behandlendeEnhetNavn = this.behandlendeEnhetNavn;
             behandlingFpsak.uuid = this.uuid;
-            behandlingFpsak.harOverføringPgaSykdom = this.harOverføringPgaSykdom;
+            behandlingFpsak.harVurderSykdom = this.harOverføringPgaSykdom;
             behandlingFpsak.behandlingstidFrist = this.behandlingstidFrist;
             behandlingFpsak.harGradering = this.harGradering;
             behandlingFpsak.erUtenlandssak = this.erUtenlandssak;
@@ -242,7 +242,7 @@ public class BehandlingFpsak {
                 ", inntektsmeldinger=" + inntektsmeldinger +
                 ", aksjonspunkter=" + aksjonspunkter +
                 ", harRefusjonskravFraArbeidsgiver=" + harRefusjonskravFraArbeidsgiver +
-                ", harOverføringPgaSykdom='" + harOverføringPgaSykdom + '\'' +
+                ", harOverføringPgaSykdom='" + harVurderSykdom + '\'' +
                 ", erUtlandssak=" + erUtenlandssak +
                 '}';
     }

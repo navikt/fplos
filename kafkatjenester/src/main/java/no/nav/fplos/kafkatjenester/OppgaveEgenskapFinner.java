@@ -26,7 +26,7 @@ public class OppgaveEgenskapFinner {
 
         if (harGradering(behandling)) this.andreKriterier.add(AndreKriterierType.SOKT_GRADERING);
         if (erUtbetalingTilBruker(behandling)) this.andreKriterier.add(AndreKriterierType.UTBETALING_TIL_BRUKER);
-        if (erOverførtGrunnetSykdom(behandling)) this.andreKriterier.add(AndreKriterierType.OVERFØRING_GRUNNET_SYKDOM);
+        if (erVurderSykdom(behandling)) this.andreKriterier.add(AndreKriterierType.VURDER_SYKDOM);
 
         andreKriterier.addAll(fpsakAksjonspunkt.getKriterier());
     }
@@ -43,8 +43,8 @@ public class OppgaveEgenskapFinner {
         return sisteEvent;
     }
 
-    private static boolean erOverførtGrunnetSykdom(BehandlingFpsak behandling) {
-        return behandling.getHarOverføringPgaSykdom() != null && behandling.getHarOverføringPgaSykdom();
+    private static boolean erVurderSykdom(BehandlingFpsak behandling) {
+        return behandling.getHarVurderSykdom() != null && behandling.getHarVurderSykdom();
     }
 
     private static OppgaveEventLogg sisteOpprettetEventFra(List<OppgaveEventLogg> logg) {

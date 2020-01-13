@@ -116,8 +116,7 @@ public class TilbakekrevingEventHandler extends FpEventHandler {
     }
     /*private Oppgave opprettOppgave(UUID eksternId, BehandlingProsessEventDto bpeDto, boolean prosesserFraAdmin) {
         return getOppgaveRepository().opprettOppgave(Oppgave.builder()
-                .medSystem(bpeDto.getFagsystem())
-                .medBehandlingId(bpeDto.getBehandlingId())
+                .medSystem(bpeDto.getFagsystem().name())
                 .medFagsakSaksnummer(Long.valueOf(bpeDto.getSaksnummer()))
                 .medAktorId(Long.valueOf(bpeDto.getAktørId()))
                 .medBehandlendeEnhet(bpeDto.getBehandlendeEnhet())
