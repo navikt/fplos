@@ -58,7 +58,7 @@ public class OppgaveRepositoryImpl implements OppgaveRepository {
     private static final String BEHANDLINGOPPRETTET = "o.behandlingOpprettet";
     private static final String FORSTE_STONADSDAG = "o.forsteStonadsdag";
     private static final String BELOP = "o.belop";
-    private static final String UTLOPSFRIST = "o.utlopsfrist";
+    private static final String FEILUTBETALINGSTART = "o.feilutbetalingstart";
     private static final String OPPGAVEFILTRERING_SORTERING_NAVN = "ORDER BY l.navn";
 
     private EntityManager entityManager;
@@ -208,10 +208,10 @@ public class OppgaveRepositoryImpl implements OppgaveRepository {
                     : filtrerStatisk(FORSTE_STONADSDAG, oppgavespørringDto.getFiltrerFomDato(), oppgavespørringDto.getFiltrerTomDato());
         } else if (KøSortering.BELOP.equals(sortering)) {
             return filtrerNumerisk(BELOP, oppgavespørringDto.getFiltrerFra(), oppgavespørringDto.getFiltrerTil());
-        } else if (KøSortering.UTLOPSFRIST.equals(sortering)) {
+        } else if (KøSortering.FEILUTBETALINGSTART.equals(sortering)) {
             return oppgavespørringDto.isErDynamiskPeriode()
-                    ? filtrerDynamisk(UTLOPSFRIST, oppgavespørringDto.getFiltrerFra(), oppgavespørringDto.getFiltrerTil())
-                    : filtrerStatisk(UTLOPSFRIST, oppgavespørringDto.getFiltrerFomDato(), oppgavespørringDto.getFiltrerTomDato());
+                    ? filtrerDynamisk(FEILUTBETALINGSTART, oppgavespørringDto.getFiltrerFra(), oppgavespørringDto.getFiltrerTil())
+                    : filtrerStatisk(FEILUTBETALINGSTART, oppgavespørringDto.getFiltrerFomDato(), oppgavespørringDto.getFiltrerTomDato());
         } else {
             return SORTERING + BEHANDLINGOPPRETTET;
         }

@@ -21,11 +21,11 @@ public class TilbakekrevingOppgave extends Oppgave{
         return belop;
     }
 
-    @Column(name = "UTLOPSFRIST")
-    protected LocalDateTime utlopsfrist;
+    @Column(name = "FEILUTBETALINGSTART")
+    protected LocalDateTime feilutbetalingstart;
 
-    public LocalDateTime getUtlopsfrist() {
-        return utlopsfrist;
+    public LocalDateTime getFeilutbetalingstart() {
+        return feilutbetalingstart;
     }
 
     public TilbakekrevingOppgave() {
@@ -47,8 +47,8 @@ public class TilbakekrevingOppgave extends Oppgave{
             return this;
         }
 
-        public TilbakekrevingOppgave.Builder medUtlopsfrist(LocalDateTime utlopsfrist) {
-            ((TilbakekrevingOppgave)this.tempOppgave).utlopsfrist = utlopsfrist;
+        public TilbakekrevingOppgave.Builder medFeilutbetalingStart(LocalDateTime feilutbetalingStart) {
+            ((TilbakekrevingOppgave)this.tempOppgave).feilutbetalingstart = feilutbetalingStart;
             return this;
         }
 
