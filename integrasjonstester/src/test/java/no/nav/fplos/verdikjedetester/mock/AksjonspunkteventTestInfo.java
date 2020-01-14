@@ -33,7 +33,6 @@ public class AksjonspunkteventTestInfo {
                 .medBehandlingTypeKode(behandlingtypeKode).medSaksnummer(""+saksnummer).medYtelseTypeKode(fagsakYtelseTypeKode)
                 .medOpprettetBehandling(LocalDateTime.now().truncatedTo(MILLIS)).medAktørId(DEFAULT_AKTØR_ID)
                 .medBehandlingSteg(DEFAULT_BEHANDLING_STEG_KODE).medBehandlingStatus(DEFAULT_BEHANDLING_STATUS_KODE);
-                //.medSystem(DEFAULT_FAGSYSTEM_KODE);
     }
 
     public String tilmeldingstekst() {
