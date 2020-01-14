@@ -1,6 +1,7 @@
 package no.nav.foreldrepenger.loslager.oppgave;
 
 import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -8,9 +9,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-
-import org.hibernate.annotations.JoinColumnOrFormula;
-import org.hibernate.annotations.JoinFormula;
 
 import no.nav.foreldrepenger.loslager.BaseEntitet;
 
@@ -31,9 +29,8 @@ public class FiltreringBehandlingType extends BaseEntitet{
     @Column(name = "behandling_type", updatable = false, insertable = false)
     private String behandlingTypeKode;
 
-    @ManyToOne(optional = false)
-    @JoinColumnOrFormula(column = @JoinColumn(name = "behandling_type", referencedColumnName = "kode", nullable = false))
-    @JoinColumnOrFormula(formula = @JoinFormula(referencedColumnName = "kodeverk", value = "'" + BehandlingType.DISCRIMINATOR + "'"))
+    @Convert(converter = BehandlingType.KodeverdiConverter.class)
+    @Column(name = "BEHANDLING_TYPE")
     private BehandlingType behandlingType;
 
     public FiltreringBehandlingType(){

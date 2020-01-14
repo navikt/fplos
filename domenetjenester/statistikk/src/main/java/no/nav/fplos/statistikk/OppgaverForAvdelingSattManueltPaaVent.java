@@ -1,7 +1,6 @@
 package no.nav.fplos.statistikk;
 
 import no.nav.foreldrepenger.loslager.oppgave.FagsakYtelseType;
-import no.nav.fplos.kodeverk.KodeverkRepository;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -15,8 +14,8 @@ public class OppgaverForAvdelingSattManueltPaaVent {
     private Long antall;
 
 
-    public OppgaverForAvdelingSattManueltPaaVent(Object[] resultat, KodeverkRepository kodeverkRepository) {
-        fagsakYtelseType = kodeverkRepository.finn(FagsakYtelseType.class, (String) resultat[1]);  // NOSONAR
+    public OppgaverForAvdelingSattManueltPaaVent(Object[] resultat) {
+        fagsakYtelseType = FagsakYtelseType.fraKode((String) resultat[1]);  // NOSONAR
         estimertFrist = ((Date) resultat[0]).toInstant().atZone(ZoneId.systemDefault()).toLocalDate();  // NOSONAR
         antall = ((BigDecimal) resultat[2]).longValue();  // NOSONAR
     }

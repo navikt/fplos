@@ -11,9 +11,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import no.nav.vedtak.felles.jpa.converters.BooleanToStringConverter;
-import org.hibernate.annotations.JoinColumnOrFormula;
-import org.hibernate.annotations.JoinFormula;
-
 import no.nav.foreldrepenger.loslager.BaseEntitet;
 
 @Entity(name = "OppgaveEgenskap")
@@ -30,12 +27,8 @@ public class OppgaveEgenskap extends BaseEntitet{
     @Column(name = "OPPGAVE_ID", updatable = false, insertable = false)
     private Long oppgaveId;
 
-    @Column(name = "ANDRE_KRITERIER_TYPE", updatable = false, insertable = false)
-    private String andreKriterier;
-
-    @ManyToOne(optional = false)
-    @JoinColumnOrFormula(column = @JoinColumn(name = "ANDRE_KRITERIER_TYPE", referencedColumnName = "kode", nullable = false))
-    @JoinColumnOrFormula(formula = @JoinFormula(referencedColumnName = "kodeverk", value = "'" + AndreKriterierType.DISCRIMINATOR + "'"))
+    @Convert(converter = AndreKriterierType.KodeverdiConverter.class)
+    @Column(name = "ANDRE_KRITERIER_TYPE", nullable = false)
     private AndreKriterierType andreKriterierType;
 
     @Column(name = "SISTE_SAKSBEHANDLER_FOR_TOTR")
@@ -54,10 +47,14 @@ public class OppgaveEgenskap extends BaseEntitet{
         this.andreKriterierType = andreKriterierType;
     }
 
-    public OppgaveEgenskap(Oppgave oppgave, AndreKriterierType andreKriterierType, String sisteSaksbehandlerForTotrinn) {
+    public OppgaveEgenskap(Oppgave oppgave, AndreKriterierType type, String sisteSaksbehandlerForTotrinn) {
         this.oppgave = oppgave;
-        this.andreKriterierType = andreKriterierType;
+        this.andreKriterierType = type;
         this.sisteSaksbehandlerForTotrinn = sisteSaksbehandlerForTotrinn;
+    }
+
+    public OppgaveEgenskap beslutterEgenskapFra(Oppgave oppgave, String sisteSaksbehandlerForTotrinn) {
+        return new OppgaveEgenskap(oppgave, AndreKriterierType.TIL_BESLUTTER, sisteSaksbehandlerForTotrinn);
     }
 
     public Oppgave getOppgave() {
@@ -82,5 +79,9 @@ public class OppgaveEgenskap extends BaseEntitet{
 
     public void aktiverOppgaveEgenskap() {
         aktiv = true;
+    }
+
+    public void setSisteSaksbehandlerForTotrinn(String sisteSaksbehandlerForTotrinn) {
+        this.sisteSaksbehandlerForTotrinn = sisteSaksbehandlerForTotrinn;
     }
 }

@@ -7,7 +7,6 @@ import java.util.Date;
 
 import no.nav.foreldrepenger.loslager.oppgave.BehandlingType;
 import no.nav.foreldrepenger.loslager.oppgave.FagsakYtelseType;
-import no.nav.fplos.kodeverk.KodeverkRepository;
 
 public class OppgaverForAvdelingPerDato {
 
@@ -17,9 +16,9 @@ public class OppgaverForAvdelingPerDato {
     private Long antall;
 
 
-    public OppgaverForAvdelingPerDato(Object[] resultat, KodeverkRepository kodeverkRepository) {
-        fagsakYtelseType = kodeverkRepository.finn(FagsakYtelseType.class, (String) resultat[0]);  // NOSONAR
-        behandlingType = kodeverkRepository.finn(BehandlingType.class, (String) resultat[1]);  // NOSONAR
+    public OppgaverForAvdelingPerDato(Object[] resultat) {
+        fagsakYtelseType = FagsakYtelseType.fraKode((String) resultat[0]);  // NOSONAR
+        behandlingType = BehandlingType.fraKode((String) resultat[1]);  // NOSONAR
         opprettetDato = ((Date) resultat[2]).toInstant().atZone(ZoneId.systemDefault()).toLocalDate();  // NOSONAR
         antall = ((BigDecimal) resultat[3]).longValue();  // NOSONAR
     }

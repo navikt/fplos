@@ -4,12 +4,18 @@ import no.nav.foreldrepenger.dbstoette.UnittestRepositoryRule;
 import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.dto.AvdelingEnhetDto;
 import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.nøkkeltall.NøkkeltallRestTjeneste;
 import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.nøkkeltall.dto.OppgaverForAvdelingSattManueltPaaVentDto;
-import no.nav.foreldrepenger.loslager.repository.OppgaveRepositoryProvider;
-import no.nav.foreldrepenger.loslager.repository.OppgaveRepositoryProviderImpl;
+import no.nav.foreldrepenger.loslager.repository.OppgaveRepository;
+import no.nav.foreldrepenger.loslager.repository.OppgaveRepositoryImpl;
+import no.nav.foreldrepenger.loslager.repository.StatistikkRepository;
+import no.nav.foreldrepenger.loslager.repository.StatistikkRepositoryImpl;
 import no.nav.fplos.foreldrepengerbehandling.Aksjonspunkt;
 import no.nav.fplos.foreldrepengerbehandling.BehandlingFpsak;
 import no.nav.fplos.foreldrepengerbehandling.ForeldrepengerBehandlingRestKlient;
-import no.nav.fplos.kafkatjenester.*;
+import no.nav.fplos.kafkatjenester.AksjonspunktMeldingConsumer;
+import no.nav.fplos.kafkatjenester.FpsakEventHandler;
+import no.nav.fplos.kafkatjenester.JsonOppgaveHandler;
+import no.nav.fplos.kafkatjenester.KafkaReader;
+import no.nav.fplos.kafkatjenester.TilbakekrevingEventHandler;
 import no.nav.fplos.statistikk.StatistikkTjeneste;
 import no.nav.fplos.statistikk.StatistikkTjenesteImpl;
 import no.nav.fplos.verdikjedetester.mock.AksjonspunkteventTestInfo;
@@ -40,8 +46,9 @@ public class VerdikjedetestNøkkeltallAvdelingTest {
     @Rule
     public UnittestRepositoryRule repoRule = new UnittestRepositoryRule();
     private EntityManager entityManager = repoRule.getEntityManager();
-    private OppgaveRepositoryProvider oppgaveRepositoryProvider = new OppgaveRepositoryProviderImpl(entityManager );
-    private StatistikkTjeneste statistikkTjeneste = new StatistikkTjenesteImpl(oppgaveRepositoryProvider);
+    private final OppgaveRepository oppgaveRepository = new OppgaveRepositoryImpl(entityManager);
+    private final StatistikkRepository statisikkRepository = new StatistikkRepositoryImpl(entityManager);
+    private StatistikkTjeneste statistikkTjeneste = new StatistikkTjenesteImpl(statisikkRepository);
     private NøkkeltallRestTjeneste nøkkeltallRestTjeneste = new NøkkeltallRestTjeneste(statistikkTjeneste);
     private ForeldrepengerBehandlingRestKlient foreldrepengerBehandlingRestKlient = mock(ForeldrepengerBehandlingRestKlient.class);
     @Inject
@@ -54,9 +61,9 @@ public class VerdikjedetestNøkkeltallAvdelingTest {
     @Before
     public void before() {
         kafkaReader = new KafkaReader(meldingConsumer,
-                new FpsakEventHandler(oppgaveRepositoryProvider, foreldrepengerBehandlingRestKlient),
-                new TilbakekrevingEventHandler(oppgaveRepositoryProvider),
-                oppgaveRepositoryProvider, jsonOppgaveHandler);
+                new FpsakEventHandler(oppgaveRepository, foreldrepengerBehandlingRestKlient),
+                new TilbakekrevingEventHandler(oppgaveRepository),
+                oppgaveRepository, jsonOppgaveHandler);
     }
 
     @Test
@@ -97,7 +104,7 @@ public class VerdikjedetestNøkkeltallAvdelingTest {
                 .medBehandlendeEnhetNavn("NAV")
                 .medAnsvarligSaksbehandler("VLLOS")
                 .medStatus("-")
-                .medHarRefusjonskrav(false)
+                .medHarRefusjonskravFraArbeidsgiver(false)
                 .medAksjonspunkter(aksjonspunkter)
                 .build();
     }

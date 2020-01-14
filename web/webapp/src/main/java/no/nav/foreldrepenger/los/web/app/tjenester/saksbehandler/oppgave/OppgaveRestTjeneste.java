@@ -292,7 +292,7 @@ public class OppgaveRestTjeneste {
     @BeskyttetRessurs(action = BeskyttetRessursActionAttributt.READ, ressurs = BeskyttetRessursResourceAttributt.FAGSAK, sporingslogg = false)
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
     public Integer hentAntallOppgaverForSaksliste(@NotNull @QueryParam("sakslisteId") @Valid SakslisteIdDto sakslisteId) {
-        return oppgaveTjeneste.hentAntallOppgaver(sakslisteId.getVerdi());
+        return oppgaveTjeneste.hentAntallOppgaver(sakslisteId.getVerdi(), false);
     }
 
 

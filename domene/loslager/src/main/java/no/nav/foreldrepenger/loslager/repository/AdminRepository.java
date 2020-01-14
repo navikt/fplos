@@ -3,7 +3,6 @@ package no.nav.foreldrepenger.loslager.repository;
 import java.util.List;
 
 import no.nav.foreldrepenger.loslager.oppgave.EventmottakFeillogg;
-import no.nav.foreldrepenger.loslager.oppgave.EventmottakStatus;
 import no.nav.foreldrepenger.loslager.oppgave.Oppgave;
 import no.nav.foreldrepenger.loslager.oppgave.OppgaveEventLogg;
 
@@ -18,7 +17,7 @@ public interface AdminRepository {
 
     List<EventmottakFeillogg> hentAlleMeldingerFraFeillogg();
 
-    void oppdaterStatus(Long feilloggId, EventmottakStatus status);
+    void markerFerdig(Long feilloggId);
 
     List<Oppgave> hentAlleOppgaverForBehandling(Long behandlingId);
 

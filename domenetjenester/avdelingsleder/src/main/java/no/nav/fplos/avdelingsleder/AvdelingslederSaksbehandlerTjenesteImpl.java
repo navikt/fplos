@@ -1,23 +1,21 @@
 package no.nav.fplos.avdelingsleder;
 
-import java.util.List;
-import java.util.Optional;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-
 import no.nav.foreldrepenger.loslager.aktør.OrganisasjonsEnhet;
 import no.nav.foreldrepenger.loslager.oppgave.OppgaveFiltrering;
 import no.nav.foreldrepenger.loslager.organisasjon.Avdeling;
 import no.nav.foreldrepenger.loslager.organisasjon.Saksbehandler;
 import no.nav.foreldrepenger.loslager.repository.OppgaveRepository;
-import no.nav.foreldrepenger.loslager.repository.OppgaveRepositoryProvider;
 import no.nav.foreldrepenger.loslager.repository.OrganisasjonRepository;
 import no.nav.fplos.domene.organisasjonsinformasjon.organisasjonressursenhet.OrganisasjonRessursEnhetTjeneste;
 import no.nav.vedtak.felles.integrasjon.ldap.LdapBruker;
 import no.nav.vedtak.felles.integrasjon.ldap.LdapBrukeroppslag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import java.util.List;
+import java.util.Optional;
 
 @ApplicationScoped
 public class AvdelingslederSaksbehandlerTjenesteImpl implements AvdelingslederSaksbehandlerTjeneste {
@@ -34,10 +32,10 @@ public class AvdelingslederSaksbehandlerTjenesteImpl implements AvdelingslederSa
     }
 
     @Inject
-    public AvdelingslederSaksbehandlerTjenesteImpl(OppgaveRepositoryProvider oppgaveRepositoryProvider, OrganisasjonRessursEnhetTjeneste organisasjonRessursEnhetTjeneste) {
-        this.organisasjonRepository = oppgaveRepositoryProvider.getOrganisasjonRepository();
+    public AvdelingslederSaksbehandlerTjenesteImpl(OppgaveRepository oppgaveRepository, OrganisasjonRepository organisasjonRepository, OrganisasjonRessursEnhetTjeneste organisasjonRessursEnhetTjeneste) {
+        this.organisasjonRepository = organisasjonRepository;
         this.organisasjonRessursEnhetTjeneste = organisasjonRessursEnhetTjeneste;
-        this.oppgaveRepository = oppgaveRepositoryProvider.getOppgaveRepository();
+        this.oppgaveRepository = oppgaveRepository;
     }
 
     @Override

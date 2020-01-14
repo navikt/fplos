@@ -83,12 +83,14 @@
   "GjeldendeSakslisterTabell.Stonadstype": "Stønadstype",
   "GjeldendeSakslisterTabell.Alle": "Alle",
   "GjeldendeSakslisterTabell.AntallSaksbehandlere": "Antall saksbehandlere",
+  "GjeldendeSakslisterTabell.AntallBehandlinger": "Antall behandlinger",
+  "GjeldendeSakslisterTabell.OppgaverForAvdeling": "Antall åpne behandlinger totalt",
 
-  "Header.Foreldrepenger": "Foreldrepenger, engangsstønad og svangerskapspenger",
+  "Header.Foreldrepenger": "Svangerskap, fødsel og adopsjon",
   "Header.NavAnsatt": "NAV-ansatt",
-  "Header.LinkToMainPage": "NAV, forsiden",
   "Header.Rettskilde": "Rettskildene",
   "Header.Systemrutine": "Systemrutine",
+  "Header.Enhet": "Enhet ",
 
   "IkkeTilgangTilAvdelingslederPanel.HarIkkeTilgang": "Du har ikke tilgang til å bruke dette programmet",
 

@@ -8,7 +8,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 
 import no.nav.foreldrepenger.loslager.oppgave.EventmottakFeillogg;
-import no.nav.foreldrepenger.loslager.oppgave.EventmottakStatus;
 import no.nav.foreldrepenger.loslager.oppgave.Oppgave;
 import no.nav.foreldrepenger.loslager.oppgave.OppgaveEventLogg;
 import no.nav.foreldrepenger.loslager.oppgave.Reservasjon;
@@ -71,14 +70,14 @@ public class AdminRepositoryImpl implements AdminRepository {
 
     @Override
     public List<EventmottakFeillogg> hentAlleMeldingerFraFeillogg() {
-        return getEntityManager().createQuery("Select ef FROM eventmottakFeillogg ef where ef.status = :status", EventmottakFeillogg.class).setParameter("status", EventmottakStatus.FEILET).getResultList();
+        return getEntityManager().createQuery("Select ef FROM eventmottakFeillogg ef where ef.status = :status", EventmottakFeillogg.class).setParameter("status", EventmottakFeillogg.Status.FEILET).getResultList();
     }
 
     @Override
-    public void oppdaterStatus(Long feilloggId, EventmottakStatus status) {
-        getEntityManager().persist(
-                getEntityManager().find(EventmottakFeillogg.class, feilloggId)
-                        .endreStatus(status));
+    public void markerFerdig(Long feilloggId) {
+        getEntityManager().persist(getEntityManager()
+                        .find(EventmottakFeillogg.class, feilloggId)
+                        .markerFerdig());
         getEntityManager().flush();
     }
 

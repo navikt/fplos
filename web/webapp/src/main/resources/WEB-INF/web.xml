@@ -44,15 +44,17 @@
         <servlet-name>metrics</servlet-name>
         <servlet-class>no.nav.foreldrepenger.los.web.app.metrics.AppMetricsServlet</servlet-class>
     </servlet>
+
     <servlet-mapping>
         <servlet-name>metrics</servlet-name>
         <url-pattern>internal/metrics</url-pattern>
     </servlet-mapping>
-    
+
     <security-constraint>
         <web-resource-collection>
             <web-resource-name>Ubeskyttet</web-resource-name>
             <url-pattern>/cb</url-pattern>
+            <url-pattern>/uuid/oppdater</url-pattern>
             <url-pattern>/internal/isAlive</url-pattern>
             <url-pattern>/internal/isReady</url-pattern>
             <url-pattern>/internal/selftest</url-pattern>

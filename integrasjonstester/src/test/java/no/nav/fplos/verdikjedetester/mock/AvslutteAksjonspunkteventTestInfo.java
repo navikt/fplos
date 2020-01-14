@@ -1,8 +1,8 @@
 package no.nav.fplos.verdikjedetester.mock;
 
-import java.util.HashMap;
+import no.nav.vedtak.felles.integrasjon.kafka.EventHendelse;
 
-import no.nav.vedtak.felles.integrasjon.kafka.BehandlingProsessEventDto;
+import java.util.HashMap;
 
 public class AvslutteAksjonspunkteventTestInfo extends AksjonspunkteventTestInfo{
 
@@ -11,7 +11,7 @@ public class AvslutteAksjonspunkteventTestInfo extends AksjonspunkteventTestInfo
         super(behandlingId, behandlendeEnhet, saksnummer, behandlingtypeKode, fagsakYtelseTypeKode);
         HashMap<String, String> aksjonspunktMap = new HashMap<>();
         aksjonspunktMap.put("5025", "UTFO");
-        behandlingProsessEventDto = behandlingProsessEventDtoBuilder.medEventHendelse(BehandlingProsessEventDto.EventHendelse.AKSJONSPUNKT_UTFØRT)
+        behandlingProsessEventDto = behandlingProsessEventDtoBuilder.medEventHendelse(EventHendelse.AKSJONSPUNKT_UTFØRT)
                 .medAksjonspunktKoderMedStatusListe(aksjonspunktMap).build();
     }
 

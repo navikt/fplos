@@ -2,10 +2,6 @@ package no.nav.foreldrepenger.loslager.oppgave;
 
 import no.nav.foreldrepenger.loslager.BaseEntitet;
 import no.nav.vedtak.felles.jpa.converters.BooleanToStringConverter;
-import org.hibernate.annotations.JoinColumnOrFormula;
-import org.hibernate.annotations.JoinFormula;
-import org.hibernate.annotations.NotFound;
-import org.hibernate.annotations.NotFoundAction;
 
 import javax.persistence.Column;
 import javax.persistence.Convert;
@@ -13,8 +9,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import java.time.LocalDate;
@@ -50,21 +44,17 @@ public class Oppgave extends BaseEntitet {
     @Column(name = "FORSTE_STONADSDAG")
     private LocalDate forsteStonadsdag;
 
-    @NotFound(action= NotFoundAction.IGNORE)
-    @ManyToOne(optional = false)
-    @JoinColumnOrFormula(column = @JoinColumn(name = "BEHANDLING_STATUS", referencedColumnName = "kode", nullable = false))
-    @JoinColumnOrFormula(formula = @JoinFormula(referencedColumnName = "kodeverk", value = "'" + BehandlingStatus.DISCRIMINATOR + "'"))
-    private BehandlingStatus behandlingStatus = BehandlingStatus.UDEFINERT;
+    @Convert(converter = BehandlingStatus.KodeverdiConverter.class)
+    @Column(name = "BEHANDLING_STATUS")
+    private BehandlingStatus behandlingStatus;
 
-    @ManyToOne(optional = false)
-    @JoinColumnOrFormula(column = @JoinColumn(name = "behandling_type", referencedColumnName = "kode", nullable = false))
-    @JoinColumnOrFormula(formula = @JoinFormula(referencedColumnName = "kodeverk", value = "'" + BehandlingType.DISCRIMINATOR + "'"))
+    @Convert(converter = BehandlingType.KodeverdiConverter.class)
+    @Column(name = "BEHANDLING_TYPE")
     private BehandlingType behandlingType = BehandlingType.INNSYN;
 
-    @ManyToOne(optional = false)
-    @JoinColumnOrFormula(column = @JoinColumn(name = "FAGSAK_YTELSE_TYPE", referencedColumnName = "kode", nullable = false))
-    @JoinColumnOrFormula(formula = @JoinFormula(referencedColumnName = "kodeverk", value = "'" + FagsakYtelseType.DISCRIMINATOR + "'"))
-    private FagsakYtelseType fagsakYtelseType = FagsakYtelseType.UDEFINERT;
+    @Convert(converter = FagsakYtelseType.KodeverdiConverter.class)
+    @Column(name = "FAGSAK_YTELSE_TYPE")
+    private FagsakYtelseType fagsakYtelseType;
 
     @Convert(converter = BooleanToStringConverter.class)
     @Column(name = "AKTIV")

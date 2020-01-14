@@ -9,7 +9,7 @@ import { fetchAvdelingensSaksbehandlere } from '../saksbehandlere/duck';
 import {
   fetchAvdelingensSakslister, getAvdelingensSakslister, setValgtSakslisteId, getValgtSakslisteId, lagNySaksliste, getNySakslisteId,
   fjernSaksliste, lagreSakslisteNavn, lagreSakslisteBehandlingstype, knyttSaksbehandlerTilSaksliste,
-  lagreSakslisteFagsakYtelseType, fetchAntallOppgaverForSaksliste, lagreSakslisteAndreKriterier,
+  lagreSakslisteFagsakYtelseType, fetchAntallOppgaverForSaksliste, fetchAntallOppgaverForAvdeling, lagreSakslisteAndreKriterier,
 } from './duck';
 import EndreSakslisterPanel from './components/EndreSakslisterPanel';
 import { Saksliste } from './sakslisteTsType';
@@ -18,6 +18,7 @@ import sakslistePropType from './sakslistePropType';
 interface TsProps {
   fetchAvdelingensSakslister: (avdelingEnhet: string) => Saksliste[];
   fetchAntallOppgaverForSaksliste: (sakslisteId: number, avdelingEnhet: string) => Promise<string>;
+  fetchAntallOppgaverForAvdeling: (avdelingEnhet: string) => Promise<string>;
   setValgtSakslisteId: (sakslisteId: number) => void;
   lagNySaksliste: (avdelingEnhet: string) => void;
   fjernSaksliste: (sakslisteId: number, avdelingEnhet: string) => void;
@@ -39,6 +40,7 @@ export class EndreBehandlingskoerIndex extends Component<TsProps> {
   static propTypes = {
     fetchAvdelingensSakslister: PropTypes.func.isRequired,
     fetchAntallOppgaverForSaksliste: PropTypes.func.isRequired,
+    fetchAntallOppgaverForAvdeling: PropTypes.func.isRequired,
     setValgtSakslisteId: PropTypes.func.isRequired,
     lagNySaksliste: PropTypes.func.isRequired,
     fjernSaksliste: PropTypes.func.isRequired,
@@ -59,9 +61,15 @@ export class EndreBehandlingskoerIndex extends Component<TsProps> {
   }
 
   componentDidMount = () => {
-    const { fetchAvdelingensSakslister: fetchSakslister, fetchAvdelingensSaksbehandlere: fetchSaksbehandlere, valgtAvdelingEnhet } = this.props;
+    const {
+      fetchAvdelingensSakslister: fetchSakslister,
+      fetchAvdelingensSaksbehandlere: fetchSaksbehandlere,
+      fetchAntallOppgaverForAvdeling: fetchAntallOppgaver,
+      valgtAvdelingEnhet,
+} = this.props;
     fetchSakslister(valgtAvdelingEnhet);
     fetchSaksbehandlere(valgtAvdelingEnhet);
+    fetchAntallOppgaver(valgtAvdelingEnhet);
   }
 
   render = () => {
@@ -69,7 +77,10 @@ export class EndreBehandlingskoerIndex extends Component<TsProps> {
       sakslister, valgtSakslisteId, setValgtSakslisteId: setValgtId, lagNySaksliste: lagNyListe,
       fjernSaksliste: fjernListe, lagreSakslisteNavn: lagreListeNavn, lagreSakslisteBehandlingstype: lagreListeBehandlingstype,
       knyttSaksbehandlerTilSaksliste: knyttSaksbehandlerTilListe,
-      lagreSakslisteFagsakYtelseType: lagreListeFagsakYtelseType, fetchAntallOppgaverForSaksliste: hentAntallOppgaverForSaksliste,
+      lagreSakslisteFagsakYtelseType: lagreListeFagsakYtelseType,
+      fetchAvdelingensSakslister: hentAvdelingensSakslister,
+      fetchAntallOppgaverForSaksliste: hentAntallOppgaverForSaksliste,
+      fetchAntallOppgaverForAvdeling: hentAntallOppgaverForAvdeling,
       lagreSakslisteAndreKriterier: lagreAndreKriterier,
     } = this.props;
     return (
@@ -84,7 +95,9 @@ export class EndreBehandlingskoerIndex extends Component<TsProps> {
         lagreSakslisteFagsakYtelseType={lagreListeFagsakYtelseType}
         lagreSakslisteAndreKriterier={lagreAndreKriterier}
         knyttSaksbehandlerTilSaksliste={knyttSaksbehandlerTilListe}
+        hentAvdelingensSakslister={hentAvdelingensSakslister}
         hentAntallOppgaverForSaksliste={hentAntallOppgaverForSaksliste}
+        hentAntallOppgaverForAvdeling={hentAntallOppgaverForAvdeling}
       />
     );
   }
@@ -114,6 +127,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
     knyttSaksbehandlerTilSaksliste,
     fetchAvdelingensSaksbehandlere,
     fetchAntallOppgaverForSaksliste,
+    fetchAntallOppgaverForAvdeling,
   }, dispatch),
 });
 

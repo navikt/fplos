@@ -4,7 +4,6 @@ import no.nav.foreldrepenger.loslager.oppgave.BehandlingType;
 import no.nav.foreldrepenger.loslager.oppgave.FagsakYtelseType;
 import no.nav.foreldrepenger.loslager.oppgave.Oppgave;
 import no.nav.foreldrepenger.loslager.repository.OppgaveRepository;
-import no.nav.foreldrepenger.loslager.repository.OppgaveRepositoryProvider;
 import no.nav.fplos.foreldrepengerbehandling.BehandlingFpsak;
 import no.nav.fplos.foreldrepengerbehandling.ForeldrepengerBehandlingRestKlient;
 import no.nav.fplos.kafkatjenester.jsonoppgave.JsonOppgave;
@@ -27,9 +26,9 @@ public class JsonOppgaveHandler {
     }
 
     @Inject
-    public JsonOppgaveHandler(OppgaveRepositoryProvider oppgaveRepositoryProvider,
+    public JsonOppgaveHandler(OppgaveRepository oppgaveRepository,
                               ForeldrepengerBehandlingRestKlient foreldrepengerBehandlingRestKlient){
-        this.oppgaveRepository = oppgaveRepositoryProvider.getOppgaveRepository();
+        this.oppgaveRepository = oppgaveRepository;
         this.foreldrepengerBehandlingRestKlient = foreldrepengerBehandlingRestKlient;
     }
 

@@ -10,8 +10,9 @@ import no.nav.foreldrepenger.loslager.oppgave.OppgaveFiltrering;
 import no.nav.foreldrepenger.loslager.organisasjon.Avdeling;
 import no.nav.foreldrepenger.loslager.organisasjon.Saksbehandler;
 import no.nav.foreldrepenger.loslager.repository.OppgaveRepository;
-import no.nav.foreldrepenger.loslager.repository.OppgaveRepositoryProvider;
-import no.nav.foreldrepenger.loslager.repository.OppgaveRepositoryProviderImpl;
+import no.nav.foreldrepenger.loslager.repository.OppgaveRepositoryImpl;
+import no.nav.foreldrepenger.loslager.repository.OrganisasjonRepository;
+import no.nav.foreldrepenger.loslager.repository.OrganisasjonRepositoryImpl;
 import no.nav.fplos.ansatt.AnsattTjeneste;
 import no.nav.fplos.avdelingsleder.AvdelingslederTjeneste;
 import no.nav.fplos.avdelingsleder.AvdelingslederTjenesteImpl;
@@ -36,18 +37,21 @@ public class OppgaveTjenesteImplTest {
     @Rule
     public final UnittestRepositoryRule repoRule = new UnittestRepositoryRule();
     private final EntityManager entityManager = repoRule.getEntityManager();
-    private final OppgaveRepositoryProvider repositoryProvider = new OppgaveRepositoryProviderImpl(entityManager);
-    private final OppgaveRepository oppgaveRepository = repositoryProvider.getOppgaveRepository();
+    private final OppgaveRepository oppgaveRepository = new OppgaveRepositoryImpl(entityManager);
+    private final OrganisasjonRepository organisasjonRepository = new OrganisasjonRepositoryImpl(entityManager);
+
     private TpsTjeneste tpsTjeneste = mock(TpsTjeneste.class);
-    private AvdelingslederTjeneste avdelingslederTjeneste = new AvdelingslederTjenesteImpl(repositoryProvider);
+    private AvdelingslederTjeneste avdelingslederTjeneste = new AvdelingslederTjenesteImpl(oppgaveRepository, organisasjonRepository);
     private AnsattTjeneste ansattTjeneste = mock(AnsattTjeneste.class);
-    private OppgaveTjenesteImpl oppgaveTjeneste = new OppgaveTjenesteImpl(repositoryProvider, tpsTjeneste, avdelingslederTjeneste, ansattTjeneste);
+    private OppgaveTjenesteImpl oppgaveTjeneste = new OppgaveTjenesteImpl(oppgaveRepository, organisasjonRepository, tpsTjeneste, avdelingslederTjeneste, ansattTjeneste);
 
     private static String AVDELING_DRAMMEN_ENHET = "4806";
+    private static String AVDELING_BERGEN_ENHET = "4812";
 
     private Oppgave førstegangOppgave = Oppgave.builder().dummyOppgave(AVDELING_DRAMMEN_ENHET).medBehandlingType(BehandlingType.FØRSTEGANGSSØKNAD).build();
     private Oppgave klageOppgave = Oppgave.builder().dummyOppgave(AVDELING_DRAMMEN_ENHET).medBehandlingType(BehandlingType.KLAGE).build();
     private Oppgave innsynOppgave = Oppgave.builder().dummyOppgave(AVDELING_DRAMMEN_ENHET).medBehandlingType(BehandlingType.INNSYN).build();
+    private Oppgave førstegangOppgaveBergen = Oppgave.builder().dummyOppgave(AVDELING_BERGEN_ENHET).medBehandlingType(BehandlingType.FØRSTEGANGSSØKNAD).build();
     private Avdeling avdelingDrammen = null;
     private String begrunnelse = "Test";
 
@@ -66,6 +70,7 @@ public class OppgaveTjenesteImplTest {
         oppgaveRepository.lagre(førstegangOppgave);
         oppgaveRepository.lagre(klageOppgave);
         oppgaveRepository.lagre(innsynOppgave);
+        oppgaveRepository.lagre(førstegangOppgaveBergen);
         entityManager.refresh(oppgaveFiltrering);
         return oppgaveFiltrering.getId();
     }
@@ -198,6 +203,22 @@ public class OppgaveTjenesteImplTest {
         List<OppgaveFiltrering> oppgaveFiltrerings = oppgaveTjeneste.hentAlleOppgaveFiltrering(saksbehandler.getSaksbehandlerIdent());
         assertThat(oppgaveFiltrerings).contains(lagtInnLister.get(0), lagtInnLister.get(2));
         assertThat(oppgaveFiltrerings).doesNotContain(lagtInnLister.get(1));
+    }
+
+    @Test
+    public void hentAntallOppgaver(){
+        Long oppgaveFiltreringId = leggeInnEtSettMedOppgaver();
+        Integer antallOppgaver = oppgaveTjeneste.hentAntallOppgaver(oppgaveFiltreringId, false);
+        assertThat(antallOppgaver).isEqualTo(3);
+    }
+
+    @Test
+    public void hentAntallOppgaverForAvdeling(){
+        leggeInnEtSettMedOppgaver();
+        Integer antallOppgaverDrammen = oppgaveTjeneste.hentAntallOppgaverForAvdeling(AVDELING_DRAMMEN_ENHET);
+        assertThat(antallOppgaverDrammen).isEqualTo(3);
+        Integer antallOppgaverBergen = oppgaveTjeneste.hentAntallOppgaverForAvdeling(AVDELING_BERGEN_ENHET);
+        assertThat(antallOppgaverBergen).isEqualTo(1);
     }
 
     @Test

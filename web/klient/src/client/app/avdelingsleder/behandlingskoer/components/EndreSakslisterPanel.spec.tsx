@@ -31,6 +31,7 @@ describe('<EndreSakslisterPanel>', () => {
       knyttSaksbehandlerTilSaksliste={sinon.spy()}
       hentSakslistensSaksbehandlere={sinon.spy()}
       hentAntallOppgaverForSaksliste={sinon.spy()}
+      hentAntallOppgaverForAvdeling={sinon.spy()}
       showSaksbehandlerPanel
     />);
 
@@ -62,6 +63,7 @@ describe('<EndreSakslisterPanel>', () => {
       knyttSaksbehandlerTilSaksliste={sinon.spy()}
       hentSakslistensSaksbehandlere={sinon.spy()}
       hentAntallOppgaverForSaksliste={sinon.spy()}
+      hentAntallOppgaverForAvdeling={sinon.spy()}
       showSaksbehandlerPanel
     />);
 

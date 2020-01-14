@@ -1,10 +1,17 @@
 package no.nav.foreldrepenger.los.web.app.tjenester.admin;
 
-import static no.nav.vedtak.sikkerhet.abac.BeskyttetRessursActionAttributt.READ;
-import static no.nav.vedtak.sikkerhet.abac.BeskyttetRessursResourceAttributt.OPPGAVESTYRING;
-
-import java.util.List;
-import java.util.stream.Collectors;
+import com.codahale.metrics.annotation.Timed;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import no.nav.foreldrepenger.los.web.app.tjenester.admin.dto.OppgaveEventLoggDto;
+import no.nav.foreldrepenger.los.web.app.tjenester.felles.dto.OppgaveDto;
+import no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.oppgave.dto.BehandlingIdDto;
+import no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.oppgave.dto.OppgaveIdDto;
+import no.nav.foreldrepenger.loslager.oppgave.Oppgave;
+import no.nav.foreldrepenger.loslager.oppgave.OppgaveEventLogg;
+import no.nav.fplos.admin.AdminTjeneste;
+import no.nav.vedtak.felles.jpa.Transaction;
+import no.nav.vedtak.sikkerhet.abac.BeskyttetRessurs;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
@@ -16,20 +23,11 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
+import java.util.List;
+import java.util.stream.Collectors;
 
-import com.codahale.metrics.annotation.Timed;
-
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import no.nav.foreldrepenger.los.web.app.tjenester.admin.dto.OppgaveEventLoggDto;
-import no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.oppgave.dto.BehandlingIdDto;
-import no.nav.foreldrepenger.los.web.app.tjenester.felles.dto.OppgaveDto;
-import no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.oppgave.dto.OppgaveIdDto;
-import no.nav.foreldrepenger.loslager.oppgave.Oppgave;
-import no.nav.foreldrepenger.loslager.oppgave.OppgaveEventLogg;
-import no.nav.fplos.admin.AdminTjeneste;
-import no.nav.vedtak.felles.jpa.Transaction;
-import no.nav.vedtak.sikkerhet.abac.BeskyttetRessurs;
+import static no.nav.vedtak.sikkerhet.abac.BeskyttetRessursActionAttributt.READ;
+import static no.nav.vedtak.sikkerhet.abac.BeskyttetRessursResourceAttributt.OPPGAVESTYRING;
 
 @Api(tags = { "Admin" })
 @Path("/admin")
@@ -123,42 +121,6 @@ public class AdminRestTjeneste {
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
     public int prosesserMelding() {
         return adminTjeneste.prosesserAlleMeldingerFraFeillogg();
-    }
-
-    @GET
-    @Timed
-    @Path("/oppdater-oppgaver-med-info-om-refusjon")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    @ApiOperation(value = "Oppdater alle aktive oppgaver med informasjon om direkteutbetaling/refusjonskrav", notes = ("Oppdaterer alle aktive oppgaver med informasjon om direkteutbetaling/refusjonskrav og legger til oppgave egenskap ved behov"))
-    @BeskyttetRessurs(action = READ, ressurs = OPPGAVESTYRING)
-    @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
-    public int oppdaterOppgaverMedInfoOmRefusjon() {
-        return adminTjeneste.oppdaterAktiveOppgaverMedInformasjonOmRefusjonskrav();
-    }
-
-    @GET
-    @Timed
-    @Path("/oppdater-oppgaver-med-info-om-utlandssak")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    @ApiOperation(value = "Oppdater alle aktive oppgaver med informasjon om utlandssak", notes = ("Oppdaterer alle aktive oppgaver med informasjon om utlandssak og legger til oppgave egenskap ved behov"))
-    @BeskyttetRessurs(action = READ, ressurs = OPPGAVESTYRING)
-    @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
-    public int oppdaterOppgaverMedInfoHvisUtlandssak() {
-        return adminTjeneste.oppdaterAktiveOppgaverMedInformasjonHvisUtlandssak();
-    }
-
-    @GET
-    @Timed
-    @Path("/oppdater-oppgaver-med-info-om-gradering")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    @ApiOperation(value = "Oppdater alle aktive oppgaver med informasjon om gradering", notes = ("Oppdaterer alle aktive oppgaver med informasjon om gradering og legger til oppgave egenskap ved behov"))
-    @BeskyttetRessurs(action = READ, ressurs = OPPGAVESTYRING)
-    @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
-    public int oppdaterOppgaverMedInfoOmGradering() {
-        return adminTjeneste.oppdaterAktiveOppgaverMedInformasjonHvisGradering();
     }
 
     @GET
