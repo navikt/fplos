@@ -1,27 +1,43 @@
 package no.nav.foreldrepenger.loslager.oppgave;
+import java.util.Arrays;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
-import no.nav.fplos.kodeverk.Kodeliste;
+@JsonFormat(shape = JsonFormat.Shape.OBJECT)
+public enum FagsakStatus implements Kodeverdi {
 
-import javax.persistence.DiscriminatorValue;
-import javax.persistence.Entity;
+    OPPRETTET("OPPR", "Opprettet"),
+    UNDER_BEHANDLING("UBEH", "Under behandling"),
+    LØPENDE("LOP", "Løpende"),
+    AVSLUTTET("AVSLU", "Avsluttet");
 
-@Entity(name = "FagsakStatus")
-@DiscriminatorValue(FagsakStatus.DISCRIMINATOR)
-public class FagsakStatus extends Kodeliste {
+    private String kode;
+    private final String navn;
+    public static final String KODEVERK = "FAGSAK_STATUS";
 
-    public static final String DISCRIMINATOR = "FAGSAK_STATUS";
-    public static final FagsakStatus OPPRETTET = new FagsakStatus("OPPR");
-    public static final FagsakStatus UNDER_BEHANDLING = new FagsakStatus("UBEH");
-    public static final FagsakStatus LØPENDE = new FagsakStatus("LOP");
-    public static final FagsakStatus AVSLUTTET = new FagsakStatus("AVSLU");
-    public static final FagsakStatus DEFAULT = OPPRETTET;
-
-    FagsakStatus() {
-        // Hibernate trenger den
+    FagsakStatus(String kode, String navn) {
+        this.kode = kode;
+        this.navn = navn;
     }
 
-    FagsakStatus(String kode) {
-        super(kode, DISCRIMINATOR);
+    public String getNavn() {
+        return navn;
     }
 
+    public String getKode() {
+        return kode;
+    }
+
+    public String getKodeverk() {
+        return KODEVERK;
+    }
+
+    @JsonCreator
+    public static FagsakStatus fraKode(@JsonProperty("kode") String kode) {
+        return Arrays.stream(values())
+                .filter(v -> v.kode.equals(kode))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("Ukjent FagsakStatus: " + kode));
+    }
 }

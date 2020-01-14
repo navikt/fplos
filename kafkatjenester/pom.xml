@@ -17,10 +17,6 @@
             <artifactId>loslager</artifactId>
         </dependency>
         <dependency>
-            <groupId>no.nav.foreldrepenger.los</groupId>
-            <artifactId>kodeverk</artifactId>
-        </dependency>
-        <dependency>
             <groupId>no.nav.foreldrepenger.felles</groupId>
             <artifactId>felles-testutilities</artifactId>
             <scope>test</scope>

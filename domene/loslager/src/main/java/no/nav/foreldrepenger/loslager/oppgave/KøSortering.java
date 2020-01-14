@@ -1,34 +1,66 @@
 package no.nav.foreldrepenger.loslager.oppgave;
 
-import javax.persistence.DiscriminatorValue;
-import javax.persistence.Entity;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
-import no.nav.fplos.kodeverk.Kodeliste;
+import javax.persistence.AttributeConverter;
+import javax.persistence.Converter;
+import java.util.Arrays;
+import java.util.Optional;
 
-@Entity(name = "KoSortering")
-@DiscriminatorValue(KøSortering.DISCRIMINATOR)
-public class KøSortering extends Kodeliste {
+@JsonFormat(shape = JsonFormat.Shape.OBJECT)
+public enum KøSortering implements Kodeverdi {
 
-    public static final String DISCRIMINATOR = "KO_SORTERING";
+    BEHANDLINGSFRIST("BEHFRIST", "Dato for behandlingsfrist"),
+    OPPRETT_BEHANDLING("OPPRBEH", "Dato for opprettelse av behandling"),
+    FORSTE_STONADSDAG("FORSTONAD", "Dato for første stønadsdag");
 
-    /**
-     * Konstanter for å skrive ned kodeverdi. For å hente ut andre data konfigurert, må disse leses fra databasen (eks.
-     * for å hente offisiell kode for et Nav kodeverk).
-     */
-    public static final KøSortering BEHANDLINGSFRIST = new KøSortering( "BEHFRIST");
-    public static final KøSortering OPPRETT_BEHANDLING = new KøSortering( "OPPRBEH");
-    public static final KøSortering FORSTE_STONADSDAG = new KøSortering( "FORSTONAD");
+    @JsonProperty("kode")
+    private String kode;
+    @JsonProperty("navn")
+    private final String navn;
+    public static final String KODEVERK = "KO_SORTERING";
 
-    /**
-     * Alle kodeverk må ha en verdi, det kan ikke være null i databasen. Denne koden gjør samme nytten.
-     */
-    public static final KøSortering UDEFINERT = new KøSortering("-"); //$NON-NLS-1$
-
-    KøSortering() {
-        // Hibernate trenger den
+    KøSortering(String kode, String navn) {
+        this.kode = kode;
+        this.navn = navn;
     }
 
-    protected KøSortering(String kode) {
-        super(kode, DISCRIMINATOR);
+    public String getNavn() {
+        return navn;
+    }
+
+    public String getKode() {
+        return kode;
+    }
+
+    public String getKodeverk() {
+        return KODEVERK;
+    }
+
+    @JsonCreator
+    public static KøSortering fraKode(@JsonProperty("kode") String kode) {
+        return Arrays.stream(values())
+                .filter(v -> v.kode.equals(kode))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("Ukjent KøSortering: " + kode));
+    }
+
+    @Converter(autoApply = true)
+    public static class KodeverdiConverter implements AttributeConverter<KøSortering, String> {
+        @Override
+        public String convertToDatabaseColumn(KøSortering attribute) {
+            return Optional.ofNullable(attribute)
+                    .map(KøSortering::getKode)
+                    .orElse(null);
+        }
+
+        @Override
+        public KøSortering convertToEntityAttribute(String dbData) {
+            return Optional.ofNullable(dbData)
+                    .map(KøSortering::fraKode)
+                    .orElse(null);
+        }
     }
 }

@@ -1,9 +1,9 @@
 package no.nav.fplos.kafkatjenester;
 
-import java.util.List;
+import org.apache.kafka.clients.consumer.ConsumerRecords;
 
 public interface AksjonspunktMeldingConsumer {
-    List<String> hentConsumerMeldingene();
+    ConsumerRecords<String, String> hentConsumerMeldingene();
 
     void manualCommitSync();
 }

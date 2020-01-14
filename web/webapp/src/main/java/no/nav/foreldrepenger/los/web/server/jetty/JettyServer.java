@@ -1,18 +1,19 @@
 package no.nav.foreldrepenger.los.web.server.jetty;
 
-import no.nav.foreldrepenger.los.web.app.ApplicationConfig;
-import no.nav.foreldrepenger.los.web.server.jetty.DataSourceKonfig.DBConnProp;
-import no.nav.vedtak.isso.IssoApplication;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.eclipse.jetty.plus.jndi.EnvEntry;
 import org.eclipse.jetty.util.resource.Resource;
 import org.eclipse.jetty.util.resource.ResourceCollection;
 import org.eclipse.jetty.webapp.MetaData;
 import org.eclipse.jetty.webapp.WebAppContext;
 
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
+import no.nav.foreldrepenger.los.web.app.ApplicationConfig;
+import no.nav.foreldrepenger.los.web.server.jetty.DataSourceKonfig.DBConnProp;
+import no.nav.vedtak.isso.IssoApplication;
 
 public class JettyServer extends AbstractJettyServer {
 
@@ -119,6 +120,7 @@ public class JettyServer extends AbstractJettyServer {
     protected ResourceCollection createResourceCollection() throws IOException {
         return new ResourceCollection(
                 Resource.newResource(System.getProperty("klient", "./klient")),
+                Resource.newClassPathResource("/META-INF/resources/webjars/"),
                 Resource.newClassPathResource("/web"),
                 Resource.newClassPathResource("/META-INF/resources")/** i18n */);
     }

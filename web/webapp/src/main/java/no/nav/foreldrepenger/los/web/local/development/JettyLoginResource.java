@@ -7,7 +7,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.Response;
 
-import com.codahale.metrics.annotation.Timed;
+import io.swagger.v3.oas.annotations.Operation;
 
 
 /**
@@ -20,8 +20,8 @@ import com.codahale.metrics.annotation.Timed;
 public class JettyLoginResource {
 
     @GET
-    @Timed
     @Path("")
+    @Operation(description = "Innlogging i test", tags = "login-test", hidden = true)
     public Response login() {
         //  når vi har kommet hit, er brukeren innlogget og har fått ID-token. Kan da gjøre redirect til hovedsiden for VL
         return Response.temporaryRedirect(URI.create("http://localhost:9100/")).build();

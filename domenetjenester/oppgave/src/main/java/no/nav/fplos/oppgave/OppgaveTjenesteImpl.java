@@ -1,26 +1,14 @@
 package no.nav.fplos.oppgave;
 
-import static no.nav.foreldrepenger.loslager.BaseEntitet.BRUKERNAVN_NÅR_SIKKERHETSKONTEKST_IKKE_FINNES;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-
 import no.nav.foreldrepenger.domene.typer.AktørId;
 import no.nav.foreldrepenger.loslager.aktør.TpsPersonDto;
 import no.nav.foreldrepenger.loslager.oppgave.Oppgave;
 import no.nav.foreldrepenger.loslager.oppgave.OppgaveFiltrering;
 import no.nav.foreldrepenger.loslager.oppgave.Reservasjon;
 import no.nav.foreldrepenger.loslager.oppgave.ReservasjonEventLogg;
+import no.nav.foreldrepenger.loslager.organisasjon.Avdeling;
 import no.nav.foreldrepenger.loslager.organisasjon.Saksbehandler;
 import no.nav.foreldrepenger.loslager.repository.OppgaveRepository;
-import no.nav.foreldrepenger.loslager.repository.OppgaveRepositoryProvider;
 import no.nav.foreldrepenger.loslager.repository.OppgavespørringDto;
 import no.nav.foreldrepenger.loslager.repository.OrganisasjonRepository;
 import no.nav.fplos.ansatt.AnsattTjeneste;
@@ -30,6 +18,16 @@ import no.nav.vedtak.exception.IntegrasjonException;
 import no.nav.vedtak.sikkerhet.context.SubjectHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import static no.nav.foreldrepenger.loslager.BaseEntitet.BRUKERNAVN_NÅR_SIKKERHETSKONTEKST_IKKE_FINNES;
 
 @ApplicationScoped
 public class OppgaveTjenesteImpl implements OppgaveTjeneste {
@@ -46,19 +44,20 @@ public class OppgaveTjenesteImpl implements OppgaveTjeneste {
     }
 
     @Inject
-    public OppgaveTjenesteImpl(OppgaveRepositoryProvider oppgaveRepositoryProvider,
+    public OppgaveTjenesteImpl(OppgaveRepository oppgaveRepository,
+                               OrganisasjonRepository organisasjonRepository,
                                TpsTjeneste tpsTjeneste,
                                AvdelingslederTjeneste avdelingslederTjeneste,
                                AnsattTjeneste ansattTjeneste) {
-        this.oppgaveRepository = oppgaveRepositoryProvider.getOppgaveRepository();
-        this.organisasjonRepository = oppgaveRepositoryProvider.getOrganisasjonRepository();
+        this.oppgaveRepository = oppgaveRepository;
+        this.organisasjonRepository = organisasjonRepository;
         this.tpsTjeneste = tpsTjeneste;
         this.avdelingslederTjeneste = avdelingslederTjeneste;
         this.ansattTjeneste = ansattTjeneste;
     }
 
     @Override
-    public List<Oppgave> hentOppgaver(Long sakslisteId){
+    public List<Oppgave> hentOppgaver(Long sakslisteId) {
         try {
             OppgaveFiltrering oppgaveListe = oppgaveRepository.hentListe(sakslisteId);
             if (oppgaveListe == null) {
@@ -74,7 +73,7 @@ public class OppgaveTjenesteImpl implements OppgaveTjeneste {
     }
 
     @Override
-    public List<Oppgave> hentNesteOppgaver(Long sakslisteId){
+    public List<Oppgave> hentNesteOppgaver(Long sakslisteId) {
         return hentOppgaver(sakslisteId);
     }
 
@@ -89,7 +88,7 @@ public class OppgaveTjenesteImpl implements OppgaveTjeneste {
     }
 
 
-    public List<Reservasjon> hentReservasjonerTilknyttetAktiveOppgaver(){
+    public List<Reservasjon> hentReservasjonerTilknyttetAktiveOppgaver() {
         return oppgaveRepository.hentReservasjonerTilknyttetAktiveOppgaver(finnBrukernavn());
     }
 
@@ -105,12 +104,12 @@ public class OppgaveTjenesteImpl implements OppgaveTjeneste {
         return reservasjon;
     }
 
-    public Reservasjon hentReservasjon(Long oppgaveId){
+    public Reservasjon hentReservasjon(Long oppgaveId) {
         return oppgaveRepository.hentReservasjon(oppgaveId);
     }
 
     @Override
-    public Reservasjon frigiOppgave(Long oppgaveId, String begrunnelse){
+    public Reservasjon frigiOppgave(Long oppgaveId, String begrunnelse) {
         Reservasjon reservasjon = oppgaveRepository.hentReservasjon(oppgaveId);
         Oppgave oppgave = reservasjon.getOppgave();
         reservasjon.frigiReservasjon(begrunnelse);
@@ -120,7 +119,7 @@ public class OppgaveTjenesteImpl implements OppgaveTjeneste {
         return reservasjon;
     }
 
-    public Reservasjon forlengReservasjonPåOppgave(Long oppgaveId){
+    public Reservasjon forlengReservasjonPåOppgave(Long oppgaveId) {
         Reservasjon reservasjon = oppgaveRepository.hentReservasjon(oppgaveId);
         reservasjon.forlengReservasjonPåOppgave();
         oppgaveRepository.lagre(reservasjon);
@@ -167,17 +166,25 @@ public class OppgaveTjenesteImpl implements OppgaveTjeneste {
     }
 
     @Override
-    public Integer hentAntallOppgaver(Long behandlingsKø) {
+    public Integer hentAntallOppgaver(Long behandlingsKø, boolean forAvdelingsleder) {
         int antallOppgaver = 0;
         try {
             OppgaveFiltrering oppgaveFiltrering = oppgaveRepository.hentListe(behandlingsKø);
             if (oppgaveFiltrering != null) {
-                antallOppgaver = oppgaveRepository.hentAntallOppgaver(new OppgavespørringDto(oppgaveFiltrering));
+                var queryDto = new OppgavespørringDto(oppgaveFiltrering);
+                queryDto.setForAvdelingsleder(forAvdelingsleder);
+                antallOppgaver = oppgaveRepository.hentAntallOppgaver(queryDto);
             }
         } catch (Exception e) {
             log.error("Henting av oppgave feilet", e);
         }
         return antallOppgaver;
+    }
+
+    @Override
+    public Integer hentAntallOppgaverForAvdeling(String avdelingsEnhet) {
+        Avdeling avdeling = organisasjonRepository.hentAvdelingFraEnhet(avdelingsEnhet);
+        return oppgaveRepository.hentAntallOppgaverForAvdeling(avdeling.getId());
     }
 
     public boolean harForandretOppgaver(List<Long> oppgaveIder) {
@@ -243,7 +250,7 @@ public class OppgaveTjenesteImpl implements OppgaveTjeneste {
         try {
             return ansattTjeneste.hentAnsattNavn(ident);
         } catch (IntegrasjonException e) {
-            log.warn("Henting av ansattnavn feilet, fortsetter med ukjent navn.", e);
+            log.info("Henting av ansattnavn feilet, fortsetter med ukjent navn.", e);
             return "Ukjent ansatt";
         }
     }

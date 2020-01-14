@@ -1,28 +1,69 @@
 package no.nav.foreldrepenger.loslager.oppgave;
 
-import javax.persistence.DiscriminatorValue;
-import javax.persistence.Entity;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
-import no.nav.fplos.kodeverk.Kodeliste;
+import javax.persistence.AttributeConverter;
+import javax.persistence.Converter;
+import java.util.Arrays;
+import java.util.Optional;
 
-@Entity(name = "AndreKriterierType")
-@DiscriminatorValue(AndreKriterierType.DISCRIMINATOR)
-public class AndreKriterierType extends Kodeliste {
+@JsonFormat(shape = JsonFormat.Shape.OBJECT)
+public enum AndreKriterierType implements Kodeverdi {
 
-    public static final String DISCRIMINATOR = "ANDRE_KRITERIER"; //$NON-NLS-1$
-    public static final AndreKriterierType TIL_BESLUTTER = new AndreKriterierType("TIL_BESLUTTER"); //$NON-NLS-1$
-    public static final AndreKriterierType PAPIRSØKNAD = new AndreKriterierType("PAPIRSOKNAD"); //$NON-NLS-1$
-    public static final AndreKriterierType UTBETALING_TIL_BRUKER = new AndreKriterierType("UTBETALING_TIL_BRUKER"); //$NON-NLS-1$
-    public static final AndreKriterierType UTLANDSSAK = new AndreKriterierType("UTLANDSSAK"); //$NON-NLS-1$
-    public static final AndreKriterierType SOKT_GRADERING = new AndreKriterierType("SOKT_GRADERING"); //$NON-NLS-1$
-    public static final AndreKriterierType UKJENT = new AndreKriterierType("-"); //$NON-NLS-1$
+    TIL_BESLUTTER("TIL_BESLUTTER", "Til beslutter"),
+    PAPIRSØKNAD("PAPIRSOKNAD", "Registrer papirsøknad"),
+    UTBETALING_TIL_BRUKER("UTBETALING_TIL_BRUKER", "Utbetaling til bruker"),
+    UTLANDSSAK("UTLANDSSAK", "Utland"),
+    SOKT_GRADERING("SOKT_GRADERING", "Søkt gradering"),
+    VURDER_SYKDOM("VURDER_SYKDOM", "Vurder sykdom"),
+    VURDER_FARESIGNALER("VURDER_FARESIGNALER", "Vurder faresignaler");
+    //SELVSTENDIG_FRILANSER("SELVSTENDIG_FRILANSER", "Selvstendig næringsdrivende eller frilanser")
 
-    AndreKriterierType() {
-        // Hibernate trenger den
+    private String kode;
+    private final String navn;
+    public static final String KODEVERK = "ANDRE_KRITERIER";
+
+    AndreKriterierType(String kode, String navn) {
+        this.kode = kode;
+        this.navn = navn;
     }
 
-    protected AndreKriterierType(String kode) {
-        super(kode, DISCRIMINATOR);
+    public String getNavn() {
+        return navn;
     }
 
+    public String getKode() {
+        return kode;
+    }
+
+    public String getKodeverk() {
+        return KODEVERK;
+    }
+
+    @JsonCreator
+    public static AndreKriterierType fraKode(@JsonProperty("kode") String kode) {
+        return Arrays.stream(values())
+                .filter(v -> v.kode.equals(kode))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("Ukjent AndreKriterierType: " + kode));
+    }
+
+    @Converter(autoApply = true)
+    public static class KodeverdiConverter implements AttributeConverter<AndreKriterierType, String> {
+        @Override
+        public String convertToDatabaseColumn(AndreKriterierType attribute) {
+            return Optional.ofNullable(attribute)
+                    .map(AndreKriterierType::getKode)
+                    .orElse(null);
+        }
+
+        @Override
+        public AndreKriterierType convertToEntityAttribute(String dbData) {
+            return Optional.ofNullable(dbData)
+                    .map(AndreKriterierType::fraKode)
+                    .orElse(null);
+        }
+    }
 }
