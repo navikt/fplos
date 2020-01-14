@@ -32,6 +32,7 @@ import javax.persistence.criteria.Root;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
@@ -72,6 +73,13 @@ public class OppgaveRepositoryImpl implements OppgaveRepository {
     }
 
     @Override
+    public int hentAntallOppgaverForAvdeling(Long avdelingsId) {
+        OppgavespørringDto oppgavespørringDto = new OppgavespørringDto(avdelingsId,KøSortering.BEHANDLINGSFRIST,new ArrayList<>(), new ArrayList<>(),new ArrayList<>(),new ArrayList<>(),false,null,null,null,null);
+        TypedQuery<Long> oppgaveTypedQuery = lagOppgavespørring(COUNT_FRA_OPPGAVE, Long.class, oppgavespørringDto);
+        return oppgaveTypedQuery.getSingleResult().intValue();
+    }
+
+    @Override
     public List<Oppgave> hentOppgaver(OppgavespørringDto oppgavespørringDto) {
         TypedQuery<Oppgave> oppgaveTypedQuery = lagOppgavespørring(SELECT_FRA_OPPGAVE, Oppgave.class, oppgavespørringDto);
         return oppgaveTypedQuery.getResultList();
@@ -102,17 +110,17 @@ public class OppgaveRepositoryImpl implements OppgaveRepository {
                 filtrerBehandlingType +
                 filtrerYtelseType +
                 ekskluderInkluderAndreKriterier +
-                "NOT EXISTS (select r from Reservasjon r where r.oppgave = o and r.reservertTil > :naa) AND " +
-                "NOT EXISTS (select oetilbesl.oppgave from OppgaveEgenskap oetilbesl " +
-                    "where oetilbesl.oppgave = o AND oetilbesl.aktiv = true AND oetilbesl.andreKriterierType = :tilbeslutter " +
-                    "AND upper(oetilbesl.sisteSaksbehandlerForTotrinn) = upper( :uid ) ) " +
+                "NOT EXISTS (select r from Reservasjon r where r.oppgave = o and r.reservertTil > :naa) " +
+                tilBeslutter(queryDto) +
                 "AND a.id = :enhet " +
                 "AND o.aktiv = true " + sortering(queryDto), oppgaveClass)
                 .setParameter("naa", LocalDateTime.now())
-                .setParameter("enhet", queryDto.getId())
-                .setParameter("tilbeslutter", AndreKriterierType.TIL_BESLUTTER)
-                .setParameter("uid", finnBrukernavn());
+                .setParameter("enhet", queryDto.getId());
 
+        if (!queryDto.getForAvdelingsleder()) {
+            query.setParameter("tilbeslutter", AndreKriterierType.TIL_BESLUTTER)
+                    .setParameter("uid", finnBrukernavn());
+        }
         if (!queryDto.getBehandlingTyper().isEmpty()) {
             query.setParameter("behtyper", queryDto.getBehandlingTyper());
         }
@@ -133,6 +141,13 @@ public class OppgaveRepositoryImpl implements OppgaveRepository {
         }
 
         return query;
+    }
+
+    private String tilBeslutter(OppgavespørringDto dto) {
+        return dto.getForAvdelingsleder() ? ""
+                : "AND NOT EXISTS (select oetilbesl.oppgave from OppgaveEgenskap oetilbesl " +
+                "where oetilbesl.oppgave = o AND oetilbesl.aktiv = true AND oetilbesl.andreKriterierType = :tilbeslutter " +
+                "AND upper(oetilbesl.sisteSaksbehandlerForTotrinn) = upper( :uid ) ) ";
     }
 
     private String sortering(OppgavespørringDto oppgavespørringDto) {

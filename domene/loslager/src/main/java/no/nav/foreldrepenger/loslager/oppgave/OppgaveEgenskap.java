@@ -2,7 +2,6 @@ package no.nav.foreldrepenger.loslager.oppgave;
 
 import javax.persistence.Column;
 import javax.persistence.Convert;
-import javax.persistence.Converter;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -12,9 +11,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import no.nav.vedtak.felles.jpa.converters.BooleanToStringConverter;
-import org.hibernate.annotations.JoinColumnOrFormula;
-import org.hibernate.annotations.JoinFormula;
-
 import no.nav.foreldrepenger.loslager.BaseEntitet;
 
 @Entity(name = "OppgaveEgenskap")
@@ -51,10 +47,14 @@ public class OppgaveEgenskap extends BaseEntitet{
         this.andreKriterierType = andreKriterierType;
     }
 
-    public OppgaveEgenskap(Oppgave oppgave, AndreKriterierType andreKriterierType, String sisteSaksbehandlerForTotrinn) {
+    public OppgaveEgenskap(Oppgave oppgave, AndreKriterierType type, String sisteSaksbehandlerForTotrinn) {
         this.oppgave = oppgave;
-        this.andreKriterierType = andreKriterierType;
+        this.andreKriterierType = type;
         this.sisteSaksbehandlerForTotrinn = sisteSaksbehandlerForTotrinn;
+    }
+
+    public OppgaveEgenskap beslutterEgenskapFra(Oppgave oppgave, String sisteSaksbehandlerForTotrinn) {
+        return new OppgaveEgenskap(oppgave, AndreKriterierType.TIL_BESLUTTER, sisteSaksbehandlerForTotrinn);
     }
 
     public Oppgave getOppgave() {
@@ -79,5 +79,9 @@ public class OppgaveEgenskap extends BaseEntitet{
 
     public void aktiverOppgaveEgenskap() {
         aktiv = true;
+    }
+
+    public void setSisteSaksbehandlerForTotrinn(String sisteSaksbehandlerForTotrinn) {
+        this.sisteSaksbehandlerForTotrinn = sisteSaksbehandlerForTotrinn;
     }
 }

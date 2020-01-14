@@ -1,17 +1,15 @@
 package no.nav.foreldrepenger.loslager.oppgave;
 
 import no.nav.foreldrepenger.loslager.BaseEntitet;
-import org.hibernate.annotations.JoinColumnOrFormula;
-import org.hibernate.annotations.JoinFormula;
 
 import javax.persistence.Column;
 import javax.persistence.Convert;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -26,9 +24,8 @@ public class OppgaveEventLogg extends BaseEntitet{
     @Column(name = "BEHANDLING_ID", nullable = false)
     private Long behandlingId;
 
-    @ManyToOne(optional = false)
-    @JoinColumnOrFormula(column = @JoinColumn(name = "EVENT_TYPE", referencedColumnName = "kode", nullable = false))
-    @JoinColumnOrFormula(formula = @JoinFormula(referencedColumnName = "kodeverk", value = "'" + OppgaveEventType.DISCRIMINATOR + "'"))
+    @Column(name = "EVENT_TYPE")
+    @Enumerated(EnumType.STRING)
     private OppgaveEventType eventType;
 
     @Column(name = "ANDRE_KRITERIER_TYPE")

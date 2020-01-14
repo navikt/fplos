@@ -8,12 +8,13 @@ import no.nav.foreldrepenger.loslager.oppgave.Oppgave;
 import no.nav.foreldrepenger.loslager.oppgave.OppgaveEgenskap;
 import no.nav.foreldrepenger.loslager.oppgave.OppgaveEventLogg;
 import no.nav.foreldrepenger.loslager.oppgave.OppgaveEventType;
-import no.nav.foreldrepenger.loslager.repository.OppgaveRepositoryProvider;
-import no.nav.foreldrepenger.loslager.repository.OppgaveRepositoryProviderImpl;
+import no.nav.foreldrepenger.loslager.repository.OppgaveRepository;
+import no.nav.foreldrepenger.loslager.repository.OppgaveRepositoryImpl;
 import no.nav.fplos.foreldrepengerbehandling.Aksjonspunkt;
 import no.nav.fplos.foreldrepengerbehandling.BehandlingFpsak;
 import no.nav.fplos.foreldrepengerbehandling.ForeldrepengerBehandlingRestKlient;
-import no.nav.vedtak.felles.integrasjon.kafka.BehandlingProsessEventDto;
+import no.nav.vedtak.felles.integrasjon.kafka.EventHendelse;
+import no.nav.vedtak.felles.integrasjon.kafka.FpsakBehandlingProsessEventDto;
 import org.junit.Rule;
 import org.junit.Test;
 
@@ -36,9 +37,9 @@ public class FpsakEventHandlerTest {
     @Rule
     public UnittestRepositoryRule repoRule = new UnittestRepositoryRule();
     private EntityManager entityManager = repoRule.getEntityManager();
-    private OppgaveRepositoryProvider oppgaveRepositoryProvider = new OppgaveRepositoryProviderImpl(entityManager );
+    private OppgaveRepository oppgaveRepository = new OppgaveRepositoryImpl(entityManager);
     private ForeldrepengerBehandlingRestKlient foreldrepengerBehandlingRestKlient = mock(ForeldrepengerBehandlingRestKlient.class);
-    private FpsakEventHandler fpsakEventHandler = new FpsakEventHandler(oppgaveRepositoryProvider, foreldrepengerBehandlingRestKlient);
+    private FpsakEventHandler fpsakEventHandler = new FpsakEventHandler(oppgaveRepository, foreldrepengerBehandlingRestKlient);
     private static Long behandlingId = 1073051L;
     private static String fagsystem = "FPSAK";
 
@@ -69,14 +70,14 @@ public class FpsakEventHandlerTest {
     private List<Aksjonspunkt> aksjonspunktKoderUtlandAutomatiskDto = Collections.singletonList(aksjonspunktMedBegrunnelseDtoFra("5068","OPPR",aksjonspunktFrist,"BOSATT_UTLAND"));
     private List<Aksjonspunkt> aksjonspunktKoderUtlandManuellDto = Collections.singletonList(aksjonspunktMedBegrunnelseDtoFra("6068","OPPR",aksjonspunktFrist, "BOSATT_UTLAND"));
 
-    BehandlingProsessEventDto eventDrammenFra(Map<String, String> aksjonspunktmap){
+    FpsakBehandlingProsessEventDto eventDrammenFra(Map<String, String> aksjonspunktmap){
         return prosessBuilderFra(aksjonspunktmap)
                 //.medId("EKSTERN_ID")
                 .medBehandlendeEnhet("4802")
                 .build();
     }
 
-    private BehandlingProsessEventDto eventStordFra(Map<String, String> aksjonspunktmap){
+    private FpsakBehandlingProsessEventDto eventStordFra(Map<String, String> aksjonspunktmap){
         return prosessBuilderFra(aksjonspunktmap)
                 //.medId("EKSTERN_ID")
                 .medBehandlendeEnhet("4842")
@@ -100,21 +101,18 @@ public class FpsakEventHandlerTest {
                 .build();
     }
 
-    private BehandlingProsessEventDto.Builder prosessBuilderFra(Map<String, String> aksjonspunktmap){
-        return BehandlingProsessEventDto.builder()
-                //.medId("EKSTERN_ID")
-                .medFagsystem(fagsystem)
+    private FpsakBehandlingProsessEventDto.Builder prosessBuilderFra(Map<String, String> aksjonspunktmap){
+        return FpsakBehandlingProsessEventDto.builder()
                 .medBehandlingId(behandlingId)
                 .medSaksnummer("135701264")
                 .medAktørId("9000000030703")
-                .medEventHendelse(BehandlingProsessEventDto.EventHendelse.AKSJONSPUNKT_OPPRETTET)
-                .medBehandlinStatus("STATUS")
+                .medEventHendelse(EventHendelse.AKSJONSPUNKT_OPPRETTET)
+                .medBehandlingStatus("STATUS")
                 .medBehandlingSteg("STEG")
                 .medYtelseTypeKode(FagsakYtelseType.FORELDREPENGER.getKode())
                 .medBehandlingTypeKode(BehandlingType.FØRSTEGANGSSØKNAD.getKode())
                 .medOpprettetBehandling(LocalDateTime.now())
                 .medAksjonspunktKoderMedStatusListe(aksjonspunktmap);
-
     }
 
     private static BehandlingFpsak behandlingDtoFra(List<Aksjonspunkt> aksjonspunkter) {
@@ -125,7 +123,7 @@ public class FpsakEventHandlerTest {
 
     private static BehandlingFpsak behandlingDtoMedManueltMarkertUtlandsakFra(List<Aksjonspunkt> aksjonspunkter){
         return behandlingBuilderMal()
-                .medErUtlandssak(true)
+                .medErUtenlandssak(true)
                 .medAksjonspunkter(aksjonspunkter)
                 .build();
     }
@@ -178,7 +176,7 @@ public class FpsakEventHandlerTest {
         assertThat(oppgaveEgenskap.getOppgave().getAktiv()).isTrue();
 
         //Sjekker at det siste eventet er å opprette og at det rett før er lukker.
-        List<OppgaveEventLogg> oppgaveEventLogg = oppgaveRepositoryProvider.getOppgaveRepository().hentEventer(behandlingId);
+        List<OppgaveEventLogg> oppgaveEventLogg = oppgaveRepository.hentEventer(behandlingId);
 
         /*Optional<EksternIdentifikator> eksternId = oppgaveRepositoryProvider.getEksternIdentifikatorRepository().finnIdentifikator("FPSAK", behandlingId.toString());
         List<OppgaveEventLogg> oppgaveEventLogg = oppgaveRepositoryProvider.getOppgaveRepository().hentEventerForEksternId(eksternId.get().getId());*/
@@ -314,7 +312,7 @@ public class FpsakEventHandlerTest {
     private void sjekkEventLoggInneholder(Long behandlingId, OppgaveEventType eventType, AndreKriterierType kriterierType) {
         /*Optional<EksternIdentifikator> eksternIdentifikator = oppgaveRepositoryProvider.getEksternIdentifikatorRepository().finnIdentifikator(fagsystem, behandlingId.toString());
         List<OppgaveEventLogg> oppgaveEventLoggs = oppgaveRepositoryProvider.getOppgaveRepository().hentEventerForEksternId(eksternIdentifikator.get().getId());*/
-        List<OppgaveEventLogg> oppgaveEventLoggs = oppgaveRepositoryProvider.getOppgaveRepository().hentEventer(behandlingId);
+        List<OppgaveEventLogg> oppgaveEventLoggs = oppgaveRepository.hentEventer(behandlingId);
 
         assertThat(oppgaveEventLoggs.get(0).getEventType()).isEqualTo(eventType);
         if (kriterierType != null) {
@@ -328,7 +326,7 @@ public class FpsakEventHandlerTest {
 
     private void sjekkForEnOppgaveOgEgenskap(AndreKriterierType egenskap, int antallOppgaver, int antallEgenskaper) {
         assertThat(repoRule.getRepository().hentAlle(Oppgave.class)).hasSize(antallOppgaver);
-        var oegenskaper = repoRule.getRepository().hentAlle(OppgaveEgenskap.class);
+        var oppgaveEgenskaper = repoRule.getRepository().hentAlle(OppgaveEgenskap.class);
         assertThat(repoRule.getRepository().hentAlle(OppgaveEgenskap.class)).hasSize(antallEgenskaper);
         assertThat(repoRule.getRepository().hentAlle(OppgaveEgenskap.class))
                 .extracting(OppgaveEgenskap::getAndreKriterierType).contains(egenskap);

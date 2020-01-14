@@ -25,8 +25,10 @@ import no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.saksliste.Saksb
 import no.nav.foreldrepenger.loslager.aktør.TpsPersonDto;
 import no.nav.foreldrepenger.loslager.oppgave.BehandlingType;
 import no.nav.foreldrepenger.loslager.oppgave.FagsakYtelseType;
-import no.nav.foreldrepenger.loslager.repository.OppgaveRepositoryProvider;
-import no.nav.foreldrepenger.loslager.repository.OppgaveRepositoryProviderImpl;
+import no.nav.foreldrepenger.loslager.repository.OppgaveRepository;
+import no.nav.foreldrepenger.loslager.repository.OppgaveRepositoryImpl;
+import no.nav.foreldrepenger.loslager.repository.OrganisasjonRepository;
+import no.nav.foreldrepenger.loslager.repository.OrganisasjonRepositoryImpl;
 import no.nav.fplos.ansatt.AnsattTjeneste;
 import no.nav.fplos.avdelingsleder.AvdelingslederSaksbehandlerTjenesteImpl;
 import no.nav.fplos.avdelingsleder.AvdelingslederTjeneste;
@@ -74,21 +76,22 @@ public class VerdikjedetestAvdelingslederTest {
     public UnittestRepositoryRule repoRule = new UnittestRepositoryRule();
     private EntityManager entityManager = repoRule.getEntityManager();
     private JsonOppgaveHandler jsonOppgaveHandler = new JsonOppgaveHandler();
-    private OppgaveRepositoryProvider oppgaveRepositoryProvider = new OppgaveRepositoryProviderImpl(entityManager );
+    private OppgaveRepository oppgaveRepository = new OppgaveRepositoryImpl(entityManager);
+    private OrganisasjonRepository organisasjonRepository = new OrganisasjonRepositoryImpl(entityManager);
     private TpsTjeneste tpsTjeneste = mock(TpsTjeneste.class);
-    private AvdelingslederTjeneste avdelingslederTjeneste = new AvdelingslederTjenesteImpl(oppgaveRepositoryProvider);
+    private AvdelingslederTjeneste avdelingslederTjeneste = new AvdelingslederTjenesteImpl(oppgaveRepository, organisasjonRepository);
     private AnsattTjeneste ansattTjeneste = mock(AnsattTjeneste.class);
     private FagsakApplikasjonTjeneste fagsakApplikasjonTjeneste = mock(FagsakApplikasjonTjeneste.class);
-    private OppgaveRestTjeneste oppgaveRestTjeneste = new OppgaveRestTjeneste(new OppgaveTjenesteImpl(oppgaveRepositoryProvider, tpsTjeneste, avdelingslederTjeneste, ansattTjeneste), fagsakApplikasjonTjeneste);
-    private AvdelingslederRestTjeneste avdelingslederRestTjeneste = new AvdelingslederRestTjeneste(new AvdelingslederTjenesteImpl(oppgaveRepositoryProvider));
+    private OppgaveRestTjeneste oppgaveRestTjeneste = new OppgaveRestTjeneste(new OppgaveTjenesteImpl(oppgaveRepository, organisasjonRepository, tpsTjeneste, avdelingslederTjeneste, ansattTjeneste), fagsakApplikasjonTjeneste);
+    private AvdelingslederRestTjeneste avdelingslederRestTjeneste = new AvdelingslederRestTjeneste(new AvdelingslederTjenesteImpl(oppgaveRepository, organisasjonRepository));
     private AvdelingslederSakslisteRestTjeneste avdelingslederSakslisteRestTjeneste = new AvdelingslederSakslisteRestTjeneste(
-            new AvdelingslederTjenesteImpl(oppgaveRepositoryProvider));
+            new AvdelingslederTjenesteImpl(oppgaveRepository, organisasjonRepository), new OppgaveTjenesteImpl(oppgaveRepository, organisasjonRepository, tpsTjeneste, avdelingslederTjeneste, ansattTjeneste));
     private AvdelingslederSaksbehandlerRestTjeneste avdelingslederSaksbehandlerRestTjeneste =
-            new AvdelingslederSaksbehandlerRestTjeneste(new AvdelingslederSaksbehandlerTjenesteImpl(oppgaveRepositoryProvider, new OrganisasjonRessursEnhetTjenesteImpl()));
+            new AvdelingslederSaksbehandlerRestTjeneste(new AvdelingslederSaksbehandlerTjenesteImpl(oppgaveRepository, organisasjonRepository, new OrganisasjonRessursEnhetTjenesteImpl()));
     private SaksbehandlerSakslisteRestTjeneste saksbehandlerSakslisteRestTjeneste =
-            new SaksbehandlerSakslisteRestTjeneste(new OppgaveTjenesteImpl(oppgaveRepositoryProvider, tpsTjeneste, avdelingslederTjeneste, ansattTjeneste));
+            new SaksbehandlerSakslisteRestTjeneste(new OppgaveTjenesteImpl(oppgaveRepository, organisasjonRepository, tpsTjeneste, avdelingslederTjeneste, ansattTjeneste));
     private AvdelingslederOppgaveRestTjeneste avdelingslederOppgaveRestTjeneste =
-            new AvdelingslederOppgaveRestTjeneste(new OppgaveTjenesteImpl(oppgaveRepositoryProvider, tpsTjeneste, avdelingslederTjeneste, ansattTjeneste));
+            new AvdelingslederOppgaveRestTjeneste(new OppgaveTjenesteImpl(oppgaveRepository, organisasjonRepository, tpsTjeneste, avdelingslederTjeneste, ansattTjeneste));
     private ForeldrepengerBehandlingRestKlient foreldrepengerBehandlingRestKlient = mock(ForeldrepengerBehandlingRestKlient.class);
 
     @Inject
@@ -104,15 +107,15 @@ public class VerdikjedetestAvdelingslederTest {
     @Before
     public void before(){
         kafkaReader = new KafkaReader(meldingConsumer,
-                new FpsakEventHandler(oppgaveRepositoryProvider, foreldrepengerBehandlingRestKlient),
-                new TilbakekrevingEventHandler(oppgaveRepositoryProvider),
-                oppgaveRepositoryProvider,
-                new JsonOppgaveHandler(oppgaveRepositoryProvider, foreldrepengerBehandlingRestKlient)
+                new FpsakEventHandler(oppgaveRepository, foreldrepengerBehandlingRestKlient),
+                new TilbakekrevingEventHandler(oppgaveRepository),
+                oppgaveRepository,
+                new JsonOppgaveHandler(oppgaveRepository, foreldrepengerBehandlingRestKlient)
                 );
         entityManager.flush();
         avdelingDrammen = avdelingslederRestTjeneste.hentAvdelinger().stream()
                 .filter(avdeling -> AVDELING_DRAMMEN.equals(avdeling.getAvdelingEnhet())).findFirst().orElseThrow();
-        oppgaveRepositoryProvider.getOppgaveRepository().hentAlleLister(avdelingDrammen.getId()).forEach(liste -> entityManager.remove(liste));
+        oppgaveRepository.hentAlleLister(avdelingDrammen.getId()).forEach(liste -> entityManager.remove(liste));
         lagEnkeltMockResultatForTpsTjenesten();
         MockKafkaMessages.clearMessages();
         MockEventKafkaMessages.clearMessages();
@@ -221,18 +224,18 @@ public class VerdikjedetestAvdelingslederTest {
     }
 
     private OppgaveDto verifiserAtEksaktFinnes(SakslisteIdDto sakslisteIdDto, Map<Long, MeldingsTestInfo> meldinger, List<OppgaveDto> oppgaverTilBehandling) {
-        assertThat(oppgaverTilBehandling).withFailMessage("Oppgavene til behandling antall '"+oppgaverTilBehandling.size()+
-                "' har ikke samme antall som meldingene antall '"+meldinger.size()+"'" )
-                .hasSize(Math.min(meldinger.size(),3));
+        assertThat(oppgaverTilBehandling).withFailMessage("Oppgavene til behandling antall '" + oppgaverTilBehandling.size() +
+                "' har ikke samme antall som meldingene antall '" + meldinger.size() + "'")
+                .hasSize(Math.min(meldinger.size(), 3));
         Integer antallOppgaverForSaksliste = avdelingslederOppgaveRestTjeneste.hentAntallOppgaverForSaksliste(sakslisteIdDto, new AvdelingEnhetDto(avdelingDrammen.getAvdelingEnhet()));
-        assertThat(antallOppgaverForSaksliste.intValue()).withFailMessage("AntallOppgaverForSaksliste gir antallet "+
-                antallOppgaverForSaksliste+" mens antall fra meldinger er "+meldinger.size())
+        assertThat(antallOppgaverForSaksliste.intValue()).withFailMessage("AntallOppgaverForSaksliste gir antallet " +
+                antallOppgaverForSaksliste + " mens antall fra meldinger er " + meldinger.size())
                 .isEqualTo(meldinger.size());
-        for (OppgaveDto oppgave :oppgaverTilBehandling) {
-            assertThat(meldinger.get(oppgave.getBehandlingId())).withFailMessage("Finner ikke oppgaven med behandlingId:"+oppgave.getBehandlingId()+" i settet funnet i databasen").isNotNull();
+        for (OppgaveDto oppgave : oppgaverTilBehandling) {
+            assertThat(meldinger.get(oppgave.getBehandlingId())).withFailMessage("Finner ikke oppgaven med behandlingId:" + oppgave.getBehandlingId() + " i settet funnet i databasen").isNotNull();
             meldinger.get(oppgave.getBehandlingId()).sammenligne(oppgave);
         }
-        if (oppgaverTilBehandling.isEmpty())return null;
+        if (oppgaverTilBehandling.isEmpty()) return null;
         return oppgaverTilBehandling.get(0);
     }
 

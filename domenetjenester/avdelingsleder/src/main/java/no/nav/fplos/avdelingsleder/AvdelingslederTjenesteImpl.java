@@ -1,11 +1,5 @@
 package no.nav.fplos.avdelingsleder;
 
-import java.time.LocalDate;
-import java.util.List;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-
 import no.nav.foreldrepenger.loslager.oppgave.AndreKriterierType;
 import no.nav.foreldrepenger.loslager.oppgave.BehandlingType;
 import no.nav.foreldrepenger.loslager.oppgave.FagsakYtelseType;
@@ -17,10 +11,14 @@ import no.nav.foreldrepenger.loslager.oppgave.OppgaveFiltrering;
 import no.nav.foreldrepenger.loslager.organisasjon.Avdeling;
 import no.nav.foreldrepenger.loslager.organisasjon.Saksbehandler;
 import no.nav.foreldrepenger.loslager.repository.OppgaveRepository;
-import no.nav.foreldrepenger.loslager.repository.OppgaveRepositoryProvider;
 import no.nav.foreldrepenger.loslager.repository.OrganisasjonRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import java.time.LocalDate;
+import java.util.List;
 
 
 @ApplicationScoped
@@ -36,9 +34,9 @@ public class AvdelingslederTjenesteImpl implements AvdelingslederTjeneste {
     }
 
     @Inject
-    public AvdelingslederTjenesteImpl(OppgaveRepositoryProvider oppgaveRepositoryProvider) {
-        oppgaveRepository = oppgaveRepositoryProvider.getOppgaveRepository();
-        organisasjonRepository = oppgaveRepositoryProvider.getOrganisasjonRepository();
+    public AvdelingslederTjenesteImpl(OppgaveRepository oppgaveRepository, OrganisasjonRepository organisasjonRepository) {
+        this.oppgaveRepository = oppgaveRepository;
+        this.organisasjonRepository = organisasjonRepository;
     }
 
     @Override

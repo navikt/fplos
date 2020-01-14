@@ -1,26 +1,24 @@
 package no.nav.fplos.avdelingsleder;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-import java.util.List;
-
-import javax.persistence.EntityManager;
-
+import no.nav.foreldrepenger.dbstoette.UnittestRepositoryRule;
 import no.nav.foreldrepenger.loslager.oppgave.AndreKriterierType;
+import no.nav.foreldrepenger.loslager.oppgave.BehandlingType;
+import no.nav.foreldrepenger.loslager.oppgave.FagsakYtelseType;
+import no.nav.foreldrepenger.loslager.oppgave.KøSortering;
 import no.nav.foreldrepenger.loslager.oppgave.OppgaveFiltrering;
+import no.nav.foreldrepenger.loslager.organisasjon.Avdeling;
+import no.nav.foreldrepenger.loslager.repository.OppgaveRepository;
+import no.nav.foreldrepenger.loslager.repository.OppgaveRepositoryImpl;
+import no.nav.foreldrepenger.loslager.repository.OrganisasjonRepository;
+import no.nav.foreldrepenger.loslager.repository.OrganisasjonRepositoryImpl;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
-import no.nav.foreldrepenger.dbstoette.UnittestRepositoryRule;
-import no.nav.foreldrepenger.loslager.oppgave.BehandlingType;
-import no.nav.foreldrepenger.loslager.oppgave.FagsakYtelseType;
-import no.nav.foreldrepenger.loslager.oppgave.KøSortering;
-import no.nav.foreldrepenger.loslager.organisasjon.Avdeling;
-import no.nav.foreldrepenger.loslager.repository.OppgaveRepository;
-import no.nav.foreldrepenger.loslager.repository.OppgaveRepositoryProvider;
-import no.nav.foreldrepenger.loslager.repository.OppgaveRepositoryProviderImpl;
-import no.nav.foreldrepenger.loslager.repository.OrganisasjonRepository;
+import javax.persistence.EntityManager;
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 
 public class AvdelingslederTjenesteImplTest {
@@ -28,10 +26,9 @@ public class AvdelingslederTjenesteImplTest {
     @Rule
     public final UnittestRepositoryRule repoRule = new UnittestRepositoryRule();
     private final EntityManager entityManager = repoRule.getEntityManager();
-    private final OppgaveRepositoryProvider repositoryProvider = new OppgaveRepositoryProviderImpl(entityManager);
-    private final OppgaveRepository oppgaveRepository = repositoryProvider.getOppgaveRepository();
-    private final OrganisasjonRepository organisasjonRepository = repositoryProvider.getOrganisasjonRepository();
-    private AvdelingslederTjeneste avdelingslederTjeneste = new AvdelingslederTjenesteImpl(repositoryProvider);
+    private final OppgaveRepository oppgaveRepository = new OppgaveRepositoryImpl(entityManager);
+    private final OrganisasjonRepository organisasjonRepository = new OrganisasjonRepositoryImpl(entityManager);
+    private AvdelingslederTjeneste avdelingslederTjeneste = new AvdelingslederTjenesteImpl(oppgaveRepository, organisasjonRepository);
 
     private static String NAVN = "Navn";
     private static String NYTT_NAVN = "Nytt navn";

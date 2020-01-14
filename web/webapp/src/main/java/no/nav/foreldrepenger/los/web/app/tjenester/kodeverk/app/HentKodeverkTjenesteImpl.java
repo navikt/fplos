@@ -5,7 +5,7 @@ import no.nav.foreldrepenger.loslager.oppgave.BehandlingType;
 import no.nav.foreldrepenger.loslager.oppgave.FagsakStatus;
 import no.nav.foreldrepenger.loslager.oppgave.FagsakYtelseType;
 import no.nav.foreldrepenger.loslager.oppgave.KøSortering;
-import no.nav.fplos.kodeverk.Kodeverdi;
+import no.nav.foreldrepenger.loslager.oppgave.Kodeverdi;
 
 import javax.enterprise.context.ApplicationScoped;
 import java.util.Collection;
@@ -21,7 +21,7 @@ class HentKodeverkTjenesteImpl implements HentKodeverkTjeneste {
             FagsakYtelseType.class.getSimpleName(), asList(FagsakYtelseType.values()),
             KøSortering.class.getSimpleName(), asList(KøSortering.values()),
             FagsakStatus.class.getSimpleName(), asList(FagsakStatus.values()),
-            AndreKriterierType.class.getSimpleName(), AndreKriterierType.filteredEnums());
+            AndreKriterierType.class.getSimpleName(), asList(AndreKriterierType.values()));
 
     public HentKodeverkTjenesteImpl() {
         // For CDI

@@ -4,16 +4,21 @@ import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import no.nav.foreldrepenger.loslager.oppgave.EventmottakFeillogg;
 import no.nav.foreldrepenger.loslager.repository.OppgaveRepository;
-import no.nav.foreldrepenger.loslager.repository.OppgaveRepositoryProvider;
 import no.nav.fplos.kafkatjenester.jsonoppgave.JsonOppgave;
 import no.nav.vedtak.felles.integrasjon.kafka.BehandlingProsessEventDto;
+import no.nav.vedtak.log.mdc.MDCOperations;
+import org.apache.kafka.clients.consumer.ConsumerRecord;
+import org.apache.kafka.clients.consumer.ConsumerRecords;
+import org.apache.kafka.common.header.Header;
+import org.apache.kafka.common.header.Headers;
+import no.nav.vedtak.felles.integrasjon.kafka.FpsakBehandlingProsessEventDto;
+import no.nav.vedtak.felles.integrasjon.kafka.TilbakebetalingBehandlingProsessEventDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import java.io.IOException;
-import java.util.List;
 
 @ApplicationScoped
 public class KafkaReader {
@@ -25,6 +30,7 @@ public class KafkaReader {
     private AksjonspunktMeldingConsumer meldingConsumer;
     private StringBuilder feilmelding = new StringBuilder();
     private JsonOppgaveHandler jsonOppgaveHandler;
+    private static final String CALLID_NAME = "Nav-CallId";
 
     public KafkaReader(){
         //to make proxyable
@@ -34,19 +40,27 @@ public class KafkaReader {
     public KafkaReader(AksjonspunktMeldingConsumer meldingConsumer,
                        FpsakEventHandler fpsakEventHandler,
                        TilbakekrevingEventHandler tilbakekrevingEventHandler,
-                       OppgaveRepositoryProvider oppgaveRepositoryProvider, JsonOppgaveHandler jsonOppgaveHandler){
+                       OppgaveRepository oppgaveRepository, JsonOppgaveHandler jsonOppgaveHandler){
         this.meldingConsumer = meldingConsumer;
         this.fpsakEventHandler = fpsakEventHandler;
         this.tilbakekrevingEventHandler = tilbakekrevingEventHandler;
-        this.oppgaveRepository = oppgaveRepositoryProvider.getOppgaveRepository();
+        this.oppgaveRepository = oppgaveRepository;
         this.jsonOppgaveHandler = jsonOppgaveHandler;
     }
 
     public void hentOgLagreMeldingene() {
-        List<String> meldinger = meldingConsumer.hentConsumerMeldingene();
-        for (String melding : meldinger) {
-            prosesser(melding);
+        ConsumerRecords<String, String> records = meldingConsumer.hentConsumerMeldingene();
+        for (ConsumerRecord<String, String> record : records) {
+            Headers headers = record.headers();
+            for(Header header:headers){
+                if(CALLID_NAME.equals(header.key())) {
+                    String callId = new String(header.value());
+                    MDCOperations.putCallId(callId);
+                }
+            }
+            prosesser(record.value());
         }
+        MDCOperations.removeCallId();
         commitMelding();
     }
 
@@ -58,22 +72,19 @@ public class KafkaReader {
         log.info("Mottatt melding med start :" + melding.substring(0, Math.min(melding.length() - 1, 1000)));
         try {
             BehandlingProsessEventDto event = deserialiser(melding, BehandlingProsessEventDto.class);
-            if (event != null) {
-                switch (Fagsystem.valueOf(event.getFagsystem())) {
-                    case FPSAK:
-                        fpsakEventHandler.prosesser(event);
-                        return;
-                    case FPTILBAKE:
-                        tilbakekrevingEventHandler.prosesser(event);
-                        return;
-                    default:
-                        log.warn("BehandlingProsessEventDto har ikke gyldig verdi for fagsystem. Fagsystem {} er ikke støttet.",
-                                event.getFagsystem());
-                }
+            if(event instanceof FpsakBehandlingProsessEventDto){
+                fpsakEventHandler.prosesser(event);
+                return;
+            }
+            else if(event instanceof TilbakebetalingBehandlingProsessEventDto) {
+                tilbakekrevingEventHandler.prosesser(event);
+                return;
             }
 
             JsonOppgave oppgaveJson = deserialiser(melding, JsonOppgave.class);
-            if (oppgaveJson != null) { jsonOppgaveHandler.prosesser(oppgaveJson); }
+            if (oppgaveJson != null) {
+                jsonOppgaveHandler.prosesser(oppgaveJson);
+            }
 
             lagreFeiletMelding(melding);
             log.warn("Kunne ikke deserialisere meldingen");

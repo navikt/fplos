@@ -2,18 +2,13 @@ package no.nav.foreldrepenger.loslager.oppgave;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import no.nav.fplos.kodeverk.Kodeverdi;
 
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;
 
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -50,7 +45,7 @@ public enum BehandlingType implements Kodeverdi {
         return Arrays.stream(values())
                 .filter(v -> v.kode.equals(kode))
                 .findFirst()
-                .orElseThrow();
+                .orElseThrow(() -> new IllegalArgumentException("Ukjent BehandlingType: " + kode));
     }
 
     public static List<BehandlingType> getEnums() {

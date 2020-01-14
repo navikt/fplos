@@ -4,14 +4,13 @@ import no.nav.foreldrepenger.loslager.oppgave.EventmottakFeillogg;
 import no.nav.foreldrepenger.loslager.oppgave.Oppgave;
 import no.nav.foreldrepenger.loslager.oppgave.OppgaveEventLogg;
 import no.nav.foreldrepenger.loslager.repository.AdminRepository;
-import no.nav.foreldrepenger.loslager.repository.OppgaveRepositoryProvider;
 import no.nav.fplos.foreldrepengerbehandling.BehandlingFpsak;
 import no.nav.fplos.foreldrepengerbehandling.ForeldrepengerBehandlingRestKlient;
 import no.nav.fplos.kafkatjenester.Fagsystem;
 import no.nav.fplos.kafkatjenester.FpsakEventHandler;
 import no.nav.fplos.kafkatjenester.KafkaReader;
 import no.nav.fplos.kafkatjenester.TilbakekrevingEventHandler;
-import no.nav.vedtak.felles.integrasjon.kafka.BehandlingProsessEventDto;
+import no.nav.vedtak.felles.integrasjon.kafka.FpsakBehandlingProsessEventDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,12 +37,12 @@ public class AdminTjenesteImpl implements AdminTjeneste {
     }
 
     @Inject
-    public AdminTjenesteImpl(OppgaveRepositoryProvider oppgaveRepositoryProvider,
+    public AdminTjenesteImpl(AdminRepository adminRepository,
                              ForeldrepengerBehandlingRestKlient foreldrepengerBehandlingRestKlient,
                              FpsakEventHandler fpsakEventHandler,
                              TilbakekrevingEventHandler tilbakekrevingEventHandler,
                              KafkaReader kafaReader) {
-        adminRepository = oppgaveRepositoryProvider.getAdminRepository();
+        this.adminRepository = adminRepository;
         this.foreldrepengerBehandlingRestKlient = foreldrepengerBehandlingRestKlient;
         this.fpsakEventHandler = fpsakEventHandler;
         this.tilbakekrevingEventHandler = tilbakekrevingEventHandler;
@@ -103,27 +102,6 @@ public class AdminTjenesteImpl implements AdminTjeneste {
     }
 
     @Override
-    public int oppdaterAktiveOppgaverMedInformasjonOmRefusjonskrav() {
-        List<Oppgave> aktiveOppgaver = adminRepository.hentAlleAktiveOppgaver();
-        aktiveOppgaver.forEach(this::leggTilOppgaveEgenskapHvisUtbetalingTilBruker);
-        return aktiveOppgaver.size();
-    }
-
-    @Override
-    public int oppdaterAktiveOppgaverMedInformasjonHvisUtlandssak() {
-        List<Oppgave> aktiveOppgaver = adminRepository.hentAlleAktiveOppgaver();
-        aktiveOppgaver.forEach(this::leggTilOppgaveEgenskapHvisUtlandssak);
-        return aktiveOppgaver.size();
-    }
-
-    @Override
-    public int oppdaterAktiveOppgaverMedInformasjonHvisGradering() {
-        List<Oppgave> aktiveOppgaver = adminRepository.hentAlleAktiveOppgaver();
-        aktiveOppgaver.forEach(this::leggTilOppgaveEgenskapHvisGradering);
-        return aktiveOppgaver.size();
-    }
-
-    @Override
     public List<Oppgave> hentAlleOppgaverForBehandling(Long behandlingId) {
         return adminRepository.hentAlleOppgaverForBehandling(behandlingId);
     }
@@ -138,22 +116,9 @@ public class AdminTjenesteImpl implements AdminTjeneste {
         return adminRepository.aktiverOppgave(oppgaveId);
     }
 
-    private void leggTilOppgaveEgenskapHvisUtbetalingTilBruker(Oppgave oppgave) {
-        BehandlingFpsak behandlingDto = foreldrepengerBehandlingRestKlient.getBehandling(oppgave.getBehandlingId());
-        fpsakEventHandler.håndterOppgaveEgenskapUtbetalingTilBruker(behandlingDto.getHarRefusjonskravFraArbeidsgiver(), oppgave);
-    }
 
-    private void leggTilOppgaveEgenskapHvisUtlandssak(Oppgave oppgave) {
-        BehandlingFpsak behandlingDto = foreldrepengerBehandlingRestKlient.getBehandling(oppgave.getBehandlingId());
-        fpsakEventHandler.håndterOppgaveEgenskapUtlandssak(behandlingDto.getErUtlandssak(), oppgave);
-    }
-
-    private void leggTilOppgaveEgenskapHvisGradering(Oppgave oppgave) {
-        BehandlingFpsak behandlingFpsak = foreldrepengerBehandlingRestKlient.getBehandling(oppgave.getBehandlingId());
-        fpsakEventHandler.håndterOppgaveEgenskapGradering(behandlingFpsak.getHarGradering(), oppgave);
-    }
-
-    private BehandlingProsessEventDto mapTilBehandlingProsessEventDto(Long behandlingId) {
+    //TODO: Må lage ny versjon som støtter Fptilbake og benytter UUID
+    private FpsakBehandlingProsessEventDto mapTilBehandlingProsessEventDto(Long behandlingId) {
         Oppgave eksisterendeOppgave = hentOppgave(behandlingId);
         BehandlingFpsak fraFpsak = foreldrepengerBehandlingRestKlient.getBehandling(behandlingId);
 
@@ -161,12 +126,11 @@ public class AdminTjenesteImpl implements AdminTjeneste {
         fraFpsak.getAksjonspunkter()
                 .forEach(aksjonspunkt -> aksjonspunktKoderMedStatusListe.put(aksjonspunkt.getDefinisjonKode(), aksjonspunkt.getStatusKode()));
 
-        return BehandlingProsessEventDto.builder()
-                .medFagsystem(eksisterendeOppgave.getSystem())
+        return FpsakBehandlingProsessEventDto.builder()
                 .medBehandlingId(behandlingId)
                 .medSaksnummer(eksisterendeOppgave.getFagsakSaksnummer().toString())
                 .medAktørId(eksisterendeOppgave.getAktorId().toString())
-                .medBehandlinStatus(fraFpsak.getStatus())
+                .medBehandlingStatus(fraFpsak.getStatus())
                 .medBehandlendeEnhet(fraFpsak.getBehandlendeEnhet())
                 .medYtelseTypeKode(eksisterendeOppgave.getFagsakYtelseType().getKode())
                 .medBehandlingTypeKode(eksisterendeOppgave.getBehandlingType().getKode())

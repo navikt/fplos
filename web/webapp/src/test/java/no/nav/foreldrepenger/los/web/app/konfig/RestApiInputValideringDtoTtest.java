@@ -56,9 +56,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 
 import no.nav.foreldrepenger.los.web.app.IndexClasses;
-import no.nav.foreldrepenger.los.web.app.validering.ValidKodeverk;
-import no.nav.fplos.kodeverk.Kodeliste;
-import no.nav.fplos.kodeverk.KodeverkTabell;
 
 @RunWith(Parameterized.class)
 public class RestApiInputValideringDtoTtest extends RestApiTester {
@@ -138,19 +135,11 @@ public class RestApiInputValideringDtoTtest extends RestApiTester {
                 Type[] args = ((ParameterizedType) field.getGenericType()).getActualTypeArguments();
                 if (Arrays.asList(args).stream().allMatch(t -> UNNTATT_FRA_VALIDERING.containsKey(t))) {
                     return Collections.singletonList(Arrays.asList(Size.class));
-                } else if (args.length == 1 && erKodeverk(args)) {
-                    return Collections.singletonList(Arrays.asList(Valid.class, Size.class));
                 }
-
             }
             return singletonList(Arrays.asList(Valid.class, Size.class));
-
         }
         return VALIDERINGSALTERNATIVER.get(type);
-    }
-
-    private static boolean erKodeverk(Type... args) {
-        return Kodeliste.class.isAssignableFrom((Class<?>) args[0]) || KodeverkTabell.class.isAssignableFrom((Class<?>) args[0]);
     }
 
     private static Set<Class<?>> finnAlleDtoTyper() {
@@ -178,9 +167,6 @@ public class RestApiInputValideringDtoTtest extends RestApiTester {
     }
 
     private static void validerRekursivt(Set<Class<?>> besøkteKlasser, Class<?> klasse, Class<?> forrigeKlasse) throws URISyntaxException {
-        if (erKodeverk(klasse)) {
-            return;
-        }
         if (besøkteKlasser.contains(klasse)) {
             return;
         }
@@ -209,9 +195,7 @@ public class RestApiInputValideringDtoTtest extends RestApiTester {
                 validerEnum(field);
                 continue; // enum er OK
             }
-            if (erKodeverk(field.getType())) {
-                validerHarValidkodeverkAnnotering(field);
-            } else if (getVurderingsalternativer(field) != null) {
+            if (getVurderingsalternativer(field) != null) {
                 validerRiktigAnnotert(field); // har konfigurert opp spesifikk validering
             } else if (field.getType().getName().startsWith("java")) {
                 throw new AssertionError(
@@ -239,19 +223,9 @@ public class RestApiInputValideringDtoTtest extends RestApiTester {
 
     }
 
-    private static boolean erKodeverk(Class<?> klasse) {
-        return Kodeliste.class.isAssignableFrom(klasse) || KodeverkTabell.class.isAssignableFrom(klasse);
-    }
-
     private static void validerHarValidAnnotering(Field field) {
         if (field.getAnnotation(Valid.class) == null) {
             throw new AssertionError("Feltet " + field + " må ha @Valid-annotering.");
-        }
-    }
-
-    private static void validerHarValidkodeverkAnnotering(Field field) {
-        if (field.getAnnotation(ValidKodeverk.class) == null) {
-            throw new AssertionError("Feltet " + field + " er et kodeverk, og må ha @ValidKodeverk-annotering");
         }
     }
 
@@ -290,27 +264,8 @@ public class RestApiInputValideringDtoTtest extends RestApiTester {
                     harAlleAnnoteringerForAlternativet = false;
                 }
             }
-            if (harAlleAnnoteringerForAlternativet) {
-                validerRiktigAnnotertForCollectionsAndMaps(field);
-                return;
-            }
+            if (harAlleAnnoteringerForAlternativet) return;
         }
         throw new IllegalArgumentException("Feltet " + field + " har ikke påkrevde annoteringer: " + alternativer);
     }
-
-    private static void validerRiktigAnnotertForCollectionsAndMaps(Field field) {
-        if (Collection.class.isAssignableFrom(field.getType()) || Map.class.isAssignableFrom(field.getType())) {
-            AnnotatedParameterizedType annType = (AnnotatedParameterizedType) field.getAnnotatedType();
-            AnnotatedType[] annotatedTypes = annType.getAnnotatedActualTypeArguments();
-            for (AnnotatedType at : Arrays.asList(annotatedTypes)) {
-                if (erKodeverk(at.getType())) {
-                    if (!at.isAnnotationPresent(ValidKodeverk.class)) {
-                        throw new IllegalArgumentException(
-                                "Feltet " + field + " har ikke påkrevd annotering for kodeverk: @" + ValidKodeverk.class.getSimpleName());
-                    }
-                }
-            }
-        }
-    }
-
 }

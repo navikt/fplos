@@ -1,34 +1,62 @@
 package no.nav.foreldrepenger.loslager.oppgave;
 
-import no.nav.fplos.kodeverk.Kodeliste;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
-import javax.persistence.DiscriminatorValue;
-import javax.persistence.Entity;
+import javax.persistence.AttributeConverter;
+import javax.persistence.Converter;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
-/**
- * NB: Pass på! Ikke legg koder vilkårlig her
- * Denne definerer etablerte behandlingstatuser ihht. modell angitt av FFA (Forretning og Fag).
- */
-@Entity(name = "BehandlingStatus")
-@DiscriminatorValue(BehandlingStatus.DISCRIMINATOR)
-public class BehandlingStatus extends Kodeliste {
+@JsonFormat(shape = JsonFormat.Shape.OBJECT)
+public enum BehandlingStatus {
+    AVSLUTTET("AVSLU"),
+    FATTER_VEDTAK("FVED"),
+    IVERKSETTER_VEDTAK("IVED"),
+    OPPRETTET("OPPRE"),
+    UTREDES("UTRED");
 
-    public static final String DISCRIMINATOR = "BEHANDLING_STATUS";
+    private String kode;
 
-    public static final BehandlingStatus AVSLUTTET = new BehandlingStatus("AVSLU"); //$NON-NLS-1$
-    public static final BehandlingStatus FATTER_VEDTAK = new BehandlingStatus("FVED"); //$NON-NLS-1$
-    public static final BehandlingStatus IVERKSETTER_VEDTAK = new BehandlingStatus("IVED"); //$NON-NLS-1$
-    public static final BehandlingStatus OPPRETTET = new BehandlingStatus("OPPRE"); //$NON-NLS-1$
-    public static final BehandlingStatus UTREDES = new BehandlingStatus("UTRED"); //$NON-NLS-1$
-
-    public static final BehandlingStatus UDEFINERT = new BehandlingStatus("-"); //$NON-NLS-1$
-
-    protected BehandlingStatus(String kode) {
-        super(kode, DISCRIMINATOR);
+    BehandlingStatus(String kode) {
+        this.kode = kode;
     }
 
-    BehandlingStatus() {
-        // Hibernate trenger den
+    public String getKode() {
+        return kode;
     }
 
+    @JsonCreator
+    public static BehandlingStatus fraKode(@JsonProperty("kode") String kode) {
+        if (kode.equals("-")) return null;
+        return Arrays.stream(values())
+                .filter(v -> v.kode.equals(kode))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("Ukjent BehandlingStatus: " + kode));
+    }
+
+    public static List<BehandlingStatus> getEnums() {
+        return Arrays.stream(values())
+                .collect(Collectors.toList());
+    }
+
+    @Converter(autoApply = true)
+    public static class KodeverdiConverter implements AttributeConverter<BehandlingStatus, String> {
+        @Override
+        public String convertToDatabaseColumn(BehandlingStatus attribute) {
+            return Optional.ofNullable(attribute)
+                    .map(BehandlingStatus::getKode)
+                    .orElse(null);
+        }
+
+        @Override
+        public BehandlingStatus convertToEntityAttribute(String dbData) {
+            return Optional.ofNullable(dbData)
+                    .map(BehandlingStatus::fraKode)
+                    .orElse(null);
+        }
+    }
 }

@@ -11,6 +11,8 @@ class TestUtil {
                 .medUuid(UUID.nameUUIDFromBytes("TEST".getBytes()))
                 .medBehandlendeEnhetNavn("NAV")
                 .medAnsvarligSaksbehandler("VLLOS")
-                .medStatus("-");
+                .medStatus("-")
+                .medHarGradering(null)
+                .medHarRefusjonskravFraArbeidsgiver(null);
     }
 }

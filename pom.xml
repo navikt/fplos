@@ -12,12 +12,10 @@
         <module>domene</module>
         <module>domenetjenester</module>
         <module>web</module>
-        <module>kodeverk</module>
         <module>i18n</module>
         <module>kafkatjenester</module>
         <module>integrasjon</module>
         <module>integrasjonstester</module>
-        <module>uuid-synkronisering</module>
     </modules>
 
     <properties>
@@ -33,7 +31,7 @@
         <!-- Felles avhengigheter i prosjektet Disse skal ALLTID være en
             RELEASE-avhengighet UNNTAK: feature-brancher og lokalt -->
         <felles.version>1.3.1_20191118123649_526493b</felles.version>
-        <fp-kontrakter.version>5.0_20191030165004_73018e2</fp-kontrakter.version>
+        <fp-kontrakter.version>5.1_20200114104934_66a9974</fp-kontrakter.version>
         <!-- NAV -->
         <organisasjon-ressurs-enhet.version>1.0.0</organisasjon-ressurs-enhet.version>
 
@@ -223,17 +221,6 @@
             </dependency>
             <dependency>
                 <groupId>no.nav.foreldrepenger.los</groupId>
-                <artifactId>kodeverk</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>no.nav.foreldrepenger.los</groupId>
-                <artifactId>kodeverk</artifactId>
-                <version>${project.version}</version>
-                <type>test-jar</type>
-            </dependency>
-            <dependency>
-                <groupId>no.nav.foreldrepenger.los</groupId>
                 <artifactId>migreringer</artifactId>
                 <version>${project.version}</version>
             </dependency>
@@ -264,12 +251,6 @@
                 <version>${project.version}</version>
                 <type>war</type>
             </dependency>
-            <dependency>
-                <groupId>no.nav.foreldrepenger.los</groupId>
-                <artifactId>uuid-synkronisering</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-
 
             <!-- Felles biblioteker og sikkerhet -->
             <dependency>

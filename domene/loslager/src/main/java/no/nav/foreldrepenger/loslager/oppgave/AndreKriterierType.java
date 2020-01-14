@@ -3,17 +3,11 @@ package no.nav.foreldrepenger.loslager.oppgave;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import no.nav.fplos.kodeverk.Kodeverdi;
 
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum AndreKriterierType implements Kodeverdi {
@@ -23,8 +17,9 @@ public enum AndreKriterierType implements Kodeverdi {
     UTBETALING_TIL_BRUKER("UTBETALING_TIL_BRUKER", "Utbetaling til bruker"),
     UTLANDSSAK("UTLANDSSAK", "Utland"),
     SOKT_GRADERING("SOKT_GRADERING", "Søkt gradering"),
-    SELVSTENDIG_FRILANSER("SELVSTENDIG_FRILANSER", "Selvstendig næringsdrivende eller frilanser"),
-    UKJENT("-", "Placeholder"); // todo: fjern verdier i tabell og relevant kode i contract-fasen
+    VURDER_SYKDOM("VURDER_SYKDOM", "Vurder sykdom"),
+    VURDER_FARESIGNALER("VURDER_FARESIGNALER", "Vurder faresignaler");
+    //SELVSTENDIG_FRILANSER("SELVSTENDIG_FRILANSER", "Selvstendig næringsdrivende eller frilanser")
 
     private String kode;
     private final String navn;
@@ -47,18 +42,12 @@ public enum AndreKriterierType implements Kodeverdi {
         return KODEVERK;
     }
 
-    public static List<AndreKriterierType> filteredEnums() { // fjern i contract
-        return Arrays.stream(values())
-                .filter(v -> !v.equals(UKJENT))
-                .collect(Collectors.toList());
-    }
-
     @JsonCreator
     public static AndreKriterierType fraKode(@JsonProperty("kode") String kode) {
         return Arrays.stream(values())
                 .filter(v -> v.kode.equals(kode))
                 .findFirst()
-                .orElseThrow();
+                .orElseThrow(() -> new IllegalArgumentException("Ukjent AndreKriterierType: " + kode));
     }
 
     @Converter(autoApply = true)
