@@ -1,24 +1,22 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Systemtittel } from 'nav-frontend-typografi';
-import { FormattedMessage } from 'react-intl';
+import { injectIntl, intlShape } from 'react-intl';
+import BoxedListWithLinks from '@navikt/boxed-list-with-links';
+import BoxedListWithSelection from '@navikt/boxed-list-with-selection';
+import Header from '@navikt/nap-header';
 
 import { getValueFromLocalStorage, setValueInLocalStorage, removeValueFromLocalStorage } from 'utils/localStorageHelper';
-import Image from 'sharedComponents/Image';
 import { Avdeling } from 'app/avdelingTsType';
 import avdelingPropType from 'app/avdelingPropType';
 
-import logoUrl from 'images/nav.svg';
-import navAnsattIkonUrl from 'images/nav_ansatt.svg';
-import rettskildeneIkonUrl from 'images/rettskildene.svg';
-import systemrutineIkonUrl from 'images/rutine.svg';
 import { RETTSKILDE_URL, SYSTEMRUTINE_URL } from 'data/eksterneLenker';
 
 import ErrorMessagePanel from './ErrorMessagePanel';
 
-import styles from './header.less';
+import styles from './headerWithErrorPanel.less';
 
 type TsProps = Readonly<{
+  intl: any;
   navAnsattName: string;
   removeErrorMessage: () => void;
   queryStrings: {
@@ -31,14 +29,15 @@ type TsProps = Readonly<{
 }>
 
 /**
- * Header
+ * HeaderWithErrorPanel
  *
  * Presentasjonskomponent. Definerer header-linjen som alltid vises øverst nettleservinduet.
  * Denne viser lenke tilbake til hovedsiden, nettside-navnet og NAV-ansatt navn.
  * I tillegg vil den vise potensielle feilmeldinger i ErrorMessagePanel.
  */
-class Header extends Component<TsProps> {
+class HeaderWithErrorPanel extends Component<TsProps> {
   static propTypes = {
+    intl: intlShape.isRequired,
     queryStrings: PropTypes.shape({
       errormessage: PropTypes.string,
       errorcode: PropTypes.string,
@@ -94,6 +93,7 @@ class Header extends Component<TsProps> {
 
   render = () => {
     const {
+      intl,
       navAnsattName,
       removeErrorMessage,
       queryStrings,
@@ -101,61 +101,46 @@ class Header extends Component<TsProps> {
       valgtAvdelingEnhet,
     } = this.props;
 
+    let props = {};
+    if (valgtAvdelingEnhet && avdelinger.length > 0) {
+      props = {
+        renderUserPopoverContent: () => (
+          <BoxedListWithSelection
+            onClick={index => this.setValgtAvdeling(avdelinger[index].avdelingEnhet)}
+            items={avdelinger.map(avdeling => ({
+              name: `${avdeling.avdelingEnhet} ${avdeling.navn}`,
+              selected: valgtAvdelingEnhet === avdeling.avdelingEnhet,
+            }))}
+          />
+        ),
+        userUnit: `${valgtAvdelingEnhet} ${avdelinger.find(a => a.avdelingEnhet === valgtAvdelingEnhet).navn}`,
+      };
+    }
+
     return (
       <header className={styles.container}>
-        <div className={styles.topplinje}>
-          <div>
-            <div className={styles.logo}>
-              <Image
-                className={styles.headerIkon}
-                src={logoUrl}
-                altCode="Header.LinkToMainPage"
-                titleCode="Header.LinkToMainPage"
-              />
-            </div>
-            <div className={styles.headerDivider} />
-          </div>
-          <Systemtittel className={styles.text}><FormattedMessage id="Header.Foreldrepenger" /></Systemtittel>
-          <div className={styles.navAnsatt}>
-            {avdelinger.length > 0 && (
-            <div className={styles.avdelingDropdownContainer}>
-              <select className={styles.avdelingDropdown} value={valgtAvdelingEnhet} onChange={event => this.setValgtAvdeling(event.target.value)}>
-                {avdelinger.map(a => <option key={a.avdelingEnhet} value={a.avdelingEnhet}>{`${a.avdelingEnhet} ${a.navn}`}</option>)}
-              </select>
-            </div>
-            )}
-            <Image
-              className={styles.weightIkon}
-              src={systemrutineIkonUrl}
-              onMouseDown={() => window.open(SYSTEMRUTINE_URL, '_blank')}
-              onKeyDown={() => window.open(SYSTEMRUTINE_URL, '_blank')}
-              altCode="Header.Systemrutine"
-              titleCode="Header.Systemrutine"
-              tabIndex="0"
+        <Header
+          title={intl.formatMessage({ id: 'Header.Foreldrepenger' })}
+          userName={navAnsattName}
+          renderLinksPopoverContent={() => (
+            <BoxedListWithLinks
+              items={[{
+                name: intl.formatMessage({ id: 'Header.Rettskilde' }),
+                href: RETTSKILDE_URL,
+                isExternal: true,
+              }, {
+                name: intl.formatMessage({ id: 'Header.Systemrutine' }),
+                href: SYSTEMRUTINE_URL,
+                isExternal: true,
+              }]}
             />
-            <Image
-              className={styles.weightIkon}
-              src={rettskildeneIkonUrl}
-              onMouseDown={() => window.open(RETTSKILDE_URL, '_blank')}
-              onKeyDown={() => window.open(RETTSKILDE_URL, '_blank')}
-              altCode="Header.Rettskilde"
-              titleCode="Header.Rettskilde"
-              tabIndex="0"
-            />
-            <div className={styles.weightAndUserDivider} />
-            <Image
-              className={styles.navAnsattIkon}
-              src={navAnsattIkonUrl}
-              altCode="Header.NavAnsatt"
-              titleCode="Header.NavAnsatt"
-            />
-            <div className={styles.navAnsattTekst}>{navAnsattName}</div>
-          </div>
-        </div>
+          )}
+          {...props}
+        />
         <ErrorMessagePanel queryStrings={queryStrings} removeErrorMessage={removeErrorMessage} />
       </header>
     );
   }
 }
 
-export default Header;
+export default injectIntl(HeaderWithErrorPanel);
