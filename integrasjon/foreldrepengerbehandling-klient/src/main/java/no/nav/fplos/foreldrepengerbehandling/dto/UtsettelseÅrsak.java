@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public enum UtsettelseÅrsak {
-    ARBEID, LOVBESTEMT_FERIE, SYKDOM, INSTITUSJON_SØKER, INSTITUSJON_BARNET;
+    ARBEID, LOVBESTEMT_FERIE, SYKDOM, INSTITUSJONSOPPHOLD_SØKER, INSTITUSJONSOPPHOLD_BARNET;
 
     @JsonCreator
     public static UtsettelseÅrsak fraKode(@JsonProperty("kode") String kode) {
@@ -13,8 +13,8 @@ public enum UtsettelseÅrsak {
 
     boolean gjelderSykdom() {
         return this.equals(SYKDOM) ||
-                this.equals(INSTITUSJON_SØKER) ||
-                this.equals(INSTITUSJON_BARNET);
+                this.equals(INSTITUSJONSOPPHOLD_SØKER) ||
+                this.equals(INSTITUSJONSOPPHOLD_BARNET);
     }
 
 }
