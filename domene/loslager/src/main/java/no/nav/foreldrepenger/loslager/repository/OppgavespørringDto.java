@@ -25,19 +25,20 @@ public class OppgavespørringDto {
     private LocalDate filtrerTomDato;
     private Long filtrerFomDager;
     private Long filtrerTomDager;
+    private boolean forAvdelingsleder;
 
-    public OppgavespørringDto(OppgaveFiltrering oppgaveFiltrering){
-         sortering = oppgaveFiltrering.getSortering();
-         id = oppgaveFiltrering.getAvdeling().getId();
-         behandlingTyper = behandlingTypeFra(oppgaveFiltrering);
-         ytelseTyper = ytelseType(oppgaveFiltrering);
-         inkluderAndreKriterierTyper = inkluderAndreKriterierTyperFra(oppgaveFiltrering);
-         ekskluderAndreKriterierTyper = ekskluderAndreKriterierTyperFra(oppgaveFiltrering);
-         erDynamiskPeriode = oppgaveFiltrering.getErDynamiskPeriode();
-         filtrerFomDato = oppgaveFiltrering.getFomDato();
-         filtrerTomDato = oppgaveFiltrering.getTomDato();
-         filtrerFomDager = oppgaveFiltrering.getFomDager();
-         filtrerTomDager = oppgaveFiltrering.getTomDager();
+    public OppgavespørringDto(OppgaveFiltrering oppgaveFiltrering) {
+        sortering = oppgaveFiltrering.getSortering();
+        id = oppgaveFiltrering.getAvdeling().getId();
+        behandlingTyper = behandlingTypeFra(oppgaveFiltrering);
+        ytelseTyper = ytelseType(oppgaveFiltrering);
+        inkluderAndreKriterierTyper = inkluderAndreKriterierTyperFra(oppgaveFiltrering);
+        ekskluderAndreKriterierTyper = ekskluderAndreKriterierTyperFra(oppgaveFiltrering);
+        erDynamiskPeriode = oppgaveFiltrering.getErDynamiskPeriode();
+        filtrerFomDato = oppgaveFiltrering.getFomDato();
+        filtrerTomDato = oppgaveFiltrering.getTomDato();
+        filtrerFomDager = oppgaveFiltrering.getFomDager();
+        filtrerTomDager = oppgaveFiltrering.getTomDager();
     }
 
     public OppgavespørringDto(Long id, KøSortering sortering, List<BehandlingType> behandlingTyper,
@@ -55,6 +56,14 @@ public class OppgavespørringDto {
         this.filtrerTomDato = filtrerTomDato;
         this.filtrerFomDager = filtrerFomDager;
         this.filtrerTomDager = filtrerTomDager;
+    }
+
+    public void setForAvdelingsleder(boolean forAvdelingsleder) {
+        this.forAvdelingsleder = forAvdelingsleder;
+    }
+
+    public boolean getForAvdelingsleder() {
+        return forAvdelingsleder;
     }
 
     public KøSortering getSortering() {

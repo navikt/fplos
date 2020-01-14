@@ -30,11 +30,6 @@
         </dependency>
 
         <!-- Prosjekt avhengigheter -->
-
-        <dependency>
-            <groupId>no.nav.foreldrepenger.los</groupId>
-            <artifactId>kodeverk</artifactId>
-        </dependency>
         <dependency>
             <groupId>no.nav.foreldrepenger.los</groupId>
             <artifactId>loslager</artifactId>
@@ -77,7 +72,6 @@
             <groupId>no.nav.foreldrepenger.los</groupId>
             <artifactId>feed</artifactId>
         </dependency>
-
         <dependency>
             <groupId>no.nav.foreldrepenger.felles.sikkerhet</groupId>
             <artifactId>felles-sikkerhet</artifactId>

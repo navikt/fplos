@@ -4,7 +4,6 @@ import com.codahale.metrics.annotation.Timed;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import no.nav.foreldrepenger.los.web.app.tjenester.kodeverk.app.HentKodeverkTjeneste;
-import no.nav.fplos.kodeverk.Kodeliste;
 import no.nav.vedtak.felles.jpa.Transaction;
 import no.nav.vedtak.sikkerhet.abac.BeskyttetRessurs;
 
@@ -15,7 +14,6 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import static no.nav.vedtak.sikkerhet.abac.BeskyttetRessursActionAttributt.READ;
@@ -47,7 +45,7 @@ public class KodeverkRestTjeneste {
     public Map<String, Object> hentGruppertKodeliste() {
         Map<String, Object> kodelisterGruppertPåType = new HashMap<>();
 
-        Map<String, List<Kodeliste>> grupperteKodelister = hentKodeverkTjeneste.hentGruppertKodeliste();
+        var grupperteKodelister = hentKodeverkTjeneste.hentGruppertKodeliste();
         grupperteKodelister.forEach(kodelisterGruppertPåType::put);
 
         return kodelisterGruppertPåType;

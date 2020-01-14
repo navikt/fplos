@@ -10,7 +10,7 @@ public class OppgaveEventLoggDto { //TODO FRIST_TID legges inn her?
 
     private Long behandlingId;
     private OppgaveEventType eventType;
-    private AndreKriterierType andreKriterierType = AndreKriterierType.UKJENT;
+    private AndreKriterierType andreKriterierType; // @TODO: vurder om ukjent-typen må inn = AndreKriterierType.UKJENT;
     private String behandlendeEnhet;
     private LocalDateTime opprettetTidspunkt; // NOSONAR
 

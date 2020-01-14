@@ -6,16 +6,13 @@ import no.nav.familie.topic.TopicManifest;
 import no.nav.vedtak.konfig.KonfigVerdi;
 import org.apache.kafka.clients.CommonClientConfigs;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
-import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.common.config.SaslConfigs;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 import java.util.Properties;
 
 @ApplicationScoped
@@ -24,7 +21,6 @@ public class AksjonspunktMeldingConsumerImpl implements AksjonspunktMeldingConsu
     private KafkaConsumer<String, String> kafkaConsumer;
     private static final int TIMEOUT = 10000;
     private static final Topic topic = TopicManifest.AKSJONSPUNKT_HENDELSE;
-
     // for proxy
     public AksjonspunktMeldingConsumerImpl() {}
 
@@ -73,13 +69,8 @@ public class AksjonspunktMeldingConsumerImpl implements AksjonspunktMeldingConsu
         }
     }
 
-    public List<String> hentConsumerMeldingene() {
-        ConsumerRecords<String, String> records = kafkaConsumer.poll(TIMEOUT);
-        List<String> responseStringList = new ArrayList<>();
-        for (ConsumerRecord<String, String> record : records) {
-            responseStringList.add(record.value());
-        }
-        return responseStringList;
+    public ConsumerRecords<String, String> hentConsumerMeldingene() {
+        return kafkaConsumer.poll(TIMEOUT);
     }
 
     public void manualCommitSync() {
