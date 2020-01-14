@@ -30,11 +30,6 @@
         </dependency>
 
         <!-- Prosjekt avhengigheter -->
-
-        <dependency>
-            <groupId>no.nav.foreldrepenger.los</groupId>
-            <artifactId>kodeverk</artifactId>
-        </dependency>
         <dependency>
             <groupId>no.nav.foreldrepenger.los</groupId>
             <artifactId>loslager</artifactId>
@@ -77,7 +72,6 @@
             <groupId>no.nav.foreldrepenger.los</groupId>
             <artifactId>feed</artifactId>
         </dependency>
-
         <dependency>
             <groupId>no.nav.foreldrepenger.felles.sikkerhet</groupId>
             <artifactId>felles-sikkerhet</artifactId>
@@ -112,6 +106,14 @@
             <groupId>no.nav.foreldrepenger.felles.integrasjon</groupId>
             <artifactId>felles-integrasjon-rest-klient</artifactId>
         </dependency>
+
+        <!-- SWagger -->
+        <dependency>
+            <groupId>org.webjars</groupId>
+            <artifactId>swagger-ui</artifactId>
+            <version>3.24.3</version>
+        </dependency>
+
 
         <!-- CDI -->
         <dependency>
@@ -174,11 +176,27 @@
         <!-- Metrics, logging, helse- og selftest -->
         <dependency>
             <groupId>io.dropwizard.metrics</groupId>
-            <artifactId>metrics-servlets</artifactId>
+            <artifactId>metrics-healthchecks</artifactId>
         </dependency>
         <dependency>
-            <groupId>io.dropwizard.metrics</groupId>
-            <artifactId>metrics-healthchecks</artifactId>
+            <groupId>io.prometheus</groupId>
+            <artifactId>simpleclient_dropwizard</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.prometheus</groupId>
+            <artifactId>simpleclient_servlet</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.prometheus</groupId>
+            <artifactId>simpleclient_hotspot</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.prometheus</groupId>
+            <artifactId>simpleclient</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.prometheus</groupId>
+            <artifactId>simpleclient_common</artifactId>
         </dependency>
         <dependency>
             <groupId>net.logstash.logback</groupId>

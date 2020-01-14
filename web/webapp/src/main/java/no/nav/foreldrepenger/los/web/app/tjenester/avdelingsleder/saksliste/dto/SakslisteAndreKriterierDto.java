@@ -3,7 +3,6 @@ package no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.saksliste.dto
 import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.dto.AvdelingEnhetDto;
 import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.saksliste.FplosAbacAttributtType;
 import no.nav.foreldrepenger.los.web.app.tjenester.felles.dto.SakslisteIdDto;
-import no.nav.foreldrepenger.los.web.app.validering.ValidKodeverk;
 import no.nav.foreldrepenger.loslager.oppgave.AndreKriterierType;
 import no.nav.vedtak.sikkerhet.abac.AbacDataAttributter;
 import no.nav.vedtak.sikkerhet.abac.AbacDto;
@@ -18,7 +17,6 @@ public class SakslisteAndreKriterierDto implements AbacDto {
     private SakslisteIdDto sakslisteId;
 
     @NotNull
-    @ValidKodeverk
     private AndreKriterierType andreKriterierType;
 
     private boolean checked;

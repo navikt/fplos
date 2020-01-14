@@ -1,32 +1,33 @@
 package no.nav.fplos.avdelingsleder;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-import java.util.List;
-
-import javax.persistence.EntityManager;
-
+import no.nav.foreldrepenger.dbstoette.UnittestRepositoryRule;
+import no.nav.foreldrepenger.loslager.organisasjon.Avdeling;
+import no.nav.foreldrepenger.loslager.organisasjon.Saksbehandler;
+import no.nav.foreldrepenger.loslager.repository.OppgaveRepository;
+import no.nav.foreldrepenger.loslager.repository.OppgaveRepositoryImpl;
+import no.nav.foreldrepenger.loslager.repository.OrganisasjonRepository;
+import no.nav.foreldrepenger.loslager.repository.OrganisasjonRepositoryImpl;
+import no.nav.fplos.domene.organisasjonsinformasjon.organisasjonressursenhet.OrganisasjonRessursEnhetTjeneste;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.Mockito;
 
-import no.nav.foreldrepenger.dbstoette.UnittestRepositoryRule;
-import no.nav.foreldrepenger.loslager.organisasjon.Avdeling;
-import no.nav.foreldrepenger.loslager.organisasjon.Saksbehandler;
-import no.nav.foreldrepenger.loslager.repository.OppgaveRepositoryProvider;
-import no.nav.foreldrepenger.loslager.repository.OppgaveRepositoryProviderImpl;
-import no.nav.foreldrepenger.loslager.repository.OrganisasjonRepository;
-import no.nav.fplos.domene.organisasjonsinformasjon.organisasjonressursenhet.OrganisasjonRessursEnhetTjeneste;
+import javax.persistence.EntityManager;
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class AvdelingslederSaksbehandlerTjenesteImplTest {
 
     @Rule
     public final UnittestRepositoryRule repoRule = new UnittestRepositoryRule();
     private final EntityManager entityManager = repoRule.getEntityManager();
-    private final OppgaveRepositoryProvider repositoryProvider = new OppgaveRepositoryProviderImpl(entityManager);
+    private final OppgaveRepository oppgaveRepository = new OppgaveRepositoryImpl(entityManager);
+    private final OrganisasjonRepository organisasjonRepository = new OrganisasjonRepositoryImpl(entityManager);
+
     private OrganisasjonRessursEnhetTjeneste organisasjonRessursEnhetTjeneste = Mockito.mock(OrganisasjonRessursEnhetTjeneste.class);
-    private AvdelingslederSaksbehandlerTjeneste avdelingslederSaksbehandlerTjeneste = new AvdelingslederSaksbehandlerTjenesteImpl(repositoryProvider, organisasjonRessursEnhetTjeneste);
+    private AvdelingslederSaksbehandlerTjeneste avdelingslederSaksbehandlerTjeneste = new AvdelingslederSaksbehandlerTjenesteImpl(oppgaveRepository, organisasjonRepository, organisasjonRessursEnhetTjeneste);
     private Avdeling avdelingDrammen = null;
     private static String NY_SAKSBEHANDLER_IDENT = "zNySaksbehandler";
     private String AVDELING_DRAMMEN_ENHET;

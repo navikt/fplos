@@ -23,4 +23,5 @@ export type Saksliste = Readonly<{
   };
   andreKriterier?: AnnetKriterie[];
   saksbehandlerIdenter: string[];
+  antallBehandlinger: number;
 }>;

@@ -6,8 +6,6 @@ import no.nav.foreldrepenger.loslager.oppgave.OppgaveEventLogg;
 import no.nav.foreldrepenger.loslager.oppgave.OppgaveEventType;
 import no.nav.foreldrepenger.loslager.oppgave.Reservasjon;
 import no.nav.foreldrepenger.loslager.repository.OppgaveRepository;
-import no.nav.foreldrepenger.loslager.repository.OppgaveRepositoryProvider;
-import no.nav.fplos.kodeverk.KodeverkRepository;
 import no.nav.vedtak.felles.integrasjon.kafka.BehandlingProsessEventDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,23 +19,17 @@ public abstract class FpEventHandler {
 
     private static final Logger log = LoggerFactory.getLogger(FpEventHandler.class);
 
-    private KodeverkRepository kodeverkRepository;
     private OppgaveRepository oppgaveRepository;
 
     protected FpEventHandler() {
     }
 
-    protected FpEventHandler(OppgaveRepositoryProvider oppgaveRepositoryProvider) {
-        this.oppgaveRepository = oppgaveRepositoryProvider.getOppgaveRepository();
-        this.kodeverkRepository = oppgaveRepositoryProvider.getKodeverkRepository();
+    protected FpEventHandler(OppgaveRepository oppgaveRepository) {
+        this.oppgaveRepository = oppgaveRepository;
     }
 
     protected OppgaveRepository getOppgaveRepository() {
         return oppgaveRepository;
-    }
-
-    protected KodeverkRepository getKodeverkRepository() {
-        return kodeverkRepository;
     }
 
     protected void loggEvent(UUID eksternId, OppgaveEventType oppgaveEventType, AndreKriterierType andreKriterierType, String behandlendeEnhet) {
@@ -53,7 +45,6 @@ public abstract class FpEventHandler {
     }
 
 
-
     /*protected void avsluttOppgaveOgLoggEventVedEksternId(BehandlingProsessEventDto bpeDto, OppgaveEventType eventType, LocalDateTime fristTid){
         Optional<EksternIdentifikator> eksternId = getEksternIdentifikatorRespository().finnIdentifikator(bpeDto.getFagsystem(), bpeDto.getId());
         if(eksternId.isPresent()) {
@@ -66,28 +57,29 @@ public abstract class FpEventHandler {
         }
     }*/
     protected void reserverOppgaveFraTidligereReservasjon(boolean reserverOppgave,
-                                                        Reservasjon reservasjon,
-                                                        Oppgave oppgave) {
+                                                          Reservasjon reservasjon,
+                                                          Oppgave oppgave) {
         if (reserverOppgave && reservasjon != null) {
             getOppgaveRepository().reserverOppgaveFraTidligereReservasjon(oppgave.getId(), reservasjon);
         }
     }
+
     protected List<OppgaveEventLogg> hentEventerVedEksternId(UUID eksternId) {
-        if(eksternId != null){
+        if (eksternId != null) {
             return getOppgaveRepository().hentEventerForEksternId(eksternId);
-        }
-        else return new ArrayList<>();
+        } else return new ArrayList<>();
     }
-/*
-    protected Oppgave gjenåpneOppgaveVedEksternId(String fagsystem, String eksternRefId) {
-        Optional<EksternIdentifikator> eksternId = eksternIdentifikatorRespository.finnIdentifikator(fagsystem, eksternRefId);
-        if(eksternId.isPresent()){
-            return oppgaveRepository.gjenåpneOppgaveForEksternId(eksternId.get().getId());
-        } else {
-            log.debug("Fant ikke eksternId som indikerer at der ikke finnes eksisterende oppgaver som kan gjenåpnes");
-            return null;
+
+    /*
+        protected Oppgave gjenåpneOppgaveVedEksternId(String fagsystem, String eksternRefId) {
+            Optional<EksternIdentifikator> eksternId = eksternIdentifikatorRespository.finnIdentifikator(fagsystem, eksternRefId);
+            if(eksternId.isPresent()){
+                return oppgaveRepository.gjenåpneOppgaveForEksternId(eksternId.get().getId());
+            } else {
+                log.debug("Fant ikke eksternId som indikerer at der ikke finnes eksisterende oppgaver som kan gjenåpnes");
+                return null;
+            }
         }
-    }
-*/
+    */
     public abstract void prosesser(BehandlingProsessEventDto bpeDto);
 }
