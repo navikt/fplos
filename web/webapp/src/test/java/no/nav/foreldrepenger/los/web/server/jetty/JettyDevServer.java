@@ -168,6 +168,7 @@ public class JettyDevServer extends JettyServer {
     @Override
     protected ResourceCollection createResourceCollection() throws IOException {
         return new ResourceCollection(
+                Resource.newClassPathResource("/META-INF/resources/webjars/"),
                 Resource.newClassPathResource("/web"),
                 Resource.newClassPathResource("/META-INF/resources")/** i18n */
         );
