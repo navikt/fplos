@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
+import javax.transaction.Transactional;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.Consumes;
@@ -18,11 +19,8 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
-import com.codahale.metrics.annotation.Timed;
-
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.dto.AvdelingEnhetDto;
 import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.saksliste.dto.SakslisteAndreKriterierDto;
 import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.saksliste.dto.SakslisteBehandlingstypeDto;
@@ -38,15 +36,13 @@ import no.nav.foreldrepenger.los.web.app.tjenester.felles.dto.SakslisteIdDto;
 import no.nav.foreldrepenger.loslager.oppgave.OppgaveFiltrering;
 import no.nav.fplos.avdelingsleder.AvdelingslederTjeneste;
 import no.nav.fplos.oppgave.OppgaveTjeneste;
-import no.nav.vedtak.felles.jpa.Transaction;
 import no.nav.vedtak.sikkerhet.abac.BeskyttetRessurs;
 import no.nav.vedtak.sikkerhet.abac.BeskyttetRessursActionAttributt;
 import no.nav.vedtak.sikkerhet.abac.BeskyttetRessursResourceAttributt;
 
-@Api(tags = "Avdelingsleder")
 @Path("avdelingsleder/sakslister")
 @RequestScoped
-@Transaction
+@Transactional
 public class AvdelingslederSakslisteRestTjeneste {
 
     private AvdelingslederTjeneste avdelingslederTjeneste;
@@ -63,9 +59,8 @@ public class AvdelingslederSakslisteRestTjeneste {
     }
 
     @GET
-    @Timed
     @Produces("application/json")
-    @ApiOperation(value = "Henter alle sakslister for avdeling")
+    @Operation(description = "Henter alle sakslister for avdeling", tags = "AvdelingslederSakslister")
     @BeskyttetRessurs(action = READ, ressurs = OPPGAVESTYRING_AVDELINGENHET, sporingslogg = false)
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
     public List<SakslisteDto> hentAvdelingensSakslister(@NotNull @QueryParam("avdelingEnhet") @Valid AvdelingEnhetDto avdelingEnhet) {
@@ -76,78 +71,72 @@ public class AvdelingslederSakslisteRestTjeneste {
     }
 
     @POST
-    @Timed
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @ApiOperation(value = "Lag ny saksliste", notes = (""))
+    @Operation(description = "Lag ny saksliste", tags = "AvdelingslederSakslister")
     @BeskyttetRessurs(action = BeskyttetRessursActionAttributt.CREATE, ressurs = BeskyttetRessursResourceAttributt.OPPGAVESTYRING_AVDELINGENHET)
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
-    public SakslisteIdDto opprettNySaksliste(@NotNull @ApiParam("enhet til avdelingsenheten som det skal opprettes ny saksliste for") @Valid AvdelingEnhetDto avdelingEnhetDto) {
+    public SakslisteIdDto opprettNySaksliste(@NotNull @Parameter(description = "enhet til avdelingsenheten som det skal opprettes ny saksliste for") @Valid AvdelingEnhetDto avdelingEnhetDto) {
         return new SakslisteIdDto(avdelingslederTjeneste.lagNyOppgaveFiltrering(avdelingEnhetDto.getAvdelingEnhet()));
     }
 
     //FIXME (TOR) burde ein heller brukt @DELETE her?
     @POST
-    @Timed
     @Path("/slett")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @ApiOperation(value = "Fjern saksliste", notes = (""))
+    @Operation(description = "Fjern saksliste", tags = "AvdelingslederSakslister")
     @BeskyttetRessurs(action = BeskyttetRessursActionAttributt.CREATE, ressurs = BeskyttetRessursResourceAttributt.OPPGAVESTYRING)
 //    @BeskyttetRessurs(action = BeskyttetRessursActionAttributt.CREATE, ressurs = BeskyttetRessursResourceAttributt.OPPGAVESTYRING_AVDELINGENHET)
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
-    public void slettSaksliste(@NotNull @ApiParam("id til sakslisten som skal slettes") @Valid SakslisteOgAvdelingDto sakslisteOgAvdelingDto) {
+    public void slettSaksliste(@NotNull @Parameter(description = "id til sakslisten som skal slettes") @Valid SakslisteOgAvdelingDto sakslisteOgAvdelingDto) {
         avdelingslederTjeneste.slettOppgaveFiltrering(sakslisteOgAvdelingDto.getSakslisteId().getVerdi());
     }
 
     @POST
-    @Timed
     @Path("/navn")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @ApiOperation(value = "Lagre sakslistens navn", notes = (""))
+    @Operation(description = "Lagre sakslistens navn", tags = "AvdelingslederSakslister")
     @BeskyttetRessurs(action = BeskyttetRessursActionAttributt.CREATE, ressurs = BeskyttetRessursResourceAttributt.OPPGAVESTYRING_AVDELINGENHET)
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
-    public void lagreNavn(@NotNull @ApiParam("Sakslistens navn") @Valid SakslisteNavnDto sakslisteNavn) {
+    public void lagreNavn(@NotNull @Parameter(description = "Sakslistens navn") @Valid SakslisteNavnDto sakslisteNavn) {
         avdelingslederTjeneste.giListeNyttNavn(sakslisteNavn.getSakslisteId(),sakslisteNavn.getNavn());
     }
 
     @POST
-    @Timed
     @Path("/behandlingstype")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @ApiOperation(value = "Lagre sakslistens behandlingstype", notes = (""))
+    @Operation(description = "Lagre sakslistens behandlingstype", tags = "AvdelingslederSakslister")
     @BeskyttetRessurs(action = BeskyttetRessursActionAttributt.CREATE, ressurs = BeskyttetRessursResourceAttributt.OPPGAVESTYRING_AVDELINGENHET)
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
-    public void lagreBehandlingstype(@NotNull @ApiParam("Sakslistens behandlingstype") @Valid SakslisteBehandlingstypeDto sakslisteBehandlingstype) {
+    public void lagreBehandlingstype(@NotNull @Parameter(description = "Sakslistens behandlingstype") @Valid SakslisteBehandlingstypeDto sakslisteBehandlingstype) {
         avdelingslederTjeneste.endreFiltreringBehandlingType(sakslisteBehandlingstype.getSakslisteId()
                 ,sakslisteBehandlingstype.getBehandlingType(), sakslisteBehandlingstype.isChecked());
     }
 
     @POST
-    @Timed
     @Path("/ytelsetype")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @ApiOperation(value = "Lagre sakslistens behandlingstype", notes = ("sakslisteFagsakYtelseTypeDto.getSakslisteId() kan være null. Dette vil si at det ikke skal være noen filtrering på "))
+    @Operation(description = "Lagre sakslistens behandlingstype", tags = "AvdelingslederSakslister")
     @BeskyttetRessurs(action = BeskyttetRessursActionAttributt.CREATE, ressurs = BeskyttetRessursResourceAttributt.OPPGAVESTYRING_AVDELINGENHET)
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
-    public void lagreFagsakYtelseType(@NotNull @ApiParam("Sakslistens ytelsetype") @Valid SakslisteFagsakYtelseTypeDto sakslisteFagsakYtelseTypeDto) {
+    public void lagreFagsakYtelseType(@NotNull @Parameter(description = "Sakslistens ytelsetype") @Valid SakslisteFagsakYtelseTypeDto sakslisteFagsakYtelseTypeDto) {
         avdelingslederTjeneste.endreFiltreringYtelseType(
                 sakslisteFagsakYtelseTypeDto.getSakslisteId(),
                 sakslisteFagsakYtelseTypeDto.getFagsakYtelseType());
     }
 
     @POST
-    @Timed
     @Path("/andre-kriterier")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @ApiOperation(value = "Lagre sakslistens 'Andre kriterier'")
+    @Operation(description = "Lagre sakslistens 'Andre kriterier'", tags = "AvdelingslederSakslister")
     @BeskyttetRessurs(action = BeskyttetRessursActionAttributt.CREATE, ressurs = BeskyttetRessursResourceAttributt.OPPGAVESTYRING_AVDELINGENHET)
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
-    public void lagreAndreKriterierType(@NotNull @ApiParam("Sakslistens 'andre kriterier'") @Valid SakslisteAndreKriterierDto sakslisteAndreKriterierDto) {
+    public void lagreAndreKriterierType(@NotNull @Parameter(description = "Sakslistens 'andre kriterier'") @Valid SakslisteAndreKriterierDto sakslisteAndreKriterierDto) {
         avdelingslederTjeneste.endreFiltreringAndreKriterierType(
                     sakslisteAndreKriterierDto.getSakslisteId(),
                     sakslisteAndreKriterierDto.getAndreKriterierType(),
@@ -156,69 +145,64 @@ public class AvdelingslederSakslisteRestTjeneste {
     }
 
     @POST
-    @Timed
     @Path("/sortering")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @ApiOperation(value = "Sett sakslistens sortering", notes = (""))
+    @Operation(description = "Sett sakslistens sortering", tags = "AvdelingslederSakslister")
     @BeskyttetRessurs(action = BeskyttetRessursActionAttributt.CREATE, ressurs = BeskyttetRessursResourceAttributt.OPPGAVESTYRING_AVDELINGENHET)
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
-    public void lagreSortering(@NotNull @ApiParam("Sakslistens sortering") @Valid SakslisteSorteringDto sakslisteSortering) {
+    public void lagreSortering(@NotNull @Parameter(description = "Sakslistens sortering") @Valid SakslisteSorteringDto sakslisteSortering) {
         avdelingslederTjeneste.settSortering(sakslisteSortering.getSakslisteId(),
                 sakslisteSortering.getSakslisteSorteringValg());
     }
 
     @POST
-    @Timed
     @Path("/sortering-tidsintervall-dato")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @ApiOperation(value = "Sett sakslistens sorteringintervall ved start og slutt datoer", notes = (""))
+    @Operation(description = "Sett sakslistens sorteringintervall ved start og slutt datoer", tags = "AvdelingslederSakslister")
     @BeskyttetRessurs(action = BeskyttetRessursActionAttributt.CREATE, ressurs = BeskyttetRessursResourceAttributt.OPPGAVESTYRING_AVDELINGENHET)
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
-    public void lagreSorteringTidsintervallDato(@NotNull @ApiParam("Sakslistens sorteringsintervall gitt datoer") @Valid SakslisteSorteringIntervallDatoDto sakslisteSorteringIntervallDato) {
+    public void lagreSorteringTidsintervallDato(@NotNull @Parameter(description = "Sakslistens sorteringsintervall gitt datoer") @Valid SakslisteSorteringIntervallDatoDto sakslisteSorteringIntervallDato) {
         avdelingslederTjeneste.settSorteringTidsintervallDato(sakslisteSorteringIntervallDato.getSakslisteId(),
                 sakslisteSorteringIntervallDato.getFomDato(),
                 sakslisteSorteringIntervallDato.getTomDato());
     }
 
     @POST
-    @Timed
     @Path("/sortering-tidsintervall-dager")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @ApiOperation(value = "Sett sakslistens sorteringsintervall i dager", notes = (""))
+    @Operation(description = "Sett sakslistens sorteringsintervall i dager", tags = "AvdelingslederSakslister")
     @BeskyttetRessurs(action = BeskyttetRessursActionAttributt.CREATE, ressurs = BeskyttetRessursResourceAttributt.OPPGAVESTYRING_AVDELINGENHET)
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
-    public void lagreSorteringTidsintervallDager(@NotNull @ApiParam("Sakslistens sortering gitt dagar") @Valid SakslisteSorteringIntervallDagerDto sakslisteSorteringIntervallDager) {
+    public void lagreSorteringTidsintervallDager(@NotNull @Parameter(description = "Sakslistens sortering gitt dagar") @Valid SakslisteSorteringIntervallDagerDto sakslisteSorteringIntervallDager) {
         avdelingslederTjeneste.settSorteringTidsintervallDager(sakslisteSorteringIntervallDager.getSakslisteId(),
                 sakslisteSorteringIntervallDager.getFomDager(),
                 sakslisteSorteringIntervallDager.getTomDager());
     }
 
     @POST
-    @Timed
     @Path("/sortering-tidsintervall-type")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @ApiOperation(value = "Sett sakslistens sorteringsintervall i dager", notes = (""))
+    @Operation(description = "Sett sakslistens sorteringsintervall i dager", tags = "AvdelingslederSakslister")
     @BeskyttetRessurs(action = BeskyttetRessursActionAttributt.CREATE, ressurs = BeskyttetRessursResourceAttributt.OPPGAVESTYRING_AVDELINGENHET)
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
-    public void lagreSorteringTidsintervallValg(@NotNull @ApiParam("id til sakslisten") @Valid SakslisteOgAvdelingDto sakslisteOgAvdelingDto) {
+    public void lagreSorteringTidsintervallValg(@NotNull @Parameter(description = "id til sakslisten") @Valid SakslisteOgAvdelingDto sakslisteOgAvdelingDto) {
         OppgaveFiltrering oppgaveFiltrering = avdelingslederTjeneste.hentOppgaveFiltering(sakslisteOgAvdelingDto.getSakslisteId().getVerdi());
         avdelingslederTjeneste.settSorteringTidsintervallValg(sakslisteOgAvdelingDto.getSakslisteId().getVerdi(),
                 !oppgaveFiltrering.getErDynamiskPeriode());
     }
 
     @POST
-    @Timed
     @Path("/saksbehandler")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @ApiOperation(value = "Legger til eller fjerner koblingen mellom saksliste og saksbehandler", notes = (""))
+    @Operation(description = "Legger til eller fjerner koblingen mellom saksliste og saksbehandler", tags = "AvdelingslederSakslister")
     @BeskyttetRessurs(action = BeskyttetRessursActionAttributt.CREATE, ressurs = BeskyttetRessursResourceAttributt.OPPGAVESTYRING_AVDELINGENHET)
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
-    public void leggSaksbehandlerTilSaksliste(@NotNull @ApiParam("Knytning mellom saksbehandler og saksliste") @Valid SakslisteSaksbehandlerDto sakslisteSaksbehandler) {
+    public void leggSaksbehandlerTilSaksliste(@NotNull @Parameter(description = "Knytning mellom saksbehandler og saksliste") @Valid SakslisteSaksbehandlerDto sakslisteSaksbehandler) {
         if(sakslisteSaksbehandler.isChecked()) {
             avdelingslederTjeneste.leggSaksbehandlerTilListe(sakslisteSaksbehandler.getSakslisteId(), sakslisteSaksbehandler.getBrukerIdent().getVerdi());
         }else{
