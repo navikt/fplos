@@ -61,7 +61,7 @@
         <apache.ws.xmlschema.version>2.2.4</apache.ws.xmlschema.version>
         <joda-time.version>2.10.5</joda-time.version>
 
-        <owaspencoder.version>1.2.1</owaspencoder.version>
+        <owaspencoder.version>1.2.2</owaspencoder.version>
         <spring.version>5.2.0.RELEASE</spring.version>
         <spring-boot.version>2.2.1.RELEASE</spring-boot.version>
         <!-- Dupliserte properties fra vl-felles. Pass på å oppdatere begge steder. Disse trengs for definisjon av videre plugins -->
