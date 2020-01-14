@@ -1,12 +1,11 @@
 package no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.oppgave;
 
-import com.codahale.metrics.annotation.Timed;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
-import io.swagger.annotations.ResponseHeader;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.headers.Header;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import no.nav.foreldrepenger.los.web.app.tjenester.fagsak.app.FagsakApplikasjonTjeneste;
 import no.nav.foreldrepenger.los.web.app.tjenester.felles.dto.AsyncPollingStatus;
 import no.nav.foreldrepenger.los.web.app.tjenester.felles.dto.OppgaveDto;
@@ -24,7 +23,6 @@ import no.nav.foreldrepenger.loslager.oppgave.Oppgave;
 import no.nav.foreldrepenger.loslager.oppgave.Reservasjon;
 import no.nav.fplos.oppgave.OppgaveTjeneste;
 import no.nav.fplos.oppgave.SaksbehandlerinformasjonDto;
-import no.nav.vedtak.felles.jpa.Transaction;
 import no.nav.vedtak.sikkerhet.abac.BeskyttetRessurs;
 import no.nav.vedtak.sikkerhet.abac.BeskyttetRessursActionAttributt;
 import no.nav.vedtak.sikkerhet.abac.BeskyttetRessursResourceAttributt;
@@ -33,6 +31,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
+import javax.transaction.Transactional;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.Consumes;
@@ -54,10 +53,9 @@ import java.util.stream.Collectors;
 import static no.nav.vedtak.sikkerhet.abac.BeskyttetRessursActionAttributt.READ;
 import static no.nav.vedtak.sikkerhet.abac.BeskyttetRessursResourceAttributt.FAGSAK;
 
-@Api(tags = { "Saksbehandler" })
 @Path("/saksbehandler/oppgaver")
 @RequestScoped
-@Transaction
+@Transactional
 public class OppgaveRestTjeneste {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(OppgaveRestTjeneste.class);
@@ -76,13 +74,12 @@ public class OppgaveRestTjeneste {
     }
 
     @GET
-    @Timed
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @ApiOperation(value = "Init hent oppgaver")
-    @ApiResponses(value = {
-            @ApiResponse(code = 202, message = "Hent oppgaver initiert, Returnerer link til å polle etter nye oppgaver", responseHeaders = {
-                    @ResponseHeader(name = "Location") })
+    @Operation(description = "Init hent oppgaver", tags = "Saksbehandler",
+        responses = {
+            @ApiResponse(responseCode = "202", description = "Hent oppgaver initiert, Returnerer link til å polle etter nye oppgaver",
+                    headers = { @Header(name = "Location") })
     })
     @BeskyttetRessurs(action = READ, ressurs = FAGSAK)
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
@@ -93,11 +90,10 @@ public class OppgaveRestTjeneste {
 
     @GET
     @Path("/status")
-    @Timed
-    @ApiOperation(value = "Url for å polle på oppgaver asynkront", notes = ("Returnerer link til enten samme (hvis ikke ferdig) eller redirecter til /saksbehandler/oppgaver dersom nye oppgaver er tilgjengelig."))
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Returnerer Status", response = AsyncPollingStatus.class),
-            @ApiResponse(code = 303, message = "Nye oppgaver tilgjenglig", responseHeaders = { @ResponseHeader(name = "Location") })
+    @Operation(description = "Url for å polle på oppgaver asynkront", tags = "Saksbehandler",
+        responses = {
+            @ApiResponse(responseCode = "200", description = "Returnerer Status", content = @Content(schema = @Schema(implementation = AsyncPollingStatus.class))),
+            @ApiResponse(responseCode = "303", description = "Nye oppgaver tilgjenglig", headers = { @Header(name = "Location") })
     })
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
     @BeskyttetRessurs(action = READ, ressurs = FAGSAK)
@@ -131,11 +127,10 @@ public class OppgaveRestTjeneste {
 
     @GET
     @Path("/resultat")
-    @Timed
     @Produces(MediaType.APPLICATION_JSON)
-    @ApiOperation(value = "Hent 3 neste oppgaver", notes = ("Henter 3 neste oppgaver til behandling"))
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Returnerer Oppgaver", response = OppgaveDto.class),
+    @Operation(description = "Hent 3 neste oppgaver", tags = "Saksbehandler",
+        responses = {
+            @ApiResponse(responseCode = "200", description = "Returnerer Oppgaver", content = @Content(schema = @Schema(implementation = OppgaveDto.class))),
     })
     @BeskyttetRessurs(action = READ, ressurs = FAGSAK)
     public List<OppgaveDto> getOppgaverTilBehandling(@NotNull @QueryParam("sakslisteId") @Valid SakslisteIdDto sakslisteId) {
@@ -154,67 +149,62 @@ public class OppgaveRestTjeneste {
     }
 
     @POST
-    @Timed
     @Path("/reserver")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @ApiOperation(value = "Reserver oppgave", notes = ("Reserver oppgave"))
+    @Operation(description = "Reserver oppgave", tags = "Saksbehandler")
     @BeskyttetRessurs(action = BeskyttetRessursActionAttributt.CREATE, ressurs = BeskyttetRessursResourceAttributt.FAGSAK)
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
-    public OppgaveStatusDto reserverOppgave(@NotNull @ApiParam("id til oppgaven") @Valid OppgaveIdDto oppgaveId) {
+    public OppgaveStatusDto reserverOppgave(@NotNull @Parameter(description = "id til oppgaven") @Valid OppgaveIdDto oppgaveId) {
         Reservasjon reservasjon = oppgaveTjeneste.reserverOppgave(oppgaveId.getVerdi());
         return lagReservertStatus(reservasjon);
     }
 
     @GET
-    @Timed
     @Path("/reservasjon-status")
     @Produces(MediaType.APPLICATION_JSON)
-    @ApiOperation(value = "Hent reservasjonsstatus")
+    @Operation(description = "Hent reservasjonsstatus", tags = "Saksbehandler")
     @BeskyttetRessurs(action = BeskyttetRessursActionAttributt.READ, ressurs = BeskyttetRessursResourceAttributt.FAGSAK)
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
-    public OppgaveStatusDto hentReservasjon(@NotNull @ApiParam("id til oppgaven") @QueryParam("oppgaveId") @Valid OppgaveIdDto oppgaveId) {
+    public OppgaveStatusDto hentReservasjon(@NotNull @Parameter(description = "id til oppgaven") @QueryParam("oppgaveId") @Valid OppgaveIdDto oppgaveId) {
         Reservasjon reservasjon = oppgaveTjeneste.hentReservasjon(oppgaveId.getVerdi());
         return reservasjon != null && reservasjon.getReservertTil() != null ? lagReservertStatus(reservasjon) : OppgaveStatusDto.ikkeReservert();
     }
 
-    private OppgaveStatusDto lagReservertStatus(@NotNull @ApiParam("id til oppgaven") @Valid Reservasjon reservasjon) {
+    private OppgaveStatusDto lagReservertStatus(@NotNull @Parameter(description = "id til oppgaven") @Valid Reservasjon reservasjon) {
         String navnHvisReservertAvAnnenSaksbehandler = oppgaveTjeneste.hentNavnHvisReservertAvAnnenSaksbehandler(reservasjon);
         String navnHvisFlyttetAvSaksbehandler = oppgaveTjeneste.hentNavnHvisFlyttetAvSaksbehandler(reservasjon.getFlyttetAv());
         return OppgaveStatusDto.reservert(reservasjon, navnHvisReservertAvAnnenSaksbehandler, navnHvisFlyttetAvSaksbehandler);
     }
 
     @POST
-    @Timed
     @Path("/opphev")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @ApiOperation(value = "Opphev reservasjon av oppgave", notes = ("Opphev reservasjon av oppgave"))
+    @Operation(description = "Opphev reservasjon av oppgave", tags = "Saksbehandler")
     @BeskyttetRessurs(action = BeskyttetRessursActionAttributt.CREATE, ressurs = BeskyttetRessursResourceAttributt.FAGSAK)
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
-    public OppgaveStatusDto opphevOppgaveReservasjon(@NotNull @ApiParam("Id og begrunnelse") @Valid OppgaveOpphevingDto opphevetOppgave) {
+    public OppgaveStatusDto opphevOppgaveReservasjon(@NotNull @Parameter(description = "Id og begrunnelse") @Valid OppgaveOpphevingDto opphevetOppgave) {
         Reservasjon reservasjon = oppgaveTjeneste.frigiOppgave(opphevetOppgave.getOppgaveId().getVerdi(), opphevetOppgave.getBegrunnelse());
         return OppgaveStatusDto.reservert(reservasjon);
     }
 
     @POST
-    @Timed
     @Path("/forleng")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @ApiOperation(value = "Forleng reservasjon av oppgave", notes = ("Forleng reservasjon av oppgave"))
+    @Operation(description = "Forleng reservasjon av oppgave", tags = "Saksbehandler")
     @BeskyttetRessurs(action = BeskyttetRessursActionAttributt.CREATE, ressurs = BeskyttetRessursResourceAttributt.FAGSAK)
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
-    public OppgaveStatusDto forlengOppgaveReservasjon(@NotNull @ApiParam("id til oppgaven") @Valid OppgaveIdDto oppgaveId) {
+    public OppgaveStatusDto forlengOppgaveReservasjon(@NotNull @Parameter(description = "id til oppgaven") @Valid OppgaveIdDto oppgaveId) {
         Reservasjon reservasjon = oppgaveTjeneste.forlengReservasjonPåOppgave(oppgaveId.getVerdi());
         return OppgaveStatusDto.reservert(reservasjon);
     }
 
     @GET
-    @Timed
     @Path("/reserverte")
     @Produces("application/json")
-    @ApiOperation(value = "", notes = (""))
+    @Operation(description = "Reserverte", tags = "Saksbehandler")
     @BeskyttetRessurs(action = BeskyttetRessursActionAttributt.READ, ressurs = BeskyttetRessursResourceAttributt.FAGSAK)
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
     public List<OppgaveDto> getReserverteOppgaver() {
@@ -236,10 +226,9 @@ public class OppgaveRestTjeneste {
 
 
     @GET
-    @Timed
     @Path("/behandlede")
     @Produces("application/json")
-    @ApiOperation(value = "", notes = (""))
+    @Operation(description = "Behandlede", tags = "Saksbehandler")
     @BeskyttetRessurs(action = BeskyttetRessursActionAttributt.READ, ressurs = BeskyttetRessursResourceAttributt.FAGSAK)
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
     public List<OppgaveDto> getBehandledeOppgaver() {
@@ -250,15 +239,13 @@ public class OppgaveRestTjeneste {
     }
 
 
-
     @POST
-    @Timed
     @Path("/flytt/sok")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @ApiOperation(value = "Søk etter saksbehandler som er tilknyttet behandlingskø", notes = (""))
+    @Operation(description = "Søk etter saksbehandler som er tilknyttet behandlingskø", tags = "Saksbehandler")
     @BeskyttetRessurs(action = BeskyttetRessursActionAttributt.READ, ressurs = BeskyttetRessursResourceAttributt.FAGSAK)
-    public SaksbehandlerDto søkAvdelingensSaksbehandlere(@NotNull @ApiParam("Brukeridentifikasjon") @Valid SaksbehandlerBrukerIdentDto brukerIdent) {
+    public SaksbehandlerDto søkAvdelingensSaksbehandlere(@NotNull @Parameter(description = "Brukeridentifikasjon") @Valid SaksbehandlerBrukerIdentDto brukerIdent) {
         String ident = brukerIdent.getVerdi().toUpperCase();
         SaksbehandlerinformasjonDto saksbehandlerInformasjon = oppgaveTjeneste.hentSaksbehandlerNavnOgAvdelinger(ident);
         if (saksbehandlerInformasjon != null) {
@@ -269,14 +256,13 @@ public class OppgaveRestTjeneste {
     }
 
     @POST
-    @Timed
     @Path("/flytt")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @ApiOperation(value = "Flytt reservasjon av oppgave", notes = ("Flytt reservasjon av oppgave"))
+    @Operation(description = "Flytt reservasjon av oppgave", tags = "Saksbehandler")
     @BeskyttetRessurs(action = BeskyttetRessursActionAttributt.CREATE, ressurs = BeskyttetRessursResourceAttributt.FAGSAK)
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
-    public OppgaveStatusDto flyttOppgaveReservasjon(@NotNull @ApiParam("id, begrunnelse og brukerident") @Valid OppgaveFlyttingDto oppgaveFlyttingId) {
+    public OppgaveStatusDto flyttOppgaveReservasjon(@NotNull @Parameter(description = "id, begrunnelse og brukerident") @Valid OppgaveFlyttingDto oppgaveFlyttingId) {
         Reservasjon reservasjon = oppgaveTjeneste.flyttReservasjon(oppgaveFlyttingId.getOppgaveId().getVerdi(),
                 oppgaveFlyttingId.getBrukerIdent().getVerdi(),
                 oppgaveFlyttingId.getBegrunnelse());
@@ -285,10 +271,9 @@ public class OppgaveRestTjeneste {
     }
 
     @GET
-    @Timed
     @Path("/antall")
     @Produces("application/json")
-    @ApiOperation(value = "Henter antall oppgaver knyttet til sakslisten")
+    @Operation(description = "Henter antall oppgaver knyttet til sakslisten", tags = "Saksbehandler")
     @BeskyttetRessurs(action = BeskyttetRessursActionAttributt.READ, ressurs = BeskyttetRessursResourceAttributt.FAGSAK, sporingslogg = false)
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
     public Integer hentAntallOppgaverForSaksliste(@NotNull @QueryParam("sakslisteId") @Valid SakslisteIdDto sakslisteId) {
@@ -297,13 +282,12 @@ public class OppgaveRestTjeneste {
 
 
     @GET
-    @Timed
     @Path("/oppgaver-for-fagsaker")
     @Produces("application/json")
-    @ApiOperation(value = "Henter antall oppgaver knyttet til fagsaker")
+    @Operation(description = "Henter antall oppgaver knyttet til fagsaker", tags = "Saksbehandler")
     @BeskyttetRessurs(action = BeskyttetRessursActionAttributt.READ, ressurs = BeskyttetRessursResourceAttributt.FAGSAK, sporingslogg = false)
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
-    public List<OppgaveDto> hentOppgaverForFagsaker(@NotNull @ApiParam("Liste med saksnummer") @QueryParam("saksnummerListe") @Valid SaknummerIderDto saksnummerliste) {
+    public List<OppgaveDto> hentOppgaverForFagsaker(@NotNull @Parameter(description = "Liste med saksnummer") @QueryParam("saksnummerListe") @Valid SaknummerIderDto saksnummerliste) {
         List<Oppgave> oppgaver = oppgaveTjeneste.hentAktiveOppgaverForSaksnummer(saksnummerliste.getSaksnummerListe());
         if (oppgaver.isEmpty()) {
             return Collections.emptyList();

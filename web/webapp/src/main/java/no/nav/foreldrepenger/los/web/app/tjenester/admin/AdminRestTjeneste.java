@@ -1,20 +1,14 @@
 package no.nav.foreldrepenger.los.web.app.tjenester.admin;
 
-import com.codahale.metrics.annotation.Timed;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import no.nav.foreldrepenger.los.web.app.tjenester.admin.dto.OppgaveEventLoggDto;
-import no.nav.foreldrepenger.los.web.app.tjenester.felles.dto.OppgaveDto;
-import no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.oppgave.dto.BehandlingIdDto;
-import no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.oppgave.dto.OppgaveIdDto;
-import no.nav.foreldrepenger.loslager.oppgave.Oppgave;
-import no.nav.foreldrepenger.loslager.oppgave.OppgaveEventLogg;
-import no.nav.fplos.admin.AdminTjeneste;
-import no.nav.vedtak.felles.jpa.Transaction;
-import no.nav.vedtak.sikkerhet.abac.BeskyttetRessurs;
+import static no.nav.vedtak.sikkerhet.abac.BeskyttetRessursActionAttributt.READ;
+import static no.nav.vedtak.sikkerhet.abac.BeskyttetRessursResourceAttributt.OPPGAVESTYRING;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
+import javax.transaction.Transactional;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.Consumes;
@@ -23,16 +17,20 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
-import java.util.List;
-import java.util.stream.Collectors;
 
-import static no.nav.vedtak.sikkerhet.abac.BeskyttetRessursActionAttributt.READ;
-import static no.nav.vedtak.sikkerhet.abac.BeskyttetRessursResourceAttributt.OPPGAVESTYRING;
+import io.swagger.v3.oas.annotations.Operation;
+import no.nav.foreldrepenger.los.web.app.tjenester.admin.dto.OppgaveEventLoggDto;
+import no.nav.foreldrepenger.los.web.app.tjenester.felles.dto.OppgaveDto;
+import no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.oppgave.dto.BehandlingIdDto;
+import no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.oppgave.dto.OppgaveIdDto;
+import no.nav.foreldrepenger.loslager.oppgave.Oppgave;
+import no.nav.foreldrepenger.loslager.oppgave.OppgaveEventLogg;
+import no.nav.fplos.admin.AdminTjeneste;
+import no.nav.vedtak.sikkerhet.abac.BeskyttetRessurs;
 
-@Api(tags = { "Admin" })
 @Path("/admin")
 @RequestScoped
-@Transaction
+@Transactional
 public class AdminRestTjeneste {
 
     private AdminTjeneste adminTjeneste;
@@ -47,11 +45,10 @@ public class AdminRestTjeneste {
     }
 
     @GET
-    @Timed
     @Path("/synkroniseroppgave")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @ApiOperation(value = "Synkroniser oppgave", notes = ("Synkroniser oppgave"))
+    @Operation(description = "Synkroniser oppgave", tags = "admin")
     @BeskyttetRessurs(action = READ, ressurs = OPPGAVESTYRING)
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
     public OppgaveDto synkroniserOppgave(@NotNull @QueryParam("behandlingIdDto") @Valid BehandlingIdDto behandlingIdDto) {
@@ -60,11 +57,10 @@ public class AdminRestTjeneste {
     }
 
     @GET
-    @Timed
     @Path("/sepaaoppgave")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @ApiOperation(value = "Se på oppgave", notes = ("See informasjon om oppgave"))
+    @Operation(description = "Se på oppgave", tags = "admin")
     @BeskyttetRessurs(action = READ, ressurs = OPPGAVESTYRING)
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
     public OppgaveDto hentOppgave(@NotNull @QueryParam("behandlingIdDto") @Valid BehandlingIdDto behandlingIdDto) {
@@ -73,11 +69,10 @@ public class AdminRestTjeneste {
     }
 
     @GET
-    @Timed
     @Path("/sepaaeventer")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @ApiOperation(value = "Se på oppgave", notes = ("See informasjon om oppgave"))
+    @Operation(description = "Se på oppgave", tags = "admin")
     @BeskyttetRessurs(action = READ, ressurs = OPPGAVESTYRING)
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
     public List<OppgaveEventLoggDto> hentEventlogg(@NotNull @QueryParam("behandlingIdDto") @Valid BehandlingIdDto behandlingIdDto) {
@@ -86,11 +81,10 @@ public class AdminRestTjeneste {
     }
 
     @GET
-    @Timed
     @Path("/oppdateringavoppgave")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @ApiOperation(value = "Oppdater oppgave", notes = ("Full oppdatering av oppgave"))
+    @Operation(description = "Oppdater oppgave", tags = "admin")
     @BeskyttetRessurs(action = READ, ressurs = OPPGAVESTYRING)
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
     public OppgaveDto oppdaterOppgave(@NotNull @QueryParam("behandlingIdDto") @Valid BehandlingIdDto behandlingIdDto) {
@@ -100,11 +94,10 @@ public class AdminRestTjeneste {
     }
 
     @GET
-    @Timed
     @Path("/oppdatering-av-alle-aktive-oppgaver")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @ApiOperation(value = "Oppdater alle aktive oppgaver", notes = ("Full oppdatering av alle aktive oppgaver. Returnerer antall oppgaver som ble oppdatert"))
+    @Operation(description = "Oppdater alle aktive oppgaver", tags = "admin")
     @BeskyttetRessurs(action = READ, ressurs = OPPGAVESTYRING)
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
     public int oppdaterAlleAktiveOppgaver() {
@@ -112,11 +105,10 @@ public class AdminRestTjeneste {
     }
 
     @GET
-    @Timed
     @Path("/prosesser-melding")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @ApiOperation(value = "Prosesser alle meldinger på feilkø", notes = ("Prosesserer meldinger som har kommet over Kafka-køen men som av ulike årsaker ikke har blitt prosessert riktig"))
+    @Operation(description = "Prosesser alle meldinger på feilkø", tags = "admin")
     @BeskyttetRessurs(action = READ, ressurs = OPPGAVESTYRING)
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
     public int prosesserMelding() {
@@ -124,11 +116,10 @@ public class AdminRestTjeneste {
     }
 
     @GET
-    @Timed
     @Path("/hent-alle-oppgaver-knyttet-til-behandling")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @ApiOperation(value = "Henter ut alle oppgaver knyttet til behandling", notes = ("Angi behandlingId for å se alle oppgaver tilknyttet behandlingen"))
+    @Operation(description = "Henter ut alle oppgaver knyttet til behandling", tags = "admin")
     @BeskyttetRessurs(action = READ, ressurs = OPPGAVESTYRING)
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
     public List<OppgaveDto> hentAlleOppgaverForBehandling(@NotNull @QueryParam("behandlingIdDto") @Valid BehandlingIdDto behandlingIdDto) {
@@ -137,11 +128,10 @@ public class AdminRestTjeneste {
     }
 
     @GET
-    @Timed
     @Path("/deaktiver-oppgave")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @ApiOperation(value = "Deaktiver oppgave", notes = ("Setter aktiv=N i Oppgave for angitt oppgaveId"))
+    @Operation(description = "Deaktiver oppgave", tags = "admin")
     @BeskyttetRessurs(action = READ, ressurs = OPPGAVESTYRING)
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
     public OppgaveDto deaktiverOppgave(@NotNull @QueryParam("oppgaveIdDto") @Valid OppgaveIdDto oppgaveIdDto) {
@@ -150,11 +140,10 @@ public class AdminRestTjeneste {
     }
 
     @GET
-    @Timed
     @Path("/aktiver-oppgave")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @ApiOperation(value = "Aktiver oppgave", notes = ("Setter aktiv=J i Oppgave for angitt oppgaveId"))
+    @Operation(description = "Aktiver oppgave", tags = "admin")
     @BeskyttetRessurs(action = READ, ressurs = OPPGAVESTYRING)
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
     public OppgaveDto aktiverOppgave(@NotNull @QueryParam("oppgaveIdDto") @Valid OppgaveIdDto oppgaveIdDto) {

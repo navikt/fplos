@@ -1,53 +1,77 @@
 package no.nav.foreldrepenger.los.web.app;
 
-import io.swagger.jaxrs.config.BeanConfig;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import javax.ws.rs.ApplicationPath;
+import javax.ws.rs.core.Application;
+
+import io.swagger.v3.jaxrs2.SwaggerSerializers;
+import io.swagger.v3.jaxrs2.integration.resources.OpenApiResource;
+import io.swagger.v3.oas.integration.GenericOpenApiContextBuilder;
+import io.swagger.v3.oas.integration.OpenApiConfigurationException;
+import io.swagger.v3.oas.integration.SwaggerConfiguration;
+import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.info.Info;
+import io.swagger.v3.oas.models.servers.Server;
 import no.nav.foreldrepenger.los.web.app.exceptions.ConstraintViolationMapper;
 import no.nav.foreldrepenger.los.web.app.exceptions.GeneralRestExceptionMapper;
 import no.nav.foreldrepenger.los.web.app.exceptions.JsonMappingExceptionMapper;
 import no.nav.foreldrepenger.los.web.app.exceptions.JsonParseExceptionMapper;
+import no.nav.foreldrepenger.los.web.app.jackson.JacksonJsonConfig;
 import no.nav.foreldrepenger.los.web.app.tjenester.admin.AdminRestTjeneste;
 import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.AvdelingslederRestTjeneste;
 import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.nøkkeltall.NøkkeltallRestTjeneste;
+import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.oppgave.AvdelingslederOppgaveRestTjeneste;
+import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.saksbehandler.AvdelingslederSaksbehandlerRestTjeneste;
 import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.saksliste.AvdelingslederSakslisteRestTjeneste;
+import no.nav.foreldrepenger.los.web.app.tjenester.fagsak.FagsakRestTjeneste;
 import no.nav.foreldrepenger.los.web.app.tjenester.kodeverk.KodeverkRestTjeneste;
+import no.nav.foreldrepenger.los.web.app.tjenester.konfig.KonfigRestTjeneste;
 import no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.NavAnsattRestTjeneste;
 import no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.nøkkeltall.SaksbehandlerNøkkeltallRestTjeneste;
 import no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.oppgave.OppgaveRestTjeneste;
 import no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.saksliste.SaksbehandlerSakslisteRestTjeneste;
-import no.nav.foreldrepenger.los.web.app.jackson.JacksonJsonConfig;
-import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.oppgave.AvdelingslederOppgaveRestTjeneste;
-import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.saksbehandler.AvdelingslederSaksbehandlerRestTjeneste;
-import no.nav.foreldrepenger.los.web.app.tjenester.fagsak.FagsakRestTjeneste;
-import no.nav.foreldrepenger.los.web.app.tjenester.konfig.KonfigRestTjeneste;
 import no.nav.vedtak.konfig.PropertyUtil;
-
-import javax.ws.rs.ApplicationPath;
-import javax.ws.rs.core.Application;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
 
 
 @ApplicationPath(ApplicationConfig.API_URI)
 public class ApplicationConfig extends Application {
 
-    public static final String API_URI = "/api";
+    static final String API_URI = "/api";
 
     public ApplicationConfig() {
 
-        BeanConfig swaggerConfig = new BeanConfig();
-        swaggerConfig.setVersion("1.0");
-        if (disableSsl()) {
-            swaggerConfig.setSchemes(new String[]{"http"});
-        } else {
-            swaggerConfig.setSchemes(new String[]{"http","https"});
+        OpenAPI oas = new OpenAPI();
+        Info info = new Info()
+                .title("Foreldrepenger risikoklassifisering")
+                .version("1.0")
+                .description("REST grensesnitt for fplos.");
+
+        oas.info(info)
+                .addServersItem(new Server()
+                        .url("/fplos"));
+        SwaggerConfiguration oasConfig = new SwaggerConfiguration()
+                .openAPI(oas)
+                .prettyPrint(true)
+                .scannerClass("io.swagger.v3.jaxrs2.integration.JaxrsAnnotationScanner")
+                .resourcePackages(Stream.of("no.nav")
+                        .collect(Collectors.toSet()));
+
+        try {
+            new GenericOpenApiContextBuilder<>()
+                    .openApiConfiguration(oasConfig)
+                    .buildContext(true)
+                    .read();
+        } catch (OpenApiConfigurationException e) {
+            throw new RuntimeException(e.getMessage(), e);
         }
-        swaggerConfig.setBasePath("/fplos/api");
-        swaggerConfig.setResourcePackage("no.nav");
-        swaggerConfig.setTitle("FPLOS");
-        swaggerConfig.setDescription("REST grensesnitt for FPLOS.");
-        swaggerConfig.setScan(true);
     }
+
+
 
     private boolean disableSsl() {
         if(PropertyUtil.getProperty("disable.ssl") == null){
@@ -73,14 +97,14 @@ public class ApplicationConfig extends Application {
         classes.add(AdminRestTjeneste.class);
         classes.add(SaksbehandlerNøkkeltallRestTjeneste.class);
 
-        classes.add(io.swagger.jaxrs.listing.ApiListingResource.class);
-        classes.add(io.swagger.jaxrs.listing.SwaggerSerializers.class);
-
         classes.add(ConstraintViolationMapper.class);
         classes.add(JsonMappingExceptionMapper.class);
         classes.add(JsonParseExceptionMapper.class);
         classes.add(GeneralRestExceptionMapper.class);
         classes.add(JacksonJsonConfig.class);
+
+        classes.add(SwaggerSerializers.class);
+        classes.add(OpenApiResource.class);
 
         return Collections.unmodifiableSet(classes);
     }

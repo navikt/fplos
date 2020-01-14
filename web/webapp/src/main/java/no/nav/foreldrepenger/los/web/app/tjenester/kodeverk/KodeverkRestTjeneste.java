@@ -1,28 +1,26 @@
 package no.nav.foreldrepenger.los.web.app.tjenester.kodeverk;
 
-import com.codahale.metrics.annotation.Timed;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import no.nav.foreldrepenger.los.web.app.tjenester.kodeverk.app.HentKodeverkTjeneste;
-import no.nav.vedtak.felles.jpa.Transaction;
-import no.nav.vedtak.sikkerhet.abac.BeskyttetRessurs;
+import static no.nav.vedtak.sikkerhet.abac.BeskyttetRessursActionAttributt.READ;
+import static no.nav.vedtak.sikkerhet.abac.BeskyttetRessursResourceAttributt.APPLIKASJON;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
+import javax.transaction.Transactional;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
-import java.util.HashMap;
-import java.util.Map;
 
-import static no.nav.vedtak.sikkerhet.abac.BeskyttetRessursActionAttributt.READ;
-import static no.nav.vedtak.sikkerhet.abac.BeskyttetRessursResourceAttributt.APPLIKASJON;
+import io.swagger.v3.oas.annotations.Operation;
+import no.nav.foreldrepenger.los.web.app.tjenester.kodeverk.app.HentKodeverkTjeneste;
+import no.nav.vedtak.sikkerhet.abac.BeskyttetRessurs;
 
-@Api(tags = {"Kodeverk"})
 @Path("/kodeverk")
 @RequestScoped
-@Transaction
+@Transactional
 public class KodeverkRestTjeneste {
 
     private HentKodeverkTjeneste hentKodeverkTjeneste; // NOSONAR
@@ -37,9 +35,8 @@ public class KodeverkRestTjeneste {
     }
 
     @GET
-    @Timed
     @Produces(MediaType.APPLICATION_JSON)
-    @ApiOperation(value = "Henter kodeliste", notes = ("Returnerer gruppert kodeliste."))
+    @Operation(description = "Henter kodeliste", tags = "Kodeverk")
     @BeskyttetRessurs(action = READ, ressurs = APPLIKASJON, sporingslogg = false)
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
     public Map<String, Object> hentGruppertKodeliste() {
