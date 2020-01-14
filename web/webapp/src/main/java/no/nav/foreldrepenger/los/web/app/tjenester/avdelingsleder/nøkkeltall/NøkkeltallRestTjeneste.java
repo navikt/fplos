@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
+import javax.transaction.Transactional;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.GET;
@@ -12,25 +13,20 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 
-import com.codahale.metrics.annotation.Timed;
-
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
 import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.dto.AvdelingEnhetDto;
 import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.nøkkeltall.dto.OppgaverForAvdelingDto;
 import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.nøkkeltall.dto.OppgaverForAvdelingPerDatoDto;
 import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.nøkkeltall.dto.OppgaverForAvdelingSattManueltPaaVentDto;
 import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.nøkkeltall.dto.OppgaverForFørsteStønadsdagDto;
 import no.nav.fplos.statistikk.StatistikkTjeneste;
-import no.nav.vedtak.felles.jpa.Transaction;
 import no.nav.vedtak.sikkerhet.abac.BeskyttetRessurs;
 import no.nav.vedtak.sikkerhet.abac.BeskyttetRessursActionAttributt;
 import no.nav.vedtak.sikkerhet.abac.BeskyttetRessursResourceAttributt;
 
-@Api(tags = { "Avdelingsleder" })
 @Path("/avdelingsleder/nokkeltall")
 @RequestScoped
-@Transaction
+@Transactional
 public class NøkkeltallRestTjeneste {
 
     private StatistikkTjeneste statistikkTjeneste;
@@ -45,10 +41,9 @@ public class NøkkeltallRestTjeneste {
     }
 
     @GET
-    @Timed
     @Path("/behandlinger-under-arbeid")
     @Produces("application/json")
-    @ApiOperation(value = "", notes = (""))
+    @Operation(description = "UnderArbeid", tags = "AvdelingslederTall")
     @BeskyttetRessurs(action = BeskyttetRessursActionAttributt.READ, ressurs = BeskyttetRessursResourceAttributt.OPPGAVESTYRING_AVDELINGENHET)
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
     public List<OppgaverForAvdelingDto> getAlleOppgaverForAvdeling(@NotNull @QueryParam("avdelingEnhet") @Valid AvdelingEnhetDto avdelingEnhet) {
@@ -59,10 +54,9 @@ public class NøkkeltallRestTjeneste {
     }
 
     @GET
-    @Timed
     @Path("/behandlinger-under-arbeid-historikk")
     @Produces("application/json")
-    @ApiOperation(value = "", notes = (""))
+    @Operation(description = "UA Historikk", tags = "AvdelingslederTall")
     @BeskyttetRessurs(action = BeskyttetRessursActionAttributt.READ, ressurs = BeskyttetRessursResourceAttributt.OPPGAVESTYRING_AVDELINGENHET)
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
     public List<OppgaverForAvdelingPerDatoDto> getAntallOppgaverForAvdelingPerDato(@NotNull @QueryParam("avdelingEnhet") @Valid AvdelingEnhetDto avdelingEnhet) {
@@ -74,10 +68,9 @@ public class NøkkeltallRestTjeneste {
 
 
     @GET
-    @Timed
     @Path("/behandlinger-manuelt-vent-historikk")
     @Produces("application/json")
-    @ApiOperation(value = "", notes = (""))
+    @Operation(description = "ManueltVent Historikk", tags = "AvdelingslederTall")
     @BeskyttetRessurs(action = BeskyttetRessursActionAttributt.READ, ressurs = BeskyttetRessursResourceAttributt.OPPGAVESTYRING_AVDELINGENHET)
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
     public List<OppgaverForAvdelingSattManueltPaaVentDto> getAntallOppgaverSattPåManuellVentForAvdeling(@NotNull @QueryParam("avdelingEnhet") @Valid AvdelingEnhetDto avdelingEnhet) {
@@ -88,10 +81,9 @@ public class NøkkeltallRestTjeneste {
     }
 
     @GET
-    @Timed
     @Path("/behandlinger-forste-stonadsdag")
     @Produces("application/json")
-    @ApiOperation(value = "", notes = (""))
+    @Operation(description = "Første stønadsdag", tags = "AvdelingslederTall")
     @BeskyttetRessurs(action = BeskyttetRessursActionAttributt.READ, ressurs = BeskyttetRessursResourceAttributt.OPPGAVESTYRING_AVDELINGENHET)
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
     public List<OppgaverForFørsteStønadsdagDto> getOppgaverPerFørsteStønadsdag(@NotNull @QueryParam("avdelingEnhet") @Valid AvdelingEnhetDto avdelingEnhet) {

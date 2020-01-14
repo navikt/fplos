@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Any;
@@ -32,7 +33,7 @@ public class Selftests {
 
     private Instance<ExtHealthCheck> healthChecks;
 
-    private boolean hasSetupChecks;
+    private AtomicBoolean hasSetupChecks;
 
     private String applicationName;
 
@@ -47,6 +48,7 @@ public class Selftests {
         this.registry = registry;
         this.healthChecks = healthChecks;
         this.applicationName = applicationName;
+        this.hasSetupChecks = new AtomicBoolean(false);
     }
 
     Selftests() {
@@ -80,11 +82,12 @@ public class Selftests {
     }
 
     private void setupChecks() {
-        if (!hasSetupChecks) {
+        if (!hasSetupChecks.get()) {
+            hasSetupChecks.compareAndSet(false, true);
             for (ExtHealthCheck healthCheck : healthChecks) {
                 registrer(healthCheck);
             }
-            hasSetupChecks = true;
+            hasSetupChecks.compareAndSet(true, true);
         }
     }
 

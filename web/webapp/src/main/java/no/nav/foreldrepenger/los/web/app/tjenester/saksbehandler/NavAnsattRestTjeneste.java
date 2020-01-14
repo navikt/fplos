@@ -1,31 +1,30 @@
 package no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.dto.InnloggetNavAnsattDto;
-import no.nav.foreldrepenger.los.web.app.util.LdapUtil;
-import no.nav.vedtak.felles.integrasjon.ldap.LdapBruker;
-import no.nav.vedtak.felles.integrasjon.ldap.LdapBrukeroppslag;
-import no.nav.vedtak.felles.jpa.Transaction;
-import no.nav.vedtak.konfig.KonfigVerdi;
-import no.nav.vedtak.sikkerhet.abac.BeskyttetRessurs;
-import no.nav.vedtak.sikkerhet.context.SubjectHandler;
+import static no.nav.vedtak.sikkerhet.abac.BeskyttetRessursActionAttributt.READ;
+import static no.nav.vedtak.sikkerhet.abac.BeskyttetRessursResourceAttributt.APPLIKASJON;
+
+import java.util.Collection;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
+import javax.transaction.Transactional;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
-import java.util.Collection;
 
-import static no.nav.vedtak.sikkerhet.abac.BeskyttetRessursActionAttributt.READ;
-import static no.nav.vedtak.sikkerhet.abac.BeskyttetRessursResourceAttributt.APPLIKASJON;
+import io.swagger.v3.oas.annotations.Operation;
+import no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.dto.InnloggetNavAnsattDto;
+import no.nav.foreldrepenger.los.web.app.util.LdapUtil;
+import no.nav.vedtak.felles.integrasjon.ldap.LdapBruker;
+import no.nav.vedtak.felles.integrasjon.ldap.LdapBrukeroppslag;
+import no.nav.vedtak.konfig.KonfigVerdi;
+import no.nav.vedtak.sikkerhet.abac.BeskyttetRessurs;
+import no.nav.vedtak.sikkerhet.context.SubjectHandler;
 
-@Api(tags = {"Saksbehandler"})
 @Path("/saksbehandler")
 @RequestScoped
-@Transaction
+@Transactional
 public class NavAnsattRestTjeneste {
     private String gruppenavnSaksbehandler;
     private String gruppenavnVeileder;
@@ -59,8 +58,7 @@ public class NavAnsattRestTjeneste {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    @ApiOperation(value = "Returnerer fullt navn for ident",
-        notes = ("Ident hentes fra sikkerhetskonteksten som er tilgjengelig etter innlogging."))
+    @Operation(description = "Returnerer fullt navn for ident", tags = "SaksbehandlerIdent")
     @BeskyttetRessurs(action = READ, ressurs = APPLIKASJON, sporingslogg = false)
     public InnloggetNavAnsattDto innloggetBruker() {
         String ident = SubjectHandler.getSubjectHandler().getUid();
