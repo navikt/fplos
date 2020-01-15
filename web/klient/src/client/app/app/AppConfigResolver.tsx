@@ -10,7 +10,7 @@ type TsProps = Readonly<{
   finishedLoadingBlockers: boolean;
   children: ReactNode;
   fetchNavAnsatt: () => void;
-  fetchLanguageFile: () => void;
+  // fetchLanguageFile: () => void;
   fetchKodeverk: () => void;
   fetchFpsakUrl: () => void;
   fetchFptilbakeUrl: () => void;
@@ -22,7 +22,7 @@ class AppConfigResolver extends Component<TsProps> {
     finishedLoadingBlockers: PropTypes.bool.isRequired,
     children: PropTypes.node.isRequired,
     fetchNavAnsatt: PropTypes.func.isRequired,
-    fetchLanguageFile: PropTypes.func.isRequired,
+    // fetchLanguageFile: PropTypes.func.isRequired,
     fetchKodeverk: PropTypes.func.isRequired,
     fetchFpsakUrl: PropTypes.func.isRequired,
     fetchFptilbakeUrl: PropTypes.func.isRequired,
@@ -37,7 +37,7 @@ class AppConfigResolver extends Component<TsProps> {
   resolveAppConfig = () => {
     const {
       fetchNavAnsatt,
-      fetchLanguageFile,
+      // fetchLanguageFile,
       fetchKodeverk,
       fetchFpsakUrl,
       fetchFptilbakeUrl,
@@ -45,7 +45,7 @@ class AppConfigResolver extends Component<TsProps> {
     } = this.props;
 
     fetchNavAnsatt();
-    fetchLanguageFile();
+    // fetchLanguageFile();
     fetchKodeverk();
     fetchFpsakUrl();
     fetchFptilbakeUrl();
@@ -64,7 +64,7 @@ class AppConfigResolver extends Component<TsProps> {
 const mapStateToProps = (state: any) => {
   const blockers = [
     fpLosApi.NAV_ANSATT.getRestApiFinished()(state),
-    fpLosApi.LANGUAGE_FILE.getRestApiFinished()(state),
+    // fpLosApi.LANGUAGE_FILE.getRestApiFinished()(state),
     fpLosApi.KODEVERK.getRestApiFinished()(state),
     fpLosApi.FPSAK_URL.getRestApiFinished()(state),
     fpLosApi.FPTILBAKE_URL.getRestApiFinished()(state),
@@ -77,7 +77,7 @@ const mapStateToProps = (state: any) => {
 
 const mapDispatchToProps = (dispatch: Dispatch) => bindActionCreators({
   fetchNavAnsatt: fpLosApi.NAV_ANSATT.makeRestApiRequest(),
-  fetchLanguageFile: fpLosApi.LANGUAGE_FILE.makeRestApiRequest(),
+  // fetchLanguageFile: fpLosApi.LANGUAGE_FILE.makeRestApiRequest(),
   fetchKodeverk: fpLosApi.KODEVERK.makeRestApiRequest(),
   fetchFpsakUrl: fpLosApi.FPSAK_URL.makeRestApiRequest(),
   fetchFptilbakeUrl: fpLosApi.FPTILBAKE_URL.makeRestApiRequest(),

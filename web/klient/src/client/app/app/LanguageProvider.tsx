@@ -5,7 +5,8 @@ import { IntlProvider, addLocaleData } from 'react-intl';
 
 import nb from 'react-intl/locale-data/nb';
 
-import fpLosApi from 'data/fpLosApi';
+// import fpLosApi from 'data/fpLosApi';
+import data from '../sprak/nb_NO.json';
 
 addLocaleData(nb);
 
@@ -33,7 +34,7 @@ LanguageProvider.propTypes = {
 };
 
 const mapStateToProps = state => ({
-  nbMessages: fpLosApi.LANGUAGE_FILE.getRestApiData()(state),
+  nbMessages: data,
 });
 
 export default connect(mapStateToProps)(LanguageProvider);
