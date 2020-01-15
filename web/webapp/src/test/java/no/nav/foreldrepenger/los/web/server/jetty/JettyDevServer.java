@@ -1,9 +1,10 @@
 package no.nav.foreldrepenger.los.web.server.jetty;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.List;
-
+import ch.qos.logback.classic.LoggerContext;
+import ch.qos.logback.classic.joran.JoranConfigurator;
+import ch.qos.logback.core.joran.spi.JoranException;
+import ch.qos.logback.core.util.StatusPrinter;
+import no.nav.foreldrepenger.los.web.server.jetty.JettyDevDbKonfigurasjon.ConnectionHandler;
 import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.HttpConfiguration;
 import org.eclipse.jetty.server.HttpConnectionFactory;
@@ -17,11 +18,9 @@ import org.eclipse.jetty.util.ssl.SslContextFactory;
 import org.eclipse.jetty.webapp.WebAppContext;
 import org.slf4j.LoggerFactory;
 
-import ch.qos.logback.classic.LoggerContext;
-import ch.qos.logback.classic.joran.JoranConfigurator;
-import ch.qos.logback.core.joran.spi.JoranException;
-import ch.qos.logback.core.util.StatusPrinter;
-import no.nav.foreldrepenger.los.web.server.jetty.JettyDevDbKonfigurasjon.ConnectionHandler;
+import java.io.File;
+import java.io.IOException;
+import java.util.List;
 
 public class JettyDevServer extends JettyServer {
 

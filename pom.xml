@@ -12,7 +12,6 @@
         <module>domene</module>
         <module>domenetjenester</module>
         <module>web</module>
-        <module>i18n</module>
         <module>kafkatjenester</module>
         <module>integrasjon</module>
         <module>integrasjonstester</module>
@@ -225,11 +224,6 @@
                 <artifactId>migreringer</artifactId>
                 <version>${project.version}</version>
                 <type>test-jar</type>
-            </dependency>
-            <dependency>
-                <groupId>no.nav.foreldrepenger.los</groupId>
-                <artifactId>i18n</artifactId>
-                <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>no.nav.foreldrepenger.los</groupId>
