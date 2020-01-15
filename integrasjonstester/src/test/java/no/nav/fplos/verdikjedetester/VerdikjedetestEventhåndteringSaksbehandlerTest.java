@@ -71,7 +71,6 @@ public class VerdikjedetestEventhåndteringSaksbehandlerTest {
 
     @Rule
     public UnittestRepositoryRule repoRule = new UnittestRepositoryRule();
-    private JsonOppgaveHandler jsonOppgaveHandler = new JsonOppgaveHandler();
     private EntityManager entityManager = repoRule.getEntityManager();
     private OppgaveRepository oppgaveRepository = new OppgaveRepositoryImpl(entityManager);
     private OrganisasjonRepository organisasjonRepository = new OrganisasjonRepositoryImpl(entityManager);
@@ -102,7 +101,7 @@ public class VerdikjedetestEventhåndteringSaksbehandlerTest {
         kafkaReader = new KafkaReader(meldingConsumer,
                 new FpsakEventHandler(oppgaveRepository, foreldrepengerBehandlingRestKlient),
                 new TilbakekrevingEventHandler(oppgaveRepository),
-                oppgaveRepository, jsonOppgaveHandler);
+                oppgaveRepository);
         avdelingDrammen = avdelingslederRestTjeneste.hentAvdelinger().stream()
                 .filter(avdeling -> AVDELING_DRAMMEN.equals(avdeling.getAvdelingEnhet()))
                 .findFirst().orElseThrow();

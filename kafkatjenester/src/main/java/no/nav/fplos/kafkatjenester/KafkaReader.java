@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import no.nav.foreldrepenger.loslager.oppgave.EventmottakFeillogg;
 import no.nav.foreldrepenger.loslager.repository.OppgaveRepository;
-import no.nav.fplos.kafkatjenester.jsonoppgave.JsonOppgave;
 import no.nav.vedtak.felles.integrasjon.kafka.BehandlingProsessEventDto;
 import no.nav.vedtak.log.mdc.MDCOperations;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
@@ -29,7 +28,6 @@ public class KafkaReader {
     private TilbakekrevingEventHandler tilbakekrevingEventHandler;
     private AksjonspunktMeldingConsumer meldingConsumer;
     private StringBuilder feilmelding = new StringBuilder();
-    private JsonOppgaveHandler jsonOppgaveHandler;
     private static final String CALLID_NAME = "Nav-CallId";
 
     public KafkaReader(){
@@ -40,12 +38,11 @@ public class KafkaReader {
     public KafkaReader(AksjonspunktMeldingConsumer meldingConsumer,
                        FpsakEventHandler fpsakEventHandler,
                        TilbakekrevingEventHandler tilbakekrevingEventHandler,
-                       OppgaveRepository oppgaveRepository, JsonOppgaveHandler jsonOppgaveHandler){
+                       OppgaveRepository oppgaveRepository){
         this.meldingConsumer = meldingConsumer;
         this.fpsakEventHandler = fpsakEventHandler;
         this.tilbakekrevingEventHandler = tilbakekrevingEventHandler;
         this.oppgaveRepository = oppgaveRepository;
-        this.jsonOppgaveHandler = jsonOppgaveHandler;
     }
 
     public void hentOgLagreMeldingene() {
@@ -79,11 +76,6 @@ public class KafkaReader {
             else if(event instanceof TilbakebetalingBehandlingProsessEventDto) {
                 tilbakekrevingEventHandler.prosesser(event);
                 return;
-            }
-
-            JsonOppgave oppgaveJson = deserialiser(melding, JsonOppgave.class);
-            if (oppgaveJson != null) {
-                jsonOppgaveHandler.prosesser(oppgaveJson);
             }
 
             lagreFeiletMelding(melding);
