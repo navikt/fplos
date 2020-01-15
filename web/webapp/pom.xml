@@ -44,10 +44,6 @@
             <type>test-jar</type>
             <scope>test</scope>
         </dependency>
-        <!--dependency>
-            <groupId>no.nav.foreldrepenger.los</groupId>
-            <artifactId>i18n</artifactId>
-        </dependency -->
         <dependency>
             <groupId>no.nav.foreldrepenger.los</groupId>
             <artifactId>oppgave</artifactId>

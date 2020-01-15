@@ -5,7 +5,6 @@ import { IntlProvider, addLocaleData } from 'react-intl';
 
 import nb from 'react-intl/locale-data/nb';
 
-// import fpLosApi from 'data/fpLosApi';
 import data from '../sprak/nb_NO.json';
 
 addLocaleData(nb);

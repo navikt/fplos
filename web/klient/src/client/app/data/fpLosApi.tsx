@@ -4,7 +4,6 @@ import {
 import errorHandler from './error-api-redux';
 
 const fpLosApiKeys = {
-  // LANGUAGE_FILE: 'LANGUAGE_FILE',
   KODEVERK: 'KODEVERK',
   NAV_ANSATT: 'NAV_ANSATT',
   SEARCH_FAGSAK: 'SEARCH_FAGSAK',
@@ -118,8 +117,6 @@ const endpoints = new RestApiConfigBuilder()
   /* /api/kodeverk */
   .withGet('/api/kodeverk', fpLosApiKeys.KODEVERK)
 
-  /* /sprak */
-  // .withGet('/sprak/nb_NO.json', fpLosApiKeys.LANGUAGE_FILE)
   .build();
 
 export const reduxRestApi: ReduxRestApi = new ReduxRestApiBuilder(endpoints, 'dataContext')
