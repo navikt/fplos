@@ -37,7 +37,6 @@ import no.nav.fplos.foreldrepengerbehandling.BehandlingFpsak;
 import no.nav.fplos.foreldrepengerbehandling.ForeldrepengerBehandlingRestKlient;
 import no.nav.fplos.kafkatjenester.AksjonspunktMeldingConsumer;
 import no.nav.fplos.kafkatjenester.FpsakEventHandler;
-import no.nav.fplos.kafkatjenester.JsonOppgaveHandler;
 import no.nav.fplos.kafkatjenester.KafkaReader;
 import no.nav.fplos.kafkatjenester.TilbakekrevingEventHandler;
 import no.nav.fplos.oppgave.OppgaveTjenesteImpl;

@@ -15,7 +15,6 @@ public interface AdminTjeneste {
 
     TilbakekrevingOppgave hentTilbakekrevingOppgave(UUID uuid);
 
-    List<OppgaveEventLogg> hentEventer(Long verdi);
     List<OppgaveEventLogg> hentEventer(UUID uuid);
 
     void oppdaterOppgave(UUID uuid);
