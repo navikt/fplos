@@ -1,19 +1,18 @@
 package no.nav.foreldrepenger.los.web.server.jetty;
 
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
-
+import no.nav.foreldrepenger.los.web.app.ApplicationConfig;
+import no.nav.foreldrepenger.los.web.server.jetty.DataSourceKonfig.DBConnProp;
+import no.nav.vedtak.isso.IssoApplication;
 import org.eclipse.jetty.plus.jndi.EnvEntry;
 import org.eclipse.jetty.util.resource.Resource;
 import org.eclipse.jetty.util.resource.ResourceCollection;
 import org.eclipse.jetty.webapp.MetaData;
 import org.eclipse.jetty.webapp.WebAppContext;
 
-import no.nav.foreldrepenger.los.web.app.ApplicationConfig;
-import no.nav.foreldrepenger.los.web.server.jetty.DataSourceKonfig.DBConnProp;
-import no.nav.vedtak.isso.IssoApplication;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class JettyServer extends AbstractJettyServer {
 
