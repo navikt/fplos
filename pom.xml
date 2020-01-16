@@ -37,7 +37,7 @@
         <organisasjon-ressurs-enhet.version>1.0.0</organisasjon-ressurs-enhet.version>
 
         <!-- Eksterne -->
-        <assertj.version>3.7.0</assertj.version>
+        <assertj.version>3.14.0</assertj.version>
         <cxf.version>3.3.5</cxf.version>
         <woodstox.version>6.0.2</woodstox.version>
         <surefire.version>2.22.2</surefire.version>
@@ -299,7 +299,7 @@
             <dependency>
                 <groupId>org.hibernate.validator</groupId>
                 <artifactId>hibernate-validator</artifactId>
-                <version>6.0.18.Final</version>
+                <version>6.1.0.Final</version>
             </dependency>
 
             <dependency>
