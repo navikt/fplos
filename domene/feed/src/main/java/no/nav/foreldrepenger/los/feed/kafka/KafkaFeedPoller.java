@@ -1,12 +1,10 @@
 package no.nav.foreldrepenger.los.feed.kafka;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-
-import com.codahale.metrics.annotation.Timed;
-
 import no.nav.foreldrepenger.los.feed.poller.FeedPoller;
 import no.nav.fplos.kafkatjenester.KafkaReader;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 
 @ApplicationScoped
 public class KafkaFeedPoller implements FeedPoller {
@@ -28,7 +26,6 @@ public class KafkaFeedPoller implements FeedPoller {
         return FEED_NAME;
     }
 
-    @Timed
     @Override
     public void poll() {
         kafaReader.hentOgLagreMeldingene();

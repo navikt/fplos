@@ -1,18 +1,21 @@
 package no.nav.foreldrepenger.los.web.app.tjenester;
 
-import no.nav.vedtak.apptjeneste.AppServiceHandler;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.Any;
-import javax.enterprise.inject.Instance;
-import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.Any;
+import javax.enterprise.inject.Instance;
+import javax.inject.Inject;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import io.prometheus.client.hotspot.DefaultExports;
+import no.nav.vedtak.apptjeneste.AppServiceHandler;
 
 @ApplicationScoped
 public class ApplicationServiceStarterImpl implements ApplicationServiceStarter {
@@ -31,6 +34,7 @@ public class ApplicationServiceStarterImpl implements ApplicationServiceStarter 
 
     @Override
     public void startServices() {
+        DefaultExports.initialize();
         serviceMap.forEach((key, value) -> {
             if (value.compareAndSet(false, true)) {
                 LOGGER.info("starter service: {}", key.getClass().getSimpleName());
