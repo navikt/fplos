@@ -74,16 +74,14 @@ public class FpsakEventHandlerTest {
 
     FpsakBehandlingProsessEventDto eventDrammenFra(Map<String, String> aksjonspunktmap){
         return prosessBuilderFra(aksjonspunktmap)
-                //.medId("EKSTERN_ID")
-                .medEksternId(UUID.nameUUIDFromBytes(behandlingId.toString().getBytes()))
+                .medEksternId(uuid)
                 .medBehandlendeEnhet("4802")
                 .build();
     }
 
     private FpsakBehandlingProsessEventDto eventStordFra(Map<String, String> aksjonspunktmap){
         return prosessBuilderFra(aksjonspunktmap)
-                //.medId("EKSTERN_ID")
-                .medEksternId(UUID.nameUUIDFromBytes(behandlingId.toString().getBytes()))
+                .medEksternId(uuid)
                 .medBehandlendeEnhet("4842")
                 .build();
     }
@@ -107,7 +105,7 @@ public class FpsakEventHandlerTest {
 
     private FpsakBehandlingProsessEventDto.Builder prosessBuilderFra(Map<String, String> aksjonspunktmap){
         return FpsakBehandlingProsessEventDto.builder()
-                .medEksternId(UUID.nameUUIDFromBytes(behandlingId.toString().getBytes()))
+                .medEksternId(uuid)
                 .medBehandlingId(behandlingId)
                 .medSaksnummer("135701264")
                 .medAktørId("9000000030703")
@@ -122,21 +120,21 @@ public class FpsakEventHandlerTest {
 
     private static BehandlingFpsak behandlingDtoFra(List<Aksjonspunkt> aksjonspunkter) {
         return behandlingBuilderMal()
-                .medUuid(UUID.nameUUIDFromBytes(behandlingId.toString().getBytes()))
+                .medUuid(uuid)
                 .medAksjonspunkter(aksjonspunkter)
                 .build();
     }
 
     private static BehandlingFpsak behandlingDtoMedManueltMarkertUtlandsakFra(List<Aksjonspunkt> aksjonspunkter){
         return behandlingBuilderMal()
-                .medUuid(UUID.nameUUIDFromBytes(behandlingId.toString().getBytes()))
+                .medUuid(uuid)
                 .medAksjonspunkter(aksjonspunkter)
                 .build();
     }
 
     private BehandlingFpsak lagBehandlingDtoMedHarGradering(List<Aksjonspunkt> aksjonspunkter){
         return behandlingBuilderMal()
-                .medUuid(UUID.nameUUIDFromBytes(behandlingId.toString().getBytes()))
+                .medUuid(uuid)
                 .medHarGradering(true)
                 .medAksjonspunkter(aksjonspunkter)
                 .build();
