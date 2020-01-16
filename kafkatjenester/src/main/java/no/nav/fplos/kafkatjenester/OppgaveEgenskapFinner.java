@@ -5,6 +5,8 @@ import no.nav.foreldrepenger.loslager.oppgave.OppgaveEventLogg;
 import no.nav.foreldrepenger.loslager.oppgave.OppgaveEventType;
 import no.nav.fplos.foreldrepengerbehandling.Aksjonspunkt;
 import no.nav.fplos.foreldrepengerbehandling.BehandlingFpsak;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,6 +14,7 @@ import java.util.List;
 import static no.nav.fplos.kafkatjenester.util.StreamUtil.safeStream;
 
 public class OppgaveEgenskapFinner {
+    private static final Logger log = LoggerFactory.getLogger(OppgaveEgenskapFinner.class);
     private final FpsakAksjonspunkt fpsakAksjonspunkt;
     private final OppgaveEventLogg sisteEvent;
     private final List<AndreKriterierType> andreKriterier = new ArrayList<>();
@@ -26,7 +29,7 @@ public class OppgaveEgenskapFinner {
 
         if (harGradering(behandling)) this.andreKriterier.add(AndreKriterierType.SOKT_GRADERING);
         if (erUtbetalingTilBruker(behandling)) this.andreKriterier.add(AndreKriterierType.UTBETALING_TIL_BRUKER);
-        if (erVurderSykdom(behandling)) this.andreKriterier.add(AndreKriterierType.VURDER_SYKDOM);
+        if (erVurderSykdom(behandling)) log.info("Aktuell for VURDER_SYKDOM-egenskap, disablet inntil videre"); //this.andreKriterier.add(AndreKriterierType.VURDER_SYKDOM);
 
         andreKriterier.addAll(fpsakAksjonspunkt.getKriterier());
     }
