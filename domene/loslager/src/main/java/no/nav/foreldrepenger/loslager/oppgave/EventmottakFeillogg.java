@@ -1,5 +1,7 @@
 package no.nav.foreldrepenger.loslager.oppgave;
 
+import no.nav.foreldrepenger.loslager.BaseEntitet;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -9,8 +11,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Lob;
 import javax.persistence.Table;
-
-import no.nav.foreldrepenger.loslager.BaseEntitet;
 
 @Entity(name = "eventmottakFeillogg")
 @Table(name = "EVENTMOTTAK_FEILLOGG")

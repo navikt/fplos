@@ -9,6 +9,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import java.time.LocalDate;
@@ -17,64 +19,67 @@ import java.util.UUID;
 
 @Entity(name = "Oppgave")
 @Table(name = "OPPGAVE")
+@Inheritance(strategy= InheritanceType.JOINED)
+/*@DiscriminatorColumn(name="system")
+@DiscriminatorValue("FPTILBAKE")*/
 public class Oppgave extends BaseEntitet {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_OPPGAVE")
-    private Long id;
+    protected Long id;
 
     @Column(name = "BEHANDLING_ID")
-    private Long behandlingId;
+    protected Long behandlingId;
 
     @Column(name = "FAGSAK_SAKSNR")
-    private Long fagsakSaksnummer;
+    protected Long fagsakSaksnummer;
 
     @Column(name = "AKTOR_ID")
-    private Long aktorId;
+    protected Long aktorId;
 
     @Column(name = "BEHANDLENDE_ENHET")
-    private String behandlendeEnhet;
+    protected String behandlendeEnhet;
 
     @Column(name = "BEHANDLINGSFRIST")
-    private LocalDateTime behandlingsfrist;
+    protected LocalDateTime behandlingsfrist;
 
     @Column(name = "BEHANDLING_OPPRETTET")
-    private LocalDateTime behandlingOpprettet;
+    protected LocalDateTime behandlingOpprettet;
 
     @Column(name = "FORSTE_STONADSDAG")
-    private LocalDate forsteStonadsdag;
+    protected LocalDate forsteStonadsdag;
 
     @Convert(converter = BehandlingStatus.KodeverdiConverter.class)
     @Column(name = "BEHANDLING_STATUS")
-    private BehandlingStatus behandlingStatus;
+    protected BehandlingStatus behandlingStatus;
 
     @Convert(converter = BehandlingType.KodeverdiConverter.class)
     @Column(name = "BEHANDLING_TYPE")
-    private BehandlingType behandlingType = BehandlingType.INNSYN;
+    protected BehandlingType behandlingType = BehandlingType.INNSYN;
 
     @Convert(converter = FagsakYtelseType.KodeverdiConverter.class)
     @Column(name = "FAGSAK_YTELSE_TYPE")
-    private FagsakYtelseType fagsakYtelseType;
+    protected FagsakYtelseType fagsakYtelseType;
 
     @Convert(converter = BooleanToStringConverter.class)
     @Column(name = "AKTIV")
-    private Boolean aktiv = Boolean.TRUE;
+    protected Boolean aktiv = Boolean.TRUE;
 
     @Column(name = "SYSTEM")
-    private String system;
+    protected String system;
 
     @Column(name = "OPPGAVE_AVSLUTTET")
-    private LocalDateTime oppgaveAvsluttet;
+    protected LocalDateTime oppgaveAvsluttet;
 
     @Convert(converter = BooleanToStringConverter.class)
     @Column(name = "UTFORT_FRA_ADMIN")
-    private Boolean utfortFraAdmin = Boolean.FALSE;
+    protected Boolean utfortFraAdmin = Boolean.FALSE;
 
     @Column(name = "EKSTERN_ID")
-    private UUID eksternId;
+    protected UUID eksternId;
 
     @OneToOne(mappedBy = "oppgave")
-    private Reservasjon reservasjon;
+    protected Reservasjon reservasjon;
 
     public Long getId() {
         return id;
@@ -259,6 +264,5 @@ public class Oppgave extends BaseEntitet {
             tempOppgave = new Oppgave();
             return oppgave;
         }
-
     }
 }

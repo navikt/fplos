@@ -7,12 +7,14 @@ import no.nav.foreldrepenger.loslager.oppgave.FagsakYtelseType;
 import no.nav.foreldrepenger.loslager.oppgave.FiltreringAndreKriterierType;
 import no.nav.foreldrepenger.loslager.oppgave.FiltreringBehandlingType;
 import no.nav.foreldrepenger.loslager.oppgave.FiltreringYtelseType;
+import no.nav.foreldrepenger.loslager.oppgave.KøSortering;
 import no.nav.foreldrepenger.loslager.oppgave.Oppgave;
 import no.nav.foreldrepenger.loslager.oppgave.OppgaveEgenskap;
 import no.nav.foreldrepenger.loslager.oppgave.OppgaveEventLogg;
 import no.nav.foreldrepenger.loslager.oppgave.OppgaveFiltrering;
 import no.nav.foreldrepenger.loslager.oppgave.Reservasjon;
 import no.nav.foreldrepenger.loslager.oppgave.ReservasjonEventLogg;
+import no.nav.foreldrepenger.loslager.oppgave.TilbakekrevingOppgave;
 import no.nav.foreldrepenger.loslager.organisasjon.Avdeling;
 import no.nav.foreldrepenger.loslager.organisasjon.Saksbehandler;
 
@@ -43,9 +45,13 @@ public interface OppgaveRepository {
 
     OppgaveFiltrering hentListe(Long listeId);
 
+    KøSortering hentSorteringForListe(Long listeId);
+
     void lagre(Reservasjon oppgave);
 
     void lagre(Oppgave oppgave);
+
+    void lagre(TilbakekrevingOppgave egenskaper);
 
     Long lagre(OppgaveFiltrering oppgaveFiltrering);
 
@@ -78,6 +84,8 @@ public interface OppgaveRepository {
     List<Oppgave> sjekkOmOppgaverFortsattErTilgjengelige(List<Long> oppgaveIder);
 
     Oppgave opprettOppgave(Oppgave build);
+
+    TilbakekrevingOppgave opprettTilbakekrevingEgenskaper(TilbakekrevingOppgave egenskaper);
     /**
      * @deprecated Bruk gjenåpneOppgaveForEksternId(Long) i stedet
      */
@@ -116,7 +124,7 @@ public interface OppgaveRepository {
 
     void settSorteringTidsintervallDato(Long oppgaveFiltreringId, LocalDate fomDato, LocalDate tomDato);
 
-    void settSorteringTidsintervallDager(Long oppgaveFiltreringId, Long fomDager, Long tomDager);
+    void settSorteringNumeriskIntervall(Long oppgaveFiltreringId, Long fra, Long til);
 
     void settSorteringTidsintervallValg(Long oppgaveFiltreringId, boolean erDynamiskPeriode);
 }

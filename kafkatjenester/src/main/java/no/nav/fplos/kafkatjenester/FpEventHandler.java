@@ -1,7 +1,6 @@
 package no.nav.fplos.kafkatjenester;
 
 import no.nav.foreldrepenger.loslager.oppgave.AndreKriterierType;
-import no.nav.foreldrepenger.loslager.oppgave.Oppgave;
 import no.nav.foreldrepenger.loslager.oppgave.OppgaveEventLogg;
 import no.nav.foreldrepenger.loslager.oppgave.OppgaveEventType;
 import no.nav.foreldrepenger.loslager.oppgave.Reservasjon;
@@ -57,10 +56,10 @@ public abstract class FpEventHandler {
         }
     }*/
     protected void reserverOppgaveFraTidligereReservasjon(boolean reserverOppgave,
-                                                          Reservasjon reservasjon,
-                                                          Oppgave oppgave) {
+                                                        Reservasjon reservasjon,
+                                                        Long oppgaveId) {
         if (reserverOppgave && reservasjon != null) {
-            getOppgaveRepository().reserverOppgaveFraTidligereReservasjon(oppgave.getId(), reservasjon);
+            getOppgaveRepository().reserverOppgaveFraTidligereReservasjon(oppgaveId, reservasjon);
         }
     }
 

@@ -3,6 +3,7 @@ package no.nav.fplos.admin;
 import no.nav.foreldrepenger.loslager.oppgave.EventmottakFeillogg;
 import no.nav.foreldrepenger.loslager.oppgave.Oppgave;
 import no.nav.foreldrepenger.loslager.oppgave.OppgaveEventLogg;
+import no.nav.foreldrepenger.loslager.oppgave.TilbakekrevingOppgave;
 import no.nav.foreldrepenger.loslager.repository.AdminRepository;
 import no.nav.fplos.foreldrepengerbehandling.BehandlingFpsak;
 import no.nav.fplos.foreldrepengerbehandling.ForeldrepengerBehandlingRestKlient;
@@ -11,6 +12,7 @@ import no.nav.fplos.kafkatjenester.FpsakEventHandler;
 import no.nav.fplos.kafkatjenester.KafkaReader;
 import no.nav.fplos.kafkatjenester.TilbakekrevingEventHandler;
 import no.nav.vedtak.felles.integrasjon.kafka.FpsakBehandlingProsessEventDto;
+import no.nav.vedtak.felles.integrasjon.kafka.TilbakebetalingBehandlingProsessEventDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,6 +21,7 @@ import javax.inject.Inject;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 @ApplicationScoped
 public class AdminTjenesteImpl implements AdminTjeneste {
@@ -64,6 +67,11 @@ public class AdminTjenesteImpl implements AdminTjeneste {
     }
 
     @Override
+    public TilbakekrevingOppgave hentTilbakekrevingOppgave(UUID uuid) {
+        return adminRepository.hentSisteTilbakekrevingOppgave(uuid);
+    }
+
+    @Override
     public List<OppgaveEventLogg> hentEventer(Long behandlingId) {
         return adminRepository.hentEventer(behandlingId);
     }
@@ -84,7 +92,7 @@ public class AdminTjenesteImpl implements AdminTjeneste {
                     fpsakEventHandler.prosesserFraAdmin(mapTilBehandlingProsessEventDto(oppgave.getBehandlingId()), oppgave.getReservasjon());
                     break;
                 case FPTILBAKE :
-                    tilbakekrevingEventHandler.prosesserFraAdmin(mapTilBehandlingProsessEventDto(oppgave.getBehandlingId()), oppgave.getReservasjon());
+                    tilbakekrevingEventHandler.prosesserFraAdmin(mapTilTilbakekrevingBehandlingProsessEventDto(oppgave.getEksternId()), oppgave.getReservasjon());
                     break;
             }
         });
@@ -136,6 +144,22 @@ public class AdminTjenesteImpl implements AdminTjeneste {
                 .medBehandlingTypeKode(eksisterendeOppgave.getBehandlingType().getKode())
                 .medOpprettetBehandling(eksisterendeOppgave.getBehandlingOpprettet())
                 .medAksjonspunktKoderMedStatusListe(aksjonspunktKoderMedStatusListe)
+                .build();
+    }
+
+    private TilbakebetalingBehandlingProsessEventDto mapTilTilbakekrevingBehandlingProsessEventDto(UUID uuid) {
+        TilbakekrevingOppgave eksisterendeOppgave = hentTilbakekrevingOppgave(uuid);
+
+        Map<String, String> aksjonspunktKoderMedStatusListe = new HashMap<>();
+
+        return TilbakebetalingBehandlingProsessEventDto.tilbakebetalingBuilder()
+                .medSaksnummer(eksisterendeOppgave.getFagsakSaksnummer().toString())
+                .medAktørId(eksisterendeOppgave.getAktorId().toString())
+                .medYtelseTypeKode(eksisterendeOppgave.getFagsakYtelseType().getKode())
+                .medBehandlingTypeKode(eksisterendeOppgave.getBehandlingType().getKode())
+                .medOpprettetBehandling(eksisterendeOppgave.getBehandlingOpprettet())
+                .medAksjonspunktKoderMedStatusListe(aksjonspunktKoderMedStatusListe)
+                .medFeilutbetaltBeløp(eksisterendeOppgave.getBelop())
                 .build();
     }
 }

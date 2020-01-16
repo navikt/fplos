@@ -15,8 +15,8 @@ export type Saksliste = Readonly<{
   andreKriterier: AnnetKriterie[];
    sortering?: {
     sorteringType: Kodeverk;
-    fomDager?: number;
-    tomDager?: number;
+    fra?: number;
+    til?: number;
     fomDato?: string;
     tomDato?: string;
     erDynamiskPeriode: boolean;

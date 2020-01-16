@@ -1,14 +1,14 @@
 package no.nav.fplos.avdelingsleder;
 
-import java.time.LocalDate;
-import java.util.List;
-
 import no.nav.foreldrepenger.loslager.oppgave.AndreKriterierType;
 import no.nav.foreldrepenger.loslager.oppgave.BehandlingType;
 import no.nav.foreldrepenger.loslager.oppgave.FagsakYtelseType;
 import no.nav.foreldrepenger.loslager.oppgave.KøSortering;
 import no.nav.foreldrepenger.loslager.oppgave.OppgaveFiltrering;
 import no.nav.foreldrepenger.loslager.organisasjon.Avdeling;
+
+import java.time.LocalDate;
+import java.util.List;
 
 public interface AvdelingslederTjeneste {
     List<OppgaveFiltrering> hentOppgaveFiltreringer(String avdelingsEnhet);
@@ -37,7 +37,7 @@ public interface AvdelingslederTjeneste {
 
     void settSorteringTidsintervallDato(Long oppgaveFiltreringId, LocalDate fomDato, LocalDate tomDato);
 
-    void settSorteringTidsintervallDager(Long oppgaveFiltreringId, Long fomDager, Long tomDager);
+    void settSorteringNumeriskIntervall(Long oppgaveFiltreringId, Long fra, Long til);
 
     void settSorteringTidsintervallValg(Long oppgaveFiltreringId, boolean erDynamiskPeriode);
 }

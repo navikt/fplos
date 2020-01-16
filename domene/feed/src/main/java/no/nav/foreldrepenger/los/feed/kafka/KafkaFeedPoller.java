@@ -1,10 +1,10 @@
 package no.nav.foreldrepenger.los.feed.kafka;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-
 import no.nav.foreldrepenger.los.feed.poller.FeedPoller;
 import no.nav.fplos.kafkatjenester.KafkaReader;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 
 @ApplicationScoped
 public class KafkaFeedPoller implements FeedPoller {

@@ -87,7 +87,7 @@ const getSorteringsnavn = (saksliste?: Saksliste) => {
   }
 
   const {
-    erDynamiskPeriode, sorteringType, fomDager, tomDager, fomDato, tomDato,
+    erDynamiskPeriode, sorteringType, fra, til, fomDato, tomDato,
   } = saksliste.sortering;
   let values = {};
   if (!erDynamiskPeriode) {
@@ -100,13 +100,13 @@ const getSorteringsnavn = (saksliste?: Saksliste) => {
       tomDato: tomDato ? moment(tomDato).format(DDMMYYYY_DATE_FORMAT) : undefined,
     };
   } else {
-    if (!fomDager && !tomDager) {
+    if (!fra && !til) {
       return sorteringType.navn;
     }
     values = {
       navn: sorteringType.navn,
-      fomDato: fomDager ? moment().add(fomDager, 'days').format(DDMMYYYY_DATE_FORMAT) : undefined,
-      tomDato: tomDager ? moment().add(tomDager, 'days').format(DDMMYYYY_DATE_FORMAT) : undefined,
+      fomDato: fra ? moment().add(fra, 'days').format(DDMMYYYY_DATE_FORMAT) : undefined,
+      tomDato: til ? moment().add(til, 'days').format(DDMMYYYY_DATE_FORMAT) : undefined,
     };
   }
 

@@ -7,16 +7,16 @@ import java.time.LocalDate;
 public class SorteringDto {
 
     private KøSortering sorteringType;
-    private Long fomDager;
-    private Long tomDager;
+    private Long fra;
+    private Long til;
     private LocalDate fomDato;
     private LocalDate tomDato;
     private boolean erDynamiskPeriode;
 
-    public SorteringDto(KøSortering sorteringType, Long fomDager, Long tomDager, LocalDate fomDato, LocalDate tomDato, boolean erDynamiskPeriode) {
+    public SorteringDto(KøSortering sorteringType, Long fra, Long til, LocalDate fomDato, LocalDate tomDato, boolean erDynamiskPeriode) {
         this.sorteringType = sorteringType;
-        this.fomDager = fomDager;
-        this.tomDager = tomDager;
+        this.fra = fra;
+        this.til = til;
         this.fomDato = fomDato;
         this.tomDato = tomDato;
         this.erDynamiskPeriode = erDynamiskPeriode;
@@ -26,12 +26,12 @@ public class SorteringDto {
         return sorteringType;
     }
 
-    public Long getFomDager() {
-        return fomDager;
+    public Long getFra() {
+        return fra;
     }
 
-    public Long getTomDager() {
-        return tomDager;
+    public Long getTil() {
+        return til;
     }
 
     public LocalDate getFomDato() {

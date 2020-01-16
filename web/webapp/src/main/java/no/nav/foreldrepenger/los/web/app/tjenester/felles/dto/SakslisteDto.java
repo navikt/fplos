@@ -46,7 +46,7 @@ public class SakslisteDto {
                     .map(AndreKriterierDto::new)
                     .collect(Collectors.toList());
         }
-        this.sortering = new SorteringDto(o.getSortering(), o.getFomDager(), o.getTomDager(), o.getFomDato(), o.getTomDato(), o.getErDynamiskPeriode());
+        this.sortering = new SorteringDto(o.getSortering(), o.getFra(), o.getTil(), o.getFomDato(), o.getTomDato(), o.getErDynamiskPeriode());
         saksbehandlerIdenter = o.getSaksbehandlere().stream()
                 .map(Saksbehandler::getSaksbehandlerIdent)
                 .collect(Collectors.toList());
