@@ -1,42 +1,40 @@
 package no.nav.fplos.verdikjedetester.mock;
 
-import static java.time.temporal.ChronoUnit.MILLIS;
-import static org.assertj.core.api.Assertions.assertThat;
-
-import java.time.LocalDateTime;
-
-import no.nav.foreldrepenger.loslager.oppgave.BehandlingType;
 import no.nav.foreldrepenger.los.web.app.tjenester.felles.dto.OppgaveDto;
+import no.nav.foreldrepenger.loslager.oppgave.BehandlingType;
+import no.nav.foreldrepenger.loslager.oppgave.FagsakYtelseType;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class MeldingsTestInfo {
 
     private final Long behandlingId;
-    private final Long fagsakId;
-    private final LocalDateTime behandlingsfrist;
-    private final Boolean aktiv;
-    private final BehandlingType behandlingType;
-    private String avdeling;
-    private String fagsakYtelseType;
+    private final Long saksnummer;
+    //private final Boolean aktiv;
+    private String aktørId;
+    private final String behandlingTypeKode;
+    private String ytelseTypeKode;
+    private String behandlendeEnhet = "4806";
 
     private final String DEFAULT = "DEFAULT_TEST";
     //Der id-er ikke har noe å si genererer vi negative ID-er.
     private static Long DEFAULT_ID_COUNTER = -1L;
 
 
-    MeldingsTestInfo(Long behandlingId, Long fagsakId, LocalDateTime behandlingsfrist, Boolean aktiv, BehandlingType behandlingType) {
+    MeldingsTestInfo(Long behandlingId, Long saksnummer, String aktørId, BehandlingType behandlingType, FagsakYtelseType ytelseType) {
         this.behandlingId = behandlingId;
-        this.fagsakId = fagsakId;
-        this.behandlingsfrist = behandlingsfrist.truncatedTo(MILLIS);
-        this.aktiv = aktiv;
-        this.behandlingType = behandlingType;
+        this.aktørId = aktørId;
+        this.saksnummer = saksnummer;
+        this.behandlingTypeKode = behandlingType.getKode();
+        this.ytelseTypeKode = ytelseType.getKode();
     }
 
-    MeldingsTestInfo(Long behandlingId){
+    MeldingsTestInfo(Long behandlingId, String aktørId){
         this.behandlingId = behandlingId;
-        this.fagsakId = hentNesteId();
-        behandlingsfrist = LocalDateTime.now().truncatedTo(MILLIS);
-        aktiv = Boolean.TRUE;
-        behandlingType = BehandlingType.FØRSTEGANGSSØKNAD;
+        this.aktørId = aktørId;
+        this.saksnummer = hentNesteId();
+        behandlingTypeKode = BehandlingType.FØRSTEGANGSSØKNAD.getKode();
+        this.ytelseTypeKode = FagsakYtelseType.FORELDREPENGER.getKode();
     }
 
     private Long hentNesteId() {
@@ -47,32 +45,35 @@ public class MeldingsTestInfo {
 
 
     String tilmeldingstekst(){
-        return "{ \"behandlingId\": "+behandlingId+", \"fagsakId\": "+fagsakId+",\"behandlingsfrist\": \"" + behandlingsfrist + "\",\"aktiv\": \""+aktiv.toString()+"\", \"behandlingType\":\""+behandlingType.getKode()+"\"}";
+        return "{ \"fagsystem\": \"FPSAK\", \"behandlingId\": "+behandlingId+", \"saksnummer\": "+ saksnummer +", \"aktørId\":\""+ aktørId + "\", \"behandlendeEnhet\":\""+ behandlendeEnhet + "\", \"behandlingTypeKode\":\""+ behandlingTypeKode+"\", \"ytelseTypeKode\":\""+ ytelseTypeKode+"\"}";
+    }
+
+    public String getBehandlendeEnhet() {
+        return behandlendeEnhet;
     }
 
     public Long getBehandlingId() {
         return behandlingId;
     }
 
-    public Long getFagsakId() {
-        return fagsakId;
+    public Long getSaksnummer() {
+        return saksnummer;
     }
 
-    public LocalDateTime getBehandlingsfrist() {
-        return behandlingsfrist;
+    public String getBehandlingTypeKode() {
+        return behandlingTypeKode;
     }
 
-    public Boolean getAktiv() {
-        return aktiv;
+    public String getAktørId() {
+        return aktørId;
     }
 
-    public BehandlingType getBehandlingType() {
-        return behandlingType;
+    public String getYtelseTypeKode() {
+        return ytelseTypeKode;
     }
 
     public void sammenligne(OppgaveDto oppgave) {
         assertThat(oppgave.getBehandlingId()).isEqualTo(behandlingId);
-        assertThat(oppgave.getBehandlingsfrist()).isEqualTo(behandlingsfrist);
-        assertThat(oppgave.getBehandlingstype()).isEqualTo(behandlingType);
+        assertThat(oppgave.getBehandlingstype().getKode()).isEqualTo(behandlingTypeKode);
     }
 }
