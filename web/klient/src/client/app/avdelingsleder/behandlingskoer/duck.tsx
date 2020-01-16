@@ -94,10 +94,10 @@ export const lagreSakslisteSorteringTidsintervallDato = (sakslisteId: number, fo
 ).then(() => dispatch(fetchAntallOppgaverForSaksliste(sakslisteId, avdelingEnhet)))
     .then(() => dispatch(fetchAvdelingensSakslister(avdelingEnhet)));
 
-export const lagreSakslisteSorteringTidsintervallDager = (sakslisteId: number, fomDager: number, tomDager: number,
+export const lagreSakslisteSorteringNumeriskIntervall = (sakslisteId: number, fra: number, til: number,
   avdelingEnhet: string) => (dispatch: Dispatch<any>) => dispatch(
   fpLosApi.LAGRE_SAKSLISTE_SORTERING_TIDSINTERVALL_DAGER.makeRestApiRequest()({
-    sakslisteId, fomDager, tomDager, avdelingEnhet,
+    sakslisteId, fra, til, avdelingEnhet,
   }),
 ).then(() => dispatch(fetchAntallOppgaverForSaksliste(sakslisteId, avdelingEnhet)))
     .then(() => dispatch(fetchAvdelingensSakslister(avdelingEnhet)));

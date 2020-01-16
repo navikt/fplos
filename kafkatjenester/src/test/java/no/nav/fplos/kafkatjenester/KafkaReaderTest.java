@@ -9,6 +9,7 @@ import no.nav.fplos.foreldrepengerbehandling.Aksjonspunkt;
 import no.nav.fplos.foreldrepengerbehandling.BehandlingFpsak;
 import no.nav.fplos.foreldrepengerbehandling.ForeldrepengerBehandlingRestKlient;
 import no.nav.vedtak.felles.integrasjon.kafka.BehandlingProsessEventDto;
+import no.nav.vedtak.felles.integrasjon.kafka.FpsakBehandlingProsessEventDto;
 import org.junit.Rule;
 import org.junit.Test;
 
@@ -33,8 +34,7 @@ public class KafkaReaderTest {
     private ForeldrepengerBehandlingRestKlient foreldrepengerBehandlingRestKlient = mock(ForeldrepengerBehandlingRestKlient.class);
     private FpsakEventHandler fpsakEventHandler = new FpsakEventHandler(oppgaveRepository, foreldrepengerBehandlingRestKlient);
     private TilbakekrevingEventHandler tilbakekrevingEventHandler = new TilbakekrevingEventHandler(oppgaveRepository);
-    private JsonOppgaveHandler jsonOppgaveHandler = new JsonOppgaveHandler();
-    private KafkaReader kafkaReader = new KafkaReader(null, fpsakEventHandler, tilbakekrevingEventHandler, oppgaveRepository, jsonOppgaveHandler);
+    private KafkaReader kafkaReader = new KafkaReader(null, fpsakEventHandler, tilbakekrevingEventHandler, oppgaveRepository);
     private FpsakEventHandlerTest fpsakEventHandlerTest = new FpsakEventHandlerTest();
     private ObjectMapper objectMapper = new ObjectMapper();
 
@@ -42,7 +42,7 @@ public class KafkaReaderTest {
 
     @Test
     public void testOk() throws IOException {
-        BehandlingProsessEventDto behandlingProsessEventDto = fpsakEventHandlerTest.eventDrammenFra(fpsakEventHandlerTest.aksjonspunktKoderSkalHaOppgave);
+        FpsakBehandlingProsessEventDto behandlingProsessEventDto = fpsakEventHandlerTest.eventDrammenFra(fpsakEventHandlerTest.aksjonspunktKoderSkalHaOppgave);
         when(foreldrepengerBehandlingRestKlient.getBehandling(anyLong())).thenReturn(lagBehandlingDto());
         kafkaReader.prosesser(getJson(behandlingProsessEventDto));
         assertThat(repoRule.getRepository().hentAlle(EventmottakFeillogg.class)).hasSize(0);
@@ -64,7 +64,7 @@ public class KafkaReaderTest {
 
     private BehandlingFpsak lagBehandlingDto() {
         return BehandlingFpsak.builder()
-                .medUuid(UUID.nameUUIDFromBytes("TEST".getBytes()))
+                .medUuid(UUID.randomUUID())
                 .medBehandlendeEnhetNavn("NAV")
                 .medHarRefusjonskravFraArbeidsgiver(false)
                 .medAksjonspunkter(Collections.singletonList(new Aksjonspunkt.Builder()

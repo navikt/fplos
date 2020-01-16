@@ -31,9 +31,13 @@ import no.nav.fplos.avdelingsleder.AvdelingslederSaksbehandlerTjenesteImpl;
 import no.nav.fplos.avdelingsleder.AvdelingslederTjeneste;
 import no.nav.fplos.avdelingsleder.AvdelingslederTjenesteImpl;
 import no.nav.fplos.domene.organisasjonsinformasjon.organisasjonressursenhet.impl.OrganisasjonRessursEnhetTjenesteImpl;
+import no.nav.fplos.foreldrepengerbehandling.Aksjonspunkt;
 import no.nav.fplos.foreldrepengerbehandling.BehandlingFpsak;
 import no.nav.fplos.foreldrepengerbehandling.ForeldrepengerBehandlingRestKlient;
-import no.nav.fplos.kafkatjenester.*;
+import no.nav.fplos.kafkatjenester.AksjonspunktMeldingConsumer;
+import no.nav.fplos.kafkatjenester.FpsakEventHandler;
+import no.nav.fplos.kafkatjenester.KafkaReader;
+import no.nav.fplos.kafkatjenester.TilbakekrevingEventHandler;
 import no.nav.fplos.oppgave.OppgaveTjenesteImpl;
 import no.nav.fplos.person.api.TpsTjeneste;
 import no.nav.fplos.verdikjedetester.mock.MeldingsTestInfo;
@@ -49,6 +53,7 @@ import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -92,8 +97,7 @@ public class VerdikjedetestSaksbehandlerTest {
     public void before(){
         kafkaReader = new KafkaReader(meldingConsumer,
                 new FpsakEventHandler(oppgaveRepository, foreldrepengerBehandlingRestKlient),
-                new TilbakekrevingEventHandler(oppgaveRepository), oppgaveRepository,
-                new JsonOppgaveHandler(oppgaveRepository, foreldrepengerBehandlingRestKlient));
+                new TilbakekrevingEventHandler(oppgaveRepository), oppgaveRepository);
         avdelingDrammen = avdelingslederRestTjeneste.hentAvdelinger().stream()
                 .filter(avdeling -> AVDELING_DRAMMEN.equals(avdeling.getAvdelingEnhet())).findFirst().orElseThrow();
         sakslisteDrammenFPFørstegangsIdDto = avdelingslederSakslisteRestTjeneste.opprettNySaksliste(new AvdelingEnhetDto(avdelingDrammen.getAvdelingEnhet()));
@@ -210,6 +214,7 @@ public class VerdikjedetestSaksbehandlerTest {
     }
 
     private BehandlingFpsak lagBehandlingDto(){
-        return BehandlingFpsak.builder().medBehandlendeEnhetNavn("NAV").medStatus("-").build();
+        Aksjonspunkt aksjonspunkt = Aksjonspunkt.builder().medStatus(Aksjonspunkt.STATUSKODE_AKTIV).build();
+        return BehandlingFpsak.builder().medBehandlendeEnhetNavn("NAV").medStatus("-").medAksjonspunkter(Collections.singletonList(aksjonspunkt)).medBehandlingstidFrist(LocalDate.now()).build();
     }
 }

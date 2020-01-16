@@ -98,8 +98,8 @@ export class UtvalgskriterierForSakslisteForm extends Component<TsProps> {
       sortering: valgtSaksliste.sortering ? valgtSaksliste.sortering.sorteringType.kode : undefined,
       fomDato: valgtSaksliste.sortering ? valgtSaksliste.sortering.fomDato : undefined,
       tomDato: valgtSaksliste.sortering ? valgtSaksliste.sortering.tomDato : undefined,
-      fomDager: valgtSaksliste.sortering ? valgtSaksliste.sortering.fomDager : undefined,
-      tomDager: valgtSaksliste.sortering ? valgtSaksliste.sortering.tomDager : undefined,
+      fra: valgtSaksliste.sortering ? valgtSaksliste.sortering.fra : undefined,
+      til: valgtSaksliste.sortering ? valgtSaksliste.sortering.til : undefined,
       erDynamiskPeriode: valgtSaksliste.sortering ? valgtSaksliste.sortering.erDynamiskPeriode : undefined,
       fagsakYtelseType,
       ...andreKriterierTyper,
@@ -179,10 +179,11 @@ export class UtvalgskriterierForSakslisteForm extends Component<TsProps> {
               <Column xs="4">
                 <SorteringVelger
                   valgtSakslisteId={valgtSaksliste.sakslisteId}
+                  valgteBehandlingtyper={valgtSaksliste.behandlingTyper}
                   valgtAvdelingEnhet={valgtAvdelingEnhet}
                   erDynamiskPeriode={values.erDynamiskPeriode}
-                  fomDager={finnDagerSomTall(values.fomDager)}
-                  tomDager={finnDagerSomTall(values.tomDager)}
+                  fra={finnDagerSomTall(values.fra)}
+                  til={finnDagerSomTall(values.til)}
                   fomDato={values.fomDato}
                   tomDato={values.tomDato}
                 />

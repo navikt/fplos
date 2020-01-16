@@ -223,6 +223,12 @@
   "SorteringVelger.Bindestrek": "-",
   "SorteringVelger.Dager": "dager frem",
   "SorteringVelger.DynamiskPeriode": "Dynamisk periode",
+  "SorteringVelger.FiltrerPaHeltall": "Ta kun med behandlinger mellom",
+  "SorteringVelger.Valuta": "kr",
+  "SorteringVelger.Fra": "Fra",
+  "SorteringVelger.Til": "Til",
+
+
 
   "SletteSaksbehandlerModal.SletteModal": "Ønsker du å slette saksbehandler?",
   "SletteSaksbehandlerModal.SletteSaksbehandler": "Ønsker du å slette {saksbehandlerNavn}?",

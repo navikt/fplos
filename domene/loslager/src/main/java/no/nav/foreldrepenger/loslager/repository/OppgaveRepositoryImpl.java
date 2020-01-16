@@ -15,6 +15,7 @@ import no.nav.foreldrepenger.loslager.oppgave.OppgaveFiltrering;
 import no.nav.foreldrepenger.loslager.oppgave.OppgaveFiltreringOppdaterer;
 import no.nav.foreldrepenger.loslager.oppgave.Reservasjon;
 import no.nav.foreldrepenger.loslager.oppgave.ReservasjonEventLogg;
+import no.nav.foreldrepenger.loslager.oppgave.TilbakekrevingOppgave;
 import no.nav.foreldrepenger.loslager.organisasjon.Avdeling;
 import no.nav.foreldrepenger.loslager.organisasjon.Saksbehandler;
 import no.nav.vedtak.felles.jpa.VLPersistenceUnit;
@@ -29,6 +30,7 @@ import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -40,16 +42,23 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static no.nav.foreldrepenger.loslager.BaseEntitet.BRUKERNAVN_NÅR_SIKKERHETSKONTEKST_IKKE_FINNES;
+import static no.nav.foreldrepenger.loslager.oppgave.KøSortering.FT_DATO;
+import static no.nav.foreldrepenger.loslager.oppgave.KøSortering.FT_HELTALL;
 
 @ApplicationScoped
 public class OppgaveRepositoryImpl implements OppgaveRepository {
 
     private static final String COUNT_FRA_OPPGAVE = "SELECT count(1) from Oppgave o ";
     private static final String SELECT_FRA_OPPGAVE = "SELECT o from Oppgave o ";
+    private static final String COUNT_FRA_TILBAKEKREVING_OPPGAVE = "SELECT count(1) from TilbakekrevingOppgave o ";
+    private static final String SELECT_FRA_TILBAKEKREVING_OPPGAVE = "SELECT o from TilbakekrevingOppgave o ";
+
     private static final String SORTERING = "ORDER BY ";
     private static final String BEHANDLINGSFRIST = "o.behandlingsfrist";
     private static final String BEHANDLINGOPPRETTET = "o.behandlingOpprettet";
     private static final String FORSTE_STONADSDAG = "o.forsteStonadsdag";
+    private static final String BELOP = "o.belop";
+    private static final String FEILUTBETALINGSTART = "o.feilutbetalingstart";
     private static final String OPPGAVEFILTRERING_SORTERING_NAVN = "ORDER BY l.navn";
 
     private EntityManager entityManager;
@@ -68,7 +77,18 @@ public class OppgaveRepositoryImpl implements OppgaveRepository {
 
     @Override
     public int hentAntallOppgaver(OppgavespørringDto oppgavespørringDto) {
-        TypedQuery<Long> oppgaveTypedQuery = lagOppgavespørring(COUNT_FRA_OPPGAVE, Long.class, oppgavespørringDto);
+        String selection = COUNT_FRA_OPPGAVE;
+        if(oppgavespørringDto.getSortering() != null) {
+            switch (oppgavespørringDto.getSortering().getFeltkategori()) {
+                case KøSortering.FK_TILBAKEKREVING:
+                    selection = COUNT_FRA_TILBAKEKREVING_OPPGAVE;
+                    break;
+                case KøSortering.FK_UNIVERSAL:
+                    selection = COUNT_FRA_OPPGAVE;
+                    break;
+            }
+        }
+        TypedQuery<Long> oppgaveTypedQuery = lagOppgavespørring(selection, Long.class, oppgavespørringDto);
         return oppgaveTypedQuery.getSingleResult().intValue();
     }
 
@@ -81,7 +101,18 @@ public class OppgaveRepositoryImpl implements OppgaveRepository {
 
     @Override
     public List<Oppgave> hentOppgaver(OppgavespørringDto oppgavespørringDto) {
-        TypedQuery<Oppgave> oppgaveTypedQuery = lagOppgavespørring(SELECT_FRA_OPPGAVE, Oppgave.class, oppgavespørringDto);
+        String selection = SELECT_FRA_OPPGAVE;
+        if(oppgavespørringDto.getSortering() != null) {
+            switch (oppgavespørringDto.getSortering().getFeltkategori()) {
+                case KøSortering.FK_TILBAKEKREVING:
+                    selection = SELECT_FRA_TILBAKEKREVING_OPPGAVE;
+                    break;
+                case KøSortering.FK_UNIVERSAL:
+                    selection = SELECT_FRA_OPPGAVE;
+                    break;
+            }
+        }
+        TypedQuery<Oppgave> oppgaveTypedQuery = lagOppgavespørring(selection, Oppgave.class, oppgavespørringDto);
         return oppgaveTypedQuery.getResultList();
     }
 
@@ -127,17 +158,28 @@ public class OppgaveRepositoryImpl implements OppgaveRepository {
         if (!queryDto.getYtelseTyper().isEmpty()) {
             query.setParameter("fagsakYtelseType", queryDto.getYtelseTyper());
         }
-        if (queryDto.getFiltrerFomDager() != null) {
-            query.setParameter("filterFomDager", KøSortering.FORSTE_STONADSDAG.equals(queryDto.getSortering()) ? LocalDate.now().plusDays(queryDto.getFiltrerFomDager()) : LocalDateTime.now().plusDays(queryDto.getFiltrerFomDager()).with(LocalTime.MIN));
-        }
-        if (queryDto.getFiltrerTomDager() != null) {
-            query.setParameter("filterTomDager", KøSortering.FORSTE_STONADSDAG.equals(queryDto.getSortering()) ? LocalDate.now().plusDays(queryDto.getFiltrerTomDager()) : LocalDateTime.now().plusDays(queryDto.getFiltrerTomDager()).with(LocalTime.MAX));
-        }
-        if (queryDto.getFiltrerFomDato() != null) {
-            query.setParameter("filterFomDato", KøSortering.FORSTE_STONADSDAG.equals(queryDto.getSortering()) ? queryDto.getFiltrerFomDato() : queryDto.getFiltrerFomDato().atTime(LocalTime.MIN));
-        }
-        if (queryDto.getFiltrerTomDato() != null) {
-            query.setParameter("filterTomDato", KøSortering.FORSTE_STONADSDAG.equals(queryDto.getSortering()) ? queryDto.getFiltrerTomDato() : queryDto.getFiltrerTomDato().atTime(LocalTime.MAX));
+        if(queryDto.getSortering() != null) {
+            if (FT_HELTALL.equalsIgnoreCase(queryDto.getSortering().getFelttype())) {
+                if (queryDto.getFiltrerFra() != null) {
+                    query.setParameter("filterFra", BigDecimal.valueOf(queryDto.getFiltrerFra()));
+                }
+                if (queryDto.getFiltrerTil() != null) {
+                    query.setParameter("filterTil", BigDecimal.valueOf(queryDto.getFiltrerTil()));
+                }
+            } else if (FT_DATO.equalsIgnoreCase(queryDto.getSortering().getFelttype())) {
+                if (queryDto.getFiltrerFra() != null) {
+                    query.setParameter("filterFomDager", KøSortering.FORSTE_STONADSDAG.equals(queryDto.getSortering()) ? LocalDate.now().plusDays(queryDto.getFiltrerFra()) : LocalDateTime.now().plusDays(queryDto.getFiltrerFra()).with(LocalTime.MIN));
+                }
+                if (queryDto.getFiltrerTil() != null) {
+                    query.setParameter("filterTomDager", KøSortering.FORSTE_STONADSDAG.equals(queryDto.getSortering()) ? LocalDate.now().plusDays(queryDto.getFiltrerTil()) : LocalDateTime.now().plusDays(queryDto.getFiltrerTil()).with(LocalTime.MAX));
+                }
+                if (queryDto.getFiltrerFomDato() != null) {
+                    query.setParameter("filterFomDato", KøSortering.FORSTE_STONADSDAG.equals(queryDto.getSortering()) ? queryDto.getFiltrerFomDato() : queryDto.getFiltrerFomDato().atTime(LocalTime.MIN));
+                }
+                if (queryDto.getFiltrerTomDato() != null) {
+                    query.setParameter("filterTomDato", KøSortering.FORSTE_STONADSDAG.equals(queryDto.getSortering()) ? queryDto.getFiltrerTomDato() : queryDto.getFiltrerTomDato().atTime(LocalTime.MAX));
+                }
+            }
         }
 
         return query;
@@ -154,19 +196,37 @@ public class OppgaveRepositoryImpl implements OppgaveRepository {
         KøSortering sortering = oppgavespørringDto.getSortering();
         if (KøSortering.BEHANDLINGSFRIST.equals(sortering)) {
             return oppgavespørringDto.isErDynamiskPeriode()
-                    ? filtrerDynamisk(BEHANDLINGSFRIST, oppgavespørringDto.getFiltrerFomDager(), oppgavespørringDto.getFiltrerTomDager())
+                    ? filtrerDynamisk(BEHANDLINGSFRIST, oppgavespørringDto.getFiltrerFra(), oppgavespørringDto.getFiltrerTil())
                     : filtrerStatisk(BEHANDLINGSFRIST, oppgavespørringDto.getFiltrerFomDato(), oppgavespørringDto.getFiltrerTomDato());
         } else if (KøSortering.OPPRETT_BEHANDLING.equals(sortering)) {
             return oppgavespørringDto.isErDynamiskPeriode()
-                    ? filtrerDynamisk(BEHANDLINGOPPRETTET, oppgavespørringDto.getFiltrerFomDager(), oppgavespørringDto.getFiltrerTomDager())
+                    ? filtrerDynamisk(BEHANDLINGOPPRETTET, oppgavespørringDto.getFiltrerFra(), oppgavespørringDto.getFiltrerTil())
                     : filtrerStatisk(BEHANDLINGOPPRETTET, oppgavespørringDto.getFiltrerFomDato(), oppgavespørringDto.getFiltrerTomDato());
         } else if (KøSortering.FORSTE_STONADSDAG.equals(sortering)) {
             return oppgavespørringDto.isErDynamiskPeriode()
-                    ? filtrerDynamisk(FORSTE_STONADSDAG, oppgavespørringDto.getFiltrerFomDager(), oppgavespørringDto.getFiltrerTomDager())
+                    ? filtrerDynamisk(FORSTE_STONADSDAG, oppgavespørringDto.getFiltrerFra(), oppgavespørringDto.getFiltrerTil())
                     : filtrerStatisk(FORSTE_STONADSDAG, oppgavespørringDto.getFiltrerFomDato(), oppgavespørringDto.getFiltrerTomDato());
+        } else if (KøSortering.BELOP.equals(sortering)) {
+            return filtrerNumerisk(BELOP, oppgavespørringDto.getFiltrerFra(), oppgavespørringDto.getFiltrerTil());
+        } else if (KøSortering.FEILUTBETALINGSTART.equals(sortering)) {
+            return oppgavespørringDto.isErDynamiskPeriode()
+                    ? filtrerDynamisk(FEILUTBETALINGSTART, oppgavespørringDto.getFiltrerFra(), oppgavespørringDto.getFiltrerTil())
+                    : filtrerStatisk(FEILUTBETALINGSTART, oppgavespørringDto.getFiltrerFomDato(), oppgavespørringDto.getFiltrerTomDato());
         } else {
             return SORTERING + BEHANDLINGOPPRETTET;
         }
+    }
+
+    private String filtrerNumerisk(String sortering, Long fra, Long til) {
+        String numeriskFiltrering = "";
+        if (fra != null && til != null) {
+            numeriskFiltrering = "AND " + sortering + " >= :filterFra AND " + sortering + " <= :filterTil ";
+        } else if (fra != null) {
+            numeriskFiltrering = "AND " + sortering + " >= :filterFra ";
+        } else if (til != null) {
+            numeriskFiltrering = "AND " + sortering + " <= :filterTil ";
+        }
+        return numeriskFiltrering + SORTERING + sortering;
     }
 
     private String filtrerDynamisk(String sortering, Long fomDager, Long tomDager) {
@@ -265,6 +325,15 @@ public class OppgaveRepositoryImpl implements OppgaveRepository {
     }
 
     @Override
+    public KøSortering hentSorteringForListe(Long listeId) {
+        TypedQuery<KøSortering> listeTypedQuery = getEntityManager()
+                .createQuery("SELECT l.sortering FROM OppgaveFiltrering l WHERE l.id = :id ", KøSortering.class)
+                .setParameter("id", listeId);
+        return listeTypedQuery.getResultStream().findFirst().orElse(null);
+    }
+
+
+    @Override
     public void lagre(Reservasjon reservasjon){
         internLagre(reservasjon);
     }
@@ -272,6 +341,11 @@ public class OppgaveRepositoryImpl implements OppgaveRepository {
     @Override
     public void lagre(Oppgave oppgave){
         internLagre(oppgave);
+    }
+
+    @Override
+    public void lagre(TilbakekrevingOppgave egenskaper){
+        internLagre(egenskaper);
     }
 
     @Override
@@ -377,6 +451,13 @@ public class OppgaveRepositoryImpl implements OppgaveRepository {
     }
 
     @Override
+    public TilbakekrevingOppgave opprettTilbakekrevingEgenskaper(TilbakekrevingOppgave egenskaper) {
+        internLagre(egenskaper);
+        entityManager.refresh(egenskaper);
+        return egenskaper;
+    }
+
+    @Override
     public Oppgave gjenåpneOppgaveForEksternId(UUID eksternId) {
         List<Oppgave> oppgaver = hentOppgaverForEksternId(eksternId);
         Oppgave sisteOppgave = oppgaver.stream()
@@ -471,8 +552,8 @@ public class OppgaveRepositoryImpl implements OppgaveRepository {
                         .endreErDynamiskPeriode(false)
                         .endreFomDato(null)
                         .endreTomDato(null)
-                        .endreFomDager(null)
-                        .endreTomDager(null));
+                        .endreFraVerdi(null)
+                        .endreTilVerdi(null));
         entityManager.flush();
     }
 
@@ -486,11 +567,11 @@ public class OppgaveRepositoryImpl implements OppgaveRepository {
     }
 
     @Override
-    public void settSorteringTidsintervallDager(Long oppgaveFiltreringId, Long fomDager, Long tomDager){
+    public void settSorteringNumeriskIntervall(Long oppgaveFiltreringId, Long fra, Long til){
         getEntityManager().persist(
                 getEntityManager().find(OppgaveFiltreringOppdaterer.class, oppgaveFiltreringId)
-                        .endreFomDager(fomDager)
-                        .endreTomDager(tomDager));
+                        .endreFraVerdi(fra)
+                        .endreTilVerdi(til));
         entityManager.flush();
     }
 
@@ -501,8 +582,8 @@ public class OppgaveRepositoryImpl implements OppgaveRepository {
                         .endreErDynamiskPeriode(erDynamiskPeriode)
                         .endreFomDato(null)
                         .endreTomDato(null)
-                        .endreFomDager(null)
-                        .endreTomDager(null));
+                        .endreFraVerdi(null)
+                        .endreTilVerdi(null));
         entityManager.flush();
     }
 

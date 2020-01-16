@@ -6,7 +6,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;
-
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -19,7 +18,8 @@ public enum BehandlingType implements Kodeverdi {
     REVURDERING("BT-004", "Revurdering"),
     SØKNAD("BT-005", "Søknad"),
     INNSYN("BT-006", "Innsyn"),
-    ANKE("BT-008", "Anke");
+    ANKE("BT-008", "Anke"),
+    TILBAKEBETALING ("BT-009", "Tilbakebetaling");
 
     private String kode;
     private final String navn;

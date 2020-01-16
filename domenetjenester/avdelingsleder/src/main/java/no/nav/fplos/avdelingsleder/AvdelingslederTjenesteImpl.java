@@ -76,11 +76,20 @@ public class AvdelingslederTjenesteImpl implements AvdelingslederTjeneste {
     public void endreFiltreringBehandlingType(Long oppgavefiltreringId, BehandlingType behandlingType, boolean checked) {
         OppgaveFiltrering filtre = oppgaveRepository.hentListe(oppgavefiltreringId);
         if (checked) {
+            if(behandlingType != BehandlingType.TILBAKEBETALING) sjekkSorteringForTilbakekreving(oppgavefiltreringId);
             oppgaveRepository.lagre(new FiltreringBehandlingType(filtre, behandlingType));
         } else {
+            if(behandlingType == BehandlingType.TILBAKEBETALING) sjekkSorteringForTilbakekreving(oppgavefiltreringId);
             oppgaveRepository.slettFiltreringBehandlingType(oppgavefiltreringId, behandlingType);
         }
         oppgaveRepository.refresh(filtre);
+    }
+
+    private void sjekkSorteringForTilbakekreving(Long oppgavefiltreringId) {
+        KøSortering sortering = oppgaveRepository.hentSorteringForListe(oppgavefiltreringId);
+        if(sortering != null && sortering.getFeltkategori() == KøSortering.FK_TILBAKEKREVING) {
+            settSortering(oppgavefiltreringId, KøSortering.BEHANDLINGSFRIST);
+        }
     }
 
     @Override
@@ -143,8 +152,8 @@ public class AvdelingslederTjenesteImpl implements AvdelingslederTjeneste {
     }
 
     @Override
-    public void settSorteringTidsintervallDager(Long oppgaveFiltreringId, Long fomDager, Long tomDager){
-        oppgaveRepository.settSorteringTidsintervallDager(oppgaveFiltreringId, fomDager, tomDager);
+    public void settSorteringNumeriskIntervall(Long oppgaveFiltreringId, Long fra, Long til){
+        oppgaveRepository.settSorteringNumeriskIntervall(oppgaveFiltreringId, fra, til);
     }
 
     @Override

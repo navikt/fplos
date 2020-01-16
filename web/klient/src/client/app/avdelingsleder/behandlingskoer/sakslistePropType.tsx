@@ -10,8 +10,8 @@ const sakslistePropType = PropTypes.shape({
   sistEndret: PropTypes.string.isRequired,
   sortering: PropTypes.shape({
     sorteringType: kodeverkPropType.isRequired,
-    fomDager: PropTypes.number,
-    tomDager: PropTypes.number,
+    fra: PropTypes.number,
+    til: PropTypes.number,
     fomDato: PropTypes.string,
     tomDato: PropTypes.string,
     erDynamiskPeriode: PropTypes.bool.isRequired,

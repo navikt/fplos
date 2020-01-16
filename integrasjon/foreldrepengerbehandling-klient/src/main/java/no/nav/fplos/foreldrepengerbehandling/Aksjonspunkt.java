@@ -8,21 +8,21 @@ import java.util.List;
 import static java.util.Arrays.asList;
 
 public class Aksjonspunkt {
-    private static final String STATUSKODE_AKTIV = "OPPR";
-    private static final String STATUSKODE_AVBRUTT = "AVBR";
+    public static final String STATUSKODE_AKTIV = "OPPR";
+    public static final String STATUSKODE_AVBRUTT = "AVBR";
 
-    private static final String MANUELT_SATT_PÅ_VENT_KODE = "7001";
-    private static final String PÅ_VENT_KODEGRUPPE_STARTS_WITH = "7";
-    private static final String TIL_BESLUTTER_KODE = "5016";
-    private static final List<String> REGISTRER_PAPIRSØKNAD_KODE = asList("5012", "5040", "5057", "5096");
-    //private static final List<String> SELVSTENDIG_FRILANSER_GRUPPE = asList("5038", "5039", "5042", "7072");
-    private static final List<String> SELVSTENDIG_FRILANSER_GRUPPE = asList("5038", "5049");
+    public static final String MANUELT_SATT_PÅ_VENT_KODE = "7001";
+    public static final String PÅ_VENT_KODEGRUPPE_STARTS_WITH = "7";
+    public static final String TIL_BESLUTTER_KODE = "5016";
+    public static final List<String> REGISTRER_PAPIRSØKNAD_KODE = asList("5012", "5040", "5057", "5096");
+    //public static final List<String> SELVSTENDIG_FRILANSER_GRUPPE = asList("5038", "5039", "5042", "7072");
+    public static final List<String> SELVSTENDIG_FRILANSER_GRUPPE = asList("5038", "5049");
 
-    private static final String VURDER_FARESIGNALER = "5095";
-    private static final String AUTOMATISK_MARKERING_SOM_UTLAND = "5068";
-    private static final String MANUELL_MARKERING_SOM_UTLAND = "6068";
-    private static final String EØS_BOSATT_NORGE = "EØS_BOSATT_NORGE";
-    private static final String BOSATT_UTLAND = "BOSATT_UTLAND";
+    public static final String VURDER_FARESIGNALER = "5095";
+    public static final String AUTOMATISK_MARKERING_SOM_UTLAND = "5068";
+    public static final String MANUELL_MARKERING_SOM_UTLAND = "6068";
+    public static final String EØS_BOSATT_NORGE = "EØS_BOSATT_NORGE";
+    public static final String BOSATT_UTLAND = "BOSATT_UTLAND";
 
     private String definisjonKode;
     private String statusKode;
@@ -49,7 +49,7 @@ public class Aksjonspunkt {
     }
 
     public boolean erPåVent() {
-        return definisjonKode.startsWith(PÅ_VENT_KODEGRUPPE_STARTS_WITH) && erAktiv();
+        return definisjonKode != null && definisjonKode.startsWith(PÅ_VENT_KODEGRUPPE_STARTS_WITH) && erAktiv();
     }
 
     public boolean erManueltPåVent() {
@@ -77,8 +77,8 @@ public class Aksjonspunkt {
     }
 
     private boolean erManueltMarkertSomUtenlandssak() {
-        return definisjonKode.equals(MANUELL_MARKERING_SOM_UTLAND)
-                && (begrunnelse.equals(EØS_BOSATT_NORGE) || begrunnelse.equals(BOSATT_UTLAND));
+        return MANUELL_MARKERING_SOM_UTLAND.equals(definisjonKode)
+                && (EØS_BOSATT_NORGE.equals(begrunnelse) || BOSATT_UTLAND.equals(begrunnelse));
     }
 
     public boolean erUtenlandssak() {

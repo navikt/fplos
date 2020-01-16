@@ -37,10 +37,8 @@ import no.nav.fplos.domene.organisasjonsinformasjon.organisasjonressursenhet.imp
 import no.nav.fplos.foreldrepengerbehandling.Aksjonspunkt;
 import no.nav.fplos.foreldrepengerbehandling.BehandlingFpsak;
 import no.nav.fplos.foreldrepengerbehandling.ForeldrepengerBehandlingRestKlient;
-
 import no.nav.fplos.kafkatjenester.AksjonspunktMeldingConsumer;
 import no.nav.fplos.kafkatjenester.FpsakEventHandler;
-import no.nav.fplos.kafkatjenester.JsonOppgaveHandler;
 import no.nav.fplos.kafkatjenester.KafkaReader;
 import no.nav.fplos.kafkatjenester.TilbakekrevingEventHandler;
 import no.nav.fplos.oppgave.OppgaveTjenesteImpl;
@@ -75,7 +73,6 @@ public class VerdikjedetestAvdelingslederTest {
     @Rule
     public UnittestRepositoryRule repoRule = new UnittestRepositoryRule();
     private EntityManager entityManager = repoRule.getEntityManager();
-    private JsonOppgaveHandler jsonOppgaveHandler = new JsonOppgaveHandler();
     private OppgaveRepository oppgaveRepository = new OppgaveRepositoryImpl(entityManager);
     private OrganisasjonRepository organisasjonRepository = new OrganisasjonRepositoryImpl(entityManager);
     private TpsTjeneste tpsTjeneste = mock(TpsTjeneste.class);
@@ -109,9 +106,7 @@ public class VerdikjedetestAvdelingslederTest {
         kafkaReader = new KafkaReader(meldingConsumer,
                 new FpsakEventHandler(oppgaveRepository, foreldrepengerBehandlingRestKlient),
                 new TilbakekrevingEventHandler(oppgaveRepository),
-                oppgaveRepository,
-                new JsonOppgaveHandler(oppgaveRepository, foreldrepengerBehandlingRestKlient)
-                );
+                oppgaveRepository);
         entityManager.flush();
         avdelingDrammen = avdelingslederRestTjeneste.hentAvdelinger().stream()
                 .filter(avdeling -> AVDELING_DRAMMEN.equals(avdeling.getAvdelingEnhet())).findFirst().orElseThrow();
@@ -225,7 +220,7 @@ public class VerdikjedetestAvdelingslederTest {
 
     private OppgaveDto verifiserAtEksaktFinnes(SakslisteIdDto sakslisteIdDto, Map<Long, MeldingsTestInfo> meldinger, List<OppgaveDto> oppgaverTilBehandling) {
         assertThat(oppgaverTilBehandling).withFailMessage("Oppgavene til behandling antall '" + oppgaverTilBehandling.size() +
-                "' har ikke samme antall som meldingene antall '" + meldinger.size() + "'")
+                "' har ikke samme antall som meldingene antall '" + Math.min(meldinger.size(), 3) + "'")
                 .hasSize(Math.min(meldinger.size(), 3));
         Integer antallOppgaverForSaksliste = avdelingslederOppgaveRestTjeneste.hentAntallOppgaverForSaksliste(sakslisteIdDto, new AvdelingEnhetDto(avdelingDrammen.getAvdelingEnhet()));
         assertThat(antallOppgaverForSaksliste.intValue()).withFailMessage("AntallOppgaverForSaksliste gir antallet " +
@@ -253,7 +248,7 @@ public class VerdikjedetestAvdelingslederTest {
 
     private BehandlingFpsak lagBehandlingDto(){
         return BehandlingFpsak.builder()
-                .medAksjonspunkter(List.of(new Aksjonspunkt.Builder().medDefinisjon("5080").medStatus("AVBR").build()))
+                .medAksjonspunkter(List.of(new Aksjonspunkt.Builder().medDefinisjon(Aksjonspunkt.TIL_BESLUTTER_KODE).medStatus(Aksjonspunkt.STATUSKODE_AKTIV).build()))
                 .medBehandlendeEnhetNavn("NAV")
                 .medStatus("-")
                 .build();

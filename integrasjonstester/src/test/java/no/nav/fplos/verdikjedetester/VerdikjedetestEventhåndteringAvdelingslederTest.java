@@ -36,10 +36,8 @@ import no.nav.fplos.domene.organisasjonsinformasjon.organisasjonressursenhet.imp
 import no.nav.fplos.foreldrepengerbehandling.Aksjonspunkt;
 import no.nav.fplos.foreldrepengerbehandling.BehandlingFpsak;
 import no.nav.fplos.foreldrepengerbehandling.ForeldrepengerBehandlingRestKlient;
-
 import no.nav.fplos.kafkatjenester.AksjonspunktMeldingConsumer;
 import no.nav.fplos.kafkatjenester.FpsakEventHandler;
-import no.nav.fplos.kafkatjenester.JsonOppgaveHandler;
 import no.nav.fplos.kafkatjenester.KafkaReader;
 import no.nav.fplos.kafkatjenester.TilbakekrevingEventHandler;
 import no.nav.fplos.oppgave.OppgaveTjenesteImpl;
@@ -74,7 +72,6 @@ public class VerdikjedetestEventhåndteringAvdelingslederTest {
 
     @Rule
     public UnittestRepositoryRule repoRule = new UnittestRepositoryRule();
-    private JsonOppgaveHandler jsonOppgaveHandler = new JsonOppgaveHandler();
     private EntityManager entityManager = repoRule.getEntityManager();
     private OppgaveRepository oppgaveRepository = new OppgaveRepositoryImpl(entityManager);
     private OrganisasjonRepository organisasjonRepository = new OrganisasjonRepositoryImpl(entityManager);
@@ -111,7 +108,7 @@ public class VerdikjedetestEventhåndteringAvdelingslederTest {
     public void before(){
         kafkaReader = new KafkaReader(meldingConsumer,
                 new FpsakEventHandler(oppgaveRepository, foreldrepengerBehandlingRestKlientMock),
-                new TilbakekrevingEventHandler(oppgaveRepository),oppgaveRepository, jsonOppgaveHandler);
+                new TilbakekrevingEventHandler(oppgaveRepository),oppgaveRepository);
         entityManager.flush();
         avdelingDrammen = avdelingslederRestTjeneste.hentAvdelinger().stream()
                 .filter(avdeling -> AVDELING_DRAMMEN.equals(avdeling.getAvdelingEnhet())).findFirst().orElseThrow();

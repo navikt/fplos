@@ -1,7 +1,12 @@
 package no.nav.foreldrepenger.db.validering;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import no.nav.foreldrepenger.dbstoette.DatasourceConfiguration;
+import no.nav.vedtak.felles.lokal.dbstoette.ConnectionHandler;
+import no.nav.vedtak.felles.lokal.dbstoette.DBConnectionProperties;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
+import javax.sql.DataSource;
 import java.io.FileNotFoundException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -10,14 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import javax.sql.DataSource;
-
-import org.junit.BeforeClass;
-import org.junit.Test;
-
-import no.nav.foreldrepenger.dbstoette.DatasourceConfiguration;
-import no.nav.vedtak.felles.lokal.dbstoette.ConnectionHandler;
-import no.nav.vedtak.felles.lokal.dbstoette.DBConnectionProperties;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /** Tester at alle migreringer følger standarder for navn og god praksis. */
 public class SjekkDbStrukturTest {
@@ -40,7 +38,7 @@ public class SjekkDbStrukturTest {
 
     @Test
     public void sjekk_at_alle_tabeller_er_dokumentert() throws Exception {
-        String sql = "SELECT table_name FROM all_tab_comments WHERE (comments IS NULL OR comments in ('', 'MISSING COLUMN COMMENT')) AND owner=sys_context('userenv', 'current_schema') AND table_name NOT LIKE 'schema_%' AND table_name not like '%_MOCK'";
+        String sql = "SELECT table_name FROM all_tab_comments WHERE (comments IS NULL OR comments in ('', 'MISSING COLUMN COMMENT')) AND owner=sys_context('userenv', 'current_schema') AND table_name NOT LIKE 'schema_%' AND table_name not like '%_MOCK' AND table_name NOT LIKE 'HT_%'";
         List<String> avvik = new ArrayList<>();
         try (Connection conn = ds.getConnection();
                 PreparedStatement stmt = conn.prepareStatement(sql);
@@ -63,7 +61,7 @@ public class SjekkDbStrukturTest {
             + "  FROM all_col_comments t "
             + " WHERE (t.comments IS NULL OR t.comments = '') "
             + "   AND t.owner = sys_context('userenv','current_schema') "
-            + "   AND ( upper(t.table_name) NOT LIKE 'SCHEMA_%' AND upper(t.table_name) NOT LIKE '%_MOCK') "
+            + "   AND ( upper(t.table_name) NOT LIKE 'SCHEMA_%' AND upper(t.table_name) NOT LIKE '%_MOCK' AND upper(t.table_name) NOT LIKE 'HT_%') "
             + "   AND NOT EXISTS (SELECT 1 FROM all_constraints a, all_cons_columns b "
             + "                    WHERE a.table_name = b.table_name "
             + "                      AND b.table_name = t.table_name "
@@ -292,7 +290,7 @@ public class SjekkDbStrukturTest {
             + " WHERE table_name "
             + " NOT IN ( SELECT ac.table_name FROM all_constraints ac "
             + "         WHERE ac.constraint_type ='P' and at.owner=ac.owner and ac.constraint_name like 'PK_%') "
-            + " AND at.owner=upper(?) and at.table_name not like 'schema_%'";
+            + " AND at.owner=upper(?) and at.table_name not like 'schema_%' and at.table_name not like 'HT_%'";
 
         List<String> avvik = new ArrayList<>();
         StringBuilder tekst = new StringBuilder();

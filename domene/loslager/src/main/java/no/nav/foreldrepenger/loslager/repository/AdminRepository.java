@@ -3,6 +3,7 @@ package no.nav.foreldrepenger.loslager.repository;
 import no.nav.foreldrepenger.loslager.oppgave.EventmottakFeillogg;
 import no.nav.foreldrepenger.loslager.oppgave.Oppgave;
 import no.nav.foreldrepenger.loslager.oppgave.OppgaveEventLogg;
+import no.nav.foreldrepenger.loslager.oppgave.TilbakekrevingOppgave;
 
 import java.util.List;
 import java.util.UUID;
@@ -14,6 +15,7 @@ public interface AdminRepository {
     Oppgave hentSisteOppgave(UUID uuid);
 
     List<OppgaveEventLogg> hentEventer(UUID uuid);
+    TilbakekrevingOppgave hentSisteTilbakekrevingOppgave(UUID behandlingId);
 
     List<Oppgave> hentAlleAktiveOppgaver();
 

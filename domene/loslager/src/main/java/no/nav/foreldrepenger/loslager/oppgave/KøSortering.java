@@ -14,17 +14,38 @@ public enum KøSortering implements Kodeverdi {
 
     BEHANDLINGSFRIST("BEHFRIST", "Dato for behandlingsfrist"),
     OPPRETT_BEHANDLING("OPPRBEH", "Dato for opprettelse av behandling"),
-    FORSTE_STONADSDAG("FORSTONAD", "Dato for første stønadsdag");
+    FORSTE_STONADSDAG("FORSTONAD", "Dato for første stønadsdag"),
+    BELOP("BELOP", "Beløp", "HELTALL", "TILBAKEKREVING"),
+    FEILUTBETALINGSTART("FEILUTBETALINGSTART", "Dato for første feilutbetaling", "DATO", "TILBAKEKREVING");
 
     @JsonProperty("kode")
     private String kode;
     @JsonProperty("navn")
     private final String navn;
+    @JsonProperty("felttype")
+    private final String felttype;
+    @JsonProperty("feltkategori")
+    private final String feltkategori;
+
     public static final String KODEVERK = "KO_SORTERING";
+    public static final String FT_HELTALL = "HELTALL";
+    public static final String FT_DATO = "DATO";
+
+    public static final String FK_UNIVERSAL = "UNIVERSAL";
+    public static final String FK_TILBAKEKREVING = "TILBAKEKREVING";
 
     KøSortering(String kode, String navn) {
         this.kode = kode;
         this.navn = navn;
+        this.felttype = FT_DATO;
+        this.feltkategori = FK_UNIVERSAL;
+    }
+
+    KøSortering(String kode, String navn, String felttype, String feltkategori) {
+        this.kode = kode;
+        this.navn = navn;
+        this.felttype = felttype;
+        this.feltkategori = feltkategori;
     }
 
     public String getNavn() {
@@ -37,6 +58,14 @@ public enum KøSortering implements Kodeverdi {
 
     public String getKodeverk() {
         return KODEVERK;
+    }
+
+    public String getFelttype() {
+        return felttype;
+    }
+
+    public String getFeltkategori() {
+        return feltkategori;
     }
 
     @JsonCreator

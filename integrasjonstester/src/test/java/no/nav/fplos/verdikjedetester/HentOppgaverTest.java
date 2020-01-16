@@ -24,7 +24,6 @@ import no.nav.fplos.avdelingsleder.AvdelingslederTjeneste;
 import no.nav.fplos.foreldrepengerbehandling.ForeldrepengerBehandlingRestKlient;
 import no.nav.fplos.kafkatjenester.AksjonspunktMeldingConsumer;
 import no.nav.fplos.kafkatjenester.FpsakEventHandler;
-import no.nav.fplos.kafkatjenester.JsonOppgaveHandler;
 import no.nav.fplos.kafkatjenester.KafkaReader;
 import no.nav.fplos.kafkatjenester.TilbakekrevingEventHandler;
 import no.nav.fplos.oppgave.OppgaveTjeneste;
@@ -69,13 +68,12 @@ public class HentOppgaverTest {
     private Avdeling avdelingDrammen = null;
     private OppgaveFiltrering oppgaveFiltrering;
     private ForeldrepengerBehandlingRestKlient foreldrepengerBehandlingRestKlient = mock(ForeldrepengerBehandlingRestKlient.class);
-    private JsonOppgaveHandler jsonOppgaveHandler = new JsonOppgaveHandler();
 
     @Before
     public void before(){
         kafkaReader = new KafkaReader(meldingConsumer,
                 new FpsakEventHandler(oppgaveRepository, foreldrepengerBehandlingRestKlient),
-                new TilbakekrevingEventHandler(oppgaveRepository),oppgaveRepository, jsonOppgaveHandler);
+                new TilbakekrevingEventHandler(oppgaveRepository),oppgaveRepository);
         List<Avdeling> avdelings = repoRule.getRepository().hentAlle(Avdeling.class);
         avdelingDrammen = avdelings.stream().filter(avdeling -> Avdeling.AVDELING_DRAMMEN_ENHET.equals(avdeling.getAvdelingEnhet())).findFirst().orElseThrow();
         oppgaveFiltrering = OppgaveFiltrering.builder().medNavn("FRIST").medSortering(KøSortering.BEHANDLINGSFRIST).medAvdeling(avdelingDrammen).build();

@@ -4,6 +4,7 @@ import no.nav.foreldrepenger.loslager.oppgave.EventmottakFeillogg;
 import no.nav.foreldrepenger.loslager.oppgave.Oppgave;
 import no.nav.foreldrepenger.loslager.oppgave.OppgaveEventLogg;
 import no.nav.foreldrepenger.loslager.oppgave.Reservasjon;
+import no.nav.foreldrepenger.loslager.oppgave.TilbakekrevingOppgave;
 import no.nav.vedtak.felles.jpa.VLPersistenceUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,6 +51,20 @@ public class AdminRepositoryImpl implements AdminRepository {
             getEntityManager().refresh(oppgave);
         } catch (NoResultException nre) {
             log.info("Fant ingen oppgave tilknyttet behandling med uuid {}", uuid, nre);
+        }
+        return oppgave;
+    }
+
+    @Override
+    public TilbakekrevingOppgave hentSisteTilbakekrevingOppgave(UUID uuid) {
+        TilbakekrevingOppgave oppgave = null;
+        try {
+            oppgave = getEntityManager().createQuery("Select to FROM TilbakekrevingOppgave to where to.eksternId = :eksternId ORDER BY to.opprettetTidspunkt desc", TilbakekrevingOppgave.class)
+                    .setParameter("eksternId", uuid)
+                    .setMaxResults(1).getSingleResult();
+            getEntityManager().refresh(oppgave);
+        } catch (NoResultException nre) {
+            log.info("Fant ingen oppgave tilknyttet behandling med id {}", uuid, nre);
         }
         return oppgave;
     }

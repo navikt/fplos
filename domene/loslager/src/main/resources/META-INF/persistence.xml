@@ -15,6 +15,9 @@
             <property name="hibernate.connection.autocommit" value="false"/>
             <property name="hibernate.jdbc.use_get_generated_keys" value="true"/>
             <property name="org.hibernate.flushMode" value="COMMIT"/>
+            <property name="hibernate.hql.bulk_id_strategy"
+                      value="org.hibernate.hql.spi.id.inline.InlineIdsInClauseBulkIdStrategy"
+            />
         </properties>
     </persistence-unit>
 

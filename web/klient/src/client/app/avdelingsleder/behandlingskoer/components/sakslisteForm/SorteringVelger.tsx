@@ -6,57 +6,40 @@ import { bindActionCreators, Dispatch } from 'redux';
 import { Undertekst } from 'nav-frontend-typografi';
 import moment from 'moment';
 
-import { ISO_DATE_FORMAT, DDMMYYYY_DATE_FORMAT } from 'utils/formats';
-import DateLabel from 'sharedComponents/DateLabel';
-import { hasValidPosOrNegInteger, hasValidDate } from 'utils/validation/validators';
-import { FlexContainer, FlexRow, FlexColumn } from 'sharedComponents/flexGrid';
-import ArrowBox from 'sharedComponents/ArrowBox';
 import {
-  RadioGroupField, RadioOption, InputField, CheckboxField, DatepickerField,
+  RadioGroupField, RadioOption,
 } from 'form/FinalFields';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import { getKodeverk } from 'kodeverk/duck';
-import { Kodeverk } from 'kodeverk/kodeverkTsType';
 import kodeverkPropType from 'kodeverk/kodeverkPropType';
 import kodeverkTyper from 'kodeverk/kodeverkTyper';
-import AutoLagringVedBlur from './AutoLagringVedBlur';
+import { KoSorteringType } from 'kodeverk/KoSorteringTsType';
+import { Kodeverk } from 'kodeverk/kodeverkTsType';
 import {
   lagreSakslisteSortering as lagreSakslisteSorteringActionCreator,
   lagreSakslisteSorteringErDynamiskPeriode as lagreSakslisteSorteringErDynamiskPeriodeActionCreator,
   lagreSakslisteSorteringTidsintervallDato as lagreSakslisteSorteringTidsintervallDatoActionCreator,
-  lagreSakslisteSorteringTidsintervallDager as lagreSakslisteSorteringTidsintervallDagerActionCreator,
+  lagreSakslisteSorteringNumeriskIntervall as lagreSakslisteSorteringNumeriskIntervallActionCreator,
 } from '../../duck';
-
-import styles from './sorteringVelger.less';
+import DatoSorteringValg from './DatoSorteringValg';
+import BelopSorteringValg from './BelopSorteringValg';
 
 const finnDato = antallDager => moment().add(antallDager, 'd').format();
 
-const getLagreDatoFn = (lagreSakslisteSorteringTidsintervallDato, valgtSakslisteId, valgtAvdelingEnhet, annenDato, erFomDato) => (e) => {
-  let dato = e.target.value;
-  if (dato) {
-    dato = moment(dato, DDMMYYYY_DATE_FORMAT, true);
-  }
-  if (!dato || dato.isValid()) {
-    const d = dato ? dato.format(ISO_DATE_FORMAT) : dato;
-    return erFomDato
-     ? lagreSakslisteSorteringTidsintervallDato(valgtSakslisteId, d, annenDato, valgtAvdelingEnhet)
-     : lagreSakslisteSorteringTidsintervallDato(valgtSakslisteId, annenDato, d, valgtAvdelingEnhet);
-  }
-  return undefined;
-};
 
 interface TsProps {
   intl: any;
-  koSorteringTyper: Kodeverk[];
+  koSorteringTyper: KoSorteringType[];
   valgtSakslisteId: number;
-  lagreSakslisteSortering: (sakslisteId: number, sakslisteSorteringValg: Kodeverk, avdelingEnhet: string) => void;
+  valgteBehandlingtyper: Kodeverk[];
+  lagreSakslisteSortering: (sakslisteId: number, sakslisteSorteringValg: KoSorteringType, avdelingEnhet: string) => void;
   lagreSakslisteSorteringErDynamiskPeriode: (sakslisteId: number, avdelingEnhet: string) => void;
   lagreSakslisteSorteringTidsintervallDato: (sakslisteId: number, fomDato: string, tomDato: string, avdelingEnhet: string) => void;
-  lagreSakslisteSorteringTidsintervallDager: (sakslisteId: number, fomDaget: number, tomDagr: number, avdelingEnhet: string) => void;
+  lagreSakslisteSorteringNumeriskIntervall: (sakslisteId: number, fra: number, til: number, avdelingEnhet: string) => void;
   valgtAvdelingEnhet: string;
   erDynamiskPeriode: boolean;
-  fomDager: number;
-  tomDager: number;
+  fra: number;
+  til: number;
   fomDato: string;
   tomDato: string;
 }
@@ -68,14 +51,15 @@ export const SorteringVelger = ({
   intl,
   koSorteringTyper,
   valgtSakslisteId,
+  valgteBehandlingtyper,
   lagreSakslisteSortering,
   lagreSakslisteSorteringErDynamiskPeriode,
   valgtAvdelingEnhet,
   erDynamiskPeriode,
   lagreSakslisteSorteringTidsintervallDato,
-  lagreSakslisteSorteringTidsintervallDager,
-  fomDager,
-  tomDager,
+  lagreSakslisteSorteringNumeriskIntervall,
+  fra,
+  til,
   fomDato,
   tomDato,
 }: TsProps) => (
@@ -90,106 +74,40 @@ export const SorteringVelger = ({
       onChange={sorteringType => lagreSakslisteSortering(valgtSakslisteId, sorteringType, valgtAvdelingEnhet)}
     >
       {koSorteringTyper.map(koSortering => (
+        (koSortering.feltkategori !== 'TILBAKEKREVING' || (valgteBehandlingtyper.length === 1 && valgteBehandlingtyper[0].kode === 'BT-009')) && (
         <RadioOption
           key={koSortering.kode}
           value={koSortering.kode}
           label={koSortering.navn}
         >
-          <ArrowBox>
-            <Undertekst>
-              <FormattedMessage id="SorteringVelger.FiltrerPaTidsintervall" />
-            </Undertekst>
-            {erDynamiskPeriode && (
-            <>
-              <AutoLagringVedBlur
-                lagre={values => lagreSakslisteSorteringTidsintervallDager(valgtSakslisteId, values.fomDager, values.tomDager, valgtAvdelingEnhet)}
-                fieldNames={['fomDager', 'tomDager']}
-              />
-              <FlexContainer>
-                <FlexRow>
-                  <FlexColumn>
-                    <InputField
-                      name="fomDager"
-                      className={styles.dato}
-                      label={intl.formatMessage({ id: 'SorteringVelger.Fom' })}
-                      validate={[hasValidPosOrNegInteger]}
-                      onBlurValidation
-                      bredde="XS"
-                    />
-                    {(fomDager || fomDager === 0) && (
-                    <Undertekst>
-                      <DateLabel dateString={finnDato(fomDager)} />
-                    </Undertekst>
-                    )}
-                  </FlexColumn>
-                  <FlexColumn>
-                    <Undertekst className={styles.dager}>
-                      <FormattedMessage id="SorteringVelger.DagerMedBindestrek" />
-                    </Undertekst>
-                  </FlexColumn>
-                  <FlexColumn>
-                    <InputField
-                      name="tomDager"
-                      className={styles.dato}
-                      label={intl.formatMessage({ id: 'SorteringVelger.Tom' })}
-                      validate={[hasValidPosOrNegInteger]}
-                      onBlurValidation
-                      bredde="XS"
-                    />
-                    {(tomDager || tomDager === 0) && (
-                    <Undertekst>
-                      <DateLabel dateString={finnDato(tomDager)} />
-                    </Undertekst>
-                    )}
-                  </FlexColumn>
-                  <FlexColumn>
-                    <Undertekst className={styles.dagerMedBindestrek}>
-                      <FormattedMessage id="SorteringVelger.Dager" />
-                    </Undertekst>
-                  </FlexColumn>
-                </FlexRow>
-              </FlexContainer>
-            </>
-              )}
-            {!erDynamiskPeriode && (
-            <>
-              <FlexContainer>
-                <FlexRow>
-                  <FlexColumn>
-                    <DatepickerField
-                      name="fomDato"
-                      label={{ id: 'SorteringVelger.Fom' }}
-                      onBlurValidation
-                      validate={[hasValidDate]}
-                      onBlur={getLagreDatoFn(lagreSakslisteSorteringTidsintervallDato, valgtSakslisteId, valgtAvdelingEnhet, tomDato, true)}
-                    />
-                  </FlexColumn>
-                  <FlexColumn>
-                    <Undertekst className={styles.dager}>
-                      <FormattedMessage id="SorteringVelger.Bindestrek" />
-                    </Undertekst>
-                  </FlexColumn>
-                  <FlexColumn className={styles.tomDato}>
-                    <DatepickerField
-                      name="tomDato"
-                      label={{ id: 'SorteringVelger.Tom' }}
-                      onBlurValidation
-                      validate={[hasValidDate]}
-                      onBlur={getLagreDatoFn(lagreSakslisteSorteringTidsintervallDato, valgtSakslisteId, valgtAvdelingEnhet, fomDato, false)}
-                    />
-                  </FlexColumn>
-                </FlexRow>
-              </FlexContainer>
-            </>
-            )}
-            <CheckboxField
-              name="erDynamiskPeriode"
-              label={intl.formatMessage({ id: 'SorteringVelger.DynamiskPeriode' })}
-              onChange={() => lagreSakslisteSorteringErDynamiskPeriode(valgtSakslisteId, valgtAvdelingEnhet)}
-            />
-            <VerticalSpacer eightPx />
-          </ArrowBox>
+          {(koSortering.felttype === 'DATO') && (
+
+          <DatoSorteringValg
+            intl={intl}
+            valgtSakslisteId={valgtSakslisteId}
+            lagreSakslisteSorteringErDynamiskPeriode={lagreSakslisteSorteringErDynamiskPeriode}
+            lagreSakslisteSorteringTidsintervallDato={lagreSakslisteSorteringTidsintervallDato}
+            lagreSakslisteSorteringTidsintervallDager={lagreSakslisteSorteringNumeriskIntervall}
+            valgtAvdelingEnhet={valgtAvdelingEnhet}
+            erDynamiskPeriode={erDynamiskPeriode}
+            fra={fra}
+            til={til}
+            fomDato={fomDato}
+            tomDato={tomDato}
+          />
+          )}
+          {(koSortering.felttype === 'HELTALL') && (
+          <BelopSorteringValg
+            intl={intl}
+            valgtSakslisteId={valgtSakslisteId}
+            lagreSakslisteSorteringNumerisk={lagreSakslisteSorteringNumeriskIntervall}
+            valgtAvdelingEnhet={valgtAvdelingEnhet}
+            fra={fra}
+            til={til}
+          />
+          )}
         </RadioOption>
+          )
       ))}
     </RadioGroupField>
   </>
@@ -202,18 +120,18 @@ SorteringVelger.propTypes = {
   lagreSakslisteSortering: PropTypes.func.isRequired,
   lagreSakslisteSorteringErDynamiskPeriode: PropTypes.func.isRequired,
   lagreSakslisteSorteringTidsintervallDato: PropTypes.func.isRequired,
-  lagreSakslisteSorteringTidsintervallDager: PropTypes.func.isRequired,
+  lagreSakslisteSorteringNumeriskIntervall: PropTypes.func.isRequired,
   valgtAvdelingEnhet: PropTypes.string.isRequired,
   erDynamiskPeriode: PropTypes.bool.isRequired,
-  fomDager: PropTypes.number,
-  tomDager: PropTypes.number,
+  fra: PropTypes.number,
+  til: PropTypes.number,
   fomDato: PropTypes.string,
   tomDato: PropTypes.string,
 };
 
 SorteringVelger.defaultProps = {
-  fomDager: undefined,
-  tomDager: undefined,
+  fra: undefined,
+  til: undefined,
   fomDato: undefined,
   tomDato: undefined,
 };
@@ -227,7 +145,7 @@ const mapDispatchToProps = (dispatch: Dispatch<any>) => ({
     lagreSakslisteSortering: lagreSakslisteSorteringActionCreator,
     lagreSakslisteSorteringErDynamiskPeriode: lagreSakslisteSorteringErDynamiskPeriodeActionCreator,
     lagreSakslisteSorteringTidsintervallDato: lagreSakslisteSorteringTidsintervallDatoActionCreator,
-    lagreSakslisteSorteringTidsintervallDager: lagreSakslisteSorteringTidsintervallDagerActionCreator,
+    lagreSakslisteSorteringNumeriskIntervall: lagreSakslisteSorteringNumeriskIntervallActionCreator,
   }, dispatch),
 });
 
