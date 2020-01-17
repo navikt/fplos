@@ -5,9 +5,9 @@
   "serviceuserkv": "/serviceuser/data/dev/srvfplos",
   "ldapuserkv": "/serviceuser/data/dev/srvssolinux",
   "namespace": "q1",
-  "ingresses":  ["https://fplos.nais.preprod.local", "https://app-q1.adeo.no/fplos"],
+  "ingresses":  ["https://app-q1.adeo.no/fplos", "https://fplos.nais.preprod.local"],
   "env": {
-    "FPSAK_URL": "http://fpsak",
+    "FPSAK_URL": "http://fpsak.q1",
     "FPSAK_FRONTEND_URL": "https://app-q1.adeo.no/fpsak",
     "SECURITYTOKENSERVICE_URL": "https://sts-q1.preprod.local/SecurityTokenServiceProvider/",
     "SERVICEGATEWAY_URL": "https://service-gw-q1.preprod.local/",
@@ -31,7 +31,6 @@
     "LDAP_DOMAIN": "PREPROD.LOCAL",
     "LDAP_BASEDN": "dc=preprod,dc=local",
     "LDAP_URL": "ldaps://ldapgw.preprod.local",
-    "BUCKET_URL": "http://s3.nais-rook",
     "BOOTSTRAP_SERVERS": "b27apvl00045.preprod.local:8443,b27apvl00046.preprod.local:8443,b27apvl00047.preprod.local:8443",
     "KAFKA_SCHEMA_REGISTRY_URL": "https://kafka-schema-registry.nais.preprod.local",
     "KAFKA_BROKERS_URL": "b27apvl00045.preprod.local:8443,b27apvl00046.preprod.local:8443,b27apvl00047.preprod.local:8443"

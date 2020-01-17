@@ -5,7 +5,7 @@
   "serviceuserkv": "/serviceuser/data/test/srvfplos",
   "ldapuserkv": "/serviceuser/data/test/srvssolinux",
   "namespace": "t4",
-  "ingresses":  ["https://fplos.nais.preprod.local", "https://app-t4.adeo.no/fplos"],
+  "ingresses":  ["https://app-t4.adeo.no/fplos", "https://fplos.nais.preprod.local"],
   "env": {
     "LOADBALANCER_FQDN": "fplos-t4.nais.preprod.local",
     "FPSAK_URL":  "http://fpsak.t4",
@@ -31,7 +31,6 @@
     "LDAP_DOMAIN":  "TEST.LOCAL",
     "LDAP_BASEDN":  "dc=test,dc=local",
     "LDAP_URL":  "ldaps://ldapgw.test.local",
-    "LDAP_USERNAME":  "srvSSOLinux",
     "BOOTSTRAP_SERVERS":  "d26apvl00159.test.local:8443,d26apvl00160.test.local:8443,d26apvl00161.test.local:8443",
     "KAFKA_SCHEMA_REGISTRY_URL":  "https://kafka-schema-registry.nais.preprod.local",
     "KAFKA_BROKERS_URL":  "d26apvl00159.test.local:8443,d26apvl00160.test.local:8443,d26apvl00161.test.local:8443"
