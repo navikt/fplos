@@ -29,8 +29,3 @@ RUN chmod +x /init-scripts/*
 # Application Start Command
 COPY run-java.sh /
 RUN chmod +x /run-java.sh
-
-# Upload heapdump to s3
-COPY s3upload-init.sh /init-scripts/
-COPY s3upload.sh /
-RUN chmod +x /s3upload.sh
