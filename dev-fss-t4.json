@@ -4,7 +4,7 @@
   "oraclecredskv": "/oracle/data/dev/creds/fplos_t4-user",
   "serviceuserkv": "/serviceuser/data/test/srvfplos",
   "ldapuserkv": "/serviceuser/data/test/srvssolinux",
-  "namespace": "q1",
+  "namespace": "t4",
   "ingresses":  ["https://fplos.nais.preprod.local", "https://app-t4.adeo.no/fplos"],
   "env": {
     "FPSAK_URL":  "http://fpsak",
