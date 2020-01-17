@@ -3,7 +3,6 @@ import { expect } from 'chai';
 import sinon from 'sinon';
 
 import { shallowWithIntl } from 'testHelpers/intl-enzyme-test-helper';
-import HeaderWithErrorPanel from './components/HeaderWithErrorPanel';
 
 import { AppIndex } from './AppIndex';
 
@@ -21,7 +20,7 @@ describe('<AppIndex>', () => {
       resetAvdelingeneTilAvdelingslederData={sinon.spy()}
     />);
 
-    const headerComp = wrapper.find(HeaderWithErrorPanel);
+    const headerComp = wrapper.find('Header');
     expect(headerComp).to.have.length(1);
     expect(headerComp.prop('navAnsattName')).to.eql('Peder');
 
@@ -43,7 +42,7 @@ describe('<AppIndex>', () => {
       resetAvdelingeneTilAvdelingslederData={sinon.spy()}
     />);
 
-    const headerComp = wrapper.find(HeaderWithErrorPanel);
+    const headerComp = wrapper.find('Header');
     expect(headerComp).to.have.length(1);
     expect(headerComp.prop('navAnsattName')).to.eql('Peder');
 
@@ -70,7 +69,7 @@ describe('<AppIndex>', () => {
       resetAvdelingeneTilAvdelingslederData={sinon.spy()}
     />);
 
-    const headerComp = wrapper.find(HeaderWithErrorPanel);
+    const headerComp = wrapper.find('Header');
     expect(headerComp.prop('queryStrings')).to.eql({ errormessage: 'Det finnes ingen sak med denne referansen: 266' });
 
     const homeComp = wrapper.find('Home');

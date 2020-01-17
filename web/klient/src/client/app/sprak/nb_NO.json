@@ -86,8 +86,9 @@
   "GjeldendeSakslisterTabell.AntallBehandlinger": "Antall behandlinger",
   "GjeldendeSakslisterTabell.OppgaverForAvdeling": "Antall åpne behandlinger totalt",
 
-  "Header.Foreldrepenger": "Svangerskap, fødsel og adopsjon",
+  "Header.Foreldrepenger": "Foreldrepenger, engangsstønad og svangerskapspenger",
   "Header.NavAnsatt": "NAV-ansatt",
+  "Header.LinkToMainPage": "NAV, forsiden",
   "Header.Rettskilde": "Rettskildene",
   "Header.Systemrutine": "Systemrutine",
   "Header.Enhet": "Enhet ",
