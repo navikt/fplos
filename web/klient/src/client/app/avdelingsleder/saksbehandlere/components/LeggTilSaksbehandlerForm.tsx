@@ -11,7 +11,9 @@ import { Hovedknapp, Knapp } from 'nav-frontend-knapper';
 import { Normaltekst, Element } from 'nav-frontend-typografi';
 
 import { getValgtAvdelingEnhet } from 'app/duck';
-import { required } from 'utils/validation/validators';
+import {
+  maxLength, minLength, required,
+} from 'utils/validation/validators';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import { InputField } from 'form/FinalFields';
 import { FlexContainer, FlexRow, FlexColumn } from 'sharedComponents/flexGrid';
@@ -20,6 +22,9 @@ import saksbehandlerPropType from '../saksbehandlerPropType';
 import { getSaksbehandler, getAvdelingensSaksbehandlere, getSaksbehandlerSokFinished } from '../duck';
 
 import styles from './leggTilSaksbehandlerForm.less';
+
+const minLength7 = minLength(7);
+const maxLength7 = maxLength(7);
 
 interface TsProps {
   intl: any;
@@ -131,7 +136,7 @@ export class LeggTilSaksbehandlerForm extends Component<TsProps, StateTsProps> {
                     name="brukerIdent"
                     label={intl.formatMessage({ id: 'LeggTilSaksbehandlerForm.Brukerident' })}
                     bredde="S"
-                    validate={[required]}
+                    validate={[required, minLength7, maxLength7]}
                   />
                 </FlexColumn>
                 <FlexColumn>

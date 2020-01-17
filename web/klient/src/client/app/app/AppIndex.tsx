@@ -18,7 +18,7 @@ import {
 } from './duck';
 import { Location } from './locationTsType';
 import LanguageProvider from './LanguageProvider';
-import HeaderWithErrorPanel from './components/HeaderWithErrorPanel';
+import Header from './components/Header';
 import Home from './components/Home';
 
 import '../../nomodulestyles/global.less';
@@ -133,7 +133,7 @@ export class AppIndex extends Component<TsProps> {
     return (
       <AppConfigResolver>
         <LanguageProvider>
-          <HeaderWithErrorPanel
+          <Header
             queryStrings={queryStrings}
             navAnsattName={navAnsattName}
             removeErrorMessage={removeErrorMsg}
