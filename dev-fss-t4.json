@@ -8,7 +8,7 @@
   "ingresses":  ["https://fplos.nais.preprod.local", "https://app-t4.adeo.no/fplos"],
   "env": {
     "LOADBALANCER_FQDN": "fplos-t4.nais.preprod.local",
-    "FPSAK_URL":  "http://fpsak",
+    "FPSAK_URL":  "http://fpsak.t4",
     "FPSAK_FRONTEND_URL":  "https://app-t4.adeo.no/fpsak",
     "SECURITYTOKENSERVICE_URL":  "https://sts-t4.test.local/SecurityTokenServiceProvider/",
     "SERVICEGATEWAY_URL":  "https://service-gw-t4.test.local",
@@ -32,7 +32,6 @@
     "LDAP_BASEDN":  "dc=test,dc=local",
     "LDAP_URL":  "ldaps://ldapgw.test.local",
     "LDAP_USERNAME":  "srvSSOLinux",
-    "BUCKET_URL":  "http://s3.nais-rook",
     "BOOTSTRAP_SERVERS":  "d26apvl00159.test.local:8443,d26apvl00160.test.local:8443,d26apvl00161.test.local:8443",
     "KAFKA_SCHEMA_REGISTRY_URL":  "https://kafka-schema-registry.nais.preprod.local",
     "KAFKA_BROKERS_URL":  "d26apvl00159.test.local:8443,d26apvl00160.test.local:8443,d26apvl00161.test.local:8443"
