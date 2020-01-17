@@ -5,7 +5,7 @@
   "serviceuserkv": "/serviceuser/data/test/srvfplos",
   "ldapuserkv": "/serviceuser/data/test/srvssolinux",
   "namespace": "t4",
-  "ingresses":  ["https://app-t4.adeo.no/fplos", "https://fplos.nais.preprod.local"],
+  "ingresses":  ["https://app-t4.adeo.no/fplos", "https://fplos-t4.nais.preprod.local"],
   "env": {
     "LOADBALANCER_FQDN": "fplos-t4.nais.preprod.local",
     "FPSAK_URL":  "http://fpsak.t4",
