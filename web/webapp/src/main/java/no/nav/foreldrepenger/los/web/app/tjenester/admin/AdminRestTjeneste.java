@@ -1,10 +1,15 @@
 package no.nav.foreldrepenger.los.web.app.tjenester.admin;
 
-import static no.nav.vedtak.sikkerhet.abac.BeskyttetRessursActionAttributt.READ;
-import static no.nav.vedtak.sikkerhet.abac.BeskyttetRessursResourceAttributt.OPPGAVESTYRING;
-
-import java.util.List;
-import java.util.stream.Collectors;
+import io.swagger.v3.oas.annotations.Operation;
+import no.nav.foreldrepenger.los.web.app.tjenester.admin.dto.OppgaveEventLoggDto;
+import no.nav.foreldrepenger.los.web.app.tjenester.felles.dto.OppgaveDto;
+import no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.oppgave.dto.BehandlingIdDto;
+import no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.oppgave.dto.OppgaveIdDto;
+import no.nav.foreldrepenger.loslager.oppgave.Oppgave;
+import no.nav.foreldrepenger.loslager.oppgave.OppgaveEventLogg;
+import no.nav.fplos.admin.AdminTjeneste;
+import no.nav.fplos.foreldrepengerbehandling.ForeldrepengerBehandlingRestKlient;
+import no.nav.vedtak.sikkerhet.abac.BeskyttetRessurs;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
@@ -17,16 +22,13 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
-import io.swagger.v3.oas.annotations.Operation;
-import no.nav.foreldrepenger.los.web.app.tjenester.admin.dto.OppgaveEventLoggDto;
-import no.nav.foreldrepenger.los.web.app.tjenester.felles.dto.OppgaveDto;
-import no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.oppgave.dto.BehandlingIdDto;
-import no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.oppgave.dto.OppgaveIdDto;
-import no.nav.foreldrepenger.loslager.oppgave.Oppgave;
-import no.nav.foreldrepenger.loslager.oppgave.OppgaveEventLogg;
-import no.nav.fplos.admin.AdminTjeneste;
-import no.nav.vedtak.sikkerhet.abac.BeskyttetRessurs;
+import static no.nav.vedtak.sikkerhet.abac.BeskyttetRessursActionAttributt.READ;
+import static no.nav.vedtak.sikkerhet.abac.BeskyttetRessursResourceAttributt.OPPGAVESTYRING;
 
 @Path("/admin")
 @RequestScoped
@@ -35,13 +37,16 @@ public class AdminRestTjeneste {
 
     private AdminTjeneste adminTjeneste;
 
+    private ForeldrepengerBehandlingRestKlient foreldrePengerBehandlingRestKlient;
+
     public AdminRestTjeneste() {
         // For Rest-CDI
     }
 
     @Inject
-    public AdminRestTjeneste(AdminTjeneste adminTjeneste) {
+    public AdminRestTjeneste(AdminTjeneste adminTjeneste, ForeldrepengerBehandlingRestKlient foreldrePengerBehandlingRestKlient) {
         this.adminTjeneste = adminTjeneste;
+        this.foreldrePengerBehandlingRestKlient = foreldrePengerBehandlingRestKlient;
     }
 
     @GET
@@ -52,7 +57,16 @@ public class AdminRestTjeneste {
     @BeskyttetRessurs(action = READ, ressurs = OPPGAVESTYRING)
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
     public OppgaveDto synkroniserOppgave(@NotNull @QueryParam("behandlingIdDto") @Valid BehandlingIdDto behandlingIdDto) {
-        Oppgave oppgave = adminTjeneste.synkroniserOppgave(behandlingIdDto.getVerdi());
+        UUID uuid = behandlingIdDto.getUuid();
+        if(uuid == null){
+            Long behandlingsId = behandlingIdDto.getBehandlingId();
+            if(behandlingsId == null) {
+                throw new IllegalArgumentException("Finner ingen gyldig verdi for behandlingsId");
+            }
+            Optional<UUID> eksternId = foreldrePengerBehandlingRestKlient.getBehandlingUUID(behandlingsId);
+            uuid = eksternId.orElseThrow(() -> new IllegalArgumentException("Finner ikke uuid for behandlingsId " + behandlingsId));
+        }
+        Oppgave oppgave = adminTjeneste.synkroniserOppgave(uuid);
         return new OppgaveDto(oppgave);
     }
 
@@ -64,7 +78,16 @@ public class AdminRestTjeneste {
     @BeskyttetRessurs(action = READ, ressurs = OPPGAVESTYRING)
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
     public OppgaveDto hentOppgave(@NotNull @QueryParam("behandlingIdDto") @Valid BehandlingIdDto behandlingIdDto) {
-        Oppgave oppgave = adminTjeneste.hentOppgave(behandlingIdDto.getVerdi());
+        UUID uuid = behandlingIdDto.getUuid();
+        if(uuid == null){
+            Long behandlingsId = behandlingIdDto.getBehandlingId();
+            if(behandlingsId == null) {
+                throw new IllegalArgumentException("Finner ingen gyldig verdi for behandlingsId");
+            }
+            Optional<UUID> eksternId = foreldrePengerBehandlingRestKlient.getBehandlingUUID(behandlingsId);
+            uuid = eksternId.orElseThrow(() -> new IllegalArgumentException("Finner ikke uuid for behandlingsId " + behandlingsId));
+        }
+        Oppgave oppgave = adminTjeneste.hentOppgave(uuid);
         return oppgave != null ? new OppgaveDto(oppgave) : null;
     }
 
@@ -76,7 +99,16 @@ public class AdminRestTjeneste {
     @BeskyttetRessurs(action = READ, ressurs = OPPGAVESTYRING)
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
     public List<OppgaveEventLoggDto> hentEventlogg(@NotNull @QueryParam("behandlingIdDto") @Valid BehandlingIdDto behandlingIdDto) {
-        List<OppgaveEventLogg> oppgaveEventLogger = adminTjeneste.hentEventer(behandlingIdDto.getVerdi());
+        UUID uuid = behandlingIdDto.getUuid();
+        if(uuid == null){
+            Long behandlingsId = behandlingIdDto.getBehandlingId();
+            if(behandlingsId == null) {
+                throw new IllegalArgumentException("Finner ingen gyldig verdi for behandlingsId");
+            }
+            Optional<UUID> eksternId = foreldrePengerBehandlingRestKlient.getBehandlingUUID(behandlingsId);
+            uuid = eksternId.orElseThrow(() -> new IllegalArgumentException("Finner ikke uuid for behandlingsId " + behandlingsId));
+        }
+        List<OppgaveEventLogg> oppgaveEventLogger = adminTjeneste.hentEventer(uuid);
         return oppgaveEventLogger.stream().map(o -> new OppgaveEventLoggDto(o)).collect(Collectors.toList());
     }
 
@@ -88,8 +120,17 @@ public class AdminRestTjeneste {
     @BeskyttetRessurs(action = READ, ressurs = OPPGAVESTYRING)
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
     public OppgaveDto oppdaterOppgave(@NotNull @QueryParam("behandlingIdDto") @Valid BehandlingIdDto behandlingIdDto) {
-        adminTjeneste.oppdaterOppgave(behandlingIdDto.getVerdi());
-        Oppgave oppgave = adminTjeneste.hentOppgave(behandlingIdDto.getVerdi());
+        UUID uuid = behandlingIdDto.getUuid();
+        if(uuid == null){
+            Long behandlingsId = behandlingIdDto.getBehandlingId();
+            if(behandlingsId == null) {
+                throw new IllegalArgumentException("Finner ingen gyldig verdi for behandlingsId");
+            }
+            Optional<UUID> eksternId = foreldrePengerBehandlingRestKlient.getBehandlingUUID(behandlingsId);
+            uuid = eksternId.orElseThrow(() -> new IllegalArgumentException("Finner ikke uuid for behandlingsId " + behandlingsId));
+        }
+        adminTjeneste.oppdaterOppgave(uuid);
+        Oppgave oppgave = adminTjeneste.hentOppgave(uuid);
         return new OppgaveDto(oppgave);
     }
 
@@ -123,7 +164,16 @@ public class AdminRestTjeneste {
     @BeskyttetRessurs(action = READ, ressurs = OPPGAVESTYRING)
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
     public List<OppgaveDto> hentAlleOppgaverForBehandling(@NotNull @QueryParam("behandlingIdDto") @Valid BehandlingIdDto behandlingIdDto) {
-        List<Oppgave> oppgaver = adminTjeneste.hentAlleOppgaverForBehandling(behandlingIdDto.getVerdi());
+        UUID uuid = behandlingIdDto.getUuid();
+        if(uuid == null){
+            Long behandlingsId = behandlingIdDto.getBehandlingId();
+            if(behandlingsId == null) {
+                throw new IllegalArgumentException("Finner ingen gyldig verdi for behandlingsId");
+            }
+            Optional<UUID> eksternId = foreldrePengerBehandlingRestKlient.getBehandlingUUID(behandlingsId);
+            uuid = eksternId.orElseThrow(() -> new IllegalArgumentException("Finner ikke uuid for behandlingsId " + behandlingsId));
+        }
+        List<Oppgave> oppgaver = adminTjeneste.hentAlleOppgaverForBehandling(uuid);
         return oppgaver.stream().map(OppgaveDto::new).collect(Collectors.toList());
     }
 
