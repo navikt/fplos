@@ -7,6 +7,7 @@
   "namespace": "t4",
   "ingresses":  ["https://fplos.nais.preprod.local", "https://app-t4.adeo.no/fplos"],
   "env": {
+    "LOADBALANCER_FQDN": "fplos-t4.nais.preprod.local",
     "FPSAK_URL":  "http://fpsak",
     "FPSAK_FRONTEND_URL":  "https://app-t4.adeo.no/fpsak",
     "SECURITYTOKENSERVICE_URL":  "https://sts-t4.test.local/SecurityTokenServiceProvider/",
