@@ -19,7 +19,7 @@
     "KAFKA_AKSJONSPUNKTHENDELSE_SCHEMA_REGISTRY_URL": "https://kafka-schema-registry.nais.adeo.no",
     "KAFKA_AKSJONSPUNKTHENDELSE_CLIENT_ID": "KP-privat-foreldrepenger-aksjonspunkthendelse-p",
     "KAFKA_AKSJONSPUNKTHENDELSE_GROUP_ID": "KC-privat-foreldrepenger-aksjonspunkthendelse-p",
-    "FASIT.ENVIRONMENT.NAME": "p",
+    "FASIT_ENVIRONMENT_NAME": "p",
     "OIDC_OPENAM_HOSTURL": "https://isso.adeo.no:443/isso/oauth2",
     "OIDC_OPENAM_JWKSURL": "https://isso.adeo.no:443/isso/oauth2/connect/jwk_uri",
     "OIDC_OPENAM_ISSUERURL": "https://isso.adeo.no:443/isso/oauth2",
