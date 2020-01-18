@@ -28,8 +28,8 @@ spec:
     failureThreshold: 27
     timeout: 5
   replicas:
-    min: 2
-    max: 3
+    min: {{minReplica}}
+    max: {{maxReplica}}
     cpuThresholdPercentage: 80
   resources:
     limits:
