@@ -10,7 +10,7 @@
   "maxReplica": "2",
   "env": {
     "LOADBALANCER_FQDN": "app-q1.adeo.no",
-    "FPSAK_URL": "http://fpsak.q1",
+    "FPSAK_URL": "http://fpsak",
     "FPSAK_FRONTEND_URL": "https://app-q1.adeo.no/fpsak",
     "SECURITYTOKENSERVICE_URL": "https://sts-q1.preprod.local/SecurityTokenServiceProvider/",
     "SERVICEGATEWAY_URL": "https://service-gw-q1.preprod.local/",
