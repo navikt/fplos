@@ -30,7 +30,7 @@
         <!-- Felles avhengigheter i prosjektet Disse skal ALLTID være en
             RELEASE-avhengighet UNNTAK: feature-brancher og lokalt -->
         <fp-kontrakter.version>5.1_20200114104934_66a9974</fp-kontrakter.version>
-        <tjenestespesifikasjoner.version>1.2019.12.13-19.12-aea1d1642d8a</tjenestespesifikasjoner.version>
+        <tjenestespesifikasjoner.version>1.2019.12.18-12.22-ce897c4eb2c1</tjenestespesifikasjoner.version>
         <felles.version>1.5.0-20200123060955-7e89e24</felles.version>
 
         <!-- NAV -->
@@ -39,7 +39,7 @@
         <!-- Eksterne -->
         <assertj.version>3.14.0</assertj.version>
         <cxf.version>3.3.5</cxf.version>
-        <woodstox.version>6.0.2</woodstox.version>
+        <woodstox.version>6.0.3</woodstox.version>
         <surefire.version>2.22.2</surefire.version>
         <asm.version>6.2.1</asm.version>
 
@@ -291,7 +291,7 @@
             <dependency>
                 <groupId>org.apache.kafka</groupId>
                 <artifactId>kafka-clients</artifactId>
-                <version>2.3.1</version>
+                <version>2.4.0</version>
             </dependency>
 
             <dependency>
@@ -744,7 +744,7 @@
                 <plugin>
                     <groupId>org.codehaus.mojo</groupId>
                     <artifactId>flatten-maven-plugin</artifactId>
-                    <version>1.1.0</version>
+                    <version>1.2.1</version>
                 </plugin>
                 <plugin>
                     <groupId>org.jacoco</groupId>
