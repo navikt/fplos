@@ -9,8 +9,8 @@
   "minReplica": "1",
   "maxReplica": "2",
   "env": {
+    "FASIT_ENVIRONMENT_NAME": "t4",
     "LOADBALANCER_FQDN": "app-t4.adeo.no",
-    "FPSAK_URL":  "http://fpsak",
     "FPSAK_FRONTEND_URL":  "https://app-t4.adeo.no/fpsak",
     "SECURITYTOKENSERVICE_URL":  "https://sts-t4.test.local/SecurityTokenServiceProvider/",
     "SERVICEGATEWAY_URL":  "https://service-gw-t4.test.local",
@@ -19,7 +19,6 @@
     "KAFKA_AKSJONSPUNKTHENDELSE_CLIENT_ID":  "KP-privat-foreldrepenger-aksjonspunkthendelse-t4",
     "KAFKA_AKSJONSPUNKTHENDELSE_SCHEMA_REGISTRY_URL":  "https://kafka-test-schema-registry.nais.preprod.local",
     "KAFKA_AKSJONSPUNKTHENDELSE_GROUP_ID":  "KC-privat-foreldrepenger-aksjonspunkthendelse-t4",
-    "FASIT_ENVIRONMENT_NAME": "t4",
     "OIDC_OPENAM_JWKSURL":  "https://isso-t.adeo.no:443/isso/oauth2/connect/jwk_uri",
     "OIDC_OPENAM_ISSUERURL":  "https://isso-t.adeo.no:443/isso/oauth2",
     "OIDC_OPENAM_AGENTNAME":  "fplos-t4",
