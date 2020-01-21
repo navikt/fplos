@@ -40,7 +40,7 @@ public class FpsakEventHandler extends FpEventHandler {
     private static final Logger log = LoggerFactory.getLogger(FpsakEventHandler.class);
     private ForeldrepengerBehandlingRestKlient foreldrePengerBehandlingRestKlient;
 
-    public FpsakEventHandler(){
+    public FpsakEventHandler() {
         //to make proxyable
     }
 

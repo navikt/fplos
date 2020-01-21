@@ -48,27 +48,29 @@ public class ForeldrepengerBehandlingRestKlient {
     private static final String UTTAK_KONTROLLER_FAKTA_PERIODER_LINK = "uttak-kontroller-fakta-perioder";
 
     private OidcRestClient oidcRestClient;
-    private String endpointFpsakRestBase;
+    private String fpsakBaseUrl;
 
-
-    @Inject
-    public ForeldrepengerBehandlingRestKlient(OidcRestClient oidcRestClient, @KonfigVerdi("fpsak.url") String fpsakUrl) {
-        this.oidcRestClient = oidcRestClient;
-        this.endpointFpsakRestBase = fpsakUrl;
+    public ForeldrepengerBehandlingRestKlient() {
+        // for CDI
     }
 
-    public ForeldrepengerBehandlingRestKlient() { //NOSONAR: for cdi
+    @Inject
+    public ForeldrepengerBehandlingRestKlient(OidcRestClient oidcRestClient,
+                                              @KonfigVerdi(value = "fpsak.url",
+                                                      defaultVerdi = "http://fpsak") String fpsakUrl) {
+        this.oidcRestClient = oidcRestClient;
+        this.fpsakBaseUrl = fpsakUrl;
     }
 
     // @TODO denne metoden skal portes til å bruke UUID
     public BehandlingFpsak getBehandling(Long behandlingId) {
-        URIBuilder uriBuilder = new URIBuilder(URI.create(endpointFpsakRestBase + FPSAK_BEHANDLINGER));
+        URIBuilder uriBuilder = new URIBuilder(URI.create(fpsakBaseUrl + FPSAK_BEHANDLINGER));
         uriBuilder.setParameter("behandlingId", String.valueOf(behandlingId));
         ContainerLogin loginContext = new ContainerLogin();
         loginContext.login();
 
         try {
-            LOGGER.info("Slår opp i fpsak for behandlingId {} per GET-kall til {}", behandlingId, uriBuilder.build());
+            LOGGER.info("Kaller {}", uriBuilder.build());
             UtvidetBehandlingDto response = oidcRestClient.get(uriBuilder.build(), UtvidetBehandlingDto.class);
             final List<ResourceLink> links = response.getLinks();
             final List<Aksjonspunkt> aksjonspunkter = hentAksjonspunkter(links);
@@ -96,7 +98,7 @@ public class ForeldrepengerBehandlingRestKlient {
     }
 
     public BehandlingFpsak getBehandling(UUID behandlingUUID) {
-        URIBuilder uriBuilder = new URIBuilder(URI.create(endpointFpsakRestBase + FPSAK_BEHANDLINGER));
+        URIBuilder uriBuilder = new URIBuilder(URI.create(fpsakBaseUrl + FPSAK_BEHANDLINGER));
         uriBuilder.setParameter("behandlingUuid", behandlingUUID.toString());
         ContainerLogin loginContext = new ContainerLogin();
         loginContext.login();
@@ -126,7 +128,7 @@ public class ForeldrepengerBehandlingRestKlient {
     }
 
     public Optional<UUID> getBehandlingUUID(Long behandlingId) {
-        URIBuilder uriBuilder = new URIBuilder(URI.create(endpointFpsakRestBase + FPSAK_BEHANDLINGER));
+        URIBuilder uriBuilder = new URIBuilder(URI.create(fpsakBaseUrl + FPSAK_BEHANDLINGER));
         uriBuilder.setParameter("behandlingId", String.valueOf(behandlingId));
         ContainerLogin loginContext = new ContainerLogin();
         loginContext.login();
@@ -200,14 +202,14 @@ public class ForeldrepengerBehandlingRestKlient {
     }
 
     private <T> Optional<T> hentFraResourceLink(ResourceLink resourceLink, Class<T> clazz) {
-        URI uri = URI.create(endpointFpsakRestBase + resourceLink.getHref());
+        URI uri = URI.create(fpsakBaseUrl + resourceLink.getHref());
         return "POST".equals(resourceLink.getType().name())
                 ? oidcRestClient.postReturnsOptional(uri, resourceLink.getRequestPayload(), clazz)
                 : oidcRestClient.getReturnsOptional(uri, clazz);
     }
 
     public List<FagsakDto> getFagsakFraSaksnummer(String saksnummer) {
-        URIBuilder uriBuilder = new URIBuilder(URI.create(endpointFpsakRestBase + FPSAK_FAGSAK_SAKSNUMMER));
+        URIBuilder uriBuilder = new URIBuilder(URI.create(fpsakBaseUrl + FPSAK_FAGSAK_SAKSNUMMER));
         uriBuilder.setParameter("saksnummer", saksnummer);
         ContainerLogin loginContext = new ContainerLogin();
         loginContext.login();
@@ -224,7 +226,7 @@ public class ForeldrepengerBehandlingRestKlient {
     }
 
     public List<FagsakDto> getFagsakFraFnr(String fnr) {
-        URIBuilder uriBuilder = new URIBuilder(URI.create(endpointFpsakRestBase + FPSAK_FAGSAK_FNR));
+        URIBuilder uriBuilder = new URIBuilder(URI.create(fpsakBaseUrl + FPSAK_FAGSAK_FNR));
         SokefeltDto sokefeltDto = new SokefeltDto(fnr);
         ContainerLogin loginContext = new ContainerLogin();
         loginContext.login();

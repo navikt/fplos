@@ -24,7 +24,7 @@
             <artifactId>flyway-core</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.oracle</groupId>
+            <groupId>com.oracle.ojdbc</groupId>
             <artifactId>ojdbc8</artifactId>
             <scope>compile</scope>
         </dependency>
@@ -249,12 +249,12 @@
             <artifactId>assertj-core</artifactId>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>no.nav.modig</groupId>
-            <artifactId>modig-core-test</artifactId>
-            <version>1.0.0</version>
-            <scope>test</scope>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>no.nav.modig</groupId>-->
+<!--            <artifactId>modig-core-test</artifactId>-->
+<!--            <version>1.0.0</version>-->
+<!--            <scope>test</scope>-->
+<!--        </dependency>-->
         <dependency>
             <groupId>org.hibernate.validator</groupId>
             <artifactId>hibernate-validator</artifactId>
@@ -267,12 +267,6 @@
             <groupId>org.glassfish</groupId>
             <artifactId>javax.el</artifactId>
         </dependency>
-<!--        <dependency>-->
-<!--            <groupId>javax.ws.rs</groupId>-->
-<!--            <artifactId>jsr311-api</artifactId>-->
-<!--            <version>1.1.1</version>-->
-<!--            <scope>compile</scope>-->
-<!--        </dependency>-->
     </dependencies>
 
     <dependencyManagement>

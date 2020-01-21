@@ -15,7 +15,7 @@ public interface AdminRepository {
     Oppgave hentSisteOppgave(UUID uuid);
 
     List<OppgaveEventLogg> hentEventer(UUID uuid);
-    TilbakekrevingOppgave hentSisteTilbakekrevingOppgave(UUID behandlingId);
+    TilbakekrevingOppgave hentSisteTilbakekrevingOppgave(UUID uuid);
 
     List<Oppgave> hentAlleAktiveOppgaver();
 
