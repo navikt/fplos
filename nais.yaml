@@ -46,7 +46,7 @@ fasitResources:
   - alias: securityTokenService
     resourceType: baseUrl
   - alias: serviceGateway
-    resourceType: Webservicegateway    
+    resourceType: Webservicegateway
   - alias: abac.pdp.endpoint
     resourceType: restservice
   - alias: srvfplos
@@ -69,15 +69,15 @@ fasitResources:
   - alias: loadbalancer:fplos
     resourceType: loadbalancerconfig
     propertyMap:
-      url: LOADBALANCER_FQDN    
+      url: LOADBALANCER_FQDN
   - alias: virksomhet:Person_v3
     resourceType: webserviceendpoint
     propertyMap:
-      endpointUrl: PERSON_V3_URL 
+      endpointUrl: PERSON_V3_URL
   - alias: virksomhet:Organisasjon_v4
     resourceType: webserviceendpoint
-    propertyMap: 
-      endpointUrl: ORGANISASJON_V4_URL            
+    propertyMap:
+      endpointUrl: ORGANISASJON_V4_URL
   - alias: virksomhet:Arbeidsfordeling_v1
     resourceType: webserviceendpoint
     propertyMap:
@@ -101,15 +101,11 @@ fasitResources:
     resourceType: baseUrl
     propertyMap:
       url: BUCKET_URL
-  - alias: kafka-brokers
+  - alias: bootstrap_servers
     resourceType: baseUrl
     propertyMap:
-      url: BOOTSTRAP_SERVERS
-  - alias: kafka-schema-registry
+      url: KAFKA_BROKERS
+  - alias: kafka_aksjonspunkthendelse_topic
     resourceType: baseUrl
-    propertyMap:
-      url: KAFKA_SCHEMA_REGISTRY_URL
-  - alias: kafka-brokers
+  - alias: kafka_aksjonspunkthendelse_group_id
     resourceType: baseUrl
-    propertyMap:
-      url: KAFKA_BROKERS_URL
