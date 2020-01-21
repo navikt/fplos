@@ -5,7 +5,7 @@
   "serviceuserkv": "/serviceuser/data/prod/srvfplos",
   "ldapuserkv": "/serviceuser/data/prod/srvssolinux",
   "namespace": "default",
-  "ingresses":  ["https://fplos.nais.preprod.local", "https://app.adeo.no/fplos"],
+  "ingresses":  ["https://fplos.nais.adeo.no", "https://app.adeo.no/fplos"],
   "minReplica": "2",
   "maxReplica": "3",
   "env": {
