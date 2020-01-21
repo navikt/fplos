@@ -1,9 +1,10 @@
 # FPLOS
 
-FPLOS er en enkeltstående app, fpsak skal ikke ha noe kunnskap om hva/hvordan oppgaver blir del ut. All
-kommunikasjon fra FPSAK til FPLOS skal skje via hendelseskøer.
+FPLOS håndterer oppgave- og ledelsesstyring på foreldrepengeområdet. Fpsak produserer hendelser som representerer state i behandlingsprosessen. FPLOS benytter dette for å opprette, kategoriesere og lukke oppgaver.
 
-https://confluence.adeo.no/display/MODNAV/Tekniske+skisser
+Oppgavestyrere definerer kø-kriterier som ligger til grunn for fordeling av oppgaver etter prioritet til saksbehandlere. 
+
+https://confluence.adeo.no/display/TVF/FPLOS
 
 
 ## Bygge og kjøre docker lokalt
