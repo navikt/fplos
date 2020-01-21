@@ -19,7 +19,6 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.time.LocalDateTime;
 import java.util.Collections;
-import java.util.TimeZone;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -40,10 +39,6 @@ public class KafkaReaderTest {
     private ObjectMapper objectMapper = new ObjectMapper();
 
     private LocalDateTime aksjonspunktFrist = null;
-
-    static {
-        TimeZone.setDefault(TimeZone.getTimeZone("Europe/Oslo"));
-    }
 
     @Test
     public void testOk() throws IOException {
