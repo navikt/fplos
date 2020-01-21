@@ -21,7 +21,6 @@ import java.io.IOException;
 
 @ApplicationScoped
 public class KafkaReader {
-
     private static final Logger log = LoggerFactory.getLogger(KafkaReader.class);
     private OppgaveRepository  oppgaveRepository;
     private FpsakEventHandler fpsakEventHandler;
@@ -69,11 +68,10 @@ public class KafkaReader {
         log.info("Mottatt melding med start :" + melding.substring(0, Math.min(melding.length() - 1, 1000)));
         try {
             BehandlingProsessEventDto event = deserialiser(melding, BehandlingProsessEventDto.class);
-            if(event instanceof FpsakBehandlingProsessEventDto){
+            if (event instanceof FpsakBehandlingProsessEventDto) {
                 fpsakEventHandler.prosesser(event);
                 return;
-            }
-            else if(event instanceof TilbakebetalingBehandlingProsessEventDto) {
+            } else if (event instanceof TilbakebetalingBehandlingProsessEventDto) {
                 tilbakekrevingEventHandler.prosesser(event);
                 return;
             }
