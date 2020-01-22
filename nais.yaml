@@ -101,7 +101,7 @@ fasitResources:
     resourceType: baseUrl
     propertyMap:
       url: BUCKET_URL
-  - alias: bootstrap_servers
+  - alias: bootstrap-servers
     resourceType: baseUrl
     propertyMap:
       url: KAFKA_BROKERS
