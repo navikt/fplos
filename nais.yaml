@@ -92,15 +92,6 @@ fasitResources:
       endpointUrl: AKTOER_V2_URL
   - alias: ldap
     resourceType: ldap
-  - alias: s3-bucket-fplos
-    resourceType: credential
-    propertyMap:
-      username: AWS_ACCESS_KEY_ID
-      password: AWS_SECRET_ACCESS_KEY
-  - alias: s3-bucket-link
-    resourceType: baseUrl
-    propertyMap:
-      url: BUCKET_URL
   - alias: bootstrap-servers
     resourceType: baseUrl
     propertyMap:
