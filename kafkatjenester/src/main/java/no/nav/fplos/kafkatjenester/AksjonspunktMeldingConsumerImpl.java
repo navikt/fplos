@@ -24,7 +24,7 @@ public class AksjonspunktMeldingConsumerImpl implements AksjonspunktMeldingConsu
 
     @Inject
     public AksjonspunktMeldingConsumerImpl(@KonfigVerdi("kafka.aksjonspunkthendelse.topic") String topic,
-            @KonfigVerdi("bootstrap.servers") String bootstrapServers,
+            @KonfigVerdi("kafka.brokers") String bootstrapServers,
             @KonfigVerdi("kafka.aksjonspunkthendelse.group.id") String groupId,
             @KonfigVerdi("systembruker.username") String username,
             @KonfigVerdi("systembruker.password") String password,
