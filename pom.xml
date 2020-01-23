@@ -31,7 +31,7 @@
             RELEASE-avhengighet UNNTAK: feature-brancher og lokalt -->
         <fp-kontrakter.version>5.1_20200114104934_66a9974</fp-kontrakter.version>
         <tjenestespesifikasjoner.version>1.2019.12.13-19.12-aea1d1642d8a</tjenestespesifikasjoner.version>
-        <felles.version>1.4.2-20200113113007-04ca61b</felles.version>
+        <felles.version>1.5.0-20200123060955-7e89e24</felles.version>
 
         <!-- NAV -->
         <organisasjon-ressurs-enhet.version>1.0.0</organisasjon-ressurs-enhet.version>
