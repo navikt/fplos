@@ -12,7 +12,6 @@
     "LOADBALANCER_URL": "https://app.adeo.no",
     "FPSAK_FRONTEND_URL": "https://app.adeo.no/fpsak",
     "SECURITYTOKENSERVICE_URL": "https://sts.adeo.no/SecurityTokenServiceProvider/",
-    "OPPGAVE_V3_URL": "https://service-gw.adeo.no/",
     "ABAC_PDP_ENDPOINT_URL": "https://wasapp.adeo.no/asm-pdp/authorize",
     "OPENIDCONNECT_ISSOHOST": "https://isso.adeo.no:443/isso/oauth2",
     "OIDC_OPENAM_JWKSURL": "https://isso.adeo.no:443/isso/oauth2/connect/jwk_uri",

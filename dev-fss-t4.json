@@ -12,7 +12,6 @@
     "LOADBALANCER_URL": "https://app-t4.adeo.no",
     "FPSAK_FRONTEND_URL":  "https://app-t4.adeo.no/fpsak",
     "SECURITYTOKENSERVICE_URL":  "https://sts-t4.test.local/SecurityTokenServiceProvider/",
-    "OPPGAVE_V3_URL":  "https://service-gw-t4.test.local",
     "ABAC_PDP_ENDPOINT_URL":  "https://wasapp-t4.adeo.no/asm-pdp/authorize",
     "OIDC_OPENAM_JWKSURL":  "https://isso-t.adeo.no:443/isso/oauth2/connect/jwk_uri",
     "OIDC_OPENAM_ISSUERURL":  "https://isso-t.adeo.no:443/isso/oauth2",
