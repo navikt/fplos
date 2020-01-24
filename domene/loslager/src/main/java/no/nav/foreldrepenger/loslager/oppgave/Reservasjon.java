@@ -1,6 +1,7 @@
 package no.nav.foreldrepenger.loslager.oppgave;
 
-import java.time.LocalDateTime;
+import no.nav.foreldrepenger.loslager.BaseEntitet;
+import no.nav.vedtak.sikkerhet.context.SubjectHandler;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -10,9 +11,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
-
-import no.nav.foreldrepenger.loslager.BaseEntitet;
-import no.nav.vedtak.sikkerhet.context.SubjectHandler;
+import java.time.LocalDateTime;
 
 @Entity(name = "Reservasjon")
 @Table(name = "RESERVASJON")
@@ -99,6 +98,11 @@ public class Reservasjon extends BaseEntitet {
 
     public void forlengReservasjonPåOppgave() {
         reservertTil = reservertTil.plusHours(24);
+        reservertAv = finnBrukernavn();
+    }
+
+    public void endreReservasjonPåOppgave(LocalDateTime reservertTil) {
+        this.reservertTil = reservertTil;
         reservertAv = finnBrukernavn();
     }
 

@@ -21,6 +21,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -122,6 +123,14 @@ public class OppgaveTjenesteImpl implements OppgaveTjeneste {
     public Reservasjon forlengReservasjonPåOppgave(Long oppgaveId) {
         Reservasjon reservasjon = oppgaveRepository.hentReservasjon(oppgaveId);
         reservasjon.forlengReservasjonPåOppgave();
+        oppgaveRepository.lagre(reservasjon);
+        oppgaveRepository.lagre(new ReservasjonEventLogg(reservasjon));
+        return reservasjon;
+    }
+
+    public Reservasjon endreReservasjonPåOppgave(Long oppgaveId, LocalDateTime reservertTil) {
+        Reservasjon reservasjon = oppgaveRepository.hentReservasjon(oppgaveId);
+        reservasjon.endreReservasjonPåOppgave(reservertTil);
         oppgaveRepository.lagre(reservasjon);
         oppgaveRepository.lagre(new ReservasjonEventLogg(reservasjon));
         return reservasjon;

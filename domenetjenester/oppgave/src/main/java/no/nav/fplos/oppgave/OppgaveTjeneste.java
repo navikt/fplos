@@ -5,6 +5,7 @@ import no.nav.foreldrepenger.loslager.oppgave.Oppgave;
 import no.nav.foreldrepenger.loslager.oppgave.OppgaveFiltrering;
 import no.nav.foreldrepenger.loslager.oppgave.Reservasjon;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -28,6 +29,8 @@ public interface OppgaveTjeneste {
     Reservasjon frigiOppgave(Long oppgaveId, String begrunnelse);
 
     Reservasjon forlengReservasjonPåOppgave(Long oppgaveId);
+
+    Reservasjon endreReservasjonPåOppgave(Long oppgaveId, LocalDateTime forlengTil);
 
     Reservasjon flyttReservasjon(Long oppgaveId, String brukernavn, String begrunnelse);
 
