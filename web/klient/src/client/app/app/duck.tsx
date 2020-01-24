@@ -1,6 +1,7 @@
 import { createSelector } from 'reselect';
 
 import fpLosApi from 'data/fpLosApi';
+import { Dispatch } from 'redux';
 
 /* Action types */
 const SET_AVDELING_ENHET = 'SET_AVDELING_ENHET';
@@ -79,3 +80,9 @@ export const getNavAnsattKanBehandleKode6 = createSelector([fpLosApi.NAV_ANSATT.
 export const getFunksjonellTid = createSelector([fpLosApi.NAV_ANSATT.getRestApiData()], (navAnsatt: NavAnsatt = NavAnsattDefault) => navAnsatt.funksjonellTid);
 export const getFpsakUrl = createSelector([fpLosApi.FPSAK_URL.getRestApiData()], (fpsakUrl: {verdi: undefined }) => fpsakUrl.verdi);
 export const getFptilbakeUrl = createSelector([fpLosApi.FPTILBAKE_URL.getRestApiData()], (fptilbakeUrl: {verdi: undefined }) => fptilbakeUrl.verdi);
+export const hentFpsakBehandlingId = (uuid: string) => (dispatch: Dispatch) => dispatch(
+    fpLosApi.FPSAK_BEHANDLING_ID.makeRestApiRequest()(
+        { uuid },
+    ),
+);
+export const getFpsakBehandlingId = fpLosApi.FPSAK_BEHANDLING_ID.getRestApiData();

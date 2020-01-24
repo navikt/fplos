@@ -144,6 +144,23 @@ public class ForeldrepengerBehandlingRestKlient {
         }
     }
 
+    public Optional<Long> getBehandlingIdFraUUID(UUID uuid) {
+        URIBuilder uriBuilder = new URIBuilder(URI.create(fpsakBaseUrl + FPSAK_BEHANDLINGER));
+        uriBuilder.setParameter("behandlingId", String.valueOf(uuid));
+        ContainerLogin loginContext = new ContainerLogin();
+        loginContext.login();
+
+        try {
+            LOGGER.info("Slår opp behandlingId i fpsak for behandling med uuid {} per GET-kall til {}", uuid, uriBuilder.build());
+            UtvidetBehandlingDto response = oidcRestClient.get(uriBuilder.build(), UtvidetBehandlingDto.class);
+            return Optional.ofNullable(response.getId());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        } finally {
+            loginContext.logout();
+        }
+    }
+
     private static Boolean utlandFra(List<Aksjonspunkt> aksjonspunkter) {
         return aksjonspunkter.stream()
                 .anyMatch(Aksjonspunkt::erUtenlandssak);
