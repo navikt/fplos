@@ -7,11 +7,10 @@ import no.nav.foreldrepenger.loslager.oppgave.TilbakekrevingOppgave;
 import no.nav.foreldrepenger.loslager.repository.AdminRepository;
 import no.nav.fplos.foreldrepengerbehandling.BehandlingFpsak;
 import no.nav.fplos.foreldrepengerbehandling.ForeldrepengerBehandlingRestKlient;
-import no.nav.fplos.kafkatjenester.Fagsystem;
+import no.nav.fplos.kafkatjenester.FpsakBehandlingProsessEventDto;
 import no.nav.fplos.kafkatjenester.FpsakEventHandler;
 import no.nav.fplos.kafkatjenester.KafkaReader;
 import no.nav.fplos.kafkatjenester.TilbakekrevingEventHandler;
-import no.nav.vedtak.felles.integrasjon.kafka.FpsakBehandlingProsessEventDto;
 import no.nav.vedtak.felles.integrasjon.kafka.TilbakebetalingBehandlingProsessEventDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -87,11 +86,11 @@ public class AdminTjenesteImpl implements AdminTjeneste {
     public int oppdaterAktiveOppgaver() {
         List<Oppgave> aktiveOppgaver = adminRepository.hentAlleAktiveOppgaver();
         aktiveOppgaver.stream().forEach(oppgave -> {
-            switch(Fagsystem.valueOf(oppgave.getSystem())){
-                case FPSAK :
+            switch (oppgave.getSystem()) {
+                case "FPSAK":
                     fpsakEventHandler.prosesserFraAdmin(mapTilBehandlingProsessEventDto(oppgave.getBehandlingId()), oppgave.getReservasjon());
                     break;
-                case FPTILBAKE :
+                case "FPTILBAKE":
                     tilbakekrevingEventHandler.prosesserFraAdmin(mapTilTilbakekrevingBehandlingProsessEventDto(oppgave.getEksternId()), oppgave.getReservasjon());
                     break;
             }
@@ -152,7 +151,7 @@ public class AdminTjenesteImpl implements AdminTjeneste {
 
         Map<String, String> aksjonspunktKoderMedStatusListe = new HashMap<>();
 
-        return TilbakebetalingBehandlingProsessEventDto.tilbakebetalingBuilder()
+        return TilbakebetalingBehandlingProsessEventDto.builder()
                 .medSaksnummer(eksisterendeOppgave.getFagsakSaksnummer().toString())
                 .medAktørId(eksisterendeOppgave.getAktorId().toString())
                 .medYtelseTypeKode(eksisterendeOppgave.getFagsakYtelseType().getKode())

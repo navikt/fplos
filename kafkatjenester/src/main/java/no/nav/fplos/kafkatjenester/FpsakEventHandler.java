@@ -16,7 +16,6 @@ import no.nav.fplos.foreldrepengerbehandling.ForeldrepengerBehandlingRestKlient;
 import no.nav.fplos.kafkatjenester.eventresultat.EventResultat;
 import no.nav.fplos.kafkatjenester.eventresultat.FpsakEventMapper;
 import no.nav.vedtak.felles.integrasjon.kafka.BehandlingProsessEventDto;
-import no.nav.vedtak.felles.integrasjon.kafka.FpsakBehandlingProsessEventDto;
 import no.nav.vedtak.felles.jpa.Transaction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,7 +34,7 @@ import static no.nav.fplos.kafkatjenester.util.StreamUtil.safeStream;
 
 @ApplicationScoped
 @Transaction
-public class FpsakEventHandler extends FpEventHandler {
+public class FpsakEventHandler extends FpEventHandler<FpsakBehandlingProsessEventDto> {
 
     private static final Logger log = LoggerFactory.getLogger(FpsakEventHandler.class);
     private ForeldrepengerBehandlingRestKlient foreldrePengerBehandlingRestKlient;
@@ -52,12 +51,12 @@ public class FpsakEventHandler extends FpEventHandler {
     }
 
     @Override
-    public void prosesser(BehandlingProsessEventDto bpeDto) {
-        prosesser((FpsakBehandlingProsessEventDto)bpeDto, null,false);
+    public void prosesser(FpsakBehandlingProsessEventDto bpeDto) {
+        prosesser(bpeDto, null,false);
     }
 
-    public void prosesserFraAdmin(BehandlingProsessEventDto bpeDto, Reservasjon reservasjon) {
-        prosesser((FpsakBehandlingProsessEventDto)bpeDto, reservasjon, true);
+    public void prosesserFraAdmin(FpsakBehandlingProsessEventDto bpeDto, Reservasjon reservasjon) {
+        prosesser(bpeDto, reservasjon, true);
     }
 
     private void prosesser(FpsakBehandlingProsessEventDto bpeDto, Reservasjon reservasjon, boolean prosesserFraAdmin) {
@@ -168,7 +167,7 @@ public class FpsakEventHandler extends FpEventHandler {
      * @deprecated Bruk avsluttOppgaveOgLoggEventVedEksternId(BehandlingProsessEventDto, OppgaveEventType, LocalDateTime) i stedet
      */
     @Deprecated(since = "14.11.2019")
-    private void avsluttOppgaveOgLoggEvent(UUID eksternId, FpsakBehandlingProsessEventDto bpeDto, OppgaveEventType eventType, LocalDateTime frist){
+    private void avsluttOppgaveOgLoggEvent(UUID eksternId, BehandlingProsessEventDto bpeDto, OppgaveEventType eventType, LocalDateTime frist){
         //Long eksisterendeEksternId = getEksternIdentifikatorRespository().finnEllerOpprettEksternId(bpeDto.getFagsystem(), bpeDto.getBehandlingId().toString()).getId();
         avsluttOppgave(bpeDto.getBehandlingId());
         loggEvent(bpeDto.getBehandlingId(), eksternId, eventType, null, bpeDto.getBehandlendeEnhet(), frist);
@@ -206,7 +205,7 @@ public class FpsakEventHandler extends FpEventHandler {
      * @deprecated Bruk gjenåpneOppgaveVedEksternId(String, String) i stedet
      */
     @Deprecated(since = "14.11.2019")
-    private Oppgave gjenåpneOppgave(FpsakBehandlingProsessEventDto bpeDto) {
+    private Oppgave gjenåpneOppgave(BehandlingProsessEventDto bpeDto) {
         return getOppgaveRepository().gjenåpneOppgave(bpeDto.getBehandlingId());
     }
 
@@ -239,7 +238,7 @@ public class FpsakEventHandler extends FpEventHandler {
         getOppgaveRepository().avsluttOppgave(behandlingId);
     }
 
-    private Oppgave opprettOppgave(UUID eksternId, FpsakBehandlingProsessEventDto bpeDto, BehandlingFpsak fraFpsak, boolean prosesserFraAdmin) {
+    private Oppgave opprettOppgave(UUID eksternId, BehandlingProsessEventDto bpeDto, BehandlingFpsak fraFpsak, boolean prosesserFraAdmin) {
         //EksternIdentifikator eksternId = getEksternIdentifikatorRespository().finnEllerOpprettEksternId(bpeDto.getFagsystem(),bpeDto.getBehandlingId().toString());
         return getOppgaveRepository().opprettOppgave(Oppgave.builder()
                 .medSystem(bpeDto.getFagsystem().name())
