@@ -7,7 +7,7 @@ import styles from 'saksbehandler/behandlingskoer/components/menu/oppgaveReserva
 import Modal from 'sharedComponents/Modal';
 import React, { Component } from 'react';
 import { Column, Row } from 'nav-frontend-grid';
-import { Hovedknapp } from 'nav-frontend-knapper';
+import { Hovedknapp, Knapp } from 'nav-frontend-knapper';
 import { hasValidDate } from 'utils/validation/validators';
 import moment from 'moment';
 import { DDMMYYYY_DATE_FORMAT, ISO_DATE_FORMAT } from 'utils/formats';
@@ -76,34 +76,40 @@ export class OppgaveReservasjonEndringDatoModal extends Component<TsProps, TsSta
               initialValues={buildInitialValues(reserverTilDefault)}
               render={() => (
                 <Panel className={styles.panel}>
+
                   <Row>
-                    <Column xs="10">
+                    <Column xs="8">
                       <DatepickerField
                         name="reserverTil"
                         label={{ id: 'OppgaveReservasjonEndringDatoModal.Header' }}
                         onBlurValidation
                         validate={[hasValidDate]}
                         onBlur={this.setValue}
+                        alwaysShowCalendar
                       />
                     </Column>
-                    <Column xs="2">
-                      <Hovedknapp
-                        mini
-                        className={styles.button}
-                        onClick={() => { endreOppgaveReservasjon(reserverTil); }}
-                      >
-                        {intl.formatMessage({ id: 'OppgaveReservasjonEndringDatoModal.Ok' })}
-                      </Hovedknapp>
+                    <Column xs="1">
+                      <div className={styles.divider} />
                     </Column>
-                    <Column xs="2">
-                      <Hovedknapp
-                        mini
-                        className={styles.button}
-                        onClick={closeModal}
-                        autoFocus
-                      >
-                        {intl.formatMessage({ id: 'OppgaveReservasjonEndringDatoModal.Avbryt' })}
-                      </Hovedknapp>
+                    <Column xs="3" className={styles.buttonCol}>
+                      <div className={styles.buttonBox}>
+                        <Hovedknapp
+                          mini
+                          className={styles.button}
+                          onClick={() => { endreOppgaveReservasjon(reserverTil); }}
+                          autoFocus
+                        >
+                          {intl.formatMessage({ id: 'OppgaveReservasjonEndringDatoModal.Ok' })}
+                        </Hovedknapp>
+
+                        <Knapp
+                          mini
+                          className={styles.button}
+                          onClick={closeModal}
+                        >
+                          {intl.formatMessage({ id: 'OppgaveReservasjonEndringDatoModal.Avbryt' })}
+                        </Knapp>
+                      </div>
                     </Column>
                   </Row>
                 </Panel>
