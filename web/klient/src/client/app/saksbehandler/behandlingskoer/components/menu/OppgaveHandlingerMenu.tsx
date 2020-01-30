@@ -244,7 +244,7 @@ export class OppgaveHandlingerMenu extends Component<TsProps, TsState> {
           showModal={showReservasjonEndringDatoModal}
           endreOppgaveReservasjon={this.endreReserverasjon}
           closeModal={this.closeReservasjonEndringDatoModal}
-          reserverTil={oppgave.status.reservertTilTidspunkt}
+          reserverTilDefault={oppgave.status.reservertTilTidspunkt}
         />
 )
         }
