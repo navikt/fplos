@@ -8,7 +8,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import no.nav.foreldrepenger.los.web.app.tjenester.fagsak.app.FagsakApplikasjonTjeneste;
 import no.nav.foreldrepenger.los.web.app.tjenester.felles.dto.AsyncPollingStatus;
-import no.nav.foreldrepenger.los.web.app.tjenester.felles.dto.LocalDateTimeDto;
+import no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.oppgave.dto.ReservasjonsEndringDto;
 import no.nav.foreldrepenger.los.web.app.tjenester.felles.dto.OppgaveDto;
 import no.nav.foreldrepenger.los.web.app.tjenester.felles.dto.OppgaveStatusDto;
 import no.nav.foreldrepenger.los.web.app.tjenester.felles.dto.SaksbehandlerBrukerIdentDto;
@@ -209,9 +209,9 @@ public class OppgaveRestTjeneste {
     @Operation(description = "Endre reservasjon av oppgave", tags = "Saksbehandler")
     @BeskyttetRessurs(action = BeskyttetRessursActionAttributt.CREATE, ressurs = BeskyttetRessursResourceAttributt.FAGSAK)
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
-    public OppgaveStatusDto endreOppgaveReservasjon(@NotNull @Parameter(description = "id til oppgaven") @Valid OppgaveIdDto oppgaveId,
-                                                      @NotNull @Parameter(description = "forleng til dato") @Valid LocalDateTimeDto forlengTil) {
-        Reservasjon reservasjon = oppgaveTjeneste.endreReservasjonPåOppgave(oppgaveId.getVerdi(), forlengTil.getVerdi());
+    public OppgaveStatusDto endreOppgaveReservasjon(//@NotNull @Parameter(description = "id til oppgaven") @Valid OppgaveIdDto oppgaveId){
+                                                      @NotNull @Parameter(description = "forleng til dato") @Valid ReservasjonsEndringDto reservasjonsEndring) {
+        Reservasjon reservasjon = oppgaveTjeneste.endreReservasjonPåOppgave(reservasjonsEndring.getOppgaveId(), reservasjonsEndring.getReserverTil().atTime(23,59));
         return OppgaveStatusDto.reservert(reservasjon);
     }
 
