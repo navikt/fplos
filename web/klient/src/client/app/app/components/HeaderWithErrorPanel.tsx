@@ -5,6 +5,7 @@ import Popover from '@navikt/nap-popover';
 import SystemButton from '@navikt/nap-system-button';
 import UserPanel from '@navikt/nap-user-panel';
 import BoxedListWithSelection from '@navikt/boxed-list-with-selection';
+import BoxedListWithLinks from '@navikt/boxed-list-with-links';
 import Header from '@navikt/nap-header';
 
 import { getValueFromLocalStorage, setValueInLocalStorage, removeValueFromLocalStorage } from 'utils/localStorageHelper';
@@ -57,7 +58,7 @@ class HeaderWithErrorPanel extends Component<TsProps> {
   };
 
   state = {
-    erLenkepanelApent: false,
+    erLenkePanelApent: false,
     erAvdelingerPanelApent: false,
   }
 
@@ -98,6 +99,14 @@ class HeaderWithErrorPanel extends Component<TsProps> {
     setValgtAvdeling(avdelingEnhet);
   }
 
+  setLenkePanelApent = (erLenkePanelApent) => {
+    this.setState(oldState => ({ ...oldState, erLenkePanelApent }));
+  }
+
+  setAvdelingerPanelApent = (erAvdelingerPanelApent) => {
+    this.setState(oldState => ({ ...oldState, erAvdelingerPanelApent }));
+  }
+
   render = () => {
     const {
       intl,
@@ -108,12 +117,9 @@ class HeaderWithErrorPanel extends Component<TsProps> {
       valgtAvdelingEnhet,
     } = this.props;
     const {
-      erLenkepanelApent: erLenkePanelApent,
+      erLenkePanelApent,
       erAvdelingerPanelApent,
     } = this.state;
-
-    const setLenkePanelApent = newState => this.setState(oldState => ({ ...oldState, erLenkepanelApent: newState }));
-    const setAvdelingerPanelApent = newState => this.setState(oldState => ({ ...oldState, erAvdelingerPanelApent: newState }));
 
     let brukerPanel = <UserPanel name={navAnsattName} />;
 
@@ -128,7 +134,7 @@ class HeaderWithErrorPanel extends Component<TsProps> {
               <BoxedListWithSelection
                 onClick={(index) => {
                   this.setValgtAvdeling(avdelinger[index].avdelingEnhet);
-                  setAvdelingerPanelApent(false);
+                  this.setAvdelingerPanelApent(false);
                 }}
                 items={avdelinger.map(avdeling => ({
                   name: `${avdeling.avdelingEnhet} ${avdeling.navn}`,
@@ -147,9 +153,9 @@ class HeaderWithErrorPanel extends Component<TsProps> {
                   unit={`${valgtAvdelingEnhet} ${avdelinger.find(a => a.avdelingEnhet === valgtAvdelingEnhet).navn}`}
                   onClick={() => {
                       if (erLenkePanelApent) {
-                        setLenkePanelApent(false);
+                        this.setLenkePanelApent(false);
                       }
-                      setAvdelingerPanelApent(!erAvdelingerPanelApent);
+                      this.setAvdelingerPanelApent(!erAvdelingerPanelApent);
                   }}
                 />
               </div>
@@ -168,17 +174,16 @@ class HeaderWithErrorPanel extends Component<TsProps> {
             customPopperStyles={{ top: '8px', zIndex: 1 }}
             popperProps={{
               children: () => (
-                <BoxedListWithSelection
-                  onClick={() => {
-                    setLenkePanelApent(false);
-                  }}
+                <BoxedListWithLinks
                   items={[{
-                  name: intl.formatMessage({ id: 'Header.Rettskilde' }),
-                  href: RETTSKILDE_URL,
-                }, {
-                  name: intl.formatMessage({ id: 'Header.Systemrutine' }),
-                  href: SYSTEMRUTINE_URL,
-                }]}
+                    name: intl.formatMessage({ id: 'Header.Rettskilde' }),
+                    href: RETTSKILDE_URL,
+                    isExternal: true,
+                  }, {
+                    name: intl.formatMessage({ id: 'Header.Systemrutine' }),
+                    href: SYSTEMRUTINE_URL,
+                    isExternal: true,
+                  }]}
                 />
               ),
               placement: 'bottom-start',
@@ -190,9 +195,9 @@ class HeaderWithErrorPanel extends Component<TsProps> {
                   <SystemButton
                     onClick={() => {
                       if (erAvdelingerPanelApent) {
-                        setAvdelingerPanelApent(false);
+                        this.setAvdelingerPanelApent(false);
                       }
-                      setLenkePanelApent(!erLenkePanelApent);
+                      this.setLenkePanelApent(!erLenkePanelApent);
                     }}
                     isToggled={erLenkePanelApent}
                   />

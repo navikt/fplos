@@ -4,6 +4,7 @@
   "description": "LOS",
   "main": "index.js",
   "dependencies": {
+    "@navikt/boxed-list-with-links": "1.0.2",
     "@navikt/boxed-list-with-selection": "1.0.0",
     "@navikt/nap-header": "1.0.9",
     "@navikt/nap-popover": "1.0.3",
