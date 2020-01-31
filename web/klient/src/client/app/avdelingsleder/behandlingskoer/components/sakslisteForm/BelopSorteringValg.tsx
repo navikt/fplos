@@ -23,8 +23,6 @@ export const BelopSorteringValg = ({
     valgtSakslisteId,
     valgtAvdelingEnhet,
     lagreSakslisteSorteringNumerisk,
-    fra,
-    til,
 }: TsProps) => (
   <ArrowBox>
     <Undertekst>

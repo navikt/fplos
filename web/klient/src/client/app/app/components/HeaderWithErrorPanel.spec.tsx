@@ -2,8 +2,7 @@ import React from 'react';
 import sinon from 'sinon';
 import { expect } from 'chai';
 import Header from '@navikt/nap-header';
-import BoxedListWithSelection from '@navikt/boxed-list-with-selection';
-import BoxedListWithLinks from '@navikt/boxed-list-with-links';
+import Popover from '@navikt/nap-popover';
 
 import { shallowWithIntl, intlMock } from 'testHelpers/intl-enzyme-test-helper';
 import { RETTSKILDE_URL, SYSTEMRUTINE_URL } from 'data/eksterneLenker';
@@ -26,17 +25,14 @@ describe('<HeaderWithErrorPanel>', () => {
     const header = wrapper.find(Header);
     expect(header).has.length(1);
 
-    expect(header.prop('renderUserPopoverContent')).is.undefined;
-    const boxedList = header.renderProp('renderLinksPopoverContent')().find(BoxedListWithLinks);
-
-    expect(boxedList.prop('items')).to.eql([{
+    const popovers = wrapper.find(Popover);
+    expect(popovers).has.length(1);
+    expect(popovers.first().prop('popperProps').children().props.items).is.eql([{
       name: 'Rettskildene',
       href: RETTSKILDE_URL,
-      isExternal: true,
     }, {
       name: 'Systemrutine',
       href: SYSTEMRUTINE_URL,
-      isExternal: true,
     }]);
   });
 
@@ -64,10 +60,10 @@ describe('<HeaderWithErrorPanel>', () => {
     const header = wrapper.find(Header);
     expect(header).has.length(1);
 
-    const boxedList = header.renderProp('renderUserPopoverContent')().find(BoxedListWithSelection);
+    const popovers = wrapper.find(Popover);
+    expect(popovers).has.length(2);
 
-    expect(boxedList).has.length(1);
-    expect(boxedList.prop('items')).to.eql([{
+    expect(popovers.last().prop('popperProps').children().props.items).is.eql([{
       name: `${avdelinger[0].avdelingEnhet} ${avdelinger[0].navn}`,
 <<<<<<< HEAD
 <<<<<<< HEAD

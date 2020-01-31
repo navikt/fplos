@@ -4,9 +4,11 @@
   "description": "LOS",
   "main": "index.js",
   "dependencies": {
-    "@navikt/boxed-list-with-links": "1.0.2",
     "@navikt/boxed-list-with-selection": "1.0.0",
-    "@navikt/nap-header": "1.0.8",
+    "@navikt/nap-header": "1.0.9",
+    "@navikt/nap-popover": "1.0.3",
+    "@navikt/nap-system-button": "1.0.0",
+    "@navikt/nap-user-panel": "1.0.0",
     "@sentry/browser": "^4.6.4",
     "axios": "^0.18.0",
     "babel-polyfill": "^6.26.0",

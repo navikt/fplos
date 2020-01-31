@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { injectIntl, intlShape } from 'react-intl';
-import BoxedListWithLinks from '@navikt/boxed-list-with-links';
+import Popover from '@navikt/nap-popover';
+import SystemButton from '@navikt/nap-system-button';
+import UserPanel from '@navikt/nap-user-panel';
 import BoxedListWithSelection from '@navikt/boxed-list-with-selection';
 import Header from '@navikt/nap-header';
 
@@ -54,6 +56,11 @@ class HeaderWithErrorPanel extends Component<TsProps> {
     valgtAvdelingEnhet: undefined,
   };
 
+  state = {
+    erLenkepanelApent: false,
+    erAvdelingerPanelApent: false,
+  }
+
   setAvdeling = () => {
     const {
       avdelinger,
@@ -100,43 +107,101 @@ class HeaderWithErrorPanel extends Component<TsProps> {
       avdelinger,
       valgtAvdelingEnhet,
     } = this.props;
+    const {
+      erLenkepanelApent: erLenkePanelApent,
+      erAvdelingerPanelApent,
+    } = this.state;
 
-    let props = {};
+    const setLenkePanelApent = newState => this.setState(oldState => ({ ...oldState, erLenkepanelApent: newState }));
+    const setAvdelingerPanelApent = newState => this.setState(oldState => ({ ...oldState, erAvdelingerPanelApent: newState }));
+
+    let brukerPanel = <UserPanel name={navAnsattName} />;
+
     if (valgtAvdelingEnhet && avdelinger.length > 0) {
-      props = {
-        renderUserPopoverContent: () => (
-          <BoxedListWithSelection
-            onClick={index => this.setValgtAvdeling(avdelinger[index].avdelingEnhet)}
-            items={avdelinger.map(avdeling => ({
-              name: `${avdeling.avdelingEnhet} ${avdeling.navn}`,
-              selected: valgtAvdelingEnhet === avdeling.avdelingEnhet,
-            }))}
-          />
-        ),
-        userUnit: `${valgtAvdelingEnhet} ${avdelinger.find(a => a.avdelingEnhet === valgtAvdelingEnhet).navn}`,
-      };
+      brukerPanel = (
+        <Popover
+          popperIsVisible={erAvdelingerPanelApent}
+          renderArrowElement
+          customPopperStyles={{ top: '8px', zIndex: 1 }}
+          popperProps={{
+            children: () => (
+              <BoxedListWithSelection
+                onClick={(index) => {
+                  this.setValgtAvdeling(avdelinger[index].avdelingEnhet);
+                  setAvdelingerPanelApent(false);
+                }}
+                items={avdelinger.map(avdeling => ({
+                  name: `${avdeling.avdelingEnhet} ${avdeling.navn}`,
+                  selected: valgtAvdelingEnhet === avdeling.avdelingEnhet,
+                }))}
+              />
+            ),
+            placement: 'bottom-start',
+            positionFixed: true,
+          }}
+          referenceProps={{
+            children: ({ ref }) => (
+              <div ref={ref}>
+                <UserPanel
+                  name={navAnsattName}
+                  unit={`${valgtAvdelingEnhet} ${avdelinger.find(a => a.avdelingEnhet === valgtAvdelingEnhet).navn}`}
+                  onClick={() => {
+                      if (erLenkePanelApent) {
+                        setLenkePanelApent(false);
+                      }
+                      setAvdelingerPanelApent(!erAvdelingerPanelApent);
+                  }}
+                />
+              </div>
+            ),
+          }}
+        />
+      );
     }
 
     return (
       <header className={styles.container}>
-        <Header
-          title={intl.formatMessage({ id: 'Header.Foreldrepenger' })}
-          userName={navAnsattName}
-          renderLinksPopoverContent={() => (
-            <BoxedListWithLinks
-              items={[{
-                name: intl.formatMessage({ id: 'Header.Rettskilde' }),
-                href: RETTSKILDE_URL,
-                isExternal: true,
-              }, {
-                name: intl.formatMessage({ id: 'Header.Systemrutine' }),
-                href: SYSTEMRUTINE_URL,
-                isExternal: true,
-              }]}
-            />
-          )}
-          {...props}
-        />
+        <Header title={intl.formatMessage({ id: 'Header.Foreldrepenger' })}>
+          <Popover
+            popperIsVisible={erLenkePanelApent}
+            renderArrowElement
+            customPopperStyles={{ top: '8px', zIndex: 1 }}
+            popperProps={{
+              children: () => (
+                <BoxedListWithSelection
+                  onClick={() => {
+                    setLenkePanelApent(false);
+                  }}
+                  items={[{
+                  name: intl.formatMessage({ id: 'Header.Rettskilde' }),
+                  href: RETTSKILDE_URL,
+                }, {
+                  name: intl.formatMessage({ id: 'Header.Systemrutine' }),
+                  href: SYSTEMRUTINE_URL,
+                }]}
+                />
+              ),
+              placement: 'bottom-start',
+              positionFixed: true,
+            }}
+            referenceProps={{
+              children: ({ ref }) => (
+                <div ref={ref}>
+                  <SystemButton
+                    onClick={() => {
+                      if (erAvdelingerPanelApent) {
+                        setAvdelingerPanelApent(false);
+                      }
+                      setLenkePanelApent(!erLenkePanelApent);
+                    }}
+                    isToggled={erLenkePanelApent}
+                  />
+                </div>
+              ),
+            }}
+          />
+          {brukerPanel}
+        </Header>
         <ErrorMessagePanel queryStrings={queryStrings} removeErrorMessage={removeErrorMessage} />
       </header>
     );

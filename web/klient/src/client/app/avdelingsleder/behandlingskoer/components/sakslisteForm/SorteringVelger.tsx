@@ -4,7 +4,6 @@ import { connect } from 'react-redux';
 import { FormattedMessage, injectIntl, intlShape } from 'react-intl';
 import { bindActionCreators, Dispatch } from 'redux';
 import { Undertekst } from 'nav-frontend-typografi';
-import moment from 'moment';
 
 import {
   RadioGroupField, RadioOption,
@@ -23,9 +22,6 @@ import {
 } from '../../duck';
 import DatoSorteringValg from './DatoSorteringValg';
 import BelopSorteringValg from './BelopSorteringValg';
-
-const finnDato = antallDager => moment().add(antallDager, 'd').format();
-
 
 interface TsProps {
   intl: any;

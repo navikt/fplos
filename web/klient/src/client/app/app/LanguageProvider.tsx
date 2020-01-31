@@ -32,7 +32,7 @@ LanguageProvider.propTypes = {
   children: PropTypes.node.isRequired,
 };
 
-const mapStateToProps = state => ({
+const mapStateToProps = () => ({
   nbMessages: data,
 });
 
