@@ -83,22 +83,6 @@ public class AdminTjenesteImpl implements AdminTjeneste {
     }
 
     @Override
-    public int oppdaterAktiveOppgaver() {
-        List<Oppgave> aktiveOppgaver = adminRepository.hentAlleAktiveOppgaver();
-        aktiveOppgaver.stream().forEach(oppgave -> {
-            switch (oppgave.getSystem()) {
-                case "FPSAK":
-                    fpsakEventHandler.prosesserFraAdmin(mapTilBehandlingProsessEventDto(oppgave.getBehandlingId()), oppgave.getReservasjon());
-                    break;
-                case "FPTILBAKE":
-                    tilbakekrevingEventHandler.prosesserFraAdmin(mapTilTilbakekrevingBehandlingProsessEventDto(oppgave.getEksternId()), oppgave.getReservasjon());
-                    break;
-            }
-        });
-        return aktiveOppgaver.size();
-    }
-
-    @Override
     public int prosesserAlleMeldingerFraFeillogg() {
         List<EventmottakFeillogg> feillogg = adminRepository.hentAlleMeldingerFraFeillogg();
         for (EventmottakFeillogg innslag : feillogg) {
