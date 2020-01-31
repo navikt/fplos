@@ -9,7 +9,7 @@ import no.nav.fplos.foreldrepengerbehandling.Aksjonspunkt;
 import no.nav.fplos.foreldrepengerbehandling.BehandlingFpsak;
 import no.nav.fplos.foreldrepengerbehandling.ForeldrepengerBehandlingRestKlient;
 import no.nav.vedtak.felles.integrasjon.kafka.BehandlingProsessEventDto;
-import no.nav.vedtak.felles.integrasjon.kafka.FpsakBehandlingProsessEventDto;
+import no.nav.vedtak.felles.integrasjon.kafka.BehandlingProsessEventDto;
 import org.junit.Rule;
 import org.junit.Test;
 
@@ -42,7 +42,7 @@ public class KafkaReaderTest {
 
     @Test
     public void testOk() throws IOException {
-        FpsakBehandlingProsessEventDto behandlingProsessEventDto = fpsakEventHandlerTest.eventDrammenFra(fpsakEventHandlerTest.aksjonspunktKoderSkalHaOppgave);
+        var behandlingProsessEventDto = fpsakEventHandlerTest.eventDrammenFra(fpsakEventHandlerTest.aksjonspunktKoderSkalHaOppgave);
         when(foreldrepengerBehandlingRestKlient.getBehandling(anyLong())).thenReturn(lagBehandlingDto());
         kafkaReader.prosesser(getJson(behandlingProsessEventDto));
         assertThat(repoRule.getRepository().hentAlle(EventmottakFeillogg.class)).hasSize(0);

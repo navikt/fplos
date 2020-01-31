@@ -19,8 +19,6 @@ public interface AdminTjeneste {
 
     void oppdaterOppgave(Long behandlingId);
 
-    int oppdaterAktiveOppgaver();
-
     int prosesserAlleMeldingerFraFeillogg();
 
     List<Oppgave> hentAlleOppgaverForBehandling(Long behandlingId);
