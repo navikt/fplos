@@ -11,11 +11,15 @@ import styles from './datepicker.less';
 
 interface TsProps {
   alwaysShowCalendar: boolean;
+  firstDate: Date;
+  lastDate: Date;
 }
 
 class Datepicker extends Component <TsProps> {
   static propTypes = {
     alwaysShowCalendar: PropTypes.bool.isRequired,
+    firstDate: PropTypes.instanceOf(Date),
+    lastDate: PropTypes.instanceOf(Date),
   }
 
   constructor() {
@@ -84,7 +88,7 @@ class Datepicker extends Component <TsProps> {
 
   render() {
     const {
-      label, placeholder, onChange, onBlur, value, feil, disabled, alwaysShowCalendar,
+      label, placeholder, onChange, onBlur, value, feil, disabled, alwaysShowCalendar, firstDate, lastDate,
     } = this.props;
     const {
       inputOffsetTop, inputOffsetWidth, showCalendar,
@@ -128,6 +132,8 @@ class Datepicker extends Component <TsProps> {
           elementIsCalendarButton={this.elementIsCalendarButton}
           className={styles.calendarRoot}
           dayPickerClassName={styles.calendarWrapper}
+          firstDate={firstDate}
+          lastDate={lastDate}
         />
         )
         }

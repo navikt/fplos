@@ -8,15 +8,19 @@ import Modal from 'sharedComponents/Modal';
 import React, { Component } from 'react';
 import { Column, Row } from 'nav-frontend-grid';
 import { Hovedknapp, Knapp } from 'nav-frontend-knapper';
-import { hasValidDate } from 'utils/validation/validators';
-import moment from 'moment';
-import { DDMMYYYY_DATE_FORMAT, ISO_DATE_FORMAT } from 'utils/formats';
+import { dateAfterOrEqual, dateBeforeOrEqual, hasValidDate } from 'utils/validation/validators';
 import { Form } from 'react-final-form';
 import Panel from 'nav-frontend-paneler';
 
 const buildInitialValues = (reserverTil: string) => ({
-    reserverTil: (reserverTil && reserverTil.length >= 19) ? moment(reserverTil.substr(0, 19), 'YYYY-MM-DDTHH:mm:ss', true).format(ISO_DATE_FORMAT) : '',
+    reserverTil: (reserverTil && reserverTil.length >= 10) ? reserverTil.substr(0, 10) : '',
 });
+
+const thirtyDaysFromNow = () => {
+    const result = new Date();
+    result.setDate(new Date().getDate() + 30);
+    return result;
+};
 
 interface TsProps {
     intl: any;
@@ -83,9 +87,11 @@ export class OppgaveReservasjonEndringDatoModal extends Component<TsProps, TsSta
                         name="reserverTil"
                         label={{ id: 'OppgaveReservasjonEndringDatoModal.Header' }}
                         onBlurValidation
-                        validate={[hasValidDate]}
+                        validate={[hasValidDate, dateAfterOrEqual(new Date()), dateBeforeOrEqual(thirtyDaysFromNow())]}
                         onBlur={this.setValue}
                         alwaysShowCalendar
+                        firstDate={new Date()}
+                        lastDate={thirtyDaysFromNow()}
                       />
                     </Column>
                     <Column xs="1">
