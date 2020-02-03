@@ -31,7 +31,7 @@ public class BehandlingIdDto implements AbacDto {
     }
 
 
-    public Long getVerdi() {
+    public Long getBehandlingId() {
         return behandlingId;
     }
 

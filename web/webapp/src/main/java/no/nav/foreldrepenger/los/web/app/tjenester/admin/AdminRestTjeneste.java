@@ -52,7 +52,7 @@ public class AdminRestTjeneste {
     @BeskyttetRessurs(action = READ, ressurs = OPPGAVESTYRING)
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
     public OppgaveDto synkroniserOppgave(@NotNull @QueryParam("behandlingIdDto") @Valid BehandlingIdDto behandlingIdDto) {
-        Oppgave oppgave = adminTjeneste.synkroniserOppgave(behandlingIdDto.getVerdi());
+        Oppgave oppgave = adminTjeneste.synkroniserOppgave(behandlingIdDto.getBehandlingId());
         return new OppgaveDto(oppgave);
     }
 
@@ -64,7 +64,7 @@ public class AdminRestTjeneste {
     @BeskyttetRessurs(action = READ, ressurs = OPPGAVESTYRING)
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
     public OppgaveDto hentOppgave(@NotNull @QueryParam("behandlingIdDto") @Valid BehandlingIdDto behandlingIdDto) {
-        Oppgave oppgave = adminTjeneste.hentOppgave(behandlingIdDto.getVerdi());
+        Oppgave oppgave = adminTjeneste.hentOppgave(behandlingIdDto.getBehandlingId());
         return oppgave != null ? new OppgaveDto(oppgave) : null;
     }
 
@@ -76,7 +76,7 @@ public class AdminRestTjeneste {
     @BeskyttetRessurs(action = READ, ressurs = OPPGAVESTYRING)
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
     public List<OppgaveEventLoggDto> hentEventlogg(@NotNull @QueryParam("behandlingIdDto") @Valid BehandlingIdDto behandlingIdDto) {
-        List<OppgaveEventLogg> oppgaveEventLogger = adminTjeneste.hentEventer(behandlingIdDto.getVerdi());
+        List<OppgaveEventLogg> oppgaveEventLogger = adminTjeneste.hentEventer(behandlingIdDto.getBehandlingId());
         return oppgaveEventLogger.stream().map(o -> new OppgaveEventLoggDto(o)).collect(Collectors.toList());
     }
 
@@ -88,8 +88,8 @@ public class AdminRestTjeneste {
     @BeskyttetRessurs(action = READ, ressurs = OPPGAVESTYRING)
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
     public OppgaveDto oppdaterOppgave(@NotNull @QueryParam("behandlingIdDto") @Valid BehandlingIdDto behandlingIdDto) {
-        adminTjeneste.oppdaterOppgave(behandlingIdDto.getVerdi());
-        Oppgave oppgave = adminTjeneste.hentOppgave(behandlingIdDto.getVerdi());
+        adminTjeneste.oppdaterOppgave(behandlingIdDto.getBehandlingId());
+        Oppgave oppgave = adminTjeneste.hentOppgave(behandlingIdDto.getBehandlingId());
         return new OppgaveDto(oppgave);
     }
 
@@ -112,7 +112,7 @@ public class AdminRestTjeneste {
     @BeskyttetRessurs(action = READ, ressurs = OPPGAVESTYRING)
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
     public List<OppgaveDto> hentAlleOppgaverForBehandling(@NotNull @QueryParam("behandlingIdDto") @Valid BehandlingIdDto behandlingIdDto) {
-        List<Oppgave> oppgaver = adminTjeneste.hentAlleOppgaverForBehandling(behandlingIdDto.getVerdi());
+        List<Oppgave> oppgaver = adminTjeneste.hentAlleOppgaverForBehandling(behandlingIdDto.getBehandlingId());
         return oppgaver.stream().map(OppgaveDto::new).collect(Collectors.toList());
     }
 
