@@ -25,6 +25,7 @@ import no.nav.fplos.foreldrepengerbehandling.ForeldrepengerBehandlingRestKlient;
 import no.nav.fplos.kafkatjenester.AksjonspunktMeldingConsumer;
 import no.nav.fplos.kafkatjenester.FpsakEventHandler;
 import no.nav.fplos.kafkatjenester.KafkaReader;
+import no.nav.fplos.kafkatjenester.OppgaveEgenskapHandler;
 import no.nav.fplos.kafkatjenester.TilbakekrevingEventHandler;
 import no.nav.fplos.oppgave.OppgaveTjeneste;
 import no.nav.fplos.oppgave.OppgaveTjenesteImpl;
@@ -60,6 +61,7 @@ public class HentOppgaverTest {
     private AvdelingslederTjeneste avdelingslederTjeneste = mock(AvdelingslederTjeneste.class);
     private AnsattTjeneste ansattTjeneste = mock(AnsattTjeneste.class);
     private OppgaveTjeneste oppgaveTjeneste = new OppgaveTjenesteImpl(oppgaveRepository, organisasjonRepository, tpsTjeneste, avdelingslederTjeneste, ansattTjeneste);
+    private OppgaveEgenskapHandler oppgaveEgenskapHandler = new OppgaveEgenskapHandler(oppgaveRepository);
     private FagsakApplikasjonTjeneste fagsakApplikasjonTjeneste = mock(FagsakApplikasjonTjeneste.class);
     private OppgaveRestTjeneste oppgaveRestTjeneste = new OppgaveRestTjeneste(oppgaveTjeneste, fagsakApplikasjonTjeneste);
     @Inject
@@ -72,7 +74,7 @@ public class HentOppgaverTest {
     @Before
     public void before(){
         kafkaReader = new KafkaReader(meldingConsumer,
-                new FpsakEventHandler(oppgaveRepository, foreldrepengerBehandlingRestKlient),
+                new FpsakEventHandler(oppgaveRepository, foreldrepengerBehandlingRestKlient, oppgaveEgenskapHandler),
                 new TilbakekrevingEventHandler(oppgaveRepository),oppgaveRepository);
         List<Avdeling> avdelings = repoRule.getRepository().hentAlle(Avdeling.class);
         avdelingDrammen = avdelings.stream().filter(avdeling -> Avdeling.AVDELING_DRAMMEN_ENHET.equals(avdeling.getAvdelingEnhet())).findFirst().orElseThrow();

@@ -14,6 +14,7 @@ import no.nav.fplos.foreldrepengerbehandling.ForeldrepengerBehandlingRestKlient;
 import no.nav.fplos.kafkatjenester.AksjonspunktMeldingConsumer;
 import no.nav.fplos.kafkatjenester.FpsakEventHandler;
 import no.nav.fplos.kafkatjenester.KafkaReader;
+import no.nav.fplos.kafkatjenester.OppgaveEgenskapHandler;
 import no.nav.fplos.kafkatjenester.TilbakekrevingEventHandler;
 import no.nav.fplos.statistikk.StatistikkTjeneste;
 import no.nav.fplos.statistikk.StatistikkTjenesteImpl;
@@ -46,6 +47,7 @@ public class VerdikjedetestNøkkeltallAvdelingTest {
     public UnittestRepositoryRule repoRule = new UnittestRepositoryRule();
     private EntityManager entityManager = repoRule.getEntityManager();
     private final OppgaveRepository oppgaveRepository = new OppgaveRepositoryImpl(entityManager);
+    private final OppgaveEgenskapHandler oppgaveEgenskapHandler = new OppgaveEgenskapHandler(oppgaveRepository);
     private final StatistikkRepository statisikkRepository = new StatistikkRepositoryImpl(entityManager);
     private StatistikkTjeneste statistikkTjeneste = new StatistikkTjenesteImpl(statisikkRepository);
     private NøkkeltallRestTjeneste nøkkeltallRestTjeneste = new NøkkeltallRestTjeneste(statistikkTjeneste);
@@ -59,7 +61,7 @@ public class VerdikjedetestNøkkeltallAvdelingTest {
     @Before
     public void before() {
         kafkaReader = new KafkaReader(meldingConsumer,
-                new FpsakEventHandler(oppgaveRepository, foreldrepengerBehandlingRestKlient),
+                new FpsakEventHandler(oppgaveRepository, foreldrepengerBehandlingRestKlient, oppgaveEgenskapHandler),
                 new TilbakekrevingEventHandler(oppgaveRepository),
                 oppgaveRepository);
     }

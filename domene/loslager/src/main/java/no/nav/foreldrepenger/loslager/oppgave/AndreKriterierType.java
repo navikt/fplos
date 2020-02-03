@@ -42,6 +42,10 @@ public enum AndreKriterierType implements Kodeverdi {
         return KODEVERK;
     }
 
+    public boolean erTilBeslutter() {
+        return this.equals(TIL_BESLUTTER);
+    }
+
     @JsonCreator
     public static AndreKriterierType fraKode(@JsonProperty("kode") String kode) {
         return Arrays.stream(values())
