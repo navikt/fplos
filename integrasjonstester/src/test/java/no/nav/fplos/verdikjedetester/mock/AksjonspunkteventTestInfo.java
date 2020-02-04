@@ -2,7 +2,8 @@ package no.nav.fplos.verdikjedetester.mock;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import no.nav.foreldrepenger.los.web.app.tjenester.felles.dto.OppgaveDto;
-import no.nav.vedtak.felles.integrasjon.kafka.FpsakBehandlingProsessEventDto;
+import no.nav.vedtak.felles.integrasjon.kafka.BehandlingProsessEventDto;
+import no.nav.vedtak.felles.integrasjon.kafka.Fagsystem;
 
 import java.io.StringWriter;
 import java.io.Writer;
@@ -15,8 +16,8 @@ public class AksjonspunkteventTestInfo {
 
     private String avdeling;
     private String fagsakYtelseType;
-    FpsakBehandlingProsessEventDto.Builder behandlingProsessEventDtoBuilder;
-    FpsakBehandlingProsessEventDto behandlingProsessEventDto;
+    BehandlingProsessEventDto.Builder behandlingProsessEventDtoBuilder;
+    BehandlingProsessEventDto behandlingProsessEventDto;
     private ObjectMapper objectMapper = new ObjectMapper();
 
     private final String DEFAULT = "DEFAULT_TEST";
@@ -24,15 +25,19 @@ public class AksjonspunkteventTestInfo {
     private final static String DEFAULT_AKTØR_ID = "3";
     private final static String DEFAULT_BEHANDLING_STEG_KODE = "BEHANDLING_STEG";
     private final static String DEFAULT_BEHANDLING_STATUS_KODE = "UTRED";
-    private final static String DEFAULT_FAGSYSTEM_KODE = "FPSAK";
 
 
-    AksjonspunkteventTestInfo(Long behandlingId, String behandlendeEnhet, Long saksnummer, String behandlingtypeKode
-            , String fagsakYtelseTypeKode) {
-        behandlingProsessEventDtoBuilder = FpsakBehandlingProsessEventDto.builder().medBehandlingId(behandlingId).medBehandlendeEnhet(behandlendeEnhet)
-                .medBehandlingTypeKode(behandlingtypeKode).medSaksnummer(""+saksnummer).medYtelseTypeKode(fagsakYtelseTypeKode)
-                .medOpprettetBehandling(LocalDateTime.now().truncatedTo(MILLIS)).medAktørId(DEFAULT_AKTØR_ID)
-                .medBehandlingSteg(DEFAULT_BEHANDLING_STEG_KODE).medBehandlingStatus(DEFAULT_BEHANDLING_STATUS_KODE);
+    AksjonspunkteventTestInfo(Long behandlingId, String behandlendeEnhet, Long saksnummer,
+                              String behandlingtypeKode, String fagsakYtelseTypeKode) {
+        behandlingProsessEventDtoBuilder = BehandlingProsessEventDto.builder()
+                .medFagsystem(Fagsystem.FPSAK)
+                .medBehandlingId(behandlingId).medBehandlendeEnhet(behandlendeEnhet)
+                .medBehandlingTypeKode(behandlingtypeKode).medSaksnummer("" + saksnummer)
+                .medYtelseTypeKode(fagsakYtelseTypeKode)
+                .medOpprettetBehandling(LocalDateTime.now().truncatedTo(MILLIS))
+                .medAktørId(DEFAULT_AKTØR_ID)
+                .medBehandlingSteg(DEFAULT_BEHANDLING_STEG_KODE)
+                .medBehandlingStatus(DEFAULT_BEHANDLING_STATUS_KODE);
     }
 
     public String tilmeldingstekst() {
