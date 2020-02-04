@@ -1,4 +1,6 @@
-import React, { Component } from 'react';
+import React, {
+ useState, useEffect, FunctionComponent, useRef, useCallback,
+} from 'react';
 import PropTypes from 'prop-types';
 import { injectIntl, intlShape } from 'react-intl';
 import Popover from '@navikt/nap-popover';
@@ -18,7 +20,7 @@ import ErrorMessagePanel from './ErrorMessagePanel';
 
 import styles from './headerWithErrorPanel.less';
 
-type TsProps = Readonly<{
+interface OwnProps {
   intl: any;
   navAnsattName: string;
   removeErrorMessage: () => void;
@@ -29,7 +31,45 @@ type TsProps = Readonly<{
   avdelinger: Avdeling[];
   setValgtAvdeling: (id: string) => void;
   valgtAvdelingEnhet?: string;
-}>
+}
+
+const useOutsideClickEvent = (erLenkepanelApent, erAvdelingerPanelApent, setLenkePanelApent, setAvdelingerPanelApent) => {
+  const wrapperRef = useRef(null);
+  const handleClickOutside = useCallback((event) => {
+    if (wrapperRef.current && !wrapperRef.current.contains(event.target)) {
+      setLenkePanelApent(false);
+      setAvdelingerPanelApent(false);
+    }
+  }, [wrapperRef.current]);
+
+  useEffect(() => {
+    if (erLenkepanelApent || erAvdelingerPanelApent) {
+      document.addEventListener('mousedown', handleClickOutside);
+    } else {
+      document.removeEventListener('mousedown', handleClickOutside);
+    }
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [erLenkepanelApent, erAvdelingerPanelApent]);
+
+  return wrapperRef;
+};
+
+const setAvdeling = (avdelinger, setValgtAvdeling, valgtAvdelingEnhet) => {
+  if (avdelinger.length > 0 && !valgtAvdelingEnhet) {
+    let valgtEnhet = avdelinger[0].avdelingEnhet;
+    const lagretAvdelingEnhet = getValueFromLocalStorage('avdelingEnhet');
+    if (lagretAvdelingEnhet) {
+      if (avdelinger.some(a => a.avdelingEnhet === lagretAvdelingEnhet)) {
+        valgtEnhet = lagretAvdelingEnhet;
+      } else {
+        removeValueFromLocalStorage('avdelingEnhet');
+      }
+    }
+    setValgtAvdeling(valgtEnhet);
+  }
+};
 
 /**
  * HeaderWithErrorPanel
@@ -38,88 +78,23 @@ type TsProps = Readonly<{
  * Denne viser lenke tilbake til hovedsiden, nettside-navnet og NAV-ansatt navn.
  * I tillegg vil den vise potensielle feilmeldinger i ErrorMessagePanel.
  */
-class HeaderWithErrorPanel extends Component<TsProps> {
-  static propTypes = {
-    intl: intlShape.isRequired,
-    queryStrings: PropTypes.shape({
-      errormessage: PropTypes.string,
-      errorcode: PropTypes.string,
-    }).isRequired,
-    navAnsattName: PropTypes.string.isRequired,
-    removeErrorMessage: PropTypes.func.isRequired,
-    avdelinger: PropTypes.arrayOf(avdelingPropType),
-    setValgtAvdeling: PropTypes.func.isRequired,
-    valgtAvdelingEnhet: PropTypes.string,
-  };
+const HeaderWithErrorPanel: FunctionComponent<OwnProps> = ({
+  intl,
+  navAnsattName,
+  removeErrorMessage,
+  queryStrings,
+  avdelinger,
+  valgtAvdelingEnhet,
+  setValgtAvdeling,
+}) => {
+    const [erLenkePanelApent, setLenkePanelApent] = useState(false);
+    const [erAvdelingerPanelApent, setAvdelingerPanelApent] = useState(false);
 
-  static defaultProps = {
-    avdelinger: [],
-    valgtAvdelingEnhet: undefined,
-  };
+    const wrapperRef = useOutsideClickEvent(erLenkePanelApent, erAvdelingerPanelApent, setLenkePanelApent, setAvdelingerPanelApent);
 
-  state = {
-    erLenkePanelApent: false,
-    erAvdelingerPanelApent: false,
-  }
-
-  setAvdeling = () => {
-    const {
-      avdelinger,
-      setValgtAvdeling,
-      valgtAvdelingEnhet,
-    } = this.props;
-
-    if (avdelinger.length > 0 && !valgtAvdelingEnhet) {
-      let valgtEnhet = avdelinger[0].avdelingEnhet;
-      const lagretAvdelingEnhet = getValueFromLocalStorage('avdelingEnhet');
-      if (lagretAvdelingEnhet) {
-        if (avdelinger.some(a => a.avdelingEnhet === lagretAvdelingEnhet)) {
-          valgtEnhet = lagretAvdelingEnhet;
-        } else {
-          removeValueFromLocalStorage('avdelingEnhet');
-        }
-      }
-      setValgtAvdeling(valgtEnhet);
-    }
-  }
-
-  componentDidMount = () => {
-    this.setAvdeling();
-  }
-
-  componentDidUpdate = () => {
-    this.setAvdeling();
-  }
-
-  setValgtAvdeling = (avdelingEnhet: string) => {
-    const {
-      setValgtAvdeling,
-    } = this.props;
-    setValueInLocalStorage('avdelingEnhet', avdelingEnhet);
-    setValgtAvdeling(avdelingEnhet);
-  }
-
-  setLenkePanelApent = (erLenkePanelApent) => {
-    this.setState(oldState => ({ ...oldState, erLenkePanelApent }));
-  }
-
-  setAvdelingerPanelApent = (erAvdelingerPanelApent) => {
-    this.setState(oldState => ({ ...oldState, erAvdelingerPanelApent }));
-  }
-
-  render = () => {
-    const {
-      intl,
-      navAnsattName,
-      removeErrorMessage,
-      queryStrings,
-      avdelinger,
-      valgtAvdelingEnhet,
-    } = this.props;
-    const {
-      erLenkePanelApent,
-      erAvdelingerPanelApent,
-    } = this.state;
+    useEffect(() => {
+      setAvdeling(avdelinger, setValgtAvdeling, valgtAvdelingEnhet);
+    }, [avdelinger]);
 
     let brukerPanel = <UserPanel name={navAnsattName} />;
 
@@ -128,13 +103,15 @@ class HeaderWithErrorPanel extends Component<TsProps> {
         <Popover
           popperIsVisible={erAvdelingerPanelApent}
           renderArrowElement
-          customPopperStyles={{ top: '8px', zIndex: 1 }}
+          customPopperStyles={{ top: '11px', zIndex: 1 }}
+          arrowProps={{ style: { right: '17px' } }}
           popperProps={{
             children: () => (
               <BoxedListWithSelection
                 onClick={(index) => {
-                  this.setValgtAvdeling(avdelinger[index].avdelingEnhet);
-                  this.setAvdelingerPanelApent(false);
+                  setValueInLocalStorage('avdelingEnhet', avdelinger[index].avdelingEnhet);
+                  setValgtAvdeling(avdelinger[index].avdelingEnhet);
+                  setAvdelingerPanelApent(false);
                 }}
                 items={avdelinger.map(avdeling => ({
                   name: `${avdeling.avdelingEnhet} ${avdeling.navn}`,
@@ -146,6 +123,7 @@ class HeaderWithErrorPanel extends Component<TsProps> {
             positionFixed: true,
           }}
           referenceProps={{
+            // eslint-disable-next-line react/prop-types
             children: ({ ref }) => (
               <div ref={ref}>
                 <UserPanel
@@ -153,9 +131,9 @@ class HeaderWithErrorPanel extends Component<TsProps> {
                   unit={`${valgtAvdelingEnhet} ${avdelinger.find(a => a.avdelingEnhet === valgtAvdelingEnhet).navn}`}
                   onClick={() => {
                       if (erLenkePanelApent) {
-                        this.setLenkePanelApent(false);
+                        setLenkePanelApent(false);
                       }
-                      this.setAvdelingerPanelApent(!erAvdelingerPanelApent);
+                      setAvdelingerPanelApent(!erAvdelingerPanelApent);
                   }}
                 />
               </div>
@@ -167,14 +145,18 @@ class HeaderWithErrorPanel extends Component<TsProps> {
 
     return (
       <header className={styles.container}>
-        <Header title={intl.formatMessage({ id: 'Header.Foreldrepenger' })}>
-          <Popover
-            popperIsVisible={erLenkePanelApent}
-            renderArrowElement
-            customPopperStyles={{ top: '8px', zIndex: 1 }}
-            popperProps={{
+        <div ref={wrapperRef}>
+          <Header title={intl.formatMessage({ id: 'Header.Foreldrepenger' })}>
+            <Popover
+              popperIsVisible={erLenkePanelApent}
+              renderArrowElement
+              customPopperStyles={{ top: '11px', zIndex: 1 }}
+              popperProps={{
               children: () => (
                 <BoxedListWithLinks
+                  onClick={() => {
+                    setLenkePanelApent(false);
+                  }}
                   items={[{
                     name: intl.formatMessage({ id: 'Header.Rettskilde' }),
                     href: RETTSKILDE_URL,
@@ -189,28 +171,48 @@ class HeaderWithErrorPanel extends Component<TsProps> {
               placement: 'bottom-start',
               positionFixed: true,
             }}
-            referenceProps={{
+              referenceProps={{
+              // eslint-disable-next-line react/prop-types
               children: ({ ref }) => (
                 <div ref={ref}>
                   <SystemButton
                     onClick={() => {
                       if (erAvdelingerPanelApent) {
-                        this.setAvdelingerPanelApent(false);
+                        setAvdelingerPanelApent(false);
                       }
-                      this.setLenkePanelApent(!erLenkePanelApent);
+                      setLenkePanelApent(!erLenkePanelApent);
                     }}
                     isToggled={erLenkePanelApent}
                   />
                 </div>
               ),
             }}
-          />
-          {brukerPanel}
-        </Header>
+            />
+            {brukerPanel}
+          </Header>
+        </div>
         <ErrorMessagePanel queryStrings={queryStrings} removeErrorMessage={removeErrorMessage} />
       </header>
     );
-  }
-}
+  };
+
+HeaderWithErrorPanel.propTypes = {
+  intl: intlShape.isRequired,
+  queryStrings: PropTypes.shape({
+    errormessage: PropTypes.string,
+    errorcode: PropTypes.string,
+  }).isRequired,
+  navAnsattName: PropTypes.string.isRequired,
+  removeErrorMessage: PropTypes.func.isRequired,
+  avdelinger: PropTypes.arrayOf(avdelingPropType),
+  setValgtAvdeling: PropTypes.func.isRequired,
+  valgtAvdelingEnhet: PropTypes.string,
+};
+
+HeaderWithErrorPanel.defaultProps = {
+  avdelinger: [],
+  valgtAvdelingEnhet: undefined,
+};
+
 
 export default injectIntl(HeaderWithErrorPanel);

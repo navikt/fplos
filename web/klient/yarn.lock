@@ -729,20 +729,20 @@
     call-me-maybe "^1.0.1"
     glob-to-regexp "^0.3.0"
 
-"@navikt/boxed-list-with-links@1.0.2":
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/@navikt/boxed-list-with-links/-/boxed-list-with-links-1.0.2.tgz#2fe2c0dcdc60b06ab295f21af1b18d2fb70a400b"
-  integrity sha512-ScAZ3oEmA5XHbh14rKVUhmZM0+y0g2+ORPc3/NuMmMg647e+HHumN3vb+CEK2zxMGPasJrR2nwwMMRiqrswYNQ==
+"@navikt/boxed-list-with-links@1.0.4":
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/@navikt/boxed-list-with-links/-/boxed-list-with-links-1.0.4.tgz#e0550bd66b921ad3ed1e9367980e04c8e1001a60"
+  integrity sha512-yXZ5jg2By7QC/I4qssY40eyUuO1fuYpI7dM/LmFSh5gg4JFjPkdgZqdQ1HtxqD9Ku+GicTTXrh9/3Y/GPqBJTw==
   dependencies:
     "@navikt/boxed-list" "1.0.2"
     "@navikt/nap-bem-utils" "1.0.1"
     nav-frontend-typografi "^2.0.16"
     nav-frontend-typografi-style "^1.0.17"
 
-"@navikt/boxed-list-with-selection@1.0.0":
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/@navikt/boxed-list-with-selection/-/boxed-list-with-selection-1.0.0.tgz#6e00b1f17c71dc00a3004406cb82643fb643d2ac"
-  integrity sha512-IWEQHphCFLZSrYnkIre8GRz12ZYwMBIhge0MTUcB/0eoL0nuO2cwVMg9EBO6YfS8HjUCvnJsYXXUSG6CCZcJDw==
+"@navikt/boxed-list-with-selection@1.0.1":
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/@navikt/boxed-list-with-selection/-/boxed-list-with-selection-1.0.1.tgz#a36dc767125d21794daab6710e3c76d5b46e85d8"
+  integrity sha512-pKbm4gxWkyOoSUlr0/2eS4KT9RRdxkA15dexFXVTD7i8ocMOHHxW6jNLlK2/xXHHEiDuKRMZavOOv+77hTU4ow==
   dependencies:
     "@navikt/boxed-list" "1.0.2"
     "@navikt/nap-bem-utils" "1.0.1"
@@ -774,10 +774,10 @@
     nav-frontend-typografi-style "^1.0.17"
     prop-types "^15.7.2"
 
-"@navikt/nap-popover@1.0.3":
-  version "1.0.3"
-  resolved "https://registry.yarnpkg.com/@navikt/nap-popover/-/nap-popover-1.0.3.tgz#474638aa770e83c31d5758da50d76e984569d6ba"
-  integrity sha512-ptC5z98vGacwpMPPqhTwmJK+4AuYLgPfXLEcOuxP1h/BWPAuTVMQIbLzIc+9OXdj6d8I0kIK7DydJcg/JosW9A==
+"@navikt/nap-popover@1.0.4":
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/@navikt/nap-popover/-/nap-popover-1.0.4.tgz#329cfe1f334f24fe98ed88c78bc8f10639dab669"
+  integrity sha512-mKeuMUvusA2MlE5MbFsGaEMY17Xv2age76+MJlBOwqX2RaYNAEmrVzYGg8EHcAE0BLDoaXmhQEa0V+YCv1cGlg==
   dependencies:
     prop-types "^15.7.2"
     react-popper "^1.3.7"
@@ -5494,15 +5494,15 @@ nav-frontend-paneler@1.0.21:
   resolved "https://registry.yarnpkg.com/nav-frontend-paneler/-/nav-frontend-paneler-1.0.21.tgz#99b5f3e6c172f786c0e8371ef55f8b03304a5bf0"
   integrity sha512-11wZWPXG+T9rXd3HTCWqSE1zTF8rmEdPPlcOUMxBQB7jXGJvmVE6c8A39ILD97sUMoYSbSlwzMneDsQxaZYcxA==
 
-nav-frontend-skjema-style@1.0.48:
-  version "1.0.48"
-  resolved "https://registry.yarnpkg.com/nav-frontend-skjema-style/-/nav-frontend-skjema-style-1.0.48.tgz#35bd5fdb7fb2b6186478f6daa772f14f2b18bd1a"
-  integrity sha512-onY5C3CSfaJbunwJ/l2EBBDDzjVhfO0OGgaoQ7FZ4IhvD7L2j2O80eK44tHUlROawJD3nmPO9WChtswZOeVs7Q==
+nav-frontend-skjema-style@1.0.38:
+  version "1.0.38"
+  resolved "https://registry.yarnpkg.com/nav-frontend-skjema-style/-/nav-frontend-skjema-style-1.0.38.tgz#f12da979685c09854693d4cbd0e0d0a8ce089e9a"
+  integrity sha512-Lwx5U/eLgzJR0iymk7KKVJeKiN4SnXHHAbI/XmyAxa/r9in5yR2UrHfFjwyc05sugK17I6T/KB2CJWthzf6NAQ==
 
-nav-frontend-skjema@1.0.78:
-  version "1.0.78"
-  resolved "https://registry.yarnpkg.com/nav-frontend-skjema/-/nav-frontend-skjema-1.0.78.tgz#589cd264b94c79c67b7599bbf56e52ffebd40c74"
-  integrity sha512-pmgt5aiWZ8lzIY09XSDi5Qty5+qgMSjo2+waMUIkdXIfFwSHpqoaLu4/skFBXcVvUQ+A+HSZZJba7SKXUwoOMw==
+nav-frontend-skjema@1.0.49:
+  version "1.0.49"
+  resolved "https://registry.yarnpkg.com/nav-frontend-skjema/-/nav-frontend-skjema-1.0.49.tgz#1f5f9f6f911193f87a6725253a64412323daa3b1"
+  integrity sha512-HDE/R+n7ws1G9ek6Eo485HB1sEtXcD/TXv1GYQ/MlJCA57EV5wIYFO8kO/nn/doCZISl2WWIoBQmQgQJP7QCXw==
 
 nav-frontend-spinner-style@0.2.5:
   version "0.2.5"
