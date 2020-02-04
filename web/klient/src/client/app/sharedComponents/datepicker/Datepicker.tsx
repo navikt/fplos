@@ -67,7 +67,7 @@ class Datepicker extends Component <TsProps> {
       if (parsed.isValid()) {
         const { onChange } = this.props;
         onChange(parsed.format(DDMMYYYY_DATE_FORMAT));
-        // this.setState({ showCalendar: false });
+        this.setState({ showCalendar: false });
         this.inputRef.focus();
       }
     }
