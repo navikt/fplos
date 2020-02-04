@@ -54,7 +54,7 @@ export class OppgaveReservasjonEndringDatoModal extends Component<TsProps, TsSta
     }
 
     setValue = (e: any) => {
-        this.setState({ reserverTil: e.target.value.substr(0, 10) });
+        this.setState({ reserverTil: (e.target.value && e.target.value >= 10) ? e.target.value.substr(0, 10) : '' });
     }
 
     render = () => {
