@@ -83,7 +83,7 @@ public interface OppgaveRepository {
 
     List<Oppgave> sjekkOmOppgaverFortsattErTilgjengelige(List<Long> oppgaveIder);
 
-    Oppgave opprettOppgave(Oppgave build);
+    Oppgave opprettOppgave(Oppgave oppgave);
 
     TilbakekrevingOppgave opprettTilbakekrevingEgenskaper(TilbakekrevingOppgave egenskaper);
     /**

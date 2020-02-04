@@ -13,8 +13,9 @@ import no.nav.foreldrepenger.loslager.repository.OppgaveRepositoryImpl;
 import no.nav.fplos.foreldrepengerbehandling.Aksjonspunkt;
 import no.nav.fplos.foreldrepengerbehandling.BehandlingFpsak;
 import no.nav.fplos.foreldrepengerbehandling.ForeldrepengerBehandlingRestKlient;
+import no.nav.vedtak.felles.integrasjon.kafka.BehandlingProsessEventDto;
 import no.nav.vedtak.felles.integrasjon.kafka.EventHendelse;
-import no.nav.vedtak.felles.integrasjon.kafka.FpsakBehandlingProsessEventDto;
+import no.nav.vedtak.felles.integrasjon.kafka.Fagsystem;
 import org.junit.Rule;
 import org.junit.Test;
 
@@ -72,16 +73,14 @@ public class FpsakEventHandlerTest {
     private List<Aksjonspunkt> aksjonspunktKoderUtlandManuellDto = Collections.singletonList(aksjonspunktMedBegrunnelseDtoFra("6068","OPPR",aksjonspunktFrist, "BOSATT_UTLAND"));
 
     FpsakBehandlingProsessEventDto eventDrammenFra(Map<String, String> aksjonspunktmap){
-        return prosessBuilderFra(aksjonspunktmap)
-                //.medId("EKSTERN_ID")
+        return (FpsakBehandlingProsessEventDto) prosessBuilderFra(aksjonspunktmap)
                 .medEksternId(UUID.nameUUIDFromBytes(behandlingId.toString().getBytes()))
                 .medBehandlendeEnhet("4802")
                 .build();
     }
 
     private FpsakBehandlingProsessEventDto eventStordFra(Map<String, String> aksjonspunktmap){
-        return prosessBuilderFra(aksjonspunktmap)
-                //.medId("EKSTERN_ID")
+        return (FpsakBehandlingProsessEventDto) prosessBuilderFra(aksjonspunktmap)
                 .medEksternId(UUID.nameUUIDFromBytes(behandlingId.toString().getBytes()))
                 .medBehandlendeEnhet("4842")
                 .build();
@@ -106,6 +105,7 @@ public class FpsakEventHandlerTest {
 
     private FpsakBehandlingProsessEventDto.Builder prosessBuilderFra(Map<String, String> aksjonspunktmap){
         return FpsakBehandlingProsessEventDto.builder()
+                .medFagsystem(Fagsystem.FPSAK)
                 .medEksternId(UUID.nameUUIDFromBytes(behandlingId.toString().getBytes()))
                 .medBehandlingId(behandlingId)
                 .medSaksnummer("135701264")

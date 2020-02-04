@@ -25,7 +25,7 @@ import java.util.UUID;
 
 @ApplicationScoped
 @Transaction
-public class TilbakekrevingEventHandler extends FpEventHandler {
+public class TilbakekrevingEventHandler extends FpEventHandler<TilbakebetalingBehandlingProsessEventDto> {
     private static final Logger log = LoggerFactory.getLogger(TilbakekrevingEventHandler.class);
 
     public TilbakekrevingEventHandler() {
@@ -37,8 +37,8 @@ public class TilbakekrevingEventHandler extends FpEventHandler {
     }
 
     @Override
-    public void prosesser(BehandlingProsessEventDto bpeDto){
-        prosesser((TilbakebetalingBehandlingProsessEventDto)bpeDto, null,false);
+    public void prosesser(TilbakebetalingBehandlingProsessEventDto bpeDto){
+        prosesser(bpeDto, null,false);
     }
 
     public void prosesserFraAdmin(TilbakebetalingBehandlingProsessEventDto bpeDto, Reservasjon reservasjon){

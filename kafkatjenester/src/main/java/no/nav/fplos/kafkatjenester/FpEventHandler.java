@@ -1,6 +1,8 @@
 package no.nav.fplos.kafkatjenester;
 
 import no.nav.foreldrepenger.loslager.oppgave.AndreKriterierType;
+import no.nav.foreldrepenger.loslager.oppgave.Oppgave;
+import no.nav.foreldrepenger.loslager.oppgave.OppgaveEgenskap;
 import no.nav.foreldrepenger.loslager.oppgave.OppgaveEventLogg;
 import no.nav.foreldrepenger.loslager.oppgave.OppgaveEventType;
 import no.nav.foreldrepenger.loslager.oppgave.Reservasjon;
@@ -14,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public abstract class FpEventHandler {
+public abstract class FpEventHandler <T extends BehandlingProsessEventDto> {
 
     private static final Logger log = LoggerFactory.getLogger(FpEventHandler.class);
 
@@ -35,6 +37,14 @@ public abstract class FpEventHandler {
         oppgaveRepository.lagre(new OppgaveEventLogg(eksternId, oppgaveEventType, andreKriterierType, behandlendeEnhet));
     }
 
+    protected Oppgave opprettOppgave(Oppgave oppgave) {
+        return oppgaveRepository.opprettOppgave(oppgave);
+    }
+
+    protected void lagre(OppgaveEgenskap oppgaveEgenskap) {
+        oppgaveRepository.lagre(oppgaveEgenskap);
+    }
+
     protected void loggEvent(UUID eksternId, OppgaveEventType oppgaveEventType, AndreKriterierType andreKriterierType, String behandlendeEnhet, LocalDateTime frist) {
         oppgaveRepository.lagre(new OppgaveEventLogg(eksternId, oppgaveEventType, andreKriterierType, behandlendeEnhet, frist));
     }
@@ -43,18 +53,6 @@ public abstract class FpEventHandler {
         oppgaveRepository.avsluttOppgaveForEksternId(externId);
     }
 
-
-    /*protected void avsluttOppgaveOgLoggEventVedEksternId(BehandlingProsessEventDto bpeDto, OppgaveEventType eventType, LocalDateTime fristTid){
-        Optional<EksternIdentifikator> eksternId = getEksternIdentifikatorRespository().finnIdentifikator(bpeDto.getFagsystem(), bpeDto.getId());
-        if(eksternId.isPresent()) {
-            avsluttOppgaveForEksternId(eksternId.get().getId());
-            loggEvent(eksternId.get().getId(), eventType, AndreKriterierType.UKJENT, bpeDto.getBehandlendeEnhet(), fristTid);
-        } else {
-            String message = "Fant ikke eksternId som indikerer at der ikke finnes noen oppgave som kan avsluttes.";
-            log.warn( message +"Prosesshendelsen hadde ekstern referanse id {} for fagsystemet {}", bpeDto.getId(), bpeDto.getFagsystem() );
-            //throw new RuntimeException(message);
-        }
-    }*/
     protected void reserverOppgaveFraTidligereReservasjon(boolean reserverOppgave,
                                                         Reservasjon reservasjon,
                                                         Long oppgaveId) {
@@ -69,16 +67,5 @@ public abstract class FpEventHandler {
         } else return new ArrayList<>();
     }
 
-    /*
-        protected Oppgave gjenåpneOppgaveVedEksternId(String fagsystem, String eksternRefId) {
-            Optional<EksternIdentifikator> eksternId = eksternIdentifikatorRespository.finnIdentifikator(fagsystem, eksternRefId);
-            if(eksternId.isPresent()){
-                return oppgaveRepository.gjenåpneOppgaveForEksternId(eksternId.get().getId());
-            } else {
-                log.debug("Fant ikke eksternId som indikerer at der ikke finnes eksisterende oppgaver som kan gjenåpnes");
-                return null;
-            }
-        }
-    */
-    public abstract void prosesser(BehandlingProsessEventDto bpeDto);
+    public abstract void prosesser(T bpeDto);
 }
