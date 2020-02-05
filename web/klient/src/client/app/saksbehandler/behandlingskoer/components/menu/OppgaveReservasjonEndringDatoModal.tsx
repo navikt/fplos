@@ -12,10 +12,6 @@ import { dateAfterOrEqual, dateBeforeOrEqual, hasValidDate } from 'utils/validat
 import { Form } from 'react-final-form';
 import Panel from 'nav-frontend-paneler';
 
-const buildInitialValues = (reserverTil: string) => ({
-    reserverTil: (reserverTil && reserverTil.length >= 10) ? reserverTil.substr(0, 10) : '',
-});
-
 const thirtyDaysFromNow = () => {
     const result = new Date();
     result.setDate(new Date().getDate() + 30);
@@ -53,6 +49,10 @@ export class OppgaveReservasjonEndringDatoModal extends Component<TsProps, TsSta
         };
     }
 
+    buildInitialValues = (reserverTil: string) => ({
+        reserverTil: (reserverTil && reserverTil.length >= 10) ? reserverTil.substr(0, 10) : '',
+    });
+
     setValue = (e: any) => {
         this.setState({ reserverTil: (e.target.value && e.target.value.length >= 10) ? e.target.value.substr(0, 10) : '' });
     }
@@ -77,7 +77,7 @@ export class OppgaveReservasjonEndringDatoModal extends Component<TsProps, TsSta
             <Form
 
               onSubmit={() => undefined}
-              initialValues={buildInitialValues(reserverTilDefault)}
+              initialValues={this.buildInitialValues(reserverTilDefault)}
               render={() => (
                 <Panel className={styles.panel}>
 
