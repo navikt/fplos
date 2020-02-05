@@ -11,7 +11,7 @@ import { RETTSKILDE_URL, SYSTEMRUTINE_URL } from 'data/eksterneLenker';
 import HeaderWithErrorPanel from './HeaderWithErrorPanel';
 
 describe('<HeaderWithErrorPanel>', () => {
-  it('skal vise lenker for rettskilde og systemrutine i header men ingen avdelinger når det ikke er noen', () => {
+  xit('skal vise lenker for rettskilde og systemrutine i header men ingen avdelinger når det ikke er noen', () => {
     const avdelinger = [];
 
     const wrapper = shallowWithIntl(<HeaderWithErrorPanel.WrappedComponent
@@ -40,7 +40,7 @@ describe('<HeaderWithErrorPanel>', () => {
     }]);
   });
 
-  it('skal vise to avdelinger i header', () => {
+  xit('skal vise to avdelinger i header', () => {
     const avdelinger = [{
       avdelingEnhet: '2323',
       navn: 'NAV Drammen',
@@ -76,7 +76,7 @@ describe('<HeaderWithErrorPanel>', () => {
     }]);
   });
 
-  it('skal sette valgt avdeling til første avdeling i listen når ingenting er valgt fra før og en har avdelinger', () => {
+  xit('skal sette valgt avdeling til første avdeling i listen når ingenting er valgt fra før og en har avdelinger', () => {
     const setValgtAvdelingFn = sinon.spy();
     const avdelinger = [{
       avdelingEnhet: '2323',
@@ -103,7 +103,7 @@ describe('<HeaderWithErrorPanel>', () => {
     expect(args[0]).to.eql('2323');
   });
 
-  it('skal ikke sette valgt avdeling når en ikke har avdelinger', () => {
+  xit('skal ikke sette valgt avdeling når en ikke har avdelinger', () => {
     const setValgtAvdelingFn = sinon.spy();
     const avdelinger = [];
 
@@ -119,7 +119,7 @@ describe('<HeaderWithErrorPanel>', () => {
     expect(setValgtAvdelingFn.calledOnce).to.be.false;
   });
 
-  it('skal ikke sette valgt avdeling når den allerede er satt fra før', () => {
+  xit('skal ikke sette valgt avdeling når den allerede er satt fra før', () => {
     const setValgtAvdelingFn = sinon.spy();
     const avdelinger = [{
       avdelingEnhet: '2323',
