@@ -29,17 +29,17 @@
 
         <!-- Felles avhengigheter i prosjektet Disse skal ALLTID være en
             RELEASE-avhengighet UNNTAK: feature-brancher og lokalt -->
-        <fp-kontrakter.version>5.1_20200114104934_66a9974</fp-kontrakter.version>
-        <tjenestespesifikasjoner.version>1.2019.12.13-19.12-aea1d1642d8a</tjenestespesifikasjoner.version>
-        <felles.version>1.4.2-20200113113007-04ca61b</felles.version>
+        <fp-kontrakter.version>5.1-20200130145225-c31a20e</fp-kontrakter.version>
+        <tjenestespesifikasjoner.version>1.2019.12.18-12.22-ce897c4eb2c1</tjenestespesifikasjoner.version>
+        <felles.version>1.5.0-20200123060955-7e89e24</felles.version>
 
         <!-- NAV -->
         <organisasjon-ressurs-enhet.version>1.0.0</organisasjon-ressurs-enhet.version>
 
         <!-- Eksterne -->
-        <assertj.version>3.14.0</assertj.version>
+        <assertj.version>3.15.0</assertj.version>
         <cxf.version>3.3.5</cxf.version>
-        <woodstox.version>6.0.2</woodstox.version>
+        <woodstox.version>6.0.3</woodstox.version>
         <surefire.version>2.22.2</surefire.version>
         <asm.version>6.2.1</asm.version>
 
@@ -51,7 +51,7 @@
         <logstash.version>6.3</logstash.version>
         <mockito.version>3.2.4</mockito.version>
         <metrics.version>4.1.2</metrics.version>
-        <prometheus.version>0.8.0</prometheus.version>
+        <prometheus.version>0.8.1</prometheus.version>
         <swagger.version>2.1.1</swagger.version>
         <!-- Transitive avh. versjoner for å sikre unikhet (enforcer dependencyConvergence). Skal ikke benyttes direkte av vår egen kode. -->
         <jasypt.version>1.9.3</jasypt.version>
@@ -61,8 +61,6 @@
         <joda-time.version>2.10.5</joda-time.version>
 
         <owaspencoder.version>1.2.2</owaspencoder.version>
-        <spring.version>5.2.0.RELEASE</spring.version>
-        <spring-boot.version>2.2.1.RELEASE</spring-boot.version>
         <!-- Dupliserte properties fra vl-felles. Pass på å oppdatere begge steder. Disse trengs for definisjon av videre plugins -->
         <!-- <flyway.version>5.1.4</flyway.version> FIXME: støtter ikke oracle 11, se på hva som skal til for å kjøre på 12 -->
         <flyway.version>4.2.0</flyway.version>
@@ -293,7 +291,7 @@
             <dependency>
                 <groupId>org.apache.kafka</groupId>
                 <artifactId>kafka-clients</artifactId>
-                <version>2.3.1</version>
+                <version>2.4.0</version>
             </dependency>
 
             <dependency>
@@ -515,13 +513,13 @@
             <dependency>
                 <groupId>org.junit.platform</groupId>
                 <artifactId>junit-platform-launcher</artifactId>
-                <version>1.5.2</version>
+                <version>1.6.0</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>org.junit.platform</groupId>
                 <artifactId>junit-platform-runner</artifactId>
-                <version>1.1.0</version>
+                <version>1.6.0</version>
                 <scope>test</scope>
             </dependency>
 
@@ -640,7 +638,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
-                    <version>3.8.0</version>
+                    <version>3.8.1</version>
                     <configuration>
                         <source>${java.version}</source>
                         <target>${java.version}</target>
@@ -731,7 +729,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-remote-resources-plugin</artifactId>
-                    <version>1.6.0</version>
+                    <version>1.7.0</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -746,7 +744,7 @@
                 <plugin>
                     <groupId>org.codehaus.mojo</groupId>
                     <artifactId>flatten-maven-plugin</artifactId>
-                    <version>1.1.0</version>
+                    <version>1.2.1</version>
                 </plugin>
                 <plugin>
                     <groupId>org.jacoco</groupId>
@@ -816,7 +814,7 @@
             <plugin>
                 <groupId>org.jboss.jandex</groupId>
                 <artifactId>jandex-maven-plugin</artifactId>
-                <version>1.0.6</version>
+                <version>1.0.7</version>
                 <executions>
                     <execution>
                         <id>make-index</id>

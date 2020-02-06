@@ -14,6 +14,7 @@ import no.nav.fplos.foreldrepengerbehandling.BehandlingFpsak;
 import no.nav.fplos.foreldrepengerbehandling.ForeldrepengerBehandlingRestKlient;
 import no.nav.fplos.kafkatjenester.FpsakEventHandler;
 import no.nav.fplos.kafkatjenester.KafkaReader;
+import no.nav.fplos.kafkatjenester.OppgaveEgenskapHandler;
 import no.nav.fplos.kafkatjenester.TilbakekrevingEventHandler;
 import org.junit.Rule;
 import org.junit.Test;
@@ -36,8 +37,9 @@ public class AdminTjenesteImplTest {
     private final EntityManager entityManager = repoRule.getEntityManager();
     private final OppgaveRepository oppgaveRepository = new OppgaveRepositoryImpl(entityManager);
     private final AdminRepository adminRepository = new AdminRepositoryImpl(entityManager);
+    private final OppgaveEgenskapHandler oppgaveEgenskapHandler = new OppgaveEgenskapHandler(oppgaveRepository);
     private ForeldrepengerBehandlingRestKlient foreldrepengerBehandlingRestKlient = mock(ForeldrepengerBehandlingRestKlient.class);
-    private FpsakEventHandler fpsakEventHandler = new FpsakEventHandler(oppgaveRepository, foreldrepengerBehandlingRestKlient);
+    private FpsakEventHandler fpsakEventHandler = new FpsakEventHandler(oppgaveRepository, foreldrepengerBehandlingRestKlient, oppgaveEgenskapHandler);
     private TilbakekrevingEventHandler tilbakekrevingEventHandler = new TilbakekrevingEventHandler(oppgaveRepository);
     private KafkaReader kafkaReader = mock(KafkaReader.class);
     private AdminTjenesteImpl adminTjeneste = new AdminTjenesteImpl(adminRepository, foreldrepengerBehandlingRestKlient, fpsakEventHandler, tilbakekrevingEventHandler, kafkaReader);

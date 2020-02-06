@@ -9,20 +9,14 @@
   "minReplica": "1",
   "maxReplica": "2",
   "env": {
-    "FASIT_ENVIRONMENT_NAME": "t4",
-    "LOADBALANCER_FQDN": "app-t4.adeo.no",
+    "LOADBALANCER_URL": "https://app-t4.adeo.no",
     "FPSAK_FRONTEND_URL":  "https://app-t4.adeo.no/fpsak",
     "SECURITYTOKENSERVICE_URL":  "https://sts-t4.test.local/SecurityTokenServiceProvider/",
-    "SERVICEGATEWAY_URL":  "https://service-gw-t4.test.local",
     "ABAC_PDP_ENDPOINT_URL":  "https://wasapp-t4.adeo.no/asm-pdp/authorize",
-    "KAFKA_AKSJONSPUNKTHENDELSE_TOPIC":  "privat-foreldrepenger-aksjonspunkthendelse-t4",
-    "KAFKA_AKSJONSPUNKTHENDELSE_CLIENT_ID":  "KP-privat-foreldrepenger-aksjonspunkthendelse-t4",
-    "KAFKA_AKSJONSPUNKTHENDELSE_SCHEMA_REGISTRY_URL":  "https://kafka-test-schema-registry.nais.preprod.local",
-    "KAFKA_AKSJONSPUNKTHENDELSE_GROUP_ID":  "KC-privat-foreldrepenger-aksjonspunkthendelse-t4",
     "OIDC_OPENAM_JWKSURL":  "https://isso-t.adeo.no:443/isso/oauth2/connect/jwk_uri",
     "OIDC_OPENAM_ISSUERURL":  "https://isso-t.adeo.no:443/isso/oauth2",
-    "OIDC_OPENAM_AGENTNAME":  "fplos-t4",
-    "OIDC_OPENAM_HOSTURL":  "https://isso-t.adeo.no:443/isso/oauth2",
+    "OPENIDCONNECT_USERNAME":  "fplos-t4",
+    "OPENIDCONNECT_ISSOHOST":  "https://isso-t.adeo.no:443/isso/oauth2",
     "PERSON_V3_URL":  "https://wasapp-t4.adeo.no/tpsws/ws/Person/v3",
     "ORGANISASJON_V4_URL":  "https://modapp-t4.adeo.no/ereg/ws/OrganisasjonService/v4",
     "ARBEIDSFORDELING_V1_URL":  "https://app-t1.adeo.no/norg2/ws/Arbeidsfordeling/v1",
@@ -33,8 +27,8 @@
     "LDAP_DOMAIN":  "TEST.LOCAL",
     "LDAP_BASEDN":  "dc=test,dc=local",
     "LDAP_URL":  "ldaps://ldapgw.test.local",
-    "BOOTSTRAP_SERVERS":  "d26apvl00159.test.local:8443,d26apvl00160.test.local:8443,d26apvl00161.test.local:8443",
-    "KAFKA_SCHEMA_REGISTRY_URL":  "https://kafka-schema-registry.nais.preprod.local",
-    "KAFKA_BROKERS_URL":  "d26apvl00159.test.local:8443,d26apvl00160.test.local:8443,d26apvl00161.test.local:8443"
+    "KAFKA_AKSJONSPUNKTHENDELSE_TOPIC":  "privat-foreldrepenger-aksjonspunkthendelse-t4",
+    "KAFKA_AKSJONSPUNKTHENDELSE_GROUP_ID":  "KC-privat-foreldrepenger-aksjonspunkthendelse",
+    "KAFKA_BROKERS":  "d26apvl00159.test.local:8443,d26apvl00160.test.local:8443,d26apvl00161.test.local:8443"
   }
 }

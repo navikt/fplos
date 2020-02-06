@@ -33,12 +33,11 @@
     <listener>
         <listener-class>no.nav.foreldrepenger.los.web.app.tjenester.ApplicationContextListener</listener-class>
     </listener>
-    
+
     <security-constraint>
         <web-resource-collection>
             <web-resource-name>Ubeskyttet</web-resource-name>
             <url-pattern>/cb</url-pattern>
-            <url-pattern>/uuid/oppdater</url-pattern>
             <url-pattern>/internal/health/isAlive</url-pattern>
             <url-pattern>/internal/health/isReady</url-pattern>
             <url-pattern>/internal/selftest</url-pattern>

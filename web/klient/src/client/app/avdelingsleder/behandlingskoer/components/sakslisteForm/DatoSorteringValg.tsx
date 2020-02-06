@@ -5,7 +5,6 @@ import { Undertekst } from 'nav-frontend-typografi';
 import DateLabel from 'sharedComponents/DateLabel';
 import { FormattedMessage } from 'react-intl';
 import React from 'react';
-import { KoSorteringType } from 'kodeverk/KoSorteringTsType';
 import {
     InputField, CheckboxField, DatepickerField,
 } from 'form/FinalFields';

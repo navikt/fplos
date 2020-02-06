@@ -65,3 +65,4 @@ public class BehandlingIdDto implements AbacDto {
         return AbacDataAttributter.opprett();
     }
 }
+

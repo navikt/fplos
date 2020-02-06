@@ -24,7 +24,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.TimeZone;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -49,10 +48,6 @@ public class OppgaveRepositoryImplTest {
     private static UUID uuid3 = UUID.nameUUIDFromBytes("uuid_3".getBytes());
     private static UUID uuid4 = UUID.nameUUIDFromBytes("uuid_4".getBytes());
     private static String AVDELING_ANNET_ENHET = "4000";
-
-    static {
-        TimeZone.setDefault(TimeZone.getTimeZone("Europe/Oslo"));
-    }
 
     @Before
     public void setup(){

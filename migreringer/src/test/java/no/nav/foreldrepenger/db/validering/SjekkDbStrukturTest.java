@@ -14,7 +14,6 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.util.TimeZone;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -31,7 +30,6 @@ public class SjekkDbStrukturTest {
     @BeforeClass
     public static void setup() throws FileNotFoundException {
         List<DBConnectionProperties> connectionProperties = DatasourceConfiguration.UNIT_TEST.get();
-        TimeZone.setDefault(TimeZone.getTimeZone("Europe/Oslo"));
         DBConnectionProperties dbconp = DBConnectionProperties.finnDefault(connectionProperties).get();
         ds = ConnectionHandler.opprettFra(dbconp);
         schema = dbconp.getSchema();

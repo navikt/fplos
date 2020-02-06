@@ -44,7 +44,7 @@ public class JettyServer extends AbstractJettyServer {
     @Override
     protected void konfigurerMiljø() throws Exception {
         dataSourceKonfig = new DataSourceKonfig();
-        hacks4Nais();
+        //hacks4Nais();
     }
 
     private void hacks4Nais() {

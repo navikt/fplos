@@ -7,11 +7,10 @@ import no.nav.foreldrepenger.loslager.oppgave.TilbakekrevingOppgave;
 import no.nav.foreldrepenger.loslager.repository.AdminRepository;
 import no.nav.fplos.foreldrepengerbehandling.BehandlingFpsak;
 import no.nav.fplos.foreldrepengerbehandling.ForeldrepengerBehandlingRestKlient;
-import no.nav.fplos.kafkatjenester.Fagsystem;
+import no.nav.fplos.kafkatjenester.FpsakBehandlingProsessEventDto;
 import no.nav.fplos.kafkatjenester.FpsakEventHandler;
 import no.nav.fplos.kafkatjenester.KafkaReader;
 import no.nav.fplos.kafkatjenester.TilbakekrevingEventHandler;
-import no.nav.vedtak.felles.integrasjon.kafka.FpsakBehandlingProsessEventDto;
 import no.nav.vedtak.felles.integrasjon.kafka.TilbakebetalingBehandlingProsessEventDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -83,22 +82,6 @@ public class AdminTjenesteImpl implements AdminTjeneste {
     }
 
     @Override
-    public int oppdaterAktiveOppgaver() {
-        List<Oppgave> aktiveOppgaver = adminRepository.hentAlleAktiveOppgaver();
-        aktiveOppgaver.stream().forEach(oppgave -> {
-            switch(Fagsystem.valueOf(oppgave.getSystem())){
-                case FPSAK :
-                    fpsakEventHandler.prosesserFraAdmin(mapTilBehandlingProsessEventDto(oppgave.getEksternId()), oppgave.getReservasjon());
-                    break;
-                case FPTILBAKE :
-                    tilbakekrevingEventHandler.prosesserFraAdmin(mapTilTilbakekrevingBehandlingProsessEventDto(oppgave.getEksternId()), oppgave.getReservasjon());
-                    break;
-            }
-        });
-        return aktiveOppgaver.size();
-    }
-
-    @Override
     public int prosesserAlleMeldingerFraFeillogg() {
         List<EventmottakFeillogg> feillogg = adminRepository.hentAlleMeldingerFraFeillogg();
         for (EventmottakFeillogg innslag : feillogg) {
@@ -150,7 +133,7 @@ public class AdminTjenesteImpl implements AdminTjeneste {
 
         Map<String, String> aksjonspunktKoderMedStatusListe = new HashMap<>();
 
-        return TilbakebetalingBehandlingProsessEventDto.tilbakebetalingBuilder()
+        return TilbakebetalingBehandlingProsessEventDto.builder()
                 .medSaksnummer(eksisterendeOppgave.getFagsakSaksnummer().toString())
                 .medAktørId(eksisterendeOppgave.getAktorId().toString())
                 .medYtelseTypeKode(eksisterendeOppgave.getFagsakYtelseType().getKode())

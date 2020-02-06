@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public abstract class FpEventHandler {
+public abstract class FpEventHandler <T extends BehandlingProsessEventDto> {
 
     private static final Logger log = LoggerFactory.getLogger(FpEventHandler.class);
 
@@ -34,6 +34,10 @@ public abstract class FpEventHandler {
 
     protected void loggEvent(UUID eksternId, OppgaveEventType oppgaveEventType, AndreKriterierType andreKriterierType, String behandlendeEnhet) {
         oppgaveRepository.lagre(new OppgaveEventLogg(eksternId, oppgaveEventType, andreKriterierType, behandlendeEnhet));
+    }
+
+    protected Oppgave opprettOppgave(Oppgave oppgave) {
+        return oppgaveRepository.opprettOppgave(oppgave);
     }
 
     protected void loggEvent(UUID eksternId, OppgaveEventType oppgaveEventType, AndreKriterierType andreKriterierType, String behandlendeEnhet, LocalDateTime frist) {
@@ -66,7 +70,7 @@ public abstract class FpEventHandler {
                                                         Reservasjon reservasjon,
                                                         Long oppgaveId) {
         if (reserverOppgave && reservasjon != null) {
-            getOppgaveRepository().reserverOppgaveFraTidligereReservasjon(oppgaveId, reservasjon);
+            oppgaveRepository.reserverOppgaveFraTidligereReservasjon(oppgaveId, reservasjon);
         }
     }
 
@@ -80,5 +84,5 @@ public abstract class FpEventHandler {
         return oppgaveRepository.gjenåpneOppgaveForEksternId(eksternId);
     }
 
-    public abstract void prosesser(BehandlingProsessEventDto bpeDto);
+    public abstract void prosesser(T bpeDto);
 }

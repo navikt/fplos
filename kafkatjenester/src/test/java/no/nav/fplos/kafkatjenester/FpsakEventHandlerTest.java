@@ -14,7 +14,7 @@ import no.nav.fplos.foreldrepengerbehandling.Aksjonspunkt;
 import no.nav.fplos.foreldrepengerbehandling.BehandlingFpsak;
 import no.nav.fplos.foreldrepengerbehandling.ForeldrepengerBehandlingRestKlient;
 import no.nav.vedtak.felles.integrasjon.kafka.EventHendelse;
-import no.nav.vedtak.felles.integrasjon.kafka.FpsakBehandlingProsessEventDto;
+import no.nav.vedtak.felles.integrasjon.kafka.Fagsystem;
 import org.junit.Rule;
 import org.junit.Test;
 
@@ -25,7 +25,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.TimeZone;
 import java.util.UUID;
 
 import static no.nav.fplos.kafkatjenester.TestUtil.behandlingBuilderMal;
@@ -40,8 +39,9 @@ public class FpsakEventHandlerTest {
     public UnittestRepositoryRule repoRule = new UnittestRepositoryRule();
     private EntityManager entityManager = repoRule.getEntityManager();
     private OppgaveRepository oppgaveRepository = new OppgaveRepositoryImpl(entityManager);
+    private OppgaveEgenskapHandler oppgaveEgenskapHandler = new OppgaveEgenskapHandler(oppgaveRepository);
     private ForeldrepengerBehandlingRestKlient foreldrepengerBehandlingRestKlient = mock(ForeldrepengerBehandlingRestKlient.class);
-    private FpsakEventHandler fpsakEventHandler = new FpsakEventHandler(oppgaveRepository, foreldrepengerBehandlingRestKlient);
+    private FpsakEventHandler fpsakEventHandler = new FpsakEventHandler(oppgaveRepository, foreldrepengerBehandlingRestKlient, oppgaveEgenskapHandler);
     private static Long behandlingId = 1073051L;
     private static UUID uuid = UUID.nameUUIDFromBytes("TEST".getBytes());//UUID.fromString("027961C0-1DA9-1D46-AFAA-0BBAE024758C");
     private static String fagsystem = "FPSAK";
@@ -73,20 +73,16 @@ public class FpsakEventHandlerTest {
     private List<Aksjonspunkt> aksjonspunktKoderUtlandAutomatiskDto = Collections.singletonList(aksjonspunktMedBegrunnelseDtoFra("5068","OPPR",aksjonspunktFrist,"BOSATT_UTLAND"));
     private List<Aksjonspunkt> aksjonspunktKoderUtlandManuellDto = Collections.singletonList(aksjonspunktMedBegrunnelseDtoFra("6068","OPPR",aksjonspunktFrist, "BOSATT_UTLAND"));
 
-    static {
-        TimeZone.setDefault(TimeZone.getTimeZone("Europe/Oslo"));
-    }
-
     FpsakBehandlingProsessEventDto eventDrammenFra(Map<String, String> aksjonspunktmap){
-        return prosessBuilderFra(aksjonspunktmap)
-                .medEksternId(uuid)
+        return (FpsakBehandlingProsessEventDto) prosessBuilderFra(aksjonspunktmap)
+                .medEksternId(UUID.nameUUIDFromBytes(behandlingId.toString().getBytes()))
                 .medBehandlendeEnhet("4802")
                 .build();
     }
 
     private FpsakBehandlingProsessEventDto eventStordFra(Map<String, String> aksjonspunktmap){
-        return prosessBuilderFra(aksjonspunktmap)
-                .medEksternId(uuid)
+        return (FpsakBehandlingProsessEventDto) prosessBuilderFra(aksjonspunktmap)
+                .medEksternId(UUID.nameUUIDFromBytes(behandlingId.toString().getBytes()))
                 .medBehandlendeEnhet("4842")
                 .build();
     }
@@ -110,6 +106,8 @@ public class FpsakEventHandlerTest {
 
     private FpsakBehandlingProsessEventDto.Builder prosessBuilderFra(Map<String, String> aksjonspunktmap){
         return FpsakBehandlingProsessEventDto.builder()
+                .medFagsystem(Fagsystem.FPSAK)
+                .medEksternId(UUID.nameUUIDFromBytes(behandlingId.toString().getBytes()))
                 .medEksternId(uuid)
                 .medBehandlingId(behandlingId)
                 .medSaksnummer("135701264")

@@ -19,8 +19,6 @@ public interface AdminTjeneste {
 
     void oppdaterOppgave(UUID uuid);
 
-    int oppdaterAktiveOppgaver();
-
     int prosesserAlleMeldingerFraFeillogg();
 
     List<Oppgave> hentAlleOppgaverForBehandling(UUID uuid);

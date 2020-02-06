@@ -5,7 +5,6 @@ import no.nav.foreldrepenger.loslager.oppgave.BehandlingStatus;
 import no.nav.foreldrepenger.loslager.oppgave.BehandlingType;
 import no.nav.foreldrepenger.loslager.oppgave.FagsakYtelseType;
 import no.nav.foreldrepenger.loslager.oppgave.Oppgave;
-import no.nav.foreldrepenger.loslager.oppgave.OppgaveEgenskap;
 import no.nav.foreldrepenger.loslager.oppgave.OppgaveEventLogg;
 import no.nav.foreldrepenger.loslager.oppgave.OppgaveEventType;
 import no.nav.foreldrepenger.loslager.oppgave.Reservasjon;
@@ -16,7 +15,6 @@ import no.nav.fplos.foreldrepengerbehandling.ForeldrepengerBehandlingRestKlient;
 import no.nav.fplos.kafkatjenester.eventresultat.EventResultat;
 import no.nav.fplos.kafkatjenester.eventresultat.FpsakEventMapper;
 import no.nav.vedtak.felles.integrasjon.kafka.BehandlingProsessEventDto;
-import no.nav.vedtak.felles.integrasjon.kafka.FpsakBehandlingProsessEventDto;
 import no.nav.vedtak.felles.jpa.Transaction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,10 +33,11 @@ import static no.nav.fplos.kafkatjenester.util.StreamUtil.safeStream;
 
 @ApplicationScoped
 @Transaction
-public class FpsakEventHandler extends FpEventHandler {
+public class FpsakEventHandler extends FpEventHandler<FpsakBehandlingProsessEventDto> {
 
     private static final Logger log = LoggerFactory.getLogger(FpsakEventHandler.class);
     private ForeldrepengerBehandlingRestKlient foreldrePengerBehandlingRestKlient;
+    private OppgaveEgenskapHandler oppgaveEgenskapHandler;
 
     public FpsakEventHandler() {
         //to make proxyable
@@ -46,18 +45,20 @@ public class FpsakEventHandler extends FpEventHandler {
 
     @Inject
     public FpsakEventHandler(OppgaveRepository oppgaveRepository,
-                             ForeldrepengerBehandlingRestKlient foreldrePengerBehandlingRestKlient){
+                             ForeldrepengerBehandlingRestKlient foreldrePengerBehandlingRestKlient,
+                             OppgaveEgenskapHandler oppgaveEgenskapHandler) {
         super(oppgaveRepository);
         this.foreldrePengerBehandlingRestKlient = foreldrePengerBehandlingRestKlient;
+        this.oppgaveEgenskapHandler = oppgaveEgenskapHandler;
     }
 
     @Override
-    public void prosesser(BehandlingProsessEventDto bpeDto) {
-        prosesser((FpsakBehandlingProsessEventDto)bpeDto, null,false);
+    public void prosesser(FpsakBehandlingProsessEventDto bpeDto) {
+        prosesser(bpeDto, null,false);
     }
 
-    public void prosesserFraAdmin(BehandlingProsessEventDto bpeDto, Reservasjon reservasjon) {
-        prosesser((FpsakBehandlingProsessEventDto)bpeDto, reservasjon, true);
+    public void prosesserFraAdmin(FpsakBehandlingProsessEventDto bpeDto, Reservasjon reservasjon) {
+        prosesser(bpeDto, reservasjon, true);
     }
 
     private void prosesser(FpsakBehandlingProsessEventDto bpeDto, Reservasjon reservasjon, boolean prosesserFraAdmin) {
@@ -91,77 +92,33 @@ public class FpsakEventHandler extends FpEventHandler {
                 break;
             case OPPRETT_OPPGAVE:
                 avsluttOppgaveHvisÅpen(behandlingId, eksternId, tidligereEventer, bpeDto.getBehandlendeEnhet());
-                Oppgave oppgave = opprettOppgave(eksternId, bpeDto, behandling, prosesserFraAdmin);
+                Oppgave oppgave = nyOppgave(eksternId, bpeDto, behandling, prosesserFraAdmin);
                 reserverOppgaveFraTidligereReservasjon(prosesserFraAdmin, reservasjon, oppgave.getId());
                 log.info("Oppretter oppgave");
                 loggEvent(behandlingId, oppgave.getEksternId(), OppgaveEventType.OPPRETTET, null, bpeDto.getBehandlendeEnhet());
-                opprettOppgaveEgenskaper(oppgave, egenskapFinner);
+                oppgaveEgenskapHandler.håndterOppgaveEgenskaper(oppgave, egenskapFinner);
                 break;
             case OPPRETT_BESLUTTER_OPPGAVE:
                 avsluttOppgaveHvisÅpen(behandlingId, eksternId, tidligereEventer, bpeDto.getBehandlendeEnhet());
-                Oppgave beslutterOppgave = opprettOppgave(eksternId, bpeDto, behandling, prosesserFraAdmin);
+                Oppgave beslutterOppgave = nyOppgave(eksternId, bpeDto, behandling, prosesserFraAdmin);
                 reserverOppgaveFraTidligereReservasjon(prosesserFraAdmin, reservasjon, beslutterOppgave.getId());
                 loggEvent(behandlingId, beslutterOppgave.getEksternId(), OppgaveEventType.OPPRETTET, AndreKriterierType.TIL_BESLUTTER, bpeDto.getBehandlendeEnhet());
-                opprettOppgaveEgenskaper(beslutterOppgave, egenskapFinner);
+                oppgaveEgenskapHandler.håndterOppgaveEgenskaper(beslutterOppgave, egenskapFinner);
                 break;
             case OPPRETT_PAPIRSØKNAD_OPPGAVE:
                 avsluttOppgaveHvisÅpen(behandlingId, eksternId, tidligereEventer, bpeDto.getBehandlendeEnhet());
-                Oppgave papirsøknadOppgave = opprettOppgave(eksternId, bpeDto, behandling, prosesserFraAdmin);
+                Oppgave papirsøknadOppgave = nyOppgave(eksternId, bpeDto, behandling, prosesserFraAdmin);
                 reserverOppgaveFraTidligereReservasjon(prosesserFraAdmin, reservasjon, papirsøknadOppgave.getId());
                 loggEvent(behandlingId, papirsøknadOppgave.getEksternId(), OppgaveEventType.OPPRETTET, AndreKriterierType.PAPIRSØKNAD, bpeDto.getBehandlendeEnhet());
-                opprettOppgaveEgenskaper(papirsøknadOppgave, egenskapFinner);
+                oppgaveEgenskapHandler.håndterOppgaveEgenskaper(papirsøknadOppgave, egenskapFinner);
                 break;
             case GJENÅPNE_OPPGAVE:
                 Oppgave gjenåpneOppgave = gjenåpneOppgaveVedEksternId(eksternId);
                 log.info("Gjenåpner oppgave");
                 loggEvent(behandlingId, gjenåpneOppgave.getEksternId(), OppgaveEventType.GJENAPNET, null, bpeDto.getBehandlendeEnhet());
-                opprettOppgaveEgenskaper(gjenåpneOppgave, egenskapFinner);
+                oppgaveEgenskapHandler.håndterOppgaveEgenskaper(gjenåpneOppgave, egenskapFinner);
                 break;
         }
-    }
-
-    private void opprettOppgaveEgenskaper(Oppgave oppgave, OppgaveEgenskapFinner event) {
-        var andreKriterier = event.getAndreKriterier();
-        log.info("Legger på oppgaveegenskaper {}", andreKriterier);
-        List<OppgaveEgenskap> eksisterende = hentEksisterendeEgenskaper(oppgave);
-
-        // deaktiver uaktuelle eksisterende
-        eksisterende.stream()
-                .filter(akt -> !andreKriterier.contains(akt.getAndreKriterierType()))
-                .forEach(oe -> {
-                    oe.deaktiverOppgaveEgenskap();
-                    getOppgaveRepository().lagre(oe);
-                });
-
-        // aktiver aktuelle eksisterende
-        eksisterende.stream()
-                .filter(akt -> andreKriterier.contains(akt.getAndreKriterierType()))
-                .forEach(oe -> aktiverEksisterendeEgenskaper(oe, event.getSaksbehandlerForTotrinn()));
-
-        // aktiver nye
-        andreKriterier.stream()
-                .filter(akt -> !eksisterende.stream()
-                        .map(OppgaveEgenskap::getAndreKriterierType)
-                        .equals(akt))
-                .forEach(k -> opprettOppgaveEgenskaper(oppgave, k, event.getSaksbehandlerForTotrinn()));
-    }
-
-    private void opprettOppgaveEgenskaper(Oppgave oppgave, AndreKriterierType kritere, String saksbehandler) {
-        if (kritere.equals(AndreKriterierType.TIL_BESLUTTER)) {
-            getOppgaveRepository().lagre(new OppgaveEgenskap(oppgave, kritere, saksbehandler));
-        } else {
-            getOppgaveRepository().lagre(new OppgaveEgenskap(oppgave, kritere));
-        }
-    }
-
-    private void aktiverEksisterendeEgenskaper(OppgaveEgenskap oppgaveEgenskap, String saksbehandler) {
-        if (oppgaveEgenskap.getAndreKriterierType().equals(AndreKriterierType.TIL_BESLUTTER)) {
-            oppgaveEgenskap.aktiverOppgaveEgenskap();
-            oppgaveEgenskap.setSisteSaksbehandlerForTotrinn(saksbehandler);
-        } else {
-            oppgaveEgenskap.aktiverOppgaveEgenskap();
-        }
-        getOppgaveRepository().lagre(oppgaveEgenskap);
     }
 
     /**
@@ -205,7 +162,7 @@ public class FpsakEventHandler extends FpEventHandler {
     }
 
     /**
-     * @deprecated Bruk loggEvent(UUID, OppgaveEventType, AndreKriterierType, String) og anvend eksternId
+     * @deprecated Bruk loggEvent(Long, OppgaveEventType, AndreKriterierType, String) og anvend eksternId
      */
     @Deprecated(since = "14.11.2019")
     private void loggEvent(Long behandlingId, UUID eksternId, OppgaveEventType oppgaveEventType, AndreKriterierType andreKriterierType, String behandlendeEnhet) {
@@ -222,9 +179,8 @@ public class FpsakEventHandler extends FpEventHandler {
         getOppgaveRepository().lagre(new OppgaveEventLogg(eksternId, oppgaveEventType, andreKriterierType, behandlendeEnhet, frist, behandlingId));
     }
 
-    private Oppgave opprettOppgave(UUID eksternId, FpsakBehandlingProsessEventDto bpeDto, BehandlingFpsak fraFpsak, boolean prosesserFraAdmin) {
-        //EksternIdentifikator eksternId = getEksternIdentifikatorRespository().finnEllerOpprettEksternId(bpeDto.getFagsystem(),bpeDto.getBehandlingId().toString());
-        return getOppgaveRepository().opprettOppgave(Oppgave.builder()
+    private Oppgave nyOppgave(UUID eksternId, BehandlingProsessEventDto bpeDto, BehandlingFpsak fraFpsak, boolean prosesserFraAdmin) {
+        return opprettOppgave(Oppgave.builder()
                 .medSystem(bpeDto.getFagsystem().name())
                 .medBehandlingId(bpeDto.getBehandlingId())
                 .medFagsakSaksnummer(Long.valueOf(bpeDto.getSaksnummer()))
@@ -239,11 +195,6 @@ public class FpsakEventHandler extends FpEventHandler {
                 .medBehandlingStatus(BehandlingStatus.fraKode(fraFpsak.getStatus()))
                 .medEksternId(eksternId)
                 .build());
-    }
-
-    private List<OppgaveEgenskap> hentEksisterendeEgenskaper(Oppgave oppgave) {
-        return Optional.ofNullable(getOppgaveRepository().hentOppgaveEgenskaper(oppgave.getId()))
-                .orElse(Collections.emptyList());
     }
 
     private static LocalDateTime hentBehandlingstidFrist(LocalDate behandlingstidFrist){

@@ -135,17 +135,6 @@ public class AdminRestTjeneste {
     }
 
     @GET
-    @Path("/oppdatering-av-alle-aktive-oppgaver")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    @Operation(description = "Oppdater alle aktive oppgaver", tags = "admin")
-    @BeskyttetRessurs(action = READ, ressurs = OPPGAVESTYRING)
-    @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
-    public int oppdaterAlleAktiveOppgaver() {
-        return adminTjeneste.oppdaterAktiveOppgaver();
-    }
-
-    @GET
     @Path("/prosesser-melding")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)

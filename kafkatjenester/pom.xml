@@ -32,10 +32,6 @@
             <artifactId>fp-topics-behandlingsprosess</artifactId>
         </dependency>
         <dependency>
-            <groupId>no.nav.foreldrepenger.kontrakter.topics</groupId>
-            <artifactId>fp-topics-manifest</artifactId>
-        </dependency>
-        <dependency>
             <groupId>no.nav.foreldrepenger.felles.integrasjon</groupId>
             <artifactId>felles-integrasjon-rest-klient</artifactId>
         </dependency>
