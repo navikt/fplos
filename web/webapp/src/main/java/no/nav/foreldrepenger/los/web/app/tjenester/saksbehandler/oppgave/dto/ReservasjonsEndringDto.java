@@ -40,16 +40,6 @@ public class ReservasjonsEndringDto implements AbacDto {
         return reserverTil;
     }
 
-    /*
-        @Override
-        public String toString() {
-            ZonedDateTime zonedDateTime = tidspunkt.atZone(ZoneId.of("Europe/Oslo"));
-            return "LocalDateTimeDto{" +
-                    "tidspunkt='" + zonedDateTime.toInstant().toEpochMilli() + '\'' +
-                    '}';
-        }
-
-     */
     @Override
     public AbacDataAttributter abacAttributter() {
         return AbacDataAttributter.opprett();
