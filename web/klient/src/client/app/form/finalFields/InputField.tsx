@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { FC } from 'react';
 import PropTypes from 'prop-types';
 import { Field } from 'react-final-form';
 import { Input as NavInput } from 'nav-frontend-skjema';
@@ -11,7 +11,7 @@ const renderNavInput = renderNavField(NavInput);
 
 const composeValidators = validators => value => validators.reduce((error, validator) => error || validator(value), undefined);
 
-const InputField = ({
+const InputField: FC<InputField.propTypes & InputField.defaultProps> = ({
   name, type, label, validate, readOnly, isEdited, ...otherProps
 }) => (
   <Field

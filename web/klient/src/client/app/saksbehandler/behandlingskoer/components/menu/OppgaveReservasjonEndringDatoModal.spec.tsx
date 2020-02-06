@@ -17,8 +17,16 @@ describe('<OppgaveReservasjonEndringDatoModal>', () => {
         reserverTilDefault="2020-08-02T00:54:25.455"
       />,
     );
-    const formwrapper = wrapper.find(Form).drill(props => props.render()).shallow();
-    const datepickerField = formwrapper.find(DatepickerField);
+    const form = wrapper.find(Form);
+    expect(form).has.length(1);
+
+    const handleSubmitFn = sinon.spy();
+    const formWrapper = shallowWithIntl(form.prop('render')({
+      handleSubmit: handleSubmitFn,
+    }));
+    const datepickerField = formWrapper.find(DatepickerField);
     expect(datepickerField).to.have.length(1);
+    formWrapper.find('form').simulate('submit');
+    expect(handleSubmitFn.calledOnce).to.be.true;
   });
 });

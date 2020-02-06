@@ -41,21 +41,17 @@ export class OppgaveReservasjonEndringDatoModal extends Component<TsProps, TsSta
         reserverTilDefault: PropTypes.string.isRequired,
     };
 
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
 
         this.state = {
-            reserverTil: '',
+          reserverTil: '',
         };
     }
 
     buildInitialValues = (reserverTil: string) => ({
         reserverTil: (reserverTil && reserverTil.length >= 10) ? reserverTil.substr(0, 10) : '',
     });
-
-    setValue = (e: any) => {
-        this.setState({ reserverTil: (e.target.value && e.target.value.length >= 10) ? e.target.value.substr(0, 10) : '' });
-    }
 
     render = () => {
         const {
@@ -75,51 +71,49 @@ export class OppgaveReservasjonEndringDatoModal extends Component<TsProps, TsSta
             onRequestClose={closeModal}
           >
             <Form
-
-              onSubmit={() => undefined}
+              onSubmit={values => endreOppgaveReservasjon(values.reserverTil.substr(0, 10))}
               initialValues={this.buildInitialValues(reserverTilDefault)}
-              render={() => (
-                <Panel className={styles.panel}>
+              render={({ handleSubmit }) => (
+                <form onSubmit={handleSubmit}>
+                  <Panel className={styles.panel}>
+                    <Row>
+                      <Column xs="8">
+                        <DatepickerField
+                          name="reserverTil"
+                          label={{ id: 'OppgaveReservasjonEndringDatoModal.Header' }}
+                          onBlurValidation
+                          validate={[hasValidDate, dateAfterOrEqual(new Date()), dateBeforeOrEqual(thirtyDaysFromNow())]}
+                          alwaysShowCalendar
+                          firstDate={new Date()}
+                          lastDate={thirtyDaysFromNow()}
+                        />
+                      </Column>
+                      <Column xs="1">
+                        <div className={styles.divider} />
+                      </Column>
+                      <Column xs="3" className={styles.buttonCol}>
+                        <div className={styles.buttonBox}>
+                          <Hovedknapp
+                            mini
+                            className={styles.button}
+                            autoFocus
+                          >
+                            {intl.formatMessage({ id: 'OppgaveReservasjonEndringDatoModal.Ok' })}
+                          </Hovedknapp>
 
-                  <Row>
-                    <Column xs="8">
-                      <DatepickerField
-                        name="reserverTil"
-                        label={{ id: 'OppgaveReservasjonEndringDatoModal.Header' }}
-                        onBlurValidation
-                        validate={[hasValidDate, dateAfterOrEqual(new Date()), dateBeforeOrEqual(thirtyDaysFromNow())]}
-                        onBlur={this.setValue}
-                        alwaysShowCalendar
-                        firstDate={new Date()}
-                        lastDate={thirtyDaysFromNow()}
-                      />
-                    </Column>
-                    <Column xs="1">
-                      <div className={styles.divider} />
-                    </Column>
-                    <Column xs="3" className={styles.buttonCol}>
-                      <div className={styles.buttonBox}>
-                        <Hovedknapp
-                          mini
-                          className={styles.button}
-                          onClick={() => { endreOppgaveReservasjon(reserverTil); }}
-                          autoFocus
-                        >
-                          {intl.formatMessage({ id: 'OppgaveReservasjonEndringDatoModal.Ok' })}
-                        </Hovedknapp>
-
-                        <Knapp
-                          mini
-                          className={styles.button}
-                          onClick={closeModal}
-                        >
-                          {intl.formatMessage({ id: 'OppgaveReservasjonEndringDatoModal.Avbryt' })}
-                        </Knapp>
-                      </div>
-                    </Column>
-                  </Row>
-                </Panel>
-           )}
+                          <Knapp
+                            mini
+                            className={styles.button}
+                            onClick={closeModal}
+                          >
+                            {intl.formatMessage({ id: 'OppgaveReservasjonEndringDatoModal.Avbryt' })}
+                          </Knapp>
+                        </div>
+                      </Column>
+                    </Row>
+                  </Panel>
+                </form>
+              )}
             />
           </Modal>
         );
