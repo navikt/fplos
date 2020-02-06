@@ -13,7 +13,6 @@ import no.nav.foreldrepenger.loslager.repository.OppgaveRepositoryImpl;
 import no.nav.fplos.foreldrepengerbehandling.Aksjonspunkt;
 import no.nav.fplos.foreldrepengerbehandling.BehandlingFpsak;
 import no.nav.fplos.foreldrepengerbehandling.ForeldrepengerBehandlingRestKlient;
-import no.nav.vedtak.felles.integrasjon.kafka.BehandlingProsessEventDto;
 import no.nav.vedtak.felles.integrasjon.kafka.EventHendelse;
 import no.nav.vedtak.felles.integrasjon.kafka.Fagsystem;
 import org.junit.Rule;
@@ -40,8 +39,9 @@ public class FpsakEventHandlerTest {
     public UnittestRepositoryRule repoRule = new UnittestRepositoryRule();
     private EntityManager entityManager = repoRule.getEntityManager();
     private OppgaveRepository oppgaveRepository = new OppgaveRepositoryImpl(entityManager);
+    private OppgaveEgenskapHandler oppgaveEgenskapHandler = new OppgaveEgenskapHandler(oppgaveRepository);
     private ForeldrepengerBehandlingRestKlient foreldrepengerBehandlingRestKlient = mock(ForeldrepengerBehandlingRestKlient.class);
-    private FpsakEventHandler fpsakEventHandler = new FpsakEventHandler(oppgaveRepository, foreldrepengerBehandlingRestKlient);
+    private FpsakEventHandler fpsakEventHandler = new FpsakEventHandler(oppgaveRepository, foreldrepengerBehandlingRestKlient, oppgaveEgenskapHandler);
     private static Long behandlingId = 1073051L;
     private static String fagsystem = "FPSAK";
 
