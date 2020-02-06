@@ -41,10 +41,6 @@ public abstract class FpEventHandler <T extends BehandlingProsessEventDto> {
         return oppgaveRepository.opprettOppgave(oppgave);
     }
 
-    protected void lagre(OppgaveEgenskap oppgaveEgenskap) {
-        oppgaveRepository.lagre(oppgaveEgenskap);
-    }
-
     protected void loggEvent(UUID eksternId, OppgaveEventType oppgaveEventType, AndreKriterierType andreKriterierType, String behandlendeEnhet, LocalDateTime frist) {
         oppgaveRepository.lagre(new OppgaveEventLogg(eksternId, oppgaveEventType, andreKriterierType, behandlendeEnhet, frist));
     }
@@ -57,7 +53,7 @@ public abstract class FpEventHandler <T extends BehandlingProsessEventDto> {
                                                         Reservasjon reservasjon,
                                                         Long oppgaveId) {
         if (reserverOppgave && reservasjon != null) {
-            getOppgaveRepository().reserverOppgaveFraTidligereReservasjon(oppgaveId, reservasjon);
+            oppgaveRepository.reserverOppgaveFraTidligereReservasjon(oppgaveId, reservasjon);
         }
     }
 
