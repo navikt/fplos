@@ -63,7 +63,7 @@
         <owaspencoder.version>1.2.2</owaspencoder.version>
         <!-- Dupliserte properties fra vl-felles. Pass på å oppdatere begge steder. Disse trengs for definisjon av videre plugins -->
         <!-- <flyway.version>5.1.4</flyway.version> FIXME: støtter ikke oracle 11, se på hva som skal til for å kjøre på 12 -->
-        <flyway.version>4.2.0</flyway.version>
+        <flyway.version>6.2.2</flyway.version>
         <ojdbc.version>19.3.0.0</ojdbc.version>
         <!--abac-attribute-constants.version>2.0.0</abac-attribute-constants.version-->
     </properties>
