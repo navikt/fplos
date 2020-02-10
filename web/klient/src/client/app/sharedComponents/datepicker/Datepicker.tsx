@@ -9,7 +9,19 @@ import CalendarToggleButton from './CalendarToggleButton';
 
 import styles from './datepicker.less';
 
-class Datepicker extends Component {
+interface TsProps {
+  alwaysShowCalendar: boolean;
+  firstDate: Date;
+  lastDate: Date;
+}
+
+class Datepicker extends Component <TsProps> {
+  static propTypes = {
+    alwaysShowCalendar: PropTypes.bool.isRequired,
+    firstDate: PropTypes.instanceOf(Date),
+    lastDate: PropTypes.instanceOf(Date),
+  }
+
   constructor() {
     super();
     this.state = { showCalendar: false };
@@ -76,7 +88,7 @@ class Datepicker extends Component {
 
   render() {
     const {
-      label, placeholder, onChange, onBlur, value, feil, disabled,
+      label, placeholder, onChange, onBlur, value, feil, disabled, alwaysShowCalendar, firstDate, lastDate,
     } = this.props;
     const {
       inputOffsetTop, inputOffsetWidth, showCalendar,
@@ -98,6 +110,8 @@ class Datepicker extends Component {
             feil={feil}
             disabled={disabled}
           />
+          {!alwaysShowCalendar
+          && (
           <CalendarToggleButton
             inputOffsetTop={inputOffsetTop}
             inputOffsetWidth={inputOffsetWidth}
@@ -106,8 +120,9 @@ class Datepicker extends Component {
             buttonRef={this.handleButtonRef}
             disabled={disabled}
           />
+)}
         </div>
-        {showCalendar
+        {(showCalendar || alwaysShowCalendar)
         && (
         <CalendarOverlay
           disabled={disabled}
@@ -117,6 +132,8 @@ class Datepicker extends Component {
           elementIsCalendarButton={this.elementIsCalendarButton}
           className={styles.calendarRoot}
           dayPickerClassName={styles.calendarWrapper}
+          firstDate={firstDate}
+          lastDate={lastDate}
         />
         )
         }
@@ -133,6 +150,7 @@ Datepicker.propTypes = {
   value: PropTypes.string,
   feil: PropTypes.shape({ feilmelding: PropTypes.string }),
   disabled: PropTypes.bool,
+  alwaysShowCalendar: PropTypes.bool,
 };
 
 Datepicker.defaultProps = {
@@ -141,6 +159,7 @@ Datepicker.defaultProps = {
   value: '',
   feil: null,
   disabled: false,
+  alwaysShowCalendar: false,
 };
 
 export default Datepicker;

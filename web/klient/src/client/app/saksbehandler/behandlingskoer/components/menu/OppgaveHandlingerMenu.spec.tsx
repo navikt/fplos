@@ -56,13 +56,14 @@ describe('<OppgaveHandlingerMenu>', () => {
         imageNode={<div />}
         opphevOppgaveReservasjon={sinon.spy()}
         forlengOppgaveReservasjon={sinon.spy()}
+        endreOppgaveReservasjon={sinon.spy()}
         finnSaksbehandler={sinon.spy()}
         resetSaksbehandler={sinon.spy()}
         flyttReservasjon={sinon.spy()}
       />,
     );
 
-    expect(wrapper.find(MenuButton)).has.length(3);
+    expect(wrapper.find(MenuButton)).has.length(4);
     const message = wrapper.find(FormattedHTMLMessage).first();
     expect(message.prop('values')).is.eql({ hours: 1, minutes: 59 });
   });
@@ -79,6 +80,7 @@ describe('<OppgaveHandlingerMenu>', () => {
         imageNode={<div />}
         opphevOppgaveReservasjon={sinon.spy()}
         forlengOppgaveReservasjon={sinon.spy()}
+        endreOppgaveReservasjon={sinon.spy()}
         finnSaksbehandler={sinon.spy()}
         resetSaksbehandler={sinon.spy()}
         flyttReservasjon={sinon.spy()}
@@ -111,6 +113,7 @@ describe('<OppgaveHandlingerMenu>', () => {
         imageNode={<div />}
         opphevOppgaveReservasjon={opphevOppgaveReservasjonFn}
         forlengOppgaveReservasjon={sinon.spy()}
+        endreOppgaveReservasjon={sinon.spy()}
         finnSaksbehandler={sinon.spy()}
         resetSaksbehandler={sinon.spy()}
         flyttReservasjon={sinon.spy()}
@@ -150,6 +153,7 @@ describe('<OppgaveHandlingerMenu>', () => {
         imageNode={<div />}
         opphevOppgaveReservasjon={sinon.spy()}
         forlengOppgaveReservasjon={forlengOppgaveReservasjonFn}
+        endreOppgaveReservasjon={sinon.spy()}
         finnSaksbehandler={sinon.spy()}
         resetSaksbehandler={sinon.spy()}
         flyttReservasjon={sinon.spy()}
@@ -175,6 +179,7 @@ describe('<OppgaveHandlingerMenu>', () => {
         imageNode={<div />}
         opphevOppgaveReservasjon={sinon.spy()}
         forlengOppgaveReservasjon={sinon.spy()}
+        endreOppgaveReservasjon={sinon.spy()}
         finnSaksbehandler={sinon.spy()}
         resetSaksbehandler={sinon.spy()}
         flyttReservasjon={sinon.spy()}
@@ -200,6 +205,7 @@ describe('<OppgaveHandlingerMenu>', () => {
         imageNode={<div />}
         opphevOppgaveReservasjon={sinon.spy()}
         forlengOppgaveReservasjon={sinon.spy()}
+        endreOppgaveReservasjon={sinon.spy()}
         finnSaksbehandler={sinon.spy()}
         resetSaksbehandler={sinon.spy()}
         flyttReservasjon={flyttReservasjonFn}

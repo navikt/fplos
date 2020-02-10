@@ -85,7 +85,9 @@ class CalendarOverlay extends Component {
       return null;
     }
 
-    const { onDayChange, className, dayPickerClassName } = this.props;
+    const {
+ onDayChange, className, dayPickerClassName, firstDate, lastDate,
+} = this.props;
     const selectedDay = this.parseDateValue();
     return (
       <div
@@ -98,6 +100,12 @@ class CalendarOverlay extends Component {
       >
         <DayPicker
           {...this.getDayPickerLocalization()}
+          disabledDays={[
+            {
+              before: firstDate,
+              after: lastDate,
+            },
+          ]}
           className={dayPickerClassName}
           month={selectedDay}
           selectedDays={selectedDay}
@@ -118,6 +126,8 @@ CalendarOverlay.propTypes = {
   value: PropTypes.string,
   disabled: PropTypes.bool,
   onClose: PropTypes.func,
+  firstDate: PropTypes.instanceOf(Date),
+  lastDate: PropTypes.instanceOf(Date),
 };
 
 CalendarOverlay.defaultProps = {

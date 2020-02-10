@@ -18,6 +18,7 @@ const fpLosApiKeys = {
   RESERVERTE_OPPGAVER: 'RESERVERTE_OPPGAVER',
   OPPHEV_OPPGAVERESERVASJON: 'OPPHEV_OPPGAVERESERVASJON',
   FORLENG_OPPGAVERESERVASJON: 'FORLENG_OPPGAVERESERVASJON',
+  ENDRE_OPPGAVERESERVASJON: 'ENDRE_OPPGAVERESERVASJON',
   SAKSLISTER_FOR_AVDELING: 'SAKSLISTER_FOR_AVDELING',
   OPPRETT_NY_SAKSLISTE: 'OPPRETT_NY_SAKSLISTE',
   SLETT_SAKSLISTE: 'SLETT_SAKSLISTE',
@@ -67,6 +68,8 @@ const endpoints = new RestApiConfigBuilder()
   .withGet('/api/saksbehandler/oppgaver/reservasjon-status', fpLosApiKeys.HENT_RESERVASJONSSTATUS)
   .withPost('/api/saksbehandler/oppgaver/opphev', fpLosApiKeys.OPPHEV_OPPGAVERESERVASJON)
   .withPost('/api/saksbehandler/oppgaver/forleng', fpLosApiKeys.FORLENG_OPPGAVERESERVASJON)
+  .withPost('/api/saksbehandler/oppgaver/reservasjon/endre', fpLosApiKeys.ENDRE_OPPGAVERESERVASJON)
+
   .withGet('/api/saksbehandler/oppgaver/behandlede', fpLosApiKeys.BEHANDLEDE_OPPGAVER)
   .withPost('/api/saksbehandler/oppgaver/flytt/sok', fpLosApiKeys.FLYTT_RESERVASJON_SAKSBEHANDLER_SOK)
   .withPost('/api/saksbehandler/oppgaver/flytt', fpLosApiKeys.FLYTT_RESERVASJON)

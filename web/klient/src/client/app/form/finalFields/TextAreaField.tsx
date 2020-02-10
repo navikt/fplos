@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { FC } from 'react';
 import PropTypes from 'prop-types';
 import { Field } from 'react-final-form';
 import { TextareaControlled as NavTextareaControlled } from 'nav-frontend-skjema';
@@ -13,8 +13,7 @@ import ReadOnlyField from './ReadOnlyField';
 
 const composeValidators = validators => value => (validators ? validators.reduce((error, validator) => error || validator(value), undefined) : []);
 
-
-const TextAreaWithBadge = ({
+const TextAreaWithBadge: FC<TextAreaWithBadge.propTypes & TextAreaWithBadge.defaultProps> = ({
   badges,
   intl,
   ...otherProps
@@ -37,7 +36,7 @@ const TextAreaWithBadge = ({
 
 const renderNavTextArea = renderNavField(injectIntl(TextAreaWithBadge));
 
-const TextAreaField = ({
+const TextAreaField: FC<TextAreaField.propTypes & TextAreaField.defaultProps> = ({
   name, label, validate, readOnly, ...otherProps
 }) => (
   <Field

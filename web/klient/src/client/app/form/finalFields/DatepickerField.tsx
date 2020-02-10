@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { FC } from 'react';
 import PropTypes from 'prop-types';
 import { Field } from 'react-final-form';
 import moment from 'moment';
@@ -32,7 +32,7 @@ const acceptedFormatToIso = (string) => {
 
 export const RenderDatepickerField = renderNavField(Datepicker);
 
-const DatepickerField = ({
+const DatepickerField: FC<DatepickerField.propTypes & DatepickerField.defaultProps> = ({
   name, label, readOnly, format, parse, isEdited, validate, ...otherProps
 }) => (
   <Field
