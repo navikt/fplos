@@ -13,7 +13,7 @@ import { Oppgave } from 'saksbehandler/oppgaveTsType';
 import OppgaveErReservertAvAnnenModal from 'saksbehandler/components/OppgaveErReservertAvAnnenModal';
 import {
   fetchAlleSakslister, getSakslisteResult, fetchOppgaverTilBehandling, fetchReserverteOppgaver, reserverOppgave, opphevOppgaveReservasjon,
-  forlengOppgaveReservasjon, fetchOppgaverTilBehandlingOppgaver, flyttReservasjon, setValgtSakslisteId,
+  forlengOppgaveReservasjon, endreOppgaveReservasjon, fetchOppgaverTilBehandlingOppgaver, flyttReservasjon, setValgtSakslisteId,
   harOppgaverTilBehandlingTimeout,
 } from './duck';
 import SakslistePanel from './components/SakslistePanel';
@@ -27,6 +27,7 @@ type TsProps = Readonly<{
   reserverOppgave: (oppgaveId: number) => Promise<{payload: OppgaveStatus }>;
   opphevOppgaveReservasjon: (oppgaveId: number, begrunnelse: string) => Promise<string>;
   forlengOppgaveReservasjon: (oppgaveId: number) => Promise<string>;
+  endreOppgaveReservasjon: (oppgaveId: number, reserverTil: string) => Promise<string>;
   flyttReservasjon: (oppgaveId: number, brukerident: string, begrunnelse: string) => Promise<string>;
   sakslister: Saksliste[];
   fpsakUrl: string;
@@ -58,6 +59,7 @@ export class BehandlingskoerIndex extends Component<TsProps, StateProps> {
     reserverOppgave: PropTypes.func.isRequired,
     opphevOppgaveReservasjon: PropTypes.func.isRequired,
     forlengOppgaveReservasjon: PropTypes.func.isRequired,
+    endreOppgaveReservasjon: PropTypes.func.isRequired,
     flyttReservasjon: PropTypes.func.isRequired,
     sakslister: PropTypes.arrayOf(sakslistePropType),
     fpsakUrl: PropTypes.string.isRequired,
@@ -161,6 +163,16 @@ export class BehandlingskoerIndex extends Component<TsProps, StateProps> {
       .then(() => fetchReserverte(sakslisteId));
   }
 
+  endreOppgaveReservasjon = (oppgaveId: number, reserverTil: string): Promise<any> => {
+    const { endreOppgaveReservasjon: endreReservasjon, fetchReserverteOppgaver: fetchReserverte } = this.props;
+    const { sakslisteId } = this.state;
+    if (!sakslisteId) {
+      return Promise.resolve();
+    }
+    return endreReservasjon(oppgaveId, reserverTil)
+        .then(() => fetchReserverte(sakslisteId));
+  }
+
   flyttReservasjon = (oppgaveId: number, brukerident: string, begrunnelse: string): Promise<any> => {
     const { flyttReservasjon: flytt, fetchReserverteOppgaver: fetchReserverte } = this.props;
     const { sakslisteId } = this.state;
@@ -196,6 +208,7 @@ export class BehandlingskoerIndex extends Component<TsProps, StateProps> {
           fetchSakslisteOppgaver={this.fetchSakslisteOppgaver}
           opphevOppgaveReservasjon={this.opphevReservasjon}
           forlengOppgaveReservasjon={this.forlengOppgaveReservasjon}
+          endreOppgaveReservasjon={this.endreOppgaveReservasjon}
           flyttReservasjon={this.flyttReservasjon}
         />
         {harTimeout
@@ -231,6 +244,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
     reserverOppgave,
     opphevOppgaveReservasjon,
     forlengOppgaveReservasjon,
+    endreOppgaveReservasjon,
     flyttReservasjon,
     setValgtSakslisteId,
   }, dispatch),

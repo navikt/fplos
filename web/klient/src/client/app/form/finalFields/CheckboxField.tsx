@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { FC } from 'react';
 import PropTypes from 'prop-types';
 import { Field } from 'react-final-form';
 import { Checkbox as NavCheckbox } from 'nav-frontend-skjema';
@@ -18,7 +18,7 @@ export const RenderCheckboxField = renderNavField(({ onChange, label, ...otherPr
   />
 ));
 
-const CheckboxField = ({
+const CheckboxField: FC<CheckboxField.propTypes & CheckboxField.defaultProps> = ({
   name, label, validate, readOnly, ...otherProps
 }) => (
   <Field

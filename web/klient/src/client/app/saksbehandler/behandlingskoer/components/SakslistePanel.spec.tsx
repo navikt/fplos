@@ -22,6 +22,7 @@ describe('<SakslistePanel>', () => {
       reserverOppgave={sinon.spy()}
       opphevOppgaveReservasjon={sinon.spy()}
       forlengOppgaveReservasjon={sinon.spy()}
+      endreOppgaveReservasjon={sinon.spy()}
       finnSaksbehandler={sinon.spy()}
       resetSaksbehandler={sinon.spy()}
       flyttReservasjon={sinon.spy()}
