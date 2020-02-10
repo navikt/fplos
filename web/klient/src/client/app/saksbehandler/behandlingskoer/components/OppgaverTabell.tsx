@@ -64,6 +64,7 @@ type TsProps = Readonly<{
   reserverOppgave: (oppgave: Oppgave) => void;
   opphevOppgaveReservasjon: (oppgaveId: number, begrunnelse: string) => Promise<string>;
   forlengOppgaveReservasjon: (oppgaveId: number) => Promise<string>;
+  endreOppgaveReservasjon: (oppgaveId: number, reserverTil: string) => Promise<string>;
   finnSaksbehandler: (brukerIdent: string) => Promise<string>;
   resetSaksbehandler: () => Promise<string>;
   flyttReservasjon: (oppgaveId: number, brukerident: string, begrunnelse: string) => Promise<string>;
@@ -89,6 +90,7 @@ export class OppgaverTabell extends Component<TsProps, TsState> {
     reserverOppgave: PropTypes.func.isRequired,
     opphevOppgaveReservasjon: PropTypes.func.isRequired,
     forlengOppgaveReservasjon: PropTypes.func.isRequired,
+    endreOppgaveReservasjon: PropTypes.func.isRequired,
     finnSaksbehandler: PropTypes.func.isRequired,
     resetSaksbehandler: PropTypes.func.isRequired,
     flyttReservasjon: PropTypes.func.isRequired,
@@ -148,7 +150,7 @@ export class OppgaverTabell extends Component<TsProps, TsState> {
 
   render = () => {
     const {
-      oppgaverTilBehandling, reserverteOppgaver, opphevOppgaveReservasjon, forlengOppgaveReservasjon,
+      oppgaverTilBehandling, reserverteOppgaver, opphevOppgaveReservasjon, forlengOppgaveReservasjon, endreOppgaveReservasjon,
       finnSaksbehandler: findSaksbehandler, flyttReservasjon,
       resetSaksbehandler: resetBehandler, antall,
     } = this.props;
@@ -222,6 +224,7 @@ export class OppgaverTabell extends Component<TsProps, TsState> {
                 oppgave={valgtOppgave}
                 opphevOppgaveReservasjon={opphevOppgaveReservasjon}
                 forlengOppgaveReservasjon={forlengOppgaveReservasjon}
+                endreOppgaveReservasjon={endreOppgaveReservasjon}
                 finnSaksbehandler={findSaksbehandler}
                 resetSaksbehandler={resetBehandler}
                 flyttReservasjon={flyttReservasjon}

@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import no.nav.foreldrepenger.los.web.app.tjenester.fagsak.app.FagsakApplikasjonTjeneste;
 import no.nav.foreldrepenger.los.web.app.tjenester.felles.dto.AsyncPollingStatus;
+import no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.oppgave.dto.ReservasjonsEndringDto;
 import no.nav.foreldrepenger.los.web.app.tjenester.felles.dto.OppgaveDto;
 import no.nav.foreldrepenger.los.web.app.tjenester.felles.dto.OppgaveStatusDto;
 import no.nav.foreldrepenger.los.web.app.tjenester.felles.dto.SaksbehandlerBrukerIdentDto;
@@ -44,6 +45,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -199,6 +201,25 @@ public class OppgaveRestTjeneste {
     public OppgaveStatusDto forlengOppgaveReservasjon(@NotNull @Parameter(description = "id til oppgaven") @Valid OppgaveIdDto oppgaveId) {
         Reservasjon reservasjon = oppgaveTjeneste.forlengReservasjonPåOppgave(oppgaveId.getVerdi());
         return OppgaveStatusDto.reservert(reservasjon);
+    }
+
+    @POST
+    @Path("/reservasjon/endre")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Operation(description = "Endre reservasjon av oppgave", tags = "Saksbehandler")
+    @BeskyttetRessurs(action = BeskyttetRessursActionAttributt.CREATE, ressurs = BeskyttetRessursResourceAttributt.FAGSAK)
+    @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
+    public OppgaveStatusDto endreOppgaveReservasjon(@NotNull @Parameter(description = "forleng til dato") @Valid ReservasjonsEndringDto reservasjonsEndring) {
+        Reservasjon reservasjon = oppgaveTjeneste.endreReservasjonPåOppgave(reservasjonsEndring.getOppgaveId(), sjekkGrenseverdier(reservasjonsEndring.getReserverTil().atTime(23,59)));
+        return OppgaveStatusDto.reservert(reservasjon);
+    }
+
+    private LocalDateTime sjekkGrenseverdier(LocalDateTime tidspunkt) throws IllegalArgumentException{
+        LocalDateTime now = LocalDateTime.now();
+        if(tidspunkt.isBefore(now)) throw new IllegalArgumentException("Reserevasjon kan ikke avsluttes før dagens dato");
+        if(tidspunkt.isAfter(now.plusDays(31))) throw new IllegalArgumentException("Reserevasjon kan ikke være lenger enn 30 dager"); //Siden vi bruker LocalDateTime med 23:59 for sjekken så justeres der til påfølgende dag
+        return tidspunkt;
     }
 
     @GET

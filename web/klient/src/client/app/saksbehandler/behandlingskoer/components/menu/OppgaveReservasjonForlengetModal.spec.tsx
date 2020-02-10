@@ -19,6 +19,7 @@ describe('<OppgaveReservasjonForlengetModal>', () => {
     },
     saksnummer: 1,
     behandlingId: 2,
+    eksternId: 'TEST-EKSTERN',
     personnummer: '1234567',
     navn: 'Espen Utvikler',
     system: 'FPSAK',

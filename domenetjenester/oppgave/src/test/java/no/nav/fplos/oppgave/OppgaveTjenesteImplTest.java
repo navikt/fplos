@@ -237,6 +237,9 @@ public class OppgaveTjenesteImplTest {
         oppgaveTjeneste.forlengReservasjonPåOppgave(førstegangOppgave.getId());
         assertThat(oppgaveTjeneste.hentReservasjonerTilknyttetAktiveOppgaver().get(0).getReservertTil().until(LocalDateTime.now().plusHours(26), MINUTES)).isLessThan(2);
 
+        oppgaveTjeneste.endreReservasjonPåOppgave(førstegangOppgave.getId(), LocalDateTime.now().plusDays(3));
+        assertThat(oppgaveTjeneste.hentReservasjonerTilknyttetAktiveOppgaver().get(0).getReservertTil().until(LocalDateTime.now().plusDays(3), MINUTES)).isLessThan(2);
+
         oppgaveTjeneste.frigiOppgave(førstegangOppgave.getId(), begrunnelse);
         assertThat(oppgaveTjeneste.hentOppgaver(oppgaveFiltreringId)).hasSize(3);
         assertThat(oppgaveTjeneste.hentReservasjonerTilknyttetAktiveOppgaver()).hasSize(0);

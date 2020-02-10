@@ -11,6 +11,7 @@ import { findDifferenceInHoursAndMinutes } from 'utils/dateUtils';
 import MenuButton from './MenuButton';
 import OpphevReservasjonModal from './OpphevReservasjonModal';
 import OppgaveReservasjonForlengetModal from './OppgaveReservasjonForlengetModal';
+import OppgaveReservasjonEndringDatoModal from './OppgaveReservasjonEndringDatoModal';
 import FlyttReservasjonModal from './FlyttReservasjonModal';
 
 import styles from './oppgaveHandlingerMenu.less';
@@ -53,6 +54,7 @@ type TsProps = Readonly<{
   imageNode: any;
   opphevOppgaveReservasjon: (oppgaveId: number, begrunnelse: string) => Promise<string>;
   forlengOppgaveReservasjon: (oppgaveId: number) => Promise<string>;
+  endreOppgaveReservasjon: (oppgaveId: number, reserverTil: string) => Promise<string>;
   finnSaksbehandler: (brukerIdent: string) => Promise<string>;
   resetSaksbehandler: () => Promise<string>;
   flyttReservasjon: (oppgaveId: number, brukerident: string, begrunnelse: string) => Promise<string>;
@@ -61,6 +63,7 @@ type TsProps = Readonly<{
 interface TsState {
   showOpphevReservasjonModal: boolean;
   showForlengetReservasjonModal: boolean;
+  showReservasjonEndringDatoModal: boolean;
   showFlyttReservasjonModal: boolean;
 }
 
@@ -78,6 +81,7 @@ export class OppgaveHandlingerMenu extends Component<TsProps, TsState> {
     imageNode: PropTypes.shape({}).isRequired,
     opphevOppgaveReservasjon: PropTypes.func.isRequired,
     forlengOppgaveReservasjon: PropTypes.func.isRequired,
+    endreOppgaveReservasjon: PropTypes.func.isRequired,
     finnSaksbehandler: PropTypes.func.isRequired,
     resetSaksbehandler: PropTypes.func.isRequired,
     flyttReservasjon: PropTypes.func.isRequired,
@@ -89,6 +93,7 @@ export class OppgaveHandlingerMenu extends Component<TsProps, TsState> {
     this.state = {
       showOpphevReservasjonModal: false,
       showForlengetReservasjonModal: false,
+      showReservasjonEndringDatoModal: false,
       showFlyttReservasjonModal: false,
     };
 
@@ -160,6 +165,25 @@ export class OppgaveHandlingerMenu extends Component<TsProps, TsState> {
     });
   }
 
+  closeReservasjonEndringDatoModal = (event: Event) => {
+    const { toggleMenu, oppgave } = this.props;
+    toggleMenu(oppgave);
+    this.handleOutsideClick(event);
+  }
+
+  showReservasjonEndringDato = () => {
+    toggleEventListeners(false, this.handleOutsideClick);
+    this.setState(prevState => ({ ...prevState, showReservasjonEndringDatoModal: true }));
+  }
+
+  endreReserverasjon = (reserverTil: string) => {
+    const { oppgave, endreOppgaveReservasjon } = this.props;
+    endreOppgaveReservasjon(oppgave.id, reserverTil).then(() => {
+      toggleEventListeners(false, this.handleOutsideClick);
+      this.setState(prevState => ({ ...prevState, showForlengetReservasjonModal: true }));
+    });
+  }
+
   opphevReserverasjon = (oppgaveId: number, begrunnelse: string) => {
     const { opphevOppgaveReservasjon } = this.props;
     opphevOppgaveReservasjon(oppgaveId, begrunnelse);
@@ -183,7 +207,7 @@ export class OppgaveHandlingerMenu extends Component<TsProps, TsState> {
       oppgave, offset, finnSaksbehandler, resetSaksbehandler,
     } = this.props;
     const {
-      showOpphevReservasjonModal, showForlengetReservasjonModal, showFlyttReservasjonModal,
+      showOpphevReservasjonModal, showForlengetReservasjonModal, showReservasjonEndringDatoModal, showFlyttReservasjonModal,
     } = this.state;
     const hoursAndMinutes = getHoursAndMinutes(oppgave.status.reservertTilTidspunkt);
 
@@ -198,6 +222,9 @@ export class OppgaveHandlingerMenu extends Component<TsProps, TsState> {
           <MenuButton onClick={this.forlengReserverasjon}>
             <FormattedHTMLMessage id="OppgaveHandlingerMenu.ForlengReservasjon" />
           </MenuButton>
+          <MenuButton onClick={this.showReservasjonEndringDato}>
+            <FormattedHTMLMessage id="OppgaveHandlingerMenu.EndreReservasjon" />
+          </MenuButton>
           <MenuButton onClick={this.showFlytteModal}>
             <FormattedHTMLMessage id="OppgaveHandlingerMenu.FlyttReservasjon" />
           </MenuButton>
@@ -211,8 +238,24 @@ export class OppgaveHandlingerMenu extends Component<TsProps, TsState> {
           />
         )
         }
+        {showReservasjonEndringDatoModal
+        && (
+        <OppgaveReservasjonEndringDatoModal
+          showModal={showReservasjonEndringDatoModal}
+          endreOppgaveReservasjon={this.endreReserverasjon}
+          closeModal={this.closeReservasjonEndringDatoModal}
+          reserverTilDefault={oppgave.status.reservertTilTidspunkt}
+        />
+)
+        }
         {showForlengetReservasjonModal
-          && <OppgaveReservasjonForlengetModal oppgave={oppgave} showModal={showForlengetReservasjonModal} closeModal={this.closeForlengReservasjonModal} />
+          && (
+          <OppgaveReservasjonForlengetModal
+            oppgave={oppgave}
+            showModal={showForlengetReservasjonModal}
+            closeModal={this.closeForlengReservasjonModal}
+          />
+)
         }
         { showFlyttReservasjonModal && (
           <FlyttReservasjonModal

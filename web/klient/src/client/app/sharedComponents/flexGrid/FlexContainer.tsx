@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { FC } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames/bind';
 
@@ -6,7 +6,7 @@ import styles from './flexContainer.less';
 
 const classNames = classnames.bind(styles);
 
-const FlexContainer = ({ children, wrap }) => (
+const FlexContainer: FC<FlexContainer.propTypes & FlexContainer.defaultProps> = ({ children, wrap }) => (
   <div className={classNames('flexContainer', 'fluid', { flexWrap: wrap })}>
     {children}
   </div>
