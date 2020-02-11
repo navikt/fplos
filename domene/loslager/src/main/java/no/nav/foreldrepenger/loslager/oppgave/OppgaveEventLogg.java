@@ -1,6 +1,7 @@
 package no.nav.foreldrepenger.loslager.oppgave;
 
 import no.nav.foreldrepenger.loslager.BaseEntitet;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.Column;
 import javax.persistence.Convert;
@@ -39,6 +40,7 @@ public class OppgaveEventLogg extends BaseEntitet{
     private LocalDateTime fristTid;
 
     @Column(name = "EKSTERN_ID", nullable = false)
+    @Type(type="uuid-char")
     private UUID eksternId;
 
     public OppgaveEventLogg(){
