@@ -85,4 +85,3 @@ export const hentFpsakBehandlingId = (uuid: string) => (dispatch: Dispatch) => d
         { uuid },
     ),
 );
-export const getFpsakBehandlingId = fpLosApi.FPSAK_BEHANDLING_ID.getRestApiData();
