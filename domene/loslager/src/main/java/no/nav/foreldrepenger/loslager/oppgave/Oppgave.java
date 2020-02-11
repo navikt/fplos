@@ -155,6 +155,9 @@ public class Oppgave extends BaseEntitet {
         return new Builder();
     }
 
+    public void deaktiverOppgave() {
+        aktiv = false;
+    }
     public void avsluttOppgave() {
         aktiv = false;
         oppgaveAvsluttet = LocalDateTime.now();

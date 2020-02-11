@@ -13,12 +13,13 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
+import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 
 @ApplicationScoped
 public class AdminRepositoryImpl implements AdminRepository {
-
+    private static final String SELECT_FRA_OPPGAVE = "SELECT o from Oppgave o ";
     private static final Logger log = LoggerFactory.getLogger(AdminRepositoryImpl.class);
 
     private EntityManager entityManager;
@@ -35,13 +36,24 @@ public class AdminRepositoryImpl implements AdminRepository {
         return entityManager;
     }
 
-    public void deaktiverSisteOppgave(UUID uuid) {
-        getEntityManager().createNativeQuery("UPDATE OPPGAVE o SET o.AKTIV = 'N' WHERE o.EKSTERN_ID = :uuid")
-                .setParameter("uuid", uuid)
-                .executeUpdate();
-        getEntityManager().flush();
+    public void deaktiverSisteOppgave(UUID eksternId) {
+        List<Oppgave> oppgaver = hentOppgaverForEksternId(eksternId);
+        if (oppgaver.isEmpty()) {
+            return;
+        }
+        Oppgave nyesteOppgave = oppgaver.stream()
+                .max(Comparator.comparing(Oppgave::getOpprettetTidspunkt))
+                .orElse(null);
+        nyesteOppgave.deaktiverOppgave();
+        internLagre(nyesteOppgave);
+        entityManager.refresh(nyesteOppgave);
     }
-
+    private List<Oppgave> hentOppgaverForEksternId(UUID eksternId) {
+        return getEntityManager().createQuery(SELECT_FRA_OPPGAVE +
+                "WHERE o.eksternId = :eksternId ", Oppgave.class)
+                .setParameter("eksternId", eksternId)
+                .getResultList();
+    }
     public Oppgave hentSisteOppgave(UUID uuid) {
         Oppgave oppgave = null;
         try {
