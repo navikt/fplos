@@ -63,9 +63,12 @@ public class FpsakEventHandler extends FpEventHandler<FpsakBehandlingProsessEven
 
     private void prosesser(FpsakBehandlingProsessEventDto bpeDto, Reservasjon reservasjon, boolean prosesserFraAdmin) {
         Long behandlingId = bpeDto.getBehandlingId();
+        UUID eksternId = bpeDto.getEksternId();
 
         BehandlingFpsak behandling = foreldrePengerBehandlingRestKlient.getBehandling(behandlingId);
-        UUID eksternId = behandling.getUuid();
+        if(eksternId == null) {
+            eksternId = behandling.getUuid();
+        }
 
         List<OppgaveEventLogg> tidligereEventer = getOppgaveRepository().hentEventerForEksternId(eksternId);
         List<Aksjonspunkt> aksjonspunkt = Optional.ofNullable(behandling.getAksjonspunkter())

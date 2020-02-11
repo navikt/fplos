@@ -75,14 +75,14 @@ public class FpsakEventHandlerTest {
 
     FpsakBehandlingProsessEventDto eventDrammenFra(Map<String, String> aksjonspunktmap){
         return (FpsakBehandlingProsessEventDto) prosessBuilderFra(aksjonspunktmap)
-                .medEksternId(UUID.nameUUIDFromBytes(behandlingId.toString().getBytes()))
+                .medEksternId(uuid)
                 .medBehandlendeEnhet("4802")
                 .build();
     }
 
     private FpsakBehandlingProsessEventDto eventStordFra(Map<String, String> aksjonspunktmap){
         return (FpsakBehandlingProsessEventDto) prosessBuilderFra(aksjonspunktmap)
-                .medEksternId(UUID.nameUUIDFromBytes(behandlingId.toString().getBytes()))
+                .medEksternId(uuid)
                 .medBehandlendeEnhet("4842")
                 .build();
     }

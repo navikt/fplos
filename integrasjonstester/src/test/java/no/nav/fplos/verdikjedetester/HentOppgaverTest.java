@@ -43,6 +43,7 @@ import javax.persistence.EntityManager;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -112,7 +113,7 @@ public class HentOppgaverTest {
                 .sammenligne(oppgave));
 
         MockKafkaMessages.clearMessages();
-        MockKafkaMessages.sendAvsluttetFørstegangsbehandlingOppgave(1L);
+        MockKafkaMessages.sendAvsluttetFørstegangsbehandlingOppgave(1L, UUID.nameUUIDFromBytes("uuid_1".getBytes()));
         kafkaReader.hentOgLagreMeldingene();
 
         List<OppgaveDto> oppgaverEtterAvsluttet= oppgaveRestTjeneste.getOppgaverTilBehandling(new SakslisteIdDto(oppgaveFiltrering.getId()));
@@ -135,7 +136,7 @@ public class HentOppgaverTest {
         assertThat(reservasjons.get(0).getBehandlingId()).isEqualTo(oppgave.getBehandlingId());
 
         MockKafkaMessages.clearMessages();
-        MockKafkaMessages.sendAvsluttetFørstegangsbehandlingOppgave(oppgave.getId());
+        MockKafkaMessages.sendAvsluttetFørstegangsbehandlingOppgave(oppgave.getId(), oppgave.getEksternId());
         kafkaReader.hentOgLagreMeldingene();
 
         List<OppgaveDto> reservasjonsEtterAvsluttetOppgave = oppgaveRestTjeneste.getReserverteOppgaver();
