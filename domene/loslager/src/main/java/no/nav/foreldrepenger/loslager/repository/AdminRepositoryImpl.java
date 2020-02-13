@@ -13,12 +13,13 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
+import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 
 @ApplicationScoped
 public class AdminRepositoryImpl implements AdminRepository {
-
+    private static final String SELECT_FRA_OPPGAVE = "SELECT o from Oppgave o ";
     private static final Logger log = LoggerFactory.getLogger(AdminRepositoryImpl.class);
 
     private EntityManager entityManager;
@@ -35,24 +36,33 @@ public class AdminRepositoryImpl implements AdminRepository {
         return entityManager;
     }
 
-    @Override
-    public void deaktiverSisteOppgave(Long behandlingId) {
-        getEntityManager().createNativeQuery("UPDATE OPPGAVE o SET o.AKTIV = 'N' WHERE o.BEHANDLING_ID = :behandlingId")
-                .setParameter("behandlingId", behandlingId)
-                .executeUpdate();
-        getEntityManager().flush();
+    public void deaktiverSisteOppgave(UUID eksternId) {
+        List<Oppgave> oppgaver = hentOppgaverForEksternId(eksternId);
+        if (oppgaver.isEmpty()) {
+            return;
+        }
+        Oppgave nyesteOppgave = oppgaver.stream()
+                .max(Comparator.comparing(Oppgave::getOpprettetTidspunkt))
+                .orElse(null);
+        nyesteOppgave.deaktiverOppgave();
+        internLagre(nyesteOppgave);
+        entityManager.refresh(nyesteOppgave);
     }
-
-    @Override
-    public Oppgave hentSisteOppgave(Long behandlingId) {
+    private List<Oppgave> hentOppgaverForEksternId(UUID eksternId) {
+        return getEntityManager().createQuery(SELECT_FRA_OPPGAVE +
+                "WHERE o.eksternId = :eksternId ", Oppgave.class)
+                .setParameter("eksternId", eksternId)
+                .getResultList();
+    }
+    public Oppgave hentSisteOppgave(UUID uuid) {
         Oppgave oppgave = null;
         try {
-            oppgave = getEntityManager().createQuery("Select o FROM Oppgave o where o.behandlingId = :behandlingId ORDER BY o.opprettetTidspunkt desc", Oppgave.class)
-                    .setParameter("behandlingId", behandlingId)
+            oppgave = getEntityManager().createQuery("Select o FROM Oppgave o where o.eksternId = :uuid ORDER BY o.opprettetTidspunkt desc", Oppgave.class)
+                    .setParameter("uuid", uuid)
                     .setMaxResults(1).getSingleResult();
             getEntityManager().refresh(oppgave);
         } catch (NoResultException nre) {
-            log.info("Fant ingen oppgave tilknyttet behandling med id {}", behandlingId, nre);
+            log.info("Fant ingen oppgave tilknyttet behandling med uuid {}", uuid, nre);
         }
         return oppgave;
     }
@@ -71,11 +81,10 @@ public class AdminRepositoryImpl implements AdminRepository {
         return oppgave;
     }
 
-    @Override
-    public List<OppgaveEventLogg> hentEventer(Long behandlingId) {
+    public List<OppgaveEventLogg> hentEventer(UUID uuid) {
         return getEntityManager().createQuery( "Select o FROM oppgaveEventLogg o " +
-                "where o.behandlingId = :behandlingId ORDER BY o.opprettetTidspunkt desc", OppgaveEventLogg.class)
-                .setParameter("behandlingId", behandlingId).getResultList();
+                "where o.eksternId = :uuid ORDER BY o.opprettetTidspunkt desc", OppgaveEventLogg.class)
+                .setParameter("uuid", uuid).getResultList();
     }
 
     @Override
@@ -96,10 +105,9 @@ public class AdminRepositoryImpl implements AdminRepository {
         getEntityManager().flush();
     }
 
-    @Override
-    public List<Oppgave> hentAlleOppgaverForBehandling(Long behandlingId) {
-        return getEntityManager().createQuery("Select o FROM Oppgave o where o.behandlingId = :behandlingId ORDER BY o.opprettetTidspunkt desc", Oppgave.class)
-                .setParameter("behandlingId", behandlingId)
+    public List<Oppgave> hentAlleOppgaverForBehandling(UUID uuid) {
+        return getEntityManager().createQuery("Select o FROM Oppgave o where o.eksternId = :uuid ORDER BY o.opprettetTidspunkt desc", Oppgave.class)
+                .setParameter("uuid", uuid)
                 .getResultList();
     }
 

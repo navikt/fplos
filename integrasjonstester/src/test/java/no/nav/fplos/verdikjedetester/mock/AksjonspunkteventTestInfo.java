@@ -8,6 +8,7 @@ import no.nav.vedtak.felles.integrasjon.kafka.Fagsystem;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 import static java.time.temporal.ChronoUnit.MILLIS;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -27,11 +28,12 @@ public class AksjonspunkteventTestInfo {
     private final static String DEFAULT_BEHANDLING_STATUS_KODE = "UTRED";
 
 
-    AksjonspunkteventTestInfo(Long behandlingId, String behandlendeEnhet, Long saksnummer,
+    AksjonspunkteventTestInfo(Long behandlingId, UUID eksternId, String behandlendeEnhet, Long saksnummer,
                               String behandlingtypeKode, String fagsakYtelseTypeKode) {
         behandlingProsessEventDtoBuilder = BehandlingProsessEventDto.builder()
                 .medFagsystem(Fagsystem.FPSAK)
                 .medBehandlingId(behandlingId).medBehandlendeEnhet(behandlendeEnhet)
+                .medEksternId(eksternId)
                 .medBehandlingTypeKode(behandlingtypeKode).medSaksnummer("" + saksnummer)
                 .medYtelseTypeKode(fagsakYtelseTypeKode)
                 .medOpprettetBehandling(LocalDateTime.now().truncatedTo(MILLIS))
@@ -53,7 +55,7 @@ public class AksjonspunkteventTestInfo {
     }
 
     public void sammenligne(OppgaveDto oppgave) {
-        assertThat(oppgave.getBehandlingId()).isEqualTo(behandlingProsessEventDto.getBehandlingId());
+        assertThat(oppgave.getEksternId()).isEqualTo(behandlingProsessEventDto.getEksternId());
         assertThat(oppgave.getOpprettetTidspunkt()).isEqualTo(behandlingProsessEventDto.getOpprettetBehandling());
         assertThat(oppgave.getBehandlingstype().getKode()).isEqualTo(behandlingProsessEventDto.getBehandlingTypeKode());
     }

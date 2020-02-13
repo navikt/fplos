@@ -9,19 +9,19 @@ import java.util.UUID;
 
 public interface AdminTjeneste {
 
-    Oppgave synkroniserOppgave(Long behandlingId);
+    Oppgave synkroniserOppgave(UUID uuid);
 
-    Oppgave hentOppgave(Long behandlingId);
+    Oppgave hentOppgave(UUID uuid);
 
     TilbakekrevingOppgave hentTilbakekrevingOppgave(UUID uuid);
 
-    List<OppgaveEventLogg> hentEventer(Long verdi);
+    List<OppgaveEventLogg> hentEventer(UUID uuid);
 
-    void oppdaterOppgave(Long behandlingId);
+    void oppdaterOppgave(UUID uuid);
 
     int prosesserAlleMeldingerFraFeillogg();
 
-    List<Oppgave> hentAlleOppgaverForBehandling(Long behandlingId);
+    List<Oppgave> hentAlleOppgaverForBehandling(UUID uuid);
 
     Oppgave deaktiverOppgave(Long oppgaveId);
 

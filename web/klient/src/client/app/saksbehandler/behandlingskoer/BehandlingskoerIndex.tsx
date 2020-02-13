@@ -7,7 +7,11 @@ import fpLosApi from 'data/fpLosApi';
 import { getFpsakHref, getFptilbakeHref } from 'app/paths';
 import sakslistePropType from 'saksbehandler/behandlingskoer/sakslistePropType';
 import { Saksliste } from 'saksbehandler/behandlingskoer/sakslisteTsType';
-import { getFpsakUrl, getFptilbakeUrl } from 'app/duck';
+import {
+  getFpsakUrl,
+  getFptilbakeUrl,
+  hentFpsakBehandlingId as hentFpsakBehandlingIdActionCreator,
+} from 'app/duck';
 import { OppgaveStatus } from 'saksbehandler/oppgaveStatusTsType';
 import { Oppgave } from 'saksbehandler/oppgaveTsType';
 import OppgaveErReservertAvAnnenModal from 'saksbehandler/components/OppgaveErReservertAvAnnenModal';
@@ -35,6 +39,7 @@ type TsProps = Readonly<{
   goToUrl: (url: string) => void;
   harTimeout: boolean;
   setValgtSakslisteId: (sakslisteId: number) => void;
+  hentFpsakBehandlingId: (uuid: string) => Promise<{payload: number }>;
 }>
 
 interface StateProps {
@@ -67,6 +72,7 @@ export class BehandlingskoerIndex extends Component<TsProps, StateProps> {
     goToUrl: PropTypes.func.isRequired,
     harTimeout: PropTypes.bool.isRequired,
     setValgtSakslisteId: PropTypes.func.isRequired,
+    hentFpsakBehandlingId: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
@@ -112,8 +118,10 @@ export class BehandlingskoerIndex extends Component<TsProps, StateProps> {
   }
 
   openFagsak = (oppgave: Oppgave) => {
-    const { fpsakUrl, goToUrl } = this.props;
-    goToUrl(getFpsakHref(fpsakUrl, oppgave.saksnummer, oppgave.behandlingId));
+    const { fpsakUrl, goToUrl, hentFpsakBehandlingId } = this.props;
+    hentFpsakBehandlingId(oppgave.eksternId).then((data: {payload: number }) => {
+      goToUrl(getFpsakHref(fpsakUrl, oppgave.saksnummer, data.payload));
+    });
   }
 
   openTilbakesak = (oppgave: Oppgave) => {
@@ -247,6 +255,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
     endreOppgaveReservasjon,
     flyttReservasjon,
     setValgtSakslisteId,
+    hentFpsakBehandlingId: hentFpsakBehandlingIdActionCreator,
   }, dispatch),
 });
 

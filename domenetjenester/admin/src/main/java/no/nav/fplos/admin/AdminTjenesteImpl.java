@@ -35,7 +35,7 @@ public class AdminTjenesteImpl implements AdminTjeneste {
     private KafkaReader kafaReader;
 
     public AdminTjenesteImpl(){
-        //For automatiks laging
+        //For automatisk laging
     }
 
     @Inject
@@ -52,17 +52,17 @@ public class AdminTjenesteImpl implements AdminTjeneste {
     }
 
     @Override
-    public Oppgave synkroniserOppgave(Long behandlingId) {
-        BehandlingFpsak behandlingDto = foreldrepengerBehandlingRestKlient.getBehandling(behandlingId);
+    public Oppgave synkroniserOppgave(UUID uuid) {
+        BehandlingFpsak behandlingDto = foreldrepengerBehandlingRestKlient.getBehandling(uuid);
         if (AVSLUTTET_STATUS.equals(behandlingDto.getStatus())) {
-            adminRepository.deaktiverSisteOppgave(behandlingId);
+            adminRepository.deaktiverSisteOppgave(uuid);
         }
-        return adminRepository.hentSisteOppgave(behandlingId);
+        return adminRepository.hentSisteOppgave(uuid);
     }
 
     @Override
-    public Oppgave hentOppgave(Long behandlingId) {
-        return adminRepository.hentSisteOppgave(behandlingId);
+    public Oppgave hentOppgave(UUID uuid) {
+        return adminRepository.hentSisteOppgave(uuid);
     }
 
     @Override
@@ -71,15 +71,14 @@ public class AdminTjenesteImpl implements AdminTjeneste {
     }
 
     @Override
-    public List<OppgaveEventLogg> hentEventer(Long behandlingId) {
-        return adminRepository.hentEventer(behandlingId);
+    public List<OppgaveEventLogg> hentEventer(UUID uuid) {
+        return adminRepository.hentEventer(uuid);
     }
-
     @Override
-    public void oppdaterOppgave(Long behandlingId) {
-        LOGGER.info("Starter oppdatering av oppgave tilhørende behandling {}", behandlingId);
-        fpsakEventHandler.prosesser(mapTilBehandlingProsessEventDto(behandlingId));
-        LOGGER.info("Oppdatering av oppgave tilhørende behandling {} er fullført", behandlingId);
+    public void oppdaterOppgave(UUID uuid) {
+        LOGGER.info("Starter oppdatering av oppgave tilhørende uuid {}", uuid);
+        fpsakEventHandler.prosesser(mapTilBehandlingProsessEventDto(uuid));
+        LOGGER.info("Oppdatering av oppgave tilhørende uuid {} er fullført", uuid);
     }
 
     @Override
@@ -93,8 +92,8 @@ public class AdminTjenesteImpl implements AdminTjeneste {
     }
 
     @Override
-    public List<Oppgave> hentAlleOppgaverForBehandling(Long behandlingId) {
-        return adminRepository.hentAlleOppgaverForBehandling(behandlingId);
+    public List<Oppgave> hentAlleOppgaverForBehandling(UUID uuid) {
+        return adminRepository.hentAlleOppgaverForBehandling(uuid);
     }
 
     @Override
@@ -107,18 +106,17 @@ public class AdminTjenesteImpl implements AdminTjeneste {
         return adminRepository.aktiverOppgave(oppgaveId);
     }
 
-
-    //TODO: Må lage ny versjon som støtter Fptilbake og benytter UUID
-    private FpsakBehandlingProsessEventDto mapTilBehandlingProsessEventDto(Long behandlingId) {
-        Oppgave eksisterendeOppgave = hentOppgave(behandlingId);
-        BehandlingFpsak fraFpsak = foreldrepengerBehandlingRestKlient.getBehandling(behandlingId);
+    private FpsakBehandlingProsessEventDto mapTilBehandlingProsessEventDto(UUID uuid) {
+        Oppgave eksisterendeOppgave = hentOppgave(uuid);
+        BehandlingFpsak fraFpsak = foreldrepengerBehandlingRestKlient.getBehandling(uuid);
 
         Map<String, String> aksjonspunktKoderMedStatusListe = new HashMap<>();
         fraFpsak.getAksjonspunkter()
                 .forEach(aksjonspunkt -> aksjonspunktKoderMedStatusListe.put(aksjonspunkt.getDefinisjonKode(), aksjonspunkt.getStatusKode()));
 
         return FpsakBehandlingProsessEventDto.builder()
-                .medBehandlingId(behandlingId)
+                .medEksternId(uuid)
+                .medBehandlingId(eksisterendeOppgave.getBehandlingId())
                 .medSaksnummer(eksisterendeOppgave.getFagsakSaksnummer().toString())
                 .medAktørId(eksisterendeOppgave.getAktorId().toString())
                 .medBehandlingStatus(fraFpsak.getStatus())

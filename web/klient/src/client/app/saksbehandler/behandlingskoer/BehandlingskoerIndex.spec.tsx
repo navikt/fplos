@@ -47,6 +47,7 @@ describe('<BehandlingskoerIndex>', () => {
     },
     saksnummer: 12343,
     behandlingId: 1,
+    eksternId: 'd10e592c-e5bd-4f24-95a6-8eb1ed48f068',
     personnummer: 1234567891,
     navn: 'Espen Uteligger',
     system: 'FPSAK',
@@ -80,6 +81,7 @@ describe('<BehandlingskoerIndex>', () => {
       goToUrl={sinon.spy()}
       harTimeout={false}
       setValgtSakslisteId={sinon.spy()}
+      hentFpsakBehandlingId={sinon.spy()}
     />);
 
     expect(wrapper.find(SakslistePanel)).to.have.length(0);
@@ -105,6 +107,7 @@ describe('<BehandlingskoerIndex>', () => {
       goToUrl={sinon.spy()}
       harTimeout={false}
       setValgtSakslisteId={sinon.spy()}
+      hentFpsakBehandlingId={sinon.spy()}
     />);
 
     expect(wrapper.find(SakslistePanel)).to.have.length(1);
@@ -117,6 +120,47 @@ describe('<BehandlingskoerIndex>', () => {
         erReservert: true,
         erReservertAvInnloggetBruker: true,
       },
+    });
+    const hentFpsakBehandlingId = sinon.spy();
+    const goToUrl = sinon.spy();
+    const wrapper = shallow(<BehandlingskoerIndex
+      fpsakUrl="www.fpsak.no"
+      fptilbakeUrl="www.fptilbake.no"
+      fetchOppgaverTilBehandling={sinon.spy()}
+      fetchReserverteOppgaver={sinon.spy()}
+      fetchAlleSakslister={sinon.spy()}
+      reserverOppgave={reserverOppgave}
+      opphevOppgaveReservasjon={sinon.spy()}
+      forlengOppgaveReservasjon={sinon.spy()}
+      endreOppgaveReservasjon={sinon.spy()}
+      fetchOppgaverTilBehandlingOppgaver={sinon.spy()}
+      flyttReservasjon={sinon.spy()}
+      sakslister={sakslister}
+      goToUrl={goToUrl}
+      harTimeout={false}
+      setValgtSakslisteId={sinon.spy()}
+      hentFpsakBehandlingId={hentFpsakBehandlingId}
+    />);
+
+    const panel = wrapper.find(SakslistePanel);
+    expect(panel).to.have.length(1);
+
+    await panel.prop('reserverOppgave')(oppgave);
+
+    expect(reserverOppgave.calledOnce).to.be.true;
+
+    expect(hentFpsakBehandlingId.calledOnce).to.be.true;
+    console.log(hentFpsakBehandlingId); // eslint-disable-line
+
+    const { args } = hentFpsakBehandlingId.getCalls()[0];
+    expect(args).to.have.length(1);
+    expect(args[0]).to.eql(oppgave.eksternId);
+  });
+
+  it('skal ikke reservere men kun åpne sak i FPSAK når oppgave allerede er reservert', () => {
+    const reserverOppgave = sinon.spy();
+    const hentFpsakBehandlingId = sinon.stub().withArgs(oppgave.eksternId).resolves({
+      payload: 1,
     });
     const goToUrl = sinon.spy();
     const wrapper = shallow(<BehandlingskoerIndex
@@ -135,39 +179,7 @@ describe('<BehandlingskoerIndex>', () => {
       goToUrl={goToUrl}
       harTimeout={false}
       setValgtSakslisteId={sinon.spy()}
-    />);
-
-    const panel = wrapper.find(SakslistePanel);
-    expect(panel).to.have.length(1);
-
-    await panel.prop('reserverOppgave')(oppgave);
-
-    expect(reserverOppgave.calledOnce).to.be.true;
-    expect(goToUrl.calledOnce).to.be.true;
-    const { args } = goToUrl.getCalls()[0];
-    expect(args).to.have.length(1);
-    expect(args[0]).to.eql('www.fpsak.no/fagsak/12343/behandling/1/?punkt=default&fakta=default');
-  });
-
-  it('skal ikke reservere men kun åpne sak i FPSAK når oppgave allerede er reservert', () => {
-    const reserverOppgave = sinon.spy();
-    const goToUrl = sinon.spy();
-    const wrapper = shallow(<BehandlingskoerIndex
-      fpsakUrl="www.fpsak.no"
-      fptilbakeUrl="www.fptilbake.no"
-      fetchOppgaverTilBehandling={sinon.spy()}
-      fetchReserverteOppgaver={sinon.spy()}
-      fetchAlleSakslister={sinon.spy()}
-      reserverOppgave={reserverOppgave}
-      opphevOppgaveReservasjon={sinon.spy()}
-      forlengOppgaveReservasjon={sinon.spy()}
-      endreOppgaveReservasjon={sinon.spy()}
-      fetchOppgaverTilBehandlingOppgaver={sinon.spy()}
-      flyttReservasjon={sinon.spy()}
-      sakslister={sakslister}
-      goToUrl={goToUrl}
-      harTimeout={false}
-      setValgtSakslisteId={sinon.spy()}
+      hentFpsakBehandlingId={hentFpsakBehandlingId}
     />);
 
     const panel = wrapper.find(SakslistePanel);
@@ -183,10 +195,10 @@ describe('<BehandlingskoerIndex>', () => {
     panel.prop('reserverOppgave')(reservertOppgave);
 
     expect(reserverOppgave.calledOnce).to.be.false;
-    expect(goToUrl.calledOnce).to.be.true;
-    const { args } = goToUrl.getCalls()[0];
+    expect(hentFpsakBehandlingId.calledOnce).to.be.true;
+    const { args } = hentFpsakBehandlingId.getCalls()[0];
     expect(args).to.have.length(1);
-    expect(args[0]).to.eql('www.fpsak.no/fagsak/12343/behandling/1/?punkt=default&fakta=default');
+    expect(args[0]).to.eql(oppgave.eksternId);
   });
 
   it('skal hente sakslistens oppgaver og så starta polling etter endringer', async () => {
@@ -220,6 +232,7 @@ describe('<BehandlingskoerIndex>', () => {
       goToUrl={sinon.spy()}
       harTimeout={false}
       setValgtSakslisteId={sinon.spy()}
+      hentFpsakBehandlingId={sinon.spy()}
     />);
 
     const panel = wrapper.find(SakslistePanel);
@@ -258,6 +271,7 @@ describe('<BehandlingskoerIndex>', () => {
       goToUrl={sinon.spy()}
       harTimeout={false}
       setValgtSakslisteId={sinon.spy()}
+      hentFpsakBehandlingId={sinon.spy()}
     />);
 
     const panel = wrapper.find(SakslistePanel);
@@ -300,6 +314,7 @@ describe('<BehandlingskoerIndex>', () => {
       goToUrl={sinon.spy()}
       harTimeout={false}
       setValgtSakslisteId={sinon.spy()}
+      hentFpsakBehandlingId={sinon.spy()}
     />);
 
     const panel = wrapper.find(SakslistePanel);
@@ -340,6 +355,7 @@ describe('<BehandlingskoerIndex>', () => {
       goToUrl={sinon.spy()}
       harTimeout={false}
       setValgtSakslisteId={sinon.spy()}
+      hentFpsakBehandlingId={sinon.spy()}
     />);
 
     const panel = wrapper.find(SakslistePanel);
@@ -383,6 +399,7 @@ describe('<BehandlingskoerIndex>', () => {
       goToUrl={sinon.spy()}
       harTimeout
       setValgtSakslisteId={sinon.spy()}
+      hentFpsakBehandlingId={sinon.spy()}
     />);
 
     expect(wrapper.find(BehandlingPollingTimoutModal)).to.have.length(1);

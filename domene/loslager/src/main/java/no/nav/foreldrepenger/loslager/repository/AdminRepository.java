@@ -9,13 +9,13 @@ import java.util.List;
 import java.util.UUID;
 
 public interface AdminRepository {
-    void deaktiverSisteOppgave(Long behandlingId);
 
-    Oppgave hentSisteOppgave(Long behandlingId);
+    void deaktiverSisteOppgave(UUID uuid);
 
-    TilbakekrevingOppgave hentSisteTilbakekrevingOppgave(UUID behandlingId);
+    Oppgave hentSisteOppgave(UUID uuid);
 
-    List<OppgaveEventLogg> hentEventer(Long behandlingId);
+    List<OppgaveEventLogg> hentEventer(UUID uuid);
+    TilbakekrevingOppgave hentSisteTilbakekrevingOppgave(UUID uuid);
 
     List<Oppgave> hentAlleAktiveOppgaver();
 
@@ -23,7 +23,7 @@ public interface AdminRepository {
 
     void markerFerdig(Long feilloggId);
 
-    List<Oppgave> hentAlleOppgaverForBehandling(Long behandlingId);
+    List<Oppgave> hentAlleOppgaverForBehandling(UUID uuid);
 
     Oppgave deaktiverOppgave(Long oppgaveId);
 

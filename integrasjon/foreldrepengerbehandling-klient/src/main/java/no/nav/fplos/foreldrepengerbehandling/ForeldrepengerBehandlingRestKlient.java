@@ -30,6 +30,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.UUID;
 
 import static no.nav.fplos.foreldrepengerbehandling.Aksjonspunkt.aksjonspunktFra;
 
@@ -61,6 +62,7 @@ public class ForeldrepengerBehandlingRestKlient {
         this.fpsakBaseUrl = fpsakUrl;
     }
 
+    // @TODO denne metoden skal portes til å bruke UUID
     public BehandlingFpsak getBehandling(Long behandlingId) {
         URIBuilder uriBuilder = new URIBuilder(URI.create(fpsakBaseUrl + FPSAK_BEHANDLINGER));
         uriBuilder.setParameter("behandlingId", String.valueOf(behandlingId));
@@ -95,6 +97,70 @@ public class ForeldrepengerBehandlingRestKlient {
         }
     }
 
+    public BehandlingFpsak getBehandling(UUID behandlingUUID) {
+        URIBuilder uriBuilder = new URIBuilder(URI.create(fpsakBaseUrl + FPSAK_BEHANDLINGER));
+        uriBuilder.setParameter("behandlingUuid", behandlingUUID.toString());
+        ContainerLogin loginContext = new ContainerLogin();
+        loginContext.login();
+
+        try {
+            LOGGER.info("Slår opp i fpsak for behandlingUuid {} per GET-kall til {}", behandlingUUID, uriBuilder.build());
+            UtvidetBehandlingDto response = oidcRestClient.get(uriBuilder.build(), UtvidetBehandlingDto.class);
+            List<ResourceLink> links = response.getLinks();
+            BehandlingFpsak.Builder builder = BehandlingFpsak.builder()
+                    .medBehandlingId(response.getId())
+                    .medUuid(response.getUuid())
+                    .medType(response.getType().getKode())
+                    .medBehandlendeEnhet(response.getBehandlendeEnhetId())
+                    .medBehandlendeEnhetNavn(response.getBehandlendeEnhetNavn())
+                    .medStatus(response.getStatus().getKode())
+                    .medAnsvarligSaksbehandler(response.getAnsvarligSaksbehandler())
+                    .medBehandlingstidFrist(response.getBehandlingsfristTid())
+                    .medFørsteUttaksdag(hentFørsteUttaksdato(links))
+                    .medAksjonspunkter(hentAksjonspunkter(links));
+            hentUttakKontrollerFaktaPerioder(behandlingUUID, builder, links);
+            return builder.build();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        } finally {
+            loginContext.logout();
+        }
+    }
+
+    public Optional<UUID> getBehandlingUUID(Long behandlingId) {
+        URIBuilder uriBuilder = new URIBuilder(URI.create(fpsakBaseUrl + FPSAK_BEHANDLINGER));
+        uriBuilder.setParameter("behandlingId", String.valueOf(behandlingId));
+        ContainerLogin loginContext = new ContainerLogin();
+        loginContext.login();
+
+        try {
+            LOGGER.info("Slår opp UUID i fpsak for behandlingId {} per GET-kall til {}", behandlingId, uriBuilder.build());
+            UtvidetBehandlingDto response = oidcRestClient.get(uriBuilder.build(), UtvidetBehandlingDto.class);
+            return Optional.ofNullable(response.getUuid());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        } finally {
+            loginContext.logout();
+        }
+    }
+
+    public Optional<Long> getBehandlingIdFraUUID(UUID uuid) {
+        URIBuilder uriBuilder = new URIBuilder(URI.create(fpsakBaseUrl + FPSAK_BEHANDLINGER));
+        uriBuilder.setParameter("behandlingId", String.valueOf(uuid));
+        ContainerLogin loginContext = new ContainerLogin();
+        loginContext.login();
+
+        try {
+            LOGGER.info("Slår opp behandlingId i fpsak for behandling med uuid {} per GET-kall til {}", uuid, uriBuilder.build());
+            UtvidetBehandlingDto response = oidcRestClient.get(uriBuilder.build(), UtvidetBehandlingDto.class);
+            return Optional.ofNullable(response.getId());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        } finally {
+            loginContext.logout();
+        }
+    }
+
     private static Boolean utlandFra(List<Aksjonspunkt> aksjonspunkter) {
         return aksjonspunkter.stream()
                 .anyMatch(Aksjonspunkt::erUtenlandssak);
@@ -121,6 +187,7 @@ public class ForeldrepengerBehandlingRestKlient {
                 .orElse(null);
     }
 
+    //@Deprecated
     private void hentUttakKontrollerFaktaPerioder(Long behandlingId, BehandlingFpsak.Builder builder, List<ResourceLink> links) {
         Optional<ResourceLink> uttakLink = velgLink(links, UTTAK_KONTROLLER_FAKTA_PERIODER_LINK);
         if (uttakLink.isPresent()) {
@@ -137,6 +204,18 @@ public class ForeldrepengerBehandlingRestKlient {
     private boolean harVurderSykdom(KontrollerFaktaDataDto kontrollerFaktaDataDto) {
         return kontrollerFaktaDataDto.getPerioder().stream()
                 .anyMatch(KontrollerFaktaPeriodeDto::gjelderSykdom);
+    }
+
+    private void hentUttakKontrollerFaktaPerioder(UUID behandlingUuid, BehandlingFpsak.Builder builder, List<ResourceLink> links) {
+        Optional<ResourceLink> uttakLink = velgLink(links, UTTAK_KONTROLLER_FAKTA_PERIODER_LINK);
+        if (uttakLink.isPresent()) {
+            Optional<KontrollerFaktaDataDto> kontrollerFaktaData = hentFraResourceLink(uttakLink.get(), KontrollerFaktaDataDto.class);
+            if (kontrollerFaktaData.isPresent()) {
+                builder.medHarGradering(harGraderingFra(kontrollerFaktaData.get()));
+            } else {
+                LOGGER.error("Feilet å hente gradering for behandlingId " + behandlingUuid);
+            }
+        }
     }
 
     private <T> Optional<T> hentFraResourceLink(ResourceLink resourceLink, Class<T> clazz) {

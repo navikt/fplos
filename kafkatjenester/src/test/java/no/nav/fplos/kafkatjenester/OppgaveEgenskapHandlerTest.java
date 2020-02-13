@@ -19,16 +19,19 @@ import javax.persistence.EntityManager;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static java.util.Collections.emptyList;
-import static no.nav.foreldrepenger.loslager.oppgave.AndreKriterierType.*;
+import static no.nav.foreldrepenger.loslager.oppgave.AndreKriterierType.PAPIRSØKNAD;
+import static no.nav.foreldrepenger.loslager.oppgave.AndreKriterierType.UTLANDSSAK;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
 public class OppgaveEgenskapHandlerTest {
+
+    private static final UUID eksternID = UUID.nameUUIDFromBytes("test_uuid".getBytes());
 
     @Rule
     public UnittestRepositoryRule repoRule = new UnittestRepositoryRule();
@@ -110,7 +113,7 @@ public class OppgaveEgenskapHandlerTest {
     private Oppgave lagOppgave() {
         Oppgave oppgave = Oppgave.builder()
                 .medFagsakSaksnummer(42L)
-                .medBehandlingId(1L)
+                .medEksternId(eksternID)
                 .medAktorId(1L)
                 .medFagsakYtelseType(FagsakYtelseType.FORELDREPENGER)
                 .medBehandlingType(BehandlingType.FØRSTEGANGSSØKNAD)

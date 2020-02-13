@@ -4,12 +4,15 @@ import no.nav.foreldrepenger.los.web.app.tjenester.felles.dto.OppgaveDto;
 import no.nav.foreldrepenger.loslager.oppgave.BehandlingType;
 import no.nav.foreldrepenger.loslager.oppgave.FagsakYtelseType;
 
+import java.util.UUID;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class MeldingsTestInfo {
 
     private final Long behandlingId;
     private final Long saksnummer;
+    private final UUID eksternId;
     //private final Boolean aktiv;
     private String aktørId;
     private final String behandlingTypeKode;
@@ -21,16 +24,18 @@ public class MeldingsTestInfo {
     private static Long DEFAULT_ID_COUNTER = -1L;
 
 
-    MeldingsTestInfo(Long behandlingId, Long saksnummer, String aktørId, BehandlingType behandlingType, FagsakYtelseType ytelseType) {
+    MeldingsTestInfo(Long behandlingId, UUID eksternId, Long saksnummer, String aktørId, BehandlingType behandlingType, FagsakYtelseType ytelseType) {
         this.behandlingId = behandlingId;
+        this.eksternId = eksternId;
         this.aktørId = aktørId;
         this.saksnummer = saksnummer;
         this.behandlingTypeKode = behandlingType.getKode();
         this.ytelseTypeKode = ytelseType.getKode();
     }
 
-    MeldingsTestInfo(Long behandlingId, String aktørId){
+    MeldingsTestInfo(Long behandlingId, UUID eksternId, String aktørId){
         this.behandlingId = behandlingId;
+        this.eksternId = eksternId;
         this.aktørId = aktørId;
         this.saksnummer = hentNesteId();
         behandlingTypeKode = BehandlingType.FØRSTEGANGSSØKNAD.getKode();
@@ -45,8 +50,10 @@ public class MeldingsTestInfo {
 
 
     String tilmeldingstekst(){
-        return "{ \"fagsystem\": \"FPSAK\", \"behandlingId\": "+behandlingId+", \"saksnummer\": "+ saksnummer +", \"aktørId\":\""+ aktørId + "\", \"behandlendeEnhet\":\""+ behandlendeEnhet + "\", \"behandlingTypeKode\":\""+ behandlingTypeKode+"\", \"ytelseTypeKode\":\""+ ytelseTypeKode+"\"}";
+        return "{ \"fagsystem\": \"FPSAK\", \"behandlingId\": "+behandlingId+",\"eksternId\": \""+eksternId+"\", \"saksnummer\": "+ saksnummer +", \"aktørId\":\""+ aktørId + "\", \"behandlendeEnhet\":\""+ behandlendeEnhet + "\", \"behandlingTypeKode\":\""+ behandlingTypeKode+"\", \"ytelseTypeKode\":\""+ ytelseTypeKode+"\"}";
     }
+
+    public String getFagsystem(){ return "FPSAK"; }
 
     public String getBehandlendeEnhet() {
         return behandlendeEnhet;
@@ -55,6 +62,8 @@ public class MeldingsTestInfo {
     public Long getBehandlingId() {
         return behandlingId;
     }
+
+    public UUID getEksternId() {return eksternId;}
 
     public Long getSaksnummer() {
         return saksnummer;

@@ -156,13 +156,13 @@ public class OppgaveDto {
         if (saksnummer.equals(oppgaveDto.saksnummer)) {
             return true;
         }
-        return behandlingId.equals(oppgaveDto.behandlingId);
+        return eksternId.equals(oppgaveDto.eksternId);
     }
 
     @Override
     public int hashCode() {
         int result = saksnummer.hashCode();
-        return 31 * result + behandlingId.hashCode();
+        return 31 * result + eksternId.hashCode();
     }
 
     private static String formaterMedStoreOgSmåBokstaver(String tekst) {

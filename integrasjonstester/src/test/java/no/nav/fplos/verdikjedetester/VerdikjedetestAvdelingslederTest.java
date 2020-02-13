@@ -250,6 +250,7 @@ public class VerdikjedetestAvdelingslederTest {
 
     private BehandlingFpsak lagBehandlingDto(){
         return BehandlingFpsak.builder()
+                //.medUuid(UUID.nameUUIDFromBytes("TEST_UUID".getBytes()))
                 .medAksjonspunkter(List.of(new Aksjonspunkt.Builder().medDefinisjon(Aksjonspunkt.TIL_BESLUTTER_KODE).medStatus(Aksjonspunkt.STATUSKODE_AKTIV).build()))
                 .medBehandlendeEnhetNavn("NAV")
                 .medStatus("-")

@@ -1,23 +1,21 @@
 package no.nav.foreldrepenger.los.feed.poller;
 
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
-import java.util.Iterator;
-
-import javax.enterprise.inject.Instance;
-
-//import ch.qos.logback.classic.Level;
 import no.nav.foreldrepenger.dbstoette.UnittestRepositoryRule;
-import org.assertj.core.api.Assertions;
-import org.junit.After;
+import no.nav.vedtak.felles.testutilities.cdi.CdiRunner;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import javax.enterprise.inject.Instance;
+import java.util.Iterator;
+
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
+//import ch.qos.logback.classic.Level;
 //import no.nav.modig.core.test.LogSniffer;
-import no.nav.vedtak.felles.testutilities.cdi.CdiRunner;
 
 @RunWith(CdiRunner.class)
 public class FeedPollerManagerTest {
