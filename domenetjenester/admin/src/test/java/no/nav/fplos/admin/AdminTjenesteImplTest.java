@@ -23,6 +23,7 @@ import javax.persistence.EntityManager;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -45,9 +46,9 @@ public class AdminTjenesteImplTest {
 
     private static String AVDELING_DRAMMEN_ENHET = "4806";
 
-    private Oppgave førstegangOppgave = Oppgave.builder().dummyOppgave(AVDELING_DRAMMEN_ENHET).medBehandlingId(1L).medBehandlingType(BehandlingType.FØRSTEGANGSSØKNAD).medAktiv(true).build();
-    private Oppgave klageOppgave = Oppgave.builder().dummyOppgave(AVDELING_DRAMMEN_ENHET).medBehandlingId(2L).medBehandlingType(BehandlingType.KLAGE).medAktiv(true).build();
-    private Oppgave innsynOppgave = Oppgave.builder().dummyOppgave(AVDELING_DRAMMEN_ENHET).medBehandlingId(3L).medBehandlingType(BehandlingType.INNSYN).medAktiv(true).build();
+    private Oppgave førstegangOppgave = Oppgave.builder().dummyOppgave(AVDELING_DRAMMEN_ENHET).medBehandlingId(1L).medBehandlingType(BehandlingType.FØRSTEGANGSSØKNAD).medAktiv(true).medEksternId(UUID.nameUUIDFromBytes("1".getBytes())).build();
+    private Oppgave klageOppgave = Oppgave.builder().dummyOppgave(AVDELING_DRAMMEN_ENHET).medBehandlingId(2L).medBehandlingType(BehandlingType.KLAGE).medAktiv(true).medEksternId(UUID.nameUUIDFromBytes("2".getBytes())).build();
+    private Oppgave innsynOppgave = Oppgave.builder().dummyOppgave(AVDELING_DRAMMEN_ENHET).medBehandlingId(3L).medBehandlingType(BehandlingType.INNSYN).medAktiv(true).medEksternId(UUID.nameUUIDFromBytes("3".getBytes())).build();
     private LocalDateTime aksjonspunktFrist = null;
 
     private void leggeInnEtSettMedOppgaver(){
@@ -59,7 +60,7 @@ public class AdminTjenesteImplTest {
     @Test
     public void testHentOppgave(){
         leggeInnEtSettMedOppgaver();
-        Oppgave oppgave = adminTjeneste.hentOppgave(førstegangOppgave.getBehandlingId());
+        Oppgave oppgave = adminTjeneste.hentOppgave(førstegangOppgave.getEksternId());
         assertThat(oppgave).isNotNull();
         assertThat(oppgave.getId()).isEqualTo(førstegangOppgave.getId());
         assertThat(oppgave.getAktiv()).isEqualTo(førstegangOppgave.getAktiv());
@@ -68,23 +69,23 @@ public class AdminTjenesteImplTest {
     @Test
     public void testHentEvent(){
         oppgaveRepository.lagre(new OppgaveEventLogg(førstegangOppgave.getEksternId(), OppgaveEventType.OPPRETTET, null, null, førstegangOppgave.getBehandlingId()));
-        List<OppgaveEventLogg> oppgave = adminTjeneste.hentEventer(førstegangOppgave.getBehandlingId());
+        List<OppgaveEventLogg> oppgave = adminTjeneste.hentEventer(førstegangOppgave.getEksternId());
         assertThat(oppgave).isNotEmpty();
     }
 
     @Test
     public void testOppfriskOppgaveIkkeLukket(){
         leggeInnEtSettMedOppgaver();
-        when(foreldrepengerBehandlingRestKlient.getBehandling(any())).thenReturn(lagBehandlingDto());
-        Oppgave oppgave = adminTjeneste.synkroniserOppgave(førstegangOppgave.getBehandlingId());
+        when(foreldrepengerBehandlingRestKlient.getBehandling(any(UUID.class))).thenReturn(lagBehandlingDto());
+        Oppgave oppgave = adminTjeneste.synkroniserOppgave(førstegangOppgave.getEksternId());
         assertThat(oppgave.getAktiv()).isTrue();
     }
 
     @Test
     public void testOppfriskOppgaveLukket(){
         leggeInnEtSettMedOppgaver();
-        when(foreldrepengerBehandlingRestKlient.getBehandling(any())).thenReturn(lagBehandlingAvsluttetDto());
-        Oppgave oppgave = adminTjeneste.synkroniserOppgave(førstegangOppgave.getBehandlingId());
+        when(foreldrepengerBehandlingRestKlient.getBehandling(any(UUID.class))).thenReturn(lagBehandlingAvsluttetDto());
+        Oppgave oppgave = adminTjeneste.synkroniserOppgave(førstegangOppgave.getEksternId());
         assertThat(oppgave.getAktiv()).isFalse();
     }
 

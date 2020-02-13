@@ -48,6 +48,7 @@ const fpLosApiKeys = {
   SAKSLISTE_SAKSBEHANDLERE: 'SAKSLISTE_SAKSBEHANDLERE',
   BEHANDLINGSKO_OPPGAVE_ANTALL: 'BEHANDLINGSKO_OPPGAVE_ANTALL',
   HENT_NYE_OG_FERDIGSTILTE_OPPGAVER: 'HENT_NYE_OG_FERDIGSTILTE_OPPGAVER',
+  FPSAK_BEHANDLING_ID: 'FPSAK_BEHANDLING_ID',
 };
 
 const endpoints = new RestApiConfigBuilder()
@@ -113,12 +114,15 @@ const endpoints = new RestApiConfigBuilder()
   .withGet('/api/avdelingsleder/nokkeltall/behandlinger-forste-stonadsdag', fpLosApiKeys.HENT_OPPGAVER_PER_FORSTE_STONADSDAG)
 
   /* /api/konfig */
-    .withGet('/api/konfig/fpsak-url', fpLosApiKeys.FPSAK_URL)
-    .withGet('/api/konfig/fptilbake-url', fpLosApiKeys.FPTILBAKE_URL)
-    .withGet('/api/konfig/feature-toggles', fpLosApiKeys.FEATURE_TOGGLES)
+  .withGet('/api/konfig/fpsak-url', fpLosApiKeys.FPSAK_URL)
+  .withGet('/api/konfig/fptilbake-url', fpLosApiKeys.FPTILBAKE_URL)
+  .withGet('/api/konfig/feature-toggles', fpLosApiKeys.FEATURE_TOGGLES)
 
   /* /api/kodeverk */
   .withGet('/api/kodeverk', fpLosApiKeys.KODEVERK)
+
+  /* /api/fpsak/behandlinger */
+  .withGet('/api/fpsak/behandlingId', fpLosApiKeys.FPSAK_BEHANDLING_ID)
 
   .build();
 

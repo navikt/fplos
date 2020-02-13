@@ -3,8 +3,8 @@ import React from 'react';
 import { expect } from 'chai';
 import { shallow } from 'enzyme';
 import Lenke from 'nav-frontend-lenker';
-
-import SistBehandledeSaker from './SistBehandledeSaker';
+import sinon from 'sinon';
+import { SistBehandledeSaker } from './SistBehandledeSaker';
 
 describe('<SistBehandledeSaker>', () => {
   it('skal vise sist behandlede saker som lenker i en liste', () => {
@@ -14,7 +14,7 @@ describe('<SistBehandledeSaker>', () => {
         erReservert: false,
       },
       saksnummer: 1,
-      behandlingId: 1,
+      eksternId: '9280ce92-0958-43b5-89ef-9c57838f9e6d',
       personnummer: '123456789',
       navn: 'Espen Utvikler',
       system: 'FPSAK',
@@ -39,7 +39,7 @@ describe('<SistBehandledeSaker>', () => {
         erReservert: false,
       },
       saksnummer: 2,
-      behandlingId: 2,
+      eksternId: 'd2e74e79-5662-4a09-be3f-52fbcdf109ad',
       personnummer: '657643535',
       navn: 'Espen Solstråle',
       system: 'FPSAK',
@@ -63,13 +63,12 @@ describe('<SistBehandledeSaker>', () => {
     const wrapper = shallow(<SistBehandledeSaker
       fpsakUrl="www.fpsak.no"
       sistBehandledeSaker={oppgaver}
+      hentFpsakBehandlingId={sinon.spy()}
     />);
 
     const links = wrapper.find(Lenke);
     expect(links).to.have.length(2);
-    expect(links.first().prop('href')).to.eql('www.fpsak.no/fagsak/1/behandling/1/?punkt=default&fakta=default');
     expect(links.first().childAt(0).text()).to.eql('Espen Utvikler 123456789');
-    expect(links.last().prop('href')).to.eql('www.fpsak.no/fagsak/2/behandling/2/?punkt=default&fakta=default');
     expect(links.last().childAt(0).text()).to.eql('Espen Solstråle 657643535');
   });
 
@@ -78,6 +77,7 @@ describe('<SistBehandledeSaker>', () => {
     const wrapper = shallow(<SistBehandledeSaker
       fpsakUrl="www.fpsak.no"
       sistBehandledeSaker={oppgaver}
+      hentFpsakBehandlingId={sinon.spy()}
     />);
 
     expect(wrapper.find(Lenke)).to.have.length(0);

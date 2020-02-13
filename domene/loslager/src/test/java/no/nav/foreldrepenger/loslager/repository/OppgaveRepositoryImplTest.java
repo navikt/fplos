@@ -194,8 +194,8 @@ public class OppgaveRepositoryImplTest {
 
 
     private void lagStandardSettMedOppgaver() {
-        Oppgave andreOppgave = Oppgave.builder().dummyOppgave(AVDELING_DRAMMEN_ENHET).medEksternId(uuid1).medFagsakSaksnummer(111L).medBehandlingOpprettet(LocalDateTime.now().minusDays(9)).medBehandlingsfrist(LocalDateTime.now().plusDays(5)).build();
-        Oppgave førsteOppgave = Oppgave.builder().dummyOppgave(AVDELING_DRAMMEN_ENHET).medEksternId(uuid2).medFagsakSaksnummer(222L).medBehandlingOpprettet(LocalDateTime.now().minusDays(10)).medBehandlingsfrist(LocalDateTime.now().plusDays(10)).build();
+        Oppgave førsteOppgave = Oppgave.builder().dummyOppgave(AVDELING_DRAMMEN_ENHET).medEksternId(uuid1).medFagsakSaksnummer(111L).medBehandlingOpprettet(LocalDateTime.now().minusDays(10)).medBehandlingsfrist(LocalDateTime.now().plusDays(10)).build();
+        Oppgave andreOppgave = Oppgave.builder().dummyOppgave(AVDELING_DRAMMEN_ENHET).medEksternId(uuid2).medFagsakSaksnummer(222L).medBehandlingOpprettet(LocalDateTime.now().minusDays(9)).medBehandlingsfrist(LocalDateTime.now().plusDays(5)).build();
         Oppgave tredjeOppgave = Oppgave.builder().dummyOppgave(AVDELING_DRAMMEN_ENHET).medEksternId(uuid3).medFagsakSaksnummer(333L).medBehandlingOpprettet(LocalDateTime.now().minusDays(8)).medBehandlingsfrist(LocalDateTime.now().plusDays(15)).build();
         Oppgave fjerdeOppgave = Oppgave.builder().dummyOppgave(AVDELING_DRAMMEN_ENHET).medEksternId(uuid4).medFagsakSaksnummer(444L).medBehandlingOpprettet(LocalDateTime.now()).medBehandlingsfrist(LocalDateTime.now()).build();
         repository.lagre(førsteOppgave);
@@ -255,7 +255,7 @@ public class OppgaveRepositoryImplTest {
         Oppgave oppgaveKommerPåNytt = lagOppgave(AVDELING_DRAMMEN_ENHET);
         oppgaveRepository.opprettOppgave(oppgave);
         assertThat(repository.hentAlle(Oppgave.class)).hasSize(1);
-        oppgaveRepository.avsluttOppgave(oppgave.getBehandlingId());
+        oppgaveRepository.avsluttOppgaveForEksternId(oppgave.getEksternId());
         oppgaveRepository.opprettOppgave(oppgaveKommerPåNytt);
         assertThat(repository.hentAlle(Oppgave.class)).hasSize(2);
     }
@@ -271,7 +271,7 @@ public class OppgaveRepositoryImplTest {
         assertThat(siste().getAktiv()).isTrue();
         assertThat(første().getOpprettetTidspunkt()).isBefore(siste().getOpprettetTidspunkt());
 
-        oppgaveRepository.avsluttOppgave(første.getBehandlingId());
+        oppgaveRepository.avsluttOppgaveForEksternId(første.getEksternId());
         assertThat(første().getAktiv()).isTrue();
         assertThat(siste().getAktiv()).isFalse();
     }
@@ -293,6 +293,7 @@ public class OppgaveRepositoryImplTest {
 
     private Oppgave lagOppgave(String behandlendeEnhet){
         return Oppgave.builder().medBehandlingId(1L).medFagsakSaksnummer(1337L)
+                .medEksternId(uuid1)
                 .medAktorId(5000000L).medBehandlendeEnhet(behandlendeEnhet)
                 .medBehandlingType(BehandlingType.FØRSTEGANGSSØKNAD)
                 .medFagsakYtelseType(FagsakYtelseType.FORELDREPENGER)

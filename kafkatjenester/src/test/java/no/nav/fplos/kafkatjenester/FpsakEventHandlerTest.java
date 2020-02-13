@@ -43,6 +43,7 @@ public class FpsakEventHandlerTest {
     private ForeldrepengerBehandlingRestKlient foreldrepengerBehandlingRestKlient = mock(ForeldrepengerBehandlingRestKlient.class);
     private FpsakEventHandler fpsakEventHandler = new FpsakEventHandler(oppgaveRepository, foreldrepengerBehandlingRestKlient, oppgaveEgenskapHandler);
     private static Long behandlingId = 1073051L;
+    private static UUID uuid = UUID.nameUUIDFromBytes("TEST".getBytes());//UUID.fromString("027961C0-1DA9-1D46-AFAA-0BBAE024758C");
     private static String fagsystem = "FPSAK";
 
     private LocalDateTime aksjonspunktFrist = null;
@@ -74,14 +75,14 @@ public class FpsakEventHandlerTest {
 
     FpsakBehandlingProsessEventDto eventDrammenFra(Map<String, String> aksjonspunktmap){
         return (FpsakBehandlingProsessEventDto) prosessBuilderFra(aksjonspunktmap)
-                .medEksternId(UUID.nameUUIDFromBytes(behandlingId.toString().getBytes()))
+                .medEksternId(uuid)
                 .medBehandlendeEnhet("4802")
                 .build();
     }
 
     private FpsakBehandlingProsessEventDto eventStordFra(Map<String, String> aksjonspunktmap){
         return (FpsakBehandlingProsessEventDto) prosessBuilderFra(aksjonspunktmap)
-                .medEksternId(UUID.nameUUIDFromBytes(behandlingId.toString().getBytes()))
+                .medEksternId(uuid)
                 .medBehandlendeEnhet("4842")
                 .build();
     }
@@ -107,6 +108,7 @@ public class FpsakEventHandlerTest {
         return FpsakBehandlingProsessEventDto.builder()
                 .medFagsystem(Fagsystem.FPSAK)
                 .medEksternId(UUID.nameUUIDFromBytes(behandlingId.toString().getBytes()))
+                .medEksternId(uuid)
                 .medBehandlingId(behandlingId)
                 .medSaksnummer("135701264")
                 .medAktørId("9000000030703")
@@ -121,21 +123,21 @@ public class FpsakEventHandlerTest {
 
     private static BehandlingFpsak behandlingDtoFra(List<Aksjonspunkt> aksjonspunkter) {
         return behandlingBuilderMal()
-                .medUuid(UUID.nameUUIDFromBytes(behandlingId.toString().getBytes()))
+                .medUuid(uuid)
                 .medAksjonspunkter(aksjonspunkter)
                 .build();
     }
 
     private static BehandlingFpsak behandlingDtoMedManueltMarkertUtlandsakFra(List<Aksjonspunkt> aksjonspunkter){
         return behandlingBuilderMal()
-                .medUuid(UUID.nameUUIDFromBytes(behandlingId.toString().getBytes()))
+                .medUuid(uuid)
                 .medAksjonspunkter(aksjonspunkter)
                 .build();
     }
 
     private BehandlingFpsak lagBehandlingDtoMedHarGradering(List<Aksjonspunkt> aksjonspunkter){
         return behandlingBuilderMal()
-                .medUuid(UUID.nameUUIDFromBytes(behandlingId.toString().getBytes()))
+                .medUuid(uuid)
                 .medHarGradering(true)
                 .medAksjonspunkter(aksjonspunkter)
                 .build();
@@ -182,7 +184,7 @@ public class FpsakEventHandlerTest {
         assertThat(oppgaveEgenskap.getOppgave().getAktiv()).isTrue();
 
         //Sjekker at det siste eventet er å opprette og at det rett før er lukker.
-        List<OppgaveEventLogg> oppgaveEventLogg = oppgaveRepository.hentEventer(behandlingId);
+        List<OppgaveEventLogg> oppgaveEventLogg = oppgaveRepository.hentEventerForEksternId(uuid);
 
         /*Optional<EksternIdentifikator> eksternId = oppgaveRepositoryProvider.getEksternIdentifikatorRepository().finnIdentifikator("FPSAK", behandlingId.toString());
         List<OppgaveEventLogg> oppgaveEventLogg = oppgaveRepositoryProvider.getOppgaveRepository().hentEventerForEksternId(eksternId.get().getId());*/
@@ -230,7 +232,7 @@ public class FpsakEventHandlerTest {
         fpsakEventHandler.prosesser(eventDrammenFra(aksjonspunktKoderTilBeslutter));
         assertThat(repoRule.getRepository().hentAlle(Oppgave.class)).hasSize(1);
         sjekkForEnOppgaveOgEgenskap(AndreKriterierType.TIL_BESLUTTER);
-        sjekkEventLoggInneholder(behandlingId, OppgaveEventType.OPPRETTET, AndreKriterierType.TIL_BESLUTTER);
+        sjekkEventLoggInneholder(uuid, OppgaveEventType.OPPRETTET, AndreKriterierType.TIL_BESLUTTER);
     }
 
 
@@ -239,7 +241,7 @@ public class FpsakEventHandlerTest {
         when(foreldrepengerBehandlingRestKlient.getBehandling(anyLong())).thenReturn(behandlingDtoFra(aksjonspunktKoderPapirsøknadESDto));
         fpsakEventHandler.prosesser(eventDrammenFra(aksjonspunktKoderPapirsøknadES));
         sjekkForEnOppgaveOgEgenskap(AndreKriterierType.PAPIRSØKNAD);
-        sjekkEventLoggInneholder(behandlingId, OppgaveEventType.OPPRETTET, AndreKriterierType.PAPIRSØKNAD);
+        sjekkEventLoggInneholder(uuid, OppgaveEventType.OPPRETTET, AndreKriterierType.PAPIRSØKNAD);
     }
 
     @Test
@@ -247,7 +249,7 @@ public class FpsakEventHandlerTest {
         when(foreldrepengerBehandlingRestKlient.getBehandling(anyLong())).thenReturn(behandlingDtoFra(aksjonspunktKoderPapirsøknadFPDto));
         fpsakEventHandler.prosesser(eventDrammenFra(aksjonspunktKoderPapirsøknadFP));
         sjekkForEnOppgaveOgEgenskap(AndreKriterierType.PAPIRSØKNAD);
-        sjekkEventLoggInneholder(behandlingId, OppgaveEventType.OPPRETTET, AndreKriterierType.PAPIRSØKNAD);
+        sjekkEventLoggInneholder(uuid, OppgaveEventType.OPPRETTET, AndreKriterierType.PAPIRSØKNAD);
     }
 
     @Test
@@ -256,7 +258,7 @@ public class FpsakEventHandlerTest {
                 .thenReturn(behandlingDtoFra(aksjonspunktKoderPapirsøknadEndringFPDto));
         fpsakEventHandler.prosesser(eventDrammenFra(aksjonspunktKoderPapirsøknadEndringFP));
         sjekkForEnOppgaveOgEgenskap(AndreKriterierType.PAPIRSØKNAD);
-        sjekkEventLoggInneholder(behandlingId, OppgaveEventType.OPPRETTET, AndreKriterierType.PAPIRSØKNAD);
+        sjekkEventLoggInneholder(uuid, OppgaveEventType.OPPRETTET, AndreKriterierType.PAPIRSØKNAD);
     }
 
 //    @Test
@@ -314,11 +316,8 @@ public class FpsakEventHandlerTest {
         assertThat(oppgaveEventLogg.getEventType()).isEqualTo(OppgaveEventType.MANU_VENT);
     }
 
-
-    private void sjekkEventLoggInneholder(Long behandlingId, OppgaveEventType eventType, AndreKriterierType kriterierType) {
-        /*Optional<EksternIdentifikator> eksternIdentifikator = oppgaveRepositoryProvider.getEksternIdentifikatorRepository().finnIdentifikator(fagsystem, behandlingId.toString());
-        List<OppgaveEventLogg> oppgaveEventLoggs = oppgaveRepositoryProvider.getOppgaveRepository().hentEventerForEksternId(eksternIdentifikator.get().getId());*/
-        List<OppgaveEventLogg> oppgaveEventLoggs = oppgaveRepository.hentEventer(behandlingId);
+    private void sjekkEventLoggInneholder(UUID uuid, OppgaveEventType eventType, AndreKriterierType kriterierType) {
+        List<OppgaveEventLogg> oppgaveEventLoggs = oppgaveRepository.hentEventerForEksternId(uuid);
 
         assertThat(oppgaveEventLoggs.get(0).getEventType()).isEqualTo(eventType);
         if (kriterierType != null) {
@@ -326,6 +325,18 @@ public class FpsakEventHandlerTest {
         }
     }
 
+/*
+    private void sjekkEventLoggInneholder(Long behandlingId, OppgaveEventType eventType, AndreKriterierType kriterierType) {
+        //Optional<EksternIdentifikator> eksternIdentifikator = oppgaveRepositoryProvider.getEksternIdentifikatorRepository().finnIdentifikator(fagsystem, behandlingId.toString());
+        //List<OppgaveEventLogg> oppgaveEventLoggs = oppgaveRepositoryProvider.getOppgaveRepository().hentEventerForEksternId(eksternIdentifikator.get().getId());
+        List<OppgaveEventLogg> oppgaveEventLoggs = oppgaveRepository.hentEventer(behandlingId);
+
+        assertThat(oppgaveEventLoggs.get(0).getEventType()).isEqualTo(eventType);
+        if (kriterierType != null) {
+            assertThat(oppgaveEventLoggs.get(0).getAndreKriterierType()).isEqualTo(kriterierType);
+        }
+    }
+*/
     private void sjekkForEnOppgaveOgEgenskap(AndreKriterierType egenskap) {
         sjekkForEnOppgaveOgEgenskap(egenskap, 1, 1);
     }

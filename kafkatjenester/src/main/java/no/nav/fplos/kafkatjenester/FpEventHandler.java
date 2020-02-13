@@ -2,7 +2,6 @@ package no.nav.fplos.kafkatjenester;
 
 import no.nav.foreldrepenger.loslager.oppgave.AndreKriterierType;
 import no.nav.foreldrepenger.loslager.oppgave.Oppgave;
-import no.nav.foreldrepenger.loslager.oppgave.OppgaveEgenskap;
 import no.nav.foreldrepenger.loslager.oppgave.OppgaveEventLogg;
 import no.nav.foreldrepenger.loslager.oppgave.OppgaveEventType;
 import no.nav.foreldrepenger.loslager.oppgave.Reservasjon;
@@ -49,6 +48,24 @@ public abstract class FpEventHandler <T extends BehandlingProsessEventDto> {
         oppgaveRepository.avsluttOppgaveForEksternId(externId);
     }
 
+
+    /*protected void avsluttOppgaveOgLoggEventVedEksternId(BehandlingProsessEventDto bpeDto, OppgaveEventType eventType, LocalDateTime fristTid){
+        Optional<EksternIdentifikator> eksternId = getEksternIdentifikatorRespository().finnIdentifikator(bpeDto.getFagsystem(), bpeDto.getId());
+        if(eksternId.isPresent()) {
+            avsluttOppgaveForEksternId(eksternId.get().getId());
+            loggEvent(eksternId.get().getId(), eventType, AndreKriterierType.UKJENT, bpeDto.getBehandlendeEnhet(), fristTid);
+        } else {
+            String message = "Fant ikke eksternId som indikerer at der ikke finnes noen oppgave som kan avsluttes.";
+            log.warn( message +"Prosesshendelsen hadde ekstern referanse id {} for fagsystemet {}", bpeDto.getId(), bpeDto.getFagsystem() );
+            //throw new RuntimeException(message);
+        }
+    }*/
+
+    protected void avsluttOppgaveOgLoggEvent(UUID eksternId, BehandlingProsessEventDto bpeDto, OppgaveEventType eventType, LocalDateTime frist){
+        avsluttOppgaveForEksternId(eksternId);
+        loggEvent(eksternId, eventType, null, bpeDto.getBehandlendeEnhet(), frist);
+    }
+
     protected void reserverOppgaveFraTidligereReservasjon(boolean reserverOppgave,
                                                         Reservasjon reservasjon,
                                                         Long oppgaveId) {
@@ -61,6 +78,10 @@ public abstract class FpEventHandler <T extends BehandlingProsessEventDto> {
         if (eksternId != null) {
             return getOppgaveRepository().hentEventerForEksternId(eksternId);
         } else return new ArrayList<>();
+    }
+
+    protected Oppgave gjenåpneOppgaveVedEksternId(UUID eksternId) {
+        return oppgaveRepository.gjenåpneOppgaveForEksternId(eksternId);
     }
 
     public abstract void prosesser(T bpeDto);

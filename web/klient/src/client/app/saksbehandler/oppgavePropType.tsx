@@ -7,7 +7,6 @@ const oppgavePropType = PropTypes.shape({
   id: PropTypes.number.isRequired,
   status: oppgaveStatusPropType.isRequired,
   saksnummer: PropTypes.number.isRequired,
-  behandlingId: PropTypes.number,
   navn: PropTypes.string.isRequired,
   system: PropTypes.string.isRequired,
   personnummer: PropTypes.string.isRequired,
