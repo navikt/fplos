@@ -56,7 +56,7 @@ public class AdminRestTjeneste {
     @Operation(description = "Synkroniser oppgave", tags = "admin")
     @BeskyttetRessurs(action = READ, ressurs = OPPGAVESTYRING)
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
-    public OppgaveDto synkroniserOppgave(@NotNull @QueryParam("behandlingIdDto") @Valid BehandlingIdDto behandlingIdDto) {
+    public OppgaveDto synkroniserOppgave(@NotNull @QueryParam("behandlingId") @Valid BehandlingIdDto behandlingIdDto) {
         UUID uuid = behandlingIdDto.getUuid();
         if(uuid == null){
             Long behandlingsId = behandlingIdDto.getBehandlingId();
@@ -77,7 +77,7 @@ public class AdminRestTjeneste {
     @Operation(description = "Se på oppgave", tags = "admin")
     @BeskyttetRessurs(action = READ, ressurs = OPPGAVESTYRING)
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
-    public OppgaveDto hentOppgave(@NotNull @QueryParam("behandlingIdDto") @Valid BehandlingIdDto behandlingIdDto) {
+    public OppgaveDto hentOppgave(@NotNull @QueryParam("behandlingId") @Valid BehandlingIdDto behandlingIdDto) {
         UUID uuid = behandlingIdDto.getUuid();
         if(uuid == null){
             Long behandlingsId = behandlingIdDto.getBehandlingId();
@@ -98,7 +98,7 @@ public class AdminRestTjeneste {
     @Operation(description = "Se på oppgave", tags = "admin")
     @BeskyttetRessurs(action = READ, ressurs = OPPGAVESTYRING)
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
-    public List<OppgaveEventLoggDto> hentEventlogg(@NotNull @QueryParam("behandlingIdDto") @Valid BehandlingIdDto behandlingIdDto) {
+    public List<OppgaveEventLoggDto> hentEventlogg(@NotNull @QueryParam("behandlingId") @Valid BehandlingIdDto behandlingIdDto) {
         UUID uuid = behandlingIdDto.getUuid();
         if(uuid == null){
             Long behandlingsId = behandlingIdDto.getBehandlingId();
@@ -119,7 +119,7 @@ public class AdminRestTjeneste {
     @Operation(description = "Oppdater oppgave", tags = "admin")
     @BeskyttetRessurs(action = READ, ressurs = OPPGAVESTYRING)
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
-    public OppgaveDto oppdaterOppgave(@NotNull @QueryParam("behandlingIdDto") @Valid BehandlingIdDto behandlingIdDto) {
+    public OppgaveDto oppdaterOppgave(@NotNull @QueryParam("behandlingId") @Valid BehandlingIdDto behandlingIdDto) {
         UUID uuid = behandlingIdDto.getUuid();
         if(uuid == null){
             Long behandlingsId = behandlingIdDto.getBehandlingId();
@@ -152,7 +152,7 @@ public class AdminRestTjeneste {
     @Operation(description = "Henter ut alle oppgaver knyttet til behandling", tags = "admin")
     @BeskyttetRessurs(action = READ, ressurs = OPPGAVESTYRING)
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
-    public List<OppgaveDto> hentAlleOppgaverForBehandling(@NotNull @QueryParam("behandlingIdDto") @Valid BehandlingIdDto behandlingIdDto) {
+    public List<OppgaveDto> hentAlleOppgaverForBehandling(@NotNull @QueryParam("behandlingId") @Valid BehandlingIdDto behandlingIdDto) {
         UUID uuid = behandlingIdDto.getUuid();
         if(uuid == null){
             Long behandlingsId = behandlingIdDto.getBehandlingId();
@@ -173,7 +173,7 @@ public class AdminRestTjeneste {
     @Operation(description = "Deaktiver oppgave", tags = "admin")
     @BeskyttetRessurs(action = READ, ressurs = OPPGAVESTYRING)
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
-    public OppgaveDto deaktiverOppgave(@NotNull @QueryParam("oppgaveIdDto") @Valid OppgaveIdDto oppgaveIdDto) {
+    public OppgaveDto deaktiverOppgave(@NotNull @QueryParam("oppgaveId") @Valid OppgaveIdDto oppgaveIdDto) {
         Oppgave oppgave = adminTjeneste.deaktiverOppgave(oppgaveIdDto.getVerdi());
         return new OppgaveDto(oppgave);
     }
@@ -185,7 +185,7 @@ public class AdminRestTjeneste {
     @Operation(description = "Aktiver oppgave", tags = "admin")
     @BeskyttetRessurs(action = READ, ressurs = OPPGAVESTYRING)
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
-    public OppgaveDto aktiverOppgave(@NotNull @QueryParam("oppgaveIdDto") @Valid OppgaveIdDto oppgaveIdDto) {
+    public OppgaveDto aktiverOppgave(@NotNull @QueryParam("oppgaveId") @Valid OppgaveIdDto oppgaveIdDto) {
         Oppgave oppgave = adminTjeneste.aktiverOppgave(oppgaveIdDto.getVerdi());
         return new OppgaveDto(oppgave);
     }
