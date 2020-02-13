@@ -2,7 +2,6 @@ package no.nav.foreldrepenger.loslager.oppgave;
 
 import no.nav.foreldrepenger.loslager.BaseEntitet;
 import no.nav.vedtak.felles.jpa.converters.BooleanToStringConverter;
-import org.hibernate.annotations.Type;
 
 import javax.persistence.Column;
 import javax.persistence.Convert;
@@ -77,7 +76,6 @@ public class Oppgave extends BaseEntitet {
     protected Boolean utfortFraAdmin = Boolean.FALSE;
 
     @Column(name = "EKSTERN_ID")
-    @Type(type="uuid-char")
     protected UUID eksternId;
 
     @OneToOne(mappedBy = "oppgave")
