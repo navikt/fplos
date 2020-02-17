@@ -77,21 +77,27 @@ export class OppgaveReservasjonEndringDatoModal extends Component<TsProps, TsSta
                 <form onSubmit={handleSubmit}>
                   <Panel className={styles.panel}>
                     <Row>
+                      <Column className={styles.header}>
+                        <h3>
+                          {intl.formatMessage({ id: 'OppgaveReservasjonEndringDatoModal.Header' })}
+                        </h3>
+                      </Column>
+                    </Row>
+                    <Row>
                       <Column xs="8">
                         <DatepickerField
                           name="reserverTil"
-                          label={{ id: 'OppgaveReservasjonEndringDatoModal.Header' }}
                           onBlurValidation
                           validate={[hasValidDate, dateAfterOrEqual(new Date()), dateBeforeOrEqual(thirtyDaysFromNow())]}
                           alwaysShowCalendar
                           firstDate={new Date()}
                           lastDate={thirtyDaysFromNow()}
                         />
+
                       </Column>
-                      <Column xs="1">
-                        <div className={styles.divider} />
-                      </Column>
-                      <Column xs="3" className={styles.buttonCol}>
+                    </Row>
+                    <Row className={styles.buttonRow}>
+                      <Column>
                         <div className={styles.buttonBox}>
                           <Hovedknapp
                             mini
@@ -101,13 +107,13 @@ export class OppgaveReservasjonEndringDatoModal extends Component<TsProps, TsSta
                             {intl.formatMessage({ id: 'OppgaveReservasjonEndringDatoModal.Ok' })}
                           </Hovedknapp>
 
-                          <Knapp
+                          <Hovedknapp
                             mini
                             className={styles.button}
                             onClick={closeModal}
                           >
                             {intl.formatMessage({ id: 'OppgaveReservasjonEndringDatoModal.Avbryt' })}
-                          </Knapp>
+                          </Hovedknapp>
                         </div>
                       </Column>
                     </Row>
