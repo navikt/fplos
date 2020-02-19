@@ -12,6 +12,7 @@ import FagsakList from './FagsakList';
 describe('<FagsakSearch>', () => {
   const fagsak = {
     saksnummer: 12345,
+    system: 'FPSAK',
     sakstype: {
       navn: 'Engangsstonad',
       kode: 'TEST',

@@ -11,7 +11,6 @@ import no.nav.foreldrepenger.loslager.repository.OppgaveRepository;
 import no.nav.fplos.foreldrepengerbehandling.Aksjonspunkt;
 import no.nav.fplos.kafkatjenester.eventresultat.EventResultat;
 import no.nav.fplos.kafkatjenester.eventresultat.FpsakEventMapper;
-import no.nav.vedtak.felles.integrasjon.kafka.BehandlingProsessEventDto;
 import no.nav.vedtak.felles.integrasjon.kafka.TilbakebetalingBehandlingProsessEventDto;
 import no.nav.vedtak.felles.jpa.Transaction;
 import org.slf4j.Logger;
@@ -111,6 +110,7 @@ public class TilbakekrevingEventHandler extends FpEventHandler<TilbakebetalingBe
                         .medAktiv(true).medBehandlingOpprettet(bpeDto.getOpprettetBehandling())
                         .medUtfortFraAdmin(prosesserFraAdmin)
                         .medEksternId(eksternId)
+                        //.medHref(bpeDto.getHref())
                         .build());
         return oppgave;
     }

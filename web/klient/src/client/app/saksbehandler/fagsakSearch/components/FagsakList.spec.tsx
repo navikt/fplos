@@ -18,6 +18,7 @@ describe('<FagsakList>', () => {
 
   const fagsak = {
     saksnummer: 12345,
+    system: 'FPSAK',
     sakstype: {
       navn: '',
       kode: 'ES',
@@ -87,6 +88,7 @@ describe('<FagsakList>', () => {
   it('skal sortere søkeresultat der avsluttede skal vises sist, mens sist endrede skal vises først', () => {
     const fagsak2 = {
       saksnummer: 23456,
+      system: 'FPSAK',
       sakstype: {
         navn: '',
         kode: 'TEST',
@@ -102,6 +104,7 @@ describe('<FagsakList>', () => {
     };
     const fagsak3 = {
       saksnummer: 34567,
+      system: 'FPSAK',
       sakstype: {
         navn: '',
         kode: 'TEST',
@@ -128,6 +131,7 @@ describe('<FagsakList>', () => {
   it('skal vise DateLabel i tabell kun om barn er født', () => {
     const fagsak4 = {
       saksnummer: 23456,
+      system: 'FPSAK',
       sakstype: {
         navn: '',
         kode: 'TEST',

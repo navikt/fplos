@@ -141,6 +141,7 @@ public class AdminTjenesteImpl implements AdminTjeneste {
                 .medOpprettetBehandling(eksisterendeOppgave.getBehandlingOpprettet())
                 .medAksjonspunktKoderMedStatusListe(aksjonspunktKoderMedStatusListe)
                 .medFeilutbetaltBeløp(eksisterendeOppgave.getBelop())
+                .medHref(eksisterendeOppgave.getHref())
                 .build();
     }
 }

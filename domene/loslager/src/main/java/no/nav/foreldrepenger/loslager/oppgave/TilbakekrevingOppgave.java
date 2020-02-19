@@ -5,6 +5,7 @@ import javax.persistence.Entity;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 import java.math.BigDecimal;
+import java.net.URL;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -27,6 +28,7 @@ public class TilbakekrevingOppgave extends Oppgave{
     public LocalDateTime getFeilutbetalingstart() {
         return feilutbetalingstart;
     }
+
 
     public TilbakekrevingOppgave() {
     }
@@ -124,6 +126,11 @@ public class TilbakekrevingOppgave extends Oppgave{
 
         public Builder medFagsakYtelseType(FagsakYtelseType fagsakYtelseType){
             tempOppgave.fagsakYtelseType = fagsakYtelseType;
+            return this;
+        }
+
+        public Builder medHref(URL href){
+            tempOppgave.href = href;
             return this;
         }
 

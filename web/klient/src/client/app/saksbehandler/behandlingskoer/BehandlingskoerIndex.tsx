@@ -4,12 +4,11 @@ import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
 
 import fpLosApi from 'data/fpLosApi';
-import { getFpsakHref, getFptilbakeHref } from 'app/paths';
+import { getFpsakHref } from 'app/paths';
 import sakslistePropType from 'saksbehandler/behandlingskoer/sakslistePropType';
 import { Saksliste } from 'saksbehandler/behandlingskoer/sakslisteTsType';
 import {
   getFpsakUrl,
-  getFptilbakeUrl,
   hentFpsakBehandlingId as hentFpsakBehandlingIdActionCreator,
 } from 'app/duck';
 import { OppgaveStatus } from 'saksbehandler/oppgaveStatusTsType';
@@ -35,7 +34,6 @@ type TsProps = Readonly<{
   flyttReservasjon: (oppgaveId: number, brukerident: string, begrunnelse: string) => Promise<string>;
   sakslister: Saksliste[];
   fpsakUrl: string;
-  fptilbakeUrl: string;
   goToUrl: (url: string) => void;
   harTimeout: boolean;
   setValgtSakslisteId: (sakslisteId: number) => void;
@@ -68,7 +66,6 @@ export class BehandlingskoerIndex extends Component<TsProps, StateProps> {
     flyttReservasjon: PropTypes.func.isRequired,
     sakslister: PropTypes.arrayOf(sakslistePropType),
     fpsakUrl: PropTypes.string.isRequired,
-    fptilbakeUrl: PropTypes.string.isRequired,
     goToUrl: PropTypes.func.isRequired,
     harTimeout: PropTypes.bool.isRequired,
     setValgtSakslisteId: PropTypes.func.isRequired,
@@ -125,8 +122,8 @@ export class BehandlingskoerIndex extends Component<TsProps, StateProps> {
   }
 
   openTilbakesak = (oppgave: Oppgave) => {
-    const { fptilbakeUrl, goToUrl } = this.props;
-    goToUrl(getFptilbakeHref(fptilbakeUrl, oppgave.saksnummer, oppgave.eksternId));
+    const { goToUrl } = this.props;
+    goToUrl(oppgave.href);
   }
 
   reserverOppgaveOgApne = (oppgave: Oppgave) => {
@@ -237,7 +234,6 @@ export class BehandlingskoerIndex extends Component<TsProps, StateProps> {
 
 const mapStateToProps = state => ({
   fpsakUrl: getFpsakUrl(state),
-  fptilbakeUrl: getFptilbakeUrl(state),
   harTimeout: harOppgaverTilBehandlingTimeout(state),
   sakslister: getSakslisteResult(state),
   goToUrl: url => window.location.assign(url),
