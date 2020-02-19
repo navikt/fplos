@@ -23,7 +23,7 @@ import saksbehandlerPropType from '../../saksbehandlerPropType';
 import styles from './flyttReservasjonModal.less';
 
 const minLength3 = minLength(3);
-const maxLength1500 = maxLength(1500);
+const maxLength500 = maxLength(500);
 const minLength7 = minLength(7);
 const maxLength7 = maxLength(7);
 
@@ -147,8 +147,8 @@ export class FlyttReservasjonModal extends Component<TsProps> {
                <TextAreaField
                  name="begrunnelse"
                  label={intl.formatMessage({ id: 'FlyttReservasjonModal.Begrunn' })}
-                 validate={[required, maxLength1500, minLength3, hasValidText]}
-                 maxLength={1500}
+                 validate={[required, maxLength500, minLength3, hasValidText]}
+                 maxLength={500}
                />
                <Hovedknapp
                  className={styles.submitButton}
