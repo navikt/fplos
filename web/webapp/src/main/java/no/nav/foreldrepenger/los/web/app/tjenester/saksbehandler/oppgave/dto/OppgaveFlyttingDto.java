@@ -22,7 +22,7 @@ public class OppgaveFlyttingDto implements AbacDto {
     private SaksbehandlerBrukerIdentDto brukerIdent;
 
     @NotNull
-    @Size(max = 1500)
+    @Size(max = 500)
     @Pattern(regexp = InputValideringRegex.FRITEKST)
     private String begrunnelse;
 
