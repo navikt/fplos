@@ -7,7 +7,7 @@ import styles from 'saksbehandler/behandlingskoer/components/menu/oppgaveReserva
 import Modal from 'sharedComponents/Modal';
 import React, { Component } from 'react';
 import { Column, Row } from 'nav-frontend-grid';
-import { Hovedknapp } from 'nav-frontend-knapper';
+import { Knapp } from 'nav-frontend-knapper';
 import { dateAfterOrEqual, dateBeforeOrEqual, hasValidDate } from 'utils/validation/validators';
 import { Form } from 'react-final-form';
 import Panel from 'nav-frontend-paneler';
@@ -99,21 +99,21 @@ export class OppgaveReservasjonEndringDatoModal extends Component<TsProps, TsSta
                     <Row className={styles.buttonRow}>
                       <Column>
                         <div className={styles.buttonBox}>
-                          <Hovedknapp
+                          <Knapp
                             mini
                             className={styles.button}
                             autoFocus
                           >
                             {intl.formatMessage({ id: 'OppgaveReservasjonEndringDatoModal.Ok' })}
-                          </Hovedknapp>
+                          </Knapp>
 
-                          <Hovedknapp
+                          <Knapp
                             mini
                             className={styles.button}
                             onClick={closeModal}
                           >
                             {intl.formatMessage({ id: 'OppgaveReservasjonEndringDatoModal.Avbryt' })}
-                          </Hovedknapp>
+                          </Knapp>
                         </div>
                       </Column>
                     </Row>
