@@ -16,7 +16,7 @@ public class OppgaveOpphevingDto implements AbacDto {
     private OppgaveIdDto oppgaveId;
 
     @NotNull
-    @Size(max = 1500)
+    @Size(max = 500)
     @Pattern(regexp = InputValideringRegex.FRITEKST)
     private String begrunnelse;
 
