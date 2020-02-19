@@ -1,15 +1,13 @@
 package no.nav.foreldrepenger.los.web.server.jetty;
 
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
+import no.nav.vedtak.konfig.PropertyUtil;
+
+import javax.sql.DataSource;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
-
-import javax.sql.DataSource;
-
-import com.zaxxer.hikari.HikariConfig;
-import com.zaxxer.hikari.HikariDataSource;
-
-import no.nav.vedtak.konfig.PropertyUtil;
 
 class DataSourceKonfig {
 
@@ -29,9 +27,9 @@ class DataSourceKonfig {
         config.setUsername(PropertyUtil.getProperty(dataSourceName + ".username"));
         config.setPassword(PropertyUtil.getProperty(dataSourceName + ".password")); // NOSONAR false positive
 
-        config.setConnectionTimeout(1000);
-        config.setMinimumIdle(5);
-        config.setMaximumPoolSize(30);
+        config.setConnectionTimeout(2000);
+        config.setMinimumIdle(0);
+        config.setMaximumPoolSize(40);
         config.setConnectionTestQuery("select 1 from dual");
         config.setDriverClassName("oracle.jdbc.OracleDriver");
 
