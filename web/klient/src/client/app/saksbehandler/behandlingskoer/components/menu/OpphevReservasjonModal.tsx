@@ -17,7 +17,7 @@ import Modal from 'sharedComponents/Modal';
 import styles from './opphevReservasjonModal.less';
 
 const minLength3 = minLength(3);
-const maxLength1500 = maxLength(1500);
+const maxLength500 = maxLength(500);
 
 type TsProps = Readonly<{
   intl: any;
@@ -54,8 +54,8 @@ export const OpphevReservasjonModal = ({
           <TextAreaField
             name="begrunnelse"
             label={intl.formatMessage({ id: 'OpphevReservasjonModal.Hjelpetekst' })}
-            validate={[required, maxLength1500, minLength3, hasValidText]}
-            maxLength={1500}
+            validate={[required, maxLength500, minLength3, hasValidText]}
+            maxLength={500}
           />
           <Hovedknapp
             className={styles.submitButton}
