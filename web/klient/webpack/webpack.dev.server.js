@@ -11,7 +11,7 @@ const options = {
   contentBase: 'src/client',
   proxy: {
     '**/(sprak|api)/**': {
-      target: 'http://localhost:8070',
+      target: 'http://localhost:8071',
       secure: false,
     },
   },
