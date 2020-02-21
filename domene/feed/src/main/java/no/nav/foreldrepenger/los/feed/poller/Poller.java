@@ -1,5 +1,13 @@
 package no.nav.foreldrepenger.los.feed.poller;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
+import javax.enterprise.inject.spi.CDI;
+import javax.persistence.EntityManager;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import no.nav.foreldrepenger.los.feed.RequestContextHandler;
 import no.nav.vedtak.feil.Feil;
 import no.nav.vedtak.feil.FeilFactory;
@@ -7,13 +15,6 @@ import no.nav.vedtak.feil.LogLevel;
 import no.nav.vedtak.feil.deklarasjon.DeklarerteFeil;
 import no.nav.vedtak.feil.deklarasjon.TekniskFeil;
 import no.nav.vedtak.felles.jpa.TransactionHandler;
-import no.nav.vedtak.felles.jpa.VLPersistenceUnit;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.enterprise.inject.spi.CDI;
-import javax.persistence.EntityManager;
-import java.util.concurrent.atomic.AtomicInteger;
 
 
 public class Poller implements Runnable {
@@ -24,14 +25,10 @@ public class Poller implements Runnable {
     private static final int[] BACKOFF_INTERVALL_IN_SEC = new int[]{1, 2, 5, 5, 10, 10, 10, 10, 30};
     private final AtomicInteger backoffRound = new AtomicInteger();
 
-    Poller(@VLPersistenceUnit EntityManager entityManager, FeedPoller feedPoller) {
+    Poller(EntityManager entityManager, FeedPoller feedPoller) {
         this.entityManager = entityManager;
         this.feedPoller = feedPoller;
     }
-
-    Poller(){
-    }
-
 
     @Override
     public void run() {

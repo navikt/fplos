@@ -1,21 +1,22 @@
 package no.nav.foreldrepenger.loslager.repository;
 
-import no.nav.foreldrepenger.loslager.oppgave.EventmottakFeillogg;
-import no.nav.foreldrepenger.loslager.oppgave.Oppgave;
-import no.nav.foreldrepenger.loslager.oppgave.OppgaveEventLogg;
-import no.nav.foreldrepenger.loslager.oppgave.Reservasjon;
-import no.nav.foreldrepenger.loslager.oppgave.TilbakekrevingOppgave;
-import no.nav.vedtak.felles.jpa.VLPersistenceUnit;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.Comparator;
+import java.util.List;
+import java.util.UUID;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
-import java.util.Comparator;
-import java.util.List;
-import java.util.UUID;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import no.nav.foreldrepenger.loslager.oppgave.EventmottakFeillogg;
+import no.nav.foreldrepenger.loslager.oppgave.Oppgave;
+import no.nav.foreldrepenger.loslager.oppgave.OppgaveEventLogg;
+import no.nav.foreldrepenger.loslager.oppgave.Reservasjon;
+import no.nav.foreldrepenger.loslager.oppgave.TilbakekrevingOppgave;
 
 @ApplicationScoped
 public class AdminRepositoryImpl implements AdminRepository {
@@ -25,15 +26,11 @@ public class AdminRepositoryImpl implements AdminRepository {
     private EntityManager entityManager;
 
     @Inject
-    public AdminRepositoryImpl(@VLPersistenceUnit EntityManager entityManager) {
+    public AdminRepositoryImpl(EntityManager entityManager) {
         this.entityManager = entityManager;
     }
 
     AdminRepositoryImpl(){
-    }
-
-    EntityManager getEntityManager() {
-        return entityManager;
     }
 
     public void deaktiverSisteOppgave(UUID eksternId) {
@@ -49,7 +46,7 @@ public class AdminRepositoryImpl implements AdminRepository {
         entityManager.refresh(nyesteOppgave);
     }
     private List<Oppgave> hentOppgaverForEksternId(UUID eksternId) {
-        return getEntityManager().createQuery(SELECT_FRA_OPPGAVE +
+        return entityManager.createQuery(SELECT_FRA_OPPGAVE +
                 "WHERE o.eksternId = :eksternId ", Oppgave.class)
                 .setParameter("eksternId", eksternId)
                 .getResultList();
@@ -57,10 +54,10 @@ public class AdminRepositoryImpl implements AdminRepository {
     public Oppgave hentSisteOppgave(UUID uuid) {
         Oppgave oppgave = null;
         try {
-            oppgave = getEntityManager().createQuery("Select o FROM Oppgave o where o.eksternId = :uuid ORDER BY o.opprettetTidspunkt desc", Oppgave.class)
+            oppgave = entityManager.createQuery("Select o FROM Oppgave o where o.eksternId = :uuid ORDER BY o.opprettetTidspunkt desc", Oppgave.class)
                     .setParameter("uuid", uuid)
                     .setMaxResults(1).getSingleResult();
-            getEntityManager().refresh(oppgave);
+            entityManager.refresh(oppgave);
         } catch (NoResultException nre) {
             log.info("Fant ingen oppgave tilknyttet behandling med uuid {}", uuid, nre);
         }
@@ -71,10 +68,10 @@ public class AdminRepositoryImpl implements AdminRepository {
     public TilbakekrevingOppgave hentSisteTilbakekrevingOppgave(UUID uuid) {
         TilbakekrevingOppgave oppgave = null;
         try {
-            oppgave = getEntityManager().createQuery("Select to FROM TilbakekrevingOppgave to where to.eksternId = :eksternId ORDER BY to.opprettetTidspunkt desc", TilbakekrevingOppgave.class)
+            oppgave = entityManager.createQuery("Select to FROM TilbakekrevingOppgave to where to.eksternId = :eksternId ORDER BY to.opprettetTidspunkt desc", TilbakekrevingOppgave.class)
                     .setParameter("eksternId", uuid)
                     .setMaxResults(1).getSingleResult();
-            getEntityManager().refresh(oppgave);
+            entityManager.refresh(oppgave);
         } catch (NoResultException nre) {
             log.info("Fant ingen oppgave tilknyttet behandling med id {}", uuid, nre);
         }
@@ -82,31 +79,31 @@ public class AdminRepositoryImpl implements AdminRepository {
     }
 
     public List<OppgaveEventLogg> hentEventer(UUID uuid) {
-        return getEntityManager().createQuery( "Select o FROM oppgaveEventLogg o " +
+        return entityManager.createQuery( "Select o FROM oppgaveEventLogg o " +
                 "where o.eksternId = :uuid ORDER BY o.opprettetTidspunkt desc", OppgaveEventLogg.class)
                 .setParameter("uuid", uuid).getResultList();
     }
 
     @Override
     public List<Oppgave> hentAlleAktiveOppgaver() {
-        return getEntityManager().createQuery("Select o FROM Oppgave o where o.aktiv = true ORDER BY o.opprettetTidspunkt desc", Oppgave.class).getResultList();
+        return entityManager.createQuery("Select o FROM Oppgave o where o.aktiv = true ORDER BY o.opprettetTidspunkt desc", Oppgave.class).getResultList();
     }
 
     @Override
     public List<EventmottakFeillogg> hentAlleMeldingerFraFeillogg() {
-        return getEntityManager().createQuery("Select ef FROM eventmottakFeillogg ef where ef.status = :status", EventmottakFeillogg.class).setParameter("status", EventmottakFeillogg.Status.FEILET).getResultList();
+        return entityManager.createQuery("Select ef FROM eventmottakFeillogg ef where ef.status = :status", EventmottakFeillogg.class).setParameter("status", EventmottakFeillogg.Status.FEILET).getResultList();
     }
 
     @Override
     public void markerFerdig(Long feilloggId) {
-        getEntityManager().persist(getEntityManager()
+        entityManager.persist(entityManager
                         .find(EventmottakFeillogg.class, feilloggId)
                         .markerFerdig());
-        getEntityManager().flush();
+        entityManager.flush();
     }
 
     public List<Oppgave> hentAlleOppgaverForBehandling(UUID uuid) {
-        return getEntityManager().createQuery("Select o FROM Oppgave o where o.eksternId = :uuid ORDER BY o.opprettetTidspunkt desc", Oppgave.class)
+        return entityManager.createQuery("Select o FROM Oppgave o where o.eksternId = :uuid ORDER BY o.opprettetTidspunkt desc", Oppgave.class)
                 .setParameter("uuid", uuid)
                 .getResultList();
     }
@@ -135,10 +132,10 @@ public class AdminRepositoryImpl implements AdminRepository {
     }
 
     private Oppgave hentOppgave(Long oppgaveId) {
-        Oppgave oppgave = getEntityManager().createQuery("Select o FROM Oppgave o where o.id = :oppgaveId", Oppgave.class)
+        Oppgave oppgave = entityManager.createQuery("Select o FROM Oppgave o where o.id = :oppgaveId", Oppgave.class)
                 .setParameter("oppgaveId", oppgaveId)
                 .setMaxResults(1).getSingleResult();
-        getEntityManager().refresh(oppgave);
+        entityManager.refresh(oppgave);
         return oppgave;
     }
 
