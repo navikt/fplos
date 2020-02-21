@@ -20,7 +20,7 @@ public enum BehandlingType implements Kodeverdi {
     INNSYN("BT-006", "Innsyn"),
     TILBAKEBETALING ("BT-007", "Tilbakebetaling"),
     ANKE("BT-008", "Anke"),
-    TILBAKEBETALING_REVURDERING ("BT-009", "Tilbakebet-rev");
+    TILBAKEBETALING_REVURDERING ("BT-009", "Tilbakebetaling Revurdering");
 
     private String kode;
     private final String navn;
