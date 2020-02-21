@@ -18,8 +18,8 @@ public enum BehandlingType implements Kodeverdi {
     REVURDERING("BT-004", "Revurdering"),
     SØKNAD("BT-005", "Søknad"),
     INNSYN("BT-006", "Innsyn"),
-    ANKE("BT-008", "Anke");
-    //TILBAKEBETALING ("BT-009", "Tilbakebetaling");
+    ANKE("BT-008", "Anke"),
+    TILBAKEBETALING ("BT-009", "Tilbakebetaling");
 
     private String kode;
     private final String navn;
