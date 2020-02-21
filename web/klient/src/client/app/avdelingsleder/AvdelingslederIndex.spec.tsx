@@ -66,6 +66,9 @@ describe('<AvdelingslederIndex>', () => {
     expect(tabs[1].aktiv).is.false;
     expect(tabs[2].label.props.children.props.id).to.eql('AvdelingslederIndex.Saksbehandlere');
     expect(tabs[2].aktiv).is.false;
+    expect(tabs[3].label.props.children.props.id).to.eql('AvdelingslederIndex.Reservasjoner');
+    expect(tabs[3].aktiv).is.false;
+
   });
 
   it('skal rendre panel for sakslister når dette er valgt', () => {

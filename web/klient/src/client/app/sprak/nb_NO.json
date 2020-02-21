@@ -8,6 +8,7 @@
   "AvdelingslederIndex.Behandlingskoer": "Behandlingskøer",
   "AvdelingslederIndex.Saksbehandlere": "Saksbehandlere",
   "AvdelingslederIndex.Nokkeltall": "Nøkkeltall",
+  "AvdelingslederIndex.Reservasjoner": "Reservasjoner",
 
   "BehandlingPollingTimoutModal.TimeoutMelding": "Din økt er gått ut på tid, trykk Fortsett",
   "BehandlingPollingTimoutModal.Oppfrisk": "Fortsett",
@@ -192,6 +193,12 @@
   "Person.HarIkkeNorskFnrEllerDnr": "Har ikke norsk f.nr. eller d-nr.",
 
   "ProduksjonPaneler.AvdelingensProduksjon": "Avdelingens produksjon",
+
+  "ReservsajonerTabell.Navn": "Navn",
+  "ReservsajonerTabell.Brukerident": "Brukerident",
+  "ReservsajonerTabell.Avdeling": "Avdeling",
+  "ReservsajonerTabell.Reservasjoner": "Reservasjoner for avdelingen",
+  "ReservsajonerTabell.IngenReservasjoner": "Ingen saksbehandlere lagt til",
 
   "Rest.ErrorMessage.Timeout": "Serverkall har gått ut på tid: {location}",
 

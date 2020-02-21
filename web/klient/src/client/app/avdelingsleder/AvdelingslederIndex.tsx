@@ -27,6 +27,7 @@ import EndreSaksbehandlereIndex from './saksbehandlere/EndreSaksbehandlereIndex'
 import EndreBehandlingskoerIndex from './behandlingskoer/EndreBehandlingskoerIndex';
 
 import styles from './avdelingslederIndex.less';
+import { ReservasjonerIndex } from './reservasjoner/ReservasjonerIndex';
 
 const classNames = classnames.bind(styles);
 
@@ -38,6 +39,8 @@ const renderAvdelingslederPanel = (avdelingslederPanel) => {
       return <EndreSaksbehandlereIndex />;
     case AvdelingslederPanels.NOKKELTALL:
       return <NokkeltallIndex />;
+    case AvdelingslederPanels.RESERVASJONER:
+      return <ReservasjonerIndex />;
     default:
       return null;
   }
@@ -47,6 +50,7 @@ const messageId = {
   [AvdelingslederPanels.BEHANDLINGSKOER]: 'AvdelingslederIndex.Behandlingskoer',
   [AvdelingslederPanels.SAKSBEHANDLERE]: 'AvdelingslederIndex.Saksbehandlere',
   [AvdelingslederPanels.NOKKELTALL]: 'AvdelingslederIndex.Nokkeltall',
+  [AvdelingslederPanels.RESERVASJONER]: 'AvdelingslederIndex.Reservasjoner',
 };
 
 interface TsProps {
@@ -95,6 +99,7 @@ export const AvdelingslederIndex = ({
             getTab(AvdelingslederPanels.BEHANDLINGSKOER, activeAvdelingslederPanel, getAvdelingslederPanelLocation),
             getTab(AvdelingslederPanels.NOKKELTALL, activeAvdelingslederPanel, getAvdelingslederPanelLocation),
             getTab(AvdelingslederPanels.SAKSBEHANDLERE, activeAvdelingslederPanel, getAvdelingslederPanelLocation),
+            getTab(AvdelingslederPanels.RESERVASJONER, activeAvdelingslederPanel, getAvdelingslederPanelLocation),
           ]}
           />
           <Panel className={styles.panelPadding}>

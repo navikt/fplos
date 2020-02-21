@@ -41,6 +41,8 @@ public interface OppgaveRepository {
 
     void reserverOppgaveFraTidligereReservasjon(Long oppgaveId, Reservasjon tidligereReservasjon);
 
+    List<Reservasjon> hentAlleReservasjonerForAvdeling(String avdelingEnhet);
+
     List<OppgaveFiltrering> hentAlleLister(Long avdelingsId);
 
     OppgaveFiltrering hentListe(Long listeId);

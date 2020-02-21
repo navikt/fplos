@@ -93,6 +93,9 @@ public class OppgaveTjenesteImpl implements OppgaveTjeneste {
         return oppgaveRepository.hentReservasjonerTilknyttetAktiveOppgaver(finnBrukernavn());
     }
 
+    public List<Reservasjon> hentReservasjonerForAvdeling(String avdelingEnhet) {
+        return oppgaveRepository.hentAlleReservasjonerForAvdeling(avdelingEnhet);
+    }
 
     public Reservasjon reserverOppgave(Long oppgaveId) {
         Reservasjon reservasjon = oppgaveRepository.hentReservasjon(oppgaveId);

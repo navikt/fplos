@@ -34,6 +34,8 @@ public interface OppgaveTjeneste {
 
     Reservasjon flyttReservasjon(Long oppgaveId, String brukernavn, String begrunnelse);
 
+    List<Reservasjon> hentReservasjonerForAvdeling(String avdelingEnhet);
+
     List<OppgaveFiltrering> hentAlleOppgaveFiltrering(String brukerIdent);
 
     List<OppgaveFiltrering> hentOppgaveFiltreringerForPåloggetBruker();

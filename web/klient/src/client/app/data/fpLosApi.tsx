@@ -30,6 +30,7 @@ const fpLosApiKeys = {
   LAGRE_SAKSLISTE_SORTERING_DYNAMISK_PERIDE: 'LAGRE_SAKSLISTE_SORTERING_DYNAMISK_PERIDE',
   LAGRE_SAKSLISTE_SORTERING_TIDSINTERVALL_DAGER: 'LAGRE_SAKSLISTE_SORTERING_TIDSINTERVALL_DAGER',
   LAGRE_SAKSLISTE_SORTERING_TIDSINTERVALL_DATO: 'LAGRE_SAKSLISTE_SORTERING_TIDSINTERVALL_DATO',
+  RESERVASJONER_FOR_AVDELING: 'RESERVASJONER_FOR_AVDELING',
   SAKSBEHANDLER_SOK: 'SAKSBEHANDLER_SOK',
   SAKSBEHANDLERE_FOR_AVDELING: 'SAKSBEHANDLERE_FOR_AVDELING',
   OPPRETT_NY_SAKSBEHANDLER: 'OPPRETT_NY_SAKSBEHANDLER',
@@ -96,6 +97,9 @@ const endpoints = new RestApiConfigBuilder()
   .withPost('/api/avdelingsleder/sakslister/sortering-tidsintervall-dager', fpLosApiKeys.LAGRE_SAKSLISTE_SORTERING_TIDSINTERVALL_DAGER)
   .withPost('/api/avdelingsleder/sakslister/sortering-tidsintervall-dato', fpLosApiKeys.LAGRE_SAKSLISTE_SORTERING_TIDSINTERVALL_DATO)
   .withPost('/api/avdelingsleder/sakslister/saksbehandler', fpLosApiKeys.LAGRE_SAKSLISTE_SAKSBEHANDLER)
+
+  /* /api/avdelingsleder/reservasjoner */
+  .withGet('/api/avdelingsleder/reservasjoner', fpLosApiKeys.RESERVASJONER_FOR_AVDELING)
 
   /* /api/avdelingsleder/saksbehandlere */
   .withPost('/api/avdelingsleder/saksbehandlere/sok', fpLosApiKeys.SAKSBEHANDLER_SOK)
