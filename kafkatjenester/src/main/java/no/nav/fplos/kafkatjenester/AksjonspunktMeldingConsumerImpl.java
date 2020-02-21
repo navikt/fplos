@@ -23,9 +23,11 @@ public class AksjonspunktMeldingConsumerImpl implements AksjonspunktMeldingConsu
     }
 
     @Inject
-    public AksjonspunktMeldingConsumerImpl(@KonfigVerdi("kafka.aksjonspunkthendelse.topic") String topic,
+    public AksjonspunktMeldingConsumerImpl(//@KonfigVerdi("kafka.aksjonspunkthendelse.topic") String topic,
+                                           @KonfigVerdi("kafka.tilbakebetaling.topic") String topic, // temp for test
             @KonfigVerdi("kafka.brokers") String bootstrapServers,
-            @KonfigVerdi("kafka.aksjonspunkthendelse.group.id") String groupId,
+            //@KonfigVerdi("kafka.aksjonspunkthendelse.group.id") String groupId,
+                                           @KonfigVerdi("kafka.consumer.group.id") String groupId, // temp for test
             @KonfigVerdi("systembruker.username") String username,
             @KonfigVerdi("systembruker.password") String password,
             @KonfigVerdi(value = "disable.ssl", required = false) Boolean disableSsl) {

@@ -21,6 +21,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @ApplicationScoped
@@ -46,49 +47,41 @@ public class TilbakekrevingEventHandler extends FpEventHandler<TilbakebetalingBe
     }
 
     private void prosesser(TilbakebetalingBehandlingProsessEventDto bpeDto, Reservasjon reservasjon, boolean prosesserFraAdmin) {
-        //TODO: bruk bpeDto.getId() når den er tilgjengelig
-        UUID eksternId = UUID.randomUUID();//bpeDto.getId();
-        //EksternIdentifikator eksternId = getEksternIdentifikatorRespository().finnEllerOpprettEksternId(bpeDto.getFagsystem(), eksternRefId);
+        var id = bpeDto.getEksternId();
+        List<OppgaveEventLogg> oppgaveEvents = getOppgaveRepository().hentEventerForEksternId(bpeDto.getEksternId());
 
-        List<OppgaveEventLogg> pastOppgaveEvents = getOppgaveRepository().hentEventerForEksternId(eksternId);
-
-        //TODO: Dersom annen info skal populeres i Oppgave (frister, status o.l.) eller OppgaveEgenskaper så behøver vi et restkall mot fptilbake
-        //BehandlingFptilbake behandling = fptilbakeBehandlingRestKlient.getBehandling(eksternRefId);
-        //TODO: Kall til fptilbake for aksjonspunkter
-        List<Aksjonspunkt> aksjonspunkt = new ArrayList<>();
-
-        //TODO: Behøver vi egen eventmapper for tilbakekreving?
-        EventResultat event = prosesserFraAdmin
-                ? FpsakEventMapper.signifikantEventForAdminFra(aksjonspunkt)
-                :FpsakEventMapper.signifikantEventFra(aksjonspunkt, pastOppgaveEvents, bpeDto.getBehandlendeEnhet());
+        EventResultat event = eventFra(bpeDto);
+        if (event == EventResultat.OPPRETT_OPPGAVE
+                && !oppgaveEvents.isEmpty()
+                && oppgaveEvents.get(0).getEventType().erÅpningsevent()) {
+            event = EventResultat.GJENÅPNE_OPPGAVE;
+        }
 
         switch (event) {
             case LUKK_OPPGAVE:
-                // Dersom oppgaven som skal avsluttes ikke blir identifisert, vil man her ende opp med en
-                // eksternreferanseidentifikator som ikke refereres i noen oppgave ettersom der er gjort kall til
-                // finnEllerOpprettEksternId for eksternId. Det er dog kanskje ikke feil at denne iden blir opprettet
-                // slik at man har et spor av hendelsen.
-                log.info("Lukker oppgave med eksternRefId {} ", eksternId.toString());
-                avsluttOppgaveForEksternId(eksternId);
-                loggEvent(eksternId, OppgaveEventType.LUKKET, null, bpeDto.getBehandlendeEnhet(), null);
+                log.info("Lukker oppgave med eksternRefId {} ", id.toString());
+                avsluttOppgaveForEksternId(id);
+                loggEvent(id, OppgaveEventType.LUKKET, null, bpeDto.getBehandlendeEnhet(), null);
                 break;
             case OPPRETT_OPPGAVE:
-                avsluttOppgaveHvisÅpen(eksternId, pastOppgaveEvents, bpeDto.getBehandlendeEnhet());
-                Oppgave oppgave = opprettTilbakekrevingOppgave(eksternId, bpeDto, prosesserFraAdmin);
+                avsluttOppgaveHvisÅpen(id, oppgaveEvents, bpeDto.getBehandlendeEnhet());
+                Oppgave oppgave = opprettTilbakekrevingOppgave(id, bpeDto, prosesserFraAdmin);
                 reserverOppgaveFraTidligereReservasjon(prosesserFraAdmin, reservasjon, oppgave.getId());
-                log.info("Oppgave {} opprettet og populert med informasjon fra FPTILBAKE for eksternId {}", oppgave.getId(), eksternId);
+                log.info("Oppgave {} opprettet og populert med informasjon fra FPTILBAKE for eksternId {}", oppgave.getId(), id);
                 loggEvent(oppgave.getEksternId(), OppgaveEventType.OPPRETTET, null, bpeDto.getBehandlendeEnhet());
-                //opprettOppgaveEgenskaper(behandling, oppgave);
                 break;
             case GJENÅPNE_OPPGAVE:
-                //Oppgave gjenåpnetOppgave = gjenåpneOppgaveForEksternId(bpeDto);
-                Oppgave gjenåpnetOppgave = getOppgaveRepository().gjenåpneOppgaveForEksternId(eksternId);
-                log.info("Gjenåpnet oppgave for eksternId {}", eksternId);
+                Oppgave gjenåpnetOppgave = getOppgaveRepository().gjenåpneOppgaveForEksternId(id);
+                log.info("Gjenåpnet oppgave for eksternId {}", id);
                 loggEvent(gjenåpnetOppgave.getEksternId(), OppgaveEventType.GJENAPNET, null, bpeDto.getBehandlendeEnhet());
-                //opprettOppgaveEgenskaper(behandling, gjenåpnetOppgave);
                 break;
         }
+    }
 
+    private EventResultat eventFra(TilbakebetalingBehandlingProsessEventDto bpeDto) {
+        return bpeDto.getAksjonspunktKoderMedStatusListe().containsValue("OPPR")
+                ? EventResultat.OPPRETT_OPPGAVE
+                : EventResultat.LUKK_OPPGAVE;
     }
 
     private void avsluttOppgaveHvisÅpen(UUID eksternId, List<OppgaveEventLogg> oppgaveEventLogger, String behandlendeEnhet) {
@@ -114,21 +107,4 @@ public class TilbakekrevingEventHandler extends FpEventHandler<TilbakebetalingBe
                         .build());
         return oppgave;
     }
-    /*private Oppgave opprettOppgave(UUID eksternId, BehandlingProsessEventDto bpeDto, boolean prosesserFraAdmin) {
-        return getOppgaveRepository().opprettOppgave(Oppgave.builder()
-                .medSystem(bpeDto.getFagsystem().name())
-                .medFagsakSaksnummer(Long.valueOf(bpeDto.getSaksnummer()))
-                .medAktorId(Long.valueOf(bpeDto.getAktørId()))
-                .medBehandlendeEnhet(bpeDto.getBehandlendeEnhet())
-                .medBehandlingType(BehandlingType.fraKode(bpeDto.getBehandlingTypeKode()))
-                .medFagsakYtelseType(FagsakYtelseType.fraKode(bpeDto.getYtelseTypeKode()))
-                .medAktiv(true).medBehandlingOpprettet(bpeDto.getOpprettetBehandling())
-                //.medForsteStonadsdag(fraFpsak.getFørsteUttaksdag())
-                .medUtfortFraAdmin(prosesserFraAdmin)
-                //.medBehandlingsfrist(hentBehandlingstidFrist(fraFpsak.getBehandlingstidFrist()))
-                //.medBehandlingStatus(getKodeverkRepository().finn(BehandlingStatus.class, fraFpsak.getStatus()))
-                .medEksternId(eksternId)
-                .build());
-    }*/
-
 }
