@@ -49,7 +49,7 @@
         <jandex.version>2.1.2.Final</jandex.version>
         <junit.version>5.5.2</junit.version>
         <logstash.version>6.3</logstash.version>
-        <mockito.version>3.2.4</mockito.version>
+        <mockito.version>3.3.0</mockito.version>
         <metrics.version>4.1.3</metrics.version>
         <prometheus.version>0.8.1</prometheus.version>
         <swagger.version>2.1.1</swagger.version>
