@@ -94,7 +94,11 @@ export class FagsakSearchIndex extends Component<Props, StateProps> {
       if (fagsakOppgaver.length === 1) {
         this.velgFagsakOperasjoner(fagsakOppgaver[0], false);
       } else if (fagsakOppgaver.length === 0) {
-        goToFagsak(fagsaker[0].saksnummer);
+        if (fagsaker[0].system === 'FPSAK') {
+          goToFagsak(fagsaker[0].saksnummer);
+        } else if (fagsaker[0].system === 'FPTILBAKE') {
+          window.location.assign(fagsaker[0].href);
+        } else throw new Error('Fagsystemet for oppgaven er ukjent');
       }
     }
   }
@@ -107,9 +111,13 @@ export class FagsakSearchIndex extends Component<Props, StateProps> {
   goToFagsakEllerApneModal = (oppgave: Oppgave, oppgaveStatus: OppgaveStatus) => {
     const { goToFagsak, hentFpsakBehandlingId } = this.props;
     if (!oppgaveStatus.erReservert || (oppgaveStatus.erReservert && oppgaveStatus.erReservertAvInnloggetBruker)) {
-      hentFpsakBehandlingId(oppgave.eksternId).then((data: {payload: number }) => {
-        goToFagsak(oppgave.saksnummer, data.payload);
-      });
+      if (oppgave.system === 'FPSAK') {
+        hentFpsakBehandlingId(oppgave.eksternId).then((data: {payload: number }) => {
+          goToFagsak(oppgave.saksnummer, data.payload);
+        });
+      } else if (oppgave.system === 'FPTILBAKE') {
+        window.location.assign(oppgave.href);
+      } else throw new Error('Fagsystemet for oppgaven er ukjent');
     } else if (oppgaveStatus.erReservert && !oppgaveStatus.erReservertAvInnloggetBruker) {
       this.setState(prevState => ({ ...prevState, reservertAvAnnenSaksbehandler: true, reservertOppgave: oppgave }));
     }
@@ -128,11 +136,13 @@ export class FagsakSearchIndex extends Component<Props, StateProps> {
         hentReservasjonsstatus(oppgave.id).then((data: {payload: OppgaveStatus }) => {
           this.goToFagsakEllerApneModal(oppgave, data.payload);
         });
-      } else {
-        hentFpsakBehandlingId(oppgave.eksternId).then((data: {payload: number }) => {
-          goToFagsak(oppgave.saksnummer, data.payload);
-        });
-      }
+      } else if (oppgave.system === 'FPSAK') {
+          hentFpsakBehandlingId(oppgave.eksternId).then((data: {payload: number }) => {
+            goToFagsak(oppgave.saksnummer, data.payload);
+          });
+        } else if (oppgave.system === 'FPTILBAKE') {
+          window.location.assign(oppgave.href);
+        } else throw new Error('Fagsystemet for oppgaven er ukjent');
     } else {
       reserverOppgave(oppgave.id).then((data: {payload: OppgaveStatus }) => {
         this.goToFagsakEllerApneModal(oppgave, data.payload);
@@ -172,9 +182,13 @@ export class FagsakSearchIndex extends Component<Props, StateProps> {
     this.setState(prevState => ({
       ...prevState, reservertAvAnnenSaksbehandler: false, reservertOppgave: undefined,
     }));
-    hentFpsakBehandlingId(oppgave.eksternId).then((data: {payload: number }) => {
-      goToFagsak(oppgave.saksnummer, data.payload);
-    });
+    if (oppgave.system === 'FPSAK') {
+      hentFpsakBehandlingId(oppgave.eksternId).then((data: {payload: number }) => {
+        goToFagsak(oppgave.saksnummer, data.payload);
+      });
+    } else if (oppgave.system === 'FPTILBAKE') {
+      window.location.assign(oppgave.href);
+    } else throw new Error('Fagsystemet for oppgaven er ukjent');
   }
 
   resetSearch = () => {

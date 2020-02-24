@@ -17,6 +17,7 @@ const oppgavePropType = PropTypes.shape({
   fagsakYtelseType: kodeverkPropType,
   erTilSaksbehandling: PropTypes.bool.isRequired,
   eksternId: PropTypes.string,
+  href: PropTypes.string,
 });
 
 export default oppgavePropType;

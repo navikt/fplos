@@ -5,6 +5,7 @@ import { Person } from './personTsType';
 // eslint-disable-next-line import/prefer-default-export
 export type Fagsak = Readonly<{
   saksnummer: number;
+  system: string;
   sakstype: Kodeverk;
   status: Kodeverk;
   person: Person;
@@ -12,4 +13,5 @@ export type Fagsak = Readonly<{
   behandlingStatus?: Kodeverk;
   opprettet: string;
   endret?: string;
+  href?: string;
 }>;

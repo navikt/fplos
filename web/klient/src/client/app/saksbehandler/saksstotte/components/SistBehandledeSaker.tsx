@@ -39,8 +39,13 @@ export class SistBehandledeSaker extends Component<TsProps, StateProps> {
 
   openFpsak = (oppgave: Oppgave) => {
     const { fpsakUrl, hentFpsakBehandlingId } = this.props;
-    hentFpsakBehandlingId(oppgave.eksternId)
-      .then((data: { payload: number }) => window.location.assign(getFpsakHref(fpsakUrl, oppgave.saksnummer, data.payload)));
+
+    if (oppgave.system === 'FPSAK') {
+      hentFpsakBehandlingId(oppgave.eksternId)
+        .then((data: { payload: number }) => window.location.assign(getFpsakHref(fpsakUrl, oppgave.saksnummer, data.payload)));
+    } else if (oppgave.system === 'FPTILBAKE') {
+      window.location.assign(oppgave.href);
+    } else throw new Error('Fagsystemet for oppgaven er ukjent');
   }
 
   render = () => {

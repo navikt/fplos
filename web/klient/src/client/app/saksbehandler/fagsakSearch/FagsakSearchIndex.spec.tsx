@@ -10,6 +10,7 @@ import { FagsakSearchIndex } from './FagsakSearchIndex';
 describe('<FagsakSearchIndex>', () => {
   const fagsak = {
     saksnummer: 12345,
+    system: 'FPSAK',
     sakstype: {
       kode: 'ES',
       navn: 'test',

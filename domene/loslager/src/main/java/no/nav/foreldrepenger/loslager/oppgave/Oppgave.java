@@ -13,6 +13,7 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import java.net.URL;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -20,8 +21,6 @@ import java.util.UUID;
 @Entity(name = "Oppgave")
 @Table(name = "OPPGAVE")
 @Inheritance(strategy= InheritanceType.JOINED)
-/*@DiscriminatorColumn(name="system")
-@DiscriminatorValue("FPTILBAKE")*/
 public class Oppgave extends BaseEntitet {
 
     @Id
@@ -77,6 +76,9 @@ public class Oppgave extends BaseEntitet {
 
     @Column(name = "EKSTERN_ID")
     protected UUID eksternId;
+
+    @Column(name = "HREF")
+    protected URL href;
 
     @OneToOne(mappedBy = "oppgave")
     protected Reservasjon reservasjon;
@@ -147,6 +149,10 @@ public class Oppgave extends BaseEntitet {
 
     public Reservasjon getReservasjon() {
         return reservasjon;
+    }
+
+    public URL getHref() {
+        return href;
     }
 
     public static Builder builder(){
@@ -245,6 +251,11 @@ public class Oppgave extends BaseEntitet {
 
         public Builder medFagsakYtelseType(FagsakYtelseType fagsakYtelseType){
             tempOppgave.fagsakYtelseType = fagsakYtelseType;
+            return this;
+        }
+
+        public Builder medHref(URL href){
+            tempOppgave.href = href;
             return this;
         }
 
