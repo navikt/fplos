@@ -47,10 +47,10 @@
         <geronimo.osgi.version>1.1</geronimo.osgi.version>
         <hamcrest.version>1.3</hamcrest.version>
         <jandex.version>2.1.2.Final</jandex.version>
-        <junit.version>5.5.2</junit.version>
+        <junit.version>5.6.0</junit.version>
         <logstash.version>6.3</logstash.version>
-        <mockito.version>3.2.4</mockito.version>
-        <metrics.version>4.1.2</metrics.version>
+        <mockito.version>3.3.0</mockito.version>
+        <metrics.version>4.1.3</metrics.version>
         <prometheus.version>0.8.1</prometheus.version>
         <swagger.version>2.1.1</swagger.version>
         <!-- Transitive avh. versjoner for å sikre unikhet (enforcer dependencyConvergence). Skal ikke benyttes direkte av vår egen kode. -->
@@ -320,7 +320,7 @@
             <dependency>
                 <groupId>io.swagger</groupId>
                 <artifactId>swagger-compat-spec-parser</artifactId>
-                <version>1.0.49</version>
+                <version>1.0.50</version>
             </dependency>
             <dependency>
                 <groupId>io.swagger.core.v3</groupId>
