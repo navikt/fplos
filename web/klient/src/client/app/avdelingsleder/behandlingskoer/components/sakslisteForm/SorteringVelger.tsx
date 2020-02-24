@@ -22,6 +22,7 @@ import {
 } from '../../duck';
 import DatoSorteringValg from './DatoSorteringValg';
 import BelopSorteringValg from './BelopSorteringValg';
+import behandlingType from "kodeverk/behandlingType";
 
 interface TsProps {
   intl: any;
@@ -70,6 +71,8 @@ export const SorteringVelger = ({
       onChange={sorteringType => lagreSakslisteSortering(valgtSakslisteId, sorteringType, valgtAvdelingEnhet)}
     >
       {koSorteringTyper.map(koSortering => (
+          valgteBehandlingtyper.some(type => type.kode === behandlingType.TILBAKEBETALING)
+          || valgteBehandlingtyper.some(type => type.kode === behandlingType.TILBAKEBETALING_REVURDERING) && (
         <RadioOption
           key={koSortering.kode}
           value={koSortering.kode}
@@ -102,6 +105,7 @@ export const SorteringVelger = ({
           />
           )}
         </RadioOption>
+          )
       ))}
     </RadioGroupField>
   </>
