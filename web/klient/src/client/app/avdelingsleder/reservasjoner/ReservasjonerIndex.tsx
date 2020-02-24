@@ -1,31 +1,58 @@
 import React, { Component } from 'react';
 import { getAvdelingensSaksbehandlere } from 'avdelingsleder/saksbehandlere/duck';
 import { getValgtAvdelingEnhet } from 'app/duck';
-import ReservasjonerPanel from './components/ReservasjonerPanel';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import { bindActionCreators, Dispatch } from 'redux';
+import reservasjonPropType from 'avdelingsleder/reservasjoner/reservasjonPropType';
+import { Reservasjon } from 'avdelingsleder/reservasjoner/reservasjonTsType';
 import {
   fetchAvdelingensReservasjoner, getAvdelingensReservasjoner,
 } from './duck';
-import PropTypes from "prop-types";
+import ReservasjonerPanel from './components/ReservasjonerPanel';
 
 interface TsProps {
   fetchAvdelingensReservasjoner: (avdelingEnhet: string) => void;
+  avdelingensReservasjoner: Reservasjon[];
+  valgtAvdelingEnhet: string;
 
 }
 export class ReservasjonerIndex extends Component<TsProps> {
   static propTypes = {
     fetchAvdelingensReservasjoner: PropTypes.func.isRequired,
+    avdelingensReservasjoner: PropTypes.arrayOf(reservasjonPropType),
+    valgtAvdelingEnhet: PropTypes.string.isRequired,
   };
+
+  static defaultProps = {
+    avdelingensReservasjoner: [],
+  }
+
+  componentDidMount = () => {
+    const { fetchAvdelingensReservasjoner: fetchReservasjoner, valgtAvdelingEnhet } = this.props;
+    fetchReservasjoner(valgtAvdelingEnhet);
+  }
 
   render = () => {
     const {
-      avdelingensReservajoner
-    }
+      avdelingensReservasjoner,
+    } = this.props;
 
-    return(
-      <ReservasjonerPanel reservasjoner={avdelingensReservasjoner}/>
+    return (
+      <ReservasjonerPanel reservasjoner={avdelingensReservasjoner} />
     );
+  }
 }
 
 const mapStateToProps = state => ({
-  avdelingensReservajoner: getAvdelingensReservasjoner(state),
+  avdelingensReservasjoner: getAvdelingensReservasjoner(state),
+  valgtAvdelingEnhet: getValgtAvdelingEnhet(state),
 });
+
+const mapDispatchToProps = (dispatch: Dispatch) => ({
+  ...bindActionCreators({
+    fetchAvdelingensReservasjoner,
+  }, dispatch),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(ReservasjonerIndex);
