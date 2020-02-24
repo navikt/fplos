@@ -42,7 +42,7 @@ public enum BehandlingType implements Kodeverdi {
     }
 
     @JsonCreator
-    public static BehandlingType fraKode(@JsonProperty("koaade") String kode) {
+    public static BehandlingType fraKode(@JsonProperty("kode") String kode) {
         return Arrays.stream(values())
                 .filter(v -> v.kode.equals(kode))
                 .findFirst()
