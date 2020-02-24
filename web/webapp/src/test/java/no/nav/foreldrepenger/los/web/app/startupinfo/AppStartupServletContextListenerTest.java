@@ -1,15 +1,11 @@
 package no.nav.foreldrepenger.los.web.app.startupinfo;
 
-import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
 import javax.servlet.ServletContextEvent;
 
-//import no.nav.modig.core.test.LogSniffer;
 import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Rule;
 import org.junit.Test;
 
 public class AppStartupServletContextListenerTest {
@@ -17,9 +13,6 @@ public class AppStartupServletContextListenerTest {
     private AppStartupServletContextListener listener; // objekter vi tester
 
     private AppStartupInfoLogger mockAppStartupInfoLogger;
-
-    //@Rule
-    //public final LogSniffer logSniffer = new LogSniffer();
 
     @Before
     public void setup() {
@@ -33,16 +26,6 @@ public class AppStartupServletContextListenerTest {
         listener.contextInitialized(mock(ServletContextEvent.class));
 
         verify(mockAppStartupInfoLogger).logAppStartupInfo();
-    }
-
-    @Ignore // TODO: vurder ny test etter fjerning av modig dependency
-    @Test
-    public void test_contextInitialized_exception() {
-        doThrow(new RuntimeException("!")).when(mockAppStartupInfoLogger).logAppStartupInfo();
-
-        listener.contextInitialized(mock(ServletContextEvent.class));
-
-        //logSniffer.assertHasErrorMessage("FP-753407");
     }
 
     @Test
