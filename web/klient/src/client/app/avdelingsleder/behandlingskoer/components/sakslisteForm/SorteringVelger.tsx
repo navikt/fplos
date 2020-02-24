@@ -41,6 +41,13 @@ interface TsProps {
   tomDato: string;
 }
 
+const gjelderTilbakekreving = (valgteBehandlingtyper: Kodeverk[]) => {
+  return valgteBehandlingtyper.some(type =>
+      type.kode === behandlingType.TILBAKEBETALING ||
+      type.kode === behandlingType.TILBAKEBETALING_REVURDERING
+  );
+};
+
 /**
  * SorteringVelger
  */
@@ -71,8 +78,7 @@ export const SorteringVelger = ({
       onChange={sorteringType => lagreSakslisteSortering(valgtSakslisteId, sorteringType, valgtAvdelingEnhet)}
     >
       {koSorteringTyper.map(koSortering => (
-          valgteBehandlingtyper.some(type => type.kode === behandlingType.TILBAKEBETALING)
-          || valgteBehandlingtyper.some(type => type.kode === behandlingType.TILBAKEBETALING_REVURDERING) && (
+        !gjelderTilbakekreving(valgteBehandlingtyper) && (
         <RadioOption
           key={koSortering.kode}
           value={koSortering.kode}

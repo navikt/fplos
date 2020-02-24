@@ -20,7 +20,7 @@ public enum BehandlingType implements Kodeverdi {
     INNSYN("BT-006", "Innsyn"),
     TILBAKEBETALING ("BT-007", "Tilbakebetaling"),
     ANKE("BT-008", "Anke"),
-    TILBAKEBETALING_REVURDERING ("BT-009", "Tilbakebetaling Revurdering");
+    TILBAKEBETALING_REVURDERING ("BT-009", "Tilbakebet-rev");
 
     private String kode;
     private final String navn;
@@ -42,7 +42,7 @@ public enum BehandlingType implements Kodeverdi {
     }
 
     @JsonCreator
-    public static BehandlingType fraKode(@JsonProperty("kode") String kode) {
+    public static BehandlingType fraKode(@JsonProperty("koaade") String kode) {
         return Arrays.stream(values())
                 .filter(v -> v.kode.equals(kode))
                 .findFirst()
