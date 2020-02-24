@@ -14,6 +14,7 @@ import kodeverkPropType from 'kodeverk/kodeverkPropType';
 import kodeverkTyper from 'kodeverk/kodeverkTyper';
 import { KoSorteringType } from 'kodeverk/KoSorteringTsType';
 import { Kodeverk } from 'kodeverk/kodeverkTsType';
+import behandlingType from 'kodeverk/behandlingType';
 import {
   lagreSakslisteSortering as lagreSakslisteSorteringActionCreator,
   lagreSakslisteSorteringErDynamiskPeriode as lagreSakslisteSorteringErDynamiskPeriodeActionCreator,
@@ -22,7 +23,6 @@ import {
 } from '../../duck';
 import DatoSorteringValg from './DatoSorteringValg';
 import BelopSorteringValg from './BelopSorteringValg';
-import behandlingType from "kodeverk/behandlingType";
 
 interface TsProps {
   intl: any;
@@ -41,12 +41,9 @@ interface TsProps {
   tomDato: string;
 }
 
-const gjelderTilbakekreving = (valgteBehandlingtyper: Kodeverk[]) => {
-  return valgteBehandlingtyper.some(type =>
-      type.kode === behandlingType.TILBAKEBETALING ||
-      type.kode === behandlingType.TILBAKEBETALING_REVURDERING
-  );
-};
+const gjelderTilbakekreving = (valgteBehandlingtyper: Kodeverk[]) => valgteBehandlingtyper
+    && valgteBehandlingtyper.some(type => type.kode === behandlingType.TILBAKEBETALING
+    || type.kode === behandlingType.TILBAKEBETALING_REVURDERING);
 
 /**
  * SorteringVelger
@@ -78,39 +75,38 @@ export const SorteringVelger = ({
       onChange={sorteringType => lagreSakslisteSortering(valgtSakslisteId, sorteringType, valgtAvdelingEnhet)}
     >
       {koSorteringTyper.map(koSortering => (
-        !gjelderTilbakekreving(valgteBehandlingtyper) && (
-        <RadioOption
-          key={koSortering.kode}
-          value={koSortering.kode}
-          label={koSortering.navn}
-        >
-          {(koSortering.felttype === 'DATO') && (
-
-          <DatoSorteringValg
-            intl={intl}
-            valgtSakslisteId={valgtSakslisteId}
-            lagreSakslisteSorteringErDynamiskPeriode={lagreSakslisteSorteringErDynamiskPeriode}
-            lagreSakslisteSorteringTidsintervallDato={lagreSakslisteSorteringTidsintervallDato}
-            lagreSakslisteSorteringTidsintervallDager={lagreSakslisteSorteringNumeriskIntervall}
-            valgtAvdelingEnhet={valgtAvdelingEnhet}
-            erDynamiskPeriode={erDynamiskPeriode}
-            fra={fra}
-            til={til}
-            fomDato={fomDato}
-            tomDato={tomDato}
-          />
-          )}
-          {(koSortering.felttype === 'HELTALL') && (
-          <BelopSorteringValg
-            intl={intl}
-            valgtSakslisteId={valgtSakslisteId}
-            lagreSakslisteSorteringNumerisk={lagreSakslisteSorteringNumeriskIntervall}
-            valgtAvdelingEnhet={valgtAvdelingEnhet}
-            fra={fra}
-            til={til}
-          />
-          )}
-        </RadioOption>
+          (!gjelderTilbakekreving(valgteBehandlingtyper)) && (
+          <RadioOption
+            key={koSortering.kode}
+            value={koSortering.kode}
+            label={koSortering.navn}
+          >
+            {(koSortering.felttype === 'DATO') && (
+            <DatoSorteringValg
+              intl={intl}
+              valgtSakslisteId={valgtSakslisteId}
+              lagreSakslisteSorteringErDynamiskPeriode={lagreSakslisteSorteringErDynamiskPeriode}
+              lagreSakslisteSorteringTidsintervallDato={lagreSakslisteSorteringTidsintervallDato}
+              lagreSakslisteSorteringTidsintervallDager={lagreSakslisteSorteringNumeriskIntervall}
+              valgtAvdelingEnhet={valgtAvdelingEnhet}
+              erDynamiskPeriode={erDynamiskPeriode}
+              fra={fra}
+              til={til}
+              fomDato={fomDato}
+              tomDato={tomDato}
+            />
+            )}
+            {(koSortering.felttype === 'HELTALL') && (
+            <BelopSorteringValg
+              intl={intl}
+              valgtSakslisteId={valgtSakslisteId}
+              lagreSakslisteSorteringNumerisk={lagreSakslisteSorteringNumeriskIntervall}
+              valgtAvdelingEnhet={valgtAvdelingEnhet}
+              fra={fra}
+              til={til}
+            />
+            )}
+          </RadioOption>
           )
       ))}
     </RadioGroupField>
