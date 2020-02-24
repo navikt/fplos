@@ -1,10 +1,10 @@
-    package no.nav.foreldrepenger.loslager.repository;
-
-import java.util.List;
-import java.util.Optional;
+package no.nav.foreldrepenger.loslager.repository;
 
 import static no.nav.vedtak.felles.jpa.HibernateVerktøy.hentEksaktResultat;
 import static no.nav.vedtak.felles.jpa.HibernateVerktøy.hentUniktResultat;
+
+import java.util.List;
+import java.util.Optional;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -13,7 +13,6 @@ import javax.persistence.TypedQuery;
 
 import no.nav.foreldrepenger.loslager.organisasjon.Avdeling;
 import no.nav.foreldrepenger.loslager.organisasjon.Saksbehandler;
-import no.nav.vedtak.felles.jpa.VLPersistenceUnit;
 
 @ApplicationScoped
 public class OrganisasjonRepositoryImpl implements OrganisasjonRepository {
@@ -21,17 +20,12 @@ public class OrganisasjonRepositoryImpl implements OrganisasjonRepository {
     private EntityManager entityManager;
 
     @Inject
-    public OrganisasjonRepositoryImpl(@VLPersistenceUnit EntityManager entityManager) {
+    public OrganisasjonRepositoryImpl(EntityManager entityManager) {
         this.entityManager = entityManager;
     }
 
     OrganisasjonRepositoryImpl(){
     }
-
-    EntityManager getEntityManager() {
-        return entityManager;
-    }
-
 
     private void internLagre(Object skaLagres) {
         entityManager.persist(skaLagres);
@@ -53,7 +47,7 @@ public class OrganisasjonRepositoryImpl implements OrganisasjonRepository {
 
     @Override
     public void slettSaksbehandler(String saksbehandlerIdent) {
-        getEntityManager().createNativeQuery("DELETE FROM SAKSBEHANDLER s " +
+        entityManager.createNativeQuery("DELETE FROM SAKSBEHANDLER s " +
                 "WHERE s.SAKSBEHANDLER_IDENT = :saksbehandlerIdent")
                 .setParameter("saksbehandlerIdent", saksbehandlerIdent)
                 .executeUpdate();
@@ -101,7 +95,7 @@ public class OrganisasjonRepositoryImpl implements OrganisasjonRepository {
 
     @Override
     public List<Avdeling> hentAvdelinger() {
-        TypedQuery<Avdeling> listeTypedQuery = getEntityManager().createQuery("FROM avdeling ", Avdeling.class);
+        TypedQuery<Avdeling> listeTypedQuery = entityManager.createQuery("FROM avdeling ", Avdeling.class);
         return listeTypedQuery.getResultList();
     }
 

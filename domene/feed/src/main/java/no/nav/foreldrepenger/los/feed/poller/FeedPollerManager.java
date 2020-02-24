@@ -1,25 +1,22 @@
 package no.nav.foreldrepenger.los.feed.poller;
 
-import no.nav.vedtak.apptjeneste.AppServiceHandler;
-import no.nav.vedtak.felles.jpa.VLPersistenceUnit;
-import no.nav.vedtak.util.Tuple;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.Collection;
+import java.util.Objects;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Objects;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.TimeUnit;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import no.nav.vedtak.apptjeneste.AppServiceHandler;
 
 /**
  * Main class handling polling JSON feed.
@@ -28,24 +25,9 @@ import java.util.concurrent.TimeUnit;
 public class FeedPollerManager implements AppServiceHandler {
 
     private static final Logger log = LoggerFactory.getLogger(FeedPollerManager.class);
+    private static final long FIXED_POLLING_DELAY = 500L;
 
     private EntityManager entityManager;
-
-    /**
-     * Prefix every thread in pool with given name.
-     */
-    private final String threadPoolNamePrefix = getClass().getSimpleName();
-
-    /**
-     * Delay between each interval of polling. (millis)
-     */
-    private long delayBetweenPollingMillis = getSystemPropertyWithLowerBoundry("task.manager.polling.delay", 500L, 50L);
-
-
-    /**
-     * Single scheduled thread handling polling.
-     */
-    private Map<String, Tuple<FeedPoller, ScheduledExecutorService>> pollingService;
 
     /**
      * Future for å kunne kansellere polling.
@@ -57,7 +39,7 @@ public class FeedPollerManager implements AppServiceHandler {
     }
 
     @Inject
-    public FeedPollerManager(@VLPersistenceUnit EntityManager entityManager, @Any Instance<FeedPoller> feedPollers) {
+    public FeedPollerManager(EntityManager entityManager, @Any Instance<FeedPoller> feedPollers) {
         Objects.requireNonNull(entityManager, "entityManager"); //$NON-NLS-1$
         Objects.requireNonNull(feedPollers, "feedPollers"); //$NON-NLS-1$
         this.entityManager = entityManager;
@@ -83,36 +65,19 @@ public class FeedPollerManager implements AppServiceHandler {
 
     synchronized void startPollerThread() {
         if (pollingServiceScheduledFuture != null) {
-            throw new IllegalStateException("Service allerede startet, stopp først");//$NON-NLS-1$
+            throw new IllegalStateException("Service allerede startet, stopp først");
         }
-        if (pollingService == null) {
-            this.pollingService = new LinkedHashMap<>();
-            for (FeedPoller feedPoller : feedPollers) {
-                String threadName = threadPoolNamePrefix + "-" + feedPoller.getName() + "-poller";
-                ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor(new PollerUtils.NamedThreadFactory(threadName));
-                Tuple<FeedPoller, ScheduledExecutorService> tuple = new Tuple<>(feedPoller, service);
-                pollingService.put(feedPoller.getName(), tuple);
-                log.info("Created thread for JSON feed polling {}", threadName); // NOSONAR
-            }
-        }
-        this.pollingServiceScheduledFuture = new ArrayList<>();
-        for (Map.Entry<String, Tuple<FeedPoller, ScheduledExecutorService>> tupleEntry : pollingService.entrySet()) {
-            Tuple<FeedPoller, ScheduledExecutorService> tuple = tupleEntry.getValue();
-            FeedPoller feedPoller = tuple.getElement1();
-            Poller poller = new Poller(entityManager, feedPoller);
-            ScheduledExecutorService service = tuple.getElement2();
-            ScheduledFuture<?> scheduledFuture = service.scheduleWithFixedDelay(poller, delayBetweenPollingMillis / 2, delayBetweenPollingMillis, TimeUnit.MILLISECONDS);// NOSONAR
-            pollingServiceScheduledFuture.add(scheduledFuture);
-            log.debug("Lagt til ny poller til pollingtjeneste. poller={}, delayBetweenPollingMillis={}", feedPoller.getName(), delayBetweenPollingMillis);
-        }
+        this.pollingServiceScheduledFuture = feedPollers.stream()
+                .map(feedPoller -> lagScheduledFuture(feedPoller))
+                .collect(Collectors.toList());
     }
 
-    private static long getSystemPropertyWithLowerBoundry(String key, long defaultValue, long lowerBoundry) {
-        final String property = System.getProperty(key, String.valueOf(defaultValue));
-        final long systemPropertyValue = Long.parseLong(property);
-        if (systemPropertyValue < lowerBoundry) {
-            return lowerBoundry;
-        }
-        return systemPropertyValue;
+    private ScheduledFuture<?> lagScheduledFuture(FeedPoller feedPoller) {
+        var threadName = getClass().getSimpleName() + "-" + feedPoller.getName() + "-poller";
+        var scheduledExecutorService = Executors.newSingleThreadScheduledExecutor(r -> new Thread(r, threadName));
+        var poller = new Poller(entityManager, feedPoller);
+        var scheduledFuture = scheduledExecutorService.scheduleWithFixedDelay(poller, FIXED_POLLING_DELAY, FIXED_POLLING_DELAY, TimeUnit.MILLISECONDS);
+        log.info("Laget scheduledfuture poller={}, delayBetweenPollingMillis={}, threadname={}", feedPoller.getName(), FIXED_POLLING_DELAY, threadName);
+        return scheduledFuture;
     }
 }
