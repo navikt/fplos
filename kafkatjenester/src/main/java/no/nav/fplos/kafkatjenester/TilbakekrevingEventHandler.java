@@ -53,7 +53,8 @@ public class TilbakekrevingEventHandler extends FpEventHandler<TilbakebetalingBe
         EventResultat event = TilbakekrevingEventMapper.tilbakekrevingEventFra(bpeDto);
         if (event == EventResultat.OPPRETT_OPPGAVE
                 && !oppgaveEvents.isEmpty()
-                && oppgaveEvents.get(0).getEventType().erÅpningsevent()) {
+                && oppgaveEvents.get(0).getEventType().erÅpningsevent()
+                && oppgaveEvents.get(0).getBehandlendeEnhet().equals(bpeDto.getBehandlendeEnhet())) {
             event = EventResultat.GJENÅPNE_OPPGAVE;
         }
 
@@ -84,12 +85,6 @@ public class TilbakekrevingEventHandler extends FpEventHandler<TilbakebetalingBe
                 loggEvent(gjenåpnetOppgave.getEksternId(), OppgaveEventType.GJENAPNET, null, bpeDto.getBehandlendeEnhet());
                 break;
         }
-    }
-
-    private static EventResultat eventFra(TilbakebetalingBehandlingProsessEventDto bpeDto) {
-        return bpeDto.getAksjonspunktKoderMedStatusListe().containsValue("OPPR")
-                ? EventResultat.OPPRETT_OPPGAVE
-                : EventResultat.LUKK_OPPGAVE;
     }
 
     private void avsluttOppgaveHvisÅpen(UUID eksternId, List<OppgaveEventLogg> oppgaveEventLogger, String behandlendeEnhet) {
