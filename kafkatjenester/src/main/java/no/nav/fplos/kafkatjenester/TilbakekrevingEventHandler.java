@@ -9,6 +9,7 @@ import no.nav.foreldrepenger.loslager.oppgave.Reservasjon;
 import no.nav.foreldrepenger.loslager.oppgave.TilbakekrevingOppgave;
 import no.nav.foreldrepenger.loslager.repository.OppgaveRepository;
 import no.nav.fplos.kafkatjenester.eventresultat.EventResultat;
+import no.nav.fplos.kafkatjenester.eventresultat.TilbakekrevingEventMapper;
 import no.nav.vedtak.felles.integrasjon.kafka.TilbakebetalingBehandlingProsessEventDto;
 import no.nav.vedtak.felles.jpa.Transaction;
 import org.slf4j.Logger;
@@ -49,7 +50,7 @@ public class TilbakekrevingEventHandler extends FpEventHandler<TilbakebetalingBe
         OppgaveEgenskapFinner egenskapFinner = new TilbakekrevingOppgaveEgenskapFinner(bpeDto.getAksjonspunktKoderMedStatusListe(),
                 bpeDto.getAnsvarligSaksbehandlerIdent());
 
-        EventResultat event = EventResultat.tilbakekrevingEventFra(bpeDto);
+        EventResultat event = TilbakekrevingEventMapper.tilbakekrevingEventFra(bpeDto);
         if (event == EventResultat.OPPRETT_OPPGAVE
                 && !oppgaveEvents.isEmpty()
                 && oppgaveEvents.get(0).getEventType().erÅpningsevent()) {
