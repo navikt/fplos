@@ -27,7 +27,7 @@ import EndreSaksbehandlereIndex from './saksbehandlere/EndreSaksbehandlereIndex'
 import EndreBehandlingskoerIndex from './behandlingskoer/EndreBehandlingskoerIndex';
 
 import styles from './avdelingslederIndex.less';
-import { ReservasjonerIndex } from './reservasjoner/ReservasjonerIndex';
+import ReservasjonerIndex from './reservasjoner/ReservasjonerIndex';
 
 const classNames = classnames.bind(styles);
 

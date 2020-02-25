@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { getAvdelingensSaksbehandlere } from 'avdelingsleder/saksbehandlere/duck';
 import { getValgtAvdelingEnhet } from 'app/duck';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
@@ -29,8 +28,8 @@ export class ReservasjonerIndex extends Component<TsProps> {
   }
 
   componentDidMount = () => {
-    const { fetchAvdelingensReservasjoner: fetchReservasjoner, valgtAvdelingEnhet } = this.props;
-    fetchReservasjoner(valgtAvdelingEnhet);
+    const { fetchAvdelingensReservasjoner, valgtAvdelingEnhet } = this.props;
+    fetchAvdelingensReservasjoner(valgtAvdelingEnhet);
   }
 
   render = () => {

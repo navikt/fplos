@@ -12,16 +12,32 @@ interface TsProps {
   valgtAvdelingEnhet: string;
 }
 
-export class ReservasjonerTabell extends Component<TsProps> {
+interface StateTsProps {
+  placeholder?: string;
+}
+
+export class ReservasjonerTabell extends Component<TsProps, StateTsProps> {
   static propTypes = {
     reservasjoner: PropTypes.arrayOf(reservasjonPropType).isRequired,
     valgtAvdelingEnhet: PropTypes.string.isRequired,
+  }
+
+  /* Endre denne */
+  constructor(props: TsProps) {
+    super(props);
+
+    this.state = {
+      placeholder: undefined,
+    };
   }
 
   render = () => {
     const {
       reservasjoner, valgtAvdelingEnhet,
     } = this.props;
+    const {
+      placeholder,
+    } = this.state;
     return (
       <>
         <Element><FormattedMessage id="ReservsajonerTabell.Reservasjoner" /></Element>

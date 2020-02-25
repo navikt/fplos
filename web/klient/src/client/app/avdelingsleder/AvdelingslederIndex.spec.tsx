@@ -42,7 +42,7 @@ describe('<AvdelingslederIndex>', () => {
     expect(wrapper.find(AvdelingslederDashboard)).to.have.length(1);
   });
 
-  it('skal vise alle tre panelene', () => {
+  it('skal vise alle fire panelene', () => {
     const location = {
       hash: '23',
       pathname: '/test/',
@@ -59,7 +59,7 @@ describe('<AvdelingslederIndex>', () => {
     expect(tab).to.have.length(1);
 
     const tabs = tab.prop('tabs');
-    expect(tabs).to.have.length(3);
+    expect(tabs).to.have.length(4);
     expect(tabs[0].label.props.children.props.id).to.eql('AvdelingslederIndex.Behandlingskoer');
     expect(tabs[0].aktiv).is.true;
     expect(tabs[1].label.props.children.props.id).to.eql('AvdelingslederIndex.Nokkeltall');
@@ -68,7 +68,6 @@ describe('<AvdelingslederIndex>', () => {
     expect(tabs[2].aktiv).is.false;
     expect(tabs[3].label.props.children.props.id).to.eql('AvdelingslederIndex.Reservasjoner');
     expect(tabs[3].aktiv).is.false;
-
   });
 
   it('skal rendre panel for sakslister når dette er valgt', () => {
