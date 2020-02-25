@@ -9,7 +9,6 @@ import SistBehandledeSaker from './SistBehandledeSaker';
 import SaksbehandlerNokkeltallIndex from '../nokkeltall/SaksbehandlerNokkeltallIndex';
 
 interface TsProps {
-  fpsakUrl: string;
   sistBehandledeSaker: Oppgave[];
   valgtSakslisteId?: number;
 }
@@ -18,12 +17,11 @@ interface TsProps {
  * SaksstottePaneler
  */
 const SaksstottePaneler = ({
-  fpsakUrl,
   sistBehandledeSaker,
   valgtSakslisteId,
 }: TsProps) => (
   <>
-    <SistBehandledeSaker fpsakUrl={fpsakUrl} sistBehandledeSaker={sistBehandledeSaker} />
+    <SistBehandledeSaker sistBehandledeSaker={sistBehandledeSaker} />
     <VerticalSpacer twentyPx />
     {valgtSakslisteId
       && <SaksbehandlerNokkeltallIndex valgtSakslisteId={valgtSakslisteId} />
@@ -32,7 +30,6 @@ const SaksstottePaneler = ({
 );
 
 SaksstottePaneler.propTypes = {
-  fpsakUrl: PropTypes.string.isRequired,
   sistBehandledeSaker: PropTypes.arrayOf(oppgavePropType).isRequired,
   valgtSakslisteId: PropTypes.number,
 };
