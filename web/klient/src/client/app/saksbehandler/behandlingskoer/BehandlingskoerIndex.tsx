@@ -237,6 +237,7 @@ export class BehandlingskoerIndex extends Component<TsProps, StateProps> {
 
 const mapStateToProps = state => ({
   fpsakUrl: getFpsakUrl(state),
+  fptilbakeUrl: getFptilbakeUrl(state),
   harTimeout: harOppgaverTilBehandlingTimeout(state),
   sakslister: getSakslisteResult(state),
   goToUrl: url => window.location.assign(url),
