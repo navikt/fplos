@@ -28,8 +28,8 @@ export class ReservasjonerIndex extends Component<TsProps> {
   }
 
   componentDidMount = () => {
-    const { fetchAvdelingensReservasjoner, valgtAvdelingEnhet } = this.props;
-    fetchAvdelingensReservasjoner(valgtAvdelingEnhet);
+    const { fetchAvdelingensReservasjoner: hentAvdelingensReservasjoner, valgtAvdelingEnhet } = this.props;
+    hentAvdelingensReservasjoner(valgtAvdelingEnhet);
   }
 
   render = () => {
