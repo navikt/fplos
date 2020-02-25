@@ -63,7 +63,7 @@ public class VerdikjedetestNøkkeltallAvdelingTest {
     public void before() {
         kafkaReader = new KafkaReader(meldingConsumer,
                 new FpsakEventHandler(oppgaveRepository, foreldrepengerBehandlingRestKlient, oppgaveEgenskapHandler),
-                new TilbakekrevingEventHandler(oppgaveRepository),
+                new TilbakekrevingEventHandler(oppgaveRepository, oppgaveEgenskapHandler),
                 oppgaveRepository);
     }
 

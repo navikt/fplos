@@ -105,7 +105,7 @@ public class VerdikjedetestEventhåndteringSaksbehandlerTest {
     public void before(){
         kafkaReader = new KafkaReader(meldingConsumer,
                 new FpsakEventHandler(oppgaveRepository, foreldrepengerBehandlingRestKlient, oppgaveEgenskapHandler),
-                new TilbakekrevingEventHandler(oppgaveRepository),
+                new TilbakekrevingEventHandler(oppgaveRepository, oppgaveEgenskapHandler),
                 oppgaveRepository);
         avdelingDrammen = avdelingslederRestTjeneste.hentAvdelinger().stream()
                 .filter(avdeling -> AVDELING_DRAMMEN.equals(avdeling.getAvdelingEnhet()))

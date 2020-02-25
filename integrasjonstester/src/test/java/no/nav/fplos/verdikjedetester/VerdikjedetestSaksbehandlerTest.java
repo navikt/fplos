@@ -99,7 +99,7 @@ public class VerdikjedetestSaksbehandlerTest {
     public void before(){
         kafkaReader = new KafkaReader(meldingConsumer,
                 new FpsakEventHandler(oppgaveRepository, foreldrepengerBehandlingRestKlient, oppgaveEgenskapHandler),
-                new TilbakekrevingEventHandler(oppgaveRepository), oppgaveRepository);
+                new TilbakekrevingEventHandler(oppgaveRepository, oppgaveEgenskapHandler), oppgaveRepository);
         avdelingDrammen = avdelingslederRestTjeneste.hentAvdelinger().stream()
                 .filter(avdeling -> AVDELING_DRAMMEN.equals(avdeling.getAvdelingEnhet())).findFirst().orElseThrow();
         sakslisteDrammenFPFørstegangsIdDto = avdelingslederSakslisteRestTjeneste.opprettNySaksliste(new AvdelingEnhetDto(avdelingDrammen.getAvdelingEnhet()));

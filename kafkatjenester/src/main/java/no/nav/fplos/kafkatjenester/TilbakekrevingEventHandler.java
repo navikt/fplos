@@ -23,13 +23,15 @@ import java.util.UUID;
 @Transaction
 public class TilbakekrevingEventHandler extends FpEventHandler<TilbakebetalingBehandlingProsessEventDto> {
     private static final Logger log = LoggerFactory.getLogger(TilbakekrevingEventHandler.class);
+    private OppgaveEgenskapHandler oppgaveEgenskapHandler;
 
     public TilbakekrevingEventHandler() {
     }
 
     @Inject
-    public TilbakekrevingEventHandler(OppgaveRepository oppgaveRepository) {
+    public TilbakekrevingEventHandler(OppgaveRepository oppgaveRepository, OppgaveEgenskapHandler oppgaveEgenskapHandler) {
         super(oppgaveRepository);
+        this.oppgaveEgenskapHandler = oppgaveEgenskapHandler;
     }
 
     @Override
@@ -44,6 +46,8 @@ public class TilbakekrevingEventHandler extends FpEventHandler<TilbakebetalingBe
     private void prosesser(TilbakebetalingBehandlingProsessEventDto bpeDto, Reservasjon reservasjon, boolean prosesserFraAdmin) {
         var id = bpeDto.getEksternId();
         List<OppgaveEventLogg> oppgaveEvents = getOppgaveRepository().hentEventerForEksternId(bpeDto.getEksternId());
+        OppgaveEgenskapFinner egenskapFinner = new TilbakekrevingOppgaveEgenskapFinner(bpeDto.getAksjonspunktKoderMedStatusListe(),
+                bpeDto.getAnsvarligSaksbehandlerIdent());
 
         EventResultat event = EventResultat.tilbakekrevingEventFra(bpeDto);
         if (event == EventResultat.OPPRETT_OPPGAVE
@@ -68,11 +72,13 @@ public class TilbakekrevingEventHandler extends FpEventHandler<TilbakebetalingBe
                 Oppgave oppgave = opprettTilbakekrevingOppgave(id, bpeDto, prosesserFraAdmin);
                 reserverOppgaveFraTidligereReservasjon(prosesserFraAdmin, reservasjon, oppgave.getId());
                 log.info("Oppgave {} opprettet og populert med informasjon fra FPTILBAKE for eksternId {}", oppgave.getId(), id);
+                oppgaveEgenskapHandler.håndterOppgaveEgenskaper(oppgave, egenskapFinner);
                 loggEvent(oppgave.getEksternId(), OppgaveEventType.OPPRETTET, null, bpeDto.getBehandlendeEnhet());
                 break;
             case GJENÅPNE_OPPGAVE:
                 TilbakekrevingOppgave gjenåpnetOppgave = getOppgaveRepository().gjenåpneTilbakekrevingOppgave(id);
                 oppdaterOppgaveInformasjon(gjenåpnetOppgave, bpeDto);
+                oppgaveEgenskapHandler.håndterOppgaveEgenskaper(gjenåpnetOppgave, egenskapFinner);
                 log.info("Gjenåpnet oppgave for eksternId {}", id);
                 loggEvent(gjenåpnetOppgave.getEksternId(), OppgaveEventType.GJENAPNET, null, bpeDto.getBehandlendeEnhet());
                 break;

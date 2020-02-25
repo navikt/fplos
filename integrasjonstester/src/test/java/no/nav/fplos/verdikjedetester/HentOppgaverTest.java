@@ -76,7 +76,7 @@ public class HentOppgaverTest {
     public void before(){
         kafkaReader = new KafkaReader(meldingConsumer,
                 new FpsakEventHandler(oppgaveRepository, foreldrepengerBehandlingRestKlient, oppgaveEgenskapHandler),
-                new TilbakekrevingEventHandler(oppgaveRepository),oppgaveRepository);
+                new TilbakekrevingEventHandler(oppgaveRepository, oppgaveEgenskapHandler),oppgaveRepository);
         List<Avdeling> avdelings = repoRule.getRepository().hentAlle(Avdeling.class);
         avdelingDrammen = avdelings.stream().filter(avdeling -> Avdeling.AVDELING_DRAMMEN_ENHET.equals(avdeling.getAvdelingEnhet())).findFirst().orElseThrow();
         oppgaveFiltrering = OppgaveFiltrering.builder().medNavn("FRIST").medSortering(KøSortering.BEHANDLINGSFRIST).medAvdeling(avdelingDrammen).build();

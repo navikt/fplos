@@ -74,7 +74,7 @@ public class FpsakEventHandler extends FpEventHandler<FpsakBehandlingProsessEven
         List<Aksjonspunkt> aksjonspunkt = Optional.ofNullable(behandling.getAksjonspunkter())
                 .orElse(Collections.emptyList());
 
-        OppgaveEgenskapFinner egenskapFinner = new OppgaveEgenskapFinner(behandling, tidligereEventer, aksjonspunkt);
+        OppgaveEgenskapFinner egenskapFinner = new FpsakOppgaveEgenskapFinner(behandling, tidligereEventer, aksjonspunkt);
 
         EventResultat eventResultat = prosesserFraAdmin
                 ? FpsakEventMapper.signifikantEventForAdminFra(aksjonspunkt)

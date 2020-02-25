@@ -1,9 +1,11 @@
 package no.nav.fplos.kafkatjenester;
 
 import no.nav.foreldrepenger.dbstoette.UnittestRepositoryRule;
+import no.nav.foreldrepenger.loslager.oppgave.AndreKriterierType;
 import no.nav.foreldrepenger.loslager.oppgave.BehandlingType;
 import no.nav.foreldrepenger.loslager.oppgave.FagsakYtelseType;
 import no.nav.foreldrepenger.loslager.oppgave.Oppgave;
+import no.nav.foreldrepenger.loslager.oppgave.OppgaveEgenskap;
 import no.nav.foreldrepenger.loslager.oppgave.OppgaveEventLogg;
 import no.nav.foreldrepenger.loslager.repository.OppgaveRepository;
 import no.nav.foreldrepenger.loslager.repository.OppgaveRepositoryImpl;
@@ -29,7 +31,8 @@ public class TilbakekrevingEventHandlerTest {
     public UnittestRepositoryRule repoRule = new UnittestRepositoryRule();
     private EntityManager entityManager = repoRule.getEntityManager();
     private OppgaveRepository oppgaveRepository = new OppgaveRepositoryImpl(entityManager);
-    private TilbakekrevingEventHandler handler = new TilbakekrevingEventHandler(oppgaveRepository);
+    private OppgaveEgenskapHandler oppgaveEgenskapHandler = new OppgaveEgenskapHandler(oppgaveRepository);
+    private TilbakekrevingEventHandler handler = new TilbakekrevingEventHandler(oppgaveRepository, oppgaveEgenskapHandler);
     private static Long behandlingId = 1000000L;
 
     private Map<String, String> åpentAksjonspunkt = new HashMap<>() {{
@@ -38,6 +41,9 @@ public class TilbakekrevingEventHandlerTest {
     private Map<String, String> manueltPåVentAksjonspunkt = new HashMap<>() {{
         put("5015", "OPPR");
         put("7002", "OPPR");
+    }};
+    private Map<String, String> åpentBeslutter = new HashMap<>() {{
+        put("5005", "OPPR");
     }};
     private Map<String, String> avsluttetAksjonspunkt = new HashMap<>() {{ put("5015", "AVBR"); }};
 
@@ -85,6 +91,33 @@ public class TilbakekrevingEventHandlerTest {
         sjekkAntallOppgaver(1);
         sjekkAktivOppgaveEksisterer(false);
         sjekkOppgaveEventAntallEr(2);
+    }
+
+    @Test
+    public void skalOppretteTilBeslutterEgenskapVedAksjonspunkt5005() {
+        var førsteEvent = eventFra(åpentBeslutter);
+        var andreEventUtenBeslutter = eventFra(åpentAksjonspunkt);
+        handler.prosesser(førsteEvent);
+
+        sjekkAktivOppgaveEksisterer(true);
+        verifiserAktivBeslutterEgenskap();
+
+        handler.prosesser(andreEventUtenBeslutter);
+        verifiserInaktivBeslutterEgenskap();
+    }
+
+    private void verifiserAktivBeslutterEgenskap() {
+        sjekkBeslutterEgenskapMedAktivstatus(true);
+    }
+
+    private void verifiserInaktivBeslutterEgenskap() {
+        sjekkBeslutterEgenskapMedAktivstatus(false);
+    }
+
+    private void sjekkBeslutterEgenskapMedAktivstatus(boolean status) {
+        List<OppgaveEgenskap> egenskaper = repoRule.getRepository().hentAlle(OppgaveEgenskap.class);
+        assertThat(egenskaper.get(0).getAndreKriterierType()).isEqualTo(AndreKriterierType.TIL_BESLUTTER);
+        assertThat(egenskaper.get(0).getAktiv()).isEqualTo(status);
     }
 
     private void sjekkAntallOppgaver(int antall) {
