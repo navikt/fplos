@@ -8,10 +8,7 @@ import no.nav.foreldrepenger.loslager.oppgave.OppgaveEventType;
 import no.nav.foreldrepenger.loslager.oppgave.Reservasjon;
 import no.nav.foreldrepenger.loslager.oppgave.TilbakekrevingOppgave;
 import no.nav.foreldrepenger.loslager.repository.OppgaveRepository;
-import no.nav.fplos.foreldrepengerbehandling.Aksjonspunkt;
 import no.nav.fplos.kafkatjenester.eventresultat.EventResultat;
-import no.nav.fplos.kafkatjenester.eventresultat.FpsakEventMapper;
-import no.nav.vedtak.felles.integrasjon.kafka.BehandlingProsessEventDto;
 import no.nav.vedtak.felles.integrasjon.kafka.TilbakebetalingBehandlingProsessEventDto;
 import no.nav.vedtak.felles.jpa.Transaction;
 import org.slf4j.Logger;
@@ -19,9 +16,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @ApplicationScoped
@@ -71,7 +66,7 @@ public class TilbakekrevingEventHandler extends FpEventHandler<TilbakebetalingBe
                 loggEvent(oppgave.getEksternId(), OppgaveEventType.OPPRETTET, null, bpeDto.getBehandlendeEnhet());
                 break;
             case GJENÅPNE_OPPGAVE:
-                Oppgave gjenåpnetOppgave = getOppgaveRepository().gjenåpneOppgaveForEksternId(id);
+                TilbakekrevingOppgave gjenåpnetOppgave = getOppgaveRepository().gjenåpneTilbakekrevingOppgave(id);
                 oppdaterOppgaveInformasjon(gjenåpnetOppgave, bpeDto);
                 log.info("Gjenåpnet oppgave for eksternId {}", id);
                 loggEvent(gjenåpnetOppgave.getEksternId(), OppgaveEventType.GJENAPNET, null, bpeDto.getBehandlendeEnhet());
@@ -92,28 +87,31 @@ public class TilbakekrevingEventHandler extends FpEventHandler<TilbakebetalingBe
         }
     }
 
-    private void oppdaterOppgaveInformasjon(Oppgave gjenåpnetOppgave, TilbakebetalingBehandlingProsessEventDto bpeDto) {
-        TilbakekrevingOppgave tmp = opprettTilbakekrevingOppgave(bpeDto.getEksternId(), bpeDto, false);
+    private void oppdaterOppgaveInformasjon(TilbakekrevingOppgave gjenåpnetOppgave, TilbakebetalingBehandlingProsessEventDto bpeDto) {
+        TilbakekrevingOppgave tmp = oppgaveFra(bpeDto, false);
         gjenåpnetOppgave.avstemMed(tmp);
+        tmp = null;
         getOppgaveRepository().lagre(gjenåpnetOppgave);
     }
 
     private TilbakekrevingOppgave opprettTilbakekrevingOppgave(UUID eksternId, TilbakebetalingBehandlingProsessEventDto bpeDto, boolean prosesserFraAdmin) {
-        TilbakekrevingOppgave oppgave =
-                getOppgaveRepository().opprettTilbakekrevingEgenskaper(TilbakekrevingOppgave.tbuilder()
-                        .medBelop(bpeDto.getFeilutbetaltBeløp())
-                        .medFeilutbetalingStart(bpeDto.getFørsteFeilutbetaling().atStartOfDay())
-                        .medSystem(bpeDto.getFagsystem().name())
-                        .medFagsakSaksnummer(Long.valueOf(bpeDto.getSaksnummer()))
-                        .medAktorId(Long.valueOf(bpeDto.getAktørId()))
-                        .medBehandlendeEnhet(bpeDto.getBehandlendeEnhet())
-                        .medBehandlingType(BehandlingType.fraKode(bpeDto.getBehandlingTypeKode()))
-                        .medFagsakYtelseType(FagsakYtelseType.fraKode(bpeDto.getYtelseTypeKode()))
-                        .medAktiv(true)
-                        .medBehandlingOpprettet(bpeDto.getOpprettetBehandling())
-                        .medUtfortFraAdmin(prosesserFraAdmin)
-                        .medEksternId(eksternId)
-                        .build());
-        return oppgave;
+        return getOppgaveRepository().opprettTilbakekrevingEgenskaper(oppgaveFra(bpeDto, prosesserFraAdmin));
+    }
+
+    private TilbakekrevingOppgave oppgaveFra(TilbakebetalingBehandlingProsessEventDto dto, boolean prosesserFraAdmin) {
+        return TilbakekrevingOppgave.tbuilder()
+                .medBelop(dto.getFeilutbetaltBeløp())
+                .medFeilutbetalingStart(dto.getFørsteFeilutbetaling().atStartOfDay())
+                .medSystem(dto.getFagsystem().name())
+                .medFagsakSaksnummer(Long.valueOf(dto.getSaksnummer()))
+                .medAktorId(Long.valueOf(dto.getAktørId()))
+                .medBehandlendeEnhet(dto.getBehandlendeEnhet())
+                .medBehandlingType(BehandlingType.fraKode(dto.getBehandlingTypeKode()))
+                .medFagsakYtelseType(FagsakYtelseType.fraKode(dto.getYtelseTypeKode()))
+                .medAktiv(true)
+                .medBehandlingOpprettet(dto.getOpprettetBehandling())
+                .medUtfortFraAdmin(prosesserFraAdmin)
+                .medEksternId(dto.getEksternId())
+                .build();
     }
 }

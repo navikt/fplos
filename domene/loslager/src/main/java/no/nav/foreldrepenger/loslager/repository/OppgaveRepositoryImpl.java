@@ -448,8 +448,8 @@ public class OppgaveRepositoryImpl implements OppgaveRepository {
     }
 
     @Override
-    public Oppgave gjenåpneOppgaveForEksternId(UUID eksternId) {
-        List<Oppgave> oppgaver = hentOppgaverForEksternId(eksternId);
+    public Oppgave gjenåpneOppgave(UUID eksternId) {
+        List<Oppgave> oppgaver = this.hentOppgaver(eksternId, Oppgave.class);
         Oppgave sisteOppgave = oppgaver.stream()
                 .max(Comparator.comparing(Oppgave::getOpprettetTidspunkt))
                 .orElse(null);
@@ -462,8 +462,22 @@ public class OppgaveRepositoryImpl implements OppgaveRepository {
     }
 
     @Override
+    public TilbakekrevingOppgave gjenåpneTilbakekrevingOppgave(UUID eksternId) {
+        List<TilbakekrevingOppgave> oppgaver = hentOppgaver(eksternId, TilbakekrevingOppgave.class);
+        var sisteOppgave = oppgaver.stream()
+                .max(Comparator.comparing(Oppgave::getOpprettetTidspunkt))
+                .orElse(null);
+        if (sisteOppgave != null) {
+            sisteOppgave.gjenåpneOppgave();
+            internLagre(sisteOppgave);
+            entityManager.refresh(sisteOppgave);
+        }
+        return sisteOppgave;
+    }
+
+    @Override
     public void avsluttOppgaveForEksternId(UUID eksternId) {
-        List<Oppgave> oppgaver = hentOppgaverForEksternId(eksternId);
+        List<Oppgave> oppgaver = this.hentOppgaver(eksternId, Oppgave.class);
         if (oppgaver.isEmpty()) {
             return;
         }
@@ -527,9 +541,12 @@ public class OppgaveRepositoryImpl implements OppgaveRepository {
         internLagre(reservasjonEventLogg);
     }
 
-    private List<Oppgave> hentOppgaverForEksternId(UUID eksternId) {
-        return entityManager.createQuery(SELECT_FRA_OPPGAVE +
-                "WHERE o.eksternId = :eksternId ", Oppgave.class)
+    private <T> List<T> hentOppgaver(UUID eksternId, Class<T> cls) {
+        var select = cls.equals(TilbakekrevingOppgave.class)
+                ? SELECT_FRA_TILBAKEKREVING_OPPGAVE
+                : SELECT_FRA_OPPGAVE;
+        return entityManager.createQuery(select +
+                "WHERE o.eksternId = :eksternId ", cls)
                 .setParameter("eksternId", eksternId)
                 .getResultList();
     }

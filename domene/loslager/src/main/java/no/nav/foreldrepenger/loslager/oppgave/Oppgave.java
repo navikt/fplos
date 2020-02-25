@@ -172,22 +172,6 @@ public class Oppgave extends BaseEntitet {
         oppgaveAvsluttet = null;
     }
 
-    public void avstemMed(TilbakekrevingOppgave other) {
-        this.behandlingOpprettet = other.behandlingOpprettet;
-        this.aktorId = other.aktorId;
-        this.behandlendeEnhet = other.behandlendeEnhet;
-        this.behandlingsfrist = other.behandlingsfrist;
-        this.fagsakSaksnummer = other.fagsakSaksnummer;
-        this.behandlingsfrist = other.behandlingsfrist;
-        this.forsteStonadsdag = other.forsteStonadsdag;
-        this.behandlingStatus = other.behandlingStatus;
-        this.behandlingType = other.behandlingType;
-        this.fagsakYtelseType = other.fagsakYtelseType;
-        this.system = other.system;
-        this.href = other.href;
-        this.reservasjon = other.reservasjon;
-    }
-
     public static class Builder {
         private Oppgave tempOppgave;
 

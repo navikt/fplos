@@ -81,7 +81,7 @@ public abstract class FpEventHandler <T extends BehandlingProsessEventDto> {
     }
 
     protected Oppgave gjenåpneOppgaveVedEksternId(UUID eksternId) {
-        return oppgaveRepository.gjenåpneOppgaveForEksternId(eksternId);
+        return oppgaveRepository.gjenåpneOppgave(eksternId);
     }
 
     public abstract void prosesser(T bpeDto);

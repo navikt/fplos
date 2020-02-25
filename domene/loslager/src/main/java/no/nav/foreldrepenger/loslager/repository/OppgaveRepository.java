@@ -87,7 +87,9 @@ public interface OppgaveRepository {
 
     TilbakekrevingOppgave opprettTilbakekrevingEgenskaper(TilbakekrevingOppgave egenskaper);
 
-    Oppgave gjenåpneOppgaveForEksternId(UUID eksternId);
+    Oppgave gjenåpneOppgave(UUID eksternId);
+
+    TilbakekrevingOppgave gjenåpneTilbakekrevingOppgave(UUID eksternId);
 
     void avsluttOppgaveForEksternId(UUID eksternId);
 
