@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
 
-import { getFpsakUrl } from 'app/duck';
+import { getFpsakUrl, getFptilbakeUrl } from 'app/duck';
 import oppgavePropType from '../oppgavePropType';
 import { Oppgave } from '../oppgaveTsType';
 import { fetchBehandledeOppgaver, getBehandledeOppgaver } from './duck';

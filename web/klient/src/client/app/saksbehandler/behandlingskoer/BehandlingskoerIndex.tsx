@@ -4,11 +4,12 @@ import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
 
 import fpLosApi from 'data/fpLosApi';
-import { getFpsakHref } from 'app/paths';
+import { getFpsakHref, getFptilbakeHref } from 'app/paths';
 import sakslistePropType from 'saksbehandler/behandlingskoer/sakslistePropType';
 import { Saksliste } from 'saksbehandler/behandlingskoer/sakslisteTsType';
 import {
   getFpsakUrl,
+  getFptilbakeUrl,
   hentFpsakBehandlingId as hentFpsakBehandlingIdActionCreator,
 } from 'app/duck';
 import { OppgaveStatus } from 'saksbehandler/oppgaveStatusTsType';
@@ -34,6 +35,7 @@ type TsProps = Readonly<{
   flyttReservasjon: (oppgaveId: number, brukerident: string, begrunnelse: string) => Promise<string>;
   sakslister: Saksliste[];
   fpsakUrl: string;
+  fptilbakeUrl: string;
   goToUrl: (url: string) => void;
   harTimeout: boolean;
   setValgtSakslisteId: (sakslisteId: number) => void;
@@ -66,6 +68,7 @@ export class BehandlingskoerIndex extends Component<TsProps, StateProps> {
     flyttReservasjon: PropTypes.func.isRequired,
     sakslister: PropTypes.arrayOf(sakslistePropType),
     fpsakUrl: PropTypes.string.isRequired,
+    fptilbakeUrl: PropTypes.string.isRequired,
     goToUrl: PropTypes.func.isRequired,
     harTimeout: PropTypes.bool.isRequired,
     setValgtSakslisteId: PropTypes.func.isRequired,
@@ -122,8 +125,8 @@ export class BehandlingskoerIndex extends Component<TsProps, StateProps> {
   }
 
   openTilbakesak = (oppgave: Oppgave) => {
-    const { goToUrl } = this.props;
-    goToUrl(oppgave.href);
+    const { fptilbakeUrl, goToUrl } = this.props;
+    goToUrl(getFptilbakeHref(fptilbakeUrl, oppgave.href));
   }
 
   reserverOppgaveOgApne = (oppgave: Oppgave) => {
