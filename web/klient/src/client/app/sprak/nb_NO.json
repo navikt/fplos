@@ -194,11 +194,11 @@
 
   "ProduksjonPaneler.AvdelingensProduksjon": "Avdelingens produksjon",
 
-  "ReservsajonerTabell.Navn": "Navn",
-  "ReservsajonerTabell.Brukerident": "Brukerident",
-  "ReservsajonerTabell.Avdeling": "Avdeling",
-  "ReservsajonerTabell.Reservasjoner": "Reservasjoner for avdelingen",
-  "ReservsajonerTabell.IngenReservasjoner": "Ingen saksbehandlere lagt til",
+  "ReservasjonerTabell.Navn": "Navn",
+  "ReservasjonerTabell.Brukerident": "Brukerident",
+  "ReservasjonerTabell.Avdeling": "Avdeling",
+  "ReservasjonerTabell.Reservasjoner": "Reservasjoner for avdelingen",
+  "ReservasjonerTabell.IngenReservasjoner": "Ingen saksbehandlere lagt til",
 
   "Rest.ErrorMessage.Timeout": "Serverkall har gått ut på tid: {location}",
 

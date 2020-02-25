@@ -6,6 +6,14 @@ import PropTypes from 'prop-types';
 import reservasjonPropType from 'avdelingsleder/reservasjoner/reservasjonPropType';
 import { getValgtAvdelingEnhet } from 'app/duck';
 import { connect } from 'react-redux';
+import Table from 'sharedComponents/Table';
+import TableRow from 'sharedComponents/TableRow';
+import TableColumn from 'sharedComponents/TableColumn';
+
+const headerTextCodes = [
+  'ReservasjonerTabell.Navn',
+  'ReservasjonerTabell.Brukerident',
+];
 
 interface TsProps {
   reservasjoner: Reservasjon[];
@@ -40,7 +48,17 @@ export class ReservasjonerTabell extends Component<TsProps, StateTsProps> {
     } = this.state;
     return (
       <>
-        <Element><FormattedMessage id="ReservsajonerTabell.Reservasjoner" /></Element>
+        <Element><FormattedMessage id="ReservasjonerTabell.Reservasjoner" /></Element>
+        {reservasjoner.length > 0 && (
+          <Table headerTextCodes={headerTextCodes} noHover>
+            {reservasjoner.map(reservasjon => (
+              <TableRow key={reservasjon.reservertAvUid}>
+                <TableColumn>{reservasjon.reservertAvNavn}</TableColumn>
+                <TableColumn>{reservasjon.reservertAvUid}</TableColumn>
+              </TableRow>
+            ))}
+          </Table>
+        )}
       </>
     );
   }
