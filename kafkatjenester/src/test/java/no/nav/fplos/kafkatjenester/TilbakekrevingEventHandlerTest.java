@@ -35,6 +35,10 @@ public class TilbakekrevingEventHandlerTest {
     private Map<String, String> åpentAksjonspunkt = new HashMap<>() {{
         put("5015", "OPPR");
     }};
+    private Map<String, String> manueltPåVentAksjonspunkt = new HashMap<>() {{
+        put("5015", "OPPR");
+        put("7002", "OPPR");
+    }};
     private Map<String, String> avsluttetAksjonspunkt = new HashMap<>() {{ put("5015", "AVBR"); }};
 
 
@@ -72,6 +76,17 @@ public class TilbakekrevingEventHandlerTest {
         sjekkOppgaveEventAntallEr(2);
     }
 
+    @Test
+    public void skalLukkeOppgaveVedÅpentManueltTilVentAksjonspunkt() {
+        var førsteEvent = eventFra(åpentAksjonspunkt);
+        var andreEvent = eventFra(manueltPåVentAksjonspunkt);
+        handler.prosesser(førsteEvent);
+        handler.prosesser(andreEvent);
+        sjekkAntallOppgaver(1);
+        sjekkAktivOppgaveEksisterer(false);
+        sjekkOppgaveEventAntallEr(2);
+    }
+
     private void sjekkAntallOppgaver(int antall) {
         assertThat(repoRule.getRepository().hentAlle(Oppgave.class)).hasSize(antall);
     }
@@ -84,7 +99,8 @@ public class TilbakekrevingEventHandlerTest {
     }
 
     private void sjekkOppgaveEventAntallEr(int antall) {
-        assertThat(repoRule.getRepository().hentAlle(OppgaveEventLogg.class)).hasSize(antall);
+        var eventer = repoRule.getRepository().hentAlle(OppgaveEventLogg.class);
+        assertThat(eventer).hasSize(antall);
     }
 
     private static TilbakebetalingBehandlingProsessEventDto eventFra(Map<String, String> aksjonspunktmap) {

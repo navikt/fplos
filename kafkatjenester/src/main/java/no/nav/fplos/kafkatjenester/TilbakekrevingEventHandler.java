@@ -45,7 +45,7 @@ public class TilbakekrevingEventHandler extends FpEventHandler<TilbakebetalingBe
         var id = bpeDto.getEksternId();
         List<OppgaveEventLogg> oppgaveEvents = getOppgaveRepository().hentEventerForEksternId(bpeDto.getEksternId());
 
-        EventResultat event = eventFra(bpeDto);
+        EventResultat event = EventResultat.tilbakekrevingEventFra(bpeDto);
         if (event == EventResultat.OPPRETT_OPPGAVE
                 && !oppgaveEvents.isEmpty()
                 && oppgaveEvents.get(0).getEventType().erÅpningsevent()) {
@@ -53,6 +53,11 @@ public class TilbakekrevingEventHandler extends FpEventHandler<TilbakebetalingBe
         }
 
         switch (event) {
+            case LUKK_OPPGAVE_MANUELT_VENT:
+                log.info("Lukker oppgave, satt manuelt på vent");
+                avsluttOppgaveForEksternId(id);
+                loggEvent(id, OppgaveEventType.MANU_VENT, null, bpeDto.getBehandlendeEnhet(), null);
+                break;
             case LUKK_OPPGAVE:
                 log.info("Lukker oppgave med eksternRefId {} ", id.toString());
                 avsluttOppgaveForEksternId(id);
@@ -74,7 +79,7 @@ public class TilbakekrevingEventHandler extends FpEventHandler<TilbakebetalingBe
         }
     }
 
-    private EventResultat eventFra(TilbakebetalingBehandlingProsessEventDto bpeDto) {
+    private static EventResultat eventFra(TilbakebetalingBehandlingProsessEventDto bpeDto) {
         return bpeDto.getAksjonspunktKoderMedStatusListe().containsValue("OPPR")
                 ? EventResultat.OPPRETT_OPPGAVE
                 : EventResultat.LUKK_OPPGAVE;
