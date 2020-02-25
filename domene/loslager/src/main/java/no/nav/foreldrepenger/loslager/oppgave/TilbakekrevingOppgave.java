@@ -5,7 +5,6 @@ import javax.persistence.Entity;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 import java.math.BigDecimal;
-import java.net.URL;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -145,7 +144,7 @@ public class TilbakekrevingOppgave extends Oppgave{
             return this;
         }
 
-        public Builder medHref(URL href){
+        public Builder medHref(String href){
             tempOppgave.href = href;
             return this;
         }

@@ -13,7 +13,6 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
-import java.net.URL;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -78,7 +77,7 @@ public class Oppgave extends BaseEntitet {
     protected UUID eksternId;
 
     @Column(name = "HREF")
-    protected URL href;
+    protected String href;
 
     @OneToOne(mappedBy = "oppgave")
     protected Reservasjon reservasjon;
@@ -151,7 +150,7 @@ public class Oppgave extends BaseEntitet {
         return reservasjon;
     }
 
-    public URL getHref() {
+    public String getHref() {
         return href;
     }
 
@@ -254,7 +253,7 @@ public class Oppgave extends BaseEntitet {
             return this;
         }
 
-        public Builder medHref(URL href){
+        public Builder medHref(String href){
             tempOppgave.href = href;
             return this;
         }

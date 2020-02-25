@@ -6,7 +6,6 @@ import no.nav.foreldrepenger.loslager.oppgave.BehandlingType;
 import no.nav.foreldrepenger.loslager.oppgave.FagsakYtelseType;
 import no.nav.foreldrepenger.loslager.oppgave.Oppgave;
 
-import java.net.URL;
 import java.time.LocalDateTime;
 import java.util.Locale;
 import java.util.UUID;
@@ -26,7 +25,7 @@ public class OppgaveDto {
     private LocalDateTime opprettetTidspunkt;
     private LocalDateTime behandlingsfrist;
     private UUID eksternId;
-    private URL href;
+    private String href;
 
     public OppgaveDto() {
         // Injiseres i test
@@ -131,7 +130,7 @@ public class OppgaveDto {
         return erTilSaksbehandling;
     }
 
-    public URL getHref() {
+    public String getHref() {
         return href;
     }
 
