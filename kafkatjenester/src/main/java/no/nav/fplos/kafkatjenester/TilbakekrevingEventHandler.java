@@ -72,6 +72,7 @@ public class TilbakekrevingEventHandler extends FpEventHandler<TilbakebetalingBe
                 break;
             case GJENÅPNE_OPPGAVE:
                 Oppgave gjenåpnetOppgave = getOppgaveRepository().gjenåpneOppgaveForEksternId(id);
+                oppdaterOppgaveInformasjon(gjenåpnetOppgave, bpeDto);
                 log.info("Gjenåpnet oppgave for eksternId {}", id);
                 loggEvent(gjenåpnetOppgave.getEksternId(), OppgaveEventType.GJENAPNET, null, bpeDto.getBehandlendeEnhet());
                 break;
@@ -91,6 +92,12 @@ public class TilbakekrevingEventHandler extends FpEventHandler<TilbakebetalingBe
         }
     }
 
+    private void oppdaterOppgaveInformasjon(Oppgave gjenåpnetOppgave, TilbakebetalingBehandlingProsessEventDto bpeDto) {
+        TilbakekrevingOppgave tmp = opprettTilbakekrevingOppgave(bpeDto.getEksternId(), bpeDto, false);
+        gjenåpnetOppgave.avstemMed(tmp);
+        getOppgaveRepository().lagre(gjenåpnetOppgave);
+    }
+
     private TilbakekrevingOppgave opprettTilbakekrevingOppgave(UUID eksternId, TilbakebetalingBehandlingProsessEventDto bpeDto, boolean prosesserFraAdmin) {
         TilbakekrevingOppgave oppgave =
                 getOppgaveRepository().opprettTilbakekrevingEgenskaper(TilbakekrevingOppgave.tbuilder()
@@ -102,7 +109,8 @@ public class TilbakekrevingEventHandler extends FpEventHandler<TilbakebetalingBe
                         .medBehandlendeEnhet(bpeDto.getBehandlendeEnhet())
                         .medBehandlingType(BehandlingType.fraKode(bpeDto.getBehandlingTypeKode()))
                         .medFagsakYtelseType(FagsakYtelseType.fraKode(bpeDto.getYtelseTypeKode()))
-                        .medAktiv(true).medBehandlingOpprettet(bpeDto.getOpprettetBehandling())
+                        .medAktiv(true)
+                        .medBehandlingOpprettet(bpeDto.getOpprettetBehandling())
                         .medUtfortFraAdmin(prosesserFraAdmin)
                         .medEksternId(eksternId)
                         .build());
