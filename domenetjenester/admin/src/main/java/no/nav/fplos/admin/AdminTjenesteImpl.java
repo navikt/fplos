@@ -8,9 +8,9 @@ import no.nav.foreldrepenger.loslager.repository.AdminRepository;
 import no.nav.fplos.foreldrepengerbehandling.BehandlingFpsak;
 import no.nav.fplos.foreldrepengerbehandling.ForeldrepengerBehandlingRestKlient;
 import no.nav.fplos.kafkatjenester.FpsakBehandlingProsessEventDto;
-import no.nav.fplos.kafkatjenester.FpsakEventHandler;
+import no.nav.fplos.kafkatjenester.ForeldrepengerEventHåndterer;
 import no.nav.fplos.kafkatjenester.KafkaReader;
-import no.nav.fplos.kafkatjenester.TilbakekrevingEventHandler;
+import no.nav.fplos.kafkatjenester.TilbakekrevingEventHåndterer;
 import no.nav.vedtak.felles.integrasjon.kafka.TilbakebetalingBehandlingProsessEventDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,8 +30,8 @@ public class AdminTjenesteImpl implements AdminTjeneste {
 
     private ForeldrepengerBehandlingRestKlient foreldrepengerBehandlingRestKlient;
     private AdminRepository adminRepository;
-    private FpsakEventHandler fpsakEventHandler;
-    private TilbakekrevingEventHandler tilbakekrevingEventHandler;
+    private ForeldrepengerEventHåndterer foreldrepengerEventHåndterer;
+    private TilbakekrevingEventHåndterer tilbakekrevingEventHandler;
     private KafkaReader kafaReader;
 
     public AdminTjenesteImpl(){
@@ -41,12 +41,12 @@ public class AdminTjenesteImpl implements AdminTjeneste {
     @Inject
     public AdminTjenesteImpl(AdminRepository adminRepository,
                              ForeldrepengerBehandlingRestKlient foreldrepengerBehandlingRestKlient,
-                             FpsakEventHandler fpsakEventHandler,
-                             TilbakekrevingEventHandler tilbakekrevingEventHandler,
+                             ForeldrepengerEventHåndterer foreldrepengerEventHåndterer,
+                             TilbakekrevingEventHåndterer tilbakekrevingEventHandler,
                              KafkaReader kafaReader) {
         this.adminRepository = adminRepository;
         this.foreldrepengerBehandlingRestKlient = foreldrepengerBehandlingRestKlient;
-        this.fpsakEventHandler = fpsakEventHandler;
+        this.foreldrepengerEventHåndterer = foreldrepengerEventHåndterer;
         this.tilbakekrevingEventHandler = tilbakekrevingEventHandler;
         this.kafaReader = kafaReader;
     }
@@ -77,7 +77,7 @@ public class AdminTjenesteImpl implements AdminTjeneste {
     @Override
     public void oppdaterOppgave(UUID uuid) {
         LOGGER.info("Starter oppdatering av oppgave tilhørende uuid {}", uuid);
-        fpsakEventHandler.prosesser(mapTilBehandlingProsessEventDto(uuid));
+        foreldrepengerEventHåndterer.prosesser(mapTilBehandlingProsessEventDto(uuid));
         LOGGER.info("Oppdatering av oppgave tilhørende uuid {} er fullført", uuid);
     }
 

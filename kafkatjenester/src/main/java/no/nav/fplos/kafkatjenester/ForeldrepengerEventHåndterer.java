@@ -33,20 +33,20 @@ import static no.nav.fplos.kafkatjenester.util.StreamUtil.safeStream;
 
 @ApplicationScoped
 @Transaction
-public class FpsakEventHandler extends FpEventHandler<FpsakBehandlingProsessEventDto> {
+public class ForeldrepengerEventHåndterer extends FpEventHandler<FpsakBehandlingProsessEventDto> {
 
-    private static final Logger log = LoggerFactory.getLogger(FpsakEventHandler.class);
+    private static final Logger log = LoggerFactory.getLogger(ForeldrepengerEventHåndterer.class);
     private ForeldrepengerBehandlingRestKlient foreldrePengerBehandlingRestKlient;
     private OppgaveEgenskapHandler oppgaveEgenskapHandler;
 
-    public FpsakEventHandler() {
+    public ForeldrepengerEventHåndterer() {
         //to make proxyable
     }
 
     @Inject
-    public FpsakEventHandler(OppgaveRepository oppgaveRepository,
-                             ForeldrepengerBehandlingRestKlient foreldrePengerBehandlingRestKlient,
-                             OppgaveEgenskapHandler oppgaveEgenskapHandler) {
+    public ForeldrepengerEventHåndterer(OppgaveRepository oppgaveRepository,
+                                        ForeldrepengerBehandlingRestKlient foreldrePengerBehandlingRestKlient,
+                                        OppgaveEgenskapHandler oppgaveEgenskapHandler) {
         super(oppgaveRepository);
         this.foreldrePengerBehandlingRestKlient = foreldrePengerBehandlingRestKlient;
         this.oppgaveEgenskapHandler = oppgaveEgenskapHandler;

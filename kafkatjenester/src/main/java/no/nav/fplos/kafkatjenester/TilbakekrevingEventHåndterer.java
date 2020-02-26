@@ -1,6 +1,5 @@
 package no.nav.fplos.kafkatjenester;
 
-import no.nav.foreldrepenger.loslager.oppgave.AndreKriterierType;
 import no.nav.foreldrepenger.loslager.oppgave.BehandlingType;
 import no.nav.foreldrepenger.loslager.oppgave.FagsakYtelseType;
 import no.nav.foreldrepenger.loslager.oppgave.Oppgave;
@@ -24,15 +23,15 @@ import static no.nav.foreldrepenger.loslager.oppgave.AndreKriterierType.*;
 
 @ApplicationScoped
 @Transaction
-public class TilbakekrevingEventHandler extends FpEventHandler<TilbakebetalingBehandlingProsessEventDto> {
-    private static final Logger log = LoggerFactory.getLogger(TilbakekrevingEventHandler.class);
+public class TilbakekrevingEventHåndterer extends FpEventHandler<TilbakebetalingBehandlingProsessEventDto> {
+    private static final Logger log = LoggerFactory.getLogger(TilbakekrevingEventHåndterer.class);
     private OppgaveEgenskapHandler oppgaveEgenskapHandler;
 
-    public TilbakekrevingEventHandler() {
+    public TilbakekrevingEventHåndterer() {
     }
 
     @Inject
-    public TilbakekrevingEventHandler(OppgaveRepository oppgaveRepository, OppgaveEgenskapHandler oppgaveEgenskapHandler) {
+    public TilbakekrevingEventHåndterer(OppgaveRepository oppgaveRepository, OppgaveEgenskapHandler oppgaveEgenskapHandler) {
         super(oppgaveRepository);
         this.oppgaveEgenskapHandler = oppgaveEgenskapHandler;
     }

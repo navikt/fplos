@@ -21,8 +21,8 @@ import javax.inject.Inject;
 public class KafkaReader {
     private static final Logger log = LoggerFactory.getLogger(KafkaReader.class);
     private OppgaveRepository oppgaveRepository;
-    private FpsakEventHandler fpsakEventHandler;
-    private TilbakekrevingEventHandler tilbakekrevingEventHandler;
+    private ForeldrepengerEventHåndterer foreldrepengerEventHåndterer;
+    private TilbakekrevingEventHåndterer tilbakekrevingEventHandler;
     private AksjonspunktMeldingConsumer meldingConsumer;
     private static final String CALLID_NAME = "Nav-CallId";
 
@@ -32,11 +32,11 @@ public class KafkaReader {
 
     @Inject
     public KafkaReader(AksjonspunktMeldingConsumer meldingConsumer,
-                       FpsakEventHandler fpsakEventHandler,
-                       TilbakekrevingEventHandler tilbakekrevingEventHandler,
+                       ForeldrepengerEventHåndterer foreldrepengerEventHåndterer,
+                       TilbakekrevingEventHåndterer tilbakekrevingEventHandler,
                        OppgaveRepository oppgaveRepository) {
         this.meldingConsumer = meldingConsumer;
-        this.fpsakEventHandler = fpsakEventHandler;
+        this.foreldrepengerEventHåndterer = foreldrepengerEventHåndterer;
         this.tilbakekrevingEventHandler = tilbakekrevingEventHandler;
         this.oppgaveRepository = oppgaveRepository;
     }
@@ -78,7 +78,7 @@ public class KafkaReader {
             tilbakekrevingEventHandler.prosesser(tilbakekrevingEvent);
         } else {
             var fpsakEvent = (FpsakBehandlingProsessEventDto) event;
-            fpsakEventHandler.prosesser(fpsakEvent);
+            foreldrepengerEventHåndterer.prosesser(fpsakEvent);
         }
     }
 

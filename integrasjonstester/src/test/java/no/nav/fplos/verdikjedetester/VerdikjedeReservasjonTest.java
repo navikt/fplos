@@ -6,7 +6,6 @@ import no.nav.foreldrepenger.loslager.oppgave.BehandlingType;
 import no.nav.foreldrepenger.loslager.oppgave.FagsakYtelseType;
 import no.nav.foreldrepenger.loslager.oppgave.OppgaveEventLogg;
 import no.nav.foreldrepenger.loslager.oppgave.OppgaveEventType;
-import no.nav.foreldrepenger.loslager.oppgave.Reservasjon;
 import no.nav.foreldrepenger.loslager.repository.OppgaveRepository;
 import no.nav.foreldrepenger.loslager.repository.OppgaveRepositoryImpl;
 import no.nav.foreldrepenger.loslager.repository.OrganisasjonRepository;
@@ -16,7 +15,7 @@ import no.nav.fplos.foreldrepengerbehandling.Aksjonspunkt;
 import no.nav.fplos.foreldrepengerbehandling.BehandlingFpsak;
 import no.nav.fplos.foreldrepengerbehandling.ForeldrepengerBehandlingRestKlient;
 import no.nav.fplos.kafkatjenester.FpsakBehandlingProsessEventDto;
-import no.nav.fplos.kafkatjenester.FpsakEventHandler;
+import no.nav.fplos.kafkatjenester.ForeldrepengerEventHåndterer;
 import no.nav.fplos.kafkatjenester.OppgaveEgenskapHandler;
 import no.nav.fplos.oppgave.OppgaveTjeneste;
 import no.nav.fplos.oppgave.OppgaveTjenesteImpl;
@@ -50,7 +49,7 @@ public class VerdikjedeReservasjonTest {
 
     private OppgaveEgenskapHandler oppgaveEgenskapHandler = new OppgaveEgenskapHandler(oppgaveRepository);
     private ForeldrepengerBehandlingRestKlient foreldrepengerBehandlingRestKlient = mock(ForeldrepengerBehandlingRestKlient.class);
-    private FpsakEventHandler fpsakEventHandler = new FpsakEventHandler(oppgaveRepository, foreldrepengerBehandlingRestKlient, oppgaveEgenskapHandler);
+    private ForeldrepengerEventHåndterer foreldrepengerEventHåndterer = new ForeldrepengerEventHåndterer(oppgaveRepository, foreldrepengerBehandlingRestKlient, oppgaveEgenskapHandler);
     private static Long behandlingId = 1073051L;
     private static UUID uuid = UUID.nameUUIDFromBytes("TEST".getBytes());//UUID.fromString("027961C0-1DA9-1D46-AFAA-0BBAE024758C");
     private static String fagsystem = "FPSAK";
@@ -164,7 +163,7 @@ public class VerdikjedeReservasjonTest {
     @Test
     public void reservasjonFjernesVedOpprettelseAvBeslutterOppgave() {
         when(foreldrepengerBehandlingRestKlient.getBehandling(anyLong())).thenReturn(behandlingDtoFra(aksjonspunktKoderTilBeslutterDto));
-        fpsakEventHandler.prosesser(eventDrammenFra(aksjonspunktKoderTilBeslutter));
+        foreldrepengerEventHåndterer.prosesser(eventDrammenFra(aksjonspunktKoderTilBeslutter));
         OppgaveEventLogg førsteEvent = repoRule.getRepository().hentAlle(OppgaveEventLogg.class).get(0);
 
         //Reservasjon førsteReservasjon = repoRule.getRepository().hentAlle(Reservasjon.class).get(0);
@@ -173,7 +172,7 @@ public class VerdikjedeReservasjonTest {
 
 
         when(foreldrepengerBehandlingRestKlient.getBehandling(anyLong())).thenReturn(behandlingDtoFra(aksjonspunktKoderUtlandAutomatiskDto));
-        fpsakEventHandler.prosesser(eventDrammenFra(aksjonspunktKoderUtland));
+        foreldrepengerEventHåndterer.prosesser(eventDrammenFra(aksjonspunktKoderUtland));
         List<OppgaveEventLogg> eventer = repoRule.getRepository().hentAlle(OppgaveEventLogg.class);
         OppgaveEventLogg andreEvent = repoRule.getRepository().hentAlle(OppgaveEventLogg.class).stream()
                 .max(Comparator.comparing(OppgaveEventLogg::getOpprettetTidspunkt)).get();
