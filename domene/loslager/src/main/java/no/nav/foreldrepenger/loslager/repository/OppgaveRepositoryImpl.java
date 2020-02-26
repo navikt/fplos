@@ -260,7 +260,7 @@ public class OppgaveRepositoryImpl implements OppgaveRepository {
 
     @Override
     public List<Reservasjon> hentAlleReservasjonerForAvdeling(String avdelingEnhet) {
-        TypedQuery<Reservasjon> listeTypedQuery = getEntityManager()
+        TypedQuery<Reservasjon> listeTypedQuery = entityManager
                 .createQuery("Select r FROM Reservasjon r INNER JOIN Oppgave o ON r.oppgave = o " +
                         "WHERE r.reservertTil > :naa AND o.behandlendeEnhet = :behandlendeEnhet " +
                         "ORDER BY r.reservertAv", Reservasjon.class)
