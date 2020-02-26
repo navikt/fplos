@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Element } from 'nav-frontend-typografi';
+import { Element, Normaltekst } from 'nav-frontend-typografi';
 import { FormattedMessage } from 'react-intl';
 import { Reservasjon } from 'avdelingsleder/reservasjoner/reservasjonTsType';
 import PropTypes from 'prop-types';
@@ -11,6 +11,7 @@ import TableRow from 'sharedComponents/TableRow';
 import TableColumn from 'sharedComponents/TableColumn';
 import Image from 'sharedComponents/Image';
 import styles from 'avdelingsleder/saksbehandlere/components/saksbehandlereTabell.less';
+import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import removeIcon from '../../../../images/remove.svg';
 
 const headerTextCodes = [
@@ -54,6 +55,14 @@ export class ReservasjonerTabell extends Component<TsProps, StateTsProps> {
     return (
       <>
         <Element><FormattedMessage id="ReservasjonerTabell.Reservasjoner" /></Element>
+        {reservasjoner.length === 0 && (
+          <>
+            <VerticalSpacer eightPx />
+            <Normaltekst><FormattedMessage id="ReservasjonerTabell.IngenReservasjoner" /></Normaltekst>
+            <VerticalSpacer eightPx />
+          </>
+        )
+        }
         {reservasjoner.length > 0 && (
           <Table headerTextCodes={headerTextCodes} noHover>
             {reservasjoner.map(reservasjon => (
