@@ -518,9 +518,10 @@ public class OppgaveRepositoryImpl implements OppgaveRepository {
     }
 
     @Override
-    public List<OppgaveEventLogg> hentEventerForEksternId(UUID eksternId) {
+    public List<OppgaveEventLogg> hentOppgaveEventer(UUID eksternId) {
         return entityManager.createQuery("FROM oppgaveEventLogg oel " +
-                "where oel.eksternId = :eksternId ORDER BY oel.id desc", OppgaveEventLogg.class)
+                "where oel.eksternId = :eksternId " +
+                "order by oel.opprettetTidspunkt desc", OppgaveEventLogg.class)
                 .setParameter("eksternId", eksternId).getResultList();
     }
 

@@ -16,15 +16,12 @@ import static no.nav.fplos.kafkatjenester.util.StreamUtil.safeStream;
 public class FpsakOppgaveEgenskapFinner implements OppgaveEgenskapFinner {
     private static final Logger log = LoggerFactory.getLogger(FpsakOppgaveEgenskapFinner.class);
     private final FpsakAksjonspunkt fpsakAksjonspunkt;
-    private final OppgaveEventLogg sisteEvent;
     private final List<AndreKriterierType> andreKriterier = new ArrayList<>();
     private final String saksbehandlerForTotrinn;
 
     public FpsakOppgaveEgenskapFinner(BehandlingFpsak behandling,
-                                      List<OppgaveEventLogg> eventHistorikk,
                                       List<Aksjonspunkt> aksjonspunkt) {
         this.fpsakAksjonspunkt = new FpsakAksjonspunkt(aksjonspunkt);
-        this.sisteEvent = sisteOpprettetEventFra(eventHistorikk);
         this.saksbehandlerForTotrinn = behandling.getAnsvarligSaksbehandler();
 
         if (harGradering(behandling)) this.andreKriterier.add(AndreKriterierType.SOKT_GRADERING);
@@ -42,10 +39,6 @@ public class FpsakOppgaveEgenskapFinner implements OppgaveEgenskapFinner {
     @Override
     public String getSaksbehandlerForTotrinn() {
         return saksbehandlerForTotrinn;
-    }
-
-    public OppgaveEventLogg getSisteEvent() {
-        return sisteEvent;
     }
 
     private static boolean erVurderSykdom(BehandlingFpsak behandling) {

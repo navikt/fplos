@@ -99,7 +99,7 @@ public interface OppgaveRepository {
 
     void lagre(EventmottakFeillogg eventmottakFeillogg);
 
-    List<OppgaveEventLogg> hentEventerForEksternId(UUID eksternId);
+    List<OppgaveEventLogg> hentOppgaveEventer(UUID eksternId);
 
     List<OppgaveEgenskap> hentOppgaveEgenskaper(Long oppgaveId);
 

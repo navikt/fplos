@@ -64,21 +64,22 @@ public class FpsakEventHandler extends FpEventHandler<FpsakBehandlingProsessEven
     private void prosesser(FpsakBehandlingProsessEventDto bpeDto, Reservasjon reservasjon, boolean prosesserFraAdmin) {
         Long behandlingId = bpeDto.getBehandlingId();
         UUID eksternId = bpeDto.getEksternId();
+        OppgaveHistorikk oppgaveHistorikk = new OppgaveHistorikk(getOppgaveRepository().hentOppgaveEventer(eksternId));
 
         BehandlingFpsak behandling = foreldrePengerBehandlingRestKlient.getBehandling(behandlingId);
         if(eksternId == null) {
             eksternId = behandling.getUuid();
         }
 
-        List<OppgaveEventLogg> tidligereEventer = getOppgaveRepository().hentEventerForEksternId(eksternId);
+        //OppgaveEventLogg sisteOppgaveEvent = getOppgaveRepository().hentSisteOpprettelseEvent(eksternId);
         List<Aksjonspunkt> aksjonspunkt = Optional.ofNullable(behandling.getAksjonspunkter())
                 .orElse(Collections.emptyList());
 
-        OppgaveEgenskapFinner egenskapFinner = new FpsakOppgaveEgenskapFinner(behandling, tidligereEventer, aksjonspunkt);
+        OppgaveEgenskapFinner egenskapFinner = new FpsakOppgaveEgenskapFinner(behandling, aksjonspunkt);
 
         EventResultat eventResultat = prosesserFraAdmin
                 ? FpsakEventMapper.signifikantEventForAdminFra(aksjonspunkt)
-                : FpsakEventMapper.signifikantEventFra(aksjonspunkt, tidligereEventer, bpeDto.getBehandlendeEnhet());
+                : FpsakEventMapper.signifikantEventFra(aksjonspunkt, oppgaveHistorikk, bpeDto.getBehandlendeEnhet());
 
         switch (eventResultat) {
             case LUKK_OPPGAVE:
@@ -94,22 +95,24 @@ public class FpsakEventHandler extends FpEventHandler<FpsakBehandlingProsessEven
                 avsluttFpsakOppgaveOgLoggEvent(eksternId, bpeDto, OppgaveEventType.MANU_VENT, finnManuellAksjonspunktFrist(aksjonspunkt));
                 break;
             case OPPRETT_OPPGAVE:
-                avsluttOppgaveHvisÅpen(behandlingId, eksternId, tidligereEventer, bpeDto.getBehandlendeEnhet());
+                avsluttOppgaveHvisÅpen(behandlingId, eksternId, oppgaveHistorikk, bpeDto.getBehandlendeEnhet());
                 Oppgave oppgave = nyOppgave(eksternId, bpeDto, behandling, prosesserFraAdmin);
                 reserverOppgaveFraTidligereReservasjon(prosesserFraAdmin, reservasjon, oppgave.getId());
                 log.info("Oppretter oppgave");
-                loggEvent(behandlingId, oppgave.getEksternId(), OppgaveEventType.OPPRETTET, null, bpeDto.getBehandlendeEnhet());
+                loggEvent(oppgave, egenskapFinner);
+                //loggEvent(behandlingId, oppgave.getEksternId(), OppgaveEventType.OPPRETTET, null, bpeDto.getBehandlendeEnhet());
                 oppgaveEgenskapHandler.håndterOppgaveEgenskaper(oppgave, egenskapFinner);
                 break;
             case OPPRETT_BESLUTTER_OPPGAVE:
-                avsluttOppgaveHvisÅpen(behandlingId, eksternId, tidligereEventer, bpeDto.getBehandlendeEnhet());
+                avsluttOppgaveHvisÅpen(behandlingId, eksternId, oppgaveHistorikk, bpeDto.getBehandlendeEnhet());
                 Oppgave beslutterOppgave = nyOppgave(eksternId, bpeDto, behandling, prosesserFraAdmin);
                 reserverOppgaveFraTidligereReservasjon(prosesserFraAdmin, reservasjon, beslutterOppgave.getId());
-                loggEvent(behandlingId, beslutterOppgave.getEksternId(), OppgaveEventType.OPPRETTET, AndreKriterierType.TIL_BESLUTTER, bpeDto.getBehandlendeEnhet());
+                loggEvent(beslutterOppgave, egenskapFinner);
+                //loggEvent(behandlingId, beslutterOppgave.getEksternId(), OppgaveEventType.OPPRETTET, AndreKriterierType.TIL_BESLUTTER, bpeDto.getBehandlendeEnhet());
                 oppgaveEgenskapHandler.håndterOppgaveEgenskaper(beslutterOppgave, egenskapFinner);
                 break;
             case OPPRETT_PAPIRSØKNAD_OPPGAVE:
-                avsluttOppgaveHvisÅpen(behandlingId, eksternId, tidligereEventer, bpeDto.getBehandlendeEnhet());
+                avsluttOppgaveHvisÅpen(behandlingId, eksternId, oppgaveHistorikk, bpeDto.getBehandlendeEnhet());
                 Oppgave papirsøknadOppgave = nyOppgave(eksternId, bpeDto, behandling, prosesserFraAdmin);
                 reserverOppgaveFraTidligereReservasjon(prosesserFraAdmin, reservasjon, papirsøknadOppgave.getId());
                 loggEvent(behandlingId, papirsøknadOppgave.getEksternId(), OppgaveEventType.OPPRETTET, AndreKriterierType.PAPIRSØKNAD, bpeDto.getBehandlendeEnhet());
@@ -122,6 +125,25 @@ public class FpsakEventHandler extends FpEventHandler<FpsakBehandlingProsessEven
                 oppgaveEgenskapHandler.håndterOppgaveEgenskaper(gjenåpneOppgave, egenskapFinner);
                 break;
         }
+    }
+
+    private void loggEvent(Oppgave oppgave, OppgaveEgenskapFinner egenskapFinner) {
+        List<AndreKriterierType> kriterier = egenskapFinner.getAndreKriterier();
+        if (kriterier.contains(AndreKriterierType.TIL_BESLUTTER)) {
+            loggEventType(oppgave, AndreKriterierType.TIL_BESLUTTER);
+        } else if (kriterier.contains(AndreKriterierType.PAPIRSØKNAD)) {
+            loggEventType(oppgave, AndreKriterierType.PAPIRSØKNAD);
+        } else {
+            loggEventType(oppgave, null);
+        }
+    }
+
+    private void loggEventType(Oppgave oppgave, AndreKriterierType kriterie) {
+        OppgaveEventLogg eventLogg = new OppgaveEventLogg(oppgave.getEksternId(),
+                OppgaveEventType.OPPRETTET,
+                kriterie,
+                oppgave.getBehandlendeEnhet());
+        getOppgaveRepository().lagre(eventLogg);
     }
 
     /**
@@ -155,8 +177,8 @@ public class FpsakEventHandler extends FpEventHandler<FpsakBehandlingProsessEven
      * @deprecated Bruk avsluttOppgaveHvisÅpen(UUID, List, String) i stedet
      */
     @Deprecated(since = "14.11.2019")
-    private void avsluttOppgaveHvisÅpen(Long behandlingId, UUID eksternId, List<OppgaveEventLogg> oppgaveEventLogger, String behandlendeEnhet) {
-        if (!oppgaveEventLogger.isEmpty() && oppgaveEventLogger.get(0).getEventType().erÅpningsevent()){
+    private void avsluttOppgaveHvisÅpen(Long behandlingId, UUID eksternId, OppgaveHistorikk oppgaveHistorikk, String behandlendeEnhet) {
+        if (oppgaveHistorikk.erSisteEventÅpningsevent()){
             if(eksternId != null) {
                 loggEvent(behandlingId, eksternId, OppgaveEventType.LUKKET, null, behandlendeEnhet);
             }
@@ -172,7 +194,6 @@ public class FpsakEventHandler extends FpEventHandler<FpsakBehandlingProsessEven
         getOppgaveRepository().lagre(new OppgaveEventLogg(eksternId, oppgaveEventType, andreKriterierType, behandlendeEnhet, behandlingId));
 
     }
-
 
     /**
      * @deprecated Bruk loggEvent(UUID, OppgaveEventType, AndreKriterierType, String, AksjonspunktDto) og anvend eksternId i stedet for behandlingId

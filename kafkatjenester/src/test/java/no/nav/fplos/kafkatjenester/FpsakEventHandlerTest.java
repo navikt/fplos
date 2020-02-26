@@ -166,6 +166,7 @@ public class FpsakEventHandlerTest {
         fpsakEventHandler.prosesser(eventDrammenFra(aksjonspunktKoderSkalLukkeOppgave));
         assertThat(repoRule.getRepository().hentAlle(Oppgave.class)).hasSize(2);
         assertThat(repoRule.getRepository().hentAlle(OppgaveEgenskap.class)).hasSize(1);
+        var alle = repoRule.getRepository().hentAlle(OppgaveEventLogg.class);
         assertThat(repoRule.getRepository().hentAlle(OppgaveEventLogg.class)).hasSize(4);
     }
 
@@ -184,7 +185,7 @@ public class FpsakEventHandlerTest {
         assertThat(oppgaveEgenskap.getOppgave().getAktiv()).isTrue();
 
         //Sjekker at det siste eventet er å opprette og at det rett før er lukker.
-        List<OppgaveEventLogg> oppgaveEventLogg = oppgaveRepository.hentEventerForEksternId(uuid);
+        List<OppgaveEventLogg> oppgaveEventLogg = oppgaveRepository.hentOppgaveEventer(uuid);
 
         /*Optional<EksternIdentifikator> eksternId = oppgaveRepositoryProvider.getEksternIdentifikatorRepository().finnIdentifikator("FPSAK", behandlingId.toString());
         List<OppgaveEventLogg> oppgaveEventLogg = oppgaveRepositoryProvider.getOppgaveRepository().hentEventerForEksternId(eksternId.get().getId());*/
@@ -317,7 +318,7 @@ public class FpsakEventHandlerTest {
     }
 
     private void sjekkEventLoggInneholder(UUID uuid, OppgaveEventType eventType, AndreKriterierType kriterierType) {
-        List<OppgaveEventLogg> oppgaveEventLoggs = oppgaveRepository.hentEventerForEksternId(uuid);
+        List<OppgaveEventLogg> oppgaveEventLoggs = oppgaveRepository.hentOppgaveEventer(uuid);
 
         assertThat(oppgaveEventLoggs.get(0).getEventType()).isEqualTo(eventType);
         if (kriterierType != null) {
@@ -325,18 +326,6 @@ public class FpsakEventHandlerTest {
         }
     }
 
-/*
-    private void sjekkEventLoggInneholder(Long behandlingId, OppgaveEventType eventType, AndreKriterierType kriterierType) {
-        //Optional<EksternIdentifikator> eksternIdentifikator = oppgaveRepositoryProvider.getEksternIdentifikatorRepository().finnIdentifikator(fagsystem, behandlingId.toString());
-        //List<OppgaveEventLogg> oppgaveEventLoggs = oppgaveRepositoryProvider.getOppgaveRepository().hentEventerForEksternId(eksternIdentifikator.get().getId());
-        List<OppgaveEventLogg> oppgaveEventLoggs = oppgaveRepository.hentEventer(behandlingId);
-
-        assertThat(oppgaveEventLoggs.get(0).getEventType()).isEqualTo(eventType);
-        if (kriterierType != null) {
-            assertThat(oppgaveEventLoggs.get(0).getAndreKriterierType()).isEqualTo(kriterierType);
-        }
-    }
-*/
     private void sjekkForEnOppgaveOgEgenskap(AndreKriterierType egenskap) {
         sjekkForEnOppgaveOgEgenskap(egenskap, 1, 1);
     }
