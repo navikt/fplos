@@ -1,6 +1,6 @@
 import React from 'react';
 import { Reservasjon } from 'avdelingsleder/reservasjoner/reservasjonTsType';
-import { ReservasjonerTabell } from './ReservasjonerTabell';
+import ReservasjonerTabell from './ReservasjonerTabell';
 
 interface TsProps {
   reservasjoner: Reservasjon[];

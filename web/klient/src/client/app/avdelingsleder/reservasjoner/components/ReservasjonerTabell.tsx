@@ -1,18 +1,20 @@
 import React, { Component } from 'react';
 import { Element, Normaltekst } from 'nav-frontend-typografi';
 import { FormattedMessage } from 'react-intl';
-import { Reservasjon } from 'avdelingsleder/reservasjoner/reservasjonTsType';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+
+import { Reservasjon } from 'avdelingsleder/reservasjoner/reservasjonTsType';
 import reservasjonPropType from 'avdelingsleder/reservasjoner/reservasjonPropType';
 import { getValgtAvdelingEnhet } from 'app/duck';
-import { connect } from 'react-redux';
 import Table from 'sharedComponents/Table';
 import TableRow from 'sharedComponents/TableRow';
 import TableColumn from 'sharedComponents/TableColumn';
 import Image from 'sharedComponents/Image';
-import styles from 'avdelingsleder/saksbehandlere/components/saksbehandlereTabell.less';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
-import removeIcon from '../../../../images/remove.svg';
+import removeIcon from 'images/remove.svg';
+
+import styles from './reservasjonerTabell.less';
 
 const headerTextCodes = [
   'ReservasjonerTabell.Navn',
