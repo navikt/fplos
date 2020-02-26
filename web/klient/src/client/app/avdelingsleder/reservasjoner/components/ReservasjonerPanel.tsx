@@ -4,13 +4,15 @@ import { ReservasjonerTabell } from './ReservasjonerTabell';
 
 interface TsProps {
   reservasjoner: Reservasjon[];
+  opphevReservasjon: (oppgaveId: number) => Promise<string>;
 }
 const ReservasjonerPanel = ({
   reservasjoner,
- }: TsProps) => (
-   <>
-     <ReservasjonerTabell reservasjoner={reservasjoner} />
-   </>
+  opphevReservasjon,
+}: TsProps) => (
+  <>
+    <ReservasjonerTabell reservasjoner={reservasjoner} opphevReservasjon={opphevReservasjon} />
+  </>
 );
 
 export default ReservasjonerPanel;

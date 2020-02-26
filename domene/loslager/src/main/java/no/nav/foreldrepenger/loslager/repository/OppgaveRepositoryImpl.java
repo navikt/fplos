@@ -269,6 +269,17 @@ public class OppgaveRepositoryImpl implements OppgaveRepository {
     }
 
     @Override
+    public List<Reservasjon> hentAlleReservasjonerForAvdeling(String avdelingEnhet) {
+        TypedQuery<Reservasjon> listeTypedQuery = getEntityManager()
+                .createQuery("Select r FROM Reservasjon r INNER JOIN Oppgave o ON r.oppgave = o " +
+                        "WHERE r.reservertTil > :naa AND o.behandlendeEnhet = :behandlendeEnhet " +
+                        "ORDER BY r.reservertAv", Reservasjon.class)
+                .setParameter("naa", LocalDateTime.now())
+                .setParameter("behandlendeEnhet" ,avdelingEnhet);
+        return listeTypedQuery.getResultList();
+    }
+
+    @Override
     public List<Oppgave> hentOppgaverForSaksnummer(Long fagsakSaksnummer) {
         return getEntityManager().createQuery(SELECT_FRA_OPPGAVE +
                 "WHERE o.fagsakSaksnummer = :fagsakSaksnummer " +
@@ -304,14 +315,6 @@ public class OppgaveRepositoryImpl implements OppgaveRepository {
         lagre(reservasjon);
         refresh(reservasjon.getOppgave());
         lagre(new ReservasjonEventLogg(reservasjon));
-    }
-
-    @Override
-    public List<Reservasjon> hentAlleReservasjonerForAvdeling(String avdelingEnhet) {
-        TypedQuery<Reservasjon> listeTypedQuery = getEntityManager()
-                .createQuery("Select r FROM Reservasjon r INNER JOIN Oppgave o ON r.oppgave = o where o.behandlendeEnhet = :behandlendeEnhet " +
-                        "ORDER BY r.reservertAv", Reservasjon.class).setParameter("behandlendeEnhet" ,avdelingEnhet);
-        return listeTypedQuery.getResultList();
     }
 
     @Override

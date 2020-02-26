@@ -1,7 +1,9 @@
-import { shallow } from 'enzyme';
 import React from 'react';
-import { FormattedMessage } from 'react-intl';
 import { expect } from 'chai';
+import { shallow } from 'enzyme';
+import sinon from 'sinon';
+import { FormattedMessage } from 'react-intl';
+
 import Table from 'sharedComponents/Table';
 import TableRow from 'sharedComponents/TableRow';
 import TableColumn from 'sharedComponents/TableColumn';
@@ -11,6 +13,7 @@ describe('<ReservasjonerTabell>', () => {
   it('skal vise tekst som viser at ingen reservasjoner er lagt til', () => {
     const wrapper = shallow(<ReservasjonerTabell
       reservasjoner={[]}
+      opphevReservasjon={sinon.spy()}
       valgtAvdelingEnhet="2"
     />);
 
@@ -37,6 +40,7 @@ describe('<ReservasjonerTabell>', () => {
     }];
     const wrapper = shallow(<ReservasjonerTabell
       reservasjoner={reservasjoner}
+      opphevReservasjon={sinon.spy()}
       valgtAvdelingEnhet="2"
     />);
 

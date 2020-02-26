@@ -23,6 +23,7 @@ const headerTextCodes = [
 
 interface TsProps {
   reservasjoner: Reservasjon[];
+  opphevReservasjon: (oppgaveId: number) => Promise<string>;
   valgtAvdelingEnhet: string;
 }
 
@@ -33,6 +34,7 @@ interface StateTsProps {
 export class ReservasjonerTabell extends Component<TsProps, StateTsProps> {
   static propTypes = {
     reservasjoner: PropTypes.arrayOf(reservasjonPropType).isRequired,
+    opphevReservasjon: PropTypes.func.isRequired,
     valgtAvdelingEnhet: PropTypes.string.isRequired,
   }
 
@@ -47,7 +49,7 @@ export class ReservasjonerTabell extends Component<TsProps, StateTsProps> {
 
   render = () => {
     const {
-      reservasjoner, valgtAvdelingEnhet,
+      reservasjoner, opphevReservasjon, valgtAvdelingEnhet,
     } = this.props;
     const {
       placeholder,
@@ -78,6 +80,7 @@ export class ReservasjonerTabell extends Component<TsProps, StateTsProps> {
                   <Image
                     src={removeIcon}
                     className={styles.removeImage}
+                    onMouseDown={() => opphevReservasjon(reservasjon.oppgaveId)}
                     tabIndex="0"
                   />
                 </TableColumn>

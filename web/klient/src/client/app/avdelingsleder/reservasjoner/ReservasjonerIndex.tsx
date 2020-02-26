@@ -14,13 +14,14 @@ interface TsProps {
   fetchAvdelingensReservasjoner: (avdelingEnhet: string) => void;
   avdelingensReservasjoner: Reservasjon[];
   valgtAvdelingEnhet: string;
-
+  opphevReservasjon: (oppgaveId: number) => Promise<string>;
 }
 export class ReservasjonerIndex extends Component<TsProps> {
   static propTypes = {
     fetchAvdelingensReservasjoner: PropTypes.func.isRequired,
     avdelingensReservasjoner: PropTypes.arrayOf(reservasjonPropType),
     valgtAvdelingEnhet: PropTypes.string.isRequired,
+    opphevReservasjon: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
@@ -32,13 +33,19 @@ export class ReservasjonerIndex extends Component<TsProps> {
     hentAvdelingensReservasjoner(valgtAvdelingEnhet);
   }
 
+  opphevOppgaveReservasjon = (oppgaveId: number): Promise<any> => {
+    const { opphevReservasjon: opphevOppgaveReservasjon, fetchAvdelingensReservasjoner: fetchReserverte, valgtAvdelingEnhet } = this.props;
+        return opphevOppgaveReservasjon(oppgaveId)
+      .then(() => fetchReserverte(valgtAvdelingEnhet));
+  }
+
   render = () => {
     const {
       avdelingensReservasjoner,
     } = this.props;
 
     return (
-      <ReservasjonerPanel reservasjoner={avdelingensReservasjoner} />
+      <ReservasjonerPanel reservasjoner={avdelingensReservasjoner} opphevReservasjon={this.opphevOppgaveReservasjon} />
     );
   }
 }
@@ -51,6 +58,7 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = (dispatch: Dispatch) => ({
   ...bindActionCreators({
     fetchAvdelingensReservasjoner,
+    opphevReservasjon,
   }, dispatch),
 });
 

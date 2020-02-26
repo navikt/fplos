@@ -33,6 +33,8 @@ public interface OppgaveRepository {
 
     List<Reservasjon> hentReservasjonerTilknyttetAktiveOppgaver(String uid);
 
+    List<Reservasjon> hentAlleReservasjonerForAvdeling(String avdelingEnhet);
+
     List<Oppgave> hentOppgaverForSaksnummer(Long fagsakSaksnummer);
 
     List<Oppgave> hentAktiveOppgaverForSaksnummer(Collection<Long> fagsakSaksnummerListe);
@@ -40,8 +42,6 @@ public interface OppgaveRepository {
     Reservasjon hentReservasjon(Long oppgaveId);
 
     void reserverOppgaveFraTidligereReservasjon(Long oppgaveId, Reservasjon tidligereReservasjon);
-
-    List<Reservasjon> hentAlleReservasjonerForAvdeling(String avdelingEnhet);
 
     List<OppgaveFiltrering> hentAlleLister(Long avdelingsId);
 
