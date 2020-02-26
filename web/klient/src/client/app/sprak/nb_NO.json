@@ -195,10 +195,13 @@
   "ProduksjonPaneler.AvdelingensProduksjon": "Avdelingens produksjon",
 
   "ReservasjonerTabell.Navn": "Navn",
+  "ReservasjonerTabell.OppgaveId": "Oppgave",
+  "ReservasjonerTabell.Saksnr": "Saksnummer",
   "ReservasjonerTabell.Brukerident": "Brukerident",
   "ReservasjonerTabell.Avdeling": "Avdeling",
+  "ReservasjonerTabell.ReservertTil": "Reservert til",
   "ReservasjonerTabell.Reservasjoner": "Reservasjoner for avdelingen",
-  "ReservasjonerTabell.IngenReservasjoner": "Ingen saksbehandlere lagt til",
+  "ReservasjonerTabell.IngenReservasjoner": "Ingen reservasjoner funnet",
 
   "Rest.ErrorMessage.Timeout": "Serverkall har gått ut på tid: {location}",
 

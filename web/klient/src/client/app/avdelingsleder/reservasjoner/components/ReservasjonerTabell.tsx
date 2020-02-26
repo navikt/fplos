@@ -9,10 +9,15 @@ import { connect } from 'react-redux';
 import Table from 'sharedComponents/Table';
 import TableRow from 'sharedComponents/TableRow';
 import TableColumn from 'sharedComponents/TableColumn';
+import Image from 'sharedComponents/Image';
+import styles from 'avdelingsleder/saksbehandlere/components/saksbehandlereTabell.less';
+import removeIcon from '../../../../images/remove.svg';
 
 const headerTextCodes = [
   'ReservasjonerTabell.Navn',
-  'ReservasjonerTabell.Brukerident',
+  'ReservasjonerTabell.OppgaveId',
+  'ReservasjonerTabell.Saksnr',
+  'ReservasjonerTabell.ReservertTil',
 ];
 
 interface TsProps {
@@ -52,9 +57,18 @@ export class ReservasjonerTabell extends Component<TsProps, StateTsProps> {
         {reservasjoner.length > 0 && (
           <Table headerTextCodes={headerTextCodes} noHover>
             {reservasjoner.map(reservasjon => (
-              <TableRow key={reservasjon.reservertAvUid}>
+              <TableRow key={reservasjon.oppgaveId}>
                 <TableColumn>{reservasjon.reservertAvNavn}</TableColumn>
-                <TableColumn>{reservasjon.reservertAvUid}</TableColumn>
+                <TableColumn>{reservasjon.oppgaveId}</TableColumn>
+                <TableColumn>{reservasjon.oppgaveSaksNr}</TableColumn>
+                <TableColumn>{reservasjon.reservertTilTidspunkt}</TableColumn>
+                <TableColumn>
+                  <Image
+                    src={removeIcon}
+                    className={styles.removeImage}
+                    tabIndex="0"
+                  />
+                </TableColumn>
               </TableRow>
             ))}
           </Table>
