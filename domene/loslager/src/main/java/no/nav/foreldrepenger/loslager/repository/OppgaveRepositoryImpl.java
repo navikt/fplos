@@ -48,6 +48,7 @@ public class OppgaveRepositoryImpl implements OppgaveRepository {
     private static final String SELECT_FRA_TILBAKEKREVING_OPPGAVE = "SELECT o from TilbakekrevingOppgave o ";
 
     private static final String SORTERING = "ORDER BY ";
+    private static final String SYNKENDE_REKKEFØLGE = " DESC";
     private static final String BEHANDLINGSFRIST = "o.behandlingsfrist";
     private static final String BEHANDLINGOPPRETTET = "o.behandlingOpprettet";
     private static final String FORSTE_STONADSDAG = "o.forsteStonadsdag";
@@ -216,7 +217,7 @@ public class OppgaveRepositoryImpl implements OppgaveRepository {
         } else if (til != null) {
             numeriskFiltrering = "AND " + sortering + " <= :filterTil ";
         }
-        return numeriskFiltrering + SORTERING + sortering;
+        return numeriskFiltrering + SORTERING + sortering + SYNKENDE_REKKEFØLGE;
     }
 
     private String filtrerDynamisk(String sortering, Long fomDager, Long tomDager) {
