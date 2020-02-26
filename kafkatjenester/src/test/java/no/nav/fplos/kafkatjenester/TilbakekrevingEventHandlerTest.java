@@ -7,6 +7,7 @@ import no.nav.foreldrepenger.loslager.oppgave.FagsakYtelseType;
 import no.nav.foreldrepenger.loslager.oppgave.Oppgave;
 import no.nav.foreldrepenger.loslager.oppgave.OppgaveEgenskap;
 import no.nav.foreldrepenger.loslager.oppgave.OppgaveEventLogg;
+import no.nav.foreldrepenger.loslager.oppgave.OppgaveEventType;
 import no.nav.foreldrepenger.loslager.repository.OppgaveRepository;
 import no.nav.foreldrepenger.loslager.repository.OppgaveRepositoryImpl;
 import no.nav.vedtak.felles.integrasjon.kafka.EventHendelse;
@@ -19,10 +20,12 @@ import javax.persistence.EntityManager;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -104,6 +107,30 @@ public class TilbakekrevingEventHandlerTest {
 
         handler.prosesser(andreEventUtenBeslutter);
         verifiserInaktivBeslutterEgenskap();
+    }
+
+    @Test
+    public void skalLukkeOppgaveVedReturFraTilBehandler() {
+        var saksbehandler = eventFra(åpentAksjonspunkt);
+        var tilBeslutter = eventFra(åpentBeslutter);
+        handler.prosesser(saksbehandler);
+        handler.prosesser(tilBeslutter);
+        handler.prosesser(saksbehandler);
+
+        List<OppgaveEventLogg> oppgaveEventer = repoRule.getRepository().hentAlle(OppgaveEventLogg.class).stream()
+                .sorted(Comparator.comparing(OppgaveEventLogg::getOpprettetTidspunkt))
+                .collect(Collectors.toList());
+
+        verifiserOppgaveEvent(oppgaveEventer.get(0), OppgaveEventType.OPPRETTET, null);
+        verifiserOppgaveEvent(oppgaveEventer.get(1), OppgaveEventType.LUKKET, null);
+        verifiserOppgaveEvent(oppgaveEventer.get(2), OppgaveEventType.OPPRETTET, AndreKriterierType.TIL_BESLUTTER);
+        verifiserOppgaveEvent(oppgaveEventer.get(3), OppgaveEventType.LUKKET, null);
+        verifiserOppgaveEvent(oppgaveEventer.get(4), OppgaveEventType.OPPRETTET, null);
+    }
+
+    private void verifiserOppgaveEvent(OppgaveEventLogg event, OppgaveEventType type, AndreKriterierType kriterierType) {
+        assertThat(event.getEventType()).isEqualTo(type);
+        assertThat(event.getAndreKriterierType()).isEqualTo(kriterierType);
     }
 
     private void verifiserAktivBeslutterEgenskap() {

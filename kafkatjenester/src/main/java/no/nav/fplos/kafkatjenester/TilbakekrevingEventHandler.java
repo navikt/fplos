@@ -1,5 +1,6 @@
 package no.nav.fplos.kafkatjenester;
 
+import no.nav.foreldrepenger.loslager.oppgave.AndreKriterierType;
 import no.nav.foreldrepenger.loslager.oppgave.BehandlingType;
 import no.nav.foreldrepenger.loslager.oppgave.FagsakYtelseType;
 import no.nav.foreldrepenger.loslager.oppgave.Oppgave;
@@ -18,6 +19,8 @@ import org.slf4j.LoggerFactory;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import java.util.UUID;
+
+import static no.nav.foreldrepenger.loslager.oppgave.AndreKriterierType.*;
 
 @ApplicationScoped
 @Transaction
@@ -48,8 +51,7 @@ public class TilbakekrevingEventHandler extends FpEventHandler<TilbakebetalingBe
         OppgaveHistorikk oppgaveHistorikk = new OppgaveHistorikk(getOppgaveRepository().hentOppgaveEventer(dto.getEksternId()));
         OppgaveEgenskapFinner egenskapFinner = new TilbakekrevingOppgaveEgenskapFinner(dto.getAksjonspunktKoderMedStatusListe(),
                 dto.getAnsvarligSaksbehandlerIdent());
-
-        EventResultat event = eventFra(dto, oppgaveHistorikk);
+        EventResultat event = eventFra(dto, oppgaveHistorikk, egenskapFinner);
 
         switch (event) {
             case LUKK_OPPGAVE_MANUELT_VENT:
@@ -70,6 +72,14 @@ public class TilbakekrevingEventHandler extends FpEventHandler<TilbakebetalingBe
                 oppgaveEgenskapHandler.håndterOppgaveEgenskaper(oppgave, egenskapFinner);
                 loggEvent(oppgave.getEksternId(), OppgaveEventType.OPPRETTET, null, dto.getBehandlendeEnhet());
                 break;
+            case OPPRETT_BESLUTTER_OPPGAVE:
+                avsluttOppgaveHvisÅpen(id, oppgaveHistorikk, dto.getBehandlendeEnhet());
+                Oppgave beslutterOppgave = opprettTilbakekrevingOppgave(dto, prosesserFraAdmin);
+                reserverOppgaveFraTidligereReservasjon(prosesserFraAdmin, reservasjon, beslutterOppgave.getId());
+                log.info("Oppretter beslutteroppgave.");
+                oppgaveEgenskapHandler.håndterOppgaveEgenskaper(beslutterOppgave, egenskapFinner);
+                loggEvent(id, OppgaveEventType.OPPRETTET, TIL_BESLUTTER, dto.getBehandlendeEnhet());
+                break;
             case GJENÅPNE_OPPGAVE:
                 TilbakekrevingOppgave gjenåpnetOppgave = getOppgaveRepository().gjenåpneTilbakekrevingOppgave(id);
                 oppdaterOppgaveInformasjon(gjenåpnetOppgave, dto);
@@ -80,14 +90,22 @@ public class TilbakekrevingEventHandler extends FpEventHandler<TilbakebetalingBe
         }
     }
 
-    private EventResultat eventFra(TilbakebetalingBehandlingProsessEventDto bpeDto, OppgaveHistorikk oppgaveHistorikk) {
+    private EventResultat eventFra(TilbakebetalingBehandlingProsessEventDto bpeDto, OppgaveHistorikk oppgaveHistorikk,
+                                   OppgaveEgenskapFinner egenskaper) {
         EventResultat event = TilbakekrevingEventMapper.tilbakekrevingEventFra(bpeDto);
-        OppgaveEventLogg sisteEvent = oppgaveHistorikk.getSisteÅpningsEvent();
-        if (event == EventResultat.OPPRETT_OPPGAVE
-                && sisteEvent != null
-                && sisteEvent.getEventType().erÅpningsevent()
-                && sisteEvent.getBehandlendeEnhet().equals(bpeDto.getBehandlendeEnhet())) {
-            event = EventResultat.GJENÅPNE_OPPGAVE;
+        OppgaveEventLogg sisteOppgaveEvent = oppgaveHistorikk.getSisteÅpningsEvent();
+        boolean erTilBeslutter = egenskaper.getAndreKriterier().contains(TIL_BESLUTTER);
+
+        if (event == EventResultat.OPPRETT_OPPGAVE && sisteOppgaveEvent != null && sisteOppgaveEvent.getEventType().erÅpningsevent()) {
+            if (erTilBeslutter && sisteOppgaveEvent.getAndreKriterierType() != TIL_BESLUTTER) {
+                return EventResultat.OPPRETT_BESLUTTER_OPPGAVE;
+            } else if (erTilBeslutter && sisteOppgaveEvent.getAndreKriterierType() == TIL_BESLUTTER) {
+                return EventResultat.GJENÅPNE_OPPGAVE;
+            } else if (!erTilBeslutter && sisteOppgaveEvent.getAndreKriterierType() == TIL_BESLUTTER) {
+                return EventResultat.OPPRETT_OPPGAVE;
+            } else if (sisteOppgaveEvent.getBehandlendeEnhet().equals(bpeDto.getBehandlendeEnhet())) {
+                return EventResultat.GJENÅPNE_OPPGAVE;
+            }
         }
         return event;
     }
