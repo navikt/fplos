@@ -35,10 +35,10 @@ import no.nav.fplos.foreldrepengerbehandling.Aksjonspunkt;
 import no.nav.fplos.foreldrepengerbehandling.BehandlingFpsak;
 import no.nav.fplos.foreldrepengerbehandling.ForeldrepengerBehandlingRestKlient;
 import no.nav.fplos.kafkatjenester.AksjonspunktMeldingConsumer;
-import no.nav.fplos.kafkatjenester.FpsakEventHandler;
+import no.nav.fplos.kafkatjenester.ForeldrepengerEventHåndterer;
 import no.nav.fplos.kafkatjenester.KafkaReader;
 import no.nav.fplos.kafkatjenester.OppgaveEgenskapHandler;
-import no.nav.fplos.kafkatjenester.TilbakekrevingEventHandler;
+import no.nav.fplos.kafkatjenester.TilbakekrevingEventHåndterer;
 import no.nav.fplos.oppgave.OppgaveTjenesteImpl;
 import no.nav.fplos.person.api.TpsTjeneste;
 import no.nav.fplos.verdikjedetester.mock.MeldingsTestInfo;
@@ -98,8 +98,8 @@ public class VerdikjedetestSaksbehandlerTest {
     @Before
     public void before(){
         kafkaReader = new KafkaReader(meldingConsumer,
-                new FpsakEventHandler(oppgaveRepository, foreldrepengerBehandlingRestKlient, oppgaveEgenskapHandler),
-                new TilbakekrevingEventHandler(oppgaveRepository, oppgaveEgenskapHandler), oppgaveRepository);
+                new ForeldrepengerEventHåndterer(oppgaveRepository, foreldrepengerBehandlingRestKlient, oppgaveEgenskapHandler),
+                new TilbakekrevingEventHåndterer(oppgaveRepository, oppgaveEgenskapHandler), oppgaveRepository);
         avdelingDrammen = avdelingslederRestTjeneste.hentAvdelinger().stream()
                 .filter(avdeling -> AVDELING_DRAMMEN.equals(avdeling.getAvdelingEnhet())).findFirst().orElseThrow();
         sakslisteDrammenFPFørstegangsIdDto = avdelingslederSakslisteRestTjeneste.opprettNySaksliste(new AvdelingEnhetDto(avdelingDrammen.getAvdelingEnhet()));

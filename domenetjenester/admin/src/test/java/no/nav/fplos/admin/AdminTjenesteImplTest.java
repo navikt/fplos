@@ -12,10 +12,10 @@ import no.nav.foreldrepenger.loslager.repository.OppgaveRepositoryImpl;
 import no.nav.fplos.foreldrepengerbehandling.Aksjonspunkt;
 import no.nav.fplos.foreldrepengerbehandling.BehandlingFpsak;
 import no.nav.fplos.foreldrepengerbehandling.ForeldrepengerBehandlingRestKlient;
-import no.nav.fplos.kafkatjenester.FpsakEventHandler;
+import no.nav.fplos.kafkatjenester.ForeldrepengerEventHåndterer;
 import no.nav.fplos.kafkatjenester.KafkaReader;
 import no.nav.fplos.kafkatjenester.OppgaveEgenskapHandler;
-import no.nav.fplos.kafkatjenester.TilbakekrevingEventHandler;
+import no.nav.fplos.kafkatjenester.TilbakekrevingEventHåndterer;
 import org.junit.Rule;
 import org.junit.Test;
 
@@ -39,10 +39,10 @@ public class AdminTjenesteImplTest {
     private final AdminRepository adminRepository = new AdminRepositoryImpl(entityManager);
     private final OppgaveEgenskapHandler oppgaveEgenskapHandler = new OppgaveEgenskapHandler(oppgaveRepository);
     private ForeldrepengerBehandlingRestKlient foreldrepengerBehandlingRestKlient = mock(ForeldrepengerBehandlingRestKlient.class);
-    private FpsakEventHandler fpsakEventHandler = new FpsakEventHandler(oppgaveRepository, foreldrepengerBehandlingRestKlient, oppgaveEgenskapHandler);
-    private TilbakekrevingEventHandler tilbakekrevingEventHandler = new TilbakekrevingEventHandler(oppgaveRepository, oppgaveEgenskapHandler);
+    private ForeldrepengerEventHåndterer foreldrepengerEventHåndterer = new ForeldrepengerEventHåndterer(oppgaveRepository, foreldrepengerBehandlingRestKlient, oppgaveEgenskapHandler);
+    private TilbakekrevingEventHåndterer tilbakekrevingEventHandler = new TilbakekrevingEventHåndterer(oppgaveRepository, oppgaveEgenskapHandler);
     private KafkaReader kafkaReader = mock(KafkaReader.class);
-    private AdminTjenesteImpl adminTjeneste = new AdminTjenesteImpl(adminRepository, foreldrepengerBehandlingRestKlient, fpsakEventHandler, tilbakekrevingEventHandler, kafkaReader);
+    private AdminTjenesteImpl adminTjeneste = new AdminTjenesteImpl(adminRepository, foreldrepengerBehandlingRestKlient, foreldrepengerEventHåndterer, tilbakekrevingEventHandler, kafkaReader);
 
     private static String AVDELING_DRAMMEN_ENHET = "4806";
 

@@ -29,13 +29,13 @@ import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class TilbakekrevingEventHandlerTest {
+public class TilbakekrevingEventHåndtererTest {
     @Rule
     public UnittestRepositoryRule repoRule = new UnittestRepositoryRule();
     private EntityManager entityManager = repoRule.getEntityManager();
     private OppgaveRepository oppgaveRepository = new OppgaveRepositoryImpl(entityManager);
     private OppgaveEgenskapHandler oppgaveEgenskapHandler = new OppgaveEgenskapHandler(oppgaveRepository);
-    private TilbakekrevingEventHandler handler = new TilbakekrevingEventHandler(oppgaveRepository, oppgaveEgenskapHandler);
+    private TilbakekrevingEventHåndterer handler = new TilbakekrevingEventHåndterer(oppgaveRepository, oppgaveEgenskapHandler);
     private static Long behandlingId = 1000000L;
 
     private Map<String, String> åpentAksjonspunkt = new HashMap<>() {{
