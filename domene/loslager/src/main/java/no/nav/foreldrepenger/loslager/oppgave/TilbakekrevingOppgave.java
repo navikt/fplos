@@ -30,6 +30,7 @@ public class TilbakekrevingOppgave extends Oppgave{
 
     public void avstemMed(TilbakekrevingOppgave other) {
         this.behandlingOpprettet = other.behandlingOpprettet;
+        this.href = other.href;
         this.aktorId = other.aktorId;
         this.behandlendeEnhet = other.behandlendeEnhet;
         this.behandlingsfrist = other.behandlingsfrist;

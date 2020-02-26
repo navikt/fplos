@@ -114,6 +114,7 @@ public class TilbakekrevingEventHandler extends FpEventHandler<TilbakebetalingBe
         return TilbakekrevingOppgave.tbuilder()
                 .medBelop(dto.getFeilutbetaltBeløp())
                 .medFeilutbetalingStart(dto.getFørsteFeilutbetaling().atStartOfDay())
+                .medHref(dto.getHref())
                 .medSystem(dto.getFagsystem().name())
                 .medFagsakSaksnummer(Long.valueOf(dto.getSaksnummer()))
                 .medAktorId(Long.valueOf(dto.getAktørId()))
