@@ -14,7 +14,6 @@
         <module>web</module>
         <module>kafkatjenester</module>
         <module>integrasjon</module>
-        <module>integrasjonstester</module>
     </modules>
 
     <properties>
@@ -66,6 +65,7 @@
         <flyway.version>4.2.0</flyway.version>
         <ojdbc.version>19.3.0.0</ojdbc.version>
         <!--abac-attribute-constants.version>2.0.0</abac-attribute-constants.version-->
+        <kafka.version>2.4.0</kafka.version>
     </properties>
 
     <dependencies>
@@ -199,11 +199,6 @@
             </dependency>
             <dependency>
                 <groupId>no.nav.foreldrepenger.los</groupId>
-                <artifactId>feed</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>no.nav.foreldrepenger.los</groupId>
                 <artifactId>organisasjonressursenhet-klient</artifactId>
                 <version>${project.version}</version>
             </dependency>
@@ -290,8 +285,8 @@
             </dependency>
             <dependency>
                 <groupId>org.apache.kafka</groupId>
-                <artifactId>kafka-clients</artifactId>
-                <version>2.4.0</version>
+                <artifactId>kafka-streams</artifactId>
+                <version>${kafka.version}</version>
             </dependency>
 
             <dependency>

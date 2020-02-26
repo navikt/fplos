@@ -1,19 +1,21 @@
 package no.nav.fplos.kafkatjenester;
 
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import no.nav.foreldrepenger.loslager.oppgave.AndreKriterierType;
 import no.nav.foreldrepenger.loslager.oppgave.Oppgave;
 import no.nav.foreldrepenger.loslager.oppgave.OppgaveEgenskap;
 import no.nav.foreldrepenger.loslager.repository.OppgaveRepository;
 import no.nav.vedtak.felles.jpa.Transaction;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @ApplicationScoped
 @Transaction
@@ -32,7 +34,7 @@ public class OppgaveEgenskapHandler {
         this.repository = oppgaveRepository;
     }
 
-    void håndterOppgaveEgenskaper(Oppgave oppgave, OppgaveEgenskapFinner event) {
+    public void håndterOppgaveEgenskaper(Oppgave oppgave, OppgaveEgenskapFinner event) {
         var andreKriterier = event.getAndreKriterier();
         log.info("Legger på oppgaveegenskaper {}", andreKriterier);
         List<OppgaveEgenskap> eksisterende = hentEksisterendeEgenskaper(oppgave);

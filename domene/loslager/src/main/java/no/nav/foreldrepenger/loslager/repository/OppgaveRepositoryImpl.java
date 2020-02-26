@@ -1,5 +1,24 @@
 package no.nav.foreldrepenger.loslager.repository;
 
+import static no.nav.foreldrepenger.loslager.BaseEntitet.BRUKERNAVN_NÅR_SIKKERHETSKONTEKST_IKKE_FINNES;
+import static no.nav.foreldrepenger.loslager.oppgave.KøSortering.FT_DATO;
+import static no.nav.foreldrepenger.loslager.oppgave.KøSortering.FT_HELTALL;
+
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.List;
+import java.util.UUID;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
+
 import no.nav.foreldrepenger.loslager.oppgave.AndreKriterierType;
 import no.nav.foreldrepenger.loslager.oppgave.BehandlingType;
 import no.nav.foreldrepenger.loslager.oppgave.EventmottakFeillogg;
@@ -18,32 +37,7 @@ import no.nav.foreldrepenger.loslager.oppgave.ReservasjonEventLogg;
 import no.nav.foreldrepenger.loslager.oppgave.TilbakekrevingOppgave;
 import no.nav.foreldrepenger.loslager.organisasjon.Avdeling;
 import no.nav.foreldrepenger.loslager.organisasjon.Saksbehandler;
-import no.nav.vedtak.felles.jpa.VLPersistenceUnit;
 import no.nav.vedtak.sikkerhet.context.SubjectHandler;
-import org.hibernate.Criteria;
-import org.hibernate.query.criteria.HibernateCriteriaBuilder;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.TypedQuery;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.List;
-import java.util.UUID;
-import java.util.stream.Collectors;
-
-import static no.nav.foreldrepenger.loslager.BaseEntitet.BRUKERNAVN_NÅR_SIKKERHETSKONTEKST_IKKE_FINNES;
-import static no.nav.foreldrepenger.loslager.oppgave.KøSortering.FT_DATO;
-import static no.nav.foreldrepenger.loslager.oppgave.KøSortering.FT_HELTALL;
 
 @ApplicationScoped
 public class OppgaveRepositoryImpl implements OppgaveRepository {
@@ -64,15 +58,11 @@ public class OppgaveRepositoryImpl implements OppgaveRepository {
     private EntityManager entityManager;
 
     @Inject
-    public OppgaveRepositoryImpl(@VLPersistenceUnit EntityManager entityManager) {
+    public OppgaveRepositoryImpl(EntityManager entityManager) {
         this.entityManager = entityManager;
     }
 
     OppgaveRepositoryImpl(){
-    }
-
-    EntityManager getEntityManager() {
-        return entityManager;
     }
 
     @Override
@@ -135,7 +125,7 @@ public class OppgaveRepositoryImpl implements OppgaveRepository {
             ekskluderInkluderAndreKriterier.append("NOT EXISTS (select 1 from OppgaveEgenskap oen WHERE o = oen.oppgave AND oen.aktiv = true AND oen.andreKriterierType = '").append(kriterie.getKode()).append("') AND ");
         }
 
-        TypedQuery<T> query = getEntityManager().createQuery(selection + //$NON-NLS-1$ // NOSONAR
+        TypedQuery<T> query = entityManager.createQuery(selection + //$NON-NLS-1$ // NOSONAR
                 "INNER JOIN avdeling a ON a.avdelingEnhet = o.behandlendeEnhet " +
                 "WHERE " +
                 filtrerBehandlingType +
@@ -260,7 +250,7 @@ public class OppgaveRepositoryImpl implements OppgaveRepository {
 
     @Override
     public List<Reservasjon> hentReservasjonerTilknyttetAktiveOppgaver(String uid){
-        TypedQuery<Reservasjon> oppgaveTypedQuery = getEntityManager().createQuery("Select r from Reservasjon r " +
+        TypedQuery<Reservasjon> oppgaveTypedQuery = entityManager.createQuery("Select r from Reservasjon r " +
                 "INNER JOIN Oppgave o ON r.oppgave = o " +
                 "WHERE r.reservertTil > :naa AND upper(r.reservertAv) = upper( :uid ) AND o.aktiv = true", Reservasjon.class) //$NON-NLS-1$
                 .setParameter("naa", LocalDateTime.now())
@@ -281,7 +271,7 @@ public class OppgaveRepositoryImpl implements OppgaveRepository {
 
     @Override
     public List<Oppgave> hentOppgaverForSaksnummer(Long fagsakSaksnummer) {
-        return getEntityManager().createQuery(SELECT_FRA_OPPGAVE +
+        return entityManager.createQuery(SELECT_FRA_OPPGAVE +
                 "WHERE o.fagsakSaksnummer = :fagsakSaksnummer " +
                 "ORDER BY o.id desc ", Oppgave.class)
                 .setParameter("fagsakSaksnummer", fagsakSaksnummer)
@@ -290,7 +280,7 @@ public class OppgaveRepositoryImpl implements OppgaveRepository {
 
     @Override
     public List<Oppgave> hentAktiveOppgaverForSaksnummer(Collection<Long> fagsakSaksnummerListe) {
-        return getEntityManager().createQuery(SELECT_FRA_OPPGAVE +
+        return entityManager.createQuery(SELECT_FRA_OPPGAVE +
                 "WHERE o.fagsakSaksnummer in :fagsakSaksnummerListe " +
                 "AND o.aktiv = true " +
                 "ORDER BY o.fagsakSaksnummer desc ", Oppgave.class)
@@ -299,11 +289,11 @@ public class OppgaveRepositoryImpl implements OppgaveRepository {
     }
 
     public Reservasjon hentReservasjon(Long oppgaveId){
-        TypedQuery<Reservasjon> oppgaveTypedQuery =  getEntityManager().createQuery("from Reservasjon r WHERE r.oppgave.id = :id ", Reservasjon.class)
+        TypedQuery<Reservasjon> oppgaveTypedQuery =  entityManager.createQuery("from Reservasjon r WHERE r.oppgave.id = :id ", Reservasjon.class)
             .setParameter("id", oppgaveId);//$NON-NLS-1$
         List<Reservasjon> resultList = oppgaveTypedQuery.getResultList();
         if (resultList.isEmpty()){
-            return new Reservasjon(getEntityManager().find(Oppgave.class, oppgaveId));
+            return new Reservasjon(entityManager.find(Oppgave.class, oppgaveId));
         }
         return oppgaveTypedQuery.getResultList().get(0);
     }
@@ -319,7 +309,7 @@ public class OppgaveRepositoryImpl implements OppgaveRepository {
 
     @Override
     public List<OppgaveFiltrering> hentAlleLister(Long avdelingsId) {
-        TypedQuery<OppgaveFiltrering> listeTypedQuery = getEntityManager()
+        TypedQuery<OppgaveFiltrering> listeTypedQuery = entityManager
                 .createQuery("FROM OppgaveFiltrering l WHERE l.avdeling.id = :id " +
                         OPPGAVEFILTRERING_SORTERING_NAVN, OppgaveFiltrering.class)
                 .setParameter("id", avdelingsId);//$NON-NLS-1$
@@ -328,7 +318,7 @@ public class OppgaveRepositoryImpl implements OppgaveRepository {
 
     @Override
     public OppgaveFiltrering hentListe(Long listeId) {
-        TypedQuery<OppgaveFiltrering> listeTypedQuery = getEntityManager()
+        TypedQuery<OppgaveFiltrering> listeTypedQuery = entityManager
                 .createQuery("FROM OppgaveFiltrering l WHERE l.id = :id " +
                         OPPGAVEFILTRERING_SORTERING_NAVN, OppgaveFiltrering.class)
                 .setParameter("id", listeId);
@@ -337,7 +327,7 @@ public class OppgaveRepositoryImpl implements OppgaveRepository {
 
     @Override
     public KøSortering hentSorteringForListe(Long listeId) {
-        TypedQuery<KøSortering> listeTypedQuery = getEntityManager()
+        TypedQuery<KøSortering> listeTypedQuery = entityManager
                 .createQuery("SELECT l.sortering FROM OppgaveFiltrering l WHERE l.id = :id ", KøSortering.class)
                 .setParameter("id", listeId);
         return listeTypedQuery.getResultStream().findFirst().orElse(null);
@@ -382,21 +372,21 @@ public class OppgaveRepositoryImpl implements OppgaveRepository {
 
     @Override
     public void oppdaterNavn(Long sakslisteId, String navn) {
-        getEntityManager().persist(
-                getEntityManager().find(OppgaveFiltreringOppdaterer.class, sakslisteId)
+        entityManager.persist(
+                entityManager.find(OppgaveFiltreringOppdaterer.class, sakslisteId)
                     .endreNavn(navn));
-        getEntityManager().flush();
+        entityManager.flush();
     }
 
     @Override
     public void slettListe(Long listeId) {
-        getEntityManager().remove(getEntityManager().find(OppgaveFiltrering.class, listeId));
-        getEntityManager().flush();
+        entityManager.remove(entityManager.find(OppgaveFiltrering.class, listeId));
+        entityManager.flush();
     }
 
     @Override
     public void slettFiltreringBehandlingType(Long sakslisteId, BehandlingType behandlingType) {
-        getEntityManager().createNativeQuery("DELETE FROM FILTRERING_BEHANDLING_TYPE f " +
+        entityManager.createNativeQuery("DELETE FROM FILTRERING_BEHANDLING_TYPE f " +
                 "WHERE f.OPPGAVE_FILTRERING_ID = :oppgaveFiltreringId and f.behandling_type = :behandlingType")
                 .setParameter("oppgaveFiltreringId", sakslisteId)//$NON-NLS-1$ // NOSONAR
                 .setParameter("behandlingType", behandlingType.getKode())
@@ -405,7 +395,7 @@ public class OppgaveRepositoryImpl implements OppgaveRepository {
 
     @Override
     public void slettFiltreringYtelseType(Long sakslisteId, FagsakYtelseType fagsakYtelseType) {
-        getEntityManager().createNativeQuery("DELETE FROM FILTRERING_YTELSE_TYPE f " +
+        entityManager.createNativeQuery("DELETE FROM FILTRERING_YTELSE_TYPE f " +
                 "WHERE f.OPPGAVE_FILTRERING_ID = :oppgaveFiltreringId and f.FAGSAK_YTELSE_TYPE = :fagsakYtelseType")
                 .setParameter("oppgaveFiltreringId", sakslisteId)//$NON-NLS-1$ // NOSONAR
                 .setParameter("fagsakYtelseType", fagsakYtelseType.getKode())
@@ -414,7 +404,7 @@ public class OppgaveRepositoryImpl implements OppgaveRepository {
 
     @Override
     public void slettFiltreringAndreKriterierType(Long oppgavefiltreringId, AndreKriterierType andreKriterierType) {
-        getEntityManager().createNativeQuery("DELETE FROM FILTRERING_ANDRE_KRITERIER f " +
+        entityManager.createNativeQuery("DELETE FROM FILTRERING_ANDRE_KRITERIER f " +
                 "WHERE f.OPPGAVE_FILTRERING_ID = :oppgaveFiltreringId and f.ANDRE_KRITERIER_TYPE = :andreKriterierType")
                 .setParameter("oppgaveFiltreringId", oppgavefiltreringId)//$NON-NLS-1$ // NOSONAR
                 .setParameter("andreKriterierType", andreKriterierType.getKode())
@@ -423,27 +413,27 @@ public class OppgaveRepositoryImpl implements OppgaveRepository {
 
     @Override
     public void refresh(Oppgave oppgave) {
-        getEntityManager().refresh(oppgave);
+        entityManager.refresh(oppgave);
     }
 
     @Override
     public void refresh(OppgaveFiltrering oppgaveFiltrering) {
-        getEntityManager().refresh(oppgaveFiltrering);
+        entityManager.refresh(oppgaveFiltrering);
     }
 
     @Override
     public void refresh(Avdeling avdeling) {
-        getEntityManager().refresh(avdeling);
+        entityManager.refresh(avdeling);
     }
 
     @Override
     public void refresh(Saksbehandler saksbehandler) {
-        getEntityManager().refresh(saksbehandler);
+        entityManager.refresh(saksbehandler);
     }
 
     @Override
     public List<Oppgave> sjekkOmOppgaverFortsattErTilgjengelige(List<Long> oppgaveIder) {
-        return getEntityManager().createQuery(SELECT_FRA_OPPGAVE +
+        return entityManager.createQuery(SELECT_FRA_OPPGAVE +
                 " INNER JOIN avdeling a ON a.avdelingEnhet = o.behandlendeEnhet WHERE " +
                 "NOT EXISTS (select r from Reservasjon r where r.oppgave = o and r.reservertTil > :naa) " +
                 "AND o.id IN ( :oppgaveId ) " +
@@ -507,7 +497,7 @@ public class OppgaveRepositoryImpl implements OppgaveRepository {
 
     @Override
     public List<Oppgave> hentSisteReserverteOppgaver(String uid) {
-        return getEntityManager().createQuery("SELECT o FROM Oppgave o " +
+        return entityManager.createQuery("SELECT o FROM Oppgave o " +
                 "INNER JOIN Reservasjon r ON r.oppgave = o " +
                 "WHERE upper(r.reservertAv) = upper( :uid ) ORDER BY coalesce(r.endretTidspunkt, r.opprettetTidspunkt) DESC ", Oppgave.class) //$NON-NLS-1$
                 .setParameter("uid", uid).setMaxResults(10).getResultList();
@@ -526,14 +516,14 @@ public class OppgaveRepositoryImpl implements OppgaveRepository {
 
     @Override
     public List<OppgaveEventLogg> hentEventerForEksternId(UUID eksternId) {
-        return getEntityManager().createQuery("FROM oppgaveEventLogg oel " +
+        return entityManager.createQuery("FROM oppgaveEventLogg oel " +
                 "where oel.eksternId = :eksternId ORDER BY oel.id desc", OppgaveEventLogg.class)
                 .setParameter("eksternId", eksternId).getResultList();
     }
 
     @Override
     public List<OppgaveEgenskap> hentOppgaveEgenskaper(Long oppgaveId) {
-        return getEntityManager().createQuery("FROM OppgaveEgenskap oe " +
+        return entityManager.createQuery("FROM OppgaveEgenskap oe " +
                 "where oe.oppgaveId = :oppgaveId ORDER BY oe.id desc", OppgaveEgenskap.class)
                 .setParameter("oppgaveId", oppgaveId).getResultList();
     }
@@ -549,7 +539,7 @@ public class OppgaveRepositoryImpl implements OppgaveRepository {
     }
 
     private List<Oppgave> hentOppgaverForEksternId(UUID eksternId) {
-        return getEntityManager().createQuery(SELECT_FRA_OPPGAVE +
+        return entityManager.createQuery(SELECT_FRA_OPPGAVE +
                 "WHERE o.eksternId = :eksternId ", Oppgave.class)
                 .setParameter("eksternId", eksternId)
                 .getResultList();
@@ -557,8 +547,8 @@ public class OppgaveRepositoryImpl implements OppgaveRepository {
 
     @Override
     public void settSortering(Long sakslisteId, String sortering) {
-        getEntityManager().persist(
-                getEntityManager().find(OppgaveFiltreringOppdaterer.class, sakslisteId)
+        entityManager.persist(
+                entityManager.find(OppgaveFiltreringOppdaterer.class, sakslisteId)
                         .endreSortering(sortering)
                         .endreErDynamiskPeriode(false)
                         .endreFomDato(null)
@@ -570,8 +560,8 @@ public class OppgaveRepositoryImpl implements OppgaveRepository {
 
     @Override
     public void settSorteringTidsintervallDato(Long oppgaveFiltreringId, LocalDate fomDato, LocalDate tomDato){
-        getEntityManager().persist(
-                getEntityManager().find(OppgaveFiltreringOppdaterer.class, oppgaveFiltreringId)
+        entityManager.persist(
+                entityManager.find(OppgaveFiltreringOppdaterer.class, oppgaveFiltreringId)
                         .endreFomDato(fomDato)
                         .endreTomDato(tomDato));
         entityManager.flush();
@@ -579,8 +569,8 @@ public class OppgaveRepositoryImpl implements OppgaveRepository {
 
     @Override
     public void settSorteringNumeriskIntervall(Long oppgaveFiltreringId, Long fra, Long til){
-        getEntityManager().persist(
-                getEntityManager().find(OppgaveFiltreringOppdaterer.class, oppgaveFiltreringId)
+        entityManager.persist(
+                entityManager.find(OppgaveFiltreringOppdaterer.class, oppgaveFiltreringId)
                         .endreFraVerdi(fra)
                         .endreTilVerdi(til));
         entityManager.flush();
@@ -588,8 +578,8 @@ public class OppgaveRepositoryImpl implements OppgaveRepository {
 
     @Override
     public void settSorteringTidsintervallValg(Long oppgaveFiltreringId, boolean erDynamiskPeriode){
-        getEntityManager().persist(
-                getEntityManager().find(OppgaveFiltreringOppdaterer.class, oppgaveFiltreringId)
+        entityManager.persist(
+                entityManager.find(OppgaveFiltreringOppdaterer.class, oppgaveFiltreringId)
                         .endreErDynamiskPeriode(erDynamiskPeriode)
                         .endreFomDato(null)
                         .endreTomDato(null)

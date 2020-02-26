@@ -1,5 +1,18 @@
 package no.nav.fplos.admin;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
+import java.util.List;
+import java.util.UUID;
+
+import javax.persistence.EntityManager;
+
+import org.junit.Rule;
+import org.junit.Test;
+
 import no.nav.foreldrepenger.dbstoette.UnittestRepositoryRule;
 import no.nav.foreldrepenger.loslager.oppgave.BehandlingType;
 import no.nav.foreldrepenger.loslager.oppgave.Oppgave;
@@ -9,26 +22,11 @@ import no.nav.foreldrepenger.loslager.repository.AdminRepository;
 import no.nav.foreldrepenger.loslager.repository.AdminRepositoryImpl;
 import no.nav.foreldrepenger.loslager.repository.OppgaveRepository;
 import no.nav.foreldrepenger.loslager.repository.OppgaveRepositoryImpl;
-import no.nav.fplos.foreldrepengerbehandling.Aksjonspunkt;
 import no.nav.fplos.foreldrepengerbehandling.BehandlingFpsak;
 import no.nav.fplos.foreldrepengerbehandling.ForeldrepengerBehandlingRestKlient;
-import no.nav.fplos.kafkatjenester.FpsakEventHandler;
-import no.nav.fplos.kafkatjenester.KafkaReader;
+import no.nav.fplos.kafkatjenester.ForeldrepengerEventHåndterer;
 import no.nav.fplos.kafkatjenester.OppgaveEgenskapHandler;
-import no.nav.fplos.kafkatjenester.TilbakekrevingEventHandler;
-import org.junit.Rule;
-import org.junit.Test;
-
-import javax.persistence.EntityManager;
-import java.time.LocalDateTime;
-import java.util.Collections;
-import java.util.List;
-import java.util.UUID;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import no.nav.fplos.kafkatjenester.TilbakekrevingEventHåndterer;
 
 public class AdminTjenesteImplTest {
 
@@ -39,17 +37,15 @@ public class AdminTjenesteImplTest {
     private final AdminRepository adminRepository = new AdminRepositoryImpl(entityManager);
     private final OppgaveEgenskapHandler oppgaveEgenskapHandler = new OppgaveEgenskapHandler(oppgaveRepository);
     private ForeldrepengerBehandlingRestKlient foreldrepengerBehandlingRestKlient = mock(ForeldrepengerBehandlingRestKlient.class);
-    private FpsakEventHandler fpsakEventHandler = new FpsakEventHandler(oppgaveRepository, foreldrepengerBehandlingRestKlient, oppgaveEgenskapHandler);
-    private TilbakekrevingEventHandler tilbakekrevingEventHandler = new TilbakekrevingEventHandler(oppgaveRepository);
-    private KafkaReader kafkaReader = mock(KafkaReader.class);
-    private AdminTjenesteImpl adminTjeneste = new AdminTjenesteImpl(adminRepository, foreldrepengerBehandlingRestKlient, fpsakEventHandler, tilbakekrevingEventHandler, kafkaReader);
+    private ForeldrepengerEventHåndterer foreldrepengerEventHåndterer = new ForeldrepengerEventHåndterer(oppgaveRepository, foreldrepengerBehandlingRestKlient, oppgaveEgenskapHandler);
+    private TilbakekrevingEventHåndterer tilbakekrevingEventHandler = new TilbakekrevingEventHåndterer(oppgaveRepository);
+    private AdminTjenesteImpl adminTjeneste = new AdminTjenesteImpl(adminRepository, foreldrepengerBehandlingRestKlient, foreldrepengerEventHåndterer, tilbakekrevingEventHandler);
 
     private static String AVDELING_DRAMMEN_ENHET = "4806";
 
     private Oppgave førstegangOppgave = Oppgave.builder().dummyOppgave(AVDELING_DRAMMEN_ENHET).medBehandlingId(1L).medBehandlingType(BehandlingType.FØRSTEGANGSSØKNAD).medAktiv(true).medEksternId(UUID.nameUUIDFromBytes("1".getBytes())).build();
     private Oppgave klageOppgave = Oppgave.builder().dummyOppgave(AVDELING_DRAMMEN_ENHET).medBehandlingId(2L).medBehandlingType(BehandlingType.KLAGE).medAktiv(true).medEksternId(UUID.nameUUIDFromBytes("2".getBytes())).build();
     private Oppgave innsynOppgave = Oppgave.builder().dummyOppgave(AVDELING_DRAMMEN_ENHET).medBehandlingId(3L).medBehandlingType(BehandlingType.INNSYN).medAktiv(true).medEksternId(UUID.nameUUIDFromBytes("3".getBytes())).build();
-    private LocalDateTime aksjonspunktFrist = null;
 
     private void leggeInnEtSettMedOppgaver(){
         oppgaveRepository.lagre(førstegangOppgave);
@@ -95,18 +91,5 @@ public class AdminTjenesteImplTest {
 
     private BehandlingFpsak lagBehandlingAvsluttetDto(){
         return BehandlingFpsak.builder().medStatus("AVSLU").build();
-    }
-
-    private BehandlingFpsak lagBehandlingMedUtlandssakDto() {
-        return BehandlingFpsak.builder()
-                .medErUtenlandssak(true)
-                .medAksjonspunkter(Collections.singletonList(new Aksjonspunkt
-                        .Builder()
-                        .medDefinisjon("5068")
-                        .medStatus("OPPR")
-                        .medFristTid(aksjonspunktFrist)
-                        .medBegrunnelse("BOSATT_UTLAND")
-                        .build()))
-                .build();
     }
 }

@@ -17,7 +17,7 @@ public class NaisRestTjeneste {
     private static final String RESPONSE_CACHE_VAL = "must-revalidate,no-cache,no-store";
     private static final String RESPONSE_OK = "OK";
 
-    private ApplicationServiceStarter starterService;
+    private KafkaConsumerStarter kafkaConsumerStarter;
     private SelftestService selftestService;
 
     public NaisRestTjeneste() {
@@ -25,8 +25,8 @@ public class NaisRestTjeneste {
     }
 
     @Inject
-    public NaisRestTjeneste(ApplicationServiceStarter starterService, SelftestService selftestService) {
-        this.starterService = starterService;
+    public NaisRestTjeneste(KafkaConsumerStarter kafkaConsumerStarter, SelftestService selftestService) {
+        this.kafkaConsumerStarter = kafkaConsumerStarter;
         this.selftestService = selftestService;
     }
 
@@ -59,8 +59,7 @@ public class NaisRestTjeneste {
     @Path("preStop")
     @Operation(description = "kalles på før stopp", tags = "nais", hidden = true)
     public Response preStop() {
-        starterService.stopServices();
+        kafkaConsumerStarter.contextDestroyed(null);
         return Response.ok(RESPONSE_OK).build();
     }
-
 }
