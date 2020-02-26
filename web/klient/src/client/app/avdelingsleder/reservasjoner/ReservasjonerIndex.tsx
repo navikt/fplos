@@ -6,7 +6,7 @@ import { bindActionCreators, Dispatch } from 'redux';
 import reservasjonPropType from 'avdelingsleder/reservasjoner/reservasjonPropType';
 import { Reservasjon } from 'avdelingsleder/reservasjoner/reservasjonTsType';
 import {
-  fetchAvdelingensReservasjoner, getAvdelingensReservasjoner,
+  fetchAvdelingensReservasjoner, getAvdelingensReservasjoner, opphevReservasjon,
 } from './duck';
 import ReservasjonerPanel from './components/ReservasjonerPanel';
 
