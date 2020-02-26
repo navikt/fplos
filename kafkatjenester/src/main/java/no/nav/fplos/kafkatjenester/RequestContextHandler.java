@@ -1,4 +1,4 @@
-package no.nav.foreldrepenger.los.feed;
+package no.nav.fplos.kafkatjenester;
 
 import org.jboss.weld.context.RequestContext;
 import org.jboss.weld.context.unbound.UnboundLiteral;

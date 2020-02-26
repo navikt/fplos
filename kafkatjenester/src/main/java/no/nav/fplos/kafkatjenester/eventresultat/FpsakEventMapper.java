@@ -1,14 +1,5 @@
 package no.nav.fplos.kafkatjenester.eventresultat;
 
-import no.nav.foreldrepenger.loslager.oppgave.AndreKriterierType;
-import no.nav.foreldrepenger.loslager.oppgave.OppgaveEventLogg;
-import no.nav.foreldrepenger.loslager.oppgave.OppgaveEventType;
-import no.nav.fplos.foreldrepengerbehandling.Aksjonspunkt;
-
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
-
 import static no.nav.fplos.kafkatjenester.eventresultat.EventResultat.GJENÅPNE_OPPGAVE;
 import static no.nav.fplos.kafkatjenester.eventresultat.EventResultat.LUKK_OPPGAVE;
 import static no.nav.fplos.kafkatjenester.eventresultat.EventResultat.LUKK_OPPGAVE_MANUELT_VENT;
@@ -17,12 +8,17 @@ import static no.nav.fplos.kafkatjenester.eventresultat.EventResultat.OPPRETT_BE
 import static no.nav.fplos.kafkatjenester.eventresultat.EventResultat.OPPRETT_OPPGAVE;
 import static no.nav.fplos.kafkatjenester.eventresultat.EventResultat.OPPRETT_PAPIRSØKNAD_OPPGAVE;
 
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import no.nav.foreldrepenger.loslager.oppgave.AndreKriterierType;
+import no.nav.foreldrepenger.loslager.oppgave.OppgaveEventLogg;
+import no.nav.foreldrepenger.loslager.oppgave.OppgaveEventType;
+import no.nav.fplos.foreldrepengerbehandling.Aksjonspunkt;
+
 
 public class FpsakEventMapper {
-
-    public static EventResultat signifikantEventForAdminFra(List<Aksjonspunkt> aksjonspunktListe) {
-        return signifikantEventFra(aksjonspunktListe, null, null, true);
-    }
 
     public static EventResultat signifikantEventFra(List<Aksjonspunkt> aksjonspunktListe,
                                                     List<OppgaveEventLogg> oppgaveEventLogger, String behandlendeEnhet) {

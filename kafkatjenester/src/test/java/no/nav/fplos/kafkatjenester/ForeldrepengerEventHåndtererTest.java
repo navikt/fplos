@@ -1,5 +1,24 @@
 package no.nav.fplos.kafkatjenester;
 
+import static no.nav.fplos.kafkatjenester.TestUtil.behandlingBuilderMal;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
+import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+
+import javax.persistence.EntityManager;
+
+import org.junit.Rule;
+import org.junit.Test;
+
 import no.nav.foreldrepenger.dbstoette.UnittestRepositoryRule;
 import no.nav.foreldrepenger.loslager.oppgave.AndreKriterierType;
 import no.nav.foreldrepenger.loslager.oppgave.BehandlingType;
@@ -15,25 +34,8 @@ import no.nav.fplos.foreldrepengerbehandling.BehandlingFpsak;
 import no.nav.fplos.foreldrepengerbehandling.ForeldrepengerBehandlingRestKlient;
 import no.nav.vedtak.felles.integrasjon.kafka.EventHendelse;
 import no.nav.vedtak.felles.integrasjon.kafka.Fagsystem;
-import org.junit.Rule;
-import org.junit.Test;
 
-import javax.persistence.EntityManager;
-import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-
-import static no.nav.fplos.kafkatjenester.TestUtil.behandlingBuilderMal;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
-public class FpsakEventHandlerTest {
+public class ForeldrepengerEventHåndtererTest {
 
     @Rule
     public UnittestRepositoryRule repoRule = new UnittestRepositoryRule();
@@ -41,7 +43,7 @@ public class FpsakEventHandlerTest {
     private OppgaveRepository oppgaveRepository = new OppgaveRepositoryImpl(entityManager);
     private OppgaveEgenskapHandler oppgaveEgenskapHandler = new OppgaveEgenskapHandler(oppgaveRepository);
     private ForeldrepengerBehandlingRestKlient foreldrepengerBehandlingRestKlient = mock(ForeldrepengerBehandlingRestKlient.class);
-    private FpsakEventHandler fpsakEventHandler = new FpsakEventHandler(oppgaveRepository, foreldrepengerBehandlingRestKlient, oppgaveEgenskapHandler);
+    private ForeldrepengerEventHåndterer fpsakEventHandler = new ForeldrepengerEventHåndterer(oppgaveRepository, foreldrepengerBehandlingRestKlient, oppgaveEgenskapHandler);
     private static Long behandlingId = 1073051L;
     private static UUID uuid = UUID.nameUUIDFromBytes("TEST".getBytes());//UUID.fromString("027961C0-1DA9-1D46-AFAA-0BBAE024758C");
     private static String fagsystem = "FPSAK";
@@ -146,7 +148,7 @@ public class FpsakEventHandlerTest {
     @Test
     public void testEnkelOppgave(){
         when(foreldrepengerBehandlingRestKlient.getBehandling(anyLong())).thenReturn(behandlingDtoFra(aksjonspunktKoderSkalHaOppgaveDto));
-        fpsakEventHandler.prosesser(eventDrammenFra(aksjonspunktKoderSkalHaOppgave));
+        fpsakEventHandler.håndterEvent(eventDrammenFra(aksjonspunktKoderSkalHaOppgave));
         assertThat(repoRule.getRepository().hentAlle(Oppgave.class)).hasSize(1);
         Oppgave oppgave = repoRule.getRepository().hentAlle(Oppgave.class).get(0);
         assertThat(oppgave.getAktiv()).isTrue();
@@ -157,13 +159,13 @@ public class FpsakEventHandlerTest {
     @Test
     public void opprettingOgAvsluttingOverTilBehandlerTest(){
         when(foreldrepengerBehandlingRestKlient.getBehandling(anyLong())).thenReturn(behandlingDtoFra(aksjonspunktKoderSkalHaOppgaveDto));
-        fpsakEventHandler.prosesser(eventDrammenFra(aksjonspunktKoderSkalHaOppgave));
+        fpsakEventHandler.håndterEvent(eventDrammenFra(aksjonspunktKoderSkalHaOppgave));
         when(foreldrepengerBehandlingRestKlient.getBehandling(anyLong())).thenReturn(behandlingDtoFra(aksjonspunktKoderSkalLukkeOppgaveDto));
-        fpsakEventHandler.prosesser(eventDrammenFra(aksjonspunktKoderSkalLukkeOppgave));
+        fpsakEventHandler.håndterEvent(eventDrammenFra(aksjonspunktKoderSkalLukkeOppgave));
         when(foreldrepengerBehandlingRestKlient.getBehandling(anyLong())).thenReturn(behandlingDtoFra(aksjonspunktKoderTilBeslutterDto));
-        fpsakEventHandler.prosesser(eventDrammenFra(aksjonspunktKoderTilBeslutter));
+        fpsakEventHandler.håndterEvent(eventDrammenFra(aksjonspunktKoderTilBeslutter));
         when(foreldrepengerBehandlingRestKlient.getBehandling(anyLong())).thenReturn(behandlingDtoFra(aksjonspunktKoderSkalLukkeOppgaveDto));
-        fpsakEventHandler.prosesser(eventDrammenFra(aksjonspunktKoderSkalLukkeOppgave));
+        fpsakEventHandler.håndterEvent(eventDrammenFra(aksjonspunktKoderSkalLukkeOppgave));
         assertThat(repoRule.getRepository().hentAlle(Oppgave.class)).hasSize(2);
         assertThat(repoRule.getRepository().hentAlle(OppgaveEgenskap.class)).hasSize(1);
         assertThat(repoRule.getRepository().hentAlle(OppgaveEventLogg.class)).hasSize(4);
@@ -172,9 +174,9 @@ public class FpsakEventHandlerTest {
     @Test
     public void opprettingOgOverTilBehandlerTest(){
         when(foreldrepengerBehandlingRestKlient.getBehandling(anyLong())).thenReturn(behandlingDtoFra(aksjonspunktKoderSkalHaOppgaveDto));
-        fpsakEventHandler.prosesser(eventDrammenFra(aksjonspunktKoderSkalHaOppgave));
+        fpsakEventHandler.håndterEvent(eventDrammenFra(aksjonspunktKoderSkalHaOppgave));
         when(foreldrepengerBehandlingRestKlient.getBehandling(anyLong())).thenReturn(behandlingDtoFra(aksjonspunktKoderTilBeslutterDto));
-        fpsakEventHandler.prosesser(eventDrammenFra(aksjonspunktKoderTilBeslutter));
+        fpsakEventHandler.håndterEvent(eventDrammenFra(aksjonspunktKoderTilBeslutter));
 
         List<Oppgave> oppgaver = repoRule.getRepository().hentAlle(Oppgave.class);
         assertThat(oppgaver).hasSize(2);
@@ -195,13 +197,13 @@ public class FpsakEventHandlerTest {
     @Test
     public void opprettingOgAvsluttingTest(){
         when(foreldrepengerBehandlingRestKlient.getBehandling(anyLong())).thenReturn(behandlingDtoFra(aksjonspunktKoderSkalHaOppgaveDto));
-        fpsakEventHandler.prosesser(eventDrammenFra(aksjonspunktKoderSkalHaOppgave));
+        fpsakEventHandler.håndterEvent(eventDrammenFra(aksjonspunktKoderSkalHaOppgave));
         when(foreldrepengerBehandlingRestKlient.getBehandling(anyLong())).thenReturn(behandlingDtoFra(aksjonspunktKoderSkalLukkeOppgaveDto));
-        fpsakEventHandler.prosesser(eventDrammenFra(aksjonspunktKoderSkalLukkeOppgave));
+        fpsakEventHandler.håndterEvent(eventDrammenFra(aksjonspunktKoderSkalLukkeOppgave));
         when(foreldrepengerBehandlingRestKlient.getBehandling(anyLong())).thenReturn(behandlingDtoFra(aksjonspunktKoderSkalHaOppgaveDto));
-        fpsakEventHandler.prosesser(eventDrammenFra(aksjonspunktKoderSkalHaOppgave));
+        fpsakEventHandler.håndterEvent(eventDrammenFra(aksjonspunktKoderSkalHaOppgave));
         when(foreldrepengerBehandlingRestKlient.getBehandling(anyLong())).thenReturn(behandlingDtoFra(aksjonspunktKoderSkalLukkeOppgaveDto));
-        fpsakEventHandler.prosesser(eventDrammenFra(aksjonspunktKoderSkalLukkeOppgave));
+        fpsakEventHandler.håndterEvent(eventDrammenFra(aksjonspunktKoderSkalLukkeOppgave));
         assertThat(repoRule.getRepository().hentAlle(Oppgave.class)).hasSize(1);
         assertThat(repoRule.getRepository().hentAlle(OppgaveEgenskap.class)).hasSize(0);
     }
@@ -209,9 +211,9 @@ public class FpsakEventHandlerTest {
     @Test
     public void opprettingOPåVentTest(){
         when(foreldrepengerBehandlingRestKlient.getBehandling(anyLong())).thenReturn(behandlingDtoFra(aksjonspunktKoderSkalHaOppgaveDto));
-        fpsakEventHandler.prosesser(eventDrammenFra(aksjonspunktKoderSkalHaOppgave));
+        fpsakEventHandler.håndterEvent(eventDrammenFra(aksjonspunktKoderSkalHaOppgave));
         when(foreldrepengerBehandlingRestKlient.getBehandling(anyLong())).thenReturn(behandlingDtoFra(aksjonspunktKoderPåVentDto));
-        fpsakEventHandler.prosesser(eventDrammenFra(aksjonspunktKoderPåVent));
+        fpsakEventHandler.håndterEvent(eventDrammenFra(aksjonspunktKoderPåVent));
         assertThat(repoRule.getRepository().hentAlle(Oppgave.class)).hasSize(1);
         Oppgave oppgave = repoRule.getRepository().hentAlle(Oppgave.class).get(0);
         assertThat(oppgave.getAktiv()).isFalse();
@@ -220,16 +222,16 @@ public class FpsakEventHandlerTest {
     @Test
     public void flyttingAvBehandlendeEnhetTest(){
         when(foreldrepengerBehandlingRestKlient.getBehandling(anyLong())).thenReturn(behandlingDtoFra(aksjonspunktKoderSkalHaOppgaveDto));
-        fpsakEventHandler.prosesser(eventDrammenFra(aksjonspunktKoderSkalHaOppgave));
+        fpsakEventHandler.håndterEvent(eventDrammenFra(aksjonspunktKoderSkalHaOppgave));
         when(foreldrepengerBehandlingRestKlient.getBehandling(anyLong())).thenReturn(behandlingDtoFra(aksjonspunktKoderSkalHaOppgaveDto));
-        fpsakEventHandler.prosesser(eventStordFra(aksjonspunktKoderSkalHaOppgave));
+        fpsakEventHandler.håndterEvent(eventStordFra(aksjonspunktKoderSkalHaOppgave));
         assertThat(repoRule.getRepository().hentAlle(Oppgave.class)).hasSize(2);
     }
 
     @Test
     public void opprettingOppgaveMedEgenskapTest(){
         when(foreldrepengerBehandlingRestKlient.getBehandling(anyLong())).thenReturn(behandlingDtoFra(aksjonspunktKoderTilBeslutterDto));
-        fpsakEventHandler.prosesser(eventDrammenFra(aksjonspunktKoderTilBeslutter));
+        fpsakEventHandler.håndterEvent(eventDrammenFra(aksjonspunktKoderTilBeslutter));
         assertThat(repoRule.getRepository().hentAlle(Oppgave.class)).hasSize(1);
         sjekkForEnOppgaveOgEgenskap(AndreKriterierType.TIL_BESLUTTER);
         sjekkEventLoggInneholder(uuid, OppgaveEventType.OPPRETTET, AndreKriterierType.TIL_BESLUTTER);
@@ -239,7 +241,7 @@ public class FpsakEventHandlerTest {
     @Test
     public void opprettingOppgaveMedEgenskapPapirsøknadESTest(){
         when(foreldrepengerBehandlingRestKlient.getBehandling(anyLong())).thenReturn(behandlingDtoFra(aksjonspunktKoderPapirsøknadESDto));
-        fpsakEventHandler.prosesser(eventDrammenFra(aksjonspunktKoderPapirsøknadES));
+        fpsakEventHandler.håndterEvent(eventDrammenFra(aksjonspunktKoderPapirsøknadES));
         sjekkForEnOppgaveOgEgenskap(AndreKriterierType.PAPIRSØKNAD);
         sjekkEventLoggInneholder(uuid, OppgaveEventType.OPPRETTET, AndreKriterierType.PAPIRSØKNAD);
     }
@@ -247,7 +249,7 @@ public class FpsakEventHandlerTest {
     @Test
     public void opprettingOppgaveMedEgenskapPapirsøknadFPTest(){
         when(foreldrepengerBehandlingRestKlient.getBehandling(anyLong())).thenReturn(behandlingDtoFra(aksjonspunktKoderPapirsøknadFPDto));
-        fpsakEventHandler.prosesser(eventDrammenFra(aksjonspunktKoderPapirsøknadFP));
+        fpsakEventHandler.håndterEvent(eventDrammenFra(aksjonspunktKoderPapirsøknadFP));
         sjekkForEnOppgaveOgEgenskap(AndreKriterierType.PAPIRSØKNAD);
         sjekkEventLoggInneholder(uuid, OppgaveEventType.OPPRETTET, AndreKriterierType.PAPIRSØKNAD);
     }
@@ -256,7 +258,7 @@ public class FpsakEventHandlerTest {
     public void opprettingOppgaveMedEgenskapPapirsøknadEndringFPTest(){
         when(foreldrepengerBehandlingRestKlient.getBehandling(anyLong()))
                 .thenReturn(behandlingDtoFra(aksjonspunktKoderPapirsøknadEndringFPDto));
-        fpsakEventHandler.prosesser(eventDrammenFra(aksjonspunktKoderPapirsøknadEndringFP));
+        fpsakEventHandler.håndterEvent(eventDrammenFra(aksjonspunktKoderPapirsøknadEndringFP));
         sjekkForEnOppgaveOgEgenskap(AndreKriterierType.PAPIRSØKNAD);
         sjekkEventLoggInneholder(uuid, OppgaveEventType.OPPRETTET, AndreKriterierType.PAPIRSØKNAD);
     }
@@ -264,37 +266,37 @@ public class FpsakEventHandlerTest {
 //    @Test
 //    public void opprettingOppgaveMedEgenskapSelvstendigFrilanserFPTest() {
 //        when(foreldrepengerBehandlingRestKlient.getBehandling(anyLong())).thenReturn(behandlingDtoFra(aksjonspunktKoderSelvstendigFrilanserFPDto));
-//        fpsakEventHandler.prosesser(eventDrammenFra(aksjonspunktKoderSelvstendigFrilanserFP));
+//        fpsakEventHandler.håndterEvent();(eventDrammenFra(aksjonspunktKoderSelvstendigFrilanserFP));
 //        sjekkForEnOppgaveOgEgenskap(AndreKriterierType.SELVSTENDIG_FRILANSER);
 //    }
 
     @Test
     public void opprettingOppgavemedEgenskapHarGraderingFPTest() {
         when(foreldrepengerBehandlingRestKlient.getBehandling(anyLong())).thenReturn(lagBehandlingDtoMedHarGradering(aksjonspunktKoderPapirsøknadEndringFPDto));
-        fpsakEventHandler.prosesser(eventDrammenFra(aksjonspunktKoderPapirsøknadEndringFP));
+        fpsakEventHandler.håndterEvent(eventDrammenFra(aksjonspunktKoderPapirsøknadEndringFP));
         sjekkForEnOppgaveOgEgenskap(AndreKriterierType.SOKT_GRADERING,1,2);
     }
 
     @Test
     public void opprettingOppgaveMedEgenskapUtlandAutomatiskMarkertTest(){
         when(foreldrepengerBehandlingRestKlient.getBehandling(anyLong())).thenReturn(behandlingDtoFra(aksjonspunktKoderUtlandAutomatiskDto));
-        fpsakEventHandler.prosesser(eventDrammenFra(aksjonspunktKoderUtland));
+        fpsakEventHandler.håndterEvent(eventDrammenFra(aksjonspunktKoderUtland));
         sjekkForEnOppgaveOgEgenskap(AndreKriterierType.UTLANDSSAK);
     }
 
     @Test
     public void opprettingOppgaveMedEgenskapUtlandManueltMarkertTest(){
         when(foreldrepengerBehandlingRestKlient.getBehandling(anyLong())).thenReturn(behandlingDtoMedManueltMarkertUtlandsakFra(aksjonspunktKoderUtlandManuellDto));
-        fpsakEventHandler.prosesser(eventDrammenFra(aksjonspunktKoderSkalHaOppgave));
+        fpsakEventHandler.håndterEvent(eventDrammenFra(aksjonspunktKoderSkalHaOppgave));
         sjekkForEnOppgaveOgEgenskap(AndreKriterierType.UTLANDSSAK);
     }
 
     @Test
     public void opprettingOppgaveSkalIkkeKommeOppForSaksbehandlerSomSendteTilBeslutterTest(){
         when(foreldrepengerBehandlingRestKlient.getBehandling(anyLong())).thenReturn(behandlingDtoFra(aksjonspunktKoderSkalHaOppgaveDto));
-        fpsakEventHandler.prosesser(eventDrammenFra(aksjonspunktKoderSkalHaOppgave));
+        fpsakEventHandler.håndterEvent(eventDrammenFra(aksjonspunktKoderSkalHaOppgave));
         when(foreldrepengerBehandlingRestKlient.getBehandling(anyLong())).thenReturn(behandlingDtoFra(aksjonspunktKoderTilBeslutterDto));
-        fpsakEventHandler.prosesser(eventDrammenFra(aksjonspunktKoderTilBeslutter));
+        fpsakEventHandler.håndterEvent(eventDrammenFra(aksjonspunktKoderTilBeslutter));
 
         OppgaveEgenskap oppgaveEgenskap = repoRule.getRepository().hentAlle(OppgaveEgenskap.class).get(0);
         assertThat(oppgaveEgenskap.getSisteSaksbehandlerForTotrinn()).isEqualTo("VLLOS");
@@ -303,7 +305,7 @@ public class FpsakEventHandlerTest {
     @Test
     public void lukkingOppgavePgaPåVentBeslutterTest(){
         when(foreldrepengerBehandlingRestKlient.getBehandling(anyLong())).thenReturn(behandlingDtoFra(aksjonspunktKoderSkalPåVentDto));
-        fpsakEventHandler.prosesser(eventDrammenFra(aksjonspunktKoderSkalPåVent));
+        fpsakEventHandler.håndterEvent(eventDrammenFra(aksjonspunktKoderSkalPåVent));
         OppgaveEventLogg oppgaveEventLogg = repoRule.getRepository().hentAlle(OppgaveEventLogg.class).get(0);
         assertThat(oppgaveEventLogg.getEventType()).isEqualTo(OppgaveEventType.VENT);
     }
@@ -311,7 +313,7 @@ public class FpsakEventHandlerTest {
     @Test
     public void lukkingOppgavePgaManueltPåVentBeslutterTest(){
         when(foreldrepengerBehandlingRestKlient.getBehandling(anyLong())).thenReturn(behandlingDtoFra(aksjonspunktKoderSkalPåManueltVentDto));
-        fpsakEventHandler.prosesser(eventDrammenFra(aksjonspunktKoderSkalPåManueltVent));
+        fpsakEventHandler.håndterEvent(eventDrammenFra(aksjonspunktKoderSkalPåManueltVent));
         OppgaveEventLogg oppgaveEventLogg = repoRule.getRepository().hentAlle(OppgaveEventLogg.class).get(0);
         assertThat(oppgaveEventLogg.getEventType()).isEqualTo(OppgaveEventType.MANU_VENT);
     }

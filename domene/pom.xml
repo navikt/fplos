@@ -14,7 +14,6 @@
 
     <modules>
         <module>loslager</module>
-        <module>feed</module>
     </modules>
 
 </project>
