@@ -52,10 +52,13 @@ export class ReservasjonerTabell extends Component<TsProps, StateTsProps> {
     const {
       placeholder,
     } = this.state;
+
+    const sorterteReservasjoner = reservasjoner.sort((reservasjon1, reservasjon2) => reservasjon1.reservertAvNavn.localeCompare(reservasjon2.reservertAvNavn));
+
     return (
       <>
         <Element><FormattedMessage id="ReservasjonerTabell.Reservasjoner" /></Element>
-        {reservasjoner.length === 0 && (
+        {sorterteReservasjoner.length === 0 && (
           <>
             <VerticalSpacer eightPx />
             <Normaltekst><FormattedMessage id="ReservasjonerTabell.IngenReservasjoner" /></Normaltekst>
@@ -63,9 +66,9 @@ export class ReservasjonerTabell extends Component<TsProps, StateTsProps> {
           </>
         )
         }
-        {reservasjoner.length > 0 && (
+        {sorterteReservasjoner.length > 0 && (
           <Table headerTextCodes={headerTextCodes} noHover>
-            {reservasjoner.map(reservasjon => (
+            {sorterteReservasjoner.map(reservasjon => (
               <TableRow key={reservasjon.oppgaveId}>
                 <TableColumn>{reservasjon.reservertAvNavn}</TableColumn>
                 <TableColumn>{reservasjon.oppgaveId}</TableColumn>

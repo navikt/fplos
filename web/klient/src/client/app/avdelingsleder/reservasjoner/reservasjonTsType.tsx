@@ -4,5 +4,4 @@ export type Reservasjon = Readonly<{
   reservertTilTidspunkt: string;
   oppgaveId: number;
   oppgaveSaksNr: number;
-  avdelingsnavn: string[];
 }>
