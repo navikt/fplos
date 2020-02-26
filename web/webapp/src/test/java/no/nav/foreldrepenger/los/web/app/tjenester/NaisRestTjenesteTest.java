@@ -16,12 +16,12 @@ public class NaisRestTjenesteTest {
 
     private NaisRestTjeneste restTjeneste;
 
-    private ApplicationServiceStarter serviceStarterMock = mock(ApplicationServiceStarter.class);
+    private KafkaConsumerStarter kafkaConsumerStarter = mock(KafkaConsumerStarter.class);
     private SelftestService selftestServiceMock = mock(SelftestService.class);
 
     @Before
     public void setup() {
-        restTjeneste = new NaisRestTjeneste(serviceStarterMock, selftestServiceMock);
+        restTjeneste = new NaisRestTjeneste(kafkaConsumerStarter, selftestServiceMock);
     }
 
     @Test
@@ -53,7 +53,7 @@ public class NaisRestTjenesteTest {
     public void test_preStop_skal_kalle_stopServices_og_returnere_status_ok() {
         Response response = restTjeneste.preStop();
 
-        verify(serviceStarterMock).stopServices();
+        verify(kafkaConsumerStarter).contextDestroyed(null);
         assertThat(response.getStatus()).isEqualTo(Response.Status.OK.getStatusCode());
     }
 }

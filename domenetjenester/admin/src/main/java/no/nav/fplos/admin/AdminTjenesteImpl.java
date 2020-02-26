@@ -1,5 +1,16 @@
 package no.nav.fplos.admin;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import no.nav.foreldrepenger.loslager.oppgave.EventmottakFeillogg;
 import no.nav.foreldrepenger.loslager.oppgave.Oppgave;
 import no.nav.foreldrepenger.loslager.oppgave.OppgaveEventLogg;
@@ -7,48 +18,36 @@ import no.nav.foreldrepenger.loslager.oppgave.TilbakekrevingOppgave;
 import no.nav.foreldrepenger.loslager.repository.AdminRepository;
 import no.nav.fplos.foreldrepengerbehandling.BehandlingFpsak;
 import no.nav.fplos.foreldrepengerbehandling.ForeldrepengerBehandlingRestKlient;
+import no.nav.fplos.kafkatjenester.ForeldrepengerEventHåndterer;
 import no.nav.fplos.kafkatjenester.FpsakBehandlingProsessEventDto;
-import no.nav.fplos.kafkatjenester.FpsakEventHandler;
-import no.nav.fplos.kafkatjenester.KafkaReader;
-import no.nav.fplos.kafkatjenester.TilbakekrevingEventHandler;
+import no.nav.fplos.kafkatjenester.KafkaConsumer;
+import no.nav.fplos.kafkatjenester.TilbakekrevingEventHåndterer;
 import no.nav.vedtak.felles.integrasjon.kafka.TilbakebetalingBehandlingProsessEventDto;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
 
 @ApplicationScoped
 public class AdminTjenesteImpl implements AdminTjeneste {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(AdminTjenesteImpl.class);
+    private static final Logger LOG = LoggerFactory.getLogger(AdminTjenesteImpl.class);
     private static final String AVSLUTTET_STATUS = "AVSLU";
 
     private ForeldrepengerBehandlingRestKlient foreldrepengerBehandlingRestKlient;
     private AdminRepository adminRepository;
-    private FpsakEventHandler fpsakEventHandler;
-    private TilbakekrevingEventHandler tilbakekrevingEventHandler;
-    private KafkaReader kafaReader;
-
-    public AdminTjenesteImpl(){
-        //For automatisk laging
-    }
+    private ForeldrepengerEventHåndterer foreldrepengerEventHåndterer;
+    private TilbakekrevingEventHåndterer tilbakekrevingEventHåndterer;
 
     @Inject
     public AdminTjenesteImpl(AdminRepository adminRepository,
                              ForeldrepengerBehandlingRestKlient foreldrepengerBehandlingRestKlient,
-                             FpsakEventHandler fpsakEventHandler,
-                             TilbakekrevingEventHandler tilbakekrevingEventHandler,
-                             KafkaReader kafaReader) {
+                             ForeldrepengerEventHåndterer foreldrepengerEventHåndterer,
+                             TilbakekrevingEventHåndterer tilbakekrevingEventHåndterer) {
         this.adminRepository = adminRepository;
         this.foreldrepengerBehandlingRestKlient = foreldrepengerBehandlingRestKlient;
-        this.fpsakEventHandler = fpsakEventHandler;
-        this.tilbakekrevingEventHandler = tilbakekrevingEventHandler;
-        this.kafaReader = kafaReader;
+        this.foreldrepengerEventHåndterer = foreldrepengerEventHåndterer;
+        this.tilbakekrevingEventHåndterer = tilbakekrevingEventHåndterer;
+    }
+
+    AdminTjenesteImpl(){
+        //For automatisk laging
     }
 
     @Override
@@ -74,21 +73,38 @@ public class AdminTjenesteImpl implements AdminTjeneste {
     public List<OppgaveEventLogg> hentEventer(UUID uuid) {
         return adminRepository.hentEventer(uuid);
     }
+
     @Override
     public void oppdaterOppgave(UUID uuid) {
-        LOGGER.info("Starter oppdatering av oppgave tilhørende uuid {}", uuid);
-        fpsakEventHandler.prosesser(mapTilBehandlingProsessEventDto(uuid));
-        LOGGER.info("Oppdatering av oppgave tilhørende uuid {} er fullført", uuid);
+        LOG.info("Starter oppdatering av oppgave tilhørende uuid {}", uuid);
+        foreldrepengerEventHåndterer.håndterEvent(mapTilBehandlingProsessEventDto(uuid));
+        LOG.info("Oppdatering av oppgave tilhørende uuid {} er fullført", uuid);
     }
 
     @Override
     public int prosesserAlleMeldingerFraFeillogg() {
         List<EventmottakFeillogg> feillogg = adminRepository.hentAlleMeldingerFraFeillogg();
         for (EventmottakFeillogg innslag : feillogg) {
-            kafaReader.prosesser(innslag.getMelding());
-            adminRepository.markerFerdig(innslag.getId());
+            prosesserFeil(innslag);
         }
         return feillogg.size();
+    }
+
+    private void prosesserFeil(EventmottakFeillogg innslag) {
+        try {
+            var dto = KafkaConsumer.deserialiser(innslag.getMelding());
+            if (dto instanceof FpsakBehandlingProsessEventDto) {
+                foreldrepengerEventHåndterer.håndterEvent((FpsakBehandlingProsessEventDto) dto);
+            } else if (dto instanceof TilbakebetalingBehandlingProsessEventDto) {
+                tilbakekrevingEventHåndterer.håndterEvent((TilbakebetalingBehandlingProsessEventDto) dto);
+            } else {
+                LOG.error("Feil ved prosessering av feillogg. InnslagId={}. Ukjent klasse for dto {}", innslag.getId(), dto.getClass());
+                return;
+            }
+            adminRepository.markerFerdig(innslag.getId());
+        } catch (Exception e) {
+            LOG.error("Feil ved prosessering av feillogg. InnslagId={}", innslag.getId(), e);
+        }
     }
 
     @Override
@@ -125,22 +141,6 @@ public class AdminTjenesteImpl implements AdminTjeneste {
                 .medBehandlingTypeKode(eksisterendeOppgave.getBehandlingType().getKode())
                 .medOpprettetBehandling(eksisterendeOppgave.getBehandlingOpprettet())
                 .medAksjonspunktKoderMedStatusListe(aksjonspunktKoderMedStatusListe)
-                .build();
-    }
-
-    private TilbakebetalingBehandlingProsessEventDto mapTilTilbakekrevingBehandlingProsessEventDto(UUID uuid) {
-        TilbakekrevingOppgave eksisterendeOppgave = hentTilbakekrevingOppgave(uuid);
-
-        Map<String, String> aksjonspunktKoderMedStatusListe = new HashMap<>();
-
-        return TilbakebetalingBehandlingProsessEventDto.builder()
-                .medSaksnummer(eksisterendeOppgave.getFagsakSaksnummer().toString())
-                .medAktørId(eksisterendeOppgave.getAktorId().toString())
-                .medYtelseTypeKode(eksisterendeOppgave.getFagsakYtelseType().getKode())
-                .medBehandlingTypeKode(eksisterendeOppgave.getBehandlingType().getKode())
-                .medOpprettetBehandling(eksisterendeOppgave.getBehandlingOpprettet())
-                .medAksjonspunktKoderMedStatusListe(aksjonspunktKoderMedStatusListe)
-                .medFeilutbetaltBeløp(eksisterendeOppgave.getBelop())
                 .build();
     }
 }
