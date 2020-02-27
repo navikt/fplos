@@ -6,8 +6,8 @@
   "ldapuserkv": "/serviceuser/data/test/srvssolinux",
   "namespace": "t4",
   "ingresses":  ["https://app-t4.adeo.no/fplos", "https://fplos-t4.nais.preprod.local"],
-  "minReplica": "2",
-  "maxReplica": "3",
+  "minReplica": "1",
+  "maxReplica": "1",
   "env": {
     "LOADBALANCER_URL": "https://app-t4.adeo.no",
     "FPSAK_FRONTEND_URL":  "https://app-t4.adeo.no/fpsak",
