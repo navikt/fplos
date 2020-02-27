@@ -59,6 +59,7 @@ public class OppgaveTjenesteImpl implements OppgaveTjeneste {
 
     @Override
     public List<Oppgave> hentOppgaver(Long sakslisteId) {
+        log.info("Henter oppgaver for saksliste : " + sakslisteId);
         try {
             OppgaveFiltrering oppgaveListe = oppgaveRepository.hentListe(sakslisteId);
             if (oppgaveListe == null) {

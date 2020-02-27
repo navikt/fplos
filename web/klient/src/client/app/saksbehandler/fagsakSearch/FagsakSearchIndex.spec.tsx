@@ -10,6 +10,7 @@ import { FagsakSearchIndex } from './FagsakSearchIndex';
 describe('<FagsakSearchIndex>', () => {
   const fagsak = {
     saksnummer: 12345,
+    system: 'FPSAK',
     sakstype: {
       kode: 'ES',
       navn: 'test',
@@ -37,7 +38,8 @@ describe('<FagsakSearchIndex>', () => {
       searchResultReceived={false}
       searchStarted
       resetFagsakSearch={sinon.spy()}
-      goToFagsak={sinon.spy()}
+      goToFpsak={sinon.spy()}
+      goToTilbakesak={sinon.spy()}
       reserverOppgave={sinon.spy()}
       hentReservasjonsstatus={sinon.spy()}
       fagsakOppgaver={[]}
@@ -51,14 +53,15 @@ describe('<FagsakSearchIndex>', () => {
   });
 
   it('skal gå til valgt fagsak', () => {
-    const goToFagsak = sinon.spy();
+    const goToFpsak = sinon.spy();
     const wrapper = shallowWithIntl(<FagsakSearchIndex
       fagsaker={fagsaker}
       searchFagsaker={sinon.spy()}
       searchResultReceived={false}
       searchStarted
       resetFagsakSearch={sinon.spy()}
-      goToFagsak={goToFagsak}
+      goToFpsak={goToFpsak}
+      goToTilbakesak={sinon.spy()}
       reserverOppgave={sinon.spy()}
       hentReservasjonsstatus={sinon.spy()}
       fagsakOppgaver={[]}
@@ -69,17 +72,18 @@ describe('<FagsakSearchIndex>', () => {
     const fagsakSearchIndex = wrapper.find(FagsakSearch);
     fagsakSearchIndex.prop('selectFagsakCallback')('', fagsak.saksnummer);
 
-    expect(goToFagsak.calledOnce).to.be.true;
+    expect(goToFpsak.calledOnce).to.be.true;
   });
 
   it('skal gå direkte til fagsak når søkeresultatet returnerer kun en fagsak', () => {
-    const goToFagsak = sinon.spy();
+    const goToFpsak = sinon.spy();
     const wrapper = shallowWithIntl(<FagsakSearchIndex
       searchFagsaker={sinon.spy()}
       searchResultReceived={false}
       searchStarted
       resetFagsakSearch={sinon.spy()}
-      goToFagsak={goToFagsak}
+      goToFpsak={goToFpsak}
+      goToTilbakesak={sinon.spy()}
       reserverOppgave={sinon.spy()}
       hentReservasjonsstatus={sinon.spy()}
       fagsakOppgaver={[]}
@@ -96,17 +100,18 @@ describe('<FagsakSearchIndex>', () => {
     });
     wrapper.update();
 
-    expect(goToFagsak.calledOnce).to.be.true;
+    expect(goToFpsak.calledOnce).to.be.true;
   });
 
   it('skal ikke gå direkte til fagsak når søkeresultatet returnerer flere fagsaker', () => {
-    const goToFagsak = sinon.spy();
+    const goToFpsak = sinon.spy();
     const wrapper = shallowWithIntl(<FagsakSearchIndex
       searchFagsaker={sinon.spy()}
       searchResultReceived={false}
       searchStarted
       resetFagsakSearch={sinon.spy()}
-      goToFagsak={goToFagsak}
+      goToFpsak={goToFpsak}
+      goToTilbakesak={sinon.spy()}
       reserverOppgave={sinon.spy()}
       hentReservasjonsstatus={sinon.spy()}
       fagsakOppgaver={[]}
@@ -121,6 +126,6 @@ describe('<FagsakSearchIndex>', () => {
     });
     wrapper.update();
 
-    expect(goToFagsak.calledOnce).to.be.false;
+    expect(goToFpsak.calledOnce).to.be.false;
   });
 });

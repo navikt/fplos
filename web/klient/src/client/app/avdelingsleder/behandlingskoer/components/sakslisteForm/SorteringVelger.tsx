@@ -14,6 +14,7 @@ import kodeverkPropType from 'kodeverk/kodeverkPropType';
 import kodeverkTyper from 'kodeverk/kodeverkTyper';
 import { KoSorteringType } from 'kodeverk/KoSorteringTsType';
 import { Kodeverk } from 'kodeverk/kodeverkTsType';
+import behandlingType from 'kodeverk/behandlingType';
 import {
   lagreSakslisteSortering as lagreSakslisteSorteringActionCreator,
   lagreSakslisteSorteringErDynamiskPeriode as lagreSakslisteSorteringErDynamiskPeriodeActionCreator,
@@ -39,6 +40,11 @@ interface TsProps {
   fomDato: string;
   tomDato: string;
 }
+
+const bareTilbakekrevingValgt = (valgteBehandlingtyper: Kodeverk[]) => valgteBehandlingtyper
+  && valgteBehandlingtyper.some(type => type.kode === behandlingType.TILBAKEBETALING
+    || type.kode === behandlingType.TILBAKEBETALING_REVURDERING)
+  && !valgteBehandlingtyper.some(type => (type.kode !== behandlingType.TILBAKEBETALING && type.kode !== behandlingType.TILBAKEBETALING_REVURDERING));
 
 /**
  * SorteringVelger
@@ -70,39 +76,38 @@ export const SorteringVelger = ({
       onChange={sorteringType => lagreSakslisteSortering(valgtSakslisteId, sorteringType, valgtAvdelingEnhet)}
     >
       {koSorteringTyper.map(koSortering => (
-        (koSortering.feltkategori !== 'TILBAKEKREVING' || (valgteBehandlingtyper.length === 1 && valgteBehandlingtyper[0].kode === 'BT-009')) && (
-        <RadioOption
-          key={koSortering.kode}
-          value={koSortering.kode}
-          label={koSortering.navn}
-        >
-          {(koSortering.felttype === 'DATO') && (
-
-          <DatoSorteringValg
-            intl={intl}
-            valgtSakslisteId={valgtSakslisteId}
-            lagreSakslisteSorteringErDynamiskPeriode={lagreSakslisteSorteringErDynamiskPeriode}
-            lagreSakslisteSorteringTidsintervallDato={lagreSakslisteSorteringTidsintervallDato}
-            lagreSakslisteSorteringTidsintervallDager={lagreSakslisteSorteringNumeriskIntervall}
-            valgtAvdelingEnhet={valgtAvdelingEnhet}
-            erDynamiskPeriode={erDynamiskPeriode}
-            fra={fra}
-            til={til}
-            fomDato={fomDato}
-            tomDato={tomDato}
-          />
-          )}
-          {(koSortering.felttype === 'HELTALL') && (
-          <BelopSorteringValg
-            intl={intl}
-            valgtSakslisteId={valgtSakslisteId}
-            lagreSakslisteSorteringNumerisk={lagreSakslisteSorteringNumeriskIntervall}
-            valgtAvdelingEnhet={valgtAvdelingEnhet}
-            fra={fra}
-            til={til}
-          />
-          )}
-        </RadioOption>
+          (koSortering.feltkategori !== 'TILBAKEKREVING' || bareTilbakekrevingValgt(valgteBehandlingtyper)) && (
+          <RadioOption
+            key={koSortering.kode}
+            value={koSortering.kode}
+            label={koSortering.navn}
+          >
+            {(koSortering.felttype === 'DATO') && (
+            <DatoSorteringValg
+              intl={intl}
+              valgtSakslisteId={valgtSakslisteId}
+              lagreSakslisteSorteringErDynamiskPeriode={lagreSakslisteSorteringErDynamiskPeriode}
+              lagreSakslisteSorteringTidsintervallDato={lagreSakslisteSorteringTidsintervallDato}
+              lagreSakslisteSorteringTidsintervallDager={lagreSakslisteSorteringNumeriskIntervall}
+              valgtAvdelingEnhet={valgtAvdelingEnhet}
+              erDynamiskPeriode={erDynamiskPeriode}
+              fra={fra}
+              til={til}
+              fomDato={fomDato}
+              tomDato={tomDato}
+            />
+            )}
+            {(koSortering.felttype === 'HELTALL') && (
+            <BelopSorteringValg
+              intl={intl}
+              valgtSakslisteId={valgtSakslisteId}
+              lagreSakslisteSorteringNumerisk={lagreSakslisteSorteringNumeriskIntervall}
+              valgtAvdelingEnhet={valgtAvdelingEnhet}
+              fra={fra}
+              til={til}
+            />
+            )}
+          </RadioOption>
           )
       ))}
     </RadioGroupField>

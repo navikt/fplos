@@ -13,27 +13,26 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import no.nav.foreldrepenger.loslager.oppgave.AndreKriterierType;
-import no.nav.foreldrepenger.loslager.oppgave.OppgaveEventLogg;
-import no.nav.foreldrepenger.loslager.oppgave.OppgaveEventType;
 import no.nav.fplos.foreldrepengerbehandling.Aksjonspunkt;
+import no.nav.fplos.kafkatjenester.OppgaveHistorikk;
 
 
 public class FpsakEventMapper {
 
     public static EventResultat signifikantEventFra(List<Aksjonspunkt> aksjonspunktListe,
-                                                    List<OppgaveEventLogg> oppgaveEventLogger, String behandlendeEnhet) {
-        return signifikantEventFra(aksjonspunktListe, oppgaveEventLogger, behandlendeEnhet, false);
+                                                    OppgaveHistorikk oppgaveHistorikk, String behandlendeEnhet) {
+        return signifikantEventFra(aksjonspunktListe, oppgaveHistorikk, behandlendeEnhet, false);
     }
 
-    private static EventResultat signifikantEventFra(List<Aksjonspunkt> aksjonspunktListe, List<OppgaveEventLogg> oppgaveEventLogger,
+    private static EventResultat signifikantEventFra(List<Aksjonspunkt> aksjonspunktListe, OppgaveHistorikk oppgaveHistorikk,
                                                      String behandlendeEnhet, boolean fraAdmin) {
         Set<Aksjonspunkt> åpneAksjonspunkter = aksjonspunktListe.stream()
                 .filter(Aksjonspunkt::erAktiv)
                 .collect(Collectors.toSet());
-        return signifikantEventFra(åpneAksjonspunkter, sisteOpprettedeEvent(oppgaveEventLogger), behandlendeEnhet, fraAdmin);
+        return signifikantEventFra(åpneAksjonspunkter, oppgaveHistorikk, behandlendeEnhet, fraAdmin);
     }
 
-    private static EventResultat signifikantEventFra(Set<Aksjonspunkt> åpneAksjonspunkt, OppgaveEventLogg sisteEvent,
+    private static EventResultat signifikantEventFra(Set<Aksjonspunkt> åpneAksjonspunkt, OppgaveHistorikk oppgaveHistorikk,
                                                      String behandlendeEnhet, boolean fraAdmin) {
         if (åpneAksjonspunkt.isEmpty()){
             return LUKK_OPPGAVE;
@@ -42,53 +41,47 @@ public class FpsakEventMapper {
             return manueltSattPåVent(åpneAksjonspunkt) ? LUKK_OPPGAVE_MANUELT_VENT : LUKK_OPPGAVE_VENT;
         }
         if (tilBeslutter(åpneAksjonspunkt)) {
-            if (!fraAdmin && harKriterie(sisteEvent, AndreKriterierType.TIL_BESLUTTER)) {
-                return erSammeEnhet(sisteEvent.getBehandlendeEnhet(), behandlendeEnhet)
+            if (!fraAdmin && harKriterie(oppgaveHistorikk, AndreKriterierType.TIL_BESLUTTER)) {
+                return erSammeEnhet(oppgaveHistorikk, behandlendeEnhet)
                         ? GJENÅPNE_OPPGAVE
                         : OPPRETT_BESLUTTER_OPPGAVE;
             }
-            if (!fraAdmin && harKriterie(sisteEvent, AndreKriterierType.TIL_BESLUTTER)
-                    && erSammeEnhet(sisteEvent.getBehandlendeEnhet(), behandlendeEnhet)) {
-                return GJENÅPNE_OPPGAVE;
+            if (!fraAdmin) {
+                return OPPRETT_BESLUTTER_OPPGAVE;
             }
-            return OPPRETT_BESLUTTER_OPPGAVE;
         }
         if (erRegistrerPapirsøknad(åpneAksjonspunkt)) {
-            if (!fraAdmin && harKriterie(sisteEvent, AndreKriterierType.PAPIRSØKNAD)) {
-                return erSammeEnhet(sisteEvent.getBehandlendeEnhet(), behandlendeEnhet)
+            if (!fraAdmin && harKriterie(oppgaveHistorikk, AndreKriterierType.PAPIRSØKNAD)) {
+                return erSammeEnhet(oppgaveHistorikk, behandlendeEnhet)
                         ? GJENÅPNE_OPPGAVE
                         : OPPRETT_PAPIRSØKNAD_OPPGAVE;
             }
             return OPPRETT_PAPIRSØKNAD_OPPGAVE;
         }
-        if (!fraAdmin && harKriterie(sisteEvent, AndreKriterierType.PAPIRSØKNAD)) {
+        if (!fraAdmin && harKriterie(oppgaveHistorikk, AndreKriterierType.PAPIRSØKNAD)) {
             return OPPRETT_OPPGAVE;
         }
-        if (!fraAdmin && harKriterie(sisteEvent, AndreKriterierType.TIL_BESLUTTER)) {
+        if (!fraAdmin && harKriterie(oppgaveHistorikk, AndreKriterierType.TIL_BESLUTTER)) {
             return OPPRETT_OPPGAVE;
         }
-        if (!fraAdmin && sisteEvent != null) {
-            return erSammeEnhet(sisteEvent.getBehandlendeEnhet(), behandlendeEnhet)
+        if (!fraAdmin && oppgaveHistorikk.getSisteÅpningsEvent() != null) {
+            return erSammeEnhet(oppgaveHistorikk, behandlendeEnhet)
                     ? GJENÅPNE_OPPGAVE
                     : OPPRETT_OPPGAVE;
         }
         return OPPRETT_OPPGAVE;
     }
 
-    private static OppgaveEventLogg sisteOpprettedeEvent(List<OppgaveEventLogg> oppgaveEventLogger) {
-        return oppgaveEventLogger.stream()
-                .filter(e -> e.getEventType().equals(OppgaveEventType.OPPRETTET))
-                .findFirst()
-                .orElse(null);
+    private static boolean erSammeEnhet(OppgaveHistorikk oppgaveHistorikk, String nyEnhet) {
+        return oppgaveHistorikk.getSisteÅpningsEvent() != null
+                && nyEnhet.equals(oppgaveHistorikk.getSisteÅpningsEvent().getBehandlendeEnhet());
     }
 
-    private static boolean erSammeEnhet(String initiellEnhet, String nyEnhet) {
-        return initiellEnhet != null & nyEnhet != null && nyEnhet.equals(initiellEnhet);
-    }
-
-    private static boolean harKriterie(OppgaveEventLogg sisteEvent, AndreKriterierType kriterie) {
-        if (sisteEvent == null) return false;
-        return (sisteEvent.getAndreKriterierType() != null && sisteEvent.getAndreKriterierType().equals(kriterie));
+    private static boolean harKriterie(OppgaveHistorikk oppgaveHistorikk, AndreKriterierType kriterie) {
+        return oppgaveHistorikk.getSisteÅpningsEvent() != null
+                && kriterie != null
+                && oppgaveHistorikk.getSisteÅpningsEvent().getAndreKriterierType() != null
+                && oppgaveHistorikk.getSisteÅpningsEvent().getAndreKriterierType().equals(kriterie);
     }
 
     private static boolean påVent(Set<Aksjonspunkt> åpneAksjonspunkt) {

@@ -87,7 +87,9 @@ public interface OppgaveRepository {
 
     TilbakekrevingOppgave opprettTilbakekrevingEgenskaper(TilbakekrevingOppgave egenskaper);
 
-    Oppgave gjenåpneOppgaveForEksternId(UUID eksternId);
+    Oppgave gjenåpneOppgave(UUID eksternId);
+
+    TilbakekrevingOppgave gjenåpneTilbakekrevingOppgave(UUID eksternId);
 
     void avsluttOppgaveForEksternId(UUID eksternId);
 
@@ -97,7 +99,7 @@ public interface OppgaveRepository {
 
     void lagre(EventmottakFeillogg eventmottakFeillogg);
 
-    List<OppgaveEventLogg> hentEventerForEksternId(UUID eksternId);
+    List<OppgaveEventLogg> hentOppgaveEventer(UUID eksternId);
 
     List<OppgaveEgenskap> hentOppgaveEgenskaper(Long oppgaveId);
 

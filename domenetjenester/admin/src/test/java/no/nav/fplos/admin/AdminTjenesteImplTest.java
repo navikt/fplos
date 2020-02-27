@@ -38,7 +38,7 @@ public class AdminTjenesteImplTest {
     private final OppgaveEgenskapHandler oppgaveEgenskapHandler = new OppgaveEgenskapHandler(oppgaveRepository);
     private ForeldrepengerBehandlingRestKlient foreldrepengerBehandlingRestKlient = mock(ForeldrepengerBehandlingRestKlient.class);
     private ForeldrepengerEventHåndterer foreldrepengerEventHåndterer = new ForeldrepengerEventHåndterer(oppgaveRepository, foreldrepengerBehandlingRestKlient, oppgaveEgenskapHandler);
-    private TilbakekrevingEventHåndterer tilbakekrevingEventHandler = new TilbakekrevingEventHåndterer(oppgaveRepository);
+    private TilbakekrevingEventHåndterer tilbakekrevingEventHandler = new TilbakekrevingEventHåndterer(oppgaveRepository, oppgaveEgenskapHandler);
     private AdminTjenesteImpl adminTjeneste = new AdminTjenesteImpl(adminRepository, foreldrepengerBehandlingRestKlient, foreldrepengerEventHåndterer, tilbakekrevingEventHandler);
 
     private static String AVDELING_DRAMMEN_ENHET = "4806";

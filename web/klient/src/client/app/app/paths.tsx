@@ -22,5 +22,4 @@ export const getAvdelingslederPanelLocationCreator = (location: Location) => (av
 export const getFpsakHref = (fpsakUrl: string, saksnummer: number, behandlingId?: number) => (behandlingId
   ? `${fpsakUrl}/fagsak/${saksnummer}/behandling/${behandlingId}/?punkt=default&fakta=default` : `${fpsakUrl}/fagsak/${saksnummer}/`);
 
-export const getFptilbakeHref = (fptilbakeUrl: string, saksnummer: number, eksternId?: string) => (eksternId
-    ? `${fptilbakeUrl}/tilbake/${saksnummer}/behandling/${eksternId}/?punkt=default&fakta=default` : `${fptilbakeUrl}/tilbake/${saksnummer}/`);
+export const getFptilbakeHref = (fptilbakeUrl: string, path: string) => `${fptilbakeUrl}${path}`;
