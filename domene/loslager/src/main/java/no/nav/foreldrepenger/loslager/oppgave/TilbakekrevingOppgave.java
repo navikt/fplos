@@ -28,6 +28,24 @@ public class TilbakekrevingOppgave extends Oppgave{
         return feilutbetalingstart;
     }
 
+    public void avstemMed(TilbakekrevingOppgave other) {
+        this.behandlingOpprettet = other.behandlingOpprettet;
+        this.href = other.href;
+        this.aktorId = other.aktorId;
+        this.behandlendeEnhet = other.behandlendeEnhet;
+        this.behandlingsfrist = other.behandlingsfrist;
+        this.fagsakSaksnummer = other.fagsakSaksnummer;
+        this.forsteStonadsdag = other.forsteStonadsdag;
+        this.behandlingStatus = other.behandlingStatus;
+        this.behandlingType = other.behandlingType;
+        this.fagsakYtelseType = other.fagsakYtelseType;
+        this.system = other.system;
+        this.href = other.href;
+        this.reservasjon = other.reservasjon;
+        this.feilutbetalingstart = other.feilutbetalingstart;
+        this.belop = other.belop;
+    }
+
     public TilbakekrevingOppgave() {
     }
 
@@ -124,6 +142,11 @@ public class TilbakekrevingOppgave extends Oppgave{
 
         public Builder medFagsakYtelseType(FagsakYtelseType fagsakYtelseType){
             tempOppgave.fagsakYtelseType = fagsakYtelseType;
+            return this;
+        }
+
+        public Builder medHref(String href){
+            tempOppgave.href = href;
             return this;
         }
 

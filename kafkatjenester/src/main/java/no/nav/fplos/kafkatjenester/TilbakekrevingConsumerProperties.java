@@ -14,9 +14,9 @@ public class TilbakekrevingConsumerProperties implements KafkaConsumerProperties
     private String password;
 
     @Inject
-    public TilbakekrevingConsumerProperties(@KonfigVerdi("kafka.aksjonspunkthendelse.topic") String topic,
+    public TilbakekrevingConsumerProperties(@KonfigVerdi("kafka.tilbakebetaling.topic") String topic,
                                             @KonfigVerdi("kafka.brokers") String bootstrapServers,
-                                            @KonfigVerdi("kafka.aksjonspunkthendelse.group.id") String groupId,
+                                            @KonfigVerdi("kafka.tilbakebetaling.group.id") String groupId,
                                             @KonfigVerdi("systembruker.username") String username,
                                             @KonfigVerdi("systembruker.password") String password) {
         this.topic = topic;

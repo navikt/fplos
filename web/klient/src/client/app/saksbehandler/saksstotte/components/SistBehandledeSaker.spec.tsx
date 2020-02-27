@@ -62,6 +62,7 @@ describe('<SistBehandledeSaker>', () => {
 
     const wrapper = shallow(<SistBehandledeSaker
       fpsakUrl="www.fpsak.no"
+      fptilbakeUrl="www.fptilbake.no"
       sistBehandledeSaker={oppgaver}
       hentFpsakBehandlingId={sinon.spy()}
     />);
@@ -76,6 +77,7 @@ describe('<SistBehandledeSaker>', () => {
     const oppgaver = [];
     const wrapper = shallow(<SistBehandledeSaker
       fpsakUrl="www.fpsak.no"
+      fptilbakeUrl="www.fptilbake.no"
       sistBehandledeSaker={oppgaver}
       hentFpsakBehandlingId={sinon.spy()}
     />);

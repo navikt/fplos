@@ -5,9 +5,9 @@ import { FormattedMessage } from 'react-intl';
 import { Undertittel, Normaltekst } from 'nav-frontend-typografi';
 import Lenke from 'nav-frontend-lenker';
 
-import { getFpsakHref } from 'app/paths';
+import { getFpsakHref, getFptilbakeHref } from 'app/paths';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
-import { getFpsakUrl, hentFpsakBehandlingId as hentFpsakBehandlingIdActionCreator } from 'app/duck';
+import { getFpsakUrl, getFptilbakeUrl, hentFpsakBehandlingId as hentFpsakBehandlingIdActionCreator } from 'app/duck';
 import { getBehandledeOppgaver } from 'saksbehandler/saksstotte/duck';
 import { bindActionCreators, Dispatch } from 'redux';
 import { connect } from 'react-redux';
@@ -18,6 +18,7 @@ const getClickEvent = (openFpsak, oppgave) => () => openFpsak(oppgave);
 
 type TsProps = Readonly<{
   fpsakUrl: string;
+  fptilbakeUrl: string;
   sistBehandledeSaker: Oppgave[];
   hentFpsakBehandlingId: (uuid: string) => Promise<{payload: number }>;
 }>
@@ -33,14 +34,20 @@ interface StateProps {
 export class SistBehandledeSaker extends Component<TsProps, StateProps> {
   static propTypes = {
     fpsakUrl: PropTypes.string.isRequired,
+    fptilbakeUrl: PropTypes.string.isRequired,
     sistBehandledeSaker: PropTypes.arrayOf(oppgavePropType).isRequired,
     hentFpsakBehandlingId: PropTypes.func.isRequired,
   };
 
   openFpsak = (oppgave: Oppgave) => {
-    const { fpsakUrl, hentFpsakBehandlingId } = this.props;
-    hentFpsakBehandlingId(oppgave.eksternId)
-      .then((data: { payload: number }) => window.location.assign(getFpsakHref(fpsakUrl, oppgave.saksnummer, data.payload)));
+    const { fpsakUrl, fptilbakeUrl, hentFpsakBehandlingId } = this.props;
+
+    if (oppgave.system === 'FPSAK') {
+      hentFpsakBehandlingId(oppgave.eksternId)
+        .then((data: { payload: number }) => window.location.assign(getFpsakHref(fpsakUrl, oppgave.saksnummer, data.payload)));
+    } else if (oppgave.system === 'FPTILBAKE') {
+      window.location.assign(getFptilbakeHref(fptilbakeUrl, oppgave.href));
+    } else throw new Error('Fagsystemet for oppgaven er ukjent');
   }
 
   render = () => {
@@ -82,7 +89,8 @@ export class SistBehandledeSaker extends Component<TsProps, StateProps> {
 }
 
 const mapStateToProps = state => ({
-  fpsakUrl: getFpsakUrl(state) || [],
+  fpsakUrl: getFpsakUrl(state),
+  fptilbakeUrl: getFptilbakeUrl(state),
   sistBehandledeSaker: getBehandledeOppgaver(state) || [],
 });
 

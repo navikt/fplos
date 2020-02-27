@@ -20,8 +20,6 @@ import java.util.UUID;
 @Entity(name = "Oppgave")
 @Table(name = "OPPGAVE")
 @Inheritance(strategy= InheritanceType.JOINED)
-/*@DiscriminatorColumn(name="system")
-@DiscriminatorValue("FPTILBAKE")*/
 public class Oppgave extends BaseEntitet {
 
     @Id
@@ -77,6 +75,9 @@ public class Oppgave extends BaseEntitet {
 
     @Column(name = "EKSTERN_ID")
     protected UUID eksternId;
+
+    @Column(name = "HREF")
+    protected String href;
 
     @OneToOne(mappedBy = "oppgave")
     protected Reservasjon reservasjon;
@@ -147,6 +148,10 @@ public class Oppgave extends BaseEntitet {
 
     public Reservasjon getReservasjon() {
         return reservasjon;
+    }
+
+    public String getHref() {
+        return href;
     }
 
     public static Builder builder(){
@@ -245,6 +250,11 @@ public class Oppgave extends BaseEntitet {
 
         public Builder medFagsakYtelseType(FagsakYtelseType fagsakYtelseType){
             tempOppgave.fagsakYtelseType = fagsakYtelseType;
+            return this;
+        }
+
+        public Builder medHref(String href){
+            tempOppgave.href = href;
             return this;
         }
 

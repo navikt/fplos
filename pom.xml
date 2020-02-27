@@ -28,7 +28,7 @@
 
         <!-- Felles avhengigheter i prosjektet Disse skal ALLTID være en
             RELEASE-avhengighet UNNTAK: feature-brancher og lokalt -->
-        <fp-kontrakter.version>5.1-20200130145225-c31a20e</fp-kontrakter.version>
+        <fp-kontrakter.version>5.1-20200225123631-afeacc4</fp-kontrakter.version>
         <tjenestespesifikasjoner.version>1.2019.12.18-12.22-ce897c4eb2c1</tjenestespesifikasjoner.version>
         <felles.version>1.5.0-20200123060955-7e89e24</felles.version>
 
@@ -292,7 +292,7 @@
             <dependency>
                 <groupId>org.hibernate.validator</groupId>
                 <artifactId>hibernate-validator</artifactId>
-                <version>6.1.2.Final</version>
+                <version>6.1.1.Final</version>
             </dependency>
 
             <dependency>

@@ -17,4 +17,5 @@ export type Oppgave = Readonly<{
   fagsakYtelseType: Kodeverk;
   erTilSaksbehandling: boolean;
   eksternId: string;
+  href: string;
 }>

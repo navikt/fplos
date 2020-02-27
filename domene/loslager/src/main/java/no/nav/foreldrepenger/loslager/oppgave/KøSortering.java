@@ -15,7 +15,7 @@ public enum KøSortering implements Kodeverdi {
     BEHANDLINGSFRIST("BEHFRIST", "Dato for behandlingsfrist"),
     OPPRETT_BEHANDLING("OPPRBEH", "Dato for opprettelse av behandling"),
     FORSTE_STONADSDAG("FORSTONAD", "Dato for første stønadsdag"),
-    BELOP("BELOP", "Beløp", "HELTALL", "TILBAKEKREVING"),
+    BELOP("BELOP", "Feilutbetalt beløp", "HELTALL", "TILBAKEKREVING"),
     FEILUTBETALINGSTART("FEILUTBETALINGSTART", "Dato for første feilutbetaling", "DATO", "TILBAKEKREVING");
 
     @JsonProperty("kode")

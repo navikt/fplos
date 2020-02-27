@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
 
-import { getFpsakUrl } from 'app/duck';
 import oppgavePropType from '../oppgavePropType';
 import { Oppgave } from '../oppgaveTsType';
 import { fetchBehandledeOppgaver, getBehandledeOppgaver } from './duck';
@@ -12,7 +11,6 @@ import SaksstottePaneler from './components/SaksstottePaneler';
 
 
 interface TsProps {
-  fpsakUrl: string;
   fetchBehandledeOppgaver: () => any;
   sistBehandledeSaker: Oppgave[];
   valgtSakslisteId?: number;
@@ -23,7 +21,6 @@ interface TsProps {
  */
 export class SaksstotteIndex extends Component<TsProps> {
   static propTypes = {
-    fpsakUrl: PropTypes.string.isRequired,
     sistBehandledeSaker: PropTypes.arrayOf(oppgavePropType),
     fetchBehandledeOppgaver: PropTypes.func.isRequired,
     valgtSakslisteId: PropTypes.number,
@@ -40,15 +37,16 @@ export class SaksstotteIndex extends Component<TsProps> {
   }
 
   render = () => {
-    const { fpsakUrl, sistBehandledeSaker, valgtSakslisteId } = this.props;
+    const {
+ fpsakUrl, fptilbakeUrl, sistBehandledeSaker, valgtSakslisteId,
+} = this.props;
     return (
-      <SaksstottePaneler fpsakUrl={fpsakUrl} sistBehandledeSaker={sistBehandledeSaker} valgtSakslisteId={valgtSakslisteId} />
+      <SaksstottePaneler sistBehandledeSaker={sistBehandledeSaker} valgtSakslisteId={valgtSakslisteId} />
     );
   }
 }
 
 const mapStateToProps = state => ({
-  fpsakUrl: getFpsakUrl(state),
   sistBehandledeSaker: getBehandledeOppgaver(state),
   valgtSakslisteId: getValgtSakslisteId(state),
 });

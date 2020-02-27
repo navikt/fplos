@@ -126,7 +126,7 @@ export class BehandlingskoerIndex extends Component<TsProps, StateProps> {
 
   openTilbakesak = (oppgave: Oppgave) => {
     const { fptilbakeUrl, goToUrl } = this.props;
-    goToUrl(getFptilbakeHref(fptilbakeUrl, oppgave.saksnummer, oppgave.eksternId));
+    goToUrl(getFptilbakeHref(fptilbakeUrl, oppgave.href));
   }
 
   reserverOppgaveOgApne = (oppgave: Oppgave) => {

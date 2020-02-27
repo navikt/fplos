@@ -29,6 +29,8 @@
     "LDAP_URL":  "ldaps://ldapgw.test.local",
     "KAFKA_AKSJONSPUNKTHENDELSE_TOPIC":  "privat-foreldrepenger-aksjonspunkthendelse-t4",
     "KAFKA_AKSJONSPUNKTHENDELSE_GROUP_ID":  "KC-privat-foreldrepenger-aksjonspunkthendelse",
+    "KAFKA_TILBAKEBETALING_TOPIC":  "privat-tilbakekreving-fploshendelse-v1-t4",
+    "KAFKA_TILBAKEBETALING_GROUP_ID":  "KC-privat-tilbakekreving-fploshendelse-v1-t4",
     "KAFKA_BROKERS":  "d26apvl00159.test.local:8443,d26apvl00160.test.local:8443,d26apvl00161.test.local:8443"
   }
 }

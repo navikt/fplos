@@ -25,6 +25,7 @@ public class OppgaveDto {
     private LocalDateTime opprettetTidspunkt;
     private LocalDateTime behandlingsfrist;
     private UUID eksternId;
+    private String href;
 
     public OppgaveDto() {
         // Injiseres i test
@@ -64,6 +65,7 @@ public class OppgaveDto {
 
         this.opprettetTidspunkt = oppgave.getBehandlingOpprettet();
         this.behandlingsfrist = oppgave.getBehandlingsfrist();
+        this.href = oppgave.getHref();
     }
 
     private void leggTilPersonInformasjon(TpsPersonDto personDto) {
@@ -126,6 +128,10 @@ public class OppgaveDto {
 
     public Boolean getErTilSaksbehandling() {
         return erTilSaksbehandling;
+    }
+
+    public String getHref() {
+        return href;
     }
 
     @Override

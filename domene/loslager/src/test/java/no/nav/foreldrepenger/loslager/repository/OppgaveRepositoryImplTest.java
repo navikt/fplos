@@ -71,9 +71,8 @@ public class OppgaveRepositoryImplTest {
     @Test
     public void testHentingAvEventerVedEksternId(){
         lagStandardSettMedOppgaver();
-        List<OppgaveEventLogg> events = oppgaveRepository.hentEventerForEksternId(uuid1);
-        assertThat(events).hasSize(1);
-        assertEquals(uuid1, events.get(0).getEksternId());
+        OppgaveEventLogg event = oppgaveRepository.hentOppgaveEventer(uuid1).get(0);
+        assertEquals(uuid1, event.getEksternId());
     }
 
     private Long setupOppgaveMedEgenskaper(AndreKriterierType... kriterier) {
