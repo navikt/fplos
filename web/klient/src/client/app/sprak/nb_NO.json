@@ -161,9 +161,7 @@
   "OppgaveHandlingerMenu.LeggTilbake": "Legg behandling</BR>tilbake i felles kø",
   "OppgaveHandlingerMenu.ForlengReservasjon": "Forleng din reservasjon av</BR>behandlingen med 24 timer",
   "OppgaveHandlingerMenu.EndreReservasjon": "Reserver behandlingen med dato",
-  "OppgaveHandlingerMenu.ReservertTid": "<b>Reservert i {hours} timer og {minutes} min.</b>",
-  "OppgaveHandlingerMenu.ReservertTidEnTime": "<b>Reservert i {hours} time og {minutes} min.</b>",
-  "OppgaveHandlingerMenu.ReservertTidUtenTimer": "<b>Reservert i {minutes} min.</b>",
+  "OppgaveHandlingerMenu.ReservertTil": "<b>Reservert til {date} - {time}</b>",
   "OppgaveHandlingerMenu.FlyttReservasjon": "Flytt reservasjonen til</BR>annen saksbehandler",
 
   "OppgaverPerForsteStonadsdagGraf.DagensDato": "Dagens</BR>dato",

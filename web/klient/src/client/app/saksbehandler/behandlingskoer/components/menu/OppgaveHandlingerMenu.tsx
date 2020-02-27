@@ -1,13 +1,12 @@
 
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import moment from 'moment';
 import { FormattedHTMLMessage } from 'react-intl';
 
 import oppgavePropType from 'saksbehandler/oppgavePropType';
 import { Oppgave } from 'saksbehandler/oppgaveTsType';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
-import { findDifferenceInHoursAndMinutes } from 'utils/dateUtils';
+import { getDateAndTime } from 'utils/dateUtils';
 import MenuButton from './MenuButton';
 import OpphevReservasjonModal from './OpphevReservasjonModal';
 import OppgaveReservasjonForlengetModal from './OppgaveReservasjonForlengetModal';
@@ -19,18 +18,6 @@ import styles from './oppgaveHandlingerMenu.less';
 const getOffsetPositionStyle = offset => (window.innerWidth > (offset.left + 250)
   ? { left: `${42 + offset.left}px`, top: `${offset.top - 20}px` }
   : { left: `${offset.left - 200}px`, top: `${offset.top + 38}px` });
-
-const getHoursAndMinutes = (reservertTilTidspunkt) => {
-  const hoursAndMinutes = findDifferenceInHoursAndMinutes(moment(), reservertTilTidspunkt);
-  return { hours: hoursAndMinutes.hours, minutes: hoursAndMinutes.minutes };
-};
-
-const getMessageTextCode = (hours) => {
-  if (hours === 0) {
-    return 'OppgaveHandlingerMenu.ReservertTidUtenTimer';
-  }
-  return hours === 1 ? 'OppgaveHandlingerMenu.ReservertTidEnTime' : 'OppgaveHandlingerMenu.ReservertTid';
-};
 
 const toggleEventListeners = (turnOnEventListeners, handleOutsideClick) => {
   if (turnOnEventListeners) {
@@ -209,12 +196,11 @@ export class OppgaveHandlingerMenu extends Component<TsProps, TsState> {
     const {
       showOpphevReservasjonModal, showForlengetReservasjonModal, showReservasjonEndringDatoModal, showFlyttReservasjonModal,
     } = this.state;
-    const hoursAndMinutes = getHoursAndMinutes(oppgave.status.reservertTilTidspunkt);
 
     return (
       <>
         <div className={styles.containerMenu} style={getOffsetPositionStyle(offset)} ref={(node) => { this.node = node; }}>
-          <FormattedHTMLMessage id={getMessageTextCode(hoursAndMinutes.hours)} values={hoursAndMinutes} />
+          <FormattedHTMLMessage id="OppgaveHandlingerMenu.ReservertTil" values={getDateAndTime(oppgave.status.reservertTilTidspunkt)} />
           <VerticalSpacer eightPx />
           <MenuButton onClick={this.showBegrunnelseModal} ref={this.menuButtonRef}>
             <FormattedHTMLMessage id="OppgaveHandlingerMenu.LeggTilbake" />
