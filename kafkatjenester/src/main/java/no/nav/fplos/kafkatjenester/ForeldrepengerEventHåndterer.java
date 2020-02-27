@@ -89,14 +89,12 @@ public class ForeldrepengerEventHåndterer implements EventHåndterer<FpsakBehan
                 Oppgave oppgave = nyOppgave(eksternId, dto, behandling);
                 LOG.info("Oppretter oppgave");
                 loggEvent(oppgave, egenskapFinner);
-                //loggEvent(behandlingId, oppgave.getEksternId(), OppgaveEventType.OPPRETTET, null, dto.getBehandlendeEnhet());
                 oppgaveEgenskapHandler.håndterOppgaveEgenskaper(oppgave, egenskapFinner);
                 break;
             case OPPRETT_BESLUTTER_OPPGAVE:
                 avsluttOppgaveHvisÅpen(behandlingId, eksternId, oppgaveHistorikk, dto.getBehandlendeEnhet());
                 Oppgave beslutterOppgave = nyOppgave(eksternId, dto, behandling);
                 loggEvent(beslutterOppgave, egenskapFinner);
-                //loggEvent(behandlingId, beslutterOppgave.getEksternId(), OppgaveEventType.OPPRETTET, AndreKriterierType.TIL_BESLUTTER, dto.getBehandlendeEnhet());
                 oppgaveEgenskapHandler.håndterOppgaveEgenskaper(beslutterOppgave, egenskapFinner);
                 break;
             case OPPRETT_PAPIRSØKNAD_OPPGAVE:
