@@ -26,16 +26,18 @@ describe('<ReservasjonerTabell>', () => {
 
   it('skal vise to reservasjoner sortert i tabell', () => {
     const reservasjoner = [{
+      oppgaveId: 1,
       reservertAvUid: 'ESPEN',
       reservertAvNavn: 'Espen Utvikler',
       reservertTilTidspunkt: '14:30 02.02.2020',
-      oppgaveId: 1,
+      behandlingType: 'Førstegangsbehandling',
       oppgaveSaksNr: 10,
     }, {
+      oppgaveId: 2,
       reservertAvUid: 'JOACHIM',
       reservertAvNavn: 'Auto Joachim',
       reservertTilTidspunkt: '10:19 02.02.2020',
-      oppgaveId: 3,
+      behandlingType: 'Revurdering',
       oppgaveSaksNr: 25,
     }];
     const wrapper = shallow(<ReservasjonerTabell
@@ -53,15 +55,15 @@ describe('<ReservasjonerTabell>', () => {
     const kolonnerRad1 = rader.first().find(TableColumn);
     expect(kolonnerRad1).to.have.length(5);
     expect(kolonnerRad1.first().childAt(0).text()).to.eql('Auto Joachim');
-    expect(kolonnerRad1.at(1).childAt(0).text()).to.eql('3');
-    expect(kolonnerRad1.at(2).childAt(0).text()).to.eql('25');
+    expect(kolonnerRad1.at(1).childAt(0).text()).to.eql('25');
+    expect(kolonnerRad1.at(2).childAt(0).text()).to.eql('Revurdering');
     expect(kolonnerRad1.at(3).childAt(0).text()).to.eql('10:19 02.02.2020');
 
     const kolonnerRad2 = rader.last().find(TableColumn);
     expect(kolonnerRad2).to.have.length(5);
     expect(kolonnerRad2.first().childAt(0).text()).to.eql('Espen Utvikler');
-    expect(kolonnerRad2.at(1).childAt(0).text()).to.eql('1');
-    expect(kolonnerRad2.at(2).childAt(0).text()).to.eql('10');
+    expect(kolonnerRad2.at(1).childAt(0).text()).to.eql('10');
+    expect(kolonnerRad2.at(2).childAt(0).text()).to.eql('Førstegangsbehandling');
     expect(kolonnerRad2.at(3).childAt(0).text()).to.eql('14:30 02.02.2020');
   });
 });

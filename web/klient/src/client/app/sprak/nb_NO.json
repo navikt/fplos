@@ -195,11 +195,10 @@
   "ProduksjonPaneler.AvdelingensProduksjon": "Avdelingens produksjon",
 
   "ReservasjonerTabell.Navn": "Navn",
-  "ReservasjonerTabell.OppgaveId": "Oppgave",
   "ReservasjonerTabell.Saksnr": "Saksnummer",
-  "ReservasjonerTabell.Brukerident": "Brukerident",
-  "ReservasjonerTabell.Avdeling": "Avdeling",
+  "ReservasjonerTabell.BehandlingType": "Type",
   "ReservasjonerTabell.ReservertTil": "Reservert til",
+  "ReservasjonerTabell.Slett": "Slett",
   "ReservasjonerTabell.Reservasjoner": "Reservasjoner for avdelingen",
   "ReservasjonerTabell.IngenReservasjoner": "Ingen reservasjoner funnet",
 

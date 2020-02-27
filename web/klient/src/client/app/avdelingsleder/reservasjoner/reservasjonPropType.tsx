@@ -6,6 +6,7 @@ const reservasjonPropType = PropTypes.shape({
   reservertTilTidspunkt: PropTypes.string.isRequired,
   oppgaveId: PropTypes.number.isRequired,
   oppgaveSaksNr: PropTypes.number.isRequired,
+  behandlingType: PropTypes.string.isRequired,
 });
 
 export default reservasjonPropType;

@@ -18,9 +18,10 @@ import styles from './reservasjonerTabell.less';
 
 const headerTextCodes = [
   'ReservasjonerTabell.Navn',
-  'ReservasjonerTabell.OppgaveId',
   'ReservasjonerTabell.Saksnr',
+  'ReservasjonerTabell.BehandlingType',
   'ReservasjonerTabell.ReservertTil',
+  'ReservasjonerTabell.Slett',
 ];
 
 interface TsProps {
@@ -75,8 +76,8 @@ export class ReservasjonerTabell extends Component<TsProps, StateTsProps> {
             {sorterteReservasjoner.map(reservasjon => (
               <TableRow key={reservasjon.oppgaveId}>
                 <TableColumn>{reservasjon.reservertAvNavn}</TableColumn>
-                <TableColumn>{reservasjon.oppgaveId}</TableColumn>
                 <TableColumn>{reservasjon.oppgaveSaksNr}</TableColumn>
+                <TableColumn>{reservasjon.behandlingType}</TableColumn>
                 <TableColumn>{reservasjon.reservertTilTidspunkt}</TableColumn>
                 <TableColumn>
                   <Image

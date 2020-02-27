@@ -17,6 +17,7 @@ public class ReservasjonDto {
     private String begrunnelse;
     private Long oppgaveId;
     private Long oppgaveSaksNr;
+    private String behandlingType;
 
     public ReservasjonDto(Reservasjon reservasjon, String reservertAvNavn, String navnFlyttetAv) {
         this.reservertTilTidspunkt = reservasjon.getReservertTil();
@@ -28,6 +29,7 @@ public class ReservasjonDto {
         this.begrunnelse = reservasjon.getBegrunnelse();
         this.oppgaveId = reservasjon.getOppgave().getId();
         this.oppgaveSaksNr = reservasjon.getOppgave().getFagsakSaksnummer();
+        this.behandlingType = reservasjon.getOppgave().getBehandlingType().getNavn();
     }
 
     public LocalDateTime getReservertTilTidspunkt() {
@@ -64,5 +66,9 @@ public class ReservasjonDto {
 
     public Long getOppgaveSaksNr() {
         return oppgaveSaksNr;
+    }
+
+    public String getBehandlingType() {
+        return behandlingType;
     }
 }
