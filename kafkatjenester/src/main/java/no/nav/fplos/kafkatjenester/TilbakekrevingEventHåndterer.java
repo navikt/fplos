@@ -1,5 +1,15 @@
 package no.nav.fplos.kafkatjenester;
 
+import static no.nav.foreldrepenger.loslager.oppgave.AndreKriterierType.TIL_BESLUTTER;
+
+import java.util.UUID;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import no.nav.foreldrepenger.loslager.oppgave.AndreKriterierType;
 import no.nav.foreldrepenger.loslager.oppgave.BehandlingType;
 import no.nav.foreldrepenger.loslager.oppgave.FagsakYtelseType;
@@ -11,16 +21,6 @@ import no.nav.foreldrepenger.loslager.repository.OppgaveRepository;
 import no.nav.fplos.kafkatjenester.eventresultat.EventResultat;
 import no.nav.fplos.kafkatjenester.eventresultat.TilbakekrevingEventMapper;
 import no.nav.vedtak.felles.integrasjon.kafka.TilbakebetalingBehandlingProsessEventDto;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.UUID;
-
-import static no.nav.foreldrepenger.loslager.oppgave.AndreKriterierType.*;
 
 @ApplicationScoped
 public class TilbakekrevingEventHåndterer implements EventHåndterer<TilbakebetalingBehandlingProsessEventDto> {
@@ -51,12 +51,12 @@ public class TilbakekrevingEventHåndterer implements EventHåndterer<Tilbakebet
             case LUKK_OPPGAVE_MANUELT_VENT:
                 log.info("Lukker oppgave, satt manuelt på vent.");
                 avsluttOppgaveForEksternId(id);
-                loggEvent(id, OppgaveEventType.MANU_VENT, null, dto.getBehandlendeEnhet(), null);
+                loggEvent(id, OppgaveEventType.MANU_VENT, dto.getBehandlendeEnhet());
                 break;
             case LUKK_OPPGAVE:
                 log.info("Lukker oppgave med eksternRefId {}.", id.toString());
                 avsluttOppgaveForEksternId(id);
-                loggEvent(id, OppgaveEventType.LUKKET, null, dto.getBehandlendeEnhet(), null);
+                loggEvent(id, OppgaveEventType.LUKKET, dto.getBehandlendeEnhet());
                 break;
             case OPPRETT_OPPGAVE:
                 avsluttOppgaveHvisÅpen(id, oppgaveHistorikk, dto.getBehandlendeEnhet());
@@ -106,8 +106,8 @@ public class TilbakekrevingEventHåndterer implements EventHåndterer<Tilbakebet
         oppgaveRepository.lagre(new OppgaveEventLogg(eksternId, oppgaveEventType, andreKriterierType, behandlendeEnhet));
     }
 
-    protected void loggEvent(UUID eksternId, OppgaveEventType oppgaveEventType, AndreKriterierType andreKriterierType, String behandlendeEnhet, LocalDateTime frist) {
-        oppgaveRepository.lagre(new OppgaveEventLogg(eksternId, oppgaveEventType, andreKriterierType, behandlendeEnhet, frist));
+    protected void loggEvent(UUID eksternId, OppgaveEventType oppgaveEventType, String behandlendeEnhet) {
+        oppgaveRepository.lagre(new OppgaveEventLogg(eksternId, oppgaveEventType, null, behandlendeEnhet));
     }
 
 
