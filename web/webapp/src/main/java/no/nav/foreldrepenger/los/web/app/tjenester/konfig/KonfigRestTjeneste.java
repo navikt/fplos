@@ -1,10 +1,8 @@
 package no.nav.foreldrepenger.los.web.app.tjenester.konfig;
 
-import static no.nav.vedtak.sikkerhet.abac.BeskyttetRessursActionAttributt.READ;
-import static no.nav.vedtak.sikkerhet.abac.BeskyttetRessursResourceAttributt.APPLIKASJON;
-
-import java.util.HashMap;
-import java.util.Map;
+import io.swagger.v3.oas.annotations.Operation;
+import no.nav.vedtak.konfig.KonfigVerdi;
+import no.nav.vedtak.sikkerhet.abac.BeskyttetRessurs;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
@@ -12,10 +10,11 @@ import javax.transaction.Transactional;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import java.util.HashMap;
+import java.util.Map;
 
-import io.swagger.v3.oas.annotations.Operation;
-import no.nav.vedtak.konfig.KonfigVerdi;
-import no.nav.vedtak.sikkerhet.abac.BeskyttetRessurs;
+import static no.nav.vedtak.sikkerhet.abac.BeskyttetRessursActionAttributt.READ;
+import static no.nav.vedtak.sikkerhet.abac.BeskyttetRessursResourceAttributt.APPLIKASJON;
 
 @Path("/konfig")
 @RequestScoped
@@ -24,13 +23,16 @@ public class KonfigRestTjeneste {
 
     private String fpsakFrontendUrl;
 
+    private String fptilbakeFrontendUrl;
+
     public KonfigRestTjeneste() {
         //NOSONAR
     }
 
     @Inject
-    public KonfigRestTjeneste(@KonfigVerdi("fpsak.frontend.url") String fpsakFrontendUrl) {
+    public KonfigRestTjeneste(@KonfigVerdi("fpsak.frontend.url") String fpsakFrontendUrl, @KonfigVerdi("fptilbake.frontend.url") String fptilbakeFrontendUrl) {
         this.fpsakFrontendUrl = fpsakFrontendUrl;
+        this.fptilbakeFrontendUrl = fptilbakeFrontendUrl;
     }
 
     @GET
@@ -50,7 +52,7 @@ public class KonfigRestTjeneste {
     @BeskyttetRessurs(action = READ, ressurs = APPLIKASJON, sporingslogg = false)
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
     public Konfig hentFptilbakeUrl() {
-        return new Konfig(fpsakFrontendUrl);
+        return new Konfig(fptilbakeFrontendUrl);
     }
 
     @GET

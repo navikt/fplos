@@ -1,24 +1,5 @@
 package no.nav.fplos.kafkatjenester;
 
-import static no.nav.fplos.kafkatjenester.TestUtil.behandlingBuilderMal;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
-import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-
-import javax.persistence.EntityManager;
-
-import org.junit.Rule;
-import org.junit.Test;
-
 import no.nav.foreldrepenger.dbstoette.UnittestRepositoryRule;
 import no.nav.foreldrepenger.loslager.oppgave.AndreKriterierType;
 import no.nav.foreldrepenger.loslager.oppgave.BehandlingType;
@@ -34,6 +15,23 @@ import no.nav.fplos.foreldrepengerbehandling.BehandlingFpsak;
 import no.nav.fplos.foreldrepengerbehandling.ForeldrepengerBehandlingRestKlient;
 import no.nav.vedtak.felles.integrasjon.kafka.EventHendelse;
 import no.nav.vedtak.felles.integrasjon.kafka.Fagsystem;
+import org.junit.Rule;
+import org.junit.Test;
+
+import javax.persistence.EntityManager;
+import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+
+import static no.nav.fplos.kafkatjenester.TestUtil.behandlingBuilderMal;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class ForeldrepengerEventHåndtererTest {
 
@@ -168,6 +166,7 @@ public class ForeldrepengerEventHåndtererTest {
         fpsakEventHandler.håndterEvent(eventDrammenFra(aksjonspunktKoderSkalLukkeOppgave));
         assertThat(repoRule.getRepository().hentAlle(Oppgave.class)).hasSize(2);
         assertThat(repoRule.getRepository().hentAlle(OppgaveEgenskap.class)).hasSize(1);
+        var alle = repoRule.getRepository().hentAlle(OppgaveEventLogg.class);
         assertThat(repoRule.getRepository().hentAlle(OppgaveEventLogg.class)).hasSize(4);
     }
 
@@ -186,7 +185,7 @@ public class ForeldrepengerEventHåndtererTest {
         assertThat(oppgaveEgenskap.getOppgave().getAktiv()).isTrue();
 
         //Sjekker at det siste eventet er å opprette og at det rett før er lukker.
-        List<OppgaveEventLogg> oppgaveEventLogg = oppgaveRepository.hentEventerForEksternId(uuid);
+        List<OppgaveEventLogg> oppgaveEventLogg = oppgaveRepository.hentOppgaveEventer(uuid);
 
         /*Optional<EksternIdentifikator> eksternId = oppgaveRepositoryProvider.getEksternIdentifikatorRepository().finnIdentifikator("FPSAK", behandlingId.toString());
         List<OppgaveEventLogg> oppgaveEventLogg = oppgaveRepositoryProvider.getOppgaveRepository().hentEventerForEksternId(eksternId.get().getId());*/
@@ -266,7 +265,7 @@ public class ForeldrepengerEventHåndtererTest {
 //    @Test
 //    public void opprettingOppgaveMedEgenskapSelvstendigFrilanserFPTest() {
 //        when(foreldrepengerBehandlingRestKlient.getBehandling(anyLong())).thenReturn(behandlingDtoFra(aksjonspunktKoderSelvstendigFrilanserFPDto));
-//        fpsakEventHandler.håndterEvent();(eventDrammenFra(aksjonspunktKoderSelvstendigFrilanserFP));
+//        fpsakEventHandler.prosesser(eventDrammenFra(aksjonspunktKoderSelvstendigFrilanserFP));
 //        sjekkForEnOppgaveOgEgenskap(AndreKriterierType.SELVSTENDIG_FRILANSER);
 //    }
 
@@ -319,7 +318,7 @@ public class ForeldrepengerEventHåndtererTest {
     }
 
     private void sjekkEventLoggInneholder(UUID uuid, OppgaveEventType eventType, AndreKriterierType kriterierType) {
-        List<OppgaveEventLogg> oppgaveEventLoggs = oppgaveRepository.hentEventerForEksternId(uuid);
+        List<OppgaveEventLogg> oppgaveEventLoggs = oppgaveRepository.hentOppgaveEventer(uuid);
 
         assertThat(oppgaveEventLoggs.get(0).getEventType()).isEqualTo(eventType);
         if (kriterierType != null) {
@@ -327,18 +326,6 @@ public class ForeldrepengerEventHåndtererTest {
         }
     }
 
-/*
-    private void sjekkEventLoggInneholder(Long behandlingId, OppgaveEventType eventType, AndreKriterierType kriterierType) {
-        //Optional<EksternIdentifikator> eksternIdentifikator = oppgaveRepositoryProvider.getEksternIdentifikatorRepository().finnIdentifikator(fagsystem, behandlingId.toString());
-        //List<OppgaveEventLogg> oppgaveEventLoggs = oppgaveRepositoryProvider.getOppgaveRepository().hentEventerForEksternId(eksternIdentifikator.get().getId());
-        List<OppgaveEventLogg> oppgaveEventLoggs = oppgaveRepository.hentEventer(behandlingId);
-
-        assertThat(oppgaveEventLoggs.get(0).getEventType()).isEqualTo(eventType);
-        if (kriterierType != null) {
-            assertThat(oppgaveEventLoggs.get(0).getAndreKriterierType()).isEqualTo(kriterierType);
-        }
-    }
-*/
     private void sjekkForEnOppgaveOgEgenskap(AndreKriterierType egenskap) {
         sjekkForEnOppgaveOgEgenskap(egenskap, 1, 1);
     }

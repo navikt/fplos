@@ -5,7 +5,8 @@ const behandlingType = {
   KLAGE: 'BT-003',
   ANKE: 'BT-008',
   DOKUMENTINNSYN: 'BT-006',
-  // TILBAKEBETALING: 'BT-009',
+  TILBAKEBETALING: 'BT-007',
+  TILBAKEBETALING_REVURDERING: 'BT-009',
 };
 
 export default behandlingType;

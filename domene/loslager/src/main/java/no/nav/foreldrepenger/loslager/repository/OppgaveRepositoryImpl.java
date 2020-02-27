@@ -48,6 +48,7 @@ public class OppgaveRepositoryImpl implements OppgaveRepository {
     private static final String SELECT_FRA_TILBAKEKREVING_OPPGAVE = "SELECT o from TilbakekrevingOppgave o ";
 
     private static final String SORTERING = "ORDER BY ";
+    private static final String SYNKENDE_REKKEFØLGE = " DESC";
     private static final String BEHANDLINGSFRIST = "o.behandlingsfrist";
     private static final String BEHANDLINGOPPRETTET = "o.behandlingOpprettet";
     private static final String FORSTE_STONADSDAG = "o.forsteStonadsdag";
@@ -216,7 +217,7 @@ public class OppgaveRepositoryImpl implements OppgaveRepository {
         } else if (til != null) {
             numeriskFiltrering = "AND " + sortering + " <= :filterTil ";
         }
-        return numeriskFiltrering + SORTERING + sortering;
+        return numeriskFiltrering + SORTERING + sortering + SYNKENDE_REKKEFØLGE;
     }
 
     private String filtrerDynamisk(String sortering, Long fomDager, Long tomDager) {
@@ -459,8 +460,8 @@ public class OppgaveRepositoryImpl implements OppgaveRepository {
     }
 
     @Override
-    public Oppgave gjenåpneOppgaveForEksternId(UUID eksternId) {
-        List<Oppgave> oppgaver = hentOppgaverForEksternId(eksternId);
+    public Oppgave gjenåpneOppgave(UUID eksternId) {
+        List<Oppgave> oppgaver = this.hentOppgaver(eksternId, Oppgave.class);
         Oppgave sisteOppgave = oppgaver.stream()
                 .max(Comparator.comparing(Oppgave::getOpprettetTidspunkt))
                 .orElse(null);
@@ -473,8 +474,22 @@ public class OppgaveRepositoryImpl implements OppgaveRepository {
     }
 
     @Override
+    public TilbakekrevingOppgave gjenåpneTilbakekrevingOppgave(UUID eksternId) {
+        List<TilbakekrevingOppgave> oppgaver = hentOppgaver(eksternId, TilbakekrevingOppgave.class);
+        var sisteOppgave = oppgaver.stream()
+                .max(Comparator.comparing(Oppgave::getOpprettetTidspunkt))
+                .orElse(null);
+        if (sisteOppgave != null) {
+            sisteOppgave.gjenåpneOppgave();
+            internLagre(sisteOppgave);
+            entityManager.refresh(sisteOppgave);
+        }
+        return sisteOppgave;
+    }
+
+    @Override
     public void avsluttOppgaveForEksternId(UUID eksternId) {
-        List<Oppgave> oppgaver = hentOppgaverForEksternId(eksternId);
+        List<Oppgave> oppgaver = this.hentOppgaver(eksternId, Oppgave.class);
         if (oppgaver.isEmpty()) {
             return;
         }
@@ -515,9 +530,10 @@ public class OppgaveRepositoryImpl implements OppgaveRepository {
     }
 
     @Override
-    public List<OppgaveEventLogg> hentEventerForEksternId(UUID eksternId) {
+    public List<OppgaveEventLogg> hentOppgaveEventer(UUID eksternId) {
         return entityManager.createQuery("FROM oppgaveEventLogg oel " +
-                "where oel.eksternId = :eksternId ORDER BY oel.id desc", OppgaveEventLogg.class)
+                "where oel.eksternId = :eksternId " +
+                "order by oel.opprettetTidspunkt desc", OppgaveEventLogg.class)
                 .setParameter("eksternId", eksternId).getResultList();
     }
 
@@ -538,9 +554,12 @@ public class OppgaveRepositoryImpl implements OppgaveRepository {
         internLagre(reservasjonEventLogg);
     }
 
-    private List<Oppgave> hentOppgaverForEksternId(UUID eksternId) {
-        return entityManager.createQuery(SELECT_FRA_OPPGAVE +
-                "WHERE o.eksternId = :eksternId ", Oppgave.class)
+    private <T> List<T> hentOppgaver(UUID eksternId, Class<T> cls) {
+        var select = cls.equals(TilbakekrevingOppgave.class)
+                ? SELECT_FRA_TILBAKEKREVING_OPPGAVE
+                : SELECT_FRA_OPPGAVE;
+        return entityManager.createQuery(select +
+                "WHERE o.eksternId = :eksternId ", cls)
                 .setParameter("eksternId", eksternId)
                 .getResultList();
     }

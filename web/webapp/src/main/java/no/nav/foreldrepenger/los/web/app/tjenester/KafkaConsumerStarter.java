@@ -13,6 +13,8 @@ import no.nav.foreldrepenger.loslager.repository.OppgaveRepository;
 import no.nav.fplos.kafkatjenester.ForeldrepengerConsumerProperties;
 import no.nav.fplos.kafkatjenester.ForeldrepengerEventHåndterer;
 import no.nav.fplos.kafkatjenester.KafkaConsumer;
+import no.nav.fplos.kafkatjenester.TilbakekrevingConsumerProperties;
+import no.nav.fplos.kafkatjenester.TilbakekrevingEventHåndterer;
 
 /**
  * Triggers start of Kafka consum
@@ -30,6 +32,12 @@ public class KafkaConsumerStarter implements ServletContextListener {
     private ForeldrepengerEventHåndterer foreldrepengerEventHåndterer;
 
     @Inject
+    private TilbakekrevingConsumerProperties tilbakekrevingConsumerProperties;
+
+    @Inject
+    private TilbakekrevingEventHåndterer tilbakekrevingEventHåndterer;
+
+    @Inject
     private EntityManager entityManager;
 
     private List<KafkaConsumer<?>> consumers = new ArrayList<>();
@@ -38,7 +46,9 @@ public class KafkaConsumerStarter implements ServletContextListener {
     @Override
     public void contextInitialized(ServletContextEvent servletContextEvent) {
         var foreldrepengerConsumer = new KafkaConsumer<>(oppgaveRepository, foreldrepengerConsumerProperties, entityManager, foreldrepengerEventHåndterer);
+        var tilbakekrevingConsumer = new KafkaConsumer<>(oppgaveRepository, tilbakekrevingConsumerProperties, entityManager, tilbakekrevingEventHåndterer);
         consumers.add(foreldrepengerConsumer);
+        consumers.add(tilbakekrevingConsumer);
         consumers.forEach(consumers -> consumers.start());
     }
 
