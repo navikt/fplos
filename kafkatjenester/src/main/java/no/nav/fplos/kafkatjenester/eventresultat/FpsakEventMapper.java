@@ -21,19 +21,14 @@ public class FpsakEventMapper {
 
     public static EventResultat signifikantEventFra(List<Aksjonspunkt> aksjonspunktListe,
                                                     OppgaveHistorikk oppgaveHistorikk, String behandlendeEnhet) {
-        return signifikantEventFra(aksjonspunktListe, oppgaveHistorikk, behandlendeEnhet, false);
-    }
-
-    private static EventResultat signifikantEventFra(List<Aksjonspunkt> aksjonspunktListe, OppgaveHistorikk oppgaveHistorikk,
-                                                     String behandlendeEnhet, boolean fraAdmin) {
         Set<Aksjonspunkt> åpneAksjonspunkter = aksjonspunktListe.stream()
                 .filter(Aksjonspunkt::erAktiv)
                 .collect(Collectors.toSet());
-        return signifikantEventFra(åpneAksjonspunkter, oppgaveHistorikk, behandlendeEnhet, fraAdmin);
+        return signifikantEventFra(åpneAksjonspunkter, oppgaveHistorikk, behandlendeEnhet);
     }
 
     private static EventResultat signifikantEventFra(Set<Aksjonspunkt> åpneAksjonspunkt, OppgaveHistorikk oppgaveHistorikk,
-                                                     String behandlendeEnhet, boolean fraAdmin) {
+                                                     String behandlendeEnhet) {
         if (åpneAksjonspunkt.isEmpty()){
             return LUKK_OPPGAVE;
         }
@@ -41,30 +36,28 @@ public class FpsakEventMapper {
             return manueltSattPåVent(åpneAksjonspunkt) ? LUKK_OPPGAVE_MANUELT_VENT : LUKK_OPPGAVE_VENT;
         }
         if (tilBeslutter(åpneAksjonspunkt)) {
-            if (!fraAdmin && harKriterie(oppgaveHistorikk, AndreKriterierType.TIL_BESLUTTER)) {
+            if (harKriterie(oppgaveHistorikk, AndreKriterierType.TIL_BESLUTTER)) {
                 return erSammeEnhet(oppgaveHistorikk, behandlendeEnhet)
                         ? GJENÅPNE_OPPGAVE
                         : OPPRETT_BESLUTTER_OPPGAVE;
             }
-            if (!fraAdmin) {
-                return OPPRETT_BESLUTTER_OPPGAVE;
-            }
+            return OPPRETT_BESLUTTER_OPPGAVE;
         }
         if (erRegistrerPapirsøknad(åpneAksjonspunkt)) {
-            if (!fraAdmin && harKriterie(oppgaveHistorikk, AndreKriterierType.PAPIRSØKNAD)) {
+            if (harKriterie(oppgaveHistorikk, AndreKriterierType.PAPIRSØKNAD)) {
                 return erSammeEnhet(oppgaveHistorikk, behandlendeEnhet)
                         ? GJENÅPNE_OPPGAVE
                         : OPPRETT_PAPIRSØKNAD_OPPGAVE;
             }
             return OPPRETT_PAPIRSØKNAD_OPPGAVE;
         }
-        if (!fraAdmin && harKriterie(oppgaveHistorikk, AndreKriterierType.PAPIRSØKNAD)) {
+        if (harKriterie(oppgaveHistorikk, AndreKriterierType.PAPIRSØKNAD)) {
             return OPPRETT_OPPGAVE;
         }
-        if (!fraAdmin && harKriterie(oppgaveHistorikk, AndreKriterierType.TIL_BESLUTTER)) {
+        if (harKriterie(oppgaveHistorikk, AndreKriterierType.TIL_BESLUTTER)) {
             return OPPRETT_OPPGAVE;
         }
-        if (!fraAdmin && oppgaveHistorikk.getSisteÅpningsEvent() != null) {
+        if (oppgaveHistorikk.getSisteÅpningsEvent() != null) {
             return erSammeEnhet(oppgaveHistorikk, behandlendeEnhet)
                     ? GJENÅPNE_OPPGAVE
                     : OPPRETT_OPPGAVE;
@@ -79,7 +72,6 @@ public class FpsakEventMapper {
 
     private static boolean harKriterie(OppgaveHistorikk oppgaveHistorikk, AndreKriterierType kriterie) {
         return oppgaveHistorikk.getSisteÅpningsEvent() != null
-                && kriterie != null
                 && oppgaveHistorikk.getSisteÅpningsEvent().getAndreKriterierType() != null
                 && oppgaveHistorikk.getSisteÅpningsEvent().getAndreKriterierType().equals(kriterie);
     }
