@@ -11,8 +11,8 @@ import java.util.Map;
 import static no.nav.fplos.kafkatjenester.ForeldrepengerEventHåndtererTest.aksjonspunktDtoFra;
 
 public class AksjonspunktTest {
-    private final Map<String, String> dto = new HashMap<>();
-    private final List<Aksjonspunkt> aksjonspunkt = new ArrayList<>();
+    private Map<String, String> dto = new HashMap<>();
+    private List<Aksjonspunkt> aksjonspunkt = new ArrayList<>();
 
     public Map<String, String> getDto() {
         return dto;
@@ -48,5 +48,39 @@ public class AksjonspunktTest {
 
     enum KodeStatus {
         OPPR, AVBR, UTFO
+    }
+
+    public static final class Builder {
+        private AksjonspunktTest tmp = new AksjonspunktTest();
+
+        private Builder() {
+        }
+
+        public static Builder aksjonspunktTestBuilder() {
+            return new Builder();
+        }
+
+        public Builder medOpprettet(int kode) {
+            tmp.addOpprettet(kode);
+            return this;
+        }
+
+        public Builder medUtført(int kode) {
+            tmp.addUtført(kode);
+            return this;
+        }
+
+        public Builder medAvbrutt(int kode) {
+            tmp.addAvbrutt(kode);
+            return this;
+        }
+
+        public AksjonspunktTest build() {
+            AksjonspunktTest aksjonspunktTest = new AksjonspunktTest();
+            aksjonspunktTest.aksjonspunkt = tmp.aksjonspunkt;
+            aksjonspunktTest.dto = tmp.dto;
+            tmp = null;
+            return aksjonspunktTest;
+        }
     }
 }

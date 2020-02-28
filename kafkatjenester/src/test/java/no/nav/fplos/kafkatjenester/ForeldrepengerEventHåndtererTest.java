@@ -13,7 +13,6 @@ import no.nav.foreldrepenger.loslager.repository.OppgaveRepositoryImpl;
 import no.nav.fplos.foreldrepengerbehandling.Aksjonspunkt;
 import no.nav.fplos.foreldrepengerbehandling.BehandlingFpsak;
 import no.nav.fplos.foreldrepengerbehandling.ForeldrepengerBehandlingRestKlient;
-import no.nav.fplos.kafkatjenester.AksjonspunktTest.KodeStatus;
 import no.nav.vedtak.felles.integrasjon.kafka.EventHendelse;
 import no.nav.vedtak.felles.integrasjon.kafka.Fagsystem;
 import org.junit.Rule;
@@ -27,7 +26,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
+import static no.nav.fplos.kafkatjenester.AksjonspunktTest.Builder.aksjonspunktTestBuilder;
 import static no.nav.fplos.kafkatjenester.TestUtil.behandlingBuilderMal;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -47,6 +48,9 @@ public class ForeldrepengerEventHåndtererTest {
     private static UUID uuid = UUID.fromString("027961C0-1DA9-1D46-AFAA-0BBAE024758C"); //UUID.nameUUIDFromBytes("TEST".getBytes());
 
     private LocalDateTime aksjonspunktFrist = null;
+
+    private AksjonspunktTest skalHaOppgave5015 = aksjonspunktTestBuilder().medOpprettet(5015).build();
+    private AksjonspunktTest skalLukkeOppgave5015UTFO= aksjonspunktTestBuilder().medUtført(5015).build();
 
     Map<String, String> aksjonspunktKoderSkalHaOppgave = new HashMap<>(){{put("5015","OPPR");}};
     private Map<String, String> aksjonspunktKoderSkalLukkeOppgave = new HashMap<>(){{put("5015","UTFO");}};
@@ -72,8 +76,11 @@ public class ForeldrepengerEventHåndtererTest {
     private List<Aksjonspunkt> aksjonspunktKoderSkalPåVentDto = Arrays.asList(aksjonspunktDtoFra("5012","AVBR",aksjonspunktFrist), aksjonspunktDtoFra("7002","OPPR",aksjonspunktFrist));
     private List<Aksjonspunkt> aksjonspunktKoderUtlandAutomatiskDto = Collections.singletonList(aksjonspunktMedBegrunnelseDtoFra("5068","OPPR",aksjonspunktFrist,"BOSATT_UTLAND"));
     private List<Aksjonspunkt> aksjonspunktKoderUtlandManuellDto = Collections.singletonList(aksjonspunktMedBegrunnelseDtoFra("6068","OPPR",aksjonspunktFrist, "BOSATT_UTLAND"));
+    private final AksjonspunktTest beslutter = aksjonspunktTestBuilder().medOpprettet(5016).build();
+    private final AksjonspunktTest beslutterUtfort = aksjonspunktTestBuilder().medUtført(5016).build();
+    private final AksjonspunktTest beslutterUtfortMedAnnetÅpentPunkt = aksjonspunktTestBuilder().medUtført(5016).medOpprettet(5010).build();
 
-        // 7003 oppr -> utfo
+    // 7003 oppr -> utfo
 
     FpsakBehandlingProsessEventDto eventDrammenFra(Map<String, String> aksjonspunktmap){
         return (FpsakBehandlingProsessEventDto) prosessBuilderFra(aksjonspunktmap)
@@ -144,30 +151,40 @@ public class ForeldrepengerEventHåndtererTest {
     }
 
     @Test
-    public void testEnkelOppgave(){
-        when(fpsak.getBehandling(anyLong())).thenReturn(behandlingDtoFra(aksjonspunktKoderSkalHaOppgaveDto));
-        handler.håndterEvent(eventDrammenFra(aksjonspunktKoderSkalHaOppgave));
-        assertThat(repoRule.getRepository().hentAlle(Oppgave.class)).hasSize(1);
-        Oppgave oppgave = repoRule.getRepository().hentAlle(Oppgave.class).get(0);
-        assertThat(oppgave.getAktiv()).isTrue();
-        assertThat(repoRule.getRepository().hentAlle(OppgaveEgenskap.class)).hasSize(0);
-        assertThat(repoRule.getRepository().hentAlle(OppgaveEventLogg.class)).hasSize(1);
+    public void testEnkelOppgave() {
+        behandle(skalHaOppgave5015);
+        verifiserAtAntallOppgaverEr(1);
+        verifiserEnAktivOppgave();
+        verifiserOppgaveEgenskaperTilsvarer(Collections.emptyList());
+        verifiserOppgaveEventAntallEr(1);
+        sjekkAktivOppgaveEksisterer(true);
     }
 
     @Test
-    public void opprettingOgAvsluttingOverTilBehandlerTest(){
-        when(fpsak.getBehandling(anyLong())).thenReturn(behandlingDtoFra(aksjonspunktKoderSkalHaOppgaveDto));
-        handler.håndterEvent(eventDrammenFra(aksjonspunktKoderSkalHaOppgave));
-        when(fpsak.getBehandling(anyLong())).thenReturn(behandlingDtoFra(aksjonspunktKoderSkalLukkeOppgaveDto));
-        handler.håndterEvent(eventDrammenFra(aksjonspunktKoderSkalLukkeOppgave));
-        when(fpsak.getBehandling(anyLong())).thenReturn(behandlingDtoFra(aksjonspunktKoderTilBeslutterDto));
-        handler.håndterEvent(eventDrammenFra(aksjonspunktKoderTilBeslutter));
-        when(fpsak.getBehandling(anyLong())).thenReturn(behandlingDtoFra(aksjonspunktKoderSkalLukkeOppgaveDto));
-        handler.håndterEvent(eventDrammenFra(aksjonspunktKoderSkalLukkeOppgave));
-        assertThat(repoRule.getRepository().hentAlle(Oppgave.class)).hasSize(2);
-        assertThat(repoRule.getRepository().hentAlle(OppgaveEgenskap.class)).hasSize(1);
-        var alle = repoRule.getRepository().hentAlle(OppgaveEventLogg.class);
-        assertThat(repoRule.getRepository().hentAlle(OppgaveEventLogg.class)).hasSize(4);
+    public void skalLukkeOppgavenVedOversendelseTilBehandler() {
+        behandle(skalHaOppgave5015);
+        behandle(skalLukkeOppgave5015UTFO);
+        behandle(beslutter);
+        behandle(beslutterUtfort);
+        verifiserAtAntallOppgaverEr(2);
+        verifiserOppgaveEgenskaperTilsvarer(List.of(AndreKriterierType.TIL_BESLUTTER));
+        verifiserOppgaveEventAntallEr(4);
+    }
+
+    @Test
+    public void skalOppretteNyOppgaveVedReturFraBehandler() {
+        behandle(skalHaOppgave5015);
+        behandle(skalLukkeOppgave5015UTFO);
+        behandle(beslutter);
+        verifiserOppgaveEgenskaperTilsvarer(List.of(AndreKriterierType.TIL_BESLUTTER));
+        behandle(beslutterUtfortMedAnnetÅpentPunkt);
+        verifiserAtAntallOppgaverEr(3);
+        verifiserOppgaveEventLoggTilsvarer(List.of(
+                OppgaveEventType.OPPRETTET,
+                OppgaveEventType.LUKKET,
+                OppgaveEventType.OPPRETTET,
+                OppgaveEventType.LUKKET,
+                OppgaveEventType.OPPRETTET));
     }
 
     @Test
@@ -273,7 +290,7 @@ public class ForeldrepengerEventHåndtererTest {
     public void opprettingOppgavemedEgenskapHarGraderingFPTest() {
         when(fpsak.getBehandling(anyLong())).thenReturn(lagBehandlingDtoMedHarGradering(aksjonspunktKoderPapirsøknadEndringFPDto));
         handler.håndterEvent(eventDrammenFra(aksjonspunktKoderPapirsøknadEndringFP));
-        sjekkForEnOppgaveOgEgenskap(AndreKriterierType.SOKT_GRADERING,1,2);
+        sjekkOppgaveOgOppgaveEgenskaper(AndreKriterierType.SOKT_GRADERING,1,2);
     }
 
     @Test
@@ -338,7 +355,7 @@ public class ForeldrepengerEventHåndtererTest {
         fjerde.addUtført(7003);
         behandle(fjerde);
 
-        sjekkKunEnAktivOppgave();
+        verifiserEnAktivOppgave();
     }
 
     private void behandle(AksjonspunktTest aksjonspunktTest) {
@@ -350,7 +367,7 @@ public class ForeldrepengerEventHåndtererTest {
         when(fpsak.getBehandling(anyLong())).thenReturn(behandlingDtoFra(aksjonspunkt));
     }
 
-    private void sjekkAntallOppgaver(int antall) {
+    private void verifiserAtAntallOppgaverEr(int antall) {
         assertThat(repoRule.getRepository().hentAlle(Oppgave.class)).hasSize(antall);
     }
 
@@ -361,15 +378,27 @@ public class ForeldrepengerEventHåndtererTest {
         assertThat(antallAktive).isEqualTo(aktiv ? 1 : 0);
     }
 
-    private void sjekkKunEnAktivOppgave() {
+    private void verifiserEnAktivOppgave() {
         List<Oppgave> oppgave = repoRule.getRepository().hentAlle(Oppgave.class);
         long antallAktive = oppgave.stream().filter(Oppgave::getAktiv).count();
         assertThat(antallAktive).isEqualTo(1L);
     }
 
-    private void sjekkOppgaveEventAntallEr(int antall) {
+    private void verifiserOppgaveEgenskaperTilsvarer(List<AndreKriterierType> kriterier) {
+        List<AndreKriterierType> kriterieLagret = repoRule.getRepository().hentAlle(OppgaveEgenskap.class).stream()
+                .map(OppgaveEgenskap::getAndreKriterierType).collect(Collectors.toList());
+        assertThat(kriterieLagret).containsExactlyElementsOf(kriterier);
+    }
+
+    private void verifiserOppgaveEventAntallEr(int antall) {
         var eventer = repoRule.getRepository().hentAlle(OppgaveEventLogg.class);
         assertThat(eventer).hasSize(antall);
+    }
+
+    private void verifiserOppgaveEventLoggTilsvarer(List<OppgaveEventType> eventer) {
+        var eventTyper = repoRule.getRepository().hentAlle(OppgaveEventLogg.class).stream()
+                .map(OppgaveEventLogg::getEventType).collect(Collectors.toList());
+        assertThat(eventTyper).containsExactlyElementsOf(eventer);
     }
 
     private void sjekkEventLoggInneholder(UUID uuid, OppgaveEventType eventType, AndreKriterierType kriterierType) {
@@ -382,10 +411,10 @@ public class ForeldrepengerEventHåndtererTest {
     }
 
     private void sjekkForEnOppgaveOgEgenskap(AndreKriterierType egenskap) {
-        sjekkForEnOppgaveOgEgenskap(egenskap, 1, 1);
+        sjekkOppgaveOgOppgaveEgenskaper(egenskap, 1, 1);
     }
 
-    private void sjekkForEnOppgaveOgEgenskap(AndreKriterierType egenskap, int antallOppgaver, int antallEgenskaper) {
+    private void sjekkOppgaveOgOppgaveEgenskaper(AndreKriterierType egenskap, int antallOppgaver, int antallEgenskaper) {
         assertThat(repoRule.getRepository().hentAlle(Oppgave.class)).hasSize(antallOppgaver);
         var oppgaveEgenskaper = repoRule.getRepository().hentAlle(OppgaveEgenskap.class);
         assertThat(repoRule.getRepository().hentAlle(OppgaveEgenskap.class)).hasSize(antallEgenskaper);
