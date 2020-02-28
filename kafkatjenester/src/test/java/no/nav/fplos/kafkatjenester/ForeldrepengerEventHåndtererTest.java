@@ -319,19 +319,23 @@ public class ForeldrepengerEventHåndtererTest {
 
     @Test
     public void skalKunVæreEnÅpenOppgavePerBehandling() {
-        var første = aksjonspunkt("7003", KodeStatus.OPPR);
+        var første = aksjonspunkt();
+        første.addOpprettet(7003);
         behandle(første);
 
-        var andre = aksjonspunkt("7003", KodeStatus.UTFO);
+        var andre = aksjonspunkt();
+        andre.addUtført(7003);
         behandle(andre);
 
-        var tredje = aksjonspunkt("5058", KodeStatus.OPPR);
-        tredje.addKode("7003", KodeStatus.UTFO);
+        var tredje = aksjonspunkt();
+        tredje.addOpprettet(5058);
+        tredje.addUtført(7003);
         behandle(tredje);
 
-        var fjerde = aksjonspunkt("5038", KodeStatus.OPPR);
-        fjerde.addKode("5058", KodeStatus.UTFO);
-        fjerde.addKode("7003", KodeStatus.UTFO);
+        var fjerde = aksjonspunkt();
+        fjerde.addOpprettet(5038);
+        fjerde.addUtført(5058);
+        fjerde.addUtført(7003);
         behandle(fjerde);
 
         sjekkKunEnAktivOppgave();
@@ -389,7 +393,7 @@ public class ForeldrepengerEventHåndtererTest {
                 .extracting(OppgaveEgenskap::getAndreKriterierType).contains(egenskap);
     }
 
-    public static AksjonspunktTest aksjonspunkt(String kode, KodeStatus status) {
-        return new AksjonspunktTest(kode, status);
+    public static AksjonspunktTest aksjonspunkt() {
+        return new AksjonspunktTest();
     }
 }

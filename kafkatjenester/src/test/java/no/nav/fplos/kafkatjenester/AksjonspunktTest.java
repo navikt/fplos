@@ -25,13 +25,25 @@ public class AksjonspunktTest {
     public AksjonspunktTest() {
     }
 
-    public AksjonspunktTest(String kode, KodeStatus status) {
-        addKode(kode, status);
+    public AksjonspunktTest(int kode, KodeStatus status) {
+        addKode(String.valueOf(kode), status);
     }
 
-    public void addKode(String kode, KodeStatus status) {
+    private void addKode(String kode, KodeStatus status) {
         dto.put(kode, status.name());
         aksjonspunkt.add(aksjonspunktDtoFra(kode, status.name(), LocalDateTime.now()));
+    }
+
+    public void addOpprettet(int kode) {
+        addKode(String.valueOf(kode), KodeStatus.OPPR);
+    }
+
+    public void addUtført(int kode) {
+        addKode(String.valueOf(kode), KodeStatus.UTFO);
+    }
+
+    public void addAvbrutt(int kode) {
+        addKode(String.valueOf(kode), KodeStatus.AVBR);
     }
 
     enum KodeStatus {
