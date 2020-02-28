@@ -32,24 +32,22 @@ public class ForeldrepengerEventMapper {
             return manueltSattPåVent(aksjonspunkter) ? LUKK_OPPGAVE_MANUELT_VENT : LUKK_OPPGAVE_VENT;
         }
         if (tilBeslutter(aksjonspunkter)) {
-            if (oppgaveHistorikk.erSisteÅpningsEventKriterie(TIL_BESLUTTER)) { //siste oppgave er beslutteroppgave
-                return oppgaveHistorikk.erSammeEnhet(gjeldendeEnhet)
-                        ? GJENÅPNE_OPPGAVE
-                        : OPPRETT_BESLUTTER_OPPGAVE;
+            if (oppgaveHistorikk.erSisteÅpningsEventKriterie(TIL_BESLUTTER) //siste oppgave er beslutteroppgave
+                    && oppgaveHistorikk.erSammeEnhet(gjeldendeEnhet)) {
+                return GJENÅPNE_OPPGAVE;
             }
             return OPPRETT_BESLUTTER_OPPGAVE;
         }
         if (erRegistrerPapirsøknad(aksjonspunkter)) {
-            if (oppgaveHistorikk.erSisteÅpningsEventKriterie(PAPIRSØKNAD)) { //siste oppgave er papirsøknad
-                return oppgaveHistorikk.erSammeEnhet(gjeldendeEnhet)
-                        ? GJENÅPNE_OPPGAVE
-                        : OPPRETT_PAPIRSØKNAD_OPPGAVE;
+            if (oppgaveHistorikk.erSisteÅpningsEventKriterie(PAPIRSØKNAD) //siste oppgave er papirsøknad
+                    && oppgaveHistorikk.erSammeEnhet(gjeldendeEnhet)) {
+                return GJENÅPNE_OPPGAVE;
             }
             return OPPRETT_PAPIRSØKNAD_OPPGAVE;
         }
         if (!oppgaveHistorikk.erUtenHistorikk()) {
             if (oppgaveHistorikk.erSisteÅpningsEventKriterie(TIL_BESLUTTER)) {
-                return OPPRETT_OPPGAVE; //returnert fra beslutter
+                return OPPRETT_OPPGAVE; //returnert fra beslutter, opprett ny oppgave
             }
             return oppgaveHistorikk.erSammeEnhet(gjeldendeEnhet)
                     ? GJENÅPNE_OPPGAVE
