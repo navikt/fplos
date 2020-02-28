@@ -95,7 +95,7 @@ export class FagsakSearchIndex extends Component<Props, StateProps> {
 } = this.props;
     const { sokFerdig } = this.state;
     if (sokFerdig && !prevState.sokFerdig && fagsaker.length === 1) {
-      if (fagsakOppgaver.length >= 1) {
+      if (fagsakOppgaver.length === 1) {
         this.velgFagsakOperasjoner(fagsakOppgaver[0], false);
       } else if (fagsakOppgaver.length === 0) {
         goToFpsak(fagsaker[0].saksnummer);
