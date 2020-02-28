@@ -91,18 +91,14 @@ export class FagsakSearchIndex extends Component<Props, StateProps> {
 
   componentDidUpdate = (prevProps: Props, prevState: StateProps) => {
     const {
- fagsaker, fagsakOppgaver, goToFpsak, goToTilbakesak,
+ fagsaker, fagsakOppgaver, goToFpsak,
 } = this.props;
     const { sokFerdig } = this.state;
     if (sokFerdig && !prevState.sokFerdig && fagsaker.length === 1) {
       if (fagsakOppgaver.length === 1) {
         this.velgFagsakOperasjoner(fagsakOppgaver[0], false);
       } else if (fagsakOppgaver.length === 0) {
-        if (fagsaker[0].system === 'FPSAK') {
-          goToFpsak(fagsaker[0].saksnummer);
-        } else if (fagsaker[0].system === 'FPTILBAKE') {
-          goToTilbakesak(fagsaker[0].href);
-        } else throw new Error('Fagsystemet for oppgaven er ukjent');
+        goToFpsak(fagsaker[0].saksnummer);
       }
     }
   }
