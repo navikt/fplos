@@ -1,13 +1,13 @@
 package no.nav.foreldrepenger.loslager.oppgave;
 
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.UUID;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.UUID;
 
 @Entity(name = "TilbakekrevingOppgave")
 @PrimaryKeyJoinColumn(name = "OPPGAVE_ID")
@@ -17,12 +17,12 @@ public class TilbakekrevingOppgave extends Oppgave{
     @Column(name = "BELOP")
     private BigDecimal belop;
 
+    @Column(name = "FEILUTBETALINGSTART")
+    protected LocalDateTime feilutbetalingstart;
+
     public BigDecimal getBelop() {
         return belop;
     }
-
-    @Column(name = "FEILUTBETALINGSTART")
-    protected LocalDateTime feilutbetalingstart;
 
     public LocalDateTime getFeilutbetalingstart() {
         return feilutbetalingstart;
@@ -61,17 +61,12 @@ public class TilbakekrevingOppgave extends Oppgave{
         }
 
         public TilbakekrevingOppgave.Builder medBelop(BigDecimal belop) {
-            ((TilbakekrevingOppgave)this.tempOppgave).belop = belop;
+            this.tempOppgave.belop = belop;
             return this;
         }
 
         public TilbakekrevingOppgave.Builder medFeilutbetalingStart(LocalDateTime feilutbetalingStart) {
-            ((TilbakekrevingOppgave)this.tempOppgave).feilutbetalingstart = feilutbetalingStart;
-            return this;
-        }
-
-        public Builder medBehandlingId(Long behandlingId){
-            tempOppgave.behandlingId = behandlingId;
+            this.tempOppgave.feilutbetalingstart = feilutbetalingStart;
             return this;
         }
 
@@ -110,28 +105,8 @@ public class TilbakekrevingOppgave extends Oppgave{
             return this;
         }
 
-        public Builder medBehandlingsfrist(LocalDateTime behandlingsfrist){
-            tempOppgave.behandlingsfrist = behandlingsfrist;
-            return this;
-        }
-
         public Builder medBehandlingOpprettet(LocalDateTime behandlingOpprettet){
             tempOppgave.behandlingOpprettet = behandlingOpprettet;
-            return this;
-        }
-
-        public Builder medForsteStonadsdag(LocalDate forsteStonadsdag){
-            tempOppgave.forsteStonadsdag = forsteStonadsdag;
-            return this;
-        }
-        public Builder medBehandlingStatus(BehandlingStatus behandlingStatus){
-            tempOppgave.behandlingStatus = behandlingStatus;
-            return this;
-        }
-
-
-        public Builder medOppgaveAvsluttet(LocalDateTime oppgaveAvsluttet){
-            tempOppgave.oppgaveAvsluttet = oppgaveAvsluttet;
             return this;
         }
 
@@ -151,7 +126,7 @@ public class TilbakekrevingOppgave extends Oppgave{
         }
 
         public TilbakekrevingOppgave build() {
-            return (TilbakekrevingOppgave)this.tempOppgave;
+            return this.tempOppgave;
         }
     }
 }
