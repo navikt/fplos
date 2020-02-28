@@ -56,19 +56,14 @@ public class ForeldrepengerEventHåndterer implements EventHåndterer<FpsakBehan
     @Override
     public void håndterEvent(FpsakBehandlingProsessEventDto dto) {
         Long behandlingId = dto.getBehandlingId();
-        UUID eksternId = dto.getEksternId();
-        OppgaveHistorikk oppgaveHistorikk = new OppgaveHistorikk(oppgaveRepository.hentOppgaveEventer(eksternId));
-
         BehandlingFpsak behandling = foreldrePengerBehandlingRestKlient.getBehandling(behandlingId);
-        if (eksternId == null) {
-            eksternId = behandling.getUuid();
-        }
+        UUID eksternId = behandling.getUuid();
+        OppgaveHistorikk oppgaveHistorikk = new OppgaveHistorikk(oppgaveRepository.hentOppgaveEventer(eksternId));
 
         List<Aksjonspunkt> aksjonspunkt = Optional.ofNullable(behandling.getAksjonspunkter())
                 .orElse(Collections.emptyList());
 
         OppgaveEgenskapFinner egenskapFinner = new FpsakOppgaveEgenskapFinner(behandling, aksjonspunkt);
-
         EventResultat eventResultat = FpsakEventMapper.signifikantEventFra(aksjonspunkt, oppgaveHistorikk, dto.getBehandlendeEnhet());
 
         switch (eventResultat) {
