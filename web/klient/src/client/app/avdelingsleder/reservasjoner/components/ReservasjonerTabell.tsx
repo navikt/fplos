@@ -1,12 +1,11 @@
 import React, { Component } from 'react';
 import { Element, Normaltekst } from 'nav-frontend-typografi';
-import { FormattedMessage } from 'react-intl';
+import { FormattedHTMLMessage, FormattedMessage } from 'react-intl';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
 import { Reservasjon } from 'avdelingsleder/reservasjoner/reservasjonTsType';
 import reservasjonPropType from 'avdelingsleder/reservasjoner/reservasjonPropType';
-import { getValgtAvdelingEnhet } from 'app/duck';
 import Table from 'sharedComponents/Table';
 import TableRow from 'sharedComponents/TableRow';
 import TableColumn from 'sharedComponents/TableColumn';
@@ -14,6 +13,10 @@ import Image from 'sharedComponents/Image';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import removeIcon from 'images/remove.svg';
 
+import CalendarToggleButton from 'sharedComponents/datepicker/CalendarToggleButton';
+import OppgaveReservasjonEndringDatoModal
+  from 'saksbehandler/behandlingskoer/components/menu/OppgaveReservasjonEndringDatoModal';
+import { getDateAndTime } from 'utils/dateUtils';
 import styles from './reservasjonerTabell.less';
 
 const headerTextCodes = [
@@ -21,24 +24,26 @@ const headerTextCodes = [
   'ReservasjonerTabell.Saksnr',
   'ReservasjonerTabell.BehandlingType',
   'ReservasjonerTabell.ReservertTil',
+  'ReservasjonerTabell.Endre',
   'ReservasjonerTabell.Slett',
 ];
 
 interface TsProps {
   reservasjoner: Reservasjon[];
   opphevReservasjon: (oppgaveId: number) => Promise<string>;
-  valgtAvdelingEnhet: string;
+  endreOppgaveReservasjon: (oppgaveId: number, reserverTil: string) => Promise<string>;
 }
 
 interface StateTsProps {
-  placeholder?: string;
+  showReservasjonEndringDatoModal: boolean;
+  valgtReservasjon?: Reservasjon;
 }
 
 export class ReservasjonerTabell extends Component<TsProps, StateTsProps> {
   static propTypes = {
     reservasjoner: PropTypes.arrayOf(reservasjonPropType).isRequired,
     opphevReservasjon: PropTypes.func.isRequired,
-    valgtAvdelingEnhet: PropTypes.string.isRequired,
+    endreOppgaveReservasjon: PropTypes.func.isRequired,
   }
 
   /* Endre denne */
@@ -46,16 +51,36 @@ export class ReservasjonerTabell extends Component<TsProps, StateTsProps> {
     super(props);
 
     this.state = {
-      placeholder: undefined,
+      showReservasjonEndringDatoModal: false,
+      valgtReservasjon: undefined,
     };
+  }
+
+
+  closeReservasjonEndringDatoModal = (event: Event) => {
+    this.setState(prevState => ({ ...prevState, showReservasjonEndringDatoModal: false }));
+  }
+
+  showReservasjonEndringDato = (reservasjon: Reservasjon) => {
+    this.setState(prevState => ({ ...prevState, showReservasjonEndringDatoModal: true, valgtReservasjon: reservasjon }));
+  }
+
+  endreReserverasjon = (reserverTil: string) => {
+    const { endreOppgaveReservasjon } = this.props;
+    const {
+      valgtReservasjon,
+    } = this.state;
+    endreOppgaveReservasjon(valgtReservasjon.oppgaveId, reserverTil).then(() => {
+      this.setState(prevState => ({ ...prevState, showReservasjonEndringDatoModal: false }));
+    });
   }
 
   render = () => {
     const {
-      reservasjoner, opphevReservasjon, valgtAvdelingEnhet,
+      reservasjoner, opphevReservasjon,
     } = this.props;
     const {
-      placeholder,
+      showReservasjonEndringDatoModal, valgtReservasjon,
     } = this.state;
 
     const sorterteReservasjoner = reservasjoner.sort((reservasjon1, reservasjon2) => reservasjon1.reservertAvNavn.localeCompare(reservasjon2.reservertAvNavn));
@@ -78,7 +103,18 @@ export class ReservasjonerTabell extends Component<TsProps, StateTsProps> {
                 <TableColumn>{reservasjon.reservertAvNavn}</TableColumn>
                 <TableColumn>{reservasjon.oppgaveSaksNr}</TableColumn>
                 <TableColumn>{reservasjon.behandlingType}</TableColumn>
-                <TableColumn>{reservasjon.reservertTilTidspunkt}</TableColumn>
+                <TableColumn>
+                  <FormattedHTMLMessage
+                    id="ReservasjonerTabell.ReservertTilFormat"
+                    values={getDateAndTime(reservasjon.reservertTilTidspunkt)}
+                  />
+                </TableColumn>
+                <TableColumn>
+                  <CalendarToggleButton
+                    toggleShowCalendar={() => this.showReservasjonEndringDato(reservasjon)}
+                    className={styles.calendarToggleButton}
+                  />
+                </TableColumn>
                 <TableColumn>
                   <Image
                     src={removeIcon}
@@ -91,13 +127,19 @@ export class ReservasjonerTabell extends Component<TsProps, StateTsProps> {
             ))}
           </Table>
         )}
+        {showReservasjonEndringDatoModal
+          && (
+            <OppgaveReservasjonEndringDatoModal
+              showModal={showReservasjonEndringDatoModal}
+              endreOppgaveReservasjon={this.endreReserverasjon}
+              closeModal={this.closeReservasjonEndringDatoModal}
+              reserverTilDefault={valgtReservasjon.reservertTilTidspunkt}
+            />
+          )
+        }
       </>
     );
   }
 }
 
-const mapStateToProps = state => ({
-  valgtAvdelingEnhet: getValgtAvdelingEnhet(state),
-});
-
-export default connect(mapStateToProps)(ReservasjonerTabell);
+export default ReservasjonerTabell;

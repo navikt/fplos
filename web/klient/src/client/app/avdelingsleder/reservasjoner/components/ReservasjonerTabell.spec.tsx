@@ -14,7 +14,7 @@ describe('<ReservasjonerTabell>', () => {
     const wrapper = shallow(<ReservasjonerTabell
       reservasjoner={[]}
       opphevReservasjon={sinon.spy()}
-      valgtAvdelingEnhet="2"
+      endreOppgaveReservasjon={sinon.spy()}
     />);
 
     const message = wrapper.find(FormattedMessage);
@@ -29,21 +29,21 @@ describe('<ReservasjonerTabell>', () => {
       oppgaveId: 1,
       reservertAvUid: 'ESPEN',
       reservertAvNavn: 'Espen Utvikler',
-      reservertTilTidspunkt: '14:30 02.02.2020',
+      reservertTilTidspunkt: '2020-02-02T14:30:00',
       behandlingType: 'Førstegangsbehandling',
       oppgaveSaksNr: 10,
     }, {
       oppgaveId: 2,
       reservertAvUid: 'JOACHIM',
       reservertAvNavn: 'Auto Joachim',
-      reservertTilTidspunkt: '10:19 02.02.2020',
+      reservertTilTidspunkt: '2020-02-01T10:19:00',
       behandlingType: 'Revurdering',
       oppgaveSaksNr: 25,
     }];
     const wrapper = shallow(<ReservasjonerTabell
       reservasjoner={reservasjoner}
       opphevReservasjon={sinon.spy()}
-      valgtAvdelingEnhet="2"
+      endreOppgaveReservasjon={sinon.spy()}
     />);
 
     expect(wrapper.find(FormattedMessage)).to.have.length(1);
@@ -53,17 +53,19 @@ describe('<ReservasjonerTabell>', () => {
     expect(rader).to.have.length(2);
 
     const kolonnerRad1 = rader.first().find(TableColumn);
-    expect(kolonnerRad1).to.have.length(5);
+    expect(kolonnerRad1).to.have.length(6);
     expect(kolonnerRad1.first().childAt(0).text()).to.eql('Auto Joachim');
     expect(kolonnerRad1.at(1).childAt(0).text()).to.eql('25');
     expect(kolonnerRad1.at(2).childAt(0).text()).to.eql('Revurdering');
-    expect(kolonnerRad1.at(3).childAt(0).text()).to.eql('10:19 02.02.2020');
+    expect(kolonnerRad1.at(3).childAt(0).prop('id')).is.eql('ReservasjonerTabell.ReservertTilFormat');
+    expect(kolonnerRad1.at(3).childAt(0).prop('values')).is.eql({ time: '10:19', date: '01.02.2020' });
 
     const kolonnerRad2 = rader.last().find(TableColumn);
-    expect(kolonnerRad2).to.have.length(5);
+    expect(kolonnerRad2).to.have.length(6);
     expect(kolonnerRad2.first().childAt(0).text()).to.eql('Espen Utvikler');
     expect(kolonnerRad2.at(1).childAt(0).text()).to.eql('10');
     expect(kolonnerRad2.at(2).childAt(0).text()).to.eql('Førstegangsbehandling');
-    expect(kolonnerRad2.at(3).childAt(0).text()).to.eql('14:30 02.02.2020');
+    expect(kolonnerRad2.at(3).childAt(0).prop('id')).is.eql('ReservasjonerTabell.ReservertTilFormat');
+    expect(kolonnerRad2.at(3).childAt(0).prop('values')).is.eql({ time: '14:30', date: '02.02.2020' });
   });
 });

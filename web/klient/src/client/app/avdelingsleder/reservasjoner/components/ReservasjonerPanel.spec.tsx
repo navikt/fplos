@@ -11,6 +11,7 @@ describe('<ReservasjonerPanel>', () => {
     const wrapper = shallow(<ReservasjonerPanel
       reservasjoner={[]}
       opphevReservasjon={sinon.spy()}
+      endreOppgaveReservasjon={sinon.spy()}
     />);
     expect(wrapper.find(ReservasjonerTabell)).to.have.length(1);
   });

@@ -1,13 +1,11 @@
 package no.nav.foreldrepenger.los.web.app.tjenester.felles.dto;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import no.nav.foreldrepenger.loslager.oppgave.Reservasjon;
 
 import java.time.LocalDateTime;
 
 public class ReservasjonDto {
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm - dd.MM.yyyy")
     private LocalDateTime reservertTilTidspunkt;
     private String reservertAvUid;
     private String reservertAvNavn;  // Settes når oppgave er reservert av annen saksbehandler
