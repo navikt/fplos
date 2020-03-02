@@ -17,6 +17,7 @@ import no.nav.foreldrepenger.los.web.app.tjenester.admin.AdminRestTjeneste;
 import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.AvdelingslederRestTjeneste;
 import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.nøkkeltall.NøkkeltallRestTjeneste;
 import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.oppgave.AvdelingslederOppgaveRestTjeneste;
+import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.reservasjoner.AvdelingReservasjonerRestTjeneste;
 import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.saksbehandler.AvdelingslederSaksbehandlerRestTjeneste;
 import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.saksliste.AvdelingslederSakslisteRestTjeneste;
 import no.nav.foreldrepenger.los.web.app.tjenester.fagsak.FagsakRestTjeneste;
@@ -91,6 +92,7 @@ public class ApplicationConfig extends Application {
         classes.add(OppgaveRestTjeneste.class);
         classes.add(AvdelingslederSakslisteRestTjeneste.class);
         classes.add(AvdelingslederSaksbehandlerRestTjeneste.class);
+        classes.add(AvdelingReservasjonerRestTjeneste.class);
         classes.add(NøkkeltallRestTjeneste.class);
         classes.add(AvdelingslederRestTjeneste.class);
         classes.add(AvdelingslederOppgaveRestTjeneste.class);

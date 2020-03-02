@@ -33,6 +33,8 @@ public interface OppgaveRepository {
 
     List<Reservasjon> hentReservasjonerTilknyttetAktiveOppgaver(String uid);
 
+    List<Reservasjon> hentAlleReservasjonerForAvdeling(String avdelingEnhet);
+
     List<Oppgave> hentOppgaverForSaksnummer(Long fagsakSaksnummer);
 
     List<Oppgave> hentAktiveOppgaverForSaksnummer(Collection<Long> fagsakSaksnummerListe);

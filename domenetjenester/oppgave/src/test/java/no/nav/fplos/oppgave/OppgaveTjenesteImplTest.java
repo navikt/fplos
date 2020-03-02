@@ -226,16 +226,20 @@ public class OppgaveTjenesteImplTest {
         Long oppgaveFiltreringId = leggeInnEtSettMedOppgaver();
         assertThat(oppgaveTjeneste.hentOppgaver(oppgaveFiltreringId)).hasSize(3);
         assertThat(oppgaveTjeneste.hentReservasjonerTilknyttetAktiveOppgaver()).hasSize(0);
+        assertThat(oppgaveTjeneste.hentReservasjonerForAvdeling(AVDELING_DRAMMEN_ENHET)).hasSize(0);
         assertThat(oppgaveTjeneste.hentSisteReserverteOppgaver()).hasSize(0);
 
         oppgaveTjeneste.reserverOppgave(førstegangOppgave.getId());
         assertThat(oppgaveTjeneste.hentOppgaver(oppgaveFiltreringId)).hasSize(2);
         assertThat(oppgaveTjeneste.hentReservasjonerTilknyttetAktiveOppgaver()).hasSize(1);
+        assertThat(oppgaveTjeneste.hentReservasjonerForAvdeling(AVDELING_DRAMMEN_ENHET)).hasSize(1);
+        assertThat(oppgaveTjeneste.hentReservasjonerForAvdeling(AVDELING_BERGEN_ENHET)).hasSize(0);
         assertThat(oppgaveTjeneste.hentReservasjonerTilknyttetAktiveOppgaver().get(0).getReservertTil().until(LocalDateTime.now().plusHours(2), MINUTES)).isLessThan(2);
         assertThat(oppgaveTjeneste.hentSisteReserverteOppgaver()).hasSize(1);
 
         oppgaveTjeneste.forlengReservasjonPåOppgave(førstegangOppgave.getId());
         assertThat(oppgaveTjeneste.hentReservasjonerTilknyttetAktiveOppgaver().get(0).getReservertTil().until(LocalDateTime.now().plusHours(26), MINUTES)).isLessThan(2);
+        assertThat(oppgaveTjeneste.hentReservasjonerForAvdeling(AVDELING_DRAMMEN_ENHET).get(0).getReservertTil().until(LocalDateTime.now().plusHours(26), MINUTES)).isLessThan(2);
 
         oppgaveTjeneste.endreReservasjonPåOppgave(førstegangOppgave.getId(), LocalDateTime.now().plusDays(3));
         assertThat(oppgaveTjeneste.hentReservasjonerTilknyttetAktiveOppgaver().get(0).getReservertTil().until(LocalDateTime.now().plusDays(3), MINUTES)).isLessThan(2);
@@ -243,6 +247,7 @@ public class OppgaveTjenesteImplTest {
         oppgaveTjeneste.frigiOppgave(førstegangOppgave.getId(), begrunnelse);
         assertThat(oppgaveTjeneste.hentOppgaver(oppgaveFiltreringId)).hasSize(3);
         assertThat(oppgaveTjeneste.hentReservasjonerTilknyttetAktiveOppgaver()).hasSize(0);
+        assertThat(oppgaveTjeneste.hentReservasjonerForAvdeling(AVDELING_DRAMMEN_ENHET)).hasSize(0);
         assertThat(oppgaveTjeneste.hentSisteReserverteOppgaver()).hasSize(1);
         assertThat(oppgaveTjeneste.hentSisteReserverteOppgaver().get(0).getReservasjon().getBegrunnelse()).isEqualTo(begrunnelse);
     }
