@@ -1,19 +1,21 @@
 package no.nav.foreldrepenger.los.web.app.tjenester.felles.dto;
 
+import java.time.LocalDateTime;
+import java.util.Locale;
+import java.util.UUID;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import no.nav.foreldrepenger.loslager.BehandlingId;
 import no.nav.foreldrepenger.loslager.aktør.TpsPersonDto;
 import no.nav.foreldrepenger.loslager.oppgave.BehandlingStatus;
 import no.nav.foreldrepenger.loslager.oppgave.BehandlingType;
 import no.nav.foreldrepenger.loslager.oppgave.FagsakYtelseType;
 import no.nav.foreldrepenger.loslager.oppgave.Oppgave;
 
-import java.time.LocalDateTime;
-import java.util.Locale;
-import java.util.UUID;
-
 public class OppgaveDto {
     private Long id;
     private OppgaveStatusDto status;
-    private Long behandlingId;
     private Long saksnummer;
     private String navn;
     private String system;
@@ -24,7 +26,7 @@ public class OppgaveDto {
     private Boolean erTilSaksbehandling;
     private LocalDateTime opprettetTidspunkt;
     private LocalDateTime behandlingsfrist;
-    private UUID eksternId;
+    private BehandlingId behandlingId;
     private String href;
 
     public OppgaveDto() {
@@ -53,7 +55,6 @@ public class OppgaveDto {
         this.status = OppgaveStatusDto.reservert(oppgave.getReservasjon(), reservertAvNavn, flyttetAvNavn);
         this.saksnummer = oppgave.getFagsakSaksnummer();
         this.behandlingId = oppgave.getBehandlingId();
-        this.eksternId = oppgave.getEksternId();
         this.system = oppgave.getSystem();
         this.behandlingStatus = oppgave.getBehandlingStatus();
 
@@ -81,12 +82,14 @@ public class OppgaveDto {
         return status;
     }
 
-    public Long getBehandlingId() {
-        return behandlingId;
+    // TODO expand-contract fjerne etter frontend bruker behandlingId
+    @JsonProperty
+    public UUID getEksternId() {
+        return getBehandlingId();
     }
 
-    public UUID getEksternId() {
-        return eksternId;
+    public UUID getBehandlingId() {
+        return behandlingId.toUUID();
     }
 
     public Long getSaksnummer() {
@@ -139,8 +142,7 @@ public class OppgaveDto {
         return "<id=" + id + //$NON-NLS-1$
                 ", status=" + status.isErReservert() + //$NON-NLS-1$
                 ", saksnummer=" + saksnummer+ //$NON-NLS-1$
-                ", behandlingId=" + behandlingId+ //$NON-NLS-1$
-                ", eksternId=" + eksternId+ //$NON-NLS-1$
+                ", behandlingId=" + behandlingId + //$NON-NLS-1$
                 ", navn=" + navn + //$NON-NLS-1$
                 ", personnummer=" + personnummer + //$NON-NLS-1$
                 ", system=" + system + //$NON-NLS-1$
@@ -162,13 +164,13 @@ public class OppgaveDto {
         if (saksnummer.equals(oppgaveDto.saksnummer)) {
             return true;
         }
-        return eksternId.equals(oppgaveDto.eksternId);
+        return behandlingId.equals(oppgaveDto.behandlingId);
     }
 
     @Override
     public int hashCode() {
         int result = saksnummer.hashCode();
-        return 31 * result + eksternId.hashCode();
+        return 31 * result + behandlingId.hashCode();
     }
 
     private static String formaterMedStoreOgSmåBokstaver(String tekst) {

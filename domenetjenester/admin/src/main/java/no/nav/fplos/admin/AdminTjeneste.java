@@ -1,27 +1,24 @@
 package no.nav.fplos.admin;
 
+import java.util.List;
+
+import no.nav.foreldrepenger.loslager.BehandlingId;
 import no.nav.foreldrepenger.loslager.oppgave.Oppgave;
 import no.nav.foreldrepenger.loslager.oppgave.OppgaveEventLogg;
-import no.nav.foreldrepenger.loslager.oppgave.TilbakekrevingOppgave;
-
-import java.util.List;
-import java.util.UUID;
 
 public interface AdminTjeneste {
 
-    Oppgave synkroniserOppgave(UUID uuid);
+    Oppgave synkroniserOppgave(BehandlingId behandlingId);
 
-    Oppgave hentOppgave(UUID uuid);
+    Oppgave hentOppgave(BehandlingId behandlingId);
 
-    TilbakekrevingOppgave hentTilbakekrevingOppgave(UUID uuid);
+    List<OppgaveEventLogg> hentEventer(BehandlingId behandlingId);
 
-    List<OppgaveEventLogg> hentEventer(UUID uuid);
-
-    void oppdaterOppgave(UUID uuid);
+    void oppdaterOppgave(BehandlingId behandlingId);
 
     int prosesserAlleMeldingerFraFeillogg();
 
-    List<Oppgave> hentAlleOppgaverForBehandling(UUID uuid);
+    List<Oppgave> hentAlleOppgaverForBehandling(BehandlingId behandlingId);
 
     Oppgave deaktiverOppgave(Long oppgaveId);
 

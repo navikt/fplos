@@ -2,14 +2,13 @@ package no.nav.fplos.kafkatjenester;
 
 import static no.nav.foreldrepenger.loslager.oppgave.AndreKriterierType.TIL_BESLUTTER;
 
-import java.util.UUID;
-
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import no.nav.foreldrepenger.loslager.BehandlingId;
 import no.nav.foreldrepenger.loslager.oppgave.AndreKriterierType;
 import no.nav.foreldrepenger.loslager.oppgave.BehandlingType;
 import no.nav.foreldrepenger.loslager.oppgave.FagsakYtelseType;
@@ -41,8 +40,8 @@ public class TilbakekrevingEventHåndterer implements EventHåndterer<Tilbakebet
 
     @Override
     public void håndterEvent(TilbakebetalingBehandlingProsessEventDto dto) {
-        var id = dto.getEksternId();
-        OppgaveHistorikk oppgaveHistorikk = new OppgaveHistorikk(oppgaveRepository.hentOppgaveEventer(dto.getEksternId()));
+        var behandlingId = new BehandlingId(dto.getEksternId());
+        OppgaveHistorikk oppgaveHistorikk = new OppgaveHistorikk(oppgaveRepository.hentOppgaveEventer(behandlingId));
         OppgaveEgenskapFinner egenskapFinner = new TilbakekrevingOppgaveEgenskapFinner(dto.getAksjonspunktKoderMedStatusListe(),
                 dto.getAnsvarligSaksbehandlerIdent());
         EventResultat event = eventFra(dto, oppgaveHistorikk, egenskapFinner);
@@ -50,34 +49,34 @@ public class TilbakekrevingEventHåndterer implements EventHåndterer<Tilbakebet
         switch (event) {
             case LUKK_OPPGAVE_MANUELT_VENT:
                 log.info("Lukker oppgave, satt manuelt på vent.");
-                avsluttOppgaveForEksternId(id);
-                loggEvent(id, OppgaveEventType.MANU_VENT, dto.getBehandlendeEnhet());
+                avsluttOppgaveForBehandling(behandlingId);
+                loggEvent(behandlingId, OppgaveEventType.MANU_VENT, dto.getBehandlendeEnhet());
                 break;
             case LUKK_OPPGAVE:
-                log.info("Lukker oppgave med eksternRefId {}.", id.toString());
-                avsluttOppgaveForEksternId(id);
-                loggEvent(id, OppgaveEventType.LUKKET, dto.getBehandlendeEnhet());
+                log.info("Lukker oppgave med behandlingId {}.", behandlingId.toString());
+                avsluttOppgaveForBehandling(behandlingId);
+                loggEvent(behandlingId, OppgaveEventType.LUKKET, dto.getBehandlendeEnhet());
                 break;
             case OPPRETT_OPPGAVE:
-                avsluttOppgaveHvisÅpen(id, oppgaveHistorikk, dto.getBehandlendeEnhet());
+                avsluttOppgaveHvisÅpen(behandlingId, oppgaveHistorikk, dto.getBehandlendeEnhet());
                 Oppgave oppgave = opprettTilbakekrevingOppgave(dto);
-                log.info("Oppretter tilbakekrevingsoppgave {} for eksternId {}.", oppgave.getId(), id);
+                log.info("Oppretter tilbakekrevingsoppgave {} for behandlingId {}.", oppgave.getId(), behandlingId);
                 oppgaveEgenskapHandler.håndterOppgaveEgenskaper(oppgave, egenskapFinner);
-                loggEvent(oppgave.getEksternId(), OppgaveEventType.OPPRETTET, null, dto.getBehandlendeEnhet());
+                loggEvent(oppgave.getBehandlingId(), OppgaveEventType.OPPRETTET, null, dto.getBehandlendeEnhet());
                 break;
             case OPPRETT_BESLUTTER_OPPGAVE:
-                avsluttOppgaveHvisÅpen(id, oppgaveHistorikk, dto.getBehandlendeEnhet());
+                avsluttOppgaveHvisÅpen(behandlingId, oppgaveHistorikk, dto.getBehandlendeEnhet());
                 Oppgave beslutterOppgave = opprettTilbakekrevingOppgave(dto);
                 log.info("Oppretter beslutteroppgave.");
                 oppgaveEgenskapHandler.håndterOppgaveEgenskaper(beslutterOppgave, egenskapFinner);
-                loggEvent(id, OppgaveEventType.OPPRETTET, TIL_BESLUTTER, dto.getBehandlendeEnhet());
+                loggEvent(behandlingId, OppgaveEventType.OPPRETTET, TIL_BESLUTTER, dto.getBehandlendeEnhet());
                 break;
             case GJENÅPNE_OPPGAVE:
-                TilbakekrevingOppgave gjenåpnetOppgave = oppgaveRepository.gjenåpneTilbakekrevingOppgave(id);
+                TilbakekrevingOppgave gjenåpnetOppgave = oppgaveRepository.gjenåpneTilbakekrevingOppgave(behandlingId);
                 oppdaterOppgaveInformasjon(gjenåpnetOppgave, dto);
                 oppgaveEgenskapHandler.håndterOppgaveEgenskaper(gjenåpnetOppgave, egenskapFinner);
-                log.info("Gjenåpner oppgave for eksternId {}.", id);
-                loggEvent(gjenåpnetOppgave.getEksternId(), OppgaveEventType.GJENAPNET, null, dto.getBehandlendeEnhet());
+                log.info("Gjenåpner oppgave for behandlingId {}.", behandlingId);
+                loggEvent(gjenåpnetOppgave.getBehandlingId(), OppgaveEventType.GJENAPNET, null, dto.getBehandlendeEnhet());
                 break;
         }
     }
@@ -102,26 +101,25 @@ public class TilbakekrevingEventHåndterer implements EventHåndterer<Tilbakebet
         return event;
     }
 
-    protected void loggEvent(UUID eksternId, OppgaveEventType oppgaveEventType, AndreKriterierType andreKriterierType, String behandlendeEnhet) {
-        oppgaveRepository.lagre(new OppgaveEventLogg(eksternId, oppgaveEventType, andreKriterierType, behandlendeEnhet));
+    protected void loggEvent(BehandlingId behandlingId, OppgaveEventType oppgaveEventType, AndreKriterierType andreKriterierType, String behandlendeEnhet) {
+        oppgaveRepository.lagre(new OppgaveEventLogg(behandlingId, oppgaveEventType, andreKriterierType, behandlendeEnhet));
     }
 
-    protected void loggEvent(UUID eksternId, OppgaveEventType oppgaveEventType, String behandlendeEnhet) {
-        oppgaveRepository.lagre(new OppgaveEventLogg(eksternId, oppgaveEventType, null, behandlendeEnhet));
+    protected void loggEvent(BehandlingId behandlingId, OppgaveEventType oppgaveEventType, String behandlendeEnhet) {
+        oppgaveRepository.lagre(new OppgaveEventLogg(behandlingId, oppgaveEventType, null, behandlendeEnhet));
     }
 
 
-    private void avsluttOppgaveHvisÅpen(UUID eksternId, OppgaveHistorikk oppgaveHistorikk, String behandlendeEnhet) {
+    private void avsluttOppgaveHvisÅpen(BehandlingId behandlingId, OppgaveHistorikk oppgaveHistorikk, String behandlendeEnhet) {
         if (oppgaveHistorikk.erSisteEventÅpningsevent()) {
-            loggEvent(eksternId, OppgaveEventType.LUKKET, null, behandlendeEnhet);
-            oppgaveRepository.avsluttOppgaveForEksternId(eksternId);
+            loggEvent(behandlingId, OppgaveEventType.LUKKET, null, behandlendeEnhet);
+            oppgaveRepository.avsluttOppgaveForBehandling(behandlingId);
         }
     }
 
     private void oppdaterOppgaveInformasjon(TilbakekrevingOppgave gjenåpnetOppgave, TilbakebetalingBehandlingProsessEventDto bpeDto) {
         TilbakekrevingOppgave tmp = oppgaveFra(bpeDto);
         gjenåpnetOppgave.avstemMed(tmp);
-        tmp = null;
         oppgaveRepository.lagre(gjenåpnetOppgave);
     }
 
@@ -143,11 +141,11 @@ public class TilbakekrevingEventHåndterer implements EventHåndterer<Tilbakebet
                 .medAktiv(true)
                 .medBehandlingOpprettet(dto.getOpprettetBehandling())
                 .medUtfortFraAdmin(false)
-                .medEksternId(dto.getEksternId())
+                .medBehandlingId(new BehandlingId(dto.getEksternId()))
                 .build();
     }
 
-    private void avsluttOppgaveForEksternId(UUID externId) {
-        oppgaveRepository.avsluttOppgaveForEksternId(externId);
+    private void avsluttOppgaveForBehandling(BehandlingId behandlingId) {
+        oppgaveRepository.avsluttOppgaveForBehandling(behandlingId);
     }
 }

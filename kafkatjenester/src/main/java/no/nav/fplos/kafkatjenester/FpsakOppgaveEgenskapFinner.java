@@ -1,33 +1,25 @@
 package no.nav.fplos.kafkatjenester;
 
-import no.nav.foreldrepenger.loslager.oppgave.AndreKriterierType;
-import no.nav.foreldrepenger.loslager.oppgave.OppgaveEventLogg;
-import no.nav.foreldrepenger.loslager.oppgave.OppgaveEventType;
-import no.nav.fplos.foreldrepengerbehandling.Aksjonspunkt;
-import no.nav.fplos.foreldrepengerbehandling.BehandlingFpsak;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.util.ArrayList;
 import java.util.List;
 
-import static no.nav.fplos.kafkatjenester.util.StreamUtil.safeStream;
+import no.nav.foreldrepenger.loslager.oppgave.AndreKriterierType;
+import no.nav.fplos.foreldrepengerbehandling.Aksjonspunkt;
+import no.nav.fplos.foreldrepengerbehandling.BehandlingFpsak;
 
 public class FpsakOppgaveEgenskapFinner implements OppgaveEgenskapFinner {
-    private static final Logger log = LoggerFactory.getLogger(FpsakOppgaveEgenskapFinner.class);
-    private final FpsakAksjonspunkt fpsakAksjonspunkt;
     private final List<AndreKriterierType> andreKriterier = new ArrayList<>();
     private final String saksbehandlerForTotrinn;
 
     public FpsakOppgaveEgenskapFinner(BehandlingFpsak behandling,
                                       List<Aksjonspunkt> aksjonspunkt) {
-        this.fpsakAksjonspunkt = new FpsakAksjonspunkt(aksjonspunkt);
         this.saksbehandlerForTotrinn = behandling.getAnsvarligSaksbehandler();
 
         if (harGradering(behandling)) this.andreKriterier.add(AndreKriterierType.SOKT_GRADERING);
         if (erUtbetalingTilBruker(behandling)) this.andreKriterier.add(AndreKriterierType.UTBETALING_TIL_BRUKER);
         if (erVurderSykdom(behandling)) this.andreKriterier.add(AndreKriterierType.VURDER_SYKDOM);
 
+        FpsakAksjonspunkt fpsakAksjonspunkt = new FpsakAksjonspunkt(aksjonspunkt);
         andreKriterier.addAll(fpsakAksjonspunkt.getKriterier());
     }
 
@@ -43,13 +35,6 @@ public class FpsakOppgaveEgenskapFinner implements OppgaveEgenskapFinner {
 
     private static boolean erVurderSykdom(BehandlingFpsak behandling) {
         return behandling.getHarVurderSykdom() != null && behandling.getHarVurderSykdom();
-    }
-
-    private static OppgaveEventLogg sisteOpprettetEventFra(List<OppgaveEventLogg> logg) {
-        return safeStream(logg)
-                .filter(e -> e.getEventType().equals(OppgaveEventType.OPPRETTET))
-                .findFirst()
-                .orElse(null);
     }
 
     private static boolean erUtbetalingTilBruker(BehandlingFpsak behandling) {

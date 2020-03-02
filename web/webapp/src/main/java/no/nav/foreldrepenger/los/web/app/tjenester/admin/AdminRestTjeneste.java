@@ -4,8 +4,6 @@ import static no.nav.vedtak.sikkerhet.abac.BeskyttetRessursActionAttributt.READ;
 import static no.nav.vedtak.sikkerhet.abac.BeskyttetRessursResourceAttributt.OPPGAVESTYRING;
 
 import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 import javax.enterprise.context.RequestScoped;
@@ -28,7 +26,6 @@ import no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.oppgave.dto.Opp
 import no.nav.foreldrepenger.loslager.oppgave.Oppgave;
 import no.nav.foreldrepenger.loslager.oppgave.OppgaveEventLogg;
 import no.nav.fplos.admin.AdminTjeneste;
-import no.nav.fplos.foreldrepengerbehandling.ForeldrepengerBehandlingRestKlient;
 import no.nav.vedtak.sikkerhet.abac.BeskyttetRessurs;
 
 @Path("/admin")
@@ -38,12 +35,9 @@ public class AdminRestTjeneste {
 
     private AdminTjeneste adminTjeneste;
 
-    private ForeldrepengerBehandlingRestKlient foreldrePengerBehandlingRestKlient;
-
     @Inject
-    public AdminRestTjeneste(AdminTjeneste adminTjeneste, ForeldrepengerBehandlingRestKlient foreldrePengerBehandlingRestKlient) {
+    public AdminRestTjeneste(AdminTjeneste adminTjeneste) {
         this.adminTjeneste = adminTjeneste;
-        this.foreldrePengerBehandlingRestKlient = foreldrePengerBehandlingRestKlient;
     }
 
     public AdminRestTjeneste() {
@@ -57,17 +51,8 @@ public class AdminRestTjeneste {
     @Operation(description = "Synkroniser oppgave", tags = "admin")
     @BeskyttetRessurs(action = READ, ressurs = OPPGAVESTYRING)
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
-    public OppgaveDto synkroniserOppgave(@NotNull @QueryParam("behandlingId") @Valid BehandlingIdDto behandlingIdDto) {
-        UUID uuid = behandlingIdDto.getUuid();
-        if(uuid == null){
-            Long behandlingsId = behandlingIdDto.getBehandlingId();
-            if(behandlingsId == null) {
-                throw new IllegalArgumentException("Finner ingen gyldig verdi for behandlingsId");
-            }
-            Optional<UUID> eksternId = foreldrePengerBehandlingRestKlient.getBehandlingUUID(behandlingsId);
-            uuid = eksternId.orElseThrow(() -> new IllegalArgumentException("Finner ikke uuid for behandlingsId " + behandlingsId));
-        }
-        Oppgave oppgave = adminTjeneste.synkroniserOppgave(uuid);
+    public OppgaveDto synkroniserOppgave(@NotNull @QueryParam("behandlingId") @Valid BehandlingIdDto behandlingId) {
+        Oppgave oppgave = adminTjeneste.synkroniserOppgave(behandlingId.getValue());
         return new OppgaveDto(oppgave);
     }
 
@@ -78,17 +63,8 @@ public class AdminRestTjeneste {
     @Operation(description = "Se på oppgave", tags = "admin")
     @BeskyttetRessurs(action = READ, ressurs = OPPGAVESTYRING)
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
-    public OppgaveDto hentOppgave(@NotNull @QueryParam("behandlingId") @Valid BehandlingIdDto behandlingIdDto) {
-        UUID uuid = behandlingIdDto.getUuid();
-        if(uuid == null){
-            Long behandlingsId = behandlingIdDto.getBehandlingId();
-            if(behandlingsId == null) {
-                throw new IllegalArgumentException("Finner ingen gyldig verdi for behandlingsId");
-            }
-            Optional<UUID> eksternId = foreldrePengerBehandlingRestKlient.getBehandlingUUID(behandlingsId);
-            uuid = eksternId.orElseThrow(() -> new IllegalArgumentException("Finner ikke uuid for behandlingsId " + behandlingsId));
-        }
-        Oppgave oppgave = adminTjeneste.hentOppgave(uuid);
+    public OppgaveDto hentOppgave(@NotNull @QueryParam("behandlingId") @Valid BehandlingIdDto behandlingId) {
+        Oppgave oppgave = adminTjeneste.hentOppgave(behandlingId.getValue());
         return oppgave != null ? new OppgaveDto(oppgave) : null;
     }
 
@@ -99,17 +75,8 @@ public class AdminRestTjeneste {
     @Operation(description = "Se på oppgave", tags = "admin")
     @BeskyttetRessurs(action = READ, ressurs = OPPGAVESTYRING)
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
-    public List<OppgaveEventLoggDto> hentEventlogg(@NotNull @QueryParam("behandlingId") @Valid BehandlingIdDto behandlingIdDto) {
-        UUID uuid = behandlingIdDto.getUuid();
-        if(uuid == null){
-            Long behandlingsId = behandlingIdDto.getBehandlingId();
-            if(behandlingsId == null) {
-                throw new IllegalArgumentException("Finner ingen gyldig verdi for behandlingsId");
-            }
-            Optional<UUID> eksternId = foreldrePengerBehandlingRestKlient.getBehandlingUUID(behandlingsId);
-            uuid = eksternId.orElseThrow(() -> new IllegalArgumentException("Finner ikke uuid for behandlingsId " + behandlingsId));
-        }
-        List<OppgaveEventLogg> oppgaveEventLogger = adminTjeneste.hentEventer(uuid);
+    public List<OppgaveEventLoggDto> hentEventlogg(@NotNull @QueryParam("behandlingId") @Valid BehandlingIdDto behandlingId) {
+        List<OppgaveEventLogg> oppgaveEventLogger = adminTjeneste.hentEventer(behandlingId.getValue());
         return oppgaveEventLogger.stream().map(o -> new OppgaveEventLoggDto(o)).collect(Collectors.toList());
     }
 
@@ -120,18 +87,10 @@ public class AdminRestTjeneste {
     @Operation(description = "Oppdater oppgave", tags = "admin")
     @BeskyttetRessurs(action = READ, ressurs = OPPGAVESTYRING)
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
-    public OppgaveDto oppdaterOppgave(@NotNull @QueryParam("behandlingId") @Valid BehandlingIdDto behandlingIdDto) {
-        UUID uuid = behandlingIdDto.getUuid();
-        if(uuid == null){
-            Long behandlingsId = behandlingIdDto.getBehandlingId();
-            if(behandlingsId == null) {
-                throw new IllegalArgumentException("Finner ingen gyldig verdi for behandlingsId");
-            }
-            Optional<UUID> eksternId = foreldrePengerBehandlingRestKlient.getBehandlingUUID(behandlingsId);
-            uuid = eksternId.orElseThrow(() -> new IllegalArgumentException("Finner ikke uuid for behandlingsId " + behandlingsId));
-        }
-        adminTjeneste.oppdaterOppgave(uuid);
-        Oppgave oppgave = adminTjeneste.hentOppgave(uuid);
+    public OppgaveDto oppdaterOppgave(@NotNull @QueryParam("behandlingId") @Valid BehandlingIdDto dto) {
+        var behandlingId = dto.getValue();
+        adminTjeneste.oppdaterOppgave(behandlingId);
+        Oppgave oppgave = adminTjeneste.hentOppgave(behandlingId);
         return new OppgaveDto(oppgave);
     }
 
@@ -153,17 +112,8 @@ public class AdminRestTjeneste {
     @Operation(description = "Henter ut alle oppgaver knyttet til behandling", tags = "admin")
     @BeskyttetRessurs(action = READ, ressurs = OPPGAVESTYRING)
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
-    public List<OppgaveDto> hentAlleOppgaverForBehandling(@NotNull @QueryParam("behandlingId") @Valid BehandlingIdDto behandlingIdDto) {
-        UUID uuid = behandlingIdDto.getUuid();
-        if(uuid == null){
-            Long behandlingsId = behandlingIdDto.getBehandlingId();
-            if(behandlingsId == null) {
-                throw new IllegalArgumentException("Finner ingen gyldig verdi for behandlingsId");
-            }
-            Optional<UUID> eksternId = foreldrePengerBehandlingRestKlient.getBehandlingUUID(behandlingsId);
-            uuid = eksternId.orElseThrow(() -> new IllegalArgumentException("Finner ikke uuid for behandlingsId " + behandlingsId));
-        }
-        List<Oppgave> oppgaver = adminTjeneste.hentAlleOppgaverForBehandling(uuid);
+    public List<OppgaveDto> hentAlleOppgaverForBehandling(@NotNull @QueryParam("behandlingId") @Valid BehandlingIdDto behandlingId) {
+        List<Oppgave> oppgaver = adminTjeneste.hentAlleOppgaverForBehandling(behandlingId.getValue());
         return oppgaver.stream().map(OppgaveDto::new).collect(Collectors.toList());
     }
 
