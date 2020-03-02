@@ -103,7 +103,6 @@ public class Reservasjon extends BaseEntitet {
 
     public void endreReservasjonPåOppgave(LocalDateTime reservertTil) {
         this.reservertTil = reservertTil;
-        reservertAv = finnBrukernavn();
     }
 
     public void flyttReservasjon(String brukernavn, String begrunnelseForFlytting) {

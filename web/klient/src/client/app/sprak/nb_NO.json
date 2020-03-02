@@ -196,6 +196,8 @@
   "ReservasjonerTabell.Saksnr": "Saksnummer",
   "ReservasjonerTabell.BehandlingType": "Type",
   "ReservasjonerTabell.ReservertTil": "Reservert til",
+  "ReservasjonerTabell.ReservertTilFormat": "{time} - {date}",
+  "ReservasjonerTabell.Endre": "Endre",
   "ReservasjonerTabell.Slett": "Slett",
   "ReservasjonerTabell.Reservasjoner": "Reservasjoner for avdelingen",
   "ReservasjonerTabell.IngenReservasjoner": "Ingen reservasjoner funnet",

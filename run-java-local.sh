@@ -23,7 +23,7 @@ export LOGBACK_CONFIG=${LOGBACK_CONFIG:-}
 PROP_FILE="web/server/app.properties"
 PROP_FILE_LOCAL="web/server/app-local.properties"
 PROP_FILE_TEMPLATE="web/server/src/test/resources/app-dev.properties"
-[[ ! -f "${PROP_FILE?}" ]] && cp ${PROP_FILE_TEMPLATE?} ${PROP_FILE} && echo "Oppdater passwords i ${PROP_FILE_LOCAL}" && exit 1 
+[[ ! -f "${PROP_FILE?}" ]] && cp ${PROP_FILE_TEMPLATE?} ${PROP_FILE} && echo "Oppdater passwords i ${PROP_FILE_LOCAL}" && exit 1
 export SYSTEM_PROPERTIES="$( grep -v "^#" $PROP_FILE | grep -v '^[[:space:]]*$' | grep -v ' ' | sed -e 's/^/ -D/g' | tr '\n' ' ')"
 
 ## export app-local.properties også til env (inneholder hemmeligheter, eks. passord)
@@ -40,7 +40,7 @@ fi
 export NAV_TRUSTSTORE_PASSWORD="changeit"
 
 ## Overstyr port for lokal kjøring
-export SERVER_PORT=8070
+export SERVER_PORT=8071
 
 ## Sett opp samme struktur som i Dockerfile
 DIR="conf"

@@ -13,6 +13,7 @@ describe('<ReservasjonerIndex>', () => {
       fetchAvdelingensReservasjoner={fetchAvdelingensReservasjoner}
       avdelingensReservasjoner={[]}
       opphevReservasjon={sinon.spy()}
+      endreOppgaveReservasjon={sinon.spy()}
       valgtAvdelingEnhet="2"
     />);
 
