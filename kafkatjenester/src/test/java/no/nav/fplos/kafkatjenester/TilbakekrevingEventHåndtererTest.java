@@ -77,6 +77,22 @@ public class TilbakekrevingEventHåndtererTest {
     }
 
     @Test
+    public void skalLukkeAlleOppgaver() {
+        TilbakebetalingBehandlingProsessEventDto førsteEvent = eventFra(åpentAksjonspunkt);
+        handler.håndterEvent(førsteEvent);
+
+        var andreEvent = eventFra(åpentBeslutter);
+        handler.håndterEvent(andreEvent);
+
+        var tredjeEvent = eventFra(åpentAksjonspunkt);
+        handler.håndterEvent(eventFra(åpentAksjonspunkt));
+
+        sjekkAntallOppgaver(3);
+        sjekkKunEnAktivOppgave();
+        sjekkOppgaveEventAntallEr(5);
+    }
+
+    @Test
     public void skalAvslutteOppgaveVedAvsluttedeAksjonspunkt() {
         var førsteEvent = eventFra(åpentAksjonspunkt);
         var andreEvent = eventFra(avsluttetAksjonspunkt);
@@ -158,6 +174,12 @@ public class TilbakekrevingEventHåndtererTest {
         assertThat(oppgave.get(0).getAktiv()).isEqualTo(aktiv);
         int antallAktive = (int) oppgave.stream().filter(Oppgave::getAktiv).count();
         assertThat(antallAktive).isEqualTo(aktiv ? 1 : 0);
+    }
+
+    private void sjekkKunEnAktivOppgave() {
+        List<Oppgave> oppgave = repoRule.getRepository().hentAlle(Oppgave.class);
+        long antallAktive = oppgave.stream().filter(Oppgave::getAktiv).count();
+        assertThat(antallAktive).isEqualTo(1L);
     }
 
     private void sjekkOppgaveEventAntallEr(int antall) {

@@ -26,7 +26,7 @@ public class FpsakOppgaveEgenskapFinner implements OppgaveEgenskapFinner {
 
         if (harGradering(behandling)) this.andreKriterier.add(AndreKriterierType.SOKT_GRADERING);
         if (erUtbetalingTilBruker(behandling)) this.andreKriterier.add(AndreKriterierType.UTBETALING_TIL_BRUKER);
-        if (erVurderSykdom(behandling)) log.info("Aktuell for VURDER_SYKDOM-egenskap, disablet inntil videre"); //this.andreKriterier.add(AndreKriterierType.VURDER_SYKDOM);
+        if (erVurderSykdom(behandling)) this.andreKriterier.add(AndreKriterierType.VURDER_SYKDOM);
 
         andreKriterier.addAll(fpsakAksjonspunkt.getKriterier());
     }

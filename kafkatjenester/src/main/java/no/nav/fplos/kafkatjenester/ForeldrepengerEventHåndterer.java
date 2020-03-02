@@ -28,7 +28,7 @@ import no.nav.fplos.foreldrepengerbehandling.Aksjonspunkt;
 import no.nav.fplos.foreldrepengerbehandling.BehandlingFpsak;
 import no.nav.fplos.foreldrepengerbehandling.ForeldrepengerBehandlingRestKlient;
 import no.nav.fplos.kafkatjenester.eventresultat.EventResultat;
-import no.nav.fplos.kafkatjenester.eventresultat.FpsakEventMapper;
+import no.nav.fplos.kafkatjenester.eventresultat.ForeldrepengerEventMapper;
 import no.nav.vedtak.felles.integrasjon.kafka.BehandlingProsessEventDto;
 
 @ApplicationScoped
@@ -56,22 +56,20 @@ public class ForeldrepengerEventHåndterer implements EventHåndterer<FpsakBehan
     @Override
     public void håndterEvent(FpsakBehandlingProsessEventDto dto) {
         Long behandlingId = dto.getBehandlingId();
-        UUID eksternId = dto.getEksternId();
-        OppgaveHistorikk oppgaveHistorikk = new OppgaveHistorikk(oppgaveRepository.hentOppgaveEventer(eksternId));
-
         BehandlingFpsak behandling = foreldrePengerBehandlingRestKlient.getBehandling(behandlingId);
-        if (eksternId == null) {
-            eksternId = behandling.getUuid();
-        }
+        UUID eksternId = behandling.getUuid();
+        OppgaveHistorikk oppgaveHistorikk = new OppgaveHistorikk(oppgaveRepository.hentOppgaveEventer(eksternId));
 
         List<Aksjonspunkt> aksjonspunkt = Optional.ofNullable(behandling.getAksjonspunkter())
                 .orElse(Collections.emptyList());
 
         OppgaveEgenskapFinner egenskapFinner = new FpsakOppgaveEgenskapFinner(behandling, aksjonspunkt);
-
-        EventResultat eventResultat = FpsakEventMapper.signifikantEventFra(aksjonspunkt, oppgaveHistorikk, dto.getBehandlendeEnhet());
+        EventResultat eventResultat = ForeldrepengerEventMapper.signifikantEventFra(aksjonspunkt, oppgaveHistorikk, dto.getBehandlendeEnhet());
 
         switch (eventResultat) {
+            case FERDIG:
+                LOG.info("Ikke relevant for oppgaver");
+                break;
             case LUKK_OPPGAVE:
                 LOG.info("Lukker oppgave");
                 avsluttFpsakOppgaveOgLoggEvent(eksternId, dto, OppgaveEventType.LUKKET, null);

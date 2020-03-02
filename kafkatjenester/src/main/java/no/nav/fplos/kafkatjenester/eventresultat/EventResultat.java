@@ -1,6 +1,7 @@
 package no.nav.fplos.kafkatjenester.eventresultat;
 
 public enum EventResultat {
+    FERDIG,
     LUKK_OPPGAVE,
     LUKK_OPPGAVE_VENT,
     LUKK_OPPGAVE_MANUELT_VENT,

@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -531,6 +532,7 @@ public class OppgaveRepositoryImpl implements OppgaveRepository {
 
     @Override
     public List<OppgaveEventLogg> hentOppgaveEventer(UUID eksternId) {
+        Objects.requireNonNull(eksternId, "EksternId kan ikke være null");
         return entityManager.createQuery("FROM oppgaveEventLogg oel " +
                 "where oel.eksternId = :eksternId " +
                 "order by oel.opprettetTidspunkt desc", OppgaveEventLogg.class)

@@ -1,5 +1,20 @@
 package no.nav.fplos.oppgave;
 
+import static no.nav.foreldrepenger.loslager.BaseEntitet.BRUKERNAVN_NÅR_SIKKERHETSKONTEKST_IKKE_FINNES;
+
+import java.time.LocalDateTime;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import no.nav.foreldrepenger.domene.typer.AktørId;
 import no.nav.foreldrepenger.loslager.aktør.TpsPersonDto;
 import no.nav.foreldrepenger.loslager.oppgave.Oppgave;
@@ -16,19 +31,6 @@ import no.nav.fplos.avdelingsleder.AvdelingslederTjeneste;
 import no.nav.fplos.person.api.TpsTjeneste;
 import no.nav.vedtak.exception.IntegrasjonException;
 import no.nav.vedtak.sikkerhet.context.SubjectHandler;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-import java.time.LocalDateTime;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
-import static no.nav.foreldrepenger.loslager.BaseEntitet.BRUKERNAVN_NÅR_SIKKERHETSKONTEKST_IKKE_FINNES;
 
 @ApplicationScoped
 public class OppgaveTjenesteImpl implements OppgaveTjeneste {
@@ -59,7 +61,7 @@ public class OppgaveTjenesteImpl implements OppgaveTjeneste {
 
     @Override
     public List<Oppgave> hentOppgaver(Long sakslisteId) {
-        log.info("Henter oppgaver for saksliste : " + sakslisteId);
+        log.debug("Henter oppgaver for saksliste : " + sakslisteId);
         try {
             OppgaveFiltrering oppgaveListe = oppgaveRepository.hentListe(sakslisteId);
             if (oppgaveListe == null) {
