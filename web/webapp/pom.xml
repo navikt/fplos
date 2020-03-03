@@ -99,14 +99,6 @@
             <artifactId>felles-integrasjon-rest-klient</artifactId>
         </dependency>
 
-        <!-- SWagger -->
-        <dependency>
-            <groupId>org.webjars</groupId>
-            <artifactId>swagger-ui</artifactId>
-            <version>3.25.0</version>
-        </dependency>
-
-
         <!-- CDI -->
         <dependency>
             <groupId>javax.servlet</groupId>
@@ -263,6 +255,19 @@
             <groupId>org.glassfish</groupId>
             <artifactId>javax.el</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>org.webjars</groupId>
+            <artifactId>swagger-ui</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.swagger.core.v3</groupId>
+            <artifactId>swagger-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.swagger.core.v3</groupId>
+            <artifactId>swagger-jaxrs2</artifactId>
+        </dependency>
     </dependencies>
 
     <dependencyManagement>
@@ -297,6 +302,11 @@
                 <groupId>no.nav.foreldrepenger.felles</groupId>
                 <artifactId>felles-sikkerhet-testutilities</artifactId>
                 <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.webjars</groupId>
+                <artifactId>swagger-ui</artifactId>
+                <version>3.24.3</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
