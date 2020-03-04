@@ -1,15 +1,16 @@
 package no.nav.fplos.foreldrepengerbehandling.dto.behandling;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import no.nav.foreldrepenger.loslager.oppgave.BehandlingStatus;
-import no.nav.foreldrepenger.loslager.oppgave.BehandlingType;
-
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+import no.nav.foreldrepenger.loslager.oppgave.BehandlingStatus;
+import no.nav.foreldrepenger.loslager.oppgave.BehandlingType;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class BehandlingDto {
@@ -72,7 +73,9 @@ public class BehandlingDto {
         return endret;
     }
 
-    public String getEndretAvBrukernavn() { return endretAvBrukernavn; }
+    public String getEndretAvBrukernavn() {
+        return endretAvBrukernavn;
+    }
 
     public String getBehandlendeEnhetId() {
         return behandlendeEnhetId;
@@ -82,10 +85,6 @@ public class BehandlingDto {
         return behandlendeEnhetNavn;
     }
 
- /*   public BehandlingÅrsakDto getFørsteÅrsak() {
-        return førsteÅrsak;
-    }
-*/
     public boolean isErAktivPapirsoknad() {
         return erAktivPapirsoknad;
     }
@@ -122,7 +121,9 @@ public class BehandlingDto {
         this.endret = endret;
     }
 
-    void setEndretAvBrukernavn(String endretAvBrukernavn) { this.endretAvBrukernavn = endretAvBrukernavn; }
+    void setEndretAvBrukernavn(String endretAvBrukernavn) {
+        this.endretAvBrukernavn = endretAvBrukernavn;
+    }
 
     void setAvsluttet(LocalDateTime avsluttet) {
         this.avsluttet = avsluttet;
@@ -142,14 +143,6 @@ public class BehandlingDto {
 
     void setErAktivPapirsøknad(boolean erAktivPapirsoknad) {
         this.erAktivPapirsoknad = erAktivPapirsoknad;
-    }
-
-   /* public void setFørsteÅrsak(BehandlingÅrsakDto førsteÅrsak) {
-        this.førsteÅrsak = førsteÅrsak;
-    }
-*/
-    void leggTil(ResourceLink link) {
-        links.add(link);
     }
 
     public LocalDate getBehandlingsfristTid() {

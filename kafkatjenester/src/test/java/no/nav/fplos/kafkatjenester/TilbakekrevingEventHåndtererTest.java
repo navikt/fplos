@@ -9,7 +9,6 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
@@ -18,6 +17,7 @@ import org.junit.Rule;
 import org.junit.Test;
 
 import no.nav.foreldrepenger.dbstoette.UnittestRepositoryRule;
+import no.nav.foreldrepenger.loslager.BehandlingId;
 import no.nav.foreldrepenger.loslager.oppgave.AndreKriterierType;
 import no.nav.foreldrepenger.loslager.oppgave.BehandlingType;
 import no.nav.foreldrepenger.loslager.oppgave.FagsakYtelseType;
@@ -38,7 +38,6 @@ public class TilbakekrevingEventHåndtererTest {
     private OppgaveRepository oppgaveRepository = new OppgaveRepositoryImpl(entityManager);
     private OppgaveEgenskapHandler oppgaveEgenskapHandler = new OppgaveEgenskapHandler(oppgaveRepository);
     private TilbakekrevingEventHåndterer handler = new TilbakekrevingEventHåndterer(oppgaveRepository, oppgaveEgenskapHandler);
-    private static Long behandlingId = 1000000L;
 
     private Map<String, String> åpentAksjonspunkt = new HashMap<>() {{
         put("5015", "OPPR");
@@ -55,7 +54,7 @@ public class TilbakekrevingEventHåndtererTest {
 
     @Test
     public void skalOppretteOppgave() {
-        TilbakebetalingBehandlingProsessEventDto event = eventFra(åpentAksjonspunkt);
+        TilbakebetalingBehandlingProsessEventDto event = eventFra(åpentAksjonspunkt, BehandlingId.random());
         handler.håndterEvent(event);
 
         sjekkAntallOppgaver(1);
@@ -65,10 +64,11 @@ public class TilbakekrevingEventHåndtererTest {
 
     @Test
     public void skalVidereføreOppgaveVedNyAktivEvent() {
-        TilbakebetalingBehandlingProsessEventDto førsteEvent = eventFra(åpentAksjonspunkt);
+        var behandlingId = BehandlingId.random();
+        TilbakebetalingBehandlingProsessEventDto førsteEvent = eventFra(åpentAksjonspunkt, behandlingId);
         handler.håndterEvent(førsteEvent);
 
-        var andreEvent = eventFra(åpentAksjonspunkt);
+        var andreEvent = eventFra(åpentAksjonspunkt, behandlingId);
         handler.håndterEvent(andreEvent);
 
         sjekkAntallOppgaver(1);
@@ -78,14 +78,15 @@ public class TilbakekrevingEventHåndtererTest {
 
     @Test
     public void skalLukkeAlleOppgaver() {
-        TilbakebetalingBehandlingProsessEventDto førsteEvent = eventFra(åpentAksjonspunkt);
+        var behandlingId = BehandlingId.random();
+        TilbakebetalingBehandlingProsessEventDto førsteEvent = eventFra(åpentAksjonspunkt, behandlingId);
         handler.håndterEvent(førsteEvent);
 
-        var andreEvent = eventFra(åpentBeslutter);
+        var andreEvent = eventFra(åpentBeslutter, behandlingId);
         handler.håndterEvent(andreEvent);
 
-        var tredjeEvent = eventFra(åpentAksjonspunkt);
-        handler.håndterEvent(eventFra(åpentAksjonspunkt));
+        var tredjeEvent = eventFra(åpentAksjonspunkt, behandlingId);
+        handler.håndterEvent(eventFra(åpentAksjonspunkt, behandlingId));
 
         sjekkAntallOppgaver(3);
         sjekkKunEnAktivOppgave();
@@ -94,8 +95,9 @@ public class TilbakekrevingEventHåndtererTest {
 
     @Test
     public void skalAvslutteOppgaveVedAvsluttedeAksjonspunkt() {
-        var førsteEvent = eventFra(åpentAksjonspunkt);
-        var andreEvent = eventFra(avsluttetAksjonspunkt);
+        var behandlingId = BehandlingId.random();
+        var førsteEvent = eventFra(åpentAksjonspunkt, behandlingId);
+        var andreEvent = eventFra(avsluttetAksjonspunkt, behandlingId);
         handler.håndterEvent(førsteEvent);
         handler.håndterEvent(andreEvent);
         sjekkAntallOppgaver(1);
@@ -105,8 +107,9 @@ public class TilbakekrevingEventHåndtererTest {
 
     @Test
     public void skalLukkeOppgaveVedÅpentManueltTilVentAksjonspunkt() {
-        var førsteEvent = eventFra(åpentAksjonspunkt);
-        var andreEvent = eventFra(manueltPåVentAksjonspunkt);
+        var behandlingId = BehandlingId.random();
+        var førsteEvent = eventFra(åpentAksjonspunkt, behandlingId);
+        var andreEvent = eventFra(manueltPåVentAksjonspunkt, behandlingId);
         handler.håndterEvent(førsteEvent);
         handler.håndterEvent(andreEvent);
         sjekkAntallOppgaver(1);
@@ -116,8 +119,9 @@ public class TilbakekrevingEventHåndtererTest {
 
     @Test
     public void skalOppretteTilBeslutterEgenskapVedAksjonspunkt5005() {
-        var førsteEvent = eventFra(åpentBeslutter);
-        var andreEventUtenBeslutter = eventFra(åpentAksjonspunkt);
+        var behandlingId = BehandlingId.random();
+        var førsteEvent = eventFra(åpentBeslutter, behandlingId);
+        var andreEventUtenBeslutter = eventFra(åpentAksjonspunkt, behandlingId);
         handler.håndterEvent(førsteEvent);
 
         sjekkAktivOppgaveEksisterer(true);
@@ -129,8 +133,9 @@ public class TilbakekrevingEventHåndtererTest {
 
     @Test
     public void skalLukkeOppgaveVedReturFraTilBehandler() {
-        var saksbehandler = eventFra(åpentAksjonspunkt);
-        var tilBeslutter = eventFra(åpentBeslutter);
+        var behandlingId = BehandlingId.random();
+        var saksbehandler = eventFra(åpentAksjonspunkt, behandlingId);
+        var tilBeslutter = eventFra(åpentBeslutter, behandlingId);
         handler.håndterEvent(saksbehandler);
         handler.håndterEvent(tilBeslutter);
         handler.håndterEvent(saksbehandler);
@@ -187,17 +192,17 @@ public class TilbakekrevingEventHåndtererTest {
         assertThat(eventer).hasSize(antall);
     }
 
-    private static TilbakebetalingBehandlingProsessEventDto eventFra(Map<String, String> aksjonspunktmap) {
-        return basisEventFra(aksjonspunktmap)
+    private static TilbakebetalingBehandlingProsessEventDto eventFra(Map<String, String> aksjonspunktmap, BehandlingId behandlingId) {
+        return basisEventFra(aksjonspunktmap, behandlingId)
                 .medFeilutbetaltBeløp(BigDecimal.valueOf(500))
                 .medFørsteFeilutbetaling(LocalDate.now())
                 .build();
     }
 
-    private static TilbakebetalingBehandlingProsessEventDto.Builder basisEventFra(Map<String, String> aksjonspunktmap) {
+    private static TilbakebetalingBehandlingProsessEventDto.Builder basisEventFra(Map<String, String> aksjonspunktmap, BehandlingId behandlingId) {
         return TilbakebetalingBehandlingProsessEventDto.builder()
                 .medFagsystem(Fagsystem.FPSAK)
-                .medEksternId(UUID.nameUUIDFromBytes(behandlingId.toString().getBytes()))
+                .medEksternId(behandlingId.toUUID())
                 .medSaksnummer("135701264")
                 .medBehandlendeEnhet("0300")
                 .medAktørId("9000000030703")

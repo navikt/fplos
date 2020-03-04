@@ -1,32 +1,29 @@
 package no.nav.foreldrepenger.los.web.app.tjenester.admin.dto;
 
+import java.time.LocalDateTime;
+import java.util.UUID;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import no.nav.foreldrepenger.loslager.BehandlingId;
 import no.nav.foreldrepenger.loslager.oppgave.AndreKriterierType;
 import no.nav.foreldrepenger.loslager.oppgave.OppgaveEventLogg;
 import no.nav.foreldrepenger.loslager.oppgave.OppgaveEventType;
 
-import java.time.LocalDateTime;
-import java.util.UUID;
+public class OppgaveEventLoggDto {
 
-public class OppgaveEventLoggDto { //TODO FRIST_TID legges inn her?
-
-    private Long behandlingId;
-    private UUID eksternId;
+    private BehandlingId behandlingId;
     private OppgaveEventType eventType;
-    private AndreKriterierType andreKriterierType; // @TODO: vurder om ukjent-typen må inn = AndreKriterierType.UKJENT;
+    private AndreKriterierType andreKriterierType;
     private String behandlendeEnhet;
-    private LocalDateTime opprettetTidspunkt; // NOSONAR
+    private LocalDateTime opprettetTidspunkt;
 
     public OppgaveEventLoggDto(OppgaveEventLogg o) {
-        this.behandlingId = o.getBehandlingId();
         this.eventType = o.getEventType();
         this.andreKriterierType = o.getAndreKriterierType();
         this.behandlendeEnhet = o.getBehandlendeEnhet();
         this.opprettetTidspunkt = o.getOpprettetTidspunkt();
-        this.eksternId = o.getEksternId();
-    }
-
-    public Long getBehandlingId() {
-        return behandlingId;
+        this.behandlingId = o.getBehandlingId();
     }
 
     public OppgaveEventType getEventType() {
@@ -45,7 +42,13 @@ public class OppgaveEventLoggDto { //TODO FRIST_TID legges inn her?
         return opprettetTidspunkt;
     }
 
+    public UUID getBehandlingId() {
+        return behandlingId.toUUID();
+    }
+
+    // TODO expand-contract fjerne etter frontend bruker behandlingId
+    @JsonProperty
     public UUID getEksternId() {
-        return eksternId;
+        return getBehandlingId();
     }
 }
