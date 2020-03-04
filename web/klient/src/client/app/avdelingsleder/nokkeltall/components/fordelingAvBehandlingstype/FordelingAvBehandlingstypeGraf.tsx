@@ -22,7 +22,13 @@ import styles from './fordelingAvBehandlingstypeGraf.less';
 
 const LEGEND_WIDTH = 210;
 
-const behandlingstypeOrder = [behandlingType.TILBAKEBETALING_REVURDERING, behandlingType.TILBAKEBETALING, behandlingType.DOKUMENTINNSYN, behandlingType.KLAGE, behandlingType.REVURDERING, behandlingType.FORSTEGANGSSOKNAD];
+const behandlingstypeOrder = [
+  behandlingType.TILBAKEBETALING_REVURDERING,
+  behandlingType.TILBAKEBETALING,
+  behandlingType.DOKUMENTINNSYN,
+  behandlingType.KLAGE,
+  behandlingType.REVURDERING,
+  behandlingType.FORSTEGANGSSOKNAD];
 
 const settCustomHoydePaSoylene = (data) => {
   const transformert = data.map(el => ({

@@ -23,7 +23,13 @@ import styles from './tilBehandlingGraf.less';
 
 const LEGEND_WIDTH = 260;
 
-const behandlingstypeOrder = [behandlingType.TILBAKEBETALING_REVURDERING, behandlingType.TILBAKEBETALING, behandlingType.DOKUMENTINNSYN, behandlingType.KLAGE, behandlingType.REVURDERING, behandlingType.FORSTEGANGSSOKNAD];
+const behandlingstypeOrder = [
+  behandlingType.TILBAKEBETALING_REVURDERING,
+  behandlingType.TILBAKEBETALING,
+  behandlingType.DOKUMENTINNSYN,
+  behandlingType.KLAGE,
+  behandlingType.REVURDERING,
+  behandlingType.FORSTEGANGSSOKNAD];
 
 const behandlingstypeFarger = {
   [behandlingType.TILBAKEBETALING_REVURDERING]: '#ef5d28',

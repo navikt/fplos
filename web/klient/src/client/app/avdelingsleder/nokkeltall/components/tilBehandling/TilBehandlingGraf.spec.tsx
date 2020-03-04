@@ -23,6 +23,12 @@ describe('<TilBehandlingGraf>', () => {
   }, {
     kode: behandlingType.REVURDERING,
     navn: 'Revurdering',
+  }, {
+    kode: behandlingType.TILBAKEBETALING,
+    navn: 'Tilbakebetaling',
+  }, {
+    kode: behandlingType.TILBAKEBETALING_REVURDERING,
+    navn: 'Tilbakebet-rev',
   }];
 
   it('skal vise tom graf når en ikke har data', () => {
