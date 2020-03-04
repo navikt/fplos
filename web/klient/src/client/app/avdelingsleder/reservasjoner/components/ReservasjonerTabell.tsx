@@ -102,7 +102,9 @@ export class ReservasjonerTabell extends Component<TsProps, StateTsProps> {
 
   flyttReservasjon = (oppgaveId: number, brukerident: string, begrunnelse: string) => {
     const { flyttReservasjon } = this.props;
-    flyttReservasjon(oppgaveId, brukerident, begrunnelse);
+    flyttReservasjon(oppgaveId, brukerident, begrunnelse).then(() => {
+      this.setState(prevState => ({ ...prevState, showFlyttReservasjonModal: false }));
+    });
   }
 
   render = () => {
@@ -176,7 +178,7 @@ export class ReservasjonerTabell extends Component<TsProps, StateTsProps> {
         }
         { showFlyttReservasjonModal && (
           <FlyttReservasjonModal
-            oppgave={valgtReservasjon.oppgaveId}
+            oppgaveId={valgtReservasjon.oppgaveId}
             showModal={showFlyttReservasjonModal}
             closeModal={this.closeFlytteModal}
             submit={this.flyttReservasjon}
