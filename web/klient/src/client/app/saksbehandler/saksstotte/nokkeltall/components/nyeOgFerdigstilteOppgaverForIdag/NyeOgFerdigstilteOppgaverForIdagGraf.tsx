@@ -18,7 +18,13 @@ import { getKodeverk } from 'kodeverk/duck';
 import 'react-vis/dist/style.css';
 import styles from './nyeOgFerdigstilteOppgaverForIdagGraf.less';
 
-const behandlingstypeOrder = [behandlingType.DOKUMENTINNSYN, behandlingType.KLAGE, behandlingType.REVURDERING, behandlingType.FORSTEGANGSSOKNAD];
+const behandlingstypeOrder = [
+  behandlingType.TILBAKEBETALING_REVURDERING,
+  behandlingType.TILBAKEBETALING,
+  behandlingType.DOKUMENTINNSYN,
+  behandlingType.KLAGE,
+  behandlingType.REVURDERING,
+  behandlingType.FORSTEGANGSSOKNAD];
 
 const cssText = {
   fontFamily: 'Source Sans Pro, Arial, sans-serif',
@@ -123,7 +129,7 @@ export class NyeOgFerdigstilteOppgaverForIdagGraf extends Component<TsProps, Sta
           }}
           width={width}
           height={height}
-          yDomain={[0, 5]}
+          yDomain={[0, 7]}
           xDomain={[0, isEmpty ? 10 : maxXValue]}
         >
           <VerticalGridLines />
@@ -131,7 +137,7 @@ export class NyeOgFerdigstilteOppgaverForIdagGraf extends Component<TsProps, Sta
           <YAxis
             style={{ text: cssText }}
             tickFormat={(v, i) => this.finnBehandlingTypeNavn(behandlingstypeOrder[i], intl)}
-            tickValues={[1, 2, 3, 4]}
+            tickValues={[1, 2, 3, 4, 5, 6]}
           />
           <HorizontalRectSeries
             data={ferdigstilteOppgaver}

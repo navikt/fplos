@@ -23,6 +23,12 @@ describe('<NyeOgFerdigstilteOppgaverForIdagGraf>', () => {
   }, {
     kode: behandlingType.REVURDERING,
     navn: 'Revurdering',
+  }, {
+    kode: behandlingType.TILBAKEBETALING,
+    navn: 'Tilbakebetaling',
+  }, {
+    kode: behandlingType.TILBAKEBETALING_REVURDERING,
+    navn: 'Tilbakebet-rev',
   }];
 
 
@@ -124,12 +130,12 @@ describe('<NyeOgFerdigstilteOppgaverForIdagGraf>', () => {
       y: 0.5,
     }, {
       x: 9,
-      y: 4.03,
-      y0: 4.41,
+      y: 6.03,
+      y0: 6.41,
     }, {
       x: 4,
-      y: 2.03,
-      y0: 2.41,
+      y: 4.03,
+      y0: 4.41,
     }, {
       x: 0,
       y: 4.5,
@@ -162,12 +168,12 @@ describe('<NyeOgFerdigstilteOppgaverForIdagGraf>', () => {
       y: 0.5,
     }, {
       x: 10,
-      y: 4.35,
-      y0: 3.97,
+      y: 6.35,
+      y0: 5.97,
     }, {
       x: 2,
-      y: 2.35,
-      y0: 1.97,
+      y: 4.35,
+      y0: 3.97,
     }, {
       x: 0,
       y: 4.5,
