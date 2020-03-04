@@ -245,7 +245,7 @@ export class OppgaveHandlingerMenu extends Component<TsProps, TsState> {
         }
         { showFlyttReservasjonModal && (
           <FlyttReservasjonModal
-            oppgave={oppgave}
+            oppgaveId={oppgave.id}
             showModal={showFlyttReservasjonModal}
             closeModal={this.closeFlytteModal}
             submit={this.flyttReservasjon}

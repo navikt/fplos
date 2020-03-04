@@ -3,6 +3,7 @@ import { Element, Normaltekst } from 'nav-frontend-typografi';
 import { FormattedHTMLMessage, FormattedMessage } from 'react-intl';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import { bindActionCreators, Dispatch } from 'redux';
 
 import { Reservasjon } from 'avdelingsleder/reservasjoner/reservasjonTsType';
 import reservasjonPropType from 'avdelingsleder/reservasjoner/reservasjonPropType';
@@ -16,8 +17,15 @@ import removeIcon from 'images/remove.svg';
 import CalendarToggleButton from 'sharedComponents/datepicker/CalendarToggleButton';
 import OppgaveReservasjonEndringDatoModal
   from 'saksbehandler/behandlingskoer/components/menu/OppgaveReservasjonEndringDatoModal';
+import FlyttReservasjonModal from 'saksbehandler/behandlingskoer/components/menu/FlyttReservasjonModal';
 import { getDateAndTime } from 'utils/dateUtils';
+import { finnSaksbehandler, resetSaksbehandler } from 'saksbehandler/behandlingskoer/duck';
+import { getAvdelingensReservasjoner } from 'avdelingsleder/reservasjoner/duck';
 import styles from './reservasjonerTabell.less';
+import gruppeHoverUrl from '../../../../images/gruppe_hover.svg';
+import gruppeUrl from '../../../../images/gruppe.svg';
+
+const saksbehandlereIkon = isHovering => (isHovering ? gruppeHoverUrl : gruppeUrl);
 
 const headerTextCodes = [
   'ReservasjonerTabell.Navn',
@@ -25,6 +33,7 @@ const headerTextCodes = [
   'ReservasjonerTabell.BehandlingType',
   'ReservasjonerTabell.ReservertTil',
   'ReservasjonerTabell.Endre',
+  'ReservasjonerTabell.Flytt',
   'ReservasjonerTabell.Slett',
 ];
 
@@ -32,10 +41,12 @@ interface TsProps {
   reservasjoner: Reservasjon[];
   opphevReservasjon: (oppgaveId: number) => Promise<string>;
   endreOppgaveReservasjon: (oppgaveId: number, reserverTil: string) => Promise<string>;
+  flyttReservasjon: (oppgaveId: number, brukerident: string, begrunnelse: string) => Promise<string>;
 }
 
 interface StateTsProps {
   showReservasjonEndringDatoModal: boolean;
+  showFlyttReservasjonModal: boolean;
   valgtReservasjon?: Reservasjon;
 }
 
@@ -44,6 +55,7 @@ export class ReservasjonerTabell extends Component<TsProps, StateTsProps> {
     reservasjoner: PropTypes.arrayOf(reservasjonPropType).isRequired,
     opphevReservasjon: PropTypes.func.isRequired,
     endreOppgaveReservasjon: PropTypes.func.isRequired,
+    flyttReservasjon: PropTypes.func.isRequired,
   }
 
   /* Endre denne */
@@ -52,6 +64,7 @@ export class ReservasjonerTabell extends Component<TsProps, StateTsProps> {
 
     this.state = {
       showReservasjonEndringDatoModal: false,
+      showFlyttReservasjonModal: false,
       valgtReservasjon: undefined,
     };
   }
@@ -75,12 +88,25 @@ export class ReservasjonerTabell extends Component<TsProps, StateTsProps> {
     });
   }
 
+  showFlytteModal = (reservasjon: Reservasjon) => {
+    this.setState(prevState => ({ ...prevState, showFlyttReservasjonModal: true, valgtReservasjon: reservasjon }));
+  }
+
+  closeFlytteModal = () => {
+    this.setState(prevState => ({ ...prevState, showFlyttReservasjonModal: false }));
+  }
+
+  flyttReservasjon = (oppgaveId: number, brukerident: string, begrunnelse: string) => {
+    const { flyttReservasjon } = this.props;
+    flyttReservasjon(oppgaveId, brukerident, begrunnelse);
+  }
+
   render = () => {
     const {
       reservasjoner, opphevReservasjon,
     } = this.props;
     const {
-      showReservasjonEndringDatoModal, valgtReservasjon,
+      showReservasjonEndringDatoModal, showFlyttReservasjonModal, valgtReservasjon,
     } = this.state;
 
     const sorterteReservasjoner = reservasjoner.sort((reservasjon1, reservasjon2) => reservasjon1.reservertAvNavn.localeCompare(reservasjon2.reservertAvNavn));
@@ -117,6 +143,13 @@ export class ReservasjonerTabell extends Component<TsProps, StateTsProps> {
                 </TableColumn>
                 <TableColumn>
                   <Image
+                    imageSrcFunction={saksbehandlereIkon}
+                    onMouseDown={() => this.showFlytteModal(reservasjon)}
+                    tabIndex="0"
+                  />
+                </TableColumn>
+                <TableColumn>
+                  <Image
                     src={removeIcon}
                     className={styles.removeImage}
                     onMouseDown={() => opphevReservasjon(reservasjon.oppgaveId)}
@@ -137,9 +170,31 @@ export class ReservasjonerTabell extends Component<TsProps, StateTsProps> {
             />
           )
         }
+        { showFlyttReservasjonModal && (
+          <FlyttReservasjonModal
+            oppgave={valgtReservasjon.oppgaveId}
+            showModal={showFlyttReservasjonModal}
+            closeModal={this.closeFlytteModal}
+            submit={this.flyttReservasjon}
+            finnSaksbehandler={finnSaksbehandler}
+            resetSaksbehandler={resetSaksbehandler}
+          />
+        )
+        }
       </>
     );
   }
 }
 
-export default ReservasjonerTabell;
+const mapStateToProps = state => ({
+  reservasjoner: getAvdelingensReservasjoner(state) || [],
+});
+
+const mapDispatchToProps = (dispatch: Dispatch) => ({
+  ...bindActionCreators({
+    finnSaksbehandler,
+    resetSaksbehandler,
+  }, dispatch),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(ReservasjonerTabell);
