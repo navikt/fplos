@@ -19,7 +19,7 @@ import OppgaveReservasjonEndringDatoModal
   from 'saksbehandler/behandlingskoer/components/menu/OppgaveReservasjonEndringDatoModal';
 import FlyttReservasjonModal from 'saksbehandler/behandlingskoer/components/menu/FlyttReservasjonModal';
 import { getDateAndTime } from 'utils/dateUtils';
-import { finnSaksbehandler, resetSaksbehandler } from 'saksbehandler/behandlingskoer/duck';
+import { finnSaksbehandler as getSaksbehandler, resetSaksbehandler } from 'saksbehandler/behandlingskoer/duck';
 import { getAvdelingensReservasjoner } from 'avdelingsleder/reservasjoner/duck';
 import styles from './reservasjonerTabell.less';
 import gruppeHoverUrl from '../../../../images/gruppe_hover.svg';
@@ -41,6 +41,8 @@ interface TsProps {
   reservasjoner: Reservasjon[];
   opphevReservasjon: (oppgaveId: number) => Promise<string>;
   endreOppgaveReservasjon: (oppgaveId: number, reserverTil: string) => Promise<string>;
+  finnSaksbehandler: (brukerIdent: string) => Promise<string>;
+  nullstillSaksbehandler: () => Promise<string>;
   flyttReservasjon: (oppgaveId: number, brukerident: string, begrunnelse: string) => Promise<string>;
 }
 
@@ -55,6 +57,8 @@ export class ReservasjonerTabell extends Component<TsProps, StateTsProps> {
     reservasjoner: PropTypes.arrayOf(reservasjonPropType).isRequired,
     opphevReservasjon: PropTypes.func.isRequired,
     endreOppgaveReservasjon: PropTypes.func.isRequired,
+    finnSaksbehandler: PropTypes.func.isRequired,
+    nullstillSaksbehandler: PropTypes.func.isRequired,
     flyttReservasjon: PropTypes.func.isRequired,
   }
 
@@ -70,7 +74,7 @@ export class ReservasjonerTabell extends Component<TsProps, StateTsProps> {
   }
 
 
-  closeReservasjonEndringDatoModal = (event: Event) => {
+  closeReservasjonEndringDatoModal = () => {
     this.setState(prevState => ({ ...prevState, showReservasjonEndringDatoModal: false }));
   }
 
@@ -103,7 +107,7 @@ export class ReservasjonerTabell extends Component<TsProps, StateTsProps> {
 
   render = () => {
     const {
-      reservasjoner, opphevReservasjon,
+      reservasjoner, opphevReservasjon, finnSaksbehandler, nullstillSaksbehandler,
     } = this.props;
     const {
       showReservasjonEndringDatoModal, showFlyttReservasjonModal, valgtReservasjon,
@@ -177,7 +181,7 @@ export class ReservasjonerTabell extends Component<TsProps, StateTsProps> {
             closeModal={this.closeFlytteModal}
             submit={this.flyttReservasjon}
             finnSaksbehandler={finnSaksbehandler}
-            resetSaksbehandler={resetSaksbehandler}
+            resetSaksbehandler={nullstillSaksbehandler}
           />
         )
         }
@@ -192,8 +196,8 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
   ...bindActionCreators({
-    finnSaksbehandler,
-    resetSaksbehandler,
+    finnSaksbehandler: getSaksbehandler,
+    nullstillSaksbehandler: resetSaksbehandler,
   }, dispatch),
 });
 

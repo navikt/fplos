@@ -15,6 +15,8 @@ describe('<ReservasjonerTabell>', () => {
       reservasjoner={[]}
       opphevReservasjon={sinon.spy()}
       endreOppgaveReservasjon={sinon.spy()}
+      finnSaksbehandler={sinon.spy()}
+      nullstillSaksbehandler={sinon.spy()}
       flyttReservasjon={sinon.spy()}
     />);
 
@@ -45,6 +47,8 @@ describe('<ReservasjonerTabell>', () => {
       reservasjoner={reservasjoner}
       opphevReservasjon={sinon.spy()}
       endreOppgaveReservasjon={sinon.spy()}
+      finnSaksbehandler={sinon.spy()}
+      nullstillSaksbehandler={sinon.spy()}
       flyttReservasjon={sinon.spy()}
     />);
 
