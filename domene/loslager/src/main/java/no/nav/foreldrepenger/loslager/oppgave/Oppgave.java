@@ -75,6 +75,9 @@ public class Oppgave extends BaseEntitet {
     @Column(name = "EKSTERN_ID")
     protected UUID eksternId;
 
+    @Column(name = "BEHANDLING_ID")
+    protected UUID behandlingId;
+
     @Column(name = "HREF")
     protected String href;
 
@@ -175,6 +178,7 @@ public class Oppgave extends BaseEntitet {
 
         public Builder medBehandlingId(BehandlingId behandlingId){
             tempOppgave.eksternId = behandlingId.toUUID();
+            tempOppgave.behandlingId = behandlingId.toUUID();
             return this;
         }
 
@@ -250,6 +254,7 @@ public class Oppgave extends BaseEntitet {
 
         public Builder dummyOppgave(String enhet){
             tempOppgave.eksternId = UUID.nameUUIDFromBytes("331133L".getBytes());
+            tempOppgave.behandlingId = UUID.nameUUIDFromBytes("331133L".getBytes());
             tempOppgave.fagsakSaksnummer = 3478293L;
             tempOppgave.aktorId = 770099L;
             tempOppgave.fagsakYtelseType = FagsakYtelseType.FORELDREPENGER;
