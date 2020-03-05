@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import {
-  XYPlot, XAxis, YAxis, HorizontalGridLines, AreaSeries, DiscreteColorLegend, Crosshair,
+  XYPlot, XAxis, YAxis, HorizontalGridLines, AreaSeries, DiscreteColorLegend, Crosshair, MarkSeries,
 } from 'react-vis';
 import Panel from 'nav-frontend-paneler';
 import { Normaltekst, Undertekst } from 'nav-frontend-typografi';
@@ -195,6 +195,7 @@ export class TilBehandlingGraf extends Component<TsProps, StateTsProps> {
                 onMouseLeave={this.onMouseLeave}
                 {...plotPropsWhenEmpty}
               >
+                <MarkSeries data={[{ x: moment().subtract(1, 'd'), y: 0 }]} style={{ display: 'none' }} />
                 <HorizontalGridLines />
                 <XAxis
                   tickTotal={5}
