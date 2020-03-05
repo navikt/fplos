@@ -32,6 +32,12 @@ describe('<FordelingAvBehandlingstypeGraf>', () => {
   }, {
     kode: behandlingType.REVURDERING,
     navn: 'Revurdering',
+  }, {
+    kode: behandlingType.TILBAKEBETALING,
+    navn: 'Tilbakebetaling',
+  }, {
+    kode: behandlingType.TILBAKEBETALING_REVURDERING,
+    navn: 'Tilbakebet-rev',
   }];
 
   it('skal vise graf', () => {
@@ -74,12 +80,12 @@ describe('<FordelingAvBehandlingstypeGraf>', () => {
     expect(yAksen).to.have.length(1);
 
     const verdiIndekser = yAksen.prop('tickValues');
-    expect(verdiIndekser).to.have.length(4);
+    expect(verdiIndekser).to.have.length(6);
 
     const verdiFn = yAksen.prop('tickFormat');
 
     const behandlingstyper = verdiIndekser.map(i => verdiFn(undefined, i - 1));
-    expect(behandlingstyper).is.eql(['Dokumentinnsyn', 'Klage', 'Revurdering', 'Førstegangssøknad']);
+    expect(behandlingstyper).is.eql(['Tilbakebet-rev', 'Tilbakebetaling', 'Dokumentinnsyn', 'Klage', 'Revurdering', 'Førstegangssøknad']);
   });
 
   it('skal vise hint med antall og total-antall ved mouseover', () => {
@@ -109,7 +115,7 @@ describe('<FordelingAvBehandlingstypeGraf>', () => {
     const grafPosisjon = {
       x: 2,
       x0: 1,
-      y: 4,
+      y: 6,
     };
     hRectSeries.first().prop('onValueMouseOver')(grafPosisjon);
 

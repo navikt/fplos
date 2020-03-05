@@ -22,7 +22,13 @@ import styles from './fordelingAvBehandlingstypeGraf.less';
 
 const LEGEND_WIDTH = 210;
 
-const behandlingstypeOrder = [behandlingType.DOKUMENTINNSYN, behandlingType.KLAGE, behandlingType.REVURDERING, behandlingType.FORSTEGANGSSOKNAD];
+const behandlingstypeOrder = [
+  behandlingType.TILBAKEBETALING_REVURDERING,
+  behandlingType.TILBAKEBETALING,
+  behandlingType.DOKUMENTINNSYN,
+  behandlingType.KLAGE,
+  behandlingType.REVURDERING,
+  behandlingType.FORSTEGANGSSOKNAD];
 
 const settCustomHoydePaSoylene = (data) => {
   const transformert = data.map(el => ({
@@ -142,7 +148,7 @@ export class FordelingAvBehandlingstypeGraf extends Component<TsProps, StateTsPr
                 width={width - LEGEND_WIDTH > 0 ? width - LEGEND_WIDTH : 100 + LEGEND_WIDTH}
                 height={height}
                 stackBy="x"
-                yDomain={[0, 5]}
+                yDomain={[0, 7]}
                 {...(isEmpty ? { xDomain: [0, 100] } : {})}
               >
                 <VerticalGridLines />
@@ -150,7 +156,7 @@ export class FordelingAvBehandlingstypeGraf extends Component<TsProps, StateTsPr
                 <YAxis
                   style={{ text: cssText }}
                   tickFormat={(v, i) => this.finnBehandlingTypeNavn(behandlingstypeOrder[i])}
-                  tickValues={[1, 2, 3, 4]}
+                  tickValues={[1, 2, 3, 4, 5, 6]}
                 />
                 <HorizontalRectSeries
                   data={settCustomHoydePaSoylene(tilSaksbehandling)}
