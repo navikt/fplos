@@ -30,7 +30,7 @@ const maxLength7 = maxLength(7);
 type TsProps = Readonly<{
   intl: any;
   showModal: boolean;
-  oppgave: Oppgave;
+  oppgaveId: number;
   closeModal: () => void;
   submit: (oppgaveId: number, brukerident: string, begrunnelse: string) => void;
   finnSaksbehandler: (brukerident: string) => void;
@@ -49,7 +49,7 @@ export class FlyttReservasjonModal extends Component<TsProps> {
    static propTypes = {
      intl: intlShape.isRequired,
      showModal: PropTypes.bool.isRequired,
-     oppgave: oppgavePropType.isRequired,
+     oppgaveId: PropTypes.number.isRequired,
      closeModal: PropTypes.func.isRequired,
      submit: PropTypes.func.isRequired,
      finnSaksbehandler: PropTypes.func.isRequired,
@@ -82,7 +82,7 @@ export class FlyttReservasjonModal extends Component<TsProps> {
 
    render = () => {
      const {
-       intl, showModal, closeModal, submit, oppgave, finnSaksbehandler, erSaksbehandlerSokStartet, erSaksbehandlerSokFerdig, saksbehandler,
+       intl, showModal, closeModal, submit, oppgaveId, finnSaksbehandler, erSaksbehandlerSokStartet, erSaksbehandlerSokFerdig, saksbehandler,
      } = this.props;
 
      return (
@@ -139,7 +139,7 @@ export class FlyttReservasjonModal extends Component<TsProps> {
            )}
          />
          <Form
-           onSubmit={values => submit(oppgave.id, saksbehandler ? saksbehandler.brukerIdent : '', values.begrunnelse)}
+           onSubmit={values => submit(oppgaveId, saksbehandler ? saksbehandler.brukerIdent : '', values.begrunnelse)}
            render={({
              handleSubmit, values,
            }) => (

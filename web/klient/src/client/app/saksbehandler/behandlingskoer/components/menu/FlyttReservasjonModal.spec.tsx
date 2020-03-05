@@ -15,33 +15,7 @@ import behandlingType from 'kodeverk/behandlingType';
 import { FlyttReservasjonModal } from './FlyttReservasjonModal';
 
 describe('<FlyttReservasjonModal>', () => {
-  const oppgave = {
-    id: 1,
-    status: {
-      erReservert: false,
-      reservertTilTidspunkt: moment().add(2, 'hours').format(),
-    },
-    saksnummer: 1,
-    behandlingId: 2,
-    personnummer: '1234567',
-    navn: 'Espen Utvikler',
-    system: 'FPSAK',
-    behandlingstype: {
-      kode: behandlingType.FORSTEGANGSSOKNAD,
-      navn: '',
-    },
-    opprettetTidspunkt: '2017-01-01',
-    behandlingsfrist: '2017-01-01',
-    erTilSaksbehandling: true,
-    fagsakYtelseType: {
-      kode: fagsakYtelseType.FORELDREPRENGER,
-      navn: 'FP',
-    },
-    behandlingStatus: {
-      kode: behandlingStatus.OPPRETTET,
-      navn: '',
-    },
-  };
+  const oppgaveId = 1;
 
   it('skal ikke vise saksbehandler før søk er utført', () => {
     const formProps = {
@@ -52,7 +26,7 @@ describe('<FlyttReservasjonModal>', () => {
       <FlyttReservasjonModal
         intl={intlMock}
         showModal
-        oppgave={oppgave}
+        oppgaveId={oppgaveId}
         closeModal={sinon.spy()}
         submit={sinon.spy()}
         finnSaksbehandler={sinon.spy()}
@@ -75,7 +49,7 @@ describe('<FlyttReservasjonModal>', () => {
       <FlyttReservasjonModal
         intl={intlMock}
         showModal
-        oppgave={oppgave}
+        oppgaveId={oppgaveId}
         closeModal={sinon.spy()}
         submit={sinon.spy()}
         finnSaksbehandler={sinon.spy()}
@@ -106,7 +80,7 @@ describe('<FlyttReservasjonModal>', () => {
       <FlyttReservasjonModal
         intl={intlMock}
         showModal
-        oppgave={oppgave}
+        oppgaveId={oppgaveId}
         closeModal={sinon.spy()}
         submit={sinon.spy()}
         finnSaksbehandler={sinon.spy()}
@@ -134,7 +108,7 @@ describe('<FlyttReservasjonModal>', () => {
       <FlyttReservasjonModal
         intl={intlMock}
         showModal
-        oppgave={oppgave}
+        oppgaveId={oppgaveId}
         closeModal={sinon.spy()}
         submit={sinon.spy()}
         finnSaksbehandler={sinon.spy()}
@@ -159,7 +133,7 @@ describe('<FlyttReservasjonModal>', () => {
       <FlyttReservasjonModal
         intl={intlMock}
         showModal
-        oppgave={oppgave}
+        oppgaveId={oppgaveId}
         closeModal={sinon.spy()}
         submit={sinon.spy()}
         finnSaksbehandler={sinon.spy()}
@@ -186,7 +160,7 @@ describe('<FlyttReservasjonModal>', () => {
       <FlyttReservasjonModal
         intl={intlMock}
         showModal
-        oppgave={oppgave}
+        oppgaveId={oppgaveId}
         closeModal={sinon.spy()}
         submit={sinon.spy()}
         finnSaksbehandler={sinon.spy()}
@@ -220,7 +194,7 @@ describe('<FlyttReservasjonModal>', () => {
       <FlyttReservasjonModal
         intl={intlMock}
         showModal
-        oppgave={oppgave}
+        oppgaveId={oppgaveId}
         closeModal={sinon.spy()}
         submit={sinon.spy()}
         finnSaksbehandler={sinon.spy()}
@@ -249,7 +223,7 @@ describe('<FlyttReservasjonModal>', () => {
       <FlyttReservasjonModal
         intl={intlMock}
         showModal
-        oppgave={oppgave}
+        oppgaveId={oppgaveId}
         closeModal={sinon.spy()}
         submit={sinon.spy()}
         finnSaksbehandler={sinon.spy()}
@@ -282,7 +256,7 @@ describe('<FlyttReservasjonModal>', () => {
       <FlyttReservasjonModal
         intl={intlMock}
         showModal
-        oppgave={oppgave}
+        oppgaveId={oppgaveId}
         closeModal={sinon.spy()}
         submit={sinon.spy()}
         finnSaksbehandler={sinon.spy()}
