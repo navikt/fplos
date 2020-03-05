@@ -1,7 +1,27 @@
 package no.nav.foreldrepenger.loslager.repository;
 
+import static no.nav.foreldrepenger.loslager.oppgave.KøSortering.BEHANDLINGSFRIST;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
+
+import javax.persistence.EntityManager;
+
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
+
 import no.nav.foreldrepenger.dbstoette.UnittestRepositoryRule;
 import no.nav.foreldrepenger.loslager.BaseEntitet;
+import no.nav.foreldrepenger.loslager.BehandlingId;
 import no.nav.foreldrepenger.loslager.oppgave.AndreKriterierType;
 import no.nav.foreldrepenger.loslager.oppgave.BehandlingType;
 import no.nav.foreldrepenger.loslager.oppgave.FagsakYtelseType;
@@ -14,23 +34,6 @@ import no.nav.foreldrepenger.loslager.oppgave.OppgaveFiltrering;
 import no.nav.foreldrepenger.loslager.oppgave.Reservasjon;
 import no.nav.foreldrepenger.loslager.organisasjon.Avdeling;
 import no.nav.vedtak.felles.testutilities.db.Repository;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-
-import javax.persistence.EntityManager;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.UUID;
-import java.util.stream.Collectors;
-
-import static no.nav.foreldrepenger.loslager.oppgave.KøSortering.BEHANDLINGSFRIST;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
 
 public class OppgaveRepositoryImplTest {
 
@@ -43,10 +46,10 @@ public class OppgaveRepositoryImplTest {
     private static String AVDELING_DRAMMEN_ENHET = "4806";
     private Long AVDELING_DRAMMEN;
 
-    private static UUID uuid1 = UUID.nameUUIDFromBytes("uuid_1".getBytes());
-    private static UUID uuid2 = UUID.nameUUIDFromBytes("uuid_2".getBytes());
-    private static UUID uuid3 = UUID.nameUUIDFromBytes("uuid_3".getBytes());
-    private static UUID uuid4 = UUID.nameUUIDFromBytes("uuid_4".getBytes());
+    private static BehandlingId behandlingId1 = new BehandlingId(UUID.nameUUIDFromBytes("uuid_1".getBytes()));
+    private static BehandlingId behandlingId2 = new BehandlingId(UUID.nameUUIDFromBytes("uuid_2".getBytes()));
+    private static BehandlingId behandlingId3 = new BehandlingId(UUID.nameUUIDFromBytes("uuid_3".getBytes()));
+    private static BehandlingId behandlingId4 = new BehandlingId(UUID.nameUUIDFromBytes("uuid_4".getBytes()));
     private static String AVDELING_ANNET_ENHET = "4000";
 
     @Before
@@ -69,10 +72,10 @@ public class OppgaveRepositoryImplTest {
     }
 
     @Test
-    public void testHentingAvEventerVedEksternId(){
+    public void testHentingAvEventerVedBehandlingId(){
         lagStandardSettMedOppgaver();
-        OppgaveEventLogg event = oppgaveRepository.hentOppgaveEventer(uuid1).get(0);
-        assertEquals(uuid1, event.getEksternId());
+        OppgaveEventLogg event = oppgaveRepository.hentOppgaveEventer(behandlingId1).get(0);
+        assertEquals(behandlingId1, event.getBehandlingId());
     }
 
     private Long setupOppgaveMedEgenskaper(AndreKriterierType... kriterier) {
@@ -193,10 +196,34 @@ public class OppgaveRepositoryImplTest {
 
 
     private void lagStandardSettMedOppgaver() {
-        Oppgave førsteOppgave = Oppgave.builder().dummyOppgave(AVDELING_DRAMMEN_ENHET).medEksternId(uuid1).medFagsakSaksnummer(111L).medBehandlingOpprettet(LocalDateTime.now().minusDays(10)).medBehandlingsfrist(LocalDateTime.now().plusDays(10)).build();
-        Oppgave andreOppgave = Oppgave.builder().dummyOppgave(AVDELING_DRAMMEN_ENHET).medEksternId(uuid2).medFagsakSaksnummer(222L).medBehandlingOpprettet(LocalDateTime.now().minusDays(9)).medBehandlingsfrist(LocalDateTime.now().plusDays(5)).build();
-        Oppgave tredjeOppgave = Oppgave.builder().dummyOppgave(AVDELING_DRAMMEN_ENHET).medEksternId(uuid3).medFagsakSaksnummer(333L).medBehandlingOpprettet(LocalDateTime.now().minusDays(8)).medBehandlingsfrist(LocalDateTime.now().plusDays(15)).build();
-        Oppgave fjerdeOppgave = Oppgave.builder().dummyOppgave(AVDELING_DRAMMEN_ENHET).medEksternId(uuid4).medFagsakSaksnummer(444L).medBehandlingOpprettet(LocalDateTime.now()).medBehandlingsfrist(LocalDateTime.now()).build();
+        Oppgave førsteOppgave = Oppgave.builder()
+                .dummyOppgave(AVDELING_DRAMMEN_ENHET)
+                .medBehandlingId(behandlingId1)
+                .medFagsakSaksnummer(111L)
+                .medBehandlingOpprettet(LocalDateTime.now().minusDays(10))
+                .medBehandlingsfrist(LocalDateTime.now().plusDays(10))
+                .build();
+        Oppgave andreOppgave = Oppgave.builder()
+                .dummyOppgave(AVDELING_DRAMMEN_ENHET)
+                .medBehandlingId(behandlingId2)
+                .medFagsakSaksnummer(222L)
+                .medBehandlingOpprettet(LocalDateTime.now().minusDays(9))
+                .medBehandlingsfrist(LocalDateTime.now().plusDays(5))
+                .build();
+        Oppgave tredjeOppgave = Oppgave.builder()
+                .dummyOppgave(AVDELING_DRAMMEN_ENHET)
+                .medBehandlingId(behandlingId3)
+                .medFagsakSaksnummer(333L)
+                .medBehandlingOpprettet(LocalDateTime.now().minusDays(8))
+                .medBehandlingsfrist(LocalDateTime.now().plusDays(15))
+                .build();
+        Oppgave fjerdeOppgave = Oppgave.builder()
+                .dummyOppgave(AVDELING_DRAMMEN_ENHET)
+                .medBehandlingId(behandlingId4)
+                .medFagsakSaksnummer(444L)
+                .medBehandlingOpprettet(LocalDateTime.now())
+                .medBehandlingsfrist(LocalDateTime.now())
+                .build();
         repository.lagre(førsteOppgave);
         repository.lagre(andreOppgave);
         repository.lagre(tredjeOppgave);
@@ -205,10 +232,10 @@ public class OppgaveRepositoryImplTest {
         repository.lagre(new OppgaveEgenskap(andreOppgave, AndreKriterierType.TIL_BESLUTTER, "Jodajoda"));
         repository.lagre(new OppgaveEgenskap(tredjeOppgave, AndreKriterierType.PAPIRSØKNAD));
         repository.lagre(new OppgaveEgenskap(tredjeOppgave, AndreKriterierType.TIL_BESLUTTER));
-        repository.lagre(new OppgaveEventLogg(uuid1, OppgaveEventType.OPPRETTET, AndreKriterierType.PAPIRSØKNAD, AVDELING_DRAMMEN_ENHET,1L ));
-        repository.lagre(new OppgaveEventLogg(uuid2, OppgaveEventType.OPPRETTET, AndreKriterierType.TIL_BESLUTTER, AVDELING_DRAMMEN_ENHET,2L));
-        repository.lagre(new OppgaveEventLogg(uuid3, OppgaveEventType.OPPRETTET, AndreKriterierType.PAPIRSØKNAD, AVDELING_DRAMMEN_ENHET,3L));
-        repository.lagre(new OppgaveEventLogg(uuid3, OppgaveEventType.OPPRETTET, AndreKriterierType.TIL_BESLUTTER, AVDELING_DRAMMEN_ENHET,3L));
+        repository.lagre(new OppgaveEventLogg(behandlingId1, OppgaveEventType.OPPRETTET, AndreKriterierType.PAPIRSØKNAD, AVDELING_DRAMMEN_ENHET ));
+        repository.lagre(new OppgaveEventLogg(behandlingId2, OppgaveEventType.OPPRETTET, AndreKriterierType.TIL_BESLUTTER, AVDELING_DRAMMEN_ENHET));
+        repository.lagre(new OppgaveEventLogg(behandlingId3, OppgaveEventType.OPPRETTET, AndreKriterierType.PAPIRSØKNAD, AVDELING_DRAMMEN_ENHET));
+        repository.lagre(new OppgaveEventLogg(behandlingId3, OppgaveEventType.OPPRETTET, AndreKriterierType.TIL_BESLUTTER, AVDELING_DRAMMEN_ENHET));
         repository.flush();
 
     }
@@ -254,7 +281,7 @@ public class OppgaveRepositoryImplTest {
         Oppgave oppgaveKommerPåNytt = lagOppgave(AVDELING_DRAMMEN_ENHET);
         oppgaveRepository.opprettOppgave(oppgave);
         assertThat(repository.hentAlle(Oppgave.class)).hasSize(1);
-        oppgaveRepository.avsluttOppgaveForEksternId(oppgave.getEksternId());
+        oppgaveRepository.avsluttOppgaveForBehandling(oppgave.getBehandlingId());
         oppgaveRepository.opprettOppgave(oppgaveKommerPåNytt);
         assertThat(repository.hentAlle(Oppgave.class)).hasSize(2);
     }
@@ -270,7 +297,7 @@ public class OppgaveRepositoryImplTest {
         assertThat(siste().getAktiv()).isTrue();
         assertThat(første().getOpprettetTidspunkt()).isBefore(siste().getOpprettetTidspunkt());
 
-        oppgaveRepository.avsluttOppgaveForEksternId(første.getEksternId());
+        oppgaveRepository.avsluttOppgaveForBehandling(første.getBehandlingId());
         assertThat(første().getAktiv()).isTrue();
         assertThat(siste().getAktiv()).isFalse();
     }
@@ -291,8 +318,9 @@ public class OppgaveRepositoryImplTest {
     }
 
     private Oppgave lagOppgave(String behandlendeEnhet){
-        return Oppgave.builder().medBehandlingId(1L).medFagsakSaksnummer(1337L)
-                .medEksternId(uuid1)
+        return Oppgave.builder()
+                .medFagsakSaksnummer(1337L)
+                .medBehandlingId(behandlingId1)
                 .medAktorId(5000000L).medBehandlendeEnhet(behandlendeEnhet)
                 .medBehandlingType(BehandlingType.FØRSTEGANGSSØKNAD)
                 .medFagsakYtelseType(FagsakYtelseType.FORELDREPENGER)

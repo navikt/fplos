@@ -14,6 +14,7 @@ describe('<ReservasjonerIndex>', () => {
       avdelingensReservasjoner={[]}
       opphevReservasjon={sinon.spy()}
       endreOppgaveReservasjon={sinon.spy()}
+      flyttReservasjon={sinon.spy()}
       valgtAvdelingEnhet="2"
     />);
 

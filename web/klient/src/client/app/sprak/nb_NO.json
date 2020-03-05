@@ -198,6 +198,7 @@
   "ReservasjonerTabell.ReservertTil": "Reservert til",
   "ReservasjonerTabell.ReservertTilFormat": "{time} - {date}",
   "ReservasjonerTabell.Endre": "Endre",
+  "ReservasjonerTabell.Flytt": "Flytt",
   "ReservasjonerTabell.Slett": "Slett",
   "ReservasjonerTabell.Reservasjoner": "Reservasjoner for avdelingen",
   "ReservasjonerTabell.IngenReservasjoner": "Ingen reservasjoner funnet",

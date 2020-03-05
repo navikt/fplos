@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
 import reservasjonPropType from 'avdelingsleder/reservasjoner/reservasjonPropType';
 import { Reservasjon } from 'avdelingsleder/reservasjoner/reservasjonTsType';
-import { endreOppgaveReservasjon } from 'saksbehandler/behandlingskoer/duck';
+import { endreOppgaveReservasjon, flyttReservasjon } from 'saksbehandler/behandlingskoer/duck';
 import {
   fetchAvdelingensReservasjoner, getAvdelingensReservasjoner, opphevReservasjon,
 } from './duck';
@@ -17,6 +17,7 @@ interface TsProps {
   valgtAvdelingEnhet: string;
   opphevReservasjon: (oppgaveId: number) => Promise<string>;
   endreOppgaveReservasjon: (oppgaveId: number, reserverTil: string) => Promise<string>;
+  flyttReservasjon: (oppgaveId: number, brukerident: string, begrunnelse: string) => Promise<string>;
 }
 export class ReservasjonerIndex extends Component<TsProps> {
   static propTypes = {
@@ -25,6 +26,7 @@ export class ReservasjonerIndex extends Component<TsProps> {
     valgtAvdelingEnhet: PropTypes.string.isRequired,
     opphevReservasjon: PropTypes.func.isRequired,
     endreOppgaveReservasjon: PropTypes.func.isRequired,
+    flyttReservasjon: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
@@ -48,6 +50,12 @@ export class ReservasjonerIndex extends Component<TsProps> {
       .then(() => fetchReserverte(valgtAvdelingEnhet));
   }
 
+  flyttReservasjon = (oppgaveId: number, brukerident: string, begrunnelse: string): Promise<any> => {
+    const { flyttReservasjon: flytt, fetchAvdelingensReservasjoner: fetchReserverte, valgtAvdelingEnhet } = this.props;
+        return flytt(oppgaveId, brukerident, begrunnelse)
+      .then(() => fetchReserverte(valgtAvdelingEnhet));
+  }
+
   render = () => {
     const {
       avdelingensReservasjoner,
@@ -58,6 +66,7 @@ export class ReservasjonerIndex extends Component<TsProps> {
         reservasjoner={avdelingensReservasjoner}
         opphevReservasjon={this.opphevOppgaveReservasjon}
         endreOppgaveReservasjon={this.endreOppgaveReservasjon}
+        flyttReservasjon={this.flyttReservasjon}
       />
     );
   }
@@ -73,6 +82,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
     fetchAvdelingensReservasjoner,
     opphevReservasjon,
     endreOppgaveReservasjon,
+    flyttReservasjon,
   }, dispatch),
 });
 

@@ -1,6 +1,27 @@
 package no.nav.fplos.kafkatjenester;
 
+import static java.util.Collections.emptyList;
+import static no.nav.foreldrepenger.loslager.oppgave.AndreKriterierType.PAPIRSØKNAD;
+import static no.nav.foreldrepenger.loslager.oppgave.AndreKriterierType.UTLANDSSAK;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.when;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import javax.persistence.EntityManager;
+
+import org.junit.Rule;
+import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnit;
+import org.mockito.junit.MockitoRule;
+
 import no.nav.foreldrepenger.dbstoette.UnittestRepositoryRule;
+import no.nav.foreldrepenger.loslager.BehandlingId;
 import no.nav.foreldrepenger.loslager.oppgave.AndreKriterierType;
 import no.nav.foreldrepenger.loslager.oppgave.BehandlingStatus;
 import no.nav.foreldrepenger.loslager.oppgave.BehandlingType;
@@ -9,29 +30,10 @@ import no.nav.foreldrepenger.loslager.oppgave.Oppgave;
 import no.nav.foreldrepenger.loslager.oppgave.OppgaveEgenskap;
 import no.nav.foreldrepenger.loslager.repository.OppgaveRepository;
 import no.nav.foreldrepenger.loslager.repository.OppgaveRepositoryImpl;
-import org.junit.Rule;
-import org.junit.Test;
-import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnit;
-import org.mockito.junit.MockitoRule;
-
-import javax.persistence.EntityManager;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
-import java.util.stream.Collectors;
-
-import static java.util.Collections.emptyList;
-import static no.nav.foreldrepenger.loslager.oppgave.AndreKriterierType.PAPIRSØKNAD;
-import static no.nav.foreldrepenger.loslager.oppgave.AndreKriterierType.UTLANDSSAK;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.when;
 
 public class OppgaveEgenskapHandlerTest {
 
-    private static final UUID eksternID = UUID.nameUUIDFromBytes("test_uuid".getBytes());
+    private static final BehandlingId behandlingId = BehandlingId.random();
 
     @Rule
     public UnittestRepositoryRule repoRule = new UnittestRepositoryRule();
@@ -113,7 +115,7 @@ public class OppgaveEgenskapHandlerTest {
     private Oppgave lagOppgave() {
         Oppgave oppgave = Oppgave.builder()
                 .medFagsakSaksnummer(42L)
-                .medEksternId(eksternID)
+                .medBehandlingId(behandlingId)
                 .medAktorId(1L)
                 .medFagsakYtelseType(FagsakYtelseType.FORELDREPENGER)
                 .medBehandlingType(BehandlingType.FØRSTEGANGSSØKNAD)

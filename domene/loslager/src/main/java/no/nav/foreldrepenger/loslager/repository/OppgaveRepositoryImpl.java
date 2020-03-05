@@ -13,13 +13,13 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
-import java.util.UUID;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 
+import no.nav.foreldrepenger.loslager.BehandlingId;
 import no.nav.foreldrepenger.loslager.oppgave.AndreKriterierType;
 import no.nav.foreldrepenger.loslager.oppgave.BehandlingType;
 import no.nav.foreldrepenger.loslager.oppgave.EventmottakFeillogg;
@@ -461,8 +461,8 @@ public class OppgaveRepositoryImpl implements OppgaveRepository {
     }
 
     @Override
-    public Oppgave gjenåpneOppgave(UUID eksternId) {
-        List<Oppgave> oppgaver = this.hentOppgaver(eksternId, Oppgave.class);
+    public Oppgave gjenåpneOppgaveForBehandling(BehandlingId behandlingId) {
+        List<Oppgave> oppgaver = hentOppgaver(behandlingId, Oppgave.class);
         Oppgave sisteOppgave = oppgaver.stream()
                 .max(Comparator.comparing(Oppgave::getOpprettetTidspunkt))
                 .orElse(null);
@@ -475,8 +475,8 @@ public class OppgaveRepositoryImpl implements OppgaveRepository {
     }
 
     @Override
-    public TilbakekrevingOppgave gjenåpneTilbakekrevingOppgave(UUID eksternId) {
-        List<TilbakekrevingOppgave> oppgaver = hentOppgaver(eksternId, TilbakekrevingOppgave.class);
+    public TilbakekrevingOppgave gjenåpneTilbakekrevingOppgave(BehandlingId behandlingId) {
+        List<TilbakekrevingOppgave> oppgaver = hentOppgaver(behandlingId, TilbakekrevingOppgave.class);
         var sisteOppgave = oppgaver.stream()
                 .max(Comparator.comparing(Oppgave::getOpprettetTidspunkt))
                 .orElse(null);
@@ -489,8 +489,8 @@ public class OppgaveRepositoryImpl implements OppgaveRepository {
     }
 
     @Override
-    public void avsluttOppgaveForEksternId(UUID eksternId) {
-        List<Oppgave> oppgaver = this.hentOppgaver(eksternId, Oppgave.class);
+    public void avsluttOppgaveForBehandling(BehandlingId behandlingId) {
+        List<Oppgave> oppgaver = hentOppgaver(behandlingId, Oppgave.class);
         if (oppgaver.isEmpty()) {
             return;
         }
@@ -531,12 +531,12 @@ public class OppgaveRepositoryImpl implements OppgaveRepository {
     }
 
     @Override
-    public List<OppgaveEventLogg> hentOppgaveEventer(UUID eksternId) {
-        Objects.requireNonNull(eksternId, "EksternId kan ikke være null");
+    public List<OppgaveEventLogg> hentOppgaveEventer(BehandlingId behandlingId) {
+        Objects.requireNonNull(behandlingId, "behandlingId kan ikke være null");
         return entityManager.createQuery("FROM oppgaveEventLogg oel " +
-                "where oel.eksternId = :eksternId " +
+                "where oel.eksternId = :behandlingId " +
                 "order by oel.opprettetTidspunkt desc", OppgaveEventLogg.class)
-                .setParameter("eksternId", eksternId).getResultList();
+                .setParameter("behandlingId", behandlingId.toUUID()).getResultList();
     }
 
     @Override
@@ -556,13 +556,13 @@ public class OppgaveRepositoryImpl implements OppgaveRepository {
         internLagre(reservasjonEventLogg);
     }
 
-    private <T> List<T> hentOppgaver(UUID eksternId, Class<T> cls) {
+    private <T> List<T> hentOppgaver(BehandlingId behandlingId, Class<T> cls) {
         var select = cls.equals(TilbakekrevingOppgave.class)
                 ? SELECT_FRA_TILBAKEKREVING_OPPGAVE
                 : SELECT_FRA_OPPGAVE;
         return entityManager.createQuery(select +
-                "WHERE o.eksternId = :eksternId ", cls)
-                .setParameter("eksternId", eksternId)
+                "WHERE o.eksternId = :behandlingId ", cls)
+                .setParameter("behandlingId", behandlingId.toUUID())
                 .getResultList();
     }
 

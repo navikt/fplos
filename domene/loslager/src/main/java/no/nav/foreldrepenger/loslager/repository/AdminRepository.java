@@ -1,29 +1,25 @@
 package no.nav.foreldrepenger.loslager.repository;
 
+import java.util.List;
+
+import no.nav.foreldrepenger.loslager.BehandlingId;
 import no.nav.foreldrepenger.loslager.oppgave.EventmottakFeillogg;
 import no.nav.foreldrepenger.loslager.oppgave.Oppgave;
 import no.nav.foreldrepenger.loslager.oppgave.OppgaveEventLogg;
-import no.nav.foreldrepenger.loslager.oppgave.TilbakekrevingOppgave;
-
-import java.util.List;
-import java.util.UUID;
 
 public interface AdminRepository {
 
-    void deaktiverSisteOppgave(UUID uuid);
+    void deaktiverSisteOppgave(BehandlingId behandlingId);
 
-    Oppgave hentSisteOppgave(UUID uuid);
+    Oppgave hentSisteOppgave(BehandlingId behandlingId);
 
-    List<OppgaveEventLogg> hentEventer(UUID uuid);
-    TilbakekrevingOppgave hentSisteTilbakekrevingOppgave(UUID uuid);
-
-    List<Oppgave> hentAlleAktiveOppgaver();
+    List<OppgaveEventLogg> hentEventer(BehandlingId behandlingId);
 
     List<EventmottakFeillogg> hentAlleMeldingerFraFeillogg();
 
     void markerFerdig(Long feilloggId);
 
-    List<Oppgave> hentAlleOppgaverForBehandling(UUID uuid);
+    List<Oppgave> hentAlleOppgaverForBehandling(BehandlingId behandlingId);
 
     Oppgave deaktiverOppgave(Long oppgaveId);
 

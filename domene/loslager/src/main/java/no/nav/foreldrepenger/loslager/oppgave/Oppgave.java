@@ -1,7 +1,8 @@
 package no.nav.foreldrepenger.loslager.oppgave;
 
-import no.nav.foreldrepenger.loslager.BaseEntitet;
-import no.nav.vedtak.felles.jpa.converters.BooleanToStringConverter;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.UUID;
 
 import javax.persistence.Column;
 import javax.persistence.Convert;
@@ -13,9 +14,10 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.UUID;
+
+import no.nav.foreldrepenger.loslager.BaseEntitet;
+import no.nav.foreldrepenger.loslager.BehandlingId;
+import no.nav.vedtak.felles.jpa.converters.BooleanToStringConverter;
 
 @Entity(name = "Oppgave")
 @Table(name = "OPPGAVE")
@@ -25,9 +27,6 @@ public class Oppgave extends BaseEntitet {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_OPPGAVE")
     protected Long id;
-
-    @Column(name = "BEHANDLING_ID")
-    protected Long behandlingId;
 
     @Column(name = "FAGSAK_SAKSNR")
     protected Long fagsakSaksnummer;
@@ -86,10 +85,6 @@ public class Oppgave extends BaseEntitet {
         return id;
     }
 
-    public Long getBehandlingId() {
-        return behandlingId;
-    }
-
     public Long getFagsakSaksnummer() {
         return fagsakSaksnummer;
     }
@@ -118,8 +113,8 @@ public class Oppgave extends BaseEntitet {
         return system;
     }
 
-    public UUID getEksternId() {
-        return eksternId;
+    public BehandlingId getBehandlingId() {
+        return eksternId == null ? null : new BehandlingId(eksternId);
     }
 
     public LocalDateTime getBehandlingsfrist() {
@@ -178,13 +173,8 @@ public class Oppgave extends BaseEntitet {
             tempOppgave = new Oppgave();
         }
 
-        public Builder medBehandlingId(Long behandlingId){
-            tempOppgave.behandlingId = behandlingId;
-            return this;
-        }
-
-        public Builder medEksternId(UUID eksternId){
-            tempOppgave.eksternId = eksternId;
+        public Builder medBehandlingId(BehandlingId behandlingId){
+            tempOppgave.eksternId = behandlingId.toUUID();
             return this;
         }
 
@@ -259,7 +249,6 @@ public class Oppgave extends BaseEntitet {
         }
 
         public Builder dummyOppgave(String enhet){
-            tempOppgave.behandlingId = 331133L;
             tempOppgave.eksternId = UUID.nameUUIDFromBytes("331133L".getBytes());
             tempOppgave.fagsakSaksnummer = 3478293L;
             tempOppgave.aktorId = 770099L;

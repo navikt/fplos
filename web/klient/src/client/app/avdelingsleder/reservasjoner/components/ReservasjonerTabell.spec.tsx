@@ -15,6 +15,9 @@ describe('<ReservasjonerTabell>', () => {
       reservasjoner={[]}
       opphevReservasjon={sinon.spy()}
       endreOppgaveReservasjon={sinon.spy()}
+      finnSaksbehandler={sinon.spy()}
+      nullstillSaksbehandler={sinon.spy()}
+      flyttReservasjon={sinon.spy()}
     />);
 
     const message = wrapper.find(FormattedMessage);
@@ -44,6 +47,9 @@ describe('<ReservasjonerTabell>', () => {
       reservasjoner={reservasjoner}
       opphevReservasjon={sinon.spy()}
       endreOppgaveReservasjon={sinon.spy()}
+      finnSaksbehandler={sinon.spy()}
+      nullstillSaksbehandler={sinon.spy()}
+      flyttReservasjon={sinon.spy()}
     />);
 
     expect(wrapper.find(FormattedMessage)).to.have.length(1);
@@ -53,7 +59,7 @@ describe('<ReservasjonerTabell>', () => {
     expect(rader).to.have.length(2);
 
     const kolonnerRad1 = rader.first().find(TableColumn);
-    expect(kolonnerRad1).to.have.length(6);
+    expect(kolonnerRad1).to.have.length(7);
     expect(kolonnerRad1.first().childAt(0).text()).to.eql('Auto Joachim');
     expect(kolonnerRad1.at(1).childAt(0).text()).to.eql('25');
     expect(kolonnerRad1.at(2).childAt(0).text()).to.eql('Revurdering');
@@ -61,7 +67,7 @@ describe('<ReservasjonerTabell>', () => {
     expect(kolonnerRad1.at(3).childAt(0).prop('values')).is.eql({ time: '10:19', date: '01.02.2020' });
 
     const kolonnerRad2 = rader.last().find(TableColumn);
-    expect(kolonnerRad2).to.have.length(6);
+    expect(kolonnerRad2).to.have.length(7);
     expect(kolonnerRad2.first().childAt(0).text()).to.eql('Espen Utvikler');
     expect(kolonnerRad2.at(1).childAt(0).text()).to.eql('10');
     expect(kolonnerRad2.at(2).childAt(0).text()).to.eql('Førstegangsbehandling');

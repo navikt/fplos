@@ -1,5 +1,10 @@
 package no.nav.foreldrepenger.loslager.repository;
 
+import java.time.LocalDate;
+import java.util.Collection;
+import java.util.List;
+
+import no.nav.foreldrepenger.loslager.BehandlingId;
 import no.nav.foreldrepenger.loslager.oppgave.AndreKriterierType;
 import no.nav.foreldrepenger.loslager.oppgave.BehandlingType;
 import no.nav.foreldrepenger.loslager.oppgave.EventmottakFeillogg;
@@ -17,11 +22,6 @@ import no.nav.foreldrepenger.loslager.oppgave.ReservasjonEventLogg;
 import no.nav.foreldrepenger.loslager.oppgave.TilbakekrevingOppgave;
 import no.nav.foreldrepenger.loslager.organisasjon.Avdeling;
 import no.nav.foreldrepenger.loslager.organisasjon.Saksbehandler;
-
-import java.time.LocalDate;
-import java.util.Collection;
-import java.util.List;
-import java.util.UUID;
 
 public interface OppgaveRepository {
 
@@ -89,11 +89,11 @@ public interface OppgaveRepository {
 
     TilbakekrevingOppgave opprettTilbakekrevingEgenskaper(TilbakekrevingOppgave egenskaper);
 
-    Oppgave gjenåpneOppgave(UUID eksternId);
+    Oppgave gjenåpneOppgaveForBehandling(BehandlingId behandlingId);
 
-    TilbakekrevingOppgave gjenåpneTilbakekrevingOppgave(UUID eksternId);
+    TilbakekrevingOppgave gjenåpneTilbakekrevingOppgave(BehandlingId behandlingId);
 
-    void avsluttOppgaveForEksternId(UUID eksternId);
+    void avsluttOppgaveForBehandling(BehandlingId behandlingId);
 
     List<Oppgave> hentSisteReserverteOppgaver(String uid);
 
@@ -101,7 +101,7 @@ public interface OppgaveRepository {
 
     void lagre(EventmottakFeillogg eventmottakFeillogg);
 
-    List<OppgaveEventLogg> hentOppgaveEventer(UUID eksternId);
+    List<OppgaveEventLogg> hentOppgaveEventer(BehandlingId behandlingId);
 
     List<OppgaveEgenskap> hentOppgaveEgenskaper(Long oppgaveId);
 

@@ -6,7 +6,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
-import java.util.UUID;
 
 import javax.persistence.EntityManager;
 
@@ -14,6 +13,7 @@ import org.junit.Rule;
 import org.junit.Test;
 
 import no.nav.foreldrepenger.dbstoette.UnittestRepositoryRule;
+import no.nav.foreldrepenger.loslager.BehandlingId;
 import no.nav.foreldrepenger.loslager.oppgave.BehandlingType;
 import no.nav.foreldrepenger.loslager.oppgave.Oppgave;
 import no.nav.foreldrepenger.loslager.oppgave.OppgaveEventLogg;
@@ -43,9 +43,24 @@ public class AdminTjenesteImplTest {
 
     private static String AVDELING_DRAMMEN_ENHET = "4806";
 
-    private Oppgave førstegangOppgave = Oppgave.builder().dummyOppgave(AVDELING_DRAMMEN_ENHET).medBehandlingId(1L).medBehandlingType(BehandlingType.FØRSTEGANGSSØKNAD).medAktiv(true).medEksternId(UUID.nameUUIDFromBytes("1".getBytes())).build();
-    private Oppgave klageOppgave = Oppgave.builder().dummyOppgave(AVDELING_DRAMMEN_ENHET).medBehandlingId(2L).medBehandlingType(BehandlingType.KLAGE).medAktiv(true).medEksternId(UUID.nameUUIDFromBytes("2".getBytes())).build();
-    private Oppgave innsynOppgave = Oppgave.builder().dummyOppgave(AVDELING_DRAMMEN_ENHET).medBehandlingId(3L).medBehandlingType(BehandlingType.INNSYN).medAktiv(true).medEksternId(UUID.nameUUIDFromBytes("3".getBytes())).build();
+    private Oppgave førstegangOppgave = Oppgave.builder()
+            .dummyOppgave(AVDELING_DRAMMEN_ENHET)
+            .medBehandlingType(BehandlingType.FØRSTEGANGSSØKNAD)
+            .medAktiv(true)
+            .medBehandlingId(BehandlingId.random())
+            .build();
+    private Oppgave klageOppgave = Oppgave.builder()
+            .dummyOppgave(AVDELING_DRAMMEN_ENHET)
+            .medBehandlingType(BehandlingType.KLAGE)
+            .medAktiv(true)
+            .medBehandlingId(BehandlingId.random())
+            .build();
+    private Oppgave innsynOppgave = Oppgave.builder()
+            .dummyOppgave(AVDELING_DRAMMEN_ENHET)
+            .medBehandlingType(BehandlingType.INNSYN)
+            .medAktiv(true)
+            .medBehandlingId(BehandlingId.random())
+            .build();
 
     private void leggeInnEtSettMedOppgaver(){
         oppgaveRepository.lagre(førstegangOppgave);
@@ -56,7 +71,7 @@ public class AdminTjenesteImplTest {
     @Test
     public void testHentOppgave(){
         leggeInnEtSettMedOppgaver();
-        Oppgave oppgave = adminTjeneste.hentOppgave(førstegangOppgave.getEksternId());
+        Oppgave oppgave = adminTjeneste.hentOppgave(førstegangOppgave.getBehandlingId());
         assertThat(oppgave).isNotNull();
         assertThat(oppgave.getId()).isEqualTo(førstegangOppgave.getId());
         assertThat(oppgave.getAktiv()).isEqualTo(førstegangOppgave.getAktiv());
@@ -64,24 +79,24 @@ public class AdminTjenesteImplTest {
 
     @Test
     public void testHentEvent(){
-        oppgaveRepository.lagre(new OppgaveEventLogg(førstegangOppgave.getEksternId(), OppgaveEventType.OPPRETTET, null, null, førstegangOppgave.getBehandlingId()));
-        List<OppgaveEventLogg> oppgave = adminTjeneste.hentEventer(førstegangOppgave.getEksternId());
+        oppgaveRepository.lagre(new OppgaveEventLogg(førstegangOppgave.getBehandlingId(), OppgaveEventType.OPPRETTET, null, null));
+        List<OppgaveEventLogg> oppgave = adminTjeneste.hentEventer(førstegangOppgave.getBehandlingId());
         assertThat(oppgave).isNotEmpty();
     }
 
     @Test
     public void testOppfriskOppgaveIkkeLukket(){
         leggeInnEtSettMedOppgaver();
-        when(foreldrepengerBehandlingRestKlient.getBehandling(any(UUID.class))).thenReturn(lagBehandlingDto());
-        Oppgave oppgave = adminTjeneste.synkroniserOppgave(førstegangOppgave.getEksternId());
+        when(foreldrepengerBehandlingRestKlient.getBehandling(any(BehandlingId.class))).thenReturn(lagBehandlingDto());
+        Oppgave oppgave = adminTjeneste.synkroniserOppgave(førstegangOppgave.getBehandlingId());
         assertThat(oppgave.getAktiv()).isTrue();
     }
 
     @Test
     public void testOppfriskOppgaveLukket(){
         leggeInnEtSettMedOppgaver();
-        when(foreldrepengerBehandlingRestKlient.getBehandling(any(UUID.class))).thenReturn(lagBehandlingAvsluttetDto());
-        Oppgave oppgave = adminTjeneste.synkroniserOppgave(førstegangOppgave.getEksternId());
+        when(foreldrepengerBehandlingRestKlient.getBehandling(any(BehandlingId.class))).thenReturn(lagBehandlingAvsluttetDto());
+        Oppgave oppgave = adminTjeneste.synkroniserOppgave(førstegangOppgave.getBehandlingId());
         assertThat(oppgave.getAktiv()).isFalse();
     }
 
