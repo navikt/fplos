@@ -47,14 +47,14 @@ public class AdminRepositoryImpl implements AdminRepository {
     }
     private List<Oppgave> hentOppgaverForBehandling(BehandlingId behandlingId) {
         return entityManager.createQuery(SELECT_FRA_OPPGAVE +
-                "WHERE o.eksternId = :behandlingId ", Oppgave.class)
+                "WHERE o.behandlingId = :behandlingId ", Oppgave.class)
                 .setParameter("behandlingId", behandlingId.toUUID())
                 .getResultList();
     }
     public Oppgave hentSisteOppgave(BehandlingId behandlingId) {
         Oppgave oppgave = null;
         try {
-            oppgave = entityManager.createQuery("Select o FROM Oppgave o where o.eksternId = :behandlingId ORDER BY o.opprettetTidspunkt desc", Oppgave.class)
+            oppgave = entityManager.createQuery("Select o FROM Oppgave o where o.behandlingId = :behandlingId ORDER BY o.opprettetTidspunkt desc", Oppgave.class)
                     .setParameter("behandlingId", behandlingId.toUUID())
                     .setMaxResults(1).getSingleResult();
             entityManager.refresh(oppgave);
@@ -66,7 +66,7 @@ public class AdminRepositoryImpl implements AdminRepository {
 
     public List<OppgaveEventLogg> hentEventer(BehandlingId behandlingId) {
         return entityManager.createQuery( "Select o FROM oppgaveEventLogg o " +
-                "where o.eksternId = :behandlingId ORDER BY o.opprettetTidspunkt desc", OppgaveEventLogg.class)
+                "where o.behandlingId = :behandlingId ORDER BY o.opprettetTidspunkt desc", OppgaveEventLogg.class)
                 .setParameter("behandlingId", behandlingId.toUUID()).getResultList();
     }
 
@@ -84,7 +84,7 @@ public class AdminRepositoryImpl implements AdminRepository {
     }
 
     public List<Oppgave> hentAlleOppgaverForBehandling(BehandlingId behandlingId) {
-        return entityManager.createQuery("Select o FROM Oppgave o where o.eksternId = :behandlingId ORDER BY o.opprettetTidspunkt desc", Oppgave.class)
+        return entityManager.createQuery("Select o FROM Oppgave o where o.behandlingId = :behandlingId ORDER BY o.opprettetTidspunkt desc", Oppgave.class)
                 .setParameter("behandlingId", behandlingId.toUUID())
                 .getResultList();
     }

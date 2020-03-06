@@ -73,7 +73,7 @@ public class OppgaveEventLogg extends BaseEntitet{
     }
 
     public BehandlingId getBehandlingId() {
-        return BehandlingId.fromUUID(eksternId);
+        return BehandlingId.fromUUID(behandlingId);
     }
 
     public LocalDateTime getFristTid() {

@@ -61,13 +61,13 @@ public class StatistikkRepositoryImpl implements StatistikkRepository {
     @Override
     public List hentAntallOppgaverForAvdelingSattManueltPåVent(String avdelingEnhet) {
         Query query = entityManager.createNativeQuery(
-                "SELECT COALESCE(trunc(oel.FRIST_TID), trunc(oel.OPPRETTET_TID + 28)) ESTIMERT_FRIST, o.FAGSAK_YTELSE_TYPE, Count(distinct oel.EKSTERN_ID) as ANTALL " + //,
+                "SELECT COALESCE(trunc(oel.FRIST_TID), trunc(oel.OPPRETTET_TID + 28)) ESTIMERT_FRIST, o.FAGSAK_YTELSE_TYPE, Count(distinct oel.BEHANDLING_ID) as ANTALL " + //,
                         "FROM OPPGAVE_EVENT_LOGG oel " +
-                        "INNER JOIN OPPGAVE o ON o.ekstern_id = oel.ekstern_id AND o.behandlende_enhet = :behandlendeEnhet " +
+                        "INNER JOIN OPPGAVE o ON o.BEHANDLING_ID = oel.BEHANDLING_ID AND o.behandlende_enhet = :behandlendeEnhet " +
                         "WHERE oel.EVENT_TYPE = :eventType " +
                         "AND oel.OPPRETTET_TID = (SELECT MAX(oel2.OPPRETTET_TID) " +
                         "                 FROM OPPGAVE_EVENT_LOGG oel2 " +
-                        "                 WHERE oel2.EKSTERN_ID = oel.EKSTERN_ID) " +
+                        "                 WHERE oel2.BEHANDLING_ID = oel.BEHANDLING_ID) " +
                         "GROUP BY COALESCE(trunc(oel.FRIST_TID), trunc(oel.OPPRETTET_TID + 28)),o.FAGSAK_YTELSE_TYPE " +
                         "ORDER BY COALESCE(trunc(oel.FRIST_TID), trunc(oel.OPPRETTET_TID + 28)),o.FAGSAK_YTELSE_TYPE ")
                 .setParameter("behandlendeEnhet", avdelingEnhet)
