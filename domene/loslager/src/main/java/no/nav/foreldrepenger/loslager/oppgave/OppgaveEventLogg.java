@@ -37,9 +37,6 @@ public class OppgaveEventLogg extends BaseEntitet{
     @Column(name = "FRIST_TID")
     private LocalDateTime fristTid;
 
-    @Column(name = "EKSTERN_ID", nullable = false)
-    private UUID eksternId;
-
     @Column(name = "BEHANDLING_ID", nullable = false)
     private UUID behandlingId;
 
@@ -56,7 +53,6 @@ public class OppgaveEventLogg extends BaseEntitet{
         this.eventType = eventType;
         this.andreKriterierType = andreKriterierType;
         this.behandlendeEnhet = behandlendeEnhet;
-        this.eksternId = behandlingId.toUUID();
         this.behandlingId = behandlingId.toUUID();
     }
 
