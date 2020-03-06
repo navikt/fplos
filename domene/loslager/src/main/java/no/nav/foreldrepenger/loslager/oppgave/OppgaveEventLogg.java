@@ -40,6 +40,9 @@ public class OppgaveEventLogg extends BaseEntitet{
     @Column(name = "EKSTERN_ID", nullable = false)
     private UUID eksternId;
 
+    @Column(name = "BEHANDLING_ID", nullable = false)
+    private UUID behandlingId;
+
     public OppgaveEventLogg(){
         //For automatisk generering
     }
@@ -54,6 +57,7 @@ public class OppgaveEventLogg extends BaseEntitet{
         this.andreKriterierType = andreKriterierType;
         this.behandlendeEnhet = behandlendeEnhet;
         this.eksternId = behandlingId.toUUID();
+        this.behandlingId = behandlingId.toUUID();
     }
 
     public OppgaveEventType getEventType() {
