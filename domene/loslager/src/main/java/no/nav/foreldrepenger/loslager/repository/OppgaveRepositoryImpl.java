@@ -534,7 +534,7 @@ public class OppgaveRepositoryImpl implements OppgaveRepository {
     public List<OppgaveEventLogg> hentOppgaveEventer(BehandlingId behandlingId) {
         Objects.requireNonNull(behandlingId, "behandlingId kan ikke være null");
         return entityManager.createQuery("FROM oppgaveEventLogg oel " +
-                "where oel.eksternId = :behandlingId " +
+                "where oel.behandlingId = :behandlingId " +
                 "order by oel.opprettetTidspunkt desc", OppgaveEventLogg.class)
                 .setParameter("behandlingId", behandlingId.toUUID()).getResultList();
     }
@@ -561,7 +561,7 @@ public class OppgaveRepositoryImpl implements OppgaveRepository {
                 ? SELECT_FRA_TILBAKEKREVING_OPPGAVE
                 : SELECT_FRA_OPPGAVE;
         return entityManager.createQuery(select +
-                "WHERE o.eksternId = :behandlingId ", cls)
+                "WHERE o.behandlingId = :behandlingId ", cls)
                 .setParameter("behandlingId", behandlingId.toUUID())
                 .getResultList();
     }

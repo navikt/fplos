@@ -75,7 +75,7 @@ public class Oppgave extends BaseEntitet {
     @Column(name = "EKSTERN_ID")
     protected UUID eksternId;
 
-    @Column(name = "BEHANDLING_ID")
+    @Column(name = "BEHANDLING_ID", nullable = false)
     protected UUID behandlingId;
 
     @Column(name = "HREF")
@@ -117,7 +117,7 @@ public class Oppgave extends BaseEntitet {
     }
 
     public BehandlingId getBehandlingId() {
-        return eksternId == null ? null : new BehandlingId(eksternId);
+        return new BehandlingId(behandlingId);
     }
 
     public LocalDateTime getBehandlingsfrist() {
