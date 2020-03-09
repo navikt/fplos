@@ -1,16 +1,16 @@
 package no.nav.fplos.person;
 
-import no.nav.foreldrepenger.loslager.aktør.TpsPersonDto;
-import no.nav.fplos.person.api.TpsAdapter;
-import no.nav.fplos.person.api.TpsTjeneste;
-import no.nav.foreldrepenger.loslager.aktør.GeografiskTilknytning;
-import no.nav.foreldrepenger.domene.typer.AktørId;
-import no.nav.foreldrepenger.domene.typer.PersonIdent;
+import java.util.Optional;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.xml.ws.soap.SOAPFaultException;
-import java.util.Optional;
+
+import no.nav.foreldrepenger.domene.typer.AktørId;
+import no.nav.foreldrepenger.domene.typer.PersonIdent;
+import no.nav.foreldrepenger.loslager.aktør.TpsPersonDto;
+import no.nav.fplos.person.api.TpsAdapter;
+import no.nav.fplos.person.api.TpsTjeneste;
 
 @ApplicationScoped
 public class TpsTjenesteImpl implements TpsTjeneste {
@@ -32,7 +32,7 @@ public class TpsTjenesteImpl implements TpsTjeneste {
             return Optional.empty();
         }
         Optional<AktørId> aktørId = tpsAdapter.hentAktørIdForPersonIdent(fnr);
-        if (!aktørId.isPresent()) {
+        if (aktørId.isEmpty()) {
             return Optional.empty();
         }
         try {
@@ -48,21 +48,6 @@ public class TpsTjenesteImpl implements TpsTjeneste {
         }
     }
 
-    @Override
-    public PersonIdent hentFnrForAktør(AktørId aktørId) {
-        Optional<PersonIdent> funnetFnr;
-        funnetFnr = hentFnr(aktørId);
-        if (funnetFnr.isPresent()) {
-            return funnetFnr.get();
-        }
-        throw TpsFeilmeldinger.FACTORY.fantIkkePersonForAktørId().toException();
-    }
-
-    @Override
-    public Optional<AktørId> hentAktørForFnr(PersonIdent fnr) {
-        return tpsAdapter.hentAktørIdForPersonIdent(fnr);
-    }
-
     private Optional<PersonIdent> hentFnr(AktørId aktørId) {
         return tpsAdapter.hentIdentForAktørId(aktørId);
     }
@@ -73,10 +58,5 @@ public class TpsTjenesteImpl implements TpsTjeneste {
         funnetFnr = hentFnr(aktørId);
 
         return funnetFnr.map(fnr -> tpsAdapter.hentKjerneinformasjon(fnr, aktørId));
-    }
-
-    @Override
-    public GeografiskTilknytning hentGeografiskTilknytning(String fnr) {
-        return tpsAdapter.hentGeografiskTilknytning(fnr);
     }
 }

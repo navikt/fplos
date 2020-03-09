@@ -1,7 +1,8 @@
 package no.nav.fplos.person;
 
-import no.nav.tjeneste.virksomhet.person.v3.binding.HentGeografiskTilknytningPersonIkkeFunnet;
-import no.nav.tjeneste.virksomhet.person.v3.binding.HentGeografiskTilknytningSikkerhetsbegrensing;
+import static no.nav.vedtak.feil.LogLevel.ERROR;
+import static no.nav.vedtak.feil.LogLevel.WARN;
+
 import no.nav.tjeneste.virksomhet.person.v3.binding.HentPersonPersonIkkeFunnet;
 import no.nav.tjeneste.virksomhet.person.v3.binding.HentPersonSikkerhetsbegrensning;
 import no.nav.vedtak.feil.Feil;
@@ -10,9 +11,6 @@ import no.nav.vedtak.feil.LogLevel;
 import no.nav.vedtak.feil.deklarasjon.DeklarerteFeil;
 import no.nav.vedtak.feil.deklarasjon.ManglerTilgangFeil;
 import no.nav.vedtak.feil.deklarasjon.TekniskFeil;
-
-import static no.nav.vedtak.feil.LogLevel.ERROR;
-import static no.nav.vedtak.feil.LogLevel.WARN;
 
 public interface TpsFeilmeldinger extends DeklarerteFeil {
 
@@ -26,14 +24,5 @@ public interface TpsFeilmeldinger extends DeklarerteFeil {
 
     @TekniskFeil(feilkode = "FP-715013", feilmelding = "Fant ikke person i TPS", logLevel = WARN)
     Feil fantIkkePerson(HentPersonPersonIkkeFunnet cause);
-
-    @TekniskFeil(feilkode = "FP-181235", feilmelding = "Fant ikke aktørId i TPS", logLevel = WARN)
-    Feil fantIkkePersonForAktørId();
-
-    @ManglerTilgangFeil(feilkode = "FP-115180", feilmelding = "TPS ikke tilgjengelig (sikkerhetsbegrensning)", logLevel = ERROR)
-    Feil tpsUtilgjengeligGeografiskTilknytningSikkerhetsbegrensing(HentGeografiskTilknytningSikkerhetsbegrensing cause);
-
-    @TekniskFeil(feilkode = "FP-349049", feilmelding = "Fant ikke geografisk informasjon for person", logLevel = WARN)
-    Feil geografiskTilknytningIkkeFunnet(HentGeografiskTilknytningPersonIkkeFunnet cause);
 
 }

@@ -1,31 +1,28 @@
 package no.nav.fplos.person;
 
-import no.nav.foreldrepenger.loslager.aktør.TpsPersonDto;
-import no.nav.fplos.person.api.TpsAdapter;
-import no.nav.foreldrepenger.loslager.aktør.GeografiskTilknytning;
+import java.util.Optional;
+import java.util.function.Consumer;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import no.nav.foreldrepenger.domene.typer.AktørId;
 import no.nav.foreldrepenger.domene.typer.PersonIdent;
-import no.nav.tjeneste.virksomhet.person.v3.binding.HentGeografiskTilknytningPersonIkkeFunnet;
-import no.nav.tjeneste.virksomhet.person.v3.binding.HentGeografiskTilknytningSikkerhetsbegrensing;
+import no.nav.foreldrepenger.loslager.aktør.TpsPersonDto;
+import no.nav.fplos.person.api.TpsAdapter;
 import no.nav.tjeneste.virksomhet.person.v3.binding.HentPersonPersonIkkeFunnet;
 import no.nav.tjeneste.virksomhet.person.v3.binding.HentPersonSikkerhetsbegrensning;
 import no.nav.tjeneste.virksomhet.person.v3.informasjon.Bruker;
 import no.nav.tjeneste.virksomhet.person.v3.informasjon.Informasjonsbehov;
 import no.nav.tjeneste.virksomhet.person.v3.informasjon.Person;
-import no.nav.tjeneste.virksomhet.person.v3.meldinger.HentGeografiskTilknytningRequest;
-import no.nav.tjeneste.virksomhet.person.v3.meldinger.HentGeografiskTilknytningResponse;
 import no.nav.tjeneste.virksomhet.person.v3.meldinger.HentPersonRequest;
 import no.nav.tjeneste.virksomhet.person.v3.meldinger.HentPersonResponse;
 import no.nav.vedtak.felles.integrasjon.aktør.klient.AktørConsumerMedCache;
 import no.nav.vedtak.felles.integrasjon.aktør.klient.DetFinnesFlereAktørerMedSammePersonIdentException;
 import no.nav.vedtak.felles.integrasjon.person.PersonConsumer;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-import java.util.Optional;
-import java.util.function.Consumer;
 
 @ApplicationScoped
 public class TpsAdapterImpl implements TpsAdapter {
@@ -100,19 +97,5 @@ public class TpsAdapterImpl implements TpsAdapter {
     @Override
     public TpsPersonDto hentKjerneinformasjon(PersonIdent fnr, AktørId aktørId) {
         return hentKjerneinformasjon(fnr, aktørId, null);
-    }
-
-    @Override
-    public GeografiskTilknytning hentGeografiskTilknytning(String fnr) {
-        HentGeografiskTilknytningRequest request = new HentGeografiskTilknytningRequest();
-        request.setAktoer(TpsUtil.lagPersonIdent(fnr));
-        try {
-            HentGeografiskTilknytningResponse response = personConsumer.hentGeografiskTilknytning(request);
-            return tpsOversetter.tilGeografiskTilknytning(response.getGeografiskTilknytning(), response.getDiskresjonskode());
-        } catch (HentGeografiskTilknytningSikkerhetsbegrensing e) {
-            throw TpsFeilmeldinger.FACTORY.tpsUtilgjengeligGeografiskTilknytningSikkerhetsbegrensing(e).toException();
-        } catch (HentGeografiskTilknytningPersonIkkeFunnet e) {
-            throw TpsFeilmeldinger.FACTORY.geografiskTilknytningIkkeFunnet(e).toException();
-        }
     }
 }

@@ -1,20 +1,7 @@
 package no.nav.fplos.person;
 
-import no.nav.foreldrepenger.dbstoette.UnittestRepositoryRule;
-import no.nav.foreldrepenger.loslager.aktør.TpsPersonDto;
-import no.nav.fplos.person.api.TpsAdapter;
-import no.nav.fplos.person.api.TpsTjeneste;
-import no.nav.foreldrepenger.loslager.aktør.GeografiskTilknytning;
-import no.nav.foreldrepenger.domene.typer.AktørId;
-import no.nav.foreldrepenger.domene.typer.PersonIdent;
-import no.nav.tjeneste.virksomhet.person.v3.binding.HentGeografiskTilknytningPersonIkkeFunnet;
-import no.nav.tjeneste.virksomhet.person.v3.binding.HentPersonSikkerhetsbegrensning;
-import no.nav.tjeneste.virksomhet.person.v3.feil.PersonIkkeFunnet;
-import no.nav.vedtak.feil.FeilFactory;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.time.LocalDate;
 import java.time.Month;
@@ -22,7 +9,18 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
+
+import no.nav.foreldrepenger.dbstoette.UnittestRepositoryRule;
+import no.nav.foreldrepenger.domene.typer.AktørId;
+import no.nav.foreldrepenger.domene.typer.PersonIdent;
+import no.nav.foreldrepenger.loslager.aktør.TpsPersonDto;
+import no.nav.fplos.person.api.TpsAdapter;
+import no.nav.fplos.person.api.TpsTjeneste;
+import no.nav.tjeneste.virksomhet.person.v3.binding.HentPersonSikkerhetsbegrensning;
+import no.nav.vedtak.feil.FeilFactory;
 
 public class TpsTjenesteTest {
 
@@ -39,9 +37,6 @@ public class TpsTjenesteTest {
     private static final String NAVN = "Anne-Berit Hjartdal";
 
     private TpsTjeneste tpsTjeneste;
-
-    @Rule
-    public ExpectedException expectedException = ExpectedException.none();
 
     @Rule
     public UnittestRepositoryRule repoRule = new UnittestRepositoryRule();
@@ -76,12 +71,10 @@ public class TpsTjenesteTest {
 
     @Test
     public void skal_kaste_feil_ved_tjenesteexception_dersom_aktør_ikke_er_cachet() {
-        expectedException.expect(TpsException.class);
-
-        tpsTjeneste.hentBrukerForAktør(AKTØR_ID_SOM_TRIGGER_EXCEPTION);
+        assertThatThrownBy(() -> tpsTjeneste.hentBrukerForAktør(AKTØR_ID_SOM_TRIGGER_EXCEPTION)).isInstanceOf(TpsException.class);
     }
 
-    class TpsAdapterMock implements TpsAdapter {
+    private static class TpsAdapterMock implements TpsAdapter {
 
         @Override
         public Optional<AktørId> hentAktørIdForPersonIdent(PersonIdent fnr) {
@@ -95,14 +88,6 @@ public class TpsTjenesteTest {
                         .tpsUtilgjengeligSikkerhetsbegrensning(new HentPersonSikkerhetsbegrensning("String", null)));
             }
             return Optional.ofNullable(FNR_VED_AKTØR_ID.get(aktørId));
-        }
-
-        @Override
-        public GeografiskTilknytning hentGeografiskTilknytning(String fnr) {
-            if (FNR.getIdent().equals(fnr)) {
-                return new GeografiskTilknytning("0219", "KLIE");
-            }
-            throw TpsFeilmeldinger.FACTORY.geografiskTilknytningIkkeFunnet(new HentGeografiskTilknytningPersonIkkeFunnet("finner ikke person", new PersonIkkeFunnet())).toException();
         }
 
         @Override
