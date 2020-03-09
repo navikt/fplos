@@ -3,8 +3,6 @@ package no.nav.foreldrepenger.los.web.app.tjenester.admin.dto;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 import no.nav.foreldrepenger.loslager.BehandlingId;
 import no.nav.foreldrepenger.loslager.oppgave.AndreKriterierType;
 import no.nav.foreldrepenger.loslager.oppgave.OppgaveEventLogg;
@@ -44,11 +42,5 @@ public class OppgaveEventLoggDto {
 
     public UUID getBehandlingId() {
         return behandlingId.toUUID();
-    }
-
-    // TODO expand-contract fjerne etter frontend bruker behandlingId
-    @JsonProperty
-    public UUID getEksternId() {
-        return getBehandlingId();
     }
 }
