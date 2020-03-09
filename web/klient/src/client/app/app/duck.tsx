@@ -80,7 +80,7 @@ export const getNavAnsattKanBehandleKode6 = createSelector([fpLosApi.NAV_ANSATT.
 export const getFunksjonellTid = createSelector([fpLosApi.NAV_ANSATT.getRestApiData()], (navAnsatt: NavAnsatt = NavAnsattDefault) => navAnsatt.funksjonellTid);
 export const getFpsakUrl = createSelector([fpLosApi.FPSAK_URL.getRestApiData()], (fpsakUrl: {verdi: undefined }) => fpsakUrl.verdi);
 export const getFptilbakeUrl = createSelector([fpLosApi.FPTILBAKE_URL.getRestApiData()], (fptilbakeUrl: {verdi: undefined }) => fptilbakeUrl.verdi);
-export const hentFpsakBehandlingId = (uuid: string) => (dispatch: Dispatch) => dispatch(
+export const hentFpsakInternBehandlingId = (uuid: string) => (dispatch: Dispatch) => dispatch(
     fpLosApi.FPSAK_BEHANDLING_ID.makeRestApiRequest()(
         { uuid },
     ),

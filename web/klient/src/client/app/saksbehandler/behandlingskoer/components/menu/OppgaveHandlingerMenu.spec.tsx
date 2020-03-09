@@ -23,7 +23,7 @@ describe('<OppgaveHandlingerMenu>', () => {
       reservertTilTidspunkt: '2020-02-02T23:59',
     },
     saksnummer: 1,
-    behandlingId: 2,
+    behandlingId: '2',
     personnummer: '1234567',
     navn: 'Espen Utvikler',
     system: 'FPSAK',

@@ -5,7 +5,7 @@ import { bindActionCreators, Dispatch } from 'redux';
 
 import OppgaveErReservertAvAnnenModal from 'saksbehandler/components/OppgaveErReservertAvAnnenModal';
 import { Fagsak } from 'saksbehandler/fagsakSearch/fagsakTsType';
-import { hentFpsakBehandlingId as hentFpsakBehandlingIdActionCreator, getFpsakUrl, getFptilbakeUrl } from 'app/duck';
+import { hentFpsakInternBehandlingId as hentFpsakInternBehandlingIdActionCreator, getFpsakUrl, getFptilbakeUrl } from 'app/duck';
 import { getFpsakHref, getFptilbakeHref } from 'app/paths';
 import {
   reserverOppgave as reserverOppgaveActionCreator, hentReservasjonsstatus as hentReservasjonActionCreator,
@@ -39,7 +39,7 @@ type Props = Readonly<{
   reserverOppgave: (oppgaveId: number) => Promise<{payload: OppgaveStatus }>;
   hentReservasjonsstatus: (oppgaveId: number) => Promise<{payload: OppgaveStatus }>;
   hentOppgaverForFagsaker: (fagsaker: Fagsak[]) => Promise<{payload: Oppgave[] }>;
-  hentFpsakBehandlingId: (eksternId: string) => Promise<{payload: number }>;
+  hentFpsakInternBehandlingId: (behandlingId: string) => Promise<{payload: number }>;
 }>;
 
 interface StateProps {
@@ -81,7 +81,7 @@ export class FagsakSearchIndex extends Component<Props, StateProps> {
     reserverOppgave: PropTypes.func.isRequired,
     hentReservasjonsstatus: PropTypes.func.isRequired,
     hentOppgaverForFagsaker: PropTypes.func.isRequired,
-    hentFpsakBehandlingId: PropTypes.func.isRequired,
+    hentFpsakInternBehandlingId: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
@@ -109,10 +109,10 @@ export class FagsakSearchIndex extends Component<Props, StateProps> {
   }
 
   goToFagsakEllerApneModal = (oppgave: Oppgave, oppgaveStatus: OppgaveStatus) => {
-    const { goToFpsak, goToTilbakesak, hentFpsakBehandlingId } = this.props;
+    const { goToFpsak, goToTilbakesak, hentFpsakInternBehandlingId } = this.props;
     if (!oppgaveStatus.erReservert || (oppgaveStatus.erReservert && oppgaveStatus.erReservertAvInnloggetBruker)) {
       if (oppgave.system === 'FPSAK') {
-        hentFpsakBehandlingId(oppgave.eksternId).then((data: {payload: number }) => {
+        hentFpsakInternBehandlingId(oppgave.behandlingId).then((data: {payload: number }) => {
           goToFpsak(oppgave.saksnummer, data.payload);
         });
       } else if (oppgave.system === 'FPTILBAKE') {
@@ -125,7 +125,7 @@ export class FagsakSearchIndex extends Component<Props, StateProps> {
 
   velgFagsakOperasjoner = (oppgave: Oppgave, skalSjekkeOmReservert: boolean) => {
     const {
- goToFpsak, goToTilbakesak, reserverOppgave, hentReservasjonsstatus, hentFpsakBehandlingId,
+ goToFpsak, goToTilbakesak, reserverOppgave, hentReservasjonsstatus, hentFpsakInternBehandlingId,
 } = this.props;
     const { skalReservere } = this.state;
 
@@ -137,7 +137,7 @@ export class FagsakSearchIndex extends Component<Props, StateProps> {
           this.goToFagsakEllerApneModal(oppgave, data.payload);
         });
       } else if (oppgave.system === 'FPSAK') {
-          hentFpsakBehandlingId(oppgave.eksternId).then((data: {payload: number }) => {
+          hentFpsakInternBehandlingId(oppgave.behandlingId).then((data: {payload: number }) => {
             goToFpsak(oppgave.saksnummer, data.payload);
           });
         } else if (oppgave.system === 'FPTILBAKE') {
@@ -178,12 +178,12 @@ export class FagsakSearchIndex extends Component<Props, StateProps> {
   }
 
   lukkErReservertModalOgOpneOppgave = (oppgave: Oppgave) => {
-    const { goToFpsak, hentFpsakBehandlingId } = this.props;
+    const { goToFpsak, hentFpsakInternBehandlingId } = this.props;
     this.setState(prevState => ({
       ...prevState, reservertAvAnnenSaksbehandler: false, reservertOppgave: undefined,
     }));
     if (oppgave.system === 'FPSAK') {
-      hentFpsakBehandlingId(oppgave.eksternId).then((data: {payload: number }) => {
+      hentFpsakInternBehandlingId(oppgave.behandlingId).then((data: {payload: number }) => {
         goToFpsak(oppgave.saksnummer, data.payload);
       });
     } else if (oppgave.system === 'FPTILBAKE') {
@@ -254,7 +254,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
     reserverOppgave: reserverOppgaveActionCreator,
     hentReservasjonsstatus: hentReservasjonActionCreator,
     hentOppgaverForFagsaker: hentOppgaverForFagsakerActionCreator,
-    hentFpsakBehandlingId: hentFpsakBehandlingIdActionCreator,
+    hentFpsakInternBehandlingId: hentFpsakInternBehandlingIdActionCreator,
   }, dispatch),
 });
 

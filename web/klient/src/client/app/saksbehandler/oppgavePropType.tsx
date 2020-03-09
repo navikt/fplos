@@ -16,7 +16,7 @@ const oppgavePropType = PropTypes.shape({
   fristForBehandling: PropTypes.string,
   fagsakYtelseType: kodeverkPropType,
   erTilSaksbehandling: PropTypes.bool.isRequired,
-  eksternId: PropTypes.string,
+  behandlingId: PropTypes.string,
   href: PropTypes.string,
 });
 

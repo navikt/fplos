@@ -14,7 +14,7 @@ describe('<SistBehandledeSaker>', () => {
         erReservert: false,
       },
       saksnummer: 1,
-      eksternId: '9280ce92-0958-43b5-89ef-9c57838f9e6d',
+      behandlingId: '9280ce92-0958-43b5-89ef-9c57838f9e6d',
       personnummer: '123456789',
       navn: 'Espen Utvikler',
       system: 'FPSAK',
@@ -39,7 +39,7 @@ describe('<SistBehandledeSaker>', () => {
         erReservert: false,
       },
       saksnummer: 2,
-      eksternId: 'd2e74e79-5662-4a09-be3f-52fbcdf109ad',
+      behandlingId: 'd2e74e79-5662-4a09-be3f-52fbcdf109ad',
       personnummer: '657643535',
       navn: 'Espen Solstråle',
       system: 'FPSAK',
@@ -64,7 +64,7 @@ describe('<SistBehandledeSaker>', () => {
       fpsakUrl="www.fpsak.no"
       fptilbakeUrl="www.fptilbake.no"
       sistBehandledeSaker={oppgaver}
-      hentFpsakBehandlingId={sinon.spy()}
+      hentFpsakInternBehandlingId={sinon.spy()}
     />);
 
     const links = wrapper.find(Lenke);
@@ -79,7 +79,7 @@ describe('<SistBehandledeSaker>', () => {
       fpsakUrl="www.fpsak.no"
       fptilbakeUrl="www.fptilbake.no"
       sistBehandledeSaker={oppgaver}
-      hentFpsakBehandlingId={sinon.spy()}
+      hentFpsakInternBehandlingId={sinon.spy()}
     />);
 
     expect(wrapper.find(Lenke)).to.have.length(0);

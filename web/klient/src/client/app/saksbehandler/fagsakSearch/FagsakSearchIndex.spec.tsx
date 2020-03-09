@@ -44,7 +44,7 @@ describe('<FagsakSearchIndex>', () => {
       hentReservasjonsstatus={sinon.spy()}
       fagsakOppgaver={[]}
       hentOppgaverForFagsaker={sinon.spy()}
-      hentFpsakBehandlingId={sinon.spy()}
+      hentFpsakInternBehandlingId={sinon.spy()}
     />);
 
     const fagsakSearchIndex = wrapper.find(FagsakSearch);
@@ -66,7 +66,7 @@ describe('<FagsakSearchIndex>', () => {
       hentReservasjonsstatus={sinon.spy()}
       fagsakOppgaver={[]}
       hentOppgaverForFagsaker={sinon.spy()}
-      hentFpsakBehandlingId={sinon.spy()}
+      hentFpsakInternBehandlingId={sinon.spy()}
     />);
 
     const fagsakSearchIndex = wrapper.find(FagsakSearch);
@@ -88,7 +88,7 @@ describe('<FagsakSearchIndex>', () => {
       hentReservasjonsstatus={sinon.spy()}
       fagsakOppgaver={[]}
       hentOppgaverForFagsaker={sinon.spy()}
-      hentFpsakBehandlingId={sinon.spy()}
+      hentFpsakInternBehandlingId={sinon.spy()}
     />);
 
     wrapper.setProps({
@@ -116,7 +116,7 @@ describe('<FagsakSearchIndex>', () => {
       hentReservasjonsstatus={sinon.spy()}
       fagsakOppgaver={[]}
       hentOppgaverForFagsaker={sinon.spy()}
-      hentFpsakBehandlingId={sinon.spy()}
+      hentFpsakInternBehandlingId={sinon.spy()}
     />);
 
     wrapper.setProps({
