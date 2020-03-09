@@ -68,7 +68,7 @@ public class OppgaveTjenesteImpl implements OppgaveTjeneste {
                 return Collections.emptyList();
             }
             List<Oppgave> oppgaver = oppgaveRepository.hentOppgaver(new OppgavespørringDto(oppgaveListe));
-            log.info("Antall oppgaver hentet: " + oppgaver.size());
+            log.debug("Antall oppgaver hentet: " + oppgaver.size());
             return oppgaver;
         } catch (Exception e) {
             log.error("Henting av oppgave feilet, returnerer en tom oppgaveliste", e);
