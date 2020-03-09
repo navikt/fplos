@@ -19,7 +19,7 @@ export const getAvdelingslederPanelLocationCreator = (location: Location) => (av
   location, { fane: avdelingslederPanel },
 );
 
-export const getFpsakHref = (fpsakUrl: string, saksnummer: number, behandlingId?: number) => (behandlingId
-  ? `${fpsakUrl}/fagsak/${saksnummer}/behandling/${behandlingId}/?punkt=default&fakta=default` : `${fpsakUrl}/fagsak/${saksnummer}/`);
+export const getFpsakHref = (fpsakUrl: string, saksnummer: number, fagsystemInternId?: number) => (fagsystemInternId
+  ? `${fpsakUrl}/fagsak/${saksnummer}/behandling/${fagsystemInternId}/?punkt=default&fakta=default` : `${fpsakUrl}/fagsak/${saksnummer}/`);
 
 export const getFptilbakeHref = (fptilbakeUrl: string, path: string) => `${fptilbakeUrl}${path}`;

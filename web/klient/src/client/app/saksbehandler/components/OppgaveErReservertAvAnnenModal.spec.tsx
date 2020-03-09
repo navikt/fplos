@@ -25,7 +25,7 @@ describe('<OppgaveErReservertAvAnnenModal>', () => {
       reservertAvUid: '123455',
     },
     saksnummer: 1,
-    behandlingId: 2,
+    behandlingId: '2',
     personnummer: '1234567',
     navn: 'Espen Utvikler',
     system: 'FPSAK',

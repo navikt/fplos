@@ -16,6 +16,6 @@ export type Oppgave = Readonly<{
   behandlingsfrist: string;
   fagsakYtelseType: Kodeverk;
   erTilSaksbehandling: boolean;
-  eksternId: string;
+  behandlingId: string;
   href: string;
 }>

@@ -7,7 +7,7 @@ import Lenke from 'nav-frontend-lenker';
 
 import { getFpsakHref, getFptilbakeHref } from 'app/paths';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
-import { getFpsakUrl, getFptilbakeUrl, hentFpsakBehandlingId as hentFpsakBehandlingIdActionCreator } from 'app/duck';
+import { getFpsakUrl, getFptilbakeUrl, hentFpsakInternBehandlingId as hentFpsakInternBehandlingIdActionCreator } from 'app/duck';
 import { getBehandledeOppgaver } from 'saksbehandler/saksstotte/duck';
 import { bindActionCreators, Dispatch } from 'redux';
 import { connect } from 'react-redux';
@@ -20,7 +20,7 @@ type TsProps = Readonly<{
   fpsakUrl: string;
   fptilbakeUrl: string;
   sistBehandledeSaker: Oppgave[];
-  hentFpsakBehandlingId: (uuid: string) => Promise<{payload: number }>;
+  hentFpsakInternBehandlingId: (uuid: string) => Promise<{payload: number }>;
 }>
 
 interface StateProps {
@@ -36,14 +36,14 @@ export class SistBehandledeSaker extends Component<TsProps, StateProps> {
     fpsakUrl: PropTypes.string.isRequired,
     fptilbakeUrl: PropTypes.string.isRequired,
     sistBehandledeSaker: PropTypes.arrayOf(oppgavePropType).isRequired,
-    hentFpsakBehandlingId: PropTypes.func.isRequired,
+    hentFpsakInternBehandlingId: PropTypes.func.isRequired,
   };
 
   openFpsak = (oppgave: Oppgave) => {
-    const { fpsakUrl, fptilbakeUrl, hentFpsakBehandlingId } = this.props;
+    const { fpsakUrl, fptilbakeUrl, hentFpsakInternBehandlingId } = this.props;
 
     if (oppgave.system === 'FPSAK') {
-      hentFpsakBehandlingId(oppgave.eksternId)
+      hentFpsakInternBehandlingId(oppgave.behandlingId)
         .then((data: { payload: number }) => window.location.assign(getFpsakHref(fpsakUrl, oppgave.saksnummer, data.payload)));
     } else if (oppgave.system === 'FPTILBAKE') {
       window.location.assign(getFptilbakeHref(fptilbakeUrl, oppgave.href));
@@ -62,7 +62,7 @@ export class SistBehandledeSaker extends Component<TsProps, StateProps> {
         && <Normaltekst><FormattedMessage id="SistBehandledeSaker.IngenBehandlinger" /></Normaltekst>
         }
         {sistBehandledeSaker.map((sbs, index) => (
-          <Fragment key={sbs.eksternId}>
+          <Fragment key={sbs.behandlingId}>
             <Normaltekst>
               {sbs.navn
                 ? (
@@ -96,7 +96,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
   ...bindActionCreators({
-    hentFpsakBehandlingId: hentFpsakBehandlingIdActionCreator,
+    hentFpsakInternBehandlingId: hentFpsakInternBehandlingIdActionCreator,
   }, dispatch),
 });
 

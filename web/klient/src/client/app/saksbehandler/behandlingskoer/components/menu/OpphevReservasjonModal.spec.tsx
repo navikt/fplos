@@ -20,7 +20,7 @@ describe('<OpphevReservasjonModal>', () => {
       reservertTilTidspunkt: '2017-08-02T00:54:25.455',
     },
     saksnummer: 1,
-    behandlingId: 2,
+    behandlingId: '2',
     personnummer: '1234567',
     navn: 'Espen Utvikler',
     behandlingstype: {

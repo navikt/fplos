@@ -10,7 +10,7 @@ import { Saksliste } from 'saksbehandler/behandlingskoer/sakslisteTsType';
 import {
   getFpsakUrl,
   getFptilbakeUrl,
-  hentFpsakBehandlingId as hentFpsakBehandlingIdActionCreator,
+  hentFpsakInternBehandlingId as hentFpsakInternBehandlingIdActionCreator,
 } from 'app/duck';
 import { OppgaveStatus } from 'saksbehandler/oppgaveStatusTsType';
 import { Oppgave } from 'saksbehandler/oppgaveTsType';
@@ -39,7 +39,7 @@ type TsProps = Readonly<{
   goToUrl: (url: string) => void;
   harTimeout: boolean;
   setValgtSakslisteId: (sakslisteId: number) => void;
-  hentFpsakBehandlingId: (uuid: string) => Promise<{payload: number }>;
+  hentFpsakInternBehandlingId: (uuid: string) => Promise<{payload: number }>;
 }>
 
 interface StateProps {
@@ -72,7 +72,7 @@ export class BehandlingskoerIndex extends Component<TsProps, StateProps> {
     goToUrl: PropTypes.func.isRequired,
     harTimeout: PropTypes.bool.isRequired,
     setValgtSakslisteId: PropTypes.func.isRequired,
-    hentFpsakBehandlingId: PropTypes.func.isRequired,
+    hentFpsakInternBehandlingId: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
@@ -118,8 +118,8 @@ export class BehandlingskoerIndex extends Component<TsProps, StateProps> {
   }
 
   openFagsak = (oppgave: Oppgave) => {
-    const { fpsakUrl, goToUrl, hentFpsakBehandlingId } = this.props;
-    hentFpsakBehandlingId(oppgave.eksternId).then((data: {payload: number }) => {
+    const { fpsakUrl, goToUrl, hentFpsakInternBehandlingId } = this.props;
+    hentFpsakInternBehandlingId(oppgave.behandlingId).then((data: {payload: number }) => {
       goToUrl(getFpsakHref(fpsakUrl, oppgave.saksnummer, data.payload));
     });
   }
@@ -255,7 +255,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
     endreOppgaveReservasjon,
     flyttReservasjon,
     setValgtSakslisteId,
-    hentFpsakBehandlingId: hentFpsakBehandlingIdActionCreator,
+    hentFpsakInternBehandlingId: hentFpsakInternBehandlingIdActionCreator,
   }, dispatch),
 });
 

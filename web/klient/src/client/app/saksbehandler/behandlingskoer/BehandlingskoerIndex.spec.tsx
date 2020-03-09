@@ -46,8 +46,7 @@ describe('<BehandlingskoerIndex>', () => {
       erReservert: false,
     },
     saksnummer: 12343,
-    behandlingId: 1,
-    eksternId: 'd10e592c-e5bd-4f24-95a6-8eb1ed48f068',
+    behandlingId: 'd10e592c-e5bd-4f24-95a6-8eb1ed48f068',
     personnummer: 1234567891,
     navn: 'Espen Uteligger',
     system: 'FPSAK',
@@ -81,7 +80,7 @@ describe('<BehandlingskoerIndex>', () => {
       goToUrl={sinon.spy()}
       harTimeout={false}
       setValgtSakslisteId={sinon.spy()}
-      hentFpsakBehandlingId={sinon.spy()}
+      hentFpsakInternBehandlingId={sinon.spy()}
     />);
 
     expect(wrapper.find(SakslistePanel)).to.have.length(0);
@@ -107,7 +106,7 @@ describe('<BehandlingskoerIndex>', () => {
       goToUrl={sinon.spy()}
       harTimeout={false}
       setValgtSakslisteId={sinon.spy()}
-      hentFpsakBehandlingId={sinon.spy()}
+      hentFpsakInternBehandlingId={sinon.spy()}
     />);
 
     expect(wrapper.find(SakslistePanel)).to.have.length(1);
@@ -121,7 +120,7 @@ describe('<BehandlingskoerIndex>', () => {
         erReservertAvInnloggetBruker: true,
       },
     });
-    const hentFpsakBehandlingId = sinon.spy();
+    const hentFpsakInternBehandlingId = sinon.spy();
     const goToUrl = sinon.spy();
     const wrapper = shallow(<BehandlingskoerIndex
       fpsakUrl="www.fpsak.no"
@@ -139,7 +138,7 @@ describe('<BehandlingskoerIndex>', () => {
       goToUrl={goToUrl}
       harTimeout={false}
       setValgtSakslisteId={sinon.spy()}
-      hentFpsakBehandlingId={hentFpsakBehandlingId}
+      hentFpsakInternBehandlingId={hentFpsakInternBehandlingId}
     />);
 
     const panel = wrapper.find(SakslistePanel);
@@ -149,17 +148,17 @@ describe('<BehandlingskoerIndex>', () => {
 
     expect(reserverOppgave.calledOnce).to.be.true;
 
-    expect(hentFpsakBehandlingId.calledOnce).to.be.true;
-    console.log(hentFpsakBehandlingId); // eslint-disable-line
+    expect(hentFpsakInternBehandlingId.calledOnce).to.be.true;
+    console.log(hentFpsakInternBehandlingId); // eslint-disable-line
 
-    const { args } = hentFpsakBehandlingId.getCalls()[0];
+    const { args } = hentFpsakInternBehandlingId.getCalls()[0];
     expect(args).to.have.length(1);
-    expect(args[0]).to.eql(oppgave.eksternId);
+    expect(args[0]).to.eql(oppgave.behandlingId);
   });
 
   it('skal ikke reservere men kun åpne sak i FPSAK når oppgave allerede er reservert', () => {
     const reserverOppgave = sinon.spy();
-    const hentFpsakBehandlingId = sinon.stub().withArgs(oppgave.eksternId).resolves({
+    const hentFpsakInternBehandlingId = sinon.stub().withArgs(oppgave.behandlingId).resolves({
       payload: 1,
     });
     const goToUrl = sinon.spy();
@@ -179,7 +178,7 @@ describe('<BehandlingskoerIndex>', () => {
       goToUrl={goToUrl}
       harTimeout={false}
       setValgtSakslisteId={sinon.spy()}
-      hentFpsakBehandlingId={hentFpsakBehandlingId}
+      hentFpsakInternBehandlingId={hentFpsakInternBehandlingId}
     />);
 
     const panel = wrapper.find(SakslistePanel);
@@ -195,10 +194,10 @@ describe('<BehandlingskoerIndex>', () => {
     panel.prop('reserverOppgave')(reservertOppgave);
 
     expect(reserverOppgave.calledOnce).to.be.false;
-    expect(hentFpsakBehandlingId.calledOnce).to.be.true;
-    const { args } = hentFpsakBehandlingId.getCalls()[0];
+    expect(hentFpsakInternBehandlingId.calledOnce).to.be.true;
+    const { args } = hentFpsakInternBehandlingId.getCalls()[0];
     expect(args).to.have.length(1);
-    expect(args[0]).to.eql(oppgave.eksternId);
+    expect(args[0]).to.eql(oppgave.behandlingId);
   });
 
   it('skal hente sakslistens oppgaver og så starta polling etter endringer', async () => {
@@ -232,7 +231,7 @@ describe('<BehandlingskoerIndex>', () => {
       goToUrl={sinon.spy()}
       harTimeout={false}
       setValgtSakslisteId={sinon.spy()}
-      hentFpsakBehandlingId={sinon.spy()}
+      hentFpsakInternBehandlingId={sinon.spy()}
     />);
 
     const panel = wrapper.find(SakslistePanel);
@@ -271,7 +270,7 @@ describe('<BehandlingskoerIndex>', () => {
       goToUrl={sinon.spy()}
       harTimeout={false}
       setValgtSakslisteId={sinon.spy()}
-      hentFpsakBehandlingId={sinon.spy()}
+      hentFpsakInternBehandlingId={sinon.spy()}
     />);
 
     const panel = wrapper.find(SakslistePanel);
@@ -314,7 +313,7 @@ describe('<BehandlingskoerIndex>', () => {
       goToUrl={sinon.spy()}
       harTimeout={false}
       setValgtSakslisteId={sinon.spy()}
-      hentFpsakBehandlingId={sinon.spy()}
+      hentFpsakInternBehandlingId={sinon.spy()}
     />);
 
     const panel = wrapper.find(SakslistePanel);
@@ -355,7 +354,7 @@ describe('<BehandlingskoerIndex>', () => {
       goToUrl={sinon.spy()}
       harTimeout={false}
       setValgtSakslisteId={sinon.spy()}
-      hentFpsakBehandlingId={sinon.spy()}
+      hentFpsakInternBehandlingId={sinon.spy()}
     />);
 
     const panel = wrapper.find(SakslistePanel);
@@ -399,7 +398,7 @@ describe('<BehandlingskoerIndex>', () => {
       goToUrl={sinon.spy()}
       harTimeout
       setValgtSakslisteId={sinon.spy()}
-      hentFpsakBehandlingId={sinon.spy()}
+      hentFpsakInternBehandlingId={sinon.spy()}
     />);
 
     expect(wrapper.find(BehandlingPollingTimoutModal)).to.have.length(1);
