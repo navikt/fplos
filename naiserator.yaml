@@ -14,7 +14,7 @@ spec:
   liveness:
     path: /fplos/internal/isAlive
     port: 8080
-    initialDelay: 60
+    initialDelay: 30
     periodSeconds: 10
     failureThreshold: 27
     timeout: 5
@@ -23,7 +23,7 @@ spec:
   readiness:
     path: /fplos/internal/isReady
     port: 8080
-    initialDelay: 60
+    initialDelay: 30
     periodSeconds: 10
     failureThreshold: 27
     timeout: 5
