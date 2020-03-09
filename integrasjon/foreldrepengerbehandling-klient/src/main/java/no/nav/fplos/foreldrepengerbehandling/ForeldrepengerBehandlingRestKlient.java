@@ -30,6 +30,7 @@ import no.nav.fplos.foreldrepengerbehandling.dto.fagsak.FagsakDto;
 import no.nav.fplos.foreldrepengerbehandling.dto.inntektarbeidytelse.Beløp;
 import no.nav.fplos.foreldrepengerbehandling.dto.inntektarbeidytelse.InntektArbeidYtelseDto;
 import no.nav.fplos.foreldrepengerbehandling.dto.inntektarbeidytelse.InntektsmeldingDto;
+import no.nav.vedtak.exception.ManglerTilgangException;
 import no.nav.vedtak.felles.integrasjon.rest.OidcRestClient;
 import no.nav.vedtak.konfig.KonfigVerdi;
 import no.nav.vedtak.sikkerhet.loginmodule.ContainerLogin;
@@ -96,6 +97,8 @@ public class ForeldrepengerBehandlingRestKlient {
             LOGGER.info("Slår opp intern behandling id i fpsak for behandling med eksternBehandlingId {} per GET-kall til {}", eksternBehandlingId, uriBuilder.build());
             UtvidetBehandlingDto response = oidcRestClient.get(uriBuilder.build(), UtvidetBehandlingDto.class);
             return Optional.ofNullable(response.getId());
+        } catch (ManglerTilgangException e) {
+            throw new InternIdMappingException(eksternBehandlingId);
         } catch (Exception e) {
             throw new RuntimeException(e);
         } finally {

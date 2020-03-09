@@ -1,5 +1,19 @@
 package no.nav.foreldrepenger.los.web.app.exceptions;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.ext.ExceptionMapper;
+import javax.ws.rs.ext.Provider;
+
+import org.jboss.resteasy.spi.ApplicationException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
+
+import no.nav.fplos.foreldrepengerbehandling.InternIdMappingException;
 import no.nav.vedtak.exception.ManglerTilgangException;
 import no.nav.vedtak.exception.VLException;
 import no.nav.vedtak.feil.Feil;
@@ -7,20 +21,6 @@ import no.nav.vedtak.feil.FunksjonellFeil;
 import no.nav.vedtak.felles.jpa.TomtResultatException;
 import no.nav.vedtak.log.mdc.MDCOperations;
 import no.nav.vedtak.log.util.LoggerUtils;
-import org.jboss.resteasy.spi.ApplicationException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.slf4j.MDC;
-
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.ext.ExceptionMapper;
-import javax.ws.rs.ext.Provider;
-import java.util.List;
-import java.util.stream.Collectors;
-
-// TODO (tor) Har berre fått denne til å fungera med ApplicationException. Dermed blir denne mapperen heilt
-// generell. (Eigen mapper for ConstraintViolationException.)
 
 @Provider
 public class GeneralRestExceptionMapper implements ExceptionMapper<ApplicationException> {
@@ -67,11 +67,10 @@ public class GeneralRestExceptionMapper implements ExceptionMapper<ApplicationEx
     }
 
     private Response handleVLException(VLException vlException, String callId) {
-        Feil feil = vlException.getFeil();
         if (vlException instanceof ManglerTilgangException) {
-            return ikkeTilgang(feil);
+            return ikkeTilgang(vlException);
         } else {
-            return serverError(callId, feil);
+            return serverError(callId, vlException.getFeil());
         }
     }
 
@@ -84,9 +83,15 @@ public class GeneralRestExceptionMapper implements ExceptionMapper<ApplicationEx
             .build();
     }
 
-    private Response ikkeTilgang(Feil feil) {
-        String feilmelding = feil.getFeilmelding();
-        FeilType feilType = FeilType.MANGLER_TILGANG_FEIL;
+    private Response ikkeTilgang(VLException exception) {
+        final FeilType feilType;
+        if (exception instanceof InternIdMappingException) {
+            //Må returnere generell for å få rød feilmelding i front. Frontend har problemer med å vise manglende tilgang
+            feilType = FeilType.GENERELL_FEIL;
+        } else {
+            feilType = FeilType.MANGLER_TILGANG_FEIL;
+        }
+        String feilmelding = exception.getFeil().getFeilmelding();
         return Response.status(Response.Status.FORBIDDEN)
             .entity(new FeilDto(feilType, feilmelding))
             .type(MediaType.APPLICATION_JSON)
