@@ -4,8 +4,6 @@ import java.time.LocalDateTime;
 import java.util.Locale;
 import java.util.UUID;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 import no.nav.foreldrepenger.loslager.BehandlingId;
 import no.nav.foreldrepenger.loslager.aktør.TpsPersonDto;
 import no.nav.foreldrepenger.loslager.oppgave.BehandlingStatus;
@@ -80,12 +78,6 @@ public class OppgaveDto {
 
     public OppgaveStatusDto getStatus() {
         return status;
-    }
-
-    // TODO expand-contract fjerne etter frontend bruker behandlingId
-    @JsonProperty
-    public UUID getEksternId() {
-        return getBehandlingId();
     }
 
     public UUID getBehandlingId() {
