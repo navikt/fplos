@@ -72,7 +72,6 @@ public class TilbakekrevingOppgave extends Oppgave{
         }
 
         public Builder medBehandlingId(BehandlingId behandlingId){
-            tempOppgave.eksternId = behandlingId.toUUID();
             tempOppgave.behandlingId = behandlingId.toUUID();
             return this;
         }
