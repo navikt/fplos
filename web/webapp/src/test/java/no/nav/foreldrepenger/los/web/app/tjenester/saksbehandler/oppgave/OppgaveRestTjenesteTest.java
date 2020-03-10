@@ -1,25 +1,26 @@
 package no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.oppgave;
 
-import no.nav.foreldrepenger.los.web.app.tjenester.fagsak.app.FagsakApplikasjonTjeneste;
-import no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.oppgave.dto.ReservasjonsEndringDto;
-import no.nav.fplos.oppgave.OppgaveTjeneste;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import static org.mockito.Mockito.mock;
 
 import java.time.LocalDate;
 
-import static org.mockito.Mockito.mock;
+import org.junit.BeforeClass;
+import org.junit.Test;
+
+import no.nav.foreldrepenger.los.web.app.tjenester.fagsak.app.FagsakApplikasjonTjeneste;
+import no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.oppgave.dto.ReservasjonsEndringDto;
+import no.nav.fplos.oppgave.OppgaveTjeneste;
+import no.nav.fplos.person.api.TpsTjeneste;
 
 public class OppgaveRestTjenesteTest {
     private static OppgaveRestTjeneste oppgaveRestTjeneste;
-    private static OppgaveTjeneste oppgaveTjeneste;
-    private static FagsakApplikasjonTjeneste fagsakApplikasjonTjeneste;
 
     @BeforeClass
     public static void setUp() {
-        oppgaveTjeneste = mock(OppgaveTjeneste.class);
-        fagsakApplikasjonTjeneste = mock(FagsakApplikasjonTjeneste.class);
-        oppgaveRestTjeneste = new OppgaveRestTjeneste(oppgaveTjeneste,fagsakApplikasjonTjeneste);
+        OppgaveTjeneste oppgaveTjeneste = mock(OppgaveTjeneste.class);
+        FagsakApplikasjonTjeneste fagsakApplikasjonTjeneste = mock(FagsakApplikasjonTjeneste.class);
+        TpsTjeneste tpsTjeneste = mock(TpsTjeneste.class);
+        oppgaveRestTjeneste = new OppgaveRestTjeneste(oppgaveTjeneste, fagsakApplikasjonTjeneste, tpsTjeneste);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -38,17 +39,14 @@ public class OppgaveRestTjenesteTest {
     }
 
     private ReservasjonsEndringDto lagReservasjonsEndring30DagerFrem() {
-        ReservasjonsEndringDto reservasjonsEndringDto = new ReservasjonsEndringDto(1L, LocalDate.now().plusDays(30));
-        return reservasjonsEndringDto;
+        return new ReservasjonsEndringDto(1L, LocalDate.now().plusDays(30));
     }
 
     private ReservasjonsEndringDto lagReservasjonsEndringIntilIGår() {
-        ReservasjonsEndringDto reservasjonsEndringDto = new ReservasjonsEndringDto(1L, LocalDate.now().minusDays(1));
-        return reservasjonsEndringDto;
+        return new ReservasjonsEndringDto(1L, LocalDate.now().minusDays(1));
     }
 
     private ReservasjonsEndringDto lagReservasjonsEndring35DagerFrem() {
-        ReservasjonsEndringDto reservasjonsEndringDto = new ReservasjonsEndringDto(1L, LocalDate.now().plusDays(35));
-        return reservasjonsEndringDto;
+        return new ReservasjonsEndringDto(1L, LocalDate.now().plusDays(35));
     }
 }

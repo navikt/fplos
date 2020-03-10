@@ -1,5 +1,21 @@
 package no.nav.fplos.oppgave;
 
+import static java.time.temporal.ChronoUnit.MINUTES;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import javax.persistence.EntityManager;
+
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
+
 import no.nav.foreldrepenger.dbstoette.UnittestRepositoryRule;
 import no.nav.foreldrepenger.loslager.oppgave.AndreKriterierType;
 import no.nav.foreldrepenger.loslager.oppgave.BehandlingType;
@@ -16,21 +32,6 @@ import no.nav.foreldrepenger.loslager.repository.OrganisasjonRepositoryImpl;
 import no.nav.fplos.ansatt.AnsattTjeneste;
 import no.nav.fplos.avdelingsleder.AvdelingslederTjeneste;
 import no.nav.fplos.avdelingsleder.AvdelingslederTjenesteImpl;
-import no.nav.fplos.person.api.TpsTjeneste;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-
-import javax.persistence.EntityManager;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import static java.time.temporal.ChronoUnit.MINUTES;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.mock;
 
 public class OppgaveTjenesteImplTest {
 
@@ -40,10 +41,9 @@ public class OppgaveTjenesteImplTest {
     private final OppgaveRepository oppgaveRepository = new OppgaveRepositoryImpl(entityManager);
     private final OrganisasjonRepository organisasjonRepository = new OrganisasjonRepositoryImpl(entityManager);
 
-    private TpsTjeneste tpsTjeneste = mock(TpsTjeneste.class);
     private AvdelingslederTjeneste avdelingslederTjeneste = new AvdelingslederTjenesteImpl(oppgaveRepository, organisasjonRepository);
     private AnsattTjeneste ansattTjeneste = mock(AnsattTjeneste.class);
-    private OppgaveTjenesteImpl oppgaveTjeneste = new OppgaveTjenesteImpl(oppgaveRepository, organisasjonRepository, tpsTjeneste, avdelingslederTjeneste, ansattTjeneste);
+    private OppgaveTjenesteImpl oppgaveTjeneste = new OppgaveTjenesteImpl(oppgaveRepository, organisasjonRepository, avdelingslederTjeneste, ansattTjeneste);
 
     private static String AVDELING_DRAMMEN_ENHET = "4806";
     private static String AVDELING_BERGEN_ENHET = "4812";

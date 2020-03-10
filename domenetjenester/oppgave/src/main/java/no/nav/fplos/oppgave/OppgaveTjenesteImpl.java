@@ -6,7 +6,6 @@ import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -15,8 +14,6 @@ import javax.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import no.nav.foreldrepenger.domene.typer.AktørId;
-import no.nav.foreldrepenger.loslager.aktør.TpsPersonDto;
 import no.nav.foreldrepenger.loslager.oppgave.Oppgave;
 import no.nav.foreldrepenger.loslager.oppgave.OppgaveFiltrering;
 import no.nav.foreldrepenger.loslager.oppgave.Reservasjon;
@@ -28,7 +25,6 @@ import no.nav.foreldrepenger.loslager.repository.OppgavespørringDto;
 import no.nav.foreldrepenger.loslager.repository.OrganisasjonRepository;
 import no.nav.fplos.ansatt.AnsattTjeneste;
 import no.nav.fplos.avdelingsleder.AvdelingslederTjeneste;
-import no.nav.fplos.person.api.TpsTjeneste;
 import no.nav.vedtak.exception.IntegrasjonException;
 import no.nav.vedtak.sikkerhet.context.SubjectHandler;
 
@@ -38,7 +34,6 @@ public class OppgaveTjenesteImpl implements OppgaveTjeneste {
     private static final Logger log = LoggerFactory.getLogger(OppgaveTjenesteImpl.class);
     private OppgaveRepository oppgaveRepository;
     private OrganisasjonRepository organisasjonRepository;
-    private TpsTjeneste tpsTjeneste;
     private AvdelingslederTjeneste avdelingslederTjeneste;
     private AnsattTjeneste ansattTjeneste;
 
@@ -49,12 +44,10 @@ public class OppgaveTjenesteImpl implements OppgaveTjeneste {
     @Inject
     public OppgaveTjenesteImpl(OppgaveRepository oppgaveRepository,
                                OrganisasjonRepository organisasjonRepository,
-                               TpsTjeneste tpsTjeneste,
                                AvdelingslederTjeneste avdelingslederTjeneste,
                                AnsattTjeneste ansattTjeneste) {
         this.oppgaveRepository = oppgaveRepository;
         this.organisasjonRepository = organisasjonRepository;
-        this.tpsTjeneste = tpsTjeneste;
         this.avdelingslederTjeneste = avdelingslederTjeneste;
         this.ansattTjeneste = ansattTjeneste;
     }
@@ -162,22 +155,6 @@ public class OppgaveTjenesteImpl implements OppgaveTjeneste {
     @Override
     public List<OppgaveFiltrering> hentOppgaveFiltreringerForPåloggetBruker() {
         return hentAlleOppgaveFiltrering(finnBrukernavn());
-    }
-
-    @Override
-    public Optional<TpsPersonDto> hentPersonInfoOptional(long aktørId) {
-        return tpsTjeneste.hentBrukerForAktør(aktørIdFra(aktørId));
-    }
-
-    private AktørId aktørIdFra(long aktørId) {
-        return new AktørId(aktørId);
-    }
-
-    @Override
-    public TpsPersonDto hentPersonInfo(long aktørId) {
-        AktørId aktørIdFromLong = aktørIdFra(aktørId);
-        return tpsTjeneste.hentBrukerForAktør(aktørIdFra(aktørId))
-                .orElseThrow(() -> OppgaveFeilmeldinger.FACTORY.identIkkeFunnet(aktørIdFromLong).toException());
     }
 
     @Override

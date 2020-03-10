@@ -1,34 +1,16 @@
 package no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.oppgave;
 
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.headers.Header;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import no.nav.foreldrepenger.los.web.app.tjenester.fagsak.app.FagsakApplikasjonTjeneste;
-import no.nav.foreldrepenger.los.web.app.tjenester.felles.dto.AsyncPollingStatus;
-import no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.oppgave.dto.ReservasjonsEndringDto;
-import no.nav.foreldrepenger.los.web.app.tjenester.felles.dto.OppgaveDto;
-import no.nav.foreldrepenger.los.web.app.tjenester.felles.dto.OppgaveStatusDto;
-import no.nav.foreldrepenger.los.web.app.tjenester.felles.dto.SaksbehandlerBrukerIdentDto;
-import no.nav.foreldrepenger.los.web.app.tjenester.felles.dto.SaksbehandlerDto;
-import no.nav.foreldrepenger.los.web.app.tjenester.felles.dto.SakslisteIdDto;
-import no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.oppgave.dto.OppgaveFlyttingDto;
-import no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.oppgave.dto.OppgaveIdDto;
-import no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.oppgave.dto.OppgaveIderDto;
-import no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.oppgave.dto.OppgaveOpphevingDto;
-import no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.oppgave.dto.SaknummerIderDto;
-import no.nav.foreldrepenger.loslager.aktør.TpsPersonDto;
-import no.nav.foreldrepenger.loslager.oppgave.Oppgave;
-import no.nav.foreldrepenger.loslager.oppgave.Reservasjon;
-import no.nav.fplos.oppgave.OppgaveTjeneste;
-import no.nav.fplos.oppgave.SaksbehandlerinformasjonDto;
-import no.nav.vedtak.sikkerhet.abac.BeskyttetRessurs;
-import no.nav.vedtak.sikkerhet.abac.BeskyttetRessursActionAttributt;
-import no.nav.vedtak.sikkerhet.abac.BeskyttetRessursResourceAttributt;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import static no.nav.vedtak.sikkerhet.abac.BeskyttetRessursActionAttributt.READ;
+import static no.nav.vedtak.sikkerhet.abac.BeskyttetRessursResourceAttributt.FAGSAK;
+
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
@@ -43,17 +25,38 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
-import static no.nav.vedtak.sikkerhet.abac.BeskyttetRessursActionAttributt.READ;
-import static no.nav.vedtak.sikkerhet.abac.BeskyttetRessursResourceAttributt.FAGSAK;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.headers.Header;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import no.nav.foreldrepenger.los.web.app.tjenester.fagsak.app.FagsakApplikasjonTjeneste;
+import no.nav.foreldrepenger.los.web.app.tjenester.felles.dto.AsyncPollingStatus;
+import no.nav.foreldrepenger.los.web.app.tjenester.felles.dto.OppgaveDto;
+import no.nav.foreldrepenger.los.web.app.tjenester.felles.dto.OppgaveStatusDto;
+import no.nav.foreldrepenger.los.web.app.tjenester.felles.dto.SaksbehandlerBrukerIdentDto;
+import no.nav.foreldrepenger.los.web.app.tjenester.felles.dto.SaksbehandlerDto;
+import no.nav.foreldrepenger.los.web.app.tjenester.felles.dto.SakslisteIdDto;
+import no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.oppgave.dto.OppgaveFlyttingDto;
+import no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.oppgave.dto.OppgaveIdDto;
+import no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.oppgave.dto.OppgaveIderDto;
+import no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.oppgave.dto.OppgaveOpphevingDto;
+import no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.oppgave.dto.ReservasjonsEndringDto;
+import no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.oppgave.dto.SaknummerIderDto;
+import no.nav.foreldrepenger.loslager.oppgave.Oppgave;
+import no.nav.foreldrepenger.loslager.oppgave.Reservasjon;
+import no.nav.fplos.oppgave.OppgaveTjeneste;
+import no.nav.fplos.oppgave.SaksbehandlerinformasjonDto;
+import no.nav.fplos.person.api.TpsTjeneste;
+import no.nav.tjeneste.virksomhet.person.v3.binding.HentPersonSikkerhetsbegrensning;
+import no.nav.vedtak.sikkerhet.abac.BeskyttetRessurs;
+import no.nav.vedtak.sikkerhet.abac.BeskyttetRessursActionAttributt;
+import no.nav.vedtak.sikkerhet.abac.BeskyttetRessursResourceAttributt;
 
 @Path("/saksbehandler/oppgaver")
 @RequestScoped
@@ -64,15 +67,17 @@ public class OppgaveRestTjeneste {
 
     private OppgaveTjeneste oppgaveTjeneste;
     private FagsakApplikasjonTjeneste fagsakApplikasjonTjeneste;
+    private TpsTjeneste tpsTjeneste;
 
     public OppgaveRestTjeneste() {
         // For Rest-CDI
     }
 
     @Inject
-    public OppgaveRestTjeneste(OppgaveTjeneste oppgaveTjeneste, FagsakApplikasjonTjeneste fagsakApplikasjonTjeneste) {
+    public OppgaveRestTjeneste(OppgaveTjeneste oppgaveTjeneste, FagsakApplikasjonTjeneste fagsakApplikasjonTjeneste, TpsTjeneste tpsTjeneste) {
         this.oppgaveTjeneste = oppgaveTjeneste;
         this.fagsakApplikasjonTjeneste = fagsakApplikasjonTjeneste;
+        this.tpsTjeneste = tpsTjeneste;
     }
 
     @GET
@@ -126,7 +131,6 @@ public class OppgaveRestTjeneste {
         return Response.seeOther(uri).build();
     }
 
-
     @GET
     @Path("/resultat")
     @Produces(MediaType.APPLICATION_JSON)
@@ -141,10 +145,12 @@ public class OppgaveRestTjeneste {
         int funnetOppgaver = 0;
         for (int i = 0; i < nesteOppgaver.size() && funnetOppgaver < 3; i++) {
             Oppgave oppgave = nesteOppgaver.get(i);
-            Optional<TpsPersonDto> personDto = oppgaveTjeneste.hentPersonInfoOptional(oppgave.getAktorId());
-            if (personDto.isPresent()) {
-                oppgaveDtos.add(new OppgaveDto(oppgave, personDto.get()));
+            try {
+                var personDto = tpsTjeneste.hentBrukerForAktør(oppgave.getAktorId());
+                oppgaveDtos.add(new OppgaveDto(oppgave, personDto));
                 funnetOppgaver++;
+            } catch (HentPersonSikkerhetsbegrensning e) {
+                logBegrensning(oppgave, e);
             }
         }
         return oppgaveDtos;
@@ -232,19 +238,30 @@ public class OppgaveRestTjeneste {
         List<Reservasjon> reserveringer = oppgaveTjeneste.hentReservasjonerTilknyttetAktiveOppgaver();
         return reserveringer.stream()
                 .map(this::oppgaveDtoFra)
+                .filter(o -> o.isPresent())
+                .map(o -> o.get())
                 .collect(Collectors.toList());
     }
 
-    private OppgaveDto oppgaveDtoFra(Reservasjon reservasjon) {
+    private Optional<OppgaveDto> oppgaveDtoFra(Reservasjon reservasjon) {
         return oppgaveDtoFra(reservasjon.getOppgave(), reservasjon);
     }
-    private OppgaveDto oppgaveDtoFra(Oppgave oppgave, Reservasjon reservasjon) {
-        return new OppgaveDto(
-                oppgave,
-                oppgaveTjeneste.hentPersonInfo(oppgave.getAktorId()),
-                oppgaveTjeneste.hentNavnHvisFlyttetAvSaksbehandler(reservasjon.getFlyttetAv()));
+    private Optional<OppgaveDto> oppgaveDtoFra(Oppgave oppgave, Reservasjon reservasjon) {
+        try {
+            var tpsPerson = tpsTjeneste.hentBrukerForAktør(oppgave.getAktorId());
+            return Optional.of(new OppgaveDto(
+                    oppgave,
+                    tpsPerson,
+                    oppgaveTjeneste.hentNavnHvisFlyttetAvSaksbehandler(reservasjon.getFlyttetAv())));
+        } catch (HentPersonSikkerhetsbegrensning e) {
+            logBegrensning(oppgave, e);
+        }
+        return Optional.empty();
     }
 
+    private void logBegrensning(Oppgave oppgave, HentPersonSikkerhetsbegrensning e) {
+        LOGGER.info("Prøver å slå opp i tps uten å ha tilgang. Ignorerer oppgave {}", oppgave.getId(), e);
+    }
 
     @GET
     @Path("/behandlede")
@@ -256,6 +273,8 @@ public class OppgaveRestTjeneste {
         List<Oppgave> sistReserverteOppgaver = oppgaveTjeneste.hentSisteReserverteOppgaver();
         return sistReserverteOppgaver.stream()
                 .map(o -> oppgaveDtoFra(o, o.getReservasjon()))
+                .filter(o -> o.isPresent())
+                .map(o -> o.get())
                 .collect(Collectors.toList());
     }
 
@@ -301,7 +320,6 @@ public class OppgaveRestTjeneste {
         return oppgaveTjeneste.hentAntallOppgaver(sakslisteId.getVerdi(), false);
     }
 
-
     @GET
     @Path("/oppgaver-for-fagsaker")
     @Produces("application/json")
@@ -315,9 +333,14 @@ public class OppgaveRestTjeneste {
         }
 
         //Alle fagsakene tilhører samme bruker
-        TpsPersonDto personDto = oppgaveTjeneste.hentPersonInfo(oppgaver.get(0).getAktorId());
-        return oppgaver.stream()
-                .map(o -> new OppgaveDto(o, personDto, fagsakApplikasjonTjeneste.hentNavnHvisReservertAvAnnenSaksbehandler(o), null))
-                .collect(Collectors.toList());
+        try {
+            var personDto = tpsTjeneste.hentBrukerForAktør(oppgaver.get(0).getAktorId());
+            return oppgaver.stream()
+                    .map(o -> new OppgaveDto(o, personDto, fagsakApplikasjonTjeneste.hentNavnHvisReservertAvAnnenSaksbehandler(o), null))
+                    .collect(Collectors.toList());
+        } catch (HentPersonSikkerhetsbegrensning e) {
+            logBegrensning(oppgaver.get(0), e);
+        }
+        return List.of();
     }
 }

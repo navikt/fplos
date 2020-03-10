@@ -20,7 +20,6 @@ import no.nav.foreldrepenger.loslager.aktør.TpsPersonDto;
 import no.nav.fplos.person.api.TpsAdapter;
 import no.nav.fplos.person.api.TpsTjeneste;
 import no.nav.tjeneste.virksomhet.person.v3.binding.HentPersonSikkerhetsbegrensning;
-import no.nav.vedtak.feil.FeilFactory;
 
 public class TpsTjenesteTest {
 
@@ -29,7 +28,6 @@ public class TpsTjenesteTest {
 
     private static final AktørId AKTØR_ID = new AktørId(1L);
     private static final AktørId ENDRET_AKTØR_ID = new AktørId(2L);
-    private static final AktørId AKTØR_ID_SOM_TRIGGER_EXCEPTION = new AktørId(10L);
     private static final PersonIdent FNR = new PersonIdent("12345678901");
     private static final PersonIdent ENDRET_FNR = new PersonIdent("02345678901");
     private static final LocalDate FØDSELSDATO = LocalDate.of(1992, Month.OCTOBER, 13);
@@ -53,8 +51,7 @@ public class TpsTjenesteTest {
 
     @Test
     public void skal_ikke_hente_bruker_for_ukjent_aktør() {
-        Optional<TpsPersonDto> funnetBruker = tpsTjeneste.hentBrukerForAktør(new AktørId(666L));
-        assertThat(funnetBruker.isPresent()).isFalse();
+        assertThatThrownBy(() -> tpsTjeneste.hentBrukerForAktør(666L)).isNotNull();
     }
 
     @Test
@@ -69,11 +66,6 @@ public class TpsTjenesteTest {
         assertThat(funnetBruker.isPresent()).isFalse();
     }
 
-    @Test
-    public void skal_kaste_feil_ved_tjenesteexception_dersom_aktør_ikke_er_cachet() {
-        assertThatThrownBy(() -> tpsTjeneste.hentBrukerForAktør(AKTØR_ID_SOM_TRIGGER_EXCEPTION)).isInstanceOf(TpsException.class);
-    }
-
     private static class TpsAdapterMock implements TpsAdapter {
 
         @Override
@@ -83,17 +75,13 @@ public class TpsTjenesteTest {
 
         @Override
         public Optional<PersonIdent> hentIdentForAktørId(AktørId aktørId) {
-            if (aktørId == AKTØR_ID_SOM_TRIGGER_EXCEPTION) {
-                throw new TpsException(FeilFactory.create(TpsFeilmeldinger.class)
-                        .tpsUtilgjengeligSikkerhetsbegrensning(new HentPersonSikkerhetsbegrensning("String", null)));
-            }
             return Optional.ofNullable(FNR_VED_AKTØR_ID.get(aktørId));
         }
 
         @Override
-        public TpsPersonDto hentKjerneinformasjon(PersonIdent fnr, AktørId aktørId) {
+        public TpsPersonDto hentKjerneinformasjon(PersonIdent fnr, AktørId aktørId) throws HentPersonSikkerhetsbegrensning {
             if (!AKTØR_ID_VED_FNR.containsKey(fnr)) {
-                return null;
+                throw TpsFeilmeldinger.FACTORY.fantIkkePerson(null).toException();
             }
             return new TpsPersonDto.Builder()
                     .medAktørId(aktørId)

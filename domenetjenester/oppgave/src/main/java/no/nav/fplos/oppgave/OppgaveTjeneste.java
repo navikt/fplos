@@ -1,14 +1,12 @@
 package no.nav.fplos.oppgave;
 
-import no.nav.foreldrepenger.loslager.aktør.TpsPersonDto;
-import no.nav.foreldrepenger.loslager.oppgave.Oppgave;
-import no.nav.foreldrepenger.loslager.oppgave.OppgaveFiltrering;
-import no.nav.foreldrepenger.loslager.oppgave.Reservasjon;
-
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
+
+import no.nav.foreldrepenger.loslager.oppgave.Oppgave;
+import no.nav.foreldrepenger.loslager.oppgave.OppgaveFiltrering;
+import no.nav.foreldrepenger.loslager.oppgave.Reservasjon;
 
 public interface OppgaveTjeneste {
 
@@ -39,10 +37,6 @@ public interface OppgaveTjeneste {
     List<OppgaveFiltrering> hentAlleOppgaveFiltrering(String brukerIdent);
 
     List<OppgaveFiltrering> hentOppgaveFiltreringerForPåloggetBruker();
-
-    TpsPersonDto hentPersonInfo(long aktørId);
-
-    Optional<TpsPersonDto> hentPersonInfoOptional(long aktørId);
 
     Integer hentAntallOppgaver(Long behandlingsKø, boolean forAvdelingsleder);
 

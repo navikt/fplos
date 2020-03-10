@@ -64,7 +64,7 @@ public class TpsAdapterImpl implements TpsAdapter {
         return aktørConsumer.hentPersonIdentForAktørId(aktørId.getId()).map(PersonIdent::new);
     }
 
-    private TpsPersonDto hentKjerneinformasjon(PersonIdent fnr, AktørId aktørId, Consumer<String> operasjonPåSerialisertPersonInfo) {
+    private TpsPersonDto hentKjerneinformasjon(PersonIdent fnr, AktørId aktørId, Consumer<String> operasjonPåSerialisertPersonInfo) throws HentPersonSikkerhetsbegrensning {
         HentPersonRequest request = new HentPersonRequest();
         request.setAktoer(TpsUtil.lagPersonIdent(fnr.getIdent()));
         request.getInformasjonsbehov().add(Informasjonsbehov.ADRESSE);
@@ -75,9 +75,7 @@ public class TpsAdapterImpl implements TpsAdapter {
         } catch (HentPersonPersonIkkeFunnet e) {
             throw TpsFeilmeldinger.FACTORY.fantIkkePerson(e).toException();
         } catch (HentPersonSikkerhetsbegrensning e) {
-            //TODO Etter at kode6/7 meldingene er filtrert ved hjelp av ABAC istedenfor direkte kall mot TPS her, throw TpsFeilmeldinger.FACTORY.tpsUtilgjengeligSikkerhetsbegrensning(e).toException() og ikke returner null
-            log.info("Kall mot TPS feilet", e);
-            return null;
+            throw e;
         }
     }
 
@@ -95,7 +93,7 @@ public class TpsAdapterImpl implements TpsAdapter {
     }
 
     @Override
-    public TpsPersonDto hentKjerneinformasjon(PersonIdent fnr, AktørId aktørId) {
+    public TpsPersonDto hentKjerneinformasjon(PersonIdent fnr, AktørId aktørId) throws HentPersonSikkerhetsbegrensning {
         return hentKjerneinformasjon(fnr, aktørId, null);
     }
 }

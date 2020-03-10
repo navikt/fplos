@@ -11,6 +11,7 @@ import no.nav.foreldrepenger.domene.typer.PersonIdent;
 import no.nav.foreldrepenger.loslager.aktør.TpsPersonDto;
 import no.nav.fplos.person.api.TpsAdapter;
 import no.nav.fplos.person.api.TpsTjeneste;
+import no.nav.tjeneste.virksomhet.person.v3.binding.HentPersonSikkerhetsbegrensning;
 
 @ApplicationScoped
 public class TpsTjenesteImpl implements TpsTjeneste {
@@ -38,6 +39,8 @@ public class TpsTjenesteImpl implements TpsTjeneste {
         try {
             TpsPersonDto personinfo = tpsAdapter.hentKjerneinformasjon(fnr, aktørId.get());
             return Optional.ofNullable(personinfo);
+        } catch (HentPersonSikkerhetsbegrensning e) {
+            return Optional.empty();
         } catch (SOAPFaultException e) {
             if (e.getMessage().contains("status: S100008F")) {
                 // Her sorterer vi ut dødfødte barn
@@ -48,15 +51,15 @@ public class TpsTjenesteImpl implements TpsTjeneste {
         }
     }
 
+    @Override
+    public TpsPersonDto hentBrukerForAktør(long aktørIdLong) throws HentPersonSikkerhetsbegrensning {
+        var aktørId = new AktørId(aktørIdLong);
+        var funnetFnr = hentFnr(aktørId).orElseThrow();
+        return tpsAdapter.hentKjerneinformasjon(funnetFnr, aktørId);
+    }
+
     private Optional<PersonIdent> hentFnr(AktørId aktørId) {
         return tpsAdapter.hentIdentForAktørId(aktørId);
     }
 
-    @Override
-    public Optional<TpsPersonDto> hentBrukerForAktør(AktørId aktørId) {
-        Optional<PersonIdent> funnetFnr;
-        funnetFnr = hentFnr(aktørId);
-
-        return funnetFnr.map(fnr -> tpsAdapter.hentKjerneinformasjon(fnr, aktørId));
-    }
 }
