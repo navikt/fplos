@@ -99,10 +99,11 @@ public class ForeldrepengerEventHåndterer implements EventHåndterer<FpsakBehan
                 oppgaveEgenskapHandler.håndterOppgaveEgenskaper(papirsøknadOppgave, egenskapFinner);
                 break;
             case GJENÅPNE_OPPGAVE:
-                Oppgave gjenåpneOppgave = gjenåpneOppgave(behandlingId);
                 LOG.info("Gjenåpner oppgave");
-                loggEvent(gjenåpneOppgave.getBehandlingId(), OppgaveEventType.GJENAPNET, null, dto.getBehandlendeEnhet());
-                oppgaveEgenskapHandler.håndterOppgaveEgenskaper(gjenåpneOppgave, egenskapFinner);
+                Oppgave gjenåpnetOppgave = gjenåpneOppgave(behandlingId);
+                oppdaterOppgaveInformasjon(gjenåpnetOppgave, behandlingId, dto, behandling);
+                loggEvent(gjenåpnetOppgave.getBehandlingId(), OppgaveEventType.GJENAPNET, null, dto.getBehandlendeEnhet());
+                oppgaveEgenskapHandler.håndterOppgaveEgenskaper(gjenåpnetOppgave, egenskapFinner);
                 break;
         }
     }
@@ -166,8 +167,20 @@ public class ForeldrepengerEventHåndterer implements EventHåndterer<FpsakBehan
         oppgaveRepository.lagre(new OppgaveEventLogg(behandlingId, oppgaveEventType, andreKriterierType, behandlendeEnhet, frist));
     }
 
-    private Oppgave nyOppgave(BehandlingId behandlingId, BehandlingProsessEventDto dto, BehandlingFpsak fraFpsak) {
-        return oppgaveRepository.opprettOppgave(Oppgave.builder()
+    private void oppdaterOppgaveInformasjon(Oppgave oppgave, BehandlingId behandlingId, BehandlingProsessEventDto dto, BehandlingFpsak behandling) {
+        Oppgave tmp = oppgaveFra(behandlingId, dto, behandling);
+        oppgave.avstemMed(tmp);
+        oppgaveRepository.lagre(oppgave);
+    }
+
+    private Oppgave nyOppgave(BehandlingId behandlingId, BehandlingProsessEventDto dto, BehandlingFpsak behandling) {
+        Oppgave oppgave = oppgaveFra(behandlingId, dto, behandling);
+        oppgaveRepository.lagre(oppgave);
+        return oppgave;
+    }
+
+    private Oppgave oppgaveFra(BehandlingId behandlingId, BehandlingProsessEventDto dto, BehandlingFpsak behandling) {
+        return Oppgave.builder()
                 .medSystem(dto.getFagsystem().name())
                 .medFagsakSaksnummer(Long.valueOf(dto.getSaksnummer()))
                 .medAktorId(Long.valueOf(dto.getAktørId()))
@@ -177,11 +190,11 @@ public class ForeldrepengerEventHåndterer implements EventHåndterer<FpsakBehan
                 .medAktiv(true)
                 .medBehandlingOpprettet(dto.getOpprettetBehandling())
                 .medUtfortFraAdmin(false)
-                .medBehandlingStatus(BehandlingStatus.fraKode(fraFpsak.getStatus()))
+                .medBehandlingStatus(BehandlingStatus.fraKode(behandling.getStatus()))
                 .medBehandlingId(behandlingId)
-                .medForsteStonadsdag(fraFpsak.getFørsteUttaksdag())
-                .medBehandlingsfrist(fraFpsak.getBehandlingstidFrist())
-                .build());
+                .medForsteStonadsdag(behandling.getFørsteUttaksdag())
+                .medBehandlingsfrist(behandling.getBehandlingstidFrist())
+                .build();
     }
 
     private Oppgave gjenåpneOppgave(BehandlingId behandlingId) {
