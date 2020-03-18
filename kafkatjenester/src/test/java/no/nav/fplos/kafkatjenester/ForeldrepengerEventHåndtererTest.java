@@ -7,6 +7,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collections;
@@ -17,6 +18,7 @@ import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 
+import no.nav.foreldrepenger.loslager.oppgave.BehandlingStatus;
 import org.junit.Rule;
 import org.junit.Test;
 
@@ -83,15 +85,22 @@ public class ForeldrepengerEventHåndtererTest {
 
     FpsakBehandlingProsessEventDto eventDrammenFra(Map<String, String> aksjonspunktmap){
         return (FpsakBehandlingProsessEventDto) prosessBuilderFra(aksjonspunktmap)
-                .medEksternId(behandlingId.toUUID())
                 .medBehandlendeEnhet("4802")
+                .medBehandlingStatus(BehandlingStatus.UTREDES.getKode())
+                .build();
+    }
+
+    FpsakBehandlingProsessEventDto eventDrammenMedEndredeFelterFra(Map<String, String> aksjonspunktmap) {
+        return (FpsakBehandlingProsessEventDto) prosessBuilderFra(aksjonspunktmap)
+                .medBehandlendeEnhet("4802")
+                .medBehandlingStatus(BehandlingStatus.FATTER_VEDTAK.getKode())
                 .build();
     }
 
     private FpsakBehandlingProsessEventDto eventStordFra(Map<String, String> aksjonspunktmap){
         return (FpsakBehandlingProsessEventDto) prosessBuilderFra(aksjonspunktmap)
-                .medEksternId(behandlingId.toUUID())
                 .medBehandlendeEnhet("4842")
+                .medBehandlingStatus(BehandlingStatus.UTREDES.getKode())
                 .build();
     }
 
@@ -114,11 +123,11 @@ public class ForeldrepengerEventHåndtererTest {
 
     private FpsakBehandlingProsessEventDto.Builder prosessBuilderFra(Map<String, String> aksjonspunktmap){
         return FpsakBehandlingProsessEventDto.builder()
+                .medEksternId(behandlingId.toUUID())
                 .medFagsystem(Fagsystem.FPSAK)
                 .medSaksnummer("135701264")
                 .medAktørId("9000000030703")
                 .medEventHendelse(EventHendelse.AKSJONSPUNKT_OPPRETTET)
-                .medBehandlingStatus("STATUS")
                 .medBehandlingSteg("STEG")
                 .medYtelseTypeKode(FagsakYtelseType.FORELDREPENGER.getKode())
                 .medBehandlingTypeKode(BehandlingType.FØRSTEGANGSSØKNAD.getKode())
@@ -128,6 +137,7 @@ public class ForeldrepengerEventHåndtererTest {
 
     private static BehandlingFpsak behandlingDtoFra(List<Aksjonspunkt> aksjonspunkter) {
         return behandlingBuilderMal()
+                .medBehandlingstidFrist(LocalDate.now())
                 .medBehandlingId(behandlingId)
                 .medAksjonspunkter(aksjonspunkter)
                 .build();
@@ -135,6 +145,7 @@ public class ForeldrepengerEventHåndtererTest {
 
     private static BehandlingFpsak behandlingDtoMedManueltMarkertUtlandsakFra(List<Aksjonspunkt> aksjonspunkter){
         return behandlingBuilderMal()
+                .medBehandlingstidFrist(LocalDate.now())
                 .medBehandlingId(behandlingId)
                 .medAksjonspunkter(aksjonspunkter)
                 .build();
@@ -142,8 +153,17 @@ public class ForeldrepengerEventHåndtererTest {
 
     private BehandlingFpsak lagBehandlingDtoMedHarGradering(List<Aksjonspunkt> aksjonspunkter){
         return behandlingBuilderMal()
+                .medBehandlingstidFrist(LocalDate.now())
                 .medBehandlingId(behandlingId)
                 .medHarGradering(true)
+                .medAksjonspunkter(aksjonspunkter)
+                .build();
+    }
+
+    private BehandlingFpsak lagBehandlingDtoMedEndretBehandlingstidFrist(List<Aksjonspunkt> aksjonspunkter) {
+        return behandlingBuilderMal()
+                .medBehandlingstidFrist(LocalDate.now().plusDays(100))
+                .medBehandlingId(behandlingId)
                 .medAksjonspunkter(aksjonspunkter)
                 .build();
     }
@@ -184,6 +204,31 @@ public class ForeldrepengerEventHåndtererTest {
                 OppgaveEventType.LUKKET,
                 OppgaveEventType.OPPRETTET));
     }
+
+    @Test
+    public void skalLagreBehandlingfristOgFørstestønadsdag() {
+        behandle(skalHaOppgave5015);
+        verifiserAtAntallOppgaverEr(1);
+        Oppgave oppgave = hentOppgave();
+        assertThat(oppgave.getBehandlingsfrist()).isNotNull();
+        assertThat(oppgave.getForsteStonadsdag()).isNotNull();
+    }
+
+    @Test
+    public void skalOppdatereOppgaveVedNyeEventer() {
+        behandle(skalHaOppgave5015);
+        var førsteBehandlingsfrist = hentOppgave().getBehandlingsfrist();
+
+        // neste melding har en endret behandlingstidFrist
+        when(fpsak.getBehandling(any(BehandlingId.class))).thenReturn(
+                lagBehandlingDtoMedEndretBehandlingstidFrist(skalHaOppgave5015.getAksjonspunkt()));
+        handler.håndterEvent(eventDrammenFra(skalHaOppgave5015.getDto()));
+        var andreBehandlingsfrist = hentOppgave().getBehandlingsfrist();
+
+        assertThat(førsteBehandlingsfrist).isBefore(andreBehandlingsfrist);
+        verifiserOppgaveEventLoggTilsvarer(List.of(OppgaveEventType.OPPRETTET, OppgaveEventType.GJENAPNET));
+    }
+
 
     @Test
     public void opprettingOgOverTilBehandlerTest(){
@@ -358,6 +403,10 @@ public class ForeldrepengerEventHåndtererTest {
 
     private void verifiserAtAntallOppgaverEr(int antall) {
         assertThat(repoRule.getRepository().hentAlle(Oppgave.class)).hasSize(antall);
+    }
+
+    private Oppgave hentOppgave() {
+        return repoRule.getRepository().hentAlle(Oppgave.class).stream().findFirst().orElse(null);
     }
 
     private void sjekkAktivOppgaveEksisterer(boolean aktiv) {

@@ -3,6 +3,8 @@ package no.nav.fplos.kafkatjenester;
 import no.nav.foreldrepenger.loslager.BehandlingId;
 import no.nav.fplos.foreldrepengerbehandling.BehandlingFpsak;
 
+import java.time.LocalDate;
+
 class TestUtil {
 
     static BehandlingFpsak.Builder behandlingBuilderMal() {
@@ -12,6 +14,7 @@ class TestUtil {
                 .medAnsvarligSaksbehandler("VLLOS")
                 .medStatus("-")
                 .medHarGradering(null)
-                .medHarRefusjonskravFraArbeidsgiver(null);
+                .medHarRefusjonskravFraArbeidsgiver(null)
+                .medFørsteUttaksdag(LocalDate.now().plusDays(20));
     }
 }
