@@ -179,6 +179,8 @@ public class ForeldrepengerEventHåndterer implements EventHåndterer<FpsakBehan
                 .medUtfortFraAdmin(false)
                 .medBehandlingStatus(BehandlingStatus.fraKode(fraFpsak.getStatus()))
                 .medBehandlingId(behandlingId)
+                .medForsteStonadsdag(fraFpsak.getFørsteUttaksdag())
+                .medBehandlingsfrist(fraFpsak.getBehandlingstidFrist())
                 .build());
     }
 

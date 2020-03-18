@@ -1,5 +1,7 @@
 package no.nav.fplos.foreldrepengerbehandling;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import no.nav.foreldrepenger.loslager.BehandlingId;
@@ -13,6 +15,8 @@ public class BehandlingFpsak {
     private Boolean harRefusjonskravFraArbeidsgiver;
     private Boolean harGradering;
     private Boolean harVurderSykdom;
+    private LocalDate behandlingstidFrist;
+    private LocalDate førsteUttaksdag;
 
     public BehandlingId getBehandlingId() {
         return behandlingId;
@@ -42,6 +46,14 @@ public class BehandlingFpsak {
         return harVurderSykdom;
     }
 
+    public LocalDateTime getBehandlingstidFrist() {
+        return behandlingstidFrist != null ? behandlingstidFrist.atStartOfDay() : null;
+    }
+
+    public LocalDate getFørsteUttaksdag() {
+        return førsteUttaksdag;
+    }
+
     public static Builder builder() {
         return new Builder();
     }
@@ -55,6 +67,8 @@ public class BehandlingFpsak {
         private Boolean harRefusjonskravFraArbeidsgiver;
         private Boolean harGradering;
         private Boolean harOverføringPgaSykdom;
+        private LocalDate behandlingstidFrist;
+        private LocalDate førsteUttaksdag;
 
         private Builder() {
         }
@@ -99,6 +113,16 @@ public class BehandlingFpsak {
             return this;
         }
 
+        public Builder medBehandlingstidFrist(LocalDate behandlingstidFrist) {
+            this.behandlingstidFrist = behandlingstidFrist;
+            return this;
+        }
+
+        public Builder medFørsteUttaksdag(LocalDate førsteUttaksdag) {
+            this.førsteUttaksdag = førsteUttaksdag;
+            return this;
+        }
+
         public BehandlingFpsak build() {
             BehandlingFpsak behandlingFpsak = new BehandlingFpsak();
             behandlingFpsak.ansvarligSaksbehandler = this.ansvarligSaksbehandler;
@@ -109,6 +133,8 @@ public class BehandlingFpsak {
             behandlingFpsak.behandlingId = this.behandlingId;
             behandlingFpsak.harVurderSykdom = this.harOverføringPgaSykdom;
             behandlingFpsak.harGradering = this.harGradering;
+            behandlingFpsak.behandlingstidFrist = this.behandlingstidFrist;
+            behandlingFpsak.førsteUttaksdag = this.førsteUttaksdag;
             return behandlingFpsak;
         }
     }
@@ -124,6 +150,8 @@ public class BehandlingFpsak {
                 ", harRefusjonskravFraArbeidsgiver=" + harRefusjonskravFraArbeidsgiver +
                 ", harGradering=" + harGradering +
                 ", harVurderSykdom=" + harVurderSykdom +
+                ", behandlingstidFrist=" + behandlingstidFrist +
+                ", førsteUttaksdag=" + førsteUttaksdag +
                 '}';
     }
 }
