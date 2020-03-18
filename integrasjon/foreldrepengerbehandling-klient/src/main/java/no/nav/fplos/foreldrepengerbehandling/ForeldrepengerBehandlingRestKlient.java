@@ -5,6 +5,7 @@ import static no.nav.fplos.foreldrepengerbehandling.Aksjonspunkt.aksjonspunktFra
 import java.math.BigDecimal;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -15,6 +16,7 @@ import java.util.Optional;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import no.nav.fplos.foreldrepengerbehandling.dto.ytelsefordeling.YtelseFordelingDto;
 import org.apache.http.client.utils.URIBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,6 +48,7 @@ public class ForeldrepengerBehandlingRestKlient {
     private static final String AKSJONSPUNKTER_LINK = "aksjonspunkter";
     private static final String INNTEKT_ARBEID_YTELSE_LINK = "inntekt-arbeid-ytelse";
     private static final String UTTAK_KONTROLLER_FAKTA_PERIODER_LINK = "uttak-kontroller-fakta-perioder";
+    private static final String YTELSEFORDELING_LINK = "ytelsefordeling";
 
     private OidcRestClient oidcRestClient;
     private String fpsakBaseUrl;
@@ -77,7 +80,9 @@ public class ForeldrepengerBehandlingRestKlient {
                     .medStatus(response.getStatus().getKode())
                     .medAnsvarligSaksbehandler(response.getAnsvarligSaksbehandler())
                     .medHarRefusjonskravFraArbeidsgiver(hentHarRefusjonskrav(links))
-                    .medAksjonspunkter(hentAksjonspunkter(links));
+                    .medAksjonspunkter(hentAksjonspunkter(links))
+                    .medBehandlingstidFrist(response.getBehandlingsfristTid())
+                    .medFørsteUttaksdag(hentFørsteUttaksdato(links));
             hentUttakKontrollerFaktaPerioder(behandlingId, builder, links);
             return builder.build();
         } catch (Exception e) {
@@ -111,6 +116,13 @@ public class ForeldrepengerBehandlingRestKlient {
                 .flatMap(ap -> hentFraResourceLink(ap, AksjonspunktDto[].class))
                 .map(ForeldrepengerBehandlingRestKlient::aksjonspunktFraDto)
                 .orElse(Collections.emptyList());
+    }
+
+    private LocalDate hentFørsteUttaksdato(List<ResourceLink> links) {
+        return velgLink(links, YTELSEFORDELING_LINK)
+                .flatMap(yf -> hentFraResourceLink(yf, YtelseFordelingDto.class))
+                .map(YtelseFordelingDto::getFørsteUttaksdato)
+                .orElse(null);
     }
 
     private Boolean hentHarRefusjonskrav(List<ResourceLink> links) {
