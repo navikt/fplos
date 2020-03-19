@@ -36,6 +36,10 @@
         </dependency>
         <dependency>
             <groupId>no.nav.foreldrepenger.los</groupId>
+            <artifactId>synkronisering</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>no.nav.foreldrepenger.los</groupId>
             <artifactId>migreringer</artifactId>
         </dependency>
         <dependency>
@@ -267,6 +271,18 @@
         <dependency>
             <groupId>io.swagger.core.v3</groupId>
             <artifactId>swagger-jaxrs2</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-web</artifactId>
+            <version>5.2.4.RELEASE</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-webmvc</artifactId>
+            <version>5.2.4.RELEASE</version>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
 
