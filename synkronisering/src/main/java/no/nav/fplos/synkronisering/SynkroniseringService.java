@@ -16,6 +16,7 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @PropertySource("classpath:spring-application.properties")
@@ -34,14 +35,14 @@ public class SynkroniseringService {
     }
 
     public void oppdater() {
-        List<BehandlingId> oppgaveBehandlinger = oppgaveRepository.finnBehandlingerUtenFelter();
+        List<UUID> oppgaveBehandlinger = oppgaveRepository.finnBehandlingerUtenFelter();
         oppgaveBehandlinger.forEach(this::oppdaterManglendeFørsteuttaksdagOgFrist);
     }
 
-    private void oppdaterManglendeFørsteuttaksdagOgFrist(BehandlingId behandlingId) {
+    private void oppdaterManglendeFørsteuttaksdagOgFrist(UUID behandlingId) {
         try {
-            BehandlingFpsak behandlingFpsak = foreldrePengerBehandlingRestKlient.getBehandling(behandlingId);
-            oppgaveRepository.oppdaterBehandlingsfristOgFørstestønadsdag(behandlingId.toUUID(), behandlingFpsak.getFørsteUttaksdag(), behandlingFpsak.getBehandlingstidFrist());
+            BehandlingFpsak behandlingFpsak = foreldrePengerBehandlingRestKlient.getBehandling(new BehandlingId(behandlingId));
+            oppgaveRepository.oppdaterBehandlingsfristOgFørstestønadsdag(behandlingId, behandlingFpsak.getFørsteUttaksdag(), behandlingFpsak.getBehandlingstidFrist());
         } catch (RuntimeException re) {
             LOGGER.info("Feil ved kall til fpsak for : " + behandlingId + " . Feilmelding : " + re.getMessage());
         }
