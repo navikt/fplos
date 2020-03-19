@@ -1,4 +1,4 @@
-package no.nav.fplos.uuid.rest;
+package no.nav.fplos.synkronisering.rest;
 
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;

@@ -1,4 +1,4 @@
-package no.nav.fplos.uuid.rest;
+package no.nav.fplos.synkronisering.rest;
 
 import no.nav.fplos.synkronisering.SynkroniseringService;
 import org.springframework.beans.factory.annotation.Autowired;

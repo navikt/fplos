@@ -1,6 +1,9 @@
 package no.nav.fplos.synkronisering.dao;
 
+import no.nav.vedtak.felles.jpa.converters.BooleanToStringConverter;
+
 import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
@@ -23,6 +26,13 @@ public class Oppgave {
     @Column(name = "FORSTE_STONADSDAG")
     protected LocalDate forsteStonadsdag;
 
+    @Convert(converter = BooleanToStringConverter.class)
+    @Column(name = "AKTIV")
+    protected Boolean aktiv = Boolean.TRUE;
+
+    @Column(name = "SYSTEM")
+    protected String system;
+
     public Long getId() {
         return id;
     }
@@ -37,5 +47,13 @@ public class Oppgave {
 
     public LocalDate getForsteStonadsdag() {
         return forsteStonadsdag;
+    }
+
+    public Boolean getAktiv() {
+        return aktiv;
+    }
+
+    public String getSystem() {
+        return system;
     }
 }

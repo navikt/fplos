@@ -1,6 +1,5 @@
 package no.nav.fplos.synkronisering.repository;
 
-import no.nav.foreldrepenger.loslager.BehandlingId;
 import no.nav.fplos.synkronisering.dao.Oppgave;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -21,7 +20,7 @@ public interface SpringOppgaveRepository extends CrudRepository<Oppgave, Long> {
             "WHERE o.aktiv = true " +
             "AND o.system = 'FPSAK'" +
             "AND (o.forsteStonadsdag IS NULL OR o.behandlingsfrist IS NULL)")
-    List<BehandlingId> finnBehandlingerUtenFelter();
+    List<UUID> finnBehandlingerUtenFelter();
 
     @Modifying
     @Query("UPDATE Oppgave o SET o.forsteStonadsdag = :forsteStonadsdag, o.behandlingsfrist = :behandlingsfrist " +
