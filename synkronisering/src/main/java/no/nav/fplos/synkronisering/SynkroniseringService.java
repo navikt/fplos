@@ -10,6 +10,7 @@ import org.apache.http.impl.client.HttpClients;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.flyway.FlywayAutoConfiguration;
 import org.springframework.context.annotation.PropertySource;
@@ -25,13 +26,15 @@ public class SynkroniseringService {
     private static final Logger LOGGER = LoggerFactory.getLogger(SynkroniseringService.class);
     private ForeldrepengerBehandlingRestKlient foreldrePengerBehandlingRestKlient;
     private SpringOppgaveRepository oppgaveRepository;
+    @Value("${fpsak.url:http://fpsak}")
+    private String fpsakUrl;
 
     @Autowired
     public SynkroniseringService(SpringOppgaveRepository oppgaveRepository) {
         this.oppgaveRepository = oppgaveRepository;
         CloseableHttpClient httpClient = HttpClients.createDefault();
         OidcRestClient restClient = new OidcRestClient(httpClient);
-        this.foreldrePengerBehandlingRestKlient = new ForeldrepengerBehandlingRestKlient(restClient, null);
+        this.foreldrePengerBehandlingRestKlient = new ForeldrepengerBehandlingRestKlient(restClient, fpsakUrl);
     }
 
     public void oppdater() {
