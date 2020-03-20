@@ -27,11 +27,8 @@ public class SynkroniseringService {
     private ForeldrepengerBehandlingRestKlient foreldrePengerBehandlingRestKlient;
     private SpringOppgaveRepository oppgaveRepository;
 
-    @Value("${fpsak.url:http://fpsak}")
-    private String fpsakUrl;
-
     @Autowired
-    public SynkroniseringService(SpringOppgaveRepository oppgaveRepository) {
+    public SynkroniseringService(SpringOppgaveRepository oppgaveRepository, @Value("${fpsak.url:http://fpsak}") String fpsakUrl) {
         this.oppgaveRepository = oppgaveRepository;
         CloseableHttpClient httpClient = HttpClients.createDefault();
         OidcRestClient restClient = new OidcRestClient(httpClient);
