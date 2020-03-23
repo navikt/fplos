@@ -1,6 +1,7 @@
 package no.nav.foreldrepenger.los.web.app.tjenester.admin;
 
 import static no.nav.vedtak.sikkerhet.abac.BeskyttetRessursActionAttributt.READ;
+import static no.nav.vedtak.sikkerhet.abac.BeskyttetRessursResourceAttributt.DRIFT;
 import static no.nav.vedtak.sikkerhet.abac.BeskyttetRessursResourceAttributt.OPPGAVESTYRING;
 
 import java.util.List;
@@ -99,7 +100,7 @@ public class AdminRestTjeneste {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Operation(description = "Prosesser alle meldinger på feilkø", tags = "admin")
-    @BeskyttetRessurs(action = READ, ressurs = OPPGAVESTYRING)
+    @BeskyttetRessurs(action = READ, ressurs = DRIFT)
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
     public int prosesserMelding() {
         return adminTjeneste.prosesserAlleMeldingerFraFeillogg();
