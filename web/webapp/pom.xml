@@ -36,10 +36,6 @@
         </dependency>
         <dependency>
             <groupId>no.nav.foreldrepenger.los</groupId>
-            <artifactId>synkronisering</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>no.nav.foreldrepenger.los</groupId>
             <artifactId>migreringer</artifactId>
         </dependency>
         <dependency>

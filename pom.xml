@@ -11,7 +11,6 @@
         <module>migreringer</module>
         <module>domene</module>
         <module>domenetjenester</module>
-        <module>synkronisering</module>
         <module>web</module>
         <module>kafkatjenester</module>
         <module>integrasjon</module>
@@ -221,11 +220,6 @@
                 <artifactId>migreringer</artifactId>
                 <version>${project.version}</version>
                 <type>test-jar</type>
-            </dependency>
-            <dependency>
-                <groupId>no.nav.foreldrepenger.los</groupId>
-                <artifactId>synkronisering</artifactId>
-                <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>no.nav.foreldrepenger.los</groupId>
