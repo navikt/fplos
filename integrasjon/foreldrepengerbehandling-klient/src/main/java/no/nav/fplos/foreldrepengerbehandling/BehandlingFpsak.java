@@ -12,11 +12,11 @@ public class BehandlingFpsak {
     private String behandlendeEnhetNavn;
     private String ansvarligSaksbehandler;
     private List<Aksjonspunkt> aksjonspunkter;
-    private Boolean harRefusjonskravFraArbeidsgiver;
-    private Boolean harGradering;
-    private Boolean harVurderSykdom;
     private LocalDate behandlingstidFrist;
     private LocalDate førsteUttaksdag;
+    private Boolean harRefusjonskravFraArbeidsgiver;
+    private boolean harVurderSykdom;
+    private boolean harGradering;
     private boolean erBerørtBehandling;
 
     public BehandlingId getBehandlingId() {
@@ -39,11 +39,11 @@ public class BehandlingFpsak {
         return harRefusjonskravFraArbeidsgiver;
     }
 
-    public Boolean harGradering() {
+    public boolean harGradering() {
         return harGradering;
     }
 
-    public Boolean harVurderSykdom() {
+    public boolean harVurderSykdom() {
         return harVurderSykdom;
     }
 
@@ -69,12 +69,12 @@ public class BehandlingFpsak {
         private String behandlendeEnhetNavn;
         private String ansvarligSaksbehandler;
         private List<Aksjonspunkt> aksjonspunkter;
-        private Boolean harRefusjonskravFraArbeidsgiver;
-        private Boolean harGradering;
-        private Boolean harOverføringPgaSykdom;
         private LocalDate behandlingstidFrist;
         private LocalDate førsteUttaksdag;
-        private Boolean erBerørtBehandling;
+        private Boolean harRefusjonskravFraArbeidsgiver;
+        private boolean harGradering = false;
+        private boolean erBerørtBehandling = false;
+        private boolean harOverføringPgaSykdom = false;
 
         private Builder() {
         }
@@ -109,12 +109,12 @@ public class BehandlingFpsak {
             return this;
         }
 
-        public Builder medHarGradering(Boolean harGradering) {
+        public Builder medHarGradering(boolean harGradering) {
             this.harGradering = harGradering;
             return this;
         }
 
-        public Builder medHarVurderSykdom(Boolean harOverføringPgaSykdom) {
+        public Builder medHarVurderSykdom(boolean harOverføringPgaSykdom) {
             this.harOverføringPgaSykdom = harOverføringPgaSykdom;
             return this;
         }
@@ -146,7 +146,7 @@ public class BehandlingFpsak {
             behandlingFpsak.harGradering = this.harGradering;
             behandlingFpsak.behandlingstidFrist = this.behandlingstidFrist;
             behandlingFpsak.førsteUttaksdag = this.førsteUttaksdag;
-            behandlingFpsak.erBerørtBehandling = this.erBerørtBehandling == null ? false : this.erBerørtBehandling;
+            behandlingFpsak.erBerørtBehandling = this.erBerørtBehandling;
             return behandlingFpsak;
         }
     }
