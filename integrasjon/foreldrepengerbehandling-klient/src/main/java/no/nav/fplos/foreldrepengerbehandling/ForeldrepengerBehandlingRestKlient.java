@@ -16,6 +16,8 @@ import java.util.Optional;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import no.nav.fplos.foreldrepengerbehandling.dto.behandling.BehandlingÅrsakDto;
+import no.nav.fplos.foreldrepengerbehandling.dto.behandling.BehandlingÅrsakType;
 import no.nav.fplos.foreldrepengerbehandling.dto.ytelsefordeling.YtelseFordelingDto;
 import org.apache.http.client.utils.URIBuilder;
 import org.slf4j.Logger;
@@ -82,7 +84,8 @@ public class ForeldrepengerBehandlingRestKlient {
                     .medHarRefusjonskravFraArbeidsgiver(hentHarRefusjonskrav(links))
                     .medAksjonspunkter(hentAksjonspunkter(links))
                     .medBehandlingstidFrist(response.getBehandlingsfristTid())
-                    .medFørsteUttaksdag(hentFørsteUttaksdato(links));
+                    .medFørsteUttaksdag(hentFørsteUttaksdato(links))
+                    .medErBerørtBehandling(hentErBerørtBehandling(response));
             hentUttakKontrollerFaktaPerioder(behandlingId, builder, links);
             return builder.build();
         } catch (Exception e) {
@@ -90,6 +93,13 @@ public class ForeldrepengerBehandlingRestKlient {
         } finally {
             loginContext.logout();
         }
+    }
+
+    private boolean hentErBerørtBehandling(UtvidetBehandlingDto dto) {
+        return Optional.ofNullable(dto.getFørsteÅrsak())
+                .map(BehandlingÅrsakDto::getBehandlingÅrsakType)
+                .map(type -> type.equals(BehandlingÅrsakType.BERØRT_BEHANDLING))
+                .orElse(false);
     }
 
     public Optional<Long> getFpsakInternBehandlingId(BehandlingId eksternBehandlingId) {

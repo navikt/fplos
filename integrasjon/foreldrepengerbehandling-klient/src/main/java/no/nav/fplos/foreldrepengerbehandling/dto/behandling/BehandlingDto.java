@@ -20,6 +20,7 @@ public class BehandlingDto {
     private Long versjon;
     private BehandlingType type;
     private BehandlingStatus status;
+    private BehandlingÅrsakDto førsteÅrsak;
     private Long fagsakId;
     private LocalDateTime opprettet;
     private LocalDateTime avsluttet;
@@ -36,7 +37,6 @@ public class BehandlingDto {
      * @see https://restfulapi.net/hateoas/
      */
     private List<ResourceLink> links = new ArrayList<>();
-
     public Long getFagsakId() {
         return fagsakId;
     }
@@ -87,6 +87,14 @@ public class BehandlingDto {
 
     public boolean isErAktivPapirsoknad() {
         return erAktivPapirsoknad;
+    }
+
+    public LocalDate getBehandlingsfristTid() {
+        return behandlingsfristTid;
+    }
+
+    public BehandlingÅrsakDto getFørsteÅrsak() {
+        return førsteÅrsak;
     }
 
     public List<ResourceLink> getLinks() {
@@ -145,8 +153,8 @@ public class BehandlingDto {
         this.erAktivPapirsoknad = erAktivPapirsoknad;
     }
 
-    public LocalDate getBehandlingsfristTid() {
-        return behandlingsfristTid;
+    public void setFørsteÅrsak(BehandlingÅrsakDto førsteÅrsak) {
+        this.førsteÅrsak = førsteÅrsak;
     }
 
     public void setBehandlingsfristTid(LocalDate behandlingsfristTid) {

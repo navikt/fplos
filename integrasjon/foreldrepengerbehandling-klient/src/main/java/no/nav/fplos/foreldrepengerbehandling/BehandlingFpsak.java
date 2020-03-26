@@ -17,6 +17,7 @@ public class BehandlingFpsak {
     private Boolean harVurderSykdom;
     private LocalDate behandlingstidFrist;
     private LocalDate førsteUttaksdag;
+    private boolean erBerørtBehandling;
 
     public BehandlingId getBehandlingId() {
         return behandlingId;
@@ -46,6 +47,10 @@ public class BehandlingFpsak {
         return harVurderSykdom;
     }
 
+    public boolean getErBerørtBehandling() {
+        return erBerørtBehandling;
+    }
+
     public LocalDateTime getBehandlingstidFrist() {
         return behandlingstidFrist != null ? behandlingstidFrist.atStartOfDay() : null;
     }
@@ -69,6 +74,7 @@ public class BehandlingFpsak {
         private Boolean harOverføringPgaSykdom;
         private LocalDate behandlingstidFrist;
         private LocalDate førsteUttaksdag;
+        private Boolean erBerørtBehandling;
 
         private Builder() {
         }
@@ -123,6 +129,11 @@ public class BehandlingFpsak {
             return this;
         }
 
+        public Builder medErBerørtBehandling(boolean erBerørtBehandling) {
+            this.erBerørtBehandling = erBerørtBehandling;
+            return this;
+        }
+
         public BehandlingFpsak build() {
             BehandlingFpsak behandlingFpsak = new BehandlingFpsak();
             behandlingFpsak.ansvarligSaksbehandler = this.ansvarligSaksbehandler;
@@ -135,6 +146,7 @@ public class BehandlingFpsak {
             behandlingFpsak.harGradering = this.harGradering;
             behandlingFpsak.behandlingstidFrist = this.behandlingstidFrist;
             behandlingFpsak.førsteUttaksdag = this.førsteUttaksdag;
+            behandlingFpsak.erBerørtBehandling = this.erBerørtBehandling == null ? false : this.erBerørtBehandling;
             return behandlingFpsak;
         }
     }

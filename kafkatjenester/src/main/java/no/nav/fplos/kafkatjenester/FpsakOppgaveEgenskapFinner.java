@@ -18,6 +18,7 @@ public class FpsakOppgaveEgenskapFinner implements OppgaveEgenskapFinner {
         if (harGradering(behandling)) this.andreKriterier.add(AndreKriterierType.SOKT_GRADERING);
         if (erUtbetalingTilBruker(behandling)) this.andreKriterier.add(AndreKriterierType.UTBETALING_TIL_BRUKER);
         if (erVurderSykdom(behandling)) this.andreKriterier.add(AndreKriterierType.VURDER_SYKDOM);
+        if (behandling.getErBerørtBehandling()) this.andreKriterier.add(AndreKriterierType.BERØRT_BEHANDLING);
 
         FpsakAksjonspunkt fpsakAksjonspunkt = new FpsakAksjonspunkt(aksjonspunkt);
         andreKriterier.addAll(fpsakAksjonspunkt.getKriterier());
