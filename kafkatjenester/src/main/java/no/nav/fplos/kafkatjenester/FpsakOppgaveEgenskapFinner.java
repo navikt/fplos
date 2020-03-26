@@ -18,7 +18,7 @@ public class FpsakOppgaveEgenskapFinner implements OppgaveEgenskapFinner {
         if (harGradering(behandling)) this.andreKriterier.add(AndreKriterierType.SOKT_GRADERING);
         if (erUtbetalingTilBruker(behandling)) this.andreKriterier.add(AndreKriterierType.UTBETALING_TIL_BRUKER);
         if (erVurderSykdom(behandling)) this.andreKriterier.add(AndreKriterierType.VURDER_SYKDOM);
-        if (behandling.getErBerørtBehandling()) this.andreKriterier.add(AndreKriterierType.BERØRT_BEHANDLING);
+        if (behandling.erBerørtBehandling()) this.andreKriterier.add(AndreKriterierType.BERØRT_BEHANDLING);
 
         FpsakAksjonspunkt fpsakAksjonspunkt = new FpsakAksjonspunkt(aksjonspunkt);
         andreKriterier.addAll(fpsakAksjonspunkt.getKriterier());
@@ -35,16 +35,16 @@ public class FpsakOppgaveEgenskapFinner implements OppgaveEgenskapFinner {
     }
 
     private static boolean erVurderSykdom(BehandlingFpsak behandling) {
-        return behandling.getHarVurderSykdom() != null && behandling.getHarVurderSykdom();
+        return behandling.harVurderSykdom() != null && behandling.harVurderSykdom();
     }
 
     private static boolean erUtbetalingTilBruker(BehandlingFpsak behandling) {
-        Boolean harRefusjonskrav = behandling.getHarRefusjonskravFraArbeidsgiver();
+        Boolean harRefusjonskrav = behandling.harRefusjonskravFraArbeidsgiver();
         //Skal ikke ha egenskap når harRefusjonskrav er true eller null. Vi avventer inntektsmelding før vi legger på egenskapen.
         return harRefusjonskrav != null && !harRefusjonskrav;
     }
 
     private static boolean harGradering(BehandlingFpsak behandling) {
-        return behandling.getHarGradering() != null && behandling.getHarGradering();
+        return behandling.harGradering() != null && behandling.harGradering();
     }
 }

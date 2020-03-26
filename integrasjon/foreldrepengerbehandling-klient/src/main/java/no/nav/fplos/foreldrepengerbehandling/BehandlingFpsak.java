@@ -35,19 +35,19 @@ public class BehandlingFpsak {
         return aksjonspunkter;
     }
 
-    public Boolean getHarRefusjonskravFraArbeidsgiver() {
+    public Boolean harRefusjonskravFraArbeidsgiver() {
         return harRefusjonskravFraArbeidsgiver;
     }
 
-    public Boolean getHarGradering() {
+    public Boolean harGradering() {
         return harGradering;
     }
 
-    public Boolean getHarVurderSykdom() {
+    public Boolean harVurderSykdom() {
         return harVurderSykdom;
     }
 
-    public boolean getErBerørtBehandling() {
+    public boolean erBerørtBehandling() {
         return erBerørtBehandling;
     }
 
