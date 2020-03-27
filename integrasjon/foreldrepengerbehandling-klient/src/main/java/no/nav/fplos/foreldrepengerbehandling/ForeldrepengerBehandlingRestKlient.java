@@ -96,10 +96,11 @@ public class ForeldrepengerBehandlingRestKlient {
     }
 
     private boolean hentErBerørtBehandling(UtvidetBehandlingDto dto) {
-        return Optional.ofNullable(dto.getFørsteÅrsak())
+        return Optional.ofNullable(dto.getBehandlingÅrsaker())
+                .orElseGet(Collections::emptyList)
+                .stream()
                 .map(BehandlingÅrsakDto::getBehandlingÅrsakType)
-                .map(type -> type.equals(BehandlingÅrsakType.BERØRT_BEHANDLING))
-                .orElse(false);
+                .anyMatch(type -> type.equals(BehandlingÅrsakType.BERØRT_BEHANDLING));
     }
 
     public Optional<Long> getFpsakInternBehandlingId(BehandlingId eksternBehandlingId) {

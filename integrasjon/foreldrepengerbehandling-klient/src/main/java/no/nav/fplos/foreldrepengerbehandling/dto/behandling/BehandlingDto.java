@@ -14,13 +14,11 @@ import no.nav.foreldrepenger.loslager.oppgave.BehandlingType;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class BehandlingDto {
-
     private Long id;
     private UUID uuid;
     private Long versjon;
     private BehandlingType type;
     private BehandlingStatus status;
-    private BehandlingÅrsakDto førsteÅrsak;
     private Long fagsakId;
     private LocalDateTime opprettet;
     private LocalDateTime avsluttet;
@@ -30,6 +28,7 @@ public class BehandlingDto {
     private String behandlendeEnhetNavn;
     private boolean erAktivPapirsoknad = false;
     private LocalDate behandlingsfristTid;
+    private List<BehandlingÅrsakDto> behandlingÅrsaker;
 
     /**
      * REST HATEOAS - pekere på data innhold som hentes fra andre url'er, eller handlinger som er tilgjengelig på behandling.
@@ -93,8 +92,8 @@ public class BehandlingDto {
         return behandlingsfristTid;
     }
 
-    public BehandlingÅrsakDto getFørsteÅrsak() {
-        return førsteÅrsak;
+    public List<BehandlingÅrsakDto> getBehandlingÅrsaker() {
+        return behandlingÅrsaker;
     }
 
     public List<ResourceLink> getLinks() {
@@ -153,8 +152,8 @@ public class BehandlingDto {
         this.erAktivPapirsoknad = erAktivPapirsoknad;
     }
 
-    public void setFørsteÅrsak(BehandlingÅrsakDto førsteÅrsak) {
-        this.førsteÅrsak = førsteÅrsak;
+    public void setBehandlingÅrsaker(List<BehandlingÅrsakDto> behandlingÅrsaker) {
+        this.behandlingÅrsaker = behandlingÅrsaker;
     }
 
     public void setBehandlingsfristTid(LocalDate behandlingsfristTid) {
