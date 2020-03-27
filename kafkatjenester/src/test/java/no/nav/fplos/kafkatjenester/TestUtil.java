@@ -13,7 +13,7 @@ class TestUtil {
                 .medBehandlendeEnhetNavn("NAV")
                 .medAnsvarligSaksbehandler("VLLOS")
                 .medStatus("-")
-                .medHarGradering(null)
+                .medHarGradering(false)
                 .medHarRefusjonskravFraArbeidsgiver(null)
                 .medFørsteUttaksdag(LocalDate.now().plusDays(20));
     }
