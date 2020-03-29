@@ -9,6 +9,7 @@ import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import no.nav.foreldrepenger.loslager.oppgave.BehandlingStatus;
 import no.nav.foreldrepenger.loslager.oppgave.BehandlingType;
 
@@ -28,6 +29,7 @@ public class BehandlingDto {
     private String behandlendeEnhetNavn;
     private boolean erAktivPapirsoknad = false;
     private LocalDate behandlingsfristTid;
+    @JsonProperty("behandlingArsaker")
     private List<BehandlingÅrsakDto> behandlingÅrsaker;
 
     /**
@@ -36,6 +38,7 @@ public class BehandlingDto {
      * @see https://restfulapi.net/hateoas/
      */
     private List<ResourceLink> links = new ArrayList<>();
+
     public Long getFagsakId() {
         return fagsakId;
     }
@@ -152,11 +155,11 @@ public class BehandlingDto {
         this.erAktivPapirsoknad = erAktivPapirsoknad;
     }
 
-    public void setBehandlingÅrsaker(List<BehandlingÅrsakDto> behandlingÅrsaker) {
+    void setBehandlingÅrsaker(List<BehandlingÅrsakDto> behandlingÅrsaker) {
         this.behandlingÅrsaker = behandlingÅrsaker;
     }
 
-    public void setBehandlingsfristTid(LocalDate behandlingsfristTid) {
+    void setBehandlingsfristTid(LocalDate behandlingsfristTid) {
         this.behandlingsfristTid = behandlingsfristTid;
     }
 }

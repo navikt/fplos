@@ -100,6 +100,7 @@ public class ForeldrepengerBehandlingRestKlient {
                 .orElseGet(Collections::emptyList)
                 .stream()
                 .map(BehandlingÅrsakDto::getBehandlingÅrsakType)
+                .filter(Objects::nonNull)
                 .anyMatch(type -> type.equals(BehandlingÅrsakType.BERØRT_BEHANDLING));
     }
 
