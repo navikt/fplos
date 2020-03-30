@@ -9,12 +9,12 @@ import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import no.nav.foreldrepenger.loslager.oppgave.BehandlingStatus;
 import no.nav.foreldrepenger.loslager.oppgave.BehandlingType;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class BehandlingDto {
-
     private Long id;
     private UUID uuid;
     private Long versjon;
@@ -29,6 +29,8 @@ public class BehandlingDto {
     private String behandlendeEnhetNavn;
     private boolean erAktivPapirsoknad = false;
     private LocalDate behandlingsfristTid;
+    @JsonProperty("behandlingArsaker")
+    private List<BehandlingÅrsakDto> behandlingÅrsaker;
 
     /**
      * REST HATEOAS - pekere på data innhold som hentes fra andre url'er, eller handlinger som er tilgjengelig på behandling.
@@ -89,6 +91,14 @@ public class BehandlingDto {
         return erAktivPapirsoknad;
     }
 
+    public LocalDate getBehandlingsfristTid() {
+        return behandlingsfristTid;
+    }
+
+    public List<BehandlingÅrsakDto> getBehandlingÅrsaker() {
+        return behandlingÅrsaker;
+    }
+
     public List<ResourceLink> getLinks() {
         return Collections.unmodifiableList(links);
     }
@@ -145,11 +155,11 @@ public class BehandlingDto {
         this.erAktivPapirsoknad = erAktivPapirsoknad;
     }
 
-    public LocalDate getBehandlingsfristTid() {
-        return behandlingsfristTid;
+    void setBehandlingÅrsaker(List<BehandlingÅrsakDto> behandlingÅrsaker) {
+        this.behandlingÅrsaker = behandlingÅrsaker;
     }
 
-    public void setBehandlingsfristTid(LocalDate behandlingsfristTid) {
+    void setBehandlingsfristTid(LocalDate behandlingsfristTid) {
         this.behandlingsfristTid = behandlingsfristTid;
     }
 }
