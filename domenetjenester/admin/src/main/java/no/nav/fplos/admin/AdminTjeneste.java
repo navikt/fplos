@@ -18,6 +18,8 @@ public interface AdminTjeneste {
 
     int prosesserAlleMeldingerFraFeillogg();
 
+    void ferdigstillFeiletEvent(Long verdi);
+
     List<Oppgave> hentAlleOppgaverForBehandling(BehandlingId behandlingId);
 
     Oppgave deaktiverOppgave(Long oppgaveId);

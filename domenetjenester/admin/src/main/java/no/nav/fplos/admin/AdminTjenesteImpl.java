@@ -102,6 +102,11 @@ public class AdminTjenesteImpl implements AdminTjeneste {
     }
 
     @Override
+    public void ferdigstillFeiletEvent(Long eventId) {
+        adminRepository.markerFerdig(eventId);
+    }
+
+    @Override
     public List<Oppgave> hentAlleOppgaverForBehandling(BehandlingId behandlingId) {
         return adminRepository.hentAlleOppgaverForBehandling(behandlingId);
     }
