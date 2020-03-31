@@ -148,10 +148,10 @@ public class AdminRestTjeneste {
     @Path("/marker-ferdig-feilet-event")
     @Consumes(MediaType.APPLICATION_JSON)
     @Operation(description = "Ferdigstill feilet event", tags = "admin")
-    @BeskyttetRessurs(action = READ, ressurs = OPPGAVESTYRING)
+    @BeskyttetRessurs(action = READ, ressurs = DRIFT)
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
     public Response markerFerdigFeiletEvent(@NotNull @QueryParam("eventId") @Valid EventIdDto eventIdDto) {
-        adminTjeneste.ferdigmarkerOgHentOppgaveEvent(eventIdDto.getVerdi());
+        adminTjeneste.markerFerdigFeiletEvent(eventIdDto.getVerdi());
         return Response.ok().build();
     }
 }

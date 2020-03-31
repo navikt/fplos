@@ -43,7 +43,7 @@ public class AdminTjenesteImpl implements AdminTjeneste {
     }
 
     AdminTjenesteImpl() {
-        //For automatisk laging
+        // CDI
     }
 
     @Override
@@ -99,7 +99,7 @@ public class AdminTjenesteImpl implements AdminTjeneste {
     }
 
     @Override
-    public void ferdigmarkerOgHentOppgaveEvent(Long eventId) {
+    public void markerFerdigFeiletEvent(Long eventId) {
         try {
             adminRepository.markerFerdig(eventId);
         } catch (NullPointerException e) {

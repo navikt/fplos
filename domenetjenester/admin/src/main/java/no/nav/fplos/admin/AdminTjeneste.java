@@ -18,7 +18,7 @@ public interface AdminTjeneste {
 
     int prosesserAlleMeldingerFraFeillogg();
 
-    void ferdigmarkerOgHentOppgaveEvent(Long verdi);
+    void markerFerdigFeiletEvent(Long verdi);
 
     List<Oppgave> hentAlleOppgaverForBehandling(BehandlingId behandlingId);
 
