@@ -6,6 +6,7 @@ import no.nav.foreldrepenger.los.web.app.tjenester.felles.dto.OppgaveDto;
 import no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.oppgave.dto.BehandlingIdDto;
 import no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.oppgave.dto.EventIdDto;
 import no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.oppgave.dto.OppgaveIdDto;
+import no.nav.foreldrepenger.loslager.oppgave.EventmottakFeillogg;
 import no.nav.foreldrepenger.loslager.oppgave.Oppgave;
 import no.nav.foreldrepenger.loslager.oppgave.OppgaveEventLogg;
 import no.nav.fplos.admin.AdminTjeneste;
@@ -23,7 +24,9 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static no.nav.vedtak.sikkerhet.abac.BeskyttetRessursActionAttributt.READ;
@@ -150,7 +153,11 @@ public class AdminRestTjeneste {
     @Operation(description = "Ferdigstill feilet event", tags = "admin")
     @BeskyttetRessurs(action = READ, ressurs = DRIFT)
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
-    public void markerFerdigFeiletEvent(@NotNull @QueryParam("eventId") @Valid EventIdDto eventIdDto) {
-        adminTjeneste.ferdigstillFeiletEvent(eventIdDto.getVerdi());
+    public Response markerFerdigFeiletEvent(@NotNull @QueryParam("eventId") @Valid EventIdDto eventIdDto) {
+        Optional<EventmottakFeillogg> event = adminTjeneste.ferdigmarkerOgHentOppgaveEvent(eventIdDto.getVerdi());
+        if (event.isEmpty()) {
+            return Response.noContent().build();
+        }
+        return Response.ok().build();
     }
 }

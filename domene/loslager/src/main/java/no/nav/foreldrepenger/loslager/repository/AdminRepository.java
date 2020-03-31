@@ -15,6 +15,8 @@ public interface AdminRepository {
 
     List<OppgaveEventLogg> hentEventer(BehandlingId behandlingId);
 
+    EventmottakFeillogg hentEvent(Long id);
+
     List<EventmottakFeillogg> hentAlleMeldingerFraFeillogg();
 
     void markerFerdig(Long feilloggId);

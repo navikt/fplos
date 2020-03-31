@@ -71,6 +71,13 @@ public class AdminRepositoryImpl implements AdminRepository {
     }
 
     @Override
+    public EventmottakFeillogg hentEvent(Long id) {
+        return entityManager.createQuery("SELECT o FROM eventmottakFeillogg o " +
+                "WHERE o.id = :id", EventmottakFeillogg.class)
+                .setParameter("id", id).getSingleResult();
+    }
+
+    @Override
     public List<EventmottakFeillogg> hentAlleMeldingerFraFeillogg() {
         return entityManager.createQuery("Select ef FROM eventmottakFeillogg ef where ef.status = :status", EventmottakFeillogg.class).setParameter("status", EventmottakFeillogg.Status.FEILET).getResultList();
     }

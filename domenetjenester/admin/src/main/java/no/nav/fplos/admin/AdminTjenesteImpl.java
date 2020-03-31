@@ -3,6 +3,7 @@ package no.nav.fplos.admin;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -102,8 +103,13 @@ public class AdminTjenesteImpl implements AdminTjeneste {
     }
 
     @Override
-    public void ferdigstillFeiletEvent(Long eventId) {
-        adminRepository.markerFerdig(eventId);
+    public Optional<EventmottakFeillogg> ferdigmarkerOgHentOppgaveEvent(Long eventId) {
+        try {
+            adminRepository.markerFerdig(eventId);
+        } catch (NullPointerException e) {
+            return Optional.empty(); // ingen event funnet
+        }
+        return Optional.of(adminRepository.hentEvent(eventId));
     }
 
     @Override
