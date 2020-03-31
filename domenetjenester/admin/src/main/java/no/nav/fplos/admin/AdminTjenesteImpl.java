@@ -11,13 +11,7 @@ import no.nav.fplos.kafkatjenester.ForeldrepengerEventHåndterer;
 import no.nav.fplos.kafkatjenester.FpsakBehandlingProsessEventDto;
 import no.nav.fplos.kafkatjenester.KafkaConsumer;
 import no.nav.fplos.kafkatjenester.TilbakekrevingEventHåndterer;
-import no.nav.vedtak.feil.Feil;
-import no.nav.vedtak.feil.FeilFactory;
-import no.nav.vedtak.feil.LogLevel;
-import no.nav.vedtak.feil.deklarasjon.DeklarerteFeil;
-import no.nav.vedtak.feil.deklarasjon.TekniskFeil;
 import no.nav.vedtak.felles.integrasjon.kafka.TilbakebetalingBehandlingProsessEventDto;
-import no.nav.vedtak.felles.jpa.TomtResultatException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,7 +23,6 @@ import java.util.Map;
 
 @ApplicationScoped
 public class AdminTjenesteImpl implements AdminTjeneste {
-
     private static final Logger LOG = LoggerFactory.getLogger(AdminTjenesteImpl.class);
     private static final String AVSLUTTET_STATUS = "AVSLU";
 
@@ -147,13 +140,5 @@ public class AdminTjenesteImpl implements AdminTjeneste {
                 .medOpprettetBehandling(eksisterendeOppgave.getBehandlingOpprettet())
                 .medAksjonspunktKoderMedStatusListe(aksjonspunktKoderMedStatusListe)
                 .build();
-    }
-
-    public interface AdminTjenesteImplFeil extends DeklarerteFeil {
-
-        AdminTjenesteImplFeil FACTORY = FeilFactory.create(AdminTjenesteImplFeil.class);
-
-        @TekniskFeil(feilkode = "FPLOS-999", feilmelding = "Finner ikke feilet event med id %s", logLevel = LogLevel.WARN, exceptionClass = TomtResultatException.class)
-        Feil finnerIkkeFeiletEvent(Long eventId);
     }
 }
