@@ -1,5 +1,6 @@
 package no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.oppgave.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import no.nav.vedtak.sikkerhet.abac.AbacDataAttributter;
 import no.nav.vedtak.sikkerhet.abac.AbacDto;
@@ -28,7 +29,7 @@ public class OppgaveIdDto implements AbacDto {
         this.oppgaveId = Long.valueOf(oppgaveId);
     }
 
-
+    @JsonIgnore
     public Long getVerdi() {
         return oppgaveId;
     }
