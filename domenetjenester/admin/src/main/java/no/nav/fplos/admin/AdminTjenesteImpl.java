@@ -1,16 +1,5 @@
 package no.nav.fplos.admin;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import no.nav.foreldrepenger.loslager.BehandlingId;
 import no.nav.foreldrepenger.loslager.oppgave.EventmottakFeillogg;
 import no.nav.foreldrepenger.loslager.oppgave.Oppgave;
@@ -22,7 +11,21 @@ import no.nav.fplos.kafkatjenester.ForeldrepengerEventHåndterer;
 import no.nav.fplos.kafkatjenester.FpsakBehandlingProsessEventDto;
 import no.nav.fplos.kafkatjenester.KafkaConsumer;
 import no.nav.fplos.kafkatjenester.TilbakekrevingEventHåndterer;
+import no.nav.vedtak.feil.Feil;
+import no.nav.vedtak.feil.FeilFactory;
+import no.nav.vedtak.feil.LogLevel;
+import no.nav.vedtak.feil.deklarasjon.DeklarerteFeil;
+import no.nav.vedtak.feil.deklarasjon.TekniskFeil;
 import no.nav.vedtak.felles.integrasjon.kafka.TilbakebetalingBehandlingProsessEventDto;
+import no.nav.vedtak.felles.jpa.TomtResultatException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @ApplicationScoped
 public class AdminTjenesteImpl implements AdminTjeneste {
@@ -46,7 +49,7 @@ public class AdminTjenesteImpl implements AdminTjeneste {
         this.tilbakekrevingEventHåndterer = tilbakekrevingEventHåndterer;
     }
 
-    AdminTjenesteImpl(){
+    AdminTjenesteImpl() {
         //For automatisk laging
     }
 
@@ -103,13 +106,12 @@ public class AdminTjenesteImpl implements AdminTjeneste {
     }
 
     @Override
-    public Optional<EventmottakFeillogg> ferdigmarkerOgHentOppgaveEvent(Long eventId) {
+    public void ferdigmarkerOgHentOppgaveEvent(Long eventId) {
         try {
             adminRepository.markerFerdig(eventId);
         } catch (NullPointerException e) {
-            return Optional.empty(); // ingen event funnet
+            throw AdminTjenesteImplFeil.FACTORY.finnerIkkeFeiletEvent(eventId).toException();
         }
-        return Optional.of(adminRepository.hentEvent(eventId));
     }
 
     @Override
@@ -145,5 +147,13 @@ public class AdminTjenesteImpl implements AdminTjeneste {
                 .medOpprettetBehandling(eksisterendeOppgave.getBehandlingOpprettet())
                 .medAksjonspunktKoderMedStatusListe(aksjonspunktKoderMedStatusListe)
                 .build();
+    }
+
+    public interface AdminTjenesteImplFeil extends DeklarerteFeil {
+
+        AdminTjenesteImplFeil FACTORY = FeilFactory.create(AdminTjenesteImplFeil.class);
+
+        @TekniskFeil(feilkode = "FPLOS-999", feilmelding = "Finner ikke feilet event med id %s", logLevel = LogLevel.WARN, exceptionClass = TomtResultatException.class)
+        Feil finnerIkkeFeiletEvent(Long eventId);
     }
 }
