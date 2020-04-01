@@ -114,4 +114,6 @@ public interface OppgaveRepository {
     void settSorteringNumeriskIntervall(Long oppgaveFiltreringId, Long fra, Long til);
 
     void settSorteringTidsintervallValg(Long oppgaveFiltreringId, boolean erDynamiskPeriode);
+
+    List<Oppgave> hentOppgaverForSynkronisering();
 }
