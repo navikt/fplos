@@ -100,11 +100,7 @@ public class AdminTjenesteImpl implements AdminTjeneste {
 
     @Override
     public void markerFerdigFeiletEvent(Long eventId) {
-        try {
-            adminRepository.markerFerdig(eventId);
-        } catch (NullPointerException e) {
-            throw AdminTjenesteImplFeil.FACTORY.finnerIkkeFeiletEvent(eventId).toException();
-        }
+        adminRepository.markerFerdig(eventId);
     }
 
     @Override

@@ -1,21 +1,20 @@
 package no.nav.foreldrepenger.loslager.repository;
 
-import java.util.Comparator;
-import java.util.List;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.NoResultException;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import no.nav.foreldrepenger.loslager.BehandlingId;
 import no.nav.foreldrepenger.loslager.oppgave.EventmottakFeillogg;
 import no.nav.foreldrepenger.loslager.oppgave.Oppgave;
 import no.nav.foreldrepenger.loslager.oppgave.OppgaveEventLogg;
 import no.nav.foreldrepenger.loslager.oppgave.Reservasjon;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Optional;
 
 @ApplicationScoped
 public class AdminRepositoryImpl implements AdminRepository {
@@ -84,9 +83,12 @@ public class AdminRepositoryImpl implements AdminRepository {
 
     @Override
     public void markerFerdig(Long feilloggId) {
-        entityManager.persist(entityManager
-                        .find(EventmottakFeillogg.class, feilloggId)
-                        .markerFerdig());
+        EventmottakFeillogg event = Optional.ofNullable(entityManager.find(EventmottakFeillogg.class, feilloggId))
+                .map(EventmottakFeillogg::markerFerdig)
+                .orElseThrow(() -> {
+                    throw AdminRepositoryImplFeil.FACTORY.finnerIkkeFeiletEvent(feilloggId).toException();
+                });
+        entityManager.persist(event);
         entityManager.flush();
     }
 
