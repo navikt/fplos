@@ -27,6 +27,9 @@ spec:
     periodSeconds: 10
     failureThreshold: 27
     timeout: 5
+  prometheus:
+    enabled: true
+    path: /fplos/internal/metrics/prometheus
   replicas:
     min: {{minReplica}}
     max: {{maxReplica}}

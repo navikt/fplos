@@ -7,6 +7,7 @@ import java.util.Set;
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
 
+import io.prometheus.client.hotspot.DefaultExports;
 import no.nav.foreldrepenger.los.web.app.metrics.PrometheusRestService;
 import no.nav.foreldrepenger.los.web.app.tjenester.NaisRestTjeneste;
 import no.nav.foreldrepenger.los.web.app.tjenester.SelftestRestTjeneste;
@@ -18,6 +19,7 @@ public class InternalApplication extends Application {
 
     public InternalApplication() {
         // CDI
+        DefaultExports.initialize();
     }
 
     @Override
