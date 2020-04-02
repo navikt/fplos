@@ -34,6 +34,7 @@ public class OppgaveSynkroniseringTjeneste {
 
     public void leggTilBerørtBehandlingEgenskap() {
         List<Oppgave> oppgaver = oppgaveRepository.hentOppgaverForSynkronisering();
+        log.info("Hentet {} oppgaver for synkronisering", oppgaver.size());
         for (var oppgave : oppgaver) {
             try {
                 lagreAktivEgenskap(oppgave);
