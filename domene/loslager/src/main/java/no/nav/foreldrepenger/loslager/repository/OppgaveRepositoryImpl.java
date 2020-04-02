@@ -609,6 +609,13 @@ public class OppgaveRepositoryImpl implements OppgaveRepository {
         entityManager.flush();
     }
 
+    @Override
+    public List<Oppgave> hentOppgaverForSynkronisering() {
+        return entityManager.createQuery("FROM Oppgave o where o.aktiv = true AND o.system = :system", Oppgave.class)
+                .setParameter("system", "FPSAK")
+                .getResultList();
+    }
+
 
     private void internLagre(Object objektTilLagring) {
         entityManager.persist(objektTilLagring);

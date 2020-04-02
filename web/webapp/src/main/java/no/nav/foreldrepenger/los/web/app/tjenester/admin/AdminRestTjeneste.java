@@ -9,6 +9,7 @@ import no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.oppgave.dto.Opp
 import no.nav.foreldrepenger.loslager.oppgave.Oppgave;
 import no.nav.foreldrepenger.loslager.oppgave.OppgaveEventLogg;
 import no.nav.fplos.admin.AdminTjeneste;
+import no.nav.fplos.admin.OppgaveSynkroniseringTjeneste;
 import no.nav.vedtak.sikkerhet.abac.BeskyttetRessurs;
 
 import javax.enterprise.context.RequestScoped;
@@ -37,10 +38,12 @@ import static no.nav.vedtak.sikkerhet.abac.BeskyttetRessursResourceAttributt.OPP
 public class AdminRestTjeneste {
 
     private AdminTjeneste adminTjeneste;
+    private OppgaveSynkroniseringTjeneste synkroniseringTjeneste;
 
     @Inject
-    public AdminRestTjeneste(AdminTjeneste adminTjeneste) {
+    public AdminRestTjeneste(AdminTjeneste adminTjeneste, OppgaveSynkroniseringTjeneste synkroniseringTjeneste) {
         this.adminTjeneste = adminTjeneste;
+        this.synkroniseringTjeneste = synkroniseringTjeneste;
     }
 
     public AdminRestTjeneste() {
@@ -152,6 +155,17 @@ public class AdminRestTjeneste {
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
     public Response markerFerdigFeiletEvent(@NotNull @QueryParam("eventId") @Valid EventIdDto eventIdDto) {
         adminTjeneste.markerFerdigFeiletEvent(eventIdDto.getVerdi());
+        return Response.ok().build();
+    }
+
+    @PATCH
+    @Path("/synkroniser-berort-behandling-egenskap")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Operation(description = "Opprett berørt behandling-egenskap basert på synkronisering med fpsak", tags = "admin")
+    @BeskyttetRessurs(action = READ, ressurs = DRIFT)
+    @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
+    public Response synkroniserBerørtBehandling() {
+        synkroniseringTjeneste.leggTilBerørtBehandlingEgenskap();
         return Response.ok().build();
     }
 }
