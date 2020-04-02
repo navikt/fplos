@@ -51,7 +51,7 @@
         <mockito.version>3.3.0</mockito.version>
         <metrics.version>4.1.5</metrics.version>
         <prometheus.version>0.8.1</prometheus.version>
-        <swagger.version>2.1.1</swagger.version>
+        <swagger.version>2.1.2</swagger.version>
         <!-- Transitive avh. versjoner for å sikre unikhet (enforcer dependencyConvergence). Skal ikke benyttes direkte av vår egen kode. -->
         <jasypt.version>1.9.3</jasypt.version>
         <javaslang.version>2.0.6</javaslang.version>
