@@ -4,11 +4,26 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public enum UtsettelseÅrsak {
-    ARBEID, LOVBESTEMT_FERIE, SYKDOM, INSTITUSJONSOPPHOLD_SØKER, INSTITUSJONSOPPHOLD_BARNET;
+    ANNET,
+    SYKDOM,
+    INSTITUSJONSOPPHOLD_SØKER,
+    INSTITUSJONSOPPHOLD_BARNET;
 
     @JsonCreator
     public static UtsettelseÅrsak fraKode(@JsonProperty("kode") String kode) {
-        return kode.equals("-") ? null : valueOf(kode);
+        if (kode == null || kode.equals("-")) {
+            return null;
+        }
+        if (kode.equals(SYKDOM.name())) {
+            return SYKDOM;
+        }
+        if (kode.equals(INSTITUSJONSOPPHOLD_BARNET.name())) {
+            return INSTITUSJONSOPPHOLD_BARNET;
+        }
+        if (kode.equals(INSTITUSJONSOPPHOLD_SØKER.name())) {
+            return INSTITUSJONSOPPHOLD_SØKER;
+        }
+        return ANNET;
     }
 
     boolean gjelderSykdom() {
