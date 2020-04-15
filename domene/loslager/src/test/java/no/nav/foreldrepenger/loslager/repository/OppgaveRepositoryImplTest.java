@@ -94,7 +94,7 @@ public class OppgaveRepositoryImplTest {
     @Test
     public void testLagringAvOppgaveEgenskaper() {
         Long saksnummerOppgaveEn = setupOppgaveMedEgenskaper(AndreKriterierType.UTLANDSSAK, AndreKriterierType.PAPIRSØKNAD);
-        List<Oppgave> lagredeOppgaver = oppgaveRepository.hentOppgaverForSaksnummer(saksnummerOppgaveEn);
+        List<Oppgave> lagredeOppgaver = oppgaveRepository.hentAktiveOppgaverForSaksnummer(List.of(saksnummerOppgaveEn));
         List<OppgaveEgenskap> lagredeEgenskaper = oppgaveRepository.hentOppgaveEgenskaper(lagredeOppgaver.get(0).getId());
         List<AndreKriterierType> lagredeKriterier = lagredeEgenskaper.stream()
                 .map(OppgaveEgenskap::getAndreKriterierType)

@@ -12,9 +12,7 @@ public interface OppgaveTjeneste {
 
     List<Oppgave> hentOppgaver(Long sakslisteId);
 
-    List<Oppgave> hentNesteOppgaver(Long sakslisteId);
-
-    List<Oppgave> hentOppgaverForSaksnummer(Long fagsakSaksnummer);
+    List<Oppgave> hentOppgaver(Long sakslisteId, int maksAntall);
 
     List<Oppgave> hentAktiveOppgaverForSaksnummer(Collection<Long> fagsakSaksnummerListe);
 

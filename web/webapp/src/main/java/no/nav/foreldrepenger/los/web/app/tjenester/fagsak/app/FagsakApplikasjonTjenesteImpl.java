@@ -1,5 +1,13 @@
 package no.nav.foreldrepenger.los.web.app.tjenester.fagsak.app;
 
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+import java.util.function.Predicate;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+
 import no.nav.foreldrepenger.domene.typer.PersonIdent;
 import no.nav.foreldrepenger.domene.typer.Saksnummer;
 import no.nav.foreldrepenger.loslager.aktør.TpsPersonDto;
@@ -10,14 +18,6 @@ import no.nav.fplos.foreldrepengerbehandling.dto.fagsak.FagsakDto;
 import no.nav.fplos.oppgave.OppgaveTjeneste;
 import no.nav.fplos.person.api.TpsTjeneste;
 import no.nav.vedtak.sikkerhet.context.SubjectHandler;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-import java.time.LocalDateTime;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-import java.util.function.Predicate;
 
 @ApplicationScoped
 public class FagsakApplikasjonTjenesteImpl implements FagsakApplikasjonTjeneste{
@@ -52,11 +52,6 @@ public class FagsakApplikasjonTjenesteImpl implements FagsakApplikasjonTjeneste{
         }
 
         return predikatErFnr.test(søkestreng) ? hentSakerForFnr(new PersonIdent(søkestreng)) : hentFagsakForSaksnummer(new Saksnummer(søkestreng));
-    }
-
-    @Override
-    public List<Oppgave> hentOppgaverForSaksnummer(Long fagsakSaksnummer) {
-        return oppgaveTjeneste.hentOppgaverForSaksnummer(fagsakSaksnummer);
     }
 
     @Override

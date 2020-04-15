@@ -48,6 +48,7 @@ import no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.oppgave.dto.Opp
 import no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.oppgave.dto.OppgaveOpphevingDto;
 import no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.oppgave.dto.ReservasjonsEndringDto;
 import no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.oppgave.dto.SaknummerIderDto;
+import no.nav.foreldrepenger.loslager.aktør.TpsPersonDto;
 import no.nav.foreldrepenger.loslager.oppgave.Oppgave;
 import no.nav.foreldrepenger.loslager.oppgave.Reservasjon;
 import no.nav.fplos.oppgave.OppgaveTjeneste;
@@ -64,6 +65,7 @@ import no.nav.vedtak.sikkerhet.abac.BeskyttetRessursResourceAttributt;
 public class OppgaveRestTjeneste {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(OppgaveRestTjeneste.class);
+    private static final int ANTALL_OPPGAVER_SOM_VISES_TIL_SAKSBEHANDLER = 3;
 
     private OppgaveTjeneste oppgaveTjeneste;
     private FagsakApplikasjonTjeneste fagsakApplikasjonTjeneste;
@@ -104,12 +106,13 @@ public class OppgaveRestTjeneste {
     })
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
     @BeskyttetRessurs(action = READ, ressurs = FAGSAK)
-    public Response hentNesteOppgaverOgSjekkOmDisseErNye(@NotNull @Valid @QueryParam("sakslisteId") SakslisteIdDto sakslisteId, @Valid @QueryParam("oppgaveIder") OppgaveIderDto oppgaverIder) throws URISyntaxException {
+    public Response hentNesteOppgaverOgSjekkOmDisseErNye(@NotNull @Valid @QueryParam("sakslisteId") SakslisteIdDto sakslisteId,
+                                                         @Valid @QueryParam("oppgaveIder") OppgaveIderDto oppgaverIder) throws URISyntaxException {
         List<Long> oppgaveIderSomVises = oppgaverIder == null ? Collections.emptyList() : oppgaverIder.getOppgaveIdeer();
         boolean skalPolle = false;
 
         if (oppgaveIderSomVises.isEmpty()) {
-            List<Oppgave> nesteOppgaver = oppgaveTjeneste.hentNesteOppgaver(sakslisteId.getVerdi());
+            List<Oppgave> nesteOppgaver = oppgaveTjeneste.hentOppgaver(sakslisteId.getVerdi(), 1);
             skalPolle = nesteOppgaver.isEmpty();
             if (!skalPolle) {
                 URI uri = new URI("/saksbehandler/oppgaver/resultat?sakslisteId=" + sakslisteId.getVerdi());
@@ -134,26 +137,42 @@ public class OppgaveRestTjeneste {
     @GET
     @Path("/resultat")
     @Produces(MediaType.APPLICATION_JSON)
-    @Operation(description = "Hent 3 neste oppgaver", tags = "Saksbehandler",
+    @Operation(description = "Hent " + ANTALL_OPPGAVER_SOM_VISES_TIL_SAKSBEHANDLER + " neste oppgaver", tags = "Saksbehandler",
         responses = {
             @ApiResponse(responseCode = "200", description = "Returnerer Oppgaver", content = @Content(schema = @Schema(implementation = OppgaveDto.class))),
     })
     @BeskyttetRessurs(action = READ, ressurs = FAGSAK)
     public List<OppgaveDto> getOppgaverTilBehandling(@NotNull @QueryParam("sakslisteId") @Valid SakslisteIdDto sakslisteId) {
-        List<Oppgave> nesteOppgaver = oppgaveTjeneste.hentNesteOppgaver(sakslisteId.getVerdi());
+        var saksliste = sakslisteId.getVerdi();
+        var nesteOppgaver = oppgaveTjeneste.hentOppgaver(saksliste, ANTALL_OPPGAVER_SOM_VISES_TIL_SAKSBEHANDLER);
+        var oppgaveDtos = map(nesteOppgaver, nesteOppgaver.size());
+        //Noen oppgave filteres bort i mappingen pga at saksbehandler ikke har tilgang til behandlingen
+        if (nesteOppgaver.size() == oppgaveDtos.size()) {
+            return oppgaveDtos;
+        }
+        LOGGER.info("{} behandlinger filtrert bort for saksliste {}", nesteOppgaver.size() - oppgaveDtos.size(), saksliste);
+        var alleOppgaver = oppgaveTjeneste.hentOppgaver(saksliste);
+        return map(alleOppgaver, ANTALL_OPPGAVER_SOM_VISES_TIL_SAKSBEHANDLER);
+    }
+
+    private List<OppgaveDto> map(List<Oppgave> oppgaver, int maksAntall) {
         List<OppgaveDto> oppgaveDtos = new ArrayList<>();
-        int funnetOppgaver = 0;
-        for (int i = 0; i < nesteOppgaver.size() && funnetOppgaver < 3; i++) {
-            Oppgave oppgave = nesteOppgaver.get(i);
-            try {
-                var personDto = tpsTjeneste.hentBrukerForAktør(oppgave.getAktorId());
-                oppgaveDtos.add(new OppgaveDto(oppgave, personDto));
-                funnetOppgaver++;
-            } catch (HentPersonSikkerhetsbegrensning e) {
-                logBegrensning(oppgave, e);
-            }
+        for (int i = 0; i < oppgaver.size() && oppgaveDtos.size() < maksAntall; i++) {
+            var oppgave = oppgaver.get(i);
+            map(oppgave).ifPresent(oppgaveDtos::add);
         }
         return oppgaveDtos;
+    }
+
+    private Optional<OppgaveDto> map(Oppgave oppgave) {
+        TpsPersonDto personDto;
+        try {
+            personDto = tpsTjeneste.hentBrukerForAktør(oppgave.getAktorId());
+            return Optional.of(new OppgaveDto(oppgave, personDto));
+        } catch (HentPersonSikkerhetsbegrensning e) {
+            logBegrensning(oppgave, e);
+        }
+        return Optional.empty();
     }
 
     @POST
@@ -244,19 +263,18 @@ public class OppgaveRestTjeneste {
     }
 
     private Optional<OppgaveDto> oppgaveDtoFra(Reservasjon reservasjon) {
-        return oppgaveDtoFra(reservasjon.getOppgave(), reservasjon);
-    }
-    private Optional<OppgaveDto> oppgaveDtoFra(Oppgave oppgave, Reservasjon reservasjon) {
+        var oppgave = reservasjon.getOppgave();
+        TpsPersonDto tpsPerson;
         try {
-            var tpsPerson = tpsTjeneste.hentBrukerForAktør(oppgave.getAktorId());
-            return Optional.of(new OppgaveDto(
-                    oppgave,
-                    tpsPerson,
-                    oppgaveTjeneste.hentNavnHvisFlyttetAvSaksbehandler(reservasjon.getFlyttetAv())));
+            tpsPerson = tpsTjeneste.hentBrukerForAktør(oppgave.getAktorId());
         } catch (HentPersonSikkerhetsbegrensning e) {
             logBegrensning(oppgave, e);
+            return Optional.empty();
         }
-        return Optional.empty();
+        return Optional.of(new OppgaveDto(
+                oppgave,
+                tpsPerson,
+                oppgaveTjeneste.hentNavnHvisFlyttetAvSaksbehandler(reservasjon.getFlyttetAv())));
     }
 
     private void logBegrensning(Oppgave oppgave, HentPersonSikkerhetsbegrensning e) {
@@ -272,12 +290,11 @@ public class OppgaveRestTjeneste {
     public List<OppgaveDto> getBehandledeOppgaver() {
         List<Oppgave> sistReserverteOppgaver = oppgaveTjeneste.hentSisteReserverteOppgaver();
         return sistReserverteOppgaver.stream()
-                .map(o -> oppgaveDtoFra(o, o.getReservasjon()))
+                .map(o -> oppgaveDtoFra(o.getReservasjon()))
                 .filter(o -> o.isPresent())
                 .map(o -> o.get())
                 .collect(Collectors.toList());
     }
-
 
     @POST
     @Path("/flytt/sok")
@@ -333,14 +350,15 @@ public class OppgaveRestTjeneste {
         }
 
         //Alle fagsakene tilhører samme bruker
+        TpsPersonDto personDto;
         try {
-            var personDto = tpsTjeneste.hentBrukerForAktør(oppgaver.get(0).getAktorId());
-            return oppgaver.stream()
-                    .map(o -> new OppgaveDto(o, personDto, fagsakApplikasjonTjeneste.hentNavnHvisReservertAvAnnenSaksbehandler(o), null))
-                    .collect(Collectors.toList());
+            personDto = tpsTjeneste.hentBrukerForAktør(oppgaver.get(0).getAktorId());
         } catch (HentPersonSikkerhetsbegrensning e) {
             logBegrensning(oppgaver.get(0), e);
+            return List.of();
         }
-        return List.of();
+        return oppgaver.stream()
+                .map(o -> new OppgaveDto(o, personDto, null, fagsakApplikasjonTjeneste.hentNavnHvisReservertAvAnnenSaksbehandler(o)))
+                .collect(Collectors.toList());
     }
 }
