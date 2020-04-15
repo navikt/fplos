@@ -8,18 +8,21 @@ import java.util.List;
 
 public class OppgaveHistorikk {
     private final boolean erUtenHistorikk;
-    private final boolean erSisteEventÅpningsevent;
     private final OppgaveEventLogg sisteÅpningsEvent;
+    private final OppgaveEventType sisteEventType;
 
     public OppgaveHistorikk(List<OppgaveEventLogg> oppgaveEventLogg) {
         this.erUtenHistorikk = oppgaveEventLogg.isEmpty();
         this.sisteÅpningsEvent = sisteÅpningsEventFra(oppgaveEventLogg);
-        this.erSisteEventÅpningsevent = !oppgaveEventLogg.isEmpty()
-                && oppgaveEventLogg.get(0).getEventType().erÅpningsevent();
+        this.sisteEventType = oppgaveEventLogg.isEmpty() ? null : oppgaveEventLogg.get(0).getEventType();
     }
 
     public boolean erSisteEventÅpningsevent() {
-        return erSisteEventÅpningsevent;
+        return sisteEventType != null && sisteEventType.erÅpningsevent();
+    }
+
+    public boolean erSisteVenteEvent() {
+        return sisteEventType != null && sisteEventType.erVenteEvent();
     }
 
     public boolean erUtenHistorikk() {

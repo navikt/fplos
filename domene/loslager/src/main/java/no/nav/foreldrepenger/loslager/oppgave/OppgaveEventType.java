@@ -6,4 +6,8 @@ public enum OppgaveEventType {
     public boolean erÅpningsevent() {
         return this.equals(OPPRETTET) || this.equals(GJENAPNET);
     }
+
+    public boolean erVenteEvent() {
+        return this.equals(VENT) || this.equals(MANU_VENT);
+    }
 }

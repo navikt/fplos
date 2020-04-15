@@ -29,6 +29,9 @@ public class ForeldrepengerEventMapper {
             return LUKK_OPPGAVE;
         }
         if (påVent(aksjonspunkter)) {
+            if (oppgaveHistorikk.erSisteVenteEvent()) {
+                return FERDIG;
+            }
             return manueltSattPåVent(aksjonspunkter) ? LUKK_OPPGAVE_MANUELT_VENT : LUKK_OPPGAVE_VENT;
         }
         if (tilBeslutter(aksjonspunkter)) {
