@@ -25,9 +25,9 @@ import no.nav.foreldrepenger.loslager.organisasjon.Saksbehandler;
 
 public interface OppgaveRepository {
 
-    List<Oppgave> hentOppgaver(OppgavespørringDto oppgavespørringDto);
+    List<Oppgave> hentOppgaver(Oppgavespørring oppgavespørring);
 
-    int hentAntallOppgaver(OppgavespørringDto oppgavespørringDto);
+    int hentAntallOppgaver(Oppgavespørring oppgavespørring);
 
     int hentAntallOppgaverForAvdeling(Long avdelingsId);
 
@@ -41,11 +41,9 @@ public interface OppgaveRepository {
 
     Reservasjon hentReservasjon(Long oppgaveId);
 
-    void reserverOppgaveFraTidligereReservasjon(Long oppgaveId, Reservasjon tidligereReservasjon);
+    List<OppgaveFiltrering> hentAlleFiltreringer(Long avdelingsId);
 
-    List<OppgaveFiltrering> hentAlleLister(Long avdelingsId);
-
-    OppgaveFiltrering hentListe(Long listeId);
+    OppgaveFiltrering hentFiltrering(Long listeId);
 
     KøSortering hentSorteringForListe(Long listeId);
 

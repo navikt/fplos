@@ -78,31 +78,31 @@ public class StatistikkRepositoryImpl implements StatistikkRepository {
     @Override
     public List hentNyeOgFerdigstilteOppgaver(Long sakslisteId) {
         OppgaveFiltrering oppgaveFiltrering = entityManager.find(OppgaveFiltrering.class, sakslisteId);
-        OppgavespørringDto oppgavespørringDto = new OppgavespørringDto(oppgaveFiltrering);
+        Oppgavespørring oppgavespørring = new Oppgavespørring(oppgaveFiltrering);
 
-        String filtrerBehandlingType = oppgavespørringDto.getBehandlingTyper().isEmpty() ? "" : " o.BEHANDLING_TYPE in ( :behtyper  ) AND ";
-        String filtrerYtelseType = oppgavespørringDto.getYtelseTyper().isEmpty() ? "" : " o.FAGSAK_YTELSE_TYPE in ( :fagsakytelsetype ) AND ";
+        String filtrerBehandlingType = oppgavespørring.getBehandlingTyper().isEmpty() ? "" : " o.BEHANDLING_TYPE in ( :behtyper  ) AND ";
+        String filtrerYtelseType = oppgavespørring.getYtelseTyper().isEmpty() ? "" : " o.FAGSAK_YTELSE_TYPE in ( :fagsakytelsetype ) AND ";
 
         StringBuilder filtrerInkluderAndreKriterier = new StringBuilder();
-        for (AndreKriterierType andreKriterierType : oppgavespørringDto.getInkluderAndreKriterierTyper()) {
+        for (AndreKriterierType andreKriterierType : oppgavespørring.getInkluderAndreKriterierTyper()) {
             filtrerInkluderAndreKriterier.append("EXISTS ( SELECT  oe.OPPGAVE_ID FROM OPPGAVE_EGENSKAP oe WHERE o.ID = oe.OPPGAVE_ID AND oe.aktiv = 'J' AND oe.ANDRE_KRITERIER_TYPE = '" + andreKriterierType.getKode() + "' ) AND ");
         }
 
         StringBuilder filtrerEkskluderAndreKriterier = new StringBuilder();
-        for (AndreKriterierType andreKriterierType : oppgavespørringDto.getEkskluderAndreKriterierTyper()) {
+        for (AndreKriterierType andreKriterierType : oppgavespørring.getEkskluderAndreKriterierTyper()) {
             filtrerEkskluderAndreKriterier.append("NOT EXISTS (select 1 from OPPGAVE_EGENSKAP oen WHERE o.ID = oen.OPPGAVE_ID AND oen.aktiv = 'J' AND oen.ANDRE_KRITERIER_TYPE = '").append(andreKriterierType.getKode()).append("' ) AND ");
         }
 
-        if (!oppgavespørringDto.getBehandlingTyper().isEmpty()) {
+        if (!oppgavespørring.getBehandlingTyper().isEmpty()) {
             filtrerBehandlingType = filtrerBehandlingType
-                    .replace(":behtyper", oppgavespørringDto.getBehandlingTyper().stream()
+                    .replace(":behtyper", oppgavespørring.getBehandlingTyper().stream()
                             .map(BehandlingType::getKode)
                             .collect(Collectors.joining("','", "'", "'")));
         }
 
-        if (!oppgavespørringDto.getYtelseTyper().isEmpty()) {
+        if (!oppgavespørring.getYtelseTyper().isEmpty()) {
             filtrerYtelseType = filtrerYtelseType
-                    .replace(":fagsakytelsetype",  oppgavespørringDto.getYtelseTyper().stream()
+                    .replace(":fagsakytelsetype",  oppgavespørring.getYtelseTyper().stream()
                             .map(FagsakYtelseType::getKode)
                             .collect(Collectors.joining("','", "'", "'")));
         }

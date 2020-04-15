@@ -42,12 +42,12 @@ public class AvdelingslederTjenesteImpl implements AvdelingslederTjeneste {
     @Override
     public List<OppgaveFiltrering> hentOppgaveFiltreringer(String avdelingsEnhet){
         Avdeling avdeling = organisasjonRepository.hentAvdelingFraEnhet(avdelingsEnhet);
-        return oppgaveRepository.hentAlleLister(avdeling.getId());
+        return oppgaveRepository.hentAlleFiltreringer(avdeling.getId());
     }
 
     @Override
     public OppgaveFiltrering hentOppgaveFiltering(Long oppgaveFiltrering){
-        return oppgaveRepository.hentListe(oppgaveFiltrering);
+        return oppgaveRepository.hentFiltrering(oppgaveFiltrering);
     }
 
     @Override
@@ -74,7 +74,7 @@ public class AvdelingslederTjenesteImpl implements AvdelingslederTjeneste {
 
     @Override
     public void endreFiltreringBehandlingType(Long oppgavefiltreringId, BehandlingType behandlingType, boolean checked) {
-        OppgaveFiltrering filtre = oppgaveRepository.hentListe(oppgavefiltreringId);
+        OppgaveFiltrering filtre = oppgaveRepository.hentFiltrering(oppgavefiltreringId);
         if (checked) {
             if(ikkeTilbakekrevingHandling(behandlingType)){
                 sjekkSorteringForTilbakekreving(oppgavefiltreringId);
@@ -93,7 +93,7 @@ public class AvdelingslederTjenesteImpl implements AvdelingslederTjeneste {
 
     private boolean ingenBehandlingsTypeErValgtEtterAtTilbakekrevingErValgtBort(BehandlingType behandlingType, Long oppgavefiltreringId) {
         if(ikkeTilbakekrevingHandling(behandlingType)) return false;
-        OppgaveFiltrering oppgaveListe = oppgaveRepository.hentListe(oppgavefiltreringId);
+        OppgaveFiltrering oppgaveListe = oppgaveRepository.hentFiltrering(oppgavefiltreringId);
         if(oppgaveListe.getFiltreringBehandlingTyper().isEmpty()) return true;
         return false;
     }
@@ -107,7 +107,7 @@ public class AvdelingslederTjenesteImpl implements AvdelingslederTjeneste {
 
     @Override
     public void endreFiltreringYtelseType(Long oppgavefiltreringId, FagsakYtelseType fagsakYtelseType) {
-        OppgaveFiltrering filtre = oppgaveRepository.hentListe(oppgavefiltreringId);
+        OppgaveFiltrering filtre = oppgaveRepository.hentFiltrering(oppgavefiltreringId);
         filtre.getFiltreringYtelseTyper()
                 .forEach(ytelseType -> oppgaveRepository.slettFiltreringYtelseType(oppgavefiltreringId, ytelseType.getFagsakYtelseType()));
         if (fagsakYtelseType != null) {
@@ -118,7 +118,7 @@ public class AvdelingslederTjenesteImpl implements AvdelingslederTjeneste {
 
     @Override
     public void endreFiltreringAndreKriterierType(Long oppgavefiltreringId, AndreKriterierType andreKriterierType, boolean checked, boolean inkluder) {
-        OppgaveFiltrering filtre = oppgaveRepository.hentListe(oppgavefiltreringId);
+        OppgaveFiltrering filtre = oppgaveRepository.hentFiltrering(oppgavefiltreringId);
         if (checked) {
             oppgaveRepository.slettFiltreringAndreKriterierType(oppgavefiltreringId, andreKriterierType);
             oppgaveRepository.lagre(new FiltreringAndreKriterierType(filtre, andreKriterierType, inkluder));
@@ -130,7 +130,7 @@ public class AvdelingslederTjenesteImpl implements AvdelingslederTjeneste {
 
     @Override
     public void leggSaksbehandlerTilListe(Long oppgaveFiltreringId, String saksbehandlerIdent){
-        OppgaveFiltrering oppgaveListe = oppgaveRepository.hentListe(oppgaveFiltreringId);
+        OppgaveFiltrering oppgaveListe = oppgaveRepository.hentFiltrering(oppgaveFiltreringId);
         if (oppgaveListe == null) {
             log.warn(String.format("Fant ikke oppgavefiltreringsliste basert på id %s, saksbehandler %s legges ikke til oppgavefiltrering", oppgaveFiltreringId, saksbehandlerIdent));
             return;
@@ -143,7 +143,7 @@ public class AvdelingslederTjenesteImpl implements AvdelingslederTjeneste {
 
     @Override
     public void fjernSaksbehandlerFraListe(Long oppgaveFiltreringId, String saksbehandlerIdent){
-        OppgaveFiltrering oppgaveListe = oppgaveRepository.hentListe(oppgaveFiltreringId);
+        OppgaveFiltrering oppgaveListe = oppgaveRepository.hentFiltrering(oppgaveFiltreringId);
         if (oppgaveListe == null) {
             log.warn(String.format("Fant ikke oppgavefiltreringsliste basert på id %s, saksbehandler %s fjernes ikke fra oppgavefiltrering", oppgaveFiltreringId, saksbehandlerIdent));
             return;

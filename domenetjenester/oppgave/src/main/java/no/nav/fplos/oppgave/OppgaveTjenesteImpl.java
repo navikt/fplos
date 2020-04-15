@@ -7,7 +7,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -22,7 +21,7 @@ import no.nav.foreldrepenger.loslager.oppgave.ReservasjonEventLogg;
 import no.nav.foreldrepenger.loslager.organisasjon.Avdeling;
 import no.nav.foreldrepenger.loslager.organisasjon.Saksbehandler;
 import no.nav.foreldrepenger.loslager.repository.OppgaveRepository;
-import no.nav.foreldrepenger.loslager.repository.OppgavespørringDto;
+import no.nav.foreldrepenger.loslager.repository.Oppgavespørring;
 import no.nav.foreldrepenger.loslager.repository.OrganisasjonRepository;
 import no.nav.fplos.ansatt.AnsattTjeneste;
 import no.nav.fplos.avdelingsleder.AvdelingslederTjeneste;
@@ -57,11 +56,11 @@ public class OppgaveTjenesteImpl implements OppgaveTjeneste {
     public List<Oppgave> hentOppgaver(Long sakslisteId) {
         log.debug("Henter oppgaver for saksliste : " + sakslisteId);
         try {
-            OppgaveFiltrering oppgaveListe = oppgaveRepository.hentListe(sakslisteId);
-            if (oppgaveListe == null) {
+            OppgaveFiltrering oppgaveFiltrering = oppgaveRepository.hentFiltrering(sakslisteId);
+            if (oppgaveFiltrering == null) {
                 return Collections.emptyList();
             }
-            List<Oppgave> oppgaver = oppgaveRepository.hentOppgaver(new OppgavespørringDto(oppgaveListe));
+            List<Oppgave> oppgaver = oppgaveRepository.hentOppgaver(new Oppgavespørring(oppgaveFiltrering));
             log.debug("Antall oppgaver hentet: " + oppgaver.size());
             return oppgaver;
         } catch (Exception e) {
@@ -162,9 +161,9 @@ public class OppgaveTjenesteImpl implements OppgaveTjeneste {
     public Integer hentAntallOppgaver(Long behandlingsKø, boolean forAvdelingsleder) {
         int antallOppgaver = 0;
         try {
-            OppgaveFiltrering oppgaveFiltrering = oppgaveRepository.hentListe(behandlingsKø);
+            OppgaveFiltrering oppgaveFiltrering = oppgaveRepository.hentFiltrering(behandlingsKø);
             if (oppgaveFiltrering != null) {
-                var queryDto = new OppgavespørringDto(oppgaveFiltrering);
+                var queryDto = new Oppgavespørring(oppgaveFiltrering);
                 queryDto.setForAvdelingsleder(forAvdelingsleder);
                 antallOppgaver = oppgaveRepository.hentAntallOppgaver(queryDto);
             }

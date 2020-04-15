@@ -68,10 +68,10 @@ public class OppgaveRepositoryImpl implements OppgaveRepository {
     }
 
     @Override
-    public int hentAntallOppgaver(OppgavespørringDto oppgavespørringDto) {
+    public int hentAntallOppgaver(Oppgavespørring oppgavespørring) {
         String selection = COUNT_FRA_OPPGAVE;
-        if(oppgavespørringDto.getSortering() != null) {
-            switch (oppgavespørringDto.getSortering().getFeltkategori()) {
+        if(oppgavespørring.getSortering() != null) {
+            switch (oppgavespørring.getSortering().getFeltkategori()) {
                 case KøSortering.FK_TILBAKEKREVING:
                     selection = COUNT_FRA_TILBAKEKREVING_OPPGAVE;
                     break;
@@ -80,22 +80,22 @@ public class OppgaveRepositoryImpl implements OppgaveRepository {
                     break;
             }
         }
-        TypedQuery<Long> oppgaveTypedQuery = lagOppgavespørring(selection, Long.class, oppgavespørringDto);
+        TypedQuery<Long> oppgaveTypedQuery = lagOppgavespørring(selection, Long.class, oppgavespørring);
         return oppgaveTypedQuery.getSingleResult().intValue();
     }
 
     @Override
     public int hentAntallOppgaverForAvdeling(Long avdelingsId) {
-        OppgavespørringDto oppgavespørringDto = new OppgavespørringDto(avdelingsId,KøSortering.BEHANDLINGSFRIST,new ArrayList<>(), new ArrayList<>(),new ArrayList<>(),new ArrayList<>(),false,null,null,null,null);
-        TypedQuery<Long> oppgaveTypedQuery = lagOppgavespørring(COUNT_FRA_OPPGAVE, Long.class, oppgavespørringDto);
+        Oppgavespørring oppgavespørring = new Oppgavespørring(avdelingsId,KøSortering.BEHANDLINGSFRIST,new ArrayList<>(), new ArrayList<>(),new ArrayList<>(),new ArrayList<>(),false,null,null,null,null);
+        TypedQuery<Long> oppgaveTypedQuery = lagOppgavespørring(COUNT_FRA_OPPGAVE, Long.class, oppgavespørring);
         return oppgaveTypedQuery.getSingleResult().intValue();
     }
 
     @Override
-    public List<Oppgave> hentOppgaver(OppgavespørringDto oppgavespørringDto) {
+    public List<Oppgave> hentOppgaver(Oppgavespørring oppgavespørring) {
         String selection = SELECT_FRA_OPPGAVE;
-        if(oppgavespørringDto.getSortering() != null) {
-            switch (oppgavespørringDto.getSortering().getFeltkategori()) {
+        if(oppgavespørring.getSortering() != null) {
+            switch (oppgavespørring.getSortering().getFeltkategori()) {
                 case KøSortering.FK_TILBAKEKREVING:
                     selection = SELECT_FRA_TILBAKEKREVING_OPPGAVE;
                     break;
@@ -104,18 +104,11 @@ public class OppgaveRepositoryImpl implements OppgaveRepository {
                     break;
             }
         }
-        TypedQuery<Oppgave> oppgaveTypedQuery = lagOppgavespørring(selection, Oppgave.class, oppgavespørringDto);
+        TypedQuery<Oppgave> oppgaveTypedQuery = lagOppgavespørring(selection, Oppgave.class, oppgavespørring);
         return oppgaveTypedQuery.getResultList();
     }
 
-//    private <T> CriteriaQuery<T> lagOppgaveSpørring(Class<T> cls, OppgavespørringDto queryDto) {
-//        CriteriaBuilder builder = entityManager.getCriteriaBuilder();
-//        CriteriaQuery<T> cq = builder.createQuery(cls);
-//        Root<T> entityRoot = cq.from(cls);
-//        cq.select(entityRoot);
-//    }
-
-    private <T> TypedQuery<T> lagOppgavespørring(String selection, Class<T> oppgaveClass, OppgavespørringDto queryDto) {
+    private <T> TypedQuery<T> lagOppgavespørring(String selection, Class<T> oppgaveClass, Oppgavespørring queryDto) {
         String filtrerBehandlingType = queryDto.getBehandlingTyper().isEmpty() ? "": " o.behandlingType in :behtyper AND ";
         String filtrerYtelseType = queryDto.getYtelseTyper().isEmpty() ? "": " o.fagsakYtelseType in :fagsakYtelseType AND ";
 
@@ -177,33 +170,33 @@ public class OppgaveRepositoryImpl implements OppgaveRepository {
         return query;
     }
 
-    private String tilBeslutter(OppgavespørringDto dto) {
+    private String tilBeslutter(Oppgavespørring dto) {
         return dto.getForAvdelingsleder() ? ""
                 : "AND NOT EXISTS (select oetilbesl.oppgave from OppgaveEgenskap oetilbesl " +
                 "where oetilbesl.oppgave = o AND oetilbesl.aktiv = true AND oetilbesl.andreKriterierType = :tilbeslutter " +
                 "AND upper(oetilbesl.sisteSaksbehandlerForTotrinn) = upper( :uid ) ) ";
     }
 
-    private String sortering(OppgavespørringDto oppgavespørringDto) {
-        KøSortering sortering = oppgavespørringDto.getSortering();
+    private String sortering(Oppgavespørring oppgavespørring) {
+        KøSortering sortering = oppgavespørring.getSortering();
         if (KøSortering.BEHANDLINGSFRIST.equals(sortering)) {
-            return oppgavespørringDto.isErDynamiskPeriode()
-                    ? filtrerDynamisk(BEHANDLINGSFRIST, oppgavespørringDto.getFiltrerFra(), oppgavespørringDto.getFiltrerTil())
-                    : filtrerStatisk(BEHANDLINGSFRIST, oppgavespørringDto.getFiltrerFomDato(), oppgavespørringDto.getFiltrerTomDato());
+            return oppgavespørring.isErDynamiskPeriode()
+                    ? filtrerDynamisk(BEHANDLINGSFRIST, oppgavespørring.getFiltrerFra(), oppgavespørring.getFiltrerTil())
+                    : filtrerStatisk(BEHANDLINGSFRIST, oppgavespørring.getFiltrerFomDato(), oppgavespørring.getFiltrerTomDato());
         } else if (KøSortering.OPPRETT_BEHANDLING.equals(sortering)) {
-            return oppgavespørringDto.isErDynamiskPeriode()
-                    ? filtrerDynamisk(BEHANDLINGOPPRETTET, oppgavespørringDto.getFiltrerFra(), oppgavespørringDto.getFiltrerTil())
-                    : filtrerStatisk(BEHANDLINGOPPRETTET, oppgavespørringDto.getFiltrerFomDato(), oppgavespørringDto.getFiltrerTomDato());
+            return oppgavespørring.isErDynamiskPeriode()
+                    ? filtrerDynamisk(BEHANDLINGOPPRETTET, oppgavespørring.getFiltrerFra(), oppgavespørring.getFiltrerTil())
+                    : filtrerStatisk(BEHANDLINGOPPRETTET, oppgavespørring.getFiltrerFomDato(), oppgavespørring.getFiltrerTomDato());
         } else if (KøSortering.FORSTE_STONADSDAG.equals(sortering)) {
-            return oppgavespørringDto.isErDynamiskPeriode()
-                    ? filtrerDynamisk(FORSTE_STONADSDAG, oppgavespørringDto.getFiltrerFra(), oppgavespørringDto.getFiltrerTil())
-                    : filtrerStatisk(FORSTE_STONADSDAG, oppgavespørringDto.getFiltrerFomDato(), oppgavespørringDto.getFiltrerTomDato());
+            return oppgavespørring.isErDynamiskPeriode()
+                    ? filtrerDynamisk(FORSTE_STONADSDAG, oppgavespørring.getFiltrerFra(), oppgavespørring.getFiltrerTil())
+                    : filtrerStatisk(FORSTE_STONADSDAG, oppgavespørring.getFiltrerFomDato(), oppgavespørring.getFiltrerTomDato());
         } else if (KøSortering.BELOP.equals(sortering)) {
-            return filtrerNumerisk(BELOP, oppgavespørringDto.getFiltrerFra(), oppgavespørringDto.getFiltrerTil());
+            return filtrerNumerisk(BELOP, oppgavespørring.getFiltrerFra(), oppgavespørring.getFiltrerTil());
         } else if (KøSortering.FEILUTBETALINGSTART.equals(sortering)) {
-            return oppgavespørringDto.isErDynamiskPeriode()
-                    ? filtrerDynamisk(FEILUTBETALINGSTART, oppgavespørringDto.getFiltrerFra(), oppgavespørringDto.getFiltrerTil())
-                    : filtrerStatisk(FEILUTBETALINGSTART, oppgavespørringDto.getFiltrerFomDato(), oppgavespørringDto.getFiltrerTomDato());
+            return oppgavespørring.isErDynamiskPeriode()
+                    ? filtrerDynamisk(FEILUTBETALINGSTART, oppgavespørring.getFiltrerFra(), oppgavespørring.getFiltrerTil())
+                    : filtrerStatisk(FEILUTBETALINGSTART, oppgavespørring.getFiltrerFomDato(), oppgavespørring.getFiltrerTomDato());
         } else {
             return SORTERING + BEHANDLINGOPPRETTET;
         }
@@ -301,16 +294,7 @@ public class OppgaveRepositoryImpl implements OppgaveRepository {
     }
 
     @Override
-    public void reserverOppgaveFraTidligereReservasjon(Long oppgaveId, Reservasjon tidligereReservasjon){
-        Reservasjon reservasjon = hentReservasjon(oppgaveId);
-        reservasjon.reserverOppgaveFraTidligereReservasjon(tidligereReservasjon);
-        lagre(reservasjon);
-        refresh(reservasjon.getOppgave());
-        lagre(new ReservasjonEventLogg(reservasjon));
-    }
-
-    @Override
-    public List<OppgaveFiltrering> hentAlleLister(Long avdelingsId) {
+    public List<OppgaveFiltrering> hentAlleFiltreringer(Long avdelingsId) {
         TypedQuery<OppgaveFiltrering> listeTypedQuery = entityManager
                 .createQuery("FROM OppgaveFiltrering l WHERE l.avdeling.id = :id " +
                         OPPGAVEFILTRERING_SORTERING_NAVN, OppgaveFiltrering.class)
@@ -319,7 +303,7 @@ public class OppgaveRepositoryImpl implements OppgaveRepository {
     }
 
     @Override
-    public OppgaveFiltrering hentListe(Long listeId) {
+    public OppgaveFiltrering hentFiltrering(Long listeId) {
         TypedQuery<OppgaveFiltrering> listeTypedQuery = entityManager
                 .createQuery("FROM OppgaveFiltrering l WHERE l.id = :id " +
                         OPPGAVEFILTRERING_SORTERING_NAVN, OppgaveFiltrering.class)

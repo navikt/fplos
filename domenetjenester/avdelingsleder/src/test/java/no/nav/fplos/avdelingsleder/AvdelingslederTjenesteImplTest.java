@@ -38,7 +38,7 @@ public class AvdelingslederTjenesteImplTest {
 
     @Before
     public void setup(){
-        oppgaveRepository.hentAlleLister(AVDELING_DRAMMEN).forEach(liste -> entityManager.remove(liste));
+        oppgaveRepository.hentAlleFiltreringer(AVDELING_DRAMMEN).forEach(liste -> entityManager.remove(liste));
         entityManager.flush();
         List<Avdeling> avdelings = repoRule.getRepository().hentAlle(Avdeling.class);
         avdelingDrammen = avdelings.stream().filter(avdeling -> AVDELING_DRAMMEN_ENHET.equals(avdeling.getAvdelingEnhet())).findFirst().orElseThrow();
@@ -49,7 +49,7 @@ public class AvdelingslederTjenesteImplTest {
     @Test
     public void testLagNyListe(){
         avdelingslederTjeneste.lagNyOppgaveFiltrering(AVDELING_DRAMMEN_ENHET);
-        List<OppgaveFiltrering> oppgaveFiltreringer = oppgaveRepository.hentAlleLister(AVDELING_DRAMMEN);
+        List<OppgaveFiltrering> oppgaveFiltreringer = oppgaveRepository.hentAlleFiltreringer(AVDELING_DRAMMEN);
         assertThat(oppgaveFiltreringer).isNotNull();
         assertThat(oppgaveFiltreringer.get(0).getId()).isNotNull();
         assertThat(oppgaveFiltreringer.get(0).getNavn()).isEqualTo("Ny liste");
@@ -71,7 +71,7 @@ public class AvdelingslederTjenesteImplTest {
         persistAndFlush(liste);
         avdelingslederTjeneste.slettOppgaveFiltrering(liste.getId());
         entityManager.flush();
-        assertThat(oppgaveRepository.hentAlleLister(AVDELING_DRAMMEN)).isEmpty();
+        assertThat(oppgaveRepository.hentAlleFiltreringer(AVDELING_DRAMMEN)).isEmpty();
     }
 
     @Test

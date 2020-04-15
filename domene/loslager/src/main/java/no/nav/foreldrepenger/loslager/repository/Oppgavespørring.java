@@ -1,5 +1,9 @@
 package no.nav.foreldrepenger.loslager.repository;
 
+import java.time.LocalDate;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import no.nav.foreldrepenger.loslager.oppgave.AndreKriterierType;
 import no.nav.foreldrepenger.loslager.oppgave.BehandlingType;
 import no.nav.foreldrepenger.loslager.oppgave.FagsakYtelseType;
@@ -9,11 +13,7 @@ import no.nav.foreldrepenger.loslager.oppgave.FiltreringYtelseType;
 import no.nav.foreldrepenger.loslager.oppgave.KøSortering;
 import no.nav.foreldrepenger.loslager.oppgave.OppgaveFiltrering;
 
-import java.time.LocalDate;
-import java.util.List;
-import java.util.stream.Collectors;
-
-public class OppgavespørringDto {
+public class Oppgavespørring {
     private KøSortering sortering;
     private Long id;
     private List<BehandlingType> behandlingTyper;
@@ -29,7 +29,7 @@ public class OppgavespørringDto {
     private Long filtrerTomDager;
     private boolean forAvdelingsleder;
 
-    public OppgavespørringDto(OppgaveFiltrering oppgaveFiltrering){
+    public Oppgavespørring(OppgaveFiltrering oppgaveFiltrering){
          sortering = oppgaveFiltrering.getSortering();
          id = oppgaveFiltrering.getAvdeling().getId();
          behandlingTyper = behandlingTypeFra(oppgaveFiltrering);
@@ -43,10 +43,10 @@ public class OppgavespørringDto {
          filtrerTil = oppgaveFiltrering.getTil();
     }
 
-    public OppgavespørringDto(Long id, KøSortering sortering, List<BehandlingType> behandlingTyper,
-                              List<FagsakYtelseType> ytelseTyper, List<AndreKriterierType> inkluderAndreKriterierTyper,
-                              List<AndreKriterierType> ekskluderAndreKriterierTyper, boolean erDynamiskPeriode,
-                              LocalDate filtrerFomDato, LocalDate filtrerTomDato, Long filtrerFra, Long filtrerTil) {
+    public Oppgavespørring(Long id, KøSortering sortering, List<BehandlingType> behandlingTyper,
+                           List<FagsakYtelseType> ytelseTyper, List<AndreKriterierType> inkluderAndreKriterierTyper,
+                           List<AndreKriterierType> ekskluderAndreKriterierTyper, boolean erDynamiskPeriode,
+                           LocalDate filtrerFomDato, LocalDate filtrerTomDato, Long filtrerFra, Long filtrerTil) {
         this.sortering = sortering;
         this.id = id;
         this.behandlingTyper = behandlingTyper;
