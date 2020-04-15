@@ -65,7 +65,7 @@
         <flyway.version>4.2.0</flyway.version>
         <ojdbc.version>19.3.0.0</ojdbc.version>
         <!--abac-attribute-constants.version>2.0.0</abac-attribute-constants.version-->
-        <kafka.version>2.4.1</kafka.version>
+        <kafka.version>2.5.0</kafka.version>
 
         <spring.version>5.2.0.RELEASE</spring.version>
         <spring-boot.version>2.2.1.RELEASE</spring-boot.version>
