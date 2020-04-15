@@ -277,6 +277,21 @@ public class ForeldrepengerEventHåndtererTest {
     }
 
     @Test
+    public void nårAlleredePåVentSkalSenerePåVentAksjonspunktIkkeGiDuplikat() {
+        var event = aksjonspunkt();
+        event.addOpprettet(1);
+        behandle(event);
+        verifiserEnAktivOppgave();
+
+        event.addOpprettet(7001); // legg til manuelt satt på vent-aksjonspunkt
+        behandle(event);
+        verifiserOppgaveEventLoggTilsvarer(List.of(OppgaveEventType.OPPRETTET, OppgaveEventType.MANU_VENT));
+
+        behandle(event); // send ny på vent-aksjonspunkt
+        verifiserOppgaveEventLoggTilsvarer(List.of(OppgaveEventType.OPPRETTET, OppgaveEventType.MANU_VENT));
+    }
+
+    @Test
     public void flyttingAvBehandlendeEnhetTest(){
         when(fpsak.getBehandling(any(BehandlingId.class))).thenReturn(behandlingDtoFra(aksjonspunktKoderSkalHaOppgaveDto));
         handler.håndterEvent(eventDrammenFra(aksjonspunktKoderSkalHaOppgave));
