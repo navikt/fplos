@@ -6,9 +6,8 @@ import static no.nav.vedtak.sikkerhet.abac.BeskyttetRessursResourceAttributt.APP
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.enterprise.context.RequestScoped;
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import javax.transaction.Transactional;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -19,8 +18,7 @@ import no.nav.foreldrepenger.los.web.app.tjenester.kodeverk.app.HentKodeverkTjen
 import no.nav.vedtak.sikkerhet.abac.BeskyttetRessurs;
 
 @Path("/kodeverk")
-@RequestScoped
-@Transactional
+@ApplicationScoped
 public class KodeverkRestTjeneste {
 
     private HentKodeverkTjeneste hentKodeverkTjeneste; // NOSONAR

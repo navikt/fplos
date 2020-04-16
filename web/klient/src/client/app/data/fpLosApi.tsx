@@ -10,7 +10,6 @@ const fpLosApiKeys = {
   BEHANDLEDE_OPPGAVER: 'BEHANDLEDE_OPPGAVER',
   FPSAK_URL: 'FPSAK_URL',
   FPTILBAKE_URL: 'FPTILBAKE_URL',
-  FEATURE_TOGGLES: 'FEATURE_TOGGLES',
   SAKSLISTE: 'SAKSLISTE',
   RESERVER_OPPGAVE: 'RESERVER_OPPGAVE',
   HENT_RESERVASJONSSTATUS: 'HENT_RESERVASJONSSTATUS',
@@ -122,7 +121,6 @@ const endpoints = new RestApiConfigBuilder()
   /* /api/konfig */
   .withGet('/api/konfig/fpsak-url', fpLosApiKeys.FPSAK_URL)
   .withGet('/api/konfig/fptilbake-url', fpLosApiKeys.FPTILBAKE_URL)
-  .withGet('/api/konfig/feature-toggles', fpLosApiKeys.FEATURE_TOGGLES)
 
   /* /api/kodeverk */
   .withGet('/api/kodeverk', fpLosApiKeys.KODEVERK)

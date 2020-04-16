@@ -8,7 +8,7 @@ import java.nio.charset.Charset;
 import java.util.List;
 import java.util.Map;
 
-import javax.enterprise.context.RequestScoped;
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -22,7 +22,7 @@ import com.fasterxml.jackson.databind.ObjectWriter;
 
 import no.nav.foreldrepenger.los.web.app.selftest.checks.ExtHealthCheck;
 
-@RequestScoped
+@ApplicationScoped
 public class SelftestService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SelftestService.class);

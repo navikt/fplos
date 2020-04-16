@@ -1,13 +1,15 @@
 package no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.oppgave.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import no.nav.vedtak.sikkerhet.abac.AbacDataAttributter;
-import no.nav.vedtak.sikkerhet.abac.AbacDto;
+import java.util.Objects;
 
 import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotNull;
-import java.util.Objects;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import no.nav.vedtak.sikkerhet.abac.AbacDataAttributter;
+import no.nav.vedtak.sikkerhet.abac.AbacDto;
 
 public class OppgaveIdDto implements AbacDto {
 
@@ -36,8 +38,8 @@ public class OppgaveIdDto implements AbacDto {
 
     @Override
     public String toString() {
-        return "FeatureToggleIdDto{" +
-                "oppgaveId='" + oppgaveId + '\'' +
+        return "OppgaveIdDto{" +
+                "oppgaveId=" + oppgaveId +
                 '}';
     }
 

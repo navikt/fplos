@@ -1,13 +1,13 @@
 package no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.oppgave.dto;
 
-import no.nav.vedtak.sikkerhet.abac.AbacDataAttributter;
-import no.nav.vedtak.sikkerhet.abac.AbacDto;
-import no.nav.vedtak.util.InputValideringRegex;
-
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
+
+import no.nav.vedtak.sikkerhet.abac.AbacDataAttributter;
+import no.nav.vedtak.sikkerhet.abac.AbacDto;
+import no.nav.vedtak.util.InputValideringRegex;
 
 public class OppgaveOpphevingDto implements AbacDto {
 
@@ -38,9 +38,9 @@ public class OppgaveOpphevingDto implements AbacDto {
 
     @Override
     public String toString() {
-        return "FeatureToggleIdDto{" +
-                "oppgaveId='" + oppgaveId + '\'' +
-                "begrunnelse='" + begrunnelse + '\'' +
+        return "OppgaveOpphevingDto{" +
+                "oppgaveId=" + oppgaveId +
+                ", begrunnelse='" + begrunnelse + '\'' +
                 '}';
     }
 

@@ -13,7 +13,6 @@ type TsProps = Readonly<{
   fetchKodeverk: () => void;
   fetchFpsakUrl: () => void;
   fetchFptilbakeUrl: () => void;
-  fetchFeatureToggles: () => void;
 }>
 
 class AppConfigResolver extends Component<TsProps> {
@@ -24,7 +23,6 @@ class AppConfigResolver extends Component<TsProps> {
     fetchKodeverk: PropTypes.func.isRequired,
     fetchFpsakUrl: PropTypes.func.isRequired,
     fetchFptilbakeUrl: PropTypes.func.isRequired,
-    fetchFeatureToggles: PropTypes.func.isRequired,
   };
 
   constructor(props: TsProps) {
@@ -38,14 +36,12 @@ class AppConfigResolver extends Component<TsProps> {
       fetchKodeverk,
       fetchFpsakUrl,
       fetchFptilbakeUrl,
-      fetchFeatureToggles,
     } = this.props;
 
     fetchNavAnsatt();
     fetchKodeverk();
     fetchFpsakUrl();
     fetchFptilbakeUrl();
-    fetchFeatureToggles();
   }
 
   render = () => {
@@ -63,7 +59,6 @@ const mapStateToProps = (state: any) => {
     fpLosApi.KODEVERK.getRestApiFinished()(state),
     fpLosApi.FPSAK_URL.getRestApiFinished()(state),
     fpLosApi.FPTILBAKE_URL.getRestApiFinished()(state),
-    fpLosApi.FEATURE_TOGGLES.getRestApiFinished()(state),
   ];
   return {
     finishedLoadingBlockers: blockers.every(finished => finished),
@@ -75,7 +70,6 @@ const mapDispatchToProps = (dispatch: Dispatch) => bindActionCreators({
   fetchKodeverk: fpLosApi.KODEVERK.makeRestApiRequest(),
   fetchFpsakUrl: fpLosApi.FPSAK_URL.makeRestApiRequest(),
   fetchFptilbakeUrl: fpLosApi.FPTILBAKE_URL.makeRestApiRequest(),
-  fetchFeatureToggles: fpLosApi.FEATURE_TOGGLES.makeRestApiRequest(),
 }, dispatch);
 
 export default connect(mapStateToProps, mapDispatchToProps)(AppConfigResolver);

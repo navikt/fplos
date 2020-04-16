@@ -3,7 +3,7 @@ package no.nav.foreldrepenger.los.web.app.tjenester;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static javax.ws.rs.core.MediaType.TEXT_HTML;
 
-import javax.enterprise.context.RequestScoped;
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.HeaderParam;
@@ -16,7 +16,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import no.nav.foreldrepenger.los.web.app.selftest.SelftestService;
 
 @Path("/selftest")
-@RequestScoped
+@ApplicationScoped
 public class SelftestRestTjeneste {
 
     private SelftestService selftestService;

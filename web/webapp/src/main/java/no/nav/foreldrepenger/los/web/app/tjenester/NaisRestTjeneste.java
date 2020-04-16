@@ -1,6 +1,6 @@
 package no.nav.foreldrepenger.los.web.app.tjenester;
 
-import javax.enterprise.context.RequestScoped;
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -10,7 +10,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import no.nav.foreldrepenger.los.web.app.selftest.SelftestService;
 
 @Path("/health")
-@RequestScoped
+@ApplicationScoped
 public class NaisRestTjeneste {
 
     private static final String RESPONSE_CACHE_KEY = "Cache-Control";

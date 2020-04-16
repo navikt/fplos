@@ -1,12 +1,12 @@
 package no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.dto;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+
 import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.saksliste.FplosAbacAttributtType;
 import no.nav.foreldrepenger.los.web.app.tjenester.felles.dto.SaksbehandlerBrukerIdentDto;
 import no.nav.vedtak.sikkerhet.abac.AbacDataAttributter;
 import no.nav.vedtak.sikkerhet.abac.AbacDto;
-
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
 
 public class SaksbehandlerOgAvdelingDto implements AbacDto {
 
@@ -34,9 +34,9 @@ public class SaksbehandlerOgAvdelingDto implements AbacDto {
 
     @Override
     public String toString() {
-        return "FeatureToggleIdDto{" +
-                "brukerIdent='" + brukerIdent + '\'' +
-                "avdelingEnhet='" + avdelingEnhet + '\'' +
+        return "SaksbehandlerOgAvdelingDto{" +
+                "brukerIdent=" + brukerIdent +
+                ", avdelingEnhet=" + avdelingEnhet +
                 '}';
     }
 
