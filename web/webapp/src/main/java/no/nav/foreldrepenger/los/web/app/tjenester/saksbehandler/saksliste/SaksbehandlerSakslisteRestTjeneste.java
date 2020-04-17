@@ -6,7 +6,7 @@ import static no.nav.vedtak.sikkerhet.abac.BeskyttetRessursResourceAttributt.FAG
 import java.util.List;
 import java.util.stream.Collectors;
 
-import javax.enterprise.context.RequestScoped;
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
@@ -27,7 +27,7 @@ import no.nav.fplos.oppgave.SaksbehandlerinformasjonDto;
 import no.nav.vedtak.sikkerhet.abac.BeskyttetRessurs;
 
 @Path("/saksbehandler/saksliste")
-@RequestScoped
+@ApplicationScoped
 @Transactional
 public class SaksbehandlerSakslisteRestTjeneste {
 

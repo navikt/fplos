@@ -2,7 +2,7 @@ package no.nav.foreldrepenger.los.web.local.development;
 
 import java.net.URI;
 
-import javax.enterprise.context.RequestScoped;
+import javax.enterprise.context.ApplicationScoped;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.Response;
@@ -16,7 +16,7 @@ import io.swagger.v3.oas.annotations.Operation;
  * Se utviklerhåndbok for hvordan dette fungerer.
  */
 @Path("/login")
-@RequestScoped
+@ApplicationScoped
 public class JettyLoginResource {
 
     @GET

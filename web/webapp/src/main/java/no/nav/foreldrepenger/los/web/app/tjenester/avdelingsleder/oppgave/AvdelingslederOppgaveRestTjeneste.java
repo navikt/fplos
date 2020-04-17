@@ -1,12 +1,9 @@
 package no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.oppgave;
 
-import io.swagger.v3.oas.annotations.Operation;
-import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.dto.AvdelingEnhetDto;
-import no.nav.foreldrepenger.los.web.app.tjenester.felles.dto.SakslisteIdDto;
-import no.nav.fplos.oppgave.OppgaveTjeneste;
-import no.nav.vedtak.sikkerhet.abac.BeskyttetRessurs;
+import static no.nav.vedtak.sikkerhet.abac.BeskyttetRessursActionAttributt.READ;
+import static no.nav.vedtak.sikkerhet.abac.BeskyttetRessursResourceAttributt.OPPGAVESTYRING_AVDELINGENHET;
 
-import javax.enterprise.context.RequestScoped;
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
@@ -16,11 +13,14 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 
-import static no.nav.vedtak.sikkerhet.abac.BeskyttetRessursActionAttributt.READ;
-import static no.nav.vedtak.sikkerhet.abac.BeskyttetRessursResourceAttributt.OPPGAVESTYRING_AVDELINGENHET;
+import io.swagger.v3.oas.annotations.Operation;
+import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.dto.AvdelingEnhetDto;
+import no.nav.foreldrepenger.los.web.app.tjenester.felles.dto.SakslisteIdDto;
+import no.nav.fplos.oppgave.OppgaveTjeneste;
+import no.nav.vedtak.sikkerhet.abac.BeskyttetRessurs;
 
 @Path("avdelingsleder/oppgaver")
-@RequestScoped
+@ApplicationScoped
 @Transactional
 public class AvdelingslederOppgaveRestTjeneste {
 

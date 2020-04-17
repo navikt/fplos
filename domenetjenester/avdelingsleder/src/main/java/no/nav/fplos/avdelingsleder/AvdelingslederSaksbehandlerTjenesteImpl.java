@@ -1,5 +1,14 @@
 package no.nav.fplos.avdelingsleder;
 
+import java.util.List;
+import java.util.Optional;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import no.nav.foreldrepenger.loslager.aktør.OrganisasjonsEnhet;
 import no.nav.foreldrepenger.loslager.oppgave.OppgaveFiltrering;
 import no.nav.foreldrepenger.loslager.organisasjon.Avdeling;
@@ -9,19 +18,11 @@ import no.nav.foreldrepenger.loslager.repository.OrganisasjonRepository;
 import no.nav.fplos.domene.organisasjonsinformasjon.organisasjonressursenhet.OrganisasjonRessursEnhetTjeneste;
 import no.nav.vedtak.felles.integrasjon.ldap.LdapBruker;
 import no.nav.vedtak.felles.integrasjon.ldap.LdapBrukeroppslag;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-import java.util.List;
-import java.util.Optional;
 
 @ApplicationScoped
 public class AvdelingslederSaksbehandlerTjenesteImpl implements AvdelingslederSaksbehandlerTjeneste {
 
     private static final Logger log = LoggerFactory.getLogger(AvdelingslederSaksbehandlerTjeneste.class);
-    private static final String LDAP = "LDAP";
 
     private OrganisasjonRepository organisasjonRepository;
     private OrganisasjonRessursEnhetTjeneste organisasjonRessursEnhetTjeneste;

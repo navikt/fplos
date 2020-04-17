@@ -5,9 +5,8 @@ import static no.nav.vedtak.sikkerhet.abac.BeskyttetRessursResourceAttributt.APP
 
 import java.util.NoSuchElementException;
 
-import javax.enterprise.context.RequestScoped;
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import javax.transaction.Transactional;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.GET;
@@ -22,11 +21,10 @@ import no.nav.fplos.foreldrepengerbehandling.ForeldrepengerBehandlingRestKlient;
 import no.nav.vedtak.sikkerhet.abac.BeskyttetRessurs;
 
 @Path("/fpsak")
-@RequestScoped
-@Transactional
+@ApplicationScoped
 public class FpsakRestTjeneste {
 
-    ForeldrepengerBehandlingRestKlient foreldrepengerBehandlingRestKlient;
+    private ForeldrepengerBehandlingRestKlient foreldrepengerBehandlingRestKlient;
 
     @Inject
     public FpsakRestTjeneste(ForeldrepengerBehandlingRestKlient foreldrepengerBehandlingRestKlient) {

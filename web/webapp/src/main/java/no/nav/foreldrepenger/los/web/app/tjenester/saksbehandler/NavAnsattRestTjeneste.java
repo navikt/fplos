@@ -5,7 +5,7 @@ import static no.nav.vedtak.sikkerhet.abac.BeskyttetRessursResourceAttributt.APP
 
 import java.util.Collection;
 
-import javax.enterprise.context.RequestScoped;
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 import javax.ws.rs.GET;
@@ -23,7 +23,7 @@ import no.nav.vedtak.sikkerhet.abac.BeskyttetRessurs;
 import no.nav.vedtak.sikkerhet.context.SubjectHandler;
 
 @Path("/saksbehandler")
-@RequestScoped
+@ApplicationScoped
 @Transactional
 public class NavAnsattRestTjeneste {
     private String gruppenavnSaksbehandler;
