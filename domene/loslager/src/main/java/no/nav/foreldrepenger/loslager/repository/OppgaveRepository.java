@@ -27,6 +27,8 @@ public interface OppgaveRepository {
 
     List<Oppgave> hentOppgaver(Oppgavespørring oppgavespørring);
 
+    List<Oppgave> hentOppgaver(Oppgavespørring oppgavespørring, int maksAntall);
+
     int hentAntallOppgaver(Oppgavespørring oppgavespørring);
 
     int hentAntallOppgaverForAvdeling(Long avdelingsId);
@@ -34,8 +36,6 @@ public interface OppgaveRepository {
     List<Reservasjon> hentReservasjonerTilknyttetAktiveOppgaver(String uid);
 
     List<Reservasjon> hentAlleReservasjonerForAvdeling(String avdelingEnhet);
-
-    List<Oppgave> hentOppgaverForSaksnummer(Long fagsakSaksnummer);
 
     List<Oppgave> hentAktiveOppgaverForSaksnummer(Collection<Long> fagsakSaksnummerListe);
 

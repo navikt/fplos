@@ -36,10 +36,10 @@ public class OppgaveDto {
     }
 
     public OppgaveDto(Oppgave oppgave, TpsPersonDto personDto, String flyttetAvNavn) {
-        this(oppgave, personDto, null, flyttetAvNavn);
+        this(oppgave, personDto, flyttetAvNavn, null);
     }
 
-    public OppgaveDto(Oppgave oppgave, TpsPersonDto personDto, String annenSaksbehandlernavn, String flyttetAvNavn){
+    public OppgaveDto(Oppgave oppgave, TpsPersonDto personDto, String flyttetAvNavn, String annenSaksbehandlernavn){
         leggTilOppgaveInformasjon(oppgave, annenSaksbehandlernavn, flyttetAvNavn);
         leggTilPersonInformasjon(personDto);
     }

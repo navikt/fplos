@@ -54,29 +54,24 @@ public class OppgaveTjenesteImpl implements OppgaveTjeneste {
 
     @Override
     public List<Oppgave> hentOppgaver(Long sakslisteId) {
+        return hentOppgaver(sakslisteId, 0);
+    }
+
+    @Override
+    public List<Oppgave> hentOppgaver(Long sakslisteId, int maksAntall) {
         log.debug("Henter oppgaver for saksliste : " + sakslisteId);
         try {
             OppgaveFiltrering oppgaveFiltrering = oppgaveRepository.hentFiltrering(sakslisteId);
             if (oppgaveFiltrering == null) {
                 return Collections.emptyList();
             }
-            List<Oppgave> oppgaver = oppgaveRepository.hentOppgaver(new Oppgavespørring(oppgaveFiltrering));
+            List<Oppgave> oppgaver = oppgaveRepository.hentOppgaver(new Oppgavespørring(oppgaveFiltrering), maksAntall);
             log.debug("Antall oppgaver hentet: " + oppgaver.size());
             return oppgaver;
         } catch (Exception e) {
             log.error("Henting av oppgave feilet, returnerer en tom oppgaveliste", e);
             return Collections.emptyList();
         }
-    }
-
-    @Override
-    public List<Oppgave> hentNesteOppgaver(Long sakslisteId) {
-        return hentOppgaver(sakslisteId);
-    }
-
-    @Override
-    public List<Oppgave> hentOppgaverForSaksnummer(Long fagsakSaksnummer) {
-        return oppgaveRepository.hentOppgaverForSaksnummer(fagsakSaksnummer);
     }
 
     @Override

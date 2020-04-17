@@ -106,7 +106,7 @@ public class OppgaveEgenskapHandlerTest {
     }
 
     private Long oppgaveId(Long saksnummer) {
-        return oppgaveRepository.hentOppgaverForSaksnummer(saksnummer).stream()
+        return oppgaveRepository.hentAktiveOppgaverForSaksnummer(List.of(saksnummer)).stream()
                 .map(Oppgave::getId)
                 .findFirst()
                 .orElseThrow();

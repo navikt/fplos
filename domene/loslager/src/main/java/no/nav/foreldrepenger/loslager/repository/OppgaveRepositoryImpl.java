@@ -93,6 +93,11 @@ public class OppgaveRepositoryImpl implements OppgaveRepository {
 
     @Override
     public List<Oppgave> hentOppgaver(Oppgavespørring oppgavespørring) {
+        return hentOppgaver(oppgavespørring, 0);
+    }
+
+    @Override
+    public List<Oppgave> hentOppgaver(Oppgavespørring oppgavespørring, int maksAntall) {
         String selection = SELECT_FRA_OPPGAVE;
         if(oppgavespørring.getSortering() != null) {
             switch (oppgavespørring.getSortering().getFeltkategori()) {
@@ -105,6 +110,9 @@ public class OppgaveRepositoryImpl implements OppgaveRepository {
             }
         }
         TypedQuery<Oppgave> oppgaveTypedQuery = lagOppgavespørring(selection, Oppgave.class, oppgavespørring);
+        if (maksAntall > 0) {
+            oppgaveTypedQuery.setMaxResults(maksAntall);
+        }
         return oppgaveTypedQuery.getResultList();
     }
 
@@ -262,15 +270,6 @@ public class OppgaveRepositoryImpl implements OppgaveRepository {
                 .setParameter("naa", LocalDateTime.now())
                 .setParameter("behandlendeEnhet" ,avdelingEnhet);
         return listeTypedQuery.getResultList();
-    }
-
-    @Override
-    public List<Oppgave> hentOppgaverForSaksnummer(Long fagsakSaksnummer) {
-        return entityManager.createQuery(SELECT_FRA_OPPGAVE +
-                "WHERE o.fagsakSaksnummer = :fagsakSaksnummer " +
-                "ORDER BY o.id desc ", Oppgave.class)
-                .setParameter("fagsakSaksnummer", fagsakSaksnummer)
-                .getResultList();
     }
 
     @Override
