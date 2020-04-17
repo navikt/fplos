@@ -3,9 +3,6 @@ package no.nav.foreldrepenger.los.web.app.tjenester.konfig;
 import static no.nav.vedtak.sikkerhet.abac.BeskyttetRessursActionAttributt.READ;
 import static no.nav.vedtak.sikkerhet.abac.BeskyttetRessursResourceAttributt.APPLIKASJON;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.ws.rs.GET;
@@ -52,18 +49,6 @@ public class KonfigRestTjeneste {
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
     public Konfig hentFptilbakeUrl() {
         return new Konfig(fptilbakeFrontendUrl);
-    }
-
-    @GET
-    @Path("/feature-toggles")
-    @Produces("application/json")
-    @Operation(description = "Henter alle feature toggles som skal brukes i klient.", tags = "Konfigurasjon")
-    @BeskyttetRessurs(action = READ, ressurs = APPLIKASJON, sporingslogg = false)
-    @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
-    public Map<String, Boolean> getFeatureToggles() {
-        //FIXME Hent fra Unleash
-        Map<String, Boolean> map = new HashMap<>();
-        return map;
     }
 
     public static class Konfig {
