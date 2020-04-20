@@ -1,20 +1,9 @@
 package no.nav.foreldrepenger.web.app.tjenester.fagsak.app;
 
-import no.nav.foreldrepenger.domene.typer.AktørId;
-import no.nav.foreldrepenger.domene.typer.PersonIdent;
-import no.nav.foreldrepenger.los.web.app.tjenester.fagsak.app.FagsakApplikasjonTjeneste;
-import no.nav.foreldrepenger.los.web.app.tjenester.fagsak.app.FagsakApplikasjonTjenesteImpl;
-import no.nav.foreldrepenger.loslager.aktør.TpsPersonDto;
-import no.nav.foreldrepenger.loslager.oppgave.FagsakStatus;
-import no.nav.foreldrepenger.loslager.oppgave.FagsakYtelseType;
-import no.nav.fplos.ansatt.AnsattTjeneste;
-import no.nav.fplos.foreldrepengerbehandling.ForeldrepengerBehandlingRestKlient;
-import no.nav.fplos.foreldrepengerbehandling.dto.fagsak.FagsakDto;
-import no.nav.fplos.foreldrepengerbehandling.dto.fagsak.PersonDto;
-import no.nav.fplos.oppgave.OppgaveTjeneste;
-import no.nav.fplos.person.api.TpsTjeneste;
-import org.junit.Before;
-import org.junit.Test;
+import static java.lang.String.valueOf;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -24,10 +13,21 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import static java.lang.String.valueOf;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import org.junit.Before;
+import org.junit.Test;
+
+import no.nav.foreldrepenger.domene.typer.AktørId;
+import no.nav.foreldrepenger.domene.typer.PersonIdent;
+import no.nav.foreldrepenger.los.web.app.tjenester.fagsak.app.FagsakApplikasjonTjeneste;
+import no.nav.foreldrepenger.loslager.aktør.TpsPersonDto;
+import no.nav.foreldrepenger.loslager.oppgave.FagsakStatus;
+import no.nav.foreldrepenger.loslager.oppgave.FagsakYtelseType;
+import no.nav.fplos.ansatt.AnsattTjeneste;
+import no.nav.fplos.foreldrepengerbehandling.ForeldrepengerBehandlingRestKlient;
+import no.nav.fplos.foreldrepengerbehandling.dto.fagsak.FagsakDto;
+import no.nav.fplos.foreldrepengerbehandling.dto.fagsak.PersonDto;
+import no.nav.fplos.oppgave.OppgaveTjeneste;
+import no.nav.fplos.person.api.TpsTjeneste;
 
 @SuppressWarnings("deprecation")
 public class FagsakApplikasjonTjenesteTest {
@@ -52,7 +52,7 @@ public class FagsakApplikasjonTjenesteTest {
         oppgaveTjeneste = mock(OppgaveTjeneste.class);
         ansattTjeneste = mock(AnsattTjeneste.class);
 
-        tjeneste = new FagsakApplikasjonTjenesteImpl(tpsTjeneste, oppgaveTjeneste, ansattTjeneste, klient);
+        tjeneste = new FagsakApplikasjonTjeneste(tpsTjeneste, klient);
     }
 
     @Test

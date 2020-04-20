@@ -1,13 +1,14 @@
 package no.nav.foreldrepenger.los.web.app.selftest.checks;
 
-import no.nav.vedtak.felles.integrasjon.person.PersonSelftestConsumer;
-import org.junit.Test;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class PersonWebServiceHealthCheckTest {
+import org.junit.Test;
+
+import no.nav.vedtak.felles.integrasjon.person.PersonSelftestConsumer;
+
+public class TpsPersonDtoWebServiceHealthCheckTest {
 
     @Test
     public void test_alt() {

@@ -1,14 +1,14 @@
 package no.nav.foreldrepenger.los.web.app.tjenester.felles.dto;
 
-import no.nav.foreldrepenger.loslager.oppgave.Reservasjon;
-
 import java.time.LocalDateTime;
+
+import no.nav.foreldrepenger.loslager.oppgave.Reservasjon;
 
 public class ReservasjonDto {
 
     private LocalDateTime reservertTilTidspunkt;
     private String reservertAvUid;
-    private String reservertAvNavn;  // Settes når oppgave er reservert av annen saksbehandler
+    private String reservertAvNavn;
     private LocalDateTime flyttetTidspunkt;
     private String flyttetAv;
     private String flyttetAvNavn;
@@ -22,7 +22,7 @@ public class ReservasjonDto {
         this.reservertAvUid = reservasjon.getReservertAv();
         this.reservertAvNavn = reservertAvNavn;
         this.flyttetTidspunkt = reservasjon.getFlyttetTidspunkt();
-        this.flyttetAv = reservasjon.getFlyttetAv();
+        this.flyttetAv = reservasjon.getFlyttetAv().orElse(null);
         this.flyttetAvNavn = navnFlyttetAv;
         this.begrunnelse = reservasjon.getBegrunnelse();
         this.oppgaveId = reservasjon.getOppgave().getId();

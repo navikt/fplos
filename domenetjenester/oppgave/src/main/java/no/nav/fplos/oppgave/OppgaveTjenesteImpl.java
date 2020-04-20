@@ -212,23 +212,6 @@ public class OppgaveTjenesteImpl implements OppgaveTjeneste {
         return lagSaksbehandlerinformasjonDto(ident);
     }
 
-    @Override
-    public String hentNavnHvisReservertAvAnnenSaksbehandler(Reservasjon reservasjon) {
-        String innloggetBruker = SubjectHandler.getSubjectHandler().getUid();
-        boolean reservertAvAnnenSaksbehandler = reservasjon != null &&
-                reservasjon.getReservertAv() != null &&
-                !reservasjon.getReservertAv().equalsIgnoreCase(innloggetBruker) &&
-                reservasjon.getReservertTil() != null &&
-                reservasjon.erAktiv();
-        return reservertAvAnnenSaksbehandler ? ansattTjeneste.hentAnsattNavn(reservasjon.getReservertAv()) : null;
-    }
-
-    @Override
-    public String hentNavnHvisFlyttetAvSaksbehandler(String flyttetAv) {
-        boolean flyttetAvSaksbehandler = flyttetAv != null;
-        return flyttetAvSaksbehandler ? ansattTjeneste.hentAnsattNavn(flyttetAv) : null;
-    }
-
     private SaksbehandlerinformasjonDto lagSaksbehandlerinformasjonDto(String ident) {
         return new SaksbehandlerinformasjonDto(ident, hentSaksbehandlerNavn(ident), ansattTjeneste.hentAvdelingerNavnForAnsatt(ident));
     }

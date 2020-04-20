@@ -27,41 +27,21 @@ public class OppgaveDto {
     private BehandlingId behandlingId;
     private String href;
 
-    public OppgaveDto() {
-        // Injiseres i test
-    }
-    public OppgaveDto(Oppgave oppgave, TpsPersonDto personDto){
-        leggTilOppgaveInformasjon(oppgave, null, null);
+    OppgaveDto(Oppgave oppgave, TpsPersonDto personDto, OppgaveStatusDto oppgaveStatus){
+        leggTilOppgaveInformasjon(oppgave, oppgaveStatus);
         leggTilPersonInformasjon(personDto);
     }
 
-    public OppgaveDto(Oppgave oppgave, TpsPersonDto personDto, String flyttetAvNavn) {
-        this(oppgave, personDto, flyttetAvNavn, null);
-    }
-
-    public OppgaveDto(Oppgave oppgave, TpsPersonDto personDto, String flyttetAvNavn, String annenSaksbehandlernavn){
-        leggTilOppgaveInformasjon(oppgave, annenSaksbehandlernavn, flyttetAvNavn);
-        leggTilPersonInformasjon(personDto);
-    }
-
-    public OppgaveDto(Oppgave oppgave){
-        leggTilOppgaveInformasjon(oppgave, null, null);
-    }
-
-    private void leggTilOppgaveInformasjon(Oppgave oppgave, String reservertAvNavn, String flyttetAvNavn) {
+    private void leggTilOppgaveInformasjon(Oppgave oppgave, OppgaveStatusDto status) {
         this.id = oppgave.getId();
-        this.status = OppgaveStatusDto.reservert(oppgave.getReservasjon(), reservertAvNavn, flyttetAvNavn);
+        this.status = status;
         this.saksnummer = oppgave.getFagsakSaksnummer();
         this.behandlingId = oppgave.getBehandlingId();
         this.system = oppgave.getSystem();
         this.behandlingStatus = oppgave.getBehandlingStatus();
-
         this.fagsakYtelseType = oppgave.getFagsakYtelseType();
         this.behandlingstype = oppgave.getBehandlingType();
-
-        //TODO Verdi i DTO skal på sikt skille mellom "Til saksbehandling" og "Til godkjenning"
         this.erTilSaksbehandling = oppgave.getAktiv();
-
         this.opprettetTidspunkt = oppgave.getBehandlingOpprettet();
         this.behandlingsfrist = oppgave.getBehandlingsfrist();
         this.href = oppgave.getHref();

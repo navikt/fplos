@@ -1,16 +1,12 @@
 package no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.oppgave;
 
+import static no.nav.foreldrepenger.los.web.app.tjenester.felles.dto.OppgaveDtoTjeneste.ANTALL_OPPGAVER_SOM_VISES_TIL_SAKSBEHANDLER;
 import static no.nav.vedtak.sikkerhet.abac.BeskyttetRessursActionAttributt.READ;
 import static no.nav.vedtak.sikkerhet.abac.BeskyttetRessursResourceAttributt.FAGSAK;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -35,9 +31,9 @@ import io.swagger.v3.oas.annotations.headers.Header;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import no.nav.foreldrepenger.los.web.app.tjenester.fagsak.app.FagsakApplikasjonTjeneste;
 import no.nav.foreldrepenger.los.web.app.tjenester.felles.dto.AsyncPollingStatus;
 import no.nav.foreldrepenger.los.web.app.tjenester.felles.dto.OppgaveDto;
+import no.nav.foreldrepenger.los.web.app.tjenester.felles.dto.OppgaveDtoTjeneste;
 import no.nav.foreldrepenger.los.web.app.tjenester.felles.dto.OppgaveStatusDto;
 import no.nav.foreldrepenger.los.web.app.tjenester.felles.dto.SaksbehandlerBrukerIdentDto;
 import no.nav.foreldrepenger.los.web.app.tjenester.felles.dto.SaksbehandlerDto;
@@ -48,13 +44,9 @@ import no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.oppgave.dto.Opp
 import no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.oppgave.dto.OppgaveOpphevingDto;
 import no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.oppgave.dto.ReservasjonsEndringDto;
 import no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.oppgave.dto.SaknummerIderDto;
-import no.nav.foreldrepenger.loslager.aktør.TpsPersonDto;
 import no.nav.foreldrepenger.loslager.oppgave.Oppgave;
-import no.nav.foreldrepenger.loslager.oppgave.Reservasjon;
 import no.nav.fplos.oppgave.OppgaveTjeneste;
 import no.nav.fplos.oppgave.SaksbehandlerinformasjonDto;
-import no.nav.fplos.person.api.TpsTjeneste;
-import no.nav.tjeneste.virksomhet.person.v3.binding.HentPersonSikkerhetsbegrensning;
 import no.nav.vedtak.sikkerhet.abac.BeskyttetRessurs;
 import no.nav.vedtak.sikkerhet.abac.BeskyttetRessursActionAttributt;
 import no.nav.vedtak.sikkerhet.abac.BeskyttetRessursResourceAttributt;
@@ -65,21 +57,19 @@ import no.nav.vedtak.sikkerhet.abac.BeskyttetRessursResourceAttributt;
 public class OppgaveRestTjeneste {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(OppgaveRestTjeneste.class);
-    private static final int ANTALL_OPPGAVER_SOM_VISES_TIL_SAKSBEHANDLER = 3;
 
     private OppgaveTjeneste oppgaveTjeneste;
-    private FagsakApplikasjonTjeneste fagsakApplikasjonTjeneste;
-    private TpsTjeneste tpsTjeneste;
+    private OppgaveDtoTjeneste oppgaveDtoTjeneste;
+
+    @Inject
+    public OppgaveRestTjeneste(OppgaveTjeneste oppgaveTjeneste,
+                               OppgaveDtoTjeneste oppgaveDtoTjeneste) {
+        this.oppgaveTjeneste = oppgaveTjeneste;
+        this.oppgaveDtoTjeneste = oppgaveDtoTjeneste;
+    }
 
     public OppgaveRestTjeneste() {
         // For Rest-CDI
-    }
-
-    @Inject
-    public OppgaveRestTjeneste(OppgaveTjeneste oppgaveTjeneste, FagsakApplikasjonTjeneste fagsakApplikasjonTjeneste, TpsTjeneste tpsTjeneste) {
-        this.oppgaveTjeneste = oppgaveTjeneste;
-        this.fagsakApplikasjonTjeneste = fagsakApplikasjonTjeneste;
-        this.tpsTjeneste = tpsTjeneste;
     }
 
     @GET
@@ -108,7 +98,7 @@ public class OppgaveRestTjeneste {
     @BeskyttetRessurs(action = READ, ressurs = FAGSAK)
     public Response hentNesteOppgaverOgSjekkOmDisseErNye(@NotNull @Valid @QueryParam("sakslisteId") SakslisteIdDto sakslisteId,
                                                          @Valid @QueryParam("oppgaveIder") OppgaveIderDto oppgaverIder) throws URISyntaxException {
-        List<Long> oppgaveIderSomVises = oppgaverIder == null ? Collections.emptyList() : oppgaverIder.getOppgaveIdeer();
+        List<Long> oppgaveIderSomVises = oppgaverIder == null ? List.of() : oppgaverIder.getOppgaveIdeer();
         boolean skalPolle = false;
 
         if (oppgaveIderSomVises.isEmpty()) {
@@ -143,36 +133,7 @@ public class OppgaveRestTjeneste {
     })
     @BeskyttetRessurs(action = READ, ressurs = FAGSAK)
     public List<OppgaveDto> getOppgaverTilBehandling(@NotNull @QueryParam("sakslisteId") @Valid SakslisteIdDto sakslisteId) {
-        var saksliste = sakslisteId.getVerdi();
-        var nesteOppgaver = oppgaveTjeneste.hentOppgaver(saksliste, ANTALL_OPPGAVER_SOM_VISES_TIL_SAKSBEHANDLER);
-        var oppgaveDtos = map(nesteOppgaver, nesteOppgaver.size());
-        //Noen oppgave filteres bort i mappingen pga at saksbehandler ikke har tilgang til behandlingen
-        if (nesteOppgaver.size() == oppgaveDtos.size()) {
-            return oppgaveDtos;
-        }
-        LOGGER.info("{} behandlinger filtrert bort for saksliste {}", nesteOppgaver.size() - oppgaveDtos.size(), saksliste);
-        var alleOppgaver = oppgaveTjeneste.hentOppgaver(saksliste);
-        return map(alleOppgaver, ANTALL_OPPGAVER_SOM_VISES_TIL_SAKSBEHANDLER);
-    }
-
-    private List<OppgaveDto> map(List<Oppgave> oppgaver, int maksAntall) {
-        List<OppgaveDto> oppgaveDtos = new ArrayList<>();
-        for (int i = 0; i < oppgaver.size() && oppgaveDtos.size() < maksAntall; i++) {
-            var oppgave = oppgaver.get(i);
-            map(oppgave).ifPresent(oppgaveDtos::add);
-        }
-        return oppgaveDtos;
-    }
-
-    private Optional<OppgaveDto> map(Oppgave oppgave) {
-        TpsPersonDto personDto;
-        try {
-            personDto = tpsTjeneste.hentBrukerForAktør(oppgave.getAktorId());
-            return Optional.of(new OppgaveDto(oppgave, personDto));
-        } catch (HentPersonSikkerhetsbegrensning e) {
-            logBegrensning(oppgave, e);
-        }
-        return Optional.empty();
+        return oppgaveDtoTjeneste.getOppgaverTilBehandling(sakslisteId.getVerdi());
     }
 
     @POST
@@ -183,8 +144,8 @@ public class OppgaveRestTjeneste {
     @BeskyttetRessurs(action = BeskyttetRessursActionAttributt.CREATE, ressurs = BeskyttetRessursResourceAttributt.FAGSAK)
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
     public OppgaveStatusDto reserverOppgave(@NotNull @Parameter(description = "id til oppgaven") @Valid OppgaveIdDto oppgaveId) {
-        Reservasjon reservasjon = oppgaveTjeneste.reserverOppgave(oppgaveId.getVerdi());
-        return lagReservertStatus(reservasjon);
+        var reservasjon = oppgaveTjeneste.reserverOppgave(oppgaveId.getVerdi());
+        return oppgaveDtoTjeneste.lagDtoFor(reservasjon.getOppgave()).getStatus();
     }
 
     @GET
@@ -194,15 +155,10 @@ public class OppgaveRestTjeneste {
     @BeskyttetRessurs(action = BeskyttetRessursActionAttributt.READ, ressurs = BeskyttetRessursResourceAttributt.FAGSAK)
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
     public OppgaveStatusDto hentReservasjon(@NotNull @Parameter(description = "id til oppgaven") @QueryParam("oppgaveId") @Valid OppgaveIdDto oppgaveId) {
-        Reservasjon reservasjon = oppgaveTjeneste.hentReservasjon(oppgaveId.getVerdi());
-        return reservasjon != null && reservasjon.getReservertTil() != null ? lagReservertStatus(reservasjon) : OppgaveStatusDto.ikkeReservert();
+        var reservasjon = oppgaveTjeneste.hentReservasjon(oppgaveId.getVerdi());
+        return oppgaveDtoTjeneste.lagDtoFor(reservasjon.getOppgave()).getStatus();
     }
 
-    private OppgaveStatusDto lagReservertStatus(@NotNull @Parameter(description = "id til oppgaven") @Valid Reservasjon reservasjon) {
-        String navnHvisReservertAvAnnenSaksbehandler = oppgaveTjeneste.hentNavnHvisReservertAvAnnenSaksbehandler(reservasjon);
-        String navnHvisFlyttetAvSaksbehandler = oppgaveTjeneste.hentNavnHvisFlyttetAvSaksbehandler(reservasjon.getFlyttetAv());
-        return OppgaveStatusDto.reservert(reservasjon, navnHvisReservertAvAnnenSaksbehandler, navnHvisFlyttetAvSaksbehandler);
-    }
 
     @POST
     @Path("/opphev")
@@ -212,8 +168,8 @@ public class OppgaveRestTjeneste {
     @BeskyttetRessurs(action = BeskyttetRessursActionAttributt.CREATE, ressurs = BeskyttetRessursResourceAttributt.FAGSAK)
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
     public OppgaveStatusDto opphevOppgaveReservasjon(@NotNull @Parameter(description = "Id og begrunnelse") @Valid OppgaveOpphevingDto opphevetOppgave) {
-        Reservasjon reservasjon = oppgaveTjeneste.frigiOppgave(opphevetOppgave.getOppgaveId().getVerdi(), opphevetOppgave.getBegrunnelse());
-        return OppgaveStatusDto.reservert(reservasjon);
+        var reservasjon = oppgaveTjeneste.frigiOppgave(opphevetOppgave.getOppgaveId().getVerdi(), opphevetOppgave.getBegrunnelse());
+        return oppgaveDtoTjeneste.lagDtoFor(reservasjon.getOppgave()).getStatus();
     }
 
     @POST
@@ -224,8 +180,8 @@ public class OppgaveRestTjeneste {
     @BeskyttetRessurs(action = BeskyttetRessursActionAttributt.CREATE, ressurs = BeskyttetRessursResourceAttributt.FAGSAK)
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
     public OppgaveStatusDto forlengOppgaveReservasjon(@NotNull @Parameter(description = "id til oppgaven") @Valid OppgaveIdDto oppgaveId) {
-        Reservasjon reservasjon = oppgaveTjeneste.forlengReservasjonPåOppgave(oppgaveId.getVerdi());
-        return OppgaveStatusDto.reservert(reservasjon);
+        var reservasjon = oppgaveTjeneste.forlengReservasjonPåOppgave(oppgaveId.getVerdi());
+        return oppgaveDtoTjeneste.lagDtoFor(reservasjon.getOppgave()).getStatus();
     }
 
     @POST
@@ -236,15 +192,9 @@ public class OppgaveRestTjeneste {
     @BeskyttetRessurs(action = BeskyttetRessursActionAttributt.CREATE, ressurs = BeskyttetRessursResourceAttributt.FAGSAK)
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
     public OppgaveStatusDto endreOppgaveReservasjon(@NotNull @Parameter(description = "forleng til dato") @Valid ReservasjonsEndringDto reservasjonsEndring) {
-        Reservasjon reservasjon = oppgaveTjeneste.endreReservasjonPåOppgave(reservasjonsEndring.getOppgaveId(), sjekkGrenseverdier(reservasjonsEndring.getReserverTil().atTime(23,59)));
-        return OppgaveStatusDto.reservert(reservasjon);
-    }
-
-    private LocalDateTime sjekkGrenseverdier(LocalDateTime tidspunkt) throws IllegalArgumentException{
-        LocalDateTime now = LocalDateTime.now();
-        if(tidspunkt.isBefore(now)) throw new IllegalArgumentException("Reserevasjon kan ikke avsluttes før dagens dato");
-        if(tidspunkt.isAfter(now.plusDays(31))) throw new IllegalArgumentException("Reserevasjon kan ikke være lenger enn 30 dager"); //Siden vi bruker LocalDateTime med 23:59 for sjekken så justeres der til påfølgende dag
-        return tidspunkt;
+        var tidspunkt = ReservasjonTidspunktUtil.utledReservasjonTidspunkt(reservasjonsEndring.getReserverTil());
+        var reservasjon = oppgaveTjeneste.endreReservasjonPåOppgave(reservasjonsEndring.getOppgaveId(), tidspunkt);
+        return oppgaveDtoTjeneste.lagDtoFor(reservasjon.getOppgave()).getStatus();
     }
 
     @GET
@@ -254,31 +204,7 @@ public class OppgaveRestTjeneste {
     @BeskyttetRessurs(action = BeskyttetRessursActionAttributt.READ, ressurs = BeskyttetRessursResourceAttributt.FAGSAK)
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
     public List<OppgaveDto> getReserverteOppgaver() {
-        List<Reservasjon> reserveringer = oppgaveTjeneste.hentReservasjonerTilknyttetAktiveOppgaver();
-        return reserveringer.stream()
-                .map(this::oppgaveDtoFra)
-                .filter(o -> o.isPresent())
-                .map(o -> o.get())
-                .collect(Collectors.toList());
-    }
-
-    private Optional<OppgaveDto> oppgaveDtoFra(Reservasjon reservasjon) {
-        var oppgave = reservasjon.getOppgave();
-        TpsPersonDto tpsPerson;
-        try {
-            tpsPerson = tpsTjeneste.hentBrukerForAktør(oppgave.getAktorId());
-        } catch (HentPersonSikkerhetsbegrensning e) {
-            logBegrensning(oppgave, e);
-            return Optional.empty();
-        }
-        return Optional.of(new OppgaveDto(
-                oppgave,
-                tpsPerson,
-                oppgaveTjeneste.hentNavnHvisFlyttetAvSaksbehandler(reservasjon.getFlyttetAv())));
-    }
-
-    private void logBegrensning(Oppgave oppgave, HentPersonSikkerhetsbegrensning e) {
-        LOGGER.info("Prøver å slå opp i tps uten å ha tilgang. Ignorerer oppgave {}", oppgave.getId(), e);
+        return oppgaveDtoTjeneste.getReserverteOppgaver();
     }
 
     @GET
@@ -288,12 +214,7 @@ public class OppgaveRestTjeneste {
     @BeskyttetRessurs(action = BeskyttetRessursActionAttributt.READ, ressurs = BeskyttetRessursResourceAttributt.FAGSAK)
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
     public List<OppgaveDto> getBehandledeOppgaver() {
-        List<Oppgave> sistReserverteOppgaver = oppgaveTjeneste.hentSisteReserverteOppgaver();
-        return sistReserverteOppgaver.stream()
-                .map(o -> oppgaveDtoFra(o.getReservasjon()))
-                .filter(o -> o.isPresent())
-                .map(o -> o.get())
-                .collect(Collectors.toList());
+        return oppgaveDtoTjeneste.getBehandledeOppgaver();
     }
 
     @POST
@@ -307,9 +228,8 @@ public class OppgaveRestTjeneste {
         SaksbehandlerinformasjonDto saksbehandlerInformasjon = oppgaveTjeneste.hentSaksbehandlerNavnOgAvdelinger(ident);
         if (saksbehandlerInformasjon != null) {
             return new SaksbehandlerDto(brukerIdent, saksbehandlerInformasjon.getNavn(), saksbehandlerInformasjon.getAvdelinger());
-        } else {
-            return null;
         }
+        return null;
     }
 
     @POST
@@ -320,11 +240,11 @@ public class OppgaveRestTjeneste {
     @BeskyttetRessurs(action = BeskyttetRessursActionAttributt.CREATE, ressurs = BeskyttetRessursResourceAttributt.FAGSAK)
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
     public OppgaveStatusDto flyttOppgaveReservasjon(@NotNull @Parameter(description = "id, begrunnelse og brukerident") @Valid OppgaveFlyttingDto oppgaveFlyttingId) {
-        Reservasjon reservasjon = oppgaveTjeneste.flyttReservasjon(oppgaveFlyttingId.getOppgaveId().getVerdi(),
+        var reservasjon = oppgaveTjeneste.flyttReservasjon(oppgaveFlyttingId.getOppgaveId().getVerdi(),
                 oppgaveFlyttingId.getBrukerIdent().getVerdi(),
                 oppgaveFlyttingId.getBegrunnelse());
         LOGGER.info("Reservasjon flyttet: {}", oppgaveFlyttingId);
-        return OppgaveStatusDto.reservert(reservasjon);
+        return oppgaveDtoTjeneste.lagDtoFor(reservasjon.getOppgave()).getStatus();
     }
 
     @GET
@@ -344,21 +264,6 @@ public class OppgaveRestTjeneste {
     @BeskyttetRessurs(action = BeskyttetRessursActionAttributt.READ, ressurs = BeskyttetRessursResourceAttributt.FAGSAK, sporingslogg = false)
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
     public List<OppgaveDto> hentOppgaverForFagsaker(@NotNull @Parameter(description = "Liste med saksnummer") @QueryParam("saksnummerListe") @Valid SaknummerIderDto saksnummerliste) {
-        List<Oppgave> oppgaver = oppgaveTjeneste.hentAktiveOppgaverForSaksnummer(saksnummerliste.getSaksnummerListe());
-        if (oppgaver.isEmpty()) {
-            return Collections.emptyList();
-        }
-
-        //Alle fagsakene tilhører samme bruker
-        TpsPersonDto personDto;
-        try {
-            personDto = tpsTjeneste.hentBrukerForAktør(oppgaver.get(0).getAktorId());
-        } catch (HentPersonSikkerhetsbegrensning e) {
-            logBegrensning(oppgaver.get(0), e);
-            return List.of();
-        }
-        return oppgaver.stream()
-                .map(o -> new OppgaveDto(o, personDto, null, fagsakApplikasjonTjeneste.hentNavnHvisReservertAvAnnenSaksbehandler(o)))
-                .collect(Collectors.toList());
+        return oppgaveDtoTjeneste.hentOppgaverForFagsaker(saksnummerliste.getSaksnummerListe());
     }
 }

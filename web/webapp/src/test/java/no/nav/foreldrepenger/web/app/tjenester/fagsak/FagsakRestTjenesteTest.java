@@ -2,7 +2,6 @@ package no.nav.foreldrepenger.web.app.tjenester.fagsak;
 
 import no.nav.foreldrepenger.los.web.app.tjenester.fagsak.FagsakRestTjeneste;
 import no.nav.foreldrepenger.los.web.app.tjenester.fagsak.app.FagsakApplikasjonTjeneste;
-import no.nav.foreldrepenger.los.web.app.tjenester.fagsak.app.FagsakApplikasjonTjenesteImpl;
 import no.nav.foreldrepenger.los.web.app.tjenester.fagsak.dto.SokefeltDto;
 import no.nav.fplos.ansatt.AnsattTjeneste;
 import no.nav.fplos.foreldrepengerbehandling.ForeldrepengerBehandlingRestKlient;
@@ -34,7 +33,7 @@ public class FagsakRestTjenesteTest {
         klient = mock(ForeldrepengerBehandlingRestKlient.class);
         oppgaveTjeneste = mock(OppgaveTjeneste.class);
         ansattTjeneste = mock(AnsattTjeneste.class);
-        applikasjonTjeneste = new FagsakApplikasjonTjenesteImpl(tpsTjeneste, oppgaveTjeneste, ansattTjeneste, klient);
+        applikasjonTjeneste = new FagsakApplikasjonTjeneste(tpsTjeneste, klient);
         tjeneste = new FagsakRestTjeneste(applikasjonTjeneste);
     }
 

@@ -182,6 +182,14 @@ public class Oppgave extends BaseEntitet {
         this.reservasjon = other.reservasjon;
     }
 
+    public boolean harAktivReservasjon() {
+        var reservasjon = getReservasjon();
+        return reservasjon != null &&
+                reservasjon.getReservertAv() != null &&
+                reservasjon.getReservertTil() != null &&
+                reservasjon.erAktiv();
+    }
+
     public static class Builder {
         private Oppgave tempOppgave;
 

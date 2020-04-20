@@ -20,6 +20,7 @@ import javax.ws.rs.core.MediaType;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.dto.AvdelingEnhetDto;
+import no.nav.foreldrepenger.los.web.app.tjenester.felles.dto.OppgaveDtoTjeneste;
 import no.nav.foreldrepenger.los.web.app.tjenester.felles.dto.OppgaveStatusDto;
 import no.nav.foreldrepenger.los.web.app.tjenester.felles.dto.ReservasjonDto;
 import no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.oppgave.dto.OppgaveIdDto;
@@ -36,16 +37,20 @@ import no.nav.vedtak.sikkerhet.abac.BeskyttetRessursResourceAttributt;
 public class AvdelingReservasjonerRestTjeneste {
 
     private OppgaveTjeneste oppgaveTjeneste;
+    private OppgaveDtoTjeneste oppgaveDtoTjeneste;
     private AvdelingslederSaksbehandlerTjeneste avdelingslederSaksbehandlerTjeneste;
 
-    public AvdelingReservasjonerRestTjeneste() {
-        //NOSONAR
+    @Inject
+    public AvdelingReservasjonerRestTjeneste(OppgaveTjeneste oppgaveTjeneste,
+                                             OppgaveDtoTjeneste oppgaveDtoTjeneste,
+                                             AvdelingslederSaksbehandlerTjeneste avdelingslederSaksbehandlerTjeneste) {
+        this.oppgaveTjeneste = oppgaveTjeneste;
+        this.oppgaveDtoTjeneste = oppgaveDtoTjeneste;
+        this.avdelingslederSaksbehandlerTjeneste = avdelingslederSaksbehandlerTjeneste;
     }
 
-    @Inject
-    public AvdelingReservasjonerRestTjeneste(OppgaveTjeneste oppgaveTjeneste, AvdelingslederSaksbehandlerTjeneste avdelingslederSaksbehandlerTjeneste) {
-        this.oppgaveTjeneste = oppgaveTjeneste;
-        this.avdelingslederSaksbehandlerTjeneste = avdelingslederSaksbehandlerTjeneste;
+    public AvdelingReservasjonerRestTjeneste() {
+        //CDI
     }
     @GET
     @Produces("application/json")
@@ -53,14 +58,17 @@ public class AvdelingReservasjonerRestTjeneste {
     @BeskyttetRessurs(action = BeskyttetRessursActionAttributt.READ, ressurs = BeskyttetRessursResourceAttributt.OPPGAVESTYRING_AVDELINGENHET, sporingslogg = false)
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
     public List<ReservasjonDto> hentAvdelingensReservasjoner(@NotNull @QueryParam("avdelingEnhet") @Valid AvdelingEnhetDto avdelingEnhetDto) {
-        List<ReservasjonDto> reservasjoner = tilReservasjonDtoListe(oppgaveTjeneste.hentReservasjonerForAvdeling(avdelingEnhetDto.getAvdelingEnhet()));
-        return reservasjoner;
+        var reservasjoner = oppgaveTjeneste.hentReservasjonerForAvdeling(avdelingEnhetDto.getAvdelingEnhet());
+        return tilReservasjonDtoListe(reservasjoner);
     }
 
     private List<ReservasjonDto> tilReservasjonDtoListe(List<Reservasjon> reservasjoner) {
-        List<ReservasjonDto> reservasjonDtoer = reservasjoner.stream().map(reservasjon -> new ReservasjonDto(
-                reservasjon, hentSaksbehandlersNavn(reservasjon.getReservertAv()), null)).collect(Collectors.toList());
-        return reservasjonDtoer;
+        return reservasjoner.stream()
+                .map(reservasjon -> {
+                    var reservertAvNavn = hentSaksbehandlersNavn(reservasjon.getReservertAv());
+                    return new ReservasjonDto(reservasjon, reservertAvNavn, null);
+                })
+                .collect(Collectors.toList());
     }
 
     private String hentSaksbehandlersNavn(String saksbehandlerIdent) {
@@ -77,8 +85,7 @@ public class AvdelingReservasjonerRestTjeneste {
     @BeskyttetRessurs(action = BeskyttetRessursActionAttributt.CREATE, ressurs = BeskyttetRessursResourceAttributt.OPPGAVESTYRING_AVDELINGENHET)
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
     public OppgaveStatusDto opphevOppgaveReservasjon(@NotNull @Parameter(description = "Id for oppgave som reservasjonen er tilknyttet") @Valid OppgaveIdDto oppgaveId) {
-        Reservasjon reservasjon = oppgaveTjeneste.frigiOppgave(oppgaveId.getVerdi(), "Opphevet av avdelingsleder");
-        return OppgaveStatusDto.reservert(reservasjon);
+        var reservasjon = oppgaveTjeneste.frigiOppgave(oppgaveId.getVerdi(), "Opphevet av avdelingsleder");
+        return oppgaveDtoTjeneste.lagDtoFor(reservasjon.getOppgave()).getStatus();
     }
-
 }
