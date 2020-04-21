@@ -46,6 +46,6 @@ public class OppgaveOpphevingDto implements AbacDto {
 
     @Override
     public AbacDataAttributter abacAttributter() {
-        return AbacDataAttributter.opprett();
+        return oppgaveId.abacAttributter();
     }
 }

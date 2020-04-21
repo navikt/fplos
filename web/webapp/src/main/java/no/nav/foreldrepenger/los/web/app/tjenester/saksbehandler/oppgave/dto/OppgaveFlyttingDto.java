@@ -16,7 +16,6 @@ public class OppgaveFlyttingDto implements AbacDto {
     @Valid
     private OppgaveIdDto oppgaveId;
 
-
     @NotNull
     @Valid
     private SaksbehandlerBrukerIdentDto brukerIdent;
@@ -58,6 +57,6 @@ public class OppgaveFlyttingDto implements AbacDto {
 
     @Override
     public AbacDataAttributter abacAttributter() {
-        return AbacDataAttributter.opprett();
+        return oppgaveId.abacAttributter();
     }
 }

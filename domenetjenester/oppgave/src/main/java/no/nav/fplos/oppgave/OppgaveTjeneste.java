@@ -47,4 +47,6 @@ public interface OppgaveTjeneste {
     List<Oppgave> hentSisteReserverteOppgaver();
 
     SaksbehandlerinformasjonDto hentSaksbehandlerNavnOgAvdelinger(String ident);
+
+    Oppgave hentOppgave(Long oppgaveId);
 }

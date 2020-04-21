@@ -16,9 +16,6 @@ import java.util.Optional;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import no.nav.fplos.foreldrepengerbehandling.dto.behandling.BehandlingÅrsakDto;
-import no.nav.fplos.foreldrepengerbehandling.dto.behandling.BehandlingÅrsakType;
-import no.nav.fplos.foreldrepengerbehandling.dto.ytelsefordeling.YtelseFordelingDto;
 import org.apache.http.client.utils.URIBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,16 +23,21 @@ import org.slf4j.LoggerFactory;
 import no.nav.foreldrepenger.loslager.BehandlingId;
 import no.nav.fplos.foreldrepengerbehandling.dto.KontrollerFaktaDataDto;
 import no.nav.fplos.foreldrepengerbehandling.dto.KontrollerFaktaPeriodeDto;
+import no.nav.fplos.foreldrepengerbehandling.dto.PipDto;
 import no.nav.fplos.foreldrepengerbehandling.dto.SokefeltDto;
 import no.nav.fplos.foreldrepengerbehandling.dto.aksjonspunkt.AksjonspunktDto;
+import no.nav.fplos.foreldrepengerbehandling.dto.behandling.BehandlingÅrsakDto;
+import no.nav.fplos.foreldrepengerbehandling.dto.behandling.BehandlingÅrsakType;
 import no.nav.fplos.foreldrepengerbehandling.dto.behandling.ResourceLink;
 import no.nav.fplos.foreldrepengerbehandling.dto.behandling.UtvidetBehandlingDto;
 import no.nav.fplos.foreldrepengerbehandling.dto.fagsak.FagsakDto;
 import no.nav.fplos.foreldrepengerbehandling.dto.inntektarbeidytelse.Beløp;
 import no.nav.fplos.foreldrepengerbehandling.dto.inntektarbeidytelse.InntektArbeidYtelseDto;
 import no.nav.fplos.foreldrepengerbehandling.dto.inntektarbeidytelse.InntektsmeldingDto;
+import no.nav.fplos.foreldrepengerbehandling.dto.ytelsefordeling.YtelseFordelingDto;
 import no.nav.vedtak.exception.ManglerTilgangException;
 import no.nav.vedtak.felles.integrasjon.rest.OidcRestClient;
+import no.nav.vedtak.felles.integrasjon.rest.SystemUserOidcRestClient;
 import no.nav.vedtak.konfig.KonfigVerdi;
 import no.nav.vedtak.sikkerhet.loginmodule.ContainerLogin;
 
@@ -52,18 +54,23 @@ public class ForeldrepengerBehandlingRestKlient {
     private static final String UTTAK_KONTROLLER_FAKTA_PERIODER_LINK = "uttak-kontroller-fakta-perioder";
     private static final String YTELSEFORDELING_LINK = "ytelsefordeling";
 
-    private OidcRestClient oidcRestClient;
-    private String fpsakBaseUrl;
+    private static final String FPSAK_PIP_ENDPOINT = "/fpsak/api/pip/pipdata-for-behandling";
 
-    public ForeldrepengerBehandlingRestKlient() {
-        // for CDI
-    }
+    private OidcRestClient oidcRestClient;
+    private SystemUserOidcRestClient systemUserOidcRestClient;
+    private String fpsakBaseUrl;
 
     @Inject
     public ForeldrepengerBehandlingRestKlient(OidcRestClient oidcRestClient,
+                                              SystemUserOidcRestClient systemUserOidcRestClient,
                                               @KonfigVerdi(value = "fpsak.url", defaultVerdi = "http://fpsak") String fpsakUrl) {
         this.oidcRestClient = oidcRestClient;
+        this.systemUserOidcRestClient = systemUserOidcRestClient;
         this.fpsakBaseUrl = fpsakUrl;
+    }
+
+    public ForeldrepengerBehandlingRestKlient() {
+        // for CDI
     }
 
     public BehandlingFpsak getBehandling(BehandlingId behandlingId) {
@@ -232,5 +239,15 @@ public class ForeldrepengerBehandlingRestKlient {
                 .stream()
                 .filter(l -> l.getRel().equals(typeLink))
                 .findFirst();
+    }
+
+    public PipDto hentPipdataForBehandling(BehandlingId behandlingId) {
+        try {
+            URIBuilder pipUriBuilder = new URIBuilder(fpsakBaseUrl + FPSAK_PIP_ENDPOINT);
+            pipUriBuilder.setParameter("behandlingUuid", behandlingId.toString());
+            return systemUserOidcRestClient.getReturnsOptional(pipUriBuilder.build(), PipDto.class).orElseThrow(IllegalStateException::new);
+        } catch (URISyntaxException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
