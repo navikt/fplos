@@ -47,8 +47,4 @@ public interface OppgaveTjeneste {
     List<Oppgave> hentSisteReserverteOppgaver();
 
     SaksbehandlerinformasjonDto hentSaksbehandlerNavnOgAvdelinger(String ident);
-
-    String hentNavnHvisReservertAvAnnenSaksbehandler(Reservasjon reservasjon);
-
-    String hentNavnHvisFlyttetAvSaksbehandler(String flyttetAv);
 }

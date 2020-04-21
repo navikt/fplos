@@ -11,8 +11,17 @@ public class OppgaveStatusDto {
     private LocalDateTime reservertTilTidspunkt;
     private Boolean erReservertAvInnloggetBruker;
     private String reservertAvUid;
-    private String reservertAvNavn;  // Settes når oppgave er reservert av annen saksbehandler
+    private String reservertAvNavn;
     private FlyttetReservasjonDto flyttetReservasjon;
+
+    static OppgaveStatusDto reservert(Reservasjon reservasjon, String reservertAvNavn, String navnFlyttetAv) {
+        ReservasjonDto reservasjonDto = new ReservasjonDto(reservasjon, reservertAvNavn, navnFlyttetAv);
+        return new OppgaveStatusDto(true, reservasjonDto);
+    }
+
+    static OppgaveStatusDto ikkeReservert() {
+        return new OppgaveStatusDto(false);
+    }
 
     private OppgaveStatusDto(boolean erReservert, ReservasjonDto reservasjonDto) {
         this.erReservert = erReservert;
@@ -32,23 +41,6 @@ public class OppgaveStatusDto {
 
     private OppgaveStatusDto(boolean erReservert) {
         this.erReservert = erReservert;
-    }
-
-    //FIXME Denne dto'en bør truleg lagast på ein annan måte, sidan ein treng blant anna reservertAvNavn
-    public static OppgaveStatusDto reservert(Reservasjon reservasjon, String reservertAvNavn, String navnFlyttetAv) {
-        if (reservasjon == null || !reservasjon.erAktiv()) {
-            return ikkeReservert();
-        }
-        ReservasjonDto reservasjonDto = new ReservasjonDto(reservasjon, reservertAvNavn, navnFlyttetAv);
-        return new OppgaveStatusDto(true, reservasjonDto);
-    }
-
-    public static OppgaveStatusDto reservert(Reservasjon reservasjon) {
-        return OppgaveStatusDto.reservert(reservasjon, null, null);
-    }
-
-    public static OppgaveStatusDto ikkeReservert() {
-        return new OppgaveStatusDto(false);
     }
 
     public boolean isErReservert() {

@@ -1,7 +1,7 @@
 package no.nav.foreldrepenger.loslager.oppgave;
 
-import no.nav.foreldrepenger.loslager.BaseEntitet;
-import no.nav.vedtak.sikkerhet.context.SubjectHandler;
+import java.time.LocalDateTime;
+import java.util.Optional;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -11,7 +11,9 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
-import java.time.LocalDateTime;
+
+import no.nav.foreldrepenger.loslager.BaseEntitet;
+import no.nav.vedtak.sikkerhet.context.SubjectHandler;
 
 @Entity(name = "Reservasjon")
 @Table(name = "RESERVASJON")
@@ -57,17 +59,21 @@ public class Reservasjon extends BaseEntitet {
         return oppgave;
     }
 
-    public LocalDateTime getReservertTil() { return reservertTil; }
+    public LocalDateTime getReservertTil() {
+        return reservertTil;
+    }
 
     public String getReservertAv() {
         return reservertAv;
     }
 
-    public String getFlyttetAv() {
-        return flyttetAv;
+    public Optional<String> getFlyttetAv() {
+        return Optional.ofNullable(flyttetAv);
     }
 
-    public LocalDateTime getFlyttetTidspunkt() { return flyttetTidspunkt; }
+    public LocalDateTime getFlyttetTidspunkt() {
+        return flyttetTidspunkt;
+    }
 
     public String getBegrunnelse() {
         return begrunnelse;
@@ -79,11 +85,6 @@ public class Reservasjon extends BaseEntitet {
         flyttetAv = null;
         flyttetTidspunkt = null;
         begrunnelse = null;
-    }
-
-    public void reserverOppgaveFraTidligereReservasjon(Reservasjon other) {
-        this.reservertTil = other.reservertTil;
-        this.reservertAv = other.reservertAv;
     }
 
     public void frigiReservasjon(String begrunnelse) {

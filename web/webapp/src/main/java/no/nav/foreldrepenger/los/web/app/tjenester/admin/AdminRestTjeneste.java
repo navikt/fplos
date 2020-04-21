@@ -24,11 +24,11 @@ import javax.ws.rs.core.Response;
 import io.swagger.v3.oas.annotations.Operation;
 import no.nav.foreldrepenger.los.web.app.tjenester.admin.dto.OppgaveEventLoggDto;
 import no.nav.foreldrepenger.los.web.app.tjenester.felles.dto.OppgaveDto;
+import no.nav.foreldrepenger.los.web.app.tjenester.felles.dto.OppgaveDtoTjeneste;
 import no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.oppgave.dto.BehandlingIdDto;
 import no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.oppgave.dto.EventIdDto;
 import no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.oppgave.dto.OppgaveIdDto;
 import no.nav.foreldrepenger.loslager.oppgave.Oppgave;
-import no.nav.foreldrepenger.loslager.oppgave.OppgaveEventLogg;
 import no.nav.fplos.admin.AdminTjeneste;
 import no.nav.fplos.admin.OppgaveSynkroniseringTjeneste;
 import no.nav.vedtak.sikkerhet.abac.BeskyttetRessurs;
@@ -40,11 +40,15 @@ public class AdminRestTjeneste {
 
     private AdminTjeneste adminTjeneste;
     private OppgaveSynkroniseringTjeneste synkroniseringTjeneste;
+    private OppgaveDtoTjeneste oppgaveDtoTjeneste;
 
     @Inject
-    public AdminRestTjeneste(AdminTjeneste adminTjeneste, OppgaveSynkroniseringTjeneste synkroniseringTjeneste) {
+    public AdminRestTjeneste(AdminTjeneste adminTjeneste,
+                             OppgaveSynkroniseringTjeneste synkroniseringTjeneste,
+                             OppgaveDtoTjeneste oppgaveDtoTjeneste) {
         this.adminTjeneste = adminTjeneste;
         this.synkroniseringTjeneste = synkroniseringTjeneste;
+        this.oppgaveDtoTjeneste = oppgaveDtoTjeneste;
     }
 
     public AdminRestTjeneste() {
@@ -59,8 +63,8 @@ public class AdminRestTjeneste {
     @BeskyttetRessurs(action = READ, ressurs = OPPGAVESTYRING)
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
     public OppgaveDto synkroniserOppgave(@NotNull @QueryParam("behandlingId") @Valid BehandlingIdDto behandlingId) {
-        Oppgave oppgave = adminTjeneste.synkroniserOppgave(behandlingId.getValue());
-        return new OppgaveDto(oppgave);
+        var oppgave = adminTjeneste.synkroniserOppgave(behandlingId.getValue());
+        return map(oppgave);
     }
 
     @GET
@@ -71,8 +75,8 @@ public class AdminRestTjeneste {
     @BeskyttetRessurs(action = READ, ressurs = OPPGAVESTYRING)
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
     public OppgaveDto hentOppgave(@NotNull @QueryParam("behandlingId") @Valid BehandlingIdDto behandlingId) {
-        Oppgave oppgave = adminTjeneste.hentOppgave(behandlingId.getValue());
-        return oppgave != null ? new OppgaveDto(oppgave) : null;
+        var oppgave = adminTjeneste.hentOppgave(behandlingId.getValue());
+        return oppgave != null ? map(oppgave) : null;
     }
 
     @GET
@@ -83,7 +87,7 @@ public class AdminRestTjeneste {
     @BeskyttetRessurs(action = READ, ressurs = OPPGAVESTYRING)
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
     public List<OppgaveEventLoggDto> hentEventlogg(@NotNull @QueryParam("behandlingId") @Valid BehandlingIdDto behandlingId) {
-        List<OppgaveEventLogg> oppgaveEventLogger = adminTjeneste.hentEventer(behandlingId.getValue());
+        var oppgaveEventLogger = adminTjeneste.hentEventer(behandlingId.getValue());
         return oppgaveEventLogger.stream().map(o -> new OppgaveEventLoggDto(o)).collect(Collectors.toList());
     }
 
@@ -97,8 +101,8 @@ public class AdminRestTjeneste {
     public OppgaveDto oppdaterOppgave(@NotNull @QueryParam("behandlingId") @Valid BehandlingIdDto dto) {
         var behandlingId = dto.getValue();
         adminTjeneste.oppdaterOppgave(behandlingId);
-        Oppgave oppgave = adminTjeneste.hentOppgave(behandlingId);
-        return new OppgaveDto(oppgave);
+        var oppgave = adminTjeneste.hentOppgave(behandlingId);
+        return map(oppgave);
     }
 
     @GET
@@ -121,7 +125,7 @@ public class AdminRestTjeneste {
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
     public List<OppgaveDto> hentAlleOppgaverForBehandling(@NotNull @QueryParam("behandlingId") @Valid BehandlingIdDto behandlingId) {
         List<Oppgave> oppgaver = adminTjeneste.hentAlleOppgaverForBehandling(behandlingId.getValue());
-        return oppgaver.stream().map(OppgaveDto::new).collect(Collectors.toList());
+        return oppgaver.stream().map(o -> map(o)).collect(Collectors.toList());
     }
 
     @GET
@@ -132,8 +136,8 @@ public class AdminRestTjeneste {
     @BeskyttetRessurs(action = READ, ressurs = OPPGAVESTYRING)
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
     public OppgaveDto deaktiverOppgave(@NotNull @QueryParam("oppgaveId") @Valid OppgaveIdDto oppgaveIdDto) {
-        Oppgave oppgave = adminTjeneste.deaktiverOppgave(oppgaveIdDto.getVerdi());
-        return new OppgaveDto(oppgave);
+        var oppgave = adminTjeneste.deaktiverOppgave(oppgaveIdDto.getVerdi());
+        return map(oppgave);
     }
 
     @GET
@@ -144,8 +148,8 @@ public class AdminRestTjeneste {
     @BeskyttetRessurs(action = READ, ressurs = OPPGAVESTYRING)
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
     public OppgaveDto aktiverOppgave(@NotNull @QueryParam("oppgaveId") @Valid OppgaveIdDto oppgaveIdDto) {
-        Oppgave oppgave = adminTjeneste.aktiverOppgave(oppgaveIdDto.getVerdi());
-        return new OppgaveDto(oppgave);
+        var oppgave = adminTjeneste.aktiverOppgave(oppgaveIdDto.getVerdi());
+        return map(oppgave);
     }
 
     @PATCH
@@ -168,5 +172,9 @@ public class AdminRestTjeneste {
     public Response synkroniserBerørtBehandling() {
         synkroniseringTjeneste.leggTilBerørtBehandlingEgenskap();
         return Response.ok().build();
+    }
+
+    private OppgaveDto map(Oppgave oppgave) {
+        return oppgaveDtoTjeneste.lagDtoFor(oppgave);
     }
 }

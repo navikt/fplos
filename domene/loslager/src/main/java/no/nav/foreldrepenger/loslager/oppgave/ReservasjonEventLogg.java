@@ -1,13 +1,15 @@
 package no.nav.foreldrepenger.loslager.oppgave;
 
-import no.nav.foreldrepenger.loslager.BaseEntitet;
+import java.time.LocalDateTime;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import java.time.LocalDateTime;
+
+import no.nav.foreldrepenger.loslager.BaseEntitet;
 
 @Entity(name = "reservasjonEventLogg")
 @Table(name = "RESERVASJON_EVENT_LOGG")
@@ -46,7 +48,7 @@ public class ReservasjonEventLogg extends BaseEntitet{
         this.oppgaveId = reservasjon.getOppgave().getId();
         this.reservertTil = reservasjon.getReservertTil();
         this.reservertAv = reservasjon.getReservertAv();
-        this.flyttetAv = reservasjon.getFlyttetAv();
+        this.flyttetAv = reservasjon.getFlyttetAv().orElse(null);
         this.flyttetTidspunkt = reservasjon.getFlyttetTidspunkt();
         this.begrunnelse = reservasjon.getBegrunnelse();
     }
