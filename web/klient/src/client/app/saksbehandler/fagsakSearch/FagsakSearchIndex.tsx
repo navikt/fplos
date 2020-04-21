@@ -163,8 +163,6 @@ export class FagsakSearchIndex extends Component<Props, StateProps> {
       ...prevState, skalReservere: values.skalReservere, sokStartet: true, sokFerdig: false,
     }));
 
-    hentReservasjonsstatus(12);
-
     return search(values).then((data: {payload: Fagsak[] }) => {
       const fagsaker = data.payload;
       if (fagsaker.length > 0) {
