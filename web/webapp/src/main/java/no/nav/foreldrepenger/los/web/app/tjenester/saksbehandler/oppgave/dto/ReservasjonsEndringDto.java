@@ -1,21 +1,23 @@
 package no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.oppgave.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import no.nav.vedtak.sikkerhet.abac.AbacDataAttributter;
-import no.nav.vedtak.sikkerhet.abac.AbacDto;
+import java.time.LocalDate;
+import java.util.Objects;
 
 import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotNull;
-import java.time.LocalDate;
-import java.util.Objects;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+
+import no.nav.vedtak.sikkerhet.abac.AbacDataAttributter;
+import no.nav.vedtak.sikkerhet.abac.AbacDto;
 
 public class ReservasjonsEndringDto implements AbacDto {
 
     @JsonProperty("oppgaveId")
     @NotNull
     @Digits(integer = 18, fraction = 0)
-    private Long oppgaveId;
+    private OppgaveIdDto oppgaveId;
 
     @JsonProperty("reserverTil")
     @NotNull
@@ -25,14 +27,14 @@ public class ReservasjonsEndringDto implements AbacDto {
     public ReservasjonsEndringDto() {
     }
 
-    public ReservasjonsEndringDto(Long oppgaveId, LocalDate reserverTil) {
+    public ReservasjonsEndringDto(OppgaveIdDto oppgaveId, LocalDate reserverTil) {
         Objects.requireNonNull(oppgaveId, "oppgaveId");
         Objects.requireNonNull(reserverTil, "reserverTil");
         this.oppgaveId = oppgaveId;
         this.reserverTil = reserverTil;
     }
 
-    public Long getOppgaveId() {
+    public OppgaveIdDto getOppgaveId() {
         return oppgaveId;
     }
 
@@ -42,7 +44,7 @@ public class ReservasjonsEndringDto implements AbacDto {
 
     @Override
     public AbacDataAttributter abacAttributter() {
-        return AbacDataAttributter.opprett();
+        return oppgaveId.abacAttributter();
     }
 
 

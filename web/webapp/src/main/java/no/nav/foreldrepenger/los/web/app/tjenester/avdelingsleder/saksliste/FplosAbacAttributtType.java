@@ -5,6 +5,7 @@ import no.nav.vedtak.sikkerhet.abac.AbacAttributtType;
 public enum FplosAbacAttributtType implements AbacAttributtType {
 
     OPPGAVESTYRING_ENHET,
+    OPPGAVE_ID,
     SAKER_MED_FNR;
 
     public static final String SUBJECT_FELLES_ENHETIDLISTE = "no.nav.abac.attributter.subject.felles.enhetidliste";

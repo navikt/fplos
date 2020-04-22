@@ -175,6 +175,6 @@ public class AdminRestTjeneste {
     }
 
     private OppgaveDto map(Oppgave oppgave) {
-        return oppgaveDtoTjeneste.lagDtoFor(oppgave);
+        return oppgaveDtoTjeneste.lagDtoFor(oppgave, false);
     }
 }

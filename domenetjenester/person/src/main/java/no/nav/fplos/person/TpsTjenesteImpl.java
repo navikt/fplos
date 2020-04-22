@@ -52,10 +52,14 @@ public class TpsTjenesteImpl implements TpsTjeneste {
     }
 
     @Override
-    public TpsPersonDto hentBrukerForAktør(long aktørIdLong) throws HentPersonSikkerhetsbegrensning {
+    public TpsPersonDto hentBrukerForAktør(long aktørIdLong) {
         var aktørId = new AktørId(aktørIdLong);
         var funnetFnr = hentFnr(aktørId).orElseThrow();
-        return tpsAdapter.hentKjerneinformasjon(funnetFnr, aktørId);
+        try {
+            return tpsAdapter.hentKjerneinformasjon(funnetFnr, aktørId);
+        } catch (HentPersonSikkerhetsbegrensning hentPersonSikkerhetsbegrensning) {
+            throw new RuntimeException(hentPersonSikkerhetsbegrensning);
+        }
     }
 
     private Optional<PersonIdent> hentFnr(AktørId aktørId) {

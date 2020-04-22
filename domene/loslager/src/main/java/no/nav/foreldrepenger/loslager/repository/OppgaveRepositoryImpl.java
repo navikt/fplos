@@ -599,6 +599,13 @@ public class OppgaveRepositoryImpl implements OppgaveRepository {
                 .getResultList();
     }
 
+    @Override
+    public Oppgave hentOppgave(Long oppgaveId) {
+        return entityManager.createQuery("FROM Oppgave o where o.id = :id", Oppgave.class)
+                .setParameter("id", oppgaveId)
+                .getSingleResult();
+    }
+
 
     private void internLagre(Object objektTilLagring) {
         entityManager.persist(objektTilLagring);

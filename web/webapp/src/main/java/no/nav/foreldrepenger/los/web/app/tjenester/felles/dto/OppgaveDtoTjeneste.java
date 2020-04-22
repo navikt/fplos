@@ -11,11 +11,18 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.oppgave.OppgaveRestTjeneste;
-import no.nav.foreldrepenger.loslager.aktør.TpsPersonDto;
+import no.nav.foreldrepenger.loslager.BehandlingId;
 import no.nav.foreldrepenger.loslager.oppgave.Oppgave;
 import no.nav.fplos.oppgave.OppgaveTjeneste;
 import no.nav.fplos.person.api.TpsTjeneste;
-import no.nav.tjeneste.virksomhet.person.v3.binding.HentPersonSikkerhetsbegrensning;
+import no.nav.vedtak.sikkerhet.abac.AbacAttributtSamling;
+import no.nav.vedtak.sikkerhet.abac.AbacDataAttributter;
+import no.nav.vedtak.sikkerhet.abac.BeskyttetRessursActionAttributt;
+import no.nav.vedtak.sikkerhet.abac.BeskyttetRessursResourceAttributt;
+import no.nav.vedtak.sikkerhet.abac.PdpKlient;
+import no.nav.vedtak.sikkerhet.abac.PdpRequestBuilder;
+import no.nav.vedtak.sikkerhet.abac.StandardAbacAttributtType;
+import no.nav.vedtak.sikkerhet.context.SubjectHandler;
 
 @ApplicationScoped
 public class OppgaveDtoTjeneste {
@@ -27,29 +34,58 @@ public class OppgaveDtoTjeneste {
     private OppgaveTjeneste oppgaveTjeneste;
     private TpsTjeneste tpsTjeneste;
     private OppgaveStatusDtoTjeneste oppgaveStatusDtoTjeneste;
+    private PdpKlient pdpKlient;
+    private PdpRequestBuilder pdpRequestBuilder;
 
     @Inject
     public OppgaveDtoTjeneste(OppgaveTjeneste oppgaveTjeneste,
                               TpsTjeneste tpsTjeneste,
-                              OppgaveStatusDtoTjeneste oppgaveStatusDtoTjeneste) {
+                              OppgaveStatusDtoTjeneste oppgaveStatusDtoTjeneste,
+                              PdpKlient pdpKlient,
+                              PdpRequestBuilder pdpRequestBuilder) {
         this.oppgaveTjeneste = oppgaveTjeneste;
         this.tpsTjeneste = tpsTjeneste;
         this.oppgaveStatusDtoTjeneste = oppgaveStatusDtoTjeneste;
+        this.pdpKlient = pdpKlient;
+        this.pdpRequestBuilder = pdpRequestBuilder;
     }
 
     OppgaveDtoTjeneste() {
         //CDI
     }
 
-    public OppgaveDto lagDtoFor(Oppgave oppgave) throws IkkeTilgangPåOppgaveException {
-        TpsPersonDto tpsPersonDto;
-        try {
-            tpsPersonDto = tpsTjeneste.hentBrukerForAktør(oppgave.getAktorId());
-        } catch (HentPersonSikkerhetsbegrensning e) {
-            throw new IkkeTilgangPåOppgaveException(oppgave.getId(), e);
+    /**
+     * @param sjekkTilgangPåBehandling Ved alle kall som tar i mot {@link no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.oppgave.dto.BehandlingIdDto}
+     *                                 eller {@link no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.oppgave.dto.OppgaveIdDto}
+     *                                 sjekkes tilgangen til behandlingen/oppgaven ved mottaket av restkallet gjennom {@link no.nav.vedtak.sikkerhet.abac.BeskyttetRessursInterceptor}.
+     *                                 Applikasjonen har noen kall som ikke går rett på en behandling/oppgave, men som returnerer oppgaver,
+     *                                 i disse tilfellene må sjekkTilgangPåBehandling være true.
+     *
+     */
+    public OppgaveDto lagDtoFor(Oppgave oppgave, boolean sjekkTilgangPåBehandling) throws IkkeTilgangPåBehandlingException {
+        if (sjekkTilgangPåBehandling) {
+            sjekkTilgang(oppgave.getBehandlingId());
         }
+        var tpsPersonDto = tpsTjeneste.hentBrukerForAktør(oppgave.getAktorId());
         var oppgaveStatus = oppgaveStatusDtoTjeneste.lagStatusFor(oppgave);
         return new OppgaveDto(oppgave, tpsPersonDto, oppgaveStatus);
+    }
+
+    private void sjekkTilgang(BehandlingId behandlingId) {
+        var abacAttributtSamling = abacAttributtSamling(behandlingId);
+        var pdpRequest = pdpRequestBuilder.lagPdpRequest(abacAttributtSamling);
+        var tilgangsbeslutning = pdpKlient.forespørTilgang(pdpRequest);
+        if (!tilgangsbeslutning.fikkTilgang()) {
+            throw new IkkeTilgangPåBehandlingException(behandlingId);
+        }
+    }
+
+    private AbacAttributtSamling abacAttributtSamling(BehandlingId behandlingId) {
+        return AbacAttributtSamling
+                .medJwtToken(SubjectHandler.getSubjectHandler().getInternSsoToken())
+                .setActionType(BeskyttetRessursActionAttributt.READ)
+                .setResource(BeskyttetRessursResourceAttributt.FAGSAK)
+                .leggTil(AbacDataAttributter.opprett().leggTil(StandardAbacAttributtType.BEHANDLING_UUID, behandlingId.toUUID()));
     }
 
     public List<OppgaveDto> getOppgaverTilBehandling(Long sakslisteId) {
@@ -91,15 +127,15 @@ public class OppgaveDtoTjeneste {
         for (int i = 0; i < oppgaver.size() && dtoList.size() < maksAntall; i++) {
             var oppgave = oppgaver.get(i);
             try {
-                dtoList.add(lagDtoFor(oppgave));
-            } catch (IkkeTilgangPåOppgaveException e) {
+                dtoList.add(lagDtoFor(oppgave, true));
+            } catch (IkkeTilgangPåBehandlingException e) {
                 logBegrensning(oppgave, e);
             }
         }
         return dtoList;
     }
 
-    private void logBegrensning(Oppgave oppgave, IkkeTilgangPåOppgaveException e) {
-        LOGGER.info("Prøver å slå opp i tps uten å ha tilgang. Ignorerer oppgave {}", oppgave.getId(), e);
+    private void logBegrensning(Oppgave oppgave, IkkeTilgangPåBehandlingException e) {
+        LOGGER.info("Prøver å slå opp oppgave uten å ha tilgang. Ignorerer oppgave {}", oppgave.getId(), e);
     }
 }

@@ -145,7 +145,7 @@ public class OppgaveRestTjeneste {
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
     public OppgaveStatusDto reserverOppgave(@NotNull @Parameter(description = "id til oppgaven") @Valid OppgaveIdDto oppgaveId) {
         var reservasjon = oppgaveTjeneste.reserverOppgave(oppgaveId.getVerdi());
-        return oppgaveDtoTjeneste.lagDtoFor(reservasjon.getOppgave()).getStatus();
+        return oppgaveDtoTjeneste.lagDtoFor(reservasjon.getOppgave(), false).getStatus();
     }
 
     @GET
@@ -156,7 +156,7 @@ public class OppgaveRestTjeneste {
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
     public OppgaveStatusDto hentReservasjon(@NotNull @Parameter(description = "id til oppgaven") @QueryParam("oppgaveId") @Valid OppgaveIdDto oppgaveId) {
         var reservasjon = oppgaveTjeneste.hentReservasjon(oppgaveId.getVerdi());
-        return oppgaveDtoTjeneste.lagDtoFor(reservasjon.getOppgave()).getStatus();
+        return oppgaveDtoTjeneste.lagDtoFor(reservasjon.getOppgave(), false).getStatus();
     }
 
 
@@ -169,7 +169,7 @@ public class OppgaveRestTjeneste {
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
     public OppgaveStatusDto opphevOppgaveReservasjon(@NotNull @Parameter(description = "Id og begrunnelse") @Valid OppgaveOpphevingDto opphevetOppgave) {
         var reservasjon = oppgaveTjeneste.frigiOppgave(opphevetOppgave.getOppgaveId().getVerdi(), opphevetOppgave.getBegrunnelse());
-        return oppgaveDtoTjeneste.lagDtoFor(reservasjon.getOppgave()).getStatus();
+        return oppgaveDtoTjeneste.lagDtoFor(reservasjon.getOppgave(), false).getStatus();
     }
 
     @POST
@@ -181,7 +181,7 @@ public class OppgaveRestTjeneste {
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
     public OppgaveStatusDto forlengOppgaveReservasjon(@NotNull @Parameter(description = "id til oppgaven") @Valid OppgaveIdDto oppgaveId) {
         var reservasjon = oppgaveTjeneste.forlengReservasjonPåOppgave(oppgaveId.getVerdi());
-        return oppgaveDtoTjeneste.lagDtoFor(reservasjon.getOppgave()).getStatus();
+        return oppgaveDtoTjeneste.lagDtoFor(reservasjon.getOppgave(), false).getStatus();
     }
 
     @POST
@@ -193,8 +193,8 @@ public class OppgaveRestTjeneste {
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
     public OppgaveStatusDto endreOppgaveReservasjon(@NotNull @Parameter(description = "forleng til dato") @Valid ReservasjonsEndringDto reservasjonsEndring) {
         var tidspunkt = ReservasjonTidspunktUtil.utledReservasjonTidspunkt(reservasjonsEndring.getReserverTil());
-        var reservasjon = oppgaveTjeneste.endreReservasjonPåOppgave(reservasjonsEndring.getOppgaveId(), tidspunkt);
-        return oppgaveDtoTjeneste.lagDtoFor(reservasjon.getOppgave()).getStatus();
+        var reservasjon = oppgaveTjeneste.endreReservasjonPåOppgave(reservasjonsEndring.getOppgaveId().getVerdi(), tidspunkt);
+        return oppgaveDtoTjeneste.lagDtoFor(reservasjon.getOppgave(), false).getStatus();
     }
 
     @GET
@@ -244,7 +244,7 @@ public class OppgaveRestTjeneste {
                 oppgaveFlyttingId.getBrukerIdent().getVerdi(),
                 oppgaveFlyttingId.getBegrunnelse());
         LOGGER.info("Reservasjon flyttet: {}", oppgaveFlyttingId);
-        return oppgaveDtoTjeneste.lagDtoFor(reservasjon.getOppgave()).getStatus();
+        return oppgaveDtoTjeneste.lagDtoFor(reservasjon.getOppgave(), false).getStatus();
     }
 
     @GET

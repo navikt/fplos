@@ -212,6 +212,11 @@ public class OppgaveTjenesteImpl implements OppgaveTjeneste {
         return lagSaksbehandlerinformasjonDto(ident);
     }
 
+    @Override
+    public Oppgave hentOppgave(Long oppgaveId) {
+        return oppgaveRepository.hentOppgave(oppgaveId);
+    }
+
     private SaksbehandlerinformasjonDto lagSaksbehandlerinformasjonDto(String ident) {
         return new SaksbehandlerinformasjonDto(ident, hentSaksbehandlerNavn(ident), ansattTjeneste.hentAvdelingerNavnForAnsatt(ident));
     }
