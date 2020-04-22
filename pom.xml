@@ -26,11 +26,9 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
-        <!-- Felles avhengigheter i prosjektet Disse skal ALLTID være en
-            RELEASE-avhengighet UNNTAK: feature-brancher og lokalt -->
         <fp-kontrakter.version>5.1-20200225123631-afeacc4</fp-kontrakter.version>
         <tjenestespesifikasjoner.version>1.2019.12.18-12.22-ce897c4eb2c1</tjenestespesifikasjoner.version>
-        <felles.version>1.6-20200309160245-03ff62e</felles.version>
+        <felles.version>1.6-20200422053939-3ecbdd1</felles.version>
 
         <!-- NAV -->
         <organisasjon-ressurs-enhet.version>1.0.0</organisasjon-ressurs-enhet.version>

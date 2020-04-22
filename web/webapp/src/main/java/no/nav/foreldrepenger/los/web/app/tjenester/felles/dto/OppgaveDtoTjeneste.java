@@ -84,7 +84,7 @@ public class OppgaveDtoTjeneste {
         return AbacAttributtSamling
                 .medJwtToken(SubjectHandler.getSubjectHandler().getInternSsoToken())
                 .setActionType(BeskyttetRessursActionAttributt.READ)
-                .setResource(BeskyttetRessursResourceAttributt.FAGSAK)
+                .setResource(BeskyttetRessursResourceAttributt.FAGSAK.getEksternKode())
                 .leggTil(AbacDataAttributter.opprett().leggTil(StandardAbacAttributtType.BEHANDLING_UUID, behandlingId.toUUID()));
     }
 

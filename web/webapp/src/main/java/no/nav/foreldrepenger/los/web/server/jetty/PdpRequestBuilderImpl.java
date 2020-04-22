@@ -54,7 +54,7 @@ public class PdpRequestBuilderImpl implements PdpRequestBuilder {
         pdpRequest.put(RESOURCE_FELLES_DOMENE, ABAC_DOMAIN);
         pdpRequest.put(PdpKlient.ENVIRONMENT_AUTH_TOKEN, attributter.getIdToken());
         pdpRequest.put(XACML10_ACTION_ACTION_ID, attributter.getActionType().getEksternKode());
-        pdpRequest.put(RESOURCE_FELLES_RESOURCE_TYPE, attributter.getResource().getEksternKode());
+        pdpRequest.put(RESOURCE_FELLES_RESOURCE_TYPE, attributter.getResource());
 
         Set<Long> oppgaveIdList = attributter.getVerdier(FplosAbacAttributtType.OPPGAVE_ID);
         if (oppgaveIdList.size() > 0) {
