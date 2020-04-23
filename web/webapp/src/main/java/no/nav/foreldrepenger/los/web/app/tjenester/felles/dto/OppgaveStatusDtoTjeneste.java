@@ -26,13 +26,18 @@ public class OppgaveStatusDtoTjeneste {
     OppgaveStatusDto lagStatusFor(Oppgave oppgave) {
         if (oppgave.harAktivReservasjon()) {
             var flyttetAv = hentFlyttetAv(oppgave.getReservasjon()).orElse(null);
-            return OppgaveStatusDto.reservert(oppgave.getReservasjon(), oppgave.getReservasjon().getReservertAv(), flyttetAv);
+            var reservertAv = oppgave.getReservasjon().getReservertAv();
+            return OppgaveStatusDto.reservert(oppgave.getReservasjon(), hentNavn(reservertAv), flyttetAv);
         }
         return OppgaveStatusDto.ikkeReservert();
     }
 
     private Optional<String> hentFlyttetAv(Reservasjon reservasjon) {
         var flyttetAv = reservasjon.getFlyttetAv();
-        return flyttetAv.map(saksbehandler -> ansattTjeneste.hentAnsattNavn(saksbehandler));
+        return flyttetAv.map(saksbehandler -> hentNavn(saksbehandler));
+    }
+
+    private String hentNavn(String saksbehandlerIdent) {
+        return ansattTjeneste.hentAnsattNavn(saksbehandlerIdent);
     }
 }
