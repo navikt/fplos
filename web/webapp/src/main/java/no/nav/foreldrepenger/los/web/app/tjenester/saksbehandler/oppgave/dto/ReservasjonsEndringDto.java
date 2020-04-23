@@ -3,7 +3,6 @@ package no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.oppgave.dto;
 import java.time.LocalDate;
 import java.util.Objects;
 
-import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -16,7 +15,6 @@ public class ReservasjonsEndringDto implements AbacDto {
 
     @JsonProperty("oppgaveId")
     @NotNull
-    @Digits(integer = 18, fraction = 0)
     private OppgaveIdDto oppgaveId;
 
     @JsonProperty("reserverTil")
