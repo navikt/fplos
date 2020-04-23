@@ -44,7 +44,6 @@ import no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.oppgave.dto.Opp
 import no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.oppgave.dto.OppgaveOpphevingDto;
 import no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.oppgave.dto.ReservasjonsEndringDto;
 import no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.oppgave.dto.SaknummerIderDto;
-import no.nav.foreldrepenger.loslager.oppgave.Oppgave;
 import no.nav.fplos.oppgave.OppgaveTjeneste;
 import no.nav.fplos.oppgave.SaksbehandlerinformasjonDto;
 import no.nav.vedtak.sikkerhet.abac.BeskyttetRessurs;
@@ -77,24 +76,24 @@ public class OppgaveRestTjeneste {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Operation(description = "Init hent oppgaver", tags = "Saksbehandler",
-        responses = {
-            @ApiResponse(responseCode = "202", description = "Hent oppgaver initiert, Returnerer link til å polle etter nye oppgaver",
-                    headers = { @Header(name = "Location") })
-    })
+            responses = {
+                    @ApiResponse(responseCode = "202", description = "Hent oppgaver initiert, Returnerer link til å polle etter nye oppgaver",
+                            headers = {@Header(name = "Location")})
+            })
     @BeskyttetRessurs(action = READ, ressurs = FAGSAK)
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
     public Response hentOppgaver(@NotNull @Valid @QueryParam("sakslisteId") SakslisteIdDto sakslisteId, @Valid @QueryParam("oppgaveIder") OppgaveIderDto oppgaveIder) throws URISyntaxException {
-        URI uri = new URI(("/saksbehandler/oppgaver/status?sakslisteId=" + sakslisteId.getVerdi()) + (oppgaveIder == null ? "" : "&oppgaveIder=" +oppgaveIder.getVerdi()));
+        URI uri = new URI(("/saksbehandler/oppgaver/status?sakslisteId=" + sakslisteId.getVerdi()) + (oppgaveIder == null ? "" : "&oppgaveIder=" + oppgaveIder.getVerdi()));
         return Response.accepted().location(uri).build();
     }
 
     @GET
     @Path("/status")
     @Operation(description = "Url for å polle på oppgaver asynkront", tags = "Saksbehandler",
-        responses = {
-            @ApiResponse(responseCode = "200", description = "Returnerer Status", content = @Content(schema = @Schema(implementation = AsyncPollingStatus.class))),
-            @ApiResponse(responseCode = "303", description = "Nye oppgaver tilgjenglig", headers = { @Header(name = "Location") })
-    })
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Returnerer Status", content = @Content(schema = @Schema(implementation = AsyncPollingStatus.class))),
+                    @ApiResponse(responseCode = "303", description = "Nye oppgaver tilgjenglig", headers = {@Header(name = "Location")})
+            })
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
     @BeskyttetRessurs(action = READ, ressurs = FAGSAK)
     public Response hentNesteOppgaverOgSjekkOmDisseErNye(@NotNull @Valid @QueryParam("sakslisteId") SakslisteIdDto sakslisteId,
@@ -103,8 +102,7 @@ public class OppgaveRestTjeneste {
         boolean skalPolle = false;
 
         if (oppgaveIderSomVises.isEmpty()) {
-            List<Oppgave> nesteOppgaver = oppgaveTjeneste.hentOppgaver(sakslisteId.getVerdi());
-            skalPolle = nesteOppgaver.isEmpty();
+            skalPolle = !oppgaveDtoTjeneste.harTilgjengeligeOppgaver(sakslisteId);
             if (!skalPolle) {
                 URI uri = new URI("/saksbehandler/oppgaver/resultat?sakslisteId=" + sakslisteId.getVerdi());
                 return Response.seeOther(uri).build();
@@ -113,7 +111,7 @@ public class OppgaveRestTjeneste {
 
         if (skalPolle || !oppgaveTjeneste.harForandretOppgaver(oppgaveIderSomVises)) {
             String ider = oppgaverIder != null ? oppgaverIder.getVerdi() : "";
-            URI uri = new URI("/saksbehandler/oppgaver/status?sakslisteId=" +  sakslisteId.getVerdi() + "&oppgaveIder=" + ider);
+            URI uri = new URI("/saksbehandler/oppgaver/status?sakslisteId=" + sakslisteId.getVerdi() + "&oppgaveIder=" + ider);
             AsyncPollingStatus status = new AsyncPollingStatus(AsyncPollingStatus.Status.PENDING, "", POLL_INTERVAL_MILLIS);
             status.setLocation(uri);
             return Response.status(status.getStatus().getHttpStatus())
@@ -121,7 +119,7 @@ public class OppgaveRestTjeneste {
                     .build();
         }
 
-        URI uri = new URI("/saksbehandler/oppgaver/resultat?sakslisteId=" +  sakslisteId.getVerdi());
+        URI uri = new URI("/saksbehandler/oppgaver/resultat?sakslisteId=" + sakslisteId.getVerdi());
         return Response.seeOther(uri).build();
     }
 
@@ -129,9 +127,9 @@ public class OppgaveRestTjeneste {
     @Path("/resultat")
     @Produces(MediaType.APPLICATION_JSON)
     @Operation(description = "Hent " + ANTALL_OPPGAVER_SOM_VISES_TIL_SAKSBEHANDLER + " neste oppgaver", tags = "Saksbehandler",
-        responses = {
-            @ApiResponse(responseCode = "200", description = "Returnerer Oppgaver", content = @Content(schema = @Schema(implementation = OppgaveDto.class))),
-    })
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Returnerer Oppgaver", content = @Content(schema = @Schema(implementation = OppgaveDto.class))),
+            })
     @BeskyttetRessurs(action = READ, ressurs = FAGSAK)
     public List<OppgaveDto> getOppgaverTilBehandling(@NotNull @QueryParam("sakslisteId") @Valid SakslisteIdDto sakslisteId) {
         return oppgaveDtoTjeneste.getOppgaverTilBehandling(sakslisteId.getVerdi());

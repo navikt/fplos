@@ -71,11 +71,21 @@ public class OppgaveDtoTjeneste {
         return new OppgaveDto(oppgave, tpsPersonDto, oppgaveStatus);
     }
 
-    private void sjekkTilgang(BehandlingId behandlingId) {
+    public boolean harTilgjengeligeOppgaver(SakslisteIdDto sakslisteId) {
+        return oppgaveTjeneste.hentOppgaver(sakslisteId.getVerdi())
+                .stream()
+                .anyMatch(o -> harTilgang(o.getBehandlingId()));
+    }
+
+    private boolean harTilgang(BehandlingId behandlingId) {
         var abacAttributtSamling = abacAttributtSamling(behandlingId);
         var pdpRequest = pdpRequestBuilder.lagPdpRequest(abacAttributtSamling);
         var tilgangsbeslutning = pdpKlient.forespørTilgang(pdpRequest);
-        if (!tilgangsbeslutning.fikkTilgang()) {
+        return tilgangsbeslutning.fikkTilgang();
+    }
+
+    private void sjekkTilgang(BehandlingId behandlingId) {
+        if (!harTilgang(behandlingId)) {
             throw new IkkeTilgangPåBehandlingException(behandlingId);
         }
     }
