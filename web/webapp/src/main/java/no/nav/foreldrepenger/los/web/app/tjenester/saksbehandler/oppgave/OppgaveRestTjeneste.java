@@ -103,7 +103,7 @@ public class OppgaveRestTjeneste {
         boolean skalPolle = false;
 
         if (oppgaveIderSomVises.isEmpty()) {
-            List<Oppgave> nesteOppgaver = oppgaveTjeneste.hentOppgaver(sakslisteId.getVerdi(), 1);
+            List<Oppgave> nesteOppgaver = oppgaveTjeneste.hentOppgaver(sakslisteId.getVerdi());
             skalPolle = nesteOppgaver.isEmpty();
             if (!skalPolle) {
                 URI uri = new URI("/saksbehandler/oppgaver/resultat?sakslisteId=" + sakslisteId.getVerdi());

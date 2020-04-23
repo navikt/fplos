@@ -129,13 +129,13 @@ public class OppgaveDtoTjeneste {
             try {
                 dtoList.add(lagDtoFor(oppgave, true));
             } catch (IkkeTilgangPåBehandlingException e) {
-                logBegrensning(oppgave, e);
+                logBegrensning(oppgave);
             }
         }
         return dtoList;
     }
 
-    private void logBegrensning(Oppgave oppgave, IkkeTilgangPåBehandlingException e) {
-        LOGGER.info("Prøver å slå opp oppgave uten å ha tilgang. Ignorerer oppgave {}", oppgave.getId(), e);
+    private void logBegrensning(Oppgave oppgave) {
+        LOGGER.info("Prøver å slå opp oppgave uten å ha tilgang. Ignorerer oppgave {}", oppgave.getId());
     }
 }
