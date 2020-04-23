@@ -57,6 +57,7 @@ import no.nav.vedtak.sikkerhet.abac.BeskyttetRessursResourceAttributt;
 public class OppgaveRestTjeneste {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(OppgaveRestTjeneste.class);
+    private static final int POLL_INTERVAL_MILLIS = 2500;
 
     private OppgaveTjeneste oppgaveTjeneste;
     private OppgaveDtoTjeneste oppgaveDtoTjeneste;
@@ -113,7 +114,7 @@ public class OppgaveRestTjeneste {
         if (skalPolle || !oppgaveTjeneste.harForandretOppgaver(oppgaveIderSomVises)) {
             String ider = oppgaverIder != null ? oppgaverIder.getVerdi() : "";
             URI uri = new URI("/saksbehandler/oppgaver/status?sakslisteId=" +  sakslisteId.getVerdi() + "&oppgaveIder=" + ider);
-            AsyncPollingStatus status = new AsyncPollingStatus(AsyncPollingStatus.Status.PENDING, "", 1000);
+            AsyncPollingStatus status = new AsyncPollingStatus(AsyncPollingStatus.Status.PENDING, "", POLL_INTERVAL_MILLIS);
             status.setLocation(uri);
             return Response.status(status.getStatus().getHttpStatus())
                     .entity(status)
