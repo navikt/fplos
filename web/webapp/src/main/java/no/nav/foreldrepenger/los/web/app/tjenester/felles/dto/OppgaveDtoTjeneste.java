@@ -10,7 +10,6 @@ import javax.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.oppgave.OppgaveRestTjeneste;
 import no.nav.foreldrepenger.loslager.BehandlingId;
 import no.nav.foreldrepenger.loslager.oppgave.Oppgave;
 import no.nav.fplos.oppgave.OppgaveTjeneste;
@@ -29,7 +28,7 @@ public class OppgaveDtoTjeneste {
 
     public static final int ANTALL_OPPGAVER_SOM_VISES_TIL_SAKSBEHANDLER = 3;
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(OppgaveRestTjeneste.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(OppgaveDtoTjeneste.class);
 
     private OppgaveTjeneste oppgaveTjeneste;
     private TpsTjeneste tpsTjeneste;
