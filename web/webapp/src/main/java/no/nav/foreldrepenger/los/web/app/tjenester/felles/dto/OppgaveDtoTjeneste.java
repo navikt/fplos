@@ -10,7 +10,7 @@ import javax.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import no.nav.foreldrepenger.loslager.BehandlingId;
+import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.saksliste.FplosAbacAttributtType;
 import no.nav.foreldrepenger.loslager.oppgave.Oppgave;
 import no.nav.fplos.oppgave.OppgaveTjeneste;
 import no.nav.fplos.person.api.TpsTjeneste;
@@ -20,7 +20,6 @@ import no.nav.vedtak.sikkerhet.abac.BeskyttetRessursActionAttributt;
 import no.nav.vedtak.sikkerhet.abac.BeskyttetRessursResourceAttributt;
 import no.nav.vedtak.sikkerhet.abac.PdpKlient;
 import no.nav.vedtak.sikkerhet.abac.PdpRequestBuilder;
-import no.nav.vedtak.sikkerhet.abac.StandardAbacAttributtType;
 import no.nav.vedtak.sikkerhet.context.SubjectHandler;
 
 @ApplicationScoped
@@ -63,7 +62,7 @@ public class OppgaveDtoTjeneste {
      */
     public OppgaveDto lagDtoFor(Oppgave oppgave, boolean sjekkTilgangPåBehandling) throws IkkeTilgangPåBehandlingException {
         if (sjekkTilgangPåBehandling) {
-            sjekkTilgang(oppgave.getBehandlingId());
+            sjekkTilgang(oppgave);
         }
         var tpsPersonDto = tpsTjeneste.hentBrukerForAktør(oppgave.getAktorId());
         var oppgaveStatus = oppgaveStatusDtoTjeneste.lagStatusFor(oppgave);
@@ -73,28 +72,28 @@ public class OppgaveDtoTjeneste {
     public boolean harTilgjengeligeOppgaver(SakslisteIdDto sakslisteId) {
         return oppgaveTjeneste.hentOppgaver(sakslisteId.getVerdi())
                 .stream()
-                .anyMatch(o -> harTilgang(o.getBehandlingId()));
+                .anyMatch(o -> harTilgang(o));
     }
 
-    private boolean harTilgang(BehandlingId behandlingId) {
-        var abacAttributtSamling = abacAttributtSamling(behandlingId);
+    private boolean harTilgang(Oppgave oppgave) {
+        var abacAttributtSamling = abacAttributtSamling(oppgave);
         var pdpRequest = pdpRequestBuilder.lagPdpRequest(abacAttributtSamling);
         var tilgangsbeslutning = pdpKlient.forespørTilgang(pdpRequest);
         return tilgangsbeslutning.fikkTilgang();
     }
 
-    private void sjekkTilgang(BehandlingId behandlingId) {
-        if (!harTilgang(behandlingId)) {
-            throw new IkkeTilgangPåBehandlingException(behandlingId);
+    private void sjekkTilgang(Oppgave oppgave) {
+        if (!harTilgang(oppgave)) {
+            throw new IkkeTilgangPåBehandlingException(oppgave.getBehandlingId());
         }
     }
 
-    private AbacAttributtSamling abacAttributtSamling(BehandlingId behandlingId) {
+    private AbacAttributtSamling abacAttributtSamling(Oppgave oppgave) {
         return AbacAttributtSamling
                 .medJwtToken(SubjectHandler.getSubjectHandler().getInternSsoToken())
                 .setActionType(BeskyttetRessursActionAttributt.READ)
                 .setResource(BeskyttetRessursResourceAttributt.FAGSAK.getEksternKode())
-                .leggTil(AbacDataAttributter.opprett().leggTil(StandardAbacAttributtType.BEHANDLING_UUID, behandlingId.toUUID()));
+                .leggTil(AbacDataAttributter.opprett().leggTil(FplosAbacAttributtType.OPPGAVE_ID, oppgave.getId()));
     }
 
     public List<OppgaveDto> getOppgaverTilBehandling(Long sakslisteId) {

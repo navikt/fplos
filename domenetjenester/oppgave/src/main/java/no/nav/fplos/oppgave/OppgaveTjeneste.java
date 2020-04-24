@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 
+import no.nav.foreldrepenger.loslager.BehandlingId;
 import no.nav.foreldrepenger.loslager.oppgave.Oppgave;
 import no.nav.foreldrepenger.loslager.oppgave.OppgaveFiltrering;
 import no.nav.foreldrepenger.loslager.oppgave.Reservasjon;
@@ -49,4 +50,6 @@ public interface OppgaveTjeneste {
     SaksbehandlerinformasjonDto hentSaksbehandlerNavnOgAvdelinger(String ident);
 
     Oppgave hentOppgave(Long oppgaveId);
+
+    Oppgave hentSisteOppgave(BehandlingId behandlingId);
 }

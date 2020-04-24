@@ -116,4 +116,6 @@ public interface OppgaveRepository {
     List<Oppgave> hentOppgaverForSynkronisering();
 
     Oppgave hentOppgave(Long oppgaveId);
+
+    List<Oppgave> hentOppgaver(BehandlingId behandlingId);
 }

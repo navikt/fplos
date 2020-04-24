@@ -15,11 +15,9 @@ import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.Alternative;
 import javax.inject.Inject;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.saksliste.FplosAbacAttributtType;
 import no.nav.foreldrepenger.loslager.BehandlingId;
+import no.nav.foreldrepenger.loslager.oppgave.Oppgave;
 import no.nav.fplos.foreldrepengerbehandling.ForeldrepengerBehandlingRestKlient;
 import no.nav.fplos.oppgave.OppgaveTjeneste;
 import no.nav.vedtak.sikkerhet.abac.AbacAttributtSamling;
@@ -32,8 +30,6 @@ import no.nav.vedtak.sikkerhet.abac.StandardAbacAttributtType;
 @Alternative
 @Priority(2)
 public class PdpRequestBuilderImpl implements PdpRequestBuilder {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(PdpRequestBuilderImpl.class);
 
     public static final String ABAC_DOMAIN = "foreldrepenger";
 
@@ -57,29 +53,45 @@ public class PdpRequestBuilderImpl implements PdpRequestBuilder {
         pdpRequest.put(RESOURCE_FELLES_RESOURCE_TYPE, attributter.getResource());
 
         Set<Long> oppgaveIdList = attributter.getVerdier(FplosAbacAttributtType.OPPGAVE_ID);
+        Set<UUID> behandlingIdList = attributter.getVerdier(StandardAbacAttributtType.BEHANDLING_UUID);
+
+        if (oppgaveIdList.size() > 0 && behandlingIdList.size() > 0) {
+            throw new IllegalStateException("Støtter ikke både oppgaveId og behandligId");
+        }
+
         if (oppgaveIdList.size() > 0) {
             var oppgave = oppgaveTjeneste.hentOppgave(oppgaveIdList.iterator().next());
-            var behandlingId = oppgave.getBehandlingId();
-            leggTilAttributterForBehandling(pdpRequest, behandlingId);
+            leggTilAttributterForBehandling(pdpRequest, oppgave);
         }
-        Set<UUID> behandlingIdList = attributter.getVerdier(StandardAbacAttributtType.BEHANDLING_UUID);
         if (behandlingIdList.size() > 0) {
             var behandlingId = new BehandlingId(behandlingIdList.iterator().next());
-            leggTilAttributterForBehandling(pdpRequest, behandlingId);
+            var oppgave = oppgaveTjeneste.hentSisteOppgave(behandlingId);
+            leggTilAttributterForBehandling(pdpRequest, oppgave);
         }
 
         return pdpRequest;
     }
 
-    private void leggTilAttributterForBehandling(PdpRequest pdpRequest, BehandlingId behandlingId) {
-        var dto = foreldrepengerBehandlingRestKlient.hentPipdataForBehandling(behandlingId);
-
-        if (dto.hasValues()) {
-            pdpRequest.put(FplosAbacAttributtType.RESOURCE_FORELDREPENGER_SAK_SAKSSTATUS, dto.getFagsakStatus());
-            pdpRequest.put(FplosAbacAttributtType.RESOURCE_FORELDREPENGER_SAK_BEHANDLINGSSTATUS, dto.getBehandlingStatus());
-            pdpRequest.put(RESOURCE_FELLES_PERSON_AKTOERID_RESOURCE, dto.getAktørIder());
+    private void leggTilAttributterForBehandling(PdpRequest pdpRequest, Oppgave oppgave) {
+        var system = oppgave.getSystem();
+        if ("FPSAK".equals(system)) {
+            leggTilAttributterForFpsakBehandling(pdpRequest, oppgave);
+        } else if ("FPTILBAKE".equals(system)) {
+            leggTilAttributterForFptilbakeBehandling(pdpRequest, oppgave);
         } else {
-            LOGGER.info("Pip kall mot fpsak returnerte tomt resultat for {}", behandlingId);
+            throw new IllegalStateException("Ukjent system " + system);
         }
+    }
+
+    private void leggTilAttributterForFpsakBehandling(PdpRequest pdpRequest, Oppgave oppgave) {
+        var dto = foreldrepengerBehandlingRestKlient.hentPipdataForBehandling(oppgave.getBehandlingId());
+
+        pdpRequest.put(FplosAbacAttributtType.RESOURCE_FORELDREPENGER_SAK_SAKSSTATUS, dto.getFagsakStatus());
+        pdpRequest.put(FplosAbacAttributtType.RESOURCE_FORELDREPENGER_SAK_BEHANDLINGSSTATUS, dto.getBehandlingStatus());
+        pdpRequest.put(RESOURCE_FELLES_PERSON_AKTOERID_RESOURCE, dto.getAktørIder());
+    }
+
+    private void leggTilAttributterForFptilbakeBehandling(PdpRequest pdpRequest, Oppgave oppgave) {
+        pdpRequest.put(RESOURCE_FELLES_PERSON_AKTOERID_RESOURCE, oppgave.getAktorId());
     }
 }

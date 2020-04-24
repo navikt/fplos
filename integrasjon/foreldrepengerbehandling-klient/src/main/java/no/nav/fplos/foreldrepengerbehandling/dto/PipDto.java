@@ -32,8 +32,4 @@ public class PipDto {
     public void setBehandlingStatus(String behandlingStatus) {
         this.behandlingStatus = behandlingStatus;
     }
-
-    public boolean hasValues() {
-        return getAktørIder() != null || getBehandlingStatus() != null || getFagsakStatus() != null;
-    }
 }
