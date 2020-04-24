@@ -14,6 +14,7 @@ import javax.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import no.nav.foreldrepenger.loslager.BehandlingId;
 import no.nav.foreldrepenger.loslager.oppgave.Oppgave;
 import no.nav.foreldrepenger.loslager.oppgave.OppgaveFiltrering;
 import no.nav.foreldrepenger.loslager.oppgave.Reservasjon;
@@ -215,6 +216,20 @@ public class OppgaveTjenesteImpl implements OppgaveTjeneste {
     @Override
     public Oppgave hentOppgave(Long oppgaveId) {
         return oppgaveRepository.hentOppgave(oppgaveId);
+    }
+
+    @Override
+    public Oppgave hentSisteOppgave(BehandlingId behandlingId) {
+        var oppgaver = oppgaveRepository.hentOppgaver(behandlingId);
+        var aktivOppgave = oppgaver.stream().filter(oppgave -> oppgave.getAktiv()).findFirst();
+        return aktivOppgave.orElseGet(() -> sisteAvsluttet(oppgaver));
+    }
+
+    private Oppgave sisteAvsluttet(List<Oppgave> oppgaver) {
+        return oppgaver.stream()
+                .sorted((o1, o2) -> o2.getOppgaveAvsluttet().compareTo(o1.getOppgaveAvsluttet()))
+                .findFirst()
+                .orElseThrow();
     }
 
     private SaksbehandlerinformasjonDto lagSaksbehandlerinformasjonDto(String ident) {

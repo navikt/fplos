@@ -606,6 +606,13 @@ public class OppgaveRepositoryImpl implements OppgaveRepository {
                 .getSingleResult();
     }
 
+    @Override
+    public List<Oppgave> hentOppgaver(BehandlingId behandlingId) {
+        return entityManager.createQuery("FROM Oppgave o where o.behandlingId = :behandlingId", Oppgave.class)
+                .setParameter("behandlingId", behandlingId.toUUID())
+                .getResultList();
+    }
+
 
     private void internLagre(Object objektTilLagring) {
         entityManager.persist(objektTilLagring);

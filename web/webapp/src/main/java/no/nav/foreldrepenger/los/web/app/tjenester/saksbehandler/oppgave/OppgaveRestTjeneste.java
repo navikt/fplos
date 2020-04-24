@@ -56,7 +56,7 @@ import no.nav.vedtak.sikkerhet.abac.BeskyttetRessursResourceAttributt;
 public class OppgaveRestTjeneste {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(OppgaveRestTjeneste.class);
-    private static final int POLL_INTERVAL_MILLIS = 2500;
+    private static final int POLL_INTERVAL_MILLIS = 1000;
 
     private OppgaveTjeneste oppgaveTjeneste;
     private OppgaveDtoTjeneste oppgaveDtoTjeneste;
