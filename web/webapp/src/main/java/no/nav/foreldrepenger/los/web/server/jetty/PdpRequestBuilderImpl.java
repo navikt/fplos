@@ -92,6 +92,6 @@ public class PdpRequestBuilderImpl implements PdpRequestBuilder {
     }
 
     private void leggTilAttributterForFptilbakeBehandling(PdpRequest pdpRequest, Oppgave oppgave) {
-        pdpRequest.put(RESOURCE_FELLES_PERSON_AKTOERID_RESOURCE, oppgave.getAktorId());
+        pdpRequest.put(RESOURCE_FELLES_PERSON_AKTOERID_RESOURCE, Set.of(String.valueOf(oppgave.getAktorId()));
     }
 }
