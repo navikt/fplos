@@ -15,6 +15,9 @@ import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.Alternative;
 import javax.inject.Inject;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.saksliste.FplosAbacAttributtType;
 import no.nav.foreldrepenger.loslager.BehandlingId;
 import no.nav.fplos.foreldrepengerbehandling.ForeldrepengerBehandlingRestKlient;
@@ -29,6 +32,8 @@ import no.nav.vedtak.sikkerhet.abac.StandardAbacAttributtType;
 @Alternative
 @Priority(2)
 public class PdpRequestBuilderImpl implements PdpRequestBuilder {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(PdpRequestBuilderImpl.class);
 
     public static final String ABAC_DOMAIN = "foreldrepenger";
 
@@ -68,8 +73,13 @@ public class PdpRequestBuilderImpl implements PdpRequestBuilder {
 
     private void leggTilAttributterForBehandling(PdpRequest pdpRequest, BehandlingId behandlingId) {
         var dto = foreldrepengerBehandlingRestKlient.hentPipdataForBehandling(behandlingId);
-        pdpRequest.put(FplosAbacAttributtType.RESOURCE_FORELDREPENGER_SAK_SAKSSTATUS, dto.getFagsakStatus());
-        pdpRequest.put(FplosAbacAttributtType.RESOURCE_FORELDREPENGER_SAK_BEHANDLINGSSTATUS, dto.getBehandlingStatus());
-        pdpRequest.put(RESOURCE_FELLES_PERSON_AKTOERID_RESOURCE, dto.getAktørIder());
+
+        if (dto.hasValues()) {
+            pdpRequest.put(FplosAbacAttributtType.RESOURCE_FORELDREPENGER_SAK_SAKSSTATUS, dto.getFagsakStatus());
+            pdpRequest.put(FplosAbacAttributtType.RESOURCE_FORELDREPENGER_SAK_BEHANDLINGSSTATUS, dto.getBehandlingStatus());
+            pdpRequest.put(RESOURCE_FELLES_PERSON_AKTOERID_RESOURCE, dto.getAktørIder());
+        } else {
+            LOGGER.info("Pip kall mot fpsak returnerte tomt resultat for {}", behandlingId);
+        }
     }
 }
