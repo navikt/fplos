@@ -6,9 +6,6 @@ import java.util.Optional;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import no.nav.foreldrepenger.loslager.oppgave.OppgaveFiltrering;
 import no.nav.foreldrepenger.loslager.organisasjon.Avdeling;
 import no.nav.foreldrepenger.loslager.organisasjon.Saksbehandler;
@@ -17,8 +14,6 @@ import no.nav.foreldrepenger.loslager.repository.OrganisasjonRepository;
 
 @ApplicationScoped
 public class AvdelingslederSaksbehandlerTjenesteImpl implements AvdelingslederSaksbehandlerTjeneste {
-
-    private static final Logger LOG = LoggerFactory.getLogger(AvdelingslederSaksbehandlerTjeneste.class);
 
     private OrganisasjonRepository organisasjonRepository;
     private OppgaveRepository oppgaveRepository;

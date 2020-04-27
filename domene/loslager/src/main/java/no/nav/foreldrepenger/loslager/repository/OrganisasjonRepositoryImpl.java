@@ -46,14 +46,6 @@ public class OrganisasjonRepositoryImpl implements OrganisasjonRepository {
     }
 
     @Override
-    public void slettSaksbehandler(String saksbehandlerIdent) {
-        entityManager.createNativeQuery("DELETE FROM SAKSBEHANDLER s " +
-                "WHERE s.SAKSBEHANDLER_IDENT = :saksbehandlerIdent")
-                .setParameter("saksbehandlerIdent", saksbehandlerIdent)
-                .executeUpdate();
-    }
-
-    @Override
     public Saksbehandler hentSaksbehandler(String saksbehandlerIdent) {
         return hentEksaktResultat(hentSaksbehandlerQuery(saksbehandlerIdent));
     }
@@ -76,14 +68,6 @@ public class OrganisasjonRepositoryImpl implements OrganisasjonRepository {
     private TypedQuery<Saksbehandler> hentSaksbehandlerQuery(String saksbehandlerIdent) {
         return entityManager.createQuery("FROM saksbehandler s WHERE upper(s.saksbehandlerIdent) = upper( :saksbehandlerIdent )", Saksbehandler.class)
                     .setParameter("saksbehandlerIdent", saksbehandlerIdent.toUpperCase());
-    }
-
-
-    @Override
-    public Avdeling hentAvdeling(Long avdelingId) {
-        TypedQuery<Avdeling> query = entityManager.createQuery("FROM avdeling a WHERE a.id = :avdelingId", Avdeling.class)
-                .setParameter("avdelingId", avdelingId);
-        return hentEksaktResultat(query);
     }
 
     @Override

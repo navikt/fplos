@@ -12,11 +12,7 @@ public interface OrganisasjonRepository {
 
     void lagre(Saksbehandler saksbehandler);
 
-    void slettSaksbehandler(String saksbehandlerIdent);
-
     Saksbehandler hentSaksbehandler(String saksbehandlerIdent);
-
-    Avdeling hentAvdeling(Long avdelingId);
 
     Avdeling hentAvdelingFraEnhet(String avdelingEnhet);
 
