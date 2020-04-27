@@ -9,23 +9,18 @@ import javax.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import no.nav.foreldrepenger.loslager.aktør.OrganisasjonsEnhet;
 import no.nav.foreldrepenger.loslager.oppgave.OppgaveFiltrering;
 import no.nav.foreldrepenger.loslager.organisasjon.Avdeling;
 import no.nav.foreldrepenger.loslager.organisasjon.Saksbehandler;
 import no.nav.foreldrepenger.loslager.repository.OppgaveRepository;
 import no.nav.foreldrepenger.loslager.repository.OrganisasjonRepository;
-import no.nav.fplos.domene.organisasjonsinformasjon.organisasjonressursenhet.OrganisasjonRessursEnhetTjeneste;
-import no.nav.vedtak.felles.integrasjon.ldap.LdapBruker;
-import no.nav.vedtak.felles.integrasjon.ldap.LdapBrukeroppslag;
 
 @ApplicationScoped
 public class AvdelingslederSaksbehandlerTjenesteImpl implements AvdelingslederSaksbehandlerTjeneste {
 
-    private static final Logger log = LoggerFactory.getLogger(AvdelingslederSaksbehandlerTjeneste.class);
+    private static final Logger LOG = LoggerFactory.getLogger(AvdelingslederSaksbehandlerTjeneste.class);
 
     private OrganisasjonRepository organisasjonRepository;
-    private OrganisasjonRessursEnhetTjeneste organisasjonRessursEnhetTjeneste;
     private OppgaveRepository oppgaveRepository;
 
     AvdelingslederSaksbehandlerTjenesteImpl() {
@@ -33,9 +28,8 @@ public class AvdelingslederSaksbehandlerTjenesteImpl implements AvdelingslederSa
     }
 
     @Inject
-    public AvdelingslederSaksbehandlerTjenesteImpl(OppgaveRepository oppgaveRepository, OrganisasjonRepository organisasjonRepository, OrganisasjonRessursEnhetTjeneste organisasjonRessursEnhetTjeneste) {
+    public AvdelingslederSaksbehandlerTjenesteImpl(OppgaveRepository oppgaveRepository, OrganisasjonRepository organisasjonRepository) {
         this.organisasjonRepository = organisasjonRepository;
-        this.organisasjonRessursEnhetTjeneste = organisasjonRessursEnhetTjeneste;
         this.oppgaveRepository = oppgaveRepository;
     }
 
@@ -79,24 +73,6 @@ public class AvdelingslederSaksbehandlerTjenesteImpl implements AvdelingslederSa
             oppgaveRepository.lagre(oppgaveFiltrering);
         }
         oppgaveRepository.refresh(avdeling);
-    }
-
-    @Override
-    public String hentSaksbehandlerNavn(String saksbehandlerIdent) {
-        try {
-            LdapBruker ldapBruker = new LdapBrukeroppslag().hentBrukerinformasjon(saksbehandlerIdent);
-            return ldapBruker.getDisplayName();
-        } catch (Exception e) {
-            // FIXME: funksjonelt tåles det ikke å kaste exception her pt. Må skrives om.
-            //throw AvdelingslederSaksbehandlerTjenesteFeil.FACTORY.feil(LDAP, e).toException();
-            log.warn("Henting av saksbehandlers navn feilet, returnerer null.", e);
-            return null;
-        }
-    }
-
-    @Override
-    public List<OrganisasjonsEnhet> hentSaksbehandlersAvdelinger(String saksbehandlerIdent) {
-        return organisasjonRessursEnhetTjeneste.hentEnhetListe(saksbehandlerIdent);
     }
 
     private Saksbehandler saksbehandlerFra(String saksbehandlerIdent) {

@@ -8,10 +8,7 @@ public class SaksbehandlerDto {
     private String navn;
     private List<String> avdelingsnavn;
 
-    public SaksbehandlerDto() {
-    }
-
-    public SaksbehandlerDto(SaksbehandlerBrukerIdentDto brukerIdent, String navn, List<String> avdelingsnavn) {
+    SaksbehandlerDto(SaksbehandlerBrukerIdentDto brukerIdent, String navn, List<String> avdelingsnavn) {
         this.brukerIdent = brukerIdent;
         this.navn = navn;
         this.avdelingsnavn = avdelingsnavn;

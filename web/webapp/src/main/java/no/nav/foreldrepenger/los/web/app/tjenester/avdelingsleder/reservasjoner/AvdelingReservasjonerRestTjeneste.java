@@ -1,7 +1,6 @@
 package no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.reservasjoner;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -23,9 +22,9 @@ import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.dto.AvdelingEn
 import no.nav.foreldrepenger.los.web.app.tjenester.felles.dto.OppgaveDtoTjeneste;
 import no.nav.foreldrepenger.los.web.app.tjenester.felles.dto.OppgaveStatusDto;
 import no.nav.foreldrepenger.los.web.app.tjenester.felles.dto.ReservasjonDto;
+import no.nav.foreldrepenger.los.web.app.tjenester.felles.dto.SaksbehandlerDtoTjeneste;
 import no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.oppgave.dto.OppgaveIdDto;
 import no.nav.foreldrepenger.loslager.oppgave.Reservasjon;
-import no.nav.fplos.avdelingsleder.AvdelingslederSaksbehandlerTjeneste;
 import no.nav.fplos.oppgave.OppgaveTjeneste;
 import no.nav.vedtak.sikkerhet.abac.BeskyttetRessurs;
 import no.nav.vedtak.sikkerhet.abac.BeskyttetRessursActionAttributt;
@@ -38,15 +37,15 @@ public class AvdelingReservasjonerRestTjeneste {
 
     private OppgaveTjeneste oppgaveTjeneste;
     private OppgaveDtoTjeneste oppgaveDtoTjeneste;
-    private AvdelingslederSaksbehandlerTjeneste avdelingslederSaksbehandlerTjeneste;
+    private SaksbehandlerDtoTjeneste saksbehandlerDtoTjeneste;
 
     @Inject
     public AvdelingReservasjonerRestTjeneste(OppgaveTjeneste oppgaveTjeneste,
                                              OppgaveDtoTjeneste oppgaveDtoTjeneste,
-                                             AvdelingslederSaksbehandlerTjeneste avdelingslederSaksbehandlerTjeneste) {
+                                             SaksbehandlerDtoTjeneste saksbehandlerDtoTjeneste) {
         this.oppgaveTjeneste = oppgaveTjeneste;
         this.oppgaveDtoTjeneste = oppgaveDtoTjeneste;
-        this.avdelingslederSaksbehandlerTjeneste = avdelingslederSaksbehandlerTjeneste;
+        this.saksbehandlerDtoTjeneste = saksbehandlerDtoTjeneste;
     }
 
     public AvdelingReservasjonerRestTjeneste() {
@@ -65,16 +64,10 @@ public class AvdelingReservasjonerRestTjeneste {
     private List<ReservasjonDto> tilReservasjonDtoListe(List<Reservasjon> reservasjoner) {
         return reservasjoner.stream()
                 .map(reservasjon -> {
-                    var reservertAvNavn = hentSaksbehandlersNavn(reservasjon.getReservertAv());
+                    var reservertAvNavn = saksbehandlerDtoTjeneste.hentSaksbehandlerNavn(reservasjon.getReservertAv());
                     return new ReservasjonDto(reservasjon, reservertAvNavn, null);
                 })
                 .collect(Collectors.toList());
-    }
-
-    private String hentSaksbehandlersNavn(String saksbehandlerIdent) {
-        return Optional.ofNullable(avdelingslederSaksbehandlerTjeneste.hentSaksbehandlerNavn(saksbehandlerIdent))
-                .map(String::toUpperCase)
-                .orElse("UKJENT SAKSBEHANDLER");
     }
 
     @POST

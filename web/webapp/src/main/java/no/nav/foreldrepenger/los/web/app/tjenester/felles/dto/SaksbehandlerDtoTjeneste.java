@@ -50,7 +50,7 @@ public class SaksbehandlerDtoTjeneste {
                 .collect(Collectors.toList());
     }
 
-    public Optional<SaksbehandlerDto> hentSaksbehandler(String ident) {
+    public Optional<SaksbehandlerDto> hentSaksbehandlerTilknyttetMinstEnKø(String ident) {
         List<Saksbehandler> saksbehandlere = organisasjonRepository.hentAlleSaksbehandlere();
         if (saksbehandlere.stream().noneMatch(saksbehandler -> saksbehandler.getSaksbehandlerIdent().equals(ident))) {
             return Optional.empty();
@@ -63,19 +63,19 @@ public class SaksbehandlerDtoTjeneste {
         return Optional.of(lagSaksbehandlerDto(ident));
     }
 
-    private SaksbehandlerDto lagSaksbehandlerDto(String ident) {
+    public SaksbehandlerDto lagSaksbehandlerDto(String ident) {
         var identDto = new SaksbehandlerBrukerIdentDto(ident);
         var navn = hentSaksbehandlerNavn(ident);
         var avdelinger = ansattTjeneste.hentAvdelingerNavnForAnsatt(ident);
         return new SaksbehandlerDto(identDto, navn, avdelinger);
     }
 
-    private SaksbehandlerDto map(Saksbehandler saksbehandler) {
+    public SaksbehandlerDto map(Saksbehandler saksbehandler) {
         var ident = saksbehandler.getSaksbehandlerIdent();
         return lagSaksbehandlerDto(ident);
     }
 
-    private String hentSaksbehandlerNavn(String ident) {
+    public String hentSaksbehandlerNavn(String ident) {
         try {
             return ansattTjeneste.hentAnsattNavn(ident);
         } catch (IntegrasjonException e) {

@@ -51,8 +51,8 @@ public class SaksbehandlerDtoTjenesteTest {
         avdelingslederTjeneste.leggSaksbehandlerTilListe(lagtInnLister.get(0).getId(), saksbehandler1.getSaksbehandlerIdent());
         entityManager.refresh(saksbehandler1);
 
-        assertThat(saksbehandlerDtoTjeneste.hentSaksbehandler(saksbehandler3Ident)).isEmpty();
-        assertThat(saksbehandlerDtoTjeneste.hentSaksbehandler(saksbehandler2Ident)).isEmpty();
+        assertThat(saksbehandlerDtoTjeneste.hentSaksbehandlerTilknyttetMinstEnKø(saksbehandler3Ident)).isEmpty();
+        assertThat(saksbehandlerDtoTjeneste.hentSaksbehandlerTilknyttetMinstEnKø(saksbehandler2Ident)).isEmpty();
     }
 
     private List<OppgaveFiltrering> leggInnEtSettMedLister(int antallLister){

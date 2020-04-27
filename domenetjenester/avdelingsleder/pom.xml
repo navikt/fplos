@@ -57,11 +57,6 @@
             <artifactId>logback-classic</artifactId>
         </dependency>
 
-        <!-- <dependency>
-             <groupId>no.nav.vedtak.felles.integrasjon</groupId>
-             <artifactId>person-klient</artifactId>
-         </dependency>-->
-
     </dependencies>
 
 </project>

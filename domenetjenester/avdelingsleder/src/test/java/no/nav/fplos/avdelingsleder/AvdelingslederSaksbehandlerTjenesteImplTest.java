@@ -1,5 +1,15 @@
 package no.nav.fplos.avdelingsleder;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.util.List;
+
+import javax.persistence.EntityManager;
+
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
+
 import no.nav.foreldrepenger.dbstoette.UnittestRepositoryRule;
 import no.nav.foreldrepenger.loslager.organisasjon.Avdeling;
 import no.nav.foreldrepenger.loslager.organisasjon.Saksbehandler;
@@ -7,16 +17,6 @@ import no.nav.foreldrepenger.loslager.repository.OppgaveRepository;
 import no.nav.foreldrepenger.loslager.repository.OppgaveRepositoryImpl;
 import no.nav.foreldrepenger.loslager.repository.OrganisasjonRepository;
 import no.nav.foreldrepenger.loslager.repository.OrganisasjonRepositoryImpl;
-import no.nav.fplos.domene.organisasjonsinformasjon.organisasjonressursenhet.OrganisasjonRessursEnhetTjeneste;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.mockito.Mockito;
-
-import javax.persistence.EntityManager;
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 public class AvdelingslederSaksbehandlerTjenesteImplTest {
 
@@ -26,16 +26,15 @@ public class AvdelingslederSaksbehandlerTjenesteImplTest {
     private final OppgaveRepository oppgaveRepository = new OppgaveRepositoryImpl(entityManager);
     private final OrganisasjonRepository organisasjonRepository = new OrganisasjonRepositoryImpl(entityManager);
 
-    private OrganisasjonRessursEnhetTjeneste organisasjonRessursEnhetTjeneste = Mockito.mock(OrganisasjonRessursEnhetTjeneste.class);
-    private AvdelingslederSaksbehandlerTjeneste avdelingslederSaksbehandlerTjeneste = new AvdelingslederSaksbehandlerTjenesteImpl(oppgaveRepository, organisasjonRepository, organisasjonRessursEnhetTjeneste);
-    private Avdeling avdelingDrammen = null;
+    private AvdelingslederSaksbehandlerTjeneste avdelingslederSaksbehandlerTjeneste = new AvdelingslederSaksbehandlerTjenesteImpl(oppgaveRepository,
+            organisasjonRepository);
     private static String NY_SAKSBEHANDLER_IDENT = "zNySaksbehandler";
     private String AVDELING_DRAMMEN_ENHET;
 
     @Before
     public void setup(){
         List<Avdeling> avdelings = repoRule.getRepository().hentAlle(Avdeling.class);
-        avdelingDrammen = avdelings.stream().filter(avdeling -> Avdeling.AVDELING_DRAMMEN_ENHET.equals(avdeling.getAvdelingEnhet())).findFirst().orElseThrow();
+        Avdeling avdelingDrammen = avdelings.stream().filter(avdeling -> Avdeling.AVDELING_DRAMMEN_ENHET.equals(avdeling.getAvdelingEnhet())).findFirst().orElseThrow();
         AVDELING_DRAMMEN_ENHET = avdelingDrammen.getAvdelingEnhet();
     }
 
