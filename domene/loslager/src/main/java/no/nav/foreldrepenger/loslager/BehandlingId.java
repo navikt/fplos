@@ -3,7 +3,7 @@ package no.nav.foreldrepenger.loslager;
 import java.util.Objects;
 import java.util.UUID;
 
-public class BehandlingId {
+public class BehandlingId implements Comparable<UUID> {
 
     private UUID value;
 
@@ -46,5 +46,10 @@ public class BehandlingId {
     @Override
     public String toString() {
         return value.toString();
+    }
+
+    @Override
+    public int compareTo(UUID uuid) {
+        return value.compareTo(uuid);
     }
 }

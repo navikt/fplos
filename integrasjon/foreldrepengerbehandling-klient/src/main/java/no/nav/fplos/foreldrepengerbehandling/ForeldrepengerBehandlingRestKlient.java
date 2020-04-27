@@ -23,7 +23,6 @@ import org.slf4j.LoggerFactory;
 import no.nav.foreldrepenger.loslager.BehandlingId;
 import no.nav.fplos.foreldrepengerbehandling.dto.KontrollerFaktaDataDto;
 import no.nav.fplos.foreldrepengerbehandling.dto.KontrollerFaktaPeriodeDto;
-import no.nav.fplos.foreldrepengerbehandling.dto.PipDto;
 import no.nav.fplos.foreldrepengerbehandling.dto.SokefeltDto;
 import no.nav.fplos.foreldrepengerbehandling.dto.aksjonspunkt.AksjonspunktDto;
 import no.nav.fplos.foreldrepengerbehandling.dto.behandling.BehandlingÅrsakDto;
@@ -37,7 +36,6 @@ import no.nav.fplos.foreldrepengerbehandling.dto.inntektarbeidytelse.Inntektsmel
 import no.nav.fplos.foreldrepengerbehandling.dto.ytelsefordeling.YtelseFordelingDto;
 import no.nav.vedtak.exception.ManglerTilgangException;
 import no.nav.vedtak.felles.integrasjon.rest.OidcRestClient;
-import no.nav.vedtak.felles.integrasjon.rest.SystemUserOidcRestClient;
 import no.nav.vedtak.konfig.KonfigVerdi;
 import no.nav.vedtak.sikkerhet.loginmodule.ContainerLogin;
 
@@ -48,24 +46,18 @@ public class ForeldrepengerBehandlingRestKlient {
     private static final String FPSAK_FAGSAK_FNR = "/fpsak/api/fagsak/sok";
     private static final String FPSAK_BEHANDLINGER = "/fpsak/api/behandlinger";
     private static final String FPSAK_FAGSAK_SAKSNUMMER = "/fpsak/api/fagsak";
-
     private static final String AKSJONSPUNKTER_LINK = "aksjonspunkter";
     private static final String INNTEKT_ARBEID_YTELSE_LINK = "inntekt-arbeid-ytelse";
     private static final String UTTAK_KONTROLLER_FAKTA_PERIODER_LINK = "uttak-kontroller-fakta-perioder";
     private static final String YTELSEFORDELING_LINK = "ytelsefordeling";
 
-    private static final String FPSAK_PIP_ENDPOINT = "/fpsak/api/pip/pipdata-for-behandling";
-
     private OidcRestClient oidcRestClient;
-    private SystemUserOidcRestClient systemUserOidcRestClient;
     private String fpsakBaseUrl;
 
     @Inject
     public ForeldrepengerBehandlingRestKlient(OidcRestClient oidcRestClient,
-                                              SystemUserOidcRestClient systemUserOidcRestClient,
                                               @KonfigVerdi(value = "fpsak.url", defaultVerdi = "http://fpsak") String fpsakUrl) {
         this.oidcRestClient = oidcRestClient;
-        this.systemUserOidcRestClient = systemUserOidcRestClient;
         this.fpsakBaseUrl = fpsakUrl;
     }
 
@@ -239,15 +231,5 @@ public class ForeldrepengerBehandlingRestKlient {
                 .stream()
                 .filter(l -> l.getRel().equals(typeLink))
                 .findFirst();
-    }
-
-    public PipDto hentPipdataForBehandling(BehandlingId behandlingId) {
-        try {
-            URIBuilder pipUriBuilder = new URIBuilder(fpsakBaseUrl + FPSAK_PIP_ENDPOINT);
-            pipUriBuilder.setParameter("behandlingUuid", behandlingId.toString());
-            return systemUserOidcRestClient.getReturnsOptional(pipUriBuilder.build(), PipDto.class).orElseThrow(IllegalStateException::new);
-        } catch (URISyntaxException e) {
-            throw new RuntimeException(e);
-        }
     }
 }

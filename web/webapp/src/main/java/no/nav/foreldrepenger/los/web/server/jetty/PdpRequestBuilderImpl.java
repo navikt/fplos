@@ -18,7 +18,7 @@ import javax.inject.Inject;
 import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.saksliste.FplosAbacAttributtType;
 import no.nav.foreldrepenger.loslager.BehandlingId;
 import no.nav.foreldrepenger.loslager.oppgave.Oppgave;
-import no.nav.fplos.foreldrepengerbehandling.ForeldrepengerBehandlingRestKlient;
+import no.nav.fplos.foreldrepengerbehandling.ForeldrepengerPipKlient;
 import no.nav.fplos.oppgave.OppgaveTjeneste;
 import no.nav.vedtak.sikkerhet.abac.AbacAttributtSamling;
 import no.nav.vedtak.sikkerhet.abac.PdpKlient;
@@ -33,13 +33,13 @@ public class PdpRequestBuilderImpl implements PdpRequestBuilder {
 
     public static final String ABAC_DOMAIN = "foreldrepenger";
 
-    private ForeldrepengerBehandlingRestKlient foreldrepengerBehandlingRestKlient;
+    private ForeldrepengerPipKlient foreldrepengerPipKlient;
     private OppgaveTjeneste oppgaveTjeneste;
 
     @Inject
-    public PdpRequestBuilderImpl(ForeldrepengerBehandlingRestKlient foreldrepengerBehandlingRestKlient,
+    public PdpRequestBuilderImpl(ForeldrepengerPipKlient foreldrepengerPipKlient,
                                  OppgaveTjeneste oppgaveTjeneste) {
-        this.foreldrepengerBehandlingRestKlient = foreldrepengerBehandlingRestKlient;
+        this.foreldrepengerPipKlient = foreldrepengerPipKlient;
         this.oppgaveTjeneste = oppgaveTjeneste;
     }
 
@@ -84,7 +84,7 @@ public class PdpRequestBuilderImpl implements PdpRequestBuilder {
     }
 
     private void leggTilAttributterForFpsakBehandling(PdpRequest pdpRequest, Oppgave oppgave) {
-        var dto = foreldrepengerBehandlingRestKlient.hentPipdataForBehandling(oppgave.getBehandlingId());
+        var dto = foreldrepengerPipKlient.hentPipdataForBehandling(oppgave.getBehandlingId());
 
         pdpRequest.put(FplosAbacAttributtType.RESOURCE_FORELDREPENGER_SAK_SAKSSTATUS, dto.getFagsakStatus());
         pdpRequest.put(FplosAbacAttributtType.RESOURCE_FORELDREPENGER_SAK_BEHANDLINGSSTATUS, dto.getBehandlingStatus());
