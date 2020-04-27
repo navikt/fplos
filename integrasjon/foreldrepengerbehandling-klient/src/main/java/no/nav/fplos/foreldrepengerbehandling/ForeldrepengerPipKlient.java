@@ -18,8 +18,8 @@ public class ForeldrepengerPipKlient {
 
     private static final String FPSAK_PIP_ENDPOINT = "/fpsak/api/pip/pipdata-for-behandling";
 
-    private static final int PIP_CACHE_SIZE = 100;
-    private static final int PIP_CACHE_TIMEOUT_MILLIS = 10000;
+    private static final int PIP_CACHE_SIZE = 300;
+    private static final int PIP_CACHE_TIMEOUT_MILLIS = 30000;
 
     private SystemUserOidcRestClient systemUserOidcRestClient;
     private String fpsakBaseUrl;
