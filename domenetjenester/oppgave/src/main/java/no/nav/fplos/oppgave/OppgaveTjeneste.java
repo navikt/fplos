@@ -43,11 +43,7 @@ public interface OppgaveTjeneste {
 
     boolean harForandretOppgaver(List<Long> oppgaveIder);
 
-    List<SaksbehandlerinformasjonDto> hentSakslistensSaksbehandlere(Long sakslisteId);
-
     List<Oppgave> hentSisteReserverteOppgaver();
-
-    SaksbehandlerinformasjonDto hentSaksbehandlerNavnOgAvdelinger(String ident);
 
     Oppgave hentOppgave(Long oppgaveId);
 

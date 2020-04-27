@@ -2,7 +2,6 @@ package no.nav.fplos.oppgave;
 
 import static java.time.temporal.ChronoUnit.MINUTES;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.mock;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -29,7 +28,6 @@ import no.nav.foreldrepenger.loslager.repository.OppgaveRepository;
 import no.nav.foreldrepenger.loslager.repository.OppgaveRepositoryImpl;
 import no.nav.foreldrepenger.loslager.repository.OrganisasjonRepository;
 import no.nav.foreldrepenger.loslager.repository.OrganisasjonRepositoryImpl;
-import no.nav.fplos.ansatt.AnsattTjeneste;
 import no.nav.fplos.avdelingsleder.AvdelingslederTjeneste;
 import no.nav.fplos.avdelingsleder.AvdelingslederTjenesteImpl;
 
@@ -42,8 +40,8 @@ public class OppgaveTjenesteImplTest {
     private final OrganisasjonRepository organisasjonRepository = new OrganisasjonRepositoryImpl(entityManager);
 
     private AvdelingslederTjeneste avdelingslederTjeneste = new AvdelingslederTjenesteImpl(oppgaveRepository, organisasjonRepository);
-    private AnsattTjeneste ansattTjeneste = mock(AnsattTjeneste.class);
-    private OppgaveTjenesteImpl oppgaveTjeneste = new OppgaveTjenesteImpl(oppgaveRepository, organisasjonRepository, avdelingslederTjeneste, ansattTjeneste);
+
+    private OppgaveTjenesteImpl oppgaveTjeneste = new OppgaveTjenesteImpl(oppgaveRepository, organisasjonRepository);
 
     private static String AVDELING_DRAMMEN_ENHET = "4806";
     private static String AVDELING_BERGEN_ENHET = "4812";
@@ -260,26 +258,5 @@ public class OppgaveTjenesteImplTest {
         assertThat(oppgaveTjeneste.harForandretOppgaver(oppgaveIder)).isFalse();
         oppgaveTjeneste.reserverOppgave(førsteOppgave.getId());
         assertThat(oppgaveTjeneste.harForandretOppgaver(oppgaveIder)).isTrue();
-    }
-
-    @Test
-    public void testHentSaksbehandlerNavnOgAvdelinger(){
-        String saksbehandler1Ident = "1234567";
-        String saksbehandler2Ident = "9876543";
-        String saksbehandler3Ident = "1234";
-
-        Saksbehandler saksbehandler1 = new Saksbehandler(saksbehandler1Ident);
-        Saksbehandler saksbehandler2 = new Saksbehandler(saksbehandler2Ident);
-        entityManager.persist(saksbehandler1);
-        entityManager.persist(saksbehandler2);
-        entityManager.flush();
-
-        List<OppgaveFiltrering> lagtInnLister = leggInnEtSettMedLister(1);
-
-        avdelingslederTjeneste.leggSaksbehandlerTilListe(lagtInnLister.get(0).getId(), saksbehandler1.getSaksbehandlerIdent());
-        entityManager.refresh(saksbehandler1);
-
-        assertThat(oppgaveTjeneste.hentSaksbehandlerNavnOgAvdelinger(saksbehandler3Ident)).isNull();
-        assertThat(oppgaveTjeneste.hentSaksbehandlerNavnOgAvdelinger(saksbehandler2Ident)).isNull();
     }
 }

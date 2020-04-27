@@ -17,13 +17,12 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 
 import io.swagger.v3.oas.annotations.Operation;
-import no.nav.foreldrepenger.los.web.app.tjenester.felles.dto.SaksbehandlerBrukerIdentDto;
 import no.nav.foreldrepenger.los.web.app.tjenester.felles.dto.SaksbehandlerDto;
+import no.nav.foreldrepenger.los.web.app.tjenester.felles.dto.SaksbehandlerDtoTjeneste;
 import no.nav.foreldrepenger.los.web.app.tjenester.felles.dto.SakslisteDto;
 import no.nav.foreldrepenger.los.web.app.tjenester.felles.dto.SakslisteIdDto;
 import no.nav.foreldrepenger.loslager.oppgave.OppgaveFiltrering;
 import no.nav.fplos.oppgave.OppgaveTjeneste;
-import no.nav.fplos.oppgave.SaksbehandlerinformasjonDto;
 import no.nav.vedtak.sikkerhet.abac.BeskyttetRessurs;
 
 @Path("/saksbehandler/saksliste")
@@ -32,10 +31,13 @@ import no.nav.vedtak.sikkerhet.abac.BeskyttetRessurs;
 public class SaksbehandlerSakslisteRestTjeneste {
 
     private OppgaveTjeneste oppgaveTjeneste;
+    private SaksbehandlerDtoTjeneste saksbehandlerDtoTjeneste;
 
     @Inject
-    public SaksbehandlerSakslisteRestTjeneste(OppgaveTjeneste oppgaveTjeneste) {
+    public SaksbehandlerSakslisteRestTjeneste(OppgaveTjeneste oppgaveTjeneste,
+                                              SaksbehandlerDtoTjeneste saksbehandlerDtoTjeneste) {
         this.oppgaveTjeneste = oppgaveTjeneste;
+        this.saksbehandlerDtoTjeneste = saksbehandlerDtoTjeneste;
     }
 
     public SaksbehandlerSakslisteRestTjeneste() {
@@ -61,15 +63,6 @@ public class SaksbehandlerSakslisteRestTjeneste {
     @BeskyttetRessurs(action = READ, ressurs = FAGSAK, sporingslogg = false)
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
     public List<SaksbehandlerDto> hentSakslistensSaksbehandlere(@NotNull @QueryParam("sakslisteId") @Valid SakslisteIdDto sakslisteId) {
-        return oppgaveTjeneste.hentSakslistensSaksbehandlere(sakslisteId.getVerdi())
-                .stream()
-                .map(SaksbehandlerSakslisteRestTjeneste::saksbehandlerDtoFra)
-                .collect(Collectors.toList());
-    }
-
-    private static SaksbehandlerDto saksbehandlerDtoFra(SaksbehandlerinformasjonDto saksbehandler) {
-        return new SaksbehandlerDto(new SaksbehandlerBrukerIdentDto(saksbehandler.getSaksbehandlerIdent()),
-                                                                    saksbehandler.getNavn(),
-                                                                    saksbehandler.getAvdelinger());
+        return saksbehandlerDtoTjeneste.hentSaksbehandlereForSaksliste(sakslisteId.getVerdi());
     }
 }

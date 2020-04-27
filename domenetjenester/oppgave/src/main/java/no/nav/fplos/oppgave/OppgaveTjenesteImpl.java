@@ -6,7 +6,6 @@ import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -24,9 +23,6 @@ import no.nav.foreldrepenger.loslager.organisasjon.Saksbehandler;
 import no.nav.foreldrepenger.loslager.repository.OppgaveRepository;
 import no.nav.foreldrepenger.loslager.repository.Oppgavespørring;
 import no.nav.foreldrepenger.loslager.repository.OrganisasjonRepository;
-import no.nav.fplos.ansatt.AnsattTjeneste;
-import no.nav.fplos.avdelingsleder.AvdelingslederTjeneste;
-import no.nav.vedtak.exception.IntegrasjonException;
 import no.nav.vedtak.sikkerhet.context.SubjectHandler;
 
 @ApplicationScoped
@@ -35,8 +31,6 @@ public class OppgaveTjenesteImpl implements OppgaveTjeneste {
     private static final Logger log = LoggerFactory.getLogger(OppgaveTjenesteImpl.class);
     private OppgaveRepository oppgaveRepository;
     private OrganisasjonRepository organisasjonRepository;
-    private AvdelingslederTjeneste avdelingslederTjeneste;
-    private AnsattTjeneste ansattTjeneste;
 
     OppgaveTjenesteImpl() {
         // for CDI proxy
@@ -44,13 +38,9 @@ public class OppgaveTjenesteImpl implements OppgaveTjeneste {
 
     @Inject
     public OppgaveTjenesteImpl(OppgaveRepository oppgaveRepository,
-                               OrganisasjonRepository organisasjonRepository,
-                               AvdelingslederTjeneste avdelingslederTjeneste,
-                               AnsattTjeneste ansattTjeneste) {
+                               OrganisasjonRepository organisasjonRepository) {
         this.oppgaveRepository = oppgaveRepository;
         this.organisasjonRepository = organisasjonRepository;
-        this.avdelingslederTjeneste = avdelingslederTjeneste;
-        this.ansattTjeneste = ansattTjeneste;
     }
 
     @Override
@@ -181,15 +171,6 @@ public class OppgaveTjenesteImpl implements OppgaveTjeneste {
     }
 
     @Override
-    public List<SaksbehandlerinformasjonDto> hentSakslistensSaksbehandlere(Long sakslisteId) {
-        OppgaveFiltrering oppgaveFiltrering = avdelingslederTjeneste.hentOppgaveFiltering(sakslisteId);
-        return oppgaveFiltrering.getSaksbehandlere()
-                .stream()
-                .map(s -> lagSaksbehandlerinformasjonDto(s.getSaksbehandlerIdent()))
-                .collect(Collectors.toList());
-    }
-
-    @Override
     public List<Oppgave> hentSisteReserverteOppgaver() {
         return oppgaveRepository.hentSisteReserverteOppgaver(finnBrukernavn());
     }
@@ -197,20 +178,6 @@ public class OppgaveTjenesteImpl implements OppgaveTjeneste {
     private static String finnBrukernavn() {
         String brukerident = SubjectHandler.getSubjectHandler().getUid();
         return brukerident != null ? brukerident.toUpperCase() : BRUKERNAVN_NÅR_SIKKERHETSKONTEKST_IKKE_FINNES;
-    }
-
-    @Override
-    public SaksbehandlerinformasjonDto hentSaksbehandlerNavnOgAvdelinger(String ident) {
-        List<Saksbehandler> saksbehandlere = organisasjonRepository.hentAlleSaksbehandlere();
-        if (saksbehandlere.stream().noneMatch(saksbehandler -> saksbehandler.getSaksbehandlerIdent().equals(ident))) {
-            return null;
-        }
-
-        if (hentAlleOppgaveFiltrering(ident).isEmpty()) {
-            return null;
-        }
-
-        return lagSaksbehandlerinformasjonDto(ident);
     }
 
     @Override
@@ -230,19 +197,6 @@ public class OppgaveTjenesteImpl implements OppgaveTjeneste {
                 .sorted((o1, o2) -> o2.getOppgaveAvsluttet().compareTo(o1.getOppgaveAvsluttet()))
                 .findFirst()
                 .orElseThrow();
-    }
-
-    private SaksbehandlerinformasjonDto lagSaksbehandlerinformasjonDto(String ident) {
-        return new SaksbehandlerinformasjonDto(ident, hentSaksbehandlerNavn(ident), ansattTjeneste.hentAvdelingerNavnForAnsatt(ident));
-    }
-
-    private String hentSaksbehandlerNavn(String ident) {
-        try {
-            return ansattTjeneste.hentAnsattNavn(ident);
-        } catch (IntegrasjonException e) {
-            log.info("Henting av ansattnavn feilet, fortsetter med ukjent navn.", e);
-            return "Ukjent ansatt";
-        }
     }
 
 }

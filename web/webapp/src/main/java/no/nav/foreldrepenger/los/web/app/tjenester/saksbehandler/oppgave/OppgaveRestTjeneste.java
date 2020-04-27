@@ -37,6 +37,7 @@ import no.nav.foreldrepenger.los.web.app.tjenester.felles.dto.OppgaveDtoTjeneste
 import no.nav.foreldrepenger.los.web.app.tjenester.felles.dto.OppgaveStatusDto;
 import no.nav.foreldrepenger.los.web.app.tjenester.felles.dto.SaksbehandlerBrukerIdentDto;
 import no.nav.foreldrepenger.los.web.app.tjenester.felles.dto.SaksbehandlerDto;
+import no.nav.foreldrepenger.los.web.app.tjenester.felles.dto.SaksbehandlerDtoTjeneste;
 import no.nav.foreldrepenger.los.web.app.tjenester.felles.dto.SakslisteIdDto;
 import no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.oppgave.dto.OppgaveFlyttingDto;
 import no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.oppgave.dto.OppgaveIdDto;
@@ -45,7 +46,6 @@ import no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.oppgave.dto.Opp
 import no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.oppgave.dto.ReservasjonsEndringDto;
 import no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.oppgave.dto.SaknummerIderDto;
 import no.nav.fplos.oppgave.OppgaveTjeneste;
-import no.nav.fplos.oppgave.SaksbehandlerinformasjonDto;
 import no.nav.vedtak.sikkerhet.abac.BeskyttetRessurs;
 import no.nav.vedtak.sikkerhet.abac.BeskyttetRessursActionAttributt;
 import no.nav.vedtak.sikkerhet.abac.BeskyttetRessursResourceAttributt;
@@ -60,12 +60,15 @@ public class OppgaveRestTjeneste {
 
     private OppgaveTjeneste oppgaveTjeneste;
     private OppgaveDtoTjeneste oppgaveDtoTjeneste;
+    private SaksbehandlerDtoTjeneste saksbehandlerDtoTjeneste;
 
     @Inject
     public OppgaveRestTjeneste(OppgaveTjeneste oppgaveTjeneste,
-                               OppgaveDtoTjeneste oppgaveDtoTjeneste) {
+                               OppgaveDtoTjeneste oppgaveDtoTjeneste,
+                               SaksbehandlerDtoTjeneste saksbehandlerDtoTjeneste) {
         this.oppgaveTjeneste = oppgaveTjeneste;
         this.oppgaveDtoTjeneste = oppgaveDtoTjeneste;
+        this.saksbehandlerDtoTjeneste = saksbehandlerDtoTjeneste;
     }
 
     public OppgaveRestTjeneste() {
@@ -224,11 +227,8 @@ public class OppgaveRestTjeneste {
     @BeskyttetRessurs(action = BeskyttetRessursActionAttributt.READ, ressurs = BeskyttetRessursResourceAttributt.FAGSAK)
     public SaksbehandlerDto søkAvdelingensSaksbehandlere(@NotNull @Parameter(description = "Brukeridentifikasjon") @Valid SaksbehandlerBrukerIdentDto brukerIdent) {
         String ident = brukerIdent.getVerdi().toUpperCase();
-        SaksbehandlerinformasjonDto saksbehandlerInformasjon = oppgaveTjeneste.hentSaksbehandlerNavnOgAvdelinger(ident);
-        if (saksbehandlerInformasjon != null) {
-            return new SaksbehandlerDto(brukerIdent, saksbehandlerInformasjon.getNavn(), saksbehandlerInformasjon.getAvdelinger());
-        }
-        return null;
+        var saksbehandler = saksbehandlerDtoTjeneste.hentSaksbehandler(ident);
+        return saksbehandler.orElse(null);
     }
 
     @POST

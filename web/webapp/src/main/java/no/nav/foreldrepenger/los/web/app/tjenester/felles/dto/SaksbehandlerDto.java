@@ -4,7 +4,6 @@ import java.util.List;
 
 public class SaksbehandlerDto {
 
-    //FIXME Bruk PersonIdent i staden for SaksbehandlerBrukerIdentDto?
     private SaksbehandlerBrukerIdentDto brukerIdent;
     private String navn;
     private List<String> avdelingsnavn;
