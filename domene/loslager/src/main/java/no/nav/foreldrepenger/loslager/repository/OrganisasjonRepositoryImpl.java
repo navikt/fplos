@@ -51,7 +51,7 @@ public class OrganisasjonRepositoryImpl implements OrganisasjonRepository {
     }
 
     @Override
-    public Optional<Saksbehandler> hentMuligSaksbehandler(String saksbehandlerIdent) {
+    public Optional<Saksbehandler> hentSaksbehandlerHvisEksisterer(String saksbehandlerIdent) {
         return hentUniktResultat(hentSaksbehandlerQuery(saksbehandlerIdent));
     }
 
@@ -82,12 +82,4 @@ public class OrganisasjonRepositoryImpl implements OrganisasjonRepository {
         TypedQuery<Avdeling> listeTypedQuery = entityManager.createQuery("FROM avdeling ", Avdeling.class);
         return listeTypedQuery.getResultList();
     }
-
-    @Override
-    public List<Saksbehandler> hentAlleSaksbehandlere() {
-        TypedQuery<Saksbehandler> query = entityManager.createQuery("FROM saksbehandler s", Saksbehandler.class);
-        return query.getResultList();
-    }
-
-
 }

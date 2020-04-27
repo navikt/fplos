@@ -16,14 +16,12 @@ public interface OrganisasjonRepository {
 
     Avdeling hentAvdelingFraEnhet(String avdelingEnhet);
 
-    Optional<Saksbehandler> hentMuligSaksbehandler(String saksbehandlerIdent);
+    Optional<Saksbehandler> hentSaksbehandlerHvisEksisterer(String saksbehandlerIdent);
 
     void lagre(Avdeling avdeling);
 
     void refresh(Avdeling avdeling);
 
     List<Avdeling> hentAvdelinger();
-
-    List<Saksbehandler> hentAlleSaksbehandlere();
 
 }

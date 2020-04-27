@@ -47,7 +47,7 @@ public class AvdelingslederSaksbehandlerTjenesteImpl implements AvdelingslederSa
     }
 
     private Saksbehandler hentEllerLagreSaksbehandler(String saksbehandlerIdent) {
-        Optional<Saksbehandler> optionalSaksbehandler = organisasjonRepository.hentMuligSaksbehandler(saksbehandlerIdent);
+        Optional<Saksbehandler> optionalSaksbehandler = organisasjonRepository.hentSaksbehandlerHvisEksisterer(saksbehandlerIdent);
         if (optionalSaksbehandler.isEmpty()) {
             organisasjonRepository.lagre(saksbehandlerFra(saksbehandlerIdent));
             return organisasjonRepository.hentSaksbehandler(saksbehandlerIdent);

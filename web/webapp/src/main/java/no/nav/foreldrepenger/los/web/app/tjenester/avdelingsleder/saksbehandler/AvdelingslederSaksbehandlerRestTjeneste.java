@@ -24,7 +24,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.dto.AvdelingEnhetDto;
 import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.dto.SaksbehandlerOgAvdelingDto;
 import no.nav.foreldrepenger.los.web.app.tjenester.felles.dto.SaksbehandlerBrukerIdentDto;
-import no.nav.foreldrepenger.los.web.app.tjenester.felles.dto.SaksbehandlerDto;
+import no.nav.foreldrepenger.los.web.app.tjenester.felles.dto.SaksbehandlerMedAvdelingerDto;
 import no.nav.foreldrepenger.los.web.app.tjenester.felles.dto.SaksbehandlerDtoTjeneste;
 import no.nav.fplos.avdelingsleder.AvdelingslederSaksbehandlerTjeneste;
 import no.nav.vedtak.sikkerhet.abac.BeskyttetRessurs;
@@ -55,10 +55,10 @@ public class AvdelingslederSaksbehandlerRestTjeneste {
     @Operation(description = "Henter alle saksbehandlere", tags = "AvdelingslederSaksbehandlere")
     @BeskyttetRessurs(action = READ, ressurs = OPPGAVESTYRING_AVDELINGENHET, sporingslogg = false)
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
-    public List<SaksbehandlerDto> hentAvdelingensSaksbehandlere(@NotNull @QueryParam("avdelingEnhet") @Valid AvdelingEnhetDto avdelingEnhetDto) {
+    public List<SaksbehandlerMedAvdelingerDto> hentAvdelingensSaksbehandlere(@NotNull @QueryParam("avdelingEnhet") @Valid AvdelingEnhetDto avdelingEnhetDto) {
         return avdelingslederSaksbehandlerTjeneste.hentAvdelingensSaksbehandlere(avdelingEnhetDto.getAvdelingEnhet())
                 .stream()
-                .map(saksbehandler -> saksbehandlerDtoTjeneste.map(saksbehandler))
+                .map(saksbehandler -> saksbehandlerDtoTjeneste.lagDtoMedAvdelinger(saksbehandler))
                 .collect(Collectors.toList());
     }
 
@@ -68,8 +68,8 @@ public class AvdelingslederSaksbehandlerRestTjeneste {
     @Produces(MediaType.APPLICATION_JSON)
     @Operation(description = "Søk etter saksbehandler", tags = "AvdelingslederSaksbehandlere")
     @BeskyttetRessurs(action = BeskyttetRessursActionAttributt.READ, ressurs = BeskyttetRessursResourceAttributt.OPPGAVESTYRING_AVDELINGENHET)
-    public SaksbehandlerDto søkAvdelingensSaksbehandlere(@NotNull @Parameter(description = "Brukeridentifikasjon") @Valid SaksbehandlerBrukerIdentDto brukerIdent) {
-        return saksbehandlerDtoTjeneste.lagSaksbehandlerDto(brukerIdent.getVerdi());
+    public SaksbehandlerMedAvdelingerDto søkAvdelingensSaksbehandlere(@NotNull @Parameter(description = "Brukeridentifikasjon") @Valid SaksbehandlerBrukerIdentDto brukerIdent) {
+        return saksbehandlerDtoTjeneste.lagSaksbehandlerMedAvdelingerDto(brukerIdent.getVerdi());
     }
 
     @POST

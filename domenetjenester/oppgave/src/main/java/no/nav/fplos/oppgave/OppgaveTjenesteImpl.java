@@ -133,7 +133,7 @@ public class OppgaveTjenesteImpl implements OppgaveTjeneste {
 
     @Override
     public List<OppgaveFiltrering> hentAlleOppgaveFiltrering(String brukerIdent) {
-        return organisasjonRepository.hentMuligSaksbehandler(brukerIdent)
+        return organisasjonRepository.hentSaksbehandlerHvisEksisterer(brukerIdent)
                 .map(Saksbehandler::getOppgaveFiltreringer)
                 .orElse(Collections.emptyList());
     }

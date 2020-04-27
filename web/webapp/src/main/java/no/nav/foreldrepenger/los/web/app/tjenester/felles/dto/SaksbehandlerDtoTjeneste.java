@@ -46,13 +46,13 @@ public class SaksbehandlerDtoTjeneste {
         var oppgaveFiltrering = avdelingslederTjeneste.hentOppgaveFiltering(sakslisteId);
         return oppgaveFiltrering.getSaksbehandlere()
                 .stream()
-                .map(s -> map(s))
+                .map(s -> lagDto(s))
                 .collect(Collectors.toList());
     }
 
-    public Optional<SaksbehandlerDto> hentSaksbehandlerTilknyttetMinstEnKø(String ident) {
-        List<Saksbehandler> saksbehandlere = organisasjonRepository.hentAlleSaksbehandlere();
-        if (saksbehandlere.stream().noneMatch(saksbehandler -> saksbehandler.getSaksbehandlerIdent().equals(ident))) {
+    public Optional<SaksbehandlerMedAvdelingerDto> hentSaksbehandlerTilknyttetMinstEnKø(String ident) {
+        var saksbehandler = organisasjonRepository.hentSaksbehandlerHvisEksisterer(ident);
+        if (saksbehandler.isEmpty()) {
             return Optional.empty();
         }
 
@@ -60,19 +60,29 @@ public class SaksbehandlerDtoTjeneste {
             return Optional.empty();
         }
 
-        return Optional.of(lagSaksbehandlerDto(ident));
+        return Optional.of(lagSaksbehandlerMedAvdelingerDto(ident));
     }
 
-    public SaksbehandlerDto lagSaksbehandlerDto(String ident) {
+    public SaksbehandlerMedAvdelingerDto lagSaksbehandlerMedAvdelingerDto(String ident) {
+        SaksbehandlerDto saksbehandlerDto = lagDto(ident);
+        var avdelinger = ansattTjeneste.hentAvdelingerNavnForAnsatt(ident);
+        return new SaksbehandlerMedAvdelingerDto(saksbehandlerDto, avdelinger);
+    }
+
+    public SaksbehandlerMedAvdelingerDto lagDtoMedAvdelinger(Saksbehandler saksbehandler) {
+        var ident = saksbehandler.getSaksbehandlerIdent();
+        return lagSaksbehandlerMedAvdelingerDto(ident);
+    }
+
+    public SaksbehandlerDto lagDto(Saksbehandler saksbehandler) {
+        var ident = saksbehandler.getSaksbehandlerIdent();
+        return lagDto(ident);
+    }
+
+    private SaksbehandlerDto lagDto(String ident) {
         var identDto = new SaksbehandlerBrukerIdentDto(ident);
         var navn = hentSaksbehandlerNavn(ident);
-        var avdelinger = ansattTjeneste.hentAvdelingerNavnForAnsatt(ident);
-        return new SaksbehandlerDto(identDto, navn, avdelinger);
-    }
-
-    public SaksbehandlerDto map(Saksbehandler saksbehandler) {
-        var ident = saksbehandler.getSaksbehandlerIdent();
-        return lagSaksbehandlerDto(ident);
+        return new SaksbehandlerDto(identDto, navn);
     }
 
     public String hentSaksbehandlerNavn(String ident) {
