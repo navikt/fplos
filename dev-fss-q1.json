@@ -6,8 +6,8 @@
   "ldapuserkv": "/serviceuser/data/dev/srvssolinux",
   "namespace": "q1",
   "ingresses":  ["https://app-q1.adeo.no/fplos", "https://fplos-q1.nais.preprod.local"],
-  "minReplica": "1",
-  "maxReplica": "1",
+  "minReplica": "2",
+  "maxReplica": "3",
   "env": {
     "LOADBALANCER_URL": "https://app-q1.adeo.no",
     "FPSAK_FRONTEND_URL": "https://app-q1.adeo.no/fpsak",

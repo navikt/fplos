@@ -64,7 +64,6 @@ public class KafkaConsumerStarter {
 
     public void destroy() {
         consumers.forEach(consumer -> consumer.stop());
-        consumers = new ArrayList<>();
     }
 
     public boolean isConsumersRunning() {

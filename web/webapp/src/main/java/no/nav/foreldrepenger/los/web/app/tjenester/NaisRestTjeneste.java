@@ -36,7 +36,9 @@ public class NaisRestTjeneste {
     @Path("isAlive")
     @Operation(description = "sjekker om poden lever", tags = "nais", hidden = true)
     public Response isAlive() {
-        return isReady();
+        return Response.ok(RESPONSE_OK)
+                .header(RESPONSE_CACHE_KEY, RESPONSE_CACHE_VAL)
+                .build();
     }
 
     @GET
@@ -57,6 +59,7 @@ public class NaisRestTjeneste {
     @Path("preStop")
     @Operation(description = "kalles på før stopp", tags = "nais", hidden = true)
     public Response preStop() {
+        LOG.info("preStop kalles");
         kafkaConsumerStarter.destroy();
         return Response.ok(RESPONSE_OK).build();
     }
