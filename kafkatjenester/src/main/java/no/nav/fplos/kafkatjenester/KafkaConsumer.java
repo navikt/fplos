@@ -129,6 +129,10 @@ public final class KafkaConsumer<T extends BehandlingProsessEventDto> {
         return mapper.readValue(payload, BehandlingProsessEventDto.class);
     }
 
+    public boolean isRunning() {
+        return streams.state().isRunningOrRebalancing();
+    }
+
     private class HåndterEventInTransaction extends TransactionHandler<Void> {
         private final EntityManager entityManager;
         private final Object header;

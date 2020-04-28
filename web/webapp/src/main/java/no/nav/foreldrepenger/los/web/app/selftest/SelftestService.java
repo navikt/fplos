@@ -79,11 +79,6 @@ public class SelftestService {
         return builder.build();
     }
 
-    public boolean kritiskTjenesteFeilet() {
-        SelftestResultat samletResultat = selftests.run(true);
-        return SelftestResultat.AggregateResult.ERROR.equals(samletResultat.getAggregateResult());
-    }
-
     private void loggSelftestResultat(SelftestResultat samletResultat) {
         kritiskeFeilTilLogg(samletResultat.getKritiskeResultater());
         ikkeKritiskFeilTilLogg(samletResultat.getIkkeKritiskeResultater());

@@ -3,25 +3,21 @@ package no.nav.foreldrepenger.los.web.app.tjenester;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 import javax.ws.rs.core.Response;
 
 import org.junit.Before;
 import org.junit.Test;
 
-import no.nav.foreldrepenger.los.web.app.selftest.SelftestService;
-
 public class NaisRestTjenesteTest {
 
     private NaisRestTjeneste restTjeneste;
 
     private KafkaConsumerStarter kafkaConsumerStarter = mock(KafkaConsumerStarter.class);
-    private SelftestService selftestServiceMock = mock(SelftestService.class);
 
     @Before
     public void setup() {
-        restTjeneste = new NaisRestTjeneste(kafkaConsumerStarter, selftestServiceMock);
+        restTjeneste = new NaisRestTjeneste(kafkaConsumerStarter);
     }
 
     @Test
@@ -32,28 +28,10 @@ public class NaisRestTjenesteTest {
     }
 
     @Test
-    public void test_isReady_skal_returnere_service_unavailable_når_kritiske_selftester_feiler() {
-        when(selftestServiceMock.kritiskTjenesteFeilet()).thenReturn(true);
-
-        Response response = restTjeneste.isReady();
-
-        assertThat(response.getStatus()).isEqualTo(Response.Status.SERVICE_UNAVAILABLE.getStatusCode());
-    }
-
-    @Test
-    public void test_isReady_skal_returnere_status_ok_når_selftester_er_ok() {
-        when(selftestServiceMock.kritiskTjenesteFeilet()).thenReturn(false);
-
-        Response response = restTjeneste.isReady();
-
-        assertThat(response.getStatus()).isEqualTo(Response.Status.OK.getStatusCode());
-    }
-
-    @Test
     public void test_preStop_skal_kalle_stopServices_og_returnere_status_ok() {
         Response response = restTjeneste.preStop();
 
-        verify(kafkaConsumerStarter).contextDestroyed(null);
+        verify(kafkaConsumerStarter).destroy();
         assertThat(response.getStatus()).isEqualTo(Response.Status.OK.getStatusCode());
     }
 }

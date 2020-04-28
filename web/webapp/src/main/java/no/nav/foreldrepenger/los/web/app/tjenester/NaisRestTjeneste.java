@@ -7,7 +7,6 @@ import javax.ws.rs.Path;
 import javax.ws.rs.core.Response;
 
 import io.swagger.v3.oas.annotations.Operation;
-import no.nav.foreldrepenger.los.web.app.selftest.SelftestService;
 
 @Path("/health")
 @ApplicationScoped
@@ -18,16 +17,14 @@ public class NaisRestTjeneste {
     private static final String RESPONSE_OK = "OK";
 
     private KafkaConsumerStarter kafkaConsumerStarter;
-    private SelftestService selftestService;
 
     public NaisRestTjeneste() {
         // CDI
     }
 
     @Inject
-    public NaisRestTjeneste(KafkaConsumerStarter kafkaConsumerStarter, SelftestService selftestService) {
+    public NaisRestTjeneste(KafkaConsumerStarter kafkaConsumerStarter) {
         this.kafkaConsumerStarter = kafkaConsumerStarter;
-        this.selftestService = selftestService;
     }
 
     @GET
@@ -44,22 +41,21 @@ public class NaisRestTjeneste {
     @Path("isReady")
     @Operation(description = "sjekker om poden er klar", tags = "nais", hidden = true)
     public Response isReady() {
-        if (selftestService.kritiskTjenesteFeilet()) {
-            return Response.status(Response.Status.SERVICE_UNAVAILABLE)
-                    .header(RESPONSE_CACHE_KEY, RESPONSE_CACHE_VAL)
-                    .build();
-        } else {
+        if (kafkaConsumerStarter.isConsumersRunning()) {
             return Response.ok(RESPONSE_OK)
                     .header(RESPONSE_CACHE_KEY, RESPONSE_CACHE_VAL)
                     .build();
         }
+        return Response.status(Response.Status.SERVICE_UNAVAILABLE)
+                .header(RESPONSE_CACHE_KEY, RESPONSE_CACHE_VAL)
+                .build();
     }
 
     @GET
     @Path("preStop")
     @Operation(description = "kalles på før stopp", tags = "nais", hidden = true)
     public Response preStop() {
-        kafkaConsumerStarter.contextDestroyed(null);
+        kafkaConsumerStarter.destroy();
         return Response.ok(RESPONSE_OK).build();
     }
 }
