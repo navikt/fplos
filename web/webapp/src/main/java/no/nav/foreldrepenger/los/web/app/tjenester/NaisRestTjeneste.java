@@ -37,10 +37,7 @@ public class NaisRestTjeneste {
     @Operation(description = "sjekker om poden lever", tags = "nais", hidden = true)
     public Response isAlive() {
         LOG.info("isAlive kalles");
-        return Response
-                .ok(RESPONSE_OK)
-                .header(RESPONSE_CACHE_KEY, RESPONSE_CACHE_VAL)
-                .build();
+        return isReady();
     }
 
     @GET
