@@ -8,7 +8,7 @@ https://confluence.adeo.no/display/TVF/FP-LOS
 
 ## Skisse
 
-![Skisse av løsning](skisse-løsning.png)
+![Skisse av løsning](skisse-løsning-v19.png)
 
 ## Bygge og kjøre docker lokalt
 Greit for å undersøke om containerne fungerer. Har lagt med noen variabler i `docker.list` denne er ikke 100% og bør
