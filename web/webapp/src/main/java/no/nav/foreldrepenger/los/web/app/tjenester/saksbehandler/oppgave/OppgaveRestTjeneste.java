@@ -55,8 +55,8 @@ import no.nav.vedtak.sikkerhet.abac.BeskyttetRessursResourceAttributt;
 @Transactional
 public class OppgaveRestTjeneste {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(OppgaveRestTjeneste.class);
-    private static final int POLL_INTERVAL_MILLIS = 10000;
+    private static final Logger LOG = LoggerFactory.getLogger(OppgaveRestTjeneste.class);
+    private static final int POLL_INTERVAL_MILLIS = 1000;
 
     private OppgaveTjeneste oppgaveTjeneste;
     private OppgaveDtoTjeneste oppgaveDtoTjeneste;
@@ -101,6 +101,7 @@ public class OppgaveRestTjeneste {
     @BeskyttetRessurs(action = READ, ressurs = FAGSAK)
     public Response hentNesteOppgaverOgSjekkOmDisseErNye(@NotNull @Valid @QueryParam("sakslisteId") SakslisteIdDto sakslisteId,
                                                          @Valid @QueryParam("oppgaveIder") OppgaveIderDto oppgaverIder) throws URISyntaxException {
+        LOG.debug("status for saksliste {}", sakslisteId.getVerdi());
         List<Long> oppgaveIderSomVises = oppgaverIder == null ? List.of() : oppgaverIder.getOppgaveIdeer();
         boolean skalPolle = false;
 
@@ -242,7 +243,7 @@ public class OppgaveRestTjeneste {
         var reservasjon = oppgaveTjeneste.flyttReservasjon(oppgaveFlyttingId.getOppgaveId().getVerdi(),
                 oppgaveFlyttingId.getBrukerIdent().getVerdi(),
                 oppgaveFlyttingId.getBegrunnelse());
-        LOGGER.info("Reservasjon flyttet: {}", oppgaveFlyttingId);
+        LOG.info("Reservasjon flyttet: {}", oppgaveFlyttingId);
         return oppgaveDtoTjeneste.lagDtoFor(reservasjon.getOppgave(), false).getStatus();
     }
 
