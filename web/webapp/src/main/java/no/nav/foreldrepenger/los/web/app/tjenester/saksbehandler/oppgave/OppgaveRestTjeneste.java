@@ -101,7 +101,7 @@ public class OppgaveRestTjeneste {
     @BeskyttetRessurs(action = READ, ressurs = FAGSAK)
     public Response hentNesteOppgaverOgSjekkOmDisseErNye(@NotNull @Valid @QueryParam("sakslisteId") SakslisteIdDto sakslisteId,
                                                          @Valid @QueryParam("oppgaveIder") OppgaveIderDto oppgaverIder) throws URISyntaxException {
-        LOG.debug("status for saksliste {}", sakslisteId.getVerdi());
+        LOG.info("status for saksliste {}", sakslisteId.getVerdi());
         List<Long> oppgaveIderSomVises = oppgaverIder == null ? List.of() : oppgaverIder.getOppgaveIdeer();
         boolean skalPolle = false;
 
