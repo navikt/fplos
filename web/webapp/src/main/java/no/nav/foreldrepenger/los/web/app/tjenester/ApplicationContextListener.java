@@ -1,5 +1,6 @@
 package no.nav.foreldrepenger.los.web.app.tjenester;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
@@ -9,6 +10,7 @@ import javax.servlet.annotation.WebListener;
  * Starter interne applikasjontjenester
  */
 @WebListener
+@ApplicationScoped
 public class ApplicationContextListener implements ServletContextListener {
 
     @Inject
