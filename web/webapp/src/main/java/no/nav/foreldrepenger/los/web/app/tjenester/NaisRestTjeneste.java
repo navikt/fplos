@@ -36,7 +36,6 @@ public class NaisRestTjeneste {
     @Path("isAlive")
     @Operation(description = "sjekker om poden lever", tags = "nais", hidden = true)
     public Response isAlive() {
-        LOG.info("isAlive endepunkt kalt");
         return Response.ok(RESPONSE_OK)
                 .header(RESPONSE_CACHE_KEY, RESPONSE_CACHE_VAL)
                 .build();
