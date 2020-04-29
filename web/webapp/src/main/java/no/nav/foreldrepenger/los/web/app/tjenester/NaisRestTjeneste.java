@@ -59,7 +59,7 @@ public class NaisRestTjeneste {
     @Path("preStop")
     @Operation(description = "kalles på før stopp", tags = "nais", hidden = true)
     public Response preStop() {
-        LOG.info("preStop kalles");
+        LOG.info("preStop endepunkt kalt");
         kafkaConsumerStarter.destroy();
         return Response.ok(RESPONSE_OK).build();
     }
