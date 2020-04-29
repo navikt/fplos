@@ -1,11 +1,14 @@
 # FPLOS
 
-FPLOS håndterer oppgave- og ledelsesstyring på foreldrepengeområdet. Fpsak produserer hendelser som representerer state i behandlingsprosessen. FPLOS benytter dette for å opprette, kategoriesere og lukke oppgaver.
+FPLOS håndterer oppgave- og ledelsesstyring på foreldrepengeområdet. Fp-sak og fp-tilbake produserer hendelser som representerer state i behandlingsprosessen. FPLOS benytter dette for å opprette, kategorisere og lukke oppgaver.
 
-Oppgavestyrere definerer kø-kriterier som ligger til grunn for fordeling av oppgaver etter prioritet til saksbehandlere. 
+Oppgavestyrere definerer kriterier som ligger til grunn for ulike køer som fordeler oppgaver etter prioritet til saksbehandlere. 
 
-https://confluence.adeo.no/display/TVF/FPLOS
+https://confluence.adeo.no/display/TVF/FP-LOS
 
+## Skisse
+
+![Skisse av løsning](skisse-løsning.png)
 
 ## Bygge og kjøre docker lokalt
 Greit for å undersøke om containerne fungerer. Har lagt med noen variabler i `docker.list` denne er ikke 100% og bør
