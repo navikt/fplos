@@ -37,7 +37,6 @@ import no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.NavAnsattRestTj
 import no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.nøkkeltall.SaksbehandlerNøkkeltallRestTjeneste;
 import no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.oppgave.OppgaveRestTjeneste;
 import no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.saksliste.SaksbehandlerSakslisteRestTjeneste;
-import no.nav.vedtak.konfig.PropertyUtil;
 
 
 @ApplicationPath(ApplicationConfig.API_URI)
@@ -71,15 +70,6 @@ public class ApplicationConfig extends Application {
         } catch (OpenApiConfigurationException e) {
             throw new RuntimeException(e.getMessage(), e);
         }
-    }
-
-
-
-    private boolean disableSsl() {
-        if(PropertyUtil.getProperty("disable.ssl") == null){
-            return false;
-        }
-        return PropertyUtil.getProperty("disable.ssl").contentEquals("true");
     }
 
     @Override

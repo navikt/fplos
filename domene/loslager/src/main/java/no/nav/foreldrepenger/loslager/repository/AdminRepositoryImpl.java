@@ -1,20 +1,22 @@
 package no.nav.foreldrepenger.loslager.repository;
 
-import no.nav.foreldrepenger.loslager.BehandlingId;
-import no.nav.foreldrepenger.loslager.oppgave.EventmottakFeillogg;
-import no.nav.foreldrepenger.loslager.oppgave.Oppgave;
-import no.nav.foreldrepenger.loslager.oppgave.OppgaveEventLogg;
-import no.nav.foreldrepenger.loslager.oppgave.Reservasjon;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Optional;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import no.nav.foreldrepenger.loslager.BehandlingId;
+import no.nav.foreldrepenger.loslager.oppgave.EventmottakFeillogg;
+import no.nav.foreldrepenger.loslager.oppgave.Oppgave;
+import no.nav.foreldrepenger.loslager.oppgave.OppgaveEventLogg;
+import no.nav.foreldrepenger.loslager.oppgave.Reservasjon;
 
 @ApplicationScoped
 public class AdminRepositoryImpl implements AdminRepository {
@@ -67,13 +69,6 @@ public class AdminRepositoryImpl implements AdminRepository {
         return entityManager.createQuery( "Select o FROM oppgaveEventLogg o " +
                 "where o.behandlingId = :behandlingId ORDER BY o.opprettetTidspunkt desc", OppgaveEventLogg.class)
                 .setParameter("behandlingId", behandlingId.toUUID()).getResultList();
-    }
-
-    @Override
-    public EventmottakFeillogg hentEvent(Long id) {
-        return entityManager.createQuery("SELECT o FROM eventmottakFeillogg o " +
-                "WHERE o.id = :id", EventmottakFeillogg.class)
-                .setParameter("id", id).getSingleResult();
     }
 
     @Override
