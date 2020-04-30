@@ -1,5 +1,14 @@
 package no.nav.foreldrepenger.los.web.app;
 
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import javax.ws.rs.ApplicationPath;
+import javax.ws.rs.core.Application;
+
 import io.swagger.v3.jaxrs2.SwaggerSerializers;
 import io.swagger.v3.jaxrs2.integration.resources.OpenApiResource;
 import io.swagger.v3.oas.integration.GenericOpenApiContextBuilder;
@@ -30,14 +39,6 @@ import no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.oppgave.Oppgave
 import no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.saksliste.SaksbehandlerSakslisteRestTjeneste;
 import no.nav.vedtak.konfig.PropertyUtil;
 
-import javax.ws.rs.ApplicationPath;
-import javax.ws.rs.core.Application;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
 
 @ApplicationPath(ApplicationConfig.API_URI)
 public class ApplicationConfig extends Application {
@@ -48,7 +49,7 @@ public class ApplicationConfig extends Application {
 
         OpenAPI oas = new OpenAPI();
         Info info = new Info()
-                .title("Foreldrepenger risikoklassifisering")
+                .title("FPLOS")
                 .version("1.0")
                 .description("REST grensesnitt for fplos.");
 
