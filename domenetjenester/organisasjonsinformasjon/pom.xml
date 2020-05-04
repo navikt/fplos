@@ -48,10 +48,6 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>no.nav.foreldrepenger.felles.integrasjon</groupId>
-            <artifactId>behandleoppgave-klient</artifactId>
-        </dependency>
-        <dependency>
             <groupId>no.nav.foreldrepenger.felles</groupId>
             <artifactId>felles-testutilities</artifactId>
             <scope>test</scope>
