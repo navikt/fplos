@@ -15,7 +15,7 @@ import { Oppgave } from 'saksbehandler/oppgaveTsType';
 import oppgavePropType from 'saksbehandler/oppgavePropType';
 import fagsakPropType from './fagsakPropType';
 import {
- searchFagsaker, resetFagsakSearch, hentOppgaverForFagsaker as hentOppgaverForFagsakerActionCreator,
+  searchFagsaker, resetFagsakSearch, hentOppgaverForFagsaker as hentOppgaverForFagsakerActionCreator,
 } from './duck';
 import {
   getFagsaker,
@@ -91,8 +91,8 @@ export class FagsakSearchIndex extends Component<Props, StateProps> {
 
   componentDidUpdate = (prevProps: Props, prevState: StateProps) => {
     const {
- fagsaker, fagsakOppgaver, goToFpsak,
-} = this.props;
+      fagsaker, fagsakOppgaver, goToFpsak,
+    } = this.props;
     const { sokFerdig } = this.state;
     if (sokFerdig && !prevState.sokFerdig && fagsaker.length === 1) {
       if (fagsakOppgaver.length === 1) {
@@ -125,8 +125,8 @@ export class FagsakSearchIndex extends Component<Props, StateProps> {
 
   velgFagsakOperasjoner = (oppgave: Oppgave, skalSjekkeOmReservert: boolean) => {
     const {
- goToFpsak, goToTilbakesak, reserverOppgave, hentReservasjonsstatus, hentFpsakInternBehandlingId,
-} = this.props;
+      goToFpsak, goToTilbakesak, reserverOppgave, hentReservasjonsstatus, hentFpsakInternBehandlingId,
+    } = this.props;
     const { skalReservere } = this.state;
 
     if (oppgave.status.erReservert && !oppgave.status.erReservertAvInnloggetBruker) {
@@ -137,12 +137,12 @@ export class FagsakSearchIndex extends Component<Props, StateProps> {
           this.goToFagsakEllerApneModal(oppgave, data.payload);
         });
       } else if (oppgave.system === 'FPSAK') {
-          hentFpsakInternBehandlingId(oppgave.behandlingId).then((data: {payload: number }) => {
-            goToFpsak(oppgave.saksnummer, data.payload);
-          });
-        } else if (oppgave.system === 'FPTILBAKE') {
-          goToTilbakesak(oppgave.href);
-        } else throw new Error('Fagsystemet for oppgaven er ukjent');
+        hentFpsakInternBehandlingId(oppgave.behandlingId).then((data: {payload: number }) => {
+          goToFpsak(oppgave.saksnummer, data.payload);
+        });
+      } else if (oppgave.system === 'FPTILBAKE') {
+        goToTilbakesak(oppgave.href);
+      } else throw new Error('Fagsystemet for oppgaven er ukjent');
     } else {
       reserverOppgave(oppgave.id).then((data: {payload: OppgaveStatus }) => {
         this.goToFagsakEllerApneModal(oppgave, data.payload);
@@ -156,7 +156,7 @@ export class FagsakSearchIndex extends Component<Props, StateProps> {
 
   sokFagsak = (values: {searchString: string; skalReservere: boolean}) => {
     const {
-      searchFagsaker: search, hentOppgaverForFagsaker, hentReservasjonsstatus,
+      searchFagsaker: search, hentOppgaverForFagsaker,
     } = this.props;
 
     this.setState(prevState => ({

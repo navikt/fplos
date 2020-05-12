@@ -81,7 +81,7 @@ export const getFunksjonellTid = createSelector([fpLosApi.NAV_ANSATT.getRestApiD
 export const getFpsakUrl = createSelector([fpLosApi.FPSAK_URL.getRestApiData()], (fpsakUrl: {verdi: undefined }) => fpsakUrl.verdi);
 export const getFptilbakeUrl = createSelector([fpLosApi.FPTILBAKE_URL.getRestApiData()], (fptilbakeUrl: {verdi: undefined }) => fptilbakeUrl.verdi);
 export const hentFpsakInternBehandlingId = (uuid: string) => (dispatch: Dispatch) => dispatch(
-    fpLosApi.FPSAK_BEHANDLING_ID.makeRestApiRequest()(
-        { uuid },
-    ),
+  fpLosApi.FPSAK_BEHANDLING_ID.makeRestApiRequest()(
+    { uuid },
+  ),
 );

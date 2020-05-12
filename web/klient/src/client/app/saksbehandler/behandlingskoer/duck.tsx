@@ -61,9 +61,9 @@ export const forlengOppgaveReservasjon = (oppgaveId: number) => (dispatch: Dispa
 );
 
 export const endreOppgaveReservasjon = (oppgaveId: number, reserverTil: string) => (dispatch: Dispatch) => dispatch(
-    fpLosApi.ENDRE_OPPGAVERESERVASJON.makeRestApiRequest()(
-        { oppgaveId, reserverTil },
-    ),
+  fpLosApi.ENDRE_OPPGAVERESERVASJON.makeRestApiRequest()(
+    { oppgaveId, reserverTil },
+  ),
 );
 
 export const finnSaksbehandler = (brukerIdent: string) => (dispatch: Dispatch) => dispatch(

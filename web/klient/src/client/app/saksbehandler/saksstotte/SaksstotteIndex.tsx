@@ -38,8 +38,8 @@ export class SaksstotteIndex extends Component<TsProps> {
 
   render = () => {
     const {
- fpsakUrl, fptilbakeUrl, sistBehandledeSaker, valgtSakslisteId,
-} = this.props;
+      sistBehandledeSaker, valgtSakslisteId,
+    } = this.props;
     return (
       <SaksstottePaneler sistBehandledeSaker={sistBehandledeSaker} valgtSakslisteId={valgtSakslisteId} />
     );

@@ -34,8 +34,8 @@ class Periodpicker extends Component {
     disabledDays: {},
   };
 
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = { showCalendar: false, period: undefined };
     this.handleInputRef = this.handleInputRef.bind(this);
     this.handleButtonRef = this.handleButtonRef.bind(this);
@@ -47,9 +47,7 @@ class Periodpicker extends Component {
     this.onBlur = this.onBlur.bind(this);
     this.onChange = this.onChange.bind(this);
     this.parseToDate = this.parseToDate.bind(this);
-  }
 
-  componentWillMount() {
     const startDate = getStartDateInput(this.props).value;
     const endDate = getEndDateInput(this.props).value;
     let period = '';

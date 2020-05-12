@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
 import {
- Normaltekst, Undertekst, Element, Undertittel,
+  Normaltekst, Undertekst, Element, Undertittel,
 } from 'nav-frontend-typografi';
 
 import { getValgtAvdelingEnhet } from 'app/duck';
@@ -182,8 +182,8 @@ export class GjeldendeSakslisterTabell extends Component<TsProps, StateTsProps> 
             <div className={styles.grayBox}>
               <Normaltekst>
                 <FormattedMessage id="GjeldendeSakslisterTabell.OppgaverForAvdeling" />
-                <Undertittel>{oppgaverForAvdeling || '0'}</Undertittel>
               </Normaltekst>
+              <Undertittel>{oppgaverForAvdeling || '0'}</Undertittel>
             </div>
           </Column>
         </Row>

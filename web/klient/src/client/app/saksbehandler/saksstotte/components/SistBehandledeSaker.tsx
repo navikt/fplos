@@ -72,7 +72,7 @@ export class SistBehandledeSaker extends Component<TsProps, StateProps> {
                   >
                     {`${sbs.navn} ${sbs.personnummer}`}
                   </Lenke>
-)
+                )
                 : (
                   <Lenke href="#" onClick={getClickEvent(this.openFpsak, sbs)}>
                     <FormattedMessage id="SistBehandledeSaker.Behandling" values={{ index: index + 1 }} />

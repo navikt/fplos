@@ -74,8 +74,8 @@ export class OppgaveHandlingerMenu extends Component<TsProps, TsState> {
     flyttReservasjon: PropTypes.func.isRequired,
   };
 
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
 
     this.state = {
       showOpphevReservasjonModal: false,
@@ -85,9 +85,6 @@ export class OppgaveHandlingerMenu extends Component<TsProps, TsState> {
     };
 
     this.menuButtonRef = React.createRef();
-  }
-
-  componentWillMount = () => {
     toggleEventListeners(true, this.handleOutsideClick);
   }
 
@@ -232,7 +229,7 @@ export class OppgaveHandlingerMenu extends Component<TsProps, TsState> {
           closeModal={this.closeReservasjonEndringDatoModal}
           reserverTilDefault={oppgave.status.reservertTilTidspunkt}
         />
-)
+        )
         }
         {showForlengetReservasjonModal
           && (
@@ -241,7 +238,7 @@ export class OppgaveHandlingerMenu extends Component<TsProps, TsState> {
             showModal={showForlengetReservasjonModal}
             closeModal={this.closeForlengReservasjonModal}
           />
-)
+          )
         }
         { showFlyttReservasjonModal && (
           <FlyttReservasjonModal

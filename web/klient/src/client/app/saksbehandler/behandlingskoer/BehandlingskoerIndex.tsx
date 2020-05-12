@@ -178,7 +178,7 @@ export class BehandlingskoerIndex extends Component<TsProps, StateProps> {
       return Promise.resolve();
     }
     return endreReservasjon(oppgaveId, reserverTil)
-        .then(() => fetchReserverte(sakslisteId));
+      .then(() => fetchReserverte(sakslisteId));
   }
 
   flyttReservasjon = (oppgaveId: number, brukerident: string, begrunnelse: string): Promise<any> => {

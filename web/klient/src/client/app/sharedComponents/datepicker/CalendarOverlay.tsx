@@ -86,8 +86,8 @@ class CalendarOverlay extends Component {
     }
 
     const {
- onDayChange, className, dayPickerClassName, firstDate, lastDate,
-} = this.props;
+      onDayChange, className, dayPickerClassName, firstDate, lastDate,
+    } = this.props;
     const selectedDay = this.parseDateValue();
     return (
       <div

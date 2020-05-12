@@ -76,7 +76,7 @@ export const SorteringVelger = ({
       onChange={sorteringType => lagreSakslisteSortering(valgtSakslisteId, sorteringType, valgtAvdelingEnhet)}
     >
       {koSorteringTyper.map(koSortering => (
-          (koSortering.feltkategori !== 'TILBAKEKREVING' || bareTilbakekrevingValgt(valgteBehandlingtyper)) && (
+        (koSortering.feltkategori !== 'TILBAKEKREVING' || bareTilbakekrevingValgt(valgteBehandlingtyper)) && (
           <RadioOption
             key={koSortering.kode}
             value={koSortering.kode}
@@ -108,7 +108,7 @@ export const SorteringVelger = ({
             />
             )}
           </RadioOption>
-          )
+        )
       ))}
     </RadioGroupField>
   </>

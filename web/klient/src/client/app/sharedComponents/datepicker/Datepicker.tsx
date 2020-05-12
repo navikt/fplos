@@ -120,7 +120,7 @@ class Datepicker extends Component <TsProps> {
             buttonRef={this.handleButtonRef}
             disabled={disabled}
           />
-)}
+          )}
         </div>
         {(showCalendar || alwaysShowCalendar)
         && (

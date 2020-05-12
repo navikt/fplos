@@ -52,7 +52,7 @@ export class ReservasjonerIndex extends Component<TsProps> {
 
   flyttReservasjon = (oppgaveId: number, brukerident: string, begrunnelse: string): Promise<any> => {
     const { flyttReservasjon: flytt, fetchAvdelingensReservasjoner: fetchReserverte, valgtAvdelingEnhet } = this.props;
-        return flytt(oppgaveId, brukerident, begrunnelse)
+    return flytt(oppgaveId, brukerident, begrunnelse)
       .then(() => fetchReserverte(valgtAvdelingEnhet));
   }
 

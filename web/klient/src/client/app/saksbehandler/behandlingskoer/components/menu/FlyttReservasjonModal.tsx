@@ -9,8 +9,6 @@ import { Normaltekst, Element } from 'nav-frontend-typografi';
 
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import { FlexContainer, FlexRow, FlexColumn } from 'sharedComponents/flexGrid';
-import oppgavePropType from 'saksbehandler/oppgavePropType';
-import { Oppgave } from 'saksbehandler/oppgaveTsType';
 import {
   hasValidText, maxLength, minLength, required,
 } from 'utils/validation/validators';
