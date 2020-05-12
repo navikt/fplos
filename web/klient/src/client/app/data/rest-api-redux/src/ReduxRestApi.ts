@@ -9,7 +9,7 @@ const getDataContext = (reducerName: string) => state => state.default[reducerNa
 class ReduxRestApi {
   config: RequestConfig[];
 
-  contextPath: string = '';
+  contextPath = '';
 
   reduxApiCreator: ReduxApiCreator;
 

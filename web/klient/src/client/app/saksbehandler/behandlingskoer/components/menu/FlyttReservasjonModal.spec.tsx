@@ -2,16 +2,12 @@
 import React from 'react';
 import { expect } from 'chai';
 import sinon from 'sinon';
-import moment from 'moment';
 
 import { Form } from 'react-final-form';
 import { Hovedknapp } from 'nav-frontend-knapper';
 import { Normaltekst } from 'nav-frontend-typografi';
 
 import { shallowWithIntl, intlMock } from 'testHelpers/intl-enzyme-test-helper';
-import behandlingStatus from 'kodeverk/behandlingStatus';
-import fagsakYtelseType from 'kodeverk/fagsakYtelseType';
-import behandlingType from 'kodeverk/behandlingType';
 import { FlyttReservasjonModal } from './FlyttReservasjonModal';
 
 describe('<FlyttReservasjonModal>', () => {
@@ -67,7 +63,10 @@ describe('<FlyttReservasjonModal>', () => {
 
   it('skal vise saksbehandler', () => {
     const saksbehandler = {
-      brukerIdent: 'P039283',
+      brukerIdent: {
+        brukerIdent: 'P039283',
+        verdi: 'P039283',
+      },
       navn: 'Brukernavn',
       avdelingsnavn: ['Avdelingsnavn'],
     };
@@ -178,7 +177,10 @@ describe('<FlyttReservasjonModal>', () => {
 
   it('skal vise ok-knapp som enablet når en har saksbehandler og begrunnelsen er minst tre bokstaver', () => {
     const saksbehandler = {
-      brukerIdent: 'P039283',
+      brukerIdent: {
+        brukerIdent: 'P039283',
+        verdi: 'P039283',
+      },
       navn: 'Brukernavn',
       avdelingsnavn: ['Avdelingsnavn'],
     };
@@ -241,7 +243,10 @@ describe('<FlyttReservasjonModal>', () => {
 
   it('skal vise ok-knapp som disablet når begrunnelsen er mindre enn tre bokstaver', () => {
     const saksbehandler = {
-      brukerIdent: 'P039283',
+      brukerIdent: {
+        brukerIdent: 'P039283',
+        verdi: 'P039283',
+      },
       navn: 'Brukernavn',
       avdelingsnavn: ['Avdelingsnavn'],
     };

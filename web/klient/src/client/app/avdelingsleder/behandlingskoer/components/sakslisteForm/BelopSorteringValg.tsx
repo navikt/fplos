@@ -19,10 +19,10 @@ interface TsProps {
 }
 
 export const BelopSorteringValg = ({
-    intl,
-    valgtSakslisteId,
-    valgtAvdelingEnhet,
-    lagreSakslisteSorteringNumerisk,
+  intl,
+  valgtSakslisteId,
+  valgtAvdelingEnhet,
+  lagreSakslisteSorteringNumerisk,
 }: TsProps) => (
   <ArrowBox>
     <Undertekst>

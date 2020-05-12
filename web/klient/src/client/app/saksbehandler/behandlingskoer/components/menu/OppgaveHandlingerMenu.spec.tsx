@@ -3,7 +3,6 @@ import React from 'react';
 import { expect } from 'chai';
 import { shallow } from 'enzyme';
 import sinon from 'sinon';
-import moment from 'moment';
 import { FormattedHTMLMessage } from 'react-intl';
 
 import behandlingStatus from 'kodeverk/behandlingStatus';

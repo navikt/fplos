@@ -26,7 +26,7 @@ const defaultPostHeaders = {
   'Content-Type': 'application/json',
 };
 
-const get = axiosInstance => (url: string, params: any, responseType: string = 'json') => cancellable(axiosInstance, {
+const get = axiosInstance => (url: string, params: any, responseType = 'json') => cancellable(axiosInstance, {
   url,
   params,
   responseType,
@@ -36,7 +36,7 @@ const get = axiosInstance => (url: string, params: any, responseType: string = '
   },
 });
 
-const post = axiosInstance => (url: string, data: any, responseType: string = 'json') => cancellable(axiosInstance, {
+const post = axiosInstance => (url: string, data: any, responseType = 'json') => cancellable(axiosInstance, {
   url,
   responseType,
   data: JSON.stringify(data),
@@ -48,7 +48,7 @@ const post = axiosInstance => (url: string, data: any, responseType: string = 'j
   cache: false,
 });
 
-const put = axiosInstance => (url: string, data: any, responseType: string = 'json') => cancellable(axiosInstance, {
+const put = axiosInstance => (url: string, data: any, responseType = 'json') => cancellable(axiosInstance, {
   url,
   responseType,
   data: JSON.stringify(data),

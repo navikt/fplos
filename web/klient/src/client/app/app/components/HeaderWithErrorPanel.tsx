@@ -1,5 +1,5 @@
 import React, {
- useState, useEffect, FunctionComponent, useRef, useCallback,
+  useState, useEffect, FunctionComponent, useRef, useCallback,
 } from 'react';
 import PropTypes from 'prop-types';
 import { injectIntl, intlShape } from 'react-intl';
@@ -87,71 +87,71 @@ const HeaderWithErrorPanel: FunctionComponent<OwnProps> = ({
   valgtAvdelingEnhet,
   setValgtAvdeling,
 }) => {
-    const [erLenkePanelApent, setLenkePanelApent] = useState(false);
-    const [erAvdelingerPanelApent, setAvdelingerPanelApent] = useState(false);
+  const [erLenkePanelApent, setLenkePanelApent] = useState(false);
+  const [erAvdelingerPanelApent, setAvdelingerPanelApent] = useState(false);
 
-    const wrapperRef = useOutsideClickEvent(erLenkePanelApent, erAvdelingerPanelApent, setLenkePanelApent, setAvdelingerPanelApent);
+  const wrapperRef = useOutsideClickEvent(erLenkePanelApent, erAvdelingerPanelApent, setLenkePanelApent, setAvdelingerPanelApent);
 
-    useEffect(() => {
-      setAvdeling(avdelinger, setValgtAvdeling, valgtAvdelingEnhet);
-    }, [avdelinger]);
+  useEffect(() => {
+    setAvdeling(avdelinger, setValgtAvdeling, valgtAvdelingEnhet);
+  }, [avdelinger]);
 
-    let brukerPanel = <UserPanel name={navAnsattName} />;
+  let brukerPanel = <UserPanel name={navAnsattName} />;
 
-    if (valgtAvdelingEnhet && avdelinger.length > 0) {
-      brukerPanel = (
-        <Popover
-          popperIsVisible={erAvdelingerPanelApent}
-          renderArrowElement
-          customPopperStyles={{ top: '11px', zIndex: 1 }}
-          arrowProps={{ style: { right: '17px' } }}
-          popperProps={{
-            children: () => (
-              <BoxedListWithSelection
-                onClick={(index) => {
-                  setValueInLocalStorage('avdelingEnhet', avdelinger[index].avdelingEnhet);
-                  setValgtAvdeling(avdelinger[index].avdelingEnhet);
-                  setAvdelingerPanelApent(false);
+  if (valgtAvdelingEnhet && avdelinger.length > 0) {
+    brukerPanel = (
+      <Popover
+        popperIsVisible={erAvdelingerPanelApent}
+        renderArrowElement
+        customPopperStyles={{ top: '11px', zIndex: 1 }}
+        arrowProps={{ style: { right: '17px' } }}
+        popperProps={{
+          children: () => (
+            <BoxedListWithSelection
+              onClick={(index) => {
+                setValueInLocalStorage('avdelingEnhet', avdelinger[index].avdelingEnhet);
+                setValgtAvdeling(avdelinger[index].avdelingEnhet);
+                setAvdelingerPanelApent(false);
+              }}
+              items={avdelinger.map(avdeling => ({
+                name: `${avdeling.avdelingEnhet} ${avdeling.navn}`,
+                selected: valgtAvdelingEnhet === avdeling.avdelingEnhet,
+              }))}
+            />
+          ),
+          placement: 'bottom-start',
+          positionFixed: true,
+        }}
+        referenceProps={{
+          // eslint-disable-next-line react/prop-types
+          children: ({ ref }) => (
+            <div ref={ref}>
+              <UserPanel
+                name={navAnsattName}
+                unit={`${valgtAvdelingEnhet} ${avdelinger.find(a => a.avdelingEnhet === valgtAvdelingEnhet).navn}`}
+                onClick={() => {
+                  if (erLenkePanelApent) {
+                    setLenkePanelApent(false);
+                  }
+                  setAvdelingerPanelApent(!erAvdelingerPanelApent);
                 }}
-                items={avdelinger.map(avdeling => ({
-                  name: `${avdeling.avdelingEnhet} ${avdeling.navn}`,
-                  selected: valgtAvdelingEnhet === avdeling.avdelingEnhet,
-                }))}
               />
-            ),
-            placement: 'bottom-start',
-            positionFixed: true,
-          }}
-          referenceProps={{
-            // eslint-disable-next-line react/prop-types
-            children: ({ ref }) => (
-              <div ref={ref}>
-                <UserPanel
-                  name={navAnsattName}
-                  unit={`${valgtAvdelingEnhet} ${avdelinger.find(a => a.avdelingEnhet === valgtAvdelingEnhet).navn}`}
-                  onClick={() => {
-                      if (erLenkePanelApent) {
-                        setLenkePanelApent(false);
-                      }
-                      setAvdelingerPanelApent(!erAvdelingerPanelApent);
-                  }}
-                />
-              </div>
-            ),
-          }}
-        />
-      );
-    }
+            </div>
+          ),
+        }}
+      />
+    );
+  }
 
-    return (
-      <header className={styles.container}>
-        <div ref={wrapperRef}>
-          <Header title={intl.formatMessage({ id: 'Header.Foreldrepenger' })}>
-            <Popover
-              popperIsVisible={erLenkePanelApent}
-              renderArrowElement
-              customPopperStyles={{ top: '11px', zIndex: 1 }}
-              popperProps={{
+  return (
+    <header className={styles.container}>
+      <div ref={wrapperRef}>
+        <Header title={intl.formatMessage({ id: 'Header.Foreldrepenger' })}>
+          <Popover
+            popperIsVisible={erLenkePanelApent}
+            renderArrowElement
+            customPopperStyles={{ top: '11px', zIndex: 1 }}
+            popperProps={{
               children: () => (
                 <BoxedListWithLinks
                   onClick={() => {
@@ -171,7 +171,7 @@ const HeaderWithErrorPanel: FunctionComponent<OwnProps> = ({
               placement: 'bottom-start',
               positionFixed: true,
             }}
-              referenceProps={{
+            referenceProps={{
               // eslint-disable-next-line react/prop-types
               children: ({ ref }) => (
                 <div ref={ref}>
@@ -187,14 +187,14 @@ const HeaderWithErrorPanel: FunctionComponent<OwnProps> = ({
                 </div>
               ),
             }}
-            />
-            {brukerPanel}
-          </Header>
-        </div>
-        <ErrorMessagePanel queryStrings={queryStrings} removeErrorMessage={removeErrorMessage} />
-      </header>
-    );
-  };
+          />
+          {brukerPanel}
+        </Header>
+      </div>
+      <ErrorMessagePanel queryStrings={queryStrings} removeErrorMessage={removeErrorMessage} />
+    </header>
+  );
+};
 
 HeaderWithErrorPanel.propTypes = {
   intl: intlShape.isRequired,

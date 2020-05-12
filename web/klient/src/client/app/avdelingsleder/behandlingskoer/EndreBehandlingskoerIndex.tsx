@@ -66,7 +66,7 @@ export class EndreBehandlingskoerIndex extends Component<TsProps> {
       fetchAvdelingensSaksbehandlere: fetchSaksbehandlere,
       fetchAntallOppgaverForAvdeling: fetchAntallOppgaver,
       valgtAvdelingEnhet,
-} = this.props;
+    } = this.props;
     fetchSakslister(valgtAvdelingEnhet);
     fetchSaksbehandlere(valgtAvdelingEnhet);
     fetchAntallOppgaver(valgtAvdelingEnhet);

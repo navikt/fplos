@@ -57,7 +57,7 @@ class RequestProcess {
 
   notify: Notify = () => undefined;
 
-  isCancelled: boolean = false;
+  isCancelled = false;
 
   constructor(httpClientApi: HttpClientApi, restMethod: (url: string, params: any, responseType?: string) => Promise<Response>,
     path: string, config: RequestAdditionalConfig) {
@@ -72,7 +72,7 @@ class RequestProcess {
     this.notify = notificationEmitter;
   }
 
-  execLongPolling = async (location: string, pollingInterval: number = 0, pollingCounter: number = 0): Promise<Response> => {
+  execLongPolling = async (location: string, pollingInterval = 0, pollingCounter = 0): Promise<Response> => {
     if (pollingCounter === this.maxPollingLimit) {
       throw new TimeoutError(location);
     }

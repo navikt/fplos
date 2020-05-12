@@ -373,15 +373,24 @@ describe('<SakslisteVelgerForm>', () => {
       fetchSakslistensSaksbehandlere={sinon.spy()}
       fetchAntallOppgaverForBehandlingsko={sinon.spy()}
       saksbehandlere={[{
-        brukerIdent: 'T120101',
+        brukerIdent: {
+          brukerIdent: 'T120101',
+          verdi: 'T120101',
+        },
         navn: 'Espen Utvikler',
         avdelingsnavn: [],
       }, {
-        brukerIdent: 'A120102',
+        brukerIdent: {
+          brukerIdent: 'A120102',
+          verdi: 'A120102',
+        },
         navn: 'Auto Joachim',
         avdelingsnavn: [],
       }, {
-        brukerIdent: 'T120102',
+        brukerIdent: {
+          brukerIdent: 'T120102',
+          verdi: 'T120102',
+        },
         navn: 'Helge Ingstad',
         avdelingsnavn: [],
       }]}

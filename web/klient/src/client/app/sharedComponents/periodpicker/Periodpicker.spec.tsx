@@ -14,6 +14,7 @@ describe('<Periodpicker>', () => {
   it('skal vise periodefelt med angitt periode', () => {
     const wrapper = shallow(<Periodpicker
       names={['fromDate', 'toDate']}
+      // @ts-ignore
       fromDate={{ input: { value: '30.08.2017' } }}
       toDate={{ input: { value: '31.10.2017' } }}
     />);
@@ -27,6 +28,7 @@ describe('<Periodpicker>', () => {
   it('skal vise dato-velger ved trykk på knapp', () => {
     const wrapper = shallow(<Periodpicker
       names={['fromDate', 'toDate']}
+      // @ts-ignore
       fromDate={{ input: { value: '30.08.2017' } }}
       toDate={{ input: { value: '31.10.2017' } }}
     />);
@@ -45,6 +47,7 @@ describe('<Periodpicker>', () => {
     const onChangeCallback = sinon.spy();
     const wrapper = shallow(<Periodpicker
       names={['fromDate', 'toDate']}
+      // @ts-ignore
       fromDate={{ input: { value: '', onChange: onChangeCallback } }}
       toDate={{ input: { value: '', onChange: onChangeCallback } }}
     />);
@@ -63,6 +66,7 @@ describe('<Periodpicker>', () => {
     const onChangeCallback = sinon.spy();
     const wrapper = shallow(<Periodpicker
       names={['fromDate', 'toDate']}
+      // @ts-ignore
       fromDate={{ input: { value: '', onChange: onChangeCallback } }}
       toDate={{ input: { value: '', onChange: onChangeCallback } }}
     />);
@@ -81,6 +85,7 @@ describe('<Periodpicker>', () => {
     const onChangeCallback = sinon.spy();
     const wrapper = shallow(<Periodpicker
       names={['fromDate', 'toDate']}
+      // @ts-ignore
       fromDate={{ input: { value: '30.08.2017', onChange: onChangeCallback } }}
       toDate={{ input: { value: '30.10.2017', onChange: onChangeCallback } }}
     />);
@@ -104,6 +109,7 @@ describe('<Periodpicker>', () => {
     const onChangeCallback = sinon.spy();
     const wrapper = shallow(<Periodpicker
       names={['fromDate', 'toDate']}
+      // @ts-ignore
       fromDate={{ input: { value: '30.08.2017', onChange: onChangeCallback } }}
       toDate={{ input: { value: '30.10.2017', onChange: onChangeCallback } }}
     />);

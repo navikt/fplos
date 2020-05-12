@@ -48,6 +48,7 @@ const config = {
     '@typescript-eslint/explicit-member-accessibility': OFF,
     '@typescript-eslint/explicit-function-return-type': OFF,
     '@typescript-eslint/no-explicit-any': OFF,
+    '@typescript-eslint/ban-ts-ignore': OFF,
   },
 };
 

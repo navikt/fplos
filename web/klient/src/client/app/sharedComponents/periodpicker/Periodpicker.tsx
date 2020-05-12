@@ -36,7 +36,7 @@ class Periodpicker extends Component {
 
   constructor(props) {
     super(props);
-    this.state = { showCalendar: false, period: undefined };
+
     this.handleInputRef = this.handleInputRef.bind(this);
     this.handleButtonRef = this.handleButtonRef.bind(this);
     this.handleUpdatedRefs = this.handleUpdatedRefs.bind(this);
@@ -48,13 +48,17 @@ class Periodpicker extends Component {
     this.onChange = this.onChange.bind(this);
     this.parseToDate = this.parseToDate.bind(this);
 
-    const startDate = getStartDateInput(this.props).value;
-    const endDate = getEndDateInput(this.props).value;
+    const startDate = getStartDateInput(props).value;
+    const endDate = getEndDateInput(props).value;
     let period = '';
     if (startDate) {
       period = endDate ? `${startDate} - ${endDate}` : startDate;
     }
-    this.setState({ period });
+
+    this.state = {
+      showCalendar: false,
+      period,
+    };
   }
 
   onBlur(e) {

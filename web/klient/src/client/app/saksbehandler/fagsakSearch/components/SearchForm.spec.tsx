@@ -38,7 +38,8 @@ describe('<SearchForm>', () => {
     />).find(Form).drill(props => props.render(formProps)).shallow();
 
     const form = wrapper.find('form');
-    form.simulate('submit', { preventDefault() {} });
+    const preventDefault = () => undefined;
+    form.simulate('submit', { preventDefault });
 
     expect(onButtonClick).to.have.property('callCount', 1);
   });
