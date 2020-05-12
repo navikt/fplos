@@ -37,20 +37,20 @@ export const AndreKriterierVelger = ({
       <FormattedMessage id="AndreKriterierVelger.AndreKriterier" />
     </Undertekst>
     <VerticalSpacer eightPx />
-    {andreKriterierTyper.map(akt => (
+    {andreKriterierTyper.map((akt) => (
       <Fragment key={akt.kode}>
         <CheckboxField
           key={akt.kode}
           name={akt.kode}
           label={akt.navn}
-          onChange={isChecked => lagreSakslisteAndreKriterier(valgtSakslisteId, akt, isChecked, true, valgtAvdelingEnhet)}
+          onChange={(isChecked) => lagreSakslisteAndreKriterier(valgtSakslisteId, akt, isChecked, true, valgtAvdelingEnhet)}
         />
         {values[akt.kode] && (
           <div className={styles.arrowbox}>
             <ArrowBox alignOffset={30}>
               <RadioGroupField
                 name={`${akt.kode}_inkluder`}
-                onChange={skalInkludere => lagreSakslisteAndreKriterier(valgtSakslisteId, akt, true, skalInkludere, valgtAvdelingEnhet)}
+                onChange={(skalInkludere) => lagreSakslisteAndreKriterier(valgtSakslisteId, akt, true, skalInkludere, valgtAvdelingEnhet)}
               >
                 <RadioOption
                   value
@@ -65,8 +65,7 @@ export const AndreKriterierVelger = ({
           </div>
         )}
       </Fragment>
-    ))
-    }
+    ))}
   </>
 );
 
@@ -77,7 +76,7 @@ AndreKriterierVelger.propTypes = {
   andreKriterierTyper: PropTypes.arrayOf(kodeverkPropType).isRequired,
 };
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   andreKriterierTyper: getKodeverk(kodeverkTyper.ANDRE_KRITERIER_TYPE)(state),
 });
 

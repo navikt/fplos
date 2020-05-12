@@ -31,7 +31,7 @@ const behandlingstypeOrder = [
   behandlingType.FORSTEGANGSSOKNAD];
 
 const settCustomHoydePaSoylene = (data) => {
-  const transformert = data.map(el => ({
+  const transformert = data.map((el) => ({
     ...el,
     y0: el.y + 0.30,
     y: el.y - 0.30,
@@ -52,7 +52,7 @@ const formatData = (oppgaverForAvdeling) => {
     }, {});
 
   return Object.keys(sammenslatteBehandlingstyper)
-    .map(k => ({ x: sammenslatteBehandlingstyper[k], y: parseInt(k, 10) }));
+    .map((k) => ({ x: sammenslatteBehandlingstyper[k], y: parseInt(k, 10) }));
 };
 
 const cssText = {
@@ -67,9 +67,9 @@ const getHintAntall = (verdi, intl) => intl.formatMessage({ id: 'FordelingAvBeha
 });
 const getHintTotalAntall = (verdi, tilBeslutter, tilSaksbehandling, intl) => {
   const y = Math.ceil(verdi.y);
-  const beslutterAntall = tilBeslutter.find(b => b.y === y);
+  const beslutterAntall = tilBeslutter.find((b) => b.y === y);
   const sum1 = beslutterAntall ? beslutterAntall.x : 0;
-  const saksbehandlingAntall = tilSaksbehandling.find(b => b.y === y);
+  const saksbehandlingAntall = tilSaksbehandling.find((b) => b.y === y);
   const sum2 = saksbehandlingAntall ? saksbehandlingAntall.x : 0;
   return intl.formatMessage({ id: 'FordelingAvBehandlingstypeGraf.TotaltAntall' }, { antall: sum1 + sum2 });
 };
@@ -107,18 +107,18 @@ export class FordelingAvBehandlingstypeGraf extends Component<TsProps, StateTsPr
   }
 
   leggTilHintVerdi = (hintVerdi: {x: number; x0: number; y: number}) => {
-    this.setState(prevState => ({ ...prevState, hintVerdi }));
+    this.setState((prevState) => ({ ...prevState, hintVerdi }));
   };
 
   fjernHintVerdi = () => {
-    this.setState(prevState => ({ ...prevState, hintVerdi: undefined }));
+    this.setState((prevState) => ({ ...prevState, hintVerdi: undefined }));
   };
 
   finnBehandlingTypeNavn = (behandlingTypeKode: string) => {
     const {
       behandlingTyper,
     } = this.props;
-    const type = behandlingTyper.find(bt => bt.kode === behandlingTypeKode);
+    const type = behandlingTyper.find((bt) => bt.kode === behandlingTypeKode);
     return type ? type.navn : '';
   }
 
@@ -131,8 +131,8 @@ export class FordelingAvBehandlingstypeGraf extends Component<TsProps, StateTsPr
     } = this.state;
 
 
-    const tilSaksbehandling = formatData(oppgaverForAvdeling.filter(o => o.tilBehandling));
-    const tilBeslutter = formatData(oppgaverForAvdeling.filter(o => !o.tilBehandling));
+    const tilSaksbehandling = formatData(oppgaverForAvdeling.filter((o) => o.tilBehandling));
+    const tilBeslutter = formatData(oppgaverForAvdeling.filter((o) => !o.tilBehandling));
     const isEmpty = tilSaksbehandling.length === 0 && tilBeslutter.length === 0;
 
     return (
@@ -203,7 +203,7 @@ export class FordelingAvBehandlingstypeGraf extends Component<TsProps, StateTsPr
   }
 }
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   behandlingTyper: getKodeverk(kodeverkTyper.BEHANDLING_TYPE)(state),
 });
 

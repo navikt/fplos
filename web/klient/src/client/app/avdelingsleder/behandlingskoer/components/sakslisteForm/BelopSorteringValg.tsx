@@ -31,7 +31,7 @@ export const BelopSorteringValg = ({
 
     <>
       <AutoLagringVedBlur
-        lagre={values => lagreSakslisteSorteringNumerisk(valgtSakslisteId, values.fra, values.til, valgtAvdelingEnhet)}
+        lagre={(values) => lagreSakslisteSorteringNumerisk(valgtSakslisteId, values.fra, values.til, valgtAvdelingEnhet)}
         fieldNames={['fra', 'til']}
       />
       <FlexContainer>

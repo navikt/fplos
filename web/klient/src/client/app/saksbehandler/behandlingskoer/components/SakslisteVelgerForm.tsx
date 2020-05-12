@@ -43,7 +43,7 @@ interface Toolip {
 const getDefaultSaksliste = (sakslister) => {
   const lagretSakslisteId = getValueFromLocalStorage('sakslisteId');
   if (lagretSakslisteId) {
-    if (sakslister.some(s => `${s.sakslisteId}` === lagretSakslisteId)) {
+    if (sakslister.some((s) => `${s.sakslisteId}` === lagretSakslisteId)) {
       return parseInt(lagretSakslisteId, 10);
     }
     removeValueFromLocalStorage('sakslisteId');
@@ -65,17 +65,17 @@ const getInitialValues = (sakslister) => {
   };
 };
 
-const getValgtSaksliste = (sakslister: Saksliste[], sakslisteId: string) => sakslister.find(s => sakslisteId === `${s.sakslisteId}`);
+const getValgtSaksliste = (sakslister: Saksliste[], sakslisteId: string) => sakslister.find((s) => sakslisteId === `${s.sakslisteId}`);
 
 const getStonadstyper = (saksliste?: Saksliste, intl: any) => (saksliste && saksliste.fagsakYtelseTyper.length > 0
-  ? saksliste.fagsakYtelseTyper.map(type => type.navn) : [intl.formatMessage({ id: 'SakslisteVelgerForm.Alle' })]);
+  ? saksliste.fagsakYtelseTyper.map((type) => type.navn) : [intl.formatMessage({ id: 'SakslisteVelgerForm.Alle' })]);
 
 const getBehandlingstyper = (saksliste?: Saksliste, intl: any) => (saksliste && saksliste.behandlingTyper.length > 0
-  ? saksliste.behandlingTyper.map(type => type.navn) : [intl.formatMessage({ id: 'SakslisteVelgerForm.Alle' })]);
+  ? saksliste.behandlingTyper.map((type) => type.navn) : [intl.formatMessage({ id: 'SakslisteVelgerForm.Alle' })]);
 
 const getAndreKriterier = (saksliste?: Saksliste, intl: any) => {
   if (saksliste && saksliste.andreKriterier.length > 0) {
-    return saksliste.andreKriterier.map(ak => (ak.inkluder ? ak.andreKriterierType.navn
+    return saksliste.andreKriterier.map((ak) => (ak.inkluder ? ak.andreKriterierType.navn
       : intl.formatMessage({ id: 'SakslisteVelgerForm.Uten' }, { kriterie: ak.andreKriterierType.navn })));
   }
   return [intl.formatMessage({ id: 'SakslisteVelgerForm.Alle' })];
@@ -118,7 +118,7 @@ const getSorteringsnavn = (saksliste?: Saksliste) => {
   return <FormattedHTMLMessage id="SakslisteVelgerForm.Sorteringsinfo" values={values} />;
 };
 
-const imageSrcFunction = isHovering => (isHovering ? gruppeHoverUrl : gruppeUrl);
+const imageSrcFunction = (isHovering) => (isHovering ? gruppeHoverUrl : gruppeUrl);
 
 /**
  * SakslisteVelgerForm
@@ -162,7 +162,7 @@ export class SakslisteVelgerForm extends Component<TsProps> {
 
     return {
       header: <Undertittel>{intl.formatMessage({ id: 'SakslisteVelgerForm.SaksbehandlerToolip' })}</Undertittel>,
-      body: saksbehandlere.map(s => s.navn).sort((n1, n2) => n1.localeCompare(n2)).map(navn => (<Normaltekst key={navn}>{navn}</Normaltekst>)),
+      body: saksbehandlere.map((s) => s.navn).sort((n1, n2) => n1.localeCompare(n2)).map((navn) => (<Normaltekst key={navn}>{navn}</Normaltekst>)),
     };
   }
 
@@ -197,7 +197,7 @@ export class SakslisteVelgerForm extends Component<TsProps> {
                     name="sakslisteId"
                     label={intl.formatMessage({ id: 'SakslisteVelgerForm.Saksliste' })}
                     selectValues={sakslister
-                      .map(saksliste => (<option key={saksliste.sakslisteId} value={`${saksliste.sakslisteId}`}>{saksliste.navn}</option>))}
+                      .map((saksliste) => (<option key={saksliste.sakslisteId} value={`${saksliste.sakslisteId}`}>{saksliste.navn}</option>))}
                     bredde="l"
                   />
                 </FlexColumn>
@@ -248,7 +248,7 @@ export class SakslisteVelgerForm extends Component<TsProps> {
   }
 }
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   saksbehandlere: getSakslistensSaksbehandlere(state),
 });
 

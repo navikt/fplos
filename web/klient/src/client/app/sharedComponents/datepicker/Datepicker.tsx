@@ -135,8 +135,7 @@ class Datepicker extends Component <TsProps> {
           firstDate={firstDate}
           lastDate={lastDate}
         />
-        )
-        }
+        )}
       </>
     );
   }

@@ -4,7 +4,7 @@ import EndpointOperations from './redux/EndpointOperations';
 import ReduxApiCreator from './redux/ReduxApiCreator';
 import ReduxEvents from './redux/ReduxEvents';
 
-const getDataContext = (reducerName: string) => state => state.default[reducerName];
+const getDataContext = (reducerName: string) => (state) => state.default[reducerName];
 
 class ReduxRestApi {
   config: RequestConfig[];

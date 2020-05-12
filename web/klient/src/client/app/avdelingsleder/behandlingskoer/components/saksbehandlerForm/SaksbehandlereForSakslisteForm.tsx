@@ -79,22 +79,22 @@ export class SaksbehandlereForSakslisteForm extends Component<TsProps> {
             {avdelingensSaksbehandlere.length > 0 && (
             <Row>
               <Column xs="6">
-                {avdelingensSaksbehandlereVenstreListe.map(s => (
+                {avdelingensSaksbehandlereVenstreListe.map((s) => (
                   <CheckboxField
                     key={s.brukerIdent}
                     name={s.brukerIdent}
                     label={s.navn}
-                    onChange={isChecked => knyttSaksbehandlerTilSaksliste(valgtSaksliste.sakslisteId, s.brukerIdent, isChecked, valgtAvdelingEnhet)}
+                    onChange={(isChecked) => knyttSaksbehandlerTilSaksliste(valgtSaksliste.sakslisteId, s.brukerIdent, isChecked, valgtAvdelingEnhet)}
                   />
                 ))}
               </Column>
               <Column xs="6">
-                {avdelingensSaksbehandlereHoyreListe.map(s => (
+                {avdelingensSaksbehandlereHoyreListe.map((s) => (
                   <CheckboxField
                     key={s.brukerIdent}
                     name={s.brukerIdent}
                     label={s.navn}
-                    onChange={isChecked => knyttSaksbehandlerTilSaksliste(valgtSaksliste.sakslisteId, s.brukerIdent, isChecked, valgtAvdelingEnhet)}
+                    onChange={(isChecked) => knyttSaksbehandlerTilSaksliste(valgtSaksliste.sakslisteId, s.brukerIdent, isChecked, valgtAvdelingEnhet)}
                   />
                 ))}
               </Column>
@@ -107,11 +107,11 @@ export class SaksbehandlereForSakslisteForm extends Component<TsProps> {
   }
 }
 
-const sortSaksbehandlere = createSelector([getAvdelingensSaksbehandlere], saksbehandlere => (saksbehandlere && saksbehandlere instanceof Array
+const sortSaksbehandlere = createSelector([getAvdelingensSaksbehandlere], (saksbehandlere) => (saksbehandlere && saksbehandlere instanceof Array
   ? saksbehandlere.sort((saksbehandler1, saksbehandler2) => saksbehandler1.navn.localeCompare(saksbehandler2.navn))
   : saksbehandlere));
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   valgtAvdelingEnhet: getValgtAvdelingEnhet(state),
   avdelingensSaksbehandlere: sortSaksbehandlere(state),
 });

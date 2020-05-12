@@ -56,7 +56,7 @@ const sorterBehandlingtyper = (b1, b2) => {
   return index1 > index2 ? -1 : 1;
 };
 
-const konverterTilKoordinaterGruppertPaBehandlingstype = oppgaverForAvdeling => oppgaverForAvdeling.reduce((acc, o) => {
+const konverterTilKoordinaterGruppertPaBehandlingstype = (oppgaverForAvdeling) => oppgaverForAvdeling.reduce((acc, o) => {
   const nyKoordinat = {
     x: moment(o.opprettetDato).startOf('day').toDate(),
     y: o.antall,
@@ -74,7 +74,7 @@ const fyllInnManglendeDatoerOgSorterEtterDato = (data, periodeStart, periodeSlut
   const koordinater = [];
 
   for (let dato = moment(periodeStart); dato.isSameOrBefore(periodeSlutt); dato = dato.add(1, 'days')) {
-    const funnetDato = behandlingstypeData.find(d => moment(d.x).startOf('day').isSame(dato.startOf('day')));
+    const funnetDato = behandlingstypeData.find((d) => moment(d.x).startOf('day').isSame(dato.startOf('day')));
     koordinater.push(funnetDato || {
       x: dato.toDate(),
       y: 0,
@@ -88,7 +88,7 @@ const fyllInnManglendeDatoerOgSorterEtterDato = (data, periodeStart, periodeSlut
 }, {});
 
 const finnAntallForBehandlingstypeOgDato = (data, behandlingstype, dato) => {
-  const koordinat = data[behandlingstype].find(d => d.x.getTime() === dato.getTime());
+  const koordinat = data[behandlingstype].find((d) => d.x.getTime() === dato.getTime());
   return koordinat.y;
 };
 
@@ -151,7 +151,7 @@ export class TilBehandlingGraf extends Component<TsProps, StateTsProps> {
     const {
       behandlingTyper,
     } = this.props;
-    const type = behandlingTyper.find(bt => bt.kode === behandlingTypeKode);
+    const type = behandlingTyper.find((bt) => bt.kode === behandlingTypeKode);
     return type ? type.navn : '';
   }
 
@@ -199,7 +199,7 @@ export class TilBehandlingGraf extends Component<TsProps, StateTsProps> {
                 <HorizontalGridLines />
                 <XAxis
                   tickTotal={5}
-                  tickFormat={t => moment(t).format(DDMMYYYY_DATE_FORMAT)}
+                  tickFormat={(t) => moment(t).format(DDMMYYYY_DATE_FORMAT)}
                   style={{ text: cssText }}
                 />
                 <YAxis style={{ text: cssText }} />
@@ -223,7 +223,7 @@ export class TilBehandlingGraf extends Component<TsProps, StateTsProps> {
                 >
                   <div className={styles.crosshair}>
                     <Normaltekst>{`${moment(crosshairValues[0].x).format(DDMMYYYY_DATE_FORMAT)}`}</Normaltekst>
-                    { revsersertSorterteBehandlingstyper.map(key => (
+                    { revsersertSorterteBehandlingstyper.map((key) => (
                       <Undertekst key={key}>
                         {`${this.finnBehandlingTypeNavn(key)}: ${finnAntallForBehandlingstypeOgDato(data, key, crosshairValues[0].x)}`}
                       </Undertekst>
@@ -235,8 +235,8 @@ export class TilBehandlingGraf extends Component<TsProps, StateTsProps> {
             </FlexColumn>
             <FlexColumn>
               <DiscreteColorLegend
-                colors={revsersertSorterteBehandlingstyper.map(key => behandlingstypeFarger[key])}
-                items={revsersertSorterteBehandlingstyper.map(key => (
+                colors={revsersertSorterteBehandlingstyper.map((key) => behandlingstypeFarger[key])}
+                items={revsersertSorterteBehandlingstyper.map((key) => (
                   <Normaltekst className={styles.displayInline}>{this.finnBehandlingTypeNavn(key)}</Normaltekst>
                 ))}
               />
@@ -248,7 +248,7 @@ export class TilBehandlingGraf extends Component<TsProps, StateTsProps> {
   }
 }
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   behandlingTyper: getKodeverk(kodeverkTyper.BEHANDLING_TYPE)(state),
 });
 

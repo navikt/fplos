@@ -61,7 +61,7 @@ const mapStateToProps = (state: any) => {
     fpLosApi.FPTILBAKE_URL.getRestApiFinished()(state),
   ];
   return {
-    finishedLoadingBlockers: blockers.every(finished => finished),
+    finishedLoadingBlockers: blockers.every((finished) => finished),
   };
 };
 

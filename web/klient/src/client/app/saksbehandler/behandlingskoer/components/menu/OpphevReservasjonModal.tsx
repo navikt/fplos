@@ -47,7 +47,7 @@ export const OpphevReservasjonModal = ({
     onRequestClose={cancel}
   >
     <Form
-      onSubmit={values => submit(oppgave.id, values.begrunnelse)}
+      onSubmit={(values) => submit(oppgave.id, values.begrunnelse)}
       render={({ handleSubmit }) => (
         <form onSubmit={handleSubmit}>
           <Undertittel><FormattedMessage id="OpphevReservasjonModal.Begrunnelse" /></Undertittel>

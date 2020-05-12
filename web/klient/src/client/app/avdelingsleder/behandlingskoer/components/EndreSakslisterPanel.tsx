@@ -50,7 +50,7 @@ const EndreSakslisterPanel = ({
   hentAntallOppgaverForSaksliste,
   hentAntallOppgaverForAvdeling,
 }: TsProps) => {
-  const valgtSaksliste = sakslister.find(s => s.sakslisteId === valgtSakslisteId);
+  const valgtSaksliste = sakslister.find((s) => s.sakslisteId === valgtSakslisteId);
   return (
     <>
       <GjeldendeSakslisterTabell

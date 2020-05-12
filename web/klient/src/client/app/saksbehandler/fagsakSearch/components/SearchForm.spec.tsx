@@ -19,7 +19,7 @@ describe('<SearchForm>', () => {
       searchStarted
       resetSearch={sinon.spy()}
       kanSaksbehandle
-    />).find(Form).drill(props => props.render(formProps)).shallow();
+    />).find(Form).drill((props) => props.render(formProps)).shallow();
 
     expect(wrapper.find(InputField)).to.have.length(1);
     expect(wrapper.find(Knapp)).to.have.length(1);
@@ -35,7 +35,7 @@ describe('<SearchForm>', () => {
       searchStarted
       resetSearch={sinon.spy()}
       kanSaksbehandle
-    />).find(Form).drill(props => props.render(formProps)).shallow();
+    />).find(Form).drill((props) => props.render(formProps)).shallow();
 
     const form = wrapper.find('form');
     const preventDefault = () => undefined;

@@ -34,15 +34,14 @@ export const BehandlingstypeVelger = ({
       <FormattedMessage id="BehandlingstypeVelger.Behandlingstype" />
     </Undertekst>
     <VerticalSpacer eightPx />
-    {behandlingTyper.map(bt => (
+    {behandlingTyper.map((bt) => (
       <CheckboxField
         key={bt.kode}
         name={bt.kode}
         label={bt.navn}
-        onChange={isChecked => lagreSakslisteBehandlingstype(valgtSakslisteId, bt, isChecked, valgtAvdelingEnhet)}
+        onChange={(isChecked) => lagreSakslisteBehandlingstype(valgtSakslisteId, bt, isChecked, valgtAvdelingEnhet)}
       />
-    ))
-    }
+    ))}
   </>
 );
 
@@ -56,10 +55,10 @@ BehandlingstypeVelger.propTypes = {
 const behandlingstypeOrder = Object.values(behandlingType);
 
 const getFiltrerteOgSorterteBehandlingstyper = createSelector(
-  [getKodeverk(kodeverkTyper.BEHANDLING_TYPE)], behandlingsTyper => behandlingstypeOrder.map(kode => behandlingsTyper.find(bt => bt.kode === kode)),
+  [getKodeverk(kodeverkTyper.BEHANDLING_TYPE)], (behandlingsTyper) => behandlingstypeOrder.map((kode) => behandlingsTyper.find((bt) => bt.kode === kode)),
 );
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   behandlingTyper: getFiltrerteOgSorterteBehandlingstyper(state),
 });
 

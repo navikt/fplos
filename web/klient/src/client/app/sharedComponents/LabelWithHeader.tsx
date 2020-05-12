@@ -18,7 +18,7 @@ const LabelWithHeader = ({
       {header}
     </Undertekst>
     <div className={styles.text}>
-      {texts.map(text => (
+      {texts.map((text) => (
         <Normaltekst key={text}>
           {text}
         </Normaltekst>

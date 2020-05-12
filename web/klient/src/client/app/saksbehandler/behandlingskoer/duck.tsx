@@ -119,5 +119,5 @@ export const behandlingskoerReducer = (state: StateTsType = initialState, action
 };
 
 /* Selectors */
-const getBehandlingskoerContext = state => state.default.behandlingskoerContext;
-export const getValgtSakslisteId = createSelector([getBehandlingskoerContext], behandlingskoerContext => behandlingskoerContext.valgtSakslisteId);
+const getBehandlingskoerContext = (state) => state.default.behandlingskoerContext;
+export const getValgtSakslisteId = createSelector([getBehandlingskoerContext], (behandlingskoerContext) => behandlingskoerContext.valgtSakslisteId);

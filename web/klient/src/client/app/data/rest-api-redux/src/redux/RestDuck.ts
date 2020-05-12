@@ -76,7 +76,7 @@ class RestDuck {
   }
 
   get stateSelector(): any {
-    return createSelector([this.getApiContext], restApiContext => restApiContext[this.name]);
+    return createSelector([this.getApiContext], (restApiContext) => restApiContext[this.name]);
   }
 }
 

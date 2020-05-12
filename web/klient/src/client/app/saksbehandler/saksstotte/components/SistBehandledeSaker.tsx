@@ -59,8 +59,7 @@ export class SistBehandledeSaker extends Component<TsProps, StateProps> {
         <Undertittel><FormattedMessage id="SistBehandledeSaker.SistBehandledeSaker" /></Undertittel>
         <VerticalSpacer eightPx />
         {sistBehandledeSaker.length === 0
-        && <Normaltekst><FormattedMessage id="SistBehandledeSaker.IngenBehandlinger" /></Normaltekst>
-        }
+        && <Normaltekst><FormattedMessage id="SistBehandledeSaker.IngenBehandlinger" /></Normaltekst>}
         {sistBehandledeSaker.map((sbs, index) => (
           <Fragment key={sbs.behandlingId}>
             <Normaltekst>
@@ -77,8 +76,7 @@ export class SistBehandledeSaker extends Component<TsProps, StateProps> {
                   <Lenke href="#" onClick={getClickEvent(this.openFpsak, sbs)}>
                     <FormattedMessage id="SistBehandledeSaker.Behandling" values={{ index: index + 1 }} />
                   </Lenke>
-                )
-              }
+                )}
             </Normaltekst>
             <VerticalSpacer eightPx />
           </Fragment>
@@ -88,7 +86,7 @@ export class SistBehandledeSaker extends Component<TsProps, StateProps> {
   }
 }
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   fpsakUrl: getFpsakUrl(state),
   fptilbakeUrl: getFptilbakeUrl(state),
   sistBehandledeSaker: getBehandledeOppgaver(state) || [],

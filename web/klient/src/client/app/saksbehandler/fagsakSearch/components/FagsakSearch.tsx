@@ -32,7 +32,7 @@ const skalViseListe = (fagsaker, fagsakOppgaver) => {
   if (!fagsaker) {
     return false;
   }
-  return fagsaker.length > 1 || (fagsaker.length === 1 && fagsakOppgaver.filter(oppgave => oppgave.saksnummer === fagsaker[0].saksnummer).length > 1);
+  return fagsaker.length > 1 || (fagsaker.length === 1 && fagsakOppgaver.filter((oppgave) => oppgave.saksnummer === fagsaker[0].saksnummer).length > 1);
 };
 
 /**
@@ -61,8 +61,7 @@ const FagsakSearch = ({
     />
 
     {searchResultReceived && fagsaker && fagsaker.length === 0
-      && <Normaltekst className={styles.label}><FormattedMessage id="FagsakSearch.ZeroSearchResults" /></Normaltekst>
-    }
+      && <Normaltekst className={styles.label}><FormattedMessage id="FagsakSearch.ZeroSearchResults" /></Normaltekst>}
 
     {searchResultReceived && skalViseListe(fagsaker, fagsakOppgaver) && (
       <>

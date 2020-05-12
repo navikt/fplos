@@ -57,7 +57,7 @@ export class OppgaveReservasjonEndringDatoModal extends Component<TsProps> {
           onRequestClose={closeModal}
         >
           <Form
-            onSubmit={values => endreOppgaveReservasjon(values.reserverTil)}
+            onSubmit={(values) => endreOppgaveReservasjon(values.reserverTil)}
             initialValues={this.buildInitialValues(reserverTilDefault)}
             render={({ handleSubmit }) => (
               <form onSubmit={handleSubmit}>

@@ -34,7 +34,7 @@ export const ErrorMessagePanel = ({
 
   return (
     <div className={styles.container}>
-      {errorMessages.map(message => (
+      {errorMessages.map((message) => (
         <Row key={message}>
           <Column xs="11">
             <Undertekst className={styles.wordWrap}>
@@ -67,7 +67,7 @@ export const getErrorMessageList = createSelector([(state, ownProps) => ownProps
   if (queryStrings.errormessage) {
     errorMessages.push(queryStrings.errormessage);
   }
-  allErrorMessages.forEach(message => errorMessages.push(message.code ? intl.formatMessage({ id: message.code }, message.params) : message.text));
+  allErrorMessages.forEach((message) => errorMessages.push(message.code ? intl.formatMessage({ id: message.code }, message.params) : message.text));
   return errorMessages;
 });
 

@@ -24,8 +24,7 @@ const SaksstottePaneler = ({
     <SistBehandledeSaker sistBehandledeSaker={sistBehandledeSaker} />
     <VerticalSpacer twentyPx />
     {valgtSakslisteId
-      && <SaksbehandlerNokkeltallIndex valgtSakslisteId={valgtSakslisteId} />
-    }
+      && <SaksbehandlerNokkeltallIndex valgtSakslisteId={valgtSakslisteId} />}
   </>
 );
 

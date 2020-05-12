@@ -92,7 +92,7 @@ export class FlyttReservasjonModal extends Component<TsProps> {
          onRequestClose={closeModal}
        >
          <Form
-           onSubmit={values => finnSaksbehandler(values.brukerIdent)}
+           onSubmit={(values) => finnSaksbehandler(values.brukerIdent)}
            render={({
              handleSubmit, values,
            }) => (
@@ -131,13 +131,12 @@ export class FlyttReservasjonModal extends Component<TsProps> {
                  <Normaltekst>{this.formatText()}</Normaltekst>
                  <VerticalSpacer sixteenPx />
                </>
-               )
-             }
+               )}
              </form>
            )}
          />
          <Form
-           onSubmit={values => submit(oppgaveId, saksbehandler ? saksbehandler.brukerIdent : '', values.begrunnelse)}
+           onSubmit={(values) => submit(oppgaveId, saksbehandler ? saksbehandler.brukerIdent : '', values.begrunnelse)}
            render={({
              handleSubmit, values,
            }) => (
@@ -173,7 +172,7 @@ export class FlyttReservasjonModal extends Component<TsProps> {
 }
 
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   erSaksbehandlerSokStartet: isSaksbehandlerSokStartet(state),
   erSaksbehandlerSokFerdig: isSaksbehandlerSokFerdig(state),
   saksbehandler: getSaksbehandler(state),

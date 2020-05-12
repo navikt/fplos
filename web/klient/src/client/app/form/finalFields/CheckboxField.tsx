@@ -7,11 +7,11 @@ import { Normaltekst } from 'nav-frontend-typografi';
 import renderNavField from './renderNavField';
 import { labelPropType } from './Label';
 
-const composeValidators = validators => value => validators.reduce((error, validator) => error || validator(value), undefined);
+const composeValidators = (validators) => (value) => validators.reduce((error, validator) => error || validator(value), undefined);
 
 export const RenderCheckboxField = renderNavField(({ onChange, label, ...otherProps }) => (
   <NavCheckbox
-    onChange={e => onChange(e.target.checked)}
+    onChange={(e) => onChange(e.target.checked)}
     checked={otherProps.value}
     label={React.cloneElement(label, { typographyElement: Normaltekst })}
     {...otherProps}

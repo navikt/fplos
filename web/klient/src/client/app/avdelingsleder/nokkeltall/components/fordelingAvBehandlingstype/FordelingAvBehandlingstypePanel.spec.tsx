@@ -35,7 +35,7 @@ describe('<FordelingAvBehandlingstypePanel>', () => {
       fagsakYtelseTyper={fagsakYtelseTyper}
       oppgaverForAvdeling={oppgaverForAvdeling}
       initialValues={{ valgtYtelseType: valuesMock.valgtYtelseType }}
-    />).find(Form).drill(props => props.render({ values: valuesMock })).shallow();
+    />).find(Form).drill((props) => props.render({ values: valuesMock })).shallow();
 
     const radioOptions = wrapper.find(RadioOption);
     expect(radioOptions).to.have.length(4);
@@ -69,7 +69,7 @@ describe('<FordelingAvBehandlingstypePanel>', () => {
       fagsakYtelseTyper={fagsakYtelseTyper}
       oppgaverForAvdeling={oppgaverForAvdeling}
       initialValues={{ valgtYtelseType: valuesMock.valgtYtelseType }}
-    />).find(Form).drill(props => props.render({ values: valuesMock })).shallow();
+    />).find(Form).drill((props) => props.render({ values: valuesMock })).shallow();
 
     const graf = wrapper.find(FordelingAvBehandlingstypeGraf);
     expect(graf).to.have.length(1);
@@ -98,7 +98,7 @@ describe('<FordelingAvBehandlingstypePanel>', () => {
       fagsakYtelseTyper={fagsakYtelseTyper}
       oppgaverForAvdeling={oppgaverForAvdeling}
       initialValues={{ valgtYtelseType: valuesMock.valgtYtelseType }}
-    />).find(Form).drill(props => props.render({ values: valuesMock })).shallow();
+    />).find(Form).drill((props) => props.render({ values: valuesMock })).shallow();
 
     const graf = wrapper.find(FordelingAvBehandlingstypeGraf);
     expect(graf).to.have.length(1);

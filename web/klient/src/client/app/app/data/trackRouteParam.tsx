@@ -8,7 +8,7 @@ import { parseQueryString } from 'utils/urlUtils';
 
 const defaultConfig = {
   paramName: '',
-  parse: a => a,
+  parse: (a) => a,
   paramPropType: PropTypes.any,
   storeParam: () => undefined,
   getParamFromStore: () => undefined,
@@ -85,8 +85,8 @@ const trackRouteParam = (config: ConfigTsProps) => (WrappedComponent: ReactEleme
     }
   }
 
-  const mapStateToProps = state => ({ paramFromStore: trackingConfig.getParamFromStore(state) });
-  const mapDispatchToProps = dispatch => bindActionCreators({ storeParam: trackingConfig.storeParam }, dispatch);
+  const mapStateToProps = (state) => ({ paramFromStore: trackingConfig.getParamFromStore(state) });
+  const mapDispatchToProps = (dispatch) => bindActionCreators({ storeParam: trackingConfig.storeParam }, dispatch);
   const mapMatchToParam = (match, location) => {
     const params = trackingConfig.isQueryParam ? parseQueryString(location.search) : match.params;
     return trackingConfig.parse(params[trackingConfig.paramName]);

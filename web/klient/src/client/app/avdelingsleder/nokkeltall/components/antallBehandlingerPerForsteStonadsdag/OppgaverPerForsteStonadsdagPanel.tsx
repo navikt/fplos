@@ -47,7 +47,7 @@ OppgaverPerForsteStonadsdagPanel.defaultProps = {
   oppgaverPerForsteStonadsdag: [],
 };
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   oppgaverPerForsteStonadsdag: getOppgaverPerForsteStonadsdag(state),
 });
 

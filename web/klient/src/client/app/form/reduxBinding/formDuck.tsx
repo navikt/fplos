@@ -41,6 +41,6 @@ export const formReducer = (state: StateTsType = initialState, action: ActionTsT
 
 
 /* Selectors */
-const getFormContext = state => state.default.formContext;
+const getFormContext = (state) => state.default.formContext;
 
-export const getValuesFromReduxState = createSelector([getFormContext], formContext => formContext.forms);
+export const getValuesFromReduxState = createSelector([getFormContext], (formContext) => formContext.forms);

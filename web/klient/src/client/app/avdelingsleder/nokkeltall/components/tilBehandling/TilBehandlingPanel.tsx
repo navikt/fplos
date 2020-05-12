@@ -44,7 +44,7 @@ const erDatoInnenforPeriode = (oppgaveForAvdeling, ukevalg) => {
 };
 
 const finnFagsakYtelseTypeNavn = (fagsakYtelseTyper, valgtFagsakYtelseType) => {
-  const type = fagsakYtelseTyper.find(fyt => fyt.kode === valgtFagsakYtelseType);
+  const type = fagsakYtelseTyper.find((fyt) => fyt.kode === valgtFagsakYtelseType);
   return type ? type.navn : '';
 };
 
@@ -52,7 +52,7 @@ const slaSammenLikeBehandlingstyperOgDatoer = (oppgaverForAvdeling) => {
   const sammenslatte = [];
 
   oppgaverForAvdeling.forEach((o) => {
-    const index = sammenslatte.findIndex(s => s.behandlingType.kode === o.behandlingType.kode && s.opprettetDato === o.opprettetDato);
+    const index = sammenslatte.findIndex((s) => s.behandlingType.kode === o.behandlingType.kode && s.opprettetDato === o.opprettetDato);
     if (index === -1) {
       sammenslatte.push(o);
     } else {
@@ -109,7 +109,7 @@ export const TilBehandlingPanel = ({
             <SelectField
               name="ukevalg"
               label=""
-              selectValues={uker.map(u => <option key={u.kode} value={u.kode}>{intl.formatMessage({ id: u.tekstKode })}</option>)}
+              selectValues={uker.map((u) => <option key={u.kode} value={u.kode}>{intl.formatMessage({ id: u.tekstKode })}</option>)}
               bredde="l"
             />
           </Column>
@@ -141,9 +141,8 @@ export const TilBehandlingPanel = ({
           height={height}
           isToUkerValgt={values.ukevalg === UKE_2}
           oppgaverPerDato={oppgaverPerDato ? slaSammenLikeBehandlingstyperOgDatoer(oppgaverPerDato
-            .filter(ofa => (values.ytelseType === ALLE_YTELSETYPER_VALGT ? true : values.ytelseType === ofa.fagsakYtelseType.kode))
-            .filter(ofa => erDatoInnenforPeriode(ofa, values.ukevalg))) : []
-          }
+            .filter((ofa) => (values.ytelseType === ALLE_YTELSETYPER_VALGT ? true : values.ytelseType === ofa.fagsakYtelseType.kode))
+            .filter((ofa) => erDatoInnenforPeriode(ofa, values.ukevalg))) : []}
         />
       </div>
     )}
@@ -168,7 +167,7 @@ TilBehandlingPanel.defaultProps = {
 
 const formDefaultValues = { ytelseType: ALLE_YTELSETYPER_VALGT, ukevalg: UKE_2 };
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   fagsakYtelseTyper: getKodeverk(kodeverkTyper.FAGSAK_YTELSE_TYPE)(state),
   oppgaverPerDato: getOppgaverPerDato(state),
   initialValues: getValuesFromReduxState(state)[formName] || formDefaultValues,

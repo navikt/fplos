@@ -1,4 +1,4 @@
-export const range = length => [...Array(length).keys()];
+export const range = (length) => [...Array(length).keys()];
 
 export const haystack = (object, keys, defaultValue = null) => {
   const keysArray = Array.isArray(keys) ? keys : keys.replace(/(\[(\d+)\])/g, '.$2').split('.');

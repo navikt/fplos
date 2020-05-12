@@ -59,7 +59,7 @@ describe('<SakslisteVelgerForm>', () => {
       totaltBehandlingTypeAntall={5}
       fetchSakslistensSaksbehandlere={sinon.spy()}
       fetchAntallOppgaverForBehandlingsko={sinon.spy()}
-    />).find(Form).drill(props => props.render(formProps)).shallow();
+    />).find(Form).drill((props) => props.render(formProps)).shallow();
 
     const select = wrapper.find(SelectField);
     expect(select).to.have.length(1);
@@ -100,7 +100,7 @@ describe('<SakslisteVelgerForm>', () => {
       totaltBehandlingTypeAntall={5}
       fetchSakslistensSaksbehandlere={sinon.spy()}
       fetchAntallOppgaverForBehandlingsko={sinon.spy()}
-    />).find(Form).drill(props => props.render(formProps)).shallow();
+    />).find(Form).drill((props) => props.render(formProps)).shallow();
 
     expect(wrapper.find(LabelWithHeader)).to.have.length(0);
   });
@@ -133,7 +133,7 @@ describe('<SakslisteVelgerForm>', () => {
       totaltBehandlingTypeAntall={5}
       fetchSakslistensSaksbehandlere={sinon.spy()}
       fetchAntallOppgaverForBehandlingsko={sinon.spy()}
-    />).find(Form).drill(props => props.render(formProps)).shallow();
+    />).find(Form).drill((props) => props.render(formProps)).shallow();
 
     const labels = wrapper.find(LabelWithHeader);
     expect(labels).to.have.length(4);
@@ -174,7 +174,7 @@ describe('<SakslisteVelgerForm>', () => {
       totaltBehandlingTypeAntall={1}
       fetchSakslistensSaksbehandlere={sinon.spy()}
       fetchAntallOppgaverForBehandlingsko={sinon.spy()}
-    />).find(Form).drill(props => props.render(formProps)).shallow();
+    />).find(Form).drill((props) => props.render(formProps)).shallow();
 
     const labels = wrapper.find(LabelWithHeader);
     expect(labels).to.have.length(4);
@@ -219,7 +219,7 @@ describe('<SakslisteVelgerForm>', () => {
       totaltBehandlingTypeAntall={5}
       fetchSakslistensSaksbehandlere={sinon.spy()}
       fetchAntallOppgaverForBehandlingsko={sinon.spy()}
-    />).find(Form).drill(props => props.render(formProps)).shallow();
+    />).find(Form).drill((props) => props.render(formProps)).shallow();
 
     const labels = wrapper.find(LabelWithHeader);
     expect(labels).to.have.length(4);
@@ -261,7 +261,7 @@ describe('<SakslisteVelgerForm>', () => {
       totaltBehandlingTypeAntall={5}
       fetchSakslistensSaksbehandlere={sinon.spy()}
       fetchAntallOppgaverForBehandlingsko={sinon.spy()}
-    />).find(Form).drill(props => props.render(formProps)).shallow();
+    />).find(Form).drill((props) => props.render(formProps)).shallow();
 
     const labels = wrapper.find(LabelWithHeader);
     expect(labels).to.have.length(4);
@@ -302,7 +302,7 @@ describe('<SakslisteVelgerForm>', () => {
       totaltBehandlingTypeAntall={5}
       fetchSakslistensSaksbehandlere={sinon.spy()}
       fetchAntallOppgaverForBehandlingsko={sinon.spy()}
-    />).find(Form).drill(props => props.render(formProps)).shallow();
+    />).find(Form).drill((props) => props.render(formProps)).shallow();
 
     const labels = wrapper.find(LabelWithHeader);
     expect(labels).to.have.length(4);
@@ -337,7 +337,7 @@ describe('<SakslisteVelgerForm>', () => {
       totaltBehandlingTypeAntall={5}
       fetchSakslistensSaksbehandlere={sinon.spy()}
       fetchAntallOppgaverForBehandlingsko={sinon.spy()}
-    />).find(Form).drill(props => props.render(formProps)).shallow();
+    />).find(Form).drill((props) => props.render(formProps)).shallow();
 
     const labels = wrapper.find(LabelWithHeader);
     expect(labels).to.have.length(4);
@@ -394,7 +394,7 @@ describe('<SakslisteVelgerForm>', () => {
         navn: 'Helge Ingstad',
         avdelingsnavn: [],
       }]}
-    />).find(Form).drill(props => props.render(formProps)).shallow();
+    />).find(Form).drill((props) => props.render(formProps)).shallow();
 
     const labels = wrapper.find(Image);
     expect(labels).to.have.length(1);

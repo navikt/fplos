@@ -49,10 +49,10 @@ NyeOgFerdigstilteOppgaverForSisteSyvPanel.propTypes = {
 
 export const getNyeOgFerdigstilteForSisteSyvDager = createSelector([getNyeOgFerdigstilteOppgaverNokkeltall], (nyeOgFerdigstilte = []) => {
   const iDag = moment().startOf('day');
-  return nyeOgFerdigstilte.filter(oppgave => iDag.isAfter(moment(oppgave.dato, ISO_DATE_FORMAT)));
+  return nyeOgFerdigstilte.filter((oppgave) => iDag.isAfter(moment(oppgave.dato, ISO_DATE_FORMAT)));
 });
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   nyeOgFerdigstilteOppgaver: getNyeOgFerdigstilteForSisteSyvDager(state),
 });
 

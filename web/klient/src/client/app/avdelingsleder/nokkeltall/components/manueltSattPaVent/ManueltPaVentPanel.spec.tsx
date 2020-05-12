@@ -34,7 +34,7 @@ describe('<ManueltPaVentPanel>', () => {
       fagsakYtelseTyper={fagsakYtelseTyper}
       oppgaverManueltPaVent={oppgaverManueltPaVent}
       initialValues={{ valgtYtelsetype: valuesMock.valgtYtelsetype, ukevalg: valuesMock.ukevalg }}
-    />).find(Form).drill(props => props.render({ values: valuesMock })).shallow();
+    />).find(Form).drill((props) => props.render({ values: valuesMock })).shallow();
 
     const select = wrapper.find(SelectField);
     expect(select).to.have.length(1);
@@ -78,7 +78,7 @@ describe('<ManueltPaVentPanel>', () => {
       fagsakYtelseTyper={fagsakYtelseTyper}
       oppgaverManueltPaVent={oppgaverManueltPaVent}
       initialValues={{ valgtYtelsetype: valuesMock.valgtYtelsetype, ukevalg: valuesMock.ukevalg }}
-    />).find(Form).drill(props => props.render({ values: valuesMock })).shallow();
+    />).find(Form).drill((props) => props.render({ values: valuesMock })).shallow();
 
     const graf = wrapper.find(ManueltPaVentGraf);
     expect(graf).to.have.length(1);
@@ -108,7 +108,7 @@ describe('<ManueltPaVentPanel>', () => {
       fagsakYtelseTyper={fagsakYtelseTyper}
       oppgaverManueltPaVent={oppgaverManueltPaVent}
       initialValues={{ valgtYtelsetype: valuesMock.valgtYtelsetype, ukevalg: valuesMock.ukevalg }}
-    />).find(Form).drill(props => props.render({ values: valuesMock })).shallow();
+    />).find(Form).drill((props) => props.render({ values: valuesMock })).shallow();
 
     const graf = wrapper.find(ManueltPaVentGraf);
     expect(graf).to.have.length(1);
@@ -138,7 +138,7 @@ describe('<ManueltPaVentPanel>', () => {
       fagsakYtelseTyper={fagsakYtelseTyper}
       oppgaverManueltPaVent={oppgaverManueltPaVent}
       initialValues={{ valgtYtelsetype: valuesMock.valgtYtelsetype, ukevalg: valuesMock.ukevalg }}
-    />).find(Form).drill(props => props.render({ values: valuesMock })).shallow();
+    />).find(Form).drill((props) => props.render({ values: valuesMock })).shallow();
 
     const graf = wrapper.find(ManueltPaVentGraf);
     expect(graf).to.have.length(1);
@@ -167,7 +167,7 @@ describe('<ManueltPaVentPanel>', () => {
       fagsakYtelseTyper={fagsakYtelseTyper}
       oppgaverManueltPaVent={oppgaverManueltPaVent}
       initialValues={{ valgtYtelsetype: valuesMock.valgtYtelsetype, ukevalg: valuesMock.ukevalg }}
-    />).find(Form).drill(props => props.render({ values: valuesMock })).shallow();
+    />).find(Form).drill((props) => props.render({ values: valuesMock })).shallow();
 
     const graf = wrapper.find(ManueltPaVentGraf);
     expect(graf).to.have.length(1);

@@ -81,18 +81,18 @@ export class NyeOgFerdigstilteOppgaverForIdagGraf extends Component<TsProps, Sta
   }
 
   leggTilHintVerdi = (hintVerdi: {x: number; x0: number; y: number}) => {
-    this.setState(prevState => ({ ...prevState, hintVerdi }));
+    this.setState((prevState) => ({ ...prevState, hintVerdi }));
   };
 
   fjernHintVerdi = () => {
-    this.setState(prevState => ({ ...prevState, hintVerdi: undefined }));
+    this.setState((prevState) => ({ ...prevState, hintVerdi: undefined }));
   };
 
   getHintAntall = (verdi: Koordinat) => {
     const {
       intl, ferdigstilteOppgaver,
     } = this.props;
-    const isFerdigstiltVerdi = ferdigstilteOppgaver.find(b => b.y === verdi.y);
+    const isFerdigstiltVerdi = ferdigstilteOppgaver.find((b) => b.y === verdi.y);
     return isFerdigstiltVerdi
       ? intl.formatMessage({ id: 'NyeOgFerdigstilteOppgaverForIdagGraf.FerdigstiltAntall' }, { antall: verdi.x })
       : intl.formatMessage({ id: 'NyeOgFerdigstilteOppgaverForIdagGraf.NyeAntall' }, { antall: verdi.x });
@@ -106,7 +106,7 @@ export class NyeOgFerdigstilteOppgaverForIdagGraf extends Component<TsProps, Sta
       return intl.formatMessage({ id: 'NyeOgFerdigstilteOppgaverForIdagGraf.Førstegangsbehandling' });
     }
 
-    const type = behandlingTyper.find(bt => bt.kode === behandlingTypeKode);
+    const type = behandlingTyper.find((bt) => bt.kode === behandlingTypeKode);
     return type ? type.navn : '';
   }
 
@@ -118,7 +118,7 @@ export class NyeOgFerdigstilteOppgaverForIdagGraf extends Component<TsProps, Sta
       hintVerdi,
     } = this.state;
 
-    const maxXValue = Math.max(...ferdigstilteOppgaver.map(b => b.x).concat(nyeOppgaver.map(b => b.x))) + 2;
+    const maxXValue = Math.max(...ferdigstilteOppgaver.map((b) => b.x).concat(nyeOppgaver.map((b) => b.x))) + 2;
 
     return (
       <Panel>
@@ -183,7 +183,7 @@ export class NyeOgFerdigstilteOppgaverForIdagGraf extends Component<TsProps, Sta
 }
 
 const settCustomHoydePaSoylene = (data, over) => {
-  const transformert = data.map(el => ({
+  const transformert = data.map((el) => ({
     ...el,
     y0: el.y + (over ? 0.41 : -0.03),
     y: el.y - (over ? -0.03 : -0.35),
@@ -194,18 +194,18 @@ const settCustomHoydePaSoylene = (data, over) => {
 };
 
 export const lagDatastrukturForFerdigstilte = createSelector([(state, ownProps) => ownProps],
-  ownProps => settCustomHoydePaSoylene(ownProps.nyeOgFerdigstilteOppgaver.map(value => ({
+  (ownProps) => settCustomHoydePaSoylene(ownProps.nyeOgFerdigstilteOppgaver.map((value) => ({
     x: value.antallFerdigstilte,
     y: behandlingstypeOrder.indexOf(value.behandlingType.kode) + 1,
   })), true));
 
 export const lagDatastrukturForNye = createSelector([(state, ownProps) => ownProps],
-  ownProps => settCustomHoydePaSoylene(ownProps.nyeOgFerdigstilteOppgaver.map(value => ({
+  (ownProps) => settCustomHoydePaSoylene(ownProps.nyeOgFerdigstilteOppgaver.map((value) => ({
     x: value.antallNye,
     y: behandlingstypeOrder.indexOf(value.behandlingType.kode) + 1,
   })), false));
 
-export const isEmpty = createSelector([(state, ownProps) => ownProps], ownProps => ownProps.nyeOgFerdigstilteOppgaver.length === 0);
+export const isEmpty = createSelector([(state, ownProps) => ownProps], (ownProps) => ownProps.nyeOgFerdigstilteOppgaver.length === 0);
 
 const mapStateToProps = (state, ownProps) => ({
   isEmpty: isEmpty(state, ownProps),

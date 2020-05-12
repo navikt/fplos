@@ -196,7 +196,7 @@ export class UtvalgskriterierForSakslisteForm extends Component<TsProps> {
   }
 }
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   valgtAvdelingEnhet: getValgtAvdelingEnhet(state),
   antallOppgaver: getAntallOppgaverForSakslisteResultat(state),
 });

@@ -25,7 +25,7 @@ import oppgaverManueltPaVentPropType from './oppgaverManueltPaVentPropType';
 import styles from './manueltPaVentPanel.less';
 
 const finnFagsakYtelseTypeNavn = (fagsakYtelseTyper, valgtFagsakYtelseType) => {
-  const type = fagsakYtelseTyper.find(fyt => fyt.kode === valgtFagsakYtelseType);
+  const type = fagsakYtelseTyper.find((fyt) => fyt.kode === valgtFagsakYtelseType);
   return type ? type.navn : '';
 };
 
@@ -90,7 +90,7 @@ export const ManueltPaVentPanel = ({
             <SelectField
               name="ukevalg"
               label=""
-              selectValues={uker.map(u => <option key={u.kode} value={u.kode}>{intl.formatMessage({ id: u.tekstKode })}</option>)}
+              selectValues={uker.map((u) => <option key={u.kode} value={u.kode}>{intl.formatMessage({ id: u.tekstKode })}</option>)}
               bredde="l"
             />
           </Column>
@@ -122,9 +122,8 @@ export const ManueltPaVentPanel = ({
           height={height}
           isFireUkerValgt={values.ukevalg === UKE_4}
           oppgaverManueltPaVent={oppgaverManueltPaVent && oppgaverManueltPaVent
-            .filter(ompv => (values.valgtYtelsetype === ALLE_YTELSETYPER_VALGT ? true : values.valgtYtelsetype === ompv.fagsakYtelseType.kode))
-            .filter(ompv => erDatoInnenforPeriode(ompv.behandlingFrist, values.ukevalg))
-          }
+            .filter((ompv) => (values.valgtYtelsetype === ALLE_YTELSETYPER_VALGT ? true : values.valgtYtelsetype === ompv.fagsakYtelseType.kode))
+            .filter((ompv) => erDatoInnenforPeriode(ompv.behandlingFrist, values.ukevalg))}
         />
       </div>
     )}
@@ -149,7 +148,7 @@ ManueltPaVentPanel.defaultProps = {
 
 const formDefaultValues = { valgtYtelsetype: ALLE_YTELSETYPER_VALGT, ukevalg: UKE_4 };
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   oppgaverManueltPaVent: getOppgaverAvdelingManueltPaVent(state),
   fagsakYtelseTyper: getKodeverk(kodeverkTyper.FAGSAK_YTELSE_TYPE)(state),
   initialValues: getValuesFromReduxState(state)[formName] || formDefaultValues,

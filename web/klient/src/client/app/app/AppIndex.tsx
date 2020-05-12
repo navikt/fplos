@@ -143,8 +143,7 @@ export class AppIndex extends Component<TsProps> {
           />
           {!crashMessage && (
             <Home nrOfErrorMessages={errorMessagesLength + (queryStrings.errorcode || queryStrings.errormessage ? 1 : 0)} />
-          )
-          }
+          )}
         </LanguageProvider>
       </AppConfigResolver>
     );

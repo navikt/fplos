@@ -10,7 +10,7 @@ const HTTP_ACCEPTED = 202;
 const MAX_POLLING_ATTEMPTS = 150;
 const CANCELLED = 'INTERNAL_CANCELLATION';
 
-const wait = ms => new Promise(resolve => setTimeout(resolve, ms));
+const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 const getRestMethod = (httpClientApi: HttpClientApi, restMethodString: string) => {
   switch (restMethodString) {
@@ -23,7 +23,7 @@ const getRestMethod = (httpClientApi: HttpClientApi, restMethodString: string) =
   }
 };
 
-const hasLocationAndStatusDelayedOrHalted = responseData => responseData.location && (responseData.status === asyncPollingStatus.DELAYED
+const hasLocationAndStatusDelayedOrHalted = (responseData) => responseData.location && (responseData.status === asyncPollingStatus.DELAYED
   || responseData.status === asyncPollingStatus.HALTED);
 
 type Notify = (eventType: keyof typeof EventType, data?: any) => void
@@ -102,14 +102,14 @@ class RequestProcess {
 
   execLinkRequests = async (responseData: {links: ResponseDataLink[]}) => {
     const requestList = responseData.links
-      .map(link => () => this.execute(// eslint-disable-line no-use-before-define
+      .map((link) => () => this.execute(// eslint-disable-line no-use-before-define
         link.href, getRestMethod(this.httpClientApi, link.type), link.requestPayload,
       )
         .then((response: SuccessResponse) => Promise.resolve({ [link.rel]: response.data })));
 
     // TODO (TOR) Må kunna konfigurera om ein skal feila om eitt av kalla feilar. Og kva med logging?
-    return Promise.all([Promise.resolve(responseData), ...requestList.map(request => request())])
-      .then(allResponses => (this.config.addLinkDataToArray
+    return Promise.all([Promise.resolve(responseData), ...requestList.map((request) => request())])
+      .then((allResponses) => (this.config.addLinkDataToArray
         ? allResponses.reduce((acc, rData) => (rData.links ? acc : acc.concat(Object.values(rData)[0])), [])
         : allResponses.reduce((acc, rData) => ({ ...acc, ...rData }), {})));
   }

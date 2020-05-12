@@ -14,7 +14,7 @@ const classNames = classnames.bind(styles);
 
 // eslint-disable-next-line react/prop-types
 const renderReadOnly = () => ({ input, selectValues, ...otherProps }) => {
-  const option = selectValues.map(sv => sv.props).find(o => o.value === input.value);
+  const option = selectValues.map((sv) => sv.props).find((o) => o.value === input.value);
   const value = option ? option.children : undefined;
   return <ReadOnlyField input={{ value }} {...otherProps} />;
 };

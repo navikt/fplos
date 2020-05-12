@@ -14,6 +14,6 @@ export const resetFagsakSearch = () => (dispatch: Dispatch) => {
 
 export const hentOppgaverForFagsaker = (fagsaker: Fagsak[]) => (dispatch: Dispatch) => dispatch(
   fpLosApi.OPPGAVER_FOR_FAGSAKER.makeRestApiRequest()(
-    { saksnummerListe: fagsaker.map(fagsak => `${fagsak.saksnummer}`).join(',') },
+    { saksnummerListe: fagsaker.map((fagsak) => `${fagsak.saksnummer}`).join(',') },
   ),
 );

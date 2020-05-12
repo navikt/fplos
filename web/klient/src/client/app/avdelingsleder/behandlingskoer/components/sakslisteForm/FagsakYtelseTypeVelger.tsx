@@ -13,7 +13,7 @@ import kodeverkTyper from 'kodeverk/kodeverkTyper';
 import { RadioGroupField, RadioOption } from 'form/FinalFields';
 
 const finnFagsakYtelseTypeNavn = (fagsakYtelseTyper, valgtFagsakYtelseType) => {
-  const type = fagsakYtelseTyper.find(fyt => fyt.kode === valgtFagsakYtelseType);
+  const type = fagsakYtelseTyper.find((fyt) => fyt.kode === valgtFagsakYtelseType);
   return type ? type.navn : '';
 };
 
@@ -40,7 +40,7 @@ export const FagsakYtelseTypeVelger = ({
     <VerticalSpacer eightPx />
     <RadioGroupField
       name="fagsakYtelseType"
-      onChange={fyt => lagreSakslisteFagsakYtelseType(valgtSakslisteId, fyt, valgtAvdelingEnhet)}
+      onChange={(fyt) => lagreSakslisteFagsakYtelseType(valgtSakslisteId, fyt, valgtAvdelingEnhet)}
     >
       <RadioOption
         value={fagsakYtelseType.FORELDREPRENGER}
@@ -69,8 +69,8 @@ FagsakYtelseTypeVelger.propTypes = {
   valgtAvdelingEnhet: PropTypes.string.isRequired,
 };
 
-const mapStateToProps = state => ({
-  fagsakYtelseTyper: getKodeverk(kodeverkTyper.FAGSAK_YTELSE_TYPE)(state).filter(k => k.kode !== fagsakYtelseType.ENDRING_FORELDREPENGER),
+const mapStateToProps = (state) => ({
+  fagsakYtelseTyper: getKodeverk(kodeverkTyper.FAGSAK_YTELSE_TYPE)(state).filter((k) => k.kode !== fagsakYtelseType.ENDRING_FORELDREPENGER),
 });
 
 export default connect(mapStateToProps)(FagsakYtelseTypeVelger);

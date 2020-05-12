@@ -38,13 +38,13 @@ const headerTextCodes = [
 
 type OppgaveMedReservertIndikator = Oppgave & { underBehandling?: boolean };
 
-const getImageIcon = isHoovering => (isHoovering ? menuIconBlueUrl : menuIconBlackUrl);
-const getFlyttetImageIcon = isHoovering => (isHoovering ? bubbletextFilledUrl : bubbletextUrl);
+const getImageIcon = (isHoovering) => (isHoovering ? menuIconBlueUrl : menuIconBlackUrl);
+const getFlyttetImageIcon = (isHoovering) => (isHoovering ? bubbletextFilledUrl : bubbletextUrl);
 
 const slaSammenOgMarkerReserverte = (reserverteOppgaver, oppgaverTilBehandling): OppgaveMedReservertIndikator[] => {
   const markedAsUnderBehandling = reserverteOppgaver
-    .filter(reservertOppgave => !oppgaverTilBehandling.some(oppgave => oppgave.id === reservertOppgave.id))
-    .map(f => ({
+    .filter((reservertOppgave) => !oppgaverTilBehandling.some((oppgave) => oppgave.id === reservertOppgave.id))
+    .map((f) => ({
       ...f,
       underBehandling: true,
     }));
@@ -97,8 +97,10 @@ export class OppgaverTabell extends Component<TsProps, TsState> {
     antall: PropTypes.number.isRequired,
   };
 
-  constructor() {
-    super();
+  nodes: { };
+
+  constructor(props) {
+    super(props);
 
     this.state = {
       showMenu: false,
@@ -112,7 +114,7 @@ export class OppgaverTabell extends Component<TsProps, TsState> {
 
   goToFagsak = (event: Event, id: number, oppgave: Oppgave) => {
     const { reserverOppgave } = this.props;
-    if (this.nodes && Object.keys(this.nodes).some(key => this.nodes[key] && this.nodes[key].contains(event.target))) {
+    if (this.nodes && Object.keys(this.nodes).some((key) => this.nodes[key] && this.nodes[key].contains(event.target))) {
       return;
     }
     reserverOppgave(oppgave);
@@ -146,8 +148,6 @@ export class OppgaverTabell extends Component<TsProps, TsState> {
     };
   }
 
-  nodes: { };
-
   render = () => {
     const {
       oppgaverTilBehandling, reserverteOppgaver, opphevOppgaveReservasjon, forlengOppgaveReservasjon, endreOppgaveReservasjon,
@@ -159,7 +159,7 @@ export class OppgaverTabell extends Component<TsProps, TsState> {
     } = this.state;
 
     const alleOppgaver = slaSammenOgMarkerReserverte(reserverteOppgaver, oppgaverTilBehandling);
-    const valgtOppgave = reserverteOppgaver.find(o => o.id === valgtOppgaveId);
+    const valgtOppgave = reserverteOppgaver.find((o) => o.id === valgtOppgaveId);
 
     return (
       <>
@@ -169,12 +169,11 @@ export class OppgaverTabell extends Component<TsProps, TsState> {
             <VerticalSpacer eightPx />
             <Normaltekst><FormattedMessage id="OppgaverTabell.IngenOppgaver" /></Normaltekst>
           </>
-        )
-        }
+        )}
         {alleOppgaver.length > 0 && (
           <>
             <Table headerTextCodes={headerTextCodes}>
-              {alleOppgaver.map(oppgave => (
+              {alleOppgaver.map((oppgave) => (
                 <TableRow
                   key={oppgave.id}
                   onMouseDown={this.goToFagsak}
@@ -229,8 +228,7 @@ export class OppgaverTabell extends Component<TsProps, TsState> {
                 resetSaksbehandler={resetBehandler}
                 flyttReservasjon={flyttReservasjon}
               />
-            )
-            }
+            )}
           </>
         )}
       </>
@@ -238,7 +236,7 @@ export class OppgaverTabell extends Component<TsProps, TsState> {
   }
 }
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   antall: getAntallOppgaverForBehandlingskoResultat(state) || 0,
   oppgaverTilBehandling: getOppgaverTilBehandling(state) || [],
   reserverteOppgaver: getReserverteOppgaver(state) || [],

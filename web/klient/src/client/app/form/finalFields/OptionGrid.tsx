@@ -15,13 +15,12 @@ export const OptionGrid = ({
       <FlexContainer fluid id={id}>
         <FlexColumn className={styles.fullBreddeIE}>
           {range(numRows)
-            .map(rowIndex => (
+            .map((rowIndex) => (
               <FlexRow key={`row${rowIndex}`} spaceBetween={spaceBetween}>
                 {options.filter((option, optionIndex) => optionIndex % numRows === rowIndex)}
                 {isEdited && <EditedIcon className="radioEdited" />}
               </FlexRow>
-            ))
-            }
+            ))}
         </FlexColumn>
       </FlexContainer>
     );
@@ -31,12 +30,11 @@ export const OptionGrid = ({
     <FlexContainer fluid id={id}>
       <FlexRow spaceBetween={spaceBetween}>
         {range(numColumns)
-          .map(columnIndex => (
+          .map((columnIndex) => (
             <FlexColumn key={`column${columnIndex}`}>
               {options.filter((option, optionIndex) => optionIndex % numColumns === columnIndex)}
             </FlexColumn>
-          ))
-        }
+          ))}
         {isEdited && <EditedIcon className="radioEdited" />}
       </FlexRow>
     </FlexContainer>

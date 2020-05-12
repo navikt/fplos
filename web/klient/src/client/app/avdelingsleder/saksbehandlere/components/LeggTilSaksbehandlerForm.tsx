@@ -55,6 +55,8 @@ export class LeggTilSaksbehandlerForm extends Component<TsProps, StateTsProps> {
     saksbehandler: undefined,
   }
 
+  nodes: ReactNode[];
+
   constructor(props: TsProps) {
     super(props);
 
@@ -70,10 +72,10 @@ export class LeggTilSaksbehandlerForm extends Component<TsProps, StateTsProps> {
     } = this.props;
 
     if (saksbehandler) {
-      this.setState(prevState => ({ ...prevState, leggerTilNySaksbehandler: true }));
+      this.setState((prevState) => ({ ...prevState, leggerTilNySaksbehandler: true }));
       leggTilSaksbehandler(saksbehandler.brukerIdent, valgtAvdelingEnhet).then(() => {
         this.resetSaksbehandlerSok(resetFormValues);
-        this.setState(prevState => ({ ...prevState, leggerTilNySaksbehandler: false }));
+        this.setState((prevState) => ({ ...prevState, leggerTilNySaksbehandler: false }));
       });
     }
   }
@@ -102,8 +104,6 @@ export class LeggTilSaksbehandlerForm extends Component<TsProps, StateTsProps> {
       ? `${brukerinfo} (${intl.formatMessage({ id: 'LeggTilSaksbehandlerForm.FinnesAllerede' })})`
       : brukerinfo;
   }
-
-  nodes: ReactNode[];
 
   render = () => {
     const {
@@ -182,8 +182,7 @@ export class LeggTilSaksbehandlerForm extends Component<TsProps, StateTsProps> {
                 </FlexRow>
               </FlexContainer>
             </>
-            )
-            }
+            )}
           </form>
         )}
       />
@@ -192,9 +191,9 @@ export class LeggTilSaksbehandlerForm extends Component<TsProps, StateTsProps> {
 }
 const erSaksbehandlerLagtTilAllerede = createSelector([getSaksbehandler, getAvdelingensSaksbehandlere],
   (saksbehandler: Saksbehandler, avdelingensSaksbehandlere = []) => avdelingensSaksbehandlere instanceof Array
-    && avdelingensSaksbehandlere.some(s => saksbehandler && s.brukerIdent.toLowerCase() === saksbehandler.brukerIdent.toLowerCase()));
+    && avdelingensSaksbehandlere.some((s) => saksbehandler && s.brukerIdent.toLowerCase() === saksbehandler.brukerIdent.toLowerCase()));
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   saksbehandler: getSaksbehandler(state),
   erLagtTilAllerede: erSaksbehandlerLagtTilAllerede(state),
   erSokFerdig: getSaksbehandlerSokFinished(state),

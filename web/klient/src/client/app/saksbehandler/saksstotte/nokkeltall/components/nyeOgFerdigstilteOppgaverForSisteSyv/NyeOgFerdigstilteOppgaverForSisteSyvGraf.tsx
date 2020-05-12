@@ -85,7 +85,7 @@ export class NyeOgFerdigstilteOppgaverForSisteSyvGraf extends Component<TsProps,
     const {
       crosshairValues,
     } = this.state;
-    const oppgave = oppgaver.find(o => o.x.getTime() === crosshairValues[0].x.getTime());
+    const oppgave = oppgaver.find((o) => o.x.getTime() === crosshairValues[0].x.getTime());
     return oppgave ? oppgave.y : '';
   }
 
@@ -118,7 +118,7 @@ export class NyeOgFerdigstilteOppgaverForSisteSyvGraf extends Component<TsProps,
           <HorizontalGridLines />
           <XAxis
             tickTotal={3}
-            tickFormat={t => moment(t).format(DDMMYYYY_DATE_FORMAT)}
+            tickFormat={(t) => moment(t).format(DDMMYYYY_DATE_FORMAT)}
             style={{ text: cssText }}
           />
           <YAxis style={{ text: cssText }} />
@@ -187,7 +187,7 @@ export const slaSammenBehandlingstyperOgFyllInnTomme = createSelector([(state, o
     const atteDagerSiden = moment().subtract(7, 'days').startOf('day');
 
     for (let dato = atteDagerSiden; dato.isBefore(iDag); dato = dato.add(1, 'days')) {
-      const dataForDato = nyeOgFerdigstilteOppgaver.filter(o => moment(o.dato).startOf('day').isSame(dato));
+      const dataForDato = nyeOgFerdigstilteOppgaver.filter((o) => moment(o.dato).startOf('day').isSame(dato));
       if (dataForDato.length === 0) {
         oppgaver.push({
           antallNye: 0,
@@ -207,17 +207,17 @@ export const slaSammenBehandlingstyperOgFyllInnTomme = createSelector([(state, o
   return oppgaver;
 });
 
-export const lagDatastrukturForFerdigstilte = createSelector([slaSammenBehandlingstyperOgFyllInnTomme], oppgaver => oppgaver.map(o => ({
+export const lagDatastrukturForFerdigstilte = createSelector([slaSammenBehandlingstyperOgFyllInnTomme], (oppgaver) => oppgaver.map((o) => ({
   x: o.dato,
   y: o.antallFerdigstilte,
 })));
 
-export const lagDatastrukturForNye = createSelector([slaSammenBehandlingstyperOgFyllInnTomme], oppgaver => oppgaver.map(o => ({
+export const lagDatastrukturForNye = createSelector([slaSammenBehandlingstyperOgFyllInnTomme], (oppgaver) => oppgaver.map((o) => ({
   x: o.dato,
   y: o.antallNye,
 })));
 
-export const isEmpty = createSelector([(state, ownProps) => ownProps], ownProps => ownProps.nyeOgFerdigstilteOppgaver.length === 0);
+export const isEmpty = createSelector([(state, ownProps) => ownProps], (ownProps) => ownProps.nyeOgFerdigstilteOppgaver.length === 0);
 
 const mapStateToProps = (state, ownProps) => ({
   isEmpty: isEmpty(state, ownProps),

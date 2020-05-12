@@ -22,7 +22,7 @@ import { OppgaverForAvdeling } from './oppgaverForAvdelingTsType';
 import oppgaverForAvdelingPropType from './oppgaverForAvdelingPropType';
 
 const finnFagsakYtelseTypeNavn = (fagsakYtelseTyper, valgtFagsakYtelseType) => {
-  const type = fagsakYtelseTyper.find(fyt => fyt.kode === valgtFagsakYtelseType);
+  const type = fagsakYtelseTyper.find((fyt) => fyt.kode === valgtFagsakYtelseType);
   return type ? type.navn : '';
 };
 
@@ -84,7 +84,7 @@ export const FordelingAvBehandlingstypePanel = ({
           width={width}
           height={height}
           oppgaverForAvdeling={oppgaverForAvdeling ? oppgaverForAvdeling
-            .filter(ofa => (values.valgtYtelseType === ALLE_YTELSETYPER_VALGT ? true : values.valgtYtelseType === ofa.fagsakYtelseType.kode)) : []}
+            .filter((ofa) => (values.valgtYtelseType === ALLE_YTELSETYPER_VALGT ? true : values.valgtYtelseType === ofa.fagsakYtelseType.kode)) : []}
         />
       </div>
     )}
@@ -107,7 +107,7 @@ FordelingAvBehandlingstypePanel.defaultProps = {
 
 const formDefaultValues = { valgtYtelseType: ALLE_YTELSETYPER_VALGT };
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   oppgaverForAvdeling: getOppgaverForAvdeling(state),
   fagsakYtelseTyper: getKodeverk(kodeverkTyper.FAGSAK_YTELSE_TYPE)(state),
   initialValues: getValuesFromReduxState(state)[formName] || formDefaultValues,

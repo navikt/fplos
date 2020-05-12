@@ -4,7 +4,7 @@ import { Dispatch } from 'redux';
 import fpLosApi from 'data/fpLosApi';
 
 /* Action types */
-const actionType = name => `saksliste/${name}`;
+const actionType = (name) => `saksliste/${name}`;
 const SET_VALGT_SAKSLISTE_ID = actionType('SET_VALGT_SAKSLISTE_ID');
 const RESET_VALGT_SAKSLISTE_ID = actionType('RESET_VALGT_SAKSLISTE_ID');
 
@@ -152,5 +152,5 @@ export const organiseringAvSakslisterReducer = (state: StateTsProp = initialStat
   }
 };
 
-const getOrganiseringAvSakslisterContext = state => state.default.organiseringAvSakslisterContext;
+const getOrganiseringAvSakslisterContext = (state) => state.default.organiseringAvSakslisterContext;
 export const getValgtSakslisteId = (state: any) => getOrganiseringAvSakslisterContext(state).valgtSakslisteId;

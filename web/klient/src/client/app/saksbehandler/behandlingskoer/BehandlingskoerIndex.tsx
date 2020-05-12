@@ -96,18 +96,18 @@ export class BehandlingskoerIndex extends Component<TsProps, StateProps> {
     fetchReserverte(sakslisteId);
     fetchTilBehandling(sakslisteId, oppgaveIder).then((response) => {
       const { sakslisteId: id } = this.state;
-      return sakslisteId === id ? this.fetchSakslisteOppgaverPolling(sakslisteId, response.payload.map(o => o.id).join(',')) : Promise.resolve();
+      return sakslisteId === id ? this.fetchSakslisteOppgaverPolling(sakslisteId, response.payload.map((o) => o.id).join(',')) : Promise.resolve();
     }).catch(() => undefined);
   }
 
   fetchSakslisteOppgaver = (sakslisteId: number) => {
-    this.setState(prevState => ({ ...prevState, sakslisteId }));
+    this.setState((prevState) => ({ ...prevState, sakslisteId }));
     const { fetchOppgaverTilBehandling: fetchTilBehandling, fetchReserverteOppgaver: fetchReserverte, setValgtSakslisteId: setSakslisteId } = this.props;
     setSakslisteId(sakslisteId);
     fetchReserverte(sakslisteId);
     fetchTilBehandling(sakslisteId).then((response) => {
       const { sakslisteId: id } = this.state;
-      return sakslisteId === id ? this.fetchSakslisteOppgaverPolling(sakslisteId, response.payload.map(o => o.id).join(',')) : Promise.resolve();
+      return sakslisteId === id ? this.fetchSakslisteOppgaverPolling(sakslisteId, response.payload.map((o) => o.id).join(',')) : Promise.resolve();
     });
   }
 
@@ -140,7 +140,7 @@ export class BehandlingskoerIndex extends Component<TsProps, StateProps> {
         if (nyOppgaveStatus.erReservert && nyOppgaveStatus.erReservertAvInnloggetBruker) {
           this.openSak(oppgave);
         } else if (nyOppgaveStatus.erReservert && !nyOppgaveStatus.erReservertAvInnloggetBruker) {
-          this.setState(prevState => ({
+          this.setState((prevState) => ({
             ...prevState,
             reservertAvAnnenSaksbehandler: true,
             reservertOppgave: oppgave,
@@ -192,7 +192,7 @@ export class BehandlingskoerIndex extends Component<TsProps, StateProps> {
   }
 
   lukkErReservertModalOgOpneOppgave = (oppgave: Oppgave) => {
-    this.setState(prevState => ({
+    this.setState((prevState) => ({
       ...prevState, reservertAvAnnenSaksbehandler: false, reservertOppgave: undefined, reservertOppgaveStatus: undefined,
     }));
     this.openSak(oppgave);
@@ -220,27 +220,25 @@ export class BehandlingskoerIndex extends Component<TsProps, StateProps> {
           flyttReservasjon={this.flyttReservasjon}
         />
         {harTimeout
-          && <BehandlingPollingTimoutModal />
-        }
+          && <BehandlingPollingTimoutModal />}
         {reservertAvAnnenSaksbehandler && reservertOppgave && reservertOppgaveStatus && (
           <OppgaveErReservertAvAnnenModal
             lukkErReservertModalOgOpneOppgave={this.lukkErReservertModalOgOpneOppgave}
             oppgave={reservertOppgave}
             oppgaveStatus={reservertOppgaveStatus}
           />
-        )
-        }
+        )}
       </>
     );
   }
 }
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   fpsakUrl: getFpsakUrl(state),
   fptilbakeUrl: getFptilbakeUrl(state),
   harTimeout: harOppgaverTilBehandlingTimeout(state),
   sakslister: getSakslisteResult(state),
-  goToUrl: url => window.location.assign(url),
+  goToUrl: (url) => window.location.assign(url),
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({

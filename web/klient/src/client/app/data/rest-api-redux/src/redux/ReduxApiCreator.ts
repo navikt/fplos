@@ -9,17 +9,17 @@ class ReduxApiCreator {
 
   constructor(requestApi: RequestApi, getRestApiState: (state: any) => any, reduxEvents: ReduxEvents) {
     const endpointNames = requestApi.getEndpointNames();
-    this.ducks = endpointNames.map(endpointName => new RestDuck(requestApi.getRequestRunner(endpointName), getRestApiState, reduxEvents));
+    this.ducks = endpointNames.map((endpointName) => new RestDuck(requestApi.getRequestRunner(endpointName), getRestApiState, reduxEvents));
   }
 
   createReducer = (): any => {
     const reducers = this.ducks
-      .map(duck => ({ [duck.name]: duck.reducer }))
+      .map((duck) => ({ [duck.name]: duck.reducer }))
       .reduce((a, b) => ({ ...a, ...b }), {});
     return combineReducers(reducers);
   }
 
-  getEndpoint = (endpointName: string) => this.ducks.find(duck => duck.name === endpointName)
+  getEndpoint = (endpointName: string) => this.ducks.find((duck) => duck.name === endpointName)
       || { actionCreators: {}, requestRunner: { stopProcess: () => undefined }, stateSelector: {} }
 
   makeRequestActionCreator = (endpointName: string) => this.getEndpoint(endpointName).actionCreators.execRequest

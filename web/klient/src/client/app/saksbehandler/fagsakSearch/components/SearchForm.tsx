@@ -60,8 +60,7 @@ export const SearchForm = ({
           <VerticalSpacer sixteenPx />
           <CheckboxField name="skalReservere" label={intl.formatMessage({ id: 'Search.ReserverBehandling' })} onClick={resetSearch} />
         </>
-        )
-        }
+        )}
         <VerticalSpacer eightPx />
         <FlexContainer fluid>
           <FlexRow>
@@ -94,8 +93,7 @@ export const SearchForm = ({
               <FormattedHTMLMessage className={styles.feilmelding} id={searchResultAccessDenied.feilmelding} />
             </FlexColumn>
           </FlexRow>
-          )
-          }
+          )}
         </FlexContainer>
       </form>
     )}
@@ -119,7 +117,7 @@ SearchForm.defaultProps = {
   },
 };
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   kanSaksbehandle: getNavAnsattKanSaksbehandle(state),
 });
 

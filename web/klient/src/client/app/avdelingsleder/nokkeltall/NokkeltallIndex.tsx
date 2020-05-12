@@ -47,7 +47,7 @@ export class NokkeltallIndex extends Component<TsProps> {
   )
 }
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   valgtAvdelingEnhet: getValgtAvdelingEnhet(state),
 });
 

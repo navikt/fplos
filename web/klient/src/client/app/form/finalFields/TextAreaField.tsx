@@ -11,7 +11,7 @@ import { labelPropType } from './Label';
 import styles from './textAreaField.less';
 import ReadOnlyField from './ReadOnlyField';
 
-const composeValidators = validators => value => (validators ? validators.reduce((error, validator) => error || validator(value), undefined) : []);
+const composeValidators = (validators) => (value) => (validators ? validators.reduce((error, validator) => error || validator(value), undefined) : []);
 
 const TextAreaWithBadge: FC<TextAreaWithBadge.propTypes & TextAreaWithBadge.defaultProps> = ({
   badges,
@@ -28,8 +28,7 @@ const TextAreaWithBadge: FC<TextAreaWithBadge.propTypes & TextAreaWithBadge.defa
         </EtikettFokus>
       ))}
     </div>
-    )
-    }
+    )}
     <NavTextareaControlled {...otherProps} />
   </div>
 );

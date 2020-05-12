@@ -248,7 +248,7 @@ describe('<BehandlingskoerIndex>', () => {
     const { args: args2 } = fetchOppgaverTilBehandlingOppgaverFn.getCalls()[0];
     expect(args2).to.have.length(2);
     expect(args2[0]).to.eql(1);
-    expect(args2[1]).to.eql(oppgaveIder.map(o => o.id).join(','));
+    expect(args2[1]).to.eql(oppgaveIder.map((o) => o.id).join(','));
   });
 
   it('skal oppheve reservasjon og så hente reserverte oppgaver på nytt', async () => {

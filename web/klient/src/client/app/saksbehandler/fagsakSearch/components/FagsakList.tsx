@@ -42,7 +42,7 @@ interface TsProps {
 
 const getSelectOppgaveCallback = (oppgave, selectOppgaveCallback) => () => selectOppgaveCallback(oppgave);
 
-const getFagsakCallback = selectFagsakCallback => (event: any, saksnummer: number) => selectFagsakCallback(saksnummer);
+const getFagsakCallback = (selectFagsakCallback) => (event: any, saksnummer: number) => selectFagsakCallback(saksnummer);
 
 /**
  * FagsakList
@@ -59,10 +59,10 @@ export const FagsakList = ({
 }: TsProps) => (
   <Table headerTextCodes={headerTextCodes} classNameTable={styles.table}>
     {sorterteFagsaker.map((fagsak) => {
-      const fagsakStatusType = fagsakStatusTyper.find(type => type.kode === fagsak.status.kode);
-      const fagsakYtelseType = fagsakYtelseTyper.find(type => type.kode === fagsak.sakstype.kode);
+      const fagsakStatusType = fagsakStatusTyper.find((type) => type.kode === fagsak.status.kode);
+      const fagsakYtelseType = fagsakYtelseTyper.find((type) => type.kode === fagsak.sakstype.kode);
 
-      const filtrerteOppgaver = fagsakOppgaver.filter(o => o.saksnummer === fagsak.saksnummer);
+      const filtrerteOppgaver = fagsakOppgaver.filter((o) => o.saksnummer === fagsak.saksnummer);
       const oppgaver = filtrerteOppgaver.map((oppgave, index) => (
         <TableRow
           key={`oppgave${oppgave.id}`}
@@ -98,8 +98,7 @@ export const FagsakList = ({
           {oppgaver.length > 0 && oppgaver}
         </Fragment>
       );
-    })
-      }
+    })}
   </Table>
 );
 
@@ -112,7 +111,7 @@ FagsakList.propTypes = {
   fagsakYtelseTyper: PropTypes.arrayOf(kodeverkPropType).isRequired,
 };
 
-export const getSorterteFagsaker = createSelector([getFagsaker], fagsaker => fagsaker.concat().sort((fagsak1, fagsak2) => {
+export const getSorterteFagsaker = createSelector([getFagsaker], (fagsaker) => fagsaker.concat().sort((fagsak1, fagsak2) => {
   if (fagsak1.status.kode === fagsakStatus.AVSLUTTET && fagsak2.status.kode !== fagsakStatus.AVSLUTTET) {
     return 1;
   } if (fagsak1.status.kode !== fagsakStatus.AVSLUTTET && fagsak2.status.kode === fagsakStatus.AVSLUTTET) {
@@ -123,7 +122,7 @@ export const getSorterteFagsaker = createSelector([getFagsaker], fagsaker => fag
   return changeTimeFagsak1 > changeTimeFagsak2 ? 1 : -1;
 }));
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   sorterteFagsaker: getSorterteFagsaker(state),
   fagsakOppgaver: getFagsakOppgaver(state),
   fagsakStatusTyper: getKodeverk(kodeverkTyper.FAGSAK_STATUS)(state),

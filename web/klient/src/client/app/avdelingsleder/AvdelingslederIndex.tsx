@@ -135,11 +135,11 @@ const getPanelFromUrlOrDefault = (location) => {
 
 export const erKode6Avdeling = createSelector([getValgtAvdelingEnhet, getAvdelingeneTilAvdelingslederResultat],
   (valgtAvdelingEnhet, avdelinger = []) => {
-    const avdeling = avdelinger instanceof Array && avdelinger.find(a => a.avdelingEnhet === valgtAvdelingEnhet);
+    const avdeling = avdelinger instanceof Array && avdelinger.find((a) => a.avdelingEnhet === valgtAvdelingEnhet);
     return avdeling ? avdeling.kreverKode6 : false;
   });
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   valgtAvdelingEnhet: getValgtAvdelingEnhet(state),
   activeAvdelingslederPanel: getSelectedAvdelingslederPanel(state),
   kanOppgavestyre: getNavAnsattKanOppgavestyre(state),

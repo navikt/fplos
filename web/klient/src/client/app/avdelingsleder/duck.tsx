@@ -1,5 +1,5 @@
 /* Action types */
-const actionType = name => `avdelingsleder/${name}`;
+const actionType = (name) => `avdelingsleder/${name}`;
 const SET_SELECTED_AVDELINGSLEDER_PANEL = actionType('SET_SELECTED_AVDELINGSLEDER_PANEL');
 const RESET_AVDELINGSLEDER = actionType('RESET_AVDELINGSLEDER');
 
@@ -41,5 +41,5 @@ export const avdelingslederReducer = (state: StateTsProp = initialState, action:
   }
 };
 
-const getAvdelingslederContext = state => state.default.avdelingslederContext;
+const getAvdelingslederContext = (state) => state.default.avdelingslederContext;
 export const getSelectedAvdelingslederPanel = (state: any) => getAvdelingslederContext(state).selectedAvdelingslederPanel;

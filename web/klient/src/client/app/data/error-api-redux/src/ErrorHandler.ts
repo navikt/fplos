@@ -26,7 +26,7 @@ class ErrorHandler {
     (errorMessages, crashMessage) => this.errorFormatter
       .format(errorMessages, crashMessage));
 
-  getCrashMessage = createSelector([getCrashMessage], message => message);
+  getCrashMessage = createSelector([getCrashMessage], (message) => message);
 }
 
 const errorHandler = new ErrorHandler();

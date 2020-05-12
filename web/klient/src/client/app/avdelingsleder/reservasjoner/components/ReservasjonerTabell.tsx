@@ -25,7 +25,7 @@ import styles from './reservasjonerTabell.less';
 import gruppeHoverUrl from '../../../../images/gruppe_hover.svg';
 import gruppeUrl from '../../../../images/gruppe.svg';
 
-const saksbehandlereIkon = isHovering => (isHovering ? gruppeHoverUrl : gruppeUrl);
+const saksbehandlereIkon = (isHovering) => (isHovering ? gruppeHoverUrl : gruppeUrl);
 
 const headerTextCodes = [
   'ReservasjonerTabell.Navn',
@@ -75,11 +75,11 @@ export class ReservasjonerTabell extends Component<TsProps, StateTsProps> {
 
 
   closeReservasjonEndringDatoModal = () => {
-    this.setState(prevState => ({ ...prevState, showReservasjonEndringDatoModal: false }));
+    this.setState((prevState) => ({ ...prevState, showReservasjonEndringDatoModal: false }));
   }
 
   showReservasjonEndringDato = (reservasjon: Reservasjon) => {
-    this.setState(prevState => ({ ...prevState, showReservasjonEndringDatoModal: true, valgtReservasjon: reservasjon }));
+    this.setState((prevState) => ({ ...prevState, showReservasjonEndringDatoModal: true, valgtReservasjon: reservasjon }));
   }
 
   endreReserverasjon = (reserverTil: string) => {
@@ -88,22 +88,22 @@ export class ReservasjonerTabell extends Component<TsProps, StateTsProps> {
       valgtReservasjon,
     } = this.state;
     endreOppgaveReservasjon(valgtReservasjon.oppgaveId, reserverTil).then(() => {
-      this.setState(prevState => ({ ...prevState, showReservasjonEndringDatoModal: false }));
+      this.setState((prevState) => ({ ...prevState, showReservasjonEndringDatoModal: false }));
     });
   }
 
   showFlytteModal = (reservasjon: Reservasjon) => {
-    this.setState(prevState => ({ ...prevState, showFlyttReservasjonModal: true, valgtReservasjon: reservasjon }));
+    this.setState((prevState) => ({ ...prevState, showFlyttReservasjonModal: true, valgtReservasjon: reservasjon }));
   }
 
   closeFlytteModal = () => {
-    this.setState(prevState => ({ ...prevState, showFlyttReservasjonModal: false }));
+    this.setState((prevState) => ({ ...prevState, showFlyttReservasjonModal: false }));
   }
 
   flyttReservasjon = (oppgaveId: number, brukerident: string, begrunnelse: string) => {
     const { flyttReservasjon } = this.props;
     flyttReservasjon(oppgaveId, brukerident, begrunnelse).then(() => {
-      this.setState(prevState => ({ ...prevState, showFlyttReservasjonModal: false }));
+      this.setState((prevState) => ({ ...prevState, showFlyttReservasjonModal: false }));
     });
   }
 
@@ -126,11 +126,10 @@ export class ReservasjonerTabell extends Component<TsProps, StateTsProps> {
             <Normaltekst><FormattedMessage id="ReservasjonerTabell.IngenReservasjoner" /></Normaltekst>
             <VerticalSpacer eightPx />
           </>
-        )
-        }
+        )}
         {sorterteReservasjoner.length > 0 && (
           <Table headerTextCodes={headerTextCodes} noHover>
-            {sorterteReservasjoner.map(reservasjon => (
+            {sorterteReservasjoner.map((reservasjon) => (
               <TableRow key={reservasjon.oppgaveId}>
                 <TableColumn>{reservasjon.reservertAvNavn}</TableColumn>
                 <TableColumn>{reservasjon.oppgaveSaksNr}</TableColumn>
@@ -174,8 +173,7 @@ export class ReservasjonerTabell extends Component<TsProps, StateTsProps> {
               closeModal={this.closeReservasjonEndringDatoModal}
               reserverTilDefault={valgtReservasjon.reservertTilTidspunkt}
             />
-          )
-        }
+          )}
         { showFlyttReservasjonModal && (
           <FlyttReservasjonModal
             oppgaveId={valgtReservasjon.oppgaveId}
@@ -185,14 +183,13 @@ export class ReservasjonerTabell extends Component<TsProps, StateTsProps> {
             finnSaksbehandler={finnSaksbehandler}
             resetSaksbehandler={nullstillSaksbehandler}
           />
-        )
-        }
+        )}
       </>
     );
   }
 }
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   reservasjoner: getAvdelingensReservasjoner(state) || [],
 });
 

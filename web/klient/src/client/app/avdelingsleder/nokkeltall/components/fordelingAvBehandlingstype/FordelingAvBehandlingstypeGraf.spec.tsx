@@ -84,7 +84,7 @@ describe('<FordelingAvBehandlingstypeGraf>', () => {
 
     const verdiFn = yAksen.prop('tickFormat');
 
-    const behandlingstyper = verdiIndekser.map(i => verdiFn(undefined, i - 1));
+    const behandlingstyper = verdiIndekser.map((i) => verdiFn(undefined, i - 1));
     expect(behandlingstyper).is.eql(['Tilbakebet-rev', 'Tilbakebetaling', 'Dokumentinnsyn', 'Klage', 'Revurdering', 'Førstegangssøknad']);
   });
 

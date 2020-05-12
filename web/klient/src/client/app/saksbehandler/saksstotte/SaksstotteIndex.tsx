@@ -46,7 +46,7 @@ export class SaksstotteIndex extends Component<TsProps> {
   }
 }
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   sistBehandledeSaker: getBehandledeOppgaver(state),
   valgtSakslisteId: getValgtSakslisteId(state),
 });

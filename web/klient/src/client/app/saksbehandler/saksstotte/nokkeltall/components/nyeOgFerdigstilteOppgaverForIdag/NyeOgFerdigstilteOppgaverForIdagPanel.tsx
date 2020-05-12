@@ -52,10 +52,10 @@ NyeOgFerdigstilteOppgaverForIdagPanel.propTypes = {
 
 export const getNyeOgFerdigstilteForIDag = createSelector([getNyeOgFerdigstilteOppgaverNokkeltall], (nyeOgFerdigstilte = []) => {
   const iDag = moment();
-  return nyeOgFerdigstilte.filter(oppgave => iDag.isSame(moment(oppgave.dato, ISO_DATE_FORMAT), 'day'));
+  return nyeOgFerdigstilte.filter((oppgave) => iDag.isSame(moment(oppgave.dato, ISO_DATE_FORMAT), 'day'));
 });
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   nyeOgFerdigstilteOppgaver: getNyeOgFerdigstilteForIDag(state),
 });
 

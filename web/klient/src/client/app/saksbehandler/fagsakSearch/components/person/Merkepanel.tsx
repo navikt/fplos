@@ -38,24 +38,21 @@ export const MerkePanel = ({
       <EtikettInfo className={styles.dodMerke} title={formatMessage({ id: 'MerkePanel.DodTittel' })}>
         <FormattedMessage id="MerkePanel.Dod" />
       </EtikettInfo>
-      )
-      }
+      )}
 
       {diskresjonskode === diskresjonskodeType.KODE6 && !erDod
       && (
       <EtikettAdvarsel className={styles.merkeDiskresjonskoder} title={formatMessage({ id: 'MerkePanel.Diskresjon6Tittel' })}>
         <FormattedMessage id="MerkePanel.Diskresjon6" />
       </EtikettAdvarsel>
-      )
-      }
+      )}
 
       {diskresjonskode === diskresjonskodeType.KODE7 && !erDod
       && (
       <EtikettFokus className={styles.merkeDiskresjonskoder} title={formatMessage({ id: 'MerkePanel.Diskresjon7Tittel' })}>
         <FormattedMessage id="MerkePanel.Diskresjon7" />
       </EtikettFokus>
-      )
-      }
+      )}
     </div>
   );
 };

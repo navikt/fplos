@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 // Css er satt opp på en spesiell måte her fordi React ikke støtter psydo-element i inline css. Her er en avhengig av å dynamisk
 // endre enkelte variabler i after/before. Bedre løsninger finnes sikkert?
-const getArrowBoxTopCss = alignOffset => [
+const getArrowBoxTopCss = (alignOffset) => [
   `.arrowBoxTop${alignOffset} {`,
   '  background: #ffffff;',
   '  border: 1px solid #cccccc;',
@@ -33,7 +33,7 @@ const getArrowBoxTopCss = alignOffset => [
   '  border-width: 12px;',
   '  margin-left: -12px;',
   '}'];
-const getArrowBoxLeftCss = alignOffset => [
+const getArrowBoxLeftCss = (alignOffset) => [
   `.arrowBoxLeft${alignOffset} {`,
   '  background: #ffffff;',
   '  border: 1px solid #cccccc;',

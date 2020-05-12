@@ -56,7 +56,7 @@ interface StateTsProps {
   valgtSaksliste?: Saksliste;
 }
 
-const wait = ms => new Promise(resolve => setTimeout(resolve, ms));
+const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 /**
  * GjeldendeSakslisterTabell
@@ -80,6 +80,8 @@ export class GjeldendeSakslisterTabell extends Component<TsProps, StateTsProps> 
     valgtSakslisteId: undefined,
   }
 
+  nodes: any[];
+
   constructor(props: TsProps) {
     super(props);
 
@@ -98,7 +100,7 @@ export class GjeldendeSakslisterTabell extends Component<TsProps, StateTsProps> 
 
   setValgtSaksliste = async (event: Event, id: number) => {
     const { setValgtSakslisteId, hentAvdelingensSakslister, valgtAvdelingEnhet } = this.props;
-    if (this.nodes.some(node => node && node.contains(event.target))) {
+    if (this.nodes.some((node) => node && node.contains(event.target))) {
       return;
     }
 
@@ -118,11 +120,11 @@ export class GjeldendeSakslisterTabell extends Component<TsProps, StateTsProps> 
   };
 
   visFjernSakslisteModal = (valgtSaksliste: Saksliste) => {
-    this.setState(prevState => ({ ...prevState, valgtSaksliste }));
+    this.setState((prevState) => ({ ...prevState, valgtSaksliste }));
   }
 
   closeSletteModal = () => {
-    this.setState(prevState => ({ ...prevState, valgtSaksliste: undefined }));
+    this.setState((prevState) => ({ ...prevState, valgtSaksliste: undefined }));
   }
 
   fjernSaksliste = (saksliste: Saksliste) => {
@@ -140,7 +142,7 @@ export class GjeldendeSakslisterTabell extends Component<TsProps, StateTsProps> 
 
     const { fagsakYtelseTyper } = this.props;
     return valgteFagsakYtelseTyper.map((fyt) => {
-      const type = fagsakYtelseTyper.find(def => def.kode === fyt.kode);
+      const type = fagsakYtelseTyper.find((def) => def.kode === fyt.kode);
       return type ? type.navn : '';
     }).join(', ');
   };
@@ -154,12 +156,10 @@ export class GjeldendeSakslisterTabell extends Component<TsProps, StateTsProps> 
     }
 
     return valgteBehandlingTyper.map((bt) => {
-      const type = behandlingTyper.find(def => def.kode === bt.kode);
+      const type = behandlingTyper.find((def) => def.kode === bt.kode);
       return type ? type.navn : '';
     }).join(', ');
   };
-
-  nodes: any[];
 
   render = () => {
     const {
@@ -193,11 +193,10 @@ export class GjeldendeSakslisterTabell extends Component<TsProps, StateTsProps> 
             <Normaltekst><FormattedMessage id="GjeldendeSakslisterTabell.IngenLister" /></Normaltekst>
             <VerticalSpacer eightPx />
           </>
-        )
-        }
+        )}
         {sakslister.length > 0 && (
         <Table headerTextCodes={headerTextCodes}>
-          {sakslister.map(saksliste => (
+          {sakslister.map((saksliste) => (
             <TableRow
               key={saksliste.sakslisteId}
               className={saksliste.sakslisteId === valgtSakslisteId ? styles.isSelected : undefined}
@@ -253,7 +252,7 @@ export class GjeldendeSakslisterTabell extends Component<TsProps, StateTsProps> 
   }
 }
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   behandlingTyper: getKodeverk(kodeverkTyper.BEHANDLING_TYPE)(state),
   fagsakYtelseTyper: getKodeverk(kodeverkTyper.FAGSAK_YTELSE_TYPE)(state),
   valgtAvdelingEnhet: getValgtAvdelingEnhet(state),

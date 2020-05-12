@@ -9,7 +9,7 @@ import { labelPropType } from './Label';
 
 const renderNavInput = renderNavField(NavInput);
 
-const composeValidators = validators => value => validators.reduce((error, validator) => error || validator(value), undefined);
+const composeValidators = (validators) => (value) => validators.reduce((error, validator) => error || validator(value), undefined);
 
 const InputField: FC<InputField.propTypes & InputField.defaultProps> = ({
   name, type, label, validate, readOnly, isEdited, ...otherProps

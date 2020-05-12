@@ -21,7 +21,7 @@ describe('<LeggTilSaksbehandlerForm>', () => {
       erLagtTilAllerede={false}
       erSokFerdig={false}
       valgtAvdelingEnhet="2"
-    />).find(Form).drill(props => props.render(formProps)).shallow();
+    />).find(Form).drill((props) => props.render(formProps)).shallow();
 
     expect(wrapper.find(Knapp)).to.have.length(1);
     expect(wrapper.find(Hovedknapp)).to.have.length(0);
@@ -44,7 +44,7 @@ describe('<LeggTilSaksbehandlerForm>', () => {
       erLagtTilAllerede={false}
       erSokFerdig
       valgtAvdelingEnhet="2"
-    />).find(Form).drill(props => props.render(formProps)).shallow();
+    />).find(Form).drill((props) => props.render(formProps)).shallow();
 
     expect(wrapper.find(Knapp)).to.have.length(2);
     expect(wrapper.find(Hovedknapp)).to.have.length(1);
@@ -73,7 +73,7 @@ describe('<LeggTilSaksbehandlerForm>', () => {
       erLagtTilAllerede={false}
       erSokFerdig
       valgtAvdelingEnhet="2"
-    />).find(Form).drill(props => props.render(formProps)).shallow();
+    />).find(Form).drill((props) => props.render(formProps)).shallow();
 
     const nullstillKnapp = wrapper.find(Knapp).last();
 
@@ -107,7 +107,7 @@ describe('<LeggTilSaksbehandlerForm>', () => {
       erLagtTilAllerede={false}
       erSokFerdig
       valgtAvdelingEnhet="2"
-    />).find(Form).drill(props => props.render(formProps)).shallow();
+    />).find(Form).drill((props) => props.render(formProps)).shallow();
 
     const leggTilKnapp = wrapper.find(Hovedknapp);
 
@@ -134,7 +134,7 @@ describe('<LeggTilSaksbehandlerForm>', () => {
       erLagtTilAllerede={false}
       erSokFerdig
       valgtAvdelingEnhet="2"
-    />).find(Form).drill(props => props.render(formProps)).shallow();
+    />).find(Form).drill((props) => props.render(formProps)).shallow();
 
     const tekstKomp = wrapper.find(Normaltekst);
     expect(tekstKomp).to.have.length(1);
@@ -152,7 +152,7 @@ describe('<LeggTilSaksbehandlerForm>', () => {
       erLagtTilAllerede={false}
       erSokFerdig
       valgtAvdelingEnhet="2"
-    />).find(Form).drill(props => props.render(formProps)).shallow();
+    />).find(Form).drill((props) => props.render(formProps)).shallow();
 
     const tekstKomp = wrapper.find(Normaltekst);
     expect(tekstKomp).to.have.length(1);
@@ -175,7 +175,7 @@ describe('<LeggTilSaksbehandlerForm>', () => {
       erLagtTilAllerede
       erSokFerdig
       valgtAvdelingEnhet="2"
-    />).find(Form).drill(props => props.render(formProps)).shallow();
+    />).find(Form).drill((props) => props.render(formProps)).shallow();
 
     const tekstKomp = wrapper.find(Normaltekst);
     expect(tekstKomp).to.have.length(1);

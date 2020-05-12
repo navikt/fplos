@@ -72,7 +72,7 @@ export class ReservasjonerIndex extends Component<TsProps> {
   }
 }
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   avdelingensReservasjoner: getAvdelingensReservasjoner(state),
   valgtAvdelingEnhet: getValgtAvdelingEnhet(state),
 });

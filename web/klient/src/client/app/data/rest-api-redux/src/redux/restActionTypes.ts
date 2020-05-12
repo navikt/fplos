@@ -7,10 +7,10 @@ import { ActionTypes } from './ActionTypesTsType';
    * Eks: createRequestActionType('fetchBehandlinger', 'ERROR', get, '/fpsak/api/behandlinger') -> '@@REST/fetchBehandlinger GET /fpsak/api/behandlinger ERROR'
    */
 const createRequestActionType = (name, qualifier, restMethod = '', path = '') => [`@@REST/${name}`, restMethod, path, qualifier]
-  .filter(s => s !== '')
+  .filter((s) => s !== '')
   .join(' ');
 
-const getCopyDataActionTypes = name => ({
+const getCopyDataActionTypes = (name) => ({
   copyDataStarted: createRequestActionType(name, 'COPY_DATA_STARTED'),
   copyDataFinished: createRequestActionType(name, 'COPY_DATA_FINISHED'),
 });

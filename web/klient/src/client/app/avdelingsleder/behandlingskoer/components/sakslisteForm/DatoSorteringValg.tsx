@@ -15,7 +15,7 @@ import ArrowBox from 'sharedComponents/ArrowBox';
 import AutoLagringVedBlur from './AutoLagringVedBlur';
 import styles from './sorteringVelger.less';
 
-const finnDato = antallDager => moment().add(antallDager, 'd').format();
+const finnDato = (antallDager) => moment().add(antallDager, 'd').format();
 const getLagreDatoFn = (lagreSakslisteSorteringTidsintervallDato, valgtSakslisteId, valgtAvdelingEnhet, annenDato, erFomDato) => (e) => {
   let dato = e.target.value;
   if (dato) {
@@ -65,7 +65,7 @@ export const DatoSorteringValg = ({
     {erDynamiskPeriode && (
     <>
       <AutoLagringVedBlur
-        lagre={values => lagreSakslisteSorteringTidsintervallDager(valgtSakslisteId, values.fra, values.til, valgtAvdelingEnhet)}
+        lagre={(values) => lagreSakslisteSorteringTidsintervallDager(valgtSakslisteId, values.fra, values.til, valgtAvdelingEnhet)}
         fieldNames={['fra', 'til']}
       />
       <FlexContainer>

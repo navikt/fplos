@@ -52,7 +52,7 @@ export const appReducer = (state: StateTsType = initialState, action: ActionTsTy
 };
 
 /* Selectors */
-const getAppContext = state => state.default.appContext;
+const getAppContext = (state) => state.default.appContext;
 
 type NavAnsatt = Readonly<{
   navn: string;
@@ -69,7 +69,7 @@ const NavAnsattDefault = {
   funksjonellTid: undefined,
 };
 
-export const getValgtAvdelingEnhet = createSelector([getAppContext], appContext => appContext.valgtAvdelingEnhet);
+export const getValgtAvdelingEnhet = createSelector([getAppContext], (appContext) => appContext.valgtAvdelingEnhet);
 export const getNavAnsattName = createSelector([fpLosApi.NAV_ANSATT.getRestApiData()], (navAnsatt: NavAnsatt = NavAnsattDefault) => navAnsatt.navn);
 export const getNavAnsattKanSaksbehandle = createSelector([fpLosApi.NAV_ANSATT.getRestApiData()], (navAnsatt: NavAnsatt = NavAnsattDefault) => navAnsatt
   .kanSaksbehandle);

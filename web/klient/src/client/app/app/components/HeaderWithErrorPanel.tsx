@@ -61,7 +61,7 @@ const setAvdeling = (avdelinger, setValgtAvdeling, valgtAvdelingEnhet) => {
     let valgtEnhet = avdelinger[0].avdelingEnhet;
     const lagretAvdelingEnhet = getValueFromLocalStorage('avdelingEnhet');
     if (lagretAvdelingEnhet) {
-      if (avdelinger.some(a => a.avdelingEnhet === lagretAvdelingEnhet)) {
+      if (avdelinger.some((a) => a.avdelingEnhet === lagretAvdelingEnhet)) {
         valgtEnhet = lagretAvdelingEnhet;
       } else {
         removeValueFromLocalStorage('avdelingEnhet');
@@ -113,7 +113,7 @@ const HeaderWithErrorPanel: FunctionComponent<OwnProps> = ({
                 setValgtAvdeling(avdelinger[index].avdelingEnhet);
                 setAvdelingerPanelApent(false);
               }}
-              items={avdelinger.map(avdeling => ({
+              items={avdelinger.map((avdeling) => ({
                 name: `${avdeling.avdelingEnhet} ${avdeling.navn}`,
                 selected: valgtAvdelingEnhet === avdeling.avdelingEnhet,
               }))}
@@ -128,7 +128,7 @@ const HeaderWithErrorPanel: FunctionComponent<OwnProps> = ({
             <div ref={ref}>
               <UserPanel
                 name={navAnsattName}
-                unit={`${valgtAvdelingEnhet} ${avdelinger.find(a => a.avdelingEnhet === valgtAvdelingEnhet).navn}`}
+                unit={`${valgtAvdelingEnhet} ${avdelinger.find((a) => a.avdelingEnhet === valgtAvdelingEnhet).navn}`}
                 onClick={() => {
                   if (erLenkePanelApent) {
                     setLenkePanelApent(false);

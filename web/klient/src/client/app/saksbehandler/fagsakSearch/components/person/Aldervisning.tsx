@@ -29,8 +29,7 @@ const AlderVisning = ({
       <Normaltekst className={styles.displayInline}>
         { dodsdato
           ? <DateLabel dateString={dodsdato} />
-          : <FormattedMessage id="Person.ManglerDodsdato" />
-      }
+          : <FormattedMessage id="Person.ManglerDodsdato" />}
       </Normaltekst>
     );
   }
