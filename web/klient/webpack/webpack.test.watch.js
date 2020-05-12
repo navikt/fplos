@@ -20,11 +20,6 @@ const config = {
     },
     include: APP_DIR,
     exclude: ['/node_modules/'],
-  }, {
-    test: /\.(tsx?|ts?)$/,
-    use: ['happypack/loader'],
-    include: APP_DIR,
-    exclude: ['/node_modules/'],
   }],
   },
 };
