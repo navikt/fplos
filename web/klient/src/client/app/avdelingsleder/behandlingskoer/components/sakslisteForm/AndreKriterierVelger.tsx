@@ -39,6 +39,7 @@ export const AndreKriterierVelger = ({
     <VerticalSpacer eightPx />
     {andreKriterierTyper.map((akt) => (
       <Fragment key={akt.kode}>
+        <VerticalSpacer fourPx />
         <CheckboxField
           key={akt.kode}
           name={akt.kode}

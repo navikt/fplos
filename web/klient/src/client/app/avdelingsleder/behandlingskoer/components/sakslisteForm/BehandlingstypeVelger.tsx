@@ -35,12 +35,15 @@ export const BehandlingstypeVelger = ({
     </Undertekst>
     <VerticalSpacer eightPx />
     {behandlingTyper.map((bt) => (
-      <CheckboxField
-        key={bt.kode}
-        name={bt.kode}
-        label={bt.navn}
-        onChange={(isChecked) => lagreSakslisteBehandlingstype(valgtSakslisteId, bt, isChecked, valgtAvdelingEnhet)}
-      />
+      <>
+        <VerticalSpacer fourPx />
+        <CheckboxField
+          key={bt.kode}
+          name={bt.kode}
+          label={bt.navn}
+          onChange={(isChecked) => lagreSakslisteBehandlingstype(valgtSakslisteId, bt, isChecked, valgtAvdelingEnhet)}
+        />
+      </>
     ))}
   </>
 );
