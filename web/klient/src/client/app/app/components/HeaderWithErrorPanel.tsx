@@ -1,8 +1,7 @@
 import React, {
   useState, useEffect, FunctionComponent, useRef, useCallback,
 } from 'react';
-import PropTypes from 'prop-types';
-import { injectIntl, intlShape } from 'react-intl';
+import { injectIntl, WrappedComponentProps } from 'react-intl';
 import Popover from '@navikt/nap-popover';
 import SystemButton from '@navikt/nap-system-button';
 import UserPanel from '@navikt/nap-user-panel';
@@ -12,7 +11,6 @@ import Header from '@navikt/nap-header';
 
 import { getValueFromLocalStorage, setValueInLocalStorage, removeValueFromLocalStorage } from 'utils/localStorageHelper';
 import { Avdeling } from 'app/avdelingTsType';
-import avdelingPropType from 'app/avdelingPropType';
 
 import { RETTSKILDE_URL, SYSTEMRUTINE_URL } from 'data/eksterneLenker';
 
@@ -21,7 +19,6 @@ import ErrorMessagePanel from './ErrorMessagePanel';
 import styles from './headerWithErrorPanel.less';
 
 interface OwnProps {
-  intl: any;
   navAnsattName: string;
   removeErrorMessage: () => void;
   queryStrings: {
@@ -78,7 +75,7 @@ const setAvdeling = (avdelinger, setValgtAvdeling, valgtAvdelingEnhet) => {
  * Denne viser lenke tilbake til hovedsiden, nettside-navnet og NAV-ansatt navn.
  * I tillegg vil den vise potensielle feilmeldinger i ErrorMessagePanel.
  */
-const HeaderWithErrorPanel: FunctionComponent<OwnProps> = ({
+const HeaderWithErrorPanel: FunctionComponent<OwnProps & WrappedComponentProps> = ({
   intl,
   navAnsattName,
   removeErrorMessage,
@@ -194,19 +191,6 @@ const HeaderWithErrorPanel: FunctionComponent<OwnProps> = ({
       <ErrorMessagePanel queryStrings={queryStrings} removeErrorMessage={removeErrorMessage} />
     </header>
   );
-};
-
-HeaderWithErrorPanel.propTypes = {
-  intl: intlShape.isRequired,
-  queryStrings: PropTypes.shape({
-    errormessage: PropTypes.string,
-    errorcode: PropTypes.string,
-  }).isRequired,
-  navAnsattName: PropTypes.string.isRequired,
-  removeErrorMessage: PropTypes.func.isRequired,
-  avdelinger: PropTypes.arrayOf(avdelingPropType),
-  setValgtAvdeling: PropTypes.func.isRequired,
-  valgtAvdelingEnhet: PropTypes.string,
 };
 
 HeaderWithErrorPanel.defaultProps = {

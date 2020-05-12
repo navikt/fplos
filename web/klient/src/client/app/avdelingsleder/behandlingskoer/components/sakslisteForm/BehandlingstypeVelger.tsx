@@ -35,15 +35,14 @@ export const BehandlingstypeVelger = ({
     </Undertekst>
     <VerticalSpacer eightPx />
     {behandlingTyper.map((bt) => (
-      <>
+      <React.Fragment key={bt.kode}>
         <VerticalSpacer fourPx />
         <CheckboxField
-          key={bt.kode}
           name={bt.kode}
           label={bt.navn}
           onChange={(isChecked) => lagreSakslisteBehandlingstype(valgtSakslisteId, bt, isChecked, valgtAvdelingEnhet)}
         />
-      </>
+      </React.Fragment>
     ))}
   </>
 );

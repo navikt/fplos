@@ -10,7 +10,7 @@ describe('<LanguageProvider>', () => {
   it('skal sette opp react-intl', () => {
     const wrapper = mountWithIntl((
       <LanguageProvider nbMessages={{ 'Header.Foreldrepenger': 'Foreldrepenger' }}>
-        <FormattedMessage id="Header.Foreldrepenger" />
+        <FormattedMessage id="Header.Foreldrepenger" tagName="span" />
       </LanguageProvider>
     ));
 

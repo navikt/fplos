@@ -1,10 +1,9 @@
-import React, { Component, Node } from 'react';
-import PropTypes from 'prop-types';
+import React, { Component, ReactNode } from 'react';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import { Form, FormSpy } from 'react-final-form';
 import {
-  injectIntl, intlShape, FormattedMessage, FormattedHTMLMessage,
+  injectIntl, WrappedComponentProps, FormattedMessage,
 } from 'react-intl';
 import { bindActionCreators, Dispatch } from 'redux';
 import { Element, Undertittel, Normaltekst } from 'nav-frontend-typografi';
@@ -15,19 +14,16 @@ import { getValueFromLocalStorage, setValueInLocalStorage, removeValueFromLocalS
 import { FlexContainer, FlexRow, FlexColumn } from 'sharedComponents/flexGrid';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import LabelWithHeader from 'sharedComponents/LabelWithHeader';
-import sakslistePropType from 'saksbehandler/behandlingskoer/sakslistePropType';
 import { Saksliste } from 'saksbehandler/behandlingskoer/sakslisteTsType';
 import { SelectField } from 'form/FinalFields';
 import gruppeHoverUrl from 'images/gruppe_hover.svg';
 import gruppeUrl from 'images/gruppe.svg';
 import { getSakslistensSaksbehandlere, fetchAntallOppgaverForBehandlingsko, fetchSakslistensSaksbehandlere } from '../duck';
 import { Saksbehandler } from '../saksbehandlerTsType';
-import saksbehandlerPropType from '../saksbehandlerPropType';
 
 import styles from './sakslisteVelgerForm.less';
 
 interface TsProps {
-  intl: any;
   sakslister: Saksliste[];
   fetchSakslisteOppgaver: (sakslisteId: number) => void;
   fetchSakslistensSaksbehandlere: (sakslisteId: number) => void;
@@ -36,8 +32,8 @@ interface TsProps {
 }
 
 interface Toolip {
-  header: Node;
-  body: Node;
+  header: ReactNode;
+  body: ReactNode;
 }
 
 const getDefaultSaksliste = (sakslister) => {
@@ -89,7 +85,9 @@ const getSorteringsnavn = (saksliste?: Saksliste) => {
   const {
     erDynamiskPeriode, sorteringType, fra, til, fomDato, tomDato,
   } = saksliste.sortering;
-  let values = {};
+  let values = {
+    br: <br />,
+  };
   if (!erDynamiskPeriode) {
     if (!fomDato && !tomDato) {
       return sorteringType.navn;
@@ -98,6 +96,7 @@ const getSorteringsnavn = (saksliste?: Saksliste) => {
       navn: sorteringType.navn,
       fomDato: fomDato ? moment(fomDato).format(DDMMYYYY_DATE_FORMAT) : undefined,
       tomDato: tomDato ? moment(tomDato).format(DDMMYYYY_DATE_FORMAT) : undefined,
+      br: <br />,
     };
   } else {
     if (!fra && !til) {
@@ -107,15 +106,16 @@ const getSorteringsnavn = (saksliste?: Saksliste) => {
       navn: sorteringType.navn,
       fomDato: fra ? moment().add(fra, 'days').format(DDMMYYYY_DATE_FORMAT) : undefined,
       tomDato: til ? moment().add(til, 'days').format(DDMMYYYY_DATE_FORMAT) : undefined,
+      br: <br />,
     };
   }
 
   if (!values.fomDato) {
-    return <FormattedHTMLMessage id="SakslisteVelgerForm.SorteringsinfoTom" values={values} />;
+    return <FormattedMessage id="SakslisteVelgerForm.SorteringsinfoTom" values={values} />;
   } if (!values.tomDato) {
-    return <FormattedHTMLMessage id="SakslisteVelgerForm.SorteringsinfoFom" values={values} />;
+    return <FormattedMessage id="SakslisteVelgerForm.SorteringsinfoFom" values={values} />;
   }
-  return <FormattedHTMLMessage id="SakslisteVelgerForm.Sorteringsinfo" values={values} />;
+  return <FormattedMessage id="SakslisteVelgerForm.Sorteringsinfo" values={values} />;
 };
 
 const imageSrcFunction = (isHovering) => (isHovering ? gruppeHoverUrl : gruppeUrl);
@@ -124,16 +124,7 @@ const imageSrcFunction = (isHovering) => (isHovering ? gruppeHoverUrl : gruppeUr
  * SakslisteVelgerForm
  *
  */
-export class SakslisteVelgerForm extends Component<TsProps> {
-  static propTypes = {
-    intl: intlShape.isRequired,
-    sakslister: PropTypes.arrayOf(sakslistePropType).isRequired,
-    fetchSakslisteOppgaver: PropTypes.func.isRequired,
-    fetchSakslistensSaksbehandlere: PropTypes.func.isRequired,
-    fetchAntallOppgaverForBehandlingsko: PropTypes.func.isRequired,
-    saksbehandlere: PropTypes.arrayOf(saksbehandlerPropType),
-  };
-
+export class SakslisteVelgerForm extends Component<TsProps & WrappedComponentProps> {
   static defaultProps = {
     saksbehandlere: [],
   };

@@ -1,5 +1,4 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React, { ReactNode, FunctionComponent } from 'react';
 import classnames from 'classnames/bind';
 
 import styles from './tableRow.less';
@@ -32,24 +31,40 @@ const createKeyHandler = (onKeyDown, id, model) => (e) => {
   }
 };
 
+interface OwnProps {
+  id?: number | string;
+  model?: {};
+  isHeader?: boolean;
+  onMouseDown?: () => void;
+  onKeyDown?: () => void;
+  children: ReactNode | ReactNode[];
+  noHover?: boolean;
+  isSelected?: boolean;
+  isBold?: boolean;
+  isDashedBottomBorder?: boolean;
+  isSolidBottomBorder?: boolean;
+  isApLeftBorder?: boolean;
+  className?: string;
+}
+
 /**
  * TableRow
  *
  * Presentasjonskomponent. Tabellrad som brukes av komponenten Table.
  */
-const TableRow = ({
+const TableRow: FunctionComponent<OwnProps> = ({
   id,
   model,
-  isHeader,
+  isHeader = false,
   onMouseDown,
   onKeyDown,
   children,
-  noHover,
-  isSelected,
-  isBold,
-  isDashedBottomBorder,
-  isSolidBottomBorder,
-  isApLeftBorder,
+  noHover = false,
+  isSelected = false,
+  isBold = false,
+  isDashedBottomBorder = false,
+  isSolidBottomBorder = false,
+  isApLeftBorder = false,
   className,
 }) => (
   <tr
@@ -69,39 +84,5 @@ const TableRow = ({
     {children}
   </tr>
 );
-
-TableRow.propTypes = {
-  id: PropTypes.oneOfType([
-    PropTypes.number,
-    PropTypes.string,
-  ]),
-  model: PropTypes.shape({}),
-  isHeader: PropTypes.bool,
-  onMouseDown: PropTypes.func,
-  onKeyDown: PropTypes.func,
-  children: PropTypes.node.isRequired,
-  noHover: PropTypes.bool,
-  isSelected: PropTypes.bool,
-  isBold: PropTypes.bool,
-  isDashedBottomBorder: PropTypes.bool,
-  isSolidBottomBorder: PropTypes.bool,
-  isApLeftBorder: PropTypes.bool,
-  className: PropTypes.string,
-};
-
-TableRow.defaultProps = {
-  id: null,
-  model: null,
-  isHeader: false,
-  onMouseDown: null,
-  onKeyDown: null,
-  noHover: false,
-  isSelected: false,
-  isBold: false,
-  isDashedBottomBorder: false,
-  isSolidBottomBorder: false,
-  isApLeftBorder: false,
-  className: undefined,
-};
 
 export default TableRow;

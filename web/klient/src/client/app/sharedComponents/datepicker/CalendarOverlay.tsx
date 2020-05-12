@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { intlShape, injectIntl } from 'react-intl';
+import { injectIntl } from 'react-intl';
 import moment from 'moment';
 import DayPicker from 'react-day-picker';
 
@@ -118,7 +118,7 @@ class CalendarOverlay extends Component {
 }
 
 CalendarOverlay.propTypes = {
-  intl: intlShape.isRequired,
+  intl: PropTypes.shape().isRequired,
   onDayChange: PropTypes.func.isRequired,
   className: PropTypes.string.isRequired,
   dayPickerClassName: PropTypes.string.isRequired,

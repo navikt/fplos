@@ -4950,10 +4950,6 @@ hoek@4.2.1:
   version "4.2.1"
   resolved "https://registry.npmjs.org/hoek/-/hoek-4.2.1.tgz#9634502aa12c445dd5a7c5734b572bb8738aacbb"
 
-hoist-non-react-statics@^2.5.5:
-  version "2.5.5"
-  resolved "https://registry.npmjs.org/hoist-non-react-statics/-/hoist-non-react-statics-2.5.5.tgz#c5903cf409c0dfd908f388e619d86b9c1174cb47"
-
 hoist-non-react-statics@^3.1.0, hoist-non-react-statics@^3.3.0:
   version "3.3.0"
   resolved "https://registry.npmjs.org/hoist-non-react-statics/-/hoist-non-react-statics-3.3.0.tgz#b09178f0122184fb95acf525daaecb4d8f45958b"
@@ -5287,18 +5283,10 @@ interpret@1.2.0, interpret@^1.0.1, interpret@^1.2.0:
   resolved "https://registry.yarnpkg.com/interpret/-/interpret-1.2.0.tgz#d5061a6224be58e8083985f5014d844359576296"
   integrity sha512-mT34yGKMNceBQUoVn7iCDKDntA7SC6gycMAWzGx1z/CMCTV7b2AAtXlo3nRyHZ1FelRkQbQjprHSYGwzLtkVbw==
 
-intl-format-cache@^2.0.5:
-  version "2.1.0"
-  resolved "https://registry.npmjs.org/intl-format-cache/-/intl-format-cache-2.1.0.tgz#04a369fecbfad6da6005bae1f14333332dcf9316"
-
 intl-format-cache@^4.2.27:
   version "4.2.27"
   resolved "https://registry.yarnpkg.com/intl-format-cache/-/intl-format-cache-4.2.27.tgz#d25fa83639913aec10ca5a8f9e3b6449bb0eacf2"
   integrity sha512-blHXX9qBp8H6fGhQc0jHGh7j97HF0megj4rIB878iazMBdFk/tR7b3av0PJxE72TP8MycLFpeXW9vLY5cBmF4A==
-
-intl-messageformat-parser@1.4.0:
-  version "1.4.0"
-  resolved "https://registry.npmjs.org/intl-messageformat-parser/-/intl-messageformat-parser-1.4.0.tgz#b43d45a97468cadbe44331d74bb1e8dea44fc075"
 
 intl-messageformat-parser@^5.0.3:
   version "5.0.3"
@@ -5306,12 +5294,6 @@ intl-messageformat-parser@^5.0.3:
   integrity sha512-u2goKAXOJLkiHBy0zB3HTMuHhWDNFYUyPVevvUeSuacGFqe04jvyvYIJIoVgHD3RYhFJ9T+0UgT0dNbu+51TEw==
   dependencies:
     "@formatjs/intl-unified-numberformat" "^3.3.6"
-
-intl-messageformat@^2.0.0, intl-messageformat@^2.1.0:
-  version "2.2.0"
-  resolved "https://registry.npmjs.org/intl-messageformat/-/intl-messageformat-2.2.0.tgz#345bcd46de630b7683330c2e52177ff5eab484fc"
-  dependencies:
-    intl-messageformat-parser "1.4.0"
 
 intl-messageformat@^8.3.10:
   version "8.3.10"
@@ -5321,13 +5303,7 @@ intl-messageformat@^8.3.10:
     intl-format-cache "^4.2.27"
     intl-messageformat-parser "^5.0.3"
 
-intl-relativeformat@^2.1.0:
-  version "2.1.0"
-  resolved "https://registry.npmjs.org/intl-relativeformat/-/intl-relativeformat-2.1.0.tgz#010f1105802251f40ac47d0e3e1a201348a255df"
-  dependencies:
-    intl-messageformat "^2.0.0"
-
-invariant@^2.1.1, invariant@^2.2.2, invariant@^2.2.4:
+invariant@^2.2.2, invariant@^2.2.4:
   version "2.2.4"
   resolved "https://registry.npmjs.org/invariant/-/invariant-2.2.4.tgz#610f3c92c9359ce1db616e538008d23ff35158e6"
   dependencies:
@@ -6590,15 +6566,15 @@ nav-frontend-chevron@1.0.10, nav-frontend-chevron@^1.0.10:
   resolved "https://registry.yarnpkg.com/nav-frontend-chevron/-/nav-frontend-chevron-1.0.10.tgz#6d38caa5231c3bb164005c7f95c4c39979d86fe4"
   integrity sha512-zh7KZJh8zwwNSOWv/nHciwh/8DpKPF6ObHIN+mpc3Y3W0EFLG7S7m4sS0OtdBAW+MSudBHqV7Ixbtrq8mzstOA==
 
-nav-frontend-core@4.0.11, nav-frontend-core@^4.0.11:
-  version "4.0.11"
-  resolved "https://registry.yarnpkg.com/nav-frontend-core/-/nav-frontend-core-4.0.11.tgz#826a242141fedfee54337cbf1578d1d7be7da3e2"
-  integrity sha512-sm9ZX2EFRBJbBkkr6uDvGkg5KT2GXJPIfmkkqrADqWkBu1SsEiy9p8qzLYQE3EE1pK1bt19kZmadGVkDyQXmvQ==
-
-nav-frontend-core@^4.0.12:
+nav-frontend-core@4.0.12, nav-frontend-core@^4.0.12:
   version "4.0.12"
   resolved "https://registry.yarnpkg.com/nav-frontend-core/-/nav-frontend-core-4.0.12.tgz#e0577ddec4f81f1f411a0a0c3fad8e5fa215bbba"
   integrity sha512-xgkTQ2PzN8qYMkLZ+5qj5Dy6kpMHbfAW/y8suvsiLNAGq/KD/gTCzrGb6ypQ6i0CKMQO7cy9w8Kc8/MmhVpSNw==
+
+nav-frontend-core@^4.0.11:
+  version "4.0.11"
+  resolved "https://registry.yarnpkg.com/nav-frontend-core/-/nav-frontend-core-4.0.11.tgz#826a242141fedfee54337cbf1578d1d7be7da3e2"
+  integrity sha512-sm9ZX2EFRBJbBkkr6uDvGkg5KT2GXJPIfmkkqrADqWkBu1SsEiy9p8qzLYQE3EE1pK1bt19kZmadGVkDyQXmvQ==
 
 nav-frontend-etiketter-style@0.3.20:
   version "0.3.20"
@@ -8251,7 +8227,7 @@ react-final-form@^6.4.0:
     "@babel/runtime" "^7.9.2"
     ts-essentials "^6.0.3"
 
-react-intl@*:
+react-intl@*, react-intl@^4.5.3:
   version "4.5.3"
   resolved "https://registry.yarnpkg.com/react-intl/-/react-intl-4.5.3.tgz#d24774fa20aeb1049c5d8cb04f1c8d9da0efb6a8"
   integrity sha512-qx7R7bRdmmoBbHBaQCTWIui5KcMOpUWZwe7oF83x1oLf5KJ5zm4Qt9XCGF7Ki4JbYTNuUiz7QUc4IPy0HFoMGg==
@@ -8268,16 +8244,6 @@ react-intl@*:
     intl-messageformat "^8.3.10"
     intl-messageformat-parser "^5.0.3"
     shallow-equal "^1.2.1"
-
-react-intl@^2.8.0:
-  version "2.8.0"
-  resolved "https://registry.npmjs.org/react-intl/-/react-intl-2.8.0.tgz#20b0c1f01d1292427768aa8ec9e51ab7e36503ba"
-  dependencies:
-    hoist-non-react-statics "^2.5.5"
-    intl-format-cache "^2.0.5"
-    intl-messageformat "^2.1.0"
-    intl-relativeformat "^2.1.0"
-    invariant "^2.1.1"
 
 react-is@^16.12.0, react-is@^16.8.6, react-is@^16.9.0:
   version "16.13.1"

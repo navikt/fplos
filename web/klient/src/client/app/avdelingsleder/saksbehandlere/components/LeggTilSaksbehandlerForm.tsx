@@ -1,9 +1,8 @@
 import React, { Component, ReactNode } from 'react';
-import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { createSelector } from 'reselect';
 import {
-  injectIntl, intlShape, FormattedMessage,
+  injectIntl, WrappedComponentProps, FormattedMessage,
 } from 'react-intl';
 
 import { Form } from 'react-final-form';
@@ -16,13 +15,11 @@ import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import { InputField } from 'form/FinalFields';
 import { FlexContainer, FlexRow, FlexColumn } from 'sharedComponents/flexGrid';
 import { Saksbehandler } from '../saksbehandlerTsType';
-import saksbehandlerPropType from '../saksbehandlerPropType';
 import { getSaksbehandler, getAvdelingensSaksbehandlere, getSaksbehandlerSokFinished } from '../duck';
 
 import styles from './leggTilSaksbehandlerForm.less';
 
 interface TsProps {
-  intl: any;
   finnSaksbehandler: (brukerIdent: string) => Promise<string>;
   leggTilSaksbehandler: (brukerIdent: string, avdelingEnhet: string) => Promise<string>;
   resetSaksbehandlerSok: () => void;
@@ -39,18 +36,7 @@ interface StateTsProps {
 /**
  * LeggTilSaksbehandlerForm
  */
-export class LeggTilSaksbehandlerForm extends Component<TsProps, StateTsProps> {
-  static propTypes = {
-    intl: intlShape.isRequired,
-    finnSaksbehandler: PropTypes.func.isRequired,
-    leggTilSaksbehandler: PropTypes.func.isRequired,
-    resetSaksbehandlerSok: PropTypes.func.isRequired,
-    saksbehandler: saksbehandlerPropType,
-    erLagtTilAllerede: PropTypes.bool.isRequired,
-    erSokFerdig: PropTypes.bool.isRequired,
-    valgtAvdelingEnhet: PropTypes.string.isRequired,
-  };
-
+export class LeggTilSaksbehandlerForm extends Component<TsProps & WrappedComponentProps, StateTsProps> {
   static defaultProps = {
     saksbehandler: undefined,
   }

@@ -1,6 +1,5 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { injectIntl, intlShape, FormattedMessage } from 'react-intl';
+import React, { FunctionComponent } from 'react';
+import { injectIntl, WrappedComponentProps, FormattedMessage } from 'react-intl';
 import { Row, Column } from 'nav-frontend-grid';
 import { Hovedknapp } from 'nav-frontend-knapper';
 import { Normaltekst } from 'nav-frontend-typografi';
@@ -8,8 +7,6 @@ import { Normaltekst } from 'nav-frontend-typografi';
 import { getDateAndTime } from 'utils/dateUtils';
 import { OppgaveStatus } from 'saksbehandler/oppgaveStatusTsType';
 import { Oppgave } from 'saksbehandler/oppgaveTsType';
-import oppgavePropType from 'saksbehandler/oppgavePropType';
-import oppgaveStatusPropType from 'saksbehandler/oppgaveStatusPropType';
 import Image from 'sharedComponents/Image';
 import Modal from 'sharedComponents/Modal';
 
@@ -17,8 +14,7 @@ import advarselImageUrl from 'images/advarsel.svg';
 
 import styles from './oppgaveErReservertAvAnnenModal.less';
 
-type TsProps = Readonly<{
-  intl: any;
+type OwnProps = Readonly<{
   lukkErReservertModalOgOpneOppgave: (oppgave: Oppgave) => void;
   oppgave: Oppgave;
   oppgaveStatus: OppgaveStatus;
@@ -31,12 +27,12 @@ const getClickEvent = (lukkErReservertModalOgOpneOppgave, oppgave) => () => lukk
  *
  * Presentasjonskomponent. Modal som vises når en åpner oppgave som er reservert av en annen saksbehandler
  */
-export const OppgaveErReservertAvAnnenModal = ({
+export const OppgaveErReservertAvAnnenModal: FunctionComponent<OwnProps & WrappedComponentProps> = ({
   intl,
   lukkErReservertModalOgOpneOppgave,
   oppgave,
   oppgaveStatus,
-}: TsProps) => (
+}) => (
   <Modal
     className={styles.modal}
     isOpen
@@ -75,12 +71,5 @@ export const OppgaveErReservertAvAnnenModal = ({
     </Row>
   </Modal>
 );
-
-OppgaveErReservertAvAnnenModal.propTypes = {
-  intl: intlShape.isRequired,
-  lukkErReservertModalOgOpneOppgave: PropTypes.func.isRequired,
-  oppgave: oppgavePropType.isRequired,
-  oppgaveStatus: oppgaveStatusPropType.isRequired,
-};
 
 export default injectIntl(OppgaveErReservertAvAnnenModal);

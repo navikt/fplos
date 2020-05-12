@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { FormattedMessage, FormattedHTMLMessage } from 'react-intl';
+import { FormattedMessage } from 'react-intl';
 import { bindActionCreators, Dispatch } from 'redux';
 import { Normaltekst, Element } from 'nav-frontend-typografi';
 import NavFrontendChevron from 'nav-frontend-chevron';
@@ -142,9 +142,10 @@ export class OppgaverTabell extends Component<TsProps, TsState> {
       uid: flyttetReservasjon.uid,
       navn: flyttetReservasjon.navn,
       beskrivelse: flyttetReservasjon.begrunnelse,
+      br: <br />,
     };
     return {
-      header: <Normaltekst><FormattedHTMLMessage id="OppgaverTabell.OverfortReservasjonTooltip" values={textValues} /></Normaltekst>,
+      header: <Normaltekst><FormattedMessage id="OppgaverTabell.OverfortReservasjonTooltip" values={textValues} /></Normaltekst>,
     };
   }
 

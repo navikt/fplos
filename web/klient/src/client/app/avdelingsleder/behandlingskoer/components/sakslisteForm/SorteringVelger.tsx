@@ -1,7 +1,6 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React, { FunctionComponent } from 'react';
 import { connect } from 'react-redux';
-import { FormattedMessage, injectIntl, intlShape } from 'react-intl';
+import { FormattedMessage, injectIntl, WrappedComponentProps } from 'react-intl';
 import { bindActionCreators, Dispatch } from 'redux';
 import { Undertekst } from 'nav-frontend-typografi';
 
@@ -10,7 +9,6 @@ import {
 } from 'form/FinalFields';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import { getKodeverk } from 'kodeverk/duck';
-import kodeverkPropType from 'kodeverk/kodeverkPropType';
 import kodeverkTyper from 'kodeverk/kodeverkTyper';
 import { KoSorteringType } from 'kodeverk/KoSorteringTsType';
 import { Kodeverk } from 'kodeverk/kodeverkTsType';
@@ -24,7 +22,7 @@ import {
 import DatoSorteringValg from './DatoSorteringValg';
 import BelopSorteringValg from './BelopSorteringValg';
 
-interface TsProps {
+interface OwnProps {
   intl: any;
   koSorteringTyper: KoSorteringType[];
   valgtSakslisteId: number;
@@ -49,7 +47,7 @@ const bareTilbakekrevingValgt = (valgteBehandlingtyper: Kodeverk[]) => valgteBeh
 /**
  * SorteringVelger
  */
-export const SorteringVelger = ({
+export const SorteringVelger: FunctionComponent<OwnProps & WrappedComponentProps> = ({
   intl,
   koSorteringTyper,
   valgtSakslisteId,
@@ -64,7 +62,7 @@ export const SorteringVelger = ({
   til,
   fomDato,
   tomDato,
-}: TsProps) => (
+}) => (
   <>
     <Undertekst>
       <FormattedMessage id="SorteringVelger.Sortering" />
@@ -113,29 +111,6 @@ export const SorteringVelger = ({
     </RadioGroupField>
   </>
 );
-
-SorteringVelger.propTypes = {
-  intl: intlShape.isRequired,
-  koSorteringTyper: PropTypes.arrayOf(kodeverkPropType).isRequired,
-  valgtSakslisteId: PropTypes.number.isRequired,
-  lagreSakslisteSortering: PropTypes.func.isRequired,
-  lagreSakslisteSorteringErDynamiskPeriode: PropTypes.func.isRequired,
-  lagreSakslisteSorteringTidsintervallDato: PropTypes.func.isRequired,
-  lagreSakslisteSorteringNumeriskIntervall: PropTypes.func.isRequired,
-  valgtAvdelingEnhet: PropTypes.string.isRequired,
-  erDynamiskPeriode: PropTypes.bool.isRequired,
-  fra: PropTypes.number,
-  til: PropTypes.number,
-  fomDato: PropTypes.string,
-  tomDato: PropTypes.string,
-};
-
-SorteringVelger.defaultProps = {
-  fra: undefined,
-  til: undefined,
-  fomDato: undefined,
-  tomDato: undefined,
-};
 
 const mapStateToProps = (state) => ({
   koSorteringTyper: getKodeverk(kodeverkTyper.KO_SORTERING)(state),

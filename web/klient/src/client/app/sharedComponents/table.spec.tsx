@@ -1,7 +1,6 @@
 import React from 'react';
 import { shallow } from 'enzyme';
 import { expect } from 'chai';
-import sinon from 'sinon';
 import { FormattedMessage } from 'react-intl';
 
 import Table from './Table';
@@ -14,17 +13,11 @@ describe('<Table>', () => {
     'FagsakList.Sakstype',
   ];
 
-  const formattedHeaderTextCodes = [
-    <FormattedMessage id="FagsakList.Saksnummer" />,
-    <FormattedMessage id="FagsakList.Sakstype" />,
-  ];
-
 
   it('skal vise korrekt antall kolonneheadere med korrekt tekst', () => {
-    const callbackFunction = sinon.spy();
     const wrapper = shallow(
       <Table headerTextCodes={headerTextCodes}>
-        <TableRow id="1" onMouseDown={callbackFunction} onKeyDown={callbackFunction}>
+        <TableRow id="1">
           <TableColumn key={1}>{12345}</TableColumn>
           <TableColumn key={2}>{23446}</TableColumn>
         </TableRow>
@@ -42,10 +35,14 @@ describe('<Table>', () => {
   });
 
   it('skal vise korrekt antall kolonneheadere med korrekt tekst for formatterte headere', () => {
-    const callbackFunction = sinon.spy();
+    const formattedHeaderTextCodes = [
+      <FormattedMessage id="FagsakList.Saksnummer" />,
+      <FormattedMessage id="FagsakList.Sakstype" />,
+    ];
+
     const wrapper = shallow(
-      <Table headerTextCodes={formattedHeaderTextCodes} allowFormattedHeader>
-        <TableRow id="1" onMouseDown={callbackFunction} onKeyDown={callbackFunction}>
+      <Table headerColumnContent={formattedHeaderTextCodes}>
+        <TableRow id="1">
           <TableColumn key={1}>{12345}</TableColumn>
           <TableColumn key={2}>{23446}</TableColumn>
         </TableRow>
@@ -64,14 +61,13 @@ describe('<Table>', () => {
 
 
   it('skal vise korrekt antall rader og kolonner', () => {
-    const callbackFunction = sinon.spy();
     const wrapper = shallow(
       <Table headerTextCodes={headerTextCodes}>
-        <TableRow key={1} id="1" onMouseDown={callbackFunction} onKeyDown={callbackFunction}>
+        <TableRow key={1} id="1">
           <TableColumn key={1}>{12345}</TableColumn>
           <TableColumn key={2}>{23446}</TableColumn>
         </TableRow>
-        <TableRow key={2} id="2" onMouseDown={callbackFunction} onKeyDown={callbackFunction}>
+        <TableRow key={2} id="2">
           <TableColumn key={3}>{34567}</TableColumn>
           <TableColumn key={4}>{45678}</TableColumn>
         </TableRow>

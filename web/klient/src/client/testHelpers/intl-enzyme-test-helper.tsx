@@ -7,44 +7,52 @@
  */
 
 import React from 'react';
-import { IntlProvider, intlShape } from 'react-intl';
+import { createIntl, createIntlCache, IntlProvider } from 'react-intl';
 import { mount, shallow } from 'enzyme';
 import sinon from 'sinon';
-
 // You can pass your messages to the IntlProvider. Optional: remove if unneeded.
 export const messages = require('../app/sprak/nb_NO.json');
 
 // Create the IntlProvider to retrieve context for wrapping around.
-const intlProvider = new IntlProvider({ locale: 'nb-NO', messages }, {});
-const { intl } = intlProvider.getChildContext();
+const cache = createIntlCache();
+
+const getIntlObject = (moduleMessages) => {
+  const selectedMessages = moduleMessages || messages;
+
+  return createIntl({
+    locale: 'nb-NO',
+    defaultLocale: 'nb-NO',
+    messages: selectedMessages,
+  }, cache);
+};
 
 /**
  * When using React-Intl `injectIntl` on components, props.intl is required.
  */
-// @ts-ignore Testkode
-function nodeWithIntlProp(node) {
-    return React.cloneElement(node, { intl });
+function nodeWithIntlProp(node, moduleMessages) {
+  const selectedMessages = moduleMessages || messages;
+  return React.cloneElement(node, { intl: getIntlObject(selectedMessages) });
 }
 
-// @ts-ignore Testkode
-export function shallowWithIntl(node, { context } = {}) {
-    return shallow(
-        nodeWithIntlProp(node),
-        {
-            context: Object.assign({}, context, {intl}),
-        }
-    );
+const getOptions = (moduleMessages) => {
+  const selectedMessages = moduleMessages || messages;
+
+  return {
+    wrappingComponent: IntlProvider,
+    wrappingComponentProps: {
+      locale: 'nb-NO',
+      defaultLocale: 'nb-NO',
+      messages: selectedMessages,
+    },
+  };
+};
+
+export function shallowWithIntl(node, options, moduleMessages = undefined) {
+  return shallow(nodeWithIntlProp(node, moduleMessages), { ...getOptions(moduleMessages), ...options });
 }
 
-// @ts-ignore Testkode
-export function mountWithIntl(node, { context, childContextTypes } = {}) {
-    return mount(
-        nodeWithIntlProp(node),
-        {
-            context: Object.assign({}, context, {intl}),
-            childContextTypes: Object.assign({}, { intl: intlShape }, childContextTypes)
-        }
-    );
+export function mountWithIntl(node, options, moduleMessages = undefined) {
+  return mount(nodeWithIntlProp(node), { ...getOptions(moduleMessages), ...options });
 }
 
 /* Lagt til for a hindre warnings i tester */
@@ -55,6 +63,5 @@ export const intlMock = {
   formatNumber: sinon.spy(),
   formatPlural: sinon.spy(),
   formatMessage: sinon.spy(),
-  formatHTMLMessage: sinon.spy(),
   now: sinon.spy(),
 };

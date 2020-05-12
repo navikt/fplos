@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Element, Normaltekst } from 'nav-frontend-typografi';
-import { FormattedHTMLMessage, FormattedMessage } from 'react-intl';
+import { FormattedMessage } from 'react-intl';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
@@ -135,7 +135,7 @@ export class ReservasjonerTabell extends Component<TsProps, StateTsProps> {
                 <TableColumn>{reservasjon.oppgaveSaksNr}</TableColumn>
                 <TableColumn>{reservasjon.behandlingType}</TableColumn>
                 <TableColumn>
-                  <FormattedHTMLMessage
+                  <FormattedMessage
                     id="ReservasjonerTabell.ReservertTilFormat"
                     values={getDateAndTime(reservasjon.reservertTilTidspunkt)}
                   />

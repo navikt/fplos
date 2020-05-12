@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
 import { Form } from 'react-final-form';
-import { injectIntl, intlShape, FormattedMessage } from 'react-intl';
+import { injectIntl, WrappedComponentProps, FormattedMessage } from 'react-intl';
 import Panel from 'nav-frontend-paneler';
 import { Undertittel, Element, Normaltekst } from 'nav-frontend-typografi';
 
@@ -16,7 +15,6 @@ import { Kodeverk } from 'kodeverk/kodeverkTsType';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import { InputField } from 'form/FinalFields';
 import { Saksliste } from '../../sakslisteTsType';
-import sakslistePropType from '../../sakslistePropType';
 import { getAntallOppgaverForSakslisteResultat } from '../../duck';
 import AutoLagringVedBlur from './AutoLagringVedBlur';
 import BehandlingstypeVelger from './BehandlingstypeVelger';
@@ -49,19 +47,7 @@ interface TsProps {
 /**
  * UtvalgskriterierForSakslisteForm
  */
-export class UtvalgskriterierForSakslisteForm extends Component<TsProps> {
-  static propTypes = {
-    intl: intlShape.isRequired,
-    valgtSaksliste: sakslistePropType.isRequired,
-    lagreSakslisteNavn: PropTypes.func.isRequired,
-    lagreSakslisteBehandlingstype: PropTypes.func.isRequired,
-    lagreSakslisteFagsakYtelseType: PropTypes.func.isRequired,
-    lagreSakslisteAndreKriterier: PropTypes.func.isRequired,
-    valgtAvdelingEnhet: PropTypes.string.isRequired,
-    antallOppgaver: PropTypes.number,
-    hentAntallOppgaverForSaksliste: PropTypes.func.isRequired,
-  };
-
+export class UtvalgskriterierForSakslisteForm extends Component<TsProps & WrappedComponentProps> {
   componentDidMount = () => {
     const {
       valgtSaksliste, hentAntallOppgaverForSaksliste, valgtAvdelingEnhet,

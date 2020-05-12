@@ -1,7 +1,5 @@
-
-import React from 'react';
-import PropTypes from 'prop-types';
-import { injectIntl, intlShape, FormattedMessage } from 'react-intl';
+import React, { FunctionComponent } from 'react';
+import { injectIntl, WrappedComponentProps, FormattedMessage } from 'react-intl';
 
 import { Form } from 'react-final-form';
 import { Hovedknapp, Knapp } from 'nav-frontend-knapper';
@@ -19,8 +17,7 @@ import styles from './opphevReservasjonModal.less';
 const minLength3 = minLength(3);
 const maxLength500 = maxLength(500);
 
-type TsProps = Readonly<{
-  intl: any;
+type OwnProps = Readonly<{
   showModal: boolean;
   oppgave: Oppgave;
   cancel: () => void;
@@ -32,13 +29,13 @@ type TsProps = Readonly<{
  *
  * Presentasjonskomponent. Modal som lar en begrunne hvorfor en sak skal frigjøres.
  */
-export const OpphevReservasjonModal = ({
+export const OpphevReservasjonModal: FunctionComponent<OwnProps & WrappedComponentProps> = ({
   intl,
   showModal,
   cancel,
   submit,
   oppgave,
-}: TsProps) => (
+}) => (
   <Modal
     className={styles.modal}
     isOpen={showModal}
@@ -78,12 +75,5 @@ export const OpphevReservasjonModal = ({
     />
   </Modal>
 );
-
-OpphevReservasjonModal.propTypes = {
-  intl: intlShape.isRequired,
-  showModal: PropTypes.bool.isRequired,
-  submit: PropTypes.func.isRequired,
-  cancel: PropTypes.func.isRequired,
-};
 
 export default injectIntl(OpphevReservasjonModal);

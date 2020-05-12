@@ -52,7 +52,7 @@ describe('<ReservasjonerTabell>', () => {
       flyttReservasjon={sinon.spy()}
     />);
 
-    expect(wrapper.find(FormattedMessage)).to.have.length(1);
+    expect(wrapper.find(FormattedMessage)).to.have.length(3);
     expect(wrapper.find(Table)).to.have.length(1);
 
     const rader = wrapper.find(TableRow);

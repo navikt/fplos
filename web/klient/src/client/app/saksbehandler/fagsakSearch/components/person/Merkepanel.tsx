@@ -1,14 +1,11 @@
-
-import React from 'react';
-import PropTypes from 'prop-types';
-import { injectIntl, intlShape, FormattedMessage } from 'react-intl';
+import React, { FunctionComponent } from 'react';
+import { injectIntl, WrappedComponentProps, FormattedMessage } from 'react-intl';
 import diskresjonskodeType from 'kodeverk/diskresjonskodeType';
 
 import { EtikettAdvarsel, EtikettInfo, EtikettFokus } from 'nav-frontend-etiketter';
 import styles from './merkepanel.less';
 
-interface TsProps {
-  intl: any;
+interface OwnProps {
   erDod?: boolean;
   diskresjonskode?: string;
 }
@@ -23,11 +20,11 @@ interface TsProps {
  *  <MerkePanel erDod={false} diskresjonskode="SPSF"  />
  * ```
  */
-export const MerkePanel = ({
+export const MerkePanel: FunctionComponent<OwnProps & WrappedComponentProps> = ({
   intl,
   erDod,
   diskresjonskode,
-}: TsProps) => {
+}) => {
   const { formatMessage } = intl;
 
   return (
@@ -55,12 +52,6 @@ export const MerkePanel = ({
       )}
     </div>
   );
-};
-
-MerkePanel.propTypes = {
-  erDod: PropTypes.bool,
-  diskresjonskode: PropTypes.string,
-  intl: intlShape.isRequired,
 };
 
 MerkePanel.defaultProps = {

@@ -1,7 +1,5 @@
-
-import React from 'react';
-import PropTypes from 'prop-types';
-import { injectIntl, intlShape, FormattedMessage } from 'react-intl';
+import React, { FunctionComponent } from 'react';
+import { injectIntl, WrappedComponentProps, FormattedMessage } from 'react-intl';
 import { Row, Column } from 'nav-frontend-grid';
 import { Hovedknapp, Knapp } from 'nav-frontend-knapper';
 import { Normaltekst } from 'nav-frontend-typografi';
@@ -11,11 +9,10 @@ import Modal from 'sharedComponents/Modal';
 
 import advarselImageUrl from 'images/advarsel.svg';
 import { Saksliste } from '../sakslisteTsType';
-import sakslistePropType from '../sakslistePropType';
 
 import styles from './sletteSakslisteModal.less';
 
-type TsProps = Readonly<{
+type OwnProps = Readonly<{
   intl: any;
   valgtSaksliste: Saksliste;
   cancel: () => void;
@@ -27,12 +24,12 @@ type TsProps = Readonly<{
  *
  * Presentasjonskomponent. Modal som lar en avdelingsleder fjerne sakslister.
  */
-export const SletteSakslisteModal = ({
+export const SletteSakslisteModal: FunctionComponent<OwnProps & WrappedComponentProps> = ({
   intl,
   valgtSaksliste,
   cancel,
   submit,
-}: TsProps) => (
+}) => (
   <Modal
     className={styles.modal}
     closeButton={false}
@@ -72,12 +69,5 @@ export const SletteSakslisteModal = ({
     </Row>
   </Modal>
 );
-
-SletteSakslisteModal.propTypes = {
-  intl: intlShape.isRequired,
-  submit: PropTypes.func.isRequired,
-  cancel: PropTypes.func.isRequired,
-  valgtSaksliste: sakslistePropType.isRequired,
-};
 
 export default injectIntl(SletteSakslisteModal);

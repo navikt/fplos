@@ -1,8 +1,7 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React, { FunctionComponent } from 'react';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import { injectIntl, intlShape, FormattedMessage } from 'react-intl';
+import { injectIntl, WrappedComponentProps, FormattedMessage } from 'react-intl';
 
 import { Form } from 'react-final-form';
 import { Element } from 'nav-frontend-typografi';
@@ -12,14 +11,12 @@ import StoreValuesInReduxState from 'form/reduxBinding/StoreValuesInReduxState';
 import { getValuesFromReduxState } from 'form/reduxBinding/formDuck';
 import { RadioGroupField, RadioOption, SelectField } from 'form/FinalFields';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
-import kodeverkPropType from 'kodeverk/kodeverkPropType';
 import { Kodeverk } from 'kodeverk/kodeverkTsType';
 import fagsakYtelseType from 'kodeverk/fagsakYtelseType';
 import kodeverkTyper from 'kodeverk/kodeverkTyper';
 import { getKodeverk } from 'kodeverk/duck';
 import TilBehandlingGraf from './TilBehandlingGraf';
 import { OppgaveForDato } from './oppgaverForDatoTsType';
-import oppgaverForDatoPropType from './oppgaverForDatoPropType';
 import { getOppgaverPerDato } from '../../duck';
 
 import styles from './tilBehandlingPanel.less';
@@ -72,8 +69,7 @@ interface InitialValues {
   ukevalg: string;
 }
 
-interface TsProps {
-  intl: any;
+interface OwnProps {
   width: number;
   height: number;
   fagsakYtelseTyper: Kodeverk[];
@@ -86,14 +82,14 @@ const formName = 'tilBehandlingForm';
 /**
  * TilBehandlingPanel.
  */
-export const TilBehandlingPanel = ({
+export const TilBehandlingPanel: FunctionComponent<OwnProps & WrappedComponentProps> = ({
   intl,
   width,
   height,
   fagsakYtelseTyper,
   oppgaverPerDato,
   initialValues,
-}: TsProps) => (
+}) => (
   <Form
     onSubmit={() => undefined}
     initialValues={initialValues}
@@ -148,18 +144,6 @@ export const TilBehandlingPanel = ({
     )}
   />
 );
-
-TilBehandlingPanel.propTypes = {
-  intl: intlShape.isRequired,
-  width: PropTypes.number.isRequired,
-  height: PropTypes.number.isRequired,
-  fagsakYtelseTyper: PropTypes.arrayOf(kodeverkPropType).isRequired,
-  oppgaverPerDato: PropTypes.arrayOf(oppgaverForDatoPropType),
-  initialValues: PropTypes.shape({
-    ytelseType: PropTypes.string.isRequired,
-    ukevalg: PropTypes.string.isRequired,
-  }).isRequired,
-};
 
 TilBehandlingPanel.defaultProps = {
   oppgaverPerDato: [],

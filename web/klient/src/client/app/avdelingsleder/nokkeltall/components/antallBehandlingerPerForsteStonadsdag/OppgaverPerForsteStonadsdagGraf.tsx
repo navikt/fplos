@@ -6,7 +6,7 @@ import {
 } from 'react-vis';
 import { createSelector } from 'reselect';
 import moment from 'moment';
-import { FormattedMessage, FormattedHTMLMessage } from 'react-intl';
+import { FormattedMessage } from 'react-intl';
 import Panel from 'nav-frontend-paneler';
 import { Normaltekst, Undertekst } from 'nav-frontend-typografi';
 
@@ -110,7 +110,7 @@ export class OppgaverPerForsteStonadsdagGraf extends Component<TsProps, StateTsP
             }}
           >
             <div className={styles.crosshairDagensDato}>
-              <FormattedHTMLMessage id="OppgaverPerForsteStonadsdagGraf.DagensDato" />
+              <FormattedMessage id="OppgaverPerForsteStonadsdagGraf.DagensDato" values={{ br: <br /> }} />
             </div>
           </Crosshair>
 

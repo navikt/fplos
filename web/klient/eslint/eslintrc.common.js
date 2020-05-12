@@ -59,6 +59,12 @@ const config = {
     '@typescript-eslint/no-explicit-any': OFF,
     '@typescript-eslint/ban-ts-ignore': OFF,
   },
+  overrides: [{
+    files: ['*.tsx'],
+    rules: {
+      'react/prop-types': OFF,
+    },
+  }],
 };
 
 module.exports = config;

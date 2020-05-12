@@ -1,7 +1,6 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React, { FunctionComponent } from 'react';
 import { connect } from 'react-redux';
-import { injectIntl, intlShape } from 'react-intl';
+import { injectIntl, WrappedComponentProps } from 'react-intl';
 import { createSelector } from 'reselect';
 import { Row, Column } from 'nav-frontend-grid';
 import { Undertekst } from 'nav-frontend-typografi';
@@ -12,8 +11,7 @@ import errorHandler from 'data/error-api-redux';
 
 import styles from './errorMessagePanel.less';
 
-interface TsProps {
-  intl: any;
+interface OwnProps {
   errorMessages: string[];
   removeErrorMessage: () => void;
 }
@@ -23,11 +21,11 @@ interface TsProps {
  *
  * Presentasjonskomponent. Definerer hvordan feilmeldinger vises.
  */
-export const ErrorMessagePanel = ({
+export const ErrorMessagePanel: FunctionComponent<OwnProps & WrappedComponentProps> = ({
   intl,
   errorMessages,
   removeErrorMessage,
-}: TsProps) => {
+}) => {
   if (errorMessages.length === 0) {
     return null;
   }
@@ -50,12 +48,6 @@ export const ErrorMessagePanel = ({
   );
 };
 
-
-ErrorMessagePanel.propTypes = {
-  intl: intlShape.isRequired,
-  errorMessages: PropTypes.arrayOf(PropTypes.string).isRequired,
-  removeErrorMessage: PropTypes.func.isRequired,
-};
 
 export const getErrorMessageList = createSelector([(state, ownProps) => ownProps,
   errorHandler.getAllErrorMessages], (ownProps, allErrorMessages = []) => {

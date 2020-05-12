@@ -1,7 +1,7 @@
 
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { FormattedHTMLMessage } from 'react-intl';
+import { FormattedMessage } from 'react-intl';
 
 import oppgavePropType from 'saksbehandler/oppgavePropType';
 import { Oppgave } from 'saksbehandler/oppgaveTsType';
@@ -197,19 +197,25 @@ export class OppgaveHandlingerMenu extends Component<TsProps, TsState> {
     return (
       <>
         <div className={styles.containerMenu} style={getOffsetPositionStyle(offset)} ref={(node) => { this.node = node; }}>
-          <FormattedHTMLMessage id="OppgaveHandlingerMenu.ReservertTil" values={getDateAndTime(oppgave.status.reservertTilTidspunkt)} />
+          <FormattedMessage
+            id="OppgaveHandlingerMenu.ReservertTil"
+            values={{
+              ...getDateAndTime(oppgave.status.reservertTilTidspunkt),
+              b: (...chunks) => <b>{chunks}</b>,
+            }}
+          />
           <VerticalSpacer eightPx />
           <MenuButton onClick={this.showBegrunnelseModal} ref={this.menuButtonRef}>
-            <FormattedHTMLMessage id="OppgaveHandlingerMenu.LeggTilbake" />
+            <FormattedMessage id="OppgaveHandlingerMenu.LeggTilbake" values={{ br: <br /> }} />
           </MenuButton>
           <MenuButton onClick={this.forlengReserverasjon}>
-            <FormattedHTMLMessage id="OppgaveHandlingerMenu.ForlengReservasjon" />
+            <FormattedMessage id="OppgaveHandlingerMenu.ForlengReservasjon" values={{ br: <br /> }} />
           </MenuButton>
           <MenuButton onClick={this.showReservasjonEndringDato}>
-            <FormattedHTMLMessage id="OppgaveHandlingerMenu.EndreReservasjon" />
+            <FormattedMessage id="OppgaveHandlingerMenu.EndreReservasjon" />
           </MenuButton>
           <MenuButton onClick={this.showFlytteModal}>
-            <FormattedHTMLMessage id="OppgaveHandlingerMenu.FlyttReservasjon" />
+            <FormattedMessage id="OppgaveHandlingerMenu.FlyttReservasjon" values={{ br: <br /> }} />
           </MenuButton>
         </div>
         {showOpphevReservasjonModal && (

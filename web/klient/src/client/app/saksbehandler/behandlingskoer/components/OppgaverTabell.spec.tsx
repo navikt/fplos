@@ -271,12 +271,11 @@ describe('<OppgaverTabell>', () => {
     expect(columnsRow1.at(5).find(Image)).has.length(1);
 
     const tooltip = columnsRow1.at(4).find(Image).prop('tooltip');
-    expect(tooltip.header.props.children.props.values).is.eql({
-      dato: '02.01.2018',
-      tid: '00:00',
-      uid: '1234556',
-      navn: 'Auto Joachim',
-      beskrivelse: 'Har flytta til deg',
-    });
+    const { values } = tooltip.header.props.children.props;
+    expect(values.dato).is.eql('02.01.2018');
+    expect(values.tid).is.eql('00:00');
+    expect(values.uid).is.eql('1234556');
+    expect(values.navn).is.eql('Auto Joachim');
+    expect(values.beskrivelse).is.eql('Har flytta til deg');
   });
 });

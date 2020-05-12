@@ -1,7 +1,6 @@
 
-import React from 'react';
-import PropTypes from 'prop-types';
-import { injectIntl, intlShape, FormattedMessage } from 'react-intl';
+import React, { FunctionComponent } from 'react';
+import { injectIntl, WrappedComponentProps, FormattedMessage } from 'react-intl';
 import { Row, Column } from 'nav-frontend-grid';
 import { Normaltekst } from 'nav-frontend-typografi';
 import { Hovedknapp } from 'nav-frontend-knapper';
@@ -9,15 +8,13 @@ import { Hovedknapp } from 'nav-frontend-knapper';
 import { getDateAndTime } from 'utils/dateUtils';
 import Modal from 'sharedComponents/Modal';
 import Image from 'sharedComponents/Image';
-import oppgavePropType from 'saksbehandler/oppgavePropType';
 import { Oppgave } from 'saksbehandler/oppgaveTsType';
 
 import innvilgetImageUrl from 'images/sharedComponents/innvilget_valgt.svg';
 
 import styles from './oppgaveReservasjonForlengetModal.less';
 
-interface TsProps {
-  intl: any;
+interface OwnProps {
   oppgave: Oppgave;
   showModal: boolean;
   closeModal: (event: Event) => void;
@@ -26,12 +23,12 @@ interface TsProps {
 /**
  * OppgaveReservasjonForlengetModal.
  */
-export const OppgaveReservasjonForlengetModal = ({
+export const OppgaveReservasjonForlengetModal: FunctionComponent<OwnProps & WrappedComponentProps> = ({
   intl,
   oppgave,
   showModal,
   closeModal,
-}: TsProps) => (
+}) => (
   <Modal
     className={styles.modal}
     isOpen={showModal}
@@ -70,12 +67,5 @@ export const OppgaveReservasjonForlengetModal = ({
     </Row>
   </Modal>
 );
-
-OppgaveReservasjonForlengetModal.propTypes = {
-  intl: intlShape.isRequired,
-  oppgave: oppgavePropType.isRequired,
-  showModal: PropTypes.bool.isRequired,
-  closeModal: PropTypes.func.isRequired,
-};
 
 export default injectIntl(OppgaveReservasjonForlengetModal);

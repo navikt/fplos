@@ -1,7 +1,6 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React, { FunctionComponent } from 'react';
 import { connect } from 'react-redux';
-import { injectIntl, intlShape, FormattedMessage } from 'react-intl';
+import { injectIntl, WrappedComponentProps, FormattedMessage } from 'react-intl';
 
 import { Form } from 'react-final-form';
 import moment from 'moment';
@@ -13,14 +12,12 @@ import { getValuesFromReduxState } from 'form/reduxBinding/formDuck';
 import { RadioGroupField, RadioOption, SelectField } from 'form/FinalFields';
 import { Kodeverk } from 'kodeverk/kodeverkTsType';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
-import kodeverkPropType from 'kodeverk/kodeverkPropType';
 import fagsakYtelseType from 'kodeverk/fagsakYtelseType';
 import kodeverkTyper from 'kodeverk/kodeverkTyper';
 import { getKodeverk } from 'kodeverk/duck';
 import ManueltPaVentGraf from './ManueltPaVentGraf';
 import { getOppgaverAvdelingManueltPaVent } from '../../duck';
 import { OppgaverManueltPaVent } from './oppgaverManueltPaVentTsType';
-import oppgaverManueltPaVentPropType from './oppgaverManueltPaVentPropType';
 
 import styles from './manueltPaVentPanel.less';
 
@@ -53,7 +50,7 @@ interface InitialValues {
   ukevalg: string;
 }
 
-interface TsProps {
+interface OwnProps {
   intl: any;
   width: number;
   height: number;
@@ -67,14 +64,14 @@ const formName = 'manueltPaVentForm';
 /**
  * ManueltPaVentPanel.
  */
-export const ManueltPaVentPanel = ({
+export const ManueltPaVentPanel: FunctionComponent<OwnProps & WrappedComponentProps> = ({
   intl,
   width,
   height,
   fagsakYtelseTyper,
   oppgaverManueltPaVent,
   initialValues,
-}: TsProps) => (
+}) => (
   <Form
     onSubmit={() => undefined}
     initialValues={initialValues}
@@ -129,18 +126,6 @@ export const ManueltPaVentPanel = ({
     )}
   />
 );
-
-ManueltPaVentPanel.propTypes = {
-  intl: intlShape.isRequired,
-  width: PropTypes.number.isRequired,
-  height: PropTypes.number.isRequired,
-  fagsakYtelseTyper: PropTypes.arrayOf(kodeverkPropType).isRequired,
-  oppgaverManueltPaVent: PropTypes.arrayOf(oppgaverManueltPaVentPropType),
-  initialValues: PropTypes.shape({
-    valgtYtelsetype: PropTypes.string.isRequired,
-    ukevalg: PropTypes.string.isRequired,
-  }).isRequired,
-};
 
 ManueltPaVentPanel.defaultProps = {
   oppgaverManueltPaVent: [],

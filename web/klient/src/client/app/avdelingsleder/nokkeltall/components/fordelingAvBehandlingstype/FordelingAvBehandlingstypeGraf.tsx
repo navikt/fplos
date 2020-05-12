@@ -1,21 +1,18 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import {
   XYPlot, XAxis, YAxis, VerticalGridLines, HorizontalRectSeries, Hint, DiscreteColorLegend,
 } from 'react-vis';
-import { FormattedMessage, injectIntl, intlShape } from 'react-intl';
+import { FormattedMessage, injectIntl, WrappedComponentProps } from 'react-intl';
 import { Normaltekst } from 'nav-frontend-typografi';
 import Panel from 'nav-frontend-paneler';
 
 import { FlexContainer, FlexRow, FlexColumn } from 'sharedComponents/flexGrid';
 import { Kodeverk } from 'kodeverk/kodeverkTsType';
 import behandlingType from 'kodeverk/behandlingType';
-import kodeverkPropType from 'kodeverk/kodeverkPropType';
 import kodeverkTyper from 'kodeverk/kodeverkTyper';
 import { getKodeverk } from 'kodeverk/duck';
 import { OppgaverForAvdeling } from './oppgaverForAvdelingTsType';
-import oppgaverForAvdelingPropType from './oppgaverForAvdelingPropType';
 
 import 'react-vis/dist/style.css';
 import styles from './fordelingAvBehandlingstypeGraf.less';
@@ -89,15 +86,7 @@ interface StateTsProps {
 /**
  * FordelingAvBehandlingstypeGraf.
  */
-export class FordelingAvBehandlingstypeGraf extends Component<TsProps, StateTsProps> {
-  static propTypes = {
-    intl: intlShape.isRequired,
-    width: PropTypes.number.isRequired,
-    height: PropTypes.number.isRequired,
-    behandlingTyper: PropTypes.arrayOf(kodeverkPropType).isRequired,
-    oppgaverForAvdeling: PropTypes.arrayOf(oppgaverForAvdelingPropType).isRequired,
-  };
-
+export class FordelingAvBehandlingstypeGraf extends Component<TsProps & WrappedComponentProps, StateTsProps> {
   constructor(props: TsProps) {
     super(props);
 

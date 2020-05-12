@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { injectIntl, intlShape, FormattedMessage } from 'react-intl';
+import { injectIntl, WrappedComponentProps, FormattedMessage } from 'react-intl';
 
 import { Form } from 'react-final-form';
 import { Hovedknapp, Knapp } from 'nav-frontend-knapper';
@@ -16,7 +15,6 @@ import { TextAreaField, InputField } from 'form/FinalFields';
 import Modal from 'sharedComponents/Modal';
 import { getSaksbehandler, isSaksbehandlerSokStartet, isSaksbehandlerSokFerdig } from '../../duck';
 import { Saksbehandler } from '../../saksbehandlerTsType';
-import saksbehandlerPropType from '../../saksbehandlerPropType';
 
 import styles from './flyttReservasjonModal.less';
 
@@ -26,7 +24,6 @@ const minLength7 = minLength(7);
 const maxLength7 = maxLength(7);
 
 type TsProps = Readonly<{
-  intl: any;
   showModal: boolean;
   oppgaveId: number;
   closeModal: () => void;
@@ -43,20 +40,7 @@ type TsProps = Readonly<{
  *
  * Presentasjonskomponent. Modal som lar en søke opp en saksbehandler som saken skal flyttes til. En kan også begrunne hvorfor saken skal flyttes.
  */
-export class FlyttReservasjonModal extends Component<TsProps> {
-   static propTypes = {
-     intl: intlShape.isRequired,
-     showModal: PropTypes.bool.isRequired,
-     oppgaveId: PropTypes.number.isRequired,
-     closeModal: PropTypes.func.isRequired,
-     submit: PropTypes.func.isRequired,
-     finnSaksbehandler: PropTypes.func.isRequired,
-     resetSaksbehandler: PropTypes.func.isRequired,
-     saksbehandler: saksbehandlerPropType,
-     erSaksbehandlerSokStartet: PropTypes.bool.isRequired,
-     erSaksbehandlerSokFerdig: PropTypes.bool.isRequired,
-   };
-
+export class FlyttReservasjonModal extends Component<TsProps & WrappedComponentProps> {
    componentWillUnmount = () => {
      const {
        resetSaksbehandler,
@@ -135,6 +119,7 @@ export class FlyttReservasjonModal extends Component<TsProps> {
              </form>
            )}
          />
+         <VerticalSpacer sixteenPx />
          <Form
            onSubmit={(values) => submit(oppgaveId, saksbehandler ? saksbehandler.brukerIdent : '', values.begrunnelse)}
            render={({

@@ -1,12 +1,11 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import { createSelector } from 'reselect';
 import {
   XYPlot, XAxis, YAxis, HorizontalGridLines, AreaSeries, DiscreteColorLegend, Crosshair,
 } from 'react-vis';
-import { FormattedMessage, injectIntl, intlShape } from 'react-intl';
+import { FormattedMessage, injectIntl, WrappedComponentProps } from 'react-intl';
 import Panel from 'nav-frontend-paneler';
 import { Normaltekst, Undertekst } from 'nav-frontend-typografi';
 
@@ -29,7 +28,6 @@ interface Koordinat {
 }
 
 interface TsProps {
-  intl: any;
   width: number;
   height: number;
   ferdigstilteOppgaver: Koordinat[];
@@ -49,22 +47,7 @@ interface StateTsProps {
 /**
  * NyeOgFerdigstilteOppgaverForSisteSyvGraf
  */
-export class NyeOgFerdigstilteOppgaverForSisteSyvGraf extends Component<TsProps, StateTsProps> {
-  static propTypes = {
-    intl: intlShape.isRequired,
-    width: PropTypes.number.isRequired,
-    height: PropTypes.number.isRequired,
-    ferdigstilteOppgaver: PropTypes.arrayOf(PropTypes.shape({
-      x: PropTypes.instanceOf(Date).isRequired,
-      y: PropTypes.number.isRequired,
-    })).isRequired,
-    nyeOppgaver: PropTypes.arrayOf(PropTypes.shape({
-      x: PropTypes.instanceOf(Date).isRequired,
-      y: PropTypes.number.isRequired,
-    })).isRequired,
-    isEmpty: PropTypes.bool.isRequired,
-  };
-
+export class NyeOgFerdigstilteOppgaverForSisteSyvGraf extends Component<TsProps & WrappedComponentProps, StateTsProps> {
   constructor(props: TsProps) {
     super(props);
 

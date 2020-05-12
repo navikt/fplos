@@ -1,20 +1,25 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React, { ReactNode, FunctionComponent } from 'react';
 import classnames from 'classnames/bind';
 
 import styles from './tableColumn.less';
 
 const classNames = classnames.bind(styles);
 
+interface OwnProps {
+  children: number | string | ReactNode;
+  className?: string;
+  hidden?: boolean;
+}
+
 /**
  * TableColumn
  *
  * Presentasjonskomponent. Tabellkolonne som brukes av komponenten Table.
  */
-const TableColumn = ({
-  children,
+const TableColumn: FunctionComponent<OwnProps> = ({
+  children = '',
   className,
-  hidden,
+  hidden = false,
 }) => {
   if (hidden) {
     return null;
@@ -24,23 +29,6 @@ const TableColumn = ({
       {children}
     </td>
   );
-};
-
-TableColumn.propTypes = {
-  children: PropTypes.oneOfType([
-    PropTypes.number.isRequired,
-    PropTypes.string.isRequired,
-    PropTypes.element.isRequired,
-    PropTypes.node.isRequired,
-  ]),
-  className: PropTypes.string,
-  hidden: PropTypes.bool,
-};
-
-TableColumn.defaultProps = {
-  children: '',
-  className: undefined,
-  hidden: false,
 };
 
 export default TableColumn;

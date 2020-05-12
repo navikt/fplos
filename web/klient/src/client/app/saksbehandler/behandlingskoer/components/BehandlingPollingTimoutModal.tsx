@@ -1,6 +1,6 @@
 
-import React from 'react';
-import { injectIntl, intlShape, FormattedMessage } from 'react-intl';
+import React, { FunctionComponent } from 'react';
+import { injectIntl, WrappedComponentProps, FormattedMessage } from 'react-intl';
 import { Row, Column } from 'nav-frontend-grid';
 import { Hovedknapp } from 'nav-frontend-knapper';
 import { Normaltekst } from 'nav-frontend-typografi';
@@ -12,18 +12,14 @@ import advarselImageUrl from 'images/advarsel.svg';
 
 import styles from './behandlingPollingTimoutModal.less';
 
-type TsProps = Readonly<{
-  intl: any;
-}>
-
 /**
  * BehandlingPollingTimoutModal
  *
  * Presentasjonskomponent. Modal som vises når en har pollet etter behandlinger et gitt antall ganger (uten oppdateringer)
  */
-const BehandlingPollingTimoutModal = ({
+const BehandlingPollingTimoutModal: FunctionComponent<WrappedComponentProps> = ({
   intl,
-}: TsProps) => (
+}) => (
   <Modal
     className={styles.modal}
     isOpen
@@ -56,9 +52,5 @@ const BehandlingPollingTimoutModal = ({
     </Row>
   </Modal>
 );
-
-BehandlingPollingTimoutModal.propTypes = {
-  intl: intlShape.isRequired,
-};
 
 export default injectIntl(BehandlingPollingTimoutModal);

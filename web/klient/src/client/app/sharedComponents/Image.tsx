@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { injectIntl, intlShape } from 'react-intl';
+import { injectIntl } from 'react-intl';
 
 import Tooltip from 'sharedComponents/Tooltip';
 
@@ -36,7 +36,7 @@ export class Image extends Component {
       body: PropTypes.node,
     }),
     alignTooltipArrowLeft: PropTypes.bool,
-    intl: intlShape.isRequired,
+    intl: PropTypes.shape().isRequired,
   };
 
   static defaultProps = {

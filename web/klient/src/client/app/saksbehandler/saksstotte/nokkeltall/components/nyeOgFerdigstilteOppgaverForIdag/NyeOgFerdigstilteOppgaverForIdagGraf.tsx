@@ -1,17 +1,15 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { createSelector } from 'reselect';
 import {
   XYPlot, XAxis, YAxis, VerticalGridLines, HorizontalRectSeries, Hint, DiscreteColorLegend,
 } from 'react-vis';
-import { FormattedMessage, injectIntl, intlShape } from 'react-intl';
+import { FormattedMessage, injectIntl, WrappedComponentProps } from 'react-intl';
 import { Normaltekst } from 'nav-frontend-typografi';
 import Panel from 'nav-frontend-paneler';
 
 import { Kodeverk } from 'kodeverk/kodeverkTsType';
 import behandlingType from 'kodeverk/behandlingType';
-import kodeverkPropType from 'kodeverk/kodeverkPropType';
 import kodeverkTyper from 'kodeverk/kodeverkTyper';
 import { getKodeverk } from 'kodeverk/duck';
 
@@ -39,7 +37,6 @@ interface Koordinat {
 }
 
 interface TsProps {
-  intl: any;
   width: number;
   height: number;
   behandlingTyper: Kodeverk[];
@@ -55,23 +52,7 @@ interface StateTsProps {
 /**
  * NyeOgFerdigstilteOppgaverForIdagGraf
  */
-export class NyeOgFerdigstilteOppgaverForIdagGraf extends Component<TsProps, StateTsProps> {
-  static propTypes = {
-    intl: intlShape.isRequired,
-    width: PropTypes.number.isRequired,
-    height: PropTypes.number.isRequired,
-    behandlingTyper: PropTypes.arrayOf(kodeverkPropType).isRequired,
-    ferdigstilteOppgaver: PropTypes.arrayOf(PropTypes.shape({
-      x: PropTypes.number.isRequired,
-      y: PropTypes.number.isRequired,
-    })).isRequired,
-    nyeOppgaver: PropTypes.arrayOf(PropTypes.shape({
-      x: PropTypes.number.isRequired,
-      y: PropTypes.number.isRequired,
-    })).isRequired,
-    isEmpty: PropTypes.bool.isRequired,
-  };
-
+export class NyeOgFerdigstilteOppgaverForIdagGraf extends Component<TsProps & WrappedComponentProps, StateTsProps> {
   constructor(props: TsProps) {
     super(props);
 

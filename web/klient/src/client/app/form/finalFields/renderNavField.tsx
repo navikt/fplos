@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { injectIntl, intlShape } from 'react-intl';
+import { injectIntl } from 'react-intl';
 
 import Label, { labelPropType } from './Label';
 
@@ -42,7 +42,7 @@ const renderNavField = (WrappedNavFieldComponent) => {
   FieldComponent.propTypes = {
     input: PropTypes.shape().isRequired,
     meta: PropTypes.shape().isRequired,
-    intl: intlShape.isRequired,
+    intl: PropTypes.shape().isRequired,
     label: labelPropType,
     readOnly: PropTypes.bool,
     readOnlyHideEmpty: PropTypes.bool,
