@@ -1,8 +1,8 @@
 import React from 'react';
-import { shallow } from 'enzyme';
 import { expect } from 'chai';
 import sinon from 'sinon';
 
+import { shallowWithIntl, intlMock } from 'testHelpers/intl-enzyme-test-helper';
 import GjeldendeSakslisterTabell from './GjeldendeSakslisterTabell';
 import UtvalgskriterierForSakslisteForm from './sakslisteForm/UtvalgskriterierForSakslisteForm';
 import EndreSakslisterPanel from './EndreSakslisterPanel';
@@ -18,7 +18,8 @@ describe('<EndreSakslisterPanel>', () => {
       saksbehandlerIdenter: [],
     }];
 
-    const wrapper = shallow(<EndreSakslisterPanel
+    const wrapper = shallowWithIntl(<EndreSakslisterPanel.WrappedComponent
+      intl={intlMock}
       sakslister={sakslister}
       setValgtSakslisteId={sinon.spy()}
       lagNySaksliste={sinon.spy()}
@@ -49,7 +50,8 @@ describe('<EndreSakslisterPanel>', () => {
       saksbehandlerIdenter: [],
     }];
 
-    const wrapper = shallow(<EndreSakslisterPanel
+    const wrapper = shallowWithIntl(<EndreSakslisterPanel.WrappedComponent
+      intl={intlMock}
       sakslister={sakslister}
       setValgtSakslisteId={sinon.spy()}
       lagNySaksliste={sinon.spy()}

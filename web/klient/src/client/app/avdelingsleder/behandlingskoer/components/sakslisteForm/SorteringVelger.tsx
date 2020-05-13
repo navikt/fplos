@@ -10,8 +10,7 @@ import {
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import { getKodeverk } from 'kodeverk/duck';
 import kodeverkTyper from 'kodeverk/kodeverkTyper';
-import { KoSorteringType } from 'kodeverk/KoSorteringTsType';
-import { Kodeverk } from 'kodeverk/kodeverkTsType';
+import Kodeverk from 'kodeverk/kodeverkTsType';
 import behandlingType from 'kodeverk/behandlingType';
 import {
   lagreSakslisteSortering as lagreSakslisteSorteringActionCreator,
@@ -21,6 +20,7 @@ import {
 } from '../../duck';
 import DatoSorteringValg from './DatoSorteringValg';
 import BelopSorteringValg from './BelopSorteringValg';
+import KoSorteringType from '../../KoSorteringTsType';
 
 interface OwnProps {
   intl: any;

@@ -6,7 +6,7 @@ import {
   injectIntl, WrappedComponentProps, FormattedMessage,
 } from 'react-intl';
 import { bindActionCreators, Dispatch } from 'redux';
-import { Element, Undertittel, Normaltekst } from 'nav-frontend-typografi';
+import { Element, Normaltekst } from 'nav-frontend-typografi';
 
 import { DDMMYYYY_DATE_FORMAT } from 'utils/formats';
 import Image from 'sharedComponents/Image';
@@ -29,11 +29,6 @@ interface TsProps {
   fetchSakslistensSaksbehandlere: (sakslisteId: number) => void;
   fetchAntallOppgaverForBehandlingsko: (sakslisteId: number) => void;
   saksbehandlere?: Saksbehandler[];
-}
-
-interface Toolip {
-  header: ReactNode;
-  body: ReactNode;
 }
 
 const getDefaultSaksliste = (sakslister) => {
@@ -118,8 +113,6 @@ const getSorteringsnavn = (saksliste?: Saksliste) => {
   return <FormattedMessage id="SakslisteVelgerForm.Sorteringsinfo" values={values} />;
 };
 
-const imageSrcFunction = (isHovering) => (isHovering ? gruppeHoverUrl : gruppeUrl);
-
 /**
  * SakslisteVelgerForm
  *
@@ -143,7 +136,7 @@ export class SakslisteVelgerForm extends Component<TsProps & WrappedComponentPro
     }
   }
 
-  createTooltip = (): Toolip | undefined => {
+  createTooltip = (): ReactNode | undefined => {
     const {
       intl, saksbehandlere,
     } = this.props;
@@ -151,10 +144,12 @@ export class SakslisteVelgerForm extends Component<TsProps & WrappedComponentPro
       return undefined;
     }
 
-    return {
-      header: <Undertittel>{intl.formatMessage({ id: 'SakslisteVelgerForm.SaksbehandlerToolip' })}</Undertittel>,
-      body: saksbehandlere.map((s) => s.navn).sort((n1, n2) => n1.localeCompare(n2)).map((navn) => (<Normaltekst key={navn}>{navn}</Normaltekst>)),
-    };
+    return (
+      <div>
+        <Element>{intl.formatMessage({ id: 'SakslisteVelgerForm.SaksbehandlerToolip' })}</Element>
+        {saksbehandlere.map((s) => s.navn).sort((n1, n2) => n1.localeCompare(n2)).map((navn) => (<Normaltekst key={navn}>{navn}</Normaltekst>))}
+      </div>
+    );
   }
 
   render = () => {
@@ -197,11 +192,10 @@ export class SakslisteVelgerForm extends Component<TsProps & WrappedComponentPro
                     <FlexColumn>
                       <div className={styles.saksbehandlerIkon} />
                       <Image
-                        altCode="SakslisteVelgerForm.Saksbehandlere"
-                        imageSrcFunction={imageSrcFunction}
-                        tabIndex="0"
+                        alt={intl.formatMessage({ id: 'SakslisteVelgerForm.Saksbehandlere' })}
+                        src={gruppeUrl}
+                        srcHover={gruppeHoverUrl}
                         tooltip={this.createTooltip()}
-                        alignTooltipArrowLeft
                       />
                     </FlexColumn>
                     <FlexColumn className={styles.marginFilters}>

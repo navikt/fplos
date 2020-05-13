@@ -29,7 +29,11 @@ const BehandlingPollingTimoutModal: FunctionComponent<WrappedComponentProps> = (
   >
     <Row>
       <Column xs="1">
-        <Image className={styles.image} altCode="BehandlingPollingTimoutModal.TimeoutMelding" src={advarselImageUrl} />
+        <Image
+          className={styles.image}
+          alt={intl.formatMessage({ id: 'BehandlingPollingTimoutModal.TimeoutMelding' })}
+          src={advarselImageUrl}
+        />
         <div className={styles.divider} />
       </Column>
       <Column xs="9" className={styles.text}>

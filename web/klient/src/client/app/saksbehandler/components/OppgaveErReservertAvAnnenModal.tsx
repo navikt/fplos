@@ -42,7 +42,11 @@ export const OppgaveErReservertAvAnnenModal: FunctionComponent<OwnProps & Wrappe
   >
     <Row>
       <Column xs="1">
-        <Image className={styles.image} altCode="OppgaveErReservertAvAnnenModal.ReservertAvEnkel" src={advarselImageUrl} />
+        <Image
+          className={styles.image}
+          alt={intl.formatMessage({ id: 'OppgaveErReservertAvAnnenModal.ReservertAvEnkel' })}
+          src={advarselImageUrl}
+        />
         <div className={styles.divider} />
       </Column>
       <Column xs="8" className={styles.text}>

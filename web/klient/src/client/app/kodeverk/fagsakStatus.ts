@@ -1,4 +1,3 @@
-
 const fagsakStatus = {
   OPPRETTET: 'OPPR',
   UNDER_BEHANDLING: 'UBEH',

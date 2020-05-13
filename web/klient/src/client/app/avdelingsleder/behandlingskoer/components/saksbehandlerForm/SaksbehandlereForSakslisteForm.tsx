@@ -1,7 +1,6 @@
 
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
 import { createSelector } from 'reselect';
 
 import { Form } from 'react-final-form';
@@ -15,9 +14,7 @@ import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import { CheckboxField } from 'form/FinalFields';
 import { getAvdelingensSaksbehandlere } from 'avdelingsleder/saksbehandlere/duck';
 import { Saksbehandler } from 'avdelingsleder/saksbehandlere/saksbehandlerTsType';
-import saksbehandlerPropType from 'avdelingsleder/saksbehandlere/saksbehandlerPropType';
-import { Saksliste } from '../../sakslisteTsType';
-import sakslistePropType from '../../sakslistePropType';
+import Saksliste from '../../sakslisteTsType';
 
 import styles from './saksbehandlereForSakslisteForm.less';
 
@@ -32,13 +29,6 @@ interface TsProps {
  * SaksbehandlereForSakslisteForm
  */
 export class SaksbehandlereForSakslisteForm extends Component<TsProps> {
-  static propTypes = {
-    valgtSaksliste: sakslistePropType.isRequired,
-    avdelingensSaksbehandlere: PropTypes.arrayOf(saksbehandlerPropType),
-    knyttSaksbehandlerTilSaksliste: PropTypes.func.isRequired,
-    valgtAvdelingEnhet: PropTypes.string.isRequired,
-  };
-
   static defaultProps = {
     avdelingensSaksbehandlere: [],
   }

@@ -1,12 +1,11 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import React, { ReactNode, Component } from 'react';
 import moment from 'moment';
 import { Input } from 'nav-frontend-skjema';
-
 import { DateUtils } from 'react-day-picker';
+
 import { haystack } from 'utils/arrayUtils';
 import { DDMMYYYY_DATE_FORMAT } from 'utils/formats';
-import CalendarToggleButton from 'sharedComponents/datepicker/CalendarToggleButton';
+import CalendarToggleButton from '../datepicker/CalendarToggleButton';
 import PeriodCalendarOverlay from './PeriodCalendarOverlay';
 
 import styles from './periodpicker.less';
@@ -16,15 +15,26 @@ const getEndDateInput = (props) => haystack(props, props.names[1]).input;
 const isValidDate = (date) => moment(date, DDMMYYYY_DATE_FORMAT, true).isValid();
 const createPeriod = (startDay, endDay) => `${moment(startDay).format(DDMMYYYY_DATE_FORMAT)} - ${moment(endDay).format(DDMMYYYY_DATE_FORMAT)}`;
 
-class Periodpicker extends Component {
-  static propTypes = {
-    names: PropTypes.arrayOf(PropTypes.string).isRequired,
-    label: PropTypes.node,
-    placeholder: PropTypes.string,
-    feil: PropTypes.shape({ feilmelding: PropTypes.string }),
-    disabled: PropTypes.bool,
-    disabledDays: PropTypes.shape({}),
-  };
+interface OwnProps {
+  names: string[];
+  label?: ReactNode;
+  placeholder?: string;
+  feil?: { feilmelding?: string };
+  disabled?: boolean;
+  disabledDays?: {};
+}
+
+interface StateProps {
+  showCalendar: boolean;
+  period: string;
+  inputOffsetTop?: number;
+  inputOffsetWidth?: number;
+}
+
+class Periodpicker extends Component<OwnProps, StateProps> {
+  buttonRef: HTMLDivElement;
+
+  inputRef: HTMLDivElement;
 
   static defaultProps = {
     label: '',
@@ -36,7 +46,6 @@ class Periodpicker extends Component {
 
   constructor(props) {
     super(props);
-
     this.handleInputRef = this.handleInputRef.bind(this);
     this.handleButtonRef = this.handleButtonRef.bind(this);
     this.handleUpdatedRefs = this.handleUpdatedRefs.bind(this);
@@ -114,6 +123,7 @@ class Periodpicker extends Component {
         to: moment(currentEndDate, DDMMYYYY_DATE_FORMAT).toDate(),
       };
 
+      // @ts-ignore https://github.com/gpbl/react-day-picker/issues/1009
       const newRange = DateUtils.addDayToRange(selectedDay, range);
       const period = createPeriod(newRange.from, newRange.to);
       this.setState({ period });

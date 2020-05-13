@@ -39,7 +39,11 @@ export const SletteSakslisteModal: FunctionComponent<OwnProps & WrappedComponent
   >
     <Row>
       <Column xs="1">
-        <Image className={styles.image} altCode="SletteSakslisteModal.SletteModal" src={advarselImageUrl} />
+        <Image
+          className={styles.image}
+          alt={intl.formatMessage({ id: 'SletteSakslisteModal.SletteModal' })}
+          src={advarselImageUrl}
+        />
         <div className={styles.divider} />
       </Column>
       <Column xs="6" className={styles.text}>

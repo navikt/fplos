@@ -1,4 +1,3 @@
-
 import { createSelector } from 'reselect';
 import fpLosApi from 'data/fpLosApi';
 

@@ -7,9 +7,9 @@ import { bindActionCreators, Dispatch } from 'redux';
 
 import { Reservasjon } from 'avdelingsleder/reservasjoner/reservasjonTsType';
 import reservasjonPropType from 'avdelingsleder/reservasjoner/reservasjonPropType';
-import Table from 'sharedComponents/Table';
-import TableRow from 'sharedComponents/TableRow';
-import TableColumn from 'sharedComponents/TableColumn';
+import Table from 'sharedComponents/table/Table';
+import TableRow from 'sharedComponents/table/TableRow';
+import TableColumn from 'sharedComponents/table/TableColumn';
 import Image from 'sharedComponents/Image';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import removeIcon from 'images/remove.svg';
@@ -24,8 +24,6 @@ import { getAvdelingensReservasjoner } from 'avdelingsleder/reservasjoner/duck';
 import styles from './reservasjonerTabell.less';
 import gruppeHoverUrl from '../../../../images/gruppe_hover.svg';
 import gruppeUrl from '../../../../images/gruppe.svg';
-
-const saksbehandlereIkon = (isHovering) => (isHovering ? gruppeHoverUrl : gruppeUrl);
 
 const headerTextCodes = [
   'ReservasjonerTabell.Navn',
@@ -148,9 +146,9 @@ export class ReservasjonerTabell extends Component<TsProps, StateTsProps> {
                 </TableColumn>
                 <TableColumn>
                   <Image
-                    imageSrcFunction={saksbehandlereIkon}
+                    src={gruppeUrl}
+                    srcHover={gruppeHoverUrl}
                     onMouseDown={() => this.showFlytteModal(reservasjon)}
-                    tabIndex="0"
                   />
                 </TableColumn>
                 <TableColumn>
@@ -158,7 +156,6 @@ export class ReservasjonerTabell extends Component<TsProps, StateTsProps> {
                     src={removeIcon}
                     className={styles.removeImage}
                     onMouseDown={() => opphevReservasjon(reservasjon.oppgaveId)}
-                    tabIndex="0"
                   />
                 </TableColumn>
               </TableRow>

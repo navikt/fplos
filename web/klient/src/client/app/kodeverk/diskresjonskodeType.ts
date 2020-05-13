@@ -1,4 +1,3 @@
-
 const diskresjonskodeType = {
   KODE6: 'SPSF',
   KODE7: 'SPFO',

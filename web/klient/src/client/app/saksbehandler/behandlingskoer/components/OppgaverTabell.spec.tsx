@@ -1,17 +1,17 @@
 
 import React from 'react';
 import { expect } from 'chai';
-import { shallow } from 'enzyme';
 import { FormattedMessage } from 'react-intl';
 import sinon from 'sinon';
 import NavFrontendChevron from 'nav-frontend-chevron';
 
+import { shallowWithIntl, intlMock } from 'testHelpers/intl-enzyme-test-helper';
 import behandlingType from 'kodeverk/behandlingType';
 import behandlingStatus from 'kodeverk/behandlingStatus';
 import fagsakYtelseType from 'kodeverk/fagsakYtelseType';
 import DateLabel from 'sharedComponents/DateLabel';
-import TableRow from 'sharedComponents/TableRow';
-import TableColumn from 'sharedComponents/TableColumn';
+import TableRow from 'sharedComponents/table/TableRow';
+import TableColumn from 'sharedComponents/table/TableColumn';
 import Image from 'sharedComponents/Image';
 import { OppgaverTabell } from './OppgaverTabell';
 
@@ -69,7 +69,8 @@ describe('<OppgaverTabell>', () => {
       },
     }];
 
-    const wrapper = shallow(<OppgaverTabell
+    const wrapper = shallowWithIntl(<OppgaverTabell
+      intl={intlMock}
       reserverteOppgaver={[]}
       oppgaverTilBehandling={oppgaverTilBehandling}
       reserverOppgave={sinon.spy()}
@@ -156,7 +157,8 @@ describe('<OppgaverTabell>', () => {
       },
     }];
 
-    const wrapper = shallow(<OppgaverTabell
+    const wrapper = shallowWithIntl(<OppgaverTabell
+      intl={intlMock}
       reserverteOppgaver={reserverteOppgaver}
       oppgaverTilBehandling={oppgaverTilBehandling}
       reserverOppgave={sinon.spy()}
@@ -191,7 +193,8 @@ describe('<OppgaverTabell>', () => {
 
   it('skal ikke vise liste når en ikke har oppgaver', () => {
     const reserverteOppgaver = [];
-    const wrapper = shallow(<OppgaverTabell
+    const wrapper = shallowWithIntl(<OppgaverTabell
+      intl={intlMock}
       oppgaverTilBehandling={reserverteOppgaver}
       reserverteOppgaver={reserverteOppgaver}
       reserverOppgave={sinon.spy()}
@@ -246,7 +249,8 @@ describe('<OppgaverTabell>', () => {
       },
     }];
 
-    const wrapper = shallow(<OppgaverTabell
+    const wrapper = shallowWithIntl(<OppgaverTabell
+      intl={intlMock}
       reserverteOppgaver={reserverteOppgaver}
       oppgaverTilBehandling={[]}
       reserverOppgave={sinon.spy()}
@@ -270,8 +274,9 @@ describe('<OppgaverTabell>', () => {
     expect(columnsRow1.at(4).find(Image)).has.length(1);
     expect(columnsRow1.at(5).find(Image)).has.length(1);
 
-    const tooltip = columnsRow1.at(4).find(Image).prop('tooltip');
-    const { values } = tooltip.header.props.children.props;
+    const tooltip = shallowWithIntl(columnsRow1.at(4).find(Image).prop('tooltip'));
+    const values = tooltip.find(FormattedMessage).prop('values');
+
     expect(values.dato).is.eql('02.01.2018');
     expect(values.tid).is.eql('00:00');
     expect(values.uid).is.eql('1234556');

@@ -28,7 +28,7 @@ describe('<BehandlingPollingTimoutModal>', () => {
 
     const image = wrapper.find(Image);
     expect(image).to.have.length(1);
-    expect(image.prop('altCode')).is.eql('BehandlingPollingTimoutModal.TimeoutMelding');
+    expect(image.prop('alt')).is.eql('Din økt er gått ut på tid, trykk Fortsett');
 
     const message = wrapper.find(FormattedMessage);
     expect(message).to.have.length(1);

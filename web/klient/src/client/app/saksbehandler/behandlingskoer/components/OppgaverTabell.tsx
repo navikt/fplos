@@ -1,7 +1,7 @@
-import React, { Component } from 'react';
+import React, { Component, ReactNode } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { FormattedMessage } from 'react-intl';
+import { FormattedMessage, injectIntl, WrappedComponentProps } from 'react-intl';
 import { bindActionCreators, Dispatch } from 'redux';
 import { Normaltekst, Element } from 'nav-frontend-typografi';
 import NavFrontendChevron from 'nav-frontend-chevron';
@@ -12,9 +12,9 @@ import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import oppgavePropType from 'saksbehandler/oppgavePropType';
 import { Oppgave } from 'saksbehandler/oppgaveTsType';
 import { OppgaveStatus } from 'saksbehandler/oppgaveStatusTsType';
-import Table from 'sharedComponents/Table';
-import TableRow from 'sharedComponents/TableRow';
-import TableColumn from 'sharedComponents/TableColumn';
+import Table from 'sharedComponents/table/Table';
+import TableRow from 'sharedComponents/table/TableRow';
+import TableColumn from 'sharedComponents/table/TableColumn';
 import DateLabel from 'sharedComponents/DateLabel';
 import menuIconBlueUrl from 'images/ic-menu-18px_blue.svg';
 import menuIconBlackUrl from 'images/ic-menu-18px_black.svg';
@@ -37,9 +37,6 @@ const headerTextCodes = [
 ];
 
 type OppgaveMedReservertIndikator = Oppgave & { underBehandling?: boolean };
-
-const getImageIcon = (isHoovering) => (isHoovering ? menuIconBlueUrl : menuIconBlackUrl);
-const getFlyttetImageIcon = (isHoovering) => (isHoovering ? bubbletextFilledUrl : bubbletextUrl);
 
 const slaSammenOgMarkerReserverte = (reserverteOppgaver, oppgaverTilBehandling): OppgaveMedReservertIndikator[] => {
   const markedAsUnderBehandling = reserverteOppgaver
@@ -83,7 +80,7 @@ interface TsState {
 /**
  * OppgaverTabell
  */
-export class OppgaverTabell extends Component<TsProps, TsState> {
+export class OppgaverTabell extends Component<TsProps & WrappedComponentProps, TsState> {
   static propTypes = {
     oppgaverTilBehandling: PropTypes.arrayOf(oppgavePropType).isRequired,
     reserverteOppgaver: PropTypes.arrayOf(oppgavePropType).isRequired,
@@ -130,7 +127,7 @@ export class OppgaverTabell extends Component<TsProps, TsState> {
     }));
   }
 
-  createTooltip = (oppgaveStatus: OppgaveStatus): Toolip | undefined => {
+  createTooltip = (oppgaveStatus: OppgaveStatus): ReactNode | undefined => {
     const { flyttetReservasjon } = oppgaveStatus;
     if (!flyttetReservasjon) {
       return undefined;
@@ -144,16 +141,16 @@ export class OppgaverTabell extends Component<TsProps, TsState> {
       beskrivelse: flyttetReservasjon.begrunnelse,
       br: <br />,
     };
-    return {
-      header: <Normaltekst><FormattedMessage id="OppgaverTabell.OverfortReservasjonTooltip" values={textValues} /></Normaltekst>,
-    };
+    return (
+      <Normaltekst><FormattedMessage id="OppgaverTabell.OverfortReservasjonTooltip" values={textValues} /></Normaltekst>
+    );
   }
 
   render = () => {
     const {
       oppgaverTilBehandling, reserverteOppgaver, opphevOppgaveReservasjon, forlengOppgaveReservasjon, endreOppgaveReservasjon,
       finnSaksbehandler: findSaksbehandler, flyttReservasjon,
-      resetSaksbehandler: resetBehandler, antall,
+      resetSaksbehandler: resetBehandler, antall, intl,
     } = this.props;
     const {
       showMenu, offset, valgtOppgaveId,
@@ -189,11 +186,10 @@ export class OppgaverTabell extends Component<TsProps, TsState> {
                   <TableColumn>
                     {oppgave.status.flyttetReservasjon && (
                     <Image
-                      imageSrcFunction={getFlyttetImageIcon}
-                      altCode="OppgaverTabell.OverfortReservasjon"
-                      titleCode="OppgaverTabell.OverfortReservasjon"
+                      src={bubbletextUrl}
+                      srcHover={bubbletextFilledUrl}
+                      alt={intl.formatMessage({ id: 'OppgaverTabell.OverfortReservasjon' })}
                       tooltip={this.createTooltip(oppgave.status)}
-                      tabIndex="0"
                     />
                     )}
                   </TableColumn>
@@ -203,12 +199,11 @@ export class OppgaverTabell extends Component<TsProps, TsState> {
                       <div ref={(node) => { this.nodes = { ...this.nodes, [oppgave.id]: node }; }}>
                         <Image
                           className={styles.image}
-                          imageSrcFunction={getImageIcon}
-                          altCode="OppgaverTabell.OppgaveHandlinger"
-                          titleCode="OppgaverTabell.OppgaveHandlinger"
+                          src={menuIconBlackUrl}
+                          srcHover={menuIconBlueUrl}
+                          alt={intl.formatMessage({ id: 'OppgaverTabell.OppgaveHandlinger' })}
                           onMouseDown={getToggleMenuEvent(oppgave, this.toggleMenu)}
                           onKeyDown={getToggleMenuEvent(oppgave, this.toggleMenu)}
-                          tabIndex="0"
                         />
                       </div>
                     ) }
@@ -250,4 +245,4 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
   }, dispatch),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(OppgaverTabell);
+export default connect(mapStateToProps, mapDispatchToProps)(injectIntl(OppgaverTabell));

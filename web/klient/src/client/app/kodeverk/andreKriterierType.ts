@@ -1,4 +1,3 @@
-
 const andreKriterierType = {
   TIL_BESLUTTER: 'TIL_BESLUTTER',
   REGISTRER_PAPIRSOKNAD: 'PAPIRSOKNAD',

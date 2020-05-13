@@ -10,7 +10,7 @@ import { Element } from 'nav-frontend-typografi';
 import StoreValuesInReduxState from 'form/reduxBinding/StoreValuesInReduxState';
 import { getValuesFromReduxState } from 'form/reduxBinding/formDuck';
 import { RadioGroupField, RadioOption } from 'form/FinalFields';
-import { Kodeverk } from 'kodeverk/kodeverkTsType';
+import Kodeverk from 'kodeverk/kodeverkTsType';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import kodeverkPropType from 'kodeverk/kodeverkPropType';
 import fagsakYtelseType from 'kodeverk/fagsakYtelseType';

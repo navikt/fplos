@@ -91,7 +91,8 @@ describe('<Periodpicker>', () => {
     />);
 
     const inputField = wrapper.find(Input);
-    inputField.prop('inputRef')({ focus: sinon.spy() });
+    const ref = inputField.prop('inputRef') as (params: {}) => void;
+    ref({ focus: sinon.spy() });
     wrapper.update();
 
     wrapper.setState({ showCalendar: true });
@@ -115,7 +116,8 @@ describe('<Periodpicker>', () => {
     />);
 
     const inputField = wrapper.find(Input);
-    inputField.prop('inputRef')({ focus: sinon.spy() });
+    const ref = inputField.prop('inputRef') as (params: {}) => void;
+    ref({ focus: sinon.spy() });
     wrapper.update();
 
     wrapper.setState({ showCalendar: true });

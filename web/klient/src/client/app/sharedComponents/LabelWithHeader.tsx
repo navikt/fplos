@@ -1,15 +1,19 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React, { ReactNode, FunctionComponent } from 'react';
 import { Normaltekst, Undertekst } from 'nav-frontend-typografi';
 
 import styles from './labelWithHeader.less';
+
+interface OwnProps {
+  header: string | ReactNode;
+  texts: string[] | ReactNode[];
+}
 
 /**
  * LabelWithHeader
  *
  * Presentasjonskomponent. Presenterer tekst med en overskrift. (På samme måte som input-felter med overskrifter)
  */
-const LabelWithHeader = ({
+const LabelWithHeader: FunctionComponent<OwnProps> = ({
   header,
   texts,
 }) => (
@@ -26,10 +30,5 @@ const LabelWithHeader = ({
     </div>
   </div>
 );
-
-LabelWithHeader.propTypes = {
-  header: PropTypes.oneOfType([PropTypes.string, PropTypes.element]).isRequired,
-  texts: PropTypes.arrayOf(PropTypes.oneOfType([PropTypes.string, PropTypes.element]).isRequired).isRequired,
-};
 
 export default LabelWithHeader;

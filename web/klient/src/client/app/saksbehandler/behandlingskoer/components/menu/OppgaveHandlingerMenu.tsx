@@ -226,24 +226,22 @@ export class OppgaveHandlingerMenu extends Component<TsProps, TsState> {
             submit={this.opphevReserverasjon}
           />
         )}
-        {showReservasjonEndringDatoModal
-        && (
-        <OppgaveReservasjonEndringDatoModal
-          showModal={showReservasjonEndringDatoModal}
-          endreOppgaveReservasjon={this.endreReserverasjon}
-          closeModal={this.closeReservasjonEndringDatoModal}
-          reserverTilDefault={oppgave.status.reservertTilTidspunkt}
-        />
+        {showReservasjonEndringDatoModal && (
+          <OppgaveReservasjonEndringDatoModal
+            showModal={showReservasjonEndringDatoModal}
+            endreOppgaveReservasjon={this.endreReserverasjon}
+            closeModal={this.closeReservasjonEndringDatoModal}
+            reserverTilDefault={oppgave.status.reservertTilTidspunkt}
+          />
         )}
-        {showForlengetReservasjonModal
-          && (
+        {showForlengetReservasjonModal && (
           <OppgaveReservasjonForlengetModal
             oppgave={oppgave}
             showModal={showForlengetReservasjonModal}
             closeModal={this.closeForlengReservasjonModal}
           />
-          )}
-        { showFlyttReservasjonModal && (
+        )}
+        {showFlyttReservasjonModal && (
           <FlyttReservasjonModal
             oppgaveId={oppgave.id}
             showModal={showFlyttReservasjonModal}

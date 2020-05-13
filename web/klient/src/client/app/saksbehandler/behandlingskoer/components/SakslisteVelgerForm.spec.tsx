@@ -2,8 +2,8 @@
 import React from 'react';
 import { expect } from 'chai';
 import sinon from 'sinon';
-
 import { Form } from 'react-final-form';
+import { Element } from 'nav-frontend-typografi';
 
 import Image from 'sharedComponents/Image';
 import LabelWithHeader from 'sharedComponents/LabelWithHeader';
@@ -396,12 +396,9 @@ describe('<SakslisteVelgerForm>', () => {
       }]}
     />).find(Form).drill((props) => props.render(formProps)).shallow();
 
-    const labels = wrapper.find(Image);
-    expect(labels).to.have.length(1);
-    expect(labels.first().prop('tooltip').header.props.children).to.eql('Saksbehandlere');
-    expect(labels.first().prop('tooltip').body).to.have.length(3);
-    expect(labels.first().prop('tooltip').body[0].key).to.eql('Auto Joachim');
-    expect(labels.first().prop('tooltip').body[1].key).to.eql('Espen Utvikler');
-    expect(labels.first().prop('tooltip').body[2].key).to.eql('Helge Ingstad');
+    const image = wrapper.find(Image);
+    expect(image).to.have.length(1);
+    const tooltip = shallowWithIntl(image.first().prop('tooltip'));
+    expect(tooltip.find(Element).childAt(0).text()).to.eql('Saksbehandlere');
   });
 });

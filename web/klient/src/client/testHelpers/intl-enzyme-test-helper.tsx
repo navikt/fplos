@@ -47,12 +47,12 @@ const getOptions = (moduleMessages) => {
   };
 };
 
-export function shallowWithIntl(node, options, moduleMessages = undefined) {
-  return shallow(nodeWithIntlProp(node, moduleMessages), { ...getOptions(moduleMessages), ...options });
+export function shallowWithIntl(node) {
+  return shallow(nodeWithIntlProp(node, undefined), { ...getOptions(undefined) });
 }
 
 export function mountWithIntl(node, options, moduleMessages = undefined) {
-  return mount(nodeWithIntlProp(node), { ...getOptions(moduleMessages), ...options });
+  return mount(nodeWithIntlProp(node, moduleMessages), { ...getOptions(moduleMessages), ...options });
 }
 
 /* Lagt til for a hindre warnings i tester */

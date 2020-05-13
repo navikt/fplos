@@ -1,6 +1,5 @@
 
 import React from 'react';
-import PropTypes from 'prop-types';
 import moment from 'moment';
 import { connect } from 'react-redux';
 import { createSelector } from 'reselect';
@@ -11,8 +10,7 @@ import { ISO_DATE_FORMAT } from 'utils/formats';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import NyeOgFerdigstilteOppgaverForSisteSyvGraf from './NyeOgFerdigstilteOppgaverForSisteSyvGraf';
 import { getNyeOgFerdigstilteOppgaverNokkeltall } from '../../duck';
-import { NyeOgFerdigstilteOppgaver } from '../nyeOgFerdigstilteOppgaverTsType';
-import nyeOgFerdigstilteOppgaverPropType from '../nyeOgFerdigstilteOppgaverPropType';
+import NyeOgFerdigstilteOppgaver from '../nyeOgFerdigstilteOppgaverTsType';
 
 interface TsProps {
   width: number;
@@ -40,12 +38,6 @@ export const NyeOgFerdigstilteOppgaverForSisteSyvPanel = ({
     />
   </div>
 );
-
-NyeOgFerdigstilteOppgaverForSisteSyvPanel.propTypes = {
-  width: PropTypes.number.isRequired,
-  height: PropTypes.number.isRequired,
-  nyeOgFerdigstilteOppgaver: PropTypes.arrayOf(nyeOgFerdigstilteOppgaverPropType).isRequired,
-};
 
 export const getNyeOgFerdigstilteForSisteSyvDager = createSelector([getNyeOgFerdigstilteOppgaverNokkeltall], (nyeOgFerdigstilte = []) => {
   const iDag = moment().startOf('day');

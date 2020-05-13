@@ -40,7 +40,7 @@ export const OppgaveReservasjonForlengetModal: FunctionComponent<OwnProps & Wrap
       <Column xs="1">
         <Image
           className={styles.image}
-          altCode="OppgaveReservasjonForlengetModal.Reservert"
+          alt={intl.formatMessage({ id: 'OppgaveReservasjonForlengetModal.Reservert' })}
           src={innvilgetImageUrl}
         />
         <div className={styles.divider} />

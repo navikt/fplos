@@ -1,4 +1,4 @@
-import { Kodeverk } from 'kodeverk/kodeverkTsType';
+import Kodeverk from 'kodeverk/kodeverkTsType';
 import { OppgaveStatus } from './oppgaveStatusTsType';
 
 // TODO (TOR) default export feilar for yarn:coverage

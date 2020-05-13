@@ -1,6 +1,5 @@
-
-import React from 'react';
-
+import React, { FunctionComponent } from 'react';
+import { injectIntl, WrappedComponentProps } from 'react-intl';
 import { Undertittel, Undertekst } from 'nav-frontend-typografi';
 
 import Image from 'sharedComponents/Image';
@@ -8,13 +7,12 @@ import urlMann from 'images/mann.svg';
 import urlKvinne from 'images/kvinne.svg';
 
 import { Person } from '../../personTsType';
-import personPropType from '../../personPropType';
 import AlderVisning from './Aldervisning';
 import MerkePanel from './Merkepanel';
 
 import styles from './personInfo.less';
 
-interface TsProps {
+interface OwnProps {
   person: Person;
 }
 
@@ -29,9 +27,10 @@ interface TsProps {
  * erDod:false diskresjonskode:"6" dodsdato:"1990.03.03"} medPanel />
  * ```
  */
-const PersonInfo = ({
+const PersonInfo: FunctionComponent<OwnProps & WrappedComponentProps> = ({
   person,
-}: TsProps) => {
+  intl,
+}) => {
   const {
     erKvinne, dodsdato, diskresjonskode, alder, navn, personnummer,
   } = person;
@@ -40,8 +39,7 @@ const PersonInfo = ({
       <Image
         className={styles.icon}
         src={erKvinne ? urlKvinne : urlMann}
-        altCode="Person.ImageText"
-        titleCode={erKvinne ? 'Person.Woman' : 'Person.Man'}
+        alt={intl.formatMessage({ id: 'Person.ImageText' })}
       />
       <div className={styles.infoPlaceholder}>
         <div>
@@ -62,8 +60,4 @@ const PersonInfo = ({
   );
 };
 
-PersonInfo.propTypes = {
-  person: personPropType.isRequired,
-};
-
-export default PersonInfo;
+export default injectIntl(PersonInfo);

@@ -1,6 +1,5 @@
 
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
 import {
@@ -9,21 +8,19 @@ import {
 
 import { getValgtAvdelingEnhet } from 'app/duck';
 import { getKodeverk } from 'kodeverk/duck';
-import { Kodeverk } from 'kodeverk/kodeverkTsType';
-import kodeverkPropType from 'kodeverk/kodeverkPropType';
+import Kodeverk from 'kodeverk/kodeverkTsType';
 import kodeverkTyper from 'kodeverk/kodeverkTyper';
 import Image from 'sharedComponents/Image';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
-import Table from 'sharedComponents/Table';
-import TableRow from 'sharedComponents/TableRow';
-import TableColumn from 'sharedComponents/TableColumn';
+import Table from 'sharedComponents/table/Table';
+import TableRow from 'sharedComponents/table/TableRow';
+import TableColumn from 'sharedComponents/table/TableColumn';
 import DateLabel from 'sharedComponents/DateLabel';
 import addCircleIcon from 'images/add-circle.svg';
 import removeIcon from 'images/remove.svg';
 import { Column, Row } from 'nav-frontend-grid';
 import SletteSakslisteModal from './SletteSakslisteModal';
-import { Saksliste } from '../sakslisteTsType';
-import sakslistePropType from '../sakslistePropType';
+import Saksliste from '../sakslisteTsType';
 import { getAntallOppgaverForAvdelingResultat } from '../duck';
 
 import styles from './gjeldendeSakslisterTabell.less';
@@ -62,20 +59,6 @@ const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
  * GjeldendeSakslisterTabell
  */
 export class GjeldendeSakslisterTabell extends Component<TsProps, StateTsProps> {
-  static propTypes = {
-    sakslister: PropTypes.arrayOf(sakslistePropType).isRequired,
-    setValgtSakslisteId: PropTypes.func.isRequired,
-    lagNySaksliste: PropTypes.func.isRequired,
-    fjernSaksliste: PropTypes.func.isRequired,
-    valgtSakslisteId: PropTypes.number,
-    behandlingTyper: PropTypes.arrayOf(kodeverkPropType).isRequired,
-    fagsakYtelseTyper: PropTypes.arrayOf(kodeverkPropType).isRequired,
-    valgtAvdelingEnhet: PropTypes.string.isRequired,
-    hentAvdelingensSakslister: PropTypes.func.isRequired,
-    oppgaverForAvdeling: PropTypes.number,
-    hentAntallOppgaverForAvdeling: PropTypes.func.isRequired,
-  };
-
   static defaultProps = {
     valgtSakslisteId: undefined,
   }
@@ -219,7 +202,6 @@ export class GjeldendeSakslisterTabell extends Component<TsProps, StateTsProps> 
                     className={styles.removeImage}
                     onMouseDown={() => this.visFjernSakslisteModal(saksliste)}
                     onKeyDown={() => this.visFjernSakslisteModal(saksliste)}
-                    tabIndex="0"
                   />
                 </div>
               </TableColumn>

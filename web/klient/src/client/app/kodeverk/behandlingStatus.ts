@@ -1,4 +1,3 @@
-
 const behandlingStatus = {
   OPPRETTET: 'OPPRE',
   BEHANDLING_UTREDES: 'UTRED',

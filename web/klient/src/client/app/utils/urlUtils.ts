@@ -11,10 +11,9 @@ export const parseQueryString = (queryString = '') => (
 export const formatQueryString = (queryParams = {}) => (
   `?${( // Add leading question mark
     Object.entries(queryParams)
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
       .filter(([key, value]) => (value !== undefined && value !== null && value !== '')) // Filter out empty/null/undef values
-      // @ts-ignore Fiks
-      .map(([key, value]) => ([key, encodeURIComponent(value)])) // URL-encode value
+      .map(([key, value]) => ([key, encodeURIComponent(value as string)])) // URL-encode value
       .map(([key, encodedValue]) => `${key}=${encodedValue}`)
       .join('&') // Join with delimiter '&'
       .replace('%20', '+') // Replace URL-encoded spaces with plus

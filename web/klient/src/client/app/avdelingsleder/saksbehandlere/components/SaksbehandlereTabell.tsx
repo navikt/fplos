@@ -8,9 +8,9 @@ import { getValgtAvdelingEnhet } from 'app/duck';
 import Image from 'sharedComponents/Image';
 import removeIcon from 'images/remove.svg';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
-import Table from 'sharedComponents/Table';
-import TableRow from 'sharedComponents/TableRow';
-import TableColumn from 'sharedComponents/TableColumn';
+import Table from 'sharedComponents/table/Table';
+import TableRow from 'sharedComponents/table/TableRow';
+import TableColumn from 'sharedComponents/table/TableColumn';
 import SletteSaksbehandlerModal from './SletteSaksbehandlerModal';
 import saksbehandlerPropType from '../saksbehandlerPropType';
 import { Saksbehandler } from '../saksbehandlerTsType';
@@ -100,7 +100,6 @@ export class SaksbehandlereTabell extends Component<TsProps, StateTsProps> {
                   className={styles.removeImage}
                   onMouseDown={() => this.showSletteSaksbehandlerModal(saksbehandler)}
                   onKeyDown={() => this.showSletteSaksbehandlerModal(saksbehandler)}
-                  tabIndex="0"
                 />
               </TableColumn>
             </TableRow>

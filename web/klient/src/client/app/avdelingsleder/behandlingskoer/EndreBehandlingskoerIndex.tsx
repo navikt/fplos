@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
 
-import { Kodeverk } from 'kodeverk/kodeverkTsType';
+import Kodeverk from 'kodeverk/kodeverkTsType';
 import { getValgtAvdelingEnhet } from 'app/duck';
 import { fetchAvdelingensSaksbehandlere } from '../saksbehandlere/duck';
 import {
@@ -12,8 +11,7 @@ import {
   lagreSakslisteFagsakYtelseType, fetchAntallOppgaverForSaksliste, fetchAntallOppgaverForAvdeling, lagreSakslisteAndreKriterier,
 } from './duck';
 import EndreSakslisterPanel from './components/EndreSakslisterPanel';
-import { Saksliste } from './sakslisteTsType';
-import sakslistePropType from './sakslistePropType';
+import Saksliste from './sakslisteTsType';
 
 interface TsProps {
   fetchAvdelingensSakslister: (avdelingEnhet: string) => Saksliste[];
@@ -37,24 +35,6 @@ interface TsProps {
  * EndreBehandlingskoerIndex
  */
 export class EndreBehandlingskoerIndex extends Component<TsProps> {
-  static propTypes = {
-    fetchAvdelingensSakslister: PropTypes.func.isRequired,
-    fetchAntallOppgaverForSaksliste: PropTypes.func.isRequired,
-    fetchAntallOppgaverForAvdeling: PropTypes.func.isRequired,
-    setValgtSakslisteId: PropTypes.func.isRequired,
-    lagNySaksliste: PropTypes.func.isRequired,
-    fjernSaksliste: PropTypes.func.isRequired,
-    lagreSakslisteNavn: PropTypes.func.isRequired,
-    lagreSakslisteBehandlingstype: PropTypes.func.isRequired,
-    lagreSakslisteFagsakYtelseType: PropTypes.func.isRequired,
-    knyttSaksbehandlerTilSaksliste: PropTypes.func.isRequired,
-    fetchAvdelingensSaksbehandlere: PropTypes.func.isRequired,
-    lagreSakslisteAndreKriterier: PropTypes.func.isRequired,
-    sakslister: PropTypes.arrayOf(sakslistePropType),
-    valgtSakslisteId: PropTypes.number,
-    valgtAvdelingEnhet: PropTypes.string.isRequired,
-  };
-
   static defaultProps = {
     sakslister: [],
     valgtSakslisteId: undefined,

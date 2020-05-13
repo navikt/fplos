@@ -11,10 +11,10 @@ import { Row, Column } from 'nav-frontend-grid';
 import {
   required, minLength, maxLength, hasValidName,
 } from 'utils/validation/validators';
-import { Kodeverk } from 'kodeverk/kodeverkTsType';
+import Kodeverk from 'kodeverk/kodeverkTsType';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import { InputField } from 'form/FinalFields';
-import { Saksliste } from '../../sakslisteTsType';
+import Saksliste from '../../sakslisteTsType';
 import { getAntallOppgaverForSakslisteResultat } from '../../duck';
 import AutoLagringVedBlur from './AutoLagringVedBlur';
 import BehandlingstypeVelger from './BehandlingstypeVelger';

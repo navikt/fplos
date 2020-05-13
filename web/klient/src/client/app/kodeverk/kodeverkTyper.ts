@@ -1,4 +1,3 @@
-
 const kodeverkTyper = {
   BEHANDLING_TYPE: 'BehandlingType',
   FAGSAK_YTELSE_TYPE: 'FagsakYtelseType',

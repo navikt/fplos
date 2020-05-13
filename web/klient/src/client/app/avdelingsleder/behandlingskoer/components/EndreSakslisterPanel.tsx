@@ -1,22 +1,20 @@
 
-import React from 'react';
-import PropTypes from 'prop-types';
-import { FormattedMessage } from 'react-intl';
+import React, { FunctionComponent } from 'react';
+import { injectIntl, FormattedMessage, WrappedComponentProps } from 'react-intl';
 import { Row, Column } from 'nav-frontend-grid';
 
 import Image from 'sharedComponents/Image';
-import { Kodeverk } from 'kodeverk/kodeverkTsType';
+import Kodeverk from 'kodeverk/kodeverkTsType';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import pilNedUrl from 'images/pil-ned.svg';
 import GjeldendeSakslisterTabell from './GjeldendeSakslisterTabell';
 import SaksbehandlereForSakslisteForm from './saksbehandlerForm/SaksbehandlereForSakslisteForm';
 import UtvalgskriterierForSakslisteForm from './sakslisteForm/UtvalgskriterierForSakslisteForm';
-import { Saksliste } from '../sakslisteTsType';
-import sakslistePropType from '../sakslistePropType';
+import Saksliste from '../sakslisteTsType';
 
 import styles from './endreSakslisterPanel.less';
 
-interface TsProps {
+interface OwnProps {
   sakslister: Saksliste[];
   setValgtSakslisteId: (sakslisteId: number) => void;
   lagNySaksliste: (avdelingEnhet: string) => void;
@@ -35,7 +33,7 @@ interface TsProps {
 /**
  * EndreSakslisterPanel
  */
-const EndreSakslisterPanel = ({
+const EndreSakslisterPanel: FunctionComponent<OwnProps & WrappedComponentProps> = ({
   sakslister,
   setValgtSakslisteId,
   valgtSakslisteId,
@@ -49,7 +47,8 @@ const EndreSakslisterPanel = ({
   hentAvdelingensSakslister,
   hentAntallOppgaverForSaksliste,
   hentAntallOppgaverForAvdeling,
-}: TsProps) => {
+  intl,
+}) => {
   const valgtSaksliste = sakslister.find((s) => s.sakslisteId === valgtSakslisteId);
   return (
     <>
@@ -76,7 +75,10 @@ const EndreSakslisterPanel = ({
           <Row>
             <Column xs="5" />
             <Column xs="1">
-              <Image altCode="EndreSakslisterPanel.Saksbehandlere" src={pilNedUrl} />
+              <Image
+                alt={intl.formatMessage({ id: 'EndreSakslisterPanel.Saksbehandlere' })}
+                src={pilNedUrl}
+              />
             </Column>
             <Column xs="5" className={styles.text}>
               <FormattedMessage id="EndreSakslisterPanel.KnyttetMotSaksbehandlere" />
@@ -92,23 +94,4 @@ const EndreSakslisterPanel = ({
   );
 };
 
-EndreSakslisterPanel.propTypes = {
-  sakslister: PropTypes.arrayOf(sakslistePropType).isRequired,
-  setValgtSakslisteId: PropTypes.func.isRequired,
-  lagNySaksliste: PropTypes.func.isRequired,
-  fjernSaksliste: PropTypes.func.isRequired,
-  lagreSakslisteNavn: PropTypes.func.isRequired,
-  lagreSakslisteBehandlingstype: PropTypes.func.isRequired,
-  lagreSakslisteFagsakYtelseType: PropTypes.func.isRequired,
-  knyttSaksbehandlerTilSaksliste: PropTypes.func.isRequired,
-  lagreSakslisteAndreKriterier: PropTypes.func.isRequired,
-  valgtSakslisteId: PropTypes.number,
-  hentAntallOppgaverForSaksliste: PropTypes.func.isRequired,
-  hentAntallOppgaverForAvdeling: PropTypes.func.isRequired,
-};
-
-EndreSakslisterPanel.defaultProps = {
-  valgtSakslisteId: undefined,
-};
-
-export default EndreSakslisterPanel;
+export default injectIntl(EndreSakslisterPanel);
