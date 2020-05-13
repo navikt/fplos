@@ -1,10 +1,22 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import React, { Component, ReactNode } from 'react';
 import { Select as NavSelect } from 'nav-frontend-skjema';
 
-class CustomNavSelect extends Component {
-  constructor() {
-    super();
+interface OwnProps {
+  selectValues: ReactNode[];
+  placeholder?: ReactNode;
+  value?: ReactNode;
+  hideValueOnDisable?: boolean;
+  disabled?: boolean;
+}
+
+class CustomNavSelect extends Component<OwnProps> {
+  static defaultProps = {
+    hideValueOnDisable: false,
+    disabled: false,
+  };
+
+  constructor(props) {
+    super(props);
     this.getOptionValues = this.getOptionValues.bind(this);
     this.checkCorrespondingOptionForValue = this.checkCorrespondingOptionForValue.bind(this);
     this.handleSelectRef = this.handleSelectRef.bind(this);
@@ -68,20 +80,5 @@ class CustomNavSelect extends Component {
     );
   }
 }
-
-CustomNavSelect.propTypes = {
-  selectValues: PropTypes.arrayOf(PropTypes.node).isRequired,
-  placeholder: PropTypes.node,
-  value: PropTypes.node,
-  hideValueOnDisable: PropTypes.bool,
-  disabled: PropTypes.bool,
-};
-
-CustomNavSelect.defaultProps = {
-  placeholder: null,
-  value: undefined,
-  hideValueOnDisable: false,
-  disabled: false,
-};
 
 export default CustomNavSelect;

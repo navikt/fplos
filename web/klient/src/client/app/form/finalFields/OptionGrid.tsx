@@ -1,23 +1,35 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React, { ReactNode, FunctionComponent } from 'react';
 import { FlexContainer, FlexRow, FlexColumn } from 'sharedComponents/flexGrid';
 import { range } from 'utils/arrayUtils';
 import EditedIcon from 'sharedComponents/EditedIcon';
 import styles from './optionGrid.less';
 
+interface OwnProps {
+  columns?: number;
+  options: ReactNode[];
+  spaceBetween?: boolean;
+  isEdited?: boolean;
+  direction?: string;
+  rows?: number;
+}
 
-export const OptionGrid = ({
-  id, columns, rows, options, spaceBetween, isEdited, direction,
+export const OptionGrid: FunctionComponent<OwnProps> = ({
+  columns,
+  rows,
+  options,
+  spaceBetween,
+  isEdited,
+  direction,
 }) => {
   if (direction === 'vertical') {
     const numRows = rows || options.length;
     return (
-      <FlexContainer fluid id={id}>
+      <FlexContainer>
         <FlexColumn className={styles.fullBreddeIE}>
           {range(numRows)
             .map((rowIndex) => (
               <FlexRow key={`row${rowIndex}`} spaceBetween={spaceBetween}>
-                {options.filter((option, optionIndex) => optionIndex % numRows === rowIndex)}
+                {options.filter((_option, optionIndex) => optionIndex % numRows === rowIndex)}
                 {isEdited && <EditedIcon className="radioEdited" />}
               </FlexRow>
             ))}
@@ -27,12 +39,12 @@ export const OptionGrid = ({
   }
   const numColumns = columns || options.length;
   return (
-    <FlexContainer fluid id={id}>
+    <FlexContainer>
       <FlexRow spaceBetween={spaceBetween}>
         {range(numColumns)
           .map((columnIndex) => (
             <FlexColumn key={`column${columnIndex}`}>
-              {options.filter((option, optionIndex) => optionIndex % numColumns === columnIndex)}
+              {options.filter((_option, optionIndex) => optionIndex % numColumns === columnIndex)}
             </FlexColumn>
           ))}
         {isEdited && <EditedIcon className="radioEdited" />}
@@ -41,18 +53,7 @@ export const OptionGrid = ({
   );
 };
 
-OptionGrid.propTypes = {
-  id: PropTypes.string,
-  columns: PropTypes.number,
-  options: PropTypes.arrayOf(PropTypes.element).isRequired,
-  spaceBetween: PropTypes.bool,
-  isEdited: PropTypes.bool,
-  direction: PropTypes.string,
-  rows: PropTypes.number,
-};
-
 OptionGrid.defaultProps = {
-  id: undefined,
   columns: 0,
   rows: 0,
   spaceBetween: false,

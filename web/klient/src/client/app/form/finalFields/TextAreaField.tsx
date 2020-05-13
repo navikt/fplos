@@ -1,19 +1,26 @@
-import React, { FC } from 'react';
-import PropTypes from 'prop-types';
+import React, { FunctionComponent } from 'react';
 import { Field } from 'react-final-form';
 import { Textarea as NavTextarea } from 'nav-frontend-skjema';
 import EtikettFokus from 'nav-frontend-etiketter';
-import { injectIntl, FormattedMessage } from 'react-intl';
+import { injectIntl, FormattedMessage, WrappedComponentProps } from 'react-intl';
 
 import renderNavField from './renderNavField';
-import { labelPropType } from './Label';
+import { LabelType } from './Label';
 
 import styles from './textAreaField.less';
 import ReadOnlyField from './ReadOnlyField';
 
 const composeValidators = (validators) => (value) => (validators ? validators.reduce((error, validator) => error || validator(value), undefined) : []);
 
-const TextAreaWithBadge: FC<TextAreaWithBadge.propTypes & TextAreaWithBadge.defaultProps> = ({
+interface TextAreaWithBadgeProps {
+  badges?: {
+    textId: string;
+    type: string;
+    title: string;
+  }[];
+}
+
+const TextAreaWithBadge: FunctionComponent<TextAreaWithBadgeProps & WrappedComponentProps> = ({
   badges,
   intl,
   ...otherProps
@@ -33,9 +40,20 @@ const TextAreaWithBadge: FC<TextAreaWithBadge.propTypes & TextAreaWithBadge.defa
   </div>
 );
 
+TextAreaWithBadge.defaultProps = {
+  badges: null,
+};
+
 const renderNavTextArea = renderNavField(injectIntl(TextAreaWithBadge));
 
-const TextAreaField: FC<TextAreaField.propTypes & TextAreaField.defaultProps> = ({
+interface OwnProps {
+  name: string;
+  label: LabelType;
+  validate?: (() => void)[];
+  readOnly?: boolean;
+}
+
+const TextAreaField: FunctionComponent<OwnProps> = ({
   name, label, validate, readOnly, ...otherProps
 }) => (
   <Field
@@ -51,29 +69,8 @@ const TextAreaField: FC<TextAreaField.propTypes & TextAreaField.defaultProps> = 
   />
 );
 
-TextAreaField.propTypes = {
-  name: PropTypes.string.isRequired,
-  label: labelPropType.isRequired,
-  validate: PropTypes.arrayOf(PropTypes.func),
-  readOnly: PropTypes.bool,
-};
-
 TextAreaField.defaultProps = {
-  validate: null,
   readOnly: false,
-};
-
-TextAreaWithBadge.propTypes = {
-  intl: PropTypes.shape().isRequired,
-  badges: PropTypes.arrayOf(PropTypes.shape({
-    textId: PropTypes.string.isRequired,
-    type: PropTypes.string.isRequired,
-    title: PropTypes.string.isRequired,
-  })),
-};
-
-TextAreaWithBadge.defaultProps = {
-  badges: null,
 };
 
 export default TextAreaField;

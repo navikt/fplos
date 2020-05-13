@@ -54,7 +54,6 @@ export const DatoSorteringValg: FunctionComponent<OwnProps & WrappedComponentPro
   fomDato,
   tomDato,
 }) => (
-
   <ArrowBox>
     <Undertekst>
       <FormattedMessage id="SorteringVelger.FiltrerPaTidsintervall" />

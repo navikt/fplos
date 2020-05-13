@@ -1,5 +1,4 @@
-import React, { FC } from 'react';
-import PropTypes from 'prop-types';
+import React, { FunctionComponent } from 'react';
 import { Field } from 'react-final-form';
 import moment from 'moment';
 
@@ -8,7 +7,7 @@ import { ISO_DATE_FORMAT, DDMMYYYY_DATE_FORMAT, ACCEPTED_DATE_INPUT_FORMATS } fr
 import Datepicker from 'sharedComponents/datepicker/Datepicker';
 import renderNavField from './renderNavField';
 import ReadOnlyField from './ReadOnlyField';
-import { labelPropType } from './Label';
+import { LabelType } from './Label';
 
 const composeValidators = (validators) => (value) => validators.reduce((error, validator) => error || validator(value), undefined);
 
@@ -32,7 +31,17 @@ const acceptedFormatToIso = (string) => {
 
 export const RenderDatepickerField = renderNavField(Datepicker);
 
-const DatepickerField: FC<DatepickerField.propTypes & DatepickerField.defaultProps> = ({
+interface OwnProps{
+  name: string;
+  label: LabelType;
+  readOnly?: boolean;
+  format: (value: string) => string;
+  parse: (value: string) => string;
+  isEdited?: boolean;
+  validate?: () => void[];
+}
+
+const DatepickerField: FunctionComponent<OwnProps> = ({
   name, label, readOnly, format, parse, isEdited, validate, ...otherProps
 }) => (
   <Field
@@ -49,18 +58,8 @@ const DatepickerField: FC<DatepickerField.propTypes & DatepickerField.defaultPro
   />
 );
 
-DatepickerField.propTypes = {
-  name: PropTypes.string.isRequired,
-  label: labelPropType,
-  readOnly: PropTypes.bool,
-  format: PropTypes.func,
-  parse: PropTypes.func,
-  isEdited: PropTypes.bool,
-  validate: PropTypes.arrayOf(PropTypes.func),
-};
-
 DatepickerField.defaultProps = {
-  label: '',
+  label: { id: '' },
   readOnly: false,
   isEdited: false,
   format: (value) => value,
