@@ -8,7 +8,6 @@ import Panel from 'nav-frontend-paneler';
 import { DatepickerField } from 'form/FinalFields';
 import styles from 'saksbehandler/behandlingskoer/components/menu/oppgaveReservasjonEndringDatoModal.less';
 import Modal from 'sharedComponents/Modal';
-import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import { dateAfterOrEqual, dateBeforeOrEqual, hasValidDate } from 'utils/validation/validators';
 
 const thirtyDaysFromNow = () => {

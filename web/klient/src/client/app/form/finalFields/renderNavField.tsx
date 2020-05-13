@@ -6,15 +6,15 @@ import Label, { labelPropType } from './Label';
 
 const renderNavField = (WrappedNavFieldComponent) => {
   class FieldComponent extends Component {
-    constructor() {
-      super();
+    constructor(props) {
+      super(props);
       this.formatError = this.formatError.bind(this);
     }
 
     formatError(submitFailed, error, onBlurValidation) {
       const { intl } = this.props;
       if ((onBlurValidation || submitFailed) && error) {
-        return { feilmelding: intl.formatMessage(...error) };
+        return intl.formatMessage(...error);
       }
       return undefined;
     }
