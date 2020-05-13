@@ -1,11 +1,9 @@
 import EventType from '../eventType';
-import { ErrorType } from './errorTsType';
-import { isHandledError, is401Error, is418Error } from './ErrorTypes';
+import ErrorType from './errorTsType';
+import { isHandledError } from './ErrorTypes';
 import TimeoutError from './TimeoutError';
 
-const isDevelopment = process.env.NODE_ENV === 'development';
-
-type NotificationEmitter = (eventType: keyof typeof EventType, data?: any) => void
+type NotificationEmitter = (eventType: keyof typeof EventType, data?: any, isPollingRequest?: boolean) => void
 
 const isString = (value) => typeof value === 'string';
 
@@ -28,15 +26,20 @@ const blobParser = (blob: any): Promise<string> => {
       }
     };
 
-    fileReader.readAsText(blob);
+    if (blob instanceof Blob) {
+      fileReader.readAsText(blob);
+    }
   });
 };
 
 class RequestErrorEventHandler {
   notify: NotificationEmitter
 
-  constructor(notificationEmitter: NotificationEmitter) {
+  isPollingRequest: boolean
+
+  constructor(notificationEmitter: NotificationEmitter, isPollingRequest: boolean) {
     this.notify = notificationEmitter;
+    this.isPollingRequest = isPollingRequest;
   }
 
   handleError = async (error: ErrorType | TimeoutError) => {
@@ -53,14 +56,19 @@ class RequestErrorEventHandler {
         formattedError.data = JSON.parse(jsonErrorString);
       }
     }
-    if (is401Error(formattedError.status) && !isDevelopment) {
-      this.notify(EventType.REQUEST_ERROR, { message: error.message });
-    } else if (is418Error(formattedError.status)) {
+
+    if (formattedError.isGatewayTimeoutOrNotFound) {
+      this.notify(EventType.REQUEST_GATEWAY_TIMEOUT_OR_NOT_FOUND, { location: formattedError.location }, this.isPollingRequest);
+    } else if (formattedError.isUnauthorized) {
+      this.notify(EventType.REQUEST_UNAUTHORIZED, { message: error.message }, this.isPollingRequest);
+    } else if (formattedError.isForbidden) {
+      this.notify(EventType.REQUEST_FORBIDDEN, { message: error.message });
+    } else if (formattedError.is418) {
       this.notify(EventType.POLLING_HALTED_OR_DELAYED, formattedError.data);
     } else if (!error.response && error.message) {
-      this.notify(EventType.REQUEST_ERROR, { message: error.message });
+      this.notify(EventType.REQUEST_ERROR, { message: error.message }, this.isPollingRequest);
     } else if (!isHandledError(formattedError.type)) {
-      this.notify(EventType.REQUEST_ERROR, this.getFormattedData(formattedError.data));
+      this.notify(EventType.REQUEST_ERROR, this.getFormattedData(formattedError.data), this.isPollingRequest);
     }
   };
 
@@ -74,6 +82,11 @@ class RequestErrorEventHandler {
       data: response ? this.findErrorData(response) : undefined,
       type: response && response.data ? response.data.type : undefined,
       status: response ? response.status : undefined,
+      isForbidden: response ? response.status === 403 : undefined,
+      isUnauthorized: response ? response.status === 401 : undefined,
+      is418: response ? response.status === 418 : undefined,
+      isGatewayTimeoutOrNotFound: response ? response.status === 504 || response.status === 404 : undefined,
+      location: response && response.config ? response.config.url : undefined,
     };
   };
 }

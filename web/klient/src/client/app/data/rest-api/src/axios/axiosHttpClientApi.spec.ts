@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 import MockAdapter from 'axios-mock-adapter';
 
-import getAxiosHttpClientApi from './axiosHttpClientApi';
+import getAxiosHttpClientApi from './getAxiosHttpClientApi';
 
 describe('axiosHttpClientApi', () => {
   const httpClientApi = getAxiosHttpClientApi();
@@ -164,17 +164,5 @@ describe('axiosHttpClientApi', () => {
     const result = await httpClientApi.putAsync(url, data);
 
     expect(result.data).to.eql({ resource: true });
-  });
-
-  it('skal finne ut at rest-metode er asynkron (long polling)', () => {
-    const isAsync = httpClientApi.isAsyncRestMethod(httpClientApi.putAsync);
-    // eslint-disable-next-line no-unused-expressions
-    expect(isAsync).to.true;
-  });
-
-  it('skal finne ut at rest-metode er synkron', () => {
-    const isAsync = httpClientApi.isAsyncRestMethod(httpClientApi.putAsync);
-    // eslint-disable-next-line no-unused-expressions
-    expect(isAsync).to.true;
   });
 });

@@ -2,6 +2,7 @@ import React from 'react';
 import { expect } from 'chai';
 import sinon from 'sinon';
 
+import EventType from 'data/rest-api/src/requestApi/eventType';
 import { shallowWithIntl } from 'testHelpers/intl-enzyme-test-helper';
 import HeaderWithErrorPanel from './components/HeaderWithErrorPanel';
 
@@ -13,7 +14,7 @@ describe('<AppIndex>', () => {
       navAnsattName="Peder"
       showCrashMessage={sinon.spy()}
       removeErrorMessage={sinon.spy()}
-      errorMessagesLength={0}
+      errorMessages={[]}
       location={{ search: undefined, state: {} }}
       fetchAvdelingeneTilAvdelingsleder={sinon.spy()}
       setAvdelingEnhet={sinon.spy()}
@@ -27,7 +28,6 @@ describe('<AppIndex>', () => {
 
     const homeComp = wrapper.find('Home');
     expect(homeComp).to.have.length(1);
-    expect(homeComp.prop('nrOfErrorMessages')).is.eql(0);
   });
 
   it('skal vise hjem-skjermbilde inkludert header og feilmelding', () => {
@@ -35,7 +35,9 @@ describe('<AppIndex>', () => {
       navAnsattName="Peder"
       showCrashMessage={sinon.spy()}
       removeErrorMessage={sinon.spy()}
-      errorMessagesLength={1}
+      errorMessages={[{
+        type: EventType.REQUEST_ERROR,
+      }]}
       location={{ search: undefined, state: {} }}
       fetchAvdelingeneTilAvdelingsleder={sinon.spy()}
       setAvdelingEnhet={sinon.spy()}
@@ -49,7 +51,6 @@ describe('<AppIndex>', () => {
 
     const homeComp = wrapper.find('Home');
     expect(homeComp).to.have.length(1);
-    expect(homeComp.prop('nrOfErrorMessages')).is.eql(1);
   });
 
   it('skal vise query-feilmelding', () => {
@@ -62,7 +63,9 @@ describe('<AppIndex>', () => {
       navAnsattName="Peder"
       removeErrorMessage={sinon.spy()}
       showCrashMessage={sinon.spy()}
-      errorMessagesLength={0}
+      errorMessages={[{
+        type: EventType.REQUEST_ERROR,
+      }]}
       location={location}
       fetchAvdelingeneTilAvdelingsleder={sinon.spy()}
       setAvdelingEnhet={sinon.spy()}
@@ -72,9 +75,6 @@ describe('<AppIndex>', () => {
 
     const headerComp = wrapper.find(HeaderWithErrorPanel);
     expect(headerComp.prop('queryStrings')).to.eql({ errormessage: 'Det finnes ingen sak med denne referansen: 266' });
-
-    const homeComp = wrapper.find('Home');
-    expect(homeComp.prop('nrOfErrorMessages')).is.eql(1);
   });
 
   it('skal hente avdelinger når en er i avdelingsleders skjermbilde', () => {

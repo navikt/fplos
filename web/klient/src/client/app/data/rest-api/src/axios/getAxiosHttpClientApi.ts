@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-import initRestMethods from './axiosRestMethods';
+import initRestMethods from './initRestMethods';
 
 /**
  * getAxiosHttpClientApi
@@ -15,9 +15,11 @@ const getAxiosHttpClientApi = () => {
   // @ts-ignore
   axiosInstance.isCancel = axios.isCancel;
 
-  axiosInstance.interceptors.request.use((c): Record<string, any> => {
+  // TODO (TOR) sentry bør ikkje vera ein avhengighet til pakka "rest-api". Konfigurer dette utanfor
+  axiosInstance.interceptors.request.use((c): any => {
+    const navCallId = `CallId_${(new Date()).getTime()}_${Math.floor(Math.random() * 1000000000)}`;
     const config = { ...c };
-    config.headers['Nav-Callid'] = `CallId_${(new Date()).getTime()}_${Math.floor(Math.random() * 1000000000)}`;
+    config.headers['Nav-Callid'] = navCallId;
     return config;
   });
 
@@ -32,7 +34,6 @@ const getAxiosHttpClientApi = () => {
     getAsync: restMethods.getAsync,
     postAsync: restMethods.postAsync,
     putAsync: restMethods.putAsync,
-    isAsyncRestMethod: restMethods.isAsyncRestMethod,
     axiosInstance,
   };
 };

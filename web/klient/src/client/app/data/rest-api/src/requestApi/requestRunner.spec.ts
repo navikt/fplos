@@ -1,4 +1,3 @@
-
 import sinon from 'sinon';
 import { expect } from 'chai';
 
@@ -18,7 +17,6 @@ const httpClientGeneralMock = {
   getAsync: () => undefined,
   postAsync: () => undefined,
   putAsync: () => undefined,
-  isAsyncRestMethod: () => undefined,
 };
 
 describe('RequestRunner', () => {
@@ -33,7 +31,6 @@ describe('RequestRunner', () => {
     const httpClientMock = {
       ...httpClientGeneralMock,
       get: () => Promise.resolve(response),
-      isAsyncRestMethod: () => false,
     };
 
     const requestConfig = new RequestConfig('BEHANDLING', '/behandling');
@@ -46,8 +43,6 @@ describe('RequestRunner', () => {
     expect(runner.getName()).to.eql(requestConfig.name);
     expect(runner.getPath()).to.eql(`/fpsak${requestConfig.path}`);
     expect(runner.getRestMethodName()).to.eql('GET');
-    // eslint-disable-next-line no-unused-expressions
-    expect(runner.isAsyncRestMethod()).is.false;
   });
 
   it('skal utføre get-request og sende status-eventer', async () => {
@@ -110,9 +105,7 @@ describe('RequestRunner', () => {
       }),
     };
 
-    const requestConfig = new RequestConfig('BEHANDLING', '/behandling', {
-      fetchLinkDataAutomatically: true,
-    }).withGetAsyncMethod();
+    const requestConfig = new RequestConfig('BEHANDLING', '/behandling').withGetAsyncMethod();
 
     const params = {
       behandlingId: 1,

@@ -1,13 +1,12 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
 import { withRouter } from 'react-router-dom';
 import moment from 'moment';
 
 import { Avdeling } from 'app/avdelingTsType';
-import avdelingPropType from 'app/avdelingPropType';
 import { parseQueryString } from 'utils/urlUtils';
+import EventType from 'data/rest-api/src/requestApi/eventType';
 import errorHandler from 'data/error-api-redux';
 import AppConfigResolver from './AppConfigResolver';
 import { AVDELINGSLEDER_PATH } from './paths';
@@ -32,7 +31,6 @@ type TsProps = Readonly<{
     };
     text?: string;
   }[];
-  errorMessagesLength: number;
   removeErrorMessage: () => void;
   crashMessage: string;
   showCrashMessage: (message: string) => void;
@@ -117,7 +115,7 @@ export class AppIndex extends Component<TsProps> {
     ].join(' '));
   }
 
-  setSiteHeight = (headerHeight) => {
+  setSiteHeight = (headerHeight: number) => {
     document.documentElement.setAttribute('style', `height: calc(100% - ${headerHeight}px)`);
     this.setState((state) => ({ ...state, headerHeight }));
   }

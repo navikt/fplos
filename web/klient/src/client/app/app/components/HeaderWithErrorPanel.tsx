@@ -9,6 +9,7 @@ import BoxedListWithSelection from '@navikt/boxed-list-with-selection';
 import BoxedListWithLinks from '@navikt/boxed-list-with-links';
 import Header from '@navikt/nap-header';
 
+import EventType from 'data/rest-api/src/requestApi/eventType';
 import { getValueFromLocalStorage, setValueInLocalStorage, removeValueFromLocalStorage } from 'utils/localStorageHelper';
 import { Avdeling } from 'app/avdelingTsType';
 
@@ -36,7 +37,7 @@ interface OwnProps {
     };
     text?: string;
   }[];
-  setSiteHeight: (clientHeight: number) => number;
+  setSiteHeight: (clientHeight: number) => void;
 }
 
 const useOutsideClickEvent = (erLenkepanelApent, erAvdelingerPanelApent, setLenkePanelApent, setAvdelingerPanelApent) => {

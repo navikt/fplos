@@ -1,8 +1,8 @@
 import EventType from './eventType';
 import asyncPollingStatus from './asyncPollingStatus';
-import { HttpClientApi } from '../HttpClientApiTsType';
-import { Response, SuccessResponse } from './ResponseTsType';
-import { RequestAdditionalConfig } from '../RequestAdditionalConfigTsType';
+import HttpClientApi from '../HttpClientApiTsType';
+import { Response } from './ResponseTsType';
+import RequestAdditionalConfig from '../RequestAdditionalConfigTsType';
 import TimeoutError from './error/TimeoutError';
 import RequestErrorEventHandler from './error/RequestErrorEventHandler';
 
@@ -12,21 +12,10 @@ const CANCELLED = 'INTERNAL_CANCELLATION';
 
 const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
-const getRestMethod = (httpClientApi: HttpClientApi, restMethodString: string) => {
-  switch (restMethodString) {
-    case 'POST':
-      return httpClientApi.post;
-    case 'PUT':
-      return httpClientApi.put;
-    default:
-      return httpClientApi.get;
-  }
-};
-
 const hasLocationAndStatusDelayedOrHalted = (responseData) => responseData.location && (responseData.status === asyncPollingStatus.DELAYED
   || responseData.status === asyncPollingStatus.HALTED);
 
-type Notify = (eventType: keyof typeof EventType, data?: any) => void
+type Notify = (eventType: keyof typeof EventType, data?: any, isPolling?: boolean) => void
 type NotificationEmitter = (eventType: keyof typeof EventType, data?: any) => void
 
 interface ResponseDataLink {
@@ -39,8 +28,7 @@ interface ResponseDataLink {
 /**
  * RequestProcess
  *
- * Denne klassen utfører et spesifikt kall mot en URL. Tilbyr automatisk henting av data
- * fra "links" i kall-responsen. Håndterer også "long-polling".
+ * Denne klassen utfører et spesifikt kall mot en URL. Håndterer også "long-polling".
  *
  * En starter prosess med run og avbryter med cancel.
  */
@@ -58,6 +46,8 @@ class RequestProcess {
   notify: Notify = () => undefined;
 
   isCancelled = false;
+
+  isPollingRequest = false;
 
   constructor(httpClientApi: HttpClientApi, restMethod: (url: string, params: any, responseType?: string) => Promise<Response>,
     path: string, config: RequestAdditionalConfig) {
@@ -100,23 +90,10 @@ class RequestProcess {
     return statusOrResultResponse;
   };
 
-  execLinkRequests = async (responseData: {links: ResponseDataLink[]}) => {
-    const requestList = responseData.links
-      .map((link) => () => this.execute(// eslint-disable-line no-use-before-define
-        link.href, getRestMethod(this.httpClientApi, link.type), link.requestPayload,
-      )
-        .then((response: SuccessResponse) => Promise.resolve({ [link.rel]: response.data })));
-
-    // TODO (TOR) Må kunna konfigurera om ein skal feila om eitt av kalla feilar. Og kva med logging?
-    return Promise.all([Promise.resolve(responseData), ...requestList.map((request) => request())])
-      .then((allResponses) => (this.config.addLinkDataToArray
-        ? allResponses.reduce((acc, rData) => (rData.links ? acc : acc.concat(Object.values(rData)[0])), [])
-        : allResponses.reduce((acc, rData) => ({ ...acc, ...rData }), {})));
-  }
-
   execute = async (path: string, restMethod: (path: string, params?: any) => Promise<Response>, params: any): Promise<Response> => {
     let response = await restMethod(path, params);
     if ('status' in response && response.status === HTTP_ACCEPTED) {
+      this.isPollingRequest = true;
       try {
         response = await this.execLongPolling(response.headers.location);
       } catch (error) {
@@ -130,11 +107,6 @@ class RequestProcess {
           throw error;
         }
       }
-    }
-    const responseData = response && 'data' in response && response.data;
-    if (this.config.fetchLinkDataAutomatically && responseData && responseData.links && responseData.links.length > 0) {
-      // TODO (TOR) execLinkRequests returnerar no responseData.
-      response = await this.execLinkRequests(responseData);
     }
     return response;
   }
@@ -152,13 +124,11 @@ class RequestProcess {
         return { payload: CANCELLED };
       }
 
-      // TODO (TOR) Bør unngå denne testen ved å sikre at ein alltid får det same tilbake fra execute
-      const responseData = 'data' in response && response.data !== undefined ? response.data : response;
-
-      this.notify(EventType.REQUEST_FINISHED, responseData);
-      return responseData ? { payload: responseData } : { payload: [] };
+      const responseData = 'data' in response ? response.data : undefined;
+      this.notify(EventType.REQUEST_FINISHED, responseData, this.isPollingRequest);
+      return responseData ? { payload: responseData } : { payload: undefined };
     } catch (error) {
-      new RequestErrorEventHandler(this.notify).handleError(error);
+      new RequestErrorEventHandler(this.notify, this.isPollingRequest).handleError(error);
       throw error;
     }
   }

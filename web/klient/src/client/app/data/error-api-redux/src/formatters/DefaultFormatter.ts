@@ -15,10 +15,10 @@ class DefaultFormatter implements Formatter<ErrorData | string> {
     }
 
     if (errorData.feilmelding) {
-      return ErrorMessage.withMessage(errorData.feilmelding);
+      return ErrorMessage.withMessage(errorData.feilmelding, errorData.type);
     }
     if (errorData.message) {
-      return ErrorMessage.withMessage(errorData.message);
+      return ErrorMessage.withMessage(errorData.message, errorData.type);
     }
     return undefined;
   };

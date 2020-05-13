@@ -1,4 +1,4 @@
-import { RequestAdditionalConfig } from './RequestAdditionalConfigTsType';
+import RequestAdditionalConfig from './RequestAdditionalConfigTsType';
 import RequestConfig from './RequestConfig';
 
 const createConfigWithPathAndConfig = (name, path, config) => new RequestConfig(name, path, config);
@@ -43,6 +43,11 @@ class RestApiConfigBuilder {
 
   withPostAndOpenBlob(path: string, name: string, config?: RequestAdditionalConfig) {
     this.endpoints.push(createConfigWithPathAndConfig(name, path, config).withPostAndOpenBlob());
+    return this;
+  }
+
+  withRel(rel: string, name: string, config?: RequestAdditionalConfig) {
+    this.endpoints.push(createConfigWithPathAndConfig(name, undefined, config).withRel(rel));
     return this;
   }
 

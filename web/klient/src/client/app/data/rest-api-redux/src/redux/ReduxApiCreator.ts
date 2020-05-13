@@ -1,15 +1,25 @@
 import { combineReducers } from 'redux';
-import { RequestApi } from 'data/rest-api';
+
+import { RequestApi } from '../../../rest-api';
 
 import ReduxEvents from './ReduxEvents';
 import RestDuck from './RestDuck';
 
+const EMPTY_ENDPOINT = {
+  actionCreators: {}, requestRunner: { stopProcess: () => undefined, getPath: () => undefined }, stateSelector: {},
+};
+
 class ReduxApiCreator {
-  ducks: RestDuck[]
+  ducks: RestDuck[] = []
 
   constructor(requestApi: RequestApi, getRestApiState: (state: any) => any, reduxEvents: ReduxEvents) {
     const endpointNames = requestApi.getEndpointNames();
-    this.ducks = endpointNames.map((endpointName) => new RestDuck(requestApi.getRequestRunner(endpointName), getRestApiState, reduxEvents));
+    endpointNames.forEach((endpointName) => {
+      const requestRunner = requestApi.getRequestRunner(endpointName);
+      const { saveResponseIn } = requestRunner.getConfig().config;
+      const resultKeyActionCreators = saveResponseIn ? this.getEndpoint(saveResponseIn).actionCreators : undefined;
+      this.ducks.push(new RestDuck(requestRunner, getRestApiState, reduxEvents, resultKeyActionCreators));
+    });
   }
 
   createReducer = (): any => {
@@ -19,13 +29,11 @@ class ReduxApiCreator {
     return combineReducers(reducers);
   }
 
-  getEndpoint = (endpointName: string) => this.ducks.find((duck) => duck.name === endpointName)
-      || { actionCreators: {}, requestRunner: { stopProcess: () => undefined }, stateSelector: {} }
+  getEndpoint = (endpointName: string) => this.ducks.find((duck) => duck.name === endpointName) || EMPTY_ENDPOINT;
+
+  isEndpointEnabled = (endpointName: string): boolean => !!this.getEndpoint(endpointName).requestRunner.getPath();
 
   makeRequestActionCreator = (endpointName: string) => this.getEndpoint(endpointName).actionCreators.execRequest
-
-  // TODO (TOR) Bør fjerne denne og heller kunna konfigurera at ein legg data under anna state-nøkkel
-  setDataActionCreator = (endpointName: string) => this.getEndpoint(endpointName).actionCreators.execSetData
 
   makeResetActionCreator = (endpointName: string) => this.getEndpoint(endpointName).actionCreators.reset
 

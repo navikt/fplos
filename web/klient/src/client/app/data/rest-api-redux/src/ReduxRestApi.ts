@@ -1,31 +1,62 @@
-import { createRequestApi, RequestConfig } from 'data/rest-api';
+import { createRequestApi, RequestConfig } from '../../rest-api';
+import Link from '../../rest-api/src/requestApi/LinkTsType';
+import HttpClientApi from '../../rest-api/src/HttpClientApiTsType';
 
 import EndpointOperations from './redux/EndpointOperations';
 import ReduxApiCreator from './redux/ReduxApiCreator';
 import ReduxEvents from './redux/ReduxEvents';
 
-const getDataContext = (reducerName: string) => (state) => state.default[reducerName];
+const getDataContext = (reducerName: string) => (state: any) => state.default[reducerName];
+
+const replaceWithConfigFromAnotherKey = (configs: RequestConfig[]) => configs.map((c) => {
+  if (!c.config.saveResponseIn) {
+    return c;
+  }
+
+  const otherConfig = configs.find((c2) => c2.name === c.config.saveResponseIn);
+  if (!otherConfig) {
+    throw Error(`Could not find config for key ${c.config.saveResponseIn}`);
+  }
+
+  const newConfig = {
+    ...otherConfig.config,
+    saveResponseIn: c.config.saveResponseIn,
+  };
+  return new RequestConfig(c.name, c.path, newConfig).withRel(c.rel).withRestMethod(c.restMethod);
+});
+
 
 class ReduxRestApi {
-  config: RequestConfig[];
+  configs: RequestConfig[];
 
   contextPath = '';
+
+  requestApi;
+
+  httpClientApi: HttpClientApi;
 
   reduxApiCreator: ReduxApiCreator;
 
   constructor(config: RequestConfig[], reducerName: string, contextPath: string, reduxEvents: ReduxEvents) {
-    this.config = config;
+    this.configs = replaceWithConfigFromAnotherKey(config);
     this.contextPath = contextPath;
-    const requestApi = createRequestApi(contextPath, config);
-    this.reduxApiCreator = new ReduxApiCreator(requestApi, getDataContext(reducerName), reduxEvents);
+    this.requestApi = createRequestApi(contextPath, this.configs);
+    this.httpClientApi = this.requestApi.getHttpClientApi();
+    this.reduxApiCreator = new ReduxApiCreator(this.requestApi, getDataContext(reducerName), reduxEvents);
   }
 
-  getEndpointApi = (): { [name: string]: EndpointOperations } => this.config.reduce((acc, c) => ({
+  getEndpointApi = (): { [name: string]: EndpointOperations } => this.configs.reduce((acc, c) => ({
     ...acc,
     [c.name]: new EndpointOperations(this.reduxApiCreator, this.contextPath, c),
   }), {})
 
   getDataReducer = () => this.reduxApiCreator.createReducer();
+
+  injectPaths = (links: Link[]) => {
+    this.requestApi.injectPaths(links);
+  };
+
+  getHttpClientApi = () => this.httpClientApi;
 }
 
 export default ReduxRestApi;

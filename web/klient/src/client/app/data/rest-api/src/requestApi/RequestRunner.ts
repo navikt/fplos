@@ -1,8 +1,9 @@
 import RequestProcess from './RequestProcess';
 import NotificationMapper from './NotificationMapper';
 import RestApiRequestContext from './RestApiRequestContext';
-import { RequestType } from '../RequestConfig';
-import { HttpClientApi } from '../HttpClientApiTsType';
+import RequestConfig, { RequestType } from '../RequestConfig';
+import HttpClientApi from '../HttpClientApiTsType';
+import Link from './LinkTsType';
 
 const getMethod = (httpClientApi: HttpClientApi, restMethod: string) => {
   if (restMethod === RequestType.GET) {
@@ -52,11 +53,12 @@ class RequestRunner {
 
   getRestMethod = () => getMethod(this.httpClientApi, this.getConfig().restMethod)
 
-  getPath = (): string => `${this.context.getHostname()}/${this.context.getContextPath()}${this.getConfig().path}`
+  getPath = (): string => {
+    const contextPath = this.context.getContextPath() ? `/${this.context.getContextPath()}` : '';
+    return this.getConfig().path ? `${this.context.getHostname()}${contextPath}${this.getConfig().path}` : undefined;
+  }
 
   getRestMethodName = (): string => this.getConfig().restMethod
-
-  isAsyncRestMethod = (): boolean => this.httpClientApi.isAsyncRestMethod(this.getRestMethod())
 
   stopProcess = () => {
     if (this.process) {
@@ -72,7 +74,21 @@ class RequestRunner {
       this.process.setNotificationEmitter(notificationMapper.getNotificationEmitter());
     }
 
-    return this.process.run(params);
+    return this.process.run(params || this.getConfig().requestPayload);
+  }
+
+  injectLink = (link: Link) => {
+    const contextConfig = this.context.getConfig();
+    const newConfig = new RequestConfig(contextConfig.name, link.href, contextConfig.config);
+    newConfig.withRestMethod(link.type).withRel(link.rel).withRequestPayload(link.requestPayload);
+    this.context = new RestApiRequestContext(this.context.getContextPath(), newConfig);
+  }
+
+  resetLink = (rel: string) => {
+    const contextConfig = this.context.getConfig();
+    const newConfig = new RequestConfig(contextConfig.name, undefined, contextConfig.config);
+    newConfig.withRel(rel);
+    this.context = new RestApiRequestContext(this.context.getContextPath(), newConfig);
   }
 }
 
