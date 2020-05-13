@@ -47,23 +47,26 @@ export const AndreKriterierVelger = ({
           onChange={(isChecked) => lagreSakslisteAndreKriterier(valgtSakslisteId, akt, isChecked, true, valgtAvdelingEnhet)}
         />
         {values[akt.kode] && (
-          <div className={styles.arrowbox}>
-            <ArrowBox alignOffset={30}>
-              <RadioGroupField
-                name={`${akt.kode}_inkluder`}
-                onChange={(skalInkludere) => lagreSakslisteAndreKriterier(valgtSakslisteId, akt, true, skalInkludere, valgtAvdelingEnhet)}
-              >
-                <RadioOption
-                  value
-                  label={<FormattedMessage id="AndreKriterierVelger.TaMed" />}
-                />
-                <RadioOption
-                  value={false}
-                  label={<FormattedMessage id="AndreKriterierVelger.Fjern" />}
-                />
-              </RadioGroupField>
-            </ArrowBox>
-          </div>
+          <>
+            <VerticalSpacer sixteenPx />
+            <div className={styles.arrowbox}>
+              <ArrowBox alignOffset={30}>
+                <RadioGroupField
+                  name={`${akt.kode}_inkluder`}
+                  onChange={(skalInkludere) => lagreSakslisteAndreKriterier(valgtSakslisteId, akt, true, skalInkludere, valgtAvdelingEnhet)}
+                >
+                  <RadioOption
+                    value
+                    label={<FormattedMessage id="AndreKriterierVelger.TaMed" />}
+                  />
+                  <RadioOption
+                    value={false}
+                    label={<FormattedMessage id="AndreKriterierVelger.Fjern" />}
+                  />
+                </RadioGroupField>
+              </ArrowBox>
+            </div>
+          </>
         )}
       </Fragment>
     ))}

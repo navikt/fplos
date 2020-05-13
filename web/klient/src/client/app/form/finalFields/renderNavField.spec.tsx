@@ -40,6 +40,6 @@ describe('renderNavField', () => {
     const mockField = wrapper.find(MockField);
 
     expect(mockField).to.have.length(1);
-    expect(mockField.at(0).props().feil).to.eql({ feilmelding: 'Feltet må fylles ut' });
+    expect(mockField.at(0).props().feil).to.eql('Feltet må fylles ut');
   });
 });

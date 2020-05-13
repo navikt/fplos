@@ -22,6 +22,7 @@ const CheckboxField: FC<CheckboxField.propTypes & CheckboxField.defaultProps> = 
   name, label, validate, readOnly, ...otherProps
 }) => (
   <Field
+    type="checkbox"
     name={name}
     validate={validate ? composeValidators(validate) : undefined}
     component={RenderCheckboxField}
