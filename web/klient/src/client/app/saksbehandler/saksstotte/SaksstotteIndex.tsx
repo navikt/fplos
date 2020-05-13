@@ -1,10 +1,8 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
 
-import oppgavePropType from '../oppgavePropType';
-import { Oppgave } from '../oppgaveTsType';
+import Oppgave from '../oppgaveTsType';
 import { fetchBehandledeOppgaver, getBehandledeOppgaver } from './duck';
 import { getValgtSakslisteId } from '../behandlingskoer/duck';
 import SaksstottePaneler from './components/SaksstottePaneler';
@@ -20,12 +18,6 @@ interface TsProps {
  * SaksstotteIndex
  */
 export class SaksstotteIndex extends Component<TsProps> {
-  static propTypes = {
-    sistBehandledeSaker: PropTypes.arrayOf(oppgavePropType),
-    fetchBehandledeOppgaver: PropTypes.func.isRequired,
-    valgtSakslisteId: PropTypes.number,
-  };
-
   static defaultProps = {
     sistBehandledeSaker: [],
     valgtSakslisteId: undefined,

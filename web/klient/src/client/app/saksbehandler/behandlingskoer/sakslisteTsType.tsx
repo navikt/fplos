@@ -5,9 +5,7 @@ type AnnetKriterie = Readonly<{
   inkluder: boolean;
 }>;
 
-// TODO (TOR) default export feilar for yarn:coverage
-// eslint-disable-next-line import/prefer-default-export
-export type Saksliste = Readonly<{
+type Saksliste = Readonly<{
   sakslisteId: number;
   navn: string;
   behandlingTyper: Kodeverk[];
@@ -22,3 +20,5 @@ export type Saksliste = Readonly<{
     erDynamiskPeriode: boolean;
   };
 }>
+
+export default Saksliste;

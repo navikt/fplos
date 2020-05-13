@@ -27,7 +27,7 @@ interface Koordinat {
   y: number;
 }
 
-interface TsProps {
+interface OwnProps {
   width: number;
   height: number;
   ferdigstilteOppgaver: Koordinat[];
@@ -40,15 +40,15 @@ interface CrosshairValue {
   y: number;
 }
 
-interface StateTsProps {
+interface StateProps {
   crosshairValues: CrosshairValue[];
 }
 
 /**
  * NyeOgFerdigstilteOppgaverForSisteSyvGraf
  */
-export class NyeOgFerdigstilteOppgaverForSisteSyvGraf extends Component<TsProps & WrappedComponentProps, StateTsProps> {
-  constructor(props: TsProps) {
+export class NyeOgFerdigstilteOppgaverForSisteSyvGraf extends Component<OwnProps & WrappedComponentProps, StateProps> {
+  constructor(props: OwnProps) {
     super(props);
 
     this.state = {

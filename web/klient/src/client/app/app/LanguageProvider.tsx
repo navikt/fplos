@@ -4,10 +4,10 @@ import { IntlProvider } from 'react-intl';
 
 import data from '../sprak/nb_NO.json';
 
-type OwnProps = Readonly<{
+interface OwnProps {
   nbMessages: {};
   children: ReactNode;
-}>
+}
 
 /**
  * LanguageProvider

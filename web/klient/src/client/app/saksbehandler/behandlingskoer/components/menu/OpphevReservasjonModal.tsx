@@ -5,7 +5,7 @@ import { Form } from 'react-final-form';
 import { Hovedknapp, Knapp } from 'nav-frontend-knapper';
 import { Undertittel } from 'nav-frontend-typografi';
 
-import { Oppgave } from 'saksbehandler/oppgaveTsType';
+import Oppgave from 'saksbehandler/oppgaveTsType';
 import {
   hasValidText, maxLength, minLength, required,
 } from 'utils/validation/validators';

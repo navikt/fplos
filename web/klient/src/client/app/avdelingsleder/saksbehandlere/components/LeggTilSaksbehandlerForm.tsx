@@ -14,12 +14,12 @@ import { required } from 'utils/validation/validators';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import { InputField } from 'form/FinalFields';
 import { FlexContainer, FlexRow, FlexColumn } from 'sharedComponents/flexGrid';
-import { Saksbehandler } from '../saksbehandlerTsType';
+import Saksbehandler from '../saksbehandlerTsType';
 import { getSaksbehandler, getAvdelingensSaksbehandlere, getSaksbehandlerSokFinished } from '../duck';
 
 import styles from './leggTilSaksbehandlerForm.less';
 
-interface TsProps {
+interface OwnProps {
   finnSaksbehandler: (brukerIdent: string) => Promise<string>;
   leggTilSaksbehandler: (brukerIdent: string, avdelingEnhet: string) => Promise<string>;
   resetSaksbehandlerSok: () => void;
@@ -29,21 +29,21 @@ interface TsProps {
   valgtAvdelingEnhet: string;
 }
 
-interface StateTsProps {
+interface StateProps {
   leggerTilNySaksbehandler: boolean;
 }
 
 /**
  * LeggTilSaksbehandlerForm
  */
-export class LeggTilSaksbehandlerForm extends Component<TsProps & WrappedComponentProps, StateTsProps> {
+export class LeggTilSaksbehandlerForm extends Component<OwnProps & WrappedComponentProps, StateProps> {
   static defaultProps = {
     saksbehandler: undefined,
   }
 
   nodes: ReactNode[];
 
-  constructor(props: TsProps) {
+  constructor(props: OwnProps) {
     super(props);
 
     this.state = {

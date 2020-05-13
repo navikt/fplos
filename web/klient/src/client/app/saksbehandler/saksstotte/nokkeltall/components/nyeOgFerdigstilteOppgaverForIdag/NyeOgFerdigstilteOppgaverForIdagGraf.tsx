@@ -36,7 +36,7 @@ interface Koordinat {
   y: number;
 }
 
-interface TsProps {
+interface OwnProps {
   width: number;
   height: number;
   behandlingTyper: Kodeverk[];
@@ -45,15 +45,15 @@ interface TsProps {
   isEmpty: boolean;
 }
 
-interface StateTsProps {
+interface StateProps {
   hintVerdi: any;
 }
 
 /**
  * NyeOgFerdigstilteOppgaverForIdagGraf
  */
-export class NyeOgFerdigstilteOppgaverForIdagGraf extends Component<TsProps & WrappedComponentProps, StateTsProps> {
-  constructor(props: TsProps) {
+export class NyeOgFerdigstilteOppgaverForIdagGraf extends Component<OwnProps & WrappedComponentProps, StateProps> {
+  constructor(props: OwnProps) {
     super(props);
 
     this.state = {

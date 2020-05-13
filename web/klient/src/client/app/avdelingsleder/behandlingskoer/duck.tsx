@@ -129,16 +129,16 @@ const initialState = {
   valgtSakslisteId: undefined,
 };
 
-interface StateTsProp {
+interface State {
   valgtSakslisteId?: number;
 }
 
-interface ActionTsProp {
+interface Action {
   type: string;
   payload?: any;
 }
 
-export const organiseringAvSakslisterReducer = (state: StateTsProp = initialState, action: ActionTsProp = { type: '' }) => {
+export const organiseringAvSakslisterReducer = (state: State = initialState, action: Action = { type: '' }) => {
   switch (action.type) {
     case SET_VALGT_SAKSLISTE_ID:
       return {

@@ -1,19 +1,17 @@
 
-import React from 'react';
-import PropTypes from 'prop-types';
+import React, { FunctionComponent } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { Undertittel } from 'nav-frontend-typografi';
 
-import sakslistePropType from 'saksbehandler/behandlingskoer/sakslistePropType';
-import { Saksliste } from 'saksbehandler/behandlingskoer/sakslisteTsType';
-import { Oppgave } from 'saksbehandler/oppgaveTsType';
+import Saksliste from 'saksbehandler/behandlingskoer/sakslisteTsType';
+import Oppgave from 'saksbehandler/oppgaveTsType';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import SakslisteVelgerForm from './SakslisteVelgerForm';
 import OppgaverTabell from './OppgaverTabell';
 
 import styles from './sakslistePanel.less';
 
-type TsProps = Readonly<{
+interface OwnProps {
   sakslister: Saksliste[];
   fetchSakslisteOppgaver: (sakslisteId: number) => void;
   reserverOppgave: (oppgaveId: Oppgave) => void;
@@ -21,12 +19,12 @@ type TsProps = Readonly<{
   forlengOppgaveReservasjon: (oppgaveId: number) => Promise<string>;
   endreOppgaveReservasjon: (oppgaveId: number, reserverTil: string) => Promise<string>;
   flyttReservasjon: (oppgaveId: number, brukerident: string, begrunnelse: string) => Promise<string>;
-}>
+}
 
 /**
  * SakslistePanel
  */
-const SakslistePanel = ({
+const SakslistePanel: FunctionComponent<OwnProps> = ({
   reserverOppgave,
   opphevOppgaveReservasjon,
   forlengOppgaveReservasjon,
@@ -34,7 +32,7 @@ const SakslistePanel = ({
   sakslister,
   fetchSakslisteOppgaver,
   flyttReservasjon,
-}: TsProps) => (
+}) => (
   <>
     <Undertittel><FormattedMessage id="SakslistePanel.StartBehandling" /></Undertittel>
     <div className={styles.container}>
@@ -53,14 +51,5 @@ const SakslistePanel = ({
     </div>
   </>
 );
-
-SakslistePanel.propTypes = {
-  sakslister: PropTypes.arrayOf(sakslistePropType),
-  fetchSakslisteOppgaver: PropTypes.func.isRequired,
-  reserverOppgave: PropTypes.func.isRequired,
-  opphevOppgaveReservasjon: PropTypes.func.isRequired,
-  forlengOppgaveReservasjon: PropTypes.func.isRequired,
-  flyttReservasjon: PropTypes.func.isRequired,
-};
 
 export default SakslistePanel;

@@ -5,8 +5,8 @@ import { Hovedknapp } from 'nav-frontend-knapper';
 import { Normaltekst } from 'nav-frontend-typografi';
 
 import { getDateAndTime } from 'utils/dateUtils';
-import { OppgaveStatus } from 'saksbehandler/oppgaveStatusTsType';
-import { Oppgave } from 'saksbehandler/oppgaveTsType';
+import OppgaveStatus from 'saksbehandler/oppgaveStatusTsType';
+import Oppgave from 'saksbehandler/oppgaveTsType';
 import Image from 'sharedComponents/Image';
 import Modal from 'sharedComponents/Modal';
 

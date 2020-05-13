@@ -16,7 +16,7 @@ const thirtyDaysFromNow = () => {
   return result;
 };
 
-interface TsProps {
+interface OwnProps {
   showModal: boolean;
   endreOppgaveReservasjon: (reserverTil: string) => void;
   closeModal: (event: Event) => void;
@@ -26,7 +26,7 @@ interface TsProps {
 /**
  * OppgaveReservasjonEndringDatoModal.
  */
-export class OppgaveReservasjonEndringDatoModal extends Component<TsProps & WrappedComponentProps> {
+export class OppgaveReservasjonEndringDatoModal extends Component<OwnProps & WrappedComponentProps> {
   buildInitialValues = (reserverTil: string) => ({
     reserverTil: (reserverTil && reserverTil.length >= 10) ? reserverTil.substr(0, 10) : '',
   });

@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
 
@@ -15,11 +14,6 @@ interface TsProps {
  * SaksbehandlerNokkeltallIndex
  */
 export class SaksbehandlerNokkeltallIndex extends Component<TsProps> {
-  static propTypes = {
-    fetchNyeOgFerdigstilteOppgaverNokkeltall: PropTypes.func.isRequired,
-    valgtSakslisteId: PropTypes.number.isRequired,
-  };
-
   componentDidMount = () => {
     const {
       fetchNyeOgFerdigstilteOppgaverNokkeltall: fetchNyeOgFerdige, valgtSakslisteId,

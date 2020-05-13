@@ -32,8 +32,7 @@ const finnDagerSomTall = (antallDager) => {
   return Number.isNaN(nr) ? undefined : nr;
 };
 
-interface TsProps {
-  intl: any;
+interface OwnProps {
   valgtSaksliste: Saksliste;
   lagreSakslisteNavn: (saksliste: {sakslisteId: number; navn: string}, avdelingEnhet: string) => void;
   lagreSakslisteBehandlingstype: (sakslisteId: number, behandlingType: Kodeverk, isChecked: boolean, avdelingEnhet: string) => void;
@@ -47,7 +46,7 @@ interface TsProps {
 /**
  * UtvalgskriterierForSakslisteForm
  */
-export class UtvalgskriterierForSakslisteForm extends Component<TsProps & WrappedComponentProps> {
+export class UtvalgskriterierForSakslisteForm extends Component<OwnProps & WrappedComponentProps> {
   componentDidMount = () => {
     const {
       valgtSaksliste, hentAntallOppgaverForSaksliste, valgtAvdelingEnhet,
@@ -55,7 +54,7 @@ export class UtvalgskriterierForSakslisteForm extends Component<TsProps & Wrappe
     hentAntallOppgaverForSaksliste(valgtSaksliste.sakslisteId, valgtAvdelingEnhet);
   }
 
-  componentDidUpdate = (prevProps: TsProps) => {
+  componentDidUpdate = (prevProps: OwnProps) => {
     const {
       valgtSaksliste, hentAntallOppgaverForSaksliste, valgtAvdelingEnhet,
     } = this.props;

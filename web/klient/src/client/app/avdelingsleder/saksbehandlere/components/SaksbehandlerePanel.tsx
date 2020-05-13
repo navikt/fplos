@@ -1,13 +1,11 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React, { FunctionComponent } from 'react';
 
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
-import { Saksbehandler } from '../saksbehandlerTsType';
-import saksbehandlerPropType from '../saksbehandlerPropType';
+import Saksbehandler from '../saksbehandlerTsType';
 import LeggTilSaksbehandlerForm from './LeggTilSaksbehandlerForm';
 import SaksbehandlereTabell from './SaksbehandlereTabell';
 
-interface TsProps {
+interface OwnProps {
   saksbehandlere: Saksbehandler[];
   finnSaksbehandler: (brukerIdent: string) => Promise<string>;
   resetSaksbehandlerSok: () => void;
@@ -18,13 +16,13 @@ interface TsProps {
 /**
  * SaksbehandlerePanel
  */
-const SaksbehandlerePanel = ({
+const SaksbehandlerePanel: FunctionComponent<OwnProps> = ({
   saksbehandlere,
   finnSaksbehandler,
   resetSaksbehandlerSok,
   leggTilSaksbehandler,
   fjernSaksbehandler,
-}: TsProps) => (
+}) => (
   <>
     <SaksbehandlereTabell saksbehandlere={saksbehandlere} fjernSaksbehandler={fjernSaksbehandler} />
     <VerticalSpacer sixteenPx />
@@ -35,13 +33,5 @@ const SaksbehandlerePanel = ({
     />
   </>
 );
-
-SaksbehandlerePanel.propTypes = {
-  saksbehandlere: PropTypes.arrayOf(saksbehandlerPropType).isRequired,
-  finnSaksbehandler: PropTypes.func.isRequired,
-  resetSaksbehandlerSok: PropTypes.func.isRequired,
-  leggTilSaksbehandler: PropTypes.func.isRequired,
-  fjernSaksbehandler: PropTypes.func.isRequired,
-};
 
 export default SaksbehandlerePanel;

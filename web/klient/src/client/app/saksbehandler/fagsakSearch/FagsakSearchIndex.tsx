@@ -1,19 +1,16 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
 
 import OppgaveErReservertAvAnnenModal from 'saksbehandler/components/OppgaveErReservertAvAnnenModal';
-import { Fagsak } from 'saksbehandler/fagsakSearch/fagsakTsType';
+import Fagsak from 'saksbehandler/fagsakSearch/fagsakTsType';
 import { hentFpsakInternBehandlingId as hentFpsakInternBehandlingIdActionCreator, getFpsakUrl, getFptilbakeUrl } from 'app/duck';
 import { getFpsakHref, getFptilbakeHref } from 'app/paths';
 import {
   reserverOppgave as reserverOppgaveActionCreator, hentReservasjonsstatus as hentReservasjonActionCreator,
 } from 'saksbehandler/behandlingskoer/duck';
-import { OppgaveStatus } from 'saksbehandler/oppgaveStatusTsType';
-import { Oppgave } from 'saksbehandler/oppgaveTsType';
-import oppgavePropType from 'saksbehandler/oppgavePropType';
-import fagsakPropType from './fagsakPropType';
+import OppgaveStatus from 'saksbehandler/oppgaveStatusTsType';
+import Oppgave from 'saksbehandler/oppgaveTsType';
 import {
   searchFagsaker, resetFagsakSearch, hentOppgaverForFagsaker as hentOppgaverForFagsakerActionCreator,
 } from './duck';
@@ -64,25 +61,6 @@ export class FagsakSearchIndex extends Component<Props, StateProps> {
      sokStartet: false,
      sokFerdig: false,
    };
-
-  static propTypes = {
-    /**
-     * Saksnummer eller fødselsnummer/D-nummer
-     */
-    fagsaker: PropTypes.arrayOf(fagsakPropType),
-    fagsakOppgaver: PropTypes.arrayOf(oppgavePropType),
-    searchFagsaker: PropTypes.func.isRequired,
-    searchResultAccessDenied: PropTypes.shape({
-      feilmelding: PropTypes.string.isRequired,
-    }),
-    resetFagsakSearch: PropTypes.func.isRequired,
-    goToFpsak: PropTypes.func.isRequired,
-    goToTilbakesak: PropTypes.func.isRequired,
-    reserverOppgave: PropTypes.func.isRequired,
-    hentReservasjonsstatus: PropTypes.func.isRequired,
-    hentOppgaverForFagsaker: PropTypes.func.isRequired,
-    hentFpsakInternBehandlingId: PropTypes.func.isRequired,
-  };
 
   static defaultProps = {
     fagsaker: [],

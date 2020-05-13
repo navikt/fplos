@@ -16,7 +16,7 @@ import fagsakYtelseType from 'kodeverk/fagsakYtelseType';
 import kodeverkTyper from 'kodeverk/kodeverkTyper';
 import { getKodeverk } from 'kodeverk/duck';
 import TilBehandlingGraf from './TilBehandlingGraf';
-import { OppgaveForDato } from './oppgaverForDatoTsType';
+import OppgaveForDato from './oppgaverForDatoTsType';
 import { getOppgaverPerDato } from '../../duck';
 
 import styles from './tilBehandlingPanel.less';

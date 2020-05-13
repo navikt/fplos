@@ -1,6 +1,5 @@
 
-import React from 'react';
-import PropTypes from 'prop-types';
+import React, { FunctionComponent } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { Normaltekst } from 'nav-frontend-typografi';
 
@@ -8,7 +7,7 @@ import DateLabel from 'sharedComponents/DateLabel';
 
 import styles from './aldervisning.less';
 
-interface TsProps {
+interface OwnProps {
   erDod: boolean;
   alder: number;
   dodsdato?: string;
@@ -19,11 +18,11 @@ interface TsProps {
  *
  * Presentasjonskomponent. Definerer visning av personens alder. (Søker)
  */
-const AlderVisning = ({
+const AlderVisning: FunctionComponent<OwnProps> = ({
   erDod,
   alder,
   dodsdato,
-}: TsProps) => {
+}) => {
   if (erDod) {
     return (
       <Normaltekst className={styles.displayInline}>
@@ -39,12 +38,6 @@ const AlderVisning = ({
       <FormattedMessage id="Person.Age" values={{ age: alder }} />
     </span>
   );
-};
-
-AlderVisning.propTypes = {
-  erDod: PropTypes.bool.isRequired,
-  alder: PropTypes.number.isRequired,
-  dodsdato: PropTypes.string,
 };
 
 AlderVisning.defaultProps = {

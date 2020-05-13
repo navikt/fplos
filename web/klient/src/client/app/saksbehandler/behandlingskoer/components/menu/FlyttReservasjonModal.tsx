@@ -14,7 +14,7 @@ import {
 import { TextAreaField, InputField } from 'form/FinalFields';
 import Modal from 'sharedComponents/Modal';
 import { getSaksbehandler, isSaksbehandlerSokStartet, isSaksbehandlerSokFerdig } from '../../duck';
-import { Saksbehandler } from '../../saksbehandlerTsType';
+import Saksbehandler from '../../saksbehandlerTsType';
 
 import styles from './flyttReservasjonModal.less';
 
@@ -23,7 +23,7 @@ const maxLength500 = maxLength(500);
 const minLength7 = minLength(7);
 const maxLength7 = maxLength(7);
 
-type TsProps = Readonly<{
+interface OwnProps {
   showModal: boolean;
   oppgaveId: number;
   closeModal: () => void;
@@ -33,14 +33,14 @@ type TsProps = Readonly<{
   saksbehandler?: Saksbehandler;
   erSaksbehandlerSokStartet: boolean;
   erSaksbehandlerSokFerdig: boolean;
-}>;
+}
 
 /**
  * FlyttReservasjonModal
  *
  * Presentasjonskomponent. Modal som lar en søke opp en saksbehandler som saken skal flyttes til. En kan også begrunne hvorfor saken skal flyttes.
  */
-export class FlyttReservasjonModal extends Component<TsProps & WrappedComponentProps> {
+export class FlyttReservasjonModal extends Component<OwnProps & WrappedComponentProps> {
    componentWillUnmount = () => {
      const {
        resetSaksbehandler,

@@ -13,12 +13,12 @@ import { getValgtAvdelingEnhet } from 'app/duck';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import { CheckboxField } from 'form/FinalFields';
 import { getAvdelingensSaksbehandlere } from 'avdelingsleder/saksbehandlere/duck';
-import { Saksbehandler } from 'avdelingsleder/saksbehandlere/saksbehandlerTsType';
+import Saksbehandler from 'avdelingsleder/saksbehandlere/saksbehandlerTsType';
 import Saksliste from '../../sakslisteTsType';
 
 import styles from './saksbehandlereForSakslisteForm.less';
 
-interface TsProps {
+interface OwnProps {
   valgtSaksliste: Saksliste;
   avdelingensSaksbehandlere: Saksbehandler[];
   knyttSaksbehandlerTilSaksliste: (sakslisteId: number, brukerIdent: string, isChecked: boolean, avdelingEnhet: string) => void;
@@ -28,7 +28,7 @@ interface TsProps {
 /**
  * SaksbehandlereForSakslisteForm
  */
-export class SaksbehandlereForSakslisteForm extends Component<TsProps> {
+export class SaksbehandlereForSakslisteForm extends Component<OwnProps> {
   static defaultProps = {
     avdelingensSaksbehandlere: [],
   }

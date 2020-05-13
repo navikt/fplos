@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { FunctionComponent } from 'react';
 import moment from 'moment';
 import { connect } from 'react-redux';
 import { createSelector } from 'reselect';
@@ -12,7 +12,7 @@ import NyeOgFerdigstilteOppgaverForSisteSyvGraf from './NyeOgFerdigstilteOppgave
 import { getNyeOgFerdigstilteOppgaverNokkeltall } from '../../duck';
 import NyeOgFerdigstilteOppgaver from '../nyeOgFerdigstilteOppgaverTsType';
 
-interface TsProps {
+interface OwnProps {
   width: number;
   height: number;
   nyeOgFerdigstilteOppgaver: NyeOgFerdigstilteOppgaver[];
@@ -21,12 +21,12 @@ interface TsProps {
 /**
  * NyeOgFerdigstilteOppgaverForSisteSyvPanel.
  */
-export const NyeOgFerdigstilteOppgaverForSisteSyvPanel = ({
+export const NyeOgFerdigstilteOppgaverForSisteSyvPanel: FunctionComponent<OwnProps> = ({
   width,
   height,
   nyeOgFerdigstilteOppgaver,
-}: TsProps) => (
-  <div>
+}) => (
+  <>
     <VerticalSpacer eightPx />
     <Element>
       <FormattedMessage id="NyeOgFerdigstilteOppgaverForSisteSyvPanel.SisteSyv" />
@@ -36,7 +36,7 @@ export const NyeOgFerdigstilteOppgaverForSisteSyvPanel = ({
       height={height}
       nyeOgFerdigstilteOppgaver={nyeOgFerdigstilteOppgaver}
     />
-  </div>
+  </>
 );
 
 export const getNyeOgFerdigstilteForSisteSyvDager = createSelector([getNyeOgFerdigstilteOppgaverNokkeltall], (nyeOgFerdigstilte = []) => {

@@ -4,7 +4,7 @@ import { bindActionCreators, Dispatch } from 'redux';
 import { withRouter } from 'react-router-dom';
 import moment from 'moment';
 
-import { Avdeling } from 'app/avdelingTsType';
+import Avdeling from 'app/avdelingTsType';
 import { parseQueryString } from 'utils/urlUtils';
 import EventType from 'data/rest-api/src/requestApi/eventType';
 import errorHandler from 'data/error-api-redux';
@@ -15,14 +15,14 @@ import {
   fetchAvdelingeneTilAvdelingsleder, getAvdelingeneTilAvdelingslederResultat,
   resetAvdelingeneTilAvdelingslederData, resetAvdelingEnhet, getNavAnsattKanOppgavestyre,
 } from './duck';
-import { Location } from './locationTsType';
+import Location from './locationTsType';
 import LanguageProvider from './LanguageProvider';
 import HeaderWithErrorPanel from './components/HeaderWithErrorPanel';
 import Home from './components/Home';
 
 import '../../nomodulestyles/global.less';
 
-type TsProps = Readonly<{
+interface OwnProps {
   errorMessages?: {
     type: EventType;
     code?: string;
@@ -44,7 +44,7 @@ type TsProps = Readonly<{
   avdelinger?: Avdeling[];
   valgtAvdelingEnhet?: string;
   kanOppgavestyre: boolean;
-}>
+}
 
 /**
  * AppIndex
@@ -54,7 +54,7 @@ type TsProps = Readonly<{
  * Komponenten er også ansvarlig for å hente innlogget NAV-ansatt, rettskilde-url, systemrutine-url
  * og kodeverk fra server og lagre desse i klientens state.
  */
-export class AppIndex extends Component<TsProps> {
+export class AppIndex extends Component<OwnProps> {
   static defaultProps = {
     crashMessage: '',
     navAnsattName: '',
@@ -71,8 +71,12 @@ export class AppIndex extends Component<TsProps> {
 
   fetchAvdelinger = () => {
     const {
-      location, fetchAvdelingeneTilAvdelingsleder: fetchAvdelinger, resetAvdelingEnhet: resetAvdeling, resetAvdelingeneTilAvdelingslederData: resetAvdelingene,
-      kanOppgavestyre, avdelinger,
+      location,
+      kanOppgavestyre,
+      avdelinger,
+      fetchAvdelingeneTilAvdelingsleder: fetchAvdelinger,
+      resetAvdelingEnhet: resetAvdeling,
+      resetAvdelingeneTilAvdelingslederData: resetAvdelingene,
     } = this.props;
 
     const harAvdelinger = avdelinger && avdelinger.length > 0;
@@ -88,7 +92,7 @@ export class AppIndex extends Component<TsProps> {
     this.fetchAvdelinger();
   }
 
-  componentDidUpdate = (prevProps: TsProps) => {
+  componentDidUpdate = (prevProps: OwnProps) => {
     const { funksjonellTid } = this.props;
 
     if (funksjonellTid && prevProps.funksjonellTid !== funksjonellTid) {
@@ -169,5 +173,4 @@ const mapDispatchToProps = (dispatch: Dispatch) => bindActionCreators({
   resetAvdelingeneTilAvdelingslederData,
 }, dispatch);
 
-// @ts-ignore
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(AppIndex));

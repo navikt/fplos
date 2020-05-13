@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { FunctionComponent } from 'react';
 import moment from 'moment';
 import { connect } from 'react-redux';
 import { createSelector } from 'reselect';
@@ -12,7 +12,7 @@ import NyeOgFerdigstilteOppgaverForIdagGraf from './NyeOgFerdigstilteOppgaverFor
 import { getNyeOgFerdigstilteOppgaverNokkeltall } from '../../duck';
 import NyeOgFerdigstilteOppgaver from '../nyeOgFerdigstilteOppgaverTsType';
 
-interface TsProps {
+interface OwnProps {
   width: number;
   height: number;
   nyeOgFerdigstilteOppgaver: NyeOgFerdigstilteOppgaver[];
@@ -21,12 +21,12 @@ interface TsProps {
 /**
  * NyeOgFerdigstilteOppgaverForIdagPanel.
  */
-export const NyeOgFerdigstilteOppgaverForIdagPanel = ({
+export const NyeOgFerdigstilteOppgaverForIdagPanel: FunctionComponent<OwnProps> = ({
   width,
   height,
   nyeOgFerdigstilteOppgaver,
-}: TsProps) => (
-  <div>
+}) => (
+  <>
     <Undertittel>
       <FormattedMessage id="NyeOgFerdigstilteOppgaverForIdagPanel.NyeOgFerdigstilte" />
     </Undertittel>
@@ -39,7 +39,7 @@ export const NyeOgFerdigstilteOppgaverForIdagPanel = ({
       height={height}
       nyeOgFerdigstilteOppgaver={nyeOgFerdigstilteOppgaver}
     />
-  </div>
+  </>
 );
 
 export const getNyeOgFerdigstilteForIDag = createSelector([getNyeOgFerdigstilteOppgaverNokkeltall], (nyeOgFerdigstilte = []) => {

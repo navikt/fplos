@@ -1,10 +1,8 @@
 
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import { FormattedMessage } from 'react-intl';
 
-import oppgavePropType from 'saksbehandler/oppgavePropType';
-import { Oppgave } from 'saksbehandler/oppgaveTsType';
+import Oppgave from 'saksbehandler/oppgaveTsType';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import { getDateAndTime } from 'utils/dateUtils';
 import MenuButton from './MenuButton';
@@ -31,7 +29,7 @@ const toggleEventListeners = (turnOnEventListeners, handleOutsideClick) => {
   }
 };
 
-type TsProps = Readonly<{
+interface OwnProps {
   toggleMenu: (valgtOppgave: Oppgave) => void;
   offset: {
     top: number;
@@ -45,9 +43,9 @@ type TsProps = Readonly<{
   finnSaksbehandler: (brukerIdent: string) => Promise<string>;
   resetSaksbehandler: () => Promise<string>;
   flyttReservasjon: (oppgaveId: number, brukerident: string, begrunnelse: string) => Promise<string>;
-}>;
+}
 
-interface TsState {
+interface OwnState {
   showOpphevReservasjonModal: boolean;
   showForlengetReservasjonModal: boolean;
   showReservasjonEndringDatoModal: boolean;
@@ -57,23 +55,7 @@ interface TsState {
 /**
  * OppgaveHandlingerMenu
  */
-export class OppgaveHandlingerMenu extends Component<TsProps, TsState> {
-  static propTypes = {
-    toggleMenu: PropTypes.func.isRequired,
-    offset: PropTypes.shape({
-      top: PropTypes.number.isRequired,
-      left: PropTypes.number.isRequired,
-    }).isRequired,
-    oppgave: oppgavePropType.isRequired,
-    imageNode: PropTypes.shape({}).isRequired,
-    opphevOppgaveReservasjon: PropTypes.func.isRequired,
-    forlengOppgaveReservasjon: PropTypes.func.isRequired,
-    endreOppgaveReservasjon: PropTypes.func.isRequired,
-    finnSaksbehandler: PropTypes.func.isRequired,
-    resetSaksbehandler: PropTypes.func.isRequired,
-    flyttReservasjon: PropTypes.func.isRequired,
-  };
-
+export class OppgaveHandlingerMenu extends Component<OwnProps, OwnState> {
   node: any;
 
   menuButtonRef: any;

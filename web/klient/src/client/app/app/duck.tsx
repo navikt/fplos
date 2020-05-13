@@ -26,15 +26,15 @@ const initialState = {
   valgtAvdelingEnhet: undefined,
 };
 
-interface ActionTsType {
+interface Action {
   type: string;
   data?: any;
 }
-interface StateTsType {
+interface State {
   valgtAvdelingEnhet?: string;
 }
 
-export const appReducer = (state: StateTsType = initialState, action: ActionTsType = { type: '' }) => {
+export const appReducer = (state: State = initialState, action: Action = { type: '' }) => {
   switch (action.type) {
     case SET_AVDELING_ENHET:
       return {

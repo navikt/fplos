@@ -1,5 +1,4 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React, { FunctionComponent } from 'react';
 import { createSelector } from 'reselect';
 import { connect } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
@@ -8,12 +7,11 @@ import { Undertekst } from 'nav-frontend-typografi';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import { getKodeverk } from 'kodeverk/duck';
 import Kodeverk from 'kodeverk/kodeverkTsType';
-import kodeverkPropType from 'kodeverk/kodeverkPropType';
 import kodeverkTyper from 'kodeverk/kodeverkTyper';
 import behandlingType from 'kodeverk/behandlingType';
 import { CheckboxField } from 'form/FinalFields';
 
-interface TsProps {
+interface OwnProps {
   behandlingTyper: Kodeverk[];
   valgtSakslisteId: number;
   lagreSakslisteBehandlingstype: (sakslisteId: number, behandlingType: Kodeverk, isChecked: boolean, avdelingEnhet: string) => void;
@@ -23,12 +21,12 @@ interface TsProps {
 /**
  * BehandlingstypeVelger
  */
-export const BehandlingstypeVelger = ({
+export const BehandlingstypeVelger: FunctionComponent<OwnProps> = ({
   behandlingTyper,
   valgtSakslisteId,
   lagreSakslisteBehandlingstype,
   valgtAvdelingEnhet,
-}: TsProps) => (
+}) => (
   <>
     <Undertekst>
       <FormattedMessage id="BehandlingstypeVelger.Behandlingstype" />
@@ -46,13 +44,6 @@ export const BehandlingstypeVelger = ({
     ))}
   </>
 );
-
-BehandlingstypeVelger.propTypes = {
-  behandlingTyper: PropTypes.arrayOf(kodeverkPropType).isRequired,
-  valgtSakslisteId: PropTypes.number.isRequired,
-  lagreSakslisteBehandlingstype: PropTypes.func.isRequired,
-  valgtAvdelingEnhet: PropTypes.string.isRequired,
-};
 
 const behandlingstypeOrder = Object.values(behandlingType);
 

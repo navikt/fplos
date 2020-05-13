@@ -51,8 +51,8 @@ export function shallowWithIntl(node) {
   return shallow(nodeWithIntlProp(node, undefined), { ...getOptions(undefined) });
 }
 
-export function mountWithIntl(node, options, moduleMessages = undefined) {
-  return mount(nodeWithIntlProp(node, moduleMessages), { ...getOptions(moduleMessages), ...options });
+export function mountWithIntl(node) {
+  return mount(nodeWithIntlProp(node, undefined), { ...getOptions(undefined) });
 }
 
 /* Lagt til for a hindre warnings i tester */

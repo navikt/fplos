@@ -8,16 +8,16 @@ import Image from 'sharedComponents/Image';
 import Modal from 'sharedComponents/Modal';
 
 import advarselImageUrl from 'images/advarsel.svg';
-import { Saksliste } from '../sakslisteTsType';
+import Saksliste from '../sakslisteTsType';
 
 import styles from './sletteSakslisteModal.less';
 
-type OwnProps = Readonly<{
+interface OwnProps {
   intl: any;
   valgtSaksliste: Saksliste;
   cancel: () => void;
   submit: (saksliste: Saksliste) => void;
-}>;
+}
 
 /**
  * SletteSakslisteModal

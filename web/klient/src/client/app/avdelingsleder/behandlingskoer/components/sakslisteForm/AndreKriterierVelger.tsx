@@ -1,11 +1,9 @@
-import React, { Fragment } from 'react';
-import PropTypes from 'prop-types';
+import React, { Fragment, FunctionComponent } from 'react';
 import { connect } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
 import { Undertekst } from 'nav-frontend-typografi';
 
 import kodeverkTyper from 'kodeverk/kodeverkTyper';
-import kodeverkPropType from 'kodeverk/kodeverkPropType';
 import { getKodeverk } from 'kodeverk/duck';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import ArrowBox from 'sharedComponents/ArrowBox';
@@ -14,7 +12,7 @@ import { CheckboxField, RadioGroupField, RadioOption } from 'form/FinalFields';
 
 import styles from './andreKriterierVelger.less';
 
-interface TsProps {
+interface OwnProps {
   valgtSakslisteId: number;
   lagreSakslisteAndreKriterier: (sakslisteId: number, andreKriterierType: Kodeverk, isChecked: boolean, skalInkludere: boolean, avdelingEnhet: string) => void;
   valgtAvdelingEnhet: string;
@@ -25,13 +23,13 @@ interface TsProps {
 /**
  * AndreKriterierVelger
  */
-export const AndreKriterierVelger = ({
+export const AndreKriterierVelger: FunctionComponent<OwnProps> = ({
   valgtSakslisteId,
   lagreSakslisteAndreKriterier,
   valgtAvdelingEnhet,
   andreKriterierTyper,
   values,
-}: TsProps) => (
+}) => (
   <>
     <Undertekst>
       <FormattedMessage id="AndreKriterierVelger.AndreKriterier" />
@@ -72,13 +70,6 @@ export const AndreKriterierVelger = ({
     ))}
   </>
 );
-
-AndreKriterierVelger.propTypes = {
-  valgtSakslisteId: PropTypes.number.isRequired,
-  lagreSakslisteAndreKriterier: PropTypes.func.isRequired,
-  valgtAvdelingEnhet: PropTypes.string.isRequired,
-  andreKriterierTyper: PropTypes.arrayOf(kodeverkPropType).isRequired,
-};
 
 const mapStateToProps = (state) => ({
   andreKriterierTyper: getKodeverk(kodeverkTyper.ANDRE_KRITERIER_TYPE)(state),

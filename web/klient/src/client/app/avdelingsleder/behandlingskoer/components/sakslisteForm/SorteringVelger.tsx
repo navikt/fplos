@@ -23,7 +23,6 @@ import BelopSorteringValg from './BelopSorteringValg';
 import KoSorteringType from '../../KoSorteringTsType';
 
 interface OwnProps {
-  intl: any;
   koSorteringTyper: KoSorteringType[];
   valgtSakslisteId: number;
   valgteBehandlingtyper: Kodeverk[];

@@ -1,13 +1,10 @@
 
-import React, { Fragment } from 'react';
-import PropTypes from 'prop-types';
+import React, { Fragment, FunctionComponent } from 'react';
 import { connect } from 'react-redux';
 import { createSelector } from 'reselect';
 import NavFrontendChevron from 'nav-frontend-chevron';
 
-import { Oppgave } from 'saksbehandler/oppgaveTsType';
-import oppgavePropType from 'saksbehandler/oppgavePropType';
-import kodeverkPropType from 'kodeverk/kodeverkPropType';
+import Oppgave from 'saksbehandler/oppgaveTsType';
 import Kodeverk from 'kodeverk/kodeverkTsType';
 import { getKodeverk } from 'kodeverk/duck';
 import kodeverkTyper from 'kodeverk/kodeverkTyper';
@@ -17,8 +14,7 @@ import TableColumn from 'sharedComponents/table/TableColumn';
 import DateLabel from 'sharedComponents/DateLabel';
 import fagsakStatus from 'kodeverk/fagsakStatus';
 import { getFagsaker, getFagsakOppgaver } from '../fagsakSearchSelectors';
-import fagsakPropType from '../fagsakPropType';
-import { Fagsak } from '../fagsakTsType';
+import Fagsak from '../fagsakTsType';
 
 import styles from './fagsakList.less';
 
@@ -31,7 +27,7 @@ const headerTextCodes = [
   'EMPTY_1',
 ];
 
-interface TsProps {
+interface OwnProps {
   sorterteFagsaker: Fagsak[];
   selectFagsakCallback: (saksnummer: number) => void;
   selectOppgaveCallback: (oppgave: Oppgave) => void;
@@ -49,14 +45,14 @@ const getFagsakCallback = (selectFagsakCallback) => (event: any, saksnummer: num
  *
  * Presentasjonskomponent. Formaterer fagsak-søkeresultatet for visning i tabell. Sortering av fagsakene blir håndtert her.
  */
-export const FagsakList = ({
+export const FagsakList: FunctionComponent<OwnProps> = ({
   sorterteFagsaker,
   fagsakOppgaver,
   selectFagsakCallback,
   selectOppgaveCallback,
   fagsakStatusTyper,
   fagsakYtelseTyper,
-}: TsProps) => (
+}) => (
   <Table headerTextCodes={headerTextCodes} classNameTable={styles.table}>
     {sorterteFagsaker.map((fagsak) => {
       const fagsakStatusType = fagsakStatusTyper.find((type) => type.kode === fagsak.status.kode);
@@ -101,15 +97,6 @@ export const FagsakList = ({
     })}
   </Table>
 );
-
-FagsakList.propTypes = {
-  sorterteFagsaker: PropTypes.arrayOf(fagsakPropType).isRequired,
-  fagsakOppgaver: PropTypes.arrayOf(oppgavePropType).isRequired,
-  selectFagsakCallback: PropTypes.func.isRequired,
-  selectOppgaveCallback: PropTypes.func.isRequired,
-  fagsakStatusTyper: PropTypes.arrayOf(kodeverkPropType).isRequired,
-  fagsakYtelseTyper: PropTypes.arrayOf(kodeverkPropType).isRequired,
-};
 
 export const getSorterteFagsaker = createSelector([getFagsaker], (fagsaker) => fagsaker.concat().sort((fagsak1, fagsak2) => {
   if (fagsak1.status.kode === fagsakStatus.AVSLUTTET && fagsak2.status.kode !== fagsakStatus.AVSLUTTET) {

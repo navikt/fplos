@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import {
   XYPlot, XAxis, YAxis, AreaSeries, Crosshair, HorizontalGridLines,
@@ -26,32 +25,22 @@ interface Koordinat {
   y: number;
 }
 
-interface TsProps {
+interface OwnProps {
   width: number;
   height: number;
   data: Koordinat[];
   isEmpty: boolean;
 }
 
-interface StateTsProps {
+interface StateProps {
   crosshairValues: Koordinat[];
 }
 
 /**
  * OppgaverPerForsteStonadsdagGraf.
  */
-export class OppgaverPerForsteStonadsdagGraf extends Component<TsProps, StateTsProps> {
-  static propTypes = {
-    width: PropTypes.number.isRequired,
-    height: PropTypes.number.isRequired,
-    data: PropTypes.arrayOf(PropTypes.shape({
-      x: PropTypes.instanceOf(Date).isRequired,
-      y: PropTypes.number.isRequired,
-    })).isRequired,
-    isEmpty: PropTypes.bool.isRequired,
-  };
-
-  constructor(props: TsProps) {
+export class OppgaverPerForsteStonadsdagGraf extends Component<OwnProps, StateProps> {
+  constructor(props: OwnProps) {
     super(props);
 
     this.state = {

@@ -1,19 +1,17 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
 
 import fpLosApi from 'data/fpLosApi';
 import { getFpsakHref, getFptilbakeHref } from 'app/paths';
-import sakslistePropType from 'saksbehandler/behandlingskoer/sakslistePropType';
-import { Saksliste } from 'saksbehandler/behandlingskoer/sakslisteTsType';
+import Saksliste from 'saksbehandler/behandlingskoer/sakslisteTsType';
 import {
   getFpsakUrl,
   getFptilbakeUrl,
   hentFpsakInternBehandlingId as hentFpsakInternBehandlingIdActionCreator,
 } from 'app/duck';
-import { OppgaveStatus } from 'saksbehandler/oppgaveStatusTsType';
-import { Oppgave } from 'saksbehandler/oppgaveTsType';
+import OppgaveStatus from 'saksbehandler/oppgaveStatusTsType';
+import Oppgave from 'saksbehandler/oppgaveTsType';
 import OppgaveErReservertAvAnnenModal from 'saksbehandler/components/OppgaveErReservertAvAnnenModal';
 import {
   fetchAlleSakslister, getSakslisteResult, fetchOppgaverTilBehandling, fetchReserverteOppgaver, reserverOppgave, opphevOppgaveReservasjon,
@@ -23,7 +21,7 @@ import {
 import SakslistePanel from './components/SakslistePanel';
 import BehandlingPollingTimoutModal from './components/BehandlingPollingTimoutModal';
 
-type TsProps = Readonly<{
+interface OwnProps {
   fetchOppgaverTilBehandling: (sakslisteId: number) => Promise<{payload: any }>;
   fetchOppgaverTilBehandlingOppgaver: (sakslisteId: number, oppgaveIder?: string) => Promise<{payload: any }>;
   fetchAlleSakslister: () => void;
@@ -40,7 +38,7 @@ type TsProps = Readonly<{
   harTimeout: boolean;
   setValgtSakslisteId: (sakslisteId: number) => void;
   hentFpsakInternBehandlingId: (uuid: string) => Promise<{payload: number }>;
-}>
+}
 
 interface StateProps {
   sakslisteId?: number;
@@ -51,28 +49,9 @@ interface StateProps {
 /**
  * BehandlingskoerIndex
  */
-export class BehandlingskoerIndex extends Component<TsProps, StateProps> {
+export class BehandlingskoerIndex extends Component<OwnProps, StateProps> {
   state = {
     sakslisteId: undefined, reservertAvAnnenSaksbehandler: false, reservertOppgave: undefined, reservertOppgaveStatus: undefined,
-  };
-
-  static propTypes = {
-    fetchOppgaverTilBehandling: PropTypes.func.isRequired,
-    fetchOppgaverTilBehandlingOppgaver: PropTypes.func.isRequired,
-    fetchAlleSakslister: PropTypes.func.isRequired,
-    fetchReserverteOppgaver: PropTypes.func.isRequired,
-    reserverOppgave: PropTypes.func.isRequired,
-    opphevOppgaveReservasjon: PropTypes.func.isRequired,
-    forlengOppgaveReservasjon: PropTypes.func.isRequired,
-    endreOppgaveReservasjon: PropTypes.func.isRequired,
-    flyttReservasjon: PropTypes.func.isRequired,
-    sakslister: PropTypes.arrayOf(sakslistePropType),
-    fpsakUrl: PropTypes.string.isRequired,
-    fptilbakeUrl: PropTypes.string.isRequired,
-    goToUrl: PropTypes.func.isRequired,
-    harTimeout: PropTypes.bool.isRequired,
-    setValgtSakslisteId: PropTypes.func.isRequired,
-    hentFpsakInternBehandlingId: PropTypes.func.isRequired,
   };
 
   static defaultProps = {

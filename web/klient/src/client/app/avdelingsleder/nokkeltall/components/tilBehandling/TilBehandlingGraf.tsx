@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import {
@@ -12,7 +11,6 @@ import { FlexContainer, FlexRow, FlexColumn } from 'sharedComponents/flexGrid';
 import { DDMMYYYY_DATE_FORMAT } from 'utils/formats';
 import behandlingType from 'kodeverk/behandlingType';
 import Kodeverk from 'kodeverk/kodeverkTsType';
-import kodeverkPropType from 'kodeverk/kodeverkPropType';
 import kodeverkTyper from 'kodeverk/kodeverkTyper';
 import { getKodeverk } from 'kodeverk/duck';
 
@@ -98,7 +96,7 @@ export interface OppgaveForDato {
   antall: number;
 }
 
-interface TsProps {
+interface OwnProps {
   width: number;
   height: number;
   behandlingTyper: Kodeverk[];
@@ -111,27 +109,15 @@ interface CrosshairValue {
   y: number;
 }
 
-interface StateTsProps {
+interface StateProps {
   crosshairValues: CrosshairValue[];
 }
 
 /**
  * TilBehandlingGraf.
  */
-export class TilBehandlingGraf extends Component<TsProps, StateTsProps> {
-  static propTypes = {
-    width: PropTypes.number.isRequired,
-    height: PropTypes.number.isRequired,
-    behandlingTyper: PropTypes.arrayOf(kodeverkPropType).isRequired,
-    oppgaverPerDato: PropTypes.arrayOf(PropTypes.shape({
-      behandlingType: kodeverkPropType.isRequired,
-      opprettetDato: PropTypes.string.isRequired,
-      antall: PropTypes.number.isRequired,
-    })).isRequired,
-    isToUkerValgt: PropTypes.bool.isRequired,
-  };
-
-  constructor(props: TsProps) {
+export class TilBehandlingGraf extends Component<OwnProps, StateProps> {
+  constructor(props: OwnProps) {
     super(props);
 
     this.state = {

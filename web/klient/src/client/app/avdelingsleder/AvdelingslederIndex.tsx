@@ -1,5 +1,4 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React, { FunctionComponent } from 'react';
 import { connect } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
 import { createSelector } from 'reselect';
@@ -16,7 +15,7 @@ import {
 import { parseQueryString } from 'utils/urlUtils';
 import { getAvdelingslederPanelLocationCreator } from 'app/paths';
 import trackRouteParam from 'app/data/trackRouteParam';
-import { Location } from 'app/locationTsType';
+import Location from 'app/locationTsType';
 import { getSelectedAvdelingslederPanel, setSelectedAvdelingslederPanel } from './duck';
 import AvdelingslederDashboard from './components/AvdelingslederDashboard';
 import IkkeTilgangTilAvdelingslederPanel from './components/IkkeTilgangTilAvdelingslederPanel';
@@ -53,7 +52,7 @@ const messageId = {
   [AvdelingslederPanels.RESERVASJONER]: 'AvdelingslederIndex.Reservasjoner',
 };
 
-interface TsProps {
+interface OwnProps {
   valgtAvdelingEnhet?: string;
   activeAvdelingslederPanel: string;
   getAvdelingslederPanelLocation: (panel: string) => Location;
@@ -79,14 +78,14 @@ const getTab = (avdelingslederPanel, activeAvdelingslederPanel, getAvdelingslede
 /**
  * AvdelingslederIndex
  */
-export const AvdelingslederIndex = ({
+export const AvdelingslederIndex: FunctionComponent<OwnProps> = ({
   valgtAvdelingEnhet,
   activeAvdelingslederPanel,
   getAvdelingslederPanelLocation,
   kanOppgavestyre,
   kanBehandleKode6,
   erKode6Avdeling,
-}: TsProps) => {
+}) => {
   if (!kanOppgavestyre) {
     return <IkkeTilgangTilAvdelingslederPanel />;
   } if (erKode6Avdeling && !kanBehandleKode6) {
@@ -110,15 +109,6 @@ export const AvdelingslederIndex = ({
     );
   }
   return <LoadingPanel />;
-};
-
-AvdelingslederIndex.propTypes = {
-  valgtAvdelingEnhet: PropTypes.string,
-  activeAvdelingslederPanel: PropTypes.string.isRequired,
-  getAvdelingslederPanelLocation: PropTypes.func.isRequired,
-  kanOppgavestyre: PropTypes.bool,
-  kanBehandleKode6: PropTypes.bool,
-  erKode6Avdeling: PropTypes.bool,
 };
 
 AvdelingslederIndex.defaultProps = {
@@ -157,7 +147,6 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => ({
 
 export default trackRouteParam({
   paramName: 'fane',
-  paramPropType: PropTypes.string,
   storeParam: setSelectedAvdelingslederPanel,
   getParamFromStore: getSelectedAvdelingslederPanel,
   isQueryParam: true,

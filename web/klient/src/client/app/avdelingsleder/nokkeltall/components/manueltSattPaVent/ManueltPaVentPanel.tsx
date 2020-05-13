@@ -17,7 +17,7 @@ import kodeverkTyper from 'kodeverk/kodeverkTyper';
 import { getKodeverk } from 'kodeverk/duck';
 import ManueltPaVentGraf from './ManueltPaVentGraf';
 import { getOppgaverAvdelingManueltPaVent } from '../../duck';
-import { OppgaverManueltPaVent } from './oppgaverManueltPaVentTsType';
+import OppgaverManueltPaVent from './oppgaverManueltPaVentTsType';
 
 import styles from './manueltPaVentPanel.less';
 

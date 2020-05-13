@@ -13,7 +13,7 @@ import {
 import EndreSakslisterPanel from './components/EndreSakslisterPanel';
 import Saksliste from './sakslisteTsType';
 
-interface TsProps {
+interface OwnProps {
   fetchAvdelingensSakslister: (avdelingEnhet: string) => Saksliste[];
   fetchAntallOppgaverForSaksliste: (sakslisteId: number, avdelingEnhet: string) => Promise<string>;
   fetchAntallOppgaverForAvdeling: (avdelingEnhet: string) => Promise<string>;
@@ -34,7 +34,7 @@ interface TsProps {
 /**
  * EndreBehandlingskoerIndex
  */
-export class EndreBehandlingskoerIndex extends Component<TsProps> {
+export class EndreBehandlingskoerIndex extends Component<OwnProps> {
   static defaultProps = {
     sakslister: [],
     valgtSakslisteId: undefined,

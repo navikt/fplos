@@ -1,6 +1,4 @@
-// TODO (TOR) default export feilar for yarn:coverage
-// eslint-disable-next-line import/prefer-default-export
-export type Saksbehandler = Readonly<{
+type Saksbehandler = Readonly<{
   brukerIdent: {
     brukerIdent: string;
     verdi: string;
@@ -8,3 +6,5 @@ export type Saksbehandler = Readonly<{
   navn: string;
   avdelingsnavn: string[];
 }>
+
+export default Saksbehandler;

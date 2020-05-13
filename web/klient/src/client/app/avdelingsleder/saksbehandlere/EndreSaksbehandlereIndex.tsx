@@ -1,17 +1,15 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
 
 import { getValgtAvdelingEnhet } from 'app/duck';
-import { Saksbehandler } from './saksbehandlerTsType';
-import saksbehandlerPropType from './saksbehandlerPropType';
+import Saksbehandler from './saksbehandlerTsType';
 import SaksbehandlerePanel from './components/SaksbehandlerePanel';
 import {
   fetchAvdelingensSaksbehandlere, getAvdelingensSaksbehandlere, findSaksbehandler, addSaksbehandler, resetSaksbehandlerSok, removeSaksbehandler,
 } from './duck';
 
-interface TsProps {
+interface OwnProps {
     fetchAvdelingensSaksbehandlere: (avdelingEnhet: string) => void;
     findSaksbehandler: (brukerIdent: string) => Promise<string>;
     resetSaksbehandlerSok: () => void;
@@ -24,17 +22,7 @@ interface TsProps {
 /**
  * EndreSaksbehandlereIndex
  */
-export class EndreSaksbehandlereIndex extends Component<TsProps> {
-    static propTypes = {
-      fetchAvdelingensSaksbehandlere: PropTypes.func.isRequired,
-      findSaksbehandler: PropTypes.func.isRequired,
-      addSaksbehandler: PropTypes.func.isRequired,
-      resetSaksbehandlerSok: PropTypes.func.isRequired,
-      removeSaksbehandler: PropTypes.func.isRequired,
-      avdelingensSaksbehandlere: PropTypes.arrayOf(saksbehandlerPropType),
-      valgtAvdelingEnhet: PropTypes.string.isRequired,
-    };
-
+export class EndreSaksbehandlereIndex extends Component<OwnProps> {
     static defaultProps = {
       avdelingensSaksbehandlere: [],
     }

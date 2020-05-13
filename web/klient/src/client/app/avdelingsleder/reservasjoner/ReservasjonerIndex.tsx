@@ -1,17 +1,15 @@
 import React, { Component } from 'react';
 import { getValgtAvdelingEnhet } from 'app/duck';
-import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
-import reservasjonPropType from 'avdelingsleder/reservasjoner/reservasjonPropType';
-import { Reservasjon } from 'avdelingsleder/reservasjoner/reservasjonTsType';
+import Reservasjon from 'avdelingsleder/reservasjoner/reservasjonTsType';
 import { endreOppgaveReservasjon, flyttReservasjon } from 'saksbehandler/behandlingskoer/duck';
 import {
   fetchAvdelingensReservasjoner, getAvdelingensReservasjoner, opphevReservasjon,
 } from './duck';
 import ReservasjonerPanel from './components/ReservasjonerPanel';
 
-interface TsProps {
+interface OwnProps {
   fetchAvdelingensReservasjoner: (avdelingEnhet: string) => void;
   avdelingensReservasjoner: Reservasjon[];
   valgtAvdelingEnhet: string;
@@ -19,16 +17,7 @@ interface TsProps {
   endreOppgaveReservasjon: (oppgaveId: number, reserverTil: string) => Promise<string>;
   flyttReservasjon: (oppgaveId: number, brukerident: string, begrunnelse: string) => Promise<string>;
 }
-export class ReservasjonerIndex extends Component<TsProps> {
-  static propTypes = {
-    fetchAvdelingensReservasjoner: PropTypes.func.isRequired,
-    avdelingensReservasjoner: PropTypes.arrayOf(reservasjonPropType),
-    valgtAvdelingEnhet: PropTypes.string.isRequired,
-    opphevReservasjon: PropTypes.func.isRequired,
-    endreOppgaveReservasjon: PropTypes.func.isRequired,
-    flyttReservasjon: PropTypes.func.isRequired,
-  };
-
+export class ReservasjonerIndex extends Component<OwnProps> {
   static defaultProps = {
     avdelingensReservasjoner: [],
   }

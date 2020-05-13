@@ -1,5 +1,4 @@
 import React, { Component, ReactNode } from 'react';
-import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { FormattedMessage, injectIntl, WrappedComponentProps } from 'react-intl';
 import { bindActionCreators, Dispatch } from 'redux';
@@ -9,9 +8,8 @@ import NavFrontendChevron from 'nav-frontend-chevron';
 import { getDateAndTime } from 'utils/dateUtils';
 import Image from 'sharedComponents/Image';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
-import oppgavePropType from 'saksbehandler/oppgavePropType';
-import { Oppgave } from 'saksbehandler/oppgaveTsType';
-import { OppgaveStatus } from 'saksbehandler/oppgaveStatusTsType';
+import Oppgave from 'saksbehandler/oppgaveTsType';
+import OppgaveStatus from 'saksbehandler/oppgaveStatusTsType';
 import Table from 'sharedComponents/table/Table';
 import TableRow from 'sharedComponents/table/TableRow';
 import TableColumn from 'sharedComponents/table/TableColumn';
@@ -55,7 +53,7 @@ interface Toolip {
   header: Element;
 }
 
-type TsProps = Readonly<{
+interface OwnProps {
   oppgaverTilBehandling: Oppgave[];
   reserverteOppgaver: Oppgave[];
   reserverOppgave: (oppgave: Oppgave) => void;
@@ -66,9 +64,9 @@ type TsProps = Readonly<{
   resetSaksbehandler: () => Promise<string>;
   flyttReservasjon: (oppgaveId: number, brukerident: string, begrunnelse: string) => Promise<string>;
   antall: number;
-}>
+}
 
-interface TsState {
+interface State {
   showMenu: boolean;
   valgtOppgaveId?: number;
   offset: {
@@ -80,20 +78,7 @@ interface TsState {
 /**
  * OppgaverTabell
  */
-export class OppgaverTabell extends Component<TsProps & WrappedComponentProps, TsState> {
-  static propTypes = {
-    oppgaverTilBehandling: PropTypes.arrayOf(oppgavePropType).isRequired,
-    reserverteOppgaver: PropTypes.arrayOf(oppgavePropType).isRequired,
-    reserverOppgave: PropTypes.func.isRequired,
-    opphevOppgaveReservasjon: PropTypes.func.isRequired,
-    forlengOppgaveReservasjon: PropTypes.func.isRequired,
-    endreOppgaveReservasjon: PropTypes.func.isRequired,
-    finnSaksbehandler: PropTypes.func.isRequired,
-    resetSaksbehandler: PropTypes.func.isRequired,
-    flyttReservasjon: PropTypes.func.isRequired,
-    antall: PropTypes.number.isRequired,
-  };
-
+export class OppgaverTabell extends Component<OwnProps & WrappedComponentProps, State> {
   nodes: { };
 
   constructor(props) {

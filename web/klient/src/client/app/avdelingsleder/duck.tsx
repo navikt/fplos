@@ -18,16 +18,16 @@ const initialState = {
   selectedAvdelingslederPanel: undefined,
 };
 
-interface StateTsProp {
+interface State {
   selectedAvdelingslederPanel?: string;
 }
 
-interface ActionTsProp {
+interface Action {
   type: string;
   payload?: any;
 }
 
-export const avdelingslederReducer = (state: StateTsProp = initialState, action: ActionTsProp = { type: '' }) => {
+export const avdelingslederReducer = (state: State = initialState, action: Action = { type: '' }) => {
   switch (action.type) {
     case SET_SELECTED_AVDELINGSLEDER_PANEL:
       return {

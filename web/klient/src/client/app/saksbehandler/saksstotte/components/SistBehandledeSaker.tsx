@@ -1,6 +1,5 @@
 
 import React, { Component, Fragment } from 'react';
-import PropTypes from 'prop-types';
 import { FormattedMessage } from 'react-intl';
 import { Undertittel, Normaltekst } from 'nav-frontend-typografi';
 import Lenke from 'nav-frontend-lenker';
@@ -11,12 +10,11 @@ import { getFpsakUrl, getFptilbakeUrl, hentFpsakInternBehandlingId as hentFpsakI
 import { getBehandledeOppgaver } from 'saksbehandler/saksstotte/duck';
 import { bindActionCreators, Dispatch } from 'redux';
 import { connect } from 'react-redux';
-import { Oppgave } from '../../oppgaveTsType';
-import oppgavePropType from '../../oppgavePropType';
+import Oppgave from '../../oppgaveTsType';
 
 const getClickEvent = (openFpsak, oppgave) => () => openFpsak(oppgave);
 
-type TsProps = Readonly<{
+type OwnProps = Readonly<{
   fpsakUrl: string;
   fptilbakeUrl: string;
   sistBehandledeSaker: Oppgave[];
@@ -31,14 +29,7 @@ interface StateProps {
  *
  * Denne komponenten viser de tre siste fagsakene en nav-ansatt har behandlet.
  */
-export class SistBehandledeSaker extends Component<TsProps, StateProps> {
-  static propTypes = {
-    fpsakUrl: PropTypes.string.isRequired,
-    fptilbakeUrl: PropTypes.string.isRequired,
-    sistBehandledeSaker: PropTypes.arrayOf(oppgavePropType).isRequired,
-    hentFpsakInternBehandlingId: PropTypes.func.isRequired,
-  };
-
+export class SistBehandledeSaker extends Component<OwnProps, StateProps> {
   openFpsak = (oppgave: Oppgave) => {
     const { fpsakUrl, fptilbakeUrl, hentFpsakInternBehandlingId } = this.props;
 

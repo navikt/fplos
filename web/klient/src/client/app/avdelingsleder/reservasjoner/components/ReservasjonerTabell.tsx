@@ -1,12 +1,10 @@
 import React, { Component } from 'react';
 import { Element, Normaltekst } from 'nav-frontend-typografi';
 import { FormattedMessage } from 'react-intl';
-import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
 
-import { Reservasjon } from 'avdelingsleder/reservasjoner/reservasjonTsType';
-import reservasjonPropType from 'avdelingsleder/reservasjoner/reservasjonPropType';
+import Reservasjon from 'avdelingsleder/reservasjoner/reservasjonTsType';
 import Table from 'sharedComponents/table/Table';
 import TableRow from 'sharedComponents/table/TableRow';
 import TableColumn from 'sharedComponents/table/TableColumn';
@@ -35,7 +33,7 @@ const headerTextCodes = [
   'ReservasjonerTabell.Slett',
 ];
 
-interface TsProps {
+interface OwnProps {
   reservasjoner: Reservasjon[];
   opphevReservasjon: (oppgaveId: number) => Promise<string>;
   endreOppgaveReservasjon: (oppgaveId: number, reserverTil: string) => Promise<string>;
@@ -50,18 +48,9 @@ interface StateTsProps {
   valgtReservasjon?: Reservasjon;
 }
 
-export class ReservasjonerTabell extends Component<TsProps, StateTsProps> {
-  static propTypes = {
-    reservasjoner: PropTypes.arrayOf(reservasjonPropType).isRequired,
-    opphevReservasjon: PropTypes.func.isRequired,
-    endreOppgaveReservasjon: PropTypes.func.isRequired,
-    finnSaksbehandler: PropTypes.func.isRequired,
-    nullstillSaksbehandler: PropTypes.func.isRequired,
-    flyttReservasjon: PropTypes.func.isRequired,
-  }
-
+export class ReservasjonerTabell extends Component<OwnProps, StateTsProps> {
   /* Endre denne */
-  constructor(props: TsProps) {
+  constructor(props: OwnProps) {
     super(props);
 
     this.state = {

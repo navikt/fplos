@@ -22,7 +22,7 @@ interface OwnProps {
 const Home: FunctionComponent<OwnProps> = ({
   headerHeight,
 }) => (
-  <div className={styles.content} style={{ margin: `${headerHeight}px auto 0` }}>
+  <div className={styles.content} style={{ margin: `${headerHeight + 10}px auto 0` }}>
     <Switch>
       <Route exact path="/" component={SaksbehandlerIndex} />
       <Route exact path="/avdelingsleder" component={AvdelingslederIndex} />

@@ -98,15 +98,15 @@ const initialState = {
   valgtSakslisteId: undefined,
 };
 
-interface ActionTsType {
+interface Action {
   type: string;
   data?: any;
 }
-interface StateTsType {
+interface State {
   valgtSakslisteId?: number;
 }
 
-export const behandlingskoerReducer = (state: StateTsType = initialState, action: ActionTsType = { type: '' }) => {
+export const behandlingskoerReducer = (state: State = initialState, action: Action = { type: '' }) => {
   switch (action.type) {
     case SET_SAKSLISTE_ID:
       return {

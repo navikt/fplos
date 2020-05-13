@@ -35,7 +35,7 @@ const headerTextCodes = [
   'EMPTY_1',
 ];
 
-interface TsProps {
+interface OwnProps {
   sakslister: Saksliste[];
   setValgtSakslisteId: (sakslisteId: number) => void;
   lagNySaksliste: (avdelingEnhet: string) => void;
@@ -58,14 +58,14 @@ const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 /**
  * GjeldendeSakslisterTabell
  */
-export class GjeldendeSakslisterTabell extends Component<TsProps, StateTsProps> {
+export class GjeldendeSakslisterTabell extends Component<OwnProps, StateTsProps> {
   static defaultProps = {
     valgtSakslisteId: undefined,
   }
 
   nodes: any[];
 
-  constructor(props: TsProps) {
+  constructor(props: OwnProps) {
     super(props);
 
     this.state = {

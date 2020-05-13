@@ -12,7 +12,7 @@ import Kodeverk from 'kodeverk/kodeverkTsType';
 import behandlingType from 'kodeverk/behandlingType';
 import kodeverkTyper from 'kodeverk/kodeverkTyper';
 import { getKodeverk } from 'kodeverk/duck';
-import { OppgaverForAvdeling } from './oppgaverForAvdelingTsType';
+import OppgaverForAvdeling from './oppgaverForAvdelingTsType';
 
 import 'react-vis/dist/style.css';
 import styles from './fordelingAvBehandlingstypeGraf.less';
@@ -71,7 +71,7 @@ const getHintTotalAntall = (verdi, tilBeslutter, tilSaksbehandling, intl) => {
   return intl.formatMessage({ id: 'FordelingAvBehandlingstypeGraf.TotaltAntall' }, { antall: sum1 + sum2 });
 };
 
-interface TsProps {
+interface OwnProps {
   intl: any;
   width: number;
   height: number;
@@ -79,15 +79,15 @@ interface TsProps {
   oppgaverForAvdeling: OppgaverForAvdeling[];
 }
 
-interface StateTsProps {
+interface StateProps {
   hintVerdi: any;
 }
 
 /**
  * FordelingAvBehandlingstypeGraf.
  */
-export class FordelingAvBehandlingstypeGraf extends Component<TsProps & WrappedComponentProps, StateTsProps> {
-  constructor(props: TsProps) {
+export class FordelingAvBehandlingstypeGraf extends Component<OwnProps & WrappedComponentProps, StateProps> {
+  constructor(props: OwnProps) {
     super(props);
 
     this.state = {

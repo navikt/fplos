@@ -1,10 +1,9 @@
-
 import { FlexColumn, FlexContainer, FlexRow } from 'sharedComponents/flexGrid';
 import { hasValidDate, hasValidPosOrNegInteger } from 'utils/validation/validators';
 import { Undertekst } from 'nav-frontend-typografi';
 import DateLabel from 'sharedComponents/DateLabel';
-import { FormattedMessage } from 'react-intl';
-import React from 'react';
+import { FormattedMessage, WrappedComponentProps } from 'react-intl';
+import React, { FunctionComponent } from 'react';
 import {
   InputField, CheckboxField, DatepickerField,
 } from 'form/FinalFields';
@@ -29,8 +28,7 @@ const getLagreDatoFn = (lagreSakslisteSorteringTidsintervallDato, valgtSaksliste
   }
   return undefined;
 };
-interface TsProps {
-    intl: any;
+interface OwnProps {
     valgtSakslisteId: number;
     lagreSakslisteSorteringErDynamiskPeriode: (sakslisteId: number, avdelingEnhet: string) => void;
     lagreSakslisteSorteringTidsintervallDato: (sakslisteId: number, fomDato: string, tomDato: string, avdelingEnhet: string) => void;
@@ -43,7 +41,7 @@ interface TsProps {
     tomDato: string;
 }
 
-export const DatoSorteringValg = ({
+export const DatoSorteringValg: FunctionComponent<OwnProps & WrappedComponentProps> = ({
   intl,
   valgtSakslisteId,
   lagreSakslisteSorteringErDynamiskPeriode,
@@ -55,7 +53,7 @@ export const DatoSorteringValg = ({
   til,
   fomDato,
   tomDato,
-}: TsProps) => (
+}) => (
 
   <ArrowBox>
     <Undertekst>

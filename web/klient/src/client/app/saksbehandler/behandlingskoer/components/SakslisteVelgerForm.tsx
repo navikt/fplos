@@ -14,16 +14,16 @@ import { getValueFromLocalStorage, setValueInLocalStorage, removeValueFromLocalS
 import { FlexContainer, FlexRow, FlexColumn } from 'sharedComponents/flexGrid';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import LabelWithHeader from 'sharedComponents/LabelWithHeader';
-import { Saksliste } from 'saksbehandler/behandlingskoer/sakslisteTsType';
+import Saksliste from 'saksbehandler/behandlingskoer/sakslisteTsType';
 import { SelectField } from 'form/FinalFields';
 import gruppeHoverUrl from 'images/gruppe_hover.svg';
 import gruppeUrl from 'images/gruppe.svg';
 import { getSakslistensSaksbehandlere, fetchAntallOppgaverForBehandlingsko, fetchSakslistensSaksbehandlere } from '../duck';
-import { Saksbehandler } from '../saksbehandlerTsType';
+import Saksbehandler from '../saksbehandlerTsType';
 
 import styles from './sakslisteVelgerForm.less';
 
-interface TsProps {
+interface OwnProps {
   sakslister: Saksliste[];
   fetchSakslisteOppgaver: (sakslisteId: number) => void;
   fetchSakslistensSaksbehandlere: (sakslisteId: number) => void;
@@ -117,7 +117,7 @@ const getSorteringsnavn = (saksliste?: Saksliste) => {
  * SakslisteVelgerForm
  *
  */
-export class SakslisteVelgerForm extends Component<TsProps & WrappedComponentProps> {
+export class SakslisteVelgerForm extends Component<OwnProps & WrappedComponentProps> {
   static defaultProps = {
     saksbehandlere: [],
   };

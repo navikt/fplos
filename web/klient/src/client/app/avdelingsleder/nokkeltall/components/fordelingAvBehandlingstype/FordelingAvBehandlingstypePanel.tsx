@@ -1,6 +1,5 @@
 
 import React from 'react';
-import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
 
@@ -12,14 +11,12 @@ import { getValuesFromReduxState } from 'form/reduxBinding/formDuck';
 import { RadioGroupField, RadioOption } from 'form/FinalFields';
 import Kodeverk from 'kodeverk/kodeverkTsType';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
-import kodeverkPropType from 'kodeverk/kodeverkPropType';
 import fagsakYtelseType from 'kodeverk/fagsakYtelseType';
 import kodeverkTyper from 'kodeverk/kodeverkTyper';
 import { getKodeverk } from 'kodeverk/duck';
 import FordelingAvBehandlingstypeGraf from './FordelingAvBehandlingstypeGraf';
 import { getOppgaverForAvdeling } from '../../duck';
-import { OppgaverForAvdeling } from './oppgaverForAvdelingTsType';
-import oppgaverForAvdelingPropType from './oppgaverForAvdelingPropType';
+import OppgaverForAvdeling from './oppgaverForAvdelingTsType';
 
 const finnFagsakYtelseTypeNavn = (fagsakYtelseTyper, valgtFagsakYtelseType) => {
   const type = fagsakYtelseTyper.find((fyt) => fyt.kode === valgtFagsakYtelseType);
@@ -32,7 +29,7 @@ interface InitialValues {
   valgtYtelseType: string;
 }
 
-interface TsProps {
+interface OwnProps {
   width: number;
   height: number;
   fagsakYtelseTyper: Kodeverk[];
@@ -51,7 +48,7 @@ export const FordelingAvBehandlingstypePanel = ({
   fagsakYtelseTyper,
   oppgaverForAvdeling,
   initialValues,
-}: TsProps) => (
+}: OwnProps) => (
   <Form
     onSubmit={() => undefined}
     initialValues={initialValues}
@@ -90,16 +87,6 @@ export const FordelingAvBehandlingstypePanel = ({
     )}
   />
 );
-
-FordelingAvBehandlingstypePanel.propTypes = {
-  width: PropTypes.number.isRequired,
-  height: PropTypes.number.isRequired,
-  fagsakYtelseTyper: PropTypes.arrayOf(kodeverkPropType).isRequired,
-  oppgaverForAvdeling: PropTypes.arrayOf(oppgaverForAvdelingPropType),
-  initialValues: PropTypes.shape({
-    valgtYtelseType: PropTypes.string.isRequired,
-  }).isRequired,
-};
 
 FordelingAvBehandlingstypePanel.defaultProps = {
   oppgaverForAvdeling: [],

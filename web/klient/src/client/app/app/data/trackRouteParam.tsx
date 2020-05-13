@@ -1,5 +1,4 @@
 import React, { Component, ReactElement } from 'react';
-import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
@@ -9,7 +8,6 @@ import { parseQueryString } from 'utils/urlUtils';
 const defaultConfig = {
   paramName: '',
   parse: (a) => a,
-  paramPropType: PropTypes.any,
   storeParam: () => undefined,
   getParamFromStore: () => undefined,
   isQueryParam: false,
@@ -19,7 +17,6 @@ const defaultConfig = {
 type ConfigTsProps = Readonly<{
   paramName: string;
   parse?: (param: any) => any;
-  paramPropType: any;
   storeParam: (param: any) => any;
   getParamFromStore: (store?: any) => any;
   isQueryParam: boolean;
@@ -44,13 +41,6 @@ const trackRouteParam = (config: ConfigTsProps) => (WrappedComponent: ReactEleme
   const trackingConfig = { ...defaultConfig, ...config };
 
   class RouteParamTrackerImpl extends Component<TsProps> {
-    static propTypes = {
-      paramFromUrl: trackingConfig.paramPropType,
-      paramFromStore: trackingConfig.paramPropType,
-      storeParam: PropTypes.func.isRequired,
-      paramsAreEqual: PropTypes.func.isRequired,
-    };
-
     static defaultProps = {
       paramFromUrl: undefined,
       paramFromStore: undefined,

@@ -8,7 +8,7 @@ import Image from 'sharedComponents/Image';
 import Modal from 'sharedComponents/Modal';
 
 import advarselImageUrl from 'images/advarsel.svg';
-import { Saksbehandler } from '../saksbehandlerTsType';
+import Saksbehandler from '../saksbehandlerTsType';
 
 import styles from './sletteSaksbehandlerModal.less';
 

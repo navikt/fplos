@@ -11,7 +11,7 @@ import Header from '@navikt/nap-header';
 
 import EventType from 'data/rest-api/src/requestApi/eventType';
 import { getValueFromLocalStorage, setValueInLocalStorage, removeValueFromLocalStorage } from 'utils/localStorageHelper';
-import { Avdeling } from 'app/avdelingTsType';
+import Avdeling from 'app/avdelingTsType';
 
 import { RETTSKILDE_URL, SYSTEMRUTINE_URL } from 'data/eksterneLenker';
 
