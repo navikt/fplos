@@ -28,6 +28,15 @@ interface OwnProps {
   avdelinger: Avdeling[];
   setValgtAvdeling: (id: string) => void;
   valgtAvdelingEnhet?: string;
+  errorMessages?: {
+    type: EventType;
+    code?: string;
+    params?: {
+      errorDetails?: string;
+    };
+    text?: string;
+  }[];
+  setSiteHeight: (clientHeight: number) => number;
 }
 
 const useOutsideClickEvent = (erLenkepanelApent, erAvdelingerPanelApent, setLenkePanelApent, setAvdelingerPanelApent) => {
@@ -83,11 +92,18 @@ const HeaderWithErrorPanel: FunctionComponent<OwnProps & WrappedComponentProps> 
   avdelinger,
   valgtAvdelingEnhet,
   setValgtAvdeling,
+  errorMessages,
+  setSiteHeight,
 }) => {
   const [erLenkePanelApent, setLenkePanelApent] = useState(false);
   const [erAvdelingerPanelApent, setAvdelingerPanelApent] = useState(false);
 
   const wrapperRef = useOutsideClickEvent(erLenkePanelApent, erAvdelingerPanelApent, setLenkePanelApent, setAvdelingerPanelApent);
+
+  const fixedHeaderRef = useRef(null);
+  useEffect(() => {
+    setSiteHeight(fixedHeaderRef.current.clientHeight);
+  }, [errorMessages.length]);
 
   useEffect(() => {
     setAvdeling(avdelinger, setValgtAvdeling, valgtAvdelingEnhet);
@@ -141,7 +157,7 @@ const HeaderWithErrorPanel: FunctionComponent<OwnProps & WrappedComponentProps> 
   }
 
   return (
-    <header className={styles.container}>
+    <header ref={fixedHeaderRef} className={styles.container}>
       <div ref={wrapperRef}>
         <Header title={intl.formatMessage({ id: 'Header.Foreldrepenger' })}>
           <Popover

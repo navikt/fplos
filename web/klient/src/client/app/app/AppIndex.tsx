@@ -24,6 +24,14 @@ import Home from './components/Home';
 import '../../nomodulestyles/global.less';
 
 type TsProps = Readonly<{
+  errorMessages?: {
+    type: EventType;
+    code?: string;
+    params?: {
+      errorDetails?: string;
+    };
+    text?: string;
+  }[];
   errorMessagesLength: number;
   removeErrorMessage: () => void;
   crashMessage: string;
@@ -49,25 +57,6 @@ type TsProps = Readonly<{
  * og kodeverk fra server og lagre desse i klientens state.
  */
 export class AppIndex extends Component<TsProps> {
-  static propTypes = {
-    errorMessagesLength: PropTypes.number.isRequired,
-    removeErrorMessage: PropTypes.func.isRequired,
-    crashMessage: PropTypes.string,
-    showCrashMessage: PropTypes.func.isRequired,
-    navAnsattName: PropTypes.string,
-    funksjonellTid: PropTypes.string,
-    location: PropTypes.shape({
-      search: PropTypes.string,
-    }).isRequired,
-    fetchAvdelingeneTilAvdelingsleder: PropTypes.func.isRequired,
-    setAvdelingEnhet: PropTypes.func.isRequired,
-    resetAvdelingEnhet: PropTypes.func.isRequired,
-    resetAvdelingeneTilAvdelingslederData: PropTypes.func.isRequired,
-    avdelinger: PropTypes.arrayOf(avdelingPropType),
-    valgtAvdelingEnhet: PropTypes.string,
-    kanOppgavestyre: PropTypes.bool,
-  };
-
   static defaultProps = {
     crashMessage: '',
     navAnsattName: '',
@@ -75,6 +64,11 @@ export class AppIndex extends Component<TsProps> {
     avdelinger: [],
     valgtAvdelingEnhet: undefined,
     kanOppgavestyre: false,
+    errorMessages: [],
+  };
+
+  state = {
+    headerHeight: 0,
   };
 
   fetchAvdelinger = () => {
@@ -123,11 +117,17 @@ export class AppIndex extends Component<TsProps> {
     ].join(' '));
   }
 
+  setSiteHeight = (headerHeight) => {
+    document.documentElement.setAttribute('style', `height: calc(100% - ${headerHeight}px)`);
+    this.setState((state) => ({ ...state, headerHeight }));
+  }
+
   render = () => {
     const {
-      location, crashMessage, errorMessagesLength, navAnsattName,
+      location, crashMessage, navAnsattName, errorMessages,
       removeErrorMessage: removeErrorMsg, avdelinger, setAvdelingEnhet: setAvdeling, valgtAvdelingEnhet,
     } = this.props;
+    const { headerHeight } = this.state;
     const queryStrings = parseQueryString(location.search);
 
     return (
@@ -140,9 +140,11 @@ export class AppIndex extends Component<TsProps> {
             avdelinger={avdelinger}
             setValgtAvdeling={setAvdeling}
             valgtAvdelingEnhet={valgtAvdelingEnhet}
+            errorMessages={errorMessages}
+            setSiteHeight={this.setSiteHeight}
           />
           {!crashMessage && (
-            <Home nrOfErrorMessages={errorMessagesLength + (queryStrings.errorcode || queryStrings.errormessage ? 1 : 0)} />
+            <Home headerHeight={headerHeight} />
           )}
         </LanguageProvider>
       </AppConfigResolver>
@@ -151,7 +153,7 @@ export class AppIndex extends Component<TsProps> {
 }
 
 const mapStateToProps = (state: any) => ({
-  errorMessagesLength: errorHandler.getAllErrorMessages(state).length,
+  errorMessages: errorHandler.getAllErrorMessages(state),
   crashMessage: errorHandler.getCrashMessage(state),
   navAnsattName: getNavAnsattName(state),
   funksjonellTid: getFunksjonellTid(state),
