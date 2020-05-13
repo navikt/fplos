@@ -1,6 +1,7 @@
 {
 	"compilerOptions": {
 		"target": "esnext",
+		"module": "es2020",
 		"moduleResolution": "node",
 		"allowJs": true,
 		"noEmit": true,
@@ -12,6 +13,7 @@
 		"jsx": "react",
 		"typeRoots": ["./node_modules/@types", "./src/@types"],
 		"baseUrl": "src/client/",
+		"skipLibCheck": true, //TODO Fjern denne
 		"paths": {
 			"app/*": ["app/app/*"],
 			"data/*": ["app/data/*"],
