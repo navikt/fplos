@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import PropTypes from 'prop-types';
 import { Field } from 'react-final-form';
-import { TextareaControlled as NavTextareaControlled } from 'nav-frontend-skjema';
+import { Textarea as NavTextarea } from 'nav-frontend-skjema';
 import EtikettFokus from 'nav-frontend-etiketter';
 import { injectIntl, FormattedMessage } from 'react-intl';
 
@@ -29,7 +29,7 @@ const TextAreaWithBadge: FC<TextAreaWithBadge.propTypes & TextAreaWithBadge.defa
       ))}
     </div>
     )}
-    <NavTextareaControlled {...otherProps} />
+    <NavTextarea {...otherProps} />
   </div>
 );
 
@@ -47,6 +47,7 @@ const TextAreaField: FC<TextAreaField.propTypes & TextAreaField.defaultProps> = 
     readOnly={readOnly}
     readOnlyHideEmpty
     autoComplete="off"
+    type="textarea"
   />
 );
 
