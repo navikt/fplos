@@ -48,7 +48,7 @@ interface StateProps {
  * NyeOgFerdigstilteOppgaverForSisteSyvGraf
  */
 export class NyeOgFerdigstilteOppgaverForSisteSyvGraf extends Component<OwnProps & WrappedComponentProps, StateProps> {
-  constructor(props: OwnProps) {
+  constructor(props) {
     super(props);
 
     this.state = {

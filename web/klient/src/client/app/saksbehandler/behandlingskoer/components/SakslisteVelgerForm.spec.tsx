@@ -2,6 +2,7 @@
 import React from 'react';
 import { expect } from 'chai';
 import sinon from 'sinon';
+import { IntlShape } from 'react-intl';
 import { Form } from 'react-final-form';
 import { Element } from 'nav-frontend-typografi';
 
@@ -15,6 +16,9 @@ import { shallowWithIntl, intlMock } from 'testHelpers/intl-enzyme-test-helper';
 import { SakslisteVelgerForm } from './SakslisteVelgerForm';
 
 describe('<SakslisteVelgerForm>', () => {
+  const intl: Partial<IntlShape> = {
+    ...intlMock,
+  };
   it('skal vise dropdown med to sakslister', () => {
     const formProps = { };
     const sakslister = [{
@@ -53,10 +57,9 @@ describe('<SakslisteVelgerForm>', () => {
       },
     }];
     const wrapper = shallowWithIntl(<SakslisteVelgerForm
-      intl={intlMock}
+      intl={intl as IntlShape}
       sakslister={sakslister}
       fetchSakslisteOppgaver={sinon.spy()}
-      totaltBehandlingTypeAntall={5}
       fetchSakslistensSaksbehandlere={sinon.spy()}
       fetchAntallOppgaverForBehandlingsko={sinon.spy()}
     />).find(Form).drill((props) => props.render(formProps)).shallow();
@@ -94,10 +97,9 @@ describe('<SakslisteVelgerForm>', () => {
 
     const formProps = { values: { sakslisteId: undefined } };
     const wrapper = shallowWithIntl(<SakslisteVelgerForm
-      intl={intlMock}
+      intl={intl as IntlShape}
       sakslister={sakslister}
       fetchSakslisteOppgaver={sinon.spy()}
-      totaltBehandlingTypeAntall={5}
       fetchSakslistensSaksbehandlere={sinon.spy()}
       fetchAntallOppgaverForBehandlingsko={sinon.spy()}
     />).find(Form).drill((props) => props.render(formProps)).shallow();
@@ -127,10 +129,9 @@ describe('<SakslisteVelgerForm>', () => {
 
     const formProps = { values: { sakslisteId: '1' } };
     const wrapper = shallowWithIntl(<SakslisteVelgerForm
-      intl={intlMock}
+      intl={intl as IntlShape}
       sakslister={sakslister}
       fetchSakslisteOppgaver={sinon.spy()}
-      totaltBehandlingTypeAntall={5}
       fetchSakslistensSaksbehandlere={sinon.spy()}
       fetchAntallOppgaverForBehandlingsko={sinon.spy()}
     />).find(Form).drill((props) => props.render(formProps)).shallow();
@@ -168,10 +169,9 @@ describe('<SakslisteVelgerForm>', () => {
     const formProps = { values: { sakslisteId: '1' } };
     // totaltBehandlingTypeAntall er satt til 1 som er lik antall behandlingstypar satt på sakslisten
     const wrapper = shallowWithIntl(<SakslisteVelgerForm
-      intl={intlMock}
+      intl={intl as IntlShape}
       sakslister={sakslister}
       fetchSakslisteOppgaver={sinon.spy()}
-      totaltBehandlingTypeAntall={1}
       fetchSakslistensSaksbehandlere={sinon.spy()}
       fetchAntallOppgaverForBehandlingsko={sinon.spy()}
     />).find(Form).drill((props) => props.render(formProps)).shallow();
@@ -213,10 +213,9 @@ describe('<SakslisteVelgerForm>', () => {
 
     const formProps = { values: { sakslisteId: '1' } };
     const wrapper = shallowWithIntl(<SakslisteVelgerForm
-      intl={intlMock}
+      intl={intl as IntlShape}
       sakslister={sakslister}
       fetchSakslisteOppgaver={sinon.spy()}
-      totaltBehandlingTypeAntall={5}
       fetchSakslistensSaksbehandlere={sinon.spy()}
       fetchAntallOppgaverForBehandlingsko={sinon.spy()}
     />).find(Form).drill((props) => props.render(formProps)).shallow();
@@ -255,10 +254,9 @@ describe('<SakslisteVelgerForm>', () => {
 
     const formProps = { values: { sakslisteId: '1' } };
     const wrapper = shallowWithIntl(<SakslisteVelgerForm
-      intl={intlMock}
+      intl={intl as IntlShape}
       sakslister={sakslister}
       fetchSakslisteOppgaver={sinon.spy()}
-      totaltBehandlingTypeAntall={5}
       fetchSakslistensSaksbehandlere={sinon.spy()}
       fetchAntallOppgaverForBehandlingsko={sinon.spy()}
     />).find(Form).drill((props) => props.render(formProps)).shallow();
@@ -296,10 +294,9 @@ describe('<SakslisteVelgerForm>', () => {
 
     const formProps = { values: { sakslisteId: '1' } };
     const wrapper = shallowWithIntl(<SakslisteVelgerForm
-      intl={intlMock}
+      intl={intl as IntlShape}
       sakslister={sakslister}
       fetchSakslisteOppgaver={sinon.spy()}
-      totaltBehandlingTypeAntall={5}
       fetchSakslistensSaksbehandlere={sinon.spy()}
       fetchAntallOppgaverForBehandlingsko={sinon.spy()}
     />).find(Form).drill((props) => props.render(formProps)).shallow();
@@ -331,10 +328,9 @@ describe('<SakslisteVelgerForm>', () => {
 
     const formProps = { values: { sakslisteId: '1' } };
     const wrapper = shallowWithIntl(<SakslisteVelgerForm
-      intl={intlMock}
+      intl={intl as IntlShape}
       sakslister={sakslister}
       fetchSakslisteOppgaver={sinon.spy()}
-      totaltBehandlingTypeAntall={5}
       fetchSakslistensSaksbehandlere={sinon.spy()}
       fetchAntallOppgaverForBehandlingsko={sinon.spy()}
     />).find(Form).drill((props) => props.render(formProps)).shallow();
@@ -366,10 +362,9 @@ describe('<SakslisteVelgerForm>', () => {
 
     const formProps = { values: { sakslisteId: '1' } };
     const wrapper = shallowWithIntl(<SakslisteVelgerForm
-      intl={intlMock}
+      intl={intl as IntlShape}
       sakslister={sakslister}
       fetchSakslisteOppgaver={sinon.spy()}
-      totaltBehandlingTypeAntall={5}
       fetchSakslistensSaksbehandlere={sinon.spy()}
       fetchAntallOppgaverForBehandlingsko={sinon.spy()}
       saksbehandlere={[{

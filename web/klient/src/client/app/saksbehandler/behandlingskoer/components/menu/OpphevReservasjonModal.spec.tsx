@@ -2,7 +2,7 @@
 import React from 'react';
 import { expect } from 'chai';
 import sinon from 'sinon';
-
+import { IntlShape } from 'react-intl';
 import { Form } from 'react-final-form';
 
 import behandlingStatus from 'kodeverk/behandlingStatus';
@@ -13,6 +13,9 @@ import behandlingType from 'kodeverk/behandlingType';
 import { OpphevReservasjonModal } from './OpphevReservasjonModal';
 
 describe('<OpphevReservasjonModal>', () => {
+  const intl: Partial<IntlShape> = {
+    ...intlMock,
+  };
   const oppgave = {
     id: 1,
     status: {
@@ -38,12 +41,14 @@ describe('<OpphevReservasjonModal>', () => {
       kode: behandlingStatus.OPPRETTET,
       navn: '',
     },
+    system: '',
+    href: '',
   };
 
   it('skal rendre modal for å oppgi begrunnelse for oppheving av reservasjon', () => {
     const wrapper = shallowWithIntl(
       <OpphevReservasjonModal
-        intl={intlMock}
+        intl={intl as IntlShape}
         oppgave={oppgave}
         showModal
         cancel={sinon.spy()}

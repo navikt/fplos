@@ -58,7 +58,7 @@ export const SearchForm: FunctionComponent<OwnProps & WrappedComponentProps> = (
         </>
         )}
         <VerticalSpacer eightPx />
-        <FlexContainer fluid>
+        <FlexContainer>
           <FlexRow>
             <FlexColumn>
               <InputField
@@ -76,7 +76,6 @@ export const SearchForm: FunctionComponent<OwnProps & WrappedComponentProps> = (
                 className={styles.button}
                 spinner={searchStarted}
                 disabled={isButtonDisabled(values.searchString, searchStarted)}
-                tabIndex="0"
               >
                 <FormattedMessage id="Search.Search" />
               </Knapp>
@@ -86,7 +85,7 @@ export const SearchForm: FunctionComponent<OwnProps & WrappedComponentProps> = (
           <FlexRow>
             <FlexColumn>
               <Image className={styles.advarselIcon} src={advarselIcon} />
-              <FormattedMessage className={styles.feilmelding} id={searchResultAccessDenied.feilmelding} />
+              <FormattedMessage id={searchResultAccessDenied.feilmelding} />
             </FlexColumn>
           </FlexRow>
           )}

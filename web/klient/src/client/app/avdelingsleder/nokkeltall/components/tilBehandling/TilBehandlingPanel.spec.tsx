@@ -1,7 +1,7 @@
 import React from 'react';
 import { expect } from 'chai';
 import moment from 'moment';
-
+import { IntlShape } from 'react-intl';
 import { Form } from 'react-final-form';
 
 import { ISO_DATE_FORMAT } from 'utils/formats';
@@ -13,6 +13,9 @@ import { TilBehandlingPanel, ALLE_YTELSETYPER_VALGT } from './TilBehandlingPanel
 import TilBehandlingGraf from './TilBehandlingGraf';
 
 describe('<TilBehandlingPanel>', () => {
+  const intl: Partial<IntlShape> = {
+    ...intlMock,
+  };
   const fagsakYtelseTyper = [{
     kode: fagsakYtelseType.ENGANGSSTONAD,
     navn: 'Engangsstønad',
@@ -34,7 +37,7 @@ describe('<TilBehandlingPanel>', () => {
     const oppgaverPerDato = [];
 
     const wrapper = shallowWithIntl(<TilBehandlingPanel
-      intl={intlMock}
+      intl={intl as IntlShape}
       width={300}
       height={200}
       fagsakYtelseTyper={fagsakYtelseTyper}
@@ -80,7 +83,7 @@ describe('<TilBehandlingPanel>', () => {
     }];
 
     const wrapper = shallowWithIntl(<TilBehandlingPanel
-      intl={intlMock}
+      intl={intl as IntlShape}
       width={300}
       height={200}
       fagsakYtelseTyper={fagsakYtelseTyper}
@@ -112,7 +115,7 @@ describe('<TilBehandlingPanel>', () => {
     }];
 
     const wrapper = shallowWithIntl(<TilBehandlingPanel
-      intl={intlMock}
+      intl={intl as IntlShape}
       width={300}
       height={200}
       fagsakYtelseTyper={fagsakYtelseTyper}
@@ -144,7 +147,7 @@ describe('<TilBehandlingPanel>', () => {
     }];
 
     const wrapper = shallowWithIntl(<TilBehandlingPanel
-      intl={intlMock}
+      intl={intl as IntlShape}
       width={300}
       height={200}
       fagsakYtelseTyper={fagsakYtelseTyper}
@@ -175,7 +178,7 @@ describe('<TilBehandlingPanel>', () => {
     }];
 
     const wrapper = shallowWithIntl(<TilBehandlingPanel
-      intl={intlMock}
+      intl={intl as IntlShape}
       width={300}
       height={200}
       fagsakYtelseTyper={fagsakYtelseTyper}
@@ -206,7 +209,7 @@ describe('<TilBehandlingPanel>', () => {
     }];
 
     const wrapper = shallowWithIntl(<TilBehandlingPanel
-      intl={intlMock}
+      intl={intl as IntlShape}
       width={300}
       height={200}
       fagsakYtelseTyper={fagsakYtelseTyper}

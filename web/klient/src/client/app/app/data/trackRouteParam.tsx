@@ -1,4 +1,4 @@
-import React, { Component, ReactElement } from 'react';
+import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
@@ -14,21 +14,12 @@ const defaultConfig = {
   paramsAreEqual: (paramFromUrl, paramFromStore) => paramFromUrl === paramFromStore,
 };
 
-type ConfigTsProps = Readonly<{
-  paramName: string;
-  parse?: (param: any) => any;
-  storeParam: (param: any) => any;
-  getParamFromStore: (store?: any) => any;
-  isQueryParam: boolean;
-  paramsAreEqual?: (paramFromUrl: any, paramFromStore: any) => boolean;
-}>
-
-type TsProps = Readonly<{
-  paramFromUrl: any[];
-  paramFromStore: any[];
-  storeParam: (param?: any) => any;
-  paramsAreEqual: (param1: any, param2: any) => boolean;
-}>
+interface RouteParamTrackerProps {
+  paramFromUrl?: any;
+  paramFromStore?: any;
+  storeParam: (param: string) => void;
+  paramsAreEqual: (paramFromUrl: string, paramFromStore: string) => boolean;
+}
 
 /**
  * trackRouteParam
@@ -37,43 +28,44 @@ type TsProps = Readonly<{
  * state whenever it changes.
  * @param config
  */
-const trackRouteParam = (config: ConfigTsProps) => (WrappedComponent: ReactElement<any>) => {
-  const trackingConfig = { ...defaultConfig, ...config };
-
-  class RouteParamTrackerImpl extends Component<TsProps> {
-    static defaultProps = {
-      paramFromUrl: undefined,
-      paramFromStore: undefined,
-    };
-
-    componentDidMount = () => {
-      this.updateParam();
+const trackRouteParam = (config) => (WrappedComponent) => {
+  class RouteParamTrackerImpl extends Component<RouteParamTrackerProps> {
+    constructor(props) {
+      super(props);
+      this.updateParam = this.updateParam.bind(this);
     }
 
-    componentDidUpdate = (prevProps) => {
+    componentDidMount() {
+      this.updateParam(undefined);
+    }
+
+    componentDidUpdate(prevProps) {
       this.updateParam(prevProps.paramFromUrl);
     }
 
-    componentWillUnmount = () => {
+    componentWillUnmount() {
       const { storeParam } = this.props;
       storeParam(undefined);
     }
 
-    updateParam = (prevParamFromUrl?: any) => {
+    updateParam(prevParamFromUrl) {
       const { paramFromUrl, storeParam, paramsAreEqual } = this.props;
       if (!paramsAreEqual(paramFromUrl, prevParamFromUrl)) {
         storeParam(paramFromUrl);
       }
     }
 
-    render = () => {
+    render() {
       const {
-        paramFromUrl, paramFromStore, storeParam, paramsAreEqual, // eslint-disable-line @typescript-eslint/no-unused-vars
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        paramFromUrl, paramFromStore, storeParam, paramsAreEqual,
         ...otherProps
       } = this.props;
       return <WrappedComponent {...otherProps} />;
     }
   }
+
+  const trackingConfig = { ...defaultConfig, ...config };
 
   const mapStateToProps = (state) => ({ paramFromStore: trackingConfig.getParamFromStore(state) });
   const mapDispatchToProps = (dispatch) => bindActionCreators({ storeParam: trackingConfig.storeParam }, dispatch);
@@ -91,6 +83,7 @@ const trackRouteParam = (config: ConfigTsProps) => (WrappedComponent: ReactEleme
 
   const RouteParamTracker = withRouter(connect(mapStateToProps, mapDispatchToProps, mergeProps)(RouteParamTrackerImpl));
 
+  // @ts-ignore
   RouteParamTracker.WrappedComponent = WrappedComponent;
   Object.keys(RouteParamTracker).forEach((ownPropKey) => {
     RouteParamTracker[ownPropKey] = WrappedComponent[ownPropKey];

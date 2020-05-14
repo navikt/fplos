@@ -49,7 +49,7 @@ const renderNavTextArea = renderNavField(injectIntl(TextAreaWithBadge));
 interface OwnProps {
   name: string;
   label: LabelType;
-  validate?: (() => void)[];
+  validate?: (value: any) => { id: string }[];
   readOnly?: boolean;
 }
 

@@ -1,6 +1,7 @@
 import React, { Component, ReactNode } from 'react';
 import { connect } from 'react-redux';
 import { createSelector } from 'reselect';
+import { Dispatch } from 'redux';
 import {
   injectIntl, WrappedComponentProps, FormattedMessage,
 } from 'react-intl';
@@ -20,7 +21,7 @@ import { getSaksbehandler, getAvdelingensSaksbehandlere, getSaksbehandlerSokFini
 import styles from './leggTilSaksbehandlerForm.less';
 
 interface OwnProps {
-  finnSaksbehandler: (brukerIdent: string) => Promise<string>;
+  finnSaksbehandler: (brukerIdent: string) => (dispatch: Dispatch) => Promise<string>;
   leggTilSaksbehandler: (brukerIdent: string, avdelingEnhet: string) => Promise<string>;
   resetSaksbehandlerSok: () => void;
   saksbehandler?: Saksbehandler;
@@ -43,7 +44,7 @@ export class LeggTilSaksbehandlerForm extends Component<OwnProps & WrappedCompon
 
   nodes: ReactNode[];
 
-  constructor(props: OwnProps) {
+  constructor(props) {
     super(props);
 
     this.state = {

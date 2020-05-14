@@ -1,6 +1,7 @@
 import React from 'react';
 import { expect } from 'chai';
 import sinon from 'sinon';
+import { IntlShape } from 'react-intl';
 
 import { shallowWithIntl, intlMock } from 'testHelpers/intl-enzyme-test-helper';
 import KoSortering from 'kodeverk/KoSortering';
@@ -8,6 +9,9 @@ import { RadioGroupField, RadioOption } from 'form/FinalFields';
 import { SorteringVelger } from './SorteringVelger';
 
 describe('<SorteringVelger>', () => {
+  const intl: Partial<IntlShape> = {
+    ...intlMock,
+  };
   it('skal vise radioknapper for alle sorteringsvalg', () => {
     const koSorteringTyper = [{
       kode: KoSortering.OPPRETT_BEHANDLING,
@@ -18,7 +22,7 @@ describe('<SorteringVelger>', () => {
     }];
 
     const wrapper = shallowWithIntl(<SorteringVelger
-      intl={intlMock}
+      intl={intl as IntlShape}
       koSorteringTyper={koSorteringTyper}
       valgtSakslisteId={1}
       lagreSakslisteSortering={sinon.spy()}
@@ -46,7 +50,7 @@ describe('<SorteringVelger>', () => {
     const lagreSorteringFn = sinon.spy();
 
     const wrapper = shallowWithIntl(<SorteringVelger
-      intl={intlMock}
+      intl={intl as IntlShape}
       koSorteringTyper={koSorteringTyper}
       valgtSakslisteId={1}
       lagreSakslisteSortering={lagreSorteringFn}

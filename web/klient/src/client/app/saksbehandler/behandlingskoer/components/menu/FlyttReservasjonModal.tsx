@@ -85,7 +85,7 @@ export class FlyttReservasjonModal extends Component<OwnProps & WrappedComponent
                  <FormattedMessage id="FlyttReservasjonModal.FlyttReservasjon" />
                </Element>
                <VerticalSpacer eightPx />
-               <FlexContainer fluid>
+               <FlexContainer>
                  <FlexRow>
                    <FlexColumn>
                      <InputField
@@ -103,7 +103,6 @@ export class FlyttReservasjonModal extends Component<OwnProps & WrappedComponent
                        className={styles.button}
                        spinner={erSaksbehandlerSokStartet}
                        disabled={!values.brukerIdent || erSaksbehandlerSokStartet}
-                       tabIndex="0"
                      >
                        <FormattedMessage id="FlyttReservasjonModal.Sok" />
                      </Hovedknapp>

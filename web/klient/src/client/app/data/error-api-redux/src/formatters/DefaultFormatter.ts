@@ -1,9 +1,10 @@
 import ErrorMessage from './ErrorMessage';
-import { Formatter } from './Formatter';
+import Formatter from './Formatter';
 
 interface ErrorData {
    feilmelding?: string;
    message?: string;
+   type?: any;
 }
 
 class DefaultFormatter implements Formatter<ErrorData | string> {

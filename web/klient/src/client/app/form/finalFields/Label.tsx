@@ -7,7 +7,7 @@ import styles from './label.less';
 
 const classNames = classnames.bind(styles);
 
-export type LabelType = ReactType | {
+export type LabelType = string | ReactType | {
   id: string;
   args?: {};
 };

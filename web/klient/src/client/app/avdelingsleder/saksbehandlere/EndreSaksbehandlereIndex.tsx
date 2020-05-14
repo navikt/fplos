@@ -10,19 +10,22 @@ import {
 } from './duck';
 
 interface OwnProps {
-    fetchAvdelingensSaksbehandlere: (avdelingEnhet: string) => void;
-    findSaksbehandler: (brukerIdent: string) => Promise<string>;
-    resetSaksbehandlerSok: () => void;
-    addSaksbehandler: (brukerIdent: string, avdelingEnhet: string) => Promise<string>;
-    avdelingensSaksbehandlere: Saksbehandler[];
-    removeSaksbehandler: (brukerIdent: string, avdelingEnhet: string) => Promise<string>;
-    valgtAvdelingEnhet: string;
+  avdelingensSaksbehandlere: Saksbehandler[];
+  valgtAvdelingEnhet: string;
+}
+
+interface DispatchProps {
+  fetchAvdelingensSaksbehandlere: (avdelingEnhet: string) => void;
+  findSaksbehandler: (brukerIdent: string) => (dispatch: Dispatch) => Promise<string>;
+  resetSaksbehandlerSok: () => void;
+  addSaksbehandler: (brukerIdent: string, avdelingEnhet: string) => (dispatch: Dispatch) => Promise<string>;
+  removeSaksbehandler: (brukerIdent: string, avdelingEnhet: string) => (dispatch: Dispatch) => Promise<string>;
 }
 
 /**
  * EndreSaksbehandlereIndex
  */
-export class EndreSaksbehandlereIndex extends Component<OwnProps> {
+export class EndreSaksbehandlereIndex extends Component<OwnProps & DispatchProps> {
     static defaultProps = {
       avdelingensSaksbehandlere: [],
     }
@@ -54,7 +57,7 @@ const mapStateToProps = (state) => ({
   valgtAvdelingEnhet: getValgtAvdelingEnhet(state),
 });
 
-const mapDispatchToProps = (dispatch: Dispatch) => ({
+const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => ({
   ...bindActionCreators({
     fetchAvdelingensSaksbehandlere,
     findSaksbehandler,

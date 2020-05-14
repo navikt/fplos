@@ -25,19 +25,23 @@ interface SearchResultAccessDenied {
   feilmelding?: string;
 }
 
-type Props = Readonly<{
+interface OwnProps {
   fagsaker: Fagsak[];
   fagsakOppgaver: Oppgave[];
   searchFagsaker: ({ searchString: string, skalReservere: boolean }) => void;
   searchResultAccessDenied?: SearchResultAccessDenied;
-  resetFagsakSearch: () => void;
   goToFpsak: (saknummer: number, behandlingId?: number) => void;
   goToTilbakesak: (path: string) => void;
-  reserverOppgave: (oppgaveId: number) => Promise<{payload: OppgaveStatus }>;
-  hentReservasjonsstatus: (oppgaveId: number) => Promise<{payload: OppgaveStatus }>;
-  hentOppgaverForFagsaker: (fagsaker: Fagsak[]) => Promise<{payload: Oppgave[] }>;
-  hentFpsakInternBehandlingId: (behandlingId: string) => Promise<{payload: number }>;
-}>;
+}
+
+interface DispatchProps {
+  searchFagsaker: ({ searchString: string, skalReservere: boolean }) => void;
+  resetFagsakSearch: () => void;
+  reserverOppgave: (oppgaveId: number) => (dispatch: Dispatch) => Promise<{payload: OppgaveStatus }>;
+  hentReservasjonsstatus: (oppgaveId: number) => (dispatch: Dispatch) => Promise<{payload: OppgaveStatus }>;
+  hentOppgaverForFagsaker: (fagsaker: Fagsak[]) => (dispatch: Dispatch) => Promise<{payload: Oppgave[] }>;
+  hentFpsakInternBehandlingId: (behandlingId: string) => (dispatch: Dispatch) => Promise<{payload: number }>;
+}
 
 interface StateProps {
   skalReservere: boolean;
@@ -53,7 +57,7 @@ interface StateProps {
  * Container komponent. Har ansvar for å vise søkeskjermbildet og å håndtere fagsaksøket
  * mot server og lagringen av resultatet i klientens state.
  */
-export class FagsakSearchIndex extends Component<Props, StateProps> {
+export class FagsakSearchIndex extends Component<OwnProps & DispatchProps, StateProps> {
    state = {
      skalReservere: false,
      reservertAvAnnenSaksbehandler: false,
@@ -64,10 +68,9 @@ export class FagsakSearchIndex extends Component<Props, StateProps> {
 
   static defaultProps = {
     fagsaker: [],
-    searchResultAccessDenied: undefined,
   };
 
-  componentDidUpdate = (prevProps: Props, prevState: StateProps) => {
+  componentDidUpdate = (_prevProps: OwnProps, prevState: StateProps) => {
     const {
       fagsaker, fagsakOppgaver, goToFpsak,
     } = this.props;
@@ -222,7 +225,7 @@ const mapStateToProps = (state) => ({
   goToTilbakesak: getGoToTilbakesakFn(getFptilbakeUrl(state)),
 });
 
-const mapDispatchToProps = (dispatch: Dispatch) => ({
+const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => ({
   ...bindActionCreators({
     searchFagsaker,
     resetFagsakSearch,

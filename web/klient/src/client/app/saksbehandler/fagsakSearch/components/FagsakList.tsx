@@ -98,7 +98,7 @@ export const FagsakList: FunctionComponent<OwnProps> = ({
   </Table>
 );
 
-export const getSorterteFagsaker = createSelector([getFagsaker], (fagsaker) => fagsaker.concat().sort((fagsak1, fagsak2) => {
+export const getSorterteFagsaker = createSelector([getFagsaker], (fagsaker: Fagsak[]) => fagsaker.concat().sort((fagsak1, fagsak2) => {
   if (fagsak1.status.kode === fagsakStatus.AVSLUTTET && fagsak2.status.kode !== fagsakStatus.AVSLUTTET) {
     return 1;
   } if (fagsak1.status.kode !== fagsakStatus.AVSLUTTET && fagsak2.status.kode === fagsakStatus.AVSLUTTET) {

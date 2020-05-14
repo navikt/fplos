@@ -7,7 +7,7 @@
  */
 
 import React from 'react';
-import { createIntl, createIntlCache, IntlProvider } from 'react-intl';
+import { createIntl, createIntlCache, IntlProvider,  } from 'react-intl';
 import { mount, shallow } from 'enzyme';
 import sinon from 'sinon';
 // You can pass your messages to the IntlProvider. Optional: remove if unneeded.

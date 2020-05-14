@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
 
 import Oppgave from '../oppgaveTsType';
-import { fetchBehandledeOppgaver, getBehandledeOppgaver } from './duck';
+import { fetchBehandledeOppgaver } from './duck';
 import { getValgtSakslisteId } from '../behandlingskoer/duck';
 import SaksstottePaneler from './components/SaksstottePaneler';
 
@@ -30,16 +30,15 @@ export class SaksstotteIndex extends Component<TsProps> {
 
   render = () => {
     const {
-      sistBehandledeSaker, valgtSakslisteId,
+      valgtSakslisteId,
     } = this.props;
     return (
-      <SaksstottePaneler sistBehandledeSaker={sistBehandledeSaker} valgtSakslisteId={valgtSakslisteId} />
+      <SaksstottePaneler valgtSakslisteId={valgtSakslisteId} />
     );
   }
 }
 
 const mapStateToProps = (state) => ({
-  sistBehandledeSaker: getBehandledeOppgaver(state),
   valgtSakslisteId: getValgtSakslisteId(state),
 });
 

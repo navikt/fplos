@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { KeyboardEvent, FocusEvent } from 'react';
 import DayPicker from 'react-day-picker';
 import { expect } from 'chai';
 import sinon from 'sinon';
@@ -85,7 +85,7 @@ describe('<CalendarOverlay>', () => {
       onClose={onCloseCallback}
     />);
 
-    wrapper.find('div').prop('onBlur')('test');
+    wrapper.find('div').prop('onBlur')({} as FocusEvent);
   });
 
   it('skal kjøre callback når en trykker escape-knappen', () => {
@@ -102,7 +102,7 @@ describe('<CalendarOverlay>', () => {
       onClose={onCloseCallback}
     />);
 
-    wrapper.find('div').prop('onKeyDown')({ keyCode: 27 });
+    wrapper.find('div').prop('onKeyDown')({ keyCode: 27 } as KeyboardEvent);
 
     expect(onCloseCallback.called).is.true;
   });
@@ -121,7 +121,7 @@ describe('<CalendarOverlay>', () => {
       onClose={onCloseCallback}
     />);
 
-    wrapper.find('div').prop('onKeyDown')({ keyCode: 20 });
+    wrapper.find('div').prop('onKeyDown')({ keyCode: 20 } as KeyboardEvent);
 
     expect(onCloseCallback.called).is.false;
   });

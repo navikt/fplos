@@ -1,14 +1,19 @@
 import React from 'react';
 import { expect } from 'chai';
+import { IntlShape } from 'react-intl';
 import { Undertekst } from 'nav-frontend-typografi';
 
 import { shallowWithIntl, intlMock } from 'testHelpers/intl-enzyme-test-helper';
 import { ErrorMessagePanel, getErrorMessageList } from './ErrorMessagePanel';
 
 describe('<ErrorMessagePanel>', () => {
+  const intl: Partial<IntlShape> = {
+    ...intlMock,
+  };
+
   it('skal vise feilmelding med ikke lenke for å vise detaljert info', () => {
     const wrapper = shallowWithIntl(<ErrorMessagePanel
-      intl={intlMock}
+      intl={intl as IntlShape}
       errorMessages={['Error!']}
       removeErrorMessage={() => undefined}
     />);
@@ -22,7 +27,7 @@ describe('<ErrorMessagePanel>', () => {
 
   it('skal erstatte spesialtegn i feilmelding', () => {
     const wrapper = shallowWithIntl(<ErrorMessagePanel
-      intl={intlMock}
+      intl={intl as IntlShape}
       errorMessages={['Høna &amp; egget og &#34;test1&#34; og &#39;test2&#39;']}
       removeErrorMessage={() => undefined}
     />);

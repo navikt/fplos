@@ -2,7 +2,7 @@
 import { Dispatch } from 'redux';
 
 import fpLosApi from 'data/fpLosApi';
-import { Fagsak } from './fagsakTsType';
+import Fagsak from './fagsakTsType';
 
 /* Action creators */
 export const searchFagsaker = fpLosApi.SEARCH_FAGSAK.makeRestApiRequest();

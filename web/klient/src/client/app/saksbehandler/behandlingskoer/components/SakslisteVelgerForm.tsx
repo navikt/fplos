@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import moment from 'moment';
 import { Form, FormSpy } from 'react-final-form';
 import {
-  injectIntl, WrappedComponentProps, FormattedMessage,
+  injectIntl, WrappedComponentProps, FormattedMessage, IntlShape,
 } from 'react-intl';
 import { bindActionCreators, Dispatch } from 'redux';
 import { Element, Normaltekst } from 'nav-frontend-typografi';
@@ -58,13 +58,13 @@ const getInitialValues = (sakslister) => {
 
 const getValgtSaksliste = (sakslister: Saksliste[], sakslisteId: string) => sakslister.find((s) => sakslisteId === `${s.sakslisteId}`);
 
-const getStonadstyper = (saksliste?: Saksliste, intl: any) => (saksliste && saksliste.fagsakYtelseTyper.length > 0
+const getStonadstyper = (intl: IntlShape, saksliste?: Saksliste) => (saksliste && saksliste.fagsakYtelseTyper.length > 0
   ? saksliste.fagsakYtelseTyper.map((type) => type.navn) : [intl.formatMessage({ id: 'SakslisteVelgerForm.Alle' })]);
 
-const getBehandlingstyper = (saksliste?: Saksliste, intl: any) => (saksliste && saksliste.behandlingTyper.length > 0
+const getBehandlingstyper = (intl: IntlShape, saksliste?: Saksliste) => (saksliste && saksliste.behandlingTyper.length > 0
   ? saksliste.behandlingTyper.map((type) => type.navn) : [intl.formatMessage({ id: 'SakslisteVelgerForm.Alle' })]);
 
-const getAndreKriterier = (saksliste?: Saksliste, intl: any) => {
+const getAndreKriterier = (intl: IntlShape, saksliste?: Saksliste) => {
   if (saksliste && saksliste.andreKriterier.length > 0) {
     return saksliste.andreKriterier.map((ak) => (ak.inkluder ? ak.andreKriterierType.navn
       : intl.formatMessage({ id: 'SakslisteVelgerForm.Uten' }, { kriterie: ak.andreKriterierType.navn })));
@@ -82,6 +82,9 @@ const getSorteringsnavn = (saksliste?: Saksliste) => {
   } = saksliste.sortering;
   let values = {
     br: <br />,
+    fomDato: undefined,
+    tomDato: undefined,
+    navn: undefined,
   };
   if (!erDynamiskPeriode) {
     if (!fomDato && !tomDato) {
@@ -201,19 +204,19 @@ export class SakslisteVelgerForm extends Component<OwnProps & WrappedComponentPr
                     <FlexColumn className={styles.marginFilters}>
                       <LabelWithHeader
                         header={intl.formatMessage({ id: 'SakslisteVelgerForm.Stonadstype' })}
-                        texts={getStonadstyper(getValgtSaksliste(sakslister, values.sakslisteId), intl)}
+                        texts={getStonadstyper(intl, getValgtSaksliste(sakslister, values.sakslisteId))}
                       />
                     </FlexColumn>
                     <FlexColumn className={styles.marginFilters}>
                       <LabelWithHeader
                         header={intl.formatMessage({ id: 'SakslisteVelgerForm.Behandlingstype' })}
-                        texts={getBehandlingstyper(getValgtSaksliste(sakslister, values.sakslisteId), intl)}
+                        texts={getBehandlingstyper(intl, getValgtSaksliste(sakslister, values.sakslisteId))}
                       />
                     </FlexColumn>
                     <FlexColumn className={styles.marginFilters}>
                       <LabelWithHeader
                         header={intl.formatMessage({ id: 'SakslisteVelgerForm.AndreKriterier' })}
-                        texts={getAndreKriterier(getValgtSaksliste(sakslister, values.sakslisteId), intl)}
+                        texts={getAndreKriterier(intl, getValgtSaksliste(sakslister, values.sakslisteId))}
                       />
                     </FlexColumn>
                     <FlexColumn className={styles.marginFilters}>

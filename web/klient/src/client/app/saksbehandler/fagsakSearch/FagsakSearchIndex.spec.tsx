@@ -25,7 +25,6 @@ describe('<FagsakSearchIndex>', () => {
       alder: 38,
       personnummer: '123456789',
       erKvinne: true,
-      erDod: false,
     },
     opprettet: '13‎.‎02‎.‎2017‎ ‎09‎:‎54‎:‎22',
   };
@@ -35,8 +34,6 @@ describe('<FagsakSearchIndex>', () => {
     const wrapper = shallowWithIntl(<FagsakSearchIndex
       fagsaker={fagsaker}
       searchFagsaker={sinon.spy()}
-      searchResultReceived={false}
-      searchStarted
       resetFagsakSearch={sinon.spy()}
       goToFpsak={sinon.spy()}
       goToTilbakesak={sinon.spy()}
@@ -57,8 +54,6 @@ describe('<FagsakSearchIndex>', () => {
     const wrapper = shallowWithIntl(<FagsakSearchIndex
       fagsaker={fagsaker}
       searchFagsaker={sinon.spy()}
-      searchResultReceived={false}
-      searchStarted
       resetFagsakSearch={sinon.spy()}
       goToFpsak={goToFpsak}
       goToTilbakesak={sinon.spy()}
@@ -70,7 +65,7 @@ describe('<FagsakSearchIndex>', () => {
     />);
 
     const fagsakSearchIndex = wrapper.find(FagsakSearch);
-    fagsakSearchIndex.prop('selectFagsakCallback')('', fagsak.saksnummer);
+    fagsakSearchIndex.prop('selectFagsakCallback')(fagsak.saksnummer);
 
     expect(goToFpsak.calledOnce).to.be.true;
   });
@@ -79,8 +74,6 @@ describe('<FagsakSearchIndex>', () => {
     const goToFpsak = sinon.spy();
     const wrapper = shallowWithIntl(<FagsakSearchIndex
       searchFagsaker={sinon.spy()}
-      searchResultReceived={false}
-      searchStarted
       resetFagsakSearch={sinon.spy()}
       goToFpsak={goToFpsak}
       goToTilbakesak={sinon.spy()}
@@ -107,8 +100,6 @@ describe('<FagsakSearchIndex>', () => {
     const goToFpsak = sinon.spy();
     const wrapper = shallowWithIntl(<FagsakSearchIndex
       searchFagsaker={sinon.spy()}
-      searchResultReceived={false}
-      searchStarted
       resetFagsakSearch={sinon.spy()}
       goToFpsak={goToFpsak}
       goToTilbakesak={sinon.spy()}

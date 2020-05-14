@@ -1,5 +1,5 @@
 
-import React, { Component } from 'react';
+import React, { Component, KeyboardEvent } from 'react';
 import { FormattedMessage } from 'react-intl';
 
 import Oppgave from 'saksbehandler/oppgaveTsType';
@@ -84,7 +84,7 @@ export class OppgaveHandlingerMenu extends Component<OwnProps, OwnState> {
     toggleEventListeners(false, this.handleOutsideClick);
   }
 
-  handleOutsideClick = (event: Event | SyntheticKeyboardEvent<HTMLButtonElement>) => {
+  handleOutsideClick = (event: KeyboardEvent<HTMLButtonElement>) => {
     const { imageNode } = this.props;
     // ignore clicks on the component itself
     const harKlikketMeny = this.node && this.node.contains(event.target);
@@ -121,7 +121,7 @@ export class OppgaveHandlingerMenu extends Component<OwnProps, OwnState> {
     this.setState((prevState) => ({ ...prevState, showFlyttReservasjonModal: false }));
   }
 
-  closeForlengReservasjonModal = (event: Event) => {
+  closeForlengReservasjonModal = (event: KeyboardEvent<HTMLButtonElement>) => {
     const { toggleMenu, oppgave } = this.props;
     toggleMenu(oppgave);
     this.handleOutsideClick(event);
@@ -135,7 +135,7 @@ export class OppgaveHandlingerMenu extends Component<OwnProps, OwnState> {
     });
   }
 
-  closeReservasjonEndringDatoModal = (event: Event) => {
+  closeReservasjonEndringDatoModal = (event: KeyboardEvent<HTMLButtonElement>) => {
     const { toggleMenu, oppgave } = this.props;
     toggleMenu(oppgave);
     this.handleOutsideClick(event);

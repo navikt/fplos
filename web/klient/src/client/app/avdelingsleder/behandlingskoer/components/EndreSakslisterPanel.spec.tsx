@@ -1,6 +1,7 @@
 import React from 'react';
 import { expect } from 'chai';
 import sinon from 'sinon';
+import { IntlShape } from 'react-intl';
 
 import { shallowWithIntl, intlMock } from 'testHelpers/intl-enzyme-test-helper';
 import GjeldendeSakslisterTabell from './GjeldendeSakslisterTabell';
@@ -8,6 +9,10 @@ import UtvalgskriterierForSakslisteForm from './sakslisteForm/UtvalgskriterierFo
 import EndreSakslisterPanel from './EndreSakslisterPanel';
 
 describe('<EndreSakslisterPanel>', () => {
+  const intl: Partial<IntlShape> = {
+    ...intlMock,
+  };
+
   it('skal vise tabell for sakslister, men ikke editeringspanel når ingen tabellrad er valgt', () => {
     const sakslister = [{
       sakslisteId: 1,
@@ -19,7 +24,7 @@ describe('<EndreSakslisterPanel>', () => {
     }];
 
     const wrapper = shallowWithIntl(<EndreSakslisterPanel.WrappedComponent
-      intl={intlMock}
+      intl={intl as IntlShape}
       sakslister={sakslister}
       setValgtSakslisteId={sinon.spy()}
       lagNySaksliste={sinon.spy()}
@@ -51,7 +56,7 @@ describe('<EndreSakslisterPanel>', () => {
     }];
 
     const wrapper = shallowWithIntl(<EndreSakslisterPanel.WrappedComponent
-      intl={intlMock}
+      intl={intl as IntlShape}
       sakslister={sakslister}
       setValgtSakslisteId={sinon.spy()}
       lagNySaksliste={sinon.spy()}

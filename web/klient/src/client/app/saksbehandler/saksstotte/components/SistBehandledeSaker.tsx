@@ -1,35 +1,35 @@
 
 import React, { Component, Fragment } from 'react';
 import { FormattedMessage } from 'react-intl';
-import { Undertittel, Normaltekst } from 'nav-frontend-typografi';
+import { connect } from 'react-redux';
+import { bindActionCreators, Dispatch } from 'redux';
 import Lenke from 'nav-frontend-lenker';
+import { Undertittel, Normaltekst } from 'nav-frontend-typografi';
 
 import { getFpsakHref, getFptilbakeHref } from 'app/paths';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import { getFpsakUrl, getFptilbakeUrl, hentFpsakInternBehandlingId as hentFpsakInternBehandlingIdActionCreator } from 'app/duck';
 import { getBehandledeOppgaver } from 'saksbehandler/saksstotte/duck';
-import { bindActionCreators, Dispatch } from 'redux';
-import { connect } from 'react-redux';
 import Oppgave from '../../oppgaveTsType';
 
 const getClickEvent = (openFpsak, oppgave) => () => openFpsak(oppgave);
 
-type OwnProps = Readonly<{
+interface OwnProps {
   fpsakUrl: string;
   fptilbakeUrl: string;
   sistBehandledeSaker: Oppgave[];
-  hentFpsakInternBehandlingId: (uuid: string) => Promise<{payload: number }>;
-}>
-
-interface StateProps {
-  sistBehandledeSaker: Oppgave[];
 }
+
+interface DispatchProps {
+  hentFpsakInternBehandlingId: (uuid: string) => (dispatch: Dispatch) => Promise<{ payload: number }>;
+}
+
 /**
  * SistBehandledeSaker
  *
  * Denne komponenten viser de tre siste fagsakene en nav-ansatt har behandlet.
  */
-export class SistBehandledeSaker extends Component<OwnProps, StateProps> {
+export class SistBehandledeSaker extends Component<OwnProps & DispatchProps> {
   openFpsak = (oppgave: Oppgave) => {
     const { fpsakUrl, fptilbakeUrl, hentFpsakInternBehandlingId } = this.props;
 
@@ -83,7 +83,7 @@ const mapStateToProps = (state) => ({
   sistBehandledeSaker: getBehandledeOppgaver(state) || [],
 });
 
-const mapDispatchToProps = (dispatch: Dispatch) => ({
+const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => ({
   ...bindActionCreators({
     hentFpsakInternBehandlingId: hentFpsakInternBehandlingIdActionCreator,
   }, dispatch),

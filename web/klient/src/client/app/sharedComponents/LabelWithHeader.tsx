@@ -5,7 +5,7 @@ import styles from './labelWithHeader.less';
 
 interface OwnProps {
   header: string | ReactNode;
-  texts: string[] | ReactNode[];
+  texts: string[];
 }
 
 /**

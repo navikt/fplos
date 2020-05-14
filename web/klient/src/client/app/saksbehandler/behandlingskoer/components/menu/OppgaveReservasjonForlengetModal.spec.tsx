@@ -2,7 +2,8 @@
 import React from 'react';
 import { expect } from 'chai';
 import sinon from 'sinon';
-import { FormattedMessage } from 'react-intl';
+import { IntlShape, FormattedMessage } from 'react-intl';
+
 
 import { shallowWithIntl, intlMock } from 'testHelpers/intl-enzyme-test-helper';
 import behandlingStatus from 'kodeverk/behandlingStatus';
@@ -11,6 +12,10 @@ import fagsakYtelseType from 'kodeverk/fagsakYtelseType';
 import { OppgaveReservasjonForlengetModal } from './OppgaveReservasjonForlengetModal';
 
 describe('<OppgaveReservasjonForlengetModal>', () => {
+  const intl: Partial<IntlShape> = {
+    ...intlMock,
+  };
+
   const oppgave = {
     id: 1,
     status: {
@@ -37,12 +42,13 @@ describe('<OppgaveReservasjonForlengetModal>', () => {
       kode: behandlingStatus.OPPRETTET,
       navn: '',
     },
+    href: '',
   };
 
   it('skal rendre modal for å gi tilbakemelding om at reservasjon er forlenget', () => {
     const wrapper = shallowWithIntl(
       <OppgaveReservasjonForlengetModal
-        intl={intlMock}
+        intl={intl as IntlShape}
         oppgave={oppgave}
         showModal
         closeModal={sinon.spy()}

@@ -93,7 +93,7 @@ const HeaderWithErrorPanel: FunctionComponent<OwnProps & WrappedComponentProps> 
   avdelinger,
   valgtAvdelingEnhet,
   setValgtAvdeling,
-  errorMessages,
+  errorMessages = [],
   setSiteHeight,
 }) => {
   const [erLenkePanelApent, setLenkePanelApent] = useState(false);

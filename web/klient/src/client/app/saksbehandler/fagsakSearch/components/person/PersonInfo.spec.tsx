@@ -1,6 +1,7 @@
 
 import React from 'react';
 import { expect } from 'chai';
+import { IntlShape } from 'react-intl';
 import { Undertittel, Undertekst } from 'nav-frontend-typografi';
 
 import { shallowWithIntl, intlMock } from 'testHelpers/intl-enzyme-test-helper';
@@ -10,6 +11,9 @@ import AlderVisning from './Aldervisning';
 import MerkePanel from './Merkepanel';
 
 describe('<PersonInfo>', () => {
+  const intl: Partial<IntlShape> = {
+    ...intlMock,
+  };
   it('skal sjekke at props blir brukt korrekt', () => {
     const person = {
       navn: 'frida',
@@ -26,7 +30,7 @@ describe('<PersonInfo>', () => {
       },
     };
     const wrapper = shallowWithIntl(<PersonInfo.WrappedComponent
-      intl={intlMock}
+      intl={intl as IntlShape}
       person={person}
     />);
 

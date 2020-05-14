@@ -14,7 +14,7 @@ interface OwnProps {
   name: string;
   type?: string;
   label?: LabelType;
-  validate?: (() => void)[];
+  validate?: (text: any) => { id: string }[];
   readOnly?: boolean;
   isEdited?: boolean;
 }
@@ -40,7 +40,7 @@ InputField.defaultProps = {
   type: 'text',
   validate: [],
   readOnly: false,
-  label: { id: '' },
+  label: '',
   isEdited: false,
 };
 

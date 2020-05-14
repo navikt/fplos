@@ -5,7 +5,9 @@ class ErrorMessage {
 
   params: any
 
-  static withMessage(message: string, type) {
+  type: any
+
+  static withMessage(message: string, type?: any) {
     const errorMessage = new ErrorMessage();
     errorMessage.text = message;
     if (type !== undefined) {
@@ -14,7 +16,7 @@ class ErrorMessage {
     return errorMessage;
   }
 
-  static withMessageCode(messageCode: string, params: any, type) {
+  static withMessageCode(messageCode: string, params: any, type?: any) {
     const errorMessage = new ErrorMessage();
     errorMessage.code = messageCode;
     errorMessage.params = params;

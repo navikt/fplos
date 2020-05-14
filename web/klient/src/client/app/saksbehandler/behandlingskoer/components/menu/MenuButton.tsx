@@ -16,7 +16,7 @@ interface OwnProps {
 const MenuButton: FunctionComponent<OwnProps> = React.forwardRef(({
   onClick,
   children,
-}, ref) => (
+}, ref: any) => (
   <button ref={ref} className={styles.button} onClick={onClick} type="button">
     <Undertekst>{children}</Undertekst>
   </button>

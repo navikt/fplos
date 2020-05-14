@@ -39,10 +39,11 @@ export const NyeOgFerdigstilteOppgaverForSisteSyvPanel: FunctionComponent<OwnPro
   </>
 );
 
-export const getNyeOgFerdigstilteForSisteSyvDager = createSelector([getNyeOgFerdigstilteOppgaverNokkeltall], (nyeOgFerdigstilte = []) => {
-  const iDag = moment().startOf('day');
-  return nyeOgFerdigstilte.filter((oppgave) => iDag.isAfter(moment(oppgave.dato, ISO_DATE_FORMAT)));
-});
+export const getNyeOgFerdigstilteForSisteSyvDager = createSelector([getNyeOgFerdigstilteOppgaverNokkeltall],
+  (nyeOgFerdigstilte: { dato: string }[] = []) => {
+    const iDag = moment().startOf('day');
+    return nyeOgFerdigstilte.filter((oppgave) => iDag.isAfter(moment(oppgave.dato, ISO_DATE_FORMAT)));
+  });
 
 const mapStateToProps = (state) => ({
   nyeOgFerdigstilteOppgaver: getNyeOgFerdigstilteForSisteSyvDager(state),

@@ -2,7 +2,7 @@ import React from 'react';
 import { expect } from 'chai';
 import { Form } from 'react-final-form';
 
-import { mountWithIntl, intlMock } from 'testHelpers/intl-enzyme-test-helper';
+import { mountWithIntl } from 'testHelpers/intl-enzyme-test-helper';
 import RadioGroupField from './RadioGroupField';
 import RadioOption from './RadioOption';
 
@@ -20,7 +20,7 @@ const mountFieldInForm = (field) => mountWithIntl(
 describe('<RadioGroupField>', () => {
   it('Skal rendre radio inputs', () => {
     const wrapper = mountFieldInForm(
-      <RadioGroupField label="label" columns={4} name="name" intl={intlMock}>
+      <RadioGroupField label="label" columns={4} name="name">
         <RadioOption label="label" value />
         <RadioOption label="label" value={false} />
       </RadioGroupField>,
@@ -31,7 +31,7 @@ describe('<RadioGroupField>', () => {
 
   it('Skal rendre med fullbredde', () => {
     const wrapper = mountFieldInForm(
-      <RadioGroupField label="label" bredde="fullbredde" name="name" intl={intlMock}>
+      <RadioGroupField label="label" bredde="fullbredde" name="name">
         <RadioOption label="label" value />
         <RadioOption label="label" value={false} />
       </RadioGroupField>,

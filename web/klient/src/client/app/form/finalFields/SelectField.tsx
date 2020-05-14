@@ -28,6 +28,7 @@ interface OwnProps {
   readOnly?: boolean;
   placeholder?: string;
   hideValueOnDisable?: boolean;
+  bredde?: string;
 }
 
 const SelectField: FunctionComponent<OwnProps> = ({

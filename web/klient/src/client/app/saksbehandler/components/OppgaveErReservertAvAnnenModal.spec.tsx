@@ -2,8 +2,9 @@
 import React from 'react';
 import { expect } from 'chai';
 import sinon from 'sinon';
+import { IntlShape, FormattedMessage } from 'react-intl';
 import moment from 'moment';
-import { FormattedMessage } from 'react-intl';
+
 import { Hovedknapp } from 'nav-frontend-knapper';
 
 import Modal from 'sharedComponents/Modal';
@@ -15,6 +16,9 @@ import behandlingType from 'kodeverk/behandlingType';
 import { OppgaveErReservertAvAnnenModal } from './OppgaveErReservertAvAnnenModal';
 
 describe('<OppgaveErReservertAvAnnenModal>', () => {
+  const intl: Partial<IntlShape> = {
+    ...intlMock,
+  };
   const dato = moment().add(2, 'hours').format();
   const oppgave = {
     id: 1,
@@ -44,12 +48,13 @@ describe('<OppgaveErReservertAvAnnenModal>', () => {
       kode: behandlingStatus.OPPRETTET,
       navn: '',
     },
+    href: '',
   };
 
   it('skal vise modal med reservasjonsdata', () => {
     const wrapper = shallowWithIntl(
       <OppgaveErReservertAvAnnenModal
-        intl={intlMock}
+        intl={intl as IntlShape}
         lukkErReservertModalOgOpneOppgave={sinon.spy()}
         oppgave={oppgave}
         oppgaveStatus={oppgave.status}
@@ -72,7 +77,7 @@ describe('<OppgaveErReservertAvAnnenModal>', () => {
     const lukkOgApneFn = sinon.spy();
     const wrapper = shallowWithIntl(
       <OppgaveErReservertAvAnnenModal
-        intl={intlMock}
+        intl={intl as IntlShape}
         lukkErReservertModalOgOpneOppgave={lukkOgApneFn}
         oppgave={oppgave}
         oppgaveStatus={oppgave.status}

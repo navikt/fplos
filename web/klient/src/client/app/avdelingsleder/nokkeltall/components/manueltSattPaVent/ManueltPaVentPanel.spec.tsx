@@ -1,8 +1,8 @@
 import React from 'react';
 import { expect } from 'chai';
-
 import { Form } from 'react-final-form';
 import moment from 'moment';
+import { IntlShape } from 'react-intl';
 
 import { ISO_DATE_FORMAT } from 'utils/formats';
 import { RadioOption, SelectField } from 'form/FinalFields';
@@ -12,6 +12,10 @@ import { ManueltPaVentPanel, ALLE_YTELSETYPER_VALGT } from './ManueltPaVentPanel
 import ManueltPaVentGraf from './ManueltPaVentGraf';
 
 describe('<ManueltPaVentPanel>', () => {
+  const intl: Partial<IntlShape> = {
+    ...intlMock,
+  };
+
   const fagsakYtelseTyper = [{
     kode: fagsakYtelseType.ENGANGSSTONAD,
     navn: 'Engangsstønad',
@@ -28,7 +32,7 @@ describe('<ManueltPaVentPanel>', () => {
     const oppgaverManueltPaVent = [];
 
     const wrapper = shallowWithIntl(<ManueltPaVentPanel
-      intl={intlMock}
+      intl={intl as IntlShape}
       width={300}
       height={200}
       fagsakYtelseTyper={fagsakYtelseTyper}
@@ -72,7 +76,7 @@ describe('<ManueltPaVentPanel>', () => {
     }];
 
     const wrapper = shallowWithIntl(<ManueltPaVentPanel
-      intl={intlMock}
+      intl={intl as IntlShape}
       width={300}
       height={200}
       fagsakYtelseTyper={fagsakYtelseTyper}
@@ -102,7 +106,7 @@ describe('<ManueltPaVentPanel>', () => {
     }];
 
     const wrapper = shallowWithIntl(<ManueltPaVentPanel
-      intl={intlMock}
+      intl={intl as IntlShape}
       width={300}
       height={200}
       fagsakYtelseTyper={fagsakYtelseTyper}
@@ -132,7 +136,7 @@ describe('<ManueltPaVentPanel>', () => {
     }];
 
     const wrapper = shallowWithIntl(<ManueltPaVentPanel
-      intl={intlMock}
+      intl={intl as IntlShape}
       width={300}
       height={200}
       fagsakYtelseTyper={fagsakYtelseTyper}
@@ -161,7 +165,7 @@ describe('<ManueltPaVentPanel>', () => {
     }];
 
     const wrapper = shallowWithIntl(<ManueltPaVentPanel
-      intl={intlMock}
+      intl={intl as IntlShape}
       width={300}
       height={200}
       fagsakYtelseTyper={fagsakYtelseTyper}

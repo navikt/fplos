@@ -2,6 +2,7 @@
 import React from 'react';
 import { expect } from 'chai';
 import { XYPlot, Hint } from 'react-vis';
+import { IntlShape } from 'react-intl';
 
 import { shallowWithIntl, intlMock } from 'testHelpers/intl-enzyme-test-helper';
 
@@ -11,6 +12,9 @@ import {
 } from './NyeOgFerdigstilteOppgaverForIdagGraf';
 
 describe('<NyeOgFerdigstilteOppgaverForIdagGraf>', () => {
+  const intl: Partial<IntlShape> = {
+    ...intlMock,
+  };
   const behandlingTyper = [{
     kode: behandlingType.FORSTEGANGSSOKNAD,
     navn: 'Førstegangssøknad',
@@ -34,7 +38,7 @@ describe('<NyeOgFerdigstilteOppgaverForIdagGraf>', () => {
 
   it('skal vise graf med 10 satt på x-linja når graf er tom', () => {
     const wrapper = shallowWithIntl(<NyeOgFerdigstilteOppgaverForIdagGraf
-      intl={intlMock}
+      intl={intl as IntlShape}
       width={300}
       height={200}
       behandlingTyper={behandlingTyper}
@@ -50,7 +54,7 @@ describe('<NyeOgFerdigstilteOppgaverForIdagGraf>', () => {
 
   it('skal vise graf med 7 satt på x-linja når data har maksverdi x=5', () => {
     const wrapper = shallowWithIntl(<NyeOgFerdigstilteOppgaverForIdagGraf
-      intl={intlMock}
+      intl={intl as IntlShape}
       width={300}
       height={200}
       behandlingTyper={behandlingTyper}
@@ -72,7 +76,7 @@ describe('<NyeOgFerdigstilteOppgaverForIdagGraf>', () => {
 
   it('skal vise hint som viser at det er fem ferdigstilte behandlinger', () => {
     const wrapper = shallowWithIntl(<NyeOgFerdigstilteOppgaverForIdagGraf
-      intl={intlMock}
+      intl={intl as IntlShape}
       width={300}
       height={200}
       behandlingTyper={behandlingTyper}

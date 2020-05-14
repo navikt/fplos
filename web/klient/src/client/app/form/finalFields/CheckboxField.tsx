@@ -22,6 +22,7 @@ interface OwnProps {
   label: LabelType;
   validate?: (() => void)[];
   readOnly?: boolean;
+  onClick: () => void;
 }
 
 const CheckboxField: FunctionComponent<OwnProps> = ({

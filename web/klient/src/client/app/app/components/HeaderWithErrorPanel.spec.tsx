@@ -2,45 +2,35 @@ import React from 'react';
 import sinon from 'sinon';
 import { expect } from 'chai';
 import Header from '@navikt/nap-header';
-import BoxedListWithSelection from '@navikt/boxed-list-with-selection';
-import BoxedListWithLinks from '@navikt/boxed-list-with-links';
+import { IntlShape } from 'react-intl';
+import Popover from '@navikt/nap-popover';
 
 import { shallowWithIntl, intlMock } from 'testHelpers/intl-enzyme-test-helper';
-import { RETTSKILDE_URL, SYSTEMRUTINE_URL } from 'data/eksterneLenker';
 
 import HeaderWithErrorPanel from './HeaderWithErrorPanel';
 
 describe('<HeaderWithErrorPanel>', () => {
-  xit('skal vise lenker for rettskilde og systemrutine i header men ingen avdelinger når det ikke er noen', () => {
-    const avdelinger = [];
+  const intl: Partial<IntlShape> = {
+    ...intlMock,
+  };
 
+  it('skal sjekke at header blir vist korrekt', () => {
     const wrapper = shallowWithIntl(<HeaderWithErrorPanel.WrappedComponent
-      intl={intlMock}
+      intl={intl as IntlShape}
       navAnsattName="Per"
-      removeErrorMessage={() => undefined}
-      queryStrings={{}}
-      avdelinger={avdelinger}
+      removeErrorMessage={sinon.spy()}
+      queryStrings={{
+        errormessage: 'test',
+      }}
+      avdelinger={[]}
+      setSiteHeight={sinon.spy()}
       setValgtAvdeling={sinon.spy()}
     />);
-
     const header = wrapper.find(Header);
-    expect(header).has.length(1);
-
-    expect(header.prop('renderUserPopoverContent')).is.undefined;
-    const boxedList = header.renderProp('renderLinksPopoverContent')().find(BoxedListWithLinks);
-
-    expect(boxedList.prop('items')).to.eql([{
-      name: 'Rettskildene',
-      href: RETTSKILDE_URL,
-      isExternal: true,
-    }, {
-      name: 'Systemrutine',
-      href: SYSTEMRUTINE_URL,
-      isExternal: true,
-    }]);
+    expect(header.prop('title')).to.eq('Svangerskap, fødsel og adopsjon');
   });
 
-  xit('skal vise to avdelinger i header', () => {
+  it('skal vise to avdelinger i header', () => {
     const avdelinger = [{
       avdelingEnhet: '2323',
       navn: 'NAV Drammen',
@@ -52,22 +42,25 @@ describe('<HeaderWithErrorPanel>', () => {
     }];
 
     const wrapper = shallowWithIntl(<HeaderWithErrorPanel.WrappedComponent
-      intl={intlMock}
+      intl={intl as IntlShape}
       navAnsattName="Per"
       removeErrorMessage={() => undefined}
       queryStrings={{}}
       avdelinger={avdelinger}
       setValgtAvdeling={() => undefined}
       valgtAvdelingEnhet={avdelinger[0].avdelingEnhet}
+      setSiteHeight={sinon.spy()}
     />);
 
     const header = wrapper.find(Header);
     expect(header).has.length(1);
 
-    const boxedList = header.renderProp('renderUserPopoverContent')().find(BoxedListWithSelection);
+    const popovers = header.find(Popover);
+    expect(popovers).has.length(2);
 
-    expect(boxedList).has.length(1);
-    expect(boxedList.prop('items')).to.eql([{
+    const boxedList = popovers.last().prop('popperProps').children();
+
+    expect(boxedList.props.items).to.eql([{
       name: `${avdelinger[0].avdelingEnhet} ${avdelinger[0].navn}`,
       selected: true,
     }, {
@@ -76,7 +69,7 @@ describe('<HeaderWithErrorPanel>', () => {
     }]);
   });
 
-  xit('skal sette valgt avdeling til første avdeling i listen når ingenting er valgt fra før og en har avdelinger', () => {
+  it('skal velge ny avdeling', () => {
     const setValgtAvdelingFn = sinon.spy();
     const avdelinger = [{
       avdelingEnhet: '2323',
@@ -88,59 +81,28 @@ describe('<HeaderWithErrorPanel>', () => {
       kreverKode6: false,
     }];
 
-    shallowWithIntl(<HeaderWithErrorPanel.WrappedComponent
-      intl={intlMock}
+    const wrapper = shallowWithIntl(<HeaderWithErrorPanel.WrappedComponent
+      intl={intl as IntlShape}
       navAnsattName="Per"
       removeErrorMessage={() => undefined}
       queryStrings={{}}
       avdelinger={avdelinger}
+      valgtAvdelingEnhet={avdelinger[0].avdelingEnhet}
       setValgtAvdeling={setValgtAvdelingFn}
+      setSiteHeight={sinon.spy()}
     />);
 
+    const header = wrapper.find(Header);
+    expect(header).has.length(1);
+
+    const popovers = header.find(Popover);
+    expect(popovers).has.length(2);
+
+    const boxedList = popovers.last().prop('popperProps').children();
+    boxedList.props.onClick(1);
     expect(setValgtAvdelingFn.calledOnce).to.be.true;
     const { args } = setValgtAvdelingFn.getCalls()[0];
     expect(args).to.have.length(1);
-    expect(args[0]).to.eql('2323');
-  });
-
-  xit('skal ikke sette valgt avdeling når en ikke har avdelinger', () => {
-    const setValgtAvdelingFn = sinon.spy();
-    const avdelinger = [];
-
-    shallowWithIntl(<HeaderWithErrorPanel.WrappedComponent
-      intl={intlMock}
-      navAnsattName="Per"
-      removeErrorMessage={() => undefined}
-      queryStrings={{}}
-      avdelinger={avdelinger}
-      setValgtAvdeling={setValgtAvdelingFn}
-    />);
-
-    expect(setValgtAvdelingFn.calledOnce).to.be.false;
-  });
-
-  xit('skal ikke sette valgt avdeling når den allerede er satt fra før', () => {
-    const setValgtAvdelingFn = sinon.spy();
-    const avdelinger = [{
-      avdelingEnhet: '2323',
-      navn: 'NAV Drammen',
-      kreverKode6: false,
-    }, {
-      avdelingEnhet: '4323',
-      navn: 'NAV Oslo',
-      kreverKode6: false,
-    }];
-
-    shallowWithIntl(<HeaderWithErrorPanel.WrappedComponent
-      intl={intlMock}
-      navAnsattName="Per"
-      removeErrorMessage={() => undefined}
-      queryStrings={{}}
-      avdelinger={avdelinger}
-      setValgtAvdeling={setValgtAvdelingFn}
-      valgtAvdelingEnhet={avdelinger[0].avdelingEnhet}
-    />);
-
-    expect(setValgtAvdelingFn.calledOnce).to.be.false;
+    expect(args[0]).to.eql('4323');
   });
 });

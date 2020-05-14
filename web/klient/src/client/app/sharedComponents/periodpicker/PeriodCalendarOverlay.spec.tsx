@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { FocusEvent, KeyboardEvent } from 'react';
 import moment from 'moment';
 import DayPicker from 'react-day-picker';
 import { expect } from 'chai';
@@ -70,8 +70,9 @@ describe('<PeriodCalendarOverlay>', () => {
       onClose={onCloseCallback}
     />);
 
-    wrapper.find('div').prop('onBlur')('test');
+    wrapper.find('div').prop('onBlur')({} as FocusEvent);
   });
+
 
   it('skal kjøre callback når en trykker escape-knappen', () => {
     const onCloseCallback = sinon.spy();
@@ -87,7 +88,7 @@ describe('<PeriodCalendarOverlay>', () => {
       onClose={onCloseCallback}
     />);
 
-    wrapper.find('div').prop('onKeyDown')({ keyCode: 27 });
+    wrapper.find('div').prop('onKeyDown')({ keyCode: 27 } as KeyboardEvent);
 
     expect(onCloseCallback.called).is.true;
   });
@@ -106,7 +107,7 @@ describe('<PeriodCalendarOverlay>', () => {
       onClose={onCloseCallback}
     />);
 
-    wrapper.find('div').prop('onKeyDown')({ keyCode: 20 });
+    wrapper.find('div').prop('onKeyDown')({ keyCode: 20 } as KeyboardEvent);
 
     expect(onCloseCallback.called).is.false;
   });
@@ -126,6 +127,7 @@ describe('<PeriodCalendarOverlay>', () => {
     />);
 
     const date = '2018-01-10';
+    // @ts-ignore
     wrapper.find(DayPicker).prop('onDayClick')(date);
 
     expect(onDayChangeCallback.called).is.true;
@@ -154,6 +156,7 @@ describe('<PeriodCalendarOverlay>', () => {
     />);
 
     const date = '2018-01-10';
+    // @ts-ignore
     wrapper.find(DayPicker).prop('onDayClick')(date);
 
     expect(onDayChangeCallback.called).is.true;
@@ -182,6 +185,7 @@ describe('<PeriodCalendarOverlay>', () => {
     />);
 
     const date = '2018-01-01';
+    // @ts-ignore
     wrapper.find(DayPicker).prop('onDayClick')(date);
 
     expect(onDayChangeCallback.called).is.false;
@@ -206,6 +210,7 @@ describe('<PeriodCalendarOverlay>', () => {
     />);
 
     const date = '2018-01-11';
+    // @ts-ignore
     wrapper.find(DayPicker).prop('onDayClick')(date);
 
     expect(onDayChangeCallback.called).is.false;

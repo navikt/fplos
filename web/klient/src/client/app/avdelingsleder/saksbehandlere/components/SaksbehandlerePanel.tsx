@@ -1,4 +1,5 @@
 import React, { FunctionComponent } from 'react';
+import { Dispatch } from 'redux';
 
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import Saksbehandler from '../saksbehandlerTsType';
@@ -7,10 +8,10 @@ import SaksbehandlereTabell from './SaksbehandlereTabell';
 
 interface OwnProps {
   saksbehandlere: Saksbehandler[];
-  finnSaksbehandler: (brukerIdent: string) => Promise<string>;
+  finnSaksbehandler: (brukerIdent: string) => (dispatch: Dispatch) => Promise<string>;
   resetSaksbehandlerSok: () => void;
-  leggTilSaksbehandler: (brukerIdent: string, avdelingEnhet: string) => Promise<string>;
-  fjernSaksbehandler: (brukerIdent: string, avdelingEnhet: string) => Promise<string>;
+  leggTilSaksbehandler: (brukerIdent: string, avdelingEnhet: string) => (dispatch: Dispatch) => Promise<string>;
+  fjernSaksbehandler: (brukerIdent: string, avdelingEnhet: string) => (dispatch: Dispatch) => Promise<string>;
 }
 
 /**

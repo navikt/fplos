@@ -41,6 +41,7 @@ describe('<OppgaveHandlingerMenu>', () => {
       kode: behandlingStatus.OPPRETTET,
       navn: '',
     },
+    href: '',
   };
 
   it('skal rendre meny med to knapper og vise tidspunkt reservasjonen gjelder til', () => {
@@ -64,8 +65,9 @@ describe('<OppgaveHandlingerMenu>', () => {
 
     expect(wrapper.find(MenuButton)).has.length(4);
     const message = wrapper.find(FormattedMessage).first();
-    expect(message.prop('values').date).is.eql('02.02.2020');
-    expect(message.prop('values').time).is.eql('23:59');
+    const values = message.prop('values') as { date: string; time: string };
+    expect(values.date).is.eql('02.02.2020');
+    expect(values.time).is.eql('23:59');
   });
 
   it('skal vise modal for oppheving av reservasjon ved klikk på menyknapp og så lukke den ved å avbryte i modal', () => {
@@ -217,7 +219,7 @@ describe('<OppgaveHandlingerMenu>', () => {
     const modal = wrapper.find(FlyttReservasjonModal);
 
     const oppgaveId = 1;
-    const brukerident = 'P039283';
+    const brukerident = { brukerIdent: 'P039283', value: 'P039283' };
     const begrunnelse = 'Dette er en begrunnelse';
     modal.prop('submit')(oppgaveId, brukerident, begrunnelse);
 
@@ -225,7 +227,7 @@ describe('<OppgaveHandlingerMenu>', () => {
     const { args } = flyttReservasjonFn.getCalls()[0];
     expect(args).to.have.length(3);
     expect(args[0]).to.eql(1);
-    expect(args[1]).to.eql('P039283');
+    expect(args[1]).to.eql(brukerident);
     expect(args[2]).to.eql('Dette er en begrunnelse');
   });
 });

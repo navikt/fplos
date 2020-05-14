@@ -53,7 +53,7 @@ interface StateProps {
  * NyeOgFerdigstilteOppgaverForIdagGraf
  */
 export class NyeOgFerdigstilteOppgaverForIdagGraf extends Component<OwnProps & WrappedComponentProps, StateProps> {
-  constructor(props: OwnProps) {
+  constructor(props) {
     super(props);
 
     this.state = {
