@@ -2,12 +2,17 @@
 import React from 'react';
 import { expect } from 'chai';
 import sinon from 'sinon';
+import { IntlShape } from 'react-intl';
 import { Hovedknapp, Knapp } from 'nav-frontend-knapper';
 
 import { shallowWithIntl, intlMock } from 'testHelpers/intl-enzyme-test-helper';
 import { SletteSakslisteModal } from './SletteSakslisteModal';
 
 describe('<SletteSakslisteModal>', () => {
+  const intl: Partial<IntlShape> = {
+    ...intlMock,
+  };
+
   it('skal vise slette-modal med knapper for om en vil slette eller ikke', () => {
     const saksliste = {
       sakslisteId: 1,
@@ -16,10 +21,11 @@ describe('<SletteSakslisteModal>', () => {
       erTilBeslutter: false,
       erRegistrerPapirsoknad: false,
       saksbehandlerIdenter: [],
+      antallBehandlinger: 1,
     };
 
     const wrapper = shallowWithIntl(<SletteSakslisteModal
-      intl={intlMock}
+      intl={intl as IntlShape}
       valgtSaksliste={saksliste}
       cancel={sinon.spy()}
       submit={sinon.spy()}
@@ -37,11 +43,12 @@ describe('<SletteSakslisteModal>', () => {
       erTilBeslutter: false,
       erRegistrerPapirsoknad: false,
       saksbehandlerIdenter: [],
+      antallBehandlinger: 1,
     };
     const submitFn = sinon.spy();
 
     const wrapper = shallowWithIntl(<SletteSakslisteModal
-      intl={intlMock}
+      intl={intl as IntlShape}
       valgtSaksliste={saksliste}
       cancel={sinon.spy()}
       submit={submitFn}

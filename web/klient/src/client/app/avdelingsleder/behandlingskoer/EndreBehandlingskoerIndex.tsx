@@ -14,9 +14,15 @@ import EndreSakslisterPanel from './components/EndreSakslisterPanel';
 import Saksliste from './sakslisteTsType';
 
 interface OwnProps {
-  fetchAvdelingensSakslister: (avdelingEnhet: string) => Saksliste[];
-  fetchAntallOppgaverForSaksliste: (sakslisteId: number, avdelingEnhet: string) => Promise<string>;
-  fetchAntallOppgaverForAvdeling: (avdelingEnhet: string) => Promise<string>;
+  sakslister: Saksliste[];
+  valgtSakslisteId?: number;
+  valgtAvdelingEnhet: string;
+}
+
+interface DispatchProps {
+  fetchAvdelingensSakslister: (avdelingEnhet: string) => (dispatch: Dispatch<any>) => Saksliste[];
+  fetchAntallOppgaverForSaksliste: (sakslisteId: number, avdelingEnhet: string) => (dispatch: Dispatch<any>) => Promise<string>;
+  fetchAntallOppgaverForAvdeling: (avdelingEnhet: string) => (dispatch: Dispatch<any>) => Promise<string>;
   setValgtSakslisteId: (sakslisteId: number) => void;
   lagNySaksliste: (avdelingEnhet: string) => void;
   fjernSaksliste: (sakslisteId: number, avdelingEnhet: string) => void;
@@ -25,16 +31,13 @@ interface OwnProps {
   lagreSakslisteFagsakYtelseType: (sakslisteId: number, fagsakYtelseType: string, avdelingEnhet: string) => void;
   knyttSaksbehandlerTilSaksliste: (sakslisteId: number, brukerIdent: string, isChecked: boolean, avdelingEnhet: string) => void;
   lagreSakslisteAndreKriterier: (sakslisteId: number, andreKriterierType: Kodeverk, isChecked: boolean, skalInkludere: boolean, avdelingEnhet: string) => void;
-  sakslister: Saksliste[];
-  valgtSakslisteId?: number;
   fetchAvdelingensSaksbehandlere: (avdelingEnhet: string) => void;
-  valgtAvdelingEnhet: string;
 }
 
 /**
  * EndreBehandlingskoerIndex
  */
-export class EndreBehandlingskoerIndex extends Component<OwnProps> {
+export class EndreBehandlingskoerIndex extends Component<OwnProps & DispatchProps> {
   static defaultProps = {
     sakslister: [],
     valgtSakslisteId: undefined,
@@ -94,7 +97,7 @@ const mapStateToProps = (state) => {
   };
 };
 
-const mapDispatchToProps = (dispatch: Dispatch) => ({
+const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => ({
   ...bindActionCreators({
     fetchAvdelingensSakslister,
     setValgtSakslisteId,

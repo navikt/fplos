@@ -37,9 +37,12 @@ interface OwnProps {
   reservasjoner: Reservasjon[];
   opphevReservasjon: (oppgaveId: number) => Promise<string>;
   endreOppgaveReservasjon: (oppgaveId: number, reserverTil: string) => Promise<string>;
-  finnSaksbehandler: (brukerIdent: string) => Promise<string>;
-  nullstillSaksbehandler: () => Promise<string>;
   flyttReservasjon: (oppgaveId: number, brukerident: string, begrunnelse: string) => Promise<string>;
+}
+
+interface DispatchProps {
+  finnSaksbehandler: (brukerIdent: string) => (dispatch: Dispatch) => Promise<string>;
+  nullstillSaksbehandler: () => (dispatch: Dispatch) => Promise<string>;
 }
 
 interface StateTsProps {
@@ -48,9 +51,9 @@ interface StateTsProps {
   valgtReservasjon?: Reservasjon;
 }
 
-export class ReservasjonerTabell extends Component<OwnProps, StateTsProps> {
+export class ReservasjonerTabell extends Component<OwnProps & DispatchProps, StateTsProps> {
   /* Endre denne */
-  constructor(props: OwnProps) {
+  constructor(props) {
     super(props);
 
     this.state = {
@@ -179,7 +182,7 @@ const mapStateToProps = (state) => ({
   reservasjoner: getAvdelingensReservasjoner(state) || [],
 });
 
-const mapDispatchToProps = (dispatch: Dispatch) => ({
+const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => ({
   ...bindActionCreators({
     finnSaksbehandler: getSaksbehandler,
     nullstillSaksbehandler: resetSaksbehandler,

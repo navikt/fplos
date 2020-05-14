@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { KeyboardEvent } from 'react';
 import { shallow } from 'enzyme';
 import { expect } from 'chai';
 import sinon from 'sinon';
@@ -61,6 +61,7 @@ describe('<GjeldendeSakslisterTabell>', () => {
       erTilBeslutter: false,
       erRegistrerPapirsoknad: false,
       saksbehandlerIdenter: [],
+      antallBehandlinger: 1,
     }, {
       sakslisteId: 2,
       navn: 'Kun foreldrepenger',
@@ -68,6 +69,7 @@ describe('<GjeldendeSakslisterTabell>', () => {
       erTilBeslutter: false,
       erRegistrerPapirsoknad: false,
       saksbehandlerIdenter: [],
+      antallBehandlinger: 1,
     }];
 
     const wrapper = shallow(<GjeldendeSakslisterTabell
@@ -141,7 +143,7 @@ describe('<GjeldendeSakslisterTabell>', () => {
 
     leggTilListe.prop('onKeyDown')({
       keyCode: 13,
-    });
+    } as KeyboardEvent);
 
     expect(lagNySakslisteFn.calledOnce).to.be.true;
   });
@@ -167,7 +169,7 @@ describe('<GjeldendeSakslisterTabell>', () => {
 
     leggTilListe.prop('onKeyDown')({
       keyCode: 10,
-    });
+    } as KeyboardEvent);
 
     expect(lagNySakslisteFn.calledOnce).to.be.false;
   });
@@ -180,6 +182,7 @@ describe('<GjeldendeSakslisterTabell>', () => {
       erTilBeslutter: false,
       erRegistrerPapirsoknad: false,
       saksbehandlerIdenter: [],
+      antallBehandlinger: 1,
     }];
     const setValgtSakslisteIdFn = sinon.spy();
 
@@ -211,6 +214,7 @@ describe('<GjeldendeSakslisterTabell>', () => {
       erTilBeslutter: false,
       erRegistrerPapirsoknad: false,
       saksbehandlerIdenter: [],
+      antallBehandlinger: 1,
     }];
     const wrapper = shallow(<GjeldendeSakslisterTabell
       sakslister={sakslister}
@@ -247,6 +251,7 @@ describe('<GjeldendeSakslisterTabell>', () => {
       erTilBeslutter: false,
       erRegistrerPapirsoknad: false,
       saksbehandlerIdenter: [],
+      antallBehandlinger: 1,
     }];
     const wrapper = shallow(<GjeldendeSakslisterTabell
       sakslister={sakslister}
@@ -283,6 +288,7 @@ describe('<GjeldendeSakslisterTabell>', () => {
       erTilBeslutter: false,
       erRegistrerPapirsoknad: false,
       saksbehandlerIdenter: [],
+      antallBehandlinger: 1,
     }];
     const fjernSakslisterFn = sinon.spy();
     const wrapper = shallow(<GjeldendeSakslisterTabell
@@ -326,6 +332,7 @@ describe('<GjeldendeSakslisterTabell>', () => {
       erTilBeslutter: false,
       erRegistrerPapirsoknad: false,
       saksbehandlerIdenter: ['U12332'],
+      antallBehandlinger: 1,
     }];
 
     const wrapper = shallow(<GjeldendeSakslisterTabell

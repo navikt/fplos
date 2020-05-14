@@ -26,16 +26,19 @@ interface OwnProps {
   koSorteringTyper: KoSorteringType[];
   valgtSakslisteId: number;
   valgteBehandlingtyper: Kodeverk[];
-  lagreSakslisteSortering: (sakslisteId: number, sakslisteSorteringValg: KoSorteringType, avdelingEnhet: string) => void;
-  lagreSakslisteSorteringErDynamiskPeriode: (sakslisteId: number, avdelingEnhet: string) => void;
-  lagreSakslisteSorteringTidsintervallDato: (sakslisteId: number, fomDato: string, tomDato: string, avdelingEnhet: string) => void;
-  lagreSakslisteSorteringNumeriskIntervall: (sakslisteId: number, fra: number, til: number, avdelingEnhet: string) => void;
   valgtAvdelingEnhet: string;
   erDynamiskPeriode: boolean;
   fra: number;
   til: number;
-  fomDato: string;
-  tomDato: string;
+  fomDato?: string;
+  tomDato?: string;
+}
+
+interface DispatchProps {
+  lagreSakslisteSortering: (sakslisteId: number, sakslisteSorteringValg: KoSorteringType, avdelingEnhet: string) => void;
+  lagreSakslisteSorteringErDynamiskPeriode: (sakslisteId: number, avdelingEnhet: string) => void;
+  lagreSakslisteSorteringTidsintervallDato: (sakslisteId: number, fomDato: string, tomDato: string, avdelingEnhet: string) => void;
+  lagreSakslisteSorteringNumeriskIntervall: (sakslisteId: number, fra: number, til: number, avdelingEnhet: string) => void;
 }
 
 const bareTilbakekrevingValgt = (valgteBehandlingtyper: Kodeverk[]) => valgteBehandlingtyper
@@ -46,7 +49,7 @@ const bareTilbakekrevingValgt = (valgteBehandlingtyper: Kodeverk[]) => valgteBeh
 /**
  * SorteringVelger
  */
-export const SorteringVelger: FunctionComponent<OwnProps & WrappedComponentProps> = ({
+export const SorteringVelger: FunctionComponent<OwnProps & DispatchProps & WrappedComponentProps> = ({
   intl,
   koSorteringTyper,
   valgtSakslisteId,
@@ -115,7 +118,7 @@ const mapStateToProps = (state) => ({
   koSorteringTyper: getKodeverk(kodeverkTyper.KO_SORTERING)(state),
 });
 
-const mapDispatchToProps = (dispatch: Dispatch<any>) => ({
+const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => ({
   ...bindActionCreators({
     lagreSakslisteSortering: lagreSakslisteSorteringActionCreator,
     lagreSakslisteSorteringErDynamiskPeriode: lagreSakslisteSorteringErDynamiskPeriodeActionCreator,

@@ -2,26 +2,24 @@ import React, { Component } from 'react';
 import { getValgtAvdelingEnhet } from 'app/duck';
 import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
-import Reservasjon from 'avdelingsleder/reservasjoner/reservasjonTsType';
 import { endreOppgaveReservasjon, flyttReservasjon } from 'saksbehandler/behandlingskoer/duck';
 import {
-  fetchAvdelingensReservasjoner, getAvdelingensReservasjoner, opphevReservasjon,
+  fetchAvdelingensReservasjoner, opphevReservasjon,
 } from './duck';
 import ReservasjonerPanel from './components/ReservasjonerPanel';
 
 interface OwnProps {
-  fetchAvdelingensReservasjoner: (avdelingEnhet: string) => void;
-  avdelingensReservasjoner: Reservasjon[];
   valgtAvdelingEnhet: string;
-  opphevReservasjon: (oppgaveId: number) => Promise<string>;
-  endreOppgaveReservasjon: (oppgaveId: number, reserverTil: string) => Promise<string>;
-  flyttReservasjon: (oppgaveId: number, brukerident: string, begrunnelse: string) => Promise<string>;
 }
-export class ReservasjonerIndex extends Component<OwnProps> {
-  static defaultProps = {
-    avdelingensReservasjoner: [],
-  }
 
+interface DispatchProps {
+  fetchAvdelingensReservasjoner: (avdelingEnhet: string) => (dispatch: Dispatch) => void;
+  opphevReservasjon: (oppgaveId: number) => (dispatch: Dispatch) => Promise<string>;
+  endreOppgaveReservasjon: (oppgaveId: number, reserverTil: string) => (dispatch: Dispatch) => Promise<string>;
+  flyttReservasjon: (oppgaveId: number, brukerident: string, begrunnelse: string) => (dispatch: Dispatch) => Promise<string>;
+}
+
+export class ReservasjonerIndex extends Component<DispatchProps & OwnProps> {
   componentDidMount = () => {
     const { fetchAvdelingensReservasjoner: hentAvdelingensReservasjoner, valgtAvdelingEnhet } = this.props;
     hentAvdelingensReservasjoner(valgtAvdelingEnhet);
@@ -45,28 +43,20 @@ export class ReservasjonerIndex extends Component<OwnProps> {
       .then(() => fetchReserverte(valgtAvdelingEnhet));
   }
 
-  render = () => {
-    const {
-      avdelingensReservasjoner,
-    } = this.props;
-
-    return (
-      <ReservasjonerPanel
-        reservasjoner={avdelingensReservasjoner}
-        opphevReservasjon={this.opphevOppgaveReservasjon}
-        endreOppgaveReservasjon={this.endreOppgaveReservasjon}
-        flyttReservasjon={this.flyttReservasjon}
-      />
-    );
-  }
+  render = () => (
+    <ReservasjonerPanel
+      opphevReservasjon={this.opphevOppgaveReservasjon}
+      endreOppgaveReservasjon={this.endreOppgaveReservasjon}
+      flyttReservasjon={this.flyttReservasjon}
+    />
+  )
 }
 
 const mapStateToProps = (state) => ({
-  avdelingensReservasjoner: getAvdelingensReservasjoner(state),
   valgtAvdelingEnhet: getValgtAvdelingEnhet(state),
 });
 
-const mapDispatchToProps = (dispatch: Dispatch) => ({
+const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => ({
   ...bindActionCreators({
     fetchAvdelingensReservasjoner,
     opphevReservasjon,

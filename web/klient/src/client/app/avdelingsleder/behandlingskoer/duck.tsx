@@ -2,6 +2,9 @@
 import { Dispatch } from 'redux';
 
 import fpLosApi from 'data/fpLosApi';
+import Kodeverk from 'kodeverk/kodeverkTsType';
+
+import KoSorteringType from './KoSorteringTsType';
 
 /* Action types */
 const actionType = (name) => `saksliste/${name}`;
@@ -19,7 +22,7 @@ export const resetValgtSakslisteId = () => ({
   type: RESET_VALGT_SAKSLISTE_ID,
 });
 
-export const fetchAvdelingensSakslister = (avdelingEnhet: string) => (dispatch: Dispatch) => dispatch(
+export const fetchAvdelingensSakslister = (avdelingEnhet: string) => (dispatch: Dispatch<any>) => dispatch(
   fpLosApi.SAKSLISTER_FOR_AVDELING.makeRestApiRequest()(
     { avdelingEnhet }, { keepData: true },
   ),
@@ -27,11 +30,11 @@ export const fetchAvdelingensSakslister = (avdelingEnhet: string) => (dispatch: 
 
 export const getAvdelingensSakslister = fpLosApi.SAKSLISTER_FOR_AVDELING.getRestApiData();
 
-export const fetchAntallOppgaverForAvdeling = (avdelingEnhet: string) => (dispatch: Dispatch) => dispatch(
+export const fetchAntallOppgaverForAvdeling = (avdelingEnhet: string) => (dispatch: Dispatch<any>) => dispatch(
   fpLosApi.OPPGAVE_AVDELING_ANTALL.makeRestApiRequest()({ avdelingEnhet }),
 );
 
-export const fetchAntallOppgaverForSaksliste = (sakslisteId: number, avdelingEnhet: string) => (dispatch: Dispatch) => dispatch(
+export const fetchAntallOppgaverForSaksliste = (sakslisteId: number, avdelingEnhet: string) => (dispatch: Dispatch<any>) => dispatch(
   fpLosApi.OPPGAVE_ANTALL.makeRestApiRequest()({ sakslisteId, avdelingEnhet }),
 ).then(() => dispatch(fetchAntallOppgaverForAvdeling(avdelingEnhet)));
 
@@ -42,24 +45,24 @@ export const getAntallOppgaverForSakslisteResultat = fpLosApi.OPPGAVE_ANTALL.get
 
 // fpLosApi.OPPGAVE_ANTALL.getRestApiData();
 
-export const lagNySaksliste = (avdelingEnhet: string) => (dispatch: Dispatch) => dispatch(fpLosApi
+export const lagNySaksliste = (avdelingEnhet: string) => (dispatch: Dispatch<any>) => dispatch(fpLosApi
   .OPPRETT_NY_SAKSLISTE.makeRestApiRequest()({ avdelingEnhet }))
   .then(() => dispatch(resetValgtSakslisteId()))
   .then(() => dispatch(fetchAvdelingensSakslister(avdelingEnhet)));
 export const getNySakslisteId = fpLosApi.OPPRETT_NY_SAKSLISTE.getRestApiData();
 
-export const fjernSaksliste = (sakslisteId: number, avdelingEnhet: string) => (dispatch: Dispatch) => dispatch(
+export const fjernSaksliste = (sakslisteId: number, avdelingEnhet: string) => (dispatch: Dispatch<any>) => dispatch(
   fpLosApi.SLETT_SAKSLISTE.makeRestApiRequest()({ sakslisteId, avdelingEnhet }),
 )
   .then(() => dispatch(resetValgtSakslisteId()))
   .then(() => dispatch(fetchAvdelingensSakslister(avdelingEnhet)));
 
-export const lagreSakslisteNavn = (saksliste: {sakslisteId: number; navn: number}, avdelingEnhet: string) => (dispatch: Dispatch) => dispatch(
+export const lagreSakslisteNavn = (saksliste: {sakslisteId: number; navn: string}, avdelingEnhet: string) => (dispatch: Dispatch<any>) => dispatch(
   fpLosApi.LAGRE_SAKSLISTE_NAVN.makeRestApiRequest()({ sakslisteId: saksliste.sakslisteId, navn: saksliste.navn, avdelingEnhet }),
 ).then(() => dispatch(fetchAvdelingensSakslister(avdelingEnhet)));
 
 export const lagreSakslisteBehandlingstype = (sakslisteId: number, behandlingType: {}, isChecked: boolean,
-  avdelingEnhet: string) => (dispatch: Dispatch) => dispatch(
+  avdelingEnhet: string) => (dispatch: Dispatch<any>) => dispatch(
   fpLosApi.LAGRE_SAKSLISTE_BEHANDLINGSTYPE.makeRestApiRequest()({
     sakslisteId,
     avdelingEnhet,
@@ -69,14 +72,15 @@ export const lagreSakslisteBehandlingstype = (sakslisteId: number, behandlingTyp
 ).then(() => dispatch(fetchAntallOppgaverForSaksliste(sakslisteId, avdelingEnhet)))
   .then(() => dispatch(fetchAvdelingensSakslister(avdelingEnhet)));
 
-export const lagreSakslisteFagsakYtelseType = (sakslisteId: number, fagsakYtelseType: string, avdelingEnhet: string) => (dispatch: Dispatch) => {
+export const lagreSakslisteFagsakYtelseType = (sakslisteId: number, fagsakYtelseType: string, avdelingEnhet: string) => (dispatch: Dispatch<any>) => {
   const data = fagsakYtelseType !== '' ? { sakslisteId, avdelingEnhet, fagsakYtelseType } : { sakslisteId, avdelingEnhet };
   return dispatch(fpLosApi.LAGRE_SAKSLISTE_FAGSAK_YTELSE_TYPE.makeRestApiRequest()(data))
     .then(() => dispatch(fetchAntallOppgaverForSaksliste(sakslisteId, avdelingEnhet)))
     .then(() => dispatch(fetchAvdelingensSakslister(avdelingEnhet)));
 };
 
-export const lagreSakslisteSortering = (sakslisteId: number, sakslisteSorteringValg: string, avdelingEnhet: string) => (dispatch: Dispatch) => dispatch(
+export const lagreSakslisteSortering = (sakslisteId: number, sakslisteSorteringValg: KoSorteringType,
+  avdelingEnhet: string) => (dispatch: Dispatch<any>) => dispatch(
   fpLosApi.LAGRE_SAKSLISTE_SORTERING.makeRestApiRequest()({ sakslisteId, sakslisteSorteringValg, avdelingEnhet }),
 ).then(() => dispatch(fetchAntallOppgaverForSaksliste(sakslisteId, avdelingEnhet)))
   .then(() => dispatch(fetchAvdelingensSakslister(avdelingEnhet)));
@@ -102,8 +106,8 @@ export const lagreSakslisteSorteringNumeriskIntervall = (sakslisteId: number, fr
 ).then(() => dispatch(fetchAntallOppgaverForSaksliste(sakslisteId, avdelingEnhet)))
   .then(() => dispatch(fetchAvdelingensSakslister(avdelingEnhet)));
 
-export const lagreSakslisteAndreKriterier = (sakslisteId: number, andreKriterierType: string, isChecked: boolean, skalInkludere: boolean,
-  avdelingEnhet: string) => (dispatch: Dispatch) => dispatch(
+export const lagreSakslisteAndreKriterier = (sakslisteId: number, andreKriterierType: Kodeverk, isChecked: boolean, skalInkludere: boolean,
+  avdelingEnhet: string) => (dispatch: Dispatch<any>) => dispatch(
   fpLosApi.LAGRE_SAKSLISTE_ANDRE_KRITERIER.makeRestApiRequest()({
     sakslisteId,
     avdelingEnhet,
@@ -115,7 +119,7 @@ export const lagreSakslisteAndreKriterier = (sakslisteId: number, andreKriterier
   .then(() => dispatch(fetchAvdelingensSakslister(avdelingEnhet)));
 
 export const knyttSaksbehandlerTilSaksliste = (sakslisteId: number, brukerIdent: string, isChecked: boolean,
-  avdelingEnhet: string) => (dispatch: Dispatch) => dispatch(
+  avdelingEnhet: string) => (dispatch: Dispatch<any>) => dispatch(
   fpLosApi.LAGRE_SAKSLISTE_SAKSBEHANDLER.makeRestApiRequest()({
     sakslisteId,
     brukerIdent,

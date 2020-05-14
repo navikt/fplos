@@ -11,7 +11,6 @@ describe('<ReservasjonerIndex>', () => {
     const fetchAvdelingensReservasjoner = sinon.spy();
     const wrapper = shallow(<ReservasjonerIndex
       fetchAvdelingensReservasjoner={fetchAvdelingensReservasjoner}
-      avdelingensReservasjoner={[]}
       opphevReservasjon={sinon.spy()}
       endreOppgaveReservasjon={sinon.spy()}
       flyttReservasjon={sinon.spy()}

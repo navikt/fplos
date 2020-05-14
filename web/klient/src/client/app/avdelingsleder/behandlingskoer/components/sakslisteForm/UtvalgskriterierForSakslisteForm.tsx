@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-
+import { Dispatch } from 'redux';
 import { Form } from 'react-final-form';
 import { injectIntl, WrappedComponentProps, FormattedMessage } from 'react-intl';
 import Panel from 'nav-frontend-paneler';
@@ -40,7 +40,7 @@ interface OwnProps {
   lagreSakslisteAndreKriterier: (sakslisteId: number, andreKriterierType: Kodeverk, isChecked: boolean, skalInkludere: boolean, avdelingEnhet: string) => void;
   valgtAvdelingEnhet: string;
   antallOppgaver?: number;
-  hentAntallOppgaverForSaksliste: (sakslisteId: number, avdelingEnhet: string) => Promise<string>;
+  hentAntallOppgaverForSaksliste: (sakslisteId: number, avdelingEnhet: string) => (dispatch: Dispatch<any>) => Promise<string>;
 }
 
 /**
@@ -141,7 +141,6 @@ export class UtvalgskriterierForSakslisteForm extends Component<OwnProps & Wrapp
                   lagreSakslisteFagsakYtelseType={lagreSakslisteFagsakYtelseType}
                   valgtSakslisteId={valgtSaksliste.sakslisteId}
                   valgtAvdelingEnhet={valgtAvdelingEnhet}
-                  valgtFagsakYtelseType={values ? values.fagsakYtelseType : ''}
                 />
               </Column>
             </Row>

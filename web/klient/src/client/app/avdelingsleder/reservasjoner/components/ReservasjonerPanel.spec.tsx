@@ -9,7 +9,6 @@ import ReservasjonerTabell from 'avdelingsleder/reservasjoner/components/Reserva
 describe('<ReservasjonerPanel>', () => {
   it('skal vise tabell for reservasjoner', () => {
     const wrapper = shallow(<ReservasjonerPanel
-      reservasjoner={[]}
       opphevReservasjon={sinon.spy()}
       endreOppgaveReservasjon={sinon.spy()}
       flyttReservasjon={sinon.spy()}

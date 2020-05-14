@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { injectIntl, WrappedComponentProps, FormattedMessage } from 'react-intl';
+import { Dispatch } from 'redux';
 
 import { Form } from 'react-final-form';
 import { Hovedknapp, Knapp } from 'nav-frontend-knapper';
@@ -29,7 +30,7 @@ interface OwnProps {
   closeModal: () => void;
   submit: (oppgaveId: number, brukerident: { brukerIdent: string; value: string }, begrunnelse: string) => void;
   finnSaksbehandler: (brukerident: string) => void;
-  resetSaksbehandler: () => Promise<string>;
+  resetSaksbehandler: () => (dispatch: Dispatch) => Promise<string>;
   saksbehandler?: Saksbehandler;
   erSaksbehandlerSokStartet: boolean;
   erSaksbehandlerSokFerdig: boolean;

@@ -23,6 +23,7 @@ describe('<SaksbehandlereForSakslisteForm>', () => {
       navn: 'Registrer papirsøknad',
     }],
     saksbehandlerIdenter: [],
+    antallBehandlinger: 1,
   };
 
   it('skal vise tekst når avdelingen ikke har tilordnede saksbehandlere', () => {

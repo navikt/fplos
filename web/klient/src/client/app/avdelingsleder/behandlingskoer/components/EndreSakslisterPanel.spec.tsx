@@ -21,6 +21,7 @@ describe('<EndreSakslisterPanel>', () => {
       erTilBeslutter: false,
       erRegistrerPapirsoknad: false,
       saksbehandlerIdenter: [],
+      antallBehandlinger: 1,
     }];
 
     const wrapper = shallowWithIntl(<EndreSakslisterPanel.WrappedComponent
@@ -32,13 +33,11 @@ describe('<EndreSakslisterPanel>', () => {
       lagreSakslisteNavn={sinon.spy()}
       lagreSakslisteBehandlingstype={sinon.spy()}
       lagreSakslisteFagsakYtelseType={sinon.spy()}
-      lagreSakslisteSortering={sinon.spy()}
       lagreSakslisteAndreKriterier={sinon.spy()}
       knyttSaksbehandlerTilSaksliste={sinon.spy()}
-      hentSakslistensSaksbehandlere={sinon.spy()}
       hentAntallOppgaverForSaksliste={sinon.spy()}
       hentAntallOppgaverForAvdeling={sinon.spy()}
-      showSaksbehandlerPanel
+      hentAvdelingensSakslister={sinon.spy()}
     />);
 
     expect(wrapper.find(GjeldendeSakslisterTabell)).to.have.length(1);
@@ -53,6 +52,7 @@ describe('<EndreSakslisterPanel>', () => {
       erTilBeslutter: false,
       erRegistrerPapirsoknad: false,
       saksbehandlerIdenter: [],
+      antallBehandlinger: 1,
     }];
 
     const wrapper = shallowWithIntl(<EndreSakslisterPanel.WrappedComponent
@@ -64,14 +64,12 @@ describe('<EndreSakslisterPanel>', () => {
       lagreSakslisteNavn={sinon.spy()}
       lagreSakslisteBehandlingstype={sinon.spy()}
       lagreSakslisteFagsakYtelseType={sinon.spy()}
-      lagreSakslisteSortering={sinon.spy()}
       lagreSakslisteAndreKriterier={sinon.spy()}
       valgtSakslisteId={1}
       knyttSaksbehandlerTilSaksliste={sinon.spy()}
-      hentSakslistensSaksbehandlere={sinon.spy()}
       hentAntallOppgaverForSaksliste={sinon.spy()}
       hentAntallOppgaverForAvdeling={sinon.spy()}
-      showSaksbehandlerPanel
+      hentAvdelingensSakslister={sinon.spy()}
     />);
 
     expect(wrapper.find(GjeldendeSakslisterTabell)).to.have.length(1);

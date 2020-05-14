@@ -2,6 +2,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
+import { Dispatch } from 'redux';
 import {
   Normaltekst, Undertekst, Element, Undertittel,
 } from 'nav-frontend-typografi';
@@ -44,9 +45,9 @@ interface OwnProps {
   behandlingTyper: Kodeverk[];
   fagsakYtelseTyper: Kodeverk[];
   valgtAvdelingEnhet: string;
-  hentAvdelingensSakslister: (avdelingEnhet: string) => Saksliste[];
+  hentAvdelingensSakslister: (avdelingEnhet: string) => (dispatch: Dispatch<any>) => Saksliste[];
   oppgaverForAvdeling?: number;
-  hentAntallOppgaverForAvdeling: (avdelingEnhet: string) => Promise<string>;
+  hentAntallOppgaverForAvdeling: (avdelingEnhet: string) => (dispatch: Dispatch<any>) => Promise<string>;
 }
 
 interface StateTsProps {

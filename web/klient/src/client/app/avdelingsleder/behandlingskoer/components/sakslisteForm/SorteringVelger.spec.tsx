@@ -16,9 +16,13 @@ describe('<SorteringVelger>', () => {
     const koSorteringTyper = [{
       kode: KoSortering.OPPRETT_BEHANDLING,
       navn: 'opprett',
+      felttype: '',
+      feltkategori: '',
     }, {
       kode: KoSortering.BEHANDLINGSFRIST,
       navn: 'frist',
+      felttype: '',
+      feltkategori: '',
     }];
 
     const wrapper = shallowWithIntl(<SorteringVelger
@@ -31,6 +35,9 @@ describe('<SorteringVelger>', () => {
       lagreSakslisteSorteringNumeriskIntervall={sinon.spy()}
       valgtAvdelingEnhet="1"
       erDynamiskPeriode={false}
+      valgteBehandlingtyper={[]}
+      fra={10}
+      til={10}
     />);
 
     const options = wrapper.find(RadioOption);
@@ -43,9 +50,13 @@ describe('<SorteringVelger>', () => {
     const koSorteringTyper = [{
       kode: KoSortering.OPPRETT_BEHANDLING,
       navn: 'opprett',
+      felttype: '',
+      feltkategori: '',
     }, {
       kode: KoSortering.BEHANDLINGSFRIST,
       navn: 'frist',
+      felttype: '',
+      feltkategori: '',
     }];
     const lagreSorteringFn = sinon.spy();
 
@@ -59,6 +70,9 @@ describe('<SorteringVelger>', () => {
       lagreSakslisteSorteringNumeriskIntervall={sinon.spy()}
       valgtAvdelingEnhet="3"
       erDynamiskPeriode={false}
+      valgteBehandlingtyper={[]}
+      fra={10}
+      til={10}
     />);
 
     const felt = wrapper.find(RadioGroupField);
