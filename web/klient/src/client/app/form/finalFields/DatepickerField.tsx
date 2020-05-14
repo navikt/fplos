@@ -59,7 +59,7 @@ const DatepickerField: FunctionComponent<OwnProps> = ({
 );
 
 DatepickerField.defaultProps = {
-  label: { id: '' },
+  label: '',
   readOnly: false,
   isEdited: false,
   format: (value) => value,

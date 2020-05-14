@@ -22,6 +22,7 @@ interface OwnProps {
   initialMonth?: Date;
   numberOfMonths?: number;
   disabledDays?: Date | Date[];
+  alwaysShowCalendar?: boolean;
 }
 
 interface StateProps {
@@ -122,6 +123,7 @@ class Datepicker extends Component<OwnProps, StateProps> {
       disabledDays,
       initialMonth,
       numberOfMonths,
+      alwaysShowCalendar = false,
     } = this.props;
     const {
       inputOffsetTop, inputOffsetWidth, showCalendar,
@@ -143,17 +145,19 @@ class Datepicker extends Component<OwnProps, StateProps> {
             feil={feil}
             disabled={disabled}
           />
-          <CalendarToggleButton
-            inputOffsetTop={inputOffsetTop}
-            inputOffsetWidth={inputOffsetWidth}
-            className={styles.calendarToggleButton}
-            toggleShowCalendar={this.toggleShowCalendar}
-            buttonRef={this.handleButtonRef}
-            disabled={disabled}
+          {!alwaysShowCalendar && (
+            <CalendarToggleButton
+              inputOffsetTop={inputOffsetTop}
+              inputOffsetWidth={inputOffsetWidth}
+              className={styles.calendarToggleButton}
+              toggleShowCalendar={this.toggleShowCalendar}
+              buttonRef={this.handleButtonRef}
+              disabled={disabled}
 
-          />
+            />
+          )}
         </div>
-        {showCalendar && (
+        {(showCalendar || alwaysShowCalendar) && (
         <CalendarOverlay
           disabled={disabled}
           value={value}

@@ -58,8 +58,7 @@ export class OppgaveReservasjonEndringDatoModal extends Component<OwnProps & Wra
                   onBlurValidation
                   validate={[hasValidDate, dateAfterOrEqual(new Date()), dateBeforeOrEqual(thirtyDaysFromNow())]}
                   alwaysShowCalendar
-                  firstDate={new Date()}
-                  lastDate={thirtyDaysFromNow()}
+                  disabledDays={{ before: new Date(), after: thirtyDaysFromNow() }}
                 />
                 <Row className={styles.buttonRow}>
                   <Column>
