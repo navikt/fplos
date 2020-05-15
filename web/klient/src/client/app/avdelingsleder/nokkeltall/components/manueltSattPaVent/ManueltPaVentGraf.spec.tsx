@@ -49,7 +49,8 @@ describe('<ManueltPaVentGraf>', () => {
     const areaSeries = wrapper.find(AreaSeries);
     expect(areaSeries).to.have.length(1);
 
-    areaSeries.first().prop('onNearestX')(data[1]);
+    const func = areaSeries.first().prop('onNearestX') as ({ x: Date, y: number }) => void;
+    func(data[1]);
 
     const crosshair = wrapper.find(Crosshair);
     expect(crosshair).to.have.length(1);

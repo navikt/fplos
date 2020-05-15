@@ -1,5 +1,5 @@
 
-import React, { Component } from 'react';
+import React, { Component, KeyboardEvent } from 'react';
 import { connect } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
 import { Dispatch } from 'redux';

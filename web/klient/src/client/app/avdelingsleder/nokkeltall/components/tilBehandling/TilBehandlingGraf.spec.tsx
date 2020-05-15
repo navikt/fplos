@@ -160,7 +160,8 @@ describe('<TilBehandlingGraf>', () => {
     expect(areaSeries).to.have.length(2);
 
     const valgtPunkt = { x: moment().startOf('day').toDate(), y: 1 };
-    areaSeries.first().prop('onNearestX')(valgtPunkt);
+    const func = areaSeries.first().prop('onNearestX') as ({ x: Date, y: number }) => void;
+    func(valgtPunkt);
 
     const crosshair = wrapper.find(Crosshair);
     expect(crosshair).to.have.length(1);

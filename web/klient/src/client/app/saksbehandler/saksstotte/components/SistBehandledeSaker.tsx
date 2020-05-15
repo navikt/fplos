@@ -21,7 +21,7 @@ interface OwnProps {
 }
 
 interface DispatchProps {
-  hentFpsakInternBehandlingId: (uuid: string) => (dispatch: Dispatch) => Promise<{ payload: number }>;
+  hentFpsakInternBehandlingId: (uuid: string) => Promise<{ payload: number }>;
 }
 
 /**
@@ -84,7 +84,7 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => ({
-  ...bindActionCreators({
+  ...bindActionCreators<DispatchProps, any>({
     hentFpsakInternBehandlingId: hentFpsakInternBehandlingIdActionCreator,
   }, dispatch),
 });

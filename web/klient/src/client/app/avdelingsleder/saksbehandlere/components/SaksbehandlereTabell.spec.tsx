@@ -83,10 +83,12 @@ describe('<SaksbehandlereTabell>', () => {
 
     expect(wrapper.find(SletteSaksbehandlerModal)).to.have.length(0);
 
-    bildeKnapp.prop('onMouseDown')();
+    const mouseFn = bildeKnapp.prop('onMouseDown') as () => void;
+    mouseFn();
 
     expect(wrapper.find(SletteSaksbehandlerModal)).to.have.length(1);
-    expect(wrapper.state().valgtSaksbehandler).is.eql(saksbehandlere[0]);
+    const state = wrapper.state() as { valgtSaksbehandler: string };
+    expect(state.valgtSaksbehandler).is.eql(saksbehandlere[0]);
   });
 
   it('skal lukke modal ved trykk på avbryt i modal', () => {
@@ -105,7 +107,8 @@ describe('<SaksbehandlereTabell>', () => {
     const kolonner = rader.first().find(TableColumn);
     const bildeKnapp = kolonner.last().find(Image);
 
-    bildeKnapp.prop('onMouseDown')();
+    const mouseFn = bildeKnapp.prop('onMouseDown') as () => void;
+    mouseFn();
 
     const modal = wrapper.find(SletteSaksbehandlerModal);
     expect(modal).to.have.length(1);
@@ -113,7 +116,8 @@ describe('<SaksbehandlereTabell>', () => {
     modal.prop('closeSletteModal')();
 
     expect(wrapper.find(SletteSaksbehandlerModal)).to.have.length(0);
-    expect(wrapper.state().valgtSaksbehandler).is.undefined;
+    const state = wrapper.state() as { valgtSaksbehandler: string };
+    expect(state.valgtSaksbehandler).is.undefined;
   });
 
   it('skal fjerne saksbehandler ved trykk på ok i modal', () => {
@@ -133,7 +137,8 @@ describe('<SaksbehandlereTabell>', () => {
     const kolonner = rader.first().find(TableColumn);
     const bildeKnapp = kolonner.last().find(Image);
 
-    bildeKnapp.prop('onMouseDown')();
+    const mouseFn = bildeKnapp.prop('onMouseDown') as () => void;
+    mouseFn();
 
     const modal = wrapper.find(SletteSaksbehandlerModal);
     expect(modal).to.have.length(1);
@@ -141,7 +146,8 @@ describe('<SaksbehandlereTabell>', () => {
     modal.prop('fjernSaksbehandler')(saksbehandlere[0]);
 
     expect(wrapper.find(SletteSaksbehandlerModal)).to.have.length(0);
-    expect(wrapper.state().valgtSaksbehandler).is.undefined;
+    const state = wrapper.state() as { valgtSaksbehandler: string };
+    expect(state.valgtSaksbehandler).is.undefined;
 
     expect(fjernSaksbehandlerFn.calledOnce).to.be.true;
     const { args } = fjernSaksbehandlerFn.getCalls()[0];

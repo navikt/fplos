@@ -33,12 +33,19 @@ export const RenderDatepickerField = renderNavField(Datepicker);
 
 interface OwnProps{
   name: string;
-  label: LabelType;
+  label?: LabelType;
   readOnly?: boolean;
-  format: (value: string) => string;
-  parse: (value: string) => string;
+  format?: (value: string) => string;
+  parse?: (value: string) => string;
   isEdited?: boolean;
-  validate?: () => void[];
+  validate?: ((text: any) => { id: string }[])[];
+  onBlurValidation?: boolean;
+  onBlur?: (any) => void;
+  alwaysShowCalendar?: boolean;
+  disabledDays?: {
+    before: Date;
+    after: Date;
+  };
 }
 
 const DatepickerField: FunctionComponent<OwnProps> = ({

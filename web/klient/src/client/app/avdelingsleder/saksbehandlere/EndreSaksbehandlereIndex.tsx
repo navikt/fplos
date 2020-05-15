@@ -16,10 +16,10 @@ interface OwnProps {
 
 interface DispatchProps {
   fetchAvdelingensSaksbehandlere: (avdelingEnhet: string) => void;
-  findSaksbehandler: (brukerIdent: string) => (dispatch: Dispatch) => Promise<string>;
+  findSaksbehandler: (brukerIdent: string) => Promise<string>;
   resetSaksbehandlerSok: () => void;
-  addSaksbehandler: (brukerIdent: string, avdelingEnhet: string) => (dispatch: Dispatch) => Promise<string>;
-  removeSaksbehandler: (brukerIdent: string, avdelingEnhet: string) => (dispatch: Dispatch) => Promise<string>;
+  addSaksbehandler: (brukerIdent: string, avdelingEnhet: string) => Promise<string>;
+  removeSaksbehandler: (brukerIdent: string, avdelingEnhet: string) => Promise<string>;
 }
 
 /**
@@ -58,7 +58,7 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => ({
-  ...bindActionCreators({
+  ...bindActionCreators<DispatchProps, any>({
     fetchAvdelingensSaksbehandlere,
     findSaksbehandler,
     resetSaksbehandlerSok,

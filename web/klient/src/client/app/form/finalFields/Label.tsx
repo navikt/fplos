@@ -1,4 +1,4 @@
-import React, { Component, ReactType } from 'react';
+import React, { Component, ReactNode, ReactType } from 'react';
 import classnames from 'classnames/bind';
 import { injectIntl, WrappedComponentProps } from 'react-intl';
 import { Undertekst } from 'nav-frontend-typografi';
@@ -7,7 +7,7 @@ import styles from './label.less';
 
 const classNames = classnames.bind(styles);
 
-export type LabelType = string | ReactType | {
+export type LabelType = string | ReactNode | {
   id: string;
   args?: {};
 };

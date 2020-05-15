@@ -13,10 +13,10 @@ interface OwnProps {
 }
 
 interface DispatchProps {
-  fetchAvdelingensReservasjoner: (avdelingEnhet: string) => (dispatch: Dispatch) => void;
-  opphevReservasjon: (oppgaveId: number) => (dispatch: Dispatch) => Promise<string>;
-  endreOppgaveReservasjon: (oppgaveId: number, reserverTil: string) => (dispatch: Dispatch) => Promise<string>;
-  flyttReservasjon: (oppgaveId: number, brukerident: string, begrunnelse: string) => (dispatch: Dispatch) => Promise<string>;
+  fetchAvdelingensReservasjoner: (avdelingEnhet: string) => void;
+  opphevReservasjon: (oppgaveId: number) => Promise<string>;
+  endreOppgaveReservasjon: (oppgaveId: number, reserverTil: string) => Promise<string>;
+  flyttReservasjon: (oppgaveId: number, brukerident: string, begrunnelse: string) => Promise<string>;
 }
 
 export class ReservasjonerIndex extends Component<DispatchProps & OwnProps> {
@@ -57,7 +57,7 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => ({
-  ...bindActionCreators({
+  ...bindActionCreators<DispatchProps, any>({
     fetchAvdelingensReservasjoner,
     opphevReservasjon,
     endreOppgaveReservasjon,

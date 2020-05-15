@@ -28,7 +28,7 @@ interface OwnProps {
   showModal: boolean;
   oppgaveId: number;
   closeModal: () => void;
-  submit: (oppgaveId: number, brukerident: { brukerIdent: string; value: string }, begrunnelse: string) => void;
+  submit: (oppgaveId: number, brukerident: string, begrunnelse: string) => void;
   finnSaksbehandler: (brukerident: string) => void;
   resetSaksbehandler: () => (dispatch: Dispatch) => Promise<string>;
   saksbehandler?: Saksbehandler;

@@ -57,7 +57,8 @@ describe('<SletteSakslisteModal>', () => {
     const sletteknapp = wrapper.find(Hovedknapp);
     expect(sletteknapp).to.have.length(1);
 
-    sletteknapp.prop('onClick')();
+    const slettFn = sletteknapp.prop('onClick') as () => void;
+    slettFn();
 
     expect(submitFn.calledOnce).to.be.true;
     const { args } = submitFn.getCalls()[0];

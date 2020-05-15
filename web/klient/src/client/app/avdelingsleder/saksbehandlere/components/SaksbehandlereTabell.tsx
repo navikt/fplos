@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { connect } from 'react-redux';
-import { Dispatch } from 'redux';
 import { Normaltekst, Element } from 'nav-frontend-typografi';
 
 import { getValgtAvdelingEnhet } from 'app/duck';
@@ -24,7 +23,7 @@ const headerTextCodes = [
 
 interface OwnProps {
   saksbehandlere: Saksbehandler[];
-  fjernSaksbehandler: (brukerIdent: string, avdelingEnhet: string) => (dispatch: Dispatch) => Promise<string>;
+  fjernSaksbehandler: (brukerIdent: string, avdelingEnhet: string) => Promise<string>;
   valgtAvdelingEnhet: string;
 }
 

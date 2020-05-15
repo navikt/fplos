@@ -117,7 +117,8 @@ describe('<GjeldendeSakslisterTabell>', () => {
     const leggTilListe = wrapper.find('div#leggTilListe');
     expect(leggTilListe).to.have.length(1);
 
-    leggTilListe.prop('onClick')();
+    const clickFn = leggTilListe.prop('onClick') as () => void;
+    clickFn();
 
     expect(lagNySakslisteFn.calledOnce).to.be.true;
   });
@@ -237,10 +238,12 @@ describe('<GjeldendeSakslisterTabell>', () => {
 
     expect(wrapper.find(SletteSakslisteModal)).to.have.length(0);
 
-    bildeKnapp.prop('onMouseDown')();
+    const mouseFn = bildeKnapp.prop('onMouseDown') as () => void;
+    mouseFn();
 
     expect(wrapper.find(SletteSakslisteModal)).to.have.length(1);
-    expect(wrapper.state().valgtSaksliste).is.eql(sakslister[0]);
+    const state = wrapper.state() as { valgtSaksliste: string };
+    expect(state.valgtSaksliste).is.eql(sakslister[0]);
   });
 
   it('skal lukke modal ved trykk på avbryt i modal', () => {
@@ -269,7 +272,8 @@ describe('<GjeldendeSakslisterTabell>', () => {
     const kolonner = rader.first().find(TableColumn);
     const bildeKnapp = kolonner.last().find(Image);
 
-    bildeKnapp.prop('onMouseDown')();
+    const mouseFn = bildeKnapp.prop('onMouseDown') as () => void;
+    mouseFn();
 
     const modal = wrapper.find(SletteSakslisteModal);
     expect(modal).to.have.length(1);
@@ -277,7 +281,8 @@ describe('<GjeldendeSakslisterTabell>', () => {
     modal.prop('cancel')();
 
     expect(wrapper.find(SletteSakslisteModal)).to.have.length(0);
-    expect(wrapper.state().valgtSaksliste).is.undefined;
+    const state = wrapper.state() as { valgtSaksliste: string };
+    expect(state.valgtSaksliste).is.undefined;
   });
 
   it('skal fjerne saksliste ved trykk på ok i modal', () => {
@@ -307,7 +312,8 @@ describe('<GjeldendeSakslisterTabell>', () => {
     const kolonner = rader.first().find(TableColumn);
     const bildeKnapp = kolonner.last().find(Image);
 
-    bildeKnapp.prop('onMouseDown')();
+    const mouseFn = bildeKnapp.prop('onMouseDown') as () => void;
+    mouseFn();
 
     const modal = wrapper.find(SletteSakslisteModal);
     expect(modal).to.have.length(1);
@@ -315,7 +321,8 @@ describe('<GjeldendeSakslisterTabell>', () => {
     modal.prop('submit')(sakslister[0]);
 
     expect(wrapper.find(SletteSakslisteModal)).to.have.length(0);
-    expect(wrapper.state().valgtSaksliste).is.undefined;
+    const state = wrapper.state() as { valgtSaksliste: string };
+    expect(state.valgtSaksliste).is.undefined;
 
     expect(fjernSakslisterFn.calledOnce).to.be.true;
     const { args } = fjernSakslisterFn.getCalls()[0];

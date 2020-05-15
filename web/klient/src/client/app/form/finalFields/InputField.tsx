@@ -14,9 +14,16 @@ interface OwnProps {
   name: string;
   type?: string;
   label?: LabelType;
-  validate?: (text: any) => { id: string }[];
+  validate?: ((text: any) => ({ id: string; text?: string }
+    | { text: any; id?: string })[])[] | { length: any; id?: string };
   readOnly?: boolean;
   isEdited?: boolean;
+  className?: string;
+  placeholder?: string;
+  onBlurValidation?: boolean;
+  bredde?: string;
+  parse?: (value: string) => string;
+  autoFocus?: boolean;
 }
 
 const InputField: FunctionComponent<OwnProps> = ({
