@@ -33,9 +33,11 @@ describe('<CheckboxField>', () => {
     const checkbox = wrapper.find('input');
 
     checkbox.simulate('change', { target: { checked: true } });
+    // @ts-ignore
     expect(onChange).to.have.been.calledWith(true);
 
     checkbox.simulate('change', { target: { checked: false } });
+    // @ts-ignore
     expect(onChange).to.have.been.calledWith(false);
   });
 

@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, MouseEvent } from 'react';
 import { Form } from 'react-final-form';
 import { injectIntl, WrappedComponentProps } from 'react-intl';
 import { Column, Row } from 'nav-frontend-grid';
@@ -19,7 +19,7 @@ const thirtyDaysFromNow = () => {
 interface OwnProps {
   showModal: boolean;
   endreOppgaveReservasjon: (reserverTil: string) => void;
-  closeModal: (event: Event) => void;
+  closeModal: (event: MouseEvent<HTMLButtonElement>) => void;
   reserverTilDefault: string;
 }
 
@@ -42,7 +42,7 @@ export class OppgaveReservasjonEndringDatoModal extends Component<OwnProps & Wra
         isOpen={showModal}
         closeButton={false}
         contentLabel={intl.formatMessage({ id: 'OppgaveReservasjonEndringDatoModal.Header' })}
-        onRequestClose={closeModal}
+        onRequestClose={closeModal as () => void}
       >
         <Form
           onSubmit={(values) => endreOppgaveReservasjon(values.reserverTil)}

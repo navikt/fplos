@@ -219,7 +219,7 @@ describe('<OppgaveHandlingerMenu>', () => {
     const modal = wrapper.find(FlyttReservasjonModal);
 
     const oppgaveId = 1;
-    const brukerident = { brukerIdent: 'P039283', value: 'P039283' };
+    const brukerident = 'P039283';
     const begrunnelse = 'Dette er en begrunnelse';
     modal.prop('submit')(oppgaveId, brukerident, begrunnelse);
 

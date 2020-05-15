@@ -34,6 +34,7 @@ describe('<FlyttReservasjonModal>', () => {
         erSaksbehandlerSokStartet={false}
         erSaksbehandlerSokFerdig={false}
       />,
+      // @ts-ignore
     ).find(Form).first().renderProp('render')(formProps);
 
     expect(wrapper.find(Normaltekst)).has.length(0);
@@ -56,6 +57,7 @@ describe('<FlyttReservasjonModal>', () => {
         erSaksbehandlerSokStartet={false}
         erSaksbehandlerSokFerdig
       />,
+      // @ts-ignore
     ).find(Form).first().renderProp('render')(formProps);
 
     const tekst = wrapper.find(Normaltekst);
@@ -90,6 +92,7 @@ describe('<FlyttReservasjonModal>', () => {
         erSaksbehandlerSokFerdig
         saksbehandler={saksbehandler}
       />,
+      // @ts-ignore
     ).find(Form).first().renderProp('render')(formProps);
 
     const tekst = wrapper.find(Normaltekst);
@@ -116,6 +119,7 @@ describe('<FlyttReservasjonModal>', () => {
         erSaksbehandlerSokStartet={false}
         erSaksbehandlerSokFerdig={false}
       />,
+      // @ts-ignore
     ).find(Form).first().renderProp('render')(formProps);
 
     const knapper = wrapper.find(Hovedknapp);
@@ -140,6 +144,7 @@ describe('<FlyttReservasjonModal>', () => {
         erSaksbehandlerSokStartet={false}
         erSaksbehandlerSokFerdig={false}
       />,
+      // @ts-ignore
     ).find(Form).first().renderProp('render')(formProps);
 
     const knapper = wrapper.find(Hovedknapp);
@@ -166,6 +171,7 @@ describe('<FlyttReservasjonModal>', () => {
         erSaksbehandlerSokStartet
         erSaksbehandlerSokFerdig={false}
       />,
+      // @ts-ignore
     ).find(Form).first().renderProp('render')(formProps);
 
     const knapper = wrapper.find(Hovedknapp);
@@ -203,6 +209,7 @@ describe('<FlyttReservasjonModal>', () => {
         erSaksbehandlerSokFerdig={false}
         saksbehandler={saksbehandler}
       />,
+      // @ts-ignore
     ).find(Form).last().renderProp('render')(formProps);
 
     const knapper = wrapper.find(Hovedknapp);
@@ -230,6 +237,7 @@ describe('<FlyttReservasjonModal>', () => {
         erSaksbehandlerSokStartet={false}
         erSaksbehandlerSokFerdig={false}
       />,
+      // @ts-ignore
     ).find(Form).last().renderProp('render')(formProps);
 
     const knapper = wrapper.find(Hovedknapp);
@@ -266,6 +274,7 @@ describe('<FlyttReservasjonModal>', () => {
         erSaksbehandlerSokFerdig={false}
         saksbehandler={saksbehandler}
       />,
+      // @ts-ignore
     ).find(Form).last().renderProp('render')(formProps);
 
     const knapper = wrapper.find(Hovedknapp);

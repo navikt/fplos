@@ -1,7 +1,7 @@
-
 import React from 'react';
 import { expect } from 'chai';
 import { IntlShape } from 'react-intl';
+import { shallow } from 'enzyme';
 import { Form } from 'react-final-form';
 import sinon from 'sinon';
 import { Knapp } from 'nav-frontend-knapper';
@@ -16,12 +16,13 @@ describe('<SearchForm>', () => {
   };
   it('skal ha et søkefelt og en søkeknapp', () => {
     const formProps = { handleSubmit: sinon.spy(), values: { searchString: '' } };
-    const wrapper = shallowWithIntl(<SearchForm
+    const wrapper = shallow(<SearchForm
       intl={intl as IntlShape}
       onSubmit={sinon.spy()}
       searchStarted
       resetSearch={sinon.spy()}
       kanSaksbehandle
+    // @ts-ignore
     />).find(Form).renderProp('render')(formProps);
 
     expect(wrapper.find(InputField)).to.have.length(1);
@@ -38,6 +39,7 @@ describe('<SearchForm>', () => {
       searchStarted
       resetSearch={sinon.spy()}
       kanSaksbehandle
+    // @ts-ignore
     />).find(Form).renderProp('render')(formProps);
 
     const form = wrapper.find('form');

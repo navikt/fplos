@@ -24,6 +24,7 @@ describe('<LeggTilSaksbehandlerForm>', () => {
       erLagtTilAllerede={false}
       erSokFerdig={false}
       valgtAvdelingEnhet="2"
+      // @ts-ignore
     />).find(Form).renderProp('render')(formProps);
 
     expect(wrapper.find(Knapp)).to.have.length(1);
@@ -47,6 +48,7 @@ describe('<LeggTilSaksbehandlerForm>', () => {
       erLagtTilAllerede={false}
       erSokFerdig
       valgtAvdelingEnhet="2"
+      // @ts-ignore
     />).find(Form).renderProp('render')(formProps);
 
     expect(wrapper.find(Knapp)).to.have.length(2);
@@ -76,11 +78,13 @@ describe('<LeggTilSaksbehandlerForm>', () => {
       erLagtTilAllerede={false}
       erSokFerdig
       valgtAvdelingEnhet="2"
+      // @ts-ignore
     />).find(Form).renderProp('render')(formProps);
 
     const nullstillKnapp = wrapper.find(Knapp).last();
 
-    nullstillKnapp.prop('onClick')();
+    const func = nullstillKnapp.prop('onClick') as () => void;
+    func();
 
     expect(resetFormFn.calledOnce).to.be.true;
     expect(resetSaksbehandlerFn.calledOnce).to.be.true;
@@ -110,11 +114,13 @@ describe('<LeggTilSaksbehandlerForm>', () => {
       erLagtTilAllerede={false}
       erSokFerdig
       valgtAvdelingEnhet="2"
+      // @ts-ignore
     />).find(Form).renderProp('render')(formProps);
 
     const leggTilKnapp = wrapper.find(Hovedknapp);
 
-    await leggTilKnapp.prop('onClick')();
+    const func = leggTilKnapp.prop('onClick') as () => void;
+    await func();
 
     expect(brukerIdent).is.eql(saksbehandler.brukerIdent);
     expect(resetFormFn.calledOnce).to.be.true;
@@ -137,6 +143,7 @@ describe('<LeggTilSaksbehandlerForm>', () => {
       erLagtTilAllerede={false}
       erSokFerdig
       valgtAvdelingEnhet="2"
+      // @ts-ignore
     />).find(Form).renderProp('render')(formProps);
 
     const tekstKomp = wrapper.find(Normaltekst);
@@ -155,6 +162,7 @@ describe('<LeggTilSaksbehandlerForm>', () => {
       erLagtTilAllerede={false}
       erSokFerdig
       valgtAvdelingEnhet="2"
+      // @ts-ignore
     />).find(Form).renderProp('render')(formProps);
 
     const tekstKomp = wrapper.find(Normaltekst);
@@ -178,6 +186,7 @@ describe('<LeggTilSaksbehandlerForm>', () => {
       erLagtTilAllerede
       erSokFerdig
       valgtAvdelingEnhet="2"
+      // @ts-ignore
     />).find(Form).renderProp('render')(formProps);
 
     const tekstKomp = wrapper.find(Normaltekst);

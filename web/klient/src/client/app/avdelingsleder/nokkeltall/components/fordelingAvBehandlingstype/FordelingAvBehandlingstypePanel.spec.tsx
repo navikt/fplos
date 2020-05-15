@@ -35,6 +35,7 @@ describe('<FordelingAvBehandlingstypePanel>', () => {
       fagsakYtelseTyper={fagsakYtelseTyper}
       oppgaverForAvdeling={oppgaverForAvdeling}
       initialValues={{ valgtYtelseType: valuesMock.valgtYtelseType }}
+      // @ts-ignore
     />).find(Form).renderProp('render')({ values: valuesMock });
 
     const radioOptions = wrapper.find(RadioOption);
@@ -69,6 +70,7 @@ describe('<FordelingAvBehandlingstypePanel>', () => {
       fagsakYtelseTyper={fagsakYtelseTyper}
       oppgaverForAvdeling={oppgaverForAvdeling}
       initialValues={{ valgtYtelseType: valuesMock.valgtYtelseType }}
+      // @ts-ignore
     />).find(Form).renderProp('render')({ values: valuesMock });
 
     const graf = wrapper.find(FordelingAvBehandlingstypeGraf);
@@ -98,6 +100,7 @@ describe('<FordelingAvBehandlingstypePanel>', () => {
       fagsakYtelseTyper={fagsakYtelseTyper}
       oppgaverForAvdeling={oppgaverForAvdeling}
       initialValues={{ valgtYtelseType: valuesMock.valgtYtelseType }}
+      // @ts-ignore
     />).find(Form).renderProp('render')({ values: valuesMock });
 
     const graf = wrapper.find(FordelingAvBehandlingstypeGraf);

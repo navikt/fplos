@@ -26,7 +26,8 @@ describe('<OppgaveReservasjonEndringDatoModal>', () => {
     expect(form).has.length(1);
 
     const handleSubmitFn = sinon.spy();
-    const formWrapper = shallowWithIntl(form.prop('render')({
+    const func = form.prop('render') as ({ handleSubmit: any }) => void;
+    const formWrapper = shallowWithIntl(func({
       handleSubmit: handleSubmitFn,
     }));
     const datepickerField = formWrapper.find(DatepickerField);

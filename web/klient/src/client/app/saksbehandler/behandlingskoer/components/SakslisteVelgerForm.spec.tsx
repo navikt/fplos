@@ -61,11 +61,12 @@ describe('<SakslisteVelgerForm>', () => {
       fetchSakslisteOppgaver={sinon.spy()}
       fetchSakslistensSaksbehandlere={sinon.spy()}
       fetchAntallOppgaverForBehandlingsko={sinon.spy()}
+      // @ts-ignore
     />).find(Form).renderProp('render')(formProps);
 
     const select = wrapper.find(SelectField);
     expect(select).to.have.length(1);
-    const options = select.prop('selectValues');
+    const options = select.prop('selectValues') as { key: number; props: { value: string; children: string }}[];
     expect(options[0].key).to.eql('1');
     expect(options[0].props.value).to.eql('1');
     expect(options[0].props.children).to.eql('Testliste 1');
@@ -101,6 +102,7 @@ describe('<SakslisteVelgerForm>', () => {
       fetchSakslisteOppgaver={sinon.spy()}
       fetchSakslistensSaksbehandlere={sinon.spy()}
       fetchAntallOppgaverForBehandlingsko={sinon.spy()}
+      // @ts-ignore
     />).find(Form).renderProp('render')(formProps);
 
     expect(wrapper.find(LabelWithHeader)).to.have.length(0);
@@ -133,6 +135,7 @@ describe('<SakslisteVelgerForm>', () => {
       fetchSakslisteOppgaver={sinon.spy()}
       fetchSakslistensSaksbehandlere={sinon.spy()}
       fetchAntallOppgaverForBehandlingsko={sinon.spy()}
+      // @ts-ignore
     />).find(Form).renderProp('render')(formProps);
 
     const labels = wrapper.find(LabelWithHeader);
@@ -173,6 +176,7 @@ describe('<SakslisteVelgerForm>', () => {
       fetchSakslisteOppgaver={sinon.spy()}
       fetchSakslistensSaksbehandlere={sinon.spy()}
       fetchAntallOppgaverForBehandlingsko={sinon.spy()}
+      // @ts-ignore
     />).find(Form).renderProp('render')(formProps);
 
     const labels = wrapper.find(LabelWithHeader);
@@ -217,6 +221,7 @@ describe('<SakslisteVelgerForm>', () => {
       fetchSakslisteOppgaver={sinon.spy()}
       fetchSakslistensSaksbehandlere={sinon.spy()}
       fetchAntallOppgaverForBehandlingsko={sinon.spy()}
+      // @ts-ignore
     />).find(Form).renderProp('render')(formProps);
 
     const labels = wrapper.find(LabelWithHeader);
@@ -258,6 +263,7 @@ describe('<SakslisteVelgerForm>', () => {
       fetchSakslisteOppgaver={sinon.spy()}
       fetchSakslistensSaksbehandlere={sinon.spy()}
       fetchAntallOppgaverForBehandlingsko={sinon.spy()}
+      // @ts-ignore
     />).find(Form).renderProp('render')(formProps);
 
     const labels = wrapper.find(LabelWithHeader);
@@ -298,6 +304,7 @@ describe('<SakslisteVelgerForm>', () => {
       fetchSakslisteOppgaver={sinon.spy()}
       fetchSakslistensSaksbehandlere={sinon.spy()}
       fetchAntallOppgaverForBehandlingsko={sinon.spy()}
+      // @ts-ignore
     />).find(Form).renderProp('render')(formProps);
 
     const labels = wrapper.find(LabelWithHeader);
@@ -332,6 +339,7 @@ describe('<SakslisteVelgerForm>', () => {
       fetchSakslisteOppgaver={sinon.spy()}
       fetchSakslistensSaksbehandlere={sinon.spy()}
       fetchAntallOppgaverForBehandlingsko={sinon.spy()}
+      // @ts-ignore
     />).find(Form).renderProp('render')(formProps);
 
     const labels = wrapper.find(LabelWithHeader);
@@ -388,6 +396,7 @@ describe('<SakslisteVelgerForm>', () => {
         navn: 'Helge Ingstad',
         avdelingsnavn: [],
       }]}
+      // @ts-ignore
     />).find(Form).renderProp('render')(formProps);
 
     const image = wrapper.find(Image);

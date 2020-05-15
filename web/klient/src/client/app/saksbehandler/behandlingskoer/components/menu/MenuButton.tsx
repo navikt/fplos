@@ -6,6 +6,7 @@ import styles from './menuButton.less';
 interface OwnProps {
   onClick: () => void;
   children: ReactNode;
+  ref?: any;
 }
 
 /**

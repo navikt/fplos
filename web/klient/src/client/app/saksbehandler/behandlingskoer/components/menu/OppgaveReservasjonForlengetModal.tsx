@@ -17,7 +17,7 @@ import styles from './oppgaveReservasjonForlengetModal.less';
 interface OwnProps {
   oppgave: Oppgave;
   showModal: boolean;
-  closeModal: (event: Event) => void;
+  closeModal: (event: React.MouseEvent<HTMLButtonElement>) => void;
 }
 
 /**
@@ -34,7 +34,7 @@ export const OppgaveReservasjonForlengetModal: FunctionComponent<OwnProps & Wrap
     isOpen={showModal}
     closeButton={false}
     contentLabel={intl.formatMessage({ id: 'OppgaveReservasjonForlengetModal.Reservert' })}
-    onRequestClose={closeModal}
+    onRequestClose={closeModal as () => void}
   >
     <Row>
       <Column xs="1">

@@ -32,6 +32,7 @@ const InputField: FunctionComponent<OwnProps> = ({
   <Field
     name={name}
     validate={composeValidators(validate)}
+    // @ts-ignore
     component={readOnly ? ReadOnlyField : renderNavInput}
     type={type}
     label={label}

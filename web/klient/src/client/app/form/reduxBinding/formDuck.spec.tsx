@@ -7,7 +7,8 @@ import {
 
 describe('FormDuck-reducer', () => {
   it('skal returnere initial state', () => {
-    expect((undefined, {})).to.eql({
+    expect(formReducer(undefined, { type: '' })).to.eql({
+      forms: {},
     });
   });
 

@@ -41,8 +41,8 @@ interface OwnProps {
 }
 
 interface DispatchProps {
-  finnSaksbehandler: (brukerIdent: string) => (dispatch: Dispatch) => Promise<string>;
-  nullstillSaksbehandler: () => (dispatch: Dispatch) => Promise<string>;
+  finnSaksbehandler: (brukerIdent: string) => Promise<string>;
+  nullstillSaksbehandler: () => Promise<string>;
 }
 
 interface StateTsProps {
@@ -183,7 +183,7 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => ({
-  ...bindActionCreators({
+  ...bindActionCreators<DispatchProps, any>({
     finnSaksbehandler: getSaksbehandler,
     nullstillSaksbehandler: resetSaksbehandler,
   }, dispatch),

@@ -35,6 +35,7 @@ const renderNavField = (WrappedNavFieldComponent) => {
     formatError(submitFailed, error, onBlurValidation) {
       const { intl } = this.props;
       if ((onBlurValidation || submitFailed) && error) {
+        // @ts-ignore
         return intl.formatMessage(...error);
       }
       return undefined;

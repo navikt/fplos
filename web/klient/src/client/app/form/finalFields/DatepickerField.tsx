@@ -54,6 +54,7 @@ const DatepickerField: FunctionComponent<OwnProps> = ({
   <Field
     name={name}
     validate={validate ? composeValidators(validate) : undefined}
+    // @ts-ignore
     component={readOnly ? ReadOnlyField : RenderDatepickerField}
     label={label}
     {...otherProps}

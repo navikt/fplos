@@ -38,12 +38,13 @@ describe('<ManueltPaVentPanel>', () => {
       fagsakYtelseTyper={fagsakYtelseTyper}
       oppgaverManueltPaVent={oppgaverManueltPaVent}
       initialValues={{ valgtYtelsetype: valuesMock.valgtYtelsetype, ukevalg: valuesMock.ukevalg }}
+      // @ts-ignore
     />).find(Form).renderProp('render')({ values: valuesMock });
 
     const select = wrapper.find(SelectField);
     expect(select).to.have.length(1);
 
-    const options = select.prop('selectValues');
+    const options = select.prop('selectValues') as { props: { value: string; children: string }}[];
     expect(options).to.have.length(2);
     expect(options[0].props.value).to.eql('4');
     expect(options[0].props.children).to.eql('4 uker frem');
@@ -82,6 +83,7 @@ describe('<ManueltPaVentPanel>', () => {
       fagsakYtelseTyper={fagsakYtelseTyper}
       oppgaverManueltPaVent={oppgaverManueltPaVent}
       initialValues={{ valgtYtelsetype: valuesMock.valgtYtelsetype, ukevalg: valuesMock.ukevalg }}
+      // @ts-ignore
     />).find(Form).renderProp('render')({ values: valuesMock });
 
     const graf = wrapper.find(ManueltPaVentGraf);
@@ -112,6 +114,7 @@ describe('<ManueltPaVentPanel>', () => {
       fagsakYtelseTyper={fagsakYtelseTyper}
       oppgaverManueltPaVent={oppgaverManueltPaVent}
       initialValues={{ valgtYtelsetype: valuesMock.valgtYtelsetype, ukevalg: valuesMock.ukevalg }}
+      // @ts-ignore
     />).find(Form).renderProp('render')({ values: valuesMock });
 
     const graf = wrapper.find(ManueltPaVentGraf);
@@ -142,6 +145,7 @@ describe('<ManueltPaVentPanel>', () => {
       fagsakYtelseTyper={fagsakYtelseTyper}
       oppgaverManueltPaVent={oppgaverManueltPaVent}
       initialValues={{ valgtYtelsetype: valuesMock.valgtYtelsetype, ukevalg: valuesMock.ukevalg }}
+      // @ts-ignore
     />).find(Form).renderProp('render')({ values: valuesMock });
 
     const graf = wrapper.find(ManueltPaVentGraf);
@@ -171,6 +175,7 @@ describe('<ManueltPaVentPanel>', () => {
       fagsakYtelseTyper={fagsakYtelseTyper}
       oppgaverManueltPaVent={oppgaverManueltPaVent}
       initialValues={{ valgtYtelsetype: valuesMock.valgtYtelsetype, ukevalg: valuesMock.ukevalg }}
+      // @ts-ignore
     />).find(Form).renderProp('render')({ values: valuesMock });
 
     const graf = wrapper.find(ManueltPaVentGraf);

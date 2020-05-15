@@ -2,7 +2,7 @@ import React, { Component, ReactNode } from 'react';
 import { Select as NavSelect } from 'nav-frontend-skjema';
 
 interface OwnProps {
-  selectValues: ReactNode[];
+  selectValues: any[];
   placeholder?: ReactNode;
   value?: ReactNode;
   hideValueOnDisable?: boolean;
@@ -14,6 +14,8 @@ class CustomNavSelect extends Component<OwnProps> {
     hideValueOnDisable: false,
     disabled: false,
   };
+
+  selectElement: ReactNode
 
   constructor(props) {
     super(props);
@@ -70,7 +72,7 @@ class CustomNavSelect extends Component<OwnProps> {
     return (
       <NavSelect
         {...otherProps}
-        selectRef={handleSelectRef}
+        selectRef={handleSelectRef as () => any}
         value={hideValueOnDisable && disabled ? '' : selectedValue(value)}
         disabled={disabled}
       >

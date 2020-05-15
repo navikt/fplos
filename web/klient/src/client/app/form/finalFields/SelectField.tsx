@@ -1,8 +1,9 @@
 import React, { FunctionComponent } from 'react';
 import classnames from 'classnames/bind';
 import { Field } from 'react-final-form';
-import CustomNavSelect from './CustomNavSelect';
+import { FieldValidator } from 'final-form';
 
+import CustomNavSelect from './CustomNavSelect';
 import renderNavField from './renderNavField';
 import { LabelType } from './Label';
 import ReadOnlyField from './ReadOnlyField';
@@ -24,11 +25,12 @@ interface OwnProps {
   name: string;
   selectValues: {}[];
   label: LabelType;
-  validate?: (() => void)[];
+  validate?: FieldValidator<any>;
   readOnly?: boolean;
   placeholder?: string;
   hideValueOnDisable?: boolean;
   bredde?: string;
+  disabled?: boolean;
 }
 
 const SelectField: FunctionComponent<OwnProps> = ({
@@ -37,6 +39,7 @@ const SelectField: FunctionComponent<OwnProps> = ({
   <Field
     name={name}
     validate={validate}
+    // @ts-ignore
     component={readOnly ? renderReadOnly() : renderNavSelect}
     label={label}
     selectValues={selectValues}

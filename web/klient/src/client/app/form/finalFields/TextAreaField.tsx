@@ -1,4 +1,4 @@
-import React, { FunctionComponent } from 'react';
+import React, { FunctionComponent, ReactNode } from 'react';
 import { Field } from 'react-final-form';
 import { Textarea as NavTextarea } from 'nav-frontend-skjema';
 import EtikettFokus from 'nav-frontend-etiketter';
@@ -15,14 +15,20 @@ const composeValidators = (validators) => (value) => (validators ? validators.re
 interface TextAreaWithBadgeProps {
   badges?: {
     textId: string;
-    type: string;
+    type: 'suksess' | 'info' | 'advarsel' | 'fokus';
     title: string;
   }[];
+  label: ReactNode;
+  value: string;
+  onChange: (...args: any[]) => any;
 }
 
 const TextAreaWithBadge: FunctionComponent<TextAreaWithBadgeProps & WrappedComponentProps> = ({
   badges,
   intl,
+  label,
+  value,
+  onChange,
   ...otherProps
 }) => (
   <div className={badges ? styles.textAreaFieldWithBadges : null}>
@@ -36,7 +42,12 @@ const TextAreaWithBadge: FunctionComponent<TextAreaWithBadgeProps & WrappedCompo
       ))}
     </div>
     )}
-    <NavTextarea {...otherProps} />
+    <NavTextarea
+      label={label}
+      value={value}
+      onChange={onChange}
+      {...otherProps}
+    />
   </div>
 );
 
@@ -64,6 +75,7 @@ const TextAreaField: FunctionComponent<OwnProps> = ({
   <Field
     name={name}
     validate={composeValidators(validate)}
+    // @ts-ignore
     component={readOnly ? ReadOnlyField : renderNavTextArea}
     label={label}
     {...otherProps}

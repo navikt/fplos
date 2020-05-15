@@ -1,5 +1,5 @@
 
-import React, { Component, KeyboardEvent } from 'react';
+import React, { Component, MouseEvent } from 'react';
 import { FormattedMessage } from 'react-intl';
 
 import Oppgave from 'saksbehandler/oppgaveTsType';
@@ -84,12 +84,12 @@ export class OppgaveHandlingerMenu extends Component<OwnProps, OwnState> {
     toggleEventListeners(false, this.handleOutsideClick);
   }
 
-  handleOutsideClick = (event: KeyboardEvent<HTMLButtonElement>) => {
+  handleOutsideClick = (event: MouseEvent<HTMLButtonElement>) => {
     const { imageNode } = this.props;
     // ignore clicks on the component itself
     const harKlikketMeny = this.node && this.node.contains(event.target);
     const harKlikketIkon = imageNode && imageNode.contains(event.target);
-    if (event.key !== 'Escape' && (harKlikketMeny || harKlikketIkon)) {
+    if (harKlikketMeny || harKlikketIkon) {
       return;
     }
 
@@ -121,7 +121,7 @@ export class OppgaveHandlingerMenu extends Component<OwnProps, OwnState> {
     this.setState((prevState) => ({ ...prevState, showFlyttReservasjonModal: false }));
   }
 
-  closeForlengReservasjonModal = (event: KeyboardEvent<HTMLButtonElement>) => {
+  closeForlengReservasjonModal = (event: MouseEvent<HTMLButtonElement>) => {
     const { toggleMenu, oppgave } = this.props;
     toggleMenu(oppgave);
     this.handleOutsideClick(event);
@@ -135,7 +135,7 @@ export class OppgaveHandlingerMenu extends Component<OwnProps, OwnState> {
     });
   }
 
-  closeReservasjonEndringDatoModal = (event: KeyboardEvent<HTMLButtonElement>) => {
+  closeReservasjonEndringDatoModal = (event: MouseEvent<HTMLButtonElement>) => {
     const { toggleMenu, oppgave } = this.props;
     toggleMenu(oppgave);
     this.handleOutsideClick(event);

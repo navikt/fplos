@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { injectIntl, WrappedComponentProps, FormattedMessage } from 'react-intl';
-import { Dispatch } from 'redux';
 
 import { Form } from 'react-final-form';
 import { Hovedknapp, Knapp } from 'nav-frontend-knapper';
@@ -30,7 +29,7 @@ interface OwnProps {
   closeModal: () => void;
   submit: (oppgaveId: number, brukerident: string, begrunnelse: string) => void;
   finnSaksbehandler: (brukerident: string) => void;
-  resetSaksbehandler: () => (dispatch: Dispatch) => Promise<string>;
+  resetSaksbehandler: () => Promise<string>;
   saksbehandler?: Saksbehandler;
   erSaksbehandlerSokStartet: boolean;
   erSaksbehandlerSokFerdig: boolean;
@@ -121,7 +120,7 @@ export class FlyttReservasjonModal extends Component<OwnProps & WrappedComponent
          />
          <VerticalSpacer sixteenPx />
          <Form
-           onSubmit={(values) => submit(oppgaveId, saksbehandler ? saksbehandler.brukerIdent : '', values.begrunnelse)}
+           onSubmit={(values) => submit(oppgaveId, saksbehandler ? saksbehandler.brukerIdent.brukerIdent : '', values.begrunnelse)}
            render={({
              handleSubmit, values,
            }) => (

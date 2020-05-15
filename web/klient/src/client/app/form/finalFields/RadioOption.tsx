@@ -12,7 +12,7 @@ interface OwnProps {
   className?: string;
   disabled?: boolean;
   groupDisabled?: boolean;
-  onChange?: () => void;
+  onChange?: (any) => void;
   children?: ReactNode | ReactNode[];
   style?: {};
   manualHideChildren?: boolean;
