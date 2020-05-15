@@ -9,6 +9,7 @@ export const getFagsakOppgaver = fpLosApi.OPPGAVER_FOR_FAGSAKER.getRestApiData()
 
 interface SearchResultAccessDenied {
   feilmelding?: string;
+  type?: string;
 }
 
 export const getSearchFagsakerAccessDenied = createSelector(

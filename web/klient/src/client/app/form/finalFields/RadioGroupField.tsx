@@ -57,7 +57,7 @@ interface OwnProps {
   rows?: number;
   direction?: string;
   DOMName?: string;
-  onChange: (any) => void;
+  onChange?: (any) => void;
 }
 
 export const RadioGroupField: FunctionComponent<OwnProps> = (props) => (

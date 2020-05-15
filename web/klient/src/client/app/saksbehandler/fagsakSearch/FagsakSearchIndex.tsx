@@ -28,19 +28,18 @@ interface SearchResultAccessDenied {
 interface OwnProps {
   fagsaker: Fagsak[];
   fagsakOppgaver: Oppgave[];
-  searchFagsaker: ({ searchString: string, skalReservere: boolean }) => void;
   searchResultAccessDenied?: SearchResultAccessDenied;
   goToFpsak: (saknummer: number, behandlingId?: number) => void;
   goToTilbakesak: (path: string) => void;
 }
 
 interface DispatchProps {
-  searchFagsaker: ({ searchString: string, skalReservere: boolean }) => void;
+  searchFagsaker: ({ searchString: string, skalReservere: boolean }) => Promise<{payload: Fagsak[] }>;
   resetFagsakSearch: () => void;
-  reserverOppgave: (oppgaveId: number) => (dispatch: Dispatch) => Promise<{payload: OppgaveStatus }>;
-  hentReservasjonsstatus: (oppgaveId: number) => (dispatch: Dispatch) => Promise<{payload: OppgaveStatus }>;
-  hentOppgaverForFagsaker: (fagsaker: Fagsak[]) => (dispatch: Dispatch) => Promise<{payload: Oppgave[] }>;
-  hentFpsakInternBehandlingId: (behandlingId: string) => (dispatch: Dispatch) => Promise<{payload: number }>;
+  reserverOppgave: (oppgaveId: number) => Promise<{payload: OppgaveStatus }>;
+  hentReservasjonsstatus: (oppgaveId: number) => Promise<{payload: OppgaveStatus }>;
+  hentOppgaverForFagsaker: (fagsaker: Fagsak[]) => Promise<{payload: Oppgave[] }>;
+  hentFpsakInternBehandlingId: (behandlingId: string) => Promise<{payload: number }>;
 }
 
 interface StateProps {
@@ -226,7 +225,7 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => ({
-  ...bindActionCreators({
+  ...bindActionCreators<DispatchProps, any>({
     searchFagsaker,
     resetFagsakSearch,
     reserverOppgave: reserverOppgaveActionCreator,

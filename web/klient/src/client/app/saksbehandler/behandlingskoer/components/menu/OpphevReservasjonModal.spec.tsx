@@ -60,7 +60,8 @@ describe('<OpphevReservasjonModal>', () => {
     expect(form).has.length(1);
 
     const handleSubmitFn = sinon.spy();
-    const formWrapper = shallowWithIntl(form.prop('render')({
+    const renderFn = form.prop('render') as ({ handleSubmit: any }) => void;
+    const formWrapper = shallowWithIntl(renderFn({
       handleSubmit: handleSubmitFn,
     }));
 

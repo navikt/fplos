@@ -1,13 +1,12 @@
 
 import React from 'react';
-import { shallowWithIntl, intlMock } from 'testHelpers/intl-enzyme-test-helper';
 import { expect } from 'chai';
-
+import { IntlShape } from 'react-intl';
 import { Form } from 'react-final-form';
 import sinon from 'sinon';
 import { Knapp } from 'nav-frontend-knapper';
-import { IntlShape } from 'react-intl';
 
+import { shallowWithIntl, intlMock } from 'testHelpers/intl-enzyme-test-helper';
 import { InputField } from 'form/FinalFields';
 import { SearchForm } from './SearchForm';
 
@@ -23,7 +22,7 @@ describe('<SearchForm>', () => {
       searchStarted
       resetSearch={sinon.spy()}
       kanSaksbehandle
-    />).find(Form).drill((props) => props.render(formProps)).shallow();
+    />).find(Form).renderProp('render')(formProps);
 
     expect(wrapper.find(InputField)).to.have.length(1);
     expect(wrapper.find(Knapp)).to.have.length(1);
@@ -39,7 +38,7 @@ describe('<SearchForm>', () => {
       searchStarted
       resetSearch={sinon.spy()}
       kanSaksbehandle
-    />).find(Form).drill((props) => props.render(formProps)).shallow();
+    />).find(Form).renderProp('render')(formProps);
 
     const form = wrapper.find('form');
     const preventDefault = () => undefined;

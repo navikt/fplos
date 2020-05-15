@@ -31,7 +31,7 @@ describe('<SaksbehandlereForSakslisteForm>', () => {
       valgtSaksliste={saksliste}
       knyttSaksbehandlerTilSaksliste={sinon.spy()}
       valgtAvdelingEnhet="1"
-    />).find(Form).drill((props) => props.render()).shallow();
+    />).find(Form).renderProp('render')();
 
     const melding = wrapper.find(FormattedMessage);
     expect(melding).to.have.length(2);
@@ -50,7 +50,7 @@ describe('<SaksbehandlereForSakslisteForm>', () => {
       avdelingensSaksbehandlere={saksbehandlere}
       knyttSaksbehandlerTilSaksliste={sinon.spy()}
       valgtAvdelingEnhet="1"
-    />).find(Form).drill((props) => props.render()).shallow();
+    />).find(Form).renderProp('render')();
 
     expect(wrapper.find(FormattedMessage)).to.have.length(1);
 
@@ -81,7 +81,7 @@ describe('<SaksbehandlereForSakslisteForm>', () => {
       avdelingensSaksbehandlere={saksbehandlere}
       knyttSaksbehandlerTilSaksliste={sinon.spy()}
       valgtAvdelingEnhet="1"
-    />).find(Form).drill((props) => props.render()).shallow();
+    />).find(Form).renderProp('render')();
 
     expect(wrapper.find(FormattedMessage)).to.have.length(1);
 

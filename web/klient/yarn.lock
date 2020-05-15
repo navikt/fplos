@@ -926,15 +926,6 @@
     lodash "^4.17.13"
     to-fast-properties "^2.0.0"
 
-"@commercetools/enzyme-extensions@^5.0.0":
-  version "5.0.0"
-  resolved "https://registry.yarnpkg.com/@commercetools/enzyme-extensions/-/enzyme-extensions-5.0.0.tgz#0ba0841b02384069ae60e76165d65ee170874fe9"
-  integrity sha512-oK80WDnFwmgE7BfEKvEQ95uRgnIpuEXC1RiSWxasEYO+hUuuyCW0fgz4EEdhjbq3O+JhifprBvvcI1rOBaoNHg==
-  dependencies:
-    common-tags "1.8.0"
-    lodash.omit "^4.5.0"
-    react-display-name "0.2.4"
-
 "@formatjs/intl-displaynames@^1.2.9":
   version "1.2.9"
   resolved "https://registry.yarnpkg.com/@formatjs/intl-displaynames/-/intl-displaynames-1.2.9.tgz#be30523a91b3f5102fcd1754679073be6f8ee545"
@@ -1230,12 +1221,6 @@
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/@types/color-name/-/color-name-1.1.1.tgz#1c1261bbeaa10a8055bbc5d8ab84b7b2afc846a0"
   integrity sha512-rr+OQyAjxze7GgWrSaJwydHStIhHq2lvY3BOC2Mj7KnzI7XK0Uw1TOOdI9lDoajEbSWLiYgoo4f1R51erQfhPQ==
-
-"@types/commercetools__enzyme-extensions@3.0.1":
-  version "3.0.1"
-  resolved "https://registry.npmjs.org/@types/commercetools__enzyme-extensions/-/commercetools__enzyme-extensions-3.0.1.tgz#e411091ef627d7b62e6f62c354706e501972b2f4"
-  dependencies:
-    "@types/enzyme" "*"
 
 "@types/enzyme-adapter-react-16@^1.0.6":
   version "1.0.6"
@@ -2899,10 +2884,6 @@ commander@^4.1.1:
 commander@~2.17.1:
   version "2.17.1"
   resolved "https://registry.npmjs.org/commander/-/commander-2.17.1.tgz#bd77ab7de6de94205ceacc72f1716d29f20a77bf"
-
-common-tags@1.8.0:
-  version "1.8.0"
-  resolved "https://registry.npmjs.org/common-tags/-/common-tags-1.8.0.tgz#8e3153e542d4a39e9b10554434afaaf98956a937"
 
 commondir@^1.0.1:
   version "1.0.1"
@@ -6252,10 +6233,6 @@ lodash.memoize@^4.1.2:
   version "4.1.2"
   resolved "https://registry.npmjs.org/lodash.memoize/-/lodash.memoize-4.1.2.tgz#bcc6c49a42a2840ed997f323eada5ecd182e0bfe"
 
-lodash.omit@^4.5.0:
-  version "4.5.0"
-  resolved "https://registry.npmjs.org/lodash.omit/-/lodash.omit-4.5.0.tgz#6eb19ae5a1ee1dd9df0b969e66ce0b7fa30b5e60"
-
 lodash.sortby@^4.7.0:
   version "4.7.0"
   resolved "https://registry.npmjs.org/lodash.sortby/-/lodash.sortby-4.7.0.tgz#edd14c824e2cc9c1e0b0a1b42bb5210516a42438"
@@ -8468,10 +8445,6 @@ react-day-picker@^7.4.8:
   integrity sha512-pp0hnxFVoRuBQcRdR1Hofw4CQtOCGVmzCNrscyvS0Q8NEc+UiYLEDqE5dk37bf0leSnBW4lheIt0CKKhuKzDVw==
   dependencies:
     prop-types "^15.6.2"
-
-react-display-name@0.2.4:
-  version "0.2.4"
-  resolved "https://registry.npmjs.org/react-display-name/-/react-display-name-0.2.4.tgz#e2a670b81d79a2204335510c01246f4c92ff12cf"
 
 react-docgen@^2.13.0:
   version "2.21.0"

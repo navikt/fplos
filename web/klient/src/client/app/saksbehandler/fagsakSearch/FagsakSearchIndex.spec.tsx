@@ -1,9 +1,9 @@
 
 import React from 'react';
 import { expect } from 'chai';
+import { shallow } from 'enzyme';
 import sinon from 'sinon';
 
-import { shallowWithIntl } from 'testHelpers/intl-enzyme-test-helper';
 import FagsakSearch from './components/FagsakSearch';
 import { FagsakSearchIndex } from './FagsakSearchIndex';
 
@@ -31,7 +31,7 @@ describe('<FagsakSearchIndex>', () => {
   const fagsaker = [fagsak, { ...fagsak, saksnummer: 23456 }];
 
   it('skal sette opp søkeskjermbilde for fagsaker', () => {
-    const wrapper = shallowWithIntl(<FagsakSearchIndex
+    const wrapper = shallow(<FagsakSearchIndex
       fagsaker={fagsaker}
       searchFagsaker={sinon.spy()}
       resetFagsakSearch={sinon.spy()}
@@ -51,7 +51,7 @@ describe('<FagsakSearchIndex>', () => {
 
   it('skal gå til valgt fagsak', () => {
     const goToFpsak = sinon.spy();
-    const wrapper = shallowWithIntl(<FagsakSearchIndex
+    const wrapper = shallow(<FagsakSearchIndex
       fagsaker={fagsaker}
       searchFagsaker={sinon.spy()}
       resetFagsakSearch={sinon.spy()}
@@ -72,7 +72,7 @@ describe('<FagsakSearchIndex>', () => {
 
   it('skal gå direkte til fagsak når søkeresultatet returnerer kun en fagsak', () => {
     const goToFpsak = sinon.spy();
-    const wrapper = shallowWithIntl(<FagsakSearchIndex
+    const wrapper = shallow(<FagsakSearchIndex
       searchFagsaker={sinon.spy()}
       resetFagsakSearch={sinon.spy()}
       goToFpsak={goToFpsak}
@@ -98,7 +98,7 @@ describe('<FagsakSearchIndex>', () => {
 
   it('skal ikke gå direkte til fagsak når søkeresultatet returnerer flere fagsaker', () => {
     const goToFpsak = sinon.spy();
-    const wrapper = shallowWithIntl(<FagsakSearchIndex
+    const wrapper = shallow(<FagsakSearchIndex
       searchFagsaker={sinon.spy()}
       resetFagsakSearch={sinon.spy()}
       goToFpsak={goToFpsak}

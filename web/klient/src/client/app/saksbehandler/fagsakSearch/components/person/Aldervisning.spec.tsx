@@ -17,7 +17,8 @@ describe('<Aldervisning>', () => {
     />);
     const aldervisning = wrapper.find('span');
     expect(aldervisning).to.have.length(1);
-    expect(aldervisning.find(FormattedMessage).prop('values').age).to.equal(40);
+    const values = aldervisning.find(FormattedMessage).prop('values') as { age: number };
+    expect(values.age).to.equal(40);
   });
 
   it('skal sjekke at dødsdato vises når person er død og dødsdato er satt', () => {

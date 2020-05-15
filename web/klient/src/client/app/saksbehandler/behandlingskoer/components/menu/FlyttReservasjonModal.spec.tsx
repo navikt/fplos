@@ -34,8 +34,7 @@ describe('<FlyttReservasjonModal>', () => {
         erSaksbehandlerSokStartet={false}
         erSaksbehandlerSokFerdig={false}
       />,
-    ).find(Form).first().drill((props) => props.render(formProps))
-      .shallow();
+    ).find(Form).first().renderProp('render')(formProps);
 
     expect(wrapper.find(Normaltekst)).has.length(0);
   });
@@ -57,8 +56,7 @@ describe('<FlyttReservasjonModal>', () => {
         erSaksbehandlerSokStartet={false}
         erSaksbehandlerSokFerdig
       />,
-    ).find(Form).first().drill((props) => props.render(formProps))
-      .shallow();
+    ).find(Form).first().renderProp('render')(formProps);
 
     const tekst = wrapper.find(Normaltekst);
     expect(tekst).has.length(1);
@@ -92,8 +90,7 @@ describe('<FlyttReservasjonModal>', () => {
         erSaksbehandlerSokFerdig
         saksbehandler={saksbehandler}
       />,
-    ).find(Form).first().drill((props) => props.render(formProps))
-      .shallow();
+    ).find(Form).first().renderProp('render')(formProps);
 
     const tekst = wrapper.find(Normaltekst);
     expect(tekst).has.length(1);
@@ -119,8 +116,7 @@ describe('<FlyttReservasjonModal>', () => {
         erSaksbehandlerSokStartet={false}
         erSaksbehandlerSokFerdig={false}
       />,
-    ).find(Form).first().drill((props) => props.render(formProps))
-      .shallow();
+    ).find(Form).first().renderProp('render')(formProps);
 
     const knapper = wrapper.find(Hovedknapp);
     expect(knapper).has.length(1);
@@ -144,8 +140,7 @@ describe('<FlyttReservasjonModal>', () => {
         erSaksbehandlerSokStartet={false}
         erSaksbehandlerSokFerdig={false}
       />,
-    ).find(Form).first().drill((props) => props.render(formProps))
-      .shallow();
+    ).find(Form).first().renderProp('render')(formProps);
 
     const knapper = wrapper.find(Hovedknapp);
     expect(knapper).has.length(1);
@@ -171,8 +166,7 @@ describe('<FlyttReservasjonModal>', () => {
         erSaksbehandlerSokStartet
         erSaksbehandlerSokFerdig={false}
       />,
-    ).find(Form).first().drill((props) => props.render(formProps))
-      .shallow();
+    ).find(Form).first().renderProp('render')(formProps);
 
     const knapper = wrapper.find(Hovedknapp);
     expect(knapper).has.length(1);
@@ -209,8 +203,7 @@ describe('<FlyttReservasjonModal>', () => {
         erSaksbehandlerSokFerdig={false}
         saksbehandler={saksbehandler}
       />,
-    ).find(Form).last().drill((props) => props.render(formProps))
-      .shallow();
+    ).find(Form).last().renderProp('render')(formProps);
 
     const knapper = wrapper.find(Hovedknapp);
     expect(knapper).has.length(1);
@@ -237,8 +230,7 @@ describe('<FlyttReservasjonModal>', () => {
         erSaksbehandlerSokStartet={false}
         erSaksbehandlerSokFerdig={false}
       />,
-    ).find(Form).last().drill((props) => props.render(formProps))
-      .shallow();
+    ).find(Form).last().renderProp('render')(formProps);
 
     const knapper = wrapper.find(Hovedknapp);
     expect(knapper).has.length(1);
@@ -274,8 +266,7 @@ describe('<FlyttReservasjonModal>', () => {
         erSaksbehandlerSokFerdig={false}
         saksbehandler={saksbehandler}
       />,
-    ).find(Form).last().drill((props) => props.render(formProps))
-      .shallow();
+    ).find(Form).last().renderProp('render')(formProps);
 
     const knapper = wrapper.find(Hovedknapp);
     expect(knapper).has.length(1);

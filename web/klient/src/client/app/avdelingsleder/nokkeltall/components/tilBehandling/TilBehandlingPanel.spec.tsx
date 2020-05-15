@@ -43,7 +43,7 @@ describe('<TilBehandlingPanel>', () => {
       fagsakYtelseTyper={fagsakYtelseTyper}
       oppgaverPerDato={oppgaverPerDato}
       initialValues={{ ytelseType: fagsakYtelseType.FORELDREPRENGER, ukevalg: valuesMock.ukevalg }}
-    />).find(Form).drill((props) => props.render({ values: valuesMock })).shallow();
+    />).find(Form).renderProp('render')({ values: valuesMock });
 
     const select = wrapper.find(SelectField);
     expect(select).to.have.length(1);
@@ -89,7 +89,7 @@ describe('<TilBehandlingPanel>', () => {
       fagsakYtelseTyper={fagsakYtelseTyper}
       oppgaverPerDato={oppgaverPerDato}
       initialValues={{ ytelseType: fagsakYtelseType.FORELDREPRENGER, ukevalg: valuesMock.ukevalg }}
-    />).find(Form).drill((props) => props.render({ values: valuesMock })).shallow();
+    />).find(Form).renderProp('render')({ values: valuesMock });
 
     const graf = wrapper.find(TilBehandlingGraf);
     expect(graf).to.have.length(1);
@@ -121,7 +121,7 @@ describe('<TilBehandlingPanel>', () => {
       fagsakYtelseTyper={fagsakYtelseTyper}
       oppgaverPerDato={oppgaverPerDato}
       initialValues={{ ytelseType: fagsakYtelseType.FORELDREPRENGER, ukevalg: valuesMock.ukevalg }}
-    />).find(Form).drill((props) => props.render({ values: valuesMock })).shallow();
+    />).find(Form).renderProp('render')({ values: valuesMock });
 
     const graf = wrapper.find(TilBehandlingGraf);
     expect(graf).to.have.length(1);
@@ -153,7 +153,7 @@ describe('<TilBehandlingPanel>', () => {
       fagsakYtelseTyper={fagsakYtelseTyper}
       oppgaverPerDato={oppgaverPerDato}
       initialValues={{ ytelseType: fagsakYtelseType.FORELDREPRENGER, ukevalg: valuesMock.ukevalg }}
-    />).find(Form).drill((props) => props.render({ values: valuesMock })).shallow();
+    />).find(Form).renderProp('render')({ values: valuesMock });
 
     const graf = wrapper.find(TilBehandlingGraf);
     expect(graf).to.have.length(1);
@@ -184,7 +184,7 @@ describe('<TilBehandlingPanel>', () => {
       fagsakYtelseTyper={fagsakYtelseTyper}
       oppgaverPerDato={oppgaverPerDato}
       initialValues={{ ytelseType: fagsakYtelseType.FORELDREPRENGER, ukevalg: valuesMock.ukevalg }}
-    />).find(Form).drill((props) => props.render({ values: valuesMock })).shallow();
+    />).find(Form).renderProp('render')({ values: valuesMock });
 
     const graf = wrapper.find(TilBehandlingGraf);
     expect(graf).to.have.length(1);
@@ -215,7 +215,7 @@ describe('<TilBehandlingPanel>', () => {
       fagsakYtelseTyper={fagsakYtelseTyper}
       oppgaverPerDato={oppgaverPerDato}
       initialValues={{ ytelseType: fagsakYtelseType.FORELDREPRENGER, ukevalg: valuesMock.ukevalg }}
-    />).find(Form).drill((props) => props.render({ values: valuesMock })).shallow();
+    />).find(Form).renderProp('render')({ values: valuesMock });
 
     const graf = wrapper.find(TilBehandlingGraf);
     expect(graf).to.have.length(1);

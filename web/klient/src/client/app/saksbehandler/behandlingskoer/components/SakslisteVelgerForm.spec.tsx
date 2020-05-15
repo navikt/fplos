@@ -2,9 +2,8 @@
 import React from 'react';
 import { expect } from 'chai';
 import sinon from 'sinon';
-import { IntlShape } from 'react-intl';
+import { IntlShape, FormattedMessage } from 'react-intl';
 import { Form } from 'react-final-form';
-import { Element } from 'nav-frontend-typografi';
 
 import Image from 'sharedComponents/Image';
 import LabelWithHeader from 'sharedComponents/LabelWithHeader';
@@ -62,7 +61,7 @@ describe('<SakslisteVelgerForm>', () => {
       fetchSakslisteOppgaver={sinon.spy()}
       fetchSakslistensSaksbehandlere={sinon.spy()}
       fetchAntallOppgaverForBehandlingsko={sinon.spy()}
-    />).find(Form).drill((props) => props.render(formProps)).shallow();
+    />).find(Form).renderProp('render')(formProps);
 
     const select = wrapper.find(SelectField);
     expect(select).to.have.length(1);
@@ -102,7 +101,7 @@ describe('<SakslisteVelgerForm>', () => {
       fetchSakslisteOppgaver={sinon.spy()}
       fetchSakslistensSaksbehandlere={sinon.spy()}
       fetchAntallOppgaverForBehandlingsko={sinon.spy()}
-    />).find(Form).drill((props) => props.render(formProps)).shallow();
+    />).find(Form).renderProp('render')(formProps);
 
     expect(wrapper.find(LabelWithHeader)).to.have.length(0);
   });
@@ -134,7 +133,7 @@ describe('<SakslisteVelgerForm>', () => {
       fetchSakslisteOppgaver={sinon.spy()}
       fetchSakslistensSaksbehandlere={sinon.spy()}
       fetchAntallOppgaverForBehandlingsko={sinon.spy()}
-    />).find(Form).drill((props) => props.render(formProps)).shallow();
+    />).find(Form).renderProp('render')(formProps);
 
     const labels = wrapper.find(LabelWithHeader);
     expect(labels).to.have.length(4);
@@ -174,7 +173,7 @@ describe('<SakslisteVelgerForm>', () => {
       fetchSakslisteOppgaver={sinon.spy()}
       fetchSakslistensSaksbehandlere={sinon.spy()}
       fetchAntallOppgaverForBehandlingsko={sinon.spy()}
-    />).find(Form).drill((props) => props.render(formProps)).shallow();
+    />).find(Form).renderProp('render')(formProps);
 
     const labels = wrapper.find(LabelWithHeader);
     expect(labels).to.have.length(4);
@@ -218,7 +217,7 @@ describe('<SakslisteVelgerForm>', () => {
       fetchSakslisteOppgaver={sinon.spy()}
       fetchSakslistensSaksbehandlere={sinon.spy()}
       fetchAntallOppgaverForBehandlingsko={sinon.spy()}
-    />).find(Form).drill((props) => props.render(formProps)).shallow();
+    />).find(Form).renderProp('render')(formProps);
 
     const labels = wrapper.find(LabelWithHeader);
     expect(labels).to.have.length(4);
@@ -259,7 +258,7 @@ describe('<SakslisteVelgerForm>', () => {
       fetchSakslisteOppgaver={sinon.spy()}
       fetchSakslistensSaksbehandlere={sinon.spy()}
       fetchAntallOppgaverForBehandlingsko={sinon.spy()}
-    />).find(Form).drill((props) => props.render(formProps)).shallow();
+    />).find(Form).renderProp('render')(formProps);
 
     const labels = wrapper.find(LabelWithHeader);
     expect(labels).to.have.length(4);
@@ -299,7 +298,7 @@ describe('<SakslisteVelgerForm>', () => {
       fetchSakslisteOppgaver={sinon.spy()}
       fetchSakslistensSaksbehandlere={sinon.spy()}
       fetchAntallOppgaverForBehandlingsko={sinon.spy()}
-    />).find(Form).drill((props) => props.render(formProps)).shallow();
+    />).find(Form).renderProp('render')(formProps);
 
     const labels = wrapper.find(LabelWithHeader);
     expect(labels).to.have.length(4);
@@ -333,7 +332,7 @@ describe('<SakslisteVelgerForm>', () => {
       fetchSakslisteOppgaver={sinon.spy()}
       fetchSakslistensSaksbehandlere={sinon.spy()}
       fetchAntallOppgaverForBehandlingsko={sinon.spy()}
-    />).find(Form).drill((props) => props.render(formProps)).shallow();
+    />).find(Form).renderProp('render')(formProps);
 
     const labels = wrapper.find(LabelWithHeader);
     expect(labels).to.have.length(4);
@@ -389,11 +388,11 @@ describe('<SakslisteVelgerForm>', () => {
         navn: 'Helge Ingstad',
         avdelingsnavn: [],
       }]}
-    />).find(Form).drill((props) => props.render(formProps)).shallow();
+    />).find(Form).renderProp('render')(formProps);
 
     const image = wrapper.find(Image);
     expect(image).to.have.length(1);
     const tooltip = shallowWithIntl(image.first().prop('tooltip'));
-    expect(tooltip.find(Element).childAt(0).text()).to.eql('Saksbehandlere');
+    expect(tooltip.find(FormattedMessage).prop('id')).to.eql('SakslisteVelgerForm.SaksbehandlerToolip');
   });
 });

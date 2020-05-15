@@ -40,7 +40,7 @@ describe('<UtvalgskriterierForSakslisteForm>', () => {
       lagreSakslisteAndreKriterier={sinon.spy()}
       valgtAvdelingEnhet="1"
       hentAntallOppgaverForSaksliste={sinon.spy()}
-    />).find(Form).drill((props) => props.render({ values: { erDynamiskPeriode: false } })).shallow();
+    />).find(Form).renderProp('render')({ values: { erDynamiskPeriode: false } });
 
     expect(wrapper.find(AutoLagringVedBlur)).to.have.length(1);
     expect(wrapper.find(BehandlingstypeVelger)).to.have.length(1);
@@ -135,7 +135,7 @@ describe('<UtvalgskriterierForSakslisteForm>', () => {
       valgtAvdelingEnhet="1"
       hentAntallOppgaverForSaksliste={sinon.spy()}
       lagreSakslisteAndreKriterier={sinon.spy()}
-    />).find(Form).drill((props) => props.render({ values: { erDynamiskPeriode: false } })).shallow();
+    />).find(Form).renderProp('render')({ values: { erDynamiskPeriode: false } });
 
     const lagreComp = wrapper.find(AutoLagringVedBlur);
 

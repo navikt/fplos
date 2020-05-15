@@ -87,7 +87,8 @@ describe('<OppgaveErReservertAvAnnenModal>', () => {
     const knapp = wrapper.find(Hovedknapp);
     expect(knapp).has.length(1);
 
-    knapp.prop('onClick')();
+    const clickFn = knapp.prop('onClick') as () => void;
+    clickFn();
 
     expect(lukkOgApneFn.calledOnce).to.be.true;
     const { args } = lukkOgApneFn.getCalls()[0];

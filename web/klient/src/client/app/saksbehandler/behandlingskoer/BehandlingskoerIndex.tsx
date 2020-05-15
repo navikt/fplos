@@ -31,16 +31,16 @@ interface OwnProps {
 
 interface DispatchProps {
   fetchAlleSakslister: () => void;
-  fetchOppgaverTilBehandling: (sakslisteId: number) => (dispatch: Dispatch) => Promise<{payload: any }>;
-  fetchOppgaverTilBehandlingOppgaver: (sakslisteId: number, oppgaveIder?: string) => (dispatch: Dispatch) => Promise<{payload: any }>;
-  fetchReserverteOppgaver: (sakslisteId: number) => (dispatch: Dispatch) => Promise<{payload: any }>;
-  reserverOppgave: (oppgaveId: number) => (dispatch: Dispatch) => Promise<{payload: OppgaveStatus }>;
-  opphevOppgaveReservasjon: (oppgaveId: number, begrunnelse: string) => (dispatch: Dispatch) => Promise<string>;
-  forlengOppgaveReservasjon: (oppgaveId: number) => (dispatch: Dispatch) => Promise<string>;
-  endreOppgaveReservasjon: (oppgaveId: number, reserverTil: string) => (dispatch: Dispatch) => Promise<string>;
-  flyttReservasjon: (oppgaveId: number, brukerident: string, begrunnelse: string) => (dispatch: Dispatch) => Promise<string>;
+  fetchOppgaverTilBehandling: (sakslisteId: number) => Promise<{payload: any }>;
+  fetchOppgaverTilBehandlingOppgaver: (sakslisteId: number, oppgaveIder?: string) => Promise<{payload: any }>;
+  fetchReserverteOppgaver: (sakslisteId: number) => Promise<{payload: any }>;
+  reserverOppgave: (oppgaveId: number) => Promise<{payload: OppgaveStatus }>;
+  opphevOppgaveReservasjon: (oppgaveId: number, begrunnelse: string) => Promise<string>;
+  forlengOppgaveReservasjon: (oppgaveId: number) => Promise<string>;
+  endreOppgaveReservasjon: (oppgaveId: number, reserverTil: string) => Promise<string>;
+  flyttReservasjon: (oppgaveId: number, brukerident: string, begrunnelse: string) => Promise<string>;
   setValgtSakslisteId: (sakslisteId: number) => void;
-  hentFpsakInternBehandlingId: (uuid: string) => (dispatch: Dispatch) => Promise<{payload: number }>;
+  hentFpsakInternBehandlingId: (uuid: string) => Promise<{payload: number }>;
 }
 
 interface StateProps {
@@ -224,7 +224,7 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => ({
-  ...bindActionCreators({
+  ...bindActionCreators<DispatchProps, any>({
     fetchAlleSakslister,
     fetchOppgaverTilBehandling,
     fetchOppgaverTilBehandlingOppgaver,

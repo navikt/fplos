@@ -72,7 +72,7 @@ const getAndreKriterier = (intl: IntlShape, saksliste?: Saksliste) => {
   return [intl.formatMessage({ id: 'SakslisteVelgerForm.Alle' })];
 };
 
-const getSorteringsnavn = (saksliste?: Saksliste) => {
+const getSorteringsnavn = (intl: IntlShape, saksliste?: Saksliste): string => {
   if (!saksliste || !saksliste.sortering) {
     return '';
   }
@@ -109,11 +109,11 @@ const getSorteringsnavn = (saksliste?: Saksliste) => {
   }
 
   if (!values.fomDato) {
-    return <FormattedMessage id="SakslisteVelgerForm.SorteringsinfoTom" values={values} />;
+    return intl.formatMessage({ id: 'SakslisteVelgerForm.SorteringsinfoTom' }, values) as string;
   } if (!values.tomDato) {
-    return <FormattedMessage id="SakslisteVelgerForm.SorteringsinfoFom" values={values} />;
+    return intl.formatMessage({ id: 'SakslisteVelgerForm.SorteringsinfoFom' }, values) as string;
   }
-  return <FormattedMessage id="SakslisteVelgerForm.Sorteringsinfo" values={values} />;
+  return intl.formatMessage({ id: 'SakslisteVelgerForm.Sorteringsinfo' }, values) as string;
 };
 
 /**
@@ -141,7 +141,7 @@ export class SakslisteVelgerForm extends Component<OwnProps & WrappedComponentPr
 
   createTooltip = (): ReactNode | undefined => {
     const {
-      intl, saksbehandlere,
+      saksbehandlere,
     } = this.props;
     if (!saksbehandlere || saksbehandlere.length === 0) {
       return undefined;
@@ -149,7 +149,7 @@ export class SakslisteVelgerForm extends Component<OwnProps & WrappedComponentPr
 
     return (
       <div>
-        <Element>{intl.formatMessage({ id: 'SakslisteVelgerForm.SaksbehandlerToolip' })}</Element>
+        <Element><FormattedMessage id="SakslisteVelgerForm.SaksbehandlerToolip" /></Element>
         {saksbehandlere.map((s) => s.navn).sort((n1, n2) => n1.localeCompare(n2)).map((navn) => (<Normaltekst key={navn}>{navn}</Normaltekst>))}
       </div>
     );
@@ -222,7 +222,7 @@ export class SakslisteVelgerForm extends Component<OwnProps & WrappedComponentPr
                     <FlexColumn className={styles.marginFilters}>
                       <LabelWithHeader
                         header={intl.formatMessage({ id: 'SakslisteVelgerForm.Sortering' })}
-                        texts={[getSorteringsnavn(getValgtSaksliste(sakslister, values.sakslisteId))]}
+                        texts={[getSorteringsnavn(intl, getValgtSaksliste(sakslister, values.sakslisteId))]}
                       />
                     </FlexColumn>
                   </>

@@ -202,7 +202,8 @@ describe('<GjeldendeSakslisterTabell>', () => {
     const rader = wrapper.find(TableRow);
     expect(rader).to.have.length(1);
 
-    await rader.prop('onKeyDown')();
+    const keyFn = rader.prop('onKeyDown') as () => void;
+    await keyFn();
 
     expect(setValgtSakslisteIdFn.calledOnce).to.be.true;
   });
