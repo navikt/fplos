@@ -67,10 +67,7 @@ describe('<FlyttReservasjonModal>', () => {
 
   it('skal vise saksbehandler', () => {
     const saksbehandler = {
-      brukerIdent: {
-        brukerIdent: 'P039283',
-        verdi: 'P039283',
-      },
+      brukerIdent: 'P039283',
       navn: 'Brukernavn',
       avdelingsnavn: ['Avdelingsnavn'],
     };
@@ -181,10 +178,7 @@ describe('<FlyttReservasjonModal>', () => {
 
   it('skal vise ok-knapp som enablet når en har saksbehandler og begrunnelsen er minst tre bokstaver', () => {
     const saksbehandler = {
-      brukerIdent: {
-        brukerIdent: 'P039283',
-        verdi: 'P039283',
-      },
+      brukerIdent: 'P039283',
       navn: 'Brukernavn',
       avdelingsnavn: ['Avdelingsnavn'],
     };
@@ -247,10 +241,7 @@ describe('<FlyttReservasjonModal>', () => {
 
   it('skal vise ok-knapp som disablet når begrunnelsen er mindre enn tre bokstaver', () => {
     const saksbehandler = {
-      brukerIdent: {
-        brukerIdent: 'P039283',
-        verdi: 'P039283',
-      },
+      brukerIdent: 'P039283',
       navn: 'Brukernavn',
       avdelingsnavn: ['Avdelingsnavn'],
     };

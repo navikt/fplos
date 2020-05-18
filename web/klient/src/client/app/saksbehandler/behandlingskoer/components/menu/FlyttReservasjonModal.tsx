@@ -14,7 +14,7 @@ import {
 import { TextAreaField, InputField } from 'form/FinalFields';
 import Modal from 'sharedComponents/Modal';
 import { getSaksbehandler, isSaksbehandlerSokStartet, isSaksbehandlerSokFerdig } from '../../duck';
-import Saksbehandler from '../../saksbehandlerTsType';
+import SaksbehandlerForFlytting from './saksbehandlerForFlyttingTsType';
 
 import styles from './flyttReservasjonModal.less';
 
@@ -30,7 +30,7 @@ interface OwnProps {
   submit: (oppgaveId: number, brukerident: string, begrunnelse: string) => void;
   finnSaksbehandler: (brukerident: string) => void;
   resetSaksbehandler: () => Promise<string>;
-  saksbehandler?: Saksbehandler;
+  saksbehandler?: SaksbehandlerForFlytting;
   erSaksbehandlerSokStartet: boolean;
   erSaksbehandlerSokFerdig: boolean;
 }
@@ -120,7 +120,7 @@ export class FlyttReservasjonModal extends Component<OwnProps & WrappedComponent
          />
          <VerticalSpacer sixteenPx />
          <Form
-           onSubmit={(values) => submit(oppgaveId, saksbehandler ? saksbehandler.brukerIdent.brukerIdent : '', values.begrunnelse)}
+           onSubmit={(values) => submit(oppgaveId, saksbehandler ? saksbehandler.brukerIdent : '', values.begrunnelse)}
            render={({
              handleSubmit, values,
            }) => (
