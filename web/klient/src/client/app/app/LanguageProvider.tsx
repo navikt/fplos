@@ -1,36 +1,27 @@
-import React, { ReactNode } from 'react';
-import PropTypes from 'prop-types';
+import React, { ReactNode, FunctionComponent } from 'react';
 import { connect } from 'react-redux';
-import { IntlProvider, addLocaleData } from 'react-intl';
-
-import nb from 'react-intl/locale-data/nb';
+import { IntlProvider } from 'react-intl';
 
 import data from '../sprak/nb_NO.json';
 
-addLocaleData(nb);
-
-type TsProps = Readonly<{
+interface OwnProps {
   nbMessages: {};
   children: ReactNode;
-}>
+}
 
 /**
  * LanguageProvider
  *
  * Container komponent. Har ansvar for å hente språkfilen.
  */
-export const LanguageProvider = ({ nbMessages, children }: TsProps) => (
+export const LanguageProvider: FunctionComponent<OwnProps> = ({
+  nbMessages,
+  children,
+}) => (
   <IntlProvider locale="nb-NO" messages={nbMessages}>
-    <>
-      {children}
-    </>
+    {children}
   </IntlProvider>
 );
-
-LanguageProvider.propTypes = {
-  nbMessages: PropTypes.shape({}).isRequired,
-  children: PropTypes.node.isRequired,
-};
 
 const mapStateToProps = () => ({
   nbMessages: data,

@@ -1,4 +1,4 @@
-import { Error } from './errorTsType';
+import Error from './errorTsType';
 
 /**
  * Feiltyper til differensiering av framvisning i GUI
@@ -19,7 +19,7 @@ export const errorOfType = (error: Error, errorType: string) => error && (getErr
 
 export const isHandledError = (errorType?: string) => errorType && handledErrorTypes.includes(errorType);
 
-const hasStatusCode = statusCode => (errorStatus?: string) => errorStatus === statusCode;
+const hasStatusCode = (statusCode) => (errorStatus?: string) => errorStatus === statusCode;
 
 export const is401Error = hasStatusCode(401);
 

@@ -3,14 +3,19 @@ import { expect } from 'chai';
 import { shallow } from 'enzyme';
 import Modal from './Modal';
 
-const otherProps = {};
+const otherProps = {
+  className: '',
+  closeButton: true,
+  isOpen: true,
+  contentLabel: 'test',
+  onRequestClose: () => undefined,
+};
 
 describe('<Modal>', () => {
   it('skal rendre modal med children', () => {
     const wrapper = shallow(
       <div id="app">
         <Modal
-          ariaHideApp={false}
           {...otherProps}
           shouldCloseOnOverlayClick={false}
         >
@@ -19,7 +24,6 @@ describe('<Modal>', () => {
       </div>,
     );
     expect(wrapper.find('div.content')).to.have.length(1);
-    expect(wrapper.find(Modal).prop('ariaHideApp')).to.be.false;
     expect(wrapper.find(Modal).prop('shouldCloseOnOverlayClick')).to.be.false;
   });
 });

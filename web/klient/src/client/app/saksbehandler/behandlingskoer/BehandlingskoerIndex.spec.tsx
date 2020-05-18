@@ -4,6 +4,7 @@ import { expect } from 'chai';
 import { shallow } from 'enzyme';
 import sinon from 'sinon';
 
+import behandlingStatus from 'kodeverk/behandlingStatus';
 import SakslistePanel from './components/SakslistePanel';
 import { BehandlingskoerIndex } from './BehandlingskoerIndex';
 import BehandlingPollingTimoutModal from './components/BehandlingPollingTimoutModal';
@@ -47,12 +48,16 @@ describe('<BehandlingskoerIndex>', () => {
     },
     saksnummer: 12343,
     behandlingId: 'd10e592c-e5bd-4f24-95a6-8eb1ed48f068',
-    personnummer: 1234567891,
+    personnummer: '1234567891',
     navn: 'Espen Uteligger',
     system: 'FPSAK',
     behandlingstype: {
       kode: 'TEST',
       navn: 'test',
+    },
+    behandlingStatus: {
+      kode: behandlingStatus.OPPRETTET,
+      navn: '',
     },
     opprettetTidspunkt: '2018-01-12',
     behandlingsfrist: '2018-01-12',
@@ -61,6 +66,7 @@ describe('<BehandlingskoerIndex>', () => {
       navn: 'test',
     },
     erTilSaksbehandling: true,
+    href: '',
   };
 
   it('skal ikke vise behandlingskøer når det ikke finnes sakslister', () => {
@@ -248,7 +254,7 @@ describe('<BehandlingskoerIndex>', () => {
     const { args: args2 } = fetchOppgaverTilBehandlingOppgaverFn.getCalls()[0];
     expect(args2).to.have.length(2);
     expect(args2[0]).to.eql(1);
-    expect(args2[1]).to.eql(oppgaveIder.map(o => o.id).join(','));
+    expect(args2[1]).to.eql(oppgaveIder.map((o) => o.id).join(','));
   });
 
   it('skal oppheve reservasjon og så hente reserverte oppgaver på nytt', async () => {

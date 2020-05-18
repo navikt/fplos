@@ -1,19 +1,17 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
 
 import fpLosApi from 'data/fpLosApi';
 import { getFpsakHref, getFptilbakeHref } from 'app/paths';
-import sakslistePropType from 'saksbehandler/behandlingskoer/sakslistePropType';
-import { Saksliste } from 'saksbehandler/behandlingskoer/sakslisteTsType';
+import Saksliste from 'saksbehandler/behandlingskoer/sakslisteTsType';
 import {
   getFpsakUrl,
   getFptilbakeUrl,
   hentFpsakInternBehandlingId as hentFpsakInternBehandlingIdActionCreator,
 } from 'app/duck';
-import { OppgaveStatus } from 'saksbehandler/oppgaveStatusTsType';
-import { Oppgave } from 'saksbehandler/oppgaveTsType';
+import OppgaveStatus from 'saksbehandler/oppgaveStatusTsType';
+import Oppgave from 'saksbehandler/oppgaveTsType';
 import OppgaveErReservertAvAnnenModal from 'saksbehandler/components/OppgaveErReservertAvAnnenModal';
 import {
   fetchAlleSakslister, getSakslisteResult, fetchOppgaverTilBehandling, fetchReserverteOppgaver, reserverOppgave, opphevOppgaveReservasjon,
@@ -23,24 +21,27 @@ import {
 import SakslistePanel from './components/SakslistePanel';
 import BehandlingPollingTimoutModal from './components/BehandlingPollingTimoutModal';
 
-type TsProps = Readonly<{
+interface OwnProps {
+  sakslister: Saksliste[];
+  fpsakUrl: string;
+  fptilbakeUrl: string;
+  goToUrl: (url: string) => void;
+  harTimeout: boolean;
+}
+
+interface DispatchProps {
+  fetchAlleSakslister: () => void;
   fetchOppgaverTilBehandling: (sakslisteId: number) => Promise<{payload: any }>;
   fetchOppgaverTilBehandlingOppgaver: (sakslisteId: number, oppgaveIder?: string) => Promise<{payload: any }>;
-  fetchAlleSakslister: () => void;
   fetchReserverteOppgaver: (sakslisteId: number) => Promise<{payload: any }>;
   reserverOppgave: (oppgaveId: number) => Promise<{payload: OppgaveStatus }>;
   opphevOppgaveReservasjon: (oppgaveId: number, begrunnelse: string) => Promise<string>;
   forlengOppgaveReservasjon: (oppgaveId: number) => Promise<string>;
   endreOppgaveReservasjon: (oppgaveId: number, reserverTil: string) => Promise<string>;
   flyttReservasjon: (oppgaveId: number, brukerident: string, begrunnelse: string) => Promise<string>;
-  sakslister: Saksliste[];
-  fpsakUrl: string;
-  fptilbakeUrl: string;
-  goToUrl: (url: string) => void;
-  harTimeout: boolean;
   setValgtSakslisteId: (sakslisteId: number) => void;
   hentFpsakInternBehandlingId: (uuid: string) => Promise<{payload: number }>;
-}>
+}
 
 interface StateProps {
   sakslisteId?: number;
@@ -51,28 +52,9 @@ interface StateProps {
 /**
  * BehandlingskoerIndex
  */
-export class BehandlingskoerIndex extends Component<TsProps, StateProps> {
+export class BehandlingskoerIndex extends Component<OwnProps & DispatchProps, StateProps> {
   state = {
     sakslisteId: undefined, reservertAvAnnenSaksbehandler: false, reservertOppgave: undefined, reservertOppgaveStatus: undefined,
-  };
-
-  static propTypes = {
-    fetchOppgaverTilBehandling: PropTypes.func.isRequired,
-    fetchOppgaverTilBehandlingOppgaver: PropTypes.func.isRequired,
-    fetchAlleSakslister: PropTypes.func.isRequired,
-    fetchReserverteOppgaver: PropTypes.func.isRequired,
-    reserverOppgave: PropTypes.func.isRequired,
-    opphevOppgaveReservasjon: PropTypes.func.isRequired,
-    forlengOppgaveReservasjon: PropTypes.func.isRequired,
-    endreOppgaveReservasjon: PropTypes.func.isRequired,
-    flyttReservasjon: PropTypes.func.isRequired,
-    sakslister: PropTypes.arrayOf(sakslistePropType),
-    fpsakUrl: PropTypes.string.isRequired,
-    fptilbakeUrl: PropTypes.string.isRequired,
-    goToUrl: PropTypes.func.isRequired,
-    harTimeout: PropTypes.bool.isRequired,
-    setValgtSakslisteId: PropTypes.func.isRequired,
-    hentFpsakInternBehandlingId: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
@@ -96,18 +78,18 @@ export class BehandlingskoerIndex extends Component<TsProps, StateProps> {
     fetchReserverte(sakslisteId);
     fetchTilBehandling(sakslisteId, oppgaveIder).then((response) => {
       const { sakslisteId: id } = this.state;
-      return sakslisteId === id ? this.fetchSakslisteOppgaverPolling(sakslisteId, response.payload.map(o => o.id).join(',')) : Promise.resolve();
+      return sakslisteId === id ? this.fetchSakslisteOppgaverPolling(sakslisteId, response.payload.map((o) => o.id).join(',')) : Promise.resolve();
     }).catch(() => undefined);
   }
 
   fetchSakslisteOppgaver = (sakslisteId: number) => {
-    this.setState(prevState => ({ ...prevState, sakslisteId }));
+    this.setState((prevState) => ({ ...prevState, sakslisteId }));
     const { fetchOppgaverTilBehandling: fetchTilBehandling, fetchReserverteOppgaver: fetchReserverte, setValgtSakslisteId: setSakslisteId } = this.props;
     setSakslisteId(sakslisteId);
     fetchReserverte(sakslisteId);
     fetchTilBehandling(sakslisteId).then((response) => {
       const { sakslisteId: id } = this.state;
-      return sakslisteId === id ? this.fetchSakslisteOppgaverPolling(sakslisteId, response.payload.map(o => o.id).join(',')) : Promise.resolve();
+      return sakslisteId === id ? this.fetchSakslisteOppgaverPolling(sakslisteId, response.payload.map((o) => o.id).join(',')) : Promise.resolve();
     });
   }
 
@@ -140,7 +122,7 @@ export class BehandlingskoerIndex extends Component<TsProps, StateProps> {
         if (nyOppgaveStatus.erReservert && nyOppgaveStatus.erReservertAvInnloggetBruker) {
           this.openSak(oppgave);
         } else if (nyOppgaveStatus.erReservert && !nyOppgaveStatus.erReservertAvInnloggetBruker) {
-          this.setState(prevState => ({
+          this.setState((prevState) => ({
             ...prevState,
             reservertAvAnnenSaksbehandler: true,
             reservertOppgave: oppgave,
@@ -178,7 +160,7 @@ export class BehandlingskoerIndex extends Component<TsProps, StateProps> {
       return Promise.resolve();
     }
     return endreReservasjon(oppgaveId, reserverTil)
-        .then(() => fetchReserverte(sakslisteId));
+      .then(() => fetchReserverte(sakslisteId));
   }
 
   flyttReservasjon = (oppgaveId: number, brukerident: string, begrunnelse: string): Promise<any> => {
@@ -192,7 +174,7 @@ export class BehandlingskoerIndex extends Component<TsProps, StateProps> {
   }
 
   lukkErReservertModalOgOpneOppgave = (oppgave: Oppgave) => {
-    this.setState(prevState => ({
+    this.setState((prevState) => ({
       ...prevState, reservertAvAnnenSaksbehandler: false, reservertOppgave: undefined, reservertOppgaveStatus: undefined,
     }));
     this.openSak(oppgave);
@@ -220,31 +202,29 @@ export class BehandlingskoerIndex extends Component<TsProps, StateProps> {
           flyttReservasjon={this.flyttReservasjon}
         />
         {harTimeout
-          && <BehandlingPollingTimoutModal />
-        }
+          && <BehandlingPollingTimoutModal />}
         {reservertAvAnnenSaksbehandler && reservertOppgave && reservertOppgaveStatus && (
           <OppgaveErReservertAvAnnenModal
             lukkErReservertModalOgOpneOppgave={this.lukkErReservertModalOgOpneOppgave}
             oppgave={reservertOppgave}
             oppgaveStatus={reservertOppgaveStatus}
           />
-        )
-        }
+        )}
       </>
     );
   }
 }
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   fpsakUrl: getFpsakUrl(state),
   fptilbakeUrl: getFptilbakeUrl(state),
   harTimeout: harOppgaverTilBehandlingTimeout(state),
   sakslister: getSakslisteResult(state),
-  goToUrl: url => window.location.assign(url),
+  goToUrl: (url) => window.location.assign(url),
 });
 
-const mapDispatchToProps = (dispatch: Dispatch) => ({
-  ...bindActionCreators({
+const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => ({
+  ...bindActionCreators<DispatchProps, any>({
     fetchAlleSakslister,
     fetchOppgaverTilBehandling,
     fetchOppgaverTilBehandlingOppgaver,
@@ -258,6 +238,5 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
     hentFpsakInternBehandlingId: hentFpsakInternBehandlingIdActionCreator,
   }, dispatch),
 });
-
 
 export default connect(mapStateToProps, mapDispatchToProps)(BehandlingskoerIndex);

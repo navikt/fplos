@@ -1,4 +1,4 @@
-import RequestConfig from 'data/rest-api/src/RequestConfig';
+import { RequestConfig } from '../../rest-api';
 import ReduxRestApi from './ReduxRestApi';
 import ReduxEvents from './redux/ReduxEvents';
 
@@ -7,7 +7,7 @@ class ReduxRestApiBuilder {
 
   reducerName: string;
 
-  contextPath: string = '';
+  contextPath = '';
 
   reduxEvents: ReduxEvents = new ReduxEvents();
 

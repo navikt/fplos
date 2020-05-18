@@ -33,6 +33,7 @@ describe('<SistBehandledeSaker>', () => {
         navn: 'test',
       },
       erTilSaksbehandling: true,
+      href: '',
     }, {
       id: 4,
       status: {
@@ -58,6 +59,7 @@ describe('<SistBehandledeSaker>', () => {
         navn: 'test',
       },
       erTilSaksbehandling: true,
+      href: '',
     }];
 
     const wrapper = shallow(<SistBehandledeSaker

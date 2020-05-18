@@ -1,7 +1,7 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import React, { ReactNode, Component, ChangeEvent } from 'react';
 import moment from 'moment';
 import { Input } from 'nav-frontend-skjema';
+import classnames from 'classnames/bind';
 
 import { DDMMYYYY_DATE_FORMAT } from 'utils/formats';
 import CalendarOverlay from './CalendarOverlay';
@@ -9,21 +9,46 @@ import CalendarToggleButton from './CalendarToggleButton';
 
 import styles from './datepicker.less';
 
-interface TsProps {
-  alwaysShowCalendar: boolean;
-  firstDate: Date;
-  lastDate: Date;
+const classNames = classnames.bind(styles);
+
+interface OwnProps {
+  label?: ReactNode;
+  placeholder?: string;
+  feil?: { feilmelding?: string };
+  disabled?: boolean;
+  onChange: (dato: string | ChangeEvent) => void;
+  onBlur: () => void;
+  value?: string;
+  initialMonth?: Date;
+  numberOfMonths?: number;
+  disabledDays?: Date | Date[];
+  alwaysShowCalendar?: boolean;
 }
 
-class Datepicker extends Component <TsProps> {
-  static propTypes = {
-    alwaysShowCalendar: PropTypes.bool.isRequired,
-    firstDate: PropTypes.instanceOf(Date),
-    lastDate: PropTypes.instanceOf(Date),
-  }
+interface StateProps {
+  showCalendar?: boolean;
+  inputOffsetTop?: number;
+  inputOffsetWidth?: number;
+}
 
-  constructor() {
-    super();
+class Datepicker extends Component<OwnProps, StateProps> {
+  buttonRef: HTMLDivElement;
+
+  inputRef: HTMLDivElement;
+
+  static defaultProps = {
+    label: '',
+    placeholder: 'dd.mm.åååå',
+    value: '',
+    feil: null,
+    disabled: false,
+    initialMonth: new Date(),
+    numberOfMonths: 1,
+    disabledDays: {},
+  };
+
+  constructor(props) {
+    super(props);
     this.state = { showCalendar: false };
     this.handleInputRef = this.handleInputRef.bind(this);
     this.handleButtonRef = this.handleButtonRef.bind(this);
@@ -88,7 +113,17 @@ class Datepicker extends Component <TsProps> {
 
   render() {
     const {
-      label, placeholder, onChange, onBlur, value, feil, disabled, alwaysShowCalendar, firstDate, lastDate,
+      label,
+      placeholder,
+      onChange,
+      onBlur,
+      value,
+      feil,
+      disabled,
+      disabledDays,
+      initialMonth,
+      numberOfMonths,
+      alwaysShowCalendar = false,
     } = this.props;
     const {
       inputOffsetTop, inputOffsetWidth, showCalendar,
@@ -110,20 +145,19 @@ class Datepicker extends Component <TsProps> {
             feil={feil}
             disabled={disabled}
           />
-          {!alwaysShowCalendar
-          && (
-          <CalendarToggleButton
-            inputOffsetTop={inputOffsetTop}
-            inputOffsetWidth={inputOffsetWidth}
-            className={styles.calendarToggleButton}
-            toggleShowCalendar={this.toggleShowCalendar}
-            buttonRef={this.handleButtonRef}
-            disabled={disabled}
-          />
-)}
+          {!alwaysShowCalendar && (
+            <CalendarToggleButton
+              inputOffsetTop={inputOffsetTop}
+              inputOffsetWidth={inputOffsetWidth}
+              className={styles.calendarToggleButton}
+              toggleShowCalendar={this.toggleShowCalendar}
+              buttonRef={this.handleButtonRef}
+              disabled={disabled}
+
+            />
+          )}
         </div>
-        {(showCalendar || alwaysShowCalendar)
-        && (
+        {(showCalendar || alwaysShowCalendar) && (
         <CalendarOverlay
           disabled={disabled}
           value={value}
@@ -131,35 +165,15 @@ class Datepicker extends Component <TsProps> {
           onClose={this.hideCalendar}
           elementIsCalendarButton={this.elementIsCalendarButton}
           className={styles.calendarRoot}
-          dayPickerClassName={styles.calendarWrapper}
-          firstDate={firstDate}
-          lastDate={lastDate}
+          dayPickerClassName={classNames(`calendarWrapper calendarWrapper--${numberOfMonths}`)}
+          disabledDays={disabledDays}
+          numberOfMonths={numberOfMonths}
+          initialMonth={initialMonth}
         />
-        )
-        }
+        )}
       </>
     );
   }
 }
-
-Datepicker.propTypes = {
-  label: PropTypes.node,
-  placeholder: PropTypes.string,
-  onChange: PropTypes.func.isRequired,
-  onBlur: PropTypes.func.isRequired,
-  value: PropTypes.string,
-  feil: PropTypes.shape({ feilmelding: PropTypes.string }),
-  disabled: PropTypes.bool,
-  alwaysShowCalendar: PropTypes.bool,
-};
-
-Datepicker.defaultProps = {
-  label: '',
-  placeholder: 'dd.mm.åååå',
-  value: '',
-  feil: null,
-  disabled: false,
-  alwaysShowCalendar: false,
-};
 
 export default Datepicker;

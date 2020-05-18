@@ -5,7 +5,7 @@ import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import NyeOgFerdigstilteOppgaverForIdagPanel from './nyeOgFerdigstilteOppgaverForIdag/NyeOgFerdigstilteOppgaverForIdagPanel';
 import NyeOgFerdigstilteOppgaverForSisteSyvPanel from './nyeOgFerdigstilteOppgaverForSisteSyv/NyeOgFerdigstilteOppgaverForSisteSyvPanel';
 
-interface StateTsProps {
+interface StateProps {
   width: number;
   height: number;
 }
@@ -13,7 +13,9 @@ interface StateTsProps {
 /**
  * SaksbehandlerNokkeltallPanel.
  */
-class SaksbehandlerNokkeltallPanel extends Component<{}, StateTsProps> {
+class SaksbehandlerNokkeltallPanel extends Component<{}, StateProps> {
+  node: any
+
   constructor(props: {}) {
     super(props);
 
@@ -38,8 +40,6 @@ class SaksbehandlerNokkeltallPanel extends Component<{}, StateTsProps> {
       this.setState({ width: rect.width });
     }
   }
-
-  node: any
 
   render = () => {
     const {

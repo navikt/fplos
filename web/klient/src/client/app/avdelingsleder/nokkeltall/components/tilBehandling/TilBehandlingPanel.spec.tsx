@@ -1,7 +1,7 @@
 import React from 'react';
 import { expect } from 'chai';
 import moment from 'moment';
-
+import { IntlShape } from 'react-intl';
 import { Form } from 'react-final-form';
 
 import { ISO_DATE_FORMAT } from 'utils/formats';
@@ -13,6 +13,9 @@ import { TilBehandlingPanel, ALLE_YTELSETYPER_VALGT } from './TilBehandlingPanel
 import TilBehandlingGraf from './TilBehandlingGraf';
 
 describe('<TilBehandlingPanel>', () => {
+  const intl: Partial<IntlShape> = {
+    ...intlMock,
+  };
   const fagsakYtelseTyper = [{
     kode: fagsakYtelseType.ENGANGSSTONAD,
     navn: 'Engangsstønad',
@@ -34,18 +37,19 @@ describe('<TilBehandlingPanel>', () => {
     const oppgaverPerDato = [];
 
     const wrapper = shallowWithIntl(<TilBehandlingPanel
-      intl={intlMock}
+      intl={intl as IntlShape}
       width={300}
       height={200}
       fagsakYtelseTyper={fagsakYtelseTyper}
       oppgaverPerDato={oppgaverPerDato}
       initialValues={{ ytelseType: fagsakYtelseType.FORELDREPRENGER, ukevalg: valuesMock.ukevalg }}
-    />).find(Form).drill(props => props.render({ values: valuesMock })).shallow();
+      // @ts-ignore
+    />).find(Form).renderProp('render')({ values: valuesMock });
 
     const select = wrapper.find(SelectField);
     expect(select).to.have.length(1);
 
-    const options = select.prop('selectValues');
+    const options = select.prop('selectValues') as { props: { value: string; children: string }}[];
     expect(options).to.have.length(2);
     expect(options[0].props.value).to.eql('2');
     expect(options[0].props.children).to.eql('2 siste uker');
@@ -80,13 +84,14 @@ describe('<TilBehandlingPanel>', () => {
     }];
 
     const wrapper = shallowWithIntl(<TilBehandlingPanel
-      intl={intlMock}
+      intl={intl as IntlShape}
       width={300}
       height={200}
       fagsakYtelseTyper={fagsakYtelseTyper}
       oppgaverPerDato={oppgaverPerDato}
       initialValues={{ ytelseType: fagsakYtelseType.FORELDREPRENGER, ukevalg: valuesMock.ukevalg }}
-    />).find(Form).drill(props => props.render({ values: valuesMock })).shallow();
+      // @ts-ignore
+    />).find(Form).renderProp('render')({ values: valuesMock });
 
     const graf = wrapper.find(TilBehandlingGraf);
     expect(graf).to.have.length(1);
@@ -112,13 +117,14 @@ describe('<TilBehandlingPanel>', () => {
     }];
 
     const wrapper = shallowWithIntl(<TilBehandlingPanel
-      intl={intlMock}
+      intl={intl as IntlShape}
       width={300}
       height={200}
       fagsakYtelseTyper={fagsakYtelseTyper}
       oppgaverPerDato={oppgaverPerDato}
       initialValues={{ ytelseType: fagsakYtelseType.FORELDREPRENGER, ukevalg: valuesMock.ukevalg }}
-    />).find(Form).drill(props => props.render({ values: valuesMock })).shallow();
+      // @ts-ignore
+    />).find(Form).renderProp('render')({ values: valuesMock });
 
     const graf = wrapper.find(TilBehandlingGraf);
     expect(graf).to.have.length(1);
@@ -144,13 +150,14 @@ describe('<TilBehandlingPanel>', () => {
     }];
 
     const wrapper = shallowWithIntl(<TilBehandlingPanel
-      intl={intlMock}
+      intl={intl as IntlShape}
       width={300}
       height={200}
       fagsakYtelseTyper={fagsakYtelseTyper}
       oppgaverPerDato={oppgaverPerDato}
       initialValues={{ ytelseType: fagsakYtelseType.FORELDREPRENGER, ukevalg: valuesMock.ukevalg }}
-    />).find(Form).drill(props => props.render({ values: valuesMock })).shallow();
+      // @ts-ignore
+    />).find(Form).renderProp('render')({ values: valuesMock });
 
     const graf = wrapper.find(TilBehandlingGraf);
     expect(graf).to.have.length(1);
@@ -175,13 +182,14 @@ describe('<TilBehandlingPanel>', () => {
     }];
 
     const wrapper = shallowWithIntl(<TilBehandlingPanel
-      intl={intlMock}
+      intl={intl as IntlShape}
       width={300}
       height={200}
       fagsakYtelseTyper={fagsakYtelseTyper}
       oppgaverPerDato={oppgaverPerDato}
       initialValues={{ ytelseType: fagsakYtelseType.FORELDREPRENGER, ukevalg: valuesMock.ukevalg }}
-    />).find(Form).drill(props => props.render({ values: valuesMock })).shallow();
+      // @ts-ignore
+    />).find(Form).renderProp('render')({ values: valuesMock });
 
     const graf = wrapper.find(TilBehandlingGraf);
     expect(graf).to.have.length(1);
@@ -206,13 +214,14 @@ describe('<TilBehandlingPanel>', () => {
     }];
 
     const wrapper = shallowWithIntl(<TilBehandlingPanel
-      intl={intlMock}
+      intl={intl as IntlShape}
       width={300}
       height={200}
       fagsakYtelseTyper={fagsakYtelseTyper}
       oppgaverPerDato={oppgaverPerDato}
       initialValues={{ ytelseType: fagsakYtelseType.FORELDREPRENGER, ukevalg: valuesMock.ukevalg }}
-    />).find(Form).drill(props => props.render({ values: valuesMock })).shallow();
+      // @ts-ignore
+    />).find(Form).renderProp('render')({ values: valuesMock });
 
     const graf = wrapper.find(TilBehandlingGraf);
     expect(graf).to.have.length(1);

@@ -150,7 +150,7 @@
   "OppgaverTabell.FristForBehandling": "Frist for behandling",
   "OppgaverTabell.OppgaveHandlinger": "Handlinger på oppgave",
   "OppgaverTabell.OverfortReservasjon": "Overført reservasjon",
-  "OppgaverTabell.OverfortReservasjonTooltip": "Overført reservasjon {dato} - {tid} fra {uid} {navn}</BR></BR>{beskrivelse}",
+  "OppgaverTabell.OverfortReservasjonTooltip": "Overført reservasjon {dato} - {tid} fra {uid} {navn}{br}{br}{beskrivelse}",
 
   "OkAvbrytModal.Ok": "OK",
   "OkAvbrytModal.Avbryt": "Avbryt",
@@ -159,13 +159,13 @@
   "OppgaveErReservertAvAnnenModal.ReservertAvEnkel": "En annen saksbehandler arbeider nå med denne behandlingen",
   "OppgaveErReservertAvAnnenModal.Ok": "OK",
 
-  "OppgaveHandlingerMenu.LeggTilbake": "Legg behandling</BR>tilbake i felles kø",
-  "OppgaveHandlingerMenu.ForlengReservasjon": "Forleng din reservasjon av</BR>behandlingen med 24 timer",
+  "OppgaveHandlingerMenu.LeggTilbake": "Legg behandling{br}tilbake i felles kø",
+  "OppgaveHandlingerMenu.ForlengReservasjon": "Forleng din reservasjon av{br}behandlingen med 24 timer",
   "OppgaveHandlingerMenu.EndreReservasjon": "Reserver behandlingen med dato",
-  "OppgaveHandlingerMenu.ReservertTil": "<b>Reservert til {date} - {time}</b>",
-  "OppgaveHandlingerMenu.FlyttReservasjon": "Flytt reservasjonen til</BR>annen saksbehandler",
+  "OppgaveHandlingerMenu.ReservertTil": "{b}Reservert til {date} - {time}{b}",
+  "OppgaveHandlingerMenu.FlyttReservasjon": "Flytt reservasjonen til{br}annen saksbehandler",
 
-  "OppgaverPerForsteStonadsdagGraf.DagensDato": "Dagens</BR>dato",
+  "OppgaverPerForsteStonadsdagGraf.DagensDato": "Dagens{br}dato",
 
   "OppgaverPerForsteStonadsdagPanel.FordeltPaForsteStonadsdag": "Antall førstegangsbehandlinger fordelt på første stønadsdag",
 
@@ -264,9 +264,9 @@
   "SakslisteVelgerForm.Uten": "Uten: {kriterie}",
   "SakslisteVelgerForm.Saksbehandlere": "Saksbehandlere tilknyttet denne køen",
   "SakslisteVelgerForm.SaksbehandlerToolip": "Saksbehandlere",
-  "SakslisteVelgerForm.Sorteringsinfo": "{navn}<BR/>Gjeldende intervall:<BR/>{fomDato} - {tomDato}",
-  "SakslisteVelgerForm.SorteringsinfoFom": "{navn}<BR/>Fra og med: {fomDato}",
-  "SakslisteVelgerForm.SorteringsinfoTom": "{navn}<BR/>Til og med: {tomDato}",
+  "SakslisteVelgerForm.Sorteringsinfo": "{navn}{br}Gjeldende intervall:{br}{fomDato} - {tomDato}",
+  "SakslisteVelgerForm.SorteringsinfoFom": "{navn}{br}Fra og med: {fomDato}",
+  "SakslisteVelgerForm.SorteringsinfoTom": "{navn}{br}Til og med: {tomDato}",
 
   "UtvalgskriterierForSakslisteForm.Utvalgskriterier": "Utvalgskriterier",
   "UtvalgskriterierForSakslisteForm.Navn": "Navn",

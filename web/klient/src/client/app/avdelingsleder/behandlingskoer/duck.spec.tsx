@@ -6,7 +6,7 @@ import {
 
 describe('Saksliste-reducer', () => {
   it('skal returnere initial state', () => {
-    expect(organiseringAvSakslisterReducer(undefined, {})).to.eql({ valgtSakslisteId: undefined });
+    expect(organiseringAvSakslisterReducer(undefined, { type: '' })).to.eql({ valgtSakslisteId: undefined });
   });
 
   it('skal oppdatere state med valgt saksliste id', () => {

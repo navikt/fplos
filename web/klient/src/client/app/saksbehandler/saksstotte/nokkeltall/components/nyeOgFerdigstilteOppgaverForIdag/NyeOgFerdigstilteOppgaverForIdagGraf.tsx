@@ -1,17 +1,15 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { createSelector } from 'reselect';
 import {
   XYPlot, XAxis, YAxis, VerticalGridLines, HorizontalRectSeries, Hint, DiscreteColorLegend,
 } from 'react-vis';
-import { FormattedMessage, injectIntl, intlShape } from 'react-intl';
+import { FormattedMessage, injectIntl, WrappedComponentProps } from 'react-intl';
 import { Normaltekst } from 'nav-frontend-typografi';
 import Panel from 'nav-frontend-paneler';
 
-import { Kodeverk } from 'kodeverk/kodeverkTsType';
+import Kodeverk from 'kodeverk/kodeverkTsType';
 import behandlingType from 'kodeverk/behandlingType';
-import kodeverkPropType from 'kodeverk/kodeverkPropType';
 import kodeverkTyper from 'kodeverk/kodeverkTyper';
 import { getKodeverk } from 'kodeverk/duck';
 
@@ -38,8 +36,7 @@ interface Koordinat {
   y: number;
 }
 
-interface TsProps {
-  intl: any;
+interface OwnProps {
   width: number;
   height: number;
   behandlingTyper: Kodeverk[];
@@ -48,31 +45,15 @@ interface TsProps {
   isEmpty: boolean;
 }
 
-interface StateTsProps {
+interface StateProps {
   hintVerdi: any;
 }
 
 /**
  * NyeOgFerdigstilteOppgaverForIdagGraf
  */
-export class NyeOgFerdigstilteOppgaverForIdagGraf extends Component<TsProps, StateTsProps> {
-  static propTypes = {
-    intl: intlShape.isRequired,
-    width: PropTypes.number.isRequired,
-    height: PropTypes.number.isRequired,
-    behandlingTyper: PropTypes.arrayOf(kodeverkPropType).isRequired,
-    ferdigstilteOppgaver: PropTypes.arrayOf(PropTypes.shape({
-      x: PropTypes.number.isRequired,
-      y: PropTypes.number.isRequired,
-    })).isRequired,
-    nyeOppgaver: PropTypes.arrayOf(PropTypes.shape({
-      x: PropTypes.number.isRequired,
-      y: PropTypes.number.isRequired,
-    })).isRequired,
-    isEmpty: PropTypes.bool.isRequired,
-  };
-
-  constructor(props: TsProps) {
+export class NyeOgFerdigstilteOppgaverForIdagGraf extends Component<OwnProps & WrappedComponentProps, StateProps> {
+  constructor(props) {
     super(props);
 
     this.state = {
@@ -81,18 +62,18 @@ export class NyeOgFerdigstilteOppgaverForIdagGraf extends Component<TsProps, Sta
   }
 
   leggTilHintVerdi = (hintVerdi: {x: number; x0: number; y: number}) => {
-    this.setState(prevState => ({ ...prevState, hintVerdi }));
+    this.setState((prevState) => ({ ...prevState, hintVerdi }));
   };
 
   fjernHintVerdi = () => {
-    this.setState(prevState => ({ ...prevState, hintVerdi: undefined }));
+    this.setState((prevState) => ({ ...prevState, hintVerdi: undefined }));
   };
 
   getHintAntall = (verdi: Koordinat) => {
     const {
       intl, ferdigstilteOppgaver,
     } = this.props;
-    const isFerdigstiltVerdi = ferdigstilteOppgaver.find(b => b.y === verdi.y);
+    const isFerdigstiltVerdi = ferdigstilteOppgaver.find((b) => b.y === verdi.y);
     return isFerdigstiltVerdi
       ? intl.formatMessage({ id: 'NyeOgFerdigstilteOppgaverForIdagGraf.FerdigstiltAntall' }, { antall: verdi.x })
       : intl.formatMessage({ id: 'NyeOgFerdigstilteOppgaverForIdagGraf.NyeAntall' }, { antall: verdi.x });
@@ -106,7 +87,7 @@ export class NyeOgFerdigstilteOppgaverForIdagGraf extends Component<TsProps, Sta
       return intl.formatMessage({ id: 'NyeOgFerdigstilteOppgaverForIdagGraf.Førstegangsbehandling' });
     }
 
-    const type = behandlingTyper.find(bt => bt.kode === behandlingTypeKode);
+    const type = behandlingTyper.find((bt) => bt.kode === behandlingTypeKode);
     return type ? type.navn : '';
   }
 
@@ -118,7 +99,7 @@ export class NyeOgFerdigstilteOppgaverForIdagGraf extends Component<TsProps, Sta
       hintVerdi,
     } = this.state;
 
-    const maxXValue = Math.max(...ferdigstilteOppgaver.map(b => b.x).concat(nyeOppgaver.map(b => b.x))) + 2;
+    const maxXValue = Math.max(...ferdigstilteOppgaver.map((b) => b.x).concat(nyeOppgaver.map((b) => b.x))) + 2;
 
     return (
       <Panel>
@@ -183,7 +164,7 @@ export class NyeOgFerdigstilteOppgaverForIdagGraf extends Component<TsProps, Sta
 }
 
 const settCustomHoydePaSoylene = (data, over) => {
-  const transformert = data.map(el => ({
+  const transformert = data.map((el) => ({
     ...el,
     y0: el.y + (over ? 0.41 : -0.03),
     y: el.y - (over ? -0.03 : -0.35),
@@ -194,18 +175,18 @@ const settCustomHoydePaSoylene = (data, over) => {
 };
 
 export const lagDatastrukturForFerdigstilte = createSelector([(state, ownProps) => ownProps],
-  ownProps => settCustomHoydePaSoylene(ownProps.nyeOgFerdigstilteOppgaver.map(value => ({
+  (ownProps) => settCustomHoydePaSoylene(ownProps.nyeOgFerdigstilteOppgaver.map((value) => ({
     x: value.antallFerdigstilte,
     y: behandlingstypeOrder.indexOf(value.behandlingType.kode) + 1,
   })), true));
 
 export const lagDatastrukturForNye = createSelector([(state, ownProps) => ownProps],
-  ownProps => settCustomHoydePaSoylene(ownProps.nyeOgFerdigstilteOppgaver.map(value => ({
+  (ownProps) => settCustomHoydePaSoylene(ownProps.nyeOgFerdigstilteOppgaver.map((value) => ({
     x: value.antallNye,
     y: behandlingstypeOrder.indexOf(value.behandlingType.kode) + 1,
   })), false));
 
-export const isEmpty = createSelector([(state, ownProps) => ownProps], ownProps => ownProps.nyeOgFerdigstilteOppgaver.length === 0);
+export const isEmpty = createSelector([(state, ownProps) => ownProps], (ownProps) => ownProps.nyeOgFerdigstilteOppgaver.length === 0);
 
 const mapStateToProps = (state, ownProps) => ({
   isEmpty: isEmpty(state, ownProps),

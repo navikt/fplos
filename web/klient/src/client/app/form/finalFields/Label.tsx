@@ -1,16 +1,31 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import React, { Component, ReactNode, ReactType } from 'react';
 import classnames from 'classnames/bind';
-import { injectIntl, intlShape } from 'react-intl';
+import { injectIntl, WrappedComponentProps } from 'react-intl';
 import { Undertekst } from 'nav-frontend-typografi';
 
 import styles from './label.less';
 
 const classNames = classnames.bind(styles);
 
-export class Label extends Component {
-  constructor() {
-    super();
+export type LabelType = string | ReactNode | {
+  id: string;
+  args?: {};
+};
+
+interface OwnProps {
+  input: LabelType;
+  typographyElement?: ReactType;
+  readOnly?: boolean;
+}
+
+export class Label extends Component<OwnProps & WrappedComponentProps> {
+  static defaultProps = {
+    typographyElement: Undertekst,
+    readOnly: false,
+  };
+
+  constructor(props) {
+    super(props);
     this.format = this.format.bind(this);
   }
 
@@ -30,26 +45,5 @@ export class Label extends Component {
     return <span className={classNames('labelWrapper', { readOnly })}><TypoElem tag="span" className={styles.label}>{this.format(input)}</TypoElem></span>;
   }
 }
-
-export const labelPropType = PropTypes.oneOfType([
-  PropTypes.node,
-  PropTypes.shape({
-    id: PropTypes.string.isRequired,
-    args: PropTypes.shape(),
-  }),
-]);
-
-Label.propTypes = {
-  intl: intlShape.isRequired,
-  input: labelPropType,
-  typographyElement: PropTypes.func,
-  readOnly: PropTypes.bool,
-};
-
-Label.defaultProps = {
-  input: null,
-  typographyElement: Undertekst,
-  readOnly: false,
-};
 
 export default injectIntl(Label);

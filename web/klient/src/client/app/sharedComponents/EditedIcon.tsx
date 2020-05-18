@@ -1,13 +1,18 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React, { FunctionComponent } from 'react';
+import { useIntl } from 'react-intl';
 import classnames from 'classnames/bind';
 
-import Image from 'sharedComponents/Image';
 import endretFelt from 'images/sharedComponents/endret_felt.svg';
+
+import Image from './Image';
 
 import styles from './editedIcon.less';
 
 const classNames = classnames.bind(styles);
+
+interface OwnProps {
+  className?: string;
+}
 
 /*
  * EditedIcon
@@ -15,18 +20,19 @@ const classNames = classnames.bind(styles);
  * Komponent/Ikon som viser om noe i GUI er endret.
  */
 
-const EditedIcon = ({ className }) => (
-  <span className={classNames('editedIcon', className)}>
-    <Image src={endretFelt} titleCode="Behandling.EditedField" altCode="Behandling.EditedField" />
-  </span>
-);
-
-EditedIcon.propTypes = {
-  className: PropTypes.string,
-};
-
-EditedIcon.defaultProps = {
-  className: '',
+const EditedIcon: FunctionComponent<OwnProps> = ({
+  className = '',
+}) => {
+  const intl = useIntl();
+  return (
+    <span className={classNames('editedIcon', className)}>
+      <Image
+        src={endretFelt}
+        alt={intl.formatMessage({ id: 'Behandling.EditedField' })}
+        tooltip={intl.formatMessage({ id: 'Behandling.EditedField' })}
+      />
+    </span>
+  );
 };
 
 export default EditedIcon;

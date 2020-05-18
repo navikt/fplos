@@ -15,6 +15,8 @@ interface StateTsProps {
  * NokkeltallPanel.
  */
 class NokkeltallPanel extends Component<{}, StateTsProps> {
+  node: any
+
   constructor(props: {}) {
     super(props);
 
@@ -39,8 +41,6 @@ class NokkeltallPanel extends Component<{}, StateTsProps> {
       this.setState({ width: rect.width });
     }
   }
-
-  node: any
 
   render = () => {
     const {

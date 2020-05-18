@@ -1,6 +1,5 @@
 
-import React from 'react';
-import PropTypes from 'prop-types';
+import React, { FunctionComponent } from 'react';
 import moment from 'moment';
 import { connect } from 'react-redux';
 import { createSelector } from 'reselect';
@@ -11,10 +10,9 @@ import { ISO_DATE_FORMAT } from 'utils/formats';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import NyeOgFerdigstilteOppgaverForSisteSyvGraf from './NyeOgFerdigstilteOppgaverForSisteSyvGraf';
 import { getNyeOgFerdigstilteOppgaverNokkeltall } from '../../duck';
-import { NyeOgFerdigstilteOppgaver } from '../nyeOgFerdigstilteOppgaverTsType';
-import nyeOgFerdigstilteOppgaverPropType from '../nyeOgFerdigstilteOppgaverPropType';
+import NyeOgFerdigstilteOppgaver from '../nyeOgFerdigstilteOppgaverTsType';
 
-interface TsProps {
+interface OwnProps {
   width: number;
   height: number;
   nyeOgFerdigstilteOppgaver: NyeOgFerdigstilteOppgaver[];
@@ -23,12 +21,12 @@ interface TsProps {
 /**
  * NyeOgFerdigstilteOppgaverForSisteSyvPanel.
  */
-export const NyeOgFerdigstilteOppgaverForSisteSyvPanel = ({
+export const NyeOgFerdigstilteOppgaverForSisteSyvPanel: FunctionComponent<OwnProps> = ({
   width,
   height,
   nyeOgFerdigstilteOppgaver,
-}: TsProps) => (
-  <div>
+}) => (
+  <>
     <VerticalSpacer eightPx />
     <Element>
       <FormattedMessage id="NyeOgFerdigstilteOppgaverForSisteSyvPanel.SisteSyv" />
@@ -38,21 +36,16 @@ export const NyeOgFerdigstilteOppgaverForSisteSyvPanel = ({
       height={height}
       nyeOgFerdigstilteOppgaver={nyeOgFerdigstilteOppgaver}
     />
-  </div>
+  </>
 );
 
-NyeOgFerdigstilteOppgaverForSisteSyvPanel.propTypes = {
-  width: PropTypes.number.isRequired,
-  height: PropTypes.number.isRequired,
-  nyeOgFerdigstilteOppgaver: PropTypes.arrayOf(nyeOgFerdigstilteOppgaverPropType).isRequired,
-};
+export const getNyeOgFerdigstilteForSisteSyvDager = createSelector([getNyeOgFerdigstilteOppgaverNokkeltall],
+  (nyeOgFerdigstilte: { dato: string }[] = []) => {
+    const iDag = moment().startOf('day');
+    return nyeOgFerdigstilte.filter((oppgave) => iDag.isAfter(moment(oppgave.dato, ISO_DATE_FORMAT)));
+  });
 
-export const getNyeOgFerdigstilteForSisteSyvDager = createSelector([getNyeOgFerdigstilteOppgaverNokkeltall], (nyeOgFerdigstilte = []) => {
-  const iDag = moment().startOf('day');
-  return nyeOgFerdigstilte.filter(oppgave => iDag.isAfter(moment(oppgave.dato, ISO_DATE_FORMAT)));
-});
-
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   nyeOgFerdigstilteOppgaver: getNyeOgFerdigstilteForSisteSyvDager(state),
 });
 

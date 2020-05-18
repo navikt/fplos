@@ -1,7 +1,6 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import React, { Component, ReactNode } from 'react';
 import { connect } from 'react-redux';
-import { FormattedMessage, FormattedHTMLMessage } from 'react-intl';
+import { FormattedMessage, injectIntl, WrappedComponentProps } from 'react-intl';
 import { bindActionCreators, Dispatch } from 'redux';
 import { Normaltekst, Element } from 'nav-frontend-typografi';
 import NavFrontendChevron from 'nav-frontend-chevron';
@@ -9,12 +8,11 @@ import NavFrontendChevron from 'nav-frontend-chevron';
 import { getDateAndTime } from 'utils/dateUtils';
 import Image from 'sharedComponents/Image';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
-import oppgavePropType from 'saksbehandler/oppgavePropType';
-import { Oppgave } from 'saksbehandler/oppgaveTsType';
-import { OppgaveStatus } from 'saksbehandler/oppgaveStatusTsType';
-import Table from 'sharedComponents/Table';
-import TableRow from 'sharedComponents/TableRow';
-import TableColumn from 'sharedComponents/TableColumn';
+import Oppgave from 'saksbehandler/oppgaveTsType';
+import OppgaveStatus from 'saksbehandler/oppgaveStatusTsType';
+import Table from 'sharedComponents/table/Table';
+import TableRow from 'sharedComponents/table/TableRow';
+import TableColumn from 'sharedComponents/table/TableColumn';
 import DateLabel from 'sharedComponents/DateLabel';
 import menuIconBlueUrl from 'images/ic-menu-18px_blue.svg';
 import menuIconBlackUrl from 'images/ic-menu-18px_black.svg';
@@ -38,13 +36,10 @@ const headerTextCodes = [
 
 type OppgaveMedReservertIndikator = Oppgave & { underBehandling?: boolean };
 
-const getImageIcon = isHoovering => (isHoovering ? menuIconBlueUrl : menuIconBlackUrl);
-const getFlyttetImageIcon = isHoovering => (isHoovering ? bubbletextFilledUrl : bubbletextUrl);
-
 const slaSammenOgMarkerReserverte = (reserverteOppgaver, oppgaverTilBehandling): OppgaveMedReservertIndikator[] => {
   const markedAsUnderBehandling = reserverteOppgaver
-    .filter(reservertOppgave => !oppgaverTilBehandling.some(oppgave => oppgave.id === reservertOppgave.id))
-    .map(f => ({
+    .filter((reservertOppgave) => !oppgaverTilBehandling.some((oppgave) => oppgave.id === reservertOppgave.id))
+    .map((f) => ({
       ...f,
       underBehandling: true,
     }));
@@ -58,7 +53,7 @@ interface Toolip {
   header: Element;
 }
 
-type TsProps = Readonly<{
+interface OwnProps {
   oppgaverTilBehandling: Oppgave[];
   reserverteOppgaver: Oppgave[];
   reserverOppgave: (oppgave: Oppgave) => void;
@@ -69,9 +64,9 @@ type TsProps = Readonly<{
   resetSaksbehandler: () => Promise<string>;
   flyttReservasjon: (oppgaveId: number, brukerident: string, begrunnelse: string) => Promise<string>;
   antall: number;
-}>
+}
 
-interface TsState {
+interface State {
   showMenu: boolean;
   valgtOppgaveId?: number;
   offset: {
@@ -83,22 +78,11 @@ interface TsState {
 /**
  * OppgaverTabell
  */
-export class OppgaverTabell extends Component<TsProps, TsState> {
-  static propTypes = {
-    oppgaverTilBehandling: PropTypes.arrayOf(oppgavePropType).isRequired,
-    reserverteOppgaver: PropTypes.arrayOf(oppgavePropType).isRequired,
-    reserverOppgave: PropTypes.func.isRequired,
-    opphevOppgaveReservasjon: PropTypes.func.isRequired,
-    forlengOppgaveReservasjon: PropTypes.func.isRequired,
-    endreOppgaveReservasjon: PropTypes.func.isRequired,
-    finnSaksbehandler: PropTypes.func.isRequired,
-    resetSaksbehandler: PropTypes.func.isRequired,
-    flyttReservasjon: PropTypes.func.isRequired,
-    antall: PropTypes.number.isRequired,
-  };
+export class OppgaverTabell extends Component<OwnProps & WrappedComponentProps, State> {
+  nodes: { };
 
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
 
     this.state = {
       showMenu: false,
@@ -112,7 +96,7 @@ export class OppgaverTabell extends Component<TsProps, TsState> {
 
   goToFagsak = (event: Event, id: number, oppgave: Oppgave) => {
     const { reserverOppgave } = this.props;
-    if (this.nodes && Object.keys(this.nodes).some(key => this.nodes[key] && this.nodes[key].contains(event.target))) {
+    if (this.nodes && Object.keys(this.nodes).some((key) => this.nodes[key] && this.nodes[key].contains(event.target))) {
       return;
     }
     reserverOppgave(oppgave);
@@ -128,7 +112,7 @@ export class OppgaverTabell extends Component<TsProps, TsState> {
     }));
   }
 
-  createTooltip = (oppgaveStatus: OppgaveStatus): Toolip | undefined => {
+  createTooltip = (oppgaveStatus: OppgaveStatus): ReactNode | undefined => {
     const { flyttetReservasjon } = oppgaveStatus;
     if (!flyttetReservasjon) {
       return undefined;
@@ -140,26 +124,25 @@ export class OppgaverTabell extends Component<TsProps, TsState> {
       uid: flyttetReservasjon.uid,
       navn: flyttetReservasjon.navn,
       beskrivelse: flyttetReservasjon.begrunnelse,
+      br: <br />,
     };
-    return {
-      header: <Normaltekst><FormattedHTMLMessage id="OppgaverTabell.OverfortReservasjonTooltip" values={textValues} /></Normaltekst>,
-    };
+    return (
+      <Normaltekst><FormattedMessage id="OppgaverTabell.OverfortReservasjonTooltip" values={textValues} /></Normaltekst>
+    );
   }
-
-  nodes: { };
 
   render = () => {
     const {
       oppgaverTilBehandling, reserverteOppgaver, opphevOppgaveReservasjon, forlengOppgaveReservasjon, endreOppgaveReservasjon,
       finnSaksbehandler: findSaksbehandler, flyttReservasjon,
-      resetSaksbehandler: resetBehandler, antall,
+      resetSaksbehandler: resetBehandler, antall, intl,
     } = this.props;
     const {
       showMenu, offset, valgtOppgaveId,
     } = this.state;
 
     const alleOppgaver = slaSammenOgMarkerReserverte(reserverteOppgaver, oppgaverTilBehandling);
-    const valgtOppgave = reserverteOppgaver.find(o => o.id === valgtOppgaveId);
+    const valgtOppgave = reserverteOppgaver.find((o) => o.id === valgtOppgaveId);
 
     return (
       <>
@@ -169,12 +152,11 @@ export class OppgaverTabell extends Component<TsProps, TsState> {
             <VerticalSpacer eightPx />
             <Normaltekst><FormattedMessage id="OppgaverTabell.IngenOppgaver" /></Normaltekst>
           </>
-        )
-        }
+        )}
         {alleOppgaver.length > 0 && (
           <>
             <Table headerTextCodes={headerTextCodes}>
-              {alleOppgaver.map(oppgave => (
+              {alleOppgaver.map((oppgave) => (
                 <TableRow
                   key={oppgave.id}
                   onMouseDown={this.goToFagsak}
@@ -189,11 +171,10 @@ export class OppgaverTabell extends Component<TsProps, TsState> {
                   <TableColumn>
                     {oppgave.status.flyttetReservasjon && (
                     <Image
-                      imageSrcFunction={getFlyttetImageIcon}
-                      altCode="OppgaverTabell.OverfortReservasjon"
-                      titleCode="OppgaverTabell.OverfortReservasjon"
+                      src={bubbletextUrl}
+                      srcHover={bubbletextFilledUrl}
+                      alt={intl.formatMessage({ id: 'OppgaverTabell.OverfortReservasjon' })}
                       tooltip={this.createTooltip(oppgave.status)}
-                      tabIndex="0"
                     />
                     )}
                   </TableColumn>
@@ -203,12 +184,11 @@ export class OppgaverTabell extends Component<TsProps, TsState> {
                       <div ref={(node) => { this.nodes = { ...this.nodes, [oppgave.id]: node }; }}>
                         <Image
                           className={styles.image}
-                          imageSrcFunction={getImageIcon}
-                          altCode="OppgaverTabell.OppgaveHandlinger"
-                          titleCode="OppgaverTabell.OppgaveHandlinger"
+                          src={menuIconBlackUrl}
+                          srcHover={menuIconBlueUrl}
+                          alt={intl.formatMessage({ id: 'OppgaverTabell.OppgaveHandlinger' })}
                           onMouseDown={getToggleMenuEvent(oppgave, this.toggleMenu)}
                           onKeyDown={getToggleMenuEvent(oppgave, this.toggleMenu)}
-                          tabIndex="0"
                         />
                       </div>
                     ) }
@@ -229,8 +209,7 @@ export class OppgaverTabell extends Component<TsProps, TsState> {
                 resetSaksbehandler={resetBehandler}
                 flyttReservasjon={flyttReservasjon}
               />
-            )
-            }
+            )}
           </>
         )}
       </>
@@ -238,7 +217,7 @@ export class OppgaverTabell extends Component<TsProps, TsState> {
   }
 }
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   antall: getAntallOppgaverForBehandlingskoResultat(state) || 0,
   oppgaverTilBehandling: getOppgaverTilBehandling(state) || [],
   reserverteOppgaver: getReserverteOppgaver(state) || [],
@@ -251,4 +230,4 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
   }, dispatch),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(OppgaverTabell);
+export default connect(mapStateToProps, mapDispatchToProps)(injectIntl(OppgaverTabell));

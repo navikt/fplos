@@ -62,7 +62,7 @@ export const errorReducer = (state: StateTsType = initialState, action: ActionTs
 
 
 /* Selectors */
-const getErrorContext = state => state.default[reducerName];
+const getErrorContext = (state) => state.default[reducerName];
 
-export const getErrorMessages = createSelector([getErrorContext], appContext => appContext.errorMessages);
-export const getCrashMessage = createSelector([getErrorContext], appContext => appContext.crashMessage);
+export const getErrorMessages = createSelector([getErrorContext], (appContext) => appContext.errorMessages);
+export const getCrashMessage = createSelector([getErrorContext], (appContext) => appContext.crashMessage);

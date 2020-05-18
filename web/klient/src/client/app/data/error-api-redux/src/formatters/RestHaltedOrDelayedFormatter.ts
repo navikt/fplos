@@ -1,7 +1,7 @@
 import { dateFormat, timeFormat } from 'utils/dateUtils';
 import ErrorEventType from './errorEventType';
 import ErrorMessage from './ErrorMessage';
-import { Formatter } from './Formatter';
+import Formatter from './Formatter';
 
 const HALTED_PROCESS_TASK_MESSAGE_CODE = 'Rest.ErrorMessage.General';
 const DELAYED_PROCESS_TASK_MESSAGE_CODE = 'Rest.ErrorMessage.DownTime';

@@ -1,5 +1,4 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React, { FunctionComponent } from 'react';
 import { connect } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
 import { Element } from 'nav-frontend-typografi';
@@ -7,10 +6,9 @@ import { Element } from 'nav-frontend-typografi';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import OppgaverPerForsteStonadsdagGraf from './OppgaverPerForsteStonadsdagGraf';
 import { getOppgaverPerForsteStonadsdag } from '../../duck';
-import { OppgaverForForsteStonadsdag } from './oppgaverForForsteStonadsdagTsType';
-import oppgaverForForsteStonadsdagPropType from './oppgaverForForsteStonadsdagPropType';
+import OppgaverForForsteStonadsdag from './oppgaverForForsteStonadsdagTsType';
 
-interface TsProps {
+interface OwnProps {
   width: number;
   height: number;
   oppgaverPerForsteStonadsdag?: OppgaverForForsteStonadsdag[];
@@ -19,11 +17,11 @@ interface TsProps {
 /**
  * OppgaverPerForsteStonadsdagPanel.
  */
-export const OppgaverPerForsteStonadsdagPanel = ({
+export const OppgaverPerForsteStonadsdagPanel: FunctionComponent<OwnProps> = ({
   width,
   height,
   oppgaverPerForsteStonadsdag,
-}: TsProps) => (
+}) => (
   <>
     <Element>
       <FormattedMessage id="OppgaverPerForsteStonadsdagPanel.FordeltPaForsteStonadsdag" />
@@ -37,17 +35,11 @@ export const OppgaverPerForsteStonadsdagPanel = ({
   </>
 );
 
-OppgaverPerForsteStonadsdagPanel.propTypes = {
-  width: PropTypes.number.isRequired,
-  height: PropTypes.number.isRequired,
-  oppgaverPerForsteStonadsdag: PropTypes.arrayOf(oppgaverForForsteStonadsdagPropType),
-};
-
 OppgaverPerForsteStonadsdagPanel.defaultProps = {
   oppgaverPerForsteStonadsdag: [],
 };
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   oppgaverPerForsteStonadsdag: getOppgaverPerForsteStonadsdag(state),
 });
 

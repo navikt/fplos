@@ -4,7 +4,7 @@ import { shallow } from 'enzyme';
 import { expect } from 'chai';
 import sinon from 'sinon';
 
-import Table from 'sharedComponents/Table';
+import Table from 'sharedComponents/table/Table';
 import { FagsakList, getSorterteFagsaker } from './FagsakList';
 
 describe('<FagsakList>', () => {

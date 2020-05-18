@@ -1,41 +1,26 @@
 
-import React from 'react';
-import PropTypes from 'prop-types';
+import React, { FunctionComponent } from 'react';
 
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
-import oppgavePropType from '../../oppgavePropType';
-import { Oppgave } from '../../oppgaveTsType';
 import SistBehandledeSaker from './SistBehandledeSaker';
 import SaksbehandlerNokkeltallIndex from '../nokkeltall/SaksbehandlerNokkeltallIndex';
 
-interface TsProps {
-  sistBehandledeSaker: Oppgave[];
+interface OwnProps {
   valgtSakslisteId?: number;
 }
 
 /**
  * SaksstottePaneler
  */
-const SaksstottePaneler = ({
-  sistBehandledeSaker,
+const SaksstottePaneler: FunctionComponent<OwnProps> = ({
   valgtSakslisteId,
-}: TsProps) => (
+}) => (
   <>
-    <SistBehandledeSaker sistBehandledeSaker={sistBehandledeSaker} />
+    <SistBehandledeSaker />
     <VerticalSpacer twentyPx />
     {valgtSakslisteId
-      && <SaksbehandlerNokkeltallIndex valgtSakslisteId={valgtSakslisteId} />
-    }
+      && <SaksbehandlerNokkeltallIndex valgtSakslisteId={valgtSakslisteId} />}
   </>
 );
-
-SaksstottePaneler.propTypes = {
-  sistBehandledeSaker: PropTypes.arrayOf(oppgavePropType).isRequired,
-  valgtSakslisteId: PropTypes.number,
-};
-
-SaksstottePaneler.defaultProps = {
-  valgtSakslisteId: undefined,
-};
 
 export default SaksstottePaneler;

@@ -42,7 +42,6 @@ describe('<FagsakSearch>', () => {
       selectOppgaveCallback={sinon.spy()}
       searchResultReceived={false}
       selectFagsakCallback={sinon.spy()}
-      spinner
       searchStarted
       resetSearch={sinon.spy()}
     />);
@@ -60,7 +59,6 @@ describe('<FagsakSearch>', () => {
       selectOppgaveCallback={sinon.spy()}
       searchResultReceived
       selectFagsakCallback={sinon.spy()}
-      spinner
       searchStarted
       resetSearch={sinon.spy()}
     />);
@@ -81,7 +79,6 @@ describe('<FagsakSearch>', () => {
       selectOppgaveCallback={sinon.spy()}
       searchResultReceived
       selectFagsakCallback={selectFagsakFunction}
-      spinner
       searchStarted
       resetSearch={sinon.spy()}
     />);

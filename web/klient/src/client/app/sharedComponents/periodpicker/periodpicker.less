@@ -12,21 +12,21 @@
 
 .calendarToggleButton {
   .skjemaelement__input();
+
   background: transparent;
   border: 1px solid transparent;
   box-sizing: content-box;
   cursor: pointer;
   display: inline-block;
   height: 22px;
-  left: 0px;
-  margin: 0px;
-  margin-left: 0px;
+  left: 0;
+  margin: 0;
   position: absolute;
-  top: 0px;
+  top: 0;
   width: 22px;
 
   &:after {
-    content: url('../../../images/sharedComponents/kalender.svg');
+    content: url('@fpsak-frontend/assets/images/kalender.svg');
   }
 
   &:hover,
@@ -36,7 +36,7 @@
     outline: none;
 
     &:after {
-      content: url('../../../images/sharedComponents/kalender_hover.svg');
+      content: url('@fpsak-frontend/assets/images/kalender_hover.svg');
     }
   }
 
@@ -46,16 +46,16 @@
     cursor: initial;
 
     &:after {
-      content: url('../../../images/sharedComponents/kalender_disabled.svg');
+      content: url('@fpsak-frontend/assets/images/kalender_disabled.svg');
     }
   }
 }
 
 .calendarRoot {
-  height: 0px;
+  height: 0;
   position: relative;
-  top: 0px;
-  width: 0px;
+  top: 0;
+  width: 0;
   z-index: 1000;
 
   &:focus {
@@ -64,12 +64,12 @@
 }
 
 .calendarWrapper {
-  background: white;
+  background: @white;
   border: 1px solid @grayIcon;
   border-radius: @border-radius-base;
-  left: 0px;
+  left: 0;
   position: absolute;
-  top: 0px;
+  top: 0;
   width: 610px;
 
   &:focus {

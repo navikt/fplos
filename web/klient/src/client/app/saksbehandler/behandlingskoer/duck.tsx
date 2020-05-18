@@ -61,9 +61,9 @@ export const forlengOppgaveReservasjon = (oppgaveId: number) => (dispatch: Dispa
 );
 
 export const endreOppgaveReservasjon = (oppgaveId: number, reserverTil: string) => (dispatch: Dispatch) => dispatch(
-    fpLosApi.ENDRE_OPPGAVERESERVASJON.makeRestApiRequest()(
-        { oppgaveId, reserverTil },
-    ),
+  fpLosApi.ENDRE_OPPGAVERESERVASJON.makeRestApiRequest()(
+    { oppgaveId, reserverTil },
+  ),
 );
 
 export const finnSaksbehandler = (brukerIdent: string) => (dispatch: Dispatch) => dispatch(
@@ -98,15 +98,15 @@ const initialState = {
   valgtSakslisteId: undefined,
 };
 
-interface ActionTsType {
+interface Action {
   type: string;
   data?: any;
 }
-interface StateTsType {
+interface State {
   valgtSakslisteId?: number;
 }
 
-export const behandlingskoerReducer = (state: StateTsType = initialState, action: ActionTsType = { type: '' }) => {
+export const behandlingskoerReducer = (state: State = initialState, action: Action = { type: '' }) => {
   switch (action.type) {
     case SET_SAKSLISTE_ID:
       return {
@@ -119,5 +119,5 @@ export const behandlingskoerReducer = (state: StateTsType = initialState, action
 };
 
 /* Selectors */
-const getBehandlingskoerContext = state => state.default.behandlingskoerContext;
-export const getValgtSakslisteId = createSelector([getBehandlingskoerContext], behandlingskoerContext => behandlingskoerContext.valgtSakslisteId);
+const getBehandlingskoerContext = (state) => state.default.behandlingskoerContext;
+export const getValgtSakslisteId = createSelector([getBehandlingskoerContext], (behandlingskoerContext) => behandlingskoerContext.valgtSakslisteId);

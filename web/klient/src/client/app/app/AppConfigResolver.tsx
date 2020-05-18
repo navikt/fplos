@@ -1,31 +1,21 @@
 import React, { Component, ReactNode } from 'react';
-import PropTypes from 'prop-types';
 import { bindActionCreators, Dispatch } from 'redux';
 import { connect } from 'react-redux';
 
 import fpLosApi from 'data/fpLosApi';
 import LoadingPanel from 'sharedComponents/LoadingPanel';
 
-type TsProps = Readonly<{
+interface OwnProps {
   finishedLoadingBlockers: boolean;
   children: ReactNode;
   fetchNavAnsatt: () => void;
   fetchKodeverk: () => void;
   fetchFpsakUrl: () => void;
   fetchFptilbakeUrl: () => void;
-}>
+}
 
-class AppConfigResolver extends Component<TsProps> {
-  static propTypes = {
-    finishedLoadingBlockers: PropTypes.bool.isRequired,
-    children: PropTypes.node.isRequired,
-    fetchNavAnsatt: PropTypes.func.isRequired,
-    fetchKodeverk: PropTypes.func.isRequired,
-    fetchFpsakUrl: PropTypes.func.isRequired,
-    fetchFptilbakeUrl: PropTypes.func.isRequired,
-  };
-
-  constructor(props: TsProps) {
+class AppConfigResolver extends Component<OwnProps> {
+  constructor(props: OwnProps) {
     super(props);
     this.resolveAppConfig();
   }
@@ -61,7 +51,7 @@ const mapStateToProps = (state: any) => {
     fpLosApi.FPTILBAKE_URL.getRestApiFinished()(state),
   ];
   return {
-    finishedLoadingBlockers: blockers.every(finished => finished),
+    finishedLoadingBlockers: blockers.every((finished) => finished),
   };
 };
 

@@ -1,15 +1,22 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React, { FunctionComponent } from 'react';
 import { Normaltekst } from 'nav-frontend-typografi';
 
 import EditedIcon from 'sharedComponents/EditedIcon';
-import Label, { labelPropType } from './Label';
+import Label, { LabelType } from './Label';
 
 import styles from './readOnlyField.less';
 
-const hasValue = value => value !== undefined && value !== null && value !== '';
+const hasValue = (value) => value !== undefined && value !== null && value !== '';
 
-export const ReadOnlyField = ({
+interface OwnProps {
+  label?: LabelType;
+  input: {
+    value?: string | number;
+  };
+  isEdited?: boolean;
+}
+
+export const ReadOnlyField: FunctionComponent<OwnProps> = ({
   label, input, isEdited,
 }) => {
   if (!hasValue(input.value)) {
@@ -24,14 +31,6 @@ export const ReadOnlyField = ({
       </Normaltekst>
     </div>
   );
-};
-
-ReadOnlyField.propTypes = {
-  label: labelPropType,
-  input: PropTypes.shape({
-    value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-  }).isRequired,
-  isEdited: PropTypes.bool,
 };
 
 ReadOnlyField.defaultProps = {

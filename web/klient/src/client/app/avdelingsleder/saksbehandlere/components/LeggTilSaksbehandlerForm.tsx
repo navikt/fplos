@@ -1,9 +1,8 @@
 import React, { Component, ReactNode } from 'react';
-import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { createSelector } from 'reselect';
 import {
-  injectIntl, intlShape, FormattedMessage,
+  injectIntl, WrappedComponentProps, FormattedMessage,
 } from 'react-intl';
 
 import { Form } from 'react-final-form';
@@ -15,14 +14,12 @@ import { required } from 'utils/validation/validators';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import { InputField } from 'form/FinalFields';
 import { FlexContainer, FlexRow, FlexColumn } from 'sharedComponents/flexGrid';
-import { Saksbehandler } from '../saksbehandlerTsType';
-import saksbehandlerPropType from '../saksbehandlerPropType';
+import Saksbehandler from '../saksbehandlerTsType';
 import { getSaksbehandler, getAvdelingensSaksbehandlere, getSaksbehandlerSokFinished } from '../duck';
 
 import styles from './leggTilSaksbehandlerForm.less';
 
-interface TsProps {
-  intl: any;
+interface OwnProps {
   finnSaksbehandler: (brukerIdent: string) => Promise<string>;
   leggTilSaksbehandler: (brukerIdent: string, avdelingEnhet: string) => Promise<string>;
   resetSaksbehandlerSok: () => void;
@@ -32,30 +29,21 @@ interface TsProps {
   valgtAvdelingEnhet: string;
 }
 
-interface StateTsProps {
+interface StateProps {
   leggerTilNySaksbehandler: boolean;
 }
 
 /**
  * LeggTilSaksbehandlerForm
  */
-export class LeggTilSaksbehandlerForm extends Component<TsProps, StateTsProps> {
-  static propTypes = {
-    intl: intlShape.isRequired,
-    finnSaksbehandler: PropTypes.func.isRequired,
-    leggTilSaksbehandler: PropTypes.func.isRequired,
-    resetSaksbehandlerSok: PropTypes.func.isRequired,
-    saksbehandler: saksbehandlerPropType,
-    erLagtTilAllerede: PropTypes.bool.isRequired,
-    erSokFerdig: PropTypes.bool.isRequired,
-    valgtAvdelingEnhet: PropTypes.string.isRequired,
-  };
-
+export class LeggTilSaksbehandlerForm extends Component<OwnProps & WrappedComponentProps, StateProps> {
   static defaultProps = {
     saksbehandler: undefined,
   }
 
-  constructor(props: TsProps) {
+  nodes: ReactNode[];
+
+  constructor(props) {
     super(props);
 
     this.state = {
@@ -70,10 +58,10 @@ export class LeggTilSaksbehandlerForm extends Component<TsProps, StateTsProps> {
     } = this.props;
 
     if (saksbehandler) {
-      this.setState(prevState => ({ ...prevState, leggerTilNySaksbehandler: true }));
+      this.setState((prevState) => ({ ...prevState, leggerTilNySaksbehandler: true }));
       leggTilSaksbehandler(saksbehandler.brukerIdent, valgtAvdelingEnhet).then(() => {
         this.resetSaksbehandlerSok(resetFormValues);
-        this.setState(prevState => ({ ...prevState, leggerTilNySaksbehandler: false }));
+        this.setState((prevState) => ({ ...prevState, leggerTilNySaksbehandler: false }));
       });
     }
   }
@@ -102,8 +90,6 @@ export class LeggTilSaksbehandlerForm extends Component<TsProps, StateTsProps> {
       ? `${brukerinfo} (${intl.formatMessage({ id: 'LeggTilSaksbehandlerForm.FinnesAllerede' })})`
       : brukerinfo;
   }
-
-  nodes: ReactNode[];
 
   render = () => {
     const {
@@ -182,8 +168,7 @@ export class LeggTilSaksbehandlerForm extends Component<TsProps, StateTsProps> {
                 </FlexRow>
               </FlexContainer>
             </>
-            )
-            }
+            )}
           </form>
         )}
       />
@@ -192,9 +177,9 @@ export class LeggTilSaksbehandlerForm extends Component<TsProps, StateTsProps> {
 }
 const erSaksbehandlerLagtTilAllerede = createSelector([getSaksbehandler, getAvdelingensSaksbehandlere],
   (saksbehandler: Saksbehandler, avdelingensSaksbehandlere = []) => avdelingensSaksbehandlere instanceof Array
-    && avdelingensSaksbehandlere.some(s => saksbehandler && s.brukerIdent.toLowerCase() === saksbehandler.brukerIdent.toLowerCase()));
+    && avdelingensSaksbehandlere.some((s) => saksbehandler && s.brukerIdent.toLowerCase() === saksbehandler.brukerIdent.toLowerCase()));
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   saksbehandler: getSaksbehandler(state),
   erLagtTilAllerede: erSaksbehandlerLagtTilAllerede(state),
   erSokFerdig: getSaksbehandlerSokFinished(state),

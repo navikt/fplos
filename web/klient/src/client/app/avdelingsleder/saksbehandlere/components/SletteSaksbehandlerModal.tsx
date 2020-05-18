@@ -1,6 +1,5 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { injectIntl, intlShape, FormattedMessage } from 'react-intl';
+import React, { FunctionComponent } from 'react';
+import { injectIntl, WrappedComponentProps, FormattedMessage } from 'react-intl';
 import { Row, Column } from 'nav-frontend-grid';
 import { Hovedknapp, Knapp } from 'nav-frontend-knapper';
 import { Normaltekst } from 'nav-frontend-typografi';
@@ -9,13 +8,11 @@ import Image from 'sharedComponents/Image';
 import Modal from 'sharedComponents/Modal';
 
 import advarselImageUrl from 'images/advarsel.svg';
-import { Saksbehandler } from '../saksbehandlerTsType';
-import saksbehandlerPropType from '../saksbehandlerPropType';
+import Saksbehandler from '../saksbehandlerTsType';
 
 import styles from './sletteSaksbehandlerModal.less';
 
-type TsProps = Readonly<{
-  intl: any;
+type OwnProps = Readonly<{
   valgtSaksbehandler: Saksbehandler;
   closeSletteModal: () => void;
   fjernSaksbehandler: (saksbehandler: Saksbehandler) => void;
@@ -26,12 +23,12 @@ type TsProps = Readonly<{
  *
  * Presentasjonskomponent. Modal som lar en avdelingsleder fjerne tilgjengelige saksbehandlere.
  */
-export const SletteSaksbehandlerModal = ({
+export const SletteSaksbehandlerModal: FunctionComponent<OwnProps & WrappedComponentProps> = ({
   intl,
   valgtSaksbehandler,
   closeSletteModal,
   fjernSaksbehandler,
-}: TsProps) => (
+}) => (
   <Modal
     className={styles.modal}
     closeButton={false}
@@ -41,7 +38,11 @@ export const SletteSaksbehandlerModal = ({
   >
     <Row>
       <Column xs="1">
-        <Image className={styles.image} altCode="SletteSaksbehandlerModal.SletteModal" src={advarselImageUrl} />
+        <Image
+          className={styles.image}
+          alt={intl.formatMessage({ id: 'SletteSaksbehandlerModal.SletteModal' })}
+          src={advarselImageUrl}
+        />
         <div className={styles.divider} />
       </Column>
       <Column xs="6" className={styles.text}>
@@ -71,12 +72,5 @@ export const SletteSaksbehandlerModal = ({
     </Row>
   </Modal>
 );
-
-SletteSaksbehandlerModal.propTypes = {
-  intl: intlShape.isRequired,
-  fjernSaksbehandler: PropTypes.func.isRequired,
-  closeSletteModal: PropTypes.func.isRequired,
-  valgtSaksbehandler: saksbehandlerPropType.isRequired,
-};
 
 export default injectIntl(SletteSaksbehandlerModal);

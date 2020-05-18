@@ -1,7 +1,7 @@
 import React from 'react';
 import { expect } from 'chai';
 import sinon from 'sinon';
-
+import { IntlShape } from 'react-intl';
 import { Form } from 'react-final-form';
 import { Normaltekst } from 'nav-frontend-typografi';
 
@@ -10,18 +10,22 @@ import { shallowWithIntl, intlMock } from 'testHelpers/intl-enzyme-test-helper';
 import { LeggTilSaksbehandlerForm } from './LeggTilSaksbehandlerForm';
 
 describe('<LeggTilSaksbehandlerForm>', () => {
+  const intl: Partial<IntlShape> = {
+    ...intlMock,
+  };
   it('skal vise form for å søke opp saksbehandlere men ikke knapper for å legge til og nullstille', () => {
     const formProps = { handleSubmit: sinon.spy() };
 
     const wrapper = shallowWithIntl(<LeggTilSaksbehandlerForm
-      intl={intlMock}
+      intl={intl as IntlShape}
       finnSaksbehandler={sinon.spy()}
       leggTilSaksbehandler={sinon.spy()}
       resetSaksbehandlerSok={sinon.spy()}
       erLagtTilAllerede={false}
       erSokFerdig={false}
       valgtAvdelingEnhet="2"
-    />).find(Form).drill(props => props.render(formProps)).shallow();
+      // @ts-ignore
+    />).find(Form).renderProp('render')(formProps);
 
     expect(wrapper.find(Knapp)).to.have.length(1);
     expect(wrapper.find(Hovedknapp)).to.have.length(0);
@@ -36,7 +40,7 @@ describe('<LeggTilSaksbehandlerForm>', () => {
     const formProps = { handleSubmit: sinon.spy() };
 
     const wrapper = shallowWithIntl(<LeggTilSaksbehandlerForm
-      intl={intlMock}
+      intl={intl as IntlShape}
       finnSaksbehandler={sinon.spy()}
       leggTilSaksbehandler={sinon.spy()}
       resetSaksbehandlerSok={sinon.spy()}
@@ -44,7 +48,8 @@ describe('<LeggTilSaksbehandlerForm>', () => {
       erLagtTilAllerede={false}
       erSokFerdig
       valgtAvdelingEnhet="2"
-    />).find(Form).drill(props => props.render(formProps)).shallow();
+      // @ts-ignore
+    />).find(Form).renderProp('render')(formProps);
 
     expect(wrapper.find(Knapp)).to.have.length(2);
     expect(wrapper.find(Hovedknapp)).to.have.length(1);
@@ -65,7 +70,7 @@ describe('<LeggTilSaksbehandlerForm>', () => {
     const resetSaksbehandlerFn = sinon.spy();
 
     const wrapper = shallowWithIntl(<LeggTilSaksbehandlerForm
-      intl={intlMock}
+      intl={intl as IntlShape}
       finnSaksbehandler={sinon.spy()}
       leggTilSaksbehandler={sinon.spy()}
       resetSaksbehandlerSok={resetSaksbehandlerFn}
@@ -73,11 +78,13 @@ describe('<LeggTilSaksbehandlerForm>', () => {
       erLagtTilAllerede={false}
       erSokFerdig
       valgtAvdelingEnhet="2"
-    />).find(Form).drill(props => props.render(formProps)).shallow();
+      // @ts-ignore
+    />).find(Form).renderProp('render')(formProps);
 
     const nullstillKnapp = wrapper.find(Knapp).last();
 
-    nullstillKnapp.prop('onClick')();
+    const func = nullstillKnapp.prop('onClick') as () => void;
+    func();
 
     expect(resetFormFn.calledOnce).to.be.true;
     expect(resetSaksbehandlerFn.calledOnce).to.be.true;
@@ -99,7 +106,7 @@ describe('<LeggTilSaksbehandlerForm>', () => {
     const resetSaksbehandlerFn = sinon.spy();
 
     const wrapper = shallowWithIntl(<LeggTilSaksbehandlerForm
-      intl={intlMock}
+      intl={intl as IntlShape}
       finnSaksbehandler={sinon.spy()}
       leggTilSaksbehandler={leggTilSaksbehandlerFn}
       resetSaksbehandlerSok={resetSaksbehandlerFn}
@@ -107,11 +114,13 @@ describe('<LeggTilSaksbehandlerForm>', () => {
       erLagtTilAllerede={false}
       erSokFerdig
       valgtAvdelingEnhet="2"
-    />).find(Form).drill(props => props.render(formProps)).shallow();
+      // @ts-ignore
+    />).find(Form).renderProp('render')(formProps);
 
     const leggTilKnapp = wrapper.find(Hovedknapp);
 
-    await leggTilKnapp.prop('onClick')();
+    const func = leggTilKnapp.prop('onClick') as () => void;
+    await func();
 
     expect(brukerIdent).is.eql(saksbehandler.brukerIdent);
     expect(resetFormFn.calledOnce).to.be.true;
@@ -126,7 +135,7 @@ describe('<LeggTilSaksbehandlerForm>', () => {
     };
     const formProps = { handleSubmit: sinon.spy() };
     const wrapper = shallowWithIntl(<LeggTilSaksbehandlerForm
-      intl={intlMock}
+      intl={intl as IntlShape}
       saksbehandler={saksbehandler}
       finnSaksbehandler={sinon.spy()}
       leggTilSaksbehandler={sinon.spy()}
@@ -134,7 +143,8 @@ describe('<LeggTilSaksbehandlerForm>', () => {
       erLagtTilAllerede={false}
       erSokFerdig
       valgtAvdelingEnhet="2"
-    />).find(Form).drill(props => props.render(formProps)).shallow();
+      // @ts-ignore
+    />).find(Form).renderProp('render')(formProps);
 
     const tekstKomp = wrapper.find(Normaltekst);
     expect(tekstKomp).to.have.length(1);
@@ -145,14 +155,15 @@ describe('<LeggTilSaksbehandlerForm>', () => {
     const formProps = { handleSubmit: sinon.spy() };
 
     const wrapper = shallowWithIntl(<LeggTilSaksbehandlerForm
-      intl={intlMock}
+      intl={intl as IntlShape}
       finnSaksbehandler={sinon.spy()}
       leggTilSaksbehandler={sinon.spy()}
       resetSaksbehandlerSok={sinon.spy()}
       erLagtTilAllerede={false}
       erSokFerdig
       valgtAvdelingEnhet="2"
-    />).find(Form).drill(props => props.render(formProps)).shallow();
+      // @ts-ignore
+    />).find(Form).renderProp('render')(formProps);
 
     const tekstKomp = wrapper.find(Normaltekst);
     expect(tekstKomp).to.have.length(1);
@@ -167,7 +178,7 @@ describe('<LeggTilSaksbehandlerForm>', () => {
     };
     const formProps = { handleSubmit: sinon.spy() };
     const wrapper = shallowWithIntl(<LeggTilSaksbehandlerForm
-      intl={intlMock}
+      intl={intl as IntlShape}
       saksbehandler={saksbehandler}
       finnSaksbehandler={sinon.spy()}
       leggTilSaksbehandler={sinon.spy()}
@@ -175,7 +186,8 @@ describe('<LeggTilSaksbehandlerForm>', () => {
       erLagtTilAllerede
       erSokFerdig
       valgtAvdelingEnhet="2"
-    />).find(Form).drill(props => props.render(formProps)).shallow();
+      // @ts-ignore
+    />).find(Form).renderProp('render')(formProps);
 
     const tekstKomp = wrapper.find(Normaltekst);
     expect(tekstKomp).to.have.length(1);

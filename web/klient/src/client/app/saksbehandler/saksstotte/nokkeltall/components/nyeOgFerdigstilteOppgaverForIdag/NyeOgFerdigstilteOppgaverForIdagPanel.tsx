@@ -1,6 +1,5 @@
 
-import React from 'react';
-import PropTypes from 'prop-types';
+import React, { FunctionComponent } from 'react';
 import moment from 'moment';
 import { connect } from 'react-redux';
 import { createSelector } from 'reselect';
@@ -11,10 +10,9 @@ import { ISO_DATE_FORMAT } from 'utils/formats';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import NyeOgFerdigstilteOppgaverForIdagGraf from './NyeOgFerdigstilteOppgaverForIdagGraf';
 import { getNyeOgFerdigstilteOppgaverNokkeltall } from '../../duck';
-import { NyeOgFerdigstilteOppgaver } from '../nyeOgFerdigstilteOppgaverTsType';
-import nyeOgFerdigstilteOppgaverPropType from '../nyeOgFerdigstilteOppgaverPropType';
+import NyeOgFerdigstilteOppgaver from '../nyeOgFerdigstilteOppgaverTsType';
 
-interface TsProps {
+interface OwnProps {
   width: number;
   height: number;
   nyeOgFerdigstilteOppgaver: NyeOgFerdigstilteOppgaver[];
@@ -23,12 +21,12 @@ interface TsProps {
 /**
  * NyeOgFerdigstilteOppgaverForIdagPanel.
  */
-export const NyeOgFerdigstilteOppgaverForIdagPanel = ({
+export const NyeOgFerdigstilteOppgaverForIdagPanel: FunctionComponent<OwnProps> = ({
   width,
   height,
   nyeOgFerdigstilteOppgaver,
-}: TsProps) => (
-  <div>
+}) => (
+  <>
     <Undertittel>
       <FormattedMessage id="NyeOgFerdigstilteOppgaverForIdagPanel.NyeOgFerdigstilte" />
     </Undertittel>
@@ -41,21 +39,15 @@ export const NyeOgFerdigstilteOppgaverForIdagPanel = ({
       height={height}
       nyeOgFerdigstilteOppgaver={nyeOgFerdigstilteOppgaver}
     />
-  </div>
+  </>
 );
 
-NyeOgFerdigstilteOppgaverForIdagPanel.propTypes = {
-  width: PropTypes.number.isRequired,
-  height: PropTypes.number.isRequired,
-  nyeOgFerdigstilteOppgaver: PropTypes.arrayOf(nyeOgFerdigstilteOppgaverPropType).isRequired,
-};
-
-export const getNyeOgFerdigstilteForIDag = createSelector([getNyeOgFerdigstilteOppgaverNokkeltall], (nyeOgFerdigstilte = []) => {
+export const getNyeOgFerdigstilteForIDag = createSelector([getNyeOgFerdigstilteOppgaverNokkeltall], (nyeOgFerdigstilte: { dato: string }[] = []) => {
   const iDag = moment();
-  return nyeOgFerdigstilte.filter(oppgave => iDag.isSame(moment(oppgave.dato, ISO_DATE_FORMAT), 'day'));
+  return nyeOgFerdigstilte.filter((oppgave) => iDag.isSame(moment(oppgave.dato, ISO_DATE_FORMAT), 'day'));
 });
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   nyeOgFerdigstilteOppgaver: getNyeOgFerdigstilteForIDag(state),
 });
 

@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import {
   XYPlot, XAxis, YAxis, AreaSeries, Crosshair, HorizontalGridLines,
@@ -26,7 +25,7 @@ interface Koordinat {
   y: number;
 }
 
-interface TsProps {
+interface OwnProps {
   width: number;
   height: number;
   isFireUkerValgt: boolean;
@@ -34,26 +33,15 @@ interface TsProps {
   isEmpty: boolean;
 }
 
-interface StateTsProps {
+interface StateProps {
   crosshairValues: Koordinat[];
 }
 
 /**
  * ManueltPaVentGraf.
  */
-export class ManueltPaVentGraf extends Component<TsProps, StateTsProps> {
-  static propTypes = {
-    width: PropTypes.number.isRequired,
-    height: PropTypes.number.isRequired,
-    isFireUkerValgt: PropTypes.bool.isRequired,
-    data: PropTypes.arrayOf(PropTypes.shape({
-      x: PropTypes.instanceOf(Date).isRequired,
-      y: PropTypes.number.isRequired,
-    })).isRequired,
-    isEmpty: PropTypes.bool.isRequired,
-  };
-
-  constructor(props: TsProps) {
+export class ManueltPaVentGraf extends Component<OwnProps, StateProps> {
+  constructor(props: OwnProps) {
     super(props);
 
     this.state = {
@@ -62,11 +50,11 @@ export class ManueltPaVentGraf extends Component<TsProps, StateTsProps> {
   }
 
   leggTilHintVerdi = (value: {x: Date; y: number}) => {
-    this.setState(prevState => ({ ...prevState, crosshairValues: [value] }));
+    this.setState((prevState) => ({ ...prevState, crosshairValues: [value] }));
   };
 
   fjernHintVerdi = () => {
-    this.setState(prevState => ({ ...prevState, crosshairValues: [] }));
+    this.setState((prevState) => ({ ...prevState, crosshairValues: [] }));
   };
 
   render = () => {
@@ -94,7 +82,7 @@ export class ManueltPaVentGraf extends Component<TsProps, StateTsProps> {
           <HorizontalGridLines />
           <XAxis
             tickTotal={6}
-            tickFormat={x => moment(x).format(DDMMYYYY_DATE_FORMAT)}
+            tickFormat={(x) => moment(x).format(DDMMYYYY_DATE_FORMAT)}
             style={{ text: cssText }}
           />
           <YAxis style={{ text: cssText }} />
@@ -127,7 +115,7 @@ export class ManueltPaVentGraf extends Component<TsProps, StateTsProps> {
   }
 }
 
-export const lagKoordinater = createSelector([(state, ownProps) => ownProps], ownProps => ownProps.oppgaverManueltPaVent.map(o => ({
+export const lagKoordinater = createSelector([(state, ownProps) => ownProps], (ownProps) => ownProps.oppgaverManueltPaVent.map((o) => ({
   x: moment(o.behandlingFrist).startOf('day').toDate(),
   y: o.antall,
 })));
@@ -138,7 +126,7 @@ export const lagDatastruktur = createSelector([lagKoordinater, (state, ownProps)
   const periodeSlutt = moment().add(ownProps.isFireUkerValgt ? 4 : 8, 'w').toDate();
 
   for (let dato = moment(periodeStart); dato.isSameOrBefore(periodeSlutt); dato = dato.add(1, 'days')) {
-    const funnetKoordinat = koordinater.find(k => moment(k.x).isSame(dato));
+    const funnetKoordinat = koordinater.find((k) => moment(k.x).isSame(dato));
     nyeKoordinater.push({
       x: dato.toDate(),
       y: funnetKoordinat ? funnetKoordinat.y : 0,
@@ -148,7 +136,7 @@ export const lagDatastruktur = createSelector([lagKoordinater, (state, ownProps)
   return nyeKoordinater;
 });
 
-export const harDatastrukturKun0Verdier = createSelector([lagKoordinater], koordinater => !koordinater.some(k => k.y !== 0));
+export const harDatastrukturKun0Verdier = createSelector([lagKoordinater], (koordinater) => !koordinater.some((k) => k.y !== 0));
 
 const mapStateToProps = (state, ownProps) => ({
   data: lagDatastruktur(state, ownProps),

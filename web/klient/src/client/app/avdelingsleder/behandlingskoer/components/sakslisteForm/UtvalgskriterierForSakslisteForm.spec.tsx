@@ -1,6 +1,7 @@
 import React from 'react';
 import { expect } from 'chai';
 import sinon from 'sinon';
+import { IntlShape } from 'react-intl';
 import { Form } from 'react-final-form';
 
 import andreKriterierType from 'kodeverk/andreKriterierType';
@@ -11,6 +12,9 @@ import AutoLagringVedBlur from './AutoLagringVedBlur';
 import BehandlingstypeVelger from './BehandlingstypeVelger';
 
 describe('<UtvalgskriterierForSakslisteForm>', () => {
+  const intl: Partial<IntlShape> = {
+    ...intlMock,
+  };
   it('skal vise form som lar avdelingsleder endre navn på saksliste', () => {
     const saksliste = {
       sakslisteId: 1,
@@ -24,19 +28,20 @@ describe('<UtvalgskriterierForSakslisteForm>', () => {
         navn: 'Registrer papirsøknad',
       }],
       saksbehandlerIdenter: [],
+      antallBehandlinger: 1,
     };
 
     const wrapper = shallowWithIntl(<UtvalgskriterierForSakslisteForm
-      intl={intlMock}
+      intl={intl as IntlShape}
       valgtSaksliste={saksliste}
       lagreSakslisteNavn={sinon.spy()}
       lagreSakslisteBehandlingstype={sinon.spy()}
       lagreSakslisteFagsakYtelseType={sinon.spy()}
-      lagreSakslisteSortering={sinon.spy()}
       lagreSakslisteAndreKriterier={sinon.spy()}
       valgtAvdelingEnhet="1"
       hentAntallOppgaverForSaksliste={sinon.spy()}
-    />).find(Form).drill(props => props.render({ values: { erDynamiskPeriode: false } })).shallow();
+      // @ts-ignore
+    />).find(Form).renderProp('render')({ values: { erDynamiskPeriode: false } });
 
     expect(wrapper.find(AutoLagringVedBlur)).to.have.length(1);
     expect(wrapper.find(BehandlingstypeVelger)).to.have.length(1);
@@ -49,15 +54,15 @@ describe('<UtvalgskriterierForSakslisteForm>', () => {
       navn: undefined,
       sistEndret: '2017-08-31',
       saksbehandlerIdenter: [],
+      antallBehandlinger: 1,
     };
 
     const wrapper = shallowWithIntl(<UtvalgskriterierForSakslisteForm
-      intl={intlMock}
+      intl={intl as IntlShape}
       valgtSaksliste={saksliste}
       lagreSakslisteNavn={sinon.spy()}
       lagreSakslisteBehandlingstype={sinon.spy()}
       lagreSakslisteFagsakYtelseType={sinon.spy()}
-      lagreSakslisteSortering={sinon.spy()}
       valgtAvdelingEnhet="1"
       hentAntallOppgaverForSaksliste={sinon.spy()}
       lagreSakslisteAndreKriterier={sinon.spy()}
@@ -83,15 +88,15 @@ describe('<UtvalgskriterierForSakslisteForm>', () => {
       navn: 'Nyansatte',
       sistEndret: '2017-08-31',
       saksbehandlerIdenter: [],
+      antallBehandlinger: 1,
     };
 
     const wrapper = shallowWithIntl(<UtvalgskriterierForSakslisteForm
-      intl={intlMock}
+      intl={intl as IntlShape}
       valgtSaksliste={saksliste}
       lagreSakslisteNavn={sinon.spy()}
       lagreSakslisteBehandlingstype={sinon.spy()}
       lagreSakslisteFagsakYtelseType={sinon.spy()}
-      lagreSakslisteSortering={sinon.spy()}
       valgtAvdelingEnhet="1"
       hentAntallOppgaverForSaksliste={sinon.spy()}
       lagreSakslisteAndreKriterier={sinon.spy()}
@@ -117,21 +122,22 @@ describe('<UtvalgskriterierForSakslisteForm>', () => {
       navn: 'Nyansatte',
       sistEndret: '2017-08-31',
       saksbehandlerIdenter: [],
+      antallBehandlinger: 1,
     };
 
     const lagreSakslisteNavnFn = sinon.spy();
 
     const wrapper = shallowWithIntl(<UtvalgskriterierForSakslisteForm
-      intl={intlMock}
+      intl={intl as IntlShape}
       valgtSaksliste={saksliste}
       lagreSakslisteNavn={lagreSakslisteNavnFn}
       lagreSakslisteBehandlingstype={sinon.spy()}
       lagreSakslisteFagsakYtelseType={sinon.spy()}
-      lagreSakslisteSortering={sinon.spy()}
       valgtAvdelingEnhet="1"
       hentAntallOppgaverForSaksliste={sinon.spy()}
       lagreSakslisteAndreKriterier={sinon.spy()}
-    />).find(Form).drill(props => props.render({ values: { erDynamiskPeriode: false } })).shallow();
+      // @ts-ignore
+    />).find(Form).renderProp('render')({ values: { erDynamiskPeriode: false } });
 
     const lagreComp = wrapper.find(AutoLagringVedBlur);
 
@@ -169,15 +175,15 @@ describe('<UtvalgskriterierForSakslisteForm>', () => {
         },
         inkluder: false,
       }],
+      antallBehandlinger: 1,
     };
 
     const wrapper = shallowWithIntl(<UtvalgskriterierForSakslisteForm
-      intl={intlMock}
+      intl={intl as IntlShape}
       valgtSaksliste={saksliste}
       lagreSakslisteNavn={sinon.spy()}
       lagreSakslisteBehandlingstype={sinon.spy()}
       lagreSakslisteFagsakYtelseType={sinon.spy()}
-      lagreSakslisteSortering={sinon.spy()}
       valgtAvdelingEnhet="1"
       hentAntallOppgaverForSaksliste={sinon.spy()}
       lagreSakslisteAndreKriterier={sinon.spy()}

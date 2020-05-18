@@ -1,20 +1,42 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import { injectIntl, intlShape } from 'react-intl';
+import { injectIntl, WrappedComponentProps } from 'react-intl';
 
-import Label, { labelPropType } from './Label';
+import Label, { LabelType } from './Label';
+
+interface OwnProps {
+  input: {
+    value: string;
+  };
+  meta: {
+    submitFailed: {};
+    error: {};
+  };
+  label?: LabelType;
+  readOnly?: boolean;
+  readOnlyHideEmpty?: boolean;
+  isEdited?: boolean;
+  onBlurValidation?: boolean;
+}
 
 const renderNavField = (WrappedNavFieldComponent) => {
-  class FieldComponent extends Component {
-    constructor() {
-      super();
+  class FieldComponent extends Component<OwnProps & WrappedComponentProps> {
+    static defaultProps = {
+      readOnly: false,
+      readOnlyHideEmpty: false,
+      isEdited: false,
+      onBlurValidation: false,
+    };
+
+    constructor(props) {
+      super(props);
       this.formatError = this.formatError.bind(this);
     }
 
     formatError(submitFailed, error, onBlurValidation) {
       const { intl } = this.props;
       if ((onBlurValidation || submitFailed) && error) {
-        return { feilmelding: intl.formatMessage(...error) };
+        // @ts-ignore
+        return intl.formatMessage(...error);
       }
       return undefined;
     }
@@ -38,25 +60,6 @@ const renderNavField = (WrappedNavFieldComponent) => {
       return <WrappedNavFieldComponent {...fieldProps} {...input} isEdited={isEdited} {...otherProps} readOnly={readOnly} />;
     }
   }
-
-  FieldComponent.propTypes = {
-    input: PropTypes.shape().isRequired,
-    meta: PropTypes.shape().isRequired,
-    intl: intlShape.isRequired,
-    label: labelPropType,
-    readOnly: PropTypes.bool,
-    readOnlyHideEmpty: PropTypes.bool,
-    isEdited: PropTypes.bool,
-    onBlurValidation: PropTypes.bool,
-  };
-
-  FieldComponent.defaultProps = {
-    label: undefined,
-    readOnly: false,
-    readOnlyHideEmpty: false,
-    isEdited: false,
-    onBlurValidation: false,
-  };
 
   const FieldComponentWithIntl = injectIntl(FieldComponent);
 

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { KeyboardEvent } from 'react';
 import { shallow } from 'enzyme';
 import { expect } from 'chai';
 import sinon from 'sinon';
@@ -7,9 +7,9 @@ import { FormattedMessage } from 'react-intl';
 import Image from 'sharedComponents/Image';
 import behandlingType from 'kodeverk/behandlingType';
 import fagsakYtelseType from 'kodeverk/fagsakYtelseType';
-import Table from 'sharedComponents/Table';
-import TableRow from 'sharedComponents/TableRow';
-import TableColumn from 'sharedComponents/TableColumn';
+import Table from 'sharedComponents/table/Table';
+import TableRow from 'sharedComponents/table/TableRow';
+import TableColumn from 'sharedComponents/table/TableColumn';
 import SletteSakslisteModal from './SletteSakslisteModal';
 import { GjeldendeSakslisterTabell } from './GjeldendeSakslisterTabell';
 
@@ -61,6 +61,7 @@ describe('<GjeldendeSakslisterTabell>', () => {
       erTilBeslutter: false,
       erRegistrerPapirsoknad: false,
       saksbehandlerIdenter: [],
+      antallBehandlinger: 1,
     }, {
       sakslisteId: 2,
       navn: 'Kun foreldrepenger',
@@ -68,6 +69,7 @@ describe('<GjeldendeSakslisterTabell>', () => {
       erTilBeslutter: false,
       erRegistrerPapirsoknad: false,
       saksbehandlerIdenter: [],
+      antallBehandlinger: 1,
     }];
 
     const wrapper = shallow(<GjeldendeSakslisterTabell
@@ -115,7 +117,8 @@ describe('<GjeldendeSakslisterTabell>', () => {
     const leggTilListe = wrapper.find('div#leggTilListe');
     expect(leggTilListe).to.have.length(1);
 
-    leggTilListe.prop('onClick')();
+    const clickFn = leggTilListe.prop('onClick') as () => void;
+    clickFn();
 
     expect(lagNySakslisteFn.calledOnce).to.be.true;
   });
@@ -141,7 +144,7 @@ describe('<GjeldendeSakslisterTabell>', () => {
 
     leggTilListe.prop('onKeyDown')({
       keyCode: 13,
-    });
+    } as KeyboardEvent);
 
     expect(lagNySakslisteFn.calledOnce).to.be.true;
   });
@@ -167,7 +170,7 @@ describe('<GjeldendeSakslisterTabell>', () => {
 
     leggTilListe.prop('onKeyDown')({
       keyCode: 10,
-    });
+    } as KeyboardEvent);
 
     expect(lagNySakslisteFn.calledOnce).to.be.false;
   });
@@ -180,6 +183,7 @@ describe('<GjeldendeSakslisterTabell>', () => {
       erTilBeslutter: false,
       erRegistrerPapirsoknad: false,
       saksbehandlerIdenter: [],
+      antallBehandlinger: 1,
     }];
     const setValgtSakslisteIdFn = sinon.spy();
 
@@ -198,7 +202,8 @@ describe('<GjeldendeSakslisterTabell>', () => {
     const rader = wrapper.find(TableRow);
     expect(rader).to.have.length(1);
 
-    await rader.prop('onKeyDown')();
+    const keyFn = rader.prop('onKeyDown') as () => void;
+    await keyFn();
 
     expect(setValgtSakslisteIdFn.calledOnce).to.be.true;
   });
@@ -211,6 +216,7 @@ describe('<GjeldendeSakslisterTabell>', () => {
       erTilBeslutter: false,
       erRegistrerPapirsoknad: false,
       saksbehandlerIdenter: [],
+      antallBehandlinger: 1,
     }];
     const wrapper = shallow(<GjeldendeSakslisterTabell
       sakslister={sakslister}
@@ -233,10 +239,12 @@ describe('<GjeldendeSakslisterTabell>', () => {
 
     expect(wrapper.find(SletteSakslisteModal)).to.have.length(0);
 
-    bildeKnapp.prop('onMouseDown')();
+    const mouseFn = bildeKnapp.prop('onMouseDown') as () => void;
+    mouseFn();
 
     expect(wrapper.find(SletteSakslisteModal)).to.have.length(1);
-    expect(wrapper.state().valgtSaksliste).is.eql(sakslister[0]);
+    const state = wrapper.state() as { valgtSaksliste: string };
+    expect(state.valgtSaksliste).is.eql(sakslister[0]);
   });
 
   it('skal lukke modal ved trykk på avbryt i modal', () => {
@@ -247,6 +255,7 @@ describe('<GjeldendeSakslisterTabell>', () => {
       erTilBeslutter: false,
       erRegistrerPapirsoknad: false,
       saksbehandlerIdenter: [],
+      antallBehandlinger: 1,
     }];
     const wrapper = shallow(<GjeldendeSakslisterTabell
       sakslister={sakslister}
@@ -264,7 +273,8 @@ describe('<GjeldendeSakslisterTabell>', () => {
     const kolonner = rader.first().find(TableColumn);
     const bildeKnapp = kolonner.last().find(Image);
 
-    bildeKnapp.prop('onMouseDown')();
+    const mouseFn = bildeKnapp.prop('onMouseDown') as () => void;
+    mouseFn();
 
     const modal = wrapper.find(SletteSakslisteModal);
     expect(modal).to.have.length(1);
@@ -272,7 +282,8 @@ describe('<GjeldendeSakslisterTabell>', () => {
     modal.prop('cancel')();
 
     expect(wrapper.find(SletteSakslisteModal)).to.have.length(0);
-    expect(wrapper.state().valgtSaksliste).is.undefined;
+    const state = wrapper.state() as { valgtSaksliste: string };
+    expect(state.valgtSaksliste).is.undefined;
   });
 
   it('skal fjerne saksliste ved trykk på ok i modal', () => {
@@ -283,6 +294,7 @@ describe('<GjeldendeSakslisterTabell>', () => {
       erTilBeslutter: false,
       erRegistrerPapirsoknad: false,
       saksbehandlerIdenter: [],
+      antallBehandlinger: 1,
     }];
     const fjernSakslisterFn = sinon.spy();
     const wrapper = shallow(<GjeldendeSakslisterTabell
@@ -301,7 +313,8 @@ describe('<GjeldendeSakslisterTabell>', () => {
     const kolonner = rader.first().find(TableColumn);
     const bildeKnapp = kolonner.last().find(Image);
 
-    bildeKnapp.prop('onMouseDown')();
+    const mouseFn = bildeKnapp.prop('onMouseDown') as () => void;
+    mouseFn();
 
     const modal = wrapper.find(SletteSakslisteModal);
     expect(modal).to.have.length(1);
@@ -309,7 +322,8 @@ describe('<GjeldendeSakslisterTabell>', () => {
     modal.prop('submit')(sakslister[0]);
 
     expect(wrapper.find(SletteSakslisteModal)).to.have.length(0);
-    expect(wrapper.state().valgtSaksliste).is.undefined;
+    const state = wrapper.state() as { valgtSaksliste: string };
+    expect(state.valgtSaksliste).is.undefined;
 
     expect(fjernSakslisterFn.calledOnce).to.be.true;
     const { args } = fjernSakslisterFn.getCalls()[0];
@@ -326,6 +340,7 @@ describe('<GjeldendeSakslisterTabell>', () => {
       erTilBeslutter: false,
       erRegistrerPapirsoknad: false,
       saksbehandlerIdenter: ['U12332'],
+      antallBehandlinger: 1,
     }];
 
     const wrapper = shallow(<GjeldendeSakslisterTabell

@@ -1,15 +1,19 @@
 
 import React from 'react';
-import { shallow } from 'enzyme';
 import { expect } from 'chai';
+import { IntlShape } from 'react-intl';
 import { Undertittel, Undertekst } from 'nav-frontend-typografi';
 
+import { shallowWithIntl, intlMock } from 'testHelpers/intl-enzyme-test-helper';
 import Image from 'sharedComponents/Image';
 import PersonInfo from './PersonInfo';
 import AlderVisning from './Aldervisning';
 import MerkePanel from './Merkepanel';
 
 describe('<PersonInfo>', () => {
+  const intl: Partial<IntlShape> = {
+    ...intlMock,
+  };
   it('skal sjekke at props blir brukt korrekt', () => {
     const person = {
       navn: 'frida',
@@ -25,15 +29,13 @@ describe('<PersonInfo>', () => {
         navn: 'test',
       },
     };
-    const wrapper = shallow(<PersonInfo
+    const wrapper = shallowWithIntl(<PersonInfo.WrappedComponent
+      intl={intl as IntlShape}
       person={person}
-      isPrimaryParent
-      medPanel
     />);
 
     const image = wrapper.find(Image);
-    expect(image.prop('altCode')).to.eql('Person.ImageText');
-    expect(image.prop('titleCode')).to.eql('Person.Woman');
+    expect(image.prop('alt')).to.eql('Personinformasjon');
 
     const innholdstittel = wrapper.find(Undertittel);
     expect(innholdstittel.childAt(0).text()).to.eql('frida');
@@ -46,30 +48,5 @@ describe('<PersonInfo>', () => {
 
     const merkepanel = wrapper.find(MerkePanel);
     expect(merkepanel.prop('diskresjonskode')).to.eql('6');
-  });
-
-  it('skal vise annen title når søker er mann ', () => {
-    const person = {
-      navn: 'Espen',
-      alder: 40,
-      personnummer: '12345678910',
-      erKvinne: false,
-      erDod: false,
-      erVerge: true,
-      diskresjonskode: '6',
-      dodsdato: '2017.01.01',
-      personstatusType: {
-        kode: 'test',
-        navn: 'test',
-      },
-    };
-    const wrapper = shallow(<PersonInfo
-      person={person}
-      isPrimaryParent
-      medPanel
-    />);
-
-    const image = wrapper.find(Image);
-    expect(image.prop('titleCode')).to.eql('Person.Man');
   });
 });

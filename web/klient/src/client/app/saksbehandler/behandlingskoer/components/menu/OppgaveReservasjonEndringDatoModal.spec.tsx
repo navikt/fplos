@@ -1,16 +1,21 @@
 import sinon from 'sinon';
-import { intlMock, shallowWithIntl } from 'testHelpers/intl-enzyme-test-helper';
 import React from 'react';
-import { OppgaveReservasjonEndringDatoModal } from 'saksbehandler/behandlingskoer/components/menu/OppgaveReservasjonEndringDatoModal';
 import { expect } from 'chai';
-import { DatepickerField } from 'form/FinalFields';
+import { IntlShape } from 'react-intl';
 import { Form } from 'react-final-form';
 
+import { intlMock, shallowWithIntl } from 'testHelpers/intl-enzyme-test-helper';
+import { OppgaveReservasjonEndringDatoModal } from 'saksbehandler/behandlingskoer/components/menu/OppgaveReservasjonEndringDatoModal';
+import { DatepickerField } from 'form/FinalFields';
+
 describe('<OppgaveReservasjonEndringDatoModal>', () => {
+  const intl: Partial<IntlShape> = {
+    ...intlMock,
+  };
   it('skal rendre modal for å gi mulighet for valg av dato', () => {
     const wrapper = shallowWithIntl(
       <OppgaveReservasjonEndringDatoModal
-        intl={intlMock}
+        intl={intl as IntlShape}
         showModal
         endreOppgaveReservasjon={sinon.spy()}
         closeModal={sinon.spy()}
@@ -21,7 +26,8 @@ describe('<OppgaveReservasjonEndringDatoModal>', () => {
     expect(form).has.length(1);
 
     const handleSubmitFn = sinon.spy();
-    const formWrapper = shallowWithIntl(form.prop('render')({
+    const func = form.prop('render') as ({ handleSubmit: any }) => void;
+    const formWrapper = shallowWithIntl(func({
       handleSubmit: handleSubmitFn,
     }));
     const datepickerField = formWrapper.find(DatepickerField);

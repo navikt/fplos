@@ -47,17 +47,20 @@ const config = {
             loader: 'css-loader',
             options: {
               importLoaders: 1,
-              modules: true,
-              localIdentName: '[name]_[local]_[hash:base64:5]',
+              modules: {
+                localIdentName: '[name]_[local]_[hash:base64:5]',
+              },
             },
           }, {
             loader: 'less-loader',
             options: {
-              modules: true,
-              localIdentName: '[name]_[local]_[hash:base64:5]',
-              modifyVars: {
-                nodeModulesPath: '~',
-                coreModulePath: '~',
+              lessOptions: {
+                modules: true,
+                localIdentName: '[name]_[local]_[hash:base64:5]',
+                modifyVars: {
+                  nodeModulesPath: '~',
+                  coreModulePath: '~',
+                },
               },
             },
           },
@@ -76,9 +79,11 @@ const config = {
           }, {
             loader: 'less-loader',
             options: {
-              modifyVars: {
-                nodeModulesPath: '~',
-                coreModulePath: '~',
+              lessOptions: {
+                modifyVars: {
+                  nodeModulesPath: '~',
+                  coreModulePath: '~',
+                },
               },
             },
           },

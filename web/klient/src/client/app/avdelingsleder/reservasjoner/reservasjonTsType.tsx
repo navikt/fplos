@@ -1,6 +1,4 @@
-import PropTypes from "prop-types";
-
-export type Reservasjon = Readonly<{
+type Reservasjon = Readonly<{
   reservertAvUid: string;
   reservertAvNavn: string;
   reservertTilTidspunkt: string;
@@ -8,3 +6,5 @@ export type Reservasjon = Readonly<{
   oppgaveSaksNr: number;
   behandlingType: string;
 }>
+
+export default Reservasjon;

@@ -1,12 +1,11 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import { createSelector } from 'reselect';
 import {
   XYPlot, XAxis, YAxis, HorizontalGridLines, AreaSeries, DiscreteColorLegend, Crosshair,
 } from 'react-vis';
-import { FormattedMessage, injectIntl, intlShape } from 'react-intl';
+import { FormattedMessage, injectIntl, WrappedComponentProps } from 'react-intl';
 import Panel from 'nav-frontend-paneler';
 import { Normaltekst, Undertekst } from 'nav-frontend-typografi';
 
@@ -28,8 +27,7 @@ interface Koordinat {
   y: number;
 }
 
-interface TsProps {
-  intl: any;
+interface OwnProps {
   width: number;
   height: number;
   ferdigstilteOppgaver: Koordinat[];
@@ -42,30 +40,15 @@ interface CrosshairValue {
   y: number;
 }
 
-interface StateTsProps {
+interface StateProps {
   crosshairValues: CrosshairValue[];
 }
 
 /**
  * NyeOgFerdigstilteOppgaverForSisteSyvGraf
  */
-export class NyeOgFerdigstilteOppgaverForSisteSyvGraf extends Component<TsProps, StateTsProps> {
-  static propTypes = {
-    intl: intlShape.isRequired,
-    width: PropTypes.number.isRequired,
-    height: PropTypes.number.isRequired,
-    ferdigstilteOppgaver: PropTypes.arrayOf(PropTypes.shape({
-      x: PropTypes.instanceOf(Date).isRequired,
-      y: PropTypes.number.isRequired,
-    })).isRequired,
-    nyeOppgaver: PropTypes.arrayOf(PropTypes.shape({
-      x: PropTypes.instanceOf(Date).isRequired,
-      y: PropTypes.number.isRequired,
-    })).isRequired,
-    isEmpty: PropTypes.bool.isRequired,
-  };
-
-  constructor(props: TsProps) {
+export class NyeOgFerdigstilteOppgaverForSisteSyvGraf extends Component<OwnProps & WrappedComponentProps, StateProps> {
+  constructor(props) {
     super(props);
 
     this.state = {
@@ -85,7 +68,7 @@ export class NyeOgFerdigstilteOppgaverForSisteSyvGraf extends Component<TsProps,
     const {
       crosshairValues,
     } = this.state;
-    const oppgave = oppgaver.find(o => o.x.getTime() === crosshairValues[0].x.getTime());
+    const oppgave = oppgaver.find((o) => o.x.getTime() === crosshairValues[0].x.getTime());
     return oppgave ? oppgave.y : '';
   }
 
@@ -118,7 +101,7 @@ export class NyeOgFerdigstilteOppgaverForSisteSyvGraf extends Component<TsProps,
           <HorizontalGridLines />
           <XAxis
             tickTotal={3}
-            tickFormat={t => moment(t).format(DDMMYYYY_DATE_FORMAT)}
+            tickFormat={(t) => moment(t).format(DDMMYYYY_DATE_FORMAT)}
             style={{ text: cssText }}
           />
           <YAxis style={{ text: cssText }} />
@@ -187,7 +170,7 @@ export const slaSammenBehandlingstyperOgFyllInnTomme = createSelector([(state, o
     const atteDagerSiden = moment().subtract(7, 'days').startOf('day');
 
     for (let dato = atteDagerSiden; dato.isBefore(iDag); dato = dato.add(1, 'days')) {
-      const dataForDato = nyeOgFerdigstilteOppgaver.filter(o => moment(o.dato).startOf('day').isSame(dato));
+      const dataForDato = nyeOgFerdigstilteOppgaver.filter((o) => moment(o.dato).startOf('day').isSame(dato));
       if (dataForDato.length === 0) {
         oppgaver.push({
           antallNye: 0,
@@ -207,17 +190,17 @@ export const slaSammenBehandlingstyperOgFyllInnTomme = createSelector([(state, o
   return oppgaver;
 });
 
-export const lagDatastrukturForFerdigstilte = createSelector([slaSammenBehandlingstyperOgFyllInnTomme], oppgaver => oppgaver.map(o => ({
+export const lagDatastrukturForFerdigstilte = createSelector([slaSammenBehandlingstyperOgFyllInnTomme], (oppgaver) => oppgaver.map((o) => ({
   x: o.dato,
   y: o.antallFerdigstilte,
 })));
 
-export const lagDatastrukturForNye = createSelector([slaSammenBehandlingstyperOgFyllInnTomme], oppgaver => oppgaver.map(o => ({
+export const lagDatastrukturForNye = createSelector([slaSammenBehandlingstyperOgFyllInnTomme], (oppgaver) => oppgaver.map((o) => ({
   x: o.dato,
   y: o.antallNye,
 })));
 
-export const isEmpty = createSelector([(state, ownProps) => ownProps], ownProps => ownProps.nyeOgFerdigstilteOppgaver.length === 0);
+export const isEmpty = createSelector([(state, ownProps) => ownProps], (ownProps) => ownProps.nyeOgFerdigstilteOppgaver.length === 0);
 
 const mapStateToProps = (state, ownProps) => ({
   isEmpty: isEmpty(state, ownProps),

@@ -7,11 +7,15 @@
     width: 100%;
   }
 
+  &.fullHeight {
+    height: 100%;
+  }
+
   @media screen and (-ms-high-contrast: active), (-ms-high-contrast: none) {
     flex-direction: row;
 
     // ie10 fix, should maybe not be an optional class
-    &.flexWrap { // lesshint qualifyingElement: false
+    &.flexWrap {
       flex-wrap: wrap;
     }
   }

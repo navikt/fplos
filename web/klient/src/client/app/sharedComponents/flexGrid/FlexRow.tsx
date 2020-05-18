@@ -1,36 +1,33 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React, { ReactNode, FunctionComponent } from 'react';
 import classnames from 'classnames/bind';
 
 import styles from './flexRow.less';
 
 const classNames = classnames.bind(styles);
 
-const FlexRow = ({
-  children, spaceBetween, alignItemsToBaseline, alignItemsToFlexEnd, wrap,
-}) => (
-  <div className={classNames('flexRow', { spaceBetween }, { alignItemsToBaseline }, { alignItemsToFlexEnd }, { wrap })}>
-    {children}
-  </div>
-);
-
-FlexRow.propTypes = {
-  children: PropTypes.oneOfType([PropTypes.node, PropTypes.arrayOf(PropTypes.node)]),
+interface OwnProps {
+  children: ReactNode | ReactNode[];
   /**
    * spaceBetween: aktiverer { justify-content: space-between } på raden. Default er false.
    */
-  spaceBetween: PropTypes.bool,
-  alignItemsToBaseline: PropTypes.bool,
-  alignItemsToFlexEnd: PropTypes.bool,
-  wrap: PropTypes.bool,
-};
+  spaceBetween?: boolean;
+  alignItemsToBaseline?: boolean;
+  alignItemsToFlexEnd?: boolean;
+  wrap?: boolean;
+  className?: string;
+}
 
-FlexRow.defaultProps = {
-  children: null,
-  spaceBetween: false,
-  alignItemsToBaseline: false,
-  alignItemsToFlexEnd: false,
-  wrap: false,
-};
+const FlexRow: FunctionComponent<OwnProps> = ({
+  children,
+  spaceBetween = false,
+  alignItemsToBaseline = false,
+  alignItemsToFlexEnd = false,
+  wrap = false,
+  className,
+}) => (
+  <div className={classNames('flexRow', { spaceBetween }, { alignItemsToBaseline }, { alignItemsToFlexEnd }, { wrap }, className)}>
+    {children}
+  </div>
+);
 
 export default FlexRow;

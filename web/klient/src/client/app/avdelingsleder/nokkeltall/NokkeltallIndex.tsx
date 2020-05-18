@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
 
@@ -24,14 +23,6 @@ interface TsProps {
  * NokkeltallIndex
  */
 export class NokkeltallIndex extends Component<TsProps> {
-  static propTypes = {
-    fetchOppgaverForAvdeling: PropTypes.func.isRequired,
-    fetchOppgaverPerDato: PropTypes.func.isRequired,
-    fetchOppgaverAvdelingManueltPaVent: PropTypes.func.isRequired,
-    fetchOppgaverPerForsteStonadsdag: PropTypes.func.isRequired,
-    valgtAvdelingEnhet: PropTypes.string.isRequired,
-  };
-
   componentDidMount = () => {
     const {
       fetchOppgaverForAvdeling, fetchOppgaverPerDato, fetchOppgaverAvdelingManueltPaVent, fetchOppgaverPerForsteStonadsdag, valgtAvdelingEnhet,
@@ -47,7 +38,7 @@ export class NokkeltallIndex extends Component<TsProps> {
   )
 }
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   valgtAvdelingEnhet: getValgtAvdelingEnhet(state),
 });
 

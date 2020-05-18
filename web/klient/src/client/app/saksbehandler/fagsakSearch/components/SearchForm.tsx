@@ -1,9 +1,6 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React, { FunctionComponent } from 'react';
 import { connect } from 'react-redux';
-import {
-  injectIntl, intlShape, FormattedMessage, FormattedHTMLMessage,
-} from 'react-intl';
+import { injectIntl, WrappedComponentProps, FormattedMessage } from 'react-intl';
 
 import { Form } from 'react-final-form';
 import { Knapp } from 'nav-frontend-knapper';
@@ -26,8 +23,7 @@ const isButtonDisabled = (searchString, searchStarted) => {
   return false;
 };
 
-interface TsProps {
-  intl: any;
+interface OwnProps {
   onSubmit: ({ searchString: string, skalReservere: boolean }) => void;
   searchStarted: boolean;
   searchResultAccessDenied?: {
@@ -42,14 +38,14 @@ interface TsProps {
  *
  * Presentasjonskomponent. Definerer søkefelt og tilhørende søkeknapp.
  */
-export const SearchForm = ({
+export const SearchForm: FunctionComponent<OwnProps & WrappedComponentProps> = ({
   intl,
   onSubmit,
   searchStarted,
   searchResultAccessDenied,
   resetSearch,
   kanSaksbehandle,
-}: TsProps) => (
+}) => (
   <Form
     onSubmit={onSubmit}
     render={({ handleSubmit, values }) => (
@@ -60,10 +56,9 @@ export const SearchForm = ({
           <VerticalSpacer sixteenPx />
           <CheckboxField name="skalReservere" label={intl.formatMessage({ id: 'Search.ReserverBehandling' })} onClick={resetSearch} />
         </>
-        )
-        }
+        )}
         <VerticalSpacer eightPx />
-        <FlexContainer fluid>
+        <FlexContainer>
           <FlexRow>
             <FlexColumn>
               <InputField
@@ -81,7 +76,6 @@ export const SearchForm = ({
                 className={styles.button}
                 spinner={searchStarted}
                 disabled={isButtonDisabled(values.searchString, searchStarted)}
-                tabIndex="0"
               >
                 <FormattedMessage id="Search.Search" />
               </Knapp>
@@ -91,27 +85,15 @@ export const SearchForm = ({
           <FlexRow>
             <FlexColumn>
               <Image className={styles.advarselIcon} src={advarselIcon} />
-              <FormattedHTMLMessage className={styles.feilmelding} id={searchResultAccessDenied.feilmelding} />
+              <FormattedMessage id={searchResultAccessDenied.feilmelding} />
             </FlexColumn>
           </FlexRow>
-          )
-          }
+          )}
         </FlexContainer>
       </form>
     )}
   />
 );
-
-SearchForm.propTypes = {
-  intl: intlShape.isRequired,
-  onSubmit: PropTypes.func.isRequired,
-  searchStarted: PropTypes.bool.isRequired,
-  searchResultAccessDenied: PropTypes.shape({
-    feilmelding: PropTypes.string,
-  }),
-  resetSearch: PropTypes.func.isRequired,
-  kanSaksbehandle: PropTypes.bool.isRequired,
-};
 
 SearchForm.defaultProps = {
   searchResultAccessDenied: {
@@ -119,7 +101,7 @@ SearchForm.defaultProps = {
   },
 };
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   kanSaksbehandle: getNavAnsattKanSaksbehandle(state),
 });
 

@@ -1,6 +1,7 @@
 
 import React from 'react';
 import { expect } from 'chai';
+import { IntlShape } from 'react-intl';
 import {
   XYPlot, AreaSeries, Crosshair,
 } from 'react-vis';
@@ -16,9 +17,12 @@ import {
 } from './NyeOgFerdigstilteOppgaverForSisteSyvGraf';
 
 describe('<NyeOgFerdigstilteOppgaverForSisteSyvGraf>', () => {
+  const intl: Partial<IntlShape> = {
+    ...intlMock,
+  };
   it('skal vise graf med default-verdier på x og y-aksen når datagrunnlaget er tom', () => {
     const wrapper = shallowWithIntl(<NyeOgFerdigstilteOppgaverForSisteSyvGraf
-      intl={intlMock}
+      intl={intl as IntlShape}
       width={300}
       height={200}
       ferdigstilteOppgaver={[]}
@@ -56,7 +60,7 @@ describe('<NyeOgFerdigstilteOppgaverForSisteSyvGraf>', () => {
     }];
 
     const wrapper = shallowWithIntl(<NyeOgFerdigstilteOppgaverForSisteSyvGraf
-      intl={intlMock}
+      intl={intl as IntlShape}
       width={300}
       height={200}
       ferdigstilteOppgaver={ferdigstilteOppgaver}
@@ -99,7 +103,7 @@ describe('<NyeOgFerdigstilteOppgaverForSisteSyvGraf>', () => {
     }];
 
     const wrapper = shallowWithIntl(<NyeOgFerdigstilteOppgaverForSisteSyvGraf
-      intl={intlMock}
+      intl={intl as IntlShape}
       width={300}
       height={200}
       ferdigstilteOppgaver={ferdigstilteOppgaver}
@@ -111,7 +115,8 @@ describe('<NyeOgFerdigstilteOppgaverForSisteSyvGraf>', () => {
     expect(areaSeries).to.have.length(2);
 
     const valgtPunkt = { x: moment().startOf('day').subtract(1, 'd').toDate(), y: 1 };
-    areaSeries.first().prop('onNearestX')(valgtPunkt);
+    const func = areaSeries.first().prop('onNearestX') as (value: {x: Date; y: number}) => void;
+    func(valgtPunkt);
 
     const crosshair = wrapper.find(Crosshair);
     expect(crosshair).to.have.length(1);

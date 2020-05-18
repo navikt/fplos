@@ -2,12 +2,12 @@
 import React from 'react';
 import moment from 'moment';
 import { expect } from 'chai';
+import { shallow } from 'enzyme';
 import { AreaSeries, Crosshair } from 'react-vis';
 import { Normaltekst, Undertekst } from 'nav-frontend-typografi';
 
 import { ISO_DATE_FORMAT, DDMMYYYY_DATE_FORMAT } from 'utils/formats';
 import behandlingType from 'kodeverk/behandlingType';
-import { shallowWithIntl, intlMock } from 'testHelpers/intl-enzyme-test-helper';
 import { TilBehandlingGraf } from './TilBehandlingGraf';
 
 describe('<TilBehandlingGraf>', () => {
@@ -34,8 +34,7 @@ describe('<TilBehandlingGraf>', () => {
   it('skal vise tom graf når en ikke har data', () => {
     const oppgaverPerDato = [];
 
-    const wrapper = shallowWithIntl(<TilBehandlingGraf
-      intl={intlMock}
+    const wrapper = shallow(<TilBehandlingGraf
       width={300}
       height={200}
       oppgaverPerDato={oppgaverPerDato}
@@ -71,7 +70,7 @@ describe('<TilBehandlingGraf>', () => {
       antall: 3,
     }];
 
-    const wrapper = shallowWithIntl(<TilBehandlingGraf
+    const wrapper = shallow(<TilBehandlingGraf
       width={300}
       height={200}
       oppgaverPerDato={oppgaverPerDato}
@@ -110,7 +109,7 @@ describe('<TilBehandlingGraf>', () => {
       antall: 3,
     }];
 
-    const wrapper = shallowWithIntl(<TilBehandlingGraf
+    const wrapper = shallow(<TilBehandlingGraf
       width={300}
       height={200}
       oppgaverPerDato={oppgaverPerDato}
@@ -149,7 +148,7 @@ describe('<TilBehandlingGraf>', () => {
       antall: 3,
     }];
 
-    const wrapper = shallowWithIntl(<TilBehandlingGraf
+    const wrapper = shallow(<TilBehandlingGraf
       width={300}
       height={200}
       oppgaverPerDato={oppgaverPerDato}
@@ -161,7 +160,8 @@ describe('<TilBehandlingGraf>', () => {
     expect(areaSeries).to.have.length(2);
 
     const valgtPunkt = { x: moment().startOf('day').toDate(), y: 1 };
-    areaSeries.first().prop('onNearestX')(valgtPunkt);
+    const func = areaSeries.first().prop('onNearestX') as ({ x: Date, y: number }) => void;
+    func(valgtPunkt);
 
     const crosshair = wrapper.find(Crosshair);
     expect(crosshair).to.have.length(1);

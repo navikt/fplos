@@ -1,7 +1,6 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React, { FunctionComponent } from 'react';
 import { connect } from 'react-redux';
-import { FormattedMessage, injectIntl, intlShape } from 'react-intl';
+import { FormattedMessage, injectIntl, WrappedComponentProps } from 'react-intl';
 import { bindActionCreators, Dispatch } from 'redux';
 import { Undertekst } from 'nav-frontend-typografi';
 
@@ -10,10 +9,8 @@ import {
 } from 'form/FinalFields';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import { getKodeverk } from 'kodeverk/duck';
-import kodeverkPropType from 'kodeverk/kodeverkPropType';
 import kodeverkTyper from 'kodeverk/kodeverkTyper';
-import { KoSorteringType } from 'kodeverk/KoSorteringTsType';
-import { Kodeverk } from 'kodeverk/kodeverkTsType';
+import Kodeverk from 'kodeverk/kodeverkTsType';
 import behandlingType from 'kodeverk/behandlingType';
 import {
   lagreSakslisteSortering as lagreSakslisteSorteringActionCreator,
@@ -23,33 +20,36 @@ import {
 } from '../../duck';
 import DatoSorteringValg from './DatoSorteringValg';
 import BelopSorteringValg from './BelopSorteringValg';
+import KoSorteringType from '../../KoSorteringTsType';
 
-interface TsProps {
-  intl: any;
+interface OwnProps {
   koSorteringTyper: KoSorteringType[];
   valgtSakslisteId: number;
   valgteBehandlingtyper: Kodeverk[];
-  lagreSakslisteSortering: (sakslisteId: number, sakslisteSorteringValg: KoSorteringType, avdelingEnhet: string) => void;
-  lagreSakslisteSorteringErDynamiskPeriode: (sakslisteId: number, avdelingEnhet: string) => void;
-  lagreSakslisteSorteringTidsintervallDato: (sakslisteId: number, fomDato: string, tomDato: string, avdelingEnhet: string) => void;
-  lagreSakslisteSorteringNumeriskIntervall: (sakslisteId: number, fra: number, til: number, avdelingEnhet: string) => void;
   valgtAvdelingEnhet: string;
   erDynamiskPeriode: boolean;
   fra: number;
   til: number;
-  fomDato: string;
-  tomDato: string;
+  fomDato?: string;
+  tomDato?: string;
+}
+
+interface DispatchProps {
+  lagreSakslisteSortering: (sakslisteId: number, sakslisteSorteringValg: KoSorteringType, avdelingEnhet: string) => void;
+  lagreSakslisteSorteringErDynamiskPeriode: (sakslisteId: number, avdelingEnhet: string) => void;
+  lagreSakslisteSorteringTidsintervallDato: (sakslisteId: number, fomDato: string, tomDato: string, avdelingEnhet: string) => void;
+  lagreSakslisteSorteringNumeriskIntervall: (sakslisteId: number, fra: number, til: number, avdelingEnhet: string) => void;
 }
 
 const bareTilbakekrevingValgt = (valgteBehandlingtyper: Kodeverk[]) => valgteBehandlingtyper
-  && valgteBehandlingtyper.some(type => type.kode === behandlingType.TILBAKEBETALING
+  && valgteBehandlingtyper.some((type) => type.kode === behandlingType.TILBAKEBETALING
     || type.kode === behandlingType.TILBAKEBETALING_REVURDERING)
-  && !valgteBehandlingtyper.some(type => (type.kode !== behandlingType.TILBAKEBETALING && type.kode !== behandlingType.TILBAKEBETALING_REVURDERING));
+  && !valgteBehandlingtyper.some((type) => (type.kode !== behandlingType.TILBAKEBETALING && type.kode !== behandlingType.TILBAKEBETALING_REVURDERING));
 
 /**
  * SorteringVelger
  */
-export const SorteringVelger = ({
+export const SorteringVelger: FunctionComponent<OwnProps & DispatchProps & WrappedComponentProps> = ({
   intl,
   koSorteringTyper,
   valgtSakslisteId,
@@ -64,7 +64,7 @@ export const SorteringVelger = ({
   til,
   fomDato,
   tomDato,
-}: TsProps) => (
+}) => (
   <>
     <Undertekst>
       <FormattedMessage id="SorteringVelger.Sortering" />
@@ -73,10 +73,10 @@ export const SorteringVelger = ({
     <RadioGroupField
       name="sortering"
       direction="vertical"
-      onChange={sorteringType => lagreSakslisteSortering(valgtSakslisteId, sorteringType, valgtAvdelingEnhet)}
+      onChange={(sorteringType) => lagreSakslisteSortering(valgtSakslisteId, sorteringType, valgtAvdelingEnhet)}
     >
-      {koSorteringTyper.map(koSortering => (
-          (koSortering.feltkategori !== 'TILBAKEKREVING' || bareTilbakekrevingValgt(valgteBehandlingtyper)) && (
+      {koSorteringTyper.map((koSortering) => (
+        (koSortering.feltkategori !== 'TILBAKEKREVING' || bareTilbakekrevingValgt(valgteBehandlingtyper)) && (
           <RadioOption
             key={koSortering.kode}
             value={koSortering.kode}
@@ -108,40 +108,17 @@ export const SorteringVelger = ({
             />
             )}
           </RadioOption>
-          )
+        )
       ))}
     </RadioGroupField>
   </>
 );
 
-SorteringVelger.propTypes = {
-  intl: intlShape.isRequired,
-  koSorteringTyper: PropTypes.arrayOf(kodeverkPropType).isRequired,
-  valgtSakslisteId: PropTypes.number.isRequired,
-  lagreSakslisteSortering: PropTypes.func.isRequired,
-  lagreSakslisteSorteringErDynamiskPeriode: PropTypes.func.isRequired,
-  lagreSakslisteSorteringTidsintervallDato: PropTypes.func.isRequired,
-  lagreSakslisteSorteringNumeriskIntervall: PropTypes.func.isRequired,
-  valgtAvdelingEnhet: PropTypes.string.isRequired,
-  erDynamiskPeriode: PropTypes.bool.isRequired,
-  fra: PropTypes.number,
-  til: PropTypes.number,
-  fomDato: PropTypes.string,
-  tomDato: PropTypes.string,
-};
-
-SorteringVelger.defaultProps = {
-  fra: undefined,
-  til: undefined,
-  fomDato: undefined,
-  tomDato: undefined,
-};
-
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   koSorteringTyper: getKodeverk(kodeverkTyper.KO_SORTERING)(state),
 });
 
-const mapDispatchToProps = (dispatch: Dispatch<any>) => ({
+const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => ({
   ...bindActionCreators({
     lagreSakslisteSortering: lagreSakslisteSorteringActionCreator,
     lagreSakslisteSorteringErDynamiskPeriode: lagreSakslisteSorteringErDynamiskPeriodeActionCreator,

@@ -1,5 +1,4 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React, { FunctionComponent } from 'react';
 import { Route, Switch } from 'react-router-dom';
 
 import AvdelingslederIndex from 'avdelingsleder/AvdelingslederIndex';
@@ -11,19 +10,19 @@ import '../../../nomodulestyles/global.less';
 
 import styles from './home.less';
 
-type TsProps = Readonly<{
-  nrOfErrorMessages: number;
-}>
+interface OwnProps {
+  headerHeight: number;
+}
 
 /**
  * Home
  *
  * Presentasjonskomponent. Wrapper for sideinnholdet som vises under header.
  */
-const Home = ({
-  nrOfErrorMessages,
-}: TsProps) => (
-  <div className={styles[`content_${nrOfErrorMessages > 5 ? 5 : nrOfErrorMessages}`]}>
+const Home: FunctionComponent<OwnProps> = ({
+  headerHeight,
+}) => (
+  <div className={styles.content} style={{ margin: `${headerHeight + 10}px auto 0` }}>
     <Switch>
       <Route exact path="/" component={SaksbehandlerIndex} />
       <Route exact path="/avdelingsleder" component={AvdelingslederIndex} />
@@ -31,9 +30,5 @@ const Home = ({
     </Switch>
   </div>
 );
-
-Home.propTypes = {
-  nrOfErrorMessages: PropTypes.number.isRequired,
-};
 
 export default Home;

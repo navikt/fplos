@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { KeyboardEvent, FocusEvent } from 'react';
 import DayPicker from 'react-day-picker';
 import { expect } from 'chai';
 import sinon from 'sinon';
@@ -6,6 +6,8 @@ import sinon from 'sinon';
 import { dateFormat } from 'utils/dateUtils';
 import { shallowWithIntl, intlMock } from 'testHelpers/intl-enzyme-test-helper';
 import CalendarOverlay from './CalendarOverlay';
+
+const disabledDays = {};
 
 describe('<CalendarOverlay>', () => {
   it('skal ikke vise overlay når disabled', () => {
@@ -16,6 +18,8 @@ describe('<CalendarOverlay>', () => {
       dayPickerClassName="test"
       elementIsCalendarButton={sinon.spy()}
       value="21.08.2017"
+      numberOfMonths={1}
+      disabledDays={disabledDays}
       disabled
     />);
 
@@ -28,6 +32,8 @@ describe('<CalendarOverlay>', () => {
       onDayChange={sinon.spy()}
       className="test"
       dayPickerClassName="test"
+      numberOfMonths={1}
+      disabledDays={disabledDays}
       elementIsCalendarButton={sinon.spy()}
       value="21.08.2017"
     />);
@@ -50,6 +56,8 @@ describe('<CalendarOverlay>', () => {
       onDayChange={onDayChangeCallback}
       className="test"
       dayPickerClassName="test"
+      numberOfMonths={1}
+      disabledDays={disabledDays}
       elementIsCalendarButton={sinon.spy()}
       value={date}
       onClose={sinon.spy()}
@@ -70,12 +78,14 @@ describe('<CalendarOverlay>', () => {
       onDayChange={sinon.spy()}
       className="test"
       dayPickerClassName="test"
+      numberOfMonths={1}
+      disabledDays={disabledDays}
       elementIsCalendarButton={elementIsCalendarButton}
       value="21.08.2017"
       onClose={onCloseCallback}
     />);
 
-    wrapper.find('div').prop('onBlur')('test');
+    wrapper.find('div').prop('onBlur')({} as FocusEvent);
   });
 
   it('skal kjøre callback når en trykker escape-knappen', () => {
@@ -85,12 +95,14 @@ describe('<CalendarOverlay>', () => {
       onDayChange={sinon.spy()}
       className="test"
       dayPickerClassName="test"
+      numberOfMonths={1}
+      disabledDays={disabledDays}
       elementIsCalendarButton={sinon.spy()}
       value="21.08.2017"
       onClose={onCloseCallback}
     />);
 
-    wrapper.find('div').prop('onKeyDown')({ keyCode: 27 });
+    wrapper.find('div').prop('onKeyDown')({ keyCode: 27 } as KeyboardEvent);
 
     expect(onCloseCallback.called).is.true;
   });
@@ -102,12 +114,14 @@ describe('<CalendarOverlay>', () => {
       onDayChange={sinon.spy()}
       className="test"
       dayPickerClassName="test"
+      numberOfMonths={1}
+      disabledDays={disabledDays}
       elementIsCalendarButton={sinon.spy()}
       value="21.08.2017"
       onClose={onCloseCallback}
     />);
 
-    wrapper.find('div').prop('onKeyDown')({ keyCode: 20 });
+    wrapper.find('div').prop('onKeyDown')({ keyCode: 20 } as KeyboardEvent);
 
     expect(onCloseCallback.called).is.false;
   });

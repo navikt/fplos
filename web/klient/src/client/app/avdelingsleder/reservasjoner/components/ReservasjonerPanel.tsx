@@ -1,27 +1,23 @@
-import React from 'react';
-import { Reservasjon } from 'avdelingsleder/reservasjoner/reservasjonTsType';
+import React, { FunctionComponent } from 'react';
 import ReservasjonerTabell from './ReservasjonerTabell';
 
-interface TsProps {
-  reservasjoner: Reservasjon[];
+// TODO Slett denne komponenten. Gjer ingenting
+
+interface OwnProps {
   opphevReservasjon: (oppgaveId: number) => Promise<string>;
   endreOppgaveReservasjon: (oppgaveId: number, reserverTil: string) => Promise<string>;
   flyttReservasjon: (oppgaveId: number, brukerident: string, begrunnelse: string) => Promise<string>;
 }
-const ReservasjonerPanel = ({
-  reservasjoner,
+const ReservasjonerPanel: FunctionComponent<OwnProps> = ({
   opphevReservasjon,
   endreOppgaveReservasjon,
   flyttReservasjon,
-}: TsProps) => (
-  <>
-    <ReservasjonerTabell
-      reservasjoner={reservasjoner}
-      opphevReservasjon={opphevReservasjon}
-      endreOppgaveReservasjon={endreOppgaveReservasjon}
-      flyttReservasjon={flyttReservasjon}
-    />
-  </>
+}) => (
+  <ReservasjonerTabell
+    opphevReservasjon={opphevReservasjon}
+    endreOppgaveReservasjon={endreOppgaveReservasjon}
+    flyttReservasjon={flyttReservasjon}
+  />
 );
 
 export default ReservasjonerPanel;

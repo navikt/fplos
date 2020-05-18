@@ -12,21 +12,15 @@ import SakslistePanel from './SakslistePanel';
 describe('<SakslistePanel>', () => {
   it('skal vise kriterievelger og liste over neste saker', () => {
     const fetchFn = sinon.spy();
-    const reserverteOppgaver = [];
     const sakslister = [];
     const wrapper = shallow(<SakslistePanel
       fetchSakslisteOppgaver={fetchFn}
-      oppgaverTilBehandling={reserverteOppgaver}
-      reserverteOppgaver={reserverteOppgaver}
       sakslister={sakslister}
       reserverOppgave={sinon.spy()}
       opphevOppgaveReservasjon={sinon.spy()}
       forlengOppgaveReservasjon={sinon.spy()}
       endreOppgaveReservasjon={sinon.spy()}
-      finnSaksbehandler={sinon.spy()}
-      resetSaksbehandler={sinon.spy()}
       flyttReservasjon={sinon.spy()}
-      fetchSakslistensSaksbehandlere={sinon.spy()}
     />);
 
     expect(wrapper.find(SakslisteVelgerForm)).to.have.length(1);

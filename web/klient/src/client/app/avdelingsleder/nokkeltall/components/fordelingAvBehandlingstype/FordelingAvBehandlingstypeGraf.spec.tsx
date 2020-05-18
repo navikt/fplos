@@ -79,12 +79,12 @@ describe('<FordelingAvBehandlingstypeGraf>', () => {
     const yAksen = wrapper.find(YAxis);
     expect(yAksen).to.have.length(1);
 
-    const verdiIndekser = yAksen.prop('tickValues');
+    const verdiIndekser = yAksen.prop('tickValues') as number[];
     expect(verdiIndekser).to.have.length(6);
 
-    const verdiFn = yAksen.prop('tickFormat');
+    const verdiFn = yAksen.prop('tickFormat') as (v, i: number) => void;
 
-    const behandlingstyper = verdiIndekser.map(i => verdiFn(undefined, i - 1));
+    const behandlingstyper = verdiIndekser.map((i) => verdiFn(undefined, i - 1));
     expect(behandlingstyper).is.eql(['Tilbakebet-rev', 'Tilbakebetaling', 'Dokumentinnsyn', 'Klage', 'Revurdering', 'Førstegangssøknad']);
   });
 
@@ -117,7 +117,8 @@ describe('<FordelingAvBehandlingstypeGraf>', () => {
       x0: 1,
       y: 6,
     };
-    hRectSeries.first().prop('onValueMouseOver')(grafPosisjon);
+    const func = hRectSeries.first().prop('onValueMouseOver') as ({ x: number, x0, y }) => void;
+    func(grafPosisjon);
 
     const hint = wrapper.find(Hint);
     expect(hint).to.have.length(1);

@@ -1,44 +1,35 @@
 
 import React, { Component, Fragment } from 'react';
-import PropTypes from 'prop-types';
 import { FormattedMessage } from 'react-intl';
-import { Undertittel, Normaltekst } from 'nav-frontend-typografi';
+import { connect } from 'react-redux';
+import { bindActionCreators, Dispatch } from 'redux';
 import Lenke from 'nav-frontend-lenker';
+import { Undertittel, Normaltekst } from 'nav-frontend-typografi';
 
 import { getFpsakHref, getFptilbakeHref } from 'app/paths';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import { getFpsakUrl, getFptilbakeUrl, hentFpsakInternBehandlingId as hentFpsakInternBehandlingIdActionCreator } from 'app/duck';
 import { getBehandledeOppgaver } from 'saksbehandler/saksstotte/duck';
-import { bindActionCreators, Dispatch } from 'redux';
-import { connect } from 'react-redux';
-import { Oppgave } from '../../oppgaveTsType';
-import oppgavePropType from '../../oppgavePropType';
+import Oppgave from '../../oppgaveTsType';
 
 const getClickEvent = (openFpsak, oppgave) => () => openFpsak(oppgave);
 
-type TsProps = Readonly<{
+interface OwnProps {
   fpsakUrl: string;
   fptilbakeUrl: string;
   sistBehandledeSaker: Oppgave[];
-  hentFpsakInternBehandlingId: (uuid: string) => Promise<{payload: number }>;
-}>
-
-interface StateProps {
-  sistBehandledeSaker: Oppgave[];
 }
+
+interface DispatchProps {
+  hentFpsakInternBehandlingId: (uuid: string) => Promise<{ payload: number }>;
+}
+
 /**
  * SistBehandledeSaker
  *
  * Denne komponenten viser de tre siste fagsakene en nav-ansatt har behandlet.
  */
-export class SistBehandledeSaker extends Component<TsProps, StateProps> {
-  static propTypes = {
-    fpsakUrl: PropTypes.string.isRequired,
-    fptilbakeUrl: PropTypes.string.isRequired,
-    sistBehandledeSaker: PropTypes.arrayOf(oppgavePropType).isRequired,
-    hentFpsakInternBehandlingId: PropTypes.func.isRequired,
-  };
-
+export class SistBehandledeSaker extends Component<OwnProps & DispatchProps> {
   openFpsak = (oppgave: Oppgave) => {
     const { fpsakUrl, fptilbakeUrl, hentFpsakInternBehandlingId } = this.props;
 
@@ -59,8 +50,7 @@ export class SistBehandledeSaker extends Component<TsProps, StateProps> {
         <Undertittel><FormattedMessage id="SistBehandledeSaker.SistBehandledeSaker" /></Undertittel>
         <VerticalSpacer eightPx />
         {sistBehandledeSaker.length === 0
-        && <Normaltekst><FormattedMessage id="SistBehandledeSaker.IngenBehandlinger" /></Normaltekst>
-        }
+        && <Normaltekst><FormattedMessage id="SistBehandledeSaker.IngenBehandlinger" /></Normaltekst>}
         {sistBehandledeSaker.map((sbs, index) => (
           <Fragment key={sbs.behandlingId}>
             <Normaltekst>
@@ -72,13 +62,12 @@ export class SistBehandledeSaker extends Component<TsProps, StateProps> {
                   >
                     {`${sbs.navn} ${sbs.personnummer}`}
                   </Lenke>
-)
+                )
                 : (
                   <Lenke href="#" onClick={getClickEvent(this.openFpsak, sbs)}>
                     <FormattedMessage id="SistBehandledeSaker.Behandling" values={{ index: index + 1 }} />
                   </Lenke>
-                )
-              }
+                )}
             </Normaltekst>
             <VerticalSpacer eightPx />
           </Fragment>
@@ -88,14 +77,14 @@ export class SistBehandledeSaker extends Component<TsProps, StateProps> {
   }
 }
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   fpsakUrl: getFpsakUrl(state),
   fptilbakeUrl: getFptilbakeUrl(state),
   sistBehandledeSaker: getBehandledeOppgaver(state) || [],
 });
 
-const mapDispatchToProps = (dispatch: Dispatch) => ({
-  ...bindActionCreators({
+const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => ({
+  ...bindActionCreators<DispatchProps, any>({
     hentFpsakInternBehandlingId: hentFpsakInternBehandlingIdActionCreator,
   }, dispatch),
 });

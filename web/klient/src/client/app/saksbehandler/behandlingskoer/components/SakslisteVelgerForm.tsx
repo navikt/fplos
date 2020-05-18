@@ -1,13 +1,12 @@
-import React, { Component, Node } from 'react';
-import PropTypes from 'prop-types';
+import React, { Component, ReactNode } from 'react';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import { Form, FormSpy } from 'react-final-form';
 import {
-  injectIntl, intlShape, FormattedMessage, FormattedHTMLMessage,
+  injectIntl, WrappedComponentProps, FormattedMessage, IntlShape,
 } from 'react-intl';
 import { bindActionCreators, Dispatch } from 'redux';
-import { Element, Undertittel, Normaltekst } from 'nav-frontend-typografi';
+import { Element, Normaltekst } from 'nav-frontend-typografi';
 
 import { DDMMYYYY_DATE_FORMAT } from 'utils/formats';
 import Image from 'sharedComponents/Image';
@@ -15,19 +14,16 @@ import { getValueFromLocalStorage, setValueInLocalStorage, removeValueFromLocalS
 import { FlexContainer, FlexRow, FlexColumn } from 'sharedComponents/flexGrid';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import LabelWithHeader from 'sharedComponents/LabelWithHeader';
-import sakslistePropType from 'saksbehandler/behandlingskoer/sakslistePropType';
-import { Saksliste } from 'saksbehandler/behandlingskoer/sakslisteTsType';
+import Saksliste from 'saksbehandler/behandlingskoer/sakslisteTsType';
 import { SelectField } from 'form/FinalFields';
 import gruppeHoverUrl from 'images/gruppe_hover.svg';
 import gruppeUrl from 'images/gruppe.svg';
 import { getSakslistensSaksbehandlere, fetchAntallOppgaverForBehandlingsko, fetchSakslistensSaksbehandlere } from '../duck';
-import { Saksbehandler } from '../saksbehandlerTsType';
-import saksbehandlerPropType from '../saksbehandlerPropType';
+import Saksbehandler from '../saksbehandlerTsType';
 
 import styles from './sakslisteVelgerForm.less';
 
-interface TsProps {
-  intl: any;
+interface OwnProps {
   sakslister: Saksliste[];
   fetchSakslisteOppgaver: (sakslisteId: number) => void;
   fetchSakslistensSaksbehandlere: (sakslisteId: number) => void;
@@ -35,15 +31,10 @@ interface TsProps {
   saksbehandlere?: Saksbehandler[];
 }
 
-interface Toolip {
-  header: Node;
-  body: Node;
-}
-
 const getDefaultSaksliste = (sakslister) => {
   const lagretSakslisteId = getValueFromLocalStorage('sakslisteId');
   if (lagretSakslisteId) {
-    if (sakslister.some(s => `${s.sakslisteId}` === lagretSakslisteId)) {
+    if (sakslister.some((s) => `${s.sakslisteId}` === lagretSakslisteId)) {
       return parseInt(lagretSakslisteId, 10);
     }
     removeValueFromLocalStorage('sakslisteId');
@@ -65,23 +56,23 @@ const getInitialValues = (sakslister) => {
   };
 };
 
-const getValgtSaksliste = (sakslister: Saksliste[], sakslisteId: string) => sakslister.find(s => sakslisteId === `${s.sakslisteId}`);
+const getValgtSaksliste = (sakslister: Saksliste[], sakslisteId: string) => sakslister.find((s) => sakslisteId === `${s.sakslisteId}`);
 
-const getStonadstyper = (saksliste?: Saksliste, intl: any) => (saksliste && saksliste.fagsakYtelseTyper.length > 0
-  ? saksliste.fagsakYtelseTyper.map(type => type.navn) : [intl.formatMessage({ id: 'SakslisteVelgerForm.Alle' })]);
+const getStonadstyper = (intl: IntlShape, saksliste?: Saksliste) => (saksliste && saksliste.fagsakYtelseTyper.length > 0
+  ? saksliste.fagsakYtelseTyper.map((type) => type.navn) : [intl.formatMessage({ id: 'SakslisteVelgerForm.Alle' })]);
 
-const getBehandlingstyper = (saksliste?: Saksliste, intl: any) => (saksliste && saksliste.behandlingTyper.length > 0
-  ? saksliste.behandlingTyper.map(type => type.navn) : [intl.formatMessage({ id: 'SakslisteVelgerForm.Alle' })]);
+const getBehandlingstyper = (intl: IntlShape, saksliste?: Saksliste) => (saksliste && saksliste.behandlingTyper.length > 0
+  ? saksliste.behandlingTyper.map((type) => type.navn) : [intl.formatMessage({ id: 'SakslisteVelgerForm.Alle' })]);
 
-const getAndreKriterier = (saksliste?: Saksliste, intl: any) => {
+const getAndreKriterier = (intl: IntlShape, saksliste?: Saksliste) => {
   if (saksliste && saksliste.andreKriterier.length > 0) {
-    return saksliste.andreKriterier.map(ak => (ak.inkluder ? ak.andreKriterierType.navn
+    return saksliste.andreKriterier.map((ak) => (ak.inkluder ? ak.andreKriterierType.navn
       : intl.formatMessage({ id: 'SakslisteVelgerForm.Uten' }, { kriterie: ak.andreKriterierType.navn })));
   }
   return [intl.formatMessage({ id: 'SakslisteVelgerForm.Alle' })];
 };
 
-const getSorteringsnavn = (saksliste?: Saksliste) => {
+const getSorteringsnavn = (intl: IntlShape, saksliste?: Saksliste): string => {
   if (!saksliste || !saksliste.sortering) {
     return '';
   }
@@ -89,7 +80,12 @@ const getSorteringsnavn = (saksliste?: Saksliste) => {
   const {
     erDynamiskPeriode, sorteringType, fra, til, fomDato, tomDato,
   } = saksliste.sortering;
-  let values = {};
+  let values = {
+    br: <br />,
+    fomDato: undefined,
+    tomDato: undefined,
+    navn: undefined,
+  };
   if (!erDynamiskPeriode) {
     if (!fomDato && !tomDato) {
       return sorteringType.navn;
@@ -98,6 +94,7 @@ const getSorteringsnavn = (saksliste?: Saksliste) => {
       navn: sorteringType.navn,
       fomDato: fomDato ? moment(fomDato).format(DDMMYYYY_DATE_FORMAT) : undefined,
       tomDato: tomDato ? moment(tomDato).format(DDMMYYYY_DATE_FORMAT) : undefined,
+      br: <br />,
     };
   } else {
     if (!fra && !til) {
@@ -107,33 +104,23 @@ const getSorteringsnavn = (saksliste?: Saksliste) => {
       navn: sorteringType.navn,
       fomDato: fra ? moment().add(fra, 'days').format(DDMMYYYY_DATE_FORMAT) : undefined,
       tomDato: til ? moment().add(til, 'days').format(DDMMYYYY_DATE_FORMAT) : undefined,
+      br: <br />,
     };
   }
 
   if (!values.fomDato) {
-    return <FormattedHTMLMessage id="SakslisteVelgerForm.SorteringsinfoTom" values={values} />;
+    return intl.formatMessage({ id: 'SakslisteVelgerForm.SorteringsinfoTom' }, values) as string;
   } if (!values.tomDato) {
-    return <FormattedHTMLMessage id="SakslisteVelgerForm.SorteringsinfoFom" values={values} />;
+    return intl.formatMessage({ id: 'SakslisteVelgerForm.SorteringsinfoFom' }, values) as string;
   }
-  return <FormattedHTMLMessage id="SakslisteVelgerForm.Sorteringsinfo" values={values} />;
+  return intl.formatMessage({ id: 'SakslisteVelgerForm.Sorteringsinfo' }, values) as string;
 };
-
-const imageSrcFunction = isHovering => (isHovering ? gruppeHoverUrl : gruppeUrl);
 
 /**
  * SakslisteVelgerForm
  *
  */
-export class SakslisteVelgerForm extends Component<TsProps> {
-  static propTypes = {
-    intl: intlShape.isRequired,
-    sakslister: PropTypes.arrayOf(sakslistePropType).isRequired,
-    fetchSakslisteOppgaver: PropTypes.func.isRequired,
-    fetchSakslistensSaksbehandlere: PropTypes.func.isRequired,
-    fetchAntallOppgaverForBehandlingsko: PropTypes.func.isRequired,
-    saksbehandlere: PropTypes.arrayOf(saksbehandlerPropType),
-  };
-
+export class SakslisteVelgerForm extends Component<OwnProps & WrappedComponentProps> {
   static defaultProps = {
     saksbehandlere: [],
   };
@@ -152,18 +139,20 @@ export class SakslisteVelgerForm extends Component<TsProps> {
     }
   }
 
-  createTooltip = (): Toolip | undefined => {
+  createTooltip = (): ReactNode | undefined => {
     const {
-      intl, saksbehandlere,
+      saksbehandlere,
     } = this.props;
     if (!saksbehandlere || saksbehandlere.length === 0) {
       return undefined;
     }
 
-    return {
-      header: <Undertittel>{intl.formatMessage({ id: 'SakslisteVelgerForm.SaksbehandlerToolip' })}</Undertittel>,
-      body: saksbehandlere.map(s => s.navn).sort((n1, n2) => n1.localeCompare(n2)).map(navn => (<Normaltekst key={navn}>{navn}</Normaltekst>)),
-    };
+    return (
+      <div>
+        <Element><FormattedMessage id="SakslisteVelgerForm.SaksbehandlerToolip" /></Element>
+        {saksbehandlere.map((s) => s.navn).sort((n1, n2) => n1.localeCompare(n2)).map((navn) => (<Normaltekst key={navn}>{navn}</Normaltekst>))}
+      </div>
+    );
   }
 
   render = () => {
@@ -197,7 +186,7 @@ export class SakslisteVelgerForm extends Component<TsProps> {
                     name="sakslisteId"
                     label={intl.formatMessage({ id: 'SakslisteVelgerForm.Saksliste' })}
                     selectValues={sakslister
-                      .map(saksliste => (<option key={saksliste.sakslisteId} value={`${saksliste.sakslisteId}`}>{saksliste.navn}</option>))}
+                      .map((saksliste) => (<option key={saksliste.sakslisteId} value={`${saksliste.sakslisteId}`}>{saksliste.navn}</option>))}
                     bredde="l"
                   />
                 </FlexColumn>
@@ -206,35 +195,34 @@ export class SakslisteVelgerForm extends Component<TsProps> {
                     <FlexColumn>
                       <div className={styles.saksbehandlerIkon} />
                       <Image
-                        altCode="SakslisteVelgerForm.Saksbehandlere"
-                        imageSrcFunction={imageSrcFunction}
-                        tabIndex="0"
+                        alt={intl.formatMessage({ id: 'SakslisteVelgerForm.Saksbehandlere' })}
+                        src={gruppeUrl}
+                        srcHover={gruppeHoverUrl}
                         tooltip={this.createTooltip()}
-                        alignTooltipArrowLeft
                       />
                     </FlexColumn>
                     <FlexColumn className={styles.marginFilters}>
                       <LabelWithHeader
                         header={intl.formatMessage({ id: 'SakslisteVelgerForm.Stonadstype' })}
-                        texts={getStonadstyper(getValgtSaksliste(sakslister, values.sakslisteId), intl)}
+                        texts={getStonadstyper(intl, getValgtSaksliste(sakslister, values.sakslisteId))}
                       />
                     </FlexColumn>
                     <FlexColumn className={styles.marginFilters}>
                       <LabelWithHeader
                         header={intl.formatMessage({ id: 'SakslisteVelgerForm.Behandlingstype' })}
-                        texts={getBehandlingstyper(getValgtSaksliste(sakslister, values.sakslisteId), intl)}
+                        texts={getBehandlingstyper(intl, getValgtSaksliste(sakslister, values.sakslisteId))}
                       />
                     </FlexColumn>
                     <FlexColumn className={styles.marginFilters}>
                       <LabelWithHeader
                         header={intl.formatMessage({ id: 'SakslisteVelgerForm.AndreKriterier' })}
-                        texts={getAndreKriterier(getValgtSaksliste(sakslister, values.sakslisteId), intl)}
+                        texts={getAndreKriterier(intl, getValgtSaksliste(sakslister, values.sakslisteId))}
                       />
                     </FlexColumn>
                     <FlexColumn className={styles.marginFilters}>
                       <LabelWithHeader
                         header={intl.formatMessage({ id: 'SakslisteVelgerForm.Sortering' })}
-                        texts={[getSorteringsnavn(getValgtSaksliste(sakslister, values.sakslisteId))]}
+                        texts={[getSorteringsnavn(intl, getValgtSaksliste(sakslister, values.sakslisteId))]}
                       />
                     </FlexColumn>
                   </>
@@ -248,7 +236,7 @@ export class SakslisteVelgerForm extends Component<TsProps> {
   }
 }
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   saksbehandlere: getSakslistensSaksbehandlere(state),
 });
 

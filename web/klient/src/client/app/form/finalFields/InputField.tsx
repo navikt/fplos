@@ -1,22 +1,38 @@
-import React, { FC } from 'react';
-import PropTypes from 'prop-types';
+import React, { FunctionComponent } from 'react';
 import { Field } from 'react-final-form';
 import { Input as NavInput } from 'nav-frontend-skjema';
 
 import renderNavField from './renderNavField';
 import ReadOnlyField from './ReadOnlyField';
-import { labelPropType } from './Label';
+import { LabelType } from './Label';
 
 const renderNavInput = renderNavField(NavInput);
 
-const composeValidators = validators => value => validators.reduce((error, validator) => error || validator(value), undefined);
+const composeValidators = (validators) => (value) => validators.reduce((error, validator) => error || validator(value), undefined);
 
-const InputField: FC<InputField.propTypes & InputField.defaultProps> = ({
+interface OwnProps {
+  name: string;
+  type?: string;
+  label?: LabelType;
+  validate?: ((text: any) => ({ id: string; text?: string }
+    | { text: any; id?: string })[])[] | { length: any; id?: string };
+  readOnly?: boolean;
+  isEdited?: boolean;
+  className?: string;
+  placeholder?: string;
+  onBlurValidation?: boolean;
+  bredde?: string;
+  parse?: (value: string) => string;
+  autoFocus?: boolean;
+}
+
+const InputField: FunctionComponent<OwnProps> = ({
   name, type, label, validate, readOnly, isEdited, ...otherProps
 }) => (
   <Field
     name={name}
     validate={composeValidators(validate)}
+    // @ts-ignore
     component={readOnly ? ReadOnlyField : renderNavInput}
     type={type}
     label={label}
@@ -27,15 +43,6 @@ const InputField: FC<InputField.propTypes & InputField.defaultProps> = ({
     autoComplete="off"
   />
 );
-
-InputField.propTypes = {
-  name: PropTypes.string.isRequired,
-  type: PropTypes.string,
-  label: labelPropType,
-  validate: PropTypes.arrayOf(PropTypes.func),
-  readOnly: PropTypes.bool,
-  isEdited: PropTypes.bool,
-};
 
 InputField.defaultProps = {
   type: 'text',

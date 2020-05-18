@@ -1,6 +1,7 @@
 import React from 'react';
 import { expect } from 'chai';
 import sinon from 'sinon';
+import { IntlShape } from 'react-intl';
 
 import { shallowWithIntl, intlMock } from 'testHelpers/intl-enzyme-test-helper';
 import KoSortering from 'kodeverk/KoSortering';
@@ -8,17 +9,24 @@ import { RadioGroupField, RadioOption } from 'form/FinalFields';
 import { SorteringVelger } from './SorteringVelger';
 
 describe('<SorteringVelger>', () => {
+  const intl: Partial<IntlShape> = {
+    ...intlMock,
+  };
   it('skal vise radioknapper for alle sorteringsvalg', () => {
     const koSorteringTyper = [{
       kode: KoSortering.OPPRETT_BEHANDLING,
       navn: 'opprett',
+      felttype: '',
+      feltkategori: '',
     }, {
       kode: KoSortering.BEHANDLINGSFRIST,
       navn: 'frist',
+      felttype: '',
+      feltkategori: '',
     }];
 
     const wrapper = shallowWithIntl(<SorteringVelger
-      intl={intlMock}
+      intl={intl as IntlShape}
       koSorteringTyper={koSorteringTyper}
       valgtSakslisteId={1}
       lagreSakslisteSortering={sinon.spy()}
@@ -27,6 +35,9 @@ describe('<SorteringVelger>', () => {
       lagreSakslisteSorteringNumeriskIntervall={sinon.spy()}
       valgtAvdelingEnhet="1"
       erDynamiskPeriode={false}
+      valgteBehandlingtyper={[]}
+      fra={10}
+      til={10}
     />);
 
     const options = wrapper.find(RadioOption);
@@ -39,14 +50,18 @@ describe('<SorteringVelger>', () => {
     const koSorteringTyper = [{
       kode: KoSortering.OPPRETT_BEHANDLING,
       navn: 'opprett',
+      felttype: '',
+      feltkategori: '',
     }, {
       kode: KoSortering.BEHANDLINGSFRIST,
       navn: 'frist',
+      felttype: '',
+      feltkategori: '',
     }];
     const lagreSorteringFn = sinon.spy();
 
     const wrapper = shallowWithIntl(<SorteringVelger
-      intl={intlMock}
+      intl={intl as IntlShape}
       koSorteringTyper={koSorteringTyper}
       valgtSakslisteId={1}
       lagreSakslisteSortering={lagreSorteringFn}
@@ -55,6 +70,9 @@ describe('<SorteringVelger>', () => {
       lagreSakslisteSorteringNumeriskIntervall={sinon.spy()}
       valgtAvdelingEnhet="3"
       erDynamiskPeriode={false}
+      valgteBehandlingtyper={[]}
+      fra={10}
+      til={10}
     />);
 
     const felt = wrapper.find(RadioGroupField);

@@ -1,29 +1,27 @@
 
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import React, { Component, KeyboardEvent } from 'react';
 import { connect } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
+import { Dispatch } from 'redux';
 import {
- Normaltekst, Undertekst, Element, Undertittel,
+  Normaltekst, Undertekst, Element, Undertittel,
 } from 'nav-frontend-typografi';
 
 import { getValgtAvdelingEnhet } from 'app/duck';
 import { getKodeverk } from 'kodeverk/duck';
-import { Kodeverk } from 'kodeverk/kodeverkTsType';
-import kodeverkPropType from 'kodeverk/kodeverkPropType';
+import Kodeverk from 'kodeverk/kodeverkTsType';
 import kodeverkTyper from 'kodeverk/kodeverkTyper';
 import Image from 'sharedComponents/Image';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
-import Table from 'sharedComponents/Table';
-import TableRow from 'sharedComponents/TableRow';
-import TableColumn from 'sharedComponents/TableColumn';
+import Table from 'sharedComponents/table/Table';
+import TableRow from 'sharedComponents/table/TableRow';
+import TableColumn from 'sharedComponents/table/TableColumn';
 import DateLabel from 'sharedComponents/DateLabel';
 import addCircleIcon from 'images/add-circle.svg';
 import removeIcon from 'images/remove.svg';
 import { Column, Row } from 'nav-frontend-grid';
 import SletteSakslisteModal from './SletteSakslisteModal';
-import { Saksliste } from '../sakslisteTsType';
-import sakslistePropType from '../sakslistePropType';
+import Saksliste from '../sakslisteTsType';
 import { getAntallOppgaverForAvdelingResultat } from '../duck';
 
 import styles from './gjeldendeSakslisterTabell.less';
@@ -38,7 +36,7 @@ const headerTextCodes = [
   'EMPTY_1',
 ];
 
-interface TsProps {
+interface OwnProps {
   sakslister: Saksliste[];
   setValgtSakslisteId: (sakslisteId: number) => void;
   lagNySaksliste: (avdelingEnhet: string) => void;
@@ -47,40 +45,28 @@ interface TsProps {
   behandlingTyper: Kodeverk[];
   fagsakYtelseTyper: Kodeverk[];
   valgtAvdelingEnhet: string;
-  hentAvdelingensSakslister: (avdelingEnhet: string) => Saksliste[];
+  hentAvdelingensSakslister: (avdelingEnhet: string) => (dispatch: Dispatch<any>) => Saksliste[];
   oppgaverForAvdeling?: number;
-  hentAntallOppgaverForAvdeling: (avdelingEnhet: string) => Promise<string>;
+  hentAntallOppgaverForAvdeling: (avdelingEnhet: string) => (dispatch: Dispatch<any>) => Promise<string>;
 }
 
 interface StateTsProps {
   valgtSaksliste?: Saksliste;
 }
 
-const wait = ms => new Promise(resolve => setTimeout(resolve, ms));
+const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 /**
  * GjeldendeSakslisterTabell
  */
-export class GjeldendeSakslisterTabell extends Component<TsProps, StateTsProps> {
-  static propTypes = {
-    sakslister: PropTypes.arrayOf(sakslistePropType).isRequired,
-    setValgtSakslisteId: PropTypes.func.isRequired,
-    lagNySaksliste: PropTypes.func.isRequired,
-    fjernSaksliste: PropTypes.func.isRequired,
-    valgtSakslisteId: PropTypes.number,
-    behandlingTyper: PropTypes.arrayOf(kodeverkPropType).isRequired,
-    fagsakYtelseTyper: PropTypes.arrayOf(kodeverkPropType).isRequired,
-    valgtAvdelingEnhet: PropTypes.string.isRequired,
-    hentAvdelingensSakslister: PropTypes.func.isRequired,
-    oppgaverForAvdeling: PropTypes.number,
-    hentAntallOppgaverForAvdeling: PropTypes.func.isRequired,
-  };
-
+export class GjeldendeSakslisterTabell extends Component<OwnProps, StateTsProps> {
   static defaultProps = {
     valgtSakslisteId: undefined,
   }
 
-  constructor(props: TsProps) {
+  nodes: any[];
+
+  constructor(props: OwnProps) {
     super(props);
 
     this.state = {
@@ -98,7 +84,7 @@ export class GjeldendeSakslisterTabell extends Component<TsProps, StateTsProps> 
 
   setValgtSaksliste = async (event: Event, id: number) => {
     const { setValgtSakslisteId, hentAvdelingensSakslister, valgtAvdelingEnhet } = this.props;
-    if (this.nodes.some(node => node && node.contains(event.target))) {
+    if (this.nodes.some((node) => node && node.contains(event.target))) {
       return;
     }
 
@@ -118,11 +104,11 @@ export class GjeldendeSakslisterTabell extends Component<TsProps, StateTsProps> 
   };
 
   visFjernSakslisteModal = (valgtSaksliste: Saksliste) => {
-    this.setState(prevState => ({ ...prevState, valgtSaksliste }));
+    this.setState((prevState) => ({ ...prevState, valgtSaksliste }));
   }
 
   closeSletteModal = () => {
-    this.setState(prevState => ({ ...prevState, valgtSaksliste: undefined }));
+    this.setState((prevState) => ({ ...prevState, valgtSaksliste: undefined }));
   }
 
   fjernSaksliste = (saksliste: Saksliste) => {
@@ -140,7 +126,7 @@ export class GjeldendeSakslisterTabell extends Component<TsProps, StateTsProps> 
 
     const { fagsakYtelseTyper } = this.props;
     return valgteFagsakYtelseTyper.map((fyt) => {
-      const type = fagsakYtelseTyper.find(def => def.kode === fyt.kode);
+      const type = fagsakYtelseTyper.find((def) => def.kode === fyt.kode);
       return type ? type.navn : '';
     }).join(', ');
   };
@@ -154,12 +140,10 @@ export class GjeldendeSakslisterTabell extends Component<TsProps, StateTsProps> 
     }
 
     return valgteBehandlingTyper.map((bt) => {
-      const type = behandlingTyper.find(def => def.kode === bt.kode);
+      const type = behandlingTyper.find((def) => def.kode === bt.kode);
       return type ? type.navn : '';
     }).join(', ');
   };
-
-  nodes: any[];
 
   render = () => {
     const {
@@ -182,8 +166,8 @@ export class GjeldendeSakslisterTabell extends Component<TsProps, StateTsProps> 
             <div className={styles.grayBox}>
               <Normaltekst>
                 <FormattedMessage id="GjeldendeSakslisterTabell.OppgaverForAvdeling" />
-                <Undertittel>{oppgaverForAvdeling || '0'}</Undertittel>
               </Normaltekst>
+              <Undertittel>{oppgaverForAvdeling || '0'}</Undertittel>
             </div>
           </Column>
         </Row>
@@ -193,11 +177,10 @@ export class GjeldendeSakslisterTabell extends Component<TsProps, StateTsProps> 
             <Normaltekst><FormattedMessage id="GjeldendeSakslisterTabell.IngenLister" /></Normaltekst>
             <VerticalSpacer eightPx />
           </>
-        )
-        }
+        )}
         {sakslister.length > 0 && (
         <Table headerTextCodes={headerTextCodes}>
-          {sakslister.map(saksliste => (
+          {sakslister.map((saksliste) => (
             <TableRow
               key={saksliste.sakslisteId}
               className={saksliste.sakslisteId === valgtSakslisteId ? styles.isSelected : undefined}
@@ -220,7 +203,6 @@ export class GjeldendeSakslisterTabell extends Component<TsProps, StateTsProps> 
                     className={styles.removeImage}
                     onMouseDown={() => this.visFjernSakslisteModal(saksliste)}
                     onKeyDown={() => this.visFjernSakslisteModal(saksliste)}
-                    tabIndex="0"
                   />
                 </div>
               </TableColumn>
@@ -253,7 +235,7 @@ export class GjeldendeSakslisterTabell extends Component<TsProps, StateTsProps> 
   }
 }
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   behandlingTyper: getKodeverk(kodeverkTyper.BEHANDLING_TYPE)(state),
   fagsakYtelseTyper: getKodeverk(kodeverkTyper.FAGSAK_YTELSE_TYPE)(state),
   valgtAvdelingEnhet: getValgtAvdelingEnhet(state),

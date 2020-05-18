@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-
+import { Dispatch } from 'redux';
 import { Form } from 'react-final-form';
-import { injectIntl, intlShape, FormattedMessage } from 'react-intl';
+import { injectIntl, WrappedComponentProps, FormattedMessage } from 'react-intl';
 import Panel from 'nav-frontend-paneler';
 import { Undertittel, Element, Normaltekst } from 'nav-frontend-typografi';
 
@@ -12,11 +11,10 @@ import { Row, Column } from 'nav-frontend-grid';
 import {
   required, minLength, maxLength, hasValidName,
 } from 'utils/validation/validators';
-import { Kodeverk } from 'kodeverk/kodeverkTsType';
+import Kodeverk from 'kodeverk/kodeverkTsType';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import { InputField } from 'form/FinalFields';
-import { Saksliste } from '../../sakslisteTsType';
-import sakslistePropType from '../../sakslistePropType';
+import Saksliste from '../../sakslisteTsType';
 import { getAntallOppgaverForSakslisteResultat } from '../../duck';
 import AutoLagringVedBlur from './AutoLagringVedBlur';
 import BehandlingstypeVelger from './BehandlingstypeVelger';
@@ -34,8 +32,7 @@ const finnDagerSomTall = (antallDager) => {
   return Number.isNaN(nr) ? undefined : nr;
 };
 
-interface TsProps {
-  intl: any;
+interface OwnProps {
   valgtSaksliste: Saksliste;
   lagreSakslisteNavn: (saksliste: {sakslisteId: number; navn: string}, avdelingEnhet: string) => void;
   lagreSakslisteBehandlingstype: (sakslisteId: number, behandlingType: Kodeverk, isChecked: boolean, avdelingEnhet: string) => void;
@@ -43,25 +40,13 @@ interface TsProps {
   lagreSakslisteAndreKriterier: (sakslisteId: number, andreKriterierType: Kodeverk, isChecked: boolean, skalInkludere: boolean, avdelingEnhet: string) => void;
   valgtAvdelingEnhet: string;
   antallOppgaver?: number;
-  hentAntallOppgaverForSaksliste: (sakslisteId: number, avdelingEnhet: string) => Promise<string>;
+  hentAntallOppgaverForSaksliste: (sakslisteId: number, avdelingEnhet: string) => (dispatch: Dispatch<any>) => Promise<string>;
 }
 
 /**
  * UtvalgskriterierForSakslisteForm
  */
-export class UtvalgskriterierForSakslisteForm extends Component<TsProps> {
-  static propTypes = {
-    intl: intlShape.isRequired,
-    valgtSaksliste: sakslistePropType.isRequired,
-    lagreSakslisteNavn: PropTypes.func.isRequired,
-    lagreSakslisteBehandlingstype: PropTypes.func.isRequired,
-    lagreSakslisteFagsakYtelseType: PropTypes.func.isRequired,
-    lagreSakslisteAndreKriterier: PropTypes.func.isRequired,
-    valgtAvdelingEnhet: PropTypes.string.isRequired,
-    antallOppgaver: PropTypes.number,
-    hentAntallOppgaverForSaksliste: PropTypes.func.isRequired,
-  };
-
+export class UtvalgskriterierForSakslisteForm extends Component<OwnProps & WrappedComponentProps> {
   componentDidMount = () => {
     const {
       valgtSaksliste, hentAntallOppgaverForSaksliste, valgtAvdelingEnhet,
@@ -69,7 +54,7 @@ export class UtvalgskriterierForSakslisteForm extends Component<TsProps> {
     hentAntallOppgaverForSaksliste(valgtSaksliste.sakslisteId, valgtAvdelingEnhet);
   }
 
-  componentDidUpdate = (prevProps: TsProps) => {
+  componentDidUpdate = (prevProps: OwnProps) => {
     const {
       valgtSaksliste, hentAntallOppgaverForSaksliste, valgtAvdelingEnhet,
     } = this.props;
@@ -156,7 +141,6 @@ export class UtvalgskriterierForSakslisteForm extends Component<TsProps> {
                   lagreSakslisteFagsakYtelseType={lagreSakslisteFagsakYtelseType}
                   valgtSakslisteId={valgtSaksliste.sakslisteId}
                   valgtAvdelingEnhet={valgtAvdelingEnhet}
-                  valgtFagsakYtelseType={values ? values.fagsakYtelseType : ''}
                 />
               </Column>
             </Row>
@@ -196,7 +180,7 @@ export class UtvalgskriterierForSakslisteForm extends Component<TsProps> {
   }
 }
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   valgtAvdelingEnhet: getValgtAvdelingEnhet(state),
   antallOppgaver: getAntallOppgaverForSakslisteResultat(state),
 });

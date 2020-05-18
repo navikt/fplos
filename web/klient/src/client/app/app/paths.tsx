@@ -1,9 +1,9 @@
 import { formatQueryString, parseQueryString } from 'utils/urlUtils';
-import { Location } from './locationTsType';
+import Location from './locationTsType';
 
 export const AVDELINGSLEDER_PATH = 'avdelingsleder';
 
-const emptyQueryString = queryString => queryString === '?' || !queryString;
+const emptyQueryString = (queryString) => queryString === '?' || !queryString;
 
 const updateQueryParams = (queryString, nextParams) => {
   const prevParams = emptyQueryString(queryString) ? {} : parseQueryString(queryString);

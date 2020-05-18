@@ -1,8 +1,8 @@
 import React from 'react';
 import { expect } from 'chai';
-
 import { Form } from 'react-final-form';
 import moment from 'moment';
+import { IntlShape } from 'react-intl';
 
 import { ISO_DATE_FORMAT } from 'utils/formats';
 import { RadioOption, SelectField } from 'form/FinalFields';
@@ -12,6 +12,10 @@ import { ManueltPaVentPanel, ALLE_YTELSETYPER_VALGT } from './ManueltPaVentPanel
 import ManueltPaVentGraf from './ManueltPaVentGraf';
 
 describe('<ManueltPaVentPanel>', () => {
+  const intl: Partial<IntlShape> = {
+    ...intlMock,
+  };
+
   const fagsakYtelseTyper = [{
     kode: fagsakYtelseType.ENGANGSSTONAD,
     navn: 'Engangsstønad',
@@ -28,18 +32,19 @@ describe('<ManueltPaVentPanel>', () => {
     const oppgaverManueltPaVent = [];
 
     const wrapper = shallowWithIntl(<ManueltPaVentPanel
-      intl={intlMock}
+      intl={intl as IntlShape}
       width={300}
       height={200}
       fagsakYtelseTyper={fagsakYtelseTyper}
       oppgaverManueltPaVent={oppgaverManueltPaVent}
       initialValues={{ valgtYtelsetype: valuesMock.valgtYtelsetype, ukevalg: valuesMock.ukevalg }}
-    />).find(Form).drill(props => props.render({ values: valuesMock })).shallow();
+      // @ts-ignore
+    />).find(Form).renderProp('render')({ values: valuesMock });
 
     const select = wrapper.find(SelectField);
     expect(select).to.have.length(1);
 
-    const options = select.prop('selectValues');
+    const options = select.prop('selectValues') as { props: { value: string; children: string }}[];
     expect(options).to.have.length(2);
     expect(options[0].props.value).to.eql('4');
     expect(options[0].props.children).to.eql('4 uker frem');
@@ -72,13 +77,14 @@ describe('<ManueltPaVentPanel>', () => {
     }];
 
     const wrapper = shallowWithIntl(<ManueltPaVentPanel
-      intl={intlMock}
+      intl={intl as IntlShape}
       width={300}
       height={200}
       fagsakYtelseTyper={fagsakYtelseTyper}
       oppgaverManueltPaVent={oppgaverManueltPaVent}
       initialValues={{ valgtYtelsetype: valuesMock.valgtYtelsetype, ukevalg: valuesMock.ukevalg }}
-    />).find(Form).drill(props => props.render({ values: valuesMock })).shallow();
+      // @ts-ignore
+    />).find(Form).renderProp('render')({ values: valuesMock });
 
     const graf = wrapper.find(ManueltPaVentGraf);
     expect(graf).to.have.length(1);
@@ -102,13 +108,14 @@ describe('<ManueltPaVentPanel>', () => {
     }];
 
     const wrapper = shallowWithIntl(<ManueltPaVentPanel
-      intl={intlMock}
+      intl={intl as IntlShape}
       width={300}
       height={200}
       fagsakYtelseTyper={fagsakYtelseTyper}
       oppgaverManueltPaVent={oppgaverManueltPaVent}
       initialValues={{ valgtYtelsetype: valuesMock.valgtYtelsetype, ukevalg: valuesMock.ukevalg }}
-    />).find(Form).drill(props => props.render({ values: valuesMock })).shallow();
+      // @ts-ignore
+    />).find(Form).renderProp('render')({ values: valuesMock });
 
     const graf = wrapper.find(ManueltPaVentGraf);
     expect(graf).to.have.length(1);
@@ -132,13 +139,14 @@ describe('<ManueltPaVentPanel>', () => {
     }];
 
     const wrapper = shallowWithIntl(<ManueltPaVentPanel
-      intl={intlMock}
+      intl={intl as IntlShape}
       width={300}
       height={200}
       fagsakYtelseTyper={fagsakYtelseTyper}
       oppgaverManueltPaVent={oppgaverManueltPaVent}
       initialValues={{ valgtYtelsetype: valuesMock.valgtYtelsetype, ukevalg: valuesMock.ukevalg }}
-    />).find(Form).drill(props => props.render({ values: valuesMock })).shallow();
+      // @ts-ignore
+    />).find(Form).renderProp('render')({ values: valuesMock });
 
     const graf = wrapper.find(ManueltPaVentGraf);
     expect(graf).to.have.length(1);
@@ -161,13 +169,14 @@ describe('<ManueltPaVentPanel>', () => {
     }];
 
     const wrapper = shallowWithIntl(<ManueltPaVentPanel
-      intl={intlMock}
+      intl={intl as IntlShape}
       width={300}
       height={200}
       fagsakYtelseTyper={fagsakYtelseTyper}
       oppgaverManueltPaVent={oppgaverManueltPaVent}
       initialValues={{ valgtYtelsetype: valuesMock.valgtYtelsetype, ukevalg: valuesMock.ukevalg }}
-    />).find(Form).drill(props => props.render({ values: valuesMock })).shallow();
+      // @ts-ignore
+    />).find(Form).renderProp('render')({ values: valuesMock });
 
     const graf = wrapper.find(ManueltPaVentGraf);
     expect(graf).to.have.length(1);

@@ -1,43 +1,41 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React, { FunctionComponent } from 'react';
 import classnames from 'classnames/bind';
 
 import styles from './verticalSpacer.less';
 
 const classNames = classnames.bind(styles);
 
+interface OwnProps {
+  fourPx?: boolean;
+  eightPx?: boolean;
+  sixteenPx?: boolean;
+  twentyPx?: boolean;
+  thirtyTwoPx?: boolean;
+  fourtyPx?: boolean;
+}
+
 /**
  * VerticalSpacer
  *
  * Presentasjonskomponent. Legg inn vertikalt tomrom.
  */
-const VerticalSpacer = ({
-  fourPx,
-  eightPx,
-  sixteenPx,
-  twentyPx,
+const VerticalSpacer: FunctionComponent<OwnProps> = ({
+  fourPx = false,
+  eightPx = false,
+  sixteenPx = false,
+  twentyPx = false,
+  thirtyTwoPx = false,
+  fourtyPx = false,
 }) => (
   <div className={classNames({
     fourPx,
     eightPx,
     sixteenPx,
     twentyPx,
+    thirtyTwoPx,
+    fourtyPx,
   })}
   />
 );
-
-VerticalSpacer.propTypes = {
-  fourPx: PropTypes.bool,
-  eightPx: PropTypes.bool,
-  sixteenPx: PropTypes.bool,
-  twentyPx: PropTypes.bool,
-};
-
-VerticalSpacer.defaultProps = {
-  fourPx: false,
-  eightPx: false,
-  sixteenPx: false,
-  twentyPx: false,
-};
 
 export default VerticalSpacer;

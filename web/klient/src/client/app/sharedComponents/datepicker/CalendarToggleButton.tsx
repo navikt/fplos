@@ -1,14 +1,34 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 
 const generateStyleObject = (inputTop, inputWidth, buttonWidth = 0) => ({
   top: inputTop,
   left: inputWidth - buttonWidth,
 });
 
-class CalendarToggleButton extends Component {
-  constructor() {
-    super();
+interface OwnProps {
+  toggleShowCalendar: () => void;
+  inputOffsetTop?: number;
+  inputOffsetWidth?: number;
+  className?: string;
+  disabled?: boolean;
+  buttonRef?: (ref: HTMLDivElement) => void;
+}
+
+interface StateProps {
+  buttonWidth?: number;
+}
+
+class CalendarToggleButton extends Component<OwnProps, StateProps> {
+  static defaultProps = {
+    inputOffsetTop: 0,
+    inputOffsetWidth: 0,
+    className: '',
+    disabled: false,
+    buttonRef: () => undefined,
+  };
+
+  constructor(props) {
+    super(props);
     this.state = {};
     this.handleButtonRef = this.handleButtonRef.bind(this);
   }
@@ -44,22 +64,5 @@ class CalendarToggleButton extends Component {
     );
   }
 }
-
-CalendarToggleButton.propTypes = {
-  toggleShowCalendar: PropTypes.func.isRequired,
-  inputOffsetTop: PropTypes.number,
-  inputOffsetWidth: PropTypes.number,
-  className: PropTypes.string,
-  disabled: PropTypes.bool,
-  buttonRef: PropTypes.func,
-};
-
-CalendarToggleButton.defaultProps = {
-  inputOffsetTop: 0,
-  inputOffsetWidth: 0,
-  className: '',
-  disabled: false,
-  buttonRef: () => undefined,
-};
 
 export default CalendarToggleButton;

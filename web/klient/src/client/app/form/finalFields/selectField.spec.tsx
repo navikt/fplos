@@ -10,7 +10,7 @@ const selectValues = [
   <option value="false" key="option2">Nei</option>,
 ];
 
-const mountFieldInForm = field => mountWithIntl(
+const mountFieldInForm = (field) => mountWithIntl(
   <Form
     onSubmit={() => undefined}
     render={() => (

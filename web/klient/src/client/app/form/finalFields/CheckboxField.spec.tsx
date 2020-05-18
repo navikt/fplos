@@ -8,7 +8,7 @@ import { RenderCheckboxField } from './CheckboxField';
 
 chai.use(sinonChai);
 
-const getInputMock = input => ({
+const getInputMock = (input) => ({
   name: 'mockInput',
   onBlur: sinon.spy(),
   onChange: sinon.spy(),
@@ -33,9 +33,11 @@ describe('<CheckboxField>', () => {
     const checkbox = wrapper.find('input');
 
     checkbox.simulate('change', { target: { checked: true } });
+    // @ts-ignore
     expect(onChange).to.have.been.calledWith(true);
 
     checkbox.simulate('change', { target: { checked: false } });
+    // @ts-ignore
     expect(onChange).to.have.been.calledWith(false);
   });
 

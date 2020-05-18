@@ -1,7 +1,7 @@
 import React from 'react';
 import { expect } from 'chai';
-import sinon from 'sinon';
-import { FormattedMessage } from 'react-intl';
+import { FormattedMessage, IntlShape } from 'react-intl';
+
 
 import { shallowWithIntl, intlMock } from 'testHelpers/intl-enzyme-test-helper';
 import Modal from 'sharedComponents/Modal';
@@ -10,14 +10,13 @@ import Image from 'sharedComponents/Image';
 import BehandlingPollingTimoutModal from './BehandlingPollingTimoutModal';
 
 describe('<BehandlingPollingTimoutModal>', () => {
+  const intl: Partial<IntlShape> = {
+    ...intlMock,
+  };
   it('skal rendre modal', () => {
     const wrapper = shallowWithIntl(
       <BehandlingPollingTimoutModal.WrappedComponent
-        intl={intlMock}
-        textCode="MerkePanel.Dod"
-        showModal
-        cancel={sinon.spy()}
-        submit={sinon.spy()}
+        intl={intl as IntlShape}
       />,
     );
 
@@ -28,7 +27,7 @@ describe('<BehandlingPollingTimoutModal>', () => {
 
     const image = wrapper.find(Image);
     expect(image).to.have.length(1);
-    expect(image.prop('altCode')).is.eql('BehandlingPollingTimoutModal.TimeoutMelding');
+    expect(image.prop('alt')).is.eql('Din økt er gått ut på tid, trykk Fortsett');
 
     const message = wrapper.find(FormattedMessage);
     expect(message).to.have.length(1);

@@ -1,25 +1,29 @@
-
 import React from 'react';
-import { shallowWithIntl, intlMock } from 'testHelpers/intl-enzyme-test-helper';
 import { expect } from 'chai';
-
+import { IntlShape } from 'react-intl';
+import { shallow } from 'enzyme';
 import { Form } from 'react-final-form';
 import sinon from 'sinon';
 import { Knapp } from 'nav-frontend-knapper';
 
+import { shallowWithIntl, intlMock } from 'testHelpers/intl-enzyme-test-helper';
 import { InputField } from 'form/FinalFields';
 import { SearchForm } from './SearchForm';
 
 describe('<SearchForm>', () => {
+  const intl: Partial<IntlShape> = {
+    ...intlMock,
+  };
   it('skal ha et søkefelt og en søkeknapp', () => {
     const formProps = { handleSubmit: sinon.spy(), values: { searchString: '' } };
-    const wrapper = shallowWithIntl(<SearchForm
-      intl={intlMock}
+    const wrapper = shallow(<SearchForm
+      intl={intl as IntlShape}
       onSubmit={sinon.spy()}
       searchStarted
       resetSearch={sinon.spy()}
       kanSaksbehandle
-    />).find(Form).drill(props => props.render(formProps)).shallow();
+    // @ts-ignore
+    />).find(Form).renderProp('render')(formProps);
 
     expect(wrapper.find(InputField)).to.have.length(1);
     expect(wrapper.find(Knapp)).to.have.length(1);
@@ -30,15 +34,17 @@ describe('<SearchForm>', () => {
     const formProps = { handleSubmit: onButtonClick, values: { searchString: '' } };
 
     const wrapper = shallowWithIntl(<SearchForm
-      intl={intlMock}
+      intl={intl as IntlShape}
       onSubmit={onButtonClick}
       searchStarted
       resetSearch={sinon.spy()}
       kanSaksbehandle
-    />).find(Form).drill(props => props.render(formProps)).shallow();
+    // @ts-ignore
+    />).find(Form).renderProp('render')(formProps);
 
     const form = wrapper.find('form');
-    form.simulate('submit', { preventDefault() {} });
+    const preventDefault = () => undefined;
+    form.simulate('submit', { preventDefault });
 
     expect(onButtonClick).to.have.property('callCount', 1);
   });

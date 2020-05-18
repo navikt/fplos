@@ -26,15 +26,15 @@ const initialState = {
   valgtAvdelingEnhet: undefined,
 };
 
-interface ActionTsType {
+interface Action {
   type: string;
   data?: any;
 }
-interface StateTsType {
+interface State {
   valgtAvdelingEnhet?: string;
 }
 
-export const appReducer = (state: StateTsType = initialState, action: ActionTsType = { type: '' }) => {
+export const appReducer = (state: State = initialState, action: Action = { type: '' }) => {
   switch (action.type) {
     case SET_AVDELING_ENHET:
       return {
@@ -52,7 +52,7 @@ export const appReducer = (state: StateTsType = initialState, action: ActionTsTy
 };
 
 /* Selectors */
-const getAppContext = state => state.default.appContext;
+const getAppContext = (state) => state.default.appContext;
 
 type NavAnsatt = Readonly<{
   navn: string;
@@ -69,7 +69,7 @@ const NavAnsattDefault = {
   funksjonellTid: undefined,
 };
 
-export const getValgtAvdelingEnhet = createSelector([getAppContext], appContext => appContext.valgtAvdelingEnhet);
+export const getValgtAvdelingEnhet = createSelector([getAppContext], (appContext) => appContext.valgtAvdelingEnhet);
 export const getNavAnsattName = createSelector([fpLosApi.NAV_ANSATT.getRestApiData()], (navAnsatt: NavAnsatt = NavAnsattDefault) => navAnsatt.navn);
 export const getNavAnsattKanSaksbehandle = createSelector([fpLosApi.NAV_ANSATT.getRestApiData()], (navAnsatt: NavAnsatt = NavAnsattDefault) => navAnsatt
   .kanSaksbehandle);
@@ -80,8 +80,8 @@ export const getNavAnsattKanBehandleKode6 = createSelector([fpLosApi.NAV_ANSATT.
 export const getFunksjonellTid = createSelector([fpLosApi.NAV_ANSATT.getRestApiData()], (navAnsatt: NavAnsatt = NavAnsattDefault) => navAnsatt.funksjonellTid);
 export const getFpsakUrl = createSelector([fpLosApi.FPSAK_URL.getRestApiData()], (fpsakUrl: {verdi: undefined }) => fpsakUrl.verdi);
 export const getFptilbakeUrl = createSelector([fpLosApi.FPTILBAKE_URL.getRestApiData()], (fptilbakeUrl: {verdi: undefined }) => fptilbakeUrl.verdi);
-export const hentFpsakInternBehandlingId = (uuid: string) => (dispatch: Dispatch) => dispatch(
-    fpLosApi.FPSAK_BEHANDLING_ID.makeRestApiRequest()(
-        { uuid },
-    ),
+export const hentFpsakInternBehandlingId = (uuid: string) => (dispatch: Dispatch<any>) => dispatch(
+  fpLosApi.FPSAK_BEHANDLING_ID.makeRestApiRequest()(
+    { uuid },
+  ),
 );

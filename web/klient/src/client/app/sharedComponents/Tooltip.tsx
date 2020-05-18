@@ -1,53 +1,42 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React, { FunctionComponent, ReactNode } from 'react';
 import classnames from 'classnames/bind';
-
-import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 
 import styles from './tooltip.less';
 
 const classNames = classnames.bind(styles);
 
+interface OwnProps {
+  children: ReactNode | string;
+  content: ReactNode | string;
+  alignLeft?: boolean;
+  alignRight?: boolean;
+  alignTop?: boolean;
+  alignBottom?: boolean;
+}
+
 /**
  * Tooltip
- *
  */
-const Tooltip = ({
-  header,
-  body,
-  show,
-  alignArrowLeft,
+const Tooltip: FunctionComponent<OwnProps> = ({
   children,
+  content,
+  alignRight = false,
+  alignLeft = false,
+  alignTop = false,
+  alignBottom = false,
 }) => (
   <div className={styles.tooltip}>
+    <span className={classNames(styles.tooltiptext, {
+      right: alignRight || (!alignLeft && !alignTop && !alignBottom),
+      left: alignLeft,
+      top: alignTop,
+      bottom: alignBottom,
+    })}
+    >
+      {content}
+    </span>
     {children}
-    {header
-      && (
-      <div className={classNames(styles.tooltiptext, {
-        show, hide: !show, tooltiptextLeft: alignArrowLeft, tooltiptextBottom: !alignArrowLeft,
-      })}
-      >
-        {header}
-        <VerticalSpacer eightPx />
-        {body}
-      </div>
-      )
-    }
   </div>
 );
-
-Tooltip.propTypes = {
-  header: PropTypes.node.isRequired,
-  body: PropTypes.node,
-  show: PropTypes.bool,
-  alignArrowLeft: PropTypes.bool,
-  children: PropTypes.node.isRequired,
-};
-
-Tooltip.defaultProps = {
-  body: undefined,
-  show: true,
-  alignArrowLeft: false,
-};
 
 export default Tooltip;

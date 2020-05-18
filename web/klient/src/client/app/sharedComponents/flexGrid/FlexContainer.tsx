@@ -1,25 +1,24 @@
-import React, { FC } from 'react';
-import PropTypes from 'prop-types';
+import React, { ReactNode, FunctionComponent } from 'react';
 import classnames from 'classnames/bind';
 
 import styles from './flexContainer.less';
 
 const classNames = classnames.bind(styles);
 
-const FlexContainer: FC<FlexContainer.propTypes & FlexContainer.defaultProps> = ({ children, wrap }) => (
-  <div className={classNames('flexContainer', 'fluid', { flexWrap: wrap })}>
+interface OwnProps {
+  children?: ReactNode | ReactNode[];
+  wrap?: boolean;
+  fullHeight?: boolean;
+}
+
+const FlexContainer: FunctionComponent<OwnProps> = ({
+  children,
+  wrap = false,
+  fullHeight = false,
+}) => (
+  <div className={classNames('flexContainer', 'fluid', { flexWrap: wrap, fullHeight })}>
     {children}
   </div>
 );
-
-FlexContainer.propTypes = {
-  children: PropTypes.oneOfType([PropTypes.node, PropTypes.arrayOf(PropTypes.node)]),
-  wrap: PropTypes.bool,
-};
-
-FlexContainer.defaultProps = {
-  children: null,
-  wrap: false,
-};
 
 export default FlexContainer;

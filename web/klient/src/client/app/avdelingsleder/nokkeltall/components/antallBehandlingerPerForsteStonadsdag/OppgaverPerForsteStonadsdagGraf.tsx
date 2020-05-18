@@ -1,12 +1,11 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import {
   XYPlot, XAxis, YAxis, AreaSeries, Crosshair, HorizontalGridLines,
 } from 'react-vis';
 import { createSelector } from 'reselect';
 import moment from 'moment';
-import { FormattedMessage, FormattedHTMLMessage } from 'react-intl';
+import { FormattedMessage } from 'react-intl';
 import Panel from 'nav-frontend-paneler';
 import { Normaltekst, Undertekst } from 'nav-frontend-typografi';
 
@@ -26,32 +25,22 @@ interface Koordinat {
   y: number;
 }
 
-interface TsProps {
+interface OwnProps {
   width: number;
   height: number;
   data: Koordinat[];
   isEmpty: boolean;
 }
 
-interface StateTsProps {
+interface StateProps {
   crosshairValues: Koordinat[];
 }
 
 /**
  * OppgaverPerForsteStonadsdagGraf.
  */
-export class OppgaverPerForsteStonadsdagGraf extends Component<TsProps, StateTsProps> {
-  static propTypes = {
-    width: PropTypes.number.isRequired,
-    height: PropTypes.number.isRequired,
-    data: PropTypes.arrayOf(PropTypes.shape({
-      x: PropTypes.instanceOf(Date).isRequired,
-      y: PropTypes.number.isRequired,
-    })).isRequired,
-    isEmpty: PropTypes.bool.isRequired,
-  };
-
-  constructor(props: TsProps) {
+export class OppgaverPerForsteStonadsdagGraf extends Component<OwnProps, StateProps> {
+  constructor(props: OwnProps) {
     super(props);
 
     this.state = {
@@ -60,11 +49,11 @@ export class OppgaverPerForsteStonadsdagGraf extends Component<TsProps, StateTsP
   }
 
   leggTilHintVerdi = (value: {x: Date; y: number}) => {
-    this.setState(prevState => ({ ...prevState, crosshairValues: [value] }));
+    this.setState((prevState) => ({ ...prevState, crosshairValues: [value] }));
   };
 
   fjernHintVerdi = () => {
-    this.setState(prevState => ({ ...prevState, crosshairValues: [] }));
+    this.setState((prevState) => ({ ...prevState, crosshairValues: [] }));
   };
 
   render = () => {
@@ -91,7 +80,7 @@ export class OppgaverPerForsteStonadsdagGraf extends Component<TsProps, StateTsP
           <HorizontalGridLines />
           <XAxis
             tickTotal={5}
-            tickFormat={x => moment(x).format(DDMMYYYY_DATE_FORMAT)}
+            tickFormat={(x) => moment(x).format(DDMMYYYY_DATE_FORMAT)}
             style={{ text: cssText }}
           />
           <YAxis style={{ text: cssText }} />
@@ -110,7 +99,7 @@ export class OppgaverPerForsteStonadsdagGraf extends Component<TsProps, StateTsP
             }}
           >
             <div className={styles.crosshairDagensDato}>
-              <FormattedHTMLMessage id="OppgaverPerForsteStonadsdagGraf.DagensDato" />
+              <FormattedMessage id="OppgaverPerForsteStonadsdagGraf.DagensDato" values={{ br: <br /> }} />
             </div>
           </Crosshair>
 
@@ -137,7 +126,7 @@ export class OppgaverPerForsteStonadsdagGraf extends Component<TsProps, StateTsP
   }
 }
 
-export const lagKoordinater = createSelector([(state, ownProps) => ownProps], ownProps => ownProps.oppgaverPerForsteStonadsdag.map(o => ({
+export const lagKoordinater = createSelector([(state, ownProps) => ownProps], (ownProps) => ownProps.oppgaverPerForsteStonadsdag.map((o) => ({
   x: moment(o.forsteStonadsdag).startOf('day').toDate(),
   y: o.antall,
 })));
@@ -145,16 +134,16 @@ export const lagKoordinater = createSelector([(state, ownProps) => ownProps], ow
 export const lagDatastruktur = createSelector([lagKoordinater], (koordinater: Koordinat[]) => {
   const nyeKoordinater = [];
   const periodeStart = koordinater
-    .map(koordinat => moment(koordinat.x))
+    .map((koordinat) => moment(koordinat.x))
     .reduce((tidligesteDato, dato) => (tidligesteDato.isSameOrBefore(dato) ? tidligesteDato : dato), moment().startOf('day'))
     .toDate();
   const periodeSlutt = koordinater
-    .map(koordinat => moment(koordinat.x))
+    .map((koordinat) => moment(koordinat.x))
     .reduce((senesteDato, dato) => (senesteDato.isSameOrAfter(dato) ? senesteDato : dato), moment().startOf('day'))
     .toDate();
 
   for (let dato = moment(periodeStart); dato.isSameOrBefore(periodeSlutt); dato = dato.add(1, 'days')) {
-    const funnetKoordinat = koordinater.find(k => moment(k.x).isSame(dato));
+    const funnetKoordinat = koordinater.find((k) => moment(k.x).isSame(dato));
     nyeKoordinater.push({
       x: dato.toDate(),
       y: funnetKoordinat ? funnetKoordinat.y : 0,
@@ -163,7 +152,7 @@ export const lagDatastruktur = createSelector([lagKoordinater], (koordinater: Ko
   return nyeKoordinater;
 });
 
-export const harDatastrukturKun0Verdier = createSelector([lagKoordinater], koordinater => !koordinater.some(k => k.y !== 0));
+export const harDatastrukturKun0Verdier = createSelector([lagKoordinater], (koordinater) => !koordinater.some((k) => k.y !== 0));
 
 const mapStateToProps = (state, ownProps) => ({
   data: lagDatastruktur(state, ownProps),

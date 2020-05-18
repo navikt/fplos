@@ -1,27 +1,36 @@
-import React, { FC } from 'react';
-import PropTypes from 'prop-types';
+import React, { FunctionComponent } from 'react';
 import { Field } from 'react-final-form';
 import { Checkbox as NavCheckbox } from 'nav-frontend-skjema';
 import { Normaltekst } from 'nav-frontend-typografi';
 
 import renderNavField from './renderNavField';
-import { labelPropType } from './Label';
+import { LabelType } from './Label';
 
-const composeValidators = validators => value => validators.reduce((error, validator) => error || validator(value), undefined);
+const composeValidators = (validators) => (value) => validators.reduce((error, validator) => error || validator(value), undefined);
 
 export const RenderCheckboxField = renderNavField(({ onChange, label, ...otherProps }) => (
   <NavCheckbox
-    onChange={e => onChange(e.target.checked)}
+    onChange={(e) => onChange(e.target.checked)}
     checked={otherProps.value}
     label={React.cloneElement(label, { typographyElement: Normaltekst })}
     {...otherProps}
   />
 ));
 
-const CheckboxField: FC<CheckboxField.propTypes & CheckboxField.defaultProps> = ({
+interface OwnProps {
+  name: string;
+  label: LabelType;
+  validate?: (() => void)[];
+  readOnly?: boolean;
+  onClick?: () => void;
+  onChange?: (any) => void;
+}
+
+const CheckboxField: FunctionComponent<OwnProps> = ({
   name, label, validate, readOnly, ...otherProps
 }) => (
   <Field
+    type="checkbox"
     name={name}
     validate={validate ? composeValidators(validate) : undefined}
     component={RenderCheckboxField}
@@ -32,13 +41,6 @@ const CheckboxField: FC<CheckboxField.propTypes & CheckboxField.defaultProps> = 
     {...otherProps}
   />
 );
-
-CheckboxField.propTypes = {
-  name: PropTypes.string.isRequired,
-  label: labelPropType.isRequired,
-  validate: PropTypes.arrayOf(PropTypes.func),
-  readOnly: PropTypes.bool,
-};
 
 CheckboxField.defaultProps = {
   validate: null,

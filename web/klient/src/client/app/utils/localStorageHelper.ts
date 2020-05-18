@@ -1,4 +1,3 @@
-
 export const getValueFromLocalStorage = (key: string): string | undefined => {
   const value = window.localStorage.getItem(key);
   return value !== 'undefined' && value !== null ? value : undefined;

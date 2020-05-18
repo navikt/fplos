@@ -1,12 +1,16 @@
 import React from 'react';
 import { expect } from 'chai';
 import sinon from 'sinon';
+import { IntlShape } from 'react-intl';
 import { Hovedknapp, Knapp } from 'nav-frontend-knapper';
 
 import { shallowWithIntl, intlMock } from 'testHelpers/intl-enzyme-test-helper';
 import { SletteSaksbehandlerModal } from './SletteSaksbehandlerModal';
 
 describe('<SletteSaksbehandlerModal>', () => {
+  const intl: Partial<IntlShape> = {
+    ...intlMock,
+  };
   it('skal vise slette-modal med knapper for om en vil slette eller ikke', () => {
     const saksbehandler = {
       brukerIdent: 'TEST1',
@@ -15,7 +19,7 @@ describe('<SletteSaksbehandlerModal>', () => {
     };
 
     const wrapper = shallowWithIntl(<SletteSaksbehandlerModal
-      intl={intlMock}
+      intl={intl as IntlShape}
       valgtSaksbehandler={saksbehandler}
       closeSletteModal={sinon.spy()}
       fjernSaksbehandler={sinon.spy()}
@@ -34,7 +38,7 @@ describe('<SletteSaksbehandlerModal>', () => {
     const submitFn = sinon.spy();
 
     const wrapper = shallowWithIntl(<SletteSaksbehandlerModal
-      intl={intlMock}
+      intl={intl as IntlShape}
       valgtSaksbehandler={saksbehandler}
       closeSletteModal={sinon.spy()}
       fjernSaksbehandler={submitFn}
@@ -43,7 +47,8 @@ describe('<SletteSaksbehandlerModal>', () => {
     const sletteknapp = wrapper.find(Hovedknapp);
     expect(sletteknapp).to.have.length(1);
 
-    sletteknapp.prop('onClick')();
+    const clickFn = sletteknapp.prop('onClick') as () => void;
+    clickFn();
 
     expect(submitFn.calledOnce).to.be.true;
     const { args } = submitFn.getCalls()[0];

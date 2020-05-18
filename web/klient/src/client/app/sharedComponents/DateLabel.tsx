@@ -1,6 +1,9 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React, { FunctionComponent } from 'react';
 import { FormattedDate } from 'react-intl';
+
+interface OwnProps {
+  dateString: string;
+}
 
 /**
  * DateLabel
@@ -12,14 +15,10 @@ import { FormattedDate } from 'react-intl';
  * <DateLabel dateString="2017-08-31" />
  * ```
  */
-const DateLabel = ({
+const DateLabel: FunctionComponent<OwnProps> = ({
   dateString,
 }) => (
   <FormattedDate day="2-digit" month="2-digit" year="numeric" value={new Date(dateString)} />
 );
-
-DateLabel.propTypes = {
-  dateString: PropTypes.string.isRequired,
-};
 
 export default DateLabel;

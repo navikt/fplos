@@ -7,7 +7,7 @@ import renderNavField from './renderNavField';
 
 const metaMock = {};
 
-const getInputMock = input => ({
+const getInputMock = (input) => ({
   name: 'mockInput',
   onBlur: sinon.spy(),
   onChange: sinon.spy(),
@@ -30,7 +30,8 @@ describe('renderNavField', () => {
     const mockField = wrapper.find(MockField);
 
     expect(mockField).to.have.length(1);
-    expect(mockField.at(0).props().feil).to.be.undefined;
+    const props = mockField.at(0).props() as { feil: string };
+    expect(props.feil).to.be.undefined;
   });
 
   it('skal vise feil hvis submit har feilet', () => {
@@ -40,6 +41,7 @@ describe('renderNavField', () => {
     const mockField = wrapper.find(MockField);
 
     expect(mockField).to.have.length(1);
-    expect(mockField.at(0).props().feil).to.eql({ feilmelding: 'Feltet må fylles ut' });
+    const props = mockField.at(0).props() as { feil: string };
+    expect(props.feil).to.eql('Feltet må fylles ut');
   });
 });

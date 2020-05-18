@@ -1,21 +1,24 @@
 
 import React from 'react';
 import { expect } from 'chai';
-import { shallow } from 'enzyme';
-import { FormattedMessage } from 'react-intl';
+import { FormattedMessage, IntlShape } from 'react-intl';
 import sinon from 'sinon';
 import NavFrontendChevron from 'nav-frontend-chevron';
 
+import { shallowWithIntl, intlMock } from 'testHelpers/intl-enzyme-test-helper';
 import behandlingType from 'kodeverk/behandlingType';
 import behandlingStatus from 'kodeverk/behandlingStatus';
 import fagsakYtelseType from 'kodeverk/fagsakYtelseType';
 import DateLabel from 'sharedComponents/DateLabel';
-import TableRow from 'sharedComponents/TableRow';
-import TableColumn from 'sharedComponents/TableColumn';
+import TableRow from 'sharedComponents/table/TableRow';
+import TableColumn from 'sharedComponents/table/TableColumn';
 import Image from 'sharedComponents/Image';
 import { OppgaverTabell } from './OppgaverTabell';
 
 describe('<OppgaverTabell>', () => {
+  const intl: Partial<IntlShape> = {
+    ...intlMock,
+  };
   it('skal vise kriterievelger og liste over neste oppgaver', () => {
     const oppgaverTilBehandling = [{
       id: 1,
@@ -42,6 +45,7 @@ describe('<OppgaverTabell>', () => {
         kode: behandlingStatus.OPPRETTET,
         navn: '',
       },
+      href: '',
     }, {
       id: 2,
       status: {
@@ -67,9 +71,11 @@ describe('<OppgaverTabell>', () => {
         kode: behandlingStatus.OPPRETTET,
         navn: '',
       },
+      href: '',
     }];
 
-    const wrapper = shallow(<OppgaverTabell
+    const wrapper = shallowWithIntl(<OppgaverTabell
+      intl={intl as IntlShape}
       reserverteOppgaver={[]}
       oppgaverTilBehandling={oppgaverTilBehandling}
       reserverOppgave={sinon.spy()}
@@ -128,6 +134,7 @@ describe('<OppgaverTabell>', () => {
         kode: behandlingStatus.OPPRETTET,
         navn: '',
       },
+      href: '',
     }];
     const reserverteOppgaver = [{
       id: 2,
@@ -154,9 +161,11 @@ describe('<OppgaverTabell>', () => {
         kode: behandlingStatus.OPPRETTET,
         navn: '',
       },
+      href: '',
     }];
 
-    const wrapper = shallow(<OppgaverTabell
+    const wrapper = shallowWithIntl(<OppgaverTabell
+      intl={intl as IntlShape}
       reserverteOppgaver={reserverteOppgaver}
       oppgaverTilBehandling={oppgaverTilBehandling}
       reserverOppgave={sinon.spy()}
@@ -191,7 +200,8 @@ describe('<OppgaverTabell>', () => {
 
   it('skal ikke vise liste når en ikke har oppgaver', () => {
     const reserverteOppgaver = [];
-    const wrapper = shallow(<OppgaverTabell
+    const wrapper = shallowWithIntl(<OppgaverTabell
+      intl={intl as IntlShape}
       oppgaverTilBehandling={reserverteOppgaver}
       reserverteOppgaver={reserverteOppgaver}
       reserverOppgave={sinon.spy()}
@@ -244,9 +254,11 @@ describe('<OppgaverTabell>', () => {
         kode: behandlingStatus.OPPRETTET,
         navn: '',
       },
+      href: '',
     }];
 
-    const wrapper = shallow(<OppgaverTabell
+    const wrapper = shallowWithIntl(<OppgaverTabell
+      intl={intl as IntlShape}
       reserverteOppgaver={reserverteOppgaver}
       oppgaverTilBehandling={[]}
       reserverOppgave={sinon.spy()}
@@ -270,13 +282,13 @@ describe('<OppgaverTabell>', () => {
     expect(columnsRow1.at(4).find(Image)).has.length(1);
     expect(columnsRow1.at(5).find(Image)).has.length(1);
 
-    const tooltip = columnsRow1.at(4).find(Image).prop('tooltip');
-    expect(tooltip.header.props.children.props.values).is.eql({
-      dato: '02.01.2018',
-      tid: '00:00',
-      uid: '1234556',
-      navn: 'Auto Joachim',
-      beskrivelse: 'Har flytta til deg',
-    });
+    const tooltip = shallowWithIntl(columnsRow1.at(4).find(Image).prop('tooltip'));
+    const values = tooltip.find(FormattedMessage).prop('values') as { dato: string; tid: string; uid: string; navn: string; beskrivelse: string};
+
+    expect(values.dato).is.eql('02.01.2018');
+    expect(values.tid).is.eql('00:00');
+    expect(values.uid).is.eql('1234556');
+    expect(values.navn).is.eql('Auto Joachim');
+    expect(values.beskrivelse).is.eql('Har flytta til deg');
   });
 });

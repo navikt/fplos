@@ -1,6 +1,11 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React, { FunctionComponent } from 'react';
 import { FormattedDate, FormattedMessage } from 'react-intl';
+
+interface OwnProps {
+  dateStringFom: string;
+  dateStringTom?: string;
+  showTodayString?: boolean;
+}
 
 /**
  * PeriodLabel
@@ -12,36 +17,23 @@ import { FormattedDate, FormattedMessage } from 'react-intl';
  * <PeriodLabel dateStringFom="2017-08-25" dateStringTom="2017-08-31" />
  * ```
  */
-const PeriodLabel = ({
+const PeriodLabel: FunctionComponent<OwnProps> = ({
   dateStringFom,
   dateStringTom,
-  showTodayString,
+  showTodayString = false,
 }) => (
   <span>
     <FormattedDate day="2-digit" month="2-digit" year="numeric" value={new Date(dateStringFom)} />
-    {' - '}
+    -
     {dateStringTom
-      && <FormattedDate day="2-digit" month="2-digit" year="numeric" value={new Date(dateStringTom)} />
-    }
+      && <FormattedDate day="2-digit" month="2-digit" year="numeric" value={new Date(dateStringTom)} />}
     {showTodayString && !dateStringTom
       && (
       <span>
         <FormattedMessage id="PeriodLabel.DateToday" />
       </span>
-      )
-    }
+      )}
   </span>
 );
-
-PeriodLabel.propTypes = {
-  dateStringFom: PropTypes.string.isRequired,
-  dateStringTom: PropTypes.string,
-  showTodayString: PropTypes.bool,
-};
-
-PeriodLabel.defaultProps = {
-  dateStringTom: undefined,
-  showTodayString: false,
-};
 
 export default PeriodLabel;

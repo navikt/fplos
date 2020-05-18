@@ -9,30 +9,19 @@ import SaksbehandlerNokkeltallIndex from '../nokkeltall/SaksbehandlerNokkeltallI
 
 describe('<SaksstottePaneler>', () => {
   it('skal vise sist behandlede saker', () => {
-    const oppgaver = [];
-    const wrapper = shallow(<SaksstottePaneler
-      fpsakUrl="www.fpsak.no"
-      sistBehandledeSaker={oppgaver}
-    />);
+    const wrapper = shallow(<SaksstottePaneler />);
 
     expect(wrapper.find(SistBehandledeSaker)).to.have.length(1);
   });
 
   it('skal ikke vise nøkkeldata når det ikke er valgt saksliste', () => {
-    const oppgaver = [];
-    const wrapper = shallow(<SaksstottePaneler
-      fpsakUrl="www.fpsak.no"
-      sistBehandledeSaker={oppgaver}
-    />);
+    const wrapper = shallow(<SaksstottePaneler />);
 
     expect(wrapper.find(SaksbehandlerNokkeltallIndex)).to.have.length(0);
   });
 
   it('skal vise nøkkeldata når det er valgt saksliste', () => {
-    const oppgaver = [];
     const wrapper = shallow(<SaksstottePaneler
-      fpsakUrl="www.fpsak.no"
-      sistBehandledeSaker={oppgaver}
       valgtSakslisteId={1}
     />);
 

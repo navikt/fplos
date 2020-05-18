@@ -1,10 +1,24 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import React, { Component, ReactNode } from 'react';
 import { Select as NavSelect } from 'nav-frontend-skjema';
 
-class CustomNavSelect extends Component {
-  constructor() {
-    super();
+interface OwnProps {
+  selectValues: any[];
+  placeholder?: ReactNode;
+  value?: ReactNode;
+  hideValueOnDisable?: boolean;
+  disabled?: boolean;
+}
+
+class CustomNavSelect extends Component<OwnProps> {
+  static defaultProps = {
+    hideValueOnDisable: false,
+    disabled: false,
+  };
+
+  selectElement: ReactNode
+
+  constructor(props) {
+    super(props);
     this.getOptionValues = this.getOptionValues.bind(this);
     this.checkCorrespondingOptionForValue = this.checkCorrespondingOptionForValue.bind(this);
     this.handleSelectRef = this.handleSelectRef.bind(this);
@@ -22,12 +36,12 @@ class CustomNavSelect extends Component {
   getOptionValues() {
     const { props: { selectValues } } = this;
     return selectValues
-      .map(option => option.props)
+      .map((option) => option.props)
       .map((props = {}) => props.value);
   }
 
   selectedValue(value) {
-    const selectedValue = this.getOptionValues().find(optionValue => optionValue === value);
+    const selectedValue = this.getOptionValues().find((optionValue) => optionValue === value);
 
     return selectedValue || '';
   }
@@ -58,7 +72,7 @@ class CustomNavSelect extends Component {
     return (
       <NavSelect
         {...otherProps}
-        selectRef={handleSelectRef}
+        selectRef={handleSelectRef as () => any}
         value={hideValueOnDisable && disabled ? '' : selectedValue(value)}
         disabled={disabled}
       >
@@ -68,20 +82,5 @@ class CustomNavSelect extends Component {
     );
   }
 }
-
-CustomNavSelect.propTypes = {
-  selectValues: PropTypes.arrayOf(PropTypes.node).isRequired,
-  placeholder: PropTypes.node,
-  value: PropTypes.node,
-  hideValueOnDisable: PropTypes.bool,
-  disabled: PropTypes.bool,
-};
-
-CustomNavSelect.defaultProps = {
-  placeholder: null,
-  value: undefined,
-  hideValueOnDisable: false,
-  disabled: false,
-};
 
 export default CustomNavSelect;

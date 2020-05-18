@@ -23,6 +23,7 @@ describe('<SaksbehandlereForSakslisteForm>', () => {
       navn: 'Registrer papirsøknad',
     }],
     saksbehandlerIdenter: [],
+    antallBehandlinger: 1,
   };
 
   it('skal vise tekst når avdelingen ikke har tilordnede saksbehandlere', () => {
@@ -30,7 +31,8 @@ describe('<SaksbehandlereForSakslisteForm>', () => {
       valgtSaksliste={saksliste}
       knyttSaksbehandlerTilSaksliste={sinon.spy()}
       valgtAvdelingEnhet="1"
-    />).find(Form).drill(props => props.render()).shallow();
+      // @ts-ignore
+    />).find(Form).renderProp('render')();
 
     const melding = wrapper.find(FormattedMessage);
     expect(melding).to.have.length(2);
@@ -49,7 +51,8 @@ describe('<SaksbehandlereForSakslisteForm>', () => {
       avdelingensSaksbehandlere={saksbehandlere}
       knyttSaksbehandlerTilSaksliste={sinon.spy()}
       valgtAvdelingEnhet="1"
-    />).find(Form).drill(props => props.render()).shallow();
+      // @ts-ignore
+    />).find(Form).renderProp('render')();
 
     expect(wrapper.find(FormattedMessage)).to.have.length(1);
 
@@ -80,7 +83,8 @@ describe('<SaksbehandlereForSakslisteForm>', () => {
       avdelingensSaksbehandlere={saksbehandlere}
       knyttSaksbehandlerTilSaksliste={sinon.spy()}
       valgtAvdelingEnhet="1"
-    />).find(Form).drill(props => props.render()).shallow();
+      // @ts-ignore
+    />).find(Form).renderProp('render')();
 
     expect(wrapper.find(FormattedMessage)).to.have.length(1);
 
