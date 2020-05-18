@@ -30,6 +30,11 @@ jobs:
         with:
           java-version: 1.11
 
+      - name: Sette opp Node
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12.x
+
       - name: Hent og start Oracle image
         id: oracle
         shell: bash
