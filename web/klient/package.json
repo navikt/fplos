@@ -1,8 +1,24 @@
 {
-  "name": "LOS",
+  "name": "fplos",
   "version": "1.0.0",
-  "description": "LOS",
+  "description": "fplos",
   "main": "index.js",
+  "author": "NAV",
+  "license": "ISC",
+  "repository": "non",
+  "scripts": {
+    "test": "mochapack --webpack-config webpack/webpack.test.js \"src/client/app/**/*.spec.ts*\"",
+    "test:watch": "mochapack --watch --webpack-config webpack/webpack.test.watch.js \"src/client/app/**/*.spec.ts*\"",
+    "test:coverage": "nyc mochapack --webpack-config webpack/webpack.test.coverage.js  \"src/client/app/*/**/*.ts*\"",
+    "dev": "cross-env NODE_ENV=development node webpack/webpack.dev.server.js --config webpack/webpack.dev.js",
+    "build": "cross-env NODE_ENV=production webpack --progress --colors --config webpack/webpack.prod.js",
+    "postinstall": "yarn build && yarn test && yarn ts-check && yarn less:lint",
+    "ts-check": "tsc --pretty",
+    "less:lint": "stylelint \"src/client/app/**/*.less\"",
+    "doc": "react-asciidoc-generator ./src/client/app/ -o ../../docs/generated/react.adoc --handlebar-template src/docs/asciidoc-template.handlebars ",
+    "storybook": "start-storybook -p 9101 -c .storybook",
+    "deploy-storybook": "build-storybook -c .storybook -o .static_storybook && storybook-to-ghpages --existing-output-dir=.static_storybook"
+  },
   "dependencies": {
     "@navikt/boxed-list-with-selection": "1.0.1",
     "@navikt/boxed-list-with-links": "1.0.4",
@@ -75,6 +91,15 @@
     "@babel/preset-react": "^7.9.4",
     "@babel/preset-typescript": "^7.9.0",
     "@babel/register": "^7.9.0",
+    "@storybook/addon-actions": "^5.3.18",
+    "@storybook/addon-centered": "^5.3.18",
+    "@storybook/addon-docs": "^5.3.18",
+    "@storybook/addon-knobs": "^5.3.18",
+    "@storybook/addons": "^5.3.18",
+    "@storybook/cli": "^5.3.18",
+    "@storybook/react": "^5.3.18",
+    "@storybook/storybook-deployer": "^2.8.5",
+    "@storybook/theming": "^5.3.18",
     "@types/chai": "^4.2.11",
     "@types/classnames": "^2.2.10",
     "@types/enzyme": "^3.10.5",
@@ -139,17 +164,6 @@
     "webpack-dev-server": "^3.11.0",
     "webpack-merge": "^4.2.2"
   },
-  "scripts": {
-    "test": "mochapack --webpack-config webpack/webpack.test.js \"src/client/app/**/*.spec.ts*\"",
-    "test:watch": "mochapack --watch --webpack-config webpack/webpack.test.watch.js \"src/client/app/**/*.spec.ts*\"",
-    "test:coverage": "nyc mochapack --webpack-config webpack/webpack.test.coverage.js  \"src/client/app/*/**/*.ts*\"",
-    "dev": "cross-env NODE_ENV=development node webpack/webpack.dev.server.js --config webpack/webpack.dev.js",
-    "build": "cross-env NODE_ENV=production webpack --progress --colors --config webpack/webpack.prod.js",
-    "postinstall": "yarn build && yarn test && yarn ts-check && yarn less:lint",
-    "ts-check": "tsc --pretty",
-    "less:lint": "stylelint \"src/client/app/**/*.less\"",
-    "doc": "react-asciidoc-generator ./src/client/app/ -o ../../docs/generated/react.adoc --handlebar-template src/docs/asciidoc-template.handlebars "
-  },
   "nyc": {
     "branches": 40,
     "lines": 60,
@@ -176,8 +190,5 @@
     "exclude": [
       "**/*.spec.tsx"
     ]
-  },
-  "author": "tor",
-  "license": "ISC",
-  "repository": "non"
+  }
 }
