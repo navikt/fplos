@@ -3,10 +3,10 @@ import ReactModal from 'react-modal';
 
 import BehandlingPollingTimoutModal from 'saksbehandler/behandlingskoer/components/BehandlingPollingTimoutModal';
 
-import withIntl from '../../decorators/withIntl';
+import withIntl from '../../../decorators/withIntl';
 
 export default {
-  title: 'saksbehandler/BehandlingPollingTimoutModal',
+  title: 'saksbehandler/behandlingskoer/BehandlingPollingTimoutModal',
   component: BehandlingPollingTimoutModal,
   decorators: [withIntl],
 };

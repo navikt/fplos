@@ -11,7 +11,7 @@ type Saksliste = Readonly<{
   behandlingTyper: Kodeverk[];
   fagsakYtelseTyper: Kodeverk[];
   andreKriterier: AnnetKriterie[];
-   sortering?: {
+  sortering?: {
     sorteringType: Kodeverk;
     fra?: number;
     til?: number;

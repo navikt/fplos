@@ -5,7 +5,7 @@ import { bindActionCreators, Dispatch } from 'redux';
 import { fetchNyeOgFerdigstilteOppgaverNokkeltall } from './duck';
 import SaksbehandlerNokkeltallPanel from './components/SaksbehandlerNokkeltallPanel';
 
-interface TsProps {
+interface OwnProps {
   fetchNyeOgFerdigstilteOppgaverNokkeltall: (sakslisteId: number) => void;
   valgtSakslisteId: number;
 }
@@ -13,7 +13,7 @@ interface TsProps {
 /**
  * SaksbehandlerNokkeltallIndex
  */
-export class SaksbehandlerNokkeltallIndex extends Component<TsProps> {
+export class SaksbehandlerNokkeltallIndex extends Component<OwnProps> {
   componentDidMount = () => {
     const {
       fetchNyeOgFerdigstilteOppgaverNokkeltall: fetchNyeOgFerdige, valgtSakslisteId,
@@ -21,7 +21,7 @@ export class SaksbehandlerNokkeltallIndex extends Component<TsProps> {
     fetchNyeOgFerdige(valgtSakslisteId);
   }
 
-  componentDidUpdate = (prevProps: TsProps) => {
+  componentDidUpdate = (prevProps: OwnProps) => {
     const {
       fetchNyeOgFerdigstilteOppgaverNokkeltall: fetchNyeOgFerdige, valgtSakslisteId,
     } = this.props;

@@ -5,9 +5,6 @@ import AvdelingslederIndex from 'avdelingsleder/AvdelingslederIndex';
 import SaksbehandlerIndex from 'saksbehandler/SaksbehandlerIndex';
 import MissingPage from './MissingPage';
 
-import 'styles/modigDesign.less';
-import '../../../nomodulestyles/global.less';
-
 import styles from './home.less';
 
 interface OwnProps {

@@ -1,5 +1,4 @@
 import React from 'react';
-import ReactModal from 'react-modal';
 import { action } from '@storybook/addon-actions';
 
 import { OppgaverTabell } from 'saksbehandler/behandlingskoer/components/OppgaverTabell';
@@ -7,16 +6,13 @@ import behandlingStatus from 'kodeverk/behandlingStatus';
 import behandlingType from 'kodeverk/behandlingType';
 import fagsakYtelseType from 'kodeverk/fagsakYtelseType';
 
-import withIntl from '../../decorators/withIntl';
-import withRedux from '../../decorators/withRedux';
+import withIntl from '../../../decorators/withIntl';
 
 export default {
-  title: 'saksbehandler/OppgaverTabell',
+  title: 'saksbehandler/behandlingskoer/OppgaverTabell',
   component: OppgaverTabell,
-  decorators: [withIntl, withRedux],
+  decorators: [withIntl],
 };
-
-ReactModal.setAppElement = () => null;
 
 export const skalViseTomOppgaveTabell = (intl) => (
   <OppgaverTabell

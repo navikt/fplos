@@ -2,8 +2,7 @@ import React from 'react';
 import { configure, addParameters, addDecorator } from '@storybook/react';
 import { themes } from '@storybook/theming';
 
-import '../src/client/styles/modigDesign.less';
-import '../src/client/nomodulestyles/global.less';
+import '../src/client/styles/global.less';
 
 const withGlobalStyle = (story) => (
   <div style={{ margin: '40px'}}>

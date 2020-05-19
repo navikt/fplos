@@ -1,6 +1,6 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { createSelector } from 'reselect';
+import React, {
+  useState, useMemo, useCallback, FunctionComponent,
+} from 'react';
 import {
   XYPlot, XAxis, YAxis, VerticalGridLines, HorizontalRectSeries, Hint, DiscreteColorLegend,
 } from 'react-vis';
@@ -10,8 +10,8 @@ import Panel from 'nav-frontend-paneler';
 
 import Kodeverk from 'kodeverk/kodeverkTsType';
 import behandlingType from 'kodeverk/behandlingType';
-import kodeverkTyper from 'kodeverk/kodeverkTyper';
-import { getKodeverk } from 'kodeverk/duck';
+
+import NyeOgFerdigstilteOppgaver from '../nyeOgFerdigstilteOppgaverTsType';
 
 import 'react-vis/dist/style.css';
 import styles from './nyeOgFerdigstilteOppgaverForIdagGraf.less';
@@ -31,138 +31,6 @@ const cssText = {
   fontWeight: 400,
 };
 
-interface Koordinat {
-  x: number;
-  y: number;
-}
-
-interface OwnProps {
-  width: number;
-  height: number;
-  behandlingTyper: Kodeverk[];
-  ferdigstilteOppgaver: Koordinat[];
-  nyeOppgaver: Koordinat[];
-  isEmpty: boolean;
-}
-
-interface StateProps {
-  hintVerdi: any;
-}
-
-/**
- * NyeOgFerdigstilteOppgaverForIdagGraf
- */
-export class NyeOgFerdigstilteOppgaverForIdagGraf extends Component<OwnProps & WrappedComponentProps, StateProps> {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      hintVerdi: undefined,
-    };
-  }
-
-  leggTilHintVerdi = (hintVerdi: {x: number; x0: number; y: number}) => {
-    this.setState((prevState) => ({ ...prevState, hintVerdi }));
-  };
-
-  fjernHintVerdi = () => {
-    this.setState((prevState) => ({ ...prevState, hintVerdi: undefined }));
-  };
-
-  getHintAntall = (verdi: Koordinat) => {
-    const {
-      intl, ferdigstilteOppgaver,
-    } = this.props;
-    const isFerdigstiltVerdi = ferdigstilteOppgaver.find((b) => b.y === verdi.y);
-    return isFerdigstiltVerdi
-      ? intl.formatMessage({ id: 'NyeOgFerdigstilteOppgaverForIdagGraf.FerdigstiltAntall' }, { antall: verdi.x })
-      : intl.formatMessage({ id: 'NyeOgFerdigstilteOppgaverForIdagGraf.NyeAntall' }, { antall: verdi.x });
-  };
-
-  finnBehandlingTypeNavn = (behandlingTypeKode: string, intl: any) => {
-    const {
-      behandlingTyper,
-    } = this.props;
-    if (behandlingTypeKode === behandlingType.FORSTEGANGSSOKNAD) {
-      return intl.formatMessage({ id: 'NyeOgFerdigstilteOppgaverForIdagGraf.Førstegangsbehandling' });
-    }
-
-    const type = behandlingTyper.find((bt) => bt.kode === behandlingTypeKode);
-    return type ? type.navn : '';
-  }
-
-  render = () => {
-    const {
-      width, height, ferdigstilteOppgaver, nyeOppgaver, isEmpty, intl,
-    } = this.props;
-    const {
-      hintVerdi,
-    } = this.state;
-
-    const maxXValue = Math.max(...ferdigstilteOppgaver.map((b) => b.x).concat(nyeOppgaver.map((b) => b.x))) + 2;
-
-    return (
-      <Panel>
-        <XYPlot
-          dontCheckIfEmpty={isEmpty}
-          margin={{
-            left: 127, right: 30, top: 0, bottom: 30,
-          }}
-          width={width}
-          height={height}
-          yDomain={[0, 7]}
-          xDomain={[0, isEmpty ? 10 : maxXValue]}
-        >
-          <VerticalGridLines />
-          <XAxis style={{ text: cssText }} />
-          <YAxis
-            style={{ text: cssText }}
-            tickFormat={(v, i) => this.finnBehandlingTypeNavn(behandlingstypeOrder[i], intl)}
-            tickValues={[1, 2, 3, 4, 5, 6]}
-          />
-          <HorizontalRectSeries
-            data={ferdigstilteOppgaver}
-            onValueMouseOver={this.leggTilHintVerdi}
-            onValueMouseOut={this.fjernHintVerdi}
-            fill="#38a161"
-            stroke="#38a161"
-            opacity={0.5}
-          />
-          <HorizontalRectSeries
-            data={nyeOppgaver}
-            onValueMouseOver={this.leggTilHintVerdi}
-            onValueMouseOut={this.fjernHintVerdi}
-            fill="#337c9b"
-            stroke="#337c9b"
-            opacity={0.5}
-          />
-          {hintVerdi && (
-          <Hint value={hintVerdi}>
-            <div className={styles.hint}>
-              {this.getHintAntall(hintVerdi)}
-            </div>
-          </Hint>
-          )}
-        </XYPlot>
-        <div className={styles.center}>
-          <DiscreteColorLegend
-            orientation="horizontal"
-            colors={['#38a161', '#337c9b']}
-            items={[
-              <Normaltekst className={styles.displayInline}>
-                <FormattedMessage id="NyeOgFerdigstilteOppgaverForIdagGraf.Ferdigstilte" />
-              </Normaltekst>,
-              <Normaltekst className={styles.displayInline}>
-                <FormattedMessage id="NyeOgFerdigstilteOppgaverForIdagGraf.Nye" />
-              </Normaltekst>,
-            ]}
-          />
-        </div>
-      </Panel>
-    );
-  }
-}
-
 const settCustomHoydePaSoylene = (data, over) => {
   const transformert = data.map((el) => ({
     ...el,
@@ -174,25 +42,136 @@ const settCustomHoydePaSoylene = (data, over) => {
   return transformert;
 };
 
-export const lagDatastrukturForFerdigstilte = createSelector([(state, ownProps) => ownProps],
-  (ownProps) => settCustomHoydePaSoylene(ownProps.nyeOgFerdigstilteOppgaver.map((value) => ({
+export const lagDatastrukturForFerdigstilte = (nyeOgFerdigstilteOppgaver) => settCustomHoydePaSoylene(nyeOgFerdigstilteOppgaver
+  .map((value) => ({
     x: value.antallFerdigstilte,
     y: behandlingstypeOrder.indexOf(value.behandlingType.kode) + 1,
-  })), true));
+  })), true);
 
-export const lagDatastrukturForNye = createSelector([(state, ownProps) => ownProps],
-  (ownProps) => settCustomHoydePaSoylene(ownProps.nyeOgFerdigstilteOppgaver.map((value) => ({
+export const lagDatastrukturForNye = (nyeOgFerdigstilteOppgaver) => settCustomHoydePaSoylene(nyeOgFerdigstilteOppgaver
+  .map((value) => ({
     x: value.antallNye,
     y: behandlingstypeOrder.indexOf(value.behandlingType.kode) + 1,
-  })), false));
+  })), false);
 
-export const isEmpty = createSelector([(state, ownProps) => ownProps], (ownProps) => ownProps.nyeOgFerdigstilteOppgaver.length === 0);
+interface Koordinat {
+  x: number;
+  y: number;
+}
 
-const mapStateToProps = (state, ownProps) => ({
-  isEmpty: isEmpty(state, ownProps),
-  ferdigstilteOppgaver: lagDatastrukturForFerdigstilte(state, ownProps),
-  nyeOppgaver: lagDatastrukturForNye(state, ownProps),
-  behandlingTyper: getKodeverk(kodeverkTyper.BEHANDLING_TYPE)(state),
-});
+interface OwnProps {
+  width: number;
+  height: number;
+  behandlingTyper: Kodeverk[];
+  nyeOgFerdigstilteOppgaver: NyeOgFerdigstilteOppgaver[];
+}
 
-export default connect(mapStateToProps)(injectIntl(NyeOgFerdigstilteOppgaverForIdagGraf));
+/**
+ * NyeOgFerdigstilteOppgaverForIdagGraf
+ */
+export const NyeOgFerdigstilteOppgaverForIdagGraf: FunctionComponent<OwnProps & WrappedComponentProps> = ({
+  intl,
+  width,
+  height,
+  nyeOgFerdigstilteOppgaver,
+  behandlingTyper,
+}) => {
+  const [hintVerdi, setHintVerdi] = useState<Koordinat>();
+
+  const leggTilHintVerdi = useCallback((nyHintVerdi: {x: number; x0: number; y: number}) => {
+    setHintVerdi(nyHintVerdi);
+  }, []);
+
+  const fjernHintVerdi = useCallback(() => {
+    setHintVerdi(undefined);
+  }, []);
+
+  const ferdigstilteOppgaver = useMemo(() => lagDatastrukturForFerdigstilte(nyeOgFerdigstilteOppgaver), [nyeOgFerdigstilteOppgaver]);
+  const nyeOppgaver = useMemo(() => lagDatastrukturForNye(nyeOgFerdigstilteOppgaver), [nyeOgFerdigstilteOppgaver]);
+
+  const isEmpty = nyeOgFerdigstilteOppgaver.length === 0;
+
+  const hintAntall = useMemo(() => {
+    if (!hintVerdi) {
+      return undefined;
+    }
+    const isFerdigstiltVerdi = ferdigstilteOppgaver.find((b) => b.y === hintVerdi.y);
+    return isFerdigstiltVerdi
+      ? intl.formatMessage({ id: 'NyeOgFerdigstilteOppgaverForIdagGraf.FerdigstiltAntall' }, { antall: hintVerdi.x })
+      : intl.formatMessage({ id: 'NyeOgFerdigstilteOppgaverForIdagGraf.NyeAntall' }, { antall: hintVerdi.x });
+  }, [hintVerdi]);
+
+  const finnBehandlingTypeNavn = useCallback((_v, i) => {
+    if (behandlingstypeOrder[i] === behandlingType.FORSTEGANGSSOKNAD) {
+      return intl.formatMessage({ id: 'NyeOgFerdigstilteOppgaverForIdagGraf.Førstegangsbehandling' });
+    }
+
+    const type = behandlingTyper.find((bt) => bt.kode === behandlingstypeOrder[i]);
+    return type ? type.navn : '';
+  }, []);
+
+  const maxXValue = useMemo(() => Math.max(...ferdigstilteOppgaver.map((b) => b.x).concat(nyeOppgaver.map((b) => b.x))) + 2,
+    [ferdigstilteOppgaver, nyeOppgaver]);
+
+  return (
+    <Panel>
+      <XYPlot
+        dontCheckIfEmpty={isEmpty}
+        margin={{
+          left: 127, right: 30, top: 0, bottom: 30,
+        }}
+        width={width}
+        height={height}
+        yDomain={[0, 7]}
+        xDomain={[0, isEmpty ? 10 : maxXValue]}
+      >
+        <VerticalGridLines />
+        <XAxis style={{ text: cssText }} />
+        <YAxis
+          style={{ text: cssText }}
+          tickFormat={finnBehandlingTypeNavn}
+          tickValues={[1, 2, 3, 4, 5, 6]}
+        />
+        <HorizontalRectSeries
+          data={ferdigstilteOppgaver}
+          onValueMouseOver={leggTilHintVerdi}
+          onValueMouseOut={fjernHintVerdi}
+          fill="#38a161"
+          stroke="#38a161"
+          opacity={0.5}
+        />
+        <HorizontalRectSeries
+          data={nyeOppgaver}
+          onValueMouseOver={leggTilHintVerdi}
+          onValueMouseOut={fjernHintVerdi}
+          fill="#337c9b"
+          stroke="#337c9b"
+          opacity={0.5}
+        />
+        {hintVerdi && (
+          <Hint value={hintVerdi}>
+            <div className={styles.hint}>
+              {hintAntall}
+            </div>
+          </Hint>
+        )}
+      </XYPlot>
+      <div className={styles.center}>
+        <DiscreteColorLegend
+          orientation="horizontal"
+          colors={['#38a161', '#337c9b']}
+          items={[
+            <Normaltekst className={styles.displayInline}>
+              <FormattedMessage id="NyeOgFerdigstilteOppgaverForIdagGraf.Ferdigstilte" />
+            </Normaltekst>,
+            <Normaltekst className={styles.displayInline}>
+              <FormattedMessage id="NyeOgFerdigstilteOppgaverForIdagGraf.Nye" />
+            </Normaltekst>,
+          ]}
+        />
+      </div>
+    </Panel>
+  );
+};
+
+export default injectIntl(NyeOgFerdigstilteOppgaverForIdagGraf);

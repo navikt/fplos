@@ -6,8 +6,11 @@ import { createSelector } from 'reselect';
 import { FormattedMessage } from 'react-intl';
 import { Undertittel, Element } from 'nav-frontend-typografi';
 
+import Kodeverk from 'kodeverk/kodeverkTsType';
+import kodeverkTyper from 'kodeverk/kodeverkTyper';
 import { ISO_DATE_FORMAT } from 'utils/formats';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
+import { getKodeverk } from 'kodeverk/duck';
 import NyeOgFerdigstilteOppgaverForIdagGraf from './NyeOgFerdigstilteOppgaverForIdagGraf';
 import { getNyeOgFerdigstilteOppgaverNokkeltall } from '../../duck';
 import NyeOgFerdigstilteOppgaver from '../nyeOgFerdigstilteOppgaverTsType';
@@ -16,6 +19,7 @@ interface OwnProps {
   width: number;
   height: number;
   nyeOgFerdigstilteOppgaver: NyeOgFerdigstilteOppgaver[];
+  behandlingTyper: Kodeverk[];
 }
 
 /**
@@ -25,6 +29,7 @@ export const NyeOgFerdigstilteOppgaverForIdagPanel: FunctionComponent<OwnProps> 
   width,
   height,
   nyeOgFerdigstilteOppgaver,
+  behandlingTyper,
 }) => (
   <>
     <Undertittel>
@@ -38,6 +43,7 @@ export const NyeOgFerdigstilteOppgaverForIdagPanel: FunctionComponent<OwnProps> 
       width={width}
       height={height}
       nyeOgFerdigstilteOppgaver={nyeOgFerdigstilteOppgaver}
+      behandlingTyper={behandlingTyper}
     />
   </>
 );
@@ -49,6 +55,7 @@ export const getNyeOgFerdigstilteForIDag = createSelector([getNyeOgFerdigstilteO
 
 const mapStateToProps = (state) => ({
   nyeOgFerdigstilteOppgaver: getNyeOgFerdigstilteForIDag(state),
+  behandlingTyper: getKodeverk(kodeverkTyper.BEHANDLING_TYPE)(state),
 });
 
 export default connect(mapStateToProps)(NyeOgFerdigstilteOppgaverForIdagPanel);

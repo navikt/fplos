@@ -2,6 +2,14 @@
 @import '@{coreModulePath}nav-frontend-core/less/core';
 @import './dayPicker';
 
+body {
+	height: 100%;
+	line-height: 1.42857143;
+	color: #3e3832;
+	background-color: #efefef;
+	margin: 0;
+}
+
 :global(.cal-wrap) {
   width: 300px;
 }
@@ -79,3 +87,31 @@
 :global(.nav-frontend-tabs__tab-inner--aktiv) {
   border: none;
 }
+
+.panel-container-mixin {
+  background-color: white;
+  border-radius: 4px;
+  padding: 20px;
+  margin-top: 16px;
+  width: 100%;
+}
+
+.Grid {
+  display: flex;
+}
+
+.Grid-cell {
+  flex: 1;
+}
+
+.Grid--gutters {
+  margin: -1em 0 0 -1em;
+}
+
+@media (max-width: 1024px) {
+
+    .panel-container-mixin{
+        width: 100%;
+    }
+}
+

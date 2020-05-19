@@ -29,7 +29,7 @@ interface OwnProps {
   closeModal: () => void;
   submit: (oppgaveId: number, brukerident: string, begrunnelse: string) => void;
   finnSaksbehandler: (brukerident: string) => void;
-  resetSaksbehandler: () => Promise<string>;
+  resetSaksbehandler: () => void;
   saksbehandler?: SaksbehandlerForFlytting;
   erSaksbehandlerSokStartet: boolean;
   erSaksbehandlerSokFerdig: boolean;

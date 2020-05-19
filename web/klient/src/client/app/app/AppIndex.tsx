@@ -20,7 +20,7 @@ import LanguageProvider from './LanguageProvider';
 import HeaderWithErrorPanel from './components/HeaderWithErrorPanel';
 import Home from './components/Home';
 
-import '../../nomodulestyles/global.less';
+import '../../styles/global.less';
 
 interface OwnProps {
   errorMessages?: {

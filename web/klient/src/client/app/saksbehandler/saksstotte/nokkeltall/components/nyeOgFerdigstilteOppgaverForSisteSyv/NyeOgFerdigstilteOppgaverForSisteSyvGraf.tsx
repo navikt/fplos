@@ -1,7 +1,7 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
+import React, {
+  FunctionComponent, useState, useMemo, useCallback,
+} from 'react';
 import moment from 'moment';
-import { createSelector } from 'reselect';
 import {
   XYPlot, XAxis, YAxis, HorizontalGridLines, AreaSeries, DiscreteColorLegend, Crosshair,
 } from 'react-vis';
@@ -11,160 +11,13 @@ import { Normaltekst, Undertekst } from 'nav-frontend-typografi';
 
 import { DDMMYYYY_DATE_FORMAT } from 'utils/formats';
 
+import NyeOgFerdigstilteOppgaver from '../nyeOgFerdigstilteOppgaverTsType';
 
 import 'react-vis/dist/style.css';
 import styles from './nyeOgFerdigstilteOppgaverForSisteSyvGraf.less';
 
-const cssText = {
-  fontFamily: 'Source Sans Pro, Arial, sans-serif',
-  fontSize: '1rem',
-  lineHeight: '1.375rem',
-  fontWeight: 400,
-};
-
-interface Koordinat {
-  x: Date;
-  y: number;
-}
-
-interface OwnProps {
-  width: number;
-  height: number;
-  ferdigstilteOppgaver: Koordinat[];
-  nyeOppgaver: Koordinat[];
-  isEmpty: boolean;
-}
-
-interface CrosshairValue {
-  x: Date;
-  y: number;
-}
-
-interface StateProps {
-  crosshairValues: CrosshairValue[];
-}
-
-/**
- * NyeOgFerdigstilteOppgaverForSisteSyvGraf
- */
-export class NyeOgFerdigstilteOppgaverForSisteSyvGraf extends Component<OwnProps & WrappedComponentProps, StateProps> {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      crosshairValues: [],
-    };
-  }
-
-  onMouseLeave = () => this.setState({ crosshairValues: [] });
-
-  onNearestX = (value: {x: Date; y: number}) => {
-    this.setState({
-      crosshairValues: [value],
-    });
-  }
-
-  getAntall = (oppgaver: Koordinat[]) => {
-    const {
-      crosshairValues,
-    } = this.state;
-    const oppgave = oppgaver.find((o) => o.x.getTime() === crosshairValues[0].x.getTime());
-    return oppgave ? oppgave.y : '';
-  }
-
-  render = () => {
-    const {
-      width, height, ferdigstilteOppgaver, nyeOppgaver, isEmpty,
-    } = this.props;
-    const {
-      crosshairValues,
-    } = this.state;
-
-    const plotPropsWhenEmpty = isEmpty ? {
-      yDomain: [0, 50],
-      xDomain: [moment().subtract(7, 'd').startOf('day').toDate(), moment().subtract(1, 'd').startOf('day').toDate()],
-    } : {};
-
-    return (
-      <Panel>
-        <XYPlot
-          dontCheckIfEmpty={isEmpty}
-          margin={{
-            left: 40, right: 60, top: 10, bottom: 30,
-          }}
-          width={width}
-          height={height}
-          xType="time"
-          onMouseLeave={this.onMouseLeave}
-          {...plotPropsWhenEmpty}
-        >
-          <HorizontalGridLines />
-          <XAxis
-            tickTotal={3}
-            tickFormat={(t) => moment(t).format(DDMMYYYY_DATE_FORMAT)}
-            style={{ text: cssText }}
-          />
-          <YAxis style={{ text: cssText }} />
-          <AreaSeries
-            data={ferdigstilteOppgaver}
-            fill="#38a161"
-            stroke="#38a161"
-            opacity={0.5}
-            onNearestX={this.onNearestX}
-          />
-          <AreaSeries
-            data={nyeOppgaver}
-            fill="#337c9b"
-            stroke="#337c9b"
-            opacity={0.5}
-          />
-          {crosshairValues.length > 0 && (
-            <Crosshair
-              values={crosshairValues}
-              style={{
-                line: {
-                  background: '#3e3832',
-                },
-              }}
-            >
-              <div className={styles.crosshair}>
-                <Normaltekst>{`${moment(crosshairValues[0].x).format(DDMMYYYY_DATE_FORMAT)}`}</Normaltekst>
-                <Undertekst>
-                  <FormattedMessage
-                    id="NyeOgFerdigstilteOppgaverForSisteSyvGraf.FerdigstiltAntall"
-                    values={{ antall: this.getAntall(ferdigstilteOppgaver) }}
-                  />
-                </Undertekst>
-                <Undertekst>
-                  <FormattedMessage id="NyeOgFerdigstilteOppgaverForSisteSyvGraf.NyeAntall" values={{ antall: this.getAntall(nyeOppgaver) }} />
-                </Undertekst>
-              </div>
-            </Crosshair>
-          )}
-        </XYPlot>
-        <div className={styles.center}>
-          <DiscreteColorLegend
-            orientation="horizontal"
-            colors={['#38a161', '#337c9b']}
-            items={[
-              <Normaltekst className={styles.displayInline}>
-                <FormattedMessage id="NyeOgFerdigstilteOppgaverForSisteSyvGraf.Ferdigstilte" />
-              </Normaltekst>,
-              <Normaltekst className={styles.displayInline}>
-                <FormattedMessage id="NyeOgFerdigstilteOppgaverForSisteSyvGraf.Nye" />
-              </Normaltekst>,
-            ]}
-          />
-        </div>
-      </Panel>
-    );
-  }
-}
-
-export const slaSammenBehandlingstyperOgFyllInnTomme = createSelector([(state, ownProps) => ownProps], (ownProps) => {
+export const slaSammenBehandlingstyperOgFyllInnTomme = (nyeOgFerdigstilteOppgaver) => {
   const oppgaver = [];
-  const { nyeOgFerdigstilteOppgaver } = ownProps;
-
   if (nyeOgFerdigstilteOppgaver.length > 0) {
     const iDag = moment().startOf('day');
     const atteDagerSiden = moment().subtract(7, 'days').startOf('day');
@@ -188,24 +41,136 @@ export const slaSammenBehandlingstyperOgFyllInnTomme = createSelector([(state, o
   }
 
   return oppgaver;
-});
+};
 
-export const lagDatastrukturForFerdigstilte = createSelector([slaSammenBehandlingstyperOgFyllInnTomme], (oppgaver) => oppgaver.map((o) => ({
-  x: o.dato,
-  y: o.antallFerdigstilte,
-})));
+const cssText = {
+  fontFamily: 'Source Sans Pro, Arial, sans-serif',
+  fontSize: '1rem',
+  lineHeight: '1.375rem',
+  fontWeight: 400,
+};
 
-export const lagDatastrukturForNye = createSelector([slaSammenBehandlingstyperOgFyllInnTomme], (oppgaver) => oppgaver.map((o) => ({
-  x: o.dato,
-  y: o.antallNye,
-})));
+interface Koordinat {
+  x: Date;
+  y: number;
+}
 
-export const isEmpty = createSelector([(state, ownProps) => ownProps], (ownProps) => ownProps.nyeOgFerdigstilteOppgaver.length === 0);
+interface OwnProps {
+  width: number;
+  height: number;
+  nyeOgFerdigstilteOppgaver: NyeOgFerdigstilteOppgaver[];
+}
 
-const mapStateToProps = (state, ownProps) => ({
-  isEmpty: isEmpty(state, ownProps),
-  ferdigstilteOppgaver: lagDatastrukturForFerdigstilte(state, ownProps),
-  nyeOppgaver: lagDatastrukturForNye(state, ownProps),
-});
+/**
+ * NyeOgFerdigstilteOppgaverForSisteSyvGraf
+ */
+export const NyeOgFerdigstilteOppgaverForSisteSyvGraf: FunctionComponent<OwnProps & WrappedComponentProps> = ({
+  width,
+  height,
+  nyeOgFerdigstilteOppgaver,
+}) => {
+  const [crosshairValues, setCrosshairValues] = useState([]);
 
-export default connect(mapStateToProps)(injectIntl(NyeOgFerdigstilteOppgaverForSisteSyvGraf));
+  const onMouseLeave = useCallback(() => setCrosshairValues([]), []);
+  const onNearestX = useCallback((value: {x: Date; y: number}) => {
+    setCrosshairValues([value]);
+  }, []);
+
+  const isEmpty = nyeOgFerdigstilteOppgaver.length === 0;
+
+  const sammenslatteOppgaver = useMemo(() => slaSammenBehandlingstyperOgFyllInnTomme(nyeOgFerdigstilteOppgaver), [nyeOgFerdigstilteOppgaver]);
+  const ferdigstilteOppgaver = useMemo(() => sammenslatteOppgaver.map((o) => ({
+    x: o.dato,
+    y: o.antallFerdigstilte,
+  })), [sammenslatteOppgaver]);
+  const nyeOppgaver = useMemo(() => sammenslatteOppgaver.map((o) => ({
+    x: o.dato,
+    y: o.antallNye,
+  })), [sammenslatteOppgaver]);
+
+  const getAntall = (oppgaver: Koordinat[]) => {
+    const oppgave = oppgaver.find((o) => o.x.getTime() === crosshairValues[0].x.getTime());
+    return oppgave ? oppgave.y : '';
+  };
+
+  const plotPropsWhenEmpty = useMemo(() => (isEmpty ? {
+    yDomain: [0, 50],
+    xDomain: [moment().subtract(7, 'd').startOf('day').toDate(), moment().subtract(1, 'd').startOf('day').toDate()],
+  } : {}), [isEmpty]);
+
+  return (
+    <Panel>
+      <XYPlot
+        dontCheckIfEmpty={isEmpty}
+        margin={{
+          left: 40, right: 60, top: 10, bottom: 30,
+        }}
+        width={width}
+        height={height}
+        xType="time"
+        onMouseLeave={onMouseLeave}
+        {...plotPropsWhenEmpty}
+      >
+        <HorizontalGridLines />
+        <XAxis
+          tickTotal={3}
+          tickFormat={(t) => moment(t).format(DDMMYYYY_DATE_FORMAT)}
+          style={{ text: cssText }}
+        />
+        <YAxis style={{ text: cssText }} />
+        <AreaSeries
+          data={ferdigstilteOppgaver}
+          fill="#38a161"
+          stroke="#38a161"
+          opacity={0.5}
+          onNearestX={onNearestX}
+        />
+        <AreaSeries
+          data={nyeOppgaver}
+          fill="#337c9b"
+          stroke="#337c9b"
+          opacity={0.5}
+        />
+        {crosshairValues.length > 0 && (
+        <Crosshair
+          values={crosshairValues}
+          style={{
+            line: {
+              background: '#3e3832',
+            },
+          }}
+        >
+          <div className={styles.crosshair}>
+            <Normaltekst>{`${moment(crosshairValues[0].x).format(DDMMYYYY_DATE_FORMAT)}`}</Normaltekst>
+            <Undertekst>
+              <FormattedMessage
+                id="NyeOgFerdigstilteOppgaverForSisteSyvGraf.FerdigstiltAntall"
+                values={{ antall: getAntall(ferdigstilteOppgaver) }}
+              />
+            </Undertekst>
+            <Undertekst>
+              <FormattedMessage id="NyeOgFerdigstilteOppgaverForSisteSyvGraf.NyeAntall" values={{ antall: getAntall(nyeOppgaver) }} />
+            </Undertekst>
+          </div>
+        </Crosshair>
+        )}
+      </XYPlot>
+      <div className={styles.center}>
+        <DiscreteColorLegend
+          orientation="horizontal"
+          colors={['#38a161', '#337c9b']}
+          items={[
+            <Normaltekst className={styles.displayInline}>
+              <FormattedMessage id="NyeOgFerdigstilteOppgaverForSisteSyvGraf.Ferdigstilte" />
+            </Normaltekst>,
+            <Normaltekst className={styles.displayInline}>
+              <FormattedMessage id="NyeOgFerdigstilteOppgaverForSisteSyvGraf.Nye" />
+            </Normaltekst>,
+          ]}
+        />
+      </div>
+    </Panel>
+  );
+};
+
+export default injectIntl(NyeOgFerdigstilteOppgaverForSisteSyvGraf);
