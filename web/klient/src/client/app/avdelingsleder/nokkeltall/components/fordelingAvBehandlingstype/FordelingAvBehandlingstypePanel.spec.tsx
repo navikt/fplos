@@ -18,6 +18,25 @@ describe('<FordelingAvBehandlingstypePanel>', () => {
     kode: fagsakYtelseType.FORELDREPRENGER,
     navn: 'Foreldrepenger',
   }];
+  const behandlingTyper = [{
+    kode: behandlingType.FORSTEGANGSSOKNAD,
+    navn: 'Førstegangssøknad',
+  }, {
+    kode: behandlingType.KLAGE,
+    navn: 'Klage',
+  }, {
+    kode: behandlingType.DOKUMENTINNSYN,
+    navn: 'Dokumentinnsyn',
+  }, {
+    kode: behandlingType.REVURDERING,
+    navn: 'Revurdering',
+  }, {
+    kode: behandlingType.TILBAKEBETALING,
+    navn: 'Tilbakebetaling',
+  }, {
+    kode: behandlingType.TILBAKEBETALING_REVURDERING,
+    navn: 'Tilbakebet-rev',
+  }];
   const forstegangssoknad = {
     kode: behandlingType.FORSTEGANGSSOKNAD,
     navn: 'Førstegangssøknad',
@@ -33,6 +52,7 @@ describe('<FordelingAvBehandlingstypePanel>', () => {
       width={300}
       height={200}
       fagsakYtelseTyper={fagsakYtelseTyper}
+      behandlingTyper={behandlingTyper}
       oppgaverForAvdeling={oppgaverForAvdeling}
       initialValues={{ valgtYtelseType: valuesMock.valgtYtelseType }}
       // @ts-ignore
@@ -67,6 +87,7 @@ describe('<FordelingAvBehandlingstypePanel>', () => {
     const wrapper = shallowWithIntl(<FordelingAvBehandlingstypePanel
       width={300}
       height={200}
+      behandlingTyper={behandlingTyper}
       fagsakYtelseTyper={fagsakYtelseTyper}
       oppgaverForAvdeling={oppgaverForAvdeling}
       initialValues={{ valgtYtelseType: valuesMock.valgtYtelseType }}
@@ -97,6 +118,7 @@ describe('<FordelingAvBehandlingstypePanel>', () => {
     const wrapper = shallowWithIntl(<FordelingAvBehandlingstypePanel
       width={300}
       height={200}
+      behandlingTyper={behandlingTyper}
       fagsakYtelseTyper={fagsakYtelseTyper}
       oppgaverForAvdeling={oppgaverForAvdeling}
       initialValues={{ valgtYtelseType: valuesMock.valgtYtelseType }}

@@ -5,7 +5,7 @@ import { IntlShape } from 'react-intl';
 import { Hovedknapp, Knapp } from 'nav-frontend-knapper';
 
 import { shallowWithIntl, intlMock } from 'testHelpers/intl-enzyme-test-helper';
-import { SletteSaksbehandlerModal } from './SletteSaksbehandlerModal';
+import SletteSaksbehandlerModal from './SletteSaksbehandlerModal';
 
 describe('<SletteSaksbehandlerModal>', () => {
   const intl: Partial<IntlShape> = {
@@ -18,7 +18,7 @@ describe('<SletteSaksbehandlerModal>', () => {
       avdelingsnavn: ['NAV Oslo'],
     };
 
-    const wrapper = shallowWithIntl(<SletteSaksbehandlerModal
+    const wrapper = shallowWithIntl(<SletteSaksbehandlerModal.WrappedComponent
       intl={intl as IntlShape}
       valgtSaksbehandler={saksbehandler}
       closeSletteModal={sinon.spy()}
@@ -37,7 +37,7 @@ describe('<SletteSaksbehandlerModal>', () => {
     };
     const submitFn = sinon.spy();
 
-    const wrapper = shallowWithIntl(<SletteSaksbehandlerModal
+    const wrapper = shallowWithIntl(<SletteSaksbehandlerModal.WrappedComponent
       intl={intl as IntlShape}
       valgtSaksbehandler={saksbehandler}
       closeSletteModal={sinon.spy()}

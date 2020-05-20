@@ -22,8 +22,8 @@ import { getOppgaverPerDato } from '../../duck';
 import styles from './tilBehandlingPanel.less';
 
 export const ALLE_YTELSETYPER_VALGT = 'ALLE';
+export const UKE_2 = '2';
 
-const UKE_2 = '2';
 const uker = [{
   kode: UKE_2,
   tekstKode: 'TilBehandlingPanel.ToSisteUker',
@@ -75,6 +75,7 @@ interface OwnProps {
   fagsakYtelseTyper: Kodeverk[];
   oppgaverPerDato?: OppgaveForDato[];
   initialValues: InitialValues;
+  behandlingTyper: Kodeverk[];
 }
 
 const formName = 'tilBehandlingForm';
@@ -89,12 +90,13 @@ export const TilBehandlingPanel: FunctionComponent<OwnProps & WrappedComponentPr
   fagsakYtelseTyper,
   oppgaverPerDato,
   initialValues,
+  behandlingTyper,
 }) => (
   <Form
     onSubmit={() => undefined}
     initialValues={initialValues}
     render={({ values }) => (
-      <div>
+      <>
         <StoreValuesInReduxState onUmount stateKey={formName} values={values} />
         <Element>
           <FormattedMessage id="TilBehandlingPanel.TilBehandling" />
@@ -136,11 +138,12 @@ export const TilBehandlingPanel: FunctionComponent<OwnProps & WrappedComponentPr
           width={width}
           height={height}
           isToUkerValgt={values.ukevalg === UKE_2}
+          behandlingTyper={behandlingTyper}
           oppgaverPerDato={oppgaverPerDato ? slaSammenLikeBehandlingstyperOgDatoer(oppgaverPerDato
             .filter((ofa) => (values.ytelseType === ALLE_YTELSETYPER_VALGT ? true : values.ytelseType === ofa.fagsakYtelseType.kode))
             .filter((ofa) => erDatoInnenforPeriode(ofa, values.ukevalg))) : []}
         />
-      </div>
+      </>
     )}
   />
 );
@@ -153,6 +156,7 @@ const formDefaultValues = { ytelseType: ALLE_YTELSETYPER_VALGT, ukevalg: UKE_2 }
 
 const mapStateToProps = (state) => ({
   fagsakYtelseTyper: getKodeverk(kodeverkTyper.FAGSAK_YTELSE_TYPE)(state),
+  behandlingTyper: getKodeverk(kodeverkTyper.BEHANDLING_TYPE)(state),
   oppgaverPerDato: getOppgaverPerDato(state),
   initialValues: getValuesFromReduxState(state)[formName] || formDefaultValues,
 });

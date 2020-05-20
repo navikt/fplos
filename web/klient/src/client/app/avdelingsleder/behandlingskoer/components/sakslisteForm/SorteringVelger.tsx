@@ -38,7 +38,7 @@ const bareTilbakekrevingValgt = (valgteBehandlingtyper: Kodeverk[]) => valgteBeh
 /**
  * SorteringVelger
  */
-export const SorteringVelger: FunctionComponent<OwnProps & WrappedComponentProps> = ({
+const SorteringVelger: FunctionComponent<OwnProps & WrappedComponentProps> = ({
   intl,
   alleKodeverk,
   valgtSakslisteId,

@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
 import { Element, Normaltekst } from 'nav-frontend-typografi';
 import { FormattedMessage } from 'react-intl';
-import { connect } from 'react-redux';
-import { bindActionCreators, Dispatch } from 'redux';
 
 import Reservasjon from 'avdelingsleder/reservasjoner/reservasjonTsType';
 import Table from 'sharedComponents/table/Table';
@@ -10,18 +8,16 @@ import TableRow from 'sharedComponents/table/TableRow';
 import TableColumn from 'sharedComponents/table/TableColumn';
 import Image from 'sharedComponents/Image';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
-import removeIcon from 'images/remove.svg';
-
 import CalendarToggleButton from 'sharedComponents/datepicker/CalendarToggleButton';
-import OppgaveReservasjonEndringDatoModal
-  from 'saksbehandler/behandlingskoer/components/menu/OppgaveReservasjonEndringDatoModal';
+import OppgaveReservasjonEndringDatoModal from 'saksbehandler/behandlingskoer/components/menu/OppgaveReservasjonEndringDatoModal';
 import FlyttReservasjonModal from 'saksbehandler/behandlingskoer/components/menu/FlyttReservasjonModal';
 import { getDateAndTime } from 'utils/dateUtils';
-import { finnSaksbehandler as getSaksbehandler, resetSaksbehandler } from 'saksbehandler/behandlingskoer/duck';
-import { getAvdelingensReservasjoner } from 'avdelingsleder/reservasjoner/duck';
+
+import removeIcon from 'images/remove.svg';
+import gruppeHoverUrl from 'images/gruppe_hover.svg';
+import gruppeUrl from 'images/gruppe.svg';
+
 import styles from './reservasjonerTabell.less';
-import gruppeHoverUrl from '../../../../images/gruppe_hover.svg';
-import gruppeUrl from '../../../../images/gruppe.svg';
 
 const headerTextCodes = [
   'ReservasjonerTabell.Navn',
@@ -38,9 +34,6 @@ interface OwnProps {
   opphevReservasjon: (oppgaveId: number) => Promise<string>;
   endreOppgaveReservasjon: (oppgaveId: number, reserverTil: string) => Promise<string>;
   flyttReservasjon: (oppgaveId: number, brukerident: string, begrunnelse: string) => Promise<string>;
-}
-
-interface DispatchProps {
   finnSaksbehandler: (brukerIdent: string) => Promise<string>;
   nullstillSaksbehandler: () => Promise<string>;
 }
@@ -51,8 +44,7 @@ interface StateTsProps {
   valgtReservasjon?: Reservasjon;
 }
 
-export class ReservasjonerTabell extends Component<OwnProps & DispatchProps, StateTsProps> {
-  /* Endre denne */
+class ReservasjonerTabell extends Component<OwnProps, StateTsProps> {
   constructor(props) {
     super(props);
 
@@ -123,7 +115,7 @@ export class ReservasjonerTabell extends Component<OwnProps & DispatchProps, Sta
               <TableRow key={reservasjon.oppgaveId}>
                 <TableColumn>{reservasjon.reservertAvNavn}</TableColumn>
                 <TableColumn>{reservasjon.oppgaveSaksNr}</TableColumn>
-                <TableColumn>{reservasjon.behandlingType}</TableColumn>
+                <TableColumn>{reservasjon.behandlingType.navn}</TableColumn>
                 <TableColumn>
                   <FormattedMessage
                     id="ReservasjonerTabell.ReservertTilFormat"
@@ -178,15 +170,4 @@ export class ReservasjonerTabell extends Component<OwnProps & DispatchProps, Sta
   }
 }
 
-const mapStateToProps = (state) => ({
-  reservasjoner: getAvdelingensReservasjoner(state) || [],
-});
-
-const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => ({
-  ...bindActionCreators<DispatchProps, any>({
-    finnSaksbehandler: getSaksbehandler,
-    nullstillSaksbehandler: resetSaksbehandler,
-  }, dispatch),
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(ReservasjonerTabell);
+export default ReservasjonerTabell;

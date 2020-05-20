@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { FunctionComponent } from 'react';
 import { connect } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
 
@@ -23,7 +23,7 @@ const finnFagsakYtelseTypeNavn = (fagsakYtelseTyper, valgtFagsakYtelseType) => {
   return type ? type.navn : '';
 };
 
-const ALLE_YTELSETYPER_VALGT = 'ALLE';
+export const ALLE_YTELSETYPER_VALGT = 'ALLE';
 
 interface InitialValues {
   valgtYtelseType: string;
@@ -33,6 +33,7 @@ interface OwnProps {
   width: number;
   height: number;
   fagsakYtelseTyper: Kodeverk[];
+  behandlingTyper: Kodeverk[];
   oppgaverForAvdeling?: OppgaverForAvdeling[];
   initialValues: InitialValues;
 }
@@ -42,13 +43,14 @@ const formName = 'fordelingAvBehandlingstype';
 /**
  * FordelingAvBehandlingstypePanel.
  */
-export const FordelingAvBehandlingstypePanel = ({
+export const FordelingAvBehandlingstypePanel: FunctionComponent<OwnProps> = ({
   width,
   height,
   fagsakYtelseTyper,
+  behandlingTyper,
   oppgaverForAvdeling,
   initialValues,
-}: OwnProps) => (
+}) => (
   <Form
     onSubmit={() => undefined}
     initialValues={initialValues}
@@ -80,6 +82,7 @@ export const FordelingAvBehandlingstypePanel = ({
         <FordelingAvBehandlingstypeGraf
           width={width}
           height={height}
+          behandlingTyper={behandlingTyper}
           oppgaverForAvdeling={oppgaverForAvdeling ? oppgaverForAvdeling
             .filter((ofa) => (values.valgtYtelseType === ALLE_YTELSETYPER_VALGT ? true : values.valgtYtelseType === ofa.fagsakYtelseType.kode)) : []}
         />
@@ -97,6 +100,7 @@ const formDefaultValues = { valgtYtelseType: ALLE_YTELSETYPER_VALGT };
 const mapStateToProps = (state) => ({
   oppgaverForAvdeling: getOppgaverForAvdeling(state),
   fagsakYtelseTyper: getKodeverk(kodeverkTyper.FAGSAK_YTELSE_TYPE)(state),
+  behandlingTyper: getKodeverk(kodeverkTyper.BEHANDLING_TYPE)(state),
   initialValues: getValuesFromReduxState(state)[formName] || formDefaultValues,
 });
 

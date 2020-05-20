@@ -27,7 +27,8 @@ const finnFagsakYtelseTypeNavn = (fagsakYtelseTyper, valgtFagsakYtelseType) => {
 };
 
 export const ALLE_YTELSETYPER_VALGT = 'ALLE';
-const UKE_4 = '4';
+export const UKE_4 = '4';
+
 const uker = [{
   kode: UKE_4,
   tekstKode: 'ManueltPaVentPanel.FireSisteUker',

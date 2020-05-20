@@ -1,5 +1,5 @@
 
-import React, { Component } from 'react';
+import React, { FunctionComponent } from 'react';
 import { connect } from 'react-redux';
 import { createSelector } from 'reselect';
 
@@ -28,74 +28,66 @@ interface OwnProps {
 /**
  * SaksbehandlereForSakslisteForm
  */
-export class SaksbehandlereForSakslisteForm extends Component<OwnProps> {
-  static defaultProps = {
-    avdelingensSaksbehandlere: [],
-  }
+export const SaksbehandlereForSakslisteForm: FunctionComponent<OwnProps> = ({
+  avdelingensSaksbehandlere = [],
+  knyttSaksbehandlerTilSaksliste,
+  valgtSaksliste,
+  valgtAvdelingEnhet,
+}) => {
+  const pos = Math.ceil(avdelingensSaksbehandlere.length / 2);
+  const avdelingensSaksbehandlereVenstreListe = avdelingensSaksbehandlere.slice(0, pos);
+  const avdelingensSaksbehandlereHoyreListe = avdelingensSaksbehandlere.slice(pos);
 
-  buildInitialValues = () => {
-    const {
-      valgtSaksliste,
-    } = this.props;
-
-    const identer = valgtSaksliste.saksbehandlerIdenter.reduce((acc, brukerIdent) => ({ ...acc, [brukerIdent]: true }), {});
-    return {
-      ...identer,
-    };
-  }
-
-  render = () => {
-    const {
-      avdelingensSaksbehandlere, knyttSaksbehandlerTilSaksliste, valgtSaksliste, valgtAvdelingEnhet,
-    } = this.props;
-
-    const pos = Math.ceil(avdelingensSaksbehandlere.length / 2);
-    const avdelingensSaksbehandlereVenstreListe = avdelingensSaksbehandlere.slice(0, pos);
-    const avdelingensSaksbehandlereHoyreListe = avdelingensSaksbehandlere.slice(pos);
-
-    return (
-      <Form
-        onSubmit={() => undefined}
-        initialValues={this.buildInitialValues()}
-        render={() => (
-          <Panel className={styles.panel}>
-            <Element>
-              <FormattedMessage id="SaksbehandlereForSakslisteForm.Saksbehandlere" />
-            </Element>
-            <VerticalSpacer sixteenPx />
-            {avdelingensSaksbehandlere.length === 0 && (
-              <FormattedMessage id="SaksbehandlereForSakslisteForm.IngenSaksbehandlere" />
-            )}
-            {avdelingensSaksbehandlere.length > 0 && (
-            <Row>
-              <Column xs="6">
-                {avdelingensSaksbehandlereVenstreListe.map((s) => (
+  return (
+    <Form
+      onSubmit={() => undefined}
+      initialValues={{
+        ...valgtSaksliste.saksbehandlerIdenter.reduce((acc, brukerIdent) => ({ ...acc, [brukerIdent]: true }), {}),
+      }}
+      render={() => (
+        <Panel className={styles.panel}>
+          <Element>
+            <FormattedMessage id="SaksbehandlereForSakslisteForm.Saksbehandlere" />
+          </Element>
+          <VerticalSpacer sixteenPx />
+          {avdelingensSaksbehandlere.length === 0 && (
+            <FormattedMessage id="SaksbehandlereForSakslisteForm.IngenSaksbehandlere" />
+          )}
+          {avdelingensSaksbehandlere.length > 0 && (
+          <Row>
+            <Column xs="6">
+              {avdelingensSaksbehandlereVenstreListe.map((s) => (
+                <>
                   <CheckboxField
                     key={s.brukerIdent}
                     name={s.brukerIdent}
                     label={s.navn}
                     onChange={(isChecked) => knyttSaksbehandlerTilSaksliste(valgtSaksliste.sakslisteId, s.brukerIdent, isChecked, valgtAvdelingEnhet)}
                   />
-                ))}
-              </Column>
-              <Column xs="6">
-                {avdelingensSaksbehandlereHoyreListe.map((s) => (
+                  <VerticalSpacer fourPx />
+                </>
+              ))}
+            </Column>
+            <Column xs="6">
+              {avdelingensSaksbehandlereHoyreListe.map((s) => (
+                <>
                   <CheckboxField
                     key={s.brukerIdent}
                     name={s.brukerIdent}
                     label={s.navn}
                     onChange={(isChecked) => knyttSaksbehandlerTilSaksliste(valgtSaksliste.sakslisteId, s.brukerIdent, isChecked, valgtAvdelingEnhet)}
                   />
-                ))}
-              </Column>
-            </Row>
-            )}
-          </Panel>
-        )}
-      />
-    );
-  }
-}
+                  <VerticalSpacer fourPx />
+                </>
+              ))}
+            </Column>
+          </Row>
+          )}
+        </Panel>
+      )}
+    />
+  );
+};
 
 const sortSaksbehandlere = createSelector([getAvdelingensSaksbehandlere], (saksbehandlere) => (saksbehandlere && saksbehandlere instanceof Array
   ? saksbehandlere.sort((saksbehandler1, saksbehandler2) => saksbehandler1.navn.localeCompare(saksbehandler2.navn))

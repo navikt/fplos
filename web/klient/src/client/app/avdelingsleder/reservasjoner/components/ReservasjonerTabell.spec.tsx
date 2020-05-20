@@ -6,8 +6,9 @@ import { FormattedMessage } from 'react-intl';
 
 import Table from 'sharedComponents/table/Table';
 import TableRow from 'sharedComponents/table/TableRow';
+import behandlingType from 'kodeverk/behandlingType';
 import TableColumn from 'sharedComponents/table/TableColumn';
-import { ReservasjonerTabell } from './ReservasjonerTabell';
+import ReservasjonerTabell from './ReservasjonerTabell';
 
 describe('<ReservasjonerTabell>', () => {
   it('skal vise tekst som viser at ingen reservasjoner er lagt til', () => {
@@ -33,14 +34,20 @@ describe('<ReservasjonerTabell>', () => {
       reservertAvUid: 'ESPEN',
       reservertAvNavn: 'Espen Utvikler',
       reservertTilTidspunkt: '2020-02-02T14:30:00',
-      behandlingType: 'Førstegangsbehandling',
+      behandlingType: {
+        kode: behandlingType.FORSTEGANGSSOKNAD,
+        navn: 'Førstegangsbehandling',
+      },
       oppgaveSaksNr: 10,
     }, {
       oppgaveId: 2,
       reservertAvUid: 'JOACHIM',
       reservertAvNavn: 'Auto Joachim',
       reservertTilTidspunkt: '2020-02-01T10:19:00',
-      behandlingType: 'Revurdering',
+      behandlingType: {
+        kode: behandlingType.REVURDERING,
+        navn: 'Revurdering',
+      },
       oppgaveSaksNr: 25,
     }];
     const wrapper = shallow(<ReservasjonerTabell

@@ -7,7 +7,7 @@ import kodeverkTyper from 'kodeverk/kodeverkTyper';
 import { shallowWithIntl, intlMock } from 'testHelpers/intl-enzyme-test-helper';
 import KoSortering from 'kodeverk/KoSortering';
 import { RadioGroupField, RadioOption } from 'form/FinalFields';
-import { SorteringVelger } from './SorteringVelger';
+import SorteringVelger from './SorteringVelger';
 
 describe('<SorteringVelger>', () => {
   const intl: Partial<IntlShape> = {
@@ -28,7 +28,7 @@ describe('<SorteringVelger>', () => {
       }],
     };
 
-    const wrapper = shallowWithIntl(<SorteringVelger
+    const wrapper = shallowWithIntl(<SorteringVelger.WrappedComponent
       intl={intl as IntlShape}
       alleKodeverk={alleKodeverk}
       valgtSakslisteId={1}
@@ -65,7 +65,7 @@ describe('<SorteringVelger>', () => {
     };
     const lagreSorteringFn = sinon.spy();
 
-    const wrapper = shallowWithIntl(<SorteringVelger
+    const wrapper = shallowWithIntl(<SorteringVelger.WrappedComponent
       intl={intl as IntlShape}
       alleKodeverk={alleKodeverk}
       valgtSakslisteId={1}

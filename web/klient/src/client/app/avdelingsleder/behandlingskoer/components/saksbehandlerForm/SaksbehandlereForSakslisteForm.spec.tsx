@@ -30,6 +30,7 @@ describe('<SaksbehandlereForSakslisteForm>', () => {
     const wrapper = shallow(<SaksbehandlereForSakslisteForm
       valgtSaksliste={saksliste}
       knyttSaksbehandlerTilSaksliste={sinon.spy()}
+      avdelingensSaksbehandlere={[]}
       valgtAvdelingEnhet="1"
       // @ts-ignore
     />).find(Form).renderProp('render')();

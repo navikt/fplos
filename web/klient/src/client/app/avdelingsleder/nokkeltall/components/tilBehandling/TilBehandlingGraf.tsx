@@ -1,5 +1,6 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
+import React, {
+  useMemo, useState, FunctionComponent, useCallback,
+} from 'react';
 import moment from 'moment';
 import {
   XYPlot, XAxis, YAxis, HorizontalGridLines, AreaSeries, DiscreteColorLegend, Crosshair, MarkSeries,
@@ -11,9 +12,6 @@ import { FlexContainer, FlexRow, FlexColumn } from 'sharedComponents/flexGrid';
 import { DDMMYYYY_DATE_FORMAT } from 'utils/formats';
 import behandlingType from 'kodeverk/behandlingType';
 import Kodeverk from 'kodeverk/kodeverkTsType';
-import kodeverkTyper from 'kodeverk/kodeverkTyper';
-import { getKodeverk } from 'kodeverk/duck';
-
 
 import 'react-vis/dist/style.css';
 
@@ -90,6 +88,11 @@ const finnAntallForBehandlingstypeOgDato = (data, behandlingstype, dato) => {
   return koordinat.y;
 };
 
+const finnBehandlingTypeNavn = (behandlingTyper, behandlingTypeKode: string) => {
+  const type = behandlingTyper.find((bt) => bt.kode === behandlingTypeKode);
+  return type ? type.navn : '';
+};
+
 export interface OppgaveForDato {
   behandlingType: Kodeverk;
   opprettetDato: string;
@@ -109,96 +112,73 @@ interface CrosshairValue {
   y: number;
 }
 
-interface StateProps {
-  crosshairValues: CrosshairValue[];
-}
-
 /**
  * TilBehandlingGraf.
  */
-export class TilBehandlingGraf extends Component<OwnProps, StateProps> {
-  constructor(props: OwnProps) {
-    super(props);
+const TilBehandlingGraf: FunctionComponent<OwnProps> = ({
+  width,
+  height,
+  oppgaverPerDato,
+  isToUkerValgt,
+  behandlingTyper,
+}) => {
+  const [crosshairValues, setCrosshairValues] = useState<CrosshairValue[]>([]);
 
-    this.state = {
-      crosshairValues: [],
-    };
-  }
+  const onMouseLeave = useCallback(() => setCrosshairValues([]), []);
+  const onNearestX = useCallback((value: {x: Date; y: number}) => {
+    setCrosshairValues([value]);
+  }, []);
 
-  onMouseLeave = () => this.setState({ crosshairValues: [] });
+  const periodeStart = moment().subtract(isToUkerValgt ? 2 : 4, 'w').add(1, 'd');
+  const periodeSlutt = moment();
 
-  onNearestX = (value: {x: Date; y: number}) => {
-    this.setState({
-      crosshairValues: [value],
-    });
-  }
+  const koordinater = useMemo(() => konverterTilKoordinaterGruppertPaBehandlingstype(oppgaverPerDato), [oppgaverPerDato]);
+  const data = useMemo(() => fyllInnManglendeDatoerOgSorterEtterDato(koordinater, periodeStart, periodeSlutt), [koordinater, periodeStart, periodeSlutt]);
 
-  finnBehandlingTypeNavn = (behandlingTypeKode: string) => {
-    const {
-      behandlingTyper,
-    } = this.props;
-    const type = behandlingTyper.find((bt) => bt.kode === behandlingTypeKode);
-    return type ? type.navn : '';
-  }
+  const sorterteBehandlingstyper = Object.keys(data).sort(sorterBehandlingtyper);
+  const reversertSorterteBehandlingstyper = sorterteBehandlingstyper.slice().reverse();
 
-  render = () => {
-    const {
-      width, height, oppgaverPerDato, isToUkerValgt,
-    } = this.props;
-    const {
-      crosshairValues,
-    } = this.state;
+  const isEmpty = sorterteBehandlingstyper.length === 0;
+  const plotPropsWhenEmpty = isEmpty ? {
+    yDomain: [0, 5],
+    xDomain: [periodeStart.toDate(), periodeSlutt.toDate()],
+  } : {};
 
-    const periodeStart = moment().subtract(isToUkerValgt ? 2 : 4, 'w').add(1, 'd');
-    const periodeSlutt = moment();
-
-    const koordinater = konverterTilKoordinaterGruppertPaBehandlingstype(oppgaverPerDato);
-    const data = fyllInnManglendeDatoerOgSorterEtterDato(koordinater, periodeStart, periodeSlutt);
-
-    const sorterteBehandlingstyper = Object.keys(data).sort(sorterBehandlingtyper);
-    const revsersertSorterteBehandlingstyper = sorterteBehandlingstyper.slice().reverse();
-
-    const isEmpty = sorterteBehandlingstyper.length === 0;
-    const plotPropsWhenEmpty = isEmpty ? {
-      yDomain: [0, 5],
-      xDomain: [periodeStart.toDate(), periodeSlutt.toDate()],
-    } : {};
-
-    return (
-      <Panel className={styles.panel}>
-        <FlexContainer>
-          <FlexRow>
-            <FlexColumn>
-              <XYPlot
-                dontCheckIfEmpty={isEmpty}
-                width={width - LEGEND_WIDTH > 0 ? width - LEGEND_WIDTH : 100 + LEGEND_WIDTH}
-                height={height}
-                margin={{
-                  left: 40, right: 40, top: 20, bottom: 40,
-                }}
-                stackBy="y"
-                xType="time"
-                onMouseLeave={this.onMouseLeave}
-                {...plotPropsWhenEmpty}
-              >
-                <MarkSeries data={[{ x: moment().subtract(1, 'd'), y: 0 }]} style={{ display: 'none' }} />
-                <HorizontalGridLines />
-                <XAxis
-                  tickTotal={5}
-                  tickFormat={(t) => moment(t).format(DDMMYYYY_DATE_FORMAT)}
-                  style={{ text: cssText }}
+  return (
+    <Panel className={styles.panel}>
+      <FlexContainer>
+        <FlexRow>
+          <FlexColumn>
+            <XYPlot
+              dontCheckIfEmpty={isEmpty}
+              width={width - LEGEND_WIDTH > 0 ? width - LEGEND_WIDTH : 100 + LEGEND_WIDTH}
+              height={height}
+              margin={{
+                left: 40, right: 40, top: 20, bottom: 40,
+              }}
+              stackBy="y"
+              xType="time"
+              onMouseLeave={onMouseLeave}
+              {...plotPropsWhenEmpty}
+            >
+              <MarkSeries data={[{ x: moment().subtract(1, 'd'), y: 0 }]} style={{ display: 'none' }} />
+              <HorizontalGridLines />
+              <XAxis
+                tickTotal={5}
+                tickFormat={(t) => moment(t).format(DDMMYYYY_DATE_FORMAT)}
+                style={{ text: cssText }}
+              />
+              <YAxis style={{ text: cssText }} />
+              {sorterteBehandlingstyper.map((k, index) => (
+                <AreaSeries
+                  key={k}
+                  data={data[k]}
+                  onNearestX={index === 0 ? onNearestX : () => undefined}
+                  fill={behandlingstypeFarger[k]}
+                  stroke={behandlingstypeFarger[k]}
                 />
-                <YAxis style={{ text: cssText }} />
-                {sorterteBehandlingstyper.map((k, index) => (
-                  <AreaSeries
-                    key={k}
-                    data={data[k]}
-                    onNearestX={index === 0 ? this.onNearestX : () => undefined}
-                    fill={behandlingstypeFarger[k]}
-                    stroke={behandlingstypeFarger[k]}
-                  />
-                ))}
-                {crosshairValues.length > 0 && (
+              ))}
+              {crosshairValues.length > 0 && (
                 <Crosshair
                   values={crosshairValues}
                   style={{
@@ -209,33 +189,28 @@ export class TilBehandlingGraf extends Component<OwnProps, StateProps> {
                 >
                   <div className={styles.crosshair}>
                     <Normaltekst>{`${moment(crosshairValues[0].x).format(DDMMYYYY_DATE_FORMAT)}`}</Normaltekst>
-                    { revsersertSorterteBehandlingstyper.map((key) => (
+                    { reversertSorterteBehandlingstyper.map((key) => (
                       <Undertekst key={key}>
-                        {`${this.finnBehandlingTypeNavn(key)}: ${finnAntallForBehandlingstypeOgDato(data, key, crosshairValues[0].x)}`}
+                        {`${finnBehandlingTypeNavn(behandlingTyper, key)}: ${finnAntallForBehandlingstypeOgDato(data, key, crosshairValues[0].x)}`}
                       </Undertekst>
                     ))}
                   </div>
                 </Crosshair>
-                )}
-              </XYPlot>
-            </FlexColumn>
-            <FlexColumn>
-              <DiscreteColorLegend
-                colors={revsersertSorterteBehandlingstyper.map((key) => behandlingstypeFarger[key])}
-                items={revsersertSorterteBehandlingstyper.map((key) => (
-                  <Normaltekst className={styles.displayInline}>{this.finnBehandlingTypeNavn(key)}</Normaltekst>
-                ))}
-              />
-            </FlexColumn>
-          </FlexRow>
-        </FlexContainer>
-      </Panel>
-    );
-  }
-}
+              )}
+            </XYPlot>
+          </FlexColumn>
+          <FlexColumn>
+            <DiscreteColorLegend
+              colors={reversertSorterteBehandlingstyper.map((key) => behandlingstypeFarger[key])}
+              items={reversertSorterteBehandlingstyper.map((key) => (
+                <Normaltekst className={styles.displayInline}>{finnBehandlingTypeNavn(behandlingTyper, key)}</Normaltekst>
+              ))}
+            />
+          </FlexColumn>
+        </FlexRow>
+      </FlexContainer>
+    </Panel>
+  );
+};
 
-const mapStateToProps = (state) => ({
-  behandlingTyper: getKodeverk(kodeverkTyper.BEHANDLING_TYPE)(state),
-});
-
-export default connect(mapStateToProps)(TilBehandlingGraf);
+export default TilBehandlingGraf;
