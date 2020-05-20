@@ -34,12 +34,17 @@ describe('<UtvalgskriterierForSakslisteForm>', () => {
     const wrapper = shallowWithIntl(<UtvalgskriterierForSakslisteForm
       intl={intl as IntlShape}
       valgtSaksliste={saksliste}
+      alleKodeverk={{}}
       lagreSakslisteNavn={sinon.spy()}
       lagreSakslisteBehandlingstype={sinon.spy()}
       lagreSakslisteFagsakYtelseType={sinon.spy()}
       lagreSakslisteAndreKriterier={sinon.spy()}
       valgtAvdelingEnhet="1"
       hentAntallOppgaverForSaksliste={sinon.spy()}
+      lagreSakslisteSortering={sinon.spy()}
+      lagreSakslisteSorteringErDynamiskPeriode={sinon.spy()}
+      lagreSakslisteSorteringTidsintervallDato={sinon.spy()}
+      lagreSakslisteSorteringNumeriskIntervall={sinon.spy()}
       // @ts-ignore
     />).find(Form).renderProp('render')({ values: { erDynamiskPeriode: false } });
 
@@ -60,12 +65,17 @@ describe('<UtvalgskriterierForSakslisteForm>', () => {
     const wrapper = shallowWithIntl(<UtvalgskriterierForSakslisteForm
       intl={intl as IntlShape}
       valgtSaksliste={saksliste}
+      alleKodeverk={{}}
       lagreSakslisteNavn={sinon.spy()}
       lagreSakslisteBehandlingstype={sinon.spy()}
       lagreSakslisteFagsakYtelseType={sinon.spy()}
       valgtAvdelingEnhet="1"
       hentAntallOppgaverForSaksliste={sinon.spy()}
       lagreSakslisteAndreKriterier={sinon.spy()}
+      lagreSakslisteSortering={sinon.spy()}
+      lagreSakslisteSorteringErDynamiskPeriode={sinon.spy()}
+      lagreSakslisteSorteringTidsintervallDato={sinon.spy()}
+      lagreSakslisteSorteringNumeriskIntervall={sinon.spy()}
     />);
 
     const initialValues = wrapper.prop('initialValues');
@@ -94,12 +104,17 @@ describe('<UtvalgskriterierForSakslisteForm>', () => {
     const wrapper = shallowWithIntl(<UtvalgskriterierForSakslisteForm
       intl={intl as IntlShape}
       valgtSaksliste={saksliste}
+      alleKodeverk={{}}
       lagreSakslisteNavn={sinon.spy()}
       lagreSakslisteBehandlingstype={sinon.spy()}
       lagreSakslisteFagsakYtelseType={sinon.spy()}
       valgtAvdelingEnhet="1"
       hentAntallOppgaverForSaksliste={sinon.spy()}
       lagreSakslisteAndreKriterier={sinon.spy()}
+      lagreSakslisteSortering={sinon.spy()}
+      lagreSakslisteSorteringErDynamiskPeriode={sinon.spy()}
+      lagreSakslisteSorteringTidsintervallDato={sinon.spy()}
+      lagreSakslisteSorteringNumeriskIntervall={sinon.spy()}
     />);
 
     const initialValues = wrapper.prop('initialValues');
@@ -130,12 +145,17 @@ describe('<UtvalgskriterierForSakslisteForm>', () => {
     const wrapper = shallowWithIntl(<UtvalgskriterierForSakslisteForm
       intl={intl as IntlShape}
       valgtSaksliste={saksliste}
+      alleKodeverk={{}}
       lagreSakslisteNavn={lagreSakslisteNavnFn}
       lagreSakslisteBehandlingstype={sinon.spy()}
       lagreSakslisteFagsakYtelseType={sinon.spy()}
       valgtAvdelingEnhet="1"
       hentAntallOppgaverForSaksliste={sinon.spy()}
       lagreSakslisteAndreKriterier={sinon.spy()}
+      lagreSakslisteSortering={sinon.spy()}
+      lagreSakslisteSorteringErDynamiskPeriode={sinon.spy()}
+      lagreSakslisteSorteringTidsintervallDato={sinon.spy()}
+      lagreSakslisteSorteringNumeriskIntervall={sinon.spy()}
       // @ts-ignore
     />).find(Form).renderProp('render')({ values: { erDynamiskPeriode: false } });
 
@@ -181,12 +201,17 @@ describe('<UtvalgskriterierForSakslisteForm>', () => {
     const wrapper = shallowWithIntl(<UtvalgskriterierForSakslisteForm
       intl={intl as IntlShape}
       valgtSaksliste={saksliste}
+      alleKodeverk={{}}
       lagreSakslisteNavn={sinon.spy()}
       lagreSakslisteBehandlingstype={sinon.spy()}
       lagreSakslisteFagsakYtelseType={sinon.spy()}
       valgtAvdelingEnhet="1"
       hentAntallOppgaverForSaksliste={sinon.spy()}
       lagreSakslisteAndreKriterier={sinon.spy()}
+      lagreSakslisteSortering={sinon.spy()}
+      lagreSakslisteSorteringErDynamiskPeriode={sinon.spy()}
+      lagreSakslisteSorteringTidsintervallDato={sinon.spy()}
+      lagreSakslisteSorteringNumeriskIntervall={sinon.spy()}
     />);
 
     const initialValues = wrapper.prop('initialValues');

@@ -2,7 +2,6 @@
 import React, { Component, KeyboardEvent } from 'react';
 import { connect } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
-import { Dispatch } from 'redux';
 import {
   Normaltekst, Undertekst, Element, Undertittel,
 } from 'nav-frontend-typografi';
@@ -45,9 +44,9 @@ interface OwnProps {
   behandlingTyper: Kodeverk[];
   fagsakYtelseTyper: Kodeverk[];
   valgtAvdelingEnhet: string;
-  hentAvdelingensSakslister: (avdelingEnhet: string) => (dispatch: Dispatch<any>) => Saksliste[];
+  hentAvdelingensSakslister: (avdelingEnhet: string) => Saksliste[];
   oppgaverForAvdeling?: number;
-  hentAntallOppgaverForAvdeling: (avdelingEnhet: string) => (dispatch: Dispatch<any>) => Promise<string>;
+  hentAntallOppgaverForAvdeling: (avdelingEnhet: string) => Promise<string>;
 }
 
 interface StateTsProps {
@@ -155,7 +154,6 @@ export class GjeldendeSakslisterTabell extends Component<OwnProps, StateTsProps>
 
     return (
       <>
-
         <Row>
           <Column xs="9">
             <Element>

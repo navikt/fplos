@@ -20,9 +20,9 @@ interface OwnProps {
 }
 
 interface DispatchProps {
-  fetchAvdelingensSakslister: (avdelingEnhet: string) => (dispatch: Dispatch<any>) => Saksliste[];
-  fetchAntallOppgaverForSaksliste: (sakslisteId: number, avdelingEnhet: string) => (dispatch: Dispatch<any>) => Promise<string>;
-  fetchAntallOppgaverForAvdeling: (avdelingEnhet: string) => (dispatch: Dispatch<any>) => Promise<string>;
+  fetchAvdelingensSakslister: (avdelingEnhet: string) => Saksliste[];
+  fetchAntallOppgaverForSaksliste: (sakslisteId: number, avdelingEnhet: string) => Promise<string>;
+  fetchAntallOppgaverForAvdeling: (avdelingEnhet: string) => Promise<string>;
   setValgtSakslisteId: (sakslisteId: number) => void;
   lagNySaksliste: (avdelingEnhet: string) => void;
   fjernSaksliste: (sakslisteId: number, avdelingEnhet: string) => void;
@@ -98,7 +98,7 @@ const mapStateToProps = (state) => {
 };
 
 const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => ({
-  ...bindActionCreators({
+  ...bindActionCreators<DispatchProps, any>({
     fetchAvdelingensSakslister,
     setValgtSakslisteId,
     lagNySaksliste,
