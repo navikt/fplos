@@ -101,6 +101,7 @@ const config = {
   plugins: [
     new MiniCssExtractPlugin({
       filename: isDevelopment ? 'style.css' : 'style_[hash].css',
+      ignoreOrder: true,
     }),
     new CircularDependencyPlugin({
       exclude: /node_modules/,
