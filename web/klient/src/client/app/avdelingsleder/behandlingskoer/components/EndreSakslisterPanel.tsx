@@ -1,7 +1,5 @@
-
 import React, { FunctionComponent } from 'react';
 import { injectIntl, FormattedMessage, WrappedComponentProps } from 'react-intl';
-import { Dispatch } from 'redux';
 import { Row, Column } from 'nav-frontend-grid';
 
 import Image from 'sharedComponents/Image';

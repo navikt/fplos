@@ -1,5 +1,5 @@
 import React, { FunctionComponent, useMemo } from 'react';
-import { injectIntl, WrappedComponentProps } from 'react-intl';
+import { injectIntl, WrappedComponentProps, IntlShape } from 'react-intl';
 import { Row, Column } from 'nav-frontend-grid';
 import { Undertekst } from 'nav-frontend-typografi';
 import Lukknapp from 'nav-frontend-lukknapp';
@@ -9,7 +9,7 @@ import EventType from 'data/rest-api/src/requestApi/eventType';
 
 import styles from './errorMessagePanel.less';
 
-export const getErrorMessageList = (intl, queryStrings, allErrorMessages = []) => {
+export const getErrorMessageList = (intl: IntlShape, queryStrings: { errorcode?: string; errormessage?: string}, allErrorMessages = []): string[] => {
   const errorMessages = [];
   if (queryStrings.errorcode) {
     errorMessages.push(intl.formatMessage({ id: queryStrings.errorcode }));

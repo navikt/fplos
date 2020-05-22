@@ -1,8 +1,10 @@
-import React, { Component } from 'react';
+import React, { Component, ReactNode } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
 import { Form } from 'react-final-form';
-import { injectIntl, WrappedComponentProps, FormattedMessage } from 'react-intl';
+import {
+  injectIntl, WrappedComponentProps, FormattedMessage, IntlShape,
+} from 'react-intl';
 import Panel from 'nav-frontend-paneler';
 import { Undertittel, Element, Normaltekst } from 'nav-frontend-typografi';
 
@@ -60,18 +62,30 @@ interface DispatchProps {
   lagreSakslisteSorteringNumeriskIntervall: (sakslisteId: number, fra: number, til: number, avdelingEnhet: string) => void;
 }
 
+interface InitialValues {
+  sakslisteId: number;
+  navn: string;
+  sortering?: string;
+  fomDato?: string;
+  tomDato?: string;
+  fra?: number;
+  til?: number;
+  erDynamiskPeriode?: boolean;
+  fagsakYtelseType: string;
+}
+
 /**
  * UtvalgskriterierForSakslisteForm
  */
 export class UtvalgskriterierForSakslisteForm extends Component<OwnProps & DispatchProps & WrappedComponentProps> {
-  componentDidMount = () => {
+  componentDidMount = (): void => {
     const {
       valgtSaksliste, hentAntallOppgaverForSaksliste, valgtAvdelingEnhet,
     } = this.props;
     hentAntallOppgaverForSaksliste(valgtSaksliste.sakslisteId, valgtAvdelingEnhet);
   }
 
-  componentDidUpdate = (prevProps: OwnProps) => {
+  componentDidUpdate = (prevProps: OwnProps): void => {
     const {
       valgtSaksliste, hentAntallOppgaverForSaksliste, valgtAvdelingEnhet,
     } = this.props;
@@ -80,7 +94,7 @@ export class UtvalgskriterierForSakslisteForm extends Component<OwnProps & Dispa
     }
   }
 
-  buildInitialValues = (intl: any) => {
+  buildInitialValues = (intl: IntlShape): InitialValues => {
     const {
       valgtSaksliste,
     } = this.props;
@@ -110,14 +124,14 @@ export class UtvalgskriterierForSakslisteForm extends Component<OwnProps & Dispa
     };
   }
 
-  tranformValues = (values: {sakslisteId: number; navn: string}) => {
+  tranformValues = (values: {sakslisteId: number; navn: string}): void => {
     const {
       lagreSakslisteNavn, valgtAvdelingEnhet,
     } = this.props;
     lagreSakslisteNavn({ sakslisteId: values.sakslisteId, navn: values.navn }, valgtAvdelingEnhet);
   }
 
-  render = () => {
+  render = (): ReactNode => {
     const {
       intl,
       lagreSakslisteBehandlingstype,

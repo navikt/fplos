@@ -31,6 +31,11 @@ const cssText = {
   fontWeight: 400,
 };
 
+interface Koordinat {
+  x: number;
+  y: number;
+}
+
 const settCustomHoydePaSoylene = (data, over) => {
   const transformert = data.map((el) => ({
     ...el,
@@ -42,22 +47,18 @@ const settCustomHoydePaSoylene = (data, over) => {
   return transformert;
 };
 
-export const lagDatastrukturForFerdigstilte = (nyeOgFerdigstilteOppgaver) => settCustomHoydePaSoylene(nyeOgFerdigstilteOppgaver
-  .map((value) => ({
+export const lagDatastrukturForFerdigstilte = (nyeOgFerdigstilteOppgaver: NyeOgFerdigstilteOppgaver[]): Koordinat[] => settCustomHoydePaSoylene(
+  nyeOgFerdigstilteOppgaver.map((value) => ({
     x: value.antallFerdigstilte,
     y: behandlingstypeOrder.indexOf(value.behandlingType.kode) + 1,
-  })), true);
+  })), true,
+);
 
-export const lagDatastrukturForNye = (nyeOgFerdigstilteOppgaver) => settCustomHoydePaSoylene(nyeOgFerdigstilteOppgaver
+export const lagDatastrukturForNye = (nyeOgFerdigstilteOppgaver: NyeOgFerdigstilteOppgaver[]): Koordinat[] => settCustomHoydePaSoylene(nyeOgFerdigstilteOppgaver
   .map((value) => ({
     x: value.antallNye,
     y: behandlingstypeOrder.indexOf(value.behandlingType.kode) + 1,
   })), false);
-
-interface Koordinat {
-  x: number;
-  y: number;
-}
 
 interface OwnProps {
   width: number;

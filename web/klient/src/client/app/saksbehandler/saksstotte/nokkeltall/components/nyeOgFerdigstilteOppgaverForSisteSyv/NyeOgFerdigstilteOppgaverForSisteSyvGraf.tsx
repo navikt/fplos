@@ -16,7 +16,8 @@ import NyeOgFerdigstilteOppgaver from '../nyeOgFerdigstilteOppgaverTsType';
 import 'react-vis/dist/style.css';
 import styles from './nyeOgFerdigstilteOppgaverForSisteSyvGraf.less';
 
-export const slaSammenBehandlingstyperOgFyllInnTomme = (nyeOgFerdigstilteOppgaver) => {
+export const slaSammenBehandlingstyperOgFyllInnTomme = (nyeOgFerdigstilteOppgaver: NyeOgFerdigstilteOppgaver[]):
+{ antallNye: number; antallFerdigstilte: number; dato: Date}[] => {
   const oppgaver = [];
   if (nyeOgFerdigstilteOppgaver.length > 0) {
     const iDag = moment().startOf('day');

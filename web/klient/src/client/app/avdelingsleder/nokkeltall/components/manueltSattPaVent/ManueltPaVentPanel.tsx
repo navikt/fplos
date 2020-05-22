@@ -14,7 +14,7 @@ import Kodeverk from 'kodeverk/kodeverkTsType';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import fagsakYtelseType from 'kodeverk/fagsakYtelseType';
 import kodeverkTyper from 'kodeverk/kodeverkTyper';
-import { getKodeverk } from 'kodeverk/duck';
+import { getAlleKodeverk } from 'kodeverk/duck';
 import ManueltPaVentGraf from './ManueltPaVentGraf';
 import { getOppgaverAvdelingManueltPaVent } from '../../duck';
 import OppgaverManueltPaVent from './oppgaverManueltPaVentTsType';
@@ -136,7 +136,7 @@ const formDefaultValues = { valgtYtelsetype: ALLE_YTELSETYPER_VALGT, ukevalg: UK
 
 const mapStateToProps = (state) => ({
   oppgaverManueltPaVent: getOppgaverAvdelingManueltPaVent(state),
-  fagsakYtelseTyper: getKodeverk(kodeverkTyper.FAGSAK_YTELSE_TYPE)(state),
+  fagsakYtelseTyper: getAlleKodeverk(state)[kodeverkTyper.FAGSAK_YTELSE_TYPE],
   initialValues: getValuesFromReduxState(state)[formName] || formDefaultValues,
 });
 

@@ -57,28 +57,26 @@ export const SaksbehandlereForSakslisteForm: FunctionComponent<OwnProps> = ({
           <Row>
             <Column xs="6">
               {avdelingensSaksbehandlereVenstreListe.map((s) => (
-                <>
+                <React.Fragment key={s.brukerIdent}>
                   <CheckboxField
-                    key={s.brukerIdent}
                     name={s.brukerIdent}
                     label={s.navn}
                     onChange={(isChecked) => knyttSaksbehandlerTilSaksliste(valgtSaksliste.sakslisteId, s.brukerIdent, isChecked, valgtAvdelingEnhet)}
                   />
                   <VerticalSpacer fourPx />
-                </>
+                </React.Fragment>
               ))}
             </Column>
             <Column xs="6">
               {avdelingensSaksbehandlereHoyreListe.map((s) => (
-                <>
+                <React.Fragment key={s.brukerIdent}>
                   <CheckboxField
-                    key={s.brukerIdent}
                     name={s.brukerIdent}
                     label={s.navn}
                     onChange={(isChecked) => knyttSaksbehandlerTilSaksliste(valgtSaksliste.sakslisteId, s.brukerIdent, isChecked, valgtAvdelingEnhet)}
                   />
                   <VerticalSpacer fourPx />
-                </>
+                </React.Fragment>
               ))}
             </Column>
           </Row>

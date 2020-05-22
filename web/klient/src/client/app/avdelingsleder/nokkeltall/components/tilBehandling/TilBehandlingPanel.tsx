@@ -14,7 +14,7 @@ import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import Kodeverk from 'kodeverk/kodeverkTsType';
 import fagsakYtelseType from 'kodeverk/fagsakYtelseType';
 import kodeverkTyper from 'kodeverk/kodeverkTyper';
-import { getKodeverk } from 'kodeverk/duck';
+import { getAlleKodeverk } from 'kodeverk/duck';
 import TilBehandlingGraf from './TilBehandlingGraf';
 import OppgaveForDato from './oppgaverForDatoTsType';
 import { getOppgaverPerDato } from '../../duck';
@@ -155,8 +155,8 @@ TilBehandlingPanel.defaultProps = {
 const formDefaultValues = { ytelseType: ALLE_YTELSETYPER_VALGT, ukevalg: UKE_2 };
 
 const mapStateToProps = (state) => ({
-  fagsakYtelseTyper: getKodeverk(kodeverkTyper.FAGSAK_YTELSE_TYPE)(state),
-  behandlingTyper: getKodeverk(kodeverkTyper.BEHANDLING_TYPE)(state),
+  fagsakYtelseTyper: getAlleKodeverk(state)[kodeverkTyper.FAGSAK_YTELSE_TYPE],
+  behandlingTyper: getAlleKodeverk(state)[kodeverkTyper.BEHANDLING_TYPE],
   oppgaverPerDato: getOppgaverPerDato(state),
   initialValues: getValuesFromReduxState(state)[formName] || formDefaultValues,
 });

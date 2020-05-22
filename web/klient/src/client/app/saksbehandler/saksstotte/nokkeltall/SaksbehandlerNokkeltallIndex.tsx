@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, ReactNode } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
 
@@ -14,14 +14,14 @@ interface OwnProps {
  * SaksbehandlerNokkeltallIndex
  */
 export class SaksbehandlerNokkeltallIndex extends Component<OwnProps> {
-  componentDidMount = () => {
+  componentDidMount = (): void => {
     const {
       fetchNyeOgFerdigstilteOppgaverNokkeltall: fetchNyeOgFerdige, valgtSakslisteId,
     } = this.props;
     fetchNyeOgFerdige(valgtSakslisteId);
   }
 
-  componentDidUpdate = (prevProps: OwnProps) => {
+  componentDidUpdate = (prevProps: OwnProps): void => {
     const {
       fetchNyeOgFerdigstilteOppgaverNokkeltall: fetchNyeOgFerdige, valgtSakslisteId,
     } = this.props;
@@ -30,7 +30,7 @@ export class SaksbehandlerNokkeltallIndex extends Component<OwnProps> {
     }
   }
 
-  render = () => (
+  render = (): ReactNode => (
     <SaksbehandlerNokkeltallPanel />
   )
 }

@@ -13,7 +13,7 @@ import Kodeverk from 'kodeverk/kodeverkTsType';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import fagsakYtelseType from 'kodeverk/fagsakYtelseType';
 import kodeverkTyper from 'kodeverk/kodeverkTyper';
-import { getKodeverk } from 'kodeverk/duck';
+import { getAlleKodeverk } from 'kodeverk/duck';
 import FordelingAvBehandlingstypeGraf from './FordelingAvBehandlingstypeGraf';
 import { getOppgaverForAvdeling } from '../../duck';
 import OppgaverForAvdeling from './oppgaverForAvdelingTsType';
@@ -99,8 +99,8 @@ const formDefaultValues = { valgtYtelseType: ALLE_YTELSETYPER_VALGT };
 
 const mapStateToProps = (state) => ({
   oppgaverForAvdeling: getOppgaverForAvdeling(state),
-  fagsakYtelseTyper: getKodeverk(kodeverkTyper.FAGSAK_YTELSE_TYPE)(state),
-  behandlingTyper: getKodeverk(kodeverkTyper.BEHANDLING_TYPE)(state),
+  fagsakYtelseTyper: getAlleKodeverk(state)[kodeverkTyper.FAGSAK_YTELSE_TYPE],
+  behandlingTyper: getAlleKodeverk(state)[kodeverkTyper.BEHANDLING_TYPE],
   initialValues: getValuesFromReduxState(state)[formName] || formDefaultValues,
 });
 

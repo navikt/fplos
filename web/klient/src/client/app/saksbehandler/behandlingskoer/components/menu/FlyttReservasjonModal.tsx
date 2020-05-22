@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, ReactNode } from 'react';
 import { connect } from 'react-redux';
 import { injectIntl, WrappedComponentProps, FormattedMessage } from 'react-intl';
 
@@ -41,14 +41,14 @@ interface OwnProps {
  * Presentasjonskomponent. Modal som lar en søke opp en saksbehandler som saken skal flyttes til. En kan også begrunne hvorfor saken skal flyttes.
  */
 export class FlyttReservasjonModal extends Component<OwnProps & WrappedComponentProps> {
-   componentWillUnmount = () => {
+   componentWillUnmount = (): void => {
      const {
        resetSaksbehandler,
      } = this.props;
      resetSaksbehandler();
    }
 
-   formatText = () => {
+   formatText = (): string => {
      const {
        intl, saksbehandler, erSaksbehandlerSokFerdig,
      } = this.props;
@@ -62,7 +62,7 @@ export class FlyttReservasjonModal extends Component<OwnProps & WrappedComponent
        : '';
    }
 
-   render = () => {
+   render = (): ReactNode => {
      const {
        intl, showModal, closeModal, submit, oppgaveId, finnSaksbehandler, erSaksbehandlerSokStartet, erSaksbehandlerSokFerdig, saksbehandler,
      } = this.props;

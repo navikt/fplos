@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, ReactNode } from 'react';
 import { getValgtAvdelingEnhet } from 'app/duck';
 import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
@@ -26,7 +26,7 @@ interface DispatchProps {
 }
 
 export class ReservasjonerIndex extends Component<DispatchProps & OwnProps> {
-  componentDidMount = () => {
+  componentDidMount = (): void => {
     const { fetchAvdelingensReservasjoner: hentAvdelingensReservasjoner, valgtAvdelingEnhet } = this.props;
     hentAvdelingensReservasjoner(valgtAvdelingEnhet);
   }
@@ -49,7 +49,7 @@ export class ReservasjonerIndex extends Component<DispatchProps & OwnProps> {
       .then(() => fetchReserverte(valgtAvdelingEnhet));
   }
 
-  render = () => {
+  render = (): ReactNode => {
     const { finnSaksbehandler, nullstillSaksbehandler, reservasjoner } = this.props;
     return (
       <ReservasjonerTabell

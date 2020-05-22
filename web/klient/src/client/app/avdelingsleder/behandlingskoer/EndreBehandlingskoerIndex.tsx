@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, ReactNode } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
 
@@ -43,7 +43,7 @@ export class EndreBehandlingskoerIndex extends Component<OwnProps & DispatchProp
     valgtSakslisteId: undefined,
   }
 
-  componentDidMount = () => {
+  componentDidMount = (): void => {
     const {
       fetchAvdelingensSakslister: fetchSakslister,
       fetchAvdelingensSaksbehandlere: fetchSaksbehandlere,
@@ -55,7 +55,7 @@ export class EndreBehandlingskoerIndex extends Component<OwnProps & DispatchProp
     fetchAntallOppgaver(valgtAvdelingEnhet);
   }
 
-  render = () => {
+  render = (): ReactNode => {
     const {
       sakslister, valgtSakslisteId, setValgtSakslisteId: setValgtId, lagNySaksliste: lagNyListe,
       fjernSaksliste: fjernListe, lagreSakslisteNavn: lagreListeNavn, lagreSakslisteBehandlingstype: lagreListeBehandlingstype,

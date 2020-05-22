@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, ReactNode } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
 import { withRouter } from 'react-router-dom';
@@ -69,7 +69,7 @@ export class AppIndex extends Component<OwnProps> {
     headerHeight: 0,
   };
 
-  fetchAvdelinger = () => {
+  fetchAvdelinger = (): void => {
     const {
       location,
       kanOppgavestyre,
@@ -88,11 +88,11 @@ export class AppIndex extends Component<OwnProps> {
     }
   }
 
-  componentDidMount = () => {
+  componentDidMount = (): void => {
     this.fetchAvdelinger();
   }
 
-  componentDidUpdate = (prevProps: OwnProps) => {
+  componentDidUpdate = (prevProps: OwnProps): void => {
     const { funksjonellTid } = this.props;
 
     if (funksjonellTid && prevProps.funksjonellTid !== funksjonellTid) {
@@ -108,7 +108,7 @@ export class AppIndex extends Component<OwnProps> {
     this.fetchAvdelinger();
   }
 
-  componentDidCatch = (error: Error, info: any) => {
+  componentDidCatch = (error: Error, info: { componentStack: string }): void => {
     const { showCrashMessage: showCrashMsg } = this.props;
     showCrashMsg([
       error.toString(),
@@ -119,12 +119,12 @@ export class AppIndex extends Component<OwnProps> {
     ].join(' '));
   }
 
-  setSiteHeight = (headerHeight: number) => {
+  setSiteHeight = (headerHeight: number): void => {
     document.documentElement.setAttribute('style', `height: calc(100% - ${headerHeight}px)`);
     this.setState((state) => ({ ...state, headerHeight }));
   }
 
-  render = () => {
+  render = (): ReactNode => {
     const {
       location, crashMessage, navAnsattName, errorMessages,
       removeErrorMessage: removeErrorMsg, avdelinger, setAvdelingEnhet: setAvdeling, valgtAvdelingEnhet,

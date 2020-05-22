@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, ReactNode } from 'react';
 import { Element, Normaltekst } from 'nav-frontend-typografi';
 import { FormattedMessage } from 'react-intl';
 
@@ -45,7 +45,7 @@ interface StateTsProps {
 }
 
 class ReservasjonerTabell extends Component<OwnProps, StateTsProps> {
-  constructor(props) {
+  constructor(props: OwnProps) {
     super(props);
 
     this.state = {
@@ -56,15 +56,15 @@ class ReservasjonerTabell extends Component<OwnProps, StateTsProps> {
   }
 
 
-  closeReservasjonEndringDatoModal = () => {
+  closeReservasjonEndringDatoModal = (): void => {
     this.setState((prevState) => ({ ...prevState, showReservasjonEndringDatoModal: false }));
   }
 
-  showReservasjonEndringDato = (reservasjon: Reservasjon) => {
+  showReservasjonEndringDato = (reservasjon: Reservasjon): void => {
     this.setState((prevState) => ({ ...prevState, showReservasjonEndringDatoModal: true, valgtReservasjon: reservasjon }));
   }
 
-  endreReserverasjon = (reserverTil: string) => {
+  endreReserverasjon = (reserverTil: string): void => {
     const { endreOppgaveReservasjon } = this.props;
     const {
       valgtReservasjon,
@@ -74,22 +74,22 @@ class ReservasjonerTabell extends Component<OwnProps, StateTsProps> {
     });
   }
 
-  showFlytteModal = (reservasjon: Reservasjon) => {
+  showFlytteModal = (reservasjon: Reservasjon): void => {
     this.setState((prevState) => ({ ...prevState, showFlyttReservasjonModal: true, valgtReservasjon: reservasjon }));
   }
 
-  closeFlytteModal = () => {
+  closeFlytteModal = (): void => {
     this.setState((prevState) => ({ ...prevState, showFlyttReservasjonModal: false }));
   }
 
-  flyttReservasjon = (oppgaveId: number, brukerident: string, begrunnelse: string) => {
+  flyttReservasjon = (oppgaveId: number, brukerident: string, begrunnelse: string): void => {
     const { flyttReservasjon } = this.props;
     flyttReservasjon(oppgaveId, brukerident, begrunnelse).then(() => {
       this.setState((prevState) => ({ ...prevState, showFlyttReservasjonModal: false }));
     });
   }
 
-  render = () => {
+  render = (): ReactNode => {
     const {
       reservasjoner, opphevReservasjon, finnSaksbehandler, nullstillSaksbehandler,
     } = this.props;
