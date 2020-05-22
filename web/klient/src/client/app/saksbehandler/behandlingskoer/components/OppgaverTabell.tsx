@@ -79,7 +79,7 @@ interface State {
  * OppgaverTabell
  */
 export class OppgaverTabell extends Component<OwnProps & WrappedComponentProps, State> {
-  nodes: { };
+  nodes: any;
 
   constructor(props) {
     super(props);

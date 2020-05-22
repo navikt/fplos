@@ -9,7 +9,7 @@ const classNames = classnames.bind(styles);
 
 export type LabelType = string | ReactNode | {
   id: string;
-  args?: {};
+  args?: any;
 };
 
 interface OwnProps {

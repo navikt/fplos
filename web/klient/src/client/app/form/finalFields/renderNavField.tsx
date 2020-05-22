@@ -8,8 +8,8 @@ interface OwnProps {
     value: string;
   };
   meta: {
-    submitFailed: {};
-    error: {};
+    submitFailed: boolean;
+    error: boolean;
   };
   label?: LabelType;
   readOnly?: boolean;

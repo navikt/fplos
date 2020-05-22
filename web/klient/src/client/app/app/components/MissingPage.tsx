@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { FunctionComponent } from 'react';
 import { Link } from 'react-router-dom';
 import { FormattedMessage } from 'react-intl';
 import Panel from 'nav-frontend-paneler';
@@ -12,7 +12,7 @@ import styles from './missingPage.less';
  * Presentasjonskomponent. Denne komponenten vises når den NAV-ansatte prøver å aksessere en url som ikke finnes.
  * Det blir presentert en generell feilmelding og en lenke som tar NAV-ansatt tilbake til hovedsiden.
  */
-const MissingPage = () => (
+const MissingPage: FunctionComponent = () => (
   <Panel className={styles.container}>
     <Undertittel>
       <FormattedMessage id="MissingPage.PageIsMissing" />

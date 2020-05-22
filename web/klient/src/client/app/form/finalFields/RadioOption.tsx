@@ -1,4 +1,4 @@
-import React, { FunctionComponent, ReactNode } from 'react';
+import React, { FunctionComponent, ReactNode, CSSProperties } from 'react';
 import { Radio as NavRadio } from 'nav-frontend-skjema';
 import { Normaltekst } from 'nav-frontend-typografi';
 
@@ -14,7 +14,7 @@ interface OwnProps {
   groupDisabled?: boolean;
   onChange?: (any) => void;
   children?: ReactNode | ReactNode[];
-  style?: {};
+  style?: CSSProperties;
   manualHideChildren?: boolean;
 }
 

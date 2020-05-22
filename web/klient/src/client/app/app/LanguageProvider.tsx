@@ -5,7 +5,7 @@ import { IntlProvider } from 'react-intl';
 import data from '../sprak/nb_NO.json';
 
 interface OwnProps {
-  nbMessages: {};
+  nbMessages: {[key: string]: string};
   children: ReactNode;
 }
 

@@ -45,7 +45,7 @@ const config = {
 
     // TODO (TOR) Skrudd av fordi den feilaktig rapporterar typescript-types som ubrukte
     'no-unused-vars': OFF,
-    
+
     // TODO (TOR) Ignorert inntil videre grunnet kost/nytte
     'jsx-a11y/anchor-is-valid': OFF,
     'react/jsx-props-no-spreading': OFF,
@@ -57,7 +57,8 @@ const config = {
     '@typescript-eslint/explicit-member-accessibility': OFF,
     '@typescript-eslint/explicit-function-return-type': OFF,
     '@typescript-eslint/no-explicit-any': OFF,
-    '@typescript-eslint/ban-ts-ignore': OFF,
+    '@typescript-eslint/ban-ts-comment': OFF,
+    '@typescript-eslint/explicit-module-boundary-types': OFF,
   },
   overrides: [{
     files: ['*.tsx'],

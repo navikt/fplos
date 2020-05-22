@@ -2,7 +2,10 @@ import React, { Component, ReactNode } from 'react';
 import { Select as NavSelect } from 'nav-frontend-skjema';
 
 interface OwnProps {
-  selectValues: any[];
+  selectValues: {
+    props: any;
+    value: string;
+  }[];
   placeholder?: ReactNode;
   value?: ReactNode;
   hideValueOnDisable?: boolean;
