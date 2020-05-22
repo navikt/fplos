@@ -34,6 +34,7 @@ interface OwnProps {
     code?: string;
     params?: {
       errorDetails?: string;
+      location?: string;
     };
     text?: string;
   }[];
@@ -90,7 +91,7 @@ const HeaderWithErrorPanel: FunctionComponent<OwnProps & WrappedComponentProps> 
   navAnsattName,
   removeErrorMessage,
   queryStrings,
-  avdelinger,
+  avdelinger = [],
   valgtAvdelingEnhet,
   setValgtAvdeling,
   errorMessages = [],
@@ -205,15 +206,9 @@ const HeaderWithErrorPanel: FunctionComponent<OwnProps & WrappedComponentProps> 
           {brukerPanel}
         </Header>
       </div>
-      <ErrorMessagePanel queryStrings={queryStrings} removeErrorMessage={removeErrorMessage} />
+      <ErrorMessagePanel errorMessages={errorMessages} queryStrings={queryStrings} removeErrorMessage={removeErrorMessage} />
     </header>
   );
 };
-
-HeaderWithErrorPanel.defaultProps = {
-  avdelinger: [],
-  valgtAvdelingEnhet: undefined,
-};
-
 
 export default injectIntl(HeaderWithErrorPanel);

@@ -2,6 +2,7 @@ package no.nav.foreldrepenger.los.web.app.tjenester.felles.dto;
 
 import java.time.LocalDateTime;
 
+import no.nav.foreldrepenger.loslager.oppgave.BehandlingType;
 import no.nav.foreldrepenger.loslager.oppgave.Reservasjon;
 
 public class ReservasjonDto {
@@ -15,7 +16,7 @@ public class ReservasjonDto {
     private String begrunnelse;
     private Long oppgaveId;
     private Long oppgaveSaksNr;
-    private String behandlingType;
+    private BehandlingType behandlingType;
 
     public ReservasjonDto(Reservasjon reservasjon, String reservertAvNavn, String navnFlyttetAv) {
         this.reservertTilTidspunkt = reservasjon.getReservertTil();
@@ -27,7 +28,7 @@ public class ReservasjonDto {
         this.begrunnelse = reservasjon.getBegrunnelse();
         this.oppgaveId = reservasjon.getOppgave().getId();
         this.oppgaveSaksNr = reservasjon.getOppgave().getFagsakSaksnummer();
-        this.behandlingType = reservasjon.getOppgave().getBehandlingType().getNavn();
+        this.behandlingType = reservasjon.getOppgave().getBehandlingType();
     }
 
     public LocalDateTime getReservertTilTidspunkt() {
@@ -66,7 +67,7 @@ public class ReservasjonDto {
         return oppgaveSaksNr;
     }
 
-    public String getBehandlingType() {
+    public BehandlingType getBehandlingType() {
         return behandlingType;
     }
 }
