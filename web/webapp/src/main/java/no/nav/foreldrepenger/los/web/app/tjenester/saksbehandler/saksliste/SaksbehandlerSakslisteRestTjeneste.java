@@ -1,10 +1,13 @@
 package no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.saksliste;
 
-import static no.nav.vedtak.sikkerhet.abac.BeskyttetRessursActionAttributt.READ;
-import static no.nav.vedtak.sikkerhet.abac.BeskyttetRessursResourceAttributt.FAGSAK;
-
-import java.util.List;
-import java.util.stream.Collectors;
+import io.swagger.v3.oas.annotations.Operation;
+import no.nav.foreldrepenger.los.web.app.tjenester.felles.dto.SaksbehandlerDto;
+import no.nav.foreldrepenger.los.web.app.tjenester.felles.dto.SaksbehandlerDtoTjeneste;
+import no.nav.foreldrepenger.los.web.app.tjenester.felles.dto.SakslisteDto;
+import no.nav.foreldrepenger.los.web.app.tjenester.felles.dto.SakslisteIdDto;
+import no.nav.foreldrepenger.loslager.oppgave.OppgaveFiltrering;
+import no.nav.fplos.oppgave.OppgaveTjeneste;
+import no.nav.vedtak.sikkerhet.abac.BeskyttetRessurs;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -15,15 +18,11 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import java.util.List;
+import java.util.stream.Collectors;
 
-import io.swagger.v3.oas.annotations.Operation;
-import no.nav.foreldrepenger.los.web.app.tjenester.felles.dto.SaksbehandlerDto;
-import no.nav.foreldrepenger.los.web.app.tjenester.felles.dto.SaksbehandlerDtoTjeneste;
-import no.nav.foreldrepenger.los.web.app.tjenester.felles.dto.SakslisteDto;
-import no.nav.foreldrepenger.los.web.app.tjenester.felles.dto.SakslisteIdDto;
-import no.nav.foreldrepenger.loslager.oppgave.OppgaveFiltrering;
-import no.nav.fplos.oppgave.OppgaveTjeneste;
-import no.nav.vedtak.sikkerhet.abac.BeskyttetRessurs;
+import static no.nav.vedtak.sikkerhet.abac.BeskyttetRessursActionAttributt.READ;
+import static no.nav.vedtak.sikkerhet.abac.BeskyttetRessursResourceAttributt.FAGSAK;
 
 @Path("/saksbehandler/saksliste")
 @ApplicationScoped
@@ -62,7 +61,7 @@ public class SaksbehandlerSakslisteRestTjeneste {
     @Operation(description = "Henter saksbehandlere tilknyttet en saksliste", tags = "Saksliste")
     @BeskyttetRessurs(action = READ, ressurs = FAGSAK, sporingslogg = false)
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
-    public List<SaksbehandlerDto> hentSakslistensSaksbehandlere(@NotNull @QueryParam("sakslisteId") @Valid SakslisteIdDto sakslisteId) {
-        return saksbehandlerDtoTjeneste.hentSaksbehandlereForSaksliste(sakslisteId.getVerdi());
+    public List<SaksbehandlerDto> hentSakslistensAktiveSaksbehandlere(@NotNull @QueryParam("sakslisteId") @Valid SakslisteIdDto sakslisteId) {
+        return saksbehandlerDtoTjeneste.hentAktiveSaksbehandlereTilknyttetSaksliste(sakslisteId.getVerdi());
     }
 }

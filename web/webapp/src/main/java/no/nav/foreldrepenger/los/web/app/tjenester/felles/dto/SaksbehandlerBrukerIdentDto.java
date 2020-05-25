@@ -1,7 +1,7 @@
 package no.nav.foreldrepenger.los.web.app.tjenester.felles.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-
 import no.nav.vedtak.sikkerhet.abac.AbacDataAttributter;
 import no.nav.vedtak.sikkerhet.abac.AbacDto;
 import no.nav.vedtak.util.InputValideringRegex;
@@ -29,6 +29,7 @@ public class SaksbehandlerBrukerIdentDto implements AbacDto {
         this.brukerIdent = brukerIdent;
     }
 
+    @JsonIgnore
     public String getVerdi() {
         return brukerIdent;
     }

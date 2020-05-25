@@ -1,10 +1,16 @@
 package no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.saksbehandler;
 
-import static no.nav.vedtak.sikkerhet.abac.BeskyttetRessursActionAttributt.READ;
-import static no.nav.vedtak.sikkerhet.abac.BeskyttetRessursResourceAttributt.OPPGAVESTYRING_AVDELINGENHET;
-
-import java.util.List;
-import java.util.stream.Collectors;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.dto.AvdelingEnhetDto;
+import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.dto.SaksbehandlerOgAvdelingDto;
+import no.nav.foreldrepenger.los.web.app.tjenester.felles.dto.SaksbehandlerBrukerIdentDto;
+import no.nav.foreldrepenger.los.web.app.tjenester.felles.dto.SaksbehandlerDtoTjeneste;
+import no.nav.foreldrepenger.los.web.app.tjenester.felles.dto.SaksbehandlerMedAvdelingerDto;
+import no.nav.fplos.avdelingsleder.AvdelingslederSaksbehandlerTjeneste;
+import no.nav.vedtak.sikkerhet.abac.BeskyttetRessurs;
+import no.nav.vedtak.sikkerhet.abac.BeskyttetRessursActionAttributt;
+import no.nav.vedtak.sikkerhet.abac.BeskyttetRessursResourceAttributt;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -18,18 +24,11 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
+import java.util.List;
+import java.util.stream.Collectors;
 
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
-import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.dto.AvdelingEnhetDto;
-import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.dto.SaksbehandlerOgAvdelingDto;
-import no.nav.foreldrepenger.los.web.app.tjenester.felles.dto.SaksbehandlerBrukerIdentDto;
-import no.nav.foreldrepenger.los.web.app.tjenester.felles.dto.SaksbehandlerMedAvdelingerDto;
-import no.nav.foreldrepenger.los.web.app.tjenester.felles.dto.SaksbehandlerDtoTjeneste;
-import no.nav.fplos.avdelingsleder.AvdelingslederSaksbehandlerTjeneste;
-import no.nav.vedtak.sikkerhet.abac.BeskyttetRessurs;
-import no.nav.vedtak.sikkerhet.abac.BeskyttetRessursActionAttributt;
-import no.nav.vedtak.sikkerhet.abac.BeskyttetRessursResourceAttributt;
+import static no.nav.vedtak.sikkerhet.abac.BeskyttetRessursActionAttributt.READ;
+import static no.nav.vedtak.sikkerhet.abac.BeskyttetRessursResourceAttributt.OPPGAVESTYRING_AVDELINGENHET;
 
 @Path("avdelingsleder/saksbehandlere")
 @ApplicationScoped
@@ -58,7 +57,7 @@ public class AvdelingslederSaksbehandlerRestTjeneste {
     public List<SaksbehandlerMedAvdelingerDto> hentAvdelingensSaksbehandlere(@NotNull @QueryParam("avdelingEnhet") @Valid AvdelingEnhetDto avdelingEnhetDto) {
         return avdelingslederSaksbehandlerTjeneste.hentAvdelingensSaksbehandlere(avdelingEnhetDto.getAvdelingEnhet())
                 .stream()
-                .map(saksbehandler -> saksbehandlerDtoTjeneste.lagDtoMedAvdelinger(saksbehandler))
+                .map(saksbehandlerDtoTjeneste::lagKjentOgUkjentSaksbehandlerMedAvdelingerDto)
                 .collect(Collectors.toList());
     }
 
@@ -69,7 +68,8 @@ public class AvdelingslederSaksbehandlerRestTjeneste {
     @Operation(description = "Søk etter saksbehandler", tags = "AvdelingslederSaksbehandlere")
     @BeskyttetRessurs(action = BeskyttetRessursActionAttributt.READ, ressurs = BeskyttetRessursResourceAttributt.OPPGAVESTYRING_AVDELINGENHET)
     public SaksbehandlerMedAvdelingerDto søkAvdelingensSaksbehandlere(@NotNull @Parameter(description = "Brukeridentifikasjon") @Valid SaksbehandlerBrukerIdentDto brukerIdent) {
-        return saksbehandlerDtoTjeneste.lagSaksbehandlerMedAvdelingerDto(brukerIdent.getVerdi());
+        return saksbehandlerDtoTjeneste.lagSaksbehandlerMedAvdelingerDto(brukerIdent.getVerdi())
+                .orElse(null);
     }
 
     @POST
