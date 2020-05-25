@@ -1,10 +1,12 @@
+import Kodeverk from 'kodeverk/kodeverkTsType';
+
 type Reservasjon = Readonly<{
   reservertAvUid: string;
   reservertAvNavn: string;
   reservertTilTidspunkt: string;
   oppgaveId: number;
   oppgaveSaksNr: number;
-  behandlingType: string;
+  behandlingType: Kodeverk;
 }>
 
 export default Reservasjon;

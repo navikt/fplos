@@ -23,7 +23,7 @@ type OwnProps = Readonly<{
  *
  * Presentasjonskomponent. Modal som lar en avdelingsleder fjerne tilgjengelige saksbehandlere.
  */
-export const SletteSaksbehandlerModal: FunctionComponent<OwnProps & WrappedComponentProps> = ({
+const SletteSaksbehandlerModal: FunctionComponent<OwnProps & WrappedComponentProps> = ({
   intl,
   valgtSaksbehandler,
   closeSletteModal,

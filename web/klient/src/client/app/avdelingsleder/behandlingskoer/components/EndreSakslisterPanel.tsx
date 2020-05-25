@@ -1,7 +1,5 @@
-
 import React, { FunctionComponent } from 'react';
 import { injectIntl, FormattedMessage, WrappedComponentProps } from 'react-intl';
-import { Dispatch } from 'redux';
 import { Row, Column } from 'nav-frontend-grid';
 
 import Image from 'sharedComponents/Image';
@@ -26,9 +24,9 @@ interface OwnProps {
   lagreSakslisteAndreKriterier: (sakslisteId: number, andreKriterierType: Kodeverk, isChecked: boolean, skalInkludere: boolean, avdelingEnhet: string) => void;
   knyttSaksbehandlerTilSaksliste: (sakslisteId: number, brukerIdent: string, isChecked: boolean, avdelingEnhet: string) => void;
   valgtSakslisteId?: number;
-  hentAvdelingensSakslister: (avdelingEnhet: string) => (dispatch: Dispatch<any>) => Saksliste[];
-  hentAntallOppgaverForSaksliste: (sakslisteId: number, avdelingEnhet: string) => (dispatch: Dispatch<any>) => Promise<string>;
-  hentAntallOppgaverForAvdeling: (avdelingEnhet: string) => (dispatch: Dispatch<any>) => Promise<string>;
+  hentAvdelingensSakslister: (avdelingEnhet: string) => Saksliste[];
+  hentAntallOppgaverForSaksliste: (sakslisteId: number, avdelingEnhet: string) => Promise<string>;
+  hentAntallOppgaverForAvdeling: (avdelingEnhet: string) => Promise<string>;
 }
 
 /**

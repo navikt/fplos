@@ -6,7 +6,7 @@ import NavFrontendChevron from 'nav-frontend-chevron';
 
 import Oppgave from 'saksbehandler/oppgaveTsType';
 import Kodeverk from 'kodeverk/kodeverkTsType';
-import { getKodeverk } from 'kodeverk/duck';
+import { getAlleKodeverk } from 'kodeverk/duck';
 import kodeverkTyper from 'kodeverk/kodeverkTyper';
 import Table from 'sharedComponents/table/Table';
 import TableRow from 'sharedComponents/table/TableRow';
@@ -98,7 +98,7 @@ export const FagsakList: FunctionComponent<OwnProps> = ({
   </Table>
 );
 
-export const getSorterteFagsaker = createSelector([getFagsaker], (fagsaker: Fagsak[]) => fagsaker.concat().sort((fagsak1, fagsak2) => {
+export const getSorterteFagsaker = createSelector([getFagsaker], (fagsaker: Fagsak[] = []) => fagsaker.concat().sort((fagsak1, fagsak2) => {
   if (fagsak1.status.kode === fagsakStatus.AVSLUTTET && fagsak2.status.kode !== fagsakStatus.AVSLUTTET) {
     return 1;
   } if (fagsak1.status.kode !== fagsakStatus.AVSLUTTET && fagsak2.status.kode === fagsakStatus.AVSLUTTET) {
@@ -112,8 +112,8 @@ export const getSorterteFagsaker = createSelector([getFagsaker], (fagsaker: Fags
 const mapStateToProps = (state) => ({
   sorterteFagsaker: getSorterteFagsaker(state),
   fagsakOppgaver: getFagsakOppgaver(state),
-  fagsakStatusTyper: getKodeverk(kodeverkTyper.FAGSAK_STATUS)(state),
-  fagsakYtelseTyper: getKodeverk(kodeverkTyper.FAGSAK_YTELSE_TYPE)(state),
+  fagsakStatusTyper: getAlleKodeverk(state)[kodeverkTyper.FAGSAK_STATUS],
+  fagsakYtelseTyper: getAlleKodeverk(state)[kodeverkTyper.FAGSAK_YTELSE_TYPE],
 });
 
 export default connect(mapStateToProps)(FagsakList);

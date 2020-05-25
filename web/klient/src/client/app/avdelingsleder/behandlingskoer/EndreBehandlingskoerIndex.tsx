@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, ReactNode } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
 
@@ -20,9 +20,9 @@ interface OwnProps {
 }
 
 interface DispatchProps {
-  fetchAvdelingensSakslister: (avdelingEnhet: string) => (dispatch: Dispatch<any>) => Saksliste[];
-  fetchAntallOppgaverForSaksliste: (sakslisteId: number, avdelingEnhet: string) => (dispatch: Dispatch<any>) => Promise<string>;
-  fetchAntallOppgaverForAvdeling: (avdelingEnhet: string) => (dispatch: Dispatch<any>) => Promise<string>;
+  fetchAvdelingensSakslister: (avdelingEnhet: string) => Saksliste[];
+  fetchAntallOppgaverForSaksliste: (sakslisteId: number, avdelingEnhet: string) => Promise<string>;
+  fetchAntallOppgaverForAvdeling: (avdelingEnhet: string) => Promise<string>;
   setValgtSakslisteId: (sakslisteId: number) => void;
   lagNySaksliste: (avdelingEnhet: string) => void;
   fjernSaksliste: (sakslisteId: number, avdelingEnhet: string) => void;
@@ -43,7 +43,7 @@ export class EndreBehandlingskoerIndex extends Component<OwnProps & DispatchProp
     valgtSakslisteId: undefined,
   }
 
-  componentDidMount = () => {
+  componentDidMount = (): void => {
     const {
       fetchAvdelingensSakslister: fetchSakslister,
       fetchAvdelingensSaksbehandlere: fetchSaksbehandlere,
@@ -55,7 +55,7 @@ export class EndreBehandlingskoerIndex extends Component<OwnProps & DispatchProp
     fetchAntallOppgaver(valgtAvdelingEnhet);
   }
 
-  render = () => {
+  render = (): ReactNode => {
     const {
       sakslister, valgtSakslisteId, setValgtSakslisteId: setValgtId, lagNySaksliste: lagNyListe,
       fjernSaksliste: fjernListe, lagreSakslisteNavn: lagreListeNavn, lagreSakslisteBehandlingstype: lagreListeBehandlingstype,
@@ -98,7 +98,7 @@ const mapStateToProps = (state) => {
 };
 
 const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => ({
-  ...bindActionCreators({
+  ...bindActionCreators<DispatchProps, any>({
     fetchAvdelingensSakslister,
     setValgtSakslisteId,
     lagNySaksliste,

@@ -8,12 +8,12 @@ const SET_AVDELING_ENHET = 'SET_AVDELING_ENHET';
 const RESET_AVDELING_ENHET = 'RESET_AVDELING_ENHET';
 
 /* Action creators */
-export const setAvdelingEnhet = (avdelingEnhet: string) => ({
+export const setAvdelingEnhet = (avdelingEnhet: string): { type: string; data: string } => ({
   type: SET_AVDELING_ENHET,
   data: avdelingEnhet,
 });
 
-export const resetAvdelingEnhet = () => ({
+export const resetAvdelingEnhet = (): { type: string } => ({
   type: RESET_AVDELING_ENHET,
 });
 

@@ -1,11 +1,14 @@
-import React, { Component } from 'react';
+import React, { Component, ReactNode } from 'react';
 import { connect } from 'react-redux';
-import { Dispatch } from 'redux';
+import { bindActionCreators, Dispatch } from 'redux';
 import { Form } from 'react-final-form';
-import { injectIntl, WrappedComponentProps, FormattedMessage } from 'react-intl';
+import {
+  injectIntl, WrappedComponentProps, FormattedMessage, IntlShape,
+} from 'react-intl';
 import Panel from 'nav-frontend-paneler';
 import { Undertittel, Element, Normaltekst } from 'nav-frontend-typografi';
 
+import { getAlleKodeverk } from 'kodeverk/duck';
 import { getValgtAvdelingEnhet } from 'app/duck';
 import { Row, Column } from 'nav-frontend-grid';
 import {
@@ -14,8 +17,16 @@ import {
 import Kodeverk from 'kodeverk/kodeverkTsType';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import { InputField } from 'form/FinalFields';
+
+import KoSorteringType from '../../KoSorteringTsType';
+import {
+  getAntallOppgaverForSakslisteResultat,
+  lagreSakslisteSortering as lagreSakslisteSorteringActionCreator,
+  lagreSakslisteSorteringErDynamiskPeriode as lagreSakslisteSorteringErDynamiskPeriodeActionCreator,
+  lagreSakslisteSorteringTidsintervallDato as lagreSakslisteSorteringTidsintervallDatoActionCreator,
+  lagreSakslisteSorteringNumeriskIntervall as lagreSakslisteSorteringNumeriskIntervallActionCreator,
+} from '../../duck';
 import Saksliste from '../../sakslisteTsType';
-import { getAntallOppgaverForSakslisteResultat } from '../../duck';
 import AutoLagringVedBlur from './AutoLagringVedBlur';
 import BehandlingstypeVelger from './BehandlingstypeVelger';
 import AndreKriterierVelger from './AndreKriterierVelger';
@@ -34,27 +45,47 @@ const finnDagerSomTall = (antallDager) => {
 
 interface OwnProps {
   valgtSaksliste: Saksliste;
+  alleKodeverk: {[key: string]: Kodeverk[]};
   lagreSakslisteNavn: (saksliste: {sakslisteId: number; navn: string}, avdelingEnhet: string) => void;
   lagreSakslisteBehandlingstype: (sakslisteId: number, behandlingType: Kodeverk, isChecked: boolean, avdelingEnhet: string) => void;
   lagreSakslisteFagsakYtelseType: (sakslisteId: number, fagsakYtelseType: string, avdelingEnhet: string) => void;
   lagreSakslisteAndreKriterier: (sakslisteId: number, andreKriterierType: Kodeverk, isChecked: boolean, skalInkludere: boolean, avdelingEnhet: string) => void;
   valgtAvdelingEnhet: string;
   antallOppgaver?: number;
-  hentAntallOppgaverForSaksliste: (sakslisteId: number, avdelingEnhet: string) => (dispatch: Dispatch<any>) => Promise<string>;
+  hentAntallOppgaverForSaksliste: (sakslisteId: number, avdelingEnhet: string) => Promise<string>;
+}
+
+interface DispatchProps {
+  lagreSakslisteSortering: (sakslisteId: number, sakslisteSorteringValg: KoSorteringType, avdelingEnhet: string) => void;
+  lagreSakslisteSorteringErDynamiskPeriode: (sakslisteId: number, avdelingEnhet: string) => void;
+  lagreSakslisteSorteringTidsintervallDato: (sakslisteId: number, fomDato: string, tomDato: string, avdelingEnhet: string) => void;
+  lagreSakslisteSorteringNumeriskIntervall: (sakslisteId: number, fra: number, til: number, avdelingEnhet: string) => void;
+}
+
+interface InitialValues {
+  sakslisteId: number;
+  navn: string;
+  sortering?: string;
+  fomDato?: string;
+  tomDato?: string;
+  fra?: number;
+  til?: number;
+  erDynamiskPeriode?: boolean;
+  fagsakYtelseType: string;
 }
 
 /**
  * UtvalgskriterierForSakslisteForm
  */
-export class UtvalgskriterierForSakslisteForm extends Component<OwnProps & WrappedComponentProps> {
-  componentDidMount = () => {
+export class UtvalgskriterierForSakslisteForm extends Component<OwnProps & DispatchProps & WrappedComponentProps> {
+  componentDidMount = (): void => {
     const {
       valgtSaksliste, hentAntallOppgaverForSaksliste, valgtAvdelingEnhet,
     } = this.props;
     hentAntallOppgaverForSaksliste(valgtSaksliste.sakslisteId, valgtAvdelingEnhet);
   }
 
-  componentDidUpdate = (prevProps: OwnProps) => {
+  componentDidUpdate = (prevProps: OwnProps): void => {
     const {
       valgtSaksliste, hentAntallOppgaverForSaksliste, valgtAvdelingEnhet,
     } = this.props;
@@ -63,7 +94,7 @@ export class UtvalgskriterierForSakslisteForm extends Component<OwnProps & Wrapp
     }
   }
 
-  buildInitialValues = (intl: any) => {
+  buildInitialValues = (intl: IntlShape): InitialValues => {
     const {
       valgtSaksliste,
     } = this.props;
@@ -93,17 +124,27 @@ export class UtvalgskriterierForSakslisteForm extends Component<OwnProps & Wrapp
     };
   }
 
-  tranformValues = (values: {sakslisteId: number; navn: string}) => {
+  tranformValues = (values: {sakslisteId: number; navn: string}): void => {
     const {
       lagreSakslisteNavn, valgtAvdelingEnhet,
     } = this.props;
     lagreSakslisteNavn({ sakslisteId: values.sakslisteId, navn: values.navn }, valgtAvdelingEnhet);
   }
 
-  render = () => {
+  render = (): ReactNode => {
     const {
-      intl, lagreSakslisteBehandlingstype, lagreSakslisteFagsakYtelseType, valgtSaksliste, valgtAvdelingEnhet, antallOppgaver,
+      intl,
+      lagreSakslisteBehandlingstype,
+      lagreSakslisteFagsakYtelseType,
+      valgtSaksliste,
+      valgtAvdelingEnhet,
+      antallOppgaver,
       lagreSakslisteAndreKriterier,
+      alleKodeverk,
+      lagreSakslisteSortering,
+      lagreSakslisteSorteringErDynamiskPeriode,
+      lagreSakslisteSorteringTidsintervallDato,
+      lagreSakslisteSorteringNumeriskIntervall,
     } = this.props;
 
     return (
@@ -141,6 +182,7 @@ export class UtvalgskriterierForSakslisteForm extends Component<OwnProps & Wrapp
                   lagreSakslisteFagsakYtelseType={lagreSakslisteFagsakYtelseType}
                   valgtSakslisteId={valgtSaksliste.sakslisteId}
                   valgtAvdelingEnhet={valgtAvdelingEnhet}
+                  alleKodeverk={alleKodeverk}
                 />
               </Column>
             </Row>
@@ -150,6 +192,7 @@ export class UtvalgskriterierForSakslisteForm extends Component<OwnProps & Wrapp
                   lagreSakslisteBehandlingstype={lagreSakslisteBehandlingstype}
                   valgtSakslisteId={valgtSaksliste.sakslisteId}
                   valgtAvdelingEnhet={valgtAvdelingEnhet}
+                  alleKodeverk={alleKodeverk}
                 />
               </Column>
               <Column xs="4">
@@ -158,6 +201,7 @@ export class UtvalgskriterierForSakslisteForm extends Component<OwnProps & Wrapp
                   valgtSakslisteId={valgtSaksliste.sakslisteId}
                   valgtAvdelingEnhet={valgtAvdelingEnhet}
                   values={values}
+                  alleKodeverk={alleKodeverk}
                 />
               </Column>
               <Column xs="4">
@@ -170,6 +214,11 @@ export class UtvalgskriterierForSakslisteForm extends Component<OwnProps & Wrapp
                   til={finnDagerSomTall(values.til)}
                   fomDato={values.fomDato}
                   tomDato={values.tomDato}
+                  alleKodeverk={alleKodeverk as {[key: string]: KoSorteringType[]}}
+                  lagreSakslisteSortering={lagreSakslisteSortering}
+                  lagreSakslisteSorteringErDynamiskPeriode={lagreSakslisteSorteringErDynamiskPeriode}
+                  lagreSakslisteSorteringTidsintervallDato={lagreSakslisteSorteringTidsintervallDato}
+                  lagreSakslisteSorteringNumeriskIntervall={lagreSakslisteSorteringNumeriskIntervall}
                 />
               </Column>
             </Row>
@@ -183,6 +232,16 @@ export class UtvalgskriterierForSakslisteForm extends Component<OwnProps & Wrapp
 const mapStateToProps = (state) => ({
   valgtAvdelingEnhet: getValgtAvdelingEnhet(state),
   antallOppgaver: getAntallOppgaverForSakslisteResultat(state),
+  alleKodeverk: getAlleKodeverk(state),
 });
 
-export default connect(mapStateToProps)(injectIntl(UtvalgskriterierForSakslisteForm));
+const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => ({
+  ...bindActionCreators({
+    lagreSakslisteSortering: lagreSakslisteSorteringActionCreator,
+    lagreSakslisteSorteringErDynamiskPeriode: lagreSakslisteSorteringErDynamiskPeriodeActionCreator,
+    lagreSakslisteSorteringTidsintervallDato: lagreSakslisteSorteringTidsintervallDatoActionCreator,
+    lagreSakslisteSorteringNumeriskIntervall: lagreSakslisteSorteringNumeriskIntervallActionCreator,
+  }, dispatch),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(injectIntl(UtvalgskriterierForSakslisteForm));

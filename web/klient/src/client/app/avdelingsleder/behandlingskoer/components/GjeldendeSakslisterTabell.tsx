@@ -1,14 +1,13 @@
 
-import React, { Component, KeyboardEvent } from 'react';
+import React, { Component, KeyboardEvent, ReactNode } from 'react';
 import { connect } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
-import { Dispatch } from 'redux';
 import {
   Normaltekst, Undertekst, Element, Undertittel,
 } from 'nav-frontend-typografi';
 
 import { getValgtAvdelingEnhet } from 'app/duck';
-import { getKodeverk } from 'kodeverk/duck';
+import { getAlleKodeverk } from 'kodeverk/duck';
 import Kodeverk from 'kodeverk/kodeverkTsType';
 import kodeverkTyper from 'kodeverk/kodeverkTyper';
 import Image from 'sharedComponents/Image';
@@ -45,9 +44,9 @@ interface OwnProps {
   behandlingTyper: Kodeverk[];
   fagsakYtelseTyper: Kodeverk[];
   valgtAvdelingEnhet: string;
-  hentAvdelingensSakslister: (avdelingEnhet: string) => (dispatch: Dispatch<any>) => Saksliste[];
+  hentAvdelingensSakslister: (avdelingEnhet: string) => Saksliste[];
   oppgaverForAvdeling?: number;
-  hentAntallOppgaverForAvdeling: (avdelingEnhet: string) => (dispatch: Dispatch<any>) => Promise<string>;
+  hentAntallOppgaverForAvdeling: (avdelingEnhet: string) => Promise<string>;
 }
 
 interface StateTsProps {
@@ -75,14 +74,14 @@ export class GjeldendeSakslisterTabell extends Component<OwnProps, StateTsProps>
     this.nodes = [];
   }
 
-  componentDidMount = () => {
+  componentDidMount = (): void => {
     const {
       hentAntallOppgaverForAvdeling, valgtAvdelingEnhet,
     } = this.props;
     hentAntallOppgaverForAvdeling(valgtAvdelingEnhet);
   }
 
-  setValgtSaksliste = async (event: Event, id: number) => {
+  setValgtSaksliste = async (event: Event, id: number): Promise<string> => {
     const { setValgtSakslisteId, hentAvdelingensSakslister, valgtAvdelingEnhet } = this.props;
     if (this.nodes.some((node) => node && node.contains(event.target))) {
       return;
@@ -96,22 +95,22 @@ export class GjeldendeSakslisterTabell extends Component<OwnProps, StateTsProps>
     hentAvdelingensSakslister(valgtAvdelingEnhet);
   }
 
-  lagNySaksliste = (event: KeyboardEvent) => {
+  lagNySaksliste = (event: KeyboardEvent): void => {
     if (event.keyCode === 13) {
       const { lagNySaksliste, valgtAvdelingEnhet } = this.props;
       lagNySaksliste(valgtAvdelingEnhet);
     }
   };
 
-  visFjernSakslisteModal = (valgtSaksliste: Saksliste) => {
+  visFjernSakslisteModal = (valgtSaksliste: Saksliste): void => {
     this.setState((prevState) => ({ ...prevState, valgtSaksliste }));
   }
 
-  closeSletteModal = () => {
+  closeSletteModal = (): void => {
     this.setState((prevState) => ({ ...prevState, valgtSaksliste: undefined }));
   }
 
-  fjernSaksliste = (saksliste: Saksliste) => {
+  fjernSaksliste = (saksliste: Saksliste): void => {
     const {
       fjernSaksliste, valgtAvdelingEnhet,
     } = this.props;
@@ -119,7 +118,7 @@ export class GjeldendeSakslisterTabell extends Component<OwnProps, StateTsProps>
     fjernSaksliste(saksliste.sakslisteId, valgtAvdelingEnhet);
   }
 
-  formatStonadstyper = (valgteFagsakYtelseTyper?: Kodeverk[]) => {
+  formatStonadstyper = (valgteFagsakYtelseTyper?: Kodeverk[]): string | ReactNode => {
     if (!valgteFagsakYtelseTyper || valgteFagsakYtelseTyper.length === 0) {
       return <FormattedMessage id="GjeldendeSakslisterTabell.Alle" />;
     }
@@ -131,7 +130,7 @@ export class GjeldendeSakslisterTabell extends Component<OwnProps, StateTsProps>
     }).join(', ');
   };
 
-  formatBehandlingstyper = (valgteBehandlingTyper?: Kodeverk[]) => {
+  formatBehandlingstyper = (valgteBehandlingTyper?: Kodeverk[]): string | ReactNode => {
     const { behandlingTyper } = this.props;
 
     if (!valgteBehandlingTyper || valgteBehandlingTyper.length === 0
@@ -145,7 +144,7 @@ export class GjeldendeSakslisterTabell extends Component<OwnProps, StateTsProps>
     }).join(', ');
   };
 
-  render = () => {
+  render = (): ReactNode => {
     const {
       sakslister, valgtSakslisteId, lagNySaksliste, valgtAvdelingEnhet, oppgaverForAvdeling,
     } = this.props;
@@ -155,7 +154,6 @@ export class GjeldendeSakslisterTabell extends Component<OwnProps, StateTsProps>
 
     return (
       <>
-
         <Row>
           <Column xs="9">
             <Element>
@@ -236,8 +234,8 @@ export class GjeldendeSakslisterTabell extends Component<OwnProps, StateTsProps>
 }
 
 const mapStateToProps = (state) => ({
-  behandlingTyper: getKodeverk(kodeverkTyper.BEHANDLING_TYPE)(state),
-  fagsakYtelseTyper: getKodeverk(kodeverkTyper.FAGSAK_YTELSE_TYPE)(state),
+  behandlingTyper: getAlleKodeverk(state)[kodeverkTyper.BEHANDLING_TYPE],
+  fagsakYtelseTyper: getAlleKodeverk(state)[kodeverkTyper.FAGSAK_YTELSE_TYPE],
   valgtAvdelingEnhet: getValgtAvdelingEnhet(state),
   oppgaverForAvdeling: getAntallOppgaverForAvdelingResultat(state),
 });

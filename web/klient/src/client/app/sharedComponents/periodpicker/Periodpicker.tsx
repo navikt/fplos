@@ -21,7 +21,7 @@ interface OwnProps {
   placeholder?: string;
   feil?: { feilmelding?: string };
   disabled?: boolean;
-  disabledDays?: {};
+  disabledDays?: any;
 }
 
 interface StateProps {

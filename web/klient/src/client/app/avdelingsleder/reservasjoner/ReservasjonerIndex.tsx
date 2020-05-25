@@ -1,14 +1,18 @@
-import React, { Component } from 'react';
+import React, { Component, ReactNode } from 'react';
 import { getValgtAvdelingEnhet } from 'app/duck';
 import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
-import { endreOppgaveReservasjon, flyttReservasjon } from 'saksbehandler/behandlingskoer/duck';
 import {
-  fetchAvdelingensReservasjoner, opphevReservasjon,
+  endreOppgaveReservasjon, flyttReservasjon, finnSaksbehandler as getSaksbehandler, resetSaksbehandler,
+} from 'saksbehandler/behandlingskoer/duck';
+import Reservasjon from 'avdelingsleder/reservasjoner/reservasjonTsType';
+import {
+  fetchAvdelingensReservasjoner, opphevReservasjon, getAvdelingensReservasjoner,
 } from './duck';
-import ReservasjonerPanel from './components/ReservasjonerPanel';
+import ReservasjonerTabell from './components/ReservasjonerTabell';
 
 interface OwnProps {
+  reservasjoner: Reservasjon[];
   valgtAvdelingEnhet: string;
 }
 
@@ -17,10 +21,12 @@ interface DispatchProps {
   opphevReservasjon: (oppgaveId: number) => Promise<string>;
   endreOppgaveReservasjon: (oppgaveId: number, reserverTil: string) => Promise<string>;
   flyttReservasjon: (oppgaveId: number, brukerident: string, begrunnelse: string) => Promise<string>;
+  finnSaksbehandler: (brukerIdent: string) => Promise<string>;
+  nullstillSaksbehandler: () => Promise<string>;
 }
 
 export class ReservasjonerIndex extends Component<DispatchProps & OwnProps> {
-  componentDidMount = () => {
+  componentDidMount = (): void => {
     const { fetchAvdelingensReservasjoner: hentAvdelingensReservasjoner, valgtAvdelingEnhet } = this.props;
     hentAvdelingensReservasjoner(valgtAvdelingEnhet);
   }
@@ -43,17 +49,24 @@ export class ReservasjonerIndex extends Component<DispatchProps & OwnProps> {
       .then(() => fetchReserverte(valgtAvdelingEnhet));
   }
 
-  render = () => (
-    <ReservasjonerPanel
-      opphevReservasjon={this.opphevOppgaveReservasjon}
-      endreOppgaveReservasjon={this.endreOppgaveReservasjon}
-      flyttReservasjon={this.flyttReservasjon}
-    />
-  )
+  render = (): ReactNode => {
+    const { finnSaksbehandler, nullstillSaksbehandler, reservasjoner } = this.props;
+    return (
+      <ReservasjonerTabell
+        opphevReservasjon={this.opphevOppgaveReservasjon}
+        endreOppgaveReservasjon={this.endreOppgaveReservasjon}
+        flyttReservasjon={this.flyttReservasjon}
+        finnSaksbehandler={finnSaksbehandler}
+        nullstillSaksbehandler={nullstillSaksbehandler}
+        reservasjoner={reservasjoner}
+      />
+    );
+  }
 }
 
 const mapStateToProps = (state) => ({
   valgtAvdelingEnhet: getValgtAvdelingEnhet(state),
+  reservasjoner: getAvdelingensReservasjoner(state) || [],
 });
 
 const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => ({
@@ -62,6 +75,8 @@ const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => ({
     opphevReservasjon,
     endreOppgaveReservasjon,
     flyttReservasjon,
+    finnSaksbehandler: getSaksbehandler,
+    nullstillSaksbehandler: resetSaksbehandler,
   }, dispatch),
 });
 

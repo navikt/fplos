@@ -24,6 +24,10 @@ describe('<NyeOgFerdigstilteOppgaverForIdagPanel>', () => {
       width={300}
       height={200}
       nyeOgFerdigstilteOppgaver={nyeOgFerdigstilteOppgaver}
+      behandlingTyper={[{
+        kode: behandlingType.FORSTEGANGSSOKNAD,
+        navn: 'FORSTEGANGSSOKNAD',
+      }]}
     />);
 
     expect(wrapper.find(NyeOgFerdigstilteOppgaverForIdagGraf)).to.have.length(1);

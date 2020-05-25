@@ -35,7 +35,7 @@ const PersonInfo: FunctionComponent<OwnProps & WrappedComponentProps> = ({
     erKvinne, dodsdato, diskresjonskode, alder, navn, personnummer,
   } = person;
   return (
-    <div>
+    <>
       <Image
         className={styles.icon}
         src={erKvinne ? urlKvinne : urlMann}
@@ -56,7 +56,7 @@ const PersonInfo: FunctionComponent<OwnProps & WrappedComponentProps> = ({
           <MerkePanel erDod={!!dodsdato} diskresjonskode={diskresjonskode} />
         </div>
       </div>
-    </div>
+    </>
   );
 };
 

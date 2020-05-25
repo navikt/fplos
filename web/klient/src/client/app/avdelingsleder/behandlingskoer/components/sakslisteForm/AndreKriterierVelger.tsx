@@ -1,10 +1,8 @@
 import React, { Fragment, FunctionComponent } from 'react';
-import { connect } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
 import { Undertekst } from 'nav-frontend-typografi';
 
 import kodeverkTyper from 'kodeverk/kodeverkTyper';
-import { getKodeverk } from 'kodeverk/duck';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import ArrowBox from 'sharedComponents/ArrowBox';
 import Kodeverk from 'kodeverk/kodeverkTsType';
@@ -13,21 +11,21 @@ import { CheckboxField, RadioGroupField, RadioOption } from 'form/FinalFields';
 import styles from './andreKriterierVelger.less';
 
 interface OwnProps {
+  alleKodeverk: {[key: string]: Kodeverk[]};
   valgtSakslisteId: number;
   lagreSakslisteAndreKriterier: (sakslisteId: number, andreKriterierType: Kodeverk, isChecked: boolean, skalInkludere: boolean, avdelingEnhet: string) => void;
   valgtAvdelingEnhet: string;
-  andreKriterierTyper: Kodeverk[];
   values: any;
 }
 
 /**
  * AndreKriterierVelger
  */
-export const AndreKriterierVelger: FunctionComponent<OwnProps> = ({
+const AndreKriterierVelger: FunctionComponent<OwnProps> = ({
+  alleKodeverk,
   valgtSakslisteId,
   lagreSakslisteAndreKriterier,
   valgtAvdelingEnhet,
-  andreKriterierTyper,
   values,
 }) => (
   <>
@@ -35,7 +33,7 @@ export const AndreKriterierVelger: FunctionComponent<OwnProps> = ({
       <FormattedMessage id="AndreKriterierVelger.AndreKriterier" />
     </Undertekst>
     <VerticalSpacer eightPx />
-    {andreKriterierTyper.map((akt) => (
+    {alleKodeverk[kodeverkTyper.ANDRE_KRITERIER_TYPE].map((akt) => (
       <Fragment key={akt.kode}>
         <VerticalSpacer fourPx />
         <CheckboxField
@@ -71,8 +69,4 @@ export const AndreKriterierVelger: FunctionComponent<OwnProps> = ({
   </>
 );
 
-const mapStateToProps = (state) => ({
-  andreKriterierTyper: getKodeverk(kodeverkTyper.ANDRE_KRITERIER_TYPE)(state),
-});
-
-export default connect(mapStateToProps)(AndreKriterierVelger);
+export default AndreKriterierVelger;

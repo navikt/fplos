@@ -54,7 +54,7 @@
   "FagsakList.Status": "Status",
   "FagsakList.BarnFodt": "Barnet er født",
 
-  "FagsakSearch.ZeroSearchResults": "Søket ga ingen treff",
+  "FagsakSearch.ZeroSearchResults": "Søket ga ingen treff eller du mangler tilgang til saken",
   "FagsakSearch.FlereApneBehandlinger": "Det er flere åpne behandlinger. Velg behandlingen du ønsker å åpne/reservere. (Fagsak kan ikke reserveres.)",
 
   "FagsakYtelseTypeVelger.Stonadstype": "Stønadstype",

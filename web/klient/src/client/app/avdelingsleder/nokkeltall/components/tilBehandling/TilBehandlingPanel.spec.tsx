@@ -23,6 +23,12 @@ describe('<TilBehandlingPanel>', () => {
     kode: fagsakYtelseType.FORELDREPRENGER,
     navn: 'Foreldrepenger',
   }];
+
+  const behandlingTyper = [{
+    kode: behandlingType.FORSTEGANGSSOKNAD,
+    navn: 'Førstegangssøknad',
+  }];
+
   const forstegangssoknad = {
     kode: behandlingType.FORSTEGANGSSOKNAD,
     navn: 'Førstegangssøknad',
@@ -41,6 +47,7 @@ describe('<TilBehandlingPanel>', () => {
       width={300}
       height={200}
       fagsakYtelseTyper={fagsakYtelseTyper}
+      behandlingTyper={behandlingTyper}
       oppgaverPerDato={oppgaverPerDato}
       initialValues={{ ytelseType: fagsakYtelseType.FORELDREPRENGER, ukevalg: valuesMock.ukevalg }}
       // @ts-ignore
@@ -88,6 +95,7 @@ describe('<TilBehandlingPanel>', () => {
       width={300}
       height={200}
       fagsakYtelseTyper={fagsakYtelseTyper}
+      behandlingTyper={behandlingTyper}
       oppgaverPerDato={oppgaverPerDato}
       initialValues={{ ytelseType: fagsakYtelseType.FORELDREPRENGER, ukevalg: valuesMock.ukevalg }}
       // @ts-ignore
@@ -121,6 +129,7 @@ describe('<TilBehandlingPanel>', () => {
       width={300}
       height={200}
       fagsakYtelseTyper={fagsakYtelseTyper}
+      behandlingTyper={behandlingTyper}
       oppgaverPerDato={oppgaverPerDato}
       initialValues={{ ytelseType: fagsakYtelseType.FORELDREPRENGER, ukevalg: valuesMock.ukevalg }}
       // @ts-ignore
@@ -154,6 +163,7 @@ describe('<TilBehandlingPanel>', () => {
       width={300}
       height={200}
       fagsakYtelseTyper={fagsakYtelseTyper}
+      behandlingTyper={behandlingTyper}
       oppgaverPerDato={oppgaverPerDato}
       initialValues={{ ytelseType: fagsakYtelseType.FORELDREPRENGER, ukevalg: valuesMock.ukevalg }}
       // @ts-ignore
@@ -186,6 +196,7 @@ describe('<TilBehandlingPanel>', () => {
       width={300}
       height={200}
       fagsakYtelseTyper={fagsakYtelseTyper}
+      behandlingTyper={behandlingTyper}
       oppgaverPerDato={oppgaverPerDato}
       initialValues={{ ytelseType: fagsakYtelseType.FORELDREPRENGER, ukevalg: valuesMock.ukevalg }}
       // @ts-ignore
@@ -218,6 +229,7 @@ describe('<TilBehandlingPanel>', () => {
       width={300}
       height={200}
       fagsakYtelseTyper={fagsakYtelseTyper}
+      behandlingTyper={behandlingTyper}
       oppgaverPerDato={oppgaverPerDato}
       initialValues={{ ytelseType: fagsakYtelseType.FORELDREPRENGER, ukevalg: valuesMock.ukevalg }}
       // @ts-ignore

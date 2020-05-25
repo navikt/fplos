@@ -1,4 +1,4 @@
-import React, { FunctionComponent } from 'react';
+import React, { FunctionComponent, ReactNode } from 'react';
 import classnames from 'classnames/bind';
 import { Field } from 'react-final-form';
 import { FieldValidator } from 'final-form';
@@ -23,7 +23,7 @@ const renderNavSelect = renderNavField(CustomNavSelect);
 
 interface OwnProps {
   name: string;
-  selectValues: {}[];
+  selectValues: ReactNode[];
   label: LabelType;
   validate?: FieldValidator<any>;
   readOnly?: boolean;

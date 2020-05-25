@@ -1,5 +1,6 @@
 import React from 'react';
 import { expect } from 'chai';
+import { IntlShape } from 'react-intl';
 import {
   XYPlot, YAxis, HorizontalRectSeries, Hint,
 } from 'react-vis';
@@ -7,9 +8,13 @@ import {
 import behandlingType from 'kodeverk/behandlingType';
 import fagsakYtelseType from 'kodeverk/fagsakYtelseType';
 import { shallowWithIntl, intlMock } from 'testHelpers/intl-enzyme-test-helper';
-import { FordelingAvBehandlingstypeGraf } from './FordelingAvBehandlingstypeGraf';
+import FordelingAvBehandlingstypeGraf from './FordelingAvBehandlingstypeGraf';
 
 describe('<FordelingAvBehandlingstypeGraf>', () => {
+  const intl: Partial<IntlShape> = {
+    ...intlMock,
+  };
+
   const fagsakYtelseTyper = [{
     kode: fagsakYtelseType.ENGANGSSTONAD,
     navn: 'Engangsstønad',
@@ -48,8 +53,8 @@ describe('<FordelingAvBehandlingstypeGraf>', () => {
       antall: 1,
     }];
 
-    const wrapper = shallowWithIntl(<FordelingAvBehandlingstypeGraf
-      intl={intlMock}
+    const wrapper = shallowWithIntl(<FordelingAvBehandlingstypeGraf.WrappedComponent
+      intl={intl as IntlShape}
       width={300}
       height={200}
       oppgaverForAvdeling={oppgaverForAvdeling}
@@ -68,8 +73,8 @@ describe('<FordelingAvBehandlingstypeGraf>', () => {
       antall: 1,
     }];
 
-    const wrapper = shallowWithIntl(<FordelingAvBehandlingstypeGraf
-      intl={intlMock}
+    const wrapper = shallowWithIntl(<FordelingAvBehandlingstypeGraf.WrappedComponent
+      intl={intl as IntlShape}
       width={300}
       height={200}
       oppgaverForAvdeling={oppgaverForAvdeling}
@@ -101,8 +106,8 @@ describe('<FordelingAvBehandlingstypeGraf>', () => {
       antall: 1,
     }];
 
-    const wrapper = shallowWithIntl(<FordelingAvBehandlingstypeGraf
-      intl={intlMock}
+    const wrapper = shallowWithIntl(<FordelingAvBehandlingstypeGraf.WrappedComponent
+      intl={intl as IntlShape}
       width={300}
       height={200}
       oppgaverForAvdeling={oppgaverForAvdeling}

@@ -49,7 +49,7 @@ const FagsakSearch: FunctionComponent<OwnProps> = ({
   searchResultAccessDenied,
   resetSearch,
 }: OwnProps) => (
-  <div>
+  <>
     <SearchForm
       onSubmit={searchFagsakCallback}
       searchStarted={searchStarted}
@@ -70,7 +70,7 @@ const FagsakSearch: FunctionComponent<OwnProps> = ({
         <FagsakList selectFagsakCallback={selectFagsakCallback} selectOppgaveCallback={selectOppgaveCallback} />
       </>
     )}
-  </div>
+  </>
 );
 
 FagsakSearch.defaultProps = {

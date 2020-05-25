@@ -1,10 +1,8 @@
-import React, { FunctionComponent } from 'react';
-import { connect } from 'react-redux';
+import React, { useMemo, FunctionComponent } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { Undertekst } from 'nav-frontend-typografi';
 
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
-import { getKodeverk } from 'kodeverk/duck';
 import Kodeverk from 'kodeverk/kodeverkTsType';
 import fagsakYtelseType from 'kodeverk/fagsakYtelseType';
 import kodeverkTyper from 'kodeverk/kodeverkTyper';
@@ -16,7 +14,7 @@ const finnFagsakYtelseTypeNavn = (fagsakYtelseTyper, valgtFagsakYtelseType) => {
 };
 
 interface OwnProps {
-  fagsakYtelseTyper: Kodeverk[];
+  alleKodeverk: {[key: string]: Kodeverk[]};
   valgtSakslisteId: number;
   lagreSakslisteFagsakYtelseType: (sakslisteId: number, fagsakYtelseType: string, avdelingEnhet: string) => void;
   valgtAvdelingEnhet: string;
@@ -25,43 +23,43 @@ interface OwnProps {
 /**
  * FagsakYtelseTypeVelger
  */
-export const FagsakYtelseTypeVelger: FunctionComponent<OwnProps> = ({
-  fagsakYtelseTyper,
+const FagsakYtelseTypeVelger: FunctionComponent<OwnProps> = ({
+  alleKodeverk,
   valgtSakslisteId,
   lagreSakslisteFagsakYtelseType,
   valgtAvdelingEnhet,
-}) => (
-  <>
-    <Undertekst>
-      <FormattedMessage id="FagsakYtelseTypeVelger.Stonadstype" />
-    </Undertekst>
-    <VerticalSpacer eightPx />
-    <RadioGroupField
-      name="fagsakYtelseType"
-      onChange={(fyt) => lagreSakslisteFagsakYtelseType(valgtSakslisteId, fyt, valgtAvdelingEnhet)}
-    >
-      <RadioOption
-        value={fagsakYtelseType.FORELDREPRENGER}
-        label={finnFagsakYtelseTypeNavn(fagsakYtelseTyper, fagsakYtelseType.FORELDREPRENGER)}
-      />
-      <RadioOption
-        value={fagsakYtelseType.ENGANGSSTONAD}
-        label={finnFagsakYtelseTypeNavn(fagsakYtelseTyper, fagsakYtelseType.ENGANGSSTONAD)}
-      />
-      <RadioOption
-        value={fagsakYtelseType.SVANGERSKAPPENGER}
-        label={finnFagsakYtelseTypeNavn(fagsakYtelseTyper, fagsakYtelseType.SVANGERSKAPPENGER)}
-      />
-      <RadioOption
-        value=""
-        label={<FormattedMessage id="FagsakYtelseTypeVelger.Alle" />}
-      />
-    </RadioGroupField>
-  </>
-);
+}) => {
+  const fagsakYtelseTyper = useMemo(() => alleKodeverk[kodeverkTyper.FAGSAK_YTELSE_TYPE].filter((k) => k.kode !== fagsakYtelseType.ENDRING_FORELDREPENGER),
+    []);
+  return (
+    <>
+      <Undertekst>
+        <FormattedMessage id="FagsakYtelseTypeVelger.Stonadstype" />
+      </Undertekst>
+      <VerticalSpacer eightPx />
+      <RadioGroupField
+        name="fagsakYtelseType"
+        onChange={(fyt) => lagreSakslisteFagsakYtelseType(valgtSakslisteId, fyt, valgtAvdelingEnhet)}
+      >
+        <RadioOption
+          value={fagsakYtelseType.FORELDREPRENGER}
+          label={finnFagsakYtelseTypeNavn(fagsakYtelseTyper, fagsakYtelseType.FORELDREPRENGER)}
+        />
+        <RadioOption
+          value={fagsakYtelseType.ENGANGSSTONAD}
+          label={finnFagsakYtelseTypeNavn(fagsakYtelseTyper, fagsakYtelseType.ENGANGSSTONAD)}
+        />
+        <RadioOption
+          value={fagsakYtelseType.SVANGERSKAPPENGER}
+          label={finnFagsakYtelseTypeNavn(fagsakYtelseTyper, fagsakYtelseType.SVANGERSKAPPENGER)}
+        />
+        <RadioOption
+          value=""
+          label={<FormattedMessage id="FagsakYtelseTypeVelger.Alle" />}
+        />
+      </RadioGroupField>
+    </>
+  );
+};
 
-const mapStateToProps = (state) => ({
-  fagsakYtelseTyper: getKodeverk(kodeverkTyper.FAGSAK_YTELSE_TYPE)(state).filter((k) => k.kode !== fagsakYtelseType.ENDRING_FORELDREPENGER),
-});
-
-export default connect(mapStateToProps)(FagsakYtelseTypeVelger);
+export default FagsakYtelseTypeVelger;

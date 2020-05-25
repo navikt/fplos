@@ -1,14 +1,13 @@
-import React, { FunctionComponent } from 'react';
+import React, { FunctionComponent, Suspense } from 'react';
 import { Route, Switch } from 'react-router-dom';
 
-import AvdelingslederIndex from 'avdelingsleder/AvdelingslederIndex';
-import SaksbehandlerIndex from 'saksbehandler/SaksbehandlerIndex';
+import LoadingPanel from 'sharedComponents/LoadingPanel';
 import MissingPage from './MissingPage';
 
-import 'styles/modigDesign.less';
-import '../../../nomodulestyles/global.less';
-
 import styles from './home.less';
+
+const AvdelingslederIndex = React.lazy(() => import('avdelingsleder/AvdelingslederIndex'));
+const SaksbehandlerIndex = React.lazy(() => import('saksbehandler/SaksbehandlerIndex'));
 
 interface OwnProps {
   headerHeight: number;
@@ -23,11 +22,13 @@ const Home: FunctionComponent<OwnProps> = ({
   headerHeight,
 }) => (
   <div className={styles.content} style={{ margin: `${headerHeight + 10}px auto 0` }}>
-    <Switch>
-      <Route exact path="/" component={SaksbehandlerIndex} />
-      <Route exact path="/avdelingsleder" component={AvdelingslederIndex} />
-      <Route component={MissingPage} />
-    </Switch>
+    <Suspense fallback={<LoadingPanel />}>
+      <Switch>
+        <Route exact path="/" component={SaksbehandlerIndex} />
+        <Route exact path="/avdelingsleder" component={AvdelingslederIndex} />
+        <Route component={MissingPage} />
+      </Switch>
+    </Suspense>
   </div>
 );
 

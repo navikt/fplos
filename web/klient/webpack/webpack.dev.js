@@ -19,7 +19,7 @@ const config = {
   ],
 
   output: {
-    filename: 'bundle.js',
+    filename: '[name].js',
     path: ROOT_DIR,
     publicPath: '/',
   },
@@ -35,6 +35,9 @@ const config = {
 
   optimization: {
     namedModules: true,
+    splitChunks: {
+      chunks: 'all',
+    },
   },
 
   devServer: {

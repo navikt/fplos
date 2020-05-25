@@ -27,7 +27,6 @@ export const BelopSorteringValg: FunctionComponent<OwnProps & WrappedComponentPr
     <Undertekst>
       <FormattedMessage id="SorteringVelger.FiltrerPaHeltall" />
     </Undertekst>
-
     <>
       <AutoLagringVedBlur
         lagre={(values) => lagreSakslisteSorteringNumerisk(valgtSakslisteId, values.fra, values.til, valgtAvdelingEnhet)}

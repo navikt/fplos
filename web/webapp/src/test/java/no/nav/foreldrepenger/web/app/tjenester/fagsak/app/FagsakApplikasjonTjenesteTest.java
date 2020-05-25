@@ -1,21 +1,5 @@
 package no.nav.foreldrepenger.web.app.tjenester.fagsak.app;
 
-import static java.lang.String.valueOf;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.Month;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-
-import org.junit.Before;
-import org.junit.Test;
-
 import no.nav.foreldrepenger.domene.typer.AktørId;
 import no.nav.foreldrepenger.domene.typer.PersonIdent;
 import no.nav.foreldrepenger.los.web.app.tjenester.fagsak.app.FagsakApplikasjonTjeneste;
@@ -28,6 +12,26 @@ import no.nav.fplos.foreldrepengerbehandling.dto.fagsak.FagsakDto;
 import no.nav.fplos.foreldrepengerbehandling.dto.fagsak.PersonDto;
 import no.nav.fplos.oppgave.OppgaveTjeneste;
 import no.nav.fplos.person.api.TpsTjeneste;
+import no.nav.vedtak.exception.IntegrasjonException;
+import no.nav.vedtak.exception.ManglerTilgangException;
+import no.nav.vedtak.felles.integrasjon.felles.ws.SoapWebServiceFeil;
+import no.nav.vedtak.felles.integrasjon.rest.OidcRestClientFeil;
+import org.junit.Before;
+import org.junit.Test;
+
+import javax.xml.ws.WebServiceException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.Month;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 @SuppressWarnings("deprecation")
 public class FagsakApplikasjonTjenesteTest {
@@ -108,26 +112,26 @@ public class FagsakApplikasjonTjenesteTest {
     @Test
     public void skal_returnere_tomt_view_dersom_søkestreng_ikke_er_gyldig_fnr_eller_saksnr() {
         List<FagsakDto> fagsakDtos = tjeneste.hentSaker("ugyldig_søkestreng");
-
         assertThat(fagsakDtos.isEmpty()).isTrue();
     }
 
     @Test
-    public void skal_returnere_tomt_view_ved_ukjent_fnr() {
-        when(tpsTjeneste.hentBrukerForFnr(new PersonIdent(FNR))).thenReturn(Optional.empty());
+    public void skal_returnere_tomt_view_ved_ukjent_fnr() throws Exception {
+        var tpsError = SoapWebServiceFeil.FACTORY.soapFaultIwebserviceKall("tjeneste", new WebServiceException("Finner ikke bruker med ident"));
+        var integrasjonException = new IntegrasjonException(tpsError);
+        when(tpsTjeneste.hentBrukerForFnr(new PersonIdent(FNR))).thenThrow(integrasjonException);
 
         List<FagsakDto> view = tjeneste.hentSaker(FNR);
-
         assertThat(view.isEmpty()).isTrue();
     }
 
     @Test
     public void skal_returnere_tomt_view_ved_ukjent_saksnr() {
-        List<FagsakDto> fagsakDtoListe = new ArrayList<>();
-        when(klient.getFagsakFraSaksnummer(SAKSNUMMER)).thenReturn(fagsakDtoListe);
+        var fpsak403 = OidcRestClientFeil.FACTORY.manglerTilgang("");
+        var manglerTilgangException = new ManglerTilgangException(fpsak403);
+        when(klient.getFagsakFraSaksnummer(any(String.class))).thenThrow(manglerTilgangException);
 
-        List<FagsakDto> view = tjeneste.hentSaker(valueOf(SAKSNUMMER));
-
+        List<FagsakDto> view = tjeneste.hentSaker(SAKSNUMMER);
         assertThat(view.isEmpty()).isTrue();
     }
 }

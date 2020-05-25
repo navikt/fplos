@@ -1,5 +1,6 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
+import React, {
+  useMemo, useState, FunctionComponent, useCallback,
+} from 'react';
 import {
   XYPlot, XAxis, YAxis, VerticalGridLines, HorizontalRectSeries, Hint, DiscreteColorLegend,
 } from 'react-vis';
@@ -10,8 +11,6 @@ import Panel from 'nav-frontend-paneler';
 import { FlexContainer, FlexRow, FlexColumn } from 'sharedComponents/flexGrid';
 import Kodeverk from 'kodeverk/kodeverkTsType';
 import behandlingType from 'kodeverk/behandlingType';
-import kodeverkTyper from 'kodeverk/kodeverkTyper';
-import { getKodeverk } from 'kodeverk/duck';
 import OppgaverForAvdeling from './oppgaverForAvdelingTsType';
 
 import 'react-vis/dist/style.css';
@@ -79,89 +78,78 @@ interface OwnProps {
   oppgaverForAvdeling: OppgaverForAvdeling[];
 }
 
-interface StateProps {
-  hintVerdi: any;
+interface Koordinat {
+  x: number;
+  x0: number;
+  y: number;
 }
 
 /**
  * FordelingAvBehandlingstypeGraf.
  */
-export class FordelingAvBehandlingstypeGraf extends Component<OwnProps & WrappedComponentProps, StateProps> {
-  constructor(props: OwnProps) {
-    super(props);
+const FordelingAvBehandlingstypeGraf: FunctionComponent<OwnProps & WrappedComponentProps> = ({
+  intl,
+  width,
+  height,
+  oppgaverForAvdeling,
+  behandlingTyper,
+}) => {
+  const [hintVerdi, setHintVerdi] = useState<Koordinat>();
 
-    this.state = {
-      hintVerdi: undefined,
-    };
-  }
+  const leggTilHintVerdi = useCallback((verdi: Koordinat) => {
+    setHintVerdi(verdi);
+  }, []);
+  const fjernHintVerdi = useCallback(() => {
+    setHintVerdi(undefined);
+  }, []);
 
-  leggTilHintVerdi = (hintVerdi: {x: number; x0: number; y: number}) => {
-    this.setState((prevState) => ({ ...prevState, hintVerdi }));
-  };
-
-  fjernHintVerdi = () => {
-    this.setState((prevState) => ({ ...prevState, hintVerdi: undefined }));
-  };
-
-  finnBehandlingTypeNavn = (behandlingTypeKode: string) => {
-    const {
-      behandlingTyper,
-    } = this.props;
-    const type = behandlingTyper.find((bt) => bt.kode === behandlingTypeKode);
+  const finnBehandlingTypeNavn = useCallback((_v, i) => {
+    const type = behandlingTyper.find((bt) => bt.kode === behandlingstypeOrder[i]);
     return type ? type.navn : '';
-  }
+  }, []);
 
-  render = () => {
-    const {
-      intl, width, height, oppgaverForAvdeling,
-    } = this.props;
-    const {
-      hintVerdi,
-    } = this.state;
+  const tilSaksbehandling = useMemo(() => formatData(oppgaverForAvdeling.filter((o) => o.tilBehandling)), [oppgaverForAvdeling]);
+  const tilBeslutter = useMemo(() => formatData(oppgaverForAvdeling.filter((o) => !o.tilBehandling)), [oppgaverForAvdeling]);
+  const isEmpty = tilSaksbehandling.length === 0 && tilBeslutter.length === 0;
 
-
-    const tilSaksbehandling = formatData(oppgaverForAvdeling.filter((o) => o.tilBehandling));
-    const tilBeslutter = formatData(oppgaverForAvdeling.filter((o) => !o.tilBehandling));
-    const isEmpty = tilSaksbehandling.length === 0 && tilBeslutter.length === 0;
-
-    return (
-      <Panel className={styles.panel}>
-        <FlexContainer>
-          <FlexRow>
-            <FlexColumn>
-              <XYPlot
-                dontCheckIfEmpty={isEmpty}
-                margin={{
-                  left: 170, right: 40, top: 40, bottom: 0,
-                }}
-                width={width - LEGEND_WIDTH > 0 ? width - LEGEND_WIDTH : 100 + LEGEND_WIDTH}
-                height={height}
-                stackBy="x"
-                yDomain={[0, 7]}
-                {...(isEmpty ? { xDomain: [0, 100] } : {})}
-              >
-                <VerticalGridLines />
-                <XAxis orientation="top" style={{ text: cssText }} />
-                <YAxis
-                  style={{ text: cssText }}
-                  tickFormat={(v, i) => this.finnBehandlingTypeNavn(behandlingstypeOrder[i])}
-                  tickValues={[1, 2, 3, 4, 5, 6]}
-                />
-                <HorizontalRectSeries
-                  data={settCustomHoydePaSoylene(tilSaksbehandling)}
-                  onValueMouseOver={this.leggTilHintVerdi}
-                  onValueMouseOut={this.fjernHintVerdi}
-                  fill="#337c9b"
-                  stroke="#337c9b"
-                />
-                <HorizontalRectSeries
-                  data={settCustomHoydePaSoylene(tilBeslutter)}
-                  onValueMouseOver={this.leggTilHintVerdi}
-                  onValueMouseOut={this.fjernHintVerdi}
-                  fill="#38a161"
-                  stroke="#38a161"
-                />
-                {hintVerdi && (
+  return (
+    <Panel className={styles.panel}>
+      <FlexContainer>
+        <FlexRow>
+          <FlexColumn>
+            <XYPlot
+              dontCheckIfEmpty={isEmpty}
+              margin={{
+                left: 170, right: 40, top: 40, bottom: 0,
+              }}
+              width={width - LEGEND_WIDTH > 0 ? width - LEGEND_WIDTH : 100 + LEGEND_WIDTH}
+              height={height}
+              stackBy="x"
+              yDomain={[0, 7]}
+              {...(isEmpty ? { xDomain: [0, 100] } : {})}
+            >
+              <VerticalGridLines />
+              <XAxis orientation="top" style={{ text: cssText }} />
+              <YAxis
+                style={{ text: cssText }}
+                tickFormat={finnBehandlingTypeNavn}
+                tickValues={[1, 2, 3, 4, 5, 6]}
+              />
+              <HorizontalRectSeries
+                data={settCustomHoydePaSoylene(tilSaksbehandling)}
+                onValueMouseOver={leggTilHintVerdi}
+                onValueMouseOut={fjernHintVerdi}
+                fill="#337c9b"
+                stroke="#337c9b"
+              />
+              <HorizontalRectSeries
+                data={settCustomHoydePaSoylene(tilBeslutter)}
+                onValueMouseOver={leggTilHintVerdi}
+                onValueMouseOut={fjernHintVerdi}
+                fill="#38a161"
+                stroke="#38a161"
+              />
+              {hintVerdi && (
                 <Hint value={hintVerdi}>
                   <div className={styles.hint}>
                     {getHintAntall(hintVerdi, intl)}
@@ -169,31 +157,26 @@ export class FordelingAvBehandlingstypeGraf extends Component<OwnProps & Wrapped
                     {getHintTotalAntall(hintVerdi, tilBeslutter, tilSaksbehandling, intl)}
                   </div>
                 </Hint>
-                )}
-              </XYPlot>
-            </FlexColumn>
-            <FlexColumn>
-              <DiscreteColorLegend
-                colors={['#337c9b', '#38a161']}
-                items={[
-                  <Normaltekst className={styles.displayInline}>
-                    <FormattedMessage id="FordelingAvBehandlingstypeGraf.TilBehandling" />
-                  </Normaltekst>,
-                  <Normaltekst className={styles.displayInline}>
-                    <FormattedMessage id="FordelingAvBehandlingstypeGraf.TilBeslutter" />
-                  </Normaltekst>,
-                ]}
-              />
-            </FlexColumn>
-          </FlexRow>
-        </FlexContainer>
-      </Panel>
-    );
-  }
-}
+              )}
+            </XYPlot>
+          </FlexColumn>
+          <FlexColumn>
+            <DiscreteColorLegend
+              colors={['#337c9b', '#38a161']}
+              items={[
+                <Normaltekst className={styles.displayInline}>
+                  <FormattedMessage id="FordelingAvBehandlingstypeGraf.TilBehandling" />
+                </Normaltekst>,
+                <Normaltekst className={styles.displayInline}>
+                  <FormattedMessage id="FordelingAvBehandlingstypeGraf.TilBeslutter" />
+                </Normaltekst>,
+              ]}
+            />
+          </FlexColumn>
+        </FlexRow>
+      </FlexContainer>
+    </Panel>
+  );
+};
 
-const mapStateToProps = (state) => ({
-  behandlingTyper: getKodeverk(kodeverkTyper.BEHANDLING_TYPE)(state),
-});
-
-export default connect(mapStateToProps)(injectIntl(FordelingAvBehandlingstypeGraf));
+export default injectIntl(FordelingAvBehandlingstypeGraf);

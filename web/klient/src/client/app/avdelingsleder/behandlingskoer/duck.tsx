@@ -61,7 +61,7 @@ export const lagreSakslisteNavn = (saksliste: {sakslisteId: number; navn: string
   fpLosApi.LAGRE_SAKSLISTE_NAVN.makeRestApiRequest()({ sakslisteId: saksliste.sakslisteId, navn: saksliste.navn, avdelingEnhet }),
 ).then(() => dispatch(fetchAvdelingensSakslister(avdelingEnhet)));
 
-export const lagreSakslisteBehandlingstype = (sakslisteId: number, behandlingType: {}, isChecked: boolean,
+export const lagreSakslisteBehandlingstype = (sakslisteId: number, behandlingType: Kodeverk, isChecked: boolean,
   avdelingEnhet: string) => (dispatch: Dispatch<any>) => dispatch(
   fpLosApi.LAGRE_SAKSLISTE_BEHANDLINGSTYPE.makeRestApiRequest()({
     sakslisteId,

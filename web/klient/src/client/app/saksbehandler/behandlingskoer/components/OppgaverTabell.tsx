@@ -57,8 +57,8 @@ interface OwnProps {
   oppgaverTilBehandling: Oppgave[];
   reserverteOppgaver: Oppgave[];
   reserverOppgave: (oppgave: Oppgave) => void;
-  opphevOppgaveReservasjon: (oppgaveId: number, begrunnelse: string) => Promise<string>;
-  forlengOppgaveReservasjon: (oppgaveId: number) => Promise<string>;
+  opphevOppgaveReservasjon: (oppgaveId: number, begrunnelse: string) => Promise<any>;
+  forlengOppgaveReservasjon: (oppgaveId: number) => Promise<any>;
   endreOppgaveReservasjon: (oppgaveId: number, reserverTil: string) => Promise<string>;
   finnSaksbehandler: (brukerIdent: string) => Promise<string>;
   resetSaksbehandler: () => Promise<string>;
@@ -79,7 +79,7 @@ interface State {
  * OppgaverTabell
  */
 export class OppgaverTabell extends Component<OwnProps & WrappedComponentProps, State> {
-  nodes: { };
+  nodes: any;
 
   constructor(props) {
     super(props);

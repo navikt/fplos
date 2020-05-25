@@ -8,7 +8,7 @@ import { Normaltekst, Undertekst } from 'nav-frontend-typografi';
 
 import { ISO_DATE_FORMAT, DDMMYYYY_DATE_FORMAT } from 'utils/formats';
 import behandlingType from 'kodeverk/behandlingType';
-import { TilBehandlingGraf } from './TilBehandlingGraf';
+import TilBehandlingGraf from './TilBehandlingGraf';
 
 describe('<TilBehandlingGraf>', () => {
   const behandlingTyper = [{

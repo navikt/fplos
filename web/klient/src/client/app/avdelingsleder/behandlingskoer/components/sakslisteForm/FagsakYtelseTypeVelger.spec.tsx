@@ -3,25 +3,29 @@ import { expect } from 'chai';
 import sinon from 'sinon';
 import { shallow } from 'enzyme';
 
+import kodeverkTyper from 'kodeverk/kodeverkTyper';
 import fagsakYtelseType from 'kodeverk/fagsakYtelseType';
 import { RadioOption, RadioGroupField } from 'form/FinalFields';
-import { FagsakYtelseTypeVelger } from './FagsakYtelseTypeVelger';
+
+import FagsakYtelseTypeVelger from './FagsakYtelseTypeVelger';
 
 describe('<FagsakYtelseTypeVelger>', () => {
   it('skal vise checkboxer for ytelsetyper', () => {
-    const fagsakYtelseTyper = [{
-      kode: fagsakYtelseType.ENGANGSSTONAD,
-      navn: 'Engangsstønad',
-    }, {
-      kode: fagsakYtelseType.FORELDREPRENGER,
-      navn: 'Foreldrepenger',
-    }, {
-      kode: fagsakYtelseType.SVANGERSKAPPENGER,
-      navn: 'Svangerskapspenger',
-    }];
+    const alleKodeverk = {
+      [kodeverkTyper.FAGSAK_YTELSE_TYPE]: [{
+        kode: fagsakYtelseType.ENGANGSSTONAD,
+        navn: 'Engangsstønad',
+      }, {
+        kode: fagsakYtelseType.FORELDREPRENGER,
+        navn: 'Foreldrepenger',
+      }, {
+        kode: fagsakYtelseType.SVANGERSKAPPENGER,
+        navn: 'Svangerskapspenger',
+      }],
+    };
 
     const wrapper = shallow(<FagsakYtelseTypeVelger
-      fagsakYtelseTyper={fagsakYtelseTyper}
+      alleKodeverk={alleKodeverk}
       valgtSakslisteId={1}
       lagreSakslisteFagsakYtelseType={sinon.spy()}
       valgtAvdelingEnhet="3"
@@ -35,14 +39,16 @@ describe('<FagsakYtelseTypeVelger>', () => {
   });
 
   it('skal lagre ytelsetype ved klikk på checkbox', () => {
-    const fagsakYtelseTyper = [{
-      kode: fagsakYtelseType.ENGANGSSTONAD,
-      navn: 'Engangsstønad',
-    }];
+    const alleKodeverk = {
+      [kodeverkTyper.FAGSAK_YTELSE_TYPE]: [{
+        kode: fagsakYtelseType.ENGANGSSTONAD,
+        navn: 'Engangsstønad',
+      }],
+    };
     const lagreYtelseTypeFn = sinon.spy();
 
     const wrapper = shallow(<FagsakYtelseTypeVelger
-      fagsakYtelseTyper={fagsakYtelseTyper}
+      alleKodeverk={alleKodeverk}
       valgtSakslisteId={1}
       lagreSakslisteFagsakYtelseType={lagreYtelseTypeFn}
       valgtAvdelingEnhet="3"

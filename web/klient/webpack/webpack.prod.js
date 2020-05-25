@@ -19,7 +19,8 @@ const config = {
   ],
 
   output: {
-    filename: 'bundle-[hash].js',
+    filename: '[name]-[contenthash].js',
+    chunkFilename: '[name].[contenthash].chunk.js',
     path: path.resolve(__dirname, '../target/public'),
     publicPath: 'public',
   },
@@ -44,6 +45,9 @@ const config = {
       }),
       new OptimizeCSSAssetsPlugin({}),
     ],
+    splitChunks: {
+      chunks: 'all',
+    },
   },
 
   stats: {
