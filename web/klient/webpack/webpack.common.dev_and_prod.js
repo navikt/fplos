@@ -88,10 +88,10 @@ const config = {
       ],
       include: [STYLE_DIR, CORE_DIR],
     }, {
-      test: /\.(jpg|png|svg)$/,
+      test: /\.(svg)$/,
       loader: 'file-loader',
       options: {
-        name: isDevelopment ? '[name]_[hash].[ext]' : '/[name]_[hash].[ext]',
+        name: '[name]_[hash].[ext]',
       },
       include: [IMG_DIR],
     },
