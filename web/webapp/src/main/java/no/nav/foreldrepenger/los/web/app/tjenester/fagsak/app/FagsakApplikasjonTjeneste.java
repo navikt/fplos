@@ -1,19 +1,19 @@
 package no.nav.foreldrepenger.los.web.app.tjenester.fagsak.app;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-import java.util.function.Predicate;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-
 import no.nav.foreldrepenger.domene.typer.PersonIdent;
 import no.nav.foreldrepenger.domene.typer.Saksnummer;
 import no.nav.foreldrepenger.loslager.aktør.TpsPersonDto;
 import no.nav.fplos.foreldrepengerbehandling.ForeldrepengerBehandlingRestKlient;
 import no.nav.fplos.foreldrepengerbehandling.dto.fagsak.FagsakDto;
 import no.nav.fplos.person.api.TpsTjeneste;
+import no.nav.vedtak.exception.ManglerTilgangException;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+import java.util.function.Predicate;
 
 @ApplicationScoped
 public class FagsakApplikasjonTjeneste {
@@ -40,7 +40,9 @@ public class FagsakApplikasjonTjeneste {
             return Collections.emptyList();
         }
 
-        return predikatErFnr.test(søkestreng) ? hentSakerForFnr(new PersonIdent(søkestreng)) : hentFagsakForSaksnummer(new Saksnummer(søkestreng));
+        return predikatErFnr.test(søkestreng)
+                ? hentSakerForFnr(new PersonIdent(søkestreng))
+                : hentFagsakForSaksnummer(new Saksnummer(søkestreng));
     }
 
     private List<FagsakDto> hentSakerForFnr(PersonIdent fnr) {
@@ -57,10 +59,11 @@ public class FagsakApplikasjonTjeneste {
     }
 
     private List<FagsakDto> hentFagsakForSaksnummer(Saksnummer saksnummer) {
-        List<FagsakDto> fagsakDtos = restKlient.getFagsakFraSaksnummer(saksnummer.getVerdi());
-        if (fagsakDtos.isEmpty()) {
+        try {
+            return restKlient.getFagsakFraSaksnummer(saksnummer.getVerdi());
+        } catch (ManglerTilgangException e) {
+            // fpsak returnerer 403 ved manglende tilgang og ingen resultat
             return Collections.emptyList();
         }
-        return fagsakDtos;
     }
 }
