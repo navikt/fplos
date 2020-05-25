@@ -22,7 +22,7 @@ const config = {
     filename: '[name]-[contenthash].js',
     chunkFilename: '[name].[contenthash].chunk.js',
     path: path.resolve(__dirname, '../target/public'),
-    publicPath: 'public',
+    publicPath: 'public/',
   },
 
   plugins: [
