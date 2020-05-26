@@ -36,7 +36,7 @@
         <!-- Eksterne -->
         <assertj.version>3.16.1</assertj.version>
         <cxf.version>3.3.6</cxf.version>
-        <woodstox.version>6.2.0</woodstox.version>
+        <woodstox.version>6.2.1</woodstox.version>
         <surefire.version>2.22.2</surefire.version>
         <asm.version>6.2.1</asm.version>
 
