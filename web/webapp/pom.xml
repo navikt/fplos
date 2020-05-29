@@ -79,15 +79,6 @@
             <artifactId>felles-util</artifactId>
         </dependency>
 
-        <dependency>
-            <groupId>no.nav.foreldrepenger.felles.integrasjon</groupId>
-            <artifactId>arbeidsfordeling-klient</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>no.nav.foreldrepenger.felles.integrasjon</groupId>
-            <artifactId>organisasjon-klient</artifactId>
-        </dependency>
-
         <!-- REST + WebService -->
         <dependency>
             <groupId>no.nav.foreldrepenger.felles.integrasjon</groupId>

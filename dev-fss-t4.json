@@ -19,8 +19,6 @@
     "OPENIDCONNECT_USERNAME":  "fplos-t4",
     "OPENIDCONNECT_ISSOHOST":  "https://isso-t.adeo.no:443/isso/oauth2",
     "PERSON_V3_URL":  "https://wasapp-t4.adeo.no/tpsws/ws/Person/v3",
-    "ORGANISASJON_V4_URL":  "https://modapp-t4.adeo.no/ereg/ws/OrganisasjonService/v4",
-    "ARBEIDSFORDELING_V1_URL":  "https://app-t1.adeo.no/norg2/ws/Arbeidsfordeling/v1",
     "ORGANISASJONRESSURSENHET_V1_URL":  "https://app-t1.adeo.no/norg2/ws/OrganisasjonRessursEnhet/v1",
     "AKTOER_V2_URL":  "https://app-t4.adeo.no/aktoerregister/ws/Aktoer/v2",
     "LDAP_USER_BASEDN":  "ou=NAV,ou=BusinessUnits,dc=test,dc=local",
