@@ -2,7 +2,7 @@ import ErrorEventType from './errorEventType';
 import ErrorMessage from './ErrorMessage';
 import Formatter from './Formatter';
 
-const TIMEOUT_MESSAGE_CODE = 'Rest.ErrorMessage.Timeout';
+const TIMEOUT_MESSAGE_CODE = 'Rest.ErrorMessage.PollingTimeout';
 
 interface ErrorData {
   type: string;

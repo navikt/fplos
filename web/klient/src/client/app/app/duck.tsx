@@ -78,8 +78,9 @@ export const getNavAnsattKanOppgavestyre = createSelector([fpLosApi.NAV_ANSATT.g
 export const getNavAnsattKanBehandleKode6 = createSelector([fpLosApi.NAV_ANSATT.getRestApiData()], (navAnsatt: NavAnsatt = NavAnsattDefault) => navAnsatt
   .kanBehandleKode6);
 export const getFunksjonellTid = createSelector([fpLosApi.NAV_ANSATT.getRestApiData()], (navAnsatt: NavAnsatt = NavAnsattDefault) => navAnsatt.funksjonellTid);
-export const getFpsakUrl = createSelector([fpLosApi.FPSAK_URL.getRestApiData()], (fpsakUrl: {verdi: undefined }) => fpsakUrl.verdi);
-export const getFptilbakeUrl = createSelector([fpLosApi.FPTILBAKE_URL.getRestApiData()], (fptilbakeUrl: {verdi: undefined }) => fptilbakeUrl.verdi);
+export const getFpsakUrl = createSelector([fpLosApi.FPSAK_URL.getRestApiData()], (fpsakUrl: {verdi: undefined } = { verdi: undefined }) => fpsakUrl.verdi);
+export const getFptilbakeUrl = createSelector([fpLosApi.FPTILBAKE_URL.getRestApiData()],
+  (fptilbakeUrl: {verdi: undefined } = { verdi: undefined }) => fptilbakeUrl.verdi);
 export const hentFpsakInternBehandlingId = (uuid: string) => (dispatch: Dispatch<any>) => dispatch(
   fpLosApi.FPSAK_BEHANDLING_ID.makeRestApiRequest()(
     { uuid },
