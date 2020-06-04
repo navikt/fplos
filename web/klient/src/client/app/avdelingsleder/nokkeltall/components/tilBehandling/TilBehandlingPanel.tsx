@@ -11,10 +11,9 @@ import StoreValuesInReduxState from 'form/reduxBinding/StoreValuesInReduxState';
 import { getValuesFromReduxState } from 'form/reduxBinding/formDuck';
 import { RadioGroupField, RadioOption, SelectField } from 'form/FinalFields';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
-import Kodeverk from 'kodeverk/kodeverkTsType';
+import useKodeverk from 'data/useKodeverk';
 import fagsakYtelseType from 'kodeverk/fagsakYtelseType';
 import kodeverkTyper from 'kodeverk/kodeverkTyper';
-import { getAlleKodeverk } from 'kodeverk/duck';
 import TilBehandlingGraf from './TilBehandlingGraf';
 import OppgaveForDato from './oppgaverForDatoTsType';
 import { getOppgaverPerDato } from '../../duck';
@@ -72,10 +71,8 @@ interface InitialValues {
 interface OwnProps {
   width: number;
   height: number;
-  fagsakYtelseTyper: Kodeverk[];
   oppgaverPerDato?: OppgaveForDato[];
   initialValues: InitialValues;
-  behandlingTyper: Kodeverk[];
 }
 
 const formName = 'tilBehandlingForm';
@@ -87,66 +84,68 @@ export const TilBehandlingPanel: FunctionComponent<OwnProps & WrappedComponentPr
   intl,
   width,
   height,
-  fagsakYtelseTyper,
   oppgaverPerDato,
   initialValues,
-  behandlingTyper,
-}) => (
-  <Form
-    onSubmit={() => undefined}
-    initialValues={initialValues}
-    render={({ values }) => (
-      <>
-        <StoreValuesInReduxState onUmount stateKey={formName} values={values} />
-        <Element>
-          <FormattedMessage id="TilBehandlingPanel.TilBehandling" />
-        </Element>
-        <VerticalSpacer eightPx />
-        <Row>
-          <Column xs="2">
-            <SelectField
-              name="ukevalg"
-              label=""
-              selectValues={uker.map((u) => <option key={u.kode} value={u.kode}>{intl.formatMessage({ id: u.tekstKode })}</option>)}
-              bredde="l"
-            />
-          </Column>
-          <Column xs="8">
-            <div className={styles.radioPadding}>
-              <RadioGroupField name="ytelseType">
-                <RadioOption
-                  value={fagsakYtelseType.FORELDREPRENGER}
-                  label={finnFagsakYtelseTypeNavn(fagsakYtelseTyper, fagsakYtelseType.FORELDREPRENGER)}
-                />
-                <RadioOption
-                  value={fagsakYtelseType.ENGANGSSTONAD}
-                  label={finnFagsakYtelseTypeNavn(fagsakYtelseTyper, fagsakYtelseType.ENGANGSSTONAD)}
-                />
-                <RadioOption
-                  value={fagsakYtelseType.SVANGERSKAPPENGER}
-                  label={finnFagsakYtelseTypeNavn(fagsakYtelseTyper, fagsakYtelseType.SVANGERSKAPPENGER)}
-                />
-                <RadioOption
-                  value={ALLE_YTELSETYPER_VALGT}
-                  label={<FormattedMessage id="FordelingAvBehandlingstypePanel.Alle" />}
-                />
-              </RadioGroupField>
-            </div>
-          </Column>
-        </Row>
-        <TilBehandlingGraf
-          width={width}
-          height={height}
-          isToUkerValgt={values.ukevalg === UKE_2}
-          behandlingTyper={behandlingTyper}
-          oppgaverPerDato={oppgaverPerDato ? slaSammenLikeBehandlingstyperOgDatoer(oppgaverPerDato
-            .filter((ofa) => (values.ytelseType === ALLE_YTELSETYPER_VALGT ? true : values.ytelseType === ofa.fagsakYtelseType.kode))
-            .filter((ofa) => erDatoInnenforPeriode(ofa, values.ukevalg))) : []}
-        />
-      </>
-    )}
-  />
-);
+}) => {
+  const behandlingTyper = useKodeverk(kodeverkTyper.BEHANDLING_TYPE);
+  const fagsakYtelseTyper = useKodeverk(kodeverkTyper.FAGSAK_YTELSE_TYPE);
+  return (
+    <Form
+      onSubmit={() => undefined}
+      initialValues={initialValues}
+      render={({ values }) => (
+        <>
+          <StoreValuesInReduxState onUmount stateKey={formName} values={values} />
+          <Element>
+            <FormattedMessage id="TilBehandlingPanel.TilBehandling" />
+          </Element>
+          <VerticalSpacer eightPx />
+          <Row>
+            <Column xs="2">
+              <SelectField
+                name="ukevalg"
+                label=""
+                selectValues={uker.map((u) => <option key={u.kode} value={u.kode}>{intl.formatMessage({ id: u.tekstKode })}</option>)}
+                bredde="l"
+              />
+            </Column>
+            <Column xs="8">
+              <div className={styles.radioPadding}>
+                <RadioGroupField name="ytelseType">
+                  <RadioOption
+                    value={fagsakYtelseType.FORELDREPRENGER}
+                    label={finnFagsakYtelseTypeNavn(fagsakYtelseTyper, fagsakYtelseType.FORELDREPRENGER)}
+                  />
+                  <RadioOption
+                    value={fagsakYtelseType.ENGANGSSTONAD}
+                    label={finnFagsakYtelseTypeNavn(fagsakYtelseTyper, fagsakYtelseType.ENGANGSSTONAD)}
+                  />
+                  <RadioOption
+                    value={fagsakYtelseType.SVANGERSKAPPENGER}
+                    label={finnFagsakYtelseTypeNavn(fagsakYtelseTyper, fagsakYtelseType.SVANGERSKAPPENGER)}
+                  />
+                  <RadioOption
+                    value={ALLE_YTELSETYPER_VALGT}
+                    label={<FormattedMessage id="FordelingAvBehandlingstypePanel.Alle" />}
+                  />
+                </RadioGroupField>
+              </div>
+            </Column>
+          </Row>
+          <TilBehandlingGraf
+            width={width}
+            height={height}
+            isToUkerValgt={values.ukevalg === UKE_2}
+            behandlingTyper={behandlingTyper}
+            oppgaverPerDato={oppgaverPerDato ? slaSammenLikeBehandlingstyperOgDatoer(oppgaverPerDato
+              .filter((ofa) => (values.ytelseType === ALLE_YTELSETYPER_VALGT ? true : values.ytelseType === ofa.fagsakYtelseType.kode))
+              .filter((ofa) => erDatoInnenforPeriode(ofa, values.ukevalg))) : []}
+          />
+        </>
+      )}
+    />
+  );
+};
 
 TilBehandlingPanel.defaultProps = {
   oppgaverPerDato: [],
@@ -155,8 +154,6 @@ TilBehandlingPanel.defaultProps = {
 const formDefaultValues = { ytelseType: ALLE_YTELSETYPER_VALGT, ukevalg: UKE_2 };
 
 const mapStateToProps = (state) => ({
-  fagsakYtelseTyper: getAlleKodeverk(state)[kodeverkTyper.FAGSAK_YTELSE_TYPE],
-  behandlingTyper: getAlleKodeverk(state)[kodeverkTyper.BEHANDLING_TYPE],
   oppgaverPerDato: getOppgaverPerDato(state),
   initialValues: getValuesFromReduxState(state)[formName] || formDefaultValues,
 });

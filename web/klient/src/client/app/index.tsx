@@ -6,6 +6,7 @@ import { render } from 'react-dom';
 import { init } from '@sentry/browser';
 
 import AppIndex from 'app/AppIndex';
+import { RestDataProvider } from 'data/RestDataContext';
 import configureStore from './store';
 
 /* eslint no-undef: "error" */
@@ -30,7 +31,9 @@ const renderFunc = (Component) => {
   render(
     <Provider store={store}>
       <ConnectedRouter history={history}>
-        <Component />
+        <RestDataProvider>
+          <Component />
+        </RestDataProvider>
       </ConnectedRouter>
     </Provider>,
     app,

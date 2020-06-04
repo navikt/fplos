@@ -54,21 +54,6 @@ export const appReducer = (state: State = initialState, action: Action = { type:
 /* Selectors */
 const getAppContext = (state) => state.default.appContext;
 
-type NavAnsatt = Readonly<{
-  navn: string;
-  kanSaksbehandle: boolean;
-  kanOppgavestyre: boolean;
-  kanBehandleKode6: boolean;
-  funksjonellTid: string;
-}>;
-const NavAnsattDefault = {
-  navn: undefined,
-  kanSaksbehandle: undefined,
-  kanOppgavestyre: undefined,
-  kanBehandleKode6: undefined,
-  funksjonellTid: undefined,
-};
-
 export const getValgtAvdelingEnhet = createSelector([getAppContext], (appContext) => appContext.valgtAvdelingEnhet);
 export const getNavAnsattName = createSelector([fpLosApi.NAV_ANSATT.getRestApiData()], (navAnsatt: NavAnsatt = NavAnsattDefault) => navAnsatt.navn);
 export const getNavAnsattKanSaksbehandle = createSelector([fpLosApi.NAV_ANSATT.getRestApiData()], (navAnsatt: NavAnsatt = NavAnsattDefault) => navAnsatt

@@ -3,7 +3,7 @@ import {
 } from './rest-api-redux/index';
 import errorHandler from './error-api-redux';
 
-const fpLosApiKeys = {
+export const fpLosApiKeys = {
   KODEVERK: 'KODEVERK',
   NAV_ANSATT: 'NAV_ANSATT',
   SEARCH_FAGSAK: 'SEARCH_FAGSAK',
@@ -52,7 +52,7 @@ const fpLosApiKeys = {
   FPSAK_BEHANDLING_ID: 'FPSAK_BEHANDLING_ID',
 };
 
-const endpoints = new RestApiConfigBuilder()
+export const endpoints = new RestApiConfigBuilder()
   /* /api/fagsak */
   .withPost('/api/fagsak/sok', fpLosApiKeys.SEARCH_FAGSAK)
 

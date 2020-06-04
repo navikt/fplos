@@ -9,18 +9,19 @@ import BoxedListWithSelection from '@navikt/boxed-list-with-selection';
 import BoxedListWithLinks from '@navikt/boxed-list-with-links';
 import Header from '@navikt/nap-header';
 
+import { fpLosApiKeys } from 'data/fpLosApi';
 import EventType from 'data/rest-api/src/requestApi/eventType';
 import { getValueFromLocalStorage, setValueInLocalStorage, removeValueFromLocalStorage } from 'utils/localStorageHelper';
 import Avdeling from 'app/avdelingTsType';
-
 import { RETTSKILDE_URL, SYSTEMRUTINE_URL } from 'data/eksterneLenker';
+import useRestApiData from 'data/useRestApiData';
 
+import NavAnsatt from 'app/navAnsattTsType';
 import ErrorMessagePanel from './ErrorMessagePanel';
 
 import styles from './headerWithErrorPanel.less';
 
 interface OwnProps {
-  navAnsattName: string;
   removeErrorMessage: () => void;
   queryStrings: {
     errormessage?: string;
@@ -88,7 +89,6 @@ const setAvdeling = (avdelinger, setValgtAvdeling, valgtAvdelingEnhet) => {
  */
 const HeaderWithErrorPanel: FunctionComponent<OwnProps & WrappedComponentProps> = ({
   intl,
-  navAnsattName,
   removeErrorMessage,
   queryStrings,
   avdelinger = [],
@@ -99,6 +99,8 @@ const HeaderWithErrorPanel: FunctionComponent<OwnProps & WrappedComponentProps> 
 }) => {
   const [erLenkePanelApent, setLenkePanelApent] = useState(false);
   const [erAvdelingerPanelApent, setAvdelingerPanelApent] = useState(false);
+
+  const navAnsatt = useRestApiData<NavAnsatt>(fpLosApiKeys.NAV_ANSATT);
 
   const wrapperRef = useOutsideClickEvent(erLenkePanelApent, erAvdelingerPanelApent, setLenkePanelApent, setAvdelingerPanelApent);
 
@@ -111,7 +113,7 @@ const HeaderWithErrorPanel: FunctionComponent<OwnProps & WrappedComponentProps> 
     setAvdeling(avdelinger, setValgtAvdeling, valgtAvdelingEnhet);
   }, [avdelinger]);
 
-  let brukerPanel = <UserPanel name={navAnsattName} />;
+  let brukerPanel = <UserPanel name={navAnsatt.navn} />;
 
   if (valgtAvdelingEnhet && avdelinger.length > 0) {
     brukerPanel = (
@@ -142,7 +144,7 @@ const HeaderWithErrorPanel: FunctionComponent<OwnProps & WrappedComponentProps> 
           children: ({ ref }) => (
             <div ref={ref}>
               <UserPanel
-                name={navAnsattName}
+                name={navAnsatt.navn}
                 unit={`${valgtAvdelingEnhet} ${avdelinger.find((a) => a.avdelingEnhet === valgtAvdelingEnhet).navn}`}
                 onClick={() => {
                   if (erLenkePanelApent) {

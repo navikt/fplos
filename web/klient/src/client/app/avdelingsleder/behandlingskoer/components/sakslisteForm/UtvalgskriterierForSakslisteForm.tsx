@@ -8,7 +8,6 @@ import {
 import Panel from 'nav-frontend-paneler';
 import { Undertittel, Element, Normaltekst } from 'nav-frontend-typografi';
 
-import { getAlleKodeverk } from 'kodeverk/duck';
 import { getValgtAvdelingEnhet } from 'app/duck';
 import { Row, Column } from 'nav-frontend-grid';
 import {
@@ -45,7 +44,6 @@ const finnDagerSomTall = (antallDager) => {
 
 interface OwnProps {
   valgtSaksliste: Saksliste;
-  alleKodeverk: {[key: string]: Kodeverk[]};
   lagreSakslisteNavn: (saksliste: {sakslisteId: number; navn: string}, avdelingEnhet: string) => void;
   lagreSakslisteBehandlingstype: (sakslisteId: number, behandlingType: Kodeverk, isChecked: boolean, avdelingEnhet: string) => void;
   lagreSakslisteFagsakYtelseType: (sakslisteId: number, fagsakYtelseType: string, avdelingEnhet: string) => void;
@@ -140,7 +138,6 @@ export class UtvalgskriterierForSakslisteForm extends Component<OwnProps & Dispa
       valgtAvdelingEnhet,
       antallOppgaver,
       lagreSakslisteAndreKriterier,
-      alleKodeverk,
       lagreSakslisteSortering,
       lagreSakslisteSorteringErDynamiskPeriode,
       lagreSakslisteSorteringTidsintervallDato,
@@ -182,7 +179,6 @@ export class UtvalgskriterierForSakslisteForm extends Component<OwnProps & Dispa
                   lagreSakslisteFagsakYtelseType={lagreSakslisteFagsakYtelseType}
                   valgtSakslisteId={valgtSaksliste.sakslisteId}
                   valgtAvdelingEnhet={valgtAvdelingEnhet}
-                  alleKodeverk={alleKodeverk}
                 />
               </Column>
             </Row>
@@ -192,7 +188,6 @@ export class UtvalgskriterierForSakslisteForm extends Component<OwnProps & Dispa
                   lagreSakslisteBehandlingstype={lagreSakslisteBehandlingstype}
                   valgtSakslisteId={valgtSaksliste.sakslisteId}
                   valgtAvdelingEnhet={valgtAvdelingEnhet}
-                  alleKodeverk={alleKodeverk}
                 />
               </Column>
               <Column xs="4">
@@ -201,7 +196,6 @@ export class UtvalgskriterierForSakslisteForm extends Component<OwnProps & Dispa
                   valgtSakslisteId={valgtSaksliste.sakslisteId}
                   valgtAvdelingEnhet={valgtAvdelingEnhet}
                   values={values}
-                  alleKodeverk={alleKodeverk}
                 />
               </Column>
               <Column xs="4">
@@ -214,7 +208,6 @@ export class UtvalgskriterierForSakslisteForm extends Component<OwnProps & Dispa
                   til={finnDagerSomTall(values.til)}
                   fomDato={values.fomDato}
                   tomDato={values.tomDato}
-                  alleKodeverk={alleKodeverk as {[key: string]: KoSorteringType[]}}
                   lagreSakslisteSortering={lagreSakslisteSortering}
                   lagreSakslisteSorteringErDynamiskPeriode={lagreSakslisteSorteringErDynamiskPeriode}
                   lagreSakslisteSorteringTidsintervallDato={lagreSakslisteSorteringTidsintervallDato}
@@ -232,7 +225,6 @@ export class UtvalgskriterierForSakslisteForm extends Component<OwnProps & Dispa
 const mapStateToProps = (state) => ({
   valgtAvdelingEnhet: getValgtAvdelingEnhet(state),
   antallOppgaver: getAntallOppgaverForSakslisteResultat(state),
-  alleKodeverk: getAlleKodeverk(state),
 });
 
 const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => ({

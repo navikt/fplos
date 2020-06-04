@@ -10,12 +10,15 @@ import { Undertittel } from 'nav-frontend-typografi';
 
 import LoadingPanel from 'sharedComponents/LoadingPanel';
 import {
-  getValgtAvdelingEnhet, getNavAnsattKanOppgavestyre, getNavAnsattKanBehandleKode6, getAvdelingeneTilAvdelingslederResultat,
+  getValgtAvdelingEnhet, getAvdelingeneTilAvdelingslederResultat,
 } from 'app/duck';
 import { parseQueryString } from 'utils/urlUtils';
 import { getAvdelingslederPanelLocationCreator } from 'app/paths';
 import trackRouteParam from 'app/data/trackRouteParam';
 import Location from 'app/locationTsType';
+import useRestApiData from 'data/useRestApiData';
+import { fpLosApiKeys } from 'data/fpLosApi';
+import NavAnsatt from 'app/navAnsattTsType';
 import { getSelectedAvdelingslederPanel, setSelectedAvdelingslederPanel } from './duck';
 import AvdelingslederDashboard from './components/AvdelingslederDashboard';
 import IkkeTilgangTilAvdelingslederPanel from './components/IkkeTilgangTilAvdelingslederPanel';
@@ -82,10 +85,9 @@ export const AvdelingslederIndex: FunctionComponent<OwnProps> = ({
   valgtAvdelingEnhet,
   activeAvdelingslederPanel,
   getAvdelingslederPanelLocation,
-  kanOppgavestyre,
-  kanBehandleKode6,
   erKode6Avdeling,
 }) => {
+  const { kanOppgavestyre, kanBehandleKode6 } = useRestApiData<NavAnsatt>(fpLosApiKeys.NAV_ANSATT);
   if (!kanOppgavestyre) {
     return <IkkeTilgangTilAvdelingslederPanel />;
   } if (erKode6Avdeling && !kanBehandleKode6) {
@@ -132,8 +134,6 @@ export const erKode6Avdeling = createSelector([getValgtAvdelingEnhet, getAvdelin
 const mapStateToProps = (state) => ({
   valgtAvdelingEnhet: getValgtAvdelingEnhet(state),
   activeAvdelingslederPanel: getSelectedAvdelingslederPanel(state),
-  kanOppgavestyre: getNavAnsattKanOppgavestyre(state),
-  kanBehandleKode6: getNavAnsattKanBehandleKode6(state),
   erKode6Avdeling: erKode6Avdeling(state),
 });
 

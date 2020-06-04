@@ -3,6 +3,7 @@ import { FormattedMessage } from 'react-intl';
 import { Undertekst } from 'nav-frontend-typografi';
 
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
+import useKodeverk from 'data/useKodeverk';
 import Kodeverk from 'kodeverk/kodeverkTsType';
 import kodeverkTyper from 'kodeverk/kodeverkTyper';
 import behandlingType from 'kodeverk/behandlingType';
@@ -14,7 +15,6 @@ interface OwnProps {
   valgtSakslisteId: number;
   lagreSakslisteBehandlingstype: (sakslisteId: number, behandlingType: Kodeverk, isChecked: boolean, avdelingEnhet: string) => void;
   valgtAvdelingEnhet: string;
-  alleKodeverk: {[key: string]: Kodeverk[]};
 }
 
 /**
@@ -24,9 +24,9 @@ const BehandlingstypeVelger: FunctionComponent<OwnProps> = ({
   valgtSakslisteId,
   lagreSakslisteBehandlingstype,
   valgtAvdelingEnhet,
-  alleKodeverk,
 }) => {
-  const behandlingTyper = useMemo(() => behandlingstypeOrder.map((kode) => alleKodeverk[kodeverkTyper.BEHANDLING_TYPE].find((bt) => bt.kode === kode)),
+  const alleBehandlingTyper = useKodeverk(kodeverkTyper.BEHANDLING_TYPE);
+  const behandlingTyper = useMemo(() => behandlingstypeOrder.map((kode) => alleBehandlingTyper.find((bt) => bt.kode === kode)),
     []);
   return (
     <>

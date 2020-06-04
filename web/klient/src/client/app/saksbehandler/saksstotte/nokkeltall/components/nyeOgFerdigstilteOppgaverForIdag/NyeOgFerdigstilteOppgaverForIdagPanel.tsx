@@ -6,11 +6,10 @@ import { createSelector } from 'reselect';
 import { FormattedMessage } from 'react-intl';
 import { Undertittel, Element } from 'nav-frontend-typografi';
 
-import Kodeverk from 'kodeverk/kodeverkTsType';
 import kodeverkTyper from 'kodeverk/kodeverkTyper';
 import { ISO_DATE_FORMAT } from 'utils/formats';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
-import { getAlleKodeverk } from 'kodeverk/duck';
+import useKodeverk from 'data/useKodeverk';
 import NyeOgFerdigstilteOppgaverForIdagGraf from './NyeOgFerdigstilteOppgaverForIdagGraf';
 import { getNyeOgFerdigstilteOppgaverNokkeltall } from '../../duck';
 import NyeOgFerdigstilteOppgaver from '../nyeOgFerdigstilteOppgaverTsType';
@@ -19,7 +18,6 @@ interface OwnProps {
   width: number;
   height: number;
   nyeOgFerdigstilteOppgaver: NyeOgFerdigstilteOppgaver[];
-  behandlingTyper: Kodeverk[];
 }
 
 /**
@@ -29,24 +27,26 @@ export const NyeOgFerdigstilteOppgaverForIdagPanel: FunctionComponent<OwnProps> 
   width,
   height,
   nyeOgFerdigstilteOppgaver,
-  behandlingTyper,
-}) => (
-  <>
-    <Undertittel>
-      <FormattedMessage id="NyeOgFerdigstilteOppgaverForIdagPanel.NyeOgFerdigstilte" />
-    </Undertittel>
-    <VerticalSpacer eightPx />
-    <Element>
-      <FormattedMessage id="NyeOgFerdigstilteOppgaverForIdagPanel.IDag" />
-    </Element>
-    <NyeOgFerdigstilteOppgaverForIdagGraf
-      width={width}
-      height={height}
-      nyeOgFerdigstilteOppgaver={nyeOgFerdigstilteOppgaver}
-      behandlingTyper={behandlingTyper}
-    />
-  </>
-);
+}) => {
+  const behandlingTyper = useKodeverk(kodeverkTyper.BEHANDLING_TYPE);
+  return (
+    <>
+      <Undertittel>
+        <FormattedMessage id="NyeOgFerdigstilteOppgaverForIdagPanel.NyeOgFerdigstilte" />
+      </Undertittel>
+      <VerticalSpacer eightPx />
+      <Element>
+        <FormattedMessage id="NyeOgFerdigstilteOppgaverForIdagPanel.IDag" />
+      </Element>
+      <NyeOgFerdigstilteOppgaverForIdagGraf
+        width={width}
+        height={height}
+        nyeOgFerdigstilteOppgaver={nyeOgFerdigstilteOppgaver}
+        behandlingTyper={behandlingTyper}
+      />
+    </>
+  );
+};
 
 export const getNyeOgFerdigstilteForIDag = createSelector([getNyeOgFerdigstilteOppgaverNokkeltall], (nyeOgFerdigstilte: { dato: string }[] = []) => {
   const iDag = moment();
@@ -55,7 +55,6 @@ export const getNyeOgFerdigstilteForIDag = createSelector([getNyeOgFerdigstilteO
 
 const mapStateToProps = (state) => ({
   nyeOgFerdigstilteOppgaver: getNyeOgFerdigstilteForIDag(state),
-  behandlingTyper: getAlleKodeverk(state)[kodeverkTyper.BEHANDLING_TYPE],
 });
 
 export default connect(mapStateToProps)(NyeOgFerdigstilteOppgaverForIdagPanel);

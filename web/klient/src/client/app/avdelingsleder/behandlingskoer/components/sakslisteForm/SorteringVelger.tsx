@@ -10,12 +10,12 @@ import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import kodeverkTyper from 'kodeverk/kodeverkTyper';
 import Kodeverk from 'kodeverk/kodeverkTsType';
 import behandlingType from 'kodeverk/behandlingType';
+import useKodeverk from 'data/useKodeverk';
 import DatoSorteringValg from './DatoSorteringValg';
 import BelopSorteringValg from './BelopSorteringValg';
 import KoSorteringType from '../../KoSorteringTsType';
 
 interface OwnProps {
-  alleKodeverk: {[key: string]: KoSorteringType[]};
   valgtSakslisteId: number;
   valgteBehandlingtyper: Kodeverk[];
   valgtAvdelingEnhet: string;
@@ -40,7 +40,6 @@ const bareTilbakekrevingValgt = (valgteBehandlingtyper: Kodeverk[]) => valgteBeh
  */
 const SorteringVelger: FunctionComponent<OwnProps & WrappedComponentProps> = ({
   intl,
-  alleKodeverk,
   valgtSakslisteId,
   valgteBehandlingtyper,
   lagreSakslisteSortering,
@@ -53,19 +52,21 @@ const SorteringVelger: FunctionComponent<OwnProps & WrappedComponentProps> = ({
   til,
   fomDato,
   tomDato,
-}) => (
-  <>
-    <Undertekst>
-      <FormattedMessage id="SorteringVelger.Sortering" />
-    </Undertekst>
-    <VerticalSpacer eightPx />
-    <RadioGroupField
-      name="sortering"
-      direction="vertical"
-      onChange={(sorteringType) => lagreSakslisteSortering(valgtSakslisteId, sorteringType, valgtAvdelingEnhet)}
-    >
-      {alleKodeverk[kodeverkTyper.KO_SORTERING].map((koSortering) => (
-        (koSortering.feltkategori !== 'TILBAKEKREVING' || bareTilbakekrevingValgt(valgteBehandlingtyper)) && (
+}) => {
+  const koSorteringer = useKodeverk(kodeverkTyper.KO_SORTERING);
+  return (
+    <>
+      <Undertekst>
+        <FormattedMessage id="SorteringVelger.Sortering" />
+      </Undertekst>
+      <VerticalSpacer eightPx />
+      <RadioGroupField
+        name="sortering"
+        direction="vertical"
+        onChange={(sorteringType) => lagreSakslisteSortering(valgtSakslisteId, sorteringType, valgtAvdelingEnhet)}
+      >
+        {koSorteringer.map((koSortering) => (
+          (koSortering.feltkategori !== 'TILBAKEKREVING' || bareTilbakekrevingValgt(valgteBehandlingtyper)) && (
           <RadioOption
             key={koSortering.kode}
             value={koSortering.kode}
@@ -97,10 +98,11 @@ const SorteringVelger: FunctionComponent<OwnProps & WrappedComponentProps> = ({
             />
             )}
           </RadioOption>
-        )
-      ))}
-    </RadioGroupField>
-  </>
-);
+          )
+        ))}
+      </RadioGroupField>
+    </>
+  );
+};
 
 export default injectIntl(SorteringVelger);

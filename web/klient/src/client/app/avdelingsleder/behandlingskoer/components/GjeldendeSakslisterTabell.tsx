@@ -1,13 +1,15 @@
 
-import React, { Component, KeyboardEvent, ReactNode } from 'react';
+import React, {
+  useState, KeyboardEvent, ReactNode, FunctionComponent, useEffect, useRef,
+} from 'react';
 import { connect } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
 import {
   Normaltekst, Undertekst, Element, Undertittel,
 } from 'nav-frontend-typografi';
+import { Column, Row } from 'nav-frontend-grid';
 
 import { getValgtAvdelingEnhet } from 'app/duck';
-import { getAlleKodeverk } from 'kodeverk/duck';
 import Kodeverk from 'kodeverk/kodeverkTsType';
 import kodeverkTyper from 'kodeverk/kodeverkTyper';
 import Image from 'sharedComponents/Image';
@@ -18,7 +20,7 @@ import TableColumn from 'sharedComponents/table/TableColumn';
 import DateLabel from 'sharedComponents/DateLabel';
 import addCircleIcon from 'images/add-circle.svg';
 import removeIcon from 'images/remove.svg';
-import { Column, Row } from 'nav-frontend-grid';
+import useKodeverk from 'data/useKodeverk';
 import SletteSakslisteModal from './SletteSakslisteModal';
 import Saksliste from '../sakslisteTsType';
 import { getAntallOppgaverForAvdelingResultat } from '../duck';
@@ -41,16 +43,10 @@ interface OwnProps {
   lagNySaksliste: (avdelingEnhet: string) => void;
   fjernSaksliste: (sakslisteId: number, avdelingEnhet: string) => void;
   valgtSakslisteId?: number;
-  behandlingTyper: Kodeverk[];
-  fagsakYtelseTyper: Kodeverk[];
   valgtAvdelingEnhet: string;
   hentAvdelingensSakslister: (avdelingEnhet: string) => Saksliste[];
   oppgaverForAvdeling?: number;
   hentAntallOppgaverForAvdeling: (avdelingEnhet: string) => Promise<string>;
-}
-
-interface StateTsProps {
-  valgtSaksliste?: Saksliste;
 }
 
 const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -58,32 +54,33 @@ const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 /**
  * GjeldendeSakslisterTabell
  */
-export class GjeldendeSakslisterTabell extends Component<OwnProps, StateTsProps> {
-  static defaultProps = {
-    valgtSakslisteId: undefined,
-  }
+export const GjeldendeSakslisterTabell: FunctionComponent<OwnProps> = ({
+  hentAntallOppgaverForAvdeling,
+  valgtAvdelingEnhet,
+  setValgtSakslisteId,
+  hentAvdelingensSakslister,
+  lagNySaksliste,
+  fjernSaksliste,
+  sakslister,
+  valgtSakslisteId,
+  oppgaverForAvdeling,
+}) => {
+  const [valgtSaksliste, setValgtSakslisteTemp] = useState<Saksliste>();
+  const tabRef = useRef([]);
 
-  nodes: any[];
+  const behandlingTyper = useKodeverk(kodeverkTyper.BEHANDLING_TYPE);
+  const fagsakYtelseTyper = useKodeverk(kodeverkTyper.FAGSAK_YTELSE_TYPE);
 
-  constructor(props: OwnProps) {
-    super(props);
-
-    this.state = {
-      valgtSaksliste: undefined,
-    };
-    this.nodes = [];
-  }
-
-  componentDidMount = (): void => {
-    const {
-      hentAntallOppgaverForAvdeling, valgtAvdelingEnhet,
-    } = this.props;
+  useEffect(() => {
     hentAntallOppgaverForAvdeling(valgtAvdelingEnhet);
-  }
+  }, []);
 
-  setValgtSaksliste = async (event: Event, id: number): Promise<string> => {
-    const { setValgtSakslisteId, hentAvdelingensSakslister, valgtAvdelingEnhet } = this.props;
-    if (this.nodes.some((node) => node && node.contains(event.target))) {
+  useEffect(() => {
+    tabRef.current = tabRef.current.slice(0, sakslister.length);
+  }, [sakslister]);
+
+  const setValgtSaksliste = async (event: Event, id: number): Promise<string> => {
+    if (tabRef.current.some((node) => node && node.contains(event.target))) {
       return;
     }
 
@@ -93,46 +90,39 @@ export class GjeldendeSakslisterTabell extends Component<OwnProps, StateTsProps>
 
     setValgtSakslisteId(id);
     hentAvdelingensSakslister(valgtAvdelingEnhet);
-  }
+  };
 
-  lagNySaksliste = (event: KeyboardEvent): void => {
+  const lagNySakslisteFn = (event: KeyboardEvent): void => {
     if (event.keyCode === 13) {
-      const { lagNySaksliste, valgtAvdelingEnhet } = this.props;
       lagNySaksliste(valgtAvdelingEnhet);
     }
   };
 
-  visFjernSakslisteModal = (valgtSaksliste: Saksliste): void => {
-    this.setState((prevState) => ({ ...prevState, valgtSaksliste }));
-  }
+  const visFjernSakslisteModal = (nyValgtSaksliste: Saksliste): void => {
+    setValgtSakslisteTemp(nyValgtSaksliste);
+  };
 
-  closeSletteModal = (): void => {
-    this.setState((prevState) => ({ ...prevState, valgtSaksliste: undefined }));
-  }
+  const closeSletteModal = (): void => {
+    setValgtSakslisteTemp(undefined);
+  };
 
-  fjernSaksliste = (saksliste: Saksliste): void => {
-    const {
-      fjernSaksliste, valgtAvdelingEnhet,
-    } = this.props;
-    this.closeSletteModal();
+  const fjernSakslisteFn = (saksliste: Saksliste): void => {
+    closeSletteModal();
     fjernSaksliste(saksliste.sakslisteId, valgtAvdelingEnhet);
-  }
+  };
 
-  formatStonadstyper = (valgteFagsakYtelseTyper?: Kodeverk[]): string | ReactNode => {
+  const formatStonadstyper = (valgteFagsakYtelseTyper?: Kodeverk[]): string | ReactNode => {
     if (!valgteFagsakYtelseTyper || valgteFagsakYtelseTyper.length === 0) {
       return <FormattedMessage id="GjeldendeSakslisterTabell.Alle" />;
     }
 
-    const { fagsakYtelseTyper } = this.props;
     return valgteFagsakYtelseTyper.map((fyt) => {
       const type = fagsakYtelseTyper.find((def) => def.kode === fyt.kode);
       return type ? type.navn : '';
     }).join(', ');
   };
 
-  formatBehandlingstyper = (valgteBehandlingTyper?: Kodeverk[]): string | ReactNode => {
-    const { behandlingTyper } = this.props;
-
+  const formatBehandlingstyper = (valgteBehandlingTyper?: Kodeverk[]): string | ReactNode => {
     if (!valgteBehandlingTyper || valgteBehandlingTyper.length === 0
       || valgteBehandlingTyper.length === behandlingTyper.length) {
       return <FormattedMessage id="GjeldendeSakslisterTabell.Alle" />;
@@ -144,98 +134,87 @@ export class GjeldendeSakslisterTabell extends Component<OwnProps, StateTsProps>
     }).join(', ');
   };
 
-  render = (): ReactNode => {
-    const {
-      sakslister, valgtSakslisteId, lagNySaksliste, valgtAvdelingEnhet, oppgaverForAvdeling,
-    } = this.props;
-    const {
-      valgtSaksliste,
-    } = this.state;
-
-    return (
-      <>
-        <Row>
-          <Column xs="9">
-            <Element>
-              <FormattedMessage id="GjeldendeSakslisterTabell.GjeldendeLister" />
-            </Element>
-          </Column>
-          <Column xs="3">
-            <div className={styles.grayBox}>
-              <Normaltekst>
-                <FormattedMessage id="GjeldendeSakslisterTabell.OppgaverForAvdeling" />
-              </Normaltekst>
-              <Undertittel>{oppgaverForAvdeling || '0'}</Undertittel>
-            </div>
-          </Column>
-        </Row>
-        {sakslister.length === 0 && (
-          <>
-            <VerticalSpacer eightPx />
-            <Normaltekst><FormattedMessage id="GjeldendeSakslisterTabell.IngenLister" /></Normaltekst>
-            <VerticalSpacer eightPx />
-          </>
-        )}
-        {sakslister.length > 0 && (
-        <Table headerTextCodes={headerTextCodes}>
-          {sakslister.map((saksliste) => (
-            <TableRow
-              key={saksliste.sakslisteId}
-              className={saksliste.sakslisteId === valgtSakslisteId ? styles.isSelected : undefined}
-              id={saksliste.sakslisteId}
-              onMouseDown={this.setValgtSaksliste}
-              onKeyDown={this.setValgtSaksliste}
-            >
-              <TableColumn>{saksliste.navn}</TableColumn>
-              <TableColumn>{this.formatStonadstyper(saksliste.fagsakYtelseTyper)}</TableColumn>
-              <TableColumn>{this.formatBehandlingstyper(saksliste.behandlingTyper)}</TableColumn>
-              <TableColumn>{saksliste.saksbehandlerIdenter.length > 0 ? saksliste.saksbehandlerIdenter.length : ''}</TableColumn>
-              <TableColumn>{saksliste.antallBehandlinger}</TableColumn>
-              <TableColumn>
-                <DateLabel dateString={saksliste.sistEndret} />
-              </TableColumn>
-              <TableColumn>
-                <div ref={(node) => { this.nodes.push(node); }}>
-                  <Image
-                    src={removeIcon}
-                    className={styles.removeImage}
-                    onMouseDown={() => this.visFjernSakslisteModal(saksliste)}
-                    onKeyDown={() => this.visFjernSakslisteModal(saksliste)}
-                  />
-                </div>
-              </TableColumn>
-            </TableRow>
-          ))}
-        </Table>
-        )}
-        <div
-          id="leggTilListe"
-          role="button"
-          tabIndex={0}
-          className={styles.addPeriode}
-          onClick={() => lagNySaksliste(valgtAvdelingEnhet)}
-          onKeyDown={this.lagNySaksliste}
-        >
-          <Image className={styles.addCircleIcon} src={addCircleIcon} />
-          <Undertekst className={styles.imageText}>
-            <FormattedMessage id="GjeldendeSakslisterTabell.LeggTilListe" />
-          </Undertekst>
-        </div>
-        {valgtSaksliste && (
-          <SletteSakslisteModal
-            valgtSaksliste={valgtSaksliste}
-            cancel={this.closeSletteModal}
-            submit={this.fjernSaksliste}
-          />
-        )}
-      </>
-    );
-  }
-}
+  return (
+    <>
+      <Row>
+        <Column xs="9">
+          <Element>
+            <FormattedMessage id="GjeldendeSakslisterTabell.GjeldendeLister" />
+          </Element>
+        </Column>
+        <Column xs="3">
+          <div className={styles.grayBox}>
+            <Normaltekst>
+              <FormattedMessage id="GjeldendeSakslisterTabell.OppgaverForAvdeling" />
+            </Normaltekst>
+            <Undertittel>{oppgaverForAvdeling || '0'}</Undertittel>
+          </div>
+        </Column>
+      </Row>
+      {sakslister.length === 0 && (
+        <>
+          <VerticalSpacer eightPx />
+          <Normaltekst><FormattedMessage id="GjeldendeSakslisterTabell.IngenLister" /></Normaltekst>
+          <VerticalSpacer eightPx />
+        </>
+      )}
+      {sakslister.length > 0 && (
+      <Table headerTextCodes={headerTextCodes}>
+        {sakslister.map((saksliste, index) => (
+          <TableRow
+            key={saksliste.sakslisteId}
+            className={saksliste.sakslisteId === valgtSakslisteId ? styles.isSelected : undefined}
+            id={saksliste.sakslisteId}
+            onMouseDown={setValgtSaksliste}
+            onKeyDown={setValgtSaksliste}
+          >
+            <TableColumn>{saksliste.navn}</TableColumn>
+            <TableColumn>{formatStonadstyper(saksliste.fagsakYtelseTyper)}</TableColumn>
+            <TableColumn>{formatBehandlingstyper(saksliste.behandlingTyper)}</TableColumn>
+            <TableColumn>{saksliste.saksbehandlerIdenter.length > 0 ? saksliste.saksbehandlerIdenter.length : ''}</TableColumn>
+            <TableColumn>{saksliste.antallBehandlinger}</TableColumn>
+            <TableColumn>
+              <DateLabel dateString={saksliste.sistEndret} />
+            </TableColumn>
+            <TableColumn>
+              <div ref={(el) => { tabRef.current[index] = el; }}>
+                <Image
+                  src={removeIcon}
+                  className={styles.removeImage}
+                  onMouseDown={() => visFjernSakslisteModal(saksliste)}
+                  onKeyDown={() => visFjernSakslisteModal(saksliste)}
+                />
+              </div>
+            </TableColumn>
+          </TableRow>
+        ))}
+      </Table>
+      )}
+      <div
+        id="leggTilListe"
+        role="button"
+        tabIndex={0}
+        className={styles.addPeriode}
+        onClick={() => lagNySaksliste(valgtAvdelingEnhet)}
+        onKeyDown={lagNySakslisteFn}
+      >
+        <Image className={styles.addCircleIcon} src={addCircleIcon} />
+        <Undertekst className={styles.imageText}>
+          <FormattedMessage id="GjeldendeSakslisterTabell.LeggTilListe" />
+        </Undertekst>
+      </div>
+      {valgtSaksliste && (
+        <SletteSakslisteModal
+          valgtSaksliste={valgtSaksliste}
+          cancel={closeSletteModal}
+          submit={fjernSakslisteFn}
+        />
+      )}
+    </>
+  );
+};
 
 const mapStateToProps = (state) => ({
-  behandlingTyper: getAlleKodeverk(state)[kodeverkTyper.BEHANDLING_TYPE],
-  fagsakYtelseTyper: getAlleKodeverk(state)[kodeverkTyper.FAGSAK_YTELSE_TYPE],
   valgtAvdelingEnhet: getValgtAvdelingEnhet(state),
   oppgaverForAvdeling: getAntallOppgaverForAvdelingResultat(state),
 });

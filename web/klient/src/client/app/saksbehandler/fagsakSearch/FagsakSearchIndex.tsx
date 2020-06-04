@@ -4,7 +4,7 @@ import { bindActionCreators, Dispatch } from 'redux';
 
 import OppgaveErReservertAvAnnenModal from 'saksbehandler/components/OppgaveErReservertAvAnnenModal';
 import Fagsak from 'saksbehandler/fagsakSearch/fagsakTsType';
-import { hentFpsakInternBehandlingId as hentFpsakInternBehandlingIdActionCreator, getFpsakUrl, getFptilbakeUrl } from 'app/duck';
+import { hentFpsakInternBehandlingId as hentFpsakInternBehandlingIdActionCreator } from 'app/duck';
 import { getFpsakHref, getFptilbakeHref } from 'app/paths';
 import {
   reserverOppgave as reserverOppgaveActionCreator, hentReservasjonsstatus as hentReservasjonActionCreator,
@@ -216,12 +216,12 @@ const getGoToTilbakesakFn = (fptilbakeUrl) => (path) => {
 };
 
 
-const mapStateToProps = (state) => ({
+const mapStateToProps = (state, ownProps) => ({
   fagsaker: getFagsaker(state),
   fagsakOppgaver: getFagsakOppgaver(state),
   searchResultAccessDenied: getSearchFagsakerAccessDenied(state),
-  goToFpsak: getGoToFpsakFn(getFpsakUrl(state)),
-  goToTilbakesak: getGoToTilbakesakFn(getFptilbakeUrl(state)),
+  goToFpsak: getGoToFpsakFn(ownProps.fpsakUrl),
+  goToTilbakesak: getGoToTilbakesakFn(ownProps.fptilbakeUrl),
 });
 
 const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => ({

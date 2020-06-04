@@ -8,17 +8,19 @@ import Avdeling from 'app/avdelingTsType';
 import { parseQueryString } from 'utils/urlUtils';
 import EventType from 'data/rest-api/src/requestApi/eventType';
 import errorHandler from 'data/error-api-redux';
+import { fpLosApiKeys } from 'data/fpLosApi';
 import AppConfigResolver from './AppConfigResolver';
 import { AVDELINGSLEDER_PATH } from './paths';
 import {
-  getFunksjonellTid, getNavAnsattName, setAvdelingEnhet, getValgtAvdelingEnhet,
+  setAvdelingEnhet, getValgtAvdelingEnhet,
   fetchAvdelingeneTilAvdelingsleder, getAvdelingeneTilAvdelingslederResultat,
-  resetAvdelingeneTilAvdelingslederData, resetAvdelingEnhet, getNavAnsattKanOppgavestyre,
+  resetAvdelingeneTilAvdelingslederData, resetAvdelingEnhet,
 } from './duck';
 import Location from './locationTsType';
 import LanguageProvider from './LanguageProvider';
 import HeaderWithErrorPanel from './components/HeaderWithErrorPanel';
 import Home from './components/Home';
+import { RestDataContext } from '../data/RestDataContext';
 
 import '../../styles/global.less';
 
@@ -35,7 +37,6 @@ interface OwnProps {
   crashMessage: string;
   showCrashMessage: (message: string) => void;
   navAnsattName: string;
-  funksjonellTid?: string;
   location: Location;
   fetchAvdelingeneTilAvdelingsleder: () => void;
   resetAvdelingeneTilAvdelingslederData: () => void;
@@ -43,7 +44,6 @@ interface OwnProps {
   resetAvdelingEnhet: () => void;
   avdelinger?: Avdeling[];
   valgtAvdelingEnhet?: string;
-  kanOppgavestyre: boolean;
 }
 
 /**
@@ -58,12 +58,13 @@ export class AppIndex extends Component<OwnProps> {
   static defaultProps = {
     crashMessage: '',
     navAnsattName: '',
-    funksjonellTid: undefined,
     avdelinger: [],
     valgtAvdelingEnhet: undefined,
     kanOppgavestyre: false,
     errorMessages: [],
   };
+
+  static contextType = RestDataContext;
 
   state = {
     headerHeight: 0,
@@ -72,12 +73,16 @@ export class AppIndex extends Component<OwnProps> {
   fetchAvdelinger = (): void => {
     const {
       location,
-      kanOppgavestyre,
       avdelinger,
       fetchAvdelingeneTilAvdelingsleder: fetchAvdelinger,
       resetAvdelingEnhet: resetAvdeling,
       resetAvdelingeneTilAvdelingslederData: resetAvdelingene,
     } = this.props;
+
+    const { state } = this.context;
+    const navAnsatt = state[fpLosApiKeys.NAV_ANSATT];
+
+    const kanOppgavestyre = navAnsatt ? navAnsatt.kanOppgavestyre : undefined;
 
     const harAvdelinger = avdelinger && avdelinger.length > 0;
     if (kanOppgavestyre && !harAvdelinger && location.pathname && location.pathname.includes(AVDELINGSLEDER_PATH)) {
@@ -92,10 +97,11 @@ export class AppIndex extends Component<OwnProps> {
     this.fetchAvdelinger();
   }
 
-  componentDidUpdate = (prevProps: OwnProps): void => {
-    const { funksjonellTid } = this.props;
+  componentDidUpdate = (): void => {
+    const dataStore = this.context;
+    const funksjonellTid = dataStore[fpLosApiKeys.NAV_ANSATT] ? dataStore[fpLosApiKeys.NAV_ANSATT].funksjonellTid : undefined;
 
-    if (funksjonellTid && prevProps.funksjonellTid !== funksjonellTid) {
+    if (funksjonellTid) {
       // TODO (TOR) Dette endrar jo berre moment. Kva med kode som brukar Date direkte?
       const diffInMinutes = moment().diff(funksjonellTid, 'minutes');
       // Hvis diffInMinutes har avvik på over 5min: override moment.now (ref. http://momentjs.com/docs/#/customization/now/)
@@ -126,7 +132,7 @@ export class AppIndex extends Component<OwnProps> {
 
   render = (): ReactNode => {
     const {
-      location, crashMessage, navAnsattName, errorMessages,
+      location, crashMessage, errorMessages,
       removeErrorMessage: removeErrorMsg, avdelinger, setAvdelingEnhet: setAvdeling, valgtAvdelingEnhet,
     } = this.props;
     const { headerHeight } = this.state;
@@ -137,7 +143,6 @@ export class AppIndex extends Component<OwnProps> {
         <LanguageProvider>
           <HeaderWithErrorPanel
             queryStrings={queryStrings}
-            navAnsattName={navAnsattName}
             removeErrorMessage={removeErrorMsg}
             avdelinger={avdelinger}
             setValgtAvdeling={setAvdeling}
@@ -157,11 +162,8 @@ export class AppIndex extends Component<OwnProps> {
 const mapStateToProps = (state: any) => ({
   errorMessages: errorHandler.getAllErrorMessages(state),
   crashMessage: errorHandler.getCrashMessage(state),
-  navAnsattName: getNavAnsattName(state),
-  funksjonellTid: getFunksjonellTid(state),
   avdelinger: getAvdelingeneTilAvdelingslederResultat(state),
   valgtAvdelingEnhet: getValgtAvdelingEnhet(state),
-  kanOppgavestyre: getNavAnsattKanOppgavestyre(state),
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => bindActionCreators({

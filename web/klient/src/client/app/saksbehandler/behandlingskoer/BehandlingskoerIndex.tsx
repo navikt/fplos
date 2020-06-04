@@ -6,8 +6,6 @@ import fpLosApi from 'data/fpLosApi';
 import { getFpsakHref, getFptilbakeHref } from 'app/paths';
 import Saksliste from 'saksbehandler/behandlingskoer/sakslisteTsType';
 import {
-  getFpsakUrl,
-  getFptilbakeUrl,
   hentFpsakInternBehandlingId as hentFpsakInternBehandlingIdActionCreator,
 } from 'app/duck';
 import OppgaveStatus from 'saksbehandler/oppgaveStatusTsType';
@@ -216,8 +214,6 @@ export class BehandlingskoerIndex extends Component<OwnProps & DispatchProps, St
 }
 
 const mapStateToProps = (state) => ({
-  fpsakUrl: getFpsakUrl(state),
-  fptilbakeUrl: getFptilbakeUrl(state),
   harTimeout: harOppgaverTilBehandlingTimeout(state),
   sakslister: getSakslisteResult(state),
   goToUrl: (url) => window.location.assign(url),
