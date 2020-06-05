@@ -1,11 +1,8 @@
 import { useState, useEffect, useContext } from 'react';
-import { createRequestApi } from 'data/rest-api-new';
-import { endpoints, RestApiPathsKeys } from 'data/restApiPaths';
+import { RestApiPathsKeys } from 'data/restApiPaths';
 
 import { RestDataContext } from './RestDataContext';
 
-const contextPath = 'fplos';
-const requestApi = createRequestApi(contextPath, endpoints);
 
 export enum ApiState {
   LOADING = 'LOADING',
@@ -27,7 +24,7 @@ function useRestApi<T>(key: RestApiPathsKeys):RestApiData<T> {
   });
 
   const context = useContext(RestDataContext);
-  const { dispatch } = context;
+  const { dispatch, requestApi } = context;
 
   const setPartData = (partialData) => setData({ ...data, ...partialData });
 

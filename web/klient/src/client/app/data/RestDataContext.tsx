@@ -1,7 +1,11 @@
 import React, {
   createContext, useReducer, FunctionComponent, ReactNode,
 } from 'react';
-import { RestApiPathsKeys } from 'data/restApiPaths';
+import { createRequestApi } from 'data/rest-api-new';
+import { endpoints, RestApiPathsKeys } from 'data/restApiPaths';
+
+const contextPath = 'fplos';
+const requestApi = createRequestApi(contextPath, endpoints);
 
 const defaultInitialState = Object.keys(RestApiPathsKeys).reduce((acc, key) => ({
   ...acc,
@@ -11,11 +15,12 @@ const RestDataContext = createContext(defaultInitialState);
 const { Provider } = RestDataContext;
 
 interface OwnProps {
-  initialState?: {[key in RestApiPathsKeys]: any};
   children: ReactNode;
+  initialState?: {[key in RestApiPathsKeys]: any};
+  customRequestApi?: any;
 }
 
-const RestDataProvider: FunctionComponent<OwnProps> = ({ initialState, children }): JSX.Element => {
+const RestDataProvider: FunctionComponent<OwnProps> = ({ children, initialState, customRequestApi }): JSX.Element => {
   const [state, dispatch] = useReducer((oldState, action) => {
     switch (action.type) {
       case 'success':
@@ -29,7 +34,7 @@ const RestDataProvider: FunctionComponent<OwnProps> = ({ initialState, children 
   }, initialState || defaultInitialState);
 
 
-  return <Provider value={{ state, dispatch }}>{children}</Provider>;
+  return <Provider value={{ state, dispatch, requestApi: customRequestApi || requestApi }}>{children}</Provider>;
 };
 
 export { RestDataContext, RestDataProvider };

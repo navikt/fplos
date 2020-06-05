@@ -1,16 +1,19 @@
 import React, { useState } from 'react';
 import { action } from '@storybook/addon-actions';
 
+import { AVDELINGSLEDER_PATH } from 'app/paths';
 import { RestApiPathsKeys } from 'data/restApiPaths';
 import EventType from 'data/rest-api/src/requestApi/eventType';
 import HeaderWithErrorPanel from 'app/components/HeaderWithErrorPanel';
 import { RestDataProvider } from 'data/RestDataContext';
 
 import withIntl from '../decorators/withIntl';
+import RequestMock from '../mocks/RequestMock';
 
 const initialState = {
   [RestApiPathsKeys.NAV_ANSATT]: {
     navn: 'Espen Utvikler',
+    kanOppgavestyre: false,
   },
 };
 
@@ -39,26 +42,32 @@ export const skalViseHeaderMedAvdelingsvelger = () => {
   const newInitialState = {
     [RestApiPathsKeys.NAV_ANSATT]: {
       navn: 'Espen Utvikler',
+      kanOppgavestyre: true,
     },
-    [RestApiPathsKeys.AVDELINGER]: [{
-      avdelingEnhet: 'VIK',
-      navn: 'NAV Viken',
-      kreverKode6: false,
-    }, {
-      avdelingEnhet: 'OSL',
-      navn: 'NAV Oslo',
-      kreverKode6: false,
-    }],
   };
+  const avdelinger = [{
+    avdelingEnhet: 'VIK',
+    navn: 'NAV Viken',
+    kreverKode6: false,
+  }, {
+    avdelingEnhet: 'OSL',
+    navn: 'NAV Oslo',
+    kreverKode6: false,
+  }];
+  const requestApi = new RequestMock()
+    .withKeyAndResult(RestApiPathsKeys.AVDELINGER, avdelinger)
+    .build();
+
   return (
     <div style={{ marginLeft: '-40px' }}>
-      <RestDataProvider initialState={newInitialState as {[key in RestApiPathsKeys]: any}}>
+      <RestDataProvider initialState={newInitialState as {[key in RestApiPathsKeys]: any}} customRequestApi={requestApi}>
         <HeaderWithErrorPanel
           removeErrorMessage={action('button-click')}
           queryStrings={{}}
           valgtAvdelingEnhet={valgtAvdelingEnhet}
           setValgtAvdelingEnhet={setValgtAvdeling}
           setSiteHeight={action('button-click')}
+          locationPathname={AVDELINGSLEDER_PATH}
         />
       </RestDataProvider>
     </div>
@@ -107,14 +116,14 @@ export const skalViseHeaderMedMerEnnFemFeilmeldinger = () => {
     type: EventType.REQUEST_ERROR,
     text: 'Rest-kallet feilet 5',
   }]);
-  const [queryStrings, setQueryStrings] = useState<{errormessage: string}>({
+  const [queryStrings, setQueryStrings] = useState<{ errormessage?: string}>({
     errormessage: 'Dette er ein feil',
   });
 
   return (
     <div style={{ marginLeft: '-40px' }}>
       <HeaderWithErrorPanel
-        removeErrorMessage={() => { setErrorMessages([]); setQueryStrings({}); }}
+        removeErrorMessage={() => { setErrorMessages([]); setQueryStrings({ errormessage: undefined }); }}
         queryStrings={queryStrings}
         setValgtAvdelingEnhet={action('button-click')}
         errorMessages={errorMessages}
