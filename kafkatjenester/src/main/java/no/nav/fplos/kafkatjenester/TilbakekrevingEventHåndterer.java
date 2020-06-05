@@ -1,13 +1,5 @@
 package no.nav.fplos.kafkatjenester;
 
-import static no.nav.foreldrepenger.loslager.oppgave.AndreKriterierType.TIL_BESLUTTER;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import no.nav.foreldrepenger.loslager.BehandlingId;
 import no.nav.foreldrepenger.loslager.oppgave.AndreKriterierType;
 import no.nav.foreldrepenger.loslager.oppgave.BehandlingType;
@@ -20,6 +12,16 @@ import no.nav.foreldrepenger.loslager.repository.OppgaveRepository;
 import no.nav.fplos.kafkatjenester.eventresultat.EventResultat;
 import no.nav.fplos.kafkatjenester.eventresultat.TilbakekrevingEventMapper;
 import no.nav.vedtak.felles.integrasjon.kafka.TilbakebetalingBehandlingProsessEventDto;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Optional;
+
+import static no.nav.foreldrepenger.loslager.oppgave.AndreKriterierType.TIL_BESLUTTER;
 
 @ApplicationScoped
 public class TilbakekrevingEventHåndterer implements EventHåndterer<TilbakebetalingBehandlingProsessEventDto> {
@@ -130,7 +132,7 @@ public class TilbakekrevingEventHåndterer implements EventHåndterer<Tilbakebet
     private TilbakekrevingOppgave oppgaveFra(TilbakebetalingBehandlingProsessEventDto dto) {
         return TilbakekrevingOppgave.tbuilder()
                 .medBelop(dto.getFeilutbetaltBeløp())
-                .medFeilutbetalingStart(dto.getFørsteFeilutbetaling().atStartOfDay())
+                .medFeilutbetalingStart(feilutbetalingStart(dto))
                 .medHref(dto.getHref())
                 .medSystem(dto.getFagsystem().name())
                 .medFagsakSaksnummer(Long.valueOf(dto.getSaksnummer()))
@@ -143,6 +145,12 @@ public class TilbakekrevingEventHåndterer implements EventHåndterer<Tilbakebet
                 .medUtfortFraAdmin(false)
                 .medBehandlingId(new BehandlingId(dto.getEksternId()))
                 .build();
+    }
+
+    private static LocalDateTime feilutbetalingStart(TilbakebetalingBehandlingProsessEventDto dto) {
+        return Optional.ofNullable(dto.getFørsteFeilutbetaling())
+                .map(LocalDate::atStartOfDay)
+                .orElse(null);
     }
 
     private void avsluttOppgaveForBehandling(BehandlingId behandlingId) {
