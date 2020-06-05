@@ -4,6 +4,7 @@ import sinon from 'sinon';
 import { IntlShape } from 'react-intl';
 
 import kodeverkTyper from 'kodeverk/kodeverkTyper';
+import * as useKodeverk from 'data/useKodeverk';
 import { shallowWithIntl, intlMock } from 'testHelpers/intl-enzyme-test-helper';
 import KoSortering from 'kodeverk/KoSortering';
 import { RadioGroupField, RadioOption } from 'form/FinalFields';
@@ -13,24 +14,32 @@ describe('<SorteringVelger>', () => {
   const intl: Partial<IntlShape> = {
     ...intlMock,
   };
-  it('skal vise radioknapper for alle sorteringsvalg', () => {
-    const alleKodeverk = {
-      [kodeverkTyper.KO_SORTERING]: [{
-        kode: KoSortering.OPPRETT_BEHANDLING,
-        navn: 'opprett',
-        felttype: '',
-        feltkategori: '',
-      }, {
-        kode: KoSortering.BEHANDLINGSFRIST,
-        navn: 'frist',
-        felttype: '',
-        feltkategori: '',
-      }],
-    };
 
+  const koSorteringTyper = [{
+    kode: KoSortering.OPPRETT_BEHANDLING,
+    navn: 'opprett',
+    felttype: '',
+    feltkategori: '',
+  }, {
+    kode: KoSortering.BEHANDLINGSFRIST,
+    navn: 'frist',
+    felttype: '',
+    feltkategori: '',
+  }];
+
+  let contextStub;
+  before(() => {
+    contextStub = sinon.stub(useKodeverk, 'default');
+    contextStub.withArgs(kodeverkTyper.KO_SORTERING).callsFake(() => koSorteringTyper);
+  });
+
+  after(() => {
+    contextStub.restore();
+  });
+
+  it('skal vise radioknapper for alle sorteringsvalg', () => {
     const wrapper = shallowWithIntl(<SorteringVelger.WrappedComponent
       intl={intl as IntlShape}
-      alleKodeverk={alleKodeverk}
       valgtSakslisteId={1}
       lagreSakslisteSortering={sinon.spy()}
       lagreSakslisteSorteringErDynamiskPeriode={sinon.spy()}
@@ -50,24 +59,10 @@ describe('<SorteringVelger>', () => {
   });
 
   it('skal lagre sortering ved klikk på radioknapp', () => {
-    const alleKodeverk = {
-      [kodeverkTyper.KO_SORTERING]: [{
-        kode: KoSortering.OPPRETT_BEHANDLING,
-        navn: 'opprett',
-        felttype: '',
-        feltkategori: '',
-      }, {
-        kode: KoSortering.BEHANDLINGSFRIST,
-        navn: 'frist',
-        felttype: '',
-        feltkategori: '',
-      }],
-    };
     const lagreSorteringFn = sinon.spy();
 
     const wrapper = shallowWithIntl(<SorteringVelger.WrappedComponent
       intl={intl as IntlShape}
-      alleKodeverk={alleKodeverk}
       valgtSakslisteId={1}
       lagreSakslisteSortering={lagreSorteringFn}
       lagreSakslisteSorteringErDynamiskPeriode={sinon.spy()}

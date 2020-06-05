@@ -1,11 +1,11 @@
-import { fpLosApiKeys } from 'data/fpLosApi';
 import Kodeverk from 'kodeverk/kodeverkTsType';
+import { RestApiPathsKeys } from 'data/restApiPaths';
 
 import useRestApiData from './useRestApiData';
 
-const useKodeverk = (kodeverkType): Kodeverk[] => {
-  const alleKodeverk = useRestApiData<{[key: string]: Kodeverk[]}>(fpLosApiKeys.KODEVERK);
+function useKodeverk<T = Kodeverk>(kodeverkType): T[] {
+  const alleKodeverk = useRestApiData<{[key: string]: T[]}>(RestApiPathsKeys.KODEVERK);
   return alleKodeverk[kodeverkType];
-};
+}
 
 export default useKodeverk;

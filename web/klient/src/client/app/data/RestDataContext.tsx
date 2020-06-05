@@ -1,14 +1,21 @@
-import React, { createContext, useReducer } from 'react';
-import fpLosApiKeys from 'data/fpLosApi';
+import React, {
+  createContext, useReducer, FunctionComponent, ReactNode,
+} from 'react';
+import { RestApiPathsKeys } from 'data/restApiPaths';
 
-const initialState = Object.keys(fpLosApiKeys).reduce((acc, key) => ({
+const defaultInitialState = Object.keys(RestApiPathsKeys).reduce((acc, key) => ({
   ...acc,
   [key]: undefined,
 }), {});
-const RestDataContext = createContext(initialState);
+const RestDataContext = createContext(defaultInitialState);
 const { Provider } = RestDataContext;
 
-const RestDataProvider = ({ children }) => {
+interface OwnProps {
+  initialState?: {[key in RestApiPathsKeys]: any};
+  children: ReactNode;
+}
+
+const RestDataProvider: FunctionComponent<OwnProps> = ({ initialState, children }): JSX.Element => {
   const [state, dispatch] = useReducer((oldState, action) => {
     switch (action.type) {
       case 'success':
@@ -19,7 +26,7 @@ const RestDataProvider = ({ children }) => {
       default:
         throw new Error();
     }
-  }, initialState);
+  }, initialState || defaultInitialState);
 
 
   return <Provider value={{ state, dispatch }}>{children}</Provider>;

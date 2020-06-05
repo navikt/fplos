@@ -1,42 +1,54 @@
 import React from 'react';
 import { action } from '@storybook/addon-actions';
 
-import { SearchForm } from 'saksbehandler/fagsakSearch/components/SearchForm';
+import { RestApiPathsKeys } from 'data/restApiPaths';
+import SearchForm from 'saksbehandler/fagsakSearch/components/SearchForm';
+import { RestDataProvider } from 'data/RestDataContext';
 
 import withIntl from '../../../decorators/withIntl';
+
+const initialState = {
+  [RestApiPathsKeys.NAV_ANSATT]: {
+    kanSaksbehandle: true,
+  },
+};
 
 export default {
   title: 'saksbehandler/fagsakSearch/SearchForm',
   component: SearchForm,
-  decorators: [withIntl],
+  decorators: [
+    withIntl,
+    (getStory) => <RestDataProvider initialState={initialState as {[key in RestApiPathsKeys]: any}}>{getStory()}</RestDataProvider>,
+  ],
 };
 
-export const skalViseSøkeskjema = (intl) => (
+export const skalViseSøkeskjema = () => (
   <SearchForm
-    intl={intl}
     onSubmit={action('button-click')}
     searchStarted={false}
     resetSearch={action('button-click')}
-    kanSaksbehandle
   />
 );
 
-export const skalViseSøkeskjemaNårEnIkkeKanVelgeÅReservere = (intl) => (
-  <SearchForm
-    intl={intl}
-    onSubmit={action('button-click')}
-    searchStarted={false}
-    resetSearch={action('button-click')}
-    kanSaksbehandle={false}
-  />
+export const skalViseSøkeskjemaNårEnIkkeKanVelgeÅReservere = () => (
+  <RestDataProvider initialState={{
+    [RestApiPathsKeys.NAV_ANSATT]: {
+      kanSaksbehandle: false,
+    },
+  } as {[key in RestApiPathsKeys]: any}}
+  >
+    <SearchForm
+      onSubmit={action('button-click')}
+      searchStarted={false}
+      resetSearch={action('button-click')}
+    />
+  </RestDataProvider>
 );
 
-export const skalViseSøkeskjemaNårSøkPågår = (intl) => (
+export const skalViseSøkeskjemaNårSøkPågår = () => (
   <SearchForm
-    intl={intl}
     onSubmit={action('button-click')}
     searchStarted
     resetSearch={action('button-click')}
-    kanSaksbehandle
   />
 );

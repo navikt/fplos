@@ -1,18 +1,28 @@
 import React from 'react';
 import { action } from '@storybook/addon-actions';
 
+import { RestApiPathsKeys } from 'data/restApiPaths';
 import fagsakYtelseType from 'kodeverk/fagsakYtelseType';
 import fagsakStatus from 'kodeverk/fagsakStatus';
 import behandlingStatus from 'kodeverk/behandlingStatus';
 import behandlingType from 'kodeverk/behandlingType';
+import { RestDataProvider } from 'data/RestDataContext';
 import { FagsakList } from 'saksbehandler/fagsakSearch/components/FagsakList';
 
+import alleKodeverk from '../../../mocks/alleKodeverk.json';
 import withIntl from '../../../decorators/withIntl';
+
+const initialState = {
+  [RestApiPathsKeys.KODEVERK]: alleKodeverk,
+};
 
 export default {
   title: 'saksbehandler/fagsakSearch/FagsakList',
   component: FagsakList,
-  decorators: [withIntl],
+  decorators: [
+    withIntl,
+    (getStory) => <RestDataProvider initialState={initialState as {[key in RestApiPathsKeys]: any}}>{getStory()}</RestDataProvider>,
+  ],
 };
 
 export const skalViseSøkeresultatMedEnFagsakOgTilhørendeOppgave = () => (
@@ -39,14 +49,6 @@ export const skalViseSøkeresultatMedEnFagsakOgTilhørendeOppgave = () => (
     }]}
     selectFagsakCallback={action('button-click')}
     selectOppgaveCallback={action('button-click')}
-    fagsakStatusTyper={[{
-      kode: fagsakStatus.UNDER_BEHANDLING,
-      navn: 'Under behandling',
-    }]}
-    fagsakYtelseTyper={[{
-      kode: fagsakYtelseType.FORELDREPRENGER,
-      navn: 'Foreldrepenger',
-    }]}
     fagsakOppgaver={[{
       id: 1,
       status: {

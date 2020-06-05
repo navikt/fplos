@@ -1,7 +1,10 @@
 
 import React from 'react';
 import { expect } from 'chai';
+import sinon from 'sinon';
 import { shallow } from 'enzyme';
+
+import * as useRestApiData from 'data/useRestApiData';
 
 import FagsakSearchIndex from '../fagsakSearch/FagsakSearchIndex';
 import BehandlingskoerIndex from '../behandlingskoer/BehandlingskoerIndex';
@@ -9,6 +12,15 @@ import SaksstotteIndex from '../saksstotte/SaksstotteIndex';
 import { SaksbehandlerDashboard } from './SaksbehandlerDashboard';
 
 describe('<SaksbehandlerDashboard>', () => {
+  let contextStub;
+  before(() => {
+    contextStub = sinon.stub(useRestApiData, 'default').callsFake(() => 'url');
+  });
+
+  after(() => {
+    contextStub.restore();
+  });
+
   it('skal vise dashboard uten fagsak-søk', () => {
     const wrapper = shallow(<SaksbehandlerDashboard />);
 

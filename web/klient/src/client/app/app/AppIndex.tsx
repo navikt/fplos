@@ -8,7 +8,7 @@ import Avdeling from 'app/avdelingTsType';
 import { parseQueryString } from 'utils/urlUtils';
 import EventType from 'data/rest-api/src/requestApi/eventType';
 import errorHandler from 'data/error-api-redux';
-import { fpLosApiKeys } from 'data/fpLosApi';
+import { RestApiPathsKeys } from 'data/restApiPaths';
 import AppConfigResolver from './AppConfigResolver';
 import { AVDELINGSLEDER_PATH } from './paths';
 import {
@@ -80,7 +80,7 @@ export class AppIndex extends Component<OwnProps> {
     } = this.props;
 
     const { state } = this.context;
-    const navAnsatt = state[fpLosApiKeys.NAV_ANSATT];
+    const navAnsatt = state[RestApiPathsKeys.NAV_ANSATT];
 
     const kanOppgavestyre = navAnsatt ? navAnsatt.kanOppgavestyre : undefined;
 
@@ -98,8 +98,9 @@ export class AppIndex extends Component<OwnProps> {
   }
 
   componentDidUpdate = (): void => {
-    const dataStore = this.context;
-    const funksjonellTid = dataStore[fpLosApiKeys.NAV_ANSATT] ? dataStore[fpLosApiKeys.NAV_ANSATT].funksjonellTid : undefined;
+    const { state } = this.context;
+    const navAnsatt = state[RestApiPathsKeys.NAV_ANSATT];
+    const funksjonellTid = navAnsatt ? navAnsatt.funksjonellTid : undefined;
 
     if (funksjonellTid) {
       // TODO (TOR) Dette endrar jo berre moment. Kva med kode som brukar Date direkte?

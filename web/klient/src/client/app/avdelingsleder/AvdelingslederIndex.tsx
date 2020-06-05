@@ -8,6 +8,7 @@ import Panel from 'nav-frontend-paneler';
 import Tabs from 'nav-frontend-tabs';
 import { Undertittel } from 'nav-frontend-typografi';
 
+import { RestApiPathsKeys } from 'data/restApiPaths';
 import LoadingPanel from 'sharedComponents/LoadingPanel';
 import {
   getValgtAvdelingEnhet, getAvdelingeneTilAvdelingslederResultat,
@@ -17,7 +18,6 @@ import { getAvdelingslederPanelLocationCreator } from 'app/paths';
 import trackRouteParam from 'app/data/trackRouteParam';
 import Location from 'app/locationTsType';
 import useRestApiData from 'data/useRestApiData';
-import { fpLosApiKeys } from 'data/fpLosApi';
 import NavAnsatt from 'app/navAnsattTsType';
 import { getSelectedAvdelingslederPanel, setSelectedAvdelingslederPanel } from './duck';
 import AvdelingslederDashboard from './components/AvdelingslederDashboard';
@@ -59,8 +59,6 @@ interface OwnProps {
   valgtAvdelingEnhet?: string;
   activeAvdelingslederPanel: string;
   getAvdelingslederPanelLocation: (panel: string) => Location;
-  kanOppgavestyre?: boolean;
-  kanBehandleKode6?: boolean;
   erKode6Avdeling?: boolean;
 }
 
@@ -87,7 +85,7 @@ export const AvdelingslederIndex: FunctionComponent<OwnProps> = ({
   getAvdelingslederPanelLocation,
   erKode6Avdeling,
 }) => {
-  const { kanOppgavestyre, kanBehandleKode6 } = useRestApiData<NavAnsatt>(fpLosApiKeys.NAV_ANSATT);
+  const { kanOppgavestyre, kanBehandleKode6 } = useRestApiData<NavAnsatt>(RestApiPathsKeys.NAV_ANSATT);
   if (!kanOppgavestyre) {
     return <IkkeTilgangTilAvdelingslederPanel />;
   } if (erKode6Avdeling && !kanBehandleKode6) {
@@ -115,8 +113,6 @@ export const AvdelingslederIndex: FunctionComponent<OwnProps> = ({
 
 AvdelingslederIndex.defaultProps = {
   valgtAvdelingEnhet: undefined,
-  kanOppgavestyre: false,
-  kanBehandleKode6: false,
   erKode6Avdeling: false,
 };
 

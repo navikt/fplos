@@ -3,40 +3,48 @@ import { expect } from 'chai';
 import sinon from 'sinon';
 import { shallow } from 'enzyme';
 
+import * as useKodeverk from 'data/useKodeverk';
 import kodeverkTyper from 'kodeverk/kodeverkTyper';
 import behandlingType from 'kodeverk/behandlingType';
 import { CheckboxField } from 'form/FinalFields';
 import BehandlingstypeVelger from './BehandlingstypeVelger';
 
-const alleKodeverk = {
-  [kodeverkTyper.BEHANDLING_TYPE]: [{
-    kode: behandlingType.FORSTEGANGSSOKNAD,
-    navn: 'Førstegangssøknad',
-  }, {
-    kode: behandlingType.KLAGE,
-    navn: 'Klage',
-  }, {
-    kode: behandlingType.DOKUMENTINNSYN,
-    navn: 'Dokumentinnsyn',
-  }, {
-    kode: behandlingType.ANKE,
-    navn: 'Anke',
-  }, {
-    kode: behandlingType.REVURDERING,
-    navn: 'Revurdering',
-  }, {
-    kode: behandlingType.TILBAKEBETALING,
-    navn: 'Tilbakebetaling',
-  }, {
-    kode: behandlingType.TILBAKEBETALING_REVURDERING,
-    navn: 'Tilbakebetaling revurdering',
-  }],
-};
+const behandlingTyper = [{
+  kode: behandlingType.FORSTEGANGSSOKNAD,
+  navn: 'Førstegangssøknad',
+}, {
+  kode: behandlingType.KLAGE,
+  navn: 'Klage',
+}, {
+  kode: behandlingType.DOKUMENTINNSYN,
+  navn: 'Dokumentinnsyn',
+}, {
+  kode: behandlingType.ANKE,
+  navn: 'Anke',
+}, {
+  kode: behandlingType.REVURDERING,
+  navn: 'Revurdering',
+}, {
+  kode: behandlingType.TILBAKEBETALING,
+  navn: 'Tilbakebetaling',
+}, {
+  kode: behandlingType.TILBAKEBETALING_REVURDERING,
+  navn: 'Tilbakebetaling revurdering',
+}];
 
 describe('<BehandlingstypeVelger>', () => {
+  let contextStub;
+  before(() => {
+    contextStub = sinon.stub(useKodeverk, 'default');
+    contextStub.withArgs(kodeverkTyper.BEHANDLING_TYPE).callsFake(() => behandlingTyper);
+  });
+
+  after(() => {
+    contextStub.restore();
+  });
+
   it('skal vise checkboxer for behandlingstyper', () => {
     const wrapper = shallow(<BehandlingstypeVelger
-      alleKodeverk={alleKodeverk}
       valgtSakslisteId={1}
       lagreSakslisteBehandlingstype={sinon.spy()}
       valgtAvdelingEnhet="3"
@@ -52,7 +60,6 @@ describe('<BehandlingstypeVelger>', () => {
     const lagreBehandlingTypeFn = sinon.spy();
 
     const wrapper = shallow(<BehandlingstypeVelger
-      alleKodeverk={alleKodeverk}
       valgtSakslisteId={1}
       lagreSakslisteBehandlingstype={lagreBehandlingTypeFn}
       valgtAvdelingEnhet="3"
@@ -65,7 +72,7 @@ describe('<BehandlingstypeVelger>', () => {
     const { args } = lagreBehandlingTypeFn.getCalls()[0];
     expect(args).to.have.length(4);
     expect(args[0]).to.eql(1);
-    expect(args[1]).to.eql(alleKodeverk[kodeverkTyper.BEHANDLING_TYPE][0]);
+    expect(args[1]).to.eql(behandlingTyper[0]);
     expect(args[2]).is.true;
     expect(args[3]).to.eql('3');
   });

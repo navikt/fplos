@@ -1,5 +1,7 @@
 import React from 'react';
 
+import { RestApiPathsKeys } from 'data/restApiPaths';
+import { RestDataProvider } from 'data/RestDataContext';
 import { SistBehandledeSaker } from 'saksbehandler/saksstotte/components/SistBehandledeSaker';
 import behandlingStatus from 'kodeverk/behandlingStatus';
 import behandlingType from 'kodeverk/behandlingType';
@@ -7,16 +9,26 @@ import fagsakYtelseType from 'kodeverk/fagsakYtelseType';
 
 import withIntl from '../../../decorators/withIntl';
 
+const initialState = {
+  [RestApiPathsKeys.FPSAK_URL]: {
+    value: 'fpsak-url',
+  },
+  [RestApiPathsKeys.FPTILBAKE_URL]: {
+    value: 'fptilbake-url',
+  },
+};
+
 export default {
   title: 'saksbehandler/saksstotte/SistBehandledeSaker',
   component: SistBehandledeSaker,
-  decorators: [withIntl],
+  decorators: [
+    withIntl,
+    (getStory) => <RestDataProvider initialState={initialState as {[key in RestApiPathsKeys]: any}}>{getStory()}</RestDataProvider>,
+  ],
 };
 
 export const skalViseIngenBehandlinger = () => (
   <SistBehandledeSaker
-    fpsakUrl=""
-    fptilbakeUrl=""
     sistBehandledeSaker={[]}
     hentFpsakInternBehandlingId={() => Promise.resolve({ payload: 1 })}
   />
@@ -24,8 +36,6 @@ export const skalViseIngenBehandlinger = () => (
 
 export const skalViseSistBehandlendeSaker = () => (
   <SistBehandledeSaker
-    fpsakUrl=""
-    fptilbakeUrl=""
     sistBehandledeSaker={[{
       id: 1,
       status: {

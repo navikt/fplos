@@ -4,12 +4,8 @@ import {
 import errorHandler from './error-api-redux';
 
 export const fpLosApiKeys = {
-  KODEVERK: 'KODEVERK',
-  NAV_ANSATT: 'NAV_ANSATT',
   SEARCH_FAGSAK: 'SEARCH_FAGSAK',
   BEHANDLEDE_OPPGAVER: 'BEHANDLEDE_OPPGAVER',
-  FPSAK_URL: 'FPSAK_URL',
-  FPTILBAKE_URL: 'FPTILBAKE_URL',
   SAKSLISTE: 'SAKSLISTE',
   RESERVER_OPPGAVE: 'RESERVER_OPPGAVE',
   HENT_RESERVASJONSSTATUS: 'HENT_RESERVASJONSSTATUS',
@@ -52,12 +48,9 @@ export const fpLosApiKeys = {
   FPSAK_BEHANDLING_ID: 'FPSAK_BEHANDLING_ID',
 };
 
-export const endpoints = new RestApiConfigBuilder()
+const endpoints = new RestApiConfigBuilder()
   /* /api/fagsak */
   .withPost('/api/fagsak/sok', fpLosApiKeys.SEARCH_FAGSAK)
-
-  /* /api/saksbehandler */
-  .withGet('/api/saksbehandler', fpLosApiKeys.NAV_ANSATT)
 
   /* /api/saksbehandler/saksliste */
   .withGet('/api/saksbehandler/saksliste', fpLosApiKeys.SAKSLISTE)
@@ -117,13 +110,6 @@ export const endpoints = new RestApiConfigBuilder()
   .withGet('/api/avdelingsleder/nokkeltall/behandlinger-under-arbeid-historikk', fpLosApiKeys.HENT_OPPGAVER_PER_DATO)
   .withGet('/api/avdelingsleder/nokkeltall/behandlinger-manuelt-vent-historikk', fpLosApiKeys.HENT_OPPGAVER_MANUELT_PA_VENT)
   .withGet('/api/avdelingsleder/nokkeltall/behandlinger-forste-stonadsdag', fpLosApiKeys.HENT_OPPGAVER_PER_FORSTE_STONADSDAG)
-
-  /* /api/konfig */
-  .withGet('/api/konfig/fpsak-url', fpLosApiKeys.FPSAK_URL)
-  .withGet('/api/konfig/fptilbake-url', fpLosApiKeys.FPTILBAKE_URL)
-
-  /* /api/kodeverk */
-  .withGet('/api/kodeverk', fpLosApiKeys.KODEVERK)
 
   /* /api/fpsak/behandlinger */
   .withGet('/api/fpsak/behandlingId', fpLosApiKeys.FPSAK_BEHANDLING_ID)

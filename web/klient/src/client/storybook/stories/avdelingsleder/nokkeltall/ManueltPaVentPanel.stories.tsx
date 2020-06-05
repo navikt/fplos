@@ -1,17 +1,28 @@
 import React from 'react';
 import moment from 'moment';
 
+import { RestApiPathsKeys } from 'data/restApiPaths';
+import { RestDataProvider } from 'data/RestDataContext';
 import { ISO_DATE_FORMAT } from 'utils/formats';
 import fagsakYtelseType from 'kodeverk/fagsakYtelseType';
 import { ManueltPaVentPanel, ALLE_YTELSETYPER_VALGT, UKE_4 } from 'avdelingsleder/nokkeltall/components/manueltSattPaVent/ManueltPaVentPanel';
 
+import alleKodeverk from '../../../mocks/alleKodeverk.json';
 import withIntl from '../../../decorators/withIntl';
 import withRedux from '../../../decorators/withRedux';
+
+const initialState = {
+  [RestApiPathsKeys.KODEVERK]: alleKodeverk,
+};
 
 export default {
   title: 'avdelingsleder/nokkeltall/ManueltPaVentPanel',
   component: ManueltPaVentPanel,
-  decorators: [withIntl, withRedux],
+  decorators: [
+    withIntl,
+    withRedux,
+    (getStory) => <RestDataProvider initialState={initialState as {[key in RestApiPathsKeys]: any}}>{getStory()}</RestDataProvider>,
+  ],
 };
 
 export const skalViseGrafForAntallBehandlingerSomErSattManueltPåVent = (intl) => (
@@ -45,15 +56,5 @@ export const skalViseGrafForAntallBehandlingerSomErSattManueltPåVent = (intl) =
       valgtYtelsetype: ALLE_YTELSETYPER_VALGT,
       ukevalg: UKE_4,
     }}
-    fagsakYtelseTyper={[{
-      kode: fagsakYtelseType.FORELDREPRENGER,
-      navn: 'Foreldreprenger',
-    }, {
-      kode: fagsakYtelseType.ENGANGSSTONAD,
-      navn: 'Engangsstønad',
-    }, {
-      kode: fagsakYtelseType.SVANGERSKAPPENGER,
-      navn: 'Svangerskapspenger',
-    }]}
   />
 );

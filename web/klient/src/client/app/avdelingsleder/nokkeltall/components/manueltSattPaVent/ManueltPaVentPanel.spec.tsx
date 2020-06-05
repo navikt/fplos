@@ -2,8 +2,11 @@ import React from 'react';
 import { expect } from 'chai';
 import { Form } from 'react-final-form';
 import moment from 'moment';
+import sinon from 'sinon';
 import { IntlShape } from 'react-intl';
 
+import kodeverkTyper from 'kodeverk/kodeverkTyper';
+import * as useKodeverk from 'data/useKodeverk';
 import { ISO_DATE_FORMAT } from 'utils/formats';
 import { RadioOption, SelectField } from 'form/FinalFields';
 import fagsakYtelseType from 'kodeverk/fagsakYtelseType';
@@ -24,6 +27,16 @@ describe('<ManueltPaVentPanel>', () => {
     navn: 'Foreldrepenger',
   }];
 
+  let contextStub;
+  before(() => {
+    contextStub = sinon.stub(useKodeverk, 'default');
+    contextStub.withArgs(kodeverkTyper.FAGSAK_YTELSE_TYPE).callsFake(() => fagsakYtelseTyper);
+  });
+
+  after(() => {
+    contextStub.restore();
+  });
+
   it('skal vise ukevalg i dropdown og valg av ytelsetype i radioknapper', () => {
     const valuesMock = {
       valgtYtelsetype: ALLE_YTELSETYPER_VALGT,
@@ -35,7 +48,6 @@ describe('<ManueltPaVentPanel>', () => {
       intl={intl as IntlShape}
       width={300}
       height={200}
-      fagsakYtelseTyper={fagsakYtelseTyper}
       oppgaverManueltPaVent={oppgaverManueltPaVent}
       initialValues={{ valgtYtelsetype: valuesMock.valgtYtelsetype, ukevalg: valuesMock.ukevalg }}
       // @ts-ignore
@@ -80,7 +92,6 @@ describe('<ManueltPaVentPanel>', () => {
       intl={intl as IntlShape}
       width={300}
       height={200}
-      fagsakYtelseTyper={fagsakYtelseTyper}
       oppgaverManueltPaVent={oppgaverManueltPaVent}
       initialValues={{ valgtYtelsetype: valuesMock.valgtYtelsetype, ukevalg: valuesMock.ukevalg }}
       // @ts-ignore
@@ -111,7 +122,6 @@ describe('<ManueltPaVentPanel>', () => {
       intl={intl as IntlShape}
       width={300}
       height={200}
-      fagsakYtelseTyper={fagsakYtelseTyper}
       oppgaverManueltPaVent={oppgaverManueltPaVent}
       initialValues={{ valgtYtelsetype: valuesMock.valgtYtelsetype, ukevalg: valuesMock.ukevalg }}
       // @ts-ignore
@@ -142,7 +152,6 @@ describe('<ManueltPaVentPanel>', () => {
       intl={intl as IntlShape}
       width={300}
       height={200}
-      fagsakYtelseTyper={fagsakYtelseTyper}
       oppgaverManueltPaVent={oppgaverManueltPaVent}
       initialValues={{ valgtYtelsetype: valuesMock.valgtYtelsetype, ukevalg: valuesMock.ukevalg }}
       // @ts-ignore
@@ -172,7 +181,6 @@ describe('<ManueltPaVentPanel>', () => {
       intl={intl as IntlShape}
       width={300}
       height={200}
-      fagsakYtelseTyper={fagsakYtelseTyper}
       oppgaverManueltPaVent={oppgaverManueltPaVent}
       initialValues={{ valgtYtelsetype: valuesMock.valgtYtelsetype, ukevalg: valuesMock.ukevalg }}
       // @ts-ignore

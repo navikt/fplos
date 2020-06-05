@@ -3,28 +3,35 @@ import { expect } from 'chai';
 import sinon from 'sinon';
 import { shallow } from 'enzyme';
 
-import kodeverkTyper from 'kodeverk/kodeverkTyper';
+import * as useKodeverk from 'data/useKodeverk';
 import andreKriterierType from 'kodeverk/andreKriterierType';
 import { CheckboxField, RadioGroupField, RadioOption } from 'form/FinalFields';
 import AndreKriterierVelger from './AndreKriterierVelger';
 
 describe('<AndreKriterierVelger>', () => {
-  const alleKodeverk = {
-    [kodeverkTyper.ANDRE_KRITERIER_TYPE]: [{
-      kode: andreKriterierType.TIL_BESLUTTER,
-      navn: 'Til beslutter',
-    }, {
-      kode: andreKriterierType.REGISTRER_PAPIRSOKNAD,
-      navn: 'Registrer papirsøknad',
-    }],
-  };
+  const andreKriterier = [{
+    kode: andreKriterierType.TIL_BESLUTTER,
+    navn: 'Til beslutter',
+  }, {
+    kode: andreKriterierType.REGISTRER_PAPIRSOKNAD,
+    navn: 'Registrer papirsøknad',
+  }];
+
+  let contextStub;
+  before(() => {
+    contextStub = sinon.stub(useKodeverk, 'default');
+    contextStub.callsFake(() => andreKriterier);
+  });
+
+  after(() => {
+    contextStub.restore();
+  });
 
   it('skal vise checkbox for Til beslutter', () => {
     const wrapper = shallow(<AndreKriterierVelger
       valgtSakslisteId={1}
       lagreSakslisteAndreKriterier={sinon.spy()}
       valgtAvdelingEnhet="3"
-      alleKodeverk={alleKodeverk}
       values={{}}
     />);
 
@@ -42,7 +49,6 @@ describe('<AndreKriterierVelger>', () => {
       valgtSakslisteId={1}
       lagreSakslisteAndreKriterier={sinon.spy()}
       valgtAvdelingEnhet="3"
-      alleKodeverk={alleKodeverk}
       values={{}}
     />);
 
@@ -59,7 +65,6 @@ describe('<AndreKriterierVelger>', () => {
       valgtSakslisteId={1}
       lagreSakslisteAndreKriterier={lagreAndreKriterierFn}
       valgtAvdelingEnhet="3"
-      alleKodeverk={alleKodeverk}
       values={{}}
     />);
 
@@ -83,7 +88,6 @@ describe('<AndreKriterierVelger>', () => {
       valgtSakslisteId={1}
       lagreSakslisteAndreKriterier={lagreAndreKriterierFn}
       valgtAvdelingEnhet="3"
-      alleKodeverk={alleKodeverk}
       values={{}}
     />);
 
@@ -107,7 +111,6 @@ describe('<AndreKriterierVelger>', () => {
       valgtSakslisteId={1}
       lagreSakslisteAndreKriterier={lagreAndreKriterierFn}
       valgtAvdelingEnhet="3"
-      alleKodeverk={alleKodeverk}
       values={{
         [andreKriterierType.TIL_BESLUTTER]: true,
         [`${andreKriterierType.TIL_BESLUTTER}_inkluder`]: true,
@@ -125,7 +128,6 @@ describe('<AndreKriterierVelger>', () => {
       valgtSakslisteId={1}
       lagreSakslisteAndreKriterier={lagreAndreKriterierFn}
       valgtAvdelingEnhet="3"
-      alleKodeverk={alleKodeverk}
       values={{
         [andreKriterierType.TIL_BESLUTTER]: true,
         [`${andreKriterierType.TIL_BESLUTTER}_inkluder`]: true,

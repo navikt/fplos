@@ -2,7 +2,7 @@
 import React from 'react';
 import Panel from 'nav-frontend-paneler';
 
-import { fpLosApiKeys } from 'data/fpLosApi';
+import { RestApiPathsKeys } from 'data/restApiPaths';
 import useRestApiData from 'data/useRestApiData';
 
 import FagsakSearchIndex from '../fagsakSearch/FagsakSearchIndex';
@@ -15,8 +15,8 @@ import styles from './saksbehandlerDashboard.less';
  * SaksbehandlerDashboard
  */
 export const SaksbehandlerDashboard = () => {
-  const fpsakUrl = useRestApiData<{ verdi?: string }>(fpLosApiKeys.FPSAK_URL);
-  const fptilbakeUrl = useRestApiData<{ verdi?: string }>(fpLosApiKeys.FPTILBAKE_URL);
+  const fpsakUrl = useRestApiData<{ verdi?: string }>(RestApiPathsKeys.FPSAK_URL);
+  const fptilbakeUrl = useRestApiData<{ verdi?: string }>(RestApiPathsKeys.FPTILBAKE_URL);
   return (
     <div>
       <div className={styles.oppgaveContainer}>

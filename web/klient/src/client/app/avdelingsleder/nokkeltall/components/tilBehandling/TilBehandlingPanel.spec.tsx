@@ -1,9 +1,12 @@
 import React from 'react';
 import { expect } from 'chai';
 import moment from 'moment';
+import sinon from 'sinon';
 import { IntlShape } from 'react-intl';
 import { Form } from 'react-final-form';
 
+import kodeverkTyper from 'kodeverk/kodeverkTyper';
+import * as useKodeverk from 'data/useKodeverk';
 import { ISO_DATE_FORMAT } from 'utils/formats';
 import { RadioOption, SelectField } from 'form/FinalFields';
 import fagsakYtelseType from 'kodeverk/fagsakYtelseType';
@@ -34,6 +37,18 @@ describe('<TilBehandlingPanel>', () => {
     navn: 'Førstegangssøknad',
   };
 
+  let contextStub;
+  before(() => {
+    contextStub = sinon.stub(useKodeverk, 'default');
+    contextStub.withArgs(kodeverkTyper.BEHANDLING_TYPE).callsFake(() => behandlingTyper)
+      .withArgs(kodeverkTyper.FAGSAK_YTELSE_TYPE)
+      .callsFake(() => fagsakYtelseTyper);
+  });
+
+  after(() => {
+    contextStub.restore();
+  });
+
   it('skal vise ukevalg i dropdown og valg av ytelsetype i radioknapper', () => {
     const valuesMock = {
       [fagsakYtelseType.FORELDREPRENGER]: true,
@@ -46,8 +61,6 @@ describe('<TilBehandlingPanel>', () => {
       intl={intl as IntlShape}
       width={300}
       height={200}
-      fagsakYtelseTyper={fagsakYtelseTyper}
-      behandlingTyper={behandlingTyper}
       oppgaverPerDato={oppgaverPerDato}
       initialValues={{ ytelseType: fagsakYtelseType.FORELDREPRENGER, ukevalg: valuesMock.ukevalg }}
       // @ts-ignore
@@ -94,8 +107,6 @@ describe('<TilBehandlingPanel>', () => {
       intl={intl as IntlShape}
       width={300}
       height={200}
-      fagsakYtelseTyper={fagsakYtelseTyper}
-      behandlingTyper={behandlingTyper}
       oppgaverPerDato={oppgaverPerDato}
       initialValues={{ ytelseType: fagsakYtelseType.FORELDREPRENGER, ukevalg: valuesMock.ukevalg }}
       // @ts-ignore
@@ -128,8 +139,6 @@ describe('<TilBehandlingPanel>', () => {
       intl={intl as IntlShape}
       width={300}
       height={200}
-      fagsakYtelseTyper={fagsakYtelseTyper}
-      behandlingTyper={behandlingTyper}
       oppgaverPerDato={oppgaverPerDato}
       initialValues={{ ytelseType: fagsakYtelseType.FORELDREPRENGER, ukevalg: valuesMock.ukevalg }}
       // @ts-ignore
@@ -162,8 +171,6 @@ describe('<TilBehandlingPanel>', () => {
       intl={intl as IntlShape}
       width={300}
       height={200}
-      fagsakYtelseTyper={fagsakYtelseTyper}
-      behandlingTyper={behandlingTyper}
       oppgaverPerDato={oppgaverPerDato}
       initialValues={{ ytelseType: fagsakYtelseType.FORELDREPRENGER, ukevalg: valuesMock.ukevalg }}
       // @ts-ignore
@@ -195,8 +202,6 @@ describe('<TilBehandlingPanel>', () => {
       intl={intl as IntlShape}
       width={300}
       height={200}
-      fagsakYtelseTyper={fagsakYtelseTyper}
-      behandlingTyper={behandlingTyper}
       oppgaverPerDato={oppgaverPerDato}
       initialValues={{ ytelseType: fagsakYtelseType.FORELDREPRENGER, ukevalg: valuesMock.ukevalg }}
       // @ts-ignore
@@ -228,8 +233,6 @@ describe('<TilBehandlingPanel>', () => {
       intl={intl as IntlShape}
       width={300}
       height={200}
-      fagsakYtelseTyper={fagsakYtelseTyper}
-      behandlingTyper={behandlingTyper}
       oppgaverPerDato={oppgaverPerDato}
       initialValues={{ ytelseType: fagsakYtelseType.FORELDREPRENGER, ukevalg: valuesMock.ukevalg }}
       // @ts-ignore

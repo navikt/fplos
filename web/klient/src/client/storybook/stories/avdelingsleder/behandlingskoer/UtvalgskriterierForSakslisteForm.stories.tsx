@@ -1,6 +1,8 @@
 import React from 'react';
 import { action } from '@storybook/addon-actions';
 
+import { RestApiPathsKeys } from 'data/restApiPaths';
+import { RestDataProvider } from 'data/RestDataContext';
 import { UtvalgskriterierForSakslisteForm } from 'avdelingsleder/behandlingskoer/components/sakslisteForm/UtvalgskriterierForSakslisteForm';
 import koSortering from 'kodeverk/KoSortering';
 import andreKriterierType from 'kodeverk/andreKriterierType';
@@ -10,10 +12,17 @@ import fagsakYtelseType from 'kodeverk/fagsakYtelseType';
 import withIntl from '../../../decorators/withIntl';
 import alleKodeverk from '../../../mocks/alleKodeverk.json';
 
+const initialState = {
+  [RestApiPathsKeys.KODEVERK]: alleKodeverk,
+};
+
 export default {
   title: 'avdelingsleder/behandlingskoer/UtvalgskriterierForSakslisteForm',
   component: UtvalgskriterierForSakslisteForm,
-  decorators: [withIntl],
+  decorators: [
+    withIntl,
+    (getStory) => <RestDataProvider initialState={initialState as {[key in RestApiPathsKeys]: any}}>{getStory()}</RestDataProvider>,
+  ],
 };
 
 export const skalViseSakslisteOppsettPanel = (intl) => (
@@ -65,7 +74,6 @@ export const skalViseSakslisteOppsettPanel = (intl) => (
     lagreSakslisteAndreKriterier={action('button-click')}
     valgtAvdelingEnhet=""
     hentAntallOppgaverForSaksliste={action('button-click') as () => Promise<string>}
-    alleKodeverk={alleKodeverk}
     lagreSakslisteSortering={action('button-click')}
     lagreSakslisteSorteringErDynamiskPeriode={action('button-click')}
     lagreSakslisteSorteringTidsintervallDato={action('button-click')}

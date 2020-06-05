@@ -2,11 +2,24 @@
 import React from 'react';
 import { expect } from 'chai';
 import { shallow } from 'enzyme';
-import Lenke from 'nav-frontend-lenker';
 import sinon from 'sinon';
+import Lenke from 'nav-frontend-lenker';
+
+import * as useRestApiData from 'data/useRestApiData';
+
 import { SistBehandledeSaker } from './SistBehandledeSaker';
 
 describe('<SistBehandledeSaker>', () => {
+  let contextStub;
+  before(() => {
+    contextStub = sinon.stub(useRestApiData, 'default');
+    contextStub.callsFake(() => ({ verdi: 'url' }));
+  });
+
+  after(() => {
+    contextStub.restore();
+  });
+
   it('skal vise sist behandlede saker som lenker i en liste', () => {
     const oppgaver = [{
       id: 3,
@@ -63,8 +76,6 @@ describe('<SistBehandledeSaker>', () => {
     }];
 
     const wrapper = shallow(<SistBehandledeSaker
-      fpsakUrl="www.fpsak.no"
-      fptilbakeUrl="www.fptilbake.no"
       sistBehandledeSaker={oppgaver}
       hentFpsakInternBehandlingId={sinon.spy()}
     />);
@@ -78,8 +89,6 @@ describe('<SistBehandledeSaker>', () => {
   it('skal ikke vise noen lenker når ingen behandlede saker blir funnet', () => {
     const oppgaver = [];
     const wrapper = shallow(<SistBehandledeSaker
-      fpsakUrl="www.fpsak.no"
-      fptilbakeUrl="www.fptilbake.no"
       sistBehandledeSaker={oppgaver}
       hentFpsakInternBehandlingId={sinon.spy()}
     />);

@@ -1,51 +1,57 @@
 import { useState, useEffect, useContext } from 'react';
 import { createRequestApi } from 'data/rest-api';
-import { endpoints } from 'data/fpLosApi';
+import { endpoints, RestApiPathsKeys } from 'data/restApiPaths';
 
 import { RestDataContext } from './RestDataContext';
 
 const contextPath = 'fplos';
 const requestApi = createRequestApi(contextPath, endpoints);
 
-export const apiStates = {
-  LOADING: 'LOADING',
-  SUCCESS: 'SUCCESS',
-  ERROR: 'ERROR',
-};
+export enum ApiState {
+  LOADING = 'LOADING',
+  SUCCESS = 'SUCCESS',
+  ERROR = 'ERROR',
+}
 
-const useRestApi = (key) => {
+interface RestApiData<T> {
+  state: ApiState;
+  error?: string;
+  data?: T;
+}
+
+function useRestApi<T>(key: RestApiPathsKeys):RestApiData<T> {
   const [data, setData] = useState({
-    state: apiStates.LOADING,
-    error: '',
-    data: [],
+    state: ApiState.LOADING,
+    error: undefined,
+    data: undefined,
   });
 
-  const globalState = useContext(RestDataContext);
-  const { dispatch } = globalState;
+  const context = useContext(RestDataContext);
+  const { dispatch } = context;
 
   const setPartData = (partialData) => setData({ ...data, ...partialData });
 
   useEffect(() => {
     setPartData({
-      state: apiStates.LOADING,
+      state: ApiState.LOADING,
     });
     requestApi.getRequestRunner(key).startProcess({})
       .then((dataRes) => {
         dispatch({ type: 'success', key, data: dataRes.payload });
         setPartData({
-          state: apiStates.SUCCESS,
+          state: ApiState.SUCCESS,
           data: dataRes,
         });
       })
       .catch(() => {
         setPartData({
-          state: apiStates.ERROR,
+          state: ApiState.ERROR,
           error: 'fetch failed',
         });
       });
   }, []);
 
   return data;
-};
+}
 
 export default useRestApi;

@@ -2,51 +2,26 @@ import React, { useState, useCallback } from 'react';
 import { Form } from 'react-final-form';
 import { action } from '@storybook/addon-actions';
 
-import kodeverkTyper from 'kodeverk/kodeverkTyper';
+import { RestApiPathsKeys } from 'data/restApiPaths';
+import { RestDataProvider } from 'data/RestDataContext';
 import SorteringVelger from 'avdelingsleder/behandlingskoer/components/sakslisteForm/SorteringVelger';
 import behandlingType from 'kodeverk/behandlingType';
 import koSortering from 'kodeverk/KoSortering';
 
+import alleKodeverk from '../../../mocks/alleKodeverk.json';
 import withIntl from '../../../decorators/withIntl';
 
-const sorteringsTyper = {
-  [kodeverkTyper.KO_SORTERING]: [{
-    kode: koSortering.BEHANDLINGSFRIST,
-    kodeverk: 'KO_SORTERING',
-    navn: 'Dato for behandlingsfrist',
-    felttype: 'DATO',
-    feltkategori: 'UNIVERSAL',
-  }, {
-    kode: koSortering.OPPRETT_BEHANDLING,
-    kodeverk: 'KO_SORTERING',
-    navn: 'Dato for opprettelse av behandling',
-    felttype: 'DATO',
-    feltkategori: 'UNIVERSAL',
-  }, {
-    kode: koSortering.FORSTE_STONADSDAG,
-    kodeverk: 'KO_SORTERING',
-    navn: 'Dato for første stønadsdag',
-    felttype: 'DATO',
-    feltkategori: 'UNIVERSAL',
-  }, {
-    kode: koSortering.BELOP,
-    kodeverk: 'KO_SORTERING',
-    navn: 'Feilutbetalt beløp',
-    felttype: 'HELTALL',
-    feltkategori: 'TILBAKEKREVING',
-  }, {
-    kode: koSortering.FEILUTBETALINGSTART,
-    kodeverk: 'KO_SORTERING',
-    navn: 'Dato for første feilutbetaling',
-    felttype: 'DATO',
-    feltkategori: 'TILBAKEKREVING',
-  }],
+const initialState = {
+  [RestApiPathsKeys.KODEVERK]: alleKodeverk,
 };
 
 export default {
   title: 'avdelingsleder/behandlingskoer/SorteringVelger',
   component: SorteringVelger,
-  decorators: [withIntl],
+  decorators: [
+    withIntl,
+    (getStory) => <RestDataProvider initialState={initialState as {[key in RestApiPathsKeys]: any}}>{getStory()}</RestDataProvider>,
+  ],
 };
 
 export const skalViseSorteringsvelgerNårMangeBehandlingstyperErValgt = () => {
@@ -77,7 +52,6 @@ export const skalViseSorteringsvelgerNårMangeBehandlingstyperErValgt = () => {
       initialValues={verdier}
       render={() => (
         <SorteringVelger
-          alleKodeverk={sorteringsTyper}
           valgtSakslisteId={1}
           valgteBehandlingtyper={[{
             kode: behandlingType.FORSTEGANGSSOKNAD,
@@ -130,7 +104,6 @@ export const skalViseSorteringsvelgerNårKunTilbakekrevingErValgt = () => {
       initialValues={verdier}
       render={() => (
         <SorteringVelger
-          alleKodeverk={sorteringsTyper}
           valgtSakslisteId={1}
           valgteBehandlingtyper={[{
             kode: behandlingType.TILBAKEBETALING,

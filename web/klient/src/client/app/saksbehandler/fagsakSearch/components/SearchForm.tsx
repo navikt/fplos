@@ -1,10 +1,10 @@
 import React, { FunctionComponent } from 'react';
 import { injectIntl, WrappedComponentProps, FormattedMessage } from 'react-intl';
-
 import { Form } from 'react-final-form';
 import { Knapp } from 'nav-frontend-knapper';
 import { Undertittel } from 'nav-frontend-typografi';
 
+import { RestApiPathsKeys } from 'data/restApiPaths';
 import { FlexContainer, FlexRow, FlexColumn } from 'sharedComponents/flexGrid';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import Image from 'sharedComponents/Image';
@@ -13,7 +13,6 @@ import { hasValidSaksnummerOrFodselsnummerFormat } from 'utils/validation/valida
 import { InputField, CheckboxField } from 'form/FinalFields';
 
 import useRestApiData from 'data/useRestApiData';
-import { fpLosApiKeys } from 'data/fpLosApi';
 import NavAnsatt from 'app/navAnsattTsType';
 
 import styles from './searchForm.less';
@@ -41,7 +40,7 @@ const SearchForm: FunctionComponent<OwnProps & WrappedComponentProps> = ({
   searchResultAccessDenied,
   resetSearch,
 }) => {
-  const { kanSaksbehandle } = useRestApiData<NavAnsatt>(fpLosApiKeys.NAV_ANSATT);
+  const { kanSaksbehandle } = useRestApiData<NavAnsatt>(RestApiPathsKeys.NAV_ANSATT);
   return (
     <Form
       onSubmit={onSubmit}

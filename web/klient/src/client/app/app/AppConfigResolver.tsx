@@ -2,9 +2,9 @@ import React, {
   ReactElement, FunctionComponent,
 } from 'react';
 
-import { fpLosApiKeys } from 'data/fpLosApi';
+import { RestApiPathsKeys } from 'data/restApiPaths';
 import LoadingPanel from 'sharedComponents/LoadingPanel';
-import useRestApi, { apiStates } from '../data/useRestApi';
+import useRestApi, { ApiState } from '../data/useRestApi';
 
 interface OwnProps {
   children: ReactElement;
@@ -13,15 +13,15 @@ interface OwnProps {
 const AppConfigResolver: FunctionComponent<OwnProps> = ({
   children,
 }) => {
-  const { state: stateNavAnsatt } = useRestApi(fpLosApiKeys.NAV_ANSATT);
-  const { state: stateKodeverk } = useRestApi(fpLosApiKeys.KODEVERK);
-  const { state: stateFpsakUrl } = useRestApi(fpLosApiKeys.FPSAK_URL);
-  const { state: stateFptilbakeUrl } = useRestApi(fpLosApiKeys.FPTILBAKE_URL);
+  const { state: stateNavAnsatt } = useRestApi(RestApiPathsKeys.NAV_ANSATT);
+  const { state: stateKodeverk } = useRestApi(RestApiPathsKeys.KODEVERK);
+  const { state: stateFpsakUrl } = useRestApi(RestApiPathsKeys.FPSAK_URL);
+  const { state: stateFptilbakeUrl } = useRestApi(RestApiPathsKeys.FPTILBAKE_URL);
 
-  if (stateNavAnsatt === apiStates.LOADING
-    || stateKodeverk === apiStates.LOADING
-    || stateFpsakUrl === apiStates.LOADING
-    || stateFptilbakeUrl === apiStates.LOADING) {
+  if (stateNavAnsatt === ApiState.LOADING
+    || stateKodeverk === ApiState.LOADING
+    || stateFpsakUrl === ApiState.LOADING
+    || stateFptilbakeUrl === ApiState.LOADING) {
     return <LoadingPanel />;
   }
   return children;

@@ -9,7 +9,7 @@ import BoxedListWithSelection from '@navikt/boxed-list-with-selection';
 import BoxedListWithLinks from '@navikt/boxed-list-with-links';
 import Header from '@navikt/nap-header';
 
-import { fpLosApiKeys } from 'data/fpLosApi';
+import { RestApiPathsKeys } from 'data/restApiPaths';
 import EventType from 'data/rest-api/src/requestApi/eventType';
 import { getValueFromLocalStorage, setValueInLocalStorage, removeValueFromLocalStorage } from 'utils/localStorageHelper';
 import Avdeling from 'app/avdelingTsType';
@@ -100,7 +100,7 @@ const HeaderWithErrorPanel: FunctionComponent<OwnProps & WrappedComponentProps> 
   const [erLenkePanelApent, setLenkePanelApent] = useState(false);
   const [erAvdelingerPanelApent, setAvdelingerPanelApent] = useState(false);
 
-  const navAnsatt = useRestApiData<NavAnsatt>(fpLosApiKeys.NAV_ANSATT);
+  const navAnsatt = useRestApiData<NavAnsatt>(RestApiPathsKeys.NAV_ANSATT);
 
   const wrapperRef = useOutsideClickEvent(erLenkePanelApent, erAvdelingerPanelApent, setLenkePanelApent, setAvdelingerPanelApent);
 

@@ -3,6 +3,7 @@ import { expect } from 'chai';
 import sinon from 'sinon';
 import { shallow } from 'enzyme';
 
+import * as useKodeverk from 'data/useKodeverk';
 import kodeverkTyper from 'kodeverk/kodeverkTyper';
 import fagsakYtelseType from 'kodeverk/fagsakYtelseType';
 import { RadioOption, RadioGroupField } from 'form/FinalFields';
@@ -10,22 +11,29 @@ import { RadioOption, RadioGroupField } from 'form/FinalFields';
 import FagsakYtelseTypeVelger from './FagsakYtelseTypeVelger';
 
 describe('<FagsakYtelseTypeVelger>', () => {
-  it('skal vise checkboxer for ytelsetyper', () => {
-    const alleKodeverk = {
-      [kodeverkTyper.FAGSAK_YTELSE_TYPE]: [{
-        kode: fagsakYtelseType.ENGANGSSTONAD,
-        navn: 'Engangsstønad',
-      }, {
-        kode: fagsakYtelseType.FORELDREPRENGER,
-        navn: 'Foreldrepenger',
-      }, {
-        kode: fagsakYtelseType.SVANGERSKAPPENGER,
-        navn: 'Svangerskapspenger',
-      }],
-    };
+  const fagsakYtelseTyper = [{
+    kode: fagsakYtelseType.ENGANGSSTONAD,
+    navn: 'Engangsstønad',
+  }, {
+    kode: fagsakYtelseType.FORELDREPRENGER,
+    navn: 'Foreldrepenger',
+  }, {
+    kode: fagsakYtelseType.SVANGERSKAPPENGER,
+    navn: 'Svangerskapspenger',
+  }];
 
+  let contextStub;
+  before(() => {
+    contextStub = sinon.stub(useKodeverk, 'default');
+    contextStub.withArgs(kodeverkTyper.FAGSAK_YTELSE_TYPE).callsFake(() => fagsakYtelseTyper);
+  });
+
+  after(() => {
+    contextStub.restore();
+  });
+
+  it('skal vise checkboxer for ytelsetyper', () => {
     const wrapper = shallow(<FagsakYtelseTypeVelger
-      alleKodeverk={alleKodeverk}
       valgtSakslisteId={1}
       lagreSakslisteFagsakYtelseType={sinon.spy()}
       valgtAvdelingEnhet="3"
@@ -39,16 +47,9 @@ describe('<FagsakYtelseTypeVelger>', () => {
   });
 
   it('skal lagre ytelsetype ved klikk på checkbox', () => {
-    const alleKodeverk = {
-      [kodeverkTyper.FAGSAK_YTELSE_TYPE]: [{
-        kode: fagsakYtelseType.ENGANGSSTONAD,
-        navn: 'Engangsstønad',
-      }],
-    };
     const lagreYtelseTypeFn = sinon.spy();
 
     const wrapper = shallow(<FagsakYtelseTypeVelger
-      alleKodeverk={alleKodeverk}
       valgtSakslisteId={1}
       lagreSakslisteFagsakYtelseType={lagreYtelseTypeFn}
       valgtAvdelingEnhet="3"

@@ -1,18 +1,29 @@
 import React from 'react';
 import moment from 'moment';
 
+import { RestApiPathsKeys } from 'data/restApiPaths';
+import { RestDataProvider } from 'data/RestDataContext';
 import { ISO_DATE_FORMAT } from 'utils/formats';
 import behandlingType from 'kodeverk/behandlingType';
 import fagsakYtelseType from 'kodeverk/fagsakYtelseType';
 import { TilBehandlingPanel, ALLE_YTELSETYPER_VALGT, UKE_2 } from 'avdelingsleder/nokkeltall/components/tilBehandling/TilBehandlingPanel';
 
+import alleKodeverk from '../../../mocks/alleKodeverk.json';
 import withIntl from '../../../decorators/withIntl';
 import withRedux from '../../../decorators/withRedux';
+
+const initialState = {
+  [RestApiPathsKeys.KODEVERK]: alleKodeverk,
+};
 
 export default {
   title: 'avdelingsleder/nokkeltall/TilBehandlingPanel',
   component: TilBehandlingPanel,
-  decorators: [withIntl, withRedux],
+  decorators: [
+    withIntl,
+    withRedux,
+    (getStory) => <RestDataProvider initialState={initialState as {[key in RestApiPathsKeys]: any}}>{getStory()}</RestDataProvider>,
+  ],
 };
 
 export const skalViseGrafForAntallOppgaverTilBehandlingPerDag = (intl) => (
@@ -91,28 +102,5 @@ export const skalViseGrafForAntallOppgaverTilBehandlingPerDag = (intl) => (
       ytelseType: ALLE_YTELSETYPER_VALGT,
       ukevalg: UKE_2,
     }}
-    fagsakYtelseTyper={[{
-      kode: fagsakYtelseType.FORELDREPRENGER,
-      navn: 'Foreldreprenger',
-    }, {
-      kode: fagsakYtelseType.ENGANGSSTONAD,
-      navn: 'Engangsstønad',
-    }, {
-      kode: fagsakYtelseType.SVANGERSKAPPENGER,
-      navn: 'Svangerskapspenger',
-    }]}
-    behandlingTyper={[{
-      kode: behandlingType.FORSTEGANGSSOKNAD,
-      navn: 'Førstegangssøknad',
-    }, {
-      kode: behandlingType.KLAGE,
-      navn: 'Klage',
-    }, {
-      kode: behandlingType.DOKUMENTINNSYN,
-      navn: 'Dokumentinnsyn',
-    }, {
-      kode: behandlingType.REVURDERING,
-      navn: 'Revurdering',
-    }]}
   />
 );

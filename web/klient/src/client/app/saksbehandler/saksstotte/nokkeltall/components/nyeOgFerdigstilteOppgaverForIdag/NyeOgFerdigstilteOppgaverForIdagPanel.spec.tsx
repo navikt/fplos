@@ -1,15 +1,22 @@
 
 import React from 'react';
 import { expect } from 'chai';
+import sinon from 'sinon';
 import { shallow } from 'enzyme';
 import moment from 'moment';
 
+import * as useRestApiData from 'data/useRestApiData';
 import behandlingType from 'kodeverk/behandlingType';
 import { NyeOgFerdigstilteOppgaverForIdagPanel, getNyeOgFerdigstilteForIDag } from './NyeOgFerdigstilteOppgaverForIdagPanel';
 import NyeOgFerdigstilteOppgaverForIdagGraf from './NyeOgFerdigstilteOppgaverForIdagGraf';
 
 describe('<NyeOgFerdigstilteOppgaverForIdagPanel>', () => {
   it('skal vise rendre komponent', () => {
+    const contextStub = sinon.stub(useRestApiData, 'default').callsFake(() => ([{
+      kode: behandlingType.FORSTEGANGSSOKNAD,
+      navn: 'FORSTEGANGSSOKNAD',
+    }]));
+
     const nyeOgFerdigstilteOppgaver = [{
       behandlingType: {
         kode: behandlingType.FORSTEGANGSSOKNAD,
@@ -24,13 +31,10 @@ describe('<NyeOgFerdigstilteOppgaverForIdagPanel>', () => {
       width={300}
       height={200}
       nyeOgFerdigstilteOppgaver={nyeOgFerdigstilteOppgaver}
-      behandlingTyper={[{
-        kode: behandlingType.FORSTEGANGSSOKNAD,
-        navn: 'FORSTEGANGSSOKNAD',
-      }]}
     />);
 
     expect(wrapper.find(NyeOgFerdigstilteOppgaverForIdagGraf)).to.have.length(1);
+    contextStub.restore();
   });
 
   it('skal filtrere bort alle andre enn dagens oppgaver', () => {

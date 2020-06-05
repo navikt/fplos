@@ -1,8 +1,10 @@
 import React from 'react';
 import { expect } from 'chai';
-
+import sinon from 'sinon';
 import { Form } from 'react-final-form';
 
+import kodeverkTyper from 'kodeverk/kodeverkTyper';
+import * as useKodeverk from 'data/useKodeverk';
 import { shallowWithIntl } from 'testHelpers/intl-enzyme-test-helper';
 import behandlingType from 'kodeverk/behandlingType';
 import { RadioOption } from 'form/FinalFields';
@@ -42,6 +44,18 @@ describe('<FordelingAvBehandlingstypePanel>', () => {
     navn: 'Førstegangssøknad',
   };
 
+  let contextStub;
+  before(() => {
+    contextStub = sinon.stub(useKodeverk, 'default');
+    contextStub.withArgs(kodeverkTyper.BEHANDLING_TYPE).callsFake(() => behandlingTyper)
+      .withArgs(kodeverkTyper.FAGSAK_YTELSE_TYPE)
+      .callsFake(() => fagsakYtelseTyper);
+  });
+
+  after(() => {
+    contextStub.restore();
+  });
+
   it('skal vise ytelsetyper i radioknapper', () => {
     const valuesMock = {
       valgtYtelseType: 'ALLE',
@@ -51,8 +65,6 @@ describe('<FordelingAvBehandlingstypePanel>', () => {
     const wrapper = shallowWithIntl(<FordelingAvBehandlingstypePanel
       width={300}
       height={200}
-      fagsakYtelseTyper={fagsakYtelseTyper}
-      behandlingTyper={behandlingTyper}
       oppgaverForAvdeling={oppgaverForAvdeling}
       initialValues={{ valgtYtelseType: valuesMock.valgtYtelseType }}
       // @ts-ignore
@@ -87,8 +99,6 @@ describe('<FordelingAvBehandlingstypePanel>', () => {
     const wrapper = shallowWithIntl(<FordelingAvBehandlingstypePanel
       width={300}
       height={200}
-      behandlingTyper={behandlingTyper}
-      fagsakYtelseTyper={fagsakYtelseTyper}
       oppgaverForAvdeling={oppgaverForAvdeling}
       initialValues={{ valgtYtelseType: valuesMock.valgtYtelseType }}
       // @ts-ignore
@@ -118,8 +128,6 @@ describe('<FordelingAvBehandlingstypePanel>', () => {
     const wrapper = shallowWithIntl(<FordelingAvBehandlingstypePanel
       width={300}
       height={200}
-      behandlingTyper={behandlingTyper}
-      fagsakYtelseTyper={fagsakYtelseTyper}
       oppgaverForAvdeling={oppgaverForAvdeling}
       initialValues={{ valgtYtelseType: valuesMock.valgtYtelseType }}
       // @ts-ignore

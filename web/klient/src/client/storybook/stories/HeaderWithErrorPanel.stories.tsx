@@ -1,21 +1,31 @@
 import React, { useState } from 'react';
 import { action } from '@storybook/addon-actions';
 
+import { RestApiPathsKeys } from 'data/restApiPaths';
 import EventType from 'data/rest-api/src/requestApi/eventType';
 import HeaderWithErrorPanel from 'app/components/HeaderWithErrorPanel';
+import { RestDataProvider } from 'data/RestDataContext';
 
 import withIntl from '../decorators/withIntl';
+
+const initialState = {
+  [RestApiPathsKeys.NAV_ANSATT]: {
+    navn: 'Espen Utvikler',
+  },
+};
 
 export default {
   title: 'HeaderWithErrorPanel',
   component: HeaderWithErrorPanel,
-  decorators: [withIntl],
+  decorators: [
+    withIntl,
+    (getStory) => <RestDataProvider initialState={initialState as {[key in RestApiPathsKeys]: any}}>{getStory()}</RestDataProvider>,
+  ],
 };
 
 export const skalViseHeaderUtenAvdelingsvelger = () => (
   <div style={{ marginLeft: '-40px' }}>
     <HeaderWithErrorPanel
-      navAnsattName="Espen Utvikler"
       removeErrorMessage={action('button-click')}
       queryStrings={{}}
       avdelinger={[]}
@@ -30,7 +40,6 @@ export const skalViseHeaderMedAvdelingsvelger = () => {
   return (
     <div style={{ marginLeft: '-40px' }}>
       <HeaderWithErrorPanel
-        navAnsattName="Espen Utvikler"
         removeErrorMessage={action('button-click')}
         queryStrings={{}}
         avdelinger={[{
@@ -59,7 +68,6 @@ export const skalViseHeaderMedKunEnFeilmelding = () => {
   return (
     <div style={{ marginLeft: '-40px' }}>
       <HeaderWithErrorPanel
-        navAnsattName="Espen Utvikler"
         removeErrorMessage={() => setErrorMessages([])}
         queryStrings={{}}
         avdelinger={[]}
@@ -101,7 +109,6 @@ export const skalViseHeaderMedMerEnnFemFeilmeldinger = () => {
   return (
     <div style={{ marginLeft: '-40px' }}>
       <HeaderWithErrorPanel
-        navAnsattName="Espen Utvikler"
         removeErrorMessage={() => { setErrorMessages([]); setQueryStrings({}); }}
         queryStrings={queryStrings}
         avdelinger={[]}

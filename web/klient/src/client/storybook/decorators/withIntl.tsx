@@ -8,12 +8,10 @@ const intl = createIntl({
   messages: data,
 }, createIntlCache());
 
-const withIntlProvider = (story) => {
-  return (
-    <RawIntlProvider value={intl}>
-      { story(intl) }
-    </RawIntlProvider>
-  );
-};
+const withIntlProvider = (story) => (
+  <RawIntlProvider value={intl}>
+    { story(intl) }
+  </RawIntlProvider>
+);
 
 export default withIntlProvider;

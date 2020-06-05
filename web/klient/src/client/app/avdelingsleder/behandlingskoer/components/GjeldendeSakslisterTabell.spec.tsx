@@ -4,6 +4,8 @@ import { expect } from 'chai';
 import sinon from 'sinon';
 import { FormattedMessage } from 'react-intl';
 
+import kodeverkTyper from 'kodeverk/kodeverkTyper';
+import * as useKodeverk from 'data/useKodeverk';
 import Image from 'sharedComponents/Image';
 import behandlingType from 'kodeverk/behandlingType';
 import fagsakYtelseType from 'kodeverk/fagsakYtelseType';
@@ -31,6 +33,18 @@ describe('<GjeldendeSakslisterTabell>', () => {
   },
   ];
 
+  let contextStub;
+  before(() => {
+    contextStub = sinon.stub(useKodeverk, 'default');
+    contextStub.withArgs(kodeverkTyper.BEHANDLING_TYPE).callsFake(() => behandlingstyper)
+      .withArgs(kodeverkTyper.FAGSAK_YTELSE_TYPE)
+      .callsFake(() => fagsakYtelseTyper);
+  });
+
+  after(() => {
+    contextStub.restore();
+  });
+
   it('skal ikke vise tabell når ingen sakslister finnes', () => {
     const sakslister = [];
 
@@ -39,8 +53,6 @@ describe('<GjeldendeSakslisterTabell>', () => {
       setValgtSakslisteId={sinon.spy()}
       lagNySaksliste={sinon.spy()}
       fjernSaksliste={sinon.spy()}
-      behandlingTyper={behandlingstyper}
-      fagsakYtelseTyper={fagsakYtelseTyper}
       valgtAvdelingEnhet="2"
       hentAvdelingensSakslister={sinon.spy()}
       hentAntallOppgaverForAvdeling={sinon.spy()}
@@ -77,8 +89,6 @@ describe('<GjeldendeSakslisterTabell>', () => {
       setValgtSakslisteId={sinon.spy()}
       lagNySaksliste={sinon.spy()}
       fjernSaksliste={sinon.spy()}
-      behandlingTyper={behandlingstyper}
-      fagsakYtelseTyper={fagsakYtelseTyper}
       valgtAvdelingEnhet="2"
       hentAvdelingensSakslister={sinon.spy()}
       hentAntallOppgaverForAvdeling={sinon.spy()}
@@ -107,8 +117,6 @@ describe('<GjeldendeSakslisterTabell>', () => {
       setValgtSakslisteId={sinon.spy()}
       lagNySaksliste={lagNySakslisteFn}
       fjernSaksliste={sinon.spy()}
-      behandlingTyper={behandlingstyper}
-      fagsakYtelseTyper={fagsakYtelseTyper}
       valgtAvdelingEnhet="2"
       hentAvdelingensSakslister={sinon.spy()}
       hentAntallOppgaverForAvdeling={sinon.spy()}
@@ -132,8 +140,6 @@ describe('<GjeldendeSakslisterTabell>', () => {
       setValgtSakslisteId={sinon.spy()}
       lagNySaksliste={lagNySakslisteFn}
       fjernSaksliste={sinon.spy()}
-      behandlingTyper={behandlingstyper}
-      fagsakYtelseTyper={fagsakYtelseTyper}
       valgtAvdelingEnhet="2"
       hentAvdelingensSakslister={sinon.spy()}
       hentAntallOppgaverForAvdeling={sinon.spy()}
@@ -158,8 +164,6 @@ describe('<GjeldendeSakslisterTabell>', () => {
       setValgtSakslisteId={sinon.spy()}
       lagNySaksliste={lagNySakslisteFn}
       fjernSaksliste={sinon.spy()}
-      behandlingTyper={behandlingstyper}
-      fagsakYtelseTyper={fagsakYtelseTyper}
       valgtAvdelingEnhet="2"
       hentAvdelingensSakslister={sinon.spy()}
       hentAntallOppgaverForAvdeling={sinon.spy()}
@@ -192,8 +196,6 @@ describe('<GjeldendeSakslisterTabell>', () => {
       setValgtSakslisteId={setValgtSakslisteIdFn}
       lagNySaksliste={sinon.spy()}
       fjernSaksliste={sinon.spy()}
-      behandlingTyper={behandlingstyper}
-      fagsakYtelseTyper={fagsakYtelseTyper}
       valgtAvdelingEnhet="2"
       hentAvdelingensSakslister={sinon.spy()}
       hentAntallOppgaverForAvdeling={sinon.spy()}
@@ -223,8 +225,6 @@ describe('<GjeldendeSakslisterTabell>', () => {
       setValgtSakslisteId={sinon.spy()}
       lagNySaksliste={sinon.spy()}
       fjernSaksliste={sinon.spy()}
-      behandlingTyper={behandlingstyper}
-      fagsakYtelseTyper={fagsakYtelseTyper}
       valgtAvdelingEnhet="2"
       hentAvdelingensSakslister={sinon.spy()}
       hentAntallOppgaverForAvdeling={sinon.spy()}
@@ -243,8 +243,6 @@ describe('<GjeldendeSakslisterTabell>', () => {
     mouseFn();
 
     expect(wrapper.find(SletteSakslisteModal)).to.have.length(1);
-    const state = wrapper.state() as { valgtSaksliste: string };
-    expect(state.valgtSaksliste).is.eql(sakslister[0]);
   });
 
   it('skal lukke modal ved trykk på avbryt i modal', () => {
@@ -262,8 +260,6 @@ describe('<GjeldendeSakslisterTabell>', () => {
       setValgtSakslisteId={sinon.spy()}
       lagNySaksliste={sinon.spy()}
       fjernSaksliste={sinon.spy()}
-      behandlingTyper={behandlingstyper}
-      fagsakYtelseTyper={fagsakYtelseTyper}
       valgtAvdelingEnhet="2"
       hentAvdelingensSakslister={sinon.spy()}
       hentAntallOppgaverForAvdeling={sinon.spy()}
@@ -282,8 +278,6 @@ describe('<GjeldendeSakslisterTabell>', () => {
     modal.prop('cancel')();
 
     expect(wrapper.find(SletteSakslisteModal)).to.have.length(0);
-    const state = wrapper.state() as { valgtSaksliste: string };
-    expect(state.valgtSaksliste).is.undefined;
   });
 
   it('skal fjerne saksliste ved trykk på ok i modal', () => {
@@ -302,8 +296,6 @@ describe('<GjeldendeSakslisterTabell>', () => {
       setValgtSakslisteId={sinon.spy()}
       lagNySaksliste={sinon.spy()}
       fjernSaksliste={fjernSakslisterFn}
-      behandlingTyper={behandlingstyper}
-      fagsakYtelseTyper={fagsakYtelseTyper}
       valgtAvdelingEnhet="2"
       hentAvdelingensSakslister={sinon.spy()}
       hentAntallOppgaverForAvdeling={sinon.spy()}
@@ -322,8 +314,6 @@ describe('<GjeldendeSakslisterTabell>', () => {
     modal.prop('submit')(sakslister[0]);
 
     expect(wrapper.find(SletteSakslisteModal)).to.have.length(0);
-    const state = wrapper.state() as { valgtSaksliste: string };
-    expect(state.valgtSaksliste).is.undefined;
 
     expect(fjernSakslisterFn.calledOnce).to.be.true;
     const { args } = fjernSakslisterFn.getCalls()[0];
@@ -348,8 +338,6 @@ describe('<GjeldendeSakslisterTabell>', () => {
       setValgtSakslisteId={sinon.spy()}
       lagNySaksliste={sinon.spy()}
       fjernSaksliste={sinon.spy()}
-      behandlingTyper={behandlingstyper}
-      fagsakYtelseTyper={fagsakYtelseTyper}
       valgtAvdelingEnhet="2"
       hentAvdelingensSakslister={sinon.spy()}
       hentAntallOppgaverForAvdeling={sinon.spy()}

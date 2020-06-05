@@ -1,37 +1,34 @@
 import React from 'react';
 import moment from 'moment';
 
-import { ISO_DATE_FORMAT } from 'utils/formats';
+import { RestApiPathsKeys } from 'data/restApiPaths';
 import behandlingType from 'kodeverk/behandlingType';
+import { ISO_DATE_FORMAT } from 'utils/formats';
+import { RestDataProvider } from 'data/RestDataContext';
 import {
   NyeOgFerdigstilteOppgaverForIdagPanel,
 } from 'saksbehandler/saksstotte/nokkeltall/components/nyeOgFerdigstilteOppgaverForIdag/NyeOgFerdigstilteOppgaverForIdagPanel';
 
+import alleKodeverk from '../../../mocks/alleKodeverk.json';
 import withIntl from '../../../decorators/withIntl';
+
+const initialState = {
+  [RestApiPathsKeys.KODEVERK]: alleKodeverk,
+};
 
 export default {
   title: 'saksbehandler/saksstotte/NyeOgFerdigstilteOppgaverForIdagPanel',
   component: NyeOgFerdigstilteOppgaverForIdagPanel,
-  decorators: [withIntl],
+  decorators: [
+    withIntl,
+    (getStory) => <RestDataProvider initialState={initialState as {[key in RestApiPathsKeys]: any}}>{getStory()}</RestDataProvider>,
+  ],
 };
 
 export const skalViseGrafForNyeOgFerdigstilteOppgaverForIdag = () => (
   <NyeOgFerdigstilteOppgaverForIdagPanel
     width={700}
     height={300}
-    behandlingTyper={[{
-      kode: behandlingType.FORSTEGANGSSOKNAD,
-      navn: 'Førstegangssøknad',
-    }, {
-      kode: behandlingType.KLAGE,
-      navn: 'Klage',
-    }, {
-      kode: behandlingType.DOKUMENTINNSYN,
-      navn: 'Dokumentinnsyn',
-    }, {
-      kode: behandlingType.REVURDERING,
-      navn: 'Revurdering',
-    }]}
     nyeOgFerdigstilteOppgaver={[{
       behandlingType: {
         kode: behandlingType.FORSTEGANGSSOKNAD,

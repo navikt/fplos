@@ -11,7 +11,6 @@ import StoreValuesInReduxState from 'form/reduxBinding/StoreValuesInReduxState';
 import { getValuesFromReduxState } from 'form/reduxBinding/formDuck';
 import { RadioGroupField, RadioOption, SelectField } from 'form/FinalFields';
 import useKodeverk from 'data/useKodeverk';
-import Kodeverk from 'kodeverk/kodeverkTsType';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import fagsakYtelseType from 'kodeverk/fagsakYtelseType';
 import kodeverkTyper from 'kodeverk/kodeverkTyper';
@@ -55,7 +54,6 @@ interface OwnProps {
   intl: any;
   width: number;
   height: number;
-  fagsakYtelseTyper: Kodeverk[];
   oppgaverManueltPaVent?: OppgaverManueltPaVent[];
   initialValues: InitialValues;
 }

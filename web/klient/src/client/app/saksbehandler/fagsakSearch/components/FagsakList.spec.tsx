@@ -4,6 +4,8 @@ import { shallow } from 'enzyme';
 import { expect } from 'chai';
 import sinon from 'sinon';
 
+import * as useKodeverk from 'data/useKodeverk';
+import kodeverkTyper from 'kodeverk/kodeverkTyper';
 import Table from 'sharedComponents/table/Table';
 import { FagsakList, getSorterteFagsaker } from './FagsakList';
 
@@ -57,6 +59,17 @@ describe('<FagsakList>', () => {
     'EMPTY_1',
   ];
 
+  let contextStub;
+  before(() => {
+    contextStub = sinon.stub(useKodeverk, 'default');
+    contextStub.withArgs(kodeverkTyper.FAGSAK_STATUS).callsFake(() => fagsakStatusTyper)
+      .withArgs(kodeverkTyper.FAGSAK_YTELSE_TYPE).callsFake(() => fagsakYtelseTyper);
+  });
+
+  after(() => {
+    contextStub.restore();
+  });
+
   it('skal vise en tabell med en rad og tilhørende kolonnedata', () => {
     const clickFunction = sinon.spy();
     const wrapper = shallow(
@@ -65,8 +78,6 @@ describe('<FagsakList>', () => {
         fagsakOppgaver={[]}
         selectFagsakCallback={clickFunction}
         selectOppgaveCallback={sinon.spy()}
-        fagsakStatusTyper={fagsakStatusTyper}
-        fagsakYtelseTyper={fagsakYtelseTyper}
       />,
     );
 
@@ -152,8 +163,6 @@ describe('<FagsakList>', () => {
         sorterteFagsaker={[fagsak, fagsak4]}
         selectOppgaveCallback={sinon.spy()}
         selectFagsakCallback={clickFunction}
-        fagsakStatusTyper={fagsakStatusTyper}
-        fagsakYtelseTyper={fagsakYtelseTyper}
         fagsakOppgaver={[]}
       />,
     );

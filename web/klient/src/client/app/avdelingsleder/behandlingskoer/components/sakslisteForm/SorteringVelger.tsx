@@ -53,7 +53,7 @@ const SorteringVelger: FunctionComponent<OwnProps & WrappedComponentProps> = ({
   fomDato,
   tomDato,
 }) => {
-  const koSorteringer = useKodeverk(kodeverkTyper.KO_SORTERING);
+  const koSorteringer = useKodeverk<KoSorteringType>(kodeverkTyper.KO_SORTERING);
   return (
     <>
       <Undertekst>

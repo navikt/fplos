@@ -1,15 +1,25 @@
 import React, { useState } from 'react';
 import { action } from '@storybook/addon-actions';
 
+import { RestApiPathsKeys } from 'data/restApiPaths';
+import { RestDataProvider } from 'data/RestDataContext';
 import { GjeldendeSakslisterTabell } from 'avdelingsleder/behandlingskoer/components/GjeldendeSakslisterTabell';
 import Saksliste from 'avdelingsleder/behandlingskoer/sakslisteTsType';
 
+import alleKodeverk from '../../../mocks/alleKodeverk.json';
 import withIntl from '../../../decorators/withIntl';
+
+const initialState = {
+  [RestApiPathsKeys.KODEVERK]: alleKodeverk,
+};
 
 export default {
   title: 'avdelingsleder/behandlingskoer/GjeldendeSakslisterTabell',
   component: GjeldendeSakslisterTabell,
-  decorators: [withIntl],
+  decorators: [
+    withIntl,
+    (getStory) => <RestDataProvider initialState={initialState as {[key in RestApiPathsKeys]: any}}>{getStory()}</RestDataProvider>,
+  ],
 };
 
 export const skalVisePanelNårDetIkkeFinnesBehandlingskøer = () => {
@@ -26,8 +36,6 @@ export const skalVisePanelNårDetIkkeFinnesBehandlingskøer = () => {
         antallBehandlinger: 1,
       }])}
       fjernSaksliste={action('button-click')}
-      behandlingTyper={[]}
-      fagsakYtelseTyper={[]}
       valgtAvdelingEnhet=""
       hentAvdelingensSakslister={action('button-click') as () => Saksliste[]}
       hentAntallOppgaverForAvdeling={action('button-click') as () => Promise<string>}
@@ -56,8 +64,6 @@ export const skalVisePanelNårDetFinnesEnBehandlingskø = () => {
         antallBehandlinger: 1,
       }])}
       fjernSaksliste={action('button-click')}
-      behandlingTyper={[]}
-      fagsakYtelseTyper={[]}
       valgtAvdelingEnhet=""
       hentAvdelingensSakslister={action('button-click') as () => Saksliste[]}
       hentAntallOppgaverForAvdeling={action('button-click') as () => Promise<string>}
