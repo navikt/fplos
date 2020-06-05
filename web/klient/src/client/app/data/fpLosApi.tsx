@@ -36,7 +36,6 @@ export const fpLosApiKeys = {
   HENT_OPPGAVER_PER_DATO: 'HENT_OPPGAVER_PER_DATO',
   HENT_OPPGAVER_PER_FORSTE_STONADSDAG: 'HENT_OPPGAVER_PER_FORSTE_STONADSDAG',
   HENT_OPPGAVER_MANUELT_PA_VENT: 'HENT_OPPGAVER_MANUELT_PA_VENT',
-  AVDELINGER: 'AVDELINGER',
   OPPGAVE_ANTALL: 'OPPGAVE_ANTALL',
   OPPGAVE_AVDELING_ANTALL: 'OPPGAVE_AVDELING_ANTALL',
   OPPGAVER_FOR_FAGSAKER: 'OPPGAVER_FOR_FAGSAKER',
@@ -73,9 +72,6 @@ const endpoints = new RestApiConfigBuilder()
 
   /* /api/saksbehandler/nokkeltall */
   .withGet('/api/saksbehandler/nokkeltall/nye-og-ferdigstilte-oppgaver', fpLosApiKeys.HENT_NYE_OG_FERDIGSTILTE_OPPGAVER)
-
-  /* /api/avdelingsleder/avdelinger */
-  .withGet('/api/avdelingsleder/avdelinger', fpLosApiKeys.AVDELINGER)
 
   /* /api/avdelingsleder/sakslister */
   .withGet('/api/avdelingsleder/sakslister', fpLosApiKeys.SAKSLISTER_FOR_AVDELING)

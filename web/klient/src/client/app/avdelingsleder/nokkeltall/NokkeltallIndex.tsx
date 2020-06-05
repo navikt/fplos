@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
 
-import { getValgtAvdelingEnhet } from 'app/duck';
 import {
   fetchOppgaverForAvdeling as fetchOppgaverForAvdelingActionCreator,
   fetchOppgaverPerDato as fetchOppgaverPerDatoActionCreator,
@@ -38,8 +37,7 @@ export class NokkeltallIndex extends Component<TsProps> {
   )
 }
 
-const mapStateToProps = (state) => ({
-  valgtAvdelingEnhet: getValgtAvdelingEnhet(state),
+const mapStateToProps = () => ({
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({

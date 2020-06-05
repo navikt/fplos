@@ -9,7 +9,6 @@ import { Form } from 'react-final-form';
 import { Hovedknapp, Knapp } from 'nav-frontend-knapper';
 import { Normaltekst, Element } from 'nav-frontend-typografi';
 
-import { getValgtAvdelingEnhet } from 'app/duck';
 import { required } from 'utils/validation/validators';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import { InputField } from 'form/FinalFields';
@@ -183,7 +182,6 @@ const mapStateToProps = (state) => ({
   saksbehandler: getSaksbehandler(state),
   erLagtTilAllerede: erSaksbehandlerLagtTilAllerede(state),
   erSokFerdig: getSaksbehandlerSokFinished(state),
-  valgtAvdelingEnhet: getValgtAvdelingEnhet(state),
 });
 
 export default connect(mapStateToProps)(injectIntl(LeggTilSaksbehandlerForm));

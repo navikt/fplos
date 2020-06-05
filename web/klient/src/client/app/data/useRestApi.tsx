@@ -40,7 +40,7 @@ function useRestApi<T>(key: RestApiPathsKeys):RestApiData<T> {
         dispatch({ type: 'success', key, data: dataRes.payload });
         setPartData({
           state: ApiState.SUCCESS,
-          data: dataRes,
+          data: dataRes.payload,
         });
       })
       .catch(() => {

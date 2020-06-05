@@ -11,6 +11,7 @@ interface OwnProps {
   resetSaksbehandlerSok: () => void;
   leggTilSaksbehandler: (brukerIdent: string, avdelingEnhet: string) => Promise<string>;
   fjernSaksbehandler: (brukerIdent: string, avdelingEnhet: string) => Promise<string>;
+  valgtAvdelingEnhet: string;
 }
 
 /**
@@ -22,14 +23,16 @@ const SaksbehandlerePanel: FunctionComponent<OwnProps> = ({
   resetSaksbehandlerSok,
   leggTilSaksbehandler,
   fjernSaksbehandler,
+  valgtAvdelingEnhet,
 }) => (
   <>
-    <SaksbehandlereTabell saksbehandlere={saksbehandlere} fjernSaksbehandler={fjernSaksbehandler} />
+    <SaksbehandlereTabell saksbehandlere={saksbehandlere} fjernSaksbehandler={fjernSaksbehandler} valgtAvdelingEnhet={valgtAvdelingEnhet} />
     <VerticalSpacer sixteenPx />
     <LeggTilSaksbehandlerForm
       finnSaksbehandler={finnSaksbehandler}
       leggTilSaksbehandler={leggTilSaksbehandler}
       resetSaksbehandlerSok={resetSaksbehandlerSok}
+      valgtAvdelingEnhet={valgtAvdelingEnhet}
     />
   </>
 );

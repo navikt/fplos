@@ -27,6 +27,7 @@ interface OwnProps {
   hentAvdelingensSakslister: (avdelingEnhet: string) => Saksliste[];
   hentAntallOppgaverForSaksliste: (sakslisteId: number, avdelingEnhet: string) => Promise<string>;
   hentAntallOppgaverForAvdeling: (avdelingEnhet: string) => Promise<string>;
+  valgtAvdelingEnhet: string;
 }
 
 /**
@@ -47,6 +48,7 @@ const EndreSakslisterPanel: FunctionComponent<OwnProps & WrappedComponentProps> 
   hentAntallOppgaverForSaksliste,
   hentAntallOppgaverForAvdeling,
   intl,
+  valgtAvdelingEnhet,
 }) => {
   const valgtSaksliste = sakslister.find((s) => s.sakslisteId === valgtSakslisteId);
   return (
@@ -59,6 +61,7 @@ const EndreSakslisterPanel: FunctionComponent<OwnProps & WrappedComponentProps> 
         fjernSaksliste={fjernSaksliste}
         hentAvdelingensSakslister={hentAvdelingensSakslister}
         hentAntallOppgaverForAvdeling={hentAntallOppgaverForAvdeling}
+        valgtAvdelingEnhet={valgtAvdelingEnhet}
       />
       <VerticalSpacer sixteenPx />
       {valgtSakslisteId && valgtSaksliste && (
@@ -70,6 +73,7 @@ const EndreSakslisterPanel: FunctionComponent<OwnProps & WrappedComponentProps> 
             lagreSakslisteFagsakYtelseType={lagreSakslisteFagsakYtelseType}
             lagreSakslisteAndreKriterier={lagreSakslisteAndreKriterier}
             hentAntallOppgaverForSaksliste={hentAntallOppgaverForSaksliste}
+            valgtAvdelingEnhet={valgtAvdelingEnhet}
           />
           <Row>
             <Column xs="5" />
@@ -86,6 +90,7 @@ const EndreSakslisterPanel: FunctionComponent<OwnProps & WrappedComponentProps> 
           <SaksbehandlereForSakslisteForm
             valgtSaksliste={valgtSaksliste}
             knyttSaksbehandlerTilSaksliste={knyttSaksbehandlerTilSaksliste}
+            valgtAvdelingEnhet={valgtAvdelingEnhet}
           />
         </>
       )}

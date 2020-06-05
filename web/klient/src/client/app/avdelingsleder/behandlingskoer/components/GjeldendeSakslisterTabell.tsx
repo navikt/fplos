@@ -9,7 +9,6 @@ import {
 } from 'nav-frontend-typografi';
 import { Column, Row } from 'nav-frontend-grid';
 
-import { getValgtAvdelingEnhet } from 'app/duck';
 import Kodeverk from 'kodeverk/kodeverkTsType';
 import kodeverkTyper from 'kodeverk/kodeverkTyper';
 import Image from 'sharedComponents/Image';
@@ -215,7 +214,6 @@ export const GjeldendeSakslisterTabell: FunctionComponent<OwnProps> = ({
 };
 
 const mapStateToProps = (state) => ({
-  valgtAvdelingEnhet: getValgtAvdelingEnhet(state),
   oppgaverForAvdeling: getAntallOppgaverForAvdelingResultat(state),
 });
 

@@ -4,7 +4,7 @@ import { bindActionCreators, Dispatch } from 'redux';
 
 import OppgaveErReservertAvAnnenModal from 'saksbehandler/components/OppgaveErReservertAvAnnenModal';
 import Fagsak from 'saksbehandler/fagsakSearch/fagsakTsType';
-import { hentFpsakInternBehandlingId as hentFpsakInternBehandlingIdActionCreator } from 'app/duck';
+import hentFpsakInternBehandlingIdActionCreator from 'app/duck';
 import { getFpsakHref, getFptilbakeHref } from 'app/paths';
 import {
   reserverOppgave as reserverOppgaveActionCreator, hentReservasjonsstatus as hentReservasjonActionCreator,

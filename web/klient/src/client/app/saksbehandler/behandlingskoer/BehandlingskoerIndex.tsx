@@ -5,9 +5,7 @@ import { bindActionCreators, Dispatch } from 'redux';
 import fpLosApi from 'data/fpLosApi';
 import { getFpsakHref, getFptilbakeHref } from 'app/paths';
 import Saksliste from 'saksbehandler/behandlingskoer/sakslisteTsType';
-import {
-  hentFpsakInternBehandlingId as hentFpsakInternBehandlingIdActionCreator,
-} from 'app/duck';
+import hentFpsakInternBehandlingIdActionCreator from 'app/duck';
 import OppgaveStatus from 'saksbehandler/oppgaveStatusTsType';
 import Oppgave from 'saksbehandler/oppgaveTsType';
 import OppgaveErReservertAvAnnenModal from 'saksbehandler/components/OppgaveErReservertAvAnnenModal';

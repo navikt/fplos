@@ -5,6 +5,7 @@ export enum RestApiPathsKeys {
   NAV_ANSATT = 'NAV_ANSATT',
   FPSAK_URL = 'FPSAK_URL',
   FPTILBAKE_URL = 'FPTILBAKE_URL',
+  AVDELINGER = 'AVDELINGER',
 }
 
 export const endpoints = new RestApiConfigBuilder()
@@ -12,4 +13,5 @@ export const endpoints = new RestApiConfigBuilder()
   .withGet('/api/konfig/fpsak-url', RestApiPathsKeys.FPSAK_URL)
   .withGet('/api/konfig/fptilbake-url', RestApiPathsKeys.FPTILBAKE_URL)
   .withGet('/api/kodeverk', RestApiPathsKeys.KODEVERK)
+  .withGet('/api/avdelingsleder/avdelinger', RestApiPathsKeys.AVDELINGER)
   .build();

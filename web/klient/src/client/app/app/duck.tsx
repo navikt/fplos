@@ -1,8 +1,7 @@
-import { createSelector } from 'reselect';
-
 import fpLosApi from 'data/fpLosApi';
 import { Dispatch } from 'redux';
 
+<<<<<<< HEAD
 /* Action types */
 const SET_AVDELING_ENHET = 'SET_AVDELING_ENHET';
 const RESET_AVDELING_ENHET = 'RESET_AVDELING_ENHET';
@@ -67,7 +66,12 @@ export const getFpsakUrl = createSelector([fpLosApi.FPSAK_URL.getRestApiData()],
 export const getFptilbakeUrl = createSelector([fpLosApi.FPTILBAKE_URL.getRestApiData()],
   (fptilbakeUrl: {verdi: undefined } = { verdi: undefined }) => fptilbakeUrl.verdi);
 export const hentFpsakInternBehandlingId = (uuid: string) => (dispatch: Dispatch<any>) => dispatch(
+=======
+const hentFpsakInternBehandlingId = (uuid: string) => (dispatch: Dispatch<any>) => dispatch(
+>>>>>>> FIX div
   fpLosApi.FPSAK_BEHANDLING_ID.makeRestApiRequest()(
     { uuid },
   ),
 );
+
+export default hentFpsakInternBehandlingId;

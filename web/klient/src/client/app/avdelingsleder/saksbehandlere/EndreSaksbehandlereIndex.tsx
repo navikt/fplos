@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
 
-import { getValgtAvdelingEnhet } from 'app/duck';
 import Saksbehandler from './saksbehandlerTsType';
 import SaksbehandlerePanel from './components/SaksbehandlerePanel';
 import {
@@ -38,7 +37,7 @@ export class EndreSaksbehandlereIndex extends Component<OwnProps & DispatchProps
     render = () => {
       const {
         avdelingensSaksbehandlere, findSaksbehandler: finnSaksbehandler, addSaksbehandler: leggTilSaksbehandler, resetSaksbehandlerSok: reset,
-        removeSaksbehandler: fjernSaksbehandler,
+        removeSaksbehandler: fjernSaksbehandler, valgtAvdelingEnhet,
       } = this.props;
       return (
         <SaksbehandlerePanel
@@ -47,6 +46,7 @@ export class EndreSaksbehandlereIndex extends Component<OwnProps & DispatchProps
           resetSaksbehandlerSok={reset}
           leggTilSaksbehandler={leggTilSaksbehandler}
           fjernSaksbehandler={fjernSaksbehandler}
+          valgtAvdelingEnhet={valgtAvdelingEnhet}
         />
       );
     }
@@ -54,7 +54,6 @@ export class EndreSaksbehandlereIndex extends Component<OwnProps & DispatchProps
 
 const mapStateToProps = (state) => ({
   avdelingensSaksbehandlere: getAvdelingensSaksbehandlere(state),
-  valgtAvdelingEnhet: getValgtAvdelingEnhet(state),
 });
 
 const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => ({

@@ -38,6 +38,7 @@ describe('<EndreSakslisterPanel>', () => {
       hentAntallOppgaverForSaksliste={sinon.spy()}
       hentAntallOppgaverForAvdeling={sinon.spy()}
       hentAvdelingensSakslister={sinon.spy()}
+      valgtAvdelingEnhet="test"
     />);
 
     expect(wrapper.find(GjeldendeSakslisterTabell)).to.have.length(1);
@@ -70,6 +71,7 @@ describe('<EndreSakslisterPanel>', () => {
       hentAntallOppgaverForSaksliste={sinon.spy()}
       hentAntallOppgaverForAvdeling={sinon.spy()}
       hentAvdelingensSakslister={sinon.spy()}
+      valgtAvdelingEnhet="test"
     />);
 
     expect(wrapper.find(GjeldendeSakslisterTabell)).to.have.length(1);

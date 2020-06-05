@@ -9,7 +9,7 @@ import { Undertittel, Normaltekst } from 'nav-frontend-typografi';
 import { RestApiPathsKeys } from 'data/restApiPaths';
 import { getFpsakHref, getFptilbakeHref } from 'app/paths';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
-import { hentFpsakInternBehandlingId as hentFpsakInternBehandlingIdActionCreator } from 'app/duck';
+import hentFpsakInternBehandlingIdActionCreator from 'app/duck';
 import useRestApiData from 'data/useRestApiData';
 import { getBehandledeOppgaver } from 'saksbehandler/saksstotte/duck';
 import Oppgave from '../../oppgaveTsType';

@@ -1,7 +1,6 @@
-import React, { FunctionComponent } from 'react';
+import React, { FunctionComponent, useMemo } from 'react';
 import { connect } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
-import { createSelector } from 'reselect';
 import classnames from 'classnames/bind';
 import { NavLink } from 'react-router-dom';
 import Panel from 'nav-frontend-paneler';
@@ -10,15 +9,13 @@ import { Undertittel } from 'nav-frontend-typografi';
 
 import { RestApiPathsKeys } from 'data/restApiPaths';
 import LoadingPanel from 'sharedComponents/LoadingPanel';
-import {
-  getValgtAvdelingEnhet, getAvdelingeneTilAvdelingslederResultat,
-} from 'app/duck';
 import { parseQueryString } from 'utils/urlUtils';
 import { getAvdelingslederPanelLocationCreator } from 'app/paths';
 import trackRouteParam from 'app/data/trackRouteParam';
 import Location from 'app/locationTsType';
 import useRestApiData from 'data/useRestApiData';
 import NavAnsatt from 'app/navAnsattTsType';
+import Avdeling from 'app/avdelingTsType';
 import { getSelectedAvdelingslederPanel, setSelectedAvdelingslederPanel } from './duck';
 import AvdelingslederDashboard from './components/AvdelingslederDashboard';
 import IkkeTilgangTilAvdelingslederPanel from './components/IkkeTilgangTilAvdelingslederPanel';
@@ -33,16 +30,16 @@ import ReservasjonerIndex from './reservasjoner/ReservasjonerIndex';
 
 const classNames = classnames.bind(styles);
 
-const renderAvdelingslederPanel = (avdelingslederPanel) => {
+const renderAvdelingslederPanel = (avdelingslederPanel, valgtAvdelingEnhet) => {
   switch (avdelingslederPanel) {
     case AvdelingslederPanels.BEHANDLINGSKOER:
-      return <EndreBehandlingskoerIndex />;
+      return <EndreBehandlingskoerIndex valgtAvdelingEnhet={valgtAvdelingEnhet} />;
     case AvdelingslederPanels.SAKSBEHANDLERE:
-      return <EndreSaksbehandlereIndex />;
+      return <EndreSaksbehandlereIndex valgtAvdelingEnhet={valgtAvdelingEnhet} />;
     case AvdelingslederPanels.NOKKELTALL:
-      return <NokkeltallIndex />;
+      return <NokkeltallIndex valgtAvdelingEnhet={valgtAvdelingEnhet} />;
     case AvdelingslederPanels.RESERVASJONER:
-      return <ReservasjonerIndex />;
+      return <ReservasjonerIndex valgtAvdelingEnhet={valgtAvdelingEnhet} />;
     default:
       return null;
   }
@@ -59,7 +56,6 @@ interface OwnProps {
   valgtAvdelingEnhet?: string;
   activeAvdelingslederPanel: string;
   getAvdelingslederPanelLocation: (panel: string) => Location;
-  erKode6Avdeling?: boolean;
 }
 
 const getTab = (avdelingslederPanel, activeAvdelingslederPanel, getAvdelingslederPanelLocation) => ({
@@ -83,9 +79,15 @@ export const AvdelingslederIndex: FunctionComponent<OwnProps> = ({
   valgtAvdelingEnhet,
   activeAvdelingslederPanel,
   getAvdelingslederPanelLocation,
-  erKode6Avdeling,
 }) => {
   const { kanOppgavestyre, kanBehandleKode6 } = useRestApiData<NavAnsatt>(RestApiPathsKeys.NAV_ANSATT);
+  const avdelinger = useRestApiData<Avdeling[]>(RestApiPathsKeys.AVDELINGER);
+
+  const erKode6Avdeling = useMemo(() => {
+    const avdeling = avdelinger instanceof Array && avdelinger.find((a) => a.avdelingEnhet === valgtAvdelingEnhet);
+    return avdeling ? avdeling.kreverKode6 : false;
+  }, [avdelinger, valgtAvdelingEnhet]);
+
   if (!kanOppgavestyre) {
     return <IkkeTilgangTilAvdelingslederPanel />;
   } if (erKode6Avdeling && !kanBehandleKode6) {
@@ -102,7 +104,7 @@ export const AvdelingslederIndex: FunctionComponent<OwnProps> = ({
           ]}
           />
           <Panel className={styles.panelPadding}>
-            {renderAvdelingslederPanel(activeAvdelingslederPanel)}
+            {renderAvdelingslederPanel(activeAvdelingslederPanel, valgtAvdelingEnhet)}
           </Panel>
         </div>
       </AvdelingslederDashboard>
@@ -111,26 +113,13 @@ export const AvdelingslederIndex: FunctionComponent<OwnProps> = ({
   return <LoadingPanel />;
 };
 
-AvdelingslederIndex.defaultProps = {
-  valgtAvdelingEnhet: undefined,
-  erKode6Avdeling: false,
-};
-
 const getPanelFromUrlOrDefault = (location) => {
   const panelFromUrl = parseQueryString(location.search);
   return panelFromUrl.avdelingsleder ? panelFromUrl.avdelingsleder : AvdelingslederPanels.BEHANDLINGSKOER;
 };
 
-export const erKode6Avdeling = createSelector([getValgtAvdelingEnhet, getAvdelingeneTilAvdelingslederResultat],
-  (valgtAvdelingEnhet, avdelinger = []) => {
-    const avdeling = avdelinger instanceof Array && avdelinger.find((a) => a.avdelingEnhet === valgtAvdelingEnhet);
-    return avdeling ? avdeling.kreverKode6 : false;
-  });
-
 const mapStateToProps = (state) => ({
-  valgtAvdelingEnhet: getValgtAvdelingEnhet(state),
   activeAvdelingslederPanel: getSelectedAvdelingslederPanel(state),
-  erKode6Avdeling: erKode6Avdeling(state),
 });
 
 const mergeProps = (stateProps, dispatchProps, ownProps) => ({

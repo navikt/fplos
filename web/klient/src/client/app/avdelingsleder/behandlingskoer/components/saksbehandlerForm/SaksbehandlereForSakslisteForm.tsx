@@ -9,7 +9,6 @@ import Panel from 'nav-frontend-paneler';
 import { Element } from 'nav-frontend-typografi';
 import { Row, Column } from 'nav-frontend-grid';
 
-import { getValgtAvdelingEnhet } from 'app/duck';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import { CheckboxField } from 'form/FinalFields';
 import { getAvdelingensSaksbehandlere } from 'avdelingsleder/saksbehandlere/duck';
@@ -92,7 +91,6 @@ const sortSaksbehandlere = createSelector([getAvdelingensSaksbehandlere], (saksb
   : saksbehandlere));
 
 const mapStateToProps = (state) => ({
-  valgtAvdelingEnhet: getValgtAvdelingEnhet(state),
   avdelingensSaksbehandlere: sortSaksbehandlere(state),
 });
 

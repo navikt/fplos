@@ -1,9 +1,7 @@
 import React, { Component } from 'react';
 import { FormattedMessage } from 'react-intl';
-import { connect } from 'react-redux';
 import { Normaltekst, Element } from 'nav-frontend-typografi';
 
-import { getValgtAvdelingEnhet } from 'app/duck';
 import Image from 'sharedComponents/Image';
 import removeIcon from 'images/remove.svg';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
@@ -21,10 +19,12 @@ const headerTextCodes = [
   'SaksbehandlereTabell.Avdeling',
 ];
 
+// TODO (TOR) Denne komponenten blir brukt av avdelingsledar sjølv om den ligg under saksbehandler
+
 interface OwnProps {
   saksbehandlere: Saksbehandler[];
   fjernSaksbehandler: (brukerIdent: string, avdelingEnhet: string) => Promise<string>;
-  valgtAvdelingEnhet: string;
+  valgtAvdelingEnhet?: string;
 }
 
 interface StateProps {
@@ -110,8 +110,4 @@ export class SaksbehandlereTabell extends Component<OwnProps, StateProps> {
   }
 }
 
-const mapStateToProps = (state) => ({
-  valgtAvdelingEnhet: getValgtAvdelingEnhet(state),
-});
-
-export default connect(mapStateToProps)(SaksbehandlereTabell);
+export default SaksbehandlereTabell;

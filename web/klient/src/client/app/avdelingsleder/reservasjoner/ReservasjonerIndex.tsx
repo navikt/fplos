@@ -1,5 +1,4 @@
 import React, { Component, ReactNode } from 'react';
-import { getValgtAvdelingEnhet } from 'app/duck';
 import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
 import {
@@ -65,7 +64,6 @@ export class ReservasjonerIndex extends Component<DispatchProps & OwnProps> {
 }
 
 const mapStateToProps = (state) => ({
-  valgtAvdelingEnhet: getValgtAvdelingEnhet(state),
   reservasjoner: getAvdelingensReservasjoner(state) || [],
 });
 

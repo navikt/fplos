@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
 
 import Kodeverk from 'kodeverk/kodeverkTsType';
-import { getValgtAvdelingEnhet } from 'app/duck';
 import { fetchAvdelingensSaksbehandlere } from '../saksbehandlere/duck';
 import {
   fetchAvdelingensSakslister, getAvdelingensSakslister, setValgtSakslisteId, getValgtSakslisteId, lagNySaksliste, getNySakslisteId,
@@ -65,6 +64,7 @@ export class EndreBehandlingskoerIndex extends Component<OwnProps & DispatchProp
       fetchAntallOppgaverForSaksliste: hentAntallOppgaverForSaksliste,
       fetchAntallOppgaverForAvdeling: hentAntallOppgaverForAvdeling,
       lagreSakslisteAndreKriterier: lagreAndreKriterier,
+      valgtAvdelingEnhet,
     } = this.props;
     return (
       <EndreSakslisterPanel
@@ -74,6 +74,7 @@ export class EndreBehandlingskoerIndex extends Component<OwnProps & DispatchProp
         lagNySaksliste={lagNyListe}
         fjernSaksliste={fjernListe}
         lagreSakslisteNavn={lagreListeNavn}
+        valgtAvdelingEnhet={valgtAvdelingEnhet}
         lagreSakslisteBehandlingstype={lagreListeBehandlingstype}
         lagreSakslisteFagsakYtelseType={lagreListeFagsakYtelseType}
         lagreSakslisteAndreKriterier={lagreAndreKriterier}
@@ -93,7 +94,6 @@ const mapStateToProps = (state) => {
   return {
     sakslister: getAvdelingensSakslister(state),
     valgtSakslisteId: id !== undefined ? id : nyId,
-    valgtAvdelingEnhet: getValgtAvdelingEnhet(state),
   };
 };
 

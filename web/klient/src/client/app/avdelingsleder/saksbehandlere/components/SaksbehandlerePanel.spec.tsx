@@ -15,6 +15,7 @@ describe('<SaksbehandlerePanel>', () => {
       resetSaksbehandlerSok={sinon.spy()}
       leggTilSaksbehandler={sinon.spy()}
       fjernSaksbehandler={sinon.spy()}
+      valgtAvdelingEnhet="test"
     />);
 
     expect(wrapper.find(LeggTilSaksbehandlerForm)).to.have.length(1);

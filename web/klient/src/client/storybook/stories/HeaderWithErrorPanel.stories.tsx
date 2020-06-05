@@ -28,8 +28,7 @@ export const skalViseHeaderUtenAvdelingsvelger = () => (
     <HeaderWithErrorPanel
       removeErrorMessage={action('button-click')}
       queryStrings={{}}
-      avdelinger={[]}
-      setValgtAvdeling={action('button-click')}
+      setValgtAvdelingEnhet={action('button-click')}
       setSiteHeight={action('button-click')}
     />
   </div>
@@ -37,24 +36,31 @@ export const skalViseHeaderUtenAvdelingsvelger = () => (
 
 export const skalViseHeaderMedAvdelingsvelger = () => {
   const [valgtAvdelingEnhet, setValgtAvdeling] = useState<string>();
+  const newInitialState = {
+    [RestApiPathsKeys.NAV_ANSATT]: {
+      navn: 'Espen Utvikler',
+    },
+    [RestApiPathsKeys.AVDELINGER]: [{
+      avdelingEnhet: 'VIK',
+      navn: 'NAV Viken',
+      kreverKode6: false,
+    }, {
+      avdelingEnhet: 'OSL',
+      navn: 'NAV Oslo',
+      kreverKode6: false,
+    }],
+  };
   return (
     <div style={{ marginLeft: '-40px' }}>
-      <HeaderWithErrorPanel
-        removeErrorMessage={action('button-click')}
-        queryStrings={{}}
-        avdelinger={[{
-          avdelingEnhet: 'VIK',
-          navn: 'NAV Viken',
-          kreverKode6: false,
-        }, {
-          avdelingEnhet: 'OSL',
-          navn: 'NAV Oslo',
-          kreverKode6: false,
-        }]}
-        valgtAvdelingEnhet={valgtAvdelingEnhet}
-        setValgtAvdeling={setValgtAvdeling}
-        setSiteHeight={action('button-click')}
-      />
+      <RestDataProvider initialState={newInitialState as {[key in RestApiPathsKeys]: any}}>
+        <HeaderWithErrorPanel
+          removeErrorMessage={action('button-click')}
+          queryStrings={{}}
+          valgtAvdelingEnhet={valgtAvdelingEnhet}
+          setValgtAvdelingEnhet={setValgtAvdeling}
+          setSiteHeight={action('button-click')}
+        />
+      </RestDataProvider>
     </div>
   );
 };
@@ -70,8 +76,7 @@ export const skalViseHeaderMedKunEnFeilmelding = () => {
       <HeaderWithErrorPanel
         removeErrorMessage={() => setErrorMessages([])}
         queryStrings={{}}
-        avdelinger={[]}
-        setValgtAvdeling={action('button-click')}
+        setValgtAvdelingEnhet={action('button-click')}
         errorMessages={errorMessages}
         setSiteHeight={action('button-click')}
       />
@@ -102,7 +107,7 @@ export const skalViseHeaderMedMerEnnFemFeilmeldinger = () => {
     type: EventType.REQUEST_ERROR,
     text: 'Rest-kallet feilet 5',
   }]);
-  const [queryStrings, setQueryStrings] = useState<{}>({
+  const [queryStrings, setQueryStrings] = useState<{errormessage: string}>({
     errormessage: 'Dette er ein feil',
   });
 
@@ -111,8 +116,7 @@ export const skalViseHeaderMedMerEnnFemFeilmeldinger = () => {
       <HeaderWithErrorPanel
         removeErrorMessage={() => { setErrorMessages([]); setQueryStrings({}); }}
         queryStrings={queryStrings}
-        avdelinger={[]}
-        setValgtAvdeling={action('button-click')}
+        setValgtAvdelingEnhet={action('button-click')}
         errorMessages={errorMessages}
         setSiteHeight={action('button-click')}
       />

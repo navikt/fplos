@@ -4,18 +4,11 @@ import { bindActionCreators, Dispatch } from 'redux';
 import { withRouter } from 'react-router-dom';
 import moment from 'moment';
 
-import Avdeling from 'app/avdelingTsType';
 import { parseQueryString } from 'utils/urlUtils';
 import EventType from 'data/rest-api/src/requestApi/eventType';
 import errorHandler from 'data/error-api-redux';
 import { RestApiPathsKeys } from 'data/restApiPaths';
 import AppConfigResolver from './AppConfigResolver';
-import { AVDELINGSLEDER_PATH } from './paths';
-import {
-  setAvdelingEnhet, getValgtAvdelingEnhet,
-  fetchAvdelingeneTilAvdelingsleder, getAvdelingeneTilAvdelingslederResultat,
-  resetAvdelingeneTilAvdelingslederData, resetAvdelingEnhet,
-} from './duck';
 import Location from './locationTsType';
 import LanguageProvider from './LanguageProvider';
 import HeaderWithErrorPanel from './components/HeaderWithErrorPanel';
@@ -36,14 +29,7 @@ interface OwnProps {
   removeErrorMessage: () => void;
   crashMessage: string;
   showCrashMessage: (message: string) => void;
-  navAnsattName: string;
   location: Location;
-  fetchAvdelingeneTilAvdelingsleder: () => void;
-  resetAvdelingeneTilAvdelingslederData: () => void;
-  setAvdelingEnhet: (avdelingEnhet: string) => void;
-  resetAvdelingEnhet: () => void;
-  avdelinger?: Avdeling[];
-  valgtAvdelingEnhet?: string;
 }
 
 /**
@@ -57,9 +43,6 @@ interface OwnProps {
 export class AppIndex extends Component<OwnProps> {
   static defaultProps = {
     crashMessage: '',
-    navAnsattName: '',
-    avdelinger: [],
-    valgtAvdelingEnhet: undefined,
     kanOppgavestyre: false,
     errorMessages: [],
   };
@@ -68,34 +51,8 @@ export class AppIndex extends Component<OwnProps> {
 
   state = {
     headerHeight: 0,
+    valgtAvdelingEnhet: undefined,
   };
-
-  fetchAvdelinger = (): void => {
-    const {
-      location,
-      avdelinger,
-      fetchAvdelingeneTilAvdelingsleder: fetchAvdelinger,
-      resetAvdelingEnhet: resetAvdeling,
-      resetAvdelingeneTilAvdelingslederData: resetAvdelingene,
-    } = this.props;
-
-    const { state } = this.context;
-    const navAnsatt = state[RestApiPathsKeys.NAV_ANSATT];
-
-    const kanOppgavestyre = navAnsatt ? navAnsatt.kanOppgavestyre : undefined;
-
-    const harAvdelinger = avdelinger && avdelinger.length > 0;
-    if (kanOppgavestyre && !harAvdelinger && location.pathname && location.pathname.includes(AVDELINGSLEDER_PATH)) {
-      fetchAvdelinger();
-    } else if (harAvdelinger && location.pathname && !location.pathname.includes(AVDELINGSLEDER_PATH)) {
-      resetAvdeling();
-      resetAvdelingene();
-    }
-  }
-
-  componentDidMount = (): void => {
-    this.fetchAvdelinger();
-  }
 
   componentDidUpdate = (): void => {
     const { state } = this.context;
@@ -111,8 +68,6 @@ export class AppIndex extends Component<OwnProps> {
         moment.now = () => Date.now() - diff;
       }
     }
-
-    this.fetchAvdelinger();
   }
 
   componentDidCatch = (error: Error, info: { componentStack: string }): void => {
@@ -126,6 +81,10 @@ export class AppIndex extends Component<OwnProps> {
     ].join(' '));
   }
 
+  setValgtAvdelingEnhet = (valgtAvdelingEnhet: string) => {
+    this.setState((state) => ({ ...state, valgtAvdelingEnhet }));
+  }
+
   setSiteHeight = (headerHeight: number): void => {
     document.documentElement.setAttribute('style', `height: calc(100% - ${headerHeight}px)`);
     this.setState((state) => ({ ...state, headerHeight }));
@@ -133,10 +92,12 @@ export class AppIndex extends Component<OwnProps> {
 
   render = (): ReactNode => {
     const {
-      location, crashMessage, errorMessages,
-      removeErrorMessage: removeErrorMsg, avdelinger, setAvdelingEnhet: setAvdeling, valgtAvdelingEnhet,
+      location,
+      crashMessage,
+      errorMessages,
+      removeErrorMessage: removeErrorMsg,
     } = this.props;
-    const { headerHeight } = this.state;
+    const { headerHeight, valgtAvdelingEnhet } = this.state;
     const queryStrings = parseQueryString(location.search);
 
     return (
@@ -145,14 +106,14 @@ export class AppIndex extends Component<OwnProps> {
           <HeaderWithErrorPanel
             queryStrings={queryStrings}
             removeErrorMessage={removeErrorMsg}
-            avdelinger={avdelinger}
-            setValgtAvdeling={setAvdeling}
-            valgtAvdelingEnhet={valgtAvdelingEnhet}
             errorMessages={errorMessages}
             setSiteHeight={this.setSiteHeight}
+            locationPathname={location.pathname}
+            setValgtAvdelingEnhet={this.setValgtAvdelingEnhet}
+            valgtAvdelingEnhet={valgtAvdelingEnhet}
           />
           {!crashMessage && (
-            <Home headerHeight={headerHeight} />
+            <Home headerHeight={headerHeight} valgtAvdelingEnhet={valgtAvdelingEnhet} />
           )}
         </LanguageProvider>
       </AppConfigResolver>
@@ -163,17 +124,11 @@ export class AppIndex extends Component<OwnProps> {
 const mapStateToProps = (state: any) => ({
   errorMessages: errorHandler.getAllErrorMessages(state),
   crashMessage: errorHandler.getCrashMessage(state),
-  avdelinger: getAvdelingeneTilAvdelingslederResultat(state),
-  valgtAvdelingEnhet: getValgtAvdelingEnhet(state),
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => bindActionCreators({
   showCrashMessage: errorHandler.showCrashMessage,
   removeErrorMessage: errorHandler.removeErrorMessage,
-  fetchAvdelingeneTilAvdelingsleder,
-  setAvdelingEnhet,
-  resetAvdelingEnhet,
-  resetAvdelingeneTilAvdelingslederData,
 }, dispatch);
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(AppIndex));

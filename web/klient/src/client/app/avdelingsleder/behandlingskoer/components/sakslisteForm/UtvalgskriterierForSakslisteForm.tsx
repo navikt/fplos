@@ -8,7 +8,6 @@ import {
 import Panel from 'nav-frontend-paneler';
 import { Undertittel, Element, Normaltekst } from 'nav-frontend-typografi';
 
-import { getValgtAvdelingEnhet } from 'app/duck';
 import { Row, Column } from 'nav-frontend-grid';
 import {
   required, minLength, maxLength, hasValidName,
@@ -223,7 +222,6 @@ export class UtvalgskriterierForSakslisteForm extends Component<OwnProps & Dispa
 }
 
 const mapStateToProps = (state) => ({
-  valgtAvdelingEnhet: getValgtAvdelingEnhet(state),
   antallOppgaver: getAntallOppgaverForSakslisteResultat(state),
 });
 
