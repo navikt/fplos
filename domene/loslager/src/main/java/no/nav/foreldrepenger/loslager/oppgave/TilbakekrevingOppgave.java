@@ -1,14 +1,13 @@
 package no.nav.foreldrepenger.loslager.oppgave;
 
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import no.nav.foreldrepenger.loslager.BehandlingId;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
-
-import no.nav.foreldrepenger.loslager.BehandlingId;
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 @Entity(name = "TilbakekrevingOppgave")
 @PrimaryKeyJoinColumn(name = "OPPGAVE_ID")
@@ -129,5 +128,30 @@ public class TilbakekrevingOppgave extends Oppgave{
         public TilbakekrevingOppgave build() {
             return this.tempOppgave;
         }
+    }
+
+    @Override
+    public String toString() {
+        return "TilbakekrevingOppgave{" +
+                "belop=" + belop +
+                ", feilutbetalingstart=" + feilutbetalingstart +
+                ", id=" + id +
+                ", fagsakSaksnummer=" + fagsakSaksnummer +
+                ", aktorId=" + aktorId +
+                ", behandlendeEnhet='" + behandlendeEnhet + '\'' +
+                ", behandlingsfrist=" + behandlingsfrist +
+                ", behandlingOpprettet=" + behandlingOpprettet +
+                ", forsteStonadsdag=" + forsteStonadsdag +
+                ", behandlingStatus=" + behandlingStatus +
+                ", behandlingType=" + behandlingType +
+                ", fagsakYtelseType=" + fagsakYtelseType +
+                ", aktiv=" + aktiv +
+                ", system='" + system + '\'' +
+                ", oppgaveAvsluttet=" + oppgaveAvsluttet +
+                ", utfortFraAdmin=" + utfortFraAdmin +
+                ", behandlingId=" + behandlingId +
+                ", href='" + href + '\'' +
+                ", reservasjon=" + reservasjon +
+                '}';
     }
 }
