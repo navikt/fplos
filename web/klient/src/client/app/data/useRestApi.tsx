@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext } from 'react';
-import { createRequestApi } from 'data/rest-api';
+import { createRequestApi } from 'data/rest-api-new';
 import { endpoints, RestApiPathsKeys } from 'data/restApiPaths';
 
 import { RestDataContext } from './RestDataContext';
