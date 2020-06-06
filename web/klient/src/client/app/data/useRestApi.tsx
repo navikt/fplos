@@ -16,7 +16,7 @@ interface RestApiData<T> {
   data?: T;
 }
 
-function useRestApi<T>(key: RestApiPathsKeys):RestApiData<T> {
+function useRestApi<T>(key: RestApiPathsKeys, params: any = {}, options: any = { keepData: false }):RestApiData<T> {
   const [data, setData] = useState({
     state: ApiState.LOADING,
     error: undefined,
@@ -32,7 +32,12 @@ function useRestApi<T>(key: RestApiPathsKeys):RestApiData<T> {
     setPartData({
       state: ApiState.LOADING,
     });
-    requestApi.getRequestRunner(key).startProcess({})
+
+    if (!options.keepData) {
+      dispatch({ type: 'remove', key });
+    }
+
+    requestApi.getRequestRunner(key).startProcess(params)
       .then((dataRes) => {
         dispatch({ type: 'success', key, data: dataRes.payload });
         setPartData({

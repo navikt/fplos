@@ -28,6 +28,11 @@ const RestDataProvider: FunctionComponent<OwnProps> = ({ children, initialState,
           ...oldState,
           [action.key]: action.data,
         };
+      case 'remove':
+        return Object.keys(oldState).filter((key) => key !== action.key).reduce((acc, key) => ({
+          ...acc,
+          [key]: oldState[key],
+        }), {});
       default:
         throw new Error();
     }

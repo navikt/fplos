@@ -6,14 +6,8 @@ import errorHandler from './error-api-redux';
 export const fpLosApiKeys = {
   SEARCH_FAGSAK: 'SEARCH_FAGSAK',
   BEHANDLEDE_OPPGAVER: 'BEHANDLEDE_OPPGAVER',
-  SAKSLISTE: 'SAKSLISTE',
-  RESERVER_OPPGAVE: 'RESERVER_OPPGAVE',
   HENT_RESERVASJONSSTATUS: 'HENT_RESERVASJONSSTATUS',
-  OPPGAVER_TIL_BEHANDLING: 'OPPGAVER_TIL_BEHANDLING',
-  RESERVERTE_OPPGAVER: 'RESERVERTE_OPPGAVER',
-  OPPHEV_OPPGAVERESERVASJON: 'OPPHEV_OPPGAVERESERVASJON',
   FORLENG_OPPGAVERESERVASJON: 'FORLENG_OPPGAVERESERVASJON',
-  ENDRE_OPPGAVERESERVASJON: 'ENDRE_OPPGAVERESERVASJON',
   SAKSLISTER_FOR_AVDELING: 'SAKSLISTER_FOR_AVDELING',
   OPPRETT_NY_SAKSLISTE: 'OPPRETT_NY_SAKSLISTE',
   SLETT_SAKSLISTE: 'SLETT_SAKSLISTE',
@@ -39,34 +33,25 @@ export const fpLosApiKeys = {
   OPPGAVE_ANTALL: 'OPPGAVE_ANTALL',
   OPPGAVE_AVDELING_ANTALL: 'OPPGAVE_AVDELING_ANTALL',
   OPPGAVER_FOR_FAGSAKER: 'OPPGAVER_FOR_FAGSAKER',
-  FLYTT_RESERVASJON_SAKSBEHANDLER_SOK: 'FLYTT_RESERVASJON_SAKSBEHANDLER_SOK',
-  FLYTT_RESERVASJON: 'FLYTT_RESERVASJON',
   SAKSLISTE_SAKSBEHANDLERE: 'SAKSLISTE_SAKSBEHANDLERE',
   BEHANDLINGSKO_OPPGAVE_ANTALL: 'BEHANDLINGSKO_OPPGAVE_ANTALL',
   HENT_NYE_OG_FERDIGSTILTE_OPPGAVER: 'HENT_NYE_OG_FERDIGSTILTE_OPPGAVER',
   FPSAK_BEHANDLING_ID: 'FPSAK_BEHANDLING_ID',
+  FLYTT_RESERVASJON_SAKSBEHANDLER_SOK: 'FLYTT_RESERVASJON_SAKSBEHANDLER_SOK',
 };
 
 const endpoints = new RestApiConfigBuilder()
+  .withPost('/api/saksbehandler/oppgaver/flytt/sok', fpLosApiKeys.FLYTT_RESERVASJON_SAKSBEHANDLER_SOK)
   /* /api/fagsak */
   .withPost('/api/fagsak/sok', fpLosApiKeys.SEARCH_FAGSAK)
 
   /* /api/saksbehandler/saksliste */
-  .withGet('/api/saksbehandler/saksliste', fpLosApiKeys.SAKSLISTE)
   .withGet('/api/saksbehandler/saksliste/saksbehandlere', fpLosApiKeys.SAKSLISTE_SAKSBEHANDLERE)
 
   /* /api/saksbehandler/oppgave */
-  .withAsyncGet('/api/saksbehandler/oppgaver', fpLosApiKeys.OPPGAVER_TIL_BEHANDLING, { maxPollingLimit: 1800 })
-  .withGet('/api/saksbehandler/oppgaver/reserverte', fpLosApiKeys.RESERVERTE_OPPGAVER)
-  .withPost('/api/saksbehandler/oppgaver/reserver', fpLosApiKeys.RESERVER_OPPGAVE)
   .withGet('/api/saksbehandler/oppgaver/reservasjon-status', fpLosApiKeys.HENT_RESERVASJONSSTATUS)
-  .withPost('/api/saksbehandler/oppgaver/opphev', fpLosApiKeys.OPPHEV_OPPGAVERESERVASJON)
-  .withPost('/api/saksbehandler/oppgaver/forleng', fpLosApiKeys.FORLENG_OPPGAVERESERVASJON)
-  .withPost('/api/saksbehandler/oppgaver/reservasjon/endre', fpLosApiKeys.ENDRE_OPPGAVERESERVASJON)
 
   .withGet('/api/saksbehandler/oppgaver/behandlede', fpLosApiKeys.BEHANDLEDE_OPPGAVER)
-  .withPost('/api/saksbehandler/oppgaver/flytt/sok', fpLosApiKeys.FLYTT_RESERVASJON_SAKSBEHANDLER_SOK)
-  .withPost('/api/saksbehandler/oppgaver/flytt', fpLosApiKeys.FLYTT_RESERVASJON)
   .withGet('/api/saksbehandler/oppgaver/antall', fpLosApiKeys.BEHANDLINGSKO_OPPGAVE_ANTALL)
   .withGet('/api/saksbehandler/oppgaver/oppgaver-for-fagsaker', fpLosApiKeys.OPPGAVER_FOR_FAGSAKER)
 

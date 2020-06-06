@@ -1,18 +1,18 @@
-import React, { Component } from 'react';
+import React, { FunctionComponent, useState, useCallback } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
 
-import fpLosApi from 'data/fpLosApi';
+import { RestApiPathsKeys } from 'data/restApiPaths';
+import useRestApiRunner from 'data/useRestApiRunner';
 import { getFpsakHref, getFptilbakeHref } from 'app/paths';
 import Saksliste from 'saksbehandler/behandlingskoer/sakslisteTsType';
 import hentFpsakInternBehandlingIdActionCreator from 'app/duck';
 import OppgaveStatus from 'saksbehandler/oppgaveStatusTsType';
 import Oppgave from 'saksbehandler/oppgaveTsType';
 import OppgaveErReservertAvAnnenModal from 'saksbehandler/components/OppgaveErReservertAvAnnenModal';
+import useRestApi from 'data/useRestApi';
 import {
-  fetchAlleSakslister, getSakslisteResult, fetchOppgaverTilBehandling, fetchReserverteOppgaver, reserverOppgave, opphevOppgaveReservasjon,
-  forlengOppgaveReservasjon, endreOppgaveReservasjon, fetchOppgaverTilBehandlingOppgaver, flyttReservasjon, setValgtSakslisteId,
-  harOppgaverTilBehandlingTimeout,
+  setValgtSakslisteId,
 } from './duck';
 import SakslistePanel from './components/SakslistePanel';
 import BehandlingPollingTimoutModal from './components/BehandlingPollingTimoutModal';
@@ -21,213 +21,166 @@ interface OwnProps {
   sakslister: Saksliste[];
   fpsakUrl: string;
   fptilbakeUrl: string;
-  goToUrl: (url: string) => void;
-  harTimeout: boolean;
 }
 
 interface DispatchProps {
-  fetchAlleSakslister: () => void;
-  fetchOppgaverTilBehandling: (sakslisteId: number) => Promise<{payload: any }>;
-  fetchOppgaverTilBehandlingOppgaver: (sakslisteId: number, oppgaveIder?: string) => Promise<{payload: any }>;
-  fetchReserverteOppgaver: (sakslisteId: number) => Promise<{payload: any }>;
-  reserverOppgave: (oppgaveId: number) => Promise<{payload: OppgaveStatus }>;
-  opphevOppgaveReservasjon: (oppgaveId: number, begrunnelse: string) => Promise<string>;
-  forlengOppgaveReservasjon: (oppgaveId: number) => Promise<string>;
-  endreOppgaveReservasjon: (oppgaveId: number, reserverTil: string) => Promise<string>;
-  flyttReservasjon: (oppgaveId: number, brukerident: string, begrunnelse: string) => Promise<string>;
   setValgtSakslisteId: (sakslisteId: number) => void;
   hentFpsakInternBehandlingId: (uuid: string) => Promise<{payload: number }>;
 }
 
-interface StateProps {
-  sakslisteId?: number;
-  reservertAvAnnenSaksbehandler: boolean;
-  reservertOppgave?: Oppgave;
-  reservertOppgaveStatus?: OppgaveStatus;
-}
 /**
  * BehandlingskoerIndex
  */
-export class BehandlingskoerIndex extends Component<OwnProps & DispatchProps, StateProps> {
-  state = {
-    sakslisteId: undefined, reservertAvAnnenSaksbehandler: false, reservertOppgave: undefined, reservertOppgaveStatus: undefined,
-  };
+const BehandlingskoerIndex: FunctionComponent<OwnProps & DispatchProps> = ({
+  fpsakUrl,
+  fptilbakeUrl,
+  hentFpsakInternBehandlingId,
+}) => {
+  const [sakslisteId, setSakslisteId] = useState<number>();
+  const [reservertAvAnnenSaksbehandler, setReservertAvAnnenSaksbehandler] = useState<boolean>(false);
+  const [reservertOppgave, setReservertOppgave] = useState<Oppgave>();
+  const [reservertOppgaveStatus, setReservertOppgaveStatus] = useState<OppgaveStatus>();
 
-  static defaultProps = {
-    sakslister: [],
-  }
+  const { data: sakslister = [] } = useRestApi<Saksliste[]>(RestApiPathsKeys.SAKSLISTE);
+  const runRequest = useRestApiRunner();
 
-  componentDidMount = () => {
-    const { fetchAlleSakslister: getSakslister } = this.props;
-    getSakslister();
-  }
+  const goToUrl = useCallback((url) => window.location.assign(url), []);
 
-  componentWillUnmount = () => {
+  // FIXME finn timeout og vis denne fram
+  // const { state: harTimeout } = useRestApiData<Oppgave[]>(RestApiPathsKeys.OPPGAVER_TIL_BEHANDLING);
+  const harTimeout = false;
+
+  // FIXME Avbryt polling
+  /* componentWillUnmount = () => {
     const { sakslisteId: id } = this.state;
     if (id) {
       fpLosApi.OPPGAVER_TIL_BEHANDLING.cancelRestApiRequest();
     }
-  }
+  }; */
 
-  fetchSakslisteOppgaverPolling = (sakslisteId: number, oppgaveIder?: string) => {
-    const { fetchOppgaverTilBehandlingOppgaver: fetchTilBehandling, fetchReserverteOppgaver: fetchReserverte } = this.props;
-    fetchReserverte(sakslisteId);
-    fetchTilBehandling(sakslisteId, oppgaveIder).then((response) => {
-      const { sakslisteId: id } = this.state;
-      return sakslisteId === id ? this.fetchSakslisteOppgaverPolling(sakslisteId, response.payload.map((o) => o.id).join(',')) : Promise.resolve();
-    }).catch(() => undefined);
-  }
+  const fetchReserverteOppgaver = () => runRequest(RestApiPathsKeys.RESERVERTE_OPPGAVER, undefined, { keepData: true });
 
-  fetchSakslisteOppgaver = (sakslisteId: number) => {
-    this.setState((prevState) => ({ ...prevState, sakslisteId }));
-    const { fetchOppgaverTilBehandling: fetchTilBehandling, fetchReserverteOppgaver: fetchReserverte, setValgtSakslisteId: setSakslisteId } = this.props;
-    setSakslisteId(sakslisteId);
-    fetchReserverte(sakslisteId);
-    fetchTilBehandling(sakslisteId).then((response) => {
-      const { sakslisteId: id } = this.state;
-      return sakslisteId === id ? this.fetchSakslisteOppgaverPolling(sakslisteId, response.payload.map((o) => o.id).join(',')) : Promise.resolve();
-    });
-  }
+  const fetchSakslisteOppgaverPolling = (nySakslisteId: number, oppgaveIder?: string) => {
+    fetchReserverteOppgaver();
+    runRequest<Oppgave[]>(RestApiPathsKeys.OPPGAVER_TIL_BEHANDLING,
+      oppgaveIder ? { sakslisteId: nySakslisteId, oppgaveIder } : { sakslisteId: nySakslisteId }, { keepData: true })
+      .then((response) => (nySakslisteId === sakslisteId
+        ? fetchSakslisteOppgaverPolling(nySakslisteId, response.map((o) => o.id).join(',')) : Promise.resolve())).catch(() => undefined);
+  };
 
-  openSak = (oppgave: Oppgave) => {
-    if (oppgave.system === 'FPSAK') this.openFagsak(oppgave);
-    else if (oppgave.system === 'FPTILBAKE') this.openTilbakesak(oppgave);
-    else throw new Error('Fagsystemet for oppgaven er ukjent');
-  }
+  const fetchSakslisteOppgaver = (nySakslisteId: number) => {
+    setSakslisteId(nySakslisteId);
+    fetchReserverteOppgaver();
+    runRequest<Oppgave[]>(RestApiPathsKeys.OPPGAVER_TIL_BEHANDLING, { sakslisteId }, { keepData: false })
+      .then((response) => (nySakslisteId === sakslisteId ? fetchSakslisteOppgaverPolling(nySakslisteId, response.map((o) => o.id)
+        .join(',')) : Promise.resolve()));
+  };
 
-  openFagsak = (oppgave: Oppgave) => {
-    const { fpsakUrl, goToUrl, hentFpsakInternBehandlingId } = this.props;
+  const openFagsak = (oppgave: Oppgave) => {
     hentFpsakInternBehandlingId(oppgave.behandlingId).then((data: {payload: number }) => {
       goToUrl(getFpsakHref(fpsakUrl, oppgave.saksnummer, data.payload));
     });
-  }
+  };
 
-  openTilbakesak = (oppgave: Oppgave) => {
-    const { fptilbakeUrl, goToUrl } = this.props;
+  const openTilbakesak = (oppgave: Oppgave) => {
     goToUrl(getFptilbakeHref(fptilbakeUrl, oppgave.href));
-  }
+  };
 
-  reserverOppgaveOgApne = (oppgave: Oppgave) => {
+  const openSak = (oppgave: Oppgave) => {
+    if (oppgave.system === 'FPSAK') openFagsak(oppgave);
+    else if (oppgave.system === 'FPTILBAKE') openTilbakesak(oppgave);
+    else throw new Error('Fagsystemet for oppgaven er ukjent');
+  };
+
+  const reserverOppgaveOgApne = (oppgave: Oppgave) => {
     if (oppgave.status.erReservert) {
-      this.openSak(oppgave);
+      openSak(oppgave);
     } else {
-      const { reserverOppgave: reserver } = this.props;
-
-      reserver(oppgave.id).then((data: {payload: OppgaveStatus }) => {
-        const nyOppgaveStatus = data.payload;
-        if (nyOppgaveStatus.erReservert && nyOppgaveStatus.erReservertAvInnloggetBruker) {
-          this.openSak(oppgave);
-        } else if (nyOppgaveStatus.erReservert && !nyOppgaveStatus.erReservertAvInnloggetBruker) {
-          this.setState((prevState) => ({
-            ...prevState,
-            reservertAvAnnenSaksbehandler: true,
-            reservertOppgave: oppgave,
-            reservertOppgaveStatus: nyOppgaveStatus,
-          }));
-        }
-      });
+      runRequest<OppgaveStatus>(RestApiPathsKeys.RESERVER_OPPGAVE, { oppgaveId: oppgave.id })
+        .then((nyOppgaveStatus) => {
+          if (nyOppgaveStatus.erReservert && nyOppgaveStatus.erReservertAvInnloggetBruker) {
+            openSak(oppgave);
+          } else if (nyOppgaveStatus.erReservert && !nyOppgaveStatus.erReservertAvInnloggetBruker) {
+            setReservertAvAnnenSaksbehandler(true);
+            setReservertOppgave(oppgave);
+            setReservertOppgaveStatus(nyOppgaveStatus);
+          }
+        });
     }
-  }
+  };
 
-  opphevReservasjon = (oppgaveId: number, begrunnelse: string): Promise<any> => {
-    const { opphevOppgaveReservasjon: opphevReservasjon, fetchReserverteOppgaver: fetchReserverte } = this.props;
-    const { sakslisteId } = this.state;
+  const opphevReservasjonFn = (oppgaveId: number, begrunnelse: string): Promise<any> => {
     if (!sakslisteId) {
       return Promise.resolve();
     }
-    return opphevReservasjon(oppgaveId, begrunnelse)
-      .then(() => fetchReserverte(sakslisteId));
-  }
+    return runRequest<Oppgave[]>(RestApiPathsKeys.OPPHEV_OPPGAVERESERVASJON, { oppgaveId, begrunnelse })
+      .then(() => fetchReserverteOppgaver());
+  };
 
-  forlengOppgaveReservasjon = (oppgaveId: number): Promise<any> => {
-    const { forlengOppgaveReservasjon: forlengReservasjon, fetchReserverteOppgaver: fetchReserverte } = this.props;
-    const { sakslisteId } = this.state;
+  const forlengOppgaveReservasjonFn = (oppgaveId: number): Promise<any> => {
     if (!sakslisteId) {
       return Promise.resolve();
     }
-    return forlengReservasjon(oppgaveId)
-      .then(() => fetchReserverte(sakslisteId));
-  }
+    return runRequest<Oppgave[]>(RestApiPathsKeys.FORLENG_OPPGAVERESERVASJON, { oppgaveId })
+      .then(() => fetchReserverteOppgaver());
+  };
 
-  endreOppgaveReservasjon = (oppgaveId: number, reserverTil: string): Promise<any> => {
-    const { endreOppgaveReservasjon: endreReservasjon, fetchReserverteOppgaver: fetchReserverte } = this.props;
-    const { sakslisteId } = this.state;
+  const endreOppgaveReservasjonFn = (oppgaveId: number, reserverTil: string): Promise<any> => {
     if (!sakslisteId) {
       return Promise.resolve();
     }
-    return endreReservasjon(oppgaveId, reserverTil)
-      .then(() => fetchReserverte(sakslisteId));
-  }
+    return runRequest<Oppgave[]>(RestApiPathsKeys.ENDRE_OPPGAVERESERVASJON, { oppgaveId, reserverTil })
+      .then(() => fetchReserverteOppgaver());
+  };
 
-  flyttReservasjon = (oppgaveId: number, brukerident: string, begrunnelse: string): Promise<any> => {
-    const { flyttReservasjon: flytt, fetchReserverteOppgaver: fetchReserverte } = this.props;
-    const { sakslisteId } = this.state;
+  const flyttReservasjonFn = (oppgaveId: number, brukerident: string, begrunnelse: string): Promise<any> => {
     if (!sakslisteId) {
       return Promise.resolve();
     }
-    return flytt(oppgaveId, brukerident, begrunnelse)
-      .then(() => fetchReserverte(sakslisteId));
-  }
+    return runRequest<Oppgave[]>(RestApiPathsKeys.FLYTT_RESERVASJON, { oppgaveId, brukerIdent: brukerident, begrunnelse })
+      .then(() => fetchReserverteOppgaver());
+  };
 
-  lukkErReservertModalOgOpneOppgave = (oppgave: Oppgave) => {
-    this.setState((prevState) => ({
-      ...prevState, reservertAvAnnenSaksbehandler: false, reservertOppgave: undefined, reservertOppgaveStatus: undefined,
-    }));
-    this.openSak(oppgave);
-  }
+  const lukkErReservertModalOgOpneOppgave = (oppgave: Oppgave) => {
+    setReservertAvAnnenSaksbehandler(false);
+    setReservertOppgave(undefined);
+    setReservertOppgaveStatus(undefined);
 
-  render = () => {
-    const {
-      sakslister, harTimeout,
-    } = this.props;
-    const {
-      reservertAvAnnenSaksbehandler, reservertOppgave, reservertOppgaveStatus,
-    } = this.state;
-    if (sakslister.length === 0) {
-      return null;
-    }
-    return (
-      <>
-        <SakslistePanel
-          reserverOppgave={this.reserverOppgaveOgApne}
-          sakslister={sakslister}
-          fetchSakslisteOppgaver={this.fetchSakslisteOppgaver}
-          opphevOppgaveReservasjon={this.opphevReservasjon}
-          forlengOppgaveReservasjon={this.forlengOppgaveReservasjon}
-          endreOppgaveReservasjon={this.endreOppgaveReservasjon}
-          flyttReservasjon={this.flyttReservasjon}
+    openSak(oppgave);
+  };
+
+  if (sakslister.length === 0) {
+    return null;
+  }
+  return (
+    <>
+      <SakslistePanel
+        reserverOppgave={reserverOppgaveOgApne}
+        sakslister={sakslister}
+        fetchSakslisteOppgaver={fetchSakslisteOppgaver}
+        opphevOppgaveReservasjon={opphevReservasjonFn}
+        forlengOppgaveReservasjon={forlengOppgaveReservasjonFn}
+        endreOppgaveReservasjon={endreOppgaveReservasjonFn}
+        flyttReservasjon={flyttReservasjonFn}
+      />
+      {harTimeout
+        && <BehandlingPollingTimoutModal />}
+      {reservertAvAnnenSaksbehandler && reservertOppgave && reservertOppgaveStatus && (
+        <OppgaveErReservertAvAnnenModal
+          lukkErReservertModalOgOpneOppgave={lukkErReservertModalOgOpneOppgave}
+          oppgave={reservertOppgave}
+          oppgaveStatus={reservertOppgaveStatus}
         />
-        {harTimeout
-          && <BehandlingPollingTimoutModal />}
-        {reservertAvAnnenSaksbehandler && reservertOppgave && reservertOppgaveStatus && (
-          <OppgaveErReservertAvAnnenModal
-            lukkErReservertModalOgOpneOppgave={this.lukkErReservertModalOgOpneOppgave}
-            oppgave={reservertOppgave}
-            oppgaveStatus={reservertOppgaveStatus}
-          />
-        )}
-      </>
-    );
-  }
-}
+      )}
+    </>
+  );
+};
 
-const mapStateToProps = (state) => ({
-  harTimeout: harOppgaverTilBehandlingTimeout(state),
-  sakslister: getSakslisteResult(state),
-  goToUrl: (url) => window.location.assign(url),
+const mapStateToProps = () => ({
 });
 
 const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => ({
   ...bindActionCreators<DispatchProps, any>({
-    fetchAlleSakslister,
-    fetchOppgaverTilBehandling,
-    fetchOppgaverTilBehandlingOppgaver,
-    fetchReserverteOppgaver,
-    reserverOppgave,
-    opphevOppgaveReservasjon,
-    forlengOppgaveReservasjon,
-    endreOppgaveReservasjon,
-    flyttReservasjon,
     setValgtSakslisteId,
     hentFpsakInternBehandlingId: hentFpsakInternBehandlingIdActionCreator,
   }, dispatch),

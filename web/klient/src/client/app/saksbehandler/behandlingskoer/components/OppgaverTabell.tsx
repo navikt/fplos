@@ -1,4 +1,6 @@
-import React, { Component, ReactNode } from 'react';
+import React, {
+  useState, useRef, ReactNode, FunctionComponent, useCallback,
+} from 'react';
 import { connect } from 'react-redux';
 import { FormattedMessage, injectIntl, WrappedComponentProps } from 'react-intl';
 import { bindActionCreators, Dispatch } from 'redux';
@@ -17,10 +19,13 @@ import DateLabel from 'sharedComponents/DateLabel';
 import menuIconBlueUrl from 'images/ic-menu-18px_blue.svg';
 import menuIconBlackUrl from 'images/ic-menu-18px_black.svg';
 import bubbletextUrl from 'images/bubbletext.svg';
+import useRestApiRunner from 'data/useRestApiRunner';
+import { RestApiPathsKeys } from 'data/restApiPaths';
+import useRestApiData from 'data/useRestApiData';
 import bubbletextFilledUrl from 'images/bubbletext_filled.svg';
 import OppgaveHandlingerMenu from './menu/OppgaveHandlingerMenu';
 import {
-  getAntallOppgaverForBehandlingskoResultat, getOppgaverTilBehandling, getReserverteOppgaver, finnSaksbehandler, resetSaksbehandler,
+  getAntallOppgaverForBehandlingskoResultat, resetSaksbehandler,
 } from '../duck';
 
 import styles from './oppgaverTabell.less';
@@ -49,13 +54,8 @@ const slaSammenOgMarkerReserverte = (reserverteOppgaver, oppgaverTilBehandling):
 
 const getToggleMenuEvent = (oppgave: OppgaveMedReservertIndikator, toggleMenu) => (oppgave.underBehandling ? () => toggleMenu(oppgave) : undefined);
 
-interface Toolip {
-  header: Element;
-}
-
 interface OwnProps {
   oppgaverTilBehandling: Oppgave[];
-  reserverteOppgaver: Oppgave[];
   reserverOppgave: (oppgave: Oppgave) => void;
   opphevOppgaveReservasjon: (oppgaveId: number, begrunnelse: string) => Promise<any>;
   forlengOppgaveReservasjon: (oppgaveId: number) => Promise<any>;
@@ -66,53 +66,49 @@ interface OwnProps {
   antall: number;
 }
 
-interface State {
-  showMenu: boolean;
-  valgtOppgaveId?: number;
-  offset: {
-    left: number;
-    top: number;
-  };
-}
-
 /**
  * OppgaverTabell
  */
-export class OppgaverTabell extends Component<OwnProps & WrappedComponentProps, State> {
-  nodes: any;
+export const OppgaverTabell: FunctionComponent<OwnProps & WrappedComponentProps> = ({
+  reserverOppgave,
+  opphevOppgaveReservasjon,
+  forlengOppgaveReservasjon,
+  endreOppgaveReservasjon,
+  flyttReservasjon,
+  resetSaksbehandler: resetBehandler,
+  antall,
+  intl,
+}) => {
+  const [showMenu, setShowMenu] = useState(false);
+  const [valgtOppgaveId, setValgtOppgaveId] = useState<number>();
+  const [offset, setOffset] = useState({
+    left: 0,
+    top: 0,
+  });
 
-  constructor(props) {
-    super(props);
+  const reserverteOppgaver = useRestApiData<Oppgave[]>(RestApiPathsKeys.RESERVERTE_OPPGAVER) || [];
+  const oppgaverTilBehandling = useRestApiData<Oppgave[]>(RestApiPathsKeys.OPPGAVER_TIL_BEHANDLING) || [];
 
-    this.state = {
-      showMenu: false,
-      valgtOppgaveId: undefined,
-      offset: {
-        left: 0,
-        top: 0,
-      },
-    };
-  }
+  const ref = useRef({});
 
-  goToFagsak = (event: Event, id: number, oppgave: Oppgave) => {
-    const { reserverOppgave } = this.props;
-    if (this.nodes && Object.keys(this.nodes).some((key) => this.nodes[key] && this.nodes[key].contains(event.target))) {
+  const runRequest = useRestApiRunner();
+  const finnSaksbehandler = useCallback((brukerIdent) => runRequest<Oppgave[]>(RestApiPathsKeys.FLYTT_RESERVASJON_SAKSBEHANDLER_SOK, brukerIdent), []);
+
+  const goToFagsak = (event: Event, id: number, oppgave: Oppgave) => {
+    if (ref.current && Object.keys(ref.current).some((key) => ref.current[key] && ref.current[key].contains(event.target))) {
       return;
     }
     reserverOppgave(oppgave);
   };
 
-  toggleMenu = (valgtOppgave: Oppgave) => {
-    const { showMenu } = this.state;
-    const offset = this.nodes[valgtOppgave.id].getBoundingClientRect();
-    this.setState(() => ({
-      valgtOppgaveId: valgtOppgave.id,
-      showMenu: !showMenu,
-      offset: { top: offset.top, left: offset.left },
-    }));
-  }
+  const toggleMenu = (valgtOppgave: Oppgave) => {
+    const newOffset = ref.current[valgtOppgave.id].getBoundingClientRect();
+    setShowMenu(!showMenu);
+    setValgtOppgaveId(valgtOppgave.id);
+    setOffset({ top: newOffset.top, left: newOffset.left });
+  };
 
-  createTooltip = (oppgaveStatus: OppgaveStatus): ReactNode | undefined => {
+  const createTooltip = (oppgaveStatus: OppgaveStatus): ReactNode | undefined => {
     const { flyttetReservasjon } = oppgaveStatus;
     if (!flyttetReservasjon) {
       return undefined;
@@ -129,103 +125,89 @@ export class OppgaverTabell extends Component<OwnProps & WrappedComponentProps, 
     return (
       <Normaltekst><FormattedMessage id="OppgaverTabell.OverfortReservasjonTooltip" values={textValues} /></Normaltekst>
     );
-  }
+  };
 
-  render = () => {
-    const {
-      oppgaverTilBehandling, reserverteOppgaver, opphevOppgaveReservasjon, forlengOppgaveReservasjon, endreOppgaveReservasjon,
-      finnSaksbehandler: findSaksbehandler, flyttReservasjon,
-      resetSaksbehandler: resetBehandler, antall, intl,
-    } = this.props;
-    const {
-      showMenu, offset, valgtOppgaveId,
-    } = this.state;
+  const alleOppgaver = slaSammenOgMarkerReserverte(reserverteOppgaver, oppgaverTilBehandling);
+  const valgtOppgave = reserverteOppgaver.find((o) => o.id === valgtOppgaveId);
 
-    const alleOppgaver = slaSammenOgMarkerReserverte(reserverteOppgaver, oppgaverTilBehandling);
-    const valgtOppgave = reserverteOppgaver.find((o) => o.id === valgtOppgaveId);
-
-    return (
-      <>
-        <Element><FormattedMessage id="OppgaverTabell.DineNesteSaker" values={{ antall }} /></Element>
-        {alleOppgaver.length === 0 && (
-          <>
-            <VerticalSpacer eightPx />
-            <Normaltekst><FormattedMessage id="OppgaverTabell.IngenOppgaver" /></Normaltekst>
-          </>
-        )}
-        {alleOppgaver.length > 0 && (
-          <>
-            <Table headerTextCodes={headerTextCodes}>
-              {alleOppgaver.map((oppgave) => (
-                <TableRow
-                  key={oppgave.id}
-                  onMouseDown={this.goToFagsak}
-                  onKeyDown={this.goToFagsak}
-                  className={oppgave.underBehandling ? styles.isUnderBehandling : undefined}
-                  model={oppgave}
-                >
-                  <TableColumn>{oppgave.navn ? `${oppgave.navn} ${oppgave.personnummer}` : '<navn>'}</TableColumn>
-                  <TableColumn>{oppgave.behandlingstype.navn}</TableColumn>
-                  <TableColumn>{oppgave.opprettetTidspunkt && <DateLabel dateString={oppgave.opprettetTidspunkt} />}</TableColumn>
-                  <TableColumn>{oppgave.behandlingsfrist && <DateLabel dateString={oppgave.behandlingsfrist} />}</TableColumn>
-                  <TableColumn>
-                    {oppgave.status.flyttetReservasjon && (
-                    <Image
-                      src={bubbletextUrl}
-                      srcHover={bubbletextFilledUrl}
-                      alt={intl.formatMessage({ id: 'OppgaverTabell.OverfortReservasjon' })}
-                      tooltip={this.createTooltip(oppgave.status)}
-                    />
-                    )}
-                  </TableColumn>
-                  <TableColumn className={oppgave.underBehandling ? styles.noPadding : undefined}>
-                    {!oppgave.underBehandling && <NavFrontendChevron /> }
-                    {oppgave.underBehandling && (
-                      <div ref={(node) => { this.nodes = { ...this.nodes, [oppgave.id]: node }; }}>
-                        <Image
-                          className={styles.image}
-                          src={menuIconBlackUrl}
-                          srcHover={menuIconBlueUrl}
-                          alt={intl.formatMessage({ id: 'OppgaverTabell.OppgaveHandlinger' })}
-                          onMouseDown={getToggleMenuEvent(oppgave, this.toggleMenu)}
-                          onKeyDown={getToggleMenuEvent(oppgave, this.toggleMenu)}
-                        />
-                      </div>
-                    ) }
-                  </TableColumn>
-                </TableRow>
-              ))}
-            </Table>
-            {showMenu && valgtOppgaveId && valgtOppgave && (
-              <OppgaveHandlingerMenu
-                imageNode={this.nodes[valgtOppgaveId]}
-                toggleMenu={this.toggleMenu}
-                offset={offset}
-                oppgave={valgtOppgave}
-                opphevOppgaveReservasjon={opphevOppgaveReservasjon}
-                forlengOppgaveReservasjon={forlengOppgaveReservasjon}
-                endreOppgaveReservasjon={endreOppgaveReservasjon}
-                finnSaksbehandler={findSaksbehandler}
-                resetSaksbehandler={resetBehandler}
-                flyttReservasjon={flyttReservasjon}
-              />
-            )}
-          </>
-        )}
-      </>
-    );
-  }
-}
+  return (
+    <>
+      <Element><FormattedMessage id="OppgaverTabell.DineNesteSaker" values={{ antall }} /></Element>
+      {alleOppgaver.length === 0 && (
+        <>
+          <VerticalSpacer eightPx />
+          <Normaltekst><FormattedMessage id="OppgaverTabell.IngenOppgaver" /></Normaltekst>
+        </>
+      )}
+      {alleOppgaver.length > 0 && (
+        <>
+          <Table headerTextCodes={headerTextCodes}>
+            {alleOppgaver.map((oppgave) => (
+              <TableRow
+                key={oppgave.id}
+                onMouseDown={goToFagsak}
+                onKeyDown={goToFagsak}
+                className={oppgave.underBehandling ? styles.isUnderBehandling : undefined}
+                model={oppgave}
+              >
+                <TableColumn>{oppgave.navn ? `${oppgave.navn} ${oppgave.personnummer}` : '<navn>'}</TableColumn>
+                <TableColumn>{oppgave.behandlingstype.navn}</TableColumn>
+                <TableColumn>{oppgave.opprettetTidspunkt && <DateLabel dateString={oppgave.opprettetTidspunkt} />}</TableColumn>
+                <TableColumn>{oppgave.behandlingsfrist && <DateLabel dateString={oppgave.behandlingsfrist} />}</TableColumn>
+                <TableColumn>
+                  {oppgave.status.flyttetReservasjon && (
+                  <Image
+                    src={bubbletextUrl}
+                    srcHover={bubbletextFilledUrl}
+                    alt={intl.formatMessage({ id: 'OppgaverTabell.OverfortReservasjon' })}
+                    tooltip={createTooltip(oppgave.status)}
+                  />
+                  )}
+                </TableColumn>
+                <TableColumn className={oppgave.underBehandling ? styles.noPadding : undefined}>
+                  {!oppgave.underBehandling && <NavFrontendChevron /> }
+                  {oppgave.underBehandling && (
+                    <div ref={(el) => { ref.current = { ...ref.current, [oppgave.id]: el }; }}>
+                      <Image
+                        className={styles.image}
+                        src={menuIconBlackUrl}
+                        srcHover={menuIconBlueUrl}
+                        alt={intl.formatMessage({ id: 'OppgaverTabell.OppgaveHandlinger' })}
+                        onMouseDown={getToggleMenuEvent(oppgave, toggleMenu)}
+                        onKeyDown={getToggleMenuEvent(oppgave, toggleMenu)}
+                      />
+                    </div>
+                  ) }
+                </TableColumn>
+              </TableRow>
+            ))}
+          </Table>
+          {showMenu && valgtOppgaveId && valgtOppgave && (
+            <OppgaveHandlingerMenu
+              imageNode={ref.current[valgtOppgaveId]}
+              toggleMenu={toggleMenu}
+              offset={offset}
+              oppgave={valgtOppgave}
+              opphevOppgaveReservasjon={opphevOppgaveReservasjon}
+              forlengOppgaveReservasjon={forlengOppgaveReservasjon}
+              endreOppgaveReservasjon={endreOppgaveReservasjon}
+              finnSaksbehandler={finnSaksbehandler}
+              resetSaksbehandler={resetBehandler}
+              flyttReservasjon={flyttReservasjon}
+            />
+          )}
+        </>
+      )}
+    </>
+  );
+};
 
 const mapStateToProps = (state) => ({
   antall: getAntallOppgaverForBehandlingskoResultat(state) || 0,
-  oppgaverTilBehandling: getOppgaverTilBehandling(state) || [],
-  reserverteOppgaver: getReserverteOppgaver(state) || [],
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
   ...bindActionCreators({
-    finnSaksbehandler,
     resetSaksbehandler,
   }, dispatch),
 });
