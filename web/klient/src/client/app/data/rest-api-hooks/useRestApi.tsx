@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, DependencyList } from 'react';
 
 import { createRequestApi } from 'data/rest-api-new';
 import { endpoints, RestApiPathsKeys } from 'data/restApiPaths';
@@ -18,7 +18,7 @@ interface RestApiData<T> {
   data?: T;
 }
 
-function useRestApi<T>(key: RestApiPathsKeys, params: any = {}):RestApiData<T> {
+function useRestApi<T>(key: RestApiPathsKeys, params: any = {}, dependencies: DependencyList = []):RestApiData<T> {
   const [data, setData] = useState({
     state: ApiState.LOADING,
     error: undefined,
@@ -45,7 +45,7 @@ function useRestApi<T>(key: RestApiPathsKeys, params: any = {}):RestApiData<T> {
           error: 'fetch failed',
         });
       });
-  }, []);
+  }, dependencies);
 
   return data;
 }

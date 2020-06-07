@@ -1,8 +1,6 @@
 
-import React, { FunctionComponent } from 'react';
+import React, { FunctionComponent, useMemo } from 'react';
 import moment from 'moment';
-import { connect } from 'react-redux';
-import { createSelector } from 'reselect';
 import { FormattedMessage } from 'react-intl';
 import { Undertittel, Element } from 'nav-frontend-typografi';
 
@@ -11,8 +9,12 @@ import { ISO_DATE_FORMAT } from 'utils/formats';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import useKodeverk from 'data/rest-api-hooks/useKodeverk';
 import NyeOgFerdigstilteOppgaverForIdagGraf from './NyeOgFerdigstilteOppgaverForIdagGraf';
-import { getNyeOgFerdigstilteOppgaverNokkeltall } from '../../duck';
-import NyeOgFerdigstilteOppgaver from '../nyeOgFerdigstilteOppgaverTsType';
+import NyeOgFerdigstilteOppgaver from '../../nyeOgFerdigstilteOppgaverTsType';
+
+export const getNyeOgFerdigstilteForIDag = (nyeOgFerdigstilte: NyeOgFerdigstilteOppgaver[] = []) => {
+  const iDag = moment();
+  return nyeOgFerdigstilte.filter((oppgave) => iDag.isSame(moment(oppgave.dato, ISO_DATE_FORMAT), 'day'));
+};
 
 interface OwnProps {
   width: number;
@@ -29,6 +31,9 @@ export const NyeOgFerdigstilteOppgaverForIdagPanel: FunctionComponent<OwnProps> 
   nyeOgFerdigstilteOppgaver,
 }) => {
   const behandlingTyper = useKodeverk(kodeverkTyper.BEHANDLING_TYPE);
+
+  const filtrerteNyeOgFerdigstilteOppgaver = useMemo(() => getNyeOgFerdigstilteForIDag(nyeOgFerdigstilteOppgaver), [nyeOgFerdigstilteOppgaver]);
+
   return (
     <>
       <Undertittel>
@@ -41,20 +46,11 @@ export const NyeOgFerdigstilteOppgaverForIdagPanel: FunctionComponent<OwnProps> 
       <NyeOgFerdigstilteOppgaverForIdagGraf
         width={width}
         height={height}
-        nyeOgFerdigstilteOppgaver={nyeOgFerdigstilteOppgaver}
+        nyeOgFerdigstilteOppgaver={filtrerteNyeOgFerdigstilteOppgaver}
         behandlingTyper={behandlingTyper}
       />
     </>
   );
 };
 
-export const getNyeOgFerdigstilteForIDag = createSelector([getNyeOgFerdigstilteOppgaverNokkeltall], (nyeOgFerdigstilte: { dato: string }[] = []) => {
-  const iDag = moment();
-  return nyeOgFerdigstilte.filter((oppgave) => iDag.isSame(moment(oppgave.dato, ISO_DATE_FORMAT), 'day'));
-});
-
-const mapStateToProps = (state) => ({
-  nyeOgFerdigstilteOppgaver: getNyeOgFerdigstilteForIDag(state),
-});
-
-export default connect(mapStateToProps)(NyeOgFerdigstilteOppgaverForIdagPanel);
+export default NyeOgFerdigstilteOppgaverForIdagPanel;

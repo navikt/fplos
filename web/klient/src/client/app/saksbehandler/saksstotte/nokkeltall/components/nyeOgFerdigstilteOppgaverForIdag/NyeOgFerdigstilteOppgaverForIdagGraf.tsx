@@ -11,7 +11,7 @@ import Panel from 'nav-frontend-paneler';
 import Kodeverk from 'kodeverk/kodeverkTsType';
 import behandlingType from 'kodeverk/behandlingType';
 
-import NyeOgFerdigstilteOppgaver from '../nyeOgFerdigstilteOppgaverTsType';
+import NyeOgFerdigstilteOppgaver from '../../nyeOgFerdigstilteOppgaverTsType';
 
 import 'react-vis/dist/style.css';
 import styles from './nyeOgFerdigstilteOppgaverForIdagGraf.less';

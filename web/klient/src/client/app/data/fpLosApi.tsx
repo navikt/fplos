@@ -32,7 +32,6 @@ export const fpLosApiKeys = {
   OPPGAVE_AVDELING_ANTALL: 'OPPGAVE_AVDELING_ANTALL',
   SAKSLISTE_SAKSBEHANDLERE: 'SAKSLISTE_SAKSBEHANDLERE',
   BEHANDLINGSKO_OPPGAVE_ANTALL: 'BEHANDLINGSKO_OPPGAVE_ANTALL',
-  HENT_NYE_OG_FERDIGSTILTE_OPPGAVER: 'HENT_NYE_OG_FERDIGSTILTE_OPPGAVER',
   // Delvis flytta
   FPSAK_BEHANDLING_ID: 'FPSAK_BEHANDLING_ID',
   FLYTT_RESERVASJON_SAKSBEHANDLER_SOK: 'FLYTT_RESERVASJON_SAKSBEHANDLER_SOK',
@@ -46,9 +45,6 @@ const endpoints = new RestApiConfigBuilder()
 
   .withGet('/api/saksbehandler/oppgaver/behandlede', fpLosApiKeys.BEHANDLEDE_OPPGAVER)
   .withGet('/api/saksbehandler/oppgaver/antall', fpLosApiKeys.BEHANDLINGSKO_OPPGAVE_ANTALL)
-
-  /* /api/saksbehandler/nokkeltall */
-  .withGet('/api/saksbehandler/nokkeltall/nye-og-ferdigstilte-oppgaver', fpLosApiKeys.HENT_NYE_OG_FERDIGSTILTE_OPPGAVER)
 
   /* /api/avdelingsleder/sakslister */
   .withGet('/api/avdelingsleder/sakslister', fpLosApiKeys.SAKSLISTER_FOR_AVDELING)

@@ -22,6 +22,7 @@ export enum RestApiPathsKeys {
   FLYTT_RESERVASJON_SAKSBEHANDLER_SOK = 'FLYTT_RESERVASJON_SAKSBEHANDLER_SOK',
   HENT_RESERVASJONSSTATUS = 'HENT_RESERVASJONSSTATUS',
   FPSAK_BEHANDLING_ID = 'FPSAK_BEHANDLING_ID',
+  HENT_NYE_OG_FERDIGSTILTE_OPPGAVER = 'HENT_NYE_OG_FERDIGSTILTE_OPPGAVER',
 }
 
 export const endpoints = new RestApiConfigBuilder()
@@ -48,5 +49,6 @@ export const endpoints = new RestApiConfigBuilder()
   .withPost('/api/saksbehandler/oppgaver/flytt/sok', RestApiPathsKeys.FLYTT_RESERVASJON_SAKSBEHANDLER_SOK)
   .withGet('/api/saksbehandler/oppgaver/oppgaver-for-fagsaker', RestApiPathsKeys.OPPGAVER_FOR_FAGSAKER)
   .withGet('/api/saksbehandler/oppgaver/reservasjon-status', RestApiPathsKeys.HENT_RESERVASJONSSTATUS)
+  .withGet('/api/saksbehandler/nokkeltall/nye-og-ferdigstilte-oppgaver', RestApiPathsKeys.HENT_NYE_OG_FERDIGSTILTE_OPPGAVER)
 
   .build();
