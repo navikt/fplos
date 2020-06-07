@@ -67,7 +67,12 @@ const FagsakSearch: FunctionComponent<OwnProps> = ({
         <Normaltekst>
           <FormattedMessage id="FagsakSearch.FlereApneBehandlinger" />
         </Normaltekst>
-        <FagsakList selectFagsakCallback={selectFagsakCallback} selectOppgaveCallback={selectOppgaveCallback} />
+        <FagsakList
+          selectFagsakCallback={selectFagsakCallback}
+          selectOppgaveCallback={selectOppgaveCallback}
+          fagsaker={fagsaker}
+          fagsakOppgaver={fagsakOppgaver}
+        />
       </>
     )}
   </>

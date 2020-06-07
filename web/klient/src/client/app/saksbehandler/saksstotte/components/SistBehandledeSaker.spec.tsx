@@ -5,7 +5,7 @@ import { shallow } from 'enzyme';
 import sinon from 'sinon';
 import Lenke from 'nav-frontend-lenker';
 
-import * as useRestApiData from 'data/useRestApiData';
+import * as useRestApiData from 'data/rest-api-hooks/useGlobalStateRestApiData';
 
 import { SistBehandledeSaker } from './SistBehandledeSaker';
 

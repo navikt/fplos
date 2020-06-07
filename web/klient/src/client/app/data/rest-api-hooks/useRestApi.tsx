@@ -1,8 +1,10 @@
-import { useState, useEffect, useContext } from 'react';
-import { RestApiPathsKeys } from 'data/restApiPaths';
+import { useState, useEffect } from 'react';
 
-import { RestDataContext } from './RestDataContext';
+import { createRequestApi } from 'data/rest-api-new';
+import { endpoints, RestApiPathsKeys } from 'data/restApiPaths';
 
+const contextPath = 'fplos';
+const requestApi = createRequestApi(contextPath, endpoints);
 
 export enum ApiState {
   LOADING = 'LOADING',
@@ -16,15 +18,12 @@ interface RestApiData<T> {
   data?: T;
 }
 
-function useRestApi<T>(key: RestApiPathsKeys, params: any = {}, options: any = { keepData: false }):RestApiData<T> {
+function useRestApi<T>(key: RestApiPathsKeys, params: any = {}):RestApiData<T> {
   const [data, setData] = useState({
     state: ApiState.LOADING,
     error: undefined,
     data: undefined,
   });
-
-  const context = useContext(RestDataContext);
-  const { dispatch, requestApi } = context;
 
   const setPartData = (partialData) => setData({ ...data, ...partialData });
 
@@ -33,13 +32,8 @@ function useRestApi<T>(key: RestApiPathsKeys, params: any = {}, options: any = {
       state: ApiState.LOADING,
     });
 
-    if (!options.keepData) {
-      dispatch({ type: 'remove', key });
-    }
-
     requestApi.getRequestRunner(key).startProcess(params)
       .then((dataRes) => {
-        dispatch({ type: 'success', key, data: dataRes.payload });
         setPartData({
           state: ApiState.SUCCESS,
           data: dataRes.payload,

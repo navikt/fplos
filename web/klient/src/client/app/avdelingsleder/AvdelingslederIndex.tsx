@@ -7,13 +7,13 @@ import Panel from 'nav-frontend-paneler';
 import Tabs from 'nav-frontend-tabs';
 import { Undertittel } from 'nav-frontend-typografi';
 
-import { RestApiPathsKeys } from 'data/restApiPaths';
+import { RestApiGlobalStatePathsKeys } from 'data/restApiPaths';
 import LoadingPanel from 'sharedComponents/LoadingPanel';
 import { parseQueryString } from 'utils/urlUtils';
 import { getAvdelingslederPanelLocationCreator } from 'app/paths';
 import trackRouteParam from 'app/data/trackRouteParam';
 import Location from 'app/locationTsType';
-import useRestApiData from 'data/useRestApiData';
+import useRestApiData from 'data/rest-api-hooks/useGlobalStateRestApiData';
 import NavAnsatt from 'app/navAnsattTsType';
 import Avdeling from 'app/avdelingTsType';
 import { getSelectedAvdelingslederPanel, setSelectedAvdelingslederPanel } from './duck';
@@ -80,8 +80,8 @@ export const AvdelingslederIndex: FunctionComponent<OwnProps> = ({
   activeAvdelingslederPanel,
   getAvdelingslederPanelLocation,
 }) => {
-  const { kanOppgavestyre, kanBehandleKode6 } = useRestApiData<NavAnsatt>(RestApiPathsKeys.NAV_ANSATT);
-  const avdelinger = useRestApiData<Avdeling[]>(RestApiPathsKeys.AVDELINGER);
+  const { kanOppgavestyre, kanBehandleKode6 } = useRestApiData<NavAnsatt>(RestApiGlobalStatePathsKeys.NAV_ANSATT);
+  const avdelinger = useRestApiData<Avdeling[]>(RestApiGlobalStatePathsKeys.AVDELINGER);
 
   const erKode6Avdeling = useMemo(() => {
     const avdeling = avdelinger instanceof Array && avdelinger.find((a) => a.avdelingEnhet === valgtAvdelingEnhet);

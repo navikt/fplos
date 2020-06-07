@@ -6,11 +6,11 @@ import { bindActionCreators, Dispatch } from 'redux';
 import Lenke from 'nav-frontend-lenker';
 import { Undertittel, Normaltekst } from 'nav-frontend-typografi';
 
-import { RestApiPathsKeys } from 'data/restApiPaths';
+import { RestApiGlobalStatePathsKeys } from 'data/restApiPaths';
 import { getFpsakHref, getFptilbakeHref } from 'app/paths';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import hentFpsakInternBehandlingIdActionCreator from 'app/duck';
-import useRestApiData from 'data/useRestApiData';
+import useRestApiData from 'data/rest-api-hooks/useGlobalStateRestApiData';
 import { getBehandledeOppgaver } from 'saksbehandler/saksstotte/duck';
 import Oppgave from '../../oppgaveTsType';
 
@@ -33,8 +33,8 @@ export const SistBehandledeSaker: FunctionComponent<OwnProps & DispatchProps> = 
   hentFpsakInternBehandlingId,
   sistBehandledeSaker,
 }) => {
-  const fpsakUrl = useRestApiData<{ verdi?: string }>(RestApiPathsKeys.FPSAK_URL);
-  const fptilbakeUrl = useRestApiData<{ verdi?: string }>(RestApiPathsKeys.FPTILBAKE_URL);
+  const fpsakUrl = useRestApiData<{ verdi?: string }>(RestApiGlobalStatePathsKeys.FPSAK_URL);
+  const fptilbakeUrl = useRestApiData<{ verdi?: string }>(RestApiGlobalStatePathsKeys.FPTILBAKE_URL);
 
   const openFpsak = (oppgave: Oppgave) => {
     if (oppgave.system === 'FPSAK') {

@@ -6,7 +6,7 @@ import { IntlShape } from 'react-intl';
 import { Form } from 'react-final-form';
 
 import kodeverkTyper from 'kodeverk/kodeverkTyper';
-import * as useKodeverk from 'data/useKodeverk';
+import * as useKodeverk from 'data/rest-api-hooks/useKodeverk';
 import { ISO_DATE_FORMAT } from 'utils/formats';
 import { RadioOption, SelectField } from 'form/FinalFields';
 import fagsakYtelseType from 'kodeverk/fagsakYtelseType';

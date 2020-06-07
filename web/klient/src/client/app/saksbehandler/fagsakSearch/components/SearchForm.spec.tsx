@@ -6,7 +6,7 @@ import { Form } from 'react-final-form';
 import sinon from 'sinon';
 import { Knapp } from 'nav-frontend-knapper';
 
-import * as useRestApiData from 'data/useRestApiData';
+import * as useRestApiData from 'data/rest-api-hooks/useGlobalStateRestApiData';
 import { shallowWithIntl, intlMock } from 'testHelpers/intl-enzyme-test-helper';
 import { InputField } from 'form/FinalFields';
 import SearchForm from './SearchForm';

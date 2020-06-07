@@ -5,7 +5,7 @@ import sinon from 'sinon';
 import { shallow } from 'enzyme';
 import moment from 'moment';
 
-import * as useRestApiData from 'data/useRestApiData';
+import * as useRestApiData from 'data/rest-api-hooks/useGlobalStateRestApiData';
 import behandlingType from 'kodeverk/behandlingType';
 import { NyeOgFerdigstilteOppgaverForIdagPanel, getNyeOgFerdigstilteForIDag } from './NyeOgFerdigstilteOppgaverForIdagPanel';
 import NyeOgFerdigstilteOppgaverForIdagGraf from './NyeOgFerdigstilteOppgaverForIdagGraf';

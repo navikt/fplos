@@ -4,7 +4,7 @@ import { shallow } from 'enzyme';
 import { expect } from 'chai';
 import sinon from 'sinon';
 
-import * as useKodeverk from 'data/useKodeverk';
+import * as useKodeverk from 'data/rest-api-hooks/useKodeverk';
 import kodeverkTyper from 'kodeverk/kodeverkTyper';
 import Table from 'sharedComponents/table/Table';
 import { FagsakList, getSorterteFagsaker } from './FagsakList';

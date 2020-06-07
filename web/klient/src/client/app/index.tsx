@@ -6,7 +6,7 @@ import { render } from 'react-dom';
 import { init } from '@sentry/browser';
 
 import AppIndex from 'app/AppIndex';
-import { RestDataProvider } from 'data/RestDataContext';
+import { RestDataProvider } from 'data/rest-api-hooks/RestDataContext';
 import configureStore from './store';
 
 /* eslint no-undef: "error" */

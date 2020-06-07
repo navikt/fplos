@@ -3,7 +3,7 @@ import { expect } from 'chai';
 import sinon from 'sinon';
 import { shallow } from 'enzyme';
 
-import * as useKodeverk from 'data/useKodeverk';
+import * as useKodeverk from 'data/rest-api-hooks/useKodeverk';
 import andreKriterierType from 'kodeverk/andreKriterierType';
 import { CheckboxField, RadioGroupField, RadioOption } from 'form/FinalFields';
 import AndreKriterierVelger from './AndreKriterierVelger';

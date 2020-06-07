@@ -1,10 +1,12 @@
-import React, { Component, ReactNode } from 'react';
+import React, { FunctionComponent, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
-import {
-  endreOppgaveReservasjon, flyttReservasjon, finnSaksbehandler as getSaksbehandler, resetSaksbehandler,
-} from 'saksbehandler/behandlingskoer/duck';
+
+import useRestApiRunner from 'data/rest-api-hooks/useRestApiRunner';
+import { RestApiPathsKeys } from 'data/restApiPaths';
+import { resetSaksbehandler } from 'saksbehandler/behandlingskoer/duck';
 import Reservasjon from 'avdelingsleder/reservasjoner/reservasjonTsType';
+
 import {
   fetchAvdelingensReservasjoner, opphevReservasjon, getAvdelingensReservasjoner,
 } from './duck';
@@ -18,50 +20,45 @@ interface OwnProps {
 interface DispatchProps {
   fetchAvdelingensReservasjoner: (avdelingEnhet: string) => void;
   opphevReservasjon: (oppgaveId: number) => Promise<string>;
-  endreOppgaveReservasjon: (oppgaveId: number, reserverTil: string) => Promise<string>;
-  flyttReservasjon: (oppgaveId: number, brukerident: string, begrunnelse: string) => Promise<string>;
-  finnSaksbehandler: (brukerIdent: string) => Promise<string>;
   nullstillSaksbehandler: () => Promise<string>;
 }
 
-export class ReservasjonerIndex extends Component<DispatchProps & OwnProps> {
-  componentDidMount = (): void => {
-    const { fetchAvdelingensReservasjoner: hentAvdelingensReservasjoner, valgtAvdelingEnhet } = this.props;
+export const ReservasjonerIndex: FunctionComponent<OwnProps & DispatchProps> = ({
+  reservasjoner,
+  fetchAvdelingensReservasjoner: hentAvdelingensReservasjoner,
+  valgtAvdelingEnhet,
+  opphevReservasjon: opphevOppgaveReservasjon,
+  nullstillSaksbehandler,
+}) => {
+  const { startRequest: endreOppgavereservasjon } = useRestApiRunner(RestApiPathsKeys.ENDRE_OPPGAVERESERVASJON);
+  const { startRequest: flyttOppgavereservasjon } = useRestApiRunner(RestApiPathsKeys.FLYTT_RESERVASJON);
+  const { startRequest: finnSaksbehandler } = useRestApiRunner<string>(RestApiPathsKeys.FLYTT_RESERVASJON_SAKSBEHANDLER_SOK);
+
+  useEffect(() => {
     hentAvdelingensReservasjoner(valgtAvdelingEnhet);
-  }
+  }, []);
 
-  opphevOppgaveReservasjon = (oppgaveId: number): Promise<any> => {
-    const { opphevReservasjon: opphevOppgaveReservasjon, fetchAvdelingensReservasjoner: fetchReserverte, valgtAvdelingEnhet } = this.props;
-    return opphevOppgaveReservasjon(oppgaveId)
-      .then(() => fetchReserverte(valgtAvdelingEnhet));
-  }
+  const opphevOppgaveReservasjonFn = (oppgaveId: number): Promise<any> => opphevOppgaveReservasjon(oppgaveId)
+    .then(() => hentAvdelingensReservasjoner(valgtAvdelingEnhet));
 
-  endreOppgaveReservasjon = (oppgaveId: number, reserverTil: string): Promise<any> => {
-    const { endreOppgaveReservasjon: endreReservasjon, fetchAvdelingensReservasjoner: fetchReserverte, valgtAvdelingEnhet } = this.props;
-    return endreReservasjon(oppgaveId, reserverTil)
-      .then(() => fetchReserverte(valgtAvdelingEnhet));
-  }
+  const endreOppgaveReservasjonFn = (oppgaveId: number, reserverTil: string): Promise<any> => endreOppgavereservasjon({ oppgaveId, reserverTil })
+    .then(() => hentAvdelingensReservasjoner(valgtAvdelingEnhet));
 
-  flyttReservasjon = (oppgaveId: number, brukerident: string, begrunnelse: string): Promise<any> => {
-    const { flyttReservasjon: flytt, fetchAvdelingensReservasjoner: fetchReserverte, valgtAvdelingEnhet } = this.props;
-    return flytt(oppgaveId, brukerident, begrunnelse)
-      .then(() => fetchReserverte(valgtAvdelingEnhet));
-  }
+  const flyttReservasjonFn = (oppgaveId: number, brukerident: string, begrunnelse: string): Promise<any> => flyttOppgavereservasjon({
+    oppgaveId, brukerident, begrunnelse,
+  }).then(() => hentAvdelingensReservasjoner(valgtAvdelingEnhet));
 
-  render = (): ReactNode => {
-    const { finnSaksbehandler, nullstillSaksbehandler, reservasjoner } = this.props;
-    return (
-      <ReservasjonerTabell
-        opphevReservasjon={this.opphevOppgaveReservasjon}
-        endreOppgaveReservasjon={this.endreOppgaveReservasjon}
-        flyttReservasjon={this.flyttReservasjon}
-        finnSaksbehandler={finnSaksbehandler}
-        nullstillSaksbehandler={nullstillSaksbehandler}
-        reservasjoner={reservasjoner}
-      />
-    );
-  }
-}
+  return (
+    <ReservasjonerTabell
+      opphevReservasjon={opphevOppgaveReservasjonFn}
+      endreOppgaveReservasjon={endreOppgaveReservasjonFn}
+      flyttReservasjon={flyttReservasjonFn}
+      finnSaksbehandler={finnSaksbehandler}
+      nullstillSaksbehandler={nullstillSaksbehandler}
+      reservasjoner={reservasjoner}
+    />
+  );
+};
 
 const mapStateToProps = (state) => ({
   reservasjoner: getAvdelingensReservasjoner(state) || [],
@@ -71,9 +68,6 @@ const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => ({
   ...bindActionCreators<DispatchProps, any>({
     fetchAvdelingensReservasjoner,
     opphevReservasjon,
-    endreOppgaveReservasjon,
-    flyttReservasjon,
-    finnSaksbehandler: getSaksbehandler,
     nullstillSaksbehandler: resetSaksbehandler,
   }, dispatch),
 });

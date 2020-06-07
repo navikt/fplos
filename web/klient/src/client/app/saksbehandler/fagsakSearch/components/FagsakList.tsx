@@ -1,7 +1,5 @@
 
-import React, { Fragment, FunctionComponent } from 'react';
-import { connect } from 'react-redux';
-import { createSelector } from 'reselect';
+import React, { Fragment, FunctionComponent, useMemo } from 'react';
 import NavFrontendChevron from 'nav-frontend-chevron';
 
 import Oppgave from 'saksbehandler/oppgaveTsType';
@@ -11,8 +9,7 @@ import TableRow from 'sharedComponents/table/TableRow';
 import TableColumn from 'sharedComponents/table/TableColumn';
 import DateLabel from 'sharedComponents/DateLabel';
 import fagsakStatus from 'kodeverk/fagsakStatus';
-import useKodeverk from 'data/useKodeverk';
-import { getFagsaker, getFagsakOppgaver } from '../fagsakSearchSelectors';
+import useKodeverk from 'data/rest-api-hooks/useKodeverk';
 import Fagsak from '../fagsakTsType';
 
 import styles from './fagsakList.less';
@@ -27,29 +24,43 @@ const headerTextCodes = [
 ];
 
 interface OwnProps {
-  sorterteFagsaker: Fagsak[];
+  fagsaker: Fagsak[];
+  fagsakOppgaver: Oppgave[];
   selectFagsakCallback: (saksnummer: number) => void;
   selectOppgaveCallback: (oppgave: Oppgave) => void;
-  fagsakOppgaver: Oppgave[];
 }
 
 const getSelectOppgaveCallback = (oppgave, selectOppgaveCallback) => () => selectOppgaveCallback(oppgave);
 
 const getFagsakCallback = (selectFagsakCallback) => (event: any, saksnummer: number) => selectFagsakCallback(saksnummer);
 
+export const getSorterteFagsaker = (fagsaker: Fagsak[] = []) => fagsaker.concat().sort((fagsak1, fagsak2) => {
+  if (fagsak1.status.kode === fagsakStatus.AVSLUTTET && fagsak2.status.kode !== fagsakStatus.AVSLUTTET) {
+    return 1;
+  } if (fagsak1.status.kode !== fagsakStatus.AVSLUTTET && fagsak2.status.kode === fagsakStatus.AVSLUTTET) {
+    return -1;
+  }
+  const changeTimeFagsak1 = fagsak1.endret ? fagsak1.endret : fagsak1.opprettet;
+  const changeTimeFagsak2 = fagsak2.endret ? fagsak2.endret : fagsak2.opprettet;
+  return changeTimeFagsak1 > changeTimeFagsak2 ? 1 : -1;
+});
+
+
 /**
  * FagsakList
  *
  * Presentasjonskomponent. Formaterer fagsak-søkeresultatet for visning i tabell. Sortering av fagsakene blir håndtert her.
  */
-export const FagsakList: FunctionComponent<OwnProps> = ({
-  sorterteFagsaker,
+const FagsakList: FunctionComponent<OwnProps> = ({
+  fagsaker,
   fagsakOppgaver,
   selectFagsakCallback,
   selectOppgaveCallback,
 }) => {
   const fagsakStatuser = useKodeverk(kodeverkTyper.FAGSAK_STATUS);
   const fagsakYtelseTyper = useKodeverk(kodeverkTyper.FAGSAK_YTELSE_TYPE);
+
+  const sorterteFagsaker = useMemo(() => getSorterteFagsaker(fagsaker), [fagsaker]);
 
   return (
     <Table headerTextCodes={headerTextCodes} classNameTable={styles.table}>
@@ -98,20 +109,4 @@ export const FagsakList: FunctionComponent<OwnProps> = ({
   );
 };
 
-export const getSorterteFagsaker = createSelector([getFagsaker], (fagsaker: Fagsak[] = []) => fagsaker.concat().sort((fagsak1, fagsak2) => {
-  if (fagsak1.status.kode === fagsakStatus.AVSLUTTET && fagsak2.status.kode !== fagsakStatus.AVSLUTTET) {
-    return 1;
-  } if (fagsak1.status.kode !== fagsakStatus.AVSLUTTET && fagsak2.status.kode === fagsakStatus.AVSLUTTET) {
-    return -1;
-  }
-  const changeTimeFagsak1 = fagsak1.endret ? fagsak1.endret : fagsak1.opprettet;
-  const changeTimeFagsak2 = fagsak2.endret ? fagsak2.endret : fagsak2.opprettet;
-  return changeTimeFagsak1 > changeTimeFagsak2 ? 1 : -1;
-}));
-
-const mapStateToProps = (state) => ({
-  sorterteFagsaker: getSorterteFagsaker(state),
-  fagsakOppgaver: getFagsakOppgaver(state),
-});
-
-export default connect(mapStateToProps)(FagsakList);
+export default FagsakList;

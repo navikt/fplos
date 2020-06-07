@@ -2,9 +2,9 @@ import React, {
   ReactElement, FunctionComponent,
 } from 'react';
 
-import { RestApiPathsKeys } from 'data/restApiPaths';
+import { RestApiGlobalStatePathsKeys } from 'data/restApiPaths';
 import LoadingPanel from 'sharedComponents/LoadingPanel';
-import useRestApi, { ApiState } from '../data/useRestApi';
+import useGlobalStateRestApi, { ApiState } from '../data/rest-api-hooks/useGlobalStateRestApi';
 
 interface OwnProps {
   children: ReactElement;
@@ -13,10 +13,10 @@ interface OwnProps {
 const AppConfigResolver: FunctionComponent<OwnProps> = ({
   children,
 }) => {
-  const { state: stateNavAnsatt } = useRestApi(RestApiPathsKeys.NAV_ANSATT);
-  const { state: stateKodeverk } = useRestApi(RestApiPathsKeys.KODEVERK);
-  const { state: stateFpsakUrl } = useRestApi(RestApiPathsKeys.FPSAK_URL);
-  const { state: stateFptilbakeUrl } = useRestApi(RestApiPathsKeys.FPTILBAKE_URL);
+  const { state: stateNavAnsatt } = useGlobalStateRestApi(RestApiGlobalStatePathsKeys.NAV_ANSATT);
+  const { state: stateKodeverk } = useGlobalStateRestApi(RestApiGlobalStatePathsKeys.KODEVERK);
+  const { state: stateFpsakUrl } = useGlobalStateRestApi(RestApiGlobalStatePathsKeys.FPSAK_URL);
+  const { state: stateFptilbakeUrl } = useGlobalStateRestApi(RestApiGlobalStatePathsKeys.FPTILBAKE_URL);
 
   if (stateNavAnsatt === ApiState.LOADING
     || stateKodeverk === ApiState.LOADING

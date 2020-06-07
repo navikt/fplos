@@ -2,8 +2,8 @@
 import React from 'react';
 import Panel from 'nav-frontend-paneler';
 
-import { RestApiPathsKeys } from 'data/restApiPaths';
-import useRestApiData from 'data/useRestApiData';
+import { RestApiGlobalStatePathsKeys } from 'data/restApiPaths';
+import useRestApiData from 'data/rest-api-hooks/useGlobalStateRestApiData';
 
 import FagsakSearchIndex from '../fagsakSearch/FagsakSearchIndex';
 import BehandlingskoerIndex from '../behandlingskoer/BehandlingskoerIndex';
@@ -15,8 +15,8 @@ import styles from './saksbehandlerDashboard.less';
  * SaksbehandlerDashboard
  */
 export const SaksbehandlerDashboard = () => {
-  const fpsakUrl = useRestApiData<{ verdi?: string }>(RestApiPathsKeys.FPSAK_URL);
-  const fptilbakeUrl = useRestApiData<{ verdi?: string }>(RestApiPathsKeys.FPTILBAKE_URL);
+  const fpsakUrl = useRestApiData<{ verdi?: string }>(RestApiGlobalStatePathsKeys.FPSAK_URL);
+  const fptilbakeUrl = useRestApiData<{ verdi?: string }>(RestApiGlobalStatePathsKeys.FPTILBAKE_URL);
   return (
     <div>
       <div className={styles.oppgaveContainer}>

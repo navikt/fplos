@@ -19,6 +19,8 @@ interface OwnProps {
   forlengOppgaveReservasjon: (oppgaveId: number) => Promise<string>;
   endreOppgaveReservasjon: (oppgaveId: number, reserverTil: string) => Promise<string>;
   flyttReservasjon: (oppgaveId: number, brukerident: string, begrunnelse: string) => Promise<string>;
+  reserverteOppgaver: Oppgave[];
+  oppgaverTilBehandling: Oppgave[];
 }
 
 /**
@@ -32,6 +34,8 @@ const SakslistePanel: FunctionComponent<OwnProps> = ({
   sakslister,
   fetchSakslisteOppgaver,
   flyttReservasjon,
+  reserverteOppgaver,
+  oppgaverTilBehandling,
 }) => (
   <>
     <Undertittel><FormattedMessage id="SakslistePanel.StartBehandling" /></Undertittel>
@@ -47,6 +51,8 @@ const SakslistePanel: FunctionComponent<OwnProps> = ({
         forlengOppgaveReservasjon={forlengOppgaveReservasjon}
         endreOppgaveReservasjon={endreOppgaveReservasjon}
         flyttReservasjon={flyttReservasjon}
+        reserverteOppgaver={reserverteOppgaver}
+        oppgaverTilBehandling={oppgaverTilBehandling}
       />
     </div>
   </>

@@ -11,7 +11,7 @@ import StoreValuesInReduxState from 'form/reduxBinding/StoreValuesInReduxState';
 import { getValuesFromReduxState } from 'form/reduxBinding/formDuck';
 import { RadioGroupField, RadioOption, SelectField } from 'form/FinalFields';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
-import useKodeverk from 'data/useKodeverk';
+import useKodeverk from 'data/rest-api-hooks/useKodeverk';
 import fagsakYtelseType from 'kodeverk/fagsakYtelseType';
 import kodeverkTyper from 'kodeverk/kodeverkTyper';
 import TilBehandlingGraf from './TilBehandlingGraf';

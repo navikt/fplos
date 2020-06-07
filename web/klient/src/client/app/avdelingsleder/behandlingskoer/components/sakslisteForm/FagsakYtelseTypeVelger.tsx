@@ -6,7 +6,7 @@ import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import fagsakYtelseType from 'kodeverk/fagsakYtelseType';
 import kodeverkTyper from 'kodeverk/kodeverkTyper';
 import { RadioGroupField, RadioOption } from 'form/FinalFields';
-import useKodeverk from 'data/useKodeverk';
+import useKodeverk from 'data/rest-api-hooks/useKodeverk';
 
 const finnFagsakYtelseTypeNavn = (fagsakYtelseTyper, valgtFagsakYtelseType) => {
   const type = fagsakYtelseTyper.find((fyt) => fyt.kode === valgtFagsakYtelseType);

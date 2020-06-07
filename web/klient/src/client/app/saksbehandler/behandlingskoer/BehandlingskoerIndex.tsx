@@ -3,14 +3,14 @@ import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
 
 import { RestApiPathsKeys } from 'data/restApiPaths';
-import useRestApiRunner from 'data/useRestApiRunner';
+import useRestApiRunner from 'data/rest-api-hooks/useRestApiRunner';
 import { getFpsakHref, getFptilbakeHref } from 'app/paths';
 import Saksliste from 'saksbehandler/behandlingskoer/sakslisteTsType';
 import hentFpsakInternBehandlingIdActionCreator from 'app/duck';
 import OppgaveStatus from 'saksbehandler/oppgaveStatusTsType';
 import Oppgave from 'saksbehandler/oppgaveTsType';
 import OppgaveErReservertAvAnnenModal from 'saksbehandler/components/OppgaveErReservertAvAnnenModal';
-import useRestApi from 'data/useRestApi';
+import useRestApi from 'data/rest-api-hooks/useRestApi';
 import {
   setValgtSakslisteId,
 } from './duck';
@@ -18,7 +18,6 @@ import SakslistePanel from './components/SakslistePanel';
 import BehandlingPollingTimoutModal from './components/BehandlingPollingTimoutModal';
 
 interface OwnProps {
-  sakslister: Saksliste[];
   fpsakUrl: string;
   fptilbakeUrl: string;
 }
@@ -42,7 +41,14 @@ const BehandlingskoerIndex: FunctionComponent<OwnProps & DispatchProps> = ({
   const [reservertOppgaveStatus, setReservertOppgaveStatus] = useState<OppgaveStatus>();
 
   const { data: sakslister = [] } = useRestApi<Saksliste[]>(RestApiPathsKeys.SAKSLISTE);
-  const runRequest = useRestApiRunner();
+
+  const { startRequest: hentReserverteOppgaver, data: reserverteOppgaver = [] } = useRestApiRunner<Oppgave[]>(RestApiPathsKeys.RESERVERTE_OPPGAVER);
+  const { startRequest: hentOppgaverTilBehandling, data: oppgaverTilBehandling = [] } = useRestApiRunner<Oppgave[]>(RestApiPathsKeys.OPPGAVER_TIL_BEHANDLING);
+  const { startRequest: reserverOppgave } = useRestApiRunner<OppgaveStatus>(RestApiPathsKeys.RESERVER_OPPGAVE);
+  const { startRequest: opphevOppgavereservasjon } = useRestApiRunner<Oppgave[]>(RestApiPathsKeys.OPPHEV_OPPGAVERESERVASJON);
+  const { startRequest: forlengOppgavereservasjon } = useRestApiRunner<Oppgave[]>(RestApiPathsKeys.FORLENG_OPPGAVERESERVASJON);
+  const { startRequest: endreOppgavereservasjon } = useRestApiRunner<Oppgave[]>(RestApiPathsKeys.ENDRE_OPPGAVERESERVASJON);
+  const { startRequest: flyttOppgavereservasjon } = useRestApiRunner<Oppgave[]>(RestApiPathsKeys.FLYTT_RESERVASJON);
 
   const goToUrl = useCallback((url) => window.location.assign(url), []);
 
@@ -58,20 +64,17 @@ const BehandlingskoerIndex: FunctionComponent<OwnProps & DispatchProps> = ({
     }
   }; */
 
-  const fetchReserverteOppgaver = () => runRequest(RestApiPathsKeys.RESERVERTE_OPPGAVER, undefined, { keepData: true });
-
   const fetchSakslisteOppgaverPolling = (nySakslisteId: number, oppgaveIder?: string) => {
-    fetchReserverteOppgaver();
-    runRequest<Oppgave[]>(RestApiPathsKeys.OPPGAVER_TIL_BEHANDLING,
-      oppgaveIder ? { sakslisteId: nySakslisteId, oppgaveIder } : { sakslisteId: nySakslisteId }, { keepData: true })
+    hentReserverteOppgaver();
+    hentOppgaverTilBehandling(oppgaveIder ? { sakslisteId: nySakslisteId, oppgaveIder } : { sakslisteId: nySakslisteId })
       .then((response) => (nySakslisteId === sakslisteId
         ? fetchSakslisteOppgaverPolling(nySakslisteId, response.map((o) => o.id).join(',')) : Promise.resolve())).catch(() => undefined);
   };
 
   const fetchSakslisteOppgaver = (nySakslisteId: number) => {
     setSakslisteId(nySakslisteId);
-    fetchReserverteOppgaver();
-    runRequest<Oppgave[]>(RestApiPathsKeys.OPPGAVER_TIL_BEHANDLING, { sakslisteId }, { keepData: false })
+    hentReserverteOppgaver();
+    hentOppgaverTilBehandling({ sakslisteId })
       .then((response) => (nySakslisteId === sakslisteId ? fetchSakslisteOppgaverPolling(nySakslisteId, response.map((o) => o.id)
         .join(',')) : Promise.resolve()));
   };
@@ -96,7 +99,7 @@ const BehandlingskoerIndex: FunctionComponent<OwnProps & DispatchProps> = ({
     if (oppgave.status.erReservert) {
       openSak(oppgave);
     } else {
-      runRequest<OppgaveStatus>(RestApiPathsKeys.RESERVER_OPPGAVE, { oppgaveId: oppgave.id })
+      reserverOppgave({ oppgaveId: oppgave.id })
         .then((nyOppgaveStatus) => {
           if (nyOppgaveStatus.erReservert && nyOppgaveStatus.erReservertAvInnloggetBruker) {
             openSak(oppgave);
@@ -113,32 +116,32 @@ const BehandlingskoerIndex: FunctionComponent<OwnProps & DispatchProps> = ({
     if (!sakslisteId) {
       return Promise.resolve();
     }
-    return runRequest<Oppgave[]>(RestApiPathsKeys.OPPHEV_OPPGAVERESERVASJON, { oppgaveId, begrunnelse })
-      .then(() => fetchReserverteOppgaver());
+    return opphevOppgavereservasjon({ oppgaveId, begrunnelse })
+      .then(() => hentReserverteOppgaver());
   };
 
   const forlengOppgaveReservasjonFn = (oppgaveId: number): Promise<any> => {
     if (!sakslisteId) {
       return Promise.resolve();
     }
-    return runRequest<Oppgave[]>(RestApiPathsKeys.FORLENG_OPPGAVERESERVASJON, { oppgaveId })
-      .then(() => fetchReserverteOppgaver());
+    return forlengOppgavereservasjon({ oppgaveId })
+      .then(() => hentReserverteOppgaver());
   };
 
   const endreOppgaveReservasjonFn = (oppgaveId: number, reserverTil: string): Promise<any> => {
     if (!sakslisteId) {
       return Promise.resolve();
     }
-    return runRequest<Oppgave[]>(RestApiPathsKeys.ENDRE_OPPGAVERESERVASJON, { oppgaveId, reserverTil })
-      .then(() => fetchReserverteOppgaver());
+    return endreOppgavereservasjon({ oppgaveId, reserverTil })
+      .then(() => hentReserverteOppgaver());
   };
 
   const flyttReservasjonFn = (oppgaveId: number, brukerident: string, begrunnelse: string): Promise<any> => {
     if (!sakslisteId) {
       return Promise.resolve();
     }
-    return runRequest<Oppgave[]>(RestApiPathsKeys.FLYTT_RESERVASJON, { oppgaveId, brukerIdent: brukerident, begrunnelse })
-      .then(() => fetchReserverteOppgaver());
+    return flyttOppgavereservasjon({ oppgaveId, brukerIdent: brukerident, begrunnelse })
+      .then(() => hentReserverteOppgaver());
   };
 
   const lukkErReservertModalOgOpneOppgave = (oppgave: Oppgave) => {
@@ -162,6 +165,8 @@ const BehandlingskoerIndex: FunctionComponent<OwnProps & DispatchProps> = ({
         forlengOppgaveReservasjon={forlengOppgaveReservasjonFn}
         endreOppgaveReservasjon={endreOppgaveReservasjonFn}
         flyttReservasjon={flyttReservasjonFn}
+        reserverteOppgaver={reserverteOppgaver}
+        oppgaverTilBehandling={oppgaverTilBehandling}
       />
       {harTimeout
         && <BehandlingPollingTimoutModal />}

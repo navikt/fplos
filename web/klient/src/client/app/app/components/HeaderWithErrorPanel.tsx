@@ -8,8 +8,8 @@ import BoxedListWithLinks from '@navikt/boxed-list-with-links';
 import Header from '@navikt/nap-header';
 import UserPanel from '@navikt/nap-user-panel';
 
-import useRestApiData from 'data/useRestApiData';
-import { RestApiPathsKeys } from 'data/restApiPaths';
+import useRestApiData from 'data/rest-api-hooks/useGlobalStateRestApiData';
+import { RestApiGlobalStatePathsKeys } from 'data/restApiPaths';
 import EventType from 'data/rest-api/src/requestApi/eventType';
 import { RETTSKILDE_URL, SYSTEMRUTINE_URL } from 'data/eksterneLenker';
 import NavAnsatt from 'app/navAnsattTsType';
@@ -84,7 +84,7 @@ const HeaderWithErrorPanel: FunctionComponent<OwnProps & WrappedComponentProps> 
   const [erLenkePanelApent, setLenkePanelApent] = useState(false);
   const [erAvdelingerPanelApent, setAvdelingerPanelApent] = useState(false);
 
-  const navAnsatt = useRestApiData<NavAnsatt>(RestApiPathsKeys.NAV_ANSATT);
+  const navAnsatt = useRestApiData<NavAnsatt>(RestApiGlobalStatePathsKeys.NAV_ANSATT);
 
   const wrapperRef = useOutsideClickEvent(erLenkePanelApent, erAvdelingerPanelApent, setLenkePanelApent, setAvdelingerPanelApent);
 

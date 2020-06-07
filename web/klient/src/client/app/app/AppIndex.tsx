@@ -7,13 +7,13 @@ import moment from 'moment';
 import { parseQueryString } from 'utils/urlUtils';
 import EventType from 'data/rest-api/src/requestApi/eventType';
 import errorHandler from 'data/error-api-redux';
-import { RestApiPathsKeys } from 'data/restApiPaths';
+import { RestApiGlobalStatePathsKeys } from 'data/restApiPaths';
 import AppConfigResolver from './AppConfigResolver';
 import Location from './locationTsType';
 import LanguageProvider from './LanguageProvider';
 import HeaderWithErrorPanel from './components/HeaderWithErrorPanel';
 import Home from './components/Home';
-import { RestDataContext } from '../data/RestDataContext';
+import { RestDataContext } from '../data/rest-api-hooks/RestDataContext';
 
 import '../../styles/global.less';
 
@@ -56,7 +56,7 @@ export class AppIndex extends Component<OwnProps> {
 
   componentDidUpdate = (): void => {
     const { state } = this.context;
-    const navAnsatt = state[RestApiPathsKeys.NAV_ANSATT];
+    const navAnsatt = state[RestApiGlobalStatePathsKeys.NAV_ANSATT];
     const funksjonellTid = navAnsatt ? navAnsatt.funksjonellTid : undefined;
 
     if (funksjonellTid) {

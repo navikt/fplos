@@ -3,8 +3,8 @@ import sinon from 'sinon';
 import { expect } from 'chai';
 import { shallow } from 'enzyme';
 
-import * as useRestApiData from 'data/useRestApiData';
-import * as useRestApi from 'data/useRestApi';
+import * as useRestApiData from 'data/rest-api-hooks/useGlobalStateRestApiData';
+import * as useRestApi from 'data/rest-api-hooks/useRestApi';
 
 import HeaderAvdelingListe from './HeaderAvdelingListe';
 

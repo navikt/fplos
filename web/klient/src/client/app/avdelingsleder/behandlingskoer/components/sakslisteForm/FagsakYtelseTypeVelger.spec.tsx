@@ -3,7 +3,7 @@ import { expect } from 'chai';
 import sinon from 'sinon';
 import { shallow } from 'enzyme';
 
-import * as useKodeverk from 'data/useKodeverk';
+import * as useKodeverk from 'data/rest-api-hooks/useKodeverk';
 import kodeverkTyper from 'kodeverk/kodeverkTyper';
 import fagsakYtelseType from 'kodeverk/fagsakYtelseType';
 import { RadioOption, RadioGroupField } from 'form/FinalFields';

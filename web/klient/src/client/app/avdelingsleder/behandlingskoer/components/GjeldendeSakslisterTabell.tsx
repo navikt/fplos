@@ -19,7 +19,7 @@ import TableColumn from 'sharedComponents/table/TableColumn';
 import DateLabel from 'sharedComponents/DateLabel';
 import addCircleIcon from 'images/add-circle.svg';
 import removeIcon from 'images/remove.svg';
-import useKodeverk from 'data/useKodeverk';
+import useKodeverk from 'data/rest-api-hooks/useKodeverk';
 import SletteSakslisteModal from './SletteSakslisteModal';
 import Saksliste from '../sakslisteTsType';
 import { getAntallOppgaverForAvdelingResultat } from '../duck';

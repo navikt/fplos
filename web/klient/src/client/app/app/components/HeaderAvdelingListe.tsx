@@ -7,9 +7,9 @@ import BoxedListWithSelection from '@navikt/boxed-list-with-selection';
 
 import { getValueFromLocalStorage, setValueInLocalStorage, removeValueFromLocalStorage } from 'utils/localStorageHelper';
 import Avdeling from 'app/avdelingTsType';
-import useRestApiData from 'data/useRestApiData';
-import useRestApi from 'data/useRestApi';
-import { RestApiPathsKeys } from 'data/restApiPaths';
+import useRestApiData from 'data/rest-api-hooks/useGlobalStateRestApiData';
+import useGlobalStateRestApi from 'data/rest-api-hooks/useGlobalStateRestApi';
+import { RestApiGlobalStatePathsKeys } from 'data/restApiPaths';
 
 import NavAnsatt from 'app/navAnsattTsType';
 
@@ -45,9 +45,9 @@ const HeaderAvdelingListe: FunctionComponent<OwnProps> = ({
   setValgtAvdelingEnhet,
   valgtAvdelingEnhet,
 }) => {
-  const { data: avdelinger } = useRestApi<Avdeling[]>(RestApiPathsKeys.AVDELINGER);
+  const { data: avdelinger } = useGlobalStateRestApi<Avdeling[]>(RestApiGlobalStatePathsKeys.AVDELINGER);
 
-  const navAnsatt = useRestApiData<NavAnsatt>(RestApiPathsKeys.NAV_ANSATT);
+  const navAnsatt = useRestApiData<NavAnsatt>(RestApiGlobalStatePathsKeys.NAV_ANSATT);
 
   useEffect(() => {
     setAvdeling(avdelinger, setValgtAvdelingEnhet, valgtAvdelingEnhet);

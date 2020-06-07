@@ -4,7 +4,7 @@ import sinon from 'sinon';
 import { Form } from 'react-final-form';
 
 import kodeverkTyper from 'kodeverk/kodeverkTyper';
-import * as useKodeverk from 'data/useKodeverk';
+import * as useKodeverk from 'data/rest-api-hooks/useKodeverk';
 import { shallowWithIntl } from 'testHelpers/intl-enzyme-test-helper';
 import behandlingType from 'kodeverk/behandlingType';
 import { RadioOption } from 'form/FinalFields';

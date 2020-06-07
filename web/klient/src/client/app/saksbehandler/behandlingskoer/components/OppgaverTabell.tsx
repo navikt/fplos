@@ -19,9 +19,8 @@ import DateLabel from 'sharedComponents/DateLabel';
 import menuIconBlueUrl from 'images/ic-menu-18px_blue.svg';
 import menuIconBlackUrl from 'images/ic-menu-18px_black.svg';
 import bubbletextUrl from 'images/bubbletext.svg';
-import useRestApiRunner from 'data/useRestApiRunner';
+import useRestApiRunner from 'data/rest-api-hooks/useRestApiRunner';
 import { RestApiPathsKeys } from 'data/restApiPaths';
-import useRestApiData from 'data/useRestApiData';
 import bubbletextFilledUrl from 'images/bubbletext_filled.svg';
 import OppgaveHandlingerMenu from './menu/OppgaveHandlingerMenu';
 import {
@@ -56,6 +55,7 @@ const getToggleMenuEvent = (oppgave: OppgaveMedReservertIndikator, toggleMenu) =
 
 interface OwnProps {
   oppgaverTilBehandling: Oppgave[];
+  reserverteOppgaver: Oppgave[];
   reserverOppgave: (oppgave: Oppgave) => void;
   opphevOppgaveReservasjon: (oppgaveId: number, begrunnelse: string) => Promise<any>;
   forlengOppgaveReservasjon: (oppgaveId: number) => Promise<any>;
@@ -76,6 +76,8 @@ export const OppgaverTabell: FunctionComponent<OwnProps & WrappedComponentProps>
   endreOppgaveReservasjon,
   flyttReservasjon,
   resetSaksbehandler: resetBehandler,
+  reserverteOppgaver,
+  oppgaverTilBehandling,
   antall,
   intl,
 }) => {
@@ -86,13 +88,11 @@ export const OppgaverTabell: FunctionComponent<OwnProps & WrappedComponentProps>
     top: 0,
   });
 
-  const reserverteOppgaver = useRestApiData<Oppgave[]>(RestApiPathsKeys.RESERVERTE_OPPGAVER) || [];
-  const oppgaverTilBehandling = useRestApiData<Oppgave[]>(RestApiPathsKeys.OPPGAVER_TIL_BEHANDLING) || [];
-
   const ref = useRef({});
 
-  const runRequest = useRestApiRunner();
-  const finnSaksbehandler = useCallback((brukerIdent) => runRequest<Oppgave[]>(RestApiPathsKeys.FLYTT_RESERVASJON_SAKSBEHANDLER_SOK, brukerIdent), []);
+  const { startRequest: startSaksbehandlerSok } = useRestApiRunner<string>(RestApiPathsKeys.FLYTT_RESERVASJON_SAKSBEHANDLER_SOK);
+
+  const finnSaksbehandler = useCallback((brukerIdent) => startSaksbehandlerSok(brukerIdent), []);
 
   const goToFagsak = (event: Event, id: number, oppgave: Oppgave) => {
     if (ref.current && Object.keys(ref.current).some((key) => ref.current[key] && ref.current[key].contains(event.target))) {
