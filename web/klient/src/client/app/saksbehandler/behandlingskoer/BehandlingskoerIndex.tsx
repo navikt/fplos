@@ -62,7 +62,7 @@ const BehandlingskoerIndex: FunctionComponent<OwnProps & DispatchProps> = ({
     if (sakslisteId) {
       requestApi.cancelRequest();
     }
-  });
+  }, []);
 
   const fetchSakslisteOppgaverPolling = (nySakslisteId: number, oppgaveIder?: string) => {
     hentReserverteOppgaver();
