@@ -8,13 +8,12 @@ import { RestApiPathsKeys } from 'data/restApiPaths';
 import useRestApiRunner from 'data/rest-api-hooks/useRestApiRunner';
 import { getFpsakHref, getFptilbakeHref } from 'app/paths';
 import Saksliste from 'saksbehandler/behandlingskoer/sakslisteTsType';
-import hentFpsakInternBehandlingIdActionCreator from 'app/duck';
 import OppgaveStatus from 'saksbehandler/oppgaveStatusTsType';
 import Oppgave from 'saksbehandler/oppgaveTsType';
 import OppgaveErReservertAvAnnenModal from 'saksbehandler/components/OppgaveErReservertAvAnnenModal';
 import useRestApi from 'data/rest-api-hooks/useRestApi';
 import {
-  setValgtSakslisteId,
+  setValgtSakslisteId as setValgtSaksliste,
 } from './duck';
 import SakslistePanel from './components/SakslistePanel';
 import BehandlingPollingTimoutModal from './components/BehandlingPollingTimoutModal';
@@ -26,16 +25,15 @@ interface OwnProps {
 
 interface DispatchProps {
   setValgtSakslisteId: (sakslisteId: number) => void;
-  hentFpsakInternBehandlingId: (uuid: string) => Promise<{payload: number }>;
 }
 
 /**
  * BehandlingskoerIndex
  */
 const BehandlingskoerIndex: FunctionComponent<OwnProps & DispatchProps> = ({
+  setValgtSakslisteId,
   fpsakUrl,
   fptilbakeUrl,
-  hentFpsakInternBehandlingId,
 }) => {
   const [sakslisteId, setSakslisteId] = useState<number>();
   const [reservertAvAnnenSaksbehandler, setReservertAvAnnenSaksbehandler] = useState<boolean>(false);
@@ -45,12 +43,15 @@ const BehandlingskoerIndex: FunctionComponent<OwnProps & DispatchProps> = ({
   const { data: sakslister = [] } = useRestApi<Saksliste[]>(RestApiPathsKeys.SAKSLISTE);
 
   const { startRequest: hentReserverteOppgaver, data: reserverteOppgaver = [] } = useRestApiRunner<Oppgave[]>(RestApiPathsKeys.RESERVERTE_OPPGAVER);
-  const { startRequest: hentOppgaverTilBehandling, requestApi, data: oppgaverTilBehandling = [] } = useRestApiRunner<Oppgave[]>(RestApiPathsKeys.OPPGAVER_TIL_BEHANDLING);
+  const {
+    startRequest: hentOppgaverTilBehandling, requestApi, data: oppgaverTilBehandling = [],
+  } = useRestApiRunner<Oppgave[]>(RestApiPathsKeys.OPPGAVER_TIL_BEHANDLING);
   const { startRequest: reserverOppgave } = useRestApiRunner<OppgaveStatus>(RestApiPathsKeys.RESERVER_OPPGAVE);
   const { startRequest: opphevOppgavereservasjon } = useRestApiRunner<Oppgave[]>(RestApiPathsKeys.OPPHEV_OPPGAVERESERVASJON);
   const { startRequest: forlengOppgavereservasjon } = useRestApiRunner<Oppgave[]>(RestApiPathsKeys.FORLENG_OPPGAVERESERVASJON);
   const { startRequest: endreOppgavereservasjon } = useRestApiRunner<Oppgave[]>(RestApiPathsKeys.ENDRE_OPPGAVERESERVASJON);
   const { startRequest: flyttOppgavereservasjon } = useRestApiRunner<Oppgave[]>(RestApiPathsKeys.FLYTT_RESERVASJON);
+  const { startRequest: hentFpsakInternBehandlingId } = useRestApiRunner<number>(RestApiPathsKeys.FPSAK_BEHANDLING_ID);
 
   const goToUrl = useCallback((url) => window.location.assign(url), []);
 
@@ -73,6 +74,7 @@ const BehandlingskoerIndex: FunctionComponent<OwnProps & DispatchProps> = ({
 
   const fetchSakslisteOppgaver = (nySakslisteId: number) => {
     setSakslisteId(nySakslisteId);
+    setValgtSakslisteId(nySakslisteId);
     hentReserverteOppgaver();
     hentOppgaverTilBehandling({ sakslisteId: nySakslisteId })
       .then((response) => (nySakslisteId === sakslisteId ? fetchSakslisteOppgaverPolling(nySakslisteId, response.map((o) => o.id)
@@ -80,8 +82,8 @@ const BehandlingskoerIndex: FunctionComponent<OwnProps & DispatchProps> = ({
   };
 
   const openFagsak = (oppgave: Oppgave) => {
-    hentFpsakInternBehandlingId(oppgave.behandlingId).then((data: {payload: number }) => {
-      goToUrl(getFpsakHref(fpsakUrl, oppgave.saksnummer, data.payload));
+    hentFpsakInternBehandlingId({ uuid: oppgave.behandlingId }).then((behandlingId) => {
+      goToUrl(getFpsakHref(fpsakUrl, oppgave.saksnummer, behandlingId));
     });
   };
 
@@ -186,8 +188,7 @@ const mapStateToProps = () => ({
 
 const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => ({
   ...bindActionCreators<DispatchProps, any>({
-    setValgtSakslisteId,
-    hentFpsakInternBehandlingId: hentFpsakInternBehandlingIdActionCreator,
+    setValgtSakslisteId: setValgtSaksliste,
   }, dispatch),
 });
 

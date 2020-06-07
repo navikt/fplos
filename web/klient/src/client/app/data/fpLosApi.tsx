@@ -32,14 +32,9 @@ export const fpLosApiKeys = {
   OPPGAVE_AVDELING_ANTALL: 'OPPGAVE_AVDELING_ANTALL',
   SAKSLISTE_SAKSBEHANDLERE: 'SAKSLISTE_SAKSBEHANDLERE',
   BEHANDLINGSKO_OPPGAVE_ANTALL: 'BEHANDLINGSKO_OPPGAVE_ANTALL',
-  // Delvis flytta
-  FPSAK_BEHANDLING_ID: 'FPSAK_BEHANDLING_ID',
-  FLYTT_RESERVASJON_SAKSBEHANDLER_SOK: 'FLYTT_RESERVASJON_SAKSBEHANDLER_SOK',
 };
 
 const endpoints = new RestApiConfigBuilder()
-  .withPost('/api/saksbehandler/oppgaver/flytt/sok', fpLosApiKeys.FLYTT_RESERVASJON_SAKSBEHANDLER_SOK)
-
   /* /api/saksbehandler/saksliste */
   .withGet('/api/saksbehandler/saksliste/saksbehandlere', fpLosApiKeys.SAKSLISTE_SAKSBEHANDLERE)
 
@@ -79,9 +74,6 @@ const endpoints = new RestApiConfigBuilder()
   .withGet('/api/avdelingsleder/nokkeltall/behandlinger-under-arbeid-historikk', fpLosApiKeys.HENT_OPPGAVER_PER_DATO)
   .withGet('/api/avdelingsleder/nokkeltall/behandlinger-manuelt-vent-historikk', fpLosApiKeys.HENT_OPPGAVER_MANUELT_PA_VENT)
   .withGet('/api/avdelingsleder/nokkeltall/behandlinger-forste-stonadsdag', fpLosApiKeys.HENT_OPPGAVER_PER_FORSTE_STONADSDAG)
-
-  /* /api/fpsak/behandlinger */
-  .withGet('/api/fpsak/behandlingId', fpLosApiKeys.FPSAK_BEHANDLING_ID)
 
   .build();
 

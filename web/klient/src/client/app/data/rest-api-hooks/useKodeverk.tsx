@@ -1,10 +1,10 @@
 import Kodeverk from 'kodeverk/kodeverkTsType';
 import { RestApiGlobalStatePathsKeys } from 'data/restApiPaths';
 
-import useGlobalStateRestApi from './useGlobalStateRestApi';
+import useGlobalStateRestApiData from './useGlobalStateRestApiData';
 
 function useKodeverk<T = Kodeverk>(kodeverkType): T[] {
-  const alleKodeverk = useGlobalStateRestApi<{[key: string]: T[]}>(RestApiGlobalStatePathsKeys.KODEVERK);
+  const alleKodeverk = useGlobalStateRestApiData<{[key: string]: T[]}>(RestApiGlobalStatePathsKeys.KODEVERK);
   return alleKodeverk[kodeverkType];
 }
 

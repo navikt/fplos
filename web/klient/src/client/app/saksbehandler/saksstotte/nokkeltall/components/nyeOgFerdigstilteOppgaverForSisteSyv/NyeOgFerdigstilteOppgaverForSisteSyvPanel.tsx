@@ -1,5 +1,5 @@
 
-import React, { FunctionComponent } from 'react';
+import React, { FunctionComponent, useMemo } from 'react';
 import moment from 'moment';
 import { FormattedMessage } from 'react-intl';
 import { Element } from 'nav-frontend-typografi';
@@ -27,18 +27,21 @@ export const NyeOgFerdigstilteOppgaverForSisteSyvPanel: FunctionComponent<OwnPro
   width,
   height,
   nyeOgFerdigstilteOppgaver,
-}) => (
-  <>
-    <VerticalSpacer eightPx />
-    <Element>
-      <FormattedMessage id="NyeOgFerdigstilteOppgaverForSisteSyvPanel.SisteSyv" />
-    </Element>
-    <NyeOgFerdigstilteOppgaverForSisteSyvGraf
-      width={width}
-      height={height}
-      nyeOgFerdigstilteOppgaver={nyeOgFerdigstilteOppgaver}
-    />
-  </>
-);
+}) => {
+  const filtrertenyeOgFerdigstilteOppgaver = useMemo(() => getNyeOgFerdigstilteForSisteSyvDager(nyeOgFerdigstilteOppgaver), [nyeOgFerdigstilteOppgaver]);
+  return (
+    <>
+      <VerticalSpacer eightPx />
+      <Element>
+        <FormattedMessage id="NyeOgFerdigstilteOppgaverForSisteSyvPanel.SisteSyv" />
+      </Element>
+      <NyeOgFerdigstilteOppgaverForSisteSyvGraf
+        width={width}
+        height={height}
+        nyeOgFerdigstilteOppgaver={filtrertenyeOgFerdigstilteOppgaver}
+      />
+    </>
+  );
+};
 
 export default NyeOgFerdigstilteOppgaverForSisteSyvPanel;

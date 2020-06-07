@@ -2,15 +2,14 @@
 import React, { Fragment, FunctionComponent } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { connect } from 'react-redux';
-import { bindActionCreators, Dispatch } from 'redux';
 import Lenke from 'nav-frontend-lenker';
 import { Undertittel, Normaltekst } from 'nav-frontend-typografi';
 
-import { RestApiGlobalStatePathsKeys } from 'data/restApiPaths';
+import { RestApiGlobalStatePathsKeys, RestApiPathsKeys } from 'data/restApiPaths';
 import { getFpsakHref, getFptilbakeHref } from 'app/paths';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
-import hentFpsakInternBehandlingIdActionCreator from 'app/duck';
-import useRestApiData from 'data/rest-api-hooks/useGlobalStateRestApiData';
+import useGlobalStateRestApiData from 'data/rest-api-hooks/useGlobalStateRestApiData';
+import useRestApiRunner from 'data/rest-api-hooks/useRestApiRunner';
 import { getBehandledeOppgaver } from 'saksbehandler/saksstotte/duck';
 import Oppgave from '../../oppgaveTsType';
 
@@ -20,26 +19,22 @@ interface OwnProps {
   sistBehandledeSaker: Oppgave[];
 }
 
-interface DispatchProps {
-  hentFpsakInternBehandlingId: (uuid: string) => Promise<{ payload: number }>;
-}
-
 /**
  * SistBehandledeSaker
  *
  * Denne komponenten viser de tre siste fagsakene en nav-ansatt har behandlet.
  */
-export const SistBehandledeSaker: FunctionComponent<OwnProps & DispatchProps> = ({
-  hentFpsakInternBehandlingId,
+export const SistBehandledeSaker: FunctionComponent<OwnProps> = ({
   sistBehandledeSaker,
 }) => {
-  const fpsakUrl = useRestApiData<{ verdi?: string }>(RestApiGlobalStatePathsKeys.FPSAK_URL);
-  const fptilbakeUrl = useRestApiData<{ verdi?: string }>(RestApiGlobalStatePathsKeys.FPTILBAKE_URL);
+  const fpsakUrl = useGlobalStateRestApiData<{ verdi?: string }>(RestApiGlobalStatePathsKeys.FPSAK_URL);
+  const fptilbakeUrl = useGlobalStateRestApiData<{ verdi?: string }>(RestApiGlobalStatePathsKeys.FPTILBAKE_URL);
+  const { startRequest: hentFpsakInternBehandlingId } = useRestApiRunner<number>(RestApiPathsKeys.FPSAK_BEHANDLING_ID);
 
   const openFpsak = (oppgave: Oppgave) => {
     if (oppgave.system === 'FPSAK') {
-      hentFpsakInternBehandlingId(oppgave.behandlingId)
-        .then((data: { payload: number }) => window.location.assign(getFpsakHref(fpsakUrl.verdi, oppgave.saksnummer, data.payload)));
+      hentFpsakInternBehandlingId({ uuid: oppgave.behandlingId })
+        .then((fagsystemInternId) => window.location.assign(getFpsakHref(fpsakUrl.verdi, oppgave.saksnummer, fagsystemInternId)));
     } else if (oppgave.system === 'FPTILBAKE') {
       window.location.assign(getFptilbakeHref(fptilbakeUrl.verdi, oppgave.href));
     } else throw new Error('Fagsystemet for oppgaven er ukjent');
@@ -80,10 +75,4 @@ const mapStateToProps = (state) => ({
   sistBehandledeSaker: getBehandledeOppgaver(state) || [],
 });
 
-const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => ({
-  ...bindActionCreators<DispatchProps, any>({
-    hentFpsakInternBehandlingId: hentFpsakInternBehandlingIdActionCreator,
-  }, dispatch),
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(SistBehandledeSaker);
+export default connect(mapStateToProps)(SistBehandledeSaker);

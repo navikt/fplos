@@ -31,7 +31,6 @@ export const endpoints = new RestApiConfigBuilder()
   .withGet('/api/konfig/fptilbake-url', RestApiGlobalStatePathsKeys.FPTILBAKE_URL)
   .withGet('/api/kodeverk', RestApiGlobalStatePathsKeys.KODEVERK)
 
-  .withGet('/api/fpsak/behandlingId', RestApiPathsKeys.FPSAK_BEHANDLING_ID)
 
   // Avdelingsleder
   .withGet('/api/avdelingsleder/avdelinger', RestApiGlobalStatePathsKeys.AVDELINGER)
@@ -50,5 +49,6 @@ export const endpoints = new RestApiConfigBuilder()
   .withGet('/api/saksbehandler/oppgaver/oppgaver-for-fagsaker', RestApiPathsKeys.OPPGAVER_FOR_FAGSAKER)
   .withGet('/api/saksbehandler/oppgaver/reservasjon-status', RestApiPathsKeys.HENT_RESERVASJONSSTATUS)
   .withGet('/api/saksbehandler/nokkeltall/nye-og-ferdigstilte-oppgaver', RestApiPathsKeys.HENT_NYE_OG_FERDIGSTILTE_OPPGAVER)
+  .withGet('/api/fpsak/behandlingId', RestApiPathsKeys.FPSAK_BEHANDLING_ID)
 
   .build();
