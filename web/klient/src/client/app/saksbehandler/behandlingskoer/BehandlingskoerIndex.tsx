@@ -1,4 +1,6 @@
-import React, { FunctionComponent, useState, useCallback } from 'react';
+import React, {
+  FunctionComponent, useState, useCallback, useEffect,
+} from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
 
@@ -43,7 +45,7 @@ const BehandlingskoerIndex: FunctionComponent<OwnProps & DispatchProps> = ({
   const { data: sakslister = [] } = useRestApi<Saksliste[]>(RestApiPathsKeys.SAKSLISTE);
 
   const { startRequest: hentReserverteOppgaver, data: reserverteOppgaver = [] } = useRestApiRunner<Oppgave[]>(RestApiPathsKeys.RESERVERTE_OPPGAVER);
-  const { startRequest: hentOppgaverTilBehandling, data: oppgaverTilBehandling = [] } = useRestApiRunner<Oppgave[]>(RestApiPathsKeys.OPPGAVER_TIL_BEHANDLING);
+  const { startRequest: hentOppgaverTilBehandling, requestApi, data: oppgaverTilBehandling = [] } = useRestApiRunner<Oppgave[]>(RestApiPathsKeys.OPPGAVER_TIL_BEHANDLING);
   const { startRequest: reserverOppgave } = useRestApiRunner<OppgaveStatus>(RestApiPathsKeys.RESERVER_OPPGAVE);
   const { startRequest: opphevOppgavereservasjon } = useRestApiRunner<Oppgave[]>(RestApiPathsKeys.OPPHEV_OPPGAVERESERVASJON);
   const { startRequest: forlengOppgavereservasjon } = useRestApiRunner<Oppgave[]>(RestApiPathsKeys.FORLENG_OPPGAVERESERVASJON);
@@ -56,13 +58,11 @@ const BehandlingskoerIndex: FunctionComponent<OwnProps & DispatchProps> = ({
   // const { state: harTimeout } = useRestApiData<Oppgave[]>(RestApiPathsKeys.OPPGAVER_TIL_BEHANDLING);
   const harTimeout = false;
 
-  // FIXME Avbryt polling
-  /* componentWillUnmount = () => {
-    const { sakslisteId: id } = this.state;
-    if (id) {
-      fpLosApi.OPPGAVER_TIL_BEHANDLING.cancelRestApiRequest();
+  useEffect(() => () => {
+    if (sakslisteId) {
+      requestApi.cancelRequest();
     }
-  }; */
+  });
 
   const fetchSakslisteOppgaverPolling = (nySakslisteId: number, oppgaveIder?: string) => {
     hentReserverteOppgaver();
@@ -74,7 +74,7 @@ const BehandlingskoerIndex: FunctionComponent<OwnProps & DispatchProps> = ({
   const fetchSakslisteOppgaver = (nySakslisteId: number) => {
     setSakslisteId(nySakslisteId);
     hentReserverteOppgaver();
-    hentOppgaverTilBehandling({ sakslisteId })
+    hentOppgaverTilBehandling({ sakslisteId: nySakslisteId })
       .then((response) => (nySakslisteId === sakslisteId ? fetchSakslisteOppgaverPolling(nySakslisteId, response.map((o) => o.id)
         .join(',')) : Promise.resolve()));
   };

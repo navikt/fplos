@@ -55,14 +55,14 @@ class RequestRunner {
     return this.getConfig().path ? `${this.context.getHostname()}${contextPath}${this.getConfig().path}` : undefined;
   }
 
-  private stopProcess = () => {
+  public cancelRequest = () => {
     if (this.process) {
       this.process.cancel();
     }
   }
 
   public startProcess = (params: any, notificationMapper?: NotificationMapper) => {
-    this.stopProcess();
+    this.cancelRequest();
 
     this.process = new RequestProcess(this.httpClientApi, this.getRestMethod(), this.getPath(), this.getConfig().config);
     if (notificationMapper) {

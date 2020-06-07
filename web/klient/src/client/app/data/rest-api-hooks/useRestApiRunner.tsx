@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import { createRequestApi } from 'data/rest-api-new';
+import { createRequestApi, RequestRunner } from 'data/rest-api-new';
 import { endpoints, RestApiPathsKeys } from 'data/restApiPaths';
 
 const contextPath = 'fplos';
@@ -24,6 +24,7 @@ interface RestApiData<T> {
   state: ApiState;
   error?: SearchResultAccessDenied;
   data?: T;
+  requestApi: RequestRunner;
 }
 
 function useRestApiRunner<T>(key: RestApiPathsKeys):RestApiData<T> {
@@ -68,6 +69,7 @@ function useRestApiRunner<T>(key: RestApiPathsKeys):RestApiData<T> {
   return {
     startRequest,
     resetRequestData,
+    requestApi: requestApi.getRequestRunner(key),
     ...data,
   };
 }
