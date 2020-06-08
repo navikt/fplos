@@ -16,7 +16,6 @@ import fagsakYtelseType from 'kodeverk/fagsakYtelseType';
 import kodeverkTyper from 'kodeverk/kodeverkTyper';
 import TilBehandlingGraf from './TilBehandlingGraf';
 import OppgaveForDato from './oppgaverForDatoTsType';
-import { getOppgaverPerDato } from '../../duck';
 
 import styles from './tilBehandlingPanel.less';
 
@@ -71,7 +70,7 @@ interface InitialValues {
 interface OwnProps {
   width: number;
   height: number;
-  oppgaverPerDato?: OppgaveForDato[];
+  oppgaverPerDato: OppgaveForDato[];
   initialValues: InitialValues;
 }
 
@@ -147,14 +146,9 @@ export const TilBehandlingPanel: FunctionComponent<OwnProps & WrappedComponentPr
   );
 };
 
-TilBehandlingPanel.defaultProps = {
-  oppgaverPerDato: [],
-};
-
 const formDefaultValues = { ytelseType: ALLE_YTELSETYPER_VALGT, ukevalg: UKE_2 };
 
 const mapStateToProps = (state) => ({
-  oppgaverPerDato: getOppgaverPerDato(state),
   initialValues: getValuesFromReduxState(state)[formName] || formDefaultValues,
 });
 

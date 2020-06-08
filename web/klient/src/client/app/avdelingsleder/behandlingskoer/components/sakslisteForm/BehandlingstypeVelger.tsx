@@ -4,7 +4,8 @@ import { Undertekst } from 'nav-frontend-typografi';
 
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import useKodeverk from 'data/rest-api-hooks/useKodeverk';
-import Kodeverk from 'kodeverk/kodeverkTsType';
+import useRestApiRunner from 'data/rest-api-hooks/useRestApiRunner';
+import { RestApiPathsKeys } from 'data/restApiPaths';
 import kodeverkTyper from 'kodeverk/kodeverkTyper';
 import behandlingType from 'kodeverk/behandlingType';
 import { CheckboxField } from 'form/FinalFields';
@@ -13,7 +14,6 @@ const behandlingstypeOrder = Object.values(behandlingType);
 
 interface OwnProps {
   valgtSakslisteId: number;
-  lagreSakslisteBehandlingstype: (sakslisteId: number, behandlingType: Kodeverk, isChecked: boolean, avdelingEnhet: string) => void;
   valgtAvdelingEnhet: string;
 }
 
@@ -22,9 +22,9 @@ interface OwnProps {
  */
 const BehandlingstypeVelger: FunctionComponent<OwnProps> = ({
   valgtSakslisteId,
-  lagreSakslisteBehandlingstype,
   valgtAvdelingEnhet,
 }) => {
+  const { startRequest: lagreSakslisteBehandlingstype } = useRestApiRunner(RestApiPathsKeys.LAGRE_SAKSLISTE_BEHANDLINGSTYPE);
   const alleBehandlingTyper = useKodeverk(kodeverkTyper.BEHANDLING_TYPE);
   const behandlingTyper = useMemo(() => behandlingstypeOrder.map((kode) => alleBehandlingTyper.find((bt) => bt.kode === kode)),
     []);
@@ -40,7 +40,12 @@ const BehandlingstypeVelger: FunctionComponent<OwnProps> = ({
           <CheckboxField
             name={bt.kode}
             label={bt.navn}
-            onChange={(isChecked) => lagreSakslisteBehandlingstype(valgtSakslisteId, bt, isChecked, valgtAvdelingEnhet)}
+            onChange={(isChecked) => lagreSakslisteBehandlingstype({
+              sakslisteId: valgtSakslisteId,
+              avdelingEnhet: valgtAvdelingEnhet,
+              behandlingType: bt,
+              checked: isChecked,
+            })}
           />
         </React.Fragment>
       ))}

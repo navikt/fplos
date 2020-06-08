@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import { createRequestApi, RequestRunner } from 'data/rest-api-new';
+import { createRequestApi, RequestRunner } from 'data/rest-api';
 import { endpoints, RestApiPathsKeys } from 'data/restApiPaths';
 import useRestApiErrorDispatcher from 'data/rest-api-hooks/useRestApiErrorDispatcher';
 import RestApiState from './RestApiState';

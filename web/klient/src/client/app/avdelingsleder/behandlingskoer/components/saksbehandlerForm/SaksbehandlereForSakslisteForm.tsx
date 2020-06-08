@@ -1,26 +1,26 @@
-
 import React, { FunctionComponent } from 'react';
-import { connect } from 'react-redux';
-import { createSelector } from 'reselect';
-
 import { Form } from 'react-final-form';
 import { FormattedMessage } from 'react-intl';
 import Panel from 'nav-frontend-paneler';
 import { Element } from 'nav-frontend-typografi';
 import { Row, Column } from 'nav-frontend-grid';
 
+import { RestApiPathsKeys } from 'data/restApiPaths';
+import useRestApiRunner from 'data/rest-api-hooks/useRestApiRunner';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import { CheckboxField } from 'form/FinalFields';
-import { getAvdelingensSaksbehandlere } from 'avdelingsleder/saksbehandlere/duck';
 import Saksbehandler from 'avdelingsleder/saksbehandlere/saksbehandlerTsType';
 import Saksliste from '../../sakslisteTsType';
 
 import styles from './saksbehandlereForSakslisteForm.less';
 
+const sortSaksbehandlere = (saksbehandlere) => (saksbehandlere && saksbehandlere instanceof Array
+  ? saksbehandlere.sort((saksbehandler1, saksbehandler2) => saksbehandler1.navn.localeCompare(saksbehandler2.navn))
+  : saksbehandlere);
+
 interface OwnProps {
   valgtSaksliste: Saksliste;
   avdelingensSaksbehandlere: Saksbehandler[];
-  knyttSaksbehandlerTilSaksliste: (sakslisteId: number, brukerIdent: string, isChecked: boolean, avdelingEnhet: string) => void;
   valgtAvdelingEnhet: string;
 }
 
@@ -29,13 +29,15 @@ interface OwnProps {
  */
 export const SaksbehandlereForSakslisteForm: FunctionComponent<OwnProps> = ({
   avdelingensSaksbehandlere = [],
-  knyttSaksbehandlerTilSaksliste,
   valgtSaksliste,
   valgtAvdelingEnhet,
 }) => {
-  const pos = Math.ceil(avdelingensSaksbehandlere.length / 2);
-  const avdelingensSaksbehandlereVenstreListe = avdelingensSaksbehandlere.slice(0, pos);
-  const avdelingensSaksbehandlereHoyreListe = avdelingensSaksbehandlere.slice(pos);
+  const sorterteAvdelingensSaksbehandlere = sortSaksbehandlere(avdelingensSaksbehandlere);
+  const pos = Math.ceil(sorterteAvdelingensSaksbehandlere.length / 2);
+  const avdelingensSaksbehandlereVenstreListe = sorterteAvdelingensSaksbehandlere.slice(0, pos);
+  const avdelingensSaksbehandlereHoyreListe = sorterteAvdelingensSaksbehandlere.slice(pos);
+
+  const { startRequest: knyttSaksbehandlerTilSaksliste } = useRestApiRunner(RestApiPathsKeys.LAGRE_SAKSLISTE_SAKSBEHANDLER);
 
   return (
     <Form
@@ -49,10 +51,10 @@ export const SaksbehandlereForSakslisteForm: FunctionComponent<OwnProps> = ({
             <FormattedMessage id="SaksbehandlereForSakslisteForm.Saksbehandlere" />
           </Element>
           <VerticalSpacer sixteenPx />
-          {avdelingensSaksbehandlere.length === 0 && (
+          {sorterteAvdelingensSaksbehandlere.length === 0 && (
             <FormattedMessage id="SaksbehandlereForSakslisteForm.IngenSaksbehandlere" />
           )}
-          {avdelingensSaksbehandlere.length > 0 && (
+          {sorterteAvdelingensSaksbehandlere.length > 0 && (
           <Row>
             <Column xs="6">
               {avdelingensSaksbehandlereVenstreListe.map((s) => (
@@ -60,7 +62,12 @@ export const SaksbehandlereForSakslisteForm: FunctionComponent<OwnProps> = ({
                   <CheckboxField
                     name={s.brukerIdent}
                     label={s.navn}
-                    onChange={(isChecked) => knyttSaksbehandlerTilSaksliste(valgtSaksliste.sakslisteId, s.brukerIdent, isChecked, valgtAvdelingEnhet)}
+                    onChange={(isChecked) => knyttSaksbehandlerTilSaksliste({
+                      sakslisteId: valgtSaksliste.sakslisteId,
+                      brukerIdent: s.brukerIdent,
+                      checked: isChecked,
+                      avdelingEnhet: valgtAvdelingEnhet,
+                    })}
                   />
                   <VerticalSpacer fourPx />
                 </React.Fragment>
@@ -72,7 +79,12 @@ export const SaksbehandlereForSakslisteForm: FunctionComponent<OwnProps> = ({
                   <CheckboxField
                     name={s.brukerIdent}
                     label={s.navn}
-                    onChange={(isChecked) => knyttSaksbehandlerTilSaksliste(valgtSaksliste.sakslisteId, s.brukerIdent, isChecked, valgtAvdelingEnhet)}
+                    onChange={(isChecked) => knyttSaksbehandlerTilSaksliste({
+                      sakslisteId: valgtSaksliste.sakslisteId,
+                      brukerIdent: s.brukerIdent,
+                      checked: isChecked,
+                      avdelingEnhet: valgtAvdelingEnhet,
+                    })}
                   />
                   <VerticalSpacer fourPx />
                 </React.Fragment>
@@ -86,12 +98,4 @@ export const SaksbehandlereForSakslisteForm: FunctionComponent<OwnProps> = ({
   );
 };
 
-const sortSaksbehandlere = createSelector([getAvdelingensSaksbehandlere], (saksbehandlere) => (saksbehandlere && saksbehandlere instanceof Array
-  ? saksbehandlere.sort((saksbehandler1, saksbehandler2) => saksbehandler1.navn.localeCompare(saksbehandler2.navn))
-  : saksbehandlere));
-
-const mapStateToProps = (state) => ({
-  avdelingensSaksbehandlere: sortSaksbehandlere(state),
-});
-
-export default connect(mapStateToProps)(SaksbehandlereForSakslisteForm);
+export default SaksbehandlereForSakslisteForm;

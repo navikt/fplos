@@ -1,7 +1,7 @@
 import React, {
   createContext, useReducer, FunctionComponent, ReactNode,
 } from 'react';
-import { createRequestApi } from 'data/rest-api-new';
+import { createRequestApi } from 'data/rest-api';
 import { endpoints, RestApiPathsKeys } from 'data/restApiPaths';
 
 const contextPath = 'fplos';

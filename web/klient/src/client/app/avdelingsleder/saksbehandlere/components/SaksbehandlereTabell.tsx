@@ -1,7 +1,9 @@
-import React, { Component } from 'react';
+import React, { FunctionComponent, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { Normaltekst, Element } from 'nav-frontend-typografi';
 
+import useRestApiRunner from 'data/rest-api-hooks/useRestApiRunner';
+import { RestApiPathsKeys } from 'data/restApiPaths';
 import Image from 'sharedComponents/Image';
 import removeIcon from 'images/remove.svg';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
@@ -23,91 +25,68 @@ const headerTextCodes = [
 
 interface OwnProps {
   saksbehandlere: Saksbehandler[];
-  fjernSaksbehandler: (brukerIdent: string, avdelingEnhet: string) => Promise<string>;
   valgtAvdelingEnhet?: string;
-}
-
-interface StateProps {
-  valgtSaksbehandler?: Saksbehandler;
+  hentAvdelingensSaksbehandlere: (params: {avdelingEnhet: string}) => void;
 }
 
 /**
  * SaksbehandlereTabell
  */
-export class SaksbehandlereTabell extends Component<OwnProps, StateProps> {
-  constructor(props: OwnProps) {
-    super(props);
+const SaksbehandlereTabell: FunctionComponent<OwnProps> = ({
+  saksbehandlere,
+  valgtAvdelingEnhet,
+  hentAvdelingensSaksbehandlere,
+}) => {
+  const [valgtSaksbehandler, setValgtSaksbehandler] = useState<Saksbehandler>();
 
-    this.state = {
-      valgtSaksbehandler: undefined,
-    };
-  }
+  const { startRequest: fjernSaksbehandler } = useRestApiRunner<Saksbehandler>(RestApiPathsKeys.SLETT_SAKSBEHANDLER);
 
-  showSletteSaksbehandlerModal = (saksbehandler: Saksbehandler) => {
-    this.setState((prevState) => ({ ...prevState, valgtSaksbehandler: saksbehandler }));
-  }
+  const fjernSaksbehandlerFn = (saksbehandler: Saksbehandler) => {
+    fjernSaksbehandler({ brukerIdent: saksbehandler.brukerIdent, avdelingEnhet: valgtAvdelingEnhet })
+      .then(() => hentAvdelingensSaksbehandlere({ avdelingEnhet: valgtAvdelingEnhet }));
+    setValgtSaksbehandler(undefined);
+  };
 
-  closeSletteModal = () => {
-    this.setState((prevState) => ({ ...prevState, valgtSaksbehandler: undefined }));
-  }
+  const sorterteSaksbehandlere = saksbehandlere.sort((saksbehandler1, saksbehandler2) => saksbehandler1.navn.localeCompare(saksbehandler2.navn));
 
-  fjernSaksbehandler = (valgtSaksbehandler: Saksbehandler) => {
-    const {
-      fjernSaksbehandler, valgtAvdelingEnhet,
-    } = this.props;
-    fjernSaksbehandler(valgtSaksbehandler.brukerIdent, valgtAvdelingEnhet);
-    this.closeSletteModal();
-  }
-
-  render = () => {
-    const {
-      saksbehandlere,
-    } = this.props;
-    const {
-      valgtSaksbehandler,
-    } = this.state;
-
-    const sorterteSaksbehandlere = saksbehandlere.sort((saksbehandler1, saksbehandler2) => saksbehandler1.navn.localeCompare(saksbehandler2.navn));
-
-    return (
-      <>
-        <Element><FormattedMessage id="SaksbehandlereTabell.Saksbehandlere" /></Element>
-        {sorterteSaksbehandlere.length === 0 && (
-          <>
-            <VerticalSpacer eightPx />
-            <Normaltekst><FormattedMessage id="SaksbehandlereTabell.IngenSaksbehandlere" /></Normaltekst>
-            <VerticalSpacer eightPx />
-          </>
-        )}
-        {sorterteSaksbehandlere.length > 0 && (
-        <Table headerTextCodes={headerTextCodes} noHover>
-          {sorterteSaksbehandlere.map((saksbehandler) => (
-            <TableRow key={saksbehandler.brukerIdent}>
-              <TableColumn>{saksbehandler.navn}</TableColumn>
-              <TableColumn>{saksbehandler.brukerIdent}</TableColumn>
-              <TableColumn>{saksbehandler.avdelingsnavn.join(', ')}</TableColumn>
-              <TableColumn>
-                <Image
-                  src={removeIcon}
-                  className={styles.removeImage}
-                  onMouseDown={() => this.showSletteSaksbehandlerModal(saksbehandler)}
-                  onKeyDown={() => this.showSletteSaksbehandlerModal(saksbehandler)}
-                />
-              </TableColumn>
-            </TableRow>
-          ))}
-        </Table>
-        )}
-        {valgtSaksbehandler && (
-        <SletteSaksbehandlerModal
-          valgtSaksbehandler={valgtSaksbehandler}
-          closeSletteModal={this.closeSletteModal}
-          fjernSaksbehandler={this.fjernSaksbehandler}
-        />
-        )}
-      </>
-    );
-  }
-}
+  return (
+    <>
+      <Element><FormattedMessage id="SaksbehandlereTabell.Saksbehandlere" /></Element>
+      {sorterteSaksbehandlere.length === 0 && (
+        <>
+          <VerticalSpacer eightPx />
+          <Normaltekst><FormattedMessage id="SaksbehandlereTabell.IngenSaksbehandlere" /></Normaltekst>
+          <VerticalSpacer eightPx />
+        </>
+      )}
+      {sorterteSaksbehandlere.length > 0 && (
+      <Table headerTextCodes={headerTextCodes} noHover>
+        {sorterteSaksbehandlere.map((saksbehandler) => (
+          <TableRow key={saksbehandler.brukerIdent}>
+            <TableColumn>{saksbehandler.navn}</TableColumn>
+            <TableColumn>{saksbehandler.brukerIdent}</TableColumn>
+            <TableColumn>{saksbehandler.avdelingsnavn.join(', ')}</TableColumn>
+            <TableColumn>
+              <Image
+                src={removeIcon}
+                className={styles.removeImage}
+                onMouseDown={() => setValgtSaksbehandler(saksbehandler)}
+                onKeyDown={() => setValgtSaksbehandler(saksbehandler)}
+              />
+            </TableColumn>
+          </TableRow>
+        ))}
+      </Table>
+      )}
+      {valgtSaksbehandler && (
+      <SletteSaksbehandlerModal
+        valgtSaksbehandler={valgtSaksbehandler}
+        closeSletteModal={() => setValgtSaksbehandler(undefined)}
+        fjernSaksbehandler={fjernSaksbehandlerFn}
+      />
+      )}
+    </>
+  );
+};
 
 export default SaksbehandlereTabell;

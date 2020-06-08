@@ -11,7 +11,7 @@ import AutoLagringVedBlur from './AutoLagringVedBlur';
 
 interface OwnProps {
   valgtSakslisteId: number;
-  lagreSakslisteSorteringNumerisk: (sakslisteId: number, fra: number, til: number, avdelingEnhet: string) => void;
+  lagreSakslisteSorteringNumerisk: (params: {sakslisteId: number, fra: number, til: number, avdelingEnhet: string}) => void;
   valgtAvdelingEnhet: string;
   fra: number;
   til: number;
@@ -29,7 +29,9 @@ export const BelopSorteringValg: FunctionComponent<OwnProps & WrappedComponentPr
     </Undertekst>
     <>
       <AutoLagringVedBlur
-        lagre={(values) => lagreSakslisteSorteringNumerisk(valgtSakslisteId, values.fra, values.til, valgtAvdelingEnhet)}
+        lagre={(values) => lagreSakslisteSorteringNumerisk({
+          sakslisteId: valgtSakslisteId, fra: values.fra, til: values.til, avdelingEnhet: valgtAvdelingEnhet,
+        })}
         fieldNames={['fra', 'til']}
       />
       <FlexContainer>

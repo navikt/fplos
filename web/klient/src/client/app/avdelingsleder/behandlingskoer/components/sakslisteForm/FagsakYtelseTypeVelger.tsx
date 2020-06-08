@@ -2,6 +2,8 @@ import React, { useMemo, FunctionComponent } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { Undertekst } from 'nav-frontend-typografi';
 
+import useRestApiRunner from 'data/rest-api-hooks/useRestApiRunner';
+import { RestApiPathsKeys } from 'data/restApiPaths';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import fagsakYtelseType from 'kodeverk/fagsakYtelseType';
 import kodeverkTyper from 'kodeverk/kodeverkTyper';
@@ -15,7 +17,6 @@ const finnFagsakYtelseTypeNavn = (fagsakYtelseTyper, valgtFagsakYtelseType) => {
 
 interface OwnProps {
   valgtSakslisteId: number;
-  lagreSakslisteFagsakYtelseType: (sakslisteId: number, fagsakYtelseType: string, avdelingEnhet: string) => void;
   valgtAvdelingEnhet: string;
 }
 
@@ -24,9 +25,9 @@ interface OwnProps {
  */
 const FagsakYtelseTypeVelger: FunctionComponent<OwnProps> = ({
   valgtSakslisteId,
-  lagreSakslisteFagsakYtelseType,
   valgtAvdelingEnhet,
 }) => {
+  const { startRequest: lagreSakslisteFagsakYtelseType } = useRestApiRunner(RestApiPathsKeys.LAGRE_SAKSLISTE_FAGSAK_YTELSE_TYPE);
   const alleFagsakYtelseTyper = useKodeverk(kodeverkTyper.FAGSAK_YTELSE_TYPE);
   const fagsakYtelseTyper = useMemo(() => alleFagsakYtelseTyper.filter((k) => k.kode !== fagsakYtelseType.ENDRING_FORELDREPENGER),
     []);
@@ -38,7 +39,9 @@ const FagsakYtelseTypeVelger: FunctionComponent<OwnProps> = ({
       <VerticalSpacer eightPx />
       <RadioGroupField
         name="fagsakYtelseType"
-        onChange={(fyt) => lagreSakslisteFagsakYtelseType(valgtSakslisteId, fyt, valgtAvdelingEnhet)}
+        onChange={(fyt) => lagreSakslisteFagsakYtelseType(fyt !== ''
+          ? { sakslisteId: valgtSakslisteId, avdelingEnhet: valgtAvdelingEnhet, fagsakYtelseType: fyt }
+          : { sakslisteId: valgtSakslisteId, avdelingEnhet: valgtAvdelingEnhet })}
       >
         <RadioOption
           value={fagsakYtelseType.FORELDREPRENGER}

@@ -14,7 +14,6 @@ import fagsakYtelseType from 'kodeverk/fagsakYtelseType';
 import kodeverkTyper from 'kodeverk/kodeverkTyper';
 import useKodeverk from 'data/rest-api-hooks/useKodeverk';
 import FordelingAvBehandlingstypeGraf from './FordelingAvBehandlingstypeGraf';
-import { getOppgaverForAvdeling } from '../../duck';
 import OppgaverForAvdeling from './oppgaverForAvdelingTsType';
 
 const finnFagsakYtelseTypeNavn = (fagsakYtelseTyper, valgtFagsakYtelseType) => {
@@ -31,7 +30,7 @@ interface InitialValues {
 interface OwnProps {
   width: number;
   height: number;
-  oppgaverForAvdeling?: OppgaverForAvdeling[];
+  oppgaverForAvdeling: OppgaverForAvdeling[];
   initialValues: InitialValues;
 }
 
@@ -90,14 +89,9 @@ export const FordelingAvBehandlingstypePanel: FunctionComponent<OwnProps> = ({
   );
 };
 
-FordelingAvBehandlingstypePanel.defaultProps = {
-  oppgaverForAvdeling: [],
-};
-
 const formDefaultValues = { valgtYtelseType: ALLE_YTELSETYPER_VALGT };
 
 const mapStateToProps = (state) => ({
-  oppgaverForAvdeling: getOppgaverForAvdeling(state),
   initialValues: getValuesFromReduxState(state)[formName] || formDefaultValues,
 });
 

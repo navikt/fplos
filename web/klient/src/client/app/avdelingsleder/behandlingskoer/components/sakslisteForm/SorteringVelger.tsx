@@ -3,6 +3,8 @@ import { FormattedMessage, injectIntl, WrappedComponentProps } from 'react-intl'
 
 import { Undertekst } from 'nav-frontend-typografi';
 
+import useRestApiRunner from 'data/rest-api-hooks/useRestApiRunner';
+import { RestApiPathsKeys } from 'data/restApiPaths';
 import {
   RadioGroupField, RadioOption,
 } from 'form/FinalFields';
@@ -24,10 +26,6 @@ interface OwnProps {
   til: number;
   fomDato?: string;
   tomDato?: string;
-  lagreSakslisteSortering: (sakslisteId: number, sakslisteSorteringValg: KoSorteringType, avdelingEnhet: string) => void;
-  lagreSakslisteSorteringErDynamiskPeriode: (sakslisteId: number, avdelingEnhet: string) => void;
-  lagreSakslisteSorteringTidsintervallDato: (sakslisteId: number, fomDato: string, tomDato: string, avdelingEnhet: string) => void;
-  lagreSakslisteSorteringNumeriskIntervall: (sakslisteId: number, fra: number, til: number, avdelingEnhet: string) => void;
 }
 
 const bareTilbakekrevingValgt = (valgteBehandlingtyper: Kodeverk[]) => valgteBehandlingtyper
@@ -42,18 +40,17 @@ const SorteringVelger: FunctionComponent<OwnProps & WrappedComponentProps> = ({
   intl,
   valgtSakslisteId,
   valgteBehandlingtyper,
-  lagreSakslisteSortering,
-  lagreSakslisteSorteringErDynamiskPeriode,
   valgtAvdelingEnhet,
   erDynamiskPeriode,
-  lagreSakslisteSorteringTidsintervallDato,
-  lagreSakslisteSorteringNumeriskIntervall,
   fra,
   til,
   fomDato,
   tomDato,
 }) => {
+  const { startRequest: lagreSakslisteSortering } = useRestApiRunner(RestApiPathsKeys.LAGRE_SAKSLISTE_SORTERING);
+  const { startRequest: lagreSakslisteSorteringNumeriskIntervall } = useRestApiRunner(RestApiPathsKeys.LAGRE_SAKSLISTE_SORTERING_TIDSINTERVALL_DAGER);
   const koSorteringer = useKodeverk<KoSorteringType>(kodeverkTyper.KO_SORTERING);
+
   return (
     <>
       <Undertekst>
@@ -63,7 +60,11 @@ const SorteringVelger: FunctionComponent<OwnProps & WrappedComponentProps> = ({
       <RadioGroupField
         name="sortering"
         direction="vertical"
-        onChange={(sorteringType) => lagreSakslisteSortering(valgtSakslisteId, sorteringType, valgtAvdelingEnhet)}
+        onChange={(sorteringType) => lagreSakslisteSortering({
+          sakslisteId: valgtSakslisteId,
+          sakslisteSorteringValg: sorteringType,
+          avdelingEnhet: valgtAvdelingEnhet,
+        })}
       >
         {koSorteringer.map((koSortering) => (
           (koSortering.feltkategori !== 'TILBAKEKREVING' || bareTilbakekrevingValgt(valgteBehandlingtyper)) && (
@@ -76,8 +77,6 @@ const SorteringVelger: FunctionComponent<OwnProps & WrappedComponentProps> = ({
             <DatoSorteringValg
               intl={intl}
               valgtSakslisteId={valgtSakslisteId}
-              lagreSakslisteSorteringErDynamiskPeriode={lagreSakslisteSorteringErDynamiskPeriode}
-              lagreSakslisteSorteringTidsintervallDato={lagreSakslisteSorteringTidsintervallDato}
               lagreSakslisteSorteringTidsintervallDager={lagreSakslisteSorteringNumeriskIntervall}
               valgtAvdelingEnhet={valgtAvdelingEnhet}
               erDynamiskPeriode={erDynamiskPeriode}

@@ -15,7 +15,6 @@ import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import fagsakYtelseType from 'kodeverk/fagsakYtelseType';
 import kodeverkTyper from 'kodeverk/kodeverkTyper';
 import ManueltPaVentGraf from './ManueltPaVentGraf';
-import { getOppgaverAvdelingManueltPaVent } from '../../duck';
 import OppgaverManueltPaVent from './oppgaverManueltPaVentTsType';
 
 import styles from './manueltPaVentPanel.less';
@@ -54,7 +53,7 @@ interface OwnProps {
   intl: any;
   width: number;
   height: number;
-  oppgaverManueltPaVent?: OppgaverManueltPaVent[];
+  oppgaverManueltPaVent: OppgaverManueltPaVent[];
   initialValues: InitialValues;
 }
 
@@ -128,14 +127,9 @@ export const ManueltPaVentPanel: FunctionComponent<OwnProps & WrappedComponentPr
   );
 };
 
-ManueltPaVentPanel.defaultProps = {
-  oppgaverManueltPaVent: [],
-};
-
 const formDefaultValues = { valgtYtelsetype: ALLE_YTELSETYPER_VALGT, ukevalg: UKE_4 };
 
 const mapStateToProps = (state) => ({
-  oppgaverManueltPaVent: getOppgaverAvdelingManueltPaVent(state),
   initialValues: getValuesFromReduxState(state)[formName] || formDefaultValues,
 });
 

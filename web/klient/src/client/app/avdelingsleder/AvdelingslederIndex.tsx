@@ -1,4 +1,4 @@
-import React, { FunctionComponent, useMemo } from 'react';
+import React, { FunctionComponent, useMemo, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
 import classnames from 'classnames/bind';
@@ -7,7 +7,7 @@ import Panel from 'nav-frontend-paneler';
 import Tabs from 'nav-frontend-tabs';
 import { Undertittel } from 'nav-frontend-typografi';
 
-import { RestApiGlobalStatePathsKeys } from 'data/restApiPaths';
+import { RestApiPathsKeys, RestApiGlobalStatePathsKeys } from 'data/restApiPaths';
 import LoadingPanel from 'sharedComponents/LoadingPanel';
 import { parseQueryString } from 'utils/urlUtils';
 import { getAvdelingslederPanelLocationCreator } from 'app/paths';
@@ -16,6 +16,7 @@ import Location from 'app/locationTsType';
 import useRestApiData from 'data/rest-api-hooks/useGlobalStateRestApiData';
 import NavAnsatt from 'app/navAnsattTsType';
 import Avdeling from 'app/avdelingTsType';
+import useRestApiRunner from 'data/rest-api-hooks/useRestApiRunner';
 import { getSelectedAvdelingslederPanel, setSelectedAvdelingslederPanel } from './duck';
 import AvdelingslederDashboard from './components/AvdelingslederDashboard';
 import IkkeTilgangTilAvdelingslederPanel from './components/IkkeTilgangTilAvdelingslederPanel';
@@ -27,15 +28,24 @@ import EndreBehandlingskoerIndex from './behandlingskoer/EndreBehandlingskoerInd
 
 import styles from './avdelingslederIndex.less';
 import ReservasjonerIndex from './reservasjoner/ReservasjonerIndex';
+import Saksbehandler from './saksbehandlere/saksbehandlerTsType';
+
+const EMPTY_ARRAY = [];
 
 const classNames = classnames.bind(styles);
 
-const renderAvdelingslederPanel = (avdelingslederPanel, valgtAvdelingEnhet) => {
+const renderAvdelingslederPanel = (avdelingslederPanel, valgtAvdelingEnhet, hentAvdelingensSaksbehandlere, avdelingensSaksbehandlere) => {
   switch (avdelingslederPanel) {
     case AvdelingslederPanels.BEHANDLINGSKOER:
-      return <EndreBehandlingskoerIndex valgtAvdelingEnhet={valgtAvdelingEnhet} />;
+      return <EndreBehandlingskoerIndex valgtAvdelingEnhet={valgtAvdelingEnhet} avdelingensSaksbehandlere={avdelingensSaksbehandlere} />;
     case AvdelingslederPanels.SAKSBEHANDLERE:
-      return <EndreSaksbehandlereIndex valgtAvdelingEnhet={valgtAvdelingEnhet} />;
+      return (
+        <EndreSaksbehandlereIndex
+          valgtAvdelingEnhet={valgtAvdelingEnhet}
+          hentAvdelingensSaksbehandlere={hentAvdelingensSaksbehandlere}
+          avdelingensSaksbehandlere={avdelingensSaksbehandlere}
+        />
+      );
     case AvdelingslederPanels.NOKKELTALL:
       return <NokkeltallIndex valgtAvdelingEnhet={valgtAvdelingEnhet} />;
     case AvdelingslederPanels.RESERVASJONER:
@@ -83,6 +93,15 @@ export const AvdelingslederIndex: FunctionComponent<OwnProps> = ({
   const { kanOppgavestyre, kanBehandleKode6 } = useRestApiData<NavAnsatt>(RestApiGlobalStatePathsKeys.NAV_ANSATT);
   const avdelinger = useRestApiData<Avdeling[]>(RestApiGlobalStatePathsKeys.AVDELINGER);
 
+  const {
+    startRequest: hentAvdelingensSaksbehandlere, data: avdelingensSaksbehandlere = EMPTY_ARRAY,
+  } = useRestApiRunner<Saksbehandler[]>(RestApiPathsKeys.SAKSBEHANDLERE_FOR_AVDELING);
+
+  useEffect(() => {
+    hentAvdelingensSaksbehandlere({ avdelingEnhet: valgtAvdelingEnhet });
+  }, []);
+
+
   const erKode6Avdeling = useMemo(() => {
     const avdeling = avdelinger instanceof Array && avdelinger.find((a) => a.avdelingEnhet === valgtAvdelingEnhet);
     return avdeling ? avdeling.kreverKode6 : false;
@@ -104,7 +123,7 @@ export const AvdelingslederIndex: FunctionComponent<OwnProps> = ({
           ]}
           />
           <Panel className={styles.panelPadding}>
-            {renderAvdelingslederPanel(activeAvdelingslederPanel, valgtAvdelingEnhet)}
+            {renderAvdelingslederPanel(activeAvdelingslederPanel, valgtAvdelingEnhet, hentAvdelingensSaksbehandlere, avdelingensSaksbehandlere)}
           </Panel>
         </div>
       </AvdelingslederDashboard>

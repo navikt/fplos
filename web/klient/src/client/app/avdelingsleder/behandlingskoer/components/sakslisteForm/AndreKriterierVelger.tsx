@@ -2,18 +2,18 @@ import React, { Fragment, FunctionComponent } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { Undertekst } from 'nav-frontend-typografi';
 
+import { RestApiPathsKeys } from 'data/restApiPaths';
+import useRestApiRunner from 'data/rest-api-hooks/useRestApiRunner';
 import kodeverkTyper from 'kodeverk/kodeverkTyper';
 import useKodeverk from 'data/rest-api-hooks/useKodeverk';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import ArrowBox from 'sharedComponents/ArrowBox';
-import Kodeverk from 'kodeverk/kodeverkTsType';
 import { CheckboxField, RadioGroupField, RadioOption } from 'form/FinalFields';
 
 import styles from './andreKriterierVelger.less';
 
 interface OwnProps {
   valgtSakslisteId: number;
-  lagreSakslisteAndreKriterier: (sakslisteId: number, andreKriterierType: Kodeverk, isChecked: boolean, skalInkludere: boolean, avdelingEnhet: string) => void;
   valgtAvdelingEnhet: string;
   values: any;
 }
@@ -23,11 +23,12 @@ interface OwnProps {
  */
 const AndreKriterierVelger: FunctionComponent<OwnProps> = ({
   valgtSakslisteId,
-  lagreSakslisteAndreKriterier,
   valgtAvdelingEnhet,
   values,
 }) => {
   const andreKriterierTyper = useKodeverk(kodeverkTyper.ANDRE_KRITERIER_TYPE);
+  const { startRequest: lagreSakslisteAndreKriterier } = useRestApiRunner(RestApiPathsKeys.LAGRE_SAKSLISTE_ANDRE_KRITERIER);
+
   return (
     <>
       <Undertekst>
@@ -41,7 +42,13 @@ const AndreKriterierVelger: FunctionComponent<OwnProps> = ({
             key={akt.kode}
             name={akt.kode}
             label={akt.navn}
-            onChange={(isChecked) => lagreSakslisteAndreKriterier(valgtSakslisteId, akt, isChecked, true, valgtAvdelingEnhet)}
+            onChange={(isChecked) => lagreSakslisteAndreKriterier({
+              sakslisteId: valgtSakslisteId,
+              avdelingEnhet: valgtAvdelingEnhet,
+              andreKriterierType: akt,
+              checked: isChecked,
+              inkluder: true,
+            })}
           />
           {values[akt.kode] && (
             <>
@@ -50,7 +57,13 @@ const AndreKriterierVelger: FunctionComponent<OwnProps> = ({
                 <ArrowBox alignOffset={30}>
                   <RadioGroupField
                     name={`${akt.kode}_inkluder`}
-                    onChange={(skalInkludere) => lagreSakslisteAndreKriterier(valgtSakslisteId, akt, true, skalInkludere, valgtAvdelingEnhet)}
+                    onChange={(skalInkludere) => lagreSakslisteAndreKriterier({
+                      sakslisteId: valgtSakslisteId,
+                      avdelingEnhet: valgtAvdelingEnhet,
+                      andreKriterierType: akt,
+                      checked: true,
+                      inkluder: skalInkludere,
+                    })}
                   >
                     <RadioOption
                       value

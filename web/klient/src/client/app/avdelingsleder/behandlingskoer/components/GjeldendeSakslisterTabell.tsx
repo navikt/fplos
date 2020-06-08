@@ -2,7 +2,6 @@
 import React, {
   useState, KeyboardEvent, ReactNode, FunctionComponent, useEffect, useRef,
 } from 'react';
-import { connect } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
 import {
   Normaltekst, Undertekst, Element, Undertittel,
@@ -20,9 +19,10 @@ import DateLabel from 'sharedComponents/DateLabel';
 import addCircleIcon from 'images/add-circle.svg';
 import removeIcon from 'images/remove.svg';
 import useKodeverk from 'data/rest-api-hooks/useKodeverk';
+import useRestApiRunner from 'data/rest-api-hooks/useRestApiRunner';
+import { RestApiPathsKeys } from 'data/restApiPaths';
 import SletteSakslisteModal from './SletteSakslisteModal';
 import Saksliste from '../sakslisteTsType';
-import { getAntallOppgaverForAvdelingResultat } from '../duck';
 
 import styles from './gjeldendeSakslisterTabell.less';
 
@@ -39,13 +39,10 @@ const headerTextCodes = [
 interface OwnProps {
   sakslister: Saksliste[];
   setValgtSakslisteId: (sakslisteId: number) => void;
-  lagNySaksliste: (avdelingEnhet: string) => void;
-  fjernSaksliste: (sakslisteId: number, avdelingEnhet: string) => void;
   valgtSakslisteId?: number;
   valgtAvdelingEnhet: string;
-  hentAvdelingensSakslister: (avdelingEnhet: string) => Saksliste[];
-  oppgaverForAvdeling?: number;
-  hentAntallOppgaverForAvdeling: (avdelingEnhet: string) => Promise<string>;
+  oppgaverForAvdelingAntall?: number;
+  lagNySaksliste: (data: {avdelingEnhet: string}) => void;
 }
 
 const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -54,15 +51,12 @@ const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
  * GjeldendeSakslisterTabell
  */
 export const GjeldendeSakslisterTabell: FunctionComponent<OwnProps> = ({
-  hentAntallOppgaverForAvdeling,
+  sakslister,
   valgtAvdelingEnhet,
   setValgtSakslisteId,
-  hentAvdelingensSakslister,
-  lagNySaksliste,
-  fjernSaksliste,
-  sakslister,
   valgtSakslisteId,
-  oppgaverForAvdeling,
+  oppgaverForAvdelingAntall,
+  lagNySaksliste,
 }) => {
   const [valgtSaksliste, setValgtSakslisteTemp] = useState<Saksliste>();
   const tabRef = useRef([]);
@@ -70,9 +64,7 @@ export const GjeldendeSakslisterTabell: FunctionComponent<OwnProps> = ({
   const behandlingTyper = useKodeverk(kodeverkTyper.BEHANDLING_TYPE);
   const fagsakYtelseTyper = useKodeverk(kodeverkTyper.FAGSAK_YTELSE_TYPE);
 
-  useEffect(() => {
-    hentAntallOppgaverForAvdeling(valgtAvdelingEnhet);
-  }, []);
+  const { startRequest: fjernSaksliste } = useRestApiRunner(RestApiPathsKeys.SLETT_SAKSLISTE);
 
   useEffect(() => {
     tabRef.current = tabRef.current.slice(0, sakslister.length);
@@ -88,12 +80,11 @@ export const GjeldendeSakslisterTabell: FunctionComponent<OwnProps> = ({
     await wait(100);
 
     setValgtSakslisteId(id);
-    hentAvdelingensSakslister(valgtAvdelingEnhet);
   };
 
   const lagNySakslisteFn = (event: KeyboardEvent): void => {
     if (event.keyCode === 13) {
-      lagNySaksliste(valgtAvdelingEnhet);
+      lagNySaksliste({ avdelingEnhet: valgtAvdelingEnhet });
     }
   };
 
@@ -107,7 +98,7 @@ export const GjeldendeSakslisterTabell: FunctionComponent<OwnProps> = ({
 
   const fjernSakslisteFn = (saksliste: Saksliste): void => {
     closeSletteModal();
-    fjernSaksliste(saksliste.sakslisteId, valgtAvdelingEnhet);
+    fjernSaksliste({ sakslisteId: saksliste.sakslisteId, avdelingEnhet: valgtAvdelingEnhet });
   };
 
   const formatStonadstyper = (valgteFagsakYtelseTyper?: Kodeverk[]): string | ReactNode => {
@@ -146,7 +137,7 @@ export const GjeldendeSakslisterTabell: FunctionComponent<OwnProps> = ({
             <Normaltekst>
               <FormattedMessage id="GjeldendeSakslisterTabell.OppgaverForAvdeling" />
             </Normaltekst>
-            <Undertittel>{oppgaverForAvdeling || '0'}</Undertittel>
+            <Undertittel>{oppgaverForAvdelingAntall || '0'}</Undertittel>
           </div>
         </Column>
       </Row>
@@ -194,7 +185,7 @@ export const GjeldendeSakslisterTabell: FunctionComponent<OwnProps> = ({
         role="button"
         tabIndex={0}
         className={styles.addPeriode}
-        onClick={() => lagNySaksliste(valgtAvdelingEnhet)}
+        onClick={() => lagNySaksliste({ avdelingEnhet: valgtAvdelingEnhet })}
         onKeyDown={lagNySakslisteFn}
       >
         <Image className={styles.addCircleIcon} src={addCircleIcon} />
@@ -213,8 +204,4 @@ export const GjeldendeSakslisterTabell: FunctionComponent<OwnProps> = ({
   );
 };
 
-const mapStateToProps = (state) => ({
-  oppgaverForAvdeling: getAntallOppgaverForAvdelingResultat(state),
-});
-
-export default connect(mapStateToProps)(GjeldendeSakslisterTabell);
+export default GjeldendeSakslisterTabell;
