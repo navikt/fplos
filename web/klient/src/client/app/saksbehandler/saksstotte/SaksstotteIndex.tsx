@@ -1,26 +1,18 @@
 import React, { FunctionComponent } from 'react';
-import { connect } from 'react-redux';
 
-import { getValgtSakslisteId } from '../behandlingskoer/duck';
 import SaksstottePaneler from './components/SaksstottePaneler';
 
-
-interface TsProps {
+interface OwnProps {
   valgtSakslisteId?: number;
 }
 
 /**
  * SaksstotteIndex
  */
-const SaksstotteIndex: FunctionComponent<TsProps> = ({
+const SaksstotteIndex: FunctionComponent<OwnProps> = ({
   valgtSakslisteId,
 }) => (
   <SaksstottePaneler valgtSakslisteId={valgtSakslisteId} />
 );
 
-const mapStateToProps = (state) => ({
-  valgtSakslisteId: getValgtSakslisteId(state),
-});
-
-
-export default connect(mapStateToProps)(SaksstotteIndex);
+export default SaksstotteIndex;

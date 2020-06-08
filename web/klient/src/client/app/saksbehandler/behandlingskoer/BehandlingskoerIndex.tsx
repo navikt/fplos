@@ -1,8 +1,6 @@
 import React, {
   FunctionComponent, useState, useCallback, useEffect,
 } from 'react';
-import { connect } from 'react-redux';
-import { bindActionCreators, Dispatch } from 'redux';
 
 import { RestApiPathsKeys } from 'data/restApiPaths';
 import useRestApiRunner from 'data/rest-api-hooks/useRestApiRunner';
@@ -12,9 +10,6 @@ import OppgaveStatus from 'saksbehandler/oppgaveStatusTsType';
 import Oppgave from 'saksbehandler/oppgaveTsType';
 import OppgaveErReservertAvAnnenModal from 'saksbehandler/components/OppgaveErReservertAvAnnenModal';
 import useRestApi from 'data/rest-api-hooks/useRestApi';
-import {
-  setValgtSakslisteId as setValgtSaksliste,
-} from './duck';
 import SakslistePanel from './components/SakslistePanel';
 import BehandlingPollingTimoutModal from './components/BehandlingPollingTimoutModal';
 
@@ -183,13 +178,4 @@ const BehandlingskoerIndex: FunctionComponent<OwnProps & DispatchProps> = ({
   );
 };
 
-const mapStateToProps = () => ({
-});
-
-const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => ({
-  ...bindActionCreators<DispatchProps, any>({
-    setValgtSakslisteId: setValgtSaksliste,
-  }, dispatch),
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(BehandlingskoerIndex);
+export default BehandlingskoerIndex;

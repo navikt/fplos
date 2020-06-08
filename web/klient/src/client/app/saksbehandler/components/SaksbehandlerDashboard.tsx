@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { FunctionComponent } from 'react';
 import Panel from 'nav-frontend-paneler';
 
 import { RestApiGlobalStatePathsKeys } from 'data/restApiPaths';
@@ -11,10 +11,18 @@ import SaksstotteIndex from '../saksstotte/SaksstotteIndex';
 
 import styles from './saksbehandlerDashboard.less';
 
+interface OwnProps {
+  valgtSakslisteId?: number;
+  setValgtSakslisteId: (valgSakslisteId: number) => void;
+}
+
 /**
  * SaksbehandlerDashboard
  */
-export const SaksbehandlerDashboard = () => {
+export const SaksbehandlerDashboard: FunctionComponent<OwnProps> = ({
+  valgtSakslisteId,
+  setValgtSakslisteId,
+}) => {
   const fpsakUrl = useRestApiData<{ verdi?: string }>(RestApiGlobalStatePathsKeys.FPSAK_URL);
   const fptilbakeUrl = useRestApiData<{ verdi?: string }>(RestApiGlobalStatePathsKeys.FPTILBAKE_URL);
   return (
@@ -24,14 +32,14 @@ export const SaksbehandlerDashboard = () => {
           <div className={styles.leftColumn}>
             <div className={styles.sakslisteContent}>
               <Panel className={styles.sakslistePanel}>
-                <BehandlingskoerIndex fpsakUrl={fpsakUrl.verdi} fptilbakeUrl={fptilbakeUrl.verdi} />
+                <BehandlingskoerIndex fpsakUrl={fpsakUrl.verdi} fptilbakeUrl={fptilbakeUrl.verdi} setValgtSakslisteId={setValgtSakslisteId} />
                 <FagsakSearchIndex fpsakUrl={fpsakUrl.verdi} fptilbakeUrl={fptilbakeUrl.verdi} />
               </Panel>
             </div>
           </div>
           <div className={styles.rightColumn}>
             <Panel>
-              <SaksstotteIndex />
+              <SaksstotteIndex valgtSakslisteId={valgtSakslisteId} />
             </Panel>
           </div>
         </div>
