@@ -1,9 +1,7 @@
 import React, {
-  useState, useRef, ReactNode, FunctionComponent, useCallback,
+  useState, useRef, ReactNode, FunctionComponent,
 } from 'react';
-import { connect } from 'react-redux';
 import { FormattedMessage, injectIntl, WrappedComponentProps } from 'react-intl';
-import { bindActionCreators, Dispatch } from 'redux';
 import { Normaltekst, Element } from 'nav-frontend-typografi';
 import NavFrontendChevron from 'nav-frontend-chevron';
 
@@ -19,13 +17,8 @@ import DateLabel from 'sharedComponents/DateLabel';
 import menuIconBlueUrl from 'images/ic-menu-18px_blue.svg';
 import menuIconBlackUrl from 'images/ic-menu-18px_black.svg';
 import bubbletextUrl from 'images/bubbletext.svg';
-import useRestApiRunner from 'data/rest-api-hooks/useRestApiRunner';
-import { RestApiPathsKeys } from 'data/restApiPaths';
 import bubbletextFilledUrl from 'images/bubbletext_filled.svg';
 import OppgaveHandlingerMenu from './menu/OppgaveHandlingerMenu';
-import {
-  getAntallOppgaverForBehandlingskoResultat, resetSaksbehandler,
-} from '../duck';
 
 import styles from './oppgaverTabell.less';
 
@@ -60,10 +53,8 @@ interface OwnProps {
   opphevOppgaveReservasjon: (oppgaveId: number, begrunnelse: string) => Promise<any>;
   forlengOppgaveReservasjon: (oppgaveId: number) => Promise<any>;
   endreOppgaveReservasjon: (oppgaveId: number, reserverTil: string) => Promise<string>;
-  finnSaksbehandler: (brukerIdent: string) => Promise<string>;
-  resetSaksbehandler: () => Promise<string>;
   flyttReservasjon: (oppgaveId: number, brukerident: string, begrunnelse: string) => Promise<string>;
-  antall: number;
+  antallOppgaver?: number;
 }
 
 /**
@@ -75,10 +66,9 @@ export const OppgaverTabell: FunctionComponent<OwnProps & WrappedComponentProps>
   forlengOppgaveReservasjon,
   endreOppgaveReservasjon,
   flyttReservasjon,
-  resetSaksbehandler: resetBehandler,
   reserverteOppgaver,
   oppgaverTilBehandling,
-  antall,
+  antallOppgaver = 0,
   intl,
 }) => {
   const [showMenu, setShowMenu] = useState(false);
@@ -89,10 +79,6 @@ export const OppgaverTabell: FunctionComponent<OwnProps & WrappedComponentProps>
   });
 
   const ref = useRef({});
-
-  const { startRequest: startSaksbehandlerSok } = useRestApiRunner<string>(RestApiPathsKeys.FLYTT_RESERVASJON_SAKSBEHANDLER_SOK);
-
-  const finnSaksbehandler = useCallback((brukerIdent) => startSaksbehandlerSok(brukerIdent), []);
 
   const goToFagsak = (event: Event, id: number, oppgave: Oppgave) => {
     if (ref.current && Object.keys(ref.current).some((key) => ref.current[key] && ref.current[key].contains(event.target))) {
@@ -132,7 +118,7 @@ export const OppgaverTabell: FunctionComponent<OwnProps & WrappedComponentProps>
 
   return (
     <>
-      <Element><FormattedMessage id="OppgaverTabell.DineNesteSaker" values={{ antall }} /></Element>
+      <Element><FormattedMessage id="OppgaverTabell.DineNesteSaker" values={{ antall: antallOppgaver }} /></Element>
       {alleOppgaver.length === 0 && (
         <>
           <VerticalSpacer eightPx />
@@ -191,8 +177,6 @@ export const OppgaverTabell: FunctionComponent<OwnProps & WrappedComponentProps>
               opphevOppgaveReservasjon={opphevOppgaveReservasjon}
               forlengOppgaveReservasjon={forlengOppgaveReservasjon}
               endreOppgaveReservasjon={endreOppgaveReservasjon}
-              finnSaksbehandler={finnSaksbehandler}
-              resetSaksbehandler={resetBehandler}
               flyttReservasjon={flyttReservasjon}
             />
           )}
@@ -202,14 +186,4 @@ export const OppgaverTabell: FunctionComponent<OwnProps & WrappedComponentProps>
   );
 };
 
-const mapStateToProps = (state) => ({
-  antall: getAntallOppgaverForBehandlingskoResultat(state) || 0,
-});
-
-const mapDispatchToProps = (dispatch: Dispatch) => ({
-  ...bindActionCreators({
-    resetSaksbehandler,
-  }, dispatch),
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(injectIntl(OppgaverTabell));
+export default injectIntl(OppgaverTabell);

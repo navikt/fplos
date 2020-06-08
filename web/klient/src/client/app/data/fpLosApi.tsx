@@ -4,7 +4,6 @@ import {
 import errorHandler from './error-api-redux';
 
 export const fpLosApiKeys = {
-  BEHANDLEDE_OPPGAVER: 'BEHANDLEDE_OPPGAVER',
   FORLENG_OPPGAVERESERVASJON: 'FORLENG_OPPGAVERESERVASJON',
   SAKSLISTER_FOR_AVDELING: 'SAKSLISTER_FOR_AVDELING',
   OPPRETT_NY_SAKSLISTE: 'OPPRETT_NY_SAKSLISTE',
@@ -30,17 +29,9 @@ export const fpLosApiKeys = {
   HENT_OPPGAVER_MANUELT_PA_VENT: 'HENT_OPPGAVER_MANUELT_PA_VENT',
   OPPGAVE_ANTALL: 'OPPGAVE_ANTALL',
   OPPGAVE_AVDELING_ANTALL: 'OPPGAVE_AVDELING_ANTALL',
-  SAKSLISTE_SAKSBEHANDLERE: 'SAKSLISTE_SAKSBEHANDLERE',
-  BEHANDLINGSKO_OPPGAVE_ANTALL: 'BEHANDLINGSKO_OPPGAVE_ANTALL',
 };
 
 const endpoints = new RestApiConfigBuilder()
-  /* /api/saksbehandler/saksliste */
-  .withGet('/api/saksbehandler/saksliste/saksbehandlere', fpLosApiKeys.SAKSLISTE_SAKSBEHANDLERE)
-
-  .withGet('/api/saksbehandler/oppgaver/behandlede', fpLosApiKeys.BEHANDLEDE_OPPGAVER)
-  .withGet('/api/saksbehandler/oppgaver/antall', fpLosApiKeys.BEHANDLINGSKO_OPPGAVE_ANTALL)
-
   /* /api/avdelingsleder/sakslister */
   .withGet('/api/avdelingsleder/sakslister', fpLosApiKeys.SAKSLISTER_FOR_AVDELING)
   .withPost('/api/avdelingsleder/sakslister', fpLosApiKeys.OPPRETT_NY_SAKSLISTE)

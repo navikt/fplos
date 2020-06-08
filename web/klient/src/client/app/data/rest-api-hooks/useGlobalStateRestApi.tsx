@@ -2,23 +2,17 @@ import { useState, useEffect, useContext } from 'react';
 import { RestApiGlobalStatePathsKeys } from 'data/restApiPaths';
 
 import { RestDataContext } from './RestDataContext';
-
-
-export enum ApiState {
-  LOADING = 'LOADING',
-  SUCCESS = 'SUCCESS',
-  ERROR = 'ERROR',
-}
+import RestApiState from './RestApiState';
 
 interface RestApiData<T> {
-  state: ApiState;
+  state: RestApiState;
   error?: string;
   data?: T;
 }
 
 function useGlobalStateRestApi<T>(key: RestApiGlobalStatePathsKeys, params: any = {}, options: any = { keepData: false }):RestApiData<T> {
   const [data, setData] = useState({
-    state: ApiState.LOADING,
+    state: RestApiState.LOADING,
     error: undefined,
     data: undefined,
   });
@@ -30,7 +24,7 @@ function useGlobalStateRestApi<T>(key: RestApiGlobalStatePathsKeys, params: any 
 
   useEffect(() => {
     setPartData({
-      state: ApiState.LOADING,
+      state: RestApiState.LOADING,
     });
 
     if (!options.keepData) {
@@ -41,13 +35,13 @@ function useGlobalStateRestApi<T>(key: RestApiGlobalStatePathsKeys, params: any 
       .then((dataRes) => {
         dispatch({ type: 'success', key, data: dataRes.payload });
         setPartData({
-          state: ApiState.SUCCESS,
+          state: RestApiState.SUCCESS,
           data: dataRes.payload,
         });
       })
       .catch(() => {
         setPartData({
-          state: ApiState.ERROR,
+          state: RestApiState.ERROR,
           error: 'fetch failed',
         });
       });

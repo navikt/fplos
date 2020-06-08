@@ -90,7 +90,7 @@ const FagsakSearchIndex: FunctionComponent<OwnProps> = ({
       setReservertAvAnnenSaksbehandler(true);
     } else if (!skalReservere) {
       if (skalSjekkeOmReservert) {
-        hentReservasjonsstatus(oppgave.id).then((status) => {
+        hentReservasjonsstatus({ oppgaveId: oppgave.id }).then((status) => {
           goToFagsakEllerApneModal(oppgave, status);
         });
       } else if (oppgave.system === 'FPSAK') {

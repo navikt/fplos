@@ -35,7 +35,7 @@ interface OwnProps {
   endreOppgaveReservasjon: (oppgaveId: number, reserverTil: string) => Promise<string>;
   flyttReservasjon: (oppgaveId: number, brukerident: string, begrunnelse: string) => Promise<string>;
   finnSaksbehandler: (brukerIdent: string) => Promise<string>;
-  nullstillSaksbehandler: () => Promise<string>;
+  nullstillSaksbehandler: () => void;
 }
 
 interface StateTsProps {

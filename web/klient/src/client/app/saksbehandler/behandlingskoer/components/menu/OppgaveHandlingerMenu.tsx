@@ -40,8 +40,6 @@ interface OwnProps {
   opphevOppgaveReservasjon: (oppgaveId: number, begrunnelse: string) => Promise<string>;
   forlengOppgaveReservasjon: (oppgaveId: number) => Promise<string>;
   endreOppgaveReservasjon: (oppgaveId: number, reserverTil: string) => Promise<string>;
-  finnSaksbehandler: (brukerIdent: string) => Promise<string>;
-  resetSaksbehandler: () => Promise<string>;
   flyttReservasjon: (oppgaveId: number, brukerident: string, begrunnelse: string) => Promise<string>;
 }
 
@@ -170,7 +168,7 @@ export class OppgaveHandlingerMenu extends Component<OwnProps, OwnState> {
 
   render = () => {
     const {
-      oppgave, offset, finnSaksbehandler, resetSaksbehandler,
+      oppgave, offset,
     } = this.props;
     const {
       showOpphevReservasjonModal, showForlengetReservasjonModal, showReservasjonEndringDatoModal, showFlyttReservasjonModal,
@@ -229,8 +227,6 @@ export class OppgaveHandlingerMenu extends Component<OwnProps, OwnState> {
             showModal={showFlyttReservasjonModal}
             closeModal={this.closeFlytteModal}
             submit={this.flyttReservasjon}
-            finnSaksbehandler={finnSaksbehandler}
-            resetSaksbehandler={resetSaksbehandler}
           />
         )}
       </>

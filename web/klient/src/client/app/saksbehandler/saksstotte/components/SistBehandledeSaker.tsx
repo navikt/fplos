@@ -1,32 +1,26 @@
 
 import React, { Fragment, FunctionComponent } from 'react';
 import { FormattedMessage } from 'react-intl';
-import { connect } from 'react-redux';
 import Lenke from 'nav-frontend-lenker';
 import { Undertittel, Normaltekst } from 'nav-frontend-typografi';
 
+import useRestApi from 'data/rest-api-hooks/useRestApi';
 import { RestApiGlobalStatePathsKeys, RestApiPathsKeys } from 'data/restApiPaths';
 import { getFpsakHref, getFptilbakeHref } from 'app/paths';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import useGlobalStateRestApiData from 'data/rest-api-hooks/useGlobalStateRestApiData';
 import useRestApiRunner from 'data/rest-api-hooks/useRestApiRunner';
-import { getBehandledeOppgaver } from 'saksbehandler/saksstotte/duck';
 import Oppgave from '../../oppgaveTsType';
 
 const getClickEvent = (openFpsak, oppgave) => () => openFpsak(oppgave);
-
-interface OwnProps {
-  sistBehandledeSaker: Oppgave[];
-}
 
 /**
  * SistBehandledeSaker
  *
  * Denne komponenten viser de tre siste fagsakene en nav-ansatt har behandlet.
  */
-export const SistBehandledeSaker: FunctionComponent<OwnProps> = ({
-  sistBehandledeSaker,
-}) => {
+export const SistBehandledeSaker: FunctionComponent = () => {
+  const { data: sistBehandledeSaker = [] } = useRestApi<Oppgave[]>(RestApiPathsKeys.BEHANDLEDE_OPPGAVER);
   const fpsakUrl = useGlobalStateRestApiData<{ verdi?: string }>(RestApiGlobalStatePathsKeys.FPSAK_URL);
   const fptilbakeUrl = useGlobalStateRestApiData<{ verdi?: string }>(RestApiGlobalStatePathsKeys.FPTILBAKE_URL);
   const { startRequest: hentFpsakInternBehandlingId } = useRestApiRunner<number>(RestApiPathsKeys.FPSAK_BEHANDLING_ID);
@@ -71,8 +65,4 @@ export const SistBehandledeSaker: FunctionComponent<OwnProps> = ({
   );
 };
 
-const mapStateToProps = (state) => ({
-  sistBehandledeSaker: getBehandledeOppgaver(state) || [],
-});
-
-export default connect(mapStateToProps)(SistBehandledeSaker);
+export default SistBehandledeSaker;

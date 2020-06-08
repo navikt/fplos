@@ -5,6 +5,8 @@ import { Undertittel } from 'nav-frontend-typografi';
 
 import Saksliste from 'saksbehandler/behandlingskoer/sakslisteTsType';
 import Oppgave from 'saksbehandler/oppgaveTsType';
+import useRestApiRunner from 'data/rest-api-hooks/useRestApiRunner';
+import { RestApiPathsKeys } from 'data/restApiPaths';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import SakslisteVelgerForm from './SakslisteVelgerForm';
 import OppgaverTabell from './OppgaverTabell';
@@ -36,26 +38,32 @@ const SakslistePanel: FunctionComponent<OwnProps> = ({
   flyttReservasjon,
   reserverteOppgaver,
   oppgaverTilBehandling,
-}) => (
-  <>
-    <Undertittel><FormattedMessage id="SakslistePanel.StartBehandling" /></Undertittel>
-    <div className={styles.container}>
-      <SakslisteVelgerForm
-        sakslister={sakslister}
-        fetchSakslisteOppgaver={fetchSakslisteOppgaver}
-      />
-      <VerticalSpacer twentyPx />
-      <OppgaverTabell
-        reserverOppgave={reserverOppgave}
-        opphevOppgaveReservasjon={opphevOppgaveReservasjon}
-        forlengOppgaveReservasjon={forlengOppgaveReservasjon}
-        endreOppgaveReservasjon={endreOppgaveReservasjon}
-        flyttReservasjon={flyttReservasjon}
-        reserverteOppgaver={reserverteOppgaver}
-        oppgaverTilBehandling={oppgaverTilBehandling}
-      />
-    </div>
-  </>
-);
+}) => {
+  const { startRequest: fetchAntallOppgaver, data: antallOppgaver } = useRestApiRunner<number>(RestApiPathsKeys.BEHANDLINGSKO_OPPGAVE_ANTALL);
+
+  return (
+    <>
+      <Undertittel><FormattedMessage id="SakslistePanel.StartBehandling" /></Undertittel>
+      <div className={styles.container}>
+        <SakslisteVelgerForm
+          sakslister={sakslister}
+          fetchSakslisteOppgaver={fetchSakslisteOppgaver}
+          fetchAntallOppgaver={fetchAntallOppgaver}
+        />
+        <VerticalSpacer twentyPx />
+        <OppgaverTabell
+          reserverOppgave={reserverOppgave}
+          opphevOppgaveReservasjon={opphevOppgaveReservasjon}
+          forlengOppgaveReservasjon={forlengOppgaveReservasjon}
+          endreOppgaveReservasjon={endreOppgaveReservasjon}
+          flyttReservasjon={flyttReservasjon}
+          reserverteOppgaver={reserverteOppgaver}
+          oppgaverTilBehandling={oppgaverTilBehandling}
+          antallOppgaver={antallOppgaver}
+        />
+      </div>
+    </>
+  );
+};
 
 export default SakslistePanel;

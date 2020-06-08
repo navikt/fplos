@@ -3,24 +3,20 @@ import { useState, useEffect, DependencyList } from 'react';
 import { createRequestApi } from 'data/rest-api-new';
 import { endpoints, RestApiPathsKeys } from 'data/restApiPaths';
 
+import RestApiState from './RestApiState';
+
 const contextPath = 'fplos';
 const requestApi = createRequestApi(contextPath, endpoints);
 
-export enum ApiState {
-  LOADING = 'LOADING',
-  SUCCESS = 'SUCCESS',
-  ERROR = 'ERROR',
-}
-
 interface RestApiData<T> {
-  state: ApiState;
+  state: RestApiState;
   error?: string;
   data?: T;
 }
 
 function useRestApi<T>(key: RestApiPathsKeys, params: any = {}, dependencies: DependencyList = []):RestApiData<T> {
   const [data, setData] = useState({
-    state: ApiState.LOADING,
+    state: RestApiState.LOADING,
     error: undefined,
     data: undefined,
   });
@@ -29,19 +25,19 @@ function useRestApi<T>(key: RestApiPathsKeys, params: any = {}, dependencies: De
 
   useEffect(() => {
     setPartData({
-      state: ApiState.LOADING,
+      state: RestApiState.LOADING,
     });
 
     requestApi.getRequestRunner(key).startProcess(params)
       .then((dataRes) => {
         setPartData({
-          state: ApiState.SUCCESS,
+          state: RestApiState.SUCCESS,
           data: dataRes.payload,
         });
       })
       .catch(() => {
         setPartData({
-          state: ApiState.ERROR,
+          state: RestApiState.ERROR,
           error: 'fetch failed',
         });
       });
