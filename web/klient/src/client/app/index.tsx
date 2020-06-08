@@ -7,6 +7,7 @@ import { init } from '@sentry/browser';
 
 import AppIndex from 'app/AppIndex';
 import { RestDataProvider } from 'data/rest-api-hooks/RestDataContext';
+import { RestDataErrorProvider } from 'data/rest-api-hooks/RestDataErrorContext';
 import configureStore from './store';
 
 /* eslint no-undef: "error" */
@@ -32,7 +33,9 @@ const renderFunc = (Component) => {
     <Provider store={store}>
       <ConnectedRouter history={history}>
         <RestDataProvider>
-          <Component />
+          <RestDataErrorProvider>
+            <Component />
+          </RestDataErrorProvider>
         </RestDataProvider>
       </ConnectedRouter>
     </Provider>,

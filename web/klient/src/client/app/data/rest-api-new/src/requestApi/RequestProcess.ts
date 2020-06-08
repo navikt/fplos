@@ -121,8 +121,7 @@ class RequestProcess {
     try {
       const response = await this.execute(this.path, this.restMethod, params);
       if (this.isCancelled) {
-        // return { payload: CANCELLED };
-        throw new Error(CANCELLED);
+        return { payload: CANCELLED };
       }
 
       const responseData = 'data' in response ? response.data : undefined;

@@ -52,6 +52,7 @@ export class AppIndex extends Component<OwnProps> {
   state = {
     headerHeight: 0,
     valgtAvdelingEnhet: undefined,
+    crashMessage: undefined,
   };
 
   componentDidUpdate = (): void => {
@@ -71,14 +72,17 @@ export class AppIndex extends Component<OwnProps> {
   }
 
   componentDidCatch = (error: Error, info: { componentStack: string }): void => {
-    const { showCrashMessage: showCrashMsg } = this.props;
-    showCrashMsg([
+    const { dispatch } = this.context;
+    const crashMessage = [
       error.toString(),
       info.componentStack
         .split('\n')
         .map((line: string) => line.trim())
         .find((line: string) => !!line),
-    ].join(' '));
+    ].join(' ');
+
+    this.setState((state) => ({ ...state, crashMessage }));
+    dispatch({ type: 'add', data: crashMessage });
   }
 
   setValgtAvdelingEnhet = (valgtAvdelingEnhet: string) => {
@@ -93,10 +97,12 @@ export class AppIndex extends Component<OwnProps> {
   render = (): ReactNode => {
     const {
       location,
-      crashMessage,
       errorMessages,
       removeErrorMessage: removeErrorMsg,
     } = this.props;
+    const {
+      crashMessage,
+    } = this.state;
     const { headerHeight, valgtAvdelingEnhet } = this.state;
     const queryStrings = parseQueryString(location.search);
 

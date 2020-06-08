@@ -25,6 +25,8 @@ interface OwnProps {
   fptilbakeUrl: string;
 }
 
+const EMPTY_ARRAY = [];
+
 /**
  * FagsakSearchIndex
  *
@@ -46,7 +48,7 @@ const FagsakSearchIndex: FunctionComponent<OwnProps> = ({
 
   const { startRequest: reserverOppgave } = useRestApiRunner<OppgaveStatus>(RestApiPathsKeys.RESERVER_OPPGAVE);
   const {
-    startRequest: sokFagsak, resetRequestData: resetFagsakSok, data: fagsaker = [], error: fagsakError,
+    startRequest: sokFagsak, resetRequestData: resetFagsakSok, data: fagsaker = EMPTY_ARRAY, error: fagsakError,
   } = useRestApiRunner<Fagsak[]>(RestApiPathsKeys.SEARCH_FAGSAK);
   const { startRequest: hentOppgaverForFagsaker, data: fagsakOppgaver } = useRestApiRunner<Oppgave[]>(RestApiPathsKeys.OPPGAVER_FOR_FAGSAKER);
   const { startRequest: hentReservasjonsstatus } = useRestApiRunner<OppgaveStatus>(RestApiPathsKeys.HENT_RESERVASJONSSTATUS);
@@ -67,7 +69,7 @@ const FagsakSearchIndex: FunctionComponent<OwnProps> = ({
     return () => {
       resetFagsakSok();
     };
-  });
+  }, [sokFerdig, fagsaker, fagsakOppgaver]);
 
   const goToFagsakEllerApneModal = (oppgave: Oppgave, oppgaveStatus: OppgaveStatus) => {
     if (!oppgaveStatus.erReservert || (oppgaveStatus.erReservert && oppgaveStatus.erReservertAvInnloggetBruker)) {

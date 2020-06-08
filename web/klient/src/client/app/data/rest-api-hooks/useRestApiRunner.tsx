@@ -2,6 +2,7 @@ import { useState } from 'react';
 
 import { createRequestApi, RequestRunner } from 'data/rest-api-new';
 import { endpoints, RestApiPathsKeys } from 'data/restApiPaths';
+import useRestApiErrorDispatcher from 'data/rest-api-hooks/useRestApiErrorDispatcher';
 import RestApiState from './RestApiState';
 
 const contextPath = 'fplos';
@@ -28,6 +29,8 @@ function useRestApiRunner<T>(key: RestApiPathsKeys):RestApiData<T> {
     data: undefined,
   });
 
+  const dispatch = useRestApiErrorDispatcher();
+
   const setPartData = (partialData) => setData({ ...data, ...partialData });
 
   const startRequest = function doCall(params: any = {}):Promise<T> {
@@ -37,10 +40,17 @@ function useRestApiRunner<T>(key: RestApiPathsKeys):RestApiData<T> {
 
     return requestApi.getRequestRunner(key).startProcess(params)
       .then((dataRes) => {
-        setPartData({
-          state: RestApiState.SUCCESS,
-          data: dataRes.payload,
-        });
+        if (dataRes.payload === 'INTERNAL_CANCELLATION') {
+          setPartData({
+            state: RestApiState.NOT_STARTED,
+            data: undefined,
+          });
+        } else {
+          setPartData({
+            state: RestApiState.SUCCESS,
+            data: dataRes.payload,
+          });
+        }
         return Promise.resolve(dataRes.payload);
       })
       .catch((error) => {
@@ -48,6 +58,9 @@ function useRestApiRunner<T>(key: RestApiPathsKeys):RestApiData<T> {
           state: RestApiState.ERROR,
           error,
         });
+
+        dispatch({ type: 'add', data: error });
+
         return undefined;
       });
   };

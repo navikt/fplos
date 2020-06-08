@@ -14,13 +14,15 @@ import Oppgave from '../../oppgaveTsType';
 
 const getClickEvent = (openFpsak, oppgave) => () => openFpsak(oppgave);
 
+const EMPTY_ARRAY = [];
+
 /**
  * SistBehandledeSaker
  *
  * Denne komponenten viser de tre siste fagsakene en nav-ansatt har behandlet.
  */
 export const SistBehandledeSaker: FunctionComponent = () => {
-  const { data: sistBehandledeSaker = [] } = useRestApi<Oppgave[]>(RestApiPathsKeys.BEHANDLEDE_OPPGAVER);
+  const { data: sistBehandledeSaker = EMPTY_ARRAY } = useRestApi<Oppgave[]>(RestApiPathsKeys.BEHANDLEDE_OPPGAVER);
   const fpsakUrl = useGlobalStateRestApiData<{ verdi?: string }>(RestApiGlobalStatePathsKeys.FPSAK_URL);
   const fptilbakeUrl = useGlobalStateRestApiData<{ verdi?: string }>(RestApiGlobalStatePathsKeys.FPTILBAKE_URL);
   const { startRequest: hentFpsakInternBehandlingId } = useRestApiRunner<number>(RestApiPathsKeys.FPSAK_BEHANDLING_ID);

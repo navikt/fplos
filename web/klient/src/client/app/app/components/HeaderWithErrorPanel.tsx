@@ -9,8 +9,9 @@ import Header from '@navikt/nap-header';
 import UserPanel from '@navikt/nap-user-panel';
 
 import useRestApiData from 'data/rest-api-hooks/useGlobalStateRestApiData';
+import useRestApiError from 'data/rest-api-hooks/useRestApiError';
+import useRestApiErrorDispatcher from 'data/rest-api-hooks/useRestApiErrorDispatcher';
 import { RestApiGlobalStatePathsKeys } from 'data/restApiPaths';
-import EventType from 'data/rest-api/src/requestApi/eventType';
 import { RETTSKILDE_URL, SYSTEMRUTINE_URL } from 'data/eksterneLenker';
 import NavAnsatt from 'app/navAnsattTsType';
 
@@ -21,20 +22,10 @@ import HeaderAvdelingListe from './HeaderAvdelingListe';
 import styles from './headerWithErrorPanel.less';
 
 interface OwnProps {
-  removeErrorMessage: () => void;
   queryStrings: {
     errormessage?: string;
     errorcode?: string;
   };
-  errorMessages?: {
-    type: EventType;
-    code?: string;
-    params?: {
-      errorDetails?: string;
-      location?: string;
-    };
-    text?: string;
-  }[];
   setSiteHeight: (clientHeight: number) => void;
   locationPathname?: string;
   setValgtAvdelingEnhet: (avdelingEnhet: string) => void;
@@ -73,9 +64,7 @@ const useOutsideClickEvent = (erLenkepanelApent, erAvdelingerPanelApent, setLenk
  */
 const HeaderWithErrorPanel: FunctionComponent<OwnProps & WrappedComponentProps> = ({
   intl,
-  removeErrorMessage,
   queryStrings,
-  errorMessages = [],
   setSiteHeight,
   locationPathname,
   setValgtAvdelingEnhet,
@@ -85,6 +74,10 @@ const HeaderWithErrorPanel: FunctionComponent<OwnProps & WrappedComponentProps> 
   const [erAvdelingerPanelApent, setAvdelingerPanelApent] = useState(false);
 
   const navAnsatt = useRestApiData<NavAnsatt>(RestApiGlobalStatePathsKeys.NAV_ANSATT);
+
+  const errorMessages = useRestApiError() || [];
+  const errorDispatcher = useRestApiErrorDispatcher();
+  const removeErrorMessage = useCallback(() => errorDispatcher({ type: 'remove' }), []);
 
   const wrapperRef = useOutsideClickEvent(erLenkePanelApent, erAvdelingerPanelApent, setLenkePanelApent, setAvdelingerPanelApent);
 

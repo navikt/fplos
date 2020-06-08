@@ -13,6 +13,8 @@ import useRestApi from 'data/rest-api-hooks/useRestApi';
 import SakslistePanel from './components/SakslistePanel';
 import BehandlingPollingTimoutModal from './components/BehandlingPollingTimoutModal';
 
+const EMPTY_ARRAY = [];
+
 interface OwnProps {
   fpsakUrl: string;
   fptilbakeUrl: string;
@@ -35,11 +37,11 @@ const BehandlingskoerIndex: FunctionComponent<OwnProps & DispatchProps> = ({
   const [reservertOppgave, setReservertOppgave] = useState<Oppgave>();
   const [reservertOppgaveStatus, setReservertOppgaveStatus] = useState<OppgaveStatus>();
 
-  const { data: sakslister = [] } = useRestApi<Saksliste[]>(RestApiPathsKeys.SAKSLISTE);
+  const { data: sakslister = EMPTY_ARRAY } = useRestApi<Saksliste[]>(RestApiPathsKeys.SAKSLISTE);
 
-  const { startRequest: hentReserverteOppgaver, data: reserverteOppgaver = [] } = useRestApiRunner<Oppgave[]>(RestApiPathsKeys.RESERVERTE_OPPGAVER);
+  const { startRequest: hentReserverteOppgaver, data: reserverteOppgaver = EMPTY_ARRAY } = useRestApiRunner<Oppgave[]>(RestApiPathsKeys.RESERVERTE_OPPGAVER);
   const {
-    startRequest: hentOppgaverTilBehandling, requestApi, data: oppgaverTilBehandling = [],
+    startRequest: hentOppgaverTilBehandling, requestApi, data: oppgaverTilBehandling = EMPTY_ARRAY,
   } = useRestApiRunner<Oppgave[]>(RestApiPathsKeys.OPPGAVER_TIL_BEHANDLING);
   const { startRequest: reserverOppgave } = useRestApiRunner<OppgaveStatus>(RestApiPathsKeys.RESERVER_OPPGAVE);
   const { startRequest: opphevOppgavereservasjon } = useRestApiRunner<Oppgave[]>(RestApiPathsKeys.OPPHEV_OPPGAVERESERVASJON);
@@ -58,7 +60,7 @@ const BehandlingskoerIndex: FunctionComponent<OwnProps & DispatchProps> = ({
     if (sakslisteId) {
       requestApi.cancelRequest();
     }
-  }, []);
+  }, [sakslisteId]);
 
   const fetchSakslisteOppgaverPolling = (nySakslisteId: number, oppgaveIder?: string) => {
     hentReserverteOppgaver();
