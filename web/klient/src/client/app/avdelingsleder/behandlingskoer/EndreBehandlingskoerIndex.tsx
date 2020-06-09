@@ -1,11 +1,6 @@
-import React, { FunctionComponent } from 'react';
-import { connect } from 'react-redux';
-import { bindActionCreators, Dispatch } from 'redux';
+import React, { FunctionComponent, useState, useCallback } from 'react';
 
 import Saksbehandler from 'avdelingsleder/saksbehandlere/saksbehandlerTsType';
-import {
-  setValgtSakslisteId, getValgtSakslisteId, resetValgtSakslisteId as reset,
-} from './duck';
 import EndreSakslisterPanel from './components/EndreSakslisterPanel';
 
 interface OwnProps {
@@ -15,42 +10,26 @@ interface OwnProps {
   hentAvdelingensSaksbehandlere: (params: {avdelingEnhet: string}) => void;
 }
 
-interface DispatchProps {
-  setValgtSakslisteId: (sakslisteId: number) => void;
-  resetValgtSakslisteId: () => void;
-}
-
 /**
  * EndreBehandlingskoerIndex
  */
-const EndreBehandlingskoerIndex: FunctionComponent<OwnProps & DispatchProps> = ({
+const EndreBehandlingskoerIndex: FunctionComponent<OwnProps> = ({
   valgtAvdelingEnhet,
-  valgtSakslisteId,
-  setValgtSakslisteId: setValgtId,
   avdelingensSaksbehandlere,
   hentAvdelingensSaksbehandlere,
-  resetValgtSakslisteId,
-}) => (
-  <EndreSakslisterPanel
-    setValgtSakslisteId={setValgtId}
-    valgtSakslisteId={valgtSakslisteId}
-    valgtAvdelingEnhet={valgtAvdelingEnhet}
-    avdelingensSaksbehandlere={avdelingensSaksbehandlere}
-    hentAvdelingensSaksbehandlere={hentAvdelingensSaksbehandlere}
-    resetValgtSakslisteId={resetValgtSakslisteId}
-  />
-);
+}) => {
+  const [valgtSakslisteId, setValgtSakslisteId] = useState<number>();
+  const resetValgtSakslisteId = useCallback(() => setValgtSakslisteId(undefined), []);
+  return (
+    <EndreSakslisterPanel
+      setValgtSakslisteId={setValgtSakslisteId}
+      valgtSakslisteId={valgtSakslisteId}
+      valgtAvdelingEnhet={valgtAvdelingEnhet}
+      avdelingensSaksbehandlere={avdelingensSaksbehandlere}
+      hentAvdelingensSaksbehandlere={hentAvdelingensSaksbehandlere}
+      resetValgtSakslisteId={resetValgtSakslisteId}
+    />
+  );
+};
 
-const mapStateToProps = (state) => ({
-  valgtSakslisteId: getValgtSakslisteId(state),
-});
-
-const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => ({
-  ...bindActionCreators<DispatchProps, any>({
-    setValgtSakslisteId,
-    resetValgtSakslisteId: reset,
-  }, dispatch),
-});
-
-
-export default connect(mapStateToProps, mapDispatchToProps)(EndreBehandlingskoerIndex);
+export default EndreBehandlingskoerIndex;
