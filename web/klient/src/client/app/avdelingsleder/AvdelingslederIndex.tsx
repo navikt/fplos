@@ -1,7 +1,6 @@
 import React, {
   FunctionComponent, useMemo, useEffect, useCallback,
 } from 'react';
-import { connect } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
 import classnames from 'classnames/bind';
 import { NavLink } from 'react-router-dom';
@@ -13,13 +12,11 @@ import { RestApiPathsKeys, RestApiGlobalStatePathsKeys } from 'data/restApiPaths
 import LoadingPanel from 'sharedComponents/LoadingPanel';
 import { parseQueryString } from 'utils/urlUtils';
 import { getAvdelingslederPanelLocationCreator } from 'app/paths';
-import trackRouteParam from 'app/data/trackRouteParam';
-import Location from 'app/locationTsType';
 import useRestApiData from 'data/rest-api-hooks/useGlobalStateRestApiData';
 import NavAnsatt from 'app/navAnsattTsType';
 import Avdeling from 'app/avdelingTsType';
+import useTrackRouteParam from 'app/data/useTrackRouteParam';
 import useRestApiRunner from 'data/rest-api-hooks/useRestApiRunner';
-import { getSelectedAvdelingslederPanel, setSelectedAvdelingslederPanel } from './duck';
 import AvdelingslederDashboard from './components/AvdelingslederDashboard';
 import IkkeTilgangTilAvdelingslederPanel from './components/IkkeTilgangTilAvdelingslederPanel';
 import IkkeTilgangTilKode6AvdelingPanel from './components/IkkeTilgangTilKode6AvdelingPanel';
@@ -72,7 +69,6 @@ const messageId = {
 interface OwnProps {
   valgtAvdelingEnhet?: string;
   activeAvdelingslederPanel: string;
-  getAvdelingslederPanelLocation: (panel: string) => Location;
 }
 
 const getTab = (avdelingslederPanel, activeAvdelingslederPanel, getAvdelingslederPanelLocation) => ({
@@ -89,14 +85,22 @@ const getTab = (avdelingslederPanel, activeAvdelingslederPanel, getAvdelingslede
   ),
 });
 
+const getPanelFromUrlOrDefault = (location) => {
+  const panelFromUrl = parseQueryString(location.search);
+  return panelFromUrl.avdelingsleder ? panelFromUrl.avdelingsleder : AvdelingslederPanels.BEHANDLINGSKOER;
+};
+
 /**
  * AvdelingslederIndex
  */
 export const AvdelingslederIndex: FunctionComponent<OwnProps> = ({
   valgtAvdelingEnhet,
-  activeAvdelingslederPanel,
-  getAvdelingslederPanelLocation,
 }) => {
+  const { selected: activeAvdelingslederPanelTemp, location } = useTrackRouteParam({
+    paramName: 'fane',
+    isQueryParam: true,
+  });
+
   const { kanOppgavestyre, kanBehandleKode6 } = useRestApiData<NavAnsatt>(RestApiGlobalStatePathsKeys.NAV_ANSATT);
   const avdelinger = useRestApiData<Avdeling[]>(RestApiGlobalStatePathsKeys.AVDELINGER);
 
@@ -109,6 +113,8 @@ export const AvdelingslederIndex: FunctionComponent<OwnProps> = ({
     hentAvdelingensSaksbehandlere({ avdelingEnhet: valgtAvdelingEnhet });
   }, []);
 
+  const getAvdelingslederPanelLocation = getAvdelingslederPanelLocationCreator(location);
+  const activeAvdelingslederPanel = activeAvdelingslederPanelTemp || getPanelFromUrlOrDefault(location);
 
   const erKode6Avdeling = useMemo(() => {
     const avdeling = avdelinger instanceof Array && avdelinger.find((a) => a.avdelingEnhet === valgtAvdelingEnhet);
@@ -140,26 +146,4 @@ export const AvdelingslederIndex: FunctionComponent<OwnProps> = ({
   return <LoadingPanel />;
 };
 
-const getPanelFromUrlOrDefault = (location) => {
-  const panelFromUrl = parseQueryString(location.search);
-  return panelFromUrl.avdelingsleder ? panelFromUrl.avdelingsleder : AvdelingslederPanels.BEHANDLINGSKOER;
-};
-
-const mapStateToProps = (state) => ({
-  activeAvdelingslederPanel: getSelectedAvdelingslederPanel(state),
-});
-
-const mergeProps = (stateProps, dispatchProps, ownProps) => ({
-  ...ownProps,
-  ...dispatchProps,
-  ...stateProps,
-  getAvdelingslederPanelLocation: getAvdelingslederPanelLocationCreator(ownProps.location), // gets prop 'location' from trackRouteParam
-  activeAvdelingslederPanel: stateProps.activeAvdelingslederPanel ? stateProps.activeAvdelingslederPanel : getPanelFromUrlOrDefault(ownProps.location),
-});
-
-export default trackRouteParam({
-  paramName: 'fane',
-  storeParam: setSelectedAvdelingslederPanel,
-  getParamFromStore: getSelectedAvdelingslederPanel,
-  isQueryParam: true,
-})(connect(mapStateToProps, null, mergeProps)(AvdelingslederIndex));
+export default AvdelingslederIndex;

@@ -1,14 +1,12 @@
 import React from 'react';
-import { Provider } from 'react-redux';
-import { ConnectedRouter } from 'connected-react-router';
 import { createBrowserHistory } from 'history';
 import { render } from 'react-dom';
+import { Router } from 'react-router-dom';
 import { init } from '@sentry/browser';
 
 import AppIndex from 'app/AppIndex';
 import { RestDataProvider } from 'data/rest-api-hooks/RestDataContext';
 import { RestDataErrorProvider } from 'data/rest-api-hooks/RestDataErrorContext';
-import configureStore from './store';
 
 /* eslint no-undef: "error" */
 const environment = window.location.hostname;
@@ -22,7 +20,6 @@ init({
 const history = createBrowserHistory({
   basename: '/fplos/',
 });
-const store = configureStore(history);
 
 const renderFunc = (Component) => {
   const app = document.getElementById('app');
@@ -30,15 +27,13 @@ const renderFunc = (Component) => {
     throw new Error('No app element');
   }
   render(
-    <Provider store={store}>
-      <ConnectedRouter history={history}>
-        <RestDataProvider>
-          <RestDataErrorProvider>
-            <Component />
-          </RestDataErrorProvider>
-        </RestDataProvider>
-      </ConnectedRouter>
-    </Provider>,
+    <Router history={history}>
+      <RestDataProvider>
+        <RestDataErrorProvider>
+          <Component />
+        </RestDataErrorProvider>
+      </RestDataProvider>
+    </Router>,
     app,
   );
 };
