@@ -1,5 +1,6 @@
+import { Location } from 'history';
+
 import { formatQueryString, parseQueryString } from 'utils/urlUtils';
-import Location from './locationTsType';
 
 export const AVDELINGSLEDER_PATH = 'avdelingsleder';
 

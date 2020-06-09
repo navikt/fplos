@@ -5,8 +5,8 @@ import { Router } from 'react-router-dom';
 import { init } from '@sentry/browser';
 
 import AppIndex from 'app/AppIndex';
-import { RestDataProvider } from 'data/rest-api-hooks/RestDataContext';
-import { RestDataErrorProvider } from 'data/rest-api-hooks/RestDataErrorContext';
+import { RestApiGlobalDataProvider } from 'data/rest-api-hooks/RestApiGlobalDataContext';
+import { RestApiErrorProvider } from 'data/rest-api-hooks/RestApiErrorContext';
 
 /* eslint no-undef: "error" */
 const environment = window.location.hostname;
@@ -28,11 +28,11 @@ const renderFunc = (Component) => {
   }
   render(
     <Router history={history}>
-      <RestDataProvider>
-        <RestDataErrorProvider>
+      <RestApiGlobalDataProvider>
+        <RestApiErrorProvider>
           <Component />
-        </RestDataErrorProvider>
-      </RestDataProvider>
+        </RestApiErrorProvider>
+      </RestApiGlobalDataProvider>
     </Router>,
     app,
   );

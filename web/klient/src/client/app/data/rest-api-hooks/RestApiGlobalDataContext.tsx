@@ -11,8 +11,8 @@ const defaultInitialState = Object.keys(RestApiPathsKeys).reduce((acc, key) => (
   ...acc,
   [key]: undefined,
 }), {});
-const RestDataContext = createContext(defaultInitialState);
-const { Provider } = RestDataContext;
+const RestApiGlobalDataContext = createContext(defaultInitialState);
+const { Provider } = RestApiGlobalDataContext;
 
 interface OwnProps {
   children: ReactNode;
@@ -20,7 +20,11 @@ interface OwnProps {
   customRequestApi?: any;
 }
 
-const RestDataProvider: FunctionComponent<OwnProps> = ({ children, initialState, customRequestApi }): JSX.Element => {
+const RestApiGlobalDataProvider: FunctionComponent<OwnProps> = ({
+  children,
+  initialState,
+  customRequestApi,
+}): JSX.Element => {
   const [state, dispatch] = useReducer((oldState, action) => {
     switch (action.type) {
       case 'success':
@@ -38,8 +42,11 @@ const RestDataProvider: FunctionComponent<OwnProps> = ({ children, initialState,
     }
   }, initialState || defaultInitialState);
 
-
-  return <Provider value={{ state, dispatch, requestApi: customRequestApi || requestApi }}>{children}</Provider>;
+  return (
+    <Provider value={{ state, dispatch, requestApi: customRequestApi || requestApi }}>
+      {children}
+    </Provider>
+  );
 };
 
-export { RestDataContext, RestDataProvider };
+export { RestApiGlobalDataContext, RestApiGlobalDataProvider };

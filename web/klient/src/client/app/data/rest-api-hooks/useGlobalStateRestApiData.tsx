@@ -2,10 +2,10 @@ import { useContext } from 'react';
 
 import { RestApiGlobalStatePathsKeys } from 'data/restApiPaths';
 
-import { RestDataContext } from './RestDataContext';
+import { RestApiGlobalDataContext } from './RestApiGlobalDataContext';
 
 function useGlobalStateRestApiData<T>(key: RestApiGlobalStatePathsKeys): T {
-  const { state } = useContext(RestDataContext);
+  const { state } = useContext(RestApiGlobalDataContext);
   return state[key];
 }
 

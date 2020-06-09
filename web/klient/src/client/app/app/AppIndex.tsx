@@ -1,20 +1,22 @@
 import React, { Component, ReactNode } from 'react';
-import { withRouter } from 'react-router-dom';
+import { withRouter, match } from 'react-router-dom';
 import moment from 'moment';
+import { Location, History } from 'history';
 
 import { parseQueryString } from 'utils/urlUtils';
 import { RestApiGlobalStatePathsKeys } from 'data/restApiPaths';
 import AppConfigResolver from './AppConfigResolver';
-import Location from './locationTsType';
 import LanguageProvider from './LanguageProvider';
 import HeaderWithErrorPanel from './components/HeaderWithErrorPanel';
 import Home from './components/Home';
-import { RestDataContext } from '../data/rest-api-hooks/RestDataContext';
+import { RestApiGlobalDataContext } from '../data/rest-api-hooks/RestApiGlobalDataContext';
 
 import '../../styles/global.less';
 
-interface OwnProps {
+interface RouterProps {
   location: Location;
+  history: History;
+  match: match;
 }
 
 interface StateProps {
@@ -31,8 +33,8 @@ interface StateProps {
  * Komponenten er også ansvarlig for å hente innlogget NAV-ansatt, rettskilde-url, systemrutine-url
  * og kodeverk fra server og lagre desse i klientens state.
  */
-export class AppIndex extends Component<OwnProps, StateProps> {
-  static contextType = RestDataContext;
+export class AppIndex extends Component<RouterProps, StateProps> {
+  static contextType = RestApiGlobalDataContext;
 
   state = {
     headerHeight: 0,

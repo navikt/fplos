@@ -1,9 +1,9 @@
 import { useContext } from 'react';
 
-import { RestDataErrorContext } from 'data/rest-api-hooks/RestDataErrorContext';
+import { RestApiErrorContext } from 'data/rest-api-hooks/RestApiErrorContext';
 
 const useRestApiError = () => {
-  const { state } = useContext(RestDataErrorContext);
+  const { state } = useContext(RestApiErrorContext);
   return state.errors;
 };
 
