@@ -1,5 +1,4 @@
 import React, { ReactNode, FunctionComponent } from 'react';
-import { connect } from 'react-redux';
 import { IntlProvider } from 'react-intl';
 
 import data from '../sprak/nb_NO.json';
@@ -14,17 +13,12 @@ interface OwnProps {
  *
  * Container komponent. Har ansvar for å hente språkfilen.
  */
-export const LanguageProvider: FunctionComponent<OwnProps> = ({
-  nbMessages,
+const LanguageProvider: FunctionComponent<OwnProps> = ({
   children,
 }) => (
-  <IntlProvider locale="nb-NO" messages={nbMessages}>
+  <IntlProvider locale="nb-NO" messages={data}>
     {children}
   </IntlProvider>
 );
 
-const mapStateToProps = () => ({
-  nbMessages: data,
-});
-
-export default connect(mapStateToProps)(LanguageProvider);
+export default LanguageProvider;
