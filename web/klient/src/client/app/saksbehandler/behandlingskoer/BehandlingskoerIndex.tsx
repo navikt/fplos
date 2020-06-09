@@ -62,14 +62,14 @@ const BehandlingskoerIndex: FunctionComponent<OwnProps> = ({
 
   const fetchSakslisteOppgaverPolling = (nySakslisteId: number, oppgaveIder?: string) => {
     hentReserverteOppgaver();
-    hentOppgaverTilBehandling(oppgaveIder ? { sakslisteId: nySakslisteId, oppgaveIder } : { sakslisteId: nySakslisteId })
+    hentOppgaverTilBehandling(oppgaveIder ? { sakslisteId: nySakslisteId, oppgaveIder } : { sakslisteId: nySakslisteId }, true)
       .then((response) => fetchSakslisteOppgaverPolling(nySakslisteId, response.map((o) => o.id).join(','))).catch(() => undefined);
   };
 
   const fetchSakslisteOppgaver = (nySakslisteId: number) => {
     setValgtSakslisteId(nySakslisteId);
     hentReserverteOppgaver();
-    hentOppgaverTilBehandling({ sakslisteId: nySakslisteId })
+    hentOppgaverTilBehandling({ sakslisteId: nySakslisteId }, true)
       .then((response) => fetchSakslisteOppgaverPolling(nySakslisteId, response.map((o) => o.id).join(',')));
   };
 
@@ -107,7 +107,7 @@ const BehandlingskoerIndex: FunctionComponent<OwnProps> = ({
   };
 
   const opphevReservasjonFn = (oppgaveId: number, begrunnelse: string): Promise<any> => {
-    if (!sakslisteId) {
+    if (!valgtSakslisteId) {
       return Promise.resolve();
     }
     return opphevOppgavereservasjon({ oppgaveId, begrunnelse })
@@ -115,7 +115,7 @@ const BehandlingskoerIndex: FunctionComponent<OwnProps> = ({
   };
 
   const forlengOppgaveReservasjonFn = (oppgaveId: number): Promise<any> => {
-    if (!sakslisteId) {
+    if (!valgtSakslisteId) {
       return Promise.resolve();
     }
     return forlengOppgavereservasjon({ oppgaveId })
@@ -123,7 +123,7 @@ const BehandlingskoerIndex: FunctionComponent<OwnProps> = ({
   };
 
   const endreOppgaveReservasjonFn = (oppgaveId: number, reserverTil: string): Promise<any> => {
-    if (!sakslisteId) {
+    if (!valgtSakslisteId) {
       return Promise.resolve();
     }
     return endreOppgavereservasjon({ oppgaveId, reserverTil })
@@ -131,7 +131,7 @@ const BehandlingskoerIndex: FunctionComponent<OwnProps> = ({
   };
 
   const flyttReservasjonFn = (oppgaveId: number, brukerident: string, begrunnelse: string): Promise<any> => {
-    if (!sakslisteId) {
+    if (!valgtSakslisteId) {
       return Promise.resolve();
     }
     return flyttOppgavereservasjon({ oppgaveId, brukerIdent: brukerident, begrunnelse })

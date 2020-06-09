@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 import { endpoints, RestApiPathsKeys } from 'data/restApiPaths';
 import useRestApiErrorDispatcher from 'data/rest-api-hooks/useRestApiErrorDispatcher';
@@ -14,7 +14,7 @@ interface SearchResultAccessDenied {
 }
 
 interface RestApiData<T> {
-  startRequest: (params?: any) => Promise<T>;
+  startRequest: (params?: any, keepData?: boolean) => Promise<T>;
   resetRequestData: () => void;
   state: RestApiState;
   error?: SearchResultAccessDenied;
@@ -31,12 +31,12 @@ function useRestApiRunner<T>(key: RestApiPathsKeys):RestApiData<T> {
 
   const dispatch = useRestApiErrorDispatcher();
 
-  const setPartData = (partialData) => setData({ ...data, ...partialData });
-
-  const startRequest = function doCall(params: any = {}):Promise<T> {
-    setPartData({
+  const startRequest = function doCall(params: any = {}, keepData = false):Promise<T> {
+    setData((oldState) => ({
       state: RestApiState.LOADING,
-    });
+      error: undefined,
+      data: keepData ? oldState.data : undefined,
+    }));
 
     const notif = new NotificationMapper();
     notif.addRequestErrorEventHandlers((errorData, type) => {
@@ -46,21 +46,24 @@ function useRestApiRunner<T>(key: RestApiPathsKeys):RestApiData<T> {
     return requestApi.getRequestRunner(key).startProcess(params, notif)
       .then((dataRes) => {
         if (dataRes.payload === 'INTERNAL_CANCELLATION') {
-          setPartData({
+          setData({
             state: RestApiState.NOT_STARTED,
             data: undefined,
+            error: undefined,
           });
         } else {
-          setPartData({
+          setData({
             state: RestApiState.SUCCESS,
             data: dataRes.payload,
+            error: undefined,
           });
         }
         return Promise.resolve(dataRes.payload);
       })
       .catch((error) => {
-        setPartData({
+        setData({
           state: RestApiState.ERROR,
+          data: undefined,
           error,
         });
 
@@ -71,7 +74,7 @@ function useRestApiRunner<T>(key: RestApiPathsKeys):RestApiData<T> {
   };
 
   const resetRequestData = () => {
-    setPartData({
+    setData({
       state: RestApiState.NOT_STARTED,
       error: undefined,
       data: undefined,
