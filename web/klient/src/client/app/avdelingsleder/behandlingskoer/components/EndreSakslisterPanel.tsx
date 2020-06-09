@@ -22,7 +22,6 @@ interface OwnProps {
   valgtSakslisteId?: number;
   valgtAvdelingEnhet: string;
   avdelingensSaksbehandlere: Saksbehandler[];
-  hentAvdelingensSaksbehandlere: (params: {avdelingEnhet: string}) => void;
   resetValgtSakslisteId: () => void;
 }
 
@@ -35,11 +34,11 @@ const EndreSakslisterPanel: FunctionComponent<OwnProps & WrappedComponentProps> 
   intl,
   valgtAvdelingEnhet,
   avdelingensSaksbehandlere,
-  hentAvdelingensSaksbehandlere,
   resetValgtSakslisteId,
 }) => {
   const { data: oppgaverForAvdelingAntall, startRequest: hentOppgaverForAvdelingAntall } = useRestApiRunner<number>(RestApiPathsKeys.OPPGAVE_AVDELING_ANTALL);
-  const { data: sakslister = EMPTY_ARRAY, startRequest: hentAvdelingensSakslister } = useRestApiRunner<Saksliste[]>(RestApiPathsKeys.SAKSLISTER_FOR_AVDELING);
+  const { data: sakslister = EMPTY_ARRAY, startRequest: hentAvdelingensSl } = useRestApiRunner<Saksliste[]>(RestApiPathsKeys.SAKSLISTER_FOR_AVDELING);
+  const hentAvdelingensSakslister = useCallback((params) => hentAvdelingensSl(params, true), []);
   useEffect(() => {
     hentOppgaverForAvdelingAntall({ avdelingEnhet: valgtAvdelingEnhet });
     hentAvdelingensSakslister({ avdelingEnhet: valgtAvdelingEnhet });
@@ -49,7 +48,7 @@ const EndreSakslisterPanel: FunctionComponent<OwnProps & WrappedComponentProps> 
   const lagNySakslisteOgHentAvdelingensSakslisterPåNytt = useCallback((avdelingEnhet) => {
     lagNySaksliste({ avdelingEnhet }).then(() => {
       resetValgtSakslisteId();
-      hentAvdelingensSaksbehandlere({ avdelingEnhet });
+      hentAvdelingensSakslister({ avdelingEnhet });
     });
   }, []);
   const nyId = nySakslisteObject ? parseInt(nySakslisteObject.sakslisteId, 10) : undefined;

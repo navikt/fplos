@@ -7,7 +7,6 @@ interface OwnProps {
   valgtSakslisteId?: number;
   valgtAvdelingEnhet: string;
   avdelingensSaksbehandlere: Saksbehandler[];
-  hentAvdelingensSaksbehandlere: (params: {avdelingEnhet: string}) => void;
 }
 
 /**
@@ -16,7 +15,6 @@ interface OwnProps {
 const EndreBehandlingskoerIndex: FunctionComponent<OwnProps> = ({
   valgtAvdelingEnhet,
   avdelingensSaksbehandlere,
-  hentAvdelingensSaksbehandlere,
 }) => {
   const [valgtSakslisteId, setValgtSakslisteId] = useState<number>();
   const resetValgtSakslisteId = useCallback(() => setValgtSakslisteId(undefined), []);
@@ -26,7 +24,6 @@ const EndreBehandlingskoerIndex: FunctionComponent<OwnProps> = ({
       valgtSakslisteId={valgtSakslisteId}
       valgtAvdelingEnhet={valgtAvdelingEnhet}
       avdelingensSaksbehandlere={avdelingensSaksbehandlere}
-      hentAvdelingensSaksbehandlere={hentAvdelingensSaksbehandlere}
       resetValgtSakslisteId={resetValgtSakslisteId}
     />
   );

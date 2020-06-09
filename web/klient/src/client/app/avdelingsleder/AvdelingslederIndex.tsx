@@ -1,4 +1,6 @@
-import React, { FunctionComponent, useMemo, useEffect } from 'react';
+import React, {
+  FunctionComponent, useMemo, useEffect, useCallback,
+} from 'react';
 import { connect } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
 import classnames from 'classnames/bind';
@@ -40,7 +42,6 @@ const renderAvdelingslederPanel = (avdelingslederPanel, valgtAvdelingEnhet, hent
       return (
         <EndreBehandlingskoerIndex
           valgtAvdelingEnhet={valgtAvdelingEnhet}
-          hentAvdelingensSaksbehandlere={hentAvdelingensSaksbehandlere}
           avdelingensSaksbehandlere={avdelingensSaksbehandlere}
         />
       );
@@ -100,8 +101,9 @@ export const AvdelingslederIndex: FunctionComponent<OwnProps> = ({
   const avdelinger = useRestApiData<Avdeling[]>(RestApiGlobalStatePathsKeys.AVDELINGER);
 
   const {
-    startRequest: hentAvdelingensSaksbehandlere, data: avdelingensSaksbehandlere = EMPTY_ARRAY,
+    startRequest: hentAvdelingensSb, data: avdelingensSaksbehandlere = EMPTY_ARRAY,
   } = useRestApiRunner<Saksbehandler[]>(RestApiPathsKeys.SAKSBEHANDLERE_FOR_AVDELING);
+  const hentAvdelingensSaksbehandlere = useCallback((params) => hentAvdelingensSb(params, true), []);
 
   useEffect(() => {
     hentAvdelingensSaksbehandlere({ avdelingEnhet: valgtAvdelingEnhet });
