@@ -4,7 +4,7 @@ import { Form } from 'react-final-form';
 import { Hovedknapp, Knapp } from 'nav-frontend-knapper';
 import { Normaltekst, Element } from 'nav-frontend-typografi';
 
-import useRestApiRunner from 'data/rest-api-hooks/useRestApiRunner';
+import { useRestApiRunner, RestApiState } from 'data/rest-api-hooks';
 import { RestApiPathsKeys } from 'data/restApiPaths';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import { FlexContainer, FlexRow, FlexColumn } from 'sharedComponents/flexGrid';
@@ -13,7 +13,6 @@ import {
 } from 'utils/validation/validators';
 import { TextAreaField, InputField } from 'form/FinalFields';
 import Modal from 'sharedComponents/Modal';
-import RestApiState from 'data/rest-api-hooks/RestApiState';
 import SaksbehandlerForFlytting from './saksbehandlerForFlyttingTsType';
 
 import styles from './flyttReservasjonModal.less';

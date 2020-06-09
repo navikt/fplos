@@ -52,7 +52,9 @@ export enum RestApiPathsKeys {
   AVDELINGSLEDER_OPPHEVER_RESERVASJON = 'AVDELINGSLEDER_OPPHEVER_RESERVASJON',
 }
 
-export const endpoints = new RestApiConfigBuilder()
+const CONTEXT_PATH = 'fplos';
+
+export const endpoints = new RestApiConfigBuilder(CONTEXT_PATH)
   .withGet('/api/saksbehandler', RestApiGlobalStatePathsKeys.NAV_ANSATT)
   .withGet('/api/konfig/fpsak-url', RestApiGlobalStatePathsKeys.FPSAK_URL)
   .withGet('/api/konfig/fptilbake-url', RestApiGlobalStatePathsKeys.FPTILBAKE_URL)

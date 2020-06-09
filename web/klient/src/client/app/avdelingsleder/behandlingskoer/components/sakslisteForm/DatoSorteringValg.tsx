@@ -6,7 +6,7 @@ import { Undertekst } from 'nav-frontend-typografi';
 import { FlexColumn, FlexContainer, FlexRow } from 'sharedComponents/flexGrid';
 import { hasValidDate, hasValidPosOrNegInteger } from 'utils/validation/validators';
 import DateLabel from 'sharedComponents/DateLabel';
-import useRestApiRunner from 'data/rest-api-hooks/useRestApiRunner';
+import { useRestApiRunner } from 'data/rest-api-hooks';
 import { RestApiPathsKeys } from 'data/restApiPaths';
 import {
   InputField, CheckboxField, DatepickerField,

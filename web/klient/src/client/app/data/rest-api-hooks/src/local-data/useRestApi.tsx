@@ -4,12 +4,11 @@ import {
 
 import { createRequestApi, NotificationMapper } from 'data/rest-api';
 import { endpoints, RestApiPathsKeys } from 'data/restApiPaths';
-import useRestApiErrorDispatcher from 'data/rest-api-hooks/useRestApiErrorDispatcher';
+import useRestApiErrorDispatcher from 'data/rest-api-hooks/src/error/useRestApiErrorDispatcher';
 
-import RestApiState from './RestApiState';
+import RestApiState from '../RestApiState';
 
-const contextPath = 'fplos';
-const requestApi = createRequestApi(contextPath, endpoints);
+const requestApi = createRequestApi(endpoints);
 
 interface RestApiData<T> {
   state: RestApiState;

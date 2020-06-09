@@ -12,7 +12,7 @@ import advarselIcon from 'images/advarsel.svg';
 import { hasValidSaksnummerOrFodselsnummerFormat } from 'utils/validation/validators';
 import { InputField, CheckboxField } from 'form/FinalFields';
 
-import useRestApiData from 'data/rest-api-hooks/useGlobalStateRestApiData';
+import { useGlobalStateRestApiData } from 'data/rest-api-hooks';
 import NavAnsatt from 'app/navAnsattTsType';
 
 import styles from './searchForm.less';
@@ -40,7 +40,7 @@ const SearchForm: FunctionComponent<OwnProps & WrappedComponentProps> = ({
   searchResultAccessDenied,
   resetSearch,
 }) => {
-  const { kanSaksbehandle } = useRestApiData<NavAnsatt>(RestApiGlobalStatePathsKeys.NAV_ANSATT);
+  const { kanSaksbehandle } = useGlobalStateRestApiData<NavAnsatt>(RestApiGlobalStatePathsKeys.NAV_ANSATT);
   return (
     <Form
       onSubmit={onSubmit}

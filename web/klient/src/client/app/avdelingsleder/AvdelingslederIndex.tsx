@@ -12,11 +12,10 @@ import { RestApiPathsKeys, RestApiGlobalStatePathsKeys } from 'data/restApiPaths
 import LoadingPanel from 'sharedComponents/LoadingPanel';
 import { parseQueryString } from 'utils/urlUtils';
 import { getAvdelingslederPanelLocationCreator } from 'app/paths';
-import useRestApiData from 'data/rest-api-hooks/useGlobalStateRestApiData';
 import NavAnsatt from 'app/navAnsattTsType';
 import Avdeling from 'app/avdelingTsType';
 import useTrackRouteParam from 'app/data/useTrackRouteParam';
-import useRestApiRunner from 'data/rest-api-hooks/useRestApiRunner';
+import { useRestApiRunner, useGlobalStateRestApiData } from 'data/rest-api-hooks';
 import AvdelingslederDashboard from './components/AvdelingslederDashboard';
 import IkkeTilgangTilAvdelingslederPanel from './components/IkkeTilgangTilAvdelingslederPanel';
 import IkkeTilgangTilKode6AvdelingPanel from './components/IkkeTilgangTilKode6AvdelingPanel';
@@ -101,8 +100,8 @@ export const AvdelingslederIndex: FunctionComponent<OwnProps> = ({
     isQueryParam: true,
   });
 
-  const { kanOppgavestyre, kanBehandleKode6 } = useRestApiData<NavAnsatt>(RestApiGlobalStatePathsKeys.NAV_ANSATT);
-  const avdelinger = useRestApiData<Avdeling[]>(RestApiGlobalStatePathsKeys.AVDELINGER);
+  const { kanOppgavestyre, kanBehandleKode6 } = useGlobalStateRestApiData<NavAnsatt>(RestApiGlobalStatePathsKeys.NAV_ANSATT);
+  const avdelinger = useGlobalStateRestApiData<Avdeling[]>(RestApiGlobalStatePathsKeys.AVDELINGER);
 
   const {
     startRequest: hentAvdelingensSb, data: avdelingensSaksbehandlere = EMPTY_ARRAY,

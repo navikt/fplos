@@ -4,12 +4,10 @@ import { FormattedMessage } from 'react-intl';
 import Lenke from 'nav-frontend-lenker';
 import { Undertittel, Normaltekst } from 'nav-frontend-typografi';
 
-import useRestApi from 'data/rest-api-hooks/useRestApi';
+import { useRestApi, useRestApiRunner, useGlobalStateRestApiData } from 'data/rest-api-hooks';
 import { RestApiGlobalStatePathsKeys, RestApiPathsKeys } from 'data/restApiPaths';
 import { getFpsakHref, getFptilbakeHref } from 'app/paths';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
-import useGlobalStateRestApiData from 'data/rest-api-hooks/useGlobalStateRestApiData';
-import useRestApiRunner from 'data/rest-api-hooks/useRestApiRunner';
 import Oppgave from '../../oppgaveTsType';
 
 const getClickEvent = (openFpsak, oppgave) => () => openFpsak(oppgave);

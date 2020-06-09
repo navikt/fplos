@@ -4,7 +4,7 @@ import React, {
 
 import { errorOfType, ErrorTypes, getErrorResponseData } from 'app/ErrorTypes';
 import { RestApiPathsKeys } from 'data/restApiPaths';
-import useRestApiRunner from 'data/rest-api-hooks/useRestApiRunner';
+import { useRestApiRunner } from 'data/rest-api-hooks';
 import OppgaveErReservertAvAnnenModal from 'saksbehandler/components/OppgaveErReservertAvAnnenModal';
 import Fagsak from 'saksbehandler/fagsakSearch/fagsakTsType';
 import { getFpsakHref, getFptilbakeHref } from 'app/paths';

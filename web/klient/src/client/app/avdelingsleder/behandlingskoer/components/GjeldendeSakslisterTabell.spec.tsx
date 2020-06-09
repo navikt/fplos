@@ -5,7 +5,7 @@ import sinon from 'sinon';
 import { FormattedMessage } from 'react-intl';
 
 import kodeverkTyper from 'kodeverk/kodeverkTyper';
-import * as useKodeverk from 'data/rest-api-hooks/useKodeverk';
+import * as useKodeverk from 'data/rest-api-hooks/src/global-data/useKodeverk';
 import Image from 'sharedComponents/Image';
 import behandlingType from 'kodeverk/behandlingType';
 import fagsakYtelseType from 'kodeverk/fagsakYtelseType';

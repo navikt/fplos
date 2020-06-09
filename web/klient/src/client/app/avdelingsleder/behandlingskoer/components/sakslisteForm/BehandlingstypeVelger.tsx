@@ -3,8 +3,7 @@ import { FormattedMessage } from 'react-intl';
 import { Undertekst } from 'nav-frontend-typografi';
 
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
-import useKodeverk from 'data/rest-api-hooks/useKodeverk';
-import useRestApiRunner from 'data/rest-api-hooks/useRestApiRunner';
+import { useRestApiRunner, useKodeverk } from 'data/rest-api-hooks';
 import { RestApiPathsKeys } from 'data/restApiPaths';
 import kodeverkTyper from 'kodeverk/kodeverkTyper';
 import behandlingType from 'kodeverk/behandlingType';

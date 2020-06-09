@@ -3,9 +3,8 @@ import { FormattedMessage } from 'react-intl';
 import { Undertekst } from 'nav-frontend-typografi';
 
 import { RestApiPathsKeys } from 'data/restApiPaths';
-import useRestApiRunner from 'data/rest-api-hooks/useRestApiRunner';
+import { useRestApiRunner, useKodeverk } from 'data/rest-api-hooks';
 import kodeverkTyper from 'kodeverk/kodeverkTyper';
-import useKodeverk from 'data/rest-api-hooks/useKodeverk';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import ArrowBox from 'sharedComponents/ArrowBox';
 import { CheckboxField, RadioGroupField, RadioOption } from 'form/FinalFields';

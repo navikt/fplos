@@ -7,7 +7,7 @@ import { RestApiPathsKeys } from 'data/restApiPaths';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import pilNedUrl from 'images/pil-ned.svg';
 import Saksbehandler from 'avdelingsleder/saksbehandlere/saksbehandlerTsType';
-import useRestApiRunner from 'data/rest-api-hooks/useRestApiRunner';
+import { useRestApiRunner } from 'data/rest-api-hooks';
 import GjeldendeSakslisterTabell from './GjeldendeSakslisterTabell';
 import SaksbehandlereForSakslisteForm from './saksbehandlerForm/SaksbehandlereForSakslisteForm';
 import UtvalgskriterierForSakslisteForm from './sakslisteForm/UtvalgskriterierForSakslisteForm';

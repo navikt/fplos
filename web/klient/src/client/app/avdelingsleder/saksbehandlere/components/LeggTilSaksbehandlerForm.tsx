@@ -7,13 +7,12 @@ import { Form } from 'react-final-form';
 import { Hovedknapp, Knapp } from 'nav-frontend-knapper';
 import { Normaltekst, Element } from 'nav-frontend-typografi';
 
-import useRestApiRunner from 'data/rest-api-hooks/useRestApiRunner';
+import { RestApiState, useRestApiRunner } from 'data/rest-api-hooks';
 import { RestApiPathsKeys } from 'data/restApiPaths';
 import { required } from 'utils/validation/validators';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import { InputField } from 'form/FinalFields';
 import { FlexContainer, FlexRow, FlexColumn } from 'sharedComponents/flexGrid';
-import RestApiState from 'data/rest-api-hooks/RestApiState';
 import Saksbehandler from '../saksbehandlerTsType';
 
 import styles from './leggTilSaksbehandlerForm.less';

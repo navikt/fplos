@@ -3,7 +3,6 @@ import { FormattedMessage, injectIntl, WrappedComponentProps } from 'react-intl'
 
 import { Undertekst } from 'nav-frontend-typografi';
 
-import useRestApiRunner from 'data/rest-api-hooks/useRestApiRunner';
 import { RestApiPathsKeys } from 'data/restApiPaths';
 import {
   RadioGroupField, RadioOption,
@@ -12,7 +11,7 @@ import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import kodeverkTyper from 'kodeverk/kodeverkTyper';
 import Kodeverk from 'kodeverk/kodeverkTsType';
 import behandlingType from 'kodeverk/behandlingType';
-import useKodeverk from 'data/rest-api-hooks/useKodeverk';
+import { useRestApiRunner, useKodeverk } from 'data/rest-api-hooks';
 import DatoSorteringValg from './DatoSorteringValg';
 import BelopSorteringValg from './BelopSorteringValg';
 import KoSorteringType from '../../KoSorteringTsType';

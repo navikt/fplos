@@ -4,7 +4,7 @@ import { expect } from 'chai';
 import Header from '@navikt/nap-header';
 import { IntlShape } from 'react-intl';
 
-import * as useRestApiData from 'data/rest-api-hooks/useGlobalStateRestApiData';
+import * as useRestApiData from 'data/rest-api-hooks/src/global-data/useGlobalStateRestApiData';
 import { shallowWithIntl, intlMock } from 'testHelpers/intl-enzyme-test-helper';
 
 import HeaderWithErrorPanel from './HeaderWithErrorPanel';

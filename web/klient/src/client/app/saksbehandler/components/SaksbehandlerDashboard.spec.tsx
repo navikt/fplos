@@ -4,7 +4,7 @@ import { expect } from 'chai';
 import sinon from 'sinon';
 import { shallow } from 'enzyme';
 
-import * as useRestApiData from 'data/rest-api-hooks/useGlobalStateRestApiData';
+import * as useRestApiData from 'data/rest-api-hooks/src/global-data/useGlobalStateRestApiData';
 
 import FagsakSearchIndex from '../fagsakSearch/FagsakSearchIndex';
 import BehandlingskoerIndex from '../behandlingskoer/BehandlingskoerIndex';

@@ -5,8 +5,7 @@ import { Router } from 'react-router-dom';
 import { init } from '@sentry/browser';
 
 import AppIndex from 'app/AppIndex';
-import { RestApiGlobalDataProvider } from 'data/rest-api-hooks/RestApiGlobalDataContext';
-import { RestApiErrorProvider } from 'data/rest-api-hooks/RestApiErrorContext';
+import { RestApiGlobalDataProvider, RestApiErrorProvider } from 'data/rest-api-hooks';
 
 /* eslint no-undef: "error" */
 const environment = window.location.hostname;

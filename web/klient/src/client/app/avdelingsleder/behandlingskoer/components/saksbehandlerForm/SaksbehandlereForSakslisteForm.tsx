@@ -6,7 +6,7 @@ import { Element } from 'nav-frontend-typografi';
 import { Row, Column } from 'nav-frontend-grid';
 
 import { RestApiPathsKeys } from 'data/restApiPaths';
-import useRestApiRunner from 'data/rest-api-hooks/useRestApiRunner';
+import { useRestApiRunner } from 'data/rest-api-hooks';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import { CheckboxField } from 'form/FinalFields';
 import Saksbehandler from 'avdelingsleder/saksbehandlere/saksbehandlerTsType';

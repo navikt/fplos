@@ -13,7 +13,7 @@ import {
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import { InputField } from 'form/FinalFields';
 import { RestApiPathsKeys } from 'data/restApiPaths';
-import useRestApiRunner from 'data/rest-api-hooks/useRestApiRunner';
+import { useRestApiRunner } from 'data/rest-api-hooks';
 import Saksliste from '../../sakslisteTsType';
 import AutoLagringVedBlur from './AutoLagringVedBlur';
 import BehandlingstypeVelger from './BehandlingstypeVelger';

@@ -5,14 +5,16 @@ import React, {
 const defaultInitialState = {
   errors: [],
 };
-const RestApiErrorContext = createContext(defaultInitialState);
+export const RestApiErrorContext = createContext(defaultInitialState);
 const { Provider } = RestApiErrorContext;
 
 interface OwnProps {
   children: ReactNode;
 }
 
-const RestApiErrorProvider: FunctionComponent<OwnProps> = ({ children }): JSX.Element => {
+export const RestApiErrorProvider: FunctionComponent<OwnProps> = ({
+  children,
+}): JSX.Element => {
   const [state, dispatch] = useReducer((oldState, action) => {
     switch (action.type) {
       case 'add':
@@ -26,8 +28,5 @@ const RestApiErrorProvider: FunctionComponent<OwnProps> = ({ children }): JSX.El
     }
   }, defaultInitialState);
 
-
   return <Provider value={{ state, dispatch }}>{children}</Provider>;
 };
-
-export { RestApiErrorContext, RestApiErrorProvider };

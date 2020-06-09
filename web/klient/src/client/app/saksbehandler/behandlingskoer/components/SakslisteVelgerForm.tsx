@@ -17,7 +17,7 @@ import { SelectField } from 'form/FinalFields';
 import gruppeHoverUrl from 'images/gruppe_hover.svg';
 import gruppeUrl from 'images/gruppe.svg';
 import { RestApiPathsKeys } from 'data/restApiPaths';
-import useRestApiRunner from 'data/rest-api-hooks/useRestApiRunner';
+import { useRestApiRunner } from 'data/rest-api-hooks';
 import Saksbehandler from '../saksbehandlerTsType';
 
 import styles from './sakslisteVelgerForm.less';

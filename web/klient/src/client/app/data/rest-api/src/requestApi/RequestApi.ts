@@ -12,10 +12,10 @@ import RequestConfig from '../RequestConfig';
 class RequestApi {
   requestRunnersMappedByName: {[key: string]: RequestRunner};
 
-  constructor(httpClientApi: HttpClientApi, contextPath: string, configs: RequestConfig[]) {
+  constructor(httpClientApi: HttpClientApi, configs: RequestConfig[]) {
     this.requestRunnersMappedByName = configs.reduce((acc, config) => ({
       ...acc,
-      [config.name]: new RequestRunner(httpClientApi, new RestApiRequestContext(contextPath, config)),
+      [config.name]: new RequestRunner(httpClientApi, new RestApiRequestContext(config)),
     }), {});
   }
 

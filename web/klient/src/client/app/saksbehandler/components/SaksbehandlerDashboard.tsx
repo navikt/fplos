@@ -3,7 +3,7 @@ import React, { FunctionComponent } from 'react';
 import Panel from 'nav-frontend-paneler';
 
 import { RestApiGlobalStatePathsKeys } from 'data/restApiPaths';
-import useRestApiData from 'data/rest-api-hooks/useGlobalStateRestApiData';
+import { useGlobalStateRestApiData } from 'data/rest-api-hooks';
 
 import FagsakSearchIndex from '../fagsakSearch/FagsakSearchIndex';
 import BehandlingskoerIndex from '../behandlingskoer/BehandlingskoerIndex';
@@ -23,8 +23,8 @@ export const SaksbehandlerDashboard: FunctionComponent<OwnProps> = ({
   valgtSakslisteId,
   setValgtSakslisteId,
 }) => {
-  const fpsakUrl = useRestApiData<{ verdi?: string }>(RestApiGlobalStatePathsKeys.FPSAK_URL);
-  const fptilbakeUrl = useRestApiData<{ verdi?: string }>(RestApiGlobalStatePathsKeys.FPTILBAKE_URL);
+  const fpsakUrl = useGlobalStateRestApiData<{ verdi?: string }>(RestApiGlobalStatePathsKeys.FPSAK_URL);
+  const fptilbakeUrl = useGlobalStateRestApiData<{ verdi?: string }>(RestApiGlobalStatePathsKeys.FPTILBAKE_URL);
   return (
     <div>
       <div className={styles.oppgaveContainer}>

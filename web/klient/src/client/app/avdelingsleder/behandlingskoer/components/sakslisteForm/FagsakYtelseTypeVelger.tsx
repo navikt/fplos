@@ -2,13 +2,13 @@ import React, { useMemo, FunctionComponent } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { Undertekst } from 'nav-frontend-typografi';
 
-import useRestApiRunner from 'data/rest-api-hooks/useRestApiRunner';
+import { useRestApiRunner } from 'data/rest-api-hooks';
 import { RestApiPathsKeys } from 'data/restApiPaths';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import fagsakYtelseType from 'kodeverk/fagsakYtelseType';
 import kodeverkTyper from 'kodeverk/kodeverkTyper';
 import { RadioGroupField, RadioOption } from 'form/FinalFields';
-import useKodeverk from 'data/rest-api-hooks/useKodeverk';
+import useKodeverk from 'data/rest-api-hooks/src/global-data/useKodeverk';
 
 const finnFagsakYtelseTypeNavn = (fagsakYtelseTyper, valgtFagsakYtelseType) => {
   const type = fagsakYtelseTyper.find((fyt) => fyt.kode === valgtFagsakYtelseType);

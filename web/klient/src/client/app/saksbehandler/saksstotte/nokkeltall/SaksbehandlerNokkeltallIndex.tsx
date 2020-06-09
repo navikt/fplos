@@ -1,7 +1,7 @@
 import React, { FunctionComponent } from 'react';
 
 import { RestApiPathsKeys } from 'data/restApiPaths';
-import useRestApi from 'data/rest-api-hooks/useRestApi';
+import { useRestApi } from 'data/rest-api-hooks';
 
 import SaksbehandlerNokkeltallPanel from './components/SaksbehandlerNokkeltallPanel';
 import NyeOgFerdigstilteOppgaver from './nyeOgFerdigstilteOppgaverTsType';

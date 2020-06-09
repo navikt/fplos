@@ -11,7 +11,7 @@ import { RadioGroupField, RadioOption } from 'form/FinalFields';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import fagsakYtelseType from 'kodeverk/fagsakYtelseType';
 import kodeverkTyper from 'kodeverk/kodeverkTyper';
-import useKodeverk from 'data/rest-api-hooks/useKodeverk';
+import { useKodeverk } from 'data/rest-api-hooks';
 import FordelingAvBehandlingstypeGraf from './FordelingAvBehandlingstypeGraf';
 import OppgaverForAvdeling from './oppgaverForAvdelingTsType';
 

@@ -2,7 +2,7 @@ import React, { FunctionComponent, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { Normaltekst, Element } from 'nav-frontend-typografi';
 
-import useRestApiRunner from 'data/rest-api-hooks/useRestApiRunner';
+import { useRestApiRunner } from 'data/rest-api-hooks';
 import { RestApiPathsKeys } from 'data/restApiPaths';
 import Image from 'sharedComponents/Image';
 import removeIcon from 'images/remove.svg';

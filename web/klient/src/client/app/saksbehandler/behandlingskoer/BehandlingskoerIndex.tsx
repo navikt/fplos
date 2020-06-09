@@ -3,14 +3,13 @@ import React, {
 } from 'react';
 
 import { RestApiPathsKeys } from 'data/restApiPaths';
-import useRestApiRunner from 'data/rest-api-hooks/useRestApiRunner';
 import TimeoutError from 'data/rest-api/src/requestApi/error/TimeoutError';
 import { getFpsakHref, getFptilbakeHref } from 'app/paths';
 import Saksliste from 'saksbehandler/behandlingskoer/sakslisteTsType';
 import OppgaveStatus from 'saksbehandler/oppgaveStatusTsType';
 import Oppgave from 'saksbehandler/oppgaveTsType';
 import OppgaveErReservertAvAnnenModal from 'saksbehandler/components/OppgaveErReservertAvAnnenModal';
-import useRestApi from 'data/rest-api-hooks/useRestApi';
+import { useRestApi, useRestApiRunner } from 'data/rest-api-hooks';
 import SakslistePanel from './components/SakslistePanel';
 import BehandlingPollingTimoutModal from './components/BehandlingPollingTimoutModal';
 

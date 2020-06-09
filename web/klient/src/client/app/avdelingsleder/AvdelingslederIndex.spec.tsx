@@ -4,7 +4,7 @@ import { expect } from 'chai';
 import sinon from 'sinon';
 import Tabs from 'nav-frontend-tabs';
 
-import * as useRestApiData from 'data/rest-api-hooks/useGlobalStateRestApiData';
+import * as useRestApiData from 'data/rest-api-hooks/src/global-data/useGlobalStateRestApiData';
 import LoadingPanel from 'sharedComponents/LoadingPanel';
 import IkkeTilgangTilAvdelingslederPanel from './components/IkkeTilgangTilAvdelingslederPanel';
 import NokkeltallIndex from './nokkeltall/NokkeltallIndex';

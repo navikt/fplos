@@ -4,14 +4,10 @@ import React, {
 import { createRequestApi } from 'data/rest-api';
 import { endpoints, RestApiPathsKeys } from 'data/restApiPaths';
 
-const contextPath = 'fplos';
-const requestApi = createRequestApi(contextPath, endpoints);
+const requestApi = createRequestApi(endpoints);
 
-const defaultInitialState = Object.keys(RestApiPathsKeys).reduce((acc, key) => ({
-  ...acc,
-  [key]: undefined,
-}), {});
-const RestApiGlobalDataContext = createContext(defaultInitialState);
+const defaultInitialState = {};
+export const RestApiGlobalDataContext = createContext(defaultInitialState);
 const { Provider } = RestApiGlobalDataContext;
 
 interface OwnProps {
@@ -20,7 +16,7 @@ interface OwnProps {
   customRequestApi?: any;
 }
 
-const RestApiGlobalDataProvider: FunctionComponent<OwnProps> = ({
+export const RestApiGlobalDataProvider: FunctionComponent<OwnProps> = ({
   children,
   initialState,
   customRequestApi,
@@ -48,5 +44,3 @@ const RestApiGlobalDataProvider: FunctionComponent<OwnProps> = ({
     </Provider>
   );
 };
-
-export { RestApiGlobalDataContext, RestApiGlobalDataProvider };

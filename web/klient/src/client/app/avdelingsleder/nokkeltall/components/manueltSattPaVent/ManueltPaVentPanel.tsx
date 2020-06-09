@@ -9,7 +9,7 @@ import { Row, Column } from 'nav-frontend-grid';
 import StoreValuesInLocalStorage from 'form/StoreValuesInLocalStorage';
 import { getValueFromLocalStorage } from 'utils/localStorageHelper';
 import { RadioGroupField, RadioOption, SelectField } from 'form/FinalFields';
-import useKodeverk from 'data/rest-api-hooks/useKodeverk';
+import { useKodeverk } from 'data/rest-api-hooks';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import fagsakYtelseType from 'kodeverk/fagsakYtelseType';
 import kodeverkTyper from 'kodeverk/kodeverkTyper';

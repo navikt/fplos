@@ -1,7 +1,7 @@
 import React, { FunctionComponent } from 'react';
 
 import { RestApiPathsKeys } from 'data/restApiPaths';
-import useRestApi from 'data/rest-api-hooks/useRestApi';
+import { useRestApi } from 'data/rest-api-hooks';
 
 import NokkeltallPanel from './components/NokkeltallPanel';
 import OppgaverForAvdeling from './components/fordelingAvBehandlingstype/oppgaverForAvdelingTsType';

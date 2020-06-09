@@ -4,7 +4,7 @@ import sinon from 'sinon';
 import { IntlShape } from 'react-intl';
 
 import kodeverkTyper from 'kodeverk/kodeverkTyper';
-import * as useKodeverk from 'data/rest-api-hooks/useKodeverk';
+import * as useKodeverk from 'data/rest-api-hooks/src/global-data/useKodeverk';
 import { shallowWithIntl, intlMock } from 'testHelpers/intl-enzyme-test-helper';
 import KoSortering from 'kodeverk/KoSortering';
 import { RadioGroupField, RadioOption } from 'form/FinalFields';

@@ -1,12 +1,11 @@
 import { useState } from 'react';
 
 import { endpoints, RestApiPathsKeys } from 'data/restApiPaths';
-import useRestApiErrorDispatcher from 'data/rest-api-hooks/useRestApiErrorDispatcher';
+import useRestApiErrorDispatcher from 'data/rest-api-hooks/error/useRestApiErrorDispatcher';
 import { createRequestApi, RequestRunner, NotificationMapper } from 'data/rest-api';
-import RestApiState from './RestApiState';
+import RestApiState from '../src/RestApiState';
 
-const contextPath = 'fplos';
-const requestApi = createRequestApi(contextPath, endpoints);
+const requestApi = createRequestApi(endpoints);
 
 interface SearchResultAccessDenied {
   feilmelding?: string;

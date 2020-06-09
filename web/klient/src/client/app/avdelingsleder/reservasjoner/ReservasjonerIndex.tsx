@@ -1,6 +1,6 @@
 import React, { FunctionComponent, useEffect } from 'react';
 
-import useRestApiRunner from 'data/rest-api-hooks/useRestApiRunner';
+import { useRestApiRunner } from 'data/rest-api-hooks';
 import { RestApiPathsKeys } from 'data/restApiPaths';
 
 import ReservasjonerTabell from './components/ReservasjonerTabell';

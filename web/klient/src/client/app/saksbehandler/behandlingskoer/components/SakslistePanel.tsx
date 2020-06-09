@@ -5,7 +5,7 @@ import { Undertittel } from 'nav-frontend-typografi';
 
 import Saksliste from 'saksbehandler/behandlingskoer/sakslisteTsType';
 import Oppgave from 'saksbehandler/oppgaveTsType';
-import useRestApiRunner from 'data/rest-api-hooks/useRestApiRunner';
+import { useRestApiRunner } from 'data/rest-api-hooks';
 import { RestApiPathsKeys } from 'data/restApiPaths';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import SakslisteVelgerForm from './SakslisteVelgerForm';

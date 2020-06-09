@@ -51,7 +51,7 @@ class RequestRunner {
   private getRestMethod = () => getMethod(this.httpClientApi, this.getConfig().restMethod)
 
   private getPath = (): string => {
-    const contextPath = this.context.getContextPath() ? `/${this.context.getContextPath()}` : '';
+    const contextPath = this.getConfig().contextPath ? `/${this.getConfig().contextPath}` : '';
     return this.getConfig().path ? `${this.context.getHostname()}${contextPath}${this.getConfig().path}` : undefined;
   }
 

@@ -4,8 +4,7 @@ import React, {
 
 import { RestApiGlobalStatePathsKeys } from 'data/restApiPaths';
 import LoadingPanel from 'sharedComponents/LoadingPanel';
-import useGlobalStateRestApi from '../data/rest-api-hooks/useGlobalStateRestApi';
-import RestApiState from '../data/rest-api-hooks/RestApiState';
+import { RestApiState, useGlobalStateRestApi } from '../data/rest-api-hooks';
 
 interface OwnProps {
   children: ReactElement;

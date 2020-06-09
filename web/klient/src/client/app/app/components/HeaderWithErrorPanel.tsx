@@ -8,9 +8,7 @@ import BoxedListWithLinks from '@navikt/boxed-list-with-links';
 import Header from '@navikt/nap-header';
 import UserPanel from '@navikt/nap-user-panel';
 
-import useRestApiData from 'data/rest-api-hooks/useGlobalStateRestApiData';
-import useRestApiError from 'data/rest-api-hooks/useRestApiError';
-import useRestApiErrorDispatcher from 'data/rest-api-hooks/useRestApiErrorDispatcher';
+import { useGlobalStateRestApiData, useRestApiError, useRestApiErrorDispatcher } from 'data/rest-api-hooks';
 import { RestApiGlobalStatePathsKeys } from 'data/restApiPaths';
 import { RETTSKILDE_URL, SYSTEMRUTINE_URL } from 'data/eksterneLenker';
 import NavAnsatt from 'app/navAnsattTsType';
@@ -76,7 +74,7 @@ const HeaderWithErrorPanel: FunctionComponent<OwnProps & WrappedComponentProps> 
   const [erLenkePanelApent, setLenkePanelApent] = useState(false);
   const [erAvdelingerPanelApent, setAvdelingerPanelApent] = useState(false);
 
-  const navAnsatt = useRestApiData<NavAnsatt>(RestApiGlobalStatePathsKeys.NAV_ANSATT);
+  const navAnsatt = useGlobalStateRestApiData<NavAnsatt>(RestApiGlobalStatePathsKeys.NAV_ANSATT);
 
   const errorMessages = useRestApiError() || [];
   const formaterteFeilmeldinger = useMemo(() => new ErrorFormatter().format(errorMessages, crashMessage), [errorMessages]);
