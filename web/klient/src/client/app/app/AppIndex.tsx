@@ -9,7 +9,7 @@ import AppConfigResolver from './AppConfigResolver';
 import LanguageProvider from './LanguageProvider';
 import HeaderWithErrorPanel from './components/HeaderWithErrorPanel';
 import Home from './components/Home';
-import { RestApiGlobalDataContext } from '../data/rest-api-hooks';
+import { RestApiGlobalDataStateContext } from '../data/rest-api-hooks';
 
 import '../../styles/global.less';
 
@@ -34,7 +34,7 @@ interface StateProps {
  * og kodeverk fra server og lagre desse i klientens state.
  */
 export class AppIndex extends Component<RouterProps, StateProps> {
-  static contextType = RestApiGlobalDataContext;
+  static contextType = RestApiGlobalDataStateContext;
 
   state = {
     headerHeight: 0,
@@ -43,7 +43,7 @@ export class AppIndex extends Component<RouterProps, StateProps> {
   };
 
   componentDidUpdate = (): void => {
-    const { state } = this.context;
+    const state = this.context;
     const navAnsatt = state[RestApiGlobalStatePathsKeys.NAV_ANSATT];
     const funksjonellTid = navAnsatt ? navAnsatt.funksjonellTid : undefined;
 

@@ -78,8 +78,7 @@ const HeaderWithErrorPanel: FunctionComponent<OwnProps & WrappedComponentProps> 
 
   const errorMessages = useRestApiError() || [];
   const formaterteFeilmeldinger = useMemo(() => new ErrorFormatter().format(errorMessages, crashMessage), [errorMessages]);
-  const errorDispatcher = useRestApiErrorDispatcher();
-  const removeErrorMessage = useCallback(() => errorDispatcher({ type: 'remove' }), []);
+  const { removeErrorMessage } = useRestApiErrorDispatcher();
 
   const wrapperRef = useOutsideClickEvent(erLenkePanelApent, erAvdelingerPanelApent, setLenkePanelApent, setAvdelingerPanelApent);
 

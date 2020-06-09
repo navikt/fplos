@@ -4,8 +4,8 @@ import {
 
 import { createRequestApi, NotificationMapper } from 'data/rest-api';
 import { endpoints, RestApiPathsKeys } from 'data/restApiPaths';
-import useRestApiErrorDispatcher from 'data/rest-api-hooks/src/error/useRestApiErrorDispatcher';
 
+import useRestApiErrorDispatcher from '../error/useRestApiErrorDispatcher';
 import RestApiState from '../RestApiState';
 
 const requestApi = createRequestApi(endpoints);
@@ -23,13 +23,13 @@ function useRestApi<T>(key: RestApiPathsKeys, params: any = {}, dependencies: De
     data: undefined,
   });
 
-  const dispatch = useRestApiErrorDispatcher();
+  const { addErrorMessage } = useRestApiErrorDispatcher();
 
   const setPartData = (partialData) => setData({ ...data, ...partialData });
 
   const notif = new NotificationMapper();
   notif.addRequestErrorEventHandlers((errorData, type) => {
-    dispatch({ type: 'add', data: { ...errorData, type } });
+    addErrorMessage({ ...errorData, type });
   });
 
   useEffect(() => {

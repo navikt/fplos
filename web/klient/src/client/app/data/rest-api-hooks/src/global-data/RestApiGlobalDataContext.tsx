@@ -1,14 +1,22 @@
 import React, {
   createContext, useReducer, FunctionComponent, ReactNode,
 } from 'react';
+
 import { createRequestApi } from 'data/rest-api';
-import { endpoints, RestApiPathsKeys } from 'data/restApiPaths';
+import { endpoints, RestApiPathsKeys, RestApiGlobalStatePathsKeys } from 'data/restApiPaths';
+import RequestApi from 'data/rest-api/src/requestApi/RequestApi';
 
 const requestApi = createRequestApi(endpoints);
 
 const defaultInitialState = {};
-export const RestApiGlobalDataContext = createContext(defaultInitialState);
-const { Provider } = RestApiGlobalDataContext;
+
+type Action = {type: 'success', key: RestApiGlobalStatePathsKeys, data: any } | {type: 'remove', key: RestApiGlobalStatePathsKeys}
+type Dispatch = (action: Action) => void
+type State = {[key: string]: any[]};
+
+export const RestApiGlobalDataStateContext = createContext<State>(defaultInitialState);
+export const RestApiGlobalDataDispatchContext = createContext<Dispatch | undefined>(undefined);
+export const RestApiContext = createContext<RequestApi | undefined>(undefined);
 
 interface OwnProps {
   children: ReactNode;
@@ -39,8 +47,12 @@ export const RestApiGlobalDataProvider: FunctionComponent<OwnProps> = ({
   }, initialState || defaultInitialState);
 
   return (
-    <Provider value={{ state, dispatch, requestApi: customRequestApi || requestApi }}>
-      {children}
-    </Provider>
+    <RestApiGlobalDataStateContext.Provider value={state}>
+      <RestApiGlobalDataDispatchContext.Provider value={dispatch}>
+        <RestApiContext.Provider value={customRequestApi || requestApi}>
+          {children}
+        </RestApiContext.Provider>
+      </RestApiGlobalDataDispatchContext.Provider>
+    </RestApiGlobalDataStateContext.Provider>
   );
 };

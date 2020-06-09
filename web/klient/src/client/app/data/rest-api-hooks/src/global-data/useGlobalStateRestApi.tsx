@@ -1,7 +1,7 @@
 import { useState, useEffect, useContext } from 'react';
 import { RestApiGlobalStatePathsKeys } from 'data/restApiPaths';
 
-import { RestApiGlobalDataContext } from './RestApiGlobalDataContext';
+import { RestApiGlobalDataDispatchContext, RestApiContext } from './RestApiGlobalDataContext';
 import RestApiState from '../RestApiState';
 
 interface RestApiData<T> {
@@ -17,8 +17,8 @@ function useGlobalStateRestApi<T>(key: RestApiGlobalStatePathsKeys, params: any 
     data: undefined,
   });
 
-  const context = useContext(RestApiGlobalDataContext);
-  const { dispatch, requestApi } = context;
+  const dispatch = useContext(RestApiGlobalDataDispatchContext);
+  const requestApi = useContext(RestApiContext);
 
   useEffect(() => {
     setData({

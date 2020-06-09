@@ -1,8 +1,8 @@
 import { useState } from 'react';
 
 import { endpoints, RestApiPathsKeys } from 'data/restApiPaths';
-import useRestApiErrorDispatcher from 'data/rest-api-hooks/src/error/useRestApiErrorDispatcher';
 import { createRequestApi, RequestRunner, NotificationMapper } from 'data/rest-api';
+import useRestApiErrorDispatcher from '../error/useRestApiErrorDispatcher';
 import RestApiState from '../RestApiState';
 
 const requestApi = createRequestApi(endpoints);
@@ -28,7 +28,7 @@ function useRestApiRunner<T>(key: RestApiPathsKeys):RestApiData<T> {
     data: undefined,
   });
 
-  const dispatch = useRestApiErrorDispatcher();
+  const { addErrorMessage } = useRestApiErrorDispatcher();
 
   const startRequest = function doCall(params: any = {}, keepData = false):Promise<T> {
     setData((oldState) => ({
@@ -39,7 +39,7 @@ function useRestApiRunner<T>(key: RestApiPathsKeys):RestApiData<T> {
 
     const notif = new NotificationMapper();
     notif.addRequestErrorEventHandlers((errorData, type) => {
-      dispatch({ type: 'add', data: { ...errorData, type } });
+      addErrorMessage({ ...errorData, type });
     });
 
     return requestApi.getRequestRunner(key).startProcess(params, notif)

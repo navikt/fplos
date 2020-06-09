@@ -1,12 +1,18 @@
 import React, {
   createContext, useReducer, FunctionComponent, ReactNode,
 } from 'react';
+import ErrorMessage from 'app/feilhandtering/ErrorMessage';
 
 const defaultInitialState = {
   errors: [],
 };
-export const RestApiErrorContext = createContext(defaultInitialState);
-const { Provider } = RestApiErrorContext;
+
+type Action = {type: 'add', data: any } | {type: 'remove'}
+type Dispatch = (action: Action) => void
+type State = {errors: ErrorMessage[]}
+
+export const RestApiErrorStateContext = createContext<State>(defaultInitialState);
+export const RestApiErrorDispatchContext = createContext<Dispatch | undefined>(undefined);
 
 interface OwnProps {
   children: ReactNode;
@@ -28,5 +34,11 @@ export const RestApiErrorProvider: FunctionComponent<OwnProps> = ({
     }
   }, defaultInitialState);
 
-  return <Provider value={{ state, dispatch }}>{children}</Provider>;
+  return (
+    <RestApiErrorStateContext.Provider value={state}>
+      <RestApiErrorDispatchContext.Provider value={dispatch}>
+        {children}
+      </RestApiErrorDispatchContext.Provider>
+    </RestApiErrorStateContext.Provider>
+  );
 };
