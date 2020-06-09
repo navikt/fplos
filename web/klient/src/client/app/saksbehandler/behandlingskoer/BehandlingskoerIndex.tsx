@@ -58,14 +58,14 @@ const BehandlingskoerIndex: FunctionComponent<OwnProps> = ({
   }, []);
 
   const fetchSakslisteOppgaverPolling = (nySakslisteId: number, oppgaveIder?: string) => {
-    hentReserverteOppgaver();
+    hentReserverteOppgaver({}, true);
     hentOppgaverTilBehandling(oppgaveIder ? { sakslisteId: nySakslisteId, oppgaveIder } : { sakslisteId: nySakslisteId }, true)
       .then((response) => fetchSakslisteOppgaverPolling(nySakslisteId, response.map((o) => o.id).join(','))).catch(() => undefined);
   };
 
   const fetchSakslisteOppgaver = (nySakslisteId: number) => {
     setValgtSakslisteId(nySakslisteId);
-    hentReserverteOppgaver();
+    hentReserverteOppgaver({}, true);
     hentOppgaverTilBehandling({ sakslisteId: nySakslisteId }, true)
       .then((response) => fetchSakslisteOppgaverPolling(nySakslisteId, response.map((o) => o.id).join(',')));
   };
@@ -108,7 +108,7 @@ const BehandlingskoerIndex: FunctionComponent<OwnProps> = ({
       return Promise.resolve();
     }
     return opphevOppgavereservasjon({ oppgaveId, begrunnelse })
-      .then(() => hentReserverteOppgaver());
+      .then(() => hentReserverteOppgaver({}, true));
   };
 
   const forlengOppgaveReservasjonFn = (oppgaveId: number): Promise<any> => {
@@ -116,7 +116,7 @@ const BehandlingskoerIndex: FunctionComponent<OwnProps> = ({
       return Promise.resolve();
     }
     return forlengOppgavereservasjon({ oppgaveId })
-      .then(() => hentReserverteOppgaver());
+      .then(() => hentReserverteOppgaver({}, true));
   };
 
   const endreOppgaveReservasjonFn = (oppgaveId: number, reserverTil: string): Promise<any> => {
@@ -124,7 +124,7 @@ const BehandlingskoerIndex: FunctionComponent<OwnProps> = ({
       return Promise.resolve();
     }
     return endreOppgavereservasjon({ oppgaveId, reserverTil })
-      .then(() => hentReserverteOppgaver());
+      .then(() => hentReserverteOppgaver({}, true));
   };
 
   const flyttReservasjonFn = (oppgaveId: number, brukerident: string, begrunnelse: string): Promise<any> => {
@@ -132,7 +132,7 @@ const BehandlingskoerIndex: FunctionComponent<OwnProps> = ({
       return Promise.resolve();
     }
     return flyttOppgavereservasjon({ oppgaveId, brukerIdent: brukerident, begrunnelse })
-      .then(() => hentReserverteOppgaver());
+      .then(() => hentReserverteOppgaver({}, true));
   };
 
   const lukkErReservertModalOgOpneOppgave = (oppgave: Oppgave) => {

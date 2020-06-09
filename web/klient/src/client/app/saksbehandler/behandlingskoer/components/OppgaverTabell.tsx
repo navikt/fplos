@@ -1,5 +1,5 @@
 import React, {
-  useState, useRef, ReactNode, FunctionComponent,
+  useState, useRef, ReactNode, FunctionComponent, useCallback, useMemo,
 } from 'react';
 import { FormattedMessage, injectIntl, WrappedComponentProps } from 'react-intl';
 import { Normaltekst, Element } from 'nav-frontend-typografi';
@@ -80,21 +80,21 @@ export const OppgaverTabell: FunctionComponent<OwnProps & WrappedComponentProps>
 
   const ref = useRef({});
 
-  const goToFagsak = (event: Event, id: number, oppgave: Oppgave) => {
+  const goToFagsak = useCallback((event: Event, id: number, oppgave: Oppgave) => {
     if (ref.current && Object.keys(ref.current).some((key) => ref.current[key] && ref.current[key].contains(event.target))) {
       return;
     }
     reserverOppgave(oppgave);
-  };
+  }, [ref.current]);
 
-  const toggleMenu = (valgtOppgave: Oppgave) => {
+  const toggleMenu = useCallback((valgtOppgave: Oppgave) => {
     const newOffset = ref.current[valgtOppgave.id].getBoundingClientRect();
     setShowMenu(!showMenu);
     setValgtOppgaveId(valgtOppgave.id);
     setOffset({ top: newOffset.top, left: newOffset.left });
-  };
+  }, [ref.current, showMenu]);
 
-  const createTooltip = (oppgaveStatus: OppgaveStatus): ReactNode | undefined => {
+  const createTooltip = useCallback((oppgaveStatus: OppgaveStatus): ReactNode | undefined => {
     const { flyttetReservasjon } = oppgaveStatus;
     if (!flyttetReservasjon) {
       return undefined;
@@ -111,9 +111,9 @@ export const OppgaverTabell: FunctionComponent<OwnProps & WrappedComponentProps>
     return (
       <Normaltekst><FormattedMessage id="OppgaverTabell.OverfortReservasjonTooltip" values={textValues} /></Normaltekst>
     );
-  };
+  }, []);
 
-  const alleOppgaver = slaSammenOgMarkerReserverte(reserverteOppgaver, oppgaverTilBehandling);
+  const alleOppgaver = useMemo(() => slaSammenOgMarkerReserverte(reserverteOppgaver, oppgaverTilBehandling), [reserverteOppgaver, oppgaverTilBehandling]);
   const valgtOppgave = reserverteOppgaver.find((o) => o.id === valgtOppgaveId);
 
   return (
