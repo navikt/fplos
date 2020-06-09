@@ -4,6 +4,7 @@ import React, {
 
 import { RestApiPathsKeys } from 'data/restApiPaths';
 import useRestApiRunner from 'data/rest-api-hooks/useRestApiRunner';
+import TimeoutError from 'data/rest-api/src/requestApi/error/TimeoutError';
 import { getFpsakHref, getFptilbakeHref } from 'app/paths';
 import Saksliste from 'saksbehandler/behandlingskoer/sakslisteTsType';
 import OppgaveStatus from 'saksbehandler/oppgaveStatusTsType';
@@ -39,7 +40,7 @@ const BehandlingskoerIndex: FunctionComponent<OwnProps> = ({
 
   const { startRequest: hentReserverteOppgaver, data: reserverteOppgaver = EMPTY_ARRAY } = useRestApiRunner<Oppgave[]>(RestApiPathsKeys.RESERVERTE_OPPGAVER);
   const {
-    startRequest: hentOppgaverTilBehandling, requestApi, data: oppgaverTilBehandling = EMPTY_ARRAY,
+    startRequest: hentOppgaverTilBehandling, requestApi, data: oppgaverTilBehandling = EMPTY_ARRAY, error: hentOppgaverTilBehandlingError,
   } = useRestApiRunner<Oppgave[]>(RestApiPathsKeys.OPPGAVER_TIL_BEHANDLING);
   const { startRequest: reserverOppgave } = useRestApiRunner<OppgaveStatus>(RestApiPathsKeys.RESERVER_OPPGAVE);
   const { startRequest: opphevOppgavereservasjon } = useRestApiRunner<Oppgave[]>(RestApiPathsKeys.OPPHEV_OPPGAVERESERVASJON);
@@ -49,10 +50,6 @@ const BehandlingskoerIndex: FunctionComponent<OwnProps> = ({
   const { startRequest: hentFpsakInternBehandlingId } = useRestApiRunner<number>(RestApiPathsKeys.FPSAK_BEHANDLING_ID);
 
   const goToUrl = useCallback((url) => window.location.assign(url), []);
-
-  // FIXME finn timeout og vis denne fram
-  // const { state: harTimeout } = useRestApiData<Oppgave[]>(RestApiPathsKeys.OPPGAVER_TIL_BEHANDLING);
-  const harTimeout = false;
 
   useEffect(() => () => {
     if (valgtSakslisteId) {
@@ -162,7 +159,7 @@ const BehandlingskoerIndex: FunctionComponent<OwnProps> = ({
         reserverteOppgaver={reserverteOppgaver}
         oppgaverTilBehandling={oppgaverTilBehandling}
       />
-      {harTimeout
+      {hentOppgaverTilBehandlingError instanceof TimeoutError
         && <BehandlingPollingTimoutModal />}
       {reservertAvAnnenSaksbehandler && reservertOppgave && reservertOppgaveStatus && (
         <OppgaveErReservertAvAnnenModal

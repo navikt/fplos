@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 
 import { endpoints, RestApiPathsKeys } from 'data/restApiPaths';
 import useRestApiErrorDispatcher from 'data/rest-api-hooks/useRestApiErrorDispatcher';
@@ -66,10 +66,7 @@ function useRestApiRunner<T>(key: RestApiPathsKeys):RestApiData<T> {
           data: undefined,
           error,
         });
-
-        dispatch({ type: 'add', data: error });
-
-        return undefined;
+        throw error;
       });
   };
 
