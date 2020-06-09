@@ -1,13 +1,12 @@
 
 import React, { FunctionComponent } from 'react';
-import { connect } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
 
 import { Form } from 'react-final-form';
 import { Element } from 'nav-frontend-typografi';
 
-import StoreValuesInReduxState from 'form/reduxBinding/StoreValuesInReduxState';
-import { getValuesFromReduxState } from 'form/reduxBinding/formDuck';
+import StoreValuesInLocalStorage from 'form/StoreValuesInLocalStorage';
+import { getValueFromLocalStorage } from 'utils/localStorageHelper';
 import { RadioGroupField, RadioOption } from 'form/FinalFields';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import fagsakYtelseType from 'kodeverk/fagsakYtelseType';
@@ -35,6 +34,7 @@ interface OwnProps {
 }
 
 const formName = 'fordelingAvBehandlingstype';
+const formDefaultValues: InitialValues = { valgtYtelseType: ALLE_YTELSETYPER_VALGT };
 
 /**
  * FordelingAvBehandlingstypePanel.
@@ -43,17 +43,18 @@ export const FordelingAvBehandlingstypePanel: FunctionComponent<OwnProps> = ({
   width,
   height,
   oppgaverForAvdeling,
-  initialValues,
 }) => {
   const fagsakYtelseTyper = useKodeverk(kodeverkTyper.FAGSAK_YTELSE_TYPE);
   const behandlingTyper = useKodeverk(kodeverkTyper.BEHANDLING_TYPE);
+  const stringFromStorage = getValueFromLocalStorage(formName);
+  const lagredeVerdier = stringFromStorage ? JSON.parse(stringFromStorage) : undefined;
   return (
     <Form
       onSubmit={() => undefined}
-      initialValues={initialValues}
+      initialValues={lagredeVerdier || formDefaultValues}
       render={({ values }) => (
         <div>
-          <StoreValuesInReduxState onUmount stateKey={formName} values={values} />
+          <StoreValuesInLocalStorage stateKey={formName} values={values} />
           <Element>
             <FormattedMessage id="FordelingAvBehandlingstypePanel.Fordeling" />
           </Element>
@@ -89,10 +90,4 @@ export const FordelingAvBehandlingstypePanel: FunctionComponent<OwnProps> = ({
   );
 };
 
-const formDefaultValues = { valgtYtelseType: ALLE_YTELSETYPER_VALGT };
-
-const mapStateToProps = (state) => ({
-  initialValues: getValuesFromReduxState(state)[formName] || formDefaultValues,
-});
-
-export default connect(mapStateToProps)(FordelingAvBehandlingstypePanel);
+export default FordelingAvBehandlingstypePanel;

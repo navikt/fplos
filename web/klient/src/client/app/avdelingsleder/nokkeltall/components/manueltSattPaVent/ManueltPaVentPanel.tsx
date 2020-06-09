@@ -1,5 +1,4 @@
 import React, { FunctionComponent } from 'react';
-import { connect } from 'react-redux';
 import { injectIntl, WrappedComponentProps, FormattedMessage } from 'react-intl';
 
 import { Form } from 'react-final-form';
@@ -7,8 +6,8 @@ import moment from 'moment';
 import { Element } from 'nav-frontend-typografi';
 import { Row, Column } from 'nav-frontend-grid';
 
-import StoreValuesInReduxState from 'form/reduxBinding/StoreValuesInReduxState';
-import { getValuesFromReduxState } from 'form/reduxBinding/formDuck';
+import StoreValuesInLocalStorage from 'form/StoreValuesInLocalStorage';
+import { getValueFromLocalStorage } from 'utils/localStorageHelper';
 import { RadioGroupField, RadioOption, SelectField } from 'form/FinalFields';
 import useKodeverk from 'data/rest-api-hooks/useKodeverk';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
@@ -58,25 +57,28 @@ interface OwnProps {
 }
 
 const formName = 'manueltPaVentForm';
+const formDefaultValues = { valgtYtelsetype: ALLE_YTELSETYPER_VALGT, ukevalg: UKE_4 };
+
 
 /**
  * ManueltPaVentPanel.
  */
-export const ManueltPaVentPanel: FunctionComponent<OwnProps & WrappedComponentProps> = ({
+const ManueltPaVentPanel: FunctionComponent<OwnProps & WrappedComponentProps> = ({
   intl,
   width,
   height,
   oppgaverManueltPaVent,
-  initialValues,
 }) => {
   const fagsakYtelseTyper = useKodeverk(kodeverkTyper.FAGSAK_YTELSE_TYPE);
+  const stringFromStorage = getValueFromLocalStorage(formName);
+  const lagredeVerdier = stringFromStorage ? JSON.parse(stringFromStorage) : undefined;
   return (
     <Form
       onSubmit={() => undefined}
-      initialValues={initialValues}
+      initialValues={lagredeVerdier || formDefaultValues}
       render={({ values }) => (
         <div>
-          <StoreValuesInReduxState onUmount stateKey={formName} values={values} />
+          <StoreValuesInLocalStorage stateKey={formName} values={values} />
           <Element>
             <FormattedMessage id="ManueltPaVentPanel.SattPaVent" />
           </Element>
@@ -127,10 +129,4 @@ export const ManueltPaVentPanel: FunctionComponent<OwnProps & WrappedComponentPr
   );
 };
 
-const formDefaultValues = { valgtYtelsetype: ALLE_YTELSETYPER_VALGT, ukevalg: UKE_4 };
-
-const mapStateToProps = (state) => ({
-  initialValues: getValuesFromReduxState(state)[formName] || formDefaultValues,
-});
-
-export default connect(mapStateToProps)(injectIntl(ManueltPaVentPanel));
+export default injectIntl(ManueltPaVentPanel);

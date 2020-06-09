@@ -1,14 +1,12 @@
 import React, { FunctionComponent } from 'react';
-import { connect } from 'react-redux';
 import moment from 'moment';
 import { injectIntl, WrappedComponentProps, FormattedMessage } from 'react-intl';
-
 import { Form } from 'react-final-form';
 import { Element } from 'nav-frontend-typografi';
 import { Row, Column } from 'nav-frontend-grid';
 
-import StoreValuesInReduxState from 'form/reduxBinding/StoreValuesInReduxState';
-import { getValuesFromReduxState } from 'form/reduxBinding/formDuck';
+import { getValueFromLocalStorage } from 'utils/localStorageHelper';
+import StoreValuesInLocalStorage from 'form/StoreValuesInLocalStorage';
 import { RadioGroupField, RadioOption, SelectField } from 'form/FinalFields';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import useKodeverk from 'data/rest-api-hooks/useKodeverk';
@@ -62,19 +60,15 @@ const slaSammenLikeBehandlingstyperOgDatoer = (oppgaverForAvdeling) => {
   return sammenslatte;
 };
 
-interface InitialValues {
-  ytelseType: string;
-  ukevalg: string;
-}
-
 interface OwnProps {
   width: number;
   height: number;
   oppgaverPerDato: OppgaveForDato[];
-  initialValues: InitialValues;
 }
 
 const formName = 'tilBehandlingForm';
+const formDefaultValues = { ytelseType: ALLE_YTELSETYPER_VALGT, ukevalg: UKE_2 };
+
 
 /**
  * TilBehandlingPanel.
@@ -84,17 +78,18 @@ export const TilBehandlingPanel: FunctionComponent<OwnProps & WrappedComponentPr
   width,
   height,
   oppgaverPerDato,
-  initialValues,
 }) => {
   const behandlingTyper = useKodeverk(kodeverkTyper.BEHANDLING_TYPE);
   const fagsakYtelseTyper = useKodeverk(kodeverkTyper.FAGSAK_YTELSE_TYPE);
+  const stringFromStorage = getValueFromLocalStorage(formName);
+  const lagredeVerdier = stringFromStorage ? JSON.parse(stringFromStorage) : undefined;
   return (
     <Form
       onSubmit={() => undefined}
-      initialValues={initialValues}
+      initialValues={lagredeVerdier || formDefaultValues}
       render={({ values }) => (
         <>
-          <StoreValuesInReduxState onUmount stateKey={formName} values={values} />
+          <StoreValuesInLocalStorage stateKey={formName} values={values} />
           <Element>
             <FormattedMessage id="TilBehandlingPanel.TilBehandling" />
           </Element>
@@ -146,10 +141,4 @@ export const TilBehandlingPanel: FunctionComponent<OwnProps & WrappedComponentPr
   );
 };
 
-const formDefaultValues = { ytelseType: ALLE_YTELSETYPER_VALGT, ukevalg: UKE_2 };
-
-const mapStateToProps = (state) => ({
-  initialValues: getValuesFromReduxState(state)[formName] || formDefaultValues,
-});
-
-export default connect(mapStateToProps)(injectIntl(TilBehandlingPanel));
+export default injectIntl(TilBehandlingPanel);
