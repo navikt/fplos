@@ -164,7 +164,7 @@ const SakslisteVelgerForm: FunctionComponent<OwnProps & WrappedComponentProps> =
                 const id = parseInt(val.values.sakslisteId, 10);
                 fetchSakslisteOppgaver(id);
                 fetchSaksbehandlere({ sakslisteId: id });
-                fetchAntallOppgaver(id);
+                fetchAntallOppgaver({ sakslisteId: id });
               }
             }}
             subscription={{ values: true, dirtyFields: true }}
