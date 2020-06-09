@@ -1,5 +1,5 @@
 import React, {
-  useState, useEffect, FunctionComponent, useRef, useCallback,
+  useState, useEffect, FunctionComponent, useRef, useCallback, useMemo,
 } from 'react';
 import { injectIntl, WrappedComponentProps } from 'react-intl';
 import Popover from '@navikt/nap-popover';
@@ -20,6 +20,7 @@ import ErrorMessagePanel from './ErrorMessagePanel';
 import HeaderAvdelingListe from './HeaderAvdelingListe';
 
 import styles from './headerWithErrorPanel.less';
+import ErrorFormatter from '../feilhandtering/ErrorFormatter';
 
 interface OwnProps {
   queryStrings: {
@@ -30,6 +31,7 @@ interface OwnProps {
   locationPathname?: string;
   setValgtAvdelingEnhet: (avdelingEnhet: string) => void;
   valgtAvdelingEnhet?: string;
+  crashMessage?: string;
 }
 
 const useOutsideClickEvent = (erLenkepanelApent, erAvdelingerPanelApent, setLenkePanelApent, setAvdelingerPanelApent) => {
@@ -69,6 +71,7 @@ const HeaderWithErrorPanel: FunctionComponent<OwnProps & WrappedComponentProps> 
   locationPathname,
   setValgtAvdelingEnhet,
   valgtAvdelingEnhet,
+  crashMessage,
 }) => {
   const [erLenkePanelApent, setLenkePanelApent] = useState(false);
   const [erAvdelingerPanelApent, setAvdelingerPanelApent] = useState(false);
@@ -76,6 +79,7 @@ const HeaderWithErrorPanel: FunctionComponent<OwnProps & WrappedComponentProps> 
   const navAnsatt = useRestApiData<NavAnsatt>(RestApiGlobalStatePathsKeys.NAV_ANSATT);
 
   const errorMessages = useRestApiError() || [];
+  const formaterteFeilmeldinger = useMemo(() => new ErrorFormatter().format(errorMessages, crashMessage), [errorMessages]);
   const errorDispatcher = useRestApiErrorDispatcher();
   const removeErrorMessage = useCallback(() => errorDispatcher({ type: 'remove' }), []);
 
@@ -84,7 +88,7 @@ const HeaderWithErrorPanel: FunctionComponent<OwnProps & WrappedComponentProps> 
   const fixedHeaderRef = useRef(null);
   useEffect(() => {
     setSiteHeight(fixedHeaderRef.current.clientHeight);
-  }, [errorMessages.length]);
+  }, [formaterteFeilmeldinger.length]);
 
   const skalViseAvdelinger = navAnsatt.kanOppgavestyre
     && locationPathname && locationPathname.includes(AVDELINGSLEDER_PATH);
@@ -149,7 +153,7 @@ const HeaderWithErrorPanel: FunctionComponent<OwnProps & WrappedComponentProps> 
           )}
         </Header>
       </div>
-      <ErrorMessagePanel errorMessages={errorMessages} queryStrings={queryStrings} removeErrorMessage={removeErrorMessage} />
+      <ErrorMessagePanel errorMessages={formaterteFeilmeldinger} queryStrings={queryStrings} removeErrorMessage={removeErrorMessage} />
     </header>
   );
 };

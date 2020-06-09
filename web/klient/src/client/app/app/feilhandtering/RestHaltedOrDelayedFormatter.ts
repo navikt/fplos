@@ -12,8 +12,6 @@ interface ErrorData {
    eta: string;
 }
 
-// TODO (TOR) Bør kanskje ligga under rest-api
-
 class RestHaltedOrDelayedFormatter implements Formatter<ErrorData> {
   type = ErrorEventType.POLLING_HALTED_OR_DELAYED;
 

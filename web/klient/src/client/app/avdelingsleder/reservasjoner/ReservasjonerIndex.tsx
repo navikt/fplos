@@ -11,11 +11,7 @@ interface OwnProps {
   valgtAvdelingEnhet: string;
 }
 
-interface DispatchProps {
-  opphevReservasjon: (oppgaveId: number) => Promise<string>;
-}
-
-export const ReservasjonerIndex: FunctionComponent<OwnProps & DispatchProps> = ({
+export const ReservasjonerIndex: FunctionComponent<OwnProps> = ({
   valgtAvdelingEnhet,
 }) => {
   const { startRequest: endreOppgavereservasjon } = useRestApiRunner(RestApiPathsKeys.ENDRE_OPPGAVERESERVASJON);

@@ -2,7 +2,7 @@ import {
   useState, useEffect, DependencyList,
 } from 'react';
 
-import { createRequestApi } from 'data/rest-api';
+import { createRequestApi, NotificationMapper } from 'data/rest-api';
 import { endpoints, RestApiPathsKeys } from 'data/restApiPaths';
 import useRestApiErrorDispatcher from 'data/rest-api-hooks/useRestApiErrorDispatcher';
 
@@ -28,12 +28,17 @@ function useRestApi<T>(key: RestApiPathsKeys, params: any = {}, dependencies: De
 
   const setPartData = (partialData) => setData({ ...data, ...partialData });
 
+  const notif = new NotificationMapper();
+  notif.addRequestErrorEventHandlers((errorData, type) => {
+    dispatch({ type: 'add', data: { ...errorData, type } });
+  });
+
   useEffect(() => {
     setPartData({
       state: RestApiState.LOADING,
     });
 
-    requestApi.getRequestRunner(key).startProcess(params)
+    requestApi.getRequestRunner(key).startProcess(params, notif)
       .then((dataRes) => {
         if (dataRes.payload === 'INTERNAL_CANCELLATION') {
           setPartData({
@@ -52,8 +57,6 @@ function useRestApi<T>(key: RestApiPathsKeys, params: any = {}, dependencies: De
           state: RestApiState.ERROR,
           error,
         });
-
-        dispatch({ type: 'add', data: error });
       });
   }, dependencies);
 

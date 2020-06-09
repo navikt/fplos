@@ -1,12 +1,8 @@
 import React, { Component, ReactNode } from 'react';
-import { connect } from 'react-redux';
-import { bindActionCreators, Dispatch } from 'redux';
 import { withRouter } from 'react-router-dom';
 import moment from 'moment';
 
 import { parseQueryString } from 'utils/urlUtils';
-import EventType from 'data/rest-api/src/requestApi/eventType';
-import errorHandler from 'data/error-api-redux';
 import { RestApiGlobalStatePathsKeys } from 'data/restApiPaths';
 import AppConfigResolver from './AppConfigResolver';
 import Location from './locationTsType';
@@ -18,18 +14,13 @@ import { RestDataContext } from '../data/rest-api-hooks/RestDataContext';
 import '../../styles/global.less';
 
 interface OwnProps {
-  errorMessages?: {
-    type: EventType;
-    code?: string;
-    params?: {
-      errorDetails?: string;
-    };
-    text?: string;
-  }[];
-  removeErrorMessage: () => void;
-  crashMessage: string;
-  showCrashMessage: (message: string) => void;
   location: Location;
+}
+
+interface StateProps {
+  headerHeight: number;
+  valgtAvdelingEnhet?: string;
+  crashMessage?: string;
 }
 
 /**
@@ -40,13 +31,7 @@ interface OwnProps {
  * Komponenten er også ansvarlig for å hente innlogget NAV-ansatt, rettskilde-url, systemrutine-url
  * og kodeverk fra server og lagre desse i klientens state.
  */
-export class AppIndex extends Component<OwnProps> {
-  static defaultProps = {
-    crashMessage: '',
-    kanOppgavestyre: false,
-    errorMessages: [],
-  };
-
+export class AppIndex extends Component<OwnProps, StateProps> {
   static contextType = RestDataContext;
 
   state = {
@@ -72,7 +57,6 @@ export class AppIndex extends Component<OwnProps> {
   }
 
   componentDidCatch = (error: Error, info: { componentStack: string }): void => {
-    const { dispatch } = this.context;
     const crashMessage = [
       error.toString(),
       info.componentStack
@@ -82,7 +66,6 @@ export class AppIndex extends Component<OwnProps> {
     ].join(' ');
 
     this.setState((state) => ({ ...state, crashMessage }));
-    dispatch({ type: 'add', data: crashMessage });
   }
 
   setValgtAvdelingEnhet = (valgtAvdelingEnhet: string) => {
@@ -97,8 +80,6 @@ export class AppIndex extends Component<OwnProps> {
   render = (): ReactNode => {
     const {
       location,
-      errorMessages,
-      removeErrorMessage: removeErrorMsg,
     } = this.props;
     const {
       crashMessage,
@@ -111,12 +92,11 @@ export class AppIndex extends Component<OwnProps> {
         <LanguageProvider>
           <HeaderWithErrorPanel
             queryStrings={queryStrings}
-            removeErrorMessage={removeErrorMsg}
-            errorMessages={errorMessages}
             setSiteHeight={this.setSiteHeight}
             locationPathname={location.pathname}
             setValgtAvdelingEnhet={this.setValgtAvdelingEnhet}
             valgtAvdelingEnhet={valgtAvdelingEnhet}
+            crashMessage={crashMessage}
           />
           {!crashMessage && (
             <Home headerHeight={headerHeight} valgtAvdelingEnhet={valgtAvdelingEnhet} />
@@ -127,14 +107,4 @@ export class AppIndex extends Component<OwnProps> {
   }
 }
 
-const mapStateToProps = (state: any) => ({
-  errorMessages: errorHandler.getAllErrorMessages(state),
-  crashMessage: errorHandler.getCrashMessage(state),
-});
-
-const mapDispatchToProps = (dispatch: Dispatch) => bindActionCreators({
-  showCrashMessage: errorHandler.showCrashMessage,
-  removeErrorMessage: errorHandler.removeErrorMessage,
-}, dispatch);
-
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(AppIndex));
+export default withRouter(AppIndex);

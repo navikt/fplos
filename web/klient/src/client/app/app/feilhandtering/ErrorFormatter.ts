@@ -1,7 +1,7 @@
-import DefaultFormatter from './formatters/DefaultFormatter';
-import RestTimeoutFormatter from './formatters/RestTimeoutFormatter';
-import RestHaltedOrDelayedFormatter from './formatters/RestHaltedOrDelayedFormatter';
-import RestGatewayTimeoutOrNotFoundFormatter from './formatters/RestGatewayTimeoutOrNotFoundFormatter';
+import DefaultFormatter from './DefaultFormatter';
+import RestTimeoutFormatter from './RestTimeoutFormatter';
+import RestHaltedOrDelayedFormatter from './RestHaltedOrDelayedFormatter';
+import RestGatewayTimeoutOrNotFoundFormatter from './RestGatewayTimeoutOrNotFoundFormatter';
 
 const defaultFormatter = new DefaultFormatter();
 const formatters = [new RestTimeoutFormatter(), new RestHaltedOrDelayedFormatter(), new RestGatewayTimeoutOrNotFoundFormatter(), defaultFormatter];

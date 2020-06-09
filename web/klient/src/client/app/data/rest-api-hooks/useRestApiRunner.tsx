@@ -1,8 +1,8 @@
 import { useState } from 'react';
 
-import { createRequestApi, RequestRunner } from 'data/rest-api';
 import { endpoints, RestApiPathsKeys } from 'data/restApiPaths';
 import useRestApiErrorDispatcher from 'data/rest-api-hooks/useRestApiErrorDispatcher';
+import { createRequestApi, RequestRunner, NotificationMapper } from 'data/rest-api';
 import RestApiState from './RestApiState';
 
 const contextPath = 'fplos';
@@ -38,7 +38,12 @@ function useRestApiRunner<T>(key: RestApiPathsKeys):RestApiData<T> {
       state: RestApiState.LOADING,
     });
 
-    return requestApi.getRequestRunner(key).startProcess(params)
+    const notif = new NotificationMapper();
+    notif.addRequestErrorEventHandlers((errorData, type) => {
+      dispatch({ type: 'add', data: { ...errorData, type } });
+    });
+
+    return requestApi.getRequestRunner(key).startProcess(params, notif)
       .then((dataRes) => {
         if (dataRes.payload === 'INTERNAL_CANCELLATION') {
           setPartData({
