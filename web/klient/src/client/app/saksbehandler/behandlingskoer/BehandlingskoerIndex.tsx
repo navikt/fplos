@@ -18,21 +18,19 @@ const EMPTY_ARRAY = [];
 interface OwnProps {
   fpsakUrl: string;
   fptilbakeUrl: string;
-}
-
-interface DispatchProps {
+  valgtSakslisteId?: number;
   setValgtSakslisteId: (sakslisteId: number) => void;
 }
 
 /**
  * BehandlingskoerIndex
  */
-const BehandlingskoerIndex: FunctionComponent<OwnProps & DispatchProps> = ({
+const BehandlingskoerIndex: FunctionComponent<OwnProps> = ({
+  valgtSakslisteId,
   setValgtSakslisteId,
   fpsakUrl,
   fptilbakeUrl,
 }) => {
-  const [sakslisteId, setSakslisteId] = useState<number>();
   const [reservertAvAnnenSaksbehandler, setReservertAvAnnenSaksbehandler] = useState<boolean>(false);
   const [reservertOppgave, setReservertOppgave] = useState<Oppgave>();
   const [reservertOppgaveStatus, setReservertOppgaveStatus] = useState<OppgaveStatus>();
@@ -57,25 +55,22 @@ const BehandlingskoerIndex: FunctionComponent<OwnProps & DispatchProps> = ({
   const harTimeout = false;
 
   useEffect(() => () => {
-    if (sakslisteId) {
+    if (valgtSakslisteId) {
       requestApi.cancelRequest();
     }
-  }, [sakslisteId]);
+  }, []);
 
   const fetchSakslisteOppgaverPolling = (nySakslisteId: number, oppgaveIder?: string) => {
     hentReserverteOppgaver();
     hentOppgaverTilBehandling(oppgaveIder ? { sakslisteId: nySakslisteId, oppgaveIder } : { sakslisteId: nySakslisteId })
-      .then((response) => (nySakslisteId === sakslisteId
-        ? fetchSakslisteOppgaverPolling(nySakslisteId, response.map((o) => o.id).join(',')) : Promise.resolve())).catch(() => undefined);
+      .then((response) => fetchSakslisteOppgaverPolling(nySakslisteId, response.map((o) => o.id).join(','))).catch(() => undefined);
   };
 
   const fetchSakslisteOppgaver = (nySakslisteId: number) => {
-    setSakslisteId(nySakslisteId);
     setValgtSakslisteId(nySakslisteId);
     hentReserverteOppgaver();
     hentOppgaverTilBehandling({ sakslisteId: nySakslisteId })
-      .then((response) => (nySakslisteId === sakslisteId ? fetchSakslisteOppgaverPolling(nySakslisteId, response.map((o) => o.id)
-        .join(',')) : Promise.resolve()));
+      .then((response) => fetchSakslisteOppgaverPolling(nySakslisteId, response.map((o) => o.id).join(',')));
   };
 
   const openFagsak = (oppgave: Oppgave) => {

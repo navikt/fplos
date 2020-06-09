@@ -32,7 +32,12 @@ export const SaksbehandlerDashboard: FunctionComponent<OwnProps> = ({
           <div className={styles.leftColumn}>
             <div className={styles.sakslisteContent}>
               <Panel className={styles.sakslistePanel}>
-                <BehandlingskoerIndex fpsakUrl={fpsakUrl.verdi} fptilbakeUrl={fptilbakeUrl.verdi} setValgtSakslisteId={setValgtSakslisteId} />
+                <BehandlingskoerIndex
+                  fpsakUrl={fpsakUrl.verdi}
+                  fptilbakeUrl={fptilbakeUrl.verdi}
+                  valgtSakslisteId={valgtSakslisteId}
+                  setValgtSakslisteId={setValgtSakslisteId}
+                />
                 <FagsakSearchIndex fpsakUrl={fpsakUrl.verdi} fptilbakeUrl={fptilbakeUrl.verdi} />
               </Panel>
             </div>
