@@ -22,6 +22,7 @@ interface OwnProps {
   valgtSaksliste: Saksliste;
   avdelingensSaksbehandlere: Saksbehandler[];
   valgtAvdelingEnhet: string;
+  hentAvdelingensSakslister: (params: {avdelingEnhet: string}) => void;
 }
 
 /**
@@ -31,6 +32,7 @@ export const SaksbehandlereForSakslisteForm: FunctionComponent<OwnProps> = ({
   avdelingensSaksbehandlere = [],
   valgtSaksliste,
   valgtAvdelingEnhet,
+  hentAvdelingensSakslister,
 }) => {
   const sorterteAvdelingensSaksbehandlere = sortSaksbehandlere(avdelingensSaksbehandlere);
   const pos = Math.ceil(sorterteAvdelingensSaksbehandlere.length / 2);
@@ -67,7 +69,7 @@ export const SaksbehandlereForSakslisteForm: FunctionComponent<OwnProps> = ({
                       brukerIdent: s.brukerIdent,
                       checked: isChecked,
                       avdelingEnhet: valgtAvdelingEnhet,
-                    })}
+                    }).then(() => hentAvdelingensSakslister({ avdelingEnhet: valgtAvdelingEnhet }))}
                   />
                   <VerticalSpacer fourPx />
                 </React.Fragment>
@@ -84,7 +86,7 @@ export const SaksbehandlereForSakslisteForm: FunctionComponent<OwnProps> = ({
                       brukerIdent: s.brukerIdent,
                       checked: isChecked,
                       avdelingEnhet: valgtAvdelingEnhet,
-                    })}
+                    }).then(() => hentAvdelingensSakslister({ avdelingEnhet: valgtAvdelingEnhet }))}
                   />
                   <VerticalSpacer fourPx />
                 </React.Fragment>

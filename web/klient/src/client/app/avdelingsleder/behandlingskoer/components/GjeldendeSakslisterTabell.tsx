@@ -42,7 +42,9 @@ interface OwnProps {
   valgtSakslisteId?: number;
   valgtAvdelingEnhet: string;
   oppgaverForAvdelingAntall?: number;
-  lagNySaksliste: (data: {avdelingEnhet: string}) => void;
+  lagNySaksliste: (avdelingEnhet: string) => void;
+  resetValgtSakslisteId: () => void;
+  hentAvdelingensSakslister: (params: {avdelingEnhet: string}) => void;
 }
 
 const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -57,6 +59,8 @@ export const GjeldendeSakslisterTabell: FunctionComponent<OwnProps> = ({
   valgtSakslisteId,
   oppgaverForAvdelingAntall,
   lagNySaksliste,
+  resetValgtSakslisteId,
+  hentAvdelingensSakslister,
 }) => {
   const [valgtSaksliste, setValgtSakslisteTemp] = useState<Saksliste>();
   const tabRef = useRef([]);
@@ -84,7 +88,7 @@ export const GjeldendeSakslisterTabell: FunctionComponent<OwnProps> = ({
 
   const lagNySakslisteFn = (event: KeyboardEvent): void => {
     if (event.keyCode === 13) {
-      lagNySaksliste({ avdelingEnhet: valgtAvdelingEnhet });
+      lagNySaksliste(valgtAvdelingEnhet);
     }
   };
 
@@ -98,7 +102,11 @@ export const GjeldendeSakslisterTabell: FunctionComponent<OwnProps> = ({
 
   const fjernSakslisteFn = (saksliste: Saksliste): void => {
     closeSletteModal();
-    fjernSaksliste({ sakslisteId: saksliste.sakslisteId, avdelingEnhet: valgtAvdelingEnhet });
+    fjernSaksliste({ sakslisteId: saksliste.sakslisteId, avdelingEnhet: valgtAvdelingEnhet })
+      .then(() => {
+        resetValgtSakslisteId();
+        hentAvdelingensSakslister({ avdelingEnhet: valgtAvdelingEnhet });
+      });
   };
 
   const formatStonadstyper = (valgteFagsakYtelseTyper?: Kodeverk[]): string | ReactNode => {
@@ -185,7 +193,7 @@ export const GjeldendeSakslisterTabell: FunctionComponent<OwnProps> = ({
         role="button"
         tabIndex={0}
         className={styles.addPeriode}
-        onClick={() => lagNySaksliste({ avdelingEnhet: valgtAvdelingEnhet })}
+        onClick={() => lagNySaksliste(valgtAvdelingEnhet)}
         onKeyDown={lagNySakslisteFn}
       >
         <Image className={styles.addCircleIcon} src={addCircleIcon} />

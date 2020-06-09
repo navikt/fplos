@@ -26,6 +26,8 @@ interface OwnProps {
   til: number;
   fomDato?: string;
   tomDato?: string;
+  hentAvdelingensSakslister: (params: {avdelingEnhet: string}) => void;
+  hentAntallOppgaver: (sakslisteId: number, avdelingEnhet: string) => void;
 }
 
 const bareTilbakekrevingValgt = (valgteBehandlingtyper: Kodeverk[]) => valgteBehandlingtyper
@@ -46,6 +48,8 @@ const SorteringVelger: FunctionComponent<OwnProps & WrappedComponentProps> = ({
   til,
   fomDato,
   tomDato,
+  hentAvdelingensSakslister,
+  hentAntallOppgaver,
 }) => {
   const { startRequest: lagreSakslisteSortering } = useRestApiRunner(RestApiPathsKeys.LAGRE_SAKSLISTE_SORTERING);
   const { startRequest: lagreSakslisteSorteringNumeriskIntervall } = useRestApiRunner(RestApiPathsKeys.LAGRE_SAKSLISTE_SORTERING_TIDSINTERVALL_DAGER);
@@ -64,6 +68,9 @@ const SorteringVelger: FunctionComponent<OwnProps & WrappedComponentProps> = ({
           sakslisteId: valgtSakslisteId,
           sakslisteSorteringValg: sorteringType,
           avdelingEnhet: valgtAvdelingEnhet,
+        }).then(() => {
+          hentAntallOppgaver(valgtSakslisteId, valgtAvdelingEnhet);
+          hentAvdelingensSakslister({ avdelingEnhet: valgtAvdelingEnhet });
         })}
       >
         {koSorteringer.map((koSortering) => (
@@ -84,6 +91,8 @@ const SorteringVelger: FunctionComponent<OwnProps & WrappedComponentProps> = ({
               til={til}
               fomDato={fomDato}
               tomDato={tomDato}
+              hentAvdelingensSakslister={hentAvdelingensSakslister}
+              hentAntallOppgaver={hentAntallOppgaver}
             />
             )}
             {(koSortering.felttype === 'HELTALL') && (
@@ -94,6 +103,8 @@ const SorteringVelger: FunctionComponent<OwnProps & WrappedComponentProps> = ({
               valgtAvdelingEnhet={valgtAvdelingEnhet}
               fra={fra}
               til={til}
+              hentAvdelingensSakslister={hentAvdelingensSakslister}
+              hentAntallOppgaver={hentAntallOppgaver}
             />
             )}
           </RadioOption>

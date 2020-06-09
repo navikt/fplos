@@ -1,9 +1,8 @@
-import React, { FunctionComponent } from 'react';
+import React, { FunctionComponent, useCallback, useEffect } from 'react';
 import { injectIntl, FormattedMessage, WrappedComponentProps } from 'react-intl';
 import { Row, Column } from 'nav-frontend-grid';
 
 import Image from 'sharedComponents/Image';
-import useRestApi from 'data/rest-api-hooks/useRestApi';
 import { RestApiPathsKeys } from 'data/restApiPaths';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import pilNedUrl from 'images/pil-ned.svg';
@@ -23,6 +22,8 @@ interface OwnProps {
   valgtSakslisteId?: number;
   valgtAvdelingEnhet: string;
   avdelingensSaksbehandlere: Saksbehandler[];
+  hentAvdelingensSaksbehandlere: (params: {avdelingEnhet: string}) => void;
+  resetValgtSakslisteId: () => void;
 }
 
 /**
@@ -34,14 +35,23 @@ const EndreSakslisterPanel: FunctionComponent<OwnProps & WrappedComponentProps> 
   intl,
   valgtAvdelingEnhet,
   avdelingensSaksbehandlere,
+  hentAvdelingensSaksbehandlere,
+  resetValgtSakslisteId,
 }) => {
-  const { data: oppgaverForAvdelingAntall } = useRestApi<number>(RestApiPathsKeys.OPPGAVE_AVDELING_ANTALL,
-    { avdelingEnhet: valgtAvdelingEnhet }, [valgtAvdelingEnhet]);
-
-  const { data: sakslister = EMPTY_ARRAY } = useRestApi<Saksliste[]>(RestApiPathsKeys.SAKSLISTER_FOR_AVDELING,
-    { avdelingEnhet: valgtAvdelingEnhet }, [valgtAvdelingEnhet]);
+  const { data: oppgaverForAvdelingAntall, startRequest: hentOppgaverForAvdelingAntall } = useRestApiRunner<number>(RestApiPathsKeys.OPPGAVE_AVDELING_ANTALL);
+  const { data: sakslister = EMPTY_ARRAY, startRequest: hentAvdelingensSakslister } = useRestApiRunner<Saksliste[]>(RestApiPathsKeys.SAKSLISTER_FOR_AVDELING);
+  useEffect(() => {
+    hentOppgaverForAvdelingAntall({ avdelingEnhet: valgtAvdelingEnhet });
+    hentAvdelingensSakslister({ avdelingEnhet: valgtAvdelingEnhet });
+  }, [valgtAvdelingEnhet]);
 
   const { data: nySakslisteObject, startRequest: lagNySaksliste } = useRestApiRunner<{sakslisteId: string}>(RestApiPathsKeys.OPPRETT_NY_SAKSLISTE);
+  const lagNySakslisteOgHentAvdelingensSakslisterPåNytt = useCallback((avdelingEnhet) => {
+    lagNySaksliste({ avdelingEnhet }).then(() => {
+      resetValgtSakslisteId();
+      hentAvdelingensSaksbehandlere({ avdelingEnhet });
+    });
+  }, []);
   const nyId = nySakslisteObject ? parseInt(nySakslisteObject.sakslisteId, 10) : undefined;
   const valgtSakId = valgtSakslisteId !== undefined ? valgtSakslisteId : nyId;
 
@@ -55,7 +65,9 @@ const EndreSakslisterPanel: FunctionComponent<OwnProps & WrappedComponentProps> 
         valgtSakslisteId={valgtSakId}
         valgtAvdelingEnhet={valgtAvdelingEnhet}
         oppgaverForAvdelingAntall={oppgaverForAvdelingAntall}
-        lagNySaksliste={lagNySaksliste}
+        lagNySaksliste={lagNySakslisteOgHentAvdelingensSakslisterPåNytt}
+        resetValgtSakslisteId={resetValgtSakslisteId}
+        hentAvdelingensSakslister={hentAvdelingensSakslister}
       />
       <VerticalSpacer sixteenPx />
       {valgtSakId && valgtSaksliste && (
@@ -63,6 +75,8 @@ const EndreSakslisterPanel: FunctionComponent<OwnProps & WrappedComponentProps> 
           <UtvalgskriterierForSakslisteForm
             valgtSaksliste={valgtSaksliste}
             valgtAvdelingEnhet={valgtAvdelingEnhet}
+            hentAvdelingensSakslister={hentAvdelingensSakslister}
+            hentOppgaverForAvdelingAntall={hentOppgaverForAvdelingAntall}
           />
           <Row>
             <Column xs="5" />
@@ -80,6 +94,7 @@ const EndreSakslisterPanel: FunctionComponent<OwnProps & WrappedComponentProps> 
             valgtSaksliste={valgtSaksliste}
             valgtAvdelingEnhet={valgtAvdelingEnhet}
             avdelingensSaksbehandlere={avdelingensSaksbehandlere}
+            hentAvdelingensSakslister={hentAvdelingensSakslister}
           />
         </>
       )}

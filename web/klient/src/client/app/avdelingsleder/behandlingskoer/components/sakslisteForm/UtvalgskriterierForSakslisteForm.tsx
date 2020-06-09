@@ -1,4 +1,4 @@
-import React, { FunctionComponent } from 'react';
+import React, { FunctionComponent, useEffect, useCallback } from 'react';
 import { Form } from 'react-final-form';
 import {
   injectIntl, WrappedComponentProps, FormattedMessage, IntlShape,
@@ -13,7 +13,6 @@ import {
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import { InputField } from 'form/FinalFields';
 import { RestApiPathsKeys } from 'data/restApiPaths';
-import useRestApi from 'data/rest-api-hooks/useRestApi';
 import useRestApiRunner from 'data/rest-api-hooks/useRestApiRunner';
 import Saksliste from '../../sakslisteTsType';
 import AutoLagringVedBlur from './AutoLagringVedBlur';
@@ -61,6 +60,8 @@ const buildInitialValues = (intl: IntlShape, valgtSaksliste): InitialValues => {
 interface OwnProps {
   valgtSaksliste: Saksliste;
   valgtAvdelingEnhet: string;
+  hentAvdelingensSakslister: (params: {avdelingEnhet: string}) => void;
+  hentOppgaverForAvdelingAntall: (params: {avdelingEnhet: string}) => void;
 }
 
 interface InitialValues {
@@ -82,14 +83,24 @@ const UtvalgskriterierForSakslisteForm: FunctionComponent<OwnProps & WrappedComp
   intl,
   valgtSaksliste,
   valgtAvdelingEnhet,
+  hentAvdelingensSakslister,
+  hentOppgaverForAvdelingAntall,
 }) => {
-  const { data: antallOppgaver } = useRestApi(RestApiPathsKeys.OPPGAVE_ANTALL,
-    { sakslisteId: valgtSaksliste.sakslisteId, avdelingEnhet: valgtAvdelingEnhet }, [valgtSaksliste.sakslisteId]);
+  const { data: antallOppgaver, startRequest: hentAntallOppgaverForSaksliste } = useRestApiRunner(RestApiPathsKeys.OPPGAVE_ANTALL);
+  useEffect(() => {
+    hentAntallOppgaverForSaksliste({ sakslisteId: valgtSaksliste.sakslisteId, avdelingEnhet: valgtAvdelingEnhet });
+  }, [valgtSaksliste.sakslisteId]);
+
+  const hentAntallOppgaver = useCallback((sakslisteId, avdelingEnhet) => {
+    hentAntallOppgaverForSaksliste({ sakslisteId, avdelingEnhet });
+    hentOppgaverForAvdelingAntall({ avdelingEnhet });
+  }, []);
 
   const { startRequest: lagreSakslisteNavn } = useRestApiRunner(RestApiPathsKeys.LAGRE_SAKSLISTE_NAVN);
 
   const tranformValues = (values: {sakslisteId: number; navn: string}): void => {
-    lagreSakslisteNavn({ sakslisteId: values.sakslisteId, navn: values.navn, avdelingEnhet: valgtAvdelingEnhet });
+    lagreSakslisteNavn({ sakslisteId: values.sakslisteId, navn: values.navn, avdelingEnhet: valgtAvdelingEnhet })
+      .then(() => hentAvdelingensSakslister({ avdelingEnhet: valgtAvdelingEnhet }));
   };
 
   return (
@@ -126,6 +137,8 @@ const UtvalgskriterierForSakslisteForm: FunctionComponent<OwnProps & WrappedComp
               <FagsakYtelseTypeVelger
                 valgtSakslisteId={valgtSaksliste.sakslisteId}
                 valgtAvdelingEnhet={valgtAvdelingEnhet}
+                hentAvdelingensSakslister={hentAvdelingensSakslister}
+                hentAntallOppgaver={hentAntallOppgaver}
               />
             </Column>
           </Row>
@@ -134,6 +147,8 @@ const UtvalgskriterierForSakslisteForm: FunctionComponent<OwnProps & WrappedComp
               <BehandlingstypeVelger
                 valgtSakslisteId={valgtSaksliste.sakslisteId}
                 valgtAvdelingEnhet={valgtAvdelingEnhet}
+                hentAvdelingensSakslister={hentAvdelingensSakslister}
+                hentAntallOppgaver={hentAntallOppgaver}
               />
             </Column>
             <Column xs="4">
@@ -141,6 +156,8 @@ const UtvalgskriterierForSakslisteForm: FunctionComponent<OwnProps & WrappedComp
                 valgtSakslisteId={valgtSaksliste.sakslisteId}
                 valgtAvdelingEnhet={valgtAvdelingEnhet}
                 values={values}
+                hentAvdelingensSakslister={hentAvdelingensSakslister}
+                hentAntallOppgaver={hentAntallOppgaver}
               />
             </Column>
             <Column xs="4">
@@ -153,6 +170,8 @@ const UtvalgskriterierForSakslisteForm: FunctionComponent<OwnProps & WrappedComp
                 til={finnDagerSomTall(values.til)}
                 fomDato={values.fomDato}
                 tomDato={values.tomDato}
+                hentAvdelingensSakslister={hentAvdelingensSakslister}
+                hentAntallOppgaver={hentAntallOppgaver}
               />
             </Column>
           </Row>

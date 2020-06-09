@@ -37,7 +37,13 @@ const classNames = classnames.bind(styles);
 const renderAvdelingslederPanel = (avdelingslederPanel, valgtAvdelingEnhet, hentAvdelingensSaksbehandlere, avdelingensSaksbehandlere) => {
   switch (avdelingslederPanel) {
     case AvdelingslederPanels.BEHANDLINGSKOER:
-      return <EndreBehandlingskoerIndex valgtAvdelingEnhet={valgtAvdelingEnhet} avdelingensSaksbehandlere={avdelingensSaksbehandlere} />;
+      return (
+        <EndreBehandlingskoerIndex
+          valgtAvdelingEnhet={valgtAvdelingEnhet}
+          hentAvdelingensSaksbehandlere={hentAvdelingensSaksbehandlere}
+          avdelingensSaksbehandlere={avdelingensSaksbehandlere}
+        />
+      );
     case AvdelingslederPanels.SAKSBEHANDLERE:
       return (
         <EndreSaksbehandlereIndex

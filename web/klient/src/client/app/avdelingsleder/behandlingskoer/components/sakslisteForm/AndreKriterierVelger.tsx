@@ -16,6 +16,8 @@ interface OwnProps {
   valgtSakslisteId: number;
   valgtAvdelingEnhet: string;
   values: any;
+  hentAvdelingensSakslister: (params: {avdelingEnhet: string}) => void;
+  hentAntallOppgaver: (sakslisteId: number, avdelingEnhet: string) => void;
 }
 
 /**
@@ -25,6 +27,8 @@ const AndreKriterierVelger: FunctionComponent<OwnProps> = ({
   valgtSakslisteId,
   valgtAvdelingEnhet,
   values,
+  hentAvdelingensSakslister,
+  hentAntallOppgaver,
 }) => {
   const andreKriterierTyper = useKodeverk(kodeverkTyper.ANDRE_KRITERIER_TYPE);
   const { startRequest: lagreSakslisteAndreKriterier } = useRestApiRunner(RestApiPathsKeys.LAGRE_SAKSLISTE_ANDRE_KRITERIER);
@@ -48,6 +52,9 @@ const AndreKriterierVelger: FunctionComponent<OwnProps> = ({
               andreKriterierType: akt,
               checked: isChecked,
               inkluder: true,
+            }).then(() => {
+              hentAntallOppgaver(valgtSakslisteId, valgtAvdelingEnhet);
+              hentAvdelingensSakslister({ avdelingEnhet: valgtAvdelingEnhet });
             })}
           />
           {values[akt.kode] && (
@@ -63,6 +70,9 @@ const AndreKriterierVelger: FunctionComponent<OwnProps> = ({
                       andreKriterierType: akt,
                       checked: true,
                       inkluder: skalInkludere,
+                    }).then(() => {
+                      hentAntallOppgaver(valgtSakslisteId, valgtAvdelingEnhet);
+                      hentAvdelingensSakslister({ avdelingEnhet: valgtAvdelingEnhet });
                     })}
                   >
                     <RadioOption

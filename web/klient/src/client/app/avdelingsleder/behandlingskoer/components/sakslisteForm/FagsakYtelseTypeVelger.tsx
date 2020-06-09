@@ -18,6 +18,8 @@ const finnFagsakYtelseTypeNavn = (fagsakYtelseTyper, valgtFagsakYtelseType) => {
 interface OwnProps {
   valgtSakslisteId: number;
   valgtAvdelingEnhet: string;
+  hentAvdelingensSakslister: (params: {avdelingEnhet: string}) => void;
+  hentAntallOppgaver: (sakslisteId: number, avdelingEnhet: string) => void;
 }
 
 /**
@@ -26,6 +28,8 @@ interface OwnProps {
 const FagsakYtelseTypeVelger: FunctionComponent<OwnProps> = ({
   valgtSakslisteId,
   valgtAvdelingEnhet,
+  hentAvdelingensSakslister,
+  hentAntallOppgaver,
 }) => {
   const { startRequest: lagreSakslisteFagsakYtelseType } = useRestApiRunner(RestApiPathsKeys.LAGRE_SAKSLISTE_FAGSAK_YTELSE_TYPE);
   const alleFagsakYtelseTyper = useKodeverk(kodeverkTyper.FAGSAK_YTELSE_TYPE);
@@ -41,7 +45,11 @@ const FagsakYtelseTypeVelger: FunctionComponent<OwnProps> = ({
         name="fagsakYtelseType"
         onChange={(fyt) => lagreSakslisteFagsakYtelseType(fyt !== ''
           ? { sakslisteId: valgtSakslisteId, avdelingEnhet: valgtAvdelingEnhet, fagsakYtelseType: fyt }
-          : { sakslisteId: valgtSakslisteId, avdelingEnhet: valgtAvdelingEnhet })}
+          : { sakslisteId: valgtSakslisteId, avdelingEnhet: valgtAvdelingEnhet })
+          .then(() => {
+            hentAntallOppgaver(valgtSakslisteId, valgtAvdelingEnhet);
+            hentAvdelingensSakslister({ avdelingEnhet: valgtAvdelingEnhet });
+          })}
       >
         <RadioOption
           value={fagsakYtelseType.FORELDREPRENGER}

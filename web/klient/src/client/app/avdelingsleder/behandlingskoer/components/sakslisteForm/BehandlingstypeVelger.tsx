@@ -15,6 +15,8 @@ const behandlingstypeOrder = Object.values(behandlingType);
 interface OwnProps {
   valgtSakslisteId: number;
   valgtAvdelingEnhet: string;
+  hentAvdelingensSakslister: (params: {avdelingEnhet: string}) => void;
+  hentAntallOppgaver: (sakslisteId: number, avdelingEnhet: string) => void;
 }
 
 /**
@@ -23,6 +25,8 @@ interface OwnProps {
 const BehandlingstypeVelger: FunctionComponent<OwnProps> = ({
   valgtSakslisteId,
   valgtAvdelingEnhet,
+  hentAvdelingensSakslister,
+  hentAntallOppgaver,
 }) => {
   const { startRequest: lagreSakslisteBehandlingstype } = useRestApiRunner(RestApiPathsKeys.LAGRE_SAKSLISTE_BEHANDLINGSTYPE);
   const alleBehandlingTyper = useKodeverk(kodeverkTyper.BEHANDLING_TYPE);
@@ -45,6 +49,9 @@ const BehandlingstypeVelger: FunctionComponent<OwnProps> = ({
               avdelingEnhet: valgtAvdelingEnhet,
               behandlingType: bt,
               checked: isChecked,
+            }).then(() => {
+              hentAntallOppgaver(valgtSakslisteId, valgtAvdelingEnhet);
+              hentAvdelingensSakslister({ avdelingEnhet: valgtAvdelingEnhet });
             })}
           />
         </React.Fragment>

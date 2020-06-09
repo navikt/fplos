@@ -20,7 +20,8 @@ import AutoLagringVedBlur from './AutoLagringVedBlur';
 import styles from './sorteringVelger.less';
 
 const finnDato = (antallDager) => moment().add(antallDager, 'd').format();
-const getLagreDatoFn = (lagreSakslisteSorteringTidsintervallDato, valgtSakslisteId, valgtAvdelingEnhet, annenDato, erFomDato) => (e) => {
+const getLagreDatoFn = (lagreSakslisteSorteringTidsintervallDato, hentAntallOppgaver, hentAvdelingensSakslister,
+  valgtSakslisteId, valgtAvdelingEnhet, annenDato, erFomDato) => (e) => {
   let dato = e.target.value;
   if (dato) {
     dato = moment(dato, DDMMYYYY_DATE_FORMAT, true);
@@ -40,19 +41,25 @@ const getLagreDatoFn = (lagreSakslisteSorteringTidsintervallDato, valgtSaksliste
       tomDato: d,
     };
 
-    return lagreSakslisteSorteringTidsintervallDato(params);
+    return lagreSakslisteSorteringTidsintervallDato(params)
+      .then(() => {
+        hentAntallOppgaver(valgtSakslisteId, valgtAvdelingEnhet);
+        hentAvdelingensSakslister({ avdelingEnhet: valgtAvdelingEnhet });
+      });
   }
   return undefined;
 };
 interface OwnProps {
     valgtSakslisteId: number;
-    lagreSakslisteSorteringTidsintervallDager: (params: {sakslisteId: number, fra: number, til: number, avdelingEnhet: string}) => void;
+    lagreSakslisteSorteringTidsintervallDager: (params: {sakslisteId: number, fra: number, til: number, avdelingEnhet: string}) => Promise<any>;
     valgtAvdelingEnhet: string;
     erDynamiskPeriode: boolean;
     fra: number;
     til: number;
     fomDato: string;
     tomDato: string;
+    hentAvdelingensSakslister: (params: {avdelingEnhet: string}) => void;
+    hentAntallOppgaver: (sakslisteId: number, avdelingEnhet: string) => void;
 }
 
 export const DatoSorteringValg: FunctionComponent<OwnProps & WrappedComponentProps> = ({
@@ -65,6 +72,8 @@ export const DatoSorteringValg: FunctionComponent<OwnProps & WrappedComponentPro
   til,
   fomDato,
   tomDato,
+  hentAvdelingensSakslister,
+  hentAntallOppgaver,
 }) => {
   const { startRequest: lagreSakslisteSorteringErDynamiskPeriode } = useRestApiRunner(RestApiPathsKeys.LAGRE_SAKSLISTE_SORTERING_DYNAMISK_PERIDE);
   const { startRequest: lagreSakslisteSorteringTidsintervallDato } = useRestApiRunner(RestApiPathsKeys.LAGRE_SAKSLISTE_SORTERING_TIDSINTERVALL_DATO);
@@ -79,7 +88,11 @@ export const DatoSorteringValg: FunctionComponent<OwnProps & WrappedComponentPro
         <AutoLagringVedBlur
           lagre={(values) => lagreSakslisteSorteringTidsintervallDager({
             sakslisteId: valgtSakslisteId, fra: values.fra, til: values.til, avdelingEnhet: valgtAvdelingEnhet,
-          })}
+          })
+            .then(() => {
+              hentAntallOppgaver(valgtSakslisteId, valgtAvdelingEnhet);
+              hentAvdelingensSakslister({ avdelingEnhet: valgtAvdelingEnhet });
+            })}
           fieldNames={['fra', 'til']}
         />
         <FlexContainer>
@@ -138,7 +151,8 @@ export const DatoSorteringValg: FunctionComponent<OwnProps & WrappedComponentPro
                 label={{ id: 'SorteringVelger.Fom' }}
                 onBlurValidation
                 validate={[hasValidDate]}
-                onBlur={getLagreDatoFn(lagreSakslisteSorteringTidsintervallDato, valgtSakslisteId, valgtAvdelingEnhet, tomDato, true)}
+                onBlur={getLagreDatoFn(lagreSakslisteSorteringTidsintervallDato, hentAntallOppgaver, hentAvdelingensSakslister,
+                  valgtSakslisteId, valgtAvdelingEnhet, tomDato, true)}
               />
             </FlexColumn>
             <FlexColumn>
@@ -152,7 +166,8 @@ export const DatoSorteringValg: FunctionComponent<OwnProps & WrappedComponentPro
                 label={{ id: 'SorteringVelger.Tom' }}
                 onBlurValidation
                 validate={[hasValidDate]}
-                onBlur={getLagreDatoFn(lagreSakslisteSorteringTidsintervallDato, valgtSakslisteId, valgtAvdelingEnhet, fomDato, false)}
+                onBlur={getLagreDatoFn(lagreSakslisteSorteringTidsintervallDato, hentAntallOppgaver, hentAvdelingensSakslister,
+                  valgtSakslisteId, valgtAvdelingEnhet, fomDato, false)}
               />
             </FlexColumn>
           </FlexRow>
@@ -162,7 +177,11 @@ export const DatoSorteringValg: FunctionComponent<OwnProps & WrappedComponentPro
       <CheckboxField
         name="erDynamiskPeriode"
         label={intl.formatMessage({ id: 'SorteringVelger.DynamiskPeriode' })}
-        onChange={() => lagreSakslisteSorteringErDynamiskPeriode({ sakslisteId: valgtSakslisteId, avdelingEnhet: valgtAvdelingEnhet })}
+        onChange={() => lagreSakslisteSorteringErDynamiskPeriode({ sakslisteId: valgtSakslisteId, avdelingEnhet: valgtAvdelingEnhet })
+          .then(() => {
+            hentAntallOppgaver(valgtSakslisteId, valgtAvdelingEnhet);
+            hentAvdelingensSakslister({ avdelingEnhet: valgtAvdelingEnhet });
+          })}
       />
       <VerticalSpacer eightPx />
     </ArrowBox>

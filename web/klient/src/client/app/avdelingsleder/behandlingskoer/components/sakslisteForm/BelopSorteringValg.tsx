@@ -11,10 +11,12 @@ import AutoLagringVedBlur from './AutoLagringVedBlur';
 
 interface OwnProps {
   valgtSakslisteId: number;
-  lagreSakslisteSorteringNumerisk: (params: {sakslisteId: number, fra: number, til: number, avdelingEnhet: string}) => void;
+  lagreSakslisteSorteringNumerisk: (params: {sakslisteId: number, fra: number, til: number, avdelingEnhet: string}) => Promise<any>;
   valgtAvdelingEnhet: string;
   fra: number;
   til: number;
+  hentAvdelingensSakslister: (params: {avdelingEnhet: string}) => void;
+  hentAntallOppgaver: (sakslisteId: number, avdelingEnhet: string) => void;
 }
 
 export const BelopSorteringValg: FunctionComponent<OwnProps & WrappedComponentProps> = ({
@@ -22,6 +24,8 @@ export const BelopSorteringValg: FunctionComponent<OwnProps & WrappedComponentPr
   valgtSakslisteId,
   valgtAvdelingEnhet,
   lagreSakslisteSorteringNumerisk,
+  hentAvdelingensSakslister,
+  hentAntallOppgaver,
 }) => (
   <ArrowBox>
     <Undertekst>
@@ -31,6 +35,9 @@ export const BelopSorteringValg: FunctionComponent<OwnProps & WrappedComponentPr
       <AutoLagringVedBlur
         lagre={(values) => lagreSakslisteSorteringNumerisk({
           sakslisteId: valgtSakslisteId, fra: values.fra, til: values.til, avdelingEnhet: valgtAvdelingEnhet,
+        }).then(() => {
+          hentAntallOppgaver(valgtSakslisteId, valgtAvdelingEnhet);
+          hentAvdelingensSakslister({ avdelingEnhet: valgtAvdelingEnhet });
         })}
         fieldNames={['fra', 'til']}
       />
