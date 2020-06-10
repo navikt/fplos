@@ -24,6 +24,12 @@ interface OwnProps {
   customRequestApi?: any;
 }
 
+/**
+ * State for data som skal hentes fra backend kun en gang og som en trenger aksess til
+ * mange steder i applikasjonen.
+ *
+ * NB! Ikke bruk denne mer enn nødvendig, da det kan føre til veldig mange rerendringer.
+ */
 export const RestApiGlobalDataProvider: FunctionComponent<OwnProps> = ({
   children,
   initialState,

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 
 import { endpoints, RestApiPathsKeys } from 'data/restApiPaths';
 import { createRequestApi, RequestRunner, NotificationMapper } from 'data/rest-api';
@@ -21,6 +21,9 @@ interface RestApiData<T> {
   requestApi: RequestRunner;
 }
 
+/**
+ * Hook som gir deg ein funksjon til å starte restkall, i tillegg til kallets status/resultat/feil
+ */
 function useRestApiRunner<T>(key: RestApiPathsKeys):RestApiData<T> {
   const [data, setData] = useState({
     state: RestApiState.NOT_STARTED,
@@ -29,18 +32,17 @@ function useRestApiRunner<T>(key: RestApiPathsKeys):RestApiData<T> {
   });
 
   const { addErrorMessage } = useRestApiErrorDispatcher();
+  const notif = new NotificationMapper();
+  notif.addRequestErrorEventHandlers((errorData, type) => {
+    addErrorMessage({ ...errorData, type });
+  });
 
-  const startRequest = function doCall(params: any = {}, keepData = false):Promise<T> {
+  const startRequest = useCallback((params: any = {}, keepData = false):Promise<T> => {
     setData((oldState) => ({
       state: RestApiState.LOADING,
       error: undefined,
       data: keepData ? oldState.data : undefined,
     }));
-
-    const notif = new NotificationMapper();
-    notif.addRequestErrorEventHandlers((errorData, type) => {
-      addErrorMessage({ ...errorData, type });
-    });
 
     return requestApi.getRequestRunner(key).startProcess(params, notif)
       .then((dataRes) => {
@@ -67,15 +69,15 @@ function useRestApiRunner<T>(key: RestApiPathsKeys):RestApiData<T> {
         });
         throw error;
       });
-  };
+  }, []);
 
-  const resetRequestData = () => {
+  const resetRequestData = useCallback(() => {
     setData({
       state: RestApiState.NOT_STARTED,
       error: undefined,
       data: undefined,
     });
-  };
+  }, []);
 
   return {
     startRequest,

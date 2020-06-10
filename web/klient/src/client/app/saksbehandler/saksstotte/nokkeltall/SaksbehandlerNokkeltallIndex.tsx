@@ -17,7 +17,7 @@ const SaksbehandlerNokkeltallIndex: FunctionComponent<OwnProps> = ({
   valgtSakslisteId,
 }) => {
   const { data: nyeOgFerdigstilteOppgaver } = useRestApi<NyeOgFerdigstilteOppgaver[]>(
-    RestApiPathsKeys.HENT_NYE_OG_FERDIGSTILTE_OPPGAVER, { sakslisteId: valgtSakslisteId }, [valgtSakslisteId],
+    RestApiPathsKeys.HENT_NYE_OG_FERDIGSTILTE_OPPGAVER, { sakslisteId: valgtSakslisteId }, false, [valgtSakslisteId],
   );
 
   return (

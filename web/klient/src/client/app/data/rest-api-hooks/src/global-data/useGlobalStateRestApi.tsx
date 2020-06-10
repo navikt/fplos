@@ -10,6 +10,9 @@ interface RestApiData<T> {
   data?: T;
 }
 
+/**
+ * Hook som henter data fra backend (ved mount) og deretter lagrer i @see RestApiGlobalDataContext
+ */
 function useGlobalStateRestApi<T>(key: RestApiGlobalStatePathsKeys, params: any = {}):RestApiData<T> {
   const [data, setData] = useState({
     state: RestApiState.LOADING,

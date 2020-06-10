@@ -18,6 +18,9 @@ interface OwnProps {
   children: ReactNode;
 }
 
+/**
+ * State for å lagre feil oppstår ved rest-kall
+ */
 export const RestApiErrorProvider: FunctionComponent<OwnProps> = ({
   children,
 }): JSX.Element => {
