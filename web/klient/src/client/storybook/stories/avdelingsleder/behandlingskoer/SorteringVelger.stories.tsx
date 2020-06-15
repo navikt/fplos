@@ -2,8 +2,8 @@ import React, { useState, useCallback } from 'react';
 import { Form } from 'react-final-form';
 import { action } from '@storybook/addon-actions';
 
-import { RestApiPathsKeys } from 'data/restApiPaths';
-import { RestDataProvider } from 'data/RestDataContext';
+import { RestApiGlobalStatePathsKeys } from 'data/restApiPaths';
+import { RestApiGlobalDataProvider } from 'data/rest-api-hooks';
 import SorteringVelger from 'avdelingsleder/behandlingskoer/components/sakslisteForm/SorteringVelger';
 import behandlingType from 'kodeverk/behandlingType';
 import koSortering from 'kodeverk/KoSortering';
@@ -12,7 +12,7 @@ import alleKodeverk from '../../../mocks/alleKodeverk.json';
 import withIntl from '../../../decorators/withIntl';
 
 const initialState = {
-  [RestApiPathsKeys.KODEVERK]: alleKodeverk,
+  [RestApiGlobalStatePathsKeys.KODEVERK]: alleKodeverk,
 };
 
 export default {
@@ -20,7 +20,11 @@ export default {
   component: SorteringVelger,
   decorators: [
     withIntl,
-    (getStory) => <RestDataProvider initialState={initialState as {[key in RestApiPathsKeys]: any}}>{getStory()}</RestDataProvider>,
+    (getStory) => (
+      <RestApiGlobalDataProvider initialState={initialState as {[key in RestApiGlobalStatePathsKeys]: any}}>
+        {getStory()}
+      </RestApiGlobalDataProvider>
+    ),
   ],
 };
 

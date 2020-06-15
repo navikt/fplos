@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { action } from '@storybook/addon-actions';
 
-import { FlyttReservasjonModal } from 'saksbehandler/behandlingskoer/components/menu/FlyttReservasjonModal';
+import FlyttReservasjonModal from 'saksbehandler/behandlingskoer/components/menu/FlyttReservasjonModal';
 import SaksbehandlerForFlytting from 'saksbehandler/behandlingskoer/components/menu/saksbehandlerForFlyttingTsType';
 
 import withIntl from '../../../decorators/withIntl';

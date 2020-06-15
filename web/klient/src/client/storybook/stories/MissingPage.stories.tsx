@@ -3,12 +3,12 @@ import React from 'react';
 import MissingPage from 'app/components/MissingPage';
 
 import withIntl from '../decorators/withIntl';
-import withReduxAndRouter from '../decorators/withReduxAndRouter';
+import withRouter from '../decorators/withRouter';
 
 export default {
   title: 'MissingPage',
   component: MissingPage,
-  decorators: [withIntl, withReduxAndRouter],
+  decorators: [withIntl, withRouter],
 };
 
 export const skalViseSideKanIkkeFinnes = () => (

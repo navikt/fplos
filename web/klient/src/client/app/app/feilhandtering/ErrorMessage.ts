@@ -5,7 +5,7 @@ class ErrorMessage {
 
   params: any
 
-  type: any
+  type?: any
 
   static withMessage(message: string, type?: any) {
     const errorMessage = new ErrorMessage();

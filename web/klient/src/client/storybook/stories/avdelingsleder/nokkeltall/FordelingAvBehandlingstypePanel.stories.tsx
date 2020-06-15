@@ -1,7 +1,7 @@
 import React from 'react';
 
-import { RestApiPathsKeys } from 'data/restApiPaths';
-import { RestDataProvider } from 'data/RestDataContext';
+import { RestApiGlobalStatePathsKeys } from 'data/restApiPaths';
+import { RestApiGlobalDataProvider } from 'data/rest-api-hooks';
 import fagsakYtelseType from 'kodeverk/fagsakYtelseType';
 import behandlingType from 'kodeverk/behandlingType';
 import {
@@ -10,10 +10,9 @@ import {
 
 import alleKodeverk from '../../../mocks/alleKodeverk.json';
 import withIntl from '../../../decorators/withIntl';
-import withRedux from '../../../decorators/withRedux';
 
 const initialState = {
-  [RestApiPathsKeys.KODEVERK]: alleKodeverk,
+  [RestApiGlobalStatePathsKeys.KODEVERK]: alleKodeverk,
 };
 
 export default {
@@ -21,8 +20,11 @@ export default {
   component: FordelingAvBehandlingstypePanel,
   decorators: [
     withIntl,
-    withRedux,
-    (getStory) => <RestDataProvider initialState={initialState as {[key in RestApiPathsKeys]: any}}>{getStory()}</RestDataProvider>,
+    (getStory) => (
+      <RestApiGlobalDataProvider initialState={initialState as {[key in RestApiGlobalStatePathsKeys]: any}}>
+        {getStory()}
+      </RestApiGlobalDataProvider>
+    ),
   ],
 };
 

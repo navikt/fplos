@@ -7,12 +7,11 @@ import {
 } from 'avdelingsleder/nokkeltall/components/antallBehandlingerPerForsteStonadsdag/OppgaverPerForsteStonadsdagPanel';
 
 import withIntl from '../../../decorators/withIntl';
-import withRedux from '../../../decorators/withRedux';
 
 export default {
   title: 'avdelingsleder/nokkeltall/OppgaverPerForsteStonadsdagPanel',
   component: OppgaverPerForsteStonadsdagPanel,
-  decorators: [withIntl, withRedux],
+  decorators: [withIntl],
 };
 
 export const skalViseGrafForOppgaverPerFørsteStønadsdag = () => (

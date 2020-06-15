@@ -1,14 +1,14 @@
 import React from 'react';
 import { action } from '@storybook/addon-actions';
 
-import { RestApiPathsKeys } from 'data/restApiPaths';
+import { RestApiGlobalStatePathsKeys } from 'data/restApiPaths';
 import SearchForm from 'saksbehandler/fagsakSearch/components/SearchForm';
-import { RestDataProvider } from 'data/RestDataContext';
+import { RestApiGlobalDataProvider } from 'data/rest-api-hooks';
 
 import withIntl from '../../../decorators/withIntl';
 
 const initialState = {
-  [RestApiPathsKeys.NAV_ANSATT]: {
+  [RestApiGlobalStatePathsKeys.NAV_ANSATT]: {
     kanSaksbehandle: true,
   },
 };
@@ -18,7 +18,11 @@ export default {
   component: SearchForm,
   decorators: [
     withIntl,
-    (getStory) => <RestDataProvider initialState={initialState as {[key in RestApiPathsKeys]: any}}>{getStory()}</RestDataProvider>,
+    (getStory) => (
+      <RestApiGlobalDataProvider initialState={initialState as {[key in RestApiGlobalStatePathsKeys]: any}}>
+        {getStory()}
+      </RestApiGlobalDataProvider>
+    ),
   ],
 };
 
@@ -31,18 +35,18 @@ export const skalViseSøkeskjema = () => (
 );
 
 export const skalViseSøkeskjemaNårEnIkkeKanVelgeÅReservere = () => (
-  <RestDataProvider initialState={{
-    [RestApiPathsKeys.NAV_ANSATT]: {
+  <RestApiGlobalDataProvider initialState={{
+    [RestApiGlobalStatePathsKeys.NAV_ANSATT]: {
       kanSaksbehandle: false,
     },
-  } as {[key in RestApiPathsKeys]: any}}
+  } as {[key in RestApiGlobalStatePathsKeys]: any}}
   >
     <SearchForm
       onSubmit={action('button-click')}
       searchStarted={false}
       resetSearch={action('button-click')}
     />
-  </RestDataProvider>
+  </RestApiGlobalDataProvider>
 );
 
 export const skalViseSøkeskjemaNårSøkPågår = () => (

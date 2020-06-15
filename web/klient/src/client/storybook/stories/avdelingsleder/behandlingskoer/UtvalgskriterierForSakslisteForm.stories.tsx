@@ -1,9 +1,9 @@
 import React from 'react';
 import { action } from '@storybook/addon-actions';
 
-import { RestApiPathsKeys } from 'data/restApiPaths';
-import { RestDataProvider } from 'data/RestDataContext';
-import { UtvalgskriterierForSakslisteForm } from 'avdelingsleder/behandlingskoer/components/sakslisteForm/UtvalgskriterierForSakslisteForm';
+import { RestApiGlobalStatePathsKeys } from 'data/restApiPaths';
+import { RestApiGlobalDataProvider } from 'data/rest-api-hooks';
+import UtvalgskriterierForSakslisteForm from 'avdelingsleder/behandlingskoer/components/sakslisteForm/UtvalgskriterierForSakslisteForm';
 import koSortering from 'kodeverk/KoSortering';
 import andreKriterierType from 'kodeverk/andreKriterierType';
 import behandlingType from 'kodeverk/behandlingType';
@@ -13,7 +13,7 @@ import withIntl from '../../../decorators/withIntl';
 import alleKodeverk from '../../../mocks/alleKodeverk.json';
 
 const initialState = {
-  [RestApiPathsKeys.KODEVERK]: alleKodeverk,
+  [RestApiGlobalStatePathsKeys.KODEVERK]: alleKodeverk,
 };
 
 export default {
@@ -21,7 +21,11 @@ export default {
   component: UtvalgskriterierForSakslisteForm,
   decorators: [
     withIntl,
-    (getStory) => <RestDataProvider initialState={initialState as {[key in RestApiPathsKeys]: any}}>{getStory()}</RestDataProvider>,
+    (getStory) => (
+      <RestApiGlobalDataProvider initialState={initialState as {[key in RestApiGlobalStatePathsKeys]: any}}>
+        {getStory()}
+      </RestApiGlobalDataProvider>
+    ),
   ],
 };
 

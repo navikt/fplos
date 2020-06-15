@@ -1,8 +1,8 @@
 import React from 'react';
 import { action } from '@storybook/addon-actions';
 
-import { RestApiPathsKeys } from 'data/restApiPaths';
-import { RestDataProvider } from 'data/RestDataContext';
+import { RestApiGlobalStatePathsKeys } from 'data/restApiPaths';
+import { RestApiGlobalDataProvider } from 'data/rest-api-hooks';
 import fagsakYtelseType from 'kodeverk/fagsakYtelseType';
 import fagsakStatus from 'kodeverk/fagsakStatus';
 import behandlingStatus from 'kodeverk/behandlingStatus';
@@ -11,22 +11,24 @@ import FagsakSearch from 'saksbehandler/fagsakSearch/components/FagsakSearch';
 
 import alleKodeverk from '../../../mocks/alleKodeverk.json';
 import withIntl from '../../../decorators/withIntl';
-import withRedux from '../../../decorators/withRedux';
 
 const initialState = {
-  [RestApiPathsKeys.NAV_ANSATT]: {
+  [RestApiGlobalStatePathsKeys.NAV_ANSATT]: {
     kanSaksbehandle: true,
   },
-  [RestApiPathsKeys.KODEVERK]: alleKodeverk,
+  [RestApiGlobalStatePathsKeys.KODEVERK]: alleKodeverk,
 };
 
 export default {
   title: 'saksbehandler/fagsakSearch/FagsakSearch',
   component: FagsakSearch,
   decorators: [
-    withRedux,
     withIntl,
-    (getStory) => <RestDataProvider initialState={initialState as {[key in RestApiPathsKeys]: any}}>{getStory()}</RestDataProvider>,
+    (getStory) => (
+      <RestApiGlobalDataProvider initialState={initialState as {[key in RestApiGlobalStatePathsKeys]: any}}>
+        {getStory()}
+      </RestApiGlobalDataProvider>
+    ),
   ],
 };
 

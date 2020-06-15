@@ -16,6 +16,7 @@ export const RestApiErrorDispatchContext = createContext<Dispatch | undefined>(u
 
 interface OwnProps {
   children: ReactNode;
+  initialState?: State;
 }
 
 /**
@@ -23,6 +24,7 @@ interface OwnProps {
  */
 export const RestApiErrorProvider: FunctionComponent<OwnProps> = ({
   children,
+  initialState,
 }): JSX.Element => {
   const [state, dispatch] = useReducer((oldState, action) => {
     switch (action.type) {
@@ -35,7 +37,7 @@ export const RestApiErrorProvider: FunctionComponent<OwnProps> = ({
       default:
         throw new Error();
     }
-  }, defaultInitialState);
+  }, initialState || defaultInitialState);
 
   return (
     <RestApiErrorStateContext.Provider value={state}>

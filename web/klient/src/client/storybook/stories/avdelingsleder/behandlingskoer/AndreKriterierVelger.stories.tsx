@@ -1,8 +1,8 @@
 import React, { useState, useCallback } from 'react';
 import { Form } from 'react-final-form';
 
-import { RestApiPathsKeys } from 'data/restApiPaths';
-import { RestDataProvider } from 'data/RestDataContext';
+import { RestApiGlobalStatePathsKeys } from 'data/restApiPaths';
+import { RestApiGlobalDataProvider } from 'data/rest-api-hooks';
 import AndreKriterierVelger from 'avdelingsleder/behandlingskoer/components/sakslisteForm/AndreKriterierVelger';
 import andreKriterierType from 'kodeverk/andreKriterierType';
 
@@ -10,7 +10,7 @@ import withIntl from '../../../decorators/withIntl';
 import alleKodeverk from '../../../mocks/alleKodeverk.json';
 
 const initialState = {
-  [RestApiPathsKeys.KODEVERK]: alleKodeverk,
+  [RestApiGlobalStatePathsKeys.KODEVERK]: alleKodeverk,
 };
 
 export default {
@@ -18,7 +18,11 @@ export default {
   component: AndreKriterierVelger,
   decorators: [
     withIntl,
-    (getStory) => <RestDataProvider initialState={initialState as {[key in RestApiPathsKeys]: any}}>{getStory()}</RestDataProvider>,
+    (getStory) => (
+      <RestApiGlobalDataProvider initialState={initialState as {[key in RestApiGlobalStatePathsKeys]: any}}>
+        {getStory()}
+      </RestApiGlobalDataProvider>
+    ),
   ],
 };
 

@@ -7,16 +7,11 @@ import RestApiState from '../RestApiState';
 
 const requestApi = createRequestApi(endpoints);
 
-interface SearchResultAccessDenied {
-  feilmelding?: string;
-  type?: string;
-}
-
 interface RestApiData<T> {
   startRequest: (params?: any, keepData?: boolean) => Promise<T>;
   resetRequestData: () => void;
   state: RestApiState;
-  error?: SearchResultAccessDenied;
+  error?: Error;
   data?: T;
   requestApi: RequestRunner;
 }

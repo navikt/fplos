@@ -1,19 +1,19 @@
 import React from 'react';
 import { action } from '@storybook/addon-actions';
 
-import { RestApiPathsKeys } from 'data/restApiPaths';
+import { RestApiGlobalStatePathsKeys } from 'data/restApiPaths';
 import fagsakYtelseType from 'kodeverk/fagsakYtelseType';
 import fagsakStatus from 'kodeverk/fagsakStatus';
 import behandlingStatus from 'kodeverk/behandlingStatus';
 import behandlingType from 'kodeverk/behandlingType';
-import { RestDataProvider } from 'data/RestDataContext';
-import { FagsakList } from 'saksbehandler/fagsakSearch/components/FagsakList';
+import { RestApiGlobalDataProvider } from 'data/rest-api-hooks';
+import FagsakList from 'saksbehandler/fagsakSearch/components/FagsakList';
 
 import alleKodeverk from '../../../mocks/alleKodeverk.json';
 import withIntl from '../../../decorators/withIntl';
 
 const initialState = {
-  [RestApiPathsKeys.KODEVERK]: alleKodeverk,
+  [RestApiGlobalStatePathsKeys.KODEVERK]: alleKodeverk,
 };
 
 export default {
@@ -21,13 +21,17 @@ export default {
   component: FagsakList,
   decorators: [
     withIntl,
-    (getStory) => <RestDataProvider initialState={initialState as {[key in RestApiPathsKeys]: any}}>{getStory()}</RestDataProvider>,
+    (getStory) => (
+      <RestApiGlobalDataProvider initialState={initialState as {[key in RestApiGlobalStatePathsKeys]: any}}>
+        {getStory()}
+      </RestApiGlobalDataProvider>
+    ),
   ],
 };
 
 export const skalViseSøkeresultatMedEnFagsakOgTilhørendeOppgave = () => (
   <FagsakList
-    sorterteFagsaker={[{
+    fagsaker={[{
       saksnummer: 12213234,
       system: 'SAK',
       sakstype: {

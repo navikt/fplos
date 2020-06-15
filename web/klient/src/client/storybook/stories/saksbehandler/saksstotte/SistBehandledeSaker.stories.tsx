@@ -1,7 +1,7 @@
 import React from 'react';
 
-import { RestApiPathsKeys } from 'data/restApiPaths';
-import { RestDataProvider } from 'data/RestDataContext';
+import { RestApiGlobalStatePathsKeys } from 'data/restApiPaths';
+import { RestApiGlobalDataProvider } from 'data/rest-api-hooks';
 import { SistBehandledeSaker } from 'saksbehandler/saksstotte/components/SistBehandledeSaker';
 import behandlingStatus from 'kodeverk/behandlingStatus';
 import behandlingType from 'kodeverk/behandlingType';
@@ -10,10 +10,10 @@ import fagsakYtelseType from 'kodeverk/fagsakYtelseType';
 import withIntl from '../../../decorators/withIntl';
 
 const initialState = {
-  [RestApiPathsKeys.FPSAK_URL]: {
+  [RestApiGlobalStatePathsKeys.FPSAK_URL]: {
     value: 'fpsak-url',
   },
-  [RestApiPathsKeys.FPTILBAKE_URL]: {
+  [RestApiGlobalStatePathsKeys.FPTILBAKE_URL]: {
     value: 'fptilbake-url',
   },
 };
@@ -23,7 +23,11 @@ export default {
   component: SistBehandledeSaker,
   decorators: [
     withIntl,
-    (getStory) => <RestDataProvider initialState={initialState as {[key in RestApiPathsKeys]: any}}>{getStory()}</RestDataProvider>,
+    (getStory) => (
+      <RestApiGlobalDataProvider initialState={initialState as {[key in RestApiGlobalStatePathsKeys]: any}}>
+        {getStory()}
+      </RestApiGlobalDataProvider>
+    ),
   ],
 };
 

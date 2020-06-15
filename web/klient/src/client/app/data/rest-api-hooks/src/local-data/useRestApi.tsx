@@ -12,7 +12,7 @@ const requestApi = createRequestApi(endpoints);
 
 interface RestApiData<T> {
   state: RestApiState;
-  error?: string;
+  error?: Error;
   data?: T;
 }
 

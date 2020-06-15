@@ -2,45 +2,44 @@ import React, { useState } from 'react';
 import { action } from '@storybook/addon-actions';
 
 import { AVDELINGSLEDER_PATH } from 'app/paths';
-import { RestApiPathsKeys } from 'data/restApiPaths';
+import { RestApiGlobalStatePathsKeys } from 'data/restApiPaths';
 import EventType from 'data/rest-api/src/requestApi/eventType';
 import HeaderWithErrorPanel from 'app/components/HeaderWithErrorPanel';
-import { RestDataProvider } from 'data/RestDataContext';
+import { RestApiGlobalDataProvider, RestApiErrorProvider } from 'data/rest-api-hooks';
+
 
 import withIntl from '../decorators/withIntl';
 import RequestMock from '../mocks/RequestMock';
 
+export default {
+  title: 'HeaderWithErrorPanel',
+  component: HeaderWithErrorPanel,
+  decorators: [withIntl],
+};
+
 const initialState = {
-  [RestApiPathsKeys.NAV_ANSATT]: {
+  [RestApiGlobalStatePathsKeys.NAV_ANSATT]: {
     navn: 'Espen Utvikler',
     kanOppgavestyre: false,
   },
 };
 
-export default {
-  title: 'HeaderWithErrorPanel',
-  component: HeaderWithErrorPanel,
-  decorators: [
-    withIntl,
-    (getStory) => <RestDataProvider initialState={initialState as {[key in RestApiPathsKeys]: any}}>{getStory()}</RestDataProvider>,
-  ],
-};
-
 export const skalViseHeaderUtenAvdelingsvelger = () => (
   <div style={{ marginLeft: '-40px' }}>
-    <HeaderWithErrorPanel
-      removeErrorMessage={action('button-click')}
-      queryStrings={{}}
-      setValgtAvdelingEnhet={action('button-click')}
-      setSiteHeight={action('button-click')}
-    />
+    <RestApiGlobalDataProvider initialState={initialState as {[key in RestApiGlobalStatePathsKeys]: any}}>
+      <HeaderWithErrorPanel
+        queryStrings={{}}
+        setValgtAvdelingEnhet={action('button-click')}
+        setSiteHeight={action('button-click')}
+      />
+    </RestApiGlobalDataProvider>
   </div>
 );
 
 export const skalViseHeaderMedAvdelingsvelger = () => {
   const [valgtAvdelingEnhet, setValgtAvdeling] = useState<string>();
   const newInitialState = {
-    [RestApiPathsKeys.NAV_ANSATT]: {
+    [RestApiGlobalStatePathsKeys.NAV_ANSATT]: {
       navn: 'Espen Utvikler',
       kanOppgavestyre: true,
     },
@@ -55,80 +54,85 @@ export const skalViseHeaderMedAvdelingsvelger = () => {
     kreverKode6: false,
   }];
   const requestApi = new RequestMock()
-    .withKeyAndResult(RestApiPathsKeys.AVDELINGER, avdelinger)
+    .withKeyAndResult(RestApiGlobalStatePathsKeys.AVDELINGER, avdelinger)
     .build();
 
   return (
     <div style={{ marginLeft: '-40px' }}>
-      <RestDataProvider initialState={newInitialState as {[key in RestApiPathsKeys]: any}} customRequestApi={requestApi}>
+      <RestApiGlobalDataProvider initialState={newInitialState as {[key in RestApiGlobalStatePathsKeys]: any}} customRequestApi={requestApi}>
         <HeaderWithErrorPanel
-          removeErrorMessage={action('button-click')}
           queryStrings={{}}
           valgtAvdelingEnhet={valgtAvdelingEnhet}
           setValgtAvdelingEnhet={setValgtAvdeling}
           setSiteHeight={action('button-click')}
           locationPathname={AVDELINGSLEDER_PATH}
         />
-      </RestDataProvider>
+      </RestApiGlobalDataProvider>
     </div>
   );
 };
 
 export const skalViseHeaderMedKunEnFeilmelding = () => {
-  const [errorMessages, setErrorMessages] = useState([{
-    type: EventType.REQUEST_ERROR,
-    text: 'Rest-kallet feilet',
-  }]);
+  const errorInitialState = {
+    errors: [{
+      type: EventType.REQUEST_ERROR,
+      feilmelding: 'Dette er en feilmelding',
+    }],
+  };
 
   return (
     <div style={{ marginLeft: '-40px' }}>
-      <HeaderWithErrorPanel
-        removeErrorMessage={() => setErrorMessages([])}
-        queryStrings={{}}
-        setValgtAvdelingEnhet={action('button-click')}
-        errorMessages={errorMessages}
-        setSiteHeight={action('button-click')}
-      />
+      <RestApiErrorProvider initialState={errorInitialState}>
+        <RestApiGlobalDataProvider initialState={initialState as {[key in RestApiGlobalStatePathsKeys]: any}}>
+          <HeaderWithErrorPanel
+            queryStrings={{}}
+            setValgtAvdelingEnhet={action('button-click')}
+            setSiteHeight={action('button-click')}
+          />
+        </RestApiGlobalDataProvider>
+      </RestApiErrorProvider>
     </div>
   );
 };
 
 export const skalViseHeaderMedMerEnnFemFeilmeldinger = () => {
-  const [errorMessages, setErrorMessages] = useState([{
-    type: EventType.REQUEST_ERROR,
-    text: 'Rest-kallet feilet',
-  }, {
-    type: EventType.POLLING_TIMEOUT,
-    code: 'Rest.ErrorMessage.Timeout',
-    params: {
+  const errorInitialState = {
+    errors: [{
+      type: EventType.REQUEST_ERROR,
+      feilmelding: 'Rest-kallet feilet',
+    }, {
+      type: EventType.POLLING_TIMEOUT,
+      message: 'Rest.ErrorMessage.Timeout',
       location: 'www.los.no',
-    },
-  }, {
-    type: EventType.REQUEST_UNAUTHORIZED,
-    text: 'Rest-kallet feilet 2',
-  }, {
-    type: EventType.REQUEST_ERROR,
-    text: 'Rest-kallet feilet 3',
-  }, {
-    type: EventType.REQUEST_ERROR,
-    text: 'Rest-kallet feilet 4',
-  }, {
-    type: EventType.REQUEST_ERROR,
-    text: 'Rest-kallet feilet 5',
-  }]);
-  const [queryStrings, setQueryStrings] = useState<{ errormessage?: string}>({
+    }, {
+      type: EventType.REQUEST_UNAUTHORIZED,
+      feilmelding: 'Rest-kallet feilet 2',
+    }, {
+      type: EventType.REQUEST_ERROR,
+      feilmelding: 'Rest-kallet feilet 3',
+    }, {
+      type: EventType.REQUEST_ERROR,
+      feilmelding: 'Rest-kallet feilet 4',
+    }, {
+      type: EventType.REQUEST_ERROR,
+      feilmelding: 'Rest-kallet feilet 5',
+    }],
+  };
+  const queryStrings = {
     errormessage: 'Dette er ein feil',
-  });
+  };
 
   return (
     <div style={{ marginLeft: '-40px' }}>
-      <HeaderWithErrorPanel
-        removeErrorMessage={() => { setErrorMessages([]); setQueryStrings({ errormessage: undefined }); }}
-        queryStrings={queryStrings}
-        setValgtAvdelingEnhet={action('button-click')}
-        errorMessages={errorMessages}
-        setSiteHeight={action('button-click')}
-      />
+      <RestApiErrorProvider initialState={errorInitialState}>
+        <RestApiGlobalDataProvider initialState={initialState as {[key in RestApiGlobalStatePathsKeys]: any}}>
+          <HeaderWithErrorPanel
+            queryStrings={queryStrings}
+            setValgtAvdelingEnhet={action('button-click')}
+            setSiteHeight={action('button-click')}
+          />
+        </RestApiGlobalDataProvider>
+      </RestApiErrorProvider>
     </div>
   );
 };

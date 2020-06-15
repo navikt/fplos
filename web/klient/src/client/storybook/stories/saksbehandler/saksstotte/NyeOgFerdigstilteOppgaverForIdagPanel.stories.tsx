@@ -1,10 +1,10 @@
 import React from 'react';
 import moment from 'moment';
 
-import { RestApiPathsKeys } from 'data/restApiPaths';
+import { RestApiGlobalStatePathsKeys } from 'data/restApiPaths';
 import behandlingType from 'kodeverk/behandlingType';
 import { ISO_DATE_FORMAT } from 'utils/formats';
-import { RestDataProvider } from 'data/RestDataContext';
+import { RestApiGlobalDataProvider } from 'data/rest-api-hooks';
 import {
   NyeOgFerdigstilteOppgaverForIdagPanel,
 } from 'saksbehandler/saksstotte/nokkeltall/components/nyeOgFerdigstilteOppgaverForIdag/NyeOgFerdigstilteOppgaverForIdagPanel';
@@ -13,7 +13,7 @@ import alleKodeverk from '../../../mocks/alleKodeverk.json';
 import withIntl from '../../../decorators/withIntl';
 
 const initialState = {
-  [RestApiPathsKeys.KODEVERK]: alleKodeverk,
+  [RestApiGlobalStatePathsKeys.KODEVERK]: alleKodeverk,
 };
 
 export default {
@@ -21,7 +21,11 @@ export default {
   component: NyeOgFerdigstilteOppgaverForIdagPanel,
   decorators: [
     withIntl,
-    (getStory) => <RestDataProvider initialState={initialState as {[key in RestApiPathsKeys]: any}}>{getStory()}</RestDataProvider>,
+    (getStory) => (
+      <RestApiGlobalDataProvider initialState={initialState as {[key in RestApiGlobalStatePathsKeys]: any}}>
+        {getStory()}
+      </RestApiGlobalDataProvider>
+    ),
   ],
 };
 

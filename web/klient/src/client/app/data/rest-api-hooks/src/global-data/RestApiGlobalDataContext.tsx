@@ -3,7 +3,7 @@ import React, {
 } from 'react';
 
 import { createRequestApi } from 'data/rest-api';
-import { endpoints, RestApiPathsKeys, RestApiGlobalStatePathsKeys } from 'data/restApiPaths';
+import { endpoints, RestApiGlobalStatePathsKeys } from 'data/restApiPaths';
 import RequestApi from 'data/rest-api/src/requestApi/RequestApi';
 
 const requestApi = createRequestApi(endpoints);
@@ -12,7 +12,7 @@ const defaultInitialState = {};
 
 type Action = {type: 'success', key: RestApiGlobalStatePathsKeys, data: any } | {type: 'remove', key: RestApiGlobalStatePathsKeys}
 type Dispatch = (action: Action) => void
-type State = {[key: string]: any[]};
+type State = {[key: string]: any};
 
 export const RestApiGlobalDataStateContext = createContext<State>(defaultInitialState);
 export const RestApiGlobalDataDispatchContext = createContext<Dispatch | undefined>(undefined);
@@ -20,7 +20,7 @@ export const RestApiContext = createContext<RequestApi | undefined>(undefined);
 
 interface OwnProps {
   children: ReactNode;
-  initialState?: {[key in RestApiPathsKeys]: any};
+  initialState?: {[key in RestApiGlobalStatePathsKeys]: any};
   customRequestApi?: any;
 }
 

@@ -1,6 +1,6 @@
 import React, { useState, useCallback } from 'react';
 
-import { SaksbehandlereTabell } from 'avdelingsleder/saksbehandlere/components/SaksbehandlereTabell';
+import SaksbehandlereTabell from 'avdelingsleder/saksbehandlere/components/SaksbehandlereTabell';
 
 import withIntl from '../../../decorators/withIntl';
 

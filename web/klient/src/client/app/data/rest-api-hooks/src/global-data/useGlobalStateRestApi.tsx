@@ -1,12 +1,14 @@
 import { useState, useEffect, useContext } from 'react';
 import { RestApiGlobalStatePathsKeys } from 'data/restApiPaths';
 
+import { NotificationMapper } from 'data/rest-api';
+import useRestApiErrorDispatcher from '../error/useRestApiErrorDispatcher';
 import { RestApiGlobalDataDispatchContext, RestApiContext } from './RestApiGlobalDataContext';
 import RestApiState from '../RestApiState';
 
 interface RestApiData<T> {
   state: RestApiState;
-  error?: string;
+  error?: Error;
   data?: T;
 }
 
@@ -20,16 +22,16 @@ function useGlobalStateRestApi<T>(key: RestApiGlobalStatePathsKeys, params: any 
     data: undefined,
   });
 
+  const { addErrorMessage } = useRestApiErrorDispatcher();
+  const notif = new NotificationMapper();
+  notif.addRequestErrorEventHandlers((errorData, type) => {
+    addErrorMessage({ ...errorData, type });
+  });
+
   const dispatch = useContext(RestApiGlobalDataDispatchContext);
   const requestApi = useContext(RestApiContext);
 
   useEffect(() => {
-    setData({
-      state: RestApiState.LOADING,
-      error: undefined,
-      data: undefined,
-    });
-
     dispatch({ type: 'remove', key });
 
     requestApi.getRequestRunner(key).startProcess(params)
@@ -41,11 +43,11 @@ function useGlobalStateRestApi<T>(key: RestApiGlobalStatePathsKeys, params: any 
           error: undefined,
         });
       })
-      .catch(() => {
+      .catch((error) => {
         setData({
           state: RestApiState.ERROR,
           data: undefined,
-          error: 'fetch failed',
+          error,
         });
       });
   }, []);
