@@ -16,7 +16,7 @@ const mapMatchToParam = (match, location, trackingConfig) => {
 };
 
 function useTrackRouteParam(config) {
-  const [selected, setSelected] = useState();
+  const [selected, setSelected] = useState<string>();
 
   const trackingConfig = { ...defaultConfig, ...config };
 

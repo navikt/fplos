@@ -24,7 +24,7 @@ const SaksbehandlerNokkeltallPanel: FunctionComponent<OwnProps> = ({
   nyeOgFerdigstilteOppgaver,
 }) => {
   const [width, setWidth] = useState(0);
-  const height = 200;
+  const HEIGHT = 200;
 
   const ref = useRef(null);
 
@@ -48,13 +48,13 @@ const SaksbehandlerNokkeltallPanel: FunctionComponent<OwnProps> = ({
     <div ref={ref}>
       <NyeOgFerdigstilteOppgaverForIdagPanel
         width={width}
-        height={height}
+        height={HEIGHT}
         nyeOgFerdigstilteOppgaver={nyeOgFerdigstilteOppgaver}
       />
       <VerticalSpacer sixteenPx />
       <NyeOgFerdigstilteOppgaverForSisteSyvPanel
         width={width}
-        height={height}
+        height={HEIGHT}
         nyeOgFerdigstilteOppgaver={nyeOgFerdigstilteOppgaver}
       />
     </div>

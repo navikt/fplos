@@ -1,4 +1,3 @@
-
 import React, { FunctionComponent, useMemo } from 'react';
 import moment from 'moment';
 import { FormattedMessage } from 'react-intl';
@@ -23,7 +22,7 @@ interface OwnProps {
 /**
  * NyeOgFerdigstilteOppgaverForSisteSyvPanel.
  */
-export const NyeOgFerdigstilteOppgaverForSisteSyvPanel: FunctionComponent<OwnProps> = ({
+const NyeOgFerdigstilteOppgaverForSisteSyvPanel: FunctionComponent<OwnProps> = ({
   width,
   height,
   nyeOgFerdigstilteOppgaver,

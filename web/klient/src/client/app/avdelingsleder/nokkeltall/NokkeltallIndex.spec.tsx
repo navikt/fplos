@@ -3,7 +3,7 @@ import { shallow } from 'enzyme';
 import { expect } from 'chai';
 import sinon from 'sinon';
 
-import { NokkeltallIndex } from './NokkeltallIndex';
+import NokkeltallIndex from './NokkeltallIndex';
 import NokkeltallPanel from './components/NokkeltallPanel';
 
 describe('<NokkeltallIndex>', () => {

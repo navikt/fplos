@@ -1,20 +1,19 @@
 import React from 'react';
 import { expect } from 'chai';
-import sinon from 'sinon';
+import { shallow } from 'enzyme';
+import { Location, History } from 'history';
+import { match } from 'react-router-dom';
 
-import EventType from 'data/rest-api/src/requestApi/eventType';
-import { shallowWithIntl } from 'testHelpers/intl-enzyme-test-helper';
 import HeaderWithErrorPanel from './components/HeaderWithErrorPanel';
 
 import { AppIndex } from './AppIndex';
 
 describe('<AppIndex>', () => {
   it('skal vise hjem-skjermbilde inkludert header men ikke feilmelding', () => {
-    const wrapper = shallowWithIntl(<AppIndex
-      showCrashMessage={sinon.spy()}
-      removeErrorMessage={sinon.spy()}
-      errorMessages={[]}
-      location={{ search: undefined, state: {} }}
+    const wrapper = shallow(<AppIndex
+      location={{ search: undefined, state: {} } as Location}
+      history={{} as History}
+      match={{} as match}
     />);
 
     const headerComp = wrapper.find(HeaderWithErrorPanel);
@@ -25,13 +24,10 @@ describe('<AppIndex>', () => {
   });
 
   it('skal vise hjem-skjermbilde inkludert header og feilmelding', () => {
-    const wrapper = shallowWithIntl(<AppIndex
-      showCrashMessage={sinon.spy()}
-      removeErrorMessage={sinon.spy()}
-      errorMessages={[{
-        type: EventType.REQUEST_ERROR,
-      }]}
-      location={{ search: undefined, state: {} }}
+    const wrapper = shallow(<AppIndex
+      location={{ search: undefined, state: {} } as Location}
+      history={{} as History}
+      match={{} as match}
     />);
 
     const headerComp = wrapper.find(HeaderWithErrorPanel);
@@ -47,13 +43,10 @@ describe('<AppIndex>', () => {
       state: {},
     };
 
-    const wrapper = shallowWithIntl(<AppIndex
-      removeErrorMessage={sinon.spy()}
-      showCrashMessage={sinon.spy()}
-      errorMessages={[{
-        type: EventType.REQUEST_ERROR,
-      }]}
-      location={location}
+    const wrapper = shallow(<AppIndex
+      location={location as Location}
+      history={{} as History}
+      match={{} as match}
     />);
 
     const headerComp = wrapper.find(HeaderWithErrorPanel);

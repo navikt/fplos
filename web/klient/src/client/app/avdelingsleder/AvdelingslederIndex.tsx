@@ -67,7 +67,6 @@ const messageId = {
 
 interface OwnProps {
   valgtAvdelingEnhet?: string;
-  activeAvdelingslederPanel: string;
 }
 
 const getTab = (avdelingslederPanel, activeAvdelingslederPanel, getAvdelingslederPanelLocation) => ({

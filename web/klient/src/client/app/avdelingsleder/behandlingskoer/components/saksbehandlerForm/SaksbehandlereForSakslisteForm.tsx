@@ -28,7 +28,7 @@ interface OwnProps {
 /**
  * SaksbehandlereForSakslisteForm
  */
-export const SaksbehandlereForSakslisteForm: FunctionComponent<OwnProps> = ({
+const SaksbehandlereForSakslisteForm: FunctionComponent<OwnProps> = ({
   avdelingensSaksbehandlere = [],
   valgtSaksliste,
   valgtAvdelingEnhet,

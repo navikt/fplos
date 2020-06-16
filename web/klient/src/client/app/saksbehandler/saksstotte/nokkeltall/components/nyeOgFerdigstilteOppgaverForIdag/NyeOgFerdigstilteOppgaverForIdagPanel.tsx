@@ -25,7 +25,7 @@ interface OwnProps {
 /**
  * NyeOgFerdigstilteOppgaverForIdagPanel.
  */
-export const NyeOgFerdigstilteOppgaverForIdagPanel: FunctionComponent<OwnProps> = ({
+const NyeOgFerdigstilteOppgaverForIdagPanel: FunctionComponent<OwnProps> = ({
   width,
   height,
   nyeOgFerdigstilteOppgaver,

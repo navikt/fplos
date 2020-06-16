@@ -4,10 +4,10 @@ import { shallow } from 'enzyme';
 import { expect } from 'chai';
 import sinon from 'sinon';
 
-import * as useKodeverk from 'data/rest-api-hooks/src/global-data/useKodeverk';
+import RestApiTestMocker from 'testHelpers/RestApiTestMocker';
 import kodeverkTyper from 'kodeverk/kodeverkTyper';
 import Table from 'sharedComponents/table/Table';
-import { FagsakList, getSorterteFagsaker } from './FagsakList';
+import FagsakList, { getSorterteFagsaker } from './FagsakList';
 
 describe('<FagsakList>', () => {
   const person = {
@@ -59,41 +59,35 @@ describe('<FagsakList>', () => {
     'EMPTY_1',
   ];
 
-  let contextStub;
-  before(() => {
-    contextStub = sinon.stub(useKodeverk, 'default');
-    contextStub.withArgs(kodeverkTyper.FAGSAK_STATUS).callsFake(() => fagsakStatusTyper)
-      .withArgs(kodeverkTyper.FAGSAK_YTELSE_TYPE).callsFake(() => fagsakYtelseTyper);
-  });
-
-  after(() => {
-    contextStub.restore();
-  });
-
   it('skal vise en tabell med en rad og tilhørende kolonnedata', () => {
     const clickFunction = sinon.spy();
-    const wrapper = shallow(
-      <FagsakList
-        sorterteFagsaker={[fagsak]}
-        fagsakOppgaver={[]}
-        selectFagsakCallback={clickFunction}
-        selectOppgaveCallback={sinon.spy()}
-      />,
-    );
+    new RestApiTestMocker()
+      .withKodeverk(kodeverkTyper.FAGSAK_STATUS, fagsakStatusTyper)
+      .withKodeverk(kodeverkTyper.FAGSAK_YTELSE_TYPE, fagsakYtelseTyper)
+      .runTest(() => {
+        const wrapper = shallow(
+          <FagsakList
+            fagsaker={[fagsak]}
+            fagsakOppgaver={[]}
+            selectFagsakCallback={clickFunction}
+            selectOppgaveCallback={sinon.spy()}
+          />,
+        );
 
-    const table = wrapper.find(Table);
-    expect(table).to.have.length(1);
+        const table = wrapper.find(Table);
+        expect(table).to.have.length(1);
 
-    expect(table.prop('headerTextCodes')).to.eql(headerTextCodes);
+        expect(table.prop('headerTextCodes')).to.eql(headerTextCodes);
 
-    const tableRows = table.children();
-    expect(tableRows).to.have.length(1);
-    const tableColumns = tableRows.children();
-    expect(tableColumns).to.have.length(6);
-    expect(tableColumns.first().childAt(0).text()).to.eql('12345');
-    expect(tableColumns.at(1).childAt(0).text()).to.eql('Engangsstonad');
-    expect(tableColumns.at(3).childAt(0).text()).to.eql('Under behandling');
-    expect(tableColumns.at(4).childAt(0)).is.empty;
+        const tableRows = table.children();
+        expect(tableRows).to.have.length(1);
+        const tableColumns = tableRows.children();
+        expect(tableColumns).to.have.length(6);
+        expect(tableColumns.first().childAt(0).text()).to.eql('12345');
+        expect(tableColumns.at(1).childAt(0).text()).to.eql('Engangsstonad');
+        expect(tableColumns.at(3).childAt(0).text()).to.eql('Under behandling');
+        expect(tableColumns.at(4).childAt(0)).is.empty;
+      });
   });
 
   it('skal sortere søkeresultat der avsluttede skal vises sist, mens sist endrede skal vises først', () => {
@@ -131,7 +125,7 @@ describe('<FagsakList>', () => {
 
     const fagsaker = [fagsak, fagsak2, fagsak3];
 
-    const sorterteFagsaker = getSorterteFagsaker.resultFunc(fagsaker);
+    const sorterteFagsaker = getSorterteFagsaker(fagsaker);
 
     expect(sorterteFagsaker).to.have.length(3);
     expect(sorterteFagsaker[0].saksnummer).to.eql(23456);
@@ -158,22 +152,28 @@ describe('<FagsakList>', () => {
     };
 
     const clickFunction = sinon.spy();
-    const wrapper = shallow(
-      <FagsakList
-        sorterteFagsaker={[fagsak, fagsak4]}
-        selectOppgaveCallback={sinon.spy()}
-        selectFagsakCallback={clickFunction}
-        fagsakOppgaver={[]}
-      />,
-    );
 
-    const table = wrapper.find(Table);
-    const tableRows = table.children();
-    expect(tableRows).to.have.length(2);
-    const tableColumnsRow1 = tableRows.first().children();
-    expect(tableColumnsRow1.at(4).childAt(0).text()).is.eql('<DateLabel />');
+    new RestApiTestMocker()
+      .withKodeverk(kodeverkTyper.FAGSAK_STATUS, fagsakStatusTyper)
+      .withKodeverk(kodeverkTyper.FAGSAK_YTELSE_TYPE, fagsakYtelseTyper)
+      .runTest(() => {
+        const wrapper = shallow(
+          <FagsakList
+            fagsaker={[fagsak, fagsak4]}
+            selectOppgaveCallback={sinon.spy()}
+            selectFagsakCallback={clickFunction}
+            fagsakOppgaver={[]}
+          />,
+        );
 
-    const tableColumnsRow2 = tableRows.last().children();
-    expect(tableColumnsRow2.at(4).childAt(0)).is.empty;
+        const table = wrapper.find(Table);
+        const tableRows = table.children();
+        expect(tableRows).to.have.length(2);
+        const tableColumnsRow1 = tableRows.first().children();
+        expect(tableColumnsRow1.at(4).childAt(0).text()).is.eql('<DateLabel />');
+
+        const tableColumnsRow2 = tableRows.last().children();
+        expect(tableColumnsRow2.at(4).childAt(0)).is.empty;
+      });
   });
 });

@@ -4,7 +4,7 @@ import { expect } from 'chai';
 import { shallow } from 'enzyme';
 import sinon from 'sinon';
 
-import { EndreSaksbehandlereIndex } from './EndreSaksbehandlereIndex';
+import EndreSaksbehandlereIndex from './EndreSaksbehandlereIndex';
 import SaksbehandlerePanel from './components/SaksbehandlerePanel';
 
 describe('<EndreSaksbehandlereIndex>', () => {

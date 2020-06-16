@@ -5,7 +5,7 @@ import { shallow } from 'enzyme';
 import moment from 'moment';
 
 import behandlingType from 'kodeverk/behandlingType';
-import { NyeOgFerdigstilteOppgaverForSisteSyvPanel, getNyeOgFerdigstilteForSisteSyvDager } from './NyeOgFerdigstilteOppgaverForSisteSyvPanel';
+import NyeOgFerdigstilteOppgaverForSisteSyvPanel from './NyeOgFerdigstilteOppgaverForSisteSyvPanel';
 import NyeOgFerdigstilteOppgaverForSisteSyvGraf from './NyeOgFerdigstilteOppgaverForSisteSyvGraf';
 
 describe('<NyeOgFerdigstilteOppgaverForSisteSyvPanel>', () => {
@@ -59,10 +59,18 @@ describe('<NyeOgFerdigstilteOppgaverForSisteSyvPanel>', () => {
       dato: atteDagerSiden,
     }];
 
-    const filtrerteOppgaver = getNyeOgFerdigstilteForSisteSyvDager.resultFunc(nyeOgFerdigstilteOppgaver);
+    const wrapper = shallow(<NyeOgFerdigstilteOppgaverForSisteSyvPanel
+      width={300}
+      height={200}
+      nyeOgFerdigstilteOppgaver={nyeOgFerdigstilteOppgaver}
+    />);
 
-    expect(filtrerteOppgaver).to.have.length(2);
-    expect(filtrerteOppgaver[0].dato).is.eql(iGar);
-    expect(filtrerteOppgaver[1].dato).is.eql(atteDagerSiden);
+    const graf = wrapper.find(NyeOgFerdigstilteOppgaverForSisteSyvGraf);
+    expect(graf).to.have.length(1);
+    const oppgaver = graf.props().nyeOgFerdigstilteOppgaver;
+
+    expect(oppgaver).to.have.length(2);
+    expect(oppgaver[0].dato).is.eql(iGar);
+    expect(oppgaver[1].dato).is.eql(atteDagerSiden);
   });
 });

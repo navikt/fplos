@@ -7,8 +7,8 @@ import { FormattedMessage } from 'react-intl';
 import { Normaltekst, Undertekst } from 'nav-frontend-typografi';
 
 import { DDMMYYYY_DATE_FORMAT } from 'utils/formats';
-import {
-  OppgaverPerForsteStonadsdagGraf, lagKoordinater, harDatastrukturKun0Verdier, lagDatastruktur,
+import OppgaverPerForsteStonadsdagGraf, {
+  lagKoordinater, harDatastrukturKun0Verdier, lagDatastruktur,
 } from './OppgaverPerForsteStonadsdagGraf';
 
 describe('<OppgaverPerForsteStonadsdagGraf>', () => {
@@ -16,8 +16,7 @@ describe('<OppgaverPerForsteStonadsdagGraf>', () => {
     const wrapper = shallow(<OppgaverPerForsteStonadsdagGraf
       width={300}
       height={200}
-      data={[]}
-      isEmpty
+      oppgaverPerForsteStonadsdag={[]}
     />);
 
     const xYPlot = wrapper.find(XYPlot);
@@ -26,22 +25,22 @@ describe('<OppgaverPerForsteStonadsdagGraf>', () => {
   });
 
   it('skal vise crosshair med antall behandlinger per stønadsdag', () => {
-    const data = [{
-      x: moment().toDate(),
-      y: 1,
+    const oppgaverPerForsteStonadsdag = [{
+      forsteStonadsdag: moment().format(DDMMYYYY_DATE_FORMAT),
+      antall: 1,
     }, {
-      x: moment().add(1, 'd').toDate(),
-      y: 2,
+      forsteStonadsdag: moment().add(1, 'd').format(DDMMYYYY_DATE_FORMAT),
+      antall: 2,
     }, {
-      x: moment().add(2, 'd').toDate(),
-      y: 3,
+      forsteStonadsdag: moment().add(2, 'd').format(DDMMYYYY_DATE_FORMAT),
+      antall: 3,
     }];
+
 
     const wrapper = shallow(<OppgaverPerForsteStonadsdagGraf
       width={300}
       height={200}
-      data={data}
-      isEmpty={false}
+      oppgaverPerForsteStonadsdag={oppgaverPerForsteStonadsdag}
     />);
 
     const areaSeries = wrapper.find(AreaSeries);
@@ -71,10 +70,7 @@ describe('<OppgaverPerForsteStonadsdagGraf>', () => {
       antall: 2,
     }];
 
-    const props = {
-      oppgaverPerForsteStonadsdag,
-    };
-    const koordinater = lagKoordinater.resultFunc(props);
+    const koordinater = lagKoordinater(oppgaverPerForsteStonadsdag);
 
     expect(koordinater).to.eql([{
       x: moment('2018-12-31').toDate(),
