@@ -1,5 +1,6 @@
 import React, { useState, useCallback } from 'react';
 import { Form } from 'react-final-form';
+import { action } from '@storybook/addon-actions';
 
 import { RestApiGlobalStatePathsKeys } from 'data/restApiPaths';
 import { RestApiGlobalDataProvider } from 'data/rest-api-hooks';
@@ -8,6 +9,7 @@ import fagsakYtelseType from 'kodeverk/fagsakYtelseType';
 
 import withIntl from '../../../decorators/withIntl';
 import alleKodeverk from '../../../mocks/alleKodeverk.json';
+import RequestMock from '../../../mocks/RequestMock';
 
 const initialState = {
   [RestApiGlobalStatePathsKeys.KODEVERK]: alleKodeverk,
@@ -16,14 +18,7 @@ const initialState = {
 export default {
   title: 'avdelingsleder/behandlingskoer/FagsakYtelseTypeVelger',
   component: FagsakYtelseTypeVelger,
-  decorators: [
-    withIntl,
-    (getStory) => (
-      <RestApiGlobalDataProvider initialState={initialState as {[key in RestApiGlobalStatePathsKeys]: any}}>
-        {getStory()}
-      </RestApiGlobalDataProvider>
-    ),
-  ],
+  decorators: [withIntl],
 };
 
 export const skalViseVelgerForFagsakYtelseTyper = () => {
@@ -38,16 +33,19 @@ export const skalViseVelgerForFagsakYtelseTyper = () => {
   }, []);
 
   return (
-    <Form
-      onSubmit={() => undefined}
-      initialValues={verdier}
-      render={() => (
-        <FagsakYtelseTypeVelger
-          valgtSakslisteId={1}
-          lagreSakslisteFagsakYtelseType={lagre}
-          valgtAvdelingEnhet="NAV Viken"
-        />
-      )}
-    />
+    <RestApiGlobalDataProvider initialState={initialState as {[key in RestApiGlobalStatePathsKeys]: any}} requestApi={new RequestMock().build()}>
+      <Form
+        onSubmit={() => undefined}
+        initialValues={verdier}
+        render={() => (
+          <FagsakYtelseTypeVelger
+            valgtSakslisteId={1}
+            valgtAvdelingEnhet="NAV Viken"
+            hentAvdelingensSakslister={action('button-click')}
+            hentAntallOppgaver={action('button-click')}
+          />
+        )}
+      />
+    </RestApiGlobalDataProvider>
   );
 };

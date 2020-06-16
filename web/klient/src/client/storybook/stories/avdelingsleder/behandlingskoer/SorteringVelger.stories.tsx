@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React from 'react';
 import { Form } from 'react-final-form';
 import { action } from '@storybook/addon-actions';
 
@@ -10,6 +10,7 @@ import koSortering from 'kodeverk/KoSortering';
 
 import alleKodeverk from '../../../mocks/alleKodeverk.json';
 import withIntl from '../../../decorators/withIntl';
+import RequestMock from '../../../mocks/RequestMock';
 
 const initialState = {
   [RestApiGlobalStatePathsKeys.KODEVERK]: alleKodeverk,
@@ -18,113 +19,82 @@ const initialState = {
 export default {
   title: 'avdelingsleder/behandlingskoer/SorteringVelger',
   component: SorteringVelger,
-  decorators: [
-    withIntl,
-    (getStory) => (
-      <RestApiGlobalDataProvider initialState={initialState as {[key in RestApiGlobalStatePathsKeys]: any}}>
-        {getStory()}
-      </RestApiGlobalDataProvider>
-    ),
-  ],
+  decorators: [withIntl],
 };
 
 export const skalViseSorteringsvelgerNårMangeBehandlingstyperErValgt = () => {
-  const [verdier, leggTilVerdi] = useState({
+  const verdier = {
     sortering: koSortering.BEHANDLINGSFRIST,
     fra: 2,
     til: 3,
     fomDato: undefined,
     tomDato: undefined,
     erDynamiskPeriode: true,
-  });
-  const lagre = useCallback((_sakslisteId, sorteringType) => {
-    leggTilVerdi((oldState) => ({
-      ...oldState,
-      sortering: sorteringType,
-    }));
-  }, []);
-  const lagreDynamiskPeriode = useCallback(() => {
-    leggTilVerdi((oldState) => ({
-      ...oldState,
-      erDynamiskPeriode: !oldState.erDynamiskPeriode,
-    }));
-  }, []);
+  };
 
   return (
-    <Form
-      onSubmit={() => undefined}
-      initialValues={verdier}
-      render={() => (
-        <SorteringVelger
-          valgtSakslisteId={1}
-          valgteBehandlingtyper={[{
-            kode: behandlingType.FORSTEGANGSSOKNAD,
-            navn: 'Førstegang',
-          }, {
-            kode: behandlingType.DOKUMENTINNSYN,
-            navn: 'Innsyn',
-          }]}
-          lagreSakslisteSortering={lagre}
-          lagreSakslisteSorteringErDynamiskPeriode={lagreDynamiskPeriode}
-          valgtAvdelingEnhet="NAV Viken"
-          erDynamiskPeriode={verdier.erDynamiskPeriode}
-          lagreSakslisteSorteringTidsintervallDato={action('button-click')}
-          lagreSakslisteSorteringNumeriskIntervall={action('button-click')}
-          fra={verdier.fra}
-          til={verdier.til}
-          fomDato={verdier.fomDato}
-          tomDato={verdier.tomDato}
-        />
-      )}
-    />
+    <RestApiGlobalDataProvider initialState={initialState as {[key in RestApiGlobalStatePathsKeys]: any}} requestApi={new RequestMock().build()}>
+      <Form
+        onSubmit={() => undefined}
+        initialValues={verdier}
+        render={() => (
+          <SorteringVelger
+            valgtSakslisteId={1}
+            valgteBehandlingtyper={[{
+              kode: behandlingType.FORSTEGANGSSOKNAD,
+              navn: 'Førstegang',
+            }, {
+              kode: behandlingType.DOKUMENTINNSYN,
+              navn: 'Innsyn',
+            }]}
+            valgtAvdelingEnhet="NAV Viken"
+            erDynamiskPeriode={verdier.erDynamiskPeriode}
+            fra={verdier.fra}
+            til={verdier.til}
+            fomDato={verdier.fomDato}
+            tomDato={verdier.tomDato}
+            hentAvdelingensSakslister={action('button-click')}
+            hentAntallOppgaver={action('button-click')}
+          />
+        )}
+      />
+    </RestApiGlobalDataProvider>
   );
 };
 
 export const skalViseSorteringsvelgerNårKunTilbakekrevingErValgt = () => {
-  const [verdier, leggTilVerdi] = useState({
+  const verdier = {
     sortering: koSortering.BEHANDLINGSFRIST,
     fra: 2,
     til: 3,
     fomDato: undefined,
     tomDato: undefined,
     erDynamiskPeriode: true,
-  });
-  const lagre = useCallback((_sakslisteId, sorteringType) => {
-    leggTilVerdi((oldState) => ({
-      ...oldState,
-      sortering: sorteringType,
-    }));
-  }, []);
-  const lagreDynamiskPeriode = useCallback(() => {
-    leggTilVerdi((oldState) => ({
-      ...oldState,
-      erDynamiskPeriode: !oldState.erDynamiskPeriode,
-    }));
-  }, []);
+  };
 
   return (
-    <Form
-      onSubmit={() => undefined}
-      initialValues={verdier}
-      render={() => (
-        <SorteringVelger
-          valgtSakslisteId={1}
-          valgteBehandlingtyper={[{
-            kode: behandlingType.TILBAKEBETALING,
-            navn: 'Tilbakekreving',
-          }]}
-          lagreSakslisteSortering={lagre}
-          lagreSakslisteSorteringErDynamiskPeriode={lagreDynamiskPeriode}
-          valgtAvdelingEnhet="NAV Viken"
-          erDynamiskPeriode={verdier.erDynamiskPeriode}
-          lagreSakslisteSorteringTidsintervallDato={action('button-click')}
-          lagreSakslisteSorteringNumeriskIntervall={action('button-click')}
-          fra={verdier.fra}
-          til={verdier.til}
-          fomDato={verdier.fomDato}
-          tomDato={verdier.tomDato}
-        />
-      )}
-    />
+    <RestApiGlobalDataProvider initialState={initialState as {[key in RestApiGlobalStatePathsKeys]: any}} requestApi={new RequestMock().build()}>
+      <Form
+        onSubmit={() => undefined}
+        initialValues={verdier}
+        render={() => (
+          <SorteringVelger
+            valgtSakslisteId={1}
+            valgteBehandlingtyper={[{
+              kode: behandlingType.TILBAKEBETALING,
+              navn: 'Tilbakekreving',
+            }]}
+            valgtAvdelingEnhet="NAV Viken"
+            erDynamiskPeriode={verdier.erDynamiskPeriode}
+            fra={verdier.fra}
+            til={verdier.til}
+            fomDato={verdier.fomDato}
+            tomDato={verdier.tomDato}
+            hentAvdelingensSakslister={action('button-click')}
+            hentAntallOppgaver={action('button-click')}
+          />
+        )}
+      />
+    </RestApiGlobalDataProvider>
   );
 };

@@ -1,10 +1,12 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { action } from '@storybook/addon-actions';
 
+import { RestApiPathsKeys } from 'data/restApiPaths';
 import LeggTilSaksbehandlerForm from 'avdelingsleder/saksbehandlere/components/LeggTilSaksbehandlerForm';
-import Saksbehandler from 'avdelingsleder/saksbehandlere/saksbehandlerTsType';
+import { RestApiGlobalDataProvider } from 'data/rest-api-hooks';
 
 import withIntl from '../../../decorators/withIntl';
+import RequestMock from '../../../mocks/RequestMock';
 
 export default {
   title: 'avdelingsleder/saksbehandlere/LeggTilSaksbehandlerForm',
@@ -13,51 +15,47 @@ export default {
 };
 
 export const skalVisePanelForÅLeggeTilSaksbehandlere = (intl) => {
-  const [erFerdig, setFerdig] = useState(false);
-  const [saksbehandler, setSaksbehandler] = useState<Saksbehandler>();
-  const finnSaksbehandler = () => {
-    setSaksbehandler({
-      brukerIdent: 'R232323',
-      navn: 'Espen Utvikler',
-      avdelingsnavn: ['NAV Viken'],
-    });
-    setFerdig(true);
+  const saksbehandler = {
+    brukerIdent: 'R232323',
+    navn: 'Espen Utvikler',
+    avdelingsnavn: ['NAV Viken'],
   };
+
+  const requestApi = new RequestMock()
+    .withKeyAndResult(RestApiPathsKeys.SAKSBEHANDLER_SOK, saksbehandler)
+    .build();
+
   return (
-    <LeggTilSaksbehandlerForm
-      intl={intl}
-      saksbehandler={saksbehandler}
-      finnSaksbehandler={finnSaksbehandler as () => Promise<string>}
-      leggTilSaksbehandler={action('button-click') as () => Promise<string>}
-      resetSaksbehandlerSok={action('button-click')}
-      erLagtTilAllerede={false}
-      erSokFerdig={erFerdig}
-      valgtAvdelingEnhet="NAV Viken"
-    />
+    <RestApiGlobalDataProvider requestApi={requestApi}>
+      <LeggTilSaksbehandlerForm
+        intl={intl}
+        avdelingensSaksbehandlere={[]}
+        hentAvdelingensSaksbehandlere={action('button-click')}
+        valgtAvdelingEnhet="NAV Viken"
+      />
+    </RestApiGlobalDataProvider>
   );
 };
 
 export const skalVisePanelForNårSaksbehandlerErLagtTilAllerede = (intl) => {
-  const [erFerdig, setFerdig] = useState(false);
-  const [saksbehandler, setSaksbehandler] = useState<Saksbehandler>();
-  const finnSaksbehandler = () => {
-    setSaksbehandler({
-      brukerIdent: 'R232323',
-      navn: 'Espen Utvikler',
-      avdelingsnavn: ['NAV Viken'],
-    });
-    setFerdig(true);
+  const saksbehandler = {
+    brukerIdent: 'R232323',
+    navn: 'Espen Utvikler',
+    avdelingsnavn: ['NAV Viken'],
   };
+
+  const requestApi = new RequestMock()
+    .withKeyAndResult(RestApiPathsKeys.SAKSBEHANDLER_SOK, saksbehandler)
+    .build();
+
   return (
-    <LeggTilSaksbehandlerForm
-      intl={intl}
-      saksbehandler={saksbehandler}
-      finnSaksbehandler={finnSaksbehandler as () => Promise<string>}
-      leggTilSaksbehandler={action('button-click') as () => Promise<string>}
-      resetSaksbehandlerSok={action('button-click')}
-      erLagtTilAllerede
-      erSokFerdig={erFerdig}
-      valgtAvdelingEnhet="NAV Viken"
-    />
+    <RestApiGlobalDataProvider requestApi={requestApi}>
+      <LeggTilSaksbehandlerForm
+        intl={intl}
+        avdelingensSaksbehandlere={[saksbehandler]}
+        hentAvdelingensSaksbehandlere={action('button-click')}
+        valgtAvdelingEnhet="NAV Viken"
+      />
+    </RestApiGlobalDataProvider>
   );
 };

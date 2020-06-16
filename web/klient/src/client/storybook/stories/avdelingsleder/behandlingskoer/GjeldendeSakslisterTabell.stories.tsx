@@ -8,6 +8,7 @@ import Saksliste from 'avdelingsleder/behandlingskoer/sakslisteTsType';
 
 import alleKodeverk from '../../../mocks/alleKodeverk.json';
 import withIntl from '../../../decorators/withIntl';
+import RequestMock from '../../../mocks/RequestMock';
 
 const initialState = {
   [RestApiGlobalStatePathsKeys.KODEVERK]: alleKodeverk,
@@ -16,34 +17,28 @@ const initialState = {
 export default {
   title: 'avdelingsleder/behandlingskoer/GjeldendeSakslisterTabell',
   component: GjeldendeSakslisterTabell,
-  decorators: [
-    withIntl,
-    (getStory) => (
-      <RestApiGlobalDataProvider initialState={initialState as {[key in RestApiGlobalStatePathsKeys]: any}}>
-        {getStory()}
-      </RestApiGlobalDataProvider>
-    ),
-  ],
+  decorators: [withIntl],
 };
 
 export const skalVisePanelNårDetIkkeFinnesBehandlingskøer = () => {
   const [sakslister, setSaksliste] = useState([]);
   return (
-    <GjeldendeSakslisterTabell
-      sakslister={sakslister}
-      setValgtSakslisteId={action('button-click')}
-      lagNySaksliste={() => setSaksliste([{
-        sakslisteId: 1,
-        navn: 'Ny liste',
-        sistEndret: '2020-01-01',
-        saksbehandlerIdenter: [],
-        antallBehandlinger: 1,
-      }])}
-      fjernSaksliste={action('button-click')}
-      valgtAvdelingEnhet=""
-      hentAvdelingensSakslister={action('button-click') as () => Saksliste[]}
-      hentAntallOppgaverForAvdeling={action('button-click') as () => Promise<string>}
-    />
+    <RestApiGlobalDataProvider initialState={initialState as {[key in RestApiGlobalStatePathsKeys]: any}} requestApi={new RequestMock().build()}>
+      <GjeldendeSakslisterTabell
+        sakslister={sakslister}
+        valgtAvdelingEnhet=""
+        setValgtSakslisteId={action('button-click')}
+        lagNySaksliste={() => setSaksliste([{
+          sakslisteId: 1,
+          navn: 'Ny liste',
+          sistEndret: '2020-01-01',
+          saksbehandlerIdenter: [],
+          antallBehandlinger: 1,
+        }])}
+        resetValgtSakslisteId={action('button-click')}
+        hentAvdelingensSakslister={action('button-click') as () => Saksliste[]}
+      />
+    </RestApiGlobalDataProvider>
   );
 };
 
@@ -56,22 +51,23 @@ export const skalVisePanelNårDetFinnesEnBehandlingskø = () => {
     antallBehandlinger: 1,
   }]);
   return (
-    <GjeldendeSakslisterTabell
-      sakslister={sakslister}
-      valgtSakslisteId={1}
-      setValgtSakslisteId={action('button-click')}
-      lagNySaksliste={() => setSaksliste([{
-        sakslisteId: 2,
-        navn: 'Ny liste',
-        sistEndret: '2020-01-01',
-        saksbehandlerIdenter: [],
-        antallBehandlinger: 1,
-      }])}
-      fjernSaksliste={action('button-click')}
-      valgtAvdelingEnhet=""
-      hentAvdelingensSakslister={action('button-click') as () => Saksliste[]}
-      hentAntallOppgaverForAvdeling={action('button-click') as () => Promise<string>}
-      oppgaverForAvdeling={23}
-    />
+    <RestApiGlobalDataProvider initialState={initialState as {[key in RestApiGlobalStatePathsKeys]: any}} requestApi={new RequestMock().build()}>
+      <GjeldendeSakslisterTabell
+        sakslister={sakslister}
+        valgtAvdelingEnhet=""
+        valgtSakslisteId={1}
+        setValgtSakslisteId={action('button-click')}
+        lagNySaksliste={() => setSaksliste([{
+          sakslisteId: 2,
+          navn: 'Ny liste',
+          sistEndret: '2020-01-01',
+          saksbehandlerIdenter: [],
+          antallBehandlinger: 1,
+        }])}
+        resetValgtSakslisteId={action('button-click')}
+        hentAvdelingensSakslister={action('button-click') as () => Saksliste[]}
+        oppgaverForAvdelingAntall={1}
+      />
+    </RestApiGlobalDataProvider>
   );
 };

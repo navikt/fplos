@@ -1,14 +1,13 @@
 import {
-  useState, useEffect, DependencyList,
+  useState, useEffect, DependencyList, useContext,
 } from 'react';
 
-import { createRequestApi, NotificationMapper } from 'data/rest-api';
-import { endpoints, RestApiPathsKeys } from 'data/restApiPaths';
+import { NotificationMapper } from 'data/rest-api';
+import { RestApiPathsKeys } from 'data/restApiPaths';
 
+import { RestApiContext } from '../global-data/RestApiGlobalDataContext';
 import useRestApiErrorDispatcher from '../error/useRestApiErrorDispatcher';
 import RestApiState from '../RestApiState';
-
-const requestApi = createRequestApi(endpoints);
 
 interface RestApiData<T> {
   state: RestApiState;
@@ -32,6 +31,8 @@ function useRestApi<T>(key: RestApiPathsKeys, params: any = {}, keepData = false
   notif.addRequestErrorEventHandlers((errorData, type) => {
     addErrorMessage({ ...errorData, type });
   });
+
+  const requestApi = useContext(RestApiContext);
 
   useEffect(() => {
     setData((oldState) => ({

@@ -6,6 +6,7 @@ import { init } from '@sentry/browser';
 
 import AppIndex from 'app/AppIndex';
 import { RestApiGlobalDataProvider, RestApiErrorProvider } from 'data/rest-api-hooks';
+import { requestApi } from 'data/restApiPaths';
 
 /* eslint no-undef: "error" */
 const environment = window.location.hostname;
@@ -27,7 +28,7 @@ const renderFunc = (Component) => {
   }
   render(
     <Router history={history}>
-      <RestApiGlobalDataProvider>
+      <RestApiGlobalDataProvider requestApi={requestApi}>
         <RestApiErrorProvider>
           <Component />
         </RestApiErrorProvider>

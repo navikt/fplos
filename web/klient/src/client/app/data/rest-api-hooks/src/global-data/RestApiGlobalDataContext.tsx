@@ -2,11 +2,8 @@ import React, {
   createContext, useReducer, FunctionComponent, ReactNode,
 } from 'react';
 
-import { createRequestApi } from 'data/rest-api';
-import { endpoints, RestApiGlobalStatePathsKeys } from 'data/restApiPaths';
+import { RestApiGlobalStatePathsKeys } from 'data/restApiPaths';
 import RequestApi from 'data/rest-api/src/requestApi/RequestApi';
-
-const requestApi = createRequestApi(endpoints);
 
 const defaultInitialState = {};
 
@@ -20,8 +17,8 @@ export const RestApiContext = createContext<RequestApi | undefined>(undefined);
 
 interface OwnProps {
   children: ReactNode;
+  requestApi: any;
   initialState?: {[key in RestApiGlobalStatePathsKeys]: any};
-  customRequestApi?: any;
 }
 
 /**
@@ -33,7 +30,7 @@ interface OwnProps {
 export const RestApiGlobalDataProvider: FunctionComponent<OwnProps> = ({
   children,
   initialState,
-  customRequestApi,
+  requestApi,
 }): JSX.Element => {
   const [state, dispatch] = useReducer((oldState, action) => {
     switch (action.type) {
@@ -55,7 +52,7 @@ export const RestApiGlobalDataProvider: FunctionComponent<OwnProps> = ({
   return (
     <RestApiGlobalDataStateContext.Provider value={state}>
       <RestApiGlobalDataDispatchContext.Provider value={dispatch}>
-        <RestApiContext.Provider value={customRequestApi || requestApi}>
+        <RestApiContext.Provider value={requestApi}>
           {children}
         </RestApiContext.Provider>
       </RestApiGlobalDataDispatchContext.Provider>

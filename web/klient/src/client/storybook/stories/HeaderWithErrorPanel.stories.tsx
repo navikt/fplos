@@ -59,7 +59,7 @@ export const skalViseHeaderMedAvdelingsvelger = () => {
 
   return (
     <div style={{ marginLeft: '-40px' }}>
-      <RestApiGlobalDataProvider initialState={newInitialState as {[key in RestApiGlobalStatePathsKeys]: any}} customRequestApi={requestApi}>
+      <RestApiGlobalDataProvider initialState={newInitialState as {[key in RestApiGlobalStatePathsKeys]: any}} requestApi={requestApi}>
         <HeaderWithErrorPanel
           queryStrings={{}}
           valgtAvdelingEnhet={valgtAvdelingEnhet}

@@ -1,11 +1,10 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useContext } from 'react';
 
-import { endpoints, RestApiPathsKeys } from 'data/restApiPaths';
-import { createRequestApi, RequestRunner, NotificationMapper } from 'data/rest-api';
+import { RestApiPathsKeys } from 'data/restApiPaths';
+import { RequestRunner, NotificationMapper } from 'data/rest-api';
+import { RestApiContext } from '../global-data/RestApiGlobalDataContext';
 import useRestApiErrorDispatcher from '../error/useRestApiErrorDispatcher';
 import RestApiState from '../RestApiState';
-
-const requestApi = createRequestApi(endpoints);
 
 interface RestApiData<T> {
   startRequest: (params?: any, keepData?: boolean) => Promise<T>;
@@ -31,6 +30,8 @@ function useRestApiRunner<T>(key: RestApiPathsKeys):RestApiData<T> {
   notif.addRequestErrorEventHandlers((errorData, type) => {
     addErrorMessage({ ...errorData, type });
   });
+
+  const requestApi = useContext(RestApiContext);
 
   const startRequest = useCallback((params: any = {}, keepData = false):Promise<T> => {
     setData((oldState) => ({

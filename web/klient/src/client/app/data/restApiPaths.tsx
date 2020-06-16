@@ -1,4 +1,4 @@
-import { RestApiConfigBuilder } from './rest-api';
+import { RestApiConfigBuilder, createRequestApi } from './rest-api';
 
 export enum RestApiGlobalStatePathsKeys {
   KODEVERK = 'KODEVERK',
@@ -107,3 +107,5 @@ export const endpoints = new RestApiConfigBuilder(CONTEXT_PATH)
   .withGet('/api/saksbehandler/oppgaver/behandlede', RestApiPathsKeys.BEHANDLEDE_OPPGAVER)
 
   .build();
+
+export const requestApi = createRequestApi(endpoints);
