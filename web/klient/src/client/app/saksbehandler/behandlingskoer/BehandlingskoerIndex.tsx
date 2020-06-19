@@ -1,17 +1,17 @@
 import React, {
-  FunctionComponent, useState, useCallback, useEffect,
+  FunctionComponent, useState, useCallback,
 } from 'react';
 
 import { RestApiPathsKeys } from 'data/restApiPaths';
-import TimeoutError from 'data/rest-api/src/requestApi/error/TimeoutError';
-import { getFpsakHref, getFptilbakeHref } from 'app/paths';
+
 import Saksliste from 'saksbehandler/behandlingskoer/sakslisteTsType';
+import { getFpsakHref, getFptilbakeHref } from 'app/paths';
 import OppgaveStatus from 'saksbehandler/oppgaveStatusTsType';
 import Oppgave from 'saksbehandler/oppgaveTsType';
 import OppgaveErReservertAvAnnenModal from 'saksbehandler/components/OppgaveErReservertAvAnnenModal';
 import { useRestApi, useRestApiRunner } from 'data/rest-api-hooks';
 import SakslistePanel from './components/SakslistePanel';
-import BehandlingPollingTimoutModal from './components/BehandlingPollingTimoutModal';
+
 
 const EMPTY_ARRAY = [];
 
@@ -53,32 +53,8 @@ const BehandlingskoerIndex: FunctionComponent<OwnProps> = ({
 
   const { data: sakslister = EMPTY_ARRAY } = useRestApi<Saksliste[]>(RestApiPathsKeys.SAKSLISTE);
 
-  const { startRequest: hentReserverteOppgaver, data: reserverteOppgaver = EMPTY_ARRAY } = useRestApiRunner<Oppgave[]>(RestApiPathsKeys.RESERVERTE_OPPGAVER);
-  const {
-    startRequest: hentOppgaverTilBehandling, cancelRequest, data: oppgaverTilBehandling = EMPTY_ARRAY, error: hentOppgaverTilBehandlingError,
-  } = useRestApiRunner<Oppgave[] | string>(RestApiPathsKeys.OPPGAVER_TIL_BEHANDLING);
   const { startRequest: reserverOppgave } = useRestApiRunner<OppgaveStatus>(RestApiPathsKeys.RESERVER_OPPGAVE);
   const { startRequest: hentFpsakInternBehandlingId } = useRestApiRunner<number>(RestApiPathsKeys.FPSAK_BEHANDLING_ID);
-
-  useEffect(() => () => {
-    if (valgtSakslisteId) {
-      cancelRequest();
-    }
-  }, []);
-
-  const fetchSakslisteOppgaverPolling = (nySakslisteId: number, oppgaveIder?: string) => {
-    hentReserverteOppgaver({}, true);
-    hentOppgaverTilBehandling(oppgaveIder ? { sakslisteId: nySakslisteId, oppgaveIder } : { sakslisteId: nySakslisteId }, true)
-      .then((response) => (response !== 'INTERNAL_CANCELLATION' ? fetchSakslisteOppgaverPolling(nySakslisteId, response.map((o) => o.id).join(',')) : Promise.resolve()))
-      .catch(() => undefined);
-  };
-
-  const fetchSakslisteOppgaver = useCallback((nySakslisteId: number) => {
-    setValgtSakslisteId(nySakslisteId);
-    hentReserverteOppgaver({}, true);
-    hentOppgaverTilBehandling({ sakslisteId: nySakslisteId }, true)
-      .then((response) => (response !== 'INTERNAL_CANCELLATION' ? fetchSakslisteOppgaverPolling(nySakslisteId, response.map((o) => o.id).join(',')) : Promise.resolve()));
-  }, []);
 
   const reserverOppgaveOgApne = useCallback((oppgave: Oppgave) => {
     if (oppgave.status.erReservert) {
@@ -111,15 +87,11 @@ const BehandlingskoerIndex: FunctionComponent<OwnProps> = ({
   return (
     <>
       <SakslistePanel
+        valgtSakslisteId={valgtSakslisteId}
+        setValgtSakslisteId={setValgtSakslisteId}
         reserverOppgave={reserverOppgaveOgApne}
         sakslister={sakslister}
-        fetchSakslisteOppgaver={fetchSakslisteOppgaver}
-        reserverteOppgaver={reserverteOppgaver}
-        oppgaverTilBehandling={oppgaverTilBehandling}
-        hentReserverteOppgaver={hentReserverteOppgaver}
       />
-      {hentOppgaverTilBehandlingError instanceof TimeoutError
-        && <BehandlingPollingTimoutModal />}
       {reservertAvAnnenSaksbehandler && reservertOppgave && reservertOppgaveStatus && (
         <OppgaveErReservertAvAnnenModal
           lukkErReservertModalOgOpneOppgave={lukkErReservertModalOgOpneOppgave}

@@ -26,7 +26,7 @@ import styles from './sakslisteVelgerForm.less';
 
 interface OwnProps {
   sakslister: Saksliste[];
-  fetchSakslisteOppgaver: (sakslisteId: number) => void;
+  setValgtSakslisteId: (sakslisteId: number) => void;
   fetchAntallOppgaver: (data: {sakslisteId: number}) => void;
 }
 
@@ -135,7 +135,7 @@ const createTooltip = (saksbehandlere: Saksbehandler[]): ReactNode | undefined =
 const SakslisteVelgerForm: FunctionComponent<OwnProps & WrappedComponentProps> = ({
   intl,
   sakslister,
-  fetchSakslisteOppgaver,
+  setValgtSakslisteId,
   fetchAntallOppgaver,
 }) => {
   const { data: saksbehandlere, startRequest: fetchSaksbehandlere } = useRestApiRunner<Saksbehandler[]>(RestApiPathsKeys.SAKSLISTE_SAKSBEHANDLERE);
@@ -144,7 +144,7 @@ const SakslisteVelgerForm: FunctionComponent<OwnProps & WrappedComponentProps> =
     if (sakslister.length > 0) {
       const defaultSakslisteId = getDefaultSaksliste(sakslister);
       if (defaultSakslisteId) {
-        fetchSakslisteOppgaver(defaultSakslisteId);
+        setValgtSakslisteId(defaultSakslisteId);
         fetchSaksbehandlere({ sakslisteId: defaultSakslisteId });
         fetchAntallOppgaver({ sakslisteId: defaultSakslisteId });
       }
@@ -166,7 +166,7 @@ const SakslisteVelgerForm: FunctionComponent<OwnProps & WrappedComponentProps> =
               if (val && val.values.sakslisteId && val.dirtyFields.sakslisteId) {
                 setValueInLocalStorage('sakslisteId', val.values.sakslisteId);
                 const id = parseInt(val.values.sakslisteId, 10);
-                fetchSakslisteOppgaver(id);
+                setValgtSakslisteId(id);
                 fetchSaksbehandlere({ sakslisteId: id });
                 fetchAntallOppgaver({ sakslisteId: id });
               }

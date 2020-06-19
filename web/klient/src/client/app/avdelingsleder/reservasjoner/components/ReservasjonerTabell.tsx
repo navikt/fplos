@@ -32,10 +32,7 @@ const headerTextCodes = [
 interface OwnProps {
   reservasjoner: Reservasjon[];
   opphevReservasjon: (oppgaveId: number) => Promise<string>;
-  endreOppgaveReservasjon: (oppgaveId: number, reserverTil: string) => Promise<string>;
-  flyttReservasjon: (oppgaveId: number, brukerident: string, begrunnelse: string) => Promise<string>;
-  finnSaksbehandler: (brukerIdent: string) => Promise<string>;
-  nullstillSaksbehandler: () => void;
+  hentAvdelingensReservasjoner: () => void;
 }
 
 interface StateTsProps {
@@ -64,14 +61,8 @@ class ReservasjonerTabell extends Component<OwnProps, StateTsProps> {
     this.setState((prevState) => ({ ...prevState, showReservasjonEndringDatoModal: true, valgtReservasjon: reservasjon }));
   }
 
-  endreReserverasjon = (reserverTil: string): void => {
-    const { endreOppgaveReservasjon } = this.props;
-    const {
-      valgtReservasjon,
-    } = this.state;
-    endreOppgaveReservasjon(valgtReservasjon.oppgaveId, reserverTil).then(() => {
-      this.setState((prevState) => ({ ...prevState, showReservasjonEndringDatoModal: false }));
-    });
+  endreReserverasjonState = (): void => {
+    this.setState((prevState) => ({ ...prevState, showReservasjonEndringDatoModal: false }));
   }
 
   showFlytteModal = (reservasjon: Reservasjon): void => {
@@ -82,16 +73,13 @@ class ReservasjonerTabell extends Component<OwnProps, StateTsProps> {
     this.setState((prevState) => ({ ...prevState, showFlyttReservasjonModal: false }));
   }
 
-  flyttReservasjon = (oppgaveId: number, brukerident: string, begrunnelse: string): void => {
-    const { flyttReservasjon } = this.props;
-    flyttReservasjon(oppgaveId, brukerident, begrunnelse).then(() => {
-      this.setState((prevState) => ({ ...prevState, showFlyttReservasjonModal: false }));
-    });
+  toggleMenu = (): void => {
+    this.setState((prevState) => ({ ...prevState, showFlyttReservasjonModal: false }));
   }
 
   render = (): ReactNode => {
     const {
-      reservasjoner, opphevReservasjon, finnSaksbehandler, nullstillSaksbehandler,
+      reservasjoner, opphevReservasjon, hentAvdelingensReservasjoner,
     } = this.props;
     const {
       showReservasjonEndringDatoModal, showFlyttReservasjonModal, valgtReservasjon,
@@ -150,19 +138,20 @@ class ReservasjonerTabell extends Component<OwnProps, StateTsProps> {
           && (
             <OppgaveReservasjonEndringDatoModal
               showModal={showReservasjonEndringDatoModal}
-              endreOppgaveReservasjon={this.endreReserverasjon}
               closeModal={this.closeReservasjonEndringDatoModal}
               reserverTilDefault={valgtReservasjon.reservertTilTidspunkt}
+              endreReserverasjonState={this.endreReserverasjonState}
+              hentReserverteOppgaver={hentAvdelingensReservasjoner}
+              oppgaveId={valgtReservasjon.oppgaveId}
             />
           )}
         { showFlyttReservasjonModal && (
           <FlyttReservasjonModal
-            oppgaveId={valgtReservasjon.oppgaveId}
             showModal={showFlyttReservasjonModal}
             closeModal={this.closeFlytteModal}
-            submit={this.flyttReservasjon}
-            finnSaksbehandler={finnSaksbehandler}
-            resetSaksbehandler={nullstillSaksbehandler}
+            oppgaveId={valgtReservasjon.oppgaveId}
+            toggleMenu={this.toggleMenu}
+            hentReserverteOppgaver={hentAvdelingensReservasjoner}
           />
         )}
       </>

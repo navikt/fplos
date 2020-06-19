@@ -14,12 +14,10 @@ import OppgaverTabell from './OppgaverTabell';
 import styles from './sakslistePanel.less';
 
 interface OwnProps {
+  valgtSakslisteId?: number;
+  setValgtSakslisteId: (sakslisteId: number) => void;
   sakslister: Saksliste[];
-  fetchSakslisteOppgaver: (sakslisteId: number) => void;
   reserverOppgave: (oppgaveId: Oppgave) => void;
-  reserverteOppgaver: Oppgave[];
-  oppgaverTilBehandling: Oppgave[];
-  hentReserverteOppgaver: (params: any, keepData: boolean) => void;
 }
 
 /**
@@ -28,10 +26,8 @@ interface OwnProps {
 const SakslistePanel: FunctionComponent<OwnProps> = ({
   reserverOppgave,
   sakslister,
-  fetchSakslisteOppgaver,
-  reserverteOppgaver,
-  oppgaverTilBehandling,
-  hentReserverteOppgaver,
+  setValgtSakslisteId,
+  valgtSakslisteId,
 }) => {
   const { startRequest: fetchAntallOppgaver, data: antallOppgaver } = useRestApiRunner<number>(RestApiPathsKeys.BEHANDLINGSKO_OPPGAVE_ANTALL);
 
@@ -41,17 +37,17 @@ const SakslistePanel: FunctionComponent<OwnProps> = ({
       <div className={styles.container}>
         <SakslisteVelgerForm
           sakslister={sakslister}
-          fetchSakslisteOppgaver={fetchSakslisteOppgaver}
+          setValgtSakslisteId={setValgtSakslisteId}
           fetchAntallOppgaver={fetchAntallOppgaver}
         />
         <VerticalSpacer twentyPx />
-        <OppgaverTabell
-          reserverOppgave={reserverOppgave}
-          reserverteOppgaver={reserverteOppgaver}
-          oppgaverTilBehandling={oppgaverTilBehandling}
-          antallOppgaver={antallOppgaver}
-          hentReserverteOppgaver={hentReserverteOppgaver}
-        />
+        {valgtSakslisteId && (
+          <OppgaverTabell
+            reserverOppgave={reserverOppgave}
+            antallOppgaver={antallOppgaver}
+            valgtSakslisteId={valgtSakslisteId}
+          />
+        )}
       </div>
     </>
   );

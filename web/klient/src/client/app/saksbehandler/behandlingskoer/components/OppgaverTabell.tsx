@@ -1,10 +1,11 @@
 import React, {
-  useState, useRef, ReactNode, FunctionComponent, useCallback, useMemo,
+  useState, useRef, ReactNode, FunctionComponent, useCallback, useMemo, useEffect,
 } from 'react';
 import { FormattedMessage, injectIntl, WrappedComponentProps } from 'react-intl';
 import { Normaltekst, Element } from 'nav-frontend-typografi';
 import NavFrontendChevron from 'nav-frontend-chevron';
 
+import TimeoutError from 'data/rest-api/src/requestApi/error/TimeoutError';
 import { RestApiPathsKeys } from 'data/restApiPaths';
 import { useRestApiRunner } from 'data/rest-api-hooks';
 import { getDateAndTime } from 'utils/dateUtils';
@@ -20,6 +21,7 @@ import menuIconBlueUrl from 'images/ic-menu-18px_blue.svg';
 import menuIconBlackUrl from 'images/ic-menu-18px_black.svg';
 import bubbletextUrl from 'images/bubbletext.svg';
 import bubbletextFilledUrl from 'images/bubbletext_filled.svg';
+import BehandlingPollingTimoutModal from './BehandlingPollingTimoutModal';
 import OppgaveHandlingerMenu from './menu/OppgaveHandlingerMenu';
 
 import styles from './oppgaverTabell.less';
@@ -32,6 +34,8 @@ const headerTextCodes = [
   'EMPTY_1',
   'EMPTY_2',
 ];
+
+const EMPTY_ARRAY = [];
 
 type OppgaveMedReservertIndikator = Oppgave & { underBehandling?: boolean };
 
@@ -49,23 +53,19 @@ const slaSammenOgMarkerReserverte = (reserverteOppgaver, oppgaverTilBehandling):
 const getToggleMenuEvent = (oppgave: OppgaveMedReservertIndikator, toggleMenu) => (oppgave.underBehandling ? () => toggleMenu(oppgave) : undefined);
 
 interface OwnProps {
-  oppgaverTilBehandling: Oppgave[];
-  reserverteOppgaver: Oppgave[];
   reserverOppgave: (oppgave: Oppgave) => void;
   antallOppgaver?: number;
-  hentReserverteOppgaver: (params: any, keepData: boolean) => void;
+  valgtSakslisteId: number;
 }
 
 /**
  * OppgaverTabell
  */
 export const OppgaverTabell: FunctionComponent<OwnProps & WrappedComponentProps> = ({
-  reserverOppgave,
-  reserverteOppgaver,
-  oppgaverTilBehandling,
-  antallOppgaver = 0,
   intl,
-  hentReserverteOppgaver,
+  reserverOppgave,
+  antallOppgaver = 0,
+  valgtSakslisteId,
 }) => {
   const [showMenu, setShowMenu] = useState(false);
   const [valgtOppgaveId, setValgtOppgaveId] = useState<number>();
@@ -75,6 +75,27 @@ export const OppgaverTabell: FunctionComponent<OwnProps & WrappedComponentProps>
   });
 
   const { startRequest: forlengOppgavereservasjon } = useRestApiRunner<Oppgave[]>(RestApiPathsKeys.FORLENG_OPPGAVERESERVASJON);
+
+  const { startRequest: hentReserverteOppgaver, data: reserverteOppgaver = EMPTY_ARRAY } = useRestApiRunner<Oppgave[]>(RestApiPathsKeys.RESERVERTE_OPPGAVER);
+
+  const {
+    startRequest: hentOppgaverTilBehandling, cancelRequest, data: oppgaverTilBehandling = EMPTY_ARRAY, error: hentOppgaverTilBehandlingError,
+  } = useRestApiRunner<Oppgave[] | string>(RestApiPathsKeys.OPPGAVER_TIL_BEHANDLING);
+
+  const fetchSakslisteOppgaverPolling = (oppgaveIder?: string) => {
+    hentReserverteOppgaver({}, true);
+    hentOppgaverTilBehandling(oppgaveIder ? { sakslisteId: valgtSakslisteId, oppgaveIder } : { sakslisteId: valgtSakslisteId }, true)
+      .then((response) => (response !== 'INTERNAL_CANCELLATION' ? fetchSakslisteOppgaverPolling(response.map((o) => o.id).join(',')) : Promise.resolve()))
+      .catch(() => undefined);
+  };
+
+  useEffect(() => {
+    fetchSakslisteOppgaverPolling();
+
+    return () => {
+      cancelRequest();
+    };
+  }, [valgtSakslisteId]);
 
   const forlengOppgaveReservasjonFn = useCallback((oppgaveId: number): Promise<any> => forlengOppgavereservasjon({ oppgaveId })
     .then(() => hentReserverteOppgaver({}, true)), []);
@@ -119,6 +140,8 @@ export const OppgaverTabell: FunctionComponent<OwnProps & WrappedComponentProps>
 
   return (
     <>
+      {hentOppgaverTilBehandlingError instanceof TimeoutError
+        && <BehandlingPollingTimoutModal />}
       <Element><FormattedMessage id="OppgaverTabell.DineNesteSaker" values={{ antall: antallOppgaver }} /></Element>
       {alleOppgaver.length === 0 && (
         <>
