@@ -10,6 +10,7 @@ import { RestApiProvider } from 'data/rest-api-hooks';
 import FagsakList from 'saksbehandler/fagsakSearch/components/FagsakList';
 
 import alleKodeverk from '../../../mocks/alleKodeverk.json';
+import RequestMock from '../../../mocks/RequestMock';
 import withIntl from '../../../decorators/withIntl';
 
 const initialState = {
@@ -22,7 +23,7 @@ export default {
   decorators: [
     withIntl,
     (getStory) => (
-      <RestApiProvider initialState={initialState as {[key in RestApiGlobalStatePathsKeys]: any}}>
+      <RestApiProvider initialState={initialState as {[key in RestApiGlobalStatePathsKeys]: any}} requestApi={new RequestMock().build()}>
         {getStory()}
       </RestApiProvider>
     ),

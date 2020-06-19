@@ -2,7 +2,7 @@ import React from 'react';
 import { action } from '@storybook/addon-actions';
 
 import { RestApiPathsKeys } from 'data/restApiPaths';
-import FlyttReservasjonModal from 'saksbehandler/behandlingskoer/components/menu/FlyttReservasjonModal';
+import { FlyttReservasjonModal } from 'saksbehandler/behandlingskoer/components/menu/FlyttReservasjonModal';
 import { RestApiProvider } from 'data/rest-api-hooks';
 
 import withIntl from '../../../decorators/withIntl';
@@ -32,7 +32,8 @@ export const skalViseModalForFlyttingAvReservasjon = (intl) => {
         showModal
         oppgaveId={1}
         closeModal={action('button-click')}
-        submit={action('button-click')}
+        toggleMenu={action('button-click')}
+        hentReserverteOppgaver={action('button-click')}
       />
     </RestApiProvider>
   );

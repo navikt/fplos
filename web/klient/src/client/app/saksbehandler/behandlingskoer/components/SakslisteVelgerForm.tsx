@@ -132,7 +132,7 @@ const createTooltip = (saksbehandlere: Saksbehandler[]): ReactNode | undefined =
  * SakslisteVelgerForm
  *
  */
-const SakslisteVelgerForm: FunctionComponent<OwnProps & WrappedComponentProps> = ({
+export const SakslisteVelgerForm: FunctionComponent<OwnProps & WrappedComponentProps> = ({
   intl,
   sakslister,
   setValgtSakslisteId,

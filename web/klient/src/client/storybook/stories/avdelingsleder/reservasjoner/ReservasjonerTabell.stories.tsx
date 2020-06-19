@@ -16,10 +16,7 @@ export const skalViseAtIngenReservasjonerBleFunnet = () => (
   <ReservasjonerTabell
     reservasjoner={[]}
     opphevReservasjon={action('button-click') as () => Promise<string>}
-    endreOppgaveReservasjon={action('button-click') as () => Promise<string>}
-    flyttReservasjon={action('button-click') as () => Promise<string>}
-    finnSaksbehandler={action('button-click') as () => Promise<string>}
-    nullstillSaksbehandler={action('button-click') as () => Promise<string>}
+    hentAvdelingensReservasjoner={action('button-click')}
   />
 );
 
@@ -54,10 +51,7 @@ export const skalViseTabellMedReservasjoner = () => {
     <ReservasjonerTabell
       reservasjoner={reservasjoner}
       opphevReservasjon={opphevReservasjon as () => Promise<string>}
-      endreOppgaveReservasjon={action('button-click') as () => Promise<string>}
-      flyttReservasjon={action('button-click') as () => Promise<string>}
-      finnSaksbehandler={action('button-click') as () => Promise<string>}
-      nullstillSaksbehandler={action('button-click') as () => Promise<string>}
+      hentAvdelingensReservasjoner={action('button-click')}
     />
   );
 };

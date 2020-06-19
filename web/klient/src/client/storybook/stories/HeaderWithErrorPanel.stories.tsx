@@ -26,7 +26,7 @@ const initialState = {
 
 export const skalViseHeaderUtenAvdelingsvelger = () => (
   <div style={{ marginLeft: '-40px' }}>
-    <RestApiProvider initialState={initialState as {[key in RestApiGlobalStatePathsKeys]: any}}>
+    <RestApiProvider initialState={initialState as {[key in RestApiGlobalStatePathsKeys]: any}} requestApi={new RequestMock().build()}>
       <HeaderWithErrorPanel
         queryStrings={{}}
         setValgtAvdelingEnhet={action('button-click')}
@@ -83,7 +83,7 @@ export const skalViseHeaderMedKunEnFeilmelding = () => {
   return (
     <div style={{ marginLeft: '-40px' }}>
       <RestApiErrorProvider initialState={errorInitialState}>
-        <RestApiProvider initialState={initialState as {[key in RestApiGlobalStatePathsKeys]: any}}>
+        <RestApiProvider initialState={initialState as {[key in RestApiGlobalStatePathsKeys]: any}} requestApi={new RequestMock().build()}>
           <HeaderWithErrorPanel
             queryStrings={{}}
             setValgtAvdelingEnhet={action('button-click')}
@@ -125,7 +125,7 @@ export const skalViseHeaderMedMerEnnFemFeilmeldinger = () => {
   return (
     <div style={{ marginLeft: '-40px' }}>
       <RestApiErrorProvider initialState={errorInitialState}>
-        <RestApiProvider initialState={initialState as {[key in RestApiGlobalStatePathsKeys]: any}}>
+        <RestApiProvider initialState={initialState as {[key in RestApiGlobalStatePathsKeys]: any}} requestApi={new RequestMock().build()}>
           <HeaderWithErrorPanel
             queryStrings={queryStrings}
             setValgtAvdelingEnhet={action('button-click')}

@@ -30,7 +30,7 @@ interface OwnProps {
 /**
  * LeggTilSaksbehandlerForm
  */
-const LeggTilSaksbehandlerForm: FunctionComponent<OwnProps & WrappedComponentProps> = ({
+export const LeggTilSaksbehandlerForm: FunctionComponent<OwnProps & WrappedComponentProps> = ({
   intl,
   valgtAvdelingEnhet,
   avdelingensSaksbehandlere,

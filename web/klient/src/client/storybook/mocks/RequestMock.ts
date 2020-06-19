@@ -10,13 +10,12 @@ class RequestMock {
   }
 
   public build = () => ({
-    getRequestRunner: (key: string) => {
+    startRequest: (key: string) => {
       const index = this.keys.findIndex((keyValue) => keyValue === key);
       const result = this.result[index];
-      return {
-        startProcess: () => Promise.resolve({ payload: result }),
-      };
+      return Promise.resolve({ payload: result });
     },
+    cancelRequest: () => undefined,
   })
 }
 

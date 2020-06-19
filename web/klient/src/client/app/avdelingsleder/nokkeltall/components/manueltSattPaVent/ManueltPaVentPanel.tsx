@@ -43,17 +43,11 @@ const erDatoInnenforPeriode = (behandlingFrist, ukevalg) => {
   return moment(behandlingFrist).isSameOrBefore(dataOmFireUker);
 };
 
-interface InitialValues {
-  valgtYtelsetype: string;
-  ukevalg: string;
-}
-
 interface OwnProps {
   intl: any;
   width: number;
   height: number;
   oppgaverManueltPaVent: OppgaverManueltPaVent[];
-  initialValues: InitialValues;
 }
 
 const formName = 'manueltPaVentForm';
@@ -63,7 +57,7 @@ const formDefaultValues = { valgtYtelsetype: ALLE_YTELSETYPER_VALGT, ukevalg: UK
 /**
  * ManueltPaVentPanel.
  */
-const ManueltPaVentPanel: FunctionComponent<OwnProps & WrappedComponentProps> = ({
+export const ManueltPaVentPanel: FunctionComponent<OwnProps & WrappedComponentProps> = ({
   intl,
   width,
   height,

@@ -9,6 +9,7 @@ import behandlingStatus from 'kodeverk/behandlingStatus';
 import behandlingType from 'kodeverk/behandlingType';
 import FagsakSearch from 'saksbehandler/fagsakSearch/components/FagsakSearch';
 
+import RequestMock from '../../../mocks/RequestMock';
 import alleKodeverk from '../../../mocks/alleKodeverk.json';
 import withIntl from '../../../decorators/withIntl';
 
@@ -25,7 +26,7 @@ export default {
   decorators: [
     withIntl,
     (getStory) => (
-      <RestApiProvider initialState={initialState as {[key in RestApiGlobalStatePathsKeys]: any}}>
+      <RestApiProvider initialState={initialState as {[key in RestApiGlobalStatePathsKeys]: any}} requestApi={new RequestMock().build()}>
         {getStory()}
       </RestApiProvider>
     ),

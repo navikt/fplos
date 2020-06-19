@@ -5,6 +5,7 @@ import { RestApiGlobalStatePathsKeys } from 'data/restApiPaths';
 import SearchForm from 'saksbehandler/fagsakSearch/components/SearchForm';
 import { RestApiProvider } from 'data/rest-api-hooks';
 
+import RequestMock from '../../../mocks/RequestMock';
 import withIntl from '../../../decorators/withIntl';
 
 const initialState = {
@@ -19,7 +20,7 @@ export default {
   decorators: [
     withIntl,
     (getStory) => (
-      <RestApiProvider initialState={initialState as {[key in RestApiGlobalStatePathsKeys]: any}}>
+      <RestApiProvider initialState={initialState as {[key in RestApiGlobalStatePathsKeys]: any}} requestApi={new RequestMock().build()}>
         {getStory()}
       </RestApiProvider>
     ),
@@ -35,11 +36,13 @@ export const skalViseSøkeskjema = () => (
 );
 
 export const skalViseSøkeskjemaNårEnIkkeKanVelgeÅReservere = () => (
-  <RestApiProvider initialState={{
-    [RestApiGlobalStatePathsKeys.NAV_ANSATT]: {
-      kanSaksbehandle: false,
-    },
-  } as {[key in RestApiGlobalStatePathsKeys]: any}}
+  <RestApiProvider
+    initialState={{
+      [RestApiGlobalStatePathsKeys.NAV_ANSATT]: {
+        kanSaksbehandle: false,
+      },
+    } as {[key in RestApiGlobalStatePathsKeys]: any}}
+    requestApi={new RequestMock().build()}
   >
     <SearchForm
       onSubmit={action('button-click')}

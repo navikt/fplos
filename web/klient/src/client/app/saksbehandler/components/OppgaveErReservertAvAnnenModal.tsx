@@ -66,7 +66,7 @@ const OppgaveErReservertAvAnnenModal: FunctionComponent<OwnProps & WrappedCompon
             className={styles.okButton}
             mini
             htmlType="button"
-            onClick={getClickEvent(lukkErReservertModalOgOpneOppgave, oppgave)}
+            onClick={lukk}
             autoFocus
           >
             {intl.formatMessage({ id: 'OppgaveErReservertAvAnnenModal.Ok' })}

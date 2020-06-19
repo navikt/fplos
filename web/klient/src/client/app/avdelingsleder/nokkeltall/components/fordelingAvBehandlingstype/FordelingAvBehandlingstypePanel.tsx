@@ -30,7 +30,6 @@ interface OwnProps {
   width: number;
   height: number;
   oppgaverForAvdeling: OppgaverForAvdeling[];
-  initialValues: InitialValues;
 }
 
 const formName = 'fordelingAvBehandlingstype';

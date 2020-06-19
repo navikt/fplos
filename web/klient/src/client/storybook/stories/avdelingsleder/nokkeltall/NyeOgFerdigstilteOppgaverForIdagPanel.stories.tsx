@@ -6,9 +6,10 @@ import { RestApiProvider } from 'data/rest-api-hooks';
 import { ISO_DATE_FORMAT } from 'utils/formats';
 import behandlingType from 'kodeverk/behandlingType';
 import fagsakYtelseType from 'kodeverk/fagsakYtelseType';
-import { TilBehandlingPanel, ALLE_YTELSETYPER_VALGT, UKE_2 } from 'avdelingsleder/nokkeltall/components/tilBehandling/TilBehandlingPanel';
+import { TilBehandlingPanel } from 'avdelingsleder/nokkeltall/components/tilBehandling/TilBehandlingPanel';
 
 import alleKodeverk from '../../../mocks/alleKodeverk.json';
+import RequestMock from '../../../mocks/RequestMock';
 import withIntl from '../../../decorators/withIntl';
 
 const initialState = {
@@ -21,7 +22,7 @@ export default {
   decorators: [
     withIntl,
     (getStory) => (
-      <RestApiProvider initialState={initialState as {[key in RestApiGlobalStatePathsKeys]: any}}>
+      <RestApiProvider initialState={initialState as {[key in RestApiGlobalStatePathsKeys]: any}} requestApi={new RequestMock().build()}>
         {getStory()}
       </RestApiProvider>
     ),
@@ -100,9 +101,5 @@ export const skalViseGrafForAntallOppgaverTilBehandlingPerDag = (intl) => (
       opprettetDato: moment().subtract(16, 'd').format(ISO_DATE_FORMAT),
       antall: 3,
     }]}
-    initialValues={{
-      ytelseType: ALLE_YTELSETYPER_VALGT,
-      ukevalg: UKE_2,
-    }}
   />
 );

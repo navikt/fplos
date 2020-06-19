@@ -56,6 +56,7 @@ interface OwnProps {
   reserverOppgave: (oppgave: Oppgave) => void;
   antallOppgaver?: number;
   valgtSakslisteId: number;
+  doPolling?: boolean;
 }
 
 /**
@@ -66,6 +67,7 @@ export const OppgaverTabell: FunctionComponent<OwnProps & WrappedComponentProps>
   reserverOppgave,
   antallOppgaver = 0,
   valgtSakslisteId,
+  doPolling = true,
 }) => {
   const [showMenu, setShowMenu] = useState(false);
   const [valgtOppgaveId, setValgtOppgaveId] = useState<number>();
@@ -85,7 +87,8 @@ export const OppgaverTabell: FunctionComponent<OwnProps & WrappedComponentProps>
   const fetchSakslisteOppgaverPolling = (oppgaveIder?: string) => {
     hentReserverteOppgaver({}, true);
     hentOppgaverTilBehandling(oppgaveIder ? { sakslisteId: valgtSakslisteId, oppgaveIder } : { sakslisteId: valgtSakslisteId }, true)
-      .then((response) => (response !== 'INTERNAL_CANCELLATION' ? fetchSakslisteOppgaverPolling(response.map((o) => o.id).join(',')) : Promise.resolve()))
+      .then((response) => (response !== 'INTERNAL_CANCELLATION' && doPolling
+        ? fetchSakslisteOppgaverPolling(response.map((o) => o.id).join(',')) : Promise.resolve()))
       .catch(() => undefined);
   };
 

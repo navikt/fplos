@@ -5,10 +5,11 @@ import { RestApiProvider } from 'data/rest-api-hooks';
 import fagsakYtelseType from 'kodeverk/fagsakYtelseType';
 import behandlingType from 'kodeverk/behandlingType';
 import {
-  FordelingAvBehandlingstypePanel, ALLE_YTELSETYPER_VALGT,
+  FordelingAvBehandlingstypePanel,
 } from 'avdelingsleder/nokkeltall/components/fordelingAvBehandlingstype/FordelingAvBehandlingstypePanel';
 
 import alleKodeverk from '../../../mocks/alleKodeverk.json';
+import RequestMock from '../../../mocks/RequestMock';
 import withIntl from '../../../decorators/withIntl';
 
 const initialState = {
@@ -21,7 +22,7 @@ export default {
   decorators: [
     withIntl,
     (getStory) => (
-      <RestApiProvider initialState={initialState as {[key in RestApiGlobalStatePathsKeys]: any}}>
+      <RestApiProvider initialState={initialState as {[key in RestApiGlobalStatePathsKeys]: any}} requestApi={new RequestMock().build()}>
         {getStory()}
       </RestApiProvider>
     ),
@@ -66,8 +67,5 @@ export const skalViseGrafForFordelingAvBehandlingstyper = () => (
       tilBehandling: true,
       antall: 14,
     }]}
-    initialValues={{
-      valgtYtelseType: ALLE_YTELSETYPER_VALGT,
-    }}
   />
 );

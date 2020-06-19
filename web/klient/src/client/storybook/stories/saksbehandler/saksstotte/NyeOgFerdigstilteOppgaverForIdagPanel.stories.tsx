@@ -5,11 +5,12 @@ import { RestApiGlobalStatePathsKeys } from 'data/restApiPaths';
 import behandlingType from 'kodeverk/behandlingType';
 import { ISO_DATE_FORMAT } from 'utils/formats';
 import { RestApiProvider } from 'data/rest-api-hooks';
-import {
-  NyeOgFerdigstilteOppgaverForIdagPanel,
-} from 'saksbehandler/saksstotte/nokkeltall/components/nyeOgFerdigstilteOppgaverForIdag/NyeOgFerdigstilteOppgaverForIdagPanel';
+import
+NyeOgFerdigstilteOppgaverForIdagPanel
+  from 'saksbehandler/saksstotte/nokkeltall/components/nyeOgFerdigstilteOppgaverForIdag/NyeOgFerdigstilteOppgaverForIdagPanel';
 
 import alleKodeverk from '../../../mocks/alleKodeverk.json';
+import RequestMock from '../../../mocks/RequestMock';
 import withIntl from '../../../decorators/withIntl';
 
 const initialState = {
@@ -22,7 +23,7 @@ export default {
   decorators: [
     withIntl,
     (getStory) => (
-      <RestApiProvider initialState={initialState as {[key in RestApiGlobalStatePathsKeys]: any}}>
+      <RestApiProvider initialState={initialState as {[key in RestApiGlobalStatePathsKeys]: any}} requestApi={new RequestMock().build()}>
         {getStory()}
       </RestApiProvider>
     ),

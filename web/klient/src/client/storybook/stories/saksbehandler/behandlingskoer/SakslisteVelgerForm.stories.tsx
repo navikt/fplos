@@ -4,7 +4,7 @@ import { IntlShape } from 'react-intl';
 
 import { RestApiPathsKeys } from 'data/restApiPaths';
 import { RestApiProvider } from 'data/rest-api-hooks';
-import SakslisteVelgerForm from 'saksbehandler/behandlingskoer/components/SakslisteVelgerForm';
+import { SakslisteVelgerForm } from 'saksbehandler/behandlingskoer/components/SakslisteVelgerForm';
 import behandlingType from 'kodeverk/behandlingType';
 import fagsakYtelseType from 'kodeverk/fagsakYtelseType';
 import koSortering from 'kodeverk/KoSortering';
@@ -74,7 +74,7 @@ export const skalViseValgtKøOgUtvalgskriterier = (intl: IntlShape) => {
             erDynamiskPeriode: true,
           },
         }]}
-        fetchSakslisteOppgaver={action('button-click')}
+        setValgtSakslisteId={action('button-click')}
         fetchAntallOppgaver={action('button-click')}
       />
     </RestApiProvider>

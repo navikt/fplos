@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React from 'react';
 import { Form } from 'react-final-form';
 import { action } from '@storybook/addon-actions';
 
@@ -22,21 +22,15 @@ export default {
 };
 
 export const skalViseVelgerForFagsakYtelseTyper = () => {
-  const [verdier, leggTilVerdi] = useState({
+  const initialValues = {
     fagsakYtelseType: fagsakYtelseType.FORELDREPRENGER,
-  });
-  const lagre = useCallback((_sakslisteId, fyt) => {
-    leggTilVerdi((oldState) => ({
-      ...oldState,
-      fagsakYtelseType: fyt,
-    }));
-  }, []);
+  };
 
   return (
     <RestApiProvider initialState={initialState as {[key in RestApiGlobalStatePathsKeys]: any}} requestApi={new RequestMock().build()}>
       <Form
         onSubmit={() => undefined}
-        initialValues={verdier}
+        initialValues={initialValues}
         render={() => (
           <FagsakYtelseTypeVelger
             valgtSakslisteId={1}

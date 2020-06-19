@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { RestApiProvider } from 'data/rest-api-hooks';
-import { SistBehandledeSaker } from 'saksbehandler/saksstotte/components/SistBehandledeSaker';
+import SistBehandledeSaker from 'saksbehandler/saksstotte/components/SistBehandledeSaker';
 import { RestApiGlobalStatePathsKeys, RestApiPathsKeys } from 'data/restApiPaths';
 
 import RequestMock from '../../../mocks/RequestMock';
@@ -32,6 +32,7 @@ export const skalViseIngenBehandlinger = () => (
 
 export const skalViseSistBehandlendeSaker = () => {
   const behandledeOppgaver = [{
+    behandlingId: 1,
     personnummer: '334342323',
     navn: 'Espen Utvikler',
   }];

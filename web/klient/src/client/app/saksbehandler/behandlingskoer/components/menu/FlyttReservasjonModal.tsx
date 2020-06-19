@@ -45,7 +45,7 @@ interface OwnProps {
  *
  * Presentasjonskomponent. Modal som lar en søke opp en saksbehandler som saken skal flyttes til. En kan også begrunne hvorfor saken skal flyttes.
  */
-const FlyttReservasjonModal: FunctionComponent<OwnProps & WrappedComponentProps> = ({
+export const FlyttReservasjonModal: FunctionComponent<OwnProps & WrappedComponentProps> = ({
   intl,
   showModal,
   closeModal,

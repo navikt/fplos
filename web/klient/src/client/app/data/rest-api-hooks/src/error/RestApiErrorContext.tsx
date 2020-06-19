@@ -1,7 +1,6 @@
 import React, {
   createContext, useReducer, FunctionComponent, ReactNode,
 } from 'react';
-import ErrorMessage from 'app/feilhandtering/ErrorMessage';
 
 const defaultInitialState = {
   errors: [],
@@ -9,7 +8,7 @@ const defaultInitialState = {
 
 type Action = {type: 'add', data: any } | {type: 'remove'}
 type Dispatch = (action: Action) => void
-type State = {errors: ErrorMessage[]}
+type State = {errors: any[]}
 
 export const RestApiErrorStateContext = createContext<State>(defaultInitialState);
 export const RestApiErrorDispatchContext = createContext<Dispatch | undefined>(undefined);

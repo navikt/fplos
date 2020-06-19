@@ -79,7 +79,7 @@ interface InitialValues {
 /**
  * UtvalgskriterierForSakslisteForm
  */
-const UtvalgskriterierForSakslisteForm: FunctionComponent<OwnProps & WrappedComponentProps> = ({
+export const UtvalgskriterierForSakslisteForm: FunctionComponent<OwnProps & WrappedComponentProps> = ({
   intl,
   valgtSaksliste,
   valgtAvdelingEnhet,
