@@ -2,7 +2,7 @@ import React from 'react';
 import { action } from '@storybook/addon-actions';
 
 import { RestApiGlobalStatePathsKeys } from 'data/restApiPaths';
-import { RestApiGlobalDataProvider } from 'data/rest-api-hooks';
+import { RestApiProvider } from 'data/rest-api-hooks';
 import fagsakYtelseType from 'kodeverk/fagsakYtelseType';
 import fagsakStatus from 'kodeverk/fagsakStatus';
 import behandlingStatus from 'kodeverk/behandlingStatus';
@@ -25,9 +25,9 @@ export default {
   decorators: [
     withIntl,
     (getStory) => (
-      <RestApiGlobalDataProvider initialState={initialState as {[key in RestApiGlobalStatePathsKeys]: any}}>
+      <RestApiProvider initialState={initialState as {[key in RestApiGlobalStatePathsKeys]: any}}>
         {getStory()}
-      </RestApiGlobalDataProvider>
+      </RestApiProvider>
     ),
   ],
 };

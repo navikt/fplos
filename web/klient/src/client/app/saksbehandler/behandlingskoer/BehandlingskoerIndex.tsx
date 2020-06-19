@@ -15,6 +15,22 @@ import BehandlingPollingTimoutModal from './components/BehandlingPollingTimoutMo
 
 const EMPTY_ARRAY = [];
 
+const openFagsak = (oppgave: Oppgave, hentFpsakInternBehandlingId: (param: { uuid: string}) => Promise<number>, fpsakUrl: string) => {
+  hentFpsakInternBehandlingId({ uuid: oppgave.behandlingId }).then((behandlingId) => {
+    window.location.assign(getFpsakHref(fpsakUrl, oppgave.saksnummer, behandlingId));
+  });
+};
+
+const openTilbakesak = (oppgave: Oppgave, fptilbakeUrl: string) => {
+  window.location.assign(getFptilbakeHref(fptilbakeUrl, oppgave.href));
+};
+
+const openSak = (oppgave: Oppgave, hentFpsakInternBehandlingId: (param: { uuid: string}) => Promise<number>, fpsakUrl: string, fptilbakeUrl: string) => {
+  if (oppgave.system === 'FPSAK') openFagsak(oppgave, hentFpsakInternBehandlingId, fpsakUrl);
+  else if (oppgave.system === 'FPTILBAKE') openTilbakesak(oppgave, fptilbakeUrl);
+  else throw new Error('Fagsystemet for oppgaven er ukjent');
+};
+
 interface OwnProps {
   fpsakUrl: string;
   fptilbakeUrl: string;
@@ -39,60 +55,39 @@ const BehandlingskoerIndex: FunctionComponent<OwnProps> = ({
 
   const { startRequest: hentReserverteOppgaver, data: reserverteOppgaver = EMPTY_ARRAY } = useRestApiRunner<Oppgave[]>(RestApiPathsKeys.RESERVERTE_OPPGAVER);
   const {
-    startRequest: hentOppgaverTilBehandling, requestApi, data: oppgaverTilBehandling = EMPTY_ARRAY, error: hentOppgaverTilBehandlingError,
-  } = useRestApiRunner<Oppgave[]>(RestApiPathsKeys.OPPGAVER_TIL_BEHANDLING);
+    startRequest: hentOppgaverTilBehandling, cancelRequest, data: oppgaverTilBehandling = EMPTY_ARRAY, error: hentOppgaverTilBehandlingError,
+  } = useRestApiRunner<Oppgave[] | string>(RestApiPathsKeys.OPPGAVER_TIL_BEHANDLING);
   const { startRequest: reserverOppgave } = useRestApiRunner<OppgaveStatus>(RestApiPathsKeys.RESERVER_OPPGAVE);
-  const { startRequest: opphevOppgavereservasjon } = useRestApiRunner<Oppgave[]>(RestApiPathsKeys.OPPHEV_OPPGAVERESERVASJON);
-  const { startRequest: forlengOppgavereservasjon } = useRestApiRunner<Oppgave[]>(RestApiPathsKeys.FORLENG_OPPGAVERESERVASJON);
-  const { startRequest: endreOppgavereservasjon } = useRestApiRunner<Oppgave[]>(RestApiPathsKeys.ENDRE_OPPGAVERESERVASJON);
-  const { startRequest: flyttOppgavereservasjon } = useRestApiRunner<Oppgave[]>(RestApiPathsKeys.FLYTT_RESERVASJON);
   const { startRequest: hentFpsakInternBehandlingId } = useRestApiRunner<number>(RestApiPathsKeys.FPSAK_BEHANDLING_ID);
-
-  const goToUrl = useCallback((url) => window.location.assign(url), []);
 
   useEffect(() => () => {
     if (valgtSakslisteId) {
-      requestApi.cancelRequest();
+      cancelRequest();
     }
   }, []);
 
   const fetchSakslisteOppgaverPolling = (nySakslisteId: number, oppgaveIder?: string) => {
     hentReserverteOppgaver({}, true);
     hentOppgaverTilBehandling(oppgaveIder ? { sakslisteId: nySakslisteId, oppgaveIder } : { sakslisteId: nySakslisteId }, true)
-      .then((response) => fetchSakslisteOppgaverPolling(nySakslisteId, response.map((o) => o.id).join(','))).catch(() => undefined);
+      .then((response) => (response !== 'INTERNAL_CANCELLATION' ? fetchSakslisteOppgaverPolling(nySakslisteId, response.map((o) => o.id).join(',')) : Promise.resolve()))
+      .catch(() => undefined);
   };
 
-  const fetchSakslisteOppgaver = (nySakslisteId: number) => {
+  const fetchSakslisteOppgaver = useCallback((nySakslisteId: number) => {
     setValgtSakslisteId(nySakslisteId);
     hentReserverteOppgaver({}, true);
     hentOppgaverTilBehandling({ sakslisteId: nySakslisteId }, true)
-      .then((response) => fetchSakslisteOppgaverPolling(nySakslisteId, response.map((o) => o.id).join(',')));
-  };
+      .then((response) => (response !== 'INTERNAL_CANCELLATION' ? fetchSakslisteOppgaverPolling(nySakslisteId, response.map((o) => o.id).join(',')) : Promise.resolve()));
+  }, []);
 
-  const openFagsak = (oppgave: Oppgave) => {
-    hentFpsakInternBehandlingId({ uuid: oppgave.behandlingId }).then((behandlingId) => {
-      goToUrl(getFpsakHref(fpsakUrl, oppgave.saksnummer, behandlingId));
-    });
-  };
-
-  const openTilbakesak = (oppgave: Oppgave) => {
-    goToUrl(getFptilbakeHref(fptilbakeUrl, oppgave.href));
-  };
-
-  const openSak = (oppgave: Oppgave) => {
-    if (oppgave.system === 'FPSAK') openFagsak(oppgave);
-    else if (oppgave.system === 'FPTILBAKE') openTilbakesak(oppgave);
-    else throw new Error('Fagsystemet for oppgaven er ukjent');
-  };
-
-  const reserverOppgaveOgApne = (oppgave: Oppgave) => {
+  const reserverOppgaveOgApne = useCallback((oppgave: Oppgave) => {
     if (oppgave.status.erReservert) {
-      openSak(oppgave);
+      openSak(oppgave, hentFpsakInternBehandlingId, fpsakUrl, fptilbakeUrl);
     } else {
       reserverOppgave({ oppgaveId: oppgave.id })
         .then((nyOppgaveStatus) => {
           if (nyOppgaveStatus.erReservert && nyOppgaveStatus.erReservertAvInnloggetBruker) {
-            openSak(oppgave);
+            openSak(oppgave, hentFpsakInternBehandlingId, fpsakUrl, fptilbakeUrl);
           } else if (nyOppgaveStatus.erReservert && !nyOppgaveStatus.erReservertAvInnloggetBruker) {
             setReservertAvAnnenSaksbehandler(true);
             setReservertOppgave(oppgave);
@@ -100,47 +95,15 @@ const BehandlingskoerIndex: FunctionComponent<OwnProps> = ({
           }
         });
     }
-  };
+  }, [fpsakUrl, fptilbakeUrl]);
 
-  const opphevReservasjonFn = (oppgaveId: number, begrunnelse: string): Promise<any> => {
-    if (!valgtSakslisteId) {
-      return Promise.resolve();
-    }
-    return opphevOppgavereservasjon({ oppgaveId, begrunnelse })
-      .then(() => hentReserverteOppgaver({}, true));
-  };
-
-  const forlengOppgaveReservasjonFn = (oppgaveId: number): Promise<any> => {
-    if (!valgtSakslisteId) {
-      return Promise.resolve();
-    }
-    return forlengOppgavereservasjon({ oppgaveId })
-      .then(() => hentReserverteOppgaver({}, true));
-  };
-
-  const endreOppgaveReservasjonFn = (oppgaveId: number, reserverTil: string): Promise<any> => {
-    if (!valgtSakslisteId) {
-      return Promise.resolve();
-    }
-    return endreOppgavereservasjon({ oppgaveId, reserverTil })
-      .then(() => hentReserverteOppgaver({}, true));
-  };
-
-  const flyttReservasjonFn = (oppgaveId: number, brukerident: string, begrunnelse: string): Promise<any> => {
-    if (!valgtSakslisteId) {
-      return Promise.resolve();
-    }
-    return flyttOppgavereservasjon({ oppgaveId, brukerIdent: brukerident, begrunnelse })
-      .then(() => hentReserverteOppgaver({}, true));
-  };
-
-  const lukkErReservertModalOgOpneOppgave = (oppgave: Oppgave) => {
+  const lukkErReservertModalOgOpneOppgave = useCallback((oppgave: Oppgave) => {
     setReservertAvAnnenSaksbehandler(false);
     setReservertOppgave(undefined);
     setReservertOppgaveStatus(undefined);
 
-    openSak(oppgave);
-  };
+    openSak(oppgave, hentFpsakInternBehandlingId, fpsakUrl, fptilbakeUrl);
+  }, [fpsakUrl, fptilbakeUrl]);
 
   if (sakslister.length === 0) {
     return null;
@@ -151,12 +114,9 @@ const BehandlingskoerIndex: FunctionComponent<OwnProps> = ({
         reserverOppgave={reserverOppgaveOgApne}
         sakslister={sakslister}
         fetchSakslisteOppgaver={fetchSakslisteOppgaver}
-        opphevOppgaveReservasjon={opphevReservasjonFn}
-        forlengOppgaveReservasjon={forlengOppgaveReservasjonFn}
-        endreOppgaveReservasjon={endreOppgaveReservasjonFn}
-        flyttReservasjon={flyttReservasjonFn}
         reserverteOppgaver={reserverteOppgaver}
         oppgaverTilBehandling={oppgaverTilBehandling}
+        hentReserverteOppgaver={hentReserverteOppgaver}
       />
       {hentOppgaverTilBehandlingError instanceof TimeoutError
         && <BehandlingPollingTimoutModal />}

@@ -13,7 +13,7 @@ describe('<ReservasjonerIndex>', () => {
 
     new RestApiTestMocker()
       .withDummyRunner()
-      .runTest(async () => {
+      .runTest(() => {
         const wrapper = shallow(<ReservasjonerIndex
           valgtAvdelingEnhet="2"
         />);

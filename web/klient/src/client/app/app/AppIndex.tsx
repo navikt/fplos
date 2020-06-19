@@ -9,7 +9,7 @@ import AppConfigResolver from './AppConfigResolver';
 import LanguageProvider from './LanguageProvider';
 import HeaderWithErrorPanel from './components/HeaderWithErrorPanel';
 import Home from './components/Home';
-import { RestApiGlobalDataStateContext } from '../data/rest-api-hooks';
+import { RestApiStateContext } from '../data/rest-api-hooks';
 
 import '../../styles/global.less';
 
@@ -34,7 +34,7 @@ interface StateProps {
  * og kodeverk fra server og lagre desse i klientens state.
  */
 export class AppIndex extends Component<RouterProps, StateProps> {
-  static contextType = RestApiGlobalDataStateContext;
+  static contextType = RestApiStateContext;
 
   state = {
     headerHeight: 0,

@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { RestApiGlobalDataProvider } from 'data/rest-api-hooks';
+import { RestApiProvider } from 'data/rest-api-hooks';
 import { SistBehandledeSaker } from 'saksbehandler/saksstotte/components/SistBehandledeSaker';
 import { RestApiGlobalStatePathsKeys, RestApiPathsKeys } from 'data/restApiPaths';
 
@@ -25,9 +25,9 @@ export default {
 };
 
 export const skalViseIngenBehandlinger = () => (
-  <RestApiGlobalDataProvider initialState={initialState as {[key in RestApiGlobalStatePathsKeys]: any}} requestApi={new RequestMock().build()}>
+  <RestApiProvider initialState={initialState as {[key in RestApiGlobalStatePathsKeys]: any}} requestApi={new RequestMock().build()}>
     <SistBehandledeSaker />
-  </RestApiGlobalDataProvider>
+  </RestApiProvider>
 );
 
 export const skalViseSistBehandlendeSaker = () => {
@@ -41,8 +41,8 @@ export const skalViseSistBehandlendeSaker = () => {
     .build();
 
   return (
-    <RestApiGlobalDataProvider initialState={initialState as {[key in RestApiGlobalStatePathsKeys]: any}} requestApi={requestApi}>
+    <RestApiProvider initialState={initialState as {[key in RestApiGlobalStatePathsKeys]: any}} requestApi={requestApi}>
       <SistBehandledeSaker />
-    </RestApiGlobalDataProvider>
+    </RestApiProvider>
   );
 };

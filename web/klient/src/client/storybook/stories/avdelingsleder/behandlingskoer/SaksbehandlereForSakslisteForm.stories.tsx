@@ -1,8 +1,8 @@
 import React from 'react';
 import { action } from '@storybook/addon-actions';
 
-import { SaksbehandlereForSakslisteForm } from 'avdelingsleder/behandlingskoer/components/saksbehandlerForm/SaksbehandlereForSakslisteForm';
-import { RestApiGlobalDataProvider } from 'data/rest-api-hooks';
+import SaksbehandlereForSakslisteForm from 'avdelingsleder/behandlingskoer/components/saksbehandlerForm/SaksbehandlereForSakslisteForm';
+import { RestApiProvider } from 'data/rest-api-hooks';
 
 import withIntl from '../../../decorators/withIntl';
 import RequestMock from '../../../mocks/RequestMock';
@@ -23,7 +23,7 @@ export const skalVisePanelForÅLeggeSaksbehandlereTilEnSaksliste = () => {
   };
 
   return (
-    <RestApiGlobalDataProvider requestApi={new RequestMock().build()}>
+    <RestApiProvider requestApi={new RequestMock().build()}>
       <SaksbehandlereForSakslisteForm
         valgtSaksliste={saksliste}
         avdelingensSaksbehandlere={[{
@@ -42,6 +42,6 @@ export const skalVisePanelForÅLeggeSaksbehandlereTilEnSaksliste = () => {
         hentAvdelingensSakslister={action('button-click')}
         valgtAvdelingEnhet="NAV Viken"
       />
-    </RestApiGlobalDataProvider>
+    </RestApiProvider>
   );
 };

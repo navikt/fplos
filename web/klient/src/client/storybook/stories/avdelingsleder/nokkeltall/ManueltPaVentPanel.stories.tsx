@@ -2,7 +2,7 @@ import React from 'react';
 import moment from 'moment';
 
 import { RestApiGlobalStatePathsKeys } from 'data/restApiPaths';
-import { RestApiGlobalDataProvider } from 'data/rest-api-hooks';
+import { RestApiProvider } from 'data/rest-api-hooks';
 import { ISO_DATE_FORMAT } from 'utils/formats';
 import fagsakYtelseType from 'kodeverk/fagsakYtelseType';
 import ManueltPaVentPanel, { ALLE_YTELSETYPER_VALGT, UKE_4 } from 'avdelingsleder/nokkeltall/components/manueltSattPaVent/ManueltPaVentPanel';
@@ -20,9 +20,9 @@ export default {
   decorators: [
     withIntl,
     (getStory) => (
-      <RestApiGlobalDataProvider initialState={initialState as {[key in RestApiGlobalStatePathsKeys]: any}}>
+      <RestApiProvider initialState={initialState as {[key in RestApiGlobalStatePathsKeys]: any}}>
         {getStory()}
-      </RestApiGlobalDataProvider>
+      </RestApiProvider>
     ),
   ],
 };

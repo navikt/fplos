@@ -17,12 +17,9 @@ interface OwnProps {
   sakslister: Saksliste[];
   fetchSakslisteOppgaver: (sakslisteId: number) => void;
   reserverOppgave: (oppgaveId: Oppgave) => void;
-  opphevOppgaveReservasjon: (oppgaveId: number, begrunnelse: string) => Promise<string>;
-  forlengOppgaveReservasjon: (oppgaveId: number) => Promise<string>;
-  endreOppgaveReservasjon: (oppgaveId: number, reserverTil: string) => Promise<string>;
-  flyttReservasjon: (oppgaveId: number, brukerident: string, begrunnelse: string) => Promise<string>;
   reserverteOppgaver: Oppgave[];
   oppgaverTilBehandling: Oppgave[];
+  hentReserverteOppgaver: (params: any, keepData: boolean) => void;
 }
 
 /**
@@ -30,14 +27,11 @@ interface OwnProps {
  */
 const SakslistePanel: FunctionComponent<OwnProps> = ({
   reserverOppgave,
-  opphevOppgaveReservasjon,
-  forlengOppgaveReservasjon,
-  endreOppgaveReservasjon,
   sakslister,
   fetchSakslisteOppgaver,
-  flyttReservasjon,
   reserverteOppgaver,
   oppgaverTilBehandling,
+  hentReserverteOppgaver,
 }) => {
   const { startRequest: fetchAntallOppgaver, data: antallOppgaver } = useRestApiRunner<number>(RestApiPathsKeys.BEHANDLINGSKO_OPPGAVE_ANTALL);
 
@@ -53,13 +47,10 @@ const SakslistePanel: FunctionComponent<OwnProps> = ({
         <VerticalSpacer twentyPx />
         <OppgaverTabell
           reserverOppgave={reserverOppgave}
-          opphevOppgaveReservasjon={opphevOppgaveReservasjon}
-          forlengOppgaveReservasjon={forlengOppgaveReservasjon}
-          endreOppgaveReservasjon={endreOppgaveReservasjon}
-          flyttReservasjon={flyttReservasjon}
           reserverteOppgaver={reserverteOppgaver}
           oppgaverTilBehandling={oppgaverTilBehandling}
           antallOppgaver={antallOppgaver}
+          hentReserverteOppgaver={hentReserverteOppgaver}
         />
       </div>
     </>

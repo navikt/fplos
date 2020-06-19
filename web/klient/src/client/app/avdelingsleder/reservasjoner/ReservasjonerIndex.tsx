@@ -1,4 +1,4 @@
-import React, { FunctionComponent, useEffect } from 'react';
+import React, { FunctionComponent, useEffect, useCallback } from 'react';
 
 import { useRestApiRunner } from 'data/rest-api-hooks';
 import { RestApiPathsKeys } from 'data/restApiPaths';
@@ -27,15 +27,18 @@ export const ReservasjonerIndex: FunctionComponent<OwnProps> = ({
     hentAvdelingensReservasjoner({ avdelingEnhet: valgtAvdelingEnhet });
   }, []);
 
-  const opphevOppgaveReservasjonFn = (oppgaveId: number): Promise<any> => opphevOppgaveReservasjon({ oppgaveId })
-    .then(() => hentAvdelingensReservasjoner({ avdelingEnhet: valgtAvdelingEnhet }));
+  const opphevOppgaveReservasjonFn = useCallback((oppgaveId: number): Promise<any> => opphevOppgaveReservasjon({ oppgaveId })
+    .then(() => hentAvdelingensReservasjoner({ avdelingEnhet: valgtAvdelingEnhet })),
+  [valgtAvdelingEnhet]);
 
-  const endreOppgaveReservasjonFn = (oppgaveId: number, reserverTil: string): Promise<any> => endreOppgavereservasjon({ oppgaveId, reserverTil })
-    .then(() => hentAvdelingensReservasjoner({ avdelingEnhet: valgtAvdelingEnhet }));
+  const endreOppgaveReservasjonFn = useCallback((oppgaveId: number, reserverTil: string): Promise<any> => endreOppgavereservasjon({ oppgaveId, reserverTil })
+    .then(() => hentAvdelingensReservasjoner({ avdelingEnhet: valgtAvdelingEnhet })),
+  [valgtAvdelingEnhet]);
 
-  const flyttReservasjonFn = (oppgaveId: number, brukerident: string, begrunnelse: string): Promise<any> => flyttOppgavereservasjon({
+  const flyttReservasjonFn = useCallback((oppgaveId: number, brukerident: string, begrunnelse: string): Promise<any> => flyttOppgavereservasjon({
     oppgaveId, brukerident, begrunnelse,
-  }).then(() => hentAvdelingensReservasjoner({ avdelingEnhet: valgtAvdelingEnhet }));
+  }).then(() => hentAvdelingensReservasjoner({ avdelingEnhet: valgtAvdelingEnhet })),
+  [valgtAvdelingEnhet]);
 
   return (
     <ReservasjonerTabell

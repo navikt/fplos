@@ -6,7 +6,7 @@ import fagsakYtelseType from 'kodeverk/fagsakYtelseType';
 import fagsakStatus from 'kodeverk/fagsakStatus';
 import behandlingStatus from 'kodeverk/behandlingStatus';
 import behandlingType from 'kodeverk/behandlingType';
-import { RestApiGlobalDataProvider } from 'data/rest-api-hooks';
+import { RestApiProvider } from 'data/rest-api-hooks';
 import FagsakList from 'saksbehandler/fagsakSearch/components/FagsakList';
 
 import alleKodeverk from '../../../mocks/alleKodeverk.json';
@@ -22,9 +22,9 @@ export default {
   decorators: [
     withIntl,
     (getStory) => (
-      <RestApiGlobalDataProvider initialState={initialState as {[key in RestApiGlobalStatePathsKeys]: any}}>
+      <RestApiProvider initialState={initialState as {[key in RestApiGlobalStatePathsKeys]: any}}>
         {getStory()}
-      </RestApiGlobalDataProvider>
+      </RestApiProvider>
     ),
   ],
 };

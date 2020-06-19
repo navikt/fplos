@@ -4,7 +4,7 @@ import moment from 'moment';
 import { RestApiGlobalStatePathsKeys } from 'data/restApiPaths';
 import behandlingType from 'kodeverk/behandlingType';
 import { ISO_DATE_FORMAT } from 'utils/formats';
-import { RestApiGlobalDataProvider } from 'data/rest-api-hooks';
+import { RestApiProvider } from 'data/rest-api-hooks';
 import {
   NyeOgFerdigstilteOppgaverForIdagPanel,
 } from 'saksbehandler/saksstotte/nokkeltall/components/nyeOgFerdigstilteOppgaverForIdag/NyeOgFerdigstilteOppgaverForIdagPanel';
@@ -22,9 +22,9 @@ export default {
   decorators: [
     withIntl,
     (getStory) => (
-      <RestApiGlobalDataProvider initialState={initialState as {[key in RestApiGlobalStatePathsKeys]: any}}>
+      <RestApiProvider initialState={initialState as {[key in RestApiGlobalStatePathsKeys]: any}}>
         {getStory()}
-      </RestApiGlobalDataProvider>
+      </RestApiProvider>
     ),
   ],
 };

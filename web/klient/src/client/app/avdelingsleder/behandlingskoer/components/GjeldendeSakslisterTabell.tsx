@@ -1,6 +1,6 @@
 
 import React, {
-  useState, KeyboardEvent, ReactNode, FunctionComponent, useEffect, useRef,
+  useState, KeyboardEvent, ReactNode, FunctionComponent, useEffect, useRef, useCallback,
 } from 'react';
 import { FormattedMessage } from 'react-intl';
 import {
@@ -34,6 +34,29 @@ const headerTextCodes = [
   'GjeldendeSakslisterTabell.SistEndret',
   'EMPTY_1',
 ];
+
+const formatStonadstyper = (fagsakYtelseTyper: Kodeverk[], valgteFagsakYtelseTyper?: Kodeverk[]): string | ReactNode => {
+  if (!valgteFagsakYtelseTyper || valgteFagsakYtelseTyper.length === 0) {
+    return <FormattedMessage id="GjeldendeSakslisterTabell.Alle" />;
+  }
+
+  return valgteFagsakYtelseTyper.map((fyt) => {
+    const type = fagsakYtelseTyper.find((def) => def.kode === fyt.kode);
+    return type ? type.navn : '';
+  }).join(', ');
+};
+
+const formatBehandlingstyper = (behandlingTyper: Kodeverk[], valgteBehandlingTyper?: Kodeverk[]): string | ReactNode => {
+  if (!valgteBehandlingTyper || valgteBehandlingTyper.length === 0
+    || valgteBehandlingTyper.length === behandlingTyper.length) {
+    return <FormattedMessage id="GjeldendeSakslisterTabell.Alle" />;
+  }
+
+  return valgteBehandlingTyper.map((bt) => {
+    const type = behandlingTyper.find((def) => def.kode === bt.kode);
+    return type ? type.navn : '';
+  }).join(', ');
+};
 
 interface OwnProps {
   sakslister: Saksliste[];
@@ -85,51 +108,28 @@ export const GjeldendeSakslisterTabell: FunctionComponent<OwnProps> = ({
     setValgtSakslisteId(id);
   };
 
-  const lagNySakslisteFn = (event: KeyboardEvent): void => {
+  const lagNySakslisteFn = useCallback((event: KeyboardEvent): void => {
     if (event.keyCode === 13) {
       lagNySaksliste(valgtAvdelingEnhet);
     }
-  };
+  }, [valgtAvdelingEnhet]);
 
   const visFjernSakslisteModal = (nyValgtSaksliste: Saksliste): void => {
     setValgtSakslisteTemp(nyValgtSaksliste);
   };
 
-  const closeSletteModal = (): void => {
+  const closeSletteModal = useCallback((): void => {
     setValgtSakslisteTemp(undefined);
-  };
+  }, []);
 
-  const fjernSakslisteFn = (saksliste: Saksliste): void => {
+  const fjernSakslisteFn = useCallback((saksliste: Saksliste): void => {
     closeSletteModal();
     fjernSaksliste({ sakslisteId: saksliste.sakslisteId, avdelingEnhet: valgtAvdelingEnhet })
       .then(() => {
         resetValgtSakslisteId();
         hentAvdelingensSakslister({ avdelingEnhet: valgtAvdelingEnhet });
       });
-  };
-
-  const formatStonadstyper = (valgteFagsakYtelseTyper?: Kodeverk[]): string | ReactNode => {
-    if (!valgteFagsakYtelseTyper || valgteFagsakYtelseTyper.length === 0) {
-      return <FormattedMessage id="GjeldendeSakslisterTabell.Alle" />;
-    }
-
-    return valgteFagsakYtelseTyper.map((fyt) => {
-      const type = fagsakYtelseTyper.find((def) => def.kode === fyt.kode);
-      return type ? type.navn : '';
-    }).join(', ');
-  };
-
-  const formatBehandlingstyper = (valgteBehandlingTyper?: Kodeverk[]): string | ReactNode => {
-    if (!valgteBehandlingTyper || valgteBehandlingTyper.length === 0
-      || valgteBehandlingTyper.length === behandlingTyper.length) {
-      return <FormattedMessage id="GjeldendeSakslisterTabell.Alle" />;
-    }
-
-    return valgteBehandlingTyper.map((bt) => {
-      const type = behandlingTyper.find((def) => def.kode === bt.kode);
-      return type ? type.navn : '';
-    }).join(', ');
-  };
+  }, [valgtAvdelingEnhet]);
 
   return (
     <>
@@ -166,8 +166,8 @@ export const GjeldendeSakslisterTabell: FunctionComponent<OwnProps> = ({
             onKeyDown={setValgtSaksliste}
           >
             <TableColumn>{saksliste.navn}</TableColumn>
-            <TableColumn>{formatStonadstyper(saksliste.fagsakYtelseTyper)}</TableColumn>
-            <TableColumn>{formatBehandlingstyper(saksliste.behandlingTyper)}</TableColumn>
+            <TableColumn>{formatStonadstyper(fagsakYtelseTyper, saksliste.fagsakYtelseTyper)}</TableColumn>
+            <TableColumn>{formatBehandlingstyper(behandlingTyper, saksliste.behandlingTyper)}</TableColumn>
             <TableColumn>{saksliste.saksbehandlerIdenter.length > 0 ? saksliste.saksbehandlerIdenter.length : ''}</TableColumn>
             <TableColumn>{saksliste.antallBehandlinger}</TableColumn>
             <TableColumn>

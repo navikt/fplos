@@ -42,7 +42,7 @@ const SaksbehandlerNokkeltallPanel: FunctionComponent<OwnProps> = ({
     return () => {
       window.removeEventListener('resize', oppdaterGrafStorrelse);
     };
-  }, []);
+  }, [oppdaterGrafStorrelse]);
 
   return (
     <div ref={ref}>

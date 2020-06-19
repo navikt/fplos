@@ -2,7 +2,7 @@ import React from 'react';
 import { action } from '@storybook/addon-actions';
 
 import { RestApiGlobalStatePathsKeys } from 'data/restApiPaths';
-import { RestApiGlobalDataProvider } from 'data/rest-api-hooks';
+import { RestApiProvider } from 'data/rest-api-hooks';
 import UtvalgskriterierForSakslisteForm from 'avdelingsleder/behandlingskoer/components/sakslisteForm/UtvalgskriterierForSakslisteForm';
 import koSortering from 'kodeverk/KoSortering';
 import andreKriterierType from 'kodeverk/andreKriterierType';
@@ -24,7 +24,7 @@ export default {
 };
 
 export const skalViseSakslisteOppsettPanel = (intl) => (
-  <RestApiGlobalDataProvider initialState={initialState as {[key in RestApiGlobalStatePathsKeys]: any}} requestApi={new RequestMock().build()}>
+  <RestApiProvider initialState={initialState as {[key in RestApiGlobalStatePathsKeys]: any}} requestApi={new RequestMock().build()}>
     <UtvalgskriterierForSakslisteForm
       intl={intl}
       valgtSaksliste={{
@@ -70,5 +70,5 @@ export const skalViseSakslisteOppsettPanel = (intl) => (
       hentAvdelingensSakslister={action('button-click')}
       hentOppgaverForAvdelingAntall={action('button-click')}
     />
-  </RestApiGlobalDataProvider>
+  </RestApiProvider>
 );

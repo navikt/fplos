@@ -1,4 +1,4 @@
-import React, { FunctionComponent, useState } from 'react';
+import React, { FunctionComponent, useState, useMemo } from 'react';
 import {
   XYPlot, XAxis, YAxis, AreaSeries, Crosshair, HorizontalGridLines,
 } from 'react-vis';
@@ -69,9 +69,9 @@ const OppgaverPerForsteStonadsdagGraf: FunctionComponent<OwnProps> = ({
 }) => {
   const [crosshairValues, setCrosshairValues] = useState<Koordinat[]>([]);
 
-  const koordinater = lagKoordinater(oppgaverPerForsteStonadsdag);
-  const data = lagDatastruktur(koordinater);
-  const isEmpty = harDatastrukturKun0Verdier(koordinater);
+  const koordinater = useMemo(() => lagKoordinater(oppgaverPerForsteStonadsdag), [oppgaverPerForsteStonadsdag]);
+  const data = useMemo(() => lagDatastruktur(koordinater), [koordinater]);
+  const isEmpty = useMemo(() => harDatastrukturKun0Verdier(koordinater), [koordinater]);
 
   return (
     <Panel className={styles.panel}>

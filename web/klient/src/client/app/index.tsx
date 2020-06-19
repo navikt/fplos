@@ -5,7 +5,7 @@ import { Router } from 'react-router-dom';
 import { init } from '@sentry/browser';
 
 import AppIndex from 'app/AppIndex';
-import { RestApiGlobalDataProvider, RestApiErrorProvider } from 'data/rest-api-hooks';
+import { RestApiProvider, RestApiErrorProvider } from 'data/rest-api-hooks';
 import { requestApi } from 'data/restApiPaths';
 
 /* eslint no-undef: "error" */
@@ -28,11 +28,11 @@ const renderFunc = (Component) => {
   }
   render(
     <Router history={history}>
-      <RestApiGlobalDataProvider requestApi={requestApi}>
+      <RestApiProvider requestApi={requestApi}>
         <RestApiErrorProvider>
           <Component />
         </RestApiErrorProvider>
-      </RestApiGlobalDataProvider>
+      </RestApiProvider>
     </Router>,
     app,
   );

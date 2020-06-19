@@ -1,4 +1,4 @@
-import React, { FunctionComponent, useState } from 'react';
+import React, { FunctionComponent, useState, useMemo } from 'react';
 import {
   injectIntl, WrappedComponentProps, FormattedMessage,
 } from 'react-intl';
@@ -65,7 +65,7 @@ const LeggTilSaksbehandlerForm: FunctionComponent<OwnProps & WrappedComponentPro
     resetFormValues();
   };
 
-  const formatText = () => {
+  const formattedText = useMemo((): string => {
     if (state === RestApiState.SUCCESS && !saksbehandler) {
       return intl.formatMessage({ id: 'LeggTilSaksbehandlerForm.FinnesIkke' });
     }
@@ -77,7 +77,7 @@ const LeggTilSaksbehandlerForm: FunctionComponent<OwnProps & WrappedComponentPro
     return erLagtTilAllerede
       ? `${brukerinfo} (${intl.formatMessage({ id: 'LeggTilSaksbehandlerForm.FinnesAllerede' })})`
       : brukerinfo;
-  };
+  }, [state, saksbehandler, erLagtTilAllerede]);
 
   return (
     <Form
@@ -117,7 +117,7 @@ const LeggTilSaksbehandlerForm: FunctionComponent<OwnProps & WrappedComponentPro
           {state === RestApiState.SUCCESS && (
           <>
             <Normaltekst>
-              {formatText()}
+              {formattedText}
             </Normaltekst>
             <VerticalSpacer sixteenPx />
             <FlexContainer>
@@ -127,7 +127,7 @@ const LeggTilSaksbehandlerForm: FunctionComponent<OwnProps & WrappedComponentPro
                     mini
                     autoFocus
                     htmlType="button"
-                    onClick={() => leggTilSaksbehandlerFn(form.reset)}
+                    onClick={() => leggTilSaksbehandlerFn()}
                     spinner={leggerTilNySaksbehandler}
                     disabled={leggerTilNySaksbehandler || erLagtTilAllerede || !saksbehandler}
                   >

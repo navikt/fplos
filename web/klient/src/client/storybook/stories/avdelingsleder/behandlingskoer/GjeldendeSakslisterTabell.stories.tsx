@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { action } from '@storybook/addon-actions';
 
 import { RestApiGlobalStatePathsKeys } from 'data/restApiPaths';
-import { RestApiGlobalDataProvider } from 'data/rest-api-hooks';
+import { RestApiProvider } from 'data/rest-api-hooks';
 import { GjeldendeSakslisterTabell } from 'avdelingsleder/behandlingskoer/components/GjeldendeSakslisterTabell';
 import Saksliste from 'avdelingsleder/behandlingskoer/sakslisteTsType';
 
@@ -23,7 +23,7 @@ export default {
 export const skalVisePanelNårDetIkkeFinnesBehandlingskøer = () => {
   const [sakslister, setSaksliste] = useState([]);
   return (
-    <RestApiGlobalDataProvider initialState={initialState as {[key in RestApiGlobalStatePathsKeys]: any}} requestApi={new RequestMock().build()}>
+    <RestApiProvider initialState={initialState as {[key in RestApiGlobalStatePathsKeys]: any}} requestApi={new RequestMock().build()}>
       <GjeldendeSakslisterTabell
         sakslister={sakslister}
         valgtAvdelingEnhet=""
@@ -38,7 +38,7 @@ export const skalVisePanelNårDetIkkeFinnesBehandlingskøer = () => {
         resetValgtSakslisteId={action('button-click')}
         hentAvdelingensSakslister={action('button-click') as () => Saksliste[]}
       />
-    </RestApiGlobalDataProvider>
+    </RestApiProvider>
   );
 };
 
@@ -51,7 +51,7 @@ export const skalVisePanelNårDetFinnesEnBehandlingskø = () => {
     antallBehandlinger: 1,
   }]);
   return (
-    <RestApiGlobalDataProvider initialState={initialState as {[key in RestApiGlobalStatePathsKeys]: any}} requestApi={new RequestMock().build()}>
+    <RestApiProvider initialState={initialState as {[key in RestApiGlobalStatePathsKeys]: any}} requestApi={new RequestMock().build()}>
       <GjeldendeSakslisterTabell
         sakslister={sakslister}
         valgtAvdelingEnhet=""
@@ -68,6 +68,6 @@ export const skalVisePanelNårDetFinnesEnBehandlingskø = () => {
         hentAvdelingensSakslister={action('button-click') as () => Saksliste[]}
         oppgaverForAvdelingAntall={1}
       />
-    </RestApiGlobalDataProvider>
+    </RestApiProvider>
   );
 };

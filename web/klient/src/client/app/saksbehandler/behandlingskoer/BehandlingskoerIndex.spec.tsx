@@ -116,7 +116,7 @@ describe('<BehandlingskoerIndex>', () => {
       });
   });
 
-  it('skal reservere og åpne sak i FPSAK når oppgave ikke er reservert fra før', () => {
+  it('skal reservere og åpne sak i FPSAK når oppgave ikke er reservert fra før', (done) => {
     const reserverOppgave = sinon.stub().withArgs(oppgave.id).resolves({
       payload: {
         erReservert: true,
@@ -135,7 +135,7 @@ describe('<BehandlingskoerIndex>', () => {
       .withRestCallRunner(RestApiPathsKeys.ENDRE_OPPGAVERESERVASJON, { startRequest: () => undefined })
       .withRestCallRunner(RestApiPathsKeys.FLYTT_RESERVASJON, { startRequest: () => undefined })
       .withRestCallRunner(RestApiPathsKeys.FPSAK_BEHANDLING_ID, { startRequest: () => undefined })
-      .runTest(async () => {
+      .runTest(() => {
         const wrapper = shallow(<BehandlingskoerIndex
           fpsakUrl="www.fpsak.no"
           fptilbakeUrl="www.fptilbake.no"
@@ -145,7 +145,9 @@ describe('<BehandlingskoerIndex>', () => {
         const panel = wrapper.find(SakslistePanel);
         expect(panel).to.have.length(1);
 
-        await panel.prop('reserverOppgave')(oppgave);
+        panel.prop('reserverOppgave')(oppgave);
+
+        done();
 
         expect(reserverOppgave.calledOnce).to.be.true;
 
@@ -173,7 +175,7 @@ describe('<BehandlingskoerIndex>', () => {
       .withRestCallRunner(RestApiPathsKeys.ENDRE_OPPGAVERESERVASJON, { startRequest: () => undefined })
       .withRestCallRunner(RestApiPathsKeys.FLYTT_RESERVASJON, { startRequest: () => undefined })
       .withRestCallRunner(RestApiPathsKeys.FPSAK_BEHANDLING_ID, { startRequest: () => undefined })
-      .runTest(async () => {
+      .runTest(() => {
         const wrapper = shallow(<BehandlingskoerIndex
           fpsakUrl="www.fpsak.no"
           fptilbakeUrl="www.fptilbake.no"
@@ -200,7 +202,7 @@ describe('<BehandlingskoerIndex>', () => {
       });
   });
 
-  it('skal hente sakslistens oppgaver og så starta polling etter endringer', async () => {
+  it('skal hente sakslistens oppgaver og så starta polling etter endringer', (done) => {
     const sakslisteId = 1;
     const oppgaveIder = [{ id: 1 }, { id: 2 }, { id: 3 }];
     /* const fetchOppgaverTilBehandlingFn = sinon.stub()
@@ -225,7 +227,7 @@ describe('<BehandlingskoerIndex>', () => {
       .withRestCallRunner(RestApiPathsKeys.ENDRE_OPPGAVERESERVASJON, { startRequest: () => undefined })
       .withRestCallRunner(RestApiPathsKeys.FLYTT_RESERVASJON, { startRequest: () => undefined })
       .withRestCallRunner(RestApiPathsKeys.FPSAK_BEHANDLING_ID, { startRequest: () => undefined })
-      .runTest(async () => {
+      .runTest(() => {
         const wrapper = shallow(<BehandlingskoerIndex
           fpsakUrl="www.fpsak.no"
           fptilbakeUrl="www.fptilbake.no"
@@ -235,7 +237,9 @@ describe('<BehandlingskoerIndex>', () => {
         const panel = wrapper.find(SakslistePanel);
         expect(panel).to.have.length(1);
 
-        await panel.prop('fetchSakslisteOppgaver')(sakslisteId);
+        panel.prop('fetchSakslisteOppgaver')(sakslisteId);
+
+        done();
 
         expect(fetchReserverteOppgaverFn.calledTwice).to.be.true;
         const { args } = fetchReserverteOppgaverFn.getCalls()[0];
@@ -250,7 +254,7 @@ describe('<BehandlingskoerIndex>', () => {
       });
   });
 
-  it('skal oppheve reservasjon og så hente reserverte oppgaver på nytt', async () => {
+  it('skal oppheve reservasjon og så hente reserverte oppgaver på nytt', (done) => {
     const opphevOppgaveReservasjonFn = sinon.stub().withArgs(oppgave.id).resolves();
     const fetchReserverteOppgaverFn = sinon.spy();
 
@@ -264,7 +268,7 @@ describe('<BehandlingskoerIndex>', () => {
       .withRestCallRunner(RestApiPathsKeys.ENDRE_OPPGAVERESERVASJON, { startRequest: () => undefined })
       .withRestCallRunner(RestApiPathsKeys.FLYTT_RESERVASJON, { startRequest: () => undefined })
       .withRestCallRunner(RestApiPathsKeys.FPSAK_BEHANDLING_ID, { startRequest: () => undefined })
-      .runTest(async () => {
+      .runTest(() => {
         const wrapper = shallow(<BehandlingskoerIndex
           fpsakUrl="www.fpsak.no"
           fptilbakeUrl="www.fptilbake.no"
@@ -278,7 +282,9 @@ describe('<BehandlingskoerIndex>', () => {
         const begrunnelse = 'Dette er en begrunnelse';
         const sakslisteId = 1;
         wrapper.setState({ sakslisteId });
-        await panel.prop('opphevOppgaveReservasjon')(oppgaveId, begrunnelse);
+        panel.prop('opphevOppgaveReservasjon')(oppgaveId, begrunnelse);
+
+        done();
 
         expect(opphevOppgaveReservasjonFn.calledOnce).to.be.true;
         const { args } = opphevOppgaveReservasjonFn.getCalls()[0];
@@ -293,7 +299,7 @@ describe('<BehandlingskoerIndex>', () => {
       });
   });
 
-  it('skal forlenge reservasjon og så hente reserverte oppgaver på nytt', async () => {
+  it('skal forlenge reservasjon og så hente reserverte oppgaver på nytt', (done) => {
     const forlengOppgaveReservasjonFn = sinon.stub().withArgs(oppgave.id).resolves();
     const fetchReserverteOppgaverFn = sinon.spy();
 
@@ -307,7 +313,7 @@ describe('<BehandlingskoerIndex>', () => {
       .withRestCallRunner(RestApiPathsKeys.ENDRE_OPPGAVERESERVASJON, { startRequest: () => undefined })
       .withRestCallRunner(RestApiPathsKeys.FLYTT_RESERVASJON, { startRequest: () => undefined })
       .withRestCallRunner(RestApiPathsKeys.FPSAK_BEHANDLING_ID, { startRequest: () => undefined })
-      .runTest(async () => {
+      .runTest(() => {
         const wrapper = shallow(<BehandlingskoerIndex
           fpsakUrl="www.fpsak.no"
           fptilbakeUrl="www.fptilbake.no"
@@ -320,7 +326,9 @@ describe('<BehandlingskoerIndex>', () => {
         const oppgaveId = 1;
         const sakslisteId = 1;
         wrapper.setState({ sakslisteId });
-        await panel.prop('forlengOppgaveReservasjon')(oppgaveId);
+        panel.prop('forlengOppgaveReservasjon')(oppgaveId);
+
+        done();
 
         expect(forlengOppgaveReservasjonFn.calledOnce).to.be.true;
         const { args } = forlengOppgaveReservasjonFn.getCalls()[0];
@@ -334,7 +342,7 @@ describe('<BehandlingskoerIndex>', () => {
       });
   });
 
-  it('skal flytte reservasjon og så hente reserverte oppgaver på nytt', async () => {
+  it('skal flytte reservasjon og så hente reserverte oppgaver på nytt', (done) => {
     const flyttReservasjonFn = sinon.stub().withArgs(oppgave.id).resolves();
     const fetchReserverteOppgaverFn = sinon.spy();
     new RestApiTestMocker()
@@ -347,7 +355,7 @@ describe('<BehandlingskoerIndex>', () => {
       .withRestCallRunner(RestApiPathsKeys.ENDRE_OPPGAVERESERVASJON, { startRequest: () => undefined })
       .withRestCallRunner(RestApiPathsKeys.FLYTT_RESERVASJON, { startRequest: () => undefined })
       .withRestCallRunner(RestApiPathsKeys.FPSAK_BEHANDLING_ID, { startRequest: () => undefined })
-      .runTest(async () => {
+      .runTest(() => {
         const wrapper = shallow(<BehandlingskoerIndex
           fpsakUrl="www.fpsak.no"
           fptilbakeUrl="www.fptilbake.no"
@@ -362,7 +370,9 @@ describe('<BehandlingskoerIndex>', () => {
         const begrunnelse = 'Dette er en begrunnelse';
         const sakslisteId = 1;
         wrapper.setState({ sakslisteId });
-        await panel.prop('flyttReservasjon')(oppgaveId, brukerIdent, begrunnelse);
+        panel.prop('flyttReservasjon')(oppgaveId, brukerIdent, begrunnelse);
+
+        done();
 
         expect(flyttReservasjonFn.calledOnce).to.be.true;
         const { args } = flyttReservasjonFn.getCalls()[0];
@@ -389,7 +399,7 @@ describe('<BehandlingskoerIndex>', () => {
       .withRestCallRunner(RestApiPathsKeys.ENDRE_OPPGAVERESERVASJON, { startRequest: () => undefined })
       .withRestCallRunner(RestApiPathsKeys.FLYTT_RESERVASJON, { startRequest: () => undefined })
       .withRestCallRunner(RestApiPathsKeys.FPSAK_BEHANDLING_ID, { startRequest: () => undefined })
-      .runTest(async () => {
+      .runTest(() => {
         const wrapper = shallow(<BehandlingskoerIndex
           fpsakUrl="www.fpsak.no"
           fptilbakeUrl="www.fptilbake.no"

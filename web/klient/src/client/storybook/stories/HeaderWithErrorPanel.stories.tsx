@@ -5,7 +5,7 @@ import { AVDELINGSLEDER_PATH } from 'app/paths';
 import { RestApiGlobalStatePathsKeys } from 'data/restApiPaths';
 import EventType from 'data/rest-api/src/requestApi/eventType';
 import HeaderWithErrorPanel from 'app/components/HeaderWithErrorPanel';
-import { RestApiGlobalDataProvider, RestApiErrorProvider } from 'data/rest-api-hooks';
+import { RestApiProvider, RestApiErrorProvider } from 'data/rest-api-hooks';
 
 
 import withIntl from '../decorators/withIntl';
@@ -26,13 +26,13 @@ const initialState = {
 
 export const skalViseHeaderUtenAvdelingsvelger = () => (
   <div style={{ marginLeft: '-40px' }}>
-    <RestApiGlobalDataProvider initialState={initialState as {[key in RestApiGlobalStatePathsKeys]: any}}>
+    <RestApiProvider initialState={initialState as {[key in RestApiGlobalStatePathsKeys]: any}}>
       <HeaderWithErrorPanel
         queryStrings={{}}
         setValgtAvdelingEnhet={action('button-click')}
         setSiteHeight={action('button-click')}
       />
-    </RestApiGlobalDataProvider>
+    </RestApiProvider>
   </div>
 );
 
@@ -59,7 +59,7 @@ export const skalViseHeaderMedAvdelingsvelger = () => {
 
   return (
     <div style={{ marginLeft: '-40px' }}>
-      <RestApiGlobalDataProvider initialState={newInitialState as {[key in RestApiGlobalStatePathsKeys]: any}} requestApi={requestApi}>
+      <RestApiProvider initialState={newInitialState as {[key in RestApiGlobalStatePathsKeys]: any}} requestApi={requestApi}>
         <HeaderWithErrorPanel
           queryStrings={{}}
           valgtAvdelingEnhet={valgtAvdelingEnhet}
@@ -67,7 +67,7 @@ export const skalViseHeaderMedAvdelingsvelger = () => {
           setSiteHeight={action('button-click')}
           locationPathname={AVDELINGSLEDER_PATH}
         />
-      </RestApiGlobalDataProvider>
+      </RestApiProvider>
     </div>
   );
 };
@@ -83,13 +83,13 @@ export const skalViseHeaderMedKunEnFeilmelding = () => {
   return (
     <div style={{ marginLeft: '-40px' }}>
       <RestApiErrorProvider initialState={errorInitialState}>
-        <RestApiGlobalDataProvider initialState={initialState as {[key in RestApiGlobalStatePathsKeys]: any}}>
+        <RestApiProvider initialState={initialState as {[key in RestApiGlobalStatePathsKeys]: any}}>
           <HeaderWithErrorPanel
             queryStrings={{}}
             setValgtAvdelingEnhet={action('button-click')}
             setSiteHeight={action('button-click')}
           />
-        </RestApiGlobalDataProvider>
+        </RestApiProvider>
       </RestApiErrorProvider>
     </div>
   );
@@ -125,13 +125,13 @@ export const skalViseHeaderMedMerEnnFemFeilmeldinger = () => {
   return (
     <div style={{ marginLeft: '-40px' }}>
       <RestApiErrorProvider initialState={errorInitialState}>
-        <RestApiGlobalDataProvider initialState={initialState as {[key in RestApiGlobalStatePathsKeys]: any}}>
+        <RestApiProvider initialState={initialState as {[key in RestApiGlobalStatePathsKeys]: any}}>
           <HeaderWithErrorPanel
             queryStrings={queryStrings}
             setValgtAvdelingEnhet={action('button-click')}
             setSiteHeight={action('button-click')}
           />
-        </RestApiGlobalDataProvider>
+        </RestApiProvider>
       </RestApiErrorProvider>
     </div>
   );

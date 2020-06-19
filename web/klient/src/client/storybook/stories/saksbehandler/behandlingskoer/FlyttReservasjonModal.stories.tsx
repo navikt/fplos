@@ -3,7 +3,7 @@ import { action } from '@storybook/addon-actions';
 
 import { RestApiPathsKeys } from 'data/restApiPaths';
 import FlyttReservasjonModal from 'saksbehandler/behandlingskoer/components/menu/FlyttReservasjonModal';
-import { RestApiGlobalDataProvider } from 'data/rest-api-hooks';
+import { RestApiProvider } from 'data/rest-api-hooks';
 
 import withIntl from '../../../decorators/withIntl';
 import RequestMock from '../../../mocks/RequestMock';
@@ -26,7 +26,7 @@ export const skalViseModalForFlyttingAvReservasjon = (intl) => {
     .build();
 
   return (
-    <RestApiGlobalDataProvider requestApi={requestApi}>
+    <RestApiProvider requestApi={requestApi}>
       <FlyttReservasjonModal
         intl={intl}
         showModal
@@ -34,6 +34,6 @@ export const skalViseModalForFlyttingAvReservasjon = (intl) => {
         closeModal={action('button-click')}
         submit={action('button-click')}
       />
-    </RestApiGlobalDataProvider>
+    </RestApiProvider>
   );
 };

@@ -1,4 +1,6 @@
-import React, { ReactNode, FunctionComponent, useEffect } from 'react';
+import React, {
+  ReactNode, FunctionComponent, useEffect, useMemo,
+} from 'react';
 import moment from 'moment';
 import { Form, FormSpy } from 'react-final-form';
 import {
@@ -113,6 +115,19 @@ const getSorteringsnavn = (intl: IntlShape, saksliste?: Saksliste): string => {
   return intl.formatMessage({ id: 'SakslisteVelgerForm.Sorteringsinfo' }, values) as string;
 };
 
+const createTooltip = (saksbehandlere: Saksbehandler[]): ReactNode | undefined => {
+  if (!saksbehandlere || saksbehandlere.length === 0) {
+    return undefined;
+  }
+
+  return (
+    <div>
+      <Element><FormattedMessage id="SakslisteVelgerForm.SaksbehandlerToolip" /></Element>
+      {saksbehandlere.map((s) => s.navn).sort((n1, n2) => n1.localeCompare(n2)).map((navn) => (<Normaltekst key={navn}>{navn}</Normaltekst>))}
+    </div>
+  );
+};
+
 /**
  * SakslisteVelgerForm
  *
@@ -136,18 +151,7 @@ const SakslisteVelgerForm: FunctionComponent<OwnProps & WrappedComponentProps> =
     }
   }, []);
 
-  const createTooltip = (): ReactNode | undefined => {
-    if (!saksbehandlere || saksbehandlere.length === 0) {
-      return undefined;
-    }
-
-    return (
-      <div>
-        <Element><FormattedMessage id="SakslisteVelgerForm.SaksbehandlerToolip" /></Element>
-        {saksbehandlere.map((s) => s.navn).sort((n1, n2) => n1.localeCompare(n2)).map((navn) => (<Normaltekst key={navn}>{navn}</Normaltekst>))}
-      </div>
-    );
-  };
+  const tooltip = useMemo(() => createTooltip(saksbehandlere), [saksbehandlere]);
 
   return (
     <Form
@@ -188,7 +192,7 @@ const SakslisteVelgerForm: FunctionComponent<OwnProps & WrappedComponentProps> =
                       alt={intl.formatMessage({ id: 'SakslisteVelgerForm.Saksbehandlere' })}
                       src={gruppeUrl}
                       srcHover={gruppeHoverUrl}
-                      tooltip={createTooltip()}
+                      tooltip={tooltip}
                     />
                   </FlexColumn>
                   <FlexColumn className={styles.marginFilters}>

@@ -5,6 +5,8 @@ import { FormattedMessage, injectIntl, WrappedComponentProps } from 'react-intl'
 import { Normaltekst, Element } from 'nav-frontend-typografi';
 import NavFrontendChevron from 'nav-frontend-chevron';
 
+import { RestApiPathsKeys } from 'data/restApiPaths';
+import { useRestApiRunner } from 'data/rest-api-hooks';
 import { getDateAndTime } from 'utils/dateUtils';
 import Image from 'sharedComponents/Image';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
@@ -50,11 +52,8 @@ interface OwnProps {
   oppgaverTilBehandling: Oppgave[];
   reserverteOppgaver: Oppgave[];
   reserverOppgave: (oppgave: Oppgave) => void;
-  opphevOppgaveReservasjon: (oppgaveId: number, begrunnelse: string) => Promise<any>;
-  forlengOppgaveReservasjon: (oppgaveId: number) => Promise<any>;
-  endreOppgaveReservasjon: (oppgaveId: number, reserverTil: string) => Promise<string>;
-  flyttReservasjon: (oppgaveId: number, brukerident: string, begrunnelse: string) => Promise<string>;
   antallOppgaver?: number;
+  hentReserverteOppgaver: (params: any, keepData: boolean) => void;
 }
 
 /**
@@ -62,14 +61,11 @@ interface OwnProps {
  */
 export const OppgaverTabell: FunctionComponent<OwnProps & WrappedComponentProps> = ({
   reserverOppgave,
-  opphevOppgaveReservasjon,
-  forlengOppgaveReservasjon,
-  endreOppgaveReservasjon,
-  flyttReservasjon,
   reserverteOppgaver,
   oppgaverTilBehandling,
   antallOppgaver = 0,
   intl,
+  hentReserverteOppgaver,
 }) => {
   const [showMenu, setShowMenu] = useState(false);
   const [valgtOppgaveId, setValgtOppgaveId] = useState<number>();
@@ -78,9 +74,14 @@ export const OppgaverTabell: FunctionComponent<OwnProps & WrappedComponentProps>
     top: 0,
   });
 
+  const { startRequest: forlengOppgavereservasjon } = useRestApiRunner<Oppgave[]>(RestApiPathsKeys.FORLENG_OPPGAVERESERVASJON);
+
+  const forlengOppgaveReservasjonFn = useCallback((oppgaveId: number): Promise<any> => forlengOppgavereservasjon({ oppgaveId })
+    .then(() => hentReserverteOppgaver({}, true)), []);
+
   const ref = useRef({});
 
-  const goToFagsak = useCallback((event: Event, id: number, oppgave: Oppgave) => {
+  const goToFagsak = useCallback((event: Event, _id: number, oppgave: Oppgave) => {
     if (ref.current && Object.keys(ref.current).some((key) => ref.current[key] && ref.current[key].contains(event.target))) {
       return;
     }
@@ -174,10 +175,8 @@ export const OppgaverTabell: FunctionComponent<OwnProps & WrappedComponentProps>
               toggleMenu={toggleMenu}
               offset={offset}
               oppgave={valgtOppgave}
-              opphevOppgaveReservasjon={opphevOppgaveReservasjon}
-              forlengOppgaveReservasjon={forlengOppgaveReservasjon}
-              endreOppgaveReservasjon={endreOppgaveReservasjon}
-              flyttReservasjon={flyttReservasjon}
+              forlengOppgaveReservasjon={forlengOppgaveReservasjonFn}
+              hentReserverteOppgaver={hentReserverteOppgaver}
             />
           )}
         </>

@@ -11,9 +11,9 @@ type Action = {type: 'success', key: RestApiGlobalStatePathsKeys, data: any } | 
 type Dispatch = (action: Action) => void
 type State = {[key: string]: any};
 
-export const RestApiGlobalDataStateContext = createContext<State>(defaultInitialState);
-export const RestApiGlobalDataDispatchContext = createContext<Dispatch | undefined>(undefined);
-export const RestApiContext = createContext<RequestApi | undefined>(undefined);
+export const RestApiStateContext = createContext<State>(defaultInitialState);
+export const RestApiDispatchContext = createContext<Dispatch | undefined>(undefined);
+export const RestApiRequestContext = createContext<RequestApi | undefined>(undefined);
 
 interface OwnProps {
   children: ReactNode;
@@ -22,12 +22,12 @@ interface OwnProps {
 }
 
 /**
- * State for data som skal hentes fra backend kun en gang og som en trenger aksess til
+ * Håndterer state for data som skal hentes fra backend kun en gang og som en trenger aksess til
  * mange steder i applikasjonen.
  *
- * NB! Ikke bruk denne mer enn nødvendig, da det kan føre til veldig mange rerendringer.
+ * Tilbyr i tillegg et requestApi for hooks som henter data fra backend
  */
-export const RestApiGlobalDataProvider: FunctionComponent<OwnProps> = ({
+export const RestApiProvider: FunctionComponent<OwnProps> = ({
   children,
   initialState,
   requestApi,
@@ -50,12 +50,12 @@ export const RestApiGlobalDataProvider: FunctionComponent<OwnProps> = ({
   }, initialState || defaultInitialState);
 
   return (
-    <RestApiGlobalDataStateContext.Provider value={state}>
-      <RestApiGlobalDataDispatchContext.Provider value={dispatch}>
-        <RestApiContext.Provider value={requestApi}>
+    <RestApiStateContext.Provider value={state}>
+      <RestApiDispatchContext.Provider value={dispatch}>
+        <RestApiRequestContext.Provider value={requestApi}>
           {children}
-        </RestApiContext.Provider>
-      </RestApiGlobalDataDispatchContext.Provider>
-    </RestApiGlobalDataStateContext.Provider>
+        </RestApiRequestContext.Provider>
+      </RestApiDispatchContext.Provider>
+    </RestApiStateContext.Provider>
   );
 };

@@ -3,7 +3,7 @@ import { action } from '@storybook/addon-actions';
 
 import { RestApiGlobalStatePathsKeys } from 'data/restApiPaths';
 import SearchForm from 'saksbehandler/fagsakSearch/components/SearchForm';
-import { RestApiGlobalDataProvider } from 'data/rest-api-hooks';
+import { RestApiProvider } from 'data/rest-api-hooks';
 
 import withIntl from '../../../decorators/withIntl';
 
@@ -19,9 +19,9 @@ export default {
   decorators: [
     withIntl,
     (getStory) => (
-      <RestApiGlobalDataProvider initialState={initialState as {[key in RestApiGlobalStatePathsKeys]: any}}>
+      <RestApiProvider initialState={initialState as {[key in RestApiGlobalStatePathsKeys]: any}}>
         {getStory()}
-      </RestApiGlobalDataProvider>
+      </RestApiProvider>
     ),
   ],
 };
@@ -35,7 +35,7 @@ export const skalViseSøkeskjema = () => (
 );
 
 export const skalViseSøkeskjemaNårEnIkkeKanVelgeÅReservere = () => (
-  <RestApiGlobalDataProvider initialState={{
+  <RestApiProvider initialState={{
     [RestApiGlobalStatePathsKeys.NAV_ANSATT]: {
       kanSaksbehandle: false,
     },
@@ -46,7 +46,7 @@ export const skalViseSøkeskjemaNårEnIkkeKanVelgeÅReservere = () => (
       searchStarted={false}
       resetSearch={action('button-click')}
     />
-  </RestApiGlobalDataProvider>
+  </RestApiProvider>
 );
 
 export const skalViseSøkeskjemaNårSøkPågår = () => (

@@ -3,7 +3,7 @@ import { Form } from 'react-final-form';
 import { action } from '@storybook/addon-actions';
 
 import { RestApiGlobalStatePathsKeys } from 'data/restApiPaths';
-import { RestApiGlobalDataProvider } from 'data/rest-api-hooks';
+import { RestApiProvider } from 'data/rest-api-hooks';
 import BehandlingstypeVelger from 'avdelingsleder/behandlingskoer/components/sakslisteForm/BehandlingstypeVelger';
 import behandlingType from 'kodeverk/behandlingType';
 
@@ -27,7 +27,7 @@ export const skalViseVelgerForBehandlingstyper = () => {
   };
 
   return (
-    <RestApiGlobalDataProvider initialState={initialState as {[key in RestApiGlobalStatePathsKeys]: any}} requestApi={new RequestMock().build()}>
+    <RestApiProvider initialState={initialState as {[key in RestApiGlobalStatePathsKeys]: any}} requestApi={new RequestMock().build()}>
       <Form
         onSubmit={() => undefined}
         initialValues={verdier}
@@ -40,6 +40,6 @@ export const skalViseVelgerForBehandlingstyper = () => {
           />
         )}
       />
-    </RestApiGlobalDataProvider>
+    </RestApiProvider>
   );
 };

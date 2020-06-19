@@ -113,11 +113,11 @@ describe('<LeggTilSaksbehandlerForm>', () => {
     const resetSaksbehandlerFn = sinon.spy();
 
     new RestApiTestMocker()
-      .withRestCallRunner(RestApiPathsKeys.SAKSBEHANDLER_SOK, { data: saksbehandler, state: RestApiState.SUCCESS, resetRequestData: resetSaksbehandlerFn })
+      .withRestCallRunner(RestApiPathsKeys.SAKSBEHANDLER_SOK, {
+        data: saksbehandler, state: RestApiState.SUCCESS, startRequest: () => undefined, resetRequestData: resetSaksbehandlerFn,
+      })
       .withRestCallRunner(RestApiPathsKeys.OPPRETT_NY_SAKSBEHANDLER, {
-        startRequest: (params) => {
-          leggTilSaksbehandlerFn(params); return Promise.resolve();
-        },
+        startRequest: (params) => leggTilSaksbehandlerFn(params.brukerIdent),
       })
       .runTest(async () => {
         const wrapper = shallowWithIntl(<LeggTilSaksbehandlerForm.WrappedComponent

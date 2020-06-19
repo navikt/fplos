@@ -3,7 +3,7 @@ import { Form } from 'react-final-form';
 import { action } from '@storybook/addon-actions';
 
 import { RestApiGlobalStatePathsKeys } from 'data/restApiPaths';
-import { RestApiGlobalDataProvider } from 'data/rest-api-hooks';
+import { RestApiProvider } from 'data/rest-api-hooks';
 import AndreKriterierVelger from 'avdelingsleder/behandlingskoer/components/sakslisteForm/AndreKriterierVelger';
 import andreKriterierType from 'kodeverk/andreKriterierType';
 
@@ -28,7 +28,7 @@ export const skalViseVelgerAvAndreKriterier = () => {
   };
 
   return (
-    <RestApiGlobalDataProvider initialState={initialState as {[key in RestApiGlobalStatePathsKeys]: any}} requestApi={new RequestMock().build()}>
+    <RestApiProvider initialState={initialState as {[key in RestApiGlobalStatePathsKeys]: any}} requestApi={new RequestMock().build()}>
       <Form
         onSubmit={() => undefined}
         initialValues={verdier}
@@ -42,6 +42,6 @@ export const skalViseVelgerAvAndreKriterier = () => {
           />
         )}
       />
-    </RestApiGlobalDataProvider>
+    </RestApiProvider>
   );
 };

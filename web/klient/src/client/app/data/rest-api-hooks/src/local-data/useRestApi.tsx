@@ -5,7 +5,7 @@ import {
 import { NotificationMapper } from 'data/rest-api';
 import { RestApiPathsKeys } from 'data/restApiPaths';
 
-import { RestApiContext } from '../global-data/RestApiGlobalDataContext';
+import { RestApiRequestContext } from '../RestApiContext';
 import useRestApiErrorDispatcher from '../error/useRestApiErrorDispatcher';
 import RestApiState from '../RestApiState';
 
@@ -32,7 +32,7 @@ function useRestApi<T>(key: RestApiPathsKeys, params: any = {}, keepData = false
     addErrorMessage({ ...errorData, type });
   });
 
-  const requestApi = useContext(RestApiContext);
+  const requestApi = useContext(RestApiRequestContext);
 
   useEffect(() => {
     setData((oldState) => ({
@@ -41,7 +41,7 @@ function useRestApi<T>(key: RestApiPathsKeys, params: any = {}, keepData = false
       data: keepData ? oldState.data : undefined,
     }));
 
-    requestApi.getRequestRunner(key).startProcess(params, notif)
+    requestApi.startRequest(key, params, notif)
       .then((dataRes) => {
         if (dataRes.payload === 'INTERNAL_CANCELLATION') {
           setData({

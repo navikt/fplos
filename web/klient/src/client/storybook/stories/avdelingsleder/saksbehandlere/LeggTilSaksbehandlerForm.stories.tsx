@@ -3,7 +3,7 @@ import { action } from '@storybook/addon-actions';
 
 import { RestApiPathsKeys } from 'data/restApiPaths';
 import LeggTilSaksbehandlerForm from 'avdelingsleder/saksbehandlere/components/LeggTilSaksbehandlerForm';
-import { RestApiGlobalDataProvider } from 'data/rest-api-hooks';
+import { RestApiProvider } from 'data/rest-api-hooks';
 
 import withIntl from '../../../decorators/withIntl';
 import RequestMock from '../../../mocks/RequestMock';
@@ -26,14 +26,14 @@ export const skalVisePanelForÅLeggeTilSaksbehandlere = (intl) => {
     .build();
 
   return (
-    <RestApiGlobalDataProvider requestApi={requestApi}>
+    <RestApiProvider requestApi={requestApi}>
       <LeggTilSaksbehandlerForm
         intl={intl}
         avdelingensSaksbehandlere={[]}
         hentAvdelingensSaksbehandlere={action('button-click')}
         valgtAvdelingEnhet="NAV Viken"
       />
-    </RestApiGlobalDataProvider>
+    </RestApiProvider>
   );
 };
 
@@ -49,13 +49,13 @@ export const skalVisePanelForNårSaksbehandlerErLagtTilAllerede = (intl) => {
     .build();
 
   return (
-    <RestApiGlobalDataProvider requestApi={requestApi}>
+    <RestApiProvider requestApi={requestApi}>
       <LeggTilSaksbehandlerForm
         intl={intl}
         avdelingensSaksbehandlere={[saksbehandler]}
         hentAvdelingensSaksbehandlere={action('button-click')}
         valgtAvdelingEnhet="NAV Viken"
       />
-    </RestApiGlobalDataProvider>
+    </RestApiProvider>
   );
 };

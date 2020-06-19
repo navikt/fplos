@@ -192,7 +192,7 @@ describe('<GjeldendeSakslisterTabell>', () => {
       });
   });
 
-  it('skal sette valgt saksliste ved trykk på rad i tabell', () => {
+  it('skal sette valgt saksliste ved trykk på rad i tabell', (done) => {
     const sakslister = [{
       sakslisteId: 1,
       navn: 'Nyansatte',
@@ -208,7 +208,7 @@ describe('<GjeldendeSakslisterTabell>', () => {
       .withKodeverk(kodeverkTyper.BEHANDLING_TYPE, behandlingstyper)
       .withKodeverk(kodeverkTyper.FAGSAK_YTELSE_TYPE, fagsakYtelseTyper)
       .withDummyRunner()
-      .runTest(async () => {
+      .runTest(() => {
         const wrapper = shallow(<GjeldendeSakslisterTabell
           sakslister={sakslister}
           setValgtSakslisteId={setValgtSakslisteIdFn}
@@ -222,7 +222,9 @@ describe('<GjeldendeSakslisterTabell>', () => {
         expect(rader).to.have.length(1);
 
         const keyFn = rader.prop('onKeyDown') as () => void;
-        await keyFn();
+        keyFn();
+
+        done();
 
         expect(setValgtSakslisteIdFn.calledOnce).to.be.true;
       });

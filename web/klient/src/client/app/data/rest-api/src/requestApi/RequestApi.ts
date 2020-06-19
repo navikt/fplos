@@ -2,6 +2,7 @@ import RequestRunner from './RequestRunner';
 import RestApiRequestContext from './RestApiRequestContext';
 import HttpClientApi from '../HttpClientApiTsType';
 import RequestConfig from '../RequestConfig';
+import NotificationMapper from './NotificationMapper';
 
 /**
  * RequestApi
@@ -19,7 +20,10 @@ class RequestApi {
     }), {});
   }
 
-  public getRequestRunner = (endpointName: string): RequestRunner => this.requestRunnersMappedByName[endpointName];
+  public startRequest = (endpointName: string, params: any, notificationMapper?: NotificationMapper) => this.requestRunnersMappedByName[endpointName]
+    .startProcess(params, notificationMapper);
+
+  public cancelRequest = (endpointName: string) => this.requestRunnersMappedByName[endpointName].cancelRequest();
 }
 
 export default RequestApi;

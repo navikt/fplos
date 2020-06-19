@@ -3,7 +3,7 @@ import { action } from '@storybook/addon-actions';
 import { IntlShape } from 'react-intl';
 
 import { RestApiPathsKeys } from 'data/restApiPaths';
-import { RestApiGlobalDataProvider } from 'data/rest-api-hooks';
+import { RestApiProvider } from 'data/rest-api-hooks';
 import SakslisteVelgerForm from 'saksbehandler/behandlingskoer/components/SakslisteVelgerForm';
 import behandlingType from 'kodeverk/behandlingType';
 import fagsakYtelseType from 'kodeverk/fagsakYtelseType';
@@ -40,7 +40,7 @@ export const skalViseValgtKøOgUtvalgskriterier = (intl: IntlShape) => {
     .build();
 
   return (
-    <RestApiGlobalDataProvider requestApi={requestApi}>
+    <RestApiProvider requestApi={requestApi}>
       <SakslisteVelgerForm
         intl={intl}
         sakslister={[{
@@ -77,6 +77,6 @@ export const skalViseValgtKøOgUtvalgskriterier = (intl: IntlShape) => {
         fetchSakslisteOppgaver={action('button-click')}
         fetchAntallOppgaver={action('button-click')}
       />
-    </RestApiGlobalDataProvider>
+    </RestApiProvider>
   );
 };

@@ -1,4 +1,6 @@
-import React, { FunctionComponent, useState } from 'react';
+import React, {
+  FunctionComponent, useState, useCallback, useMemo,
+} from 'react';
 import { FormattedMessage } from 'react-intl';
 import { Normaltekst, Element } from 'nav-frontend-typografi';
 
@@ -41,13 +43,14 @@ const SaksbehandlereTabell: FunctionComponent<OwnProps> = ({
 
   const { startRequest: fjernSaksbehandler } = useRestApiRunner<Saksbehandler>(RestApiPathsKeys.SLETT_SAKSBEHANDLER);
 
-  const fjernSaksbehandlerFn = (saksbehandler: Saksbehandler) => {
+  const fjernSaksbehandlerFn = useCallback((saksbehandler: Saksbehandler) => {
     fjernSaksbehandler({ brukerIdent: saksbehandler.brukerIdent, avdelingEnhet: valgtAvdelingEnhet })
       .then(() => hentAvdelingensSaksbehandlere({ avdelingEnhet: valgtAvdelingEnhet }));
     setValgtSaksbehandler(undefined);
-  };
+  }, [valgtAvdelingEnhet]);
 
-  const sorterteSaksbehandlere = saksbehandlere.sort((saksbehandler1, saksbehandler2) => saksbehandler1.navn.localeCompare(saksbehandler2.navn));
+  const sorterteSaksbehandlere = useMemo(() => saksbehandlere
+    .sort((saksbehandler1, saksbehandler2) => saksbehandler1.navn.localeCompare(saksbehandler2.navn)), [saksbehandlere]);
 
   return (
     <>

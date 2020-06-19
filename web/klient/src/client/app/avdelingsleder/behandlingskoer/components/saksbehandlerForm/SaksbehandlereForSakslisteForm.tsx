@@ -1,4 +1,4 @@
-import React, { FunctionComponent } from 'react';
+import React, { FunctionComponent, useMemo } from 'react';
 import { Form } from 'react-final-form';
 import { FormattedMessage } from 'react-intl';
 import Panel from 'nav-frontend-paneler';
@@ -34,7 +34,7 @@ const SaksbehandlereForSakslisteForm: FunctionComponent<OwnProps> = ({
   valgtAvdelingEnhet,
   hentAvdelingensSakslister,
 }) => {
-  const sorterteAvdelingensSaksbehandlere = sortSaksbehandlere(avdelingensSaksbehandlere);
+  const sorterteAvdelingensSaksbehandlere = useMemo(() => sortSaksbehandlere(avdelingensSaksbehandlere), [avdelingensSaksbehandlere]);
   const pos = Math.ceil(sorterteAvdelingensSaksbehandlere.length / 2);
   const avdelingensSaksbehandlereVenstreListe = sorterteAvdelingensSaksbehandlere.slice(0, pos);
   const avdelingensSaksbehandlereHoyreListe = sorterteAvdelingensSaksbehandlere.slice(pos);

@@ -1,8 +1,8 @@
 import { useState, useCallback, useContext } from 'react';
 
 import { RestApiPathsKeys } from 'data/restApiPaths';
-import { RequestRunner, NotificationMapper } from 'data/rest-api';
-import { RestApiContext } from '../global-data/RestApiGlobalDataContext';
+import { NotificationMapper } from 'data/rest-api';
+import { RestApiRequestContext } from '../RestApiContext';
 import useRestApiErrorDispatcher from '../error/useRestApiErrorDispatcher';
 import RestApiState from '../RestApiState';
 
@@ -12,7 +12,7 @@ interface RestApiData<T> {
   state: RestApiState;
   error?: Error;
   data?: T;
-  requestApi: RequestRunner;
+  cancelRequest: () => void;
 }
 
 /**
@@ -31,7 +31,7 @@ function useRestApiRunner<T>(key: RestApiPathsKeys):RestApiData<T> {
     addErrorMessage({ ...errorData, type });
   });
 
-  const requestApi = useContext(RestApiContext);
+  const requestApi = useContext(RestApiRequestContext);
 
   const startRequest = useCallback((params: any = {}, keepData = false):Promise<T> => {
     setData((oldState) => ({
@@ -40,7 +40,7 @@ function useRestApiRunner<T>(key: RestApiPathsKeys):RestApiData<T> {
       data: keepData ? oldState.data : undefined,
     }));
 
-    return requestApi.getRequestRunner(key).startProcess(params, notif)
+    return requestApi.startRequest(key, params, notif)
       .then((dataRes) => {
         if (dataRes.payload === 'INTERNAL_CANCELLATION') {
           setData({
@@ -78,7 +78,7 @@ function useRestApiRunner<T>(key: RestApiPathsKeys):RestApiData<T> {
   return {
     startRequest,
     resetRequestData,
-    requestApi: requestApi.getRequestRunner(key),
+    cancelRequest: () => requestApi.cancelRequest(key),
     ...data,
   };
 }

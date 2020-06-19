@@ -22,11 +22,22 @@ const maxLength500 = maxLength(500);
 const minLength7 = minLength(7);
 const maxLength7 = maxLength(7);
 
+const formatText = (state, saksbehandler, intl): string => {
+  if (state === RestApiState.SUCCESS && !saksbehandler) {
+    return intl.formatMessage({ id: 'LeggTilSaksbehandlerForm.FinnesIkke' });
+  }
+
+  return saksbehandler
+    ? `${saksbehandler.navn}, ${saksbehandler.avdelingsnavn.join(', ')}`
+    : '';
+};
+
 interface OwnProps {
   showModal: boolean;
   oppgaveId: number;
   closeModal: () => void;
-  submit: (oppgaveId: number, brukerident: string, begrunnelse: string) => void;
+  toggleMenu: () => void;
+  hentReserverteOppgaver: (params: any, keepData: boolean) => void;
 }
 
 /**
@@ -38,28 +49,24 @@ const FlyttReservasjonModal: FunctionComponent<OwnProps & WrappedComponentProps>
   intl,
   showModal,
   closeModal,
-  submit,
   oppgaveId,
+  toggleMenu,
+  hentReserverteOppgaver,
 }) => {
   const {
     startRequest, state, data: saksbehandler, resetRequestData,
   } = useRestApiRunner<SaksbehandlerForFlytting>(RestApiPathsKeys.FLYTT_RESERVASJON_SAKSBEHANDLER_SOK);
-
   const finnSaksbehandler = useCallback((brukerIdent) => startRequest(brukerIdent), []);
+
+  const { startRequest: flyttOppgavereservasjon } = useRestApiRunner(RestApiPathsKeys.FLYTT_RESERVASJON);
+  const flyttReservasjon = useCallback((brukerident: string, begrunnelse: string) => flyttOppgavereservasjon({
+    oppgaveId, brukerIdent: brukerident, begrunnelse,
+  }).then(() => hentReserverteOppgaver({}, true)),
+  []);
 
   useEffect(() => () => {
     resetRequestData();
   }, []);
-
-  const formatText = (): string => {
-    if (state === RestApiState.SUCCESS && !saksbehandler) {
-      return intl.formatMessage({ id: 'LeggTilSaksbehandlerForm.FinnesIkke' });
-    }
-
-    return saksbehandler
-      ? `${saksbehandler.navn}, ${saksbehandler.avdelingsnavn.join(', ')}`
-      : '';
-  };
 
   return (
     <Modal
@@ -105,7 +112,7 @@ const FlyttReservasjonModal: FunctionComponent<OwnProps & WrappedComponentProps>
             </FlexContainer>
             {state === RestApiState.SUCCESS && (
               <>
-                <Normaltekst>{formatText()}</Normaltekst>
+                <Normaltekst>{formatText(state, saksbehandler, intl)}</Normaltekst>
                 <VerticalSpacer sixteenPx />
               </>
             )}
@@ -114,7 +121,10 @@ const FlyttReservasjonModal: FunctionComponent<OwnProps & WrappedComponentProps>
       />
       <VerticalSpacer sixteenPx />
       <Form
-        onSubmit={(values) => submit(oppgaveId, saksbehandler ? saksbehandler.brukerIdent : '', values.begrunnelse)}
+        onSubmit={(values) => {
+          toggleMenu();
+          flyttReservasjon(saksbehandler ? saksbehandler.brukerIdent : '', values.begrunnelse);
+        }}
         render={({
           handleSubmit, values,
         }) => (

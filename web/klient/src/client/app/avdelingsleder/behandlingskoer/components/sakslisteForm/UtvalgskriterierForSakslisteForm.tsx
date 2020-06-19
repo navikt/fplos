@@ -98,10 +98,10 @@ const UtvalgskriterierForSakslisteForm: FunctionComponent<OwnProps & WrappedComp
 
   const { startRequest: lagreSakslisteNavn } = useRestApiRunner(RestApiPathsKeys.LAGRE_SAKSLISTE_NAVN);
 
-  const tranformValues = (values: {sakslisteId: number; navn: string}): void => {
+  const tranformValues = useCallback((values: {sakslisteId: number; navn: string}): void => {
     lagreSakslisteNavn({ sakslisteId: values.sakslisteId, navn: values.navn, avdelingEnhet: valgtAvdelingEnhet })
       .then(() => hentAvdelingensSakslister({ avdelingEnhet: valgtAvdelingEnhet }));
-  };
+  }, [valgtAvdelingEnhet]);
 
   return (
     <Form
