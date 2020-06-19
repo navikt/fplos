@@ -95,7 +95,12 @@ class RestApiTestMocker {
 
     let contextStubRunner;
     if (this.useRunner) {
-      contextStubRunner = sinon.stub(useRestApiRunner, 'default').callsFake(() => ({}));
+      contextStubRunner = sinon.stub(useRestApiRunner, 'default').callsFake(() => ({
+        state: RestApiState.NOT_STARTED,
+        cancelRequest: () => undefined,
+        startRequest: () => undefined,
+        resetRequestData: () => undefined,
+      }));
       this.mocks.push(contextStubRunner);
     }
     if (this.runnerData.length > 0) {

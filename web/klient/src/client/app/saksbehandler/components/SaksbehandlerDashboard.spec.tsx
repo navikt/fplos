@@ -22,14 +22,20 @@ describe('<SaksbehandlerDashboard>', () => {
   });
 
   it('skal vise dashboard uten fagsak-søk', () => {
-    const wrapper = shallow(<SaksbehandlerDashboard />);
+    const wrapper = shallow(<SaksbehandlerDashboard
+      valgtSakslisteId={1}
+      setValgtSakslisteId={() => undefined}
+    />);
 
     expect(wrapper.find(BehandlingskoerIndex)).to.have.length(1);
     expect(wrapper.find(SaksstotteIndex)).to.have.length(1);
   });
 
   it('skal vise dashboard med fagsak-søk', () => {
-    const wrapper = shallow(<SaksbehandlerDashboard />);
+    const wrapper = shallow(<SaksbehandlerDashboard
+      valgtSakslisteId={1}
+      setValgtSakslisteId={() => undefined}
+    />);
 
     expect(wrapper.find(FagsakSearchIndex)).to.have.length(1);
     expect(wrapper.find(BehandlingskoerIndex)).to.have.length(1);

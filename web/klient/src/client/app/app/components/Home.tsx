@@ -2,7 +2,6 @@ import React, { FunctionComponent, Suspense } from 'react';
 import { Route, Switch } from 'react-router-dom';
 
 import LoadingPanel from 'sharedComponents/LoadingPanel';
-import Avdeling from 'app/avdelingTsType';
 
 import MissingPage from './MissingPage';
 
@@ -13,7 +12,7 @@ const SaksbehandlerIndex = React.lazy(() => import('saksbehandler/SaksbehandlerI
 
 interface OwnProps {
   headerHeight: number;
-  valgtAvdelingEnhet?: Avdeling;
+  valgtAvdelingEnhet?: string;
 }
 
 /**

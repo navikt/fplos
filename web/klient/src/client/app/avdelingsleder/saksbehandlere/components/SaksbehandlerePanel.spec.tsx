@@ -11,10 +11,8 @@ describe('<SaksbehandlerePanel>', () => {
   it('skal vise tabell for saksbehandlere og panel for å legge til flere', () => {
     const wrapper = shallow(<SaksbehandlerePanel
       saksbehandlere={[]}
-      finnSaksbehandler={sinon.spy()}
-      resetSaksbehandlerSok={sinon.spy()}
-      leggTilSaksbehandler={sinon.spy()}
-      fjernSaksbehandler={sinon.spy()}
+      avdelingensSaksbehandlere={[]}
+      hentAvdelingensSaksbehandlere={sinon.spy()}
       valgtAvdelingEnhet="test"
     />);
 

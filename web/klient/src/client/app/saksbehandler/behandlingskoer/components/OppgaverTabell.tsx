@@ -87,8 +87,9 @@ export const OppgaverTabell: FunctionComponent<OwnProps & WrappedComponentProps>
   const fetchSakslisteOppgaverPolling = (oppgaveIder?: string) => {
     hentReserverteOppgaver({}, true);
     hentOppgaverTilBehandling(oppgaveIder ? { sakslisteId: valgtSakslisteId, oppgaveIder } : { sakslisteId: valgtSakslisteId }, true)
-      .then((response) => (response !== 'INTERNAL_CANCELLATION' && doPolling
-        ? fetchSakslisteOppgaverPolling(response.map((o) => o.id).join(',')) : Promise.resolve()))
+      .then((response) => (typeof response === 'string' || !doPolling
+        ? Promise.resolve()
+        : fetchSakslisteOppgaverPolling(response.map((o) => o.id).join(','))))
       .catch(() => undefined);
   };
 

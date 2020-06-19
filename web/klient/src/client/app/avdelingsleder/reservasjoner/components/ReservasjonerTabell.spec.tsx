@@ -15,10 +15,7 @@ describe('<ReservasjonerTabell>', () => {
     const wrapper = shallow(<ReservasjonerTabell
       reservasjoner={[]}
       opphevReservasjon={sinon.spy()}
-      endreOppgaveReservasjon={sinon.spy()}
-      finnSaksbehandler={sinon.spy()}
-      nullstillSaksbehandler={sinon.spy()}
-      flyttReservasjon={sinon.spy()}
+      hentAvdelingensReservasjoner={sinon.spy()}
     />);
 
     const message = wrapper.find(FormattedMessage);
@@ -53,10 +50,7 @@ describe('<ReservasjonerTabell>', () => {
     const wrapper = shallow(<ReservasjonerTabell
       reservasjoner={reservasjoner}
       opphevReservasjon={sinon.spy()}
-      endreOppgaveReservasjon={sinon.spy()}
-      finnSaksbehandler={sinon.spy()}
-      nullstillSaksbehandler={sinon.spy()}
-      flyttReservasjon={sinon.spy()}
+      hentAvdelingensReservasjoner={sinon.spy()}
     />);
 
     expect(wrapper.find(FormattedMessage)).to.have.length(3);

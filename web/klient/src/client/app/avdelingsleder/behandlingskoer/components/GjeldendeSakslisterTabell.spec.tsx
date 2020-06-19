@@ -90,6 +90,7 @@ describe('<GjeldendeSakslisterTabell>', () => {
       .runTest(() => {
         const wrapper = shallow(<GjeldendeSakslisterTabell
           sakslister={sakslister}
+          valgtAvdelingEnhet="2"
           setValgtSakslisteId={sinon.spy()}
           lagNySaksliste={sinon.spy()}
           hentAvdelingensSakslister={sinon.spy()}
