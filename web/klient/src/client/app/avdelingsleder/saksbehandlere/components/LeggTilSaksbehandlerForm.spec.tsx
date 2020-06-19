@@ -13,6 +13,11 @@ import { RestApiState } from 'data/rest-api-hooks';
 import LeggTilSaksbehandlerForm from './LeggTilSaksbehandlerForm';
 
 describe('<LeggTilSaksbehandlerForm>', () => {
+  const restApiMocker = new RestApiTestMocker();
+  afterEach(() => {
+    restApiMocker.resetMock();
+  });
+
   const intl: Partial<IntlShape> = {
     ...intlMock,
   };
@@ -97,7 +102,7 @@ describe('<LeggTilSaksbehandlerForm>', () => {
       });
   });
 
-  it('skal legge til saksbehandler ved trykk på knapp for legg til', () => {
+  it('skal legge til saksbehandler ved trykk på knapp for legg til', async () => {
     const saksbehandler = {
       brukerIdent: 'TEST1',
       navn: 'Espen Utvikler',
@@ -112,31 +117,31 @@ describe('<LeggTilSaksbehandlerForm>', () => {
     };
     const resetSaksbehandlerFn = sinon.spy();
 
-    new RestApiTestMocker()
+    restApiMocker
       .withRestCallRunner(RestApiPathsKeys.SAKSBEHANDLER_SOK, {
         data: saksbehandler, state: RestApiState.SUCCESS, startRequest: () => undefined, resetRequestData: resetSaksbehandlerFn,
       })
       .withRestCallRunner(RestApiPathsKeys.OPPRETT_NY_SAKSBEHANDLER, {
         startRequest: (params) => leggTilSaksbehandlerFn(params.brukerIdent),
       })
-      .runTest(async () => {
-        const wrapper = shallowWithIntl(<LeggTilSaksbehandlerForm.WrappedComponent
-          intl={intl as IntlShape}
-          valgtAvdelingEnhet="2"
-          avdelingensSaksbehandlere={[]}
-          hentAvdelingensSaksbehandlere={sinon.spy()}
-          // @ts-ignore
-        />).find(Form).renderProp('render')(formProps);
+      .mock();
 
-        const leggTilKnapp = wrapper.find(Hovedknapp);
+    const wrapper = shallowWithIntl(<LeggTilSaksbehandlerForm.WrappedComponent
+      intl={intl as IntlShape}
+      valgtAvdelingEnhet="2"
+      avdelingensSaksbehandlere={[]}
+      hentAvdelingensSaksbehandlere={sinon.spy()}
+      // @ts-ignore
+    />).find(Form).renderProp('render')(formProps);
 
-        const func = leggTilKnapp.prop('onClick') as () => void;
-        await func();
+    const leggTilKnapp = wrapper.find(Hovedknapp);
 
-        expect(brukerIdent).is.eql(saksbehandler.brukerIdent);
-        expect(resetFormFn.calledOnce).to.be.true;
-        expect(resetSaksbehandlerFn.calledOnce).to.be.true;
-      });
+    const func = leggTilKnapp.prop('onClick') as () => void;
+    await func();
+
+    expect(brukerIdent).is.eql(saksbehandler.brukerIdent);
+    expect(resetFormFn.calledOnce).to.be.true;
+    expect(resetSaksbehandlerFn.calledOnce).to.be.true;
   });
 
   it('skal vise tekst som viser funnet brukerinformasjon', () => {

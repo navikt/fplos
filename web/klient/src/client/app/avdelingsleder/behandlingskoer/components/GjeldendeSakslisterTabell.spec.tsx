@@ -17,6 +17,11 @@ import SletteSakslisteModal from './SletteSakslisteModal';
 import { GjeldendeSakslisterTabell } from './GjeldendeSakslisterTabell';
 
 describe('<GjeldendeSakslisterTabell>', () => {
+  const restApiMocker = new RestApiTestMocker();
+  afterEach(() => {
+    restApiMocker.resetMock();
+  });
+
   const behandlingstyper = [{
     kode: behandlingType.FORSTEGANGSSOKNAD,
     navn: '',
@@ -192,7 +197,7 @@ describe('<GjeldendeSakslisterTabell>', () => {
       });
   });
 
-  it('skal sette valgt saksliste ved trykk på rad i tabell', (done) => {
+  it('skal sette valgt saksliste ved trykk på rad i tabell', async () => {
     const sakslister = [{
       sakslisteId: 1,
       navn: 'Nyansatte',
@@ -204,30 +209,28 @@ describe('<GjeldendeSakslisterTabell>', () => {
     }];
     const setValgtSakslisteIdFn = sinon.spy();
 
-    new RestApiTestMocker()
+    restApiMocker
       .withKodeverk(kodeverkTyper.BEHANDLING_TYPE, behandlingstyper)
       .withKodeverk(kodeverkTyper.FAGSAK_YTELSE_TYPE, fagsakYtelseTyper)
       .withDummyRunner()
-      .runTest(() => {
-        const wrapper = shallow(<GjeldendeSakslisterTabell
-          sakslister={sakslister}
-          setValgtSakslisteId={setValgtSakslisteIdFn}
-          lagNySaksliste={sinon.spy()}
-          valgtAvdelingEnhet="2"
-          hentAvdelingensSakslister={sinon.spy()}
-          resetValgtSakslisteId={sinon.spy()}
-        />);
+      .mock();
 
-        const rader = wrapper.find(TableRow);
-        expect(rader).to.have.length(1);
+    const wrapper = shallow(<GjeldendeSakslisterTabell
+      sakslister={sakslister}
+      setValgtSakslisteId={setValgtSakslisteIdFn}
+      lagNySaksliste={sinon.spy()}
+      valgtAvdelingEnhet="2"
+      hentAvdelingensSakslister={sinon.spy()}
+      resetValgtSakslisteId={sinon.spy()}
+    />);
 
-        const keyFn = rader.prop('onKeyDown') as () => void;
-        keyFn();
+    const rader = wrapper.find(TableRow);
+    expect(rader).to.have.length(1);
 
-        done();
+    const keyFn = rader.prop('onKeyDown') as () => void;
+    await keyFn();
 
-        expect(setValgtSakslisteIdFn.calledOnce).to.be.true;
-      });
+    expect(setValgtSakslisteIdFn.calledOnce).to.be.true;
   });
 
   it('skal vise modal for å slette saksliste ved trykk på slette-knapp', () => {

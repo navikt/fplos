@@ -21,6 +21,8 @@ class RestApiTestMocker {
 
   runnerData = [];
 
+  mocks = [];
+
   public withGlobalRestCall = (key: RestApiGlobalStatePathsKeys, data) => {
     this.globalRestCallData.push({
       key,
@@ -69,20 +71,24 @@ class RestApiTestMocker {
     return this;
   }
 
-  public runTest = (test) => {
+  mock = () => {
     const contextStubRestCallGlobalData = sinon.stub(useGlobalStateRestApi, 'default');
+    this.mocks.push(contextStubRestCallGlobalData);
     this.globalRestCallData.forEach((data) => {
       contextStubRestCallGlobalData.withArgs(data.key).callsFake(() => ({ state: RestApiState.SUCCESS, data: data.data }));
     });
     const contextStubGlobalData = sinon.stub(useGlobalStateRestApiData, 'default');
+    this.mocks.push(contextStubGlobalData);
     this.globalData.forEach((data) => {
       contextStubGlobalData.withArgs(data.key).callsFake(() => data.data);
     });
     const contextStubKodeverk = sinon.stub(useKodeverk, 'default');
+    this.mocks.push(contextStubKodeverk);
     this.kodeverk.forEach((data) => {
       contextStubKodeverk.withArgs(data.key).callsFake(() => data.data);
     });
     const contextStub = sinon.stub(useRestApi, 'default');
+    this.mocks.push(contextStub);
     this.restCallData.forEach((data) => {
       contextStub.withArgs(data.key).callsFake(() => ({ state: RestApiState.SUCCESS, data: data.data }));
     });
@@ -90,24 +96,29 @@ class RestApiTestMocker {
     let contextStubRunner;
     if (this.useRunner) {
       contextStubRunner = sinon.stub(useRestApiRunner, 'default').callsFake(() => ({}));
+      this.mocks.push(contextStubRunner);
     }
     if (this.runnerData.length > 0) {
       contextStubRunner = sinon.stub(useRestApiRunner, 'default');
+      this.mocks.push(contextStubRunner);
       this.runnerData.forEach((data) => {
         contextStubRunner.withArgs(data.key).callsFake(() => data.data);
       });
     }
+  }
 
+  resetMock = () => {
+    this.mocks.forEach((mock) => {
+      mock.restore();
+    });
+  }
+
+  public runTest = (test) => {
+    this.mock();
     try {
       test();
     } finally {
-      contextStubRestCallGlobalData.restore();
-      contextStubGlobalData.restore();
-      contextStubKodeverk.restore();
-      contextStub.restore();
-      if (this.useRunner || this.runnerData.length > 0) {
-        contextStubRunner.restore();
-      }
+      this.resetMock();
     }
   }
 }

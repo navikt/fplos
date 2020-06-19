@@ -46,7 +46,7 @@ export const LeggTilSaksbehandlerForm: FunctionComponent<OwnProps & WrappedCompo
 
   const erLagtTilAllerede = erSaksbehandlerLagtTilAllerede(saksbehandler, avdelingensSaksbehandlere);
 
-  const leggTilSaksbehandlerFn = () => {
+  const leggTilSaksbehandlerFn = (resetFormValues: () => void) => {
     if (saksbehandler) {
       setLeggetTilNySaksbehandler(true);
       leggTilSaksbehandler({
@@ -54,6 +54,7 @@ export const LeggTilSaksbehandlerForm: FunctionComponent<OwnProps & WrappedCompo
         avdelingEnhet: valgtAvdelingEnhet,
       }).then(() => {
         resetSaksbehandlerSok();
+        resetFormValues();
         setLeggetTilNySaksbehandler(false);
         hentAvdelingensSaksbehandlere({ avdelingEnhet: valgtAvdelingEnhet });
       });
@@ -127,7 +128,7 @@ export const LeggTilSaksbehandlerForm: FunctionComponent<OwnProps & WrappedCompo
                     mini
                     autoFocus
                     htmlType="button"
-                    onClick={() => leggTilSaksbehandlerFn()}
+                    onClick={() => leggTilSaksbehandlerFn(form.reset)}
                     spinner={leggerTilNySaksbehandler}
                     disabled={leggerTilNySaksbehandler || erLagtTilAllerede || !saksbehandler}
                   >
