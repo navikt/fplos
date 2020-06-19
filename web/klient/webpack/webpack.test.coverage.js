@@ -4,6 +4,7 @@ const merge = require('webpack-merge');
 const common = require('./webpack.common.js');
 
 const APP_DIR = path.resolve(__dirname, '../src/client/app');
+const TEST_HELPER_DIR = path.resolve(__dirname, '../src/client/testHelpers');
 
 const config = {
   mode: 'development',
@@ -18,7 +19,7 @@ const config = {
     }, {
       loader: 'happypack/loader',
     }],
-    include: APP_DIR,
+    include: [APP_DIR, TEST_HELPER_DIR],
     exclude: /node_modules/,
   }, {
     test: /\.(less|css|jpg|png|svg)$/,
