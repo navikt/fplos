@@ -64,8 +64,11 @@ describe('<SakslisteVelgerForm>', () => {
         const wrapper = shallowWithIntl(<SakslisteVelgerForm.WrappedComponent
           intl={intl as IntlShape}
           sakslister={sakslister}
-          fetchSakslisteOppgaver={sinon.spy()}
+          setValgtSakslisteId={sinon.spy()}
           fetchAntallOppgaver={sinon.spy()}
+          getValueFromLocalStorage={sinon.spy()}
+          setValueInLocalStorage={sinon.spy()}
+          removeValueFromLocalStorage={sinon.spy()}
           // @ts-ignore
         />).find(Form).renderProp('render')(formProps);
 
@@ -109,8 +112,11 @@ describe('<SakslisteVelgerForm>', () => {
         const wrapper = shallowWithIntl(<SakslisteVelgerForm.WrappedComponent
           intl={intl as IntlShape}
           sakslister={sakslister}
-          fetchSakslisteOppgaver={sinon.spy()}
+          setValgtSakslisteId={sinon.spy()}
           fetchAntallOppgaver={sinon.spy()}
+          getValueFromLocalStorage={sinon.spy()}
+          setValueInLocalStorage={sinon.spy()}
+          removeValueFromLocalStorage={sinon.spy()}
           // @ts-ignore
         />).find(Form).renderProp('render')(formProps);
 
@@ -146,8 +152,11 @@ describe('<SakslisteVelgerForm>', () => {
         const wrapper = shallowWithIntl(<SakslisteVelgerForm.WrappedComponent
           intl={intl as IntlShape}
           sakslister={sakslister}
-          fetchSakslisteOppgaver={sinon.spy()}
+          setValgtSakslisteId={sinon.spy()}
           fetchAntallOppgaver={sinon.spy()}
+          getValueFromLocalStorage={sinon.spy()}
+          setValueInLocalStorage={sinon.spy()}
+          removeValueFromLocalStorage={sinon.spy()}
           // @ts-ignore
         />).find(Form).renderProp('render')(formProps);
 
@@ -191,8 +200,11 @@ describe('<SakslisteVelgerForm>', () => {
         const wrapper = shallowWithIntl(<SakslisteVelgerForm.WrappedComponent
           intl={intl as IntlShape}
           sakslister={sakslister}
-          fetchSakslisteOppgaver={sinon.spy()}
+          setValgtSakslisteId={sinon.spy()}
           fetchAntallOppgaver={sinon.spy()}
+          getValueFromLocalStorage={sinon.spy()}
+          setValueInLocalStorage={sinon.spy()}
+          removeValueFromLocalStorage={sinon.spy()}
           // @ts-ignore
         />).find(Form).renderProp('render')(formProps);
 
@@ -240,8 +252,11 @@ describe('<SakslisteVelgerForm>', () => {
         const wrapper = shallowWithIntl(<SakslisteVelgerForm.WrappedComponent
           intl={intl as IntlShape}
           sakslister={sakslister}
-          fetchSakslisteOppgaver={sinon.spy()}
+          setValgtSakslisteId={sinon.spy()}
           fetchAntallOppgaver={sinon.spy()}
+          getValueFromLocalStorage={sinon.spy()}
+          setValueInLocalStorage={sinon.spy()}
+          removeValueFromLocalStorage={sinon.spy()}
           // @ts-ignore
         />).find(Form).renderProp('render')(formProps);
 
@@ -285,8 +300,11 @@ describe('<SakslisteVelgerForm>', () => {
         const wrapper = shallowWithIntl(<SakslisteVelgerForm.WrappedComponent
           intl={intl as IntlShape}
           sakslister={sakslister}
-          fetchSakslisteOppgaver={sinon.spy()}
+          setValgtSakslisteId={sinon.spy()}
           fetchAntallOppgaver={sinon.spy()}
+          getValueFromLocalStorage={sinon.spy()}
+          setValueInLocalStorage={sinon.spy()}
+          removeValueFromLocalStorage={sinon.spy()}
           // @ts-ignore
         />).find(Form).renderProp('render')(formProps);
 
@@ -330,8 +348,11 @@ describe('<SakslisteVelgerForm>', () => {
         const wrapper = shallowWithIntl(<SakslisteVelgerForm.WrappedComponent
           intl={intl as IntlShape}
           sakslister={sakslister}
-          fetchSakslisteOppgaver={sinon.spy()}
+          setValgtSakslisteId={sinon.spy()}
           fetchAntallOppgaver={sinon.spy()}
+          getValueFromLocalStorage={sinon.spy()}
+          setValueInLocalStorage={sinon.spy()}
+          removeValueFromLocalStorage={sinon.spy()}
           // @ts-ignore
         />).find(Form).renderProp('render')(formProps);
 
@@ -369,8 +390,11 @@ describe('<SakslisteVelgerForm>', () => {
         const wrapper = shallowWithIntl(<SakslisteVelgerForm.WrappedComponent
           intl={intl as IntlShape}
           sakslister={sakslister}
-          fetchSakslisteOppgaver={sinon.spy()}
+          setValgtSakslisteId={sinon.spy()}
           fetchAntallOppgaver={sinon.spy()}
+          getValueFromLocalStorage={sinon.spy()}
+          setValueInLocalStorage={sinon.spy()}
+          removeValueFromLocalStorage={sinon.spy()}
           // @ts-ignore
         />).find(Form).renderProp('render')(formProps);
 
@@ -431,8 +455,11 @@ describe('<SakslisteVelgerForm>', () => {
         const wrapper = shallowWithIntl(<SakslisteVelgerForm.WrappedComponent
           intl={intl as IntlShape}
           sakslister={sakslister}
-          fetchSakslisteOppgaver={sinon.spy()}
+          setValgtSakslisteId={sinon.spy()}
           fetchAntallOppgaver={sinon.spy()}
+          getValueFromLocalStorage={sinon.spy()}
+          setValueInLocalStorage={sinon.spy()}
+          removeValueFromLocalStorage={sinon.spy()}
           // @ts-ignore
         />).find(Form).renderProp('render')(formProps);
 

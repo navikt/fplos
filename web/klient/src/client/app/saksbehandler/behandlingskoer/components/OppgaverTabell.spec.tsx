@@ -5,6 +5,8 @@ import { FormattedMessage, IntlShape } from 'react-intl';
 import sinon from 'sinon';
 import NavFrontendChevron from 'nav-frontend-chevron';
 
+import { RestApiPathsKeys } from 'data/restApiPaths';
+import RestApiTestMocker from 'testHelpers/RestApiTestMocker';
 import { shallowWithIntl, intlMock } from 'testHelpers/intl-enzyme-test-helper';
 import behandlingType from 'kodeverk/behandlingType';
 import behandlingStatus from 'kodeverk/behandlingStatus';
@@ -74,38 +76,36 @@ describe('<OppgaverTabell>', () => {
       href: '',
     }];
 
-    const wrapper = shallowWithIntl(<OppgaverTabell
-      intl={intl as IntlShape}
-      reserverteOppgaver={[]}
-      oppgaverTilBehandling={oppgaverTilBehandling}
-      reserverOppgave={sinon.spy()}
-      opphevOppgaveReservasjon={sinon.spy()}
-      forlengOppgaveReservasjon={sinon.spy()}
-      endreOppgaveReservasjon={sinon.spy()}
-      finnSaksbehandler={sinon.spy()}
-      resetSaksbehandler={sinon.spy()}
-      flyttReservasjon={sinon.spy()}
-      antall={1}
-    />);
+    new RestApiTestMocker()
+      .withRestCallRunner(RestApiPathsKeys.FORLENG_OPPGAVERESERVASJON, { startRequest: () => undefined, data: undefined })
+      .withRestCallRunner(RestApiPathsKeys.RESERVERTE_OPPGAVER, { startRequest: () => undefined, data: [] })
+      .withRestCallRunner(RestApiPathsKeys.OPPGAVER_TIL_BEHANDLING, { startRequest: () => undefined, data: oppgaverTilBehandling })
+      .runTest(() => {
+        const wrapper = shallowWithIntl(<OppgaverTabell
+          intl={intl as IntlShape}
+          reserverOppgave={sinon.spy()}
+          valgtSakslisteId={1}
+        />);
 
-    const tableRows = wrapper.find(TableRow);
-    expect(tableRows).has.length(2);
+        const tableRows = wrapper.find(TableRow);
+        expect(tableRows).has.length(2);
 
-    const columnsRow1 = tableRows.first().find(TableColumn);
-    expect(columnsRow1.first().childAt(0).text()).is.eql('Espen Utvikler 123456789');
-    expect(columnsRow1.at(1).childAt(0).text()).is.eql('Førstegangssøknad');
-    expect(columnsRow1.at(2).find(DateLabel).prop('dateString')).is.eql('2019-01-02');
-    expect(columnsRow1.at(3).find(DateLabel).prop('dateString')).is.eql('2019-03-03');
+        const columnsRow1 = tableRows.first().find(TableColumn);
+        expect(columnsRow1.first().childAt(0).text()).is.eql('Espen Utvikler 123456789');
+        expect(columnsRow1.at(1).childAt(0).text()).is.eql('Førstegangssøknad');
+        expect(columnsRow1.at(2).find(DateLabel).prop('dateString')).is.eql('2019-01-02');
+        expect(columnsRow1.at(3).find(DateLabel).prop('dateString')).is.eql('2019-03-03');
 
-    const columnsRow2 = tableRows.last().find(TableColumn);
-    expect(columnsRow2.first().childAt(0).text()).is.eql('Espen Solstråle 657643535');
-    expect(columnsRow2.at(1).childAt(0).text()).is.eql('Førstegangssøknad far');
-    expect(columnsRow2.at(2).find(DateLabel).prop('dateString')).is.eql('2018-01-02');
-    expect(columnsRow2.at(3).find(DateLabel).prop('dateString')).is.eql('2018-03-03');
+        const columnsRow2 = tableRows.last().find(TableColumn);
+        expect(columnsRow2.first().childAt(0).text()).is.eql('Espen Solstråle 657643535');
+        expect(columnsRow2.at(1).childAt(0).text()).is.eql('Førstegangssøknad far');
+        expect(columnsRow2.at(2).find(DateLabel).prop('dateString')).is.eql('2018-01-02');
+        expect(columnsRow2.at(3).find(DateLabel).prop('dateString')).is.eql('2018-03-03');
 
-    const message = wrapper.find(FormattedMessage);
-    expect(message).has.length(1);
-    expect(message.prop('id')).is.eql('OppgaverTabell.DineNesteSaker');
+        const message = wrapper.find(FormattedMessage);
+        expect(message).has.length(1);
+        expect(message.prop('id')).is.eql('OppgaverTabell.DineNesteSaker');
+      });
   });
 
   it('skal vise de behandlingene som fremdeles er valgt av saksbehandler først i listen samt et menyikon for disse', () => {
@@ -164,62 +164,55 @@ describe('<OppgaverTabell>', () => {
       href: '',
     }];
 
-    const wrapper = shallowWithIntl(<OppgaverTabell
-      intl={intl as IntlShape}
-      reserverteOppgaver={reserverteOppgaver}
-      oppgaverTilBehandling={oppgaverTilBehandling}
-      reserverOppgave={sinon.spy()}
-      opphevOppgaveReservasjon={sinon.spy()}
-      forlengOppgaveReservasjon={sinon.spy()}
-      endreOppgaveReservasjon={sinon.spy()}
-      finnSaksbehandler={sinon.spy()}
-      resetSaksbehandler={sinon.spy()}
-      flyttReservasjon={sinon.spy()}
-      antall={1}
-    />);
+    new RestApiTestMocker()
+      .withRestCallRunner(RestApiPathsKeys.FORLENG_OPPGAVERESERVASJON, { startRequest: () => undefined, data: undefined })
+      .withRestCallRunner(RestApiPathsKeys.RESERVERTE_OPPGAVER, { startRequest: () => undefined, data: reserverteOppgaver })
+      .withRestCallRunner(RestApiPathsKeys.OPPGAVER_TIL_BEHANDLING, { startRequest: () => undefined, data: oppgaverTilBehandling })
+      .runTest(() => {
+        const wrapper = shallowWithIntl(<OppgaverTabell
+          intl={intl as IntlShape}
+          reserverOppgave={sinon.spy()}
+          valgtSakslisteId={1}
+        />);
 
-    const tableRows = wrapper.find(TableRow);
-    expect(tableRows).has.length(2);
+        const tableRows = wrapper.find(TableRow);
+        expect(tableRows).has.length(2);
 
-    const columnsRow1 = tableRows.first().find(TableColumn);
-    expect(columnsRow1.first().childAt(0).text()).is.eql('Espen Solstråle 657643535');
-    expect(columnsRow1.at(1).childAt(0).text()).is.eql('Førstegangssøknad far');
-    expect(columnsRow1.at(2).find(DateLabel).prop('dateString')).is.eql('2018-01-02');
-    expect(columnsRow1.at(3).find(DateLabel).prop('dateString')).is.eql('2018-03-03');
-    expect(columnsRow1.at(4).find(Image)).has.length(0);
-    expect(columnsRow1.at(5).find(Image)).has.length(1);
+        const columnsRow1 = tableRows.first().find(TableColumn);
+        expect(columnsRow1.first().childAt(0).text()).is.eql('Espen Solstråle 657643535');
+        expect(columnsRow1.at(1).childAt(0).text()).is.eql('Førstegangssøknad far');
+        expect(columnsRow1.at(2).find(DateLabel).prop('dateString')).is.eql('2018-01-02');
+        expect(columnsRow1.at(3).find(DateLabel).prop('dateString')).is.eql('2018-03-03');
+        expect(columnsRow1.at(4).find(Image)).has.length(0);
+        expect(columnsRow1.at(5).find(Image)).has.length(1);
 
-    const columnsRow2 = tableRows.last().find(TableColumn);
-    expect(columnsRow2.first().childAt(0).text()).is.eql('Espen Utvikler 123456789');
-    expect(columnsRow2.at(1).childAt(0).text()).is.eql('Førstegangssøknad');
-    expect(columnsRow2.at(2).find(DateLabel).prop('dateString')).is.eql('2019-01-02');
-    expect(columnsRow2.at(3).find(DateLabel).prop('dateString')).is.eql('2019-03-03');
-    expect(columnsRow2.at(4).find(Image)).has.length(0);
-    expect(columnsRow2.at(5).find(NavFrontendChevron)).has.length(1);
+        const columnsRow2 = tableRows.last().find(TableColumn);
+        expect(columnsRow2.first().childAt(0).text()).is.eql('Espen Utvikler 123456789');
+        expect(columnsRow2.at(1).childAt(0).text()).is.eql('Førstegangssøknad');
+        expect(columnsRow2.at(2).find(DateLabel).prop('dateString')).is.eql('2019-01-02');
+        expect(columnsRow2.at(3).find(DateLabel).prop('dateString')).is.eql('2019-03-03');
+        expect(columnsRow2.at(4).find(Image)).has.length(0);
+        expect(columnsRow2.at(5).find(NavFrontendChevron)).has.length(1);
+      });
   });
 
   it('skal ikke vise liste når en ikke har oppgaver', () => {
-    const reserverteOppgaver = [];
-    const wrapper = shallowWithIntl(<OppgaverTabell
-      intl={intl as IntlShape}
-      oppgaverTilBehandling={reserverteOppgaver}
-      reserverteOppgaver={reserverteOppgaver}
-      reserverOppgave={sinon.spy()}
-      opphevOppgaveReservasjon={sinon.spy()}
-      forlengOppgaveReservasjon={sinon.spy()}
-      endreOppgaveReservasjon={sinon.spy()}
-      finnSaksbehandler={sinon.spy()}
-      resetSaksbehandler={sinon.spy()}
-      flyttReservasjon={sinon.spy()}
-      antall={1}
-    />);
+    new RestApiTestMocker()
+      .withDummyRunner()
+      .runTest(() => {
+        const wrapper = shallowWithIntl(<OppgaverTabell
+          intl={intl as IntlShape}
+          reserverOppgave={sinon.spy()}
+          valgtSakslisteId={1}
+        />);
 
-    const message = wrapper.find(FormattedMessage);
-    expect(message).has.length(2);
-    expect(message.first().prop('id')).is.eql('OppgaverTabell.DineNesteSaker');
-    expect(message.last().prop('id')).is.eql('OppgaverTabell.IngenOppgaver');
+        const message = wrapper.find(FormattedMessage);
+        expect(message).has.length(2);
+        expect(message.first().prop('id')).is.eql('OppgaverTabell.DineNesteSaker');
+        expect(message.last().prop('id')).is.eql('OppgaverTabell.IngenOppgaver');
 
-    expect(wrapper.find(TableRow)).has.length(0);
+        expect(wrapper.find(TableRow)).has.length(0);
+      });
   });
 
   it('skal vise tooltip for reserverte oppgaver som er flyttet', () => {
@@ -257,38 +250,36 @@ describe('<OppgaverTabell>', () => {
       href: '',
     }];
 
-    const wrapper = shallowWithIntl(<OppgaverTabell
-      intl={intl as IntlShape}
-      reserverteOppgaver={reserverteOppgaver}
-      oppgaverTilBehandling={[]}
-      reserverOppgave={sinon.spy()}
-      opphevOppgaveReservasjon={sinon.spy()}
-      forlengOppgaveReservasjon={sinon.spy()}
-      endreOppgaveReservasjon={sinon.spy()}
-      finnSaksbehandler={sinon.spy()}
-      resetSaksbehandler={sinon.spy()}
-      flyttReservasjon={sinon.spy()}
-      antall={1}
-    />);
+    new RestApiTestMocker()
+      .withRestCallRunner(RestApiPathsKeys.FORLENG_OPPGAVERESERVASJON, { startRequest: () => undefined, data: undefined })
+      .withRestCallRunner(RestApiPathsKeys.RESERVERTE_OPPGAVER, { startRequest: () => undefined, data: reserverteOppgaver })
+      .withRestCallRunner(RestApiPathsKeys.OPPGAVER_TIL_BEHANDLING, { startRequest: () => undefined, data: [] })
+      .runTest(() => {
+        const wrapper = shallowWithIntl(<OppgaverTabell
+          intl={intl as IntlShape}
+          reserverOppgave={sinon.spy()}
+          valgtSakslisteId={1}
+        />);
 
-    const tableRows = wrapper.find(TableRow);
-    expect(tableRows).has.length(1);
+        const tableRows = wrapper.find(TableRow);
+        expect(tableRows).has.length(1);
 
-    const columnsRow1 = tableRows.first().find(TableColumn);
-    expect(columnsRow1.first().childAt(0).text()).is.eql('Espen Solstråle 657643535');
-    expect(columnsRow1.at(1).childAt(0).text()).is.eql('Førstegangssøknad far');
-    expect(columnsRow1.at(2).find(DateLabel).prop('dateString')).is.eql('2018-01-02');
-    expect(columnsRow1.at(3).find(DateLabel).prop('dateString')).is.eql('2018-03-03');
-    expect(columnsRow1.at(4).find(Image)).has.length(1);
-    expect(columnsRow1.at(5).find(Image)).has.length(1);
+        const columnsRow1 = tableRows.first().find(TableColumn);
+        expect(columnsRow1.first().childAt(0).text()).is.eql('Espen Solstråle 657643535');
+        expect(columnsRow1.at(1).childAt(0).text()).is.eql('Førstegangssøknad far');
+        expect(columnsRow1.at(2).find(DateLabel).prop('dateString')).is.eql('2018-01-02');
+        expect(columnsRow1.at(3).find(DateLabel).prop('dateString')).is.eql('2018-03-03');
+        expect(columnsRow1.at(4).find(Image)).has.length(1);
+        expect(columnsRow1.at(5).find(Image)).has.length(1);
 
-    const tooltip = shallowWithIntl(columnsRow1.at(4).find(Image).prop('tooltip'));
-    const values = tooltip.find(FormattedMessage).prop('values') as { dato: string; tid: string; uid: string; navn: string; beskrivelse: string};
+        const tooltip = shallowWithIntl(columnsRow1.at(4).find(Image).prop('tooltip'));
+        const values = tooltip.find(FormattedMessage).prop('values') as { dato: string; tid: string; uid: string; navn: string; beskrivelse: string};
 
-    expect(values.dato).is.eql('02.01.2018');
-    expect(values.tid).is.eql('00:00');
-    expect(values.uid).is.eql('1234556');
-    expect(values.navn).is.eql('Auto Joachim');
-    expect(values.beskrivelse).is.eql('Har flytta til deg');
+        expect(values.dato).is.eql('02.01.2018');
+        expect(values.tid).is.eql('00:00');
+        expect(values.uid).is.eql('1234556');
+        expect(values.navn).is.eql('Auto Joachim');
+        expect(values.beskrivelse).is.eql('Har flytta til deg');
+      });
   });
 });

@@ -7,7 +7,6 @@ import { Element } from 'nav-frontend-typografi';
 import { Row, Column } from 'nav-frontend-grid';
 
 import StoreValuesInLocalStorage from 'form/StoreValuesInLocalStorage';
-import { getValueFromLocalStorage } from 'utils/localStorageHelper';
 import { RadioGroupField, RadioOption, SelectField } from 'form/FinalFields';
 import { useKodeverk } from 'data/rest-api-hooks';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
@@ -48,6 +47,7 @@ interface OwnProps {
   width: number;
   height: number;
   oppgaverManueltPaVent: OppgaverManueltPaVent[];
+  getValueFromLocalStorage: (key: string) => string;
 }
 
 const formName = 'manueltPaVentForm';
@@ -62,6 +62,7 @@ export const ManueltPaVentPanel: FunctionComponent<OwnProps & WrappedComponentPr
   width,
   height,
   oppgaverManueltPaVent,
+  getValueFromLocalStorage,
 }) => {
   const fagsakYtelseTyper = useKodeverk(kodeverkTyper.FAGSAK_YTELSE_TYPE);
   const stringFromStorage = getValueFromLocalStorage(formName);

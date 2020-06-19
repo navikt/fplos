@@ -2,6 +2,7 @@ import React, {
   useState, useRef, FunctionComponent, useEffect, useCallback,
 } from 'react';
 
+import { getValueFromLocalStorage } from 'utils/localStorageHelper';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import FordelingAvBehandlingstypePanel from './fordelingAvBehandlingstype/FordelingAvBehandlingstypePanel';
 import TilBehandlingPanel from './tilBehandling/TilBehandlingPanel';
@@ -55,18 +56,21 @@ const NokkeltallPanel: FunctionComponent<OwnProps> = ({
         width={width}
         height={height}
         oppgaverPerDato={oppgaverPerDato}
+        getValueFromLocalStorage={getValueFromLocalStorage}
       />
       <VerticalSpacer twentyPx />
       <FordelingAvBehandlingstypePanel
         width={width}
         height={height}
         oppgaverForAvdeling={oppgaverForAvdeling}
+        getValueFromLocalStorage={getValueFromLocalStorage}
       />
       <VerticalSpacer twentyPx />
       <ManueltPaVentPanel
         width={width}
         height={height}
         oppgaverManueltPaVent={oppgaverManueltPaVent}
+        getValueFromLocalStorage={getValueFromLocalStorage}
       />
       <VerticalSpacer twentyPx />
       <OppgaverPerForsteStonadsdagPanel

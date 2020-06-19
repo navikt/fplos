@@ -101,5 +101,6 @@ export const skalViseGrafForAntallOppgaverTilBehandlingPerDag = (intl) => (
       opprettetDato: moment().subtract(16, 'd').format(ISO_DATE_FORMAT),
       antall: 3,
     }]}
+    getValueFromLocalStorage={() => ''}
   />
 );

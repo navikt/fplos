@@ -10,7 +10,7 @@ import fagsakYtelseType from 'kodeverk/fagsakYtelseType';
 import { TextAreaField } from 'form/FinalFields';
 import { shallowWithIntl, intlMock } from 'testHelpers/intl-enzyme-test-helper';
 import behandlingType from 'kodeverk/behandlingType';
-import { OpphevReservasjonModal } from './OpphevReservasjonModal';
+import OpphevReservasjonModal from './OpphevReservasjonModal';
 
 describe('<OpphevReservasjonModal>', () => {
   const intl: Partial<IntlShape> = {
@@ -47,12 +47,13 @@ describe('<OpphevReservasjonModal>', () => {
 
   it('skal rendre modal for å oppgi begrunnelse for oppheving av reservasjon', () => {
     const wrapper = shallowWithIntl(
-      <OpphevReservasjonModal
+      <OpphevReservasjonModal.WrappedComponent
         intl={intl as IntlShape}
-        oppgave={oppgave}
         showModal
+        oppgave={oppgave}
         cancel={sinon.spy()}
-        submit={sinon.spy()}
+        toggleMenu={sinon.spy()}
+        hentReserverteOppgaver={sinon.spy()}
       />,
     );
 

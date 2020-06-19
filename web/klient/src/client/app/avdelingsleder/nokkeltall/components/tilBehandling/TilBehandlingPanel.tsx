@@ -5,7 +5,6 @@ import { Form } from 'react-final-form';
 import { Element } from 'nav-frontend-typografi';
 import { Row, Column } from 'nav-frontend-grid';
 
-import { getValueFromLocalStorage } from 'utils/localStorageHelper';
 import StoreValuesInLocalStorage from 'form/StoreValuesInLocalStorage';
 import { RadioGroupField, RadioOption, SelectField } from 'form/FinalFields';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
@@ -64,6 +63,7 @@ interface OwnProps {
   width: number;
   height: number;
   oppgaverPerDato: OppgaveForDato[];
+  getValueFromLocalStorage: (key: string) => string;
 }
 
 const formName = 'tilBehandlingForm';
@@ -78,6 +78,7 @@ export const TilBehandlingPanel: FunctionComponent<OwnProps & WrappedComponentPr
   width,
   height,
   oppgaverPerDato,
+  getValueFromLocalStorage,
 }) => {
   const behandlingTyper = useKodeverk(kodeverkTyper.BEHANDLING_TYPE);
   const fagsakYtelseTyper = useKodeverk(kodeverkTyper.FAGSAK_YTELSE_TYPE);

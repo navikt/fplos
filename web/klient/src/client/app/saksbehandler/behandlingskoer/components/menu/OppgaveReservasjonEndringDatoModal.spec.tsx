@@ -5,7 +5,7 @@ import { IntlShape } from 'react-intl';
 import { Form } from 'react-final-form';
 
 import { intlMock, shallowWithIntl } from 'testHelpers/intl-enzyme-test-helper';
-import { OppgaveReservasjonEndringDatoModal } from 'saksbehandler/behandlingskoer/components/menu/OppgaveReservasjonEndringDatoModal';
+import OppgaveReservasjonEndringDatoModal from 'saksbehandler/behandlingskoer/components/menu/OppgaveReservasjonEndringDatoModal';
 import { DatepickerField } from 'form/FinalFields';
 
 describe('<OppgaveReservasjonEndringDatoModal>', () => {
@@ -14,12 +14,14 @@ describe('<OppgaveReservasjonEndringDatoModal>', () => {
   };
   it('skal rendre modal for å gi mulighet for valg av dato', () => {
     const wrapper = shallowWithIntl(
-      <OppgaveReservasjonEndringDatoModal
+      <OppgaveReservasjonEndringDatoModal.WrappedComponent
         intl={intl as IntlShape}
         showModal
-        endreOppgaveReservasjon={sinon.spy()}
         closeModal={sinon.spy()}
         reserverTilDefault="2020-08-02T00:54:25.455"
+        oppgaveId={1}
+        endreReserverasjonState={sinon.spy()}
+        hentReserverteOppgaver={sinon.spy()}
       />,
     );
     const form = wrapper.find(Form);

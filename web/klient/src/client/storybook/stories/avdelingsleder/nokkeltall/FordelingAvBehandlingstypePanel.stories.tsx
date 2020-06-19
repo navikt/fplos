@@ -67,5 +67,6 @@ export const skalViseGrafForFordelingAvBehandlingstyper = () => (
       tilBehandling: true,
       antall: 14,
     }]}
+    getValueFromLocalStorage={() => ''}
   />
 );

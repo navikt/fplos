@@ -6,7 +6,6 @@ import { Form } from 'react-final-form';
 import { Element } from 'nav-frontend-typografi';
 
 import StoreValuesInLocalStorage from 'form/StoreValuesInLocalStorage';
-import { getValueFromLocalStorage } from 'utils/localStorageHelper';
 import { RadioGroupField, RadioOption } from 'form/FinalFields';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import fagsakYtelseType from 'kodeverk/fagsakYtelseType';
@@ -30,6 +29,7 @@ interface OwnProps {
   width: number;
   height: number;
   oppgaverForAvdeling: OppgaverForAvdeling[];
+  getValueFromLocalStorage: (key: string) => string;
 }
 
 const formName = 'fordelingAvBehandlingstype';
@@ -42,6 +42,7 @@ export const FordelingAvBehandlingstypePanel: FunctionComponent<OwnProps> = ({
   width,
   height,
   oppgaverForAvdeling,
+  getValueFromLocalStorage,
 }) => {
   const fagsakYtelseTyper = useKodeverk(kodeverkTyper.FAGSAK_YTELSE_TYPE);
   const behandlingTyper = useKodeverk(kodeverkTyper.BEHANDLING_TYPE);

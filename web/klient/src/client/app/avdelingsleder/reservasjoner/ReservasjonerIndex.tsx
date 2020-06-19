@@ -4,6 +4,7 @@ import { useRestApiRunner } from 'data/rest-api-hooks';
 import { RestApiPathsKeys } from 'data/restApiPaths';
 
 import ReservasjonerTabell from './components/ReservasjonerTabell';
+import Reservasjon from './reservasjonTsType';
 
 const EMPTY_ARRAY = [];
 
@@ -14,7 +15,9 @@ interface OwnProps {
 export const ReservasjonerIndex: FunctionComponent<OwnProps> = ({
   valgtAvdelingEnhet,
 }) => {
-  const { data: reservasjoner = EMPTY_ARRAY, startRequest: hentAvdelingensReservasjoner } = useRestApiRunner(RestApiPathsKeys.RESERVASJONER_FOR_AVDELING);
+  const { data: reservasjoner = EMPTY_ARRAY, startRequest: hentAvdelingensReservasjoner } = useRestApiRunner<Reservasjon[]>(
+    RestApiPathsKeys.RESERVASJONER_FOR_AVDELING,
+  );
   const { startRequest: opphevOppgaveReservasjon } = useRestApiRunner(RestApiPathsKeys.AVDELINGSLEDER_OPPHEVER_RESERVASJON);
 
   useEffect(() => {

@@ -26,11 +26,10 @@ class NotificationHelper {
     const mapper = new NotificationMapper();
     mapper.addRequestStartedEventHandler(this.requestStartedCallback);
     mapper.addRequestFinishedEventHandler(this.requestFinishedCallback);
-    mapper.addRequestErrorEventHandler(this.requestErrorCallback);
+    mapper.addRequestErrorEventHandlers(this.requestErrorCallback);
     mapper.addStatusRequestStartedEventHandler(this.statusRequestStartedCallback);
     mapper.addStatusRequestFinishedEventHandler(this.statusRequestFinishedCallback);
     mapper.addUpdatePollingMessageEventHandler(this.updatePollingMessageCallback);
-    mapper.addPollingTimeoutEventHandler(this.addPollingTimeoutEventHandler);
     this.mapper = mapper;
   }
 }
@@ -148,9 +147,6 @@ describe('RequestProcess', () => {
       // eslint-disable-next-line no-unused-expressions
       expect(notificationHelper.updatePollingMessageCallback.calledOnce).to.true;
       expect(notificationHelper.updatePollingMessageCallback.getCalls()[0].args[0]).is.eql('Polling continues');
-      // eslint-disable-next-line no-unused-expressions
-      expect(notificationHelper.addPollingTimeoutEventHandler.calledOnce).to.true;
-      expect(notificationHelper.addPollingTimeoutEventHandler.getCalls()[0].args[0]).is.eql({ location: 'http://polling.url' });
     }
   });
 

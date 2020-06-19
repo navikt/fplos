@@ -26,13 +26,13 @@ describe('<OppgaverPerForsteStonadsdagGraf>', () => {
 
   it('skal vise crosshair med antall behandlinger per stønadsdag', () => {
     const oppgaverPerForsteStonadsdag = [{
-      forsteStonadsdag: moment().format(DDMMYYYY_DATE_FORMAT),
+      forsteStonadsdag: moment().format(),
       antall: 1,
     }, {
-      forsteStonadsdag: moment().add(1, 'd').format(DDMMYYYY_DATE_FORMAT),
+      forsteStonadsdag: moment().add(1, 'd').format(),
       antall: 2,
     }, {
-      forsteStonadsdag: moment().add(2, 'd').format(DDMMYYYY_DATE_FORMAT),
+      forsteStonadsdag: moment().add(2, 'd').format(),
       antall: 3,
     }];
 
@@ -46,13 +46,18 @@ describe('<OppgaverPerForsteStonadsdagGraf>', () => {
     const areaSeries = wrapper.find(AreaSeries);
     expect(areaSeries).to.have.length(1);
 
+    const koordinat = {
+      x: moment().add(1, 'd').toDate(),
+      y: 2,
+    };
+
     const func = areaSeries.first().prop('onNearestX') as ({ x: Date, y: number }) => void;
-    func(data[1]);
+    func(koordinat);
 
     const crosshair = wrapper.find(Crosshair);
     expect(crosshair).to.have.length(2);
 
-    expect(crosshair.last().find(Normaltekst).childAt(0).text()).to.eql(moment(data[1].x).format(DDMMYYYY_DATE_FORMAT));
+    expect(crosshair.last().find(Normaltekst).childAt(0).text()).to.eql(moment(koordinat.x).format(DDMMYYYY_DATE_FORMAT));
     const tekst = crosshair.find(Undertekst);
     expect(tekst).to.have.length(1);
     expect(tekst.first().find(FormattedMessage).prop('values')).to.eql({ antall: 2 });
@@ -98,7 +103,7 @@ describe('<OppgaverPerForsteStonadsdagGraf>', () => {
     },
     ];
 
-    const sorterteKoordinater = lagDatastruktur.resultFunc(koordinater);
+    const sorterteKoordinater = lagDatastruktur(koordinater);
 
     expect(sorterteKoordinater).has.length(21);
     expect(sorterteKoordinater[0]).is.eql({
@@ -136,7 +141,7 @@ describe('<OppgaverPerForsteStonadsdagGraf>', () => {
     },
     ];
 
-    const harKun0Verdier = harDatastrukturKun0Verdier.resultFunc(koordinater);
+    const harKun0Verdier = harDatastrukturKun0Verdier(koordinater);
 
     expect(harKun0Verdier).is.true;
   });
@@ -154,7 +159,7 @@ describe('<OppgaverPerForsteStonadsdagGraf>', () => {
     },
     ];
 
-    const harKun0Verdier = harDatastrukturKun0Verdier.resultFunc(koordinater);
+    const harKun0Verdier = harDatastrukturKun0Verdier(koordinater);
 
     expect(harKun0Verdier).is.false;
   });

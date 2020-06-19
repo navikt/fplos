@@ -1,5 +1,6 @@
 import React from 'react';
 import { expect } from 'chai';
+import sinon from 'sinon';
 import { Form } from 'react-final-form';
 import moment from 'moment';
 import { IntlShape } from 'react-intl';
@@ -41,7 +42,8 @@ describe('<ManueltPaVentPanel>', () => {
           width={300}
           height={200}
           oppgaverManueltPaVent={oppgaverManueltPaVent}
-          initialValues={{ valgtYtelsetype: valuesMock.valgtYtelsetype, ukevalg: valuesMock.ukevalg }}
+          getValueFromLocalStorage={sinon.spy()}
+          // @ts-ignore
         />).find(Form).renderProp('render')({ values: valuesMock });
 
         const select = wrapper.find(SelectField);
@@ -88,7 +90,8 @@ describe('<ManueltPaVentPanel>', () => {
           width={300}
           height={200}
           oppgaverManueltPaVent={oppgaverManueltPaVent}
-          initialValues={{ valgtYtelsetype: valuesMock.valgtYtelsetype, ukevalg: valuesMock.ukevalg }}
+          getValueFromLocalStorage={sinon.spy()}
+          // @ts-ignore
         />).find(Form).renderProp('render')({ values: valuesMock });
 
         const graf = wrapper.find(ManueltPaVentGraf);
@@ -121,7 +124,8 @@ describe('<ManueltPaVentPanel>', () => {
           width={300}
           height={200}
           oppgaverManueltPaVent={oppgaverManueltPaVent}
-          initialValues={{ valgtYtelsetype: valuesMock.valgtYtelsetype, ukevalg: valuesMock.ukevalg }}
+          getValueFromLocalStorage={sinon.spy()}
+          // @ts-ignore
         />).find(Form).renderProp('render')({ values: valuesMock });
 
         const graf = wrapper.find(ManueltPaVentGraf);
@@ -154,7 +158,8 @@ describe('<ManueltPaVentPanel>', () => {
           width={300}
           height={200}
           oppgaverManueltPaVent={oppgaverManueltPaVent}
-          initialValues={{ valgtYtelsetype: valuesMock.valgtYtelsetype, ukevalg: valuesMock.ukevalg }}
+          getValueFromLocalStorage={sinon.spy()}
+          // @ts-ignore
         />).find(Form).renderProp('render')({ values: valuesMock });
 
         const graf = wrapper.find(ManueltPaVentGraf);
@@ -186,7 +191,8 @@ describe('<ManueltPaVentPanel>', () => {
           width={300}
           height={200}
           oppgaverManueltPaVent={oppgaverManueltPaVent}
-          initialValues={{ valgtYtelsetype: valuesMock.valgtYtelsetype, ukevalg: valuesMock.ukevalg }}
+          getValueFromLocalStorage={sinon.spy()}
+          // @ts-ignore
         />).find(Form).renderProp('render')({ values: valuesMock });
 
         const graf = wrapper.find(ManueltPaVentGraf);

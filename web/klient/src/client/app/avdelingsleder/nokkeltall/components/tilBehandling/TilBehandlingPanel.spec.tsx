@@ -38,14 +38,14 @@ describe('<TilBehandlingPanel>', () => {
   };
 
   let contextStub;
-  before(() => {
+  beforeEach(() => {
     contextStub = sinon.stub(useKodeverk, 'default');
     contextStub.withArgs(kodeverkTyper.BEHANDLING_TYPE).callsFake(() => behandlingTyper)
       .withArgs(kodeverkTyper.FAGSAK_YTELSE_TYPE)
       .callsFake(() => fagsakYtelseTyper);
   });
 
-  after(() => {
+  afterEach(() => {
     contextStub.restore();
   });
 
@@ -62,7 +62,7 @@ describe('<TilBehandlingPanel>', () => {
       width={300}
       height={200}
       oppgaverPerDato={oppgaverPerDato}
-      initialValues={{ ytelseType: fagsakYtelseType.FORELDREPRENGER, ukevalg: valuesMock.ukevalg }}
+      getValueFromLocalStorage={sinon.spy()}
       // @ts-ignore
     />).find(Form).renderProp('render')({ values: valuesMock });
 
@@ -108,7 +108,7 @@ describe('<TilBehandlingPanel>', () => {
       width={300}
       height={200}
       oppgaverPerDato={oppgaverPerDato}
-      initialValues={{ ytelseType: fagsakYtelseType.FORELDREPRENGER, ukevalg: valuesMock.ukevalg }}
+      getValueFromLocalStorage={sinon.spy()}
       // @ts-ignore
     />).find(Form).renderProp('render')({ values: valuesMock });
 
@@ -140,7 +140,7 @@ describe('<TilBehandlingPanel>', () => {
       width={300}
       height={200}
       oppgaverPerDato={oppgaverPerDato}
-      initialValues={{ ytelseType: fagsakYtelseType.FORELDREPRENGER, ukevalg: valuesMock.ukevalg }}
+      getValueFromLocalStorage={sinon.spy()}
       // @ts-ignore
     />).find(Form).renderProp('render')({ values: valuesMock });
 
@@ -172,7 +172,7 @@ describe('<TilBehandlingPanel>', () => {
       width={300}
       height={200}
       oppgaverPerDato={oppgaverPerDato}
-      initialValues={{ ytelseType: fagsakYtelseType.FORELDREPRENGER, ukevalg: valuesMock.ukevalg }}
+      getValueFromLocalStorage={sinon.spy()}
       // @ts-ignore
     />).find(Form).renderProp('render')({ values: valuesMock });
 
@@ -203,7 +203,7 @@ describe('<TilBehandlingPanel>', () => {
       width={300}
       height={200}
       oppgaverPerDato={oppgaverPerDato}
-      initialValues={{ ytelseType: fagsakYtelseType.FORELDREPRENGER, ukevalg: valuesMock.ukevalg }}
+      getValueFromLocalStorage={sinon.spy()}
       // @ts-ignore
     />).find(Form).renderProp('render')({ values: valuesMock });
 
@@ -234,7 +234,7 @@ describe('<TilBehandlingPanel>', () => {
       width={300}
       height={200}
       oppgaverPerDato={oppgaverPerDato}
-      initialValues={{ ytelseType: fagsakYtelseType.FORELDREPRENGER, ukevalg: valuesMock.ukevalg }}
+      getValueFromLocalStorage={sinon.spy()}
       // @ts-ignore
     />).find(Form).renderProp('render')({ values: valuesMock });
 

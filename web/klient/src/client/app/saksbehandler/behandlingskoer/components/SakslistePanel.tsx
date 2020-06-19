@@ -3,6 +3,7 @@ import React, { FunctionComponent } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { Undertittel } from 'nav-frontend-typografi';
 
+import { getValueFromLocalStorage, setValueInLocalStorage, removeValueFromLocalStorage } from 'utils/localStorageHelper';
 import Saksliste from 'saksbehandler/behandlingskoer/sakslisteTsType';
 import Oppgave from 'saksbehandler/oppgaveTsType';
 import { useRestApiRunner } from 'data/rest-api-hooks';
@@ -39,6 +40,9 @@ const SakslistePanel: FunctionComponent<OwnProps> = ({
           sakslister={sakslister}
           setValgtSakslisteId={setValgtSakslisteId}
           fetchAntallOppgaver={fetchAntallOppgaver}
+          getValueFromLocalStorage={getValueFromLocalStorage}
+          setValueInLocalStorage={setValueInLocalStorage}
+          removeValueFromLocalStorage={removeValueFromLocalStorage}
         />
         <VerticalSpacer twentyPx />
         {valgtSakslisteId && (

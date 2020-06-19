@@ -76,6 +76,9 @@ export const skalViseValgtKøOgUtvalgskriterier = (intl: IntlShape) => {
         }]}
         setValgtSakslisteId={action('button-click')}
         fetchAntallOppgaver={action('button-click')}
+        getValueFromLocalStorage={() => ''}
+        setValueInLocalStorage={action('button-click')}
+        removeValueFromLocalStorage={action('button-click')}
       />
     </RestApiProvider>
   );

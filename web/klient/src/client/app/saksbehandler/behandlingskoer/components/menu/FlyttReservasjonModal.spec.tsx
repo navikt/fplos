@@ -34,7 +34,8 @@ describe('<FlyttReservasjonModal>', () => {
             showModal
             oppgaveId={oppgaveId}
             closeModal={sinon.spy()}
-            submit={sinon.spy()}
+            toggleMenu={sinon.spy()}
+            hentReserverteOppgaver={sinon.spy()}
           />,
           // @ts-ignore
         ).find(Form).first().renderProp('render')(formProps);
@@ -50,6 +51,7 @@ describe('<FlyttReservasjonModal>', () => {
     };
     new RestApiTestMocker()
       .withRestCallRunner(RestApiPathsKeys.FLYTT_RESERVASJON_SAKSBEHANDLER_SOK, { state: RestApiState.SUCCESS, data: undefined })
+      .withRestCallRunner(RestApiPathsKeys.FLYTT_RESERVASJON, { startRequest: () => Promise.resolve() })
       .runTest(() => {
         const wrapper = shallowWithIntl(
           <FlyttReservasjonModal.WrappedComponent
@@ -57,7 +59,8 @@ describe('<FlyttReservasjonModal>', () => {
             showModal
             oppgaveId={oppgaveId}
             closeModal={sinon.spy()}
-            submit={sinon.spy()}
+            toggleMenu={sinon.spy()}
+            hentReserverteOppgaver={sinon.spy()}
           />,
           // @ts-ignore
         ).find(Form).first().renderProp('render')(formProps);
@@ -81,6 +84,7 @@ describe('<FlyttReservasjonModal>', () => {
 
     new RestApiTestMocker()
       .withRestCallRunner(RestApiPathsKeys.FLYTT_RESERVASJON_SAKSBEHANDLER_SOK, { state: RestApiState.SUCCESS, data: saksbehandler })
+      .withRestCallRunner(RestApiPathsKeys.FLYTT_RESERVASJON, { startRequest: () => Promise.resolve() })
       .runTest(() => {
         const wrapper = shallowWithIntl(
           <FlyttReservasjonModal.WrappedComponent
@@ -88,7 +92,8 @@ describe('<FlyttReservasjonModal>', () => {
             showModal
             oppgaveId={oppgaveId}
             closeModal={sinon.spy()}
-            submit={sinon.spy()}
+            toggleMenu={sinon.spy()}
+            hentReserverteOppgaver={sinon.spy()}
           />,
           // @ts-ignore
         ).find(Form).first().renderProp('render')(formProps);
@@ -116,7 +121,8 @@ describe('<FlyttReservasjonModal>', () => {
             showModal
             oppgaveId={oppgaveId}
             closeModal={sinon.spy()}
-            submit={sinon.spy()}
+            toggleMenu={sinon.spy()}
+            hentReserverteOppgaver={sinon.spy()}
           />,
           // @ts-ignore
         ).find(Form).first().renderProp('render')(formProps);
@@ -142,7 +148,8 @@ describe('<FlyttReservasjonModal>', () => {
             showModal
             oppgaveId={oppgaveId}
             closeModal={sinon.spy()}
-            submit={sinon.spy()}
+            toggleMenu={sinon.spy()}
+            hentReserverteOppgaver={sinon.spy()}
           />,
           // @ts-ignore
         ).find(Form).first().renderProp('render')(formProps);
@@ -163,6 +170,7 @@ describe('<FlyttReservasjonModal>', () => {
 
     new RestApiTestMocker()
       .withRestCallRunner(RestApiPathsKeys.FLYTT_RESERVASJON_SAKSBEHANDLER_SOK, { state: RestApiState.LOADING, data: undefined })
+      .withRestCallRunner(RestApiPathsKeys.FLYTT_RESERVASJON, { startRequest: () => Promise.resolve() })
       .runTest(() => {
         const wrapper = shallowWithIntl(
           <FlyttReservasjonModal.WrappedComponent
@@ -170,7 +178,8 @@ describe('<FlyttReservasjonModal>', () => {
             showModal
             oppgaveId={oppgaveId}
             closeModal={sinon.spy()}
-            submit={sinon.spy()}
+            toggleMenu={sinon.spy()}
+            hentReserverteOppgaver={sinon.spy()}
           />,
           // @ts-ignore
         ).find(Form).first().renderProp('render')(formProps);
@@ -197,6 +206,7 @@ describe('<FlyttReservasjonModal>', () => {
 
     new RestApiTestMocker()
       .withRestCallRunner(RestApiPathsKeys.FLYTT_RESERVASJON_SAKSBEHANDLER_SOK, { state: RestApiState.SUCCESS, data: saksbehandler })
+      .withRestCallRunner(RestApiPathsKeys.FLYTT_RESERVASJON, { startRequest: () => Promise.resolve() })
       .runTest(() => {
         const wrapper = shallowWithIntl(
           <FlyttReservasjonModal.WrappedComponent
@@ -204,7 +214,8 @@ describe('<FlyttReservasjonModal>', () => {
             showModal
             oppgaveId={oppgaveId}
             closeModal={sinon.spy()}
-            submit={sinon.spy()}
+            toggleMenu={sinon.spy()}
+            hentReserverteOppgaver={sinon.spy()}
           />,
           // @ts-ignore
         ).find(Form).last().renderProp('render')(formProps);
@@ -226,6 +237,7 @@ describe('<FlyttReservasjonModal>', () => {
 
     new RestApiTestMocker()
       .withRestCallRunner(RestApiPathsKeys.FLYTT_RESERVASJON_SAKSBEHANDLER_SOK, { state: RestApiState.SUCCESS, data: undefined })
+      .withRestCallRunner(RestApiPathsKeys.FLYTT_RESERVASJON, { startRequest: () => Promise.resolve() })
       .runTest(() => {
         const wrapper = shallowWithIntl(
           <FlyttReservasjonModal.WrappedComponent
@@ -233,7 +245,8 @@ describe('<FlyttReservasjonModal>', () => {
             showModal
             oppgaveId={oppgaveId}
             closeModal={sinon.spy()}
-            submit={sinon.spy()}
+            toggleMenu={sinon.spy()}
+            hentReserverteOppgaver={sinon.spy()}
           />,
           // @ts-ignore
         ).find(Form).last().renderProp('render')(formProps);
@@ -260,6 +273,7 @@ describe('<FlyttReservasjonModal>', () => {
 
     new RestApiTestMocker()
       .withRestCallRunner(RestApiPathsKeys.FLYTT_RESERVASJON_SAKSBEHANDLER_SOK, { state: RestApiState.SUCCESS, data: saksbehandler })
+      .withRestCallRunner(RestApiPathsKeys.FLYTT_RESERVASJON, { startRequest: () => Promise.resolve() })
       .runTest(() => {
         const wrapper = shallowWithIntl(
           <FlyttReservasjonModal.WrappedComponent
@@ -267,7 +281,8 @@ describe('<FlyttReservasjonModal>', () => {
             showModal
             oppgaveId={oppgaveId}
             closeModal={sinon.spy()}
-            submit={sinon.spy()}
+            toggleMenu={sinon.spy()}
+            hentReserverteOppgaver={sinon.spy()}
           />,
           // @ts-ignore
         ).find(Form).last().renderProp('render')(formProps);

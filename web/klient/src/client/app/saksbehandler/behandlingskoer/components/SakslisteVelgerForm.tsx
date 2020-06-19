@@ -10,7 +10,6 @@ import { Element, Normaltekst } from 'nav-frontend-typografi';
 
 import { DDMMYYYY_DATE_FORMAT } from 'utils/formats';
 import Image from 'sharedComponents/Image';
-import { getValueFromLocalStorage, setValueInLocalStorage, removeValueFromLocalStorage } from 'utils/localStorageHelper';
 import { FlexContainer, FlexRow, FlexColumn } from 'sharedComponents/flexGrid';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import LabelWithHeader from 'sharedComponents/LabelWithHeader';
@@ -28,9 +27,12 @@ interface OwnProps {
   sakslister: Saksliste[];
   setValgtSakslisteId: (sakslisteId: number) => void;
   fetchAntallOppgaver: (data: {sakslisteId: number}) => void;
+  getValueFromLocalStorage: (key: string) => string;
+  setValueInLocalStorage: (key: string, value: string) => void;
+  removeValueFromLocalStorage: (key: string) => void;
 }
 
-const getDefaultSaksliste = (sakslister) => {
+const getDefaultSaksliste = (sakslister, getValueFromLocalStorage, removeValueFromLocalStorage) => {
   const lagretSakslisteId = getValueFromLocalStorage('sakslisteId');
   if (lagretSakslisteId) {
     if (sakslister.some((s) => `${s.sakslisteId}` === lagretSakslisteId)) {
@@ -43,13 +45,13 @@ const getDefaultSaksliste = (sakslister) => {
   return sortertSakslister.length > 0 ? sortertSakslister[0].sakslisteId : undefined;
 };
 
-const getInitialValues = (sakslister) => {
+const getInitialValues = (sakslister, getValueFromLocalStorage, removeValueFromLocalStorage) => {
   if (sakslister.length === 0) {
     return {
       sakslisteId: undefined,
     };
   }
-  const defaultSaksliste = getDefaultSaksliste(sakslister);
+  const defaultSaksliste = getDefaultSaksliste(sakslister, getValueFromLocalStorage, removeValueFromLocalStorage);
   return {
     sakslisteId: defaultSaksliste ? `${defaultSaksliste}` : undefined,
   };
@@ -137,12 +139,15 @@ export const SakslisteVelgerForm: FunctionComponent<OwnProps & WrappedComponentP
   sakslister,
   setValgtSakslisteId,
   fetchAntallOppgaver,
+  getValueFromLocalStorage,
+  setValueInLocalStorage,
+  removeValueFromLocalStorage,
 }) => {
   const { data: saksbehandlere, startRequest: fetchSaksbehandlere } = useRestApiRunner<Saksbehandler[]>(RestApiPathsKeys.SAKSLISTE_SAKSBEHANDLERE);
 
   useEffect(() => {
     if (sakslister.length > 0) {
-      const defaultSakslisteId = getDefaultSaksliste(sakslister);
+      const defaultSakslisteId = getDefaultSaksliste(sakslister, getValueFromLocalStorage, removeValueFromLocalStorage);
       if (defaultSakslisteId) {
         setValgtSakslisteId(defaultSakslisteId);
         fetchSaksbehandlere({ sakslisteId: defaultSakslisteId });
@@ -156,7 +161,7 @@ export const SakslisteVelgerForm: FunctionComponent<OwnProps & WrappedComponentP
   return (
     <Form
       onSubmit={() => undefined}
-      initialValues={getInitialValues(sakslister)}
+      initialValues={getInitialValues(sakslister, getValueFromLocalStorage, removeValueFromLocalStorage)}
       render={({ values = {} }) => (
         <form>
           <Element><FormattedMessage id="SakslisteVelgerForm.Utvalgskriterier" /></Element>

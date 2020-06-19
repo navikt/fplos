@@ -1,4 +1,5 @@
 import React from 'react';
+import sinon from 'sinon';
 import { expect } from 'chai';
 import { Form } from 'react-final-form';
 
@@ -57,7 +58,7 @@ describe('<FordelingAvBehandlingstypePanel>', () => {
           width={300}
           height={200}
           oppgaverForAvdeling={oppgaverForAvdeling}
-          initialValues={{ valgtYtelseType: valuesMock.valgtYtelseType }}
+          getValueFromLocalStorage={sinon.spy()}
           // @ts-ignore
         />).find(Form).renderProp('render')({ values: valuesMock });
 
@@ -96,7 +97,7 @@ describe('<FordelingAvBehandlingstypePanel>', () => {
           width={300}
           height={200}
           oppgaverForAvdeling={oppgaverForAvdeling}
-          initialValues={{ valgtYtelseType: valuesMock.valgtYtelseType }}
+          getValueFromLocalStorage={sinon.spy()}
           // @ts-ignore
         />).find(Form).renderProp('render')({ values: valuesMock });
 
@@ -130,7 +131,7 @@ describe('<FordelingAvBehandlingstypePanel>', () => {
           width={300}
           height={200}
           oppgaverForAvdeling={oppgaverForAvdeling}
-          initialValues={{ valgtYtelseType: valuesMock.valgtYtelseType }}
+          getValueFromLocalStorage={sinon.spy()}
           // @ts-ignore
         />).find(Form).renderProp('render')({ values: valuesMock });
 

@@ -55,5 +55,6 @@ export const skalViseGrafForAntallBehandlingerSomErSattManueltPåVent = (intl) =
       behandlingFrist: moment().add(5, 'w').format(ISO_DATE_FORMAT),
       antall: 14,
     }]}
+    getValueFromLocalStorage={() => ''}
   />
 );
