@@ -87,7 +87,7 @@ const HeaderWithErrorPanel: FunctionComponent<OwnProps & WrappedComponentProps> 
     setSiteHeight(fixedHeaderRef.current.clientHeight);
   }, [formaterteFeilmeldinger.length]);
 
-  const skalViseAvdelinger = navAnsatt.kanOppgavestyre
+  const skalViseAvdelinger = navAnsatt && navAnsatt.kanOppgavestyre
     && locationPathname && locationPathname.includes(AVDELINGSLEDER_PATH);
 
   return (
@@ -145,7 +145,7 @@ const HeaderWithErrorPanel: FunctionComponent<OwnProps & WrappedComponentProps> 
               setValgtAvdelingEnhet={setValgtAvdelingEnhet}
             />
           )}
-          {!skalViseAvdelinger && (
+          {!skalViseAvdelinger && navAnsatt && (
             <UserPanel name={navAnsatt.navn} />
           )}
         </Header>

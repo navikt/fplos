@@ -100,7 +100,7 @@ export class AppIndex extends Component<RouterProps, StateProps> {
             valgtAvdelingEnhet={valgtAvdelingEnhet}
             crashMessage={crashMessage}
           />
-          {!crashMessage && (
+          {crashMessage === undefined && (
             <Home headerHeight={headerHeight} valgtAvdelingEnhet={valgtAvdelingEnhet} />
           )}
         </LanguageProvider>

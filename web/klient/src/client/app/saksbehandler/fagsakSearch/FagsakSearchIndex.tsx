@@ -2,7 +2,7 @@ import React, {
   useState, FunctionComponent, useEffect,
 } from 'react';
 
-import { errorOfType, ErrorTypes, getErrorResponseData } from 'app/ErrorTypes';
+import { errorOfType, ErrorTypes, getErrorResponseData } from 'data/rest-api';
 import { RestApiPathsKeys } from 'data/restApiPaths';
 import { useRestApiRunner } from 'data/rest-api-hooks';
 import OppgaveErReservertAvAnnenModal from 'saksbehandler/components/OppgaveErReservertAvAnnenModal';

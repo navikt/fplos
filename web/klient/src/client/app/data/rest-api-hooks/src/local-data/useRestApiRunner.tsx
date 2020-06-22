@@ -1,7 +1,7 @@
 import { useState, useCallback, useContext } from 'react';
 
 import { RestApiPathsKeys } from 'data/restApiPaths';
-import { NotificationMapper } from 'data/rest-api';
+import { NotificationMapper, ErrorType } from 'data/rest-api';
 import { RestApiRequestContext } from '../RestApiContext';
 import useRestApiErrorDispatcher from '../error/useRestApiErrorDispatcher';
 import RestApiState from '../RestApiState';
@@ -10,7 +10,7 @@ interface RestApiData<T> {
   startRequest: (params?: any, keepData?: boolean) => Promise<T>;
   resetRequestData: () => void;
   state: RestApiState;
-  error?: Error;
+  error?: ErrorType;
   data?: T;
   cancelRequest: () => void;
 }

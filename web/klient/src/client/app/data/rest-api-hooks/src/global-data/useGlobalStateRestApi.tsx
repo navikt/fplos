@@ -34,7 +34,7 @@ function useGlobalStateRestApi<T>(key: RestApiGlobalStatePathsKeys, params: any 
   useEffect(() => {
     dispatch({ type: 'remove', key });
 
-    requestApi.startRequest(key, params)
+    requestApi.startRequest(key, params, notif)
       .then((dataRes) => {
         dispatch({ type: 'success', key, data: dataRes.payload });
         setData({

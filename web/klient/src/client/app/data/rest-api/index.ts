@@ -11,5 +11,6 @@ export { default as asyncPollingStatus } from './src/requestApi/asyncPollingStat
 export { default as RestApiConfigBuilder } from './src/RestApiConfigBuilder';
 export { default as getAxiosHttpClientApi } from './src/axios/getAxiosHttpClientApi';
 export { ErrorTypes, errorOfType, getErrorResponseData } from './src/requestApi/error/ErrorTypes';
+export { default as ErrorType } from './src/requestApi/error/errorTsType';
 
 export const createRequestApi = (configs: RequestConfig[]) => new RequestApi(getAxiosHttpClientApi(), configs);
