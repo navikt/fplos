@@ -291,7 +291,7 @@
                 <groupId>org.webjars</groupId>
                 <artifactId>swagger-ui</artifactId>
                 <!--Ikke bump automatisk uten å teste lokalt og i miljø, brekker ofte-->
-                <version>3.24.3</version>
+                <version>3.27.0</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
