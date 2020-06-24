@@ -108,8 +108,10 @@ export const AvdelingslederIndex: FunctionComponent<OwnProps> = ({
   const hentAvdelingensSaksbehandlere = useCallback((params) => hentAvdelingensSb(params, true), []);
 
   useEffect(() => {
-    hentAvdelingensSaksbehandlere({ avdelingEnhet: valgtAvdelingEnhet });
-  }, []);
+    if (valgtAvdelingEnhet) {
+      hentAvdelingensSaksbehandlere({ avdelingEnhet: valgtAvdelingEnhet });
+    }
+  }, [valgtAvdelingEnhet]);
 
   const getAvdelingslederPanelLocation = getAvdelingslederPanelLocationCreator(location);
   const activeAvdelingslederPanel = activeAvdelingslederPanelTemp || getPanelFromUrlOrDefault(location);
