@@ -3,7 +3,6 @@ package no.nav.foreldrepenger.loslager.repository;
 import java.util.List;
 
 import no.nav.foreldrepenger.loslager.BehandlingId;
-import no.nav.foreldrepenger.loslager.oppgave.EventmottakFeillogg;
 import no.nav.foreldrepenger.loslager.oppgave.Oppgave;
 import no.nav.foreldrepenger.loslager.oppgave.OppgaveEventLogg;
 
@@ -14,10 +13,6 @@ public interface AdminRepository {
     Oppgave hentSisteOppgave(BehandlingId behandlingId);
 
     List<OppgaveEventLogg> hentEventer(BehandlingId behandlingId);
-
-    List<EventmottakFeillogg> hentAlleMeldingerFraFeillogg();
-
-    void markerFerdig(Long feilloggId);
 
     List<Oppgave> hentAlleOppgaverForBehandling(BehandlingId behandlingId);
 

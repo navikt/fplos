@@ -1,25 +1,25 @@
 package no.nav.fplos.kafkatjenester.eventresultat;
 
-import no.nav.vedtak.felles.integrasjon.kafka.TilbakebetalingBehandlingProsessEventDto;
+import java.util.List;
 
-import java.util.Map;
+import no.nav.foreldrepenger.loslager.hendelse.Aksjonspunkt;
 
 public class TilbakekrevingEventMapper {
 
-    public static EventResultat tilbakekrevingEventFra(TilbakebetalingBehandlingProsessEventDto dto) {
-        var koder = dto.getAksjonspunktKoderMedStatusListe();
-        if (aktivManuellVent(koder)) {
+    public static EventResultat tilbakekrevingEventFra(List<Aksjonspunkt> aksjonspunkter) {
+        if (aktivManuellVent(aksjonspunkter)) {
             return EventResultat.LUKK_OPPGAVE_MANUELT_VENT;
-        } else if (koder.containsValue("OPPR")) {
+        } else if (harAksjonspunktMedStatusOpprettet(aksjonspunkter)) {
             return EventResultat.OPPRETT_OPPGAVE;
         }
         return EventResultat.LUKK_OPPGAVE;
     }
 
-    private static boolean aktivManuellVent(Map<String, String> koder) {
-        boolean found = false;
-        if (koder.containsKey("7001") && koder.get("7001").equals("OPPR")) found = true;
-        if (koder.containsKey("7002") && koder.get("7002").equals("OPPR")) found = true;
-        return found;
+    private static boolean harAksjonspunktMedStatusOpprettet(List<Aksjonspunkt> aksjonspunkter) {
+        return aksjonspunkter.stream().anyMatch(a -> a.erOpprettet());
+    }
+
+    private static boolean aktivManuellVent(List<Aksjonspunkt> aksjonspunkter) {
+        return aksjonspunkter.stream().anyMatch(a -> List.of("7001", "7002").contains(a.getKode()) && a.erOpprettet());
     }
 }

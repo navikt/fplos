@@ -7,7 +7,6 @@ import java.util.List;
 import no.nav.foreldrepenger.loslager.BehandlingId;
 import no.nav.foreldrepenger.loslager.oppgave.AndreKriterierType;
 import no.nav.foreldrepenger.loslager.oppgave.BehandlingType;
-import no.nav.foreldrepenger.loslager.oppgave.EventmottakFeillogg;
 import no.nav.foreldrepenger.loslager.oppgave.FagsakYtelseType;
 import no.nav.foreldrepenger.loslager.oppgave.FiltreringAndreKriterierType;
 import no.nav.foreldrepenger.loslager.oppgave.FiltreringBehandlingType;
@@ -96,8 +95,6 @@ public interface OppgaveRepository {
     List<Oppgave> hentSisteReserverteOppgaver(String uid);
 
     void lagre(OppgaveEgenskap oppgaveEgenskap);
-
-    void lagre(EventmottakFeillogg eventmottakFeillogg);
 
     List<OppgaveEventLogg> hentOppgaveEventer(BehandlingId behandlingId);
 

@@ -1,7 +1,6 @@
 package no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler;
 
 import static no.nav.vedtak.sikkerhet.abac.BeskyttetRessursActionAttributt.READ;
-import static no.nav.vedtak.sikkerhet.abac.BeskyttetRessursResourceAttributt.APPLIKASJON;
 
 import java.util.Collection;
 
@@ -14,6 +13,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import io.swagger.v3.oas.annotations.Operation;
+import no.nav.foreldrepenger.los.web.app.AbacAttributter;
 import no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.dto.InnloggetNavAnsattDto;
 import no.nav.foreldrepenger.los.web.app.util.LdapUtil;
 import no.nav.vedtak.felles.integrasjon.ldap.LdapBruker;
@@ -59,7 +59,7 @@ public class NavAnsattRestTjeneste {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Operation(description = "Returnerer fullt navn for ident", tags = "SaksbehandlerIdent")
-    @BeskyttetRessurs(action = READ, ressurs = APPLIKASJON, sporingslogg = false)
+    @BeskyttetRessurs(action = READ, resource = AbacAttributter.APPLIKASJON, sporingslogg = false)
     public InnloggetNavAnsattDto innloggetBruker() {
         String ident = SubjectHandler.getSubjectHandler().getUid();
         LdapBruker ldapBruker = new LdapBrukeroppslag().hentBrukerinformasjon(ident);

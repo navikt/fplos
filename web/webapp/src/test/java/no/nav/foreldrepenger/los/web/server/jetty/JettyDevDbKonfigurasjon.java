@@ -14,8 +14,6 @@ import javax.sql.DataSource;
 import org.eclipse.jetty.plus.jndi.EnvEntry;
 import org.flywaydb.core.Flyway;
 import org.flywaydb.core.api.FlywayException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
@@ -114,7 +112,7 @@ public class JettyDevDbKonfigurasjon {
                 }
                 return placeholders;
             }
-            
+
 
             String getMigrationScriptLocation(JettyDevDbKonfigurasjon connectionProperties) {
                 String relativePath = connectionProperties.getMigrationScriptsFilesystemRoot() + connectionProperties.getDatasource();
@@ -160,8 +158,6 @@ public class JettyDevDbKonfigurasjon {
     /** Håndter oppsett av datasource. */
     static class ConnectionHandler {
 
-        private static final Logger log = LoggerFactory.getLogger("jdbc.sql");
-
         private static Map<String, DataSource> cache = new ConcurrentHashMap<>();
 
         private ConnectionHandler() {
@@ -199,8 +195,8 @@ public class JettyDevDbKonfigurasjon {
             config.setPassword(dbProperties.getPassword());
 
             config.setConnectionTimeout(1000);
-            config.setMinimumIdle(0);
-            config.setMaximumPoolSize(4);
+            config.setMinimumIdle(5);
+            config.setMaximumPoolSize(30);
             config.setConnectionTestQuery("select 1 from dual");
             config.setDriverClassName("oracle.jdbc.OracleDriver");
 
