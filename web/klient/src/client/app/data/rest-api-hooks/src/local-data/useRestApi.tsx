@@ -44,11 +44,11 @@ function useRestApi<T>(key: RestApiPathsKeys, params: any = {}, keepData = false
     requestApi.startRequest(key, params, notif)
       .then((dataRes) => {
         if (dataRes.payload === 'INTERNAL_CANCELLATION') {
-          setData({
+          setData((oldState) => ({
             state: RestApiState.NOT_STARTED,
+            data: keepData ? oldState.data : undefined,
             error: undefined,
-            data: undefined,
-          });
+          }));
         } else {
           setData({
             state: RestApiState.SUCCESS,

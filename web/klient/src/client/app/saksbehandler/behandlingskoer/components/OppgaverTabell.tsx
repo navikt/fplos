@@ -84,18 +84,17 @@ export const OppgaverTabell: FunctionComponent<OwnProps & WrappedComponentProps>
     startRequest: hentOppgaverTilBehandling, cancelRequest, data: oppgaverTilBehandling = EMPTY_ARRAY, error: hentOppgaverTilBehandlingError,
   } = useRestApiRunner<Oppgave[] | string>(RestApiPathsKeys.OPPGAVER_TIL_BEHANDLING);
 
-  const fetchSakslisteOppgaverPolling = (oppgaveIder?: string) => {
+  const fetchSakslisteOppgaverPolling = (sakslisteId: number, oppgaveIder?: string) => {
     hentReserverteOppgaver({}, true);
-    hentOppgaverTilBehandling(oppgaveIder ? { sakslisteId: valgtSakslisteId, oppgaveIder } : { sakslisteId: valgtSakslisteId }, true)
+    hentOppgaverTilBehandling(oppgaveIder ? { sakslisteId, oppgaveIder } : { sakslisteId }, true)
       .then((response) => (typeof response === 'string' || !doPolling
         ? Promise.resolve()
-        : fetchSakslisteOppgaverPolling(response.map((o) => o.id).join(','))))
+        : fetchSakslisteOppgaverPolling(sakslisteId, response.map((o) => o.id).join(','))))
       .catch(() => undefined);
   };
 
   useEffect(() => {
-    fetchSakslisteOppgaverPolling();
-
+    fetchSakslisteOppgaverPolling(valgtSakslisteId);
     return () => {
       cancelRequest();
     };

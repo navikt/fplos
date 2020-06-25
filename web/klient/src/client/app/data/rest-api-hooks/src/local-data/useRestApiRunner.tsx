@@ -21,8 +21,8 @@ interface RestApiData<T> {
 function useRestApiRunner<T>(key: RestApiPathsKeys):RestApiData<T> {
   const [data, setData] = useState({
     state: RestApiState.NOT_STARTED,
-    error: undefined,
     data: undefined,
+    error: undefined,
   });
 
   const { addErrorMessage } = useRestApiErrorDispatcher();
@@ -36,18 +36,18 @@ function useRestApiRunner<T>(key: RestApiPathsKeys):RestApiData<T> {
   const startRequest = useCallback((params: any = {}, keepData = false):Promise<T> => {
     setData((oldState) => ({
       state: RestApiState.LOADING,
-      error: undefined,
       data: keepData ? oldState.data : undefined,
+      error: undefined,
     }));
 
     return requestApi.startRequest(key, params, notif)
       .then((dataRes) => {
         if (dataRes.payload === 'INTERNAL_CANCELLATION') {
-          setData({
+          setData((oldState) => ({
             state: RestApiState.NOT_STARTED,
-            data: undefined,
+            data: keepData ? oldState.data : undefined,
             error: undefined,
-          });
+          }));
         } else {
           setData({
             state: RestApiState.SUCCESS,
@@ -70,8 +70,8 @@ function useRestApiRunner<T>(key: RestApiPathsKeys):RestApiData<T> {
   const resetRequestData = useCallback(() => {
     setData({
       state: RestApiState.NOT_STARTED,
-      error: undefined,
       data: undefined,
+      error: undefined,
     });
   }, []);
 
