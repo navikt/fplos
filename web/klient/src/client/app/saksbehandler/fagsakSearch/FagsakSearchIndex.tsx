@@ -65,16 +65,16 @@ const FagsakSearchIndex: FunctionComponent<OwnProps> = ({
         goToFpsak(fagsaker[0].saksnummer);
       }
     }
-
-    return () => {
-      resetFagsakSok();
-    };
   }, [sokFerdig, fagsaker, fagsakOppgaver]);
+
+  useEffect(() => () => {
+    resetFagsakSok();
+  }, []);
 
   const goToFagsakEllerApneModal = (oppgave: Oppgave, oppgaveStatus: OppgaveStatus) => {
     if (!oppgaveStatus.erReservert || (oppgaveStatus.erReservert && oppgaveStatus.erReservertAvInnloggetBruker)) {
       if (oppgave.system === 'FPSAK') {
-        hentFpsakInternBehandlingId(oppgave.behandlingId).then((behandlingId) => {
+        hentFpsakInternBehandlingId({ uuid: oppgave.behandlingId }).then((behandlingId) => {
           goToFpsak(oppgave.saksnummer, behandlingId);
         });
       } else if (oppgave.system === 'FPTILBAKE') {
@@ -96,14 +96,14 @@ const FagsakSearchIndex: FunctionComponent<OwnProps> = ({
           goToFagsakEllerApneModal(oppgave, status);
         });
       } else if (oppgave.system === 'FPSAK') {
-        hentFpsakInternBehandlingId(oppgave.behandlingId).then((behandlingId) => {
+        hentFpsakInternBehandlingId({ uuid: oppgave.behandlingId }).then((behandlingId) => {
           goToFpsak(oppgave.saksnummer, behandlingId);
         });
       } else if (oppgave.system === 'FPTILBAKE') {
         goToTilbakesak(oppgave.href);
       } else throw new Error('Fagsystemet for oppgaven er ukjent');
     } else {
-      reserverOppgave(oppgave.id).then((data) => {
+      reserverOppgave({ oppgaveId: oppgave.id }).then((data) => {
         goToFagsakEllerApneModal(oppgave, data);
       });
     }
@@ -136,7 +136,7 @@ const FagsakSearchIndex: FunctionComponent<OwnProps> = ({
     setReservertOppgave(undefined);
     setReservertAvAnnenSaksbehandler(false);
     if (oppgave.system === 'FPSAK') {
-      hentFpsakInternBehandlingId(oppgave.behandlingId).then((behandlingId) => {
+      hentFpsakInternBehandlingId({ uuid: oppgave.behandlingId }).then((behandlingId) => {
         goToFpsak(oppgave.saksnummer, behandlingId);
       });
     } else if (oppgave.system === 'FPTILBAKE') {
