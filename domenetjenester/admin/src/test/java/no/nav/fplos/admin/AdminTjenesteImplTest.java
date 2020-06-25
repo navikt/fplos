@@ -24,9 +24,6 @@ import no.nav.foreldrepenger.loslager.repository.OppgaveRepository;
 import no.nav.foreldrepenger.loslager.repository.OppgaveRepositoryImpl;
 import no.nav.fplos.foreldrepengerbehandling.BehandlingFpsak;
 import no.nav.fplos.foreldrepengerbehandling.ForeldrepengerBehandlingRestKlient;
-import no.nav.fplos.kafkatjenester.ForeldrepengerEventHåndterer;
-import no.nav.fplos.kafkatjenester.OppgaveEgenskapHandler;
-import no.nav.fplos.kafkatjenester.TilbakekrevingEventHåndterer;
 
 public class AdminTjenesteImplTest {
 
@@ -35,11 +32,8 @@ public class AdminTjenesteImplTest {
     private final EntityManager entityManager = repoRule.getEntityManager();
     private final OppgaveRepository oppgaveRepository = new OppgaveRepositoryImpl(entityManager);
     private final AdminRepository adminRepository = new AdminRepositoryImpl(entityManager);
-    private final OppgaveEgenskapHandler oppgaveEgenskapHandler = new OppgaveEgenskapHandler(oppgaveRepository);
     private ForeldrepengerBehandlingRestKlient foreldrepengerBehandlingRestKlient = mock(ForeldrepengerBehandlingRestKlient.class);
-    private ForeldrepengerEventHåndterer foreldrepengerEventHåndterer = new ForeldrepengerEventHåndterer(oppgaveRepository, foreldrepengerBehandlingRestKlient, oppgaveEgenskapHandler);
-    private TilbakekrevingEventHåndterer tilbakekrevingEventHandler = new TilbakekrevingEventHåndterer(oppgaveRepository, oppgaveEgenskapHandler);
-    private AdminTjenesteImpl adminTjeneste = new AdminTjenesteImpl(adminRepository, foreldrepengerBehandlingRestKlient, foreldrepengerEventHåndterer, tilbakekrevingEventHandler);
+    private AdminTjenesteImpl adminTjeneste = new AdminTjenesteImpl(adminRepository, foreldrepengerBehandlingRestKlient);
 
     private static String AVDELING_DRAMMEN_ENHET = "4806";
 

@@ -6,9 +6,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
@@ -18,6 +16,8 @@ import org.junit.Test;
 
 import no.nav.foreldrepenger.dbstoette.UnittestRepositoryRule;
 import no.nav.foreldrepenger.loslager.BehandlingId;
+import no.nav.foreldrepenger.loslager.hendelse.Aksjonspunkt;
+import no.nav.foreldrepenger.loslager.hendelse.TilbakekrevingHendelse;
 import no.nav.foreldrepenger.loslager.oppgave.AndreKriterierType;
 import no.nav.foreldrepenger.loslager.oppgave.BehandlingType;
 import no.nav.foreldrepenger.loslager.oppgave.FagsakYtelseType;
@@ -27,35 +27,26 @@ import no.nav.foreldrepenger.loslager.oppgave.OppgaveEventLogg;
 import no.nav.foreldrepenger.loslager.oppgave.OppgaveEventType;
 import no.nav.foreldrepenger.loslager.repository.OppgaveRepository;
 import no.nav.foreldrepenger.loslager.repository.OppgaveRepositoryImpl;
-import no.nav.vedtak.felles.integrasjon.kafka.EventHendelse;
-import no.nav.vedtak.felles.integrasjon.kafka.Fagsystem;
-import no.nav.vedtak.felles.integrasjon.kafka.TilbakebetalingBehandlingProsessEventDto;
 
-public class TilbakekrevingEventHåndtererTest {
+public class TilbakekrevingHendelseHåndtererTest {
+
     @Rule
     public UnittestRepositoryRule repoRule = new UnittestRepositoryRule();
     private EntityManager entityManager = repoRule.getEntityManager();
     private OppgaveRepository oppgaveRepository = new OppgaveRepositoryImpl(entityManager);
     private OppgaveEgenskapHandler oppgaveEgenskapHandler = new OppgaveEgenskapHandler(oppgaveRepository);
-    private TilbakekrevingEventHåndterer handler = new TilbakekrevingEventHåndterer(oppgaveRepository, oppgaveEgenskapHandler);
+    private TilbakekrevingHendelseHåndterer handler = new TilbakekrevingHendelseHåndterer(oppgaveEgenskapHandler, oppgaveRepository);
 
-    private Map<String, String> åpentAksjonspunkt = new HashMap<>() {{
-        put("5015", "OPPR");
-    }};
-    private Map<String, String> manueltPåVentAksjonspunkt = new HashMap<>() {{
-        put("5015", "OPPR");
-        put("7002", "OPPR");
-    }};
-    private Map<String, String> åpentBeslutter = new HashMap<>() {{
-        put("5005", "OPPR");
-    }};
-    private Map<String, String> avsluttetAksjonspunkt = new HashMap<>() {{ put("5015", "AVBR"); }};
+    private List<Aksjonspunkt> åpentAksjonspunkt = List.of(new Aksjonspunkt("5015", "OPPR"));
+    private List<Aksjonspunkt> manueltPåVentAksjonspunkt = List.of(new Aksjonspunkt("5015", "OPPR"), new Aksjonspunkt("7002", "OPPR"));
+    private List<Aksjonspunkt> åpentBeslutter = List.of(new Aksjonspunkt("5005", "OPPR"));
+    private List<Aksjonspunkt> avsluttetAksjonspunkt = List.of(new Aksjonspunkt("5015", "AVBR"));
 
 
     @Test
     public void skalOppretteOppgave() {
-        TilbakebetalingBehandlingProsessEventDto event = eventFra(åpentAksjonspunkt, BehandlingId.random());
-        handler.håndterEvent(event);
+        var event = hendelse(åpentAksjonspunkt, BehandlingId.random());
+        handler.håndter(event);
 
         sjekkAntallOppgaver(1);
         sjekkAktivOppgaveEksisterer(true);
@@ -65,11 +56,11 @@ public class TilbakekrevingEventHåndtererTest {
     @Test
     public void skalVidereføreOppgaveVedNyAktivEvent() {
         var behandlingId = BehandlingId.random();
-        TilbakebetalingBehandlingProsessEventDto førsteEvent = eventFra(åpentAksjonspunkt, behandlingId);
-        handler.håndterEvent(førsteEvent);
+        var førsteEvent = hendelse(åpentAksjonspunkt, behandlingId);
+        handler.håndter(førsteEvent);
 
-        var andreEvent = eventFra(åpentAksjonspunkt, behandlingId);
-        handler.håndterEvent(andreEvent);
+        var andreEvent = hendelse(åpentAksjonspunkt, behandlingId);
+        handler.håndter(andreEvent);
 
         sjekkAntallOppgaver(1);
         sjekkAktivOppgaveEksisterer(true);
@@ -79,14 +70,14 @@ public class TilbakekrevingEventHåndtererTest {
     @Test
     public void skalLukkeAlleOppgaver() {
         var behandlingId = BehandlingId.random();
-        TilbakebetalingBehandlingProsessEventDto førsteEvent = eventFra(åpentAksjonspunkt, behandlingId);
-        handler.håndterEvent(førsteEvent);
+        var førsteEvent = hendelse(åpentAksjonspunkt, behandlingId);
+        handler.håndter(førsteEvent);
 
-        var andreEvent = eventFra(åpentBeslutter, behandlingId);
-        handler.håndterEvent(andreEvent);
+        var andreEvent = hendelse(åpentBeslutter, behandlingId);
+        handler.håndter(andreEvent);
 
-        var tredjeEvent = eventFra(åpentAksjonspunkt, behandlingId);
-        handler.håndterEvent(eventFra(åpentAksjonspunkt, behandlingId));
+        var tredjeEvent = hendelse(åpentAksjonspunkt, behandlingId);
+        handler.håndter(hendelse(åpentAksjonspunkt, behandlingId));
 
         sjekkAntallOppgaver(3);
         sjekkKunEnAktivOppgave();
@@ -96,10 +87,10 @@ public class TilbakekrevingEventHåndtererTest {
     @Test
     public void skalAvslutteOppgaveVedAvsluttedeAksjonspunkt() {
         var behandlingId = BehandlingId.random();
-        var førsteEvent = eventFra(åpentAksjonspunkt, behandlingId);
-        var andreEvent = eventFra(avsluttetAksjonspunkt, behandlingId);
-        handler.håndterEvent(førsteEvent);
-        handler.håndterEvent(andreEvent);
+        var førsteEvent = hendelse(åpentAksjonspunkt, behandlingId);
+        var andreEvent = hendelse(avsluttetAksjonspunkt, behandlingId);
+        handler.håndter(førsteEvent);
+        handler.håndter(andreEvent);
         sjekkAntallOppgaver(1);
         sjekkAktivOppgaveEksisterer(false);
         sjekkOppgaveEventAntallEr(2);
@@ -108,10 +99,10 @@ public class TilbakekrevingEventHåndtererTest {
     @Test
     public void skalLukkeOppgaveVedÅpentManueltTilVentAksjonspunkt() {
         var behandlingId = BehandlingId.random();
-        var førsteEvent = eventFra(åpentAksjonspunkt, behandlingId);
-        var andreEvent = eventFra(manueltPåVentAksjonspunkt, behandlingId);
-        handler.håndterEvent(førsteEvent);
-        handler.håndterEvent(andreEvent);
+        var førsteEvent = hendelse(åpentAksjonspunkt, behandlingId);
+        var andreEvent = hendelse(manueltPåVentAksjonspunkt, behandlingId);
+        handler.håndter(førsteEvent);
+        handler.håndter(andreEvent);
         sjekkAntallOppgaver(1);
         sjekkAktivOppgaveEksisterer(false);
         sjekkOppgaveEventAntallEr(2);
@@ -120,25 +111,25 @@ public class TilbakekrevingEventHåndtererTest {
     @Test
     public void skalOppretteTilBeslutterEgenskapVedAksjonspunkt5005() {
         var behandlingId = BehandlingId.random();
-        var førsteEvent = eventFra(åpentBeslutter, behandlingId);
-        var andreEventUtenBeslutter = eventFra(åpentAksjonspunkt, behandlingId);
-        handler.håndterEvent(førsteEvent);
+        var førsteEvent = hendelse(åpentBeslutter, behandlingId);
+        var andreEventUtenBeslutter = hendelse(åpentAksjonspunkt, behandlingId);
+        handler.håndter(førsteEvent);
 
         sjekkAktivOppgaveEksisterer(true);
         verifiserAktivBeslutterEgenskap();
 
-        handler.håndterEvent(andreEventUtenBeslutter);
+        handler.håndter(andreEventUtenBeslutter);
         verifiserInaktivBeslutterEgenskap();
     }
 
     @Test
     public void skalLukkeOppgaveVedReturFraTilBehandler() {
         var behandlingId = BehandlingId.random();
-        var saksbehandler = eventFra(åpentAksjonspunkt, behandlingId);
-        var tilBeslutter = eventFra(åpentBeslutter, behandlingId);
-        handler.håndterEvent(saksbehandler);
-        handler.håndterEvent(tilBeslutter);
-        handler.håndterEvent(saksbehandler);
+        var saksbehandler = hendelse(åpentAksjonspunkt, behandlingId);
+        var tilBeslutter = hendelse(åpentBeslutter, behandlingId);
+        handler.håndter(saksbehandler);
+        handler.håndter(tilBeslutter);
+        handler.håndter(saksbehandler);
 
         List<OppgaveEventLogg> oppgaveEventer = repoRule.getRepository().hentAlle(OppgaveEventLogg.class).stream()
                 .sorted(Comparator.comparing(OppgaveEventLogg::getOpprettetTidspunkt))
@@ -192,27 +183,25 @@ public class TilbakekrevingEventHåndtererTest {
         assertThat(eventer).hasSize(antall);
     }
 
-    private static TilbakebetalingBehandlingProsessEventDto eventFra(Map<String, String> aksjonspunktmap, BehandlingId behandlingId) {
-        return basisEventFra(aksjonspunktmap, behandlingId)
-                .medFeilutbetaltBeløp(BigDecimal.valueOf(500))
-                .medFørsteFeilutbetaling(LocalDate.now())
-                .build();
+    private static TilbakekrevingHendelse hendelse(List<no.nav.foreldrepenger.loslager.hendelse.Aksjonspunkt> aksjonspunkter, BehandlingId behandlingId) {
+        var tilbakekrevingHendelse = basisHendelse(aksjonspunkter, behandlingId);
+        tilbakekrevingHendelse.setFeilutbetaltBeløp(BigDecimal.valueOf(500));
+        tilbakekrevingHendelse.setFørsteFeilutbetalingDato(LocalDate.now());
+        return tilbakekrevingHendelse;
     }
 
-    private static TilbakebetalingBehandlingProsessEventDto.Builder basisEventFra(Map<String, String> aksjonspunktmap, BehandlingId behandlingId) {
-        return TilbakebetalingBehandlingProsessEventDto.builder()
-                .medFagsystem(Fagsystem.FPSAK)
-                .medEksternId(behandlingId.toUUID())
-                .medSaksnummer("135701264")
-                .medBehandlendeEnhet("0300")
-                .medAktørId("9000000030703")
-                .medEventTid(LocalDateTime.now())
-                .medEventHendelse(EventHendelse.AKSJONSPUNKT_OPPRETTET)
-                .medBehandlingStatus("STATUS")
-                .medBehandlingSteg("STEG")
-                .medYtelseTypeKode(FagsakYtelseType.FORELDREPENGER.getKode())
-                .medBehandlingTypeKode(BehandlingType.FØRSTEGANGSSØKNAD.getKode())
-                .medOpprettetBehandling(LocalDateTime.now())
-                .medAksjonspunktKoderMedStatusListe(aksjonspunktmap);
+    private static TilbakekrevingHendelse basisHendelse(List<no.nav.foreldrepenger.loslager.hendelse.Aksjonspunkt> aksjonspunkter, BehandlingId behandlingId) {
+        var tilbakekrevingHendelse = new TilbakekrevingHendelse();
+        tilbakekrevingHendelse.setAksjonspunkter(aksjonspunkter);
+        tilbakekrevingHendelse.setFagsystem(no.nav.foreldrepenger.loslager.hendelse.Fagsystem.FPTILBAKE);
+        tilbakekrevingHendelse.setBehandlingId(behandlingId);
+        tilbakekrevingHendelse.setSaksnummer("123");
+        tilbakekrevingHendelse.setBehandlendeEnhet("0300");
+        tilbakekrevingHendelse.setAktørId("345");
+        tilbakekrevingHendelse.setBehandlingType(BehandlingType.FØRSTEGANGSSØKNAD);
+        tilbakekrevingHendelse.setBehandlingOpprettetTidspunkt(LocalDateTime.now());
+        tilbakekrevingHendelse.setYtelseType(FagsakYtelseType.FORELDREPENGER);
+
+        return tilbakekrevingHendelse;
     }
 }

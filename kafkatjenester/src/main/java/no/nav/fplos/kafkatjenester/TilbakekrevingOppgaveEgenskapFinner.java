@@ -1,22 +1,22 @@
 package no.nav.fplos.kafkatjenester;
 
-import no.nav.foreldrepenger.loslager.oppgave.AndreKriterierType;
-
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
+
+import no.nav.foreldrepenger.loslager.hendelse.Aksjonspunkt;
+import no.nav.foreldrepenger.loslager.oppgave.AndreKriterierType;
 
 public class TilbakekrevingOppgaveEgenskapFinner implements OppgaveEgenskapFinner {
     private final List<AndreKriterierType> andreKriterier;
     private final String saksbehandlerForTotrinn;
 
-    public TilbakekrevingOppgaveEgenskapFinner(Map<String, String> aksjonspunkter, String saksbehandler) {
+    public TilbakekrevingOppgaveEgenskapFinner(List<Aksjonspunkt> aksjonspunkter, String saksbehandler) {
         this.andreKriterier = fra(aksjonspunkter);
         this.saksbehandlerForTotrinn = saksbehandler;
     }
 
-    private List<AndreKriterierType> fra(Map<String, String> aksjonspunkter) {
-        if (aksjonspunkter.containsKey("5005") && aksjonspunkter.get("5005").equals("OPPR")) {
+    private List<AndreKriterierType> fra(List<Aksjonspunkt> aksjonspunkter) {
+        if (aksjonspunkter.stream().anyMatch(a -> a.getKode().equals("5005") && a.erOpprettet())) {
             return Collections.singletonList(AndreKriterierType.TIL_BESLUTTER);
         }
         return Collections.emptyList();

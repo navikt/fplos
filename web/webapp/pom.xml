@@ -13,6 +13,15 @@
     <name>FPLOS :: Web - Applikasjon</name>
 
     <dependencies>
+        <dependency>
+            <groupId>no.nav.vedtak.prosesstask</groupId>
+            <artifactId>prosesstask-legacy</artifactId>
+            <version>${prosesstask.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>no.nav.vedtak.prosesstask</groupId>
+            <artifactId>prosesstask-rest-api</artifactId>
+        </dependency>
 
         <!-- Database håndtering -->
         <dependency>

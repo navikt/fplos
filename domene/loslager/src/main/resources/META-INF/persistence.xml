@@ -5,19 +5,14 @@
 
     <!-- Hibernate persistence unit. -->
     <persistence-unit name="pu-default" transaction-type="RESOURCE_LOCAL">
-        <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
+        <provider>no.nav.vedtak.felles.jpa.VLPersistenceUnitProvider</provider>
         <non-jta-data-source>jdbc/defaultDS</non-jta-data-source>
-
-        <mapping-file>META-INF/oppgaver.xml</mapping-file>
 
         <properties>
             <property name="hibernate.dialect" value="org.hibernate.dialect.Oracle12cDialect"/>
             <property name="hibernate.connection.autocommit" value="false"/>
             <property name="hibernate.jdbc.use_get_generated_keys" value="true"/>
             <property name="org.hibernate.flushMode" value="COMMIT"/>
-            <property name="hibernate.hql.bulk_id_strategy"
-                      value="org.hibernate.hql.spi.id.inline.InlineIdsInClauseBulkIdStrategy"
-            />
         </properties>
     </persistence-unit>
 

@@ -3,8 +3,13 @@ package no.nav.foreldrepenger.loslager;
 import java.util.Objects;
 import java.util.UUID;
 
+import javax.persistence.Column;
+import javax.persistence.Embeddable;
+
+@Embeddable
 public class BehandlingId implements Comparable<UUID> {
 
+    @Column(name = "behandling_id")
     private UUID value;
 
     public BehandlingId(UUID value) {
@@ -17,6 +22,10 @@ public class BehandlingId implements Comparable<UUID> {
 
     public static BehandlingId fromString(String string) {
         return fromUUID(UUID.fromString(string));
+    }
+
+    public BehandlingId() {
+        //hiberate
     }
 
     /**

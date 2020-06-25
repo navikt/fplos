@@ -22,7 +22,6 @@ import javax.persistence.TypedQuery;
 import no.nav.foreldrepenger.loslager.BehandlingId;
 import no.nav.foreldrepenger.loslager.oppgave.AndreKriterierType;
 import no.nav.foreldrepenger.loslager.oppgave.BehandlingType;
-import no.nav.foreldrepenger.loslager.oppgave.EventmottakFeillogg;
 import no.nav.foreldrepenger.loslager.oppgave.FagsakYtelseType;
 import no.nav.foreldrepenger.loslager.oppgave.FiltreringAndreKriterierType;
 import no.nav.foreldrepenger.loslager.oppgave.FiltreringBehandlingType;
@@ -509,17 +508,12 @@ public class OppgaveRepositoryImpl implements OppgaveRepository {
     }
 
     @Override
-    public void lagre(EventmottakFeillogg eventmottakFeillogg) {
-        internLagre(eventmottakFeillogg);
-    }
-
-    @Override
     public List<OppgaveEventLogg> hentOppgaveEventer(BehandlingId behandlingId) {
         Objects.requireNonNull(behandlingId, "behandlingId kan ikke være null");
         return entityManager.createQuery("FROM oppgaveEventLogg oel " +
                 "where oel.behandlingId = :behandlingId " +
                 "order by oel.opprettetTidspunkt desc", OppgaveEventLogg.class)
-                .setParameter("behandlingId", behandlingId.toUUID()).getResultList();
+                .setParameter("behandlingId", behandlingId).getResultList();
     }
 
     @Override
@@ -545,7 +539,7 @@ public class OppgaveRepositoryImpl implements OppgaveRepository {
                 : SELECT_FRA_OPPGAVE;
         return entityManager.createQuery(select +
                 "WHERE o.behandlingId = :behandlingId ", cls)
-                .setParameter("behandlingId", behandlingId.toUUID())
+                .setParameter("behandlingId", behandlingId)
                 .getResultList();
     }
 
@@ -609,7 +603,7 @@ public class OppgaveRepositoryImpl implements OppgaveRepository {
     @Override
     public List<Oppgave> hentOppgaver(BehandlingId behandlingId) {
         return entityManager.createQuery("FROM Oppgave o where o.behandlingId = :behandlingId", Oppgave.class)
-                .setParameter("behandlingId", behandlingId.toUUID())
+                .setParameter("behandlingId", behandlingId)
                 .getResultList();
     }
 

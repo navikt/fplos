@@ -6,6 +6,7 @@ import java.util.UUID;
 
 import javax.persistence.Column;
 import javax.persistence.Convert;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -72,8 +73,8 @@ public class Oppgave extends BaseEntitet {
     @Column(name = "UTFORT_FRA_ADMIN")
     protected Boolean utfortFraAdmin = Boolean.FALSE;
 
-    @Column(name = "BEHANDLING_ID", nullable = false)
-    protected UUID behandlingId;
+    @Embedded
+    protected BehandlingId behandlingId;
 
     @Column(name = "HREF")
     protected String href;
@@ -114,7 +115,7 @@ public class Oppgave extends BaseEntitet {
     }
 
     public BehandlingId getBehandlingId() {
-        return new BehandlingId(behandlingId);
+        return behandlingId;
     }
 
     public LocalDateTime getBehandlingsfrist() {
@@ -198,7 +199,7 @@ public class Oppgave extends BaseEntitet {
         }
 
         public Builder medBehandlingId(BehandlingId behandlingId){
-            tempOppgave.behandlingId = behandlingId.toUUID();
+            tempOppgave.behandlingId = behandlingId;
             return this;
         }
 
@@ -273,7 +274,7 @@ public class Oppgave extends BaseEntitet {
         }
 
         public Builder dummyOppgave(String enhet){
-            tempOppgave.behandlingId = UUID.nameUUIDFromBytes("331133L".getBytes());
+            tempOppgave.behandlingId = new BehandlingId(UUID.nameUUIDFromBytes("331133L".getBytes()));
             tempOppgave.fagsakSaksnummer = 3478293L;
             tempOppgave.aktorId = 770099L;
             tempOppgave.fagsakYtelseType = FagsakYtelseType.FORELDREPENGER;

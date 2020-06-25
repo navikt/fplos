@@ -1,7 +1,6 @@
 package no.nav.foreldrepenger.los.web.app.tjenester.konfig;
 
 import static no.nav.vedtak.sikkerhet.abac.BeskyttetRessursActionAttributt.READ;
-import static no.nav.vedtak.sikkerhet.abac.BeskyttetRessursResourceAttributt.APPLIKASJON;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -10,6 +9,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
 import io.swagger.v3.oas.annotations.Operation;
+import no.nav.foreldrepenger.los.web.app.AbacAttributter;
 import no.nav.vedtak.konfig.KonfigVerdi;
 import no.nav.vedtak.sikkerhet.abac.BeskyttetRessurs;
 
@@ -35,7 +35,7 @@ public class KonfigRestTjeneste {
     @Path("/fpsak-url")
     @Produces("application/json")
     @Operation(description = "Henter basis lenke til FPSAK.", tags = "Konfigurasjon")
-    @BeskyttetRessurs(action = READ, ressurs = APPLIKASJON, sporingslogg = false)
+    @BeskyttetRessurs(action = READ, resource = AbacAttributter.APPLIKASJON, sporingslogg = false)
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
     public Konfig hentFpsakUrl() {
         return new Konfig(fpsakFrontendUrl);
@@ -45,7 +45,7 @@ public class KonfigRestTjeneste {
     @Path("/fptilbake-url")
     @Produces("application/json")
     @Operation(description = "Henter basis lenke til FPTILBAKE.", tags = "Konfigurasjon")
-    @BeskyttetRessurs(action = READ, ressurs = APPLIKASJON, sporingslogg = false)
+    @BeskyttetRessurs(action = READ, resource = AbacAttributter.APPLIKASJON, sporingslogg = false)
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
     public Konfig hentFptilbakeUrl() {
         return new Konfig(fptilbakeFrontendUrl);

@@ -1,10 +1,10 @@
 package no.nav.foreldrepenger.loslager.oppgave;
 
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 import javax.persistence.Column;
 import javax.persistence.Convert;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -37,8 +37,8 @@ public class OppgaveEventLogg extends BaseEntitet{
     @Column(name = "FRIST_TID")
     private LocalDateTime fristTid;
 
-    @Column(name = "BEHANDLING_ID", nullable = false)
-    private UUID behandlingId;
+    @Embedded
+    private BehandlingId behandlingId;
 
     public OppgaveEventLogg(){
         //For automatisk generering
@@ -53,7 +53,7 @@ public class OppgaveEventLogg extends BaseEntitet{
         this.eventType = eventType;
         this.andreKriterierType = andreKriterierType;
         this.behandlendeEnhet = behandlendeEnhet;
-        this.behandlingId = behandlingId.toUUID();
+        this.behandlingId = behandlingId;
     }
 
     public OppgaveEventType getEventType() {
@@ -69,7 +69,7 @@ public class OppgaveEventLogg extends BaseEntitet{
     }
 
     public BehandlingId getBehandlingId() {
-        return BehandlingId.fromUUID(behandlingId);
+        return behandlingId;
     }
 
     public LocalDateTime getFristTid() {

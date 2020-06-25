@@ -1,13 +1,14 @@
 package no.nav.foreldrepenger.loslager.oppgave;
 
-import no.nav.foreldrepenger.loslager.BehandlingId;
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
+
+import no.nav.foreldrepenger.loslager.BehandlingId;
 
 @Entity(name = "TilbakekrevingOppgave")
 @PrimaryKeyJoinColumn(name = "OPPGAVE_ID")
@@ -71,7 +72,7 @@ public class TilbakekrevingOppgave extends Oppgave{
         }
 
         public Builder medBehandlingId(BehandlingId behandlingId){
-            tempOppgave.behandlingId = behandlingId.toUUID();
+            tempOppgave.behandlingId = behandlingId;
             return this;
         }
 

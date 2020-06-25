@@ -2,7 +2,6 @@ package no.nav.foreldrepenger.loslager.repository;
 
 import java.util.Comparator;
 import java.util.List;
-import java.util.Optional;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -13,7 +12,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import no.nav.foreldrepenger.loslager.BehandlingId;
-import no.nav.foreldrepenger.loslager.oppgave.EventmottakFeillogg;
 import no.nav.foreldrepenger.loslager.oppgave.Oppgave;
 import no.nav.foreldrepenger.loslager.oppgave.OppgaveEventLogg;
 import no.nav.foreldrepenger.loslager.oppgave.Reservasjon;
@@ -49,14 +47,14 @@ public class AdminRepositoryImpl implements AdminRepository {
     private List<Oppgave> hentOppgaverForBehandling(BehandlingId behandlingId) {
         return entityManager.createQuery(SELECT_FRA_OPPGAVE +
                 "WHERE o.behandlingId = :behandlingId ", Oppgave.class)
-                .setParameter("behandlingId", behandlingId.toUUID())
+                .setParameter("behandlingId", behandlingId)
                 .getResultList();
     }
     public Oppgave hentSisteOppgave(BehandlingId behandlingId) {
         Oppgave oppgave = null;
         try {
             oppgave = entityManager.createQuery("Select o FROM Oppgave o where o.behandlingId = :behandlingId ORDER BY o.opprettetTidspunkt desc", Oppgave.class)
-                    .setParameter("behandlingId", behandlingId.toUUID())
+                    .setParameter("behandlingId", behandlingId)
                     .setMaxResults(1).getSingleResult();
             entityManager.refresh(oppgave);
         } catch (NoResultException nre) {
@@ -68,28 +66,12 @@ public class AdminRepositoryImpl implements AdminRepository {
     public List<OppgaveEventLogg> hentEventer(BehandlingId behandlingId) {
         return entityManager.createQuery( "Select o FROM oppgaveEventLogg o " +
                 "where o.behandlingId = :behandlingId ORDER BY o.opprettetTidspunkt desc", OppgaveEventLogg.class)
-                .setParameter("behandlingId", behandlingId.toUUID()).getResultList();
-    }
-
-    @Override
-    public List<EventmottakFeillogg> hentAlleMeldingerFraFeillogg() {
-        return entityManager.createQuery("Select ef FROM eventmottakFeillogg ef where ef.status = :status", EventmottakFeillogg.class).setParameter("status", EventmottakFeillogg.Status.FEILET).getResultList();
-    }
-
-    @Override
-    public void markerFerdig(Long feilloggId) {
-        EventmottakFeillogg event = Optional.ofNullable(entityManager.find(EventmottakFeillogg.class, feilloggId))
-                .map(EventmottakFeillogg::markerFerdig)
-                .orElseThrow(() -> {
-                    throw AdminRepositoryImplFeil.FACTORY.finnerIkkeFeiletEvent(feilloggId).toException();
-                });
-        entityManager.persist(event);
-        entityManager.flush();
+                .setParameter("behandlingId", behandlingId).getResultList();
     }
 
     public List<Oppgave> hentAlleOppgaverForBehandling(BehandlingId behandlingId) {
         return entityManager.createQuery("Select o FROM Oppgave o where o.behandlingId = :behandlingId ORDER BY o.opprettetTidspunkt desc", Oppgave.class)
-                .setParameter("behandlingId", behandlingId.toUUID())
+                .setParameter("behandlingId", behandlingId)
                 .getResultList();
     }
 

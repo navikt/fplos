@@ -28,7 +28,7 @@
 
         <fp-kontrakter.version>5.1-20200225123631-afeacc4</fp-kontrakter.version>
         <tjenestespesifikasjoner.version>1.2019.12.18-12.22-ce897c4eb2c1</tjenestespesifikasjoner.version>
-        <felles.version>1.6-20200422053939-3ecbdd1</felles.version>
+        <felles.version>1.9-20200611133813-b2fa736</felles.version>
 
         <!-- NAV -->
         <organisasjon-ressurs-enhet.version>1.0.0</organisasjon-ressurs-enhet.version>
@@ -64,9 +64,14 @@
         <ojdbc.version>19.3.0.0</ojdbc.version>
         <!--abac-attribute-constants.version>2.0.0</abac-attribute-constants.version-->
         <kafka.version>2.5.0</kafka.version>
+        <prosesstask.version>2.4.2-20200619122016-c3161d1</prosesstask.version>
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>no.nav.vedtak.prosesstask</groupId>
+            <artifactId>prosesstask</artifactId>
+        </dependency>
         <!-- Avhengigeter som fjernes fra JDK11 som er del av JavaSE. Legger til her framfor med add-modules. -->
         <dependency>
             <groupId>javax.xml.bind</groupId>
@@ -121,6 +126,18 @@
 
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>no.nav.vedtak.prosesstask</groupId>
+                <artifactId>prosesstask-root</artifactId>
+                <version>${prosesstask.version}</version>
+                <scope>import</scope>
+                <type>pom</type>
+            </dependency>
+            <dependency>
+                <groupId>no.nav.vedtak.prosesstask</groupId>
+                <artifactId>prosesstask</artifactId>
+                <version>${prosesstask.version}</version>
+            </dependency>
             <dependency>
                 <groupId>org.flywaydb</groupId>
                 <artifactId>flyway-core</artifactId>
@@ -430,13 +447,6 @@
                 <groupId>org.codehaus.woodstox</groupId>
                 <artifactId>stax2-api</artifactId>
                 <version>4.2.1</version>
-            </dependency>
-
-            <!-- Generelle clashes -->
-            <dependency>
-                <groupId>org.apache.zookeeper</groupId>
-                <artifactId>zookeeper</artifactId>
-                <version>3.4.14</version>
             </dependency>
             <dependency>
                 <!-- clasher med javax.annotations-api -->

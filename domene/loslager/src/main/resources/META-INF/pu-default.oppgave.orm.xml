@@ -12,7 +12,8 @@
     <sequence-generator name="SEQ_FILTRERING_YTELSE_TYPE" allocation-size="50" sequence-name="SEQ_FILTRERING_YTELSE_TYPE"/>
     <sequence-generator name="SEQ_AVDELING" allocation-size="50" sequence-name="SEQ_AVDELING"/>
     <sequence-generator name="SEQ_SAKSBEHANDLER" allocation-size="50" sequence-name="SEQ_SAKSBEHANDLER"/>
-    <entity class="no.nav.foreldrepenger.loslager.oppgave.EventmottakFeillogg"/>
+    <sequence-generator name="SEQ_HENDELSE" allocation-size="50" sequence-name="SEQ_HENDELSE"/>
+    <sequence-generator name="SEQ_HENDELSE_TK_AKSJONSPUNKT" allocation-size="50" sequence-name="SEQ_HENDELSE_TK_AKSJONSPUNKT"/>
     <entity class="no.nav.foreldrepenger.loslager.oppgave.Oppgave"/>
     <entity class="no.nav.foreldrepenger.loslager.oppgave.OppgaveEgenskap"/>
     <entity class="no.nav.foreldrepenger.loslager.oppgave.OppgaveEventLogg"/>
@@ -23,6 +24,9 @@
     <entity class="no.nav.foreldrepenger.loslager.oppgave.FiltreringBehandlingType"/>
     <entity class="no.nav.foreldrepenger.loslager.oppgave.FiltreringYtelseType"/>
     <entity class="no.nav.foreldrepenger.loslager.oppgave.FiltreringAndreKriterierType"/>
+    <entity class="no.nav.foreldrepenger.loslager.hendelse.Hendelse"/>
+    <entity class="no.nav.foreldrepenger.loslager.hendelse.TilbakekrevingHendelse"/>
+    <entity class="no.nav.foreldrepenger.loslager.hendelse.Aksjonspunkt"/>
     <entity class="no.nav.foreldrepenger.loslager.organisasjon.Avdeling"/>
     <entity class="no.nav.foreldrepenger.loslager.organisasjon.Saksbehandler"/>
 </entity-mappings>

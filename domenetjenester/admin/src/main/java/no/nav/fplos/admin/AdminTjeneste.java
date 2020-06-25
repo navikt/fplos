@@ -1,10 +1,10 @@
 package no.nav.fplos.admin;
 
+import java.util.List;
+
 import no.nav.foreldrepenger.loslager.BehandlingId;
 import no.nav.foreldrepenger.loslager.oppgave.Oppgave;
 import no.nav.foreldrepenger.loslager.oppgave.OppgaveEventLogg;
-
-import java.util.List;
 
 public interface AdminTjeneste {
 
@@ -13,12 +13,6 @@ public interface AdminTjeneste {
     Oppgave hentOppgave(BehandlingId behandlingId);
 
     List<OppgaveEventLogg> hentEventer(BehandlingId behandlingId);
-
-    void oppdaterOppgave(BehandlingId behandlingId);
-
-    int prosesserAlleMeldingerFraFeillogg();
-
-    void markerFerdigFeiletEvent(Long verdi);
 
     List<Oppgave> hentAlleOppgaverForBehandling(BehandlingId behandlingId);
 

@@ -1,15 +1,14 @@
 package no.nav.foreldrepenger.loslager.oppgave;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import java.util.Arrays;
+import java.util.Optional;
 
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
+
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum BehandlingType implements Kodeverdi {
@@ -49,10 +48,6 @@ public enum BehandlingType implements Kodeverdi {
                 .orElseThrow(() -> new IllegalArgumentException("Ukjent BehandlingType: " + kode));
     }
 
-    public static List<BehandlingType> getEnums() {
-        return Arrays.stream(values())
-                .collect(Collectors.toList());
-    }
 
     @Converter(autoApply = true)
     public static class KodeverdiConverter implements AttributeConverter<BehandlingType, String> {
