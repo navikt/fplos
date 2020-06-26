@@ -6,6 +6,7 @@ import NotificationMapper from './NotificationMapper';
 import asyncPollingStatus from './asyncPollingStatus';
 import RequestRunner from './RequestRunner';
 import RequestConfig from '../RequestConfig';
+import { REQUEST_POLLING_CANCELLED } from './RequestProcess';
 
 const httpClientGeneralMock = {
   get: () => undefined,
@@ -116,6 +117,6 @@ describe('RequestRunner', () => {
 
     const response = await runner.startProcess(params, mapper);
 
-    expect(response).to.eql({ payload: 'INTERNAL_CANCELLATION' });
+    expect(response).to.eql({ payload: REQUEST_POLLING_CANCELLED });
   });
 });

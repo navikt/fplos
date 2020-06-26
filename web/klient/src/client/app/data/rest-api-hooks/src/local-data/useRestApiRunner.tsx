@@ -1,7 +1,7 @@
 import { useState, useCallback, useContext } from 'react';
 
 import { RestApiPathsKeys } from 'data/restApiPaths';
-import { NotificationMapper, ErrorType } from 'data/rest-api';
+import { NotificationMapper, ErrorType, REQUEST_POLLING_CANCELLED } from 'data/rest-api';
 import { RestApiRequestContext } from '../RestApiContext';
 import useRestApiErrorDispatcher from '../error/useRestApiErrorDispatcher';
 import RestApiState from '../RestApiState';
@@ -42,13 +42,7 @@ function useRestApiRunner<T>(key: RestApiPathsKeys):RestApiData<T> {
 
     return requestApi.startRequest(key, params, notif)
       .then((dataRes) => {
-        if (dataRes.payload === 'INTERNAL_CANCELLATION') {
-          setData((oldState) => ({
-            state: RestApiState.NOT_STARTED,
-            data: keepData ? oldState.data : undefined,
-            error: undefined,
-          }));
-        } else {
+        if (dataRes.payload !== REQUEST_POLLING_CANCELLED) {
           setData({
             state: RestApiState.SUCCESS,
             data: dataRes.payload,

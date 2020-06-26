@@ -2,7 +2,7 @@ import {
   useState, useEffect, DependencyList, useContext,
 } from 'react';
 
-import { NotificationMapper } from 'data/rest-api';
+import { REQUEST_POLLING_CANCELLED, NotificationMapper } from 'data/rest-api';
 import { RestApiPathsKeys } from 'data/restApiPaths';
 
 import { RestApiRequestContext } from '../RestApiContext';
@@ -43,13 +43,7 @@ function useRestApi<T>(key: RestApiPathsKeys, params: any = {}, keepData = false
 
     requestApi.startRequest(key, params, notif)
       .then((dataRes) => {
-        if (dataRes.payload === 'INTERNAL_CANCELLATION') {
-          setData((oldState) => ({
-            state: RestApiState.NOT_STARTED,
-            data: keepData ? oldState.data : undefined,
-            error: undefined,
-          }));
-        } else {
+        if (dataRes.payload !== REQUEST_POLLING_CANCELLED) {
           setData({
             state: RestApiState.SUCCESS,
             data: dataRes.payload,

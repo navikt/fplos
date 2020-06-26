@@ -8,7 +8,7 @@ import RequestErrorEventHandler from './error/RequestErrorEventHandler';
 
 const HTTP_ACCEPTED = 202;
 const MAX_POLLING_ATTEMPTS = 150;
-const CANCELLED = 'INTERNAL_CANCELLATION';
+export const REQUEST_POLLING_CANCELLED = 'INTERNAL_CANCELLATION';
 
 const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -121,7 +121,7 @@ class RequestProcess {
     try {
       const response = await this.execute(this.path, this.restMethod, params);
       if (this.isCancelled) {
-        return { payload: CANCELLED };
+        return { payload: REQUEST_POLLING_CANCELLED };
       }
 
       const responseData = 'data' in response ? response.data : undefined;

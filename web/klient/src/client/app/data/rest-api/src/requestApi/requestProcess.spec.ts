@@ -2,7 +2,7 @@ import { expect } from 'chai';
 import sinon from 'sinon';
 
 import asyncPollingStatus from './asyncPollingStatus';
-import RequestProcess from './RequestProcess';
+import RequestProcess, { REQUEST_POLLING_CANCELLED } from './RequestProcess';
 import NotificationMapper from './NotificationMapper';
 
 class NotificationHelper {
@@ -190,7 +190,7 @@ describe('RequestProcess', () => {
 
     const resResponse = await process.run(params);
 
-    expect(resResponse).to.eql({ payload: 'INTERNAL_CANCELLATION' });
+    expect(resResponse).to.eql({ payload: REQUEST_POLLING_CANCELLED });
   });
 
   it('skal hente data med nullverdi', async () => {
