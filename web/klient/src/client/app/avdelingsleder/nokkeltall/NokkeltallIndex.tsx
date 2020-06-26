@@ -1,55 +1,47 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { bindActionCreators, Dispatch } from 'redux';
+import React, { FunctionComponent } from 'react';
 
-import { getValgtAvdelingEnhet } from 'app/duck';
-import {
-  fetchOppgaverForAvdeling as fetchOppgaverForAvdelingActionCreator,
-  fetchOppgaverPerDato as fetchOppgaverPerDatoActionCreator,
-  fetchOppgaverAvdelingManueltPaVent as fetchOppgaverAvdelingManueltPaVentActionCreator,
-  fetchOppgaverPerForsteStonadsdag as fetchOppgaverPerForsteStonadsdagActionCreator,
-} from './duck';
+import { RestApiPathsKeys } from 'data/restApiPaths';
+import { useRestApi } from 'data/rest-api-hooks';
+
 import NokkeltallPanel from './components/NokkeltallPanel';
+import OppgaverForAvdeling from './components/fordelingAvBehandlingstype/oppgaverForAvdelingTsType';
+import OppgaveForDato from './components/tilBehandling/oppgaverForDatoTsType';
+import OppgaverManueltPaVent from './components/manueltSattPaVent/oppgaverManueltPaVentTsType';
+import OppgaverForForsteStonadsdag from './components/antallBehandlingerPerForsteStonadsdag/oppgaverForForsteStonadsdagTsType';
 
-interface TsProps {
-  fetchOppgaverForAvdeling: (avdelingEnhet: string) => void;
-  fetchOppgaverPerDato: (avdelingEnhet: string) => void;
-  fetchOppgaverAvdelingManueltPaVent: (avdelingEnhet: string) => void;
-  fetchOppgaverPerForsteStonadsdag: (avdelingEnhet: string) => void;
+const EMPTY_ARRAY = [];
+
+interface OwnProps {
   valgtAvdelingEnhet: string;
 }
 
 /**
  * NokkeltallIndex
  */
-export class NokkeltallIndex extends Component<TsProps> {
-  componentDidMount = () => {
-    const {
-      fetchOppgaverForAvdeling, fetchOppgaverPerDato, fetchOppgaverAvdelingManueltPaVent, fetchOppgaverPerForsteStonadsdag, valgtAvdelingEnhet,
-    } = this.props;
-    fetchOppgaverForAvdeling(valgtAvdelingEnhet);
-    fetchOppgaverPerDato(valgtAvdelingEnhet);
-    fetchOppgaverAvdelingManueltPaVent(valgtAvdelingEnhet);
-    fetchOppgaverPerForsteStonadsdag(valgtAvdelingEnhet);
-  }
+const NokkeltallIndex: FunctionComponent<OwnProps> = ({
+  valgtAvdelingEnhet,
+}) => {
+  const {
+    data: oppgaverForAvdeling = EMPTY_ARRAY,
+  } = useRestApi<OppgaverForAvdeling[]>(RestApiPathsKeys.HENT_OPPGAVER_FOR_AVDELING, { avdelingEnhet: valgtAvdelingEnhet });
+  const {
+    data: oppgaverPerDato = EMPTY_ARRAY,
+  } = useRestApi<OppgaveForDato[]>(RestApiPathsKeys.HENT_OPPGAVER_PER_DATO, { avdelingEnhet: valgtAvdelingEnhet });
+  const {
+    data: oppgaverManueltPaVent = EMPTY_ARRAY,
+  } = useRestApi<OppgaverManueltPaVent[]>(RestApiPathsKeys.HENT_OPPGAVER_MANUELT_PA_VENT, { avdelingEnhet: valgtAvdelingEnhet });
+  const {
+    data: oppgaverPerForsteStonadsdag = EMPTY_ARRAY,
+  } = useRestApi<OppgaverForForsteStonadsdag[]>(RestApiPathsKeys.HENT_OPPGAVER_PER_FORSTE_STONADSDAG, { avdelingEnhet: valgtAvdelingEnhet });
 
-  render = () => (
-    <NokkeltallPanel />
-  )
-}
+  return (
+    <NokkeltallPanel
+      oppgaverForAvdeling={oppgaverForAvdeling}
+      oppgaverPerDato={oppgaverPerDato}
+      oppgaverManueltPaVent={oppgaverManueltPaVent}
+      oppgaverPerForsteStonadsdag={oppgaverPerForsteStonadsdag}
+    />
+  );
+};
 
-const mapStateToProps = (state) => ({
-  valgtAvdelingEnhet: getValgtAvdelingEnhet(state),
-});
-
-const mapDispatchToProps = (dispatch: Dispatch) => ({
-  ...bindActionCreators({
-    fetchOppgaverForAvdeling: fetchOppgaverForAvdelingActionCreator,
-    fetchOppgaverPerDato: fetchOppgaverPerDatoActionCreator,
-    fetchOppgaverAvdelingManueltPaVent: fetchOppgaverAvdelingManueltPaVentActionCreator,
-    fetchOppgaverPerForsteStonadsdag: fetchOppgaverPerForsteStonadsdagActionCreator,
-  }, dispatch),
-});
-
-
-export default connect(mapStateToProps, mapDispatchToProps)(NokkeltallIndex);
+export default NokkeltallIndex;

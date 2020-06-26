@@ -1,48 +1,28 @@
-import React, { Component, ReactNode } from 'react';
-import { connect } from 'react-redux';
-import { bindActionCreators, Dispatch } from 'redux';
+import React, { FunctionComponent } from 'react';
 
-import { fetchNyeOgFerdigstilteOppgaverNokkeltall } from './duck';
+import { RestApiPathsKeys } from 'data/restApiPaths';
+import { useRestApi } from 'data/rest-api-hooks';
+
 import SaksbehandlerNokkeltallPanel from './components/SaksbehandlerNokkeltallPanel';
+import NyeOgFerdigstilteOppgaver from './nyeOgFerdigstilteOppgaverTsType';
 
 interface OwnProps {
-  fetchNyeOgFerdigstilteOppgaverNokkeltall: (sakslisteId: number) => void;
   valgtSakslisteId: number;
 }
 
 /**
  * SaksbehandlerNokkeltallIndex
  */
-export class SaksbehandlerNokkeltallIndex extends Component<OwnProps> {
-  componentDidMount = (): void => {
-    const {
-      fetchNyeOgFerdigstilteOppgaverNokkeltall: fetchNyeOgFerdige, valgtSakslisteId,
-    } = this.props;
-    fetchNyeOgFerdige(valgtSakslisteId);
-  }
+const SaksbehandlerNokkeltallIndex: FunctionComponent<OwnProps> = ({
+  valgtSakslisteId,
+}) => {
+  const { data: nyeOgFerdigstilteOppgaver } = useRestApi<NyeOgFerdigstilteOppgaver[]>(
+    RestApiPathsKeys.HENT_NYE_OG_FERDIGSTILTE_OPPGAVER, { sakslisteId: valgtSakslisteId }, false, [valgtSakslisteId],
+  );
 
-  componentDidUpdate = (prevProps: OwnProps): void => {
-    const {
-      fetchNyeOgFerdigstilteOppgaverNokkeltall: fetchNyeOgFerdige, valgtSakslisteId,
-    } = this.props;
-    if (prevProps.valgtSakslisteId !== valgtSakslisteId) {
-      fetchNyeOgFerdige(valgtSakslisteId);
-    }
-  }
+  return (
+    <SaksbehandlerNokkeltallPanel nyeOgFerdigstilteOppgaver={nyeOgFerdigstilteOppgaver} />
+  );
+};
 
-  render = (): ReactNode => (
-    <SaksbehandlerNokkeltallPanel />
-  )
-}
-
-const mapStateToProps = () => ({
-});
-
-const mapDispatchToProps = (dispatch: Dispatch) => ({
-  ...bindActionCreators({
-    fetchNyeOgFerdigstilteOppgaverNokkeltall,
-  }, dispatch),
-});
-
-
-export default connect(mapStateToProps, mapDispatchToProps)(SaksbehandlerNokkeltallIndex);
+export default SaksbehandlerNokkeltallIndex;

@@ -2,11 +2,13 @@ import React, { useMemo, FunctionComponent } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { Undertekst } from 'nav-frontend-typografi';
 
+import { useRestApiRunner } from 'data/rest-api-hooks';
+import { RestApiPathsKeys } from 'data/restApiPaths';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
-import Kodeverk from 'kodeverk/kodeverkTsType';
 import fagsakYtelseType from 'kodeverk/fagsakYtelseType';
 import kodeverkTyper from 'kodeverk/kodeverkTyper';
 import { RadioGroupField, RadioOption } from 'form/FinalFields';
+import useKodeverk from 'data/rest-api-hooks/src/global-data/useKodeverk';
 
 const finnFagsakYtelseTypeNavn = (fagsakYtelseTyper, valgtFagsakYtelseType) => {
   const type = fagsakYtelseTyper.find((fyt) => fyt.kode === valgtFagsakYtelseType);
@@ -14,22 +16,24 @@ const finnFagsakYtelseTypeNavn = (fagsakYtelseTyper, valgtFagsakYtelseType) => {
 };
 
 interface OwnProps {
-  alleKodeverk: {[key: string]: Kodeverk[]};
   valgtSakslisteId: number;
-  lagreSakslisteFagsakYtelseType: (sakslisteId: number, fagsakYtelseType: string, avdelingEnhet: string) => void;
   valgtAvdelingEnhet: string;
+  hentAvdelingensSakslister: (params: {avdelingEnhet: string}) => void;
+  hentAntallOppgaver: (sakslisteId: number, avdelingEnhet: string) => void;
 }
 
 /**
  * FagsakYtelseTypeVelger
  */
 const FagsakYtelseTypeVelger: FunctionComponent<OwnProps> = ({
-  alleKodeverk,
   valgtSakslisteId,
-  lagreSakslisteFagsakYtelseType,
   valgtAvdelingEnhet,
+  hentAvdelingensSakslister,
+  hentAntallOppgaver,
 }) => {
-  const fagsakYtelseTyper = useMemo(() => alleKodeverk[kodeverkTyper.FAGSAK_YTELSE_TYPE].filter((k) => k.kode !== fagsakYtelseType.ENDRING_FORELDREPENGER),
+  const { startRequest: lagreSakslisteFagsakYtelseType } = useRestApiRunner(RestApiPathsKeys.LAGRE_SAKSLISTE_FAGSAK_YTELSE_TYPE);
+  const alleFagsakYtelseTyper = useKodeverk(kodeverkTyper.FAGSAK_YTELSE_TYPE);
+  const fagsakYtelseTyper = useMemo(() => alleFagsakYtelseTyper.filter((k) => k.kode !== fagsakYtelseType.ENDRING_FORELDREPENGER),
     []);
   return (
     <>
@@ -39,7 +43,13 @@ const FagsakYtelseTypeVelger: FunctionComponent<OwnProps> = ({
       <VerticalSpacer eightPx />
       <RadioGroupField
         name="fagsakYtelseType"
-        onChange={(fyt) => lagreSakslisteFagsakYtelseType(valgtSakslisteId, fyt, valgtAvdelingEnhet)}
+        onChange={(fyt) => lagreSakslisteFagsakYtelseType(fyt !== ''
+          ? { sakslisteId: valgtSakslisteId, avdelingEnhet: valgtAvdelingEnhet, fagsakYtelseType: fyt }
+          : { sakslisteId: valgtSakslisteId, avdelingEnhet: valgtAvdelingEnhet })
+          .then(() => {
+            hentAntallOppgaver(valgtSakslisteId, valgtAvdelingEnhet);
+            hentAvdelingensSakslister({ avdelingEnhet: valgtAvdelingEnhet });
+          })}
       >
         <RadioOption
           value={fagsakYtelseType.FORELDREPRENGER}

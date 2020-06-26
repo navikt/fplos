@@ -2,6 +2,7 @@ import React, { FunctionComponent, Suspense } from 'react';
 import { Route, Switch } from 'react-router-dom';
 
 import LoadingPanel from 'sharedComponents/LoadingPanel';
+
 import MissingPage from './MissingPage';
 
 import styles from './home.less';
@@ -11,6 +12,7 @@ const SaksbehandlerIndex = React.lazy(() => import('saksbehandler/SaksbehandlerI
 
 interface OwnProps {
   headerHeight: number;
+  valgtAvdelingEnhet?: string;
 }
 
 /**
@@ -20,12 +22,13 @@ interface OwnProps {
  */
 const Home: FunctionComponent<OwnProps> = ({
   headerHeight,
+  valgtAvdelingEnhet,
 }) => (
   <div className={styles.content} style={{ margin: `${headerHeight + 10}px auto 0` }}>
     <Suspense fallback={<LoadingPanel />}>
       <Switch>
         <Route exact path="/" component={SaksbehandlerIndex} />
-        <Route exact path="/avdelingsleder" component={AvdelingslederIndex} />
+        <Route exact path="/avdelingsleder" render={(props) => <AvdelingslederIndex {...props} valgtAvdelingEnhet={valgtAvdelingEnhet} />} />
         <Route component={MissingPage} />
       </Switch>
     </Suspense>

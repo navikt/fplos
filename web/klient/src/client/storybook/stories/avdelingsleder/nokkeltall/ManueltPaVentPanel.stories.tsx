@@ -1,17 +1,31 @@
 import React from 'react';
 import moment from 'moment';
 
+import { RestApiGlobalStatePathsKeys } from 'data/restApiPaths';
+import { RestApiProvider } from 'data/rest-api-hooks';
 import { ISO_DATE_FORMAT } from 'utils/formats';
 import fagsakYtelseType from 'kodeverk/fagsakYtelseType';
-import { ManueltPaVentPanel, ALLE_YTELSETYPER_VALGT, UKE_4 } from 'avdelingsleder/nokkeltall/components/manueltSattPaVent/ManueltPaVentPanel';
+import { ManueltPaVentPanel } from 'avdelingsleder/nokkeltall/components/manueltSattPaVent/ManueltPaVentPanel';
 
+import alleKodeverk from '../../../mocks/alleKodeverk.json';
+import RequestMock from '../../../mocks/RequestMock';
 import withIntl from '../../../decorators/withIntl';
-import withRedux from '../../../decorators/withRedux';
+
+const initialState = {
+  [RestApiGlobalStatePathsKeys.KODEVERK]: alleKodeverk,
+};
 
 export default {
   title: 'avdelingsleder/nokkeltall/ManueltPaVentPanel',
   component: ManueltPaVentPanel,
-  decorators: [withIntl, withRedux],
+  decorators: [
+    withIntl,
+    (getStory) => (
+      <RestApiProvider initialState={initialState as {[key in RestApiGlobalStatePathsKeys]: any}} requestApi={new RequestMock().build()}>
+        {getStory()}
+      </RestApiProvider>
+    ),
+  ],
 };
 
 export const skalViseGrafForAntallBehandlingerSomErSattManueltPåVent = (intl) => (
@@ -41,19 +55,6 @@ export const skalViseGrafForAntallBehandlingerSomErSattManueltPåVent = (intl) =
       behandlingFrist: moment().add(5, 'w').format(ISO_DATE_FORMAT),
       antall: 14,
     }]}
-    initialValues={{
-      valgtYtelsetype: ALLE_YTELSETYPER_VALGT,
-      ukevalg: UKE_4,
-    }}
-    fagsakYtelseTyper={[{
-      kode: fagsakYtelseType.FORELDREPRENGER,
-      navn: 'Foreldreprenger',
-    }, {
-      kode: fagsakYtelseType.ENGANGSSTONAD,
-      navn: 'Engangsstønad',
-    }, {
-      kode: fagsakYtelseType.SVANGERSKAPPENGER,
-      navn: 'Svangerskapspenger',
-    }]}
+    getValueFromLocalStorage={() => ''}
   />
 );

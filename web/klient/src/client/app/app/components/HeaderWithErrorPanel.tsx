@@ -1,44 +1,35 @@
 import React, {
-  useState, useEffect, FunctionComponent, useRef, useCallback,
+  useState, useEffect, FunctionComponent, useRef, useCallback, useMemo,
 } from 'react';
 import { injectIntl, WrappedComponentProps } from 'react-intl';
 import Popover from '@navikt/nap-popover';
 import SystemButton from '@navikt/nap-system-button';
-import UserPanel from '@navikt/nap-user-panel';
-import BoxedListWithSelection from '@navikt/boxed-list-with-selection';
 import BoxedListWithLinks from '@navikt/boxed-list-with-links';
 import Header from '@navikt/nap-header';
+import UserPanel from '@navikt/nap-user-panel';
 
-import EventType from 'data/rest-api/src/requestApi/eventType';
-import { getValueFromLocalStorage, setValueInLocalStorage, removeValueFromLocalStorage } from 'utils/localStorageHelper';
-import Avdeling from 'app/avdelingTsType';
-
+import { useGlobalStateRestApiData, useRestApiError, useRestApiErrorDispatcher } from 'data/rest-api-hooks';
+import { RestApiGlobalStatePathsKeys } from 'data/restApiPaths';
 import { RETTSKILDE_URL, SYSTEMRUTINE_URL } from 'data/eksterneLenker';
+import NavAnsatt from 'app/navAnsattTsType';
 
+import { AVDELINGSLEDER_PATH } from '../paths';
 import ErrorMessagePanel from './ErrorMessagePanel';
+import HeaderAvdelingListe from './HeaderAvdelingListe';
 
 import styles from './headerWithErrorPanel.less';
+import ErrorFormatter from '../feilhandtering/ErrorFormatter';
 
 interface OwnProps {
-  navAnsattName: string;
-  removeErrorMessage: () => void;
   queryStrings: {
     errormessage?: string;
     errorcode?: string;
   };
-  avdelinger: Avdeling[];
-  setValgtAvdeling: (id: string) => void;
-  valgtAvdelingEnhet?: string;
-  errorMessages?: {
-    type: EventType;
-    code?: string;
-    params?: {
-      errorDetails?: string;
-      location?: string;
-    };
-    text?: string;
-  }[];
   setSiteHeight: (clientHeight: number) => void;
+  locationPathname?: string;
+  setValgtAvdelingEnhet: (avdelingEnhet: string) => void;
+  valgtAvdelingEnhet?: string;
+  crashMessage?: string;
 }
 
 const useOutsideClickEvent = (erLenkepanelApent, erAvdelingerPanelApent, setLenkePanelApent, setAvdelingerPanelApent) => {
@@ -64,21 +55,6 @@ const useOutsideClickEvent = (erLenkepanelApent, erAvdelingerPanelApent, setLenk
   return wrapperRef;
 };
 
-const setAvdeling = (avdelinger, setValgtAvdeling, valgtAvdelingEnhet) => {
-  if (avdelinger.length > 0 && !valgtAvdelingEnhet) {
-    let valgtEnhet = avdelinger[0].avdelingEnhet;
-    const lagretAvdelingEnhet = getValueFromLocalStorage('avdelingEnhet');
-    if (lagretAvdelingEnhet) {
-      if (avdelinger.some((a) => a.avdelingEnhet === lagretAvdelingEnhet)) {
-        valgtEnhet = lagretAvdelingEnhet;
-      } else {
-        removeValueFromLocalStorage('avdelingEnhet');
-      }
-    }
-    setValgtAvdeling(valgtEnhet);
-  }
-};
-
 /**
  * HeaderWithErrorPanel
  *
@@ -88,75 +64,31 @@ const setAvdeling = (avdelinger, setValgtAvdeling, valgtAvdelingEnhet) => {
  */
 const HeaderWithErrorPanel: FunctionComponent<OwnProps & WrappedComponentProps> = ({
   intl,
-  navAnsattName,
-  removeErrorMessage,
   queryStrings,
-  avdelinger = [],
-  valgtAvdelingEnhet,
-  setValgtAvdeling,
-  errorMessages = [],
   setSiteHeight,
+  locationPathname,
+  setValgtAvdelingEnhet,
+  valgtAvdelingEnhet,
+  crashMessage,
 }) => {
   const [erLenkePanelApent, setLenkePanelApent] = useState(false);
   const [erAvdelingerPanelApent, setAvdelingerPanelApent] = useState(false);
+
+  const navAnsatt = useGlobalStateRestApiData<NavAnsatt>(RestApiGlobalStatePathsKeys.NAV_ANSATT);
+
+  const errorMessages = useRestApiError() || [];
+  const formaterteFeilmeldinger = useMemo(() => new ErrorFormatter().format(errorMessages, crashMessage), [errorMessages]);
+  const { removeErrorMessage } = useRestApiErrorDispatcher();
 
   const wrapperRef = useOutsideClickEvent(erLenkePanelApent, erAvdelingerPanelApent, setLenkePanelApent, setAvdelingerPanelApent);
 
   const fixedHeaderRef = useRef(null);
   useEffect(() => {
     setSiteHeight(fixedHeaderRef.current.clientHeight);
-  }, [errorMessages.length]);
+  }, [formaterteFeilmeldinger.length]);
 
-  useEffect(() => {
-    setAvdeling(avdelinger, setValgtAvdeling, valgtAvdelingEnhet);
-  }, [avdelinger]);
-
-  let brukerPanel = <UserPanel name={navAnsattName} />;
-
-  if (valgtAvdelingEnhet && avdelinger.length > 0) {
-    brukerPanel = (
-      <Popover
-        popperIsVisible={erAvdelingerPanelApent}
-        renderArrowElement
-        customPopperStyles={{ top: '11px', zIndex: 1 }}
-        arrowProps={{ style: { right: '17px' } }}
-        popperProps={{
-          children: () => (
-            <BoxedListWithSelection
-              onClick={(index) => {
-                setValueInLocalStorage('avdelingEnhet', avdelinger[index].avdelingEnhet);
-                setValgtAvdeling(avdelinger[index].avdelingEnhet);
-                setAvdelingerPanelApent(false);
-              }}
-              items={avdelinger.map((avdeling) => ({
-                name: `${avdeling.avdelingEnhet} ${avdeling.navn}`,
-                selected: valgtAvdelingEnhet === avdeling.avdelingEnhet,
-              }))}
-            />
-          ),
-          placement: 'bottom-start',
-          positionFixed: true,
-        }}
-        referenceProps={{
-          // eslint-disable-next-line react/prop-types
-          children: ({ ref }) => (
-            <div ref={ref}>
-              <UserPanel
-                name={navAnsattName}
-                unit={`${valgtAvdelingEnhet} ${avdelinger.find((a) => a.avdelingEnhet === valgtAvdelingEnhet).navn}`}
-                onClick={() => {
-                  if (erLenkePanelApent) {
-                    setLenkePanelApent(false);
-                  }
-                  setAvdelingerPanelApent(!erAvdelingerPanelApent);
-                }}
-              />
-            </div>
-          ),
-        }}
-      />
-    );
-  }
+  const skalViseAvdelinger = navAnsatt && navAnsatt.kanOppgavestyre
+    && locationPathname && locationPathname.includes(AVDELINGSLEDER_PATH);
 
   return (
     <header ref={fixedHeaderRef} className={styles.container}>
@@ -203,10 +135,22 @@ const HeaderWithErrorPanel: FunctionComponent<OwnProps & WrappedComponentProps> 
               ),
             }}
           />
-          {brukerPanel}
+          {skalViseAvdelinger && (
+            <HeaderAvdelingListe
+              erLenkePanelApent={erLenkePanelApent}
+              setLenkePanelApent={setLenkePanelApent}
+              erAvdelingerPanelApent={erAvdelingerPanelApent}
+              setAvdelingerPanelApent={setAvdelingerPanelApent}
+              valgtAvdelingEnhet={valgtAvdelingEnhet}
+              setValgtAvdelingEnhet={setValgtAvdelingEnhet}
+            />
+          )}
+          {!skalViseAvdelinger && navAnsatt && (
+            <UserPanel name={navAnsatt.navn} />
+          )}
         </Header>
       </div>
-      <ErrorMessagePanel errorMessages={errorMessages} queryStrings={queryStrings} removeErrorMessage={removeErrorMessage} />
+      <ErrorMessagePanel errorMessages={formaterteFeilmeldinger} queryStrings={queryStrings} removeErrorMessage={removeErrorMessage} />
     </header>
   );
 };

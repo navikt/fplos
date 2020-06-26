@@ -1,15 +1,22 @@
 
 import React from 'react';
 import { expect } from 'chai';
+import sinon from 'sinon';
 import { shallow } from 'enzyme';
 import moment from 'moment';
 
+import * as useKodeverk from 'data/rest-api-hooks/src/global-data/useKodeverk';
 import behandlingType from 'kodeverk/behandlingType';
-import { NyeOgFerdigstilteOppgaverForIdagPanel, getNyeOgFerdigstilteForIDag } from './NyeOgFerdigstilteOppgaverForIdagPanel';
+import NyeOgFerdigstilteOppgaverForIdagPanel, { getNyeOgFerdigstilteForIDag } from './NyeOgFerdigstilteOppgaverForIdagPanel';
 import NyeOgFerdigstilteOppgaverForIdagGraf from './NyeOgFerdigstilteOppgaverForIdagGraf';
 
 describe('<NyeOgFerdigstilteOppgaverForIdagPanel>', () => {
   it('skal vise rendre komponent', () => {
+    const contextStub = sinon.stub(useKodeverk, 'default').callsFake(() => ([{
+      kode: behandlingType.FORSTEGANGSSOKNAD,
+      navn: 'FORSTEGANGSSOKNAD',
+    }]));
+
     const nyeOgFerdigstilteOppgaver = [{
       behandlingType: {
         kode: behandlingType.FORSTEGANGSSOKNAD,
@@ -24,13 +31,10 @@ describe('<NyeOgFerdigstilteOppgaverForIdagPanel>', () => {
       width={300}
       height={200}
       nyeOgFerdigstilteOppgaver={nyeOgFerdigstilteOppgaver}
-      behandlingTyper={[{
-        kode: behandlingType.FORSTEGANGSSOKNAD,
-        navn: 'FORSTEGANGSSOKNAD',
-      }]}
     />);
 
     expect(wrapper.find(NyeOgFerdigstilteOppgaverForIdagGraf)).to.have.length(1);
+    contextStub.restore();
   });
 
   it('skal filtrere bort alle andre enn dagens oppgaver', () => {
@@ -61,7 +65,7 @@ describe('<NyeOgFerdigstilteOppgaverForIdagPanel>', () => {
       dato: moment().subtract(1, 'days').format(),
     }];
 
-    const filtrerteOppgaver = getNyeOgFerdigstilteForIDag.resultFunc(nyeOgFerdigstilteOppgaver);
+    const filtrerteOppgaver = getNyeOgFerdigstilteForIDag(nyeOgFerdigstilteOppgaver);
 
     expect(filtrerteOppgaver).to.have.length(1);
     expect(filtrerteOppgaver[0].dato).is.eql(iDag);

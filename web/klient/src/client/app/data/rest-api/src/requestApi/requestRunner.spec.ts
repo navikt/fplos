@@ -6,6 +6,7 @@ import NotificationMapper from './NotificationMapper';
 import asyncPollingStatus from './asyncPollingStatus';
 import RequestRunner from './RequestRunner';
 import RequestConfig from '../RequestConfig';
+import { REQUEST_POLLING_CANCELLED } from './RequestProcess';
 
 const httpClientGeneralMock = {
   get: () => undefined,
@@ -35,14 +36,11 @@ describe('RequestRunner', () => {
 
     const requestConfig = new RequestConfig('BEHANDLING', '/behandling');
 
-    const context = new RestApiRequestContext('fpsak', requestConfig);
+    const context = new RestApiRequestContext(requestConfig);
     const runner = new RequestRunner(httpClientMock, context);
 
     expect(runner.httpClientApi).to.eql(httpClientMock);
     expect(runner.context.config).to.eql(requestConfig);
-    expect(runner.getName()).to.eql(requestConfig.name);
-    expect(runner.getPath()).to.eql(`/fpsak${requestConfig.path}`);
-    expect(runner.getRestMethodName()).to.eql('GET');
   });
 
   it('skal utføre get-request og sende status-eventer', async () => {
@@ -63,7 +61,7 @@ describe('RequestRunner', () => {
       behandlingId: 1,
     };
 
-    const context = new RestApiRequestContext('fpsak', requestConfig);
+    const context = new RestApiRequestContext(requestConfig);
     const runner = new RequestRunner(httpClientMock, context);
     const mapper = new NotificationMapper();
     const requestStartedCallback = sinon.spy();
@@ -111,14 +109,14 @@ describe('RequestRunner', () => {
       behandlingId: 1,
     };
 
-    const context = new RestApiRequestContext('fpsak', requestConfig);
+    const context = new RestApiRequestContext(requestConfig);
     const runner = new RequestRunner(httpClientMock, context);
     const mapper = new NotificationMapper();
     // Etter en runde med polling vil en stoppe prosessen via event
-    mapper.addUpdatePollingMessageEventHandler(() => { runner.stopProcess(); return Promise.resolve(''); });
+    mapper.addUpdatePollingMessageEventHandler(() => { runner.cancelRequest(); return Promise.resolve(''); });
 
     const response = await runner.startProcess(params, mapper);
 
-    expect(response).to.eql({ payload: 'INTERNAL_CANCELLATION' });
+    expect(response).to.eql({ payload: REQUEST_POLLING_CANCELLED });
   });
 });

@@ -1,18 +1,32 @@
 import React from 'react';
 import moment from 'moment';
 
+import { RestApiGlobalStatePathsKeys } from 'data/restApiPaths';
+import { RestApiProvider } from 'data/rest-api-hooks';
 import { ISO_DATE_FORMAT } from 'utils/formats';
 import behandlingType from 'kodeverk/behandlingType';
 import fagsakYtelseType from 'kodeverk/fagsakYtelseType';
-import { TilBehandlingPanel, ALLE_YTELSETYPER_VALGT, UKE_2 } from 'avdelingsleder/nokkeltall/components/tilBehandling/TilBehandlingPanel';
+import { TilBehandlingPanel } from 'avdelingsleder/nokkeltall/components/tilBehandling/TilBehandlingPanel';
 
+import alleKodeverk from '../../../mocks/alleKodeverk.json';
+import RequestMock from '../../../mocks/RequestMock';
 import withIntl from '../../../decorators/withIntl';
-import withRedux from '../../../decorators/withRedux';
+
+const initialState = {
+  [RestApiGlobalStatePathsKeys.KODEVERK]: alleKodeverk,
+};
 
 export default {
   title: 'avdelingsleder/nokkeltall/TilBehandlingPanel',
   component: TilBehandlingPanel,
-  decorators: [withIntl, withRedux],
+  decorators: [
+    withIntl,
+    (getStory) => (
+      <RestApiProvider initialState={initialState as {[key in RestApiGlobalStatePathsKeys]: any}} requestApi={new RequestMock().build()}>
+        {getStory()}
+      </RestApiProvider>
+    ),
+  ],
 };
 
 export const skalViseGrafForAntallOppgaverTilBehandlingPerDag = (intl) => (
@@ -87,32 +101,6 @@ export const skalViseGrafForAntallOppgaverTilBehandlingPerDag = (intl) => (
       opprettetDato: moment().subtract(16, 'd').format(ISO_DATE_FORMAT),
       antall: 3,
     }]}
-    initialValues={{
-      ytelseType: ALLE_YTELSETYPER_VALGT,
-      ukevalg: UKE_2,
-    }}
-    fagsakYtelseTyper={[{
-      kode: fagsakYtelseType.FORELDREPRENGER,
-      navn: 'Foreldreprenger',
-    }, {
-      kode: fagsakYtelseType.ENGANGSSTONAD,
-      navn: 'Engangsstønad',
-    }, {
-      kode: fagsakYtelseType.SVANGERSKAPPENGER,
-      navn: 'Svangerskapspenger',
-    }]}
-    behandlingTyper={[{
-      kode: behandlingType.FORSTEGANGSSOKNAD,
-      navn: 'Førstegangssøknad',
-    }, {
-      kode: behandlingType.KLAGE,
-      navn: 'Klage',
-    }, {
-      kode: behandlingType.DOKUMENTINNSYN,
-      navn: 'Dokumentinnsyn',
-    }, {
-      kode: behandlingType.REVURDERING,
-      navn: 'Revurdering',
-    }]}
+    getValueFromLocalStorage={() => ''}
   />
 );

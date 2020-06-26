@@ -7,10 +7,9 @@ import SaksbehandlereTabell from './SaksbehandlereTabell';
 
 interface OwnProps {
   saksbehandlere: Saksbehandler[];
-  finnSaksbehandler: (brukerIdent: string) => Promise<string>;
-  resetSaksbehandlerSok: () => void;
-  leggTilSaksbehandler: (brukerIdent: string, avdelingEnhet: string) => Promise<string>;
-  fjernSaksbehandler: (brukerIdent: string, avdelingEnhet: string) => Promise<string>;
+  valgtAvdelingEnhet: string;
+  avdelingensSaksbehandlere: Saksbehandler[];
+  hentAvdelingensSaksbehandlere: (params: {avdelingEnhet: string}) => void;
 }
 
 /**
@@ -18,18 +17,21 @@ interface OwnProps {
  */
 const SaksbehandlerePanel: FunctionComponent<OwnProps> = ({
   saksbehandlere,
-  finnSaksbehandler,
-  resetSaksbehandlerSok,
-  leggTilSaksbehandler,
-  fjernSaksbehandler,
+  valgtAvdelingEnhet,
+  avdelingensSaksbehandlere,
+  hentAvdelingensSaksbehandlere,
 }) => (
   <>
-    <SaksbehandlereTabell saksbehandlere={saksbehandlere} fjernSaksbehandler={fjernSaksbehandler} />
+    <SaksbehandlereTabell
+      saksbehandlere={saksbehandlere}
+      valgtAvdelingEnhet={valgtAvdelingEnhet}
+      hentAvdelingensSaksbehandlere={hentAvdelingensSaksbehandlere}
+    />
     <VerticalSpacer sixteenPx />
     <LeggTilSaksbehandlerForm
-      finnSaksbehandler={finnSaksbehandler}
-      leggTilSaksbehandler={leggTilSaksbehandler}
-      resetSaksbehandlerSok={resetSaksbehandlerSok}
+      valgtAvdelingEnhet={valgtAvdelingEnhet}
+      avdelingensSaksbehandlere={avdelingensSaksbehandlere}
+      hentAvdelingensSaksbehandlere={hentAvdelingensSaksbehandlere}
     />
   </>
 );

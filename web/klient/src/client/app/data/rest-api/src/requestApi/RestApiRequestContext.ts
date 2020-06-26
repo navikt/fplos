@@ -3,14 +3,11 @@ import RequestConfig from '../RequestConfig';
 class RestApiRequestContext {
   endpointName: string
 
-  contextPath: string
-
   config: RequestConfig
 
   hostname = '';
 
-  constructor(contextPath: string, config: RequestConfig) {
-    this.contextPath = contextPath;
+  constructor(config: RequestConfig) {
     this.config = config;
     this.endpointName = config.name;
   }
@@ -21,8 +18,6 @@ class RestApiRequestContext {
   }
 
   getEndpointName = () => this.endpointName
-
-  getContextPath = () => this.contextPath
 
   getConfig = () => this.config
 

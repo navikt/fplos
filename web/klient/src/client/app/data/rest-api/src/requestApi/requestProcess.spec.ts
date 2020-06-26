@@ -2,7 +2,7 @@ import { expect } from 'chai';
 import sinon from 'sinon';
 
 import asyncPollingStatus from './asyncPollingStatus';
-import RequestProcess from './RequestProcess';
+import RequestProcess, { REQUEST_POLLING_CANCELLED } from './RequestProcess';
 import NotificationMapper from './NotificationMapper';
 
 class NotificationHelper {
@@ -26,11 +26,10 @@ class NotificationHelper {
     const mapper = new NotificationMapper();
     mapper.addRequestStartedEventHandler(this.requestStartedCallback);
     mapper.addRequestFinishedEventHandler(this.requestFinishedCallback);
-    mapper.addRequestErrorEventHandler(this.requestErrorCallback);
+    mapper.addRequestErrorEventHandlers(this.requestErrorCallback);
     mapper.addStatusRequestStartedEventHandler(this.statusRequestStartedCallback);
     mapper.addStatusRequestFinishedEventHandler(this.statusRequestFinishedCallback);
     mapper.addUpdatePollingMessageEventHandler(this.updatePollingMessageCallback);
-    mapper.addPollingTimeoutEventHandler(this.addPollingTimeoutEventHandler);
     this.mapper = mapper;
   }
 }
@@ -148,9 +147,6 @@ describe('RequestProcess', () => {
       // eslint-disable-next-line no-unused-expressions
       expect(notificationHelper.updatePollingMessageCallback.calledOnce).to.true;
       expect(notificationHelper.updatePollingMessageCallback.getCalls()[0].args[0]).is.eql('Polling continues');
-      // eslint-disable-next-line no-unused-expressions
-      expect(notificationHelper.addPollingTimeoutEventHandler.calledOnce).to.true;
-      expect(notificationHelper.addPollingTimeoutEventHandler.getCalls()[0].args[0]).is.eql({ location: 'http://polling.url' });
     }
   });
 
@@ -194,7 +190,7 @@ describe('RequestProcess', () => {
 
     const resResponse = await process.run(params);
 
-    expect(resResponse).to.eql({ payload: 'INTERNAL_CANCELLATION' });
+    expect(resResponse).to.eql({ payload: REQUEST_POLLING_CANCELLED });
   });
 
   it('skal hente data med nullverdi', async () => {

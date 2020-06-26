@@ -1,75 +1,81 @@
-import React, { FunctionComponent } from 'react';
+import React, { FunctionComponent, useCallback, useEffect } from 'react';
 import { injectIntl, FormattedMessage, WrappedComponentProps } from 'react-intl';
 import { Row, Column } from 'nav-frontend-grid';
 
 import Image from 'sharedComponents/Image';
-import Kodeverk from 'kodeverk/kodeverkTsType';
+import { RestApiPathsKeys } from 'data/restApiPaths';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import pilNedUrl from 'images/pil-ned.svg';
+import Saksbehandler from 'avdelingsleder/saksbehandlere/saksbehandlerTsType';
+import { useRestApiRunner } from 'data/rest-api-hooks';
 import GjeldendeSakslisterTabell from './GjeldendeSakslisterTabell';
 import SaksbehandlereForSakslisteForm from './saksbehandlerForm/SaksbehandlereForSakslisteForm';
 import UtvalgskriterierForSakslisteForm from './sakslisteForm/UtvalgskriterierForSakslisteForm';
-import Saksliste from '../sakslisteTsType';
 
 import styles from './endreSakslisterPanel.less';
+import Saksliste from '../sakslisteTsType';
+
+const EMPTY_ARRAY = [];
 
 interface OwnProps {
-  sakslister: Saksliste[];
   setValgtSakslisteId: (sakslisteId: number) => void;
-  lagNySaksliste: (avdelingEnhet: string) => void;
-  fjernSaksliste: (sakslisteId: number, avdelingEnhet: string) => void;
-  lagreSakslisteNavn: (saksliste: {sakslisteId: number; navn: string}, avdelingEnhet: string) => void;
-  lagreSakslisteBehandlingstype: (sakslisteId: number, behandlingType: Kodeverk, isChecked: boolean, avdelingEnhet: string) => void;
-  lagreSakslisteFagsakYtelseType: (sakslisteId: number, fagsakYtelseType: string, avdelingEnhet: string) => void;
-  lagreSakslisteAndreKriterier: (sakslisteId: number, andreKriterierType: Kodeverk, isChecked: boolean, skalInkludere: boolean, avdelingEnhet: string) => void;
-  knyttSaksbehandlerTilSaksliste: (sakslisteId: number, brukerIdent: string, isChecked: boolean, avdelingEnhet: string) => void;
   valgtSakslisteId?: number;
-  hentAvdelingensSakslister: (avdelingEnhet: string) => Saksliste[];
-  hentAntallOppgaverForSaksliste: (sakslisteId: number, avdelingEnhet: string) => Promise<string>;
-  hentAntallOppgaverForAvdeling: (avdelingEnhet: string) => Promise<string>;
+  valgtAvdelingEnhet: string;
+  avdelingensSaksbehandlere: Saksbehandler[];
+  resetValgtSakslisteId: () => void;
 }
 
 /**
  * EndreSakslisterPanel
  */
 const EndreSakslisterPanel: FunctionComponent<OwnProps & WrappedComponentProps> = ({
-  sakslister,
   setValgtSakslisteId,
   valgtSakslisteId,
-  lagNySaksliste,
-  fjernSaksliste,
-  lagreSakslisteNavn,
-  lagreSakslisteBehandlingstype,
-  lagreSakslisteFagsakYtelseType,
-  lagreSakslisteAndreKriterier,
-  knyttSaksbehandlerTilSaksliste,
-  hentAvdelingensSakslister,
-  hentAntallOppgaverForSaksliste,
-  hentAntallOppgaverForAvdeling,
   intl,
+  valgtAvdelingEnhet,
+  avdelingensSaksbehandlere,
+  resetValgtSakslisteId,
 }) => {
-  const valgtSaksliste = sakslister.find((s) => s.sakslisteId === valgtSakslisteId);
+  const { data: oppgaverForAvdelingAntall, startRequest: hentOppgaverForAvdelingAntall } = useRestApiRunner<number>(RestApiPathsKeys.OPPGAVE_AVDELING_ANTALL);
+  const { data: sakslister = EMPTY_ARRAY, startRequest: hentAvdelingensSl } = useRestApiRunner<Saksliste[]>(RestApiPathsKeys.SAKSLISTER_FOR_AVDELING);
+  const hentAvdelingensSakslister = useCallback((params) => hentAvdelingensSl(params, true), []);
+  useEffect(() => {
+    hentOppgaverForAvdelingAntall({ avdelingEnhet: valgtAvdelingEnhet });
+    hentAvdelingensSakslister({ avdelingEnhet: valgtAvdelingEnhet });
+  }, [valgtAvdelingEnhet]);
+
+  const { data: nySakslisteObject, startRequest: lagNySaksliste } = useRestApiRunner<{sakslisteId: string}>(RestApiPathsKeys.OPPRETT_NY_SAKSLISTE);
+  const lagNySakslisteOgHentAvdelingensSakslisterPåNytt = useCallback((avdelingEnhet) => {
+    lagNySaksliste({ avdelingEnhet }).then(() => {
+      resetValgtSakslisteId();
+      hentAvdelingensSakslister({ avdelingEnhet });
+    });
+  }, []);
+  const nyId = nySakslisteObject ? parseInt(nySakslisteObject.sakslisteId, 10) : undefined;
+  const valgtSakId = valgtSakslisteId !== undefined ? valgtSakslisteId : nyId;
+
+  const valgtSaksliste = sakslister.find((s) => s.sakslisteId === valgtSakId);
+
   return (
     <>
       <GjeldendeSakslisterTabell
         sakslister={sakslister}
         setValgtSakslisteId={setValgtSakslisteId}
-        valgtSakslisteId={valgtSakslisteId}
-        lagNySaksliste={lagNySaksliste}
-        fjernSaksliste={fjernSaksliste}
+        valgtSakslisteId={valgtSakId}
+        valgtAvdelingEnhet={valgtAvdelingEnhet}
+        oppgaverForAvdelingAntall={oppgaverForAvdelingAntall}
+        lagNySaksliste={lagNySakslisteOgHentAvdelingensSakslisterPåNytt}
+        resetValgtSakslisteId={resetValgtSakslisteId}
         hentAvdelingensSakslister={hentAvdelingensSakslister}
-        hentAntallOppgaverForAvdeling={hentAntallOppgaverForAvdeling}
       />
       <VerticalSpacer sixteenPx />
-      {valgtSakslisteId && valgtSaksliste && (
+      {valgtSakId && valgtSaksliste && (
         <>
           <UtvalgskriterierForSakslisteForm
             valgtSaksliste={valgtSaksliste}
-            lagreSakslisteNavn={lagreSakslisteNavn}
-            lagreSakslisteBehandlingstype={lagreSakslisteBehandlingstype}
-            lagreSakslisteFagsakYtelseType={lagreSakslisteFagsakYtelseType}
-            lagreSakslisteAndreKriterier={lagreSakslisteAndreKriterier}
-            hentAntallOppgaverForSaksliste={hentAntallOppgaverForSaksliste}
+            valgtAvdelingEnhet={valgtAvdelingEnhet}
+            hentAvdelingensSakslister={hentAvdelingensSakslister}
+            hentOppgaverForAvdelingAntall={hentOppgaverForAvdelingAntall}
           />
           <Row>
             <Column xs="5" />
@@ -85,7 +91,9 @@ const EndreSakslisterPanel: FunctionComponent<OwnProps & WrappedComponentProps> 
           </Row>
           <SaksbehandlereForSakslisteForm
             valgtSaksliste={valgtSaksliste}
-            knyttSaksbehandlerTilSaksliste={knyttSaksbehandlerTilSaksliste}
+            valgtAvdelingEnhet={valgtAvdelingEnhet}
+            avdelingensSaksbehandlere={avdelingensSaksbehandlere}
+            hentAvdelingensSakslister={hentAvdelingensSakslister}
           />
         </>
       )}

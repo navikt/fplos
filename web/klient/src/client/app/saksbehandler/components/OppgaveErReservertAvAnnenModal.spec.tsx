@@ -13,7 +13,7 @@ import { shallowWithIntl, intlMock } from 'testHelpers/intl-enzyme-test-helper';
 import behandlingStatus from 'kodeverk/behandlingStatus';
 import fagsakYtelseType from 'kodeverk/fagsakYtelseType';
 import behandlingType from 'kodeverk/behandlingType';
-import { OppgaveErReservertAvAnnenModal } from './OppgaveErReservertAvAnnenModal';
+import OppgaveErReservertAvAnnenModal from './OppgaveErReservertAvAnnenModal';
 
 describe('<OppgaveErReservertAvAnnenModal>', () => {
   const intl: Partial<IntlShape> = {
@@ -53,7 +53,7 @@ describe('<OppgaveErReservertAvAnnenModal>', () => {
 
   it('skal vise modal med reservasjonsdata', () => {
     const wrapper = shallowWithIntl(
-      <OppgaveErReservertAvAnnenModal
+      <OppgaveErReservertAvAnnenModal.WrappedComponent
         intl={intl as IntlShape}
         lukkErReservertModalOgOpneOppgave={sinon.spy()}
         oppgave={oppgave}
@@ -76,7 +76,7 @@ describe('<OppgaveErReservertAvAnnenModal>', () => {
   it('skal lukke modal og åpne oppgave ved trykk på knapp', () => {
     const lukkOgApneFn = sinon.spy();
     const wrapper = shallowWithIntl(
-      <OppgaveErReservertAvAnnenModal
+      <OppgaveErReservertAvAnnenModal.WrappedComponent
         intl={intl as IntlShape}
         lukkErReservertModalOgOpneOppgave={lukkOgApneFn}
         oppgave={oppgave}

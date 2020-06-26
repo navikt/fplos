@@ -2,16 +2,33 @@ import React, {
   useState, useRef, FunctionComponent, useEffect, useCallback,
 } from 'react';
 
+import { getValueFromLocalStorage } from 'utils/localStorageHelper';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import FordelingAvBehandlingstypePanel from './fordelingAvBehandlingstype/FordelingAvBehandlingstypePanel';
 import TilBehandlingPanel from './tilBehandling/TilBehandlingPanel';
 import ManueltPaVentPanel from './manueltSattPaVent/ManueltPaVentPanel';
 import OppgaverPerForsteStonadsdagPanel from './antallBehandlingerPerForsteStonadsdag/OppgaverPerForsteStonadsdagPanel';
+import OppgaverForAvdeling from './fordelingAvBehandlingstype/oppgaverForAvdelingTsType';
+import OppgaveForDato from './tilBehandling/oppgaverForDatoTsType';
+import OppgaverForForsteStonadsdag from './antallBehandlingerPerForsteStonadsdag/oppgaverForForsteStonadsdagTsType';
+import OppgaverManueltPaVent from './manueltSattPaVent/oppgaverManueltPaVentTsType';
+
+interface OwnProps {
+  oppgaverForAvdeling: OppgaverForAvdeling[];
+  oppgaverPerDato: OppgaveForDato[];
+  oppgaverManueltPaVent: OppgaverManueltPaVent[];
+  oppgaverPerForsteStonadsdag?: OppgaverForForsteStonadsdag[];
+}
 
 /**
  * NokkeltallPanel.
  */
-const NokkeltallPanel: FunctionComponent = () => {
+const NokkeltallPanel: FunctionComponent<OwnProps> = ({
+  oppgaverForAvdeling,
+  oppgaverPerDato,
+  oppgaverManueltPaVent,
+  oppgaverPerForsteStonadsdag,
+}) => {
   const [width, setWidth] = useState(0);
   const height = 200;
 
@@ -38,21 +55,28 @@ const NokkeltallPanel: FunctionComponent = () => {
       <TilBehandlingPanel
         width={width}
         height={height}
+        oppgaverPerDato={oppgaverPerDato}
+        getValueFromLocalStorage={getValueFromLocalStorage}
       />
       <VerticalSpacer twentyPx />
       <FordelingAvBehandlingstypePanel
         width={width}
         height={height}
+        oppgaverForAvdeling={oppgaverForAvdeling}
+        getValueFromLocalStorage={getValueFromLocalStorage}
       />
       <VerticalSpacer twentyPx />
       <ManueltPaVentPanel
         width={width}
         height={height}
+        oppgaverManueltPaVent={oppgaverManueltPaVent}
+        getValueFromLocalStorage={getValueFromLocalStorage}
       />
       <VerticalSpacer twentyPx />
       <OppgaverPerForsteStonadsdagPanel
         width={width}
         height={height}
+        oppgaverPerForsteStonadsdag={oppgaverPerForsteStonadsdag}
       />
     </div>
   );

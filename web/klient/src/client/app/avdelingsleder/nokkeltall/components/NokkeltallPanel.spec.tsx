@@ -8,7 +8,12 @@ import TilBehandlingPanel from './tilBehandling/TilBehandlingPanel';
 
 describe('<NokkeltallPanel>', () => {
   it('skal vise grafpaneler', () => {
-    const wrapper = shallow(<NokkeltallPanel />);
+    const wrapper = shallow(<NokkeltallPanel
+      oppgaverForAvdeling={[]}
+      oppgaverPerDato={[]}
+      oppgaverManueltPaVent={[]}
+      oppgaverPerForsteStonadsdag={[]}
+    />);
 
     expect(wrapper.find(FordelingAvBehandlingstypePanel)).to.have.length(1);
     expect(wrapper.find(TilBehandlingPanel)).to.have.length(1);

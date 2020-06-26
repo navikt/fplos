@@ -1,52 +1,18 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { bindActionCreators, Dispatch } from 'redux';
+import React, { FunctionComponent } from 'react';
 
-import Oppgave from '../oppgaveTsType';
-import { fetchBehandledeOppgaver } from './duck';
-import { getValgtSakslisteId } from '../behandlingskoer/duck';
 import SaksstottePaneler from './components/SaksstottePaneler';
 
-
-interface TsProps {
-  fetchBehandledeOppgaver: () => any;
-  sistBehandledeSaker: Oppgave[];
+interface OwnProps {
   valgtSakslisteId?: number;
 }
 
 /**
  * SaksstotteIndex
  */
-export class SaksstotteIndex extends Component<TsProps> {
-  static defaultProps = {
-    sistBehandledeSaker: [],
-    valgtSakslisteId: undefined,
-  };
+const SaksstotteIndex: FunctionComponent<OwnProps> = ({
+  valgtSakslisteId,
+}) => (
+  <SaksstottePaneler valgtSakslisteId={valgtSakslisteId} />
+);
 
-  componentDidMount = () => {
-    const { fetchBehandledeOppgaver: fetch } = this.props;
-    fetch();
-  }
-
-  render = () => {
-    const {
-      valgtSakslisteId,
-    } = this.props;
-    return (
-      <SaksstottePaneler valgtSakslisteId={valgtSakslisteId} />
-    );
-  }
-}
-
-const mapStateToProps = (state) => ({
-  valgtSakslisteId: getValgtSakslisteId(state),
-});
-
-const mapDispatchToProps = (dispatch: Dispatch) => ({
-  ...bindActionCreators({
-    fetchBehandledeOppgaver,
-  }, dispatch),
-});
-
-
-export default connect(mapStateToProps, mapDispatchToProps)(SaksstotteIndex);
+export default SaksstotteIndex;

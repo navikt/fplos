@@ -5,30 +5,40 @@ import { IntlShape } from 'react-intl';
 import { Form } from 'react-final-form';
 import { Normaltekst } from 'nav-frontend-typografi';
 
+import { RestApiPathsKeys } from 'data/restApiPaths';
+import RestApiTestMocker from 'testHelpers/RestApiTestMocker';
 import { Hovedknapp, Knapp } from 'nav-frontend-knapper';
 import { shallowWithIntl, intlMock } from 'testHelpers/intl-enzyme-test-helper';
-import { LeggTilSaksbehandlerForm } from './LeggTilSaksbehandlerForm';
+import { RestApiState } from 'data/rest-api-hooks';
+import LeggTilSaksbehandlerForm from './LeggTilSaksbehandlerForm';
 
 describe('<LeggTilSaksbehandlerForm>', () => {
+  const restApiMocker = new RestApiTestMocker();
+  afterEach(() => {
+    restApiMocker.resetMock();
+  });
+
   const intl: Partial<IntlShape> = {
     ...intlMock,
   };
   it('skal vise form for å søke opp saksbehandlere men ikke knapper for å legge til og nullstille', () => {
     const formProps = { handleSubmit: sinon.spy() };
 
-    const wrapper = shallowWithIntl(<LeggTilSaksbehandlerForm
-      intl={intl as IntlShape}
-      finnSaksbehandler={sinon.spy()}
-      leggTilSaksbehandler={sinon.spy()}
-      resetSaksbehandlerSok={sinon.spy()}
-      erLagtTilAllerede={false}
-      erSokFerdig={false}
-      valgtAvdelingEnhet="2"
-      // @ts-ignore
-    />).find(Form).renderProp('render')(formProps);
+    new RestApiTestMocker()
+      .withRestCallRunner(RestApiPathsKeys.SAKSBEHANDLER_SOK, { startRequest: () => undefined })
+      .withRestCallRunner(RestApiPathsKeys.OPPRETT_NY_SAKSBEHANDLER, { startRequest: () => undefined })
+      .runTest(() => {
+        const wrapper = shallowWithIntl(<LeggTilSaksbehandlerForm.WrappedComponent
+          intl={intl as IntlShape}
+          valgtAvdelingEnhet="2"
+          avdelingensSaksbehandlere={[]}
+          hentAvdelingensSaksbehandlere={sinon.spy()}
+          // @ts-ignore
+        />).find(Form).renderProp('render')(formProps);
 
-    expect(wrapper.find(Knapp)).to.have.length(1);
-    expect(wrapper.find(Hovedknapp)).to.have.length(0);
+        expect(wrapper.find(Knapp)).to.have.length(1);
+        expect(wrapper.find(Hovedknapp)).to.have.length(0);
+      });
   });
 
   it('skal vise form etter at saksbehandler er søkt opp, med knapp for å legge til og nullstille', () => {
@@ -39,24 +49,25 @@ describe('<LeggTilSaksbehandlerForm>', () => {
     };
     const formProps = { handleSubmit: sinon.spy() };
 
-    const wrapper = shallowWithIntl(<LeggTilSaksbehandlerForm
-      intl={intl as IntlShape}
-      finnSaksbehandler={sinon.spy()}
-      leggTilSaksbehandler={sinon.spy()}
-      resetSaksbehandlerSok={sinon.spy()}
-      saksbehandler={saksbehandler}
-      erLagtTilAllerede={false}
-      erSokFerdig
-      valgtAvdelingEnhet="2"
-      // @ts-ignore
-    />).find(Form).renderProp('render')(formProps);
+    new RestApiTestMocker()
+      .withRestCallRunner(RestApiPathsKeys.SAKSBEHANDLER_SOK, { data: saksbehandler, state: RestApiState.SUCCESS })
+      .withRestCallRunner(RestApiPathsKeys.OPPRETT_NY_SAKSBEHANDLER, { startRequest: () => undefined })
+      .runTest(() => {
+        const wrapper = shallowWithIntl(<LeggTilSaksbehandlerForm.WrappedComponent
+          intl={intl as IntlShape}
+          valgtAvdelingEnhet="2"
+          avdelingensSaksbehandlere={[]}
+          hentAvdelingensSaksbehandlere={sinon.spy()}
+          // @ts-ignore
+        />).find(Form).renderProp('render')(formProps);
 
-    expect(wrapper.find(Knapp)).to.have.length(2);
-    expect(wrapper.find(Hovedknapp)).to.have.length(1);
+        expect(wrapper.find(Knapp)).to.have.length(2);
+        expect(wrapper.find(Hovedknapp)).to.have.length(1);
 
-    const tekst = wrapper.find(Normaltekst);
-    expect(tekst).to.have.length(1);
-    expect(tekst.childAt(0).text()).to.eql('Espen Utvikler, NAV Oslo');
+        const tekst = wrapper.find(Normaltekst);
+        expect(tekst).to.have.length(1);
+        expect(tekst.childAt(0).text()).to.eql('Espen Utvikler, NAV Oslo');
+      });
   });
 
   it('skal nullstille form state og funnet saksbehandler ved trykk på nullstill', () => {
@@ -69,25 +80,26 @@ describe('<LeggTilSaksbehandlerForm>', () => {
     const formProps = { handleSubmit: sinon.spy(), form: { reset: resetFormFn } };
     const resetSaksbehandlerFn = sinon.spy();
 
-    const wrapper = shallowWithIntl(<LeggTilSaksbehandlerForm
-      intl={intl as IntlShape}
-      finnSaksbehandler={sinon.spy()}
-      leggTilSaksbehandler={sinon.spy()}
-      resetSaksbehandlerSok={resetSaksbehandlerFn}
-      saksbehandler={saksbehandler}
-      erLagtTilAllerede={false}
-      erSokFerdig
-      valgtAvdelingEnhet="2"
-      // @ts-ignore
-    />).find(Form).renderProp('render')(formProps);
+    new RestApiTestMocker()
+      .withRestCallRunner(RestApiPathsKeys.SAKSBEHANDLER_SOK, { data: saksbehandler, state: RestApiState.SUCCESS, resetRequestData: resetSaksbehandlerFn })
+      .withRestCallRunner(RestApiPathsKeys.OPPRETT_NY_SAKSBEHANDLER, { startRequest: () => undefined })
+      .runTest(() => {
+        const wrapper = shallowWithIntl(<LeggTilSaksbehandlerForm.WrappedComponent
+          intl={intl as IntlShape}
+          valgtAvdelingEnhet="2"
+          avdelingensSaksbehandlere={[]}
+          hentAvdelingensSaksbehandlere={sinon.spy()}
+          // @ts-ignore
+        />).find(Form).renderProp('render')(formProps);
 
-    const nullstillKnapp = wrapper.find(Knapp).last();
+        const nullstillKnapp = wrapper.find(Knapp).last();
 
-    const func = nullstillKnapp.prop('onClick') as () => void;
-    func();
+        const func = nullstillKnapp.prop('onClick') as () => void;
+        func();
 
-    expect(resetFormFn.calledOnce).to.be.true;
-    expect(resetSaksbehandlerFn.calledOnce).to.be.true;
+        expect(resetFormFn.calledOnce).to.be.true;
+        expect(resetSaksbehandlerFn.calledOnce).to.be.true;
+      });
   });
 
   it('skal legge til saksbehandler ved trykk på knapp for legg til', async () => {
@@ -105,15 +117,20 @@ describe('<LeggTilSaksbehandlerForm>', () => {
     };
     const resetSaksbehandlerFn = sinon.spy();
 
-    const wrapper = shallowWithIntl(<LeggTilSaksbehandlerForm
+    restApiMocker
+      .withRestCallRunner(RestApiPathsKeys.SAKSBEHANDLER_SOK, {
+        data: saksbehandler, state: RestApiState.SUCCESS, startRequest: () => undefined, resetRequestData: resetSaksbehandlerFn,
+      })
+      .withRestCallRunner(RestApiPathsKeys.OPPRETT_NY_SAKSBEHANDLER, {
+        startRequest: (params) => leggTilSaksbehandlerFn(params.brukerIdent),
+      })
+      .mock();
+
+    const wrapper = shallowWithIntl(<LeggTilSaksbehandlerForm.WrappedComponent
       intl={intl as IntlShape}
-      finnSaksbehandler={sinon.spy()}
-      leggTilSaksbehandler={leggTilSaksbehandlerFn}
-      resetSaksbehandlerSok={resetSaksbehandlerFn}
-      saksbehandler={saksbehandler}
-      erLagtTilAllerede={false}
-      erSokFerdig
       valgtAvdelingEnhet="2"
+      avdelingensSaksbehandlere={[]}
+      hentAvdelingensSaksbehandlere={sinon.spy()}
       // @ts-ignore
     />).find(Form).renderProp('render')(formProps);
 
@@ -134,40 +151,45 @@ describe('<LeggTilSaksbehandlerForm>', () => {
       avdelingsnavn: ['NAV Oslo'],
     };
     const formProps = { handleSubmit: sinon.spy() };
-    const wrapper = shallowWithIntl(<LeggTilSaksbehandlerForm
-      intl={intl as IntlShape}
-      saksbehandler={saksbehandler}
-      finnSaksbehandler={sinon.spy()}
-      leggTilSaksbehandler={sinon.spy()}
-      resetSaksbehandlerSok={sinon.spy()}
-      erLagtTilAllerede={false}
-      erSokFerdig
-      valgtAvdelingEnhet="2"
-      // @ts-ignore
-    />).find(Form).renderProp('render')(formProps);
 
-    const tekstKomp = wrapper.find(Normaltekst);
-    expect(tekstKomp).to.have.length(1);
-    expect(tekstKomp.childAt(0).text()).is.eql('Espen Utvikler, NAV Oslo');
+    new RestApiTestMocker()
+      .withRestCallRunner(RestApiPathsKeys.SAKSBEHANDLER_SOK, { data: saksbehandler, state: RestApiState.SUCCESS })
+      .withRestCallRunner(RestApiPathsKeys.OPPRETT_NY_SAKSBEHANDLER, { startRequest: () => undefined })
+      .runTest(() => {
+        const wrapper = shallowWithIntl(<LeggTilSaksbehandlerForm.WrappedComponent
+          intl={intl as IntlShape}
+          valgtAvdelingEnhet="2"
+          avdelingensSaksbehandlere={[]}
+          hentAvdelingensSaksbehandlere={sinon.spy()}
+          // @ts-ignore
+        />).find(Form).renderProp('render')(formProps);
+
+        const tekstKomp = wrapper.find(Normaltekst);
+        expect(tekstKomp).to.have.length(1);
+        expect(tekstKomp.childAt(0).text()).is.eql('Espen Utvikler, NAV Oslo');
+      });
   });
 
   it('skal vise tekst som viser at brukerident ikke finnes etter søk på ugyldig bruker', () => {
     const formProps = { handleSubmit: sinon.spy() };
 
-    const wrapper = shallowWithIntl(<LeggTilSaksbehandlerForm
-      intl={intl as IntlShape}
-      finnSaksbehandler={sinon.spy()}
-      leggTilSaksbehandler={sinon.spy()}
-      resetSaksbehandlerSok={sinon.spy()}
-      erLagtTilAllerede={false}
-      erSokFerdig
-      valgtAvdelingEnhet="2"
-      // @ts-ignore
-    />).find(Form).renderProp('render')(formProps);
 
-    const tekstKomp = wrapper.find(Normaltekst);
-    expect(tekstKomp).to.have.length(1);
-    expect(tekstKomp.childAt(0).text()).is.eql('Kan ikke finne brukerident');
+    new RestApiTestMocker()
+      .withRestCallRunner(RestApiPathsKeys.SAKSBEHANDLER_SOK, { data: undefined, state: RestApiState.SUCCESS })
+      .withRestCallRunner(RestApiPathsKeys.OPPRETT_NY_SAKSBEHANDLER, { startRequest: () => undefined })
+      .runTest(() => {
+        const wrapper = shallowWithIntl(<LeggTilSaksbehandlerForm.WrappedComponent
+          intl={intl as IntlShape}
+          valgtAvdelingEnhet="2"
+          avdelingensSaksbehandlere={[]}
+          hentAvdelingensSaksbehandlere={sinon.spy()}
+          // @ts-ignore
+        />).find(Form).renderProp('render')(formProps);
+
+        const tekstKomp = wrapper.find(Normaltekst);
+        expect(tekstKomp).to.have.length(1);
+        expect(tekstKomp.childAt(0).text()).is.eql('Kan ikke finne brukerident');
+      });
   });
 
   it('skal vise tekst som viser at brukerident allerede er lagt til', () => {
@@ -177,20 +199,22 @@ describe('<LeggTilSaksbehandlerForm>', () => {
       avdelingsnavn: ['NAV Oslo'],
     };
     const formProps = { handleSubmit: sinon.spy() };
-    const wrapper = shallowWithIntl(<LeggTilSaksbehandlerForm
-      intl={intl as IntlShape}
-      saksbehandler={saksbehandler}
-      finnSaksbehandler={sinon.spy()}
-      leggTilSaksbehandler={sinon.spy()}
-      resetSaksbehandlerSok={sinon.spy()}
-      erLagtTilAllerede
-      erSokFerdig
-      valgtAvdelingEnhet="2"
-      // @ts-ignore
-    />).find(Form).renderProp('render')(formProps);
 
-    const tekstKomp = wrapper.find(Normaltekst);
-    expect(tekstKomp).to.have.length(1);
-    expect(tekstKomp.childAt(0).text()).is.eql('Espen Utvikler, NAV Oslo (Brukerident finnes allerede i listen)');
+    new RestApiTestMocker()
+      .withRestCallRunner(RestApiPathsKeys.SAKSBEHANDLER_SOK, { data: saksbehandler, state: RestApiState.SUCCESS })
+      .withRestCallRunner(RestApiPathsKeys.OPPRETT_NY_SAKSBEHANDLER, { startRequest: () => undefined })
+      .runTest(() => {
+        const wrapper = shallowWithIntl(<LeggTilSaksbehandlerForm.WrappedComponent
+          intl={intl as IntlShape}
+          valgtAvdelingEnhet="2"
+          avdelingensSaksbehandlere={[saksbehandler]}
+          hentAvdelingensSaksbehandlere={sinon.spy()}
+          // @ts-ignore
+        />).find(Form).renderProp('render')(formProps);
+
+        const tekstKomp = wrapper.find(Normaltekst);
+        expect(tekstKomp).to.have.length(1);
+        expect(tekstKomp.childAt(0).text()).is.eql('Espen Utvikler, NAV Oslo (Brukerident finnes allerede i listen)');
+      });
   });
 });

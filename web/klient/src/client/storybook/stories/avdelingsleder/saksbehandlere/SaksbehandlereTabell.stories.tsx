@@ -1,8 +1,10 @@
-import React, { useState, useCallback } from 'react';
+import React from 'react';
 
-import { SaksbehandlereTabell } from 'avdelingsleder/saksbehandlere/components/SaksbehandlereTabell';
+import SaksbehandlereTabell from 'avdelingsleder/saksbehandlere/components/SaksbehandlereTabell';
+import { RestApiProvider } from 'data/rest-api-hooks';
 
 import withIntl from '../../../decorators/withIntl';
+import RequestMock from '../../../mocks/RequestMock';
 
 export default {
   title: 'avdelingsleder/saksbehandlere/SaksbehandlereTabell',
@@ -11,15 +13,17 @@ export default {
 };
 
 export const skalViseTomTabell = () => (
-  <SaksbehandlereTabell
-    saksbehandlere={[]}
-    fjernSaksbehandler={() => undefined}
-    valgtAvdelingEnhet="NAV Viken"
-  />
+  <RestApiProvider requestApi={new RequestMock().build()}>
+    <SaksbehandlereTabell
+      saksbehandlere={[]}
+      hentAvdelingensSaksbehandlere={() => undefined}
+      valgtAvdelingEnhet="NAV Viken"
+    />
+  </RestApiProvider>
 );
 
 export const skalViseSaksbehandlereITabell = () => {
-  const [saksbehandlere, fjernSaksbehandler] = useState([{
+  const saksbehandlere = [{
     brukerIdent: 'R12122',
     navn: 'Espen Utvikler',
     avdelingsnavn: ['NAV Viken'],
@@ -27,17 +31,15 @@ export const skalViseSaksbehandlereITabell = () => {
     brukerIdent: 'S53343',
     navn: 'Steffen',
     avdelingsnavn: ['NAV Oslo'],
-  }]);
-
-  const fjern = useCallback((brukerIdent) => {
-    fjernSaksbehandler((oldState) => oldState.filter((s) => s.brukerIdent !== brukerIdent));
-  }, [saksbehandlere]);
+  }];
 
   return (
-    <SaksbehandlereTabell
-      saksbehandlere={saksbehandlere}
-      fjernSaksbehandler={fjern as () => Promise<string>}
-      valgtAvdelingEnhet="NAV Viken"
-    />
+    <RestApiProvider requestApi={new RequestMock().build()}>
+      <SaksbehandlereTabell
+        saksbehandlere={saksbehandlere}
+        hentAvdelingensSaksbehandlere={() => undefined}
+        valgtAvdelingEnhet="NAV Viken"
+      />
+    </RestApiProvider>
   );
 };

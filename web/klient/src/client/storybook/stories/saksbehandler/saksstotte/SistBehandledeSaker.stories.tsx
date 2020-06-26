@@ -1,64 +1,49 @@
 import React from 'react';
 
-import { SistBehandledeSaker } from 'saksbehandler/saksstotte/components/SistBehandledeSaker';
-import behandlingStatus from 'kodeverk/behandlingStatus';
-import behandlingType from 'kodeverk/behandlingType';
-import fagsakYtelseType from 'kodeverk/fagsakYtelseType';
+import { RestApiProvider } from 'data/rest-api-hooks';
+import SistBehandledeSaker from 'saksbehandler/saksstotte/components/SistBehandledeSaker';
+import { RestApiGlobalStatePathsKeys, RestApiPathsKeys } from 'data/restApiPaths';
 
+import RequestMock from '../../../mocks/RequestMock';
 import withIntl from '../../../decorators/withIntl';
+
+const initialState = {
+  [RestApiGlobalStatePathsKeys.FPSAK_URL]: {
+    value: 'fpsak-url',
+  },
+  [RestApiGlobalStatePathsKeys.FPTILBAKE_URL]: {
+    value: 'fptilbake-url',
+  },
+};
 
 export default {
   title: 'saksbehandler/saksstotte/SistBehandledeSaker',
   component: SistBehandledeSaker,
-  decorators: [withIntl],
+  decorators: [
+    withIntl,
+  ],
 };
 
 export const skalViseIngenBehandlinger = () => (
-  <SistBehandledeSaker
-    fpsakUrl=""
-    fptilbakeUrl=""
-    sistBehandledeSaker={[]}
-    hentFpsakInternBehandlingId={() => Promise.resolve({ payload: 1 })}
-  />
+  <RestApiProvider initialState={initialState as {[key in RestApiGlobalStatePathsKeys]: any}} requestApi={new RequestMock().build()}>
+    <SistBehandledeSaker />
+  </RestApiProvider>
 );
 
-export const skalViseSistBehandlendeSaker = () => (
-  <SistBehandledeSaker
-    fpsakUrl=""
-    fptilbakeUrl=""
-    sistBehandledeSaker={[{
-      id: 1,
-      status: {
-        erReservert: false,
-        flyttetReservasjon: {
-          tidspunkt: '2019-02-02',
-          uid: '23423',
-          navn: 'Espen Utvikler',
-          begrunnelse: 'Flyttet',
-        },
-      },
-      saksnummer: 1234,
-      personnummer: '334342323',
-      navn: 'Espen Utvikler',
-      system: 'SAK',
-      behandlingstype: {
-        kode: behandlingType.FORSTEGANGSSOKNAD,
-        navn: 'Førstegangssøknad',
-      },
-      behandlingStatus: {
-        kode: behandlingStatus.BEHANDLING_UTREDES,
-        navn: 'Behandling utredes',
-      },
-      opprettetTidspunkt: '2019-01-01',
-      behandlingsfrist: '2019-01-01',
-      fagsakYtelseType: {
-        kode: fagsakYtelseType.FORELDREPRENGER,
-        navn: 'Foreldrepenger',
-      },
-      erTilSaksbehandling: true,
-      behandlingId: '1',
-      href: '',
-    }]}
-    hentFpsakInternBehandlingId={() => Promise.resolve({ payload: 1 })}
-  />
-);
+export const skalViseSistBehandlendeSaker = () => {
+  const behandledeOppgaver = [{
+    behandlingId: 1,
+    personnummer: '334342323',
+    navn: 'Espen Utvikler',
+  }];
+
+  const requestApi = new RequestMock()
+    .withKeyAndResult(RestApiPathsKeys.BEHANDLEDE_OPPGAVER, behandledeOppgaver)
+    .build();
+
+  return (
+    <RestApiProvider initialState={initialState as {[key in RestApiGlobalStatePathsKeys]: any}} requestApi={requestApi}>
+      <SistBehandledeSaker />
+    </RestApiProvider>
+  );
+};

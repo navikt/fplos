@@ -1,11 +1,19 @@
-import React, { useState, useCallback } from 'react';
+import React from 'react';
 import { Form } from 'react-final-form';
+import { action } from '@storybook/addon-actions';
 
+import { RestApiGlobalStatePathsKeys } from 'data/restApiPaths';
+import { RestApiProvider } from 'data/rest-api-hooks';
 import BehandlingstypeVelger from 'avdelingsleder/behandlingskoer/components/sakslisteForm/BehandlingstypeVelger';
 import behandlingType from 'kodeverk/behandlingType';
 
 import withIntl from '../../../decorators/withIntl';
 import alleKodeverk from '../../../mocks/alleKodeverk.json';
+import RequestMock from '../../../mocks/RequestMock';
+
+const initialState = {
+  [RestApiGlobalStatePathsKeys.KODEVERK]: alleKodeverk,
+};
 
 export default {
   title: 'avdelingsleder/behandlingskoer/BehandlingstypeVelger',
@@ -14,28 +22,24 @@ export default {
 };
 
 export const skalViseVelgerForBehandlingstyper = () => {
-  const [verdier, leggTilVerdi] = useState({
+  const verdier = {
     [behandlingType.FORSTEGANGSSOKNAD]: true,
-  });
-  const lagre = useCallback((_sakslisteId, bt, isChecked) => {
-    leggTilVerdi((oldState) => ({
-      ...oldState,
-      [bt.kode]: isChecked,
-    }));
-  }, []);
+  };
 
   return (
-    <Form
-      onSubmit={() => undefined}
-      initialValues={verdier}
-      render={() => (
-        <BehandlingstypeVelger
-          alleKodeverk={alleKodeverk}
-          valgtSakslisteId={1}
-          lagreSakslisteBehandlingstype={lagre}
-          valgtAvdelingEnhet="NAV Viken"
-        />
-      )}
-    />
+    <RestApiProvider initialState={initialState as {[key in RestApiGlobalStatePathsKeys]: any}} requestApi={new RequestMock().build()}>
+      <Form
+        onSubmit={() => undefined}
+        initialValues={verdier}
+        render={() => (
+          <BehandlingstypeVelger
+            valgtSakslisteId={1}
+            valgtAvdelingEnhet="NAV Viken"
+            hentAvdelingensSakslister={action('button-click')}
+            hentAntallOppgaver={action('button-click')}
+          />
+        )}
+      />
+    </RestApiProvider>
   );
 };

@@ -1,37 +1,39 @@
 import React from 'react';
 import moment from 'moment';
 
-import { ISO_DATE_FORMAT } from 'utils/formats';
+import { RestApiGlobalStatePathsKeys } from 'data/restApiPaths';
 import behandlingType from 'kodeverk/behandlingType';
-import {
-  NyeOgFerdigstilteOppgaverForIdagPanel,
-} from 'saksbehandler/saksstotte/nokkeltall/components/nyeOgFerdigstilteOppgaverForIdag/NyeOgFerdigstilteOppgaverForIdagPanel';
+import { ISO_DATE_FORMAT } from 'utils/formats';
+import { RestApiProvider } from 'data/rest-api-hooks';
+import
+NyeOgFerdigstilteOppgaverForIdagPanel
+  from 'saksbehandler/saksstotte/nokkeltall/components/nyeOgFerdigstilteOppgaverForIdag/NyeOgFerdigstilteOppgaverForIdagPanel';
 
+import alleKodeverk from '../../../mocks/alleKodeverk.json';
+import RequestMock from '../../../mocks/RequestMock';
 import withIntl from '../../../decorators/withIntl';
+
+const initialState = {
+  [RestApiGlobalStatePathsKeys.KODEVERK]: alleKodeverk,
+};
 
 export default {
   title: 'saksbehandler/saksstotte/NyeOgFerdigstilteOppgaverForIdagPanel',
   component: NyeOgFerdigstilteOppgaverForIdagPanel,
-  decorators: [withIntl],
+  decorators: [
+    withIntl,
+    (getStory) => (
+      <RestApiProvider initialState={initialState as {[key in RestApiGlobalStatePathsKeys]: any}} requestApi={new RequestMock().build()}>
+        {getStory()}
+      </RestApiProvider>
+    ),
+  ],
 };
 
 export const skalViseGrafForNyeOgFerdigstilteOppgaverForIdag = () => (
   <NyeOgFerdigstilteOppgaverForIdagPanel
     width={700}
     height={300}
-    behandlingTyper={[{
-      kode: behandlingType.FORSTEGANGSSOKNAD,
-      navn: 'Førstegangssøknad',
-    }, {
-      kode: behandlingType.KLAGE,
-      navn: 'Klage',
-    }, {
-      kode: behandlingType.DOKUMENTINNSYN,
-      navn: 'Dokumentinnsyn',
-    }, {
-      kode: behandlingType.REVURDERING,
-      navn: 'Revurdering',
-    }]}
     nyeOgFerdigstilteOppgaver={[{
       behandlingType: {
         kode: behandlingType.FORSTEGANGSSOKNAD,

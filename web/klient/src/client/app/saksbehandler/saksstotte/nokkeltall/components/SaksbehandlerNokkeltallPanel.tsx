@@ -3,8 +3,14 @@ import React, {
 } from 'react';
 
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
+
 import NyeOgFerdigstilteOppgaverForIdagPanel from './nyeOgFerdigstilteOppgaverForIdag/NyeOgFerdigstilteOppgaverForIdagPanel';
 import NyeOgFerdigstilteOppgaverForSisteSyvPanel from './nyeOgFerdigstilteOppgaverForSisteSyv/NyeOgFerdigstilteOppgaverForSisteSyvPanel';
+import NyeOgFerdigstilteOppgaver from '../nyeOgFerdigstilteOppgaverTsType';
+
+interface OwnProps {
+  nyeOgFerdigstilteOppgaver: NyeOgFerdigstilteOppgaver[]
+}
 
 interface StateProps {
   width: number;
@@ -14,9 +20,11 @@ interface StateProps {
 /**
  * SaksbehandlerNokkeltallPanel.
  */
-const SaksbehandlerNokkeltallPanel: FunctionComponent = () => {
+const SaksbehandlerNokkeltallPanel: FunctionComponent<OwnProps> = ({
+  nyeOgFerdigstilteOppgaver,
+}) => {
   const [width, setWidth] = useState(0);
-  const height = 200;
+  const HEIGHT = 200;
 
   const ref = useRef(null);
 
@@ -34,18 +42,20 @@ const SaksbehandlerNokkeltallPanel: FunctionComponent = () => {
     return () => {
       window.removeEventListener('resize', oppdaterGrafStorrelse);
     };
-  }, []);
+  }, [oppdaterGrafStorrelse]);
 
   return (
     <div ref={ref}>
       <NyeOgFerdigstilteOppgaverForIdagPanel
         width={width}
-        height={height}
+        height={HEIGHT}
+        nyeOgFerdigstilteOppgaver={nyeOgFerdigstilteOppgaver}
       />
       <VerticalSpacer sixteenPx />
       <NyeOgFerdigstilteOppgaverForSisteSyvPanel
         width={width}
-        height={height}
+        height={HEIGHT}
+        nyeOgFerdigstilteOppgaver={nyeOgFerdigstilteOppgaver}
       />
     </div>
   );

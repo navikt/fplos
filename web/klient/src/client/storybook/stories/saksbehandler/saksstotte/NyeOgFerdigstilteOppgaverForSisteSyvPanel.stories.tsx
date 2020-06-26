@@ -3,9 +3,9 @@ import moment from 'moment';
 
 import { ISO_DATE_FORMAT } from 'utils/formats';
 import behandlingType from 'kodeverk/behandlingType';
-import {
-  NyeOgFerdigstilteOppgaverForSisteSyvPanel,
-} from 'saksbehandler/saksstotte/nokkeltall/components/nyeOgFerdigstilteOppgaverForSisteSyv/NyeOgFerdigstilteOppgaverForSisteSyvPanel';
+import
+NyeOgFerdigstilteOppgaverForSisteSyvPanel
+  from 'saksbehandler/saksstotte/nokkeltall/components/nyeOgFerdigstilteOppgaverForSisteSyv/NyeOgFerdigstilteOppgaverForSisteSyvPanel';
 
 import withIntl from '../../../decorators/withIntl';
 

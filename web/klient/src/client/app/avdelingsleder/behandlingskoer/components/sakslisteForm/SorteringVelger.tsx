@@ -3,6 +3,7 @@ import { FormattedMessage, injectIntl, WrappedComponentProps } from 'react-intl'
 
 import { Undertekst } from 'nav-frontend-typografi';
 
+import { RestApiPathsKeys } from 'data/restApiPaths';
 import {
   RadioGroupField, RadioOption,
 } from 'form/FinalFields';
@@ -10,12 +11,12 @@ import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import kodeverkTyper from 'kodeverk/kodeverkTyper';
 import Kodeverk from 'kodeverk/kodeverkTsType';
 import behandlingType from 'kodeverk/behandlingType';
+import { useRestApiRunner, useKodeverk } from 'data/rest-api-hooks';
 import DatoSorteringValg from './DatoSorteringValg';
 import BelopSorteringValg from './BelopSorteringValg';
 import KoSorteringType from '../../KoSorteringTsType';
 
 interface OwnProps {
-  alleKodeverk: {[key: string]: KoSorteringType[]};
   valgtSakslisteId: number;
   valgteBehandlingtyper: Kodeverk[];
   valgtAvdelingEnhet: string;
@@ -24,10 +25,8 @@ interface OwnProps {
   til: number;
   fomDato?: string;
   tomDato?: string;
-  lagreSakslisteSortering: (sakslisteId: number, sakslisteSorteringValg: KoSorteringType, avdelingEnhet: string) => void;
-  lagreSakslisteSorteringErDynamiskPeriode: (sakslisteId: number, avdelingEnhet: string) => void;
-  lagreSakslisteSorteringTidsintervallDato: (sakslisteId: number, fomDato: string, tomDato: string, avdelingEnhet: string) => void;
-  lagreSakslisteSorteringNumeriskIntervall: (sakslisteId: number, fra: number, til: number, avdelingEnhet: string) => void;
+  hentAvdelingensSakslister: (params: {avdelingEnhet: string}) => void;
+  hentAntallOppgaver: (sakslisteId: number, avdelingEnhet: string) => void;
 }
 
 const bareTilbakekrevingValgt = (valgteBehandlingtyper: Kodeverk[]) => valgteBehandlingtyper
@@ -40,32 +39,41 @@ const bareTilbakekrevingValgt = (valgteBehandlingtyper: Kodeverk[]) => valgteBeh
  */
 const SorteringVelger: FunctionComponent<OwnProps & WrappedComponentProps> = ({
   intl,
-  alleKodeverk,
   valgtSakslisteId,
   valgteBehandlingtyper,
-  lagreSakslisteSortering,
-  lagreSakslisteSorteringErDynamiskPeriode,
   valgtAvdelingEnhet,
   erDynamiskPeriode,
-  lagreSakslisteSorteringTidsintervallDato,
-  lagreSakslisteSorteringNumeriskIntervall,
   fra,
   til,
   fomDato,
   tomDato,
-}) => (
-  <>
-    <Undertekst>
-      <FormattedMessage id="SorteringVelger.Sortering" />
-    </Undertekst>
-    <VerticalSpacer eightPx />
-    <RadioGroupField
-      name="sortering"
-      direction="vertical"
-      onChange={(sorteringType) => lagreSakslisteSortering(valgtSakslisteId, sorteringType, valgtAvdelingEnhet)}
-    >
-      {alleKodeverk[kodeverkTyper.KO_SORTERING].map((koSortering) => (
-        (koSortering.feltkategori !== 'TILBAKEKREVING' || bareTilbakekrevingValgt(valgteBehandlingtyper)) && (
+  hentAvdelingensSakslister,
+  hentAntallOppgaver,
+}) => {
+  const { startRequest: lagreSakslisteSortering } = useRestApiRunner(RestApiPathsKeys.LAGRE_SAKSLISTE_SORTERING);
+  const { startRequest: lagreSakslisteSorteringNumeriskIntervall } = useRestApiRunner(RestApiPathsKeys.LAGRE_SAKSLISTE_SORTERING_TIDSINTERVALL_DAGER);
+  const koSorteringer = useKodeverk<KoSorteringType>(kodeverkTyper.KO_SORTERING);
+
+  return (
+    <>
+      <Undertekst>
+        <FormattedMessage id="SorteringVelger.Sortering" />
+      </Undertekst>
+      <VerticalSpacer eightPx />
+      <RadioGroupField
+        name="sortering"
+        direction="vertical"
+        onChange={(sorteringType) => lagreSakslisteSortering({
+          sakslisteId: valgtSakslisteId,
+          sakslisteSorteringValg: sorteringType,
+          avdelingEnhet: valgtAvdelingEnhet,
+        }).then(() => {
+          hentAntallOppgaver(valgtSakslisteId, valgtAvdelingEnhet);
+          hentAvdelingensSakslister({ avdelingEnhet: valgtAvdelingEnhet });
+        })}
+      >
+        {koSorteringer.map((koSortering) => (
+          (koSortering.feltkategori !== 'TILBAKEKREVING' || bareTilbakekrevingValgt(valgteBehandlingtyper)) && (
           <RadioOption
             key={koSortering.kode}
             value={koSortering.kode}
@@ -75,8 +83,6 @@ const SorteringVelger: FunctionComponent<OwnProps & WrappedComponentProps> = ({
             <DatoSorteringValg
               intl={intl}
               valgtSakslisteId={valgtSakslisteId}
-              lagreSakslisteSorteringErDynamiskPeriode={lagreSakslisteSorteringErDynamiskPeriode}
-              lagreSakslisteSorteringTidsintervallDato={lagreSakslisteSorteringTidsintervallDato}
               lagreSakslisteSorteringTidsintervallDager={lagreSakslisteSorteringNumeriskIntervall}
               valgtAvdelingEnhet={valgtAvdelingEnhet}
               erDynamiskPeriode={erDynamiskPeriode}
@@ -84,6 +90,8 @@ const SorteringVelger: FunctionComponent<OwnProps & WrappedComponentProps> = ({
               til={til}
               fomDato={fomDato}
               tomDato={tomDato}
+              hentAvdelingensSakslister={hentAvdelingensSakslister}
+              hentAntallOppgaver={hentAntallOppgaver}
             />
             )}
             {(koSortering.felttype === 'HELTALL') && (
@@ -94,13 +102,16 @@ const SorteringVelger: FunctionComponent<OwnProps & WrappedComponentProps> = ({
               valgtAvdelingEnhet={valgtAvdelingEnhet}
               fra={fra}
               til={til}
+              hentAvdelingensSakslister={hentAvdelingensSakslister}
+              hentAntallOppgaver={hentAntallOppgaver}
             />
             )}
           </RadioOption>
-        )
-      ))}
-    </RadioGroupField>
-  </>
-);
+          )
+        ))}
+      </RadioGroupField>
+    </>
+  );
+};
 
 export default injectIntl(SorteringVelger);

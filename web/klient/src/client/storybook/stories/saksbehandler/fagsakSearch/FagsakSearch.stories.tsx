@@ -1,19 +1,36 @@
 import React from 'react';
 import { action } from '@storybook/addon-actions';
 
+import { RestApiGlobalStatePathsKeys } from 'data/restApiPaths';
+import { RestApiProvider } from 'data/rest-api-hooks';
 import fagsakYtelseType from 'kodeverk/fagsakYtelseType';
 import fagsakStatus from 'kodeverk/fagsakStatus';
 import behandlingStatus from 'kodeverk/behandlingStatus';
 import behandlingType from 'kodeverk/behandlingType';
 import FagsakSearch from 'saksbehandler/fagsakSearch/components/FagsakSearch';
 
+import RequestMock from '../../../mocks/RequestMock';
+import alleKodeverk from '../../../mocks/alleKodeverk.json';
 import withIntl from '../../../decorators/withIntl';
-import withRedux from '../../../decorators/withRedux';
+
+const initialState = {
+  [RestApiGlobalStatePathsKeys.NAV_ANSATT]: {
+    kanSaksbehandle: true,
+  },
+  [RestApiGlobalStatePathsKeys.KODEVERK]: alleKodeverk,
+};
 
 export default {
   title: 'saksbehandler/fagsakSearch/FagsakSearch',
   component: FagsakSearch,
-  decorators: [withRedux, withIntl],
+  decorators: [
+    withIntl,
+    (getStory) => (
+      <RestApiProvider initialState={initialState as {[key in RestApiGlobalStatePathsKeys]: any}} requestApi={new RequestMock().build()}>
+        {getStory()}
+      </RestApiProvider>
+    ),
+  ],
 };
 
 export const skalViseAtIngentingBleFunnet = () => (

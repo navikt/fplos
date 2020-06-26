@@ -1,42 +1,61 @@
 import React from 'react';
 import { action } from '@storybook/addon-actions';
 
-import { SearchForm } from 'saksbehandler/fagsakSearch/components/SearchForm';
+import { RestApiGlobalStatePathsKeys } from 'data/restApiPaths';
+import SearchForm from 'saksbehandler/fagsakSearch/components/SearchForm';
+import { RestApiProvider } from 'data/rest-api-hooks';
 
+import RequestMock from '../../../mocks/RequestMock';
 import withIntl from '../../../decorators/withIntl';
+
+const initialState = {
+  [RestApiGlobalStatePathsKeys.NAV_ANSATT]: {
+    kanSaksbehandle: true,
+  },
+};
 
 export default {
   title: 'saksbehandler/fagsakSearch/SearchForm',
   component: SearchForm,
-  decorators: [withIntl],
+  decorators: [
+    withIntl,
+    (getStory) => (
+      <RestApiProvider initialState={initialState as {[key in RestApiGlobalStatePathsKeys]: any}} requestApi={new RequestMock().build()}>
+        {getStory()}
+      </RestApiProvider>
+    ),
+  ],
 };
 
-export const skalViseSøkeskjema = (intl) => (
+export const skalViseSøkeskjema = () => (
   <SearchForm
-    intl={intl}
     onSubmit={action('button-click')}
     searchStarted={false}
     resetSearch={action('button-click')}
-    kanSaksbehandle
   />
 );
 
-export const skalViseSøkeskjemaNårEnIkkeKanVelgeÅReservere = (intl) => (
-  <SearchForm
-    intl={intl}
-    onSubmit={action('button-click')}
-    searchStarted={false}
-    resetSearch={action('button-click')}
-    kanSaksbehandle={false}
-  />
+export const skalViseSøkeskjemaNårEnIkkeKanVelgeÅReservere = () => (
+  <RestApiProvider
+    initialState={{
+      [RestApiGlobalStatePathsKeys.NAV_ANSATT]: {
+        kanSaksbehandle: false,
+      },
+    } as {[key in RestApiGlobalStatePathsKeys]: any}}
+    requestApi={new RequestMock().build()}
+  >
+    <SearchForm
+      onSubmit={action('button-click')}
+      searchStarted={false}
+      resetSearch={action('button-click')}
+    />
+  </RestApiProvider>
 );
 
-export const skalViseSøkeskjemaNårSøkPågår = (intl) => (
+export const skalViseSøkeskjemaNårSøkPågår = () => (
   <SearchForm
-    intl={intl}
     onSubmit={action('button-click')}
     searchStarted
     resetSearch={action('button-click')}
-    kanSaksbehandle
   />
 );

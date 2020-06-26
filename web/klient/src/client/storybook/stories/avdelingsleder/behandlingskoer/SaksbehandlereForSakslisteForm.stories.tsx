@@ -1,8 +1,11 @@
-import React, { useCallback, useState } from 'react';
+import React from 'react';
+import { action } from '@storybook/addon-actions';
 
-import { SaksbehandlereForSakslisteForm } from 'avdelingsleder/behandlingskoer/components/saksbehandlerForm/SaksbehandlereForSakslisteForm';
+import SaksbehandlereForSakslisteForm from 'avdelingsleder/behandlingskoer/components/saksbehandlerForm/SaksbehandlereForSakslisteForm';
+import { RestApiProvider } from 'data/rest-api-hooks';
 
 import withIntl from '../../../decorators/withIntl';
+import RequestMock from '../../../mocks/RequestMock';
 
 export default {
   title: 'avdelingsleder/behandlingskoer/SaksbehandlereForSakslisteForm',
@@ -11,41 +14,34 @@ export default {
 };
 
 export const skalVisePanelForÅLeggeSaksbehandlereTilEnSaksliste = () => {
-  const [saksliste, setSaksliste] = useState({
+  const saksliste = {
     sakslisteId: 1,
     navn: 'Saksliste 1',
     sistEndret: '2020-01-01',
     saksbehandlerIdenter: ['S34354'],
     antallBehandlinger: 1,
-  });
-
-  const leggTilSaksbehandler = useCallback((_sakslisteId, brukerIdent, isChecked) => {
-    setSaksliste((oldState) => ({
-      ...oldState,
-      saksbehandlerIdenter: isChecked
-        ? oldState.saksbehandlerIdenter.concat(brukerIdent)
-        : oldState.saksbehandlerIdenter.filter((i) => i !== brukerIdent),
-    }));
-  }, []);
+  };
 
   return (
-    <SaksbehandlereForSakslisteForm
-      valgtSaksliste={saksliste}
-      avdelingensSaksbehandlere={[{
-        brukerIdent: 'E23232',
-        navn: 'Espen Utvikler',
-        avdelingsnavn: ['NAV Viken'],
-      }, {
-        brukerIdent: 'S34354',
-        navn: 'Steffen',
-        avdelingsnavn: ['NAV Viken'],
-      }, {
-        brukerIdent: 'E24353',
-        navn: 'Eirik',
-        avdelingsnavn: ['NAV Viken'],
-      }]}
-      knyttSaksbehandlerTilSaksliste={leggTilSaksbehandler}
-      valgtAvdelingEnhet="NAV Viken"
-    />
+    <RestApiProvider requestApi={new RequestMock().build()}>
+      <SaksbehandlereForSakslisteForm
+        valgtSaksliste={saksliste}
+        avdelingensSaksbehandlere={[{
+          brukerIdent: 'E23232',
+          navn: 'Espen Utvikler',
+          avdelingsnavn: ['NAV Viken'],
+        }, {
+          brukerIdent: 'S34354',
+          navn: 'Steffen',
+          avdelingsnavn: ['NAV Viken'],
+        }, {
+          brukerIdent: 'E24353',
+          navn: 'Eirik',
+          avdelingsnavn: ['NAV Viken'],
+        }]}
+        hentAvdelingensSakslister={action('button-click')}
+        valgtAvdelingEnhet="NAV Viken"
+      />
+    </RestApiProvider>
   );
 };

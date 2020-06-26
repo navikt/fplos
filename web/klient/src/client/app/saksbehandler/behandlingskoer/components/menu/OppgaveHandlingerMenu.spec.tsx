@@ -54,12 +54,8 @@ describe('<OppgaveHandlingerMenu>', () => {
         }}
         oppgave={oppgave}
         imageNode={<div />}
-        opphevOppgaveReservasjon={sinon.spy()}
         forlengOppgaveReservasjon={sinon.spy()}
-        endreOppgaveReservasjon={sinon.spy()}
-        finnSaksbehandler={sinon.spy()}
-        resetSaksbehandler={sinon.spy()}
-        flyttReservasjon={sinon.spy()}
+        hentReserverteOppgaver={sinon.spy()}
       />,
     );
 
@@ -80,12 +76,8 @@ describe('<OppgaveHandlingerMenu>', () => {
         }}
         oppgave={oppgave}
         imageNode={<div />}
-        opphevOppgaveReservasjon={sinon.spy()}
         forlengOppgaveReservasjon={sinon.spy()}
-        endreOppgaveReservasjon={sinon.spy()}
-        finnSaksbehandler={sinon.spy()}
-        resetSaksbehandler={sinon.spy()}
-        flyttReservasjon={sinon.spy()}
+        hentReserverteOppgaver={sinon.spy()}
       />,
     );
     expect(wrapper.find(OpphevReservasjonModal)).has.length(0);
@@ -101,24 +93,18 @@ describe('<OppgaveHandlingerMenu>', () => {
     expect(wrapper.find(OpphevReservasjonModal)).has.length(0);
   });
 
-  it('skal vise modal for oppheving av reservasjon og så bekrefte oppheving ved å oppgi begrunnelse', () => {
-    const toggleMenuFn = sinon.spy();
-    const opphevOppgaveReservasjonFn = sinon.spy();
+  it('skal vise modal for oppheving av reservasjon', () => {
     const wrapper = shallow(
       <OppgaveHandlingerMenu
-        toggleMenu={toggleMenuFn}
+        toggleMenu={sinon.spy()}
         offset={{
           top: 10,
           left: 20,
         }}
         oppgave={oppgave}
         imageNode={<div />}
-        opphevOppgaveReservasjon={opphevOppgaveReservasjonFn}
         forlengOppgaveReservasjon={sinon.spy()}
-        endreOppgaveReservasjon={sinon.spy()}
-        finnSaksbehandler={sinon.spy()}
-        resetSaksbehandler={sinon.spy()}
-        flyttReservasjon={sinon.spy()}
+        hentReserverteOppgaver={sinon.spy()}
       />,
     );
 
@@ -127,19 +113,6 @@ describe('<OppgaveHandlingerMenu>', () => {
 
     const modal = wrapper.find(OpphevReservasjonModal);
     expect(modal).has.length(1);
-
-    modal.prop('submit')(1, 'Dette er en begrunnelse');
-
-    expect(opphevOppgaveReservasjonFn.calledOnce).to.be.true;
-    const { args } = opphevOppgaveReservasjonFn.getCalls()[0];
-    expect(args).to.have.length(2);
-    expect(args[0]).to.eql(1);
-    expect(args[1]).to.eql('Dette er en begrunnelse');
-
-    expect(toggleMenuFn.calledOnce).to.be.true;
-    const { args: toggleArgs } = toggleMenuFn.getCalls()[0];
-    expect(toggleArgs).to.have.length(1);
-    expect(toggleArgs[0]).to.eql(oppgave);
   });
 
   it('skal vise modal for forlenging av reservasjon', async () => {
@@ -153,12 +126,8 @@ describe('<OppgaveHandlingerMenu>', () => {
         }}
         oppgave={oppgave}
         imageNode={<div />}
-        opphevOppgaveReservasjon={sinon.spy()}
         forlengOppgaveReservasjon={forlengOppgaveReservasjonFn}
-        endreOppgaveReservasjon={sinon.spy()}
-        finnSaksbehandler={sinon.spy()}
-        resetSaksbehandler={sinon.spy()}
-        flyttReservasjon={sinon.spy()}
+        hentReserverteOppgaver={sinon.spy()}
       />,
     );
 
@@ -179,12 +148,8 @@ describe('<OppgaveHandlingerMenu>', () => {
         }}
         oppgave={oppgave}
         imageNode={<div />}
-        opphevOppgaveReservasjon={sinon.spy()}
         forlengOppgaveReservasjon={sinon.spy()}
-        endreOppgaveReservasjon={sinon.spy()}
-        finnSaksbehandler={sinon.spy()}
-        resetSaksbehandler={sinon.spy()}
-        flyttReservasjon={sinon.spy()}
+        hentReserverteOppgaver={sinon.spy()}
       />,
     );
 
@@ -194,8 +159,7 @@ describe('<OppgaveHandlingerMenu>', () => {
     expect(wrapper.find(FlyttReservasjonModal)).has.length(1);
   });
 
-  it('skal flytte reservasjon og så lukke modal', () => {
-    const flyttReservasjonFn = sinon.spy();
+  it('skal vise flytt reservasjonsmodal', () => {
     const wrapper = shallow(
       <OppgaveHandlingerMenu
         toggleMenu={sinon.spy()}
@@ -205,29 +169,14 @@ describe('<OppgaveHandlingerMenu>', () => {
         }}
         oppgave={oppgave}
         imageNode={<div />}
-        opphevOppgaveReservasjon={sinon.spy()}
         forlengOppgaveReservasjon={sinon.spy()}
-        endreOppgaveReservasjon={sinon.spy()}
-        finnSaksbehandler={sinon.spy()}
-        resetSaksbehandler={sinon.spy()}
-        flyttReservasjon={flyttReservasjonFn}
+        hentReserverteOppgaver={sinon.spy()}
       />,
     );
 
     wrapper.setState({ showFlyttReservasjonModal: true });
 
     const modal = wrapper.find(FlyttReservasjonModal);
-
-    const oppgaveId = 1;
-    const brukerident = 'P039283';
-    const begrunnelse = 'Dette er en begrunnelse';
-    modal.prop('submit')(oppgaveId, brukerident, begrunnelse);
-
-    expect(flyttReservasjonFn.calledOnce).to.be.true;
-    const { args } = flyttReservasjonFn.getCalls()[0];
-    expect(args).to.have.length(3);
-    expect(args[0]).to.eql(1);
-    expect(args[1]).to.eql(brukerident);
-    expect(args[2]).to.eql('Dette er en begrunnelse');
+    expect(modal).to.have.length(1);
   });
 });

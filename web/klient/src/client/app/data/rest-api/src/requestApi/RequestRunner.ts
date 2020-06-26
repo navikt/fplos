@@ -1,9 +1,8 @@
 import RequestProcess from './RequestProcess';
 import NotificationMapper from './NotificationMapper';
 import RestApiRequestContext from './RestApiRequestContext';
-import RequestConfig, { RequestType } from '../RequestConfig';
+import { RequestType } from '../RequestConfig';
 import HttpClientApi from '../HttpClientApiTsType';
-import Link from './LinkTsType';
 
 const getMethod = (httpClientApi: HttpClientApi, restMethod: string) => {
   if (restMethod === RequestType.GET) {
@@ -47,27 +46,23 @@ class RequestRunner {
     this.context = context;
   }
 
-  getConfig = () => this.context.getConfig();
+  private getConfig = () => this.context.getConfig();
 
-  getName = (): string => this.getConfig().name
+  private getRestMethod = () => getMethod(this.httpClientApi, this.getConfig().restMethod)
 
-  getRestMethod = () => getMethod(this.httpClientApi, this.getConfig().restMethod)
-
-  getPath = (): string => {
-    const contextPath = this.context.getContextPath() ? `/${this.context.getContextPath()}` : '';
+  private getPath = (): string => {
+    const contextPath = this.getConfig().contextPath ? `/${this.getConfig().contextPath}` : '';
     return this.getConfig().path ? `${this.context.getHostname()}${contextPath}${this.getConfig().path}` : undefined;
   }
 
-  getRestMethodName = (): string => this.getConfig().restMethod
-
-  stopProcess = () => {
+  public cancelRequest = () => {
     if (this.process) {
       this.process.cancel();
     }
   }
 
-  startProcess = (params: any, notificationMapper?: NotificationMapper) => {
-    this.stopProcess();
+  public startProcess = (params: any, notificationMapper?: NotificationMapper) => {
+    this.cancelRequest();
 
     this.process = new RequestProcess(this.httpClientApi, this.getRestMethod(), this.getPath(), this.getConfig().config);
     if (notificationMapper) {
@@ -75,20 +70,6 @@ class RequestRunner {
     }
 
     return this.process.run(params || this.getConfig().requestPayload);
-  }
-
-  injectLink = (link: Link) => {
-    const contextConfig = this.context.getConfig();
-    const newConfig = new RequestConfig(contextConfig.name, link.href, contextConfig.config);
-    newConfig.withRestMethod(link.type).withRel(link.rel).withRequestPayload(link.requestPayload);
-    this.context = new RestApiRequestContext(this.context.getContextPath(), newConfig);
-  }
-
-  resetLink = (rel: string) => {
-    const contextConfig = this.context.getConfig();
-    const newConfig = new RequestConfig(contextConfig.name, undefined, contextConfig.config);
-    newConfig.withRel(rel);
-    this.context = new RestApiRequestContext(this.context.getContextPath(), newConfig);
   }
 }
 

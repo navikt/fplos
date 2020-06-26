@@ -1,5 +1,4 @@
 import React, { FunctionComponent } from 'react';
-import { connect } from 'react-redux';
 import { injectIntl, WrappedComponentProps, FormattedMessage } from 'react-intl';
 
 import { Form } from 'react-final-form';
@@ -7,16 +6,13 @@ import moment from 'moment';
 import { Element } from 'nav-frontend-typografi';
 import { Row, Column } from 'nav-frontend-grid';
 
-import StoreValuesInReduxState from 'form/reduxBinding/StoreValuesInReduxState';
-import { getValuesFromReduxState } from 'form/reduxBinding/formDuck';
+import StoreValuesInLocalStorage from 'form/StoreValuesInLocalStorage';
 import { RadioGroupField, RadioOption, SelectField } from 'form/FinalFields';
-import Kodeverk from 'kodeverk/kodeverkTsType';
+import { useKodeverk } from 'data/rest-api-hooks';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import fagsakYtelseType from 'kodeverk/fagsakYtelseType';
 import kodeverkTyper from 'kodeverk/kodeverkTyper';
-import { getAlleKodeverk } from 'kodeverk/duck';
 import ManueltPaVentGraf from './ManueltPaVentGraf';
-import { getOppgaverAvdelingManueltPaVent } from '../../duck';
 import OppgaverManueltPaVent from './oppgaverManueltPaVentTsType';
 
 import styles from './manueltPaVentPanel.less';
@@ -46,21 +42,17 @@ const erDatoInnenforPeriode = (behandlingFrist, ukevalg) => {
   return moment(behandlingFrist).isSameOrBefore(dataOmFireUker);
 };
 
-interface InitialValues {
-  valgtYtelsetype: string;
-  ukevalg: string;
-}
-
 interface OwnProps {
   intl: any;
   width: number;
   height: number;
-  fagsakYtelseTyper: Kodeverk[];
-  oppgaverManueltPaVent?: OppgaverManueltPaVent[];
-  initialValues: InitialValues;
+  oppgaverManueltPaVent: OppgaverManueltPaVent[];
+  getValueFromLocalStorage: (key: string) => string;
 }
 
 const formName = 'manueltPaVentForm';
+const formDefaultValues = { valgtYtelsetype: ALLE_YTELSETYPER_VALGT, ukevalg: UKE_4 };
+
 
 /**
  * ManueltPaVentPanel.
@@ -69,75 +61,67 @@ export const ManueltPaVentPanel: FunctionComponent<OwnProps & WrappedComponentPr
   intl,
   width,
   height,
-  fagsakYtelseTyper,
   oppgaverManueltPaVent,
-  initialValues,
-}) => (
-  <Form
-    onSubmit={() => undefined}
-    initialValues={initialValues}
-    render={({ values }) => (
-      <div>
-        <StoreValuesInReduxState onUmount stateKey={formName} values={values} />
-        <Element>
-          <FormattedMessage id="ManueltPaVentPanel.SattPaVent" />
-        </Element>
-        <VerticalSpacer sixteenPx />
-        <Row>
-          <Column xs="2">
-            <SelectField
-              name="ukevalg"
-              label=""
-              selectValues={uker.map((u) => <option key={u.kode} value={u.kode}>{intl.formatMessage({ id: u.tekstKode })}</option>)}
-              bredde="l"
-            />
-          </Column>
-          <Column xs="8">
-            <div className={styles.radioPadding}>
-              <RadioGroupField name="valgtYtelsetype">
-                <RadioOption
-                  value={fagsakYtelseType.FORELDREPRENGER}
-                  label={finnFagsakYtelseTypeNavn(fagsakYtelseTyper, fagsakYtelseType.FORELDREPRENGER)}
-                />
-                <RadioOption
-                  value={fagsakYtelseType.ENGANGSSTONAD}
-                  label={finnFagsakYtelseTypeNavn(fagsakYtelseTyper, fagsakYtelseType.ENGANGSSTONAD)}
-                />
-                <RadioOption
-                  value={fagsakYtelseType.SVANGERSKAPPENGER}
-                  label={finnFagsakYtelseTypeNavn(fagsakYtelseTyper, fagsakYtelseType.SVANGERSKAPPENGER)}
-                />
-                <RadioOption
-                  value={ALLE_YTELSETYPER_VALGT}
-                  label={<FormattedMessage id="ManueltPaVentPanel.Alle" />}
-                />
-              </RadioGroupField>
-            </div>
-          </Column>
-        </Row>
-        <ManueltPaVentGraf
-          width={width}
-          height={height}
-          isFireUkerValgt={values.ukevalg === UKE_4}
-          oppgaverManueltPaVent={oppgaverManueltPaVent && oppgaverManueltPaVent
-            .filter((ompv) => (values.valgtYtelsetype === ALLE_YTELSETYPER_VALGT ? true : values.valgtYtelsetype === ompv.fagsakYtelseType.kode))
-            .filter((ompv) => erDatoInnenforPeriode(ompv.behandlingFrist, values.ukevalg))}
-        />
-      </div>
-    )}
-  />
-);
-
-ManueltPaVentPanel.defaultProps = {
-  oppgaverManueltPaVent: [],
+  getValueFromLocalStorage,
+}) => {
+  const fagsakYtelseTyper = useKodeverk(kodeverkTyper.FAGSAK_YTELSE_TYPE);
+  const stringFromStorage = getValueFromLocalStorage(formName);
+  const lagredeVerdier = stringFromStorage ? JSON.parse(stringFromStorage) : undefined;
+  return (
+    <Form
+      onSubmit={() => undefined}
+      initialValues={lagredeVerdier || formDefaultValues}
+      render={({ values }) => (
+        <div>
+          <StoreValuesInLocalStorage stateKey={formName} values={values} />
+          <Element>
+            <FormattedMessage id="ManueltPaVentPanel.SattPaVent" />
+          </Element>
+          <VerticalSpacer sixteenPx />
+          <Row>
+            <Column xs="2">
+              <SelectField
+                name="ukevalg"
+                label=""
+                selectValues={uker.map((u) => <option key={u.kode} value={u.kode}>{intl.formatMessage({ id: u.tekstKode })}</option>)}
+                bredde="l"
+              />
+            </Column>
+            <Column xs="8">
+              <div className={styles.radioPadding}>
+                <RadioGroupField name="valgtYtelsetype">
+                  <RadioOption
+                    value={fagsakYtelseType.FORELDREPRENGER}
+                    label={finnFagsakYtelseTypeNavn(fagsakYtelseTyper, fagsakYtelseType.FORELDREPRENGER)}
+                  />
+                  <RadioOption
+                    value={fagsakYtelseType.ENGANGSSTONAD}
+                    label={finnFagsakYtelseTypeNavn(fagsakYtelseTyper, fagsakYtelseType.ENGANGSSTONAD)}
+                  />
+                  <RadioOption
+                    value={fagsakYtelseType.SVANGERSKAPPENGER}
+                    label={finnFagsakYtelseTypeNavn(fagsakYtelseTyper, fagsakYtelseType.SVANGERSKAPPENGER)}
+                  />
+                  <RadioOption
+                    value={ALLE_YTELSETYPER_VALGT}
+                    label={<FormattedMessage id="ManueltPaVentPanel.Alle" />}
+                  />
+                </RadioGroupField>
+              </div>
+            </Column>
+          </Row>
+          <ManueltPaVentGraf
+            width={width}
+            height={height}
+            isFireUkerValgt={values.ukevalg === UKE_4}
+            oppgaverManueltPaVent={oppgaverManueltPaVent && oppgaverManueltPaVent
+              .filter((ompv) => (values.valgtYtelsetype === ALLE_YTELSETYPER_VALGT ? true : values.valgtYtelsetype === ompv.fagsakYtelseType.kode))
+              .filter((ompv) => erDatoInnenforPeriode(ompv.behandlingFrist, values.ukevalg))}
+          />
+        </div>
+      )}
+    />
+  );
 };
 
-const formDefaultValues = { valgtYtelsetype: ALLE_YTELSETYPER_VALGT, ukevalg: UKE_4 };
-
-const mapStateToProps = (state) => ({
-  oppgaverManueltPaVent: getOppgaverAvdelingManueltPaVent(state),
-  fagsakYtelseTyper: getAlleKodeverk(state)[kodeverkTyper.FAGSAK_YTELSE_TYPE],
-  initialValues: getValuesFromReduxState(state)[formName] || formDefaultValues,
-});
-
-export default connect(mapStateToProps)(injectIntl(ManueltPaVentPanel));
+export default injectIntl(ManueltPaVentPanel);

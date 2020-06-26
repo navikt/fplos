@@ -1,17 +1,15 @@
 import React, { FunctionComponent } from 'react';
-import { connect } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
 import { Element } from 'nav-frontend-typografi';
 
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import OppgaverPerForsteStonadsdagGraf from './OppgaverPerForsteStonadsdagGraf';
-import { getOppgaverPerForsteStonadsdag } from '../../duck';
 import OppgaverForForsteStonadsdag from './oppgaverForForsteStonadsdagTsType';
 
 interface OwnProps {
   width: number;
   height: number;
-  oppgaverPerForsteStonadsdag?: OppgaverForForsteStonadsdag[];
+  oppgaverPerForsteStonadsdag: OppgaverForForsteStonadsdag[];
 }
 
 /**
@@ -35,12 +33,4 @@ export const OppgaverPerForsteStonadsdagPanel: FunctionComponent<OwnProps> = ({
   </>
 );
 
-OppgaverPerForsteStonadsdagPanel.defaultProps = {
-  oppgaverPerForsteStonadsdag: [],
-};
-
-const mapStateToProps = (state) => ({
-  oppgaverPerForsteStonadsdag: getOppgaverPerForsteStonadsdag(state),
-});
-
-export default connect(mapStateToProps)(OppgaverPerForsteStonadsdagPanel);
+export default OppgaverPerForsteStonadsdagPanel;

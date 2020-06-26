@@ -1,18 +1,32 @@
 import React from 'react';
 
+import { RestApiGlobalStatePathsKeys } from 'data/restApiPaths';
+import { RestApiProvider } from 'data/rest-api-hooks';
 import fagsakYtelseType from 'kodeverk/fagsakYtelseType';
 import behandlingType from 'kodeverk/behandlingType';
 import {
-  FordelingAvBehandlingstypePanel, ALLE_YTELSETYPER_VALGT,
+  FordelingAvBehandlingstypePanel,
 } from 'avdelingsleder/nokkeltall/components/fordelingAvBehandlingstype/FordelingAvBehandlingstypePanel';
 
+import alleKodeverk from '../../../mocks/alleKodeverk.json';
+import RequestMock from '../../../mocks/RequestMock';
 import withIntl from '../../../decorators/withIntl';
-import withRedux from '../../../decorators/withRedux';
+
+const initialState = {
+  [RestApiGlobalStatePathsKeys.KODEVERK]: alleKodeverk,
+};
 
 export default {
   title: 'avdelingsleder/nokkeltall/FordelingAvBehandlingstypePanel',
   component: FordelingAvBehandlingstypePanel,
-  decorators: [withIntl, withRedux],
+  decorators: [
+    withIntl,
+    (getStory) => (
+      <RestApiProvider initialState={initialState as {[key in RestApiGlobalStatePathsKeys]: any}} requestApi={new RequestMock().build()}>
+        {getStory()}
+      </RestApiProvider>
+    ),
+  ],
 };
 
 export const skalViseGrafForFordelingAvBehandlingstyper = () => (
@@ -53,31 +67,6 @@ export const skalViseGrafForFordelingAvBehandlingstyper = () => (
       tilBehandling: true,
       antall: 14,
     }]}
-    initialValues={{
-      valgtYtelseType: ALLE_YTELSETYPER_VALGT,
-    }}
-    fagsakYtelseTyper={[{
-      kode: fagsakYtelseType.FORELDREPRENGER,
-      navn: 'Foreldreprenger',
-    }, {
-      kode: fagsakYtelseType.ENGANGSSTONAD,
-      navn: 'Engangsstønad',
-    }, {
-      kode: fagsakYtelseType.SVANGERSKAPPENGER,
-      navn: 'Svangerskapspenger',
-    }]}
-    behandlingTyper={[{
-      kode: behandlingType.FORSTEGANGSSOKNAD,
-      navn: 'Førstegangssøknad',
-    }, {
-      kode: behandlingType.KLAGE,
-      navn: 'Klage',
-    }, {
-      kode: behandlingType.DOKUMENTINNSYN,
-      navn: 'Dokumentinnsyn',
-    }, {
-      kode: behandlingType.REVURDERING,
-      navn: 'Revurdering',
-    }]}
+    getValueFromLocalStorage={() => ''}
   />
 );

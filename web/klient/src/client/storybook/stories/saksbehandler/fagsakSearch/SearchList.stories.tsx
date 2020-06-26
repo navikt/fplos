@@ -1,23 +1,38 @@
 import React from 'react';
 import { action } from '@storybook/addon-actions';
 
+import { RestApiGlobalStatePathsKeys } from 'data/restApiPaths';
 import fagsakYtelseType from 'kodeverk/fagsakYtelseType';
 import fagsakStatus from 'kodeverk/fagsakStatus';
 import behandlingStatus from 'kodeverk/behandlingStatus';
 import behandlingType from 'kodeverk/behandlingType';
-import { FagsakList } from 'saksbehandler/fagsakSearch/components/FagsakList';
+import { RestApiProvider } from 'data/rest-api-hooks';
+import FagsakList from 'saksbehandler/fagsakSearch/components/FagsakList';
 
+import alleKodeverk from '../../../mocks/alleKodeverk.json';
+import RequestMock from '../../../mocks/RequestMock';
 import withIntl from '../../../decorators/withIntl';
+
+const initialState = {
+  [RestApiGlobalStatePathsKeys.KODEVERK]: alleKodeverk,
+};
 
 export default {
   title: 'saksbehandler/fagsakSearch/FagsakList',
   component: FagsakList,
-  decorators: [withIntl],
+  decorators: [
+    withIntl,
+    (getStory) => (
+      <RestApiProvider initialState={initialState as {[key in RestApiGlobalStatePathsKeys]: any}} requestApi={new RequestMock().build()}>
+        {getStory()}
+      </RestApiProvider>
+    ),
+  ],
 };
 
 export const skalViseSøkeresultatMedEnFagsakOgTilhørendeOppgave = () => (
   <FagsakList
-    sorterteFagsaker={[{
+    fagsaker={[{
       saksnummer: 12213234,
       system: 'SAK',
       sakstype: {
@@ -39,14 +54,6 @@ export const skalViseSøkeresultatMedEnFagsakOgTilhørendeOppgave = () => (
     }]}
     selectFagsakCallback={action('button-click')}
     selectOppgaveCallback={action('button-click')}
-    fagsakStatusTyper={[{
-      kode: fagsakStatus.UNDER_BEHANDLING,
-      navn: 'Under behandling',
-    }]}
-    fagsakYtelseTyper={[{
-      kode: fagsakYtelseType.FORELDREPRENGER,
-      navn: 'Foreldrepenger',
-    }]}
     fagsakOppgaver={[{
       id: 1,
       status: {

@@ -1,6 +1,4 @@
-import React, { Component, ReactNode } from 'react';
-import { connect } from 'react-redux';
-import { createSelector } from 'reselect';
+import React, { FunctionComponent, useState, useMemo } from 'react';
 import {
   injectIntl, WrappedComponentProps, FormattedMessage,
 } from 'react-intl';
@@ -9,76 +7,67 @@ import { Form } from 'react-final-form';
 import { Hovedknapp, Knapp } from 'nav-frontend-knapper';
 import { Normaltekst, Element } from 'nav-frontend-typografi';
 
-import { getValgtAvdelingEnhet } from 'app/duck';
+import { RestApiState, useRestApiRunner } from 'data/rest-api-hooks';
+import { RestApiPathsKeys } from 'data/restApiPaths';
 import { required } from 'utils/validation/validators';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import { InputField } from 'form/FinalFields';
 import { FlexContainer, FlexRow, FlexColumn } from 'sharedComponents/flexGrid';
 import Saksbehandler from '../saksbehandlerTsType';
-import { getSaksbehandler, getAvdelingensSaksbehandlere, getSaksbehandlerSokFinished } from '../duck';
 
 import styles from './leggTilSaksbehandlerForm.less';
 
-interface OwnProps {
-  finnSaksbehandler: (brukerIdent: string) => Promise<string>;
-  leggTilSaksbehandler: (brukerIdent: string, avdelingEnhet: string) => Promise<string>;
-  resetSaksbehandlerSok: () => void;
-  saksbehandler?: Saksbehandler;
-  erLagtTilAllerede: boolean;
-  erSokFerdig: boolean;
-  valgtAvdelingEnhet: string;
-}
+const erSaksbehandlerLagtTilAllerede = (saksbehandler: Saksbehandler, avdelingensSaksbehandlere = []) => avdelingensSaksbehandlere instanceof Array
+    && avdelingensSaksbehandlere.some((s) => saksbehandler && s.brukerIdent.toLowerCase() === saksbehandler.brukerIdent.toLowerCase());
 
-interface StateProps {
-  leggerTilNySaksbehandler: boolean;
+
+interface OwnProps {
+  valgtAvdelingEnhet: string;
+  avdelingensSaksbehandlere: Saksbehandler[];
+  hentAvdelingensSaksbehandlere: (params: {avdelingEnhet: string}) => void;
 }
 
 /**
  * LeggTilSaksbehandlerForm
  */
-export class LeggTilSaksbehandlerForm extends Component<OwnProps & WrappedComponentProps, StateProps> {
-  static defaultProps = {
-    saksbehandler: undefined,
-  }
+export const LeggTilSaksbehandlerForm: FunctionComponent<OwnProps & WrappedComponentProps> = ({
+  intl,
+  valgtAvdelingEnhet,
+  avdelingensSaksbehandlere,
+  hentAvdelingensSaksbehandlere,
+}) => {
+  const [leggerTilNySaksbehandler, setLeggetTilNySaksbehandler] = useState(false);
 
-  nodes: ReactNode[];
+  const {
+    data: saksbehandler, startRequest: finnSaksbehandler, state, resetRequestData: resetSaksbehandlerSok,
+  } = useRestApiRunner<Saksbehandler>(RestApiPathsKeys.SAKSBEHANDLER_SOK);
 
-  constructor(props) {
-    super(props);
+  const { startRequest: leggTilSaksbehandler } = useRestApiRunner<Saksbehandler>(RestApiPathsKeys.OPPRETT_NY_SAKSBEHANDLER);
 
-    this.state = {
-      leggerTilNySaksbehandler: false,
-    };
-    this.nodes = [];
-  }
+  const erLagtTilAllerede = erSaksbehandlerLagtTilAllerede(saksbehandler, avdelingensSaksbehandlere);
 
-  leggTilSaksbehandler = (resetFormValues: () => void) => {
-    const {
-      leggTilSaksbehandler, saksbehandler, valgtAvdelingEnhet,
-    } = this.props;
-
+  const leggTilSaksbehandlerFn = (resetFormValues: () => void) => {
     if (saksbehandler) {
-      this.setState((prevState) => ({ ...prevState, leggerTilNySaksbehandler: true }));
-      leggTilSaksbehandler(saksbehandler.brukerIdent, valgtAvdelingEnhet).then(() => {
-        this.resetSaksbehandlerSok(resetFormValues);
-        this.setState((prevState) => ({ ...prevState, leggerTilNySaksbehandler: false }));
+      setLeggetTilNySaksbehandler(true);
+      leggTilSaksbehandler({
+        brukerIdent: saksbehandler.brukerIdent,
+        avdelingEnhet: valgtAvdelingEnhet,
+      }).then(() => {
+        resetSaksbehandlerSok();
+        resetFormValues();
+        setLeggetTilNySaksbehandler(false);
+        hentAvdelingensSaksbehandlere({ avdelingEnhet: valgtAvdelingEnhet });
       });
     }
-  }
+  };
 
-  resetSaksbehandlerSok = (resetFormValues: () => void) => {
-    const {
-      resetSaksbehandlerSok,
-    } = this.props;
+  const resetSaksbehandlerSokFn = (resetFormValues: () => void) => {
     resetSaksbehandlerSok();
     resetFormValues();
-  }
+  };
 
-  formatText = () => {
-    const {
-      intl, saksbehandler, erLagtTilAllerede, erSokFerdig,
-    } = this.props;
-    if (erSokFerdig && !saksbehandler) {
+  const formattedText = useMemo((): string => {
+    if (state === RestApiState.SUCCESS && !saksbehandler) {
       return intl.formatMessage({ id: 'LeggTilSaksbehandlerForm.FinnesIkke' });
     }
     if (!saksbehandler) {
@@ -89,101 +78,82 @@ export class LeggTilSaksbehandlerForm extends Component<OwnProps & WrappedCompon
     return erLagtTilAllerede
       ? `${brukerinfo} (${intl.formatMessage({ id: 'LeggTilSaksbehandlerForm.FinnesAllerede' })})`
       : brukerinfo;
-  }
+  }, [state, saksbehandler, erLagtTilAllerede]);
 
-  render = () => {
-    const {
-      intl, finnSaksbehandler, saksbehandler, erLagtTilAllerede, erSokFerdig,
-    } = this.props;
-    const {
-      leggerTilNySaksbehandler,
-    } = this.state;
-
-    return (
-      <Form
-        onSubmit={(values: { brukerIdent: string}) => finnSaksbehandler(values.brukerIdent)}
-        render={({
-          submitting, handleSubmit, form,
-        }) => (
-          <form onSubmit={handleSubmit}>
-            <Element>
-              <FormattedMessage id="LeggTilSaksbehandlerForm.LeggTil" />
-            </Element>
-            <VerticalSpacer eightPx />
+  return (
+    <Form
+      onSubmit={(values: { brukerIdent: string}) => finnSaksbehandler({ brukerIdent: values.brukerIdent })}
+      render={({
+        submitting, handleSubmit, form,
+      }) => (
+        <form onSubmit={handleSubmit}>
+          <Element>
+            <FormattedMessage id="LeggTilSaksbehandlerForm.LeggTil" />
+          </Element>
+          <VerticalSpacer eightPx />
+          <FlexContainer>
+            <FlexRow>
+              <FlexColumn>
+                <InputField
+                  name="brukerIdent"
+                  label={intl.formatMessage({ id: 'LeggTilSaksbehandlerForm.Brukerident' })}
+                  bredde="S"
+                  validate={[required]}
+                />
+              </FlexColumn>
+              <FlexColumn>
+                <Knapp
+                  mini
+                  htmlType="submit"
+                  className={styles.button}
+                  spinner={submitting}
+                  disabled={submitting || leggerTilNySaksbehandler}
+                  tabIndex={0}
+                >
+                  <FormattedMessage id="LeggTilSaksbehandlerForm.Sok" />
+                </Knapp>
+              </FlexColumn>
+            </FlexRow>
+          </FlexContainer>
+          {state === RestApiState.SUCCESS && (
+          <>
+            <Normaltekst>
+              {formattedText}
+            </Normaltekst>
+            <VerticalSpacer sixteenPx />
             <FlexContainer>
               <FlexRow>
                 <FlexColumn>
-                  <InputField
-                    name="brukerIdent"
-                    label={intl.formatMessage({ id: 'LeggTilSaksbehandlerForm.Brukerident' })}
-                    bredde="S"
-                    validate={[required]}
-                  />
+                  <Hovedknapp
+                    mini
+                    autoFocus
+                    htmlType="button"
+                    onClick={() => leggTilSaksbehandlerFn(form.reset)}
+                    spinner={leggerTilNySaksbehandler}
+                    disabled={leggerTilNySaksbehandler || erLagtTilAllerede || !saksbehandler}
+                  >
+                    <FormattedMessage id="LeggTilSaksbehandlerForm.LeggTilIListen" />
+                  </Hovedknapp>
                 </FlexColumn>
                 <FlexColumn>
                   <Knapp
                     mini
-                    htmlType="submit"
-                    className={styles.button}
-                    spinner={submitting}
-                    disabled={submitting || leggerTilNySaksbehandler}
+                    htmlType="button"
                     tabIndex={0}
+                    disabled={leggerTilNySaksbehandler}
+                    onClick={() => resetSaksbehandlerSokFn(form.reset)}
                   >
-                    <FormattedMessage id="LeggTilSaksbehandlerForm.Sok" />
+                    <FormattedMessage id="LeggTilSaksbehandlerForm.Nullstill" />
                   </Knapp>
                 </FlexColumn>
               </FlexRow>
             </FlexContainer>
-            {erSokFerdig && (
-            <>
-              <Normaltekst>
-                {this.formatText()}
-              </Normaltekst>
-              <VerticalSpacer sixteenPx />
-              <FlexContainer>
-                <FlexRow>
-                  <FlexColumn>
-                    <Hovedknapp
-                      mini
-                      autoFocus
-                      htmlType="button"
-                      onClick={() => this.leggTilSaksbehandler(form.reset)}
-                      spinner={leggerTilNySaksbehandler}
-                      disabled={leggerTilNySaksbehandler || erLagtTilAllerede || !saksbehandler}
-                    >
-                      <FormattedMessage id="LeggTilSaksbehandlerForm.LeggTilIListen" />
-                    </Hovedknapp>
-                  </FlexColumn>
-                  <FlexColumn>
-                    <Knapp
-                      mini
-                      htmlType="button"
-                      tabIndex={0}
-                      disabled={leggerTilNySaksbehandler}
-                      onClick={() => this.resetSaksbehandlerSok(form.reset)}
-                    >
-                      <FormattedMessage id="LeggTilSaksbehandlerForm.Nullstill" />
-                    </Knapp>
-                  </FlexColumn>
-                </FlexRow>
-              </FlexContainer>
-            </>
-            )}
-          </form>
-        )}
-      />
-    );
-  }
-}
-const erSaksbehandlerLagtTilAllerede = createSelector([getSaksbehandler, getAvdelingensSaksbehandlere],
-  (saksbehandler: Saksbehandler, avdelingensSaksbehandlere = []) => avdelingensSaksbehandlere instanceof Array
-    && avdelingensSaksbehandlere.some((s) => saksbehandler && s.brukerIdent.toLowerCase() === saksbehandler.brukerIdent.toLowerCase()));
+          </>
+          )}
+        </form>
+      )}
+    />
+  );
+};
 
-const mapStateToProps = (state) => ({
-  saksbehandler: getSaksbehandler(state),
-  erLagtTilAllerede: erSaksbehandlerLagtTilAllerede(state),
-  erSokFerdig: getSaksbehandlerSokFinished(state),
-  valgtAvdelingEnhet: getValgtAvdelingEnhet(state),
-});
-
-export default connect(mapStateToProps)(injectIntl(LeggTilSaksbehandlerForm));
+export default injectIntl(LeggTilSaksbehandlerForm);
