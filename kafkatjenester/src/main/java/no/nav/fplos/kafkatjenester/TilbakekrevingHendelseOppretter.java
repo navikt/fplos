@@ -22,6 +22,8 @@ public class TilbakekrevingHendelseOppretter implements HendelseOppretter<Tilbak
         var tilbakekrevingHendelse = new TilbakekrevingHendelse();
         tilbakekrevingHendelse.setFørsteFeilutbetalingDato(dto.getFørsteFeilutbetaling());
         tilbakekrevingHendelse.setFeilutbetaltBeløp(dto.getFeilutbetaltBeløp());
+        tilbakekrevingHendelse.setHref(dto.getHref());
+        tilbakekrevingHendelse.setAnsvarligSaksbehandler(dto.getAnsvarligSaksbehandlerIdent());
 
         tilbakekrevingHendelse.setBehandlendeEnhet(dto.getBehandlendeEnhet());
         tilbakekrevingHendelse.setYtelseType(FagsakYtelseType.fraKode(dto.getYtelseTypeKode()));
