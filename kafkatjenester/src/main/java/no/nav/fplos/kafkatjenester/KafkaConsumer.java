@@ -2,6 +2,7 @@ package no.nav.fplos.kafkatjenester;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.util.Optional;
 import java.util.Properties;
 
 import javax.enterprise.inject.spi.CDI;
@@ -16,6 +17,8 @@ import org.apache.kafka.streams.StreamsConfig;
 import org.apache.kafka.streams.Topology;
 import org.apache.kafka.streams.errors.LogAndFailExceptionHandler;
 import org.apache.kafka.streams.kstream.Consumed;
+import org.apache.kafka.streams.processor.Processor;
+import org.apache.kafka.streams.processor.ProcessorContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,6 +32,7 @@ import no.nav.vedtak.felles.integrasjon.kafka.BehandlingProsessEventDto;
 import no.nav.vedtak.felles.jpa.TransactionHandler;
 import no.nav.vedtak.felles.prosesstask.api.ProsessTaskData;
 import no.nav.vedtak.felles.prosesstask.api.ProsessTaskRepository;
+import no.nav.vedtak.log.mdc.MDCOperations;
 
 public final class KafkaConsumer<T extends BehandlingProsessEventDto> {
 
@@ -61,14 +65,10 @@ public final class KafkaConsumer<T extends BehandlingProsessEventDto> {
     private KafkaStreams lagKafkaStreams(KafkaConsumerProperties properties) {
         var consumed = Consumed.with(Topology.AutoOffsetReset.EARLIEST);
         var builder = new StreamsBuilder();
-        builder.stream(properties.getTopic(), consumed).foreach((header, payload) -> håndterITransaction(payload));
+        builder.stream(properties.getTopic(), consumed).process(() -> new MyProcessor());
 
         var topology = builder.build();
         return new KafkaStreams(topology, setupProperties(properties));
-    }
-
-    private void håndterITransaction(Object payload) {
-        RequestContextHandler.doWithRequestContext(() -> new HåndterEventInTransaction(entityManager, payload).doWork());
     }
 
     private Properties setupProperties(KafkaConsumerProperties consumerProperties) {
@@ -163,7 +163,6 @@ public final class KafkaConsumer<T extends BehandlingProsessEventDto> {
         protected Void doWork(EntityManager em) {
             var dto = deserialiser(String.valueOf(payload));
             LOG.debug("Håndterer event {}", dto.getEksternId());
-            //TODO callid
             var hendelse = hendelseOppretter.opprett((T) dto);
             hendelseRepository.lagre(hendelse);
             prosessTaskRepository.lagre(opprettTask(hendelse));
@@ -175,9 +174,49 @@ public final class KafkaConsumer<T extends BehandlingProsessEventDto> {
         ProsessTaskData prosessTaskData = new ProsessTaskData(HåndterHendelseTask.TASKTYPE);
         prosessTaskData.setProperty(HåndterHendelseTask.HENDELSE_ID, hendelse.getId().toString());
         prosessTaskData.setPrioritet(50);
+        prosessTaskData.setCallIdFraEksisterende();
         //setter gruppe og sekvens for rekkefølge
         prosessTaskData.setGruppe(hendelse.getBehandlingId().toString());
         prosessTaskData.setSekvens(String.valueOf(Instant.now().toEpochMilli()));
         return prosessTaskData;
+    }
+
+    private class MyProcessor implements Processor<Object, Object> {
+
+        private ProcessorContext context;
+
+        @Override
+        public void init(ProcessorContext context) {
+            this.context = context;
+        }
+
+        @Override
+        public void process(Object key, Object value) {
+            var callId = navCallId();
+            MDCOperations.putCallId(callId);
+            håndterITransaction(value);
+        }
+
+        private String navCallId() {
+            var header = callIdFraHeader();
+            return header.isEmpty() || header.get().isEmpty() ? MDCOperations.generateCallId() : header.get();
+        }
+
+        private Optional<String> callIdFraHeader() {
+            var header = context.headers().lastHeader("Nav-CallId");
+            if (header == null) {
+                header = context.headers().lastHeader("Nav-Tbk-CallId");
+            }
+            return Optional.of(new String(header.value()));
+        }
+
+        @Override
+        public void close() {
+
+        }
+
+        private void håndterITransaction(Object payload) {
+            RequestContextHandler.doWithRequestContext(() -> new HåndterEventInTransaction(entityManager, payload).doWork());
+        }
     }
 }
