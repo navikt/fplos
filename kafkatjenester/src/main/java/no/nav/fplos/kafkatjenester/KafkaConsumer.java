@@ -61,10 +61,7 @@ public final class KafkaConsumer<T extends BehandlingProsessEventDto> {
     private KafkaStreams lagKafkaStreams(KafkaConsumerProperties properties) {
         var consumed = Consumed.with(Topology.AutoOffsetReset.EARLIEST);
         var builder = new StreamsBuilder();
-        builder.stream(properties.getTopic(), consumed).foreach((header, payload) -> {
-            LOG.info("header {}", header);
-            håndterITransaction(payload);
-        });
+        builder.stream(properties.getTopic(), consumed).foreach((header, payload) -> håndterITransaction(payload));
 
         var topology = builder.build();
         return new KafkaStreams(topology, setupProperties(properties));
