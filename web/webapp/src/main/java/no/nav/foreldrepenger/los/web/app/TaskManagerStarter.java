@@ -1,25 +1,30 @@
 package no.nav.foreldrepenger.los.web.app;
 
-import javax.enterprise.inject.spi.CDI;
+import no.nav.vedtak.felles.prosesstask.impl.TaskManager;
+import no.nav.vedtak.felles.prosesstask.impl.cron.BatchTaskScheduler;
+
+import javax.inject.Inject;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.servlet.annotation.WebListener;
 
-import no.nav.vedtak.felles.prosesstask.impl.TaskManager;
-
 @WebListener
 public class TaskManagerStarter implements ServletContextListener {
 
+    @Inject
+    TaskManager taskManager;
+    @Inject
+    BatchTaskScheduler batchTaskScheduler;
+
     @Override
     public void contextInitialized(ServletContextEvent sce) {
-        // kan gjøre programmatisk lookup siden TaskManager er ApplicationScoped (en per applikasjoninstans)
-        var taskManager = CDI.current().select(TaskManager.class).get();
         taskManager.start();
+        batchTaskScheduler.start();
     }
 
     @Override
     public void contextDestroyed(ServletContextEvent sce) {
-        var taskManager = CDI.current().select(TaskManager.class).get();
         taskManager.stop();
+        batchTaskScheduler.stop();
     }
 }
