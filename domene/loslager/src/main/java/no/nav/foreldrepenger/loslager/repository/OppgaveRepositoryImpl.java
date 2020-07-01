@@ -1,24 +1,5 @@
 package no.nav.foreldrepenger.loslager.repository;
 
-import static no.nav.foreldrepenger.loslager.BaseEntitet.BRUKERNAVN_NÅR_SIKKERHETSKONTEKST_IKKE_FINNES;
-import static no.nav.foreldrepenger.loslager.oppgave.KøSortering.FT_DATO;
-import static no.nav.foreldrepenger.loslager.oppgave.KøSortering.FT_HELTALL;
-
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Objects;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.TypedQuery;
-
 import no.nav.foreldrepenger.loslager.BehandlingId;
 import no.nav.foreldrepenger.loslager.oppgave.AndreKriterierType;
 import no.nav.foreldrepenger.loslager.oppgave.BehandlingType;
@@ -38,6 +19,24 @@ import no.nav.foreldrepenger.loslager.oppgave.TilbakekrevingOppgave;
 import no.nav.foreldrepenger.loslager.organisasjon.Avdeling;
 import no.nav.foreldrepenger.loslager.organisasjon.Saksbehandler;
 import no.nav.vedtak.sikkerhet.context.SubjectHandler;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Objects;
+
+import static no.nav.foreldrepenger.loslager.BaseEntitet.BRUKERNAVN_NÅR_SIKKERHETSKONTEKST_IKKE_FINNES;
+import static no.nav.foreldrepenger.loslager.oppgave.KøSortering.FT_DATO;
+import static no.nav.foreldrepenger.loslager.oppgave.KøSortering.FT_HELTALL;
 
 @ApplicationScoped
 public class OppgaveRepositoryImpl implements OppgaveRepository {
@@ -281,14 +280,15 @@ public class OppgaveRepositoryImpl implements OppgaveRepository {
                 .getResultList();
     }
 
-    public Reservasjon hentReservasjon(Long oppgaveId){
-        TypedQuery<Reservasjon> oppgaveTypedQuery =  entityManager.createQuery("from Reservasjon r WHERE r.oppgave.id = :id ", Reservasjon.class)
-            .setParameter("id", oppgaveId);//$NON-NLS-1$
-        List<Reservasjon> resultList = oppgaveTypedQuery.getResultList();
-        if (resultList.isEmpty()){
+    public Reservasjon hentReservasjon(Long oppgaveId) {
+        TypedQuery<Reservasjon> query = entityManager
+                .createQuery("from Reservasjon r WHERE r.oppgave.id = :id ", Reservasjon.class)
+                .setParameter("id", oppgaveId);//$NON-NLS-1$
+        List<Reservasjon> resultList = query.getResultList();
+        if (resultList.isEmpty()) {
             return new Reservasjon(entityManager.find(Oppgave.class, oppgaveId));
         }
-        return oppgaveTypedQuery.getResultList().get(0);
+        return query.getResultList().get(0);
     }
 
     @Override
@@ -314,9 +314,10 @@ public class OppgaveRepositoryImpl implements OppgaveRepository {
         TypedQuery<KøSortering> listeTypedQuery = entityManager
                 .createQuery("SELECT l.sortering FROM OppgaveFiltrering l WHERE l.id = :id ", KøSortering.class)
                 .setParameter("id", listeId);
-        return listeTypedQuery.getResultStream().findFirst().orElse(null);
+        return listeTypedQuery.getResultStream()
+                .findFirst()
+                .orElse(null);
     }
-
 
     @Override
     public void lagre(Reservasjon reservasjon){
@@ -607,10 +608,8 @@ public class OppgaveRepositoryImpl implements OppgaveRepository {
                 .getResultList();
     }
 
-
     private void internLagre(Object objektTilLagring) {
         entityManager.persist(objektTilLagring);
         entityManager.flush();
     }
-
 }

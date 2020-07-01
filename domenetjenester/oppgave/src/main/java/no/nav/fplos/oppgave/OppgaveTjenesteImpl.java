@@ -1,18 +1,5 @@
 package no.nav.fplos.oppgave;
 
-import static no.nav.foreldrepenger.loslager.BaseEntitet.BRUKERNAVN_NÅR_SIKKERHETSKONTEKST_IKKE_FINNES;
-
-import java.time.LocalDateTime;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import no.nav.foreldrepenger.loslager.BehandlingId;
 import no.nav.foreldrepenger.loslager.oppgave.Oppgave;
 import no.nav.foreldrepenger.loslager.oppgave.OppgaveFiltrering;
@@ -24,6 +11,18 @@ import no.nav.foreldrepenger.loslager.repository.OppgaveRepository;
 import no.nav.foreldrepenger.loslager.repository.Oppgavespørring;
 import no.nav.foreldrepenger.loslager.repository.OrganisasjonRepository;
 import no.nav.vedtak.sikkerhet.context.SubjectHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import javax.persistence.PersistenceException;
+import java.time.LocalDateTime;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+
+import static no.nav.foreldrepenger.loslager.BaseEntitet.BRUKERNAVN_NÅR_SIKKERHETSKONTEKST_IKKE_FINNES;
 
 @ApplicationScoped
 public class OppgaveTjenesteImpl implements OppgaveTjeneste {
@@ -81,12 +80,18 @@ public class OppgaveTjenesteImpl implements OppgaveTjeneste {
 
     public Reservasjon reserverOppgave(Long oppgaveId) {
         Reservasjon reservasjon = oppgaveRepository.hentReservasjon(oppgaveId);
-        if (reservasjon.getReservertTil() == null || !reservasjon.erAktiv()) {
+        if (!reservasjon.erAktiv()) {
             reservasjon.reserverNormalt();
+            try {
+                oppgaveRepository.lagre(reservasjon);
+                oppgaveRepository.refresh(reservasjon.getOppgave());
+                oppgaveRepository.lagre(new ReservasjonEventLogg(reservasjon));
+            } catch (PersistenceException e) {
+                // ignorerer feil ettersom ReservasjonDto til frontend vil vise at reservasjon tilhører annen
+                log.info("Antatt kollisjon på reservasjon", e);
+                oppgaveRepository.refresh(reservasjon.getOppgave());
+            }
         }
-        oppgaveRepository.lagre(reservasjon);
-        oppgaveRepository.refresh(reservasjon.getOppgave());
-        oppgaveRepository.lagre(new ReservasjonEventLogg(reservasjon));
         return reservasjon;
     }
 

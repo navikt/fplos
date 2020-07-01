@@ -1,13 +1,12 @@
 package no.nav.foreldrepenger.los.web.app.tjenester.felles.dto;
 
-import java.util.Optional;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-
 import no.nav.foreldrepenger.loslager.oppgave.Oppgave;
 import no.nav.foreldrepenger.loslager.oppgave.Reservasjon;
 import no.nav.fplos.ansatt.AnsattTjeneste;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import java.util.Optional;
 
 @ApplicationScoped
 public class OppgaveStatusDtoTjeneste {
@@ -34,7 +33,7 @@ public class OppgaveStatusDtoTjeneste {
 
     private Optional<String> hentFlyttetAv(Reservasjon reservasjon) {
         var flyttetAv = reservasjon.getFlyttetAv();
-        return flyttetAv.map(saksbehandler -> hentNavn(saksbehandler));
+        return flyttetAv.map(this::hentNavn);
     }
 
     private String hentNavn(String saksbehandlerIdent) {

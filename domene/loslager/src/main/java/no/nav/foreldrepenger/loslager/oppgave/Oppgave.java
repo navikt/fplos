@@ -1,8 +1,8 @@
 package no.nav.foreldrepenger.loslager.oppgave;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.UUID;
+import no.nav.foreldrepenger.loslager.BaseEntitet;
+import no.nav.foreldrepenger.loslager.BehandlingId;
+import no.nav.vedtak.felles.jpa.converters.BooleanToStringConverter;
 
 import javax.persistence.Column;
 import javax.persistence.Convert;
@@ -15,10 +15,9 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
-
-import no.nav.foreldrepenger.loslager.BaseEntitet;
-import no.nav.foreldrepenger.loslager.BehandlingId;
-import no.nav.vedtak.felles.jpa.converters.BooleanToStringConverter;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Entity(name = "Oppgave")
 @Table(name = "OPPGAVE")
@@ -184,11 +183,7 @@ public class Oppgave extends BaseEntitet {
     }
 
     public boolean harAktivReservasjon() {
-        var reservasjon = getReservasjon();
-        return reservasjon != null &&
-                reservasjon.getReservertAv() != null &&
-                reservasjon.getReservertTil() != null &&
-                reservasjon.erAktiv();
+        return reservasjon != null && reservasjon.erAktiv();
     }
 
     public static class Builder {

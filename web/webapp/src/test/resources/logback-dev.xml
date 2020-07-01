@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE xml>
 <configuration scan="true" scanPeriod="60 seconds">
 
 	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
@@ -11,7 +10,7 @@
                <level>INFO</level>
        </filter>
 	</appender>
-  
+
     <!-- Application log -->
     <appender name="APP_FILE_LOG" class="ch.qos.logback.core.rolling.RollingFileAppender">
             <File>${APP_LOG_HOME}/fplos.log</File>
@@ -90,7 +89,7 @@
     <logger name="no.nav.modig" level="${log.level.no.nav.modig:-WARN}" />
     <!-- denne logger passord på INFO nivå!-->
     <logger name="no.nav.modig.core.test.PropertySetter" level="${log.level.no.nav.modig.core.test.PropertySetter:-WARN}" />
-    
+
     <logger name="sporing" level="INFO" additivity="false">
         <appender-ref ref="SPORING_LOG" />
     </logger>
