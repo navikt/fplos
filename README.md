@@ -1,8 +1,8 @@
 # FPLOS
 
-FPLOS håndterer oppgave- og ledelsesstyring på foreldrepengeområdet. Fp-sak og fp-tilbake produserer hendelser som representerer state i behandlingsprosessen. FPLOS benytter dette for å opprette, kategorisere og lukke oppgaver.
+FPLOS håndterer oppgave- og ledelsesstyring på foreldrepengeområdet. Fp-sak og fp-tilbake produserer hendelser som representerer tilstand i behandlingsprosessen. FPLOS lytter til hendelsene for å dekke behovet for oppgavestyring og statistikk. 
 
-Oppgavestyrere definerer kriterier som ligger til grunn for ulike køer som fordeler oppgaver etter prioritet til saksbehandlere. 
+Oppgavestyrere definerer kriterier som ligger til grunn for køer som fordeler oppgaver etter prioritet til saksbehandlere. 
 
 https://confluence.adeo.no/display/TVF/FP-LOS
 
