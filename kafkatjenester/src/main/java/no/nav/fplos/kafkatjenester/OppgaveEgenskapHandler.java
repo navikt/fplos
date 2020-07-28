@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import javax.transaction.Transactional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,10 +16,9 @@ import no.nav.foreldrepenger.loslager.oppgave.AndreKriterierType;
 import no.nav.foreldrepenger.loslager.oppgave.Oppgave;
 import no.nav.foreldrepenger.loslager.oppgave.OppgaveEgenskap;
 import no.nav.foreldrepenger.loslager.repository.OppgaveRepository;
-import no.nav.vedtak.felles.jpa.Transaction;
 
 @ApplicationScoped
-@Transaction
+@Transactional
 public class OppgaveEgenskapHandler {
 
     private static final Logger log = LoggerFactory.getLogger(OppgaveEgenskapHandler.class);
