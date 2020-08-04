@@ -63,7 +63,7 @@
         <flyway.version>4.2.0</flyway.version>
         <ojdbc.version>19.3.0.0</ojdbc.version>
         <!--abac-attribute-constants.version>2.0.0</abac-attribute-constants.version-->
-        <kafka.version>2.5.0</kafka.version>
+        <kafka.version>2.6.0</kafka.version>
         <prosesstask.version>2.4.2-20200703105213-95d753a</prosesstask.version>
     </properties>
 
