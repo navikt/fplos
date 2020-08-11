@@ -1,7 +1,7 @@
 package no.nav.foreldrepenger.los.web.app.startupinfo;
 
 import static no.nav.vedtak.feil.LogLevel.ERROR;
-import static no.nav.vedtak.feil.LogLevel.WARN;
+import static no.nav.vedtak.feil.LogLevel.INFO;
 
 import no.nav.vedtak.feil.Feil;
 import no.nav.vedtak.feil.FeilFactory;
