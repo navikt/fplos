@@ -1,7 +1,7 @@
 package no.nav.foreldrepenger.los.web.app.startupinfo;
 
 import static no.nav.vedtak.feil.LogLevel.ERROR;
-import static no.nav.vedtak.feil.LogLevel.INFO;
+import static no.nav.vedtak.feil.LogLevel.WARN;
 
 import no.nav.vedtak.feil.Feil;
 import no.nav.vedtak.feil.FeilFactory;
@@ -15,6 +15,6 @@ interface OppstartFeil extends DeklarerteFeil {
     @TekniskFeil(feilkode = "FP-753407", feilmelding = "Uventet exception ved oppstart", logLevel = ERROR)
     Feil uventetExceptionVedOppstart(Exception e);
 
-    @TekniskFeil(feilkode = "FP-753409", feilmelding = "Selftest %s: %s. Endpoint: %s. Responstid: %s. Feilmelding: %s.", logLevel = INFO)
+    @TekniskFeil(feilkode = "FP-753409", feilmelding = "Selftest %s: %s. Endpoint: %s. Responstid: %s. Feilmelding: %s.", logLevel = WARN)
     Feil selftestStatus(String status, String description, String endpoint, String responstid, String feilmelding);
 }

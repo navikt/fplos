@@ -14,10 +14,12 @@ public interface OrganisasjonRessursEnhetTjenesteFeil extends DeklarerteFeil {
 
     OrganisasjonRessursEnhetTjenesteFeil FACTORY = FeilFactory.create(OrganisasjonRessursEnhetTjenesteFeil.class);
 
-    @IntegrasjonFeil(feilkode = "FPLOS-923", feilmelding = "Funksjonell feil i grensesnitt mot %s", logLevel = LogLevel.INFO, exceptionClass = OrganisasjonRessursEnhetUgyldigInputException.class)
+    @IntegrasjonFeil(feilkode = "FPLOS-923", feilmelding = "Funksjonell feil i grensesnitt mot %s", logLevel =
+            LogLevel.WARN, exceptionClass = OrganisasjonRessursEnhetUgyldigInputException.class)
     Feil ugyldigInput(String tjeneste, HentEnhetListeUgyldigInput årsak);
 
-    @IntegrasjonFeil(feilkode = "FPLOS-067", feilmelding = "Ingen liste over enheter til angitt ressurs funnet i grensesnitt mot %s", logLevel = LogLevel.INFO, exceptionClass = OrganisasjonRessursEnhetHentEnhetListeRessursIkkeFunnetException.class)
+    @IntegrasjonFeil(feilkode = "FPLOS-067", feilmelding = "Ingen liste over enheter til angitt ressurs funnet i grensesnitt mot %s",
+            logLevel = LogLevel.WARN, exceptionClass = OrganisasjonRessursEnhetHentEnhetListeRessursIkkeFunnetException.class)
     Feil ikkeFunnet(String tjeneste, HentEnhetListeRessursIkkeFunnet årsak);
 
     @IntegrasjonFeil(feilkode = "FPLOS-695", feilmelding = "Feil i kall mot grensesnittet %s", logLevel = LogLevel.WARN)
