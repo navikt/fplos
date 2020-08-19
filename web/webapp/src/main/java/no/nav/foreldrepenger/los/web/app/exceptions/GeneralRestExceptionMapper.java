@@ -12,7 +12,6 @@ import org.jboss.resteasy.spi.ApplicationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
-import org.slf4j.event.Level;
 
 import no.nav.fplos.foreldrepengerbehandling.InternIdMappingException;
 import no.nav.vedtak.exception.ManglerTilgangException;
@@ -128,11 +127,7 @@ public class GeneralRestExceptionMapper implements ExceptionMapper<ApplicationEx
 
     private void loggTilApplikasjonslogg(Throwable cause) {
         if (cause instanceof VLException) {
-            var vlException = (VLException) cause;
-            if (vlException.getFeil().getLogLevel().equals(Level.INFO)) {
-                LOGGER.warn("Prøver å logge vlexception til info {}, {}", vlException.getCause(), vlException.getFeil().getFeilmelding());
-            }
-            vlException.log(LOGGER);
+            ((VLException) cause).log(LOGGER);
         } else {
             String message = cause.getMessage() != null ? LoggerUtils.removeLineBreaks(cause.getMessage()) : "";
             LOGGER.error("Fikk uventet feil:" + message, cause); //NOSONAR //$NON-NLS-1$

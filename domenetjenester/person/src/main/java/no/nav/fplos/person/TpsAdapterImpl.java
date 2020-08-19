@@ -74,8 +74,6 @@ public class TpsAdapterImpl implements TpsAdapter {
             return håndterResponse(aktørId, operasjonPåSerialisertPersonInfo, request);
         } catch (HentPersonPersonIkkeFunnet e) {
             throw TpsFeilmeldinger.FACTORY.fantIkkePerson(e).toException();
-        } catch (HentPersonSikkerhetsbegrensning e) {
-            throw e;
         }
     }
 
