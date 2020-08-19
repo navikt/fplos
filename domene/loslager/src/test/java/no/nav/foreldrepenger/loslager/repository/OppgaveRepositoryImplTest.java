@@ -1,5 +1,26 @@
 package no.nav.foreldrepenger.loslager.repository;
 
+import static no.nav.foreldrepenger.loslager.oppgave.KøSortering.BEHANDLINGSFRIST;
+import static no.nav.foreldrepenger.loslager.oppgave.KøSortering.FEILUTBETALINGSTART;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
+
+import javax.persistence.EntityManager;
+
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
+
 import no.nav.foreldrepenger.dbstoette.UnittestRepositoryRule;
 import no.nav.foreldrepenger.loslager.BaseEntitet;
 import no.nav.foreldrepenger.loslager.BehandlingId;
@@ -16,25 +37,6 @@ import no.nav.foreldrepenger.loslager.oppgave.Reservasjon;
 import no.nav.foreldrepenger.loslager.oppgave.TilbakekrevingOppgave;
 import no.nav.foreldrepenger.loslager.organisasjon.Avdeling;
 import no.nav.vedtak.felles.testutilities.db.Repository;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-
-import javax.persistence.EntityManager;
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.UUID;
-import java.util.stream.Collectors;
-
-import static no.nav.foreldrepenger.loslager.oppgave.KøSortering.BEHANDLINGSFRIST;
-import static no.nav.foreldrepenger.loslager.oppgave.KøSortering.FEILUTBETALINGSTART;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
 
 public class OppgaveRepositoryImplTest {
 
