@@ -300,7 +300,7 @@
                 <groupId>org.webjars</groupId>
                 <artifactId>swagger-ui</artifactId>
                 <!--Ikke bump automatisk uten å teste lokalt og i miljø, brekker ofte-->
-                <version>3.30.0</version>
+                <version>3.32.3</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
