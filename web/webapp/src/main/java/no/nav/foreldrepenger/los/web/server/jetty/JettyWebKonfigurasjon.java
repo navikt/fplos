@@ -2,7 +2,7 @@ package no.nav.foreldrepenger.los.web.server.jetty;
 
 public class JettyWebKonfigurasjon implements AppKonfigurasjon {
     private static final String CONTEXT_PATH = "/fplos";
-    private static final String SWAGGER_HASH = "sha256-1t+exeFbOSmHgWLUvPEPNeXNMeruEG5G1CP3XgRJq2g=";
+    private static final String SWAGGER_HASH = "sha256-EPQ03TJBvKMhn2uZPS5nGRMxPRmRYgz8WUtCS0NFSxI=";
 
     private Integer serverPort;
 
