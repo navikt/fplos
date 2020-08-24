@@ -2,7 +2,6 @@ package no.nav.foreldrepenger.los.web.server.jetty;
 
 public class JettyWebKonfigurasjon implements AppKonfigurasjon {
     private static final String CONTEXT_PATH = "/fplos";
-    private static final String SWAGGER_HASH = "sha256-EPQ03TJBvKMhn2uZPS5nGRMxPRmRYgz8WUtCS0NFSxI=";
 
     private Integer serverPort;
 
@@ -29,11 +28,4 @@ public class JettyWebKonfigurasjon implements AppKonfigurasjon {
     public int getSslPort() {
         throw new IllegalStateException("SSL port should only be used locally");
     }
-
-    @Override
-    public String getSwaggerHash() {
-        return SWAGGER_HASH;
-    }
-
-
 }

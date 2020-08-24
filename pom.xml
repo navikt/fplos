@@ -28,7 +28,7 @@
 
         <fp-kontrakter.version>5.1-20200225123631-afeacc4</fp-kontrakter.version>
         <tjenestespesifikasjoner.version>1.2019.12.18-12.22-ce897c4eb2c1</tjenestespesifikasjoner.version>
-        <felles.version>2.0.0-20200702160706-bb063e2</felles.version>
+        <felles.version>2.1.0-20200821125413-7c8cc89</felles.version>
 
         <!-- NAV -->
         <organisasjon-ressurs-enhet.version>1.0.0</organisasjon-ressurs-enhet.version>
@@ -64,7 +64,7 @@
         <ojdbc.version>19.3.0.0</ojdbc.version>
         <!--abac-attribute-constants.version>2.0.0</abac-attribute-constants.version-->
         <kafka.version>2.6.0</kafka.version>
-        <prosesstask.version>2.4.3-20200819084508-33a122f</prosesstask.version>
+        <prosesstask.version>2.4.3-20200821080802-12519de</prosesstask.version>
     </properties>
 
     <dependencies>

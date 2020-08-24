@@ -1,6 +1,13 @@
 package no.nav.foreldrepenger.los.web.server.jetty;
 
-import no.nav.vedtak.sikkerhetsfilter.SecurityFilter;
+import java.io.File;
+import java.io.IOException;
+import java.security.Security;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.security.auth.message.config.AuthConfigFactory;
+
 import org.apache.geronimo.components.jaspi.AuthConfigFactoryImpl;
 import org.eclipse.jetty.annotations.AnnotationConfiguration;
 import org.eclipse.jetty.jaas.JAASLoginService;
@@ -22,19 +29,11 @@ import org.eclipse.jetty.webapp.WebAppContext;
 import org.eclipse.jetty.webapp.WebInfConfiguration;
 import org.eclipse.jetty.webapp.WebXmlConfiguration;
 
-import javax.security.auth.message.config.AuthConfigFactory;
-import java.io.File;
-import java.io.IOException;
-import java.security.Security;
-import java.util.ArrayList;
-import java.util.List;
-
 abstract class AbstractJettyServer {
 
     /**
      * @see AbstractNetworkConnector#getHost()
      */
-    //TODO (u139158): Trenger vi egentlig å sette denne? Spec ser ut til å si at det er eq med null, settes den default til null eller binder den mot et interface?
 
     protected static final String SERVER_HOST = "0.0.0.0";
     /**
@@ -76,15 +75,6 @@ abstract class AbstractJettyServer {
             throw new IllegalStateException("Missing required file: " + jaspiConf.getAbsolutePath());
         }
         System.setProperty("org.apache.geronimo.jaspic.configurationFile", jaspiConf.getAbsolutePath());
-
-        konfigurerSwaggerHash();
-    }
-
-    /**
-     * @see SecurityFilter
-     */
-    protected void konfigurerSwaggerHash() {
-        System.setProperty(SecurityFilter.SWAGGER_HASH_KEY, appKonfigurasjon.getSwaggerHash());
     }
 
     protected abstract void konfigurerJndi() throws Exception;
