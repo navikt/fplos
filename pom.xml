@@ -34,7 +34,7 @@
         <organisasjon-ressurs-enhet.version>1.0.0</organisasjon-ressurs-enhet.version>
 
         <!-- Eksterne -->
-        <assertj.version>3.16.1</assertj.version>
+        <assertj.version>3.17.0</assertj.version>
         <cxf.version>3.3.7</cxf.version>
         <woodstox.version>6.2.1</woodstox.version>
         <surefire.version>2.22.2</surefire.version>
