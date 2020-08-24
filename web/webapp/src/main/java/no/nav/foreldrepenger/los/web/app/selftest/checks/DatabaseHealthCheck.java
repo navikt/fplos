@@ -42,7 +42,7 @@ public class DatabaseHealthCheck extends ExtHealthCheck {
 
         InternalResult intTestRes = new InternalResult();
 
-        DataSource dataSource = null;
+        DataSource dataSource;
         try {
             dataSource = (DataSource) new InitialContext().lookup(jndiName);
         } catch (NamingException e) {
@@ -86,5 +86,9 @@ public class DatabaseHealthCheck extends ExtHealthCheck {
             // ikke fatalt
         }
         return result;
+    }
+
+    public boolean isReady() {
+        return performCheck().isOk();
     }
 }

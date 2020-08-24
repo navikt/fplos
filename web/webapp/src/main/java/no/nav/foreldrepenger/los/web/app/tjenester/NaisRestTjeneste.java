@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import io.swagger.v3.oas.annotations.Operation;
+import no.nav.foreldrepenger.los.web.app.selftest.checks.DatabaseHealthCheck;
 
 @Path("/health")
 @ApplicationScoped
@@ -22,21 +23,28 @@ public class NaisRestTjeneste {
     private static final String RESPONSE_OK = "OK";
 
     private KafkaConsumerStarter kafkaConsumerStarter;
+    private DatabaseHealthCheck databaseHealthCheck;
 
     public NaisRestTjeneste() {
         // CDI
     }
 
     @Inject
-    public NaisRestTjeneste(KafkaConsumerStarter kafkaConsumerStarter) {
+    public NaisRestTjeneste(KafkaConsumerStarter kafkaConsumerStarter, DatabaseHealthCheck databaseHealthCheck) {
         this.kafkaConsumerStarter = kafkaConsumerStarter;
+        this.databaseHealthCheck = databaseHealthCheck;
     }
 
     @GET
     @Path("isAlive")
     @Operation(description = "sjekker om poden lever", tags = "nais", hidden = true)
     public Response isAlive() {
-        return Response.ok(RESPONSE_OK)
+        if (kafkaConsumerStarter.isConsumersRunning()) {
+            return Response.ok(RESPONSE_OK)
+                    .header(RESPONSE_CACHE_KEY, RESPONSE_CACHE_VAL)
+                    .build();
+        }
+        return Response.serverError()
                 .header(RESPONSE_CACHE_KEY, RESPONSE_CACHE_VAL)
                 .build();
     }
@@ -45,7 +53,7 @@ public class NaisRestTjeneste {
     @Path("isReady")
     @Operation(description = "sjekker om poden er klar", tags = "nais", hidden = true)
     public Response isReady() {
-        if (kafkaConsumerStarter.isConsumersRunning()) {
+        if (kafkaConsumerStarter.isConsumersRunning() && databaseHealthCheck.isReady()) {
             return Response.ok(RESPONSE_OK)
                     .header(RESPONSE_CACHE_KEY, RESPONSE_CACHE_VAL)
                     .build();
