@@ -1,6 +1,8 @@
 package no.nav.fplos.admin;
 
+import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -9,6 +11,10 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 
+import no.nav.foreldrepenger.loslager.organisasjon.Avdeling;
+import no.nav.foreldrepenger.loslager.repository.OrganisasjonRepository;
+import no.nav.foreldrepenger.loslager.repository.OrganisasjonRepositoryImpl;
+import no.nav.fplos.avdelingsleder.AvdelingslederTjenesteImpl;
 import org.junit.Rule;
 import org.junit.Test;
 
@@ -33,7 +39,9 @@ public class AdminTjenesteImplTest {
     private final OppgaveRepository oppgaveRepository = new OppgaveRepositoryImpl(entityManager);
     private final AdminRepository adminRepository = new AdminRepositoryImpl(entityManager);
     private ForeldrepengerBehandlingRestKlient foreldrepengerBehandlingRestKlient = mock(ForeldrepengerBehandlingRestKlient.class);
-    private AdminTjenesteImpl adminTjeneste = new AdminTjenesteImpl(adminRepository, foreldrepengerBehandlingRestKlient);
+    private OrganisasjonRepository organisasjonRepository = new OrganisasjonRepositoryImpl(entityManager);
+    private AdminTjenesteImpl adminTjeneste = new AdminTjenesteImpl(adminRepository, foreldrepengerBehandlingRestKlient, organisasjonRepository);
+    private AvdelingslederTjenesteImpl avdelingslederTjeneste = new AvdelingslederTjenesteImpl(oppgaveRepository, organisasjonRepository);
 
     private static String AVDELING_DRAMMEN_ENHET = "4806";
 
@@ -60,6 +68,27 @@ public class AdminTjenesteImplTest {
         oppgaveRepository.lagre(førstegangOppgave);
         oppgaveRepository.lagre(klageOppgave);
         oppgaveRepository.lagre(innsynOppgave);
+    }
+
+    @Test
+    public void skalKunneOppretteNyAvdeling() {
+        List<Avdeling> avdelingerFør = avdelingslederTjeneste.hentAvdelinger();
+        var avdeling = new Avdeling("1234", "Nav på ny", Boolean.FALSE);
+        adminTjeneste.opprettAvdeling(avdeling);
+        var avdelingerDiff = avdelingslederTjeneste.hentAvdelinger().stream()
+                .filter(e -> !avdelingerFør.contains(e))
+                .collect(toList());
+        assertThat(avdelingerDiff).containsExactly(avdeling);
+        assertThat(avdelingerDiff.get(0).getAvdelingEnhet()).isEqualTo("1234");
+        assertThat(avdelingerDiff.get(0).getNavn()).isEqualTo("Nav på ny");
+        assertThat(avdelingerDiff.get(0).getKreverKode6()).isEqualTo(Boolean.FALSE);
+    }
+
+    @Test
+    public void nårOpprettelseAvDuplikatAvdelingSkalDetKastesFeil() {
+        var avdeling = new Avdeling("1234", "Nav på ny", Boolean.FALSE);
+        adminTjeneste.opprettAvdeling(avdeling);
+        assertThrows(IllegalArgumentException.class, () -> adminTjeneste.opprettAvdeling(avdeling));
     }
 
     @Test

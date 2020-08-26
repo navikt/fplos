@@ -71,10 +71,10 @@ public class OrganisasjonRepositoryImpl implements OrganisasjonRepository {
     }
 
     @Override
-    public Avdeling hentAvdelingFraEnhet(String avdelingEnhet){
+    public Optional<Avdeling> hentAvdelingFraEnhet(String avdelingEnhet){
         TypedQuery<Avdeling> query = entityManager.createQuery("FROM avdeling a WHERE a.avdelingEnhet = :avdelingEnhet", Avdeling.class)
                 .setParameter("avdelingEnhet", avdelingEnhet);
-        return hentEksaktResultat(query);
+        return hentUniktResultat(query);
     }
 
     @Override

@@ -166,7 +166,7 @@ public class OppgaveTjenesteImpl implements OppgaveTjeneste {
 
     @Override
     public Integer hentAntallOppgaverForAvdeling(String avdelingsEnhet) {
-        Avdeling avdeling = organisasjonRepository.hentAvdelingFraEnhet(avdelingsEnhet);
+        Avdeling avdeling = organisasjonRepository.hentAvdelingFraEnhet(avdelingsEnhet).orElseThrow();
         return oppgaveRepository.hentAntallOppgaverForAvdeling(avdeling.getId());
     }
 

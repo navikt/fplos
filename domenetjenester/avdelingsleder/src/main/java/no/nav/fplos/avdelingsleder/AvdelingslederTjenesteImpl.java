@@ -41,7 +41,7 @@ public class AvdelingslederTjenesteImpl implements AvdelingslederTjeneste {
 
     @Override
     public List<OppgaveFiltrering> hentOppgaveFiltreringer(String avdelingsEnhet){
-        Avdeling avdeling = organisasjonRepository.hentAvdelingFraEnhet(avdelingsEnhet);
+        Avdeling avdeling = organisasjonRepository.hentAvdelingFraEnhet(avdelingsEnhet).orElseThrow();
         return oppgaveRepository.hentAlleFiltreringer(avdeling.getId());
     }
 
@@ -52,7 +52,7 @@ public class AvdelingslederTjenesteImpl implements AvdelingslederTjeneste {
 
     @Override
     public Long lagNyOppgaveFiltrering(String avdelingEnhet) {
-        Avdeling avdeling = organisasjonRepository.hentAvdelingFraEnhet(avdelingEnhet);
+        Avdeling avdeling = organisasjonRepository.hentAvdelingFraEnhet(avdelingEnhet).orElseThrow();
         return oppgaveRepository.lagre(OppgaveFiltrering.nyTomOppgaveFiltrering(avdeling));
     }
 
@@ -155,7 +155,7 @@ public class AvdelingslederTjenesteImpl implements AvdelingslederTjeneste {
     }
 
     @Override
-    public  List<Avdeling> hentAvdelinger(){
+    public List<Avdeling> hentAvdelinger(){
         return organisasjonRepository.hentAvdelinger();
     }
 

@@ -43,7 +43,7 @@ public class AvdelingslederSaksbehandlerTjenesteImpl implements AvdelingslederSa
     }
 
     private Avdeling hentAvdeling(String avdelingEnhet) {
-        return organisasjonRepository.hentAvdelingFraEnhet(avdelingEnhet);
+        return organisasjonRepository.hentAvdelingFraEnhet(avdelingEnhet).orElseThrow();
     }
 
     private Saksbehandler hentEllerLagreSaksbehandler(String saksbehandlerIdent) {
@@ -58,7 +58,7 @@ public class AvdelingslederSaksbehandlerTjenesteImpl implements AvdelingslederSa
     @Override
     public void slettSaksbehandler(String saksbehandlerIdent, String avdelingEnhet) {
         Saksbehandler saksbehandler = organisasjonRepository.hentSaksbehandler(saksbehandlerIdent);
-        saksbehandler.fjernAvdeling(organisasjonRepository.hentAvdelingFraEnhet(avdelingEnhet));
+        saksbehandler.fjernAvdeling(organisasjonRepository.hentAvdelingFraEnhet(avdelingEnhet).orElseThrow());
         organisasjonRepository.lagre(saksbehandler);
 
         Avdeling avdeling = hentAvdeling(avdelingEnhet);

@@ -1,9 +1,9 @@
 package no.nav.foreldrepenger.los.web.app.tjenester.admin;
 
+import static java.util.stream.Collectors.toList;
 import static no.nav.vedtak.sikkerhet.abac.BeskyttetRessursActionAttributt.READ;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -13,6 +13,7 @@ import javax.validation.constraints.NotNull;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.PATCH;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
@@ -22,6 +23,7 @@ import javax.ws.rs.core.Response;
 import io.swagger.v3.oas.annotations.Operation;
 import no.nav.foreldrepenger.los.web.app.AbacAttributter;
 import no.nav.foreldrepenger.los.web.app.tjenester.admin.dto.OppgaveEventLoggDto;
+import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.dto.AvdelingDto;
 import no.nav.foreldrepenger.los.web.app.tjenester.felles.dto.OppgaveDto;
 import no.nav.foreldrepenger.los.web.app.tjenester.felles.dto.OppgaveDtoTjeneste;
 import no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.oppgave.dto.BehandlingIdDto;
@@ -86,7 +88,9 @@ public class AdminRestTjeneste {
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
     public List<OppgaveEventLoggDto> hentEventlogg(@NotNull @QueryParam("behandlingId") @Valid BehandlingIdDto behandlingId) {
         var oppgaveEventLogger = adminTjeneste.hentEventer(behandlingId.getValue());
-        return oppgaveEventLogger.stream().map(o -> new OppgaveEventLoggDto(o)).collect(Collectors.toList());
+        return oppgaveEventLogger.stream()
+                .map(OppgaveEventLoggDto::new)
+                .collect(toList());
     }
 
     @GET
@@ -98,7 +102,9 @@ public class AdminRestTjeneste {
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
     public List<OppgaveDto> hentAlleOppgaverForBehandling(@NotNull @QueryParam("behandlingId") @Valid BehandlingIdDto behandlingId) {
         List<Oppgave> oppgaver = adminTjeneste.hentAlleOppgaverForBehandling(behandlingId.getValue());
-        return oppgaver.stream().map(o -> map(o)).collect(Collectors.toList());
+        return oppgaver.stream()
+                .map(this::map)
+                .collect(toList());
     }
 
     @GET
@@ -133,6 +139,17 @@ public class AdminRestTjeneste {
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
     public Response synkroniserBerørtBehandling() {
         synkroniseringTjeneste.leggTilBerørtBehandlingEgenskap();
+        return Response.ok().build();
+    }
+
+    @POST
+    @Path("/opprettAvdeling")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Operation(description = "Opprett avdeling", tags = "admin")
+    @BeskyttetRessurs(action = READ, resource = AbacAttributter.OPPGAVESTYRING)
+    @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
+    public Response opprettAvdeling(@NotNull @Valid AvdelingDto avdelingDto) {
+        adminTjeneste.opprettAvdeling(avdelingDto.getValue());
         return Response.ok().build();
     }
 

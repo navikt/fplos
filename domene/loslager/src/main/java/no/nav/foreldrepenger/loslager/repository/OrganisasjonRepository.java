@@ -14,7 +14,7 @@ public interface OrganisasjonRepository {
 
     Saksbehandler hentSaksbehandler(String saksbehandlerIdent);
 
-    Avdeling hentAvdelingFraEnhet(String avdelingEnhet);
+    Optional<Avdeling> hentAvdelingFraEnhet(String avdelingEnhet);
 
     Optional<Saksbehandler> hentSaksbehandlerHvisEksisterer(String saksbehandlerIdent);
 
