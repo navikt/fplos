@@ -1,6 +1,7 @@
 package no.nav.foreldrepenger.los.web.app.tjenester.admin;
 
 import static java.util.stream.Collectors.toList;
+import static no.nav.vedtak.sikkerhet.abac.BeskyttetRessursActionAttributt.CREATE;
 import static no.nav.vedtak.sikkerhet.abac.BeskyttetRessursActionAttributt.READ;
 
 import java.util.List;
@@ -23,12 +24,13 @@ import javax.ws.rs.core.Response;
 import io.swagger.v3.oas.annotations.Operation;
 import no.nav.foreldrepenger.los.web.app.AbacAttributter;
 import no.nav.foreldrepenger.los.web.app.tjenester.admin.dto.OppgaveEventLoggDto;
-import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.dto.AvdelingDto;
+import no.nav.foreldrepenger.los.web.app.tjenester.admin.dto.AvdelingOpprettelseDto;
 import no.nav.foreldrepenger.los.web.app.tjenester.felles.dto.OppgaveDto;
 import no.nav.foreldrepenger.los.web.app.tjenester.felles.dto.OppgaveDtoTjeneste;
 import no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.oppgave.dto.BehandlingIdDto;
 import no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.oppgave.dto.OppgaveIdDto;
 import no.nav.foreldrepenger.loslager.oppgave.Oppgave;
+import no.nav.foreldrepenger.loslager.organisasjon.Avdeling;
 import no.nav.fplos.admin.AdminTjeneste;
 import no.nav.fplos.admin.OppgaveSynkroniseringTjeneste;
 import no.nav.vedtak.sikkerhet.abac.BeskyttetRessurs;
@@ -146,11 +148,12 @@ public class AdminRestTjeneste {
     @Path("/opprettAvdeling")
     @Consumes(MediaType.APPLICATION_JSON)
     @Operation(description = "Opprett avdeling", tags = "admin")
-    @BeskyttetRessurs(action = READ, resource = AbacAttributter.OPPGAVESTYRING)
+    @BeskyttetRessurs(action = CREATE, resource = AbacAttributter.DRIFT)
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
-    public Response opprettAvdeling(@NotNull @Valid AvdelingDto avdelingDto) {
-        adminTjeneste.opprettAvdeling(avdelingDto.getValue());
-        return Response.ok().build();
+    public Response opprettAvdeling(@NotNull @Valid AvdelingOpprettelseDto dto) {
+        Avdeling nyAvdeling = new Avdeling(dto.getAvdelingKode(), dto.getAvdelingNavn(), dto.getKreverKode6Tilgang());
+        adminTjeneste.opprettAvdeling(nyAvdeling);
+        return Response.noContent().build();
     }
 
     private OppgaveDto map(Oppgave oppgave) {
