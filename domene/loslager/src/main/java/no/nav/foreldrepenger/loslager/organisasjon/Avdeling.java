@@ -20,7 +20,6 @@ import no.nav.vedtak.felles.jpa.converters.BooleanToStringConverter;
 @Entity(name = "avdeling")
 @Table(name = "AVDELING")
 public class Avdeling extends BaseEntitet{
-
     public static final String AVDELING_DRAMMEN_ENHET = "4806";
 
     @Id
@@ -43,6 +42,14 @@ public class Avdeling extends BaseEntitet{
     @Column(name = "KREVER_KODE_6")
     private Boolean kreverKode6 = Boolean.FALSE;
 
+    public Avdeling() {
+    }
+
+    public Avdeling(String avdelingEnhet, String navn, Boolean kreverKode6) {
+        this.avdelingEnhet = avdelingEnhet;
+        this.navn = navn;
+        this.kreverKode6 = kreverKode6;
+    }
 
     public Long getId() {
         return id;
