@@ -38,7 +38,7 @@ public class AdminTjenesteImpl implements AdminTjeneste {
 
     @Override
     public void opprettAvdeling(Avdeling nyAvdeling) {
-        if ((enhetEksisterer(nyAvdeling))) {
+        if (enhetEksisterer(nyAvdeling)) {
             throw new IllegalArgumentException("Avdeling eksisterer");
         }
         organisasjonRepository.lagre(nyAvdeling);
