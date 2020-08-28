@@ -67,9 +67,6 @@ public class TpsAdapterImpl implements TpsAdapter {
     private TpsPersonDto hentKjerneinformasjon(PersonIdent fnr, AktørId aktørId, Consumer<String> operasjonPåSerialisertPersonInfo) throws HentPersonSikkerhetsbegrensning {
         HentPersonRequest request = new HentPersonRequest();
         request.setAktoer(TpsUtil.lagPersonIdent(fnr.getIdent()));
-        request.getInformasjonsbehov().add(Informasjonsbehov.ADRESSE);
-        request.getInformasjonsbehov().add(Informasjonsbehov.KOMMUNIKASJON);
-        request.getInformasjonsbehov().add(Informasjonsbehov.FAMILIERELASJONER);
         try {
             return håndterResponse(aktørId, operasjonPåSerialisertPersonInfo, request);
         } catch (HentPersonPersonIkkeFunnet e) {
