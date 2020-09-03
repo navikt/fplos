@@ -137,7 +137,7 @@ public class OppgaveRepositoryImpl implements OppgaveRepository {
                 "AND a.id = :enhet " +
                 "AND o.aktiv = true " + sortering(queryDto), oppgaveClass)
                 .setParameter("naa", LocalDateTime.now())
-                .setParameter("enhet", queryDto.getId());
+                .setParameter("enhet", queryDto.getEnhetId());
 
         if (!queryDto.getForAvdelingsleder()) {
             query.setParameter("tilbeslutter", AndreKriterierType.TIL_BESLUTTER)

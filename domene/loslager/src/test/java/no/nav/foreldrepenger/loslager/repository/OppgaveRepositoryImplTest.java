@@ -7,6 +7,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -305,6 +306,28 @@ public class OppgaveRepositoryImplTest {
     }
 
     @Test
+    public void filtrerPåOpprettetDatoTomDato() {
+        var aktuellOppgave = lagOppgave(LocalDate.now().minusDays(2));
+        var uaktuellOppgave = lagOppgave(LocalDate.now());
+        oppgaveRepository.lagre(uaktuellOppgave);
+        oppgaveRepository.lagre(aktuellOppgave);
+        var filtrerTomDato = LocalDate.now().minusDays(1);
+        Oppgavespørring query = new Oppgavespørring(AVDELING_DRAMMEN,
+                KøSortering.OPPRETT_BEHANDLING,
+                List.of(BehandlingType.FØRSTEGANGSSØKNAD),
+                List.of(FagsakYtelseType.FORELDREPENGER),
+                Collections.emptyList(),
+                Collections.emptyList(),
+                false, //erDynamiskPeriode
+                null,
+                filtrerTomDato,
+                null,
+                null);
+        var oppgaveResultat = oppgaveRepository.hentOppgaver(query);
+        assertThat(oppgaveResultat).containsExactly(aktuellOppgave);
+    }
+
+    @Test
     public void nullSistVedFeilutbetalingStartSomSorteringsKriterium() {
         // dersom oppdrag ikke leverer grunnlag innen frist, gir fptilbake opp og
         // lager hendelse som fører til oppgave. Formålet er at saksbehandler skal avklare
@@ -353,6 +376,20 @@ public class OppgaveRepositoryImplTest {
 
     private Oppgave siste() {
         return repository.hentAlle(Oppgave.class).get(1);
+    }
+
+    private Oppgave lagOppgave(LocalDate opprettetDato){
+        return Oppgave.builder()
+                .medFagsakSaksnummer(1337L)
+                .medBehandlingId(behandlingId1)
+                .medAktorId(5000000L)
+                .medBehandlingType(BehandlingType.FØRSTEGANGSSØKNAD)
+                .medFagsakYtelseType(FagsakYtelseType.FORELDREPENGER)
+                .medAktiv(true)
+                .medBehandlingsfrist(LocalDateTime.now())
+                .medBehandlendeEnhet(AVDELING_DRAMMEN_ENHET)
+                .medBehandlingOpprettet(opprettetDato.atStartOfDay())
+                .build();
     }
 
     private Oppgave lagOppgave(String behandlendeEnhet){

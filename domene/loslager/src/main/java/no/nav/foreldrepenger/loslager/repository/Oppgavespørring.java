@@ -15,7 +15,7 @@ import no.nav.foreldrepenger.loslager.oppgave.OppgaveFiltrering;
 
 public class Oppgavespørring {
     private KøSortering sortering;
-    private Long id;
+    private Long enhetId;
     private List<BehandlingType> behandlingTyper;
     private List<FagsakYtelseType> ytelseTyper;
     private List<AndreKriterierType> inkluderAndreKriterierTyper;
@@ -31,7 +31,7 @@ public class Oppgavespørring {
 
     public Oppgavespørring(OppgaveFiltrering oppgaveFiltrering){
          sortering = oppgaveFiltrering.getSortering();
-         id = oppgaveFiltrering.getAvdeling().getId();
+         enhetId = oppgaveFiltrering.getAvdeling().getId();
          behandlingTyper = behandlingTypeFra(oppgaveFiltrering);
          ytelseTyper = ytelseType(oppgaveFiltrering);
          inkluderAndreKriterierTyper = inkluderAndreKriterierTyperFra(oppgaveFiltrering);
@@ -43,12 +43,12 @@ public class Oppgavespørring {
          filtrerTil = oppgaveFiltrering.getTil();
     }
 
-    public Oppgavespørring(Long id, KøSortering sortering, List<BehandlingType> behandlingTyper,
+    public Oppgavespørring(Long enhetId, KøSortering sortering, List<BehandlingType> behandlingTyper,
                            List<FagsakYtelseType> ytelseTyper, List<AndreKriterierType> inkluderAndreKriterierTyper,
                            List<AndreKriterierType> ekskluderAndreKriterierTyper, boolean erDynamiskPeriode,
                            LocalDate filtrerFomDato, LocalDate filtrerTomDato, Long filtrerFra, Long filtrerTil) {
         this.sortering = sortering;
-        this.id = id;
+        this.enhetId = enhetId;
         this.behandlingTyper = behandlingTyper;
         this.ytelseTyper = ytelseTyper;
         this.inkluderAndreKriterierTyper = inkluderAndreKriterierTyper;
@@ -72,8 +72,8 @@ public class Oppgavespørring {
         return sortering;
     }
 
-    public Long getId() {
-        return id;
+    public Long getEnhetId() {
+        return enhetId;
     }
 
     public List<BehandlingType> getBehandlingTyper() {
