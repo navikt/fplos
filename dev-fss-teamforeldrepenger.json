@@ -11,7 +11,6 @@
   "env": {
     "LOADBALANCER_URL": "https://app-q1.adeo.no",
     "FPSAK_FRONTEND_URL": "https://app-q1.adeo.no/fpsak",
-    "FPSAK_URL": "http://fpsak.q1",
     "FPTILBAKE_FRONTEND_URL":  "https://app-q1.adeo.no",
     "SECURITYTOKENSERVICE_URL": "https://sts-q1.preprod.local/SecurityTokenServiceProvider/",
     "ABAC_PDP_ENDPOINT_URL": "https://wasapp-q1.adeo.no/asm-pdp/authorize",
