@@ -81,7 +81,7 @@ jobs:
             <table>
             <tr><th>Cluster</th><th>Namespace</th></tr>
             <tr><td>dev-fss</td><td>teamforeldrepenger</td></tr>
-            <tr><td>prod-fss</td><td>default,teamforeldrepenger</td></tr>
+            <tr><td>prod-fss</td><td>teamforeldrepenger</td></tr>
             </table>
 
       - name: Trigg deploy til dev-fss q1
