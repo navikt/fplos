@@ -8,7 +8,6 @@ import no.nav.foreldrepenger.loslager.oppgave.KøSortering;
 import no.nav.foreldrepenger.loslager.oppgave.Kodeverdi;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -18,12 +17,13 @@ import java.util.stream.Collectors;
 @ApplicationScoped
 class HentKodeverkTjenesteImpl implements HentKodeverkTjeneste {
 
-    private KodeverkFeatureToggle toggle;
+    private final static Map<String, Collection<? extends Kodeverdi>> KODEVERK = Map.of(
+            BehandlingType.class.getSimpleName(), toggletListe(BehandlingType.values()),
+            FagsakYtelseType.class.getSimpleName(), toggletListe(FagsakYtelseType.values()),
+            KøSortering.class.getSimpleName(), toggletListe(KøSortering.values()),
+            FagsakStatus.class.getSimpleName(), toggletListe(FagsakStatus.values()),
+            AndreKriterierType.class.getSimpleName(), toggletListe(AndreKriterierType.values()));
 
-    @Inject
-    public HentKodeverkTjenesteImpl(KodeverkFeatureToggle featureToggle) {
-        this.toggle = featureToggle;
-    }
 
     HentKodeverkTjenesteImpl() {
         // cdi
@@ -31,18 +31,13 @@ class HentKodeverkTjenesteImpl implements HentKodeverkTjeneste {
 
     @Override
     public Map<String, Collection<? extends Kodeverdi>> hentGruppertKodeliste() {
-        return Map.of(
-                BehandlingType.class.getSimpleName(), toggletListe(BehandlingType.values()),
-                FagsakYtelseType.class.getSimpleName(), toggletListe(FagsakYtelseType.values()),
-                KøSortering.class.getSimpleName(), toggletListe(KøSortering.values()),
-                FagsakStatus.class.getSimpleName(), toggletListe(FagsakStatus.values()),
-                AndreKriterierType.class.getSimpleName(), toggletListe(AndreKriterierType.values()));
+        return KODEVERK;
     }
 
     @SafeVarargs
-    private <T extends Kodeverdi> List<T> toggletListe(T... kodeverdi) {
+    private static <T extends Kodeverdi> List<T> toggletListe(T... kodeverdi) {
         return Arrays.stream(kodeverdi)
-                .filter(v -> !toggle.skalEkskludereFraFrontend(v))
+                .filter(v -> !KodeverkFeatureToggle.skalEkskludereFraFrontend(v))
                 .collect(Collectors.toList());
     }
 }
