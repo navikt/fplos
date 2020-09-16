@@ -8,27 +8,41 @@ import no.nav.foreldrepenger.loslager.oppgave.KøSortering;
 import no.nav.foreldrepenger.loslager.oppgave.Kodeverdi;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
-
-import static java.util.Arrays.asList;
+import java.util.stream.Collectors;
 
 @ApplicationScoped
 class HentKodeverkTjenesteImpl implements HentKodeverkTjeneste {
 
-    private static Map<String, Collection<? extends Kodeverdi>> KODEVERK_ENUM = Map.of(
-            BehandlingType.class.getSimpleName(), asList(BehandlingType.values()),
-            FagsakYtelseType.class.getSimpleName(), asList(FagsakYtelseType.values()),
-            KøSortering.class.getSimpleName(), asList(KøSortering.values()),
-            FagsakStatus.class.getSimpleName(), asList(FagsakStatus.values()),
-            AndreKriterierType.class.getSimpleName(), asList(AndreKriterierType.values()));
+    private KodeverkFeatureToggle toggle;
 
-    public HentKodeverkTjenesteImpl() {
-        // For CDI
+    @Inject
+    public HentKodeverkTjenesteImpl(KodeverkFeatureToggle featureToggle) {
+        this.toggle = featureToggle;
+    }
+
+    HentKodeverkTjenesteImpl() {
+        // cdi
     }
 
     @Override
     public Map<String, Collection<? extends Kodeverdi>> hentGruppertKodeliste() {
-        return KODEVERK_ENUM;
+        return Map.of(
+                BehandlingType.class.getSimpleName(), toggletListe(BehandlingType.values()),
+                FagsakYtelseType.class.getSimpleName(), toggletListe(FagsakYtelseType.values()),
+                KøSortering.class.getSimpleName(), toggletListe(KøSortering.values()),
+                FagsakStatus.class.getSimpleName(), toggletListe(FagsakStatus.values()),
+                AndreKriterierType.class.getSimpleName(), toggletListe(AndreKriterierType.values()));
+    }
+
+    @SafeVarargs
+    private <T extends Kodeverdi> List<T> toggletListe(T... kodeverdi) {
+        return Arrays.stream(kodeverdi)
+                .filter(v -> !toggle.skalEkskludereFraFrontend(v))
+                .collect(Collectors.toList());
     }
 }

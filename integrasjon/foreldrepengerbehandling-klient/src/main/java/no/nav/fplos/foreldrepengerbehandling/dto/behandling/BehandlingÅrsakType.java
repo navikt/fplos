@@ -3,8 +3,11 @@ package no.nav.fplos.foreldrepengerbehandling.dto.behandling;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.util.Arrays;
+
 public enum BehandlingÅrsakType {
-    BERØRT_BEHANDLING("BERØRT-BEHANDLING", "Endring i den andre forelderens uttak");
+    BERØRT_BEHANDLING("BERØRT-BEHANDLING", "Endring i den andre forelderens uttak"),
+    RE_ENDRING_FRA_BRUKER("RE-END-FRA-BRUKER", "Endringssøknad fra bruker");
 
     private String navn;
     private String kode;
@@ -14,11 +17,19 @@ public enum BehandlingÅrsakType {
         this.kode = kode;
     }
 
+    public String getNavn() {
+        return navn;
+    }
+
+    public String getKode() {
+        return kode;
+    }
+
     @JsonCreator
     public static BehandlingÅrsakType fraKode(@JsonProperty("kode") String kode) {
-        if (kode != null && kode.equals(BERØRT_BEHANDLING.kode)) {
-            return BERØRT_BEHANDLING;
-        }
-        return null;
+        return Arrays.stream(values())
+                .filter(v -> v.kode.equals(kode))
+                .findFirst()
+                .orElse(null);
     }
 }
