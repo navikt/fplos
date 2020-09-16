@@ -17,7 +17,7 @@ import no.nav.vedtak.util.env.Environment;
 public class KodeverkFeatureToggle {
 
     private static final Map<? extends Kodeverdi, Set<Cluster>> ekskludertKodeverdi = new HashMap<>() {{
-        put(AndreKriterierType.ENDRINGSSØKNAD, Set.of(Cluster.PROD_FSS, Cluster.DEV_FSS, Cluster.LOCAL));
+        put(AndreKriterierType.ENDRINGSSØKNAD, Set.of(Cluster.PROD_FSS));
     }};
 
     public static <T extends Kodeverdi> boolean skalEkskludereFraFrontend(T input) {
