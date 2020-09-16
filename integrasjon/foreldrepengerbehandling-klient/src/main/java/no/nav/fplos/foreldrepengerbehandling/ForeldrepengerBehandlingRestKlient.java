@@ -84,7 +84,8 @@ public class ForeldrepengerBehandlingRestKlient {
                     .medAksjonspunkter(hentAksjonspunkter(links))
                     .medBehandlingstidFrist(response.getBehandlingsfristTid())
                     .medFørsteUttaksdag(hentFørsteUttaksdato(links))
-                    .medErBerørtBehandling(hentErBerørtBehandling(response));
+                    .medErBerørtBehandling(harBehandlingÅrsakType(response, BehandlingÅrsakType.BERØRT_BEHANDLING))
+                    .medErEndringssøknad(harBehandlingÅrsakType(response, BehandlingÅrsakType.RE_ENDRING_FRA_BRUKER));
             hentUttakKontrollerFaktaPerioder(behandlingId, builder, links);
             return builder.build();
         } catch (Exception e) {
@@ -94,13 +95,13 @@ public class ForeldrepengerBehandlingRestKlient {
         }
     }
 
-    private boolean hentErBerørtBehandling(UtvidetBehandlingDto dto) {
+    private static boolean harBehandlingÅrsakType(UtvidetBehandlingDto dto, BehandlingÅrsakType type) {
         return Optional.ofNullable(dto.getBehandlingÅrsaker())
                 .orElseGet(Collections::emptyList)
                 .stream()
                 .map(BehandlingÅrsakDto::getBehandlingÅrsakType)
                 .filter(Objects::nonNull)
-                .anyMatch(type -> type.equals(BehandlingÅrsakType.BERØRT_BEHANDLING));
+                .anyMatch(t -> t.equals(type));
     }
 
     public Optional<Long> getFpsakInternBehandlingId(BehandlingId eksternBehandlingId) {

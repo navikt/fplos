@@ -18,6 +18,7 @@ public class BehandlingFpsak {
     private boolean harVurderSykdom;
     private boolean harGradering;
     private boolean erBerørtBehandling;
+    private boolean erEndringssøknad;
 
     public BehandlingId getBehandlingId() {
         return behandlingId;
@@ -51,6 +52,10 @@ public class BehandlingFpsak {
         return erBerørtBehandling;
     }
 
+    public boolean erEndringssøknad() {
+        return erEndringssøknad;
+    }
+
     public LocalDateTime getBehandlingstidFrist() {
         return behandlingstidFrist != null ? behandlingstidFrist.atStartOfDay() : null;
     }
@@ -75,6 +80,7 @@ public class BehandlingFpsak {
         private boolean harGradering = false;
         private boolean erBerørtBehandling = false;
         private boolean harOverføringPgaSykdom = false;
+        private boolean erEndringssøknad = false;
 
         private Builder() {
         }
@@ -134,6 +140,11 @@ public class BehandlingFpsak {
             return this;
         }
 
+        public Builder medErEndringssøknad(boolean erEndringssøknad) {
+            this.erEndringssøknad = erEndringssøknad;
+            return this;
+        }
+
         public BehandlingFpsak build() {
             BehandlingFpsak behandlingFpsak = new BehandlingFpsak();
             behandlingFpsak.ansvarligSaksbehandler = this.ansvarligSaksbehandler;
@@ -147,6 +158,7 @@ public class BehandlingFpsak {
             behandlingFpsak.behandlingstidFrist = this.behandlingstidFrist;
             behandlingFpsak.førsteUttaksdag = this.førsteUttaksdag;
             behandlingFpsak.erBerørtBehandling = this.erBerørtBehandling;
+            behandlingFpsak.erEndringssøknad = this.erEndringssøknad;
             return behandlingFpsak;
         }
     }
@@ -159,11 +171,13 @@ public class BehandlingFpsak {
                 ", behandlendeEnhetNavn='" + behandlendeEnhetNavn + '\'' +
                 ", ansvarligSaksbehandler='" + ansvarligSaksbehandler + '\'' +
                 ", aksjonspunkter=" + aksjonspunkter +
-                ", harRefusjonskravFraArbeidsgiver=" + harRefusjonskravFraArbeidsgiver +
-                ", harGradering=" + harGradering +
-                ", harVurderSykdom=" + harVurderSykdom +
                 ", behandlingstidFrist=" + behandlingstidFrist +
                 ", førsteUttaksdag=" + førsteUttaksdag +
+                ", harRefusjonskravFraArbeidsgiver=" + harRefusjonskravFraArbeidsgiver +
+                ", harVurderSykdom=" + harVurderSykdom +
+                ", harGradering=" + harGradering +
+                ", erBerørtBehandling=" + erBerørtBehandling +
+                ", erEndringssøknad=" + erEndringssøknad +
                 '}';
     }
 }
