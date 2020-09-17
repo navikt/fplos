@@ -1,5 +1,7 @@
 package no.nav.fplos.admin;
 
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Optional;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -39,14 +41,20 @@ public class OppgaveSynkroniseringTaskOppretterTjeneste {
                 .orElseThrow();
         var oppgaver = oppgaveRepository.hentOppgaverForSynkronisering();
         log.info("Oppretter tasker for synkronisering av oppgaveegenskap {} for {} oppgaver", mapper.getType(), oppgaver.size());
-        oppgaver.forEach(oppgave -> opprettSynkroniseringTask(oppgave, mapper, callId));
+        var kjøres = LocalDateTime.now();
+        for (var oppgave : oppgaver) {
+            opprettSynkroniseringTask(oppgave, mapper, callId, kjøres);
+            kjøres = kjøres.plus(500, ChronoUnit.MILLIS);
+        }
         return OppgaveEgenskapOppdatererTask.TASKTYPE + "-" + oppgaver.size();
     }
 
-    private void opprettSynkroniseringTask(Oppgave oppgave, OppgaveEgenskapTypeMapper typeMapper, String callId) {
+    private void opprettSynkroniseringTask(Oppgave oppgave, OppgaveEgenskapTypeMapper typeMapper, String callId, LocalDateTime kjøretidspunkt) {
         ProsessTaskData prosessTaskData = new ProsessTaskData(OppgaveEgenskapOppdatererTask.TASKTYPE);
         prosessTaskData.setCallId(callId + oppgave.getId());
         prosessTaskData.setOppgaveId(String.valueOf(oppgave.getId()));
+        prosessTaskData.setPrioritet(999);
+        prosessTaskData.setNesteKjøringEtter(kjøretidspunkt);
         prosessTaskData.setProperty(OppgaveEgenskapOppdatererTask.EGENSKAPMAPPER, typeMapper.name());
         prosessTaskRepository.lagre(prosessTaskData);
     }
