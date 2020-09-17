@@ -23,6 +23,7 @@ import javax.ws.rs.core.Response;
 
 import io.swagger.v3.oas.annotations.Operation;
 import no.nav.foreldrepenger.los.web.app.AbacAttributter;
+import no.nav.foreldrepenger.los.web.app.tjenester.admin.dto.OppgaveKriterieTypeDto;
 import no.nav.foreldrepenger.los.web.app.tjenester.admin.dto.OppgaveEventLoggDto;
 import no.nav.foreldrepenger.los.web.app.tjenester.admin.dto.AvdelingOpprettelseDto;
 import no.nav.foreldrepenger.los.web.app.tjenester.felles.dto.OppgaveDto;
@@ -32,7 +33,7 @@ import no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.oppgave.dto.Opp
 import no.nav.foreldrepenger.loslager.oppgave.Oppgave;
 import no.nav.foreldrepenger.loslager.organisasjon.Avdeling;
 import no.nav.fplos.admin.AdminTjeneste;
-import no.nav.fplos.admin.OppgaveSynkroniseringTjeneste;
+import no.nav.fplos.admin.OppgaveSynkroniseringTaskOppretterTjeneste;
 import no.nav.vedtak.sikkerhet.abac.BeskyttetRessurs;
 
 @Path("/admin")
@@ -41,12 +42,12 @@ import no.nav.vedtak.sikkerhet.abac.BeskyttetRessurs;
 public class AdminRestTjeneste {
 
     private AdminTjeneste adminTjeneste;
-    private OppgaveSynkroniseringTjeneste synkroniseringTjeneste;
+    private OppgaveSynkroniseringTaskOppretterTjeneste synkroniseringTjeneste;
     private OppgaveDtoTjeneste oppgaveDtoTjeneste;
 
     @Inject
     public AdminRestTjeneste(AdminTjeneste adminTjeneste,
-                             OppgaveSynkroniseringTjeneste synkroniseringTjeneste,
+                             OppgaveSynkroniseringTaskOppretterTjeneste synkroniseringTjeneste,
                              OppgaveDtoTjeneste oppgaveDtoTjeneste) {
         this.adminTjeneste = adminTjeneste;
         this.synkroniseringTjeneste = synkroniseringTjeneste;
@@ -133,15 +134,15 @@ public class AdminRestTjeneste {
         return map(oppgave);
     }
 
-    @PATCH
-    @Path("/synkroniser-berort-behandling-egenskap")
+    @POST
+    @Path("/synkroniser-egenskap")
     @Consumes(MediaType.APPLICATION_JSON)
-    @Operation(description = "Opprett berørt behandling-egenskap basert på synkronisering med fpsak", tags = "admin")
-    @BeskyttetRessurs(action = READ, resource = AbacAttributter.DRIFT)
+    @Operation(description = "Synkroniserer spesifisert oppgaveegenskap/kriterietype for åpne oppgaver", tags = "admin")
+    @BeskyttetRessurs(action = CREATE, resource = AbacAttributter.DRIFT)
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
-    public Response synkroniserBerørtBehandling() {
-        synkroniseringTjeneste.leggTilBerørtBehandlingEgenskap();
-        return Response.ok().build();
+    public Response synkroniserBerørtBehandling(@NotNull @Valid OppgaveKriterieTypeDto oppgaveKriterieTypeDto) {
+        var antallTasker = synkroniseringTjeneste.opprettOppgaveEgenskapOppdatererTask(oppgaveKriterieTypeDto.getVerdi());
+        return Response.ok(antallTasker).build();
     }
 
     @POST

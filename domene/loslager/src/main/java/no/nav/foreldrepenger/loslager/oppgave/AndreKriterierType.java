@@ -19,7 +19,8 @@ public enum AndreKriterierType implements Kodeverdi {
     SOKT_GRADERING("SOKT_GRADERING", "Søkt gradering"),
     VURDER_SYKDOM("VURDER_SYKDOM", "Vurder sykdom"),
     VURDER_FARESIGNALER("VURDER_FARESIGNALER", "Vurder faresignaler"),
-    BERØRT_BEHANDLING("BERØRT_BEHANDLING", "Berørt behandling");
+    BERØRT_BEHANDLING("BERØRT_BEHANDLING", "Berørt behandling"),
+    ENDRINGSSØKNAD("ENDRINGSSOKNAD", "Endringssøknad");
     //SELVSTENDIG_FRILANSER("SELVSTENDIG_FRILANSER", "Selvstendig næringsdrivende eller frilanser")
 
     private String kode;
