@@ -38,11 +38,8 @@ public class OppgaveEgenskapOppdatererTask implements ProsessTaskHandler {
         var oppgave = oppgaveRepository.hentOppgave(oppgaveId);
         var eksisterendeEgenskaper = oppgaveRepository.hentOppgaveEgenskaper(oppgaveId);
 
-        boolean oppgaveAktiv = oppgave.getAktiv() != null && oppgave.getAktiv();
-        if (oppgaveAktiv) { // dobbeltsjekk om det er korrekt med getAktiv
-            if (eksistererAktivEgenskap(eksisterendeEgenskaper, egenskapMapper)) {
-                return; // that was easy
-            }
+        boolean eksistererAktivEgenskap = eksistererAktivEgenskap(eksisterendeEgenskaper, egenskapMapper);
+        if (oppgave.getAktiv() && !eksistererAktivEgenskap) {
             var behandling = fpsakKlient.getBehandling(oppgave.getBehandlingId());
             if (egenskapMapper.erEgenskapAktuell(behandling)) {
                 var aktivEgenskap = lagAktivEgenskap(oppgave, eksisterendeEgenskaper, egenskapMapper);
