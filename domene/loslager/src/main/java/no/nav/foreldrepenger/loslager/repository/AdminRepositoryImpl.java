@@ -9,7 +9,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 
 import no.nav.foreldrepenger.loslager.oppgave.AndreKriterierType;
-import no.nav.foreldrepenger.loslager.oppgave.FagsakYtelseType;
+import no.nav.foreldrepenger.loslager.oppgave.BehandlingType;
 import no.nav.foreldrepenger.loslager.oppgave.OppgaveEgenskap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -118,9 +118,11 @@ public class AdminRepositoryImpl implements AdminRepository {
 
     private List<OppgaveEgenskap> hentUaktuelleEndringssoknadEgenskaper() {
         return entityManager.createQuery("SELECT oe FROM OppgaveEgenskap oe JOIN oe.oppgave o " +
-                "WHERE o.fagsakYtelseType not in (:fp)" +
-                "AND oe.andreKriterierType in (:endringssoknad)", OppgaveEgenskap.class)
-                .setParameter("fp", FagsakYtelseType.FORELDREPENGER)
+                "WHERE o.behandlingType not in (:revurdering)" +
+                "AND oe.andreKriterierType in (:endringssoknad)" +
+                "AND oe.aktiv = TRUE " +
+                "AND o.aktiv = TRUE", OppgaveEgenskap.class)
+                .setParameter("revurdering", BehandlingType.REVURDERING)
                 .setParameter("endringssoknad", AndreKriterierType.ENDRINGSSØKNAD)
                 .getResultList();
     }
