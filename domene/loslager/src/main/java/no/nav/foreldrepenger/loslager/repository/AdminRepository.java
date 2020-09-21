@@ -19,4 +19,6 @@ public interface AdminRepository {
     Oppgave deaktiverOppgave(Long oppgaveId);
 
     Oppgave aktiverOppgave(Long oppgaveId);
+
+    void korrigerEndringssoknad();
 }

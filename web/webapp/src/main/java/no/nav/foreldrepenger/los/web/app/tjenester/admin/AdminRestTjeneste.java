@@ -157,6 +157,18 @@ public class AdminRestTjeneste {
         return Response.noContent().build();
     }
 
+    @GET
+    @Path("/fjern-irrelevant-endringssoknad")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Operation(description = "Aktiver oppgave", tags = "admin")
+    @BeskyttetRessurs(action = READ, resource = AbacAttributter.OPPGAVESTYRING)
+    @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
+    public Response korrigerEndringssoknad() {
+        adminTjeneste.korrigerEndringssoknad();
+        return Response.noContent().build();
+    }
+
     private OppgaveDto map(Oppgave oppgave) {
         return oppgaveDtoTjeneste.lagDtoFor(oppgave, false);
     }
