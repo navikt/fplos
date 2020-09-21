@@ -81,9 +81,4 @@ public class AdminTjenesteImpl implements AdminTjeneste {
     public Oppgave aktiverOppgave(Long oppgaveId) {
         return adminRepository.aktiverOppgave(oppgaveId);
     }
-
-    @Override
-    public void korrigerEndringssoknad() {
-        adminRepository.korrigerEndringssoknad();
-    }
 }

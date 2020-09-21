@@ -20,5 +20,4 @@ public interface AdminRepository {
 
     Oppgave aktiverOppgave(Long oppgaveId);
 
-    void korrigerEndringssoknad();
 }

@@ -101,32 +101,6 @@ public class AdminRepositoryImpl implements AdminRepository {
         return hentOppgave(oppgaveId);
     }
 
-    @Override
-    public void korrigerEndringssoknad() {
-        List<OppgaveEgenskap> uaktuelleEgenskaper = hentUaktuelleEndringssoknadEgenskaper();
-        boolean notOk = uaktuelleEgenskaper.stream()
-                .anyMatch(oe -> !oe.getAktiv() || !oe.getAndreKriterierType().equals(AndreKriterierType.ENDRINGSSØKNAD));
-        if (notOk) {
-            throw new IllegalArgumentException("funnet uventede oppgaveegenskaper");
-        }
-        log.info("Deaktiverer {} uaktuelle ENDRINGSSØKNAD-egenskaper", uaktuelleEgenskaper.size());
-        for (var egenskap: uaktuelleEgenskaper) {
-            egenskap.deaktiverOppgaveEgenskap();
-            internLagre(egenskap);
-        }
-    }
-
-    private List<OppgaveEgenskap> hentUaktuelleEndringssoknadEgenskaper() {
-        return entityManager.createQuery("SELECT oe FROM OppgaveEgenskap oe JOIN oe.oppgave o " +
-                "WHERE o.behandlingType not in (:revurdering)" +
-                "AND oe.andreKriterierType in (:endringssoknad)" +
-                "AND oe.aktiv = TRUE " +
-                "AND o.aktiv = TRUE", OppgaveEgenskap.class)
-                .setParameter("revurdering", BehandlingType.REVURDERING)
-                .setParameter("endringssoknad", AndreKriterierType.ENDRINGSSØKNAD)
-                .getResultList();
-    }
-
     private Oppgave hentOppgave(Long oppgaveId) {
         Oppgave oppgave = entityManager.createQuery("Select o FROM Oppgave o where o.id = :oppgaveId", Oppgave.class)
                 .setParameter("oppgaveId", oppgaveId)

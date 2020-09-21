@@ -22,6 +22,4 @@ public interface AdminTjeneste {
     Oppgave deaktiverOppgave(Long oppgaveId);
 
     Oppgave aktiverOppgave(Long oppgaveId);
-
-    void korrigerEndringssoknad();
 }
