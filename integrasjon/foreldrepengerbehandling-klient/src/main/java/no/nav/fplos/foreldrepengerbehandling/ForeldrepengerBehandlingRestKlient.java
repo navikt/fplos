@@ -73,19 +73,20 @@ public class ForeldrepengerBehandlingRestKlient {
 
         try {
             LOGGER.info("Slår opp i fpsak for behandling {} per GET-kall til {}", behandlingId, uriBuilder.build());
-            UtvidetBehandlingDto response = oidcRestClient.get(uriBuilder.build(), UtvidetBehandlingDto.class);
-            List<ResourceLink> links = response.getLinks();
+            UtvidetBehandlingDto behandlingDto = oidcRestClient.get(uriBuilder.build(), UtvidetBehandlingDto.class);
+            List<ResourceLink> links = behandlingDto.getLinks();
             BehandlingFpsak.Builder builder = BehandlingFpsak.builder()
-                    .medBehandlingId(new BehandlingId(response.getUuid()))
-                    .medBehandlendeEnhetNavn(response.getBehandlendeEnhetNavn())
-                    .medStatus(response.getStatus().getKode())
-                    .medAnsvarligSaksbehandler(response.getAnsvarligSaksbehandler())
+                    .medBehandlingType(behandlingDto.getType())
+                    .medBehandlingId(new BehandlingId(behandlingDto.getUuid()))
+                    .medBehandlendeEnhetNavn(behandlingDto.getBehandlendeEnhetNavn())
+                    .medStatus(behandlingDto.getStatus().getKode())
+                    .medAnsvarligSaksbehandler(behandlingDto.getAnsvarligSaksbehandler())
                     .medHarRefusjonskravFraArbeidsgiver(hentHarRefusjonskrav(links))
                     .medAksjonspunkter(hentAksjonspunkter(links))
-                    .medBehandlingstidFrist(response.getBehandlingsfristTid())
+                    .medBehandlingstidFrist(behandlingDto.getBehandlingsfristTid())
                     .medFørsteUttaksdag(hentFørsteUttaksdato(links))
-                    .medErBerørtBehandling(harBehandlingÅrsakType(response, BehandlingÅrsakType.BERØRT_BEHANDLING))
-                    .medErEndringssøknad(harBehandlingÅrsakType(response, BehandlingÅrsakType.RE_ENDRING_FRA_BRUKER));
+                    .medErBerørtBehandling(harBehandlingÅrsakType(behandlingDto, BehandlingÅrsakType.BERØRT_BEHANDLING))
+                    .medErEndringssøknad(harBehandlingÅrsakType(behandlingDto, BehandlingÅrsakType.RE_ENDRING_FRA_BRUKER));
             hentUttakKontrollerFaktaPerioder(behandlingId, builder, links);
             return builder.build();
         } catch (Exception e) {
@@ -112,8 +113,8 @@ public class ForeldrepengerBehandlingRestKlient {
 
         try {
             LOGGER.info("Slår opp intern behandling id i fpsak for behandling med eksternBehandlingId {} per GET-kall til {}", eksternBehandlingId, uriBuilder.build());
-            UtvidetBehandlingDto response = oidcRestClient.get(uriBuilder.build(), UtvidetBehandlingDto.class);
-            return Optional.ofNullable(response.getId());
+            UtvidetBehandlingDto behandlingDto = oidcRestClient.get(uriBuilder.build(), UtvidetBehandlingDto.class);
+            return Optional.ofNullable(behandlingDto.getId());
         } catch (ManglerTilgangException e) {
             throw new InternIdMappingException(eksternBehandlingId);
         } catch (Exception e) {

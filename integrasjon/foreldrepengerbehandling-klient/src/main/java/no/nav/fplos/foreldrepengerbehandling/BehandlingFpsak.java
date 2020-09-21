@@ -2,9 +2,13 @@ package no.nav.fplos.foreldrepengerbehandling;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import no.nav.foreldrepenger.loslager.BehandlingId;
+import no.nav.foreldrepenger.loslager.oppgave.BehandlingType;
+import no.nav.foreldrepenger.loslager.oppgave.FagsakYtelseType;
 
 public class BehandlingFpsak {
     private BehandlingId behandlingId;
@@ -19,6 +23,8 @@ public class BehandlingFpsak {
     private boolean harGradering;
     private boolean erBerørtBehandling;
     private boolean erEndringssøknad;
+    private BehandlingType behandlingType;
+    private FagsakYtelseType ytelseType;
 
     public BehandlingId getBehandlingId() {
         return behandlingId;
@@ -33,7 +39,7 @@ public class BehandlingFpsak {
     }
 
     public List<Aksjonspunkt> getAksjonspunkter() {
-        return aksjonspunkter;
+        return Optional.ofNullable(aksjonspunkter).orElse(Collections.emptyList());
     }
 
     public Boolean harRefusjonskravFraArbeidsgiver() {
@@ -64,8 +70,20 @@ public class BehandlingFpsak {
         return førsteUttaksdag;
     }
 
+    public BehandlingType getBehandlingType() {
+        return behandlingType;
+    }
+
     public static Builder builder() {
         return new Builder();
+    }
+
+    public FagsakYtelseType getYtelseType() {
+        return ytelseType;
+    }
+
+    public void setYtelseType(FagsakYtelseType ytelseType) {
+        this.ytelseType = ytelseType;
     }
 
     public static final class Builder {
@@ -81,6 +99,8 @@ public class BehandlingFpsak {
         private boolean erBerørtBehandling = false;
         private boolean harOverføringPgaSykdom = false;
         private boolean erEndringssøknad = false;
+        private BehandlingType behandlingType;
+        private FagsakYtelseType ytelseType;
 
         private Builder() {
         }
@@ -145,6 +165,16 @@ public class BehandlingFpsak {
             return this;
         }
 
+        public Builder medBehandlingType(BehandlingType type) {
+            this.behandlingType = type;
+            return this;
+        }
+
+        public Builder medYtelseType(FagsakYtelseType ytelseType) {
+            this.ytelseType = ytelseType;
+            return this;
+        }
+
         public BehandlingFpsak build() {
             BehandlingFpsak behandlingFpsak = new BehandlingFpsak();
             behandlingFpsak.ansvarligSaksbehandler = this.ansvarligSaksbehandler;
@@ -159,6 +189,8 @@ public class BehandlingFpsak {
             behandlingFpsak.førsteUttaksdag = this.førsteUttaksdag;
             behandlingFpsak.erBerørtBehandling = this.erBerørtBehandling;
             behandlingFpsak.erEndringssøknad = this.erEndringssøknad;
+            behandlingFpsak.behandlingType = this.behandlingType;
+            behandlingFpsak.ytelseType = this.ytelseType;
             return behandlingFpsak;
         }
     }
@@ -178,6 +210,8 @@ public class BehandlingFpsak {
                 ", harGradering=" + harGradering +
                 ", erBerørtBehandling=" + erBerørtBehandling +
                 ", erEndringssøknad=" + erEndringssøknad +
+                ", behandlingType=" + behandlingType +
+                ", ytelseType=" + ytelseType +
                 '}';
     }
 }
