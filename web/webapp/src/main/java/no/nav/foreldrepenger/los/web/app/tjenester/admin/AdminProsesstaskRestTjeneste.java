@@ -28,7 +28,7 @@ import javax.ws.rs.core.Response;
 import java.util.function.Function;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
-import static no.nav.vedtak.sikkerhet.abac.BeskyttetRessursActionAttributt.UPDATE;
+import static no.nav.vedtak.sikkerhet.abac.BeskyttetRessursActionAttributt.CREATE;
 
 
 @Path("/prosesstask-forvaltning")
@@ -60,7 +60,7 @@ public class AdminProsesstaskRestTjeneste {
                     @ApiResponse(responseCode = "400", description = "Fant ikke aktuell prosessTask."),
                     @ApiResponse(responseCode = "500", description = "Feilet pga ukjent feil.")
             })
-    @BeskyttetRessurs(action = UPDATE, resource = AbacAttributter.DRIFT)
+    @BeskyttetRessurs(action = CREATE, resource = AbacAttributter.DRIFT)
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
     public Response setTaskFerdig(@TilpassetAbacAttributt(supplierClass = AdminProsesstaskRestTjeneste.AbacDataSupplier.class)
                                   @Parameter(description = "Task som skal settes ferdig") @NotNull @Valid ProsessTaskIdDto taskId) {
