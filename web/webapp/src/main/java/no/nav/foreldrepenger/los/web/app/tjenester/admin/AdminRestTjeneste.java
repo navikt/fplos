@@ -162,7 +162,7 @@ public class AdminRestTjeneste {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Operation(description = "Aktiver oppgave", tags = "admin")
-    @BeskyttetRessurs(action = READ, resource = AbacAttributter.OPPGAVESTYRING)
+    @BeskyttetRessurs(action = READ, resource = AbacAttributter.DRIFT)
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
     public Response korrigerEndringssoknad() {
         adminTjeneste.korrigerEndringssoknad();
