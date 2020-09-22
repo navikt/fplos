@@ -2,8 +2,8 @@ package no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler;
 
 import java.util.Arrays;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.dto.InnloggetNavAnsattDto;
 import no.nav.vedtak.felles.integrasjon.ldap.LdapBruker;
@@ -21,7 +21,7 @@ public class NavAnsattRestTjenesteTest {
 
     private NavAnsattRestTjeneste saksbehandlerTjeneste;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         saksbehandlerTjeneste = new NavAnsattRestTjeneste(gruppenavnSaksbehandler, gruppenavnVeileder, gruppenavnBeslutter, gruppenavnEgenAnsatt, gruppenavnKode6, gruppenavnKode7, gruppenavnOppgavestyrer);
     }

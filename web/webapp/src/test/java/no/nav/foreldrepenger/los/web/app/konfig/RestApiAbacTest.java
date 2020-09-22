@@ -13,7 +13,7 @@ import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import no.nav.foreldrepenger.los.web.app.AbacAttributter;
 import no.nav.vedtak.sikkerhet.abac.AbacDto;

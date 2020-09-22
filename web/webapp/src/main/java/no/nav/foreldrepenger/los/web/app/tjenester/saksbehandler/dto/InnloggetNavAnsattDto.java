@@ -1,6 +1,5 @@
 package no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.dto;
 
-import no.nav.vedtak.util.FPDateUtil;
 
 import java.time.LocalDateTime;
 
@@ -17,7 +16,15 @@ public class InnloggetNavAnsattDto {
     private final LocalDateTime funksjonellTid;
     private final boolean kanOppgavestyre;
 
-    private InnloggetNavAnsattDto(String brukernavn, String navn, boolean kanSaksbehandle, boolean kanVeilede, boolean kanBeslutte, boolean kanBehandleKodeEgenAnsatt, boolean kanBehandleKode6, boolean kanBehandleKode7, boolean kanOppgavestyre) {
+    private InnloggetNavAnsattDto(String brukernavn,
+                                  String navn,
+                                  boolean kanSaksbehandle,
+                                  boolean kanVeilede,
+                                  boolean kanBeslutte,
+                                  boolean kanBehandleKodeEgenAnsatt,
+                                  boolean kanBehandleKode6,
+                                  boolean kanBehandleKode7,
+                                  boolean kanOppgavestyre) {
         this.brukernavn = brukernavn;
         this.navn = navn;
         this.kanSaksbehandle = kanSaksbehandle;
@@ -26,7 +33,7 @@ public class InnloggetNavAnsattDto {
         this.kanBehandleKodeEgenAnsatt = kanBehandleKodeEgenAnsatt;
         this.kanBehandleKode6 = kanBehandleKode6;
         this.kanBehandleKode7 = kanBehandleKode7;
-        this.funksjonellTid = LocalDateTime.now(FPDateUtil.getOffset());
+        this.funksjonellTid = LocalDateTime.now();
         this.kanOppgavestyre = kanOppgavestyre;
     }
 

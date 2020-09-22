@@ -8,7 +8,6 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -16,41 +15,28 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.assertj.core.api.Assertions;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonValue;
 
-@RunWith(Parameterized.class)
 public class SjekkDtoStrukturTest {
     private static final List<String> SKIPPED = Arrays.asList("class", "kode");
-    private Class<?> cls;
 
-    public SjekkDtoStrukturTest(Class<?> cls) {
-        this.cls = cls;
-    }
-
-    @Test
-    public void skal_ha_riktig_navn_på_properties_i_dto_eller_konfiguret_med_annotations() throws Exception {
+    @ParameterizedTest
+    @MethodSource("parameters")
+    public void skal_ha_riktig_navn_på_properties_i_dto_eller_konfiguret_med_annotations(Class<?> cls) throws Exception {
         sjekkJsonProperties(cls);
     }
 
-    @org.junit.runners.Parameterized.Parameters
-    public static Collection<Object[]> parameters() throws URISyntaxException {
+    private static Collection<Class<?>> parameters() throws URISyntaxException {
         IndexClasses indexClasses;
         indexClasses = IndexClasses.getIndexFor(IndexClasses.class.getProtectionDomain().getCodeSource().getLocation().toURI());
-        List<Class<?>> classes = indexClasses.getClasses(
+        return indexClasses.getClasses(
                 ci -> ci.name().toString().endsWith("Dto"),
                 c -> !c.isInterface());
-
-        List<Object[]> params = new ArrayList<>();
-        for (Class<?> aClass : classes) {
-            params.add(new Object[]{aClass});
-        }
-        return params;
     }
 
     private void sjekkJsonProperties(Class<?> c) throws IntrospectionException {

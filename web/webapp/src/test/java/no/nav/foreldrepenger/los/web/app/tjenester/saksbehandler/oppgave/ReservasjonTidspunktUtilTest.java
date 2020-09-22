@@ -2,21 +2,22 @@ package no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.oppgave;
 
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.time.LocalDate;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class ReservasjonTidspunktUtilTest {
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testEndreOppgaveReservasjonFeilerUtenforPeriode(){
-        ReservasjonTidspunktUtil.utledReservasjonTidspunkt(LocalDate.now().plusDays(35));
+        assertThrows(IllegalArgumentException.class, () -> ReservasjonTidspunktUtil.utledReservasjonTidspunkt(LocalDate.now().plusDays(35)));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testEndreOppgaveReservasjonFeilerTilbakeITid(){
-        ReservasjonTidspunktUtil.utledReservasjonTidspunkt(LocalDate.now().minusDays(1));
+        assertThrows(IllegalArgumentException.class, () -> ReservasjonTidspunktUtil.utledReservasjonTidspunkt(LocalDate.now().minusDays(1)));
     }
 
     @Test

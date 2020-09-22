@@ -24,12 +24,12 @@ BEGIN
   SELECT count(*)
   INTO userexists
   FROM SYS.ALL_USERS
-  WHERE USERNAME = upper('${vl_fplos_schema_unit}');
+  WHERE USERNAME = upper('fplos_unit');
   IF (userexists = 0)
   THEN
-    EXECUTE IMMEDIATE ('CREATE USER ${vl_fplos_schema_unit} IDENTIFIED BY ${vl_fplos_schema_unit}');
+    EXECUTE IMMEDIATE ('CREATE USER fplos_unit IDENTIFIED BY fplos_unit');
   END IF;
 END;
 /
 
-GRANT CONNECT, RESOURCE, CREATE JOB, CREATE TABLE, CREATE SYNONYM, CREATE VIEW, CREATE MATERIALIZED VIEW TO ${vl_fplos_schema_unit};
+GRANT CONNECT, RESOURCE, CREATE JOB, CREATE TABLE, CREATE SYNONYM, CREATE VIEW, CREATE MATERIALIZED VIEW TO fplos_unit;

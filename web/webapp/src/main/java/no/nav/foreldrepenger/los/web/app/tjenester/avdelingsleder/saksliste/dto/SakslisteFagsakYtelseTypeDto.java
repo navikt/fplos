@@ -1,5 +1,8 @@
 package no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.saksliste.dto;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+
 import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.dto.AvdelingEnhetDto;
 import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.saksliste.FplosAbacAttributtType;
 import no.nav.foreldrepenger.los.web.app.tjenester.felles.dto.SakslisteIdDto;
@@ -7,15 +10,13 @@ import no.nav.foreldrepenger.loslager.oppgave.FagsakYtelseType;
 import no.nav.vedtak.sikkerhet.abac.AbacDataAttributter;
 import no.nav.vedtak.sikkerhet.abac.AbacDto;
 
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
-
 public class SakslisteFagsakYtelseTypeDto implements AbacDto {
 
     @NotNull
     @Valid
     private SakslisteIdDto sakslisteId;
 
+    @Valid
     private FagsakYtelseType fagsakYtelseType;
 
     @NotNull

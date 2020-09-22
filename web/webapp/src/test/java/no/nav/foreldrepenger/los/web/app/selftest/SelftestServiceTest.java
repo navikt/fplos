@@ -10,8 +10,8 @@ import java.time.LocalDateTime;
 
 import javax.ws.rs.core.Response;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import com.codahale.metrics.health.HealthCheck;
 
@@ -25,7 +25,7 @@ public class SelftestServiceTest {
     private static final String MSG_IKKEKRITISK_FEIL = "ikke-kritisk feil";
 
 
-    @Before
+    @BeforeEach
     public void setup() {
         mockSelftests = mock(Selftests.class);
         service = new SelftestService(mockSelftests);

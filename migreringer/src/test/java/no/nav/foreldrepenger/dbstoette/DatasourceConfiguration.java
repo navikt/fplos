@@ -24,7 +24,7 @@ public enum DatasourceConfiguration {
     }
 
     @SuppressWarnings("resource")
-    public List<DBConnectionProperties> get() throws FileNotFoundException {
+    public List<DBConnectionProperties> get() {
         String fileName = this.name().toLowerCase() + extension; // NOSONAR
         InputStream io = DatasourceConfiguration.class.getClassLoader().getResourceAsStream(fileName);
         return DBConnectionProperties.fraStream(io);

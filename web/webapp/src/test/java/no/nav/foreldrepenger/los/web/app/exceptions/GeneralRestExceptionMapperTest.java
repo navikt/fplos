@@ -7,8 +7,7 @@ import java.util.Collections;
 import javax.ws.rs.core.Response;
 
 import org.jboss.resteasy.spi.ApplicationException;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import no.nav.vedtak.exception.VLException;
 import no.nav.vedtak.feil.Feil;
@@ -21,12 +20,7 @@ import no.nav.vedtak.feil.deklarasjon.TekniskFeil;
 
 public class GeneralRestExceptionMapperTest {
 
-    private GeneralRestExceptionMapper generalRestExceptionMapper;
-
-    @Before
-    public void setUp() {
-        generalRestExceptionMapper = new GeneralRestExceptionMapper();
-    }
+    private GeneralRestExceptionMapper generalRestExceptionMapper = new GeneralRestExceptionMapper();
 
     @Test
     public void skalMappeValideringsfeil() {

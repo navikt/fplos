@@ -3,7 +3,7 @@
     {
       "datasource": "defaultDS",
       "defaultSchema": "fplos_unit",
-      "schema": "${flyway.placeholders.vl_fplos_schema_unit}",
+      "schema": "fplos_unit",
       "url": "jdbc:oracle:thin:@(DESCRIPTION=(ADDRESS=(PROTOCOL=tcp) (HOST=0.0.0.0)(PORT=1521))(CONNECT_DATA=(SERVICE_NAME=XE)))",
       "default": true,
       "migrationScriptsFilesystemRoot": "migreringer/src/main/resources/db/migration/"

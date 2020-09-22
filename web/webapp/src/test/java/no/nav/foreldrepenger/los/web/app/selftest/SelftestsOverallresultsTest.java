@@ -2,8 +2,8 @@ package no.nav.foreldrepenger.los.web.app.selftest;
 
 import com.codahale.metrics.health.HealthCheck;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
 
@@ -14,7 +14,7 @@ public class SelftestsOverallresultsTest {
 
     private SelftestResultat samletResultat;
 
-    @Before
+    @BeforeEach
     public void setup() {
         samletResultat = new SelftestResultat();
     }

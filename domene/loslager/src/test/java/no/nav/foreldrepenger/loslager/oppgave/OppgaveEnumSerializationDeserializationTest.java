@@ -1,5 +1,9 @@
 package no.nav.foreldrepenger.loslager.oppgave;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
+import org.junit.jupiter.api.Test;
+
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -7,8 +11,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import org.junit.Test;
-import static org.junit.Assert.*;
 
 public class OppgaveEnumSerializationDeserializationTest {
     private static final ObjectMapper mapper = getObjectMapper();
@@ -41,7 +43,7 @@ public class OppgaveEnumSerializationDeserializationTest {
     private void testRoundtrip(Object initiell) throws JsonProcessingException {
         String json = toJson(initiell);
         Object roundtripped = fromJson(json, initiell.getClass());
-        assertEquals(initiell, roundtripped);
+        assertThat(initiell).isEqualTo(roundtripped);
     }
 
     static String toJson(Object dto) throws JsonProcessingException {

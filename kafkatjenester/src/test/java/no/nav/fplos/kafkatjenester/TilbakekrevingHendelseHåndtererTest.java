@@ -9,12 +9,11 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import javax.persistence.EntityManager;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
-import org.junit.Rule;
-import org.junit.Test;
-
-import no.nav.foreldrepenger.dbstoette.UnittestRepositoryRule;
+import no.nav.foreldrepenger.extensions.EntityManagerFPLosAwareExtension;
 import no.nav.foreldrepenger.loslager.BehandlingId;
 import no.nav.foreldrepenger.loslager.hendelse.Aksjonspunkt;
 import no.nav.foreldrepenger.loslager.hendelse.TilbakekrevingHendelse;
@@ -25,23 +24,29 @@ import no.nav.foreldrepenger.loslager.oppgave.Oppgave;
 import no.nav.foreldrepenger.loslager.oppgave.OppgaveEgenskap;
 import no.nav.foreldrepenger.loslager.oppgave.OppgaveEventLogg;
 import no.nav.foreldrepenger.loslager.oppgave.OppgaveEventType;
-import no.nav.foreldrepenger.loslager.repository.OppgaveRepository;
 import no.nav.foreldrepenger.loslager.repository.OppgaveRepositoryImpl;
+import no.nav.vedtak.felles.testutilities.db.EntityManagerAwareTest;
+import no.nav.vedtak.felles.testutilities.db.Repository;
 
-public class TilbakekrevingHendelseHåndtererTest {
+@ExtendWith(EntityManagerFPLosAwareExtension.class)
+public class TilbakekrevingHendelseHåndtererTest extends EntityManagerAwareTest {
 
-    @Rule
-    public UnittestRepositoryRule repoRule = new UnittestRepositoryRule();
-    private EntityManager entityManager = repoRule.getEntityManager();
-    private OppgaveRepository oppgaveRepository = new OppgaveRepositoryImpl(entityManager);
-    private OppgaveEgenskapHandler oppgaveEgenskapHandler = new OppgaveEgenskapHandler(oppgaveRepository);
-    private TilbakekrevingHendelseHåndterer handler = new TilbakekrevingHendelseHåndterer(oppgaveEgenskapHandler, oppgaveRepository);
+    private Repository repository;
+    private TilbakekrevingHendelseHåndterer handler;
 
-    private List<Aksjonspunkt> åpentAksjonspunkt = List.of(new Aksjonspunkt("5015", "OPPR"));
-    private List<Aksjonspunkt> manueltPåVentAksjonspunkt = List.of(new Aksjonspunkt("5015", "OPPR"), new Aksjonspunkt("7002", "OPPR"));
-    private List<Aksjonspunkt> åpentBeslutter = List.of(new Aksjonspunkt("5005", "OPPR"));
-    private List<Aksjonspunkt> avsluttetAksjonspunkt = List.of(new Aksjonspunkt("5015", "AVBR"));
+    private final List<Aksjonspunkt> åpentAksjonspunkt = List.of(new Aksjonspunkt("5015", "OPPR"));
+    private final List<Aksjonspunkt> manueltPåVentAksjonspunkt = List.of(new Aksjonspunkt("5015", "OPPR"), new Aksjonspunkt("7002", "OPPR"));
+    private final List<Aksjonspunkt> åpentBeslutter = List.of(new Aksjonspunkt("5005", "OPPR"));
+    private final List<Aksjonspunkt> avsluttetAksjonspunkt = List.of(new Aksjonspunkt("5015", "AVBR"));
 
+    @BeforeEach
+    void setUp() {
+        var entityManager = getEntityManager();
+        repository = new Repository(entityManager);
+        var oppgaveRepository = new OppgaveRepositoryImpl(entityManager);
+        var oppgaveEgenskapHandler = new OppgaveEgenskapHandler(oppgaveRepository);
+        handler = new TilbakekrevingHendelseHåndterer(oppgaveEgenskapHandler, oppgaveRepository);
+    }
 
     @Test
     public void skalOppretteOppgave() {
@@ -131,7 +136,7 @@ public class TilbakekrevingHendelseHåndtererTest {
         handler.håndter(tilBeslutter);
         handler.håndter(saksbehandler);
 
-        List<OppgaveEventLogg> oppgaveEventer = repoRule.getRepository().hentAlle(OppgaveEventLogg.class).stream()
+        List<OppgaveEventLogg> oppgaveEventer = repository.hentAlle(OppgaveEventLogg.class).stream()
                 .sorted(Comparator.comparing(OppgaveEventLogg::getOpprettetTidspunkt))
                 .collect(Collectors.toList());
 
@@ -156,30 +161,30 @@ public class TilbakekrevingHendelseHåndtererTest {
     }
 
     private void sjekkBeslutterEgenskapMedAktivstatus(boolean status) {
-        List<OppgaveEgenskap> egenskaper = repoRule.getRepository().hentAlle(OppgaveEgenskap.class);
+        List<OppgaveEgenskap> egenskaper = repository.hentAlle(OppgaveEgenskap.class);
         assertThat(egenskaper.get(0).getAndreKriterierType()).isEqualTo(AndreKriterierType.TIL_BESLUTTER);
         assertThat(egenskaper.get(0).getAktiv()).isEqualTo(status);
     }
 
     private void sjekkAntallOppgaver(int antall) {
-        assertThat(repoRule.getRepository().hentAlle(Oppgave.class)).hasSize(antall);
+        assertThat(repository.hentAlle(Oppgave.class)).hasSize(antall);
     }
 
     private void sjekkAktivOppgaveEksisterer(boolean aktiv) {
-        List<Oppgave> oppgave = repoRule.getRepository().hentAlle(Oppgave.class);
+        List<Oppgave> oppgave = repository.hentAlle(Oppgave.class);
         assertThat(oppgave.get(0).getAktiv()).isEqualTo(aktiv);
         int antallAktive = (int) oppgave.stream().filter(Oppgave::getAktiv).count();
         assertThat(antallAktive).isEqualTo(aktiv ? 1 : 0);
     }
 
     private void sjekkKunEnAktivOppgave() {
-        List<Oppgave> oppgave = repoRule.getRepository().hentAlle(Oppgave.class);
+        List<Oppgave> oppgave = repository.hentAlle(Oppgave.class);
         long antallAktive = oppgave.stream().filter(Oppgave::getAktiv).count();
         assertThat(antallAktive).isEqualTo(1L);
     }
 
     private void sjekkOppgaveEventAntallEr(int antall) {
-        var eventer = repoRule.getRepository().hentAlle(OppgaveEventLogg.class);
+        var eventer = repository.hentAlle(OppgaveEventLogg.class);
         assertThat(eventer).hasSize(antall);
     }
 

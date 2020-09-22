@@ -23,11 +23,6 @@
             <groupId>no.nav.foreldrepenger.los</groupId>
             <artifactId>loslager</artifactId>
         </dependency>
-        <dependency>
-            <groupId>no.nav.foreldrepenger.felles</groupId>
-            <artifactId>felles-testutilities</artifactId>
-            <scope>test</scope>
-        </dependency>
     </dependencies>
 
 </project>

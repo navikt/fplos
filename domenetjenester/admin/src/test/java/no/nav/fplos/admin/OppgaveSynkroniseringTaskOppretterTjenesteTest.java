@@ -1,27 +1,37 @@
 package no.nav.fplos.admin;
 
-import no.nav.foreldrepenger.dbstoette.UnittestRepositoryRule;
-import no.nav.foreldrepenger.loslager.oppgave.Oppgave;
-import no.nav.foreldrepenger.loslager.repository.OppgaveRepository;
-import no.nav.vedtak.felles.testutilities.cdi.CdiRunner;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
-import javax.inject.Inject;
-import java.util.List;
-
 import static no.nav.foreldrepenger.loslager.oppgave.AndreKriterierType.BERØRT_BEHANDLING;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
 
-@RunWith(CdiRunner.class)
-public class OppgaveSynkroniseringTaskOppretterTjenesteTest {
-    @Rule
-    public UnittestRepositoryRule repoRule = new UnittestRepositoryRule();
-    @Inject
+import java.util.List;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+
+import no.nav.foreldrepenger.extensions.EntityManagerFPLosAwareExtension;
+import no.nav.foreldrepenger.loslager.oppgave.Oppgave;
+import no.nav.foreldrepenger.loslager.repository.OppgaveRepository;
+import no.nav.foreldrepenger.loslager.repository.OppgaveRepositoryImpl;
+import no.nav.vedtak.felles.prosesstask.impl.ProsessTaskEventPubliserer;
+import no.nav.vedtak.felles.prosesstask.impl.ProsessTaskRepositoryImpl;
+import no.nav.vedtak.felles.testutilities.db.EntityManagerAwareTest;
+import no.nav.vedtak.felles.testutilities.db.Repository;
+
+@ExtendWith(EntityManagerFPLosAwareExtension.class)
+public class OppgaveSynkroniseringTaskOppretterTjenesteTest extends EntityManagerAwareTest {
+
     private OppgaveRepository oppgaveRepository;
-    @Inject
     private OppgaveSynkroniseringTaskOppretterTjeneste synkroniseringTjeneste;
+
+    @BeforeEach
+    void setUp() {
+        oppgaveRepository = new OppgaveRepositoryImpl(getEntityManager());
+        synkroniseringTjeneste = new OppgaveSynkroniseringTaskOppretterTjeneste(oppgaveRepository,
+                new ProsessTaskRepositoryImpl(getEntityManager(), () -> "user",
+                mock(ProsessTaskEventPubliserer.class)));
+    }
 
     @Test
     public void skalOppretteTaskForAktivOppgave() {
@@ -61,7 +71,7 @@ public class OppgaveSynkroniseringTaskOppretterTjenesteTest {
     }
 
     private List<Oppgave> hentOppgave() {
-        return repoRule.getRepository().hentAlle(Oppgave.class);
+        return new Repository(getEntityManager()).hentAlle(Oppgave.class);
     }
 
 }

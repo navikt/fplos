@@ -1,6 +1,15 @@
 package no.nav.fplos.avdelingsleder;
 
-import no.nav.foreldrepenger.dbstoette.UnittestRepositoryRule;
+import static no.nav.foreldrepenger.loslager.organisasjon.Avdeling.AVDELING_DRAMMEN_ENHET;
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.util.List;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+
+import no.nav.foreldrepenger.extensions.EntityManagerFPLosAwareExtension;
 import no.nav.foreldrepenger.loslager.oppgave.AndreKriterierType;
 import no.nav.foreldrepenger.loslager.oppgave.BehandlingType;
 import no.nav.foreldrepenger.loslager.oppgave.FagsakYtelseType;
@@ -9,116 +18,106 @@ import no.nav.foreldrepenger.loslager.oppgave.OppgaveFiltrering;
 import no.nav.foreldrepenger.loslager.organisasjon.Avdeling;
 import no.nav.foreldrepenger.loslager.repository.OppgaveRepository;
 import no.nav.foreldrepenger.loslager.repository.OppgaveRepositoryImpl;
-import no.nav.foreldrepenger.loslager.repository.OrganisasjonRepository;
 import no.nav.foreldrepenger.loslager.repository.OrganisasjonRepositoryImpl;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import no.nav.vedtak.felles.testutilities.db.EntityManagerAwareTest;
+import no.nav.vedtak.felles.testutilities.db.Repository;
 
-import javax.persistence.EntityManager;
-import java.util.List;
+@ExtendWith(EntityManagerFPLosAwareExtension.class)
+public class AvdelingslederTjenesteImplTest extends EntityManagerAwareTest {
 
-import static org.assertj.core.api.Assertions.assertThat;
+    private OppgaveRepository oppgaveRepository;
+    private AvdelingslederTjeneste avdelingslederTjeneste;
+    private Repository repository;
 
-
-public class AvdelingslederTjenesteImplTest {
-
-    @Rule
-    public final UnittestRepositoryRule repoRule = new UnittestRepositoryRule();
-    private final EntityManager entityManager = repoRule.getEntityManager();
-    private final OppgaveRepository oppgaveRepository = new OppgaveRepositoryImpl(entityManager);
-    private final OrganisasjonRepository organisasjonRepository = new OrganisasjonRepositoryImpl(entityManager);
-    private AvdelingslederTjeneste avdelingslederTjeneste = new AvdelingslederTjenesteImpl(oppgaveRepository, organisasjonRepository);
-
-    private static String NAVN = "Navn";
-    private static String NYTT_NAVN = "Nytt navn";
-    private Avdeling avdelingDrammen = null;
-    private static String AVDELING_DRAMMEN_ENHET = "4806";
-    private static Long AVDELING_DRAMMEN;
-
-    @Before
+    @BeforeEach
     public void setup(){
-        oppgaveRepository.hentAlleFiltreringer(AVDELING_DRAMMEN).forEach(liste -> entityManager.remove(liste));
-        entityManager.flush();
-        List<Avdeling> avdelings = repoRule.getRepository().hentAlle(Avdeling.class);
-        avdelingDrammen = avdelings.stream().filter(avdeling -> AVDELING_DRAMMEN_ENHET.equals(avdeling.getAvdelingEnhet())).findFirst().orElseThrow();
-        AVDELING_DRAMMEN = avdelingDrammen.getId();
-        entityManager.flush();
+        var entityManager = getEntityManager();
+        oppgaveRepository = new OppgaveRepositoryImpl(entityManager);
+        var organisasjonRepository = new OrganisasjonRepositoryImpl(entityManager);
+        avdelingslederTjeneste = new AvdelingslederTjenesteImpl(oppgaveRepository, organisasjonRepository);
+        repository = new Repository(entityManager);
     }
 
     @Test
     public void testLagNyListe(){
         avdelingslederTjeneste.lagNyOppgaveFiltrering(AVDELING_DRAMMEN_ENHET);
-        List<OppgaveFiltrering> oppgaveFiltreringer = oppgaveRepository.hentAlleFiltreringer(AVDELING_DRAMMEN);
+        List<OppgaveFiltrering> oppgaveFiltreringer = oppgaveRepository.hentAlleFiltreringer(avdelingDrammen().getId());
         assertThat(oppgaveFiltreringer).isNotNull();
         assertThat(oppgaveFiltreringer.get(0).getId()).isNotNull();
         assertThat(oppgaveFiltreringer.get(0).getNavn()).isEqualTo("Ny liste");
-        assertThat(oppgaveFiltreringer.get(0).getAvdeling()).isEqualTo(avdelingDrammen);
+        assertThat(oppgaveFiltreringer.get(0).getAvdeling()).isEqualTo(avdelingDrammen());
+    }
+
+    private Avdeling avdelingDrammen() {
+        return repository.hentAlle(Avdeling.class).stream()
+                .filter(avdeling -> AVDELING_DRAMMEN_ENHET.equals(avdeling.getAvdelingEnhet())).findFirst()
+                .orElseThrow();
     }
 
     @Test
     public void testSettNyttNavnPåListe(){
-        OppgaveFiltrering oppgaveFiltrering = OppgaveFiltrering.nyTomOppgaveFiltrering(avdelingDrammen);
+        OppgaveFiltrering oppgaveFiltrering = OppgaveFiltrering.nyTomOppgaveFiltrering(avdelingDrammen());
         persistAndFlush(oppgaveFiltrering);
+        String NYTT_NAVN = "Nytt navn";
         avdelingslederTjeneste.giListeNyttNavn(oppgaveFiltrering.getId(), NYTT_NAVN);
-        entityManager.refresh(oppgaveFiltrering);
+        getEntityManager().refresh(oppgaveFiltrering);
         assertThat(oppgaveFiltrering.getNavn()).isEqualTo(NYTT_NAVN);
     }
 
     @Test
     public void testSlettListe()throws IllegalArgumentException {
-        OppgaveFiltrering liste = OppgaveFiltrering.nyTomOppgaveFiltrering(avdelingDrammen);
+        OppgaveFiltrering liste = OppgaveFiltrering.nyTomOppgaveFiltrering(avdelingDrammen());
         persistAndFlush(liste);
         avdelingslederTjeneste.slettOppgaveFiltrering(liste.getId());
-        entityManager.flush();
-        assertThat(oppgaveRepository.hentAlleFiltreringer(AVDELING_DRAMMEN)).isEmpty();
+        getEntityManager().flush();
+        assertThat(oppgaveRepository.hentAlleFiltreringer(avdelingDrammen().getId())).isEmpty();
     }
 
     @Test
     public void testSettSorteringPåListe() {
-        OppgaveFiltrering liste = OppgaveFiltrering.nyTomOppgaveFiltrering(avdelingDrammen);
+        OppgaveFiltrering liste = OppgaveFiltrering.nyTomOppgaveFiltrering(avdelingDrammen());
         persistAndFlush(liste);
         avdelingslederTjeneste.settSortering(liste.getId(), KøSortering.BEHANDLINGSFRIST);
-        entityManager.refresh(liste);
+        getEntityManager().refresh(liste);
         assertThat(liste.getSortering()).isEqualTo(KøSortering.BEHANDLINGSFRIST);
     }
 
     @Test
     public void leggTilBehandlingtypeFiltrering(){
-        OppgaveFiltrering oppgaveFiltrering = OppgaveFiltrering.nyTomOppgaveFiltrering(avdelingDrammen);
+        OppgaveFiltrering oppgaveFiltrering = OppgaveFiltrering.nyTomOppgaveFiltrering(avdelingDrammen());
         persistAndFlush(oppgaveFiltrering);
         avdelingslederTjeneste.endreFiltreringBehandlingType(oppgaveFiltrering.getId(), BehandlingType.FØRSTEGANGSSØKNAD, true);
-        entityManager.refresh(oppgaveFiltrering);
+        getEntityManager().refresh(oppgaveFiltrering);
         assertThat(oppgaveFiltrering.getFiltreringBehandlingTyper()).isNotEmpty();
         assertThat(oppgaveFiltrering.getFiltreringBehandlingTyper().get(0).getBehandlingType()).isEqualTo(BehandlingType.FØRSTEGANGSSØKNAD);
         avdelingslederTjeneste.endreFiltreringBehandlingType(oppgaveFiltrering.getId(), BehandlingType.FØRSTEGANGSSØKNAD, false);
-        entityManager.refresh(oppgaveFiltrering);
+        getEntityManager().refresh(oppgaveFiltrering);
         assertThat(oppgaveFiltrering.getFiltreringBehandlingTyper()).isEmpty();
     }
 
     @Test
     public void leggTilYtelsetypeFiltrering(){
-        OppgaveFiltrering oppgaveFiltrering = OppgaveFiltrering.nyTomOppgaveFiltrering(avdelingDrammen);
+        OppgaveFiltrering oppgaveFiltrering = OppgaveFiltrering.nyTomOppgaveFiltrering(avdelingDrammen());
         persistAndFlush(oppgaveFiltrering);
         avdelingslederTjeneste.endreFiltreringYtelseType(oppgaveFiltrering.getId(), FagsakYtelseType.ENGANGSTØNAD);
-        entityManager.refresh(oppgaveFiltrering);
+        getEntityManager().refresh(oppgaveFiltrering);
         assertThat(oppgaveFiltrering.getFiltreringYtelseTyper()).isNotEmpty();
         assertThat(oppgaveFiltrering.getFiltreringYtelseTyper().get(0).getFagsakYtelseType()).isEqualTo(FagsakYtelseType.ENGANGSTØNAD);
         avdelingslederTjeneste.endreFiltreringYtelseType(oppgaveFiltrering.getId(), null);
-        entityManager.refresh(oppgaveFiltrering);
+        getEntityManager().refresh(oppgaveFiltrering);
         assertThat(oppgaveFiltrering.getFiltreringYtelseTyper()).isEmpty();
     }
 
     @Test
     public void leggTilAndreKriterierFiltrering(){
-        OppgaveFiltrering oppgaveFiltrering = OppgaveFiltrering.nyTomOppgaveFiltrering(avdelingDrammen);
+        OppgaveFiltrering oppgaveFiltrering = OppgaveFiltrering.nyTomOppgaveFiltrering(avdelingDrammen());
         persistAndFlush(oppgaveFiltrering);
         avdelingslederTjeneste.endreFiltreringAndreKriterierType(oppgaveFiltrering.getId(), AndreKriterierType.TIL_BESLUTTER, true, true);
-        entityManager.refresh(oppgaveFiltrering);
+        getEntityManager().refresh(oppgaveFiltrering);
         assertThat(oppgaveFiltrering.getFiltreringAndreKriterierTyper()).isNotEmpty();
         assertThat(oppgaveFiltrering.getFiltreringAndreKriterierTyper().get(0).getAndreKriterierType()).isEqualTo(AndreKriterierType.TIL_BESLUTTER);
         avdelingslederTjeneste.endreFiltreringAndreKriterierType(oppgaveFiltrering.getId(), AndreKriterierType.TIL_BESLUTTER, false, true );
-        entityManager.refresh(oppgaveFiltrering);
+        getEntityManager().refresh(oppgaveFiltrering);
         assertThat(oppgaveFiltrering.getFiltreringAndreKriterierTyper()).isEmpty();
     }
 
@@ -130,6 +129,7 @@ public class AvdelingslederTjenesteImplTest {
     }
 
     private void persistAndFlush(OppgaveFiltrering oppgaveFiltrering) {
+        var entityManager = getEntityManager();
         entityManager.persist(oppgaveFiltrering);
         entityManager.flush();
     }

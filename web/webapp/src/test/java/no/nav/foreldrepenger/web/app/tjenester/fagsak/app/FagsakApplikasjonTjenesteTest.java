@@ -1,25 +1,10 @@
 package no.nav.foreldrepenger.web.app.tjenester.fagsak.app;
 
-import no.nav.foreldrepenger.domene.typer.AktørId;
-import no.nav.foreldrepenger.domene.typer.PersonIdent;
-import no.nav.foreldrepenger.los.web.app.tjenester.fagsak.app.FagsakApplikasjonTjeneste;
-import no.nav.foreldrepenger.loslager.aktør.TpsPersonDto;
-import no.nav.foreldrepenger.loslager.oppgave.FagsakStatus;
-import no.nav.foreldrepenger.loslager.oppgave.FagsakYtelseType;
-import no.nav.fplos.ansatt.AnsattTjeneste;
-import no.nav.fplos.foreldrepengerbehandling.ForeldrepengerBehandlingRestKlient;
-import no.nav.fplos.foreldrepengerbehandling.dto.fagsak.FagsakDto;
-import no.nav.fplos.foreldrepengerbehandling.dto.fagsak.PersonDto;
-import no.nav.fplos.oppgave.OppgaveTjeneste;
-import no.nav.fplos.person.api.TpsTjeneste;
-import no.nav.vedtak.exception.IntegrasjonException;
-import no.nav.vedtak.exception.ManglerTilgangException;
-import no.nav.vedtak.felles.integrasjon.felles.ws.SoapWebServiceFeil;
-import no.nav.vedtak.felles.integrasjon.rest.OidcRestClientFeil;
-import org.junit.Before;
-import org.junit.Test;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
-import javax.xml.ws.WebServiceException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Month;
@@ -28,33 +13,41 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import javax.xml.ws.WebServiceException;
 
-@SuppressWarnings("deprecation")
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import no.nav.foreldrepenger.domene.typer.AktørId;
+import no.nav.foreldrepenger.domene.typer.PersonIdent;
+import no.nav.foreldrepenger.los.web.app.tjenester.fagsak.app.FagsakApplikasjonTjeneste;
+import no.nav.foreldrepenger.loslager.aktør.TpsPersonDto;
+import no.nav.foreldrepenger.loslager.oppgave.FagsakStatus;
+import no.nav.foreldrepenger.loslager.oppgave.FagsakYtelseType;
+import no.nav.fplos.foreldrepengerbehandling.ForeldrepengerBehandlingRestKlient;
+import no.nav.fplos.foreldrepengerbehandling.dto.fagsak.FagsakDto;
+import no.nav.fplos.foreldrepengerbehandling.dto.fagsak.PersonDto;
+import no.nav.fplos.person.api.TpsTjeneste;
+import no.nav.vedtak.exception.IntegrasjonException;
+import no.nav.vedtak.exception.ManglerTilgangException;
+import no.nav.vedtak.felles.integrasjon.felles.ws.SoapWebServiceFeil;
+import no.nav.vedtak.felles.integrasjon.rest.OidcRestClientFeil;
+
 public class FagsakApplikasjonTjenesteTest {
 
     private static final String FNR = "12345678901";
-    private static final String FNR_BARN = "12345678902";
     private static final AktørId AKTØR_ID = new AktørId("1");
-    private static final AktørId AKTØR_ID_BARN = new AktørId("2");
     private static final String SAKSNUMMER  = "123";
     private static final boolean ER_KVINNE = true;
 
     private FagsakApplikasjonTjeneste tjeneste;
     private ForeldrepengerBehandlingRestKlient klient;
     private TpsTjeneste tpsTjeneste;
-    private OppgaveTjeneste oppgaveTjeneste;
-    private AnsattTjeneste ansattTjeneste;
 
-    @Before
+    @BeforeEach
     public void oppsett() {
         tpsTjeneste = mock(TpsTjeneste.class);
         klient = mock(ForeldrepengerBehandlingRestKlient.class);
-        oppgaveTjeneste = mock(OppgaveTjeneste.class);
-        ansattTjeneste = mock(AnsattTjeneste.class);
 
         tjeneste = new FagsakApplikasjonTjeneste(tpsTjeneste, klient);
     }
@@ -116,7 +109,7 @@ public class FagsakApplikasjonTjenesteTest {
     }
 
     @Test
-    public void skal_returnere_tomt_view_ved_ukjent_fnr() throws Exception {
+    public void skal_returnere_tomt_view_ved_ukjent_fnr() {
         var tpsError = SoapWebServiceFeil.FACTORY.soapFaultIwebserviceKall("tjeneste", new WebServiceException("Finner ikke bruker med ident"));
         var integrasjonException = new IntegrasjonException(tpsError);
         when(tpsTjeneste.hentBrukerForFnr(new PersonIdent(FNR))).thenThrow(integrasjonException);

@@ -1,45 +1,41 @@
 package no.nav.fplos.person;
 
-import no.nav.foreldrepenger.loslager.aktør.NavBrukerKjønn;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+
+import java.time.LocalDate;
+import java.util.Optional;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
+
 import no.nav.foreldrepenger.domene.typer.AktørId;
 import no.nav.foreldrepenger.domene.typer.PersonIdent;
+import no.nav.foreldrepenger.loslager.aktør.NavBrukerKjønn;
 import no.nav.foreldrepenger.loslager.aktør.TpsPersonDto;
 import no.nav.tjeneste.virksomhet.person.v3.binding.HentPersonPersonIkkeFunnet;
-import no.nav.tjeneste.virksomhet.person.v3.binding.HentPersonSikkerhetsbegrensning;
 import no.nav.tjeneste.virksomhet.person.v3.informasjon.Bruker;
-import no.nav.tjeneste.virksomhet.person.v3.meldinger.HentPersonRequest;
 import no.nav.tjeneste.virksomhet.person.v3.meldinger.HentPersonResponse;
-import no.nav.vedtak.exception.ManglerTilgangException;
 import no.nav.vedtak.exception.TekniskException;
 import no.nav.vedtak.feil.Feil;
 import no.nav.vedtak.felles.integrasjon.aktør.klient.AktørConsumerMedCache;
 import no.nav.vedtak.felles.integrasjon.aktør.klient.DetFinnesFlereAktørerMedSammePersonIdentException;
 import no.nav.vedtak.felles.integrasjon.person.PersonConsumer;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.mockito.Mockito;
-
-import java.time.LocalDate;
-import java.util.Optional;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertNotNull;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.when;
 
 public class TpsAdapterImplTest {
 
     private TpsAdapterImpl tpsAdapterImpl;
 
-    private AktørConsumerMedCache aktørConsumerMock = Mockito.mock(AktørConsumerMedCache.class);
-    private PersonConsumer personProxyServiceMock = Mockito.mock(PersonConsumer.class);
+    private final AktørConsumerMedCache aktørConsumerMock = Mockito.mock(AktørConsumerMedCache.class);
+    private final PersonConsumer personProxyServiceMock = Mockito.mock(PersonConsumer.class);
 
     private final AktørId AKTØRID = new AktørId(1337L);
     private final PersonIdent FNR = new PersonIdent("31018143212");
 
-    @Before
+    @BeforeEach
     public void setup() {
         tpsAdapterImpl = new TpsAdapterImpl(aktørConsumerMock, personProxyServiceMock, new TpsOversetter());
     }
@@ -110,28 +106,18 @@ public class TpsAdapterImplTest {
         tpsAdapterImpl = new TpsAdapterImpl(aktørConsumerMock, personProxyServiceMock, tpsOversetterMock);
 
         TpsPersonDto personinfo = tpsAdapterImpl.hentKjerneinformasjon(fnr, AKTØRID);
-        assertNotNull(personinfo);
+        assertThat(personinfo).isNotNull();
         assertThat(personinfo.getAktørId()).isEqualTo(AKTØRID);
         assertThat(personinfo.getPersonIdent()).isEqualTo(fnr);
         assertThat(personinfo.getNavn()).isEqualTo(navn);
         assertThat(personinfo.getFødselsdato()).isEqualTo(fødselsdato);
     }
 
-    @Test(expected = TekniskException.class)
+    @Test
     public void skal_få_exception_når_tjenesten_ikke_kan_finne_personen() throws Exception {
         Mockito.when(personProxyServiceMock.hentPersonResponse(Mockito.any()))
             .thenThrow(new HentPersonPersonIkkeFunnet(null, null));
 
-        tpsAdapterImpl.hentKjerneinformasjon(FNR, AKTØRID);
-    }
-
-    // TODO: Slå på når PFP-1763 er ferdig. tpsAdaptet skal returnere exception og ikke null som den gjør nå
-    @Ignore
-    @Test(expected = ManglerTilgangException.class)
-    public void skal_få_exception_når_tjenesten_ikke_kan_aksesseres_pga_manglende_tilgang() throws Exception {
-        when(personProxyServiceMock.hentPersonResponse(any(HentPersonRequest.class)))
-            .thenThrow(new HentPersonSikkerhetsbegrensning(null, null));
-
-        tpsAdapterImpl.hentKjerneinformasjon(FNR, AKTØRID);
+        assertThrows(TekniskException.class, () -> tpsAdapterImpl.hentKjerneinformasjon(FNR, AKTØRID));
     }
 }

@@ -33,31 +33,16 @@
             <groupId>no.nav.foreldrepenger.los</groupId>
             <artifactId>ansatt</artifactId>
         </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+        </dependency>
         <!-- TESTDEPENDENCIES -->
         <dependency>
             <groupId>no.nav.foreldrepenger.los</groupId>
             <artifactId>migreringer</artifactId>
             <type>test-jar</type>
             <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>no.nav.foreldrepenger.felles</groupId>
-            <artifactId>felles-testutilities</artifactId>
-            <scope>test</scope>
-            <exclusions>
-                <exclusion>
-                    <groupId>no.nav.foreldrepenger.felles</groupId>
-                    <artifactId>felles-log</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <!-- <dependency>
-             <groupId>no.nav.vedtak.felles.integrasjon</groupId>
-             <artifactId>person-klient</artifactId>
-         </dependency>-->
-        <dependency>
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-classic</artifactId>
         </dependency>
     </dependencies>
 

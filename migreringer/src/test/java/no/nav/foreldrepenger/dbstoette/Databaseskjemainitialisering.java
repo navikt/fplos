@@ -38,11 +38,7 @@ public final class Databaseskjemainitialisering {
         settOppSkjemaer();
 
         if (GUARD_UNIT_TEST_SKJEMAER.compareAndSet(false, true)) {
-            try {
-                DatabaseStøtte.kjørMigreringFor(DatasourceConfiguration.UNIT_TEST.get());
-            } catch (FileNotFoundException e) {
-                throw new RuntimeException(e);
-            }
+            DatabaseStøtte.kjørMigreringFor(DatasourceConfiguration.UNIT_TEST.get());
         }
     }
 
@@ -55,7 +51,7 @@ public final class Databaseskjemainitialisering {
         }
     }
 
-    private static void settSchemaPlaceholder(List<DBConnectionProperties> connectionProperties) throws FileNotFoundException {
+    private static void settSchemaPlaceholder(List<DBConnectionProperties> connectionProperties) {
         for (DBConnectionProperties dbcp : connectionProperties) {
             Matcher matcher = placeholderPattern.matcher(dbcp.getSchema());
             if (matcher.matches()) {

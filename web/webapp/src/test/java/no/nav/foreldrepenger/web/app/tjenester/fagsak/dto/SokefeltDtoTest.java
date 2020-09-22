@@ -5,7 +5,7 @@ import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.saksliste.Fplo
 import no.nav.foreldrepenger.los.web.app.tjenester.fagsak.dto.SokefeltDto;
 import no.nav.vedtak.sikkerhet.abac.AbacDataAttributter;
 import no.nav.vedtak.sikkerhet.abac.StandardAbacAttributtType;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

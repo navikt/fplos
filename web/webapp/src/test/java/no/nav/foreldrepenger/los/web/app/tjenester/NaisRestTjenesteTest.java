@@ -7,8 +7,8 @@ import static org.mockito.Mockito.when;
 
 import javax.ws.rs.core.Response;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import no.nav.foreldrepenger.los.web.app.selftest.checks.DatabaseHealthCheck;
 
@@ -19,7 +19,7 @@ public class NaisRestTjenesteTest {
     private KafkaConsumerStarter kafkaConsumerStarter = mock(KafkaConsumerStarter.class);
     private DatabaseHealthCheck databaseHealthCheck = mock(DatabaseHealthCheck.class);
 
-    @Before
+    @BeforeEach
     public void setup() {
         restTjeneste = new NaisRestTjeneste(kafkaConsumerStarter, databaseHealthCheck);
     }

@@ -1,41 +1,34 @@
 package no.nav.fplos.avdelingsleder;
 
+import static no.nav.foreldrepenger.loslager.organisasjon.Avdeling.AVDELING_DRAMMEN_ENHET;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
 
-import javax.persistence.EntityManager;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-
-import no.nav.foreldrepenger.dbstoette.UnittestRepositoryRule;
-import no.nav.foreldrepenger.loslager.organisasjon.Avdeling;
+import no.nav.foreldrepenger.extensions.EntityManagerFPLosAwareExtension;
 import no.nav.foreldrepenger.loslager.organisasjon.Saksbehandler;
 import no.nav.foreldrepenger.loslager.repository.OppgaveRepository;
 import no.nav.foreldrepenger.loslager.repository.OppgaveRepositoryImpl;
 import no.nav.foreldrepenger.loslager.repository.OrganisasjonRepository;
 import no.nav.foreldrepenger.loslager.repository.OrganisasjonRepositoryImpl;
+import no.nav.vedtak.felles.testutilities.db.EntityManagerAwareTest;
 
-public class AvdelingslederSaksbehandlerTjenesteImplTest {
+@ExtendWith(EntityManagerFPLosAwareExtension.class)
+public class AvdelingslederSaksbehandlerTjenesteImplTest extends EntityManagerAwareTest {
 
-    @Rule
-    public final UnittestRepositoryRule repoRule = new UnittestRepositoryRule();
-    private final EntityManager entityManager = repoRule.getEntityManager();
-    private final OppgaveRepository oppgaveRepository = new OppgaveRepositoryImpl(entityManager);
-    private final OrganisasjonRepository organisasjonRepository = new OrganisasjonRepositoryImpl(entityManager);
+    private static final String NY_SAKSBEHANDLER_IDENT = "zNySaksbehandler";
 
-    private AvdelingslederSaksbehandlerTjeneste avdelingslederSaksbehandlerTjeneste = new AvdelingslederSaksbehandlerTjenesteImpl(oppgaveRepository,
-            organisasjonRepository);
-    private static String NY_SAKSBEHANDLER_IDENT = "zNySaksbehandler";
-    private String AVDELING_DRAMMEN_ENHET;
+    private AvdelingslederSaksbehandlerTjeneste avdelingslederSaksbehandlerTjeneste;
 
-    @Before
+    @BeforeEach
     public void setup(){
-        List<Avdeling> avdelings = repoRule.getRepository().hentAlle(Avdeling.class);
-        Avdeling avdelingDrammen = avdelings.stream().filter(avdeling -> Avdeling.AVDELING_DRAMMEN_ENHET.equals(avdeling.getAvdelingEnhet())).findFirst().orElseThrow();
-        AVDELING_DRAMMEN_ENHET = avdelingDrammen.getAvdelingEnhet();
+        OppgaveRepository oppgaveRepository = new OppgaveRepositoryImpl(getEntityManager());
+        OrganisasjonRepository organisasjonRepository = new OrganisasjonRepositoryImpl(getEntityManager());
+        avdelingslederSaksbehandlerTjeneste = new AvdelingslederSaksbehandlerTjenesteImpl(oppgaveRepository, organisasjonRepository);
     }
 
     @Test

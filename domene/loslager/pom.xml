@@ -52,11 +52,6 @@
             <type>test-jar</type>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>no.nav.foreldrepenger.felles</groupId>
-            <artifactId>felles-testutilities</artifactId>
-            <scope>test</scope>
-        </dependency>
 
 		<!-- https://mvnrepository.com/artifact/javax.xml.ws/jaxws-api -->
         <dependency>

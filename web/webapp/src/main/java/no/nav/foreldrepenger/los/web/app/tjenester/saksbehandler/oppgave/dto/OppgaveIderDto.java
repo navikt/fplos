@@ -7,6 +7,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -17,6 +18,7 @@ public class OppgaveIderDto implements AbacDto {
 
     @JsonProperty("oppgaveIder")
     @NotNull
+    @Pattern(regexp = "^[0-9_]+$")
     private final String oppgaveIder;
 
     public OppgaveIderDto() {

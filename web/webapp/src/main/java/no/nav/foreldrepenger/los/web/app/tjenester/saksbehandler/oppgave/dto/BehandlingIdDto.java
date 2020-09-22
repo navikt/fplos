@@ -1,5 +1,6 @@
 package no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.oppgave.dto;
 
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
@@ -15,6 +16,7 @@ public class BehandlingIdDto implements AbacDto {
 
     @JsonProperty("behandlingId")
     @NotNull
+    @Valid
     private final BehandlingId value;
 
     @JsonCreator
