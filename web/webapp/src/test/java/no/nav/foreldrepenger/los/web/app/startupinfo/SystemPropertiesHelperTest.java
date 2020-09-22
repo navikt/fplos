@@ -1,7 +1,7 @@
 package no.nav.foreldrepenger.los.web.app.startupinfo;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.SortedMap;
 
@@ -11,7 +11,7 @@ public class SystemPropertiesHelperTest {
 
     private SystemPropertiesHelper helper; // objektet som testes
 
-    @Before
+    @BeforeEach
     public void setup() {
         helper = SystemPropertiesHelper.getInstance();
     }

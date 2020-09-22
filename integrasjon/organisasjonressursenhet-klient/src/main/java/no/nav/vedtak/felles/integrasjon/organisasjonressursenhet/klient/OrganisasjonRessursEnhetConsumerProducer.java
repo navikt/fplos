@@ -1,15 +1,11 @@
 package no.nav.vedtak.felles.integrasjon.organisasjonressursenhet.klient;
 
-import no.nav.tjeneste.virksomhet.organisasjonressursenhet.v1.OrganisasjonRessursEnhetV1;
-
-import no.nav.vedtak.sts.client.NAVSTSClient;
-import no.nav.vedtak.sts.client.StsConfigurationUtil;
-
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import static no.nav.vedtak.sts.client.NAVSTSClient.StsClientType.SECURITYCONTEXT_TIL_SAML;
-import static no.nav.vedtak.sts.client.NAVSTSClient.StsClientType.SYSTEM_SAML;
+import no.nav.tjeneste.virksomhet.organisasjonressursenhet.v1.OrganisasjonRessursEnhetV1;
+import no.nav.vedtak.sts.client.StsClientType;
+import no.nav.vedtak.sts.client.StsConfigurationUtil;
 
 @Dependent
 public class OrganisasjonRessursEnhetConsumerProducer {
@@ -21,17 +17,17 @@ public class OrganisasjonRessursEnhetConsumerProducer {
     }
 
     public OrganisasjonRessursEnhetConsumer organisasjonRessursEnhetConsumer() {
-        OrganisasjonRessursEnhetV1 port = wrapWithSts(consumerConfig.getPort(), SECURITYCONTEXT_TIL_SAML);
+        OrganisasjonRessursEnhetV1 port = wrapWithSts(consumerConfig.getPort(), StsClientType.SECURITYCONTEXT_TIL_SAML);
         return new OrganisasjonRessursEnhetConsumerImpl(port);
     }
 
     public OrganisasjonRessursEnhetSelftestConsumer organisasjonRessursEnhetSelftestConsumer() {
-        OrganisasjonRessursEnhetV1 port = wrapWithSts(consumerConfig.getPort(), SYSTEM_SAML);
+        OrganisasjonRessursEnhetV1 port = wrapWithSts(consumerConfig.getPort(), StsClientType.SYSTEM_SAML);
         return new OrganisasjonRessursEnhetSelftestConsumerImpl(port, consumerConfig.getEndpointUrl());
     }
 
-    OrganisasjonRessursEnhetV1 wrapWithSts(OrganisasjonRessursEnhetV1 port, NAVSTSClient.StsClientType samlTokenType) {
-        return StsConfigurationUtil.wrapWithSts(port, samlTokenType);
+    OrganisasjonRessursEnhetV1 wrapWithSts(OrganisasjonRessursEnhetV1 port, StsClientType stsClientType) {
+        return StsConfigurationUtil.wrapWithSts(port, stsClientType);
     }
 
 }

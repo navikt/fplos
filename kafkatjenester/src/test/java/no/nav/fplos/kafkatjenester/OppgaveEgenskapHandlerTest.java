@@ -12,15 +12,13 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import javax.persistence.EntityManager;
-
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnit;
-import org.mockito.junit.MockitoRule;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-import no.nav.foreldrepenger.dbstoette.UnittestRepositoryRule;
+import no.nav.foreldrepenger.extensions.EntityManagerFPLosAwareExtension;
 import no.nav.foreldrepenger.loslager.BehandlingId;
 import no.nav.foreldrepenger.loslager.oppgave.AndreKriterierType;
 import no.nav.foreldrepenger.loslager.oppgave.BehandlingStatus;
@@ -30,21 +28,25 @@ import no.nav.foreldrepenger.loslager.oppgave.Oppgave;
 import no.nav.foreldrepenger.loslager.oppgave.OppgaveEgenskap;
 import no.nav.foreldrepenger.loslager.repository.OppgaveRepository;
 import no.nav.foreldrepenger.loslager.repository.OppgaveRepositoryImpl;
+import no.nav.vedtak.felles.testutilities.db.EntityManagerAwareTest;
 
-public class OppgaveEgenskapHandlerTest {
+@ExtendWith(EntityManagerFPLosAwareExtension.class)
+@ExtendWith(MockitoExtension.class)
+public class OppgaveEgenskapHandlerTest extends EntityManagerAwareTest {
 
-    private static final BehandlingId behandlingId = BehandlingId.random();
+    private static final BehandlingId BEHANDLING_ID = BehandlingId.random();
 
-    @Rule
-    public UnittestRepositoryRule repoRule = new UnittestRepositoryRule();
-    private EntityManager entityManager = repoRule.getEntityManager();
-    private OppgaveRepository oppgaveRepository = new OppgaveRepositoryImpl(entityManager);
-    private OppgaveEgenskapHandler egenskapHandler = new OppgaveEgenskapHandler(oppgaveRepository);
+    private OppgaveRepository oppgaveRepository;
+    private OppgaveEgenskapHandler egenskapHandler;
+
     @Mock
     private OppgaveEgenskapFinner oppgaveEgenskapFinner;
 
-    @Rule
-    public MockitoRule mockitoRule = MockitoJUnit.rule();
+    @BeforeEach
+    void setUp() {
+        oppgaveRepository = new OppgaveRepositoryImpl(getEntityManager());
+        egenskapHandler = new OppgaveEgenskapHandler(oppgaveRepository);
+    }
 
     @Test
     public void opprettOppgaveEgenskaperTest() {
@@ -115,7 +117,7 @@ public class OppgaveEgenskapHandlerTest {
     private Oppgave lagOppgave() {
         Oppgave oppgave = Oppgave.builder()
                 .medFagsakSaksnummer(42L)
-                .medBehandlingId(behandlingId)
+                .medBehandlingId(BEHANDLING_ID)
                 .medAktorId(1L)
                 .medFagsakYtelseType(FagsakYtelseType.FORELDREPENGER)
                 .medBehandlingType(BehandlingType.FØRSTEGANGSSØKNAD)

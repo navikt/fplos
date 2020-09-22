@@ -1,5 +1,13 @@
 package no.nav.foreldrepenger.web.app.tjenester.fagsak;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
+
+import java.util.Collection;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import no.nav.foreldrepenger.los.web.app.tjenester.fagsak.FagsakRestTjeneste;
 import no.nav.foreldrepenger.los.web.app.tjenester.fagsak.app.FagsakApplikasjonTjeneste;
 import no.nav.foreldrepenger.los.web.app.tjenester.fagsak.dto.SokefeltDto;
@@ -8,15 +16,7 @@ import no.nav.fplos.foreldrepengerbehandling.ForeldrepengerBehandlingRestKlient;
 import no.nav.fplos.foreldrepengerbehandling.dto.fagsak.FagsakDto;
 import no.nav.fplos.oppgave.OppgaveTjeneste;
 import no.nav.fplos.person.api.TpsTjeneste;
-import org.junit.Before;
-import org.junit.Test;
 
-import java.util.Collection;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.mock;
-
-@SuppressWarnings("deprecation")
 public class FagsakRestTjenesteTest {
 
     private FagsakRestTjeneste tjeneste;
@@ -27,7 +27,7 @@ public class FagsakRestTjenesteTest {
     private OppgaveTjeneste oppgaveTjeneste;
     private AnsattTjeneste ansattTjeneste;
 
-    @Before
+    @BeforeEach
     public void oppsett() {
         tpsTjeneste = mock(TpsTjeneste.class);
         klient = mock(ForeldrepengerBehandlingRestKlient.class);

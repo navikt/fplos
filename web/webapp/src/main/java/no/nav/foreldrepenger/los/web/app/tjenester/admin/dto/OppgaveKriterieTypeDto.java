@@ -1,16 +1,21 @@
 package no.nav.foreldrepenger.los.web.app.tjenester.admin.dto;
 
+import java.util.Objects;
+
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
+
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+
 import no.nav.vedtak.sikkerhet.abac.AbacDataAttributter;
 import no.nav.vedtak.sikkerhet.abac.AbacDto;
-
-import javax.validation.constraints.NotNull;
-import java.util.Objects;
+import no.nav.vedtak.util.InputValideringRegex;
 
 public class OppgaveKriterieTypeDto implements AbacDto {
     @NotNull
+    @Pattern(regexp = InputValideringRegex.FRITEKST)
     private final String oppgaveEgenskap;
 
     @JsonCreator

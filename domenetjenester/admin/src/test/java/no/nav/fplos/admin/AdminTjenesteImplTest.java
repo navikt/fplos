@@ -1,63 +1,67 @@
 package no.nav.fplos.admin;
 
 import static java.util.stream.Collectors.toList;
+import static no.nav.foreldrepenger.loslager.organisasjon.Avdeling.AVDELING_DRAMMEN_ENHET;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
 
-import javax.persistence.EntityManager;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
-import no.nav.foreldrepenger.loslager.organisasjon.Avdeling;
-import no.nav.foreldrepenger.loslager.repository.OrganisasjonRepository;
-import no.nav.foreldrepenger.loslager.repository.OrganisasjonRepositoryImpl;
-import no.nav.fplos.avdelingsleder.AvdelingslederTjenesteImpl;
-import org.junit.Rule;
-import org.junit.Test;
-
-import no.nav.foreldrepenger.dbstoette.UnittestRepositoryRule;
+import no.nav.foreldrepenger.extensions.EntityManagerFPLosAwareExtension;
 import no.nav.foreldrepenger.loslager.BehandlingId;
 import no.nav.foreldrepenger.loslager.oppgave.BehandlingType;
 import no.nav.foreldrepenger.loslager.oppgave.Oppgave;
 import no.nav.foreldrepenger.loslager.oppgave.OppgaveEventLogg;
 import no.nav.foreldrepenger.loslager.oppgave.OppgaveEventType;
-import no.nav.foreldrepenger.loslager.repository.AdminRepository;
+import no.nav.foreldrepenger.loslager.organisasjon.Avdeling;
 import no.nav.foreldrepenger.loslager.repository.AdminRepositoryImpl;
 import no.nav.foreldrepenger.loslager.repository.OppgaveRepository;
 import no.nav.foreldrepenger.loslager.repository.OppgaveRepositoryImpl;
+import no.nav.foreldrepenger.loslager.repository.OrganisasjonRepositoryImpl;
+import no.nav.fplos.avdelingsleder.AvdelingslederTjenesteImpl;
 import no.nav.fplos.foreldrepengerbehandling.BehandlingFpsak;
 import no.nav.fplos.foreldrepengerbehandling.ForeldrepengerBehandlingRestKlient;
+import no.nav.vedtak.felles.testutilities.db.EntityManagerAwareTest;
 
-public class AdminTjenesteImplTest {
+@ExtendWith(EntityManagerFPLosAwareExtension.class)
+public class AdminTjenesteImplTest extends EntityManagerAwareTest {
 
-    @Rule
-    public final UnittestRepositoryRule repoRule = new UnittestRepositoryRule();
-    private final EntityManager entityManager = repoRule.getEntityManager();
-    private final OppgaveRepository oppgaveRepository = new OppgaveRepositoryImpl(entityManager);
-    private final AdminRepository adminRepository = new AdminRepositoryImpl(entityManager);
-    private ForeldrepengerBehandlingRestKlient foreldrepengerBehandlingRestKlient = mock(ForeldrepengerBehandlingRestKlient.class);
-    private OrganisasjonRepository organisasjonRepository = new OrganisasjonRepositoryImpl(entityManager);
-    private AdminTjenesteImpl adminTjeneste = new AdminTjenesteImpl(adminRepository, foreldrepengerBehandlingRestKlient, organisasjonRepository);
-    private AvdelingslederTjenesteImpl avdelingslederTjeneste = new AvdelingslederTjenesteImpl(oppgaveRepository, organisasjonRepository);
+    private final ForeldrepengerBehandlingRestKlient foreldrepengerBehandlingRestKlient = mock(ForeldrepengerBehandlingRestKlient.class);
 
-    private static String AVDELING_DRAMMEN_ENHET = "4806";
+    private OppgaveRepository oppgaveRepository;
+    private AdminTjenesteImpl adminTjeneste;
+    private AvdelingslederTjenesteImpl avdelingslederTjeneste;
 
-    private Oppgave førstegangOppgave = Oppgave.builder()
+    @BeforeEach
+    void setUp() {
+        var entityManager = getEntityManager();
+        oppgaveRepository = new OppgaveRepositoryImpl(entityManager);
+        var adminRepository = new AdminRepositoryImpl(entityManager);
+        var organisasjonRepository = new OrganisasjonRepositoryImpl(entityManager);
+        adminTjeneste = new AdminTjenesteImpl(adminRepository, foreldrepengerBehandlingRestKlient, organisasjonRepository);
+        avdelingslederTjeneste = new AvdelingslederTjenesteImpl(oppgaveRepository, organisasjonRepository);
+    }
+
+    private final Oppgave førstegangOppgave = Oppgave.builder()
             .dummyOppgave(AVDELING_DRAMMEN_ENHET)
             .medBehandlingType(BehandlingType.FØRSTEGANGSSØKNAD)
             .medAktiv(true)
             .medBehandlingId(BehandlingId.random())
             .build();
-    private Oppgave klageOppgave = Oppgave.builder()
+    private final Oppgave klageOppgave = Oppgave.builder()
             .dummyOppgave(AVDELING_DRAMMEN_ENHET)
             .medBehandlingType(BehandlingType.KLAGE)
             .medAktiv(true)
             .medBehandlingId(BehandlingId.random())
             .build();
-    private Oppgave innsynOppgave = Oppgave.builder()
+    private final Oppgave innsynOppgave = Oppgave.builder()
             .dummyOppgave(AVDELING_DRAMMEN_ENHET)
             .medBehandlingType(BehandlingType.INNSYN)
             .medAktiv(true)

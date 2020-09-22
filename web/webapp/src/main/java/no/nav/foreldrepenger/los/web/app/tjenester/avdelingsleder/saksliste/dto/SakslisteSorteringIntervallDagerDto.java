@@ -1,13 +1,15 @@
 package no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.saksliste.dto;
 
+import javax.validation.Valid;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+
 import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.dto.AvdelingEnhetDto;
 import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.saksliste.FplosAbacAttributtType;
 import no.nav.foreldrepenger.los.web.app.tjenester.felles.dto.SakslisteIdDto;
 import no.nav.vedtak.sikkerhet.abac.AbacDataAttributter;
 import no.nav.vedtak.sikkerhet.abac.AbacDto;
-
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
 
 public class SakslisteSorteringIntervallDagerDto implements AbacDto {
 
@@ -16,9 +18,13 @@ public class SakslisteSorteringIntervallDagerDto implements AbacDto {
     private SakslisteIdDto sakslisteId;
 
     @Valid
+    @Min(0)
+    @Max(5000)
     private Long fra;
 
     @Valid
+    @Min(0)
+    @Max(5000)
     private Long til;
 
     @NotNull

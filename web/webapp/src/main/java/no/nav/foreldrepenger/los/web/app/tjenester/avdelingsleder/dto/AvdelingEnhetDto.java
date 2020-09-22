@@ -1,17 +1,22 @@
 package no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.dto;
 
+import java.util.Objects;
+
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
+
 import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.saksliste.FplosAbacAttributtType;
 import no.nav.vedtak.sikkerhet.abac.AbacDataAttributter;
 import no.nav.vedtak.sikkerhet.abac.AbacDto;
-
-import javax.validation.constraints.NotNull;
-import java.util.Objects;
+import no.nav.vedtak.util.InputValideringRegex;
 
 public class AvdelingEnhetDto implements AbacDto {
 
     @JsonProperty("avdelingEnhet")
     @NotNull
+    @Pattern(regexp = InputValideringRegex.FRITEKST)
     private final String avdelingEnhet;
 
     public AvdelingEnhetDto() {

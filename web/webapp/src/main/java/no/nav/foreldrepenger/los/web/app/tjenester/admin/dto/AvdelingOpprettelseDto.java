@@ -1,15 +1,18 @@
 package no.nav.foreldrepenger.los.web.app.tjenester.admin.dto;
 
+import javax.validation.constraints.Pattern;
+
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+
 import no.nav.vedtak.sikkerhet.abac.AbacDataAttributter;
 import no.nav.vedtak.sikkerhet.abac.AbacDto;
-
-import javax.validation.constraints.Pattern;
+import no.nav.vedtak.util.InputValideringRegex;
 
 public class AvdelingOpprettelseDto implements AbacDto {
     @Pattern(regexp = "^[0-9]{4}$")
     private String avdelingKode;
+    @Pattern(regexp = InputValideringRegex.FRITEKST)
     private String avdelingNavn;
     private Boolean kreverKode6Tilgang;
 

@@ -9,11 +9,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-import no.nav.foreldrepenger.dbstoette.UnittestRepositoryRule;
 import no.nav.foreldrepenger.domene.typer.AktørId;
 import no.nav.foreldrepenger.domene.typer.PersonIdent;
 import no.nav.foreldrepenger.loslager.aktør.TpsPersonDto;
@@ -36,10 +34,7 @@ public class TpsTjenesteTest {
 
     private TpsTjeneste tpsTjeneste;
 
-    @Rule
-    public UnittestRepositoryRule repoRule = new UnittestRepositoryRule();
-
-    @Before
+    @BeforeEach
     public void oppsett() {
         FNR_VED_AKTØR_ID.put(AKTØR_ID, FNR);
         FNR_VED_AKTØR_ID.put(ENDRET_AKTØR_ID, ENDRET_FNR);

@@ -10,7 +10,6 @@ import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 
 import no.nav.vedtak.sikkerhet.context.SubjectHandler;
-import no.nav.vedtak.util.FPDateUtil;
 
 /**
  * En basis {@link Entity} klasse som håndtere felles standarder for utformign av tabeller (eks. sporing av hvem som har
@@ -36,13 +35,13 @@ public class BaseEntitet implements Serializable {
     @PrePersist
     protected void onCreate() {
         this.opprettetAv = finnBrukernavn();
-        this.opprettetTidspunkt = LocalDateTime.now(FPDateUtil.getOffset());
+        this.opprettetTidspunkt = LocalDateTime.now();
     }
 
     @PreUpdate
     protected void onUpdate() {
         endretAv = finnBrukernavn();
-        endretTidspunkt = LocalDateTime.now(FPDateUtil.getOffset());
+        endretTidspunkt = LocalDateTime.now();
     }
 
     public String getOpprettetAv() {

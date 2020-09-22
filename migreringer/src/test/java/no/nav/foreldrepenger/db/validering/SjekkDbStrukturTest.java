@@ -1,13 +1,7 @@
 package no.nav.foreldrepenger.db.validering;
 
-import no.nav.foreldrepenger.dbstoette.DatasourceConfiguration;
-import no.nav.vedtak.felles.lokal.dbstoette.ConnectionHandler;
-import no.nav.vedtak.felles.lokal.dbstoette.DBConnectionProperties;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import static org.assertj.core.api.Assertions.assertThat;
 
-import javax.sql.DataSource;
-import java.io.FileNotFoundException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -15,10 +9,22 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import javax.sql.DataSource;
+
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+
+import no.nav.foreldrepenger.dbstoette.DatasourceConfiguration;
+import no.nav.foreldrepenger.extensions.EntityManagerFPLosAwareExtension;
+import no.nav.vedtak.felles.lokal.dbstoette.ConnectionHandler;
+import no.nav.vedtak.felles.lokal.dbstoette.DBConnectionProperties;
+import no.nav.vedtak.felles.testutilities.db.EntityManagerAwareTest;
+
 
 /** Tester at alle migreringer følger standarder for navn og god praksis. */
-public class SjekkDbStrukturTest {
+@ExtendWith(EntityManagerFPLosAwareExtension.class)
+public class SjekkDbStrukturTest extends EntityManagerAwareTest {
 
     private static final String HJELP = "\n\nDu har nylig lagt til en ny tabell eller kolonne som ikke er dokumentert ihht. gjeldende regler for dokumentasjon."
         + "\nVennligst gå over sql scriptene og dokumenter tabellene på korrekt måte.";
@@ -27,8 +33,8 @@ public class SjekkDbStrukturTest {
 
     private static String schema;
 
-    @BeforeClass
-    public static void setup() throws FileNotFoundException {
+    @BeforeAll
+    public static void setup() {
         List<DBConnectionProperties> connectionProperties = DatasourceConfiguration.UNIT_TEST.get();
         DBConnectionProperties dbconp = DBConnectionProperties.finnDefault(connectionProperties).get();
         ds = ConnectionHandler.opprettFra(dbconp);
