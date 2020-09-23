@@ -18,7 +18,7 @@ public class SaknummerIderDto implements AbacDto {
 
     @JsonProperty("saksnummerListe")
     @NotNull
-    @Pattern(regexp = "^[0-9]+$")
+    @Pattern(regexp = "^[0-9_]+$")
     private final String saksnummerListe;
 
     public SaknummerIderDto() {
