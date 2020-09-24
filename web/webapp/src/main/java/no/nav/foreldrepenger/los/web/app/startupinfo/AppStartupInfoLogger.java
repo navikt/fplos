@@ -54,15 +54,7 @@ class AppStartupInfoLogger {
     }
 
     private static void log(String msg, Object... args) {
-        log(false, msg, args);
-    }
-
-    private static void log(boolean ignore, String msg, Object... args) {
-        if (ignore) {
-            LOG.debug(msg, args);
-        } else {
-            LOG.info(msg, args);
-        }
+        LOG.info(msg, args);
     }
 
     private static void log(Selftests.Resultat result) {
