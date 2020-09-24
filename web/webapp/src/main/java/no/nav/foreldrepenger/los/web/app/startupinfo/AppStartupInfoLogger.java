@@ -10,8 +10,6 @@ import org.jboss.weld.util.reflection.Formats;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
-import no.nav.foreldrepenger.los.web.app.selftest.SelftestResultat;
 import no.nav.foreldrepenger.los.web.app.selftest.Selftests;
 import no.nav.vedtak.log.mdc.MDCOperations;
 
@@ -50,12 +48,12 @@ class AppStartupInfoLogger {
 
         // callId er påkrevd på utgående kall og må settes før selftest kjøres
         MDCOperations.putCallId();
-        var samletResultat = selftests.run();
+        var selftestsResultat = selftests.run();
         MDCOperations.removeCallId();
 
-        samletResultat.getAlleResultater().forEach(AppStartupInfoLogger::log);
+        log(selftestsResultat);
 
-        log(APPLIKASJONENS_STATUS + ": {}", samletResultat.getAggregateResult());
+        log(APPLIKASJONENS_STATUS + ": {}", getStatus(selftestsResultat.isReady()));
         log(SELFTEST + " " + SLUTT);
     }
 
@@ -71,7 +69,7 @@ class AppStartupInfoLogger {
         }
     }
 
-    private static void log(SelftestResultat.InternalResult result) {
+    private static void log(Selftests.Resultat result) {
         OppstartFeil.FACTORY.selftestStatus(
                 getStatus(result.isReady()),
                 result.getDescription(),

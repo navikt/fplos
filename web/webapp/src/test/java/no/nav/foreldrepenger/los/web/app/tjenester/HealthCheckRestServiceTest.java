@@ -33,7 +33,7 @@ public class HealthCheckRestServiceTest {
     }
 
     @Test
-    public void test_isReady_skal_returnere_service_unavailable_når_kritiske_selftester_feiler() {
+    public void test_isReady_skal_returnere_service_unavailable_når_selftester_feiler() {
         when(selftests.isKafkaAlive()).thenReturn(false);
         when(selftests.isReady()).thenReturn(false);
 
