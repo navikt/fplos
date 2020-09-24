@@ -14,5 +14,4 @@ exec java -cp "app.jar:lib/*"${EXTRA_CLASS_PATH:-""} ${DEFAULT_JAVA_OPTS:-} ${JA
     -Dwebapp=${WEBAPP:-"./webapp"} \
     -Dklient=${KLIENT:-"./klient"} \
     -Di18n=${I18N:-"./i18n"} \
-    -Djavax.xml.soap.SAAJMetaFactory="com.sun.xml.messaging.saaj.soap.SAAJMetaFactoryImpl" \
-    -Dapplication.name=${APP_NAME} ${STARTUP_CLASS?} $@
+    -Djavax.xml.soap.SAAJMetaFactory="com.sun.xml.messaging.saaj.soap.SAAJMetaFactoryImpl" $@

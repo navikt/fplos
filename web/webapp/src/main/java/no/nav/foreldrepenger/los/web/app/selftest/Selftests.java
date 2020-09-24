@@ -11,7 +11,6 @@ import javax.inject.Inject;
 
 import no.nav.foreldrepenger.los.web.app.selftest.checks.DatabaseHealthCheck;
 import no.nav.fplos.kafkatjenester.KafkaConsumer;
-import no.nav.vedtak.konfig.KonfigVerdi;
 
 @ApplicationScoped
 public class Selftests {
@@ -19,34 +18,28 @@ public class Selftests {
     private DatabaseHealthCheck databaseHealthCheck;
     private final List<KafkaConsumer<?>> kafkaList = new ArrayList<>();
 
-    private boolean isDatabaseReady;
+    private boolean isReady;
     private LocalDateTime sistOppdatertTid = LocalDateTime.now().minusDays(1);
-
-    private String applicationName;
-    private SelftestResultat selftestResultat;
 
     @Inject
     public Selftests(DatabaseHealthCheck databaseHealthCheck,
-                     @Any Instance<KafkaConsumer<?>> kafkaIntegrations,
-                     @KonfigVerdi(value = "application.name") String applicationName) {
+                     @Any Instance<KafkaConsumer<?>> kafkaIntegrations) {
         this.databaseHealthCheck = databaseHealthCheck;
         kafkaIntegrations.forEach(this.kafkaList::add);
-        this.applicationName = applicationName;
     }
 
     Selftests() {
         // for CDI proxy
     }
 
-    public SelftestResultat run() {
+    public Selftests.Resultat run() {
         oppdaterSelftestResultatHvisNødvendig();
-        return selftestResultat; // NOSONAR
+        return new Selftests.Resultat(isReady, databaseHealthCheck.getDescription(), databaseHealthCheck.getEndpoint());
     }
 
     public boolean isReady() {
         // Bruk denne for NAIS-respons og skill omfanget her.
-        oppdaterSelftestResultatHvisNødvendig();
-        return isDatabaseReady; // NOSONAR
+        return run().isReady();
     }
 
     public boolean isKafkaAlive() {
@@ -55,20 +48,32 @@ public class Selftests {
 
     private synchronized void oppdaterSelftestResultatHvisNødvendig() {
         if (sistOppdatertTid.isBefore(LocalDateTime.now().minusSeconds(30))) {
-            isDatabaseReady = databaseHealthCheck.isOK();
-            selftestResultat = innhentSelftestResultat();
+            isReady = databaseHealthCheck.isOK();
             sistOppdatertTid = LocalDateTime.now();
         }
     }
 
-    private SelftestResultat innhentSelftestResultat() {
-        SelftestResultat samletResultat = new SelftestResultat();
-        samletResultat.setApplication(applicationName);
-        samletResultat.setTimestamp(LocalDateTime.now());
+    public static class Resultat {
+        private final boolean isReady;
+        private final String description;
+        private final String endpoint;
 
-        samletResultat.leggTilResultatForKritiskTjeneste(isDatabaseReady, databaseHealthCheck.getDescription(), databaseHealthCheck.getEndpoint());
+        public Resultat(boolean isReady, String description, String endpoint) {
+            this.isReady = isReady;
+            this.description = description;
+            this.endpoint = endpoint;
+        }
 
-        return samletResultat;
+        public boolean isReady() {
+            return isReady;
+        }
+
+        public String getDescription() {
+            return description;
+        }
+
+        public String getEndpoint() {
+            return endpoint;
+        }
     }
-
 }
