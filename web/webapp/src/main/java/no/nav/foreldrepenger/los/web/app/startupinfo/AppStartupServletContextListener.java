@@ -7,8 +7,6 @@ import javax.servlet.ServletContextListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import no.nav.foreldrepenger.los.web.app.tjenester.HealthCheckRestService;
-
 public class AppStartupServletContextListener implements ServletContextListener {
 
     private static final Logger logger = LoggerFactory.getLogger(AppStartupServletContextListener.class);
@@ -20,8 +18,6 @@ public class AppStartupServletContextListener implements ServletContextListener 
         Thread thread = new Thread(this::startupLogging, getClass().getSimpleName() + "-thread");
         thread.setDaemon(true);
         thread.start();
-
-        CDI.current().select(HealthCheckRestService.class).get().setIsContextStartupReady(Boolean.TRUE);
     }
 
     private void startupLogging() {

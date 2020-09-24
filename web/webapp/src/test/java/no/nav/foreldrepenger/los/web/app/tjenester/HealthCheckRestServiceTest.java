@@ -15,7 +15,7 @@ public class HealthCheckRestServiceTest {
 
     private HealthCheckRestService restTjeneste;
 
-    private Selftests selftests = mock(Selftests.class);
+    private final Selftests selftests = mock(Selftests.class);
 
     @BeforeEach
     public void setup() {
@@ -27,7 +27,6 @@ public class HealthCheckRestServiceTest {
         when(selftests.isKafkaAlive()).thenReturn(true);
         when(selftests.isReady()).thenReturn(true);
 
-        restTjeneste.setIsContextStartupReady(true);
         Response response = restTjeneste.isAlive();
 
         assertThat(response.getStatus()).isEqualTo(Response.Status.OK.getStatusCode());
@@ -38,10 +37,8 @@ public class HealthCheckRestServiceTest {
         when(selftests.isKafkaAlive()).thenReturn(false);
         when(selftests.isReady()).thenReturn(false);
 
-        restTjeneste.setIsContextStartupReady(true);
         Response responseReady = restTjeneste.isReady();
 
-        restTjeneste.setIsContextStartupReady(false);
         Response responseAlive = restTjeneste.isAlive();
 
         assertThat(responseReady.getStatus()).isEqualTo(Response.Status.SERVICE_UNAVAILABLE.getStatusCode());
@@ -53,7 +50,6 @@ public class HealthCheckRestServiceTest {
         when(selftests.isKafkaAlive()).thenReturn(true);
         when(selftests.isReady()).thenReturn(false);
 
-        restTjeneste.setIsContextStartupReady(true);
         Response responseReady = restTjeneste.isReady();
         Response responseAlive = restTjeneste.isAlive();
 
@@ -66,7 +62,6 @@ public class HealthCheckRestServiceTest {
         when(selftests.isKafkaAlive()).thenReturn(true);
         when(selftests.isReady()).thenReturn(true);
 
-        restTjeneste.setIsContextStartupReady(true);
         Response responseReady = restTjeneste.isReady();
         Response responseAlive = restTjeneste.isAlive();
 

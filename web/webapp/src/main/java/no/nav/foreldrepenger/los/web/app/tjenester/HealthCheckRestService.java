@@ -17,8 +17,6 @@ public class HealthCheckRestService {
     private static final String RESPONSE_CACHE_VAL = "must-revalidate,no-cache,no-store";
     private static final String RESPONSE_OK = "OK";
 
-    private boolean isContextStartupReady;
-
     private Selftests selftests;
 
     @Inject
@@ -37,7 +35,7 @@ public class HealthCheckRestService {
     @Path("isAlive")
     @Operation(description = "sjekker om poden lever", tags = "nais", hidden = true)
     public Response isAlive() {
-        if (isContextStartupReady && selftests.isKafkaAlive()) {
+        if (selftests.isKafkaAlive()) {
             return Response.ok(RESPONSE_OK)
                     .header(RESPONSE_CACHE_KEY, RESPONSE_CACHE_VAL)
                     .build();
@@ -54,7 +52,7 @@ public class HealthCheckRestService {
     @Path("isReady")
     @Operation(description = "sjekker om poden er klar", tags = "nais", hidden = true)
     public Response isReady() {
-        if (isContextStartupReady && selftests.isReady()) {
+        if (selftests.isReady()) {
             return Response.ok(RESPONSE_OK)
                     .header(RESPONSE_CACHE_KEY, RESPONSE_CACHE_VAL)
                     .build();
@@ -62,14 +60,5 @@ public class HealthCheckRestService {
         return Response.status(Response.Status.SERVICE_UNAVAILABLE)
                 .header(RESPONSE_CACHE_KEY, RESPONSE_CACHE_VAL)
                 .build();
-    }
-
-    /**
-     * Settes av AppstartupServletContextListener ved contextInitialized
-     *
-     * @param isContextStartupReady
-     */
-    public void setIsContextStartupReady(boolean isContextStartupReady) {
-        this.isContextStartupReady = isContextStartupReady;
     }
 }
