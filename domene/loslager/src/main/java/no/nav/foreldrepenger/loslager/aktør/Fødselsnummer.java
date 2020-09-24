@@ -5,8 +5,6 @@ import javax.validation.constraints.Pattern;
 
 import java.util.Objects;
 
-import static no.nav.foreldrepenger.util.StringUtil.mask;
-
 public class Fødselsnummer {
     @Pattern(regexp = "\\d{11}")
     private final String fødselsnummer;
@@ -26,7 +24,7 @@ public class Fødselsnummer {
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + " [fnr=" + mask(fødselsnummer) + "]";
+        return getClass().getSimpleName() + " [fnr=" + "***********" + "]";
     }
 
     @Override

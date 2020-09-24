@@ -13,7 +13,4 @@ public interface PersonTjenesteFeil extends DeklarerteFeil {
     @TekniskFeil(feilkode = "FP-164686", feilmelding = "Person er ikke Bruker, kan ikke hente ut brukerinformasjon", logLevel = LogLevel.WARN)
     Feil ukjentBrukerType();
 
-    @TekniskFeil(feilkode = "FP-715013", feilmelding = "Fant ikke person i TPS", logLevel = LogLevel.WARN)
-    Feil fantIkkePerson(Exception cause);
-
 }

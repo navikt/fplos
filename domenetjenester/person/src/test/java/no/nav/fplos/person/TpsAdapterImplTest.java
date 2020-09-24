@@ -47,7 +47,7 @@ public class TpsAdapterImplTest {
         Optional<AktørId> optAktørId = tpsAdapter.hentAktørForFødselsnummer(new Fødselsnummer("12534341200"));
         assertThat(optAktørId).isEmpty();
     }
-    
+
     @Test
     public void hentPerson_funnet() throws Exception {
         Fødselsnummer fnr = new Fødselsnummer("31018143212");

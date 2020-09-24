@@ -24,7 +24,6 @@ import static no.nav.fplos.person.TpsPersonMapper.tilPerson;
 
 @ApplicationScoped
 public class TpsAdapterImpl implements TpsAdapter {
-    private static final Logger log = LoggerFactory.getLogger(TpsAdapterImpl.class);
 
     private AktørConsumerMedCache aktørConsumer;
     private PersonConsumer personConsumer;
