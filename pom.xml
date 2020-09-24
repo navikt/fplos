@@ -373,18 +373,8 @@
 
             <!-- Metrics -->
             <dependency>
-                <groupId>io.dropwizard.metrics</groupId>
-                <artifactId>metrics-healthchecks</artifactId>
-                <version>${metrics.version}</version>
-            </dependency>
-            <dependency>
                 <groupId>io.prometheus</groupId>
                 <artifactId>simpleclient_dropwizard</artifactId>
-                <version>${prometheus.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>io.prometheus</groupId>
-                <artifactId>simpleclient_servlet</artifactId>
                 <version>${prometheus.version}</version>
             </dependency>
             <dependency>
@@ -402,8 +392,6 @@
                 <artifactId>simpleclient_common</artifactId>
                 <version>${prometheus.version}</version>
             </dependency>
-
-
 
             <!-- transitiv avhengighet, sikrer konsistent versjon -->
 

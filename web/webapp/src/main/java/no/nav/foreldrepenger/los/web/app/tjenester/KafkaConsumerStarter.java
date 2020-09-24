@@ -72,8 +72,4 @@ public class KafkaConsumerStarter {
     public void destroy() {
         consumers.forEach(consumer -> consumer.stop());
     }
-
-    public boolean isConsumersRunning() {
-        return consumers.stream().allMatch(consumer -> consumer.isRunning());
-    }
 }

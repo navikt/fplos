@@ -1,7 +1,5 @@
 package no.nav.foreldrepenger.los.web.app.konfig;
 
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.Set;
 
 import javax.ws.rs.ApplicationPath;
@@ -9,8 +7,7 @@ import javax.ws.rs.core.Application;
 
 import io.prometheus.client.hotspot.DefaultExports;
 import no.nav.foreldrepenger.los.web.app.metrics.PrometheusRestService;
-import no.nav.foreldrepenger.los.web.app.tjenester.NaisRestTjeneste;
-import no.nav.foreldrepenger.los.web.app.tjenester.SelftestRestTjeneste;
+import no.nav.foreldrepenger.los.web.app.tjenester.HealthCheckRestService;
 
 @ApplicationPath(InternalApplication.API_URL)
 public class InternalApplication extends Application {
@@ -24,12 +21,6 @@ public class InternalApplication extends Application {
 
     @Override
     public Set<Class<?>> getClasses() {
-        Set<Class<?>> classes = new HashSet<>();
-
-        classes.add(NaisRestTjeneste.class);
-        classes.add(SelftestRestTjeneste.class);
-        classes.add(PrometheusRestService.class);
-
-        return Collections.unmodifiableSet(classes);
+        return Set.of(HealthCheckRestService.class, PrometheusRestService.class);
     }
 }
