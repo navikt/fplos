@@ -65,4 +65,4 @@ export JAVA_OPTS="${JAVA_OPTS} -Djavax.xml.soap.SAAJMetaFactory=com.sun.xml.mess
 export STARTUP_CLASS=${STARTUP_CLASS:-"no.nav.foreldrepenger.los.web.server.jetty.JettyServer"}
 export LOGBACK_CONFIG=${LOGBACK_CONFIG:-"./conf/logback.xml"}
 
-exec java -cp ${CLASSPATH?} ${DEFAULT_JAVA_OPTS:-} ${JAVA_OPTS} -Dlogback.configurationFile=${LOGBACK_CONFIG?} -Dklient=${KLIENT:-"./klient"} -Dwebapp=${WEBAPP:-"./webapp"} -Di18n=${I18N:-"./i18n"} ${SERVER_PORT:-8080} $@
+exec java -cp ${CLASSPATH?} ${DEFAULT_JAVA_OPTS:-} ${JAVA_OPTS} -Dlogback.configurationFile=${LOGBACK_CONFIG?} -Dklient=${KLIENT:-"./klient"} -Dwebapp=${WEBAPP:-"./webapp"} -Di18n=${I18N:-"./i18n"} ${STARTUP_CLASS?} ${SERVER_PORT:-8080} $@
