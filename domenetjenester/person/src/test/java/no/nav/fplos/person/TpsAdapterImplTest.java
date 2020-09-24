@@ -41,7 +41,7 @@ public class TpsAdapterImplTest {
     }
 
     @Test
-    public void test_hentAktørIdForPersonIdent_normal(){
+    public void hentAktørIdForPersonIdent_normal(){
         Mockito.when(aktørConsumerMock.hentAktørIdForPersonIdent("125343412")).thenReturn(Optional.of(AKTØRID.getId()));
         AktørId aktørId = (tpsAdapterImpl.hentAktørIdForPersonIdent(new PersonIdent("125343412"))).orElse(new AktørId(3L));
         assertThat(aktørId).isEqualTo(AKTØRID);
@@ -49,7 +49,7 @@ public class TpsAdapterImplTest {
     }
 
     @Test
-    public void test_hentAktørIdForPersonIdent_ikkeFunnet(){
+    public void hentAktørIdForPersonIdent_ikkeFunnet(){
         Mockito.when(aktørConsumerMock.hentAktørIdForPersonIdent("125343412")).thenReturn(Optional.empty());
 
         Optional<AktørId> optAktørId = tpsAdapterImpl.hentAktørIdForPersonIdent(new PersonIdent("125343412"));
@@ -68,21 +68,21 @@ public class TpsAdapterImplTest {
     }
 
     @Test
-    public void test_hentIdentForAktørId_normal(){
+    public void hentIdentForAktørId_normal(){
         Mockito.when(aktørConsumerMock.hentPersonIdentForAktørId("1")).thenReturn(Optional.of("1337"));
         PersonIdent ident = tpsAdapterImpl.hentIdentForAktørId(new AktørId(1L)).orElse(new PersonIdent("3254"));
         assertThat(ident).isEqualTo(new PersonIdent("1337"));
     }
 
     @Test
-    public void test_hentIdentForAktørId_ikkeFunnet(){
+    public void hentIdentForAktørId_ikkeFunnet(){
         Mockito.when(aktørConsumerMock.hentPersonIdentForAktørId("1")).thenReturn(Optional.empty());
         Optional<PersonIdent> optIdent = tpsAdapterImpl.hentIdentForAktørId(new AktørId(1L));
         assertThat(optIdent).isNotPresent();
     }
 
     @Test
-    public void test_hentKjerneinformasjon_normal() throws Exception {
+    public void hentKjerneinformasjon_normal() throws Exception {
         PersonIdent fnr = new PersonIdent("31018143212");
         String navn = "John Doe";
         LocalDate fødselsdato = LocalDate.of(1343, 12, 12);

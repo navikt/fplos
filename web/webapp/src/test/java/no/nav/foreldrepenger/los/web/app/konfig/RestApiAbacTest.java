@@ -29,7 +29,7 @@ public class RestApiAbacTest {
      * Kontakt Team Humle hvis du trenger hjelp til å endre koden din slik at den går igjennom her     *
      */
     @Test
-    public void test_at_alle_restmetoder_er_annotert_med_BeskyttetRessurs() {
+    public void alle_restmetoder_er_annotert_med_BeskyttetRessurs() {
         for (Method restMethod : RestApiTester.finnAlleRestMetoder()) {
             if (restMethod.getAnnotation(BeskyttetRessurs.class) == null) {
                 throw new AssertionError("Mangler @" + BeskyttetRessurs.class.getSimpleName() + "-annotering på " + restMethod);
@@ -45,7 +45,7 @@ public class RestApiAbacTest {
     }
 
     @Test
-    public void test_at_alle_input_parametre_til_restmetoder_implementer_AbacDto_eller_spesifiserer_AbacDataSupplier() throws Exception {
+    public void alle_input_parametre_til_restmetoder_implementer_AbacDto_eller_spesifiserer_AbacDataSupplier() throws Exception {
         String feilmelding = "Parameter på %s.%s av type %s må implementere " + AbacDto.class.getSimpleName() + ", eller være annotatert med @TilpassetAbacAttributt.\n";
         StringBuilder feilmeldinger = new StringBuilder();
 

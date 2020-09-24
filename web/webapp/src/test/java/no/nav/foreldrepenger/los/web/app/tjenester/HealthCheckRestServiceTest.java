@@ -23,7 +23,7 @@ public class HealthCheckRestServiceTest {
     }
 
     @Test
-    public void test_isAlive_skal_returnere_status_200() {
+    public void isAlive_skal_returnere_status_200() {
         when(selftests.isKafkaAlive()).thenReturn(true);
         when(selftests.isReady()).thenReturn(true);
 
@@ -33,7 +33,7 @@ public class HealthCheckRestServiceTest {
     }
 
     @Test
-    public void test_isReady_skal_returnere_service_unavailable_når_selftester_feiler() {
+    public void isReady_skal_returnere_service_unavailable_når_selftester_feiler() {
         when(selftests.isKafkaAlive()).thenReturn(false);
         when(selftests.isReady()).thenReturn(false);
 
@@ -46,7 +46,7 @@ public class HealthCheckRestServiceTest {
     }
 
     @Test
-    public void test_isReady_skal_returnere_status_delvis_når_db_feiler() {
+    public void isReady_skal_returnere_status_delvis_når_db_feiler() {
         when(selftests.isKafkaAlive()).thenReturn(true);
         when(selftests.isReady()).thenReturn(false);
 
@@ -58,7 +58,7 @@ public class HealthCheckRestServiceTest {
     }
 
     @Test
-    public void test_isReady_skal_returnere_status_ok_når_selftester_er_ok() {
+    public void isReady_skal_returnere_status_ok_når_selftester_er_ok() {
         when(selftests.isKafkaAlive()).thenReturn(true);
         when(selftests.isReady()).thenReturn(true);
 
