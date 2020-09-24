@@ -15,7 +15,7 @@ import no.nav.fplos.ansatt.AnsattTjeneste;
 import no.nav.fplos.foreldrepengerbehandling.ForeldrepengerBehandlingRestKlient;
 import no.nav.fplos.foreldrepengerbehandling.dto.fagsak.FagsakDto;
 import no.nav.fplos.oppgave.OppgaveTjeneste;
-import no.nav.fplos.person.api.TpsTjeneste;
+import no.nav.fplos.person.PersonTjeneste;
 
 public class FagsakRestTjenesteTest {
 
@@ -23,17 +23,17 @@ public class FagsakRestTjenesteTest {
 
     private FagsakApplikasjonTjeneste applikasjonTjeneste;
     private ForeldrepengerBehandlingRestKlient klient;
-    private TpsTjeneste tpsTjeneste;
+    private PersonTjeneste personTjeneste;
     private OppgaveTjeneste oppgaveTjeneste;
     private AnsattTjeneste ansattTjeneste;
 
     @BeforeEach
     public void oppsett() {
-        tpsTjeneste = mock(TpsTjeneste.class);
+        personTjeneste = mock(PersonTjeneste.class);
         klient = mock(ForeldrepengerBehandlingRestKlient.class);
         oppgaveTjeneste = mock(OppgaveTjeneste.class);
         ansattTjeneste = mock(AnsattTjeneste.class);
-        applikasjonTjeneste = new FagsakApplikasjonTjeneste(tpsTjeneste, klient);
+        applikasjonTjeneste = new FagsakApplikasjonTjeneste(personTjeneste, klient);
         tjeneste = new FagsakRestTjeneste(applikasjonTjeneste);
     }
 

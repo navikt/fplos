@@ -1,5 +1,6 @@
 package no.nav.foreldrepenger.loslager.oppgave;
 
+import no.nav.foreldrepenger.domene.typer.AktørId;
 import no.nav.foreldrepenger.loslager.BaseEntitet;
 import no.nav.foreldrepenger.loslager.BehandlingId;
 import no.nav.vedtak.felles.jpa.converters.BooleanToStringConverter;
@@ -89,8 +90,8 @@ public class Oppgave extends BaseEntitet {
         return fagsakSaksnummer;
     }
 
-    public Long getAktorId() {
-        return aktorId;
+    public AktørId getAktorId() {
+        return new AktørId(aktorId);
     }
 
     public BehandlingType getBehandlingType() {

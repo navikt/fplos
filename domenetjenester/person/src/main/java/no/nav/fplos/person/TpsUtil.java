@@ -10,7 +10,7 @@ public final class TpsUtil {
         //for å hindre instanser av util klasse
     }
 
-    public static PersonIdent lagPersonIdent(String fnr) {
+    public static PersonIdent lagTpsPersonIdent(String fnr) {
         if (fnr == null || fnr.isEmpty()) {
             throw new IllegalArgumentException("Fødselsnummer kan ikke være null eller tomt");
         }

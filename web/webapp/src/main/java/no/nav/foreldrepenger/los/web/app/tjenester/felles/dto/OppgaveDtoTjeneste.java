@@ -7,13 +7,14 @@ import java.util.stream.Collectors;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import no.nav.foreldrepenger.loslager.oppgave.Reservasjon;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.saksliste.FplosAbacAttributtType;
 import no.nav.foreldrepenger.loslager.oppgave.Oppgave;
 import no.nav.fplos.oppgave.OppgaveTjeneste;
-import no.nav.fplos.person.api.TpsTjeneste;
+import no.nav.fplos.person.PersonTjeneste;
 import no.nav.vedtak.sikkerhet.abac.AbacAttributtSamling;
 import no.nav.vedtak.sikkerhet.abac.AbacDataAttributter;
 import no.nav.vedtak.sikkerhet.abac.BeskyttetRessursActionAttributt;
@@ -30,19 +31,19 @@ public class OppgaveDtoTjeneste {
     private static final Logger LOGGER = LoggerFactory.getLogger(OppgaveDtoTjeneste.class);
 
     private OppgaveTjeneste oppgaveTjeneste;
-    private TpsTjeneste tpsTjeneste;
+    private PersonTjeneste personTjeneste;
     private OppgaveStatusDtoTjeneste oppgaveStatusDtoTjeneste;
     private PdpKlient pdpKlient;
     private PdpRequestBuilder pdpRequestBuilder;
 
     @Inject
     public OppgaveDtoTjeneste(OppgaveTjeneste oppgaveTjeneste,
-                              TpsTjeneste tpsTjeneste,
+                              PersonTjeneste personTjeneste,
                               OppgaveStatusDtoTjeneste oppgaveStatusDtoTjeneste,
                               PdpKlient pdpKlient,
                               PdpRequestBuilder pdpRequestBuilder) {
         this.oppgaveTjeneste = oppgaveTjeneste;
-        this.tpsTjeneste = tpsTjeneste;
+        this.personTjeneste = personTjeneste;
         this.oppgaveStatusDtoTjeneste = oppgaveStatusDtoTjeneste;
         this.pdpKlient = pdpKlient;
         this.pdpRequestBuilder = pdpRequestBuilder;
@@ -64,15 +65,15 @@ public class OppgaveDtoTjeneste {
         if (sjekkTilgangPåBehandling) {
             sjekkTilgang(oppgave);
         }
-        var tpsPersonDto = tpsTjeneste.hentBrukerForAktør(oppgave.getAktorId());
+        var person = personTjeneste.hentPerson(oppgave.getAktorId()).orElseThrow();
         var oppgaveStatus = oppgaveStatusDtoTjeneste.lagStatusFor(oppgave);
-        return new OppgaveDto(oppgave, tpsPersonDto, oppgaveStatus);
+        return new OppgaveDto(oppgave, person, oppgaveStatus);
     }
 
     public boolean harTilgjengeligeOppgaver(SakslisteIdDto sakslisteId) {
         return oppgaveTjeneste.hentOppgaver(sakslisteId.getVerdi())
                 .stream()
-                .anyMatch(o -> harTilgang(o));
+                .anyMatch(this::harTilgang);
     }
 
     private boolean harTilgang(Oppgave oppgave) {
@@ -111,7 +112,7 @@ public class OppgaveDtoTjeneste {
     public List<OppgaveDto> getReserverteOppgaver() {
         var reserveringer = oppgaveTjeneste.hentReservasjonerTilknyttetAktiveOppgaver();
         var oppgaver = reserveringer.stream()
-                .map(r -> r.getOppgave())
+                .map(Reservasjon::getOppgave)
                 .collect(Collectors.toList());
         return map(oppgaver);
     }

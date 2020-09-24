@@ -9,7 +9,7 @@ public class Saksnummer {
     private static final Pattern VALID = Pattern.compile("^(-?[1-9]|[a-z0])[" + CHARS + "]*$", Pattern.CASE_INSENSITIVE);
     private static final Pattern INVALID = Pattern.compile("[^" + CHARS + "]+", Pattern.DOTALL | Pattern.CASE_INSENSITIVE);
 
-    private String saksnummer;
+    private final String saksnummer;
 
     public Saksnummer(String saksnummer) {
         Objects.requireNonNull(saksnummer, "saksnummer");
