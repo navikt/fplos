@@ -13,3 +13,14 @@ updates:
   - dependency-name: org.flywaydb:flyway-core
     versions:
     - ">= 6.a, < 7"
+- package-ecosystem: github-actions
+    directory: "/"
+    schedule:
+      interval: daily
+    open-pull-requests-limit: 10
+- package-ecosystem: npm
+  directory: "/"
+  schedule:
+    interval: daily
+    time: "12:30"
+  open-pull-requests-limit: 20
