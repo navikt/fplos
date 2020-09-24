@@ -60,40 +60,51 @@ jobs:
           TZ: Europe/Oslo
           GITHUB_USERNAME: x-access-token
           GITHUB_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
-          #SONAR: ${{ secrets.SONAR }}
 
 
-      - name: Bygg, tag og push Docker image
+      - name: Bygg, tag og push Docker image  
         run: |
-          docker build --tag $IMAGE --tag $IMAGE_BASE:latest .
+          docker build  --tag $IMAGE .
           echo  $GITHUB_TOKEN | docker login docker.pkg.github.com -u ${GITHUB_REPOSITORY} --password-stdin
-          docker push $IMAGE_BASE
-
-      - name: Opprett deployment issue
-        if: success()
-        uses: maxkomarychev/oction-create-issue@v0.7.1
-        id: createdeployissue
+          docker push $IMAGE_BASE  
+          
+      - name: Lukk gamle bygg-issues
+        uses: actions/github-script@v3
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          title: Bygg av ${{ env.TAG }}
-          body: |
-            Kommenter med <b>/promote ${{ env.TAG }} cluster namespace</b>, hvor <b>cluster</b> er et gyldig clusternavn og <b>namespace</b> et eksisterende namespace i det clusteret.
-            <table>
-            <tr><th>Cluster</th><th>Namespace</th></tr>
-            <tr><td>dev-fss</td><td>teamforeldrepenger</td></tr>
-            <tr><td>prod-fss</td><td>teamforeldrepenger</td></tr>
-            </table>
-
-      - name: Trigg deploy til dev-fss q1
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            github.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              labels: ['bygg']
+            }).then(response => {
+              response.data.forEach(issue => {
+                github.issues.update({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: issue.number,
+                  state: 'closed'
+                });
+              });
+            });     
+      
+      - name: Opprett issue, trigg deploy til dev-fss
         if: success()
-        uses: actions/github-script@0.3.0
+        uses: actions/github-script@v3
         with:
           github-token: ${{secrets.NOTIFICATION}}
           script: |
-            const issue = { owner: context.issue.owner,
-                            repo: context.issue.repo,
-                            issue_number: ${{ steps.createdeployissue.outputs.number }} }
-            github.issues.createComment({...issue,
-                                    title: 'Deploy av ${{ env.TAG }}',
-                                    body: '/promote ${{ env.TAG }} ${{ env.CLUSTER }} teamforeldrepenger'})
-
+              github.issues.create( {
+                owner: context.issue.owner,
+                repo: context.issue.repo,
+                labels: ['bygg'],
+                title: 'Deploy av ${{ env.TAG }}'})
+              .then(response => {
+                      const issue = { owner: context.issue.owner,
+                      repo: context.issue.repo,
+                      issue_number: response.data.number }
+                     github.issues.createComment({...issue,
+                            title: 'Deploy av ${{ env.TAG }}',
+                            body: '/promote dev-fss '})
+               });
