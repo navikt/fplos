@@ -5,6 +5,8 @@ import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.AnnotatedParameterizedType;
+import java.lang.reflect.AnnotatedType;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -26,6 +28,7 @@ import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.UUID;
@@ -45,6 +48,8 @@ import javax.validation.constraints.Null;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
+import no.nav.foreldrepenger.loslager.oppgave.Kodeverdi;
+import no.nav.foreldrepenger.loslager.validering.ValidKodeliste;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
@@ -70,7 +75,7 @@ public class RestApiInputValideringDtoTest extends RestApiTester {
     }
 
     private static final List<Class<? extends Object>> ALLOWED_ENUM_ANNOTATIONS = Arrays.asList(JsonProperty.class, JsonValue.class, JsonIgnore.class,
-            Valid.class, Null.class, NotNull.class);
+            Valid.class, Null.class, NotNull.class, ValidKodeliste.class);
 
     @SuppressWarnings("rawtypes")
     private static final Map<Class, List<List<Class<? extends Annotation>>>> UNNTATT_FRA_VALIDERING = new HashMap<>() {
@@ -93,7 +98,7 @@ public class RestApiInputValideringDtoTest extends RestApiTester {
         {
             put(String.class, asList(
                     asList(Pattern.class, Size.class),
-                    asList(Pattern.class),
+                    singletonList(Pattern.class),
                     singletonList(Digits.class)));
             put(Long.class, asList(
                     asList(Min.class, Max.class),
@@ -120,7 +125,7 @@ public class RestApiInputValideringDtoTest extends RestApiTester {
         } else if (Collection.class.isAssignableFrom(type) || Map.class.isAssignableFrom(type)) {
             if (brukerGenerics(field)) {
                 Type[] args = ((ParameterizedType) field.getGenericType()).getActualTypeArguments();
-                if (Arrays.asList(args).stream().allMatch(t -> UNNTATT_FRA_VALIDERING.containsKey(t))) {
+                if (Arrays.stream(args).allMatch(UNNTATT_FRA_VALIDERING::containsKey)) {
                     return Collections.singletonList(Arrays.asList(Size.class));
                 }
             }
@@ -154,6 +159,10 @@ public class RestApiInputValideringDtoTest extends RestApiTester {
     }
 
     private static void validerRekursivt(Set<Class<?>> besøkteKlasser, Class<?> klasse, Class<?> forrigeKlasse) throws URISyntaxException {
+        if (erKodeverk(klasse)) {
+            return;
+        }
+
         if (besøkteKlasser.contains(klasse)) {
             return;
         }
@@ -182,7 +191,9 @@ public class RestApiInputValideringDtoTest extends RestApiTester {
                 validerEnum(field);
                 continue; // enum er OK
             }
-            if (getVurderingsalternativer(field) != null) {
+            if (erKodeverk(field.getType()))  {
+                validerHarValidkodelisteAnnotering(field);
+            } else if (getVurderingsalternativer(field) != null) {
                 validerRiktigAnnotert(field); // har konfigurert opp spesifikk validering
             } else if (field.getType().getName().startsWith("java")) {
                 throw new AssertionError(
@@ -200,9 +211,17 @@ public class RestApiInputValideringDtoTest extends RestApiTester {
         }
     }
 
+    private static void validerHarValidkodelisteAnnotering(Field field) {
+        if (field.getAnnotation(ValidKodeliste.class) == null) {
+            throw new AssertionError("Feltet " + field + " er et kodeverk, og må ha @ValidKodeverk-annotering");
+        }
+    }
+
     private static void validerEnum(Field field) {
-        validerRiktigAnnotert(field);
-        List<Annotation> illegal = Arrays.asList(field.getAnnotations()).stream().filter(a -> !ALLOWED_ENUM_ANNOTATIONS.contains(a.annotationType()))
+        if (!erKodeverk(field.getType())) {
+            validerRiktigAnnotert(field);
+        }
+        List<Annotation> illegal = Arrays.stream(field.getAnnotations()).filter(a -> !ALLOWED_ENUM_ANNOTATIONS.contains(a.annotationType()))
                 .collect(Collectors.toList());
         if (!illegal.isEmpty()) {
             throw new AssertionError("Ugyldige annotasjoner funnet på [" + field + "]: " + illegal);
@@ -251,8 +270,31 @@ public class RestApiInputValideringDtoTest extends RestApiTester {
                     harAlleAnnoteringerForAlternativet = false;
                 }
             }
-            if (harAlleAnnoteringerForAlternativet) return;
+            if (harAlleAnnoteringerForAlternativet) {
+                validerRiktigAnnotertForCollectionsAndMaps(field);
+                return;
+            }
         }
         throw new IllegalArgumentException("Feltet " + field + " har ikke påkrevde annoteringer: " + alternativer);
+    }
+
+    private static void validerRiktigAnnotertForCollectionsAndMaps(Field field) {
+        if (!Properties.class.isAssignableFrom(field.getType())
+                && (Collection.class.isAssignableFrom(field.getType()) || Map.class.isAssignableFrom(field.getType()))) {
+            AnnotatedParameterizedType annType = (AnnotatedParameterizedType) field.getAnnotatedType();
+            AnnotatedType[] annotatedTypes = annType.getAnnotatedActualTypeArguments();
+            for (AnnotatedType at : List.of(annotatedTypes)) {
+                if (erKodeverk(at.getType())) {
+                    if (!at.isAnnotationPresent(ValidKodeliste.class)) {
+                        throw new IllegalArgumentException(
+                                "Feltet " + field + " har ikke påkrevd annotering for kodeverk: @" + ValidKodeliste.class.getSimpleName());
+                    }
+                }
+            }
+        }
+    }
+
+    private static boolean erKodeverk(Type... args) {
+        return Kodeverdi.class.isAssignableFrom((Class<?>) args[0]);
     }
 }

@@ -7,6 +7,7 @@ import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.dto.AvdelingEn
 import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.saksliste.FplosAbacAttributtType;
 import no.nav.foreldrepenger.los.web.app.tjenester.felles.dto.SakslisteIdDto;
 import no.nav.foreldrepenger.loslager.oppgave.AndreKriterierType;
+import no.nav.foreldrepenger.loslager.validering.ValidKodeliste;
 import no.nav.vedtak.sikkerhet.abac.AbacDataAttributter;
 import no.nav.vedtak.sikkerhet.abac.AbacDto;
 
@@ -17,6 +18,7 @@ public class SakslisteAndreKriterierDto implements AbacDto {
     private SakslisteIdDto sakslisteId;
 
     @NotNull
+    @ValidKodeliste
     private AndreKriterierType andreKriterierType;
 
     private boolean checked;
