@@ -18,12 +18,12 @@ public class SakslisteSorteringIntervallDagerDto implements AbacDto {
     private SakslisteIdDto sakslisteId;
 
     @Valid
-    @Min(0)
+    @Min(-500)
     @Max(5000)
     private Long fra;
 
     @Valid
-    @Min(0)
+    @Min(-500)
     @Max(5000)
     private Long til;
 
