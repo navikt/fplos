@@ -3,7 +3,6 @@ package no.nav.fplos.person;
 import no.nav.foreldrepenger.domene.typer.AktørId;
 import no.nav.foreldrepenger.loslager.aktør.Fødselsnummer;
 import no.nav.foreldrepenger.loslager.aktør.Person;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -12,33 +11,30 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class TpsPersonTjenesteTest {
-    private static final Person PERSON = FiktivTestPerson.ny();
+    private static final Person PERSON = FiktivTestPerson.nyPerson();
     private static final List<Person> KJENTE_PERSONER = List.of(PERSON);
 
-    private PersonTjeneste personTjeneste;
+    private static final Person UKJENT_PERSON = FiktivTestPerson.nyPerson();
 
-    @BeforeEach
-    public void oppsett() {
-        personTjeneste = new TpsPersonTjeneste(new TpsAdapterMock());
+    private static final PersonTjeneste personTjeneste = new TpsPersonTjeneste(new TpsAdapterMock());
+
+
+    @Test
+    public void skal_ikke_hente_person_for_ukjent_aktør() {
+        assertThat(personTjeneste.hentPerson(UKJENT_PERSON.getAktørId())).isEmpty();
     }
 
     @Test
-    public void skal_ikke_hente_bruker_for_ukjent_aktør() {
-        var ukjentAktør = new AktørId(666L);
-        assertThat(personTjeneste.hentPerson(ukjentAktør)).isEmpty();
-    }
-
-    @Test
-    public void skal_hente_bruker_for_kjent_fnr() {
+    public void skal_hente_person_for_kjent_fnr() {
         Optional<Person> funnetPerson = personTjeneste.hentPerson(PERSON.getFødselsnummer());
         assertThat(funnetPerson.isPresent()).isTrue();
         assertThat(funnetPerson.get()).isEqualTo(PERSON);
     }
 
     @Test
-    public void skal_ikke_hente_bruker_for_ukjent_fnr() {
-        Optional<Person> funnetBruker = personTjeneste.hentPerson(new Fødselsnummer("66666666666"));
-        assertThat(funnetBruker.isPresent()).isFalse();
+    public void skal_ikke_hente_person_for_ukjent_fnr() {
+        Optional<Person> ukjentPerson = personTjeneste.hentPerson(UKJENT_PERSON.getFødselsnummer());
+        assertThat(ukjentPerson.isPresent()).isFalse();
     }
 
     private static class TpsAdapterMock implements TpsAdapter {

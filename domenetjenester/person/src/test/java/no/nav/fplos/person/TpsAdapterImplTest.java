@@ -1,7 +1,6 @@
 package no.nav.fplos.person;
 
 import no.nav.foreldrepenger.domene.typer.AktørId;
-import no.nav.foreldrepenger.loslager.aktør.Fødselsnummer;
 import no.nav.foreldrepenger.loslager.aktør.Person;
 import no.nav.tjeneste.virksomhet.person.v3.binding.HentPersonPersonIkkeFunnet;
 import no.nav.tjeneste.virksomhet.person.v3.informasjon.Bruker;
@@ -18,6 +17,8 @@ import org.mockito.Mockito;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 
 public class TpsAdapterImplTest {
@@ -27,7 +28,8 @@ public class TpsAdapterImplTest {
     private final AktørConsumerMedCache aktørConsumerMock = Mockito.mock(AktørConsumerMedCache.class);
     private final PersonConsumer personProxyServiceMock = Mockito.mock(PersonConsumer.class);
 
-    private final AktørId AKTØRID = new AktørId(1337L);
+    private final Person PERSON = FiktivTestPerson.nyPerson();
+    private final Person UKJENT_PERSON = FiktivTestPerson.nyPerson();
 
     @BeforeEach
     public void setup() {
@@ -36,32 +38,29 @@ public class TpsAdapterImplTest {
 
     @Test
     public void hentAktørForFødselsnummer() {
-        Mockito.when(aktørConsumerMock.hentAktørIdForPersonIdent("12534341200")).thenReturn(Optional.of(AKTØRID.getId()));
-        AktørId aktørId = tpsAdapter.hentAktørForFødselsnummer(new Fødselsnummer("12534341200")).orElse(new AktørId(3L));
-        assertThat(aktørId).isEqualTo(AKTØRID);
+        Mockito.when(aktørConsumerMock.hentAktørIdForPersonIdent(PERSON.getFødselsnummer().asValue())).thenReturn(Optional.of(PERSON.getAktørId().getId()));
+        AktørId aktørId = tpsAdapter.hentAktørForFødselsnummer(PERSON.getFødselsnummer()).orElseThrow();
+        assertThat(aktørId).isEqualTo(PERSON.getAktørId());
     }
 
     @Test
     public void hentAktørForFødselsnummer_ikkeFunnet() {
-        Mockito.when(aktørConsumerMock.hentAktørIdForPersonIdent("125343412")).thenReturn(Optional.empty());
-        Optional<AktørId> optAktørId = tpsAdapter.hentAktørForFødselsnummer(new Fødselsnummer("12534341200"));
+        Mockito.when(aktørConsumerMock.hentAktørIdForPersonIdent(UKJENT_PERSON.getFødselsnummer().asValue())).thenReturn(Optional.empty());
+        Optional<AktørId> optAktørId = tpsAdapter.hentAktørForFødselsnummer(UKJENT_PERSON.getFødselsnummer());
         assertThat(optAktørId).isEmpty();
     }
 
     @Test
     public void hentPerson_funnet() throws Exception {
-        Fødselsnummer fnr = new Fødselsnummer("31018143212");
-        String navn = "John Doe";
-
         // get ready, set
         HentPersonResponse response = new HentPersonResponse();
         Bruker tpsPerson = new Bruker();
         Personnavn sammensattNavn = new Personnavn();
-        sammensattNavn.setSammensattNavn(navn);
+        sammensattNavn.setSammensattNavn(PERSON.getNavn());
         tpsPerson.setPersonnavn(sammensattNavn);
         PersonIdent aktør = new PersonIdent();
         NorskIdent norskIdent = new NorskIdent();
-        norskIdent.setIdent(fnr.asValue());
+        norskIdent.setIdent(PERSON.getFødselsnummer().asValue());
         aktør.setIdent(norskIdent);
         tpsPerson.setAktoer(aktør);
         response.setPerson(tpsPerson);
@@ -69,22 +68,18 @@ public class TpsAdapterImplTest {
 
         Mockito.when(personProxyServiceMock.hentPersonResponse(Mockito.any())).thenReturn(response);
         tpsAdapter = new TpsAdapterImpl(aktørConsumerMock, personProxyServiceMock);
-        Mockito.when(aktørConsumerMock.hentPersonIdentForAktørId(any())).thenReturn(Optional.of(fnr.asValue()));
+        Mockito.when(aktørConsumerMock.hentPersonIdentForAktørId(any())).thenReturn(Optional.of(PERSON.getFødselsnummer().asValue()));
 
-        // act
-        Person person = tpsAdapter.hentPerson(AKTØRID).orElseThrow();
+        Person personFraTps = tpsAdapter.hentPerson(PERSON.getAktørId()).orElseThrow();
 
-        assertThat(person).isNotNull();
-        assertThat(person.getNavn()).isEqualTo(navn);
-        assertThat(person.getFødselsnummer()).isEqualTo(fnr);
-        assertThat(person.getAktørId()).isEqualTo(AKTØRID);
+        assertEquals(personFraTps, PERSON);
     }
 
     @Test
     public void skal_få_empty_når_hentPerson_ikke_kan_finne_personen() throws Exception {
         Mockito.when(personProxyServiceMock.hentPersonResponse(Mockito.any()))
             .thenThrow(new HentPersonPersonIkkeFunnet(null, null));
-        Optional<Person> person = tpsAdapter.hentPerson(AKTØRID);
-        assertThat(person.isEmpty()).isTrue();
+        Optional<Person> OptionalPersonFraTps = tpsAdapter.hentPerson(UKJENT_PERSON.getAktørId());
+        assertTrue(OptionalPersonFraTps.isEmpty());
     }
 }

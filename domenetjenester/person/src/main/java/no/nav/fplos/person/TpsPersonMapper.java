@@ -12,9 +12,9 @@ public final class TpsPersonMapper {
     TpsPersonMapper() {
     }
 
-    public static Person tilPerson(AktørId aktørId, Bruker person) {
-        String navn = person.getPersonnavn().getSammensattNavn();
-        Aktoer aktoer = person.getAktoer();
+    public static Person tilPerson(AktørId aktørId, Bruker bruker) {
+        String navn = bruker.getPersonnavn().getSammensattNavn();
+        Aktoer aktoer = bruker.getAktoer();
         PersonIdent pi = (PersonIdent) aktoer;
         Fødselsnummer ident = new Fødselsnummer(pi.getIdent().getIdent());
         return new Person.Builder()

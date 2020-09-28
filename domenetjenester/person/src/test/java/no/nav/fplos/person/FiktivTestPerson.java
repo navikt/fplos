@@ -9,7 +9,7 @@ import java.util.Random;
 
 public final class FiktivTestPerson {
 
-    public static Person ny() {
+    public static Person nyPerson() {
         Fødselsnummer fnr = new FiktiveFnr().nesteFødselsnummer();
         AktørId aktørId = new AktørId(Long.valueOf(fnr.asValue()));
         return new Person.Builder()

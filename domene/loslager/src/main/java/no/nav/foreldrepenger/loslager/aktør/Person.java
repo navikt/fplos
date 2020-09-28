@@ -2,6 +2,7 @@ package no.nav.foreldrepenger.loslager.aktør;
 
 import static java.util.Objects.requireNonNull;
 import java.util.Locale;
+import java.util.Objects;
 
 import no.nav.foreldrepenger.domene.typer.AktørId;
 
@@ -15,16 +16,31 @@ public class Person {
     }
 
     public String getNavn() {
-        return formaterMedStoreOgSmåBokstaver(navn);
+        return navn;
     }
 
     public AktørId getAktørId() {
         return aktørId;
     }
 
-    public static class Builder {
-        private Person personMal;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Person person = (Person) o;
+        return aktørId.equals(person.aktørId) &&
+                navn.equals(person.navn) &&
+                fødselsnummer.equals(person.fødselsnummer);
+    }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(aktørId, navn, fødselsnummer);
+    }
+
+    public static class Builder {
+
+        private Person personMal;
         public Builder() {
             personMal = new Person();
         }
@@ -35,7 +51,7 @@ public class Person {
         }
 
         public Builder medNavn(String navn) {
-            personMal.navn = navn;
+            personMal.navn = formaterMedStoreOgSmåBokstaver(navn);
             return this;
         }
 
@@ -50,6 +66,7 @@ public class Person {
             requireNonNull(personMal.navn, "Mangler navn"); //$NON-NLS-1$
             return personMal;
         }
+
     }
 
     private static String formaterMedStoreOgSmåBokstaver(String tekst) {
