@@ -16,6 +16,7 @@ import java.util.Optional;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import no.nav.foreldrepenger.loslager.aktør.Fødselsnummer;
 import org.apache.http.client.utils.URIBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -188,9 +189,9 @@ public class ForeldrepengerBehandlingRestKlient {
         }
     }
 
-    public List<FagsakDto> getFagsakFraFnr(String fnr) {
+    public List<FagsakDto> getFagsakFraFnr(Fødselsnummer fødselsnummer) {
         URIBuilder uriBuilder = new URIBuilder(URI.create(fpsakBaseUrl + FPSAK_FAGSAK_FNR));
-        SokefeltDto sokefeltDto = new SokefeltDto(fnr);
+        SokefeltDto sokefeltDto = new SokefeltDto(fødselsnummer.asValue());
         ContainerLogin loginContext = new ContainerLogin();
         loginContext.login();
 

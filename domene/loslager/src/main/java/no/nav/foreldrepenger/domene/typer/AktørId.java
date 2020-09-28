@@ -34,8 +34,7 @@ public class AktørId implements Serializable, Comparable<AktørId> {
     }
 
     public AktørId(Long aktørId) {
-        Objects.requireNonNull(aktørId, "aktørId");
-        this.aktørId = aktørId.toString();
+        this(String.valueOf(aktørId));
     }
 
     public AktørId(String aktørId) {

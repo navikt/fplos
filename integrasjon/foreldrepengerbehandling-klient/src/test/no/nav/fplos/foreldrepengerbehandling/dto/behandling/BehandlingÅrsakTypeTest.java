@@ -11,7 +11,9 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+
 
 public class BehandlingÅrsakTypeTest {
     private static final ObjectMapper mapper = getObjectMapper();
@@ -27,7 +29,7 @@ public class BehandlingÅrsakTypeTest {
     @Test
     public void ukjentVerdiDeserialiseresTilNull() throws Exception {
         String ukjentKode = "{\"kode\": \"DUMMY-UKJENT-VERDI\"}";
-        assertEquals(null, fromJson(ukjentKode, BehandlingÅrsakType.class));
+        assertNull(fromJson(ukjentKode, BehandlingÅrsakType.class));
     }
 
     static <T> T fromJson(String json, Class<T> clazz) throws JsonProcessingException {

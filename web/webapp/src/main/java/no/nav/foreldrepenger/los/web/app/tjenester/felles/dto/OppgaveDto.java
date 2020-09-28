@@ -1,11 +1,10 @@
 package no.nav.foreldrepenger.los.web.app.tjenester.felles.dto;
 
 import java.time.LocalDateTime;
-import java.util.Locale;
 import java.util.UUID;
 
 import no.nav.foreldrepenger.loslager.BehandlingId;
-import no.nav.foreldrepenger.loslager.aktør.TpsPersonDto;
+import no.nav.foreldrepenger.loslager.aktør.Person;
 import no.nav.foreldrepenger.loslager.oppgave.BehandlingStatus;
 import no.nav.foreldrepenger.loslager.oppgave.BehandlingType;
 import no.nav.foreldrepenger.loslager.oppgave.FagsakYtelseType;
@@ -27,7 +26,7 @@ public class OppgaveDto {
     private BehandlingId behandlingId;
     private String href;
 
-    OppgaveDto(Oppgave oppgave, TpsPersonDto personDto, OppgaveStatusDto oppgaveStatus){
+    OppgaveDto(Oppgave oppgave, Person personDto, OppgaveStatusDto oppgaveStatus){
         leggTilOppgaveInformasjon(oppgave, oppgaveStatus);
         leggTilPersonInformasjon(personDto);
     }
@@ -47,9 +46,9 @@ public class OppgaveDto {
         this.href = oppgave.getHref();
     }
 
-    private void leggTilPersonInformasjon(TpsPersonDto personDto) {
-        this.navn = formaterMedStoreOgSmåBokstaver(personDto.getNavn());
-        this.personnummer = personDto.getFnr().getIdent();
+    private void leggTilPersonInformasjon(Person person) {
+        this.navn = person.getNavn();
+        this.personnummer = person.getFødselsnummer().asValue();
     }
 
     public Long getId() {
@@ -142,23 +141,6 @@ public class OppgaveDto {
     public int hashCode() {
         int result = saksnummer.hashCode();
         return 31 * result + behandlingId.hashCode();
-    }
-
-    private static String formaterMedStoreOgSmåBokstaver(String tekst) {
-        if (tekst == null || (tekst = tekst.trim()).isEmpty()) { // NOSONAR
-            return null;
-        }
-        String skilletegnPattern = "(\\s|[()\\-_.,/])";
-        char[] tegn = tekst.toLowerCase(Locale.getDefault()).toCharArray();
-        boolean nesteSkalHaStorBokstav = true;
-        for (int i = 0; i < tegn.length; i++) {
-            boolean erSkilletegn = String.valueOf(tegn[i]).matches(skilletegnPattern);
-            if (!erSkilletegn && nesteSkalHaStorBokstav) {
-                tegn[i] = Character.toTitleCase(tegn[i]);
-            }
-            nesteSkalHaStorBokstav = erSkilletegn;
-        }
-        return new String(tegn);
     }
 
 }

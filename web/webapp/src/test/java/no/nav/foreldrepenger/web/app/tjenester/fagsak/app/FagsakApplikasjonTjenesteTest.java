@@ -13,65 +13,59 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import javax.xml.ws.WebServiceException;
-
+import no.nav.foreldrepenger.loslager.aktør.Fødselsnummer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import no.nav.foreldrepenger.domene.typer.AktørId;
-import no.nav.foreldrepenger.domene.typer.PersonIdent;
 import no.nav.foreldrepenger.los.web.app.tjenester.fagsak.app.FagsakApplikasjonTjeneste;
-import no.nav.foreldrepenger.loslager.aktør.TpsPersonDto;
+import no.nav.foreldrepenger.loslager.aktør.Person;
 import no.nav.foreldrepenger.loslager.oppgave.FagsakStatus;
 import no.nav.foreldrepenger.loslager.oppgave.FagsakYtelseType;
 import no.nav.fplos.foreldrepengerbehandling.ForeldrepengerBehandlingRestKlient;
 import no.nav.fplos.foreldrepengerbehandling.dto.fagsak.FagsakDto;
 import no.nav.fplos.foreldrepengerbehandling.dto.fagsak.PersonDto;
-import no.nav.fplos.person.api.TpsTjeneste;
-import no.nav.vedtak.exception.IntegrasjonException;
+import no.nav.fplos.person.PersonTjeneste;
 import no.nav.vedtak.exception.ManglerTilgangException;
-import no.nav.vedtak.felles.integrasjon.felles.ws.SoapWebServiceFeil;
 import no.nav.vedtak.felles.integrasjon.rest.OidcRestClientFeil;
 
 public class FagsakApplikasjonTjenesteTest {
 
-    private static final String FNR = "12345678901";
+    private static final Fødselsnummer FNR = new Fødselsnummer("12345678901");
     private static final AktørId AKTØR_ID = new AktørId("1");
     private static final String SAKSNUMMER  = "123";
     private static final boolean ER_KVINNE = true;
 
-    private FagsakApplikasjonTjeneste tjeneste;
-    private ForeldrepengerBehandlingRestKlient klient;
-    private TpsTjeneste tpsTjeneste;
+    private FagsakApplikasjonTjeneste fagsakTjeneste;
+    private ForeldrepengerBehandlingRestKlient foreldrepengerKlient;
+    private PersonTjeneste personTjeneste;
 
     @BeforeEach
     public void oppsett() {
-        tpsTjeneste = mock(TpsTjeneste.class);
-        klient = mock(ForeldrepengerBehandlingRestKlient.class);
+        personTjeneste = mock(PersonTjeneste.class);
+        foreldrepengerKlient = mock(ForeldrepengerBehandlingRestKlient.class);
 
-        tjeneste = new FagsakApplikasjonTjeneste(tpsTjeneste, klient);
+        fagsakTjeneste = new FagsakApplikasjonTjeneste(personTjeneste, foreldrepengerKlient);
     }
 
     @Test
     public void skal_hente_saker_på_fnr() {
         // Arrange
-        TpsPersonDto personinfo = new TpsPersonDto.Builder().medAktørId(AKTØR_ID)
-                .medFnr(new PersonIdent(FNR))
+        Person personinfo = new Person.Builder().medAktørId(AKTØR_ID)
+                .medFnr(FNR)
                 .medNavn("Test")
-                .medFødselsdato(LocalDate.now())
-                .medNavBrukerKjønn("M")
                 .build();
-        when(tpsTjeneste.hentBrukerForFnr(new PersonIdent(FNR))).thenReturn(Optional.of(personinfo));
+        when(personTjeneste.hentPerson(FNR)).thenReturn(Optional.of(personinfo));
 
-        PersonDto personinfoSoker = new PersonDto("TEST", 20, FNR, ER_KVINNE, "", null);
-        FagsakDto fagsakDto = new FagsakDto(Long.valueOf(FNR), FagsakYtelseType.FORELDREPENGER, FagsakStatus.OPPRETTET,
+        PersonDto personinfoSoker = new PersonDto("TEST", 20, FNR.asValue(), ER_KVINNE, "", null);
+        FagsakDto fagsakDto = new FagsakDto(Long.valueOf(FNR.asValue()), FagsakYtelseType.FORELDREPENGER, FagsakStatus.OPPRETTET,
                 personinfoSoker, LocalDateTime.now(), LocalDateTime.now(), LocalDate.of(2017, Month.FEBRUARY, 1));
-        when(klient.getFagsakFraFnr(FNR)).thenReturn(Collections.singletonList(fagsakDto));
+        when(foreldrepengerKlient.getFagsakFraFnr(FNR)).thenReturn(Collections.singletonList(fagsakDto));
 
         LocalDate fødselsdatoBarn = LocalDate.of(2017, Month.FEBRUARY, 1);
 
         // Act
-        List<FagsakDto> fagsakDtos = tjeneste.hentSaker(FNR);
+        List<FagsakDto> fagsakDtos = fagsakTjeneste.hentSaker(FNR.asValue());
 
         // Assert
         assertThat(fagsakDtos.isEmpty()).isFalse();
@@ -83,17 +77,17 @@ public class FagsakApplikasjonTjenesteTest {
 
     @Test
     public void skal_hente_saker_på_saksreferanse() {
-        PersonDto personinfo = new PersonDto("TEST", 20, FNR, ER_KVINNE, "", null);
+        PersonDto personinfo = new PersonDto("TEST", 20, FNR.asValue(), ER_KVINNE, "", null);
 
         List<FagsakDto> fagsakDtos = new ArrayList<>();
         FagsakDto fagsakDto = new FagsakDto(Long.valueOf(SAKSNUMMER), FagsakYtelseType.FORELDREPENGER, FagsakStatus.UNDER_BEHANDLING, personinfo, LocalDateTime.now(),
                 LocalDateTime.now(), LocalDate.now());
         fagsakDtos.add(fagsakDto);
-        when(klient.getFagsakFraSaksnummer(SAKSNUMMER)).thenReturn(fagsakDtos);
+        when(foreldrepengerKlient.getFagsakFraSaksnummer(SAKSNUMMER)).thenReturn(fagsakDtos);
 
 
         // Act
-        List<FagsakDto> resultFagsakDtos = tjeneste.hentSaker(SAKSNUMMER);
+        List<FagsakDto> resultFagsakDtos = fagsakTjeneste.hentSaker(SAKSNUMMER);
 
         // Assert
         assertThat(resultFagsakDtos.isEmpty()).isFalse();
@@ -104,17 +98,15 @@ public class FagsakApplikasjonTjenesteTest {
 
     @Test
     public void skal_returnere_tomt_view_dersom_søkestreng_ikke_er_gyldig_fnr_eller_saksnr() {
-        List<FagsakDto> fagsakDtos = tjeneste.hentSaker("ugyldig_søkestreng");
+        List<FagsakDto> fagsakDtos = fagsakTjeneste.hentSaker("ugyldig_søkestreng");
         assertThat(fagsakDtos.isEmpty()).isTrue();
     }
 
     @Test
     public void skal_returnere_tomt_view_ved_ukjent_fnr() {
-        var tpsError = SoapWebServiceFeil.FACTORY.soapFaultIwebserviceKall("tjeneste", new WebServiceException("Finner ikke bruker med ident"));
-        var integrasjonException = new IntegrasjonException(tpsError);
-        when(tpsTjeneste.hentBrukerForFnr(new PersonIdent(FNR))).thenThrow(integrasjonException);
-
-        List<FagsakDto> view = tjeneste.hentSaker(FNR);
+        String ukjentFødselsnummer = "00000000000";
+        when(personTjeneste.hentPerson(any(AktørId.class))).thenReturn(Optional.empty());
+        List<FagsakDto> view = fagsakTjeneste.hentSaker(ukjentFødselsnummer);
         assertThat(view.isEmpty()).isTrue();
     }
 
@@ -122,9 +114,9 @@ public class FagsakApplikasjonTjenesteTest {
     public void skal_returnere_tomt_view_ved_ukjent_saksnr() {
         var fpsak403 = OidcRestClientFeil.FACTORY.manglerTilgang("");
         var manglerTilgangException = new ManglerTilgangException(fpsak403);
-        when(klient.getFagsakFraSaksnummer(any(String.class))).thenThrow(manglerTilgangException);
+        when(foreldrepengerKlient.getFagsakFraSaksnummer(any(String.class))).thenThrow(manglerTilgangException);
 
-        List<FagsakDto> view = tjeneste.hentSaker(SAKSNUMMER);
+        List<FagsakDto> view = fagsakTjeneste.hentSaker(SAKSNUMMER);
         assertThat(view.isEmpty()).isTrue();
     }
 }
