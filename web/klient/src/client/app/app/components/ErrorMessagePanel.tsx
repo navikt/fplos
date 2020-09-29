@@ -2,11 +2,14 @@ import React, { FunctionComponent, useMemo } from 'react';
 import { injectIntl, WrappedComponentProps, IntlShape } from 'react-intl';
 import { Row, Column } from 'nav-frontend-grid';
 import { Undertekst } from 'nav-frontend-typografi';
+import advarselImageUrl from 'images/advarsel-sirkel-fyll.svg';
+import Driftsmelding from 'app/driftsmeldingTsType';
+
 import Lukknapp from 'nav-frontend-lukknapp';
-
 import decodeHtmlEntity from 'utils/decodeHtmlEntityUtils';
-import EventType from 'data/rest-api/src/requestApi/eventType';
 
+import Image from 'sharedComponents/Image';
+import EventType from 'data/rest-api/src/requestApi/eventType';
 import styles from './errorMessagePanel.less';
 
 export const getErrorMessageList = (intl: IntlShape, queryStrings: { errorcode?: string; errormessage?: string}, allErrorMessages = []): string[] => {
@@ -36,7 +39,9 @@ interface OwnProps {
     errormessage?: string;
     errorcode?: string;
   };
+  driftsmeldinger: Driftsmelding[];
 }
+
 
 /**
  * ErrorMessagePanel
@@ -48,15 +53,41 @@ const ErrorMessagePanel: FunctionComponent<OwnProps & WrappedComponentProps> = (
   errorMessages,
   queryStrings,
   removeErrorMessage,
+  driftsmeldinger,
 }) => {
   const feilmeldinger = useMemo(() => getErrorMessageList(intl, queryStrings, errorMessages), [queryStrings, errorMessages]);
 
-  if (feilmeldinger.length === 0) {
+  if (feilmeldinger.length === 0 && driftsmeldinger.length === 0) {
     return null;
+  }
+
+
+  function LukkeKnapp() {
+    if (feilmeldinger.length === 0) {
+      return null;
+    }
+    return (
+      <div className={styles.lukkContainer}>
+        <Lukknapp hvit onClick={removeErrorMessage}>{intl.formatMessage({ id: 'ErrorMessagePanel.Close' })}</Lukknapp>
+      </div>
+    );
   }
 
   return (
     <div className={styles.container}>
+      {driftsmeldinger.map((message) => (
+        <Row key={message.id}>
+          <Column xs="11" className={styles.column}>
+            <Image
+              className={styles.driftsInfo}
+              src={advarselImageUrl}
+            />
+            <Undertekst className={styles.wordWrap}>
+              {`${message.melding}`}
+            </Undertekst>
+          </Column>
+        </Row>
+      ))}
       {feilmeldinger.map((message) => (
         <Row key={message}>
           <Column xs="11">
@@ -66,9 +97,7 @@ const ErrorMessagePanel: FunctionComponent<OwnProps & WrappedComponentProps> = (
           </Column>
         </Row>
       ))}
-      <div className={styles.lukkContainer}>
-        <Lukknapp hvit onClick={removeErrorMessage}>{intl.formatMessage({ id: 'ErrorMessagePanel.Close' })}</Lukknapp>
-      </div>
+      <LukkeKnapp />
     </div>
   );
 };

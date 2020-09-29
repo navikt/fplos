@@ -17,11 +17,13 @@ const AppConfigResolver: FunctionComponent<OwnProps> = ({
   const { state: stateKodeverk } = useGlobalStateRestApi(RestApiGlobalStatePathsKeys.KODEVERK);
   const { state: stateFpsakUrl } = useGlobalStateRestApi(RestApiGlobalStatePathsKeys.FPSAK_URL);
   const { state: stateFptilbakeUrl } = useGlobalStateRestApi(RestApiGlobalStatePathsKeys.FPTILBAKE_URL);
+  const { state: stateDriftsmeldinger } = useGlobalStateRestApi(RestApiGlobalStatePathsKeys.DRIFTSMELDINGER);
 
   if (stateNavAnsatt === RestApiState.LOADING
     || stateKodeverk === RestApiState.LOADING
     || stateFpsakUrl === RestApiState.LOADING
-    || stateFptilbakeUrl === RestApiState.LOADING) {
+    || stateFptilbakeUrl === RestApiState.LOADING
+    || stateDriftsmeldinger === RestApiState.LOADING) {
     return <LoadingPanel />;
   }
   return children;

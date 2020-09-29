@@ -6,6 +6,7 @@ export enum RestApiGlobalStatePathsKeys {
   FPSAK_URL = 'FPSAK_URL',
   FPTILBAKE_URL = 'FPTILBAKE_URL',
   AVDELINGER = 'AVDELINGER',
+  DRIFTSMELDINGER = 'DRIFTSMELDINGER',
 }
 
 export enum RestApiPathsKeys {
@@ -59,6 +60,7 @@ export const endpoints = new RestApiConfigBuilder(CONTEXT_PATH)
   .withGet('/api/konfig/fpsak-url', RestApiGlobalStatePathsKeys.FPSAK_URL)
   .withGet('/api/konfig/fptilbake-url', RestApiGlobalStatePathsKeys.FPTILBAKE_URL)
   .withGet('/api/kodeverk', RestApiGlobalStatePathsKeys.KODEVERK)
+  .withGet('/api/driftsmeldinger', RestApiGlobalStatePathsKeys.DRIFTSMELDINGER)
 
   // Avdelingsleder
   .withGet('/api/avdelingsleder/avdelinger', RestApiGlobalStatePathsKeys.AVDELINGER)
