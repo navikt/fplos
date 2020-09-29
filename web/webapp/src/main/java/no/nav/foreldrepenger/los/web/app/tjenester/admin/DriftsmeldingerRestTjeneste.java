@@ -31,7 +31,7 @@ public class DriftsmeldingerRestTjeneste {
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
     @BeskyttetRessurs(action = READ, resource = AbacAttributter.APPLIKASJON, sporingslogg = false)
     public List<Driftsmelding> hentDriftsmeldinger() {
-        if (Cluster.current() == Cluster.PROD_FSS) {
+        if (Cluster.current().isProd()) {
             return Collections.emptyList();
         }
         return List.of(Driftsmelding.DriftsmeldingBuilder.aDriftsmelding()
