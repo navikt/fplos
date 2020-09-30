@@ -19,6 +19,7 @@ import HeaderAvdelingListe from './HeaderAvdelingListe';
 
 import styles from './headerWithErrorPanel.less';
 import ErrorFormatter from '../feilhandtering/ErrorFormatter';
+import Driftsmelding from '../driftsmeldingTsType';
 
 interface OwnProps {
   queryStrings: {
@@ -75,6 +76,7 @@ const HeaderWithErrorPanel: FunctionComponent<OwnProps & WrappedComponentProps> 
   const [erAvdelingerPanelApent, setAvdelingerPanelApent] = useState(false);
 
   const navAnsatt = useGlobalStateRestApiData<NavAnsatt>(RestApiGlobalStatePathsKeys.NAV_ANSATT);
+  const driftsmeldinger = useGlobalStateRestApiData<Driftsmelding[]>(RestApiGlobalStatePathsKeys.DRIFTSMELDINGER);
 
   const errorMessages = useRestApiError() || [];
   const formaterteFeilmeldinger = useMemo(() => new ErrorFormatter().format(errorMessages, crashMessage), [errorMessages]);
@@ -150,7 +152,12 @@ const HeaderWithErrorPanel: FunctionComponent<OwnProps & WrappedComponentProps> 
           )}
         </Header>
       </div>
-      <ErrorMessagePanel errorMessages={formaterteFeilmeldinger} queryStrings={queryStrings} removeErrorMessage={removeErrorMessage} />
+      <ErrorMessagePanel
+        errorMessages={formaterteFeilmeldinger}
+        queryStrings={queryStrings}
+        removeErrorMessage={removeErrorMessage}
+        driftsmeldinger={driftsmeldinger}
+      />
     </header>
   );
 };

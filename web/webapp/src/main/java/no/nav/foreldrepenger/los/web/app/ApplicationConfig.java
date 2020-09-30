@@ -24,6 +24,7 @@ import no.nav.foreldrepenger.los.web.app.exceptions.JsonParseExceptionMapper;
 import no.nav.foreldrepenger.los.web.app.jackson.JacksonJsonConfig;
 import no.nav.foreldrepenger.los.web.app.tjenester.admin.AdminProsesstaskRestTjeneste;
 import no.nav.foreldrepenger.los.web.app.tjenester.admin.AdminRestTjeneste;
+import no.nav.foreldrepenger.los.web.app.tjenester.admin.DriftsmeldingerRestTjeneste;
 import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.AvdelingslederRestTjeneste;
 import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.nøkkeltall.NøkkeltallRestTjeneste;
 import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.oppgave.AvdelingslederOppgaveRestTjeneste;
@@ -81,6 +82,7 @@ public class ApplicationConfig extends Application {
         classes.add(NavAnsattRestTjeneste.class);
         classes.add(KonfigRestTjeneste.class);
         classes.add(KodeverkRestTjeneste.class);
+        classes.add(DriftsmeldingerRestTjeneste.class);
         classes.add(SaksbehandlerSakslisteRestTjeneste.class);
         classes.add(OppgaveRestTjeneste.class);
         classes.add(AvdelingslederSakslisteRestTjeneste.class);
