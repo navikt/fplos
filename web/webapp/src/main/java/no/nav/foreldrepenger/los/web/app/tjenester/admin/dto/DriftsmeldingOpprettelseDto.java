@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
 
 public class DriftsmeldingOpprettelseDto implements AbacDto {
     @NotNull
-    @Size(min = 5, max = 1500)
+    @Size(min = 10, max = 1500)
     @Pattern(regexp = InputValideringRegex.FRITEKST)
     @JsonProperty(value = "melding", required = true)
     private String melding;
