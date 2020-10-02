@@ -144,7 +144,6 @@ public class OppgaveTjenesteImpl implements OppgaveTjeneste {
         var queryDto = oppgaveRepository.hentFiltrering(behandlingsKø)
                 .map(Oppgavespørring::new)
                 .orElseThrow(() -> OppgaveTjenesteFeil.FACTORY.fantIkkeOppgavekø(behandlingsKø).toException());
-                //.orElseThrow(() -> new IllegalArgumentException(String.format("Behandlingskø med id %s ikke funnet. Køen kan ha blitt slettet.", behandlingsKø)));
         queryDto.setForAvdelingsleder(forAvdelingsleder);
         return oppgaveRepository.hentAntallOppgaver(queryDto);
     }
