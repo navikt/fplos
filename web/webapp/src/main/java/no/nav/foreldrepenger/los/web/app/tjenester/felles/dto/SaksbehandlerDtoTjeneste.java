@@ -62,7 +62,7 @@ public class SaksbehandlerDtoTjeneste {
 
     public Optional<SaksbehandlerMedAvdelingerDto> lagSaksbehandlerMedAvdelingerDto(String ident) {
         var saksbehandlerDto = lagDto(ident);
-        if (!saksbehandlerDto.isEmpty()) {
+        if (saksbehandlerDto.isPresent()) {
             var avdelinger = ansattTjeneste.hentAvdelingerNavnForAnsatt(ident);
             return Optional.of(new SaksbehandlerMedAvdelingerDto(saksbehandlerDto.get(), avdelinger));
         }

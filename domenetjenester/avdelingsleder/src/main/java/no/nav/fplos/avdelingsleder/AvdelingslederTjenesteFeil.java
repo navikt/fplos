@@ -10,6 +10,6 @@ public interface AvdelingslederTjenesteFeil extends DeklarerteFeil {
 
     AvdelingslederTjenesteFeil FACTORY = FeilFactory.create(AvdelingslederTjenesteFeil.class);
 
-    @FunksjonellFeil(feilkode = "FP-164687", feilmelding = "Fant ikke oppgavekø", løsningsforslag = "Last siden på nytt, forsøk igjen.", logLevel = LogLevel.INFO)
+    @FunksjonellFeil(feilkode = "FP-164687", feilmelding = "Fant ikke oppgavekø med id %s", løsningsforslag = "Last siden på nytt", logLevel = LogLevel.INFO)
     Feil fantIkkeOppgavekø(Long oppgaveFilterId);
 }
