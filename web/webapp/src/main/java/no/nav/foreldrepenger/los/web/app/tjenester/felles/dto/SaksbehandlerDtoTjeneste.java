@@ -5,6 +5,7 @@ import no.nav.foreldrepenger.loslager.organisasjon.Saksbehandler;
 import no.nav.foreldrepenger.loslager.repository.OrganisasjonRepository;
 import no.nav.fplos.ansatt.AnsattTjeneste;
 import no.nav.fplos.avdelingsleder.AvdelingslederTjeneste;
+import no.nav.fplos.avdelingsleder.AvdelingslederTjenesteFeil;
 import no.nav.fplos.oppgave.OppgaveTjeneste;
 import no.nav.vedtak.exception.IntegrasjonException;
 import org.slf4j.Logger;
@@ -43,11 +44,9 @@ public class SaksbehandlerDtoTjeneste {
     }
 
     public List<SaksbehandlerDto> hentAktiveSaksbehandlereTilknyttetSaksliste(Long sakslisteId) {
-        Optional<OppgaveFiltrering> filtrering = avdelingslederTjeneste.hentOppgaveFiltering(sakslisteId);
-        if (filtrering.isEmpty()) {
-            throw new IllegalArgumentException("Fant ikke sakslisten. Den kan ha blitt slettet av oppgavestyrer.");
-        }
-        return filtrering.get().getSaksbehandlere().stream()
+        var filtrering = avdelingslederTjeneste.hentOppgaveFiltering(sakslisteId)
+                .orElseThrow(() -> AvdelingslederTjenesteFeil.FACTORY.fantIkkeOppgavekø(sakslisteId).toException());
+        return filtrering.getSaksbehandlere().stream()
                 .map(this::lagDto)
                 .filter(Optional::isPresent)
                 .map(Optional::get)

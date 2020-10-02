@@ -118,7 +118,7 @@ public class AvdelingslederTjenesteImpl implements AvdelingslederTjeneste {
 
     private OppgaveFiltrering hentFiltrering(Long oppgavefiltreringId) {
         return oppgaveRepository.hentFiltrering(oppgavefiltreringId)
-                .orElseThrow(() -> new IllegalArgumentException(String.format("Fant ikke filter med id %s", oppgavefiltreringId)));
+                .orElseThrow(() -> AvdelingslederTjenesteFeil.FACTORY.fantIkkeOppgavekø(oppgavefiltreringId).toException());
     }
 
     @Override
