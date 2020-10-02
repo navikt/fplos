@@ -33,6 +33,7 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 import static no.nav.foreldrepenger.loslager.BaseEntitet.BRUKERNAVN_NÅR_SIKKERHETSKONTEKST_IKKE_FINNES;
 import static no.nav.foreldrepenger.loslager.oppgave.KøSortering.FT_DATO;
@@ -301,12 +302,12 @@ public class OppgaveRepositoryImpl implements OppgaveRepository {
     }
 
     @Override
-    public OppgaveFiltrering hentFiltrering(Long listeId) {
+    public Optional<OppgaveFiltrering> hentFiltrering(Long listeId) {
         TypedQuery<OppgaveFiltrering> listeTypedQuery = entityManager
                 .createQuery("FROM OppgaveFiltrering l WHERE l.id = :id " +
                         OPPGAVEFILTRERING_SORTERING_NAVN, OppgaveFiltrering.class)
                 .setParameter("id", listeId);
-        return listeTypedQuery.getResultStream().findFirst().orElse(null);
+        return listeTypedQuery.getResultStream().findFirst();
     }
 
     @Override

@@ -9,7 +9,6 @@ import no.nav.foreldrepenger.loslager.oppgave.FiltreringYtelseType;
 import no.nav.foreldrepenger.loslager.oppgave.KøSortering;
 import no.nav.foreldrepenger.loslager.oppgave.OppgaveFiltrering;
 import no.nav.foreldrepenger.loslager.organisasjon.Avdeling;
-import no.nav.foreldrepenger.loslager.organisasjon.Saksbehandler;
 import no.nav.foreldrepenger.loslager.repository.OppgaveRepository;
 import no.nav.foreldrepenger.loslager.repository.OrganisasjonRepository;
 import org.slf4j.Logger;
@@ -19,6 +18,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 
 @ApplicationScoped
@@ -46,7 +46,7 @@ public class AvdelingslederTjenesteImpl implements AvdelingslederTjeneste {
     }
 
     @Override
-    public OppgaveFiltrering hentOppgaveFiltering(Long oppgaveFiltrering){
+    public Optional<OppgaveFiltrering> hentOppgaveFiltering(Long oppgaveFiltrering){
         return oppgaveRepository.hentFiltrering(oppgaveFiltrering);
     }
 
@@ -74,51 +74,56 @@ public class AvdelingslederTjenesteImpl implements AvdelingslederTjeneste {
 
     @Override
     public void endreFiltreringBehandlingType(Long oppgavefiltreringId, BehandlingType behandlingType, boolean checked) {
-        OppgaveFiltrering filtre = oppgaveRepository.hentFiltrering(oppgavefiltreringId);
+        OppgaveFiltrering filtre = oppgaveRepository.hentFiltrering(oppgavefiltreringId).orElseThrow();
         if (checked) {
-            if(ikkeTilbakekrevingHandling(behandlingType)){
-                sjekkSorteringForTilbakekreving(oppgavefiltreringId);
+            if (!behandlingType.gjelderTilbakebetaling()) {
+                settStandardSorteringHvisTidligereTilbakebetaling(oppgavefiltreringId);
             }
             oppgaveRepository.lagre(new FiltreringBehandlingType(filtre, behandlingType));
         } else {
             oppgaveRepository.slettFiltreringBehandlingType(oppgavefiltreringId, behandlingType);
-            if(ingenBehandlingsTypeErValgtEtterAtTilbakekrevingErValgtBort(behandlingType, oppgavefiltreringId)) sjekkSorteringForTilbakekreving(oppgavefiltreringId);
+            if (ingenBehandlingsTypeErValgtEtterAtTilbakekrevingErValgtBort(behandlingType, oppgavefiltreringId))
+                settStandardSorteringHvisTidligereTilbakebetaling(oppgavefiltreringId);
         }
         oppgaveRepository.refresh(filtre);
     }
 
-    private boolean ikkeTilbakekrevingHandling(BehandlingType behandlingType){
-        return (behandlingType != BehandlingType.TILBAKEBETALING && behandlingType != BehandlingType.TILBAKEBETALING_REVURDERING);
-    }
-
     private boolean ingenBehandlingsTypeErValgtEtterAtTilbakekrevingErValgtBort(BehandlingType behandlingType, Long oppgavefiltreringId) {
-        if(ikkeTilbakekrevingHandling(behandlingType)) return false;
-        OppgaveFiltrering oppgaveListe = oppgaveRepository.hentFiltrering(oppgavefiltreringId);
-        if(oppgaveListe.getFiltreringBehandlingTyper().isEmpty()) return true;
-        return false;
+        if (!behandlingType.gjelderTilbakebetaling()) return false;
+        var filter = hentFiltrering(oppgavefiltreringId);
+        return filter.getFiltreringBehandlingTyper().isEmpty();
     }
 
-    private void sjekkSorteringForTilbakekreving(Long oppgavefiltreringId) {
+    private void settStandardSorteringHvisTidligereTilbakebetaling(Long oppgavefiltreringId) {
         KøSortering sortering = oppgaveRepository.hentSorteringForListe(oppgavefiltreringId);
-        if(sortering != null && sortering.getFeltkategori() == KøSortering.FK_TILBAKEKREVING) {
+        if (sortering != null && sortering.getFeltkategori().equals(KøSortering.FK_TILBAKEKREVING)) {
             settSortering(oppgavefiltreringId, KøSortering.BEHANDLINGSFRIST);
         }
     }
 
     @Override
     public void endreFiltreringYtelseType(Long oppgavefiltreringId, FagsakYtelseType fagsakYtelseType) {
-        OppgaveFiltrering filtre = oppgaveRepository.hentFiltrering(oppgavefiltreringId);
-        filtre.getFiltreringYtelseTyper()
-                .forEach(ytelseType -> oppgaveRepository.slettFiltreringYtelseType(oppgavefiltreringId, ytelseType.getFagsakYtelseType()));
+        var filter = hentFiltrering(oppgavefiltreringId);
+        // fjern gamle filtre
+        filter.getFiltreringYtelseTyper().stream()
+                .map(FiltreringYtelseType::getFagsakYtelseType)
+                .forEach(yt -> {
+                    oppgaveRepository.slettFiltreringYtelseType(oppgavefiltreringId, yt);});
         if (fagsakYtelseType != null) {
-            oppgaveRepository.lagre(new FiltreringYtelseType(filtre, fagsakYtelseType));
+            // legg på eventuelle nye
+            oppgaveRepository.lagre(new FiltreringYtelseType(filter, fagsakYtelseType));
         }
-        oppgaveRepository.refresh(filtre);
+        oppgaveRepository.refresh(filter);
+    }
+
+    private OppgaveFiltrering hentFiltrering(Long oppgavefiltreringId) {
+        return oppgaveRepository.hentFiltrering(oppgavefiltreringId)
+                .orElseThrow(() -> new IllegalArgumentException(String.format("Fant ikke filter med id %s", oppgavefiltreringId)));
     }
 
     @Override
     public void endreFiltreringAndreKriterierType(Long oppgavefiltreringId, AndreKriterierType andreKriterierType, boolean checked, boolean inkluder) {
-        OppgaveFiltrering filtre = oppgaveRepository.hentFiltrering(oppgavefiltreringId);
+        var filtre = hentFiltrering(oppgavefiltreringId);
         if (checked) {
             oppgaveRepository.slettFiltreringAndreKriterierType(oppgavefiltreringId, andreKriterierType);
             oppgaveRepository.lagre(new FiltreringAndreKriterierType(filtre, andreKriterierType, inkluder));
@@ -129,28 +134,24 @@ public class AvdelingslederTjenesteImpl implements AvdelingslederTjeneste {
     }
 
     @Override
-    public void leggSaksbehandlerTilListe(Long oppgaveFiltreringId, String saksbehandlerIdent){
-        OppgaveFiltrering oppgaveListe = oppgaveRepository.hentFiltrering(oppgaveFiltreringId);
-        if (oppgaveListe == null) {
-            log.warn(String.format("Fant ikke oppgavefiltreringsliste basert på id %s, saksbehandler %s legges ikke til oppgavefiltrering", oppgaveFiltreringId, saksbehandlerIdent));
-            return;
-        }
-        Saksbehandler saksbehandler = organisasjonRepository.hentSaksbehandler(saksbehandlerIdent);
-        oppgaveListe.leggTilSaksbehandler(saksbehandler);
-        oppgaveRepository.lagre(oppgaveListe);
+    public void leggSaksbehandlerTilListe(Long oppgaveFiltreringId, String saksbehandlerIdent) {
+        var saksbehandler = organisasjonRepository.hentSaksbehandler(saksbehandlerIdent);
+        oppgaveRepository.hentFiltrering(oppgaveFiltreringId)
+                .ifPresent(f -> {
+                    f.leggTilSaksbehandler(saksbehandler);
+                    oppgaveRepository.lagre(f);
+                });
         oppgaveRepository.refresh(saksbehandler);
     }
 
     @Override
-    public void fjernSaksbehandlerFraListe(Long oppgaveFiltreringId, String saksbehandlerIdent){
-        OppgaveFiltrering oppgaveListe = oppgaveRepository.hentFiltrering(oppgaveFiltreringId);
-        if (oppgaveListe == null) {
-            log.warn(String.format("Fant ikke oppgavefiltreringsliste basert på id %s, saksbehandler %s fjernes ikke fra oppgavefiltrering", oppgaveFiltreringId, saksbehandlerIdent));
-            return;
-        }
-        Saksbehandler saksbehandler = organisasjonRepository.hentSaksbehandler(saksbehandlerIdent);
-        oppgaveListe.fjernSaksbehandler(saksbehandler);
-        oppgaveRepository.lagre(oppgaveListe);
+    public void fjernSaksbehandlerFraListe(Long oppgaveFiltreringId, String saksbehandlerIdent) {
+        var saksbehandler = organisasjonRepository.hentSaksbehandler(saksbehandlerIdent);
+        oppgaveRepository.hentFiltrering(oppgaveFiltreringId)
+                .ifPresent(f -> {
+                    f.fjernSaksbehandler(saksbehandler);
+                    oppgaveRepository.lagre(f);
+                });
         oppgaveRepository.refresh(saksbehandler);
     }
 

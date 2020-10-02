@@ -9,11 +9,12 @@ import no.nav.foreldrepenger.loslager.organisasjon.Avdeling;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 public interface AvdelingslederTjeneste {
     List<OppgaveFiltrering> hentOppgaveFiltreringer(String avdelingsEnhet);
 
-    OppgaveFiltrering hentOppgaveFiltering(Long oppgaveFiltrering);
+    Optional<OppgaveFiltrering> hentOppgaveFiltering(Long oppgaveFiltrering);
 
     Long lagNyOppgaveFiltrering(String avdelingEnhet);
 

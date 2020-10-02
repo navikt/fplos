@@ -3,6 +3,7 @@ package no.nav.foreldrepenger.loslager.repository;
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 import no.nav.foreldrepenger.loslager.BehandlingId;
 import no.nav.foreldrepenger.loslager.oppgave.AndreKriterierType;
@@ -42,7 +43,7 @@ public interface OppgaveRepository {
 
     List<OppgaveFiltrering> hentAlleFiltreringer(Long avdelingsId);
 
-    OppgaveFiltrering hentFiltrering(Long listeId);
+    Optional<OppgaveFiltrering> hentFiltrering(Long listeId);
 
     KøSortering hentSorteringForListe(Long listeId);
 

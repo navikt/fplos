@@ -1,5 +1,6 @@
 package no.nav.foreldrepenger.los.web.app.tjenester.felles.dto;
 
+import no.nav.foreldrepenger.loslager.oppgave.OppgaveFiltrering;
 import no.nav.foreldrepenger.loslager.organisasjon.Saksbehandler;
 import no.nav.foreldrepenger.loslager.repository.OrganisasjonRepository;
 import no.nav.fplos.ansatt.AnsattTjeneste;
@@ -42,10 +43,14 @@ public class SaksbehandlerDtoTjeneste {
     }
 
     public List<SaksbehandlerDto> hentAktiveSaksbehandlereTilknyttetSaksliste(Long sakslisteId) {
-        var oppgaveFiltrering = avdelingslederTjeneste.hentOppgaveFiltering(sakslisteId);
-        return oppgaveFiltrering.getSaksbehandlere().stream()
+        Optional<OppgaveFiltrering> filtrering = avdelingslederTjeneste.hentOppgaveFiltering(sakslisteId);
+        if (filtrering.isEmpty()) {
+            throw new IllegalArgumentException("Fant ikke sakslisten. Den kan ha blitt slettet av oppgavestyrer.");
+        }
+        return filtrering.get().getSaksbehandlere().stream()
                 .map(this::lagDto)
-                .flatMap(Optional::stream)
+                .filter(Optional::isPresent)
+                .map(Optional::get)
                 .collect(Collectors.toList());
     }
 
