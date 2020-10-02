@@ -48,8 +48,7 @@ public class SaksbehandlerDtoTjeneste {
                 .orElseThrow(() -> AvdelingslederTjenesteFeil.FACTORY.fantIkkeOppgavekø(sakslisteId).toException());
         return filtrering.getSaksbehandlere().stream()
                 .map(this::lagDto)
-                .filter(Optional::isPresent)
-                .map(Optional::get)
+                .flatMap(Optional::stream)
                 .collect(Collectors.toList());
     }
 
@@ -70,7 +69,7 @@ public class SaksbehandlerDtoTjeneste {
     }
 
     public SaksbehandlerMedAvdelingerDto lagKjentOgUkjentSaksbehandlerMedAvdelingerDto(Saksbehandler saksbehandler) {
-        // noe innfløkt løsning - saksbehandler kan eksistere i basen men være ukjent i ldap
+        // saksbehandler kan eksistere i basen men være ukjent i ldap
         var ident = saksbehandler.getSaksbehandlerIdent();
         var saksbehandlerDto = lagDto(ident);
         if (saksbehandlerDto.isPresent()) {
