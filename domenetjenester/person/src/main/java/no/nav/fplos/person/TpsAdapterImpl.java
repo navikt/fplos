@@ -14,7 +14,7 @@ import no.nav.tjeneste.virksomhet.person.v3.binding.HentPersonSikkerhetsbegrensn
 import no.nav.tjeneste.virksomhet.person.v3.informasjon.Bruker;
 import no.nav.tjeneste.virksomhet.person.v3.meldinger.HentPersonRequest;
 import no.nav.tjeneste.virksomhet.person.v3.meldinger.HentPersonResponse;
-import no.nav.vedtak.felles.integrasjon.aktør.klient.AktørConsumerMedCache;
+import no.nav.vedtak.felles.integrasjon.aktør.klient.AktørConsumer;
 import no.nav.vedtak.felles.integrasjon.aktør.klient.DetFinnesFlereAktørerMedSammePersonIdentException;
 import no.nav.vedtak.felles.integrasjon.person.PersonConsumer;
 
@@ -23,30 +23,27 @@ import static no.nav.fplos.person.TpsMapper.tilPerson;
 @ApplicationScoped
 public class TpsAdapterImpl implements TpsAdapter {
 
-    private AktørConsumerMedCache aktørConsumer;
     private PersonConsumer personConsumer;
+    private AktørConsumer aktørConsumer;
 
     public TpsAdapterImpl() {
         // for CDI proxy
     }
 
     @Inject
-    TpsAdapterImpl(AktørConsumerMedCache aktørConsumer,
-                          PersonConsumer personConsumer) {
+    public TpsAdapterImpl(AktørConsumer aktørConsumer, PersonConsumer personConsumer) {
         this.aktørConsumer = aktørConsumer;
         this.personConsumer = personConsumer;
     }
 
     @Override
     public Optional<Person> hentPerson(Fødselsnummer fnr) {
-        return hentAktørForFødselsnummer(fnr)
-                .flatMap(aktørId -> hentPerson(aktørId, fnr));
+       return hentAktørForFødselsnummer(fnr).flatMap(aktørId -> hentPerson(aktørId, fnr));
     }
 
     @Override
     public Optional<Person> hentPerson(AktørId aktørId) {
-        return hentFødselsnummerForAktør(aktørId)
-                .flatMap(fnr -> hentPerson(aktørId, fnr));
+        return hentFødselsnummerForAktør(aktørId).flatMap(fnr -> hentPerson(aktørId, fnr));
     }
 
     private Optional<Fødselsnummer> hentFødselsnummerForAktør(AktørId aktørId) {

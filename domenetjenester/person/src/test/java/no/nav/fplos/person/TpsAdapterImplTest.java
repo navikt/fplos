@@ -7,7 +7,7 @@ import no.nav.tjeneste.virksomhet.person.v3.informasjon.NorskIdent;
 import no.nav.tjeneste.virksomhet.person.v3.informasjon.PersonIdent;
 import no.nav.tjeneste.virksomhet.person.v3.informasjon.Personnavn;
 import no.nav.tjeneste.virksomhet.person.v3.meldinger.HentPersonResponse;
-import no.nav.vedtak.felles.integrasjon.aktør.klient.AktørConsumerMedCache;
+import no.nav.vedtak.felles.integrasjon.aktør.klient.AktørConsumer;
 import no.nav.vedtak.felles.integrasjon.person.PersonConsumer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -24,7 +24,7 @@ public class TpsAdapterImplTest {
 
     private TpsAdapterImpl tpsAdapter;
 
-    private final AktørConsumerMedCache aktørConsumerMock = Mockito.mock(AktørConsumerMedCache.class);
+    private final AktørConsumer aktørConsumerMock = Mockito.mock(AktørConsumer.class);
     private final PersonConsumer personProxyServiceMock = Mockito.mock(PersonConsumer.class);
 
     private static final Person PERSON = FiktivTestPerson.nyPerson();

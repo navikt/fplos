@@ -5,7 +5,7 @@ import javax.validation.constraints.Pattern;
 
 import java.util.Objects;
 
-public class Fødselsnummer {
+public class Fødselsnummer implements Comparable<Fødselsnummer> {
     @Pattern(regexp = "\\d{11}")
     private final String fødselsnummer;
 
@@ -38,5 +38,10 @@ public class Fødselsnummer {
     @Override
     public int hashCode() {
         return Objects.hash(fødselsnummer);
+    }
+
+    @Override
+    public int compareTo(Fødselsnummer o) {
+        return this.fødselsnummer.compareTo(o.fødselsnummer);
     }
 }
