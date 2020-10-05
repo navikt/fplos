@@ -189,9 +189,11 @@ public class AvdelingslederSakslisteRestTjeneste {
     @BeskyttetRessurs(action = BeskyttetRessursActionAttributt.CREATE, resource = AbacAttributter.OPPGAVESTYRING_AVDELINGENHET)
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
     public void lagreSorteringTidsintervallValg(@NotNull @Parameter(description = "id til sakslisten") @Valid SakslisteOgAvdelingDto sakslisteOgAvdelingDto) {
-        OppgaveFiltrering oppgaveFiltrering = avdelingslederTjeneste.hentOppgaveFiltering(sakslisteOgAvdelingDto.getSakslisteId().getVerdi());
-        avdelingslederTjeneste.settSorteringTidsintervallValg(sakslisteOgAvdelingDto.getSakslisteId().getVerdi(),
-                !oppgaveFiltrering.getErDynamiskPeriode());
+        var sakslisteId = sakslisteOgAvdelingDto.getSakslisteId().getVerdi();
+        var oppgaveFiltrering = avdelingslederTjeneste.hentOppgaveFiltering(sakslisteId);
+        oppgaveFiltrering.ifPresentOrElse(
+                of -> avdelingslederTjeneste.settSorteringTidsintervallValg(sakslisteId, !of.getErDynamiskPeriode()),
+                () -> { throw new IllegalArgumentException("Fant ikke listen"); });
     }
 
     @POST
@@ -202,10 +204,12 @@ public class AvdelingslederSakslisteRestTjeneste {
     @BeskyttetRessurs(action = BeskyttetRessursActionAttributt.CREATE, resource = AbacAttributter.OPPGAVESTYRING_AVDELINGENHET)
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
     public void leggSaksbehandlerTilSaksliste(@NotNull @Parameter(description = "Knytning mellom saksbehandler og saksliste") @Valid SakslisteSaksbehandlerDto sakslisteSaksbehandler) {
-        if(sakslisteSaksbehandler.isChecked()) {
-            avdelingslederTjeneste.leggSaksbehandlerTilListe(sakslisteSaksbehandler.getSakslisteId(), sakslisteSaksbehandler.getBrukerIdent().getVerdi());
-        }else{
-            avdelingslederTjeneste.fjernSaksbehandlerFraListe(sakslisteSaksbehandler.getSakslisteId(), sakslisteSaksbehandler.getBrukerIdent().getVerdi());
+        var sakslisteId = sakslisteSaksbehandler.getSakslisteId();
+        var saksbehandlerIdent = sakslisteSaksbehandler.getBrukerIdent().getVerdi();
+        if (sakslisteSaksbehandler.isChecked()) {
+            avdelingslederTjeneste.leggSaksbehandlerTilListe(sakslisteId, saksbehandlerIdent);
+        } else {
+            avdelingslederTjeneste.fjernSaksbehandlerFraListe(sakslisteId, saksbehandlerIdent);
         }
     }
 }

@@ -8,6 +8,7 @@ import javax.persistence.Converter;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
@@ -38,6 +39,11 @@ public enum BehandlingType implements Kodeverdi {
 
     public String getKodeverk() {
         return kodeverk;
+    }
+
+    @JsonIgnore
+    public boolean gjelderTilbakebetaling() {
+        return this == TILBAKEBETALING || this == TILBAKEBETALING_REVURDERING;
     }
 
     @JsonCreator

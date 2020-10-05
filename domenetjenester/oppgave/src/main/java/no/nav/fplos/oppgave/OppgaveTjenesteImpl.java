@@ -49,19 +49,10 @@ public class OppgaveTjenesteImpl implements OppgaveTjeneste {
 
     @Override
     public List<Oppgave> hentOppgaver(Long sakslisteId, int maksAntall) {
-        log.debug("Henter oppgaver for saksliste : " + sakslisteId);
-        try {
-            OppgaveFiltrering oppgaveFiltrering = oppgaveRepository.hentFiltrering(sakslisteId);
-            if (oppgaveFiltrering == null) {
-                return Collections.emptyList();
-            }
-            List<Oppgave> oppgaver = oppgaveRepository.hentOppgaver(new Oppgavespørring(oppgaveFiltrering), maksAntall);
-            log.debug("Antall oppgaver hentet: " + oppgaver.size());
-            return oppgaver;
-        } catch (Exception e) {
-            log.error("Henting av oppgave feilet, returnerer en tom oppgaveliste", e);
-            return Collections.emptyList();
-        }
+        return oppgaveRepository.hentFiltrering(sakslisteId)
+                .map(Oppgavespørring::new)
+                .map(os -> oppgaveRepository.hentOppgaver(os, maksAntall))
+                .orElse(Collections.emptyList());
     }
 
     @Override
@@ -150,18 +141,11 @@ public class OppgaveTjenesteImpl implements OppgaveTjeneste {
 
     @Override
     public Integer hentAntallOppgaver(Long behandlingsKø, boolean forAvdelingsleder) {
-        int antallOppgaver = 0;
-        try {
-            OppgaveFiltrering oppgaveFiltrering = oppgaveRepository.hentFiltrering(behandlingsKø);
-            if (oppgaveFiltrering != null) {
-                var queryDto = new Oppgavespørring(oppgaveFiltrering);
-                queryDto.setForAvdelingsleder(forAvdelingsleder);
-                antallOppgaver = oppgaveRepository.hentAntallOppgaver(queryDto);
-            }
-        } catch (Exception e) {
-            log.error("Henting av oppgave feilet", e);
-        }
-        return antallOppgaver;
+        var queryDto = oppgaveRepository.hentFiltrering(behandlingsKø)
+                .map(Oppgavespørring::new)
+                .orElseThrow(() -> OppgaveTjenesteFeil.FACTORY.fantIkkeOppgavekø(behandlingsKø).toException());
+        queryDto.setForAvdelingsleder(forAvdelingsleder);
+        return oppgaveRepository.hentAntallOppgaver(queryDto);
     }
 
     @Override
@@ -193,14 +177,13 @@ public class OppgaveTjenesteImpl implements OppgaveTjeneste {
     @Override
     public Oppgave hentSisteOppgave(BehandlingId behandlingId) {
         var oppgaver = oppgaveRepository.hentOppgaver(behandlingId);
-        var aktivOppgave = oppgaver.stream().filter(oppgave -> oppgave.getAktiv()).findFirst();
+        var aktivOppgave = oppgaver.stream().filter(Oppgave::getAktiv).findFirst();
         return aktivOppgave.orElseGet(() -> sisteAvsluttet(oppgaver));
     }
 
     private Oppgave sisteAvsluttet(List<Oppgave> oppgaver) {
         return oppgaver.stream()
-                .sorted((o1, o2) -> o2.getOppgaveAvsluttet().compareTo(o1.getOppgaveAvsluttet()))
-                .findFirst()
+                .min((o1, o2) -> o2.getOppgaveAvsluttet().compareTo(o1.getOppgaveAvsluttet()))
                 .orElseThrow();
     }
 

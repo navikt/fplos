@@ -376,8 +376,8 @@ public class OppgaveRepositoryImplTest extends EntityManagerAwareTest {
 
     @Test
     public void fårTomtSvarFraOppgaveFiltrering() {
-        OppgaveFiltrering filtrering = oppgaveRepository.hentFiltrering(0L);
-        assertThat(filtrering).isNull();
+        var filtrering = oppgaveRepository.hentFiltrering(0L);
+        assertThat(filtrering).isEmpty();
     }
 
 
