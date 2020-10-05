@@ -8,7 +8,7 @@ import no.nav.foreldrepenger.loslager.aktør.Person;
 
 public interface TpsAdapter {
 
-    Optional<AktørId> hentAktørForFødselsnummer(Fødselsnummer fnr);
+    Optional<Person> hentPerson(Fødselsnummer fnr);
 
     Optional<Person> hentPerson(AktørId aktørId);
 

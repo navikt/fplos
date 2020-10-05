@@ -13,13 +13,13 @@ import no.nav.tjeneste.virksomhet.person.v3.informasjon.PersonIdent;
 import no.nav.tjeneste.virksomhet.person.v3.informasjon.Personnavn;
 
 @ExtendWith(MockitoExtension.class)
-public class TpsPersonMapperTest {
+public class TpsMapperTest {
 
     @Test
     public void skal_oversette_til_person() {
         Person testPerson = FiktivTestPerson.nyPerson();
         Bruker tpsBruker = lagTpsBruker(testPerson);
-        Person person = TpsPersonMapper.tilPerson(testPerson.getAktørId(), tpsBruker);
+        Person person = TpsMapper.tilPerson(testPerson.getAktørId(), tpsBruker);
 
         assertThat(person.getNavn()).isEqualTo(testPerson.getNavn());
         assertThat(person.getFødselsnummer()).isEqualTo(testPerson.getFødselsnummer());

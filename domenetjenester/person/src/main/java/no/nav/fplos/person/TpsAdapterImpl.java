@@ -6,8 +6,6 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import no.nav.foreldrepenger.loslager.aktør.Fødselsnummer;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import no.nav.foreldrepenger.domene.typer.AktørId;
 import no.nav.foreldrepenger.loslager.aktør.Person;
@@ -20,7 +18,7 @@ import no.nav.vedtak.felles.integrasjon.aktør.klient.AktørConsumerMedCache;
 import no.nav.vedtak.felles.integrasjon.aktør.klient.DetFinnesFlereAktørerMedSammePersonIdentException;
 import no.nav.vedtak.felles.integrasjon.person.PersonConsumer;
 
-import static no.nav.fplos.person.TpsPersonMapper.tilPerson;
+import static no.nav.fplos.person.TpsMapper.tilPerson;
 
 @ApplicationScoped
 public class TpsAdapterImpl implements TpsAdapter {
@@ -40,47 +38,48 @@ public class TpsAdapterImpl implements TpsAdapter {
     }
 
     @Override
-    public Optional<AktørId> hentAktørForFødselsnummer(Fødselsnummer fnr) {
-        try {
-            return aktørConsumer.hentAktørIdForPersonIdent(fnr.asValue())
-                    .map(AktørId::new);
-        } catch (DetFinnesFlereAktørerMedSammePersonIdentException ignore) { // NOSONAR
-            return Optional.empty();
-        }
+    public Optional<Person> hentPerson(Fødselsnummer fnr) {
+        return hentAktørForFødselsnummer(fnr)
+                .flatMap(aktørId -> hentPerson(aktørId, fnr));
     }
 
     @Override
     public Optional<Person> hentPerson(AktørId aktørId) {
-        var request = hentFødselsnummerForAktør(aktørId)
-                .map(TpsAdapterImpl::lagRequest);
-        if (request.isEmpty()) {
-            return Optional.empty();
-        }
-        try {
-            return håndterResponse(aktørId, request.get());
-        } catch (HentPersonPersonIkkeFunnet | HentPersonSikkerhetsbegrensning e) {
-            // none the wiser om manglende tilgang
-            return Optional.empty();
-        }
-    }
-
-    private Optional<Person> håndterResponse(AktørId aktørId, HentPersonRequest request) throws HentPersonPersonIkkeFunnet, HentPersonSikkerhetsbegrensning {
-        HentPersonResponse response = personConsumer.hentPersonResponse(request);
-        var tpsPerson = response.getPerson();
-        if (!(tpsPerson instanceof Bruker)) {
-            throw PersonTjenesteFeil.FACTORY.ukjentBrukerType().toException();
-        }
-        var person = tilPerson(aktørId, (Bruker) tpsPerson);
-        return Optional.of(person);
+        return hentFødselsnummerForAktør(aktørId)
+                .flatMap(fnr -> hentPerson(aktørId, fnr));
     }
 
     private Optional<Fødselsnummer> hentFødselsnummerForAktør(AktørId aktørId) {
         return aktørConsumer.hentPersonIdentForAktørId(aktørId.getId()).map(Fødselsnummer::new);
     }
 
-    private static HentPersonRequest lagRequest(Fødselsnummer fnr) {
-        HentPersonRequest request = new HentPersonRequest();
-        request.setAktoer(TpsUtil.lagTpsPersonIdent(fnr.asValue()));
-        return request;
+    private Optional<AktørId> hentAktørForFødselsnummer(Fødselsnummer fnr) {
+        try {
+            return aktørConsumer.hentAktørIdForPersonIdent(fnr.asValue()).map(AktørId::new);
+        } catch (DetFinnesFlereAktørerMedSammePersonIdentException ignore) { // NOSONAR
+            return Optional.empty();
+        }
     }
+
+    private Optional<Person> hentPerson(AktørId aktørId, Fødselsnummer fnr) {
+        var request = TpsMapper.hentPersonRequest(fnr);
+        try {
+            var tpsPerson = hentTpsPerson(request);
+            var person = tilPerson(aktørId, (Bruker) tpsPerson);
+            return Optional.of(person);
+        } catch (HentPersonPersonIkkeFunnet | HentPersonSikkerhetsbegrensning e) {
+            // none the wiser om manglende tilgang
+            return Optional.empty();
+        }
+    }
+
+    private no.nav.tjeneste.virksomhet.person.v3.informasjon.Person hentTpsPerson(HentPersonRequest request) throws HentPersonPersonIkkeFunnet, HentPersonSikkerhetsbegrensning {
+        HentPersonResponse response = personConsumer.hentPersonResponse(request);
+        var tpsPerson = response.getPerson();
+        if (!(tpsPerson instanceof Bruker)) {
+            throw PersonTjenesteFeil.FACTORY.ukjentBrukerType().toException();
+        }
+        return tpsPerson;
+    }
+
 }

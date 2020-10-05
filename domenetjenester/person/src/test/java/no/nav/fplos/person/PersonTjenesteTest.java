@@ -10,13 +10,13 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class TpsPersonTjenesteTest {
+public class PersonTjenesteTest {
     private static final Person PERSON = FiktivTestPerson.nyPerson();
     private static final List<Person> KJENTE_PERSONER = List.of(PERSON);
 
     private static final Person UKJENT_PERSON = FiktivTestPerson.nyPerson();
 
-    private static final PersonTjeneste personTjeneste = new TpsPersonTjeneste(new TpsAdapterMock());
+    private static final PersonTjeneste personTjeneste = new PersonTjeneste(new TpsAdapterMock());
 
 
     @Test
@@ -40,10 +40,9 @@ public class TpsPersonTjenesteTest {
     private static class TpsAdapterMock implements TpsAdapter {
 
         @Override
-        public Optional<AktørId> hentAktørForFødselsnummer(Fødselsnummer fnr) {
+        public Optional<Person> hentPerson(Fødselsnummer fnr) {
             return KJENTE_PERSONER.stream()
                     .filter(p -> p.getFødselsnummer().equals(fnr))
-                    .map(Person::getAktørId)
                     .findFirst();
         }
 
