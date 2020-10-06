@@ -169,13 +169,13 @@ public class AvdelingslederSakslisteRestTjeneste {
     }
 
     @POST
-    @Path("/sortering-tidsintervall-dager")
+    @Path("/sortering-tidsintervall-dager") //Bruker ikke bare til intervall på dager
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @Operation(description = "Sett sakslistens sorteringsintervall i dager", tags = "AvdelingslederSakslister")
+    @Operation(description = "Sett sakslistens sorteringsintervall", tags = "AvdelingslederSakslister")
     @BeskyttetRessurs(action = BeskyttetRessursActionAttributt.CREATE, resource = AbacAttributter.OPPGAVESTYRING_AVDELINGENHET)
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
-    public void lagreSorteringTidsintervallDager(@NotNull @Parameter(description = "Sakslistens sortering gitt dagar") @Valid SakslisteSorteringIntervallDagerDto sakslisteSorteringIntervallDager) {
+    public void lagreSorteringTidsintervallDager(@NotNull @Parameter(description = "Sakslistens sortering") @Valid SakslisteSorteringIntervallDagerDto sakslisteSorteringIntervallDager) {
         avdelingslederTjeneste.settSorteringNumeriskIntervall(sakslisteSorteringIntervallDager.getSakslisteId(),
                 sakslisteSorteringIntervallDager.getFra(),
                 sakslisteSorteringIntervallDager.getTil());
