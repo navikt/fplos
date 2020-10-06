@@ -29,7 +29,7 @@ import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.saksliste.dto.
 import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.saksliste.dto.SakslisteOgAvdelingDto;
 import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.saksliste.dto.SakslisteSaksbehandlerDto;
 import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.saksliste.dto.SakslisteSorteringDto;
-import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.saksliste.dto.SakslisteSorteringIntervallDagerDto;
+import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.saksliste.dto.SakslisteSorteringIntervallDto;
 import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.saksliste.dto.SakslisteSorteringIntervallDatoDto;
 import no.nav.foreldrepenger.los.web.app.tjenester.felles.dto.SakslisteDto;
 import no.nav.foreldrepenger.los.web.app.tjenester.felles.dto.SakslisteIdDto;
@@ -175,10 +175,19 @@ public class AvdelingslederSakslisteRestTjeneste {
     @Operation(description = "Sett sakslistens sorteringsintervall", tags = "AvdelingslederSakslister")
     @BeskyttetRessurs(action = BeskyttetRessursActionAttributt.CREATE, resource = AbacAttributter.OPPGAVESTYRING_AVDELINGENHET)
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
-    public void lagreSorteringTidsintervallDager(@NotNull @Parameter(description = "Sakslistens sortering") @Valid SakslisteSorteringIntervallDagerDto sakslisteSorteringIntervallDager) {
-        avdelingslederTjeneste.settSorteringNumeriskIntervall(sakslisteSorteringIntervallDager.getSakslisteId(),
-                sakslisteSorteringIntervallDager.getFra(),
-                sakslisteSorteringIntervallDager.getTil());
+    public void lagreSorteringTidsintervallDager(@NotNull @Parameter(description = "Sakslistens sortering") @Valid SakslisteSorteringIntervallDto intervall) {
+        lagreSorteringTidsintervall(intervall);
+    }
+
+    @POST
+    @Path("/sortering-numerisk-intervall")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Operation(description = "Sett sakslistens sorteringsintervall", tags = "AvdelingslederSakslister")
+    @BeskyttetRessurs(action = BeskyttetRessursActionAttributt.CREATE, resource = AbacAttributter.OPPGAVESTYRING_AVDELINGENHET)
+    @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
+    public void lagreSorteringTidsintervall(@NotNull @Parameter(description = "Intervall som filtrererer/sorterer numerisk") @Valid SakslisteSorteringIntervallDto intervall) {
+        avdelingslederTjeneste.settSorteringNumeriskIntervall(intervall.getSakslisteId(), intervall.getFra(), intervall.getTil());
     }
 
     @POST

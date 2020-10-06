@@ -51,7 +51,7 @@ const SorteringVelger: FunctionComponent<OwnProps & WrappedComponentProps> = ({
   hentAntallOppgaver,
 }) => {
   const { startRequest: lagreSakslisteSortering } = useRestApiRunner(RestApiPathsKeys.LAGRE_SAKSLISTE_SORTERING);
-  const { startRequest: lagreSakslisteSorteringNumeriskIntervall } = useRestApiRunner(RestApiPathsKeys.LAGRE_SAKSLISTE_SORTERING_TIDSINTERVALL_DAGER);
+  const { startRequest: lagreSakslisteSorteringNumeriskIntervall } = useRestApiRunner(RestApiPathsKeys.LAGRE_SAKSLISTE_SORTERING_INTERVALL);
   const koSorteringer = useKodeverk<KoSorteringType>(kodeverkTyper.KO_SORTERING);
 
   return (

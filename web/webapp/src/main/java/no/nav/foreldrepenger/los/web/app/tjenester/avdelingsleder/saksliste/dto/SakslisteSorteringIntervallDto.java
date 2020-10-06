@@ -11,7 +11,7 @@ import no.nav.foreldrepenger.los.web.app.tjenester.felles.dto.SakslisteIdDto;
 import no.nav.vedtak.sikkerhet.abac.AbacDataAttributter;
 import no.nav.vedtak.sikkerhet.abac.AbacDto;
 
-public class SakslisteSorteringIntervallDagerDto implements AbacDto {
+public class SakslisteSorteringIntervallDto implements AbacDto {
 
     @NotNull
     @Valid
@@ -31,10 +31,10 @@ public class SakslisteSorteringIntervallDagerDto implements AbacDto {
     @Valid
     private AvdelingEnhetDto avdelingEnhet;
 
-    public SakslisteSorteringIntervallDagerDto() {
+    public SakslisteSorteringIntervallDto() {
     }
 
-    public SakslisteSorteringIntervallDagerDto(SakslisteIdDto sakslisteId, Long fra, Long til, AvdelingEnhetDto avdelingEnhet) {
+    public SakslisteSorteringIntervallDto(SakslisteIdDto sakslisteId, Long fra, Long til, AvdelingEnhetDto avdelingEnhet) {
         this.sakslisteId = sakslisteId;
         this.fra = fra;
         this.til = til;
@@ -59,7 +59,7 @@ public class SakslisteSorteringIntervallDagerDto implements AbacDto {
 
     @Override
     public String toString() {
-        return "SakslisteSorteringDto{" +
+        return "SakslisteSorteringIntervallDto{" +
                 "sakslisteId='" + sakslisteId + '\'' +
                 "fra='" + fra + '\'' +
                 "til='" + til + '\'' +

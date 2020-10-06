@@ -39,7 +39,7 @@ export enum RestApiPathsKeys {
   LAGRE_SAKSLISTE_SORTERING = 'LAGRE_SAKSLISTE_SORTERING',
   LAGRE_SAKSLISTE_SORTERING_DYNAMISK_PERIDE = 'LAGRE_SAKSLISTE_SORTERING_DYNAMISK_PERIDE',
   LAGRE_SAKSLISTE_SORTERING_TIDSINTERVALL_DATO = 'LAGRE_SAKSLISTE_SORTERING_TIDSINTERVALL_DATO',
-  LAGRE_SAKSLISTE_SORTERING_TIDSINTERVALL_DAGER = 'LAGRE_SAKSLISTE_SORTERING_TIDSINTERVALL_DAGER',
+  LAGRE_SAKSLISTE_SORTERING_INTERVALL = 'LAGRE_SAKSLISTE_SORTERING_INTERVALL',
   LAGRE_SAKSLISTE_ANDRE_KRITERIER = 'LAGRE_SAKSLISTE_ANDRE_KRITERIER',
   LAGRE_SAKSLISTE_SAKSBEHANDLER = 'LAGRE_SAKSLISTE_SAKSBEHANDLER',
   SAKSBEHANDLER_SOK = 'SAKSBEHANDLER_SOK',
@@ -76,7 +76,7 @@ export const endpoints = new RestApiConfigBuilder(CONTEXT_PATH)
   .withPost('/api/avdelingsleder/sakslister/sortering', RestApiPathsKeys.LAGRE_SAKSLISTE_SORTERING)
   .withPost('/api/avdelingsleder/sakslister/sortering-tidsintervall-type', RestApiPathsKeys.LAGRE_SAKSLISTE_SORTERING_DYNAMISK_PERIDE)
   .withPost('/api/avdelingsleder/sakslister/sortering-tidsintervall-dato', RestApiPathsKeys.LAGRE_SAKSLISTE_SORTERING_TIDSINTERVALL_DATO)
-  .withPost('/api/avdelingsleder/sakslister/sortering-tidsintervall-dager', RestApiPathsKeys.LAGRE_SAKSLISTE_SORTERING_TIDSINTERVALL_DAGER)
+  .withPost('/api/avdelingsleder/sakslister/sortering-numerisk-intervall', RestApiPathsKeys.LAGRE_SAKSLISTE_SORTERING_INTERVALL)
   .withPost('/api/avdelingsleder/sakslister/andre-kriterier', RestApiPathsKeys.LAGRE_SAKSLISTE_ANDRE_KRITERIER)
   .withPost('/api/avdelingsleder/sakslister/saksbehandler', RestApiPathsKeys.LAGRE_SAKSLISTE_SAKSBEHANDLER)
   .withPost('/api/avdelingsleder/saksbehandlere/sok', RestApiPathsKeys.SAKSBEHANDLER_SOK)

@@ -59,7 +59,7 @@ describe('<SorteringVelger>', () => {
       .withKodeverk(kodeverkTyper.KO_SORTERING, koSorteringTyper)
       .withRestCallRunner(RestApiPathsKeys.LAGRE_SAKSLISTE_SORTERING,
         { startRequest: (params) => { lagreSorteringFn(params); return Promise.resolve(); } })
-      .withRestCallRunner(RestApiPathsKeys.LAGRE_SAKSLISTE_SORTERING_TIDSINTERVALL_DAGER,
+      .withRestCallRunner(RestApiPathsKeys.LAGRE_SAKSLISTE_SORTERING_INTERVALL,
         { startRequest: () => undefined })
       .runTest(() => {
         const wrapper = shallowWithIntl(<SorteringVelger.WrappedComponent
