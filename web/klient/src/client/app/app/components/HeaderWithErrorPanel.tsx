@@ -20,6 +20,7 @@ import HeaderAvdelingListe from './HeaderAvdelingListe';
 import styles from './headerWithErrorPanel.less';
 import ErrorFormatter from '../feilhandtering/ErrorFormatter';
 import Driftsmelding from '../driftsmeldingTsType';
+import DriftsmeldingPanel from './DriftsmeldingPanel';
 
 interface OwnProps {
   queryStrings: {
@@ -152,11 +153,13 @@ const HeaderWithErrorPanel: FunctionComponent<OwnProps & WrappedComponentProps> 
           )}
         </Header>
       </div>
+      <DriftsmeldingPanel
+        driftsmeldinger={driftsmeldinger}
+      />
       <ErrorMessagePanel
         errorMessages={formaterteFeilmeldinger}
         queryStrings={queryStrings}
         removeErrorMessage={removeErrorMessage}
-        driftsmeldinger={driftsmeldinger}
       />
     </header>
   );
