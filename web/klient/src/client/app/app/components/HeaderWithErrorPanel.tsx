@@ -90,13 +90,39 @@ const HeaderWithErrorPanel: FunctionComponent<OwnProps & WrappedComponentProps> 
     setSiteHeight(fixedHeaderRef.current.clientHeight);
   }, [formaterteFeilmeldinger.length]);
 
-  const skalViseAvdelinger = navAnsatt && navAnsatt.kanOppgavestyre
+  const kanOppgavestyre = navAnsatt && navAnsatt.kanOppgavestyre;
+  const skalViseAvdelinger = kanOppgavestyre
     && locationPathname && locationPathname.includes(AVDELINGSLEDER_PATH);
+
+  function popoverItems() {
+    const liste = [{
+      name: intl.formatMessage({ id: 'Header.Rettskilde' }),
+      href: RETTSKILDE_URL,
+      isExternal: true,
+    }, {
+      name: intl.formatMessage({ id: 'Header.Systemrutine' }),
+      href: SYSTEMRUTINE_URL,
+      isExternal: true,
+    }];
+    if (kanOppgavestyre && !locationPathname.includes(AVDELINGSLEDER_PATH)) {
+      liste.push(
+        {
+          name: 'Avdelingsleder',
+          href: AVDELINGSLEDER_PATH,
+          isExternal: false,
+        },
+      );
+    }
+    return liste;
+  }
 
   return (
     <header ref={fixedHeaderRef} className={styles.container}>
       <div ref={wrapperRef}>
-        <Header title={intl.formatMessage({ id: 'Header.Foreldrepenger' })}>
+        <Header
+          title={intl.formatMessage({ id: 'Header.Foreldrepenger' })}
+          titleHref="/"
+        >
           <Popover
             popperIsVisible={erLenkePanelApent}
             renderArrowElement
@@ -107,15 +133,7 @@ const HeaderWithErrorPanel: FunctionComponent<OwnProps & WrappedComponentProps> 
                   onClick={() => {
                     setLenkePanelApent(false);
                   }}
-                  items={[{
-                    name: intl.formatMessage({ id: 'Header.Rettskilde' }),
-                    href: RETTSKILDE_URL,
-                    isExternal: true,
-                  }, {
-                    name: intl.formatMessage({ id: 'Header.Systemrutine' }),
-                    href: SYSTEMRUTINE_URL,
-                    isExternal: true,
-                  }]}
+                  items={popoverItems()}
                 />
               ),
               placement: 'bottom-start',
