@@ -44,7 +44,6 @@ public class FagsakApplikasjonTjenesteTest {
     public void oppsett() {
         personTjeneste = mock(PersonTjeneste.class);
         foreldrepengerKlient = mock(ForeldrepengerBehandlingRestKlient.class);
-
         fagsakTjeneste = new FagsakApplikasjonTjeneste(personTjeneste, foreldrepengerKlient);
     }
 
@@ -112,11 +111,28 @@ public class FagsakApplikasjonTjenesteTest {
 
     @Test
     public void skal_returnere_tomt_view_ved_ukjent_saksnr() {
-        var fpsak403 = OidcRestClientFeil.FACTORY.manglerTilgang("");
-        var manglerTilgangException = new ManglerTilgangException(fpsak403);
+        ManglerTilgangException manglerTilgangException = manglerTilgangException();
         when(foreldrepengerKlient.getFagsakFraSaksnummer(any(String.class))).thenThrow(manglerTilgangException);
 
         List<FagsakDto> view = fagsakTjeneste.hentSaker(SAKSNUMMER);
         assertThat(view.isEmpty()).isTrue();
+    }
+
+    @Test
+    public void skal_returnere_tomt_view_ved_403_fra_fpsak_ved_fnrsøk() {
+        var person = new Person.Builder()
+                .medAktørId(new AktørId(1234L))
+                .medFnr(FNR)
+                .medNavn("Test testen")
+                .build();
+        when(personTjeneste.hentPerson(any(Fødselsnummer.class))).thenReturn(Optional.of(person));
+        when(foreldrepengerKlient.getFagsakFraFnr(any())).thenThrow(manglerTilgangException());
+        List<FagsakDto> view = fagsakTjeneste.hentSaker(FNR.asValue());
+        assertThat(view).isEmpty();
+    }
+
+    private static ManglerTilgangException manglerTilgangException() {
+        var fpsak403 = OidcRestClientFeil.FACTORY.manglerTilgang("");
+        return new ManglerTilgangException(fpsak403);
     }
 }

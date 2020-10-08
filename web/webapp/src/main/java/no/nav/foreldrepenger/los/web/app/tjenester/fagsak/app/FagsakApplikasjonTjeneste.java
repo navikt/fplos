@@ -38,9 +38,14 @@ public class FagsakApplikasjonTjeneste {
         if (!søkestreng.matches("\\d+")) {
             return Collections.emptyList();
         }
-        return erFødselsnummer(søkestreng)
-                ? hentSakerForFnr(new Fødselsnummer(søkestreng))
-                : hentFagsakForSaksnummer(new Saksnummer(søkestreng));
+        try {
+            return erFødselsnummer(søkestreng)
+                    ? hentSakerForFnr(new Fødselsnummer(søkestreng))
+                    : hentFagsakForSaksnummer(new Saksnummer(søkestreng));
+        } catch (ManglerTilgangException e) {
+            // fpsak gir 403 både ved manglende tilgang og sak-ikke-funnet
+            return Collections.emptyList();
+        }
     }
 
     private List<FagsakDto> hentSakerForFnr(Fødselsnummer fnr) {
@@ -59,11 +64,6 @@ public class FagsakApplikasjonTjeneste {
     }
 
     private List<FagsakDto> hentFagsakForSaksnummer(Saksnummer saksnummer) {
-        try {
-            return foreldrepengerBehandlingKlient.getFagsakFraSaksnummer(saksnummer.getVerdi());
-        } catch (ManglerTilgangException e) {
-            // fpsak returnerer 403 ved manglende tilgang og ingen resultat
-            return Collections.emptyList();
-        }
+        return foreldrepengerBehandlingKlient.getFagsakFraSaksnummer(saksnummer.getVerdi());
     }
 }
