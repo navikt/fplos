@@ -94,8 +94,8 @@ const HeaderWithErrorPanel: FunctionComponent<OwnProps & WrappedComponentProps> 
   const skalViseAvdelinger = kanOppgavestyre
     && locationPathname && locationPathname.includes(AVDELINGSLEDER_PATH);
 
-  function popoverItems() {
-    const liste = [{
+  const popoverItems = useMemo(() => {
+    const items = [{
       name: intl.formatMessage({ id: 'Header.Rettskilde' }),
       href: RETTSKILDE_URL,
       isExternal: true,
@@ -105,16 +105,14 @@ const HeaderWithErrorPanel: FunctionComponent<OwnProps & WrappedComponentProps> 
       isExternal: true,
     }];
     if (kanOppgavestyre && !locationPathname.includes(AVDELINGSLEDER_PATH)) {
-      liste.push(
-        {
-          name: 'Avdelingsleder',
-          href: AVDELINGSLEDER_PATH,
-          isExternal: false,
-        },
-      );
+      items.push({
+        name: 'Avdelingsleder',
+        href: AVDELINGSLEDER_PATH,
+        isExternal: false,
+      });
     }
-    return liste;
-  }
+    return items;
+  }, [kanOppgavestyre, locationPathname]);
 
   return (
     <header ref={fixedHeaderRef} className={styles.container}>
@@ -133,7 +131,7 @@ const HeaderWithErrorPanel: FunctionComponent<OwnProps & WrappedComponentProps> 
                   onClick={() => {
                     setLenkePanelApent(false);
                   }}
-                  items={popoverItems()}
+                  items={popoverItems}
                 />
               ),
               placement: 'bottom-start',
