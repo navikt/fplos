@@ -50,11 +50,13 @@ public class SaksbehandlerEnhetstilgangTjeneste {
     }
 
     public List<OrganisasjonsEnhet> hentAktiveOgInaktiveEnheter(Saksbehandler saksbehandler) throws URISyntaxException {
-        var uri = new URIBuilder()
+        var uriString = host + PATH + saksbehandler.getSaksbehandlerIdent() + "/" + "?inkluderAlleEnheter=true";
+        var uri = new URI(uriString);
+        /*var uri = new URIBuilder()
                 .setHost(host)
                 .setPathSegments(PATH, saksbehandler.getSaksbehandlerIdent())
                 .setParameter("inkluderAlleEnheter", "true")
-                .build();
+                .build();*/
         var axsysMedInaktive = httpClient.get(uri, AxsysTilgangerResponse.class);
         return axsysMedInaktive.getEnheter();
     }
