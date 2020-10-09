@@ -25,7 +25,8 @@ public class OrganisasjonRessursEnhetTjenesteImplTest {
     private static final String RESPONSE_ENHETS_NAVN_2 = "NAV Oslo";
 
     private OrganisasjonRessursEnhetConsumer consumer = mock(OrganisasjonRessursEnhetConsumer.class);
-    private OrganisasjonRessursEnhetTjeneste tjeneste = new OrganisasjonRessursEnhetTjenesteImpl(consumer);
+    private SaksbehandlerEnhetstilgangTjeneste axsysTjeneste = mock(SaksbehandlerEnhetstilgangTjeneste.class);
+    private OrganisasjonRessursEnhetTjeneste tjeneste = new OrganisasjonRessursEnhetTjenesteImpl(consumer, axsysTjeneste);
 
     @Test
     public void skal_hente_ut_enhetens_id_og_navn_ved_normalt_svar_ved_en_enhet() throws Exception {
