@@ -53,12 +53,17 @@ public class OrganisasjonRessursEnhetTjenesteImpl implements OrganisasjonRessurs
     private void testAxsys(List<OrganisasjonsEnhet> norgEnheter, String saksbehandlerIdent) {
         var saksbehandler = new Saksbehandler(saksbehandlerIdent);
         try {
-            var axsysEnheter = saksbehandlerEnhetstilgangTjeneste.hentEnheter(saksbehandler);
-            boolean resultatLikt = listEqualsIgnoreOrder(norgEnheter, axsysEnheter) && norgEnheter.size() == (axsysEnheter.size());
-            if (resultatLikt) {
+            var aktiveForeldrepengerEnheter = saksbehandlerEnhetstilgangTjeneste.hentEnheter(saksbehandler);
+            var alleEnheter = saksbehandlerEnhetstilgangTjeneste.hentAktiveOgInaktiveEnheter(saksbehandler);
+            boolean ingenAvvikAlleEnheter = listEqualsIgnoreOrder(norgEnheter, alleEnheter) && alleEnheter.size() == norgEnheter.size();
+            boolean ingenAvvikFiltrertliste = listEqualsIgnoreOrder(norgEnheter, aktiveForeldrepengerEnheter) && norgEnheter.size() == (aktiveForeldrepengerEnheter.size());
+            if (ingenAvvikFiltrertliste && ingenAvvikAlleEnheter) {
                 log.info("Axsys og Norg ga samme resultat");
+            } else if (ingenAvvikAlleEnheter) {
+                log.info("Axsys og Norg ga samme resultat på ufiltrert liste fra axsys");
             } else {
-                log.info("Axsys og Norg ga ikke samme resultat. Norg: {}, Axsys: {}", logformat(norgEnheter), logformat(axsysEnheter));
+                log.info("Axsys og Norg ga ikke samme resultat. Norg: {}, Axsys ufiltrert: {}, Axsys filtrert: {}",
+                        norgEnheter.size(), alleEnheter.size(), aktiveForeldrepengerEnheter.size());
             }
         } catch (Exception e) {
             log.info("Axsys feilet", e);
