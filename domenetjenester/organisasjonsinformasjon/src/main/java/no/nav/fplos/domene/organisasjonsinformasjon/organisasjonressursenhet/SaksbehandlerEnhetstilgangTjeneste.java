@@ -4,8 +4,6 @@ import no.nav.foreldrepenger.loslager.aktør.OrganisasjonsEnhet;
 import no.nav.foreldrepenger.loslager.organisasjon.Saksbehandler;
 import no.nav.vedtak.felles.integrasjon.rest.OidcRestClient;
 import no.nav.vedtak.konfig.KonfigVerdi;
-import no.nav.vedtak.util.env.Cluster;
-import org.apache.http.client.utils.URIBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -64,7 +62,7 @@ public class SaksbehandlerEnhetstilgangTjeneste {
     private void loggfiltrerteEnheter(OrganisasjonsEnhet organisasjonsEnhet) {
         // greit å logge mens vi sammenlikner med norgtjenesten
         if (!organisasjonsEnhet.kanBehandleForeldrepenger()) {
-            log.info("Fjerner enhet uten fagområde FOR: {}", organisasjonsEnhet.getEnhetId());
+            log.info("Fjerner enhet uten fagområde FOR");
         }
     }
 
