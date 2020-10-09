@@ -22,6 +22,10 @@
             <groupId>no.nav.foreldrepenger.los</groupId>
             <artifactId>organisasjonressursenhet-klient</artifactId>
         </dependency>
+        <dependency>
+            <groupId>no.nav.foreldrepenger.felles.integrasjon</groupId>
+            <artifactId>felles-integrasjon-rest-klient</artifactId>
+        </dependency>
 
         <!-- Prosjektinterne avhengigheter -->
         <dependency>
