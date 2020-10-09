@@ -107,6 +107,6 @@ public class OrganisasjonRessursEnhetTjenesteImpl implements OrganisasjonRessurs
     }
 
     private OrganisasjonsEnhet mapEnhetTilOrganisasjonsEnhet (WSEnhet enhet) {
-        return new OrganisasjonsEnhet(enhet.getEnhetId(), enhet.getNavn());
+        return new OrganisasjonsEnhet(enhet.getEnhetId(), enhet.getNavn(), null);
     }
 }
