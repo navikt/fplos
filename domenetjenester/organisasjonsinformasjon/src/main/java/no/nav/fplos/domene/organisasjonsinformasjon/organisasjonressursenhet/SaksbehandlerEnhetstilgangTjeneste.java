@@ -27,6 +27,10 @@ public class SaksbehandlerEnhetstilgangTjeneste {
         this.httpClient = httpClient;
     }
 
+    public SaksbehandlerEnhetstilgangTjeneste() {
+        // CDI
+    }
+
     public List<OrganisasjonsEnhet> hentEnheter(Saksbehandler saksbehandler) {
         if (Cluster.current().isProd()) return Collections.emptyList();
         var axsysRespons = httpClient.get(full_uri(saksbehandler), AxsysTilgangerResponse.class);
