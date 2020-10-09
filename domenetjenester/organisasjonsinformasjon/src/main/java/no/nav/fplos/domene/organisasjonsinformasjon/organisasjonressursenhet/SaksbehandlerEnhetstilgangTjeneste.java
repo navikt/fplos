@@ -50,7 +50,7 @@ public class SaksbehandlerEnhetstilgangTjeneste {
     }
 
     public List<OrganisasjonsEnhet> hentAktiveOgInaktiveEnheter(Saksbehandler saksbehandler) throws URISyntaxException {
-        var uriString = host + PATH + saksbehandler.getSaksbehandlerIdent() + "/" + "?inkluderAlleEnheter=true";
+        var uriString = host + PATH + saksbehandler.getSaksbehandlerIdent() + "?inkluderAlleEnheter=true";
         var uri = new URI(uriString);
         /*var uri = new URIBuilder()
                 .setHost(host)
