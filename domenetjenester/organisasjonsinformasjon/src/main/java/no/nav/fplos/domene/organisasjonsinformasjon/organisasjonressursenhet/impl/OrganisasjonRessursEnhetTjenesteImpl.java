@@ -67,9 +67,9 @@ public class OrganisasjonRessursEnhetTjenesteImpl implements OrganisasjonRessurs
                         norgEnheter.size(), alleEnheter.size(), aktiveForeldrepengerEnheter.size());
             }
         } catch (IntegrasjonException e) {
-            if (e.getFeil().getFeilmelding().contains("http-kode 404")) {
+            if (e.getFeil().getFeilmelding().contains("http-kode '404'")) {
                 log.info("Fant ikke bruker");
-            }
+            } else throw e;
         } catch (Exception e) {
             log.info("Axsys feilet", e);
         }
