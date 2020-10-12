@@ -9,6 +9,7 @@ import no.nav.tjeneste.virksomhet.organisasjonressursenhet.v1.HentEnhetListeUgyl
 import no.nav.tjeneste.virksomhet.organisasjonressursenhet.v1.informasjon.WSEnhet;
 import no.nav.tjeneste.virksomhet.organisasjonressursenhet.v1.meldinger.WSHentEnhetListeRequest;
 import no.nav.tjeneste.virksomhet.organisasjonressursenhet.v1.meldinger.WSHentEnhetListeResponse;
+import no.nav.vedtak.exception.IntegrasjonException;
 import no.nav.vedtak.felles.integrasjon.organisasjonressursenhet.klient.OrganisasjonRessursEnhetConsumer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -64,6 +65,10 @@ public class OrganisasjonRessursEnhetTjenesteImpl implements OrganisasjonRessurs
             } else {
                 log.info("Axsys og Norg ga ikke samme resultat. Norg: {}, Axsys ufiltrert: {}, Axsys filtrert: {}",
                         norgEnheter.size(), alleEnheter.size(), aktiveForeldrepengerEnheter.size());
+            }
+        } catch (IntegrasjonException e) {
+            if (e.getFeil().getFeilmelding().contains("http-kode 404")) {
+                log.info("Fant ikke bruker");
             }
         } catch (Exception e) {
             log.info("Axsys feilet", e);

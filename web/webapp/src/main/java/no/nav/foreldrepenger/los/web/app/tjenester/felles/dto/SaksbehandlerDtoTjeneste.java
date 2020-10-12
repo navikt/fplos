@@ -1,6 +1,5 @@
 package no.nav.foreldrepenger.los.web.app.tjenester.felles.dto;
 
-import no.nav.foreldrepenger.loslager.oppgave.OppgaveFiltrering;
 import no.nav.foreldrepenger.loslager.organisasjon.Saksbehandler;
 import no.nav.foreldrepenger.loslager.repository.OrganisasjonRepository;
 import no.nav.fplos.ansatt.AnsattTjeneste;
@@ -47,7 +46,7 @@ public class SaksbehandlerDtoTjeneste {
         var filtrering = avdelingslederTjeneste.hentOppgaveFiltering(sakslisteId)
                 .orElseThrow(() -> AvdelingslederTjenesteFeil.FACTORY.fantIkkeOppgavekø(sakslisteId).toException());
         return filtrering.getSaksbehandlere().stream()
-                .map(this::lagDto)
+                .map(this::tilSaksbehandlerDto)
                 .flatMap(Optional::stream)
                 .collect(Collectors.toList());
     }
@@ -60,18 +59,21 @@ public class SaksbehandlerDtoTjeneste {
     }
 
     public Optional<SaksbehandlerMedAvdelingerDto> lagSaksbehandlerMedAvdelingerDto(String ident) {
-        var saksbehandlerDto = lagDto(ident);
-        if (saksbehandlerDto.isPresent()) {
-            var avdelinger = ansattTjeneste.hentAvdelingerNavnForAnsatt(ident);
-            return Optional.of(new SaksbehandlerMedAvdelingerDto(saksbehandlerDto.get(), avdelinger));
-        }
-        return Optional.empty();
+        return Optional.ofNullable(ident)
+                .flatMap(this::tilSaksbehandlerDto)
+                .flatMap(sb -> tilSaksbehandlerMedAvdelingerDto(ident, sb));
+    }
+
+    private Optional<SaksbehandlerMedAvdelingerDto> tilSaksbehandlerMedAvdelingerDto(String ident, SaksbehandlerDto saksbehandlerDto) {
+        return Optional.of(ident)
+                .map(ansattTjeneste::hentAvdelingerNavnForAnsatt)
+                .map(a -> new SaksbehandlerMedAvdelingerDto(saksbehandlerDto, a));
     }
 
     public SaksbehandlerMedAvdelingerDto lagKjentOgUkjentSaksbehandlerMedAvdelingerDto(Saksbehandler saksbehandler) {
         // saksbehandler kan eksistere i basen men være ukjent i ldap
         var ident = saksbehandler.getSaksbehandlerIdent();
-        var saksbehandlerDto = lagDto(ident);
+        var saksbehandlerDto = tilSaksbehandlerDto(ident);
         if (saksbehandlerDto.isPresent()) {
             var avdelinger = ansattTjeneste.hentAvdelingerNavnForAnsatt(ident);
             return new SaksbehandlerMedAvdelingerDto(saksbehandlerDto.get(), avdelinger);
@@ -80,12 +82,12 @@ public class SaksbehandlerDtoTjeneste {
         return new SaksbehandlerMedAvdelingerDto(ukjent, Collections.emptyList());
     }
 
-    public Optional<SaksbehandlerDto> lagDto(Saksbehandler saksbehandler) {
+    public Optional<SaksbehandlerDto> tilSaksbehandlerDto(Saksbehandler saksbehandler) {
         var ident = saksbehandler.getSaksbehandlerIdent();
-        return lagDto(ident);
+        return tilSaksbehandlerDto(ident);
     }
 
-    private Optional<SaksbehandlerDto> lagDto(String ident) {
+    private Optional<SaksbehandlerDto> tilSaksbehandlerDto(String ident) {
         var identDto = new SaksbehandlerBrukerIdentDto(ident);
         return hentSaksbehandlerNavn(ident)
                 .map(navn -> new SaksbehandlerDto(identDto, navn));
