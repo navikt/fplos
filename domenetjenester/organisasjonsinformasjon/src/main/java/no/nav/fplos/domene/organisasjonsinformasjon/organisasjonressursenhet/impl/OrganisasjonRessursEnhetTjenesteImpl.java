@@ -3,13 +3,12 @@ package no.nav.fplos.domene.organisasjonsinformasjon.organisasjonressursenhet.im
 import no.nav.foreldrepenger.loslager.aktør.OrganisasjonsEnhet;
 import no.nav.foreldrepenger.loslager.organisasjon.Saksbehandler;
 import no.nav.fplos.domene.organisasjonsinformasjon.organisasjonressursenhet.OrganisasjonRessursEnhetTjeneste;
-import no.nav.fplos.domene.organisasjonsinformasjon.organisasjonressursenhet.SaksbehandlerEnhetstilgangTjeneste;
+import no.nav.fplos.domene.organisasjonsinformasjon.organisasjonressursenhet.EnhetstilgangTjeneste;
 import no.nav.tjeneste.virksomhet.organisasjonressursenhet.v1.HentEnhetListeRessursIkkeFunnet;
 import no.nav.tjeneste.virksomhet.organisasjonressursenhet.v1.HentEnhetListeUgyldigInput;
 import no.nav.tjeneste.virksomhet.organisasjonressursenhet.v1.informasjon.WSEnhet;
 import no.nav.tjeneste.virksomhet.organisasjonressursenhet.v1.meldinger.WSHentEnhetListeRequest;
 import no.nav.tjeneste.virksomhet.organisasjonressursenhet.v1.meldinger.WSHentEnhetListeResponse;
-import no.nav.vedtak.exception.IntegrasjonException;
 import no.nav.vedtak.felles.integrasjon.organisasjonressursenhet.klient.OrganisasjonRessursEnhetConsumer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,7 +29,7 @@ public class OrganisasjonRessursEnhetTjenesteImpl implements OrganisasjonRessurs
     private static final String TJENESTE = "OrganisasjonRessursEnhet";
 
     private OrganisasjonRessursEnhetConsumer organisasjonRessursEnhetConsumer;
-    private SaksbehandlerEnhetstilgangTjeneste saksbehandlerEnhetstilgangTjeneste;
+    private EnhetstilgangTjeneste enhetstilgangTjeneste;
 
     public OrganisasjonRessursEnhetTjenesteImpl() {
         // CDI
@@ -38,9 +37,9 @@ public class OrganisasjonRessursEnhetTjenesteImpl implements OrganisasjonRessurs
 
     @Inject
     public OrganisasjonRessursEnhetTjenesteImpl(OrganisasjonRessursEnhetConsumer organisasjonRessursEnhetConsumer,
-                                                SaksbehandlerEnhetstilgangTjeneste saksbehandlerEnhetstilgangTjeneste) {
+                                                EnhetstilgangTjeneste enhetstilgangTjeneste) {
         this.organisasjonRessursEnhetConsumer = organisasjonRessursEnhetConsumer;
-        this.saksbehandlerEnhetstilgangTjeneste = saksbehandlerEnhetstilgangTjeneste;
+        this.enhetstilgangTjeneste = enhetstilgangTjeneste;
     }
 
     @Override
@@ -54,8 +53,8 @@ public class OrganisasjonRessursEnhetTjenesteImpl implements OrganisasjonRessurs
     private void testAxsys(List<OrganisasjonsEnhet> norgEnheter, String saksbehandlerIdent) {
         var saksbehandler = new Saksbehandler(saksbehandlerIdent);
         try {
-            var aktiveForeldrepengerEnheter = saksbehandlerEnhetstilgangTjeneste.hentEnheter(saksbehandler);
-            var alleEnheter = saksbehandlerEnhetstilgangTjeneste.hentAktiveOgInaktiveEnheter(saksbehandler);
+            var aktiveForeldrepengerEnheter = enhetstilgangTjeneste.hentEnhetstilganger(saksbehandler);
+            var alleEnheter = enhetstilgangTjeneste.hentAktiveOgInaktiveEnheter(saksbehandler);
             boolean ingenAvvikAlleEnheter = listEqualsIgnoreOrder(norgEnheter, alleEnheter) && alleEnheter.size() == norgEnheter.size();
             boolean ingenAvvikFiltrertliste = listEqualsIgnoreOrder(norgEnheter, aktiveForeldrepengerEnheter) && norgEnheter.size() == (aktiveForeldrepengerEnheter.size());
             if (ingenAvvikFiltrertliste && ingenAvvikAlleEnheter) {
@@ -66,10 +65,6 @@ public class OrganisasjonRessursEnhetTjenesteImpl implements OrganisasjonRessurs
                 log.info("Axsys og Norg ga ikke samme resultat. Norg: {}, Axsys ufiltrert: {}, Axsys filtrert: {}",
                         norgEnheter.size(), alleEnheter.size(), aktiveForeldrepengerEnheter.size());
             }
-        } catch (IntegrasjonException e) {
-            if (e.getFeil().getFeilmelding().contains("http-kode '404'")) {
-                log.info("Fant ikke bruker");
-            } else throw e;
         } catch (Exception e) {
             log.info("Axsys feilet", e);
         }

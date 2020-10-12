@@ -25,7 +25,7 @@ public class OrganisasjonRessursEnhetTjenesteImplTest {
     private static final String RESPONSE_ENHETS_NAVN_2 = "NAV Oslo";
 
     private OrganisasjonRessursEnhetConsumer consumer = mock(OrganisasjonRessursEnhetConsumer.class);
-    private SaksbehandlerEnhetstilgangTjeneste axsysTjeneste = mock(SaksbehandlerEnhetstilgangTjeneste.class);
+    private EnhetstilgangTjeneste axsysTjeneste = mock(EnhetstilgangTjeneste.class);
     private OrganisasjonRessursEnhetTjeneste tjeneste = new OrganisasjonRessursEnhetTjenesteImpl(consumer, axsysTjeneste);
 
     @Test
