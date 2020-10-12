@@ -15,7 +15,6 @@
         <module>oppgave</module>
         <module>person</module>
         <module>avdelingsleder</module>
-        <module>organisasjonsinformasjon</module>
         <module>admin</module>
         <module>ansatt</module>
         <module>statistikk</module>

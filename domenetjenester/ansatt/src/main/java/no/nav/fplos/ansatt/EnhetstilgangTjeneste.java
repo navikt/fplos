@@ -1,4 +1,4 @@
-package no.nav.fplos.domene.organisasjonsinformasjon.organisasjonressursenhet;
+package no.nav.fplos.ansatt;
 
 import no.nav.foreldrepenger.loslager.aktør.OrganisasjonsEnhet;
 import no.nav.foreldrepenger.loslager.organisasjon.Saksbehandler;
@@ -26,28 +26,18 @@ public class EnhetstilgangTjeneste {
         // CDI
     }
 
-    public List<OrganisasjonsEnhet> hentEnhetstilganger(Saksbehandler saksbehandler) {
+    public List<OrganisasjonsEnhet> hentEnhetstilganger(String ident) {
         if (!connection.isEnabled()) {
             log.info("EnhetstilgangTjeneste deaktivert, returnerer tom liste.");
             return Collections.emptyList();
         }
-        return connection.hentEnhetstilganger(saksbehandler)
+        return connection.hentEnhetstilganger(ident)
                 .map(EnhetstilgangResponse::getEnheter)
                 .orElse(Collections.emptyList())
                 .stream()
                 .peek(this::loggfiltrerteEnheter)
                 .filter(OrganisasjonsEnhet::kanBehandleForeldrepenger)
                 .collect(Collectors.toList());
-    }
-
-    public List<OrganisasjonsEnhet> hentAktiveOgInaktiveEnheter(Saksbehandler saksbehandler) {
-        if (!connection.isEnabled()) {
-            log.info("EnhetstilgangTjeneste deaktivert, returnerer tom liste.");
-            return Collections.emptyList();
-        }
-        return connection.hentAktiveOgInaktiveEnheter(saksbehandler)
-                .map(EnhetstilgangResponse::getEnheter)
-                .orElse(Collections.emptyList());
     }
 
     private void loggfiltrerteEnheter(OrganisasjonsEnhet organisasjonsEnhet) {

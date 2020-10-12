@@ -1,6 +1,5 @@
-package no.nav.fplos.domene.organisasjonsinformasjon.organisasjonressursenhet;
+package no.nav.fplos.ansatt;
 
-import no.nav.foreldrepenger.loslager.organisasjon.Saksbehandler;
 import no.nav.vedtak.exception.IntegrasjonException;
 import no.nav.vedtak.felles.integrasjon.rest.OidcRestClient;
 import no.nav.vedtak.konfig.KonfigVerdi;
@@ -34,20 +33,12 @@ public class EnhetstilgangConnection {
         // CDI
     }
 
-
-    public Optional<EnhetstilgangResponse> hentEnhetstilganger(Saksbehandler saksbehandler) {
-        return hentEnhetstilganger(uri(saksbehandler));
-
-    }
-
-    public Optional<EnhetstilgangResponse> hentAktiveOgInaktiveEnheter(Saksbehandler saksbehandler) {
-        var uriString = host + PATH + saksbehandler.getSaksbehandlerIdent() + "?inkluderAlleEnheter=true";
-        var uri = URI.create(uriString);
-        return hentEnhetstilganger(uri);
-    }
-
     public boolean isEnabled() {
         return enabled;
+    }
+
+    public Optional<EnhetstilgangResponse> hentEnhetstilganger(String ident) {
+        return hentEnhetstilganger(uri(ident));
     }
 
     private Optional<EnhetstilgangResponse> hentEnhetstilganger(URI uri) {
@@ -62,7 +53,7 @@ public class EnhetstilgangConnection {
         }
     }
 
-    private URI uri(Saksbehandler saksbehandler) {
-        return URI.create(host + PATH + saksbehandler.getSaksbehandlerIdent());
+    private URI uri(String ident) {
+        return URI.create(host + PATH + ident);
     }
 }

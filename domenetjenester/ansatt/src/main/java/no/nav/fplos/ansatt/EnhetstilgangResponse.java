@@ -1,4 +1,4 @@
-package no.nav.fplos.domene.organisasjonsinformasjon.organisasjonressursenhet;
+package no.nav.fplos.ansatt;
 
 import no.nav.foreldrepenger.loslager.aktør.OrganisasjonsEnhet;
 import java.util.List;
