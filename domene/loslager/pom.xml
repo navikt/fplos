@@ -54,10 +54,6 @@
         </dependency>
 
 		<!-- https://mvnrepository.com/artifact/javax.xml.ws/jaxws-api -->
-        <dependency>
-            <groupId>javax.xml.ws</groupId>
-            <artifactId>jaxws-api</artifactId>
-        </dependency>
 		<dependency>
 			<groupId>javax.jws</groupId>
 			<artifactId>jsr181-api</artifactId>

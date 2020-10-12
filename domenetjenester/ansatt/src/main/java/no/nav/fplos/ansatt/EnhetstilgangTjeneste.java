@@ -1,7 +1,6 @@
 package no.nav.fplos.ansatt;
 
 import no.nav.foreldrepenger.loslager.aktør.OrganisasjonsEnhet;
-import no.nav.foreldrepenger.loslager.organisasjon.Saksbehandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,13 +30,15 @@ public class EnhetstilgangTjeneste {
             log.info("EnhetstilgangTjeneste deaktivert, returnerer tom liste.");
             return Collections.emptyList();
         }
-        return connection.hentEnhetstilganger(ident)
+        var enhetsTilganger = connection.hentEnhetstilganger(ident)
                 .map(EnhetstilgangResponse::getEnheter)
                 .orElse(Collections.emptyList())
                 .stream()
                 .peek(this::loggfiltrerteEnheter)
                 .filter(OrganisasjonsEnhet::kanBehandleForeldrepenger)
                 .collect(Collectors.toList());
+        log.info("Enhetstilgangliste har størrelse " + enhetsTilganger.size());
+        return enhetsTilganger;
     }
 
     private void loggfiltrerteEnheter(OrganisasjonsEnhet organisasjonsEnhet) {
