@@ -29,7 +29,6 @@
         <fp-kontrakter.version>5.1-20200225123631-afeacc4</fp-kontrakter.version>
         <tjenestespesifikasjoner.version>1.2019.12.18-12.22-ce897c4eb2c1</tjenestespesifikasjoner.version>
         <felles.version>2.3.0-20200921081815-27ae9b5</felles.version>
-        <organisasjon-ressurs-enhet.version>1.0.0</organisasjon-ressurs-enhet.version>
         <prosesstask.version>2.4.4-20200918181003-4bc2a52</prosesstask.version>
 
         <!-- Eksterne -->
@@ -214,11 +213,6 @@
             </dependency>
             <dependency>
                 <groupId>no.nav.foreldrepenger.los</groupId>
-                <artifactId>organisasjonsinformasjon</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>no.nav.foreldrepenger.los</groupId>
                 <artifactId>statistikk</artifactId>
                 <version>${project.version}</version>
             </dependency>
@@ -311,23 +305,17 @@
                 <version>${fp-kontrakter.version}</version>
             </dependency>
             <!-- NAV -->
-            <dependency>
-                <groupId>no.nav.tjenestespesifikasjoner</groupId>
-                <artifactId>organisasjon-ressurs-enhet-v1-tjenestespesifikasjon</artifactId>
-                <version>${tjenestespesifikasjoner.version}</version>
-            </dependency>
+
             <dependency>
                 <groupId>org.apache.kafka</groupId>
                 <artifactId>kafka-streams</artifactId>
                 <version>${kafka.version}</version>
             </dependency>
-
             <dependency>
                 <groupId>org.hibernate.validator</groupId>
                 <artifactId>hibernate-validator</artifactId>
                 <version>6.1.6.Final</version>
             </dependency>
-
             <dependency>
                 <groupId>javax.el</groupId>
                 <artifactId>javax.el-api</artifactId>

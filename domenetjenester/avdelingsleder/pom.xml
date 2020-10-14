@@ -22,10 +22,6 @@
             <artifactId>loslager</artifactId>
         </dependency>
         <dependency>
-            <groupId>no.nav.foreldrepenger.los</groupId>
-            <artifactId>organisasjonsinformasjon</artifactId>
-        </dependency>
-        <dependency>
             <groupId>no.nav.foreldrepenger.felles.integrasjon</groupId>
             <artifactId>ldap-klient</artifactId>
         </dependency>

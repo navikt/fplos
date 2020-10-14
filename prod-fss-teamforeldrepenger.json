@@ -19,7 +19,6 @@
     "OIDC_OPENAM_ISSUERURL": "https://isso.adeo.no:443/isso/oauth2",
     "OPENIDCONNECT_USERNAME": "fplos-p",
     "PERSON_V3_URL": "https://wasapp.adeo.no/tpsws/ws/Person/v3",
-    "ORGANISASJONRESSURSENHET_V1_URL": "https://app.adeo.no/norg2/ws/OrganisasjonRessursEnhet/v1",
     "AKTOER_V2_URL": "https://app.adeo.no/aktoerregister/ws/Aktoer/v2",
     "LDAP_URL": "ldaps://ldapgw.adeo.no",
     "LDAP_USER_BASEDN": "ou=NAV,ou=BusinessUnits,dc=adeo,dc=no",
