@@ -28,7 +28,7 @@
 
         <fp-kontrakter.version>5.1-20200225123631-afeacc4</fp-kontrakter.version>
         <tjenestespesifikasjoner.version>1.2019.12.18-12.22-ce897c4eb2c1</tjenestespesifikasjoner.version>
-        <felles.version>2.3.0-20200921081815-27ae9b5</felles.version>
+        <felles.version>2.3.0-20201013152658-81aa82f</felles.version>
         <prosesstask.version>2.4.4-20200918181003-4bc2a52</prosesstask.version>
 
         <!-- Eksterne -->

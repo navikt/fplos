@@ -16,7 +16,7 @@ public class PersonTjenesteTest {
 
     private static final Person UKJENT_PERSON = FiktivTestPerson.nyPerson();
 
-    private static final PersonTjeneste personTjeneste = new PersonTjeneste(new TpsAdapterMock());
+    private static final PersonTjeneste personTjeneste = new PersonTjeneste(new TpsAdapterMock(), new PdlTjenesteDummy());
 
 
     @Test
@@ -51,6 +51,14 @@ public class PersonTjenesteTest {
             return KJENTE_PERSONER.stream()
                     .filter(p -> p.getAktørId().equals(aktørId))
                     .findFirst();
+        }
+    }
+
+    private static class PdlTjenesteDummy implements PdlTjeneste {
+
+        @Override
+        public void hentPerson(AktørId aktørId, Person personFraTps) {
+            // gjør ingenting
         }
     }
 }

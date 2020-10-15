@@ -13,14 +13,16 @@ import no.nav.foreldrepenger.loslager.aktør.Person;
 public class PersonTjeneste {
 
     private TpsAdapter tpsAdapter;
+    private PdlTjeneste pdlTjeneste;
 
     PersonTjeneste() {
         // for CDI proxy
     }
 
     @Inject
-    public PersonTjeneste(TpsAdapter tpsAdapter) {
+    public PersonTjeneste(TpsAdapter tpsAdapter, PdlTjeneste pdlTjeneste) {
         this.tpsAdapter = tpsAdapter;
+        this.pdlTjeneste = pdlTjeneste;
     }
 
     public Optional<Person> hentPerson(Fødselsnummer fnr) {
@@ -28,6 +30,8 @@ public class PersonTjeneste {
     }
 
     public Optional<Person> hentPerson(AktørId aktørId) {
-        return tpsAdapter.hentPerson(aktørId);
+        var personTps = tpsAdapter.hentPerson(aktørId);
+        personTps.ifPresent(p -> pdlTjeneste.hentPerson(aktørId, p));
+        return personTps;
     }
 }
