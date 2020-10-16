@@ -238,11 +238,11 @@ public class OppgaveRestTjeneste {
     @Operation(description = "Flytt reservasjon av oppgave", tags = "Saksbehandler")
     @BeskyttetRessurs(action = BeskyttetRessursActionAttributt.CREATE, resource = AbacAttributter.FAGSAK)
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
-    public OppgaveStatusDto flyttOppgaveReservasjon(@NotNull @Parameter(description = "id, begrunnelse og brukerident") @Valid OppgaveFlyttingDto oppgaveFlyttingId) {
-        var reservasjon = oppgaveTjeneste.flyttReservasjon(oppgaveFlyttingId.getOppgaveId().getVerdi(),
-                oppgaveFlyttingId.getBrukerIdent().getVerdi(),
-                oppgaveFlyttingId.getBegrunnelse());
-        LOG.info("Reservasjon flyttet: {}", oppgaveFlyttingId);
+    public OppgaveStatusDto flyttOppgaveReservasjon(@NotNull @Parameter(description = "id, begrunnelse og brukerident") @Valid OppgaveFlyttingDto oppgaveFlyttingDto) {
+        var reservasjon = oppgaveTjeneste.flyttReservasjon(oppgaveFlyttingDto.getOppgaveId().getVerdi(),
+                oppgaveFlyttingDto.getBrukerIdent().getVerdi(),
+                oppgaveFlyttingDto.getBegrunnelse());
+        LOG.info("Reservasjon flyttet: {}", oppgaveFlyttingDto);
         return oppgaveDtoTjeneste.lagDtoFor(reservasjon.getOppgave(), false).getStatus();
     }
 

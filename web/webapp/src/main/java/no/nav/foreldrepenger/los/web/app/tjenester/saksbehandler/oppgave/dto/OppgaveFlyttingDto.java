@@ -51,7 +51,7 @@ public class OppgaveFlyttingDto implements AbacDto {
         return "OppgaveFlyttingDto{" +
                 "oppgaveId=" + oppgaveId +
                 ", brukerIdent=" + brukerIdent +
-                ", begrunnelse='" + begrunnelse + '\'' +
+                ", begrunnelse='" + "*****" + '\'' +
                 '}';
     }
 
