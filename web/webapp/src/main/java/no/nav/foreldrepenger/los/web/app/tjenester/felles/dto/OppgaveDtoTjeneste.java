@@ -65,7 +65,8 @@ public class OppgaveDtoTjeneste {
         if (sjekkTilgangPåBehandling) {
             sjekkTilgang(oppgave);
         }
-        var person = personTjeneste.hentPerson(oppgave.getAktorId()).orElseThrow();
+        var person = personTjeneste.hentPerson(oppgave.getAktorId())
+                .orElseThrow(() -> new IllegalArgumentException("Finner ikke person tilknyttet oppgaveId " + oppgave.getId()));
         var oppgaveStatus = oppgaveStatusDtoTjeneste.lagStatusFor(oppgave);
         return new OppgaveDto(oppgave, person, oppgaveStatus);
     }
