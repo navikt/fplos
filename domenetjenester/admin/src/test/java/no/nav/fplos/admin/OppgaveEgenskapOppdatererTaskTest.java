@@ -20,7 +20,7 @@ import no.nav.foreldrepenger.loslager.oppgave.OppgaveEgenskap;
 import no.nav.foreldrepenger.loslager.repository.OppgaveRepository;
 import no.nav.foreldrepenger.loslager.repository.OppgaveRepositoryImpl;
 import no.nav.fplos.foreldrepengerbehandling.BehandlingFpsak;
-import no.nav.fplos.foreldrepengerbehandling.ForeldrepengerBehandlingRestKlient;
+import no.nav.fplos.foreldrepengerbehandling.ForeldrepengerBehandlingKlient;
 import no.nav.vedtak.felles.prosesstask.api.ProsessTaskData;
 import no.nav.vedtak.felles.prosesstask.api.ProsessTaskHandler;
 import no.nav.vedtak.felles.testutilities.db.EntityManagerAwareTest;
@@ -29,7 +29,7 @@ import no.nav.vedtak.felles.testutilities.db.Repository;
 @ExtendWith(EntityManagerFPLosAwareExtension.class)
 public class OppgaveEgenskapOppdatererTaskTest extends EntityManagerAwareTest {
 
-    private static final ForeldrepengerBehandlingRestKlient FPSAK_KLIENT_MOCK = mock(ForeldrepengerBehandlingRestKlient.class);
+    private static final ForeldrepengerBehandlingKlient FPSAK_KLIENT_MOCK = mock(ForeldrepengerBehandlingKlient.class);
 
     private OppgaveRepository oppgaveRepository;
     private Repository repository;

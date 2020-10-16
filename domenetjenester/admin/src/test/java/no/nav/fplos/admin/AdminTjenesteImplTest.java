@@ -27,13 +27,13 @@ import no.nav.foreldrepenger.loslager.repository.OppgaveRepositoryImpl;
 import no.nav.foreldrepenger.loslager.repository.OrganisasjonRepositoryImpl;
 import no.nav.fplos.avdelingsleder.AvdelingslederTjenesteImpl;
 import no.nav.fplos.foreldrepengerbehandling.BehandlingFpsak;
-import no.nav.fplos.foreldrepengerbehandling.ForeldrepengerBehandlingRestKlient;
+import no.nav.fplos.foreldrepengerbehandling.ForeldrepengerBehandlingKlient;
 import no.nav.vedtak.felles.testutilities.db.EntityManagerAwareTest;
 
 @ExtendWith(EntityManagerFPLosAwareExtension.class)
 public class AdminTjenesteImplTest extends EntityManagerAwareTest {
 
-    private final ForeldrepengerBehandlingRestKlient foreldrepengerBehandlingRestKlient = mock(ForeldrepengerBehandlingRestKlient.class);
+    private final ForeldrepengerBehandlingKlient foreldrepengerBehandlingKlient = mock(ForeldrepengerBehandlingKlient.class);
 
     private OppgaveRepository oppgaveRepository;
     private AdminTjenesteImpl adminTjeneste;
@@ -45,7 +45,7 @@ public class AdminTjenesteImplTest extends EntityManagerAwareTest {
         oppgaveRepository = new OppgaveRepositoryImpl(entityManager);
         var adminRepository = new AdminRepositoryImpl(entityManager);
         var organisasjonRepository = new OrganisasjonRepositoryImpl(entityManager);
-        adminTjeneste = new AdminTjenesteImpl(adminRepository, foreldrepengerBehandlingRestKlient, organisasjonRepository);
+        adminTjeneste = new AdminTjenesteImpl(adminRepository, foreldrepengerBehandlingKlient, organisasjonRepository);
         avdelingslederTjeneste = new AvdelingslederTjenesteImpl(oppgaveRepository, organisasjonRepository);
     }
 
@@ -114,7 +114,7 @@ public class AdminTjenesteImplTest extends EntityManagerAwareTest {
     @Test
     public void testOppfriskOppgaveIkkeLukket(){
         leggeInnEtSettMedOppgaver();
-        when(foreldrepengerBehandlingRestKlient.getBehandling(any(BehandlingId.class))).thenReturn(lagBehandlingDto());
+        when(foreldrepengerBehandlingKlient.getBehandling(any(BehandlingId.class))).thenReturn(lagBehandlingDto());
         Oppgave oppgave = adminTjeneste.synkroniserOppgave(førstegangOppgave.getBehandlingId());
         assertThat(oppgave.getAktiv()).isTrue();
     }
@@ -122,7 +122,7 @@ public class AdminTjenesteImplTest extends EntityManagerAwareTest {
     @Test
     public void testOppfriskOppgaveLukket(){
         leggeInnEtSettMedOppgaver();
-        when(foreldrepengerBehandlingRestKlient.getBehandling(any(BehandlingId.class))).thenReturn(lagBehandlingAvsluttetDto());
+        when(foreldrepengerBehandlingKlient.getBehandling(any(BehandlingId.class))).thenReturn(lagBehandlingAvsluttetDto());
         Oppgave oppgave = adminTjeneste.synkroniserOppgave(førstegangOppgave.getBehandlingId());
         assertThat(oppgave.getAktiv()).isFalse();
     }

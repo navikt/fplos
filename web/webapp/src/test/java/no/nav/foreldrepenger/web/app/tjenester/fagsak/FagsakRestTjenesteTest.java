@@ -5,6 +5,7 @@ import static org.mockito.Mockito.mock;
 
 import java.util.Collection;
 
+import no.nav.fplos.foreldrepengerbehandling.ForeldrepengerFagsakKlient;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -12,7 +13,7 @@ import no.nav.foreldrepenger.los.web.app.tjenester.fagsak.FagsakRestTjeneste;
 import no.nav.foreldrepenger.los.web.app.tjenester.fagsak.app.FagsakApplikasjonTjeneste;
 import no.nav.foreldrepenger.los.web.app.tjenester.fagsak.dto.SokefeltDto;
 import no.nav.fplos.ansatt.AnsattTjeneste;
-import no.nav.fplos.foreldrepengerbehandling.ForeldrepengerBehandlingRestKlient;
+import no.nav.fplos.foreldrepengerbehandling.ForeldrepengerBehandlingKlient;
 import no.nav.fplos.foreldrepengerbehandling.dto.fagsak.FagsakDto;
 import no.nav.fplos.oppgave.OppgaveTjeneste;
 import no.nav.fplos.person.PersonTjeneste;
@@ -22,7 +23,7 @@ public class FagsakRestTjenesteTest {
     private FagsakRestTjeneste tjeneste;
 
     private FagsakApplikasjonTjeneste applikasjonTjeneste;
-    private ForeldrepengerBehandlingRestKlient klient;
+    private ForeldrepengerFagsakKlient klient;
     private PersonTjeneste personTjeneste;
     private OppgaveTjeneste oppgaveTjeneste;
     private AnsattTjeneste ansattTjeneste;
@@ -30,7 +31,7 @@ public class FagsakRestTjenesteTest {
     @BeforeEach
     public void oppsett() {
         personTjeneste = mock(PersonTjeneste.class);
-        klient = mock(ForeldrepengerBehandlingRestKlient.class);
+        klient = mock(ForeldrepengerFagsakKlient.class);
         oppgaveTjeneste = mock(OppgaveTjeneste.class);
         ansattTjeneste = mock(AnsattTjeneste.class);
         applikasjonTjeneste = new FagsakApplikasjonTjeneste(personTjeneste, klient);

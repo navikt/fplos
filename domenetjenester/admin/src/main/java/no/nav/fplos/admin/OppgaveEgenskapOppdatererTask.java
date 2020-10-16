@@ -3,7 +3,7 @@ package no.nav.fplos.admin;
 import no.nav.foreldrepenger.loslager.oppgave.Oppgave;
 import no.nav.foreldrepenger.loslager.oppgave.OppgaveEgenskap;
 import no.nav.foreldrepenger.loslager.repository.OppgaveRepository;
-import no.nav.fplos.foreldrepengerbehandling.ForeldrepengerBehandlingRestKlient;
+import no.nav.fplos.foreldrepengerbehandling.ForeldrepengerBehandlingKlient;
 import no.nav.vedtak.felles.prosesstask.api.ProsessTask;
 import no.nav.vedtak.felles.prosesstask.api.ProsessTaskData;
 import no.nav.vedtak.felles.prosesstask.api.ProsessTaskHandler;
@@ -19,10 +19,10 @@ public class OppgaveEgenskapOppdatererTask implements ProsessTaskHandler {
     public static final String EGENSKAPMAPPER = "oppgaveegenskap.egenskapmapper";
 
     private OppgaveRepository oppgaveRepository;
-    private ForeldrepengerBehandlingRestKlient fpsakKlient;
+    private ForeldrepengerBehandlingKlient fpsakKlient;
 
     @Inject
-    public OppgaveEgenskapOppdatererTask(OppgaveRepository oppgaveRepository, ForeldrepengerBehandlingRestKlient fpsakKlient) {
+    public OppgaveEgenskapOppdatererTask(OppgaveRepository oppgaveRepository, ForeldrepengerBehandlingKlient fpsakKlient) {
         this.oppgaveRepository = oppgaveRepository;
         this.fpsakKlient = fpsakKlient;
     }

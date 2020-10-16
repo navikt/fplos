@@ -17,18 +17,18 @@ import javax.ws.rs.core.MediaType;
 import io.swagger.v3.oas.annotations.Operation;
 import no.nav.foreldrepenger.los.web.app.AbacAttributter;
 import no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.oppgave.dto.BehandlingIdDto;
-import no.nav.fplos.foreldrepengerbehandling.ForeldrepengerBehandlingRestKlient;
+import no.nav.fplos.foreldrepengerbehandling.ForeldrepengerBehandlingKlient;
 import no.nav.vedtak.sikkerhet.abac.BeskyttetRessurs;
 
 @Path("/fpsak")
 @ApplicationScoped
 public class FpsakRestTjeneste {
 
-    private ForeldrepengerBehandlingRestKlient foreldrepengerBehandlingRestKlient;
+    private ForeldrepengerBehandlingKlient foreldrepengerBehandlingKlient;
 
     @Inject
-    public FpsakRestTjeneste(ForeldrepengerBehandlingRestKlient foreldrepengerBehandlingRestKlient) {
-        this.foreldrepengerBehandlingRestKlient = foreldrepengerBehandlingRestKlient;
+    public FpsakRestTjeneste(ForeldrepengerBehandlingKlient foreldrepengerBehandlingKlient) {
+        this.foreldrepengerBehandlingKlient = foreldrepengerBehandlingKlient;
     }
 
     public FpsakRestTjeneste() {
@@ -41,7 +41,7 @@ public class FpsakRestTjeneste {
     @BeskyttetRessurs(action = READ, resource = AbacAttributter.APPLIKASJON)
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
     public Long hentFpsakInternBehandlingId(@NotNull @Valid @QueryParam("uuid") BehandlingIdDto behandlingId) {
-        return foreldrepengerBehandlingRestKlient.getFpsakInternBehandlingId(behandlingId.getValue())
+        return foreldrepengerBehandlingKlient.getFpsakInternBehandlingId(behandlingId.getValue())
                 .orElseThrow(() -> new NoSuchElementException("Fant ingen intern behandloingId for ekstern id : " + behandlingId));
     }
 }

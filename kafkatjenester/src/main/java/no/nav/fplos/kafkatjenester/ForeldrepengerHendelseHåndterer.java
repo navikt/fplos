@@ -3,10 +3,8 @@ package no.nav.fplos.kafkatjenester;
 import static no.nav.fplos.kafkatjenester.util.StreamUtil.safeStream;
 
 import java.time.LocalDateTime;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -24,7 +22,7 @@ import no.nav.foreldrepenger.loslager.oppgave.OppgaveEventType;
 import no.nav.foreldrepenger.loslager.repository.OppgaveRepository;
 import no.nav.fplos.foreldrepengerbehandling.Aksjonspunkt;
 import no.nav.fplos.foreldrepengerbehandling.BehandlingFpsak;
-import no.nav.fplos.foreldrepengerbehandling.ForeldrepengerBehandlingRestKlient;
+import no.nav.fplos.foreldrepengerbehandling.ForeldrepengerBehandlingKlient;
 import no.nav.fplos.kafkatjenester.eventresultat.EventResultat;
 import no.nav.fplos.kafkatjenester.eventresultat.ForeldrepengerEventMapper;
 
@@ -33,15 +31,15 @@ public class ForeldrepengerHendelseHåndterer {
 
     private static final Logger LOG = LoggerFactory.getLogger(ForeldrepengerHendelseHåndterer.class);
 
-    private ForeldrepengerBehandlingRestKlient foreldrePengerBehandlingRestKlient;
+    private ForeldrepengerBehandlingKlient foreldrePengerBehandlingKlient;
     private OppgaveRepository oppgaveRepository;
     private OppgaveEgenskapHandler oppgaveEgenskapHandler;
 
     @Inject
-    public ForeldrepengerHendelseHåndterer(ForeldrepengerBehandlingRestKlient foreldrePengerBehandlingRestKlient,
+    public ForeldrepengerHendelseHåndterer(ForeldrepengerBehandlingKlient foreldrePengerBehandlingKlient,
                                            OppgaveRepository oppgaveRepository,
                                            OppgaveEgenskapHandler oppgaveEgenskapHandler) {
-        this.foreldrePengerBehandlingRestKlient = foreldrePengerBehandlingRestKlient;
+        this.foreldrePengerBehandlingKlient = foreldrePengerBehandlingKlient;
         this.oppgaveRepository = oppgaveRepository;
         this.oppgaveEgenskapHandler = oppgaveEgenskapHandler;
     }
@@ -52,7 +50,7 @@ public class ForeldrepengerHendelseHåndterer {
 
     public void håndter(Hendelse hendelse) {
         var behandlingId = hendelse.getBehandlingId();
-        BehandlingFpsak behandling = foreldrePengerBehandlingRestKlient.getBehandling(behandlingId);
+        BehandlingFpsak behandling = foreldrePengerBehandlingKlient.getBehandling(behandlingId);
         behandling.setYtelseType(hendelse.getYtelseType());
         OppgaveHistorikk oppgaveHistorikk = new OppgaveHistorikk(oppgaveRepository.hentOppgaveEventer(behandlingId));
         OppgaveEgenskapFinner egenskapFinner = new FpsakOppgaveEgenskapFinner(behandling);

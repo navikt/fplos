@@ -3,7 +3,8 @@ package no.nav.foreldrepenger.los.web.app.tjenester.fagsak.app;
 import no.nav.foreldrepenger.domene.typer.Saksnummer;
 import no.nav.foreldrepenger.loslager.aktør.Fødselsnummer;
 import no.nav.foreldrepenger.loslager.aktør.Person;
-import no.nav.fplos.foreldrepengerbehandling.ForeldrepengerBehandlingRestKlient;
+import no.nav.fplos.foreldrepengerbehandling.ForeldrepengerBehandlingKlient;
+import no.nav.fplos.foreldrepengerbehandling.ForeldrepengerFagsakKlient;
 import no.nav.fplos.foreldrepengerbehandling.dto.fagsak.FagsakDto;
 import no.nav.fplos.person.PersonTjeneste;
 import no.nav.vedtak.exception.IntegrasjonException;
@@ -20,14 +21,14 @@ import static no.nav.foreldrepenger.loslager.aktør.Fødselsnummer.erFødselsnum
 public class FagsakApplikasjonTjeneste {
 
     private PersonTjeneste personTjeneste;
-    private ForeldrepengerBehandlingRestKlient foreldrepengerBehandlingKlient;
+    private ForeldrepengerFagsakKlient fagsakKlient;
 
 
     @Inject
     public FagsakApplikasjonTjeneste(PersonTjeneste personTjeneste,
-                                     ForeldrepengerBehandlingRestKlient foreldrepengerBehandlingKlient) {
+                                     ForeldrepengerFagsakKlient fagsakKlient) {
         this.personTjeneste = personTjeneste;
-        this.foreldrepengerBehandlingKlient = foreldrepengerBehandlingKlient;
+        this.fagsakKlient = fagsakKlient;
     }
 
     FagsakApplikasjonTjeneste() {
@@ -52,7 +53,7 @@ public class FagsakApplikasjonTjeneste {
         try {
             return personTjeneste.hentPerson(fnr)
                     .map(Person::getFødselsnummer)
-                    .map(foreldrepengerBehandlingKlient::getFagsakFraFnr)
+                    .map(fagsakKlient::getFagsakFraFnr)
                     .orElse(Collections.emptyList());
         } catch (IntegrasjonException e) {
             if (e.getMessage().contains("Finner ikke bruker med ident")) {
@@ -64,6 +65,6 @@ public class FagsakApplikasjonTjeneste {
     }
 
     private List<FagsakDto> hentFagsakForSaksnummer(Saksnummer saksnummer) {
-        return foreldrepengerBehandlingKlient.getFagsakFraSaksnummer(saksnummer.getVerdi());
+        return fagsakKlient.getFagsakFraSaksnummer(saksnummer.getVerdi());
     }
 }

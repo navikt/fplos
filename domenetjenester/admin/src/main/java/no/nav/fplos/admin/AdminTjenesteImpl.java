@@ -12,23 +12,23 @@ import no.nav.foreldrepenger.loslager.organisasjon.Avdeling;
 import no.nav.foreldrepenger.loslager.repository.AdminRepository;
 import no.nav.foreldrepenger.loslager.repository.OrganisasjonRepository;
 import no.nav.fplos.foreldrepengerbehandling.BehandlingFpsak;
-import no.nav.fplos.foreldrepengerbehandling.ForeldrepengerBehandlingRestKlient;
+import no.nav.fplos.foreldrepengerbehandling.ForeldrepengerBehandlingKlient;
 
 @ApplicationScoped
 public class AdminTjenesteImpl implements AdminTjeneste {
 
     private static final String AVSLUTTET_STATUS = "AVSLU";
 
-    private ForeldrepengerBehandlingRestKlient foreldrepengerBehandlingRestKlient;
+    private ForeldrepengerBehandlingKlient foreldrepengerBehandlingKlient;
     private AdminRepository adminRepository;
     private OrganisasjonRepository organisasjonRepository;
 
     @Inject
     public AdminTjenesteImpl(AdminRepository adminRepository,
-                             ForeldrepengerBehandlingRestKlient foreldrepengerBehandlingRestKlient,
+                             ForeldrepengerBehandlingKlient foreldrepengerBehandlingKlient,
                              OrganisasjonRepository organisasjonRepository) {
         this.adminRepository = adminRepository;
-        this.foreldrepengerBehandlingRestKlient = foreldrepengerBehandlingRestKlient;
+        this.foreldrepengerBehandlingKlient = foreldrepengerBehandlingKlient;
         this.organisasjonRepository = organisasjonRepository;
     }
 
@@ -50,7 +50,7 @@ public class AdminTjenesteImpl implements AdminTjeneste {
 
     @Override
     public Oppgave synkroniserOppgave(BehandlingId behandlingId) {
-        BehandlingFpsak behandlingDto = foreldrepengerBehandlingRestKlient.getBehandling(behandlingId);
+        BehandlingFpsak behandlingDto = foreldrepengerBehandlingKlient.getBehandling(behandlingId);
         if (AVSLUTTET_STATUS.equals(behandlingDto.getStatus())) {
             adminRepository.deaktiverSisteOppgave(behandlingId);
         }

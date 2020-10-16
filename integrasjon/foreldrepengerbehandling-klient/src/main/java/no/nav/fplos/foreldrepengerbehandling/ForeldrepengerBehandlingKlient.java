@@ -7,7 +7,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -16,7 +15,6 @@ import java.util.Optional;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import no.nav.foreldrepenger.loslager.aktør.Fødselsnummer;
 import org.apache.http.client.utils.URIBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,13 +22,11 @@ import org.slf4j.LoggerFactory;
 import no.nav.foreldrepenger.loslager.BehandlingId;
 import no.nav.fplos.foreldrepengerbehandling.dto.KontrollerFaktaDataDto;
 import no.nav.fplos.foreldrepengerbehandling.dto.KontrollerFaktaPeriodeDto;
-import no.nav.fplos.foreldrepengerbehandling.dto.SokefeltDto;
 import no.nav.fplos.foreldrepengerbehandling.dto.aksjonspunkt.AksjonspunktDto;
 import no.nav.fplos.foreldrepengerbehandling.dto.behandling.BehandlingÅrsakDto;
 import no.nav.fplos.foreldrepengerbehandling.dto.behandling.BehandlingÅrsakType;
 import no.nav.fplos.foreldrepengerbehandling.dto.behandling.ResourceLink;
 import no.nav.fplos.foreldrepengerbehandling.dto.behandling.UtvidetBehandlingDto;
-import no.nav.fplos.foreldrepengerbehandling.dto.fagsak.FagsakDto;
 import no.nav.fplos.foreldrepengerbehandling.dto.inntektarbeidytelse.Beløp;
 import no.nav.fplos.foreldrepengerbehandling.dto.inntektarbeidytelse.InntektArbeidYtelseDto;
 import no.nav.fplos.foreldrepengerbehandling.dto.inntektarbeidytelse.InntektsmeldingDto;
@@ -38,15 +34,12 @@ import no.nav.fplos.foreldrepengerbehandling.dto.ytelsefordeling.YtelseFordeling
 import no.nav.vedtak.exception.ManglerTilgangException;
 import no.nav.vedtak.felles.integrasjon.rest.OidcRestClient;
 import no.nav.vedtak.konfig.KonfigVerdi;
-import no.nav.vedtak.sikkerhet.loginmodule.ContainerLogin;
 
 @ApplicationScoped
-public class ForeldrepengerBehandlingRestKlient {
-    private static final Logger LOGGER = LoggerFactory.getLogger(ForeldrepengerBehandlingRestKlient.class);
+public class ForeldrepengerBehandlingKlient {
+    private static final Logger LOGGER = LoggerFactory.getLogger(ForeldrepengerBehandlingKlient.class);
 
-    private static final String FPSAK_FAGSAK_FNR = "/fpsak/api/fagsak/sok";
     private static final String FPSAK_BEHANDLINGER = "/fpsak/api/behandlinger";
-    private static final String FPSAK_FAGSAK_SAKSNUMMER = "/fpsak/api/fagsak";
     private static final String AKSJONSPUNKTER_LINK = "aksjonspunkter";
     private static final String INNTEKT_ARBEID_YTELSE_LINK = "inntekt-arbeid-ytelse";
     private static final String UTTAK_KONTROLLER_FAKTA_PERIODER_LINK = "uttak-kontroller-fakta-perioder";
@@ -56,44 +49,53 @@ public class ForeldrepengerBehandlingRestKlient {
     private String fpsakBaseUrl;
 
     @Inject
-    public ForeldrepengerBehandlingRestKlient(OidcRestClient oidcRestClient,
-                                              @KonfigVerdi(value = "fpsak.url", defaultVerdi = "http://fpsak") String fpsakUrl) {
+    public ForeldrepengerBehandlingKlient(OidcRestClient oidcRestClient,
+                                          @KonfigVerdi(value = "fpsak.url", defaultVerdi = "http://fpsak") String fpsakUrl) {
         this.oidcRestClient = oidcRestClient;
         this.fpsakBaseUrl = fpsakUrl;
     }
 
-    public ForeldrepengerBehandlingRestKlient() {
+    public ForeldrepengerBehandlingKlient() {
         // for CDI
     }
 
     public BehandlingFpsak getBehandling(BehandlingId behandlingId) {
-        URIBuilder uriBuilder = new URIBuilder(URI.create(fpsakBaseUrl + FPSAK_BEHANDLINGER));
-        uriBuilder.setParameter("behandlingId", behandlingId.toString());
-        ContainerLogin loginContext = new ContainerLogin();
-        loginContext.login();
+        var uri = behandlingUri(behandlingId.toString());
+        var behandlingDto = oidcRestClient.get(uri, UtvidetBehandlingDto.class);
+        var links = behandlingDto.getLinks();
+        BehandlingFpsak.Builder builder = BehandlingFpsak.builder()
+                .medBehandlingType(behandlingDto.getType())
+                .medBehandlingId(new BehandlingId(behandlingDto.getUuid()))
+                .medBehandlendeEnhetNavn(behandlingDto.getBehandlendeEnhetNavn())
+                .medStatus(behandlingDto.getStatus().getKode())
+                .medAnsvarligSaksbehandler(behandlingDto.getAnsvarligSaksbehandler())
+                .medHarRefusjonskravFraArbeidsgiver(hentHarRefusjonskrav(links))
+                .medAksjonspunkter(hentAksjonspunkter(links))
+                .medBehandlingstidFrist(behandlingDto.getBehandlingsfristTid())
+                .medFørsteUttaksdag(hentFørsteUttaksdato(links))
+                .medErBerørtBehandling(harBehandlingÅrsakType(behandlingDto, BehandlingÅrsakType.BERØRT_BEHANDLING))
+                .medErEndringssøknad(harBehandlingÅrsakType(behandlingDto, BehandlingÅrsakType.RE_ENDRING_FRA_BRUKER));
+        hentUttakKontrollerFaktaPerioder(behandlingId, builder, links);
+        return builder.build();
+    }
 
+    public Optional<Long> getFpsakInternBehandlingId(BehandlingId eksternBehandlingId) {
+        var uri = behandlingUri(eksternBehandlingId.toString());
         try {
-            LOGGER.info("Slår opp i fpsak for behandling {} per GET-kall til {}", behandlingId, uriBuilder.build());
-            UtvidetBehandlingDto behandlingDto = oidcRestClient.get(uriBuilder.build(), UtvidetBehandlingDto.class);
-            List<ResourceLink> links = behandlingDto.getLinks();
-            BehandlingFpsak.Builder builder = BehandlingFpsak.builder()
-                    .medBehandlingType(behandlingDto.getType())
-                    .medBehandlingId(new BehandlingId(behandlingDto.getUuid()))
-                    .medBehandlendeEnhetNavn(behandlingDto.getBehandlendeEnhetNavn())
-                    .medStatus(behandlingDto.getStatus().getKode())
-                    .medAnsvarligSaksbehandler(behandlingDto.getAnsvarligSaksbehandler())
-                    .medHarRefusjonskravFraArbeidsgiver(hentHarRefusjonskrav(links))
-                    .medAksjonspunkter(hentAksjonspunkter(links))
-                    .medBehandlingstidFrist(behandlingDto.getBehandlingsfristTid())
-                    .medFørsteUttaksdag(hentFørsteUttaksdato(links))
-                    .medErBerørtBehandling(harBehandlingÅrsakType(behandlingDto, BehandlingÅrsakType.BERØRT_BEHANDLING))
-                    .medErEndringssøknad(harBehandlingÅrsakType(behandlingDto, BehandlingÅrsakType.RE_ENDRING_FRA_BRUKER));
-            hentUttakKontrollerFaktaPerioder(behandlingId, builder, links);
+            UtvidetBehandlingDto behandlingDto = oidcRestClient.get(uri, UtvidetBehandlingDto.class);
+            return Optional.ofNullable(behandlingDto.getId());
+        } catch (ManglerTilgangException e) {
+            throw new InternIdMappingException(eksternBehandlingId);
+        }
+    }
+
+    private URI behandlingUri(String id) {
+        try {
+            var builder = new URIBuilder(URI.create(fpsakBaseUrl + FPSAK_BEHANDLINGER));
+            builder.setParameter("behandlingId", id);
             return builder.build();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        } finally {
-            loginContext.logout();
+        } catch (URISyntaxException e) {
+            throw new IllegalArgumentException("Ikke gyldig uri for behandling", e);
         }
     }
 
@@ -106,29 +108,10 @@ public class ForeldrepengerBehandlingRestKlient {
                 .anyMatch(t -> t.equals(type));
     }
 
-    public Optional<Long> getFpsakInternBehandlingId(BehandlingId eksternBehandlingId) {
-        URIBuilder uriBuilder = new URIBuilder(URI.create(fpsakBaseUrl + FPSAK_BEHANDLINGER));
-        uriBuilder.setParameter("behandlingId", eksternBehandlingId.toString());
-        ContainerLogin loginContext = new ContainerLogin();
-        loginContext.login();
-
-        try {
-            LOGGER.info("Slår opp intern behandling id i fpsak for behandling med eksternBehandlingId {} per GET-kall til {}", eksternBehandlingId, uriBuilder.build());
-            UtvidetBehandlingDto behandlingDto = oidcRestClient.get(uriBuilder.build(), UtvidetBehandlingDto.class);
-            return Optional.ofNullable(behandlingDto.getId());
-        } catch (ManglerTilgangException e) {
-            throw new InternIdMappingException(eksternBehandlingId);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        } finally {
-            loginContext.logout();
-        }
-    }
-
     private List<Aksjonspunkt> hentAksjonspunkter(List<ResourceLink> links) {
         return velgLink(links, AKSJONSPUNKTER_LINK)
                 .flatMap(ap -> hentFraResourceLink(ap, AksjonspunktDto[].class))
-                .map(ForeldrepengerBehandlingRestKlient::aksjonspunktFraDto)
+                .map(ForeldrepengerBehandlingKlient::aksjonspunktFraDto)
                 .orElse(Collections.emptyList());
     }
 
@@ -142,7 +125,7 @@ public class ForeldrepengerBehandlingRestKlient {
     private Boolean hentHarRefusjonskrav(List<ResourceLink> links) {
         return velgLink(links, INNTEKT_ARBEID_YTELSE_LINK)
                 .flatMap(iay -> hentFraResourceLink(iay, InntektArbeidYtelseDto.class))
-                .map(ForeldrepengerBehandlingRestKlient::harRefusjonskrav)
+                .map(ForeldrepengerBehandlingKlient::harRefusjonskrav)
                 .orElse(null); // har ikke inntektsmelding enda, kan ikke vurdere refusjonskrav
     }
 
@@ -154,7 +137,7 @@ public class ForeldrepengerBehandlingRestKlient {
                 builder.medHarGradering(harGraderingFra(kontrollerFaktaData.get()));
                 builder.medHarVurderSykdom(harVurderSykdom(kontrollerFaktaData.get()));
             } else {
-                LOGGER.error("Feilet å hente gradering for behandlingId " + behandlingId);
+                LOGGER.warn("Kunne ikke hente gradering for behandlingId " + behandlingId);
             }
         }
     }
@@ -164,46 +147,11 @@ public class ForeldrepengerBehandlingRestKlient {
                 .anyMatch(KontrollerFaktaPeriodeDto::gjelderSykdom);
     }
 
-
-        private <T> Optional<T> hentFraResourceLink(ResourceLink resourceLink, Class<T> clazz) {
+    private <T> Optional<T> hentFraResourceLink(ResourceLink resourceLink, Class<T> clazz) {
         URI uri = URI.create(fpsakBaseUrl + resourceLink.getHref());
         return "POST".equals(resourceLink.getType().name())
                 ? oidcRestClient.postReturnsOptional(uri, resourceLink.getRequestPayload(), clazz)
                 : oidcRestClient.getReturnsOptional(uri, clazz);
-    }
-
-    public List<FagsakDto> getFagsakFraSaksnummer(String saksnummer) {
-        URIBuilder uriBuilder = new URIBuilder(URI.create(fpsakBaseUrl + FPSAK_FAGSAK_SAKSNUMMER));
-        uriBuilder.setParameter("saksnummer", saksnummer);
-        ContainerLogin loginContext = new ContainerLogin();
-        loginContext.login();
-
-        try {
-            FagsakDto fagsakDtos = oidcRestClient.get(uriBuilder.build(), FagsakDto.class);
-            return Collections.singletonList(fagsakDtos);
-        } catch (URISyntaxException e) {
-            LOGGER.error("Feilet å hente Fagsak fra FPSAK for saksnummer: " + saksnummer, e);
-            return Collections.emptyList();
-        } finally {
-            loginContext.logout();
-        }
-    }
-
-    public List<FagsakDto> getFagsakFraFnr(Fødselsnummer fødselsnummer) {
-        URIBuilder uriBuilder = new URIBuilder(URI.create(fpsakBaseUrl + FPSAK_FAGSAK_FNR));
-        SokefeltDto sokefeltDto = new SokefeltDto(fødselsnummer.asValue());
-        ContainerLogin loginContext = new ContainerLogin();
-        loginContext.login();
-
-        try {
-            FagsakDto[] fagsakDtos = oidcRestClient.post(uriBuilder.build(), sokefeltDto, FagsakDto[].class);
-            return Arrays.asList(fagsakDtos);
-        } catch (URISyntaxException e) {
-            LOGGER.error("Feilet å hente Fagsak fra FPSAK for en fødselsnummer", e);
-            return Collections.emptyList();
-        } finally {
-            loginContext.logout();
-        }
     }
 
     private static boolean harGraderingFra(KontrollerFaktaDataDto faktaDataDto) {
@@ -222,8 +170,8 @@ public class ForeldrepengerBehandlingRestKlient {
 
     private static List<Aksjonspunkt> aksjonspunktFraDto(AksjonspunktDto[] aksjonspunktDtos) {
         List<Aksjonspunkt> liste = new ArrayList<>();
-        for (AksjonspunktDto aksjonspunktDto : aksjonspunktDtos) {
-            liste.add(aksjonspunktFra(aksjonspunktDto));
+        for (AksjonspunktDto dto : aksjonspunktDtos) {
+            liste.add(aksjonspunktFra(dto));
         }
         return liste;
     }
@@ -235,4 +183,5 @@ public class ForeldrepengerBehandlingRestKlient {
                 .filter(l -> l.getRel().equals(typeLink))
                 .findFirst();
     }
+
 }
