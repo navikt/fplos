@@ -21,20 +21,13 @@ import no.nav.fplos.person.PersonTjeneste;
 public class FagsakRestTjenesteTest {
 
     private FagsakRestTjeneste tjeneste;
-
     private FagsakApplikasjonTjeneste applikasjonTjeneste;
     private ForeldrepengerFagsakKlient klient;
-    private PersonTjeneste personTjeneste;
-    private OppgaveTjeneste oppgaveTjeneste;
-    private AnsattTjeneste ansattTjeneste;
 
     @BeforeEach
     public void oppsett() {
-        personTjeneste = mock(PersonTjeneste.class);
         klient = mock(ForeldrepengerFagsakKlient.class);
-        oppgaveTjeneste = mock(OppgaveTjeneste.class);
-        ansattTjeneste = mock(AnsattTjeneste.class);
-        applikasjonTjeneste = new FagsakApplikasjonTjeneste(personTjeneste, klient);
+        applikasjonTjeneste = new FagsakApplikasjonTjeneste(klient);
         tjeneste = new FagsakRestTjeneste(applikasjonTjeneste);
     }
 

@@ -23,7 +23,6 @@ import no.nav.foreldrepenger.los.web.app.tjenester.fagsak.app.FagsakApplikasjonT
 import no.nav.foreldrepenger.loslager.aktør.Person;
 import no.nav.foreldrepenger.loslager.oppgave.FagsakStatus;
 import no.nav.foreldrepenger.loslager.oppgave.FagsakYtelseType;
-import no.nav.fplos.foreldrepengerbehandling.ForeldrepengerBehandlingKlient;
 import no.nav.fplos.foreldrepengerbehandling.dto.fagsak.FagsakDto;
 import no.nav.fplos.foreldrepengerbehandling.dto.fagsak.PersonDto;
 import no.nav.fplos.person.PersonTjeneste;
@@ -45,7 +44,7 @@ public class FagsakApplikasjonTjenesteTest {
     public void oppsett() {
         personTjeneste = mock(PersonTjeneste.class);
         fagsakKlient = mock(ForeldrepengerFagsakKlient.class);
-        fagsakTjeneste = new FagsakApplikasjonTjeneste(personTjeneste, fagsakKlient);
+        fagsakTjeneste = new FagsakApplikasjonTjeneste(fagsakKlient);
     }
 
     @Test
@@ -60,7 +59,7 @@ public class FagsakApplikasjonTjenesteTest {
         PersonDto personinfoSoker = new PersonDto("TEST", 20, FNR.asValue(), ER_KVINNE, "", null);
         FagsakDto fagsakDto = new FagsakDto(Long.valueOf(FNR.asValue()), FagsakYtelseType.FORELDREPENGER, FagsakStatus.OPPRETTET,
                 personinfoSoker, LocalDateTime.now(), LocalDateTime.now(), LocalDate.of(2017, Month.FEBRUARY, 1));
-        when(fagsakKlient.getFagsakFraFnr(FNR)).thenReturn(Collections.singletonList(fagsakDto));
+        when(fagsakKlient.finnFagsaker(FNR.asValue())).thenReturn(Collections.singletonList(fagsakDto));
 
         LocalDate fødselsdatoBarn = LocalDate.of(2017, Month.FEBRUARY, 1);
 
@@ -83,7 +82,7 @@ public class FagsakApplikasjonTjenesteTest {
         FagsakDto fagsakDto = new FagsakDto(Long.valueOf(SAKSNUMMER), FagsakYtelseType.FORELDREPENGER, FagsakStatus.UNDER_BEHANDLING, personinfo, LocalDateTime.now(),
                 LocalDateTime.now(), LocalDate.now());
         fagsakDtos.add(fagsakDto);
-        when(fagsakKlient.getFagsakFraSaksnummer(SAKSNUMMER)).thenReturn(fagsakDtos);
+        when(fagsakKlient.finnFagsaker(SAKSNUMMER)).thenReturn(fagsakDtos);
 
 
         // Act
@@ -113,7 +112,7 @@ public class FagsakApplikasjonTjenesteTest {
     @Test
     public void skal_returnere_tomt_view_ved_ukjent_saksnr() {
         ManglerTilgangException manglerTilgangException = manglerTilgangException();
-        when(fagsakKlient.getFagsakFraSaksnummer(any(String.class))).thenThrow(manglerTilgangException);
+        when(fagsakKlient.finnFagsaker(any(String.class))).thenThrow(manglerTilgangException);
 
         List<FagsakDto> view = fagsakTjeneste.hentSaker(SAKSNUMMER);
         assertThat(view.isEmpty()).isTrue();
@@ -127,7 +126,7 @@ public class FagsakApplikasjonTjenesteTest {
                 .medNavn("Test testen")
                 .build();
         when(personTjeneste.hentPerson(any(Fødselsnummer.class))).thenReturn(Optional.of(person));
-        when(fagsakKlient.getFagsakFraFnr(any())).thenThrow(manglerTilgangException());
+        when(fagsakKlient.finnFagsaker(any())).thenThrow(manglerTilgangException());
         List<FagsakDto> view = fagsakTjeneste.hentSaker(FNR.asValue());
         assertThat(view).isEmpty();
     }
