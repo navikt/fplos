@@ -1,7 +1,6 @@
 name: Bygg PR eller branches
 
 on:
-  pull_request:
   push:
     branches-ignore:
       - master
