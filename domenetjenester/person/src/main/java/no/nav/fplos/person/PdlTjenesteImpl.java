@@ -77,6 +77,9 @@ public class PdlTjenesteImpl implements PdlTjeneste {
     }
 
     private static String navn(Navn navn) {
+        if (navn.getForkortetNavn() != null) {
+            return navn.getForkortetNavn();
+        }
         return Stream.of(navn.getFornavn(), navn.getMellomnavn(), navn.getEtternavn())
                 .filter(Objects::nonNull)
                 .filter(s -> !s.isBlank())
