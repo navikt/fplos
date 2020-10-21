@@ -1,10 +1,10 @@
 package no.nav.fplos.foreldrepengerbehandling;
 
+import static no.nav.fplos.foreldrepengerbehandling.Lazy.get;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 import no.nav.foreldrepenger.loslager.BehandlingId;
 import no.nav.foreldrepenger.loslager.oppgave.BehandlingType;
@@ -15,12 +15,11 @@ public class BehandlingFpsak {
     private String status;
     private String behandlendeEnhetNavn;
     private String ansvarligSaksbehandler;
-    private List<Aksjonspunkt> aksjonspunkter;
+    private Lazy<List<Aksjonspunkt>> aksjonspunkter;
     private LocalDate behandlingstidFrist;
-    private LocalDate førsteUttaksdag;
-    private Boolean harRefusjonskravFraArbeidsgiver;
-    private boolean harVurderSykdom;
-    private boolean harGradering;
+    private Lazy<LocalDate> førsteUttaksdag;
+    private Lazy<Boolean> harRefusjonskravFraArbeidsgiver;
+    private Lazy<UttakEgenskaper> uttakEgenskaper;
     private boolean erBerørtBehandling;
     private boolean erEndringssøknad;
     private BehandlingType behandlingType;
@@ -39,19 +38,31 @@ public class BehandlingFpsak {
     }
 
     public List<Aksjonspunkt> getAksjonspunkter() {
-        return Optional.ofNullable(aksjonspunkter).orElse(Collections.emptyList());
+        var svar = get(aksjonspunkter);
+        if (svar == null) {
+            return List.of();
+        }
+        return svar;
     }
 
     public Boolean harRefusjonskravFraArbeidsgiver() {
-        return harRefusjonskravFraArbeidsgiver;
+        return get(harRefusjonskravFraArbeidsgiver);
     }
 
     public boolean harGradering() {
-        return harGradering;
+        var svar = get(uttakEgenskaper);
+        if (svar == null) {
+            return false;
+        }
+        return svar.isGradering();
     }
 
     public boolean harVurderSykdom() {
-        return harVurderSykdom;
+        var svar = get(uttakEgenskaper);
+        if (svar == null) {
+            return false;
+        }
+        return svar.isVurderSykdom();
     }
 
     public boolean erBerørtBehandling() {
@@ -67,7 +78,7 @@ public class BehandlingFpsak {
     }
 
     public LocalDate getFørsteUttaksdag() {
-        return førsteUttaksdag;
+        return førsteUttaksdag.get();
     }
 
     public BehandlingType getBehandlingType() {
@@ -91,16 +102,15 @@ public class BehandlingFpsak {
         private String status;
         private String behandlendeEnhetNavn;
         private String ansvarligSaksbehandler;
-        private List<Aksjonspunkt> aksjonspunkter;
+        private Lazy<List<Aksjonspunkt>> aksjonspunkter;
         private LocalDate behandlingstidFrist;
-        private LocalDate førsteUttaksdag;
-        private Boolean harRefusjonskravFraArbeidsgiver;
-        private boolean harGradering = false;
+        private Lazy<LocalDate> førsteUttaksdag;
+        private Lazy<Boolean> harRefusjonskravFraArbeidsgiver;
         private boolean erBerørtBehandling = false;
-        private boolean harOverføringPgaSykdom = false;
         private boolean erEndringssøknad = false;
         private BehandlingType behandlingType;
         private FagsakYtelseType ytelseType;
+        private Lazy<UttakEgenskaper> uttakEgenskaper;
 
         private Builder() {
         }
@@ -125,23 +135,18 @@ public class BehandlingFpsak {
             return this;
         }
 
-        public Builder medAksjonspunkter(List<Aksjonspunkt> aksjonspunkter) {
+        public Builder medAksjonspunkter(Lazy<List<Aksjonspunkt>> aksjonspunkter) {
             this.aksjonspunkter = aksjonspunkter;
             return this;
         }
 
-        public Builder medHarRefusjonskravFraArbeidsgiver(Boolean harRefusjonskravFraArbeidsgiver) {
+        public Builder medHarRefusjonskravFraArbeidsgiver(Lazy<Boolean> harRefusjonskravFraArbeidsgiver) {
             this.harRefusjonskravFraArbeidsgiver = harRefusjonskravFraArbeidsgiver;
             return this;
         }
 
-        public Builder medHarGradering(boolean harGradering) {
-            this.harGradering = harGradering;
-            return this;
-        }
-
-        public Builder medHarVurderSykdom(boolean harOverføringPgaSykdom) {
-            this.harOverføringPgaSykdom = harOverføringPgaSykdom;
+        public Builder medUttakEgenskaper(Lazy<UttakEgenskaper> uttakEgenskaper) {
+            this.uttakEgenskaper = uttakEgenskaper;
             return this;
         }
 
@@ -150,7 +155,7 @@ public class BehandlingFpsak {
             return this;
         }
 
-        public Builder medFørsteUttaksdag(LocalDate førsteUttaksdag) {
+        public Builder medFørsteUttaksdag(Lazy<LocalDate> førsteUttaksdag) {
             this.førsteUttaksdag = førsteUttaksdag;
             return this;
         }
@@ -183,8 +188,7 @@ public class BehandlingFpsak {
             behandlingFpsak.status = this.status;
             behandlingFpsak.behandlendeEnhetNavn = this.behandlendeEnhetNavn;
             behandlingFpsak.behandlingId = this.behandlingId;
-            behandlingFpsak.harVurderSykdom = this.harOverføringPgaSykdom;
-            behandlingFpsak.harGradering = this.harGradering;
+            behandlingFpsak.uttakEgenskaper = this.uttakEgenskaper;
             behandlingFpsak.behandlingstidFrist = this.behandlingstidFrist;
             behandlingFpsak.førsteUttaksdag = this.førsteUttaksdag;
             behandlingFpsak.erBerørtBehandling = this.erBerørtBehandling;
@@ -202,12 +206,7 @@ public class BehandlingFpsak {
                 ", status='" + status + '\'' +
                 ", behandlendeEnhetNavn='" + behandlendeEnhetNavn + '\'' +
                 ", ansvarligSaksbehandler='" + ansvarligSaksbehandler + '\'' +
-                ", aksjonspunkter=" + aksjonspunkter +
                 ", behandlingstidFrist=" + behandlingstidFrist +
-                ", førsteUttaksdag=" + førsteUttaksdag +
-                ", harRefusjonskravFraArbeidsgiver=" + harRefusjonskravFraArbeidsgiver +
-                ", harVurderSykdom=" + harVurderSykdom +
-                ", harGradering=" + harGradering +
                 ", erBerørtBehandling=" + erBerørtBehandling +
                 ", erEndringssøknad=" + erEndringssøknad +
                 ", behandlingType=" + behandlingType +

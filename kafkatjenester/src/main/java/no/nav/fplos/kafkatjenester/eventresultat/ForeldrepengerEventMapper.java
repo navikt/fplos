@@ -1,10 +1,5 @@
 package no.nav.fplos.kafkatjenester.eventresultat;
 
-import no.nav.fplos.foreldrepengerbehandling.Aksjonspunkt;
-import no.nav.fplos.kafkatjenester.OppgaveHistorikk;
-
-import java.util.List;
-
 import static no.nav.foreldrepenger.loslager.oppgave.AndreKriterierType.PAPIRSØKNAD;
 import static no.nav.foreldrepenger.loslager.oppgave.AndreKriterierType.TIL_BESLUTTER;
 import static no.nav.fplos.kafkatjenester.eventresultat.EventResultat.FERDIG;
@@ -16,15 +11,22 @@ import static no.nav.fplos.kafkatjenester.eventresultat.EventResultat.OPPRETT_BE
 import static no.nav.fplos.kafkatjenester.eventresultat.EventResultat.OPPRETT_OPPGAVE;
 import static no.nav.fplos.kafkatjenester.eventresultat.EventResultat.OPPRETT_PAPIRSØKNAD_OPPGAVE;
 
+import java.util.List;
+
+import no.nav.fplos.foreldrepengerbehandling.Aksjonspunkt;
+import no.nav.fplos.foreldrepengerbehandling.BehandlingFpsak;
+import no.nav.fplos.kafkatjenester.OppgaveHistorikk;
+
 
 public class ForeldrepengerEventMapper {
 
-    public static EventResultat signifikantEventFra(List<Aksjonspunkt> aksjonspunkter,
+    public static EventResultat signifikantEventFra(BehandlingFpsak behandling,
                                                     OppgaveHistorikk oppgaveHistorikk,
                                                     String gjeldendeEnhet) {
-        if (erIngenÅpne(aksjonspunkter) && oppgaveHistorikk.erUtenHistorikk()) {
+        if (oppgaveHistorikk.erUtenHistorikk() && erIngenÅpne(behandling.getAksjonspunkter())) {
             return FERDIG;
         }
+        var aksjonspunkter = behandling.getAksjonspunkter();
         if (erIngenÅpne(aksjonspunkter)) {
             return LUKK_OPPGAVE;
         }

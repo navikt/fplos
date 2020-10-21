@@ -53,9 +53,7 @@ public class ForeldrepengerHendelseHåndterer {
         BehandlingFpsak behandling = foreldrePengerBehandlingKlient.getBehandling(behandlingId);
         behandling.setYtelseType(hendelse.getYtelseType());
         OppgaveHistorikk oppgaveHistorikk = new OppgaveHistorikk(oppgaveRepository.hentOppgaveEventer(behandlingId));
-        OppgaveEgenskapFinner egenskapFinner = new FpsakOppgaveEgenskapFinner(behandling);
-        var enhet = hendelse.getBehandlendeEnhet();
-        EventResultat eventResultat = ForeldrepengerEventMapper.signifikantEventFra(behandling.getAksjonspunkter(), oppgaveHistorikk, enhet);
+        EventResultat eventResultat = ForeldrepengerEventMapper.signifikantEventFra(behandling, oppgaveHistorikk, hendelse.getBehandlendeEnhet());
 
         switch (eventResultat) {
             case FERDIG:
@@ -63,43 +61,76 @@ public class ForeldrepengerHendelseHåndterer {
                 break;
             case LUKK_OPPGAVE:
                 LOG.info("Lukker oppgave");
-                avsluttFpsakOppgaveOgLoggEvent(behandlingId, OppgaveEventType.LUKKET, null, enhet);
+                avsluttFpsakOppgaveOgLoggEvent(behandlingId, OppgaveEventType.LUKKET, null, hendelse.getBehandlendeEnhet());
                 break;
             case LUKK_OPPGAVE_VENT:
                 LOG.info("Behandling satt automatisk på vent, lukker oppgave.");
-                avsluttFpsakOppgaveOgLoggEvent(behandlingId, OppgaveEventType.VENT, finnVentAksjonspunktFrist(behandling.getAksjonspunkter()), enhet);
+                avsluttFpsakOppgaveOgLoggEvent(behandlingId, OppgaveEventType.VENT,
+                        finnVentAksjonspunktFrist(behandling.getAksjonspunkter()), hendelse.getBehandlendeEnhet());
                 break;
             case LUKK_OPPGAVE_MANUELT_VENT:
                 LOG.info("Behandling satt manuelt på vent, lukker oppgave.");
-                avsluttFpsakOppgaveOgLoggEvent(behandlingId, OppgaveEventType.MANU_VENT, finnManuellAksjonspunktFrist(behandling.getAksjonspunkter()), enhet);
+                avsluttFpsakOppgaveOgLoggEvent(behandlingId, OppgaveEventType.MANU_VENT,
+                        finnManuellAksjonspunktFrist(behandling.getAksjonspunkter()), hendelse.getBehandlendeEnhet());
                 break;
             case OPPRETT_OPPGAVE:
-                avsluttOppgaveHvisÅpen(behandlingId, oppgaveHistorikk, enhet);
-                Oppgave oppgave = nyOppgave(behandlingId, hendelse, behandling);
-                LOG.info("Oppretter oppgave");
-                loggEvent(oppgave, egenskapFinner);
-                oppgaveEgenskapHandler.håndterOppgaveEgenskaper(oppgave, egenskapFinner);
+                håndterOpprettOppgave(hendelse, behandling, oppgaveHistorikk);
                 break;
             case OPPRETT_BESLUTTER_OPPGAVE:
-                avsluttOppgaveHvisÅpen(behandlingId, oppgaveHistorikk, enhet);
-                Oppgave beslutterOppgave = nyOppgave(behandlingId, hendelse, behandling);
-                loggEvent(beslutterOppgave, egenskapFinner);
-                oppgaveEgenskapHandler.håndterOppgaveEgenskaper(beslutterOppgave, egenskapFinner);
+                håndterOpprettetBeslutterOppgave(hendelse, behandling, oppgaveHistorikk);
                 break;
             case OPPRETT_PAPIRSØKNAD_OPPGAVE:
-                avsluttOppgaveHvisÅpen(behandlingId, oppgaveHistorikk, enhet);
-                Oppgave papirsøknadOppgave = nyOppgave(behandlingId, hendelse, behandling);
-                loggEvent(papirsøknadOppgave.getBehandlingId(), OppgaveEventType.OPPRETTET, AndreKriterierType.PAPIRSØKNAD, enhet);
-                oppgaveEgenskapHandler.håndterOppgaveEgenskaper(papirsøknadOppgave, egenskapFinner);
+                håndterOpprettetPapirsøknadOppgave(hendelse, behandling, oppgaveHistorikk);
                 break;
             case GJENÅPNE_OPPGAVE:
-                LOG.info("Gjenåpner oppgave");
-                Oppgave gjenåpnetOppgave = gjenåpneOppgave(behandlingId);
-                oppdaterOppgaveInformasjon(gjenåpnetOppgave, behandlingId, hendelse, behandling);
-                loggEvent(gjenåpnetOppgave.getBehandlingId(), OppgaveEventType.GJENAPNET, null, enhet);
-                oppgaveEgenskapHandler.håndterOppgaveEgenskaper(gjenåpnetOppgave, egenskapFinner);
+                håndterGjenåpneOppgave(hendelse, behandling);
                 break;
         }
+    }
+
+    private void håndterGjenåpneOppgave(Hendelse hendelse, BehandlingFpsak behandling) {
+        LOG.info("Gjenåpner oppgave");
+        var behandlingId = behandling.getBehandlingId();
+        Oppgave gjenåpnetOppgave = gjenåpneOppgave(behandlingId);
+        oppdaterOppgaveInformasjon(gjenåpnetOppgave, behandlingId, hendelse, behandling);
+        loggEvent(gjenåpnetOppgave.getBehandlingId(), OppgaveEventType.GJENAPNET, null, hendelse.getBehandlendeEnhet());
+        var egenskapFinner = new FpsakOppgaveEgenskapFinner(behandling);
+        oppgaveEgenskapHandler.håndterOppgaveEgenskaper(gjenåpnetOppgave, egenskapFinner);
+    }
+
+    private void håndterOpprettetPapirsøknadOppgave(Hendelse hendelse,
+                                                    BehandlingFpsak behandling,
+                                                    OppgaveHistorikk oppgaveHistorikk) {
+        var behandlingId = behandling.getBehandlingId();
+        avsluttOppgaveHvisÅpen(behandlingId, oppgaveHistorikk, hendelse.getBehandlendeEnhet());
+        Oppgave papirsøknadOppgave = nyOppgave(behandlingId, hendelse, behandling);
+        loggEvent(papirsøknadOppgave.getBehandlingId(), OppgaveEventType.OPPRETTET, AndreKriterierType.PAPIRSØKNAD, hendelse.getBehandlendeEnhet());
+        var egenskapFinner = new FpsakOppgaveEgenskapFinner(behandling);
+        oppgaveEgenskapHandler.håndterOppgaveEgenskaper(papirsøknadOppgave, egenskapFinner);
+    }
+
+    private void håndterOpprettOppgave(Hendelse hendelse,
+                                       BehandlingFpsak behandling,
+                                       OppgaveHistorikk oppgaveHistorikk) {
+        var behandlingId = behandling.getBehandlingId();
+        avsluttOppgaveHvisÅpen(behandlingId, oppgaveHistorikk, hendelse.getBehandlendeEnhet());
+        Oppgave oppgave = nyOppgave(behandlingId, hendelse, behandling);
+        LOG.info("Oppretter oppgave");
+        var egenskapFinner = new FpsakOppgaveEgenskapFinner(behandling);
+        loggEvent(oppgave, egenskapFinner);
+        oppgaveEgenskapHandler.håndterOppgaveEgenskaper(oppgave, egenskapFinner);
+    }
+
+    private void håndterOpprettetBeslutterOppgave(Hendelse hendelse,
+                                                  BehandlingFpsak behandling,
+                                                  OppgaveHistorikk oppgaveHistorikk) {
+        var behandlingId = behandling.getBehandlingId();
+        var enhet = hendelse.getBehandlendeEnhet();
+        avsluttOppgaveHvisÅpen(behandlingId, oppgaveHistorikk, enhet);
+        Oppgave beslutterOppgave = nyOppgave(behandlingId, hendelse, behandling);
+        var egenskapFinner = new FpsakOppgaveEgenskapFinner(behandling);
+        loggEvent(beslutterOppgave, egenskapFinner);
+        oppgaveEgenskapHandler.håndterOppgaveEgenskaper(beslutterOppgave, egenskapFinner);
     }
 
     private void loggEvent(Oppgave oppgave, OppgaveEgenskapFinner egenskapFinner) {

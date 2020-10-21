@@ -37,6 +37,7 @@ import no.nav.vedtak.konfig.KonfigVerdi;
 
 @ApplicationScoped
 public class ForeldrepengerBehandlingKlient {
+
     private static final Logger LOGGER = LoggerFactory.getLogger(ForeldrepengerBehandlingKlient.class);
 
     private static final String FPSAK_BEHANDLINGER = "/fpsak/api/behandlinger";
@@ -69,13 +70,13 @@ public class ForeldrepengerBehandlingKlient {
                 .medBehandlendeEnhetNavn(behandlingDto.getBehandlendeEnhetNavn())
                 .medStatus(behandlingDto.getStatus().getKode())
                 .medAnsvarligSaksbehandler(behandlingDto.getAnsvarligSaksbehandler())
-                .medHarRefusjonskravFraArbeidsgiver(hentHarRefusjonskrav(links))
-                .medAksjonspunkter(hentAksjonspunkter(links))
+                .medHarRefusjonskravFraArbeidsgiver(new Lazy<>(() -> hentHarRefusjonskrav(links)))
+                .medAksjonspunkter(new Lazy<>(() -> hentAksjonspunkter(links)))
                 .medBehandlingstidFrist(behandlingDto.getBehandlingsfristTid())
-                .medFørsteUttaksdag(hentFørsteUttaksdato(links))
+                .medFørsteUttaksdag(new Lazy<>(() -> hentFørsteUttaksdato(links)))
                 .medErBerørtBehandling(harBehandlingÅrsakType(behandlingDto, BehandlingÅrsakType.BERØRT_BEHANDLING))
-                .medErEndringssøknad(harBehandlingÅrsakType(behandlingDto, BehandlingÅrsakType.RE_ENDRING_FRA_BRUKER));
-        hentUttakKontrollerFaktaPerioder(behandlingId, builder, links);
+                .medErEndringssøknad(harBehandlingÅrsakType(behandlingDto, BehandlingÅrsakType.RE_ENDRING_FRA_BRUKER))
+                .medUttakEgenskaper(new Lazy<>(() -> hentUttakEgenskaper(behandlingId, links)));
         return builder.build();
     }
 
@@ -129,17 +130,17 @@ public class ForeldrepengerBehandlingKlient {
                 .orElse(null); // har ikke inntektsmelding enda, kan ikke vurdere refusjonskrav
     }
 
-    private void hentUttakKontrollerFaktaPerioder(BehandlingId behandlingId, BehandlingFpsak.Builder builder, List<ResourceLink> links) {
+    private UttakEgenskaper hentUttakEgenskaper(BehandlingId behandlingId, List<ResourceLink> links) {
         Optional<ResourceLink> uttakLink = velgLink(links, UTTAK_KONTROLLER_FAKTA_PERIODER_LINK);
         if (uttakLink.isPresent()) {
             Optional<KontrollerFaktaDataDto> kontrollerFaktaData = hentFraResourceLink(uttakLink.get(), KontrollerFaktaDataDto.class);
             if (kontrollerFaktaData.isPresent()) {
-                builder.medHarGradering(harGraderingFra(kontrollerFaktaData.get()));
-                builder.medHarVurderSykdom(harVurderSykdom(kontrollerFaktaData.get()));
+                return new UttakEgenskaper(harVurderSykdom(kontrollerFaktaData.get()), harGraderingFra(kontrollerFaktaData.get()));
             } else {
                 LOGGER.warn("Kunne ikke hente gradering for behandlingId " + behandlingId);
             }
         }
+        return null;
     }
 
     private boolean harVurderSykdom(KontrollerFaktaDataDto kontrollerFaktaDataDto) {
