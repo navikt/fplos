@@ -1,7 +1,10 @@
 package no.nav.foreldrepenger.los.web.app.tjenester.fagsak.app;
 
 import no.nav.fplos.foreldrepengerbehandling.ForeldrepengerFagsakKlient;
+import no.nav.fplos.foreldrepengerbehandling.dto.behandling.ResourceLink;
+import no.nav.fplos.foreldrepengerbehandling.dto.fagsak.AktoerInfoDto;
 import no.nav.fplos.foreldrepengerbehandling.dto.fagsak.FagsakDto;
+import no.nav.fplos.foreldrepengerbehandling.dto.fagsak.FagsakMedPersonDto;
 import no.nav.vedtak.exception.IntegrasjonException;
 import no.nav.vedtak.exception.ManglerTilgangException;
 import org.slf4j.Logger;
@@ -11,6 +14,8 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import java.util.Collections;
 import java.util.List;
+
+import static java.util.stream.Collectors.toList;
 
 @ApplicationScoped
 public class FagsakApplikasjonTjeneste {
@@ -28,12 +33,24 @@ public class FagsakApplikasjonTjeneste {
         //CDI runner
     }
 
-    public List<FagsakDto> hentSaker(String søkestreng) {
+    public List<FagsakMedPersonDto> hentSaker(String søkestreng) {
         if (!søkestreng.matches("\\d+")) {
             return Collections.emptyList();
         }
         try {
-            return fagsakKlient.finnFagsaker(søkestreng);
+            var fagsaker = fagsakKlient.finnFagsaker(søkestreng);
+            if (fagsaker.isEmpty()) {
+                return Collections.emptyList();
+            }
+            var personDto = fagsaker.stream().findAny()
+                    .map(FagsakDto::getLinks)
+                    .orElseGet(Collections::emptyList)
+                    .stream()
+                    .filter(rel -> rel.getRel().equals("sak-aktoer-person"))
+                    .map(ResourceLink::getHref)
+                    .map(fagsakKlient::hentAktoerInfo)
+                    .findAny().orElse(null);
+            return fagsaker.stream().map(fs -> map(fs, personDto)).collect(toList());
         } catch (ManglerTilgangException e) {
             // fpsak gir 403 både ved manglende tilgang og sak-ikke-funnet
             return Collections.emptyList();
@@ -45,6 +62,11 @@ public class FagsakApplikasjonTjeneste {
             }
             throw e;
         }
+    }
+
+    private static FagsakMedPersonDto map(FagsakDto fagsakDto, AktoerInfoDto aktoerInfoDto) {
+        return new FagsakMedPersonDto(fagsakDto.getSaksnummer(), fagsakDto.getSakstype(),
+                fagsakDto.getStatus(), aktoerInfoDto.getPerson(), fagsakDto.getBarnFodt());
     }
 
 }

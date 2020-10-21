@@ -6,6 +6,7 @@ import static org.mockito.Mockito.mock;
 import java.util.Collection;
 
 import no.nav.fplos.foreldrepengerbehandling.ForeldrepengerFagsakKlient;
+import no.nav.fplos.foreldrepengerbehandling.dto.fagsak.FagsakMedPersonDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -33,7 +34,7 @@ public class FagsakRestTjenesteTest {
 
     @Test
     public void skal_returnere_tom_liste_dersom_tomt_view() {
-        Collection<FagsakDto> fagsakDtos = tjeneste.søkFagsaker(new SokefeltDto("ugyldig_søkestreng"));
+        Collection<FagsakMedPersonDto> fagsakDtos = tjeneste.søkFagsaker(new SokefeltDto("ugyldig_søkestreng"));
         assertThat(fagsakDtos).hasSize(0);
     }
 }
