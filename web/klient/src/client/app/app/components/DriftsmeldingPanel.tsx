@@ -21,7 +21,7 @@ interface OwnProps {
 const DriftsmeldingPanel: FunctionComponent<OwnProps> = ({
   driftsmeldinger,
 }) => {
-  if (driftsmeldinger.length === 0) {
+  if (driftsmeldinger !== undefined && driftsmeldinger.length === 0) {
     return null;
   }
 
