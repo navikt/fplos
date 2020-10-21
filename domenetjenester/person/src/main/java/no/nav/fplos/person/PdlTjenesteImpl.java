@@ -79,6 +79,7 @@ public class PdlTjenesteImpl implements PdlTjeneste {
 
     private static String navn(Navn navn) {
         if (navn.getForkortetNavn() != null) {
+            log.info("Pdl navn: bruker forkortet navn");
             return navn.getForkortetNavn();
         }
         return Stream.of(navn.getFornavn(), navn.getMellomnavn(), navn.getEtternavn())
