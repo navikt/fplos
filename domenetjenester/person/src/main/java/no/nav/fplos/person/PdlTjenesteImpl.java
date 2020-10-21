@@ -44,7 +44,7 @@ public class PdlTjenesteImpl implements PdlTjeneste {
             var projection = new PersonResponseProjection()
                     .navn(new NavnResponseProjection().forkortetNavn().fornavn().mellomnavn().etternavn())
                     .adressebeskyttelse(new AdressebeskyttelseResponseProjection().gradering())
-                    .folkeregisteridentifikator(new FolkeregisteridentifikatorResponseProjection());
+                    .folkeregisteridentifikator(new FolkeregisteridentifikatorResponseProjection().identifikasjonsnummer());
             var person = pdlKlient.hentPerson(query, projection, Tema.FOR);
             var fraPDL = new Person.Builder()
                     .medAktørId(aktørId)
