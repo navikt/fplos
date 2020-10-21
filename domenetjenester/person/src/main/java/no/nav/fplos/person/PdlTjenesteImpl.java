@@ -44,7 +44,7 @@ public class PdlTjenesteImpl implements PdlTjeneste {
             var projection = new PersonResponseProjection()
                     .navn(new NavnResponseProjection().forkortetNavn().fornavn().mellomnavn().etternavn())
                     .adressebeskyttelse(new AdressebeskyttelseResponseProjection().gradering())
-                    .folkeregisteridentifikator(new FolkeregisteridentifikatorResponseProjection().identifikasjonsnummer());
+                    .folkeregisteridentifikator(new FolkeregisteridentifikatorResponseProjection().identifikasjonsnummer().status().type());
             var person = pdlKlient.hentPerson(query, projection, Tema.FOR);
             var fraPDL = new Person.Builder()
                     .medAktørId(aktørId)
@@ -70,6 +70,7 @@ public class PdlTjenesteImpl implements PdlTjeneste {
     }
 
     private static String navn(List<Navn> navn) {
+        log.info("Pdl navneliste har størrelse: " + navn.size());
         return navn.stream()
                 .map(PdlTjenesteImpl::navn)
                 .findFirst()
