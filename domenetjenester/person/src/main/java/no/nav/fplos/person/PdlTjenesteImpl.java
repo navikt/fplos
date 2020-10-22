@@ -90,12 +90,13 @@ public class PdlTjenesteImpl implements PdlTjeneste {
 
     private static Fødselsnummer fnr(List<Folkeregisteridentifikator> folkeregisteridentifikator) {
         log.info("Pdl folkeregisteridentifikatorlistestørrelse: " + folkeregisteridentifikator.size());
-        var ider = folkeregisteridentifikator.stream().filter(i -> i.getStatus().equals("I_BRUK"));
-        if (ider.count() > 1) {
-            String typer = ider.map(Folkeregisteridentifikator::getType).collect(Collectors.joining(", "));
+        var ider = folkeregisteridentifikator.stream().filter(i -> i.getStatus().equals("I_BRUK"))
+                .collect(Collectors.toList());
+        if (ider.size() > 1) {
+            String typer = ider.stream().map(Folkeregisteridentifikator::getType).collect(Collectors.joining(", "));
             log.info("Pdl fnr: fant " + typer);
         }
-        return ider.map(Folkeregisteridentifikator::getIdentifikasjonsnummer)
+        return ider.stream().map(Folkeregisteridentifikator::getIdentifikasjonsnummer)
                 .map(Fødselsnummer::new)
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("Fant ikke fødselsnummer"));
