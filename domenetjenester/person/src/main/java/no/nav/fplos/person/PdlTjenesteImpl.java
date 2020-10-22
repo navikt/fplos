@@ -17,6 +17,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -70,11 +71,10 @@ public class PdlTjenesteImpl implements PdlTjeneste {
     }
 
     private static String navn(List<Navn> navn) {
-        log.info("Pdl navneliste har størrelse: " + navn.size());
         return navn.stream()
                 .map(PdlTjenesteImpl::navn)
                 .findFirst()
-                .orElseThrow();
+                .orElseThrow(() -> new IllegalArgumentException("Fant ikke navn"));
     }
 
     private static String navn(Navn navn) {
@@ -89,14 +89,9 @@ public class PdlTjenesteImpl implements PdlTjeneste {
     }
 
     private static Fødselsnummer fnr(List<Folkeregisteridentifikator> folkeregisteridentifikator) {
-        log.info("Pdl folkeregisteridentifikatorlistestørrelse: " + folkeregisteridentifikator.size());
-        var ider = folkeregisteridentifikator.stream().filter(i -> i.getStatus().equals("I_BRUK"))
-                .collect(Collectors.toList());
-        if (ider.size() > 1) {
-            String typer = ider.stream().map(Folkeregisteridentifikator::getType).collect(Collectors.joining(", "));
-            log.info("Pdl fnr: fant " + typer);
-        }
-        return ider.stream().map(Folkeregisteridentifikator::getIdentifikasjonsnummer)
+        return folkeregisteridentifikator.stream()
+                .filter(i -> i.getStatus().equals("I_BRUK"))
+                .map(Folkeregisteridentifikator::getIdentifikasjonsnummer)
                 .map(Fødselsnummer::new)
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("Fant ikke fødselsnummer"));
