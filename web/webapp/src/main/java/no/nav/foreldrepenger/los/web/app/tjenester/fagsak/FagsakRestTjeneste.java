@@ -17,6 +17,7 @@ import no.nav.foreldrepenger.los.web.app.AbacAttributter;
 import no.nav.foreldrepenger.los.web.app.tjenester.fagsak.app.FagsakApplikasjonTjeneste;
 import no.nav.foreldrepenger.los.web.app.tjenester.fagsak.dto.SokefeltDto;
 import no.nav.fplos.foreldrepengerbehandling.dto.fagsak.FagsakDto;
+import no.nav.fplos.foreldrepengerbehandling.dto.fagsak.FagsakMedPersonDto;
 import no.nav.vedtak.sikkerhet.abac.BeskyttetRessurs;
 import no.nav.vedtak.sikkerhet.abac.BeskyttetRessursActionAttributt;
 
@@ -42,7 +43,7 @@ public class FagsakRestTjeneste {
     @Operation(description = "Søk etter saker på saksnummer eller fødselsnummer", tags = "Fagsaker")
     @BeskyttetRessurs(action = BeskyttetRessursActionAttributt.READ, resource = AbacAttributter.FAGSAK)
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
-    public List<FagsakDto> søkFagsaker(@Parameter(description = "Søkestreng kan være saksnummer, fødselsnummer eller D-nummer.") @Valid SokefeltDto søkestreng) {
+    public List<FagsakMedPersonDto> søkFagsaker(@Parameter(description = "Søkestreng kan være saksnummer, fødselsnummer eller D-nummer.") @Valid SokefeltDto søkestreng) {
         return fagsakApplikasjonTjeneste.hentSaker(søkestreng.getSearchString());
     }
 }

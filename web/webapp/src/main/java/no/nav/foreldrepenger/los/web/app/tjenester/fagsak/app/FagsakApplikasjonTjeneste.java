@@ -1,33 +1,32 @@
 package no.nav.foreldrepenger.los.web.app.tjenester.fagsak.app;
 
-import no.nav.foreldrepenger.domene.typer.Saksnummer;
-import no.nav.foreldrepenger.loslager.aktør.Fødselsnummer;
-import no.nav.foreldrepenger.loslager.aktør.Person;
-import no.nav.fplos.foreldrepengerbehandling.ForeldrepengerBehandlingKlient;
 import no.nav.fplos.foreldrepengerbehandling.ForeldrepengerFagsakKlient;
+import no.nav.fplos.foreldrepengerbehandling.dto.behandling.ResourceLink;
+import no.nav.fplos.foreldrepengerbehandling.dto.fagsak.AktoerInfoDto;
 import no.nav.fplos.foreldrepengerbehandling.dto.fagsak.FagsakDto;
-import no.nav.fplos.person.PersonTjeneste;
+import no.nav.fplos.foreldrepengerbehandling.dto.fagsak.FagsakMedPersonDto;
+import no.nav.fplos.foreldrepengerbehandling.dto.fagsak.PersonDto;
 import no.nav.vedtak.exception.IntegrasjonException;
 import no.nav.vedtak.exception.ManglerTilgangException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import java.util.Collections;
 import java.util.List;
 
-import static no.nav.foreldrepenger.loslager.aktør.Fødselsnummer.erFødselsnummer;
+import static java.util.stream.Collectors.toList;
 
 @ApplicationScoped
 public class FagsakApplikasjonTjeneste {
 
-    private PersonTjeneste personTjeneste;
+    private static final Logger log = LoggerFactory.getLogger(FagsakApplikasjonTjeneste.class);
     private ForeldrepengerFagsakKlient fagsakKlient;
 
 
     @Inject
-    public FagsakApplikasjonTjeneste(PersonTjeneste personTjeneste,
-                                     ForeldrepengerFagsakKlient fagsakKlient) {
-        this.personTjeneste = personTjeneste;
+    public FagsakApplikasjonTjeneste(ForeldrepengerFagsakKlient fagsakKlient) {
         this.fagsakKlient = fagsakKlient;
     }
 
@@ -35,36 +34,42 @@ public class FagsakApplikasjonTjeneste {
         //CDI runner
     }
 
-    public List<FagsakDto> hentSaker(String søkestreng) {
+    public List<FagsakMedPersonDto> hentSaker(String søkestreng) {
         if (!søkestreng.matches("\\d+")) {
             return Collections.emptyList();
         }
         try {
-            return erFødselsnummer(søkestreng)
-                    ? hentSakerForFnr(new Fødselsnummer(søkestreng))
-                    : hentFagsakForSaksnummer(new Saksnummer(søkestreng));
+            var fagsaker = fagsakKlient.finnFagsaker(søkestreng);
+            if (fagsaker.isEmpty()) {
+                return Collections.emptyList();
+            }
+            var personDto = fagsaker.stream().findAny()
+                    .map(FagsakDto::getLinks)
+                    .orElse(Collections.emptyList())
+                    .stream()
+                    .filter(rl -> rl.getRel().equals("sak-aktoer-person"))
+                    .map(ResourceLink::getHref)
+                    .peek(h -> log.info(h.getQuery()))
+                    .map(fagsakKlient::hentAktoerInfo)
+                    .map(AktoerInfoDto::getPerson)
+                    .findFirst().orElse(null);
+            return fagsaker.stream().map(fs -> map(fs, personDto)).collect(toList());
         } catch (ManglerTilgangException e) {
             // fpsak gir 403 både ved manglende tilgang og sak-ikke-funnet
             return Collections.emptyList();
-        }
-    }
-
-    private List<FagsakDto> hentSakerForFnr(Fødselsnummer fnr) {
-        try {
-            return personTjeneste.hentPerson(fnr)
-                    .map(Person::getFødselsnummer)
-                    .map(fagsakKlient::getFagsakFraFnr)
-                    .orElse(Collections.emptyList());
         } catch (IntegrasjonException e) {
             if (e.getMessage().contains("Finner ikke bruker med ident")) {
-                // unødvendig feilmelding i frontend hvis vi ikke bytter ut denne med tom liste
+                // fant ikke bruker.
+                log.info("Fant ikke bruker", e);
                 return Collections.emptyList();
             }
             throw e;
         }
     }
 
-    private List<FagsakDto> hentFagsakForSaksnummer(Saksnummer saksnummer) {
-        return fagsakKlient.getFagsakFraSaksnummer(saksnummer.getVerdi());
+    private static FagsakMedPersonDto map(FagsakDto fagsakDto, PersonDto personDto) {
+        return new FagsakMedPersonDto(fagsakDto.getSaksnummer(), fagsakDto.getSakstype(),
+                fagsakDto.getStatus(), personDto, fagsakDto.getBarnFodt());
     }
+
 }

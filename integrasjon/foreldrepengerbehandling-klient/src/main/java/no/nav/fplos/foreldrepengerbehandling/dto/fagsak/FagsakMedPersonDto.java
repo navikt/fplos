@@ -1,32 +1,36 @@
 package no.nav.fplos.foreldrepengerbehandling.dto.fagsak;
 
-import java.time.LocalDate;
-import java.util.List;
-
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import no.nav.foreldrepenger.loslager.oppgave.FagsakStatus;
 import no.nav.foreldrepenger.loslager.oppgave.FagsakYtelseType;
-import no.nav.fplos.foreldrepengerbehandling.dto.behandling.ResourceLink;
+
+import java.time.LocalDate;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class FagsakDto {
-
+public class FagsakMedPersonDto {
     private Long saksnummer;
     private FagsakYtelseType sakstype;
     private FagsakStatus status;
+    private PersonDto person;
     private LocalDate barnFodt;
-    private List<ResourceLink> links;
 
-    public FagsakDto() {
-        // Injiseres i test
+    public FagsakMedPersonDto() {
+
     }
 
-    public FagsakDto(Long saksnummer, FagsakYtelseType sakstype, FagsakStatus status, LocalDate barnFodt, List<ResourceLink> links) {
+    public FagsakMedPersonDto(Long saksnummer, FagsakYtelseType sakstype,
+                              FagsakStatus status, PersonDto person,
+                              LocalDate barnFodt) {
         this.saksnummer = saksnummer;
         this.sakstype = sakstype;
         this.status = status;
+        this.person = person;
         this.barnFodt = barnFodt;
-        this.links = links;
+    }
+
+    public FagsakMedPersonDto person(PersonDto person) {
+        this.person = person;
+        return this;
     }
 
     public Long getSaksnummer() {
@@ -41,12 +45,11 @@ public class FagsakDto {
         return status;
     }
 
+    public PersonDto getPerson() {
+        return person;
+    }
+
     public LocalDate getBarnFodt() {
         return barnFodt;
     }
-
-    public List<ResourceLink> getLinks() {
-        return links;
-    }
-
 }
