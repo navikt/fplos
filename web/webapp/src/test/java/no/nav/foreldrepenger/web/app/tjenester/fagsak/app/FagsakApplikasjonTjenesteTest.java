@@ -1,39 +1,34 @@
 package no.nav.foreldrepenger.web.app.tjenester.fagsak.app;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import no.nav.foreldrepenger.domene.typer.AktørId;
+import no.nav.foreldrepenger.los.web.app.tjenester.fagsak.app.FagsakApplikasjonTjeneste;
+import no.nav.foreldrepenger.loslager.aktør.Fødselsnummer;
+import no.nav.foreldrepenger.loslager.aktør.Person;
+import no.nav.foreldrepenger.loslager.oppgave.FagsakStatus;
+import no.nav.foreldrepenger.loslager.oppgave.FagsakYtelseType;
+import no.nav.fplos.foreldrepengerbehandling.ForeldrepengerFagsakKlient;
+import no.nav.fplos.foreldrepengerbehandling.dto.behandling.ResourceLink;
+import no.nav.fplos.foreldrepengerbehandling.dto.fagsak.AktoerInfoDto;
+import no.nav.fplos.foreldrepengerbehandling.dto.fagsak.FagsakDto;
+import no.nav.fplos.foreldrepengerbehandling.dto.fagsak.FagsakMedPersonDto;
+import no.nav.fplos.foreldrepengerbehandling.dto.fagsak.PersonDto;
+import no.nav.fplos.person.PersonTjeneste;
+import no.nav.vedtak.exception.ManglerTilgangException;
+import no.nav.vedtak.felles.integrasjon.rest.OidcRestClientFeil;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-import java.net.URI;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.Month;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import no.nav.foreldrepenger.loslager.aktør.Fødselsnummer;
-import no.nav.fplos.foreldrepengerbehandling.ForeldrepengerFagsakKlient;
-import no.nav.fplos.foreldrepengerbehandling.dto.behandling.ResourceLink;
-import no.nav.fplos.foreldrepengerbehandling.dto.fagsak.AktoerInfoDto;
-import no.nav.fplos.foreldrepengerbehandling.dto.fagsak.FagsakMedPersonDto;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
-import no.nav.foreldrepenger.domene.typer.AktørId;
-import no.nav.foreldrepenger.los.web.app.tjenester.fagsak.app.FagsakApplikasjonTjeneste;
-import no.nav.foreldrepenger.loslager.aktør.Person;
-import no.nav.foreldrepenger.loslager.oppgave.FagsakStatus;
-import no.nav.foreldrepenger.loslager.oppgave.FagsakYtelseType;
-import no.nav.fplos.foreldrepengerbehandling.dto.fagsak.FagsakDto;
-import no.nav.fplos.foreldrepengerbehandling.dto.fagsak.PersonDto;
-import no.nav.fplos.person.PersonTjeneste;
-import no.nav.vedtak.exception.ManglerTilgangException;
-import no.nav.vedtak.felles.integrasjon.rest.OidcRestClientFeil;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class FagsakApplikasjonTjenesteTest {
 
@@ -86,8 +81,8 @@ public class FagsakApplikasjonTjenesteTest {
     @Test
     public void skal_hente_saker_på_saksreferanse() {
         PersonDto personDto = new PersonDto("TEST", 20, FNR.asValue(), ER_KVINNE, "", null);
-        AktoerInfoDto aktoerInfoDto = new AktoerInfoDto();
-        aktoerInfoDto.setPerson(personDto);
+        AktoerInfoDto infoDto = new AktoerInfoDto();
+        infoDto.setPerson(personDto);
         ResourceLink rel = ResourceLink.get("test-uri", "sak-aktoer-person", "aktørIdDtoObjekt");
 
         List<FagsakDto> fagsakDtos = new ArrayList<>();
@@ -95,7 +90,7 @@ public class FagsakApplikasjonTjenesteTest {
                 FagsakStatus.UNDER_BEHANDLING, LocalDate.now(), List.of(rel));
         fagsakDtos.add(fagsakDto);
         when(fagsakKlient.finnFagsaker(SAKSNUMMER)).thenReturn(fagsakDtos);
-        when(fagsakKlient.hentAktoerInfo(any())).thenReturn(aktoerInfoDto);
+        when(fagsakKlient.hentAktoerInfo(any())).thenReturn(infoDto);
 
 
         // Act

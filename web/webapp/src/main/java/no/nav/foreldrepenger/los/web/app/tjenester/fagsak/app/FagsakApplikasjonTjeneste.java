@@ -5,6 +5,7 @@ import no.nav.fplos.foreldrepengerbehandling.dto.behandling.ResourceLink;
 import no.nav.fplos.foreldrepengerbehandling.dto.fagsak.AktoerInfoDto;
 import no.nav.fplos.foreldrepengerbehandling.dto.fagsak.FagsakDto;
 import no.nav.fplos.foreldrepengerbehandling.dto.fagsak.FagsakMedPersonDto;
+import no.nav.fplos.foreldrepengerbehandling.dto.fagsak.PersonDto;
 import no.nav.vedtak.exception.IntegrasjonException;
 import no.nav.vedtak.exception.ManglerTilgangException;
 import org.slf4j.Logger;
@@ -44,12 +45,14 @@ public class FagsakApplikasjonTjeneste {
             }
             var personDto = fagsaker.stream().findAny()
                     .map(FagsakDto::getLinks)
-                    .orElseGet(Collections::emptyList)
+                    .orElse(Collections.emptyList())
                     .stream()
-                    .filter(rel -> rel.getRel().equals("sak-aktoer-person"))
+                    .filter(rl -> rl.getRel().equals("sak-aktoer-person"))
                     .map(ResourceLink::getHref)
+                    .peek(h -> log.info(h.getQuery()))
                     .map(fagsakKlient::hentAktoerInfo)
-                    .findAny().orElse(null);
+                    .map(AktoerInfoDto::getPerson)
+                    .findFirst().orElse(null);
             return fagsaker.stream().map(fs -> map(fs, personDto)).collect(toList());
         } catch (ManglerTilgangException e) {
             // fpsak gir 403 både ved manglende tilgang og sak-ikke-funnet
@@ -64,9 +67,9 @@ public class FagsakApplikasjonTjeneste {
         }
     }
 
-    private static FagsakMedPersonDto map(FagsakDto fagsakDto, AktoerInfoDto aktoerInfoDto) {
+    private static FagsakMedPersonDto map(FagsakDto fagsakDto, PersonDto personDto) {
         return new FagsakMedPersonDto(fagsakDto.getSaksnummer(), fagsakDto.getSakstype(),
-                fagsakDto.getStatus(), aktoerInfoDto.getPerson(), fagsakDto.getBarnFodt());
+                fagsakDto.getStatus(), personDto, fagsakDto.getBarnFodt());
     }
 
 }

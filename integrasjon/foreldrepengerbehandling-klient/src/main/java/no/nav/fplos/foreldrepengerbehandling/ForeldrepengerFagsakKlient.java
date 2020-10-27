@@ -23,7 +23,6 @@ public class ForeldrepengerFagsakKlient {
 
 
     private static final String FAGSAK_SOK = "/fpsak/api/fagsak/sok";
-    private static final String AKTOER_INFO = "/fpsak/api/aktoer-info";
     private OidcRestClient oidcRestClient;
     private String baseUrl;
 
@@ -47,18 +46,20 @@ public class ForeldrepengerFagsakKlient {
 
     public AktoerInfoDto hentAktoerInfo(URI href) {
         try {
-            var uriBuilder = new URIBuilder(baseUrl);
-            uriBuilder.setPath(href.getPath());
-            uriBuilder.setCustomQuery(href.getQuery());
-            URI uri = uriBuilder.build();
+            var builder = new URIBuilder(baseUrl);
+            builder.setPath(href.getPath());
+            builder.setCustomQuery(oe(href.getQuery()));
+            URI uri = builder.build();
             log.info(String.valueOf(uri));
             return oidcRestClient.get(uri, AktoerInfoDto.class);
         } catch (URISyntaxException e) {
-            throw new IllegalArgumentException("Oppslag av aktørinformasjon feilet.", e);
+            throw new IllegalArgumentException("Feil i bygging av URI", e);
         }
     }
 
-    private URI uri(String path) {
-        return URI.create(baseUrl + path);
+    private String oe(String query) {
+        // kompenserer for feil i aktoer-info lenke fra fpsak
+        return query.replace("ø", "oe");
     }
+
 }
