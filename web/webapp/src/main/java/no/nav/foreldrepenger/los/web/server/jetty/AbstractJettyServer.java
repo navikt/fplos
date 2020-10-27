@@ -127,7 +127,7 @@ abstract class AbstractJettyServer {
 
         // Add support for X-Forwarded headers
         httpConfig.addCustomizer( new org.eclipse.jetty.server.ForwardedRequestCustomizer() );
-        httpConfig.setRequestHeaderSize(16192); // øker for å unngå 431 error code
+        httpConfig.setRequestHeaderSize(16384); // øker for å unngå 431 error code
 
         return httpConfig;
 
