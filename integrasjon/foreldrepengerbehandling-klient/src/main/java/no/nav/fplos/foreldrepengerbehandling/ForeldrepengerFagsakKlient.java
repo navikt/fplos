@@ -1,14 +1,10 @@
 package no.nav.fplos.foreldrepengerbehandling;
 
 import no.nav.fplos.foreldrepengerbehandling.dto.SokefeltDto;
-import no.nav.fplos.foreldrepengerbehandling.dto.fagsak.AktoerInfoDto;
 import no.nav.fplos.foreldrepengerbehandling.dto.fagsak.FagsakDto;
-import no.nav.fplos.foreldrepengerbehandling.dto.fagsak.PersonDto;
 import no.nav.vedtak.felles.integrasjon.rest.OidcRestClient;
 import no.nav.vedtak.konfig.KonfigVerdi;
 import org.apache.http.client.utils.URIBuilder;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -19,9 +15,6 @@ import java.util.List;
 
 @ApplicationScoped
 public class ForeldrepengerFagsakKlient {
-
-    private static final Logger log = LoggerFactory.getLogger(ForeldrepengerFagsakKlient.class);
-
 
     private static final String FAGSAK_SOK = "/fpsak/api/fagsak/sok";
     private OidcRestClient oidcRestClient;
@@ -45,35 +38,16 @@ public class ForeldrepengerFagsakKlient {
         return Arrays.asList(fagsakDtoer);
     }
 
-    public AktoerInfoDto hentAktoerInfo(URI href) {
-        try {
-            var builder = new URIBuilder(baseUrl);
-            builder.setPath(href.getPath());
-            builder.setCustomQuery(oe(href.getQuery()));
-            URI uri = builder.build();
-            log.info(String.valueOf(uri));
-            return oidcRestClient.get(uri, AktoerInfoDto.class);
-        } catch (URISyntaxException e) {
-            throw new IllegalArgumentException("Feil i bygging av URI", e);
-        }
-    }
-
-    public PersonDto hentBruker(URI href) {
+    public <T> T get(URI href, Class<T> cls) {
         try {
             var uriBuilder = new URIBuilder(baseUrl);
             uriBuilder.setPath(href.getPath());
             uriBuilder.setCustomQuery(href.getQuery());
             URI uri = uriBuilder.build();
-            log.info(String.valueOf(uri));
-            return oidcRestClient.get(uri, PersonDto.class);
+            return oidcRestClient.get(uri, cls);
         } catch (URISyntaxException e) {
-            throw new IllegalArgumentException("Oppslag av brukerinformasjon feilet.", e);
+            throw new IllegalArgumentException("Konstruksjon av uri til endepunkt som henter " + cls.getSimpleName() + " feiler", e);
         }
-    }
-
-    private String oe(String query) {
-        // kompenserer for feil i aktoer-info lenke fra fpsak
-        return query.replace("ø", "oe");
     }
 
 }

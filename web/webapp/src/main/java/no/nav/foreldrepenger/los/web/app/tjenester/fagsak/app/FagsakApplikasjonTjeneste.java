@@ -2,7 +2,6 @@ package no.nav.foreldrepenger.los.web.app.tjenester.fagsak.app;
 
 import no.nav.fplos.foreldrepengerbehandling.ForeldrepengerFagsakKlient;
 import no.nav.fplos.foreldrepengerbehandling.dto.behandling.ResourceLink;
-import no.nav.fplos.foreldrepengerbehandling.dto.fagsak.AktoerInfoDto;
 import no.nav.fplos.foreldrepengerbehandling.dto.fagsak.FagsakDto;
 import no.nav.fplos.foreldrepengerbehandling.dto.fagsak.FagsakMedPersonDto;
 import no.nav.fplos.foreldrepengerbehandling.dto.fagsak.PersonDto;
@@ -43,7 +42,7 @@ public class FagsakApplikasjonTjeneste {
             if (fagsaker.isEmpty()) {
                 return Collections.emptyList();
             }
-            var personDto = person(fagsaker);
+            var personDto = personDtoFra(fagsaker);
             return fagsaker.stream().map(fs -> map(fs, personDto)).collect(toList());
         } catch (ManglerTilgangException e) {
             // fpsak gir 403 både ved manglende tilgang og sak-ikke-funnet
@@ -58,27 +57,15 @@ public class FagsakApplikasjonTjeneste {
         }
     }
 
-    private PersonDto person(List<FagsakDto> fagsaker) {
-        var links = fagsaker.stream().findAny()
-                .map(FagsakDto::getLinks)
-                .orElse(Collections.emptyList());
-        if (links.stream().anyMatch(rl -> rl.getRel().equals("sak-aktoer-person"))) {
-            return links.stream()
-                    .filter(rl -> rl.getRel().equals("sak-aktoer-person"))
-                    .map(ResourceLink::getHref)
-                    .peek(h -> log.info(h.getQuery()))
-                    .map(fagsakKlient::hentAktoerInfo)
-                    .map(AktoerInfoDto::getPerson)
-                    .findFirst().orElse(null);
-        }
+    private PersonDto personDtoFra(List<FagsakDto> fagsaker) {
         return fagsaker.stream().findAny()
                 .map(FagsakDto::getOnceLinks)
                 .orElse(Collections.emptyList()).stream()
                 .filter(rl -> rl.getRel().equals("sak-bruker"))
                 .map(ResourceLink::getHref)
-                .peek(h -> log.info(h.getQuery()))
-                .map(fagsakKlient::hentBruker)
-                .findFirst().orElse(null);
+                .map(href -> fagsakKlient.get(href, PersonDto.class))
+                .findFirst()
+                .orElse(null);
     }
 
     private static FagsakMedPersonDto map(FagsakDto fagsakDto, PersonDto personDto) {

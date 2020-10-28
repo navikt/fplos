@@ -8,7 +8,6 @@ import no.nav.foreldrepenger.loslager.oppgave.FagsakStatus;
 import no.nav.foreldrepenger.loslager.oppgave.FagsakYtelseType;
 import no.nav.fplos.foreldrepengerbehandling.ForeldrepengerFagsakKlient;
 import no.nav.fplos.foreldrepengerbehandling.dto.behandling.ResourceLink;
-import no.nav.fplos.foreldrepengerbehandling.dto.fagsak.AktoerInfoDto;
 import no.nav.fplos.foreldrepengerbehandling.dto.fagsak.FagsakDto;
 import no.nav.fplos.foreldrepengerbehandling.dto.fagsak.FagsakMedPersonDto;
 import no.nav.fplos.foreldrepengerbehandling.dto.fagsak.PersonDto;
@@ -50,16 +49,9 @@ public class FagsakApplikasjonTjenesteTest {
 
     @Test
     public void skal_hente_saker_på_fnr() {
-        // Arrange
-        Person personinfo = new Person.Builder().medAktørId(AKTØR_ID)
-                .medFnr(FNR)
-                .medNavn("Test")
-                .build();
-        when(personTjeneste.hentPerson(FNR)).thenReturn(Optional.of(personinfo));
-
         PersonDto personinfoSoker = new PersonDto("TEST", 20, FNR.asValue(), ER_KVINNE, "", null);
         FagsakDto fagsakDto = new FagsakDto(Long.valueOf(FNR.asValue()), FagsakYtelseType.FORELDREPENGER,
-                FagsakStatus.OPPRETTET, LocalDate.of(2017, Month.FEBRUARY, 1), Collections.emptyList(), Collections.emptyList());
+                FagsakStatus.OPPRETTET, LocalDate.of(2017, Month.FEBRUARY, 1), Collections.emptyList());
 
         when(fagsakKlient.finnFagsaker(FNR.asValue())).thenReturn(Collections.singletonList(fagsakDto));
 
@@ -81,17 +73,14 @@ public class FagsakApplikasjonTjenesteTest {
     @Test
     public void skal_hente_saker_på_saksreferanse() {
         PersonDto personDto = new PersonDto("TEST", 20, FNR.asValue(), ER_KVINNE, "", null);
-        AktoerInfoDto infoDto = new AktoerInfoDto();
-        infoDto.setPerson(personDto);
-        ResourceLink rel = ResourceLink.get("test-uri", "sak-aktoer-person", "aktørIdDtoObjekt");
+        ResourceLink rel = ResourceLink.get("test-uri", "sak-bruker", "aktørIdDtoObjekt");
 
         List<FagsakDto> fagsakDtos = new ArrayList<>();
         FagsakDto fagsakDto = new FagsakDto(Long.valueOf(SAKSNUMMER), FagsakYtelseType.FORELDREPENGER,
-                FagsakStatus.UNDER_BEHANDLING, LocalDate.now(), List.of(rel), Collections.emptyList());
+                FagsakStatus.UNDER_BEHANDLING, LocalDate.now(), List.of(rel));
         fagsakDtos.add(fagsakDto);
         when(fagsakKlient.finnFagsaker(SAKSNUMMER)).thenReturn(fagsakDtos);
-        when(fagsakKlient.hentAktoerInfo(any())).thenReturn(infoDto);
-
+        when(fagsakKlient.get(any(), any())).thenReturn(personDto);
 
         // Act
         List<FagsakMedPersonDto> resultFagsakDtos = fagsakTjeneste.hentSaker(SAKSNUMMER);
@@ -99,7 +88,6 @@ public class FagsakApplikasjonTjenesteTest {
         // Assert
         assertThat(resultFagsakDtos.isEmpty()).isFalse();
         assertThat(resultFagsakDtos).hasSize(1);
-        //FagsakDto resultFagsakDto = resultFagsakDtos.get(0);
         assertThat(resultFagsakDtos.get(0).getPerson()).isEqualTo(personDto);
     }
 

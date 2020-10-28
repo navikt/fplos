@@ -15,19 +15,17 @@ public class FagsakDto {
     private FagsakYtelseType sakstype;
     private FagsakStatus status;
     private LocalDate barnFodt;
-    private List<ResourceLink> links;
     private List<ResourceLink> onceLinks;
 
     public FagsakDto() {
         // Injiseres i test
     }
 
-    public FagsakDto(Long saksnummer, FagsakYtelseType sakstype, FagsakStatus status, LocalDate barnFodt, List<ResourceLink> links, List<ResourceLink> onceLinks) {
+    public FagsakDto(Long saksnummer, FagsakYtelseType sakstype, FagsakStatus status, LocalDate barnFodt, List<ResourceLink> onceLinks) {
         this.saksnummer = saksnummer;
         this.sakstype = sakstype;
         this.status = status;
         this.barnFodt = barnFodt;
-        this.links = links;
         this.onceLinks = onceLinks;
     }
 
@@ -45,10 +43,6 @@ public class FagsakDto {
 
     public LocalDate getBarnFodt() {
         return barnFodt;
-    }
-
-    public List<ResourceLink> getLinks() {
-        return links;
     }
 
     public List<ResourceLink> getOnceLinks() {
