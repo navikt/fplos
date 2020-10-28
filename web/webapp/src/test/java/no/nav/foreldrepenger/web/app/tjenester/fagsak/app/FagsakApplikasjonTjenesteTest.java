@@ -59,7 +59,7 @@ public class FagsakApplikasjonTjenesteTest {
 
         PersonDto personinfoSoker = new PersonDto("TEST", 20, FNR.asValue(), ER_KVINNE, "", null);
         FagsakDto fagsakDto = new FagsakDto(Long.valueOf(FNR.asValue()), FagsakYtelseType.FORELDREPENGER,
-                FagsakStatus.OPPRETTET, LocalDate.of(2017, Month.FEBRUARY, 1), Collections.emptyList());
+                FagsakStatus.OPPRETTET, LocalDate.of(2017, Month.FEBRUARY, 1), Collections.emptyList(), Collections.emptyList());
 
         when(fagsakKlient.finnFagsaker(FNR.asValue())).thenReturn(Collections.singletonList(fagsakDto));
 
@@ -87,7 +87,7 @@ public class FagsakApplikasjonTjenesteTest {
 
         List<FagsakDto> fagsakDtos = new ArrayList<>();
         FagsakDto fagsakDto = new FagsakDto(Long.valueOf(SAKSNUMMER), FagsakYtelseType.FORELDREPENGER,
-                FagsakStatus.UNDER_BEHANDLING, LocalDate.now(), List.of(rel));
+                FagsakStatus.UNDER_BEHANDLING, LocalDate.now(), List.of(rel), Collections.emptyList());
         fagsakDtos.add(fagsakDto);
         when(fagsakKlient.finnFagsaker(SAKSNUMMER)).thenReturn(fagsakDtos);
         when(fagsakKlient.hentAktoerInfo(any())).thenReturn(infoDto);

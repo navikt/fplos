@@ -43,16 +43,7 @@ public class FagsakApplikasjonTjeneste {
             if (fagsaker.isEmpty()) {
                 return Collections.emptyList();
             }
-            var personDto = fagsaker.stream().findAny()
-                    .map(FagsakDto::getLinks)
-                    .orElse(Collections.emptyList())
-                    .stream()
-                    .filter(rl -> rl.getRel().equals("sak-aktoer-person"))
-                    .map(ResourceLink::getHref)
-                    .peek(h -> log.info(h.getQuery()))
-                    .map(fagsakKlient::hentAktoerInfo)
-                    .map(AktoerInfoDto::getPerson)
-                    .findFirst().orElse(null);
+            var personDto = person(fagsaker);
             return fagsaker.stream().map(fs -> map(fs, personDto)).collect(toList());
         } catch (ManglerTilgangException e) {
             // fpsak gir 403 både ved manglende tilgang og sak-ikke-funnet
@@ -65,6 +56,29 @@ public class FagsakApplikasjonTjeneste {
             }
             throw e;
         }
+    }
+
+    private PersonDto person(List<FagsakDto> fagsaker) {
+        var links = fagsaker.stream().findAny()
+                .map(FagsakDto::getLinks)
+                .orElse(Collections.emptyList());
+        if (links.stream().anyMatch(rl -> rl.getRel().equals("sak-aktoer-person"))) {
+            return links.stream()
+                    .filter(rl -> rl.getRel().equals("sak-aktoer-person"))
+                    .map(ResourceLink::getHref)
+                    .peek(h -> log.info(h.getQuery()))
+                    .map(fagsakKlient::hentAktoerInfo)
+                    .map(AktoerInfoDto::getPerson)
+                    .findFirst().orElse(null);
+        }
+        return fagsaker.stream().findAny()
+                .map(FagsakDto::getOnceLinks)
+                .orElse(Collections.emptyList()).stream()
+                .filter(rl -> rl.getRel().equals("sak-bruker"))
+                .map(ResourceLink::getHref)
+                .peek(h -> log.info(h.getQuery()))
+                .map(fagsakKlient::hentBruker)
+                .findFirst().orElse(null);
     }
 
     private static FagsakMedPersonDto map(FagsakDto fagsakDto, PersonDto personDto) {

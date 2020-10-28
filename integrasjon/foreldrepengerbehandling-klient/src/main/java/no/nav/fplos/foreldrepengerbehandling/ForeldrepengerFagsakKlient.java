@@ -3,6 +3,7 @@ package no.nav.fplos.foreldrepengerbehandling;
 import no.nav.fplos.foreldrepengerbehandling.dto.SokefeltDto;
 import no.nav.fplos.foreldrepengerbehandling.dto.fagsak.AktoerInfoDto;
 import no.nav.fplos.foreldrepengerbehandling.dto.fagsak.FagsakDto;
+import no.nav.fplos.foreldrepengerbehandling.dto.fagsak.PersonDto;
 import no.nav.vedtak.felles.integrasjon.rest.OidcRestClient;
 import no.nav.vedtak.konfig.KonfigVerdi;
 import org.apache.http.client.utils.URIBuilder;
@@ -54,6 +55,19 @@ public class ForeldrepengerFagsakKlient {
             return oidcRestClient.get(uri, AktoerInfoDto.class);
         } catch (URISyntaxException e) {
             throw new IllegalArgumentException("Feil i bygging av URI", e);
+        }
+    }
+
+    public PersonDto hentBruker(URI href) {
+        try {
+            var uriBuilder = new URIBuilder(baseUrl);
+            uriBuilder.setPath(href.getPath());
+            uriBuilder.setCustomQuery(href.getQuery());
+            URI uri = uriBuilder.build();
+            log.info(String.valueOf(uri));
+            return oidcRestClient.get(uri, PersonDto.class);
+        } catch (URISyntaxException e) {
+            throw new IllegalArgumentException("Oppslag av brukerinformasjon feilet.", e);
         }
     }
 
