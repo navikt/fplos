@@ -134,7 +134,7 @@ public final class KafkaConsumer<T extends BehandlingProsessEventDto> {
         }
     }
 
-    public boolean isRunning() {
+    public boolean isAlive() {
         return streams.state().isRunningOrRebalancing();
     }
 

@@ -23,10 +23,11 @@ public class ForeldrepengerEventMapper {
     public static EventResultat signifikantEventFra(BehandlingFpsak behandling,
                                                     OppgaveHistorikk oppgaveHistorikk,
                                                     String gjeldendeEnhet) {
-        if (oppgaveHistorikk.erUtenHistorikk() && erIngenÅpne(behandling.getAksjonspunkter())) {
+        var aksjonspunkter = behandling.getAksjonspunkter();
+
+        if (oppgaveHistorikk.erUtenHistorikk() && erIngenÅpne(aksjonspunkter)) {
             return FERDIG;
         }
-        var aksjonspunkter = behandling.getAksjonspunkter();
         if (erIngenÅpne(aksjonspunkter)) {
             return LUKK_OPPGAVE;
         }
@@ -86,7 +87,6 @@ public class ForeldrepengerEventMapper {
     }
 
     private static boolean erIngenÅpne(List<Aksjonspunkt> aksjonspunkt) {
-        return !aksjonspunkt.stream()
-                .anyMatch(Aksjonspunkt::erAktiv);
+        return aksjonspunkt.stream().noneMatch(Aksjonspunkt::erAktiv);
     }
 }

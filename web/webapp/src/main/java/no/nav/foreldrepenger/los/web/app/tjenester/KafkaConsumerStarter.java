@@ -14,6 +14,8 @@ import no.nav.fplos.kafkatjenester.KafkaConsumer;
 import no.nav.fplos.kafkatjenester.TilbakekrevingConsumerProperties;
 import no.nav.fplos.kafkatjenester.TilbakekrevingHendelseOppretter;
 import no.nav.vedtak.felles.prosesstask.api.ProsessTaskRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Triggers start of Kafka consum
@@ -66,10 +68,14 @@ public class KafkaConsumerStarter {
         destroy();
         consumers.add(foreldrepengerConsumer);
         consumers.add(tilbakekrevingConsumer);
-        consumers.forEach(consumer -> consumer.start());
+        consumers.forEach(KafkaConsumer::start);
     }
 
     public void destroy() {
-        consumers.forEach(consumer -> consumer.stop());
+        consumers.forEach(KafkaConsumer::stop);
+    }
+
+    public boolean isKafkaAlive() {
+        return consumers.stream().allMatch(KafkaConsumer::isAlive);
     }
 }

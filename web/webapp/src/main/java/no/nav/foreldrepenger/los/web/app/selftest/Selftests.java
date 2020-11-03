@@ -1,31 +1,26 @@
 package no.nav.foreldrepenger.los.web.app.selftest;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.Any;
-import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
 import no.nav.foreldrepenger.los.web.app.selftest.checks.DatabaseHealthCheck;
-import no.nav.fplos.kafkatjenester.KafkaConsumer;
+import no.nav.foreldrepenger.los.web.app.tjenester.KafkaConsumerStarter;
 
 @ApplicationScoped
 public class Selftests {
-
     private DatabaseHealthCheck databaseHealthCheck;
-    private final List<KafkaConsumer<?>> kafkaList = new ArrayList<>();
+    private KafkaConsumerStarter kafkaConsumerStarter;
 
     private boolean isReady;
     private LocalDateTime sistOppdatertTid = LocalDateTime.now().minusDays(1);
 
     @Inject
     public Selftests(DatabaseHealthCheck databaseHealthCheck,
-                     @Any Instance<KafkaConsumer<?>> kafkaIntegrations) {
+                     KafkaConsumerStarter kafkaConsumerStarter) {
         this.databaseHealthCheck = databaseHealthCheck;
-        kafkaIntegrations.forEach(this.kafkaList::add);
+        this.kafkaConsumerStarter = kafkaConsumerStarter;
     }
 
     Selftests() {
@@ -43,7 +38,7 @@ public class Selftests {
     }
 
     public boolean isKafkaAlive() {
-        return kafkaList.stream().allMatch(KafkaConsumer::isRunning);
+        return kafkaConsumerStarter.isKafkaAlive();
     }
 
     private synchronized void oppdaterSelftestResultatHvisNødvendig() {
