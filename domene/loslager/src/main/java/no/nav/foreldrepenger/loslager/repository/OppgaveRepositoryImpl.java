@@ -480,7 +480,10 @@ public class OppgaveRepositoryImpl implements OppgaveRepository {
         }
         Oppgave nyesteOppgave = oppgaver.stream()
                 .max(Comparator.comparing(Oppgave::getOpprettetTidspunkt))
-                .orElse(null);
+                .orElseThrow();
+        if (!nyesteOppgave.getAktiv()) {
+            return;
+        }
         frigiEventuellReservasjon(nyesteOppgave.getReservasjon());
         nyesteOppgave.avsluttOppgave();
         internLagre(nyesteOppgave);
