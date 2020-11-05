@@ -162,7 +162,7 @@ public final class KafkaConsumer<T extends BehandlingProsessEventDto> {
         @Override
         protected Void doWork(EntityManager em) {
             var dto = deserialiser(String.valueOf(payload));
-            LOG.debug("Håndterer event {}", dto.getEksternId());
+            LOG.info("Håndterer event {}", dto.getEksternId());
             var hendelse = hendelseOppretter.opprett((T) dto);
             hendelseRepository.lagre(hendelse);
             prosessTaskRepository.lagre(opprettTask(hendelse));
@@ -194,6 +194,7 @@ public final class KafkaConsumer<T extends BehandlingProsessEventDto> {
         public void process(Object key, Object value) {
             var callId = navCallId();
             MDCOperations.putCallId(callId);
+            LOG.info("offset={}", context.offset());
             håndterITransaction(value);
         }
 
