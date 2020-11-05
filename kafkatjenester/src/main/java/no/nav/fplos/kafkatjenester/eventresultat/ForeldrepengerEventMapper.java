@@ -25,11 +25,12 @@ public class ForeldrepengerEventMapper {
                                                     String gjeldendeEnhet) {
         var aksjonspunkter = behandling.getAksjonspunkter();
 
-        if (erIngenÅpne(aksjonspunkter) && (oppgaveHistorikk.erUtenHistorikk() || oppgaveHistorikk.erSisteEventLukkeevent())) {
-            return FERDIG;
-        }
         if (erIngenÅpne(aksjonspunkter)) {
-            return LUKK_OPPGAVE;
+            if (oppgaveHistorikk.erUtenHistorikk() || oppgaveHistorikk.erSisteEventLukkeevent()) {
+                return FERDIG;
+            } else {
+                return LUKK_OPPGAVE;
+            }
         }
         if (påVent(aksjonspunkter)) {
             if (oppgaveHistorikk.erSisteVenteEvent()) {
