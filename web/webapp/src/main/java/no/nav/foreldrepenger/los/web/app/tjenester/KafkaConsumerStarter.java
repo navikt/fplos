@@ -65,8 +65,8 @@ public class KafkaConsumerStarter {
                 tilbakekrevingEventHåndterer, prosessTaskRepository, hendelseRepository);
         destroy();
         consumers.add(foreldrepengerConsumer);
-        consumers.add(tilbakekrevingConsumer);
-//        consumers.forEach(KafkaConsumer::start);
+        //consumers.add(tilbakekrevingConsumer);
+        consumers.forEach(KafkaConsumer::start);
     }
 
     public void destroy() {
