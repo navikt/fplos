@@ -6,7 +6,7 @@
   "ldapuserkv": "/serviceuser/data/prod/srvssolinux",
   "namespace": "teamforeldrepenger",
   "ingresses":  ["https://fplos.nais.adeo.no", "https://app.adeo.no/fplos"],
-  "minReplica": "2",
+  "minReplica": "3",
   "maxReplica": "4",
   "env": {
     "LOADBALANCER_URL": "https://app.adeo.no",

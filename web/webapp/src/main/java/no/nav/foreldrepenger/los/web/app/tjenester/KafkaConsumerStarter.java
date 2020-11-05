@@ -74,8 +74,6 @@ public class KafkaConsumerStarter {
     }
 
     public boolean isKafkaAlive() {
-        //Appen server også frontend for saksbehandler, kan ikke dø hvis kafka dør
-        return true;
-//        return consumers.stream().allMatch(KafkaConsumer::isAlive);
+        return consumers.stream().allMatch(KafkaConsumer::isAlive);
     }
 }
