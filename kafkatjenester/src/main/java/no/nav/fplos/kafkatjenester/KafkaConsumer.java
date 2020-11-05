@@ -10,6 +10,7 @@ import javax.persistence.EntityManager;
 
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.config.SaslConfigs;
+import org.apache.kafka.common.header.Header;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.StreamsBuilder;
@@ -194,8 +195,13 @@ public final class KafkaConsumer<T extends BehandlingProsessEventDto> {
         @Override
         public void process(Object key, Object value) {
             var callId = navCallId();
+            var log = new StringBuilder();
+            for (Header header : context.headers()) {
+                log.append(header.key());
+                log.append(" - ");
+            }
             MDCOperations.putCallId(callId);
-            LOG.info("offset={}", context.offset());
+            LOG.info("offset={} {}", context.offset(), log.toString());
             håndterITransaction(value);
         }
 
