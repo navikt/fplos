@@ -65,7 +65,7 @@ public class KafkaConsumerStarter {
                 tilbakekrevingEventHåndterer, prosessTaskRepository, hendelseRepository);
         destroy();
         consumers.add(foreldrepengerConsumer);
-        //consumers.add(tilbakekrevingConsumer);
+        consumers.add(tilbakekrevingConsumer);
         consumers.forEach(KafkaConsumer::start);
     }
 
@@ -74,6 +74,7 @@ public class KafkaConsumerStarter {
     }
 
     public boolean isKafkaAlive() {
+        //Appen server også frontend for saksbehandler, kan ikke dø hvis kafka dør
         return true;
 //        return consumers.stream().allMatch(KafkaConsumer::isAlive);
     }
