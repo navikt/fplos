@@ -63,9 +63,9 @@ public final class KafkaConsumer<T extends BehandlingProsessEventDto> {
     }
 
     private KafkaStreams lagKafkaStreams(KafkaConsumerProperties properties) {
-        //var consumed = Consumed.with(Topology.AutoOffsetReset.EARLIEST);
+        var consumed = Consumed.with(Topology.AutoOffsetReset.EARLIEST);
         var builder = new StreamsBuilder();
-        builder.stream(properties.getTopic()).process(MyProcessor::new);
+        builder.stream(properties.getTopic(), consumed).process(() -> new MyProcessor());
 
         var topology = builder.build();
         return new KafkaStreams(topology, setupProperties(properties));
@@ -75,7 +75,6 @@ public final class KafkaConsumer<T extends BehandlingProsessEventDto> {
         var properties = new Properties();
         properties.setProperty(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, consumerProperties.getBootstrapServers());
         properties.setProperty(ConsumerConfig.MAX_POLL_RECORDS_CONFIG, "1");
-        properties.setProperty(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "none");
         properties.setProperty(StreamsConfig.APPLICATION_ID_CONFIG, consumerProperties.getGroupId());
 
         var username = consumerProperties.getUsername();
