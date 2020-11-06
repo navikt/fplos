@@ -63,10 +63,10 @@ public class OppgaveKorrigerEndretdatoTask implements ProsessTaskHandler {
             tilhørendeOppgaveEvent
                     .flatMap(t -> finnEldreDuplikatEvent(aktuelleEventer, t.getType()))
                     .map(BehandlingEventLogg::getOpprettetTid)
-                    .ifPresent(korrigertTid -> {
-                        log.info("Fant tidligere endringsdato {} for oppgaveId {}", korrigertTid, oppgave.getId());
+                    .ifPresentOrElse(korrigertTid -> {
+                        log.info("OppgaveId: {}, eksisterende endret_tid: {}, korrigert endret_tid_2: {}", oppgave.getId(), oppgave.getEndretTid(), korrigertTid);
                         updateEndretTid(oppgave, korrigertTid);
-                    });
+                    }, () -> log.info("OppgaveId: {}. Ikke behov for å korrigere endret_tid", oppgave.getId()));
         }
     }
 
@@ -103,11 +103,10 @@ public class OppgaveKorrigerEndretdatoTask implements ProsessTaskHandler {
 
     private void updateEndretTid(Oppgave oppgave, LocalDateTime korrigertTid) {
         // TODO: både endret_tid og avsluttet_tid bør kanskje oppdateres
-        int query = entityManager.createNativeQuery("update oppgave set endret_TID_2 = :korrigertTid where id = :oppgaveId")
+        entityManager.createNativeQuery("update oppgave set endret_TID_2 = :korrigertTid where id = :oppgaveId")
                 .setParameter("korrigertTid", korrigertTid)
                 .setParameter("oppgaveId", oppgave.getId())
                 .executeUpdate();
-        log.info("Oppdaterte tid til {} for oppgave med id {}", korrigertTid, oppgave.getId());
     }
 
     private Oppgave hentOppgave(long oppgaveId) {
