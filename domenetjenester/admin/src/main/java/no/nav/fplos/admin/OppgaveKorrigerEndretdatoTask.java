@@ -107,7 +107,7 @@ public class OppgaveKorrigerEndretdatoTask implements ProsessTaskHandler {
                 .setParameter("korrigertTid", korrigertTid)
                 .setParameter("oppgaveId", oppgave.getId())
                 .executeUpdate();
-        log.info("Oppdaterte {} oppgave med id {}", query, oppgave.getId());
+        log.info("Oppdaterte tid til {} for oppgave med id {}", korrigertTid, oppgave.getId());
     }
 
     private Oppgave hentOppgave(long oppgaveId) {

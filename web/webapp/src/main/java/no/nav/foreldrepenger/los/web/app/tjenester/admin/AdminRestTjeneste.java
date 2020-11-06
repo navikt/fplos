@@ -5,6 +5,7 @@ import static no.nav.vedtak.sikkerhet.abac.BeskyttetRessursActionAttributt.CREAT
 import static no.nav.vedtak.sikkerhet.abac.BeskyttetRessursActionAttributt.READ;
 
 import java.util.List;
+import java.util.function.Function;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -34,7 +35,9 @@ import no.nav.foreldrepenger.loslager.organisasjon.Avdeling;
 import no.nav.fplos.admin.AdminTjeneste;
 import no.nav.fplos.admin.OppgaveKorrigerEndretdatoTaskOppretterTjeneste;
 import no.nav.fplos.admin.OppgaveSynkroniseringTaskOppretterTjeneste;
+import no.nav.vedtak.sikkerhet.abac.AbacDataAttributter;
 import no.nav.vedtak.sikkerhet.abac.BeskyttetRessurs;
+import no.nav.vedtak.sikkerhet.abac.TilpassetAbacAttributt;
 
 @Path("/admin")
 @ApplicationScoped
@@ -154,7 +157,8 @@ public class AdminRestTjeneste {
     @Produces(MediaType.APPLICATION_JSON)
     @Operation(description = "Synkroniserer spesifisert oppgaveegenskap/kriterietype for åpne oppgaver", tags = "admin")
     @BeskyttetRessurs(action = CREATE, resource = AbacAttributter.DRIFT)
-    public Response korrigerEndretTid(@NotNull @QueryParam("antall") int antall) {
+    public Response korrigerEndretTid(@TilpassetAbacAttributt(supplierClass = AbacDataSupplier.class)
+                                          @NotNull @QueryParam("antall") int antall) {
         var tjenesterespons = oppgaveKorrigerEndretdatoTaskOppretterTjeneste.opprettOppgaveEgenskapOppdatererTask(antall);
         return Response.ok(tjenesterespons).build();
     }
@@ -173,5 +177,12 @@ public class AdminRestTjeneste {
 
     private OppgaveDto map(Oppgave oppgave) {
         return oppgaveDtoTjeneste.lagDtoFor(oppgave, false);
+    }
+
+    public static class AbacDataSupplier implements Function<Object, AbacDataAttributter> {
+        @Override
+        public AbacDataAttributter apply(Object obj) {
+            return AbacDataAttributter.opprett();
+        }
     }
 }
