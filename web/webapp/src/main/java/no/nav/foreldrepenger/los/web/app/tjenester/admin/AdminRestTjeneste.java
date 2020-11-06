@@ -32,6 +32,7 @@ import no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.oppgave.dto.Opp
 import no.nav.foreldrepenger.loslager.oppgave.Oppgave;
 import no.nav.foreldrepenger.loslager.organisasjon.Avdeling;
 import no.nav.fplos.admin.AdminTjeneste;
+import no.nav.fplos.admin.OppgaveKorrigerEndretdatoTaskOppretterTjeneste;
 import no.nav.fplos.admin.OppgaveSynkroniseringTaskOppretterTjeneste;
 import no.nav.vedtak.sikkerhet.abac.BeskyttetRessurs;
 
@@ -43,14 +44,17 @@ public class AdminRestTjeneste {
     private AdminTjeneste adminTjeneste;
     private OppgaveSynkroniseringTaskOppretterTjeneste synkroniseringTjeneste;
     private OppgaveDtoTjeneste oppgaveDtoTjeneste;
+    private OppgaveKorrigerEndretdatoTaskOppretterTjeneste oppgaveKorrigerEndretdatoTaskOppretterTjeneste;
 
     @Inject
     public AdminRestTjeneste(AdminTjeneste adminTjeneste,
                              OppgaveSynkroniseringTaskOppretterTjeneste synkroniseringTjeneste,
-                             OppgaveDtoTjeneste oppgaveDtoTjeneste) {
+                             OppgaveDtoTjeneste oppgaveDtoTjeneste,
+                             OppgaveKorrigerEndretdatoTaskOppretterTjeneste oppgaveKorrigerEndretdatoTaskOppretterTjeneste) {
         this.adminTjeneste = adminTjeneste;
         this.synkroniseringTjeneste = synkroniseringTjeneste;
         this.oppgaveDtoTjeneste = oppgaveDtoTjeneste;
+        this.oppgaveKorrigerEndretdatoTaskOppretterTjeneste = oppgaveKorrigerEndretdatoTaskOppretterTjeneste;
     }
 
     public AdminRestTjeneste() {
@@ -142,6 +146,17 @@ public class AdminRestTjeneste {
     public Response synkroniserBerørtBehandling(@NotNull @Valid OppgaveKriterieTypeDto oppgaveKriterieTypeDto) {
         var antallTasker = synkroniseringTjeneste.opprettOppgaveEgenskapOppdatererTask(oppgaveKriterieTypeDto.getVerdi());
         return Response.ok(antallTasker).build();
+    }
+
+    @GET
+    @Path("/korriger-endret-tid")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Operation(description = "Synkroniserer spesifisert oppgaveegenskap/kriterietype for åpne oppgaver", tags = "admin")
+    @BeskyttetRessurs(action = CREATE, resource = AbacAttributter.DRIFT)
+    public Response korrigerEndretTid() {
+        var tjenesterespons = oppgaveKorrigerEndretdatoTaskOppretterTjeneste.opprettOppgaveEgenskapOppdatererTask();
+        return Response.ok(tjenesterespons).build();
     }
 
     @POST
