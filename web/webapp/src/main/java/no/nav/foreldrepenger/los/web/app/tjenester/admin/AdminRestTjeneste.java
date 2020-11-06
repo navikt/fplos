@@ -158,7 +158,7 @@ public class AdminRestTjeneste {
     @Operation(description = "Synkroniserer spesifisert oppgaveegenskap/kriterietype for åpne oppgaver", tags = "admin")
     @BeskyttetRessurs(action = CREATE, resource = AbacAttributter.DRIFT)
     public Response korrigerEndretTid(@TilpassetAbacAttributt(supplierClass = AbacDataSupplier.class)
-                                          @NotNull @QueryParam("antall") int antall) {
+                                          @NotNull @QueryParam("antall") @Valid int antall) {
         var tjenesterespons = oppgaveKorrigerEndretdatoTaskOppretterTjeneste.opprettOppgaveEgenskapOppdatererTask(antall);
         return Response.ok(tjenesterespons).build();
     }
