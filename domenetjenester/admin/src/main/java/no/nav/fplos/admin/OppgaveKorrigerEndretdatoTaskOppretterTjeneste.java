@@ -53,7 +53,7 @@ public class OppgaveKorrigerEndretdatoTaskOppretterTjeneste {
 
     private List<BigDecimal> hentOppgaveIdListe() {
         LocalDateTime endretFraogmed = LocalDateTime.of(2020, 11, 5, 0, 0);
-        LocalDateTime endretTilogmed = LocalDateTime.of(2020, 11, 5, 15, 0);
+        LocalDateTime endretTilogmed = LocalDateTime.of(2020, 11, 5, 15, 45);
 
         return (List<BigDecimal>) entityManager.createNativeQuery("select id from oppgave " +
                 "where endret_tid >= :fom and endret_tid <= :tom " +
