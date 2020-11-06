@@ -13,8 +13,8 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @ApplicationScoped
 public class OppgaveKorrigerEndretdatoTaskOppretterTjeneste {
@@ -33,17 +33,13 @@ public class OppgaveKorrigerEndretdatoTaskOppretterTjeneste {
         this.entityManager = entityManager;
     }
 
-    public String opprettOppgaveEgenskapOppdatererTask() {
+    public String opprettOppgaveEgenskapOppdatererTask(int antallOppgavver) {
         final String callId = (MDCOperations.getCallId() == null ? MDCOperations.generateCallId() : MDCOperations.getCallId()) + "_";
-
-        List<BigDecimal> oppgaver = hentOppgaveIdListe();
-        log.info("Oppretter tasker for korrigering av endretDato for {} oppgaver", oppgaver.size());
+        var oppgaver = hentOppgaveIdListe();
+        log.info("Trakk ut {} oppgaver, oppretter tasker for {} ", oppgaver.size(), antallOppgavver);
         var kjøres = LocalDateTime.now();
-        for (var oppgave : oppgaver) {
-            opprettTask(oppgave.longValue(), callId, kjøres);
-            kjøres = kjøres.plus(100, ChronoUnit.MILLIS);
-        }
-        return OppgaveEgenskapOppdatererTask.TASKTYPE + "-" + oppgaver.size();
+        oppgaver.stream().limit(antallOppgavver).forEach(o -> opprettTask(o.longValue(), callId, kjøres));
+        return OppgaveEgenskapOppdatererTask.TASKTYPE + "-" + oppgaver.size() + "-" + antallOppgavver;
     }
 
     private void opprettTask(Long oppgave, String callId, LocalDateTime kjøretidspunkt) {
@@ -59,7 +55,9 @@ public class OppgaveKorrigerEndretdatoTaskOppretterTjeneste {
         LocalDateTime endretFraogmed = LocalDateTime.of(2020, 11, 5, 0, 0);
         LocalDateTime endretTilogmed = LocalDateTime.of(2020, 11, 5, 15, 0);
 
-        return (List<BigDecimal>) entityManager.createNativeQuery("select id from oppgave where endret_tid >= :fom and endret_tid <= :tom")
+        return (List<BigDecimal>) entityManager.createNativeQuery("select id from oppgave " +
+                "where endret_tid >= :fom and endret_tid <= :tom " +
+                "and endret_tid_2 is NULL")
                 .setParameter("fom", sql(endretFraogmed))
                 .setParameter("tom", sql(endretTilogmed))
                 .getResultList();
