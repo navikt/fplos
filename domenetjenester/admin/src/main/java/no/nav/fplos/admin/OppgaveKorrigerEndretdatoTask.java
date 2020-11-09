@@ -1,6 +1,5 @@
 package no.nav.fplos.admin;
 
-import no.nav.foreldrepenger.loslager.BehandlingId;
 import no.nav.vedtak.felles.prosesstask.api.ProsessTask;
 import no.nav.vedtak.felles.prosesstask.api.ProsessTaskData;
 import no.nav.vedtak.felles.prosesstask.api.ProsessTaskHandler;
@@ -12,14 +11,12 @@ import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 import java.math.BigDecimal;
-import java.nio.ByteBuffer;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 @ApplicationScoped
@@ -66,7 +63,10 @@ public class OppgaveKorrigerEndretdatoTask implements ProsessTaskHandler {
                     .ifPresentOrElse(korrigertTid -> {
                         log.info("OppgaveId: {}, eksisterende endret_tid: {}, korrigert endret_tid_2: {}", oppgave.getId(), oppgave.getEndretTid(), korrigertTid);
                         updateEndretTid(oppgave, korrigertTid);
-                    }, () -> log.info("OppgaveId: {}. Ikke behov for å korrigere endret_tid", oppgave.getId()));
+                    }, () -> {
+                        log.info("OppgaveId: {}. Ikke behov for å korrigere endret_tid", oppgave.getId());
+                        kopierEndretTidTilEndretTid2(oppgave);
+                    });
         }
     }
 
@@ -102,9 +102,18 @@ public class OppgaveKorrigerEndretdatoTask implements ProsessTaskHandler {
     }
 
     private void updateEndretTid(Oppgave oppgave, LocalDateTime korrigertTid) {
-        // TODO: både endret_tid og avsluttet_tid bør kanskje oppdateres
-        entityManager.createNativeQuery("update oppgave set endret_TID_2 = :korrigertTid where id = :oppgaveId")
+        entityManager.createNativeQuery("update oppgave " +
+                "set endret_tid_2 = :gammelTid, " +
+                "endret_tid = :korrigertTid " +
+                "where id = :oppgaveId")
+                .setParameter("gammelTid", oppgave.getEndretTid())
                 .setParameter("korrigertTid", korrigertTid)
+                .setParameter("oppgaveId", oppgave.getId())
+                .executeUpdate();
+    }
+
+    private void kopierEndretTidTilEndretTid2(Oppgave oppgave) {
+        entityManager.createNativeQuery("update oppgave set endret_TID_2 = endret_tid where id = :oppgaveId")
                 .setParameter("oppgaveId", oppgave.getId())
                 .executeUpdate();
     }
@@ -115,14 +124,7 @@ public class OppgaveKorrigerEndretdatoTask implements ProsessTaskHandler {
         Object[] queryResultat = (Object[]) query.getSingleResult();
         var id = ((BigDecimal) queryResultat[0]).longValue();
         var endretTid = ((Timestamp) queryResultat[1]).toLocalDateTime();
-
         var behandlingIdBytes = ((byte[]) queryResultat[2]);
-        ByteBuffer bb = ByteBuffer.wrap(behandlingIdBytes);
-        long high = bb.getLong();
-        long low = bb.getLong();
-        UUID uuid = new UUID(high, low);
-        var behandlingId = BehandlingId.fromUUID(uuid);
-
         return new Oppgave(id, endretTid, behandlingIdBytes);
     }
 

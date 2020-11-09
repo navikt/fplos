@@ -163,6 +163,17 @@ public class AdminRestTjeneste {
         return Response.ok(tjenesterespons).build();
     }
 
+    @GET
+    @Path("/nullstill-endret-tid-2")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Operation(description = "Setter alle til null", tags = "admin")
+    @BeskyttetRessurs(action = CREATE, resource = AbacAttributter.DRIFT)
+    public Response settEndretTid2TilNull() {
+        var tjenesterespons = oppgaveKorrigerEndretdatoTaskOppretterTjeneste.settEndretTid2TilNull();
+        return Response.ok(tjenesterespons).build();
+    }
+
     @POST
     @Path("/opprettAvdeling")
     @Consumes(MediaType.APPLICATION_JSON)

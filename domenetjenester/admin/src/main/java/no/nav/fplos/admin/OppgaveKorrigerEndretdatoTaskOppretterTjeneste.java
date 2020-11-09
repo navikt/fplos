@@ -39,7 +39,14 @@ public class OppgaveKorrigerEndretdatoTaskOppretterTjeneste {
         log.info("Trakk ut {} oppgaver, oppretter tasker for {} ", oppgaver.size(), antallOppgavver);
         var kjøres = LocalDateTime.now();
         oppgaver.stream().limit(antallOppgavver).forEach(o -> opprettTask(o.longValue(), callId, kjøres));
-        return OppgaveEgenskapOppdatererTask.TASKTYPE + "-" + oppgaver.size() + "-" + antallOppgavver;
+        return OppgaveEgenskapOppdatererTask.TASKTYPE + "-" + oppgaver.size() + "-" + Math.min(antallOppgavver, oppgaver.size());
+    }
+
+    public String settEndretTid2TilNull() {
+        var antallRader = entityManager.createNativeQuery("update oppgave set endret_tid_2=null " +
+                "where endret_tid_2 is not null")
+                .executeUpdate();
+        return String.valueOf(antallRader);
     }
 
     private void opprettTask(Long oppgave, String callId, LocalDateTime kjøretidspunkt) {
