@@ -17,7 +17,6 @@ import no.nav.vedtak.felles.integrasjon.rest.OidcRestClientFeil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.net.URI;
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.ArrayList;
@@ -129,7 +128,7 @@ public class FagsakApplikasjonTjenesteTest {
     }
 
     private static ManglerTilgangException manglerTilgangException() {
-        var fpsak403 = OidcRestClientFeil.FACTORY.manglerTilgang(URI.create("http://testuri"));
+        var fpsak403 = OidcRestClientFeil.FACTORY.manglerTilgang("http://testuri");
         return new ManglerTilgangException(fpsak403);
     }
 }
