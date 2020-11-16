@@ -1,11 +1,20 @@
 package no.nav.foreldrepenger.los.web.app.tjenester.admin;
 
-import static java.util.stream.Collectors.toList;
-import static no.nav.vedtak.sikkerhet.abac.BeskyttetRessursActionAttributt.CREATE;
-import static no.nav.vedtak.sikkerhet.abac.BeskyttetRessursActionAttributt.READ;
-
-import java.util.List;
-import java.util.function.Function;
+import io.swagger.v3.oas.annotations.Operation;
+import no.nav.foreldrepenger.los.web.app.AbacAttributter;
+import no.nav.foreldrepenger.los.web.app.tjenester.admin.dto.AvdelingOpprettelseDto;
+import no.nav.foreldrepenger.los.web.app.tjenester.admin.dto.OppgaveEventLoggDto;
+import no.nav.foreldrepenger.los.web.app.tjenester.admin.dto.OppgaveKriterieTypeDto;
+import no.nav.foreldrepenger.los.web.app.tjenester.felles.dto.OppgaveDto;
+import no.nav.foreldrepenger.los.web.app.tjenester.felles.dto.OppgaveDtoTjeneste;
+import no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.oppgave.dto.BehandlingIdDto;
+import no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.oppgave.dto.OppgaveIdDto;
+import no.nav.foreldrepenger.loslager.oppgave.Oppgave;
+import no.nav.foreldrepenger.loslager.organisasjon.Avdeling;
+import no.nav.fplos.admin.AdminTjeneste;
+import no.nav.fplos.admin.OppgaveSynkroniseringTaskOppretterTjeneste;
+import no.nav.vedtak.sikkerhet.abac.AbacDataAttributter;
+import no.nav.vedtak.sikkerhet.abac.BeskyttetRessurs;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -20,24 +29,12 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.util.List;
+import java.util.function.Function;
 
-import io.swagger.v3.oas.annotations.Operation;
-import no.nav.foreldrepenger.los.web.app.AbacAttributter;
-import no.nav.foreldrepenger.los.web.app.tjenester.admin.dto.OppgaveKriterieTypeDto;
-import no.nav.foreldrepenger.los.web.app.tjenester.admin.dto.OppgaveEventLoggDto;
-import no.nav.foreldrepenger.los.web.app.tjenester.admin.dto.AvdelingOpprettelseDto;
-import no.nav.foreldrepenger.los.web.app.tjenester.felles.dto.OppgaveDto;
-import no.nav.foreldrepenger.los.web.app.tjenester.felles.dto.OppgaveDtoTjeneste;
-import no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.oppgave.dto.BehandlingIdDto;
-import no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.oppgave.dto.OppgaveIdDto;
-import no.nav.foreldrepenger.loslager.oppgave.Oppgave;
-import no.nav.foreldrepenger.loslager.organisasjon.Avdeling;
-import no.nav.fplos.admin.AdminTjeneste;
-import no.nav.fplos.admin.OppgaveKorrigerEndretdatoTaskOppretterTjeneste;
-import no.nav.fplos.admin.OppgaveSynkroniseringTaskOppretterTjeneste;
-import no.nav.vedtak.sikkerhet.abac.AbacDataAttributter;
-import no.nav.vedtak.sikkerhet.abac.BeskyttetRessurs;
-import no.nav.vedtak.sikkerhet.abac.TilpassetAbacAttributt;
+import static java.util.stream.Collectors.toList;
+import static no.nav.vedtak.sikkerhet.abac.BeskyttetRessursActionAttributt.CREATE;
+import static no.nav.vedtak.sikkerhet.abac.BeskyttetRessursActionAttributt.READ;
 
 @Path("/admin")
 @ApplicationScoped
@@ -47,17 +44,14 @@ public class AdminRestTjeneste {
     private AdminTjeneste adminTjeneste;
     private OppgaveSynkroniseringTaskOppretterTjeneste synkroniseringTjeneste;
     private OppgaveDtoTjeneste oppgaveDtoTjeneste;
-    private OppgaveKorrigerEndretdatoTaskOppretterTjeneste oppgaveKorrigerEndretdatoTaskOppretterTjeneste;
 
     @Inject
     public AdminRestTjeneste(AdminTjeneste adminTjeneste,
                              OppgaveSynkroniseringTaskOppretterTjeneste synkroniseringTjeneste,
-                             OppgaveDtoTjeneste oppgaveDtoTjeneste,
-                             OppgaveKorrigerEndretdatoTaskOppretterTjeneste oppgaveKorrigerEndretdatoTaskOppretterTjeneste) {
+                             OppgaveDtoTjeneste oppgaveDtoTjeneste) {
         this.adminTjeneste = adminTjeneste;
         this.synkroniseringTjeneste = synkroniseringTjeneste;
         this.oppgaveDtoTjeneste = oppgaveDtoTjeneste;
-        this.oppgaveKorrigerEndretdatoTaskOppretterTjeneste = oppgaveKorrigerEndretdatoTaskOppretterTjeneste;
     }
 
     public AdminRestTjeneste() {
@@ -69,7 +63,7 @@ public class AdminRestTjeneste {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Operation(description = "Synkroniser oppgave", tags = "admin")
-    @BeskyttetRessurs(action = READ, resource = AbacAttributter.OPPGAVESTYRING)
+    @BeskyttetRessurs(action = CREATE, resource = AbacAttributter.DRIFT)
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
     public OppgaveDto synkroniserOppgave(@NotNull @QueryParam("behandlingId") @Valid BehandlingIdDto behandlingId) {
         var oppgave = adminTjeneste.synkroniserOppgave(behandlingId.getValue());
@@ -121,7 +115,7 @@ public class AdminRestTjeneste {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Operation(description = "Deaktiver oppgave", tags = "admin")
-    @BeskyttetRessurs(action = READ, resource = AbacAttributter.OPPGAVESTYRING)
+    @BeskyttetRessurs(action = CREATE, resource = AbacAttributter.DRIFT)
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
     public OppgaveDto deaktiverOppgave(@NotNull @QueryParam("oppgaveId") @Valid OppgaveIdDto oppgaveIdDto) {
         var oppgave = adminTjeneste.deaktiverOppgave(oppgaveIdDto.getVerdi());
@@ -133,7 +127,7 @@ public class AdminRestTjeneste {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Operation(description = "Aktiver oppgave", tags = "admin")
-    @BeskyttetRessurs(action = READ, resource = AbacAttributter.OPPGAVESTYRING)
+    @BeskyttetRessurs(action = READ, resource = AbacAttributter.DRIFT)
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
     public OppgaveDto aktiverOppgave(@NotNull @QueryParam("oppgaveId") @Valid OppgaveIdDto oppgaveIdDto) {
         var oppgave = adminTjeneste.aktiverOppgave(oppgaveIdDto.getVerdi());
@@ -149,29 +143,6 @@ public class AdminRestTjeneste {
     public Response synkroniserBerørtBehandling(@NotNull @Valid OppgaveKriterieTypeDto oppgaveKriterieTypeDto) {
         var antallTasker = synkroniseringTjeneste.opprettOppgaveEgenskapOppdatererTask(oppgaveKriterieTypeDto.getVerdi());
         return Response.ok(antallTasker).build();
-    }
-
-    @GET
-    @Path("/korriger-endret-tid")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    @Operation(description = "Synkroniserer spesifisert oppgaveegenskap/kriterietype for åpne oppgaver", tags = "admin")
-    @BeskyttetRessurs(action = CREATE, resource = AbacAttributter.DRIFT)
-    public Response korrigerEndretTid(@TilpassetAbacAttributt(supplierClass = AbacDataSupplier.class)
-                                          @NotNull @QueryParam("antall") @Valid int antall) {
-        var tjenesterespons = oppgaveKorrigerEndretdatoTaskOppretterTjeneste.opprettOppgaveEgenskapOppdatererTask(antall);
-        return Response.ok(tjenesterespons).build();
-    }
-
-    @GET
-    @Path("/nullstill-endret-tid-2")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    @Operation(description = "Setter alle til null", tags = "admin")
-    @BeskyttetRessurs(action = CREATE, resource = AbacAttributter.DRIFT)
-    public Response settEndretTid2TilNull() {
-        var tjenesterespons = oppgaveKorrigerEndretdatoTaskOppretterTjeneste.settEndretTid2TilNull();
-        return Response.ok(tjenesterespons).build();
     }
 
     @POST
