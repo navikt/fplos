@@ -8,6 +8,7 @@ import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 
+import no.nav.foreldrepenger.domene.typer.Saksnummer;
 import no.nav.foreldrepenger.loslager.oppgave.AndreKriterierType;
 import no.nav.foreldrepenger.loslager.oppgave.BehandlingType;
 import no.nav.foreldrepenger.loslager.oppgave.OppgaveEgenskap;
@@ -64,6 +65,14 @@ public class AdminRepositoryImpl implements AdminRepository {
             log.info("Fant ingen oppgave tilknyttet behandling med id {}", behandlingId, nre);
         }
         return oppgave;
+    }
+
+    @Override
+    public List<Oppgave> hentOppgaver(Saksnummer saksnummer) {
+        return entityManager.createQuery(SELECT_FRA_OPPGAVE +
+                "WHERE o.fagsakSaksnummer = :saksnummer", Oppgave.class)
+                .setParameter("saksnummer", Long.valueOf(saksnummer.getVerdi()))
+                .getResultList();
     }
 
     public List<OppgaveEventLogg> hentEventer(BehandlingId behandlingId) {

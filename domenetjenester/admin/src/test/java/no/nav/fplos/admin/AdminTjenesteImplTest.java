@@ -10,6 +10,7 @@ import static org.mockito.Mockito.when;
 
 import java.util.List;
 
+import no.nav.foreldrepenger.domene.typer.Saksnummer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -58,7 +59,7 @@ public class AdminTjenesteImplTest extends EntityManagerAwareTest {
     private final Oppgave klageOppgave = Oppgave.builder()
             .dummyOppgave(AVDELING_DRAMMEN_ENHET)
             .medBehandlingType(BehandlingType.KLAGE)
-            .medAktiv(true)
+            .medAktiv(false)
             .medBehandlingId(BehandlingId.random())
             .build();
     private final Oppgave innsynOppgave = Oppgave.builder()
@@ -70,8 +71,8 @@ public class AdminTjenesteImplTest extends EntityManagerAwareTest {
 
     private void leggeInnEtSettMedOppgaver(){
         oppgaveRepository.lagre(førstegangOppgave);
-        oppgaveRepository.lagre(klageOppgave);
         oppgaveRepository.lagre(innsynOppgave);
+        oppgaveRepository.lagre(klageOppgave);
     }
 
     @Test
@@ -98,10 +99,12 @@ public class AdminTjenesteImplTest extends EntityManagerAwareTest {
     @Test
     public void testHentOppgave(){
         leggeInnEtSettMedOppgaver();
-        Oppgave oppgave = adminTjeneste.hentOppgave(førstegangOppgave.getBehandlingId());
-        assertThat(oppgave).isNotNull();
-        assertThat(oppgave.getId()).isEqualTo(førstegangOppgave.getId());
-        assertThat(oppgave.getAktiv()).isEqualTo(førstegangOppgave.getAktiv());
+        List<Oppgave> oppgave = adminTjeneste.hentOppgaver(new Saksnummer("3478293"));
+        for (var o : oppgave) {
+            System.out.println(o.getAktiv() + " - " + o.getOpprettetTidspunkt());
+        }
+        assertThat(oppgave).containsExactly(innsynOppgave, førstegangOppgave, klageOppgave);
+
     }
 
     @Test

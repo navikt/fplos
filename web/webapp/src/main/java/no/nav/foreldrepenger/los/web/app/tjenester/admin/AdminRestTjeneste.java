@@ -1,6 +1,7 @@
 package no.nav.foreldrepenger.los.web.app.tjenester.admin;
 
 import io.swagger.v3.oas.annotations.Operation;
+import no.nav.foreldrepenger.domene.typer.Saksnummer;
 import no.nav.foreldrepenger.los.web.app.AbacAttributter;
 import no.nav.foreldrepenger.los.web.app.tjenester.admin.dto.AvdelingOpprettelseDto;
 import no.nav.foreldrepenger.los.web.app.tjenester.admin.dto.OppgaveEventLoggDto;
@@ -15,6 +16,7 @@ import no.nav.fplos.admin.AdminTjeneste;
 import no.nav.fplos.admin.OppgaveSynkroniseringTaskOppretterTjeneste;
 import no.nav.vedtak.sikkerhet.abac.AbacDataAttributter;
 import no.nav.vedtak.sikkerhet.abac.BeskyttetRessurs;
+import no.nav.vedtak.sikkerhet.abac.TilpassetAbacAttributt;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -71,15 +73,17 @@ public class AdminRestTjeneste {
     }
 
     @GET
-    @Path("/sepaaoppgave")
+    @Path("/hentoppgaver")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @Operation(description = "Se på oppgave", tags = "admin")
-    @BeskyttetRessurs(action = READ, resource = AbacAttributter.OPPGAVESTYRING)
+    @Operation(description = "Liste over oppgaver tilknyttet sak. Merk at tilbakekrevingsspesifikke detaljer ikke vises.", tags = "admin")
+    @BeskyttetRessurs(action = READ, resource = AbacAttributter.DRIFT)
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
-    public OppgaveDto hentOppgave(@NotNull @QueryParam("behandlingId") @Valid BehandlingIdDto behandlingId) {
-        var oppgave = adminTjeneste.hentOppgave(behandlingId.getValue());
-        return oppgave != null ? map(oppgave) : null;
+    public List<OppgaveDto> hentOppgave(@TilpassetAbacAttributt(supplierClass = AbacDataSupplier.class) @NotNull @QueryParam("saksnummer") @Valid Saksnummer saksnummer) {
+        // som for øvrige admintjenester er ABAC for oppgaveDto håndtert i oppgaveDtoTjeneste.
+        return adminTjeneste.hentOppgaver(saksnummer).stream()
+                .map(this::map)
+                .collect(toList());
     }
 
     @GET

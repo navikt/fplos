@@ -1,10 +1,14 @@
 package no.nav.fplos.admin;
 
+import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import no.nav.foreldrepenger.domene.typer.Saksnummer;
 import no.nav.foreldrepenger.loslager.BehandlingId;
 import no.nav.foreldrepenger.loslager.oppgave.Oppgave;
 import no.nav.foreldrepenger.loslager.oppgave.OppgaveEventLogg;
@@ -58,8 +62,12 @@ public class AdminTjenesteImpl implements AdminTjeneste {
     }
 
     @Override
-    public Oppgave hentOppgave(BehandlingId behandlingId) {
-        return adminRepository.hentSisteOppgave(behandlingId);
+    public List<Oppgave> hentOppgaver(Saksnummer saksnummer) {
+        Comparator<Oppgave> sortertAktivOpprettet = Comparator.comparing(Oppgave::getAktiv)
+                .thenComparing(o -> Optional.ofNullable(o.getEndretTidspunkt()).orElse(o.getOpprettetTidspunkt())).reversed();
+        return adminRepository.hentOppgaver(saksnummer).stream()
+                .sorted(sortertAktivOpprettet)
+                .collect(Collectors.toList());
     }
 
     @Override
