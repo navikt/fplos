@@ -10,6 +10,7 @@ import no.nav.foreldrepenger.los.web.app.tjenester.felles.dto.OppgaveDto;
 import no.nav.foreldrepenger.los.web.app.tjenester.felles.dto.OppgaveDtoTjeneste;
 import no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.oppgave.dto.BehandlingIdDto;
 import no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.oppgave.dto.OppgaveIdDto;
+import no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.oppgave.dto.SaksnummerDto;
 import no.nav.foreldrepenger.loslager.oppgave.Oppgave;
 import no.nav.foreldrepenger.loslager.organisasjon.Avdeling;
 import no.nav.fplos.admin.AdminTjeneste;
@@ -79,8 +80,10 @@ public class AdminRestTjeneste {
     @Operation(description = "Liste over oppgaver tilknyttet sak. Merk at tilbakekrevingsspesifikke detaljer ikke vises.", tags = "admin")
     @BeskyttetRessurs(action = READ, resource = AbacAttributter.DRIFT)
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
-    public List<OppgaveDto> hentOppgave(@TilpassetAbacAttributt(supplierClass = AbacDataSupplier.class) @NotNull @QueryParam("saksnummer") @Valid Saksnummer saksnummer) {
-        // som for øvrige admintjenester er ABAC for oppgaveDto håndtert i oppgaveDtoTjeneste.
+    public List<OppgaveDto> hentOppgave(@TilpassetAbacAttributt(supplierClass = AbacDataSupplier.class)
+                                            @NotNull @QueryParam("saksnummer") @Valid SaksnummerDto saksnummerDto) {
+        var saksnummer = new Saksnummer(saksnummerDto.getSaksnummer());
+        // OppgaveDto ABAC håndteres i OppgaveDtoTjeneste
         return adminTjeneste.hentOppgaver(saksnummer).stream()
                 .map(this::map)
                 .collect(toList());
