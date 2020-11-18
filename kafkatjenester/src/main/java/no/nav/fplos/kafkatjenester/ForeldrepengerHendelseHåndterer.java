@@ -2,13 +2,16 @@ package no.nav.fplos.kafkatjenester;
 
 import static no.nav.fplos.kafkatjenester.util.StreamUtil.safeStream;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import no.nav.foreldrepenger.loslager.oppgave.Reservasjon;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -98,9 +101,9 @@ public class ForeldrepengerHendelseHåndterer {
         oppgaveEgenskapHandler.håndterOppgaveEgenskaper(gjenåpnetOppgave, egenskapFinner);
     }
 
-    private void håndterOpprettetPapirsøknadOppgave(Hendelse hendelse,
-                                                    BehandlingFpsak behandling,
+    private void håndterOpprettetPapirsøknadOppgave(Hendelse hendelse, BehandlingFpsak behandling,
                                                     OppgaveHistorikk oppgaveHistorikk) {
+        LOG.info("Oppretter papirsøknadoppgave");
         var behandlingId = behandling.getBehandlingId();
         avsluttOppgaveHvisÅpen(behandlingId, oppgaveHistorikk, hendelse.getBehandlendeEnhet());
         Oppgave papirsøknadOppgave = nyOppgave(behandlingId, hendelse, behandling);
@@ -109,8 +112,7 @@ public class ForeldrepengerHendelseHåndterer {
         oppgaveEgenskapHandler.håndterOppgaveEgenskaper(papirsøknadOppgave, egenskapFinner);
     }
 
-    private void håndterOpprettOppgave(Hendelse hendelse,
-                                       BehandlingFpsak behandling,
+    private void håndterOpprettOppgave(Hendelse hendelse, BehandlingFpsak behandling,
                                        OppgaveHistorikk oppgaveHistorikk) {
         var behandlingId = behandling.getBehandlingId();
         avsluttOppgaveHvisÅpen(behandlingId, oppgaveHistorikk, hendelse.getBehandlendeEnhet());
@@ -121,9 +123,9 @@ public class ForeldrepengerHendelseHåndterer {
         oppgaveEgenskapHandler.håndterOppgaveEgenskaper(oppgave, egenskapFinner);
     }
 
-    private void håndterOpprettetBeslutterOppgave(Hendelse hendelse,
-                                                  BehandlingFpsak behandling,
+    private void håndterOpprettetBeslutterOppgave(Hendelse hendelse, BehandlingFpsak behandling,
                                                   OppgaveHistorikk oppgaveHistorikk) {
+        LOG.info("Oppretter beslutteroppgave");
         var behandlingId = behandling.getBehandlingId();
         var enhet = hendelse.getBehandlendeEnhet();
         avsluttOppgaveHvisÅpen(behandlingId, oppgaveHistorikk, enhet);
@@ -145,10 +147,8 @@ public class ForeldrepengerHendelseHåndterer {
     }
 
     private void loggEventType(Oppgave oppgave, AndreKriterierType kriterie) {
-        OppgaveEventLogg eventLogg = new OppgaveEventLogg(oppgave.getBehandlingId(),
-                OppgaveEventType.OPPRETTET,
-                kriterie,
-                oppgave.getBehandlendeEnhet());
+        OppgaveEventLogg eventLogg = new OppgaveEventLogg(oppgave.getBehandlingId(), OppgaveEventType.OPPRETTET,
+                kriterie, oppgave.getBehandlendeEnhet());
         oppgaveRepository.lagre(eventLogg);
     }
 
@@ -223,7 +223,22 @@ public class ForeldrepengerHendelseHåndterer {
     }
 
     private Oppgave gjenåpneOppgave(BehandlingId behandlingId) {
-        return oppgaveRepository.gjenåpneOppgaveForBehandling(behandlingId);
+        var oppgave = oppgaveRepository.gjenåpneOppgaveForBehandling(behandlingId);
+        Optional.ofNullable(oppgave.getReservasjon())
+                .map(Reservasjon::getReservertTil)
+                .ifPresent(reservertTil -> {
+                            var nå = LocalDateTime.now();
+                            var duration = Duration.between(reservertTil, nå);
+                            if (reservertTil.isAfter(nå)) {
+                                LOG.info(String.format("Gjenåpnet oppgave har aktiv reservasjon {} minutter frem i tid",
+                                        duration.abs().toMinutes()));
+                            } else {
+                                LOG.info(String.format("Gjenåpnet oppgave er tilknyttet inaktiv reservasjon " +
+                                        "lukket for {} minutter siden", duration.toMinutes()));
+                            }
+                        }
+                );
+        return oppgave;
     }
 
     private void avsluttOppgaveForBehandling(BehandlingId behandlingId) {
