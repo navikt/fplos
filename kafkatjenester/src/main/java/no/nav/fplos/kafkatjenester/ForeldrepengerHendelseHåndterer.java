@@ -230,11 +230,11 @@ public class ForeldrepengerHendelseHåndterer {
                             var nå = LocalDateTime.now();
                             var duration = Duration.between(reservertTil, nå);
                             if (reservertTil.isAfter(nå)) {
-                                LOG.info(String.format("Gjenåpnet oppgave har aktiv reservasjon {} minutter frem i tid",
-                                        duration.abs().toMinutes()));
+                                LOG.info("Gjenåpnet oppgave har aktiv reservasjon {} " +
+                                        "minutter frem i tid", duration.abs().toMinutes());
                             } else {
-                                LOG.info(String.format("Gjenåpnet oppgave er tilknyttet inaktiv reservasjon " +
-                                        "lukket for {} minutter siden", duration.toMinutes()));
+                                LOG.info("Gjenåpnet oppgave er tilknyttet inaktiv reservasjon " +
+                                        "lukket for {} minutter siden", duration.toMinutes());
                             }
                         }
                 );
