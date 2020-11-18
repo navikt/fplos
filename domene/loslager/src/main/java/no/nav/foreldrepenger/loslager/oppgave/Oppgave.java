@@ -180,7 +180,6 @@ public class Oppgave extends BaseEntitet {
         this.fagsakYtelseType = other.fagsakYtelseType;
         this.system = other.system;
         this.href = other.href;
-        this.reservasjon = other.reservasjon;
     }
 
     public boolean harAktivReservasjon() {
