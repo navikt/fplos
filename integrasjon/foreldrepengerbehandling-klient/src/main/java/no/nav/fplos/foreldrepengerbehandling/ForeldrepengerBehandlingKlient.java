@@ -15,6 +15,7 @@ import java.util.Optional;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import no.nav.fplos.foreldrepengerbehandling.dto.fagsak.FagsakDto;
 import org.apache.http.client.utils.URIBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -78,6 +79,11 @@ public class ForeldrepengerBehandlingKlient {
                 .medErEndringssøknad(harBehandlingÅrsakType(behandlingDto, BehandlingÅrsakType.RE_ENDRING_FRA_BRUKER))
                 .medUttakEgenskaper(new Lazy<>(() -> hentUttakEgenskaper(behandlingId, links)));
         return builder.build();
+    }
+
+    public UtvidetBehandlingDto hentUtvidetBehandlingDto(String behandlingId) {
+        var uri = behandlingUri(behandlingId);
+        return oidcRestClient.get(uri, UtvidetBehandlingDto.class);
     }
 
     public Optional<Long> getFpsakInternBehandlingId(BehandlingId eksternBehandlingId) {

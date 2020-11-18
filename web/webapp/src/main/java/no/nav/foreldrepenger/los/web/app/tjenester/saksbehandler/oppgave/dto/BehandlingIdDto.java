@@ -20,7 +20,7 @@ public class BehandlingIdDto implements AbacDto {
     private final BehandlingId value;
 
     @JsonCreator
-    public BehandlingIdDto(String value) {
+    public BehandlingIdDto(@JsonProperty("behandlingId") String value) {
         this.value = BehandlingId.fromString(value);
     }
 
