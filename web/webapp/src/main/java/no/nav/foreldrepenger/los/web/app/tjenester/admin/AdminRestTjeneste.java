@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import no.nav.foreldrepenger.domene.typer.Saksnummer;
 import no.nav.foreldrepenger.los.web.app.AbacAttributter;
 import no.nav.foreldrepenger.los.web.app.tjenester.admin.dto.AvdelingOpprettelseDto;
+import no.nav.foreldrepenger.los.web.app.tjenester.admin.dto.EnkelBehandlingIdDto;
 import no.nav.foreldrepenger.los.web.app.tjenester.admin.dto.OppgaveEventLoggDto;
 import no.nav.foreldrepenger.los.web.app.tjenester.admin.dto.OppgaveKriterieTypeDto;
 import no.nav.foreldrepenger.los.web.app.tjenester.felles.dto.OppgaveDto;
@@ -15,6 +16,7 @@ import no.nav.foreldrepenger.loslager.oppgave.Oppgave;
 import no.nav.foreldrepenger.loslager.organisasjon.Avdeling;
 import no.nav.fplos.admin.AdminTjeneste;
 import no.nav.fplos.admin.OppgaveSynkroniseringTaskOppretterTjeneste;
+import no.nav.fplos.admin.SynkroniseringHendelseTaskOppretterTjeneste;
 import no.nav.vedtak.sikkerhet.abac.AbacDataAttributter;
 import no.nav.vedtak.sikkerhet.abac.BeskyttetRessurs;
 import no.nav.vedtak.sikkerhet.abac.TilpassetAbacAttributt;
@@ -33,6 +35,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.List;
+import java.util.UUID;
 import java.util.function.Function;
 
 import static java.util.stream.Collectors.toList;
@@ -47,14 +50,17 @@ public class AdminRestTjeneste {
     private AdminTjeneste adminTjeneste;
     private OppgaveSynkroniseringTaskOppretterTjeneste synkroniseringTjeneste;
     private OppgaveDtoTjeneste oppgaveDtoTjeneste;
+    private SynkroniseringHendelseTaskOppretterTjeneste synkroniseringHendelseTaskOppretterTjeneste;
 
     @Inject
     public AdminRestTjeneste(AdminTjeneste adminTjeneste,
                              OppgaveSynkroniseringTaskOppretterTjeneste synkroniseringTjeneste,
-                             OppgaveDtoTjeneste oppgaveDtoTjeneste) {
+                             OppgaveDtoTjeneste oppgaveDtoTjeneste,
+                             SynkroniseringHendelseTaskOppretterTjeneste synkroniseringHendelseTaskOppretterTjeneste) {
         this.adminTjeneste = adminTjeneste;
         this.synkroniseringTjeneste = synkroniseringTjeneste;
         this.oppgaveDtoTjeneste = oppgaveDtoTjeneste;
+        this.synkroniseringHendelseTaskOppretterTjeneste = synkroniseringHendelseTaskOppretterTjeneste;
     }
 
     public AdminRestTjeneste() {
@@ -151,6 +157,19 @@ public class AdminRestTjeneste {
         var antallTasker = synkroniseringTjeneste.opprettOppgaveEgenskapOppdatererTask(oppgaveKriterieTypeDto.getVerdi());
         return Response.ok(antallTasker).build();
     }
+
+    @POST
+    @Path("/synkroniser-hendelser")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Operation(description = "Synkroniserer fpsak behandling basert på hendelse", tags = "admin")
+    @BeskyttetRessurs(action = CREATE, resource = AbacAttributter.DRIFT)
+    public Response synkroniserHendelser(@NotNull @Valid List<EnkelBehandlingIdDto> behandlingIdListe) {
+        var behandlinger = behandlingIdListe.stream().map(EnkelBehandlingIdDto::getBehandlingId).collect(toList());
+        var opprettedeTasker = synkroniseringHendelseTaskOppretterTjeneste.opprettOppgaveEgenskapOppdatererTask(behandlinger);
+        return Response.ok(opprettedeTasker).build();
+    }
+
 
     @POST
     @Path("/opprettAvdeling")
