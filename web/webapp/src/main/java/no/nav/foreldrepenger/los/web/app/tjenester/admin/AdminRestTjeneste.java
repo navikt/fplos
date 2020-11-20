@@ -68,18 +68,6 @@ public class AdminRestTjeneste {
     }
 
     @GET
-    @Path("/synkroniseroppgave")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    @Operation(description = "Synkroniser oppgave", tags = "admin")
-    @BeskyttetRessurs(action = CREATE, resource = AbacAttributter.DRIFT)
-    @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
-    public OppgaveDto synkroniserOppgave(@NotNull @QueryParam("behandlingId") @Valid BehandlingIdDto behandlingId) {
-        var oppgave = adminTjeneste.synkroniserOppgave(behandlingId.getValue());
-        return map(oppgave);
-    }
-
-    @GET
     @Path("/hentoppgaver")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
@@ -159,10 +147,10 @@ public class AdminRestTjeneste {
     }
 
     @POST
-    @Path("/synkroniser-hendelser")
+    @Path("/synkroniser-behandling")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @Operation(description = "Synkroniserer fpsak behandling basert på hendelse", tags = "admin")
+    @Operation(description = "Oppretter task for synkronisering av behandling med fpsak", tags = "admin")
     @BeskyttetRessurs(action = CREATE, resource = AbacAttributter.DRIFT)
     public Response synkroniserHendelser(@NotNull @Valid List<EnkelBehandlingIdDto> behandlingIdListe) {
         var behandlinger = behandlingIdListe.stream().map(EnkelBehandlingIdDto::getBehandlingId).collect(toList());

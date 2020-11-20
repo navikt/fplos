@@ -12,8 +12,6 @@ public interface AdminTjeneste {
 
     void opprettAvdeling(Avdeling enhet);
 
-    Oppgave synkroniserOppgave(BehandlingId behandlingId);
-
     List<Oppgave> hentOppgaver(Saksnummer saksnummer);
 
     List<OppgaveEventLogg> hentEventer(BehandlingId behandlingId);

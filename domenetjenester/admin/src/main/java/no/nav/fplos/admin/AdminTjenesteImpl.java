@@ -53,15 +53,6 @@ public class AdminTjenesteImpl implements AdminTjeneste {
     }
 
     @Override
-    public Oppgave synkroniserOppgave(BehandlingId behandlingId) {
-        BehandlingFpsak behandlingDto = foreldrepengerBehandlingKlient.getBehandling(behandlingId);
-        if (AVSLUTTET_STATUS.equals(behandlingDto.getStatus())) {
-            adminRepository.deaktiverSisteOppgave(behandlingId);
-        }
-        return adminRepository.hentSisteOppgave(behandlingId);
-    }
-
-    @Override
     public List<Oppgave> hentOppgaver(Saksnummer saksnummer) {
         Comparator<Oppgave> sortertAktivOpprettet = Comparator.comparing(Oppgave::getAktiv)
                 .thenComparing(o -> Optional.ofNullable(o.getEndretTidspunkt()).orElse(o.getOpprettetTidspunkt())).reversed();
