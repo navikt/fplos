@@ -4,9 +4,7 @@ import static java.util.stream.Collectors.toList;
 import static no.nav.foreldrepenger.loslager.organisasjon.Avdeling.AVDELING_DRAMMEN_ENHET;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 import java.util.List;
 
@@ -27,7 +25,6 @@ import no.nav.foreldrepenger.loslager.repository.OppgaveRepository;
 import no.nav.foreldrepenger.loslager.repository.OppgaveRepositoryImpl;
 import no.nav.foreldrepenger.loslager.repository.OrganisasjonRepositoryImpl;
 import no.nav.fplos.avdelingsleder.AvdelingslederTjenesteImpl;
-import no.nav.fplos.foreldrepengerbehandling.BehandlingFpsak;
 import no.nav.fplos.foreldrepengerbehandling.ForeldrepengerBehandlingKlient;
 import no.nav.vedtak.felles.testutilities.db.EntityManagerAwareTest;
 
@@ -114,27 +111,4 @@ public class AdminTjenesteImplTest extends EntityManagerAwareTest {
         assertThat(oppgave).isNotEmpty();
     }
 
-    @Test
-    public void testOppfriskOppgaveIkkeLukket(){
-        leggeInnEtSettMedOppgaver();
-        when(foreldrepengerBehandlingKlient.getBehandling(any(BehandlingId.class))).thenReturn(lagBehandlingDto());
-        Oppgave oppgave = adminTjeneste.synkroniserOppgave(førstegangOppgave.getBehandlingId());
-        assertThat(oppgave.getAktiv()).isTrue();
-    }
-
-    @Test
-    public void testOppfriskOppgaveLukket(){
-        leggeInnEtSettMedOppgaver();
-        when(foreldrepengerBehandlingKlient.getBehandling(any(BehandlingId.class))).thenReturn(lagBehandlingAvsluttetDto());
-        Oppgave oppgave = adminTjeneste.synkroniserOppgave(førstegangOppgave.getBehandlingId());
-        assertThat(oppgave.getAktiv()).isFalse();
-    }
-
-    private BehandlingFpsak lagBehandlingDto(){
-        return BehandlingFpsak.builder().medStatus("UTRED").build();
-    }
-
-    private BehandlingFpsak lagBehandlingAvsluttetDto(){
-        return BehandlingFpsak.builder().medStatus("AVSLU").build();
-    }
 }
