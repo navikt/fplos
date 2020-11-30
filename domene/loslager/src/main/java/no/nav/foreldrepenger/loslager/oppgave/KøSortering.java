@@ -68,7 +68,7 @@ public enum KøSortering implements Kodeverdi {
         return feltkategori;
     }
 
-    @JsonCreator
+    @JsonCreator(mode = JsonCreator.Mode.DELEGATING)
     public static KøSortering fraKode(@JsonProperty("kode") String kode) {
         return Arrays.stream(values())
                 .filter(v -> v.kode.equals(kode))
