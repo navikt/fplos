@@ -35,11 +35,6 @@ public class OppgaveEnumSerializationDeserializationTest {
         testRoundtrip(BehandlingType.FØRSTEGANGSSØKNAD);
     }
 
-    @Test
-    public void køSortering() throws Exception {
-        testRoundtrip(KøSortering.FORSTE_STONADSDAG);
-    }
-
     private void testRoundtrip(Object initiell) throws JsonProcessingException {
         String json = toJson(initiell);
         Object roundtripped = fromJson(json, initiell.getClass());
@@ -54,13 +49,13 @@ public class OppgaveEnumSerializationDeserializationTest {
         return mapper.readValue(json, clazz);
     }
 
-    static ObjectMapper getObjectMapper() { // hentet fra felles-integrasjon-rest-klient
+    static ObjectMapper getObjectMapper() {
         ObjectMapper mapper = new ObjectMapper();
         mapper.registerModule(new Jdk8Module());
         mapper.registerModule(new JavaTimeModule());
         mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-        mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+
         return mapper;
     }
 }
