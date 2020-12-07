@@ -25,7 +25,11 @@ public enum FagsakYtelseType implements Kodeverdi {
     }
 
     @JsonCreator(mode = JsonCreator.Mode.DELEGATING)
-    public static FagsakYtelseType fraKode(@JsonProperty("kode") String kode) {
+    public static FagsakYtelseType fraKode(@JsonProperty("kode") Object node) {
+        if (node == null) {
+            return null;
+        }
+        String kode = (String) node;
         return Arrays.stream(values())
                 .filter(v -> v.kode.equals(kode))
                 .findFirst()
