@@ -57,8 +57,8 @@ public class PersonTjenesteTest {
     private static class PdlTjenesteDummy implements PdlTjeneste {
 
         @Override
-        public void hentPerson(AktørId aktørId, Person personFraTps) {
-            // gjør ingenting
+        public Optional<Person> hentPerson(AktørId aktørId) {
+            return Optional.empty();
         }
     }
 }
