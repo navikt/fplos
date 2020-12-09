@@ -7,7 +7,6 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import no.nav.foreldrepenger.domene.typer.AktørId;
-import no.nav.foreldrepenger.loslager.aktør.Fødselsnummer;
 import no.nav.foreldrepenger.loslager.aktør.Person;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,15 +29,9 @@ public class PersonTjeneste {
         this.pdlTjeneste = pdlTjeneste;
     }
 
-    public Optional<Person> hentPerson(Fødselsnummer fnr) {
-        return tpsAdapter.hentPerson(fnr);
-    }
-
     public Optional<Person> hentPerson(AktørId aktørId) {
         var pdlPerson = pdlTjeneste.hentPerson(aktørId);
-        if (pdlPerson.isPresent()) {
-            verifiserMedTps(pdlPerson.get());
-        }
+        pdlPerson.ifPresent(this::verifiserMedTps);
         return pdlPerson;
     }
 

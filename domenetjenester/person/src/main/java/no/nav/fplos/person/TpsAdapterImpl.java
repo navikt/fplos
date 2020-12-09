@@ -38,12 +38,6 @@ public class TpsAdapterImpl implements TpsAdapter {
     }
 
     @Override
-    public Optional<Person> hentPerson(Fødselsnummer fnr) {
-        return hentAktørForFødselsnummer(fnr)
-                .flatMap(aktørId -> hentPerson(aktørId, fnr));
-    }
-
-    @Override
     public Optional<Person> hentPerson(AktørId aktørId) {
         return hentFødselsnummerForAktør(aktørId)
                 .flatMap(fnr -> hentPerson(aktørId, fnr));
@@ -51,14 +45,6 @@ public class TpsAdapterImpl implements TpsAdapter {
 
     private Optional<Fødselsnummer> hentFødselsnummerForAktør(AktørId aktørId) {
         return aktørConsumer.hentPersonIdentForAktørId(aktørId.getId()).map(Fødselsnummer::new);
-    }
-
-    private Optional<AktørId> hentAktørForFødselsnummer(Fødselsnummer fnr) {
-        try {
-            return aktørConsumer.hentAktørIdForPersonIdent(fnr.asValue()).map(AktørId::new);
-        } catch (DetFinnesFlereAktørerMedSammePersonIdentException ignore) { // NOSONAR
-            return Optional.empty();
-        }
     }
 
     private Optional<Person> hentPerson(AktørId aktørId, Fødselsnummer fnr) {

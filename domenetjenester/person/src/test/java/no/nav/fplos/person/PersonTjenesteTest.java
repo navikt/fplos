@@ -18,33 +18,13 @@ public class PersonTjenesteTest {
 
     private static final PersonTjeneste personTjeneste = new PersonTjeneste(new TpsAdapterMock(), new PdlTjenesteDummy());
 
-
     @Test
     public void skal_ikke_hente_person_for_ukjent_aktør() {
         assertThat(personTjeneste.hentPerson(UKJENT_PERSON.getAktørId())).isEmpty();
     }
 
-    @Test
-    public void skal_hente_person_for_kjent_fnr() {
-        Optional<Person> funnetPerson = personTjeneste.hentPerson(PERSON.getFødselsnummer());
-        assertThat(funnetPerson.isPresent()).isTrue();
-        assertThat(funnetPerson.get()).isEqualTo(PERSON);
-    }
-
-    @Test
-    public void skal_ikke_hente_person_for_ukjent_fnr() {
-        Optional<Person> ukjentPerson = personTjeneste.hentPerson(UKJENT_PERSON.getFødselsnummer());
-        assertThat(ukjentPerson.isPresent()).isFalse();
-    }
 
     private static class TpsAdapterMock implements TpsAdapter {
-
-        @Override
-        public Optional<Person> hentPerson(Fødselsnummer fnr) {
-            return KJENTE_PERSONER.stream()
-                    .filter(p -> p.getFødselsnummer().equals(fnr))
-                    .findFirst();
-        }
 
         @Override
         public Optional<Person> hentPerson(AktørId aktørId) {

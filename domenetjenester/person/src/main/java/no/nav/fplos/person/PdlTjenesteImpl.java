@@ -45,8 +45,7 @@ public class PdlTjenesteImpl implements PdlTjeneste {
                     .adressebeskyttelse(new AdressebeskyttelseResponseProjection().gradering())
                     .folkeregisteridentifikator(new FolkeregisteridentifikatorResponseProjection().identifikasjonsnummer().status().type());
             var pdlPerson = pdlKlient.hentPerson(query, projection, Tema.FOR);
-            return Optional.ofNullable(pdlPerson)
-                    .map(p -> tilPerson(p, aktørId));
+            return Optional.ofNullable(pdlPerson).map(p -> tilPerson(p, aktørId));
     }
 
     private Person tilPerson(no.nav.pdl.Person person, AktørId aktørId) {
