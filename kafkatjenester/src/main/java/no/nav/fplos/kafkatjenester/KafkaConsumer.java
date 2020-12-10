@@ -73,7 +73,7 @@ public final class KafkaConsumer<T extends BehandlingProsessEventDto> {
         var properties = new Properties();
         properties.setProperty(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, consumerProperties.getBootstrapServers());
         properties.setProperty(ConsumerConfig.MAX_POLL_RECORDS_CONFIG, "1");
-        properties.setProperty(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "none");
+        properties.setProperty(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, consumerProperties.getOffsetResetPolicy());
         properties.setProperty(StreamsConfig.APPLICATION_ID_CONFIG, consumerProperties.getGroupId());
 
         var username = consumerProperties.getUsername();
