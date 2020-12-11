@@ -11,4 +11,6 @@ public interface KafkaConsumerProperties {
     String getUsername();
 
     String getPassword();
+
+    String getOffsetResetPolicy();
 }

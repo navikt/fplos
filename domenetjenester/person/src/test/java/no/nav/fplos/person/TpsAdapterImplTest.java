@@ -36,21 +36,6 @@ public class TpsAdapterImplTest {
     }
 
     @Test
-    public void hentPersonForFødselsnummer() throws Exception {
-        Mockito.when(aktørConsumerMock.hentAktørIdForPersonIdent(PERSON.getFødselsnummer().asValue())).thenReturn(Optional.of(PERSON.getAktørId().getId()));
-        Mockito.when(personProxyServiceMock.hentPersonResponse(any())).thenReturn(tpsPersonRespons());
-        Person personFraTps = tpsAdapter.hentPerson(PERSON.getFødselsnummer()).orElseThrow();
-        assertThat(personFraTps).isEqualTo(PERSON);
-    }
-
-    @Test
-    public void hentPersonForFødselsnummer_ikkeFunnet() {
-        Mockito.when(aktørConsumerMock.hentAktørIdForPersonIdent(UKJENT_PERSON.getFødselsnummer().asValue())).thenReturn(Optional.empty());
-        Optional<Person> optAktørId = tpsAdapter.hentPerson(UKJENT_PERSON.getFødselsnummer());
-        assertThat(optAktørId).isEmpty();
-    }
-
-    @Test
     public void hentPerson_funnet() throws Exception {
         Mockito.when(personProxyServiceMock.hentPersonResponse(Mockito.any())).thenReturn(tpsPersonRespons());
         Mockito.when(aktørConsumerMock.hentPersonIdentForAktørId(any()))

@@ -19,13 +19,13 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @ApplicationScoped
 public class PdlTjenesteImpl implements PdlTjeneste {
 
-    private static final Logger log = LoggerFactory.getLogger(PdlTjenesteImpl.class);
     private PdlKlient pdlKlient;
 
     public PdlTjenesteImpl() {
@@ -37,36 +37,23 @@ public class PdlTjenesteImpl implements PdlTjeneste {
     }
 
     @Override
-    public void hentPerson(AktørId aktørId, Person personFraTps) {
-        try {
+    public Optional<Person> hentPerson(AktørId aktørId) {
             var query = new HentPersonQueryRequest();
             query.setIdent(aktørId.getId());
             var projection = new PersonResponseProjection()
                     .navn(new NavnResponseProjection().forkortetNavn().fornavn().mellomnavn().etternavn())
                     .adressebeskyttelse(new AdressebeskyttelseResponseProjection().gradering())
                     .folkeregisteridentifikator(new FolkeregisteridentifikatorResponseProjection().identifikasjonsnummer().status().type());
-            var person = pdlKlient.hentPerson(query, projection, Tema.FOR);
-            var fraPDL = new Person.Builder()
-                    .medAktørId(aktørId)
-                    .medFnr(fnr(person.getFolkeregisteridentifikator()))
-                    .medNavn(navn(person.getNavn()))
-                    .build();
-            if (Objects.equals(fraPDL, personFraTps)) {
-                log.info("Pdl/tps person: like svar");
-            } else {
-                log.info("Pdl/tps person: avvik {}", finnAvvik(fraPDL, personFraTps));
-            }
-        } catch (Exception e) {
-            log.info("Pdl/tps person feil", e);
-        }
+            var pdlPerson = pdlKlient.hentPerson(query, projection, Tema.FOR);
+            return Optional.ofNullable(pdlPerson).map(p -> tilPerson(p, aktørId));
     }
 
-    private String finnAvvik(Person pdl, Person tps) {
-        String navn = Objects.equals(pdl.getNavn(), tps.getNavn()) ? "" : " navn ";
-        String aktørid = Objects.equals(tps.getAktørId(), pdl.getAktørId()) ? "" : " aktørId ";
-        String fødselsnummer = Objects.equals(tps.getFødselsnummer(), pdl.getFødselsnummer()) ? "" : " fødselsnummer ";
-        return "Avvik" + navn + aktørid + fødselsnummer;
-
+    private Person tilPerson(no.nav.pdl.Person person, AktørId aktørId) {
+        return new Person.Builder()
+                .medAktørId(aktørId)
+                .medFnr(fnr(person.getFolkeregisteridentifikator()))
+                .medNavn(navn(person.getNavn()))
+                .build();
     }
 
     private static String navn(List<Navn> navn) {

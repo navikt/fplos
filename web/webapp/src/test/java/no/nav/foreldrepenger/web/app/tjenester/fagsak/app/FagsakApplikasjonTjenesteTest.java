@@ -3,7 +3,6 @@ package no.nav.foreldrepenger.web.app.tjenester.fagsak.app;
 import no.nav.foreldrepenger.domene.typer.AktørId;
 import no.nav.foreldrepenger.los.web.app.tjenester.fagsak.app.FagsakApplikasjonTjeneste;
 import no.nav.foreldrepenger.loslager.aktør.Fødselsnummer;
-import no.nav.foreldrepenger.loslager.aktør.Person;
 import no.nav.foreldrepenger.loslager.oppgave.FagsakStatus;
 import no.nav.foreldrepenger.loslager.oppgave.FagsakYtelseType;
 import no.nav.fplos.foreldrepengerbehandling.ForeldrepengerFagsakKlient;
@@ -33,8 +32,7 @@ import static org.mockito.Mockito.when;
 public class FagsakApplikasjonTjenesteTest {
 
     private static final Fødselsnummer FNR = new Fødselsnummer("12345678901");
-    private static final AktørId AKTØR_ID = new AktørId("1");
-    private static final String SAKSNUMMER  = "123";
+    private static final String SAKSNUMMER = "123";
     private static final boolean ER_KVINNE = true;
 
     private FagsakApplikasjonTjeneste fagsakTjeneste;
@@ -50,12 +48,9 @@ public class FagsakApplikasjonTjenesteTest {
 
     @Test
     public void skal_hente_saker_på_fnr() {
-        PersonDto personinfoSoker = new PersonDto("TEST", 20, FNR.asValue(), ER_KVINNE, "", null);
         FagsakDto fagsakDto = new FagsakDto(Long.valueOf(FNR.asValue()), FagsakYtelseType.FORELDREPENGER,
                 FagsakStatus.OPPRETTET, LocalDate.of(2017, Month.FEBRUARY, 1), Collections.emptyList());
-
         when(fagsakKlient.finnFagsaker(FNR.asValue())).thenReturn(Collections.singletonList(fagsakDto));
-
         LocalDate fødselsdatoBarn = LocalDate.of(2017, Month.FEBRUARY, 1);
 
         // Act
@@ -117,12 +112,6 @@ public class FagsakApplikasjonTjenesteTest {
 
     @Test
     public void skal_returnere_tomt_view_ved_403_fra_fpsak_ved_fnrsøk() {
-        var person = new Person.Builder()
-                .medAktørId(new AktørId(1234L))
-                .medFnr(FNR)
-                .medNavn("Test testen")
-                .build();
-        when(personTjeneste.hentPerson(any(Fødselsnummer.class))).thenReturn(Optional.of(person));
         when(fagsakKlient.finnFagsaker(any())).thenThrow(manglerTilgangException());
         var view = fagsakTjeneste.hentSaker(FNR.asValue());
         assertThat(view).isEmpty();
