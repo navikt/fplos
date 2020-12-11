@@ -8,6 +8,7 @@ import javax.inject.Inject;
 
 import no.nav.foreldrepenger.domene.typer.AktørId;
 import no.nav.foreldrepenger.loslager.aktør.Person;
+import no.nav.vedtak.exception.FunksjonellException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,9 +31,20 @@ public class PersonTjeneste {
     }
 
     public Optional<Person> hentPerson(AktørId aktørId) {
-        var pdlPerson = pdlTjeneste.hentPerson(aktørId);
+        var pdlPerson = hent(aktørId);
         pdlPerson.ifPresent(this::verifiserMedTps);
         return pdlPerson;
+    }
+
+    private Optional<Person> hent(AktørId aktørId) {
+        try {
+            return pdlTjeneste.hentPerson(aktørId);
+        } catch (FunksjonellException e) {
+            if (e.getMessage().contains("Error: Person ikke funnet")) {
+                return Optional.empty();
+            }
+            throw e;
+        }
     }
 
     private void verifiserMedTps(Person pdlPerson) {

@@ -66,7 +66,7 @@ public class OppgaveDtoTjeneste {
             sjekkTilgang(oppgave);
         }
         var person = personTjeneste.hentPerson(oppgave.getAktorId())
-                .orElseThrow(() -> new IllegalArgumentException("Finner ikke person tilknyttet oppgaveId " + oppgave.getId()));
+                .orElseThrow(() -> new LagOppgaveDtoFeil("Finner ikke person tilknyttet oppgaveId " + oppgave.getId()));
         var oppgaveStatus = oppgaveStatusDtoTjeneste.lagStatusFor(oppgave);
         return new OppgaveDto(oppgave, person, oppgaveStatus);
     }
@@ -147,5 +147,11 @@ public class OppgaveDtoTjeneste {
 
     private void logBegrensning(Oppgave oppgave) {
         LOGGER.info("Prøver å slå opp oppgave uten å ha tilgang. Ignorerer oppgave {}", oppgave.getId());
+    }
+
+    public static final class LagOppgaveDtoFeil extends RuntimeException {
+        public LagOppgaveDtoFeil(String message) {
+            super(message);
+        }
     }
 }
