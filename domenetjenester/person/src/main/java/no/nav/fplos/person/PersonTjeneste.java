@@ -40,7 +40,7 @@ public class PersonTjeneste {
         try {
             return pdlTjeneste.hentPerson(aktørId);
         } catch (FunksjonellException e) {
-            if (e.getMessage().contains("Error: Person ikke funnet")) {
+            if (e.getFeil().getFeilmelding().contains("Error: Person ikke funnet")) {
                 return Optional.empty();
             }
             throw e;

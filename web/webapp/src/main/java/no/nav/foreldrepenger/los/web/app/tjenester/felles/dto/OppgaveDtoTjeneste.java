@@ -140,6 +140,8 @@ public class OppgaveDtoTjeneste {
                 dtoList.add(lagDtoFor(oppgave, true));
             } catch (IkkeTilgangPåBehandlingException e) {
                 logBegrensning(oppgave);
+            } catch (LagOppgaveDtoFeil e) {
+                LOGGER.info("Hopper over oppgave {}", oppgave.getId(), e);
             }
         }
         return dtoList;
