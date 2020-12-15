@@ -6,11 +6,8 @@ import no.nav.foreldrepenger.domene.typer.Saksnummer;
 import no.nav.foreldrepenger.loslager.BehandlingId;
 import no.nav.foreldrepenger.loslager.oppgave.Oppgave;
 import no.nav.foreldrepenger.loslager.oppgave.OppgaveEventLogg;
-import no.nav.foreldrepenger.loslager.organisasjon.Avdeling;
 
 public interface AdminTjeneste {
-
-    void opprettAvdeling(Avdeling enhet);
 
     List<Oppgave> hentOppgaver(Saksnummer saksnummer);
 
