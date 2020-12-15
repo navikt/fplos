@@ -141,7 +141,7 @@ public class OppgaveDtoTjeneste {
             } catch (IkkeTilgangPåBehandlingException e) {
                 logBegrensning(oppgave);
             } catch (LagOppgaveDtoFeil e) {
-                LOGGER.info("Hopper over oppgave {}", oppgave.getId(), e);
+                LOGGER.warn("Kunne ikke lage OppgaveDto for oppgaveId {}, hopper over", oppgave.getId(), e);
             }
         }
         return dtoList;
