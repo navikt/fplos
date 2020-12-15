@@ -32,7 +32,7 @@ public class PersonTjeneste {
 
     public Optional<Person> hentPerson(AktørId aktørId) {
         var pdlPerson = hent(aktørId);
-        pdlPerson.ifPresent(this::verifiserMedTps);
+        //pdlPerson.ifPresent(this::verifiserMedTps);
         return pdlPerson;
     }
 
