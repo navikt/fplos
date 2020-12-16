@@ -1,10 +1,50 @@
 package no.nav.fplos.ansatt;
 
+import no.nav.foreldrepenger.loslager.aktør.OrganisasjonsEnhet;
+import no.nav.foreldrepenger.loslager.organisasjon.Avdeling;
+import no.nav.foreldrepenger.loslager.repository.OrganisasjonRepository;
+import no.nav.vedtak.felles.integrasjon.ldap.LdapBruker;
+import no.nav.vedtak.felles.integrasjon.ldap.LdapBrukeroppslag;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 import java.util.List;
+import java.util.stream.Collectors;
 
-public interface AnsattTjeneste {
+@ApplicationScoped
+public class AnsattTjeneste {
 
-    String hentAnsattNavn(String ident);
+    private EnhetstilgangTjeneste enhetstilgangTjeneste;
+    private OrganisasjonRepository organisasjonRepository;
+    private static List<String> aktuelleEnhetIder;
 
-    List<String> hentAvdelingerNavnForAnsatt(String ident);
+    AnsattTjeneste() {
+        // for CDI proxy
+    }
+
+    @Inject
+    public AnsattTjeneste(EnhetstilgangTjeneste enhetstilgangTjeneste,
+                          OrganisasjonRepository organisasjonRepository) {
+        this.enhetstilgangTjeneste = enhetstilgangTjeneste;
+        this.organisasjonRepository = organisasjonRepository;
+    }
+
+    public String hentAnsattNavn(String ident) {
+        LdapBruker ldapBruker = new LdapBrukeroppslag().hentBrukerinformasjon(ident);
+        return ldapBruker.getDisplayName();
+    }
+
+    public List<String> hentAvdelingerNavnForAnsatt(String ident) {
+        if (aktuelleEnhetIder == null) {
+            aktuelleEnhetIder = organisasjonRepository.hentAvdelinger().stream()
+                    .map(Avdeling::getAvdelingEnhet)
+                    .collect(Collectors.toList());
+        }
+        return enhetstilgangTjeneste.hentEnhetstilganger(ident)
+                .stream()
+                .filter(oe -> aktuelleEnhetIder.contains(oe.getEnhetId()))
+                .map(OrganisasjonsEnhet::getEnhetNavn)
+                .collect(Collectors.toList());
+    }
+
 }

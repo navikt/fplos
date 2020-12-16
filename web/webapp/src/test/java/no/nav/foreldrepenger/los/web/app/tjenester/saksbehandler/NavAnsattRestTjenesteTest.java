@@ -42,10 +42,8 @@ public class NavAnsattRestTjenesteTest {
     public void skalMappeVeilederGruppeTilKanVeiledeRettighet() {
         LdapBruker brukerUtenforVeilederGruppe = getTestBruker();
         LdapBruker brukerIVeilederGruppe = getTestBruker(gruppenavnVeileder);
-
         InnloggetNavAnsattDto innloggetBrukerUtenVeilederRettighet = saksbehandlerTjeneste.getInnloggetBrukerDto(null, brukerUtenforVeilederGruppe);
         InnloggetNavAnsattDto innloggetBrukerMedVeilederRettighet = saksbehandlerTjeneste.getInnloggetBrukerDto(null, brukerIVeilederGruppe);
-
         assertThat(innloggetBrukerUtenVeilederRettighet.getKanVeilede()).isFalse();
         assertThat(innloggetBrukerMedVeilederRettighet.getKanVeilede()).isTrue();
     }
@@ -54,10 +52,8 @@ public class NavAnsattRestTjenesteTest {
     public void skalMappeBeslutterGruppeTilKanBeslutteRettighet() {
         LdapBruker brukerUtenforBeslutterGruppe = getTestBruker();
         LdapBruker brukerIBeslutterGruppe = getTestBruker(gruppenavnBeslutter);
-
         InnloggetNavAnsattDto innloggetBrukerUtenBeslutterRettighet = saksbehandlerTjeneste.getInnloggetBrukerDto(null, brukerUtenforBeslutterGruppe);
         InnloggetNavAnsattDto innloggetBrukerMedBeslutterRettighet = saksbehandlerTjeneste.getInnloggetBrukerDto(null, brukerIBeslutterGruppe);
-
         assertThat(innloggetBrukerUtenBeslutterRettighet.getKanBeslutte()).isFalse();
         assertThat(innloggetBrukerMedBeslutterRettighet.getKanBeslutte()).isTrue();
     }

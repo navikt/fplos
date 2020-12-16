@@ -3,7 +3,6 @@ package no.nav.foreldrepenger.los.web.app.tjenester.admin;
 import io.swagger.v3.oas.annotations.Operation;
 import no.nav.foreldrepenger.domene.typer.Saksnummer;
 import no.nav.foreldrepenger.los.web.app.AbacAttributter;
-import no.nav.foreldrepenger.los.web.app.tjenester.admin.dto.AvdelingOpprettelseDto;
 import no.nav.foreldrepenger.los.web.app.tjenester.admin.dto.EnkelBehandlingIdDto;
 import no.nav.foreldrepenger.los.web.app.tjenester.admin.dto.OppgaveEventLoggDto;
 import no.nav.foreldrepenger.los.web.app.tjenester.admin.dto.OppgaveKriterieTypeDto;
@@ -13,7 +12,6 @@ import no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.oppgave.dto.Beh
 import no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.oppgave.dto.OppgaveIdDto;
 import no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.oppgave.dto.SaksnummerDto;
 import no.nav.foreldrepenger.loslager.oppgave.Oppgave;
-import no.nav.foreldrepenger.loslager.organisasjon.Avdeling;
 import no.nav.fplos.admin.AdminTjeneste;
 import no.nav.fplos.admin.OppgaveSynkroniseringTaskOppretterTjeneste;
 import no.nav.fplos.admin.SynkroniseringHendelseTaskOppretterTjeneste;
@@ -35,7 +33,6 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.List;
-import java.util.UUID;
 import java.util.function.Function;
 
 import static java.util.stream.Collectors.toList;
@@ -156,19 +153,6 @@ public class AdminRestTjeneste {
         var behandlinger = behandlingIdListe.stream().map(EnkelBehandlingIdDto::getBehandlingId).collect(toList());
         var opprettedeTasker = synkroniseringHendelseTaskOppretterTjeneste.opprettOppgaveEgenskapOppdatererTask(behandlinger);
         return Response.ok(opprettedeTasker).build();
-    }
-
-
-    @POST
-    @Path("/opprettAvdeling")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Operation(description = "Opprett avdeling", tags = "admin")
-    @BeskyttetRessurs(action = CREATE, resource = AbacAttributter.DRIFT)
-    @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
-    public Response opprettAvdeling(@NotNull @Valid AvdelingOpprettelseDto dto) {
-        Avdeling nyAvdeling = new Avdeling(dto.getAvdelingKode(), dto.getAvdelingNavn(), dto.getKreverKode6Tilgang());
-        adminTjeneste.opprettAvdeling(nyAvdeling);
-        return Response.noContent().build();
     }
 
     private OppgaveDto map(Oppgave oppgave) {

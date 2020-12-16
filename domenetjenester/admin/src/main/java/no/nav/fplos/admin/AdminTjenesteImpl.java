@@ -1,55 +1,30 @@
 package no.nav.fplos.admin;
 
+import no.nav.foreldrepenger.domene.typer.Saksnummer;
+import no.nav.foreldrepenger.loslager.BehandlingId;
+import no.nav.foreldrepenger.loslager.oppgave.Oppgave;
+import no.nav.foreldrepenger.loslager.oppgave.OppgaveEventLogg;
+import no.nav.foreldrepenger.loslager.repository.AdminRepository;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-
-import no.nav.foreldrepenger.domene.typer.Saksnummer;
-import no.nav.foreldrepenger.loslager.BehandlingId;
-import no.nav.foreldrepenger.loslager.oppgave.Oppgave;
-import no.nav.foreldrepenger.loslager.oppgave.OppgaveEventLogg;
-import no.nav.foreldrepenger.loslager.organisasjon.Avdeling;
-import no.nav.foreldrepenger.loslager.repository.AdminRepository;
-import no.nav.foreldrepenger.loslager.repository.OrganisasjonRepository;
-import no.nav.fplos.foreldrepengerbehandling.BehandlingFpsak;
-import no.nav.fplos.foreldrepengerbehandling.ForeldrepengerBehandlingKlient;
-
 @ApplicationScoped
 public class AdminTjenesteImpl implements AdminTjeneste {
 
-    private static final String AVSLUTTET_STATUS = "AVSLU";
-
-    private ForeldrepengerBehandlingKlient foreldrepengerBehandlingKlient;
     private AdminRepository adminRepository;
-    private OrganisasjonRepository organisasjonRepository;
 
     @Inject
-    public AdminTjenesteImpl(AdminRepository adminRepository,
-                             ForeldrepengerBehandlingKlient foreldrepengerBehandlingKlient,
-                             OrganisasjonRepository organisasjonRepository) {
+    public AdminTjenesteImpl(AdminRepository adminRepository) {
         this.adminRepository = adminRepository;
-        this.foreldrepengerBehandlingKlient = foreldrepengerBehandlingKlient;
-        this.organisasjonRepository = organisasjonRepository;
     }
 
     AdminTjenesteImpl() {
         // CDI
-    }
-
-    @Override
-    public void opprettAvdeling(Avdeling nyAvdeling) {
-        if (enhetEksisterer(nyAvdeling)) {
-            throw new IllegalArgumentException("Avdeling eksisterer");
-        }
-        organisasjonRepository.lagre(nyAvdeling);
-    }
-
-    private boolean enhetEksisterer(Avdeling enhet) {
-        return organisasjonRepository.hentAvdelingFraEnhet(enhet.getAvdelingEnhet()).isPresent();
     }
 
     @Override
