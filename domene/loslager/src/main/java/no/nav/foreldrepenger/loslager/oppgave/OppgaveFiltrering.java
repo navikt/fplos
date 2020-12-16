@@ -145,11 +145,13 @@ public class OppgaveFiltrering extends BaseEntitet{
         return Collections.unmodifiableList(saksbehandlere);
     }
 
-    public void leggTilSaksbehandler(Saksbehandler saksbehandler){
-        saksbehandlere.add(saksbehandler);
+    public void leggTilSaksbehandler(Saksbehandler saksbehandler) {
+        if (!saksbehandlere.contains(saksbehandler)) {
+            saksbehandlere.add(saksbehandler);
+        }
     }
 
-    public void fjernSaksbehandler(Saksbehandler saksbehandler){
+    public void fjernSaksbehandler(Saksbehandler saksbehandler) {
         saksbehandlere.remove(saksbehandler);
     }
 
