@@ -1,14 +1,15 @@
 package no.nav.fplos.person;
 
 import no.nav.foreldrepenger.domene.typer.AktørId;
-import no.nav.foreldrepenger.loslager.aktør.Fødselsnummer;
 import no.nav.foreldrepenger.loslager.aktør.Person;
+import no.nav.vedtak.felles.integrasjon.pdl.PdlKlient;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
 
 public class PersonTjenesteTest {
     private static final Person PERSON = FiktivTestPerson.nyPerson();
@@ -16,7 +17,7 @@ public class PersonTjenesteTest {
 
     private static final Person UKJENT_PERSON = FiktivTestPerson.nyPerson();
 
-    private static final PersonTjeneste personTjeneste = new PersonTjeneste(new TpsAdapterMock(), new PdlTjenesteDummy());
+    private static final PersonTjeneste personTjeneste = new PersonTjenesteImpl(mock(PdlKlient.class));
 
     @Test
     public void skal_ikke_hente_person_for_ukjent_aktør() {
@@ -34,7 +35,7 @@ public class PersonTjenesteTest {
         }
     }
 
-    private static class PdlTjenesteDummy implements PdlTjeneste {
+    private static class PersonTjenesteDummy implements PersonTjeneste {
 
         @Override
         public Optional<Person> hentPerson(AktørId aktørId) {
