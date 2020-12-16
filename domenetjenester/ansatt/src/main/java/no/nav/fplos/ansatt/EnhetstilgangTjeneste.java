@@ -34,19 +34,10 @@ public class EnhetstilgangTjeneste {
                 .map(EnhetstilgangResponse::getEnheter)
                 .orElse(Collections.emptyList())
                 .stream()
-                .peek(this::loggfiltrerteEnheter)
                 .filter(OrganisasjonsEnhet::kanBehandleForeldrepenger)
                 .collect(Collectors.toList());
         log.info("Enhetstilgangliste har størrelse " + enhetsTilganger.size());
         return enhetsTilganger;
     }
 
-    private void loggfiltrerteEnheter(OrganisasjonsEnhet organisasjonsEnhet) {
-        // greit å logge mens vi sammenlikner med norgtjenesten
-        if (!organisasjonsEnhet.kanBehandleForeldrepenger()) {
-            log.info("Fjerner enhet uten fagområde FOR");
-        }
-    }
-
 }
-
