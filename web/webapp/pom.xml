@@ -145,10 +145,6 @@
             <groupId>org.apache.geronimo.specs</groupId>
             <artifactId>geronimo-osgi-locator</artifactId>
         </dependency>
-        <dependency>
-            <groupId>org.apache.cxf</groupId>
-            <artifactId>cxf-rt-transports-http-jetty</artifactId>
-        </dependency>
 
         <dependency>
             <groupId>io.prometheus</groupId>
@@ -175,19 +171,6 @@
             <artifactId>logback-syslog4j</artifactId>
         </dependency>
 
-        <!-- Java11 -->
-        <dependency>
-            <groupId>org.glassfish.jaxb</groupId>
-            <artifactId>jaxb-runtime</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.sun.xml.messaging.saaj</groupId>
-            <artifactId>saaj-impl</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.datatype</groupId>
-            <artifactId>jackson-datatype-jsr310</artifactId>
-        </dependency>
         <!-- Annet -->
         <dependency>
             <groupId>org.owasp.encoder</groupId>
