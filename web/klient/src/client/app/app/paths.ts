@@ -2,7 +2,7 @@ import { Location } from 'history';
 
 import { formatQueryString, parseQueryString } from 'utils/urlUtils';
 
-export const AVDELINGSLEDER_PATH = 'avdelingsleder';
+export const AVDELINGSLEDER_PATH = '/avdelingsleder';
 
 const emptyQueryString = (queryString) => queryString === '?' || !queryString;
 
