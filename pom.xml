@@ -58,7 +58,7 @@
         <!--abac-attribute-constants.version>2.0.0</abac-attribute-constants.version-->
         <kafka.version>2.6.0</kafka.version>
         <junit5.version>5.7.0</junit5.version>
-        <mockito-junit-jupiter.version>3.6.28</mockito-junit-jupiter.version>
+        <mockito-junit-jupiter.version>3.7.0</mockito-junit-jupiter.version>
     </properties>
 
     <dependencies>
