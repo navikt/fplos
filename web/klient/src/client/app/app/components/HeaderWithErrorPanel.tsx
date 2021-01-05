@@ -13,7 +13,7 @@ import { RestApiGlobalStatePathsKeys } from 'data/restApiPaths';
 import { RETTSKILDE_URL, SYSTEMRUTINE_URL } from 'data/eksterneLenker';
 import NavAnsatt from 'app/navAnsattTsType';
 
-import { AVDELINGSLEDER_PATH } from '../paths';
+import { AVDELINGSLEDER_PATH, BASE_PATH } from '../paths';
 import ErrorMessagePanel from './ErrorMessagePanel';
 import HeaderAvdelingListe from './HeaderAvdelingListe';
 
@@ -107,7 +107,7 @@ const HeaderWithErrorPanel: FunctionComponent<OwnProps & WrappedComponentProps> 
     if (kanOppgavestyre && !locationPathname.includes(AVDELINGSLEDER_PATH)) {
       items.push({
         name: 'Avdelingsleder',
-        href: AVDELINGSLEDER_PATH,
+        href: [BASE_PATH, AVDELINGSLEDER_PATH].join('/'),
         isExternal: false,
       });
     }
@@ -119,7 +119,7 @@ const HeaderWithErrorPanel: FunctionComponent<OwnProps & WrappedComponentProps> 
       <div ref={wrapperRef}>
         <Header
           title={intl.formatMessage({ id: 'Header.Foreldrepenger' })}
-          titleHref="/"
+          titleHref={BASE_PATH}
         >
           <Popover
             popperIsVisible={erLenkePanelApent}

@@ -2,7 +2,8 @@ import { Location } from 'history';
 
 import { formatQueryString, parseQueryString } from 'utils/urlUtils';
 
-export const AVDELINGSLEDER_PATH = '/fplos/avdelingsleder';
+export const BASE_PATH = '/fplos';
+export const AVDELINGSLEDER_PATH = 'avdelingsleder';
 
 const emptyQueryString = (queryString) => queryString === '?' || !queryString;
 
