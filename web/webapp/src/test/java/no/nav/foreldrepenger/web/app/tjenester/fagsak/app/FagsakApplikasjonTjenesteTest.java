@@ -62,7 +62,7 @@ public class FagsakApplikasjonTjenesteTest {
         assertThat(fagsakDtos).hasSize(1);
         var fagsakMedPersonDto = fagsakDtos.get(0);
         assertThat(fagsakMedPersonDto.getSaksnummer()).isEqualTo(fagsakDto.getSaksnummer());
-        assertThat(fagsakMedPersonDto.getSakstype()).isEqualTo(fagsakDto.getSakstype());
+        assertThat(fagsakMedPersonDto.getSakstype().getKode()).isEqualTo(fagsakDto.getSakstype().getKode());
         assertThat(fagsakMedPersonDto.getStatus()).isEqualTo(fagsakDto.getStatus());
         assertThat(fagsakMedPersonDto.getBarnFodt()).isEqualTo(fødselsdatoBarn);
     }
