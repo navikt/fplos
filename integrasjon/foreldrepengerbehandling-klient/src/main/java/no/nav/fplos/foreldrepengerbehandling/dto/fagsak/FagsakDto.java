@@ -12,7 +12,7 @@ import no.nav.fplos.foreldrepengerbehandling.dto.behandling.ResourceLink;
 public class FagsakDto {
 
     private Long saksnummer;
-    private FagsakYtelseType sakstype;
+    private FagsakYtelseTypeDto sakstype;
     private FagsakStatus status;
     private LocalDate barnFodt;
     private List<ResourceLink> onceLinks;
@@ -21,7 +21,7 @@ public class FagsakDto {
         // Injiseres i test
     }
 
-    public FagsakDto(Long saksnummer, FagsakYtelseType sakstype, FagsakStatus status, LocalDate barnFodt, List<ResourceLink> onceLinks) {
+    public FagsakDto(Long saksnummer, FagsakYtelseTypeDto sakstype, FagsakStatus status, LocalDate barnFodt, List<ResourceLink> onceLinks) {
         this.saksnummer = saksnummer;
         this.sakstype = sakstype;
         this.status = status;
@@ -33,7 +33,7 @@ public class FagsakDto {
         return saksnummer;
     }
 
-    public FagsakYtelseType getSakstype() {
+    public FagsakYtelseTypeDto getSakstype() {
         return sakstype;
     }
 

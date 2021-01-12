@@ -9,6 +9,7 @@ import no.nav.fplos.foreldrepengerbehandling.ForeldrepengerFagsakKlient;
 import no.nav.fplos.foreldrepengerbehandling.dto.behandling.ResourceLink;
 import no.nav.fplos.foreldrepengerbehandling.dto.fagsak.FagsakDto;
 import no.nav.fplos.foreldrepengerbehandling.dto.fagsak.FagsakMedPersonDto;
+import no.nav.fplos.foreldrepengerbehandling.dto.fagsak.FagsakYtelseTypeDto;
 import no.nav.fplos.foreldrepengerbehandling.dto.fagsak.PersonDto;
 import no.nav.fplos.person.PersonTjeneste;
 import no.nav.vedtak.exception.ManglerTilgangException;
@@ -48,7 +49,7 @@ public class FagsakApplikasjonTjenesteTest {
 
     @Test
     public void skal_hente_saker_på_fnr() {
-        FagsakDto fagsakDto = new FagsakDto(Long.valueOf(FNR.asValue()), FagsakYtelseType.FORELDREPENGER,
+        FagsakDto fagsakDto = new FagsakDto(Long.valueOf(FNR.asValue()), FagsakYtelseTypeDto.FORELDREPENGER,
                 FagsakStatus.OPPRETTET, LocalDate.of(2017, Month.FEBRUARY, 1), Collections.emptyList());
         when(fagsakKlient.finnFagsaker(FNR.asValue())).thenReturn(Collections.singletonList(fagsakDto));
         LocalDate fødselsdatoBarn = LocalDate.of(2017, Month.FEBRUARY, 1);
@@ -72,7 +73,7 @@ public class FagsakApplikasjonTjenesteTest {
         ResourceLink rel = ResourceLink.get("test-uri", "sak-bruker", "aktørIdDtoObjekt");
 
         List<FagsakDto> fagsakDtos = new ArrayList<>();
-        FagsakDto fagsakDto = new FagsakDto(Long.valueOf(SAKSNUMMER), FagsakYtelseType.FORELDREPENGER,
+        FagsakDto fagsakDto = new FagsakDto(Long.valueOf(SAKSNUMMER), FagsakYtelseTypeDto.FORELDREPENGER,
                 FagsakStatus.UNDER_BEHANDLING, LocalDate.now(), List.of(rel));
         fagsakDtos.add(fagsakDto);
         when(fagsakKlient.finnFagsaker(SAKSNUMMER)).thenReturn(fagsakDtos);

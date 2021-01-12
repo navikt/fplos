@@ -1,5 +1,6 @@
 package no.nav.foreldrepenger.los.web.app.tjenester.fagsak.app;
 
+import no.nav.foreldrepenger.loslager.oppgave.FagsakYtelseType;
 import no.nav.fplos.foreldrepengerbehandling.ForeldrepengerFagsakKlient;
 import no.nav.fplos.foreldrepengerbehandling.dto.behandling.ResourceLink;
 import no.nav.fplos.foreldrepengerbehandling.dto.fagsak.FagsakDto;
@@ -69,7 +70,8 @@ public class FagsakApplikasjonTjeneste {
     }
 
     private static FagsakMedPersonDto map(FagsakDto fagsakDto, PersonDto personDto) {
-        return new FagsakMedPersonDto(fagsakDto.getSaksnummer(), fagsakDto.getSakstype(),
+        var sakstype = FagsakYtelseType.fraKode(fagsakDto.getSakstype().getKode());
+        return new FagsakMedPersonDto(fagsakDto.getSaksnummer(), sakstype,
                 fagsakDto.getStatus(), personDto, fagsakDto.getBarnFodt());
     }
 
