@@ -39,13 +39,6 @@
             <artifactId>validation-api</artifactId>
         </dependency>
 
-        <!-- Foreldrepengeprosjektet -->
-<!--        <dependency>-->
-<!--            <groupId>no.nav.foreldrepenger.felles</groupId>-->
-<!--            <artifactId>felles-bom</artifactId>-->
-<!--            <scope>provided</scope>-->
-<!--        </dependency>-->
-
         <!-- NAV -->
         <!-- Test avhengigheter -->
         <dependency>

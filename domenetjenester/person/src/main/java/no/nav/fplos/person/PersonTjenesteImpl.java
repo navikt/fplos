@@ -10,10 +10,9 @@ import no.nav.pdl.HentPersonQueryRequest;
 import no.nav.pdl.Navn;
 import no.nav.pdl.NavnResponseProjection;
 import no.nav.pdl.PersonResponseProjection;
+import no.nav.vedtak.exception.FunksjonellException;
 import no.nav.vedtak.felles.integrasjon.pdl.PdlKlient;
 import no.nav.vedtak.felles.integrasjon.pdl.Tema;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -24,28 +23,39 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @ApplicationScoped
-public class PdlTjenesteImpl implements PdlTjeneste {
+public class PersonTjenesteImpl implements PersonTjeneste {
 
     private PdlKlient pdlKlient;
 
-    public PdlTjenesteImpl() {
+    public PersonTjenesteImpl() {
     }
 
     @Inject
-    public PdlTjenesteImpl(PdlKlient pdlKlient) {
+    public PersonTjenesteImpl(PdlKlient pdlKlient) {
         this.pdlKlient = pdlKlient;
     }
 
     @Override
     public Optional<Person> hentPerson(AktørId aktørId) {
-            var query = new HentPersonQueryRequest();
-            query.setIdent(aktørId.getId());
-            var projection = new PersonResponseProjection()
-                    .navn(new NavnResponseProjection().forkortetNavn().fornavn().mellomnavn().etternavn())
-                    .adressebeskyttelse(new AdressebeskyttelseResponseProjection().gradering())
-                    .folkeregisteridentifikator(new FolkeregisteridentifikatorResponseProjection().identifikasjonsnummer().status().type());
-            var pdlPerson = pdlKlient.hentPerson(query, projection, Tema.FOR);
-            return Optional.ofNullable(pdlPerson).map(p -> tilPerson(p, aktørId));
+        Objects.requireNonNull(aktørId, "aktørId");
+        try {
+            return Optional.of(aktørId).map(this::hentPdlPerson).map(p -> tilPerson(p, aktørId));
+        } catch (FunksjonellException e) {
+            if (e.getFeil().getFeilmelding().contains("Error: Person ikke funnet")) {
+                return Optional.empty();
+            }
+            throw e;
+        }
+    }
+
+    private no.nav.pdl.Person hentPdlPerson(AktørId aktørId) {
+        var query = new HentPersonQueryRequest();
+        query.setIdent(aktørId.getId());
+        var projection = new PersonResponseProjection()
+                .navn(new NavnResponseProjection().forkortetNavn().fornavn().mellomnavn().etternavn())
+                .adressebeskyttelse(new AdressebeskyttelseResponseProjection().gradering())
+                .folkeregisteridentifikator(new FolkeregisteridentifikatorResponseProjection().identifikasjonsnummer().status().type());
+        return pdlKlient.hentPerson(query, projection, Tema.FOR);
     }
 
     private Person tilPerson(no.nav.pdl.Person person, AktørId aktørId) {
@@ -58,7 +68,7 @@ public class PdlTjenesteImpl implements PdlTjeneste {
 
     private static String navn(List<Navn> navn) {
         return navn.stream()
-                .map(PdlTjenesteImpl::navn)
+                .map(PersonTjenesteImpl::navn)
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("Fant ikke navn"));
     }
