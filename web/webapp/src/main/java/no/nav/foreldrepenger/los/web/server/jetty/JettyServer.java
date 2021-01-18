@@ -3,7 +3,6 @@ package no.nav.foreldrepenger.los.web.server.jetty;
 import no.nav.foreldrepenger.los.web.app.ApplicationConfig;
 import no.nav.foreldrepenger.los.web.server.jetty.DataSourceKonfig.DBConnProp;
 import no.nav.vedtak.isso.IssoApplication;
-import no.nav.vedtak.util.env.Environment;
 import org.eclipse.jetty.plus.jndi.EnvEntry;
 import org.eclipse.jetty.util.resource.Resource;
 import org.eclipse.jetty.util.resource.ResourceCollection;
@@ -55,9 +54,8 @@ public class JettyServer extends AbstractJettyServer {
 
     @Override
     protected void migrerDatabaser() throws IOException {
-        boolean cleanOnException = !Environment.current().isProd();
         for (DBConnProp dbConnProp : dataSourceKonfig.getDataSources()) {
-            new DatabaseScript(dbConnProp.getDatasource(), cleanOnException, dbConnProp.getMigrationScripts()).migrate();
+            new DatabaseScript(dbConnProp.getDatasource(), false, dbConnProp.getMigrationScripts()).migrate();
         }
     }
 
