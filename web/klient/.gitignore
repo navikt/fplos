@@ -5,7 +5,9 @@
 /.tmp/
 /.happypack/
 /.nyc_output/
+/jest_cache/
 /.vscode/
 /coverage/
 *.iml
 *.log*
+.eslintcache

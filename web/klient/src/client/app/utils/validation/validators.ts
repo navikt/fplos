@@ -99,7 +99,6 @@ const validateDate = (dateAsText, date, earliestDate, latestDate) => {
   return error;
 };
 
-
 export const hasValidPeriodIncludingOtherErrors = (values, otherErrors = [{}], options = {}) => {
   const today = moment().format(ISO_DATE_FORMAT);
   // @ts-ignore Fiks

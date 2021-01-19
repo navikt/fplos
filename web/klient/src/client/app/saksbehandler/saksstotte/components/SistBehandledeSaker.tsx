@@ -1,4 +1,3 @@
-
 import React, { useCallback, Fragment, FunctionComponent } from 'react';
 import { FormattedMessage } from 'react-intl';
 import Lenke from 'nav-frontend-lenker';

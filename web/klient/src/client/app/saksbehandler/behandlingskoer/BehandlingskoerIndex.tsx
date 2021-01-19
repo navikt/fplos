@@ -12,7 +12,6 @@ import OppgaveErReservertAvAnnenModal from 'saksbehandler/components/OppgaveErRe
 import { useRestApi, useRestApiRunner } from 'data/rest-api-hooks';
 import SakslistePanel from './components/SakslistePanel';
 
-
 const EMPTY_ARRAY = [];
 
 const openFagsak = (oppgave: Oppgave, hentFpsakInternBehandlingId: (param: { uuid: string}) => Promise<number>, fpsakUrl: string) => {

@@ -26,7 +26,6 @@ describe('<EndreSakslisterPanel>', () => {
       antallBehandlinger: 1,
     }];
 
-
     new RestApiTestMocker()
       .withRestCallRunner(RestApiPathsKeys.OPPGAVE_AVDELING_ANTALL, { data: 1 })
       .withRestCallRunner(RestApiPathsKeys.SAKSLISTER_FOR_AVDELING, { data: sakslister })

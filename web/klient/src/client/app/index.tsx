@@ -16,7 +16,6 @@ init({
   environment,
 });
 
-
 const history = createBrowserHistory({
   basename: '/fplos/',
 });

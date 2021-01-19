@@ -69,7 +69,6 @@ interface OwnProps {
 const formName = 'tilBehandlingForm';
 const formDefaultValues = { ytelseType: ALLE_YTELSETYPER_VALGT, ukevalg: UKE_2 };
 
-
 /**
  * TilBehandlingPanel.
  */

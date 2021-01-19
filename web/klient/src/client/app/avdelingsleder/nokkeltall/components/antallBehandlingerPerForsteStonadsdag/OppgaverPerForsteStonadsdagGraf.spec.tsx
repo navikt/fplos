@@ -36,7 +36,6 @@ describe('<OppgaverPerForsteStonadsdagGraf>', () => {
       antall: 3,
     }];
 
-
     const wrapper = shallow(<OppgaverPerForsteStonadsdagGraf
       width={300}
       height={200}

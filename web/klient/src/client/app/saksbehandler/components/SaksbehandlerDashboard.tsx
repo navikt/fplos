@@ -1,4 +1,3 @@
-
 import React, { FunctionComponent } from 'react';
 import Panel from 'nav-frontend-paneler';
 

@@ -20,7 +20,6 @@ import styles from './leggTilSaksbehandlerForm.less';
 const erSaksbehandlerLagtTilAllerede = (saksbehandler: Saksbehandler, avdelingensSaksbehandlere = []) => avdelingensSaksbehandlere instanceof Array
     && avdelingensSaksbehandlere.some((s) => saksbehandler && s.brukerIdent.toLowerCase() === saksbehandler.brukerIdent.toLowerCase());
 
-
 interface OwnProps {
   valgtAvdelingEnhet: string;
   avdelingensSaksbehandlere: Saksbehandler[];

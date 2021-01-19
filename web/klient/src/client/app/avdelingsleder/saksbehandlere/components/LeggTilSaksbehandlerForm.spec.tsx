@@ -173,7 +173,6 @@ describe('<LeggTilSaksbehandlerForm>', () => {
   it('skal vise tekst som viser at brukerident ikke finnes etter søk på ugyldig bruker', () => {
     const formProps = { handleSubmit: sinon.spy() };
 
-
     new RestApiTestMocker()
       .withRestCallRunner(RestApiPathsKeys.SAKSBEHANDLER_SOK, { data: undefined, state: RestApiState.SUCCESS })
       .withRestCallRunner(RestApiPathsKeys.OPPRETT_NY_SAKSBEHANDLER, { startRequest: () => undefined })

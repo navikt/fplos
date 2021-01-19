@@ -62,7 +62,7 @@ class RestApiTestMocker {
 
   public withRestCallRunner = (
     key: RestApiPathsKeys,
-    data: { state?: RestApiState, data?: any, startRequest?: (any) => any, resetRequestData?: () => void}
+    data: { state?: RestApiState, data?: any, startRequest?: (any) => any, resetRequestData?: () => void},
   ) => {
     this.runnerData.push({
       key,

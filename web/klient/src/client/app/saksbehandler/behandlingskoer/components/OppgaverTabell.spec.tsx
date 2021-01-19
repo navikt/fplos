@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { expect } from 'chai';
 import { FormattedMessage, IntlShape } from 'react-intl';

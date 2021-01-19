@@ -105,7 +105,6 @@ describe('<Periodpicker>', () => {
     expect(updatedInputField.prop('value')).to.eql('30.07.2017 - 30.10.2017');
   });
 
-
   it('skal lage periode med ny sluttdato når en velger dato etter nåværende periode', () => {
     const onChangeCallback = sinon.spy();
     const wrapper = shallow(<Periodpicker

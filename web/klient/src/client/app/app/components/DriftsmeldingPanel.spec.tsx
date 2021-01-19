@@ -5,7 +5,6 @@ import { Undertekst } from 'nav-frontend-typografi';
 import { shallow } from 'enzyme';
 import DriftsmeldingPanel from './DriftsmeldingPanel';
 
-
 describe('<DriftsmeldingPanel>', () => {
   it('skal ikke vises når det ikke finnes driftsmeldinger', () => {
     const wrapper = shallow(<DriftsmeldingPanel

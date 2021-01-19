@@ -72,7 +72,6 @@ describe('<FordelingAvBehandlingstypePanel>', () => {
       });
   });
 
-
   it('skal filtrere bort engangsstønader', () => {
     const valuesMock = {
       valgtYtelseType: fagsakYtelseType.FORELDREPRENGER,

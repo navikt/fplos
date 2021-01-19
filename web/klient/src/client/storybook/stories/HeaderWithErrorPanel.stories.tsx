@@ -7,7 +7,6 @@ import EventType from 'data/rest-api/src/requestApi/eventType';
 import HeaderWithErrorPanel from 'app/components/HeaderWithErrorPanel';
 import { RestApiProvider, RestApiErrorProvider } from 'data/rest-api-hooks';
 
-
 import withIntl from '../decorators/withIntl';
 import RequestMock from '../mocks/RequestMock';
 

@@ -2,7 +2,6 @@ import React from 'react';
 import { expect } from 'chai';
 import { FormattedMessage, IntlShape } from 'react-intl';
 
-
 import { shallowWithIntl, intlMock } from 'testHelpers/intl-enzyme-test-helper';
 import Modal from 'sharedComponents/Modal';
 import Image from 'sharedComponents/Image';

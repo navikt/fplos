@@ -17,10 +17,8 @@ const getInputMock = (input) => ({
   ...input,
 });
 
-
 const MockField = () => <div />;
 const RenderedMockField = renderNavField(MockField).WrappedComponent;
-
 
 describe('renderNavField', () => {
   it('skal ikke vise feil i utgangspunktet', () => {

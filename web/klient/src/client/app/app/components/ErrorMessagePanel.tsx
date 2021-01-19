@@ -38,7 +38,6 @@ interface OwnProps {
   };
 }
 
-
 /**
  * ErrorMessagePanel
  *

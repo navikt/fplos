@@ -73,7 +73,6 @@ describe('<PeriodCalendarOverlay>', () => {
     wrapper.find('div').prop('onBlur')({} as FocusEvent);
   });
 
-
   it('skal kjøre callback når en trykker escape-knappen', () => {
     const onCloseCallback = sinon.spy();
     const wrapper = shallowWithIntl(<PeriodCalendarOverlay.WrappedComponent

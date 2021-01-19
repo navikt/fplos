@@ -1,4 +1,3 @@
-
 import React, { FunctionComponent, useMemo } from 'react';
 import moment from 'moment';
 import { FormattedMessage } from 'react-intl';

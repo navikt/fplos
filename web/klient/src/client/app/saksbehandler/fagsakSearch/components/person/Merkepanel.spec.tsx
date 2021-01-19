@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { expect } from 'chai';
 import { shallowWithIntl, intlMock } from 'testHelpers/intl-enzyme-test-helper';

@@ -1,4 +1,3 @@
-
 import React, { FunctionComponent } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { Undertittel } from 'nav-frontend-typografi';

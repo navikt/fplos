@@ -56,7 +56,6 @@ describe('<ManueltPaVentPanel>', () => {
         expect(options[1].props.value).to.eql('8');
         expect(options[1].props.children).to.eql('8 uker frem');
 
-
         const radioOptions = wrapper.find(RadioOption);
         expect(radioOptions).to.have.length(4);
         expect(radioOptions.first().prop('value')).to.eql('FP');

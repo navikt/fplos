@@ -53,7 +53,6 @@ interface OwnProps {
 const formName = 'manueltPaVentForm';
 const formDefaultValues = { valgtYtelsetype: ALLE_YTELSETYPER_VALGT, ukevalg: UKE_4 };
 
-
 /**
  * ManueltPaVentPanel.
  */
