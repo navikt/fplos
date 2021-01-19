@@ -12,11 +12,11 @@ import { SaksbehandlerDashboard } from './SaksbehandlerDashboard';
 
 describe('<SaksbehandlerDashboard>', () => {
   let contextStub;
-  before(() => {
+  beforeEach(() => {
     contextStub = sinon.stub(useRestApiData, 'default').callsFake(() => 'url');
   });
 
-  after(() => {
+  afterEach(() => {
     contextStub.restore();
   });
 

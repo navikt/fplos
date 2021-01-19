@@ -13,11 +13,11 @@ import SearchForm from './SearchForm';
 
 describe('<SearchForm>', () => {
   let contextStub;
-  before(() => {
+  beforeEach(() => {
     contextStub = sinon.stub(useRestApiData, 'default').callsFake(() => ({ kanSaksbehandle: true }));
   });
 
-  after(() => {
+  afterEach(() => {
     contextStub.restore();
   });
 

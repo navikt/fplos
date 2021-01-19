@@ -44,7 +44,7 @@ const config = {
           options: {
             importLoaders: 1,
             modules: {
-              localIdentName: '[name]_[local]_[hash:base64:5]',
+              localIdentName: '[name]_[local]_[contenthash:base64:5]',
             },
           },
         }, {
@@ -52,7 +52,7 @@ const config = {
           options: {
             lessOptions: {
               modules: true,
-              localIdentName: '[name]_[local]_[hash:base64:5]',
+              localIdentName: '[name]_[local]_[contenthash:base64:5]',
               modifyVars: {
                 nodeModulesPath: '~',
                 coreModulePath: '~',
@@ -97,7 +97,7 @@ const config = {
 
   plugins: [
     new MiniCssExtractPlugin({
-      filename: isDevelopment ? 'style.css' : 'style_[hash].css',
+      filename: isDevelopment ? 'style.css' : 'style_[contenthash].css',
       ignoreOrder: true,
     }),
     new CircularDependencyPlugin({
@@ -121,7 +121,7 @@ const config = {
       sharedComponents: path.join(APP_DIR, 'sharedComponents'),
       utils: path.join(APP_DIR, 'utils'),
     },
-    extensions: ['.json', '.js', '.tsx', '.ts', '.less'],
+    extensions: ['.js', '.tsx', '.ts', '.less'],
   },
 
   externals: {
