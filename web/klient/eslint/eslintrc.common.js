@@ -2,11 +2,13 @@ const OFF = 0;
 const ERROR = 2;
 
 const config = {
-  root: true,
-
   env: {
     es6: true,
     browser: true,
+  },
+
+  globals: {
+    VERSION: 'off',
   },
 
   parser: '@typescript-eslint/parser',

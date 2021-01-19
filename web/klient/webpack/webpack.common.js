@@ -121,7 +121,7 @@ const config = {
       sharedComponents: path.join(APP_DIR, 'sharedComponents'),
       utils: path.join(APP_DIR, 'utils'),
     },
-    extensions: ['.js', '.tsx', '.ts', '.less'],
+    extensions: ['.js', '.jsx', '.tsx', '.ts', '.less'],
   },
 
   externals: {
