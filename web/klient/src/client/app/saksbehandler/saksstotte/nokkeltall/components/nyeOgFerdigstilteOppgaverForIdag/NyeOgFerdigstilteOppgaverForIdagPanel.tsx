@@ -6,7 +6,7 @@ import { Undertittel, Element } from 'nav-frontend-typografi';
 import kodeverkTyper from 'kodeverk/kodeverkTyper';
 import { ISO_DATE_FORMAT } from 'utils/formats';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
-import { useKodeverk } from 'data/rest-api-hooks';
+import useKodeverk from 'data/useKodeverk';
 import NyeOgFerdigstilteOppgaverForIdagGraf from './NyeOgFerdigstilteOppgaverForIdagGraf';
 import NyeOgFerdigstilteOppgaver from '../../nyeOgFerdigstilteOppgaverTsType';
 

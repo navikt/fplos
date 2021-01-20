@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { action } from '@storybook/addon-actions';
 
-import { RestApiGlobalStatePathsKeys } from 'data/restApiPaths';
+import { RestApiGlobalStatePathsKeys } from 'data/fplosRestApi';
 import { RestApiProvider } from 'data/rest-api-hooks';
 import { GjeldendeSakslisterTabell } from 'avdelingsleder/behandlingskoer/components/GjeldendeSakslisterTabell';
 import Saksliste from 'avdelingsleder/behandlingskoer/sakslisteTsType';

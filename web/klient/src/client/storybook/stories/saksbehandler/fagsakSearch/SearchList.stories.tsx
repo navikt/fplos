@@ -1,7 +1,7 @@
 import React from 'react';
 import { action } from '@storybook/addon-actions';
 
-import { RestApiGlobalStatePathsKeys } from 'data/restApiPaths';
+import { RestApiGlobalStatePathsKeys } from 'data/fplosRestApi';
 import fagsakYtelseType from 'kodeverk/fagsakYtelseType';
 import fagsakStatus from 'kodeverk/fagsakStatus';
 import behandlingStatus from 'kodeverk/behandlingStatus';

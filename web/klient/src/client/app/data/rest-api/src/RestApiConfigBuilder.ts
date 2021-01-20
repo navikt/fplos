@@ -1,8 +1,6 @@
 import RequestAdditionalConfig from './RequestAdditionalConfigTsType';
 import RequestConfig from './RequestConfig';
 
-const createConfigWithPathAndConfig = (name, path, contextPath, config) => new RequestConfig(name, path, contextPath, config);
-
 /**
  * RestApiConfigBuilder
  *
@@ -11,49 +9,38 @@ const createConfigWithPathAndConfig = (name, path, contextPath, config) => new R
 class RestApiConfigBuilder {
   endpoints: RequestConfig[] = [];
 
-  contextPath?: string = '';
-
-  constructor(contextPath?: string) {
-    this.contextPath = contextPath;
-  }
-
-  withGet(path: string, name: string, config?: RequestAdditionalConfig) {
-    this.endpoints.push(createConfigWithPathAndConfig(name, path, this.contextPath, config).withGetMethod());
+  withGet(path: string, name: string, config?: RequestAdditionalConfig): this {
+    this.endpoints.push(new RequestConfig(name, path, config).withGetMethod());
     return this;
   }
 
-  withAsyncGet(path: string, name: string, config?: RequestAdditionalConfig) {
-    this.endpoints.push(createConfigWithPathAndConfig(name, path, this.contextPath, config).withGetAsyncMethod());
+  withAsyncGet(path: string, name: string, config?: RequestAdditionalConfig): this {
+    this.endpoints.push(new RequestConfig(name, path, config).withGetAsyncMethod());
     return this;
   }
 
-  withPost(path: string, name: string, config?: RequestAdditionalConfig) {
-    this.endpoints.push(createConfigWithPathAndConfig(name, path, this.contextPath, config).withPostMethod());
+  withPost(path: string, name: string, config?: RequestAdditionalConfig): this {
+    this.endpoints.push(new RequestConfig(name, path, config).withPostMethod());
     return this;
   }
 
-  withAsyncPost(path: string, name: string, config?: RequestAdditionalConfig) {
-    this.endpoints.push(createConfigWithPathAndConfig(name, path, this.contextPath, config).withPostAsyncMethod());
+  withAsyncPost(path: string, name: string, config?: RequestAdditionalConfig): this {
+    this.endpoints.push(new RequestConfig(name, path, config).withPostAsyncMethod());
     return this;
   }
 
-  withPut(path: string, name: string, config?: RequestAdditionalConfig) {
-    this.endpoints.push(createConfigWithPathAndConfig(name, path, this.contextPath, config).withPutMethod());
+  withPut(path: string, name: string, config?: RequestAdditionalConfig): this {
+    this.endpoints.push(new RequestConfig(name, path, config).withPutMethod());
     return this;
   }
 
-  withAsyncPut(path: string, name: string, config?: RequestAdditionalConfig) {
-    this.endpoints.push(createConfigWithPathAndConfig(name, path, this.contextPath, config).withPutAsyncMethod());
+  withAsyncPut(path: string, name: string, config?: RequestAdditionalConfig): this {
+    this.endpoints.push(new RequestConfig(name, path, config).withPutAsyncMethod());
     return this;
   }
 
-  withPostAndOpenBlob(path: string, name: string, config?: RequestAdditionalConfig) {
-    this.endpoints.push(createConfigWithPathAndConfig(name, path, this.contextPath, config).withPostAndOpenBlob());
-    return this;
-  }
-
-  withRel(rel: string, name: string, config?: RequestAdditionalConfig) {
-    this.endpoints.push(createConfigWithPathAndConfig(name, undefined, undefined, config).withRel(rel));
+  withRel(rel: string, name: string, config?: RequestAdditionalConfig): this {
+    this.endpoints.push(new RequestConfig(name, undefined, config).withRel(rel));
     return this;
   }
 

@@ -5,9 +5,8 @@ import { FormattedMessage, injectIntl, WrappedComponentProps } from 'react-intl'
 import { Normaltekst, Element } from 'nav-frontend-typografi';
 import NavFrontendChevron from 'nav-frontend-chevron';
 
+import { restApiHooks, RestApiPathsKeys } from 'data/fplosRestApi';
 import TimeoutError from 'data/rest-api/src/requestApi/error/TimeoutError';
-import { RestApiPathsKeys } from 'data/restApiPaths';
-import { useRestApiRunner } from 'data/rest-api-hooks';
 import { getDateAndTime } from 'utils/dateUtils';
 import Image from 'sharedComponents/Image';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
@@ -76,13 +75,13 @@ export const OppgaverTabell: FunctionComponent<OwnProps & WrappedComponentProps>
     top: 0,
   });
 
-  const { startRequest: forlengOppgavereservasjon } = useRestApiRunner<Oppgave[]>(RestApiPathsKeys.FORLENG_OPPGAVERESERVASJON);
+  const { startRequest: forlengOppgavereservasjon } = restApiHooks.useRestApiRunner<Oppgave[]>(RestApiPathsKeys.FORLENG_OPPGAVERESERVASJON);
 
-  const { startRequest: hentReserverteOppgaver, data: reserverteOppgaver = EMPTY_ARRAY } = useRestApiRunner<Oppgave[]>(RestApiPathsKeys.RESERVERTE_OPPGAVER);
+  const { startRequest: hentReserverteOppgaver, data: reserverteOppgaver = EMPTY_ARRAY } = restApiHooks.useRestApiRunner<Oppgave[]>(RestApiPathsKeys.RESERVERTE_OPPGAVER);
 
   const {
-    startRequest: hentOppgaverTilBehandling, cancelRequest, data: oppgaverTilBehandling = EMPTY_ARRAY, error: hentOppgaverTilBehandlingError,
-  } = useRestApiRunner<Oppgave[] | string>(RestApiPathsKeys.OPPGAVER_TIL_BEHANDLING);
+    startRequest: hentOppgaverTilBehandling, data: oppgaverTilBehandling = EMPTY_ARRAY, error: hentOppgaverTilBehandlingError,
+  } = restApiHooks.useRestApiRunner<Oppgave[] | string>(RestApiPathsKeys.OPPGAVER_TIL_BEHANDLING);
 
   const fetchSakslisteOppgaverPolling = (sakslisteId: number, oppgaveIder?: string) => {
     hentReserverteOppgaver({}, true);
@@ -95,9 +94,10 @@ export const OppgaverTabell: FunctionComponent<OwnProps & WrappedComponentProps>
 
   useEffect(() => {
     fetchSakslisteOppgaverPolling(valgtSakslisteId);
-    return () => {
+    //FIXME Trengs denne?
+    /*return () => {
       cancelRequest();
-    };
+    };*/
   }, [valgtSakslisteId]);
 
   const forlengOppgaveReservasjonFn = useCallback((oppgaveId: number): Promise<any> => forlengOppgavereservasjon({ oppgaveId })

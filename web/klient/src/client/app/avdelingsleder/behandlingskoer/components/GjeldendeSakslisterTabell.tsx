@@ -17,8 +17,8 @@ import TableColumn from 'sharedComponents/table/TableColumn';
 import DateLabel from 'sharedComponents/DateLabel';
 import addCircleIcon from 'images/add-circle.svg';
 import removeIcon from 'images/remove.svg';
-import { useKodeverk, useRestApiRunner } from 'data/rest-api-hooks';
-import { RestApiPathsKeys } from 'data/restApiPaths';
+import { restApiHooks, RestApiPathsKeys } from 'data/fplosRestApi';
+import useKodeverk from 'data/useKodeverk';
 import SletteSakslisteModal from './SletteSakslisteModal';
 import Saksliste from '../sakslisteTsType';
 
@@ -89,7 +89,7 @@ export const GjeldendeSakslisterTabell: FunctionComponent<OwnProps> = ({
   const behandlingTyper = useKodeverk(kodeverkTyper.BEHANDLING_TYPE);
   const fagsakYtelseTyper = useKodeverk(kodeverkTyper.FAGSAK_YTELSE_TYPE);
 
-  const { startRequest: fjernSaksliste } = useRestApiRunner(RestApiPathsKeys.SLETT_SAKSLISTE);
+  const { startRequest: fjernSaksliste } = restApiHooks.useRestApiRunner(RestApiPathsKeys.SLETT_SAKSLISTE);
 
   useEffect(() => {
     tabRef.current = tabRef.current.slice(0, sakslister.length);

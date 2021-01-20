@@ -3,8 +3,7 @@ import { expect } from 'chai';
 import { shallow } from 'enzyme';
 import Lenke from 'nav-frontend-lenker';
 
-import { RestApiPathsKeys, RestApiGlobalStatePathsKeys } from 'data/restApiPaths';
-import RestApiTestMocker from 'testHelpers/RestApiTestMocker';
+import { requestApi, RestApiPathsKeys, RestApiGlobalStatePathsKeys } from 'data/fplosRestApi';
 import SistBehandledeSaker from './SistBehandledeSaker';
 
 describe('<SistBehandledeSaker>', () => {
@@ -63,33 +62,27 @@ describe('<SistBehandledeSaker>', () => {
       href: '',
     }];
 
-    new RestApiTestMocker()
-      .withGlobalData(RestApiGlobalStatePathsKeys.FPSAK_URL, { verdi: 'url' })
-      .withGlobalData(RestApiGlobalStatePathsKeys.FPTILBAKE_URL, { verdi: 'url' })
-      .withRestCall(RestApiPathsKeys.BEHANDLEDE_OPPGAVER, oppgaver)
-      .withDummyRunner()
-      .runTest(() => {
-        const wrapper = shallow(<SistBehandledeSaker />);
+    requestApi.mock(RestApiGlobalStatePathsKeys.FPSAK_URL, { verdi: 'url' });
+    requestApi.mock(RestApiGlobalStatePathsKeys.FPTILBAKE_URL, { verdi: 'url' });
+    requestApi.mock(RestApiPathsKeys.BEHANDLEDE_OPPGAVER, oppgaver);
 
-        const links = wrapper.find(Lenke);
-        expect(links).to.have.length(2);
-        expect(links.first().childAt(0).text()).to.eql('Espen Utvikler 123456789');
-        expect(links.last().childAt(0).text()).to.eql('Espen Solstråle 657643535');
-      });
+    const wrapper = shallow(<SistBehandledeSaker />);
+
+    const links = wrapper.find(Lenke);
+    expect(links).to.have.length(2);
+    expect(links.first().childAt(0).text()).to.eql('Espen Utvikler 123456789');
+    expect(links.last().childAt(0).text()).to.eql('Espen Solstråle 657643535');
   });
 
   it('skal ikke vise noen lenker når ingen behandlede saker blir funnet', () => {
     const oppgaver = [];
 
-    new RestApiTestMocker()
-      .withGlobalData(RestApiGlobalStatePathsKeys.FPSAK_URL, { verdi: 'url' })
-      .withGlobalData(RestApiGlobalStatePathsKeys.FPTILBAKE_URL, { verdi: 'url' })
-      .withRestCall(RestApiPathsKeys.BEHANDLEDE_OPPGAVER, oppgaver)
-      .withDummyRunner()
-      .runTest(() => {
-        const wrapper = shallow(<SistBehandledeSaker />);
+    requestApi.mock(RestApiGlobalStatePathsKeys.FPSAK_URL, { verdi: 'url' });
+    requestApi.mock(RestApiGlobalStatePathsKeys.FPTILBAKE_URL, { verdi: 'url' });
+    requestApi.mock(RestApiPathsKeys.BEHANDLEDE_OPPGAVER, oppgaver);
 
-        expect(wrapper.find(Lenke)).to.have.length(0);
-      });
+    const wrapper = shallow(<SistBehandledeSaker />);
+
+    expect(wrapper.find(Lenke)).to.have.length(0);
   });
 });

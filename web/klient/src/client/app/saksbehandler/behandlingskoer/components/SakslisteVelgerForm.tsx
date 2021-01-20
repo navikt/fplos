@@ -17,8 +17,7 @@ import Saksliste from 'saksbehandler/behandlingskoer/sakslisteTsType';
 import { SelectField } from 'form/FinalFields';
 import gruppeHoverUrl from 'images/gruppe_hover.svg';
 import gruppeUrl from 'images/gruppe.svg';
-import { RestApiPathsKeys } from 'data/restApiPaths';
-import { useRestApiRunner } from 'data/rest-api-hooks';
+import { restApiHooks, RestApiPathsKeys } from 'data/fplosRestApi';
 import Saksbehandler from '../saksbehandlerTsType';
 
 import styles from './sakslisteVelgerForm.less';
@@ -143,7 +142,7 @@ export const SakslisteVelgerForm: FunctionComponent<OwnProps & WrappedComponentP
   setValueInLocalStorage,
   removeValueFromLocalStorage,
 }) => {
-  const { data: saksbehandlere, startRequest: fetchSaksbehandlere } = useRestApiRunner<Saksbehandler[]>(RestApiPathsKeys.SAKSLISTE_SAKSBEHANDLERE);
+  const { data: saksbehandlere, startRequest: fetchSaksbehandlere } = restApiHooks.useRestApiRunner<Saksbehandler[]>(RestApiPathsKeys.SAKSLISTE_SAKSBEHANDLERE);
 
   useEffect(() => {
     if (sakslister.length > 0) {

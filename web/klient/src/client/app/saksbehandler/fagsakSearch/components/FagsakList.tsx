@@ -8,7 +8,7 @@ import TableRow from 'sharedComponents/table/TableRow';
 import TableColumn from 'sharedComponents/table/TableColumn';
 import DateLabel from 'sharedComponents/DateLabel';
 import fagsakStatus from 'kodeverk/fagsakStatus';
-import { useKodeverk } from 'data/rest-api-hooks';
+import useKodeverk from 'data/useKodeverk';
 import Fagsak from '../fagsakTsType';
 
 import styles from './fagsakList.less';

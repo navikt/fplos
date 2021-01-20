@@ -2,7 +2,7 @@ import React from 'react';
 import { action } from '@storybook/addon-actions';
 
 import { RestApiProvider } from 'data/rest-api-hooks';
-import { RestApiPathsKeys } from 'data/restApiPaths';
+import { RestApiPathsKeys } from 'data/fplosRestApi';
 import OppgaveReservasjonEndringDatoModal from 'saksbehandler/behandlingskoer/components/menu/OppgaveReservasjonEndringDatoModal';
 
 import RequestMock from '../../../mocks/RequestMock';

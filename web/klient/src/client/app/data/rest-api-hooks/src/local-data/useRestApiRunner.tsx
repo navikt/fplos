@@ -1,9 +1,9 @@
-import { useState, useCallback, useContext } from 'react';
+import { useState, useCallback } from 'react';
 
-import { RestApiPathsKeys } from 'data/restApiPaths';
-import { NotificationMapper, ErrorType, REQUEST_POLLING_CANCELLED } from 'data/rest-api';
-import { RestApiRequestContext } from '../RestApiContext';
-import useRestApiErrorDispatcher from '../error/useRestApiErrorDispatcher';
+import {
+  REQUEST_POLLING_CANCELLED, ErrorType, AbstractRequestApi,
+} from '@fpsak-frontend/rest-api';
+
 import RestApiState from '../RestApiState';
 
 interface RestApiData<T> {
@@ -12,53 +12,79 @@ interface RestApiData<T> {
   state: RestApiState;
   error?: ErrorType;
   data?: T;
-  cancelRequest: () => void;
 }
 
 /**
- * Hook som gir deg ein funksjon til å starte restkall, i tillegg til kallets status/resultat/feil
+ * For mocking i unit-test
  */
-function useRestApiRunner<T>(key: RestApiPathsKeys):RestApiData<T> {
+export const getUseRestApiRunnerMock = (requestApi: AbstractRequestApi) => function useRestApiRunner<T>(key: string):RestApiData<T> {
   const [data, setData] = useState({
     state: RestApiState.NOT_STARTED,
     data: undefined,
     error: undefined,
   });
 
-  const { addErrorMessage } = useRestApiErrorDispatcher();
-  const notif = new NotificationMapper();
-  notif.addRequestErrorEventHandlers((errorData, type) => {
-    addErrorMessage({ ...errorData, type });
+  const startRequest = (params?: any):Promise<T> => {
+    const response = requestApi.startRequest(key, params);
+    setData({
+      state: RestApiState.SUCCESS,
+      data: response,
+      error: undefined,
+    });
+    return Promise.resolve(response);
+  };
+
+  return {
+    startRequest,
+    resetRequestData: () => undefined,
+    ...data,
+  };
+};
+
+/**
+ * Hook som gir deg ein funksjon til å starte restkall, i tillegg til kallets status/resultat/feil
+ */
+const getUseRestApiRunner = (requestApi: AbstractRequestApi) => function useRestApiRunner<T>(key: string):RestApiData<T> {
+  const [data, setData] = useState({
+    state: RestApiState.NOT_STARTED,
+    data: undefined,
+    error: undefined,
   });
 
-  const requestApi = useContext(RestApiRequestContext);
+  const startRequest = useCallback((params?: any, keepData = false):Promise<T> => {
+    if (requestApi.hasPath(key)) {
+      setData((oldState) => ({
+        state: RestApiState.LOADING,
+        data: keepData ? oldState.data : undefined,
+        error: undefined,
+      }));
 
-  const startRequest = useCallback((params: any = {}, keepData = false):Promise<T> => {
-    setData((oldState) => ({
-      state: RestApiState.LOADING,
-      data: keepData ? oldState.data : undefined,
-      error: undefined,
-    }));
-
-    return requestApi.startRequest(key, params, notif)
-      .then((dataRes) => {
-        if (dataRes.payload !== REQUEST_POLLING_CANCELLED) {
+      return requestApi.startRequest(key, params)
+        .then((dataRes) => {
+          if (dataRes.payload !== REQUEST_POLLING_CANCELLED) {
+            setData({
+              state: RestApiState.SUCCESS,
+              data: dataRes.payload,
+              error: undefined,
+            });
+          }
+          return Promise.resolve(dataRes.payload);
+        })
+        .catch((error) => {
           setData({
-            state: RestApiState.SUCCESS,
-            data: dataRes.payload,
-            error: undefined,
+            state: RestApiState.ERROR,
+            data: undefined,
+            error,
           });
-        }
-        return Promise.resolve(dataRes.payload);
-      })
-      .catch((error) => {
-        setData({
-          state: RestApiState.ERROR,
-          data: undefined,
-          error,
+          throw error;
         });
-        throw error;
-      });
+    }
+    setData({
+      state: RestApiState.NOT_STARTED,
+      error: undefined,
+      data: undefined,
+    });
+    return undefined;
   }, []);
 
   const resetRequestData = useCallback(() => {
@@ -72,9 +98,8 @@ function useRestApiRunner<T>(key: RestApiPathsKeys):RestApiData<T> {
   return {
     startRequest,
     resetRequestData,
-    cancelRequest: () => requestApi.cancelRequest(key),
     ...data,
   };
-}
+};
 
-export default useRestApiRunner;
+export default getUseRestApiRunner;

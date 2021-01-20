@@ -1,7 +1,7 @@
 import React from 'react';
 import { action } from '@storybook/addon-actions';
 
-import { RestApiGlobalStatePathsKeys } from 'data/restApiPaths';
+import { RestApiGlobalStatePathsKeys } from 'data/fplosRestApi';
 import { RestApiProvider } from 'data/rest-api-hooks';
 import { UtvalgskriterierForSakslisteForm } from 'avdelingsleder/behandlingskoer/components/sakslisteForm/UtvalgskriterierForSakslisteForm';
 import koSortering from 'kodeverk/KoSortering';

@@ -2,9 +2,8 @@ import React from 'react';
 import { shallow } from 'enzyme';
 import { expect } from 'chai';
 
-import { RestApiPathsKeys } from 'data/restApiPaths';
+import { requestApi, RestApiPathsKeys } from 'data/fplosRestApi';
 import behandlingType from 'kodeverk/behandlingType';
-import RestApiTestMocker from 'testHelpers/RestApiTestMocker';
 
 import SaksbehandlerNokkeltallIndex from './SaksbehandlerNokkeltallIndex';
 import SaksbehandlerNokkeltallPanel from './components/SaksbehandlerNokkeltallPanel';
@@ -21,15 +20,13 @@ describe('<SaksbehandlerNokkeltallIndex>', () => {
       dato: '2019-01-01',
     }];
 
-    new RestApiTestMocker()
-      .withRestCall(RestApiPathsKeys.HENT_NYE_OG_FERDIGSTILTE_OPPGAVER, oppgaver)
-      .runTest(() => {
-        const wrapper = shallow(<SaksbehandlerNokkeltallIndex valgtSakslisteId={2} />);
+    requestApi.mock(RestApiPathsKeys.HENT_NYE_OG_FERDIGSTILTE_OPPGAVER, oppgaver);
 
-        const panel = wrapper.find(SaksbehandlerNokkeltallPanel);
-        expect(panel).to.have.length(1);
-        const oppgaverRes = panel.props().nyeOgFerdigstilteOppgaver;
-        expect(oppgaverRes).to.eql(oppgaver);
-      });
+    const wrapper = shallow(<SaksbehandlerNokkeltallIndex valgtSakslisteId={2} />);
+
+    const panel = wrapper.find(SaksbehandlerNokkeltallPanel);
+    expect(panel).to.have.length(1);
+    const oppgaverRes = panel.props().nyeOgFerdigstilteOppgaver;
+    expect(oppgaverRes).to.eql(oppgaver);
   });
 });

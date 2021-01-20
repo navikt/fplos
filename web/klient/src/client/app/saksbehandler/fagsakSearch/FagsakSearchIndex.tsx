@@ -3,8 +3,7 @@ import React, {
 } from 'react';
 
 import { errorOfType, ErrorTypes, getErrorResponseData } from 'data/rest-api';
-import { RestApiPathsKeys } from 'data/restApiPaths';
-import { useRestApiRunner } from 'data/rest-api-hooks';
+import { restApiHooks, RestApiPathsKeys } from 'data/fplosRestApi';
 import OppgaveErReservertAvAnnenModal from 'saksbehandler/components/OppgaveErReservertAvAnnenModal';
 import Fagsak from 'saksbehandler/fagsakSearch/fagsakTsType';
 import { getFpsakHref, getFptilbakeHref } from 'app/paths';
@@ -46,13 +45,13 @@ const FagsakSearchIndex: FunctionComponent<OwnProps> = ({
   const [sokStartet, setSokStartet] = useState(false);
   const [sokFerdig, setSokFerdig] = useState(false);
 
-  const { startRequest: reserverOppgave } = useRestApiRunner<OppgaveStatus>(RestApiPathsKeys.RESERVER_OPPGAVE);
+  const { startRequest: reserverOppgave } = restApiHooks.useRestApiRunner<OppgaveStatus>(RestApiPathsKeys.RESERVER_OPPGAVE);
   const {
     startRequest: sokFagsak, resetRequestData: resetFagsakSok, data: fagsaker = EMPTY_ARRAY, error: fagsakError,
-  } = useRestApiRunner<Fagsak[]>(RestApiPathsKeys.SEARCH_FAGSAK);
-  const { startRequest: hentOppgaverForFagsaker, data: fagsakOppgaver } = useRestApiRunner<Oppgave[]>(RestApiPathsKeys.OPPGAVER_FOR_FAGSAKER);
-  const { startRequest: hentReservasjonsstatus } = useRestApiRunner<OppgaveStatus>(RestApiPathsKeys.HENT_RESERVASJONSSTATUS);
-  const { startRequest: hentFpsakInternBehandlingId } = useRestApiRunner<number>(RestApiPathsKeys.FPSAK_BEHANDLING_ID);
+  } = restApiHooks.useRestApiRunner<Fagsak[]>(RestApiPathsKeys.SEARCH_FAGSAK);
+  const { startRequest: hentOppgaverForFagsaker, data: fagsakOppgaver } = restApiHooks.useRestApiRunner<Oppgave[]>(RestApiPathsKeys.OPPGAVER_FOR_FAGSAKER);
+  const { startRequest: hentReservasjonsstatus } = restApiHooks.useRestApiRunner<OppgaveStatus>(RestApiPathsKeys.HENT_RESERVASJONSSTATUS);
+  const { startRequest: hentFpsakInternBehandlingId } = restApiHooks.useRestApiRunner<number>(RestApiPathsKeys.FPSAK_BEHANDLING_ID);
 
   const searchResultAccessDenied = fagsakError && errorOfType(fagsakError, ErrorTypes.MANGLER_TILGANG_FEIL) ? getErrorResponseData(fagsakError) : undefined;
 

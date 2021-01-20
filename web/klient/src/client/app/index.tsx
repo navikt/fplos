@@ -6,7 +6,7 @@ import { init } from '@sentry/browser';
 
 import AppIndex from 'app/AppIndex';
 import { RestApiProvider, RestApiErrorProvider } from 'data/rest-api-hooks';
-import { requestApi } from 'data/restApiPaths';
+import { requestApi } from 'data/fplosRestApi';
 
 /* eslint no-undef: "error" */
 const environment = window.location.hostname;

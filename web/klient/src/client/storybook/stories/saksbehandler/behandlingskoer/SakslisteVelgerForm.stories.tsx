@@ -2,7 +2,7 @@ import React from 'react';
 import { action } from '@storybook/addon-actions';
 import { IntlShape } from 'react-intl';
 
-import { RestApiPathsKeys } from 'data/restApiPaths';
+import { RestApiPathsKeys } from 'data/fplosRestApi';
 import { RestApiProvider } from 'data/rest-api-hooks';
 import { SakslisteVelgerForm } from 'saksbehandler/behandlingskoer/components/SakslisteVelgerForm';
 import behandlingType from 'kodeverk/behandlingType';

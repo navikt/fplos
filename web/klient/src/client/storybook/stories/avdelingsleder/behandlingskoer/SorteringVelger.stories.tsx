@@ -2,7 +2,7 @@ import React from 'react';
 import { Form } from 'react-final-form';
 import { action } from '@storybook/addon-actions';
 
-import { RestApiGlobalStatePathsKeys } from 'data/restApiPaths';
+import { RestApiGlobalStatePathsKeys } from 'data/fplosRestApi';
 import { RestApiProvider } from 'data/rest-api-hooks';
 import SorteringVelger from 'avdelingsleder/behandlingskoer/components/sakslisteForm/SorteringVelger';
 import behandlingType from 'kodeverk/behandlingType';

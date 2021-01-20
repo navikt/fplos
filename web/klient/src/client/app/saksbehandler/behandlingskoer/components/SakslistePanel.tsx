@@ -5,8 +5,7 @@ import { Undertittel } from 'nav-frontend-typografi';
 import { getValueFromLocalStorage, setValueInLocalStorage, removeValueFromLocalStorage } from 'utils/localStorageHelper';
 import Saksliste from 'saksbehandler/behandlingskoer/sakslisteTsType';
 import Oppgave from 'saksbehandler/oppgaveTsType';
-import { useRestApiRunner } from 'data/rest-api-hooks';
-import { RestApiPathsKeys } from 'data/restApiPaths';
+import { restApiHooks, RestApiPathsKeys } from 'data/fplosRestApi';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import SakslisteVelgerForm from './SakslisteVelgerForm';
 import OppgaverTabell from './OppgaverTabell';
@@ -29,7 +28,7 @@ const SakslistePanel: FunctionComponent<OwnProps> = ({
   setValgtSakslisteId,
   valgtSakslisteId,
 }) => {
-  const { startRequest: fetchAntallOppgaver, data: antallOppgaver } = useRestApiRunner<number>(RestApiPathsKeys.BEHANDLINGSKO_OPPGAVE_ANTALL);
+  const { startRequest: fetchAntallOppgaver, data: antallOppgaver } = restApiHooks.useRestApiRunner<number>(RestApiPathsKeys.BEHANDLINGSKO_OPPGAVE_ANTALL);
 
   return (
     <>

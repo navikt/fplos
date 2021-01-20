@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { action } from '@storybook/addon-actions';
 
 import { AVDELINGSLEDER_PATH } from 'app/paths';
-import { RestApiGlobalStatePathsKeys } from 'data/restApiPaths';
+import { RestApiGlobalStatePathsKeys } from 'data/fplosRestApi';
 import EventType from 'data/rest-api/src/requestApi/eventType';
 import HeaderWithErrorPanel from 'app/components/HeaderWithErrorPanel';
 import { RestApiProvider, RestApiErrorProvider } from 'data/rest-api-hooks';

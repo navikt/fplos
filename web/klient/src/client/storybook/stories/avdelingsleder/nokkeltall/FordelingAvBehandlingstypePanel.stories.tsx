@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { RestApiGlobalStatePathsKeys } from 'data/restApiPaths';
+import { RestApiGlobalStatePathsKeys } from 'data/fplosRestApi';
 import { RestApiProvider } from 'data/rest-api-hooks';
 import fagsakYtelseType from 'kodeverk/fagsakYtelseType';
 import behandlingType from 'kodeverk/behandlingType';

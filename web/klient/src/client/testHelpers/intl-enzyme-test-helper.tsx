@@ -11,7 +11,7 @@ import { createIntl, createIntlCache, IntlProvider } from 'react-intl';
 import { mount, shallow } from 'enzyme';
 import sinon from 'sinon';
 // You can pass your messages to the IntlProvider. Optional: remove if unneeded.
-export const messages = require('../app/sprak/nb_NO.json');
+import messages from '../app/sprak/nb_NO.json';
 
 // Create the IntlProvider to retrieve context for wrapping around.
 const cache = createIntlCache();

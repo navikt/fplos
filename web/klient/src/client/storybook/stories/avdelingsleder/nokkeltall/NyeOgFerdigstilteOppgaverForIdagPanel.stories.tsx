@@ -1,7 +1,7 @@
 import React from 'react';
 import moment from 'moment';
 
-import { RestApiGlobalStatePathsKeys } from 'data/restApiPaths';
+import { RestApiGlobalStatePathsKeys } from 'data/fplosRestApi';
 import { RestApiProvider } from 'data/rest-api-hooks';
 import { ISO_DATE_FORMAT } from 'utils/formats';
 import behandlingType from 'kodeverk/behandlingType';

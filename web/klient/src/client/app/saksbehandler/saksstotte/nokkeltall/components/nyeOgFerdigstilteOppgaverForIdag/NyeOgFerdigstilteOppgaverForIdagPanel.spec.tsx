@@ -4,7 +4,7 @@ import sinon from 'sinon';
 import { shallow } from 'enzyme';
 import moment from 'moment';
 
-import * as useKodeverk from 'data/rest-api-hooks/src/global-data/useKodeverk';
+import useKodeverk from 'data/useKodeverk';
 import behandlingType from 'kodeverk/behandlingType';
 import NyeOgFerdigstilteOppgaverForIdagPanel, { getNyeOgFerdigstilteForIDag } from './NyeOgFerdigstilteOppgaverForIdagPanel';
 import NyeOgFerdigstilteOppgaverForIdagGraf from './NyeOgFerdigstilteOppgaverForIdagGraf';

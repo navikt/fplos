@@ -2,7 +2,7 @@ import React from 'react';
 
 import { RestApiProvider } from 'data/rest-api-hooks';
 import SistBehandledeSaker from 'saksbehandler/saksstotte/components/SistBehandledeSaker';
-import { RestApiGlobalStatePathsKeys, RestApiPathsKeys } from 'data/restApiPaths';
+import { RestApiGlobalStatePathsKeys, RestApiPathsKeys } from 'data/fplosRestApi';
 
 import RequestMock from '../../../mocks/RequestMock';
 import withIntl from '../../../decorators/withIntl';

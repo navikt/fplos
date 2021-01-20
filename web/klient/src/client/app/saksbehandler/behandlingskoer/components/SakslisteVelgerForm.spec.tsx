@@ -4,8 +4,7 @@ import sinon from 'sinon';
 import { IntlShape, FormattedMessage } from 'react-intl';
 import { Form } from 'react-final-form';
 
-import { RestApiPathsKeys } from 'data/restApiPaths';
-import RestApiTestMocker from 'testHelpers/RestApiTestMocker';
+import { requestApi, RestApiPathsKeys } from 'data/fplosRestApi';
 import Image from 'sharedComponents/Image';
 import LabelWithHeader from 'sharedComponents/LabelWithHeader';
 import behandlingType from 'kodeverk/behandlingType';
@@ -57,30 +56,26 @@ describe('<SakslisteVelgerForm>', () => {
       },
     }];
 
-    new RestApiTestMocker()
-      .withDummyRunner()
-      .runTest(() => {
-        const wrapper = shallowWithIntl(<SakslisteVelgerForm.WrappedComponent
-          intl={intl as IntlShape}
-          sakslister={sakslister}
-          setValgtSakslisteId={sinon.spy()}
-          fetchAntallOppgaver={sinon.spy()}
-          getValueFromLocalStorage={sinon.spy()}
-          setValueInLocalStorage={sinon.spy()}
-          removeValueFromLocalStorage={sinon.spy()}
-          // @ts-ignore
-        />).find(Form).renderProp('render')(formProps);
+    const wrapper = shallowWithIntl(<SakslisteVelgerForm.WrappedComponent
+      intl={intl as IntlShape}
+      sakslister={sakslister}
+      setValgtSakslisteId={sinon.spy()}
+      fetchAntallOppgaver={sinon.spy()}
+      getValueFromLocalStorage={sinon.spy()}
+      setValueInLocalStorage={sinon.spy()}
+      removeValueFromLocalStorage={sinon.spy()}
+      // @ts-ignore
+    />).find(Form).renderProp('render')(formProps);
 
-        const select = wrapper.find(SelectField);
-        expect(select).to.have.length(1);
-        const options = select.prop('selectValues') as { key: number; props: { value: string; children: string }}[];
-        expect(options[0].key).to.eql('1');
-        expect(options[0].props.value).to.eql('1');
-        expect(options[0].props.children).to.eql('Testliste 1');
-        expect(options[1].key).to.eql('2');
-        expect(options[1].props.value).to.eql('2');
-        expect(options[1].props.children).to.eql('Testliste 2');
-      });
+    const select = wrapper.find(SelectField);
+    expect(select).to.have.length(1);
+    const options = select.prop('selectValues') as { key: number; props: { value: string; children: string }}[];
+    expect(options[0].key).to.eql('1');
+    expect(options[0].props.value).to.eql('1');
+    expect(options[0].props.children).to.eql('Testliste 1');
+    expect(options[1].key).to.eql('2');
+    expect(options[1].props.value).to.eql('2');
+    expect(options[1].props.children).to.eql('Testliste 2');
   });
 
   it('skal ikke vise informasjon om saksliste når ingen saksliste er valgt', () => {
@@ -105,22 +100,18 @@ describe('<SakslisteVelgerForm>', () => {
 
     const formProps = { values: { sakslisteId: undefined } };
 
-    new RestApiTestMocker()
-      .withDummyRunner()
-      .runTest(() => {
-        const wrapper = shallowWithIntl(<SakslisteVelgerForm.WrappedComponent
-          intl={intl as IntlShape}
-          sakslister={sakslister}
-          setValgtSakslisteId={sinon.spy()}
-          fetchAntallOppgaver={sinon.spy()}
-          getValueFromLocalStorage={sinon.spy()}
-          setValueInLocalStorage={sinon.spy()}
-          removeValueFromLocalStorage={sinon.spy()}
-          // @ts-ignore
-        />).find(Form).renderProp('render')(formProps);
+    const wrapper = shallowWithIntl(<SakslisteVelgerForm.WrappedComponent
+      intl={intl as IntlShape}
+      sakslister={sakslister}
+      setValgtSakslisteId={sinon.spy()}
+      fetchAntallOppgaver={sinon.spy()}
+      getValueFromLocalStorage={sinon.spy()}
+      setValueInLocalStorage={sinon.spy()}
+      removeValueFromLocalStorage={sinon.spy()}
+      // @ts-ignore
+    />).find(Form).renderProp('render')(formProps);
 
-        expect(wrapper.find(LabelWithHeader)).to.have.length(0);
-      });
+    expect(wrapper.find(LabelWithHeader)).to.have.length(0);
   });
 
   it('skal vise at alle behandlingstyper og fagsakYtelseTyper er valgt når ingen verdier er oppgitt', () => {
@@ -145,26 +136,22 @@ describe('<SakslisteVelgerForm>', () => {
 
     const formProps = { values: { sakslisteId: '1' } };
 
-    new RestApiTestMocker()
-      .withDummyRunner()
-      .runTest(() => {
-        const wrapper = shallowWithIntl(<SakslisteVelgerForm.WrappedComponent
-          intl={intl as IntlShape}
-          sakslister={sakslister}
-          setValgtSakslisteId={sinon.spy()}
-          fetchAntallOppgaver={sinon.spy()}
-          getValueFromLocalStorage={sinon.spy()}
-          setValueInLocalStorage={sinon.spy()}
-          removeValueFromLocalStorage={sinon.spy()}
-          // @ts-ignore
-        />).find(Form).renderProp('render')(formProps);
+    const wrapper = shallowWithIntl(<SakslisteVelgerForm.WrappedComponent
+      intl={intl as IntlShape}
+      sakslister={sakslister}
+      setValgtSakslisteId={sinon.spy()}
+      fetchAntallOppgaver={sinon.spy()}
+      getValueFromLocalStorage={sinon.spy()}
+      setValueInLocalStorage={sinon.spy()}
+      removeValueFromLocalStorage={sinon.spy()}
+      // @ts-ignore
+    />).find(Form).renderProp('render')(formProps);
 
-        const labels = wrapper.find(LabelWithHeader);
-        expect(labels).to.have.length(4);
-        expect(labels.first().prop('texts')).to.eql(['Alle']);
-        expect(labels.at(0).prop('texts')).to.eql(['Alle']);
-        expect(labels.at(1).prop('texts')).to.eql(['Alle']);
-      });
+    const labels = wrapper.find(LabelWithHeader);
+    expect(labels).to.have.length(4);
+    expect(labels.first().prop('texts')).to.eql(['Alle']);
+    expect(labels.at(0).prop('texts')).to.eql(['Alle']);
+    expect(labels.at(1).prop('texts')).to.eql(['Alle']);
   });
 
   it('skal vise at alle behandlingstyper er valgt når alle verdiene er oppgitt', () => {
@@ -192,26 +179,22 @@ describe('<SakslisteVelgerForm>', () => {
 
     const formProps = { values: { sakslisteId: '1' } };
 
-    new RestApiTestMocker()
-      .withDummyRunner()
-      .runTest(() => {
-        // totaltBehandlingTypeAntall er satt til 1 som er lik antall behandlingstypar satt på sakslisten
-        const wrapper = shallowWithIntl(<SakslisteVelgerForm.WrappedComponent
-          intl={intl as IntlShape}
-          sakslister={sakslister}
-          setValgtSakslisteId={sinon.spy()}
-          fetchAntallOppgaver={sinon.spy()}
-          getValueFromLocalStorage={sinon.spy()}
-          setValueInLocalStorage={sinon.spy()}
-          removeValueFromLocalStorage={sinon.spy()}
-          // @ts-ignore
-        />).find(Form).renderProp('render')(formProps);
+    // totaltBehandlingTypeAntall er satt til 1 som er lik antall behandlingstypar satt på sakslisten
+    const wrapper = shallowWithIntl(<SakslisteVelgerForm.WrappedComponent
+      intl={intl as IntlShape}
+      sakslister={sakslister}
+      setValgtSakslisteId={sinon.spy()}
+      fetchAntallOppgaver={sinon.spy()}
+      getValueFromLocalStorage={sinon.spy()}
+      setValueInLocalStorage={sinon.spy()}
+      removeValueFromLocalStorage={sinon.spy()}
+      // @ts-ignore
+    />).find(Form).renderProp('render')(formProps);
 
-        const labels = wrapper.find(LabelWithHeader);
-        expect(labels).to.have.length(4);
-        expect(labels.first().prop('texts')).to.eql(['Alle']);
-        expect(labels.at(1).prop('texts')).to.eql(['Førstegangssøknad']);
-      });
+    const labels = wrapper.find(LabelWithHeader);
+    expect(labels).to.have.length(4);
+    expect(labels.first().prop('texts')).to.eql(['Alle']);
+    expect(labels.at(1).prop('texts')).to.eql(['Førstegangssøknad']);
   });
 
   it('skal vise valgte behandlingstyper og fagsakYtelseTyper', () => {
@@ -245,25 +228,21 @@ describe('<SakslisteVelgerForm>', () => {
 
     const formProps = { values: { sakslisteId: '1' } };
 
-    new RestApiTestMocker()
-      .withDummyRunner()
-      .runTest(() => {
-        const wrapper = shallowWithIntl(<SakslisteVelgerForm.WrappedComponent
-          intl={intl as IntlShape}
-          sakslister={sakslister}
-          setValgtSakslisteId={sinon.spy()}
-          fetchAntallOppgaver={sinon.spy()}
-          getValueFromLocalStorage={sinon.spy()}
-          setValueInLocalStorage={sinon.spy()}
-          removeValueFromLocalStorage={sinon.spy()}
-          // @ts-ignore
-        />).find(Form).renderProp('render')(formProps);
+    const wrapper = shallowWithIntl(<SakslisteVelgerForm.WrappedComponent
+      intl={intl as IntlShape}
+      sakslister={sakslister}
+      setValgtSakslisteId={sinon.spy()}
+      fetchAntallOppgaver={sinon.spy()}
+      getValueFromLocalStorage={sinon.spy()}
+      setValueInLocalStorage={sinon.spy()}
+      removeValueFromLocalStorage={sinon.spy()}
+      // @ts-ignore
+    />).find(Form).renderProp('render')(formProps);
 
-        const labels = wrapper.find(LabelWithHeader);
-        expect(labels).to.have.length(4);
-        expect(labels.first().prop('texts')).to.eql(['Engangsstønad']);
-        expect(labels.at(1).prop('texts')).to.eql(['Førstegangssøknad', 'Klage']);
-      });
+    const labels = wrapper.find(LabelWithHeader);
+    expect(labels).to.have.length(4);
+    expect(labels.first().prop('texts')).to.eql(['Engangsstønad']);
+    expect(labels.at(1).prop('texts')).to.eql(['Førstegangssøknad', 'Klage']);
   });
 
   it('skal vise valgte andre kriterier som er inkluderte', () => {
@@ -293,24 +272,20 @@ describe('<SakslisteVelgerForm>', () => {
     }];
 
     const formProps = { values: { sakslisteId: '1' } };
-    new RestApiTestMocker()
-      .withDummyRunner()
-      .runTest(() => {
-        const wrapper = shallowWithIntl(<SakslisteVelgerForm.WrappedComponent
-          intl={intl as IntlShape}
-          sakslister={sakslister}
-          setValgtSakslisteId={sinon.spy()}
-          fetchAntallOppgaver={sinon.spy()}
-          getValueFromLocalStorage={sinon.spy()}
-          setValueInLocalStorage={sinon.spy()}
-          removeValueFromLocalStorage={sinon.spy()}
-          // @ts-ignore
-        />).find(Form).renderProp('render')(formProps);
+    const wrapper = shallowWithIntl(<SakslisteVelgerForm.WrappedComponent
+      intl={intl as IntlShape}
+      sakslister={sakslister}
+      setValgtSakslisteId={sinon.spy()}
+      fetchAntallOppgaver={sinon.spy()}
+      getValueFromLocalStorage={sinon.spy()}
+      setValueInLocalStorage={sinon.spy()}
+      removeValueFromLocalStorage={sinon.spy()}
+      // @ts-ignore
+    />).find(Form).renderProp('render')(formProps);
 
-        const labels = wrapper.find(LabelWithHeader);
-        expect(labels).to.have.length(4);
-        expect(labels.at(2).prop('texts')).to.eql(['Til beslutter']);
-      });
+    const labels = wrapper.find(LabelWithHeader);
+    expect(labels).to.have.length(4);
+    expect(labels.at(2).prop('texts')).to.eql(['Til beslutter']);
   });
 
   it('skal vise valgte andre kriterier som er ekskludert', () => {
@@ -341,24 +316,20 @@ describe('<SakslisteVelgerForm>', () => {
 
     const formProps = { values: { sakslisteId: '1' } };
 
-    new RestApiTestMocker()
-      .withDummyRunner()
-      .runTest(() => {
-        const wrapper = shallowWithIntl(<SakslisteVelgerForm.WrappedComponent
-          intl={intl as IntlShape}
-          sakslister={sakslister}
-          setValgtSakslisteId={sinon.spy()}
-          fetchAntallOppgaver={sinon.spy()}
-          getValueFromLocalStorage={sinon.spy()}
-          setValueInLocalStorage={sinon.spy()}
-          removeValueFromLocalStorage={sinon.spy()}
-          // @ts-ignore
-        />).find(Form).renderProp('render')(formProps);
+    const wrapper = shallowWithIntl(<SakslisteVelgerForm.WrappedComponent
+      intl={intl as IntlShape}
+      sakslister={sakslister}
+      setValgtSakslisteId={sinon.spy()}
+      fetchAntallOppgaver={sinon.spy()}
+      getValueFromLocalStorage={sinon.spy()}
+      setValueInLocalStorage={sinon.spy()}
+      removeValueFromLocalStorage={sinon.spy()}
+      // @ts-ignore
+    />).find(Form).renderProp('render')(formProps);
 
-        const labels = wrapper.find(LabelWithHeader);
-        expect(labels).to.have.length(4);
-        expect(labels.at(2).prop('texts')).to.eql(['Uten: Til beslutter']);
-      });
+    const labels = wrapper.find(LabelWithHeader);
+    expect(labels).to.have.length(4);
+    expect(labels.at(2).prop('texts')).to.eql(['Uten: Til beslutter']);
   });
 
   it('skal vise at alle andre kriterier er valgte', () => {
@@ -383,24 +354,20 @@ describe('<SakslisteVelgerForm>', () => {
 
     const formProps = { values: { sakslisteId: '1' } };
 
-    new RestApiTestMocker()
-      .withDummyRunner()
-      .runTest(() => {
-        const wrapper = shallowWithIntl(<SakslisteVelgerForm.WrappedComponent
-          intl={intl as IntlShape}
-          sakslister={sakslister}
-          setValgtSakslisteId={sinon.spy()}
-          fetchAntallOppgaver={sinon.spy()}
-          getValueFromLocalStorage={sinon.spy()}
-          setValueInLocalStorage={sinon.spy()}
-          removeValueFromLocalStorage={sinon.spy()}
-          // @ts-ignore
-        />).find(Form).renderProp('render')(formProps);
+    const wrapper = shallowWithIntl(<SakslisteVelgerForm.WrappedComponent
+      intl={intl as IntlShape}
+      sakslister={sakslister}
+      setValgtSakslisteId={sinon.spy()}
+      fetchAntallOppgaver={sinon.spy()}
+      getValueFromLocalStorage={sinon.spy()}
+      setValueInLocalStorage={sinon.spy()}
+      removeValueFromLocalStorage={sinon.spy()}
+      // @ts-ignore
+    />).find(Form).renderProp('render')(formProps);
 
-        const labels = wrapper.find(LabelWithHeader);
-        expect(labels).to.have.length(4);
-        expect(labels.at(2).prop('texts')).to.eql(['Alle']);
-      });
+    const labels = wrapper.find(LabelWithHeader);
+    expect(labels).to.have.length(4);
+    expect(labels.at(2).prop('texts')).to.eql(['Alle']);
   });
 
   it('skal vise køens saksbehandlere i tooltip', () => {
@@ -448,24 +415,22 @@ describe('<SakslisteVelgerForm>', () => {
 
     const formProps = { values: { sakslisteId: '1' } };
 
-    new RestApiTestMocker()
-      .withRestCallRunner(RestApiPathsKeys.SAKSLISTE_SAKSBEHANDLERE, { data: saksbehandlere })
-      .runTest(() => {
-        const wrapper = shallowWithIntl(<SakslisteVelgerForm.WrappedComponent
-          intl={intl as IntlShape}
-          sakslister={sakslister}
-          setValgtSakslisteId={sinon.spy()}
-          fetchAntallOppgaver={sinon.spy()}
-          getValueFromLocalStorage={sinon.spy()}
-          setValueInLocalStorage={sinon.spy()}
-          removeValueFromLocalStorage={sinon.spy()}
-          // @ts-ignore
-        />).find(Form).renderProp('render')(formProps);
+    requestApi.mock(RestApiPathsKeys.SAKSLISTE_SAKSBEHANDLERE, saksbehandlere);
 
-        const image = wrapper.find(Image);
-        expect(image).to.have.length(1);
-        const tooltip = shallowWithIntl(image.first().prop('tooltip'));
-        expect(tooltip.find(FormattedMessage).prop('id')).to.eql('SakslisteVelgerForm.SaksbehandlerToolip');
-      });
+    const wrapper = shallowWithIntl(<SakslisteVelgerForm.WrappedComponent
+      intl={intl as IntlShape}
+      sakslister={sakslister}
+      setValgtSakslisteId={sinon.spy()}
+      fetchAntallOppgaver={sinon.spy()}
+      getValueFromLocalStorage={sinon.spy()}
+      setValueInLocalStorage={sinon.spy()}
+      removeValueFromLocalStorage={sinon.spy()}
+      // @ts-ignore
+    />).find(Form).renderProp('render')(formProps);
+
+    const image = wrapper.find(Image);
+    expect(image).to.have.length(1);
+    const tooltip = shallowWithIntl(image.first().prop('tooltip'));
+    expect(tooltip.find(FormattedMessage).prop('id')).to.eql('SakslisteVelgerForm.SaksbehandlerToolip');
   });
 });

@@ -1,7 +1,7 @@
 import React from 'react';
 import { action } from '@storybook/addon-actions';
 
-import { RestApiPathsKeys } from 'data/restApiPaths';
+import { RestApiPathsKeys } from 'data/fplosRestApi';
 import { LeggTilSaksbehandlerForm } from 'avdelingsleder/saksbehandlere/components/LeggTilSaksbehandlerForm';
 import { RestApiProvider } from 'data/rest-api-hooks';
 

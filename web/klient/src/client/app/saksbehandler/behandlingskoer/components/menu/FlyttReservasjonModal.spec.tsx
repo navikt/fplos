@@ -6,10 +6,8 @@ import { Form } from 'react-final-form';
 import { Hovedknapp } from 'nav-frontend-knapper';
 import { Normaltekst } from 'nav-frontend-typografi';
 
-import { RestApiPathsKeys } from 'data/restApiPaths';
-import RestApiTestMocker from 'testHelpers/RestApiTestMocker';
+import { requestApi, RestApiPathsKeys } from 'data/fplosRestApi';
 import { shallowWithIntl, intlMock } from 'testHelpers/intl-enzyme-test-helper';
-import { RestApiState } from 'data/rest-api-hooks';
 import FlyttReservasjonModal from './FlyttReservasjonModal';
 
 describe('<FlyttReservasjonModal>', () => {
@@ -24,23 +22,19 @@ describe('<FlyttReservasjonModal>', () => {
       handleSubmit: sinon.spy(),
       values: {},
     };
-    new RestApiTestMocker()
-      .withDummyRunner()
-      .runTest(() => {
-        const wrapper = shallowWithIntl(
-          <FlyttReservasjonModal.WrappedComponent
-            intl={intl as IntlShape}
-            showModal
-            oppgaveId={oppgaveId}
-            closeModal={sinon.spy()}
-            toggleMenu={sinon.spy()}
-            hentReserverteOppgaver={sinon.spy()}
-          />,
-          // @ts-ignore
-        ).find(Form).first().renderProp('render')(formProps);
+    const wrapper = shallowWithIntl(
+      <FlyttReservasjonModal.WrappedComponent
+        intl={intl as IntlShape}
+        showModal
+        oppgaveId={oppgaveId}
+        closeModal={sinon.spy()}
+        toggleMenu={sinon.spy()}
+        hentReserverteOppgaver={sinon.spy()}
+      />,
+      // @ts-ignore
+    ).find(Form).first().renderProp('render')(formProps);
 
-        expect(wrapper.find(Normaltekst)).has.length(0);
-      });
+    expect(wrapper.find(Normaltekst)).has.length(0);
   });
 
   it('skal vise at saksbehandler ikke finnes når søket er utført og ingen saksbehandler vart returnert', () => {
@@ -48,26 +42,25 @@ describe('<FlyttReservasjonModal>', () => {
       handleSubmit: sinon.spy(),
       values: {},
     };
-    new RestApiTestMocker()
-      .withRestCallRunner(RestApiPathsKeys.FLYTT_RESERVASJON_SAKSBEHANDLER_SOK, { state: RestApiState.SUCCESS, data: undefined })
-      .withRestCallRunner(RestApiPathsKeys.FLYTT_RESERVASJON, { startRequest: () => Promise.resolve() })
-      .runTest(() => {
-        const wrapper = shallowWithIntl(
-          <FlyttReservasjonModal.WrappedComponent
-            intl={intl as IntlShape}
-            showModal
-            oppgaveId={oppgaveId}
-            closeModal={sinon.spy()}
-            toggleMenu={sinon.spy()}
-            hentReserverteOppgaver={sinon.spy()}
-          />,
-          // @ts-ignore
-        ).find(Form).first().renderProp('render')(formProps);
+    
+    requestApi.mock(RestApiPathsKeys.FLYTT_RESERVASJON_SAKSBEHANDLER_SOK, undefined);
+    requestApi.mock(RestApiPathsKeys.FLYTT_RESERVASJON, {});
 
-        const tekst = wrapper.find(Normaltekst);
-        expect(tekst).has.length(1);
-        expect(tekst.childAt(0).text()).is.eql('Kan ikke finne brukerident');
-      });
+    const wrapper = shallowWithIntl(
+      <FlyttReservasjonModal.WrappedComponent
+        intl={intl as IntlShape}
+        showModal
+        oppgaveId={oppgaveId}
+        closeModal={sinon.spy()}
+        toggleMenu={sinon.spy()}
+        hentReserverteOppgaver={sinon.spy()}
+      />,
+      // @ts-ignore
+    ).find(Form).first().renderProp('render')(formProps);
+
+    const tekst = wrapper.find(Normaltekst);
+    expect(tekst).has.length(1);
+    expect(tekst.childAt(0).text()).is.eql('Kan ikke finne brukerident');
   });
 
   it('skal vise saksbehandler', () => {
@@ -81,26 +74,24 @@ describe('<FlyttReservasjonModal>', () => {
       values: {},
     };
 
-    new RestApiTestMocker()
-      .withRestCallRunner(RestApiPathsKeys.FLYTT_RESERVASJON_SAKSBEHANDLER_SOK, { state: RestApiState.SUCCESS, data: saksbehandler })
-      .withRestCallRunner(RestApiPathsKeys.FLYTT_RESERVASJON, { startRequest: () => Promise.resolve() })
-      .runTest(() => {
-        const wrapper = shallowWithIntl(
-          <FlyttReservasjonModal.WrappedComponent
-            intl={intl as IntlShape}
-            showModal
-            oppgaveId={oppgaveId}
-            closeModal={sinon.spy()}
-            toggleMenu={sinon.spy()}
-            hentReserverteOppgaver={sinon.spy()}
-          />,
-          // @ts-ignore
-        ).find(Form).first().renderProp('render')(formProps);
+    requestApi.mock(RestApiPathsKeys.FLYTT_RESERVASJON_SAKSBEHANDLER_SOK, saksbehandler);
+    requestApi.mock(RestApiPathsKeys.FLYTT_RESERVASJON, {});
 
-        const tekst = wrapper.find(Normaltekst);
-        expect(tekst).has.length(1);
-        expect(tekst.childAt(0).text()).is.eql('Brukernavn, Avdelingsnavn');
-      });
+    const wrapper = shallowWithIntl(
+      <FlyttReservasjonModal.WrappedComponent
+        intl={intl as IntlShape}
+        showModal
+        oppgaveId={oppgaveId}
+        closeModal={sinon.spy()}
+        toggleMenu={sinon.spy()}
+        hentReserverteOppgaver={sinon.spy()}
+      />,
+      // @ts-ignore
+    ).find(Form).first().renderProp('render')(formProps);
+
+    const tekst = wrapper.find(Normaltekst);
+    expect(tekst).has.length(1);
+    expect(tekst.childAt(0).text()).is.eql('Brukernavn, Avdelingsnavn');
   });
 
   it('skal vise søkeknapp som enablet når en har skrive inn minst ett tegn og en ikke har startet søket', () => {
@@ -111,25 +102,21 @@ describe('<FlyttReservasjonModal>', () => {
       },
     };
 
-    new RestApiTestMocker()
-      .withDummyRunner()
-      .runTest(() => {
-        const wrapper = shallowWithIntl(
-          <FlyttReservasjonModal.WrappedComponent
-            intl={intl as IntlShape}
-            showModal
-            oppgaveId={oppgaveId}
-            closeModal={sinon.spy()}
-            toggleMenu={sinon.spy()}
-            hentReserverteOppgaver={sinon.spy()}
-          />,
-          // @ts-ignore
-        ).find(Form).first().renderProp('render')(formProps);
+    const wrapper = shallowWithIntl(
+      <FlyttReservasjonModal.WrappedComponent
+        intl={intl as IntlShape}
+        showModal
+        oppgaveId={oppgaveId}
+        closeModal={sinon.spy()}
+        toggleMenu={sinon.spy()}
+        hentReserverteOppgaver={sinon.spy()}
+      />,
+      // @ts-ignore
+    ).find(Form).first().renderProp('render')(formProps);
 
-        const knapper = wrapper.find(Hovedknapp);
-        expect(knapper).has.length(1);
-        expect(knapper.first().prop('disabled')).is.false;
-      });
+    const knapper = wrapper.find(Hovedknapp);
+    expect(knapper).has.length(1);
+    expect(knapper.first().prop('disabled')).is.false;
   });
 
   it('skal vise søkeknapp som disablet når en ikke har skrevet noe i brukerident-feltet', () => {
@@ -138,25 +125,21 @@ describe('<FlyttReservasjonModal>', () => {
       values: {},
     };
 
-    new RestApiTestMocker()
-      .withDummyRunner()
-      .runTest(() => {
-        const wrapper = shallowWithIntl(
-          <FlyttReservasjonModal.WrappedComponent
-            intl={intl as IntlShape}
-            showModal
-            oppgaveId={oppgaveId}
-            closeModal={sinon.spy()}
-            toggleMenu={sinon.spy()}
-            hentReserverteOppgaver={sinon.spy()}
-          />,
-          // @ts-ignore
-        ).find(Form).first().renderProp('render')(formProps);
+    const wrapper = shallowWithIntl(
+      <FlyttReservasjonModal.WrappedComponent
+        intl={intl as IntlShape}
+        showModal
+        oppgaveId={oppgaveId}
+        closeModal={sinon.spy()}
+        toggleMenu={sinon.spy()}
+        hentReserverteOppgaver={sinon.spy()}
+      />,
+      // @ts-ignore
+    ).find(Form).first().renderProp('render')(formProps);
 
-        const knapper = wrapper.find(Hovedknapp);
-        expect(knapper).has.length(1);
-        expect(knapper.first().prop('disabled')).is.true;
-      });
+    const knapper = wrapper.find(Hovedknapp);
+    expect(knapper).has.length(1);
+    expect(knapper.first().prop('disabled')).is.true;
   });
 
   it('skal vise søkeknapp som disablet når søk er startet', () => {
@@ -166,27 +149,25 @@ describe('<FlyttReservasjonModal>', () => {
         brukerIdent: '1',
       },
     };
+    
+    requestApi.mock(RestApiPathsKeys.FLYTT_RESERVASJON_SAKSBEHANDLER_SOK, undefined);
+    requestApi.mock(RestApiPathsKeys.FLYTT_RESERVASJON, {});
 
-    new RestApiTestMocker()
-      .withRestCallRunner(RestApiPathsKeys.FLYTT_RESERVASJON_SAKSBEHANDLER_SOK, { state: RestApiState.LOADING, data: undefined })
-      .withRestCallRunner(RestApiPathsKeys.FLYTT_RESERVASJON, { startRequest: () => Promise.resolve() })
-      .runTest(() => {
-        const wrapper = shallowWithIntl(
-          <FlyttReservasjonModal.WrappedComponent
-            intl={intl as IntlShape}
-            showModal
-            oppgaveId={oppgaveId}
-            closeModal={sinon.spy()}
-            toggleMenu={sinon.spy()}
-            hentReserverteOppgaver={sinon.spy()}
-          />,
-          // @ts-ignore
-        ).find(Form).first().renderProp('render')(formProps);
+    const wrapper = shallowWithIntl(
+      <FlyttReservasjonModal.WrappedComponent
+        intl={intl as IntlShape}
+        showModal
+        oppgaveId={oppgaveId}
+        closeModal={sinon.spy()}
+        toggleMenu={sinon.spy()}
+        hentReserverteOppgaver={sinon.spy()}
+      />,
+      // @ts-ignore
+    ).find(Form).first().renderProp('render')(formProps);
 
-        const knapper = wrapper.find(Hovedknapp);
-        expect(knapper).has.length(1);
-        expect(knapper.first().prop('disabled')).is.true;
-      });
+    const knapper = wrapper.find(Hovedknapp);
+    expect(knapper).has.length(1);
+    expect(knapper.first().prop('disabled')).is.true;
   });
 
   it('skal vise ok-knapp som enablet når en har saksbehandler og begrunnelsen er minst tre bokstaver', () => {
@@ -203,26 +184,24 @@ describe('<FlyttReservasjonModal>', () => {
       },
     };
 
-    new RestApiTestMocker()
-      .withRestCallRunner(RestApiPathsKeys.FLYTT_RESERVASJON_SAKSBEHANDLER_SOK, { state: RestApiState.SUCCESS, data: saksbehandler })
-      .withRestCallRunner(RestApiPathsKeys.FLYTT_RESERVASJON, { startRequest: () => Promise.resolve() })
-      .runTest(() => {
-        const wrapper = shallowWithIntl(
-          <FlyttReservasjonModal.WrappedComponent
-            intl={intl as IntlShape}
-            showModal
-            oppgaveId={oppgaveId}
-            closeModal={sinon.spy()}
-            toggleMenu={sinon.spy()}
-            hentReserverteOppgaver={sinon.spy()}
-          />,
-          // @ts-ignore
-        ).find(Form).last().renderProp('render')(formProps);
+    requestApi.mock(RestApiPathsKeys.FLYTT_RESERVASJON_SAKSBEHANDLER_SOK, saksbehandler);
+    requestApi.mock(RestApiPathsKeys.FLYTT_RESERVASJON, {});
 
-        const knapper = wrapper.find(Hovedknapp);
-        expect(knapper).has.length(1);
-        expect(knapper.last().prop('disabled')).is.false;
-      });
+    const wrapper = shallowWithIntl(
+      <FlyttReservasjonModal.WrappedComponent
+        intl={intl as IntlShape}
+        showModal
+        oppgaveId={oppgaveId}
+        closeModal={sinon.spy()}
+        toggleMenu={sinon.spy()}
+        hentReserverteOppgaver={sinon.spy()}
+      />,
+      // @ts-ignore
+    ).find(Form).last().renderProp('render')(formProps);
+
+    const knapper = wrapper.find(Hovedknapp);
+    expect(knapper).has.length(1);
+    expect(knapper.last().prop('disabled')).is.false;
   });
 
   it('skal vise ok-knapp som disablet når en ikke har saksbehandler', () => {
@@ -234,26 +213,24 @@ describe('<FlyttReservasjonModal>', () => {
       },
     };
 
-    new RestApiTestMocker()
-      .withRestCallRunner(RestApiPathsKeys.FLYTT_RESERVASJON_SAKSBEHANDLER_SOK, { state: RestApiState.SUCCESS, data: undefined })
-      .withRestCallRunner(RestApiPathsKeys.FLYTT_RESERVASJON, { startRequest: () => Promise.resolve() })
-      .runTest(() => {
-        const wrapper = shallowWithIntl(
-          <FlyttReservasjonModal.WrappedComponent
-            intl={intl as IntlShape}
-            showModal
-            oppgaveId={oppgaveId}
-            closeModal={sinon.spy()}
-            toggleMenu={sinon.spy()}
-            hentReserverteOppgaver={sinon.spy()}
-          />,
-          // @ts-ignore
-        ).find(Form).last().renderProp('render')(formProps);
+    requestApi.mock(RestApiPathsKeys.FLYTT_RESERVASJON_SAKSBEHANDLER_SOK, undefined);
+    requestApi.mock(RestApiPathsKeys.FLYTT_RESERVASJON, {});
 
-        const knapper = wrapper.find(Hovedknapp);
-        expect(knapper).has.length(1);
-        expect(knapper.last().prop('disabled')).is.true;
-      });
+    const wrapper = shallowWithIntl(
+      <FlyttReservasjonModal.WrappedComponent
+        intl={intl as IntlShape}
+        showModal
+        oppgaveId={oppgaveId}
+        closeModal={sinon.spy()}
+        toggleMenu={sinon.spy()}
+        hentReserverteOppgaver={sinon.spy()}
+      />,
+      // @ts-ignore
+    ).find(Form).last().renderProp('render')(formProps);
+
+    const knapper = wrapper.find(Hovedknapp);
+    expect(knapper).has.length(1);
+    expect(knapper.last().prop('disabled')).is.true;
   });
 
   it('skal vise ok-knapp som disablet når begrunnelsen er mindre enn tre bokstaver', () => {
@@ -270,25 +247,23 @@ describe('<FlyttReservasjonModal>', () => {
       },
     };
 
-    new RestApiTestMocker()
-      .withRestCallRunner(RestApiPathsKeys.FLYTT_RESERVASJON_SAKSBEHANDLER_SOK, { state: RestApiState.SUCCESS, data: saksbehandler })
-      .withRestCallRunner(RestApiPathsKeys.FLYTT_RESERVASJON, { startRequest: () => Promise.resolve() })
-      .runTest(() => {
-        const wrapper = shallowWithIntl(
-          <FlyttReservasjonModal.WrappedComponent
-            intl={intl as IntlShape}
-            showModal
-            oppgaveId={oppgaveId}
-            closeModal={sinon.spy()}
-            toggleMenu={sinon.spy()}
-            hentReserverteOppgaver={sinon.spy()}
-          />,
-          // @ts-ignore
-        ).find(Form).last().renderProp('render')(formProps);
+    requestApi.mock(RestApiPathsKeys.FLYTT_RESERVASJON_SAKSBEHANDLER_SOK, saksbehandler);
+    requestApi.mock(RestApiPathsKeys.FLYTT_RESERVASJON, {});
 
-        const knapper = wrapper.find(Hovedknapp);
-        expect(knapper).has.length(1);
-        expect(knapper.last().prop('disabled')).is.true;
-      });
+    const wrapper = shallowWithIntl(
+      <FlyttReservasjonModal.WrappedComponent
+        intl={intl as IntlShape}
+        showModal
+        oppgaveId={oppgaveId}
+        closeModal={sinon.spy()}
+        toggleMenu={sinon.spy()}
+        hentReserverteOppgaver={sinon.spy()}
+      />,
+      // @ts-ignore
+    ).find(Form).last().renderProp('render')(formProps);
+
+    const knapper = wrapper.find(Hovedknapp);
+    expect(knapper).has.length(1);
+    expect(knapper.last().prop('disabled')).is.true;
   });
 });

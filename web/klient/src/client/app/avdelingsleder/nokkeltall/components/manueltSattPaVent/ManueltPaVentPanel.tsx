@@ -8,7 +8,7 @@ import { Row, Column } from 'nav-frontend-grid';
 
 import StoreValuesInLocalStorage from 'form/StoreValuesInLocalStorage';
 import { RadioGroupField, RadioOption, SelectField } from 'form/FinalFields';
-import { useKodeverk } from 'data/rest-api-hooks';
+import useKodeverk from 'data/useKodeverk';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import fagsakYtelseType from 'kodeverk/fagsakYtelseType';
 import kodeverkTyper from 'kodeverk/kodeverkTyper';

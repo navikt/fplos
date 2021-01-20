@@ -32,6 +32,7 @@ module.exports = {
       ],
       setupFilesAfterEnv: [
         '<rootDir>/src/client/testHelpers/setup-test-env.ts',
+        '<rootDir>/src/client/testHelpers/setup-test-env-hooks.ts',
       ],
       testMatch: ['**/?(*.)+(spec).+(ts|tsx)'],
       testPathIgnorePatterns: ['/node_modules/'],

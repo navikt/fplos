@@ -2,13 +2,12 @@ import React, { useMemo, FunctionComponent } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { Undertekst } from 'nav-frontend-typografi';
 
-import { useRestApiRunner } from 'data/rest-api-hooks';
-import { RestApiPathsKeys } from 'data/restApiPaths';
+import { restApiHooks, RestApiPathsKeys } from 'data/fplosRestApi';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import fagsakYtelseType from 'kodeverk/fagsakYtelseType';
 import kodeverkTyper from 'kodeverk/kodeverkTyper';
 import { RadioGroupField, RadioOption } from 'form/FinalFields';
-import useKodeverk from 'data/rest-api-hooks/src/global-data/useKodeverk';
+import useKodeverk from 'data/useKodeverk';
 
 const finnFagsakYtelseTypeNavn = (fagsakYtelseTyper, valgtFagsakYtelseType) => {
   const type = fagsakYtelseTyper.find((fyt) => fyt.kode === valgtFagsakYtelseType);
@@ -31,7 +30,7 @@ const FagsakYtelseTypeVelger: FunctionComponent<OwnProps> = ({
   hentAvdelingensSakslister,
   hentAntallOppgaver,
 }) => {
-  const { startRequest: lagreSakslisteFagsakYtelseType } = useRestApiRunner(RestApiPathsKeys.LAGRE_SAKSLISTE_FAGSAK_YTELSE_TYPE);
+  const { startRequest: lagreSakslisteFagsakYtelseType } = restApiHooks.useRestApiRunner(RestApiPathsKeys.LAGRE_SAKSLISTE_FAGSAK_YTELSE_TYPE);
   const alleFagsakYtelseTyper = useKodeverk(kodeverkTyper.FAGSAK_YTELSE_TYPE);
   const fagsakYtelseTyper = useMemo(() => alleFagsakYtelseTyper.filter((k) => k.kode !== fagsakYtelseType.ENDRING_FORELDREPENGER),
     []);

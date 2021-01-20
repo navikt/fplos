@@ -3,7 +3,7 @@ import { shallow } from 'enzyme';
 import { expect } from 'chai';
 import sinon from 'sinon';
 
-import RestApiTestMocker from 'testHelpers/RestApiTestMocker';
+import { requestApi, RestApiGlobalStatePathsKeys } from 'data/fplosRestApi';
 import kodeverkTyper from 'kodeverk/kodeverkTyper';
 import Table from 'sharedComponents/table/Table';
 import FagsakList, { getSorterteFagsaker } from './FagsakList';
@@ -58,35 +58,38 @@ describe('<FagsakList>', () => {
     'EMPTY_1',
   ];
 
+  const alleKodeverk = {
+    [kodeverkTyper.FAGSAK_STATUS]: fagsakStatusTyper,
+    [kodeverkTyper.FAGSAK_YTELSE_TYPE]: fagsakYtelseTyper,
+  }
+
+
   it('skal vise en tabell med en rad og tilhørende kolonnedata', () => {
     const clickFunction = sinon.spy();
-    new RestApiTestMocker()
-      .withKodeverk(kodeverkTyper.FAGSAK_STATUS, fagsakStatusTyper)
-      .withKodeverk(kodeverkTyper.FAGSAK_YTELSE_TYPE, fagsakYtelseTyper)
-      .runTest(() => {
-        const wrapper = shallow(
-          <FagsakList
-            fagsaker={[fagsak]}
-            fagsakOppgaver={[]}
-            selectFagsakCallback={clickFunction}
-            selectOppgaveCallback={sinon.spy()}
-          />,
-        );
+    requestApi.mock(RestApiGlobalStatePathsKeys.KODEVERK, alleKodeverk);
 
-        const table = wrapper.find(Table);
-        expect(table).to.have.length(1);
+    const wrapper = shallow(
+      <FagsakList
+        fagsaker={[fagsak]}
+        fagsakOppgaver={[]}
+        selectFagsakCallback={clickFunction}
+        selectOppgaveCallback={sinon.spy()}
+      />,
+    );
 
-        expect(table.prop('headerTextCodes')).to.eql(headerTextCodes);
+    const table = wrapper.find(Table);
+    expect(table).to.have.length(1);
 
-        const tableRows = table.children();
-        expect(tableRows).to.have.length(1);
-        const tableColumns = tableRows.children();
-        expect(tableColumns).to.have.length(6);
-        expect(tableColumns.first().childAt(0).text()).to.eql('12345');
-        expect(tableColumns.at(1).childAt(0).text()).to.eql('Engangsstonad');
-        expect(tableColumns.at(3).childAt(0).text()).to.eql('Under behandling');
-        expect(tableColumns.at(4).childAt(0)).is.empty;
-      });
+    expect(table.prop('headerTextCodes')).to.eql(headerTextCodes);
+
+    const tableRows = table.children();
+    expect(tableRows).to.have.length(1);
+    const tableColumns = tableRows.children();
+    expect(tableColumns).to.have.length(6);
+    expect(tableColumns.first().childAt(0).text()).to.eql('12345');
+    expect(tableColumns.at(1).childAt(0).text()).to.eql('Engangsstonad');
+    expect(tableColumns.at(3).childAt(0).text()).to.eql('Under behandling');
+    expect(tableColumns.at(4).childAt(0)).is.empty;
   });
 
   it('skal sortere søkeresultat der avsluttede skal vises sist, mens sist endrede skal vises først', () => {
@@ -152,27 +155,24 @@ describe('<FagsakList>', () => {
 
     const clickFunction = sinon.spy();
 
-    new RestApiTestMocker()
-      .withKodeverk(kodeverkTyper.FAGSAK_STATUS, fagsakStatusTyper)
-      .withKodeverk(kodeverkTyper.FAGSAK_YTELSE_TYPE, fagsakYtelseTyper)
-      .runTest(() => {
-        const wrapper = shallow(
-          <FagsakList
-            fagsaker={[fagsak, fagsak4]}
-            selectOppgaveCallback={sinon.spy()}
-            selectFagsakCallback={clickFunction}
-            fagsakOppgaver={[]}
-          />,
-        );
+    requestApi.mock(RestApiGlobalStatePathsKeys.KODEVERK, alleKodeverk);
 
-        const table = wrapper.find(Table);
-        const tableRows = table.children();
-        expect(tableRows).to.have.length(2);
-        const tableColumnsRow1 = tableRows.first().children();
-        expect(tableColumnsRow1.at(4).childAt(0).text()).is.eql('<DateLabel />');
+    const wrapper = shallow(
+      <FagsakList
+        fagsaker={[fagsak, fagsak4]}
+        selectOppgaveCallback={sinon.spy()}
+        selectFagsakCallback={clickFunction}
+        fagsakOppgaver={[]}
+      />,
+    );
 
-        const tableColumnsRow2 = tableRows.last().children();
-        expect(tableColumnsRow2.at(4).childAt(0)).is.empty;
-      });
+    const table = wrapper.find(Table);
+    const tableRows = table.children();
+    expect(tableRows).to.have.length(2);
+    const tableColumnsRow1 = tableRows.first().children();
+    expect(tableColumnsRow1.at(4).childAt(0).text()).is.eql('<DateLabel />');
+
+    const tableColumnsRow2 = tableRows.last().children();
+    expect(tableColumnsRow2.at(4).childAt(0)).is.empty;
   });
 });
