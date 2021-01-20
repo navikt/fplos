@@ -2,7 +2,7 @@ import {
   useState, useEffect, DependencyList, useRef,
 } from 'react';
 
-import { AbstractRequestApi } from '@fpsak-frontend/rest-api';
+import { AbstractRequestApi } from 'data/rest-api';
 
 import RestApiState from '../RestApiState';
 

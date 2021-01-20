@@ -35,15 +35,18 @@ const EndreSakslisterPanel: FunctionComponent<OwnProps & WrappedComponentProps> 
   avdelingensSaksbehandlere,
   resetValgtSakslisteId,
 }) => {
-  const { data: oppgaverForAvdelingAntall, startRequest: hentOppgaverForAvdelingAntall } = restApiHooks.useRestApiRunner<number>(RestApiPathsKeys.OPPGAVE_AVDELING_ANTALL);
-  const { data: sakslister = EMPTY_ARRAY, startRequest: hentAvdelingensSl } = restApiHooks.useRestApiRunner<Saksliste[]>(RestApiPathsKeys.SAKSLISTER_FOR_AVDELING);
+  const { data: oppgaverForAvdelingAntall, startRequest: hentOppgaverForAvdelingAntall } = restApiHooks
+    .useRestApiRunner<number>(RestApiPathsKeys.OPPGAVE_AVDELING_ANTALL);
+  const { data: sakslister = EMPTY_ARRAY, startRequest: hentAvdelingensSl } = restApiHooks
+    .useRestApiRunner<Saksliste[]>(RestApiPathsKeys.SAKSLISTER_FOR_AVDELING);
   const hentAvdelingensSakslister = useCallback((params) => hentAvdelingensSl(params, true), []);
   useEffect(() => {
     hentOppgaverForAvdelingAntall({ avdelingEnhet: valgtAvdelingEnhet });
     hentAvdelingensSakslister({ avdelingEnhet: valgtAvdelingEnhet });
   }, [valgtAvdelingEnhet]);
 
-  const { data: nySakslisteObject, startRequest: lagNySaksliste } = restApiHooks.useRestApiRunner<{sakslisteId: string}>(RestApiPathsKeys.OPPRETT_NY_SAKSLISTE);
+  const { data: nySakslisteObject, startRequest: lagNySaksliste } = restApiHooks
+    .useRestApiRunner<{sakslisteId: string}>(RestApiPathsKeys.OPPRETT_NY_SAKSLISTE);
   const lagNySakslisteOgHentAvdelingensSakslisterPåNytt = useCallback((avdelingEnhet) => {
     lagNySaksliste({ avdelingEnhet }).then(() => {
       resetValgtSakslisteId();

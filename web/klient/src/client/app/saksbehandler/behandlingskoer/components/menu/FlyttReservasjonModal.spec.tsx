@@ -42,7 +42,7 @@ describe('<FlyttReservasjonModal>', () => {
       handleSubmit: sinon.spy(),
       values: {},
     };
-    
+
     requestApi.mock(RestApiPathsKeys.FLYTT_RESERVASJON_SAKSBEHANDLER_SOK, undefined);
     requestApi.mock(RestApiPathsKeys.FLYTT_RESERVASJON, {});
 
@@ -149,7 +149,7 @@ describe('<FlyttReservasjonModal>', () => {
         brukerIdent: '1',
       },
     };
-    
+
     requestApi.mock(RestApiPathsKeys.FLYTT_RESERVASJON_SAKSBEHANDLER_SOK, undefined);
     requestApi.mock(RestApiPathsKeys.FLYTT_RESERVASJON, {});
 

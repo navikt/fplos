@@ -90,7 +90,7 @@ describe('<BehandlingskoerIndex>', () => {
     requestApi.mock(RestApiPathsKeys.SAKSLISTE, undefined);
     requestApi.mock(RestApiPathsKeys.RESERVER_OPPGAVE, undefined);
     requestApi.mock(RestApiPathsKeys.FPSAK_BEHANDLING_ID, undefined);
-  
+
     const wrapper = shallow(<BehandlingskoerIndex
       fpsakUrl="www.fpsak.no"
       fptilbakeUrl="www.fptilbake.no"

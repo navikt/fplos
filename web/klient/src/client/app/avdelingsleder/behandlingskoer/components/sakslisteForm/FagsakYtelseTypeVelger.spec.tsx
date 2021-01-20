@@ -24,7 +24,7 @@ describe('<FagsakYtelseTypeVelger>', () => {
 
   const alleKodeverk = {
     [kodeverkTyper.FAGSAK_YTELSE_TYPE]: fagsakYtelseTyper,
-  }
+  };
 
   it('skal vise checkboxer for ytelsetyper', () => {
     requestApi.mock(RestApiGlobalStatePathsKeys.KODEVERK, alleKodeverk);

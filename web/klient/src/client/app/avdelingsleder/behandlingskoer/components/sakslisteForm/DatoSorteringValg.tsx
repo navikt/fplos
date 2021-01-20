@@ -74,8 +74,10 @@ export const DatoSorteringValg: FunctionComponent<OwnProps & WrappedComponentPro
   hentAvdelingensSakslister,
   hentAntallOppgaver,
 }) => {
-  const { startRequest: lagreSakslisteSorteringErDynamiskPeriode } = restApiHooks.useRestApiRunner(RestApiPathsKeys.LAGRE_SAKSLISTE_SORTERING_DYNAMISK_PERIDE);
-  const { startRequest: lagreSakslisteSorteringTidsintervallDato } = restApiHooks.useRestApiRunner(RestApiPathsKeys.LAGRE_SAKSLISTE_SORTERING_TIDSINTERVALL_DATO);
+  const { startRequest: lagreSakslisteSorteringErDynamiskPeriode } = restApiHooks
+    .useRestApiRunner(RestApiPathsKeys.LAGRE_SAKSLISTE_SORTERING_DYNAMISK_PERIDE);
+  const { startRequest: lagreSakslisteSorteringTidsintervallDato } = restApiHooks
+    .useRestApiRunner(RestApiPathsKeys.LAGRE_SAKSLISTE_SORTERING_TIDSINTERVALL_DATO);
   return (
     <ArrowBox>
       <Undertekst>

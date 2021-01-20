@@ -58,7 +58,7 @@ const FagsakSearchIndex: FunctionComponent<OwnProps> = ({
   useEffect(() => {
     if (sokFerdig && fagsaker.length === 1) {
       if (fagsakOppgaver.length === 1) {
-        // eslint-disable-next-line no-use-before-define
+        // eslint-disable-next-line @typescript-eslint/no-use-before-define
         velgFagsakOperasjoner(fagsakOppgaver[0], false);
       } else if (fagsakOppgaver.length === 0) {
         goToFpsak(fagsaker[0].saksnummer);

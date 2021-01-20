@@ -20,7 +20,7 @@ describe('<AndreKriterierVelger>', () => {
 
   const alleKodeverk = {
     [kodeverkTyper.ANDRE_KRITERIER_TYPE]: andreKriterier,
-  }
+  };
 
   it('skal vise checkbox for Til beslutter', () => {
     requestApi.mock(RestApiGlobalStatePathsKeys.KODEVERK, alleKodeverk);

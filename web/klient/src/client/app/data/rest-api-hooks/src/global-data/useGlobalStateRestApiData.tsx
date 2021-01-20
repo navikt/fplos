@@ -1,6 +1,6 @@
 import { useContext } from 'react';
 
-import { AbstractRequestApi } from '@fpsak-frontend/rest-api';
+import { AbstractRequestApi } from 'data/rest-api';
 
 import { RestApiStateContext } from './RestApiContext';
 

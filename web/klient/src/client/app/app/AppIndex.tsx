@@ -4,12 +4,12 @@ import moment from 'moment';
 import { Location, History } from 'history';
 
 import { parseQueryString } from 'utils/urlUtils';
+import { RestApiGlobalStatePathsKeys } from 'data/fplosRestApi';
 import AppConfigResolver from './AppConfigResolver';
 import LanguageProvider from './LanguageProvider';
 import HeaderWithErrorPanel from './components/HeaderWithErrorPanel';
 import Home from './components/Home';
 import { RestApiStateContext } from '../data/rest-api-hooks';
-import { RestApiGlobalStatePathsKeys } from 'data/fplosRestApi';
 
 import '../../styles/global.less';
 

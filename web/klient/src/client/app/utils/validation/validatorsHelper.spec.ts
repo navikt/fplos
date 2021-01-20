@@ -1,5 +1,4 @@
 import { expect } from 'chai';
-import moment from 'moment';
 import {
   isoDateRegex,
   integerRegex,
@@ -10,9 +9,6 @@ import {
   nameRegex,
   nameGyldigRegex,
   isEmpty,
-  yesterday,
-  tomorrow,
-  dateRangesAreSequential,
 } from './validatorsHelper';
 
 describe('validatorsHelper', () => {
@@ -80,33 +76,6 @@ describe('validatorsHelper', () => {
       const text = 'Not Empty';
       expect(isEmpty(emptyText)).is.true;
       expect(isEmpty(text)).is.false;
-    });
-  });
-
-  describe('yesterday', () => {
-    it('Skal sjekke om dato er i går', () => {
-      expect(yesterday()).is.eql(moment().subtract(1, 'days').startOf('day'));
-    });
-  });
-
-  describe('tomorrow', () => {
-    it('Skal sjekke om dato er i morgen', () => {
-      expect(tomorrow()).is.eql(moment().add(1, 'days').startOf('day'));
-    });
-  });
-
-  describe('dateRangesAreSequential', () => {
-    it('Skal sjekke om datoer er etter hverandre', () => {
-      const rangesMatch = [
-        ['2018-04-01', '2018-05-01'],
-        ['2018-04-01', '2018-05-01'],
-      ];
-      const ranges = [
-        ['2018-04-01', '2018-05-01'],
-        ['2018-05-02', '2018-05-31'],
-      ];
-      expect(dateRangesAreSequential(rangesMatch)).is.false;
-      expect(dateRangesAreSequential(ranges)).is.true;
     });
   });
 });

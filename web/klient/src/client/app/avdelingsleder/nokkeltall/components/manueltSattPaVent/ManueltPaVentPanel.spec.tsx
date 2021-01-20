@@ -29,7 +29,7 @@ describe('<ManueltPaVentPanel>', () => {
 
   const alleKodeverk = {
     [kodeverkTyper.FAGSAK_YTELSE_TYPE]: fagsakYtelseTyper,
-  }
+  };
 
   it('skal vise ukevalg i dropdown og valg av ytelsetype i radioknapper', () => {
     const valuesMock = {
@@ -83,7 +83,6 @@ describe('<ManueltPaVentPanel>', () => {
       antall: 1,
     }];
 
-    
     requestApi.mock(RestApiGlobalStatePathsKeys.KODEVERK, alleKodeverk);
 
     const wrapper = shallowWithIntl(<ManueltPaVentPanel.WrappedComponent
@@ -115,7 +114,7 @@ describe('<ManueltPaVentPanel>', () => {
       behandlingFrist: moment().add(7, 'w').format(ISO_DATE_FORMAT),
       antall: 1,
     }];
-    
+
     requestApi.mock(RestApiGlobalStatePathsKeys.KODEVERK, alleKodeverk);
 
     const wrapper = shallowWithIntl(<ManueltPaVentPanel.WrappedComponent
@@ -178,7 +177,7 @@ describe('<ManueltPaVentPanel>', () => {
       behandlingFrist: moment().format(ISO_DATE_FORMAT),
       antall: 1,
     }];
-    
+
     requestApi.mock(RestApiGlobalStatePathsKeys.KODEVERK, alleKodeverk);
 
     const wrapper = shallowWithIntl(<ManueltPaVentPanel.WrappedComponent

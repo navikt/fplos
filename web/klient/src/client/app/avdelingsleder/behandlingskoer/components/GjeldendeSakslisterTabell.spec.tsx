@@ -36,7 +36,7 @@ describe('<GjeldendeSakslisterTabell>', () => {
   const alleKodeverk = {
     [kodeverkTyper.BEHANDLING_TYPE]: behandlingstyper,
     [kodeverkTyper.FAGSAK_YTELSE_TYPE]: fagsakYtelseTyper,
-  }
+  };
 
   it('skal ikke vise tabell når ingen sakslister finnes', () => {
     const sakslister = [];

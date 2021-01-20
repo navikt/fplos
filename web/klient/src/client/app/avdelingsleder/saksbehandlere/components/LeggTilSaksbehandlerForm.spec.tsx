@@ -97,10 +97,6 @@ describe('<LeggTilSaksbehandlerForm>', () => {
     const resetFormFn = sinon.spy();
     const formProps = { handleSubmit: sinon.spy(), form: { reset: resetFormFn } };
     let brukerIdent;
-    const leggTilSaksbehandlerFn = (ident) => {
-      brukerIdent = ident;
-      return Promise.resolve('');
-    };
     const resetSaksbehandlerFn = sinon.spy();
 
     requestApi.mock(RestApiPathsKeys.SAKSBEHANDLER_SOK, saksbehandler);

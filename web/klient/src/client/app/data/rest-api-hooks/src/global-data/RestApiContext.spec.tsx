@@ -3,7 +3,7 @@ import { mount } from 'enzyme';
 import sinon from 'sinon';
 import { act } from 'react-dom/test-utils';
 
-import { AbstractRequestApi } from '@fpsak-frontend/rest-api';
+import { AbstractRequestApi } from 'data/rest-api';
 
 import { RestApiErrorProvider } from '../error/RestApiErrorContext';
 import { RestApiProvider } from './RestApiContext';

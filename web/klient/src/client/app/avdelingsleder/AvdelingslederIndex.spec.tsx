@@ -94,6 +94,7 @@ describe('<AvdelingslederIndex>', () => {
     />);
 
     expect(wrapper.find(EndreBehandlingskoerIndex)).to.have.length(1);
+    contextStub.restore();
   });
 
   it('skal rendre panel for saksbehandlere når dette er valgt', () => {

@@ -8,7 +8,7 @@ import BoxedListWithLinks from '@navikt/boxed-list-with-links';
 import Header from '@navikt/nap-header';
 import UserPanel from '@navikt/nap-user-panel';
 
-import {  useRestApiError, useRestApiErrorDispatcher } from 'data/rest-api-hooks';
+import { useRestApiError, useRestApiErrorDispatcher } from 'data/rest-api-hooks';
 import { restApiHooks, RestApiGlobalStatePathsKeys } from 'data/fplosRestApi';
 import { RETTSKILDE_URL, SYSTEMRUTINE_URL } from 'data/eksterneLenker';
 import NavAnsatt from 'app/navAnsattTsType';

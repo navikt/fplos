@@ -36,6 +36,12 @@ class CustomNavSelect extends Component<OwnProps> {
     this.checkCorrespondingOptionForValue();
   }
 
+  handleSelectRef(selectRef) {
+    if (selectRef) {
+      this.selectElement = selectRef;
+    }
+  }
+
   getOptionValues() {
     const { props: { selectValues } } = this;
     return selectValues
@@ -55,12 +61,6 @@ class CustomNavSelect extends Component<OwnProps> {
     if (!getOptionValues().includes(value) && value !== '') {
       // eslint-disable-next-line no-console
       console.warn(`No corresponding option found for value '${value}'`); // NOSONAR Viser ikke sensitiv info
-    }
-  }
-
-  handleSelectRef(selectRef) {
-    if (selectRef) {
-      this.selectElement = selectRef;
     }
   }
 

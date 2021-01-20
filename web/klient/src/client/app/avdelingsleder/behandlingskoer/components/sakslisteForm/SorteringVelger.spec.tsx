@@ -29,7 +29,7 @@ describe('<SorteringVelger>', () => {
 
   const alleKodeverk = {
     [kodeverkTyper.KO_SORTERING]: koSorteringTyper,
-  }
+  };
 
   it('skal vise radioknapper for alle sorteringsvalg', () => {
     requestApi.mock(RestApiGlobalStatePathsKeys.KODEVERK, alleKodeverk);

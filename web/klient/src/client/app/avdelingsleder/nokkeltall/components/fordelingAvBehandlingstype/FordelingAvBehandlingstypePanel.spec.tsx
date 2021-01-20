@@ -47,7 +47,7 @@ describe('<FordelingAvBehandlingstypePanel>', () => {
   const alleKodeverk = {
     [kodeverkTyper.BEHANDLING_TYPE]: behandlingTyper,
     [kodeverkTyper.FAGSAK_YTELSE_TYPE]: fagsakYtelseTyper,
-  }
+  };
 
   it('skal vise ytelsetyper i radioknapper', () => {
     const valuesMock = {

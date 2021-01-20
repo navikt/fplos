@@ -34,7 +34,7 @@ const behandlingTyper = [{
 
 const alleKodeverk = {
   [kodeverkTyper.BEHANDLING_TYPE]: behandlingTyper,
-}
+};
 
 describe('<BehandlingstypeVelger>', () => {
   it('skal vise checkboxer for behandlingstyper', () => {

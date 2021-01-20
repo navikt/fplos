@@ -61,8 +61,7 @@ describe('<FagsakList>', () => {
   const alleKodeverk = {
     [kodeverkTyper.FAGSAK_STATUS]: fagsakStatusTyper,
     [kodeverkTyper.FAGSAK_YTELSE_TYPE]: fagsakYtelseTyper,
-  }
-
+  };
 
   it('skal vise en tabell med en rad og tilhørende kolonnedata', () => {
     const clickFunction = sinon.spy();
