@@ -8,7 +8,7 @@ import { ReservasjonerIndex } from './ReservasjonerIndex';
 import ReservasjonerTabell from './components/ReservasjonerTabell';
 
 describe('<ReservasjonerIndex>', () => {
-  it('skal hente reservasjoner ved lasting av komponent og så vise dem i panel', () => {
+  it('skal hente reservasjoner ved lasting av komponent og så vise dem i panel', async () => {
     const reservasjoner = [{
       reservertAvUid: '2323',
       reservertAvNavn: 'Espen Utvikler',
@@ -28,8 +28,8 @@ describe('<ReservasjonerIndex>', () => {
       valgtAvdelingEnhet="2"
     />);
 
-    const tabell = wrapper.find(ReservasjonerTabell);
-    expect(tabell).to.have.length(1);
-    expect(tabell.prop('reservasjoner')).is.eql(reservasjoner);
+    await wrapper.find(ReservasjonerTabell).prop('hentAvdelingensReservasjoner')();
+
+    expect(wrapper.find(ReservasjonerTabell).prop('reservasjoner')).is.eql(reservasjoner);
   });
 });

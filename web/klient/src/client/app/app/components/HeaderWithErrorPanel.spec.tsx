@@ -20,6 +20,7 @@ describe('<HeaderWithErrorPanel>', () => {
 
   it('skal sjekke at header blir vist korrekt', () => {
     requestApi.mock(RestApiGlobalStatePathsKeys.NAV_ANSATT, navAnsatt);
+    requestApi.mock(RestApiGlobalStatePathsKeys.DRIFTSMELDINGER, undefined);
 
     const wrapper = shallowWithIntl(<HeaderWithErrorPanel.WrappedComponent
       intl={intl as IntlShape}

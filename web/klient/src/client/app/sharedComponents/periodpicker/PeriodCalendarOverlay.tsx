@@ -65,13 +65,15 @@ class PeriodCalendarOverlay extends Component<OwnProps & WrappedComponentProps> 
   onDayClick(selectedDate: Date): void {
     let isSelectable = true;
     const { disabledDays, onDayChange } = this.props;
-    const { before: intervalStart } = disabledDays as BeforeModifier;
-    if (intervalStart) {
-      isSelectable = moment(selectedDate).isSameOrAfter(moment(intervalStart).startOf('day'));
-    }
-    const { after: intervalEnd } = disabledDays as AfterModifier;
-    if (isSelectable && intervalEnd) {
-      isSelectable = moment(selectedDate).isSameOrBefore(moment(intervalEnd).endOf('day'));
+    if (disabledDays) {
+      const { before: intervalStart } = disabledDays as BeforeModifier;
+      if (intervalStart) {
+        isSelectable = moment(selectedDate).isSameOrAfter(moment(intervalStart).startOf('day'));
+      }
+      const { after: intervalEnd } = disabledDays as AfterModifier;
+      if (isSelectable && intervalEnd) {
+        isSelectable = moment(selectedDate).isSameOrBefore(moment(intervalEnd).endOf('day'));
+      }
     }
     if (isSelectable) {
       onDayChange(selectedDate);
