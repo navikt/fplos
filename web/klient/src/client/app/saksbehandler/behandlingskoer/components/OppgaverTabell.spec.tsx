@@ -78,7 +78,6 @@ describe('<OppgaverTabell>', () => {
     requestApi.mock(RestApiPathsKeys.FORLENG_OPPGAVERESERVASJON, undefined);
     requestApi.mock(RestApiPathsKeys.RESERVERTE_OPPGAVER, []);
     requestApi.mock(RestApiPathsKeys.OPPGAVER_TIL_BEHANDLING, oppgaverTilBehandling);
-
     const wrapper = shallowWithIntl(<OppgaverTabell
       intl={intl as IntlShape}
       reserverOppgave={sinon.spy()}

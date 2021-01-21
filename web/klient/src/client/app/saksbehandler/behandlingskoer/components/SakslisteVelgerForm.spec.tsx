@@ -2,7 +2,7 @@ import React from 'react';
 import { expect } from 'chai';
 import sinon from 'sinon';
 import { IntlShape, FormattedMessage } from 'react-intl';
-import { Form } from 'react-final-form';
+import { Form, FormSpy } from 'react-final-form';
 
 import { requestApi, RestApiPathsKeys } from 'data/fplosRestApi';
 import Image from 'sharedComponents/Image';
@@ -20,7 +20,6 @@ describe('<SakslisteVelgerForm>', () => {
   };
   it('skal vise dropdown med to sakslister', () => {
     const formProps = { };
-
     const sakslister = [{
       sakslisteId: 1,
       navn: 'Testliste 1',
@@ -371,7 +370,7 @@ describe('<SakslisteVelgerForm>', () => {
     expect(labels.at(2).prop('texts')).to.eql(['Alle']);
   });
 
-  it('skal vise køens saksbehandlere i tooltip', () => {
+  it('skal vise køens saksbehandlere i tooltip', async () => {
     const sakslister = [{
       sakslisteId: 1,
       navn: 'Testliste 1',
@@ -426,12 +425,21 @@ describe('<SakslisteVelgerForm>', () => {
       getValueFromLocalStorage={sinon.spy()}
       setValueInLocalStorage={sinon.spy()}
       removeValueFromLocalStorage={sinon.spy()}
-      // @ts-ignore
-    />).find(Form).renderProp('render')(formProps);
+    />);
 
-    const image = wrapper.find(Image);
+    // @ts-ignore
+    const innerWrapper = wrapper.find(Form).renderProp('render')(formProps);
+
+    const formSpy = innerWrapper.find(FormSpy);
+    // @ts-ignore
+    await formSpy.prop('onChange')({ values: { sakslisteId: 1 }, dirtyFields: { sakslisteId: 1 } });
+
+    // @ts-ignore
+    const updatedInnerWrapper = wrapper.find(Form).renderProp('render')(formProps);
+
+    const image = updatedInnerWrapper.find(Image);
     expect(image).to.have.length(1);
-    const tooltip = shallowWithIntl(image.first().prop('tooltip'));
+    const tooltip = shallowWithIntl(image.prop('tooltip'));
     expect(tooltip.find(FormattedMessage).prop('id')).to.eql('SakslisteVelgerForm.SaksbehandlerToolip');
   });
 });
