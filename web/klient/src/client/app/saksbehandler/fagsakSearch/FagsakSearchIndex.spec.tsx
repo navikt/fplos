@@ -29,8 +29,8 @@ describe('<FagsakSearchIndex>', () => {
   };
   const fagsaker = [fagsak, { ...fagsak, saksnummer: 23456 }];
 
-  it('skal sette opp søkeskjermbilde for fagsaker', () => {
-    requestApi.mock(RestApiPathsKeys.SEARCH_FAGSAK, { data: fagsaker });
+  it('skal sette opp søkeskjermbilde for fagsaker', async () => {
+    requestApi.mock(RestApiPathsKeys.SEARCH_FAGSAK, fagsaker);
     requestApi.mock(RestApiPathsKeys.RESERVER_OPPGAVE, undefined);
     requestApi.mock(RestApiPathsKeys.OPPGAVER_FOR_FAGSAKER, undefined);
     requestApi.mock(RestApiPathsKeys.HENT_RESERVASJONSSTATUS, undefined);
@@ -43,6 +43,9 @@ describe('<FagsakSearchIndex>', () => {
 
     const fagsakSearchIndex = wrapper.find(FagsakSearch);
     expect(fagsakSearchIndex).to.have.length(1);
-    expect(fagsakSearchIndex.prop('fagsaker')).to.eql(fagsaker);
+
+    await fagsakSearchIndex.prop('searchFagsakCallback')({ searchString: 'test', skalReservere: false });
+
+    expect(wrapper.find(FagsakSearch).prop('fagsaker')).to.eql(fagsaker);
   });
 });

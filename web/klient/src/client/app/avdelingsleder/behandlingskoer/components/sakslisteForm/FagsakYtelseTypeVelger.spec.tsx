@@ -28,7 +28,6 @@ describe('<FagsakYtelseTypeVelger>', () => {
 
   it('skal vise checkboxer for ytelsetyper', () => {
     requestApi.mock(RestApiGlobalStatePathsKeys.KODEVERK, alleKodeverk);
-
     const wrapper = shallow(<FagsakYtelseTypeVelger
       valgtSakslisteId={1}
       valgtAvdelingEnhet="3"
@@ -43,26 +42,26 @@ describe('<FagsakYtelseTypeVelger>', () => {
     expect(radios.last().prop('value')).to.eql('');
   });
 
-  it('skal lagre ytelsetype ved klikk på checkbox', () => {
-    const lagreYtelseTypeFn = sinon.spy();
+  it('skal lagre ytelsetype ved klikk på checkbox', async () => {
+    const hentAvdelingensSakslister = sinon.spy();
+    const hentAntallOppgaver = sinon.spy();
     requestApi.mock(RestApiGlobalStatePathsKeys.KODEVERK, alleKodeverk);
     requestApi.mock(RestApiPathsKeys.LAGRE_SAKSLISTE_FAGSAK_YTELSE_TYPE, {});
 
     const wrapper = shallow(<FagsakYtelseTypeVelger
       valgtSakslisteId={1}
       valgtAvdelingEnhet="3"
-      hentAvdelingensSakslister={sinon.spy()}
-      hentAntallOppgaver={sinon.spy()}
+      hentAvdelingensSakslister={hentAvdelingensSakslister}
+      hentAntallOppgaver={hentAntallOppgaver}
     />);
 
     const radioGroup = wrapper.find(RadioGroupField);
-    radioGroup.prop('onChange')(fagsakYtelseType.ENGANGSSTONAD);
+    await radioGroup.prop('onChange')(fagsakYtelseType.ENGANGSSTONAD);
 
-    expect(lagreYtelseTypeFn.calledOnce).to.be.true;
-    const { args } = lagreYtelseTypeFn.getCalls()[0];
+    expect(hentAvdelingensSakslister.calledOnce).to.be.true;
+    const { args } = hentAvdelingensSakslister.getCalls()[0];
     expect(args).to.have.length(1);
-    expect(args[0].sakslisteId).to.eql(1);
-    expect(args[0].fagsakYtelseType).to.eql(fagsakYtelseType.ENGANGSSTONAD);
-    expect(args[0].avdelingEnhet).to.eql('3');
+    expect(args[0]).to.eql({ avdelingEnhet: '3' });
+    expect(hentAntallOppgaver.calledOnce).to.be.true;
   });
 });

@@ -41,7 +41,7 @@ describe('<EndreSakslisterPanel>', () => {
     expect(wrapper.find(UtvalgskriterierForSakslisteForm)).to.have.length(0);
   });
 
-  it('skal vise editeringspanel når en har valgt tabellrad', () => {
+  it('skal vise editeringspanel når en har valgt tabellrad', async () => {
     const sakslister = [{
       sakslisteId: 1,
       navn: 'Espen Utvikler',
@@ -65,7 +65,11 @@ describe('<EndreSakslisterPanel>', () => {
       resetValgtSakslisteId={sinon.spy()}
     />);
 
-    expect(wrapper.find(GjeldendeSakslisterTabell)).to.have.length(1);
+    const tabell = wrapper.find(GjeldendeSakslisterTabell);
+    expect(tabell).to.have.length(1);
+
+    await tabell.prop('hentAvdelingensSakslister')({ avdelingEnhet: '1' });
+
     expect(wrapper.find(UtvalgskriterierForSakslisteForm)).to.have.length(1);
   });
 });
