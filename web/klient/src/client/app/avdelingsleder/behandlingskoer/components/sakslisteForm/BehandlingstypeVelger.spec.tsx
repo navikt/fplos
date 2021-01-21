@@ -54,9 +54,9 @@ describe('<BehandlingstypeVelger>', () => {
   });
 
   it('skal lagre behandlingstype ved klikk på checkbox', () => {
-    const lagreBehandlingTypeFn = sinon.spy();
     requestApi.mock(RestApiGlobalStatePathsKeys.KODEVERK, alleKodeverk);
     requestApi.mock(RestApiPathsKeys.LAGRE_SAKSLISTE_BEHANDLINGSTYPE, {});
+
     const wrapper = shallow(<BehandlingstypeVelger
       valgtSakslisteId={1}
       valgtAvdelingEnhet="3"
@@ -67,12 +67,11 @@ describe('<BehandlingstypeVelger>', () => {
     const checkbox = wrapper.find(CheckboxField);
     checkbox.first().prop('onChange')(true);
 
-    expect(lagreBehandlingTypeFn.calledOnce).to.be.true;
-    const { args } = lagreBehandlingTypeFn.getCalls()[0];
-    expect(args).to.have.length(1);
-    expect(args[0].sakslisteId).to.eql(1);
-    expect(args[0].behandlingType).to.eql(behandlingTyper[0]);
-    expect(args[0].checked).is.true;
-    expect(args[0].avdelingEnhet).to.eql('3');
+    const lagreSakslisteBehandlingstypeCallData = requestApi.getRequestMockData(RestApiPathsKeys.LAGRE_SAKSLISTE_BEHANDLINGSTYPE);
+    expect(lagreSakslisteBehandlingstypeCallData).to.have.length(1);
+    expect(lagreSakslisteBehandlingstypeCallData[0].params.sakslisteId).is.eql(1);
+    expect(lagreSakslisteBehandlingstypeCallData[0].params.behandlingType).is.eql(behandlingTyper[0]);
+    expect(lagreSakslisteBehandlingstypeCallData[0].params.checked).is.true;
+    expect(lagreSakslisteBehandlingstypeCallData[0].params.avdelingEnhet).is.eql('3');
   });
 });

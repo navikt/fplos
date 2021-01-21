@@ -33,6 +33,7 @@ describe('<SorteringVelger>', () => {
 
   it('skal vise radioknapper for alle sorteringsvalg', () => {
     requestApi.mock(RestApiGlobalStatePathsKeys.KODEVERK, alleKodeverk);
+
     const wrapper = shallowWithIntl(<SorteringVelger.WrappedComponent
       intl={intl as IntlShape}
       valgtSakslisteId={1}
@@ -52,10 +53,9 @@ describe('<SorteringVelger>', () => {
   });
 
   it('skal lagre sortering ved klikk på radioknapp', () => {
-    const lagreSorteringFn = sinon.spy();
     requestApi.mock(RestApiGlobalStatePathsKeys.KODEVERK, alleKodeverk);
     requestApi.mock(RestApiPathsKeys.LAGRE_SAKSLISTE_SORTERING, {});
-    requestApi.mock(RestApiPathsKeys.LAGRE_SAKSLISTE_SORTERING_INTERVALL, undefined);
+    requestApi.mock(RestApiPathsKeys.LAGRE_SAKSLISTE_SORTERING_INTERVALL);
 
     const wrapper = shallowWithIntl(<SorteringVelger.WrappedComponent
       intl={intl as IntlShape}
@@ -72,11 +72,10 @@ describe('<SorteringVelger>', () => {
     const felt = wrapper.find(RadioGroupField);
     felt.prop('onChange')(KoSortering.OPPRETT_BEHANDLING);
 
-    expect(lagreSorteringFn.calledOnce).to.be.true;
-    const { args } = lagreSorteringFn.getCalls()[0];
-    expect(args).to.have.length(1);
-    expect(args[0].sakslisteId).to.eql(1);
-    expect(args[0].sakslisteSorteringValg).to.eql(KoSortering.OPPRETT_BEHANDLING);
-    expect(args[0].avdelingEnhet).to.eql('3');
+    const lagreSakslisteSorteringCallData = requestApi.getRequestMockData(RestApiPathsKeys.LAGRE_SAKSLISTE_SORTERING);
+    expect(lagreSakslisteSorteringCallData).to.have.length(1);
+    expect(lagreSakslisteSorteringCallData[0].params.sakslisteId).is.eql(1);
+    expect(lagreSakslisteSorteringCallData[0].params.sakslisteSorteringValg).is.eql(KoSortering.OPPRETT_BEHANDLING);
+    expect(lagreSakslisteSorteringCallData[0].params.avdelingEnhet).is.eql('3');
   });
 });

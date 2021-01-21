@@ -87,9 +87,9 @@ describe('<BehandlingskoerIndex>', () => {
   };
 
   it('skal ikke vise behandlingskøer når det ikke finnes sakslister', () => {
-    requestApi.mock(RestApiPathsKeys.SAKSLISTE, undefined);
-    requestApi.mock(RestApiPathsKeys.RESERVER_OPPGAVE, undefined);
-    requestApi.mock(RestApiPathsKeys.FPSAK_BEHANDLING_ID, undefined);
+    requestApi.mock(RestApiPathsKeys.SAKSLISTE, []);
+    requestApi.mock(RestApiPathsKeys.RESERVER_OPPGAVE);
+    requestApi.mock(RestApiPathsKeys.FPSAK_BEHANDLING_ID);
 
     const wrapper = shallow(<BehandlingskoerIndex
       fpsakUrl="www.fpsak.no"
@@ -105,6 +105,7 @@ describe('<BehandlingskoerIndex>', () => {
     requestApi.mock(RestApiPathsKeys.SAKSLISTE, sakslister);
     requestApi.mock(RestApiPathsKeys.RESERVER_OPPGAVE, undefined);
     requestApi.mock(RestApiPathsKeys.FPSAK_BEHANDLING_ID, undefined);
+
     const wrapper = shallow(<BehandlingskoerIndex
       fpsakUrl="www.fpsak.no"
       fptilbakeUrl="www.fptilbake.no"
@@ -115,15 +116,12 @@ describe('<BehandlingskoerIndex>', () => {
   });
 
   it('skal reservere og åpne sak i FPSAK når oppgave ikke er reservert fra før', async () => {
-    const reserverOppgave = sinon.stub().withArgs(oppgave.id).resolves({
+    requestApi.mock(RestApiPathsKeys.SAKSLISTE, sakslister);
+    requestApi.mock(RestApiPathsKeys.RESERVER_OPPGAVE, {
       erReservert: true,
       erReservertAvInnloggetBruker: true,
     });
-    const hentFpsakInternBehandlingId = sinon.stub().withArgs(oppgave.behandlingId).resolves(1);
-
-    requestApi.mock(RestApiPathsKeys.SAKSLISTE, sakslister);
-    requestApi.mock(RestApiPathsKeys.RESERVER_OPPGAVE, undefined);
-    requestApi.mock(RestApiPathsKeys.FPSAK_BEHANDLING_ID, undefined);
+    requestApi.mock(RestApiPathsKeys.FPSAK_BEHANDLING_ID, 1);
 
     const wrapper = shallow(<BehandlingskoerIndex
       fpsakUrl="www.fpsak.no"
@@ -136,21 +134,19 @@ describe('<BehandlingskoerIndex>', () => {
 
     await panel.prop('reserverOppgave')(oppgave);
 
-    expect(reserverOppgave.calledOnce).to.be.true;
-    expect(hentFpsakInternBehandlingId.calledOnce).to.be.true;
+    const reserverOppgaveCallData = requestApi.getRequestMockData(RestApiPathsKeys.RESERVER_OPPGAVE);
+    expect(reserverOppgaveCallData).to.have.length(1);
+    expect(reserverOppgaveCallData[0].params.oppgaveId).is.eql(1);
 
-    const { args } = hentFpsakInternBehandlingId.getCalls()[0];
-    expect(args).to.have.length(1);
-    expect(args[0]).to.eql({ uuid: oppgave.behandlingId });
+    const hentFpsakInternBehandlingIdCallData = requestApi.getRequestMockData(RestApiPathsKeys.FPSAK_BEHANDLING_ID);
+    expect(hentFpsakInternBehandlingIdCallData).to.have.length(1);
+    expect(hentFpsakInternBehandlingIdCallData[0].params.uuid).is.eql('d10e592c-e5bd-4f24-95a6-8eb1ed48f068');
   });
 
   it('skal ikke reservere men kun åpne sak i FPSAK når oppgave allerede er reservert', () => {
-    const reserverOppgave = sinon.spy();
-    const hentFpsakInternBehandlingId = sinon.stub().withArgs(oppgave.behandlingId).resolves(1);
-
     requestApi.mock(RestApiPathsKeys.SAKSLISTE, sakslister);
-    requestApi.mock(RestApiPathsKeys.RESERVER_OPPGAVE, undefined);
-    requestApi.mock(RestApiPathsKeys.FPSAK_BEHANDLING_ID, undefined);
+    requestApi.mock(RestApiPathsKeys.RESERVER_OPPGAVE);
+    requestApi.mock(RestApiPathsKeys.FPSAK_BEHANDLING_ID);
 
     const wrapper = shallow(<BehandlingskoerIndex
       fpsakUrl="www.fpsak.no"
@@ -170,10 +166,11 @@ describe('<BehandlingskoerIndex>', () => {
     };
     panel.prop('reserverOppgave')(reservertOppgave);
 
-    expect(reserverOppgave.calledOnce).to.be.false;
-    expect(hentFpsakInternBehandlingId.calledOnce).to.be.true;
-    const { args } = hentFpsakInternBehandlingId.getCalls()[0];
-    expect(args).to.have.length(1);
-    expect(args[0]).to.eql({ uuid: oppgave.behandlingId });
+    const reserverOppgaveCallData = requestApi.getRequestMockData(RestApiPathsKeys.RESERVER_OPPGAVE);
+    expect(reserverOppgaveCallData).to.have.length(0);
+
+    const hentFpsakInternBehandlingIdCallData = requestApi.getRequestMockData(RestApiPathsKeys.FPSAK_BEHANDLING_ID);
+    expect(hentFpsakInternBehandlingIdCallData).to.have.length(1);
+    expect(hentFpsakInternBehandlingIdCallData[0].params.uuid).is.eql('d10e592c-e5bd-4f24-95a6-8eb1ed48f068');
   });
 });
