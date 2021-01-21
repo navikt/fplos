@@ -19,6 +19,7 @@ describe('<OppgaverTabell>', () => {
   const intl: Partial<IntlShape> = {
     ...intlMock,
   };
+
   it('skal vise kriterievelger og liste over neste oppgaver', () => {
     const oppgaverTilBehandling = [{
       id: 1,

@@ -293,7 +293,6 @@ describe('<GjeldendeSakslisterTabell>', () => {
       saksbehandlerIdenter: [],
       antallBehandlinger: 1,
     }];
-    const fjernSakslisterFn = sinon.spy();
 
     requestApi.mock(RestApiGlobalStatePathsKeys.KODEVERK, alleKodeverk);
     requestApi.mock(RestApiPathsKeys.SLETT_SAKSLISTE, {});
@@ -321,11 +320,10 @@ describe('<GjeldendeSakslisterTabell>', () => {
 
     expect(wrapper.find(SletteSakslisteModal)).to.have.length(0);
 
-    expect(fjernSakslisterFn.calledOnce).to.be.true;
-    const { args } = fjernSakslisterFn.getCalls()[0];
-    expect(args).to.have.length(1);
-    expect(args[0].sakslisteId).to.eql(sakslister[0].sakslisteId);
-    expect(args[0].avdelingEnhet).to.eql('2');
+    const fjernSakslisterCallData = requestApi.getRequestMockData(RestApiPathsKeys.SLETT_SAKSLISTE);
+    expect(fjernSakslisterCallData).to.have.length(1);
+    expect(fjernSakslisterCallData[0].params.sakslisteId).is.eql(1);
+    expect(fjernSakslisterCallData[0].params.avdelingEnhet).is.eql('2');
   });
 
   it('skal vise antall saksbehandlere tilknyttet sakslisten', () => {

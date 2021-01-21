@@ -16,6 +16,7 @@ describe('<UtvalgskriterierForSakslisteForm>', () => {
   const intl: Partial<IntlShape> = {
     ...intlMock,
   };
+
   it('skal vise form som lar avdelingsleder endre navn på saksliste', () => {
     const saksliste = {
       sakslisteId: 1,
@@ -117,10 +118,8 @@ describe('<UtvalgskriterierForSakslisteForm>', () => {
       antallBehandlinger: 1,
     };
 
-    const lagreSakslisteNavnFn = sinon.spy();
-
-    requestApi.mock(RestApiPathsKeys.OPPGAVE_ANTALL, {});
-    requestApi.mock(RestApiPathsKeys.LAGRE_SAKSLISTE_NAVN, {});
+    requestApi.mock(RestApiPathsKeys.OPPGAVE_ANTALL);
+    requestApi.mock(RestApiPathsKeys.LAGRE_SAKSLISTE_NAVN);
 
     const wrapper = shallowWithIntl(<UtvalgskriterierForSakslisteForm.WrappedComponent
       intl={intl as IntlShape}
@@ -138,12 +137,11 @@ describe('<UtvalgskriterierForSakslisteForm>', () => {
       navn: 'Foreldrepenger',
     });
 
-    expect(lagreSakslisteNavnFn.calledOnce).to.be.true;
-    const { args } = lagreSakslisteNavnFn.getCalls()[0];
-    expect(args).to.have.length(1);
-    expect(args[0].sakslisteId).to.eql(1);
-    expect(args[0].navn).to.eql('Foreldrepenger');
-    expect(args[0].avdelingEnhet).to.eql('1');
+    const lagreSakslisteNavnCallData = requestApi.getRequestMockData(RestApiPathsKeys.LAGRE_SAKSLISTE_NAVN);
+    expect(lagreSakslisteNavnCallData).to.have.length(1);
+    expect(lagreSakslisteNavnCallData[0].params.sakslisteId).is.eql(1);
+    expect(lagreSakslisteNavnCallData[0].params.navn).is.eql('Foreldrepenger');
+    expect(lagreSakslisteNavnCallData[0].params.avdelingEnhet).is.eql('1');
   });
 
   it('skal sette opp korrekt formstate for andrekriterier', () => {

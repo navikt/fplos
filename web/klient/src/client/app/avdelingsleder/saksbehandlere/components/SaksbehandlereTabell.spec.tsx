@@ -122,13 +122,12 @@ describe('<SaksbehandlereTabell>', () => {
     expect(wrapper.find(SletteSaksbehandlerModal)).to.have.length(0);
   });
 
-  it('skal fjerne saksbehandler ved trykk på ok i modal', () => {
+  it('skal fjerne saksbehandler ved trykk på ok i modal', async () => {
     const saksbehandlere = [{
       brukerIdent: 'TEST1',
       navn: 'Espen Utvikler',
       avdelingsnavn: ['NAV Oslo'],
     }];
-    const fjernSaksbehandlerFn = sinon.spy();
 
     requestApi.mock(RestApiPathsKeys.SLETT_SAKSBEHANDLER, {});
 
@@ -148,14 +147,13 @@ describe('<SaksbehandlereTabell>', () => {
     const modal = wrapper.find(SletteSaksbehandlerModal);
     expect(modal).to.have.length(1);
 
-    modal.prop('fjernSaksbehandler')(saksbehandlere[0]);
+    await modal.prop('fjernSaksbehandler')(saksbehandlere[0]);
 
     expect(wrapper.find(SletteSaksbehandlerModal)).to.have.length(0);
 
-    expect(fjernSaksbehandlerFn.calledOnce).to.be.true;
-    const { args } = fjernSaksbehandlerFn.getCalls()[0];
-    expect(args).to.have.length(1);
-    expect(args[0].brukerIdent).to.eql(saksbehandlere[0].brukerIdent);
-    expect(args[0].avdelingEnhet).to.eql('2');
+    const fjernSaksbehandlerCallData = requestApi.getRequestMockData(RestApiPathsKeys.SLETT_SAKSBEHANDLER);
+    expect(fjernSaksbehandlerCallData).to.have.length(1);
+    expect(fjernSaksbehandlerCallData[0].params.brukerIdent).is.eql(saksbehandlere[0].brukerIdent);
+    expect(fjernSaksbehandlerCallData[0].params.avdelingEnhet).is.eql('2');
   });
 });

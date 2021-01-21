@@ -22,6 +22,7 @@ describe('<FlyttReservasjonModal>', () => {
       handleSubmit: sinon.spy(),
       values: {},
     };
+
     const wrapper = shallowWithIntl(
       <FlyttReservasjonModal.WrappedComponent
         intl={intl as IntlShape}
@@ -43,8 +44,8 @@ describe('<FlyttReservasjonModal>', () => {
       values: {},
     };
 
-    requestApi.mock(RestApiPathsKeys.FLYTT_RESERVASJON_SAKSBEHANDLER_SOK, undefined);
-    requestApi.mock(RestApiPathsKeys.FLYTT_RESERVASJON, {});
+    requestApi.mock(RestApiPathsKeys.FLYTT_RESERVASJON_SAKSBEHANDLER_SOK);
+    requestApi.mock(RestApiPathsKeys.FLYTT_RESERVASJON);
 
     const wrapper = shallowWithIntl(
       <FlyttReservasjonModal.WrappedComponent
@@ -55,10 +56,15 @@ describe('<FlyttReservasjonModal>', () => {
         toggleMenu={sinon.spy()}
         hentReserverteOppgaver={sinon.spy()}
       />,
-      // @ts-ignore
-    ).find(Form).first().renderProp('render')(formProps);
+    );
 
-    const tekst = wrapper.find(Normaltekst);
+    // @ts-ignore
+    wrapper.find(Form).first().prop('onSubmit')({ brukerIdent: '' });
+
+    // @ts-ignore
+    const innerWrapper = wrapper.find(Form).first().renderProp('render')(formProps);
+
+    const tekst = innerWrapper.find(Normaltekst);
     expect(tekst).has.length(1);
     expect(tekst.childAt(0).text()).is.eql('Kan ikke finne brukerident');
   });
@@ -75,7 +81,7 @@ describe('<FlyttReservasjonModal>', () => {
     };
 
     requestApi.mock(RestApiPathsKeys.FLYTT_RESERVASJON_SAKSBEHANDLER_SOK, saksbehandler);
-    requestApi.mock(RestApiPathsKeys.FLYTT_RESERVASJON, {});
+    requestApi.mock(RestApiPathsKeys.FLYTT_RESERVASJON);
 
     const wrapper = shallowWithIntl(
       <FlyttReservasjonModal.WrappedComponent
@@ -86,10 +92,15 @@ describe('<FlyttReservasjonModal>', () => {
         toggleMenu={sinon.spy()}
         hentReserverteOppgaver={sinon.spy()}
       />,
-      // @ts-ignore
-    ).find(Form).first().renderProp('render')(formProps);
+    );
 
-    const tekst = wrapper.find(Normaltekst);
+    // @ts-ignore
+    wrapper.find(Form).first().prop('onSubmit')({ brukerIdent: '' });
+
+    // @ts-ignore
+    const innerWrapper = wrapper.find(Form).first().renderProp('render')(formProps);
+
+    const tekst = innerWrapper.find(Normaltekst);
     expect(tekst).has.length(1);
     expect(tekst.childAt(0).text()).is.eql('Brukernavn, Avdelingsnavn');
   });
@@ -150,8 +161,8 @@ describe('<FlyttReservasjonModal>', () => {
       },
     };
 
-    requestApi.mock(RestApiPathsKeys.FLYTT_RESERVASJON_SAKSBEHANDLER_SOK, undefined);
-    requestApi.mock(RestApiPathsKeys.FLYTT_RESERVASJON, {});
+    requestApi.mock(RestApiPathsKeys.FLYTT_RESERVASJON_SAKSBEHANDLER_SOK);
+    requestApi.mock(RestApiPathsKeys.FLYTT_RESERVASJON);
 
     const wrapper = shallowWithIntl(
       <FlyttReservasjonModal.WrappedComponent
@@ -162,15 +173,20 @@ describe('<FlyttReservasjonModal>', () => {
         toggleMenu={sinon.spy()}
         hentReserverteOppgaver={sinon.spy()}
       />,
-      // @ts-ignore
-    ).find(Form).first().renderProp('render')(formProps);
+    );
 
-    const knapper = wrapper.find(Hovedknapp);
+    // @ts-ignore
+    wrapper.find(Form).first().prop('onSubmit')({ brukerIdent: '' });
+
+    // @ts-ignore
+    const innerWrapper = wrapper.find(Form).last().renderProp('render')(formProps);
+
+    const knapper = innerWrapper.find(Hovedknapp);
     expect(knapper).has.length(1);
     expect(knapper.first().prop('disabled')).is.true;
   });
 
-  it('skal vise ok-knapp som enablet når en har saksbehandler og begrunnelsen er minst tre bokstaver', () => {
+  it('skal vise ok-knapp som enablet når en har saksbehandler og begrunnelsen er minst tre bokstaver', async () => {
     const saksbehandler = {
       brukerIdent: 'P039283',
       navn: 'Brukernavn',
@@ -196,10 +212,15 @@ describe('<FlyttReservasjonModal>', () => {
         toggleMenu={sinon.spy()}
         hentReserverteOppgaver={sinon.spy()}
       />,
-      // @ts-ignore
-    ).find(Form).last().renderProp('render')(formProps);
+    );
 
-    const knapper = wrapper.find(Hovedknapp);
+    // @ts-ignore
+    await wrapper.find(Form).first().prop('onSubmit')({ brukerIdent: saksbehandler.brukerIdent });
+
+    // @ts-ignore
+    const innerWrapper = wrapper.find(Form).first().renderProp('render')(formProps);
+
+    const knapper = innerWrapper.find(Hovedknapp);
     expect(knapper).has.length(1);
     expect(knapper.last().prop('disabled')).is.false;
   });
@@ -212,9 +233,6 @@ describe('<FlyttReservasjonModal>', () => {
         begrunnelse: 'oki',
       },
     };
-
-    requestApi.mock(RestApiPathsKeys.FLYTT_RESERVASJON_SAKSBEHANDLER_SOK, undefined);
-    requestApi.mock(RestApiPathsKeys.FLYTT_RESERVASJON, {});
 
     const wrapper = shallowWithIntl(
       <FlyttReservasjonModal.WrappedComponent
@@ -234,11 +252,6 @@ describe('<FlyttReservasjonModal>', () => {
   });
 
   it('skal vise ok-knapp som disablet når begrunnelsen er mindre enn tre bokstaver', () => {
-    const saksbehandler = {
-      brukerIdent: 'P039283',
-      navn: 'Brukernavn',
-      avdelingsnavn: ['Avdelingsnavn'],
-    };
     const formProps = {
       handleSubmit: sinon.spy(),
       values: {
@@ -246,9 +259,6 @@ describe('<FlyttReservasjonModal>', () => {
         begrunnelse: 'ok',
       },
     };
-
-    requestApi.mock(RestApiPathsKeys.FLYTT_RESERVASJON_SAKSBEHANDLER_SOK, saksbehandler);
-    requestApi.mock(RestApiPathsKeys.FLYTT_RESERVASJON, {});
 
     const wrapper = shallowWithIntl(
       <FlyttReservasjonModal.WrappedComponent

@@ -146,7 +146,7 @@ describe('<BehandlingskoerIndex>', () => {
   it('skal ikke reservere men kun åpne sak i FPSAK når oppgave allerede er reservert', () => {
     requestApi.mock(RestApiPathsKeys.SAKSLISTE, sakslister);
     requestApi.mock(RestApiPathsKeys.RESERVER_OPPGAVE);
-    requestApi.mock(RestApiPathsKeys.FPSAK_BEHANDLING_ID);
+    requestApi.mock(RestApiPathsKeys.FPSAK_BEHANDLING_ID, {});
 
     const wrapper = shallow(<BehandlingskoerIndex
       fpsakUrl="www.fpsak.no"

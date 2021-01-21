@@ -15,15 +15,14 @@ class RequestApiMock extends AbstractRequestApi {
   missingPaths: string[] = [];
 
   public startRequest = (endpointName: string, params?: any): any => {
-    const data = this.mockdata[endpointName];
-    if (!data) {
+    if (!(endpointName in this.mockdata)) {
       throw new Error(`Det er ikke satt opp mock-data for endepunkt ${endpointName}`);
     }
     this.execData.push({
       endpointName,
       params,
     });
-    return data;
+    return this.mockdata[endpointName];
   }
 
   public hasPath = (endpointName: string): boolean => !this.missingPaths.some((p) => p === endpointName);
@@ -45,7 +44,7 @@ class RequestApiMock extends AbstractRequestApi {
 
     this.mockdata = {
       ...this.mockdata,
-      [endpointName]: data || {},
+      [endpointName]: data || undefined,
     };
   };
 

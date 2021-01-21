@@ -20,6 +20,7 @@ describe('<SakslisteVelgerForm>', () => {
   };
   it('skal vise dropdown med to sakslister', () => {
     const formProps = { };
+
     const sakslister = [{
       sakslisteId: 1,
       navn: 'Testliste 1',
