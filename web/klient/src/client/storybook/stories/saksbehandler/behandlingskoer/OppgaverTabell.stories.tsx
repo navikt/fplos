@@ -1,42 +1,36 @@
 import React from 'react';
 import { action } from '@storybook/addon-actions';
 
-import { RestApiProvider } from 'data/rest-api-hooks';
-import { RestApiPathsKeys } from 'data/fplosRestApi';
-import { OppgaverTabell } from 'saksbehandler/behandlingskoer/components/OppgaverTabell';
+import { requestApi, RestApiPathsKeys } from 'data/fplosRestApi';
+import OppgaverTabell from 'saksbehandler/behandlingskoer/components/OppgaverTabell';
 import behandlingStatus from 'kodeverk/behandlingStatus';
 import behandlingType from 'kodeverk/behandlingType';
 import fagsakYtelseType from 'kodeverk/fagsakYtelseType';
 
-import RequestMock from '../../../mocks/RequestMock';
+import withRestApiProvider from '../../../decorators/withRestApi';
 import withIntl from '../../../decorators/withIntl';
 
 export default {
   title: 'saksbehandler/behandlingskoer/OppgaverTabell',
   component: OppgaverTabell,
-  decorators: [withIntl],
+  decorators: [withIntl, withRestApiProvider],
 };
 
-export const skalViseTomOppgaveTabell = (intl) => {
-  const requestApiMock = new RequestMock()
-    .withKeyAndResult(RestApiPathsKeys.FORLENG_OPPGAVERESERVASJON, {})
-    .withKeyAndResult(RestApiPathsKeys.RESERVERTE_OPPGAVER, [])
-    .withKeyAndResult(RestApiPathsKeys.OPPGAVER_TIL_BEHANDLING, [])
-    .build();
+export const skalViseTomOppgaveTabell = () => {
+  requestApi.mock(RestApiPathsKeys.FORLENG_OPPGAVERESERVASJON, {});
+  requestApi.mock(RestApiPathsKeys.RESERVERTE_OPPGAVER, []);
+  requestApi.mock(RestApiPathsKeys.OPPGAVER_TIL_BEHANDLING, []);
 
   return (
-    <RestApiProvider requestApi={requestApiMock}>
-      <OppgaverTabell
-        intl={intl}
-        reserverOppgave={action('button-click')}
-        valgtSakslisteId={1}
-        doPolling={false}
-      />
-    </RestApiProvider>
+    <OppgaverTabell
+      reserverOppgave={action('button-click')}
+      valgtSakslisteId={1}
+      doPolling={false}
+    />
   );
 };
 
-export const skalViseTabellMedBådeLedigOgReservertOppgave = (intl) => {
+export const skalViseTabellMedBådeLedigOgReservertOppgave = () => {
   const oppgaverTilBehandling = [{
     id: 1,
     status: {
@@ -97,22 +91,18 @@ export const skalViseTabellMedBådeLedigOgReservertOppgave = (intl) => {
     behandlingId: '2',
     href: '',
   }];
-  const requestApiMock = new RequestMock()
-    .withKeyAndResult(RestApiPathsKeys.FORLENG_OPPGAVERESERVASJON, {})
-    .withKeyAndResult(RestApiPathsKeys.RESERVERTE_OPPGAVER, reserverteOppgaver)
-    .withKeyAndResult(RestApiPathsKeys.OPPGAVER_TIL_BEHANDLING, oppgaverTilBehandling)
-    .build();
+
+  requestApi.mock(RestApiPathsKeys.FORLENG_OPPGAVERESERVASJON, {});
+  requestApi.mock(RestApiPathsKeys.RESERVERTE_OPPGAVER, reserverteOppgaver);
+  requestApi.mock(RestApiPathsKeys.OPPGAVER_TIL_BEHANDLING, oppgaverTilBehandling);
 
   return (
-    <RestApiProvider requestApi={requestApiMock}>
-      <div style={{ width: '80%' }}>
-        <OppgaverTabell
-          intl={intl}
-          reserverOppgave={action('button-click')}
-          valgtSakslisteId={1}
-          doPolling={false}
-        />
-      </div>
-    </RestApiProvider>
+    <div style={{ width: '80%' }}>
+      <OppgaverTabell
+        reserverOppgave={action('button-click')}
+        valgtSakslisteId={1}
+        doPolling={false}
+      />
+    </div>
   );
 };

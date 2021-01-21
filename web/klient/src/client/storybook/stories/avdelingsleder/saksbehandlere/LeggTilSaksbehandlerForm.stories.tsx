@@ -1,61 +1,50 @@
 import React from 'react';
 import { action } from '@storybook/addon-actions';
 
-import { RestApiPathsKeys } from 'data/fplosRestApi';
-import { LeggTilSaksbehandlerForm } from 'avdelingsleder/saksbehandlere/components/LeggTilSaksbehandlerForm';
-import { RestApiProvider } from 'data/rest-api-hooks';
+import { requestApi, RestApiPathsKeys } from 'data/fplosRestApi';
+import LeggTilSaksbehandlerForm from 'avdelingsleder/saksbehandlere/components/LeggTilSaksbehandlerForm';
 
 import withIntl from '../../../decorators/withIntl';
-import RequestMock from '../../../mocks/RequestMock';
+import withRestApiProvider from '../../../decorators/withRestApi';
 
 export default {
   title: 'avdelingsleder/saksbehandlere/LeggTilSaksbehandlerForm',
   component: LeggTilSaksbehandlerForm,
-  decorators: [withIntl],
+  decorators: [withIntl, withRestApiProvider],
 };
 
-export const skalVisePanelForÅLeggeTilSaksbehandlere = (intl) => {
+export const skalVisePanelForÅLeggeTilSaksbehandlere = () => {
   const saksbehandler = {
     brukerIdent: 'R232323',
     navn: 'Espen Utvikler',
     avdelingsnavn: ['NAV Viken'],
   };
 
-  const requestApi = new RequestMock()
-    .withKeyAndResult(RestApiPathsKeys.SAKSBEHANDLER_SOK, saksbehandler)
-    .build();
+  requestApi.mock(RestApiPathsKeys.SAKSBEHANDLER_SOK, saksbehandler);
 
   return (
-    <RestApiProvider requestApi={requestApi}>
-      <LeggTilSaksbehandlerForm
-        intl={intl}
-        avdelingensSaksbehandlere={[]}
-        hentAvdelingensSaksbehandlere={action('button-click')}
-        valgtAvdelingEnhet="NAV Viken"
-      />
-    </RestApiProvider>
+    <LeggTilSaksbehandlerForm
+      avdelingensSaksbehandlere={[]}
+      hentAvdelingensSaksbehandlere={action('button-click')}
+      valgtAvdelingEnhet="NAV Viken"
+    />
   );
 };
 
-export const skalVisePanelForNårSaksbehandlerErLagtTilAllerede = (intl) => {
+export const skalVisePanelForNårSaksbehandlerErLagtTilAllerede = () => {
   const saksbehandler = {
     brukerIdent: 'R232323',
     navn: 'Espen Utvikler',
     avdelingsnavn: ['NAV Viken'],
   };
 
-  const requestApi = new RequestMock()
-    .withKeyAndResult(RestApiPathsKeys.SAKSBEHANDLER_SOK, saksbehandler)
-    .build();
+  requestApi.mock(RestApiPathsKeys.SAKSBEHANDLER_SOK, saksbehandler);
 
   return (
-    <RestApiProvider requestApi={requestApi}>
-      <LeggTilSaksbehandlerForm
-        intl={intl}
-        avdelingensSaksbehandlere={[saksbehandler]}
-        hentAvdelingensSaksbehandlere={action('button-click')}
-        valgtAvdelingEnhet="NAV Viken"
-      />
-    </RestApiProvider>
+    <LeggTilSaksbehandlerForm
+      avdelingensSaksbehandlere={[saksbehandler]}
+      hentAvdelingensSaksbehandlere={action('button-click')}
+      valgtAvdelingEnhet="NAV Viken"
+    />
   );
 };

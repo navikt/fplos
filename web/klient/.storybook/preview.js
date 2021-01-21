@@ -1,4 +1,8 @@
 import React from 'react';
-import '@fpsak-frontend/assets/styles/global.less';
+import '../src/client/styles/global.less';
+import { switchOnTestMode } from 'data/rest-api';
 
 export const decorators = [(Story) => <div style={{ margin: '40px'}}><Story/></div>];
+
+switchOnTestMode();
+

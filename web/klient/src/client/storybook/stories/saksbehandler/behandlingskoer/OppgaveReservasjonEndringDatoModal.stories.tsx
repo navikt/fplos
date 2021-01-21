@@ -1,34 +1,29 @@
 import React from 'react';
 import { action } from '@storybook/addon-actions';
 
-import { RestApiProvider } from 'data/rest-api-hooks';
-import { RestApiPathsKeys } from 'data/fplosRestApi';
+import { requestApi, RestApiPathsKeys } from 'data/fplosRestApi';
 import OppgaveReservasjonEndringDatoModal from 'saksbehandler/behandlingskoer/components/menu/OppgaveReservasjonEndringDatoModal';
 
-import RequestMock from '../../../mocks/RequestMock';
+import withRestApiProvider from '../../../decorators/withRestApi';
 import withIntl from '../../../decorators/withIntl';
 
 export default {
   title: 'saksbehandler/behandlingskoer/OppgaveReservasjonEndringDatoModal',
   component: OppgaveReservasjonEndringDatoModal,
-  decorators: [withIntl],
+  decorators: [withIntl, withRestApiProvider],
 };
 
 export const skalViseModalForEndringAvReservasjon = () => {
-  const requestApi = new RequestMock()
-    .withKeyAndResult(RestApiPathsKeys.ENDRE_OPPGAVERESERVASJON, {})
-    .build();
+  requestApi.mock(RestApiPathsKeys.ENDRE_OPPGAVERESERVASJON, {});
 
   return (
-    <RestApiProvider requestApi={requestApi}>
-      <OppgaveReservasjonEndringDatoModal
-        showModal
-        closeModal={action('button-click')}
-        reserverTilDefault=""
-        oppgaveId={1}
-        endreReserverasjonState={action('button-click')}
-        hentReserverteOppgaver={action('button-click')}
-      />
-    </RestApiProvider>
+    <OppgaveReservasjonEndringDatoModal
+      showModal
+      closeModal={action('button-click')}
+      reserverTilDefault=""
+      oppgaveId={1}
+      endreReserverasjonState={action('button-click')}
+      hentReserverteOppgaver={action('button-click')}
+    />
   );
 };
