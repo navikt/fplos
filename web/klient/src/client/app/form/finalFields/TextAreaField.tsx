@@ -3,6 +3,7 @@ import { Field } from 'react-final-form';
 import { Textarea as NavTextarea } from 'nav-frontend-skjema';
 import EtikettFokus from 'nav-frontend-etiketter';
 import { injectIntl, FormattedMessage, WrappedComponentProps } from 'react-intl';
+import { FieldValidator } from 'final-form';
 
 import renderNavField from './renderNavField';
 import { LabelType } from './Label';
@@ -60,11 +61,7 @@ const renderNavTextArea = renderNavField(injectIntl(TextAreaWithBadge));
 interface OwnProps {
   name: string;
   label: LabelType;
-  validate?: (((text: any) => ({ id: string; length?: number }
-  | { length: any; id?: string })[])
-  | ((value: any) => { id: string }[])
-  | ((text: any) => ({ id: string; text?: string }
-  | { text: any; id?: string })[]))[];
+  validate?: FieldValidator<any> | FieldValidator<any>[];
   readOnly?: boolean;
   maxLength?: number;
 }

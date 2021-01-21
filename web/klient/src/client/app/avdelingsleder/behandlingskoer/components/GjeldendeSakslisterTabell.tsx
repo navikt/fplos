@@ -95,7 +95,7 @@ export const GjeldendeSakslisterTabell: FunctionComponent<OwnProps> = ({
     tabRef.current = tabRef.current.slice(0, sakslister.length);
   }, [sakslister]);
 
-  const setValgtSaksliste = async (event: Event, id: number): Promise<string> => {
+  const setValgtSaksliste = async (event: React.MouseEvent | React.KeyboardEvent, id: number): Promise<string> => {
     if (tabRef.current.some((node) => node && node.contains(event.target))) {
       return;
     }

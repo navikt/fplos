@@ -106,7 +106,7 @@ export const OppgaverTabell: FunctionComponent<OwnProps & WrappedComponentProps>
 
   const ref = useRef({});
 
-  const goToFagsak = useCallback((event: Event, _id: number, oppgave: Oppgave) => {
+  const goToFagsak = useCallback((event: React.MouseEvent | React.KeyboardEvent, _id: number, oppgave: Oppgave) => {
     if (ref.current && Object.keys(ref.current).some((key) => ref.current[key] && ref.current[key].contains(event.target))) {
       return;
     }

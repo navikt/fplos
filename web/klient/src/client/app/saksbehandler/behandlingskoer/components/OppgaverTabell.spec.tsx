@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ReactElement } from 'react';
 import { expect } from 'chai';
 import { FormattedMessage, IntlShape } from 'react-intl';
 import sinon from 'sinon';
@@ -261,7 +261,7 @@ describe('<OppgaverTabell>', () => {
     expect(columnsRow1.at(4).find(Image)).has.length(1);
     expect(columnsRow1.at(5).find(Image)).has.length(1);
 
-    const tooltip = shallowWithIntl(columnsRow1.at(4).find(Image).prop('tooltip'));
+    const tooltip = shallowWithIntl(columnsRow1.at(4).find(Image).prop('tooltip') as ReactElement);
     const values = tooltip.find(FormattedMessage).prop('values') as { dato: string; tid: string; uid: string; navn: string; beskrivelse: string};
 
     expect(values.dato).is.eql('02.01.2018');

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ReactElement } from 'react';
 import { expect } from 'chai';
 import sinon from 'sinon';
 import { IntlShape, FormattedMessage } from 'react-intl';
@@ -439,7 +439,7 @@ describe('<SakslisteVelgerForm>', () => {
 
     const image = updatedInnerWrapper.find(Image);
     expect(image).to.have.length(1);
-    const tooltip = shallowWithIntl(image.prop('tooltip'));
+    const tooltip = shallowWithIntl(image.prop('tooltip') as ReactElement);
     expect(tooltip.find(FormattedMessage).prop('id')).to.eql('SakslisteVelgerForm.SaksbehandlerToolip');
   });
 });
