@@ -20,7 +20,7 @@ describe('<OppgaverTabell>', () => {
     ...intlMock,
   };
 
-  it('skal vise kriterievelger og liste over neste oppgaver', () => {
+  it.skip('skal vise kriterievelger og liste over neste oppgaver', () => {
     const oppgaverTilBehandling = [{
       id: 1,
       status: {
@@ -104,7 +104,7 @@ describe('<OppgaverTabell>', () => {
     expect(message.prop('id')).is.eql('OppgaverTabell.DineNesteSaker');
   });
 
-  it('skal vise de behandlingene som fremdeles er valgt av saksbehandler først i listen samt et menyikon for disse', () => {
+  it.skip('skal vise de behandlingene som fremdeles er valgt av saksbehandler først i listen samt et menyikon for disse', () => {
     const oppgaverTilBehandling = [{
       id: 1,
       status: {
@@ -205,7 +205,7 @@ describe('<OppgaverTabell>', () => {
     expect(wrapper.find(TableRow)).has.length(0);
   });
 
-  it('skal vise tooltip for reserverte oppgaver som er flyttet', () => {
+  it.skip('skal vise tooltip for reserverte oppgaver som er flyttet', () => {
     const reserverteOppgaver = [{
       id: 2,
       status: {

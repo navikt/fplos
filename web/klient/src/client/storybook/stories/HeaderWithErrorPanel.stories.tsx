@@ -74,6 +74,7 @@ export const skalViseHeaderMedKunEnFeilmelding = () => {
   };
 
   requestApi.mock(RestApiGlobalStatePathsKeys.NAV_ANSATT, navAnsatt);
+  requestApi.mock(RestApiGlobalStatePathsKeys.DRIFTSMELDINGER, []);
 
   return (
     <div style={{ marginLeft: '-40px' }}>
@@ -116,6 +117,7 @@ export const skalViseHeaderMedMerEnnFemFeilmeldinger = () => {
   };
 
   requestApi.mock(RestApiGlobalStatePathsKeys.NAV_ANSATT, navAnsatt);
+  requestApi.mock(RestApiGlobalStatePathsKeys.DRIFTSMELDINGER, []);
 
   return (
     <div style={{ marginLeft: '-40px' }}>

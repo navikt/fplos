@@ -84,21 +84,17 @@ export const OppgaverTabell: FunctionComponent<OwnProps & WrappedComponentProps>
     startRequest: hentOppgaverTilBehandling, data: oppgaverTilBehandling = EMPTY_ARRAY, error: hentOppgaverTilBehandlingError,
   } = restApiHooks.useRestApiRunner<Oppgave[] | string>(RestApiPathsKeys.OPPGAVER_TIL_BEHANDLING);
 
-  const fetchSakslisteOppgaverPolling = (sakslisteId: number, oppgaveIder?: string) => {
+  const fetchSakslisteOppgaverPolling = (keepData: boolean, sakslisteId: number, oppgaveIder?: string) => {
     hentReserverteOppgaver({}, true);
-    hentOppgaverTilBehandling(oppgaveIder ? { sakslisteId, oppgaveIder } : { sakslisteId }, true)
+    hentOppgaverTilBehandling(oppgaveIder ? { sakslisteId, oppgaveIder } : { sakslisteId }, keepData)
       .then((response) => (typeof response === 'string' || !doPolling
         ? Promise.resolve()
-        : fetchSakslisteOppgaverPolling(sakslisteId, response.map((o) => o.id).join(','))))
+        : fetchSakslisteOppgaverPolling(true, sakslisteId, response.map((o) => o.id).join(','))))
       .catch(() => undefined);
   };
 
   useEffect(() => {
-    fetchSakslisteOppgaverPolling(valgtSakslisteId);
-    // FIXME Trengs denne?
-    /* return () => {
-      cancelRequest();
-    }; */
+    fetchSakslisteOppgaverPolling(false, valgtSakslisteId);
   }, [valgtSakslisteId]);
 
   const forlengOppgaveReservasjonFn = useCallback((oppgaveId: number): Promise<any> => forlengOppgavereservasjon({ oppgaveId })

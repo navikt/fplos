@@ -3,7 +3,6 @@ import NotificationMapper from './NotificationMapper';
 import Link from './LinkTsType';
 import AbstractRequestApi from './AbstractRequestApi';
 import RequestRunner from './RequestRunner';
-import ResponseCache from './ResponseCache';
 import RequestConfig, { RequestType } from '../RequestConfig';
 
 const DEFAULT_CATEGORY = 'DEFAULT_CATEGORY';
@@ -30,16 +29,7 @@ const getMethod = (httpClientApi: HttpClientApi, restMethod: string, isResponseB
   return httpClientApi.postBlob;
 };
 
-const isGetRequest = (restMethod: string): boolean => restMethod === RequestType.GET || restMethod === RequestType.GET_ASYNC;
-
-const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
-const waitUntilFinished = async (cache: ResponseCache, endpointName: string) => {
-  if (cache.isFetching(endpointName)) {
-    await wait(50);
-    return waitUntilFinished(cache, endpointName);
-  }
-  return undefined;
-};
+const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 /**
  * RequestApi
@@ -56,7 +46,7 @@ class RequestApi extends AbstractRequestApi {
 
   notificationMapper: NotificationMapper = new NotificationMapper();
 
-  cache: ResponseCache = new ResponseCache();
+  activeRunners: Record<string, RequestRunner> = {};
 
   constructor(httpClientApi: HttpClientApi, endpointConfigList: RequestConfig[]) {
     super();
@@ -64,21 +54,17 @@ class RequestApi extends AbstractRequestApi {
     this.endpointConfigList = endpointConfigList;
   }
 
-  private doCaching = async (endpointName: string): Promise<any> => {
-    if (this.cache.hasFetched(endpointName)) {
-      return this.cache.getData(endpointName);
-    }
-    if (this.cache.isFetching(endpointName)) {
-      await waitUntilFinished(this.cache, endpointName);
-      return this.cache.getData(endpointName);
-    }
-    this.cache.setToFetching(endpointName);
-    return undefined;
-  }
-
   private findLinks = (rel: string): Link => Object.values(this.links).flat().find((link) => link.rel === rel);
 
-  public startRequest = async (endpointName: string, params?: any, isCachingOn = false): Promise<{ payload: any }> => {
+  private cancelRequest = (endpointName: string): boolean => {
+    if (this.activeRunners[endpointName]) {
+      this.activeRunners[endpointName].cancel();
+      return true;
+    }
+    return false;
+  }
+
+  public startRequest = async (endpointName: string, params?: any): Promise<{ payload: any }> => {
     const endpointConfig = this.endpointConfigList.find((c) => c.name === endpointName);
     if (!endpointConfig) {
       throw new Error(`Mangler konfig for endepunkt ${endpointName}`);
@@ -87,30 +73,28 @@ class RequestApi extends AbstractRequestApi {
     const restMethod = link ? link.type : endpointConfig.restMethod;
     const href = link ? link.href : endpointConfig.path;
 
-    const useCaching = isCachingOn && isGetRequest(restMethod);
-    if (useCaching) {
-      const cachedResult = await this.doCaching(endpointName);
-      if (cachedResult) {
-        return cachedResult;
-      }
-    }
-
     const apiRestMethod = getMethod(this.httpClientApi, restMethod, endpointConfig.config.isResponseBlob);
     const runner = new RequestRunner(this.httpClientApi, apiRestMethod, href, endpointConfig.config);
     if (this.notificationMapper) {
       runner.setNotificationEmitter(this.notificationMapper.getNotificationEmitter());
     }
 
-    if (!useCaching) {
-      return runner.start(params || link?.requestPayload);
+    const hasCancelled = this.cancelRequest(endpointName);
+    if (hasCancelled) {
+      // TODO (TOR) Fjern dette når ein har gått over til Server side events
+      await wait(1500);
     }
 
     try {
+      this.activeRunners = {
+        ...this.activeRunners,
+        [endpointName]: runner,
+      };
       const result = await runner.start(params || link?.requestPayload);
-      this.cache.addData(endpointName, result);
+      delete this.activeRunners[endpointName];
       return result;
     } catch (error) {
-      this.cache.addData(endpointName, undefined);
+      delete this.activeRunners[endpointName];
       throw error;
     }
   }
@@ -150,7 +134,6 @@ class RequestApi extends AbstractRequestApi {
   };
 
   public resetCache = (): void => {
-    this.cache = new ResponseCache();
   }
 
   public isMock = (): boolean => false;
