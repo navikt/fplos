@@ -43,22 +43,25 @@ describe('<OppgaveReservasjonForlengetModal>', () => {
     href: '',
   };
 
-  it('skal rendre modal for å gi tilbakemelding om at reservasjon er forlenget', () => {
-    const wrapper = shallowWithIntl(
-      <OppgaveReservasjonForlengetModal
-        intl={intl as IntlShape}
-        oppgave={oppgave}
-        showModal
-        closeModal={sinon.spy()}
-      />,
-    );
+  it(
+    'skal rendre modal for å gi tilbakemelding om at reservasjon er forlenget',
+    () => {
+      const wrapper = shallowWithIntl(
+        <OppgaveReservasjonForlengetModal
+          intl={intl as IntlShape}
+          oppgave={oppgave}
+          showModal
+          closeModal={sinon.spy()}
+        />,
+      );
 
-    const messages = wrapper.find(FormattedMessage);
-    expect(messages).has.length(2);
+      const messages = wrapper.find(FormattedMessage);
+      expect(messages).has.length(2);
 
-    expect(messages.last().prop('values')).is.eql({
-      date: '02.08.2017',
-      time: '00:54',
-    });
-  });
+      expect(messages.last().prop('values')).is.eql({
+        date: '02.08.2017',
+        time: '00:54',
+      });
+    },
+  );
 });

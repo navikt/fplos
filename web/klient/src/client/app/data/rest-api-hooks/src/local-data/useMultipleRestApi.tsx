@@ -37,7 +37,7 @@ const defaultOptions = {
 /**
  * For mocking i unit-test
  */
-export const getUseMultipleRestApiMock = (requestApi: AbstractRequestApi) => function useMultipleRestApi<T>(
+export const getUseMultipleRestApiMock = (requestApi: AbstractRequestApi) => (function useMultipleRestApi<T>(
   endpoints: EndpointData[], options: Options = defaultOptions,
 ):RestApiData<T> {
   const endpointData = endpoints.reduce((acc, endpoint) => ({
@@ -50,7 +50,7 @@ export const getUseMultipleRestApiMock = (requestApi: AbstractRequestApi) => fun
     // @ts-ignore
     data: options.suspendRequest ? undefined : endpointData,
   };
-};
+});
 
 const DEFAULT_STATE = {
   state: RestApiState.NOT_STARTED,
@@ -62,7 +62,7 @@ const DEFAULT_STATE = {
   * Hook som utfører et restkall ved mount. En kan i tillegg legge ved en dependencies-liste som kan trigge ny henting når data
   * blir oppdatert. Hook returnerer rest-kallets status/resultat/feil
   */
-const getUseMultipleRestApi = (requestApi: AbstractRequestApi) => function useMultipleRestApi<T>(
+const getUseMultipleRestApi = (requestApi: AbstractRequestApi) => (function useMultipleRestApi<T>(
   endpoints: EndpointData[], options: Options = defaultOptions,
 ):RestApiData<T> {
   const [data, setData] = useState(DEFAULT_STATE);
@@ -108,6 +108,6 @@ const getUseMultipleRestApi = (requestApi: AbstractRequestApi) => function useMu
 
   return previousTriggers && notEqual(previousTriggers, options.updateTriggers)
     ? { ...DEFAULT_STATE, data: options.keepData ? data.data : undefined } : data;
-};
+});
 
 export default getUseMultipleRestApi;

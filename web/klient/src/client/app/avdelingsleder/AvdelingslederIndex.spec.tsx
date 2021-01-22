@@ -41,19 +41,22 @@ describe('<AvdelingslederIndex>', () => {
     contextStub.restore();
   });
 
-  it('skal vise avdelingsleder dashboard etter at valgt avdeling er satt', () => {
-    const contextStub = sinon.stub(useTrackRouteParam, 'default').callsFake(() => ({
-      selected: AvdelingslederPanels.BEHANDLINGSKOER, location,
-    }));
+  it(
+    'skal vise avdelingsleder dashboard etter at valgt avdeling er satt',
+    () => {
+      const contextStub = sinon.stub(useTrackRouteParam, 'default').callsFake(() => ({
+        selected: AvdelingslederPanels.BEHANDLINGSKOER, location,
+      }));
 
-    requestApi.mock(RestApiGlobalStatePathsKeys.NAV_ANSATT, navAnsatt);
-    requestApi.mock(RestApiGlobalStatePathsKeys.AVDELINGER, []);
-    const wrapper = shallow(<AvdelingslederIndex
-      valgtAvdelingEnhet="1"
-    />);
-    expect(wrapper.find(AvdelingslederDashboard)).to.have.length(1);
-    contextStub.restore();
-  });
+      requestApi.mock(RestApiGlobalStatePathsKeys.NAV_ANSATT, navAnsatt);
+      requestApi.mock(RestApiGlobalStatePathsKeys.AVDELINGER, []);
+      const wrapper = shallow(<AvdelingslederIndex
+        valgtAvdelingEnhet="1"
+      />);
+      expect(wrapper.find(AvdelingslederDashboard)).to.have.length(1);
+      contextStub.restore();
+    },
+  );
 
   it('skal vise alle fire panelene', () => {
     const contextStub = sinon.stub(useTrackRouteParam, 'default').callsFake(() => ({

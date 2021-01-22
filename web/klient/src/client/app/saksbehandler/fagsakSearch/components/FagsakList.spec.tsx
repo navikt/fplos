@@ -91,48 +91,51 @@ describe('<FagsakList>', () => {
     expect(tableColumns.at(4).childAt(0)).is.empty;
   });
 
-  it('skal sortere søkeresultat der avsluttede skal vises sist, mens sist endrede skal vises først', () => {
-    const fagsak2 = {
-      saksnummer: 23456,
-      system: 'FPSAK',
-      sakstype: {
-        navn: '',
-        kode: 'TEST',
-      },
-      status: {
-        navn: '',
-        kode: 'UBEH',
-      },
-      opprettet: '13‎.‎02‎.‎2017‎ ‎09‎:‎54‎:‎22 ',
-      endret: '13‎.‎02‎.‎2017‎ ‎09‎:‎54‎:‎22',
-      person,
-      oppgaver: [],
-    };
-    const fagsak3 = {
-      saksnummer: 34567,
-      system: 'FPSAK',
-      sakstype: {
-        navn: '',
-        kode: 'TEST',
-      },
-      status: {
-        navn: '',
-        kode: 'AVSLU',
-      },
-      opprettet: '13‎.‎02‎.‎2017‎ ‎09‎:‎54‎:‎22',
-      endret: '13‎.‎02‎.‎2017‎ ‎09‎:‎54‎:‎22',
-      person,
-    };
+  it(
+    'skal sortere søkeresultat der avsluttede skal vises sist, mens sist endrede skal vises først',
+    () => {
+      const fagsak2 = {
+        saksnummer: 23456,
+        system: 'FPSAK',
+        sakstype: {
+          navn: '',
+          kode: 'TEST',
+        },
+        status: {
+          navn: '',
+          kode: 'UBEH',
+        },
+        opprettet: '13‎.‎02‎.‎2017‎ ‎09‎:‎54‎:‎22 ',
+        endret: '13‎.‎02‎.‎2017‎ ‎09‎:‎54‎:‎22',
+        person,
+        oppgaver: [],
+      };
+      const fagsak3 = {
+        saksnummer: 34567,
+        system: 'FPSAK',
+        sakstype: {
+          navn: '',
+          kode: 'TEST',
+        },
+        status: {
+          navn: '',
+          kode: 'AVSLU',
+        },
+        opprettet: '13‎.‎02‎.‎2017‎ ‎09‎:‎54‎:‎22',
+        endret: '13‎.‎02‎.‎2017‎ ‎09‎:‎54‎:‎22',
+        person,
+      };
 
-    const fagsaker = [fagsak, fagsak2, fagsak3];
+      const fagsaker = [fagsak, fagsak2, fagsak3];
 
-    const sorterteFagsaker = getSorterteFagsaker(fagsaker);
+      const sorterteFagsaker = getSorterteFagsaker(fagsaker);
 
-    expect(sorterteFagsaker).to.have.length(3);
-    expect(sorterteFagsaker[0].saksnummer).to.eql(23456);
-    expect(sorterteFagsaker[1].saksnummer).to.eql(12345);
-    expect(sorterteFagsaker[2].saksnummer).to.eql(34567);
-  });
+      expect(sorterteFagsaker).to.have.length(3);
+      expect(sorterteFagsaker[0].saksnummer).to.eql(23456);
+      expect(sorterteFagsaker[1].saksnummer).to.eql(12345);
+      expect(sorterteFagsaker[2].saksnummer).to.eql(34567);
+    },
+  );
 
   it('skal vise DateLabel i tabell kun om barn er født', () => {
     const fagsak4 = {

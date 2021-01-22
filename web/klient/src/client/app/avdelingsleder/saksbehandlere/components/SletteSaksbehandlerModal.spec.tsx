@@ -11,23 +11,26 @@ describe('<SletteSaksbehandlerModal>', () => {
   const intl: Partial<IntlShape> = {
     ...intlMock,
   };
-  it('skal vise slette-modal med knapper for om en vil slette eller ikke', () => {
-    const saksbehandler = {
-      brukerIdent: 'TEST1',
-      navn: 'Espen Utvikler',
-      avdelingsnavn: ['NAV Oslo'],
-    };
+  it(
+    'skal vise slette-modal med knapper for om en vil slette eller ikke',
+    () => {
+      const saksbehandler = {
+        brukerIdent: 'TEST1',
+        navn: 'Espen Utvikler',
+        avdelingsnavn: ['NAV Oslo'],
+      };
 
-    const wrapper = shallowWithIntl(<SletteSaksbehandlerModal.WrappedComponent
-      intl={intl as IntlShape}
-      valgtSaksbehandler={saksbehandler}
-      closeSletteModal={sinon.spy()}
-      fjernSaksbehandler={sinon.spy()}
-    />);
+      const wrapper = shallowWithIntl(<SletteSaksbehandlerModal.WrappedComponent
+        intl={intl as IntlShape}
+        valgtSaksbehandler={saksbehandler}
+        closeSletteModal={sinon.spy()}
+        fjernSaksbehandler={sinon.spy()}
+      />);
 
-    expect(wrapper.find(Hovedknapp)).to.have.length(1);
-    expect(wrapper.find(Knapp)).to.have.length(1);
-  });
+      expect(wrapper.find(Hovedknapp)).to.have.length(1);
+      expect(wrapper.find(Knapp)).to.have.length(1);
+    },
+  );
 
   it('skal kjøre slettefunksjon ved trykk på Ja-knapp', () => {
     const saksbehandler = {

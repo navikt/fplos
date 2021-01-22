@@ -74,15 +74,18 @@ describe('<SistBehandledeSaker>', () => {
     expect(links.last().childAt(0).text()).to.eql('Espen Solstråle 657643535');
   });
 
-  it('skal ikke vise noen lenker når ingen behandlede saker blir funnet', () => {
-    const oppgaver = [];
+  it(
+    'skal ikke vise noen lenker når ingen behandlede saker blir funnet',
+    () => {
+      const oppgaver = [];
 
-    requestApi.mock(RestApiGlobalStatePathsKeys.FPSAK_URL, { verdi: 'url' });
-    requestApi.mock(RestApiGlobalStatePathsKeys.FPTILBAKE_URL, { verdi: 'url' });
-    requestApi.mock(RestApiPathsKeys.BEHANDLEDE_OPPGAVER, oppgaver);
+      requestApi.mock(RestApiGlobalStatePathsKeys.FPSAK_URL, { verdi: 'url' });
+      requestApi.mock(RestApiGlobalStatePathsKeys.FPTILBAKE_URL, { verdi: 'url' });
+      requestApi.mock(RestApiPathsKeys.BEHANDLEDE_OPPGAVER, oppgaver);
 
-    const wrapper = shallow(<SistBehandledeSaker />);
+      const wrapper = shallow(<SistBehandledeSaker />);
 
-    expect(wrapper.find(Lenke)).to.have.length(0);
-  });
+      expect(wrapper.find(Lenke)).to.have.length(0);
+    },
+  );
 });

@@ -33,30 +33,33 @@ describe('<Table>', () => {
     expect(tableHeaderCols.last().childAt(0).prop('id')).to.eql('FagsakList.Sakstype');
   });
 
-  it('skal vise korrekt antall kolonneheadere med korrekt tekst for formatterte headere', () => {
-    const formattedHeaderTextCodes = [
-      <FormattedMessage id="FagsakList.Saksnummer" />,
-      <FormattedMessage id="FagsakList.Sakstype" />,
-    ];
+  it(
+    'skal vise korrekt antall kolonneheadere med korrekt tekst for formatterte headere',
+    () => {
+      const formattedHeaderTextCodes = [
+        <FormattedMessage id="FagsakList.Saksnummer" />,
+        <FormattedMessage id="FagsakList.Sakstype" />,
+      ];
 
-    const wrapper = shallow(
-      <Table headerColumnContent={formattedHeaderTextCodes}>
-        <TableRow id="1">
-          <TableColumn key={1}>{12345}</TableColumn>
-          <TableColumn key={2}>{23446}</TableColumn>
-        </TableRow>
-      </Table>,
-    );
+      const wrapper = shallow(
+        <Table headerColumnContent={formattedHeaderTextCodes}>
+          <TableRow id="1">
+            <TableColumn key={1}>{12345}</TableColumn>
+            <TableColumn key={2}>{23446}</TableColumn>
+          </TableRow>
+        </Table>,
+      );
 
-    expect(wrapper.find('table')).to.have.length(1);
-    const tableHeaderRow = wrapper.find('thead').children();
-    expect(tableHeaderRow).to.have.length(1);
+      expect(wrapper.find('table')).to.have.length(1);
+      const tableHeaderRow = wrapper.find('thead').children();
+      expect(tableHeaderRow).to.have.length(1);
 
-    const tableHeaderCols = tableHeaderRow.children();
-    expect(tableHeaderCols).to.have.length(2);
-    expect(tableHeaderCols.first().childAt(0).prop('id')).to.eql('FagsakList.Saksnummer');
-    expect(tableHeaderCols.last().childAt(0).prop('id')).to.eql('FagsakList.Sakstype');
-  });
+      const tableHeaderCols = tableHeaderRow.children();
+      expect(tableHeaderCols).to.have.length(2);
+      expect(tableHeaderCols.first().childAt(0).prop('id')).to.eql('FagsakList.Saksnummer');
+      expect(tableHeaderCols.last().childAt(0).prop('id')).to.eql('FagsakList.Sakstype');
+    },
+  );
 
   it('skal vise korrekt antall rader og kolonner', () => {
     const wrapper = shallow(

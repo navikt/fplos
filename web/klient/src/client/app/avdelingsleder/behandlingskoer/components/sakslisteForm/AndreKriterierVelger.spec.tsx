@@ -83,29 +83,32 @@ describe('<AndreKriterierVelger>', () => {
     expect(lagreSakslisteAndreKriterierCallData[0].params.avdelingEnhet).is.eql('3');
   });
 
-  it('skal lagre valgt for Registrere papirsoknad ved klikk på checkbox', () => {
-    requestApi.mock(RestApiGlobalStatePathsKeys.KODEVERK, alleKodeverk);
-    requestApi.mock(RestApiPathsKeys.LAGRE_SAKSLISTE_ANDRE_KRITERIER, {});
+  it(
+    'skal lagre valgt for Registrere papirsoknad ved klikk på checkbox',
+    () => {
+      requestApi.mock(RestApiGlobalStatePathsKeys.KODEVERK, alleKodeverk);
+      requestApi.mock(RestApiPathsKeys.LAGRE_SAKSLISTE_ANDRE_KRITERIER, {});
 
-    const wrapper = shallow(<AndreKriterierVelger
-      valgtSakslisteId={1}
-      valgtAvdelingEnhet="3"
-      values={{}}
-      hentAvdelingensSakslister={sinon.spy()}
-      hentAntallOppgaver={sinon.spy()}
-    />);
+      const wrapper = shallow(<AndreKriterierVelger
+        valgtSakslisteId={1}
+        valgtAvdelingEnhet="3"
+        values={{}}
+        hentAvdelingensSakslister={sinon.spy()}
+        hentAntallOppgaver={sinon.spy()}
+      />);
 
-    const checkbox = wrapper.find(CheckboxField).last();
-    checkbox.prop('onChange')(true);
+      const checkbox = wrapper.find(CheckboxField).last();
+      checkbox.prop('onChange')(true);
 
-    const lagreSakslisteAndreKriterierCallData = requestApi.getRequestMockData(RestApiPathsKeys.LAGRE_SAKSLISTE_ANDRE_KRITERIER);
-    expect(lagreSakslisteAndreKriterierCallData).to.have.length(1);
-    expect(lagreSakslisteAndreKriterierCallData[0].params.sakslisteId).is.eql(1);
-    expect(lagreSakslisteAndreKriterierCallData[0].params.andreKriterierType.kode).is.eql(andreKriterierType.REGISTRER_PAPIRSOKNAD);
-    expect(lagreSakslisteAndreKriterierCallData[0].params.checked).is.true;
-    expect(lagreSakslisteAndreKriterierCallData[0].params.inkluder).is.true;
-    expect(lagreSakslisteAndreKriterierCallData[0].params.avdelingEnhet).is.eql('3');
-  });
+      const lagreSakslisteAndreKriterierCallData = requestApi.getRequestMockData(RestApiPathsKeys.LAGRE_SAKSLISTE_ANDRE_KRITERIER);
+      expect(lagreSakslisteAndreKriterierCallData).to.have.length(1);
+      expect(lagreSakslisteAndreKriterierCallData[0].params.sakslisteId).is.eql(1);
+      expect(lagreSakslisteAndreKriterierCallData[0].params.andreKriterierType.kode).is.eql(andreKriterierType.REGISTRER_PAPIRSOKNAD);
+      expect(lagreSakslisteAndreKriterierCallData[0].params.checked).is.true;
+      expect(lagreSakslisteAndreKriterierCallData[0].params.inkluder).is.true;
+      expect(lagreSakslisteAndreKriterierCallData[0].params.avdelingEnhet).is.eql('3');
+    },
+  );
 
   it('skal vise radioknapper for å ta med eller fjerne', () => {
     requestApi.mock(RestApiGlobalStatePathsKeys.KODEVERK, alleKodeverk);

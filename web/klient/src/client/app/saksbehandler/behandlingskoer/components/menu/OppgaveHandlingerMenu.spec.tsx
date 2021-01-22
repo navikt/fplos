@@ -43,54 +43,60 @@ describe('<OppgaveHandlingerMenu>', () => {
     href: '',
   };
 
-  it('skal rendre meny med to knapper og vise tidspunkt reservasjonen gjelder til', () => {
-    const wrapper = shallow(
-      <OppgaveHandlingerMenu
-        toggleMenu={sinon.spy()}
-        offset={{
-          top: 10,
-          left: 20,
-        }}
-        oppgave={oppgave}
-        imageNode={<div />}
-        forlengOppgaveReservasjon={sinon.spy()}
-        hentReserverteOppgaver={sinon.spy()}
-      />,
-    );
+  it(
+    'skal rendre meny med to knapper og vise tidspunkt reservasjonen gjelder til',
+    () => {
+      const wrapper = shallow(
+        <OppgaveHandlingerMenu
+          toggleMenu={sinon.spy()}
+          offset={{
+            top: 10,
+            left: 20,
+          }}
+          oppgave={oppgave}
+          imageNode={<div />}
+          forlengOppgaveReservasjon={sinon.spy()}
+          hentReserverteOppgaver={sinon.spy()}
+        />,
+      );
 
-    expect(wrapper.find(MenuButton)).has.length(4);
-    const message = wrapper.find(FormattedMessage).first();
-    const values = message.prop('values') as { date: string; time: string };
-    expect(values.date).is.eql('02.02.2020');
-    expect(values.time).is.eql('23:59');
-  });
+      expect(wrapper.find(MenuButton)).has.length(4);
+      const message = wrapper.find(FormattedMessage).first();
+      const values = message.prop('values') as { date: string; time: string };
+      expect(values.date).is.eql('02.02.2020');
+      expect(values.time).is.eql('23:59');
+    },
+  );
 
-  it('skal vise modal for oppheving av reservasjon ved klikk på menyknapp og så lukke den ved å avbryte i modal', () => {
-    const wrapper = shallow(
-      <OppgaveHandlingerMenu
-        toggleMenu={sinon.spy()}
-        offset={{
-          top: 10,
-          left: 20,
-        }}
-        oppgave={oppgave}
-        imageNode={<div />}
-        forlengOppgaveReservasjon={sinon.spy()}
-        hentReserverteOppgaver={sinon.spy()}
-      />,
-    );
-    expect(wrapper.find(OpphevReservasjonModal)).has.length(0);
+  it(
+    'skal vise modal for oppheving av reservasjon ved klikk på menyknapp og så lukke den ved å avbryte i modal',
+    () => {
+      const wrapper = shallow(
+        <OppgaveHandlingerMenu
+          toggleMenu={sinon.spy()}
+          offset={{
+            top: 10,
+            left: 20,
+          }}
+          oppgave={oppgave}
+          imageNode={<div />}
+          forlengOppgaveReservasjon={sinon.spy()}
+          hentReserverteOppgaver={sinon.spy()}
+        />,
+      );
+      expect(wrapper.find(OpphevReservasjonModal)).has.length(0);
 
-    const menuButton = wrapper.find(MenuButton).first();
-    menuButton.prop('onClick')();
+      const menuButton = wrapper.find(MenuButton).first();
+      menuButton.prop('onClick')();
 
-    const modal = wrapper.find(OpphevReservasjonModal);
-    expect(modal).has.length(1);
+      const modal = wrapper.find(OpphevReservasjonModal);
+      expect(modal).has.length(1);
 
-    modal.prop('cancel')();
+      modal.prop('cancel')();
 
-    expect(wrapper.find(OpphevReservasjonModal)).has.length(0);
-  });
+      expect(wrapper.find(OpphevReservasjonModal)).has.length(0);
+    },
+  );
 
   it('skal vise modal for oppheving av reservasjon', () => {
     const wrapper = shallow(

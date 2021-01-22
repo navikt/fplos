@@ -47,36 +47,39 @@ describe('<UtvalgskriterierForSakslisteForm>', () => {
     expect(wrapper.find(InputField)).to.have.length(1);
   });
 
-  it('skal vise default-navn for sakslisten når dette ikke er satt fra før', () => {
-    const saksliste = {
-      sakslisteId: 1,
-      navn: undefined,
-      sistEndret: '2017-08-31',
-      saksbehandlerIdenter: [],
-      antallBehandlinger: 1,
-    };
+  it(
+    'skal vise default-navn for sakslisten når dette ikke er satt fra før',
+    () => {
+      const saksliste = {
+        sakslisteId: 1,
+        navn: undefined,
+        sistEndret: '2017-08-31',
+        saksbehandlerIdenter: [],
+        antallBehandlinger: 1,
+      };
 
-    const wrapper = shallowWithIntl(<UtvalgskriterierForSakslisteForm.WrappedComponent
-      intl={intl as IntlShape}
-      valgtSaksliste={saksliste}
-      valgtAvdelingEnhet="1"
-      hentAvdelingensSakslister={sinon.spy()}
-      hentOppgaverForAvdelingAntall={sinon.spy()}
-    />);
+      const wrapper = shallowWithIntl(<UtvalgskriterierForSakslisteForm.WrappedComponent
+        intl={intl as IntlShape}
+        valgtSaksliste={saksliste}
+        valgtAvdelingEnhet="1"
+        hentAvdelingensSakslister={sinon.spy()}
+        hentOppgaverForAvdelingAntall={sinon.spy()}
+      />);
 
-    const initialValues = wrapper.prop('initialValues');
-    expect(initialValues).to.eql({
-      sakslisteId: 1,
-      navn: 'Ny behandlingskø',
-      sortering: undefined,
-      fagsakYtelseType: '',
-      fra: undefined,
-      til: undefined,
-      fomDato: undefined,
-      tomDato: undefined,
-      erDynamiskPeriode: undefined,
-    });
-  });
+      const initialValues = wrapper.prop('initialValues');
+      expect(initialValues).to.eql({
+        sakslisteId: 1,
+        navn: 'Ny behandlingskø',
+        sortering: undefined,
+        fagsakYtelseType: '',
+        fra: undefined,
+        til: undefined,
+        fomDato: undefined,
+        tomDato: undefined,
+        erDynamiskPeriode: undefined,
+      });
+    },
+  );
 
   it('skal vise navn for sakslisten når dette er satt fra før', () => {
     const saksliste = {

@@ -210,15 +210,21 @@ describe('Validators', () => {
   });
 
   describe('hasValidSaksnummerOrFodselsnummerFormat', () => {
-    it('skal ikke feile når saksnummer eller fødselsnummer har gyldig pattern', () => {
-      const result = hasValidSaksnummerOrFodselsnummerFormat('22121588017');
-      expect(result).is.null;
-    });
+    it(
+      'skal ikke feile når saksnummer eller fødselsnummer har gyldig pattern',
+      () => {
+        const result = hasValidSaksnummerOrFodselsnummerFormat('22121588017');
+        expect(result).is.null;
+      },
+    );
 
-    it('skal feile når saksnummer eller fødselsnummer har ugyldig pattern', () => {
-      const result = hasValidSaksnummerOrFodselsnummerFormat('0501851212-d');
-      expect(result).has.length(1);
-      expect(result[0]).is.eql({ id: 'ValidationMessage.InvalidSaksnummerOrFodselsnummerFormat' });
-    });
+    it(
+      'skal feile når saksnummer eller fødselsnummer har ugyldig pattern',
+      () => {
+        const result = hasValidSaksnummerOrFodselsnummerFormat('0501851212-d');
+        expect(result).has.length(1);
+        expect(result[0]).is.eql({ id: 'ValidationMessage.InvalidSaksnummerOrFodselsnummerFormat' });
+      },
+    );
   });
 });

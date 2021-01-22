@@ -104,91 +104,94 @@ describe('<OppgaverTabell>', () => {
     expect(message.prop('id')).is.eql('OppgaverTabell.DineNesteSaker');
   });
 
-  it.skip('skal vise de behandlingene som fremdeles er valgt av saksbehandler først i listen samt et menyikon for disse', () => {
-    const oppgaverTilBehandling = [{
-      id: 1,
-      status: {
-        erReservert: false,
-      },
-      saksnummer: 1,
-      behandlingId: '2',
-      personnummer: '123456789',
-      navn: 'Espen Utvikler',
-      system: 'FPSAK',
-      behandlingstype: {
-        kode: behandlingType.FORSTEGANGSSOKNAD,
-        navn: 'Førstegangssøknad',
-      },
-      opprettetTidspunkt: '2019-01-02',
-      behandlingsfrist: '2019-03-03',
-      erTilSaksbehandling: true,
-      fagsakYtelseType: {
-        kode: fagsakYtelseType.FORELDREPRENGER,
-        navn: 'FP',
-      },
-      behandlingStatus: {
-        kode: behandlingStatus.OPPRETTET,
-        navn: '',
-      },
-      href: '',
-    }];
-    const reserverteOppgaver = [{
-      id: 2,
-      status: {
-        erReservert: true,
-      },
-      saksnummer: 2,
-      behandlingId: '2',
-      personnummer: '657643535',
-      navn: 'Espen Solstråle',
-      system: 'FPSAK',
-      behandlingstype: {
-        kode: behandlingType.FORSTEGANGSSOKNAD,
-        navn: 'Førstegangssøknad far',
-      },
-      opprettetTidspunkt: '2018-01-02',
-      behandlingsfrist: '2018-03-03',
-      erTilSaksbehandling: true,
-      fagsakYtelseType: {
-        kode: fagsakYtelseType.FORELDREPRENGER,
-        navn: 'FP',
-      },
-      behandlingStatus: {
-        kode: behandlingStatus.OPPRETTET,
-        navn: '',
-      },
-      href: '',
-    }];
+  it.skip(
+    'skal vise de behandlingene som fremdeles er valgt av saksbehandler først i listen samt et menyikon for disse',
+    () => {
+      const oppgaverTilBehandling = [{
+        id: 1,
+        status: {
+          erReservert: false,
+        },
+        saksnummer: 1,
+        behandlingId: '2',
+        personnummer: '123456789',
+        navn: 'Espen Utvikler',
+        system: 'FPSAK',
+        behandlingstype: {
+          kode: behandlingType.FORSTEGANGSSOKNAD,
+          navn: 'Førstegangssøknad',
+        },
+        opprettetTidspunkt: '2019-01-02',
+        behandlingsfrist: '2019-03-03',
+        erTilSaksbehandling: true,
+        fagsakYtelseType: {
+          kode: fagsakYtelseType.FORELDREPRENGER,
+          navn: 'FP',
+        },
+        behandlingStatus: {
+          kode: behandlingStatus.OPPRETTET,
+          navn: '',
+        },
+        href: '',
+      }];
+      const reserverteOppgaver = [{
+        id: 2,
+        status: {
+          erReservert: true,
+        },
+        saksnummer: 2,
+        behandlingId: '2',
+        personnummer: '657643535',
+        navn: 'Espen Solstråle',
+        system: 'FPSAK',
+        behandlingstype: {
+          kode: behandlingType.FORSTEGANGSSOKNAD,
+          navn: 'Førstegangssøknad far',
+        },
+        opprettetTidspunkt: '2018-01-02',
+        behandlingsfrist: '2018-03-03',
+        erTilSaksbehandling: true,
+        fagsakYtelseType: {
+          kode: fagsakYtelseType.FORELDREPRENGER,
+          navn: 'FP',
+        },
+        behandlingStatus: {
+          kode: behandlingStatus.OPPRETTET,
+          navn: '',
+        },
+        href: '',
+      }];
 
-    requestApi.mock(RestApiPathsKeys.FORLENG_OPPGAVERESERVASJON, undefined);
-    requestApi.mock(RestApiPathsKeys.RESERVERTE_OPPGAVER, reserverteOppgaver);
-    requestApi.mock(RestApiPathsKeys.OPPGAVER_TIL_BEHANDLING, oppgaverTilBehandling);
+      requestApi.mock(RestApiPathsKeys.FORLENG_OPPGAVERESERVASJON, undefined);
+      requestApi.mock(RestApiPathsKeys.RESERVERTE_OPPGAVER, reserverteOppgaver);
+      requestApi.mock(RestApiPathsKeys.OPPGAVER_TIL_BEHANDLING, oppgaverTilBehandling);
 
-    const wrapper = shallowWithIntl(<OppgaverTabell
-      intl={intl as IntlShape}
-      reserverOppgave={sinon.spy()}
-      valgtSakslisteId={1}
-    />);
+      const wrapper = shallowWithIntl(<OppgaverTabell
+        intl={intl as IntlShape}
+        reserverOppgave={sinon.spy()}
+        valgtSakslisteId={1}
+      />);
 
-    const tableRows = wrapper.find(TableRow);
-    expect(tableRows).has.length(2);
+      const tableRows = wrapper.find(TableRow);
+      expect(tableRows).has.length(2);
 
-    const columnsRow1 = tableRows.first().find(TableColumn);
-    expect(columnsRow1.first().childAt(0).text()).is.eql('Espen Solstråle 657643535');
-    expect(columnsRow1.at(1).childAt(0).text()).is.eql('Førstegangssøknad far');
-    expect(columnsRow1.at(2).find(DateLabel).prop('dateString')).is.eql('2018-01-02');
-    expect(columnsRow1.at(3).find(DateLabel).prop('dateString')).is.eql('2018-03-03');
-    expect(columnsRow1.at(4).find(Image)).has.length(0);
-    expect(columnsRow1.at(5).find(Image)).has.length(1);
+      const columnsRow1 = tableRows.first().find(TableColumn);
+      expect(columnsRow1.first().childAt(0).text()).is.eql('Espen Solstråle 657643535');
+      expect(columnsRow1.at(1).childAt(0).text()).is.eql('Førstegangssøknad far');
+      expect(columnsRow1.at(2).find(DateLabel).prop('dateString')).is.eql('2018-01-02');
+      expect(columnsRow1.at(3).find(DateLabel).prop('dateString')).is.eql('2018-03-03');
+      expect(columnsRow1.at(4).find(Image)).has.length(0);
+      expect(columnsRow1.at(5).find(Image)).has.length(1);
 
-    const columnsRow2 = tableRows.last().find(TableColumn);
-    expect(columnsRow2.first().childAt(0).text()).is.eql('Espen Utvikler 123456789');
-    expect(columnsRow2.at(1).childAt(0).text()).is.eql('Førstegangssøknad');
-    expect(columnsRow2.at(2).find(DateLabel).prop('dateString')).is.eql('2019-01-02');
-    expect(columnsRow2.at(3).find(DateLabel).prop('dateString')).is.eql('2019-03-03');
-    expect(columnsRow2.at(4).find(Image)).has.length(0);
-    expect(columnsRow2.at(5).find(NavFrontendChevron)).has.length(1);
-  });
+      const columnsRow2 = tableRows.last().find(TableColumn);
+      expect(columnsRow2.first().childAt(0).text()).is.eql('Espen Utvikler 123456789');
+      expect(columnsRow2.at(1).childAt(0).text()).is.eql('Førstegangssøknad');
+      expect(columnsRow2.at(2).find(DateLabel).prop('dateString')).is.eql('2019-01-02');
+      expect(columnsRow2.at(3).find(DateLabel).prop('dateString')).is.eql('2019-03-03');
+      expect(columnsRow2.at(4).find(Image)).has.length(0);
+      expect(columnsRow2.at(5).find(NavFrontendChevron)).has.length(1);
+    },
+  );
 
   it('skal ikke vise liste når en ikke har oppgaver', () => {
     const wrapper = shallowWithIntl(<OppgaverTabell

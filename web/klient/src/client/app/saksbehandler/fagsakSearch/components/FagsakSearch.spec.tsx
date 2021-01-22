@@ -50,45 +50,51 @@ describe('<FagsakSearch>', () => {
     expect(wrapper.find(FagsakList)).to.have.length(0);
   });
 
-  it('skal vise søkefelt og label for ingen søketreff når ingen fagsaker blir hentet', () => {
-    const wrapper = shallow(<FagsakSearch
-      fagsaker={[]}
-      fagsakOppgaver={[]}
-      searchFagsakCallback={sinon.spy()}
-      selectOppgaveCallback={sinon.spy()}
-      searchResultReceived
-      selectFagsakCallback={sinon.spy()}
-      searchStarted
-      resetSearch={sinon.spy()}
-    />);
+  it(
+    'skal vise søkefelt og label for ingen søketreff når ingen fagsaker blir hentet',
+    () => {
+      const wrapper = shallow(<FagsakSearch
+        fagsaker={[]}
+        fagsakOppgaver={[]}
+        searchFagsakCallback={sinon.spy()}
+        selectOppgaveCallback={sinon.spy()}
+        searchResultReceived
+        selectFagsakCallback={sinon.spy()}
+        searchStarted
+        resetSearch={sinon.spy()}
+      />);
 
-    expect(wrapper.find(SearchForm)).to.have.length(1);
-    const labelComp = wrapper.find('Normaltekst');
-    expect(labelComp).to.have.length(1);
-    expect(labelComp.find('FormattedMessage').prop('id')).to.eql('FagsakSearch.ZeroSearchResults');
-  });
+      expect(wrapper.find(SearchForm)).to.have.length(1);
+      const labelComp = wrapper.find('Normaltekst');
+      expect(labelComp).to.have.length(1);
+      expect(labelComp.find('FormattedMessage').prop('id')).to.eql('FagsakSearch.ZeroSearchResults');
+    },
+  );
 
-  it('skal vise søkefelt og søketreff der person og to fagsaker blir vist', () => {
-    const searchFagsakFunction = sinon.spy();
-    const selectFagsakFunction = sinon.spy();
-    const wrapper = shallow(<FagsakSearch
-      fagsaker={[fagsak, fagsak]}
-      fagsakOppgaver={[]}
-      searchFagsakCallback={searchFagsakFunction}
-      selectOppgaveCallback={sinon.spy()}
-      searchResultReceived
-      selectFagsakCallback={selectFagsakFunction}
-      searchStarted
-      resetSearch={sinon.spy()}
-    />);
+  it(
+    'skal vise søkefelt og søketreff der person og to fagsaker blir vist',
+    () => {
+      const searchFagsakFunction = sinon.spy();
+      const selectFagsakFunction = sinon.spy();
+      const wrapper = shallow(<FagsakSearch
+        fagsaker={[fagsak, fagsak]}
+        fagsakOppgaver={[]}
+        searchFagsakCallback={searchFagsakFunction}
+        selectOppgaveCallback={sinon.spy()}
+        searchResultReceived
+        selectFagsakCallback={selectFagsakFunction}
+        searchStarted
+        resetSearch={sinon.spy()}
+      />);
 
-    expect(wrapper.find(SearchForm)).to.have.length(1);
+      expect(wrapper.find(SearchForm)).to.have.length(1);
 
-    const personComp = wrapper.find(PersonInfo);
-    expect(personComp).to.have.length(1);
+      const personComp = wrapper.find(PersonInfo);
+      expect(personComp).to.have.length(1);
 
-    const fagsakListComp = wrapper.find(FagsakList);
-    expect(fagsakListComp).to.have.length(1);
-    expect(fagsakListComp.prop('selectFagsakCallback')).to.eql(selectFagsakFunction);
-  });
+      const fagsakListComp = wrapper.find(FagsakList);
+      expect(fagsakListComp).to.have.length(1);
+      expect(fagsakListComp.prop('selectFagsakCallback')).to.eql(selectFagsakFunction);
+    },
+  );
 });

@@ -12,27 +12,30 @@ describe('<SletteSakslisteModal>', () => {
     ...intlMock,
   };
 
-  it('skal vise slette-modal med knapper for om en vil slette eller ikke', () => {
-    const saksliste = {
-      sakslisteId: 1,
-      navn: 'Nyansatte',
-      sistEndret: '2017-01-01',
-      erTilBeslutter: false,
-      erRegistrerPapirsoknad: false,
-      saksbehandlerIdenter: [],
-      antallBehandlinger: 1,
-    };
+  it(
+    'skal vise slette-modal med knapper for om en vil slette eller ikke',
+    () => {
+      const saksliste = {
+        sakslisteId: 1,
+        navn: 'Nyansatte',
+        sistEndret: '2017-01-01',
+        erTilBeslutter: false,
+        erRegistrerPapirsoknad: false,
+        saksbehandlerIdenter: [],
+        antallBehandlinger: 1,
+      };
 
-    const wrapper = shallowWithIntl(<SletteSakslisteModal
-      intl={intl as IntlShape}
-      valgtSaksliste={saksliste}
-      cancel={sinon.spy()}
-      submit={sinon.spy()}
-    />);
+      const wrapper = shallowWithIntl(<SletteSakslisteModal
+        intl={intl as IntlShape}
+        valgtSaksliste={saksliste}
+        cancel={sinon.spy()}
+        submit={sinon.spy()}
+      />);
 
-    expect(wrapper.find(Hovedknapp)).to.have.length(1);
-    expect(wrapper.find(Knapp)).to.have.length(1);
-  });
+      expect(wrapper.find(Hovedknapp)).to.have.length(1);
+      expect(wrapper.find(Knapp)).to.have.length(1);
+    },
+  );
 
   it('skal kjøre slettefunksjon ved trykk på Ja-knapp', () => {
     const saksliste = {

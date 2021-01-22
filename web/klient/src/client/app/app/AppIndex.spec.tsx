@@ -9,19 +9,22 @@ import HeaderWithErrorPanel from './components/HeaderWithErrorPanel';
 import { AppIndex } from './AppIndex';
 
 describe('<AppIndex>', () => {
-  it('skal vise hjem-skjermbilde inkludert header men ikke feilmelding', () => {
-    const wrapper = shallow(<AppIndex
-      location={{ search: undefined, state: {} } as Location}
-      history={{} as History}
-      match={{} as match}
-    />);
+  it(
+    'skal vise hjem-skjermbilde inkludert header men ikke feilmelding',
+    () => {
+      const wrapper = shallow(<AppIndex
+        location={{ search: undefined, state: {} } as Location}
+        history={{} as History}
+        match={{} as match}
+      />);
 
-    const headerComp = wrapper.find(HeaderWithErrorPanel);
-    expect(headerComp).to.have.length(1);
+      const headerComp = wrapper.find(HeaderWithErrorPanel);
+      expect(headerComp).to.have.length(1);
 
-    const homeComp = wrapper.find('Home');
-    expect(homeComp).to.have.length(1);
-  });
+      const homeComp = wrapper.find('Home');
+      expect(homeComp).to.have.length(1);
+    },
+  );
 
   it('skal vise hjem-skjermbilde inkludert header og feilmelding', () => {
     const wrapper = shallow(<AppIndex

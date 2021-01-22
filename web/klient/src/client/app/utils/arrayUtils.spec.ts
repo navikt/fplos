@@ -20,19 +20,22 @@ describe('arrayUtils', () => {
   });
 
   describe('haystack', () => {
-    it('Skal finne verdi i liste B ved å bruke en dynamiske nøkkel fra liste A', () => {
-      const listeA = ['A[0].a', 'B[0].b.key'];
-      const listeB = {
-        Z: {},
-        X: {},
-        A: [
-          {
-            a: 'value',
-            b: 'value',
-          },
-        ],
-      };
-      expect(haystack(listeB, listeA[0])).to.eql('value');
-    });
+    it(
+      'Skal finne verdi i liste B ved å bruke en dynamiske nøkkel fra liste A',
+      () => {
+        const listeA = ['A[0].a', 'B[0].b.key'];
+        const listeB = {
+          Z: {},
+          X: {},
+          A: [
+            {
+              a: 'value',
+              b: 'value',
+            },
+          ],
+        };
+        expect(haystack(listeB, listeA[0])).to.eql('value');
+      },
+    );
   });
 });

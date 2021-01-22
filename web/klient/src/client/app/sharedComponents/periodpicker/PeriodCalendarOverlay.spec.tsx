@@ -50,24 +50,27 @@ describe('<PeriodCalendarOverlay>', () => {
     expect(daypicker.prop('initialMonth')).is.eql(endDate);
   });
 
-  it('skal kjøre callback når overlay blir lukket og target er noe annet enn kalender eller kalenderknapp', () => {
-    const onCloseCallback = () => {
-      expect(true).is.true;
-    };
-    const elementIsCalendarButton = () => false;
-    const wrapper = shallowWithIntl(<PeriodCalendarOverlay.WrappedComponent
-      intl={intlMock}
-      onDayChange={sinon.spy()}
-      className="test"
-      dayPickerClassName="test"
-      elementIsCalendarButton={elementIsCalendarButton}
-      startDate={moment('2017-08-31').toDate()}
-      endDate={moment('2018-08-31').toDate()}
-      onClose={onCloseCallback}
-    />);
+  it(
+    'skal kjøre callback når overlay blir lukket og target er noe annet enn kalender eller kalenderknapp',
+    () => {
+      const onCloseCallback = () => {
+        expect(true).is.true;
+      };
+      const elementIsCalendarButton = () => false;
+      const wrapper = shallowWithIntl(<PeriodCalendarOverlay.WrappedComponent
+        intl={intlMock}
+        onDayChange={sinon.spy()}
+        className="test"
+        dayPickerClassName="test"
+        elementIsCalendarButton={elementIsCalendarButton}
+        startDate={moment('2017-08-31').toDate()}
+        endDate={moment('2018-08-31').toDate()}
+        onClose={onCloseCallback}
+      />);
 
-    wrapper.find('div').prop('onBlur')({} as FocusEvent);
-  });
+      wrapper.find('div').prop('onBlur')({} as FocusEvent);
+    },
+  );
 
   it('skal kjøre callback når en trykker escape-knappen', () => {
     const onCloseCallback = sinon.spy();
@@ -87,23 +90,26 @@ describe('<PeriodCalendarOverlay>', () => {
     expect(onCloseCallback.called).is.true;
   });
 
-  it('skal ikke kjøre callback når en trykker noe annet enn escape-knappen', () => {
-    const onCloseCallback = sinon.spy();
-    const wrapper = shallowWithIntl(<PeriodCalendarOverlay.WrappedComponent
-      intl={intlMock}
-      onDayChange={sinon.spy()}
-      className="test"
-      dayPickerClassName="test"
-      elementIsCalendarButton={sinon.spy()}
-      startDate={moment('2017-08-31').toDate()}
-      endDate={moment('2018-08-31').toDate()}
-      onClose={onCloseCallback}
-    />);
+  it(
+    'skal ikke kjøre callback når en trykker noe annet enn escape-knappen',
+    () => {
+      const onCloseCallback = sinon.spy();
+      const wrapper = shallowWithIntl(<PeriodCalendarOverlay.WrappedComponent
+        intl={intlMock}
+        onDayChange={sinon.spy()}
+        className="test"
+        dayPickerClassName="test"
+        elementIsCalendarButton={sinon.spy()}
+        startDate={moment('2017-08-31').toDate()}
+        endDate={moment('2018-08-31').toDate()}
+        onClose={onCloseCallback}
+      />);
 
-    wrapper.find('div').prop('onKeyDown')({ keyCode: 20 } as KeyboardEvent);
+      wrapper.find('div').prop('onKeyDown')({ keyCode: 20 } as KeyboardEvent);
 
-    expect(onCloseCallback.called).is.false;
-  });
+      expect(onCloseCallback.called).is.false;
+    },
+  );
 
   it('skal sette input-dato når ingen dager er disabled', () => {
     const onDayChangeCallback = sinon.spy();
@@ -129,82 +135,91 @@ describe('<PeriodCalendarOverlay>', () => {
     expect(args1[0]).is.eql(date);
   });
 
-  it('skal sette input-dato når denne er innenfor det gyldige intervallet', () => {
-    const onDayChangeCallback = sinon.spy();
-    const disabledDays = {
-      before: new Date('2018-01-05'),
-      after: new Date('2018-01-10'),
-    };
-    const wrapper = shallowWithIntl(<PeriodCalendarOverlay.WrappedComponent
-      intl={intlMock}
-      onDayChange={onDayChangeCallback}
-      className="test"
-      dayPickerClassName="test"
-      elementIsCalendarButton={sinon.spy()}
-      startDate={moment('2017-08-31').toDate()}
-      endDate={moment('2018-08-31').toDate()}
-      disabledDays={disabledDays}
-      onClose={sinon.spy()}
-    />);
+  it(
+    'skal sette input-dato når denne er innenfor det gyldige intervallet',
+    () => {
+      const onDayChangeCallback = sinon.spy();
+      const disabledDays = {
+        before: new Date('2018-01-05'),
+        after: new Date('2018-01-10'),
+      };
+      const wrapper = shallowWithIntl(<PeriodCalendarOverlay.WrappedComponent
+        intl={intlMock}
+        onDayChange={onDayChangeCallback}
+        className="test"
+        dayPickerClassName="test"
+        elementIsCalendarButton={sinon.spy()}
+        startDate={moment('2017-08-31').toDate()}
+        endDate={moment('2018-08-31').toDate()}
+        disabledDays={disabledDays}
+        onClose={sinon.spy()}
+      />);
 
-    const date = '2018-01-10';
-    // @ts-ignore
-    wrapper.find(DayPicker).prop('onDayClick')(date);
+      const date = '2018-01-10';
+      // @ts-ignore
+      wrapper.find(DayPicker).prop('onDayClick')(date);
 
-    expect(onDayChangeCallback.called).is.true;
-    expect(onDayChangeCallback.getCalls()).has.length(1);
-    const args1 = onDayChangeCallback.getCalls()[0].args;
-    expect(args1).has.length(1);
-    expect(args1[0]).is.eql(date);
-  });
+      expect(onDayChangeCallback.called).is.true;
+      expect(onDayChangeCallback.getCalls()).has.length(1);
+      const args1 = onDayChangeCallback.getCalls()[0].args;
+      expect(args1).has.length(1);
+      expect(args1[0]).is.eql(date);
+    },
+  );
 
-  it('skal ikke sette input-dato når denne er utenfor startdato i intervallet', () => {
-    const onDayChangeCallback = sinon.spy();
-    const disabledDays = {
-      before: new Date('2018-01-05'),
-      after: new Date('2018-01-10'),
-    };
-    const wrapper = shallowWithIntl(<PeriodCalendarOverlay.WrappedComponent
-      intl={intlMock}
-      onDayChange={onDayChangeCallback}
-      className="test"
-      dayPickerClassName="test"
-      elementIsCalendarButton={sinon.spy()}
-      startDate={moment('2017-08-31').toDate()}
-      endDate={moment('2018-08-31').toDate()}
-      disabledDays={disabledDays}
-      onClose={sinon.spy()}
-    />);
+  it(
+    'skal ikke sette input-dato når denne er utenfor startdato i intervallet',
+    () => {
+      const onDayChangeCallback = sinon.spy();
+      const disabledDays = {
+        before: new Date('2018-01-05'),
+        after: new Date('2018-01-10'),
+      };
+      const wrapper = shallowWithIntl(<PeriodCalendarOverlay.WrappedComponent
+        intl={intlMock}
+        onDayChange={onDayChangeCallback}
+        className="test"
+        dayPickerClassName="test"
+        elementIsCalendarButton={sinon.spy()}
+        startDate={moment('2017-08-31').toDate()}
+        endDate={moment('2018-08-31').toDate()}
+        disabledDays={disabledDays}
+        onClose={sinon.spy()}
+      />);
 
-    const date = '2018-01-01';
-    // @ts-ignore
-    wrapper.find(DayPicker).prop('onDayClick')(date);
+      const date = '2018-01-01';
+      // @ts-ignore
+      wrapper.find(DayPicker).prop('onDayClick')(date);
 
-    expect(onDayChangeCallback.called).is.false;
-  });
+      expect(onDayChangeCallback.called).is.false;
+    },
+  );
 
-  it('skal ikke sette input-dato når denne er utenfor sluttdato i intervallet', () => {
-    const onDayChangeCallback = sinon.spy();
-    const disabledDays = {
-      before: new Date('2018-01-05'),
-      after: new Date('2018-01-10'),
-    };
-    const wrapper = shallowWithIntl(<PeriodCalendarOverlay.WrappedComponent
-      intl={intlMock}
-      onDayChange={onDayChangeCallback}
-      className="test"
-      dayPickerClassName="test"
-      elementIsCalendarButton={sinon.spy()}
-      startDate={moment('2017-08-31').toDate()}
-      endDate={moment('2018-08-31').toDate()}
-      disabledDays={disabledDays}
-      onClose={sinon.spy()}
-    />);
+  it(
+    'skal ikke sette input-dato når denne er utenfor sluttdato i intervallet',
+    () => {
+      const onDayChangeCallback = sinon.spy();
+      const disabledDays = {
+        before: new Date('2018-01-05'),
+        after: new Date('2018-01-10'),
+      };
+      const wrapper = shallowWithIntl(<PeriodCalendarOverlay.WrappedComponent
+        intl={intlMock}
+        onDayChange={onDayChangeCallback}
+        className="test"
+        dayPickerClassName="test"
+        elementIsCalendarButton={sinon.spy()}
+        startDate={moment('2017-08-31').toDate()}
+        endDate={moment('2018-08-31').toDate()}
+        disabledDays={disabledDays}
+        onClose={sinon.spy()}
+      />);
 
-    const date = '2018-01-11';
-    // @ts-ignore
-    wrapper.find(DayPicker).prop('onDayClick')(date);
+      const date = '2018-01-11';
+      // @ts-ignore
+      wrapper.find(DayPicker).prop('onDayClick')(date);
 
-    expect(onDayChangeCallback.called).is.false;
-  });
+      expect(onDayChangeCallback.called).is.false;
+    },
+  );
 });

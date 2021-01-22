@@ -62,24 +62,27 @@ describe('<CalendarOverlay>', () => {
     expect(daypicker.prop('selectedDays')).is.null;
   });
 
-  it('skal kjøre callback når overlay blir lukket og target er noe annet enn kalender eller kalenderknapp', () => {
-    const onCloseCallback = () => {
-      expect(true).is.true;
-    };
-    const elementIsCalendarButton = () => false;
-    const wrapper = shallowWithIntl(<CalendarOverlay.WrappedComponent
-      intl={intlMock}
-      onDayChange={sinon.spy()}
-      className="test"
-      dayPickerClassName="test"
-      numberOfMonths={1}
-      elementIsCalendarButton={elementIsCalendarButton}
-      value="21.08.2017"
-      onClose={onCloseCallback}
-    />);
+  it(
+    'skal kjøre callback når overlay blir lukket og target er noe annet enn kalender eller kalenderknapp',
+    () => {
+      const onCloseCallback = () => {
+        expect(true).is.true;
+      };
+      const elementIsCalendarButton = () => false;
+      const wrapper = shallowWithIntl(<CalendarOverlay.WrappedComponent
+        intl={intlMock}
+        onDayChange={sinon.spy()}
+        className="test"
+        dayPickerClassName="test"
+        numberOfMonths={1}
+        elementIsCalendarButton={elementIsCalendarButton}
+        value="21.08.2017"
+        onClose={onCloseCallback}
+      />);
 
-    wrapper.find('div').prop('onBlur')({} as FocusEvent);
-  });
+      wrapper.find('div').prop('onBlur')({} as FocusEvent);
+    },
+  );
 
   it('skal kjøre callback når en trykker escape-knappen', () => {
     const onCloseCallback = sinon.spy();
@@ -99,21 +102,24 @@ describe('<CalendarOverlay>', () => {
     expect(onCloseCallback.called).is.true;
   });
 
-  it('skal ikke kjøre callback når en trykker noe annet enn escape-knappen', () => {
-    const onCloseCallback = sinon.spy();
-    const wrapper = shallowWithIntl(<CalendarOverlay.WrappedComponent
-      intl={intlMock}
-      onDayChange={sinon.spy()}
-      className="test"
-      dayPickerClassName="test"
-      numberOfMonths={1}
-      elementIsCalendarButton={sinon.spy()}
-      value="21.08.2017"
-      onClose={onCloseCallback}
-    />);
+  it(
+    'skal ikke kjøre callback når en trykker noe annet enn escape-knappen',
+    () => {
+      const onCloseCallback = sinon.spy();
+      const wrapper = shallowWithIntl(<CalendarOverlay.WrappedComponent
+        intl={intlMock}
+        onDayChange={sinon.spy()}
+        className="test"
+        dayPickerClassName="test"
+        numberOfMonths={1}
+        elementIsCalendarButton={sinon.spy()}
+        value="21.08.2017"
+        onClose={onCloseCallback}
+      />);
 
-    wrapper.find('div').prop('onKeyDown')({ keyCode: 20 } as KeyboardEvent);
+      wrapper.find('div').prop('onKeyDown')({ keyCode: 20 } as KeyboardEvent);
 
-    expect(onCloseCallback.called).is.false;
-  });
+      expect(onCloseCallback.called).is.false;
+    },
+  );
 });

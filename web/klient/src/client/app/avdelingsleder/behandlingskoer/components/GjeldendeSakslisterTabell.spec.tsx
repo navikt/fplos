@@ -152,30 +152,33 @@ describe('<GjeldendeSakslisterTabell>', () => {
     expect(lagNySakslisteFn.calledOnce).to.be.true;
   });
 
-  it('skal ikke legge til ny saksliste ved trykk på annen knapp enn enter', () => {
-    const sakslister = [];
-    const lagNySakslisteFn = sinon.spy();
+  it(
+    'skal ikke legge til ny saksliste ved trykk på annen knapp enn enter',
+    () => {
+      const sakslister = [];
+      const lagNySakslisteFn = sinon.spy();
 
-    requestApi.mock(RestApiGlobalStatePathsKeys.KODEVERK, alleKodeverk);
+      requestApi.mock(RestApiGlobalStatePathsKeys.KODEVERK, alleKodeverk);
 
-    const wrapper = shallow(<GjeldendeSakslisterTabell
-      sakslister={sakslister}
-      setValgtSakslisteId={sinon.spy()}
-      lagNySaksliste={lagNySakslisteFn}
-      valgtAvdelingEnhet="2"
-      hentAvdelingensSakslister={sinon.spy()}
-      resetValgtSakslisteId={sinon.spy()}
-    />);
+      const wrapper = shallow(<GjeldendeSakslisterTabell
+        sakslister={sakslister}
+        setValgtSakslisteId={sinon.spy()}
+        lagNySaksliste={lagNySakslisteFn}
+        valgtAvdelingEnhet="2"
+        hentAvdelingensSakslister={sinon.spy()}
+        resetValgtSakslisteId={sinon.spy()}
+      />);
 
-    const leggTilListe = wrapper.find('div#leggTilListe');
-    expect(leggTilListe).to.have.length(1);
+      const leggTilListe = wrapper.find('div#leggTilListe');
+      expect(leggTilListe).to.have.length(1);
 
-    leggTilListe.prop('onKeyDown')({
-      keyCode: 10,
-    } as KeyboardEvent);
+      leggTilListe.prop('onKeyDown')({
+        keyCode: 10,
+      } as KeyboardEvent);
 
-    expect(lagNySakslisteFn.calledOnce).to.be.false;
-  });
+      expect(lagNySakslisteFn.calledOnce).to.be.false;
+    },
+  );
 
   it('skal sette valgt saksliste ved trykk på rad i tabell', async () => {
     const sakslister = [{
@@ -209,42 +212,45 @@ describe('<GjeldendeSakslisterTabell>', () => {
     expect(setValgtSakslisteIdFn.calledOnce).to.be.true;
   });
 
-  it('skal vise modal for å slette saksliste ved trykk på slette-knapp', () => {
-    const sakslister = [{
-      sakslisteId: 1,
-      navn: 'Nyansatte',
-      sistEndret: '2017-08-31',
-      erTilBeslutter: false,
-      erRegistrerPapirsoknad: false,
-      saksbehandlerIdenter: [],
-      antallBehandlinger: 1,
-    }];
+  it(
+    'skal vise modal for å slette saksliste ved trykk på slette-knapp',
+    () => {
+      const sakslister = [{
+        sakslisteId: 1,
+        navn: 'Nyansatte',
+        sistEndret: '2017-08-31',
+        erTilBeslutter: false,
+        erRegistrerPapirsoknad: false,
+        saksbehandlerIdenter: [],
+        antallBehandlinger: 1,
+      }];
 
-    requestApi.mock(RestApiGlobalStatePathsKeys.KODEVERK, alleKodeverk);
+      requestApi.mock(RestApiGlobalStatePathsKeys.KODEVERK, alleKodeverk);
 
-    const wrapper = shallow(<GjeldendeSakslisterTabell
-      sakslister={sakslister}
-      setValgtSakslisteId={sinon.spy()}
-      lagNySaksliste={sinon.spy()}
-      valgtAvdelingEnhet="2"
-      hentAvdelingensSakslister={sinon.spy()}
-      resetValgtSakslisteId={sinon.spy()}
-    />);
+      const wrapper = shallow(<GjeldendeSakslisterTabell
+        sakslister={sakslister}
+        setValgtSakslisteId={sinon.spy()}
+        lagNySaksliste={sinon.spy()}
+        valgtAvdelingEnhet="2"
+        hentAvdelingensSakslister={sinon.spy()}
+        resetValgtSakslisteId={sinon.spy()}
+      />);
 
-    const rader = wrapper.find(TableRow);
-    expect(rader).to.have.length(1);
+      const rader = wrapper.find(TableRow);
+      expect(rader).to.have.length(1);
 
-    const kolonner = rader.first().find(TableColumn);
-    const bildeKnapp = kolonner.last().find(Image);
-    expect(bildeKnapp).to.have.length(1);
+      const kolonner = rader.first().find(TableColumn);
+      const bildeKnapp = kolonner.last().find(Image);
+      expect(bildeKnapp).to.have.length(1);
 
-    expect(wrapper.find(SletteSakslisteModal)).to.have.length(0);
+      expect(wrapper.find(SletteSakslisteModal)).to.have.length(0);
 
-    const mouseFn = bildeKnapp.prop('onMouseDown') as () => void;
-    mouseFn();
+      const mouseFn = bildeKnapp.prop('onMouseDown') as () => void;
+      mouseFn();
 
-    expect(wrapper.find(SletteSakslisteModal)).to.have.length(1);
-  });
+      expect(wrapper.find(SletteSakslisteModal)).to.have.length(1);
+    },
+  );
 
   it('skal lukke modal ved trykk på avbryt i modal', () => {
     const sakslister = [{

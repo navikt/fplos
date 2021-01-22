@@ -14,32 +14,35 @@ describe('<EndreSakslisterPanel>', () => {
     ...intlMock,
   };
 
-  it('skal vise tabell for sakslister, men ikke editeringspanel når ingen tabellrad er valgt', () => {
-    const sakslister = [{
-      sakslisteId: 1,
-      navn: 'Espen Utvikler',
-      sistEndret: '2017-08-31',
-      erTilBeslutter: false,
-      erRegistrerPapirsoknad: false,
-      saksbehandlerIdenter: [],
-      antallBehandlinger: 1,
-    }];
+  it(
+    'skal vise tabell for sakslister, men ikke editeringspanel når ingen tabellrad er valgt',
+    () => {
+      const sakslister = [{
+        sakslisteId: 1,
+        navn: 'Espen Utvikler',
+        sistEndret: '2017-08-31',
+        erTilBeslutter: false,
+        erRegistrerPapirsoknad: false,
+        saksbehandlerIdenter: [],
+        antallBehandlinger: 1,
+      }];
 
-    requestApi.mock(RestApiPathsKeys.OPPGAVE_AVDELING_ANTALL, 1);
-    requestApi.mock(RestApiPathsKeys.SAKSLISTER_FOR_AVDELING, sakslister);
-    requestApi.mock(RestApiPathsKeys.OPPRETT_NY_SAKSLISTE, undefined);
+      requestApi.mock(RestApiPathsKeys.OPPGAVE_AVDELING_ANTALL, 1);
+      requestApi.mock(RestApiPathsKeys.SAKSLISTER_FOR_AVDELING, sakslister);
+      requestApi.mock(RestApiPathsKeys.OPPRETT_NY_SAKSLISTE, undefined);
 
-    const wrapper = shallowWithIntl(<EndreSakslisterPanel.WrappedComponent
-      intl={intl as IntlShape}
-      setValgtSakslisteId={sinon.spy()}
-      valgtAvdelingEnhet="test"
-      avdelingensSaksbehandlere={[]}
-      resetValgtSakslisteId={sinon.spy()}
-    />);
+      const wrapper = shallowWithIntl(<EndreSakslisterPanel.WrappedComponent
+        intl={intl as IntlShape}
+        setValgtSakslisteId={sinon.spy()}
+        valgtAvdelingEnhet="test"
+        avdelingensSaksbehandlere={[]}
+        resetValgtSakslisteId={sinon.spy()}
+      />);
 
-    expect(wrapper.find(GjeldendeSakslisterTabell)).to.have.length(1);
-    expect(wrapper.find(UtvalgskriterierForSakslisteForm)).to.have.length(0);
-  });
+      expect(wrapper.find(GjeldendeSakslisterTabell)).to.have.length(1);
+      expect(wrapper.find(UtvalgskriterierForSakslisteForm)).to.have.length(0);
+    },
+  );
 
   it('skal vise editeringspanel når en har valgt tabellrad', async () => {
     const sakslister = [{

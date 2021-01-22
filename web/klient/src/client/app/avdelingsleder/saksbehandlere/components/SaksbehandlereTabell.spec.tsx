@@ -64,35 +64,38 @@ describe('<SaksbehandlereTabell>', () => {
     expect(kolonnerRad2.at(2).childAt(0).text()).to.eql('NAV Oslo');
   });
 
-  it('skal vise modal for å slette saksbehandler ved trykk på slette-knapp', () => {
-    const saksbehandlere = [{
-      brukerIdent: 'TEST1',
-      navn: 'Espen Utvikler',
-      avdelingsnavn: ['NAV Oslo'],
-    }];
+  it(
+    'skal vise modal for å slette saksbehandler ved trykk på slette-knapp',
+    () => {
+      const saksbehandlere = [{
+        brukerIdent: 'TEST1',
+        navn: 'Espen Utvikler',
+        avdelingsnavn: ['NAV Oslo'],
+      }];
 
-    const wrapper = shallow(<SaksbehandlereTabell
-      saksbehandlere={saksbehandlere}
-      valgtAvdelingEnhet="2"
-      hentAvdelingensSaksbehandlere={sinon.spy()}
-    />);
+      const wrapper = shallow(<SaksbehandlereTabell
+        saksbehandlere={saksbehandlere}
+        valgtAvdelingEnhet="2"
+        hentAvdelingensSaksbehandlere={sinon.spy()}
+      />);
 
-    const rader = wrapper.find(TableRow);
-    expect(rader).to.have.length(1);
+      const rader = wrapper.find(TableRow);
+      expect(rader).to.have.length(1);
 
-    const kolonner = rader.first().find(TableColumn);
-    const bildeKnapp = kolonner.last().find(Image);
-    expect(bildeKnapp).to.have.length(1);
+      const kolonner = rader.first().find(TableColumn);
+      const bildeKnapp = kolonner.last().find(Image);
+      expect(bildeKnapp).to.have.length(1);
 
-    expect(wrapper.find(SletteSaksbehandlerModal)).to.have.length(0);
+      expect(wrapper.find(SletteSaksbehandlerModal)).to.have.length(0);
 
-    const mouseFn = bildeKnapp.prop('onMouseDown') as () => void;
-    mouseFn();
+      const mouseFn = bildeKnapp.prop('onMouseDown') as () => void;
+      mouseFn();
 
-    const modal = wrapper.find(SletteSaksbehandlerModal);
-    expect(modal).to.have.length(1);
-    expect(modal.props().valgtSaksbehandler).is.eql(saksbehandlere[0]);
-  });
+      const modal = wrapper.find(SletteSaksbehandlerModal);
+      expect(modal).to.have.length(1);
+      expect(modal.props().valgtSaksbehandler).is.eql(saksbehandlere[0]);
+    },
+  );
 
   it('skal lukke modal ved trykk på avbryt i modal', () => {
     const saksbehandlere = [{
