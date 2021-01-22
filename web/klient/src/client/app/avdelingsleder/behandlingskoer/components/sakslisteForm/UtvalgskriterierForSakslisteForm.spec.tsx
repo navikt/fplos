@@ -4,10 +4,9 @@ import sinon from 'sinon';
 import { IntlShape } from 'react-intl';
 import { Form } from 'react-final-form';
 
-import RestApiTestMocker from 'testHelpers/RestApiTestMocker';
+import { requestApi, RestApiPathsKeys } from 'data/fplosRestApi';
 import andreKriterierType from 'kodeverk/andreKriterierType';
 import { InputField } from 'form/FinalFields';
-import { RestApiPathsKeys } from 'data/restApiPaths';
 import { shallowWithIntl, intlMock } from 'testHelpers/intl-enzyme-test-helper';
 import UtvalgskriterierForSakslisteForm from './UtvalgskriterierForSakslisteForm';
 import AutoLagringVedBlur from './AutoLagringVedBlur';
@@ -17,6 +16,7 @@ describe('<UtvalgskriterierForSakslisteForm>', () => {
   const intl: Partial<IntlShape> = {
     ...intlMock,
   };
+
   it('skal vise form som lar avdelingsleder endre navn på saksliste', () => {
     const saksliste = {
       sakslisteId: 1,
@@ -33,22 +33,18 @@ describe('<UtvalgskriterierForSakslisteForm>', () => {
       antallBehandlinger: 1,
     };
 
-    new RestApiTestMocker()
-      .withDummyRunner()
-      .runTest(() => {
-        const wrapper = shallowWithIntl(<UtvalgskriterierForSakslisteForm.WrappedComponent
-          intl={intl as IntlShape}
-          valgtSaksliste={saksliste}
-          valgtAvdelingEnhet="1"
-          hentAvdelingensSakslister={sinon.spy()}
-          hentOppgaverForAvdelingAntall={sinon.spy()}
-          // @ts-ignore
-        />).find(Form).renderProp('render')({ values: { erDynamiskPeriode: false } });
+    const wrapper = shallowWithIntl(<UtvalgskriterierForSakslisteForm.WrappedComponent
+      intl={intl as IntlShape}
+      valgtSaksliste={saksliste}
+      valgtAvdelingEnhet="1"
+      hentAvdelingensSakslister={sinon.spy()}
+      hentOppgaverForAvdelingAntall={sinon.spy()}
+      // @ts-ignore
+    />).find(Form).renderProp('render')({ values: { erDynamiskPeriode: false } });
 
-        expect(wrapper.find(AutoLagringVedBlur)).to.have.length(1);
-        expect(wrapper.find(BehandlingstypeVelger)).to.have.length(1);
-        expect(wrapper.find(InputField)).to.have.length(1);
-      });
+    expect(wrapper.find(AutoLagringVedBlur)).to.have.length(1);
+    expect(wrapper.find(BehandlingstypeVelger)).to.have.length(1);
+    expect(wrapper.find(InputField)).to.have.length(1);
   });
 
   it('skal vise default-navn for sakslisten når dette ikke er satt fra før', () => {
@@ -60,30 +56,26 @@ describe('<UtvalgskriterierForSakslisteForm>', () => {
       antallBehandlinger: 1,
     };
 
-    new RestApiTestMocker()
-      .withDummyRunner()
-      .runTest(() => {
-        const wrapper = shallowWithIntl(<UtvalgskriterierForSakslisteForm.WrappedComponent
-          intl={intl as IntlShape}
-          valgtSaksliste={saksliste}
-          valgtAvdelingEnhet="1"
-          hentAvdelingensSakslister={sinon.spy()}
-          hentOppgaverForAvdelingAntall={sinon.spy()}
-        />);
+    const wrapper = shallowWithIntl(<UtvalgskriterierForSakslisteForm.WrappedComponent
+      intl={intl as IntlShape}
+      valgtSaksliste={saksliste}
+      valgtAvdelingEnhet="1"
+      hentAvdelingensSakslister={sinon.spy()}
+      hentOppgaverForAvdelingAntall={sinon.spy()}
+    />);
 
-        const initialValues = wrapper.prop('initialValues');
-        expect(initialValues).to.eql({
-          sakslisteId: 1,
-          navn: 'Ny behandlingskø',
-          sortering: undefined,
-          fagsakYtelseType: '',
-          fra: undefined,
-          til: undefined,
-          fomDato: undefined,
-          tomDato: undefined,
-          erDynamiskPeriode: undefined,
-        });
-      });
+    const initialValues = wrapper.prop('initialValues');
+    expect(initialValues).to.eql({
+      sakslisteId: 1,
+      navn: 'Ny behandlingskø',
+      sortering: undefined,
+      fagsakYtelseType: '',
+      fra: undefined,
+      til: undefined,
+      fomDato: undefined,
+      tomDato: undefined,
+      erDynamiskPeriode: undefined,
+    });
   });
 
   it('skal vise navn for sakslisten når dette er satt fra før', () => {
@@ -95,30 +87,26 @@ describe('<UtvalgskriterierForSakslisteForm>', () => {
       antallBehandlinger: 1,
     };
 
-    new RestApiTestMocker()
-      .withDummyRunner()
-      .runTest(() => {
-        const wrapper = shallowWithIntl(<UtvalgskriterierForSakslisteForm.WrappedComponent
-          intl={intl as IntlShape}
-          valgtSaksliste={saksliste}
-          valgtAvdelingEnhet="1"
-          hentAvdelingensSakslister={sinon.spy()}
-          hentOppgaverForAvdelingAntall={sinon.spy()}
-        />);
+    const wrapper = shallowWithIntl(<UtvalgskriterierForSakslisteForm.WrappedComponent
+      intl={intl as IntlShape}
+      valgtSaksliste={saksliste}
+      valgtAvdelingEnhet="1"
+      hentAvdelingensSakslister={sinon.spy()}
+      hentOppgaverForAvdelingAntall={sinon.spy()}
+    />);
 
-        const initialValues = wrapper.prop('initialValues');
-        expect(initialValues).to.eql({
-          sakslisteId: 1,
-          navn: 'Nyansatte',
-          sortering: undefined,
-          fagsakYtelseType: '',
-          fra: undefined,
-          til: undefined,
-          fomDato: undefined,
-          tomDato: undefined,
-          erDynamiskPeriode: undefined,
-        });
-      });
+    const initialValues = wrapper.prop('initialValues');
+    expect(initialValues).to.eql({
+      sakslisteId: 1,
+      navn: 'Nyansatte',
+      sortering: undefined,
+      fagsakYtelseType: '',
+      fra: undefined,
+      til: undefined,
+      fomDato: undefined,
+      tomDato: undefined,
+      erDynamiskPeriode: undefined,
+    });
   });
 
   it('skal lagre sakslistenavn ved blur i navnefelt', () => {
@@ -130,35 +118,30 @@ describe('<UtvalgskriterierForSakslisteForm>', () => {
       antallBehandlinger: 1,
     };
 
-    const lagreSakslisteNavnFn = sinon.spy();
+    requestApi.mock(RestApiPathsKeys.OPPGAVE_ANTALL);
+    requestApi.mock(RestApiPathsKeys.LAGRE_SAKSLISTE_NAVN);
 
-    new RestApiTestMocker()
-      .withRestCallRunner(RestApiPathsKeys.OPPGAVE_ANTALL, {})
-      .withRestCallRunner(RestApiPathsKeys.LAGRE_SAKSLISTE_NAVN, { startRequest: (params) => { lagreSakslisteNavnFn(params); return Promise.resolve(); } })
-      .runTest(() => {
-        const wrapper = shallowWithIntl(<UtvalgskriterierForSakslisteForm.WrappedComponent
-          intl={intl as IntlShape}
-          valgtSaksliste={saksliste}
-          valgtAvdelingEnhet="1"
-          hentAvdelingensSakslister={sinon.spy()}
-          hentOppgaverForAvdelingAntall={sinon.spy()}
-          // @ts-ignore
-        />).find(Form).renderProp('render')({ values: { erDynamiskPeriode: false } });
+    const wrapper = shallowWithIntl(<UtvalgskriterierForSakslisteForm.WrappedComponent
+      intl={intl as IntlShape}
+      valgtSaksliste={saksliste}
+      valgtAvdelingEnhet="1"
+      hentAvdelingensSakslister={sinon.spy()}
+      hentOppgaverForAvdelingAntall={sinon.spy()}
+      // @ts-ignore
+    />).find(Form).renderProp('render')({ values: { erDynamiskPeriode: false } });
 
-        const lagreComp = wrapper.find(AutoLagringVedBlur);
+    const lagreComp = wrapper.find(AutoLagringVedBlur);
 
-        lagreComp.prop('lagre')({
-          sakslisteId: 1,
-          navn: 'Foreldrepenger',
-        });
+    lagreComp.prop('lagre')({
+      sakslisteId: 1,
+      navn: 'Foreldrepenger',
+    });
 
-        expect(lagreSakslisteNavnFn.calledOnce).to.be.true;
-        const { args } = lagreSakslisteNavnFn.getCalls()[0];
-        expect(args).to.have.length(1);
-        expect(args[0].sakslisteId).to.eql(1);
-        expect(args[0].navn).to.eql('Foreldrepenger');
-        expect(args[0].avdelingEnhet).to.eql('1');
-      });
+    const lagreSakslisteNavnCallData = requestApi.getRequestMockData(RestApiPathsKeys.LAGRE_SAKSLISTE_NAVN);
+    expect(lagreSakslisteNavnCallData).to.have.length(1);
+    expect(lagreSakslisteNavnCallData[0].params.sakslisteId).is.eql(1);
+    expect(lagreSakslisteNavnCallData[0].params.navn).is.eql('Foreldrepenger');
+    expect(lagreSakslisteNavnCallData[0].params.avdelingEnhet).is.eql('1');
   });
 
   it('skal sette opp korrekt formstate for andrekriterier', () => {
@@ -183,33 +166,29 @@ describe('<UtvalgskriterierForSakslisteForm>', () => {
       antallBehandlinger: 1,
     };
 
-    new RestApiTestMocker()
-      .withDummyRunner()
-      .runTest(() => {
-        const wrapper = shallowWithIntl(<UtvalgskriterierForSakslisteForm.WrappedComponent
-          intl={intl as IntlShape}
-          valgtSaksliste={saksliste}
-          valgtAvdelingEnhet="1"
-          hentAvdelingensSakslister={sinon.spy()}
-          hentOppgaverForAvdelingAntall={sinon.spy()}
-        />);
+    const wrapper = shallowWithIntl(<UtvalgskriterierForSakslisteForm.WrappedComponent
+      intl={intl as IntlShape}
+      valgtSaksliste={saksliste}
+      valgtAvdelingEnhet="1"
+      hentAvdelingensSakslister={sinon.spy()}
+      hentOppgaverForAvdelingAntall={sinon.spy()}
+    />);
 
-        const initialValues = wrapper.prop('initialValues');
-        expect(initialValues).to.eql({
-          sakslisteId: 1,
-          navn: 'Nyansatte',
-          sortering: undefined,
-          fagsakYtelseType: '',
-          fra: undefined,
-          til: undefined,
-          fomDato: undefined,
-          tomDato: undefined,
-          erDynamiskPeriode: undefined,
-          [andreKriterierType.REGISTRER_PAPIRSOKNAD]: true,
-          [`${andreKriterierType.REGISTRER_PAPIRSOKNAD}_inkluder`]: false,
-          [andreKriterierType.TIL_BESLUTTER]: true,
-          [`${andreKriterierType.TIL_BESLUTTER}_inkluder`]: true,
-        });
-      });
+    const initialValues = wrapper.prop('initialValues');
+    expect(initialValues).to.eql({
+      sakslisteId: 1,
+      navn: 'Nyansatte',
+      sortering: undefined,
+      fagsakYtelseType: '',
+      fra: undefined,
+      til: undefined,
+      fomDato: undefined,
+      tomDato: undefined,
+      erDynamiskPeriode: undefined,
+      [andreKriterierType.REGISTRER_PAPIRSOKNAD]: true,
+      [`${andreKriterierType.REGISTRER_PAPIRSOKNAD}_inkluder`]: false,
+      [andreKriterierType.TIL_BESLUTTER]: true,
+      [`${andreKriterierType.TIL_BESLUTTER}_inkluder`]: true,
+    });
   });
 });

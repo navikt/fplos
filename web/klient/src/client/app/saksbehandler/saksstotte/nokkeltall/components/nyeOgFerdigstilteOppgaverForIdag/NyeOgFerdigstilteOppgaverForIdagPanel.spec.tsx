@@ -1,21 +1,24 @@
-
 import React from 'react';
 import { expect } from 'chai';
-import sinon from 'sinon';
 import { shallow } from 'enzyme';
 import moment from 'moment';
 
-import * as useKodeverk from 'data/rest-api-hooks/src/global-data/useKodeverk';
+import { requestApi, RestApiGlobalStatePathsKeys } from 'data/fplosRestApi';
 import behandlingType from 'kodeverk/behandlingType';
+import kodeverkTyper from 'kodeverk/kodeverkTyper';
 import NyeOgFerdigstilteOppgaverForIdagPanel, { getNyeOgFerdigstilteForIDag } from './NyeOgFerdigstilteOppgaverForIdagPanel';
 import NyeOgFerdigstilteOppgaverForIdagGraf from './NyeOgFerdigstilteOppgaverForIdagGraf';
 
 describe('<NyeOgFerdigstilteOppgaverForIdagPanel>', () => {
   it('skal vise rendre komponent', () => {
-    const contextStub = sinon.stub(useKodeverk, 'default').callsFake(() => ([{
-      kode: behandlingType.FORSTEGANGSSOKNAD,
-      navn: 'FORSTEGANGSSOKNAD',
-    }]));
+    const alleKodeverk = {
+      [kodeverkTyper.BEHANDLING_TYPE]: [{
+        kode: behandlingType.FORSTEGANGSSOKNAD,
+        navn: 'FORSTEGANGSSOKNAD',
+      }],
+    };
+
+    requestApi.mock(RestApiGlobalStatePathsKeys.KODEVERK, alleKodeverk);
 
     const nyeOgFerdigstilteOppgaver = [{
       behandlingType: {
@@ -34,7 +37,6 @@ describe('<NyeOgFerdigstilteOppgaverForIdagPanel>', () => {
     />);
 
     expect(wrapper.find(NyeOgFerdigstilteOppgaverForIdagGraf)).to.have.length(1);
-    contextStub.restore();
   });
 
   it('skal filtrere bort alle andre enn dagens oppgaver', () => {

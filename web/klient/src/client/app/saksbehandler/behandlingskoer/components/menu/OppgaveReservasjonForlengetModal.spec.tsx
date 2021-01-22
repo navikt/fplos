@@ -1,9 +1,7 @@
-
 import React from 'react';
 import { expect } from 'chai';
 import sinon from 'sinon';
 import { IntlShape, FormattedMessage } from 'react-intl';
-
 
 import { shallowWithIntl, intlMock } from 'testHelpers/intl-enzyme-test-helper';
 import behandlingStatus from 'kodeverk/behandlingStatus';

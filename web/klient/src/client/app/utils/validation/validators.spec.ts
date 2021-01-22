@@ -3,11 +3,9 @@ import moment from 'moment';
 
 import { DDMMYYYY_DATE_FORMAT, ISO_DATE_FORMAT } from 'utils/formats';
 import {
-  required, requiredIfNotPristine, requiredIfCustomFunctionIsTrue, minLength, maxLength, minValue, maxValue,
-  hasValidInteger, hasValidDecimal, hasValidDate, dateBeforeOrEqual, dateAfterOrEqual, dateRangesNotOverlapping,
-  dateBeforeToday, dateBeforeOrEqualToToday, dateAfterToday, dateAfterOrEqualToToday,
-  hasValidFodselsnummerFormat, hasValidFodselsnummer, hasValidText, hasValidName,
-  hasValidSaksnummerOrFodselsnummerFormat, hasValidPeriod, isWithinOpptjeningsperiode,
+  required, minLength, maxLength, minValue, maxValue,
+  hasValidDate, dateBeforeOrEqual, dateAfterOrEqual,
+  hasValidText, hasValidName, hasValidSaksnummerOrFodselsnummerFormat,
 } from './validators';
 
 const today = moment();
@@ -30,56 +28,6 @@ describe('Validators', () => {
 
     it('skal ikke gi feilmelding når verdi er ulik null og undefined', () => {
       const result = required('test');
-      expect(result).is.undefined;
-    });
-  });
-
-  describe('requiredIfNotPristine', () => {
-    it('skal ikke gi feilmelding når ingen formverdier er endret', () => {
-      const result = requiredIfNotPristine(null, null, { pristine: true });
-      expect(result).is.undefined;
-    });
-
-    it('skal gi feilmelding når formverdier er endret og verdi er null', () => {
-      const result = requiredIfNotPristine(null, null, { pristine: false });
-      expect(result).has.length(1);
-      expect(result[0]).is.eql({ id: 'ValidationMessage.NotEmpty' });
-    });
-
-    it('skal gi feilmelding når formverdier er endret og verdi er undefined', () => {
-      const result = requiredIfNotPristine(undefined, null, { pristine: false });
-      expect(result).has.length(1);
-      expect(result[0]).is.eql({ id: 'ValidationMessage.NotEmpty' });
-    });
-
-    it('skal ikke gi feilmelding når formverdier er endret men verdi er ulik null og undefined', () => {
-      const result = requiredIfNotPristine('test', null, { pristine: false });
-      expect(result).is.undefined;
-    });
-  });
-
-  describe('requiredIfCustomFunctionIsTrue', () => {
-    const isRequiredFunc = (allValues, props) => !props.pristine;
-
-    it('skal ikke gi feilmelding når ingen formverdier er endret', () => {
-      const result = requiredIfCustomFunctionIsTrue(isRequiredFunc)(null, null, { pristine: true });
-      expect(result).is.undefined;
-    });
-
-    it('skal gi feilmelding når formverdier er endret og verdi er null', () => {
-      const result = requiredIfCustomFunctionIsTrue(isRequiredFunc)(null, null, { pristine: false });
-      expect(result).has.length(1);
-      expect(result[0]).is.eql({ id: 'ValidationMessage.NotEmpty' });
-    });
-
-    it('skal gi feilmelding når formverdier er endret og verdi er undefined', () => {
-      const result = requiredIfCustomFunctionIsTrue(isRequiredFunc)(undefined, null, { pristine: false });
-      expect(result).has.length(1);
-      expect(result[0]).is.eql({ id: 'ValidationMessage.NotEmpty' });
-    });
-
-    it('skal ikke gi feilmelding når formverdier er endret men verdi er ulik null og undefined', () => {
-      const result = requiredIfCustomFunctionIsTrue(isRequiredFunc)('test', null, { pristine: false });
       expect(result).is.undefined;
     });
   });
@@ -148,48 +96,6 @@ describe('Validators', () => {
     });
   });
 
-  describe('hasValidInteger', () => {
-    it('skal ikke feile når tallet er et heltall', () => {
-      const result = hasValidInteger(2);
-      expect(result).is.null;
-    });
-
-    it('skal feile når tallet er et desimaltall', () => {
-      const result = hasValidInteger(2.2);
-      expect(result).has.length(2);
-      expect(result[0]).is.eql({ id: 'ValidationMessage.InvalidInteger' });
-      expect(result[1]).is.eql({ text: 2.2 });
-    });
-
-    it('skal feile når input ikke er et gyldig tall', () => {
-      const result = hasValidInteger('test');
-      expect(result).has.length(2);
-      expect(result[0]).is.eql({ id: 'ValidationMessage.InvalidNumber' });
-      expect(result[1]).is.eql({ text: 'test' });
-    });
-  });
-
-  describe('hasValidDecimal', () => {
-    it('skal ikke feile når tallet er et desimaltall', () => {
-      const result = hasValidDecimal(2.11);
-      expect(result).is.null;
-    });
-
-    it('skal feile når tallet har mer enn to desimaler', () => {
-      const result = hasValidDecimal(2.233);
-      expect(result).has.length(2);
-      expect(result[0]).is.eql({ id: 'ValidationMessage.InvalidDecimal' });
-      expect(result[1]).is.eql({ text: 2.233 });
-    });
-
-    it('skal feile når input ikke er et gyldig tall', () => {
-      const result = hasValidDecimal('test');
-      expect(result).has.length(2);
-      expect(result[0]).is.eql({ id: 'ValidationMessage.InvalidNumber' });
-      expect(result[1]).is.eql({ text: 'test' });
-    });
-  });
-
   describe('hasValidDate', () => {
     it('skal feile når dag i dato er utenfor lovlig område', () => {
       const result = hasValidDate('2017-10-40');
@@ -218,12 +124,6 @@ describe('Validators', () => {
       // @ts-ignore Fiks
       const result = hasValidDate();
       expect(result).is.null;
-    });
-
-    it('skal feile når dato er på feil format', () => {
-      const result = hasValidDate('10.10.2017');
-      expect(result).has.length(1);
-      expect(result[0]).is.eql({ id: 'ValidationMessage.InvalidDate' });
     });
   });
 
@@ -277,128 +177,6 @@ describe('Validators', () => {
     });
   });
 
-  describe('dateRangesNotOverlapping', () => {
-    it('skal feile når perioder overlapper', () => {
-      const periods = [['2017-10-10', '2017-12-10'], ['2017-01-10', '2017-10-11']];
-      const result = dateRangesNotOverlapping(periods);
-      expect(result).has.length(1);
-      expect(result[0]).is.eql({ id: 'ValidationMessage.DateRangesOverlapping' });
-    });
-
-    it('skal ikke feile når perioder ikke overlapper', () => {
-      const periods = [['2017-10-10', '2017-12-10'], ['2017-01-10', '2017-10-09']];
-      const result = dateRangesNotOverlapping(periods);
-      expect(result).is.null;
-    });
-  });
-
-  describe('dateBeforeToday', () => {
-    it('skal ikke feile når dato er før dagens dato', () => {
-      const result = dateBeforeToday('2000-10-10');
-      expect(result).is.null;
-    });
-
-    it('skal feile når dato er lik dagens dato', () => {
-      const result = dateBeforeToday(todayAsISO);
-      expect(result).has.length(2);
-      expect(result[0]).is.eql({ id: 'ValidationMessage.DateNotBeforeOrEqual' });
-    });
-
-    it('skal ikke feile når dato er tom', () => {
-      // @ts-ignore Fiks
-      const result = dateBeforeToday();
-      expect(result).is.null;
-    });
-  });
-
-  describe('dateBeforeOrEqualToToday', () => {
-    it('skal ikke feile når dato er før dagens dato', () => {
-      const result = dateBeforeOrEqualToToday('2000-10-10');
-      expect(result).is.null;
-    });
-
-    it('skal ikke feile når dato er lik dagens dato', () => {
-      const result = dateBeforeOrEqualToToday(todayAsISO);
-      expect(result).is.null;
-    });
-
-    it('skal feile når dato er etter dagens dato', () => {
-      const result = dateBeforeOrEqualToToday('2100-10-10');
-      expect(result).has.length(2);
-      expect(result[0]).is.eql({ id: 'ValidationMessage.DateNotBeforeOrEqual' });
-    });
-
-    it('skal ikke feile når dato er tom', () => {
-      // @ts-ignore Fiks
-      const result = dateBeforeOrEqualToToday();
-      expect(result).is.null;
-    });
-  });
-
-  describe('dateAfterToday', () => {
-    it('skal ikke feile når dato etter etter i dag', () => {
-      const result = dateAfterToday('2100-10-10');
-      expect(result).is.null;
-    });
-
-    it('skal feile når dato er i dag', () => {
-      const result = dateAfterToday(todayAsISO);
-      expect(result).has.length(2);
-      expect(result[0]).is.eql({ id: 'ValidationMessage.DateNotAfterOrEqual' });
-    });
-
-    it('skal ikke feile når dato er tom', () => {
-      // @ts-ignore Fiks
-      const result = dateAfterToday();
-      expect(result).is.null;
-    });
-  });
-
-  describe('dateAfterOrEqualToToday', () => {
-    it('skal ikke feile når dato etter eller lik i dag', () => {
-      const result = dateAfterOrEqualToToday(todayAsISO);
-      expect(result).is.null;
-    });
-
-    it('skal feile når dato er historisk', () => {
-      const result = dateAfterOrEqualToToday('2000-10-10');
-      expect(result).has.length(2);
-      expect(result[0]).is.eql({ id: 'ValidationMessage.DateNotAfterOrEqual' });
-    });
-
-    it('skal ikke feile når dato er tom', () => {
-      // @ts-ignore Fiks
-      const result = dateAfterOrEqualToToday();
-      expect(result).is.null;
-    });
-  });
-
-  describe('hasValidFodselsnummerFormat', () => {
-    it('skal ikke feile fødselsnummer-formatet er gyldig', () => {
-      const result = hasValidFodselsnummerFormat('05018512123');
-      expect(result).is.null;
-    });
-
-    it('skal feile når fødselsnummer-formatet er ugyldig', () => {
-      const result = hasValidFodselsnummerFormat('0501851212');
-      expect(result).has.length(1);
-      expect(result[0]).is.eql({ id: 'ValidationMessage.InvalidFodselsnummerFormat' });
-    });
-  });
-
-  describe('hasValidFodselsnummer', () => {
-    it('skal ikke feile når fødselsnummer er gyldig', () => {
-      const result = hasValidFodselsnummer('22121588017');
-      expect(result).is.null;
-    });
-
-    it('skal feile når fødselsnummer er ugyldig', () => {
-      const result = hasValidFodselsnummer('0501851212');
-      expect(result).has.length(1);
-      expect(result[0]).is.eql({ id: 'ValidationMessage.InvalidFodselsnummer' });
-    });
-  });
-
   describe('hasValidText', () => {
     it('skal ikke feile når tekst ikke har ugyldig tegn', () => {
       const result = hasValidText('Hei hei\n'
@@ -441,60 +219,6 @@ describe('Validators', () => {
       const result = hasValidSaksnummerOrFodselsnummerFormat('0501851212-d');
       expect(result).has.length(1);
       expect(result[0]).is.eql({ id: 'ValidationMessage.InvalidSaksnummerOrFodselsnummerFormat' });
-    });
-  });
-
-  describe('hasValidPeriod', () => {
-    it('skal ikke feile når både fomDato og tomDato er tomme', () => {
-      expect(hasValidPeriod('', '')).is.null;
-    });
-
-    it('skal feile når fomDato er på feil format', () => {
-      const result = hasValidPeriod('2017-06-0', '2017-06-01');
-      expect(result).has.length(1);
-      expect(result[0]).is.eql({ id: 'ValidationMessage.InvalidDatesInPeriod' });
-    });
-
-    it('skal feile når tomDato er på feil format', () => {
-      const result = hasValidPeriod('2017-06-01', '2017-06-0');
-      expect(result).has.length(1);
-      expect(result[0]).is.eql({ id: 'ValidationMessage.InvalidDatesInPeriod' });
-    });
-
-    it('skal ikke feile når fomDato er før tomDato', () => {
-      expect(hasValidPeriod('2017-05-01', '2017-06-01')).is.null;
-    });
-
-    it('skal ikke feile når fomDato er lik tomDato', () => {
-      expect(hasValidPeriod('2017-06-01', '2017-06-01')).is.null;
-    });
-
-    it('skal feile når fomDato er etter tomDato', () => {
-      const result = hasValidPeriod('2017-06-01', '2017-05-01');
-      expect(result).has.length(1);
-      expect(result[0]).is.eql({ id: 'ValidationMessage.InvalidPeriod' });
-    });
-  });
-
-  describe('isWithinOpptjeningsperiode', () => {
-    const opptjeningFom = '2017-01-01';
-    const opptjeningTom = '2017-05-01';
-
-    it('skal ikke feile når periode er innenfor opptjeningsperiode', () => {
-      expect(isWithinOpptjeningsperiode(opptjeningFom, opptjeningTom)('2017-02-01', '2017-03-01')).is.null;
-      expect(isWithinOpptjeningsperiode(opptjeningFom, opptjeningTom)('2017-01-01', '2017-05-01')).is.null;
-    });
-
-    it('skal feile når fom-dato er utenfor opptjeningsperiode', () => {
-      const result = isWithinOpptjeningsperiode(opptjeningFom, opptjeningTom)('2016-02-01', '2017-03-01');
-      expect(result).has.length(1);
-      expect(result[0]).is.eql({ id: 'ValidationMessage.InvalidPeriodRange' });
-    });
-
-    it('skal feile når tom-dato er utenfor opptjeningsperiode', () => {
-      const result = isWithinOpptjeningsperiode(opptjeningFom, opptjeningTom)('2017-02-01', '2018-03-01');
-      expect(result).has.length(1);
-      expect(result[0]).is.eql({ id: 'ValidationMessage.InvalidPeriodRange' });
     });
   });
 });

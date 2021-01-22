@@ -2,14 +2,13 @@ import { shallow } from 'enzyme';
 import { expect } from 'chai';
 import React from 'react';
 
-import { RestApiPathsKeys } from 'data/restApiPaths';
+import { requestApi, RestApiPathsKeys } from 'data/fplosRestApi';
 import behandlingType from 'kodeverk/behandlingType';
-import RestApiTestMocker from 'testHelpers/RestApiTestMocker';
 import { ReservasjonerIndex } from './ReservasjonerIndex';
 import ReservasjonerTabell from './components/ReservasjonerTabell';
 
 describe('<ReservasjonerIndex>', () => {
-  it('skal hente reservasjoner ved lasting av komponent og så vise dem i panel', () => {
+  it('skal hente reservasjoner ved lasting av komponent og så vise dem i panel', async () => {
     const reservasjoner = [{
       reservertAvUid: '2323',
       reservertAvNavn: 'Espen Utvikler',
@@ -22,17 +21,15 @@ describe('<ReservasjonerIndex>', () => {
       },
     }];
 
-    new RestApiTestMocker()
-      .withRestCallRunner(RestApiPathsKeys.RESERVASJONER_FOR_AVDELING, { data: reservasjoner, startRequest: () => undefined })
-      .withRestCallRunner(RestApiPathsKeys.AVDELINGSLEDER_OPPHEVER_RESERVASJON, { startRequest: () => undefined })
-      .runTest(() => {
-        const wrapper = shallow(<ReservasjonerIndex
-          valgtAvdelingEnhet="2"
-        />);
+    requestApi.mock(RestApiPathsKeys.RESERVASJONER_FOR_AVDELING, reservasjoner);
+    requestApi.mock(RestApiPathsKeys.AVDELINGSLEDER_OPPHEVER_RESERVASJON, undefined);
 
-        const tabell = wrapper.find(ReservasjonerTabell);
-        expect(tabell).to.have.length(1);
-        expect(tabell.prop('reservasjoner')).is.eql(reservasjoner);
-      });
+    const wrapper = shallow(<ReservasjonerIndex
+      valgtAvdelingEnhet="2"
+    />);
+
+    await wrapper.find(ReservasjonerTabell).prop('hentAvdelingensReservasjoner')();
+
+    expect(wrapper.find(ReservasjonerTabell).prop('reservasjoner')).is.eql(reservasjoner);
   });
 });

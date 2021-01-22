@@ -1,4 +1,3 @@
-
 import React, { Component } from 'react';
 
 import { FormSpy } from 'react-final-form';

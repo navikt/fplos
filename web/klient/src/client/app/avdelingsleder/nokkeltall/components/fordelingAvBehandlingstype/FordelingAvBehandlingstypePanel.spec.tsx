@@ -3,7 +3,7 @@ import sinon from 'sinon';
 import { expect } from 'chai';
 import { Form } from 'react-final-form';
 
-import RestApiTestMocker from 'testHelpers/RestApiTestMocker';
+import { requestApi, RestApiGlobalStatePathsKeys } from 'data/fplosRestApi';
 import kodeverkTyper from 'kodeverk/kodeverkTyper';
 import { shallowWithIntl } from 'testHelpers/intl-enzyme-test-helper';
 import behandlingType from 'kodeverk/behandlingType';
@@ -44,34 +44,35 @@ describe('<FordelingAvBehandlingstypePanel>', () => {
     navn: 'Førstegangssøknad',
   };
 
+  const alleKodeverk = {
+    [kodeverkTyper.BEHANDLING_TYPE]: behandlingTyper,
+    [kodeverkTyper.FAGSAK_YTELSE_TYPE]: fagsakYtelseTyper,
+  };
+
   it('skal vise ytelsetyper i radioknapper', () => {
     const valuesMock = {
       valgtYtelseType: 'ALLE',
     };
     const oppgaverForAvdeling = [];
 
-    new RestApiTestMocker()
-      .withKodeverk(kodeverkTyper.BEHANDLING_TYPE, behandlingTyper)
-      .withKodeverk(kodeverkTyper.FAGSAK_YTELSE_TYPE, fagsakYtelseTyper)
-      .runTest(() => {
-        const wrapper = shallowWithIntl(<FordelingAvBehandlingstypePanel
-          width={300}
-          height={200}
-          oppgaverForAvdeling={oppgaverForAvdeling}
-          getValueFromLocalStorage={sinon.spy()}
-          // @ts-ignore
-        />).find(Form).renderProp('render')({ values: valuesMock });
+    requestApi.mock(RestApiGlobalStatePathsKeys.KODEVERK, alleKodeverk);
 
-        const radioOptions = wrapper.find(RadioOption);
-        expect(radioOptions).to.have.length(4);
-        expect(radioOptions.first().prop('value')).to.eql('FP');
-        expect(radioOptions.first().prop('label')).to.eql('Foreldrepenger');
-        expect(radioOptions.at(1).prop('value')).to.eql('ES');
-        expect(radioOptions.at(1).prop('label')).to.eql('Engangsstønad');
-        expect(radioOptions.last().prop('value')).to.eql('ALLE');
-      });
+    const wrapper = shallowWithIntl(<FordelingAvBehandlingstypePanel
+      width={300}
+      height={200}
+      oppgaverForAvdeling={oppgaverForAvdeling}
+      getValueFromLocalStorage={sinon.spy()}
+      // @ts-ignore
+    />).find(Form).renderProp('render')({ values: valuesMock });
+
+    const radioOptions = wrapper.find(RadioOption);
+    expect(radioOptions).to.have.length(4);
+    expect(radioOptions.first().prop('value')).to.eql('FP');
+    expect(radioOptions.first().prop('label')).to.eql('Foreldrepenger');
+    expect(radioOptions.at(1).prop('value')).to.eql('ES');
+    expect(radioOptions.at(1).prop('label')).to.eql('Engangsstønad');
+    expect(radioOptions.last().prop('value')).to.eql('ALLE');
   });
-
 
   it('skal filtrere bort engangsstønader', () => {
     const valuesMock = {
@@ -89,22 +90,18 @@ describe('<FordelingAvBehandlingstypePanel>', () => {
       antall: 1,
     }];
 
-    new RestApiTestMocker()
-      .withKodeverk(kodeverkTyper.BEHANDLING_TYPE, behandlingTyper)
-      .withKodeverk(kodeverkTyper.FAGSAK_YTELSE_TYPE, fagsakYtelseTyper)
-      .runTest(() => {
-        const wrapper = shallowWithIntl(<FordelingAvBehandlingstypePanel
-          width={300}
-          height={200}
-          oppgaverForAvdeling={oppgaverForAvdeling}
-          getValueFromLocalStorage={sinon.spy()}
-          // @ts-ignore
-        />).find(Form).renderProp('render')({ values: valuesMock });
+    requestApi.mock(RestApiGlobalStatePathsKeys.KODEVERK, alleKodeverk);
+    const wrapper = shallowWithIntl(<FordelingAvBehandlingstypePanel
+      width={300}
+      height={200}
+      oppgaverForAvdeling={oppgaverForAvdeling}
+      getValueFromLocalStorage={sinon.spy()}
+      // @ts-ignore
+    />).find(Form).renderProp('render')({ values: valuesMock });
 
-        const graf = wrapper.find(FordelingAvBehandlingstypeGraf);
-        expect(graf).to.have.length(1);
-        expect(graf.prop('oppgaverForAvdeling')).is.eql([oppgaverForAvdeling[1]]);
-      });
+    const graf = wrapper.find(FordelingAvBehandlingstypeGraf);
+    expect(graf).to.have.length(1);
+    expect(graf.prop('oppgaverForAvdeling')).is.eql([oppgaverForAvdeling[1]]);
   });
 
   it('skal filtrere bort foreldrepenger', () => {
@@ -123,21 +120,18 @@ describe('<FordelingAvBehandlingstypePanel>', () => {
       antall: 1,
     }];
 
-    new RestApiTestMocker()
-      .withKodeverk(kodeverkTyper.BEHANDLING_TYPE, behandlingTyper)
-      .withKodeverk(kodeverkTyper.FAGSAK_YTELSE_TYPE, fagsakYtelseTyper)
-      .runTest(() => {
-        const wrapper = shallowWithIntl(<FordelingAvBehandlingstypePanel
-          width={300}
-          height={200}
-          oppgaverForAvdeling={oppgaverForAvdeling}
-          getValueFromLocalStorage={sinon.spy()}
-          // @ts-ignore
-        />).find(Form).renderProp('render')({ values: valuesMock });
+    requestApi.mock(RestApiGlobalStatePathsKeys.KODEVERK, alleKodeverk);
 
-        const graf = wrapper.find(FordelingAvBehandlingstypeGraf);
-        expect(graf).to.have.length(1);
-        expect(graf.prop('oppgaverForAvdeling')).is.eql([oppgaverForAvdeling[0]]);
-      });
+    const wrapper = shallowWithIntl(<FordelingAvBehandlingstypePanel
+      width={300}
+      height={200}
+      oppgaverForAvdeling={oppgaverForAvdeling}
+      getValueFromLocalStorage={sinon.spy()}
+      // @ts-ignore
+    />).find(Form).renderProp('render')({ values: valuesMock });
+
+    const graf = wrapper.find(FordelingAvBehandlingstypeGraf);
+    expect(graf).to.have.length(1);
+    expect(graf.prop('oppgaverForAvdeling')).is.eql([oppgaverForAvdeling[0]]);
   });
 });

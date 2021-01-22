@@ -1,14 +1,23 @@
 import { useContext } from 'react';
 
-import { RestApiGlobalStatePathsKeys } from 'data/restApiPaths';
+import { AbstractRequestApi } from 'data/rest-api';
 
-import { RestApiStateContext } from '../RestApiContext';
+import { RestApiStateContext } from './RestApiContext';
+
+/**
+ * For mocking i unit-test
+ */
+export const useGlobalStateRestApiDataMock = (requestApi: AbstractRequestApi) => function useGlobalStateRestApiDataa<T>(
+  key: string,
+): T {
+  return requestApi.startRequest(key, {});
+};
 
 /**
  * Hook som bruker respons som allerede er hentet fra backend. For å kunne bruke denne
  * må @see useGlobalStateRestApi først brukes for å hente data fra backend
  */
-function useGlobalStateRestApiData<T>(key: RestApiGlobalStatePathsKeys): T {
+function useGlobalStateRestApiData<T>(key: string): T {
   const state = useContext(RestApiStateContext);
   return state[key];
 }

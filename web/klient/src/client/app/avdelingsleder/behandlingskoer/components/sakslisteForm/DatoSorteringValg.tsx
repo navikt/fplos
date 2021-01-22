@@ -6,8 +6,7 @@ import { Undertekst } from 'nav-frontend-typografi';
 import { FlexColumn, FlexContainer, FlexRow } from 'sharedComponents/flexGrid';
 import { hasValidDate, hasValidPosOrNegInteger } from 'utils/validation/validators';
 import DateLabel from 'sharedComponents/DateLabel';
-import { useRestApiRunner } from 'data/rest-api-hooks';
-import { RestApiPathsKeys } from 'data/restApiPaths';
+import { restApiHooks, RestApiPathsKeys } from 'data/fplosRestApi';
 import {
   InputField, CheckboxField, DatepickerField,
 } from 'form/FinalFields';
@@ -75,8 +74,10 @@ export const DatoSorteringValg: FunctionComponent<OwnProps & WrappedComponentPro
   hentAvdelingensSakslister,
   hentAntallOppgaver,
 }) => {
-  const { startRequest: lagreSakslisteSorteringErDynamiskPeriode } = useRestApiRunner(RestApiPathsKeys.LAGRE_SAKSLISTE_SORTERING_DYNAMISK_PERIDE);
-  const { startRequest: lagreSakslisteSorteringTidsintervallDato } = useRestApiRunner(RestApiPathsKeys.LAGRE_SAKSLISTE_SORTERING_TIDSINTERVALL_DATO);
+  const { startRequest: lagreSakslisteSorteringErDynamiskPeriode } = restApiHooks
+    .useRestApiRunner(RestApiPathsKeys.LAGRE_SAKSLISTE_SORTERING_DYNAMISK_PERIDE);
+  const { startRequest: lagreSakslisteSorteringTidsintervallDato } = restApiHooks
+    .useRestApiRunner(RestApiPathsKeys.LAGRE_SAKSLISTE_SORTERING_TIDSINTERVALL_DATO);
   return (
     <ArrowBox>
       <Undertekst>

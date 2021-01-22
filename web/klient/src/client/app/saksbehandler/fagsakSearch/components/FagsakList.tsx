@@ -1,4 +1,3 @@
-
 import React, { Fragment, FunctionComponent, useMemo } from 'react';
 import NavFrontendChevron from 'nav-frontend-chevron';
 
@@ -9,7 +8,7 @@ import TableRow from 'sharedComponents/table/TableRow';
 import TableColumn from 'sharedComponents/table/TableColumn';
 import DateLabel from 'sharedComponents/DateLabel';
 import fagsakStatus from 'kodeverk/fagsakStatus';
-import { useKodeverk } from 'data/rest-api-hooks';
+import useKodeverk from 'data/useKodeverk';
 import Fagsak from '../fagsakTsType';
 
 import styles from './fagsakList.less';
@@ -44,7 +43,6 @@ export const getSorterteFagsaker = (fagsaker: Fagsak[] = []) => fagsaker.concat(
   const changeTimeFagsak2 = fagsak2.endret ? fagsak2.endret : fagsak2.opprettet;
   return changeTimeFagsak1 > changeTimeFagsak2 ? 1 : -1;
 });
-
 
 /**
  * FagsakList

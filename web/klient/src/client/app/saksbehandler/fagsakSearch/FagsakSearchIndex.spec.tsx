@@ -1,10 +1,8 @@
-
 import React from 'react';
 import { expect } from 'chai';
 import { shallow } from 'enzyme';
 
-import RestApiTestMocker from 'testHelpers/RestApiTestMocker';
-import { RestApiPathsKeys } from 'data/restApiPaths';
+import { requestApi, RestApiPathsKeys } from 'data/fplosRestApi';
 import FagsakSearch from './components/FagsakSearch';
 import FagsakSearchIndex from './FagsakSearchIndex';
 
@@ -31,22 +29,23 @@ describe('<FagsakSearchIndex>', () => {
   };
   const fagsaker = [fagsak, { ...fagsak, saksnummer: 23456 }];
 
-  it('skal sette opp søkeskjermbilde for fagsaker', () => {
-    new RestApiTestMocker()
-      .withRestCallRunner(RestApiPathsKeys.SEARCH_FAGSAK, { data: fagsaker })
-      .withRestCallRunner(RestApiPathsKeys.RESERVER_OPPGAVE, { startRequest: () => undefined })
-      .withRestCallRunner(RestApiPathsKeys.OPPGAVER_FOR_FAGSAKER, { startRequest: () => undefined })
-      .withRestCallRunner(RestApiPathsKeys.HENT_RESERVASJONSSTATUS, { startRequest: () => undefined })
-      .withRestCallRunner(RestApiPathsKeys.FPSAK_BEHANDLING_ID, { startRequest: () => undefined })
-      .runTest(() => {
-        const wrapper = shallow(<FagsakSearchIndex
-          fpsakUrl=""
-          fptilbakeUrl=""
-        />);
+  it('skal sette opp søkeskjermbilde for fagsaker', async () => {
+    requestApi.mock(RestApiPathsKeys.SEARCH_FAGSAK, fagsaker);
+    requestApi.mock(RestApiPathsKeys.RESERVER_OPPGAVE);
+    requestApi.mock(RestApiPathsKeys.OPPGAVER_FOR_FAGSAKER);
+    requestApi.mock(RestApiPathsKeys.HENT_RESERVASJONSSTATUS);
+    requestApi.mock(RestApiPathsKeys.FPSAK_BEHANDLING_ID);
 
-        const fagsakSearchIndex = wrapper.find(FagsakSearch);
-        expect(fagsakSearchIndex).to.have.length(1);
-        expect(fagsakSearchIndex.prop('fagsaker')).to.eql(fagsaker);
-      });
+    const wrapper = shallow(<FagsakSearchIndex
+      fpsakUrl=""
+      fptilbakeUrl=""
+    />);
+
+    const fagsakSearchIndex = wrapper.find(FagsakSearch);
+    expect(fagsakSearchIndex).to.have.length(1);
+
+    await fagsakSearchIndex.prop('searchFagsakCallback')({ searchString: 'test', skalReservere: false });
+
+    expect(wrapper.find(FagsakSearch).prop('fagsaker')).to.eql(fagsaker);
   });
 });

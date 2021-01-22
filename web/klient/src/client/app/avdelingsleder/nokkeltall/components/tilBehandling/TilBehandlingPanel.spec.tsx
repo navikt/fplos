@@ -5,8 +5,8 @@ import sinon from 'sinon';
 import { IntlShape } from 'react-intl';
 import { Form } from 'react-final-form';
 
+import { requestApi, RestApiGlobalStatePathsKeys } from 'data/fplosRestApi';
 import kodeverkTyper from 'kodeverk/kodeverkTyper';
-import * as useKodeverk from 'data/rest-api-hooks/src/global-data/useKodeverk';
 import { ISO_DATE_FORMAT } from 'utils/formats';
 import { RadioOption, SelectField } from 'form/FinalFields';
 import fagsakYtelseType from 'kodeverk/fagsakYtelseType';
@@ -37,19 +37,14 @@ describe('<TilBehandlingPanel>', () => {
     navn: 'Førstegangssøknad',
   };
 
-  let contextStub;
-  beforeEach(() => {
-    contextStub = sinon.stub(useKodeverk, 'default');
-    contextStub.withArgs(kodeverkTyper.BEHANDLING_TYPE).callsFake(() => behandlingTyper)
-      .withArgs(kodeverkTyper.FAGSAK_YTELSE_TYPE)
-      .callsFake(() => fagsakYtelseTyper);
-  });
-
-  afterEach(() => {
-    contextStub.restore();
-  });
+  const alleKodeverk = {
+    [kodeverkTyper.BEHANDLING_TYPE]: behandlingTyper,
+    [kodeverkTyper.FAGSAK_YTELSE_TYPE]: fagsakYtelseTyper,
+  };
 
   it('skal vise ukevalg i dropdown og valg av ytelsetype i radioknapper', () => {
+    requestApi.mock(RestApiGlobalStatePathsKeys.KODEVERK, alleKodeverk);
+
     const valuesMock = {
       [fagsakYtelseType.FORELDREPRENGER]: true,
       [fagsakYtelseType.ENGANGSSTONAD]: true,
@@ -76,7 +71,6 @@ describe('<TilBehandlingPanel>', () => {
     expect(options[1].props.value).to.eql('4');
     expect(options[1].props.children).to.eql('4 siste uker');
 
-
     const radioOptions = wrapper.find(RadioOption);
     expect(radioOptions).to.have.length(4);
     expect(radioOptions.first().prop('value')).to.eql('FP');
@@ -87,6 +81,8 @@ describe('<TilBehandlingPanel>', () => {
   });
 
   it('skal filtrere bort alt som er eldre enn to uker', () => {
+    requestApi.mock(RestApiGlobalStatePathsKeys.KODEVERK, alleKodeverk);
+
     const valuesMock = {
       ytelseType: 'ALLE',
       ukevalg: '2',
@@ -119,6 +115,8 @@ describe('<TilBehandlingPanel>', () => {
   });
 
   it('skal ikke filtrere bort alt som er eldre enn to uker når fire uker er valgt i filter', () => {
+    requestApi.mock(RestApiGlobalStatePathsKeys.KODEVERK, alleKodeverk);
+
     const valuesMock = {
       ytelseType: 'ALLE',
       ukevalg: '4',
@@ -151,6 +149,8 @@ describe('<TilBehandlingPanel>', () => {
   });
 
   it('skal filtrere bort engangsstønader', () => {
+    requestApi.mock(RestApiGlobalStatePathsKeys.KODEVERK, alleKodeverk);
+
     const valuesMock = {
       ytelseType: fagsakYtelseType.FORELDREPRENGER,
       ukevalg: '2',
@@ -182,6 +182,8 @@ describe('<TilBehandlingPanel>', () => {
   });
 
   it('skal filtrere bort foreldrepenger', () => {
+    requestApi.mock(RestApiGlobalStatePathsKeys.KODEVERK, alleKodeverk);
+
     const valuesMock = {
       ytelseType: fagsakYtelseType.ENGANGSSTONAD,
       ukevalg: '2',
@@ -213,6 +215,8 @@ describe('<TilBehandlingPanel>', () => {
   });
 
   it('skal slå sammen like behandlingstyper og opprettetDatoer', () => {
+    requestApi.mock(RestApiGlobalStatePathsKeys.KODEVERK, alleKodeverk);
+
     const valuesMock = {
       ytelseType: ALLE_YTELSETYPER_VALGT,
       ukevalg: '2',

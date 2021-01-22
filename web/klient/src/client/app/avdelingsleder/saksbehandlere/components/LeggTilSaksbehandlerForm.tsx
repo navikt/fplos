@@ -7,8 +7,8 @@ import { Form } from 'react-final-form';
 import { Hovedknapp, Knapp } from 'nav-frontend-knapper';
 import { Normaltekst, Element } from 'nav-frontend-typografi';
 
-import { RestApiState, useRestApiRunner } from 'data/rest-api-hooks';
-import { RestApiPathsKeys } from 'data/restApiPaths';
+import { restApiHooks, RestApiPathsKeys } from 'data/fplosRestApi';
+import { RestApiState } from 'data/rest-api-hooks';
 import { required } from 'utils/validation/validators';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import { InputField } from 'form/FinalFields';
@@ -19,7 +19,6 @@ import styles from './leggTilSaksbehandlerForm.less';
 
 const erSaksbehandlerLagtTilAllerede = (saksbehandler: Saksbehandler, avdelingensSaksbehandlere = []) => avdelingensSaksbehandlere instanceof Array
     && avdelingensSaksbehandlere.some((s) => saksbehandler && s.brukerIdent.toLowerCase() === saksbehandler.brukerIdent.toLowerCase());
-
 
 interface OwnProps {
   valgtAvdelingEnhet: string;
@@ -40,9 +39,9 @@ export const LeggTilSaksbehandlerForm: FunctionComponent<OwnProps & WrappedCompo
 
   const {
     data: saksbehandler, startRequest: finnSaksbehandler, state, resetRequestData: resetSaksbehandlerSok,
-  } = useRestApiRunner<Saksbehandler>(RestApiPathsKeys.SAKSBEHANDLER_SOK);
+  } = restApiHooks.useRestApiRunner<Saksbehandler>(RestApiPathsKeys.SAKSBEHANDLER_SOK);
 
-  const { startRequest: leggTilSaksbehandler } = useRestApiRunner<Saksbehandler>(RestApiPathsKeys.OPPRETT_NY_SAKSBEHANDLER);
+  const { startRequest: leggTilSaksbehandler } = restApiHooks.useRestApiRunner<Saksbehandler>(RestApiPathsKeys.OPPRETT_NY_SAKSBEHANDLER);
 
   const erLagtTilAllerede = erSaksbehandlerLagtTilAllerede(saksbehandler, avdelingensSaksbehandlere);
 

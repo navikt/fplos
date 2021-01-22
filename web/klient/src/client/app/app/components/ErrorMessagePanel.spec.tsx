@@ -18,7 +18,7 @@ describe('<ErrorMessagePanel>', () => {
       queryStrings={{
         errormessage: 'Error!',
       }}
-      removeErrorMessage={() => undefined}
+      removeErrorMessages={() => undefined}
     />);
 
     const div = wrapper.find(Undertekst);
@@ -34,7 +34,7 @@ describe('<ErrorMessagePanel>', () => {
       queryStrings={{
         errormessage: 'Høna &amp; egget og &#34;test1&#34; og &#39;test2&#39;',
       }}
-      removeErrorMessage={() => undefined}
+      removeErrorMessages={() => undefined}
     />);
 
     const div = wrapper.find(Undertekst);
@@ -52,7 +52,7 @@ describe('<ErrorMessagePanel>', () => {
       queryStrings={{
         errormessage: 'Dette er en feil',
       }}
-      removeErrorMessage={() => undefined}
+      removeErrorMessages={() => undefined}
     />);
 
     const div = wrapper.find(Undertekst);

@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { expect } from 'chai';
 import { IntlShape } from 'react-intl';
@@ -151,7 +150,6 @@ describe('<NyeOgFerdigstilteOppgaverForSisteSyvGraf>', () => {
     const dataArea2 = areaSeries.last().prop('data');
     expect(dataArea2).to.eql(nyeOppgaver);
   });
-
 
   it('skal vise crosshair med antall nye og ferdigstilte for valgt dato', () => {
     const nyeOgFerdigstilteOppgaver = [{

@@ -22,7 +22,7 @@ export const getErrorMessageList = (intl: IntlShape, queryStrings: { errorcode?:
 };
 
 interface OwnProps {
-  removeErrorMessage: () => void;
+  removeErrorMessages: () => void;
   errorMessages?: {
     type: EventType;
     code?: string;
@@ -38,7 +38,6 @@ interface OwnProps {
   };
 }
 
-
 /**
  * ErrorMessagePanel
  *
@@ -48,7 +47,7 @@ const ErrorMessagePanel: FunctionComponent<OwnProps & WrappedComponentProps> = (
   intl,
   errorMessages,
   queryStrings,
-  removeErrorMessage,
+  removeErrorMessages,
 }) => {
   const feilmeldinger = useMemo(() => getErrorMessageList(intl, queryStrings, errorMessages), [queryStrings, errorMessages]);
 
@@ -68,7 +67,7 @@ const ErrorMessagePanel: FunctionComponent<OwnProps & WrappedComponentProps> = (
         </Row>
       ))}
       <div className={styles.lukkContainer}>
-        <Lukknapp hvit onClick={removeErrorMessage}>{intl.formatMessage({ id: 'ErrorMessagePanel.Close' })}</Lukknapp>
+        <Lukknapp hvit onClick={removeErrorMessages}>{intl.formatMessage({ id: 'ErrorMessagePanel.Close' })}</Lukknapp>
       </div>
     </div>
   );

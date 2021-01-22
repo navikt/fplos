@@ -3,8 +3,7 @@ import { expect } from 'chai';
 import sinon from 'sinon';
 import { IntlShape } from 'react-intl';
 
-import RestApiTestMocker from 'testHelpers/RestApiTestMocker';
-import { RestApiPathsKeys } from 'data/restApiPaths';
+import { requestApi, RestApiPathsKeys } from 'data/fplosRestApi';
 import { shallowWithIntl, intlMock } from 'testHelpers/intl-enzyme-test-helper';
 import GjeldendeSakslisterTabell from './GjeldendeSakslisterTabell';
 import UtvalgskriterierForSakslisteForm from './sakslisteForm/UtvalgskriterierForSakslisteForm';
@@ -26,26 +25,23 @@ describe('<EndreSakslisterPanel>', () => {
       antallBehandlinger: 1,
     }];
 
+    requestApi.mock(RestApiPathsKeys.OPPGAVE_AVDELING_ANTALL, 1);
+    requestApi.mock(RestApiPathsKeys.SAKSLISTER_FOR_AVDELING, sakslister);
+    requestApi.mock(RestApiPathsKeys.OPPRETT_NY_SAKSLISTE, undefined);
 
-    new RestApiTestMocker()
-      .withRestCallRunner(RestApiPathsKeys.OPPGAVE_AVDELING_ANTALL, { data: 1 })
-      .withRestCallRunner(RestApiPathsKeys.SAKSLISTER_FOR_AVDELING, { data: sakslister })
-      .withRestCallRunner(RestApiPathsKeys.OPPRETT_NY_SAKSLISTE, { data: undefined })
-      .runTest(() => {
-        const wrapper = shallowWithIntl(<EndreSakslisterPanel.WrappedComponent
-          intl={intl as IntlShape}
-          setValgtSakslisteId={sinon.spy()}
-          valgtAvdelingEnhet="test"
-          avdelingensSaksbehandlere={[]}
-          resetValgtSakslisteId={sinon.spy()}
-        />);
+    const wrapper = shallowWithIntl(<EndreSakslisterPanel.WrappedComponent
+      intl={intl as IntlShape}
+      setValgtSakslisteId={sinon.spy()}
+      valgtAvdelingEnhet="test"
+      avdelingensSaksbehandlere={[]}
+      resetValgtSakslisteId={sinon.spy()}
+    />);
 
-        expect(wrapper.find(GjeldendeSakslisterTabell)).to.have.length(1);
-        expect(wrapper.find(UtvalgskriterierForSakslisteForm)).to.have.length(0);
-      });
+    expect(wrapper.find(GjeldendeSakslisterTabell)).to.have.length(1);
+    expect(wrapper.find(UtvalgskriterierForSakslisteForm)).to.have.length(0);
   });
 
-  it('skal vise editeringspanel når en har valgt tabellrad', () => {
+  it('skal vise editeringspanel når en har valgt tabellrad', async () => {
     const sakslister = [{
       sakslisteId: 1,
       navn: 'Espen Utvikler',
@@ -56,22 +52,24 @@ describe('<EndreSakslisterPanel>', () => {
       antallBehandlinger: 1,
     }];
 
-    new RestApiTestMocker()
-      .withRestCallRunner(RestApiPathsKeys.OPPGAVE_AVDELING_ANTALL, { data: 1 })
-      .withRestCallRunner(RestApiPathsKeys.SAKSLISTER_FOR_AVDELING, { data: sakslister })
-      .withRestCallRunner(RestApiPathsKeys.OPPRETT_NY_SAKSLISTE, { data: undefined })
-      .runTest(() => {
-        const wrapper = shallowWithIntl(<EndreSakslisterPanel.WrappedComponent
-          intl={intl as IntlShape}
-          setValgtSakslisteId={sinon.spy()}
-          valgtSakslisteId={1}
-          valgtAvdelingEnhet="test"
-          avdelingensSaksbehandlere={[]}
-          resetValgtSakslisteId={sinon.spy()}
-        />);
+    requestApi.mock(RestApiPathsKeys.OPPGAVE_AVDELING_ANTALL, 1);
+    requestApi.mock(RestApiPathsKeys.SAKSLISTER_FOR_AVDELING, sakslister);
+    requestApi.mock(RestApiPathsKeys.OPPRETT_NY_SAKSLISTE, undefined);
 
-        expect(wrapper.find(GjeldendeSakslisterTabell)).to.have.length(1);
-        expect(wrapper.find(UtvalgskriterierForSakslisteForm)).to.have.length(1);
-      });
+    const wrapper = shallowWithIntl(<EndreSakslisterPanel.WrappedComponent
+      intl={intl as IntlShape}
+      setValgtSakslisteId={sinon.spy()}
+      valgtSakslisteId={1}
+      valgtAvdelingEnhet="test"
+      avdelingensSaksbehandlere={[]}
+      resetValgtSakslisteId={sinon.spy()}
+    />);
+
+    const tabell = wrapper.find(GjeldendeSakslisterTabell);
+    expect(tabell).to.have.length(1);
+
+    await tabell.prop('hentAvdelingensSakslister')({ avdelingEnhet: '1' });
+
+    expect(wrapper.find(UtvalgskriterierForSakslisteForm)).to.have.length(1);
   });
 });

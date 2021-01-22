@@ -4,9 +4,8 @@ import { expect } from 'chai';
 import sinon from 'sinon';
 import { FormattedMessage } from 'react-intl';
 
-import RestApiTestMocker from 'testHelpers/RestApiTestMocker';
+import { requestApi, RestApiGlobalStatePathsKeys, RestApiPathsKeys } from 'data/fplosRestApi';
 import kodeverkTyper from 'kodeverk/kodeverkTyper';
-import { RestApiPathsKeys } from 'data/restApiPaths';
 import Image from 'sharedComponents/Image';
 import behandlingType from 'kodeverk/behandlingType';
 import fagsakYtelseType from 'kodeverk/fagsakYtelseType';
@@ -17,11 +16,6 @@ import SletteSakslisteModal from './SletteSakslisteModal';
 import { GjeldendeSakslisterTabell } from './GjeldendeSakslisterTabell';
 
 describe('<GjeldendeSakslisterTabell>', () => {
-  const restApiMocker = new RestApiTestMocker();
-  afterEach(() => {
-    restApiMocker.resetMock();
-  });
-
   const behandlingstyper = [{
     kode: behandlingType.FORSTEGANGSSOKNAD,
     navn: '',
@@ -39,29 +33,30 @@ describe('<GjeldendeSakslisterTabell>', () => {
   },
   ];
 
+  const alleKodeverk = {
+    [kodeverkTyper.BEHANDLING_TYPE]: behandlingstyper,
+    [kodeverkTyper.FAGSAK_YTELSE_TYPE]: fagsakYtelseTyper,
+  };
+
   it('skal ikke vise tabell når ingen sakslister finnes', () => {
     const sakslister = [];
 
-    new RestApiTestMocker()
-      .withKodeverk(kodeverkTyper.BEHANDLING_TYPE, behandlingstyper)
-      .withKodeverk(kodeverkTyper.FAGSAK_YTELSE_TYPE, fagsakYtelseTyper)
-      .withDummyRunner()
-      .runTest(() => {
-        const wrapper = shallow(<GjeldendeSakslisterTabell
-          sakslister={sakslister}
-          valgtAvdelingEnhet="2"
-          setValgtSakslisteId={sinon.spy()}
-          lagNySaksliste={sinon.spy()}
-          resetValgtSakslisteId={sinon.spy()}
-          hentAvdelingensSakslister={sinon.spy()}
-        />);
+    requestApi.mock(RestApiGlobalStatePathsKeys.KODEVERK, alleKodeverk);
 
-        const tekstComp = wrapper.find(FormattedMessage);
-        expect(tekstComp).to.have.length(4);
-        expect(tekstComp.at(2).prop('id')).to.eql('GjeldendeSakslisterTabell.IngenLister');
+    const wrapper = shallow(<GjeldendeSakslisterTabell
+      sakslister={sakslister}
+      valgtAvdelingEnhet="2"
+      setValgtSakslisteId={sinon.spy()}
+      lagNySaksliste={sinon.spy()}
+      resetValgtSakslisteId={sinon.spy()}
+      hentAvdelingensSakslister={sinon.spy()}
+    />);
 
-        expect(wrapper.find(Table)).to.have.length(0);
-      });
+    const tekstComp = wrapper.find(FormattedMessage);
+    expect(tekstComp).to.have.length(4);
+    expect(tekstComp.at(2).prop('id')).to.eql('GjeldendeSakslisterTabell.IngenLister');
+
+    expect(wrapper.find(Table)).to.have.length(0);
   });
 
   it('skal vise to sakslister', () => {
@@ -83,119 +78,103 @@ describe('<GjeldendeSakslisterTabell>', () => {
       antallBehandlinger: 1,
     }];
 
-    new RestApiTestMocker()
-      .withKodeverk(kodeverkTyper.BEHANDLING_TYPE, behandlingstyper)
-      .withKodeverk(kodeverkTyper.FAGSAK_YTELSE_TYPE, fagsakYtelseTyper)
-      .withDummyRunner()
-      .runTest(() => {
-        const wrapper = shallow(<GjeldendeSakslisterTabell
-          sakslister={sakslister}
-          valgtAvdelingEnhet="2"
-          setValgtSakslisteId={sinon.spy()}
-          lagNySaksliste={sinon.spy()}
-          hentAvdelingensSakslister={sinon.spy()}
-          resetValgtSakslisteId={sinon.spy()}
-        />);
+    requestApi.mock(RestApiGlobalStatePathsKeys.KODEVERK, alleKodeverk);
 
-        expect(wrapper.find(FormattedMessage)).to.have.length(7);
-        expect(wrapper.find(Table)).to.have.length(1);
-        const rader = wrapper.find(TableRow);
-        expect(rader).to.have.length(2);
+    const wrapper = shallow(<GjeldendeSakslisterTabell
+      sakslister={sakslister}
+      valgtAvdelingEnhet="2"
+      setValgtSakslisteId={sinon.spy()}
+      lagNySaksliste={sinon.spy()}
+      hentAvdelingensSakslister={sinon.spy()}
+      resetValgtSakslisteId={sinon.spy()}
+    />);
 
-        const kolonnerForRad1 = rader.first().find(TableColumn);
-        expect(kolonnerForRad1).to.have.length(7);
-        expect(kolonnerForRad1.first().childAt(0).text()).to.eql('Nyansatte');
+    expect(wrapper.find(FormattedMessage)).to.have.length(7);
+    expect(wrapper.find(Table)).to.have.length(1);
+    const rader = wrapper.find(TableRow);
+    expect(rader).to.have.length(2);
 
-        const kolonnerForRad2 = rader.last().find(TableColumn);
-        expect(kolonnerForRad2).to.have.length(7);
-        expect(kolonnerForRad2.first().childAt(0).text()).to.eql('Kun foreldrepenger');
-      });
+    const kolonnerForRad1 = rader.first().find(TableColumn);
+    expect(kolonnerForRad1).to.have.length(7);
+    expect(kolonnerForRad1.first().childAt(0).text()).to.eql('Nyansatte');
+
+    const kolonnerForRad2 = rader.last().find(TableColumn);
+    expect(kolonnerForRad2).to.have.length(7);
+    expect(kolonnerForRad2.first().childAt(0).text()).to.eql('Kun foreldrepenger');
   });
 
   it('skal legge til ny saksliste ved musklikk', () => {
     const sakslister = [];
     const lagNySakslisteFn = sinon.spy();
 
-    new RestApiTestMocker()
-      .withKodeverk(kodeverkTyper.BEHANDLING_TYPE, behandlingstyper)
-      .withKodeverk(kodeverkTyper.FAGSAK_YTELSE_TYPE, fagsakYtelseTyper)
-      .withDummyRunner()
-      .runTest(() => {
-        const wrapper = shallow(<GjeldendeSakslisterTabell
-          sakslister={sakslister}
-          setValgtSakslisteId={sinon.spy()}
-          lagNySaksliste={lagNySakslisteFn}
-          valgtAvdelingEnhet="2"
-          hentAvdelingensSakslister={sinon.spy()}
-          resetValgtSakslisteId={sinon.spy()}
-        />);
+    requestApi.mock(RestApiGlobalStatePathsKeys.KODEVERK, alleKodeverk);
 
-        const leggTilListe = wrapper.find('div#leggTilListe');
-        expect(leggTilListe).to.have.length(1);
+    const wrapper = shallow(<GjeldendeSakslisterTabell
+      sakslister={sakslister}
+      setValgtSakslisteId={sinon.spy()}
+      lagNySaksliste={lagNySakslisteFn}
+      valgtAvdelingEnhet="2"
+      hentAvdelingensSakslister={sinon.spy()}
+      resetValgtSakslisteId={sinon.spy()}
+    />);
 
-        const clickFn = leggTilListe.prop('onClick') as () => void;
-        clickFn();
+    const leggTilListe = wrapper.find('div#leggTilListe');
+    expect(leggTilListe).to.have.length(1);
 
-        expect(lagNySakslisteFn.calledOnce).to.be.true;
-      });
+    const clickFn = leggTilListe.prop('onClick') as () => void;
+    clickFn();
+
+    expect(lagNySakslisteFn.calledOnce).to.be.true;
   });
 
   it('skal legge til ny saksliste ved trykk på enter-knapp', () => {
     const sakslister = [];
     const lagNySakslisteFn = sinon.spy();
 
-    new RestApiTestMocker()
-      .withKodeverk(kodeverkTyper.BEHANDLING_TYPE, behandlingstyper)
-      .withKodeverk(kodeverkTyper.FAGSAK_YTELSE_TYPE, fagsakYtelseTyper)
-      .withDummyRunner()
-      .runTest(() => {
-        const wrapper = shallow(<GjeldendeSakslisterTabell
-          sakslister={sakslister}
-          setValgtSakslisteId={sinon.spy()}
-          lagNySaksliste={lagNySakslisteFn}
-          valgtAvdelingEnhet="2"
-          hentAvdelingensSakslister={sinon.spy()}
-          resetValgtSakslisteId={sinon.spy()}
-        />);
+    requestApi.mock(RestApiGlobalStatePathsKeys.KODEVERK, alleKodeverk);
 
-        const leggTilListe = wrapper.find('div#leggTilListe');
-        expect(leggTilListe).to.have.length(1);
+    const wrapper = shallow(<GjeldendeSakslisterTabell
+      sakslister={sakslister}
+      setValgtSakslisteId={sinon.spy()}
+      lagNySaksliste={lagNySakslisteFn}
+      valgtAvdelingEnhet="2"
+      hentAvdelingensSakslister={sinon.spy()}
+      resetValgtSakslisteId={sinon.spy()}
+    />);
 
-        leggTilListe.prop('onKeyDown')({
-          keyCode: 13,
-        } as KeyboardEvent);
+    const leggTilListe = wrapper.find('div#leggTilListe');
+    expect(leggTilListe).to.have.length(1);
 
-        expect(lagNySakslisteFn.calledOnce).to.be.true;
-      });
+    leggTilListe.prop('onKeyDown')({
+      keyCode: 13,
+    } as KeyboardEvent);
+
+    expect(lagNySakslisteFn.calledOnce).to.be.true;
   });
 
   it('skal ikke legge til ny saksliste ved trykk på annen knapp enn enter', () => {
     const sakslister = [];
     const lagNySakslisteFn = sinon.spy();
 
-    new RestApiTestMocker()
-      .withKodeverk(kodeverkTyper.BEHANDLING_TYPE, behandlingstyper)
-      .withKodeverk(kodeverkTyper.FAGSAK_YTELSE_TYPE, fagsakYtelseTyper)
-      .withDummyRunner()
-      .runTest(() => {
-        const wrapper = shallow(<GjeldendeSakslisterTabell
-          sakslister={sakslister}
-          setValgtSakslisteId={sinon.spy()}
-          lagNySaksliste={lagNySakslisteFn}
-          valgtAvdelingEnhet="2"
-          hentAvdelingensSakslister={sinon.spy()}
-          resetValgtSakslisteId={sinon.spy()}
-        />);
+    requestApi.mock(RestApiGlobalStatePathsKeys.KODEVERK, alleKodeverk);
 
-        const leggTilListe = wrapper.find('div#leggTilListe');
-        expect(leggTilListe).to.have.length(1);
+    const wrapper = shallow(<GjeldendeSakslisterTabell
+      sakslister={sakslister}
+      setValgtSakslisteId={sinon.spy()}
+      lagNySaksliste={lagNySakslisteFn}
+      valgtAvdelingEnhet="2"
+      hentAvdelingensSakslister={sinon.spy()}
+      resetValgtSakslisteId={sinon.spy()}
+    />);
 
-        leggTilListe.prop('onKeyDown')({
-          keyCode: 10,
-        } as KeyboardEvent);
+    const leggTilListe = wrapper.find('div#leggTilListe');
+    expect(leggTilListe).to.have.length(1);
 
-        expect(lagNySakslisteFn.calledOnce).to.be.false;
-      });
+    leggTilListe.prop('onKeyDown')({
+      keyCode: 10,
+    } as KeyboardEvent);
+
+    expect(lagNySakslisteFn.calledOnce).to.be.false;
   });
 
   it('skal sette valgt saksliste ved trykk på rad i tabell', async () => {
@@ -210,11 +189,7 @@ describe('<GjeldendeSakslisterTabell>', () => {
     }];
     const setValgtSakslisteIdFn = sinon.spy();
 
-    restApiMocker
-      .withKodeverk(kodeverkTyper.BEHANDLING_TYPE, behandlingstyper)
-      .withKodeverk(kodeverkTyper.FAGSAK_YTELSE_TYPE, fagsakYtelseTyper)
-      .withDummyRunner()
-      .mock();
+    requestApi.mock(RestApiGlobalStatePathsKeys.KODEVERK, alleKodeverk);
 
     const wrapper = shallow(<GjeldendeSakslisterTabell
       sakslister={sakslister}
@@ -245,34 +220,30 @@ describe('<GjeldendeSakslisterTabell>', () => {
       antallBehandlinger: 1,
     }];
 
-    new RestApiTestMocker()
-      .withKodeverk(kodeverkTyper.BEHANDLING_TYPE, behandlingstyper)
-      .withKodeverk(kodeverkTyper.FAGSAK_YTELSE_TYPE, fagsakYtelseTyper)
-      .withDummyRunner()
-      .runTest(() => {
-        const wrapper = shallow(<GjeldendeSakslisterTabell
-          sakslister={sakslister}
-          setValgtSakslisteId={sinon.spy()}
-          lagNySaksliste={sinon.spy()}
-          valgtAvdelingEnhet="2"
-          hentAvdelingensSakslister={sinon.spy()}
-          resetValgtSakslisteId={sinon.spy()}
-        />);
+    requestApi.mock(RestApiGlobalStatePathsKeys.KODEVERK, alleKodeverk);
 
-        const rader = wrapper.find(TableRow);
-        expect(rader).to.have.length(1);
+    const wrapper = shallow(<GjeldendeSakslisterTabell
+      sakslister={sakslister}
+      setValgtSakslisteId={sinon.spy()}
+      lagNySaksliste={sinon.spy()}
+      valgtAvdelingEnhet="2"
+      hentAvdelingensSakslister={sinon.spy()}
+      resetValgtSakslisteId={sinon.spy()}
+    />);
 
-        const kolonner = rader.first().find(TableColumn);
-        const bildeKnapp = kolonner.last().find(Image);
-        expect(bildeKnapp).to.have.length(1);
+    const rader = wrapper.find(TableRow);
+    expect(rader).to.have.length(1);
 
-        expect(wrapper.find(SletteSakslisteModal)).to.have.length(0);
+    const kolonner = rader.first().find(TableColumn);
+    const bildeKnapp = kolonner.last().find(Image);
+    expect(bildeKnapp).to.have.length(1);
 
-        const mouseFn = bildeKnapp.prop('onMouseDown') as () => void;
-        mouseFn();
+    expect(wrapper.find(SletteSakslisteModal)).to.have.length(0);
 
-        expect(wrapper.find(SletteSakslisteModal)).to.have.length(1);
-      });
+    const mouseFn = bildeKnapp.prop('onMouseDown') as () => void;
+    mouseFn();
+
+    expect(wrapper.find(SletteSakslisteModal)).to.have.length(1);
   });
 
   it('skal lukke modal ved trykk på avbryt i modal', () => {
@@ -286,34 +257,30 @@ describe('<GjeldendeSakslisterTabell>', () => {
       antallBehandlinger: 1,
     }];
 
-    new RestApiTestMocker()
-      .withKodeverk(kodeverkTyper.BEHANDLING_TYPE, behandlingstyper)
-      .withKodeverk(kodeverkTyper.FAGSAK_YTELSE_TYPE, fagsakYtelseTyper)
-      .withDummyRunner()
-      .runTest(() => {
-        const wrapper = shallow(<GjeldendeSakslisterTabell
-          sakslister={sakslister}
-          setValgtSakslisteId={sinon.spy()}
-          lagNySaksliste={sinon.spy()}
-          valgtAvdelingEnhet="2"
-          hentAvdelingensSakslister={sinon.spy()}
-          resetValgtSakslisteId={sinon.spy()}
-        />);
+    requestApi.mock(RestApiGlobalStatePathsKeys.KODEVERK, alleKodeverk);
 
-        const rader = wrapper.find(TableRow);
-        const kolonner = rader.first().find(TableColumn);
-        const bildeKnapp = kolonner.last().find(Image);
+    const wrapper = shallow(<GjeldendeSakslisterTabell
+      sakslister={sakslister}
+      setValgtSakslisteId={sinon.spy()}
+      lagNySaksliste={sinon.spy()}
+      valgtAvdelingEnhet="2"
+      hentAvdelingensSakslister={sinon.spy()}
+      resetValgtSakslisteId={sinon.spy()}
+    />);
 
-        const mouseFn = bildeKnapp.prop('onMouseDown') as () => void;
-        mouseFn();
+    const rader = wrapper.find(TableRow);
+    const kolonner = rader.first().find(TableColumn);
+    const bildeKnapp = kolonner.last().find(Image);
 
-        const modal = wrapper.find(SletteSakslisteModal);
-        expect(modal).to.have.length(1);
+    const mouseFn = bildeKnapp.prop('onMouseDown') as () => void;
+    mouseFn();
 
-        modal.prop('cancel')();
+    const modal = wrapper.find(SletteSakslisteModal);
+    expect(modal).to.have.length(1);
 
-        expect(wrapper.find(SletteSakslisteModal)).to.have.length(0);
-      });
+    modal.prop('cancel')();
+
+    expect(wrapper.find(SletteSakslisteModal)).to.have.length(0);
   });
 
   it('skal fjerne saksliste ved trykk på ok i modal', () => {
@@ -326,43 +293,37 @@ describe('<GjeldendeSakslisterTabell>', () => {
       saksbehandlerIdenter: [],
       antallBehandlinger: 1,
     }];
-    const fjernSakslisterFn = sinon.spy();
 
-    new RestApiTestMocker()
-      .withKodeverk(kodeverkTyper.BEHANDLING_TYPE, behandlingstyper)
-      .withKodeverk(kodeverkTyper.FAGSAK_YTELSE_TYPE, fagsakYtelseTyper)
-      .withRestCallRunner(RestApiPathsKeys.SLETT_SAKSLISTE,
-        { startRequest: (params) => { fjernSakslisterFn(params); return Promise.resolve(); } })
-      .runTest(() => {
-        const wrapper = shallow(<GjeldendeSakslisterTabell
-          sakslister={sakslister}
-          setValgtSakslisteId={sinon.spy()}
-          lagNySaksliste={sinon.spy()}
-          valgtAvdelingEnhet="2"
-          hentAvdelingensSakslister={sinon.spy()}
-          resetValgtSakslisteId={sinon.spy()}
-        />);
+    requestApi.mock(RestApiGlobalStatePathsKeys.KODEVERK, alleKodeverk);
+    requestApi.mock(RestApiPathsKeys.SLETT_SAKSLISTE, {});
 
-        const rader = wrapper.find(TableRow);
-        const kolonner = rader.first().find(TableColumn);
-        const bildeKnapp = kolonner.last().find(Image);
+    const wrapper = shallow(<GjeldendeSakslisterTabell
+      sakslister={sakslister}
+      setValgtSakslisteId={sinon.spy()}
+      lagNySaksliste={sinon.spy()}
+      valgtAvdelingEnhet="2"
+      hentAvdelingensSakslister={sinon.spy()}
+      resetValgtSakslisteId={sinon.spy()}
+    />);
 
-        const mouseFn = bildeKnapp.prop('onMouseDown') as () => void;
-        mouseFn();
+    const rader = wrapper.find(TableRow);
+    const kolonner = rader.first().find(TableColumn);
+    const bildeKnapp = kolonner.last().find(Image);
 
-        const modal = wrapper.find(SletteSakslisteModal);
-        expect(modal).to.have.length(1);
+    const mouseFn = bildeKnapp.prop('onMouseDown') as () => void;
+    mouseFn();
 
-        modal.prop('submit')(sakslister[0]);
+    const modal = wrapper.find(SletteSakslisteModal);
+    expect(modal).to.have.length(1);
 
-        expect(wrapper.find(SletteSakslisteModal)).to.have.length(0);
+    modal.prop('submit')(sakslister[0]);
 
-        expect(fjernSakslisterFn.calledOnce).to.be.true;
-        const { args } = fjernSakslisterFn.getCalls()[0];
-        expect(args).to.have.length(1);
-        expect(args[0].sakslisteId).to.eql(sakslister[0].sakslisteId);
-        expect(args[0].avdelingEnhet).to.eql('2');
-      });
+    expect(wrapper.find(SletteSakslisteModal)).to.have.length(0);
+
+    const fjernSakslisterCallData = requestApi.getRequestMockData(RestApiPathsKeys.SLETT_SAKSLISTE);
+    expect(fjernSakslisterCallData).to.have.length(1);
+    expect(fjernSakslisterCallData[0].params.sakslisteId).is.eql(1);
+    expect(fjernSakslisterCallData[0].params.avdelingEnhet).is.eql('2');
   });
 
   it('skal vise antall saksbehandlere tilknyttet sakslisten', () => {
@@ -376,27 +337,23 @@ describe('<GjeldendeSakslisterTabell>', () => {
       antallBehandlinger: 1,
     }];
 
-    new RestApiTestMocker()
-      .withKodeverk(kodeverkTyper.BEHANDLING_TYPE, behandlingstyper)
-      .withKodeverk(kodeverkTyper.FAGSAK_YTELSE_TYPE, fagsakYtelseTyper)
-      .withDummyRunner()
-      .runTest(() => {
-        const wrapper = shallow(<GjeldendeSakslisterTabell
-          sakslister={sakslister}
-          setValgtSakslisteId={sinon.spy()}
-          lagNySaksliste={sinon.spy()}
-          valgtAvdelingEnhet="2"
-          hentAvdelingensSakslister={sinon.spy()}
-          resetValgtSakslisteId={sinon.spy()}
-        />);
+    requestApi.mock(RestApiGlobalStatePathsKeys.KODEVERK, alleKodeverk);
 
-        expect(wrapper.find(Table)).to.have.length(1);
-        const rader = wrapper.find(TableRow);
-        expect(rader).to.have.length(1);
+    const wrapper = shallow(<GjeldendeSakslisterTabell
+      sakslister={sakslister}
+      setValgtSakslisteId={sinon.spy()}
+      lagNySaksliste={sinon.spy()}
+      valgtAvdelingEnhet="2"
+      hentAvdelingensSakslister={sinon.spy()}
+      resetValgtSakslisteId={sinon.spy()}
+    />);
 
-        const kolonnerForRad = rader.first().find(TableColumn);
-        expect(kolonnerForRad).to.have.length(7);
-        expect(kolonnerForRad.at(3).childAt(0).text()).to.eql('1');
-      });
+    expect(wrapper.find(Table)).to.have.length(1);
+    const rader = wrapper.find(TableRow);
+    expect(rader).to.have.length(1);
+
+    const kolonnerForRad = rader.first().find(TableColumn);
+    expect(kolonnerForRad).to.have.length(7);
+    expect(kolonnerForRad.at(3).childAt(0).text()).to.eql('1');
   });
 });

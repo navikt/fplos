@@ -1,4 +1,3 @@
-
 import React, { FunctionComponent } from 'react';
 
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';

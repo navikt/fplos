@@ -4,9 +4,8 @@ import { expect } from 'chai';
 import Header from '@navikt/nap-header';
 import { IntlShape } from 'react-intl';
 
-import { RestApiGlobalStatePathsKeys } from 'data/restApiPaths';
+import { requestApi, RestApiGlobalStatePathsKeys } from 'data/fplosRestApi';
 import { shallowWithIntl, intlMock } from 'testHelpers/intl-enzyme-test-helper';
-import RestApiTestMocker from 'testHelpers/RestApiTestMocker';
 
 import HeaderWithErrorPanel from './HeaderWithErrorPanel';
 
@@ -20,20 +19,19 @@ describe('<HeaderWithErrorPanel>', () => {
   };
 
   it('skal sjekke at header blir vist korrekt', () => {
-    new RestApiTestMocker()
-      .withGlobalData(RestApiGlobalStatePathsKeys.NAV_ANSATT, navAnsatt)
-      .runTest(() => {
-        const wrapper = shallowWithIntl(<HeaderWithErrorPanel.WrappedComponent
-          intl={intl as IntlShape}
-          queryStrings={{
-            errormessage: 'test',
-          }}
-          setSiteHeight={sinon.spy()}
-          setValgtAvdelingEnhet={sinon.spy()}
-        />);
+    requestApi.mock(RestApiGlobalStatePathsKeys.NAV_ANSATT, navAnsatt);
+    requestApi.mock(RestApiGlobalStatePathsKeys.DRIFTSMELDINGER, {});
 
-        const header = wrapper.find(Header);
-        expect(header.prop('title')).to.eq('Svangerskap, fødsel og adopsjon');
-      });
+    const wrapper = shallowWithIntl(<HeaderWithErrorPanel.WrappedComponent
+      intl={intl as IntlShape}
+      queryStrings={{
+        errormessage: 'test',
+      }}
+      setSiteHeight={sinon.spy()}
+      setValgtAvdelingEnhet={sinon.spy()}
+    />);
+
+    const header = wrapper.find(Header);
+    expect(header.prop('title')).to.eq('Svangerskap, fødsel og adopsjon');
   });
 });

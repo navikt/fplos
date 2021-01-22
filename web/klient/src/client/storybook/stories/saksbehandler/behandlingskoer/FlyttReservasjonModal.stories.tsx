@@ -1,40 +1,34 @@
 import React from 'react';
 import { action } from '@storybook/addon-actions';
 
-import { RestApiPathsKeys } from 'data/restApiPaths';
-import { FlyttReservasjonModal } from 'saksbehandler/behandlingskoer/components/menu/FlyttReservasjonModal';
-import { RestApiProvider } from 'data/rest-api-hooks';
+import { requestApi, RestApiPathsKeys } from 'data/fplosRestApi';
+import FlyttReservasjonModal from 'saksbehandler/behandlingskoer/components/menu/FlyttReservasjonModal';
 
 import withIntl from '../../../decorators/withIntl';
-import RequestMock from '../../../mocks/RequestMock';
+import withRestApiProvider from '../../../decorators/withRestApi';
 
 export default {
   title: 'saksbehandler/behandlingskoer/FlyttReservasjonModal',
   component: FlyttReservasjonModal,
-  decorators: [withIntl],
+  decorators: [withIntl, withRestApiProvider],
 };
 
-export const skalViseModalForFlyttingAvReservasjon = (intl) => {
+export const skalViseModalForFlyttingAvReservasjon = () => {
   const saksbehandler = {
     brukerIdent: 'R232323',
     navn: 'Espen Utvikler',
     avdelingsnavn: ['NAV Viken'],
   };
 
-  const requestApi = new RequestMock()
-    .withKeyAndResult(RestApiPathsKeys.FLYTT_RESERVASJON_SAKSBEHANDLER_SOK, saksbehandler)
-    .build();
+  requestApi.mock(RestApiPathsKeys.FLYTT_RESERVASJON_SAKSBEHANDLER_SOK, saksbehandler);
 
   return (
-    <RestApiProvider requestApi={requestApi}>
-      <FlyttReservasjonModal
-        intl={intl}
-        showModal
-        oppgaveId={1}
-        closeModal={action('button-click')}
-        toggleMenu={action('button-click')}
-        hentReserverteOppgaver={action('button-click')}
-      />
-    </RestApiProvider>
+    <FlyttReservasjonModal
+      showModal
+      oppgaveId={1}
+      closeModal={action('button-click')}
+      toggleMenu={action('button-click')}
+      hentReserverteOppgaver={action('button-click')}
+    />
   );
 };

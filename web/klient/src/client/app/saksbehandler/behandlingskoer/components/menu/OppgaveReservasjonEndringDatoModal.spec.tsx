@@ -29,6 +29,7 @@ describe('<OppgaveReservasjonEndringDatoModal>', () => {
 
     const handleSubmitFn = sinon.spy();
     const func = form.prop('render') as ({ handleSubmit: any }) => void;
+    // @ts-ignore Fiks
     const formWrapper = shallowWithIntl(func({
       handleSubmit: handleSubmitFn,
     }));

@@ -2,15 +2,14 @@ import React from 'react';
 import { action } from '@storybook/addon-actions';
 
 import SaksbehandlereForSakslisteForm from 'avdelingsleder/behandlingskoer/components/saksbehandlerForm/SaksbehandlereForSakslisteForm';
-import { RestApiProvider } from 'data/rest-api-hooks';
 
 import withIntl from '../../../decorators/withIntl';
-import RequestMock from '../../../mocks/RequestMock';
+import withRestApiProvider from '../../../decorators/withRestApi';
 
 export default {
   title: 'avdelingsleder/behandlingskoer/SaksbehandlereForSakslisteForm',
   component: SaksbehandlereForSakslisteForm,
-  decorators: [withIntl],
+  decorators: [withIntl, withRestApiProvider],
 };
 
 export const skalVisePanelForÅLeggeSaksbehandlereTilEnSaksliste = () => {
@@ -23,25 +22,23 @@ export const skalVisePanelForÅLeggeSaksbehandlereTilEnSaksliste = () => {
   };
 
   return (
-    <RestApiProvider requestApi={new RequestMock().build()}>
-      <SaksbehandlereForSakslisteForm
-        valgtSaksliste={saksliste}
-        avdelingensSaksbehandlere={[{
-          brukerIdent: 'E23232',
-          navn: 'Espen Utvikler',
-          avdelingsnavn: ['NAV Viken'],
-        }, {
-          brukerIdent: 'S34354',
-          navn: 'Steffen',
-          avdelingsnavn: ['NAV Viken'],
-        }, {
-          brukerIdent: 'E24353',
-          navn: 'Eirik',
-          avdelingsnavn: ['NAV Viken'],
-        }]}
-        hentAvdelingensSakslister={action('button-click')}
-        valgtAvdelingEnhet="NAV Viken"
-      />
-    </RestApiProvider>
+    <SaksbehandlereForSakslisteForm
+      valgtSaksliste={saksliste}
+      avdelingensSaksbehandlere={[{
+        brukerIdent: 'E23232',
+        navn: 'Espen Utvikler',
+        avdelingsnavn: ['NAV Viken'],
+      }, {
+        brukerIdent: 'S34354',
+        navn: 'Steffen',
+        avdelingsnavn: ['NAV Viken'],
+      }, {
+        brukerIdent: 'E24353',
+        navn: 'Eirik',
+        avdelingsnavn: ['NAV Viken'],
+      }]}
+      hentAvdelingensSakslister={action('button-click')}
+      valgtAvdelingEnhet="NAV Viken"
+    />
   );
 };

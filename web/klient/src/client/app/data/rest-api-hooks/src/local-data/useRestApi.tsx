@@ -1,12 +1,9 @@
 import {
-  useState, useEffect, DependencyList, useContext,
+  useState, useEffect, DependencyList,
 } from 'react';
 
-import { REQUEST_POLLING_CANCELLED, NotificationMapper } from 'data/rest-api';
-import { RestApiPathsKeys } from 'data/restApiPaths';
+import { REQUEST_POLLING_CANCELLED, AbstractRequestApi } from 'data/rest-api';
 
-import { RestApiRequestContext } from '../RestApiContext';
-import useRestApiErrorDispatcher from '../error/useRestApiErrorDispatcher';
 import RestApiState from '../RestApiState';
 
 interface RestApiData<T> {
@@ -15,52 +12,81 @@ interface RestApiData<T> {
   data?: T;
 }
 
+interface Options {
+  updateTriggers?: DependencyList;
+  keepData?: boolean;
+  suspendRequest?: boolean;
+}
+
+const defaultOptions = {
+  updateTriggers: [],
+  keepData: false,
+  suspendRequest: false,
+};
+
+/**
+ * For mocking i unit-test
+ */
+export const getUseRestApiMock = (requestApi: AbstractRequestApi) => function useRestApi<T>(
+  key: string, params?: any, options: Options = defaultOptions,
+):RestApiData<T> {
+  return {
+    state: options.suspendRequest ? RestApiState.NOT_STARTED : RestApiState.SUCCESS,
+    error: undefined,
+    data: options.suspendRequest ? undefined : requestApi.startRequest(key, params),
+  };
+};
+
 /**
   * Hook som utfører et restkall ved mount. En kan i tillegg legge ved en dependencies-liste som kan trigge ny henting når data
   * blir oppdatert. Hook returnerer rest-kallets status/resultat/feil
   */
-function useRestApi<T>(key: RestApiPathsKeys, params: any = {}, keepData = false, dependencies: DependencyList = []):RestApiData<T> {
+const getUseRestApi = (requestApi: AbstractRequestApi) => function useRestApi<T>(
+  key: string, params?: any, options?: Options,
+):RestApiData<T> {
+  const allOptions = { ...defaultOptions, ...options };
+
   const [data, setData] = useState({
     state: RestApiState.NOT_STARTED,
     error: undefined,
     data: undefined,
   });
 
-  const { addErrorMessage } = useRestApiErrorDispatcher();
-  const notif = new NotificationMapper();
-  notif.addRequestErrorEventHandlers((errorData, type) => {
-    addErrorMessage({ ...errorData, type });
-  });
-
-  const requestApi = useContext(RestApiRequestContext);
-
   useEffect(() => {
-    setData((oldState) => ({
-      state: RestApiState.LOADING,
-      error: undefined,
-      data: keepData ? oldState.data : undefined,
-    }));
+    if (requestApi.hasPath(key) && !allOptions.suspendRequest) {
+      setData((oldState) => ({
+        state: RestApiState.LOADING,
+        error: undefined,
+        data: allOptions.keepData ? oldState.data : undefined,
+      }));
 
-    requestApi.startRequest(key, params, notif)
-      .then((dataRes) => {
-        if (dataRes.payload !== REQUEST_POLLING_CANCELLED) {
+      requestApi.startRequest(key, params)
+        .then((dataRes) => {
+          if (dataRes.payload !== REQUEST_POLLING_CANCELLED) {
+            setData({
+              state: RestApiState.SUCCESS,
+              data: dataRes.payload,
+              error: undefined,
+            });
+          }
+        })
+        .catch((error) => {
           setData({
-            state: RestApiState.SUCCESS,
-            data: dataRes.payload,
-            error: undefined,
+            state: RestApiState.ERROR,
+            data: undefined,
+            error,
           });
-        }
-      })
-      .catch((error) => {
-        setData({
-          state: RestApiState.ERROR,
-          data: undefined,
-          error,
         });
+    } else if (!requestApi.hasPath(key)) {
+      setData({
+        state: RestApiState.NOT_STARTED,
+        error: undefined,
+        data: undefined,
       });
-  }, dependencies);
+    }
+  }, [...allOptions.updateTriggers]);
 
   return data;
-}
+};
 
-export default useRestApi;
+export default getUseRestApi;
