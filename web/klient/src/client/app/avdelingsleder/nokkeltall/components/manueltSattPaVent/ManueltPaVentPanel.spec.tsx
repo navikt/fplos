@@ -1,5 +1,4 @@
 import React from 'react';
-import { expect } from 'chai';
 import sinon from 'sinon';
 import { Form } from 'react-final-form';
 import moment from 'moment';
@@ -31,42 +30,45 @@ describe('<ManueltPaVentPanel>', () => {
     [kodeverkTyper.FAGSAK_YTELSE_TYPE]: fagsakYtelseTyper,
   };
 
-  it('skal vise ukevalg i dropdown og valg av ytelsetype i radioknapper', () => {
-    const valuesMock = {
-      valgtYtelsetype: ALLE_YTELSETYPER_VALGT,
-      ukevalg: '4',
-    };
-    const oppgaverManueltPaVent = [];
+  it(
+    'skal vise ukevalg i dropdown og valg av ytelsetype i radioknapper',
+    () => {
+      const valuesMock = {
+        valgtYtelsetype: ALLE_YTELSETYPER_VALGT,
+        ukevalg: '4',
+      };
+      const oppgaverManueltPaVent = [];
 
-    requestApi.mock(RestApiGlobalStatePathsKeys.KODEVERK, alleKodeverk);
+      requestApi.mock(RestApiGlobalStatePathsKeys.KODEVERK, alleKodeverk);
 
-    const wrapper = shallowWithIntl(<ManueltPaVentPanel.WrappedComponent
-      intl={intl as IntlShape}
-      width={300}
-      height={200}
-      oppgaverManueltPaVent={oppgaverManueltPaVent}
-      getValueFromLocalStorage={sinon.spy()}
-      // @ts-ignore
-    />).find(Form).renderProp('render')({ values: valuesMock });
+      const wrapper = shallowWithIntl(<ManueltPaVentPanel.WrappedComponent
+        intl={intl as IntlShape}
+        width={300}
+        height={200}
+        oppgaverManueltPaVent={oppgaverManueltPaVent}
+        getValueFromLocalStorage={sinon.spy()}
+        // @ts-ignore
+      />).find(Form).renderProp('render')({ values: valuesMock });
 
-    const select = wrapper.find(SelectField);
-    expect(select).to.have.length(1);
+      const select = wrapper.find(SelectField);
+      expect(select).toHaveLength(1);
 
-    const options = select.prop('selectValues') as { props: { value: string; children: string }}[];
-    expect(options).to.have.length(2);
-    expect(options[0].props.value).to.eql('4');
-    expect(options[0].props.children).to.eql('4 uker frem');
-    expect(options[1].props.value).to.eql('8');
-    expect(options[1].props.children).to.eql('8 uker frem');
+      const options = select.prop('selectValues') as { props: { value: string; children: string }}[];
+      expect(options).toHaveLength(2);
+      expect(options[0].props.value).toEqual('4');
+      expect(options[0].props.children).toEqual('4 uker frem');
+      expect(options[1].props.value).toEqual('8');
+      expect(options[1].props.children).toEqual('8 uker frem');
 
-    const radioOptions = wrapper.find(RadioOption);
-    expect(radioOptions).to.have.length(4);
-    expect(radioOptions.first().prop('value')).to.eql('FP');
-    expect(radioOptions.first().prop('label')).to.eql('Foreldrepenger');
-    expect(radioOptions.at(1).prop('value')).to.eql('ES');
-    expect(radioOptions.at(1).prop('label')).to.eql('Engangsstønad');
-    expect(radioOptions.last().prop('value')).to.eql('ALLE');
-  });
+      const radioOptions = wrapper.find(RadioOption);
+      expect(radioOptions).toHaveLength(4);
+      expect(radioOptions.first().prop('value')).toEqual('FP');
+      expect(radioOptions.first().prop('label')).toEqual('Foreldrepenger');
+      expect(radioOptions.at(1).prop('value')).toEqual('ES');
+      expect(radioOptions.at(1).prop('label')).toEqual('Engangsstønad');
+      expect(radioOptions.last().prop('value')).toEqual('ALLE');
+    },
+  );
 
   it('skal filtrere bort alt som er lengre frem i tid enn fire uker', () => {
     const valuesMock = {
@@ -95,42 +97,45 @@ describe('<ManueltPaVentPanel>', () => {
     />).find(Form).renderProp('render')({ values: valuesMock });
 
     const graf = wrapper.find(ManueltPaVentGraf);
-    expect(graf).to.have.length(1);
-    expect(graf.prop('isFireUkerValgt')).is.true;
-    expect(graf.prop('oppgaverManueltPaVent')).is.eql([oppgaverManueltPaVent[1]]);
+    expect(graf).toHaveLength(1);
+    expect(graf.prop('isFireUkerValgt')).toBe(true);
+    expect(graf.prop('oppgaverManueltPaVent')).toEqual([oppgaverManueltPaVent[1]]);
   });
 
-  it('skal ikke filtrere bort alt som er lengre frem i tid enn fire uker når åtte uker er valgt i filter', () => {
-    const valuesMock = {
-      valgtYtelsetype: ALLE_YTELSETYPER_VALGT,
-      ukevalg: '8',
-    };
-    const oppgaverManueltPaVent = [{
-      fagsakYtelseType: fagsakYtelseTyper[0],
-      behandlingFrist: moment().add(4, 'w').format(ISO_DATE_FORMAT),
-      antall: 1,
-    }, {
-      fagsakYtelseType: fagsakYtelseTyper[1],
-      behandlingFrist: moment().add(7, 'w').format(ISO_DATE_FORMAT),
-      antall: 1,
-    }];
+  it(
+    'skal ikke filtrere bort alt som er lengre frem i tid enn fire uker når åtte uker er valgt i filter',
+    () => {
+      const valuesMock = {
+        valgtYtelsetype: ALLE_YTELSETYPER_VALGT,
+        ukevalg: '8',
+      };
+      const oppgaverManueltPaVent = [{
+        fagsakYtelseType: fagsakYtelseTyper[0],
+        behandlingFrist: moment().add(4, 'w').format(ISO_DATE_FORMAT),
+        antall: 1,
+      }, {
+        fagsakYtelseType: fagsakYtelseTyper[1],
+        behandlingFrist: moment().add(7, 'w').format(ISO_DATE_FORMAT),
+        antall: 1,
+      }];
 
-    requestApi.mock(RestApiGlobalStatePathsKeys.KODEVERK, alleKodeverk);
+      requestApi.mock(RestApiGlobalStatePathsKeys.KODEVERK, alleKodeverk);
 
-    const wrapper = shallowWithIntl(<ManueltPaVentPanel.WrappedComponent
-      intl={intl as IntlShape}
-      width={300}
-      height={200}
-      oppgaverManueltPaVent={oppgaverManueltPaVent}
-      getValueFromLocalStorage={sinon.spy()}
-      // @ts-ignore
-    />).find(Form).renderProp('render')({ values: valuesMock });
+      const wrapper = shallowWithIntl(<ManueltPaVentPanel.WrappedComponent
+        intl={intl as IntlShape}
+        width={300}
+        height={200}
+        oppgaverManueltPaVent={oppgaverManueltPaVent}
+        getValueFromLocalStorage={sinon.spy()}
+        // @ts-ignore
+      />).find(Form).renderProp('render')({ values: valuesMock });
 
-    const graf = wrapper.find(ManueltPaVentGraf);
-    expect(graf).to.have.length(1);
-    expect(graf.prop('isFireUkerValgt')).is.false;
-    expect(graf.prop('oppgaverManueltPaVent')).is.eql(oppgaverManueltPaVent);
-  });
+      const graf = wrapper.find(ManueltPaVentGraf);
+      expect(graf).toHaveLength(1);
+      expect(graf.prop('isFireUkerValgt')).toBe(false);
+      expect(graf.prop('oppgaverManueltPaVent')).toEqual(oppgaverManueltPaVent);
+    },
+  );
 
   it('skal filtrere bort engangsstønader', () => {
     const valuesMock = {
@@ -159,8 +164,8 @@ describe('<ManueltPaVentPanel>', () => {
     />).find(Form).renderProp('render')({ values: valuesMock });
 
     const graf = wrapper.find(ManueltPaVentGraf);
-    expect(graf).to.have.length(1);
-    expect(graf.prop('oppgaverManueltPaVent')).is.eql([oppgaverManueltPaVent[1]]);
+    expect(graf).toHaveLength(1);
+    expect(graf.prop('oppgaverManueltPaVent')).toEqual([oppgaverManueltPaVent[1]]);
   });
 
   it('skal filtrere bort foreldrepenger', () => {
@@ -190,7 +195,7 @@ describe('<ManueltPaVentPanel>', () => {
     />).find(Form).renderProp('render')({ values: valuesMock });
 
     const graf = wrapper.find(ManueltPaVentGraf);
-    expect(graf).to.have.length(1);
-    expect(graf.prop('oppgaverManueltPaVent')).is.eql([oppgaverManueltPaVent[0]]);
+    expect(graf).toHaveLength(1);
+    expect(graf.prop('oppgaverManueltPaVent')).toEqual([oppgaverManueltPaVent[0]]);
   });
 });

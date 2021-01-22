@@ -1,12 +1,8 @@
 import React from 'react';
-import chai, { expect } from 'chai';
 import sinon from 'sinon';
-import sinonChai from 'sinon-chai';
 
 import { mountWithIntl, intlMock } from 'testHelpers/intl-enzyme-test-helper';
 import { RenderCheckboxField } from './CheckboxField';
-
-chai.use(sinonChai);
 
 const getInputMock = (input) => ({
   name: 'mockInput',
@@ -33,12 +29,17 @@ describe('<CheckboxField>', () => {
     const checkbox = wrapper.find('input');
 
     checkbox.simulate('change', { target: { checked: true } });
-    // @ts-ignore
-    expect(onChange).to.have.been.calledWith(true);
+
+    expect(onChange.called).toBe(true);
+    const { args } = onChange.getCalls()[0];
+    expect(args).toHaveLength(1);
+    expect(args[0]).toBe(true);
 
     checkbox.simulate('change', { target: { checked: false } });
-    // @ts-ignore
-    expect(onChange).to.have.been.calledWith(false);
+
+    const args2 = onChange.getCalls()[0].args;
+    expect(args2).toHaveLength(1);
+    expect(args2[0]).toBe(true);
   });
 
   it('skal initialisere checked med verdi fra input', () => {
@@ -52,7 +53,7 @@ describe('<CheckboxField>', () => {
     );
 
     const checkboxTrue = wrapperTrue.find('input');
-    expect(checkboxTrue.props().checked).to.be.true;
+    expect(checkboxTrue.props().checked).toBe(true);
 
     const wrapperFalse = mountWithIntl(
       <RenderCheckboxField
@@ -64,6 +65,6 @@ describe('<CheckboxField>', () => {
     );
 
     const checkboxFalse = wrapperFalse.find('input');
-    expect(checkboxFalse.props().checked).to.be.false;
+    expect(checkboxFalse.props().checked).toBe(false);
   });
 });

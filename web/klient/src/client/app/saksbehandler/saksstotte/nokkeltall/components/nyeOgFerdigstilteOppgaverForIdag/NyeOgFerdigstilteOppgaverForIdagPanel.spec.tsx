@@ -1,5 +1,4 @@
 import React from 'react';
-import { expect } from 'chai';
 import { shallow } from 'enzyme';
 import moment from 'moment';
 
@@ -36,7 +35,7 @@ describe('<NyeOgFerdigstilteOppgaverForIdagPanel>', () => {
       nyeOgFerdigstilteOppgaver={nyeOgFerdigstilteOppgaver}
     />);
 
-    expect(wrapper.find(NyeOgFerdigstilteOppgaverForIdagGraf)).to.have.length(1);
+    expect(wrapper.find(NyeOgFerdigstilteOppgaverForIdagGraf)).toHaveLength(1);
   });
 
   it('skal filtrere bort alle andre enn dagens oppgaver', () => {
@@ -69,7 +68,7 @@ describe('<NyeOgFerdigstilteOppgaverForIdagPanel>', () => {
 
     const filtrerteOppgaver = getNyeOgFerdigstilteForIDag(nyeOgFerdigstilteOppgaver);
 
-    expect(filtrerteOppgaver).to.have.length(1);
-    expect(filtrerteOppgaver[0].dato).is.eql(iDag);
+    expect(filtrerteOppgaver).toHaveLength(1);
+    expect(filtrerteOppgaver[0].dato).toEqual(iDag);
   });
 });

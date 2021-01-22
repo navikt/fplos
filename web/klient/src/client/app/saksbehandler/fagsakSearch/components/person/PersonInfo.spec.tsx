@@ -1,5 +1,4 @@
 import React from 'react';
-import { expect } from 'chai';
 import { IntlShape } from 'react-intl';
 import { Undertittel, Undertekst } from 'nav-frontend-typografi';
 
@@ -34,18 +33,18 @@ describe('<PersonInfo>', () => {
     />);
 
     const image = wrapper.find(Image);
-    expect(image.prop('alt')).to.eql('Personinformasjon');
+    expect(image.prop('alt')).toEqual('Personinformasjon');
 
     const innholdstittel = wrapper.find(Undertittel);
-    expect(innholdstittel.childAt(0).text()).to.eql('frida');
+    expect(innholdstittel.childAt(0).text()).toEqual('frida');
 
     const aldervisning = wrapper.find(AlderVisning);
-    expect(aldervisning.prop('alder')).to.eql(40);
+    expect(aldervisning.prop('alder')).toEqual(40);
 
     const normaltekst = wrapper.find(Undertekst);
-    expect(normaltekst.childAt(0).text()).to.eql('12345678910');
+    expect(normaltekst.childAt(0).text()).toEqual('12345678910');
 
     const merkepanel = wrapper.find(MerkePanel);
-    expect(merkepanel.prop('diskresjonskode')).to.eql('6');
+    expect(merkepanel.prop('diskresjonskode')).toEqual('6');
   });
 });

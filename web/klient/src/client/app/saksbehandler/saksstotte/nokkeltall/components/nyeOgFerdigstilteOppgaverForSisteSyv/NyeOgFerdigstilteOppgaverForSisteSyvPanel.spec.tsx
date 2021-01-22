@@ -1,5 +1,4 @@
 import React from 'react';
-import { expect } from 'chai';
 import { shallow } from 'enzyme';
 import moment from 'moment';
 
@@ -25,7 +24,7 @@ describe('<NyeOgFerdigstilteOppgaverForSisteSyvPanel>', () => {
       nyeOgFerdigstilteOppgaver={nyeOgFerdigstilteOppgaver}
     />);
 
-    expect(wrapper.find(NyeOgFerdigstilteOppgaverForSisteSyvGraf)).to.have.length(1);
+    expect(wrapper.find(NyeOgFerdigstilteOppgaverForSisteSyvGraf)).toHaveLength(1);
   });
 
   it('skal filtrere bort dagens oppgaver', () => {
@@ -65,11 +64,11 @@ describe('<NyeOgFerdigstilteOppgaverForSisteSyvPanel>', () => {
     />);
 
     const graf = wrapper.find(NyeOgFerdigstilteOppgaverForSisteSyvGraf);
-    expect(graf).to.have.length(1);
+    expect(graf).toHaveLength(1);
     const oppgaver = graf.props().nyeOgFerdigstilteOppgaver;
 
-    expect(oppgaver).to.have.length(2);
-    expect(oppgaver[0].dato).is.eql(iGar);
-    expect(oppgaver[1].dato).is.eql(atteDagerSiden);
+    expect(oppgaver).toHaveLength(2);
+    expect(oppgaver[0].dato).toEqual(iGar);
+    expect(oppgaver[1].dato).toEqual(atteDagerSiden);
   });
 });

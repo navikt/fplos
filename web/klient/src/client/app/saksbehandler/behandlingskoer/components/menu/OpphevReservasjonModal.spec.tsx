@@ -1,5 +1,4 @@
 import React from 'react';
-import { expect } from 'chai';
 import sinon from 'sinon';
 import { IntlShape } from 'react-intl';
 import { Form } from 'react-final-form';
@@ -44,32 +43,35 @@ describe('<OpphevReservasjonModal>', () => {
     href: '',
   };
 
-  it('skal rendre modal for å oppgi begrunnelse for oppheving av reservasjon', () => {
-    const wrapper = shallowWithIntl(
-      <OpphevReservasjonModal.WrappedComponent
-        intl={intl as IntlShape}
-        showModal
-        oppgave={oppgave}
-        cancel={sinon.spy()}
-        toggleMenu={sinon.spy()}
-        hentReserverteOppgaver={sinon.spy()}
-      />,
-    );
+  it(
+    'skal rendre modal for å oppgi begrunnelse for oppheving av reservasjon',
+    () => {
+      const wrapper = shallowWithIntl(
+        <OpphevReservasjonModal.WrappedComponent
+          intl={intl as IntlShape}
+          showModal
+          oppgave={oppgave}
+          cancel={sinon.spy()}
+          toggleMenu={sinon.spy()}
+          hentReserverteOppgaver={sinon.spy()}
+        />,
+      );
 
-    const form = wrapper.find(Form);
-    expect(form).has.length(1);
+      const form = wrapper.find(Form);
+      expect(form).toHaveLength(1);
 
-    const handleSubmitFn = sinon.spy();
-    const renderFn = form.prop('render') as ({ handleSubmit: any }) => void;
-    // @ts-ignore Fiks
-    const formWrapper = shallowWithIntl(renderFn({
-      handleSubmit: handleSubmitFn,
-    }));
+      const handleSubmitFn = sinon.spy();
+      const renderFn = form.prop('render') as ({ handleSubmit: any }) => void;
+      // @ts-ignore Fiks
+      const formWrapper = shallowWithIntl(renderFn({
+        handleSubmit: handleSubmitFn,
+      }));
 
-    expect(formWrapper.find(TextAreaField)).has.length(1);
+      expect(formWrapper.find(TextAreaField)).toHaveLength(1);
 
-    formWrapper.find('form').simulate('submit');
+      formWrapper.find('form').simulate('submit');
 
-    expect(handleSubmitFn.calledOnce).to.be.true;
-  });
+      expect(handleSubmitFn.calledOnce).toBe(true);
+    },
+  );
 });

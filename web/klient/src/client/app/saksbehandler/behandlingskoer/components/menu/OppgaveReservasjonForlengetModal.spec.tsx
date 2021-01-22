@@ -1,5 +1,4 @@
 import React from 'react';
-import { expect } from 'chai';
 import sinon from 'sinon';
 import { IntlShape, FormattedMessage } from 'react-intl';
 
@@ -43,22 +42,25 @@ describe('<OppgaveReservasjonForlengetModal>', () => {
     href: '',
   };
 
-  it('skal rendre modal for å gi tilbakemelding om at reservasjon er forlenget', () => {
-    const wrapper = shallowWithIntl(
-      <OppgaveReservasjonForlengetModal
-        intl={intl as IntlShape}
-        oppgave={oppgave}
-        showModal
-        closeModal={sinon.spy()}
-      />,
-    );
+  it(
+    'skal rendre modal for å gi tilbakemelding om at reservasjon er forlenget',
+    () => {
+      const wrapper = shallowWithIntl(
+        <OppgaveReservasjonForlengetModal
+          intl={intl as IntlShape}
+          oppgave={oppgave}
+          showModal
+          closeModal={sinon.spy()}
+        />,
+      );
 
-    const messages = wrapper.find(FormattedMessage);
-    expect(messages).has.length(2);
+      const messages = wrapper.find(FormattedMessage);
+      expect(messages).toHaveLength(2);
 
-    expect(messages.last().prop('values')).is.eql({
-      date: '02.08.2017',
-      time: '00:54',
-    });
-  });
+      expect(messages.last().prop('values')).toEqual({
+        date: '02.08.2017',
+        time: '00:54',
+      });
+    },
+  );
 });

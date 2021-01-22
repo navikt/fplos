@@ -1,5 +1,4 @@
 import React from 'react';
-import { expect } from 'chai';
 import { shallow } from 'enzyme';
 import sinon from 'sinon';
 
@@ -18,7 +17,7 @@ describe('<SakslistePanel>', () => {
       valgtSakslisteId={1}
     />);
 
-    expect(wrapper.find(SakslisteVelgerForm)).to.have.length(1);
-    expect(wrapper.find(OppgaverTabell)).to.have.length(1);
+    expect(wrapper.find(SakslisteVelgerForm)).toHaveLength(1);
+    expect(wrapper.find(OppgaverTabell)).toHaveLength(1);
   });
 });

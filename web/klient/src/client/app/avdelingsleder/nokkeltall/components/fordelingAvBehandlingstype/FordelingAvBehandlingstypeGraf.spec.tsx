@@ -1,5 +1,4 @@
 import React from 'react';
-import { expect } from 'chai';
 import { IntlShape } from 'react-intl';
 import {
   XYPlot, YAxis, HorizontalRectSeries, Hint,
@@ -62,7 +61,7 @@ describe('<FordelingAvBehandlingstypeGraf>', () => {
     />);
 
     const plot = wrapper.find(XYPlot);
-    expect(plot).to.have.length(1);
+    expect(plot).toHaveLength(1);
   });
 
   it('skal vise behandlingstyper på y-aksen', () => {
@@ -82,15 +81,17 @@ describe('<FordelingAvBehandlingstypeGraf>', () => {
     />);
 
     const yAksen = wrapper.find(YAxis);
-    expect(yAksen).to.have.length(1);
+    expect(yAksen).toHaveLength(1);
 
     const verdiIndekser = yAksen.prop('tickValues') as number[];
-    expect(verdiIndekser).to.have.length(6);
+    expect(verdiIndekser).toHaveLength(6);
 
     const verdiFn = yAksen.prop('tickFormat') as (v, i: number) => void;
 
     const behandlingstyper = verdiIndekser.map((i) => verdiFn(undefined, i - 1));
-    expect(behandlingstyper).is.eql(['Tilbakebet-rev', 'Tilbakebetaling', 'Dokumentinnsyn', 'Klage', 'Revurdering', 'Førstegangssøknad']);
+    expect(behandlingstyper).toEqual(
+      ['Tilbakebet-rev', 'Tilbakebetaling', 'Dokumentinnsyn', 'Klage', 'Revurdering', 'Førstegangssøknad'],
+    );
   });
 
   it('skal vise hint med antall og total-antall ved mouseover', () => {
@@ -115,7 +116,7 @@ describe('<FordelingAvBehandlingstypeGraf>', () => {
     />);
 
     const hRectSeries = wrapper.find(HorizontalRectSeries);
-    expect(hRectSeries).to.have.length(2);
+    expect(hRectSeries).toHaveLength(2);
 
     const grafPosisjon = {
       x: 2,
@@ -126,8 +127,7 @@ describe('<FordelingAvBehandlingstypeGraf>', () => {
     func(grafPosisjon);
 
     const hint = wrapper.find(Hint);
-    expect(hint).to.have.length(1);
-    expect(hint.childAt(0).html()).to.include('Antall: 1');
-    expect(hint.childAt(0).html()).to.include('Totalt antall: 2');
+    expect(hint).toHaveLength(1);
+    expect(hint.childAt(0).html()).toEqual('<div class="hint">Antall: 1<br/>Totalt antall: 2</div>');
   });
 });

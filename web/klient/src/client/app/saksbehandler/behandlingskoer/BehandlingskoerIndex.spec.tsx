@@ -1,5 +1,4 @@
 import React from 'react';
-import { expect } from 'chai';
 import { shallow } from 'enzyme';
 import sinon from 'sinon';
 
@@ -97,80 +96,89 @@ describe('<BehandlingskoerIndex>', () => {
       setValgtSakslisteId={sinon.spy()}
     />);
 
-    expect(wrapper.find(SakslistePanel)).to.have.length(0);
-    expect(wrapper.find(BehandlingPollingTimoutModal)).to.have.length(0);
+    expect(wrapper.find(SakslistePanel)).toHaveLength(0);
+    expect(wrapper.find(BehandlingPollingTimoutModal)).toHaveLength(0);
   });
 
-  it('skal hente behandlingskøer ved lasting av komponent og så vise desse korrekt', () => {
-    requestApi.mock(RestApiPathsKeys.SAKSLISTE, sakslister);
-    requestApi.mock(RestApiPathsKeys.RESERVER_OPPGAVE, undefined);
-    requestApi.mock(RestApiPathsKeys.FPSAK_BEHANDLING_ID, undefined);
+  it(
+    'skal hente behandlingskøer ved lasting av komponent og så vise desse korrekt',
+    () => {
+      requestApi.mock(RestApiPathsKeys.SAKSLISTE, sakslister);
+      requestApi.mock(RestApiPathsKeys.RESERVER_OPPGAVE, undefined);
+      requestApi.mock(RestApiPathsKeys.FPSAK_BEHANDLING_ID, undefined);
 
-    const wrapper = shallow(<BehandlingskoerIndex
-      fpsakUrl="www.fpsak.no"
-      fptilbakeUrl="www.fptilbake.no"
-      setValgtSakslisteId={sinon.spy()}
-    />);
+      const wrapper = shallow(<BehandlingskoerIndex
+        fpsakUrl="www.fpsak.no"
+        fptilbakeUrl="www.fptilbake.no"
+        setValgtSakslisteId={sinon.spy()}
+      />);
 
-    expect(wrapper.find(SakslistePanel)).to.have.length(1);
-  });
+      expect(wrapper.find(SakslistePanel)).toHaveLength(1);
+    },
+  );
 
-  it('skal reservere og åpne sak i FPSAK når oppgave ikke er reservert fra før', async () => {
-    requestApi.mock(RestApiPathsKeys.SAKSLISTE, sakslister);
-    requestApi.mock(RestApiPathsKeys.RESERVER_OPPGAVE, {
-      erReservert: true,
-      erReservertAvInnloggetBruker: true,
-    });
-    requestApi.mock(RestApiPathsKeys.FPSAK_BEHANDLING_ID, 1);
-
-    const wrapper = shallow(<BehandlingskoerIndex
-      fpsakUrl="www.fpsak.no"
-      fptilbakeUrl="www.fptilbake.no"
-      setValgtSakslisteId={sinon.spy()}
-    />);
-
-    const panel = wrapper.find(SakslistePanel);
-    expect(panel).to.have.length(1);
-
-    await panel.prop('reserverOppgave')(oppgave);
-
-    const reserverOppgaveCallData = requestApi.getRequestMockData(RestApiPathsKeys.RESERVER_OPPGAVE);
-    expect(reserverOppgaveCallData).to.have.length(1);
-    expect(reserverOppgaveCallData[0].params.oppgaveId).is.eql(1);
-
-    const hentFpsakInternBehandlingIdCallData = requestApi.getRequestMockData(RestApiPathsKeys.FPSAK_BEHANDLING_ID);
-    expect(hentFpsakInternBehandlingIdCallData).to.have.length(1);
-    expect(hentFpsakInternBehandlingIdCallData[0].params.uuid).is.eql('d10e592c-e5bd-4f24-95a6-8eb1ed48f068');
-  });
-
-  it('skal ikke reservere men kun åpne sak i FPSAK når oppgave allerede er reservert', () => {
-    requestApi.mock(RestApiPathsKeys.SAKSLISTE, sakslister);
-    requestApi.mock(RestApiPathsKeys.RESERVER_OPPGAVE);
-    requestApi.mock(RestApiPathsKeys.FPSAK_BEHANDLING_ID, {});
-
-    const wrapper = shallow(<BehandlingskoerIndex
-      fpsakUrl="www.fpsak.no"
-      fptilbakeUrl="www.fptilbake.no"
-      setValgtSakslisteId={sinon.spy()}
-    />);
-
-    const panel = wrapper.find(SakslistePanel);
-    expect(panel).to.have.length(1);
-
-    const reservertOppgave = {
-      ...oppgave,
-      status: {
+  it(
+    'skal reservere og åpne sak i FPSAK når oppgave ikke er reservert fra før',
+    async () => {
+      requestApi.mock(RestApiPathsKeys.SAKSLISTE, sakslister);
+      requestApi.mock(RestApiPathsKeys.RESERVER_OPPGAVE, {
         erReservert: true,
         erReservertAvInnloggetBruker: true,
-      },
-    };
-    panel.prop('reserverOppgave')(reservertOppgave);
+      });
+      requestApi.mock(RestApiPathsKeys.FPSAK_BEHANDLING_ID, 1);
 
-    const reserverOppgaveCallData = requestApi.getRequestMockData(RestApiPathsKeys.RESERVER_OPPGAVE);
-    expect(reserverOppgaveCallData).to.have.length(0);
+      const wrapper = shallow(<BehandlingskoerIndex
+        fpsakUrl="www.fpsak.no"
+        fptilbakeUrl="www.fptilbake.no"
+        setValgtSakslisteId={sinon.spy()}
+      />);
 
-    const hentFpsakInternBehandlingIdCallData = requestApi.getRequestMockData(RestApiPathsKeys.FPSAK_BEHANDLING_ID);
-    expect(hentFpsakInternBehandlingIdCallData).to.have.length(1);
-    expect(hentFpsakInternBehandlingIdCallData[0].params.uuid).is.eql('d10e592c-e5bd-4f24-95a6-8eb1ed48f068');
-  });
+      const panel = wrapper.find(SakslistePanel);
+      expect(panel).toHaveLength(1);
+
+      await panel.prop('reserverOppgave')(oppgave);
+
+      const reserverOppgaveCallData = requestApi.getRequestMockData(RestApiPathsKeys.RESERVER_OPPGAVE);
+      expect(reserverOppgaveCallData).toHaveLength(1);
+      expect(reserverOppgaveCallData[0].params.oppgaveId).toEqual(1);
+
+      const hentFpsakInternBehandlingIdCallData = requestApi.getRequestMockData(RestApiPathsKeys.FPSAK_BEHANDLING_ID);
+      expect(hentFpsakInternBehandlingIdCallData).toHaveLength(1);
+      expect(hentFpsakInternBehandlingIdCallData[0].params.uuid).toEqual('d10e592c-e5bd-4f24-95a6-8eb1ed48f068');
+    },
+  );
+
+  it(
+    'skal ikke reservere men kun åpne sak i FPSAK når oppgave allerede er reservert',
+    () => {
+      requestApi.mock(RestApiPathsKeys.SAKSLISTE, sakslister);
+      requestApi.mock(RestApiPathsKeys.RESERVER_OPPGAVE);
+      requestApi.mock(RestApiPathsKeys.FPSAK_BEHANDLING_ID, {});
+
+      const wrapper = shallow(<BehandlingskoerIndex
+        fpsakUrl="www.fpsak.no"
+        fptilbakeUrl="www.fptilbake.no"
+        setValgtSakslisteId={sinon.spy()}
+      />);
+
+      const panel = wrapper.find(SakslistePanel);
+      expect(panel).toHaveLength(1);
+
+      const reservertOppgave = {
+        ...oppgave,
+        status: {
+          erReservert: true,
+          erReservertAvInnloggetBruker: true,
+        },
+      };
+      panel.prop('reserverOppgave')(reservertOppgave);
+
+      const reserverOppgaveCallData = requestApi.getRequestMockData(RestApiPathsKeys.RESERVER_OPPGAVE);
+      expect(reserverOppgaveCallData).toHaveLength(0);
+
+      const hentFpsakInternBehandlingIdCallData = requestApi.getRequestMockData(RestApiPathsKeys.FPSAK_BEHANDLING_ID);
+      expect(hentFpsakInternBehandlingIdCallData).toHaveLength(1);
+      expect(hentFpsakInternBehandlingIdCallData[0].params.uuid).toEqual('d10e592c-e5bd-4f24-95a6-8eb1ed48f068');
+    },
+  );
 });

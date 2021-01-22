@@ -1,5 +1,4 @@
 import React from 'react';
-import { expect } from 'chai';
 import { shallow } from 'enzyme';
 import sinon from 'sinon';
 import { FormattedMessage } from 'react-intl';
@@ -19,10 +18,10 @@ describe('<ReservasjonerTabell>', () => {
     />);
 
     const message = wrapper.find(FormattedMessage);
-    expect(message).to.have.length(2);
-    expect(message.last().prop('id')).to.eql('ReservasjonerTabell.IngenReservasjoner');
+    expect(message).toHaveLength(2);
+    expect(message.last().prop('id')).toEqual('ReservasjonerTabell.IngenReservasjoner');
 
-    expect(wrapper.find(Table)).to.have.length(0);
+    expect(wrapper.find(Table)).toHaveLength(0);
   });
 
   it('skal vise to reservasjoner sortert i tabell', () => {
@@ -53,26 +52,26 @@ describe('<ReservasjonerTabell>', () => {
       hentAvdelingensReservasjoner={sinon.spy()}
     />);
 
-    expect(wrapper.find(FormattedMessage)).to.have.length(3);
-    expect(wrapper.find(Table)).to.have.length(1);
+    expect(wrapper.find(FormattedMessage)).toHaveLength(3);
+    expect(wrapper.find(Table)).toHaveLength(1);
 
     const rader = wrapper.find(TableRow);
-    expect(rader).to.have.length(2);
+    expect(rader).toHaveLength(2);
 
     const kolonnerRad1 = rader.first().find(TableColumn);
-    expect(kolonnerRad1).to.have.length(7);
-    expect(kolonnerRad1.first().childAt(0).text()).to.eql('Auto Joachim');
-    expect(kolonnerRad1.at(1).childAt(0).text()).to.eql('25');
-    expect(kolonnerRad1.at(2).childAt(0).text()).to.eql('Revurdering');
-    expect(kolonnerRad1.at(3).childAt(0).prop('id')).is.eql('ReservasjonerTabell.ReservertTilFormat');
-    expect(kolonnerRad1.at(3).childAt(0).prop('values')).is.eql({ time: '10:19', date: '01.02.2020' });
+    expect(kolonnerRad1).toHaveLength(7);
+    expect(kolonnerRad1.first().childAt(0).text()).toEqual('Auto Joachim');
+    expect(kolonnerRad1.at(1).childAt(0).text()).toEqual('25');
+    expect(kolonnerRad1.at(2).childAt(0).text()).toEqual('Revurdering');
+    expect(kolonnerRad1.at(3).childAt(0).prop('id')).toEqual('ReservasjonerTabell.ReservertTilFormat');
+    expect(kolonnerRad1.at(3).childAt(0).prop('values')).toEqual({ time: '10:19', date: '01.02.2020' });
 
     const kolonnerRad2 = rader.last().find(TableColumn);
-    expect(kolonnerRad2).to.have.length(7);
-    expect(kolonnerRad2.first().childAt(0).text()).to.eql('Espen Utvikler');
-    expect(kolonnerRad2.at(1).childAt(0).text()).to.eql('10');
-    expect(kolonnerRad2.at(2).childAt(0).text()).to.eql('Førstegangsbehandling');
-    expect(kolonnerRad2.at(3).childAt(0).prop('id')).is.eql('ReservasjonerTabell.ReservertTilFormat');
-    expect(kolonnerRad2.at(3).childAt(0).prop('values')).is.eql({ time: '14:30', date: '02.02.2020' });
+    expect(kolonnerRad2).toHaveLength(7);
+    expect(kolonnerRad2.first().childAt(0).text()).toEqual('Espen Utvikler');
+    expect(kolonnerRad2.at(1).childAt(0).text()).toEqual('10');
+    expect(kolonnerRad2.at(2).childAt(0).text()).toEqual('Førstegangsbehandling');
+    expect(kolonnerRad2.at(3).childAt(0).prop('id')).toEqual('ReservasjonerTabell.ReservertTilFormat');
+    expect(kolonnerRad2.at(3).childAt(0).prop('values')).toEqual({ time: '14:30', date: '02.02.2020' });
   });
 });

@@ -1,5 +1,4 @@
 import React from 'react';
-import { expect } from 'chai';
 import { shallow } from 'enzyme';
 
 import { OppgaverPerForsteStonadsdagPanel } from './OppgaverPerForsteStonadsdagPanel';
@@ -18,6 +17,6 @@ describe('<OppgaverPerForsteStonadsdagPanel>', () => {
       oppgaverPerForsteStonadsdag={oppgaverPerForsteStonadsdag}
     />);
 
-    expect(wrapper.find(OppgaverPerForsteStonadsdagGraf)).to.have.length(1);
+    expect(wrapper.find(OppgaverPerForsteStonadsdagGraf)).toHaveLength(1);
   });
 });

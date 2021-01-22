@@ -1,5 +1,4 @@
 import React from 'react';
-import { expect } from 'chai';
 import { Form } from 'react-final-form';
 
 import { mountWithIntl } from 'testHelpers/intl-enzyme-test-helper';
@@ -20,16 +19,16 @@ const mountFieldInForm = (field, initialValues = {}) => mountWithIntl(
 describe('<TextAreaField>', () => {
   it('Skal rendre TextAreaField', () => {
     const wrapper = mountFieldInForm(<TextAreaField name="text" label="name" />);
-    expect(wrapper.find('textarea')).to.have.length(1);
+    expect(wrapper.find('textarea')).toHaveLength(1);
   });
 
   it('Skal rendre TextAreaField som ren tekst hvis readonly', () => {
     const wrapper = mountFieldInForm(<TextAreaField name="text" label="name" readOnly />, { text: 'tekst' });
-    expect(wrapper.find('textarea')).to.have.length(0);
-    expect(wrapper.find('div')).to.have.length(1);
-    expect(wrapper.find('Label')).to.have.length(1);
-    expect(wrapper.find('Label').prop('input')).to.eql('name');
-    expect(wrapper.find('Normaltekst')).to.have.length(1);
-    expect(wrapper.find('Normaltekst').text()).to.eql('tekst');
+    expect(wrapper.find('textarea')).toHaveLength(0);
+    expect(wrapper.find('div')).toHaveLength(1);
+    expect(wrapper.find('Label')).toHaveLength(1);
+    expect(wrapper.find('Label').prop('input')).toEqual('name');
+    expect(wrapper.find('Normaltekst')).toHaveLength(1);
+    expect(wrapper.find('Normaltekst').text()).toEqual('tekst');
   });
 });

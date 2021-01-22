@@ -1,5 +1,4 @@
 import React from 'react';
-import { expect } from 'chai';
 import { shallow } from 'enzyme';
 
 import AvdelingslederDashboard from './AvdelingslederDashboard';
@@ -12,6 +11,6 @@ describe('<AvdelingslederDashboard>', () => {
       </AvdelingslederDashboard>,
     );
 
-    expect(wrapper.childAt(0).text()).to.eql('test');
+    expect(wrapper.childAt(0).text()).toEqual('test');
   });
 });

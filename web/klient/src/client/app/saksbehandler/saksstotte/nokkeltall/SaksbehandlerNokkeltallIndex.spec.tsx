@@ -1,6 +1,5 @@
 import React from 'react';
 import { shallow } from 'enzyme';
-import { expect } from 'chai';
 
 import { requestApi, RestApiPathsKeys } from 'data/fplosRestApi';
 import behandlingType from 'kodeverk/behandlingType';
@@ -25,8 +24,8 @@ describe('<SaksbehandlerNokkeltallIndex>', () => {
     const wrapper = shallow(<SaksbehandlerNokkeltallIndex valgtSakslisteId={2} />);
 
     const panel = wrapper.find(SaksbehandlerNokkeltallPanel);
-    expect(panel).to.have.length(1);
+    expect(panel).toHaveLength(1);
     const oppgaverRes = panel.props().nyeOgFerdigstilteOppgaver;
-    expect(oppgaverRes).to.eql(oppgaver);
+    expect(oppgaverRes).toEqual(oppgaver);
   });
 });

@@ -1,5 +1,4 @@
 import React from 'react';
-import { expect } from 'chai';
 import { IntlShape } from 'react-intl';
 import { Undertekst } from 'nav-frontend-typografi';
 
@@ -22,10 +21,10 @@ describe('<ErrorMessagePanel>', () => {
     />);
 
     const div = wrapper.find(Undertekst);
-    expect(div).to.have.length(1);
-    expect(div.childAt(0).text()).to.eql('Error! ');
+    expect(div).toHaveLength(1);
+    expect(div.childAt(0).text()).toEqual('Error! ');
 
-    expect(wrapper.find('a')).to.have.length(0);
+    expect(wrapper.find('a')).toHaveLength(0);
   });
 
   it('skal erstatte spesialtegn i feilmelding', () => {
@@ -38,8 +37,8 @@ describe('<ErrorMessagePanel>', () => {
     />);
 
     const div = wrapper.find(Undertekst);
-    expect(div).to.have.length(1);
-    expect(div.childAt(0).text()).to.eql('Høna & egget og "test1" og \'test2\' ');
+    expect(div).toHaveLength(1);
+    expect(div.childAt(0).text()).toEqual('Høna & egget og "test1" og \'test2\' ');
   });
 
   it('skal sette sammen feil fra ulike kilder til en struktur', () => {
@@ -56,8 +55,8 @@ describe('<ErrorMessagePanel>', () => {
     />);
 
     const div = wrapper.find(Undertekst);
-    expect(div).to.have.length(2);
-    expect(div.at(0).childAt(0).text()).to.eql('Dette er en feil ');
-    expect(div.at(1).childAt(0).text()).to.eql('Feilet ');
+    expect(div).toHaveLength(2);
+    expect(div.at(0).childAt(0).text()).toEqual('Dette er en feil ');
+    expect(div.at(1).childAt(0).text()).toEqual('Feilet ');
   });
 });

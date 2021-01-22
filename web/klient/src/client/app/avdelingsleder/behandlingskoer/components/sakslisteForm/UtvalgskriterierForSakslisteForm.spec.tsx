@@ -1,5 +1,4 @@
 import React from 'react';
-import { expect } from 'chai';
 import sinon from 'sinon';
 import { IntlShape } from 'react-intl';
 import { Form } from 'react-final-form';
@@ -42,41 +41,44 @@ describe('<UtvalgskriterierForSakslisteForm>', () => {
       // @ts-ignore
     />).find(Form).renderProp('render')({ values: { erDynamiskPeriode: false } });
 
-    expect(wrapper.find(AutoLagringVedBlur)).to.have.length(1);
-    expect(wrapper.find(BehandlingstypeVelger)).to.have.length(1);
-    expect(wrapper.find(InputField)).to.have.length(1);
+    expect(wrapper.find(AutoLagringVedBlur)).toHaveLength(1);
+    expect(wrapper.find(BehandlingstypeVelger)).toHaveLength(1);
+    expect(wrapper.find(InputField)).toHaveLength(1);
   });
 
-  it('skal vise default-navn for sakslisten når dette ikke er satt fra før', () => {
-    const saksliste = {
-      sakslisteId: 1,
-      navn: undefined,
-      sistEndret: '2017-08-31',
-      saksbehandlerIdenter: [],
-      antallBehandlinger: 1,
-    };
+  it(
+    'skal vise default-navn for sakslisten når dette ikke er satt fra før',
+    () => {
+      const saksliste = {
+        sakslisteId: 1,
+        navn: undefined,
+        sistEndret: '2017-08-31',
+        saksbehandlerIdenter: [],
+        antallBehandlinger: 1,
+      };
 
-    const wrapper = shallowWithIntl(<UtvalgskriterierForSakslisteForm.WrappedComponent
-      intl={intl as IntlShape}
-      valgtSaksliste={saksliste}
-      valgtAvdelingEnhet="1"
-      hentAvdelingensSakslister={sinon.spy()}
-      hentOppgaverForAvdelingAntall={sinon.spy()}
-    />);
+      const wrapper = shallowWithIntl(<UtvalgskriterierForSakslisteForm.WrappedComponent
+        intl={intl as IntlShape}
+        valgtSaksliste={saksliste}
+        valgtAvdelingEnhet="1"
+        hentAvdelingensSakslister={sinon.spy()}
+        hentOppgaverForAvdelingAntall={sinon.spy()}
+      />);
 
-    const initialValues = wrapper.prop('initialValues');
-    expect(initialValues).to.eql({
-      sakslisteId: 1,
-      navn: 'Ny behandlingskø',
-      sortering: undefined,
-      fagsakYtelseType: '',
-      fra: undefined,
-      til: undefined,
-      fomDato: undefined,
-      tomDato: undefined,
-      erDynamiskPeriode: undefined,
-    });
-  });
+      const initialValues = wrapper.prop('initialValues');
+      expect(initialValues).toEqual({
+        sakslisteId: 1,
+        navn: 'Ny behandlingskø',
+        sortering: undefined,
+        fagsakYtelseType: '',
+        fra: undefined,
+        til: undefined,
+        fomDato: undefined,
+        tomDato: undefined,
+        erDynamiskPeriode: undefined,
+      });
+    },
+  );
 
   it('skal vise navn for sakslisten når dette er satt fra før', () => {
     const saksliste = {
@@ -96,7 +98,7 @@ describe('<UtvalgskriterierForSakslisteForm>', () => {
     />);
 
     const initialValues = wrapper.prop('initialValues');
-    expect(initialValues).to.eql({
+    expect(initialValues).toEqual({
       sakslisteId: 1,
       navn: 'Nyansatte',
       sortering: undefined,
@@ -138,10 +140,10 @@ describe('<UtvalgskriterierForSakslisteForm>', () => {
     });
 
     const lagreSakslisteNavnCallData = requestApi.getRequestMockData(RestApiPathsKeys.LAGRE_SAKSLISTE_NAVN);
-    expect(lagreSakslisteNavnCallData).to.have.length(1);
-    expect(lagreSakslisteNavnCallData[0].params.sakslisteId).is.eql(1);
-    expect(lagreSakslisteNavnCallData[0].params.navn).is.eql('Foreldrepenger');
-    expect(lagreSakslisteNavnCallData[0].params.avdelingEnhet).is.eql('1');
+    expect(lagreSakslisteNavnCallData).toHaveLength(1);
+    expect(lagreSakslisteNavnCallData[0].params.sakslisteId).toEqual(1);
+    expect(lagreSakslisteNavnCallData[0].params.navn).toEqual('Foreldrepenger');
+    expect(lagreSakslisteNavnCallData[0].params.avdelingEnhet).toEqual('1');
   });
 
   it('skal sette opp korrekt formstate for andrekriterier', () => {
@@ -175,7 +177,7 @@ describe('<UtvalgskriterierForSakslisteForm>', () => {
     />);
 
     const initialValues = wrapper.prop('initialValues');
-    expect(initialValues).to.eql({
+    expect(initialValues).toEqual({
       sakslisteId: 1,
       navn: 'Nyansatte',
       sortering: undefined,

@@ -1,6 +1,5 @@
 import React, { KeyboardEvent } from 'react';
 import { shallow } from 'enzyme';
-import { expect } from 'chai';
 import sinon from 'sinon';
 import { FormattedMessage } from 'react-intl';
 
@@ -53,10 +52,10 @@ describe('<GjeldendeSakslisterTabell>', () => {
     />);
 
     const tekstComp = wrapper.find(FormattedMessage);
-    expect(tekstComp).to.have.length(4);
-    expect(tekstComp.at(2).prop('id')).to.eql('GjeldendeSakslisterTabell.IngenLister');
+    expect(tekstComp).toHaveLength(4);
+    expect(tekstComp.at(2).prop('id')).toEqual('GjeldendeSakslisterTabell.IngenLister');
 
-    expect(wrapper.find(Table)).to.have.length(0);
+    expect(wrapper.find(Table)).toHaveLength(0);
   });
 
   it('skal vise to sakslister', () => {
@@ -89,18 +88,18 @@ describe('<GjeldendeSakslisterTabell>', () => {
       resetValgtSakslisteId={sinon.spy()}
     />);
 
-    expect(wrapper.find(FormattedMessage)).to.have.length(7);
-    expect(wrapper.find(Table)).to.have.length(1);
+    expect(wrapper.find(FormattedMessage)).toHaveLength(7);
+    expect(wrapper.find(Table)).toHaveLength(1);
     const rader = wrapper.find(TableRow);
-    expect(rader).to.have.length(2);
+    expect(rader).toHaveLength(2);
 
     const kolonnerForRad1 = rader.first().find(TableColumn);
-    expect(kolonnerForRad1).to.have.length(7);
-    expect(kolonnerForRad1.first().childAt(0).text()).to.eql('Nyansatte');
+    expect(kolonnerForRad1).toHaveLength(7);
+    expect(kolonnerForRad1.first().childAt(0).text()).toEqual('Nyansatte');
 
     const kolonnerForRad2 = rader.last().find(TableColumn);
-    expect(kolonnerForRad2).to.have.length(7);
-    expect(kolonnerForRad2.first().childAt(0).text()).to.eql('Kun foreldrepenger');
+    expect(kolonnerForRad2).toHaveLength(7);
+    expect(kolonnerForRad2.first().childAt(0).text()).toEqual('Kun foreldrepenger');
   });
 
   it('skal legge til ny saksliste ved musklikk', () => {
@@ -119,12 +118,12 @@ describe('<GjeldendeSakslisterTabell>', () => {
     />);
 
     const leggTilListe = wrapper.find('div#leggTilListe');
-    expect(leggTilListe).to.have.length(1);
+    expect(leggTilListe).toHaveLength(1);
 
     const clickFn = leggTilListe.prop('onClick') as () => void;
     clickFn();
 
-    expect(lagNySakslisteFn.calledOnce).to.be.true;
+    expect(lagNySakslisteFn.calledOnce).toBe(true);
   });
 
   it('skal legge til ny saksliste ved trykk på enter-knapp', () => {
@@ -143,39 +142,42 @@ describe('<GjeldendeSakslisterTabell>', () => {
     />);
 
     const leggTilListe = wrapper.find('div#leggTilListe');
-    expect(leggTilListe).to.have.length(1);
+    expect(leggTilListe).toHaveLength(1);
 
     leggTilListe.prop('onKeyDown')({
       keyCode: 13,
     } as KeyboardEvent);
 
-    expect(lagNySakslisteFn.calledOnce).to.be.true;
+    expect(lagNySakslisteFn.calledOnce).toBe(true);
   });
 
-  it('skal ikke legge til ny saksliste ved trykk på annen knapp enn enter', () => {
-    const sakslister = [];
-    const lagNySakslisteFn = sinon.spy();
+  it(
+    'skal ikke legge til ny saksliste ved trykk på annen knapp enn enter',
+    () => {
+      const sakslister = [];
+      const lagNySakslisteFn = sinon.spy();
 
-    requestApi.mock(RestApiGlobalStatePathsKeys.KODEVERK, alleKodeverk);
+      requestApi.mock(RestApiGlobalStatePathsKeys.KODEVERK, alleKodeverk);
 
-    const wrapper = shallow(<GjeldendeSakslisterTabell
-      sakslister={sakslister}
-      setValgtSakslisteId={sinon.spy()}
-      lagNySaksliste={lagNySakslisteFn}
-      valgtAvdelingEnhet="2"
-      hentAvdelingensSakslister={sinon.spy()}
-      resetValgtSakslisteId={sinon.spy()}
-    />);
+      const wrapper = shallow(<GjeldendeSakslisterTabell
+        sakslister={sakslister}
+        setValgtSakslisteId={sinon.spy()}
+        lagNySaksliste={lagNySakslisteFn}
+        valgtAvdelingEnhet="2"
+        hentAvdelingensSakslister={sinon.spy()}
+        resetValgtSakslisteId={sinon.spy()}
+      />);
 
-    const leggTilListe = wrapper.find('div#leggTilListe');
-    expect(leggTilListe).to.have.length(1);
+      const leggTilListe = wrapper.find('div#leggTilListe');
+      expect(leggTilListe).toHaveLength(1);
 
-    leggTilListe.prop('onKeyDown')({
-      keyCode: 10,
-    } as KeyboardEvent);
+      leggTilListe.prop('onKeyDown')({
+        keyCode: 10,
+      } as KeyboardEvent);
 
-    expect(lagNySakslisteFn.calledOnce).to.be.false;
-  });
+      expect(lagNySakslisteFn.calledOnce).toBe(false);
+    },
+  );
 
   it('skal sette valgt saksliste ved trykk på rad i tabell', async () => {
     const sakslister = [{
@@ -201,50 +203,53 @@ describe('<GjeldendeSakslisterTabell>', () => {
     />);
 
     const rader = wrapper.find(TableRow);
-    expect(rader).to.have.length(1);
+    expect(rader).toHaveLength(1);
 
     const keyFn = rader.prop('onKeyDown') as () => void;
     await keyFn();
 
-    expect(setValgtSakslisteIdFn.calledOnce).to.be.true;
+    expect(setValgtSakslisteIdFn.calledOnce).toBe(true);
   });
 
-  it('skal vise modal for å slette saksliste ved trykk på slette-knapp', () => {
-    const sakslister = [{
-      sakslisteId: 1,
-      navn: 'Nyansatte',
-      sistEndret: '2017-08-31',
-      erTilBeslutter: false,
-      erRegistrerPapirsoknad: false,
-      saksbehandlerIdenter: [],
-      antallBehandlinger: 1,
-    }];
+  it(
+    'skal vise modal for å slette saksliste ved trykk på slette-knapp',
+    () => {
+      const sakslister = [{
+        sakslisteId: 1,
+        navn: 'Nyansatte',
+        sistEndret: '2017-08-31',
+        erTilBeslutter: false,
+        erRegistrerPapirsoknad: false,
+        saksbehandlerIdenter: [],
+        antallBehandlinger: 1,
+      }];
 
-    requestApi.mock(RestApiGlobalStatePathsKeys.KODEVERK, alleKodeverk);
+      requestApi.mock(RestApiGlobalStatePathsKeys.KODEVERK, alleKodeverk);
 
-    const wrapper = shallow(<GjeldendeSakslisterTabell
-      sakslister={sakslister}
-      setValgtSakslisteId={sinon.spy()}
-      lagNySaksliste={sinon.spy()}
-      valgtAvdelingEnhet="2"
-      hentAvdelingensSakslister={sinon.spy()}
-      resetValgtSakslisteId={sinon.spy()}
-    />);
+      const wrapper = shallow(<GjeldendeSakslisterTabell
+        sakslister={sakslister}
+        setValgtSakslisteId={sinon.spy()}
+        lagNySaksliste={sinon.spy()}
+        valgtAvdelingEnhet="2"
+        hentAvdelingensSakslister={sinon.spy()}
+        resetValgtSakslisteId={sinon.spy()}
+      />);
 
-    const rader = wrapper.find(TableRow);
-    expect(rader).to.have.length(1);
+      const rader = wrapper.find(TableRow);
+      expect(rader).toHaveLength(1);
 
-    const kolonner = rader.first().find(TableColumn);
-    const bildeKnapp = kolonner.last().find(Image);
-    expect(bildeKnapp).to.have.length(1);
+      const kolonner = rader.first().find(TableColumn);
+      const bildeKnapp = kolonner.last().find(Image);
+      expect(bildeKnapp).toHaveLength(1);
 
-    expect(wrapper.find(SletteSakslisteModal)).to.have.length(0);
+      expect(wrapper.find(SletteSakslisteModal)).toHaveLength(0);
 
-    const mouseFn = bildeKnapp.prop('onMouseDown') as () => void;
-    mouseFn();
+      const mouseFn = bildeKnapp.prop('onMouseDown') as () => void;
+      mouseFn();
 
-    expect(wrapper.find(SletteSakslisteModal)).to.have.length(1);
-  });
+      expect(wrapper.find(SletteSakslisteModal)).toHaveLength(1);
+    },
+  );
 
   it('skal lukke modal ved trykk på avbryt i modal', () => {
     const sakslister = [{
@@ -276,11 +281,11 @@ describe('<GjeldendeSakslisterTabell>', () => {
     mouseFn();
 
     const modal = wrapper.find(SletteSakslisteModal);
-    expect(modal).to.have.length(1);
+    expect(modal).toHaveLength(1);
 
     modal.prop('cancel')();
 
-    expect(wrapper.find(SletteSakslisteModal)).to.have.length(0);
+    expect(wrapper.find(SletteSakslisteModal)).toHaveLength(0);
   });
 
   it('skal fjerne saksliste ved trykk på ok i modal', () => {
@@ -314,16 +319,16 @@ describe('<GjeldendeSakslisterTabell>', () => {
     mouseFn();
 
     const modal = wrapper.find(SletteSakslisteModal);
-    expect(modal).to.have.length(1);
+    expect(modal).toHaveLength(1);
 
     modal.prop('submit')(sakslister[0]);
 
-    expect(wrapper.find(SletteSakslisteModal)).to.have.length(0);
+    expect(wrapper.find(SletteSakslisteModal)).toHaveLength(0);
 
     const fjernSakslisterCallData = requestApi.getRequestMockData(RestApiPathsKeys.SLETT_SAKSLISTE);
-    expect(fjernSakslisterCallData).to.have.length(1);
-    expect(fjernSakslisterCallData[0].params.sakslisteId).is.eql(1);
-    expect(fjernSakslisterCallData[0].params.avdelingEnhet).is.eql('2');
+    expect(fjernSakslisterCallData).toHaveLength(1);
+    expect(fjernSakslisterCallData[0].params.sakslisteId).toEqual(1);
+    expect(fjernSakslisterCallData[0].params.avdelingEnhet).toEqual('2');
   });
 
   it('skal vise antall saksbehandlere tilknyttet sakslisten', () => {
@@ -348,12 +353,12 @@ describe('<GjeldendeSakslisterTabell>', () => {
       resetValgtSakslisteId={sinon.spy()}
     />);
 
-    expect(wrapper.find(Table)).to.have.length(1);
+    expect(wrapper.find(Table)).toHaveLength(1);
     const rader = wrapper.find(TableRow);
-    expect(rader).to.have.length(1);
+    expect(rader).toHaveLength(1);
 
     const kolonnerForRad = rader.first().find(TableColumn);
-    expect(kolonnerForRad).to.have.length(7);
-    expect(kolonnerForRad.at(3).childAt(0).text()).to.eql('1');
+    expect(kolonnerForRad).toHaveLength(7);
+    expect(kolonnerForRad.at(3).childAt(0).text()).toEqual('1');
   });
 });

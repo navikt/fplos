@@ -1,6 +1,5 @@
 import React from 'react';
 import { shallow } from 'enzyme';
-import { expect } from 'chai';
 import sinon from 'sinon';
 
 import { requestApi, RestApiGlobalStatePathsKeys } from 'data/fplosRestApi';
@@ -77,62 +76,64 @@ describe('<FagsakList>', () => {
     );
 
     const table = wrapper.find(Table);
-    expect(table).to.have.length(1);
+    expect(table).toHaveLength(1);
 
-    expect(table.prop('headerTextCodes')).to.eql(headerTextCodes);
+    expect(table.prop('headerTextCodes')).toEqual(headerTextCodes);
 
     const tableRows = table.children();
-    expect(tableRows).to.have.length(1);
+    expect(tableRows).toHaveLength(1);
     const tableColumns = tableRows.children();
-    expect(tableColumns).to.have.length(6);
-    expect(tableColumns.first().childAt(0).text()).to.eql('12345');
-    expect(tableColumns.at(1).childAt(0).text()).to.eql('Engangsstonad');
-    expect(tableColumns.at(3).childAt(0).text()).to.eql('Under behandling');
-    expect(tableColumns.at(4).childAt(0)).is.empty;
+    expect(tableColumns).toHaveLength(6);
+    expect(tableColumns.first().childAt(0).text()).toEqual('12345');
+    expect(tableColumns.at(1).childAt(0).text()).toEqual('Engangsstonad');
+    expect(tableColumns.at(3).childAt(0).text()).toEqual('Under behandling');
   });
 
-  it('skal sortere søkeresultat der avsluttede skal vises sist, mens sist endrede skal vises først', () => {
-    const fagsak2 = {
-      saksnummer: 23456,
-      system: 'FPSAK',
-      sakstype: {
-        navn: '',
-        kode: 'TEST',
-      },
-      status: {
-        navn: '',
-        kode: 'UBEH',
-      },
-      opprettet: '13‎.‎02‎.‎2017‎ ‎09‎:‎54‎:‎22 ',
-      endret: '13‎.‎02‎.‎2017‎ ‎09‎:‎54‎:‎22',
-      person,
-      oppgaver: [],
-    };
-    const fagsak3 = {
-      saksnummer: 34567,
-      system: 'FPSAK',
-      sakstype: {
-        navn: '',
-        kode: 'TEST',
-      },
-      status: {
-        navn: '',
-        kode: 'AVSLU',
-      },
-      opprettet: '13‎.‎02‎.‎2017‎ ‎09‎:‎54‎:‎22',
-      endret: '13‎.‎02‎.‎2017‎ ‎09‎:‎54‎:‎22',
-      person,
-    };
+  it(
+    'skal sortere søkeresultat der avsluttede skal vises sist, mens sist endrede skal vises først',
+    () => {
+      const fagsak2 = {
+        saksnummer: 23456,
+        system: 'FPSAK',
+        sakstype: {
+          navn: '',
+          kode: 'TEST',
+        },
+        status: {
+          navn: '',
+          kode: 'UBEH',
+        },
+        opprettet: '13‎.‎02‎.‎2017‎ ‎09‎:‎54‎:‎22 ',
+        endret: '13‎.‎02‎.‎2017‎ ‎09‎:‎54‎:‎22',
+        person,
+        oppgaver: [],
+      };
+      const fagsak3 = {
+        saksnummer: 34567,
+        system: 'FPSAK',
+        sakstype: {
+          navn: '',
+          kode: 'TEST',
+        },
+        status: {
+          navn: '',
+          kode: 'AVSLU',
+        },
+        opprettet: '13‎.‎02‎.‎2017‎ ‎09‎:‎54‎:‎22',
+        endret: '13‎.‎02‎.‎2017‎ ‎09‎:‎54‎:‎22',
+        person,
+      };
 
-    const fagsaker = [fagsak, fagsak2, fagsak3];
+      const fagsaker = [fagsak, fagsak2, fagsak3];
 
-    const sorterteFagsaker = getSorterteFagsaker(fagsaker);
+      const sorterteFagsaker = getSorterteFagsaker(fagsaker);
 
-    expect(sorterteFagsaker).to.have.length(3);
-    expect(sorterteFagsaker[0].saksnummer).to.eql(23456);
-    expect(sorterteFagsaker[1].saksnummer).to.eql(12345);
-    expect(sorterteFagsaker[2].saksnummer).to.eql(34567);
-  });
+      expect(sorterteFagsaker).toHaveLength(3);
+      expect(sorterteFagsaker[0].saksnummer).toEqual(23456);
+      expect(sorterteFagsaker[1].saksnummer).toEqual(12345);
+      expect(sorterteFagsaker[2].saksnummer).toEqual(34567);
+    },
+  );
 
   it('skal vise DateLabel i tabell kun om barn er født', () => {
     const fagsak4 = {
@@ -167,11 +168,8 @@ describe('<FagsakList>', () => {
 
     const table = wrapper.find(Table);
     const tableRows = table.children();
-    expect(tableRows).to.have.length(2);
+    expect(tableRows).toHaveLength(2);
     const tableColumnsRow1 = tableRows.first().children();
-    expect(tableColumnsRow1.at(4).childAt(0).text()).is.eql('<DateLabel />');
-
-    const tableColumnsRow2 = tableRows.last().children();
-    expect(tableColumnsRow2.at(4).childAt(0)).is.empty;
+    expect(tableColumnsRow1.at(4).childAt(0).text()).toEqual('<DateLabel />');
   });
 });

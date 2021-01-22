@@ -1,6 +1,5 @@
 import React from 'react';
 import sinon from 'sinon';
-import { expect } from 'chai';
 import Header from '@navikt/nap-header';
 import { IntlShape } from 'react-intl';
 
@@ -32,6 +31,6 @@ describe('<HeaderWithErrorPanel>', () => {
     />);
 
     const header = wrapper.find(Header);
-    expect(header.prop('title')).to.eq('Svangerskap, fødsel og adopsjon');
+    expect(header.prop('title')).toBe('Svangerskap, fødsel og adopsjon');
   });
 });

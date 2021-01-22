@@ -1,5 +1,4 @@
 import React from 'react';
-import { expect } from 'chai';
 import { FormattedMessage, IntlShape } from 'react-intl';
 
 import { shallowWithIntl, intlMock } from 'testHelpers/intl-enzyme-test-helper';
@@ -20,16 +19,16 @@ describe('<BehandlingPollingTimoutModal>', () => {
     );
 
     const modal = wrapper.find(Modal);
-    expect(modal).to.have.length(1);
-    expect(modal.prop('isOpen')).is.true;
-    expect(modal.prop('contentLabel')).is.eql('Din økt er gått ut på tid, trykk Fortsett');
+    expect(modal).toHaveLength(1);
+    expect(modal.prop('isOpen')).toBe(true);
+    expect(modal.prop('contentLabel')).toEqual('Din økt er gått ut på tid, trykk Fortsett');
 
     const image = wrapper.find(Image);
-    expect(image).to.have.length(1);
-    expect(image.prop('alt')).is.eql('Din økt er gått ut på tid, trykk Fortsett');
+    expect(image).toHaveLength(1);
+    expect(image.prop('alt')).toEqual('Din økt er gått ut på tid, trykk Fortsett');
 
     const message = wrapper.find(FormattedMessage);
-    expect(message).to.have.length(1);
-    expect(message.prop('id')).is.eql('BehandlingPollingTimoutModal.TimeoutMelding');
+    expect(message).toHaveLength(1);
+    expect(message.prop('id')).toEqual('BehandlingPollingTimoutModal.TimeoutMelding');
   });
 });
