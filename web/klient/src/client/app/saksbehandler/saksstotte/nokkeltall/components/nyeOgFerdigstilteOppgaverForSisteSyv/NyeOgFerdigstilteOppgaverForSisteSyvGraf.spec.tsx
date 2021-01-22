@@ -1,5 +1,4 @@
 import React from 'react';
-import { expect } from 'chai';
 import { IntlShape } from 'react-intl';
 import {
   XYPlot, AreaSeries, Crosshair,
@@ -28,9 +27,11 @@ describe('<NyeOgFerdigstilteOppgaverForSisteSyvGraf>', () => {
       />);
 
       const xYPlot = wrapper.find(XYPlot);
-      expect(xYPlot).to.have.length(1);
-      expect(xYPlot.prop('xDomain')).to.eql([moment().subtract(7, 'd').startOf('day').toDate(), moment().subtract(1, 'd').startOf('day').toDate()]);
-      expect(xYPlot.prop('yDomain')).to.eql([0, 50]);
+      expect(xYPlot).toHaveLength(1);
+      expect(xYPlot.prop('xDomain')).toEqual(
+        [moment().subtract(7, 'd').startOf('day').toDate(), moment().subtract(1, 'd').startOf('day').toDate()],
+      );
+      expect(xYPlot.prop('yDomain')).toEqual([0, 50]);
     },
   );
 
@@ -103,7 +104,7 @@ describe('<NyeOgFerdigstilteOppgaverForSisteSyvGraf>', () => {
       />);
 
       const areaSeries = wrapper.find(AreaSeries);
-      expect(areaSeries).to.have.length(2);
+      expect(areaSeries).toHaveLength(2);
 
       const ferdigstilteOppgaver = [{
         x: moment().subtract(7, 'd').startOf('day').toDate(),
@@ -128,7 +129,7 @@ describe('<NyeOgFerdigstilteOppgaverForSisteSyvGraf>', () => {
         y: 1,
       }];
       const dataArea1 = areaSeries.first().prop('data');
-      expect(dataArea1).to.eql(ferdigstilteOppgaver);
+      expect(dataArea1).toEqual(ferdigstilteOppgaver);
 
       const nyeOppgaver = [{
         x: moment().subtract(7, 'd').startOf('day').toDate(),
@@ -153,7 +154,7 @@ describe('<NyeOgFerdigstilteOppgaverForSisteSyvGraf>', () => {
         y: 11,
       }];
       const dataArea2 = areaSeries.last().prop('data');
-      expect(dataArea2).to.eql(nyeOppgaver);
+      expect(dataArea2).toEqual(nyeOppgaver);
     },
   );
 
@@ -178,19 +179,19 @@ describe('<NyeOgFerdigstilteOppgaverForSisteSyvGraf>', () => {
       />);
 
       const areaSeries = wrapper.find(AreaSeries);
-      expect(areaSeries).to.have.length(2);
+      expect(areaSeries).toHaveLength(2);
       const valgtPunkt = { x: moment().startOf('day').subtract(1, 'd').toDate(), y: 1 };
       const func = areaSeries.first().prop('onNearestX') as (value: {x: Date; y: number}) => void;
       func(valgtPunkt);
 
       const crosshair = wrapper.find(Crosshair);
-      expect(crosshair).to.have.length(1);
+      expect(crosshair).toHaveLength(1);
 
-      expect(crosshair.find(Normaltekst).childAt(0).text()).to.eql(moment().subtract(1, 'd').format(DDMMYYYY_DATE_FORMAT));
+      expect(crosshair.find(Normaltekst).childAt(0).text()).toEqual(moment().subtract(1, 'd').format(DDMMYYYY_DATE_FORMAT));
       const tekst = crosshair.find(Undertekst);
-      expect(tekst).to.have.length(2);
-      expect(tekst.first().childAt(0).prop('values').antall).to.eql(2);
-      expect(tekst.last().childAt(0).prop('values').antall).to.eql(12);
+      expect(tekst).toHaveLength(2);
+      expect(tekst.first().childAt(0).prop('values').antall).toEqual(2);
+      expect(tekst.last().childAt(0).prop('values').antall).toEqual(12);
     },
   );
 });

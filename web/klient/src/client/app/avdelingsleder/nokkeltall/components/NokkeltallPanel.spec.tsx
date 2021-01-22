@@ -1,6 +1,5 @@
 import React from 'react';
 import { shallow } from 'enzyme';
-import { expect } from 'chai';
 
 import NokkeltallPanel from './NokkeltallPanel';
 import FordelingAvBehandlingstypePanel from './fordelingAvBehandlingstype/FordelingAvBehandlingstypePanel';
@@ -15,7 +14,7 @@ describe('<NokkeltallPanel>', () => {
       oppgaverPerForsteStonadsdag={[]}
     />);
 
-    expect(wrapper.find(FordelingAvBehandlingstypePanel)).to.have.length(1);
-    expect(wrapper.find(TilBehandlingPanel)).to.have.length(1);
+    expect(wrapper.find(FordelingAvBehandlingstypePanel)).toHaveLength(1);
+    expect(wrapper.find(TilBehandlingPanel)).toHaveLength(1);
   });
 });

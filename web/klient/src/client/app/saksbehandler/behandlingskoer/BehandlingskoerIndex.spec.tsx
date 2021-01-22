@@ -1,5 +1,4 @@
 import React from 'react';
-import { expect } from 'chai';
 import { shallow } from 'enzyme';
 import sinon from 'sinon';
 
@@ -97,8 +96,8 @@ describe('<BehandlingskoerIndex>', () => {
       setValgtSakslisteId={sinon.spy()}
     />);
 
-    expect(wrapper.find(SakslistePanel)).to.have.length(0);
-    expect(wrapper.find(BehandlingPollingTimoutModal)).to.have.length(0);
+    expect(wrapper.find(SakslistePanel)).toHaveLength(0);
+    expect(wrapper.find(BehandlingPollingTimoutModal)).toHaveLength(0);
   });
 
   it(
@@ -114,7 +113,7 @@ describe('<BehandlingskoerIndex>', () => {
         setValgtSakslisteId={sinon.spy()}
       />);
 
-      expect(wrapper.find(SakslistePanel)).to.have.length(1);
+      expect(wrapper.find(SakslistePanel)).toHaveLength(1);
     },
   );
 
@@ -135,17 +134,17 @@ describe('<BehandlingskoerIndex>', () => {
       />);
 
       const panel = wrapper.find(SakslistePanel);
-      expect(panel).to.have.length(1);
+      expect(panel).toHaveLength(1);
 
       await panel.prop('reserverOppgave')(oppgave);
 
       const reserverOppgaveCallData = requestApi.getRequestMockData(RestApiPathsKeys.RESERVER_OPPGAVE);
-      expect(reserverOppgaveCallData).to.have.length(1);
-      expect(reserverOppgaveCallData[0].params.oppgaveId).is.eql(1);
+      expect(reserverOppgaveCallData).toHaveLength(1);
+      expect(reserverOppgaveCallData[0].params.oppgaveId).toEqual(1);
 
       const hentFpsakInternBehandlingIdCallData = requestApi.getRequestMockData(RestApiPathsKeys.FPSAK_BEHANDLING_ID);
-      expect(hentFpsakInternBehandlingIdCallData).to.have.length(1);
-      expect(hentFpsakInternBehandlingIdCallData[0].params.uuid).is.eql('d10e592c-e5bd-4f24-95a6-8eb1ed48f068');
+      expect(hentFpsakInternBehandlingIdCallData).toHaveLength(1);
+      expect(hentFpsakInternBehandlingIdCallData[0].params.uuid).toEqual('d10e592c-e5bd-4f24-95a6-8eb1ed48f068');
     },
   );
 
@@ -163,7 +162,7 @@ describe('<BehandlingskoerIndex>', () => {
       />);
 
       const panel = wrapper.find(SakslistePanel);
-      expect(panel).to.have.length(1);
+      expect(panel).toHaveLength(1);
 
       const reservertOppgave = {
         ...oppgave,
@@ -175,11 +174,11 @@ describe('<BehandlingskoerIndex>', () => {
       panel.prop('reserverOppgave')(reservertOppgave);
 
       const reserverOppgaveCallData = requestApi.getRequestMockData(RestApiPathsKeys.RESERVER_OPPGAVE);
-      expect(reserverOppgaveCallData).to.have.length(0);
+      expect(reserverOppgaveCallData).toHaveLength(0);
 
       const hentFpsakInternBehandlingIdCallData = requestApi.getRequestMockData(RestApiPathsKeys.FPSAK_BEHANDLING_ID);
-      expect(hentFpsakInternBehandlingIdCallData).to.have.length(1);
-      expect(hentFpsakInternBehandlingIdCallData[0].params.uuid).is.eql('d10e592c-e5bd-4f24-95a6-8eb1ed48f068');
+      expect(hentFpsakInternBehandlingIdCallData).toHaveLength(1);
+      expect(hentFpsakInternBehandlingIdCallData[0].params.uuid).toEqual('d10e592c-e5bd-4f24-95a6-8eb1ed48f068');
     },
   );
 });

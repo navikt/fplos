@@ -1,5 +1,4 @@
 import React from 'react';
-import { expect } from 'chai';
 import sinon from 'sinon';
 import { IntlShape } from 'react-intl';
 import { Form } from 'react-final-form';
@@ -59,7 +58,7 @@ describe('<OpphevReservasjonModal>', () => {
       );
 
       const form = wrapper.find(Form);
-      expect(form).has.length(1);
+      expect(form).toHaveLength(1);
 
       const handleSubmitFn = sinon.spy();
       const renderFn = form.prop('render') as ({ handleSubmit: any }) => void;
@@ -68,11 +67,11 @@ describe('<OpphevReservasjonModal>', () => {
         handleSubmit: handleSubmitFn,
       }));
 
-      expect(formWrapper.find(TextAreaField)).has.length(1);
+      expect(formWrapper.find(TextAreaField)).toHaveLength(1);
 
       formWrapper.find('form').simulate('submit');
 
-      expect(handleSubmitFn.calledOnce).to.be.true;
+      expect(handleSubmitFn.calledOnce).toBe(true);
     },
   );
 });

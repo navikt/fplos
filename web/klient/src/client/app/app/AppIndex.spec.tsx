@@ -1,5 +1,4 @@
 import React from 'react';
-import { expect } from 'chai';
 import { shallow } from 'enzyme';
 import { Location, History } from 'history';
 import { match } from 'react-router-dom';
@@ -19,10 +18,10 @@ describe('<AppIndex>', () => {
       />);
 
       const headerComp = wrapper.find(HeaderWithErrorPanel);
-      expect(headerComp).to.have.length(1);
+      expect(headerComp).toHaveLength(1);
 
       const homeComp = wrapper.find('Home');
-      expect(homeComp).to.have.length(1);
+      expect(homeComp).toHaveLength(1);
     },
   );
 
@@ -34,10 +33,10 @@ describe('<AppIndex>', () => {
     />);
 
     const headerComp = wrapper.find(HeaderWithErrorPanel);
-    expect(headerComp).to.have.length(1);
+    expect(headerComp).toHaveLength(1);
 
     const homeComp = wrapper.find('Home');
-    expect(homeComp).to.have.length(1);
+    expect(homeComp).toHaveLength(1);
   });
 
   it('skal vise query-feilmelding', () => {
@@ -53,6 +52,6 @@ describe('<AppIndex>', () => {
     />);
 
     const headerComp = wrapper.find(HeaderWithErrorPanel);
-    expect(headerComp.prop('queryStrings')).to.eql({ errormessage: 'Det finnes ingen sak med denne referansen: 266' });
+    expect(headerComp.prop('queryStrings')).toEqual({ errormessage: 'Det finnes ingen sak med denne referansen: 266' });
   });
 });

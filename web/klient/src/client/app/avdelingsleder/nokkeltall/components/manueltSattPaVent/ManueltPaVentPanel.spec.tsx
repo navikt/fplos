@@ -1,5 +1,4 @@
 import React from 'react';
-import { expect } from 'chai';
 import sinon from 'sinon';
 import { Form } from 'react-final-form';
 import moment from 'moment';
@@ -52,22 +51,22 @@ describe('<ManueltPaVentPanel>', () => {
       />).find(Form).renderProp('render')({ values: valuesMock });
 
       const select = wrapper.find(SelectField);
-      expect(select).to.have.length(1);
+      expect(select).toHaveLength(1);
 
       const options = select.prop('selectValues') as { props: { value: string; children: string }}[];
-      expect(options).to.have.length(2);
-      expect(options[0].props.value).to.eql('4');
-      expect(options[0].props.children).to.eql('4 uker frem');
-      expect(options[1].props.value).to.eql('8');
-      expect(options[1].props.children).to.eql('8 uker frem');
+      expect(options).toHaveLength(2);
+      expect(options[0].props.value).toEqual('4');
+      expect(options[0].props.children).toEqual('4 uker frem');
+      expect(options[1].props.value).toEqual('8');
+      expect(options[1].props.children).toEqual('8 uker frem');
 
       const radioOptions = wrapper.find(RadioOption);
-      expect(radioOptions).to.have.length(4);
-      expect(radioOptions.first().prop('value')).to.eql('FP');
-      expect(radioOptions.first().prop('label')).to.eql('Foreldrepenger');
-      expect(radioOptions.at(1).prop('value')).to.eql('ES');
-      expect(radioOptions.at(1).prop('label')).to.eql('Engangsstønad');
-      expect(radioOptions.last().prop('value')).to.eql('ALLE');
+      expect(radioOptions).toHaveLength(4);
+      expect(radioOptions.first().prop('value')).toEqual('FP');
+      expect(radioOptions.first().prop('label')).toEqual('Foreldrepenger');
+      expect(radioOptions.at(1).prop('value')).toEqual('ES');
+      expect(radioOptions.at(1).prop('label')).toEqual('Engangsstønad');
+      expect(radioOptions.last().prop('value')).toEqual('ALLE');
     },
   );
 
@@ -98,9 +97,9 @@ describe('<ManueltPaVentPanel>', () => {
     />).find(Form).renderProp('render')({ values: valuesMock });
 
     const graf = wrapper.find(ManueltPaVentGraf);
-    expect(graf).to.have.length(1);
-    expect(graf.prop('isFireUkerValgt')).is.true;
-    expect(graf.prop('oppgaverManueltPaVent')).is.eql([oppgaverManueltPaVent[1]]);
+    expect(graf).toHaveLength(1);
+    expect(graf.prop('isFireUkerValgt')).toBe(true);
+    expect(graf.prop('oppgaverManueltPaVent')).toEqual([oppgaverManueltPaVent[1]]);
   });
 
   it(
@@ -132,9 +131,9 @@ describe('<ManueltPaVentPanel>', () => {
       />).find(Form).renderProp('render')({ values: valuesMock });
 
       const graf = wrapper.find(ManueltPaVentGraf);
-      expect(graf).to.have.length(1);
-      expect(graf.prop('isFireUkerValgt')).is.false;
-      expect(graf.prop('oppgaverManueltPaVent')).is.eql(oppgaverManueltPaVent);
+      expect(graf).toHaveLength(1);
+      expect(graf.prop('isFireUkerValgt')).toBe(false);
+      expect(graf.prop('oppgaverManueltPaVent')).toEqual(oppgaverManueltPaVent);
     },
   );
 
@@ -165,8 +164,8 @@ describe('<ManueltPaVentPanel>', () => {
     />).find(Form).renderProp('render')({ values: valuesMock });
 
     const graf = wrapper.find(ManueltPaVentGraf);
-    expect(graf).to.have.length(1);
-    expect(graf.prop('oppgaverManueltPaVent')).is.eql([oppgaverManueltPaVent[1]]);
+    expect(graf).toHaveLength(1);
+    expect(graf.prop('oppgaverManueltPaVent')).toEqual([oppgaverManueltPaVent[1]]);
   });
 
   it('skal filtrere bort foreldrepenger', () => {
@@ -196,7 +195,7 @@ describe('<ManueltPaVentPanel>', () => {
     />).find(Form).renderProp('render')({ values: valuesMock });
 
     const graf = wrapper.find(ManueltPaVentGraf);
-    expect(graf).to.have.length(1);
-    expect(graf.prop('oppgaverManueltPaVent')).is.eql([oppgaverManueltPaVent[0]]);
+    expect(graf).toHaveLength(1);
+    expect(graf.prop('oppgaverManueltPaVent')).toEqual([oppgaverManueltPaVent[0]]);
   });
 });

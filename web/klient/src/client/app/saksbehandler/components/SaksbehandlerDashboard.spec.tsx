@@ -1,5 +1,4 @@
 import React from 'react';
-import { expect } from 'chai';
 import { shallow } from 'enzyme';
 
 import { requestApi, RestApiGlobalStatePathsKeys } from 'data/fplosRestApi';
@@ -18,8 +17,8 @@ describe('<SaksbehandlerDashboard>', () => {
       setValgtSakslisteId={() => undefined}
     />);
 
-    expect(wrapper.find(BehandlingskoerIndex)).to.have.length(1);
-    expect(wrapper.find(SaksstotteIndex)).to.have.length(1);
+    expect(wrapper.find(BehandlingskoerIndex)).toHaveLength(1);
+    expect(wrapper.find(SaksstotteIndex)).toHaveLength(1);
   });
 
   it('skal vise dashboard med fagsak-søk', () => {
@@ -30,8 +29,8 @@ describe('<SaksbehandlerDashboard>', () => {
       setValgtSakslisteId={() => undefined}
     />);
 
-    expect(wrapper.find(FagsakSearchIndex)).to.have.length(1);
-    expect(wrapper.find(BehandlingskoerIndex)).to.have.length(1);
-    expect(wrapper.find(SaksstotteIndex)).to.have.length(1);
+    expect(wrapper.find(FagsakSearchIndex)).toHaveLength(1);
+    expect(wrapper.find(BehandlingskoerIndex)).toHaveLength(1);
+    expect(wrapper.find(SaksstotteIndex)).toHaveLength(1);
   });
 });

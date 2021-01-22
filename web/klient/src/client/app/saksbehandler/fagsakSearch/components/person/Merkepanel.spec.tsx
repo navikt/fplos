@@ -1,5 +1,4 @@
 import React from 'react';
-import { expect } from 'chai';
 import { shallowWithIntl, intlMock } from 'testHelpers/intl-enzyme-test-helper';
 
 import { FormattedMessage, IntlShape } from 'react-intl';
@@ -16,6 +15,6 @@ describe('<MerkePanel>', () => {
       diskresjonskode={diskresjonskodeType.KODE6}
       intl={intl as IntlShape}
     />);
-    expect(wrapper.find(FormattedMessage).prop('id')).to.equal('MerkePanel.Dod');
+    expect(wrapper.find(FormattedMessage).prop('id')).toBe('MerkePanel.Dod');
   });
 });

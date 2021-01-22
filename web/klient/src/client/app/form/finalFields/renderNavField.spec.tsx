@@ -1,5 +1,4 @@
 import React from 'react';
-import { expect } from 'chai';
 import sinon from 'sinon';
 
 import { shallowWithIntl, intlMock } from 'testHelpers/intl-enzyme-test-helper';
@@ -27,9 +26,9 @@ describe('renderNavField', () => {
     const wrapper = shallowWithIntl(<RenderedMockField input={getInputMock({})} meta={meta} intl={intlMock} />);
     const mockField = wrapper.find(MockField);
 
-    expect(mockField).to.have.length(1);
+    expect(mockField).toHaveLength(1);
     const props = mockField.at(0).props() as { feil: string };
-    expect(props.feil).to.be.undefined;
+    expect(props.feil).toBeUndefined();
   });
 
   it('skal vise feil hvis submit har feilet', () => {
@@ -38,8 +37,8 @@ describe('renderNavField', () => {
     const wrapper = shallowWithIntl(<RenderedMockField input={getInputMock({})} meta={meta} intl={intlMock} />);
     const mockField = wrapper.find(MockField);
 
-    expect(mockField).to.have.length(1);
+    expect(mockField).toHaveLength(1);
     const props = mockField.at(0).props() as { feil: string };
-    expect(props.feil).to.eql('Feltet må fylles ut');
+    expect(props.feil).toEqual('Feltet må fylles ut');
   });
 });

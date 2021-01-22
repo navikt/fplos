@@ -1,6 +1,5 @@
 import React from 'react';
 import { shallow } from 'enzyme';
-import { expect } from 'chai';
 import sinon from 'sinon';
 
 import FagsakSearch from './FagsakSearch';
@@ -45,9 +44,9 @@ describe('<FagsakSearch>', () => {
       resetSearch={sinon.spy()}
     />);
 
-    expect(wrapper.find(SearchForm)).to.have.length(1);
-    expect(wrapper.find(PersonInfo)).to.have.length(0);
-    expect(wrapper.find(FagsakList)).to.have.length(0);
+    expect(wrapper.find(SearchForm)).toHaveLength(1);
+    expect(wrapper.find(PersonInfo)).toHaveLength(0);
+    expect(wrapper.find(FagsakList)).toHaveLength(0);
   });
 
   it(
@@ -64,10 +63,10 @@ describe('<FagsakSearch>', () => {
         resetSearch={sinon.spy()}
       />);
 
-      expect(wrapper.find(SearchForm)).to.have.length(1);
+      expect(wrapper.find(SearchForm)).toHaveLength(1);
       const labelComp = wrapper.find('Normaltekst');
-      expect(labelComp).to.have.length(1);
-      expect(labelComp.find('FormattedMessage').prop('id')).to.eql('FagsakSearch.ZeroSearchResults');
+      expect(labelComp).toHaveLength(1);
+      expect(labelComp.find('FormattedMessage').prop('id')).toEqual('FagsakSearch.ZeroSearchResults');
     },
   );
 
@@ -87,14 +86,14 @@ describe('<FagsakSearch>', () => {
         resetSearch={sinon.spy()}
       />);
 
-      expect(wrapper.find(SearchForm)).to.have.length(1);
+      expect(wrapper.find(SearchForm)).toHaveLength(1);
 
       const personComp = wrapper.find(PersonInfo);
-      expect(personComp).to.have.length(1);
+      expect(personComp).toHaveLength(1);
 
       const fagsakListComp = wrapper.find(FagsakList);
-      expect(fagsakListComp).to.have.length(1);
-      expect(fagsakListComp.prop('selectFagsakCallback')).to.eql(selectFagsakFunction);
+      expect(fagsakListComp).toHaveLength(1);
+      expect(fagsakListComp.prop('selectFagsakCallback')).toEqual(selectFagsakFunction);
     },
   );
 });

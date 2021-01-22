@@ -1,5 +1,4 @@
 import React from 'react';
-import { expect } from 'chai';
 import { shallow } from 'enzyme';
 
 import SaksstottePaneler from './components/SaksstottePaneler';
@@ -11,6 +10,6 @@ describe('<SaksstotteIndex>', () => {
       valgtSakslisteId={1}
     />);
 
-    expect(wrapper.find(SaksstottePaneler)).to.have.length(1);
+    expect(wrapper.find(SaksstottePaneler)).toHaveLength(1);
   });
 });

@@ -1,5 +1,4 @@
 import React from 'react';
-import { expect } from 'chai';
 import sinon from 'sinon';
 import { shallow } from 'enzyme';
 
@@ -36,10 +35,10 @@ describe('<FagsakYtelseTypeVelger>', () => {
     />);
 
     const radios = wrapper.find(RadioOption);
-    expect(radios).to.have.length(4);
-    expect(radios.first().prop('value')).to.eql(fagsakYtelseType.FORELDREPRENGER);
-    expect(radios.at(1).prop('value')).to.eql(fagsakYtelseType.ENGANGSSTONAD);
-    expect(radios.last().prop('value')).to.eql('');
+    expect(radios).toHaveLength(4);
+    expect(radios.first().prop('value')).toEqual(fagsakYtelseType.FORELDREPRENGER);
+    expect(radios.at(1).prop('value')).toEqual(fagsakYtelseType.ENGANGSSTONAD);
+    expect(radios.last().prop('value')).toEqual('');
   });
 
   it('skal lagre ytelsetype ved klikk på checkbox', async () => {
@@ -58,10 +57,10 @@ describe('<FagsakYtelseTypeVelger>', () => {
     const radioGroup = wrapper.find(RadioGroupField);
     await radioGroup.prop('onChange')(fagsakYtelseType.ENGANGSSTONAD);
 
-    expect(hentAvdelingensSakslister.calledOnce).to.be.true;
+    expect(hentAvdelingensSakslister.calledOnce).toBe(true);
     const { args } = hentAvdelingensSakslister.getCalls()[0];
-    expect(args).to.have.length(1);
-    expect(args[0]).to.eql({ avdelingEnhet: '3' });
-    expect(hentAntallOppgaver.calledOnce).to.be.true;
+    expect(args).toHaveLength(1);
+    expect(args[0]).toEqual({ avdelingEnhet: '3' });
+    expect(hentAntallOppgaver.calledOnce).toBe(true);
   });
 });

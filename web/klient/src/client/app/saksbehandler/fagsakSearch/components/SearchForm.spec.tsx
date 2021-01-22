@@ -1,5 +1,4 @@
 import React from 'react';
-import { expect } from 'chai';
 import { IntlShape } from 'react-intl';
 import { shallow } from 'enzyme';
 import { Form } from 'react-final-form';
@@ -26,8 +25,8 @@ describe('<SearchForm>', () => {
     // @ts-ignore
     />).find(Form).renderProp('render')(formProps);
 
-    expect(wrapper.find(InputField)).to.have.length(1);
-    expect(wrapper.find(Knapp)).to.have.length(1);
+    expect(wrapper.find(InputField)).toHaveLength(1);
+    expect(wrapper.find(Knapp)).toHaveLength(1);
   });
 
   it('skal utføre søk når en trykker på søkeknapp', () => {
@@ -47,6 +46,6 @@ describe('<SearchForm>', () => {
     const preventDefault = () => undefined;
     form.simulate('submit', { preventDefault });
 
-    expect(onButtonClick).to.have.property('callCount', 1);
+    expect(onButtonClick).toHaveProperty('callCount', 1);
   });
 });

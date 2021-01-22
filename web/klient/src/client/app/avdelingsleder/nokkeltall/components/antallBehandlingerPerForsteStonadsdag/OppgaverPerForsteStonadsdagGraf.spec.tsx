@@ -1,6 +1,5 @@
 import React from 'react';
 import moment from 'moment';
-import { expect } from 'chai';
 import { shallow } from 'enzyme';
 import { AreaSeries, Crosshair, XYPlot } from 'react-vis';
 import { FormattedMessage } from 'react-intl';
@@ -20,8 +19,8 @@ describe('<OppgaverPerForsteStonadsdagGraf>', () => {
     />);
 
     const xYPlot = wrapper.find(XYPlot);
-    expect(xYPlot).to.have.length(1);
-    expect(xYPlot.prop('yDomain')).to.eql([0, 50]);
+    expect(xYPlot).toHaveLength(1);
+    expect(xYPlot.prop('yDomain')).toEqual([0, 50]);
   });
 
   it('skal vise crosshair med antall behandlinger per stønadsdag', () => {
@@ -43,7 +42,7 @@ describe('<OppgaverPerForsteStonadsdagGraf>', () => {
     />);
 
     const areaSeries = wrapper.find(AreaSeries);
-    expect(areaSeries).to.have.length(1);
+    expect(areaSeries).toHaveLength(1);
 
     const koordinat = {
       x: moment().add(1, 'd').toDate(),
@@ -54,12 +53,12 @@ describe('<OppgaverPerForsteStonadsdagGraf>', () => {
     func(koordinat);
 
     const crosshair = wrapper.find(Crosshair);
-    expect(crosshair).to.have.length(2);
+    expect(crosshair).toHaveLength(2);
 
-    expect(crosshair.last().find(Normaltekst).childAt(0).text()).to.eql(moment(koordinat.x).format(DDMMYYYY_DATE_FORMAT));
+    expect(crosshair.last().find(Normaltekst).childAt(0).text()).toEqual(moment(koordinat.x).format(DDMMYYYY_DATE_FORMAT));
     const tekst = crosshair.find(Undertekst);
-    expect(tekst).to.have.length(1);
-    expect(tekst.first().find(FormattedMessage).prop('values')).to.eql({ antall: 2 });
+    expect(tekst).toHaveLength(1);
+    expect(tekst.first().find(FormattedMessage).prop('values')).toEqual({ antall: 2 });
   });
 
   it('skal lage koordinater til graf gitt oppgavestruktur', () => {
@@ -76,7 +75,7 @@ describe('<OppgaverPerForsteStonadsdagGraf>', () => {
 
     const koordinater = lagKoordinater(oppgaverPerForsteStonadsdag);
 
-    expect(koordinater).to.eql([{
+    expect(koordinater).toEqual([{
       x: moment('2018-12-31').toDate(),
       y: 1,
     }, {
@@ -104,24 +103,24 @@ describe('<OppgaverPerForsteStonadsdagGraf>', () => {
 
     const sorterteKoordinater = lagDatastruktur(koordinater);
 
-    expect(sorterteKoordinater).has.length(21);
-    expect(sorterteKoordinater[0]).is.eql({
+    expect(sorterteKoordinater).toHaveLength(21);
+    expect(sorterteKoordinater[0]).toEqual({
       x: moment().subtract(10, 'd').startOf('day').toDate(),
       y: 3,
     });
-    expect(sorterteKoordinater[1]).is.eql({
+    expect(sorterteKoordinater[1]).toEqual({
       x: moment().subtract(9, 'd').startOf('day').toDate(),
       y: 0,
     });
-    expect(sorterteKoordinater[11]).is.eql({
+    expect(sorterteKoordinater[11]).toEqual({
       x: moment().add(1, 'd').startOf('day').toDate(),
       y: 1,
     });
-    expect(sorterteKoordinater[19]).is.eql({
+    expect(sorterteKoordinater[19]).toEqual({
       x: moment().add(9, 'd').startOf('day').toDate(),
       y: 0,
     });
-    expect(sorterteKoordinater[20]).is.eql({
+    expect(sorterteKoordinater[20]).toEqual({
       x: moment().add(10, 'd').startOf('day').toDate(),
       y: 2,
     });
@@ -142,7 +141,7 @@ describe('<OppgaverPerForsteStonadsdagGraf>', () => {
 
     const harKun0Verdier = harDatastrukturKun0Verdier(koordinater);
 
-    expect(harKun0Verdier).is.true;
+    expect(harKun0Verdier).toBe(true);
   });
 
   it('skal finne ut at ikke alle koordinater har antall 0', () => {
@@ -160,6 +159,6 @@ describe('<OppgaverPerForsteStonadsdagGraf>', () => {
 
     const harKun0Verdier = harDatastrukturKun0Verdier(koordinater);
 
-    expect(harKun0Verdier).is.false;
+    expect(harKun0Verdier).toBe(false);
   });
 });

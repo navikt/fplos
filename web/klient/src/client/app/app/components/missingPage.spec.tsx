@@ -1,6 +1,5 @@
 import React from 'react';
 import { shallow } from 'enzyme';
-import { expect } from 'chai';
 import { Link } from 'react-router-dom';
 import { FormattedMessage } from 'react-intl';
 import Panel from 'nav-frontend-paneler';
@@ -13,11 +12,11 @@ describe('<MissingPage>', () => {
     () => {
       const wrapper = shallow(<MissingPage />);
 
-      expect(wrapper.find(Panel)).to.have.length(1);
-      expect(wrapper.find(FormattedMessage)).to.have.length(2);
+      expect(wrapper.find(Panel)).toHaveLength(1);
+      expect(wrapper.find(FormattedMessage)).toHaveLength(2);
       const link = wrapper.find(Link);
-      expect(link).to.have.length(1);
-      expect(link.prop('to')).to.eql('/');
+      expect(link).toHaveLength(1);
+      expect(link.prop('to')).toEqual('/');
     },
   );
 });

@@ -1,5 +1,4 @@
 import React from 'react';
-import { expect } from 'chai';
 import { FormattedMessage } from 'react-intl';
 
 import { mountWithIntl } from 'testHelpers/intl-enzyme-test-helper';
@@ -16,10 +15,10 @@ describe('<LanguageProvider>', () => {
     ));
 
     const intlProvider = wrapper.find('IntlProvider');
-    expect(intlProvider).to.have.length(1);
-    expect(intlProvider.prop('messages')).to.eql(data);
+    expect(intlProvider).toHaveLength(1);
+    expect(intlProvider.prop('messages')).toEqual(data);
     const span = wrapper.find('span');
-    expect(span).to.have.length(1);
-    expect(span.text()).to.eql('Svangerskap, fødsel og adopsjon');
+    expect(span).toHaveLength(1);
+    expect(span.text()).toEqual('Svangerskap, fødsel og adopsjon');
   });
 });

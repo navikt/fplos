@@ -1,5 +1,4 @@
 import React from 'react';
-import { expect } from 'chai';
 import sinon from 'sinon';
 import { IntlShape } from 'react-intl';
 import { Form } from 'react-final-form';
@@ -35,7 +34,7 @@ describe('<FlyttReservasjonModal>', () => {
       // @ts-ignore
     ).find(Form).first().renderProp('render')(formProps);
 
-    expect(wrapper.find(Normaltekst)).has.length(0);
+    expect(wrapper.find(Normaltekst)).toHaveLength(0);
   });
 
   it(
@@ -67,8 +66,8 @@ describe('<FlyttReservasjonModal>', () => {
       const innerWrapper = wrapper.find(Form).first().renderProp('render')(formProps);
 
       const tekst = innerWrapper.find(Normaltekst);
-      expect(tekst).has.length(1);
-      expect(tekst.childAt(0).text()).is.eql('Kan ikke finne brukerident');
+      expect(tekst).toHaveLength(1);
+      expect(tekst.childAt(0).text()).toEqual('Kan ikke finne brukerident');
     },
   );
 
@@ -104,8 +103,8 @@ describe('<FlyttReservasjonModal>', () => {
     const innerWrapper = wrapper.find(Form).first().renderProp('render')(formProps);
 
     const tekst = innerWrapper.find(Normaltekst);
-    expect(tekst).has.length(1);
-    expect(tekst.childAt(0).text()).is.eql('Brukernavn, Avdelingsnavn');
+    expect(tekst).toHaveLength(1);
+    expect(tekst.childAt(0).text()).toEqual('Brukernavn, Avdelingsnavn');
   });
 
   it(
@@ -131,8 +130,8 @@ describe('<FlyttReservasjonModal>', () => {
       ).find(Form).first().renderProp('render')(formProps);
 
       const knapper = wrapper.find(Hovedknapp);
-      expect(knapper).has.length(1);
-      expect(knapper.first().prop('disabled')).is.false;
+      expect(knapper).toHaveLength(1);
+      expect(knapper.first().prop('disabled')).toBe(false);
     },
   );
 
@@ -157,8 +156,8 @@ describe('<FlyttReservasjonModal>', () => {
       ).find(Form).first().renderProp('render')(formProps);
 
       const knapper = wrapper.find(Hovedknapp);
-      expect(knapper).has.length(1);
-      expect(knapper.first().prop('disabled')).is.true;
+      expect(knapper).toHaveLength(1);
+      expect(knapper.first().prop('disabled')).toBe(true);
     },
   );
 
@@ -191,8 +190,8 @@ describe('<FlyttReservasjonModal>', () => {
     const innerWrapper = wrapper.find(Form).last().renderProp('render')(formProps);
 
     const knapper = innerWrapper.find(Hovedknapp);
-    expect(knapper).has.length(1);
-    expect(knapper.first().prop('disabled')).is.true;
+    expect(knapper).toHaveLength(1);
+    expect(knapper.first().prop('disabled')).toBe(true);
   });
 
   it(
@@ -232,8 +231,8 @@ describe('<FlyttReservasjonModal>', () => {
       const innerWrapper = wrapper.find(Form).first().renderProp('render')(formProps);
 
       const knapper = innerWrapper.find(Hovedknapp);
-      expect(knapper).has.length(1);
-      expect(knapper.last().prop('disabled')).is.false;
+      expect(knapper).toHaveLength(1);
+      expect(knapper.last().prop('disabled')).toBe(false);
     },
   );
 
@@ -259,8 +258,8 @@ describe('<FlyttReservasjonModal>', () => {
     ).find(Form).last().renderProp('render')(formProps);
 
     const knapper = wrapper.find(Hovedknapp);
-    expect(knapper).has.length(1);
-    expect(knapper.last().prop('disabled')).is.true;
+    expect(knapper).toHaveLength(1);
+    expect(knapper.last().prop('disabled')).toBe(true);
   });
 
   it(
@@ -287,8 +286,8 @@ describe('<FlyttReservasjonModal>', () => {
       ).find(Form).last().renderProp('render')(formProps);
 
       const knapper = wrapper.find(Hovedknapp);
-      expect(knapper).has.length(1);
-      expect(knapper.last().prop('disabled')).is.true;
+      expect(knapper).toHaveLength(1);
+      expect(knapper.last().prop('disabled')).toBe(true);
     },
   );
 });

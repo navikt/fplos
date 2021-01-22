@@ -1,5 +1,4 @@
 import React from 'react';
-import { expect } from 'chai';
 import sinon from 'sinon';
 import { IntlShape } from 'react-intl';
 
@@ -47,9 +46,9 @@ describe('<SorteringVelger>', () => {
     />);
 
     const options = wrapper.find(RadioOption);
-    expect(options).to.have.length(2);
-    expect(options.first().prop('value')).to.eql(KoSortering.OPPRETT_BEHANDLING);
-    expect(options.last().prop('value')).to.eql(KoSortering.BEHANDLINGSFRIST);
+    expect(options).toHaveLength(2);
+    expect(options.first().prop('value')).toEqual(KoSortering.OPPRETT_BEHANDLING);
+    expect(options.last().prop('value')).toEqual(KoSortering.BEHANDLINGSFRIST);
   });
 
   it('skal lagre sortering ved klikk på radioknapp', () => {
@@ -73,9 +72,9 @@ describe('<SorteringVelger>', () => {
     felt.prop('onChange')(KoSortering.OPPRETT_BEHANDLING);
 
     const lagreSakslisteSorteringCallData = requestApi.getRequestMockData(RestApiPathsKeys.LAGRE_SAKSLISTE_SORTERING);
-    expect(lagreSakslisteSorteringCallData).to.have.length(1);
-    expect(lagreSakslisteSorteringCallData[0].params.sakslisteId).is.eql(1);
-    expect(lagreSakslisteSorteringCallData[0].params.sakslisteSorteringValg).is.eql(KoSortering.OPPRETT_BEHANDLING);
-    expect(lagreSakslisteSorteringCallData[0].params.avdelingEnhet).is.eql('3');
+    expect(lagreSakslisteSorteringCallData).toHaveLength(1);
+    expect(lagreSakslisteSorteringCallData[0].params.sakslisteId).toEqual(1);
+    expect(lagreSakslisteSorteringCallData[0].params.sakslisteSorteringValg).toEqual(KoSortering.OPPRETT_BEHANDLING);
+    expect(lagreSakslisteSorteringCallData[0].params.avdelingEnhet).toEqual('3');
   });
 });

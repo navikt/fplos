@@ -1,5 +1,4 @@
 import React from 'react';
-import { expect } from 'chai';
 import { shallow } from 'enzyme';
 import sinon from 'sinon';
 
@@ -18,8 +17,8 @@ describe('<SaksbehandlerePanel>', () => {
         valgtAvdelingEnhet="test"
       />);
 
-      expect(wrapper.find(LeggTilSaksbehandlerForm)).to.have.length(1);
-      expect(wrapper.find(SaksbehandlereTabell)).to.have.length(1);
+      expect(wrapper.find(LeggTilSaksbehandlerForm)).toHaveLength(1);
+      expect(wrapper.find(SaksbehandlereTabell)).toHaveLength(1);
     },
   );
 });

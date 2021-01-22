@@ -1,6 +1,5 @@
 import React from 'react';
 import { shallow } from 'enzyme';
-import { expect } from 'chai';
 
 import EndreSakslisterPanel from './components/EndreSakslisterPanel';
 import EndreBehandlingskoerIndex from './EndreBehandlingskoerIndex';
@@ -12,6 +11,6 @@ describe('<EndreBehandlingskoerIndex>', () => {
       avdelingensSaksbehandlere={[]}
     />);
 
-    expect(wrapper.find(EndreSakslisterPanel)).to.have.length(1);
+    expect(wrapper.find(EndreSakslisterPanel)).toHaveLength(1);
   });
 });

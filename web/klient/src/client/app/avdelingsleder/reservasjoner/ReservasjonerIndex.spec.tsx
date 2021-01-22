@@ -1,5 +1,4 @@
 import { shallow } from 'enzyme';
-import { expect } from 'chai';
 import React from 'react';
 
 import { requestApi, RestApiPathsKeys } from 'data/fplosRestApi';
@@ -32,7 +31,7 @@ describe('<ReservasjonerIndex>', () => {
 
       await wrapper.find(ReservasjonerTabell).prop('hentAvdelingensReservasjoner')();
 
-      expect(wrapper.find(ReservasjonerTabell).prop('reservasjoner')).is.eql(reservasjoner);
+      expect(wrapper.find(ReservasjonerTabell).prop('reservasjoner')).toEqual(reservasjoner);
     },
   );
 });

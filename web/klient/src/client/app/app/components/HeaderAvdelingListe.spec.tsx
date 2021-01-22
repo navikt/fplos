@@ -1,6 +1,5 @@
 import React from 'react';
 import sinon from 'sinon';
-import { expect } from 'chai';
 import { shallow } from 'enzyme';
 
 import { requestApi, RestApiGlobalStatePathsKeys } from 'data/fplosRestApi';
@@ -37,7 +36,7 @@ describe('<HeaderAvdelingListe>', () => {
 
     const boxedList = wrapper.last().prop('popperProps').children();
 
-    expect(boxedList.props.items).to.eql([{
+    expect(boxedList.props.items).toEqual([{
       name: `${avdelingerData[0].avdelingEnhet} ${avdelingerData[0].navn}`,
       selected: true,
     }, {
@@ -63,9 +62,9 @@ describe('<HeaderAvdelingListe>', () => {
 
     const boxedList = wrapper.prop('popperProps').children();
     boxedList.props.onClick(1);
-    expect(setValgtAvdelingFn.calledOnce).to.be.true;
+    expect(setValgtAvdelingFn.calledOnce).toBe(true);
     const { args } = setValgtAvdelingFn.getCalls()[0];
-    expect(args).to.have.length(1);
-    expect(args[0]).to.eql('4323');
+    expect(args).toHaveLength(1);
+    expect(args[0]).toEqual('4323');
   });
 });

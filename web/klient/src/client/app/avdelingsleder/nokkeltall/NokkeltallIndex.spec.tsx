@@ -1,6 +1,5 @@
 import React from 'react';
 import { shallow } from 'enzyme';
-import { expect } from 'chai';
 
 import { requestApi, RestApiPathsKeys } from 'data/fplosRestApi';
 import NokkeltallIndex from './NokkeltallIndex';
@@ -17,6 +16,6 @@ describe('<NokkeltallIndex>', () => {
       valgtAvdelingEnhet="2"
     />);
 
-    expect(wrapper.find(NokkeltallPanel)).to.have.length(1);
+    expect(wrapper.find(NokkeltallPanel)).toHaveLength(1);
   });
 });

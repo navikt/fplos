@@ -1,6 +1,5 @@
 import React from 'react';
 import { shallow } from 'enzyme';
-import { expect } from 'chai';
 import { FormattedMessage } from 'react-intl';
 import { Normaltekst } from 'nav-frontend-typografi';
 
@@ -15,9 +14,9 @@ describe('<Aldervisning>', () => {
       dodsdato="01.01.2017"
     />);
     const aldervisning = wrapper.find('span');
-    expect(aldervisning).to.have.length(1);
+    expect(aldervisning).toHaveLength(1);
     const values = aldervisning.find(FormattedMessage).prop('values') as { age: number };
-    expect(values.age).to.equal(40);
+    expect(values.age).toBe(40);
   });
 
   it(
@@ -30,10 +29,10 @@ describe('<Aldervisning>', () => {
       />);
 
       const aldervisningDod = wrapper.find(Normaltekst);
-      expect(aldervisningDod).to.have.length(1);
+      expect(aldervisningDod).toHaveLength(1);
 
       const formattedDate = wrapper.find(DateLabel);
-      expect(formattedDate.prop('dateString')).to.equal('01.01.2017');
+      expect(formattedDate.prop('dateString')).toBe('01.01.2017');
     },
   );
 
@@ -47,8 +46,8 @@ describe('<Aldervisning>', () => {
       />);
 
       const aldervisningDod = wrapper.find(Normaltekst);
-      expect(aldervisningDod).to.have.length(1);
-      expect(wrapper.find(FormattedMessage).prop('id')).to.equal('Person.ManglerDodsdato');
+      expect(aldervisningDod).toHaveLength(1);
+      expect(wrapper.find(FormattedMessage).prop('id')).toBe('Person.ManglerDodsdato');
     },
   );
 });

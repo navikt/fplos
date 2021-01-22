@@ -1,5 +1,4 @@
 import React, { ReactElement } from 'react';
-import { expect } from 'chai';
 import { FormattedMessage, IntlShape } from 'react-intl';
 import sinon from 'sinon';
 import NavFrontendChevron from 'nav-frontend-chevron';
@@ -85,23 +84,23 @@ describe('<OppgaverTabell>', () => {
     />);
 
     const tableRows = wrapper.find(TableRow);
-    expect(tableRows).has.length(2);
+    expect(tableRows).toHaveLength(2);
 
     const columnsRow1 = tableRows.first().find(TableColumn);
-    expect(columnsRow1.first().childAt(0).text()).is.eql('Espen Utvikler 123456789');
-    expect(columnsRow1.at(1).childAt(0).text()).is.eql('Førstegangssøknad');
-    expect(columnsRow1.at(2).find(DateLabel).prop('dateString')).is.eql('2019-01-02');
-    expect(columnsRow1.at(3).find(DateLabel).prop('dateString')).is.eql('2019-03-03');
+    expect(columnsRow1.first().childAt(0).text()).toEqual('Espen Utvikler 123456789');
+    expect(columnsRow1.at(1).childAt(0).text()).toEqual('Førstegangssøknad');
+    expect(columnsRow1.at(2).find(DateLabel).prop('dateString')).toEqual('2019-01-02');
+    expect(columnsRow1.at(3).find(DateLabel).prop('dateString')).toEqual('2019-03-03');
 
     const columnsRow2 = tableRows.last().find(TableColumn);
-    expect(columnsRow2.first().childAt(0).text()).is.eql('Espen Solstråle 657643535');
-    expect(columnsRow2.at(1).childAt(0).text()).is.eql('Førstegangssøknad far');
-    expect(columnsRow2.at(2).find(DateLabel).prop('dateString')).is.eql('2018-01-02');
-    expect(columnsRow2.at(3).find(DateLabel).prop('dateString')).is.eql('2018-03-03');
+    expect(columnsRow2.first().childAt(0).text()).toEqual('Espen Solstråle 657643535');
+    expect(columnsRow2.at(1).childAt(0).text()).toEqual('Førstegangssøknad far');
+    expect(columnsRow2.at(2).find(DateLabel).prop('dateString')).toEqual('2018-01-02');
+    expect(columnsRow2.at(3).find(DateLabel).prop('dateString')).toEqual('2018-03-03');
 
     const message = wrapper.find(FormattedMessage);
-    expect(message).has.length(1);
-    expect(message.prop('id')).is.eql('OppgaverTabell.DineNesteSaker');
+    expect(message).toHaveLength(1);
+    expect(message.prop('id')).toEqual('OppgaverTabell.DineNesteSaker');
   });
 
   it.skip(
@@ -173,23 +172,23 @@ describe('<OppgaverTabell>', () => {
       />);
 
       const tableRows = wrapper.find(TableRow);
-      expect(tableRows).has.length(2);
+      expect(tableRows).toHaveLength(2);
 
       const columnsRow1 = tableRows.first().find(TableColumn);
-      expect(columnsRow1.first().childAt(0).text()).is.eql('Espen Solstråle 657643535');
-      expect(columnsRow1.at(1).childAt(0).text()).is.eql('Førstegangssøknad far');
-      expect(columnsRow1.at(2).find(DateLabel).prop('dateString')).is.eql('2018-01-02');
-      expect(columnsRow1.at(3).find(DateLabel).prop('dateString')).is.eql('2018-03-03');
-      expect(columnsRow1.at(4).find(Image)).has.length(0);
-      expect(columnsRow1.at(5).find(Image)).has.length(1);
+      expect(columnsRow1.first().childAt(0).text()).toEqual('Espen Solstråle 657643535');
+      expect(columnsRow1.at(1).childAt(0).text()).toEqual('Førstegangssøknad far');
+      expect(columnsRow1.at(2).find(DateLabel).prop('dateString')).toEqual('2018-01-02');
+      expect(columnsRow1.at(3).find(DateLabel).prop('dateString')).toEqual('2018-03-03');
+      expect(columnsRow1.at(4).find(Image)).toHaveLength(0);
+      expect(columnsRow1.at(5).find(Image)).toHaveLength(1);
 
       const columnsRow2 = tableRows.last().find(TableColumn);
-      expect(columnsRow2.first().childAt(0).text()).is.eql('Espen Utvikler 123456789');
-      expect(columnsRow2.at(1).childAt(0).text()).is.eql('Førstegangssøknad');
-      expect(columnsRow2.at(2).find(DateLabel).prop('dateString')).is.eql('2019-01-02');
-      expect(columnsRow2.at(3).find(DateLabel).prop('dateString')).is.eql('2019-03-03');
-      expect(columnsRow2.at(4).find(Image)).has.length(0);
-      expect(columnsRow2.at(5).find(NavFrontendChevron)).has.length(1);
+      expect(columnsRow2.first().childAt(0).text()).toEqual('Espen Utvikler 123456789');
+      expect(columnsRow2.at(1).childAt(0).text()).toEqual('Førstegangssøknad');
+      expect(columnsRow2.at(2).find(DateLabel).prop('dateString')).toEqual('2019-01-02');
+      expect(columnsRow2.at(3).find(DateLabel).prop('dateString')).toEqual('2019-03-03');
+      expect(columnsRow2.at(4).find(Image)).toHaveLength(0);
+      expect(columnsRow2.at(5).find(NavFrontendChevron)).toHaveLength(1);
     },
   );
 
@@ -201,11 +200,11 @@ describe('<OppgaverTabell>', () => {
     />);
 
     const message = wrapper.find(FormattedMessage);
-    expect(message).has.length(2);
-    expect(message.first().prop('id')).is.eql('OppgaverTabell.DineNesteSaker');
-    expect(message.last().prop('id')).is.eql('OppgaverTabell.IngenOppgaver');
+    expect(message).toHaveLength(2);
+    expect(message.first().prop('id')).toEqual('OppgaverTabell.DineNesteSaker');
+    expect(message.last().prop('id')).toEqual('OppgaverTabell.IngenOppgaver');
 
-    expect(wrapper.find(TableRow)).has.length(0);
+    expect(wrapper.find(TableRow)).toHaveLength(0);
   });
 
   it.skip('skal vise tooltip for reserverte oppgaver som er flyttet', () => {
@@ -254,23 +253,23 @@ describe('<OppgaverTabell>', () => {
     />);
 
     const tableRows = wrapper.find(TableRow);
-    expect(tableRows).has.length(1);
+    expect(tableRows).toHaveLength(1);
 
     const columnsRow1 = tableRows.first().find(TableColumn);
-    expect(columnsRow1.first().childAt(0).text()).is.eql('Espen Solstråle 657643535');
-    expect(columnsRow1.at(1).childAt(0).text()).is.eql('Førstegangssøknad far');
-    expect(columnsRow1.at(2).find(DateLabel).prop('dateString')).is.eql('2018-01-02');
-    expect(columnsRow1.at(3).find(DateLabel).prop('dateString')).is.eql('2018-03-03');
-    expect(columnsRow1.at(4).find(Image)).has.length(1);
-    expect(columnsRow1.at(5).find(Image)).has.length(1);
+    expect(columnsRow1.first().childAt(0).text()).toEqual('Espen Solstråle 657643535');
+    expect(columnsRow1.at(1).childAt(0).text()).toEqual('Førstegangssøknad far');
+    expect(columnsRow1.at(2).find(DateLabel).prop('dateString')).toEqual('2018-01-02');
+    expect(columnsRow1.at(3).find(DateLabel).prop('dateString')).toEqual('2018-03-03');
+    expect(columnsRow1.at(4).find(Image)).toHaveLength(1);
+    expect(columnsRow1.at(5).find(Image)).toHaveLength(1);
 
     const tooltip = shallowWithIntl(columnsRow1.at(4).find(Image).prop('tooltip') as ReactElement);
     const values = tooltip.find(FormattedMessage).prop('values') as { dato: string; tid: string; uid: string; navn: string; beskrivelse: string};
 
-    expect(values.dato).is.eql('02.01.2018');
-    expect(values.tid).is.eql('00:00');
-    expect(values.uid).is.eql('1234556');
-    expect(values.navn).is.eql('Auto Joachim');
-    expect(values.beskrivelse).is.eql('Har flytta til deg');
+    expect(values.dato).toEqual('02.01.2018');
+    expect(values.tid).toEqual('00:00');
+    expect(values.uid).toEqual('1234556');
+    expect(values.navn).toEqual('Auto Joachim');
+    expect(values.beskrivelse).toEqual('Har flytta til deg');
   });
 });

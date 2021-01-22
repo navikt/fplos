@@ -1,5 +1,4 @@
 import React from 'react';
-import { expect } from 'chai';
 import sinon from 'sinon';
 import { IntlShape } from 'react-intl';
 import { Form } from 'react-final-form';
@@ -31,8 +30,8 @@ describe('<LeggTilSaksbehandlerForm>', () => {
         // @ts-ignore
       />).find(Form).renderProp('render')(formProps);
 
-      expect(wrapper.find(Knapp)).to.have.length(1);
-      expect(wrapper.find(Hovedknapp)).to.have.length(0);
+      expect(wrapper.find(Knapp)).toHaveLength(1);
+      expect(wrapper.find(Hovedknapp)).toHaveLength(0);
     },
   );
 
@@ -62,12 +61,12 @@ describe('<LeggTilSaksbehandlerForm>', () => {
       // @ts-ignore
       const innerWrapper = wrapper.find(Form).renderProp('render')(formProps);
 
-      expect(innerWrapper.find(Knapp)).to.have.length(2);
-      expect(innerWrapper.find(Hovedknapp)).to.have.length(1);
+      expect(innerWrapper.find(Knapp)).toHaveLength(2);
+      expect(innerWrapper.find(Hovedknapp)).toHaveLength(1);
 
       const tekst = innerWrapper.find(Normaltekst);
-      expect(tekst).to.have.length(1);
-      expect(tekst.childAt(0).text()).to.eql('Espen Utvikler, NAV Oslo');
+      expect(tekst).toHaveLength(1);
+      expect(tekst.childAt(0).text()).toEqual('Espen Utvikler, NAV Oslo');
     },
   );
 
@@ -104,9 +103,9 @@ describe('<LeggTilSaksbehandlerForm>', () => {
       func();
 
       const lagreSakslisteAndreKriterierCallData = requestApi.getRequestMockData(RestApiPathsKeys.SAKSBEHANDLER_SOK);
-      expect(lagreSakslisteAndreKriterierCallData).to.have.length(1);
+      expect(lagreSakslisteAndreKriterierCallData).toHaveLength(1);
 
-      expect(resetFormFn.calledOnce).to.be.true;
+      expect(resetFormFn.calledOnce).toBe(true);
     },
   );
 
@@ -143,9 +142,9 @@ describe('<LeggTilSaksbehandlerForm>', () => {
       await func();
 
       const lagreSakslisteAndreKriterierCallData = requestApi.getRequestMockData(RestApiPathsKeys.SAKSBEHANDLER_SOK);
-      expect(lagreSakslisteAndreKriterierCallData).to.have.length(1);
+      expect(lagreSakslisteAndreKriterierCallData).toHaveLength(1);
 
-      expect(resetFormFn.calledOnce).to.be.true;
+      expect(resetFormFn.calledOnce).toBe(true);
     },
   );
 
@@ -174,8 +173,8 @@ describe('<LeggTilSaksbehandlerForm>', () => {
     const innerWrapper = wrapper.find(Form).renderProp('render')(formProps);
 
     const tekstKomp = innerWrapper.find(Normaltekst);
-    expect(tekstKomp).to.have.length(1);
-    expect(tekstKomp.childAt(0).text()).is.eql('Espen Utvikler, NAV Oslo');
+    expect(tekstKomp).toHaveLength(1);
+    expect(tekstKomp.childAt(0).text()).toEqual('Espen Utvikler, NAV Oslo');
   });
 
   it(
@@ -200,8 +199,8 @@ describe('<LeggTilSaksbehandlerForm>', () => {
       const innerWrapper = wrapper.find(Form).renderProp('render')(formProps);
 
       const tekstKomp = innerWrapper.find(Normaltekst);
-      expect(tekstKomp).to.have.length(1);
-      expect(tekstKomp.childAt(0).text()).is.eql('Kan ikke finne brukerident');
+      expect(tekstKomp).toHaveLength(1);
+      expect(tekstKomp.childAt(0).text()).toEqual('Kan ikke finne brukerident');
     },
   );
 
@@ -232,8 +231,8 @@ describe('<LeggTilSaksbehandlerForm>', () => {
       const innerWrapper = wrapper.find(Form).renderProp('render')(formProps);
 
       const tekstKomp = innerWrapper.find(Normaltekst);
-      expect(tekstKomp).to.have.length(1);
-      expect(tekstKomp.childAt(0).text()).is.eql('Espen Utvikler, NAV Oslo (Brukerident finnes allerede i listen)');
+      expect(tekstKomp).toHaveLength(1);
+      expect(tekstKomp.childAt(0).text()).toEqual('Espen Utvikler, NAV Oslo (Brukerident finnes allerede i listen)');
     },
   );
 });

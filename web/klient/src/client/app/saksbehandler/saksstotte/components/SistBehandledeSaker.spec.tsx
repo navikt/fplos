@@ -1,5 +1,4 @@
 import React from 'react';
-import { expect } from 'chai';
 import { shallow } from 'enzyme';
 import Lenke from 'nav-frontend-lenker';
 
@@ -69,9 +68,9 @@ describe('<SistBehandledeSaker>', () => {
     const wrapper = shallow(<SistBehandledeSaker />);
 
     const links = wrapper.find(Lenke);
-    expect(links).to.have.length(2);
-    expect(links.first().childAt(0).text()).to.eql('Espen Utvikler 123456789');
-    expect(links.last().childAt(0).text()).to.eql('Espen Solstråle 657643535');
+    expect(links).toHaveLength(2);
+    expect(links.first().childAt(0).text()).toEqual('Espen Utvikler 123456789');
+    expect(links.last().childAt(0).text()).toEqual('Espen Solstråle 657643535');
   });
 
   it(
@@ -85,7 +84,7 @@ describe('<SistBehandledeSaker>', () => {
 
       const wrapper = shallow(<SistBehandledeSaker />);
 
-      expect(wrapper.find(Lenke)).to.have.length(0);
+      expect(wrapper.find(Lenke)).toHaveLength(0);
     },
   );
 });

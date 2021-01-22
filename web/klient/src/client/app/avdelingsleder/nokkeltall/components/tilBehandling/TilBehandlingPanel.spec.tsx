@@ -1,5 +1,4 @@
 import React from 'react';
-import { expect } from 'chai';
 import moment from 'moment';
 import sinon from 'sinon';
 import { IntlShape } from 'react-intl';
@@ -64,22 +63,22 @@ describe('<TilBehandlingPanel>', () => {
       />).find(Form).renderProp('render')({ values: valuesMock });
 
       const select = wrapper.find(SelectField);
-      expect(select).to.have.length(1);
+      expect(select).toHaveLength(1);
 
       const options = select.prop('selectValues') as { props: { value: string; children: string }}[];
-      expect(options).to.have.length(2);
-      expect(options[0].props.value).to.eql('2');
-      expect(options[0].props.children).to.eql('2 siste uker');
-      expect(options[1].props.value).to.eql('4');
-      expect(options[1].props.children).to.eql('4 siste uker');
+      expect(options).toHaveLength(2);
+      expect(options[0].props.value).toEqual('2');
+      expect(options[0].props.children).toEqual('2 siste uker');
+      expect(options[1].props.value).toEqual('4');
+      expect(options[1].props.children).toEqual('4 siste uker');
 
       const radioOptions = wrapper.find(RadioOption);
-      expect(radioOptions).to.have.length(4);
-      expect(radioOptions.first().prop('value')).to.eql('FP');
-      expect(radioOptions.first().prop('label')).to.eql('Foreldrepenger');
-      expect(radioOptions.at(1).prop('value')).to.eql('ES');
-      expect(radioOptions.at(1).prop('label')).to.eql('Engangsstønad');
-      expect(radioOptions.last().prop('value')).to.eql('ALLE');
+      expect(radioOptions).toHaveLength(4);
+      expect(radioOptions.first().prop('value')).toEqual('FP');
+      expect(radioOptions.first().prop('label')).toEqual('Foreldrepenger');
+      expect(radioOptions.at(1).prop('value')).toEqual('ES');
+      expect(radioOptions.at(1).prop('label')).toEqual('Engangsstønad');
+      expect(radioOptions.last().prop('value')).toEqual('ALLE');
     },
   );
 
@@ -112,9 +111,9 @@ describe('<TilBehandlingPanel>', () => {
     />).find(Form).renderProp('render')({ values: valuesMock });
 
     const graf = wrapper.find(TilBehandlingGraf);
-    expect(graf).to.have.length(1);
-    expect(graf.prop('isToUkerValgt')).is.true;
-    expect(graf.prop('oppgaverPerDato')).is.eql([oppgaverPerDato[0]]);
+    expect(graf).toHaveLength(1);
+    expect(graf.prop('isToUkerValgt')).toBe(true);
+    expect(graf.prop('oppgaverPerDato')).toEqual([oppgaverPerDato[0]]);
   });
 
   it(
@@ -148,9 +147,9 @@ describe('<TilBehandlingPanel>', () => {
       />).find(Form).renderProp('render')({ values: valuesMock });
 
       const graf = wrapper.find(TilBehandlingGraf);
-      expect(graf).to.have.length(1);
-      expect(graf.prop('isToUkerValgt')).is.false;
-      expect(graf.prop('oppgaverPerDato')).is.eql(oppgaverPerDato);
+      expect(graf).toHaveLength(1);
+      expect(graf.prop('isToUkerValgt')).toBe(false);
+      expect(graf.prop('oppgaverPerDato')).toEqual(oppgaverPerDato);
     },
   );
 
@@ -183,8 +182,8 @@ describe('<TilBehandlingPanel>', () => {
     />).find(Form).renderProp('render')({ values: valuesMock });
 
     const graf = wrapper.find(TilBehandlingGraf);
-    expect(graf).to.have.length(1);
-    expect(graf.prop('oppgaverPerDato')).is.eql([oppgaverPerDato[1]]);
+    expect(graf).toHaveLength(1);
+    expect(graf.prop('oppgaverPerDato')).toEqual([oppgaverPerDato[1]]);
   });
 
   it('skal filtrere bort foreldrepenger', () => {
@@ -216,8 +215,8 @@ describe('<TilBehandlingPanel>', () => {
     />).find(Form).renderProp('render')({ values: valuesMock });
 
     const graf = wrapper.find(TilBehandlingGraf);
-    expect(graf).to.have.length(1);
-    expect(graf.prop('oppgaverPerDato')).is.eql([oppgaverPerDato[0]]);
+    expect(graf).toHaveLength(1);
+    expect(graf.prop('oppgaverPerDato')).toEqual([oppgaverPerDato[0]]);
   });
 
   it('skal slå sammen like behandlingstyper og opprettetDatoer', () => {
@@ -249,8 +248,8 @@ describe('<TilBehandlingPanel>', () => {
     />).find(Form).renderProp('render')({ values: valuesMock });
 
     const graf = wrapper.find(TilBehandlingGraf);
-    expect(graf).to.have.length(1);
-    expect(graf.prop('oppgaverPerDato')).is.eql([{
+    expect(graf).toHaveLength(1);
+    expect(graf.prop('oppgaverPerDato')).toEqual([{
       behandlingType: forstegangssoknad,
       opprettetDato: moment().format(ISO_DATE_FORMAT),
       antall: 2,

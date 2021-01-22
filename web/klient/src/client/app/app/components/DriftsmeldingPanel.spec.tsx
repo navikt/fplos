@@ -1,5 +1,4 @@
 import React from 'react';
-import { expect } from 'chai';
 import { Undertekst } from 'nav-frontend-typografi';
 
 import { shallow } from 'enzyme';
@@ -12,7 +11,7 @@ describe('<DriftsmeldingPanel>', () => {
     />);
 
     const div = wrapper.find(Undertekst);
-    expect(div).to.have.length(0);
+    expect(div).toHaveLength(0);
   });
 
   it('skal vise driftsmeldinger når det finnes driftsmeldinger', () => {
@@ -28,7 +27,7 @@ describe('<DriftsmeldingPanel>', () => {
     />);
 
     const div = wrapper.find(Undertekst);
-    expect(div).to.have.length(1);
-    expect(div.at(0).childAt(0).text()).to.contain('Dette er driftsmeldingen');
+    expect(div).toHaveLength(1);
+    expect(div.at(0).childAt(0).text()).toEqual('Dette er driftsmeldingen');
   });
 });

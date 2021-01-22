@@ -1,6 +1,5 @@
 import React from 'react';
 import sinon from 'sinon';
-import { expect } from 'chai';
 import { Form } from 'react-final-form';
 
 import { requestApi, RestApiGlobalStatePathsKeys } from 'data/fplosRestApi';
@@ -66,12 +65,12 @@ describe('<FordelingAvBehandlingstypePanel>', () => {
     />).find(Form).renderProp('render')({ values: valuesMock });
 
     const radioOptions = wrapper.find(RadioOption);
-    expect(radioOptions).to.have.length(4);
-    expect(radioOptions.first().prop('value')).to.eql('FP');
-    expect(radioOptions.first().prop('label')).to.eql('Foreldrepenger');
-    expect(radioOptions.at(1).prop('value')).to.eql('ES');
-    expect(radioOptions.at(1).prop('label')).to.eql('Engangsstønad');
-    expect(radioOptions.last().prop('value')).to.eql('ALLE');
+    expect(radioOptions).toHaveLength(4);
+    expect(radioOptions.first().prop('value')).toEqual('FP');
+    expect(radioOptions.first().prop('label')).toEqual('Foreldrepenger');
+    expect(radioOptions.at(1).prop('value')).toEqual('ES');
+    expect(radioOptions.at(1).prop('label')).toEqual('Engangsstønad');
+    expect(radioOptions.last().prop('value')).toEqual('ALLE');
   });
 
   it('skal filtrere bort engangsstønader', () => {
@@ -100,8 +99,8 @@ describe('<FordelingAvBehandlingstypePanel>', () => {
     />).find(Form).renderProp('render')({ values: valuesMock });
 
     const graf = wrapper.find(FordelingAvBehandlingstypeGraf);
-    expect(graf).to.have.length(1);
-    expect(graf.prop('oppgaverForAvdeling')).is.eql([oppgaverForAvdeling[1]]);
+    expect(graf).toHaveLength(1);
+    expect(graf.prop('oppgaverForAvdeling')).toEqual([oppgaverForAvdeling[1]]);
   });
 
   it('skal filtrere bort foreldrepenger', () => {
@@ -131,7 +130,7 @@ describe('<FordelingAvBehandlingstypePanel>', () => {
     />).find(Form).renderProp('render')({ values: valuesMock });
 
     const graf = wrapper.find(FordelingAvBehandlingstypeGraf);
-    expect(graf).to.have.length(1);
-    expect(graf.prop('oppgaverForAvdeling')).is.eql([oppgaverForAvdeling[0]]);
+    expect(graf).toHaveLength(1);
+    expect(graf.prop('oppgaverForAvdeling')).toEqual([oppgaverForAvdeling[0]]);
   });
 });

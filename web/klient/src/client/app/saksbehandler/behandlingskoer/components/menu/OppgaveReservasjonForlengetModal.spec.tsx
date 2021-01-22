@@ -1,5 +1,4 @@
 import React from 'react';
-import { expect } from 'chai';
 import sinon from 'sinon';
 import { IntlShape, FormattedMessage } from 'react-intl';
 
@@ -56,9 +55,9 @@ describe('<OppgaveReservasjonForlengetModal>', () => {
       );
 
       const messages = wrapper.find(FormattedMessage);
-      expect(messages).has.length(2);
+      expect(messages).toHaveLength(2);
 
-      expect(messages.last().prop('values')).is.eql({
+      expect(messages.last().prop('values')).toEqual({
         date: '02.08.2017',
         time: '00:54',
       });

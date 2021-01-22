@@ -1,5 +1,4 @@
 import React from 'react';
-import { expect } from 'chai';
 import { shallow } from 'enzyme';
 import sinon from 'sinon';
 import { FormattedMessage } from 'react-intl';
@@ -60,11 +59,11 @@ describe('<OppgaveHandlingerMenu>', () => {
         />,
       );
 
-      expect(wrapper.find(MenuButton)).has.length(4);
+      expect(wrapper.find(MenuButton)).toHaveLength(4);
       const message = wrapper.find(FormattedMessage).first();
       const values = message.prop('values') as { date: string; time: string };
-      expect(values.date).is.eql('02.02.2020');
-      expect(values.time).is.eql('23:59');
+      expect(values.date).toEqual('02.02.2020');
+      expect(values.time).toEqual('23:59');
     },
   );
 
@@ -84,17 +83,17 @@ describe('<OppgaveHandlingerMenu>', () => {
           hentReserverteOppgaver={sinon.spy()}
         />,
       );
-      expect(wrapper.find(OpphevReservasjonModal)).has.length(0);
+      expect(wrapper.find(OpphevReservasjonModal)).toHaveLength(0);
 
       const menuButton = wrapper.find(MenuButton).first();
       menuButton.prop('onClick')();
 
       const modal = wrapper.find(OpphevReservasjonModal);
-      expect(modal).has.length(1);
+      expect(modal).toHaveLength(1);
 
       modal.prop('cancel')();
 
-      expect(wrapper.find(OpphevReservasjonModal)).has.length(0);
+      expect(wrapper.find(OpphevReservasjonModal)).toHaveLength(0);
     },
   );
 
@@ -117,7 +116,7 @@ describe('<OppgaveHandlingerMenu>', () => {
     menuButton.prop('onClick')();
 
     const modal = wrapper.find(OpphevReservasjonModal);
-    expect(modal).has.length(1);
+    expect(modal).toHaveLength(1);
   });
 
   it('skal vise modal for forlenging av reservasjon', async () => {
@@ -140,7 +139,7 @@ describe('<OppgaveHandlingerMenu>', () => {
     await menuButton.prop('onClick')();
 
     const modal = wrapper.find(OppgaveReservasjonForlengetModal);
-    expect(modal).has.length(1);
+    expect(modal).toHaveLength(1);
   });
 
   it('skal vise modal for flytting av reservasjon', () => {
@@ -161,7 +160,7 @@ describe('<OppgaveHandlingerMenu>', () => {
     const menuButton = wrapper.find(MenuButton).last();
     menuButton.prop('onClick')();
 
-    expect(wrapper.find(FlyttReservasjonModal)).has.length(1);
+    expect(wrapper.find(FlyttReservasjonModal)).toHaveLength(1);
   });
 
   it('skal vise flytt reservasjonsmodal', () => {
@@ -182,6 +181,6 @@ describe('<OppgaveHandlingerMenu>', () => {
     wrapper.setState({ showFlyttReservasjonModal: true });
 
     const modal = wrapper.find(FlyttReservasjonModal);
-    expect(modal).to.have.length(1);
+    expect(modal).toHaveLength(1);
   });
 });

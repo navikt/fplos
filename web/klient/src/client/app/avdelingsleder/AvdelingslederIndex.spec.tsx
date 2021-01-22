@@ -1,6 +1,5 @@
 import React from 'react';
 import { shallow } from 'enzyme';
-import { expect } from 'chai';
 import sinon from 'sinon';
 import Tabs from 'nav-frontend-tabs';
 
@@ -37,7 +36,7 @@ describe('<AvdelingslederIndex>', () => {
     requestApi.mock(RestApiGlobalStatePathsKeys.AVDELINGER, []);
 
     const wrapper = shallow(<AvdelingslederIndex />);
-    expect(wrapper.find(LoadingPanel)).to.have.length(1);
+    expect(wrapper.find(LoadingPanel)).toHaveLength(1);
     contextStub.restore();
   });
 
@@ -53,7 +52,7 @@ describe('<AvdelingslederIndex>', () => {
       const wrapper = shallow(<AvdelingslederIndex
         valgtAvdelingEnhet="1"
       />);
-      expect(wrapper.find(AvdelingslederDashboard)).to.have.length(1);
+      expect(wrapper.find(AvdelingslederDashboard)).toHaveLength(1);
       contextStub.restore();
     },
   );
@@ -70,18 +69,18 @@ describe('<AvdelingslederIndex>', () => {
     />);
 
     const tab = wrapper.find(Tabs);
-    expect(tab).to.have.length(1);
+    expect(tab).toHaveLength(1);
 
     const tabs = tab.prop('tabs');
-    expect(tabs).to.have.length(4);
-    expect(tabs[0].label.props.children.props.id).to.eql('AvdelingslederIndex.Behandlingskoer');
-    expect(tabs[0].aktiv).is.true;
-    expect(tabs[1].label.props.children.props.id).to.eql('AvdelingslederIndex.Nokkeltall');
-    expect(tabs[1].aktiv).is.false;
-    expect(tabs[2].label.props.children.props.id).to.eql('AvdelingslederIndex.Saksbehandlere');
-    expect(tabs[2].aktiv).is.false;
-    expect(tabs[3].label.props.children.props.id).to.eql('AvdelingslederIndex.Reservasjoner');
-    expect(tabs[3].aktiv).is.false;
+    expect(tabs).toHaveLength(4);
+    expect(tabs[0].label.props.children.props.id).toEqual('AvdelingslederIndex.Behandlingskoer');
+    expect(tabs[0].aktiv).toBe(true);
+    expect(tabs[1].label.props.children.props.id).toEqual('AvdelingslederIndex.Nokkeltall');
+    expect(tabs[1].aktiv).toBe(false);
+    expect(tabs[2].label.props.children.props.id).toEqual('AvdelingslederIndex.Saksbehandlere');
+    expect(tabs[2].aktiv).toBe(false);
+    expect(tabs[3].label.props.children.props.id).toEqual('AvdelingslederIndex.Reservasjoner');
+    expect(tabs[3].aktiv).toBe(false);
     contextStub.restore();
   });
 
@@ -96,7 +95,7 @@ describe('<AvdelingslederIndex>', () => {
       valgtAvdelingEnhet="1"
     />);
 
-    expect(wrapper.find(EndreBehandlingskoerIndex)).to.have.length(1);
+    expect(wrapper.find(EndreBehandlingskoerIndex)).toHaveLength(1);
     contextStub.restore();
   });
 
@@ -110,7 +109,7 @@ describe('<AvdelingslederIndex>', () => {
       valgtAvdelingEnhet="1"
     />);
 
-    expect(wrapper.find(EndreSaksbehandlereIndex)).to.have.length(1);
+    expect(wrapper.find(EndreSaksbehandlereIndex)).toHaveLength(1);
     contextStub.restore();
   });
 
@@ -124,7 +123,7 @@ describe('<AvdelingslederIndex>', () => {
       valgtAvdelingEnhet="1"
     />);
 
-    expect(wrapper.find(NokkeltallIndex)).to.have.length(1);
+    expect(wrapper.find(NokkeltallIndex)).toHaveLength(1);
     contextStub.restore();
   });
 
@@ -140,7 +139,7 @@ describe('<AvdelingslederIndex>', () => {
     requestApi.mock(RestApiGlobalStatePathsKeys.AVDELINGER, []);
     const wrapper = shallow(<AvdelingslederIndex />);
 
-    expect(wrapper.find(IkkeTilgangTilAvdelingslederPanel)).to.have.length(1);
+    expect(wrapper.find(IkkeTilgangTilAvdelingslederPanel)).toHaveLength(1);
     contextStub.restore();
   });
 });

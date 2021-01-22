@@ -1,5 +1,4 @@
 import React, { ReactElement } from 'react';
-import { expect } from 'chai';
 import sinon from 'sinon';
 import { IntlShape, FormattedMessage } from 'react-intl';
 import { Form, FormSpy } from 'react-final-form';
@@ -68,14 +67,14 @@ describe('<SakslisteVelgerForm>', () => {
     />).find(Form).renderProp('render')(formProps);
 
     const select = wrapper.find(SelectField);
-    expect(select).to.have.length(1);
+    expect(select).toHaveLength(1);
     const options = select.prop('selectValues') as { key: number; props: { value: string; children: string }}[];
-    expect(options[0].key).to.eql('1');
-    expect(options[0].props.value).to.eql('1');
-    expect(options[0].props.children).to.eql('Testliste 1');
-    expect(options[1].key).to.eql('2');
-    expect(options[1].props.value).to.eql('2');
-    expect(options[1].props.children).to.eql('Testliste 2');
+    expect(options[0].key).toEqual('1');
+    expect(options[0].props.value).toEqual('1');
+    expect(options[0].props.children).toEqual('Testliste 1');
+    expect(options[1].key).toEqual('2');
+    expect(options[1].props.value).toEqual('2');
+    expect(options[1].props.children).toEqual('Testliste 2');
   });
 
   it(
@@ -113,7 +112,7 @@ describe('<SakslisteVelgerForm>', () => {
         // @ts-ignore
       />).find(Form).renderProp('render')(formProps);
 
-      expect(wrapper.find(LabelWithHeader)).to.have.length(0);
+      expect(wrapper.find(LabelWithHeader)).toHaveLength(0);
     },
   );
 
@@ -153,10 +152,10 @@ describe('<SakslisteVelgerForm>', () => {
       />).find(Form).renderProp('render')(formProps);
 
       const labels = wrapper.find(LabelWithHeader);
-      expect(labels).to.have.length(4);
-      expect(labels.first().prop('texts')).to.eql(['Alle']);
-      expect(labels.at(0).prop('texts')).to.eql(['Alle']);
-      expect(labels.at(1).prop('texts')).to.eql(['Alle']);
+      expect(labels).toHaveLength(4);
+      expect(labels.first().prop('texts')).toEqual(['Alle']);
+      expect(labels.at(0).prop('texts')).toEqual(['Alle']);
+      expect(labels.at(1).prop('texts')).toEqual(['Alle']);
     },
   );
 
@@ -200,9 +199,9 @@ describe('<SakslisteVelgerForm>', () => {
       />).find(Form).renderProp('render')(formProps);
 
       const labels = wrapper.find(LabelWithHeader);
-      expect(labels).to.have.length(4);
-      expect(labels.first().prop('texts')).to.eql(['Alle']);
-      expect(labels.at(1).prop('texts')).to.eql(['Førstegangssøknad']);
+      expect(labels).toHaveLength(4);
+      expect(labels.first().prop('texts')).toEqual(['Alle']);
+      expect(labels.at(1).prop('texts')).toEqual(['Førstegangssøknad']);
     },
   );
 
@@ -249,9 +248,9 @@ describe('<SakslisteVelgerForm>', () => {
     />).find(Form).renderProp('render')(formProps);
 
     const labels = wrapper.find(LabelWithHeader);
-    expect(labels).to.have.length(4);
-    expect(labels.first().prop('texts')).to.eql(['Engangsstønad']);
-    expect(labels.at(1).prop('texts')).to.eql(['Førstegangssøknad', 'Klage']);
+    expect(labels).toHaveLength(4);
+    expect(labels.first().prop('texts')).toEqual(['Engangsstønad']);
+    expect(labels.at(1).prop('texts')).toEqual(['Førstegangssøknad', 'Klage']);
   });
 
   it('skal vise valgte andre kriterier som er inkluderte', () => {
@@ -293,8 +292,8 @@ describe('<SakslisteVelgerForm>', () => {
     />).find(Form).renderProp('render')(formProps);
 
     const labels = wrapper.find(LabelWithHeader);
-    expect(labels).to.have.length(4);
-    expect(labels.at(2).prop('texts')).to.eql(['Til beslutter']);
+    expect(labels).toHaveLength(4);
+    expect(labels.at(2).prop('texts')).toEqual(['Til beslutter']);
   });
 
   it('skal vise valgte andre kriterier som er ekskludert', () => {
@@ -337,8 +336,8 @@ describe('<SakslisteVelgerForm>', () => {
     />).find(Form).renderProp('render')(formProps);
 
     const labels = wrapper.find(LabelWithHeader);
-    expect(labels).to.have.length(4);
-    expect(labels.at(2).prop('texts')).to.eql(['Uten: Til beslutter']);
+    expect(labels).toHaveLength(4);
+    expect(labels.at(2).prop('texts')).toEqual(['Uten: Til beslutter']);
   });
 
   it('skal vise at alle andre kriterier er valgte', () => {
@@ -375,8 +374,8 @@ describe('<SakslisteVelgerForm>', () => {
     />).find(Form).renderProp('render')(formProps);
 
     const labels = wrapper.find(LabelWithHeader);
-    expect(labels).to.have.length(4);
-    expect(labels.at(2).prop('texts')).to.eql(['Alle']);
+    expect(labels).toHaveLength(4);
+    expect(labels.at(2).prop('texts')).toEqual(['Alle']);
   });
 
   it('skal vise køens saksbehandlere i tooltip', async () => {
@@ -447,8 +446,8 @@ describe('<SakslisteVelgerForm>', () => {
     const updatedInnerWrapper = wrapper.find(Form).renderProp('render')(formProps);
 
     const image = updatedInnerWrapper.find(Image);
-    expect(image).to.have.length(1);
+    expect(image).toHaveLength(1);
     const tooltip = shallowWithIntl(image.prop('tooltip') as ReactElement);
-    expect(tooltip.find(FormattedMessage).prop('id')).to.eql('SakslisteVelgerForm.SaksbehandlerToolip');
+    expect(tooltip.find(FormattedMessage).prop('id')).toEqual('SakslisteVelgerForm.SaksbehandlerToolip');
   });
 });

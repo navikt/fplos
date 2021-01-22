@@ -1,5 +1,4 @@
 import React from 'react';
-import { expect } from 'chai';
 import moment from 'moment';
 import { XYPlot, Hint, HorizontalRectSeries } from 'react-vis';
 import { IntlShape } from 'react-intl';
@@ -44,8 +43,8 @@ describe('<NyeOgFerdigstilteOppgaverForIdagGraf>', () => {
     />);
 
     const xYPlot = wrapper.find(XYPlot);
-    expect(xYPlot).to.have.length(1);
-    expect(xYPlot.prop('xDomain')).to.eql([0, 10]);
+    expect(xYPlot).toHaveLength(1);
+    expect(xYPlot.prop('xDomain')).toEqual([0, 10]);
   });
 
   it('skal vise graf med 7 satt på x-linja når data har maksverdi x=5', () => {
@@ -68,8 +67,8 @@ describe('<NyeOgFerdigstilteOppgaverForIdagGraf>', () => {
     />);
 
     const xYPlot = wrapper.find(XYPlot);
-    expect(xYPlot).to.have.length(1);
-    expect(xYPlot.prop('xDomain')).to.eql([0, 14]);
+    expect(xYPlot).toHaveLength(1);
+    expect(xYPlot.prop('xDomain')).toEqual([0, 14]);
   });
 
   it(
@@ -97,8 +96,8 @@ describe('<NyeOgFerdigstilteOppgaverForIdagGraf>', () => {
       func({ x: 2, y: 4.5 });
 
       const hint = wrapper.find(Hint);
-      expect(hint).to.have.length(1);
-      expect(hint.find('div').childAt(0).text()).is.eql('Antall ferdigstilte: 2');
+      expect(hint).toHaveLength(1);
+      expect(hint.find('div').childAt(0).text()).toEqual('Antall ferdigstilte: 2');
     },
   );
 });

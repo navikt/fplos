@@ -1,6 +1,5 @@
 import sinon from 'sinon';
 import React from 'react';
-import { expect } from 'chai';
 import { IntlShape } from 'react-intl';
 import { Form } from 'react-final-form';
 
@@ -25,7 +24,7 @@ describe('<OppgaveReservasjonEndringDatoModal>', () => {
       />,
     );
     const form = wrapper.find(Form);
-    expect(form).has.length(1);
+    expect(form).toHaveLength(1);
 
     const handleSubmitFn = sinon.spy();
     const func = form.prop('render') as ({ handleSubmit: any }) => void;
@@ -34,8 +33,8 @@ describe('<OppgaveReservasjonEndringDatoModal>', () => {
       handleSubmit: handleSubmitFn,
     }));
     const datepickerField = formWrapper.find(DatepickerField);
-    expect(datepickerField).to.have.length(1);
+    expect(datepickerField).toHaveLength(1);
     formWrapper.find('form').simulate('submit');
-    expect(handleSubmitFn.calledOnce).to.be.true;
+    expect(handleSubmitFn.calledOnce).toBe(true);
   });
 });

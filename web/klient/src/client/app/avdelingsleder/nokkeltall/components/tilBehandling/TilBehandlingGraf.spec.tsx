@@ -1,6 +1,5 @@
 import React from 'react';
 import moment from 'moment';
-import { expect } from 'chai';
 import { shallow } from 'enzyme';
 import { AreaSeries, Crosshair } from 'react-vis';
 import { Normaltekst, Undertekst } from 'nav-frontend-typografi';
@@ -42,15 +41,15 @@ describe('<TilBehandlingGraf>', () => {
     />);
 
     const areaSeries = wrapper.find(AreaSeries);
-    expect(areaSeries).to.have.length(0);
+    expect(areaSeries).toHaveLength(0);
   });
 
   const sjekkAtEnHarVerdierForPeriode = (data, isToUkerValgt) => {
     const dager = isToUkerValgt ? 14 : 28;
-    expect(data).to.have.length(dager);
+    expect(data).toHaveLength(dager);
     for (let i = 0; i < dager; i += 1) {
       const dato = moment().startOf('day').subtract(dager - 1 - i, 'd');
-      expect(dato.toDate()).is.eql(data[i].x);
+      expect(dato.toDate()).toEqual(data[i].x);
     }
   };
 
@@ -80,19 +79,19 @@ describe('<TilBehandlingGraf>', () => {
       />);
 
       const areaSeries = wrapper.find(AreaSeries);
-      expect(areaSeries).to.have.length(2);
+      expect(areaSeries).toHaveLength(2);
 
       const dataArea1 = areaSeries.first().prop('data');
       sjekkAtEnHarVerdierForPeriode(dataArea1, true);
-      expect(dataArea1[0].y).to.eql(0);
-      expect(dataArea1[11].y).to.eql(0);
-      expect(dataArea1[12].y).to.eql(2);
-      expect(dataArea1[13].y).to.eql(1);
+      expect(dataArea1[0].y).toEqual(0);
+      expect(dataArea1[11].y).toEqual(0);
+      expect(dataArea1[12].y).toEqual(2);
+      expect(dataArea1[13].y).toEqual(1);
 
       const dataArea2 = areaSeries.last().prop('data');
       sjekkAtEnHarVerdierForPeriode(dataArea2, true);
-      expect(dataArea2[12].y).to.eql(0);
-      expect(dataArea2[13].y).to.eql(3);
+      expect(dataArea2[12].y).toEqual(0);
+      expect(dataArea2[13].y).toEqual(3);
     },
   );
 
@@ -122,19 +121,19 @@ describe('<TilBehandlingGraf>', () => {
       />);
 
       const areaSeries = wrapper.find(AreaSeries);
-      expect(areaSeries).to.have.length(2);
+      expect(areaSeries).toHaveLength(2);
 
       const dataArea1 = areaSeries.first().prop('data');
       sjekkAtEnHarVerdierForPeriode(dataArea1, false);
-      expect(dataArea1[0].y).to.eql(0);
-      expect(dataArea1[25].y).to.eql(0);
-      expect(dataArea1[26].y).to.eql(2);
-      expect(dataArea1[27].y).to.eql(1);
+      expect(dataArea1[0].y).toEqual(0);
+      expect(dataArea1[25].y).toEqual(0);
+      expect(dataArea1[26].y).toEqual(2);
+      expect(dataArea1[27].y).toEqual(1);
 
       const dataArea2 = areaSeries.last().prop('data');
       sjekkAtEnHarVerdierForPeriode(dataArea2, false);
-      expect(dataArea2[26].y).to.eql(0);
-      expect(dataArea2[27].y).to.eql(3);
+      expect(dataArea2[26].y).toEqual(0);
+      expect(dataArea2[27].y).toEqual(3);
     },
   );
 
@@ -164,20 +163,20 @@ describe('<TilBehandlingGraf>', () => {
       />);
 
       const areaSeries = wrapper.find(AreaSeries);
-      expect(areaSeries).to.have.length(2);
+      expect(areaSeries).toHaveLength(2);
 
       const valgtPunkt = { x: moment().startOf('day').toDate(), y: 1 };
       const func = areaSeries.first().prop('onNearestX') as ({ x: Date, y: number }) => void;
       func(valgtPunkt);
 
       const crosshair = wrapper.find(Crosshair);
-      expect(crosshair).to.have.length(1);
+      expect(crosshair).toHaveLength(1);
 
-      expect(crosshair.find(Normaltekst).childAt(0).text()).to.eql(moment().format(DDMMYYYY_DATE_FORMAT));
+      expect(crosshair.find(Normaltekst).childAt(0).text()).toEqual(moment().format(DDMMYYYY_DATE_FORMAT));
       const tekst = crosshair.find(Undertekst);
-      expect(tekst).to.have.length(2);
-      expect(tekst.first().childAt(0).text()).to.eql(`Klage: ${3}`);
-      expect(tekst.last().childAt(0).text()).to.eql(`Førstegangssøknad: ${1}`);
+      expect(tekst).toHaveLength(2);
+      expect(tekst.first().childAt(0).text()).toEqual(`Klage: ${3}`);
+      expect(tekst.last().childAt(0).text()).toEqual(`Førstegangssøknad: ${1}`);
     },
   );
 });

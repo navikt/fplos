@@ -1,5 +1,4 @@
 import React from 'react';
-import { expect } from 'chai';
 import sinon from 'sinon';
 import { shallow } from 'enzyme';
 
@@ -34,12 +33,12 @@ describe('<AndreKriterierVelger>', () => {
     />);
 
     const checkboxer = wrapper.find(CheckboxField);
-    expect(checkboxer).to.have.length(2);
+    expect(checkboxer).toHaveLength(2);
     const tilBeslutterCheckbox = checkboxer.first();
-    expect(tilBeslutterCheckbox.prop('name')).to.eql(andreKriterierType.TIL_BESLUTTER);
+    expect(tilBeslutterCheckbox.prop('name')).toEqual(andreKriterierType.TIL_BESLUTTER);
 
-    expect(wrapper.find(RadioGroupField)).to.have.length(0);
-    expect(wrapper.find(RadioOption)).to.have.length(0);
+    expect(wrapper.find(RadioGroupField)).toHaveLength(0);
+    expect(wrapper.find(RadioOption)).toHaveLength(0);
   });
 
   it('skal vise checkbox for Registrere papirsøknad', () => {
@@ -54,9 +53,9 @@ describe('<AndreKriterierVelger>', () => {
     />);
 
     const checkboxer = wrapper.find(CheckboxField);
-    expect(checkboxer).to.have.length(2);
+    expect(checkboxer).toHaveLength(2);
     const tilBeslutterCheckbox = checkboxer.last();
-    expect(tilBeslutterCheckbox.prop('name')).to.eql(andreKriterierType.REGISTRER_PAPIRSOKNAD);
+    expect(tilBeslutterCheckbox.prop('name')).toEqual(andreKriterierType.REGISTRER_PAPIRSOKNAD);
   });
 
   it('skal lagre valgt for Til beslutter ved klikk på checkbox', () => {
@@ -75,12 +74,12 @@ describe('<AndreKriterierVelger>', () => {
     checkbox.prop('onChange')(true);
 
     const lagreSakslisteAndreKriterierCallData = requestApi.getRequestMockData(RestApiPathsKeys.LAGRE_SAKSLISTE_ANDRE_KRITERIER);
-    expect(lagreSakslisteAndreKriterierCallData).to.have.length(1);
-    expect(lagreSakslisteAndreKriterierCallData[0].params.sakslisteId).is.eql(1);
-    expect(lagreSakslisteAndreKriterierCallData[0].params.andreKriterierType.kode).is.eql(andreKriterierType.TIL_BESLUTTER);
-    expect(lagreSakslisteAndreKriterierCallData[0].params.checked).is.true;
-    expect(lagreSakslisteAndreKriterierCallData[0].params.inkluder).is.true;
-    expect(lagreSakslisteAndreKriterierCallData[0].params.avdelingEnhet).is.eql('3');
+    expect(lagreSakslisteAndreKriterierCallData).toHaveLength(1);
+    expect(lagreSakslisteAndreKriterierCallData[0].params.sakslisteId).toEqual(1);
+    expect(lagreSakslisteAndreKriterierCallData[0].params.andreKriterierType.kode).toEqual(andreKriterierType.TIL_BESLUTTER);
+    expect(lagreSakslisteAndreKriterierCallData[0].params.checked).toBe(true);
+    expect(lagreSakslisteAndreKriterierCallData[0].params.inkluder).toBe(true);
+    expect(lagreSakslisteAndreKriterierCallData[0].params.avdelingEnhet).toEqual('3');
   });
 
   it(
@@ -101,12 +100,12 @@ describe('<AndreKriterierVelger>', () => {
       checkbox.prop('onChange')(true);
 
       const lagreSakslisteAndreKriterierCallData = requestApi.getRequestMockData(RestApiPathsKeys.LAGRE_SAKSLISTE_ANDRE_KRITERIER);
-      expect(lagreSakslisteAndreKriterierCallData).to.have.length(1);
-      expect(lagreSakslisteAndreKriterierCallData[0].params.sakslisteId).is.eql(1);
-      expect(lagreSakslisteAndreKriterierCallData[0].params.andreKriterierType.kode).is.eql(andreKriterierType.REGISTRER_PAPIRSOKNAD);
-      expect(lagreSakslisteAndreKriterierCallData[0].params.checked).is.true;
-      expect(lagreSakslisteAndreKriterierCallData[0].params.inkluder).is.true;
-      expect(lagreSakslisteAndreKriterierCallData[0].params.avdelingEnhet).is.eql('3');
+      expect(lagreSakslisteAndreKriterierCallData).toHaveLength(1);
+      expect(lagreSakslisteAndreKriterierCallData[0].params.sakslisteId).toEqual(1);
+      expect(lagreSakslisteAndreKriterierCallData[0].params.andreKriterierType.kode).toEqual(andreKriterierType.REGISTRER_PAPIRSOKNAD);
+      expect(lagreSakslisteAndreKriterierCallData[0].params.checked).toBe(true);
+      expect(lagreSakslisteAndreKriterierCallData[0].params.inkluder).toBe(true);
+      expect(lagreSakslisteAndreKriterierCallData[0].params.avdelingEnhet).toEqual('3');
     },
   );
 
@@ -123,8 +122,8 @@ describe('<AndreKriterierVelger>', () => {
       hentAntallOppgaver={sinon.spy()}
     />);
 
-    expect(wrapper.find(RadioGroupField)).to.have.length(1);
-    expect(wrapper.find(RadioOption)).to.have.length(2);
+    expect(wrapper.find(RadioGroupField)).toHaveLength(1);
+    expect(wrapper.find(RadioOption)).toHaveLength(2);
   });
 
   it('skal valge å fjerne inkludering av beslutter', () => {
@@ -144,11 +143,11 @@ describe('<AndreKriterierVelger>', () => {
     wrapper.find(RadioGroupField).prop('onChange')(false);
 
     const lagreSakslisteAndreKriterierCallData = requestApi.getRequestMockData(RestApiPathsKeys.LAGRE_SAKSLISTE_ANDRE_KRITERIER);
-    expect(lagreSakslisteAndreKriterierCallData).to.have.length(1);
-    expect(lagreSakslisteAndreKriterierCallData[0].params.sakslisteId).is.eql(1);
-    expect(lagreSakslisteAndreKriterierCallData[0].params.andreKriterierType.kode).is.eql(andreKriterierType.TIL_BESLUTTER);
-    expect(lagreSakslisteAndreKriterierCallData[0].params.checked).is.true;
-    expect(lagreSakslisteAndreKriterierCallData[0].params.inkluder).is.false;
-    expect(lagreSakslisteAndreKriterierCallData[0].params.avdelingEnhet).is.eql('3');
+    expect(lagreSakslisteAndreKriterierCallData).toHaveLength(1);
+    expect(lagreSakslisteAndreKriterierCallData[0].params.sakslisteId).toEqual(1);
+    expect(lagreSakslisteAndreKriterierCallData[0].params.andreKriterierType.kode).toEqual(andreKriterierType.TIL_BESLUTTER);
+    expect(lagreSakslisteAndreKriterierCallData[0].params.checked).toBe(true);
+    expect(lagreSakslisteAndreKriterierCallData[0].params.inkluder).toBe(false);
+    expect(lagreSakslisteAndreKriterierCallData[0].params.avdelingEnhet).toEqual('3');
   });
 });

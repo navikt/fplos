@@ -1,5 +1,4 @@
 import React from 'react';
-import { expect } from 'chai';
 import sinon from 'sinon';
 import { shallow } from 'enzyme';
 
@@ -48,9 +47,9 @@ describe('<BehandlingstypeVelger>', () => {
     />);
 
     const checkboxer = wrapper.find(CheckboxField);
-    expect(checkboxer).to.have.length(7);
-    expect(checkboxer.first().prop('name')).to.eql(behandlingType.FORSTEGANGSSOKNAD);
-    expect(checkboxer.last().prop('name')).to.eql(behandlingType.TILBAKEBETALING_REVURDERING);
+    expect(checkboxer).toHaveLength(7);
+    expect(checkboxer.first().prop('name')).toEqual(behandlingType.FORSTEGANGSSOKNAD);
+    expect(checkboxer.last().prop('name')).toEqual(behandlingType.TILBAKEBETALING_REVURDERING);
   });
 
   it('skal lagre behandlingstype ved klikk på checkbox', () => {
@@ -68,10 +67,10 @@ describe('<BehandlingstypeVelger>', () => {
     checkbox.first().prop('onChange')(true);
 
     const lagreSakslisteBehandlingstypeCallData = requestApi.getRequestMockData(RestApiPathsKeys.LAGRE_SAKSLISTE_BEHANDLINGSTYPE);
-    expect(lagreSakslisteBehandlingstypeCallData).to.have.length(1);
-    expect(lagreSakslisteBehandlingstypeCallData[0].params.sakslisteId).is.eql(1);
-    expect(lagreSakslisteBehandlingstypeCallData[0].params.behandlingType).is.eql(behandlingTyper[0]);
-    expect(lagreSakslisteBehandlingstypeCallData[0].params.checked).is.true;
-    expect(lagreSakslisteBehandlingstypeCallData[0].params.avdelingEnhet).is.eql('3');
+    expect(lagreSakslisteBehandlingstypeCallData).toHaveLength(1);
+    expect(lagreSakslisteBehandlingstypeCallData[0].params.sakslisteId).toEqual(1);
+    expect(lagreSakslisteBehandlingstypeCallData[0].params.behandlingType).toEqual(behandlingTyper[0]);
+    expect(lagreSakslisteBehandlingstypeCallData[0].params.checked).toBe(true);
+    expect(lagreSakslisteBehandlingstypeCallData[0].params.avdelingEnhet).toEqual('3');
   });
 });

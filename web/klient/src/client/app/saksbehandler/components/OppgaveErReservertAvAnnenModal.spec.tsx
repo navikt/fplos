@@ -1,5 +1,4 @@
 import React from 'react';
-import { expect } from 'chai';
 import sinon from 'sinon';
 import { IntlShape, FormattedMessage } from 'react-intl';
 import moment from 'moment';
@@ -60,11 +59,11 @@ describe('<OppgaveErReservertAvAnnenModal>', () => {
       />,
     );
 
-    expect(wrapper.find(Modal)).has.length(1);
+    expect(wrapper.find(Modal)).toHaveLength(1);
     const fmessage = wrapper.find(FormattedMessage);
-    expect(fmessage).has.length(1);
+    expect(fmessage).toHaveLength(1);
     const dagOgTidspunkt = getDateAndTime(dato);
-    expect(fmessage.prop('values')).is.eql({
+    expect(fmessage.prop('values')).toEqual({
       date: dagOgTidspunkt.date,
       time: dagOgTidspunkt.time,
       saksbehandlerid: '123455',
@@ -84,14 +83,14 @@ describe('<OppgaveErReservertAvAnnenModal>', () => {
     );
 
     const knapp = wrapper.find(Hovedknapp);
-    expect(knapp).has.length(1);
+    expect(knapp).toHaveLength(1);
 
     const clickFn = knapp.prop('onClick') as () => void;
     clickFn();
 
-    expect(lukkOgApneFn.calledOnce).to.be.true;
+    expect(lukkOgApneFn.calledOnce).toBe(true);
     const { args } = lukkOgApneFn.getCalls()[0];
-    expect(args).to.have.length(1);
-    expect(args[0]).to.eql(oppgave);
+    expect(args).toHaveLength(1);
+    expect(args[0]).toEqual(oppgave);
   });
 });

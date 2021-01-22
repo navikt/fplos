@@ -1,6 +1,5 @@
 import React from 'react';
 import { shallow } from 'enzyme';
-import { expect } from 'chai';
 import sinon from 'sinon';
 
 import { AutoLagringVedBlur } from './AutoLagringVedBlur';
@@ -22,10 +21,10 @@ describe('<AutoLagringVedBlur>', () => {
     };
     wrapper.setProps(changedProps);
 
-    expect(lagreFn.getCalls()).has.length(1);
+    expect(lagreFn.getCalls()).toHaveLength(1);
     const args1 = lagreFn.getCalls()[0].args;
-    expect(args1).has.length(1);
-    expect(args1[0]).is.eql({
+    expect(args1).toHaveLength(1);
+    expect(args1[0]).toEqual({
       navn: 'Nytt listenavn',
     });
   });
@@ -46,6 +45,6 @@ describe('<AutoLagringVedBlur>', () => {
     };
     wrapper.setProps(changedProps);
 
-    expect(lagreFn.getCalls()).has.length(0);
+    expect(lagreFn.getCalls()).toHaveLength(0);
   });
 });

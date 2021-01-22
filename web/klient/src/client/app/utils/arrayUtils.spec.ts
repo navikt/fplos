@@ -1,5 +1,3 @@
-import { expect } from 'chai';
-
 import {
   range, haystack,
 } from './arrayUtils';
@@ -12,10 +10,10 @@ describe('arrayUtils', () => {
       const rangeTwo = range(2);
       const rangeTen = range(10);
 
-      expect(rangeZero).to.eql([]);
-      expect(rangeOne).to.eql([0]);
-      expect(rangeTwo).to.eql([0, 1]);
-      expect(rangeTen).to.eql([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]);
+      expect(rangeZero).toEqual([]);
+      expect(rangeOne).toEqual([0]);
+      expect(rangeTwo).toEqual([0, 1]);
+      expect(rangeTen).toEqual([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]);
     });
   });
 
@@ -34,7 +32,7 @@ describe('arrayUtils', () => {
             },
           ],
         };
-        expect(haystack(listeB, listeA[0])).to.eql('value');
+        expect(haystack(listeB, listeA[0])).toEqual('value');
       },
     );
   });

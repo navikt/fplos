@@ -1,5 +1,4 @@
 import React from 'react';
-import { expect } from 'chai';
 import { shallow } from 'enzyme';
 
 import EndreSaksbehandlereIndex from './EndreSaksbehandlereIndex';
@@ -15,7 +14,7 @@ describe('<EndreSaksbehandlereIndex>', () => {
         hentAvdelingensSaksbehandlere={() => undefined}
       />);
 
-      expect(wrapper.find(SaksbehandlerePanel)).to.have.length(1);
+      expect(wrapper.find(SaksbehandlerePanel)).toHaveLength(1);
     },
   );
 });

@@ -1,6 +1,5 @@
 import React from 'react';
 import moment from 'moment';
-import { expect } from 'chai';
 import { shallow } from 'enzyme';
 import { AreaSeries, Crosshair, XYPlot } from 'react-vis';
 import { FormattedMessage } from 'react-intl';
@@ -20,8 +19,8 @@ describe('<ManueltPaVentGraf>', () => {
     />);
 
     const xYPlot = wrapper.find(XYPlot);
-    expect(xYPlot).to.have.length(1);
-    expect(xYPlot.prop('yDomain')).to.eql([0, 50]);
+    expect(xYPlot).toHaveLength(1);
+    expect(xYPlot.prop('yDomain')).toEqual([0, 50]);
   });
 
   it('skal vise crosshair med antall behandlinger for i morgen', () => {
@@ -56,7 +55,7 @@ describe('<ManueltPaVentGraf>', () => {
     />);
 
     const areaSeries = wrapper.find(AreaSeries);
-    expect(areaSeries).to.have.length(1);
+    expect(areaSeries).toHaveLength(1);
 
     const func = areaSeries.first().prop('onNearestX') as ({ x: Date, y: number }) => void;
     func({
@@ -65,11 +64,11 @@ describe('<ManueltPaVentGraf>', () => {
     });
 
     const crosshair = wrapper.find(Crosshair);
-    expect(crosshair).to.have.length(1);
+    expect(crosshair).toHaveLength(1);
 
-    expect(crosshair.find(Normaltekst).childAt(0).text()).to.eql(moment().add(1, 'd').format(DDMMYYYY_DATE_FORMAT));
+    expect(crosshair.find(Normaltekst).childAt(0).text()).toEqual(moment().add(1, 'd').format(DDMMYYYY_DATE_FORMAT));
     const tekst = crosshair.find(Undertekst);
-    expect(tekst).to.have.length(1);
-    expect(tekst.first().find(FormattedMessage).prop('values')).to.eql({ antall: 2 });
+    expect(tekst).toHaveLength(1);
+    expect(tekst.first().find(FormattedMessage).prop('values')).toEqual({ antall: 2 });
   });
 });

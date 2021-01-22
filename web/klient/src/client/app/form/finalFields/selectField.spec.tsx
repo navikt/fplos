@@ -1,5 +1,4 @@
 import React from 'react';
-import { expect } from 'chai';
 import { Form } from 'react-final-form';
 
 import { mountWithIntl } from 'testHelpers/intl-enzyme-test-helper';
@@ -24,19 +23,19 @@ const mountFieldInForm = (field) => mountWithIntl(
 describe('<SelectField>', () => {
   it('Skal rendre select', () => {
     const wrapper = mountFieldInForm(<SelectField label="text" name="text" selectValues={selectValues} />);
-    expect(wrapper.find('label').text()).to.eql('text');
+    expect(wrapper.find('label').text()).toEqual('text');
     const select = wrapper.find('select');
-    expect(select).to.have.length(1);
-    expect(select.find('option')).to.have.length(3);
-    expect(select.find('option').first().prop('value')).to.eql('');
-    expect(select.find('option').first().text()).to.eql(' ');
+    expect(select).toHaveLength(1);
+    expect(select.find('option')).toHaveLength(3);
+    expect(select.find('option').first().prop('value')).toEqual('');
+    expect(select.find('option').first().text()).toEqual(' ');
   });
 
   it('Skal rendre disabled select', () => {
     const wrapper = mountFieldInForm(<SelectField label="text" name="text" disabled selectValues={selectValues} />);
-    expect(wrapper.find('label').text()).to.eql('text');
+    expect(wrapper.find('label').text()).toEqual('text');
     const select = wrapper.find('select');
-    expect(select).to.have.length(1);
-    expect(select.prop('disabled')).to.true;
+    expect(select).toHaveLength(1);
+    expect(select.prop('disabled')).toBe(true);
   });
 });

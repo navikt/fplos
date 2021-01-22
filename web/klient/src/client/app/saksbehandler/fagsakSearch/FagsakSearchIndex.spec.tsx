@@ -1,5 +1,4 @@
 import React from 'react';
-import { expect } from 'chai';
 import { shallow } from 'enzyme';
 
 import { requestApi, RestApiPathsKeys } from 'data/fplosRestApi';
@@ -42,10 +41,10 @@ describe('<FagsakSearchIndex>', () => {
     />);
 
     const fagsakSearchIndex = wrapper.find(FagsakSearch);
-    expect(fagsakSearchIndex).to.have.length(1);
+    expect(fagsakSearchIndex).toHaveLength(1);
 
     await fagsakSearchIndex.prop('searchFagsakCallback')({ searchString: 'test', skalReservere: false });
 
-    expect(wrapper.find(FagsakSearch).prop('fagsaker')).to.eql(fagsaker);
+    expect(wrapper.find(FagsakSearch).prop('fagsaker')).toEqual(fagsaker);
   });
 });

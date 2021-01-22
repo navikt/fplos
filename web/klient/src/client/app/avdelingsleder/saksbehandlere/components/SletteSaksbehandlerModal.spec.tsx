@@ -1,5 +1,4 @@
 import React from 'react';
-import { expect } from 'chai';
 import sinon from 'sinon';
 import { IntlShape } from 'react-intl';
 import { Hovedknapp, Knapp } from 'nav-frontend-knapper';
@@ -27,8 +26,8 @@ describe('<SletteSaksbehandlerModal>', () => {
         fjernSaksbehandler={sinon.spy()}
       />);
 
-      expect(wrapper.find(Hovedknapp)).to.have.length(1);
-      expect(wrapper.find(Knapp)).to.have.length(1);
+      expect(wrapper.find(Hovedknapp)).toHaveLength(1);
+      expect(wrapper.find(Knapp)).toHaveLength(1);
     },
   );
 
@@ -48,14 +47,14 @@ describe('<SletteSaksbehandlerModal>', () => {
     />);
 
     const sletteknapp = wrapper.find(Hovedknapp);
-    expect(sletteknapp).to.have.length(1);
+    expect(sletteknapp).toHaveLength(1);
 
     const clickFn = sletteknapp.prop('onClick') as () => void;
     clickFn();
 
-    expect(submitFn.calledOnce).to.be.true;
+    expect(submitFn.calledOnce).toBe(true);
     const { args } = submitFn.getCalls()[0];
-    expect(args).to.have.length(1);
-    expect(args[0]).to.eql(saksbehandler);
+    expect(args).toHaveLength(1);
+    expect(args[0]).toEqual(saksbehandler);
   });
 });

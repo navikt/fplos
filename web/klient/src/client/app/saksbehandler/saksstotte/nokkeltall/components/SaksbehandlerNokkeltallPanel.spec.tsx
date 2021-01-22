@@ -1,6 +1,5 @@
 import React from 'react';
 import { shallow } from 'enzyme';
-import { expect } from 'chai';
 
 import SaksbehandlerNokkeltallPanel from './SaksbehandlerNokkeltallPanel';
 import NyeOgFerdigstilteOppgaverForIdagPanel from './nyeOgFerdigstilteOppgaverForIdag/NyeOgFerdigstilteOppgaverForIdagPanel';
@@ -12,7 +11,7 @@ describe('<SaksbehandlerNokkeltallPanel>', () => {
       nyeOgFerdigstilteOppgaver={[]}
     />);
 
-    expect(wrapper.find(NyeOgFerdigstilteOppgaverForIdagPanel)).to.have.length(1);
-    expect(wrapper.find(NyeOgFerdigstilteOppgaverForSisteSyvPanel)).to.have.length(1);
+    expect(wrapper.find(NyeOgFerdigstilteOppgaverForIdagPanel)).toHaveLength(1);
+    expect(wrapper.find(NyeOgFerdigstilteOppgaverForSisteSyvPanel)).toHaveLength(1);
   });
 });
