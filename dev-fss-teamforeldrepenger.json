@@ -20,8 +20,6 @@
     "OIDC_STS_JWKS_URL": "http://security-token-service.default/rest/v1/sts/jwks",
     "OPENIDCONNECT_USERNAME": "fplos-q1",
     "OPENIDCONNECT_ISSOHOST": "https://isso-q.adeo.no:443/isso/oauth2",
-    "PERSON_V3_URL": "https://wasapp-q1.adeo.no/tpsws/ws/Person/v3",
-    "AKTOER_V2_URL": "https://app-q1.adeo.no/aktoerregister/ws/Aktoer/v2",
     "LDAP_USER_BASEDN": "ou=NAV,ou=BusinessUnits,dc=preprod,dc=local",
     "LDAP_SERVICEUSER_BASEDN": "ou=ServiceAccounts,dc=preprod,dc=local",
     "LDAP_DOMAIN": "PREPROD.LOCAL",
@@ -32,7 +30,7 @@
     "KAFKA_TILBAKEBETALING_TOPIC":  "privat-tilbakekreving-fploshendelse-v1-q1",
     "KAFKA_TILBAKEBETALING_GROUP_ID":  "KC-privat-tilbakekreving-fploshendelse-v1-q1",
     "KAFKA_BROKERS": "b27apvl00045.preprod.local:8443,b27apvl00046.preprod.local:8443,b27apvl00047.preprod.local:8443",
-    "PDL_BASE_URL" : "http://pdl-api.default",
+    "PDL_BASE_URL" : "http://pdl-api.default/graphql",
     "APPDYNAMICS_AGENT_ACCOUNT_NAME": "NON-PROD",
     "ABAC_ATTRIBUTT_DRIFT": "no.nav.abac.attributter.foreldrepenger.drift"
   }

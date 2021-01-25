@@ -16,11 +16,11 @@ public class EntityManagerFPLosAwareExtension extends EntityManagerAwareExtensio
         if (System.getenv("MAVEN_CMD_LINE_ARGS") == null) {
             // prøver alltid migrering hvis endring, ellers funker det dårlig i IDE.
             LOG.warn("Kjører migreringer");
-            Databaseskjemainitialisering.migrerUnittestSkjemaer();
+            Databaseskjemainitialisering.migrerForUnitTests();
         }
         // Maven kjører testen
         // kun kjør migreringer i migreringer modul
 
-        Databaseskjemainitialisering.settPlaceholdereOgJdniOppslag();
+        Databaseskjemainitialisering.settJdniOppslagForUnitTests();
     }
 }
