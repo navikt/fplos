@@ -14,6 +14,8 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import javax.persistence.EntityManager;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -33,11 +35,10 @@ import no.nav.foreldrepenger.loslager.oppgave.OppgaveFiltrering;
 import no.nav.foreldrepenger.loslager.oppgave.Reservasjon;
 import no.nav.foreldrepenger.loslager.oppgave.TilbakekrevingOppgave;
 import no.nav.foreldrepenger.loslager.organisasjon.Avdeling;
-import no.nav.vedtak.felles.testutilities.db.EntityManagerAwareTest;
 import no.nav.vedtak.felles.testutilities.db.Repository;
 
 @ExtendWith(EntityManagerFPLosAwareExtension.class)
-public class OppgaveRepositoryImplTest extends EntityManagerAwareTest {
+public class OppgaveRepositoryImplTest {
 
     private static final BehandlingId behandlingId1 = new BehandlingId(UUID.nameUUIDFromBytes("uuid_1".getBytes()));
     private static final BehandlingId behandlingId2 = new BehandlingId(UUID.nameUUIDFromBytes("uuid_2".getBytes()));
@@ -49,8 +50,7 @@ public class OppgaveRepositoryImplTest extends EntityManagerAwareTest {
 
 
     @BeforeEach
-    public void setup() {
-        var entityManager = getEntityManager();
+    public void setup(EntityManager entityManager) {
         repository = new Repository(entityManager);
         oppgaveRepository = new OppgaveRepositoryImpl(entityManager);
     }

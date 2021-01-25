@@ -12,6 +12,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.persistence.EntityManager;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -28,11 +30,10 @@ import no.nav.foreldrepenger.loslager.oppgave.Oppgave;
 import no.nav.foreldrepenger.loslager.oppgave.OppgaveEgenskap;
 import no.nav.foreldrepenger.loslager.repository.OppgaveRepository;
 import no.nav.foreldrepenger.loslager.repository.OppgaveRepositoryImpl;
-import no.nav.vedtak.felles.testutilities.db.EntityManagerAwareTest;
 
 @ExtendWith(EntityManagerFPLosAwareExtension.class)
 @ExtendWith(MockitoExtension.class)
-public class OppgaveEgenskapHandlerTest extends EntityManagerAwareTest {
+public class OppgaveEgenskapHandlerTest {
 
     private static final BehandlingId BEHANDLING_ID = BehandlingId.random();
 
@@ -43,8 +44,8 @@ public class OppgaveEgenskapHandlerTest extends EntityManagerAwareTest {
     private OppgaveEgenskapFinner oppgaveEgenskapFinner;
 
     @BeforeEach
-    void setUp() {
-        oppgaveRepository = new OppgaveRepositoryImpl(getEntityManager());
+    void setUp(EntityManager entityManager) {
+        oppgaveRepository = new OppgaveRepositoryImpl(entityManager);
         egenskapHandler = new OppgaveEgenskapHandler(oppgaveRepository);
     }
 

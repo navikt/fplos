@@ -7,6 +7,8 @@ import static org.mockito.Mockito.mock;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.EntityManager;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -22,17 +24,15 @@ import no.nav.fplos.ansatt.AnsattTjeneste;
 import no.nav.fplos.avdelingsleder.AvdelingslederTjeneste;
 import no.nav.fplos.avdelingsleder.AvdelingslederTjenesteImpl;
 import no.nav.fplos.oppgave.OppgaveTjenesteImpl;
-import no.nav.vedtak.felles.testutilities.db.EntityManagerAwareTest;
 
 @ExtendWith(EntityManagerFPLosAwareExtension.class)
-public class SaksbehandlerDtoTjenesteTest extends EntityManagerAwareTest {
+public class SaksbehandlerDtoTjenesteTest {
 
     private AvdelingslederTjeneste avdelingslederTjeneste;
     private SaksbehandlerDtoTjeneste saksbehandlerDtoTjeneste;
 
     @BeforeEach
-    void setUp() {
-        var entityManager = getEntityManager();
+    void setUp(EntityManager entityManager) {
         var oppgaveRepository = new OppgaveRepositoryImpl(entityManager);
         var organisasjonRepository = new OrganisasjonRepositoryImpl(entityManager);
         avdelingslederTjeneste = new AvdelingslederTjenesteImpl(oppgaveRepository, organisasjonRepository);
@@ -41,19 +41,18 @@ public class SaksbehandlerDtoTjenesteTest extends EntityManagerAwareTest {
     }
 
     @Test
-    public void testHentSaksbehandlerNavnOgAvdelinger(){
+    public void testHentSaksbehandlerNavnOgAvdelinger(EntityManager entityManager){
         String saksbehandler1Ident = "1234567";
         String saksbehandler2Ident = "9876543";
         String saksbehandler3Ident = "1234";
 
         Saksbehandler saksbehandler1 = new Saksbehandler(saksbehandler1Ident);
         Saksbehandler saksbehandler2 = new Saksbehandler(saksbehandler2Ident);
-        var entityManager = getEntityManager();
         entityManager.persist(saksbehandler1);
         entityManager.persist(saksbehandler2);
         entityManager.flush();
 
-        List<OppgaveFiltrering> lagtInnLister = leggInnEtSettMedLister(1);
+        List<OppgaveFiltrering> lagtInnLister = leggInnEtSettMedLister(1, entityManager);
 
         avdelingslederTjeneste.leggSaksbehandlerTilListe(lagtInnLister.get(0).getId(), saksbehandler1.getSaksbehandlerIdent());
         entityManager.refresh(saksbehandler1);
@@ -62,17 +61,17 @@ public class SaksbehandlerDtoTjenesteTest extends EntityManagerAwareTest {
         assertThat(saksbehandlerDtoTjeneste.hentSaksbehandlerTilknyttetMinstEnKø(saksbehandler2Ident)).isEmpty();
     }
 
-    private List<OppgaveFiltrering> leggInnEtSettMedLister(int antallLister){
+    private List<OppgaveFiltrering> leggInnEtSettMedLister(int antallLister, EntityManager entityManager){
         List<OppgaveFiltrering> filtre = new ArrayList<>();
 
         List<Avdeling> avdelings = avdelingslederTjeneste.hentAvdelinger();
         var avdelingDrammen = avdelings.stream().filter(avdeling -> AVDELING_DRAMMEN_ENHET.equals(avdeling.getAvdelingEnhet())).findFirst().orElseThrow();
         for(int i = 0; i< antallLister; i++) {
             OppgaveFiltrering oppgaveFiltrering = OppgaveFiltrering.builder().medNavn("Test " + i).medSortering(KøSortering.BEHANDLINGSFRIST).medAvdeling(avdelingDrammen).build();
-            getEntityManager().persist(oppgaveFiltrering);
+            entityManager.persist(oppgaveFiltrering);
             filtre.add(oppgaveFiltrering);
         }
-        getEntityManager().flush();
+        entityManager.flush();
         return filtre;
     }
 
