@@ -34,7 +34,6 @@ export const ReadOnlyField: FunctionComponent<OwnProps> = ({
 };
 
 ReadOnlyField.defaultProps = {
-  label: undefined,
   isEdited: false,
 };
 

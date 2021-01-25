@@ -1,17 +1,32 @@
 import React, { FunctionComponent } from 'react';
-import { Field } from 'react-final-form';
+import { Field, FormRenderProps } from 'react-final-form';
 import { Checkbox as NavCheckbox } from 'nav-frontend-skjema';
 import { Normaltekst } from 'nav-frontend-typografi';
 
+import { FieldValidator } from 'final-form';
 import renderNavField from './renderNavField';
 import { LabelType } from './Label';
 
-const composeValidators = (validators) => (value) => validators.reduce((error, validator) => error || validator(value), undefined);
+const composeValidators = (validators: FieldValidator<any>[]): FieldValidator<any> => (
+  value: any,
+) => validators.reduce((error, validator) => error || validator(value, undefined), undefined);
 
-export const RenderCheckboxField = renderNavField(({ onChange, label, ...otherProps }) => (
+interface RenderCheckboxFieldProps {
+  onChange: (isChecked: boolean) => void;
+  label: React.ReactElement;
+  value: string | number | string[];
+  isEdited: boolean;
+}
+
+export const RenderCheckboxField = renderNavField(({
+  onChange,
+  label,
+  ...otherProps
+}: FormRenderProps & RenderCheckboxFieldProps) => (
+  // @ts-ignore Fiks
   <NavCheckbox
     onChange={(e) => onChange(e.target.checked)}
-    checked={otherProps.value}
+    checked={!!otherProps.value}
     label={React.cloneElement(label, { typographyElement: Normaltekst })}
     {...otherProps}
   />
@@ -20,14 +35,18 @@ export const RenderCheckboxField = renderNavField(({ onChange, label, ...otherPr
 interface OwnProps {
   name: string;
   label: LabelType;
-  validate?: (() => void)[];
+  validate?: FieldValidator<any>[];
   readOnly?: boolean;
   onClick?: () => void;
-  onChange?: (any) => void;
+  onChange?: (isChecked: boolean) => void;
 }
 
 const CheckboxField: FunctionComponent<OwnProps> = ({
-  name, label, validate, readOnly, ...otherProps
+  name,
+  label,
+  validate,
+  readOnly,
+  ...otherProps
 }) => (
   <Field
     type="checkbox"
@@ -43,7 +62,6 @@ const CheckboxField: FunctionComponent<OwnProps> = ({
 );
 
 CheckboxField.defaultProps = {
-  validate: null,
   readOnly: false,
 };
 
