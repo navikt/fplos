@@ -3,17 +3,18 @@ import { useContext, useCallback } from 'react';
 import { RestApiErrorDispatchContext } from './RestApiErrorContext';
 
 /**
- * Hook for å legge til eller fjerne feil fra rest-kall
+ * Hook som tilbyr funksjoner for å legge til eller fjerne feil i kontekst.
+ * Fungerer kun i komponenter som har en @see RestApiErrorProvider over seg i komponent-treet.
  */
 const useRestApiErrorDispatcher = () => {
   const dispatch = useContext(RestApiErrorDispatchContext);
 
   const addErrorMessage = useCallback((data) => dispatch({ type: 'add', data }), []);
-  const removeErrorMessage = useCallback(() => dispatch({ type: 'remove' }), []);
+  const removeErrorMessages = useCallback(() => dispatch({ type: 'remove' }), []);
 
   return {
     addErrorMessage,
-    removeErrorMessage,
+    removeErrorMessages,
   };
 };
 

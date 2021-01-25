@@ -32,7 +32,7 @@ interface StateProps {
 }
 
 class Datepicker extends Component<OwnProps, StateProps> {
-  buttonRef: HTMLDivElement;
+  buttonRef: HTMLButtonElement;
 
   inputRef: HTMLDivElement;
 
@@ -47,7 +47,7 @@ class Datepicker extends Component<OwnProps, StateProps> {
     disabledDays: {},
   };
 
-  constructor(props) {
+  constructor(props: OwnProps) {
     super(props);
     this.state = { showCalendar: false };
     this.handleInputRef = this.handleInputRef.bind(this);
@@ -59,21 +59,21 @@ class Datepicker extends Component<OwnProps, StateProps> {
     this.handleDayChange = this.handleDayChange.bind(this);
   }
 
-  handleButtonRef(buttonRef) {
+  handleButtonRef(buttonRef: HTMLButtonElement): void {
     if (buttonRef) {
       this.buttonRef = buttonRef;
       this.handleUpdatedRefs();
     }
   }
 
-  handleInputRef(inputRef) {
+  handleInputRef(inputRef: HTMLDivElement): void {
     if (inputRef) {
       this.inputRef = inputRef;
       this.handleUpdatedRefs();
     }
   }
 
-  handleUpdatedRefs() {
+  handleUpdatedRefs(): void {
     const { inputRef, buttonRef } = this;
     if (inputRef) {
       this.setState({
@@ -86,7 +86,7 @@ class Datepicker extends Component<OwnProps, StateProps> {
     }
   }
 
-  handleDayChange(selectedDay) {
+  handleDayChange(selectedDay: Date): void {
     if (selectedDay) {
       const parsed = moment(selectedDay);
       if (parsed.isValid()) {
@@ -98,16 +98,16 @@ class Datepicker extends Component<OwnProps, StateProps> {
     }
   }
 
-  toggleShowCalendar() {
+  toggleShowCalendar(): void {
     const { showCalendar } = this.state;
     this.setState({ showCalendar: !showCalendar });
   }
 
-  hideCalendar() {
+  hideCalendar(): void {
     this.setState({ showCalendar: false });
   }
 
-  elementIsCalendarButton(element) {
+  elementIsCalendarButton(element: EventTarget): boolean {
     return element === this.buttonRef;
   }
 

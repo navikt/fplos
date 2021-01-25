@@ -6,7 +6,6 @@ import { init } from '@sentry/browser';
 
 import AppIndex from 'app/AppIndex';
 import { RestApiProvider, RestApiErrorProvider } from 'data/rest-api-hooks';
-import { requestApi } from 'data/restApiPaths';
 
 /* eslint no-undef: "error" */
 const environment = window.location.hostname;
@@ -15,7 +14,6 @@ init({
   dsn: 'https://d863105541bf4d0cb030dd4c6bfb4d05@sentry.gc.nav.no/10',
   environment,
 });
-
 
 const history = createBrowserHistory({
   basename: '/fplos/',
@@ -28,7 +26,7 @@ const renderFunc = (Component) => {
   }
   render(
     <Router history={history}>
-      <RestApiProvider requestApi={requestApi}>
+      <RestApiProvider>
         <RestApiErrorProvider>
           <Component />
         </RestApiErrorProvider>

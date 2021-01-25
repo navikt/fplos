@@ -5,9 +5,8 @@ import { FormattedMessage, injectIntl, WrappedComponentProps } from 'react-intl'
 import { Normaltekst, Element } from 'nav-frontend-typografi';
 import NavFrontendChevron from 'nav-frontend-chevron';
 
+import { restApiHooks, RestApiPathsKeys } from 'data/fplosRestApi';
 import TimeoutError from 'data/rest-api/src/requestApi/error/TimeoutError';
-import { RestApiPathsKeys } from 'data/restApiPaths';
-import { useRestApiRunner } from 'data/rest-api-hooks';
 import { getDateAndTime } from 'utils/dateUtils';
 import Image from 'sharedComponents/Image';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
@@ -76,28 +75,26 @@ export const OppgaverTabell: FunctionComponent<OwnProps & WrappedComponentProps>
     top: 0,
   });
 
-  const { startRequest: forlengOppgavereservasjon } = useRestApiRunner<Oppgave[]>(RestApiPathsKeys.FORLENG_OPPGAVERESERVASJON);
+  const { startRequest: forlengOppgavereservasjon } = restApiHooks.useRestApiRunner<Oppgave[]>(RestApiPathsKeys.FORLENG_OPPGAVERESERVASJON);
 
-  const { startRequest: hentReserverteOppgaver, data: reserverteOppgaver = EMPTY_ARRAY } = useRestApiRunner<Oppgave[]>(RestApiPathsKeys.RESERVERTE_OPPGAVER);
+  const { startRequest: hentReserverteOppgaver, data: reserverteOppgaver = EMPTY_ARRAY } = restApiHooks
+    .useRestApiRunner<Oppgave[]>(RestApiPathsKeys.RESERVERTE_OPPGAVER);
 
   const {
-    startRequest: hentOppgaverTilBehandling, cancelRequest, data: oppgaverTilBehandling = EMPTY_ARRAY, error: hentOppgaverTilBehandlingError,
-  } = useRestApiRunner<Oppgave[] | string>(RestApiPathsKeys.OPPGAVER_TIL_BEHANDLING);
+    startRequest: hentOppgaverTilBehandling, data: oppgaverTilBehandling = EMPTY_ARRAY, error: hentOppgaverTilBehandlingError,
+  } = restApiHooks.useRestApiRunner<Oppgave[] | string>(RestApiPathsKeys.OPPGAVER_TIL_BEHANDLING);
 
-  const fetchSakslisteOppgaverPolling = (sakslisteId: number, oppgaveIder?: string) => {
+  const fetchSakslisteOppgaverPolling = (keepData: boolean, sakslisteId: number, oppgaveIder?: string) => {
     hentReserverteOppgaver({}, true);
-    hentOppgaverTilBehandling(oppgaveIder ? { sakslisteId, oppgaveIder } : { sakslisteId }, true)
+    hentOppgaverTilBehandling(oppgaveIder ? { sakslisteId, oppgaveIder } : { sakslisteId }, keepData)
       .then((response) => (typeof response === 'string' || !doPolling
         ? Promise.resolve()
-        : fetchSakslisteOppgaverPolling(sakslisteId, response.map((o) => o.id).join(','))))
+        : fetchSakslisteOppgaverPolling(true, sakslisteId, response.map((o) => o.id).join(','))))
       .catch(() => undefined);
   };
 
   useEffect(() => {
-    fetchSakslisteOppgaverPolling(valgtSakslisteId);
-    return () => {
-      cancelRequest();
-    };
+    fetchSakslisteOppgaverPolling(false, valgtSakslisteId);
   }, [valgtSakslisteId]);
 
   const forlengOppgaveReservasjonFn = useCallback((oppgaveId: number): Promise<any> => forlengOppgavereservasjon({ oppgaveId })
@@ -105,7 +102,7 @@ export const OppgaverTabell: FunctionComponent<OwnProps & WrappedComponentProps>
 
   const ref = useRef({});
 
-  const goToFagsak = useCallback((event: Event, _id: number, oppgave: Oppgave) => {
+  const goToFagsak = useCallback((event: React.MouseEvent | React.KeyboardEvent, _id: number, oppgave: Oppgave) => {
     if (ref.current && Object.keys(ref.current).some((key) => ref.current[key] && ref.current[key].contains(event.target))) {
       return;
     }

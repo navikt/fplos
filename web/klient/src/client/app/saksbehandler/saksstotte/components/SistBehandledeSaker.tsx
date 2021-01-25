@@ -1,11 +1,9 @@
-
 import React, { useCallback, Fragment, FunctionComponent } from 'react';
 import { FormattedMessage } from 'react-intl';
 import Lenke from 'nav-frontend-lenker';
 import { Undertittel, Normaltekst } from 'nav-frontend-typografi';
 
-import { useRestApi, useRestApiRunner, useGlobalStateRestApiData } from 'data/rest-api-hooks';
-import { RestApiGlobalStatePathsKeys, RestApiPathsKeys } from 'data/restApiPaths';
+import { restApiHooks, RestApiPathsKeys, RestApiGlobalStatePathsKeys } from 'data/fplosRestApi';
 import { getFpsakHref, getFptilbakeHref } from 'app/paths';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import Oppgave from '../../oppgaveTsType';
@@ -20,10 +18,10 @@ const EMPTY_ARRAY = [];
  * Denne komponenten viser de tre siste fagsakene en nav-ansatt har behandlet.
  */
 const SistBehandledeSaker: FunctionComponent = () => {
-  const { data: sistBehandledeSaker = EMPTY_ARRAY } = useRestApi<Oppgave[]>(RestApiPathsKeys.BEHANDLEDE_OPPGAVER);
-  const fpsakUrl = useGlobalStateRestApiData<{ verdi?: string }>(RestApiGlobalStatePathsKeys.FPSAK_URL);
-  const fptilbakeUrl = useGlobalStateRestApiData<{ verdi?: string }>(RestApiGlobalStatePathsKeys.FPTILBAKE_URL);
-  const { startRequest: hentFpsakInternBehandlingId } = useRestApiRunner<number>(RestApiPathsKeys.FPSAK_BEHANDLING_ID);
+  const { data: sistBehandledeSaker = EMPTY_ARRAY } = restApiHooks.useRestApi<Oppgave[]>(RestApiPathsKeys.BEHANDLEDE_OPPGAVER);
+  const fpsakUrl = restApiHooks.useGlobalStateRestApiData<{ verdi?: string }>(RestApiGlobalStatePathsKeys.FPSAK_URL);
+  const fptilbakeUrl = restApiHooks.useGlobalStateRestApiData<{ verdi?: string }>(RestApiGlobalStatePathsKeys.FPTILBAKE_URL);
+  const { startRequest: hentFpsakInternBehandlingId } = restApiHooks.useRestApiRunner<number>(RestApiPathsKeys.FPSAK_BEHANDLING_ID);
 
   const openFpsak = useCallback((oppgave: Oppgave) => {
     if (oppgave.system === 'FPSAK') {

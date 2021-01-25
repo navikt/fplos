@@ -3,8 +3,8 @@ import { FormattedMessage } from 'react-intl';
 import { Undertekst } from 'nav-frontend-typografi';
 
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
-import { useRestApiRunner, useKodeverk } from 'data/rest-api-hooks';
-import { RestApiPathsKeys } from 'data/restApiPaths';
+import { restApiHooks, RestApiPathsKeys } from 'data/fplosRestApi';
+import useKodeverk from 'data/useKodeverk';
 import kodeverkTyper from 'kodeverk/kodeverkTyper';
 import behandlingType from 'kodeverk/behandlingType';
 import { CheckboxField } from 'form/FinalFields';
@@ -27,7 +27,7 @@ const BehandlingstypeVelger: FunctionComponent<OwnProps> = ({
   hentAvdelingensSakslister,
   hentAntallOppgaver,
 }) => {
-  const { startRequest: lagreSakslisteBehandlingstype } = useRestApiRunner(RestApiPathsKeys.LAGRE_SAKSLISTE_BEHANDLINGSTYPE);
+  const { startRequest: lagreSakslisteBehandlingstype } = restApiHooks.useRestApiRunner(RestApiPathsKeys.LAGRE_SAKSLISTE_BEHANDLINGSTYPE);
   const alleBehandlingTyper = useKodeverk(kodeverkTyper.BEHANDLING_TYPE);
   const behandlingTyper = useMemo(() => behandlingstypeOrder.map((kode) => alleBehandlingTyper.find((bt) => bt.kode === kode)),
     []);

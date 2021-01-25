@@ -1,7 +1,6 @@
 import React, { FunctionComponent } from 'react';
 
-import { RestApiPathsKeys } from 'data/restApiPaths';
-import { useRestApi } from 'data/rest-api-hooks';
+import { restApiHooks, RestApiPathsKeys } from 'data/fplosRestApi';
 
 import SaksbehandlerNokkeltallPanel from './components/SaksbehandlerNokkeltallPanel';
 import NyeOgFerdigstilteOppgaver from './nyeOgFerdigstilteOppgaverTsType';
@@ -16,8 +15,10 @@ interface OwnProps {
 const SaksbehandlerNokkeltallIndex: FunctionComponent<OwnProps> = ({
   valgtSakslisteId,
 }) => {
-  const { data: nyeOgFerdigstilteOppgaver } = useRestApi<NyeOgFerdigstilteOppgaver[]>(
-    RestApiPathsKeys.HENT_NYE_OG_FERDIGSTILTE_OPPGAVER, { sakslisteId: valgtSakslisteId }, false, [valgtSakslisteId],
+  const { data: nyeOgFerdigstilteOppgaver } = restApiHooks.useRestApi<NyeOgFerdigstilteOppgaver[]>(
+    RestApiPathsKeys.HENT_NYE_OG_FERDIGSTILTE_OPPGAVER, { sakslisteId: valgtSakslisteId }, {
+      updateTriggers: [valgtSakslisteId],
+    },
   );
 
   return (

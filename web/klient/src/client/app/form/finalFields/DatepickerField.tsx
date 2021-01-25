@@ -1,7 +1,7 @@
 import React, { FunctionComponent } from 'react';
 import { Field } from 'react-final-form';
 import moment from 'moment';
-
+import { FieldValidator } from 'final-form';
 
 import { ISO_DATE_FORMAT, DDMMYYYY_DATE_FORMAT, ACCEPTED_DATE_INPUT_FORMATS } from 'utils/formats';
 import Datepicker from 'sharedComponents/datepicker/Datepicker';
@@ -38,7 +38,7 @@ interface OwnProps{
   format?: (value: string) => string;
   parse?: (value: string) => string;
   isEdited?: boolean;
-  validate?: ((text: any) => { id: string }[])[];
+  validate?: FieldValidator<any> | FieldValidator<any>[];
   onBlurValidation?: boolean;
   onBlur?: (any) => void;
   alwaysShowCalendar?: boolean;

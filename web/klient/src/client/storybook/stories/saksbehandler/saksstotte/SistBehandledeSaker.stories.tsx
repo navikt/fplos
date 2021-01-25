@@ -1,34 +1,28 @@
 import React from 'react';
 
-import { RestApiProvider } from 'data/rest-api-hooks';
+import { requestApi, RestApiPathsKeys, RestApiGlobalStatePathsKeys } from 'data/fplosRestApi';
 import SistBehandledeSaker from 'saksbehandler/saksstotte/components/SistBehandledeSaker';
-import { RestApiGlobalStatePathsKeys, RestApiPathsKeys } from 'data/restApiPaths';
 
-import RequestMock from '../../../mocks/RequestMock';
+import withRestApiProvider from '../../../decorators/withRestApi';
 import withIntl from '../../../decorators/withIntl';
-
-const initialState = {
-  [RestApiGlobalStatePathsKeys.FPSAK_URL]: {
-    value: 'fpsak-url',
-  },
-  [RestApiGlobalStatePathsKeys.FPTILBAKE_URL]: {
-    value: 'fptilbake-url',
-  },
-};
 
 export default {
   title: 'saksbehandler/saksstotte/SistBehandledeSaker',
   component: SistBehandledeSaker,
   decorators: [
     withIntl,
+    withRestApiProvider,
   ],
 };
 
-export const skalViseIngenBehandlinger = () => (
-  <RestApiProvider initialState={initialState as {[key in RestApiGlobalStatePathsKeys]: any}} requestApi={new RequestMock().build()}>
+export const skalViseIngenBehandlinger = () => {
+  requestApi.mock(RestApiGlobalStatePathsKeys.FPSAK_URL, { value: 'fpsak-url' });
+  requestApi.mock(RestApiGlobalStatePathsKeys.FPTILBAKE_URL, { value: 'fptilbake-url' });
+  requestApi.mock(RestApiPathsKeys.BEHANDLEDE_OPPGAVER);
+  return (
     <SistBehandledeSaker />
-  </RestApiProvider>
-);
+  );
+};
 
 export const skalViseSistBehandlendeSaker = () => {
   const behandledeOppgaver = [{
@@ -37,13 +31,11 @@ export const skalViseSistBehandlendeSaker = () => {
     navn: 'Espen Utvikler',
   }];
 
-  const requestApi = new RequestMock()
-    .withKeyAndResult(RestApiPathsKeys.BEHANDLEDE_OPPGAVER, behandledeOppgaver)
-    .build();
+  requestApi.mock(RestApiGlobalStatePathsKeys.FPSAK_URL, { value: 'fpsak-url' });
+  requestApi.mock(RestApiGlobalStatePathsKeys.FPTILBAKE_URL, { value: 'fptilbake-url' });
+  requestApi.mock(RestApiPathsKeys.BEHANDLEDE_OPPGAVER, behandledeOppgaver);
 
   return (
-    <RestApiProvider initialState={initialState as {[key in RestApiGlobalStatePathsKeys]: any}} requestApi={requestApi}>
-      <SistBehandledeSaker />
-    </RestApiProvider>
+    <SistBehandledeSaker />
   );
 };

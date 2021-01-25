@@ -4,8 +4,7 @@ import { Form } from 'react-final-form';
 import { Hovedknapp, Knapp } from 'nav-frontend-knapper';
 import { Undertittel } from 'nav-frontend-typografi';
 
-import { useRestApiRunner } from 'data/rest-api-hooks';
-import { RestApiPathsKeys } from 'data/restApiPaths';
+import { restApiHooks, RestApiPathsKeys } from 'data/fplosRestApi';
 import Oppgave from 'saksbehandler/oppgaveTsType';
 import {
   hasValidText, maxLength, minLength, required,
@@ -39,7 +38,7 @@ const OpphevReservasjonModal: FunctionComponent<OwnProps & WrappedComponentProps
   toggleMenu,
   hentReserverteOppgaver,
 }) => {
-  const { startRequest: opphevOppgavereservasjon } = useRestApiRunner(RestApiPathsKeys.OPPHEV_OPPGAVERESERVASJON);
+  const { startRequest: opphevOppgavereservasjon } = restApiHooks.useRestApiRunner(RestApiPathsKeys.OPPHEV_OPPGAVERESERVASJON);
 
   const opphevReservasjonFn = useCallback((begrunnelse: string) => opphevOppgavereservasjon({ oppgaveId: oppgave.id, begrunnelse })
     .then(() => {

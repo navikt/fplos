@@ -12,8 +12,7 @@ import {
 } from 'utils/validation/validators';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import { InputField } from 'form/FinalFields';
-import { RestApiPathsKeys } from 'data/restApiPaths';
-import { useRestApiRunner } from 'data/rest-api-hooks';
+import { restApiHooks, RestApiPathsKeys } from 'data/fplosRestApi';
 import Saksliste from '../../sakslisteTsType';
 import AutoLagringVedBlur from './AutoLagringVedBlur';
 import BehandlingstypeVelger from './BehandlingstypeVelger';
@@ -86,7 +85,7 @@ export const UtvalgskriterierForSakslisteForm: FunctionComponent<OwnProps & Wrap
   hentAvdelingensSakslister,
   hentOppgaverForAvdelingAntall,
 }) => {
-  const { data: antallOppgaver, startRequest: hentAntallOppgaverForSaksliste } = useRestApiRunner(RestApiPathsKeys.OPPGAVE_ANTALL);
+  const { data: antallOppgaver, startRequest: hentAntallOppgaverForSaksliste } = restApiHooks.useRestApiRunner(RestApiPathsKeys.OPPGAVE_ANTALL);
   useEffect(() => {
     hentAntallOppgaverForSaksliste({ sakslisteId: valgtSaksliste.sakslisteId, avdelingEnhet: valgtAvdelingEnhet });
   }, [valgtSaksliste.sakslisteId]);
@@ -96,7 +95,7 @@ export const UtvalgskriterierForSakslisteForm: FunctionComponent<OwnProps & Wrap
     hentOppgaverForAvdelingAntall({ avdelingEnhet });
   }, []);
 
-  const { startRequest: lagreSakslisteNavn } = useRestApiRunner(RestApiPathsKeys.LAGRE_SAKSLISTE_NAVN);
+  const { startRequest: lagreSakslisteNavn } = restApiHooks.useRestApiRunner(RestApiPathsKeys.LAGRE_SAKSLISTE_NAVN);
 
   const tranformValues = useCallback((values: {sakslisteId: number; navn: string}): void => {
     lagreSakslisteNavn({ sakslisteId: values.sakslisteId, navn: values.navn, avdelingEnhet: valgtAvdelingEnhet })

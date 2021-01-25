@@ -4,7 +4,7 @@ import { Form } from 'react-final-form';
 import { Knapp } from 'nav-frontend-knapper';
 import { Undertittel } from 'nav-frontend-typografi';
 
-import { RestApiGlobalStatePathsKeys } from 'data/restApiPaths';
+import { restApiHooks, RestApiGlobalStatePathsKeys } from 'data/fplosRestApi';
 import { FlexContainer, FlexRow, FlexColumn } from 'sharedComponents/flexGrid';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import Image from 'sharedComponents/Image';
@@ -12,7 +12,6 @@ import advarselIcon from 'images/advarsel.svg';
 import { hasValidSaksnummerOrFodselsnummerFormat } from 'utils/validation/validators';
 import { InputField, CheckboxField } from 'form/FinalFields';
 
-import { useGlobalStateRestApiData } from 'data/rest-api-hooks';
 import NavAnsatt from 'app/navAnsattTsType';
 
 import styles from './searchForm.less';
@@ -40,7 +39,7 @@ const SearchForm: FunctionComponent<OwnProps & WrappedComponentProps> = ({
   searchResultAccessDenied,
   resetSearch,
 }) => {
-  const { kanSaksbehandle } = useGlobalStateRestApiData<NavAnsatt>(RestApiGlobalStatePathsKeys.NAV_ANSATT);
+  const { kanSaksbehandle } = restApiHooks.useGlobalStateRestApiData<NavAnsatt>(RestApiGlobalStatePathsKeys.NAV_ANSATT);
   return (
     <Form
       onSubmit={onSubmit}

@@ -2,8 +2,8 @@ import React, { Fragment, FunctionComponent } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { Undertekst } from 'nav-frontend-typografi';
 
-import { RestApiPathsKeys } from 'data/restApiPaths';
-import { useRestApiRunner, useKodeverk } from 'data/rest-api-hooks';
+import { restApiHooks, RestApiPathsKeys } from 'data/fplosRestApi';
+import useKodeverk from 'data/useKodeverk';
 import kodeverkTyper from 'kodeverk/kodeverkTyper';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import ArrowBox from 'sharedComponents/ArrowBox';
@@ -30,7 +30,7 @@ const AndreKriterierVelger: FunctionComponent<OwnProps> = ({
   hentAntallOppgaver,
 }) => {
   const andreKriterierTyper = useKodeverk(kodeverkTyper.ANDRE_KRITERIER_TYPE);
-  const { startRequest: lagreSakslisteAndreKriterier } = useRestApiRunner(RestApiPathsKeys.LAGRE_SAKSLISTE_ANDRE_KRITERIER);
+  const { startRequest: lagreSakslisteAndreKriterier } = restApiHooks.useRestApiRunner(RestApiPathsKeys.LAGRE_SAKSLISTE_ANDRE_KRITERIER);
 
   return (
     <>

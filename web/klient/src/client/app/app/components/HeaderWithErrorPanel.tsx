@@ -8,8 +8,8 @@ import BoxedListWithLinks from '@navikt/boxed-list-with-links';
 import Header from '@navikt/nap-header';
 import UserPanel from '@navikt/nap-user-panel';
 
-import { useGlobalStateRestApiData, useRestApiError, useRestApiErrorDispatcher } from 'data/rest-api-hooks';
-import { RestApiGlobalStatePathsKeys } from 'data/restApiPaths';
+import { useRestApiError, useRestApiErrorDispatcher } from 'data/rest-api-hooks';
+import { restApiHooks, RestApiGlobalStatePathsKeys } from 'data/fplosRestApi';
 import { RETTSKILDE_URL, SYSTEMRUTINE_URL } from 'data/eksterneLenker';
 import NavAnsatt from 'app/navAnsattTsType';
 
@@ -76,12 +76,12 @@ const HeaderWithErrorPanel: FunctionComponent<OwnProps & WrappedComponentProps> 
   const [erLenkePanelApent, setLenkePanelApent] = useState(false);
   const [erAvdelingerPanelApent, setAvdelingerPanelApent] = useState(false);
 
-  const navAnsatt = useGlobalStateRestApiData<NavAnsatt>(RestApiGlobalStatePathsKeys.NAV_ANSATT);
-  const driftsmeldinger = useGlobalStateRestApiData<Driftsmelding[]>(RestApiGlobalStatePathsKeys.DRIFTSMELDINGER);
+  const navAnsatt = restApiHooks.useGlobalStateRestApiData<NavAnsatt>(RestApiGlobalStatePathsKeys.NAV_ANSATT);
+  const driftsmeldinger = restApiHooks.useGlobalStateRestApiData<Driftsmelding[]>(RestApiGlobalStatePathsKeys.DRIFTSMELDINGER);
 
   const errorMessages = useRestApiError() || [];
   const formaterteFeilmeldinger = useMemo(() => new ErrorFormatter().format(errorMessages, crashMessage), [errorMessages]);
-  const { removeErrorMessage } = useRestApiErrorDispatcher();
+  const { removeErrorMessages } = useRestApiErrorDispatcher();
 
   const wrapperRef = useOutsideClickEvent(erLenkePanelApent, erAvdelingerPanelApent, setLenkePanelApent, setAvdelingerPanelApent);
 
@@ -175,7 +175,7 @@ const HeaderWithErrorPanel: FunctionComponent<OwnProps & WrappedComponentProps> 
       <ErrorMessagePanel
         errorMessages={formaterteFeilmeldinger}
         queryStrings={queryStrings}
-        removeErrorMessage={removeErrorMessage}
+        removeErrorMessages={removeErrorMessages}
       />
     </header>
   );
