@@ -5,7 +5,8 @@ import Panel from 'nav-frontend-paneler';
 import { Element } from 'nav-frontend-typografi';
 import { Row, Column } from 'nav-frontend-grid';
 
-import { restApiHooks, RestApiPathsKeys } from 'data/fplosRestApi';
+import { RestApiPathsKeys } from 'data/restApiPaths';
+import { useRestApiRunner } from 'data/rest-api-hooks';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import { CheckboxField } from 'form/FinalFields';
 import Saksbehandler from 'avdelingsleder/saksbehandlere/saksbehandlerTsType';
@@ -38,7 +39,7 @@ const SaksbehandlereForSakslisteForm: FunctionComponent<OwnProps> = ({
   const avdelingensSaksbehandlereVenstreListe = sorterteAvdelingensSaksbehandlere.slice(0, pos);
   const avdelingensSaksbehandlereHoyreListe = sorterteAvdelingensSaksbehandlere.slice(pos);
 
-  const { startRequest: knyttSaksbehandlerTilSaksliste } = restApiHooks.useRestApiRunner(RestApiPathsKeys.LAGRE_SAKSLISTE_SAKSBEHANDLER);
+  const { startRequest: knyttSaksbehandlerTilSaksliste } = useRestApiRunner(RestApiPathsKeys.LAGRE_SAKSLISTE_SAKSBEHANDLER);
 
   return (
     <Form

@@ -8,7 +8,7 @@ import { Row, Column } from 'nav-frontend-grid';
 
 import StoreValuesInLocalStorage from 'form/StoreValuesInLocalStorage';
 import { RadioGroupField, RadioOption, SelectField } from 'form/FinalFields';
-import useKodeverk from 'data/useKodeverk';
+import { useKodeverk } from 'data/rest-api-hooks';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import fagsakYtelseType from 'kodeverk/fagsakYtelseType';
 import kodeverkTyper from 'kodeverk/kodeverkTyper';
@@ -52,6 +52,7 @@ interface OwnProps {
 
 const formName = 'manueltPaVentForm';
 const formDefaultValues = { valgtYtelsetype: ALLE_YTELSETYPER_VALGT, ukevalg: UKE_4 };
+
 
 /**
  * ManueltPaVentPanel.

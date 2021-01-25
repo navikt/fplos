@@ -1,9 +1,9 @@
-const TerserPlugin = require('terser-webpack-plugin');
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
 const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin");
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const path = require('path');
-const { merge } = require('webpack-merge');
-const commonDevAndProd = require('./webpack.common.js');
+const merge = require('webpack-merge');
+const commonDevAndProd = require('./webpack.common.dev_and_prod.js');
 
 const ROOT_DIR = path.resolve(__dirname, '../src/client');
 const APP_DIR = path.resolve(ROOT_DIR, 'app');
@@ -35,7 +35,10 @@ const config = {
 
   optimization: {
     minimizer: [
-      new TerserPlugin({
+      new UglifyJsPlugin({
+        uglifyOptions: {
+          compress: false,
+        },
         parallel: true,
         cache: true,
         sourceMap: true,

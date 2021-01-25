@@ -8,7 +8,7 @@ import { Row, Column } from 'nav-frontend-grid';
 import StoreValuesInLocalStorage from 'form/StoreValuesInLocalStorage';
 import { RadioGroupField, RadioOption, SelectField } from 'form/FinalFields';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
-import useKodeverk from 'data/useKodeverk';
+import { useKodeverk } from 'data/rest-api-hooks';
 import fagsakYtelseType from 'kodeverk/fagsakYtelseType';
 import kodeverkTyper from 'kodeverk/kodeverkTyper';
 import TilBehandlingGraf from './TilBehandlingGraf';
@@ -68,6 +68,7 @@ interface OwnProps {
 
 const formName = 'tilBehandlingForm';
 const formDefaultValues = { ytelseType: ALLE_YTELSETYPER_VALGT, ukevalg: UKE_2 };
+
 
 /**
  * TilBehandlingPanel.

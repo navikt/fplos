@@ -12,6 +12,11 @@ interface OwnProps {
   nyeOgFerdigstilteOppgaver: NyeOgFerdigstilteOppgaver[]
 }
 
+interface StateProps {
+  width: number;
+  height: number;
+}
+
 /**
  * SaksbehandlerNokkeltallPanel.
  */

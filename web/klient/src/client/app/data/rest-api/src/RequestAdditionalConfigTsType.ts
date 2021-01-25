@@ -1,6 +1,6 @@
 type RequestAdditionalConfig = Readonly<{
   maxPollingLimit?: number;
-  isResponseBlob?: boolean,
+  saveResponseIn?: string;
 }>
 
 export default RequestAdditionalConfig;

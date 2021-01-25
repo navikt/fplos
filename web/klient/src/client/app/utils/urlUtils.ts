@@ -1,4 +1,4 @@
-export const parseQueryString = (queryString = ''): {[paramName: string]: string} => (
+export const parseQueryString = (queryString = '') => (
   queryString
     .replace(/^\?/, '') // Remove leading question mark
     .replace(/\+/g, '%20') // Replace plus signs with URL-encoded spaces
@@ -8,7 +8,7 @@ export const parseQueryString = (queryString = ''): {[paramName: string]: string
     .reduce((a, b) => ({ ...a, ...b }), {})
 );
 
-export const formatQueryString = (queryParams: Record<string, any> = {}): string => (
+export const formatQueryString = (queryParams = {}) => (
   `?${( // Add leading question mark
     Object.entries(queryParams)
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -19,3 +19,30 @@ export const formatQueryString = (queryParams: Record<string, any> = {}): string
       .replace('%20', '+') // Replace URL-encoded spaces with plus
   )}`
 );
+
+const paramSegmentPattern = /^:(\w+)(\(.+\))?(\?)?$/;
+
+const resolveParam = (params) => (segment) => {
+  if (!paramSegmentPattern.test(segment)) {
+    return segment;
+  }
+  const [paramName, paramPattern, optional] = paramSegmentPattern.exec(segment).slice(1, 4);
+  const paramMatch = new RegExp(paramPattern || '(.+)').exec(params[paramName]);
+  const paramValue = paramMatch ? paramMatch[1].replace(/^undefined$/, '') : '';
+  return paramValue || (optional ? '' : segment);
+};
+
+export const buildPath = (path, params = {}) => (
+  path
+    .replace(/^\//, ' /') // Add whitespace before leading slash to keep it from being consumed by split
+    .replace(/\/$/, '/ ') // Add whitespace after trailing slash to keep it from being consumed by split
+    .split('/') // Split on delimiter '/'
+    .map(resolveParam(params))
+    .filter((segment) => segment !== '')
+    .join('/')
+    .trim()
+);
+
+export const formatArray = (array) => array.join(',');
+
+export const parseArray = (formattedArray) => formattedArray.split(',');

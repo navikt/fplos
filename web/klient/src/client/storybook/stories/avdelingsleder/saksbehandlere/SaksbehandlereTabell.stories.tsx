@@ -1,22 +1,25 @@
 import React from 'react';
 
 import SaksbehandlereTabell from 'avdelingsleder/saksbehandlere/components/SaksbehandlereTabell';
+import { RestApiProvider } from 'data/rest-api-hooks';
 
-import withRestApiProvider from '../../../decorators/withRestApi';
 import withIntl from '../../../decorators/withIntl';
+import RequestMock from '../../../mocks/RequestMock';
 
 export default {
   title: 'avdelingsleder/saksbehandlere/SaksbehandlereTabell',
   component: SaksbehandlereTabell,
-  decorators: [withIntl, withRestApiProvider],
+  decorators: [withIntl],
 };
 
 export const skalViseTomTabell = () => (
-  <SaksbehandlereTabell
-    saksbehandlere={[]}
-    hentAvdelingensSaksbehandlere={() => undefined}
-    valgtAvdelingEnhet="NAV Viken"
-  />
+  <RestApiProvider requestApi={new RequestMock().build()}>
+    <SaksbehandlereTabell
+      saksbehandlere={[]}
+      hentAvdelingensSaksbehandlere={() => undefined}
+      valgtAvdelingEnhet="NAV Viken"
+    />
+  </RestApiProvider>
 );
 
 export const skalViseSaksbehandlereITabell = () => {
@@ -31,10 +34,12 @@ export const skalViseSaksbehandlereITabell = () => {
   }];
 
   return (
-    <SaksbehandlereTabell
-      saksbehandlere={saksbehandlere}
-      hentAvdelingensSaksbehandlere={() => undefined}
-      valgtAvdelingEnhet="NAV Viken"
-    />
+    <RestApiProvider requestApi={new RequestMock().build()}>
+      <SaksbehandlereTabell
+        saksbehandlere={saksbehandlere}
+        hentAvdelingensSaksbehandlere={() => undefined}
+        valgtAvdelingEnhet="NAV Viken"
+      />
+    </RestApiProvider>
   );
 };

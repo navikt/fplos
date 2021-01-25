@@ -1,6 +1,7 @@
 import React, { FunctionComponent, useEffect, useCallback } from 'react';
 
-import { restApiHooks, RestApiPathsKeys } from 'data/fplosRestApi';
+import { useRestApiRunner } from 'data/rest-api-hooks';
+import { RestApiPathsKeys } from 'data/restApiPaths';
 
 import ReservasjonerTabell from './components/ReservasjonerTabell';
 import Reservasjon from './reservasjonTsType';
@@ -14,10 +15,10 @@ interface OwnProps {
 export const ReservasjonerIndex: FunctionComponent<OwnProps> = ({
   valgtAvdelingEnhet,
 }) => {
-  const { data: reservasjoner = EMPTY_ARRAY, startRequest: hentAvdelingensReservasjoner } = restApiHooks.useRestApiRunner<Reservasjon[]>(
+  const { data: reservasjoner = EMPTY_ARRAY, startRequest: hentAvdelingensReservasjoner } = useRestApiRunner<Reservasjon[]>(
     RestApiPathsKeys.RESERVASJONER_FOR_AVDELING,
   );
-  const { startRequest: opphevOppgaveReservasjon } = restApiHooks.useRestApiRunner(RestApiPathsKeys.AVDELINGSLEDER_OPPHEVER_RESERVASJON);
+  const { startRequest: opphevOppgaveReservasjon } = useRestApiRunner(RestApiPathsKeys.AVDELINGSLEDER_OPPHEVER_RESERVASJON);
 
   useEffect(() => {
     hentAvdelingensReservasjoner({ avdelingEnhet: valgtAvdelingEnhet });

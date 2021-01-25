@@ -10,7 +10,7 @@ const intl = createIntl({
 
 const withIntlProvider = (story) => (
   <RawIntlProvider value={intl}>
-    { story() }
+    { story(intl) }
   </RawIntlProvider>
 );
 

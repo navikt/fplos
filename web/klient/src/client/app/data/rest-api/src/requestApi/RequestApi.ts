@@ -1,35 +1,8 @@
-import HttpClientApi from '../HttpClientApiTsType';
-import NotificationMapper from './NotificationMapper';
-import Link from './LinkTsType';
-import AbstractRequestApi from './AbstractRequestApi';
 import RequestRunner from './RequestRunner';
-import RequestConfig, { RequestType } from '../RequestConfig';
-
-const DEFAULT_CATEGORY = 'DEFAULT_CATEGORY';
-
-const getMethod = (httpClientApi: HttpClientApi, restMethod: string, isResponseBlob: boolean) => {
-  if (restMethod === RequestType.GET) {
-    return httpClientApi.get;
-  }
-  if (restMethod === RequestType.GET_ASYNC) {
-    return httpClientApi.getAsync;
-  }
-  if (restMethod === RequestType.POST && !isResponseBlob) {
-    return httpClientApi.post;
-  }
-  if (restMethod === RequestType.POST_ASYNC) {
-    return httpClientApi.postAsync;
-  }
-  if (restMethod === RequestType.PUT) {
-    return httpClientApi.put;
-  }
-  if (restMethod === RequestType.PUT_ASYNC) {
-    return httpClientApi.putAsync;
-  }
-  return httpClientApi.postBlob;
-};
-
-const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+import RestApiRequestContext from './RestApiRequestContext';
+import HttpClientApi from '../HttpClientApiTsType';
+import RequestConfig from '../RequestConfig';
+import NotificationMapper from './NotificationMapper';
 
 /**
  * RequestApi
@@ -37,118 +10,20 @@ const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
  * Denne klassen opprettes med en referanse til et HttpClientApi (for eksempel Axios), context-path og konfig for
  * de enkelte endepunktene. Det blir så satt opp RequestRunner's for endepunktene. Desse kan hentes via metoden @see getRequestRunner.
  */
-class RequestApi extends AbstractRequestApi {
-  httpClientApi: HttpClientApi;
+class RequestApi {
+  requestRunnersMappedByName: {[key: string]: RequestRunner};
 
-  endpointConfigList: RequestConfig[];
-
-  links: {[key: string]: Link[]} = {};
-
-  notificationMapper: NotificationMapper = new NotificationMapper();
-
-  activeRunners: Record<string, RequestRunner> = {};
-
-  constructor(httpClientApi: HttpClientApi, endpointConfigList: RequestConfig[]) {
-    super();
-    this.httpClientApi = httpClientApi;
-    this.endpointConfigList = endpointConfigList;
+  constructor(httpClientApi: HttpClientApi, configs: RequestConfig[]) {
+    this.requestRunnersMappedByName = configs.reduce((acc, config) => ({
+      ...acc,
+      [config.name]: new RequestRunner(httpClientApi, new RestApiRequestContext(config)),
+    }), {});
   }
 
-  private findLinks = (rel: string): Link => Object.values(this.links).flat().find((link) => link.rel === rel);
+  public startRequest = (endpointName: string, params: any, notificationMapper?: NotificationMapper) => this.requestRunnersMappedByName[endpointName]
+    .startProcess(params, notificationMapper);
 
-  private cancelRequest = (endpointName: string): boolean => {
-    if (this.activeRunners[endpointName]) {
-      this.activeRunners[endpointName].cancel();
-      return true;
-    }
-    return false;
-  }
-
-  public startRequest = async (endpointName: string, params?: any): Promise<{ payload: any }> => {
-    const endpointConfig = this.endpointConfigList.find((c) => c.name === endpointName);
-    if (!endpointConfig) {
-      throw new Error(`Mangler konfig for endepunkt ${endpointName}`);
-    }
-    const link = this.findLinks(endpointConfig.rel);
-    const restMethod = link ? link.type : endpointConfig.restMethod;
-    const href = link ? link.href : endpointConfig.path;
-
-    const apiRestMethod = getMethod(this.httpClientApi, restMethod, endpointConfig.config.isResponseBlob);
-    const runner = new RequestRunner(this.httpClientApi, apiRestMethod, href, endpointConfig.config);
-    if (this.notificationMapper) {
-      runner.setNotificationEmitter(this.notificationMapper.getNotificationEmitter());
-    }
-
-    const hasCancelled = this.cancelRequest(endpointName);
-    if (hasCancelled) {
-      // TODO (TOR) Fjern dette når ein har gått over til Server side events
-      await wait(1500);
-    }
-
-    try {
-      this.activeRunners = {
-        ...this.activeRunners,
-        [endpointName]: runner,
-      };
-      const result = await runner.start(params || link?.requestPayload);
-      delete this.activeRunners[endpointName];
-      return result;
-    } catch (error) {
-      delete this.activeRunners[endpointName];
-      throw error;
-    }
-  }
-
-  public hasPath = (endpointName: string): boolean => {
-    const endpointConfig = this.endpointConfigList.find((c) => c.name === endpointName);
-    if (!endpointConfig) {
-      throw new Error(`Mangler konfig for endepunkt ${endpointName}`);
-    }
-    const link = this.findLinks(endpointConfig.rel);
-    return !!link?.href || !!endpointConfig?.path;
-  };
-
-  public setLinks = (links: Link[], linkCategory: string = DEFAULT_CATEGORY): void => {
-    this.links = {
-      ...this.links,
-      [linkCategory]: links,
-    };
-  }
-
-  public setRequestPendingHandler = (requestPendingHandler: (message?: string) => void): void => {
-    this.notificationMapper.addUpdatePollingMessageEventHandler((data) => {
-      requestPendingHandler(data);
-    });
-    this.notificationMapper.addRequestFinishedEventHandler(() => {
-      requestPendingHandler();
-    });
-    this.notificationMapper.addRequestErrorEventHandlers(() => {
-      requestPendingHandler();
-    });
-  }
-
-  public setAddErrorMessageHandler = (addErrorMessage: (message: string) => void): void => {
-    this.notificationMapper.addRequestErrorEventHandlers((errorData, type) => {
-      addErrorMessage({ ...errorData, type });
-    });
-  };
-
-  public resetCache = (): void => {
-  }
-
-  public isMock = (): boolean => false;
-
-  // Kun for test
-  public mock = () => { throw new Error('Not Implemented'); };
-
-  // Kun for test
-  public setMissingPath = () => { throw new Error('Not Implemented'); };
-
-  // Kun for test
-  public getRequestMockData = () => { throw new Error('Not Implemented'); };
-
-  // Kun for test
-  public clearAllMockData = () => { throw new Error('Not Implemented'); };
+  public cancelRequest = (endpointName: string) => this.requestRunnersMappedByName[endpointName].cancelRequest();
 }
 
 export default RequestApi;

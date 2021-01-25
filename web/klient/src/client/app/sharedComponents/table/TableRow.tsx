@@ -5,16 +5,11 @@ import styles from './tableRow.less';
 
 const classNames = classnames.bind(styles);
 
-const createMouseDownHandler = (
-  onMouseDown: (e: React.MouseEvent, id: number | string, model: any) => void,
-  id?: number | string,
-  model?: any,
-) => (e: React.MouseEvent): void => onMouseDown && onMouseDown(e, id, model);
+const createMouseDownHandler = (onMouseDown, id, model) => (e) => onMouseDown && onMouseDown(e, id, model);
 
-// @ts-ignore Fiks
-const findNearestRow = (element: EventTarget) => (element.tagName === 'TR' ? element : findNearestRow(element.parentElement));
+const findNearestRow = (element) => (element.tagName === 'TR' ? element : findNearestRow(element.parentElement));
 
-const setFocus = (e: React.KeyboardEvent, isNext: boolean): void => {
+const setFocus = (e, isNext) => {
   const row = findNearestRow(e.target);
   const otherRow = isNext ? row.nextSibling : row.previousSibling;
   const element = otherRow || row;
@@ -25,16 +20,11 @@ const setFocus = (e: React.KeyboardEvent, isNext: boolean): void => {
   }
 };
 
-const createKeyHandler = (
-  onKeyDown: (e: React.KeyboardEvent, id: number | string, model: any) => void,
-  id?: number | string,
-  model?: any,
-) => (e: React.KeyboardEvent): void => {
+const createKeyHandler = (onKeyDown, id, model) => (e) => {
   if (e.key === 'ArrowDown') {
     setFocus(e, true);
   } else if (e.key === 'ArrowUp') {
     setFocus(e, false);
-    // @ts-ignore Fiks
   } else if (onKeyDown && e.target.tagName !== 'TD' && (e.key === 'Enter' || e.key === ' ')) {
     onKeyDown(e, id, model);
     e.preventDefault();
@@ -45,8 +35,8 @@ interface OwnProps {
   id?: number | string;
   model?: any;
   isHeader?: boolean;
-  onMouseDown?: (event: React.MouseEvent, id: number, object?: any) => any;
-  onKeyDown?: (event: React.KeyboardEvent, id: number, object?: any) => any;
+  onMouseDown?: (event: Event, id: number, object?: any) => any;
+  onKeyDown?: (event: Event, id: number, object?: any) => any;
   children: ReactNode | ReactNode[];
   noHover?: boolean;
   isSelected?: boolean;

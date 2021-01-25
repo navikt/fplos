@@ -4,7 +4,8 @@ import React, {
 import { FormattedMessage } from 'react-intl';
 import { Normaltekst, Element } from 'nav-frontend-typografi';
 
-import { restApiHooks, RestApiPathsKeys } from 'data/fplosRestApi';
+import { useRestApiRunner } from 'data/rest-api-hooks';
+import { RestApiPathsKeys } from 'data/restApiPaths';
 import Image from 'sharedComponents/Image';
 import removeIcon from 'images/remove.svg';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
@@ -40,7 +41,7 @@ const SaksbehandlereTabell: FunctionComponent<OwnProps> = ({
 }) => {
   const [valgtSaksbehandler, setValgtSaksbehandler] = useState<Saksbehandler>();
 
-  const { startRequest: fjernSaksbehandler } = restApiHooks.useRestApiRunner<Saksbehandler>(RestApiPathsKeys.SLETT_SAKSBEHANDLER);
+  const { startRequest: fjernSaksbehandler } = useRestApiRunner<Saksbehandler>(RestApiPathsKeys.SLETT_SAKSBEHANDLER);
 
   const fjernSaksbehandlerFn = useCallback((saksbehandler: Saksbehandler) => {
     fjernSaksbehandler({ brukerIdent: saksbehandler.brukerIdent, avdelingEnhet: valgtAvdelingEnhet })

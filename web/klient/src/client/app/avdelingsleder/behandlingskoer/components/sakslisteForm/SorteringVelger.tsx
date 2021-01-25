@@ -3,7 +3,7 @@ import { FormattedMessage, injectIntl, WrappedComponentProps } from 'react-intl'
 
 import { Undertekst } from 'nav-frontend-typografi';
 
-import { restApiHooks, RestApiPathsKeys } from 'data/fplosRestApi';
+import { RestApiPathsKeys } from 'data/restApiPaths';
 import {
   RadioGroupField, RadioOption,
 } from 'form/FinalFields';
@@ -11,7 +11,7 @@ import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import kodeverkTyper from 'kodeverk/kodeverkTyper';
 import Kodeverk from 'kodeverk/kodeverkTsType';
 import behandlingType from 'kodeverk/behandlingType';
-import useKodeverk from 'data/useKodeverk';
+import { useRestApiRunner, useKodeverk } from 'data/rest-api-hooks';
 import DatoSorteringValg from './DatoSorteringValg';
 import BelopSorteringValg from './BelopSorteringValg';
 import KoSorteringType from '../../KoSorteringTsType';
@@ -50,8 +50,8 @@ const SorteringVelger: FunctionComponent<OwnProps & WrappedComponentProps> = ({
   hentAvdelingensSakslister,
   hentAntallOppgaver,
 }) => {
-  const { startRequest: lagreSakslisteSortering } = restApiHooks.useRestApiRunner(RestApiPathsKeys.LAGRE_SAKSLISTE_SORTERING);
-  const { startRequest: lagreSakslisteSorteringNumeriskIntervall } = restApiHooks.useRestApiRunner(RestApiPathsKeys.LAGRE_SAKSLISTE_SORTERING_INTERVALL);
+  const { startRequest: lagreSakslisteSortering } = useRestApiRunner(RestApiPathsKeys.LAGRE_SAKSLISTE_SORTERING);
+  const { startRequest: lagreSakslisteSorteringNumeriskIntervall } = useRestApiRunner(RestApiPathsKeys.LAGRE_SAKSLISTE_SORTERING_INTERVALL);
   const koSorteringer = useKodeverk<KoSorteringType>(kodeverkTyper.KO_SORTERING);
 
   return (

@@ -4,7 +4,7 @@ import moment from 'moment';
 import { Location, History } from 'history';
 
 import { parseQueryString } from 'utils/urlUtils';
-import { RestApiGlobalStatePathsKeys } from 'data/fplosRestApi';
+import { RestApiGlobalStatePathsKeys } from 'data/restApiPaths';
 import AppConfigResolver from './AppConfigResolver';
 import LanguageProvider from './LanguageProvider';
 import HeaderWithErrorPanel from './components/HeaderWithErrorPanel';

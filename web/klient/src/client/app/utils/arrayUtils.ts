@@ -1,6 +1,6 @@
-export const range = (length: number) => [...Array(length).keys()];
+export const range = (length) => [...Array(length).keys()];
 
-export const haystack = (object: Record<string, any>, keys: string | string[], defaultValue = null): any => {
+export const haystack = (object, keys, defaultValue = null) => {
   const keysArray = Array.isArray(keys) ? keys : keys.replace(/(\[(\d+)\])/g, '.$2').split('.');
   const currentObject = object[keysArray[0]];
   if (currentObject && keysArray.length > 1) {

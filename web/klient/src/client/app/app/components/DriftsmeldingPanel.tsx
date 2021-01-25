@@ -7,9 +7,11 @@ import Driftsmelding from 'app/driftsmeldingTsType';
 import Image from 'sharedComponents/Image';
 import styles from './driftsmeldingPanel.less';
 
+
 interface OwnProps {
   driftsmeldinger: Driftsmelding[];
 }
+
 
 /**
  * DriftsmeldingPanel

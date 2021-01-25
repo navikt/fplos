@@ -40,6 +40,7 @@ export const lagDatastruktur = (koordinater: Koordinat[]): Koordinat[] => {
 
 export const harDatastrukturKun0Verdier = (koordinater: Koordinat[]): boolean => !koordinater.some((k) => k.y !== 0);
 
+
 const cssText = {
   fontFamily: 'Source Sans Pro, Arial, sans-serif',
   fontSize: '1rem',

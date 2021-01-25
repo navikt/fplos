@@ -2,19 +2,24 @@ import React from 'react';
 import { Form } from 'react-final-form';
 import { action } from '@storybook/addon-actions';
 
-import { requestApi, RestApiGlobalStatePathsKeys } from 'data/fplosRestApi';
+import { RestApiGlobalStatePathsKeys } from 'data/restApiPaths';
+import { RestApiProvider } from 'data/rest-api-hooks';
 import SorteringVelger from 'avdelingsleder/behandlingskoer/components/sakslisteForm/SorteringVelger';
 import behandlingType from 'kodeverk/behandlingType';
 import koSortering from 'kodeverk/KoSortering';
 
 import alleKodeverk from '../../../mocks/alleKodeverk.json';
 import withIntl from '../../../decorators/withIntl';
-import withRestApiProvider from '../../../decorators/withRestApi';
+import RequestMock from '../../../mocks/RequestMock';
+
+const initialState = {
+  [RestApiGlobalStatePathsKeys.KODEVERK]: alleKodeverk,
+};
 
 export default {
   title: 'avdelingsleder/behandlingskoer/SorteringVelger',
   component: SorteringVelger,
-  decorators: [withIntl, withRestApiProvider],
+  decorators: [withIntl],
 };
 
 export const skalViseSorteringsvelgerNårMangeBehandlingstyperErValgt = () => {
@@ -27,33 +32,33 @@ export const skalViseSorteringsvelgerNårMangeBehandlingstyperErValgt = () => {
     erDynamiskPeriode: true,
   };
 
-  requestApi.mock(RestApiGlobalStatePathsKeys.KODEVERK, alleKodeverk);
-
   return (
-    <Form
-      onSubmit={() => undefined}
-      initialValues={verdier}
-      render={() => (
-        <SorteringVelger
-          valgtSakslisteId={1}
-          valgteBehandlingtyper={[{
-            kode: behandlingType.FORSTEGANGSSOKNAD,
-            navn: 'Førstegang',
-          }, {
-            kode: behandlingType.DOKUMENTINNSYN,
-            navn: 'Innsyn',
-          }]}
-          valgtAvdelingEnhet="NAV Viken"
-          erDynamiskPeriode={verdier.erDynamiskPeriode}
-          fra={verdier.fra}
-          til={verdier.til}
-          fomDato={verdier.fomDato}
-          tomDato={verdier.tomDato}
-          hentAvdelingensSakslister={action('button-click')}
-          hentAntallOppgaver={action('button-click')}
-        />
-      )}
-    />
+    <RestApiProvider initialState={initialState as {[key in RestApiGlobalStatePathsKeys]: any}} requestApi={new RequestMock().build()}>
+      <Form
+        onSubmit={() => undefined}
+        initialValues={verdier}
+        render={() => (
+          <SorteringVelger
+            valgtSakslisteId={1}
+            valgteBehandlingtyper={[{
+              kode: behandlingType.FORSTEGANGSSOKNAD,
+              navn: 'Førstegang',
+            }, {
+              kode: behandlingType.DOKUMENTINNSYN,
+              navn: 'Innsyn',
+            }]}
+            valgtAvdelingEnhet="NAV Viken"
+            erDynamiskPeriode={verdier.erDynamiskPeriode}
+            fra={verdier.fra}
+            til={verdier.til}
+            fomDato={verdier.fomDato}
+            tomDato={verdier.tomDato}
+            hentAvdelingensSakslister={action('button-click')}
+            hentAntallOppgaver={action('button-click')}
+          />
+        )}
+      />
+    </RestApiProvider>
   );
 };
 
@@ -67,29 +72,29 @@ export const skalViseSorteringsvelgerNårKunTilbakekrevingErValgt = () => {
     erDynamiskPeriode: true,
   };
 
-  requestApi.mock(RestApiGlobalStatePathsKeys.KODEVERK, alleKodeverk);
-
   return (
-    <Form
-      onSubmit={() => undefined}
-      initialValues={verdier}
-      render={() => (
-        <SorteringVelger
-          valgtSakslisteId={1}
-          valgteBehandlingtyper={[{
-            kode: behandlingType.TILBAKEBETALING,
-            navn: 'Tilbakekreving',
-          }]}
-          valgtAvdelingEnhet="NAV Viken"
-          erDynamiskPeriode={verdier.erDynamiskPeriode}
-          fra={verdier.fra}
-          til={verdier.til}
-          fomDato={verdier.fomDato}
-          tomDato={verdier.tomDato}
-          hentAvdelingensSakslister={action('button-click')}
-          hentAntallOppgaver={action('button-click')}
-        />
-      )}
-    />
+    <RestApiProvider initialState={initialState as {[key in RestApiGlobalStatePathsKeys]: any}} requestApi={new RequestMock().build()}>
+      <Form
+        onSubmit={() => undefined}
+        initialValues={verdier}
+        render={() => (
+          <SorteringVelger
+            valgtSakslisteId={1}
+            valgteBehandlingtyper={[{
+              kode: behandlingType.TILBAKEBETALING,
+              navn: 'Tilbakekreving',
+            }]}
+            valgtAvdelingEnhet="NAV Viken"
+            erDynamiskPeriode={verdier.erDynamiskPeriode}
+            fra={verdier.fra}
+            til={verdier.til}
+            fomDato={verdier.fomDato}
+            tomDato={verdier.tomDato}
+            hentAvdelingensSakslister={action('button-click')}
+            hentAntallOppgaver={action('button-click')}
+          />
+        )}
+      />
+    </RestApiProvider>
   );
 };

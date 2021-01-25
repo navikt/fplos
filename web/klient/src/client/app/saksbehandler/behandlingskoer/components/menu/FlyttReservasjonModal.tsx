@@ -4,8 +4,8 @@ import { Form } from 'react-final-form';
 import { Hovedknapp, Knapp } from 'nav-frontend-knapper';
 import { Normaltekst, Element } from 'nav-frontend-typografi';
 
-import { RestApiState } from 'data/rest-api-hooks';
-import { restApiHooks, RestApiPathsKeys } from 'data/fplosRestApi';
+import { useRestApiRunner, RestApiState } from 'data/rest-api-hooks';
+import { RestApiPathsKeys } from 'data/restApiPaths';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import { FlexContainer, FlexRow, FlexColumn } from 'sharedComponents/flexGrid';
 import {
@@ -55,10 +55,10 @@ export const FlyttReservasjonModal: FunctionComponent<OwnProps & WrappedComponen
 }) => {
   const {
     startRequest, state, data: saksbehandler, resetRequestData,
-  } = restApiHooks.useRestApiRunner<SaksbehandlerForFlytting>(RestApiPathsKeys.FLYTT_RESERVASJON_SAKSBEHANDLER_SOK);
+  } = useRestApiRunner<SaksbehandlerForFlytting>(RestApiPathsKeys.FLYTT_RESERVASJON_SAKSBEHANDLER_SOK);
   const finnSaksbehandler = useCallback((brukerIdent) => startRequest(brukerIdent), []);
 
-  const { startRequest: flyttOppgavereservasjon } = restApiHooks.useRestApiRunner(RestApiPathsKeys.FLYTT_RESERVASJON);
+  const { startRequest: flyttOppgavereservasjon } = useRestApiRunner(RestApiPathsKeys.FLYTT_RESERVASJON);
   const flyttReservasjon = useCallback((brukerident: string, begrunnelse: string) => flyttOppgavereservasjon({
     oppgaveId, brukerIdent: brukerident, begrunnelse,
   }).then(() => hentReserverteOppgaver({}, true)),

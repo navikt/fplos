@@ -1,7 +1,7 @@
 // @ts-ignore Fiks
-export const isIE11 = (): boolean => !!window.MSInputMethodContext && !!document.documentMode;
+export const isIE11 = () => !!window.MSInputMethodContext && !!document.documentMode;
 
-export const isEdge = (): boolean => /Edge/.test(navigator.userAgent);
+export const isEdge = () => /Edge/.test(navigator.userAgent);
 
 /**
  * IE11 workaround for åpen bug i React: https://github.com/facebook/react/issues/3751

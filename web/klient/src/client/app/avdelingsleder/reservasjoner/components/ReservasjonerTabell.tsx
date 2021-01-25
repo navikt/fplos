@@ -52,6 +52,7 @@ class ReservasjonerTabell extends Component<OwnProps, StateTsProps> {
     };
   }
 
+
   closeReservasjonEndringDatoModal = (): void => {
     this.setState((prevState) => ({ ...prevState, showReservasjonEndringDatoModal: false }));
   }

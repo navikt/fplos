@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { FormattedMessage } from 'react-intl';
 import Panel from 'nav-frontend-paneler';

@@ -1,8 +1,9 @@
 import React from 'react';
 import { action } from '@storybook/addon-actions';
 
-import { requestApi, RestApiGlobalStatePathsKeys, RestApiPathsKeys } from 'data/fplosRestApi';
-import UtvalgskriterierForSakslisteForm from 'avdelingsleder/behandlingskoer/components/sakslisteForm/UtvalgskriterierForSakslisteForm';
+import { RestApiGlobalStatePathsKeys } from 'data/restApiPaths';
+import { RestApiProvider } from 'data/rest-api-hooks';
+import { UtvalgskriterierForSakslisteForm } from 'avdelingsleder/behandlingskoer/components/sakslisteForm/UtvalgskriterierForSakslisteForm';
 import koSortering from 'kodeverk/KoSortering';
 import andreKriterierType from 'kodeverk/andreKriterierType';
 import behandlingType from 'kodeverk/behandlingType';
@@ -10,19 +11,22 @@ import fagsakYtelseType from 'kodeverk/fagsakYtelseType';
 
 import withIntl from '../../../decorators/withIntl';
 import alleKodeverk from '../../../mocks/alleKodeverk.json';
-import withRestApiProvider from '../../../decorators/withRestApi';
+import RequestMock from '../../../mocks/RequestMock';
+
+const initialState = {
+  [RestApiGlobalStatePathsKeys.KODEVERK]: alleKodeverk,
+};
 
 export default {
   title: 'avdelingsleder/behandlingskoer/UtvalgskriterierForSakslisteForm',
   component: UtvalgskriterierForSakslisteForm,
-  decorators: [withIntl, withRestApiProvider],
+  decorators: [withIntl],
 };
 
-export const skalViseSakslisteOppsettPanel = () => {
-  requestApi.mock(RestApiGlobalStatePathsKeys.KODEVERK, alleKodeverk);
-  requestApi.mock(RestApiPathsKeys.OPPGAVE_ANTALL);
-  return (
+export const skalViseSakslisteOppsettPanel = (intl) => (
+  <RestApiProvider initialState={initialState as {[key in RestApiGlobalStatePathsKeys]: any}} requestApi={new RequestMock().build()}>
     <UtvalgskriterierForSakslisteForm
+      intl={intl}
       valgtSaksliste={{
         sakslisteId: 1,
         navn: 'Saksliste 1',
@@ -66,5 +70,5 @@ export const skalViseSakslisteOppsettPanel = () => {
       hentAvdelingensSakslister={action('button-click')}
       hentOppgaverForAvdelingAntall={action('button-click')}
     />
-  );
-};
+  </RestApiProvider>
+);

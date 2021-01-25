@@ -1,18 +1,23 @@
-import axios, { AxiosInstance, AxiosRequestConfig, ResponseType } from 'axios';
+const openPreview = (data) => {
+  if (window.navigator.msSaveOrOpenBlob) {
+    window.navigator.msSaveOrOpenBlob(data);
+  } else {
+    window.open(URL.createObjectURL(data));
+  }
+};
 
-const cancellable = (axiosInstance: AxiosInstance, config: AxiosRequestConfig): Promise<any> => {
+const cancellable = (axiosInstance, config) => {
   let cancel;
   const request = axiosInstance({
     ...config,
-    cancelToken: new axios.CancelToken((c) => { cancel = c; }),
+    cancelToken: new axiosInstance.CancelToken((c) => { cancel = c; }),
   });
-  // @ts-ignore Fiks
   request.cancel = cancel;
-  return request.catch((error) => (axios.isCancel(error) ? Promise.reject(new Error(null)) : Promise.reject(error)));
+  return request.catch((error) => (axiosInstance.isCancel(error) ? Promise.reject(new Error(null)) : Promise.reject(error)));
 };
 
 const defaultHeaders = {
-  'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0',
+  'Cache-Control': 'no-cache',
   Pragma: 'no-cache',
   Expires: 0,
 };
@@ -21,7 +26,7 @@ const defaultPostHeaders = {
   'Content-Type': 'application/json',
 };
 
-const get = (axiosInstance: AxiosInstance) => (url: string, params: any, responseType: ResponseType = 'json') => cancellable(axiosInstance, {
+const get = (axiosInstance) => (url: string, params: any, responseType = 'json') => cancellable(axiosInstance, {
   url,
   params,
   responseType,
@@ -31,7 +36,7 @@ const get = (axiosInstance: AxiosInstance) => (url: string, params: any, respons
   },
 });
 
-const post = (axiosInstance: AxiosInstance) => (url: string, data: any, responseType: ResponseType = 'json') => cancellable(axiosInstance, {
+const post = (axiosInstance) => (url: string, data: any, responseType = 'json') => cancellable(axiosInstance, {
   url,
   responseType,
   data: JSON.stringify(data),
@@ -40,9 +45,10 @@ const post = (axiosInstance: AxiosInstance) => (url: string, data: any, response
     ...defaultHeaders,
     ...defaultPostHeaders,
   },
+  cache: false,
 });
 
-const put = (axiosInstance: AxiosInstance) => (url: string, data: any, responseType: ResponseType = 'json') => cancellable(axiosInstance, {
+const put = (axiosInstance) => (url: string, data: any, responseType = 'json') => cancellable(axiosInstance, {
   url,
   responseType,
   data: JSON.stringify(data),
@@ -51,23 +57,35 @@ const put = (axiosInstance: AxiosInstance) => (url: string, data: any, responseT
     ...defaultHeaders,
     ...defaultPostHeaders,
   },
+  cache: false,
 });
 
-const getBlob = (axiosInstance: AxiosInstance) => (url: string, params: any) => get(axiosInstance)(url, params, 'blob');
+const getBlob = (axiosInstance) => (url: string, params: any) => get(axiosInstance)(url, params, 'blob');
 
-const postBlob = (axiosInstance: AxiosInstance) => (url: string, data: any) => post(axiosInstance)(url, data, 'blob');
+const postBlob = (axiosInstance) => (url: string, data: any) => post(axiosInstance)(url, data, 'blob');
 
-const getAsync = (axiosInstance: AxiosInstance) => (url: string, params: any) => get(axiosInstance)(url, params);
-const postAsync = (axiosInstance: AxiosInstance) => (url: string, params: any) => post(axiosInstance)(url, params);
-const putAsync = (axiosInstance: AxiosInstance) => (url: string, params: any) => put(axiosInstance)(url, params);
+// TODO (TOR) Åpninga av dokument bør vel ikkje ligga her?
+const postAndOpenBlob = (axiosInstance) => (url: string, data: any) => postBlob(axiosInstance)(url, data)
+  .then((response) => {
+    openPreview(response.data);
+    return {
+      ...response,
+      data: 'blob opened as preview', // Don't waste memory by storing blob in state
+    };
+  });
 
-const initRestMethods = (axiosInstance: AxiosInstance) => {
+const getAsync = (axiosInstance) => (url: string, params: any) => get(axiosInstance)(url, params);
+const postAsync = (axiosInstance) => (url: string, params: any) => post(axiosInstance)(url, params);
+const putAsync = (axiosInstance) => (url: string, params: any) => put(axiosInstance)(url, params);
+
+const initRestMethods = (axiosInstance: any) => {
   const restMethods = {
     get: get(axiosInstance),
     post: post(axiosInstance),
     put: put(axiosInstance),
     getBlob: getBlob(axiosInstance),
     postBlob: postBlob(axiosInstance),
+    postAndOpenBlob: postAndOpenBlob(axiosInstance),
     getAsync: getAsync(axiosInstance),
     postAsync: postAsync(axiosInstance),
     putAsync: putAsync(axiosInstance),

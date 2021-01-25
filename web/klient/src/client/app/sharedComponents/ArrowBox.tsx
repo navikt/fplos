@@ -5,7 +5,7 @@ const borderRadius = 4;
 
 // Css er satt opp på en spesiell måte her fordi React ikke støtter psydo-element i inline css. Her er en avhengig av å dynamisk
 // endre enkelte variabler i after/before. Bedre løsninger finnes sikkert?
-const getArrowBoxTopCss = (alignOffset?: number, marginTop?: number, marginLeft?: number): string => `
+const getArrowBoxTopCss = (alignOffset, marginTop, marginLeft) => `
   .arrowBoxTop${alignOffset} {
     background: #ffffff;
     border: 1px solid ${navGra40};
@@ -34,7 +34,7 @@ const getArrowBoxTopCss = (alignOffset?: number, marginTop?: number, marginLeft?
   }
 `;
 
-const getArrowBoxLeftCss = (alignOffset?: number, marginTop?: number, marginLeft?: number): string => `
+const getArrowBoxLeftCss = (alignOffset, marginTop, marginLeft) => `
   .arrowBoxLeft${alignOffset} {
     background: #ffffff;
     border: 1px solid ${navGra40};
@@ -62,11 +62,11 @@ const getArrowBoxLeftCss = (alignOffset?: number, marginTop?: number, marginLeft
     width: 1rem;
   }
 `;
-const getArrowBox = (alignOffset?: number, alignLeft?: boolean, marginTop?: number, marginLeft?: number): string => (alignLeft
+const getArrowBox = (alignOffset, alignLeft, marginTop, marginLeft) => (alignLeft
   ? getArrowBoxLeftCss(alignOffset, marginTop, marginLeft)
   : getArrowBoxTopCss(alignOffset, marginTop, marginLeft)
 );
-const getClassName = (alignOffset?: number, alignLeft?: boolean, hideBorder?: boolean): string => {
+const getClassName = (alignOffset, alignLeft, hideBorder) => {
   if (hideBorder) {
     return '';
   }
