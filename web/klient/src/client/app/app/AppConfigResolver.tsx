@@ -1,10 +1,10 @@
 import React, {
-  ReactElement, FunctionComponent,
+  ReactElement, FunctionComponent, useEffect,
 } from 'react';
 
-import { restApiHooks, RestApiGlobalStatePathsKeys } from 'data/fplosRestApi';
+import { requestApi, restApiHooks, RestApiGlobalStatePathsKeys } from 'data/fplosRestApi';
+import { RestApiState, useRestApiErrorDispatcher } from 'data/rest-api-hooks';
 import LoadingPanel from 'sharedComponents/LoadingPanel';
-import { RestApiState } from '../data/rest-api-hooks';
 
 interface OwnProps {
   children: ReactElement;
@@ -13,6 +13,11 @@ interface OwnProps {
 const AppConfigResolver: FunctionComponent<OwnProps> = ({
   children,
 }) => {
+  const { addErrorMessage } = useRestApiErrorDispatcher();
+  useEffect(() => {
+    requestApi.setAddErrorMessageHandler(addErrorMessage);
+  }, []);
+
   const { state: stateNavAnsatt } = restApiHooks.useGlobalStateRestApi(RestApiGlobalStatePathsKeys.NAV_ANSATT);
   const { state: stateKodeverk } = restApiHooks.useGlobalStateRestApi(RestApiGlobalStatePathsKeys.KODEVERK);
   const { state: stateFpsakUrl } = restApiHooks.useGlobalStateRestApi(RestApiGlobalStatePathsKeys.FPSAK_URL);

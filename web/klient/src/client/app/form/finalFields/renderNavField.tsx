@@ -1,16 +1,10 @@
 import React, { Component } from 'react';
+import { FieldRenderProps } from 'react-final-form';
 import { injectIntl, WrappedComponentProps } from 'react-intl';
 
 import Label, { LabelType } from './Label';
 
 interface OwnProps {
-  input: {
-    value: string;
-  };
-  meta: {
-    submitFailed: boolean;
-    error: boolean;
-  };
   label?: LabelType;
   readOnly?: boolean;
   readOnlyHideEmpty?: boolean;
@@ -19,7 +13,7 @@ interface OwnProps {
 }
 
 const renderNavField = (WrappedNavFieldComponent) => {
-  class FieldComponent extends Component<OwnProps & WrappedComponentProps> {
+  class FieldComponent extends Component<OwnProps & FieldRenderProps<any> & WrappedComponentProps> {
     static defaultProps = {
       readOnly: false,
       readOnlyHideEmpty: false,
@@ -27,12 +21,12 @@ const renderNavField = (WrappedNavFieldComponent) => {
       onBlurValidation: false,
     };
 
-    constructor(props) {
+    constructor(props: OwnProps & FieldRenderProps<any> & WrappedComponentProps) {
       super(props);
       this.formatError = this.formatError.bind(this);
     }
 
-    formatError(submitFailed, error, onBlurValidation) {
+    formatError(submitFailed: boolean, error: any, onBlurValidation: boolean): string | undefined {
       const { intl } = this.props;
       if ((onBlurValidation || submitFailed) && error) {
         // @ts-ignore

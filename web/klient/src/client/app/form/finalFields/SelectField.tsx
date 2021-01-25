@@ -1,6 +1,6 @@
-import React, { FunctionComponent, ReactNode } from 'react';
+import React, { FunctionComponent, ReactElement } from 'react';
 import classnames from 'classnames/bind';
-import { Field } from 'react-final-form';
+import { Field, FieldRenderProps } from 'react-final-form';
 import { FieldValidator } from 'final-form';
 
 import CustomNavSelect from './CustomNavSelect';
@@ -12,8 +12,15 @@ import styles from './selectField.less';
 
 const classNames = classnames.bind(styles);
 
-// eslint-disable-next-line react/prop-types
-const renderReadOnly = () => ({ input, selectValues, ...otherProps }) => {
+interface ReadOnlyProps {
+  selectValues: ReactElement[];
+}
+
+const renderReadOnly = (): FunctionComponent<FieldRenderProps<any> & ReadOnlyProps> => ({
+  input,
+  selectValues,
+  ...otherProps
+}): ReactElement => {
   const option = selectValues.map((sv) => sv.props).find((o) => o.value === input.value);
   const value = option ? option.children : undefined;
   return <ReadOnlyField input={{ value }} {...otherProps} />;
@@ -23,7 +30,7 @@ const renderNavSelect = renderNavField(CustomNavSelect);
 
 interface OwnProps {
   name: string;
-  selectValues: ReactNode[];
+  selectValues: ReactElement[];
   label: LabelType;
   validate?: FieldValidator<any>;
   readOnly?: boolean;
@@ -34,12 +41,16 @@ interface OwnProps {
 }
 
 const SelectField: FunctionComponent<OwnProps> = ({
-  name, label, selectValues, validate, readOnly, ...otherProps
+  name,
+  label,
+  selectValues,
+  validate,
+  readOnly,
+  ...otherProps
 }) => (
   <Field
     name={name}
     validate={validate}
-    // @ts-ignore
     component={readOnly ? renderReadOnly() : renderNavSelect}
     label={label}
     selectValues={selectValues}

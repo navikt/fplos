@@ -15,7 +15,7 @@ interface OwnProps {
 const StoreValuesInLocalStorage: FunctionComponent<OwnProps> = ({
   stateKey,
   values,
-}) => {
+}): null => {
   useEffect(() => {
     setValueInLocalStorage(stateKey, JSON.stringify(values));
   }, [values]);
