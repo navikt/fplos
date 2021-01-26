@@ -1,32 +1,33 @@
 package no.nav.foreldrepenger.los.web.app.tjenester.admin;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.time.LocalDateTime;
+import java.util.List;
+
+import javax.persistence.EntityManager;
+import javax.ws.rs.core.Response;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+
 import no.nav.foreldrepenger.extensions.EntityManagerFPLosAwareExtension;
 import no.nav.foreldrepenger.los.web.app.tjenester.admin.dto.DriftsmeldingDto;
 import no.nav.foreldrepenger.los.web.app.tjenester.admin.dto.DriftsmeldingOpprettelseDto;
 import no.nav.foreldrepenger.loslager.repository.DriftsmeldingRepository;
 import no.nav.fplos.admin.DriftsmeldingTjeneste;
 import no.nav.fplos.admin.DriftsmeldingTjenesteImpl;
-import no.nav.vedtak.felles.testutilities.db.EntityManagerAwareTest;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-
-import javax.ws.rs.core.Response;
-
-import java.time.LocalDateTime;
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @ExtendWith(EntityManagerFPLosAwareExtension.class)
-class DriftsmeldingerRestTjenesteTest extends EntityManagerAwareTest {
+class DriftsmeldingerRestTjenesteTest {
 
     private DriftsmeldingerRestTjeneste driftsmeldinger;
 
     @BeforeEach
-    public void setUp() {
-        DriftsmeldingRepository driftsmeldingRepository = new DriftsmeldingRepository(getEntityManager());
+    public void setUp(EntityManager entityManager) {
+        DriftsmeldingRepository driftsmeldingRepository = new DriftsmeldingRepository(entityManager);
         DriftsmeldingTjeneste driftsmeldingTjeneste = new DriftsmeldingTjenesteImpl(driftsmeldingRepository);
         driftsmeldinger = new DriftsmeldingerRestTjeneste(driftsmeldingTjeneste);
     }

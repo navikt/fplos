@@ -10,6 +10,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.persistence.EntityManager;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -28,11 +30,10 @@ import no.nav.foreldrepenger.loslager.repository.OppgaveRepositoryImpl;
 import no.nav.foreldrepenger.loslager.repository.OrganisasjonRepositoryImpl;
 import no.nav.fplos.avdelingsleder.AvdelingslederTjeneste;
 import no.nav.fplos.avdelingsleder.AvdelingslederTjenesteImpl;
-import no.nav.vedtak.felles.testutilities.db.EntityManagerAwareTest;
 import no.nav.vedtak.felles.testutilities.db.Repository;
 
 @ExtendWith(EntityManagerFPLosAwareExtension.class)
-public class OppgaveTjenesteImplTest extends EntityManagerAwareTest {
+public class OppgaveTjenesteImplTest {
 
     private static final String AVDELING_BERGEN_ENHET = "4812";
 
@@ -50,15 +51,16 @@ public class OppgaveTjenesteImplTest extends EntityManagerAwareTest {
             .medBehandlingType(BehandlingType.INNSYN).build();
     private final Oppgave førstegangOppgaveBergen = Oppgave.builder().dummyOppgave(AVDELING_BERGEN_ENHET)
             .medBehandlingType(BehandlingType.FØRSTEGANGSSØKNAD).build();
+    private EntityManager entityManager;
 
     @BeforeEach
-    public void setup() {
-        var entityManager = getEntityManager();
+    public void setup(EntityManager entityManager) {
         oppgaveRepository = new OppgaveRepositoryImpl(entityManager);
         var organisasjonRepository = new OrganisasjonRepositoryImpl(entityManager);
         avdelingslederTjeneste = new AvdelingslederTjenesteImpl(oppgaveRepository, organisasjonRepository);
         oppgaveTjeneste = new OppgaveTjenesteImpl(oppgaveRepository, organisasjonRepository);
         repository = new Repository(entityManager);
+        this.entityManager = entityManager;
     }
 
 
@@ -71,7 +73,7 @@ public class OppgaveTjenesteImplTest extends EntityManagerAwareTest {
         oppgaveRepository.lagre(klageOppgave);
         oppgaveRepository.lagre(innsynOppgave);
         oppgaveRepository.lagre(førstegangOppgaveBergen);
-        getEntityManager().refresh(oppgaveFiltrering);
+        entityManager.refresh(oppgaveFiltrering);
         return oppgaveFiltrering.getId();
     }
 
@@ -90,7 +92,7 @@ public class OppgaveTjenesteImplTest extends EntityManagerAwareTest {
         leggtilOppgaveMedEkstraEgenskaper(førstegangOppgave, AndreKriterierType.PAPIRSØKNAD);
         leggtilOppgaveMedEkstraEgenskaper(klageOppgave, AndreKriterierType.PAPIRSØKNAD);
         oppgaveRepository.lagre(innsynOppgave);
-        getEntityManager().refresh(oppgaveFiltrering);
+        entityManager.refresh(oppgaveFiltrering);
         return oppgaveFiltrering.getId();
     }
 
@@ -106,10 +108,10 @@ public class OppgaveTjenesteImplTest extends EntityManagerAwareTest {
             OppgaveFiltrering oppgaveFiltrering = OppgaveFiltrering.builder()
                     .medNavn("Test " + i).medSortering(KøSortering.BEHANDLINGSFRIST)
                     .medAvdeling(avdelingDrammen()).build();
-            getEntityManager().persist(oppgaveFiltrering);
+            entityManager.persist(oppgaveFiltrering);
             filtre.add(oppgaveFiltrering);
         }
-        getEntityManager().flush();
+        entityManager.flush();
         return filtre;
     }
 
@@ -209,12 +211,12 @@ public class OppgaveTjenesteImplTest extends EntityManagerAwareTest {
     public void hentAlleOppgaveFiltrering() {
         List<OppgaveFiltrering> lagtInnLister = leggInnEtSettMedLister(3);
         Saksbehandler saksbehandler = new Saksbehandler("1234567");
-        getEntityManager().persist(saksbehandler);
-        getEntityManager().flush();
+        entityManager.persist(saksbehandler);
+        entityManager.flush();
 
         avdelingslederTjeneste.leggSaksbehandlerTilListe(lagtInnLister.get(0).getId(), saksbehandler.getSaksbehandlerIdent());
         avdelingslederTjeneste.leggSaksbehandlerTilListe(lagtInnLister.get(2).getId(), saksbehandler.getSaksbehandlerIdent());
-        getEntityManager().refresh(saksbehandler);
+        entityManager.refresh(saksbehandler);
 
         List<OppgaveFiltrering> oppgaveFiltrerings = oppgaveTjeneste.hentAlleOppgaveFiltrering(saksbehandler.getSaksbehandlerIdent());
         assertThat(oppgaveFiltrerings).contains(lagtInnLister.get(0), lagtInnLister.get(2));

@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import no.nav.foreldrepenger.los.web.app.AbacAttributter;
 import no.nav.foreldrepenger.loslager.oppgave.Reservasjon;
 import no.nav.vedtak.exception.TekniskException;
 import org.slf4j.Logger;
@@ -19,7 +20,6 @@ import no.nav.fplos.person.PersonTjeneste;
 import no.nav.vedtak.sikkerhet.abac.AbacAttributtSamling;
 import no.nav.vedtak.sikkerhet.abac.AbacDataAttributter;
 import no.nav.vedtak.sikkerhet.abac.BeskyttetRessursActionAttributt;
-import no.nav.vedtak.sikkerhet.abac.BeskyttetRessursResourceAttributt;
 import no.nav.vedtak.sikkerhet.abac.PdpKlient;
 import no.nav.vedtak.sikkerhet.abac.PdpRequestBuilder;
 import no.nav.vedtak.sikkerhet.context.SubjectHandler;
@@ -95,7 +95,7 @@ public class OppgaveDtoTjeneste {
         return AbacAttributtSamling
                 .medJwtToken(SubjectHandler.getSubjectHandler().getInternSsoToken())
                 .setActionType(BeskyttetRessursActionAttributt.READ)
-                .setResource(BeskyttetRessursResourceAttributt.FAGSAK.getEksternKode())
+                .setResource(AbacAttributter.FAGSAK)
                 .leggTil(AbacDataAttributter.opprett().leggTil(FplosAbacAttributtType.OPPGAVE_ID, oppgave.getId()));
     }
 

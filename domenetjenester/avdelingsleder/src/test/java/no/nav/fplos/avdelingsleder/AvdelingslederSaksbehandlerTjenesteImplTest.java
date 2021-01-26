@@ -5,6 +5,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
 
+import javax.persistence.EntityManager;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -15,19 +17,18 @@ import no.nav.foreldrepenger.loslager.repository.OppgaveRepository;
 import no.nav.foreldrepenger.loslager.repository.OppgaveRepositoryImpl;
 import no.nav.foreldrepenger.loslager.repository.OrganisasjonRepository;
 import no.nav.foreldrepenger.loslager.repository.OrganisasjonRepositoryImpl;
-import no.nav.vedtak.felles.testutilities.db.EntityManagerAwareTest;
 
 @ExtendWith(EntityManagerFPLosAwareExtension.class)
-public class AvdelingslederSaksbehandlerTjenesteImplTest extends EntityManagerAwareTest {
+public class AvdelingslederSaksbehandlerTjenesteImplTest {
 
     private static final String NY_SAKSBEHANDLER_IDENT = "zNySaksbehandler";
 
     private AvdelingslederSaksbehandlerTjeneste avdelingslederSaksbehandlerTjeneste;
 
     @BeforeEach
-    public void setup(){
-        OppgaveRepository oppgaveRepository = new OppgaveRepositoryImpl(getEntityManager());
-        OrganisasjonRepository organisasjonRepository = new OrganisasjonRepositoryImpl(getEntityManager());
+    public void setup(EntityManager entityManager){
+        OppgaveRepository oppgaveRepository = new OppgaveRepositoryImpl(entityManager);
+        OrganisasjonRepository organisasjonRepository = new OrganisasjonRepositoryImpl(entityManager);
         avdelingslederSaksbehandlerTjeneste = new AvdelingslederSaksbehandlerTjenesteImpl(oppgaveRepository, organisasjonRepository);
     }
 

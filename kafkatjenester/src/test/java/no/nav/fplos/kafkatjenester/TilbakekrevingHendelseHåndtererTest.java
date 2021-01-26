@@ -9,6 +9,8 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.persistence.EntityManager;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -25,11 +27,10 @@ import no.nav.foreldrepenger.loslager.oppgave.OppgaveEgenskap;
 import no.nav.foreldrepenger.loslager.oppgave.OppgaveEventLogg;
 import no.nav.foreldrepenger.loslager.oppgave.OppgaveEventType;
 import no.nav.foreldrepenger.loslager.repository.OppgaveRepositoryImpl;
-import no.nav.vedtak.felles.testutilities.db.EntityManagerAwareTest;
 import no.nav.vedtak.felles.testutilities.db.Repository;
 
 @ExtendWith(EntityManagerFPLosAwareExtension.class)
-public class TilbakekrevingHendelseHåndtererTest extends EntityManagerAwareTest {
+public class TilbakekrevingHendelseHåndtererTest {
 
     private Repository repository;
     private TilbakekrevingHendelseHåndterer handler;
@@ -40,8 +41,7 @@ public class TilbakekrevingHendelseHåndtererTest extends EntityManagerAwareTest
     private final List<Aksjonspunkt> avsluttetAksjonspunkt = List.of(new Aksjonspunkt("5015", "AVBR"));
 
     @BeforeEach
-    void setUp() {
-        var entityManager = getEntityManager();
+    void setUp(EntityManager entityManager) {
         repository = new Repository(entityManager);
         var oppgaveRepository = new OppgaveRepositoryImpl(entityManager);
         var oppgaveEgenskapHandler = new OppgaveEgenskapHandler(oppgaveRepository);

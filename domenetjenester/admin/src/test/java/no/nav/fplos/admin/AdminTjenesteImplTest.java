@@ -5,11 +5,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
 
-import no.nav.foreldrepenger.domene.typer.Saksnummer;
+import javax.persistence.EntityManager;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
+import no.nav.foreldrepenger.domene.typer.Saksnummer;
 import no.nav.foreldrepenger.extensions.EntityManagerFPLosAwareExtension;
 import no.nav.foreldrepenger.loslager.BehandlingId;
 import no.nav.foreldrepenger.loslager.oppgave.BehandlingType;
@@ -19,17 +21,15 @@ import no.nav.foreldrepenger.loslager.oppgave.OppgaveEventType;
 import no.nav.foreldrepenger.loslager.repository.AdminRepositoryImpl;
 import no.nav.foreldrepenger.loslager.repository.OppgaveRepository;
 import no.nav.foreldrepenger.loslager.repository.OppgaveRepositoryImpl;
-import no.nav.vedtak.felles.testutilities.db.EntityManagerAwareTest;
 
 @ExtendWith(EntityManagerFPLosAwareExtension.class)
-public class AdminTjenesteImplTest extends EntityManagerAwareTest {
+public class AdminTjenesteImplTest {
 
     private OppgaveRepository oppgaveRepository;
     private AdminTjenesteImpl adminTjeneste;
 
     @BeforeEach
-    void setUp() {
-        var entityManager = getEntityManager();
+    void setUp(EntityManager entityManager) {
         oppgaveRepository = new OppgaveRepositoryImpl(entityManager);
         var adminRepository = new AdminRepositoryImpl(entityManager);
         adminTjeneste = new AdminTjenesteImpl(adminRepository);

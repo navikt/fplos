@@ -1,32 +1,33 @@
 package no.nav.fplos.ansatt;
 
-import no.nav.foreldrepenger.extensions.EntityManagerFPLosAwareExtension;
-import no.nav.foreldrepenger.loslager.aktør.OrganisasjonsEnhet;
-import no.nav.foreldrepenger.loslager.organisasjon.Avdeling;
-import no.nav.foreldrepenger.loslager.repository.OrganisasjonRepository;
-import no.nav.foreldrepenger.loslager.repository.OrganisasjonRepositoryImpl;
-import no.nav.vedtak.felles.testutilities.db.EntityManagerAwareTest;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-
-import java.util.List;
-import java.util.Set;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import java.util.List;
+import java.util.Set;
+
+import javax.persistence.EntityManager;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+
+import no.nav.foreldrepenger.extensions.EntityManagerFPLosAwareExtension;
+import no.nav.foreldrepenger.loslager.aktør.OrganisasjonsEnhet;
+import no.nav.foreldrepenger.loslager.organisasjon.Avdeling;
+import no.nav.foreldrepenger.loslager.repository.OrganisasjonRepository;
+import no.nav.foreldrepenger.loslager.repository.OrganisasjonRepositoryImpl;
+
 @ExtendWith(EntityManagerFPLosAwareExtension.class)
-class AnsattTjenesteTest extends EntityManagerAwareTest {
+class AnsattTjenesteTest {
 
     private AnsattTjeneste ansattTjeneste;
     private EnhetstilgangTjeneste enhetstilgangTjeneste;
 
     @BeforeEach
-    public void setup() {
-        var entityManager = getEntityManager();
+    public void setup(EntityManager entityManager) {
         OrganisasjonRepository organisasjonRepository = new OrganisasjonRepositoryImpl(entityManager);
         enhetstilgangTjeneste = mock(EnhetstilgangTjeneste.class);
         ansattTjeneste = new AnsattTjeneste(enhetstilgangTjeneste, organisasjonRepository);

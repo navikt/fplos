@@ -7,6 +7,8 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.persistence.EntityManager;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -26,10 +28,9 @@ import no.nav.foreldrepenger.loslager.oppgave.OppgaveEventLogg;
 import no.nav.foreldrepenger.loslager.oppgave.OppgaveEventType;
 import no.nav.foreldrepenger.loslager.repository.StatistikkRepositoryImpl;
 import no.nav.fplos.statistikk.StatistikkTjenesteImpl;
-import no.nav.vedtak.felles.testutilities.db.EntityManagerAwareTest;
 
 @ExtendWith(EntityManagerFPLosAwareExtension.class)
-public class StatistikkTjenesteImplTest extends EntityManagerAwareTest {
+public class StatistikkTjenesteImplTest {
 
     private final Oppgave førstegangOppgave = Oppgave.builder().dummyOppgave(AVDELING_DRAMMEN_ENHET)
             .medBehandlingType(BehandlingType.FØRSTEGANGSSØKNAD).build();
@@ -50,15 +51,16 @@ public class StatistikkTjenesteImplTest extends EntityManagerAwareTest {
             .medBehandlingType(BehandlingType.FØRSTEGANGSSØKNAD).build();
 
     private StatistikkTjenesteImpl statistikkTjeneste;
+    private EntityManager entityManager;
 
     @BeforeEach
-    void setUp() {
-        var statisikkRepository = new StatistikkRepositoryImpl(getEntityManager());
+    void setUp(EntityManager entityManager) {
+        var statisikkRepository = new StatistikkRepositoryImpl(entityManager);
         statistikkTjeneste = new StatistikkTjenesteImpl(statisikkRepository);
+        this.entityManager = entityManager;
     }
 
     private void leggInnEttSettMedOppgaver() {
-        var entityManager = getEntityManager();
         entityManager.persist(førstegangOppgave);
         entityManager.persist(førstegangOppgave2);
         entityManager.persist(klageOppgave);
@@ -165,7 +167,6 @@ public class StatistikkTjenesteImplTest extends EntityManagerAwareTest {
         var behandlingId5 = BehandlingId.random();
         var behandlingId6 = BehandlingId.random();
 
-        var entityManager = getEntityManager();
         entityManager.persist(Oppgave.builder().dummyOppgave(AVDELING_DRAMMEN_ENHET).medSystem("FPSAK").medBehandlingId(behandlingId1).build());
         entityManager.persist(Oppgave.builder().dummyOppgave(AVDELING_DRAMMEN_ENHET).medSystem("FPSAK").medBehandlingId(behandlingId2).build());
         entityManager.persist(Oppgave.builder().dummyOppgave(AVDELING_DRAMMEN_ENHET).medSystem("FPSAK").medBehandlingId(behandlingId3).build());
@@ -195,7 +196,6 @@ public class StatistikkTjenesteImplTest extends EntityManagerAwareTest {
     }
 
     private void leggTilOppgave(Oppgave oppgave, int startTilbakeITid, int sluttTilbakeITid) {
-        var entityManager = getEntityManager();
         entityManager.persist(oppgave);
         entityManager.flush();
         entityManager.createNativeQuery("UPDATE OPPGAVE " +

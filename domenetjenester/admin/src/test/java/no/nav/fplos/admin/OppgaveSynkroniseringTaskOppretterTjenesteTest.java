@@ -6,6 +6,8 @@ import static org.mockito.Mockito.mock;
 
 import java.util.List;
 
+import javax.persistence.EntityManager;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -16,20 +18,21 @@ import no.nav.foreldrepenger.loslager.repository.OppgaveRepository;
 import no.nav.foreldrepenger.loslager.repository.OppgaveRepositoryImpl;
 import no.nav.vedtak.felles.prosesstask.impl.ProsessTaskEventPubliserer;
 import no.nav.vedtak.felles.prosesstask.impl.ProsessTaskRepositoryImpl;
-import no.nav.vedtak.felles.testutilities.db.EntityManagerAwareTest;
 import no.nav.vedtak.felles.testutilities.db.Repository;
 
 @ExtendWith(EntityManagerFPLosAwareExtension.class)
-public class OppgaveSynkroniseringTaskOppretterTjenesteTest extends EntityManagerAwareTest {
+public class OppgaveSynkroniseringTaskOppretterTjenesteTest {
 
     private OppgaveRepository oppgaveRepository;
     private OppgaveSynkroniseringTaskOppretterTjeneste synkroniseringTjeneste;
+    private EntityManager entityManager;
 
     @BeforeEach
-    void setUp() {
-        oppgaveRepository = new OppgaveRepositoryImpl(getEntityManager());
+    void setUp(EntityManager entityManager) {
+        this.entityManager = entityManager;
+        oppgaveRepository = new OppgaveRepositoryImpl(entityManager);
         synkroniseringTjeneste = new OppgaveSynkroniseringTaskOppretterTjeneste(oppgaveRepository,
-                new ProsessTaskRepositoryImpl(getEntityManager(), () -> "user",
+                new ProsessTaskRepositoryImpl(entityManager, () -> "user",
                 mock(ProsessTaskEventPubliserer.class)));
     }
 
@@ -71,7 +74,7 @@ public class OppgaveSynkroniseringTaskOppretterTjenesteTest extends EntityManage
     }
 
     private List<Oppgave> hentOppgave() {
-        return new Repository(getEntityManager()).hentAlle(Oppgave.class);
+        return new Repository(entityManager).hentAlle(Oppgave.class);
     }
 
 }

@@ -55,7 +55,7 @@ public class PersonTjenesteImpl implements PersonTjeneste {
                 .navn(new NavnResponseProjection().forkortetNavn().fornavn().mellomnavn().etternavn())
                 .adressebeskyttelse(new AdressebeskyttelseResponseProjection().gradering())
                 .folkeregisteridentifikator(new FolkeregisteridentifikatorResponseProjection().identifikasjonsnummer().status().type());
-        return pdlKlient.hentPerson(query, projection, Tema.FOR);
+        return pdlKlient.hentPerson(query, projection);
     }
 
     private Person tilPerson(no.nav.pdl.Person person, AktørId aktørId) {
