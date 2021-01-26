@@ -1,12 +1,12 @@
 package no.nav.foreldrepenger.los.web.app;
 
-import no.nav.vedtak.felles.prosesstask.impl.TaskManager;
-import no.nav.vedtak.felles.prosesstask.impl.cron.BatchTaskScheduler;
-
 import javax.inject.Inject;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.servlet.annotation.WebListener;
+
+import no.nav.vedtak.felles.prosesstask.impl.BatchTaskScheduler;
+import no.nav.vedtak.felles.prosesstask.impl.TaskManager;
 
 @WebListener
 public class TaskManagerStarter implements ServletContextListener {
