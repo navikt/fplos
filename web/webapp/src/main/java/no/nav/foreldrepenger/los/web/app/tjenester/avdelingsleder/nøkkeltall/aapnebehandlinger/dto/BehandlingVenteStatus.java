@@ -10,7 +10,7 @@ import java.util.Arrays;
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum BehandlingVenteStatus implements Kodeverdi {
     PÅ_VENT("PÅ_VENT", "På vent"),
-    AKTIV("AKTIV", "Aktiv");
+    IKKE_PÅ_VENT("IKKE_PÅ_VENT", "Ikke på vent");
 
     private String kode;
     private final String navn;
@@ -23,7 +23,6 @@ public enum BehandlingVenteStatus implements Kodeverdi {
 
     @JsonCreator
     public static BehandlingVenteStatus fraKode(@JsonProperty("kode") String kode) {
-        if (kode.equals("-")) return null;
         return Arrays.stream(values())
                 .filter(v -> v.kode.equals(kode))
                 .findFirst()

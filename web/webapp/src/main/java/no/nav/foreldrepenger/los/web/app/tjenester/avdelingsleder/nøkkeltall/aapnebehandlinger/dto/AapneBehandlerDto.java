@@ -7,13 +7,13 @@ import java.time.LocalDate;
 public class AapneBehandlerDto {
     private BehandlingType behandlingType;
     private BehandlingVenteStatus behandlingVenteStatus;
-    private LocalDate førsteVirkeMåned;
+    private LocalDate førsteUttakMåned;
     private int antall;
 
-    public AapneBehandlerDto(BehandlingType behandlingType, BehandlingVenteStatus påVent, LocalDate førsteVirkeMåned, int antall) {
+    public AapneBehandlerDto(BehandlingType behandlingType, BehandlingVenteStatus påVent, LocalDate førsteUttakMåned, int antall) {
         this.behandlingType = behandlingType;
         this.behandlingVenteStatus = påVent;
-        this.førsteVirkeMåned = førsteVirkeMåned;
+        this.førsteUttakMåned = førsteUttakMåned;
         this.antall = antall;
     }
 
@@ -25,8 +25,8 @@ public class AapneBehandlerDto {
         return behandlingVenteStatus;
     }
 
-    public LocalDate getFørsteVirkeMåned() {
-        return førsteVirkeMåned;
+    public LocalDate getFørsteUttakMåned() {
+        return førsteUttakMåned;
     }
 
     public int getAntall() {
