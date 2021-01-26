@@ -1,5 +1,16 @@
 package no.nav.fplos.person;
 
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+
+import org.apache.http.HttpStatus;
+
 import no.nav.foreldrepenger.domene.typer.AktørId;
 import no.nav.foreldrepenger.loslager.aktør.Fødselsnummer;
 import no.nav.foreldrepenger.loslager.aktør.Person;
@@ -10,39 +21,34 @@ import no.nav.pdl.HentPersonQueryRequest;
 import no.nav.pdl.Navn;
 import no.nav.pdl.NavnResponseProjection;
 import no.nav.pdl.PersonResponseProjection;
-import no.nav.vedtak.exception.FunksjonellException;
-import no.nav.vedtak.felles.integrasjon.pdl.PdlKlient;
-import no.nav.vedtak.felles.integrasjon.pdl.Tema;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import no.nav.vedtak.felles.integrasjon.pdl.Pdl;
+import no.nav.vedtak.felles.integrasjon.pdl.PdlException;
+import no.nav.vedtak.felles.integrasjon.rest.jersey.Jersey;
 
 @ApplicationScoped
 public class PersonTjenesteImpl implements PersonTjeneste {
 
-    private PdlKlient pdlKlient;
+    private Pdl pdl;
 
     public PersonTjenesteImpl() {
     }
 
     @Inject
-    public PersonTjenesteImpl(PdlKlient pdlKlient) {
-        this.pdlKlient = pdlKlient;
+    public PersonTjenesteImpl(@Jersey Pdl pdl) {
+        this.pdl = pdl;
     }
 
     @Override
     public Optional<Person> hentPerson(AktørId aktørId) {
         Objects.requireNonNull(aktørId, "aktørId");
         try {
-            return Optional.of(aktørId).map(this::hentPdlPerson).map(p -> tilPerson(p, aktørId));
-        } catch (FunksjonellException e) {
-            if (e.getFeil().getFeilmelding().contains("Error: Person ikke funnet")) {
+            return Optional.of(hentPdlPerson(aktørId)).map(p -> tilPerson(p, aktørId));
+        } catch (PdlException e) {
+            if (e.getStatus() == HttpStatus.SC_NOT_FOUND) {
                 return Optional.empty();
+            }
+            if (e.getStatus() == HttpStatus.SC_FORBIDDEN) {
+                throw new IkkeTilgangPåPersonException(e);
             }
             throw e;
         }
@@ -55,7 +61,7 @@ public class PersonTjenesteImpl implements PersonTjeneste {
                 .navn(new NavnResponseProjection().forkortetNavn().fornavn().mellomnavn().etternavn())
                 .adressebeskyttelse(new AdressebeskyttelseResponseProjection().gradering())
                 .folkeregisteridentifikator(new FolkeregisteridentifikatorResponseProjection().identifikasjonsnummer().status().type());
-        return pdlKlient.hentPerson(query, projection);
+        return pdl.hentPerson(query, projection);
     }
 
     private Person tilPerson(no.nav.pdl.Person person, AktørId aktørId) {
