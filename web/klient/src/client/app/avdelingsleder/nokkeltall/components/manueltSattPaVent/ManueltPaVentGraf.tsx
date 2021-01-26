@@ -22,12 +22,12 @@ const cssText = {
   fontWeight: 400,
 };
 
-const lagKoordinater = (oppgaverManueltPaVent) => oppgaverManueltPaVent.map((o) => ({
-  x: moment(o.behandlingFrist).startOf('day').toDate(),
+const lagKoordinater = (oppgaverManueltPaVent: OppgaverManueltPaVent[]): Koordinat[] => oppgaverManueltPaVent.map((o) => ({
+  x: moment(o.behandlingFrist).startOf('day').toDate().getTime(),
   y: o.antall,
 }));
 
-const lagDatastruktur = (koordinater: Koordinat[], isFireUkerValgt) => {
+const lagDatastruktur = (koordinater: Koordinat[], isFireUkerValgt: boolean): Koordinat[] => {
   const nyeKoordinater = [];
   const periodeStart = moment().startOf('day').toDate();
   const periodeSlutt = moment().add(isFireUkerValgt ? 4 : 8, 'w').toDate();
@@ -43,10 +43,10 @@ const lagDatastruktur = (koordinater: Koordinat[], isFireUkerValgt) => {
   return nyeKoordinater;
 };
 
-const harDatastrukturKun0Verdier = (koordinater) => !koordinater.some((k) => k.y !== 0);
+const harDatastrukturKun0Verdier = (koordinater: Koordinat[]): boolean => !koordinater.some((k) => k.y !== 0);
 
 interface Koordinat {
-  x: Date;
+  x: number;
   y: number;
 }
 
@@ -72,7 +72,7 @@ const ManueltPaVentGraf: FunctionComponent<OwnProps> = ({
   const data = useMemo(() => lagDatastruktur(koordinater, isFireUkerValgt), [koordinater, isFireUkerValgt]);
   const isEmpty = useMemo(() => harDatastrukturKun0Verdier(koordinater), [koordinater]);
 
-  const leggTilHintVerdi = useCallback((value: {x: Date; y: number}) => {
+  const leggTilHintVerdi = useCallback((value: {x: number; y: number}) => {
     setCrosshairValues([value]);
   }, []);
   const fjernHintVerdi = useCallback(() => {

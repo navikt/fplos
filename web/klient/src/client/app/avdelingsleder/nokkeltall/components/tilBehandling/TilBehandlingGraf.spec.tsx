@@ -83,14 +83,20 @@ describe('<TilBehandlingGraf>', () => {
 
       const dataArea1 = areaSeries.first().prop('data');
       sjekkAtEnHarVerdierForPeriode(dataArea1, true);
+      // @ts-ignore Fiks denne
       expect(dataArea1[0].y).toEqual(0);
+      // @ts-ignore Fiks denne
       expect(dataArea1[11].y).toEqual(0);
+      // @ts-ignore Fiks denne
       expect(dataArea1[12].y).toEqual(2);
+      // @ts-ignore Fiks denne
       expect(dataArea1[13].y).toEqual(1);
 
       const dataArea2 = areaSeries.last().prop('data');
       sjekkAtEnHarVerdierForPeriode(dataArea2, true);
+      // @ts-ignore Fiks denne
       expect(dataArea2[12].y).toEqual(0);
+      // @ts-ignore Fiks denne
       expect(dataArea2[13].y).toEqual(3);
     },
   );
@@ -125,14 +131,20 @@ describe('<TilBehandlingGraf>', () => {
 
       const dataArea1 = areaSeries.first().prop('data');
       sjekkAtEnHarVerdierForPeriode(dataArea1, false);
+      // @ts-ignore Fiks denne
       expect(dataArea1[0].y).toEqual(0);
+      // @ts-ignore Fiks denne
       expect(dataArea1[25].y).toEqual(0);
+      // @ts-ignore Fiks denne
       expect(dataArea1[26].y).toEqual(2);
+      // @ts-ignore Fiks denne
       expect(dataArea1[27].y).toEqual(1);
 
       const dataArea2 = areaSeries.last().prop('data');
       sjekkAtEnHarVerdierForPeriode(dataArea2, false);
+      // @ts-ignore Fiks denne
       expect(dataArea2[26].y).toEqual(0);
+      // @ts-ignore Fiks denne
       expect(dataArea2[27].y).toEqual(3);
     },
   );

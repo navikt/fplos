@@ -76,13 +76,16 @@ describe('<OppgaverPerForsteStonadsdagGraf>', () => {
     const koordinater = lagKoordinater(oppgaverPerForsteStonadsdag);
 
     expect(koordinater).toEqual([{
-      x: moment('2018-12-31').toDate(),
+      x: moment('2018-12-31').toDate()
+        .getTime(),
       y: 1,
     }, {
-      x: moment('2018-12-30').toDate(),
+      x: moment('2018-12-30').toDate()
+        .getTime(),
       y: 3,
     }, {
-      x: moment('2018-12-29').toDate(),
+      x: moment('2018-12-29').toDate()
+        .getTime(),
       y: 2,
     },
     ]);
@@ -90,13 +93,16 @@ describe('<OppgaverPerForsteStonadsdagGraf>', () => {
 
   it('skal sortere og fylle inn manglende datoer i koordinatstruktur', () => {
     const koordinater = [{
-      x: moment().subtract(10, 'd').startOf('day').toDate(),
+      x: moment().subtract(10, 'd').startOf('day').toDate()
+        .getTime(),
       y: 3,
     }, {
-      x: moment().add(10, 'd').startOf('day').toDate(),
+      x: moment().add(10, 'd').startOf('day').toDate()
+        .getTime(),
       y: 2,
     }, {
-      x: moment().add(1, 'd').startOf('day').toDate(),
+      x: moment().add(1, 'd').startOf('day').toDate()
+        .getTime(),
       y: 1,
     },
     ];
@@ -105,36 +111,41 @@ describe('<OppgaverPerForsteStonadsdagGraf>', () => {
 
     expect(sorterteKoordinater).toHaveLength(21);
     expect(sorterteKoordinater[0]).toEqual({
-      x: moment().subtract(10, 'd').startOf('day').toDate(),
+      x: moment().subtract(10, 'd').startOf('day').toDate()
+        .getTime(),
       y: 3,
     });
     expect(sorterteKoordinater[1]).toEqual({
-      x: moment().subtract(9, 'd').startOf('day').toDate(),
+      x: moment().subtract(9, 'd').startOf('day').toDate()
+        .getTime(),
       y: 0,
     });
     expect(sorterteKoordinater[11]).toEqual({
-      x: moment().add(1, 'd').startOf('day').toDate(),
+      x: moment().add(1, 'd').startOf('day').toDate()
+        .getTime(),
       y: 1,
     });
     expect(sorterteKoordinater[19]).toEqual({
-      x: moment().add(9, 'd').startOf('day').toDate(),
+      x: moment().add(9, 'd').startOf('day').toDate()
+        .getTime(),
       y: 0,
     });
     expect(sorterteKoordinater[20]).toEqual({
-      x: moment().add(10, 'd').startOf('day').toDate(),
+      x: moment().add(10, 'd').startOf('day').toDate()
+        .getTime(),
       y: 2,
     });
   });
 
   it('skal finne ut at alle koordinater har antall 0', () => {
     const koordinater = [{
-      x: moment('2018-12-31').toDate(),
+      x: moment('2018-12-31').toDate().getTime(),
       y: 0,
     }, {
-      x: moment('2018-12-30').toDate(),
+      x: moment('2018-12-30').toDate().getTime(),
       y: 0,
     }, {
-      x: moment('2018-12-29').toDate(),
+      x: moment('2018-12-29').toDate().getTime(),
       y: 0,
     },
     ];
@@ -146,13 +157,13 @@ describe('<OppgaverPerForsteStonadsdagGraf>', () => {
 
   it('skal finne ut at ikke alle koordinater har antall 0', () => {
     const koordinater = [{
-      x: moment('2018-12-31').toDate(),
+      x: moment('2018-12-31').toDate().getTime(),
       y: 3,
     }, {
-      x: moment('2018-12-30').toDate(),
+      x: moment('2018-12-30').toDate().getTime(),
       y: 0,
     }, {
-      x: moment('2018-12-29').toDate(),
+      x: moment('2018-12-29').toDate().getTime(),
       y: 0,
     },
     ];

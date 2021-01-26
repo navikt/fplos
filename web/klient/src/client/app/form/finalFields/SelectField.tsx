@@ -23,6 +23,7 @@ const renderReadOnly = (): FunctionComponent<FieldRenderProps<any> & ReadOnlyPro
 }): ReactElement => {
   const option = selectValues.map((sv) => sv.props).find((o) => o.value === input.value);
   const value = option ? option.children : undefined;
+  // @ts-ignore Fiks
   return <ReadOnlyField input={{ value }} {...otherProps} />;
 };
 

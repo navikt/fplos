@@ -4,7 +4,9 @@ import React, {
 import {
   XYPlot, XAxis, YAxis, VerticalGridLines, HorizontalRectSeries, Hint, DiscreteColorLegend,
 } from 'react-vis';
-import { FormattedMessage, injectIntl, WrappedComponentProps } from 'react-intl';
+import {
+  FormattedMessage, injectIntl, IntlShape, WrappedComponentProps,
+} from 'react-intl';
 import { Normaltekst } from 'nav-frontend-typografi';
 import Panel from 'nav-frontend-paneler';
 
@@ -26,18 +28,23 @@ const behandlingstypeOrder = [
   behandlingType.REVURDERING,
   behandlingType.FORSTEGANGSSOKNAD];
 
-const settCustomHoydePaSoylene = (data) => {
+const settCustomHoydePaSoylene = (data: { x: number; y: number }[]): Koordinat[] => {
   const transformert = data.map((el) => ({
     ...el,
     y0: el.y + 0.30,
     y: el.y - 0.30,
+    x0: 0,
   }));
-  transformert.unshift({ x: 0, y: 0.5 });
-  transformert.push({ x: 0, y: 4.5 });
+  transformert.unshift({
+    x: 0, y0: 0, x0: 0, y: 0.5,
+  });
+  transformert.push({
+    x: 0, y0: 0, x0: 0, y: 4.5,
+  });
   return transformert;
 };
 
-const formatData = (oppgaverForAvdeling) => {
+const formatData = (oppgaverForAvdeling: OppgaverForAvdeling[]): { x: number; y: number }[] => {
   const sammenslatteBehandlingstyper = oppgaverForAvdeling
     .reduce((acc, o) => {
       const index = behandlingstypeOrder.indexOf(o.behandlingType.kode) + 1;
@@ -58,10 +65,16 @@ const cssText = {
   fontWeight: 400,
 };
 
-const getHintAntall = (verdi, intl) => intl.formatMessage({ id: 'FordelingAvBehandlingstypeGraf.Antall' }, {
+const getHintAntall = (verdi: Koordinat, intl: IntlShape): string => intl.formatMessage({ id: 'FordelingAvBehandlingstypeGraf.Antall' }, {
   antall: verdi.x0 ? verdi.x - verdi.x0 : verdi.x,
 });
-const getHintTotalAntall = (verdi, tilBeslutter, tilSaksbehandling, intl) => {
+
+const getHintTotalAntall = (
+  verdi: Koordinat,
+  tilBeslutter: { x: number; y: number }[],
+  tilSaksbehandling: { x: number; y: number }[],
+  intl: IntlShape,
+): string => {
   const y = Math.ceil(verdi.y);
   const beslutterAntall = tilBeslutter.find((b) => b.y === y);
   const sum1 = beslutterAntall ? beslutterAntall.x : 0;
@@ -82,6 +95,7 @@ interface Koordinat {
   x: number;
   x0: number;
   y: number;
+  y0: number;
 }
 
 /**
@@ -96,14 +110,14 @@ const FordelingAvBehandlingstypeGraf: FunctionComponent<OwnProps & WrappedCompon
 }) => {
   const [hintVerdi, setHintVerdi] = useState<Koordinat>();
 
-  const leggTilHintVerdi = useCallback((verdi: Koordinat) => {
+  const leggTilHintVerdi = useCallback((verdi: Koordinat): void => {
     setHintVerdi(verdi);
   }, []);
-  const fjernHintVerdi = useCallback(() => {
+  const fjernHintVerdi = useCallback((): void => {
     setHintVerdi(undefined);
   }, []);
 
-  const finnBehandlingTypeNavn = useCallback((_v, i) => {
+  const finnBehandlingTypeNavn = useCallback((_v: number, i: number): string => {
     const type = behandlingTyper.find((bt) => bt.kode === behandlingstypeOrder[i]);
     return type ? type.navn : '';
   }, []);
@@ -132,6 +146,7 @@ const FordelingAvBehandlingstypeGraf: FunctionComponent<OwnProps & WrappedCompon
               <XAxis orientation="top" style={{ text: cssText }} />
               <YAxis
                 style={{ text: cssText }}
+                // @ts-ignore Feil i @types/react-vis
                 tickFormat={finnBehandlingTypeNavn}
                 tickValues={[1, 2, 3, 4, 5, 6]}
               />
@@ -162,6 +177,7 @@ const FordelingAvBehandlingstypeGraf: FunctionComponent<OwnProps & WrappedCompon
           </FlexColumn>
           <FlexColumn>
             <DiscreteColorLegend
+              // @ts-ignore Feil i @types/react-vis
               colors={['#337c9b', '#38a161']}
               items={[
                 <Normaltekst className={styles.displayInline}>

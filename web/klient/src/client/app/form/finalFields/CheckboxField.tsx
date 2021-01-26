@@ -1,5 +1,5 @@
 import React, { FunctionComponent } from 'react';
-import { Field, FormRenderProps } from 'react-final-form';
+import { Field, FieldRenderProps } from 'react-final-form';
 import { Checkbox as NavCheckbox } from 'nav-frontend-skjema';
 import { Normaltekst } from 'nav-frontend-typografi';
 
@@ -22,8 +22,7 @@ export const RenderCheckboxField = renderNavField(({
   onChange,
   label,
   ...otherProps
-}: FormRenderProps & RenderCheckboxFieldProps) => (
-  // @ts-ignore Fiks
+}: FieldRenderProps<any> & RenderCheckboxFieldProps) => (
   <NavCheckbox
     onChange={(e) => onChange(e.target.checked)}
     checked={!!otherProps.value}

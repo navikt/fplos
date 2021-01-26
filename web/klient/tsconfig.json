@@ -13,7 +13,7 @@
 		"jsx": "react",
 		"typeRoots": ["./node_modules/@types", "./src/@types"],
 		"baseUrl": "src/client/",
-		"skipLibCheck": true, //TODO Fjern denne
+		"skipLibCheck": true,
 		"paths": {
 			"app/*": ["app/app/*"],
 			"data/*": ["app/data/*"],

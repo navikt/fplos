@@ -1,4 +1,4 @@
-import React, { Component, ReactNode, ReactType } from 'react';
+import React, { Component, ReactElement, ElementType } from 'react';
 import classnames from 'classnames/bind';
 import { injectIntl, WrappedComponentProps } from 'react-intl';
 import { Undertekst } from 'nav-frontend-typografi';
@@ -7,14 +7,16 @@ import styles from './label.less';
 
 const classNames = classnames.bind(styles);
 
-export type LabelType = string | ReactNode | {
+type Message = {
   id: string;
   args?: any;
-};
+}
+
+export type LabelType = string | ReactElement | Message;
 
 interface OwnProps {
   input: LabelType;
-  typographyElement?: ReactType;
+  typographyElement?: ElementType;
   readOnly?: boolean;
 }
 
@@ -24,17 +26,19 @@ export class Label extends Component<OwnProps & WrappedComponentProps> {
     readOnly: false,
   };
 
-  constructor(props) {
+  constructor(props: OwnProps & WrappedComponentProps) {
     super(props);
     this.format = this.format.bind(this);
   }
 
-  format(label) {
-    if (label && label.id) {
+  format(label: LabelType): string | ReactElement {
+    const labelAsMessage = label as Message;
+    const labelAsReactNodeOrString = label as ReactElement | string;
+    if (label && labelAsMessage.id) {
       const { intl } = this.props;
-      return intl.formatMessage({ id: label.id }, label.args);
+      return intl.formatMessage({ id: labelAsMessage.id }, labelAsMessage.args);
     }
-    return label;
+    return labelAsReactNodeOrString;
   }
 
   render() {

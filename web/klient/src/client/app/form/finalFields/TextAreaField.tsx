@@ -69,7 +69,6 @@ const TextAreaField: FunctionComponent<OwnProps> = ({
   <Field
     name={name}
     validate={composeValidators(validate)}
-    // @ts-ignore Fiks
     component={readOnly ? ReadOnlyField : renderNavTextArea}
     label={label}
     {...otherProps}

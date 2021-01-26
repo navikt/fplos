@@ -4,7 +4,7 @@ import { Normaltekst } from 'nav-frontend-typografi';
 
 import Label, { LabelType } from './Label';
 
-interface OwnProps {
+export interface RadioOptionProps {
   name?: string;
   label: LabelType;
   value: any;
@@ -18,7 +18,7 @@ interface OwnProps {
   manualHideChildren?: boolean;
 }
 
-export const RadioOption: FunctionComponent<OwnProps> = ({
+export const RadioOption: FunctionComponent<RadioOptionProps> = ({
   name,
   className,
   label,

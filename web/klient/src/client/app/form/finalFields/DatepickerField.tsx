@@ -9,9 +9,11 @@ import renderNavField from './renderNavField';
 import ReadOnlyField from './ReadOnlyField';
 import { LabelType } from './Label';
 
-const composeValidators = (validators) => (value) => validators.reduce((error, validator) => error || validator(value), undefined);
+const composeValidators = (validators: FieldValidator<any>[]): FieldValidator<any> => (
+  value: any,
+) => validators.reduce((error, validator) => error || validator(value, undefined), undefined);
 
-const isoToDdMmYyyy = (string) => {
+const isoToDdMmYyyy = (string: string): string => {
   const parsedDate = moment(string, ISO_DATE_FORMAT, true);
   if (parsedDate.isValid()) {
     return parsedDate.format(DDMMYYYY_DATE_FORMAT);
@@ -19,7 +21,7 @@ const isoToDdMmYyyy = (string) => {
   return string;
 };
 
-const acceptedFormatToIso = (string) => {
+const acceptedFormatToIso = (string: string): string => {
   const validDate = ACCEPTED_DATE_INPUT_FORMATS
     .map((format) => moment(string, format, true))
     .find((parsedDate) => parsedDate.isValid());
@@ -38,7 +40,7 @@ interface OwnProps{
   format?: (value: string) => string;
   parse?: (value: string) => string;
   isEdited?: boolean;
-  validate?: FieldValidator<any> | FieldValidator<any>[];
+  validate?: FieldValidator<any>[];
   onBlurValidation?: boolean;
   onBlur?: (any) => void;
   alwaysShowCalendar?: boolean;
@@ -49,12 +51,18 @@ interface OwnProps{
 }
 
 const DatepickerField: FunctionComponent<OwnProps> = ({
-  name, label, readOnly, format, parse, isEdited, validate, ...otherProps
+  name,
+  label,
+  readOnly,
+  format,
+  parse,
+  isEdited,
+  validate,
+  ...otherProps
 }) => (
   <Field
     name={name}
     validate={validate ? composeValidators(validate) : undefined}
-    // @ts-ignore
     component={readOnly ? ReadOnlyField : RenderDatepickerField}
     label={label}
     {...otherProps}

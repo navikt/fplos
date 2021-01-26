@@ -43,7 +43,12 @@ const cssText = {
   fontWeight: 400,
 };
 
-const sorterBehandlingtyper = (b1, b2) => {
+type Koordinat = {
+  x: Date,
+  y: number,
+}
+
+const sorterBehandlingtyper = (b1: string, b2: string): number => {
   const index1 = behandlingstypeOrder.indexOf(b1);
   const index2 = behandlingstypeOrder.indexOf(b2);
   if (index1 === index2) {
@@ -52,20 +57,25 @@ const sorterBehandlingtyper = (b1, b2) => {
   return index1 > index2 ? -1 : 1;
 };
 
-const konverterTilKoordinaterGruppertPaBehandlingstype = (oppgaverForAvdeling) => oppgaverForAvdeling.reduce((acc, o) => {
-  const nyKoordinat = {
-    x: moment(o.opprettetDato).startOf('day').toDate(),
-    y: o.antall,
-  };
+const konverterTilKoordinaterGruppertPaBehandlingstype = (oppgaverForAvdeling: OppgaveForDatoGraf[]): Record<string, Koordinat[]> => oppgaverForAvdeling
+  .reduce((acc, o) => {
+    const nyKoordinat = {
+      x: moment(o.opprettetDato).startOf('day').toDate(),
+      y: o.antall,
+    };
 
-  const eksisterendeKoordinater = acc[o.behandlingType.kode];
-  return {
-    ...acc,
-    [o.behandlingType.kode]: (eksisterendeKoordinater ? eksisterendeKoordinater.concat(nyKoordinat) : [nyKoordinat]),
-  };
-}, {});
+    const eksisterendeKoordinater = acc[o.behandlingType.kode];
+    return {
+      ...acc,
+      [o.behandlingType.kode]: (eksisterendeKoordinater ? eksisterendeKoordinater.concat(nyKoordinat) : [nyKoordinat]),
+    };
+  }, {});
 
-const fyllInnManglendeDatoerOgSorterEtterDato = (data, periodeStart, periodeSlutt) => Object.keys(data).reduce((acc, behandlingstype) => {
+const fyllInnManglendeDatoerOgSorterEtterDato = (
+  data: Record<string, Koordinat[]>,
+  periodeStart: moment.Moment,
+  periodeSlutt: moment.Moment,
+): Record<string, Koordinat[]> => Object.keys(data).reduce((acc, behandlingstype) => {
   const behandlingstypeData = data[behandlingstype];
   const koordinater = [];
 
@@ -83,17 +93,21 @@ const fyllInnManglendeDatoerOgSorterEtterDato = (data, periodeStart, periodeSlut
   };
 }, {});
 
-const finnAntallForBehandlingstypeOgDato = (data, behandlingstype, dato) => {
+const finnAntallForBehandlingstypeOgDato = (
+  data: Record<string, Koordinat[]>,
+  behandlingstype: string,
+  dato: Date,
+): number => {
   const koordinat = data[behandlingstype].find((d) => d.x.getTime() === dato.getTime());
   return koordinat.y;
 };
 
-const finnBehandlingTypeNavn = (behandlingTyper, behandlingTypeKode: string) => {
+const finnBehandlingTypeNavn = (behandlingTyper: Kodeverk[], behandlingTypeKode: string): string => {
   const type = behandlingTyper.find((bt) => bt.kode === behandlingTypeKode);
   return type ? type.navn : '';
 };
 
-export interface OppgaveForDato {
+export interface OppgaveForDatoGraf {
   behandlingType: Kodeverk;
   opprettetDato: string;
   antall: number;
@@ -103,7 +117,7 @@ interface OwnProps {
   width: number;
   height: number;
   behandlingTyper: Kodeverk[];
-  oppgaverPerDato: OppgaveForDato[];
+  oppgaverPerDato: OppgaveForDatoGraf[];
   isToUkerValgt: boolean;
 }
 
@@ -149,6 +163,7 @@ const TilBehandlingGraf: FunctionComponent<OwnProps> = ({
       <FlexContainer>
         <FlexRow>
           <FlexColumn>
+            {/* @ts-ignore Feil i @types/react-vis yDomain og xDomain har en funksjon */}
             <XYPlot
               dontCheckIfEmpty={isEmpty}
               width={width - LEGEND_WIDTH > 0 ? width - LEGEND_WIDTH : 100 + LEGEND_WIDTH}
@@ -161,7 +176,7 @@ const TilBehandlingGraf: FunctionComponent<OwnProps> = ({
               onMouseLeave={onMouseLeave}
               {...plotPropsWhenEmpty}
             >
-              <MarkSeries data={[{ x: moment().subtract(1, 'd'), y: 0 }]} style={{ display: 'none' }} />
+              <MarkSeries data={[{ x: moment().subtract(1, 'd').toDate(), y: 0 }]} style={{ display: 'none' }} />
               <HorizontalGridLines />
               <XAxis
                 tickTotal={5}
@@ -170,6 +185,7 @@ const TilBehandlingGraf: FunctionComponent<OwnProps> = ({
               />
               <YAxis style={{ text: cssText }} />
               {sorterteBehandlingstyper.map((k, index) => (
+                // @ts-ignore Fiks desse feila
                 <AreaSeries
                   key={k}
                   data={data[k]}
@@ -201,6 +217,7 @@ const TilBehandlingGraf: FunctionComponent<OwnProps> = ({
           </FlexColumn>
           <FlexColumn>
             <DiscreteColorLegend
+              // @ts-ignore Feil i @types/react-vis
               colors={reversertSorterteBehandlingstyper.map((key) => behandlingstypeFarger[key])}
               items={reversertSorterteBehandlingstyper.map((key) => (
                 <Normaltekst className={styles.displayInline}>{finnBehandlingTypeNavn(behandlingTyper, key)}</Normaltekst>
