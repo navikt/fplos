@@ -12,13 +12,13 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
+import no.nav.foreldrepenger.dbstoette.DBTestUtil;
 import no.nav.foreldrepenger.extensions.EntityManagerFPLosAwareExtension;
 import no.nav.foreldrepenger.loslager.oppgave.Oppgave;
 import no.nav.foreldrepenger.loslager.repository.OppgaveRepository;
 import no.nav.foreldrepenger.loslager.repository.OppgaveRepositoryImpl;
 import no.nav.vedtak.felles.prosesstask.impl.ProsessTaskEventPubliserer;
 import no.nav.vedtak.felles.prosesstask.impl.ProsessTaskRepositoryImpl;
-import no.nav.vedtak.felles.testutilities.db.Repository;
 
 @ExtendWith(EntityManagerFPLosAwareExtension.class)
 public class OppgaveSynkroniseringTaskOppretterTjenesteTest {
@@ -74,7 +74,7 @@ public class OppgaveSynkroniseringTaskOppretterTjenesteTest {
     }
 
     private List<Oppgave> hentOppgave() {
-        return new Repository(entityManager).hentAlle(Oppgave.class);
+        return DBTestUtil.hentAlle(entityManager, Oppgave.class);
     }
 
 }

@@ -1,5 +1,6 @@
 package no.nav.fplos.avdelingsleder;
 
+import static no.nav.foreldrepenger.dbstoette.DBTestUtil.hentAlle;
 import static no.nav.foreldrepenger.loslager.organisasjon.Avdeling.AVDELING_DRAMMEN_ENHET;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -21,14 +22,12 @@ import no.nav.foreldrepenger.loslager.organisasjon.Avdeling;
 import no.nav.foreldrepenger.loslager.repository.OppgaveRepository;
 import no.nav.foreldrepenger.loslager.repository.OppgaveRepositoryImpl;
 import no.nav.foreldrepenger.loslager.repository.OrganisasjonRepositoryImpl;
-import no.nav.vedtak.felles.testutilities.db.Repository;
 
 @ExtendWith(EntityManagerFPLosAwareExtension.class)
 public class AvdelingslederTjenesteImplTest {
 
     private OppgaveRepository oppgaveRepository;
     private AvdelingslederTjeneste avdelingslederTjeneste;
-    private Repository repository;
     private EntityManager entityManager;
 
     @BeforeEach
@@ -37,7 +36,6 @@ public class AvdelingslederTjenesteImplTest {
         oppgaveRepository = new OppgaveRepositoryImpl(entityManager);
         var organisasjonRepository = new OrganisasjonRepositoryImpl(entityManager);
         avdelingslederTjeneste = new AvdelingslederTjenesteImpl(oppgaveRepository, organisasjonRepository);
-        repository = new Repository(entityManager);
     }
 
     @Test
@@ -51,7 +49,7 @@ public class AvdelingslederTjenesteImplTest {
     }
 
     private Avdeling avdelingDrammen() {
-        return repository.hentAlle(Avdeling.class).stream()
+        return hentAlle(entityManager, Avdeling.class).stream()
                 .filter(avdeling -> AVDELING_DRAMMEN_ENHET.equals(avdeling.getAvdelingEnhet())).findFirst()
                 .orElseThrow();
     }

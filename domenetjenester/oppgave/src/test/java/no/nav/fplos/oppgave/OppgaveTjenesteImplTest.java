@@ -16,6 +16,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
+import no.nav.foreldrepenger.dbstoette.DBTestUtil;
 import no.nav.foreldrepenger.extensions.EntityManagerFPLosAwareExtension;
 import no.nav.foreldrepenger.loslager.oppgave.AndreKriterierType;
 import no.nav.foreldrepenger.loslager.oppgave.BehandlingType;
@@ -30,7 +31,6 @@ import no.nav.foreldrepenger.loslager.repository.OppgaveRepositoryImpl;
 import no.nav.foreldrepenger.loslager.repository.OrganisasjonRepositoryImpl;
 import no.nav.fplos.avdelingsleder.AvdelingslederTjeneste;
 import no.nav.fplos.avdelingsleder.AvdelingslederTjenesteImpl;
-import no.nav.vedtak.felles.testutilities.db.Repository;
 
 @ExtendWith(EntityManagerFPLosAwareExtension.class)
 public class OppgaveTjenesteImplTest {
@@ -41,7 +41,6 @@ public class OppgaveTjenesteImplTest {
 
     private AvdelingslederTjeneste avdelingslederTjeneste;
     private OppgaveTjenesteImpl oppgaveTjeneste;
-    private Repository repository;
 
     private final Oppgave førstegangOppgave = Oppgave.builder().dummyOppgave(AVDELING_DRAMMEN_ENHET)
             .medBehandlingType(BehandlingType.FØRSTEGANGSSØKNAD).build();
@@ -59,7 +58,6 @@ public class OppgaveTjenesteImplTest {
         var organisasjonRepository = new OrganisasjonRepositoryImpl(entityManager);
         avdelingslederTjeneste = new AvdelingslederTjenesteImpl(oppgaveRepository, organisasjonRepository);
         oppgaveTjeneste = new OppgaveTjenesteImpl(oppgaveRepository, organisasjonRepository);
-        repository = new Repository(entityManager);
         this.entityManager = entityManager;
     }
 
@@ -78,7 +76,7 @@ public class OppgaveTjenesteImplTest {
     }
 
     private Avdeling avdelingDrammen() {
-        return repository.hentAlle(Avdeling.class).stream()
+        return DBTestUtil.hentAlle(entityManager, Avdeling.class).stream()
                 .filter(a -> a.getAvdelingEnhet().equals(AVDELING_DRAMMEN_ENHET))
                 .findAny().orElseThrow();
     }

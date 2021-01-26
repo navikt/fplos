@@ -20,8 +20,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
+import no.nav.foreldrepenger.dbstoette.DBTestUtil;
 import no.nav.foreldrepenger.extensions.EntityManagerFPLosAwareExtension;
-import no.nav.foreldrepenger.loslager.BaseEntitet;
 import no.nav.foreldrepenger.loslager.BehandlingId;
 import no.nav.foreldrepenger.loslager.oppgave.AndreKriterierType;
 import no.nav.foreldrepenger.loslager.oppgave.BehandlingType;
@@ -35,7 +35,6 @@ import no.nav.foreldrepenger.loslager.oppgave.OppgaveFiltrering;
 import no.nav.foreldrepenger.loslager.oppgave.Reservasjon;
 import no.nav.foreldrepenger.loslager.oppgave.TilbakekrevingOppgave;
 import no.nav.foreldrepenger.loslager.organisasjon.Avdeling;
-import no.nav.vedtak.felles.testutilities.db.Repository;
 
 @ExtendWith(EntityManagerFPLosAwareExtension.class)
 public class OppgaveRepositoryImplTest {
@@ -45,13 +44,13 @@ public class OppgaveRepositoryImplTest {
     private static final BehandlingId behandlingId3 = new BehandlingId(UUID.nameUUIDFromBytes("uuid_3".getBytes()));
     private static final BehandlingId behandlingId4 = new BehandlingId(UUID.nameUUIDFromBytes("uuid_4".getBytes()));
 
-    private Repository repository;
+    private EntityManager entityManager;
     private OppgaveRepository oppgaveRepository;
 
 
     @BeforeEach
     public void setup(EntityManager entityManager) {
-        repository = new Repository(entityManager);
+        this.entityManager = entityManager;
         oppgaveRepository = new OppgaveRepositoryImpl(entityManager);
     }
 
@@ -75,7 +74,7 @@ public class OppgaveRepositoryImplTest {
     }
 
     private Avdeling avdelingForDrammen() {
-        return repository.hentAlle(Avdeling.class).stream()
+        return DBTestUtil.hentAlle(entityManager, Avdeling.class).stream()
                 .filter(a -> a.getAvdelingEnhet().equals(AVDELING_DRAMMEN_ENHET))
                 .findAny().orElseThrow();
     }
@@ -88,15 +87,13 @@ public class OppgaveRepositoryImplTest {
     }
 
     private Long setupOppgaveMedEgenskaper(AndreKriterierType... kriterier) {
-        List<BaseEntitet> entiteter = new ArrayList<>();
         Long saksnummer = (long) (Math.random() * 10000);
         Oppgave oppgave = Oppgave.builder().dummyOppgave(AVDELING_DRAMMEN_ENHET).medFagsakSaksnummer(saksnummer).build();
-        entiteter.add(oppgave);
+        entityManager.persist(oppgave);
         for (var kriterie : kriterier) {
-            entiteter.add(new OppgaveEgenskap(oppgave, kriterie));
+            entityManager.persist(new OppgaveEgenskap(oppgave, kriterie));
         }
-        repository.lagre(entiteter);
-        repository.flush();
+        entityManager.flush();
         return saksnummer;
     }
 
@@ -233,26 +230,26 @@ public class OppgaveRepositoryImplTest {
                 .medBehandlingOpprettet(LocalDateTime.now())
                 .medBehandlingsfrist(LocalDateTime.now())
                 .build();
-        repository.lagre(førsteOppgave);
-        repository.lagre(andreOppgave);
-        repository.lagre(tredjeOppgave);
-        repository.lagre(fjerdeOppgave);
-        repository.lagre(new OppgaveEgenskap(førsteOppgave, AndreKriterierType.PAPIRSØKNAD));
-        repository.lagre(new OppgaveEgenskap(andreOppgave, AndreKriterierType.TIL_BESLUTTER, "Jodajoda"));
-        repository.lagre(new OppgaveEgenskap(tredjeOppgave, AndreKriterierType.PAPIRSØKNAD));
-        repository.lagre(new OppgaveEgenskap(tredjeOppgave, AndreKriterierType.TIL_BESLUTTER));
-        repository.lagre(new OppgaveEventLogg(behandlingId1, OppgaveEventType.OPPRETTET, AndreKriterierType.PAPIRSØKNAD, AVDELING_DRAMMEN_ENHET));
-        repository.lagre(new OppgaveEventLogg(behandlingId2, OppgaveEventType.OPPRETTET, AndreKriterierType.TIL_BESLUTTER, AVDELING_DRAMMEN_ENHET));
-        repository.lagre(new OppgaveEventLogg(behandlingId3, OppgaveEventType.OPPRETTET, AndreKriterierType.PAPIRSØKNAD, AVDELING_DRAMMEN_ENHET));
-        repository.lagre(new OppgaveEventLogg(behandlingId3, OppgaveEventType.OPPRETTET, AndreKriterierType.TIL_BESLUTTER, AVDELING_DRAMMEN_ENHET));
-        repository.flush();
+        entityManager.persist(førsteOppgave);
+        entityManager.persist(andreOppgave);
+        entityManager.persist(tredjeOppgave);
+        entityManager.persist(fjerdeOppgave);
+        entityManager.persist(new OppgaveEgenskap(førsteOppgave, AndreKriterierType.PAPIRSØKNAD));
+        entityManager.persist(new OppgaveEgenskap(andreOppgave, AndreKriterierType.TIL_BESLUTTER, "Jodajoda"));
+        entityManager.persist(new OppgaveEgenskap(tredjeOppgave, AndreKriterierType.PAPIRSØKNAD));
+        entityManager.persist(new OppgaveEgenskap(tredjeOppgave, AndreKriterierType.TIL_BESLUTTER));
+        entityManager.persist(new OppgaveEventLogg(behandlingId1, OppgaveEventType.OPPRETTET, AndreKriterierType.PAPIRSØKNAD, AVDELING_DRAMMEN_ENHET));
+        entityManager.persist(new OppgaveEventLogg(behandlingId2, OppgaveEventType.OPPRETTET, AndreKriterierType.TIL_BESLUTTER, AVDELING_DRAMMEN_ENHET));
+        entityManager.persist(new OppgaveEventLogg(behandlingId3, OppgaveEventType.OPPRETTET, AndreKriterierType.PAPIRSØKNAD, AVDELING_DRAMMEN_ENHET));
+        entityManager.persist(new OppgaveEventLogg(behandlingId3, OppgaveEventType.OPPRETTET, AndreKriterierType.TIL_BESLUTTER, AVDELING_DRAMMEN_ENHET));
+        entityManager.flush();
     }
 
     @Test
     public void testReservering() {
         Oppgave oppgave = Oppgave.builder().dummyOppgave(AVDELING_DRAMMEN_ENHET).medBehandlingOpprettet(LocalDateTime.now().minusDays(10)).build();
-        repository.lagre(oppgave);
-        repository.flush();
+        entityManager.persist(oppgave);
+        entityManager.flush();
         Reservasjon reservertOppgave = oppgaveRepository.hentReservasjon(oppgave.getId());
         assertThat(reservertOppgave).isNotNull();
     }
@@ -267,9 +264,9 @@ public class OppgaveRepositoryImplTest {
                 .medNavn("BEHANDLINGSFRIST").medSortering(BEHANDLINGSFRIST)
                 .medAvdeling(avdeling).build();
 
-        repository.lagre(førsteOppgaveFiltrering);
-        repository.lagre(andreOppgaveFiltrering);
-        repository.flush();
+        entityManager.persist(førsteOppgaveFiltrering);
+        entityManager.persist(andreOppgaveFiltrering);
+        entityManager.flush();
 
         List<OppgaveFiltrering> lister = oppgaveRepository.hentAlleFiltreringer(avdelingIdForDrammen());
 
@@ -284,9 +281,9 @@ public class OppgaveRepositoryImplTest {
         String AVDELING_ANNET_ENHET = "4000";
         Oppgave oppgaveKommerPåNytt = lagOppgave(AVDELING_ANNET_ENHET);
         oppgaveRepository.opprettOppgave(oppgave);
-        assertThat(repository.hentAlle(Oppgave.class)).hasSize(1);
+        assertThat(DBTestUtil.hentAlle(entityManager, Oppgave.class)).hasSize(1);
         oppgaveRepository.opprettOppgave(oppgaveKommerPåNytt);
-        assertThat(repository.hentAlle(Oppgave.class)).hasSize(2);
+        assertThat(DBTestUtil.hentAlle(entityManager, Oppgave.class)).hasSize(2);
     }
 
     @Test
@@ -294,10 +291,10 @@ public class OppgaveRepositoryImplTest {
         Oppgave oppgave = lagOppgave(AVDELING_DRAMMEN_ENHET);
         Oppgave oppgaveKommerPåNytt = lagOppgave(AVDELING_DRAMMEN_ENHET);
         oppgaveRepository.opprettOppgave(oppgave);
-        assertThat(repository.hentAlle(Oppgave.class)).hasSize(1);
+        assertThat(DBTestUtil.hentAlle(entityManager, Oppgave.class)).hasSize(1);
         oppgaveRepository.avsluttOppgaveForBehandling(oppgave.getBehandlingId());
         oppgaveRepository.opprettOppgave(oppgaveKommerPåNytt);
-        assertThat(repository.hentAlle(Oppgave.class)).hasSize(2);
+        assertThat(DBTestUtil.hentAlle(entityManager, Oppgave.class)).hasSize(2);
     }
 
     @Test
@@ -306,7 +303,7 @@ public class OppgaveRepositoryImplTest {
         oppgaveRepository.opprettOppgave(første);
         Oppgave siste = lagOppgave(AVDELING_DRAMMEN_ENHET);
         oppgaveRepository.opprettOppgave(siste);
-        assertThat(repository.hentAlle(Oppgave.class)).hasSize(2);
+        assertThat(DBTestUtil.hentAlle(entityManager, Oppgave.class)).hasSize(2);
         assertThat(første()).isEqualTo(første);
         assertThat(siste().getAktiv()).isTrue();
         assertThat(første().getOpprettetTidspunkt()).isBefore(siste().getOpprettetTidspunkt());
@@ -382,11 +379,11 @@ public class OppgaveRepositoryImplTest {
 
 
     private Oppgave første() {
-        return repository.hentAlle(Oppgave.class).get(0);
+        return DBTestUtil.hentAlle(entityManager, Oppgave.class).get(0);
     }
 
     private Oppgave siste() {
-        return repository.hentAlle(Oppgave.class).get(1);
+        return DBTestUtil.hentAlle(entityManager, Oppgave.class).get(1);
     }
 
     private Oppgave lagOppgave(LocalDate opprettetDato) {
