@@ -11,7 +11,8 @@ import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import useKodeverk from 'data/useKodeverk';
 import fagsakYtelseType from 'kodeverk/fagsakYtelseType';
 import kodeverkTyper from 'kodeverk/kodeverkTyper';
-import TilBehandlingGraf from './TilBehandlingGraf';
+import Kodeverk from 'kodeverk/kodeverkTsType';
+import TilBehandlingGraf, { OppgaveForDatoGraf } from './TilBehandlingGraf';
 import OppgaveForDato from './oppgaverForDatoTsType';
 
 import styles from './tilBehandlingPanel.less';
@@ -27,7 +28,7 @@ const uker = [{
   tekstKode: 'TilBehandlingPanel.FireSisteUker',
 }];
 
-const erDatoInnenforPeriode = (oppgaveForAvdeling, ukevalg) => {
+const erDatoInnenforPeriode = (oppgaveForAvdeling: OppgaveForDato, ukevalg: string): boolean => {
   if (ukevalg === uker[1].kode) {
     return true;
   }
@@ -35,12 +36,12 @@ const erDatoInnenforPeriode = (oppgaveForAvdeling, ukevalg) => {
   return moment(oppgaveForAvdeling.opprettetDato).isSameOrAfter(toUkerSiden);
 };
 
-const finnFagsakYtelseTypeNavn = (fagsakYtelseTyper, valgtFagsakYtelseType) => {
+const finnFagsakYtelseTypeNavn = (fagsakYtelseTyper: Kodeverk[], valgtFagsakYtelseType: string): string => {
   const type = fagsakYtelseTyper.find((fyt) => fyt.kode === valgtFagsakYtelseType);
   return type ? type.navn : '';
 };
 
-const slaSammenLikeBehandlingstyperOgDatoer = (oppgaverForAvdeling) => {
+const slaSammenLikeBehandlingstyperOgDatoer = (oppgaverForAvdeling: OppgaveForDato[]): OppgaveForDatoGraf[] => {
   const sammenslatte = [];
 
   oppgaverForAvdeling.forEach((o) => {

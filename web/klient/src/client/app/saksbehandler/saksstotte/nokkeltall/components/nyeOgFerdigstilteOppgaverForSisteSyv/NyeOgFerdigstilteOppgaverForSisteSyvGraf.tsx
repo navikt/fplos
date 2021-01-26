@@ -52,7 +52,7 @@ const cssText = {
 };
 
 interface Koordinat {
-  x: Date;
+  x: number;
   y: number;
 }
 
@@ -70,10 +70,10 @@ export const NyeOgFerdigstilteOppgaverForSisteSyvGraf: FunctionComponent<OwnProp
   height,
   nyeOgFerdigstilteOppgaver,
 }) => {
-  const [crosshairValues, setCrosshairValues] = useState([]);
+  const [crosshairValues, setCrosshairValues] = useState<Koordinat[]>([]);
 
   const onMouseLeave = useCallback(() => setCrosshairValues([]), []);
-  const onNearestX = useCallback((value: {x: Date; y: number}) => {
+  const onNearestX = useCallback((value: {x: number; y: number}) => {
     setCrosshairValues([value]);
   }, []);
 
@@ -81,16 +81,16 @@ export const NyeOgFerdigstilteOppgaverForSisteSyvGraf: FunctionComponent<OwnProp
 
   const sammenslatteOppgaver = useMemo(() => slaSammenBehandlingstyperOgFyllInnTomme(nyeOgFerdigstilteOppgaver), [nyeOgFerdigstilteOppgaver]);
   const ferdigstilteOppgaver = useMemo(() => sammenslatteOppgaver.map((o) => ({
-    x: o.dato,
+    x: o.dato.getTime(),
     y: o.antallFerdigstilte,
   })), [sammenslatteOppgaver]);
   const nyeOppgaver = useMemo(() => sammenslatteOppgaver.map((o) => ({
-    x: o.dato,
+    x: o.dato.getTime(),
     y: o.antallNye,
   })), [sammenslatteOppgaver]);
 
-  const getAntall = (oppgaver: Koordinat[]) => {
-    const oppgave = oppgaver.find((o) => o.x.getTime() === crosshairValues[0].x.getTime());
+  const getAntall = (oppgaver: Koordinat[]): number | string => {
+    const oppgave = oppgaver.find((o) => o.x === crosshairValues[0].x);
     return oppgave ? oppgave.y : '';
   };
 
@@ -101,6 +101,7 @@ export const NyeOgFerdigstilteOppgaverForSisteSyvGraf: FunctionComponent<OwnProp
 
   return (
     <Panel>
+      {/* @ts-ignore Feil i @types/react-vis yDomain/xDomain har en funksjon */}
       <XYPlot
         dontCheckIfEmpty={isEmpty}
         margin={{
@@ -159,6 +160,7 @@ export const NyeOgFerdigstilteOppgaverForSisteSyvGraf: FunctionComponent<OwnProp
       <div className={styles.center}>
         <DiscreteColorLegend
           orientation="horizontal"
+          // @ts-ignore Feil i @types/react-vis
           colors={['#38a161', '#337c9b']}
           items={[
             <Normaltekst className={styles.displayInline}>

@@ -12,12 +12,13 @@ import useKodeverk from 'data/useKodeverk';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import fagsakYtelseType from 'kodeverk/fagsakYtelseType';
 import kodeverkTyper from 'kodeverk/kodeverkTyper';
+import Kodeverk from 'kodeverk/kodeverkTsType';
 import ManueltPaVentGraf from './ManueltPaVentGraf';
 import OppgaverManueltPaVent from './oppgaverManueltPaVentTsType';
 
 import styles from './manueltPaVentPanel.less';
 
-const finnFagsakYtelseTypeNavn = (fagsakYtelseTyper, valgtFagsakYtelseType) => {
+const finnFagsakYtelseTypeNavn = (fagsakYtelseTyper: Kodeverk[], valgtFagsakYtelseType: string): string => {
   const type = fagsakYtelseTyper.find((fyt) => fyt.kode === valgtFagsakYtelseType);
   return type ? type.navn : '';
 };
@@ -33,7 +34,7 @@ const uker = [{
   tekstKode: 'ManueltPaVentPanel.AtteSisteUker',
 }];
 
-const erDatoInnenforPeriode = (behandlingFrist, ukevalg) => {
+const erDatoInnenforPeriode = (behandlingFrist: string, ukevalg: string): boolean => {
   if (ukevalg === uker[1].kode) {
     return true;
   }

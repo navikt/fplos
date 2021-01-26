@@ -180,8 +180,8 @@ describe('<NyeOgFerdigstilteOppgaverForSisteSyvGraf>', () => {
 
       const areaSeries = wrapper.find(AreaSeries);
       expect(areaSeries).toHaveLength(2);
-      const valgtPunkt = { x: moment().startOf('day').subtract(1, 'd').toDate(), y: 1 };
-      const func = areaSeries.first().prop('onNearestX') as (value: {x: Date; y: number}) => void;
+      const valgtPunkt = { x: moment().startOf('day').subtract(1, 'd').toDate().getTime(), y: 1 };
+      const func = areaSeries.first().prop('onNearestX') as (value: {x: number; y: number}) => void;
       func(valgtPunkt);
 
       const crosshair = wrapper.find(Crosshair);

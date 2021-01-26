@@ -31,30 +31,41 @@ const cssText = {
   fontWeight: 400,
 };
 
-interface Koordinat {
+type Koordinat = {
   x: number;
   y: number;
+  y0: number;
+  x0: number;
 }
 
-const settCustomHoydePaSoylene = (data, over) => {
+const settCustomHoydePaSoylene = (data: { x: number; y: number }[], over: boolean): Koordinat[] => {
   const transformert = data.map((el) => ({
     ...el,
     y0: el.y + (over ? 0.41 : -0.03),
     y: el.y - (over ? -0.03 : -0.35),
+    x0: 0,
   }));
-  transformert.unshift({ x: 0, y: 0.5 });
-  transformert.push({ x: 0, y: 4.5 });
+  transformert.unshift({
+    x: 0, y0: 0, x0: 0, y: 0.5,
+  });
+  transformert.push({
+    x: 0, y0: 0, x0: 0, y: 4.5,
+  });
   return transformert;
 };
 
-export const lagDatastrukturForFerdigstilte = (nyeOgFerdigstilteOppgaver: NyeOgFerdigstilteOppgaver[]): Koordinat[] => settCustomHoydePaSoylene(
+export const lagDatastrukturForFerdigstilte = (
+  nyeOgFerdigstilteOppgaver: NyeOgFerdigstilteOppgaver[],
+): Koordinat[] => settCustomHoydePaSoylene(
   nyeOgFerdigstilteOppgaver.map((value) => ({
     x: value.antallFerdigstilte,
     y: behandlingstypeOrder.indexOf(value.behandlingType.kode) + 1,
   })), true,
 );
 
-export const lagDatastrukturForNye = (nyeOgFerdigstilteOppgaver: NyeOgFerdigstilteOppgaver[]): Koordinat[] => settCustomHoydePaSoylene(nyeOgFerdigstilteOppgaver
+export const lagDatastrukturForNye = (
+  nyeOgFerdigstilteOppgaver: NyeOgFerdigstilteOppgaver[],
+): Koordinat[] => settCustomHoydePaSoylene(nyeOgFerdigstilteOppgaver
   .map((value) => ({
     x: value.antallNye,
     y: behandlingstypeOrder.indexOf(value.behandlingType.kode) + 1,
@@ -79,7 +90,7 @@ export const NyeOgFerdigstilteOppgaverForIdagGraf: FunctionComponent<OwnProps & 
 }) => {
   const [hintVerdi, setHintVerdi] = useState<Koordinat>();
 
-  const leggTilHintVerdi = useCallback((nyHintVerdi: {x: number; x0: number; y: number}) => {
+  const leggTilHintVerdi = useCallback((nyHintVerdi: Koordinat) => {
     setHintVerdi(nyHintVerdi);
   }, []);
 
@@ -103,7 +114,7 @@ export const NyeOgFerdigstilteOppgaverForIdagGraf: FunctionComponent<OwnProps & 
       : intl.formatMessage({ id: 'NyeOgFerdigstilteOppgaverForIdagGraf.NyeAntall' }, { antall: hintVerdi.x });
   }, [hintVerdi]);
 
-  const finnBehandlingTypeNavn = useCallback((_v, i) => {
+  const finnBehandlingTypeNavn = useCallback((_v: number, i: number): string => {
     if (behandlingstypeOrder[i] === behandlingType.FORSTEGANGSSOKNAD) {
       return intl.formatMessage({ id: 'NyeOgFerdigstilteOppgaverForIdagGraf.Førstegangsbehandling' });
     }
@@ -131,6 +142,7 @@ export const NyeOgFerdigstilteOppgaverForIdagGraf: FunctionComponent<OwnProps & 
         <XAxis style={{ text: cssText }} />
         <YAxis
           style={{ text: cssText }}
+          // @ts-ignore Feil i @types/react-vis
           tickFormat={finnBehandlingTypeNavn}
           tickValues={[1, 2, 3, 4, 5, 6]}
         />
@@ -161,6 +173,7 @@ export const NyeOgFerdigstilteOppgaverForIdagGraf: FunctionComponent<OwnProps & 
       <div className={styles.center}>
         <DiscreteColorLegend
           orientation="horizontal"
+          // @ts-ignore Feil i @types/react-vis
           colors={['#38a161', '#337c9b']}
           items={[
             <Normaltekst className={styles.displayInline}>

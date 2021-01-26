@@ -12,10 +12,11 @@ import { DDMMYYYY_DATE_FORMAT } from 'utils/formats';
 import styles from './oppgaverPerForsteStonadsdagGraf.less';
 import OppgaverForForsteStonadsdag from './oppgaverForForsteStonadsdagTsType';
 
-export const lagKoordinater = (oppgaverPerForsteStonadsdag): Koordinat[] => oppgaverPerForsteStonadsdag.map((o) => ({
-  x: moment(o.forsteStonadsdag).startOf('day').toDate(),
-  y: o.antall,
-}));
+export const lagKoordinater = (oppgaverPerForsteStonadsdag: OppgaverForForsteStonadsdag[]): Koordinat[] => oppgaverPerForsteStonadsdag
+  .map((o) => ({
+    x: moment(o.forsteStonadsdag).startOf('day').toDate().getTime(),
+    y: o.antall,
+  }));
 
 export const lagDatastruktur = (koordinater: Koordinat[]): Koordinat[] => {
   const nyeKoordinater = [];
@@ -31,7 +32,7 @@ export const lagDatastruktur = (koordinater: Koordinat[]): Koordinat[] => {
   for (let dato = moment(periodeStart); dato.isSameOrBefore(periodeSlutt); dato = dato.add(1, 'days')) {
     const funnetKoordinat = koordinater.find((k) => moment(k.x).isSame(dato));
     nyeKoordinater.push({
-      x: dato.toDate(),
+      x: dato.toDate().getTime(),
       y: funnetKoordinat ? funnetKoordinat.y : 0,
     });
   }
@@ -48,7 +49,7 @@ const cssText = {
 };
 
 interface Koordinat {
-  x: Date;
+  x: number;
   y: number;
 }
 
@@ -94,7 +95,7 @@ const OppgaverPerForsteStonadsdagGraf: FunctionComponent<OwnProps> = ({
         <YAxis style={{ text: cssText }} />
         <AreaSeries
           data={data}
-          onNearestX={(value: {x: Date; y: number}) => setCrosshairValues([value])}
+          onNearestX={(value: {x: number; y: number}) => setCrosshairValues([value])}
           fill="#337c9b"
           stroke="#337c9b"
         />

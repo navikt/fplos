@@ -2,22 +2,22 @@ import React, { FunctionComponent } from 'react';
 import { Normaltekst } from 'nav-frontend-typografi';
 
 import EditedIcon from 'sharedComponents/EditedIcon';
+import { FieldRenderProps } from 'react-final-form';
 import Label, { LabelType } from './Label';
 
 import styles from './readOnlyField.less';
 
-const hasValue = (value) => value !== undefined && value !== null && value !== '';
+const hasValue = (value: any): boolean => value !== undefined && value !== null && value !== '';
 
 interface OwnProps {
   label?: LabelType;
-  input: {
-    value?: string | number;
-  };
   isEdited?: boolean;
 }
 
-export const ReadOnlyField: FunctionComponent<OwnProps> = ({
-  label, input, isEdited,
+export const ReadOnlyField: FunctionComponent<OwnProps & FieldRenderProps<any>> = ({
+  label,
+  input,
+  isEdited,
 }) => {
   if (!hasValue(input.value)) {
     return null;

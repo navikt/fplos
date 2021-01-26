@@ -2,20 +2,22 @@ import React, { FunctionComponent } from 'react';
 import { Field } from 'react-final-form';
 import { Input as NavInput } from 'nav-frontend-skjema';
 
+import { FieldValidator } from 'final-form';
 import renderNavField from './renderNavField';
 import ReadOnlyField from './ReadOnlyField';
 import { LabelType } from './Label';
 
 const renderNavInput = renderNavField(NavInput);
 
-const composeValidators = (validators) => (value) => validators.reduce((error, validator) => error || validator(value), undefined);
+const composeValidators = (validators: FieldValidator<any>[]): FieldValidator<any> => (
+  value: any,
+) => validators.reduce((error, validator) => error || validator(value, undefined), undefined);
 
 interface OwnProps {
   name: string;
   type?: string;
   label?: LabelType;
-  validate?: ((text: any) => ({ id: string; text?: string }
-    | { text: any; id?: string })[])[] | { length: any; id?: string };
+  validate?: FieldValidator<any>[]
   readOnly?: boolean;
   isEdited?: boolean;
   className?: string;
@@ -27,12 +29,17 @@ interface OwnProps {
 }
 
 const InputField: FunctionComponent<OwnProps> = ({
-  name, type, label, validate, readOnly, isEdited, ...otherProps
+  name,
+  type,
+  label,
+  validate,
+  readOnly,
+  isEdited,
+  ...otherProps
 }) => (
   <Field
     name={name}
     validate={composeValidators(validate)}
-    // @ts-ignore
     component={readOnly ? ReadOnlyField : renderNavInput}
     type={type}
     label={label}

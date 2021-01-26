@@ -1,18 +1,16 @@
 import React, { Component, ReactNode } from 'react';
 import { Select as NavSelect } from 'nav-frontend-skjema';
+import { FieldRenderProps } from 'react-final-form';
 
 interface OwnProps {
-  selectValues: {
-    props: any;
-    value: string;
-  }[];
+  selectValues: React.ReactElement[];
   placeholder?: ReactNode;
   value?: ReactNode;
   hideValueOnDisable?: boolean;
   disabled?: boolean;
 }
 
-class CustomNavSelect extends Component<OwnProps> {
+class CustomNavSelect extends Component<OwnProps & FieldRenderProps<any>> {
   static defaultProps = {
     hideValueOnDisable: false,
     disabled: false,
@@ -20,7 +18,7 @@ class CustomNavSelect extends Component<OwnProps> {
 
   selectElement: ReactNode
 
-  constructor(props) {
+  constructor(props: OwnProps & FieldRenderProps<any>) {
     super(props);
     this.getOptionValues = this.getOptionValues.bind(this);
     this.checkCorrespondingOptionForValue = this.checkCorrespondingOptionForValue.bind(this);
@@ -28,34 +26,34 @@ class CustomNavSelect extends Component<OwnProps> {
     this.selectedValue = this.selectedValue.bind(this);
   }
 
-  componentDidMount() {
+  componentDidMount(): void {
     this.checkCorrespondingOptionForValue();
   }
 
-  componentDidUpdate() {
+  componentDidUpdate(): void {
     this.checkCorrespondingOptionForValue();
   }
 
-  handleSelectRef(selectRef) {
+  handleSelectRef(selectRef?: ReactNode): void {
     if (selectRef) {
       this.selectElement = selectRef;
     }
   }
 
-  getOptionValues() {
+  getOptionValues(): any {
     const { props: { selectValues } } = this;
     return selectValues
       .map((option) => option.props)
       .map((props = {}) => props.value);
   }
 
-  selectedValue(value) {
+  selectedValue(value: any): any {
     const selectedValue = this.getOptionValues().find((optionValue) => optionValue === value);
 
     return selectedValue || '';
   }
 
-  checkCorrespondingOptionForValue() {
+  checkCorrespondingOptionForValue(): void {
     const { getOptionValues, props: { value } } = this;
     // (aa) added "&& value !== ''" as to not spam other browsers
     if (!getOptionValues().includes(value) && value !== '') {
@@ -75,7 +73,7 @@ class CustomNavSelect extends Component<OwnProps> {
     return (
       <NavSelect
         {...otherProps}
-        selectRef={handleSelectRef as () => any}
+        selectRef={handleSelectRef}
         value={hideValueOnDisable && disabled ? '' : selectedValue(value)}
         disabled={disabled}
       >

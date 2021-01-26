@@ -1,20 +1,50 @@
-import React, { FunctionComponent, ReactNode } from 'react';
+import React, { FunctionComponent, ReactElement } from 'react';
 import classnames from 'classnames/bind';
 import { Field } from 'react-final-form';
 import { SkjemaGruppe as NavSkjemaGruppe } from 'nav-frontend-skjema';
 
+import { LabelType } from './Label';
+import { RadioOptionProps } from './RadioOption';
 import renderNavField from './renderNavField';
-import OptionGrid from './OptionGrid';
+import OptionGrid, { Direction } from './OptionGrid';
 
 import styles from './radioGroupField.less';
 
 const classNames = classnames.bind(styles);
 
-const isChecked = (radioOption, actualValueStringified) => radioOption.key === actualValueStringified;
+const isChecked = (radioOption: React.ReactElement<RadioOptionProps>, actualValueStringified: string): boolean => radioOption.key === actualValueStringified;
+
+interface RadioGroupFieldProps {
+  name: string;
+  label?: LabelType;
+  columns?: number;
+  bredde?: string;
+  children?: React.ReactElement<RadioOptionProps>[];
+  spaceBetween?: boolean;
+  rows?: number;
+  direction?: Direction;
+  DOMName?: string;
+  onChange?: (any) => void;
+  readOnly?: boolean;
+  isEdited?: boolean;
+}
 
 const renderRadioGroupField = renderNavField(({
-  label, columns, name, value, onChange, bredde, readOnly, isEdited, feil, children, spaceBetween, rows, direction, DOMName,
-}) => {
+  label,
+  columns,
+  name,
+  value,
+  onChange,
+  bredde,
+  readOnly,
+  isEdited,
+  feil,
+  children,
+  spaceBetween,
+  rows,
+  direction,
+  DOMName,
+}: RadioGroupFieldProps & { feil?: string; value: any }) => {
   const optionProps = {
     onChange,
     name: DOMName || name,
@@ -29,12 +59,15 @@ const renderRadioGroupField = renderNavField(({
     .map((radioOption) => React.cloneElement(radioOption, { key: JSON.stringify(radioOption.props.value), ...optionProps }))
     .filter((radioOption) => !showCheckedOnly || isChecked(radioOption, actualValueStringified));
 
+  const labelSomReactNode = label as ReactElement;
+
   return (
     <NavSkjemaGruppe feil={readOnly ? undefined : feil} className={classNames(`input--${bredde}`, 'radioGroup', { readOnly })}>
-      {label.props.input && <span className={classNames('radioGroupLabel', { readOnly })}>{label}</span>}
+      {labelSomReactNode.props.input && <span className={classNames('radioGroupLabel', { readOnly })}>{label}</span>}
       <OptionGrid
         direction={direction}
         isEdited={readOnly && isEdited}
+        // @ts-ignore Fiks
         options={options}
         spaceBetween={spaceBetween}
         columns={showCheckedOnly ? 1 : columns}
@@ -44,23 +77,7 @@ const renderRadioGroupField = renderNavField(({
   );
 });
 
-interface OwnProps {
-  name: string;
-  label?: ReactNode;
-  /**
-   * columns: Antall kolonner som valgene skal fordeles på. Default er samme som antall valg.
-   */
-  columns?: number;
-  bredde?: string;
-  children: ReactNode[];
-  spaceBetween?: boolean;
-  rows?: number;
-  direction?: string;
-  DOMName?: string;
-  onChange?: (any) => void;
-}
-
-export const RadioGroupField: FunctionComponent<OwnProps> = (props) => (
+export const RadioGroupField: FunctionComponent<RadioGroupFieldProps> = (props) => (
   <Field
     component={renderRadioGroupField}
     {...props}

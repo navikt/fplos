@@ -1,15 +1,17 @@
-import React, { ReactNode, FunctionComponent } from 'react';
+import React, { ElementType, FunctionComponent } from 'react';
 import { FlexContainer, FlexRow, FlexColumn } from 'sharedComponents/flexGrid';
 import { range } from 'utils/arrayUtils';
 import EditedIcon from 'sharedComponents/EditedIcon';
 import styles from './optionGrid.less';
 
+export type Direction = 'horizontal' | 'vertical';
+
 interface OwnProps {
   columns?: number;
-  options: ReactNode[];
+  options: ElementType[];
   spaceBetween?: boolean;
   isEdited?: boolean;
-  direction?: string;
+  direction?: Direction;
   rows?: number;
 }
 
