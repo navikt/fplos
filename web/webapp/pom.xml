@@ -213,12 +213,6 @@
                 <version>1.1</version>
             </dependency>
             <dependency>
-                <!-- bør ha samme versjon som CXF ellers -->
-                <groupId>org.apache.cxf</groupId>
-                <artifactId>cxf-rt-transports-http-jetty</artifactId>
-                <version>3.4.1</version>
-            </dependency>
-            <dependency>
                 <groupId>ch.qos.logback</groupId>
                 <artifactId>logback-classic</artifactId>
             </dependency>

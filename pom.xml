@@ -32,7 +32,6 @@
         <prosesstask.version>2.5.10</prosesstask.version>
 
         <!-- Eksterne -->
-        <cxf.version>3.4.1</cxf.version>
         <woodstox.version>6.2.3</woodstox.version>
         <surefire.version>2.22.2</surefire.version>
         <asm.version>6.2.1</asm.version>
