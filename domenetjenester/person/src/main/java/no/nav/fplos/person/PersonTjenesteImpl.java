@@ -1,14 +1,5 @@
 package no.nav.fplos.person;
 
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-
 import no.nav.foreldrepenger.domene.typer.AktørId;
 import no.nav.foreldrepenger.loslager.aktør.Fødselsnummer;
 import no.nav.foreldrepenger.loslager.aktør.Person;
@@ -20,20 +11,28 @@ import no.nav.pdl.Navn;
 import no.nav.pdl.NavnResponseProjection;
 import no.nav.pdl.PersonResponseProjection;
 import no.nav.vedtak.exception.FunksjonellException;
-import no.nav.vedtak.felles.integrasjon.pdl.Pdl;
-import no.nav.vedtak.felles.integrasjon.rest.jersey.Jersey;
+import no.nav.vedtak.felles.integrasjon.pdl.PdlKlient;
+import no.nav.vedtak.felles.integrasjon.pdl.Tema;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @ApplicationScoped
 public class PersonTjenesteImpl implements PersonTjeneste {
 
-    private Pdl pdl;
-
-    @Inject
-    public PersonTjenesteImpl(@Jersey Pdl pdl) {
-        this.pdl = pdl;
-    }
+    private PdlKlient pdlKlient;
 
     public PersonTjenesteImpl() {
+    }
+
+    @Inject
+    public PersonTjenesteImpl(PdlKlient pdlKlient) {
+        this.pdlKlient = pdlKlient;
     }
 
     @Override
@@ -56,7 +55,7 @@ public class PersonTjenesteImpl implements PersonTjeneste {
                 .navn(new NavnResponseProjection().forkortetNavn().fornavn().mellomnavn().etternavn())
                 .adressebeskyttelse(new AdressebeskyttelseResponseProjection().gradering())
                 .folkeregisteridentifikator(new FolkeregisteridentifikatorResponseProjection().identifikasjonsnummer().status().type());
-        return pdl.hentPerson(query, projection);
+        return pdlKlient.hentPerson(query, projection);
     }
 
     private Person tilPerson(no.nav.pdl.Person person, AktørId aktørId) {
