@@ -46,7 +46,7 @@ jobs:
           sh -c 'tail -n +0 -f nohup.out | { sed "/Disconnected/q" && kill $$; }' || true
 
       - name: Kompiler
-        run: mvn --quiet clean install -batch-mode --settings .github/workflows/.m2/settings.xml -Dchangelist= -Dsha1=-$TAG
+        run: mvn --quiet clean install --batch-mode --settings .github/workflows/.m2/settings.xml -Dchangelist= -Dsha1=-$TAG
         env:
           TZ: Europe/Oslo
           GITHUB_USERNAME: x-access-token
