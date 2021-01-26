@@ -7,15 +7,15 @@ import java.util.stream.Collectors;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import no.nav.foreldrepenger.los.web.app.AbacAttributter;
-import no.nav.foreldrepenger.loslager.oppgave.Reservasjon;
-import no.nav.vedtak.exception.TekniskException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import no.nav.foreldrepenger.los.web.app.AbacAttributter;
 import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.saksliste.FplosAbacAttributtType;
 import no.nav.foreldrepenger.loslager.oppgave.Oppgave;
+import no.nav.foreldrepenger.loslager.oppgave.Reservasjon;
 import no.nav.fplos.oppgave.OppgaveTjeneste;
+import no.nav.fplos.person.IkkeTilgangPåPersonException;
 import no.nav.fplos.person.PersonTjeneste;
 import no.nav.vedtak.sikkerhet.abac.AbacAttributtSamling;
 import no.nav.vedtak.sikkerhet.abac.AbacDataAttributter;
@@ -141,12 +141,8 @@ public class OppgaveDtoTjeneste {
                 dtoList.add(lagDtoFor(oppgave, true));
             } catch (IkkeTilgangPåBehandlingException e) {
                 logBegrensning(oppgave);
-            } catch (TekniskException e) {
-                if (e.getMessage().contains("Ikke tilgang til å se person")) {
-                    LOGGER.warn("Kunne ikke lage OppgaveDto for oppgaveId {}, oppslag PDL feiler på grunn av manglende tilgang", oppgave.getId(), e);
-                } else {
-                    throw e;
-                }
+            } catch (IkkeTilgangPåPersonException e) {
+                LOGGER.warn("Kunne ikke lage OppgaveDto for oppgaveId {}, oppslag PDL feiler på grunn av manglende tilgang", oppgave.getId(), e);
             } catch (LagOppgaveDtoFeil e) {
                 LOGGER.warn("Kunne ikke lage OppgaveDto for oppgaveId {}, hopper over", oppgave.getId(), e);
             }
