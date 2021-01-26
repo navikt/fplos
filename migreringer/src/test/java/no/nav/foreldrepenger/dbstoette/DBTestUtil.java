@@ -1,5 +1,10 @@
 package no.nav.foreldrepenger.dbstoette;
 
+import java.util.List;
+
+import javax.persistence.EntityManager;
+import javax.persistence.criteria.CriteriaQuery;
+
 import no.nav.vedtak.util.env.Environment;
 
 public final class DBTestUtil {
@@ -7,5 +12,11 @@ public final class DBTestUtil {
 
     public static boolean kjøresAvMaven() {
         return isRunningUnderMaven;
+    }
+
+    public static <T> List<T> hentAlle(EntityManager entityManager, Class<T> klasse) {
+        CriteriaQuery<T> criteria = entityManager.getCriteriaBuilder().createQuery(klasse);
+        criteria.select(criteria.from(klasse));
+        return entityManager.createQuery(criteria).getResultList();
     }
 }

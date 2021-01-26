@@ -15,6 +15,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
+import no.nav.foreldrepenger.dbstoette.DBTestUtil;
 import no.nav.foreldrepenger.extensions.EntityManagerFPLosAwareExtension;
 import no.nav.foreldrepenger.loslager.BehandlingId;
 import no.nav.foreldrepenger.loslager.hendelse.Aksjonspunkt;
@@ -27,12 +28,11 @@ import no.nav.foreldrepenger.loslager.oppgave.OppgaveEgenskap;
 import no.nav.foreldrepenger.loslager.oppgave.OppgaveEventLogg;
 import no.nav.foreldrepenger.loslager.oppgave.OppgaveEventType;
 import no.nav.foreldrepenger.loslager.repository.OppgaveRepositoryImpl;
-import no.nav.vedtak.felles.testutilities.db.Repository;
 
 @ExtendWith(EntityManagerFPLosAwareExtension.class)
 public class TilbakekrevingHendelseHåndtererTest {
 
-    private Repository repository;
+    private EntityManager entityManager;
     private TilbakekrevingHendelseHåndterer handler;
 
     private final List<Aksjonspunkt> åpentAksjonspunkt = List.of(new Aksjonspunkt("5015", "OPPR"));
@@ -42,7 +42,7 @@ public class TilbakekrevingHendelseHåndtererTest {
 
     @BeforeEach
     void setUp(EntityManager entityManager) {
-        repository = new Repository(entityManager);
+        this.entityManager = entityManager;
         var oppgaveRepository = new OppgaveRepositoryImpl(entityManager);
         var oppgaveEgenskapHandler = new OppgaveEgenskapHandler(oppgaveRepository);
         handler = new TilbakekrevingHendelseHåndterer(oppgaveEgenskapHandler, oppgaveRepository);
@@ -136,7 +136,7 @@ public class TilbakekrevingHendelseHåndtererTest {
         handler.håndter(tilBeslutter);
         handler.håndter(saksbehandler);
 
-        List<OppgaveEventLogg> oppgaveEventer = repository.hentAlle(OppgaveEventLogg.class).stream()
+        List<OppgaveEventLogg> oppgaveEventer = DBTestUtil.hentAlle(entityManager, OppgaveEventLogg.class).stream()
                 .sorted(Comparator.comparing(OppgaveEventLogg::getOpprettetTidspunkt))
                 .collect(Collectors.toList());
 
@@ -161,30 +161,30 @@ public class TilbakekrevingHendelseHåndtererTest {
     }
 
     private void sjekkBeslutterEgenskapMedAktivstatus(boolean status) {
-        List<OppgaveEgenskap> egenskaper = repository.hentAlle(OppgaveEgenskap.class);
+        List<OppgaveEgenskap> egenskaper = DBTestUtil.hentAlle(entityManager, OppgaveEgenskap.class);
         assertThat(egenskaper.get(0).getAndreKriterierType()).isEqualTo(AndreKriterierType.TIL_BESLUTTER);
         assertThat(egenskaper.get(0).getAktiv()).isEqualTo(status);
     }
 
     private void sjekkAntallOppgaver(int antall) {
-        assertThat(repository.hentAlle(Oppgave.class)).hasSize(antall);
+        assertThat(DBTestUtil.hentAlle(entityManager, Oppgave.class)).hasSize(antall);
     }
 
     private void sjekkAktivOppgaveEksisterer(boolean aktiv) {
-        List<Oppgave> oppgave = repository.hentAlle(Oppgave.class);
+        List<Oppgave> oppgave = DBTestUtil.hentAlle(entityManager, Oppgave.class);
         assertThat(oppgave.get(0).getAktiv()).isEqualTo(aktiv);
         int antallAktive = (int) oppgave.stream().filter(Oppgave::getAktiv).count();
         assertThat(antallAktive).isEqualTo(aktiv ? 1 : 0);
     }
 
     private void sjekkKunEnAktivOppgave() {
-        List<Oppgave> oppgave = repository.hentAlle(Oppgave.class);
+        List<Oppgave> oppgave = DBTestUtil.hentAlle(entityManager, Oppgave.class);
         long antallAktive = oppgave.stream().filter(Oppgave::getAktiv).count();
         assertThat(antallAktive).isEqualTo(1L);
     }
 
     private void sjekkOppgaveEventAntallEr(int antall) {
-        var eventer = repository.hentAlle(OppgaveEventLogg.class);
+        var eventer = DBTestUtil.hentAlle(entityManager, OppgaveEventLogg.class);
         assertThat(eventer).hasSize(antall);
     }
 

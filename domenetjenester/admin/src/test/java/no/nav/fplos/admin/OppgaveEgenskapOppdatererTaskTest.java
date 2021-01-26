@@ -14,6 +14,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
+import no.nav.foreldrepenger.dbstoette.DBTestUtil;
 import no.nav.foreldrepenger.extensions.EntityManagerFPLosAwareExtension;
 import no.nav.foreldrepenger.loslager.BehandlingId;
 import no.nav.foreldrepenger.loslager.oppgave.AndreKriterierType;
@@ -25,7 +26,6 @@ import no.nav.fplos.foreldrepengerbehandling.BehandlingFpsak;
 import no.nav.fplos.foreldrepengerbehandling.ForeldrepengerBehandlingKlient;
 import no.nav.vedtak.felles.prosesstask.api.ProsessTaskData;
 import no.nav.vedtak.felles.prosesstask.api.ProsessTaskHandler;
-import no.nav.vedtak.felles.testutilities.db.Repository;
 
 @ExtendWith(EntityManagerFPLosAwareExtension.class)
 public class OppgaveEgenskapOppdatererTaskTest {
@@ -33,13 +33,12 @@ public class OppgaveEgenskapOppdatererTaskTest {
     private static final ForeldrepengerBehandlingKlient FPSAK_KLIENT_MOCK = mock(ForeldrepengerBehandlingKlient.class);
 
     private OppgaveRepository oppgaveRepository;
-    private Repository repository;
-
+    private EntityManager entityManager;
 
     @BeforeEach
     public void setup(EntityManager entityManager) {
         oppgaveRepository = new OppgaveRepositoryImpl(entityManager);
-        repository = new Repository(entityManager);
+        this.entityManager = entityManager;
     }
 
     @Test
@@ -65,7 +64,7 @@ public class OppgaveEgenskapOppdatererTaskTest {
         prosessTaskData.setProperty(OppgaveEgenskapOppdatererTask.EGENSKAPMAPPER, OppgaveEgenskapTypeMapper.EGENSKAP_ENDRINGSSØKNAD.name());
         mockErEndringssøknadMedVerdi(false);
         createTask().doTask(prosessTaskData);
-        var oppgaveEgenskaper = repository.hentAlle(OppgaveEgenskap.class);
+        var oppgaveEgenskaper = DBTestUtil.hentAlle(entityManager, OppgaveEgenskap.class);
         assertThat(oppgaveEgenskaper.size()).isEqualTo(0);
     }
 
@@ -108,12 +107,12 @@ public class OppgaveEgenskapOppdatererTaskTest {
 
         mockErBerørtBehandling();
         createTask().doTask(prosessTaskData);
-        var oppgaveEgenskaper = repository.hentAlle(OppgaveEgenskap.class);
+        var oppgaveEgenskaper = DBTestUtil.hentAlle(entityManager, OppgaveEgenskap.class);
         assertThat(oppgaveEgenskaper.size()).isEqualTo(0);
     }
 
     private void verifiserEgenskap(AndreKriterierType type) {
-        List<OppgaveEgenskap> oppgaveEgenskaper = repository.hentAlle(OppgaveEgenskap.class);
+        List<OppgaveEgenskap> oppgaveEgenskaper = DBTestUtil.hentAlle(entityManager, OppgaveEgenskap.class);
         assertThat(oppgaveEgenskaper.size()).isEqualTo(1);
         assertThat(oppgaveEgenskaper.get(0).getAktiv()).isEqualTo(true);
         assertThat(oppgaveEgenskaper.get(0).getAndreKriterierType()).isEqualTo(type);
