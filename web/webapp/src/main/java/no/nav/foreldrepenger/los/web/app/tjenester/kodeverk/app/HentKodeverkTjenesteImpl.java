@@ -1,5 +1,6 @@
 package no.nav.foreldrepenger.los.web.app.tjenester.kodeverk.app;
 
+import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.nøkkeltall.aapnebehandlinger.dto.BehandlingVenteStatus;
 import no.nav.foreldrepenger.loslager.oppgave.AndreKriterierType;
 import no.nav.foreldrepenger.loslager.oppgave.BehandlingType;
 import no.nav.foreldrepenger.loslager.oppgave.FagsakStatus;
@@ -20,7 +21,8 @@ class HentKodeverkTjenesteImpl implements HentKodeverkTjeneste {
             FagsakYtelseType.class.getSimpleName(), List.of(FagsakYtelseType.values()),
             KøSortering.class.getSimpleName(), List.of(KøSortering.values()),
             FagsakStatus.class.getSimpleName(), List.of(FagsakStatus.values()),
-            AndreKriterierType.class.getSimpleName(), List.of(AndreKriterierType.values()));
+            AndreKriterierType.class.getSimpleName(), List.of(AndreKriterierType.values()),
+            BehandlingVenteStatus.class.getSimpleName(), List.of(BehandlingVenteStatus.values()));
 
 
     HentKodeverkTjenesteImpl() {

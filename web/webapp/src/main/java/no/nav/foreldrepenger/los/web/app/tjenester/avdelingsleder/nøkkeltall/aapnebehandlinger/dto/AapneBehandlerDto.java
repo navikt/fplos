@@ -2,16 +2,18 @@ package no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.nøkkeltall.a
 
 import no.nav.foreldrepenger.loslager.oppgave.BehandlingType;
 
+import java.time.LocalDate;
+
 public class AapneBehandlerDto {
     private BehandlingType behandlingType;
-    private boolean erBehandlingPåVent;
-    private String tidligsteFom;
+    private BehandlingVenteStatus behandlingVenteStatus;
+    private LocalDate førsteVirkeMåned;
     private int antall;
 
-    public AapneBehandlerDto(BehandlingType behandlingType, boolean påVent, String tidligsteFom, int antall) {
+    public AapneBehandlerDto(BehandlingType behandlingType, BehandlingVenteStatus påVent, LocalDate førsteVirkeMåned, int antall) {
         this.behandlingType = behandlingType;
-        this.erBehandlingPåVent = påVent;
-        this.tidligsteFom = tidligsteFom;
+        this.behandlingVenteStatus = påVent;
+        this.førsteVirkeMåned = førsteVirkeMåned;
         this.antall = antall;
     }
 
@@ -19,15 +21,16 @@ public class AapneBehandlerDto {
         return behandlingType;
     }
 
-    public boolean erBehandlingPåVent() {
-        return erBehandlingPåVent;
+    public BehandlingVenteStatus getBehandlingVenteStatus() {
+        return behandlingVenteStatus;
     }
 
-    public String getTidligsteFom() {
-        return tidligsteFom;
+    public LocalDate getFørsteVirkeMåned() {
+        return førsteVirkeMåned;
     }
 
     public int getAntall() {
         return antall;
     }
+
 }
