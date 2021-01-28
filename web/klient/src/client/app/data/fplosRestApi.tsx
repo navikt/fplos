@@ -50,6 +50,7 @@ export enum RestApiPathsKeys {
   HENT_OPPGAVER_PER_DATO = 'HENT_OPPGAVER_PER_DATO',
   HENT_OPPGAVER_PER_FORSTE_STONADSDAG = 'HENT_OPPGAVER_PER_FORSTE_STONADSDAG',
   HENT_OPPGAVER_MANUELT_PA_VENT = 'HENT_OPPGAVER_MANUELT_PA_VENT',
+  HENT_OPPGAVER_APNE_ELLER_PA_VENT = 'HENT_OPPGAVER_APNE_ELLER_PA_VENT',
   RESERVASJONER_FOR_AVDELING = 'RESERVASJONER_FOR_AVDELING',
   AVDELINGSLEDER_OPPHEVER_RESERVASJON = 'AVDELINGSLEDER_OPPHEVER_RESERVASJON',
 }
@@ -85,6 +86,7 @@ export const endpoints = new RestApiConfigBuilder()
   .withGet('/fplos/api/avdelingsleder/nokkeltall/behandlinger-under-arbeid-historikk', RestApiPathsKeys.HENT_OPPGAVER_PER_DATO)
   .withGet('/fplos/api/avdelingsleder/nokkeltall/behandlinger-manuelt-vent-historikk', RestApiPathsKeys.HENT_OPPGAVER_MANUELT_PA_VENT)
   .withGet('/fplos/api/avdelingsleder/nokkeltall/behandlinger-forste-stonadsdag', RestApiPathsKeys.HENT_OPPGAVER_PER_FORSTE_STONADSDAG)
+  .withGet('/fplos/api/avdelingsleder/nokkeltall/aapne-behandlinger', RestApiPathsKeys.HENT_OPPGAVER_APNE_ELLER_PA_VENT)
   .withGet('/fplos/api/avdelingsleder/reservasjoner', RestApiPathsKeys.RESERVASJONER_FOR_AVDELING)
   .withPost('/fplos/api/avdelingsleder/reservasjoner/opphev', RestApiPathsKeys.AVDELINGSLEDER_OPPHEVER_RESERVASJON)
 

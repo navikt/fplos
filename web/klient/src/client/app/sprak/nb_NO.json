@@ -276,6 +276,10 @@
   "UtvalgskriterierForSakslisteForm.AntallSaker": "Antall behandlinger",
   "UtvalgskriterierForSakslisteForm.NyListe": "Ny behandlingskø",
 
+  "OppgaverSomErApneEllerPaVentPanel.Apne": "Åpne behandlinger",
+  "OppgaverSomErApneEllerPaVentGraf.PaVent": "På vent",
+  "OppgaverSomErApneEllerPaVentGraf.IkkePaVent": "Ikke på vent",
+
   "ValidationMessage.NotEmpty": "Feltet må fylles ut",
   "ValidationMessage.MinLength": "Du må skrive minst {length} tegn",
   "ValidationMessage.MaxLength": "Du kan skrive maksimalt {length} tegn",

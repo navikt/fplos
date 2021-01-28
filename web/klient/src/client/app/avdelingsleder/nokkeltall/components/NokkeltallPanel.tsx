@@ -12,12 +12,15 @@ import OppgaverForAvdeling from './fordelingAvBehandlingstype/oppgaverForAvdelin
 import OppgaveForDato from './tilBehandling/oppgaverForDatoTsType';
 import OppgaverForForsteStonadsdag from './antallBehandlingerPerForsteStonadsdag/oppgaverForForsteStonadsdagTsType';
 import OppgaverManueltPaVent from './manueltSattPaVent/oppgaverManueltPaVentTsType';
+import OppgaverSomErApneEllerPaVent from './apneOgPaVentBehandlinger/oppgaverSomErApneEllerPaVentTsType';
+import OppgaverSomErApneEllerPaVentPanel from './apneOgPaVentBehandlinger/OppgaverSomErApneEllerPaVentPanel';
 
 interface OwnProps {
   oppgaverForAvdeling: OppgaverForAvdeling[];
   oppgaverPerDato: OppgaveForDato[];
   oppgaverManueltPaVent: OppgaverManueltPaVent[];
   oppgaverPerForsteStonadsdag: OppgaverForForsteStonadsdag[];
+  oppgaverApneEllerPaVent: OppgaverSomErApneEllerPaVent[];
 }
 
 /**
@@ -28,6 +31,7 @@ const NokkeltallPanel: FunctionComponent<OwnProps> = ({
   oppgaverPerDato,
   oppgaverManueltPaVent,
   oppgaverPerForsteStonadsdag,
+  oppgaverApneEllerPaVent,
 }) => {
   const [width, setWidth] = useState(0);
   const height = 200;
@@ -77,6 +81,13 @@ const NokkeltallPanel: FunctionComponent<OwnProps> = ({
         width={width}
         height={height}
         oppgaverPerForsteStonadsdag={oppgaverPerForsteStonadsdag}
+      />
+      <VerticalSpacer twentyPx />
+      <OppgaverSomErApneEllerPaVentPanel
+        width={width}
+        height={height}
+        oppgaverApneEllerPaVent={oppgaverApneEllerPaVent}
+        getValueFromLocalStorage={getValueFromLocalStorage}
       />
     </div>
   );
