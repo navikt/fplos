@@ -1,4 +1,4 @@
-import React, { FunctionComponent } from 'react';
+import React, { FunctionComponent, useMemo } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { Element } from 'nav-frontend-typografi';
 import { Form } from 'react-final-form';
@@ -35,13 +35,13 @@ export const OppgaverSomErApneEllerPaVentPanel: FunctionComponent<OwnProps> = ({
   const stringFromStorage = getValueFromLocalStorage(formName);
   const lagredeVerdier = stringFromStorage ? JSON.parse(stringFromStorage) : undefined;
 
-  const filtrerteBehandlingstyper = behandlingTyper
-    .filter((type) => type.kode !== behandlingType.TILBAKEBETALING && type.kode !== behandlingType.TILBAKEBETALING_REVURDERING);
+  const filtrerteBehandlingstyper = useMemo(() => behandlingTyper
+    .filter((type) => type.kode !== behandlingType.TILBAKEBETALING && type.kode !== behandlingType.TILBAKEBETALING_REVURDERING), []);
 
-  const formDefaultValues = Object.values(filtrerteBehandlingstyper).reduce((app, type) => ({
+  const formDefaultValues = useMemo(() => Object.values(filtrerteBehandlingstyper).reduce((app, type) => ({
     ...app,
     [type.kode]: true,
-  }), {});
+  }), {}), []);
 
   return (
     <Form
@@ -70,7 +70,6 @@ export const OppgaverSomErApneEllerPaVentPanel: FunctionComponent<OwnProps> = ({
           <OppgaverSomErApneEllerPaVentGraf
             width={width}
             height={height}
-            behandlingTyper={filtrerteBehandlingstyper}
             oppgaverApneEllerPaVent={oppgaverApneEllerPaVent.filter((oav) => values[oav.behandlingType.kode])}
           />
         </div>

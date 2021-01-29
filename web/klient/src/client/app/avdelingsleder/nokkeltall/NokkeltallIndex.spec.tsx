@@ -11,6 +11,7 @@ describe('<NokkeltallIndex>', () => {
     requestApi.mock(RestApiPathsKeys.HENT_OPPGAVER_PER_DATO, []);
     requestApi.mock(RestApiPathsKeys.HENT_OPPGAVER_MANUELT_PA_VENT, []);
     requestApi.mock(RestApiPathsKeys.HENT_OPPGAVER_PER_FORSTE_STONADSDAG, []);
+    requestApi.mock(RestApiPathsKeys.HENT_OPPGAVER_APNE_ELLER_PA_VENT, []);
 
     const wrapper = shallow(<NokkeltallIndex
       valgtAvdelingEnhet="2"

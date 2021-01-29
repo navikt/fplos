@@ -13,7 +13,6 @@ import { Normaltekst } from 'nav-frontend-typografi';
 
 import behandlingVenteStatus from 'kodeverk/behandlingVenteStatus';
 import { FlexContainer, FlexRow, FlexColumn } from 'sharedComponents/flexGrid';
-import Kodeverk from 'kodeverk/kodeverkTsType';
 
 import 'react-vis/dist/style.css';
 import styles from './oppgaverSomErApneEllerPaVentGraf.less';
@@ -98,10 +97,12 @@ const fyllInnManglendeDatoerOgSorterEtterDato = (
     };
   }
 
-  for (let dato = periodeStart; dato.isBefore(periodeSlutt); dato = dato.add(1, 'month')) {
+  let dato = periodeStart;
+  do {
     koordinaterPaVent.push(lagKoordinat(dato, oppgaverPaVent));
     koordinaterIkkePaVent.push(lagKoordinat(dato, oppgaverIkkePaVent));
-  }
+    dato = dato.add(1, 'month');
+  } while (dato.isBefore(periodeSlutt));
 
   koordinaterPaVent.push({
     x: periodeSlutt.toDate(),
@@ -133,7 +134,6 @@ interface OwnProps {
   intl: any;
   width: number;
   height: number;
-  behandlingTyper: Kodeverk[];
   oppgaverApneEllerPaVent: OppgaverSomErApneEllerPaVent[];
 }
 
@@ -156,7 +156,6 @@ const OppgaverSomErApneEllerPaVentGraf: FunctionComponent<OwnProps & WrappedComp
   width,
   height,
   oppgaverApneEllerPaVent,
-  behandlingTyper,
 }) => {
   const [hintVerdi, setHintVerdi] = useState<Koordinat>();
 
@@ -208,7 +207,12 @@ const OppgaverSomErApneEllerPaVentGraf: FunctionComponent<OwnProps & WrappedComp
                   if (isEmpty) {
                     return '';
                   }
-                  if (index === koordinaterIkkePaVent.length) {
+                  console.log(koordinaterPaVent);
+                  console.log('test');
+                  console.log(koordinaterIkkePaVent);
+                  const koordinat = koordinaterPaVent.length > 0 ? koordinaterPaVent : koordinaterIkkePaVent;
+
+                  if (index === koordinat.length) {
                     return (
                       <tspan>
                         <tspan x="0" dy="1em">Ukjent</tspan>
@@ -219,8 +223,8 @@ const OppgaverSomErApneEllerPaVentGraf: FunctionComponent<OwnProps & WrappedComp
 
                   return (
                     <tspan>
-                      <tspan x="0" dy="1em">{getYearText(moment(koordinaterIkkePaVent[index - 1].x).month(), intl)}</tspan>
-                      <tspan x="0" dy="1em">{moment(koordinaterIkkePaVent[index - 1].x).year()}</tspan>
+                      <tspan x="0" dy="1em">{getYearText(moment(koordinat[index - 1].x).month(), intl)}</tspan>
+                      <tspan x="0" dy="1em">{moment(koordinat[index - 1].x).year()}</tspan>
                     </tspan>
                   );
                 }}
