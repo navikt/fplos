@@ -1,11 +1,11 @@
 import React, {
-  useMemo, FunctionComponent,
+  useMemo, FunctionComponent, useState, useCallback,
 } from 'react';
 import {
-  XYPlot, XAxis, YAxis, HorizontalGridLines, VerticalRectSeries, DiscreteColorLegend,
+  XYPlot, XAxis, YAxis, HorizontalGridLines, VerticalRectSeries, DiscreteColorLegend, Hint,
 } from 'react-vis';
 import {
-  FormattedMessage, injectIntl, WrappedComponentProps,
+  FormattedMessage, injectIntl, IntlShape, WrappedComponentProps,
 } from 'react-intl';
 import moment from 'moment';
 import Panel from 'nav-frontend-paneler';
@@ -21,6 +21,8 @@ import OppgaverSomErApneEllerPaVent from './oppgaverSomErApneEllerPaVentTsType';
 
 const LEGEND_WIDTH = 210;
 
+const getYearText = (month: number, intl: IntlShape) => intl.formatMessage({ id: `OppgaverSomErApneEllerPaVentGraf.${month}` });
+
 const settCustomBreddePaSoylene = (data: KoordinatDato[]): Koordinat[] => {
   const transformert = data.map((el, index) => ({
     ...el,
@@ -28,12 +30,6 @@ const settCustomBreddePaSoylene = (data: KoordinatDato[]): Koordinat[] => {
     x: index + 1 + 0.30,
     y: el.y,
   }));
-  /* transformert.unshift({
-    x: 0, y0: 0, x0: 0, y: 0.5,
-  });
-  transformert.push({
-    x: 0, y0: 0, x0: 0, y: 4.5,
-  }); */
   return transformert;
 };
 
@@ -122,6 +118,10 @@ const fyllInnManglendeDatoerOgSorterEtterDato = (
   };
 };
 
+const getHintAntall = (verdi: Koordinat, intl: IntlShape): string => intl.formatMessage({ id: 'FordelingAvBehandlingstypeGraf.Antall' }, {
+  antall: verdi.y0 ? verdi.y - verdi.y0 : verdi.y,
+});
+
 const cssText = {
   fontFamily: 'Source Sans Pro, Arial, sans-serif',
   fontSize: '1rem',
@@ -158,6 +158,15 @@ const OppgaverSomErApneEllerPaVentGraf: FunctionComponent<OwnProps & WrappedComp
   oppgaverApneEllerPaVent,
   behandlingTyper,
 }) => {
+  const [hintVerdi, setHintVerdi] = useState<Koordinat>();
+
+  const leggTilHintVerdi = useCallback((verdi: Koordinat): void => {
+    setHintVerdi(verdi);
+  }, []);
+  const fjernHintVerdi = useCallback((): void => {
+    setHintVerdi(undefined);
+  }, []);
+
   const [forsteDato, sisteDato] = finnForsteOgSisteDato(oppgaverApneEllerPaVent);
 
   const oppgaverPaVent = useMemo(() => grupperAntallPaDato(oppgaverApneEllerPaVent
@@ -185,7 +194,7 @@ const OppgaverSomErApneEllerPaVentGraf: FunctionComponent<OwnProps & WrappedComp
             <XYPlot
               dontCheckIfEmpty={isEmpty}
               margin={{
-                left: 170, right: 40, top: 40, bottom: 30,
+                left: 170, right: 40, top: 40, bottom: 50,
               }}
               width={width - LEGEND_WIDTH > 0 ? width - LEGEND_WIDTH : 100 + LEGEND_WIDTH}
               height={height}
@@ -200,24 +209,47 @@ const OppgaverSomErApneEllerPaVentGraf: FunctionComponent<OwnProps & WrappedComp
                     return '';
                   }
                   if (index === koordinaterIkkePaVent.length) {
-                    return 'Ukjent';
+                    return (
+                      <tspan>
+                        <tspan x="0" dy="1em">Ukjent</tspan>
+                        <tspan x="0" dy="1em">dato</tspan>
+                      </tspan>
+                    );
                   }
-                  return `${moment(koordinaterIkkePaVent[index - 1].x).month() + 1}`;
+
+                  return (
+                    <tspan>
+                      <tspan x="0" dy="1em">{getYearText(moment(koordinaterIkkePaVent[index - 1].x).month(), intl)}</tspan>
+                      <tspan x="0" dy="1em">{moment(koordinaterIkkePaVent[index - 1].x).year()}</tspan>
+                    </tspan>
+                  );
                 }}
               />
               <YAxis
                 style={{ text: cssText }}
+                title="Antall"
               />
               <VerticalRectSeries
                 data={dataKoorIkkePaVent}
+                onValueMouseOver={leggTilHintVerdi}
+                onValueMouseOut={fjernHintVerdi}
                 fill="#337c9b"
                 stroke="#337c9b"
               />
               <VerticalRectSeries
                 data={dataKoor}
+                onValueMouseOver={leggTilHintVerdi}
+                onValueMouseOut={fjernHintVerdi}
                 fill="#38a161"
                 stroke="#38a161"
               />
+              {hintVerdi && (
+                <Hint value={hintVerdi}>
+                  <div className={styles.hint}>
+                    {getHintAntall(hintVerdi, intl)}
+                  </div>
+                </Hint>
+              )}
             </XYPlot>
           </FlexColumn>
           <FlexColumn>
