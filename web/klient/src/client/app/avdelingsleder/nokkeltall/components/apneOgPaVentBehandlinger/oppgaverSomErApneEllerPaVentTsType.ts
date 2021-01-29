@@ -1,10 +1,10 @@
-import Kodeverk from "kodeverk/kodeverkTsType";
+import Kodeverk from 'kodeverk/kodeverkTsType';
 
 type OppgaverSomErApneEllerPaVent = Readonly<{
   antall: number;
   behandlingType: Kodeverk;
   behandlingVenteStatus: Kodeverk;
-  førsteUttakMåned: string;
+  førsteUttakMåned?: string;
 }>
 
 export default OppgaverSomErApneEllerPaVent;

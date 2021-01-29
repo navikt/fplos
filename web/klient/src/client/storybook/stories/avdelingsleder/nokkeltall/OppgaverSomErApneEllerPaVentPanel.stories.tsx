@@ -55,10 +55,20 @@ export const skalViseGrafForAntallOppgaverTilBehandlingPerDag = () => {
           navn: 'Ikke på vent',
         },
         behandlingType: {
+          kode: behandlingType.REVURDERING,
+          navn: 'Revurdering',
+        },
+        førsteUttakMåned: moment().startOf('month').subtract(4, 'M').format(ISO_DATE_FORMAT),
+        antall: 2,
+      }, {
+        behandlingVenteStatus: {
+          kode: behandlingVenteStatus.IKKE_PA_VENT,
+          navn: 'Ikke på vent',
+        },
+        behandlingType: {
           kode: behandlingType.KLAGE,
           navn: 'Klage',
         },
-        førsteUttakMåned: moment().startOf('month').subtract(4, 'M').format(ISO_DATE_FORMAT),
         antall: 2,
       }, {
         behandlingVenteStatus: {
@@ -66,8 +76,18 @@ export const skalViseGrafForAntallOppgaverTilBehandlingPerDag = () => {
           navn: 'På vent',
         },
         behandlingType: {
+          kode: behandlingType.KLAGE,
+          navn: 'Klage',
+        },
+        antall: 6,
+      }, {
+        behandlingVenteStatus: {
+          kode: behandlingVenteStatus.PA_VENT,
+          navn: 'På vent',
+        },
+        behandlingType: {
           kode: behandlingType.REVURDERING,
-          navn: 'Førstegangssøknad',
+          navn: 'Revurdering',
         },
         førsteUttakMåned: moment().startOf('month').subtract(4, 'M').format(ISO_DATE_FORMAT),
         antall: 6,
