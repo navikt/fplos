@@ -77,7 +77,7 @@ const finnAntallPerDato = (oppgaverSomErApneEllerPaVent: OppgaverSomErApneEllerP
 };
 
 const lagKoordinatForDato = (dato: moment.Moment, oppgaver: KoordinatDatoEllerUkjent[]): KoordinatDato => {
-  const eksisterendeDato = oppgaver.find((d) => moment(d.x).isSame(dato));
+  const eksisterendeDato = oppgaver.filter((o) => o.x !== UKJENT_DATO).find((o) => moment(o.x).isSame(dato));
   return {
     x: eksisterendeDato ? moment(eksisterendeDato.x) : dato,
     y: eksisterendeDato ? eksisterendeDato.y : 0,
