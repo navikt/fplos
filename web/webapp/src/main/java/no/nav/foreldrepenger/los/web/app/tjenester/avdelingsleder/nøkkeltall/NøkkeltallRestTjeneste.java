@@ -49,7 +49,7 @@ public class NøkkeltallRestTjeneste {
     public List<OppgaverForAvdelingDto> getAlleOppgaverForAvdeling(@NotNull @QueryParam("avdelingEnhet") @Valid AvdelingEnhetDto avdelingEnhet) {
         return statistikkTjeneste.hentAlleOppgaverForAvdeling(avdelingEnhet.getAvdelingEnhet())
                 .stream()
-                .map(resultat -> new OppgaverForAvdelingDto(resultat))
+                .map(OppgaverForAvdelingDto::new)
                 .collect(Collectors.toList());
     }
 
@@ -62,7 +62,7 @@ public class NøkkeltallRestTjeneste {
     public List<OppgaverForAvdelingPerDatoDto> getAntallOppgaverForAvdelingPerDato(@NotNull @QueryParam("avdelingEnhet") @Valid AvdelingEnhetDto avdelingEnhet) {
         return statistikkTjeneste.hentAntallOppgaverForAvdelingPerDato(avdelingEnhet.getAvdelingEnhet())
                 .stream()
-                .map(resultat -> new OppgaverForAvdelingPerDatoDto(resultat))
+                .map(OppgaverForAvdelingPerDatoDto::new)
                 .collect(Collectors.toList());
     }
 
@@ -76,7 +76,7 @@ public class NøkkeltallRestTjeneste {
     public List<OppgaverForAvdelingSattManueltPaaVentDto> getAntallOppgaverSattPåManuellVentForAvdeling(@NotNull @QueryParam("avdelingEnhet") @Valid AvdelingEnhetDto avdelingEnhet) {
         return statistikkTjeneste.hentAntallOppgaverForAvdelingSattManueltPåVent(avdelingEnhet.getAvdelingEnhet())
                 .stream()
-                .map(result -> new OppgaverForAvdelingSattManueltPaaVentDto(result))
+                .map(OppgaverForAvdelingSattManueltPaaVentDto::new)
                 .collect(Collectors.toList());
     }
 
@@ -89,7 +89,7 @@ public class NøkkeltallRestTjeneste {
     public List<OppgaverForFørsteStønadsdagDto> getOppgaverPerFørsteStønadsdag(@NotNull @QueryParam("avdelingEnhet") @Valid AvdelingEnhetDto avdelingEnhet) {
         return statistikkTjeneste.hentOppgaverPerFørsteStønadsdag(avdelingEnhet.getAvdelingEnhet())
                 .stream()
-                .map(result -> new OppgaverForFørsteStønadsdagDto(result))
+                .map(OppgaverForFørsteStønadsdagDto::new)
                 .collect(Collectors.toList());
     }
 }

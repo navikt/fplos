@@ -3,7 +3,7 @@ package no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.nøkkeltall.a
 import io.swagger.v3.oas.annotations.Operation;
 import no.nav.foreldrepenger.los.web.app.AbacAttributter;
 import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.dto.AvdelingEnhetDto;
-import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.nøkkeltall.aapnebehandlinger.dto.AapneBehandlerDto;
+import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.nøkkeltall.aapnebehandlinger.dto.NøkkeltallBehandlingVentestatusDto;
 import no.nav.vedtak.sikkerhet.abac.BeskyttetRessurs;
 import no.nav.vedtak.sikkerhet.abac.BeskyttetRessursActionAttributt;
 
@@ -23,15 +23,14 @@ import java.util.List;
 @Transactional
 public class NøkkeltallÅpneBehandlingerRestTjeneste {
 
-    private DummyBehandlingerStatistikkTjeneste dummyBehandlingerStatistikkTjeneste;
+    private NøkkeltallBehandlingerVentestatus nøkkeltallBehandlingerVentestatus;
 
     public NøkkeltallÅpneBehandlingerRestTjeneste() {
-        // For Rest-CDI
     }
 
     @Inject
-    public NøkkeltallÅpneBehandlingerRestTjeneste(DummyBehandlingerStatistikkTjeneste statistikkTjeneste) {
-        this.dummyBehandlingerStatistikkTjeneste = statistikkTjeneste;
+    public NøkkeltallÅpneBehandlingerRestTjeneste(NøkkeltallBehandlingerVentestatus statistikkTjeneste) {
+        this.nøkkeltallBehandlingerVentestatus = statistikkTjeneste;
     }
 
     @GET
@@ -40,9 +39,8 @@ public class NøkkeltallÅpneBehandlingerRestTjeneste {
     @Operation(description = "AapneBehandlinger", tags = "AvdelingslederTall")
     @BeskyttetRessurs(action = BeskyttetRessursActionAttributt.READ, resource = AbacAttributter.OPPGAVESTYRING_AVDELINGENHET)
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
-    public List<AapneBehandlerDto> getAlleOppgaverForAvdeling(@NotNull @QueryParam("avdelingEnhet") @Valid AvdelingEnhetDto avdelingEnhet) {
-        return dummyBehandlingerStatistikkTjeneste.hentÅpneBehandlinger();
+    public List<NøkkeltallBehandlingVentestatusDto> getAlleOppgaverForAvdeling(@NotNull @QueryParam("avdelingEnhet") @Valid AvdelingEnhetDto avdelingEnhet) {
+        return nøkkeltallBehandlingerVentestatus.hentBehandlingVentestatusNøkkeltall(avdelingEnhet.getAvdelingEnhet());
     }
-
 
 }

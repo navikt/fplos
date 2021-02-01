@@ -1,11 +1,7 @@
 package no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.nøkkeltall.aapnebehandlinger.dto;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import no.nav.foreldrepenger.loslager.oppgave.Kodeverdi;
-
-import java.util.Arrays;
 
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum BehandlingVenteStatus implements Kodeverdi {
@@ -19,14 +15,6 @@ public enum BehandlingVenteStatus implements Kodeverdi {
     BehandlingVenteStatus(String kode, String navn) {
         this.kode = kode;
         this.navn = navn;
-    }
-
-    @JsonCreator
-    public static BehandlingVenteStatus fraKode(@JsonProperty("kode") String kode) {
-        return Arrays.stream(values())
-                .filter(v -> v.kode.equals(kode))
-                .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("Ukjent BehandlingVenteStatus: " + kode));
     }
 
     @Override
