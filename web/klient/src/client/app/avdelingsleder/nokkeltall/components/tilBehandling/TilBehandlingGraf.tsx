@@ -69,7 +69,7 @@ const konverterTilKoordinaterGruppertPaBehandlingstype = (oppgaverForAvdeling: O
       ...acc,
       [o.behandlingType.kode]: (eksisterendeKoordinater ? eksisterendeKoordinater.concat(nyKoordinat) : [nyKoordinat]),
     };
-  }, {});
+  }, {} as Record<string, Koordinat[]>);
 
 const fyllInnManglendeDatoerOgSorterEtterDato = (
   data: Record<string, Koordinat[]>,
@@ -99,7 +99,7 @@ const finnAntallForBehandlingstypeOgDato = (
   dato: Date,
 ): number => {
   const koordinat = data[behandlingstype].find((d) => d.x.getTime() === dato.getTime());
-  return koordinat.y;
+  return koordinat ? koordinat.y : 0;
 };
 
 const finnBehandlingTypeNavn = (behandlingTyper: Kodeverk[], behandlingTypeKode: string): string => {

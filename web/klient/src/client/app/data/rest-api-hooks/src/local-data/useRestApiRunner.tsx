@@ -60,7 +60,7 @@ const getUseRestApiRunner = (requestApi: AbstractRequestApi) => (function useRes
       }));
 
       return requestApi.startRequest(key, params)
-        .then((dataRes) => {
+        .then((dataRes: { payload: any }) => {
           if (dataRes.payload !== REQUEST_POLLING_CANCELLED) {
             setData({
               state: RestApiState.SUCCESS,
@@ -70,7 +70,7 @@ const getUseRestApiRunner = (requestApi: AbstractRequestApi) => (function useRes
           }
           return Promise.resolve(dataRes.payload);
         })
-        .catch((error) => {
+        .catch((error: Error) => {
           setData({
             state: RestApiState.ERROR,
             data: undefined,

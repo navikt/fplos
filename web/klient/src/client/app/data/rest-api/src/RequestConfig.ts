@@ -27,7 +27,7 @@ const formatConfig = (config: RequestAdditionalConfig = {}): RequestAdditionalCo
 class RequestConfig {
     name: string;
 
-    config?: RequestAdditionalConfig;
+    config: RequestAdditionalConfig;
 
     path?: string;
 

@@ -42,7 +42,7 @@ const finnFagsakYtelseTypeNavn = (fagsakYtelseTyper: Kodeverk[], valgtFagsakYtel
 };
 
 const slaSammenLikeBehandlingstyperOgDatoer = (oppgaverForAvdeling: OppgaveForDato[]): OppgaveForDatoGraf[] => {
-  const sammenslatte = [];
+  const sammenslatte: OppgaveForDatoGraf[] = [];
 
   oppgaverForAvdeling.forEach((o) => {
     const index = sammenslatte.findIndex((s) => s.behandlingType.kode === o.behandlingType.kode && s.opprettetDato === o.opprettetDato);

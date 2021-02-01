@@ -7,7 +7,7 @@ import RequestConfig, { RequestType } from '../RequestConfig';
 
 const DEFAULT_CATEGORY = 'DEFAULT_CATEGORY';
 
-const getMethod = (httpClientApi: HttpClientApi, restMethod: string, isResponseBlob: boolean) => {
+const getMethod = (httpClientApi: HttpClientApi, restMethod: string, isResponseBlob?: boolean) => {
   if (restMethod === RequestType.GET) {
     return httpClientApi.get;
   }
@@ -29,7 +29,7 @@ const getMethod = (httpClientApi: HttpClientApi, restMethod: string, isResponseB
   return httpClientApi.postBlob;
 };
 
-const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 /**
  * RequestApi
@@ -54,7 +54,7 @@ class RequestApi extends AbstractRequestApi {
     this.endpointConfigList = endpointConfigList;
   }
 
-  private findLinks = (rel: string): Link => Object.values(this.links).flat().find((link) => link.rel === rel);
+  private findLinks = (rel: string | undefined): Link | undefined => Object.values(this.links).flat().find((link) => link.rel === rel);
 
   private cancelRequest = (endpointName: string): boolean => {
     if (this.activeRunners[endpointName]) {
@@ -71,9 +71,15 @@ class RequestApi extends AbstractRequestApi {
     }
     const link = this.findLinks(endpointConfig.rel);
     const restMethod = link ? link.type : endpointConfig.restMethod;
+    if (!restMethod) {
+      throw new Error(`Mangler restMethod for endepunkt ${endpointName}`);
+    }
     const href = link ? link.href : endpointConfig.path;
+    if (!href) {
+      throw new Error(`Mangler href for endepunkt ${endpointName}`);
+    }
 
-    const apiRestMethod = getMethod(this.httpClientApi, restMethod, endpointConfig.config.isResponseBlob);
+    const apiRestMethod = getMethod(this.httpClientApi, restMethod, endpointConfig.config?.isResponseBlob);
     const runner = new RequestRunner(this.httpClientApi, apiRestMethod, href, endpointConfig.config);
     if (this.notificationMapper) {
       runner.setNotificationEmitter(this.notificationMapper.getNotificationEmitter());

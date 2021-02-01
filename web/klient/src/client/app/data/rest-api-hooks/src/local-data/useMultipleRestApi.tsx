@@ -6,8 +6,9 @@ import { AbstractRequestApi } from 'data/rest-api';
 
 import RestApiState from '../RestApiState';
 
-const notEqual = (array1, array2) => !(array1.length === array2.length && array1.every((value, index) => value === array2[index]));
-const format = (name) => name.toLowerCase().replace(/_([a-z])/g, (m) => m.toUpperCase()).replace(/_/g, '');
+const notEqual = (array1: DependencyList, array2: DependencyList) => !(array1.length === array2.length 
+  && array1.every((value, index) => value === array2[index]));
+const format = (name: string) => name.toLowerCase().replace(/_([a-z])/g, (m) => m.toUpperCase()).replace(/_/g, '');
 
 export interface RestApiData<T> {
   state: RestApiState;
@@ -63,7 +64,8 @@ const DEFAULT_STATE = {
   * blir oppdatert. Hook returnerer rest-kallets status/resultat/feil
   */
 const getUseMultipleRestApi = (requestApi: AbstractRequestApi) => (function useMultipleRestApi<T>(
-  endpoints: EndpointData[], options: Options = defaultOptions,
+  endpoints: EndpointData[],
+  options: Options = defaultOptions,
 ):RestApiData<T> {
   const [data, setData] = useState(DEFAULT_STATE);
 

@@ -8,6 +8,9 @@ import { RestApiErrorDispatchContext } from './RestApiErrorContext';
  */
 const useRestApiErrorDispatcher = () => {
   const dispatch = useContext(RestApiErrorDispatchContext);
+  if (!dispatch) {
+    throw new Error('Dispatch er undefined')
+  }
 
   const addErrorMessage = useCallback((data) => dispatch({ type: 'add', data }), []);
   const removeErrorMessages = useCallback(() => dispatch({ type: 'remove' }), []);

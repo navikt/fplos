@@ -52,7 +52,7 @@ const formatData = (oppgaverForAvdeling: OppgaverForAvdeling[]): { x: number; y:
         ...acc,
         [index]: (acc[index] ? acc[index] + o.antall : o.antall),
       };
-    }, {});
+    }, {} as Record<number, number>);
 
   return Object.keys(sammenslatteBehandlingstyper)
     .map((k) => ({ x: sammenslatteBehandlingstyper[k], y: parseInt(k, 10) }));

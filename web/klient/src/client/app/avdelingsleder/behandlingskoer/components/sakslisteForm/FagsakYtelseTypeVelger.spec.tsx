@@ -55,6 +55,7 @@ describe('<FagsakYtelseTypeVelger>', () => {
     />);
 
     const radioGroup = wrapper.find(RadioGroupField);
+    // @ts-ignore
     await radioGroup.prop('onChange')(fagsakYtelseType.ENGANGSSTONAD);
 
     expect(hentAvdelingensSakslister.calledOnce).toBe(true);

@@ -9,11 +9,12 @@ import { RadioGroupField, RadioOption } from 'form/FinalFields';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import fagsakYtelseType from 'kodeverk/fagsakYtelseType';
 import kodeverkTyper from 'kodeverk/kodeverkTyper';
+import Kodeverk from 'kodeverk/kodeverkTsType';
 import useKodeverk from 'data/useKodeverk';
 import FordelingAvBehandlingstypeGraf from './FordelingAvBehandlingstypeGraf';
 import OppgaverForAvdeling from './oppgaverForAvdelingTsType';
 
-const finnFagsakYtelseTypeNavn = (fagsakYtelseTyper, valgtFagsakYtelseType) => {
+const finnFagsakYtelseTypeNavn = (fagsakYtelseTyper: Kodeverk[], valgtFagsakYtelseType: string) => {
   const type = fagsakYtelseTyper.find((fyt) => fyt.kode === valgtFagsakYtelseType);
   return type ? type.navn : '';
 };

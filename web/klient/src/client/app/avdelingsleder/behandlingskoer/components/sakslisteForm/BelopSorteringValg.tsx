@@ -33,7 +33,7 @@ export const BelopSorteringValg: FunctionComponent<OwnProps & WrappedComponentPr
     </Undertekst>
     <>
       <AutoLagringVedBlur
-        lagre={(values) => lagreSakslisteSorteringNumerisk({
+        lagre={(values: { fra: number, til: number }) => lagreSakslisteSorteringNumerisk({
           sakslisteId: valgtSakslisteId, fra: values.fra, til: values.til, avdelingEnhet: valgtAvdelingEnhet,
         }).then(() => {
           hentAntallOppgaver(valgtSakslisteId, valgtAvdelingEnhet);

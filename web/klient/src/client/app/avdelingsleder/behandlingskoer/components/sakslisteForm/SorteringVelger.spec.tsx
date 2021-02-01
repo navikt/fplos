@@ -69,6 +69,7 @@ describe('<SorteringVelger>', () => {
     />);
 
     const felt = wrapper.find(RadioGroupField);
+    // @ts-ignore
     felt.prop('onChange')(KoSortering.OPPRETT_BEHANDLING);
 
     const lagreSakslisteSorteringCallData = requestApi.getRequestMockData(RestApiPathsKeys.LAGRE_SAKSLISTE_SORTERING);
