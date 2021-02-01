@@ -26,12 +26,16 @@ interface OwnProps {
   sakslister: Saksliste[];
   setValgtSakslisteId: (sakslisteId: number) => void;
   fetchAntallOppgaver: (data: {sakslisteId: number}) => void;
-  getValueFromLocalStorage: (key: string) => string;
+  getValueFromLocalStorage: (key: string) => string | undefined;
   setValueInLocalStorage: (key: string, value: string) => void;
   removeValueFromLocalStorage: (key: string) => void;
 }
 
-const getDefaultSaksliste = (sakslister, getValueFromLocalStorage, removeValueFromLocalStorage) => {
+const getDefaultSaksliste = (
+  sakslister: Saksliste[],
+  getValueFromLocalStorage: (key: string) => string | undefined,
+  removeValueFromLocalStorage: (key: string) => void,
+) => {
   const lagretSakslisteId = getValueFromLocalStorage('sakslisteId');
   if (lagretSakslisteId) {
     if (sakslister.some((s) => `${s.sakslisteId}` === lagretSakslisteId)) {
@@ -44,7 +48,11 @@ const getDefaultSaksliste = (sakslister, getValueFromLocalStorage, removeValueFr
   return sortertSakslister.length > 0 ? sortertSakslister[0].sakslisteId : undefined;
 };
 
-const getInitialValues = (sakslister, getValueFromLocalStorage, removeValueFromLocalStorage) => {
+const getInitialValues = (
+  sakslister: Saksliste[], 
+  getValueFromLocalStorage: (key: string) => string | undefined,
+  removeValueFromLocalStorage: (key: string) => void,
+) => {
   if (sakslister.length === 0) {
     return {
       sakslisteId: undefined,
@@ -116,7 +124,7 @@ const getSorteringsnavn = (intl: IntlShape, saksliste?: Saksliste): string => {
   return intl.formatMessage({ id: 'SakslisteVelgerForm.Sorteringsinfo' }, values) as string;
 };
 
-const createTooltip = (saksbehandlere: Saksbehandler[]): ReactNode | undefined => {
+const createTooltip = (saksbehandlere?: Saksbehandler[]): ReactNode | undefined => {
   if (!saksbehandlere || saksbehandlere.length === 0) {
     return undefined;
   }

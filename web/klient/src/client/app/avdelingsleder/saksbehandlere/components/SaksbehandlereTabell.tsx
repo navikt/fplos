@@ -26,7 +26,7 @@ const headerTextCodes = [
 
 interface OwnProps {
   saksbehandlere: Saksbehandler[];
-  valgtAvdelingEnhet?: string;
+  valgtAvdelingEnhet: string;
   hentAvdelingensSaksbehandlere: (params: {avdelingEnhet: string}) => void;
 }
 

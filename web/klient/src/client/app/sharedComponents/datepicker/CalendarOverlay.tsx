@@ -6,7 +6,7 @@ import DayPicker, { Modifier } from 'react-day-picker';
 import { DDMMYYYY_DATE_FORMAT } from 'utils/formats';
 import { getRelatedTargetIE11, isIE11 } from 'utils/browserUtils';
 
-const getRelatedTarget = (e: React.FocusEvent) => {
+const getRelatedTarget = (e: React.FocusEvent): Promise<any> => {
   if (isIE11()) {
     return getRelatedTargetIE11();
   }
@@ -22,7 +22,7 @@ interface OwnProps {
   disabled?: boolean;
   onClose?: () => void;
   initialMonth?: Date;
-  numberOfMonths: number;
+  numberOfMonths?: number;
   disabledDays?: Modifier | Modifier[];
 }
 
@@ -32,8 +32,6 @@ class CalendarOverlay extends Component<OwnProps & WrappedComponentProps> {
   static defaultProps = {
     value: '',
     disabled: false,
-    onClose: () => undefined,
-    initialMonth: null,
   };
 
   constructor(props: OwnProps & WrappedComponentProps) {
@@ -53,14 +51,18 @@ class CalendarOverlay extends Component<OwnProps & WrappedComponentProps> {
         if (targetIsCalendarOrCalendarButton(relatedTarget)) {
           return;
         }
-        onClose();
+        if (onClose) {
+          onClose();
+        }
       });
   }
 
   onKeyDown({ keyCode }: React.KeyboardEvent): void {
     if (keyCode === 27) {
       const { onClose } = this.props;
-      onClose();
+      if (onClose) {
+        onClose();
+      }
     }
   }
 
@@ -82,13 +84,13 @@ class CalendarOverlay extends Component<OwnProps & WrappedComponentProps> {
     };
   }
 
-  parseDateValue(): Date {
+  parseDateValue(): Date | undefined {
     const { value } = this.props;
     const parsedValue = moment(value, DDMMYYYY_DATE_FORMAT, true);
     if (parsedValue.isValid()) {
       return parsedValue.toDate();
     }
-    return null;
+    return undefined;
   }
 
   targetIsCalendarOrCalendarButton(target: HTMLDivElement): boolean {

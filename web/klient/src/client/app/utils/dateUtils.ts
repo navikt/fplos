@@ -9,7 +9,10 @@ export const dateFormat = (date: Date | string): string => moment(date).format(D
 
 export const timeFormat = (date: string): string => moment(date).format(HHMM_TIME_FORMAT);
 
-export const getDateAndTime = (tidspunkt: string): { date: string; time: string } => {
+export const getDateAndTime = (tidspunkt?: string): { date: string; time: string } | undefined => {
+  if (!tidspunkt) {
+    return undefined;
+  }
   const dateTime = moment(tidspunkt);
   const date = dateTime.format(DDMMYYYY_DATE_FORMAT);
   const time = dateTime.format(HHMM_TIME_FORMAT);

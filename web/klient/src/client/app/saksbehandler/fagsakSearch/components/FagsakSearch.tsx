@@ -25,7 +25,7 @@ interface OwnProps {
   resetSearch: () => void;
 }
 
-const skalViseListe = (fagsaker, fagsakOppgaver) => {
+const skalViseListe = (fagsaker: Fagsak[], fagsakOppgaver: Oppgave[]): boolean => {
   if (!fagsaker) {
     return false;
   }
@@ -77,9 +77,5 @@ const FagsakSearch: FunctionComponent<OwnProps> = ({
     )}
   </>
 );
-
-FagsakSearch.defaultProps = {
-  searchResultAccessDenied: undefined,
-};
 
 export default FagsakSearch;

@@ -2,14 +2,15 @@ import React from 'react';
 import { shallow } from 'enzyme';
 import sinon from 'sinon';
 
+import Saksliste from 'saksbehandler/behandlingskoer/sakslisteTsType';
+
 import SakslisteVelgerForm from './SakslisteVelgerForm';
 import OppgaverTabell from './OppgaverTabell';
-
 import SakslistePanel from './SakslistePanel';
 
 describe('<SakslistePanel>', () => {
   it('skal vise kriterievelger og liste over neste saker', () => {
-    const sakslister = [];
+    const sakslister: Saksliste[] = [];
     const wrapper = shallow(<SakslistePanel
       sakslister={sakslister}
       reserverOppgave={sinon.spy()}

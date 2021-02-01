@@ -6,7 +6,7 @@ const history = createBrowserHistory({
   basename: '/fplos/',
 });
 
-const withRouterProvider = (story) => (
+const withRouterProvider = (story: any) => (
   <Router history={history}>
     { story() }
   </Router>

@@ -19,34 +19,29 @@ interface StateProps {
 }
 
 class CalendarToggleButton extends Component<OwnProps, StateProps> {
-  static defaultProps = {
-    inputOffsetTop: 0,
-    inputOffsetWidth: 0,
-    className: '',
-    disabled: false,
-    buttonRef: () => undefined,
-  };
-
   constructor(props: OwnProps) {
     super(props);
     this.state = {};
     this.handleButtonRef = this.handleButtonRef.bind(this);
   }
 
-  handleButtonRef(buttonRef: HTMLButtonElement): void {
+  handleButtonRef(buttonRef: HTMLButtonElement | null): void {
     if (buttonRef) {
       this.setState({ buttonWidth: buttonRef.offsetWidth });
+
       const { buttonRef: buttonRefFn } = this.props;
-      buttonRefFn(buttonRef);
+      if (buttonRefFn) {
+        buttonRefFn(buttonRef);
+      }
     }
   }
 
   render() {
     const {
-      className,
-      inputOffsetTop,
-      inputOffsetWidth,
-      disabled,
+      className = '',
+      inputOffsetTop = 0,
+      inputOffsetWidth = 0,
+      disabled = false,
       toggleShowCalendar,
     } = this.props;
 

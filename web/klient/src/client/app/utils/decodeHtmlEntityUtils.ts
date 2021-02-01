@@ -6,7 +6,7 @@ const decodeHtmlEntity = (str?: string): string | undefined => {
   if (str === null || str === undefined) {
     return str;
   }
-  return str.replace(/&#?((?!(60|62);)\w+);/g, (match, dec) => {
+  return str.replace(/&#?((?!(60|62);)\w+);/g, (match: string, dec) => {
     if (Number.isNaN(parseInt(dec, 10))) {
       const chars = {
         quot: 34,

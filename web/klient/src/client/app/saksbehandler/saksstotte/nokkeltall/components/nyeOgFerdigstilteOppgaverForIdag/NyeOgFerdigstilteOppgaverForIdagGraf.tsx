@@ -148,6 +148,7 @@ export const NyeOgFerdigstilteOppgaverForIdagGraf: FunctionComponent<OwnProps & 
         />
         <HorizontalRectSeries
           data={ferdigstilteOppgaver}
+          // @ts-ignore Usikker på om feil eller ikkje
           onValueMouseOver={leggTilHintVerdi}
           onValueMouseOut={fjernHintVerdi}
           fill="#38a161"
@@ -156,6 +157,7 @@ export const NyeOgFerdigstilteOppgaverForIdagGraf: FunctionComponent<OwnProps & 
         />
         <HorizontalRectSeries
           data={nyeOppgaver}
+          // @ts-ignore Usikker på om feil eller ikkje
           onValueMouseOver={leggTilHintVerdi}
           onValueMouseOut={fjernHintVerdi}
           fill="#337c9b"

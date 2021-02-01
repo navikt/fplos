@@ -2,7 +2,7 @@ import React from 'react';
 import { RestApiProvider } from 'data/rest-api-hooks';
 import { requestApi } from 'data/fplosRestApi';
 
-const withRestApiProvider = (story) => {
+const withRestApiProvider = (story: any) => {
   // Denne bør eigentleg ikkje ligga her. Har storybook afterEach?
   requestApi.clearAllMockData();
 

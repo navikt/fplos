@@ -18,7 +18,7 @@ export const getNyeOgFerdigstilteForIDag = (nyeOgFerdigstilte: NyeOgFerdigstilte
 interface OwnProps {
   width: number;
   height: number;
-  nyeOgFerdigstilteOppgaver: NyeOgFerdigstilteOppgaver[];
+  nyeOgFerdigstilteOppgaver?: NyeOgFerdigstilteOppgaver[];
 }
 
 /**

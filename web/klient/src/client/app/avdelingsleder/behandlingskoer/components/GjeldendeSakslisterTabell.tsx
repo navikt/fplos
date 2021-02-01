@@ -68,7 +68,7 @@ interface OwnProps {
   hentAvdelingensSakslister: (params: {avdelingEnhet: string}) => void;
 }
 
-const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+const wait = (ms: number): Promise<any> => new Promise((resolve) => setTimeout(resolve, ms));
 
 /**
  * GjeldendeSakslisterTabell
@@ -84,7 +84,7 @@ export const GjeldendeSakslisterTabell: FunctionComponent<OwnProps> = ({
   hentAvdelingensSakslister,
 }) => {
   const [valgtSaksliste, setValgtSakslisteTemp] = useState<Saksliste>();
-  const tabRef = useRef([]);
+  const tabRef = useRef<(HTMLDivElement | null)[]>([]);
 
   const behandlingTyper = useKodeverk(kodeverkTyper.BEHANDLING_TYPE);
   const fagsakYtelseTyper = useKodeverk(kodeverkTyper.FAGSAK_YTELSE_TYPE);
@@ -95,7 +95,8 @@ export const GjeldendeSakslisterTabell: FunctionComponent<OwnProps> = ({
     tabRef.current = tabRef.current.slice(0, sakslister.length);
   }, [sakslister]);
 
-  const setValgtSaksliste = async (event: React.MouseEvent | React.KeyboardEvent, id: number): Promise<string> => {
+  const setValgtSaksliste = async (event: React.MouseEvent | React.KeyboardEvent, id: number): Promise<string | undefined> => {
+    // @ts-ignore Fiks
     if (tabRef.current.some((node) => node && node.contains(event.target))) {
       return;
     }

@@ -4,6 +4,7 @@ import Lenke from 'nav-frontend-lenker';
 
 import { requestApi, RestApiPathsKeys, RestApiGlobalStatePathsKeys } from 'data/fplosRestApi';
 import SistBehandledeSaker from './SistBehandledeSaker';
+import Oppgave from 'saksbehandler/oppgaveTsType';
 
 describe('<SistBehandledeSaker>', () => {
   it('skal vise sist behandlede saker som lenker i en liste', () => {
@@ -76,7 +77,7 @@ describe('<SistBehandledeSaker>', () => {
   it(
     'skal ikke vise noen lenker når ingen behandlede saker blir funnet',
     () => {
-      const oppgaver = [];
+      const oppgaver: Oppgave[] = [];
 
       requestApi.mock(RestApiGlobalStatePathsKeys.FPSAK_URL, { verdi: 'url' });
       requestApi.mock(RestApiGlobalStatePathsKeys.FPTILBAKE_URL, { verdi: 'url' });
