@@ -48,7 +48,7 @@ const slaSammenOgMarkerReserverte = (reserverteOppgaver: Oppgave[], oppgaverTilB
   const notMarked = oppgaverTilBehandling.map((f) => ({
     ...f,
     underBehandling: false,
-  }))
+  }));
 
   return markedAsUnderBehandling.concat(notMarked.slice(0, 3));
 };
@@ -133,8 +133,8 @@ export const OppgaverTabell: FunctionComponent<OwnProps & WrappedComponentProps>
     }
     const datoOgTid = getDateAndTime(flyttetReservasjon.tidspunkt);
     const textValues = {
-      dato: datoOgTid.date,
-      tid: datoOgTid.time,
+      dato: datoOgTid?.date,
+      tid: datoOgTid?.time,
       uid: flyttetReservasjon.uid,
       navn: flyttetReservasjon.navn,
       beskrivelse: flyttetReservasjon.begrunnelse,

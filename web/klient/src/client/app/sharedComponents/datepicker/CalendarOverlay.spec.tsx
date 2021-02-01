@@ -58,7 +58,7 @@ describe('<CalendarOverlay>', () => {
     />);
 
     const daypicker = wrapper.find(DayPicker);
-    expect(daypicker.prop('selectedDays')).toBeNull();
+    expect(daypicker.prop('selectedDays')).toBeUndefined();
   });
 
   it(

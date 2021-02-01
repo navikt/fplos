@@ -21,7 +21,7 @@ const getOffsetPositionStyle = (offset: Offset) => (window.innerWidth > (offset.
   ? { left: `${42 + offset.left}px`, top: `${offset.top - 20}px` }
   : { left: `${offset.left - 200}px`, top: `${offset.top + 38}px` });
 
-const toggleEventListeners = (turnOnEventListeners: boolean, handleOutsideClick: (event: MouseEvent<HTMLButtonElement>) => void) => {
+const toggleEventListeners = (turnOnEventListeners: boolean, handleOutsideClick: (event: any) => void) => {
   if (turnOnEventListeners) {
     document.addEventListener('click', handleOutsideClick, false);
     document.addEventListener('mousedown', handleOutsideClick, false);
@@ -168,7 +168,7 @@ export class OppgaveHandlingerMenu extends Component<OwnProps, OwnState> {
             id="OppgaveHandlingerMenu.ReservertTil"
             values={{
               ...getDateAndTime(oppgave.status.reservertTilTidspunkt),
-              b: (...chunks) => <b>{chunks}</b>,
+              b: (...chunks: any) => <b>{chunks}</b>,
             }}
           />
           <VerticalSpacer eightPx />

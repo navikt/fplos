@@ -37,7 +37,7 @@ describe('<Label>', () => {
   });
 
   it('skal rendre null hvis input er tom', () => {
-    const wrapper = shallow(<Label input={null} intl={intl as IntlShape} />);
+    const wrapper = shallow(<Label intl={intl as IntlShape} />);
     expect(wrapper.html()).toBeNull();
   });
 });

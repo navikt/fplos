@@ -1,5 +1,7 @@
 import React, { FunctionComponent, useEffect, useCallback } from 'react';
-import { injectIntl, WrappedComponentProps, FormattedMessage } from 'react-intl';
+import {
+  injectIntl, WrappedComponentProps, FormattedMessage, IntlShape,
+} from 'react-intl';
 import { Form } from 'react-final-form';
 import { Hovedknapp, Knapp } from 'nav-frontend-knapper';
 import { Normaltekst, Element } from 'nav-frontend-typografi';
@@ -22,7 +24,7 @@ const maxLength500 = maxLength(500);
 const minLength7 = minLength(7);
 const maxLength7 = maxLength(7);
 
-const formatText = (state, saksbehandler, intl): string => {
+const formatText = (state: RestApiState, intl: IntlShape, saksbehandler?: SaksbehandlerForFlytting): string => {
   if (state === RestApiState.SUCCESS && !saksbehandler) {
     return intl.formatMessage({ id: 'LeggTilSaksbehandlerForm.FinnesIkke' });
   }
@@ -112,7 +114,7 @@ export const FlyttReservasjonModal: FunctionComponent<OwnProps & WrappedComponen
             </FlexContainer>
             {state === RestApiState.SUCCESS && (
               <>
-                <Normaltekst>{formatText(state, saksbehandler, intl)}</Normaltekst>
+                <Normaltekst>{formatText(state, intl, saksbehandler)}</Normaltekst>
                 <VerticalSpacer sixteenPx />
               </>
             )}

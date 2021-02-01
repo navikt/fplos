@@ -27,7 +27,7 @@ describe('Validators', () => {
 
     it('skal ikke gi feilmelding når verdi er ulik null og undefined', () => {
       const result = required('test');
-      expect(result).toBeUndefined();
+      expect(result).toBeNull();
     });
   });
 

@@ -11,7 +11,7 @@ import Oppgave from 'saksbehandler/oppgaveTsType';
 import OppgaveErReservertAvAnnenModal from 'saksbehandler/components/OppgaveErReservertAvAnnenModal';
 import SakslistePanel from './components/SakslistePanel';
 
-const EMPTY_ARRAY = [];
+const EMPTY_ARRAY: Saksliste[] = [];
 
 const openFagsak = (oppgave: Oppgave, hentFpsakInternBehandlingId: (param: { uuid: string}) => Promise<number>, fpsakUrl: string) => {
   hentFpsakInternBehandlingId({ uuid: oppgave.behandlingId }).then((behandlingId) => {

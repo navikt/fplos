@@ -12,7 +12,7 @@ interface OwnProps {
   onBlurValidation?: boolean;
 }
 
-const renderNavField = (WrappedNavFieldComponent) => {
+const renderNavField = (WrappedNavFieldComponent: any) => {
   class FieldComponent extends Component<OwnProps & FieldRenderProps<any> & WrappedComponentProps> {
     static defaultProps = {
       readOnly: false,
@@ -26,7 +26,7 @@ const renderNavField = (WrappedNavFieldComponent) => {
       this.formatError = this.formatError.bind(this);
     }
 
-    formatError(submitFailed: boolean, error: any, onBlurValidation: boolean): string | undefined {
+    formatError(error: any, onBlurValidation?: boolean, submitFailed?: boolean): string | undefined {
       const { intl } = this.props;
       if ((onBlurValidation || submitFailed) && error) {
         // @ts-ignore
@@ -44,7 +44,7 @@ const renderNavField = (WrappedNavFieldComponent) => {
         return null;
       }
       const fieldProps = {
-        feil: this.formatError(submitFailed, error, onBlurValidation),
+        feil: this.formatError(error, onBlurValidation, submitFailed),
         label: <Label input={label} readOnly={readOnly} />,
       };
 

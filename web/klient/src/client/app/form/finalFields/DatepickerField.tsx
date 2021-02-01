@@ -11,7 +11,7 @@ import { LabelType } from './Label';
 
 const composeValidators = (validators: FieldValidator<any>[]): FieldValidator<any> => (
   value: any,
-) => validators.reduce((error, validator) => error || validator(value, undefined), undefined);
+) => validators.reduce((error, validator) => error || validator(value, {}), undefined);
 
 const isoToDdMmYyyy = (string: string): string => {
   const parsedDate = moment(string, ISO_DATE_FORMAT, true);
@@ -42,7 +42,7 @@ interface OwnProps{
   isEdited?: boolean;
   validate?: FieldValidator<any>[];
   onBlurValidation?: boolean;
-  onBlur?: (any) => void;
+  onBlur?: (value: any) => void;
   alwaysShowCalendar?: boolean;
   disabledDays?: {
     before: Date;
@@ -52,11 +52,11 @@ interface OwnProps{
 
 const DatepickerField: FunctionComponent<OwnProps> = ({
   name,
-  label,
-  readOnly,
-  format,
-  parse,
-  isEdited,
+  label = '',
+  readOnly = false,
+  format = (value) => value,
+  parse = (value) => value,
+  isEdited = false,
   validate,
   ...otherProps
 }) => (
@@ -73,13 +73,5 @@ const DatepickerField: FunctionComponent<OwnProps> = ({
     isEdited={isEdited}
   />
 );
-
-DatepickerField.defaultProps = {
-  label: '',
-  readOnly: false,
-  isEdited: false,
-  format: (value) => value,
-  parse: (value) => value,
-};
 
 export default DatepickerField;

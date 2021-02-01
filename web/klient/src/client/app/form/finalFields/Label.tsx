@@ -15,7 +15,7 @@ type Message = {
 export type LabelType = string | ReactElement | Message;
 
 interface OwnProps {
-  input: LabelType;
+  input?: LabelType;
   typographyElement?: ElementType;
   readOnly?: boolean;
 }

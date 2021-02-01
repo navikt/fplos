@@ -1,5 +1,5 @@
 import React, {
-  ReactNode, FunctionComponent, useEffect, useMemo,
+  ReactNode, FunctionComponent, useEffect, useMemo, ReactElement,
 } from 'react';
 import moment from 'moment';
 import { Form, FormSpy } from 'react-final-form';
@@ -49,7 +49,7 @@ const getDefaultSaksliste = (
 };
 
 const getInitialValues = (
-  sakslister: Saksliste[], 
+  sakslister: Saksliste[],
   getValueFromLocalStorage: (key: string) => string | undefined,
   removeValueFromLocalStorage: (key: string) => void,
 ) => {
@@ -80,6 +80,13 @@ const getAndreKriterier = (intl: IntlShape, saksliste?: Saksliste) => {
   return [intl.formatMessage({ id: 'SakslisteVelgerForm.Alle' })];
 };
 
+type Values = {
+  br: ReactElement;
+  fomDato: string | undefined;
+  tomDato: string |undefined;
+  navn: string | undefined;
+}
+
 const getSorteringsnavn = (intl: IntlShape, saksliste?: Saksliste): string => {
   if (!saksliste || !saksliste.sortering) {
     return '';
@@ -88,7 +95,7 @@ const getSorteringsnavn = (intl: IntlShape, saksliste?: Saksliste): string => {
   const {
     erDynamiskPeriode, sorteringType, fra, til, fomDato, tomDato,
   } = saksliste.sortering;
-  let values = {
+  let values: Values = {
     br: <br />,
     fomDato: undefined,
     tomDato: undefined,

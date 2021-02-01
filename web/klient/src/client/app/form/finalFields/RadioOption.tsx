@@ -12,24 +12,24 @@ export interface RadioOptionProps {
   className?: string;
   disabled?: boolean;
   groupDisabled?: boolean;
-  onChange?: (any) => void;
+  onChange?: (value: any) => void;
   children?: ReactNode | ReactNode[];
   style?: CSSProperties;
   manualHideChildren?: boolean;
 }
 
 export const RadioOption: FunctionComponent<RadioOptionProps> = ({
-  name,
-  className,
+  name = '',
+  className = '',
   label,
   value,
   actualValue,
-  disabled,
-  groupDisabled,
+  disabled = false,
+  groupDisabled = false,
   onChange,
   children,
   style,
-  manualHideChildren,
+  manualHideChildren = false,
 }) => {
   const stringifiedValue = JSON.stringify(value);
   const actualStringifiedValue = JSON.stringify(actualValue);
@@ -43,20 +43,11 @@ export const RadioOption: FunctionComponent<RadioOptionProps> = ({
         value={value}
         checked={checked}
         disabled={disabled || groupDisabled}
-        onChange={() => onChange(value)}
+        onChange={onChange ? () => onChange(value) : undefined}
       />
       {(checked || manualHideChildren) && children}
     </div>
   );
-};
-
-RadioOption.defaultProps = {
-  name: '',
-  className: '',
-  disabled: false,
-  groupDisabled: false,
-  onChange: () => undefined,
-  manualHideChildren: false,
 };
 
 RadioOption.displayName = 'RadioOption';

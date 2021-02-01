@@ -19,12 +19,12 @@ interface RadioGroupFieldProps {
   label?: LabelType;
   columns?: number;
   bredde?: string;
-  children?: React.ReactElement<RadioOptionProps>[];
+  children: React.ReactElement<RadioOptionProps>[];
   spaceBetween?: boolean;
   rows?: number;
   direction?: Direction;
   DOMName?: string;
-  onChange?: (any) => void;
+  onChange?: (value: any) => void;
   readOnly?: boolean;
   isEdited?: boolean;
 }

@@ -2,9 +2,9 @@ import React from 'react';
 import { shallow } from 'enzyme';
 import Lenke from 'nav-frontend-lenker';
 
+import Oppgave from 'saksbehandler/oppgaveTsType';
 import { requestApi, RestApiPathsKeys, RestApiGlobalStatePathsKeys } from 'data/fplosRestApi';
 import SistBehandledeSaker from './SistBehandledeSaker';
-import Oppgave from 'saksbehandler/oppgaveTsType';
 
 describe('<SistBehandledeSaker>', () => {
   it('skal vise sist behandlede saker som lenker i en liste', () => {

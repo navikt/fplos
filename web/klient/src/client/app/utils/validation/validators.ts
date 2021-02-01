@@ -30,7 +30,8 @@ const hasValidPosOrNegInt = (text: string): FormValidationResultOrNull => (isEmp
   || integerOptionalNegativeRegex.test(text) ? null : invalidIntegerMessage(text));
 export const hasValidPosOrNegInteger = (text: string): FormValidationResultOrNull => (hasValidPosOrNegNumber(text) || hasValidPosOrNegInt(text));
 
-export const hasValidSaksnummerOrFodselsnummerFormat = (text: string): FormValidationResultOrNull => (isEmpty(text) || saksnummerOrFodselsnummerPattern.test(text)
+export const hasValidSaksnummerOrFodselsnummerFormat = (text: string): FormValidationResultOrNull => (isEmpty(text)
+  || saksnummerOrFodselsnummerPattern.test(text)
   ? null : invalidSaksnummerOrFodselsnummerFormatMessage());
 
 export const hasValidDate = (text: string): FormValidationResultOrNull => (isEmpty(text) || isoDateRegex.test(text) ? null : invalidDateMessage());
@@ -39,7 +40,10 @@ export const dateBeforeOrEqual = (latest: moment.Moment | Date | string) => (tex
     ? null
     : dateNotBeforeOrEqualMessage(moment(latest).format(DDMMYYYY_DATE_FORMAT))
 );
-const getErrorMessage = (earliest: moment.Moment | Date | string, customErrorMessage?: (date: string) => FormValidationResultOrNull): FormValidationResultOrNull => {
+const getErrorMessage = (
+  earliest: moment.Moment | Date | string,
+  customErrorMessage?: (date: string) => FormValidationResultOrNull,
+): FormValidationResultOrNull => {
   const date = moment(earliest).format(DDMMYYYY_DATE_FORMAT);
   return customErrorMessage ? customErrorMessage(date) : dateNotAfterOrEqualMessage(date);
 };

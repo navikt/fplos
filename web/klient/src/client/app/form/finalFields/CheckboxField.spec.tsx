@@ -4,7 +4,7 @@ import sinon from 'sinon';
 import { mountWithIntl, intlMock } from 'testHelpers/intl-enzyme-test-helper';
 import { RenderCheckboxField } from './CheckboxField';
 
-const getInputMock = (input) => ({
+const getInputMock = (input: any) => ({
   name: 'mockInput',
   onBlur: sinon.spy(),
   onChange: sinon.spy(),

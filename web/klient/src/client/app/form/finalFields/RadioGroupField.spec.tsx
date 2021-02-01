@@ -5,7 +5,7 @@ import { mountWithIntl } from 'testHelpers/intl-enzyme-test-helper';
 import RadioGroupField from './RadioGroupField';
 import RadioOption from './RadioOption';
 
-const mountFieldInForm = (field) => mountWithIntl(
+const mountFieldInForm = (field: any) => mountWithIntl(
   <Form
     onSubmit={() => undefined}
     render={() => (

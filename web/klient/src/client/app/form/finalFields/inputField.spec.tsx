@@ -4,7 +4,7 @@ import { Form } from 'react-final-form';
 import { mountWithIntl } from 'testHelpers/intl-enzyme-test-helper';
 import InputField from './InputField';
 
-const mountFieldInForm = (field, initialValues) => mountWithIntl(
+const mountFieldInForm = (field: any, initialValues: any) => mountWithIntl(
   <Form
     onSubmit={() => undefined}
     initialValues={initialValues}
