@@ -197,7 +197,9 @@ const OppgaverSomErApneEllerPaVentGraf: FunctionComponent<OwnProps & WrappedComp
                 style={{ text: cssText }}
                 // @ts-ignore Feil i @types/react-vis Kan returnere Element
                 tickFormat={(index) => {
-                  if (isEmpty) {
+                  // TODO (TOR) Kvifor får ein av og til flyttall her?
+                  const erFlyttall = index % 1 !== 0;
+                  if (isEmpty || erFlyttall) {
                     return '';
                   }
 
