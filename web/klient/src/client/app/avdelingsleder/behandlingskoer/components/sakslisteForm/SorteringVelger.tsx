@@ -18,18 +18,18 @@ import KoSorteringType from '../../KoSorteringTsType';
 
 interface OwnProps {
   valgtSakslisteId: number;
-  valgteBehandlingtyper: Kodeverk[];
+  valgteBehandlingtyper?: Kodeverk[];
   valgtAvdelingEnhet: string;
   erDynamiskPeriode: boolean;
-  fra: number;
-  til: number;
-  fomDato?: string;
-  tomDato?: string;
+  fra?: number;
+  til?: number;
+  fomDato: string;
+  tomDato: string;
   hentAvdelingensSakslister: (params: {avdelingEnhet: string}) => void;
   hentAntallOppgaver: (sakslisteId: number, avdelingEnhet: string) => void;
 }
 
-const bareTilbakekrevingValgt = (valgteBehandlingtyper: Kodeverk[]) => valgteBehandlingtyper
+const bareTilbakekrevingValgt = (valgteBehandlingtyper?: Kodeverk[]) => valgteBehandlingtyper
   && valgteBehandlingtyper.some((type) => type.kode === behandlingType.TILBAKEBETALING
     || type.kode === behandlingType.TILBAKEBETALING_REVURDERING)
   && !valgteBehandlingtyper.some((type) => (type.kode !== behandlingType.TILBAKEBETALING && type.kode !== behandlingType.TILBAKEBETALING_REVURDERING));
@@ -100,8 +100,6 @@ const SorteringVelger: FunctionComponent<OwnProps & WrappedComponentProps> = ({
               valgtSakslisteId={valgtSakslisteId}
               lagreSakslisteSorteringNumerisk={lagreSakslisteSorteringNumeriskIntervall}
               valgtAvdelingEnhet={valgtAvdelingEnhet}
-              fra={fra}
-              til={til}
               hentAvdelingensSakslister={hentAvdelingensSakslister}
               hentAntallOppgaver={hentAntallOppgaver}
             />

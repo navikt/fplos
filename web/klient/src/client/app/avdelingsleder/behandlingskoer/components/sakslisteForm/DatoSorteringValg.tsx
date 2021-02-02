@@ -61,8 +61,8 @@ interface OwnProps {
   lagreSakslisteSorteringTidsintervallDager: (params: {sakslisteId: number, fra: number, til: number, avdelingEnhet: string}) => Promise<any>;
   valgtAvdelingEnhet: string;
   erDynamiskPeriode: boolean;
-  fra: number;
-  til: number;
+  fra?: number;
+  til?: number;
   fomDato: string;
   tomDato: string;
   hentAvdelingensSakslister: (params: {avdelingEnhet: string}) => void;

@@ -8,7 +8,6 @@ import useKodeverk from 'data/useKodeverk';
 import kodeverkTyper from 'kodeverk/kodeverkTyper';
 import behandlingType from 'kodeverk/behandlingType';
 import { CheckboxField } from 'form/FinalFields';
-import Kodeverk from 'kodeverk/kodeverkTsType';
 
 const behandlingstypeOrder = Object.values(behandlingType);
 

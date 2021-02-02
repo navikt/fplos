@@ -71,7 +71,7 @@ describe('<AvdelingslederIndex>', () => {
     const tab = wrapper.find(Tabs);
     expect(tab).toHaveLength(1);
 
-    const tabs = tab.prop('tabs');
+    const tabs = tab.prop('tabs') as { label: any, aktiv: true }[];
     expect(tabs).toHaveLength(4);
     expect(tabs[0].label.props.children.props.id).toEqual('AvdelingslederIndex.Behandlingskoer');
     expect(tabs[0].aktiv).toBe(true);

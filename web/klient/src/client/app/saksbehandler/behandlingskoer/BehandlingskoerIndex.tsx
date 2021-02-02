@@ -13,7 +13,11 @@ import SakslistePanel from './components/SakslistePanel';
 
 const EMPTY_ARRAY: Saksliste[] = [];
 
-const openFagsak = (oppgave: Oppgave, hentFpsakInternBehandlingId: (param: { uuid: string}) => Promise<number | undefined>, fpsakUrl: string) => {
+const openFagsak = (
+  oppgave: Oppgave,
+  hentFpsakInternBehandlingId: (param: { uuid: string}) => Promise<number | undefined>,
+  fpsakUrl: string,
+) => {
   hentFpsakInternBehandlingId({ uuid: oppgave.behandlingId }).then((behandlingId) => {
     window.location.assign(getFpsakHref(fpsakUrl, oppgave.saksnummer, behandlingId));
   });
@@ -23,7 +27,12 @@ const openTilbakesak = (oppgave: Oppgave, fptilbakeUrl: string) => {
   window.location.assign(getFptilbakeHref(fptilbakeUrl, oppgave.href));
 };
 
-const openSak = (oppgave: Oppgave, hentFpsakInternBehandlingId: (param: { uuid: string}) => Promise<number | undefined>, fpsakUrl: string, fptilbakeUrl: string) => {
+const openSak = (
+  oppgave: Oppgave,
+  hentFpsakInternBehandlingId: (param: { uuid: string}) => Promise<number | undefined>,
+  fpsakUrl: string,
+  fptilbakeUrl: string,
+) => {
   if (oppgave.system === 'FPSAK') openFagsak(oppgave, hentFpsakInternBehandlingId, fpsakUrl);
   else if (oppgave.system === 'FPTILBAKE') openTilbakesak(oppgave, fptilbakeUrl);
   else throw new Error('Fagsystemet for oppgaven er ukjent');

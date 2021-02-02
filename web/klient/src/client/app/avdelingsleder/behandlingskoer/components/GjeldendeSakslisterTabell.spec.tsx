@@ -13,6 +13,7 @@ import TableRow from 'sharedComponents/table/TableRow';
 import TableColumn from 'sharedComponents/table/TableColumn';
 import SletteSakslisteModal from './SletteSakslisteModal';
 import { GjeldendeSakslisterTabell } from './GjeldendeSakslisterTabell';
+import Saksliste from '../sakslisteTsType';
 
 describe('<GjeldendeSakslisterTabell>', () => {
   const behandlingstyper = [{
@@ -38,7 +39,7 @@ describe('<GjeldendeSakslisterTabell>', () => {
   };
 
   it('skal ikke vise tabell når ingen sakslister finnes', () => {
-    const sakslister = [];
+    const sakslister: Saksliste[] = [];
 
     requestApi.mock(RestApiGlobalStatePathsKeys.KODEVERK, alleKodeverk);
 
@@ -103,7 +104,7 @@ describe('<GjeldendeSakslisterTabell>', () => {
   });
 
   it('skal legge til ny saksliste ved musklikk', () => {
-    const sakslister = [];
+    const sakslister: Saksliste[] = [];
     const lagNySakslisteFn = sinon.spy();
 
     requestApi.mock(RestApiGlobalStatePathsKeys.KODEVERK, alleKodeverk);
@@ -127,7 +128,7 @@ describe('<GjeldendeSakslisterTabell>', () => {
   });
 
   it('skal legge til ny saksliste ved trykk på enter-knapp', () => {
-    const sakslister = [];
+    const sakslister: Saksliste[] = [];
     const lagNySakslisteFn = sinon.spy();
 
     requestApi.mock(RestApiGlobalStatePathsKeys.KODEVERK, alleKodeverk);
@@ -144,6 +145,7 @@ describe('<GjeldendeSakslisterTabell>', () => {
     const leggTilListe = wrapper.find('div#leggTilListe');
     expect(leggTilListe).toHaveLength(1);
 
+    // @ts-ignore fiks
     leggTilListe.prop('onKeyDown')({
       keyCode: 13,
     } as KeyboardEvent);
@@ -154,7 +156,7 @@ describe('<GjeldendeSakslisterTabell>', () => {
   it(
     'skal ikke legge til ny saksliste ved trykk på annen knapp enn enter',
     () => {
-      const sakslister = [];
+      const sakslister: Saksliste[] = [];
       const lagNySakslisteFn = sinon.spy();
 
       requestApi.mock(RestApiGlobalStatePathsKeys.KODEVERK, alleKodeverk);
@@ -171,6 +173,7 @@ describe('<GjeldendeSakslisterTabell>', () => {
       const leggTilListe = wrapper.find('div#leggTilListe');
       expect(leggTilListe).toHaveLength(1);
 
+      // @ts-ignore fiks
       leggTilListe.prop('onKeyDown')({
         keyCode: 10,
       } as KeyboardEvent);

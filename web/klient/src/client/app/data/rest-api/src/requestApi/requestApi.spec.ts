@@ -4,7 +4,6 @@ import RequestApi from './RequestApi';
 import RequestConfig from '../RequestConfig';
 import { Response } from './ResponseTsType';
 
-
 const httpClientGeneralMock = (response: Response) => ({
   get: () => Promise.resolve(response),
   post: () => Promise.resolve(response),
@@ -19,7 +18,6 @@ const httpClientGeneralMock = (response: Response) => ({
 });
 
 describe('RequestApi', () => {
-
   it('skal utføre get-request', async () => {
     const response = {
       data: 'data',

@@ -1,4 +1,6 @@
-import React, { ReactElement, ElementType, FunctionComponent, useMemo } from 'react';
+import React, {
+  ReactElement, ElementType, FunctionComponent, useMemo,
+} from 'react';
 import classnames from 'classnames/bind';
 import { injectIntl, WrappedComponentProps } from 'react-intl';
 import { Undertekst } from 'nav-frontend-typografi';
@@ -26,7 +28,7 @@ const Label: FunctionComponent<OwnProps & WrappedComponentProps> = ({
   readOnly = false,
   typographyElement: TypoElem = Undertekst,
 }) => {
-  const formattedInput = useMemo(() => (): string | ReactElement | null => {
+  const formattedInput = useMemo(() => {
     if (!input) {
       return null;
     }
@@ -37,7 +39,7 @@ const Label: FunctionComponent<OwnProps & WrappedComponentProps> = ({
       return intl.formatMessage({ id: labelAsMessage.id }, labelAsMessage.args);
     }
     return labelAsReactNodeOrString;
-  }, [input])
+  }, [input]);
 
   if (!input) {
     return null;
@@ -48,6 +50,6 @@ const Label: FunctionComponent<OwnProps & WrappedComponentProps> = ({
       <TypoElem tag="span" className={styles.label}>{formattedInput}</TypoElem>
     </span>
   );
-} 
+};
 
 export default injectIntl(Label);

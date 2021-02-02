@@ -6,7 +6,7 @@ import { AbstractRequestApi } from 'data/rest-api';
 
 import RestApiState from '../RestApiState';
 
-const notEqual = (array1: DependencyList, array2: DependencyList) => !(array1.length === array2.length 
+const notEqual = (array1: DependencyList, array2: DependencyList) => !(array1.length === array2.length
   && array1.every((value, index) => value === array2[index]));
 const format = (name: string) => name.toLowerCase().replace(/_([a-z])/g, (m) => m.toUpperCase()).replace(/_/g, '');
 

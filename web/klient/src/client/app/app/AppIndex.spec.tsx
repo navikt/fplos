@@ -7,12 +7,17 @@ import HeaderWithErrorPanel from './components/HeaderWithErrorPanel';
 
 import { AppIndex } from './AppIndex';
 
+const LocationMock = {
+  search: '',
+  state: {},
+} as Location;
+
 describe('<AppIndex>', () => {
   it(
     'skal vise hjem-skjermbilde inkludert header men ikke feilmelding',
     () => {
       const wrapper = shallow(<AppIndex
-        location={{ search: undefined, state: {} } as Location}
+        location={LocationMock}
         history={{} as History}
         match={{} as match}
       />);
@@ -27,7 +32,7 @@ describe('<AppIndex>', () => {
 
   it('skal vise hjem-skjermbilde inkludert header og feilmelding', () => {
     const wrapper = shallow(<AppIndex
-      location={{ search: undefined, state: {} } as Location}
+      location={LocationMock}
       history={{} as History}
       match={{} as match}
     />);

@@ -13,7 +13,7 @@ import Saksliste from '../../sakslisteTsType';
 
 import styles from './saksbehandlereForSakslisteForm.less';
 
-const sortSaksbehandlere = (saksbehandlere) => (saksbehandlere && saksbehandlere instanceof Array
+const sortSaksbehandlere = (saksbehandlere: Saksbehandler[]) => (saksbehandlere && saksbehandlere instanceof Array
   ? saksbehandlere.sort((saksbehandler1, saksbehandler2) => saksbehandler1.navn.localeCompare(saksbehandler2.navn))
   : saksbehandlere);
 
