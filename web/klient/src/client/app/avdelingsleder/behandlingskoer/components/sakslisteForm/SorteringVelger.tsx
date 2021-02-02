@@ -72,41 +72,42 @@ const SorteringVelger: FunctionComponent<OwnProps & WrappedComponentProps> = ({
           hentAvdelingensSakslister({ avdelingEnhet: valgtAvdelingEnhet });
         })}
       >
-        {koSorteringer.map((koSortering) => (
-          (koSortering.feltkategori !== 'TILBAKEKREVING' || bareTilbakekrevingValgt(valgteBehandlingtyper)) && (
-          <RadioOption
-            key={koSortering.kode}
-            value={koSortering.kode}
-            label={koSortering.navn}
-          >
-            {(koSortering.felttype === 'DATO') && (
-            <DatoSorteringValg
-              intl={intl}
-              valgtSakslisteId={valgtSakslisteId}
-              lagreSakslisteSorteringTidsintervallDager={lagreSakslisteSorteringNumeriskIntervall}
-              valgtAvdelingEnhet={valgtAvdelingEnhet}
-              erDynamiskPeriode={erDynamiskPeriode}
-              fra={fra}
-              til={til}
-              fomDato={fomDato}
-              tomDato={tomDato}
-              hentAvdelingensSakslister={hentAvdelingensSakslister}
-              hentAntallOppgaver={hentAntallOppgaver}
-            />
-            )}
-            {(koSortering.felttype === 'HELTALL') && (
-            <BelopSorteringValg
-              intl={intl}
-              valgtSakslisteId={valgtSakslisteId}
-              lagreSakslisteSorteringNumerisk={lagreSakslisteSorteringNumeriskIntervall}
-              valgtAvdelingEnhet={valgtAvdelingEnhet}
-              hentAvdelingensSakslister={hentAvdelingensSakslister}
-              hentAntallOppgaver={hentAntallOppgaver}
-            />
-            )}
-          </RadioOption>
+        {koSorteringer
+          .filter((koSortering) => koSortering.feltkategori !== 'TILBAKEKREVING' || bareTilbakekrevingValgt(valgteBehandlingtyper))
+          .map((koSortering) => (
+            <RadioOption
+              key={koSortering.kode}
+              value={koSortering.kode}
+              label={koSortering.navn}
+            >
+              {(koSortering.felttype === 'DATO') && (
+                <DatoSorteringValg
+                  intl={intl}
+                  valgtSakslisteId={valgtSakslisteId}
+                  lagreSakslisteSorteringTidsintervallDager={lagreSakslisteSorteringNumeriskIntervall}
+                  valgtAvdelingEnhet={valgtAvdelingEnhet}
+                  erDynamiskPeriode={erDynamiskPeriode}
+                  fra={fra}
+                  til={til}
+                  fomDato={fomDato}
+                  tomDato={tomDato}
+                  hentAvdelingensSakslister={hentAvdelingensSakslister}
+                  hentAntallOppgaver={hentAntallOppgaver}
+                />
+              )}
+              {(koSortering.felttype === 'HELTALL') && (
+                <BelopSorteringValg
+                  intl={intl}
+                  valgtSakslisteId={valgtSakslisteId}
+                  lagreSakslisteSorteringNumerisk={lagreSakslisteSorteringNumeriskIntervall}
+                  valgtAvdelingEnhet={valgtAvdelingEnhet}
+                  hentAvdelingensSakslister={hentAvdelingensSakslister}
+                  hentAntallOppgaver={hentAntallOppgaver}
+                />
+              )}
+            </RadioOption>
           )
-        ))}
+        )}
       </RadioGroupField>
     </>
   );

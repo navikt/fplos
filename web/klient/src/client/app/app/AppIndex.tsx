@@ -109,4 +109,5 @@ export class AppIndex extends Component<RouterProps, StateProps> {
   }
 }
 
+// @ts-ignore Endre til funksjonelle komponent
 export default withRouter(AppIndex);

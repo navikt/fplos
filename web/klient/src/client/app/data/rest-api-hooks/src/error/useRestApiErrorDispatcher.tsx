@@ -11,12 +11,12 @@ const useRestApiErrorDispatcher = () => {
 
   const addErrorMessage = useCallback((data) => {
     if (dispatch) {
-      return dispatch({ type: 'add', data });
+      dispatch({ type: 'add', data });
     }
   }, []);
   const removeErrorMessages = useCallback(() => {
     if (dispatch) {
-      return dispatch({ type: 'remove' });
+      dispatch({ type: 'remove' });
     }
   }, []);
 

@@ -37,24 +37,29 @@ const BehandlingstypeVelger: FunctionComponent<OwnProps> = ({
         <FormattedMessage id="BehandlingstypeVelger.Behandlingstype" />
       </Undertekst>
       <VerticalSpacer eightPx />
-      {behandlingTyper.map((bt) => (
-        <React.Fragment key={bt.kode}>
-          <VerticalSpacer fourPx />
-          <CheckboxField
-            name={bt.kode}
-            label={bt.navn}
-            onChange={(isChecked) => lagreSakslisteBehandlingstype({
-              sakslisteId: valgtSakslisteId,
-              avdelingEnhet: valgtAvdelingEnhet,
-              behandlingType: bt,
-              checked: isChecked,
-            }).then(() => {
-              hentAntallOppgaver(valgtSakslisteId, valgtAvdelingEnhet);
-              hentAvdelingensSakslister({ avdelingEnhet: valgtAvdelingEnhet });
-            })}
-          />
-        </React.Fragment>
-      ))}
+      {behandlingTyper.map((bt) => {
+        if (!bt) {
+          return null;
+        }
+        return (
+          <React.Fragment key={bt.kode}>
+            <VerticalSpacer fourPx />
+            <CheckboxField
+              name={bt.kode}
+              label={bt.navn}
+              onChange={(isChecked) => lagreSakslisteBehandlingstype({
+                sakslisteId: valgtSakslisteId,
+                avdelingEnhet: valgtAvdelingEnhet,
+                behandlingType: bt,
+                checked: isChecked,
+              }).then(() => {
+                hentAntallOppgaver(valgtSakslisteId, valgtAvdelingEnhet);
+                hentAvdelingensSakslister({ avdelingEnhet: valgtAvdelingEnhet });
+              })}
+            />
+          </React.Fragment>
+        )
+      }).filter((bt) => !!bt)}
     </>
   );
 };
