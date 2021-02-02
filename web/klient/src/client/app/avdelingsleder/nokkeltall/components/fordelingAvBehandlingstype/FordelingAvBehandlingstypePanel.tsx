@@ -29,7 +29,7 @@ interface OwnProps {
   width: number;
   height: number;
   oppgaverForAvdeling: OppgaverForAvdeling[];
-  getValueFromLocalStorage: (key: string) => string;
+  getValueFromLocalStorage: (key: string) => string| undefined;
 }
 
 const formName = 'fordelingAvBehandlingstype';

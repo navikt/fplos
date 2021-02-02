@@ -25,7 +25,7 @@ const isButtonDisabled = (
 ) => (!searchResultAccessDenied?.feilmelding && searchStarted) || !searchString;
 
 interface OwnProps {
-  onSubmit: ({ searchString: string, skalReservere: boolean }) => void;
+  onSubmit: (values: { searchString: string, skalReservere: boolean }) => void;
   searchStarted: boolean;
   searchResultAccessDenied?: {
     feilmelding?: string;

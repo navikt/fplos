@@ -1,4 +1,5 @@
 import axios from 'axios';
+import HttpClientApi from '../HttpClientApiTsType';
 
 import initRestMethods from './initRestMethods';
 
@@ -6,7 +7,7 @@ import initRestMethods from './initRestMethods';
  * getAxiosHttpClientApi
  * Oppretter nytt http-klient api basert på Axios.
  */
-const getAxiosHttpClientApi = () => {
+const getAxiosHttpClientApi = (): HttpClientApi => {
   const axiosInstance = axios.create();
 
   // TODO (TOR) sentry bør ikkje vera ein avhengighet til pakka "rest-api". Konfigurer dette utanfor

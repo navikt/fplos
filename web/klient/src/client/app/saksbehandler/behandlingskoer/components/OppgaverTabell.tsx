@@ -94,7 +94,7 @@ export const OppgaverTabell: FunctionComponent<OwnProps & WrappedComponentProps>
   const fetchSakslisteOppgaverPolling = (keepData: boolean, sakslisteId: number, oppgaveIder?: string) => {
     hentReserverteOppgaver({}, true);
     hentOppgaverTilBehandling(oppgaveIder ? { sakslisteId, oppgaveIder } : { sakslisteId }, keepData)
-      .then((response) => (typeof response === 'string' || !doPolling
+      .then((response) => (!response || typeof response === 'string' || !doPolling
         ? Promise.resolve()
         : fetchSakslisteOppgaverPolling(true, sakslisteId, response.map((o) => o.id).join(','))))
       .catch(() => undefined);

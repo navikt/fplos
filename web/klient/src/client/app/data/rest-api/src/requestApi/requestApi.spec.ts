@@ -1,3 +1,5 @@
+import axios from 'axios';
+
 import RequestApi from './RequestApi';
 import RequestConfig from '../RequestConfig';
 import { Response } from './ResponseTsType';
@@ -13,6 +15,7 @@ const httpClientGeneralMock = (response: Response) => ({
   getAsync: () => Promise.resolve(response),
   postAsync: () => Promise.resolve(response),
   putAsync: () => Promise.resolve(response),
+  axiosInstance: axios.create(),
 });
 
 describe('RequestApi', () => {

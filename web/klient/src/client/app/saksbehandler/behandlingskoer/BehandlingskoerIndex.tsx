@@ -13,7 +13,7 @@ import SakslistePanel from './components/SakslistePanel';
 
 const EMPTY_ARRAY: Saksliste[] = [];
 
-const openFagsak = (oppgave: Oppgave, hentFpsakInternBehandlingId: (param: { uuid: string}) => Promise<number>, fpsakUrl: string) => {
+const openFagsak = (oppgave: Oppgave, hentFpsakInternBehandlingId: (param: { uuid: string}) => Promise<number | undefined>, fpsakUrl: string) => {
   hentFpsakInternBehandlingId({ uuid: oppgave.behandlingId }).then((behandlingId) => {
     window.location.assign(getFpsakHref(fpsakUrl, oppgave.saksnummer, behandlingId));
   });
@@ -23,7 +23,7 @@ const openTilbakesak = (oppgave: Oppgave, fptilbakeUrl: string) => {
   window.location.assign(getFptilbakeHref(fptilbakeUrl, oppgave.href));
 };
 
-const openSak = (oppgave: Oppgave, hentFpsakInternBehandlingId: (param: { uuid: string}) => Promise<number>, fpsakUrl: string, fptilbakeUrl: string) => {
+const openSak = (oppgave: Oppgave, hentFpsakInternBehandlingId: (param: { uuid: string}) => Promise<number | undefined>, fpsakUrl: string, fptilbakeUrl: string) => {
   if (oppgave.system === 'FPSAK') openFagsak(oppgave, hentFpsakInternBehandlingId, fpsakUrl);
   else if (oppgave.system === 'FPTILBAKE') openTilbakesak(oppgave, fptilbakeUrl);
   else throw new Error('Fagsystemet for oppgaven er ukjent');
@@ -60,9 +60,9 @@ const BehandlingskoerIndex: FunctionComponent<OwnProps> = ({
     } else {
       reserverOppgave({ oppgaveId: oppgave.id })
         .then((nyOppgaveStatus) => {
-          if (nyOppgaveStatus.erReservert && nyOppgaveStatus.erReservertAvInnloggetBruker) {
+          if (nyOppgaveStatus && nyOppgaveStatus.erReservert && nyOppgaveStatus.erReservertAvInnloggetBruker) {
             openSak(oppgave, hentFpsakInternBehandlingId, fpsakUrl, fptilbakeUrl);
-          } else if (nyOppgaveStatus.erReservert && !nyOppgaveStatus.erReservertAvInnloggetBruker) {
+          } else if (nyOppgaveStatus && nyOppgaveStatus.erReservert && !nyOppgaveStatus.erReservertAvInnloggetBruker) {
             setReservertAvAnnenSaksbehandler(true);
             setReservertOppgave(oppgave);
             setReservertOppgaveStatus(nyOppgaveStatus);

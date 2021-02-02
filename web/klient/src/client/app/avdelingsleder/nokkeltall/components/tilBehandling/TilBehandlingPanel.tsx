@@ -64,7 +64,7 @@ interface OwnProps {
   width: number;
   height: number;
   oppgaverPerDato: OppgaveForDato[];
-  getValueFromLocalStorage: (key: string) => string;
+  getValueFromLocalStorage: (key: string) => string | undefined;
 }
 
 const formName = 'tilBehandlingForm';

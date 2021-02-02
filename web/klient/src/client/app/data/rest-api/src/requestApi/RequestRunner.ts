@@ -1,3 +1,5 @@
+import { ResponseType } from 'axios';
+
 import EventType from './eventType';
 import AsyncPollingStatus from './asyncPollingStatus';
 import HttpClientApi from '../HttpClientApiTsType';
@@ -12,7 +14,9 @@ export const REQUEST_POLLING_CANCELLED = 'INTERNAL_CANCELLATION';
 
 const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
-const hasLocationAndStatusDelayedOrHalted = (responseData): boolean => responseData.location && (responseData.status === AsyncPollingStatus.DELAYED
+const hasLocationAndStatusDelayedOrHalted = (
+  responseData: { location: string, status: string },
+): boolean => !!responseData.location && (responseData.status === AsyncPollingStatus.DELAYED
   || responseData.status === AsyncPollingStatus.HALTED);
 
 type Notify = (eventType: keyof typeof EventType, data?: any, isPolling?: boolean) => void
@@ -28,7 +32,7 @@ type NotificationEmitter = (eventType: keyof typeof EventType, data?: any) => vo
 class RequestRunner {
   httpClientApi: HttpClientApi;
 
-  restMethod: (url: string, params: any, responseType?: string) => Promise<Response>;
+  restMethod: (url: string, params: any, responseType?: ResponseType) => Promise<Response>;
 
   path: string;
 
@@ -42,7 +46,7 @@ class RequestRunner {
 
   isPollingRequest = false;
 
-  constructor(httpClientApi: HttpClientApi, restMethod: (url: string, params: any, responseType?: string) => Promise<Response>,
+  constructor(httpClientApi: HttpClientApi, restMethod: (url: string, params?: any, responseType?: ResponseType) => Promise<Response>,
     path: string, config: RequestAdditionalConfig) {
     this.httpClientApi = httpClientApi;
     this.restMethod = restMethod;
@@ -55,7 +59,7 @@ class RequestRunner {
     this.notify = notificationEmitter;
   }
 
-  execLongPolling = async (location: string, pollingInterval = 0, pollingCounter = 0): Promise<Response> => {
+  execLongPolling = async (location: string, pollingInterval = 0, pollingCounter = 0): Promise<Response | null> => {
     if (pollingCounter === this.maxPollingLimit) {
       throw new TimeoutError(location);
     }
@@ -63,7 +67,7 @@ class RequestRunner {
     await wait(pollingInterval);
 
     if (this.isCancelled) {
-      return null;
+      return Promise.resolve(null);
     }
 
     this.notify(EventType.STATUS_REQUEST_STARTED);
@@ -83,12 +87,12 @@ class RequestRunner {
     return statusOrResultResponse;
   };
 
-  execute = async (path: string, restMethod: (pathArg: string, params?: any) => Promise<Response>, params: any): Promise<Response> => {
+  execute = async (path: string, restMethod: (pathArg: string, params?: any) => Promise<Response>, params: any): Promise<Response | null> => {
     let response = await restMethod(path, params);
-    if ('status' in response && response.status === HTTP_ACCEPTED) {
+    if ('status' in response && response.status === HTTP_ACCEPTED && response.headers.location) {
       this.isPollingRequest = true;
       try {
-        response = await this.execLongPolling(response.headers.location);
+        return await this.execLongPolling(response.headers.location);
       } catch (error) {
         const responseData = error.response ? error.response.data : undefined;
         if (responseData && hasLocationAndStatusDelayedOrHalted(responseData)) {
@@ -117,7 +121,7 @@ class RequestRunner {
         return { payload: REQUEST_POLLING_CANCELLED };
       }
 
-      const responseData = 'data' in response ? response.data : undefined;
+      const responseData = response && 'data' in response ? response.data : undefined;
       this.notify(EventType.REQUEST_FINISHED, responseData, this.isPollingRequest);
       return responseData ? { payload: responseData } : { payload: undefined };
     } catch (error) {

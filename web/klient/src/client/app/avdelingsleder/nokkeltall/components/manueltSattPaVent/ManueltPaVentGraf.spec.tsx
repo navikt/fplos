@@ -57,7 +57,7 @@ describe('<ManueltPaVentGraf>', () => {
     const areaSeries = wrapper.find(AreaSeries);
     expect(areaSeries).toHaveLength(1);
 
-    const func = areaSeries.first().prop('onNearestX') as ({ x: Date, y: number }) => void;
+    const func = areaSeries.first().prop('onNearestX') as any;
     func({
       x: moment().add(1, 'd').toDate(),
       y: 2,

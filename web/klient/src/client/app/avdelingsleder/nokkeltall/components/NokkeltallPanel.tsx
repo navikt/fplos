@@ -17,7 +17,7 @@ interface OwnProps {
   oppgaverForAvdeling: OppgaverForAvdeling[];
   oppgaverPerDato: OppgaveForDato[];
   oppgaverManueltPaVent: OppgaverManueltPaVent[];
-  oppgaverPerForsteStonadsdag?: OppgaverForForsteStonadsdag[];
+  oppgaverPerForsteStonadsdag: OppgaverForForsteStonadsdag[];
 }
 
 /**
@@ -32,7 +32,7 @@ const NokkeltallPanel: FunctionComponent<OwnProps> = ({
   const [width, setWidth] = useState(0);
   const height = 200;
 
-  const ref = useRef(null);
+  const ref = useRef<HTMLDivElement>(null);
 
   const oppdaterGrafStorrelse = useCallback(() => {
     if (ref.current) {

@@ -1,4 +1,5 @@
 import sinon from 'sinon';
+import axios from 'axios';
 
 import AsyncPollingStatus from './asyncPollingStatus';
 import RequestRunner, { REQUEST_POLLING_CANCELLED } from './RequestRunner';
@@ -45,6 +46,7 @@ const httpClientGeneralMock = (response: Response) => ({
   getAsync: () => Promise.resolve(response),
   postAsync: () => Promise.resolve(response),
   putAsync: () => Promise.resolve(response),
+  axiosInstance: axios.create(),
 });
 
 describe('RequestRunner', () => {

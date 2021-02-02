@@ -48,7 +48,7 @@ interface OwnProps {
   width: number;
   height: number;
   oppgaverManueltPaVent: OppgaverManueltPaVent[];
-  getValueFromLocalStorage: (key: string) => string;
+  getValueFromLocalStorage: (key: string) => string | undefined;
 }
 
 const formName = 'manueltPaVentForm';

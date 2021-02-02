@@ -49,7 +49,7 @@ describe('<OppgaverPerForsteStonadsdagGraf>', () => {
       y: 2,
     };
 
-    const func = areaSeries.first().prop('onNearestX') as ({ x: Date, y: number }) => void;
+    const func = areaSeries.first().prop('onNearestX') as any;
     func(koordinat);
 
     const crosshair = wrapper.find(Crosshair);

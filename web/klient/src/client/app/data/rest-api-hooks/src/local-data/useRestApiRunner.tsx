@@ -7,7 +7,7 @@ import {
 import RestApiState from '../RestApiState';
 
 interface RestApiData<T> {
-  startRequest: (params?: any, keepData?: boolean) => Promise<T>;
+  startRequest: (params?: any, keepData?: boolean) => Promise<T | undefined>;
   resetRequestData: () => void;
   state: RestApiState;
   error?: ErrorType;
@@ -45,13 +45,17 @@ export const getUseRestApiRunnerMock = (requestApi: AbstractRequestApi) => (func
  * Hook som gir deg ein funksjon til å starte restkall, i tillegg til kallets status/resultat/feil
  */
 const getUseRestApiRunner = (requestApi: AbstractRequestApi) => (function useRestApiRunner<T>(key: string):RestApiData<T> {
-  const [data, setData] = useState({
+  const [data, setData] = useState<{
+    state: RestApiState;
+    error?: ErrorType;
+    data?: T;
+  }>({
     state: RestApiState.NOT_STARTED,
     data: undefined,
     error: undefined,
   });
 
-  const startRequest = useCallback((params?: any, keepData = false):Promise<T> => {
+  const startRequest = useCallback((params?: any, keepData = false):Promise<T | undefined> => {
     if (requestApi.hasPath(key)) {
       setData((oldState) => ({
         state: RestApiState.LOADING,
@@ -79,12 +83,14 @@ const getUseRestApiRunner = (requestApi: AbstractRequestApi) => (function useRes
           throw error;
         });
     }
+
     setData({
       state: RestApiState.NOT_STARTED,
       error: undefined,
       data: undefined,
     });
-    return undefined;
+
+    return Promise.resolve(undefined);
   }, []);
 
   const resetRequestData = useCallback(() => {
