@@ -89,7 +89,7 @@ public final class Databaseskjemainitialisering {
         if (kjøresAvMaven()) {
             return classpathScriptLocation(dsName);
         }
-        return fileScriptLocation(dsName);
+        return fileScriptLocation("migreringer/src/main/resources/db/migration/" + dsName);
     }
 
     private static String classpathScriptLocation(String dsName) {
@@ -100,12 +100,10 @@ public final class Databaseskjemainitialisering {
         if (kjøresAvMaven()) {
             return classpathScriptLocation("vl_dba");
         }
-        return "migreringer/src/test/resources/db/migration/vl_dba";
+        return fileScriptLocation("migreringer/src/test/resources/db/migration/vl_dba");
     }
 
-    private static String fileScriptLocation(String dsName) {
-        String relativePath = "migreringer/src/main/resources/db/migration/" + dsName;
-
+    private static String fileScriptLocation(String relativePath) {
         File baseDir = new File(".").getAbsoluteFile();
         File location = new File(baseDir, relativePath);
         while (!location.exists()) {
