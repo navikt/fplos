@@ -1,9 +1,10 @@
 import React, {
-  FunctionComponent, useMemo, useEffect, useCallback,
+  FunctionComponent, useMemo, useEffect, useCallback, ReactElement,
 } from 'react';
 import { FormattedMessage } from 'react-intl';
 import classnames from 'classnames/bind';
 import { NavLink } from 'react-router-dom';
+import { Location } from 'history';
 import Panel from 'nav-frontend-paneler';
 import Tabs from 'nav-frontend-tabs';
 import { Undertittel } from 'nav-frontend-typografi';
@@ -27,11 +28,16 @@ import styles from './avdelingslederIndex.less';
 import ReservasjonerIndex from './reservasjoner/ReservasjonerIndex';
 import Saksbehandler from './saksbehandlere/saksbehandlerTsType';
 
-const EMPTY_ARRAY = [];
+const EMPTY_ARRAY: Saksbehandler[] = [];
 
 const classNames = classnames.bind(styles);
 
-const renderAvdelingslederPanel = (avdelingslederPanel, valgtAvdelingEnhet, hentAvdelingensSaksbehandlere, avdelingensSaksbehandlere) => {
+const renderAvdelingslederPanel = (
+  avdelingslederPanel: string,
+  valgtAvdelingEnhet: string,
+  hentAvdelingensSaksbehandlere: (params: {avdelingEnhet: string}) => void,
+  avdelingensSaksbehandlere: Saksbehandler[],
+) => {
   switch (avdelingslederPanel) {
     case AvdelingslederPanels.BEHANDLINGSKOER:
       return (
@@ -68,11 +74,15 @@ interface OwnProps {
   valgtAvdelingEnhet?: string;
 }
 
-const getTab = (avdelingslederPanel, activeAvdelingslederPanel, getAvdelingslederPanelLocation) => ({
+const getTab = (
+  avdelingslederPanel: string,
+  activeAvdelingslederPanel: string,
+  getAvdelingslederPanelLocation: (avdelingslederPanel: string) => any,
+) => ({
   label: (<Undertittel><FormattedMessage id={messageId[avdelingslederPanel]} /></Undertittel>),
   aktiv: avdelingslederPanel === activeAvdelingslederPanel,
   // eslint-disable-next-line react/prop-types
-  linkCreator: ({ children, className }) => (
+  linkCreator: ({ children, className }: { children: ReactElement, className: string }) => (
     <NavLink
       to={getAvdelingslederPanelLocation(avdelingslederPanel)}
       className={classNames(className, 'link', { isActive: activeAvdelingslederPanel === avdelingslederPanel })}
@@ -82,7 +92,7 @@ const getTab = (avdelingslederPanel, activeAvdelingslederPanel, getAvdelingslede
   ),
 });
 
-const getPanelFromUrlOrDefault = (location) => {
+const getPanelFromUrlOrDefault = (location: Location) => {
   const panelFromUrl = parseQueryString(location.search);
   return panelFromUrl.avdelingsleder ? panelFromUrl.avdelingsleder : AvdelingslederPanels.BEHANDLINGSKOER;
 };
@@ -93,7 +103,7 @@ const getPanelFromUrlOrDefault = (location) => {
 export const AvdelingslederIndex: FunctionComponent<OwnProps> = ({
   valgtAvdelingEnhet,
 }) => {
-  const { selected: activeAvdelingslederPanelTemp, location } = useTrackRouteParam({
+  const { selected: activeAvdelingslederPanelTemp, location } = useTrackRouteParam<string>({
     paramName: 'fane',
     isQueryParam: true,
   });

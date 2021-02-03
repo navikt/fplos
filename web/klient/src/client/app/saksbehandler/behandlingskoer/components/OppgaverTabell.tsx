@@ -34,22 +34,29 @@ const headerTextCodes = [
   'EMPTY_2',
 ];
 
-const EMPTY_ARRAY = [];
+const EMPTY_ARRAY: Oppgave[] = [];
 
 type OppgaveMedReservertIndikator = Oppgave & { underBehandling?: boolean };
 
-const slaSammenOgMarkerReserverte = (reserverteOppgaver, oppgaverTilBehandling): OppgaveMedReservertIndikator[] => {
+const slaSammenOgMarkerReserverte = (reserverteOppgaver: Oppgave[], oppgaverTilBehandling: Oppgave[]): OppgaveMedReservertIndikator[] => {
   const markedAsUnderBehandling = reserverteOppgaver
     .filter((reservertOppgave) => !oppgaverTilBehandling.some((oppgave) => oppgave.id === reservertOppgave.id))
     .map((f) => ({
       ...f,
       underBehandling: true,
     }));
+  const notMarked = oppgaverTilBehandling.map((f) => ({
+    ...f,
+    underBehandling: false,
+  }));
 
-  return markedAsUnderBehandling.concat(oppgaverTilBehandling.slice(0, 3));
+  return markedAsUnderBehandling.concat(notMarked.slice(0, 3));
 };
 
-const getToggleMenuEvent = (oppgave: OppgaveMedReservertIndikator, toggleMenu) => (oppgave.underBehandling ? () => toggleMenu(oppgave) : undefined);
+const getToggleMenuEvent = (
+  oppgave: OppgaveMedReservertIndikator,
+  toggleMenu: (valgtOppgave: Oppgave) => void,
+) => (oppgave.underBehandling ? () => toggleMenu(oppgave) : undefined);
 
 interface OwnProps {
   reserverOppgave: (oppgave: Oppgave) => void;
@@ -82,12 +89,12 @@ export const OppgaverTabell: FunctionComponent<OwnProps & WrappedComponentProps>
 
   const {
     startRequest: hentOppgaverTilBehandling, data: oppgaverTilBehandling = EMPTY_ARRAY, error: hentOppgaverTilBehandlingError,
-  } = restApiHooks.useRestApiRunner<Oppgave[] | string>(RestApiPathsKeys.OPPGAVER_TIL_BEHANDLING);
+  } = restApiHooks.useRestApiRunner<Oppgave[]>(RestApiPathsKeys.OPPGAVER_TIL_BEHANDLING);
 
   const fetchSakslisteOppgaverPolling = (keepData: boolean, sakslisteId: number, oppgaveIder?: string) => {
     hentReserverteOppgaver({}, true);
     hentOppgaverTilBehandling(oppgaveIder ? { sakslisteId, oppgaveIder } : { sakslisteId }, keepData)
-      .then((response) => (typeof response === 'string' || !doPolling
+      .then((response) => (!response || typeof response === 'string' || !doPolling
         ? Promise.resolve()
         : fetchSakslisteOppgaverPolling(true, sakslisteId, response.map((o) => o.id).join(','))))
       .catch(() => undefined);
@@ -100,9 +107,10 @@ export const OppgaverTabell: FunctionComponent<OwnProps & WrappedComponentProps>
   const forlengOppgaveReservasjonFn = useCallback((oppgaveId: number): Promise<any> => forlengOppgavereservasjon({ oppgaveId })
     .then(() => hentReserverteOppgaver({}, true)), []);
 
-  const ref = useRef({});
+  const ref = useRef<Record<number, HTMLDivElement | null>>({});
 
   const goToFagsak = useCallback((event: React.MouseEvent | React.KeyboardEvent, _id: number, oppgave: Oppgave) => {
+    // @ts-ignore Fiks
     if (ref.current && Object.keys(ref.current).some((key) => ref.current[key] && ref.current[key].contains(event.target))) {
       return;
     }
@@ -110,10 +118,12 @@ export const OppgaverTabell: FunctionComponent<OwnProps & WrappedComponentProps>
   }, [ref.current]);
 
   const toggleMenu = useCallback((valgtOppgave: Oppgave) => {
-    const newOffset = ref.current[valgtOppgave.id].getBoundingClientRect();
+    const newOffset = ref.current[valgtOppgave.id]?.getBoundingClientRect();
     setShowMenu(!showMenu);
     setValgtOppgaveId(valgtOppgave.id);
-    setOffset({ top: newOffset.top, left: newOffset.left });
+    if (newOffset) {
+      setOffset({ top: newOffset.top, left: newOffset.left });
+    }
   }, [ref.current, showMenu]);
 
   const createTooltip = useCallback((oppgaveStatus: OppgaveStatus): ReactNode | undefined => {
@@ -123,8 +133,8 @@ export const OppgaverTabell: FunctionComponent<OwnProps & WrappedComponentProps>
     }
     const datoOgTid = getDateAndTime(flyttetReservasjon.tidspunkt);
     const textValues = {
-      dato: datoOgTid.date,
-      tid: datoOgTid.time,
+      dato: datoOgTid?.date,
+      tid: datoOgTid?.time,
       uid: flyttetReservasjon.uid,
       navn: flyttetReservasjon.navn,
       beskrivelse: flyttetReservasjon.begrunnelse,

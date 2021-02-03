@@ -12,6 +12,7 @@ import fagsakYtelseType from 'kodeverk/fagsakYtelseType';
 import { shallowWithIntl, intlMock } from 'testHelpers/intl-enzyme-test-helper';
 import ManueltPaVentPanel, { ALLE_YTELSETYPER_VALGT } from './ManueltPaVentPanel';
 import ManueltPaVentGraf from './ManueltPaVentGraf';
+import OppgaverManueltPaVent from './oppgaverManueltPaVentTsType';
 
 describe('<ManueltPaVentPanel>', () => {
   const intl: Partial<IntlShape> = {
@@ -37,7 +38,7 @@ describe('<ManueltPaVentPanel>', () => {
         valgtYtelsetype: ALLE_YTELSETYPER_VALGT,
         ukevalg: '4',
       };
-      const oppgaverManueltPaVent = [];
+      const oppgaverManueltPaVent: OppgaverManueltPaVent[] = [];
 
       requestApi.mock(RestApiGlobalStatePathsKeys.KODEVERK, alleKodeverk);
 

@@ -16,7 +16,7 @@ export default {
 };
 
 export const skalVisePanelNårDetIkkeFinnesBehandlingskøer = () => {
-  const [sakslister, setSaksliste] = useState([]);
+  const [sakslister, setSaksliste] = useState<Saksliste[]>([]);
   requestApi.mock(RestApiGlobalStatePathsKeys.KODEVERK, alleKodeverk);
   return (
     <GjeldendeSakslisterTabell
@@ -37,7 +37,7 @@ export const skalVisePanelNårDetIkkeFinnesBehandlingskøer = () => {
 };
 
 export const skalVisePanelNårDetFinnesEnBehandlingskø = () => {
-  const [sakslister, setSaksliste] = useState([{
+  const [sakslister, setSaksliste] = useState<Saksliste[]>([{
     sakslisteId: 1,
     navn: 'Saksliste 1',
     sistEndret: '2020-01-01',

@@ -22,8 +22,8 @@ export const skalViseSorteringsvelgerNårMangeBehandlingstyperErValgt = () => {
     sortering: koSortering.BEHANDLINGSFRIST,
     fra: 2,
     til: 3,
-    fomDato: undefined,
-    tomDato: undefined,
+    fomDato: '2020.01.10',
+    tomDato: '2020.10.01',
     erDynamiskPeriode: true,
   };
 
@@ -62,8 +62,8 @@ export const skalViseSorteringsvelgerNårKunTilbakekrevingErValgt = () => {
     sortering: koSortering.BEHANDLINGSFRIST,
     fra: 2,
     til: 3,
-    fomDato: undefined,
-    tomDato: undefined,
+    fomDato: '2020.01.10',
+    tomDato: '2020.10.01',
     erDynamiskPeriode: true,
   };
 

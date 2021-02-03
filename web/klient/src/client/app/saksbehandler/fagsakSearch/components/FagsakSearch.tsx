@@ -14,7 +14,7 @@ import styles from './fagsakSearch.less';
 interface OwnProps {
   fagsaker: Fagsak[];
   fagsakOppgaver: Oppgave[];
-  searchFagsakCallback: ({ searchString: string, skalReservere: boolean }) => void;
+  searchFagsakCallback: (values: { searchString: string, skalReservere: boolean }) => void;
   searchResultReceived: boolean;
   selectFagsakCallback: (saksnummer: number) => void;
   selectOppgaveCallback: (oppgave: Oppgave) => void;
@@ -25,7 +25,7 @@ interface OwnProps {
   resetSearch: () => void;
 }
 
-const skalViseListe = (fagsaker, fagsakOppgaver) => {
+const skalViseListe = (fagsaker: Fagsak[], fagsakOppgaver: Oppgave[]): boolean => {
   if (!fagsaker) {
     return false;
   }
@@ -48,7 +48,7 @@ const FagsakSearch: FunctionComponent<OwnProps> = ({
   searchStarted,
   searchResultAccessDenied,
   resetSearch,
-}: OwnProps) => (
+}) => (
   <>
     <SearchForm
       onSubmit={searchFagsakCallback}
@@ -77,9 +77,5 @@ const FagsakSearch: FunctionComponent<OwnProps> = ({
     )}
   </>
 );
-
-FagsakSearch.defaultProps = {
-  searchResultAccessDenied: undefined,
-};
 
 export default FagsakSearch;

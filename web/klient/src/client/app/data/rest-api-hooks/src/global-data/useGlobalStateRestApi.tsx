@@ -38,9 +38,13 @@ export const getUseGlobalStateRestApiMock = (requestApi: AbstractRequestApi) => 
  * Hook som henter data fra backend og deretter lagrer i @see RestApiContext
  */
 const getUseGlobalStateRestApi = (requestApi: AbstractRequestApi) => (function useGlobalStateRestApi<T>(
-  key: string, params?: any, options: Options = defaultOptions,
+  key: string,
+  params?: any,
+  options?: Options,
 ):RestApiData<T> {
-  const [data, setData] = useState({
+  const allOptions = { ...defaultOptions, ...options };
+
+  const [data, setData] = useState<RestApiData<T>>({
     state: RestApiState.NOT_STARTED,
     error: undefined,
     data: undefined,
@@ -49,7 +53,7 @@ const getUseGlobalStateRestApi = (requestApi: AbstractRequestApi) => (function u
   const dispatch = useContext(RestApiDispatchContext);
 
   useEffect(() => {
-    if (requestApi.hasPath(key) && !options.suspendRequest) {
+    if (dispatch && requestApi.hasPath(key) && !allOptions.suspendRequest) {
       dispatch({ type: 'remove', key });
 
       setData({
@@ -59,7 +63,7 @@ const getUseGlobalStateRestApi = (requestApi: AbstractRequestApi) => (function u
       });
 
       requestApi.startRequest(key, params)
-        .then((dataRes) => {
+        .then((dataRes:{ payload: any }) => {
           dispatch({ type: 'success', key, data: dataRes.payload });
           setData({
             state: RestApiState.SUCCESS,
@@ -67,7 +71,7 @@ const getUseGlobalStateRestApi = (requestApi: AbstractRequestApi) => (function u
             error: undefined,
           });
         })
-        .catch((error) => {
+        .catch((error: Error) => {
           setData({
             state: RestApiState.ERROR,
             data: undefined,
@@ -75,7 +79,7 @@ const getUseGlobalStateRestApi = (requestApi: AbstractRequestApi) => (function u
           });
         });
     }
-  }, options.updateTriggers);
+  }, allOptions.updateTriggers);
 
   return data;
 });

@@ -9,7 +9,7 @@ import NyeOgFerdigstilteOppgaverForSisteSyvPanel from './nyeOgFerdigstilteOppgav
 import NyeOgFerdigstilteOppgaver from '../nyeOgFerdigstilteOppgaverTsType';
 
 interface OwnProps {
-  nyeOgFerdigstilteOppgaver: NyeOgFerdigstilteOppgaver[]
+  nyeOgFerdigstilteOppgaver?: NyeOgFerdigstilteOppgaver[];
 }
 
 /**
@@ -21,7 +21,7 @@ const SaksbehandlerNokkeltallPanel: FunctionComponent<OwnProps> = ({
   const [width, setWidth] = useState(0);
   const HEIGHT = 200;
 
-  const ref = useRef(null);
+  const ref = useRef<HTMLDivElement>(null);
 
   const oppdaterGrafStorrelse = useCallback(() => {
     if (ref.current) {

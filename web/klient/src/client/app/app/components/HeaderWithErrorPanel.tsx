@@ -34,8 +34,13 @@ interface OwnProps {
   crashMessage?: string;
 }
 
-const useOutsideClickEvent = (erLenkepanelApent, erAvdelingerPanelApent, setLenkePanelApent, setAvdelingerPanelApent) => {
-  const wrapperRef = useRef(null);
+const useOutsideClickEvent = (
+  erLenkepanelApent: boolean,
+  erAvdelingerPanelApent: boolean,
+  setLenkePanelApent: (erApent: boolean) => void,
+  setAvdelingerPanelApent: (erApent: boolean) => void,
+) => {
+  const wrapperRef = useRef<HTMLDivElement>(null);
   const handleClickOutside = useCallback((event) => {
     if (wrapperRef.current && !wrapperRef.current.contains(event.target)) {
       setLenkePanelApent(false);
@@ -85,9 +90,11 @@ const HeaderWithErrorPanel: FunctionComponent<OwnProps & WrappedComponentProps> 
 
   const wrapperRef = useOutsideClickEvent(erLenkePanelApent, erAvdelingerPanelApent, setLenkePanelApent, setAvdelingerPanelApent);
 
-  const fixedHeaderRef = useRef(null);
+  const fixedHeaderRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
-    setSiteHeight(fixedHeaderRef.current.clientHeight);
+    if (fixedHeaderRef?.current) {
+      setSiteHeight(fixedHeaderRef.current.clientHeight);
+    }
   }, [formaterteFeilmeldinger.length]);
 
   const kanOppgavestyre = navAnsatt && navAnsatt.kanOppgavestyre;
@@ -104,7 +111,7 @@ const HeaderWithErrorPanel: FunctionComponent<OwnProps & WrappedComponentProps> 
       href: SYSTEMRUTINE_URL,
       isExternal: true,
     }];
-    if (kanOppgavestyre && !locationPathname.includes(AVDELINGSLEDER_PATH)) {
+    if (kanOppgavestyre && locationPathname && !locationPathname.includes(AVDELINGSLEDER_PATH)) {
       items.push({
         name: 'Avdelingsleder',
         href: [BASE_PATH, AVDELINGSLEDER_PATH].join('/'),
@@ -173,6 +180,7 @@ const HeaderWithErrorPanel: FunctionComponent<OwnProps & WrappedComponentProps> 
         driftsmeldinger={driftsmeldinger}
       />
       <ErrorMessagePanel
+        // @ts-ignore Fiks denne
         errorMessages={formaterteFeilmeldinger}
         queryStrings={queryStrings}
         removeErrorMessages={removeErrorMessages}

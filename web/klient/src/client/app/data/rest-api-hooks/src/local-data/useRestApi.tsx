@@ -44,7 +44,7 @@ export const getUseRestApiMock = (requestApi: AbstractRequestApi) => (function u
 const getUseRestApi = (requestApi: AbstractRequestApi) => (function useRestApi<T>(key: string, params?: any, options?: Options):RestApiData<T> {
   const allOptions = { ...defaultOptions, ...options };
 
-  const [data, setData] = useState({
+  const [data, setData] = useState<RestApiData<T>>({
     state: RestApiState.NOT_STARTED,
     error: undefined,
     data: undefined,
@@ -59,7 +59,7 @@ const getUseRestApi = (requestApi: AbstractRequestApi) => (function useRestApi<T
       }));
 
       requestApi.startRequest(key, params)
-        .then((dataRes) => {
+        .then((dataRes: { payload: any }) => {
           if (dataRes.payload !== REQUEST_POLLING_CANCELLED) {
             setData({
               state: RestApiState.SUCCESS,
@@ -68,7 +68,7 @@ const getUseRestApi = (requestApi: AbstractRequestApi) => (function useRestApi<T
             });
           }
         })
-        .catch((error) => {
+        .catch((error: Error) => {
           setData({
             state: RestApiState.ERROR,
             data: undefined,

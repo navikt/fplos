@@ -64,6 +64,7 @@ describe('<BehandlingstypeVelger>', () => {
     />);
 
     const checkbox = wrapper.find(CheckboxField);
+    // @ts-ignore
     checkbox.first().prop('onChange')(true);
 
     const lagreSakslisteBehandlingstypeCallData = requestApi.getRequestMockData(RestApiPathsKeys.LAGRE_SAKSLISTE_BEHANDLINGSTYPE);

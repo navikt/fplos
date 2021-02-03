@@ -1,49 +1,36 @@
-import { useState, useEffect, useRef } from 'react';
-import { useLocation, useRouteMatch } from 'react-router-dom';
+import { useHistory, useRouteMatch, match as RouterMatch } from 'react-router-dom';
+import { Location } from 'history';
 
 import { parseQueryString } from 'utils/urlUtils';
 
 const defaultConfig = {
   paramName: '',
-  parse: (a) => a,
+  parse: (a: any) => a,
   isQueryParam: false,
-  paramsAreEqual: (paramFromUrl, paramFromStore) => paramFromUrl === paramFromStore,
 };
 
-const mapMatchToParam = (match, location, trackingConfig) => {
-  const params = trackingConfig.isQueryParam ? parseQueryString(location.search) : match.params;
+interface Config {
+  paramName?: string,
+  parse?: (a: any) => any,
+  isQueryParam?: boolean,
+}
+
+const mapMatchToParam = (match: RouterMatch, location: Location, trackingConfig: Required<Config>) => {
+  const params = trackingConfig.isQueryParam ? parseQueryString(location.search) : match.params as Record<string, string>;
   return trackingConfig.parse(params[trackingConfig.paramName]);
 };
 
-function useTrackRouteParam(config) {
-  const [selected, setSelected] = useState<string>();
-
+function useTrackRouteParam<T>(config: Config): { location: Location; selected: T } {
   const trackingConfig = { ...defaultConfig, ...config };
 
-  const location = useLocation();
+  const history = useHistory();
+  const { location } = history;
   const match = useRouteMatch();
 
   const paramFromUrl = mapMatchToParam(match, location, trackingConfig);
-  const { paramsAreEqual } = trackingConfig;
-
-  const ref = useRef();
-
-  useEffect(() => {
-    if (ref.current && !paramsAreEqual(paramFromUrl, ref.current)) {
-      setSelected(paramFromUrl);
-    } else if (!paramsAreEqual(paramFromUrl, undefined)) {
-      setSelected(paramFromUrl);
-    }
-
-    ref.current = paramFromUrl;
-    return () => {
-      setSelected(undefined);
-    };
-  }, [paramFromUrl]);
-
   return {
     location,
-    selected,
+    selected: paramFromUrl,
   };
 }
 

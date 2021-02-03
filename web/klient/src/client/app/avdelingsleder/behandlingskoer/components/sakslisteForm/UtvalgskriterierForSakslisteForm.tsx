@@ -25,12 +25,12 @@ import styles from './utvalgskriterierForSakslisteForm.less';
 const minLength3 = minLength(3);
 const maxLength100 = maxLength(100);
 
-const finnDagerSomTall = (antallDager) => {
+const finnDagerSomTall = (antallDager: string): undefined | number => {
   const nr = Number.parseInt(antallDager, 10);
   return Number.isNaN(nr) ? undefined : nr;
 };
 
-const buildInitialValues = (intl: IntlShape, valgtSaksliste): InitialValues => {
+const buildInitialValues = (intl: IntlShape, valgtSaksliste: Saksliste): InitialValues => {
   const behandlingTypes = valgtSaksliste.behandlingTyper ? valgtSaksliste.behandlingTyper.reduce((acc, bt) => ({ ...acc, [bt.kode]: true }), {}) : {};
   const fagsakYtelseType = valgtSaksliste.fagsakYtelseTyper && valgtSaksliste.fagsakYtelseTyper.length > 0
     ? valgtSaksliste.fagsakYtelseTyper[0].kode : '';
@@ -127,7 +127,7 @@ export const UtvalgskriterierForSakslisteForm: FunctionComponent<OwnProps & Wrap
             <Column xs="3">
               <div className={styles.grayBox}>
                 <Normaltekst><FormattedMessage id="UtvalgskriterierForSakslisteForm.AntallSaker" /></Normaltekst>
-                <Undertittel>{antallOppgaver || '0'}</Undertittel>
+                <Undertittel>{`${antallOppgaver}` || '0'}</Undertittel>
               </div>
             </Column>
           </Row>

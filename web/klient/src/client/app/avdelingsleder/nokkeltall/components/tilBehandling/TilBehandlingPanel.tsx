@@ -42,7 +42,7 @@ const finnFagsakYtelseTypeNavn = (fagsakYtelseTyper: Kodeverk[], valgtFagsakYtel
 };
 
 const slaSammenLikeBehandlingstyperOgDatoer = (oppgaverForAvdeling: OppgaveForDato[]): OppgaveForDatoGraf[] => {
-  const sammenslatte = [];
+  const sammenslatte: OppgaveForDatoGraf[] = [];
 
   oppgaverForAvdeling.forEach((o) => {
     const index = sammenslatte.findIndex((s) => s.behandlingType.kode === o.behandlingType.kode && s.opprettetDato === o.opprettetDato);
@@ -64,7 +64,7 @@ interface OwnProps {
   width: number;
   height: number;
   oppgaverPerDato: OppgaveForDato[];
-  getValueFromLocalStorage: (key: string) => string;
+  getValueFromLocalStorage: (key: string) => string | undefined;
 }
 
 const formName = 'tilBehandlingForm';

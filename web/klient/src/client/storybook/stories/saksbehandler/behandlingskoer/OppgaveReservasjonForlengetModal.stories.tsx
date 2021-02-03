@@ -27,6 +27,7 @@ export const skalViseModalForEndringAvReservasjon = () => (
           navn: 'Espen Utvikler',
           begrunnelse: 'Flyttet',
         },
+        reservertTilTidspunkt: '2017-08-02T00:54:25.455',
       },
       saksnummer: 1234,
       personnummer: '1212',

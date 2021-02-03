@@ -5,7 +5,7 @@ import { restApiHooks, RestApiPathsKeys } from 'data/fplosRestApi';
 import ReservasjonerTabell from './components/ReservasjonerTabell';
 import Reservasjon from './reservasjonTsType';
 
-const EMPTY_ARRAY = [];
+const EMPTY_ARRAY: Reservasjon[] = [];
 
 interface OwnProps {
   valgtAvdelingEnhet: string;

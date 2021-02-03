@@ -58,7 +58,7 @@ describe('<CalendarOverlay>', () => {
     />);
 
     const daypicker = wrapper.find(DayPicker);
-    expect(daypicker.prop('selectedDays')).toBeNull();
+    expect(daypicker.prop('selectedDays')).toBeUndefined();
   });
 
   it(
@@ -79,6 +79,7 @@ describe('<CalendarOverlay>', () => {
         onClose={onCloseCallback}
       />);
 
+      // @ts-ignore Fiks
       wrapper.find('div').prop('onBlur')({} as FocusEvent);
     },
   );
@@ -96,6 +97,7 @@ describe('<CalendarOverlay>', () => {
       onClose={onCloseCallback}
     />);
 
+    // @ts-ignore Fiks
     wrapper.find('div').prop('onKeyDown')({ keyCode: 27 } as KeyboardEvent);
 
     expect(onCloseCallback.called).toBe(true);
@@ -116,6 +118,7 @@ describe('<CalendarOverlay>', () => {
         onClose={onCloseCallback}
       />);
 
+      // @ts-ignore Fiks
       wrapper.find('div').prop('onKeyDown')({ keyCode: 20 } as KeyboardEvent);
 
       expect(onCloseCallback.called).toBe(false);

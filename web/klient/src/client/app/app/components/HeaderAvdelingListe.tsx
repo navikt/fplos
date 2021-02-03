@@ -20,7 +20,11 @@ interface OwnProps {
   valgtAvdelingEnhet?: string;
 }
 
-const setAvdeling = (avdelinger, setValgtAvdeling, valgtAvdelingEnhet) => {
+const setAvdeling = (
+  setValgtAvdeling: (avdelingEnhet: string) => void,
+  avdelinger?: Avdeling[],
+  valgtAvdelingEnhet?: string,
+) => {
   if (avdelinger && avdelinger.length > 0 && !valgtAvdelingEnhet) {
     let valgtEnhet = avdelinger[0].avdelingEnhet;
     const lagretAvdelingEnhet = getValueFromLocalStorage('avdelingEnhet');
@@ -48,7 +52,7 @@ const HeaderAvdelingListe: FunctionComponent<OwnProps> = ({
   const navAnsatt = restApiHooks.useGlobalStateRestApiData<NavAnsatt>(RestApiGlobalStatePathsKeys.NAV_ANSATT);
 
   useEffect(() => {
-    setAvdeling(avdelinger, setValgtAvdelingEnhet, valgtAvdelingEnhet);
+    setAvdeling(setValgtAvdelingEnhet, avdelinger, valgtAvdelingEnhet);
   }, [avdelinger]);
 
   if (valgtAvdelingEnhet && avdelinger && avdelinger.length > 0) {
@@ -81,7 +85,7 @@ const HeaderAvdelingListe: FunctionComponent<OwnProps> = ({
             <div ref={ref}>
               <UserPanel
                 name={navAnsatt.navn}
-                unit={`${valgtAvdelingEnhet} ${avdelinger.find((a) => a.avdelingEnhet === valgtAvdelingEnhet).navn}`}
+                unit={`${valgtAvdelingEnhet} ${avdelinger.find((a) => a.avdelingEnhet === valgtAvdelingEnhet)?.navn}`}
                 onClick={() => {
                   if (erLenkePanelApent) {
                     setLenkePanelApent(false);

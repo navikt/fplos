@@ -5,10 +5,16 @@ import styles from './tableRow.less';
 
 const classNames = classnames.bind(styles);
 
+type OnMouseDown = ((event: React.MouseEvent, id: number, object?: any) => any)
+  | ((event: React.MouseEvent, id: string, object?: any) => any);
+type OnKeyDown = ((event: React.KeyboardEvent, id: number, object?: any) => any)
+  | ((event: React.KeyboardEvent, id: string, object?: any) => any)
+
 const createMouseDownHandler = (
-  onMouseDown: (e: React.MouseEvent, id: number | string, model: any) => void,
+  onMouseDown?: OnMouseDown,
   id?: number | string,
   model?: any,
+  // @ts-ignore Fiks
 ) => (e: React.MouseEvent): void => onMouseDown && onMouseDown(e, id, model);
 
 // @ts-ignore Fiks
@@ -26,7 +32,7 @@ const setFocus = (e: React.KeyboardEvent, isNext: boolean): void => {
 };
 
 const createKeyHandler = (
-  onKeyDown: (e: React.KeyboardEvent, id: number | string, model: any) => void,
+  onKeyDown?: OnKeyDown,
   id?: number | string,
   model?: any,
 ) => (e: React.KeyboardEvent): void => {
@@ -36,6 +42,7 @@ const createKeyHandler = (
     setFocus(e, false);
     // @ts-ignore Fiks
   } else if (onKeyDown && e.target.tagName !== 'TD' && (e.key === 'Enter' || e.key === ' ')) {
+    // @ts-ignore Fiks
     onKeyDown(e, id, model);
     e.preventDefault();
   }
@@ -45,8 +52,8 @@ interface OwnProps {
   id?: number | string;
   model?: any;
   isHeader?: boolean;
-  onMouseDown?: (event: React.MouseEvent, id: number, object?: any) => any;
-  onKeyDown?: (event: React.KeyboardEvent, id: number, object?: any) => any;
+  onMouseDown?: OnMouseDown;
+  onKeyDown?: OnKeyDown;
   children: ReactNode | ReactNode[];
   noHover?: boolean;
   isSelected?: boolean;

@@ -67,6 +67,7 @@ describe('<PeriodCalendarOverlay>', () => {
         onClose={onCloseCallback}
       />);
 
+      // @ts-ignore fiks
       wrapper.find('div').prop('onBlur')({} as FocusEvent);
     },
   );
@@ -84,6 +85,7 @@ describe('<PeriodCalendarOverlay>', () => {
       onClose={onCloseCallback}
     />);
 
+    // @ts-ignore fiks
     wrapper.find('div').prop('onKeyDown')({ keyCode: 27 } as KeyboardEvent);
 
     expect(onCloseCallback.called).toBe(true);
@@ -104,6 +106,7 @@ describe('<PeriodCalendarOverlay>', () => {
         onClose={onCloseCallback}
       />);
 
+      // @ts-ignore fiks
       wrapper.find('div').prop('onKeyDown')({ keyCode: 20 } as KeyboardEvent);
 
       expect(onCloseCallback.called).toBe(false);

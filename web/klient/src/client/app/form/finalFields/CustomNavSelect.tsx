@@ -40,6 +40,7 @@ class CustomNavSelect extends Component<OwnProps & FieldRenderProps<any>> {
     }
   }
 
+  // TODO Kva for type blir returnert her?
   getOptionValues(): any {
     const { props: { selectValues } } = this;
     return selectValues
@@ -47,8 +48,8 @@ class CustomNavSelect extends Component<OwnProps & FieldRenderProps<any>> {
       .map((props = {}) => props.value);
   }
 
-  selectedValue(value: any): any {
-    const selectedValue = this.getOptionValues().find((optionValue) => optionValue === value);
+  selectedValue(value: ReactNode): any {
+    const selectedValue = this.getOptionValues().find((optionValue: ReactNode) => optionValue === value);
 
     return selectedValue || '';
   }

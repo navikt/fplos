@@ -16,7 +16,7 @@ export const getNyeOgFerdigstilteForSisteSyvDager = (nyeOgFerdigstilte: NyeOgFer
 interface OwnProps {
   width: number;
   height: number;
-  nyeOgFerdigstilteOppgaver: NyeOgFerdigstilteOppgaver[];
+  nyeOgFerdigstilteOppgaver?: NyeOgFerdigstilteOppgaver[];
 }
 
 /**

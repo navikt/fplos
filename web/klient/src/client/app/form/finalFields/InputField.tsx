@@ -9,9 +9,9 @@ import { LabelType } from './Label';
 
 const renderNavInput = renderNavField(NavInput);
 
-const composeValidators = (validators: FieldValidator<any>[]): FieldValidator<any> => (
+const composeValidators = (validators?: FieldValidator<any>[]): FieldValidator<any> => (
   value: any,
-) => validators.reduce((error, validator) => error || validator(value, undefined), undefined);
+) => (validators ? validators.reduce((error, validator) => error || validator(value, {}), undefined) : []);
 
 interface OwnProps {
   name: string;

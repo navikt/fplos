@@ -18,7 +18,7 @@ export const getErrorResponseData = (error: ErrorType): any => (error
 
 export const errorOfType = (error: ErrorType, errorType: string): boolean => error && (getErrorResponseData(error).type === errorType);
 
-export const isHandledError = (errorType?: string): boolean => errorType && handledErrorTypes.some((het) => het === errorType);
+export const isHandledError = (errorType?: string): boolean => !!errorType && handledErrorTypes.some((het) => het === errorType);
 
 const hasStatusCode = (statusCode: number) => (errorStatus?: number): boolean => errorStatus === statusCode;
 

@@ -13,8 +13,6 @@ interface OwnProps {
   valgtSakslisteId: number;
   lagreSakslisteSorteringNumerisk: (params: {sakslisteId: number, fra: number, til: number, avdelingEnhet: string}) => Promise<any>;
   valgtAvdelingEnhet: string;
-  fra: number;
-  til: number;
   hentAvdelingensSakslister: (params: {avdelingEnhet: string}) => void;
   hentAntallOppgaver: (sakslisteId: number, avdelingEnhet: string) => void;
 }
@@ -33,7 +31,7 @@ export const BelopSorteringValg: FunctionComponent<OwnProps & WrappedComponentPr
     </Undertekst>
     <>
       <AutoLagringVedBlur
-        lagre={(values) => lagreSakslisteSorteringNumerisk({
+        lagre={(values: { fra: number, til: number }) => lagreSakslisteSorteringNumerisk({
           sakslisteId: valgtSakslisteId, fra: values.fra, til: values.til, avdelingEnhet: valgtAvdelingEnhet,
         }).then(() => {
           hentAntallOppgaver(valgtSakslisteId, valgtAvdelingEnhet);

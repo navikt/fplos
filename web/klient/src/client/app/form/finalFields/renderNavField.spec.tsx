@@ -6,7 +6,7 @@ import renderNavField from './renderNavField';
 
 const metaMock = {};
 
-const getInputMock = (input) => ({
+const getInputMock = (input: any) => ({
   name: 'mockInput',
   onBlur: sinon.spy(),
   onChange: sinon.spy(),

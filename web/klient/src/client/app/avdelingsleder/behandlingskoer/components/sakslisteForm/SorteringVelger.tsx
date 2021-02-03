@@ -18,18 +18,18 @@ import KoSorteringType from '../../KoSorteringTsType';
 
 interface OwnProps {
   valgtSakslisteId: number;
-  valgteBehandlingtyper: Kodeverk[];
+  valgteBehandlingtyper?: Kodeverk[];
   valgtAvdelingEnhet: string;
   erDynamiskPeriode: boolean;
-  fra: number;
-  til: number;
-  fomDato?: string;
-  tomDato?: string;
+  fra?: number;
+  til?: number;
+  fomDato: string;
+  tomDato: string;
   hentAvdelingensSakslister: (params: {avdelingEnhet: string}) => void;
   hentAntallOppgaver: (sakslisteId: number, avdelingEnhet: string) => void;
 }
 
-const bareTilbakekrevingValgt = (valgteBehandlingtyper: Kodeverk[]) => valgteBehandlingtyper
+const bareTilbakekrevingValgt = (valgteBehandlingtyper?: Kodeverk[]) => valgteBehandlingtyper
   && valgteBehandlingtyper.some((type) => type.kode === behandlingType.TILBAKEBETALING
     || type.kode === behandlingType.TILBAKEBETALING_REVURDERING)
   && !valgteBehandlingtyper.some((type) => (type.kode !== behandlingType.TILBAKEBETALING && type.kode !== behandlingType.TILBAKEBETALING_REVURDERING));
@@ -72,43 +72,41 @@ const SorteringVelger: FunctionComponent<OwnProps & WrappedComponentProps> = ({
           hentAvdelingensSakslister({ avdelingEnhet: valgtAvdelingEnhet });
         })}
       >
-        {koSorteringer.map((koSortering) => (
-          (koSortering.feltkategori !== 'TILBAKEKREVING' || bareTilbakekrevingValgt(valgteBehandlingtyper)) && (
-          <RadioOption
-            key={koSortering.kode}
-            value={koSortering.kode}
-            label={koSortering.navn}
-          >
-            {(koSortering.felttype === 'DATO') && (
-            <DatoSorteringValg
-              intl={intl}
-              valgtSakslisteId={valgtSakslisteId}
-              lagreSakslisteSorteringTidsintervallDager={lagreSakslisteSorteringNumeriskIntervall}
-              valgtAvdelingEnhet={valgtAvdelingEnhet}
-              erDynamiskPeriode={erDynamiskPeriode}
-              fra={fra}
-              til={til}
-              fomDato={fomDato}
-              tomDato={tomDato}
-              hentAvdelingensSakslister={hentAvdelingensSakslister}
-              hentAntallOppgaver={hentAntallOppgaver}
-            />
-            )}
-            {(koSortering.felttype === 'HELTALL') && (
-            <BelopSorteringValg
-              intl={intl}
-              valgtSakslisteId={valgtSakslisteId}
-              lagreSakslisteSorteringNumerisk={lagreSakslisteSorteringNumeriskIntervall}
-              valgtAvdelingEnhet={valgtAvdelingEnhet}
-              fra={fra}
-              til={til}
-              hentAvdelingensSakslister={hentAvdelingensSakslister}
-              hentAntallOppgaver={hentAntallOppgaver}
-            />
-            )}
-          </RadioOption>
-          )
-        ))}
+        {koSorteringer
+          .filter((koSortering) => koSortering.feltkategori !== 'TILBAKEKREVING' || bareTilbakekrevingValgt(valgteBehandlingtyper))
+          .map((koSortering) => (
+            <RadioOption
+              key={koSortering.kode}
+              value={koSortering.kode}
+              label={koSortering.navn}
+            >
+              {(koSortering.felttype === 'DATO') && (
+                <DatoSorteringValg
+                  intl={intl}
+                  valgtSakslisteId={valgtSakslisteId}
+                  lagreSakslisteSorteringTidsintervallDager={lagreSakslisteSorteringNumeriskIntervall}
+                  valgtAvdelingEnhet={valgtAvdelingEnhet}
+                  erDynamiskPeriode={erDynamiskPeriode}
+                  fra={fra}
+                  til={til}
+                  fomDato={fomDato}
+                  tomDato={tomDato}
+                  hentAvdelingensSakslister={hentAvdelingensSakslister}
+                  hentAntallOppgaver={hentAntallOppgaver}
+                />
+              )}
+              {(koSortering.felttype === 'HELTALL') && (
+                <BelopSorteringValg
+                  intl={intl}
+                  valgtSakslisteId={valgtSakslisteId}
+                  lagreSakslisteSorteringNumerisk={lagreSakslisteSorteringNumeriskIntervall}
+                  valgtAvdelingEnhet={valgtAvdelingEnhet}
+                  hentAvdelingensSakslister={hentAvdelingensSakslister}
+                  hentAntallOppgaver={hentAntallOppgaver}
+                />
+              )}
+            </RadioOption>
+          ))}
       </RadioGroupField>
     </>
   );

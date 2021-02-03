@@ -12,11 +12,16 @@ import FlyttReservasjonModal from './FlyttReservasjonModal';
 
 import styles from './oppgaveHandlingerMenu.less';
 
-const getOffsetPositionStyle = (offset) => (window.innerWidth > (offset.left + 250)
+type Offset = {
+  top: number;
+  left: number;
+};
+
+const getOffsetPositionStyle = (offset: Offset) => (window.innerWidth > (offset.left + 250)
   ? { left: `${42 + offset.left}px`, top: `${offset.top - 20}px` }
   : { left: `${offset.left - 200}px`, top: `${offset.top + 38}px` });
 
-const toggleEventListeners = (turnOnEventListeners, handleOutsideClick) => {
+const toggleEventListeners = (turnOnEventListeners: boolean, handleOutsideClick: (event: any) => void) => {
   if (turnOnEventListeners) {
     document.addEventListener('click', handleOutsideClick, false);
     document.addEventListener('mousedown', handleOutsideClick, false);
@@ -30,10 +35,7 @@ const toggleEventListeners = (turnOnEventListeners, handleOutsideClick) => {
 
 interface OwnProps {
   toggleMenu: (valgtOppgave: Oppgave) => void;
-  offset: {
-    top: number;
-    left: number;
-  };
+  offset: Offset;
   oppgave: Oppgave;
   imageNode: any;
   forlengOppgaveReservasjon: (oppgaveId: number) => Promise<string>;
@@ -55,7 +57,7 @@ export class OppgaveHandlingerMenu extends Component<OwnProps, OwnState> {
 
   menuButtonRef: any;
 
-  constructor(props) {
+  constructor(props: OwnProps) {
     super(props);
 
     this.state = {
@@ -166,7 +168,7 @@ export class OppgaveHandlingerMenu extends Component<OwnProps, OwnState> {
             id="OppgaveHandlingerMenu.ReservertTil"
             values={{
               ...getDateAndTime(oppgave.status.reservertTilTidspunkt),
-              b: (...chunks) => <b>{chunks}</b>,
+              b: (...chunks: any) => <b>{chunks}</b>,
             }}
           />
           <VerticalSpacer eightPx />

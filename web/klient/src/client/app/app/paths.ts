@@ -5,9 +5,9 @@ import { formatQueryString, parseQueryString } from 'utils/urlUtils';
 export const BASE_PATH = '/fplos';
 export const AVDELINGSLEDER_PATH = 'avdelingsleder';
 
-const emptyQueryString = (queryString) => queryString === '?' || !queryString;
+const emptyQueryString = (queryString: string) => queryString === '?' || !queryString;
 
-const updateQueryParams = (queryString, nextParams) => {
+const updateQueryParams = (queryString: string, nextParams: Record<string, string>) => {
   const prevParams = emptyQueryString(queryString) ? {} : parseQueryString(queryString);
   return formatQueryString({
     ...prevParams,
@@ -15,7 +15,10 @@ const updateQueryParams = (queryString, nextParams) => {
   });
 };
 
-const getLocationWithQueryParams = (location, queryParams) => ({ ...location, search: updateQueryParams(location.search, queryParams) });
+const getLocationWithQueryParams = (location: Location, queryParams: Record<string, string>) => ({
+  ...location,
+  search: updateQueryParams(location.search, queryParams),
+});
 
 export const getAvdelingslederPanelLocationCreator = (location: Location) => (avdelingslederPanel: string) => getLocationWithQueryParams(
   location, { fane: avdelingslederPanel },

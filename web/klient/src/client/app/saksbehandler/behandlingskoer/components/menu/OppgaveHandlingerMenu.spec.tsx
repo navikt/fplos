@@ -120,7 +120,7 @@ describe('<OppgaveHandlingerMenu>', () => {
   });
 
   it('skal vise modal for forlenging av reservasjon', async () => {
-    const forlengOppgaveReservasjonFn = (oppgaveId) => Promise.resolve(`${oppgaveId}`);
+    const forlengOppgaveReservasjonFn = (oppgaveId: number) => Promise.resolve(`${oppgaveId}`);
     const wrapper = shallow(
       <OppgaveHandlingerMenu
         toggleMenu={sinon.spy()}

@@ -21,7 +21,7 @@ const thirtyDaysFromNow = () => {
 interface OwnProps {
   showModal: boolean;
   closeModal: (event: MouseEvent<HTMLButtonElement>) => void;
-  reserverTilDefault: string;
+  reserverTilDefault?: string;
   oppgaveId: number;
   endreReserverasjonState: () => void;
   hentReserverteOppgaver: (params: any, keepData: boolean) => void;
@@ -48,7 +48,7 @@ const OppgaveReservasjonEndringDatoModal: FunctionComponent<OwnProps & WrappedCo
     }),
   []);
 
-  const buildInitialValues = useCallback((reserverTil: string) => ({
+  const buildInitialValues = useCallback((reserverTil?: string) => ({
     reserverTil: (reserverTil && reserverTil.length >= 10) ? reserverTil.substr(0, 10) : '',
   }), []);
 

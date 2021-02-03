@@ -107,50 +107,64 @@ describe('<NyeOgFerdigstilteOppgaverForSisteSyvGraf>', () => {
       expect(areaSeries).toHaveLength(2);
 
       const ferdigstilteOppgaver = [{
-        x: moment().subtract(7, 'd').startOf('day').toDate(),
+        x: moment().subtract(7, 'd').startOf('day').toDate()
+          .getTime(),
         y: 7,
       }, {
-        x: moment().subtract(6, 'd').startOf('day').toDate(),
+        x: moment().subtract(6, 'd').startOf('day').toDate()
+          .getTime(),
         y: 6,
       }, {
-        x: moment().subtract(5, 'd').startOf('day').toDate(),
+        x: moment().subtract(5, 'd').startOf('day').toDate()
+          .getTime(),
         y: 5,
       }, {
-        x: moment().subtract(4, 'd').startOf('day').toDate(),
+        x: moment().subtract(4, 'd').startOf('day').toDate()
+          .getTime(),
         y: 4,
       }, {
-        x: moment().subtract(3, 'd').startOf('day').toDate(),
+        x: moment().subtract(3, 'd').startOf('day').toDate()
+          .getTime(),
         y: 3,
       }, {
-        x: moment().subtract(2, 'd').startOf('day').toDate(),
+        x: moment().subtract(2, 'd').startOf('day').toDate()
+          .getTime(),
         y: 2,
       }, {
-        x: moment().subtract(1, 'd').startOf('day').toDate(),
+        x: moment().subtract(1, 'd').startOf('day').toDate()
+          .getTime(),
         y: 1,
       }];
       const dataArea1 = areaSeries.first().prop('data');
       expect(dataArea1).toEqual(ferdigstilteOppgaver);
 
       const nyeOppgaver = [{
-        x: moment().subtract(7, 'd').startOf('day').toDate(),
+        x: moment().subtract(7, 'd').startOf('day').toDate()
+          .getTime(),
         y: 17,
       }, {
-        x: moment().subtract(6, 'd').startOf('day').toDate(),
+        x: moment().subtract(6, 'd').startOf('day').toDate()
+          .getTime(),
         y: 16,
       }, {
-        x: moment().subtract(5, 'd').startOf('day').toDate(),
+        x: moment().subtract(5, 'd').startOf('day').toDate()
+          .getTime(),
         y: 15,
       }, {
-        x: moment().subtract(4, 'd').startOf('day').toDate(),
+        x: moment().subtract(4, 'd').startOf('day').toDate()
+          .getTime(),
         y: 14,
       }, {
-        x: moment().subtract(3, 'd').startOf('day').toDate(),
+        x: moment().subtract(3, 'd').startOf('day').toDate()
+          .getTime(),
         y: 13,
       }, {
-        x: moment().subtract(2, 'd').startOf('day').toDate(),
+        x: moment().subtract(2, 'd').startOf('day').toDate()
+          .getTime(),
         y: 12,
       }, {
-        x: moment().subtract(1, 'd').startOf('day').toDate(),
+        x: moment().subtract(1, 'd').startOf('day').toDate()
+          .getTime(),
         y: 11,
       }];
       const dataArea2 = areaSeries.last().prop('data');
@@ -180,7 +194,11 @@ describe('<NyeOgFerdigstilteOppgaverForSisteSyvGraf>', () => {
 
       const areaSeries = wrapper.find(AreaSeries);
       expect(areaSeries).toHaveLength(2);
-      const valgtPunkt = { x: moment().startOf('day').subtract(1, 'd').toDate().getTime(), y: 1 };
+      const valgtPunkt = {
+        x: moment().startOf('day').subtract(1, 'd').toDate()
+          .getTime(),
+        y: 1,
+      };
       const func = areaSeries.first().prop('onNearestX') as (value: {x: number; y: number}) => void;
       func(valgtPunkt);
 

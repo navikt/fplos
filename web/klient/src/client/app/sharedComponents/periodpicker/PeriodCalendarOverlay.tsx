@@ -5,7 +5,7 @@ import moment from 'moment';
 
 import { getRelatedTargetIE11, isIE11 } from 'utils/browserUtils';
 
-const getRelatedTarget = (e: React.FocusEvent) => {
+const getRelatedTarget = (e: React.FocusEvent): Promise<any> => {
   if (isIE11()) {
     return getRelatedTargetIE11();
   }
@@ -28,10 +28,9 @@ class PeriodCalendarOverlay extends Component<OwnProps & WrappedComponentProps> 
   calendarRootRef: HTMLDivElement
 
   static defaultProps = {
-    startDate: null,
-    endDate: null,
+    startDate: undefined,
+    endDate: undefined,
     disabled: false,
-    onClose: () => undefined,
   };
 
   constructor(props: OwnProps & WrappedComponentProps) {
@@ -51,14 +50,18 @@ class PeriodCalendarOverlay extends Component<OwnProps & WrappedComponentProps> 
         if (targetIsCalendarOrCalendarButton(relatedTarget)) {
           return;
         }
-        onClose();
+        if (onClose) {
+          onClose();
+        }
       });
   }
 
   onKeyDown({ keyCode }: React.KeyboardEvent): void {
     if (keyCode === 27) {
       const { onClose } = this.props;
-      onClose();
+      if (onClose) {
+        onClose();
+      }
     }
   }
 
@@ -128,7 +131,7 @@ class PeriodCalendarOverlay extends Component<OwnProps & WrappedComponentProps> 
           {...this.getDayPickerLocalization()}
           className={dayPickerClassName}
           numberOfMonths={2}
-          selectedDays={[{ from: startDate, to: endDate }]}
+          selectedDays={startDate && endDate ? [{ from: startDate, to: endDate }] : undefined}
           onDayClick={this.onDayClick}
           onKeyDown={this.onKeyDown}
           disabledDays={disabledDays}

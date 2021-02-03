@@ -6,7 +6,7 @@ import { Normaltekst, Undertekst } from 'nav-frontend-typografi';
 
 import { ISO_DATE_FORMAT, DDMMYYYY_DATE_FORMAT } from 'utils/formats';
 import behandlingType from 'kodeverk/behandlingType';
-import TilBehandlingGraf from './TilBehandlingGraf';
+import TilBehandlingGraf, { OppgaveForDatoGraf } from './TilBehandlingGraf';
 
 describe('<TilBehandlingGraf>', () => {
   const behandlingTyper = [{
@@ -30,7 +30,7 @@ describe('<TilBehandlingGraf>', () => {
   }];
 
   it('skal vise tom graf når en ikke har data', () => {
-    const oppgaverPerDato = [];
+    const oppgaverPerDato: OppgaveForDatoGraf[] = [];
 
     const wrapper = shallow(<TilBehandlingGraf
       width={300}
@@ -44,7 +44,7 @@ describe('<TilBehandlingGraf>', () => {
     expect(areaSeries).toHaveLength(0);
   });
 
-  const sjekkAtEnHarVerdierForPeriode = (data, isToUkerValgt) => {
+  const sjekkAtEnHarVerdierForPeriode = (data: any, isToUkerValgt: boolean) => {
     const dager = isToUkerValgt ? 14 : 28;
     expect(data).toHaveLength(dager);
     for (let i = 0; i < dager; i += 1) {
@@ -178,7 +178,7 @@ describe('<TilBehandlingGraf>', () => {
       expect(areaSeries).toHaveLength(2);
 
       const valgtPunkt = { x: moment().startOf('day').toDate(), y: 1 };
-      const func = areaSeries.first().prop('onNearestX') as ({ x: Date, y: number }) => void;
+      const func = areaSeries.first().prop('onNearestX') as any;
       func(valgtPunkt);
 
       const crosshair = wrapper.find(Crosshair);

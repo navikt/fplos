@@ -22,7 +22,7 @@ class ErrorFormatter {
         const formatter = formatters.find((f) => f.isOfType(e.type));
         return formatter ? formatter.format(e) : undefined;
       })
-        .filter((e) => e)
+        .filter((e) => !!e)
         .forEach((e) => allErrorMessages.push(e));
     }
 

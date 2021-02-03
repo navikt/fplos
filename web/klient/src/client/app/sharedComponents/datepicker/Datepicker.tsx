@@ -66,7 +66,7 @@ class Datepicker extends Component<OwnProps, StateProps> {
     }
   }
 
-  handleInputRef(inputRef: HTMLDivElement): void {
+  handleInputRef(inputRef: HTMLInputElement | null): void {
     if (inputRef) {
       this.inputRef = inputRef;
       this.handleUpdatedRefs();

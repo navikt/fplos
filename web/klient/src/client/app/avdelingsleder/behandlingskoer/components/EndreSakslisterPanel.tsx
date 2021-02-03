@@ -14,7 +14,7 @@ import UtvalgskriterierForSakslisteForm from './sakslisteForm/UtvalgskriterierFo
 import styles from './endreSakslisterPanel.less';
 import Saksliste from '../sakslisteTsType';
 
-const EMPTY_ARRAY = [];
+const EMPTY_ARRAY: Saksliste[] = [];
 
 interface OwnProps {
   setValgtSakslisteId: (sakslisteId: number) => void;

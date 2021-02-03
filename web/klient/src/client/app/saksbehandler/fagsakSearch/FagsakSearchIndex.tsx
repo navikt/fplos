@@ -24,7 +24,8 @@ interface OwnProps {
   fptilbakeUrl: string;
 }
 
-const EMPTY_ARRAY = [];
+const EMPTY_ARRAY_FAGSAK: Fagsak[] = [];
+const EMPTY_ARRAY_OPPGAVER: Oppgave[] = [];
 
 /**
  * FagsakSearchIndex
@@ -47,9 +48,10 @@ const FagsakSearchIndex: FunctionComponent<OwnProps> = ({
 
   const { startRequest: reserverOppgave } = restApiHooks.useRestApiRunner<OppgaveStatus>(RestApiPathsKeys.RESERVER_OPPGAVE);
   const {
-    startRequest: sokFagsak, resetRequestData: resetFagsakSok, data: fagsaker = EMPTY_ARRAY, error: fagsakError,
+    startRequest: sokFagsak, resetRequestData: resetFagsakSok, data: fagsaker = EMPTY_ARRAY_FAGSAK, error: fagsakError,
   } = restApiHooks.useRestApiRunner<Fagsak[]>(RestApiPathsKeys.SEARCH_FAGSAK);
-  const { startRequest: hentOppgaverForFagsaker, data: fagsakOppgaver } = restApiHooks.useRestApiRunner<Oppgave[]>(RestApiPathsKeys.OPPGAVER_FOR_FAGSAKER);
+  const { startRequest: hentOppgaverForFagsaker, data: fagsakOppgaver = EMPTY_ARRAY_OPPGAVER } = restApiHooks
+    .useRestApiRunner<Oppgave[]>(RestApiPathsKeys.OPPGAVER_FOR_FAGSAKER);
   const { startRequest: hentReservasjonsstatus } = restApiHooks.useRestApiRunner<OppgaveStatus>(RestApiPathsKeys.HENT_RESERVASJONSSTATUS);
   const { startRequest: hentFpsakInternBehandlingId } = restApiHooks.useRestApiRunner<number>(RestApiPathsKeys.FPSAK_BEHANDLING_ID);
 
@@ -70,8 +72,8 @@ const FagsakSearchIndex: FunctionComponent<OwnProps> = ({
     resetFagsakSok();
   }, []);
 
-  const goToFagsakEllerApneModal = (oppgave: Oppgave, oppgaveStatus: OppgaveStatus) => {
-    if (!oppgaveStatus.erReservert || (oppgaveStatus.erReservert && oppgaveStatus.erReservertAvInnloggetBruker)) {
+  const goToFagsakEllerApneModal = (oppgave: Oppgave, oppgaveStatus?: OppgaveStatus) => {
+    if (oppgaveStatus && (!oppgaveStatus.erReservert || (oppgaveStatus.erReservert && oppgaveStatus.erReservertAvInnloggetBruker))) {
       if (oppgave.system === 'FPSAK') {
         hentFpsakInternBehandlingId({ uuid: oppgave.behandlingId }).then((behandlingId) => {
           goToFpsak(oppgave.saksnummer, behandlingId);
@@ -79,7 +81,7 @@ const FagsakSearchIndex: FunctionComponent<OwnProps> = ({
       } else if (oppgave.system === 'FPTILBAKE') {
         goToTilbakesak(oppgave.href);
       } else throw new Error('Fagsystemet for oppgaven er ukjent');
-    } else if (oppgaveStatus.erReservert && !oppgaveStatus.erReservertAvInnloggetBruker) {
+    } else if (oppgaveStatus && oppgaveStatus.erReservert && !oppgaveStatus.erReservertAvInnloggetBruker) {
       setReservertOppgave(oppgave);
       setReservertAvAnnenSaksbehandler(true);
     }
@@ -118,7 +120,7 @@ const FagsakSearchIndex: FunctionComponent<OwnProps> = ({
     setSokFerdig(false);
 
     return sokFagsak(values).then((fagsakerResultat) => {
-      if (fagsakerResultat.length > 0) {
+      if (fagsakerResultat && fagsakerResultat.length > 0) {
         hentOppgaverForFagsaker({ saksnummerListe: fagsakerResultat.map((fagsak) => `${fagsak.saksnummer}`).join(',') })
           .then(() => {
             setSokStartet(false);

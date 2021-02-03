@@ -8,7 +8,7 @@ const intl = createIntl({
   messages: data,
 }, createIntlCache());
 
-const withIntlProvider = (story) => (
+const withIntlProvider = (story: any) => (
   <RawIntlProvider value={intl}>
     { story() }
   </RawIntlProvider>

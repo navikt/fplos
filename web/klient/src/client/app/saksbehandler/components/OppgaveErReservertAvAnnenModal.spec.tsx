@@ -64,8 +64,8 @@ describe('<OppgaveErReservertAvAnnenModal>', () => {
     expect(fmessage).toHaveLength(1);
     const dagOgTidspunkt = getDateAndTime(dato);
     expect(fmessage.prop('values')).toEqual({
-      date: dagOgTidspunkt.date,
-      time: dagOgTidspunkt.time,
+      date: dagOgTidspunkt?.date,
+      time: dagOgTidspunkt?.time,
       saksbehandlerid: '123455',
       saksbehandlernavn: 'Espen Utvikler',
     });

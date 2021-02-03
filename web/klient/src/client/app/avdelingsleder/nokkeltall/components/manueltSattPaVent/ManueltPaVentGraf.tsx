@@ -28,14 +28,14 @@ const lagKoordinater = (oppgaverManueltPaVent: OppgaverManueltPaVent[]): Koordin
 }));
 
 const lagDatastruktur = (koordinater: Koordinat[], isFireUkerValgt: boolean): Koordinat[] => {
-  const nyeKoordinater = [];
+  const nyeKoordinater: Koordinat[] = [];
   const periodeStart = moment().startOf('day').toDate();
   const periodeSlutt = moment().add(isFireUkerValgt ? 4 : 8, 'w').toDate();
 
   for (let dato = moment(periodeStart); dato.isSameOrBefore(periodeSlutt); dato = dato.add(1, 'days')) {
     const funnetKoordinat = koordinater.find((k) => moment(k.x).isSame(dato));
     nyeKoordinater.push({
-      x: dato.toDate(),
+      x: dato.toDate().getDate(),
       y: funnetKoordinat ? funnetKoordinat.y : 0,
     });
   }
@@ -54,7 +54,7 @@ interface OwnProps {
   width: number;
   height: number;
   isFireUkerValgt: boolean;
-  oppgaverManueltPaVent?: OppgaverManueltPaVent[];
+  oppgaverManueltPaVent: OppgaverManueltPaVent[];
 }
 
 /**

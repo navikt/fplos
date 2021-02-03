@@ -6,8 +6,9 @@ import { AbstractRequestApi } from 'data/rest-api';
 
 import RestApiState from '../RestApiState';
 
-const notEqual = (array1, array2) => !(array1.length === array2.length && array1.every((value, index) => value === array2[index]));
-const format = (name) => name.toLowerCase().replace(/_([a-z])/g, (m) => m.toUpperCase()).replace(/_/g, '');
+const notEqual = (array1: DependencyList, array2: DependencyList) => !(array1.length === array2.length
+  && array1.every((value, index) => value === array2[index]));
+const format = (name: string) => name.toLowerCase().replace(/_([a-z])/g, (m) => m.toUpperCase()).replace(/_/g, '');
 
 export interface RestApiData<T> {
   state: RestApiState;
@@ -63,27 +64,30 @@ const DEFAULT_STATE = {
   * blir oppdatert. Hook returnerer rest-kallets status/resultat/feil
   */
 const getUseMultipleRestApi = (requestApi: AbstractRequestApi) => (function useMultipleRestApi<T>(
-  endpoints: EndpointData[], options: Options = defaultOptions,
+  endpoints: EndpointData[],
+  options?: Options,
 ):RestApiData<T> {
   const [data, setData] = useState(DEFAULT_STATE);
 
+  const allOptions = { ...defaultOptions, ...options };
+
   const ref = useRef<DependencyList>();
   useEffect(() => {
-    ref.current = options.updateTriggers;
-  }, [options.updateTriggers]);
+    ref.current = allOptions.updateTriggers;
+  }, [allOptions.updateTriggers]);
   const previousTriggers = ref.current;
 
   useEffect(() => {
-    if (!options.suspendRequest) {
+    if (!allOptions.suspendRequest) {
       setData((oldState) => ({
         state: RestApiState.LOADING,
         error: undefined,
-        data: options.keepData ? oldState.data : undefined,
+        data: allOptions.keepData ? oldState.data : undefined,
       }));
 
       const filteredEndpoints = endpoints.filter((e) => requestApi.hasPath(e.key));
 
-      Promise.all(filteredEndpoints.map((e) => requestApi.startRequest(e.key, e.params, options.isCachingOn)))
+      Promise.all(filteredEndpoints.map((e) => requestApi.startRequest(e.key, e.params, allOptions.isCachingOn)))
         .then((dataRes) => {
           setData({
             state: RestApiState.SUCCESS,
@@ -104,10 +108,10 @@ const getUseMultipleRestApi = (requestApi: AbstractRequestApi) => (function useM
     } else {
       setData(DEFAULT_STATE);
     }
-  }, [...options.updateTriggers]);
+  }, [...allOptions.updateTriggers]);
 
-  return previousTriggers && notEqual(previousTriggers, options.updateTriggers)
-    ? { ...DEFAULT_STATE, data: options.keepData ? data.data : undefined } : data;
+  return previousTriggers && notEqual(previousTriggers, allOptions.updateTriggers)
+    ? { ...DEFAULT_STATE, data: allOptions.keepData ? data.data : undefined } : data;
 });
 
 export default getUseMultipleRestApi;

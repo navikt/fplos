@@ -10,6 +10,7 @@ import { RadioOption } from 'form/FinalFields';
 import fagsakYtelseType from 'kodeverk/fagsakYtelseType';
 import { FordelingAvBehandlingstypePanel } from './FordelingAvBehandlingstypePanel';
 import FordelingAvBehandlingstypeGraf from './FordelingAvBehandlingstypeGraf';
+import OppgaverForAvdeling from './oppgaverForAvdelingTsType';
 
 describe('<FordelingAvBehandlingstypePanel>', () => {
   const fagsakYtelseTyper = [{
@@ -52,7 +53,7 @@ describe('<FordelingAvBehandlingstypePanel>', () => {
     const valuesMock = {
       valgtYtelseType: 'ALLE',
     };
-    const oppgaverForAvdeling = [];
+    const oppgaverForAvdeling: OppgaverForAvdeling[] = [];
 
     requestApi.mock(RestApiGlobalStatePathsKeys.KODEVERK, alleKodeverk);
 

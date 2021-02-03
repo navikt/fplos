@@ -52,7 +52,7 @@ const formatData = (oppgaverForAvdeling: OppgaverForAvdeling[]): { x: number; y:
         ...acc,
         [index]: (acc[index] ? acc[index] + o.antall : o.antall),
       };
-    }, {});
+    }, {} as Record<string, number>);
 
   return Object.keys(sammenslatteBehandlingstyper)
     .map((k) => ({ x: sammenslatteBehandlingstyper[k], y: parseInt(k, 10) }));
@@ -152,6 +152,7 @@ const FordelingAvBehandlingstypeGraf: FunctionComponent<OwnProps & WrappedCompon
               />
               <HorizontalRectSeries
                 data={settCustomHoydePaSoylene(tilSaksbehandling)}
+                // @ts-ignore Feil i @types/react-vis
                 onValueMouseOver={leggTilHintVerdi}
                 onValueMouseOut={fjernHintVerdi}
                 fill="#337c9b"
@@ -159,6 +160,7 @@ const FordelingAvBehandlingstypeGraf: FunctionComponent<OwnProps & WrappedCompon
               />
               <HorizontalRectSeries
                 data={settCustomHoydePaSoylene(tilBeslutter)}
+                // @ts-ignore Feil i @types/react-vis
                 onValueMouseOver={leggTilHintVerdi}
                 onValueMouseOut={fjernHintVerdi}
                 fill="#38a161"

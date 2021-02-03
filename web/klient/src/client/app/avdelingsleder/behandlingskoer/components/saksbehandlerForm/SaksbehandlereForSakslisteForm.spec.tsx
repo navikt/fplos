@@ -14,12 +14,18 @@ describe('<SaksbehandlereForSakslisteForm>', () => {
     sakslisteId: 1,
     navn: 'Nyansatte',
     sistEndret: '2017-08-31',
-    andreKriterierTyper: [{
-      kode: andreKriterierType.TIL_BESLUTTER,
-      navn: 'Til beslutter',
+    andreKriterier: [{
+      andreKriterierType: {
+        kode: andreKriterierType.TIL_BESLUTTER,
+        navn: 'Til beslutter',
+      },
+      inkluder: true,
     }, {
-      kode: andreKriterierType.REGISTRER_PAPIRSOKNAD,
-      navn: 'Registrer papirsøknad',
+      andreKriterierType: {
+        kode: andreKriterierType.REGISTRER_PAPIRSOKNAD,
+        navn: 'Registrer papirsøknad',
+      },
+      inkluder: true,
     }],
     saksbehandlerIdenter: [],
     antallBehandlinger: 1,
@@ -34,7 +40,7 @@ describe('<SaksbehandlereForSakslisteForm>', () => {
         avdelingensSaksbehandlere={[]}
         valgtAvdelingEnhet="1"
         // @ts-ignore
-      />).find(Form).renderProp('render')();
+      />).find(Form).renderProp('render')({});
 
       const melding = wrapper.find(FormattedMessage);
       expect(melding).toHaveLength(2);
@@ -57,7 +63,7 @@ describe('<SaksbehandlereForSakslisteForm>', () => {
         hentAvdelingensSakslister={sinon.spy()}
         valgtAvdelingEnhet="1"
         // @ts-ignore
-      />).find(Form).renderProp('render')();
+      />).find(Form).renderProp('render')({});
 
       expect(wrapper.find(FormattedMessage)).toHaveLength(1);
 
@@ -92,7 +98,7 @@ describe('<SaksbehandlereForSakslisteForm>', () => {
         hentAvdelingensSakslister={sinon.spy()}
         valgtAvdelingEnhet="1"
         // @ts-ignore
-      />).find(Form).renderProp('render')();
+      />).find(Form).renderProp('render')({});
 
       expect(wrapper.find(FormattedMessage)).toHaveLength(1);
 

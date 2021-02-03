@@ -41,6 +41,8 @@ describe('<SorteringVelger>', () => {
       valgteBehandlingtyper={[]}
       fra={10}
       til={10}
+      fomDato="2020.01.01"
+      tomDato="2020.10.01"
       hentAvdelingensSakslister={sinon.spy()}
       hentAntallOppgaver={sinon.spy()}
     />);
@@ -64,11 +66,14 @@ describe('<SorteringVelger>', () => {
       valgteBehandlingtyper={[]}
       fra={10}
       til={10}
+      fomDato="2020.01.01"
+      tomDato="2020.10.01"
       hentAvdelingensSakslister={sinon.spy()}
       hentAntallOppgaver={sinon.spy()}
     />);
 
     const felt = wrapper.find(RadioGroupField);
+    // @ts-ignore
     felt.prop('onChange')(KoSortering.OPPRETT_BEHANDLING);
 
     const lagreSakslisteSorteringCallData = requestApi.getRequestMockData(RestApiPathsKeys.LAGRE_SAKSLISTE_SORTERING);

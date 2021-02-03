@@ -10,7 +10,7 @@ interface ErrorData {
 class DefaultFormatter implements Formatter<ErrorData | string> {
   isOfType = () => true
 
-  format = (errorData: ErrorData | string) => {
+  format = (errorData: ErrorData | string): ErrorMessage | undefined => {
     if (typeof errorData === 'string') {
       return ErrorMessage.withMessage(errorData);
     }

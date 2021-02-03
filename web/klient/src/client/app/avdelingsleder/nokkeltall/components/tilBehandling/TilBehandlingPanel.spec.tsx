@@ -13,6 +13,7 @@ import behandlingType from 'kodeverk/behandlingType';
 import { shallowWithIntl, intlMock } from 'testHelpers/intl-enzyme-test-helper';
 import { TilBehandlingPanel, ALLE_YTELSETYPER_VALGT } from './TilBehandlingPanel';
 import TilBehandlingGraf from './TilBehandlingGraf';
+import OppgaveForDato from './oppgaverForDatoTsType';
 
 describe('<TilBehandlingPanel>', () => {
   const intl: Partial<IntlShape> = {
@@ -51,7 +52,7 @@ describe('<TilBehandlingPanel>', () => {
         [fagsakYtelseType.ENGANGSSTONAD]: true,
         ukevalg: '2',
       };
-      const oppgaverPerDato = [];
+      const oppgaverPerDato: OppgaveForDato[] = [];
 
       const wrapper = shallowWithIntl(<TilBehandlingPanel
         intl={intl as IntlShape}

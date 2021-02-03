@@ -2,6 +2,7 @@ import React from 'react';
 import { shallow } from 'enzyme';
 import Lenke from 'nav-frontend-lenker';
 
+import Oppgave from 'saksbehandler/oppgaveTsType';
 import { requestApi, RestApiPathsKeys, RestApiGlobalStatePathsKeys } from 'data/fplosRestApi';
 import SistBehandledeSaker from './SistBehandledeSaker';
 
@@ -76,7 +77,7 @@ describe('<SistBehandledeSaker>', () => {
   it(
     'skal ikke vise noen lenker når ingen behandlede saker blir funnet',
     () => {
-      const oppgaver = [];
+      const oppgaver: Oppgave[] = [];
 
       requestApi.mock(RestApiGlobalStatePathsKeys.FPSAK_URL, { verdi: 'url' });
       requestApi.mock(RestApiGlobalStatePathsKeys.FPTILBAKE_URL, { verdi: 'url' });

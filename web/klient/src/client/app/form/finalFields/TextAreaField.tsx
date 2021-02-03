@@ -44,9 +44,9 @@ const TextAreaWithBadge: FunctionComponent<TextAreaWithBadgeProps & WrappedCompo
   </div>
 );
 
-const composeValidators = (validators: FieldValidator<any>[]): FieldValidator<any> => (
+const composeValidators = (validators?: FieldValidator<any>[]): FieldValidator<any> => (
   value: any,
-) => (validators ? validators.reduce((error, validator) => error || validator(value, undefined), undefined) : []);
+) => (validators ? validators.reduce((error, validator) => error || validator(value, {}), undefined) : []);
 
 const renderNavTextArea = renderNavField(injectIntl(TextAreaWithBadge));
 

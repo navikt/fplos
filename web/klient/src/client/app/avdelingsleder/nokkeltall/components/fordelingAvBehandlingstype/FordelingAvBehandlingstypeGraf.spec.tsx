@@ -86,7 +86,7 @@ describe('<FordelingAvBehandlingstypeGraf>', () => {
     const verdiIndekser = yAksen.prop('tickValues') as number[];
     expect(verdiIndekser).toHaveLength(6);
 
-    const verdiFn = yAksen.prop('tickFormat') as (v, i: number) => void;
+    const verdiFn = yAksen.prop('tickFormat') as any;
 
     const behandlingstyper = verdiIndekser.map((i) => verdiFn(undefined, i - 1));
     expect(behandlingstyper).toEqual(
@@ -123,7 +123,7 @@ describe('<FordelingAvBehandlingstypeGraf>', () => {
       x0: 1,
       y: 6,
     };
-    const func = hRectSeries.first().prop('onValueMouseOver') as ({ x: number, x0, y }) => void;
+    const func = hRectSeries.first().prop('onValueMouseOver') as any;
     func(grafPosisjon);
 
     const hint = wrapper.find(Hint);

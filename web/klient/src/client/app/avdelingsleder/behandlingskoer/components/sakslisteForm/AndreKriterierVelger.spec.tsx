@@ -71,6 +71,7 @@ describe('<AndreKriterierVelger>', () => {
     />);
 
     const checkbox = wrapper.find(CheckboxField).first();
+    // @ts-ignore
     checkbox.prop('onChange')(true);
 
     const lagreSakslisteAndreKriterierCallData = requestApi.getRequestMockData(RestApiPathsKeys.LAGRE_SAKSLISTE_ANDRE_KRITERIER);
@@ -97,6 +98,7 @@ describe('<AndreKriterierVelger>', () => {
       />);
 
       const checkbox = wrapper.find(CheckboxField).last();
+      // @ts-ignore
       checkbox.prop('onChange')(true);
 
       const lagreSakslisteAndreKriterierCallData = requestApi.getRequestMockData(RestApiPathsKeys.LAGRE_SAKSLISTE_ANDRE_KRITERIER);
@@ -140,6 +142,7 @@ describe('<AndreKriterierVelger>', () => {
       hentAntallOppgaver={sinon.spy()}
     />);
 
+    // @ts-ignore
     wrapper.find(RadioGroupField).prop('onChange')(false);
 
     const lagreSakslisteAndreKriterierCallData = requestApi.getRequestMockData(RestApiPathsKeys.LAGRE_SAKSLISTE_ANDRE_KRITERIER);

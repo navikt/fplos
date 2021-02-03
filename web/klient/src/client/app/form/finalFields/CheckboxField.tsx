@@ -9,7 +9,7 @@ import { LabelType } from './Label';
 
 const composeValidators = (validators: FieldValidator<any>[]): FieldValidator<any> => (
   value: any,
-) => validators.reduce((error, validator) => error || validator(value, undefined), undefined);
+) => validators.reduce((error, validator) => error || validator(value, {}), undefined);
 
 interface RenderCheckboxFieldProps {
   onChange: (isChecked: boolean) => void;

@@ -1,4 +1,4 @@
-export const parseQueryString = (queryString = ''): {[paramName: string]: string} => (
+export const parseQueryString = (queryString = ''): Record<string, string> => (
   queryString
     .replace(/^\?/, '') // Remove leading question mark
     .replace(/\+/g, '%20') // Replace plus signs with URL-encoded spaces

@@ -6,7 +6,7 @@ const decodeHtmlEntity = (str?: string): string | undefined => {
   if (str === null || str === undefined) {
     return str;
   }
-  return str.replace(/&#?((?!(60|62);)\w+);/g, (match, dec) => {
+  return str.replace(/&#?((?!(60|62);)\w+);/g, (match: string, dec: string) => {
     if (Number.isNaN(parseInt(dec, 10))) {
       const chars = {
         quot: 34,
@@ -186,12 +186,14 @@ const decodeHtmlEntity = (str?: string): string | undefined => {
         Omega: 937,
         omega: 969,
       };
-      if (chars[dec] !== undefined) {
-        return String.fromCharCode(chars[dec]);
+      // @ts-ignore Fiks
+      const charCode = chars[dec];
+      if (charCode !== undefined) {
+        return String.fromCharCode(charCode);
       }
       return match;
     }
-    return String.fromCharCode(dec);
+    return String.fromCharCode(parseInt(dec, 10));
   });
 };
 

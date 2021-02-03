@@ -77,7 +77,7 @@ class Periodpicker extends Component<OwnProps, StateProps> {
     }
   }
 
-  handleInputRef(inputRef: HTMLDivElement): void {
+  handleInputRef(inputRef: HTMLInputElement | null): void {
     if (inputRef) {
       this.inputRef = inputRef;
       this.handleUpdatedRefs();
@@ -148,10 +148,10 @@ class Periodpicker extends Component<OwnProps, StateProps> {
     getEndDateInput(this.props).onChange(e);
   }
 
-  parseToDate(name: string): Date {
+  parseToDate(name: string): Date | undefined {
     const nameFromProps = haystack(this.props, name);
     const day = nameFromProps.input.value;
-    return isValidDate(day) ? moment(day, DDMMYYYY_DATE_FORMAT).toDate() : null;
+    return isValidDate(day) ? moment(day, DDMMYYYY_DATE_FORMAT).toDate() : undefined;
   }
 
   toggleShowCalendar(): void {

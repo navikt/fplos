@@ -61,6 +61,7 @@ describe('<OpphevReservasjonModal>', () => {
       expect(form).toHaveLength(1);
 
       const handleSubmitFn = sinon.spy();
+      // @ts-ignore Fiks
       const renderFn = form.prop('render') as ({ handleSubmit: any }) => void;
       // @ts-ignore Fiks
       const formWrapper = shallowWithIntl(renderFn({

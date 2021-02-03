@@ -16,10 +16,16 @@ import NavAnsatt from 'app/navAnsattTsType';
 
 import styles from './searchForm.less';
 
-const isButtonDisabled = (searchString, searchStarted, searchResultAccessDenied) => (!searchResultAccessDenied.feilmelding && searchStarted) || !searchString;
+const isButtonDisabled = (
+  searchString: string,
+  searchStarted: boolean,
+  searchResultAccessDenied?: {
+    feilmelding?: string;
+  },
+) => (!searchResultAccessDenied?.feilmelding && searchStarted) || !searchString;
 
 interface OwnProps {
-  onSubmit: ({ searchString: string, skalReservere: boolean }) => void;
+  onSubmit: (values: { searchString: string, skalReservere: boolean }) => void;
   searchStarted: boolean;
   searchResultAccessDenied?: {
     feilmelding?: string;
@@ -69,14 +75,14 @@ const SearchForm: FunctionComponent<OwnProps & WrappedComponentProps> = ({
                   mini
                   htmlType="submit"
                   className={styles.button}
-                  spinner={!searchResultAccessDenied.feilmelding && searchStarted}
+                  spinner={!searchResultAccessDenied?.feilmelding && searchStarted}
                   disabled={isButtonDisabled(values.searchString, searchStarted, searchResultAccessDenied)}
                 >
                   <FormattedMessage id="Search.Search" />
                 </Knapp>
               </FlexColumn>
             </FlexRow>
-            {searchResultAccessDenied.feilmelding && (
+            {searchResultAccessDenied?.feilmelding && (
             <>
               <VerticalSpacer eightPx />
               <FlexRow>
@@ -94,12 +100,6 @@ const SearchForm: FunctionComponent<OwnProps & WrappedComponentProps> = ({
       )}
     />
   );
-};
-
-SearchForm.defaultProps = {
-  searchResultAccessDenied: {
-    feilmelding: undefined,
-  },
 };
 
 export default injectIntl(SearchForm);

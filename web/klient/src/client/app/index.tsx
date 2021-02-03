@@ -15,11 +15,11 @@ init({
   environment,
 });
 
-const history = createBrowserHistory({
+const history = createBrowserHistory<any>({
   basename: '/fplos/',
 });
 
-const renderFunc = (Component) => {
+const renderFunc = () => {
   const app = document.getElementById('app');
   if (app === null) {
     throw new Error('No app element');
@@ -28,7 +28,7 @@ const renderFunc = (Component) => {
     <Router history={history}>
       <RestApiProvider>
         <RestApiErrorProvider>
-          <Component />
+          <AppIndex />
         </RestApiErrorProvider>
       </RestApiProvider>
     </Router>,
@@ -36,4 +36,4 @@ const renderFunc = (Component) => {
   );
 };
 
-renderFunc(AppIndex);
+renderFunc();
