@@ -70,10 +70,10 @@ const finnAntallPerDato = (oppgaverSomErApneEllerPaVent: OppgaverSomErApneEllerP
         ...acc,
         [key]: (acc[key] ? acc[key] + antall : antall),
       };
-    }, {});
+    }, {} as Record<string, number>);
 
   return Object.keys(antallPerDatoOgUkjent)
-    .map((k) => ({ x: k, y: parseInt(antallPerDatoOgUkjent[k], 10) }));
+    .map((k) => ({ x: k, y: antallPerDatoOgUkjent[k] }));
 };
 
 const lagKoordinatForDato = (dato: moment.Moment, oppgaver: KoordinatDatoEllerUkjent[]): KoordinatDato => {
@@ -223,6 +223,7 @@ const OppgaverSomErApneEllerPaVentGraf: FunctionComponent<OwnProps & WrappedComp
               />
               <VerticalRectSeries
                 data={rectSeriesKoordinaterIkkePaVent}
+                // @ts-ignore Feil i @types/react-vis
                 onValueMouseOver={leggTilHintVerdi}
                 onValueMouseOut={fjernHintVerdi}
                 fill="#337c9b"
@@ -230,6 +231,7 @@ const OppgaverSomErApneEllerPaVentGraf: FunctionComponent<OwnProps & WrappedComp
               />
               <VerticalRectSeries
                 data={rectSeriesKoordinaterPaVent}
+                // @ts-ignore Feil i @types/react-vis
                 onValueMouseOver={leggTilHintVerdi}
                 onValueMouseOut={fjernHintVerdi}
                 fill="#38a161"

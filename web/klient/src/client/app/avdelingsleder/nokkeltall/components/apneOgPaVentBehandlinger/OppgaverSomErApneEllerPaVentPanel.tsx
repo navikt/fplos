@@ -19,7 +19,7 @@ interface OwnProps {
   width: number;
   height: number;
   oppgaverApneEllerPaVent: OppgaverSomErApneEllerPaVent[];
-  getValueFromLocalStorage: (key: string) => string;
+  getValueFromLocalStorage: (key: string) => string | undefined;
 }
 
 /**

@@ -13,6 +13,7 @@ const EMPTY_ARRAY_AVDELING: OppgaverForAvdeling[] = [];
 const EMPTY_ARRAY_DATO: OppgaveForDato[] = [];
 const EMPTY_ARRAY_PA_VENT: OppgaverManueltPaVent[] = [];
 const EMPTY_ARRAY_STONADSDAG: OppgaverForForsteStonadsdag[] = [];
+const EMPTY_ARRAY_APNE_ELLER_PA_VENT: OppgaverSomErApneEllerPaVent[] = [];
 
 interface OwnProps {
   valgtAvdelingEnhet: string;
@@ -37,7 +38,7 @@ const NokkeltallIndex: FunctionComponent<OwnProps> = ({
     data: oppgaverPerForsteStonadsdag = EMPTY_ARRAY_STONADSDAG,
   } = restApiHooks.useRestApi<OppgaverForForsteStonadsdag[]>(RestApiPathsKeys.HENT_OPPGAVER_PER_FORSTE_STONADSDAG, { avdelingEnhet: valgtAvdelingEnhet });
   const {
-    data: oppgaverApneEllerPaVent = EMPTY_ARRAY,
+    data: oppgaverApneEllerPaVent = EMPTY_ARRAY_APNE_ELLER_PA_VENT,
   } = restApiHooks.useRestApi<OppgaverSomErApneEllerPaVent[]>(RestApiPathsKeys.HENT_OPPGAVER_APNE_ELLER_PA_VENT, { avdelingEnhet: valgtAvdelingEnhet });
 
   return (

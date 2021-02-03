@@ -78,7 +78,7 @@ describe('<OppgaverSomErApneEllerPaVentGraf>', () => {
       x0: 1,
       y: 6,
     };
-    const func = vRectSeries.first().prop('onValueMouseOver') as ({ x: number, x0, y }) => void;
+    const func = vRectSeries.first().prop('onValueMouseOver') as any;
     func(grafPosisjon);
 
     const hint = wrapper.find(Hint);
