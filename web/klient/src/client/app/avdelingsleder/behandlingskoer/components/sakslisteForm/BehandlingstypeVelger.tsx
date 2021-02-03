@@ -58,7 +58,7 @@ const BehandlingstypeVelger: FunctionComponent<OwnProps> = ({
               })}
             />
           </React.Fragment>
-        )
+        );
       }).filter((bt) => !!bt)}
     </>
   );

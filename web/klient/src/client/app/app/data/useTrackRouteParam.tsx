@@ -16,7 +16,7 @@ interface Config {
 }
 
 const mapMatchToParam = (match: RouterMatch, location: Location, trackingConfig: Required<Config>) => {
-  const params = trackingConfig.isQueryParam ? parseQueryString(location.search) : match.params;
+  const params = trackingConfig.isQueryParam ? parseQueryString(location.search) : match.params as Record<string, string>;
   return trackingConfig.parse(params[trackingConfig.paramName]);
 };
 

@@ -180,6 +180,7 @@ const HeaderWithErrorPanel: FunctionComponent<OwnProps & WrappedComponentProps> 
         driftsmeldinger={driftsmeldinger}
       />
       <ErrorMessagePanel
+        // @ts-ignore Fiks denne
         errorMessages={formaterteFeilmeldinger}
         queryStrings={queryStrings}
         removeErrorMessages={removeErrorMessages}

@@ -10,16 +10,24 @@ import EventType from 'data/rest-api/src/requestApi/eventType';
 import styles from './errorMessagePanel.less';
 
 type ErrorMessage = {
-  type: EventType;
+  type?: EventType;
   code?: string;
   params?: {
     errorDetails?: string;
     location?: string;
+    contextPath?: string;
+    message?: string;
+    date?: string;
+    time?: string;
   };
   text?: string;
 };
 
-export const getErrorMessageList = (intl: IntlShape, queryStrings: { errorcode?: string; errormessage?: string}, allErrorMessages: ErrorMessage[] = []): string[] => {
+export const getErrorMessageList = (
+  intl: IntlShape,
+  queryStrings: { errorcode?: string; errormessage?: string},
+  allErrorMessages: ErrorMessage[] = [],
+): string[] => {
   const errorMessages = [];
   if (queryStrings.errorcode) {
     errorMessages.push(intl.formatMessage({ id: queryStrings.errorcode }));

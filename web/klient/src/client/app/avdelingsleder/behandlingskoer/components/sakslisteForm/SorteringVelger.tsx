@@ -106,8 +106,7 @@ const SorteringVelger: FunctionComponent<OwnProps & WrappedComponentProps> = ({
                 />
               )}
             </RadioOption>
-          )
-        )}
+          ))}
       </RadioGroupField>
     </>
   );
