@@ -5,11 +5,10 @@ import {
   XYPlot, XAxis, YAxis, HorizontalGridLines, VerticalRectSeries, DiscreteColorLegend, Hint,
 } from 'react-vis';
 import {
-  FormattedMessage, injectIntl, IntlShape, WrappedComponentProps,
+  injectIntl, IntlShape, WrappedComponentProps,
 } from 'react-intl';
 import moment from 'moment';
 import Panel from 'nav-frontend-paneler';
-import { Normaltekst } from 'nav-frontend-typografi';
 
 import behandlingVenteStatus from 'kodeverk/behandlingVenteStatus';
 import { FlexContainer, FlexRow, FlexColumn } from 'sharedComponents/flexGrid';
@@ -146,10 +145,13 @@ const OppgaverSomErApneEllerPaVentGraf: FunctionComponent<OwnProps & WrappedComp
   height,
   oppgaverApneEllerPaVent,
 }) => {
-  const [hintVerdi, setHintVerdi] = useState<Koordinat>();
+  const [hintVerdi, setHintVerdi] = useState<{ paVent: boolean, verdi: Koordinat }>();
 
-  const leggTilHintVerdi = useCallback((verdi: Koordinat): void => {
-    setHintVerdi(verdi);
+  const leggTilHintVerdiPaVent = useCallback((verdi: Koordinat): void => {
+    setHintVerdi({ paVent: true, verdi });
+  }, []);
+  const leggTilHintVerdiIkkePaVent = useCallback((verdi: Koordinat): void => {
+    setHintVerdi({ paVent: false, verdi });
   }, []);
   const fjernHintVerdi = useCallback((): void => {
     setHintVerdi(undefined);
@@ -224,7 +226,7 @@ const OppgaverSomErApneEllerPaVentGraf: FunctionComponent<OwnProps & WrappedComp
               <VerticalRectSeries
                 data={rectSeriesKoordinaterIkkePaVent}
                 // @ts-ignore Feil i @types/react-vis
-                onValueMouseOver={leggTilHintVerdi}
+                onValueMouseOver={leggTilHintVerdiIkkePaVent}
                 onValueMouseOut={fjernHintVerdi}
                 fill="#337c9b"
                 stroke="#337c9b"
@@ -232,16 +234,19 @@ const OppgaverSomErApneEllerPaVentGraf: FunctionComponent<OwnProps & WrappedComp
               <VerticalRectSeries
                 data={rectSeriesKoordinaterPaVent}
                 // @ts-ignore Feil i @types/react-vis
-                onValueMouseOver={leggTilHintVerdi}
+                onValueMouseOver={leggTilHintVerdiPaVent}
                 onValueMouseOut={fjernHintVerdi}
                 fill="#38a161"
                 stroke="#38a161"
               />
               {hintVerdi && (
-                <Hint value={hintVerdi}>
+                <Hint value={hintVerdi.verdi}>
                   <div className={styles.hint}>
-                    {intl.formatMessage({ id: 'OppgaverSomErApneEllerPaVentGraf.Antall' }, {
-                      antall: hintVerdi.y0 ? hintVerdi.y - hintVerdi.y0 : hintVerdi.y,
+                    {intl.formatMessage({
+                      id: hintVerdi.paVent
+                        ? 'OppgaverSomErApneEllerPaVentGraf.AntallPaVent' : 'OppgaverSomErApneEllerPaVentGraf.AntallIkkePaVent',
+                    }, {
+                      antall: hintVerdi.verdi.y0 ? hintVerdi.verdi.y - hintVerdi.verdi.y0 : hintVerdi.verdi.y,
                     })}
                   </div>
                 </Hint>
@@ -250,15 +255,11 @@ const OppgaverSomErApneEllerPaVentGraf: FunctionComponent<OwnProps & WrappedComp
           </FlexColumn>
           <FlexColumn>
             <DiscreteColorLegend
-              // @ts-ignore Feil i @types/react-vis
-              colors={['#337c9b', '#38a161']}
               items={[
-                <Normaltekst className={styles.displayInline}>
-                  <FormattedMessage id="OppgaverSomErApneEllerPaVentGraf.IkkePaVent" />
-                </Normaltekst>,
-                <Normaltekst className={styles.displayInline}>
-                  <FormattedMessage id="OppgaverSomErApneEllerPaVentGraf.PaVent" />
-                </Normaltekst>,
+                // @ts-ignore Feil i @types/react-vis
+                { title: intl.formatMessage({ id: 'OppgaverSomErApneEllerPaVentGraf.PaVent' }), color: '#38a161', strokeWidth: 10 },
+                // @ts-ignore Feil i @types/react-vis
+                { title: intl.formatMessage({ id: 'OppgaverSomErApneEllerPaVentGraf.IkkePaVent' }), color: '#337c9b', strokeWidth: 12 },
               ]}
             />
           </FlexColumn>
