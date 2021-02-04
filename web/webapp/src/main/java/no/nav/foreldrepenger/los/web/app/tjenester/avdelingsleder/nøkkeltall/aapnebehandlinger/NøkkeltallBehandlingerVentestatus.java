@@ -1,0 +1,54 @@
+package no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.nøkkeltall.aapnebehandlinger;
+
+import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.nøkkeltall.aapnebehandlinger.dto.NøkkeltallBehandlingVentestatusDto;
+import no.nav.vedtak.felles.integrasjon.rest.jersey.Jersey;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import java.time.LocalDateTime;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+@ApplicationScoped
+public class NøkkeltallBehandlingerVentestatus {
+
+    private static final Logger LOG = LoggerFactory.getLogger(NøkkeltallBehandlingerVentestatus.class);
+
+    private JerseyFpsakKlient fpsakRestKlient;
+    private Map<String, List<NøkkeltallBehandlingVentestatusDto>> enhetStatistikkMap;
+    private LocalDateTime nesteOppdateringEtter;
+
+    public NøkkeltallBehandlingerVentestatus() {
+    }
+
+    @Inject
+    public NøkkeltallBehandlingerVentestatus(JerseyFpsakKlient fpsakRestKlient) {
+        this.fpsakRestKlient = fpsakRestKlient;
+    }
+
+    public List<NøkkeltallBehandlingVentestatusDto> hentBehandlingVentestatusNøkkeltall(String avdeling) {
+        if (enhetStatistikkMap == null || LocalDateTime.now().isAfter(nesteOppdateringEtter)) {
+            enhetStatistikkMap = fpsakRestKlient.hentBehandlingVentestatusNøkkeltall()
+                    .stream()
+                    .collect(Collectors.groupingBy(NøkkeltallBehandlingVentestatusDto::getBehandlendeEnhet,
+                            Collectors.toUnmodifiableList()));
+            nesteOppdateringEtter = LocalDateTime.now().plusMinutes(45);
+            LOG.info("Hentet statistikk fra fpsak, neste hentes etter {}. Antall unike uttaksmåneder per enhet: {}", nesteOppdateringEtter, antallFørsteUttakMånederPerEnhet());
+        }
+        var resultat = enhetStatistikkMap.get(avdeling);
+        return resultat != null ? resultat : Collections.emptyList();
+    }
+
+    private String antallFørsteUttakMånederPerEnhet() {
+        return enhetStatistikkMap.keySet().stream()
+                .map(key -> key + "=" + enhetStatistikkMap.get(key).stream()
+                        .map(NøkkeltallBehandlingVentestatusDto::getFørsteUttakMåned)
+                        .distinct()
+                        .count())
+                .collect(Collectors.joining(", ", "{", "}"));
+    }
+}

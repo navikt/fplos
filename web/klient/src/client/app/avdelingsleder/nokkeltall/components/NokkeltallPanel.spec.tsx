@@ -12,6 +12,7 @@ describe('<NokkeltallPanel>', () => {
       oppgaverPerDato={[]}
       oppgaverManueltPaVent={[]}
       oppgaverPerForsteStonadsdag={[]}
+      oppgaverApneEllerPaVent={[]}
     />);
 
     expect(wrapper.find(FordelingAvBehandlingstypePanel)).toHaveLength(1);
