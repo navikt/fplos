@@ -1,6 +1,7 @@
 FROM navikt/java:11-appdynamics
-ENV APPD_ENABLED=true
+
 ENV APP_NAME=fplos
+ENV APPD_ENABLED=true
 ENV APPDYNAMICS_CONTROLLER_HOST_NAME=appdynamics.adeo.no
 ENV APPDYNAMICS_CONTROLLER_PORT=443
 ENV APPDYNAMICS_CONTROLLER_SSL_ENABLED=true
@@ -19,13 +20,9 @@ COPY web/webapp/target/app.jar /app/
 COPY web/webapp/target/lib/*.jar /app/lib/
 
 # Application
-#COPY web/webapp/target/webapp/ /app/webapp/
 COPY web/klient/target/index.html /app/klient/
 COPY web/klient/target/public/ /app/klient/public/
 
 COPY export-vault-secrets.sh /init-scripts/
-RUN chmod +x /init-scripts/*
 
-# Application Start Command
-COPY run-java.sh /
-RUN chmod +x /run-java.sh
+ENV JAVA_OPTS="-XX:MaxRAMPercentage=75.0 -Djava.security.egd=file:/dev/./urandom -Duser.timezone=Europe/Oslo -Dklient=./klient"
