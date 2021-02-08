@@ -48,7 +48,7 @@
         <!-- Transitive avh. versjoner for å sikre unikhet (enforcer dependencyConvergence). Skal ikke benyttes direkte av vår egen kode. -->
         <jasypt.version>1.9.3</jasypt.version>
         <javaslang.version>2.0.6</javaslang.version>
-        <joda-time.version>2.10.9</joda-time.version>
+        <joda-time.version>2.10.10</joda-time.version>
         <owaspencoder.version>1.2.3</owaspencoder.version>
         <ojdbc.version>19.3.0.0</ojdbc.version>
         <kafka.version>2.6.0</kafka.version>
