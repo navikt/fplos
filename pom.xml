@@ -51,7 +51,7 @@
         <joda-time.version>2.10.9</joda-time.version>
         <owaspencoder.version>1.2.3</owaspencoder.version>
         <ojdbc.version>19.3.0.0</ojdbc.version>
-        <kafka.version>2.6.0</kafka.version>
+        <kafka.version>2.7.0</kafka.version>
         <junit5.version>5.7.1</junit5.version>
         <mockito-junit-jupiter.version>3.7.7</mockito-junit-jupiter.version>
         <validation-api.version>2.0.1.Final</validation-api.version>
