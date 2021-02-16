@@ -6,26 +6,26 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import javax.persistence.EntityManager;
 
+import no.nav.fplos.kø.OppgaveKøTjeneste;
+import no.nav.fplos.kø.OppgaveKøTjenesteImpl;
+import no.nav.fplos.reservasjon.ReservasjonTjeneste;
+import no.nav.fplos.reservasjon.ReservasjonTjenesteImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import no.nav.foreldrepenger.dbstoette.DBTestUtil;
 import no.nav.foreldrepenger.extensions.EntityManagerFPLosAwareExtension;
-import no.nav.foreldrepenger.loslager.oppgave.AndreKriterierType;
 import no.nav.foreldrepenger.loslager.oppgave.BehandlingType;
 import no.nav.foreldrepenger.loslager.oppgave.KøSortering;
 import no.nav.foreldrepenger.loslager.oppgave.Oppgave;
-import no.nav.foreldrepenger.loslager.oppgave.OppgaveEgenskap;
 import no.nav.foreldrepenger.loslager.oppgave.OppgaveFiltrering;
 import no.nav.foreldrepenger.loslager.organisasjon.Avdeling;
-import no.nav.foreldrepenger.loslager.organisasjon.Saksbehandler;
 import no.nav.foreldrepenger.loslager.repository.OppgaveRepository;
 import no.nav.foreldrepenger.loslager.repository.OppgaveRepositoryImpl;
 import no.nav.foreldrepenger.loslager.repository.OrganisasjonRepositoryImpl;
@@ -38,9 +38,11 @@ public class OppgaveTjenesteImplTest {
     private static final String AVDELING_BERGEN_ENHET = "4812";
 
     private OppgaveRepository oppgaveRepository;
+    private OppgaveKøTjeneste oppgaveKøTjeneste;
+    private OppgaveTjeneste oppgaveTjeneste;
+    private ReservasjonTjeneste reservasjonTjeneste;
 
     private AvdelingslederTjeneste avdelingslederTjeneste;
-    private OppgaveTjenesteImpl oppgaveTjeneste;
 
     private final Oppgave førstegangOppgave = Oppgave.builder().dummyOppgave(AVDELING_DRAMMEN_ENHET)
             .medBehandlingType(BehandlingType.FØRSTEGANGSSØKNAD).build();
@@ -57,7 +59,9 @@ public class OppgaveTjenesteImplTest {
         oppgaveRepository = new OppgaveRepositoryImpl(entityManager);
         var organisasjonRepository = new OrganisasjonRepositoryImpl(entityManager);
         avdelingslederTjeneste = new AvdelingslederTjenesteImpl(oppgaveRepository, organisasjonRepository);
-        oppgaveTjeneste = new OppgaveTjenesteImpl(oppgaveRepository, organisasjonRepository);
+        oppgaveKøTjeneste = new OppgaveKøTjenesteImpl(oppgaveRepository, organisasjonRepository);
+        oppgaveTjeneste = new OppgaveTjenesteImpl(oppgaveRepository);
+        reservasjonTjeneste = new ReservasjonTjenesteImpl(oppgaveRepository);
         this.entityManager = entityManager;
     }
 
@@ -81,69 +85,12 @@ public class OppgaveTjenesteImplTest {
                 .findAny().orElseThrow();
     }
 
-    private Long leggeInnEtSettMedAndreKriterierOppgaver() {
-        OppgaveFiltrering oppgaveFiltrering = OppgaveFiltrering.builder().medNavn("OPPRETTET")
-                .medSortering(KøSortering.OPPRETT_BEHANDLING)
-                .medAvdeling(avdelingDrammen()).build();
-        oppgaveRepository.lagre(oppgaveFiltrering);
-        leggtilOppgaveMedEkstraEgenskaper(førstegangOppgave, AndreKriterierType.TIL_BESLUTTER);
-        leggtilOppgaveMedEkstraEgenskaper(førstegangOppgave, AndreKriterierType.PAPIRSØKNAD);
-        leggtilOppgaveMedEkstraEgenskaper(klageOppgave, AndreKriterierType.PAPIRSØKNAD);
-        oppgaveRepository.lagre(innsynOppgave);
-        entityManager.refresh(oppgaveFiltrering);
-        return oppgaveFiltrering.getId();
-    }
-
-    private void leggtilOppgaveMedEkstraEgenskaper(Oppgave oppgave, AndreKriterierType andreKriterierType) {
-        oppgaveRepository.lagre(oppgave);
-        oppgaveRepository.refresh(oppgave);
-        oppgaveRepository.lagre(new OppgaveEgenskap(oppgave, andreKriterierType));
-    }
-
-    private List<OppgaveFiltrering> leggInnEtSettMedLister(int antallLister) {
-        List<OppgaveFiltrering> filtre = new ArrayList<>();
-        for (int i = 0; i < antallLister; i++) {
-            OppgaveFiltrering oppgaveFiltrering = OppgaveFiltrering.builder()
-                    .medNavn("Test " + i).medSortering(KøSortering.BEHANDLINGSFRIST)
-                    .medAvdeling(avdelingDrammen()).build();
-            entityManager.persist(oppgaveFiltrering);
-            filtre.add(oppgaveFiltrering);
-        }
-        entityManager.flush();
-        return filtre;
-    }
-
     @Test
     public void testEnFiltreringpåBehandlingstype() {
         Long listeId = leggeInnEtSettMedOppgaver();
         avdelingslederTjeneste.endreFiltreringBehandlingType(listeId, BehandlingType.FØRSTEGANGSSØKNAD, true);
-        List<Oppgave> oppgaver = oppgaveTjeneste.hentOppgaver(listeId);
+        List<Oppgave> oppgaver = oppgaveKøTjeneste.hentOppgaver(listeId);
         assertThat(oppgaver).hasSize(1);
-    }
-
-    @Test
-    public void testToFiltreringerpåBehandlingstype() {
-        Long listeId = leggeInnEtSettMedOppgaver();
-        avdelingslederTjeneste.endreFiltreringBehandlingType(listeId, BehandlingType.FØRSTEGANGSSØKNAD, true);
-        avdelingslederTjeneste.endreFiltreringBehandlingType(listeId, BehandlingType.KLAGE, true);
-        List<Oppgave> oppgaver = oppgaveTjeneste.hentOppgaver(listeId);
-        assertThat(oppgaver).hasSize(2);
-    }
-
-    @Test
-    public void testFiltreringerpåAndreKriteriertype() {
-        Long listeId = leggeInnEtSettMedAndreKriterierOppgaver();
-        avdelingslederTjeneste.endreFiltreringAndreKriterierType(listeId, AndreKriterierType.TIL_BESLUTTER, true, true);
-        avdelingslederTjeneste.endreFiltreringAndreKriterierType(listeId, AndreKriterierType.PAPIRSØKNAD, true, true);
-        List<Oppgave> oppgaver = oppgaveTjeneste.hentOppgaver(listeId);
-        assertThat(oppgaver).hasSize(1);
-    }
-
-    @Test
-    public void testUtenFiltreringpåBehandlingstype() {
-        Long oppgaveFiltreringId = leggeInnEtSettMedOppgaver();
-        List<Oppgave> oppgaver = oppgaveTjeneste.hentOppgaver(oppgaveFiltreringId);
-        assertThat(oppgaver).hasSize(3);
     }
 
     @Test
@@ -158,7 +105,7 @@ public class OppgaveTjenesteImplTest {
                 .medAvdeling(avdelingDrammen()).build();
         oppgaveRepository.lagre(opprettet);
 
-        List<Oppgave> oppgaves = oppgaveTjeneste.hentOppgaver(opprettet.getId());
+        List<Oppgave> oppgaves = oppgaveKøTjeneste.hentOppgaver(opprettet.getId());
         assertThat(oppgaves).containsSequence(førsteOppgave, andreOppgave, tredjeOppgave, fjerdeOppgave);
     }
 
@@ -174,7 +121,7 @@ public class OppgaveTjenesteImplTest {
                 .medAvdeling(avdelingDrammen()).build();
         oppgaveRepository.lagre(frist);
 
-        List<Oppgave> oppgaves = oppgaveTjeneste.hentOppgaver(frist.getId());
+        List<Oppgave> oppgaves = oppgaveKøTjeneste.hentOppgaver(frist.getId());
         assertThat(oppgaves).containsSequence(førsteOppgave, andreOppgave, tredjeOppgave, fjerdeOppgave);
     }
 
@@ -190,7 +137,7 @@ public class OppgaveTjenesteImplTest {
                 .medAvdeling(avdelingDrammen()).build();
         oppgaveRepository.lagre(førsteStønadsdag);
 
-        List<Oppgave> oppgaves = oppgaveTjeneste.hentOppgaver(førsteStønadsdag.getId());
+        List<Oppgave> oppgaves = oppgaveKøTjeneste.hentOppgaver(førsteStønadsdag.getId());
         assertThat(oppgaves).containsSequence(førsteOppgave, andreOppgave, tredjeOppgave, fjerdeOppgave);
     }
 
@@ -206,67 +153,35 @@ public class OppgaveTjenesteImplTest {
     }
 
     @Test
-    public void hentAlleOppgaveFiltrering() {
-        List<OppgaveFiltrering> lagtInnLister = leggInnEtSettMedLister(3);
-        Saksbehandler saksbehandler = new Saksbehandler("1234567");
-        entityManager.persist(saksbehandler);
-        entityManager.flush();
-
-        avdelingslederTjeneste.leggSaksbehandlerTilListe(lagtInnLister.get(0).getId(), saksbehandler.getSaksbehandlerIdent());
-        avdelingslederTjeneste.leggSaksbehandlerTilListe(lagtInnLister.get(2).getId(), saksbehandler.getSaksbehandlerIdent());
-        entityManager.refresh(saksbehandler);
-
-        List<OppgaveFiltrering> oppgaveFiltrerings = oppgaveTjeneste.hentAlleOppgaveFiltrering(saksbehandler.getSaksbehandlerIdent());
-        assertThat(oppgaveFiltrerings).contains(lagtInnLister.get(0), lagtInnLister.get(2));
-        assertThat(oppgaveFiltrerings).doesNotContain(lagtInnLister.get(1));
-    }
-
-    @Test
-    public void hentAntallOppgaver() {
-        Long oppgaveFiltreringId = leggeInnEtSettMedOppgaver();
-        Integer antallOppgaver = oppgaveTjeneste.hentAntallOppgaver(oppgaveFiltreringId, false);
-        assertThat(antallOppgaver).isEqualTo(3);
-    }
-
-    @Test
-    public void hentAntallOppgaverForAvdeling() {
-        leggeInnEtSettMedOppgaver();
-        Integer antallOppgaverDrammen = oppgaveTjeneste.hentAntallOppgaverForAvdeling(AVDELING_DRAMMEN_ENHET);
-        assertThat(antallOppgaverDrammen).isEqualTo(3);
-        Integer antallOppgaverBergen = oppgaveTjeneste.hentAntallOppgaverForAvdeling(AVDELING_BERGEN_ENHET);
-        assertThat(antallOppgaverBergen).isEqualTo(1);
-    }
-
-    @Test
     public void testReservasjon() {
         Long oppgaveFiltreringId = leggeInnEtSettMedOppgaver();
-        assertThat(oppgaveTjeneste.hentOppgaver(oppgaveFiltreringId)).hasSize(3);
-        assertThat(oppgaveTjeneste.hentReservasjonerTilknyttetAktiveOppgaver()).hasSize(0);
-        assertThat(oppgaveTjeneste.hentReservasjonerForAvdeling(AVDELING_DRAMMEN_ENHET)).hasSize(0);
-        assertThat(oppgaveTjeneste.hentSisteReserverteOppgaver()).hasSize(0);
+        assertThat(oppgaveKøTjeneste.hentOppgaver(oppgaveFiltreringId)).hasSize(3);
+        assertThat(reservasjonTjeneste.hentReservasjonerTilknyttetAktiveOppgaver()).hasSize(0);
+        assertThat(reservasjonTjeneste.hentReservasjonerForAvdeling(AVDELING_DRAMMEN_ENHET)).hasSize(0);
+        assertThat(reservasjonTjeneste.hentSisteReserverteOppgaver()).hasSize(0);
 
-        oppgaveTjeneste.reserverOppgave(førstegangOppgave.getId());
-        assertThat(oppgaveTjeneste.hentOppgaver(oppgaveFiltreringId)).hasSize(2);
-        assertThat(oppgaveTjeneste.hentReservasjonerTilknyttetAktiveOppgaver()).hasSize(1);
-        assertThat(oppgaveTjeneste.hentReservasjonerForAvdeling(AVDELING_DRAMMEN_ENHET)).hasSize(1);
-        assertThat(oppgaveTjeneste.hentReservasjonerForAvdeling(AVDELING_BERGEN_ENHET)).hasSize(0);
-        assertThat(oppgaveTjeneste.hentReservasjonerTilknyttetAktiveOppgaver().get(0).getReservertTil().until(LocalDateTime.now().plusHours(2), MINUTES)).isLessThan(2);
-        assertThat(oppgaveTjeneste.hentSisteReserverteOppgaver()).hasSize(1);
+        reservasjonTjeneste.reserverOppgave(førstegangOppgave.getId());
+        assertThat(oppgaveKøTjeneste.hentOppgaver(oppgaveFiltreringId)).hasSize(2);
+        assertThat(reservasjonTjeneste.hentReservasjonerTilknyttetAktiveOppgaver()).hasSize(1);
+        assertThat(reservasjonTjeneste.hentReservasjonerForAvdeling(AVDELING_DRAMMEN_ENHET)).hasSize(1);
+        assertThat(reservasjonTjeneste.hentReservasjonerForAvdeling(AVDELING_BERGEN_ENHET)).hasSize(0);
+        assertThat(reservasjonTjeneste.hentReservasjonerTilknyttetAktiveOppgaver().get(0).getReservertTil().until(LocalDateTime.now().plusHours(2), MINUTES)).isLessThan(2);
+        assertThat(reservasjonTjeneste.hentSisteReserverteOppgaver()).hasSize(1);
 
-        oppgaveTjeneste.forlengReservasjonPåOppgave(førstegangOppgave.getId());
-        assertThat(oppgaveTjeneste.hentReservasjonerTilknyttetAktiveOppgaver().get(0).getReservertTil().until(LocalDateTime.now().plusHours(26), MINUTES)).isLessThan(2);
-        assertThat(oppgaveTjeneste.hentReservasjonerForAvdeling(AVDELING_DRAMMEN_ENHET).get(0).getReservertTil().until(LocalDateTime.now().plusHours(26), MINUTES)).isLessThan(2);
+        reservasjonTjeneste.forlengReservasjonPåOppgave(førstegangOppgave.getId());
+        assertThat(reservasjonTjeneste.hentReservasjonerTilknyttetAktiveOppgaver().get(0).getReservertTil().until(LocalDateTime.now().plusHours(26), MINUTES)).isLessThan(2);
+        assertThat(reservasjonTjeneste.hentReservasjonerForAvdeling(AVDELING_DRAMMEN_ENHET).get(0).getReservertTil().until(LocalDateTime.now().plusHours(26), MINUTES)).isLessThan(2);
 
-        oppgaveTjeneste.endreReservasjonPåOppgave(førstegangOppgave.getId(), LocalDateTime.now().plusDays(3));
-        assertThat(oppgaveTjeneste.hentReservasjonerTilknyttetAktiveOppgaver().get(0).getReservertTil().until(LocalDateTime.now().plusDays(3), MINUTES)).isLessThan(2);
+        reservasjonTjeneste.endreReservasjonPåOppgave(førstegangOppgave.getId(), LocalDateTime.now().plusDays(3));
+        assertThat(reservasjonTjeneste.hentReservasjonerTilknyttetAktiveOppgaver().get(0).getReservertTil().until(LocalDateTime.now().plusDays(3), MINUTES)).isLessThan(2);
 
         String begrunnelse = "Test";
-        oppgaveTjeneste.frigiOppgave(førstegangOppgave.getId(), begrunnelse);
-        assertThat(oppgaveTjeneste.hentOppgaver(oppgaveFiltreringId)).hasSize(3);
-        assertThat(oppgaveTjeneste.hentReservasjonerTilknyttetAktiveOppgaver()).hasSize(0);
-        assertThat(oppgaveTjeneste.hentReservasjonerForAvdeling(AVDELING_DRAMMEN_ENHET)).hasSize(0);
-        assertThat(oppgaveTjeneste.hentSisteReserverteOppgaver()).hasSize(1);
-        assertThat(oppgaveTjeneste.hentSisteReserverteOppgaver().get(0).getReservasjon().getBegrunnelse()).isEqualTo(begrunnelse);
+        reservasjonTjeneste.frigiOppgave(førstegangOppgave.getId(), begrunnelse);
+        assertThat(oppgaveKøTjeneste.hentOppgaver(oppgaveFiltreringId)).hasSize(3);
+        assertThat(reservasjonTjeneste.hentReservasjonerTilknyttetAktiveOppgaver()).hasSize(0);
+        assertThat(reservasjonTjeneste.hentReservasjonerForAvdeling(AVDELING_DRAMMEN_ENHET)).hasSize(0);
+        assertThat(reservasjonTjeneste.hentSisteReserverteOppgaver()).hasSize(1);
+        assertThat(reservasjonTjeneste.hentSisteReserverteOppgaver().get(0).getReservasjon().getBegrunnelse()).isEqualTo(begrunnelse);
     }
 
     @Test
@@ -274,8 +189,8 @@ public class OppgaveTjenesteImplTest {
         Oppgave andreOppgave = opprettOgLargeOppgaveTilSortering(8, 9, 10);
         Oppgave førsteOppgave = opprettOgLargeOppgaveTilSortering(0, 10, 10);
         List<Long> oppgaveIder = Arrays.asList(førsteOppgave.getId(), andreOppgave.getId());
-        assertThat(oppgaveTjeneste.harForandretOppgaver(oppgaveIder)).isFalse();
-        oppgaveTjeneste.reserverOppgave(førsteOppgave.getId());
-        assertThat(oppgaveTjeneste.harForandretOppgaver(oppgaveIder)).isTrue();
+        assertThat(oppgaveTjeneste.erAlleOppgaverFortsattTilgjengelig(oppgaveIder)).isTrue();
+        reservasjonTjeneste.reserverOppgave(førsteOppgave.getId());
+        assertThat(oppgaveTjeneste.erAlleOppgaverFortsattTilgjengelig(oppgaveIder)).isFalse();
     }
 }

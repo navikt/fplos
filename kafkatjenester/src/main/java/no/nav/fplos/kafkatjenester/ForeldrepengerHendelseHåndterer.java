@@ -4,6 +4,7 @@ import static no.nav.fplos.kafkatjenester.util.StreamUtil.safeStream;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -12,6 +13,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import no.nav.foreldrepenger.loslager.oppgave.Reservasjon;
+import no.nav.fplos.kø.OppgaveKøTjeneste;
 import no.nav.fplos.oppgave.OppgaveTjeneste;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,15 +40,19 @@ public class ForeldrepengerHendelseHåndterer {
     private ForeldrepengerBehandlingKlient foreldrePengerBehandlingKlient;
     private OppgaveRepository oppgaveRepository;
     private OppgaveTjeneste oppgaveTjeneste;
+    private OppgaveKøTjeneste oppgaveKøTjeneste;
     private OppgaveEgenskapHandler oppgaveEgenskapHandler;
 
     @Inject
     public ForeldrepengerHendelseHåndterer(ForeldrepengerBehandlingKlient foreldrePengerBehandlingKlient,
                                            OppgaveRepository oppgaveRepository,
-                                           OppgaveTjeneste oppgaveTjeneste, OppgaveEgenskapHandler oppgaveEgenskapHandler) {
+                                           OppgaveTjeneste oppgaveTjeneste,
+                                           OppgaveKøTjeneste oppgaveKøTjeneste,
+                                           OppgaveEgenskapHandler oppgaveEgenskapHandler) {
         this.foreldrePengerBehandlingKlient = foreldrePengerBehandlingKlient;
         this.oppgaveRepository = oppgaveRepository;
         this.oppgaveTjeneste = oppgaveTjeneste;
+        this.oppgaveKøTjeneste = oppgaveKøTjeneste;
         this.oppgaveEgenskapHandler = oppgaveEgenskapHandler;
     }
 
@@ -156,8 +162,10 @@ public class ForeldrepengerHendelseHåndterer {
     }
 
     private void avsluttFpsakOppgaveOgLoggEvent(BehandlingId behandlingId, OppgaveEventType eventType, LocalDateTime frist, String behandlendeEnhet) {
-        var oppgaveFinnesIKøer = oppgaveTjeneste.hentAktivOppgave(behandlingId)
-                .map(oppgaveTjeneste::finnKøerSomInneholder);
+        var oppgaveFinnesIKøer = oppgaveTjeneste.hentNyesteOppgaveTilknyttet(behandlingId)
+                .filter(Oppgave::getAktiv)
+                .map(oppgaveKøTjeneste::finnKøerSomInneholder)
+                .orElse(Collections.emptyList());
         avsluttOppgaveForBehandling(behandlingId);
         loggEvent(behandlingId, eventType, null, behandlendeEnhet, frist);
 

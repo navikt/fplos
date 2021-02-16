@@ -35,7 +35,7 @@ import no.nav.foreldrepenger.los.web.app.tjenester.felles.dto.SakslisteDto;
 import no.nav.foreldrepenger.los.web.app.tjenester.felles.dto.SakslisteIdDto;
 import no.nav.foreldrepenger.loslager.oppgave.OppgaveFiltrering;
 import no.nav.fplos.avdelingsleder.AvdelingslederTjeneste;
-import no.nav.fplos.oppgave.OppgaveTjeneste;
+import no.nav.fplos.kø.OppgaveKøTjeneste;
 import no.nav.vedtak.sikkerhet.abac.BeskyttetRessurs;
 import no.nav.vedtak.sikkerhet.abac.BeskyttetRessursActionAttributt;
 
@@ -45,12 +45,12 @@ import no.nav.vedtak.sikkerhet.abac.BeskyttetRessursActionAttributt;
 public class AvdelingslederSakslisteRestTjeneste {
 
     private AvdelingslederTjeneste avdelingslederTjeneste;
-    private OppgaveTjeneste oppgaveTjeneste;
+    private OppgaveKøTjeneste oppgaveKøTjeneste;
 
     @Inject
-    public AvdelingslederSakslisteRestTjeneste(AvdelingslederTjeneste avdelingslederTjeneste, OppgaveTjeneste oppgaveTjeneste) {
+    public AvdelingslederSakslisteRestTjeneste(AvdelingslederTjeneste avdelingslederTjeneste, OppgaveKøTjeneste oppgaveKøTjeneste) {
         this.avdelingslederTjeneste = avdelingslederTjeneste;
-        this.oppgaveTjeneste = oppgaveTjeneste;
+        this.oppgaveKøTjeneste = oppgaveKøTjeneste;
     }
 
     public AvdelingslederSakslisteRestTjeneste() {
@@ -65,7 +65,7 @@ public class AvdelingslederSakslisteRestTjeneste {
     public List<SakslisteDto> hentAvdelingensSakslister(@NotNull @QueryParam("avdelingEnhet") @Valid AvdelingEnhetDto avdelingEnhet) {
         List<OppgaveFiltrering> filtersett = avdelingslederTjeneste.hentOppgaveFiltreringer(avdelingEnhet.getAvdelingEnhet());
         return filtersett.stream()
-                .map(o-> new SakslisteDto(o,oppgaveTjeneste.hentAntallOppgaver(o.getId(), true)))
+                .map(o-> new SakslisteDto(o, oppgaveKøTjeneste.hentAntallOppgaver(o.getId(), true)))
                 .collect(Collectors.toList());
     }
 

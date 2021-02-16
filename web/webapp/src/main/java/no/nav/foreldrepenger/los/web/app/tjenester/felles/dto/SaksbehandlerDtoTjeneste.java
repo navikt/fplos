@@ -5,7 +5,7 @@ import no.nav.foreldrepenger.loslager.repository.OrganisasjonRepository;
 import no.nav.fplos.ansatt.AnsattTjeneste;
 import no.nav.fplos.avdelingsleder.AvdelingslederTjeneste;
 import no.nav.fplos.avdelingsleder.AvdelingslederTjenesteFeil;
-import no.nav.fplos.oppgave.OppgaveTjeneste;
+import no.nav.fplos.kø.OppgaveKøTjeneste;
 import no.nav.vedtak.exception.IntegrasjonException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,19 +23,19 @@ public class SaksbehandlerDtoTjeneste {
     private static final Logger LOG = LoggerFactory.getLogger(SaksbehandlerDtoTjeneste.class);
 
     private OrganisasjonRepository organisasjonRepository;
+    private OppgaveKøTjeneste oppgaveKøTjeneste;
     private AvdelingslederTjeneste avdelingslederTjeneste;
     private AnsattTjeneste ansattTjeneste;
-    private OppgaveTjeneste oppgaveTjeneste;
 
     @Inject
     public SaksbehandlerDtoTjeneste(OrganisasjonRepository organisasjonRepository,
                                     AvdelingslederTjeneste avdelingslederTjeneste,
                                     AnsattTjeneste ansattTjeneste,
-                                    OppgaveTjeneste oppgaveTjeneste) {
+                                    OppgaveKøTjeneste oppgaveKøTjeneste) {
         this.organisasjonRepository = organisasjonRepository;
         this.avdelingslederTjeneste = avdelingslederTjeneste;
         this.ansattTjeneste = ansattTjeneste;
-        this.oppgaveTjeneste = oppgaveTjeneste;
+        this.oppgaveKøTjeneste = oppgaveKøTjeneste;
     }
 
     SaksbehandlerDtoTjeneste() {
@@ -54,7 +54,7 @@ public class SaksbehandlerDtoTjeneste {
     public Optional<SaksbehandlerMedAvdelingerDto> hentSaksbehandlerTilknyttetMinstEnKø(String ident) {
         return organisasjonRepository.hentSaksbehandlerHvisEksisterer(ident)
                 .map(Saksbehandler::getSaksbehandlerIdent)
-                .filter(sb -> !oppgaveTjeneste.hentAlleOppgaveFiltrering(sb).isEmpty())
+                .filter(sb -> !oppgaveKøTjeneste.hentAlleOppgaveFiltrering(sb).isEmpty())
                 .flatMap(this::lagSaksbehandlerMedAvdelingerDto);
     }
 

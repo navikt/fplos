@@ -27,6 +27,7 @@ import no.nav.foreldrepenger.los.web.app.tjenester.felles.dto.SaksbehandlerDtoTj
 import no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.oppgave.dto.OppgaveIdDto;
 import no.nav.foreldrepenger.loslager.oppgave.Reservasjon;
 import no.nav.fplos.oppgave.OppgaveTjeneste;
+import no.nav.fplos.reservasjon.ReservasjonTjeneste;
 import no.nav.vedtak.sikkerhet.abac.BeskyttetRessurs;
 import no.nav.vedtak.sikkerhet.abac.BeskyttetRessursActionAttributt;
 
@@ -35,15 +36,15 @@ import no.nav.vedtak.sikkerhet.abac.BeskyttetRessursActionAttributt;
 @Transactional
 public class AvdelingReservasjonerRestTjeneste {
 
-    private OppgaveTjeneste oppgaveTjeneste;
+    private ReservasjonTjeneste reservasjonTjeneste;
     private OppgaveDtoTjeneste oppgaveDtoTjeneste;
     private SaksbehandlerDtoTjeneste saksbehandlerDtoTjeneste;
 
     @Inject
-    public AvdelingReservasjonerRestTjeneste(OppgaveTjeneste oppgaveTjeneste,
+    public AvdelingReservasjonerRestTjeneste(ReservasjonTjeneste reservasjonTjeneste,
                                              OppgaveDtoTjeneste oppgaveDtoTjeneste,
                                              SaksbehandlerDtoTjeneste saksbehandlerDtoTjeneste) {
-        this.oppgaveTjeneste = oppgaveTjeneste;
+        this.reservasjonTjeneste = reservasjonTjeneste;
         this.oppgaveDtoTjeneste = oppgaveDtoTjeneste;
         this.saksbehandlerDtoTjeneste = saksbehandlerDtoTjeneste;
     }
@@ -57,7 +58,7 @@ public class AvdelingReservasjonerRestTjeneste {
     @BeskyttetRessurs(action = BeskyttetRessursActionAttributt.READ, resource = AbacAttributter.OPPGAVESTYRING_AVDELINGENHET, sporingslogg = false)
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
     public List<ReservasjonDto> hentAvdelingensReservasjoner(@NotNull @QueryParam("avdelingEnhet") @Valid AvdelingEnhetDto avdelingEnhetDto) {
-        var reservasjoner = oppgaveTjeneste.hentReservasjonerForAvdeling(avdelingEnhetDto.getAvdelingEnhet());
+        var reservasjoner = reservasjonTjeneste.hentReservasjonerForAvdeling(avdelingEnhetDto.getAvdelingEnhet());
         return tilReservasjonDtoListe(reservasjoner);
     }
 
@@ -78,7 +79,7 @@ public class AvdelingReservasjonerRestTjeneste {
     @BeskyttetRessurs(action = BeskyttetRessursActionAttributt.CREATE, resource = AbacAttributter.OPPGAVESTYRING_AVDELINGENHET)
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
     public OppgaveStatusDto opphevOppgaveReservasjon(@NotNull @Parameter(description = "Id for oppgave som reservasjonen er tilknyttet") @Valid OppgaveIdDto oppgaveId) {
-        var reservasjon = oppgaveTjeneste.frigiOppgave(oppgaveId.getVerdi(), "Opphevet av avdelingsleder");
+        var reservasjon = reservasjonTjeneste.frigiOppgave(oppgaveId.getVerdi(), "Opphevet av avdelingsleder");
         return oppgaveDtoTjeneste.lagDtoFor(reservasjon.getOppgave(), false).getStatus();
     }
 }

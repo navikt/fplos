@@ -20,6 +20,7 @@ import no.nav.foreldrepenger.loslager.BehandlingId;
 import no.nav.foreldrepenger.loslager.oppgave.Oppgave;
 import no.nav.fplos.foreldrepengerbehandling.ForeldrepengerPipKlient;
 import no.nav.fplos.oppgave.OppgaveTjeneste;
+import no.nav.vedtak.exception.TekniskException;
 import no.nav.vedtak.sikkerhet.abac.AbacAttributtSamling;
 import no.nav.vedtak.sikkerhet.abac.PdpKlient;
 import no.nav.vedtak.sikkerhet.abac.PdpRequest;
@@ -56,7 +57,7 @@ public class PdpRequestBuilderImpl implements PdpRequestBuilder {
         Set<UUID> behandlingIdList = attributter.getVerdier(StandardAbacAttributtType.BEHANDLING_UUID);
 
         if (oppgaveIdList.size() > 0 && behandlingIdList.size() > 0) {
-            throw new IllegalStateException("Støtter ikke både oppgaveId og behandligId");
+            throw PdpRequestBuilderFeil.støtterIkkeBådeOppgaveIdOgBehandlingId();
         }
 
         if (oppgaveIdList.size() > 0) {
@@ -65,7 +66,8 @@ public class PdpRequestBuilderImpl implements PdpRequestBuilder {
         }
         if (behandlingIdList.size() > 0) {
             var behandlingId = new BehandlingId(behandlingIdList.iterator().next());
-            var oppgave = oppgaveTjeneste.hentSisteOppgave(behandlingId);
+            var oppgave = oppgaveTjeneste.hentNyesteOppgaveTilknyttet(behandlingId)
+                    .orElseThrow(() -> PdpRequestBuilderFeil.finnerIkkeOppgaveTilknyttetBehandling(behandlingId));
             leggTilAttributterForBehandling(pdpRequest, oppgave);
         }
 
@@ -79,7 +81,7 @@ public class PdpRequestBuilderImpl implements PdpRequestBuilder {
         } else if ("FPTILBAKE".equals(system)) {
             leggTilAttributterForFptilbakeBehandling(pdpRequest, oppgave);
         } else {
-            throw new IllegalStateException("Ukjent system " + system);
+            throw PdpRequestBuilderFeil.ukjentSystem(system);
         }
     }
 
@@ -93,5 +95,19 @@ public class PdpRequestBuilderImpl implements PdpRequestBuilder {
 
     private void leggTilAttributterForFptilbakeBehandling(PdpRequest pdpRequest, Oppgave oppgave) {
         pdpRequest.put(RESOURCE_FELLES_PERSON_AKTOERID_RESOURCE, Set.of(oppgave.getAktorId().getId()));
+    }
+
+    private static class PdpRequestBuilderFeil {
+        static TekniskException finnerIkkeOppgaveTilknyttetBehandling(BehandlingId behandlingId) {
+            return new TekniskException("FPLOS-00001", String.format("Kunne ikke lage PDP-request: finner ikke oppgave knyttet til behandling %s", behandlingId));
+        }
+
+        static TekniskException støtterIkkeBådeOppgaveIdOgBehandlingId() {
+            return new TekniskException("FPLOS-00002", "Kunne ikke lage PDP-request: støtter ikke både oppgaveId og behandligId");
+        }
+
+        static TekniskException ukjentSystem(String system) {
+            return new TekniskException("FPLOS-0003", String.format("Kunne ikke lage PDP-request: ukjent system %s", system));
+        }
     }
 }

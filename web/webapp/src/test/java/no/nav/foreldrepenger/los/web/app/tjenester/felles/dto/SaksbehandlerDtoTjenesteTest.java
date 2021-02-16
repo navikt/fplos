@@ -9,6 +9,7 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 
+import no.nav.fplos.kø.OppgaveKøTjenesteImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -37,7 +38,7 @@ public class SaksbehandlerDtoTjenesteTest {
         var organisasjonRepository = new OrganisasjonRepositoryImpl(entityManager);
         avdelingslederTjeneste = new AvdelingslederTjenesteImpl(oppgaveRepository, organisasjonRepository);
         saksbehandlerDtoTjeneste = new SaksbehandlerDtoTjeneste(organisasjonRepository, avdelingslederTjeneste,
-                mock(AnsattTjeneste.class), new OppgaveTjenesteImpl(oppgaveRepository, organisasjonRepository));
+                mock(AnsattTjeneste.class), new OppgaveKøTjenesteImpl(oppgaveRepository, organisasjonRepository));
     }
 
     @Test
