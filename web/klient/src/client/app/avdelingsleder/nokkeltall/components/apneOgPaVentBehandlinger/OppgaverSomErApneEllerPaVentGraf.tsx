@@ -228,16 +228,16 @@ const OppgaverSomErApneEllerPaVentGraf: FunctionComponent<OwnProps & WrappedComp
                 // @ts-ignore Feil i @types/react-vis
                 onValueMouseOver={leggTilHintVerdiIkkePaVent}
                 onValueMouseOut={fjernHintVerdi}
-                fill="#337c9b"
-                stroke="#337c9b"
+                fill="#38a161"
+                stroke="#38a161"
               />
               <VerticalRectSeries
                 data={rectSeriesKoordinaterPaVent}
                 // @ts-ignore Feil i @types/react-vis
                 onValueMouseOver={leggTilHintVerdiPaVent}
                 onValueMouseOut={fjernHintVerdi}
-                fill="#38a161"
-                stroke="#38a161"
+                fill="#85d5f0"
+                stroke="#85d5f0"
               />
               {hintVerdi && (
                 <Hint value={hintVerdi.verdi}>
@@ -257,9 +257,9 @@ const OppgaverSomErApneEllerPaVentGraf: FunctionComponent<OwnProps & WrappedComp
             <DiscreteColorLegend
               items={[
                 // @ts-ignore Feil i @types/react-vis
-                { title: intl.formatMessage({ id: 'OppgaverSomErApneEllerPaVentGraf.PaVent' }), color: '#38a161', strokeWidth: 10 },
+                { title: intl.formatMessage({ id: 'OppgaverSomErApneEllerPaVentGraf.PaVent' }), color: '#85d5f0', strokeWidth: 12 },
                 // @ts-ignore Feil i @types/react-vis
-                { title: intl.formatMessage({ id: 'OppgaverSomErApneEllerPaVentGraf.IkkePaVent' }), color: '#337c9b', strokeWidth: 12 },
+                { title: intl.formatMessage({ id: 'OppgaverSomErApneEllerPaVentGraf.IkkePaVent' }), color: '#38a161', strokeWidth: 12 },
               ]}
             />
           </FlexColumn>

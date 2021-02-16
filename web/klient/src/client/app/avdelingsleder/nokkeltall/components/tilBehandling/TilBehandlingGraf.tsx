@@ -217,11 +217,11 @@ const TilBehandlingGraf: FunctionComponent<OwnProps> = ({
           </FlexColumn>
           <FlexColumn>
             <DiscreteColorLegend
-              // @ts-ignore Feil i @types/react-vis
-              colors={reversertSorterteBehandlingstyper.map((key) => behandlingstypeFarger[key])}
-              items={reversertSorterteBehandlingstyper.map((key) => (
-                <Normaltekst className={styles.displayInline}>{finnBehandlingTypeNavn(behandlingTyper, key)}</Normaltekst>
-              ))}
+              items={reversertSorterteBehandlingstyper.map((key) => ({
+                title: finnBehandlingTypeNavn(behandlingTyper, key),
+                color: behandlingstypeFarger[key],
+                strokeWidth: 12,
+              }))}
             />
           </FlexColumn>
         </FlexRow>

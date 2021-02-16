@@ -5,9 +5,8 @@ import {
   XYPlot, XAxis, YAxis, VerticalGridLines, HorizontalRectSeries, Hint, DiscreteColorLegend,
 } from 'react-vis';
 import {
-  FormattedMessage, injectIntl, IntlShape, WrappedComponentProps,
+  injectIntl, IntlShape, WrappedComponentProps,
 } from 'react-intl';
-import { Normaltekst } from 'nav-frontend-typografi';
 import Panel from 'nav-frontend-paneler';
 
 import { FlexContainer, FlexRow, FlexColumn } from 'sharedComponents/flexGrid';
@@ -179,15 +178,11 @@ const FordelingAvBehandlingstypeGraf: FunctionComponent<OwnProps & WrappedCompon
           </FlexColumn>
           <FlexColumn>
             <DiscreteColorLegend
-              // @ts-ignore Feil i @types/react-vis
-              colors={['#337c9b', '#38a161']}
               items={[
-                <Normaltekst className={styles.displayInline}>
-                  <FormattedMessage id="FordelingAvBehandlingstypeGraf.TilBehandling" />
-                </Normaltekst>,
-                <Normaltekst className={styles.displayInline}>
-                  <FormattedMessage id="FordelingAvBehandlingstypeGraf.TilBeslutter" />
-                </Normaltekst>,
+                // @ts-ignore Feil i @types/react-vis
+                { title: intl.formatMessage({ id: 'FordelingAvBehandlingstypeGraf.TilBehandling' }), color: '#337c9b', strokeWidth: 12 },
+                // @ts-ignore Feil i @types/react-vis
+                { title: intl.formatMessage({ id: 'FordelingAvBehandlingstypeGraf.TilBeslutter' }), color: '#38a161', strokeWidth: 12 },
               ]}
             />
           </FlexColumn>

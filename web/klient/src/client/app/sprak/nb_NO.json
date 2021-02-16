@@ -276,7 +276,7 @@
   "UtvalgskriterierForSakslisteForm.AntallSaker": "Antall behandlinger",
   "UtvalgskriterierForSakslisteForm.NyListe": "Ny behandlingskø",
 
-  "OppgaverSomErApneEllerPaVentPanel.Apne": "Åpne behandlinger",
+  "OppgaverSomErApneEllerPaVentPanel.Apne": "Status - åpne behandlinger",
   "OppgaverSomErApneEllerPaVentGraf.PaVent": "På vent",
   "OppgaverSomErApneEllerPaVentGraf.IkkePaVent": "Ikke på vent",
   "OppgaverSomErApneEllerPaVentGraf.AntallPaVent": "På vent: {antall}",

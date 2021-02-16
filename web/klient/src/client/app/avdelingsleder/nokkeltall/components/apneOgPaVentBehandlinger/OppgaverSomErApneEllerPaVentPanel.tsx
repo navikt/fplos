@@ -36,7 +36,9 @@ export const OppgaverSomErApneEllerPaVentPanel: FunctionComponent<OwnProps> = ({
   const lagredeVerdier = stringFromStorage ? JSON.parse(stringFromStorage) : undefined;
 
   const filtrerteBehandlingstyper = useMemo(() => behandlingTyper
-    .filter((type) => type.kode !== behandlingType.TILBAKEBETALING && type.kode !== behandlingType.TILBAKEBETALING_REVURDERING), []);
+    .filter((type) => type.kode !== behandlingType.TILBAKEBETALING
+      && type.kode !== behandlingType.TILBAKEBETALING_REVURDERING
+      && type.kode !== behandlingType.SOKNAD), []);
 
   const formDefaultValues = useMemo(() => Object.values(filtrerteBehandlingstyper).reduce((app, type) => ({
     ...app,
