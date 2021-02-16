@@ -6,6 +6,7 @@ import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Convert;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -32,10 +33,10 @@ public class Avdeling extends BaseEntitet{
     @Column(name = "NAVN")
     private String navn;
 
-    @ManyToMany(mappedBy = "avdelinger")
+    @ManyToMany(mappedBy = "avdelinger", fetch = FetchType.LAZY)
     private List<Saksbehandler> saksbehandlere;
 
-    @OneToMany(mappedBy = "avdeling")
+    @OneToMany(mappedBy = "avdeling", fetch = FetchType.LAZY)
     private List<OppgaveFiltrering> oppgaveFiltrering;
 
     @Convert(converter = BooleanToStringConverter.class)
