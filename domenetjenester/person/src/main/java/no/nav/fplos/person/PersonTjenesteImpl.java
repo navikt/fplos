@@ -10,6 +10,8 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.apache.http.HttpStatus;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import no.nav.foreldrepenger.domene.typer.AktørId;
 import no.nav.foreldrepenger.loslager.aktør.Fødselsnummer;
@@ -27,6 +29,8 @@ import no.nav.vedtak.felles.integrasjon.rest.jersey.Jersey;
 
 @ApplicationScoped
 public class PersonTjenesteImpl implements PersonTjeneste {
+
+    private static final Logger LOG = LoggerFactory.getLogger(PersonTjenesteImpl.class);
 
     private Pdl pdl;
 
@@ -47,6 +51,7 @@ public class PersonTjenesteImpl implements PersonTjeneste {
             if (e.getStatus() == HttpStatus.SC_NOT_FOUND) {
                 return Optional.empty();
             }
+            LOG.warn("PDL FPLOS hentPerson feil fra PDL ", e);
             if (e.getStatus() == HttpStatus.SC_FORBIDDEN) {
                 throw new IkkeTilgangPåPersonException(e);
             }

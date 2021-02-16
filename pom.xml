@@ -48,7 +48,6 @@
         <!-- Transitive avh. versjoner for å sikre unikhet (enforcer dependencyConvergence). Skal ikke benyttes direkte av vår egen kode. -->
         <jasypt.version>1.9.3</jasypt.version>
         <javaslang.version>2.0.6</javaslang.version>
-        <joda-time.version>2.10.10</joda-time.version>
         <owaspencoder.version>1.2.3</owaspencoder.version>
         <ojdbc.version>19.3.0.0</ojdbc.version>
         <kafka.version>2.7.0</kafka.version>
@@ -255,11 +254,6 @@
                 <version>6.1.6.Final</version>
             </dependency>
             <dependency>
-                <groupId>org.glassfish</groupId>
-                <artifactId>javax.el</artifactId>
-                <version>3.0.1-b12</version>
-            </dependency>
-            <dependency>
                 <groupId>io.swagger.core.v3</groupId>
                 <artifactId>swagger-jaxrs2</artifactId>
                 <version>${swagger.version}</version>
@@ -323,12 +317,6 @@
                 <scope>provided</scope>
             </dependency>
 
-            <dependency>
-                <groupId>javax.validation</groupId>
-                <artifactId>validation-api</artifactId>
-                <version>${validation-api.version}</version>
-            </dependency>
-
             <!-- testavhengighet lokal - definer scope der det brukes -->
             <dependency>
                 <groupId>com.papertrailapp</groupId>
@@ -370,11 +358,6 @@
             </dependency>
 
             <!-- Transitive avhengighet resolution for å sikre bestemt versjon -->
-            <dependency>
-                <groupId>joda-time</groupId>
-                <artifactId>joda-time</artifactId>
-                <version>${joda-time.version}</version>
-            </dependency>
             <dependency>
                 <groupId>org.jasypt</groupId>
                 <artifactId>jasypt</artifactId>
