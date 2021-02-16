@@ -83,6 +83,6 @@ describe('<OppgaverSomErApneEllerPaVentGraf>', () => {
 
     const hint = wrapper.find(Hint);
     expect(hint).toHaveLength(1);
-    expect(hint.childAt(0).html()).toEqual('<div class="hint">Antall: 6</div>');
+    expect(hint.childAt(0).html()).toEqual('<div class="hint">Ikke på vent: 6</div>');
   });
 });
