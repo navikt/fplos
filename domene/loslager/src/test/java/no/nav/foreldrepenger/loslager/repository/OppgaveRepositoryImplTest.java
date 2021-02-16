@@ -268,7 +268,7 @@ public class OppgaveRepositoryImplTest {
         entityManager.persist(andreOppgaveFiltrering);
         entityManager.flush();
 
-        List<OppgaveFiltrering> lister = oppgaveRepository.hentAlleFiltreringer(avdelingIdForDrammen());
+        List<OppgaveFiltrering> lister = oppgaveRepository.hentAlleOppgaveFiltreringsettTilknyttetAvdeling(avdelingIdForDrammen());
 
         assertThat(lister).extracting(OppgaveFiltrering::getNavn).contains("OPPRETTET", "BEHANDLINGSFRIST");
         assertThat(lister).extracting(OppgaveFiltrering::getAvdeling).contains(avdeling);

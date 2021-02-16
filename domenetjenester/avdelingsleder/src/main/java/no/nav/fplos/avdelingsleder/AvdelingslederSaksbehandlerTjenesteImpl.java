@@ -1,5 +1,6 @@
 package no.nav.fplos.avdelingsleder;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,7 +31,10 @@ public class AvdelingslederSaksbehandlerTjenesteImpl implements AvdelingslederSa
 
     @Override
     public List<Saksbehandler> hentAvdelingensSaksbehandlere(String avdelingEnhet) {
-        return organisasjonRepository.hentAvdelingensSaksbehandlere(avdelingEnhet);
+        return organisasjonRepository.hentAvdelingFraEnhet(avdelingEnhet)
+                .map(Avdeling::getSaksbehandlere)
+                .orElse(Collections.emptyList());
+        //return organisasjonRepository.hentAvdelingensSaksbehandlere(avdelingEnhet);
     }
 
     @Override

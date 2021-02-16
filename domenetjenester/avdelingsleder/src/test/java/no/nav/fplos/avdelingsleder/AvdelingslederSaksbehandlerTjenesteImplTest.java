@@ -60,6 +60,7 @@ public class AvdelingslederSaksbehandlerTjenesteImplTest {
         assertThat(saksbehandlers.get(0).getSaksbehandlerIdent()).isEqualTo(NY_SAKSBEHANDLER_IDENT.toUpperCase());
         assertThat(saksbehandlers.get(0).getAvdelinger()).hasSize(1);
         avdelingslederSaksbehandlerTjeneste.slettSaksbehandler(NY_SAKSBEHANDLER_IDENT, AVDELING_DRAMMEN_ENHET);
-        assertThat(avdelingslederSaksbehandlerTjeneste.hentAvdelingensSaksbehandlere(AVDELING_DRAMMEN_ENHET)).isEmpty();
+        var saksb = avdelingslederSaksbehandlerTjeneste.hentAvdelingensSaksbehandlere(AVDELING_DRAMMEN_ENHET);
+        assertThat(saksb).isEmpty();
     }
 }

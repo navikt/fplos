@@ -41,7 +41,7 @@ public class AvdelingslederTjenesteImplTest {
     @Test
     public void testLagNyListe(){
         avdelingslederTjeneste.lagNyOppgaveFiltrering(AVDELING_DRAMMEN_ENHET);
-        List<OppgaveFiltrering> oppgaveFiltreringer = oppgaveRepository.hentAlleFiltreringer(avdelingDrammen().getId());
+        List<OppgaveFiltrering> oppgaveFiltreringer = oppgaveRepository.hentAlleOppgaveFiltreringsettTilknyttetAvdeling(avdelingDrammen().getId());
         assertThat(oppgaveFiltreringer).isNotNull();
         assertThat(oppgaveFiltreringer.get(0).getId()).isNotNull();
         assertThat(oppgaveFiltreringer.get(0).getNavn()).isEqualTo("Ny liste");
@@ -70,7 +70,7 @@ public class AvdelingslederTjenesteImplTest {
         persistAndFlush(liste);
         avdelingslederTjeneste.slettOppgaveFiltrering(liste.getId());
         entityManager.flush();
-        assertThat(oppgaveRepository.hentAlleFiltreringer(avdelingDrammen().getId())).isEmpty();
+        assertThat(oppgaveRepository.hentAlleOppgaveFiltreringsettTilknyttetAvdeling(avdelingDrammen().getId())).isEmpty();
     }
 
     @Test

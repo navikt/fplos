@@ -12,6 +12,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import no.nav.foreldrepenger.loslager.oppgave.Reservasjon;
+import no.nav.fplos.oppgave.OppgaveTjeneste;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,14 +37,16 @@ public class ForeldrepengerHendelseHåndterer {
 
     private ForeldrepengerBehandlingKlient foreldrePengerBehandlingKlient;
     private OppgaveRepository oppgaveRepository;
+    private OppgaveTjeneste oppgaveTjeneste;
     private OppgaveEgenskapHandler oppgaveEgenskapHandler;
 
     @Inject
     public ForeldrepengerHendelseHåndterer(ForeldrepengerBehandlingKlient foreldrePengerBehandlingKlient,
                                            OppgaveRepository oppgaveRepository,
-                                           OppgaveEgenskapHandler oppgaveEgenskapHandler) {
+                                           OppgaveTjeneste oppgaveTjeneste, OppgaveEgenskapHandler oppgaveEgenskapHandler) {
         this.foreldrePengerBehandlingKlient = foreldrePengerBehandlingKlient;
         this.oppgaveRepository = oppgaveRepository;
+        this.oppgaveTjeneste = oppgaveTjeneste;
         this.oppgaveEgenskapHandler = oppgaveEgenskapHandler;
     }
 
@@ -153,8 +156,11 @@ public class ForeldrepengerHendelseHåndterer {
     }
 
     private void avsluttFpsakOppgaveOgLoggEvent(BehandlingId behandlingId, OppgaveEventType eventType, LocalDateTime frist, String behandlendeEnhet) {
+        var oppgaveFinnesIKøer = oppgaveTjeneste.hentAktivOppgave(behandlingId)
+                .map(oppgaveTjeneste::finnKøerSomInneholder);
         avsluttOppgaveForBehandling(behandlingId);
         loggEvent(behandlingId, eventType, null, behandlendeEnhet, frist);
+
     }
 
     private static LocalDateTime finnVentAksjonspunktFrist(List<Aksjonspunkt> aksjonspunktListe) {

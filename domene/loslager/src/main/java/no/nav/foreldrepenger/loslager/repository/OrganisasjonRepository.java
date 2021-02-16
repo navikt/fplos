@@ -8,8 +8,6 @@ import no.nav.foreldrepenger.loslager.organisasjon.Saksbehandler;
 
 public interface OrganisasjonRepository {
 
-    List<Saksbehandler> hentAvdelingensSaksbehandlere(String avdelingEnhet);
-
     void lagre(Saksbehandler saksbehandler);
 
     Saksbehandler hentSaksbehandler(String saksbehandlerIdent);

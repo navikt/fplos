@@ -42,7 +42,7 @@ public class AvdelingslederTjenesteImpl implements AvdelingslederTjeneste {
     @Override
     public List<OppgaveFiltrering> hentOppgaveFiltreringer(String avdelingsEnhet){
         Avdeling avdeling = organisasjonRepository.hentAvdelingFraEnhet(avdelingsEnhet).orElseThrow();
-        return oppgaveRepository.hentAlleFiltreringer(avdeling.getId());
+        return oppgaveRepository.hentAlleOppgaveFiltreringsettTilknyttetAvdeling(avdeling.getId());
     }
 
     @Override

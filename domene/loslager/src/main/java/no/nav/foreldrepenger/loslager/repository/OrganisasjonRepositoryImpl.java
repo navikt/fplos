@@ -33,14 +33,6 @@ public class OrganisasjonRepositoryImpl implements OrganisasjonRepository {
     }
 
     @Override
-    public List<Saksbehandler> hentAvdelingensSaksbehandlere(String avdelingEnhet) {
-        TypedQuery<Avdeling> query = entityManager.createQuery("FROM avdeling a " +
-                "WHERE a.avdelingEnhet = :avdelingEnhet", Avdeling.class)
-                .setParameter("avdelingEnhet", avdelingEnhet);
-        return hentEksaktResultat(query).getSaksbehandlere();
-    }
-
-    @Override
     public void lagre(Saksbehandler saksbehandler) {
         internLagre(saksbehandler);
     }

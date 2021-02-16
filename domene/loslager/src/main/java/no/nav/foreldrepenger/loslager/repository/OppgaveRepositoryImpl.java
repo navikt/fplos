@@ -293,7 +293,7 @@ public class OppgaveRepositoryImpl implements OppgaveRepository {
     }
 
     @Override
-    public List<OppgaveFiltrering> hentAlleFiltreringer(Long avdelingsId) {
+    public List<OppgaveFiltrering> hentAlleOppgaveFiltreringsettTilknyttetAvdeling(Long avdelingsId) {
         TypedQuery<OppgaveFiltrering> listeTypedQuery = entityManager
                 .createQuery("FROM OppgaveFiltrering l WHERE l.avdeling.id = :id " +
                         OPPGAVEFILTRERING_SORTERING_NAVN, OppgaveFiltrering.class)
