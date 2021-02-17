@@ -42,9 +42,9 @@ public interface OppgaveRepository {
 
     Reservasjon hentReservasjon(Long oppgaveId);
 
-    List<OppgaveFiltrering> hentAlleOppgaveFiltreringsettTilknyttetAvdeling(Long avdelingsId);
+    List<OppgaveFiltrering> hentAlleOppgaveFilterSettTilknyttetAvdeling(Long avdelingsId);
 
-    Optional<OppgaveFiltrering> hentFiltrering(Long listeId);
+    Optional<OppgaveFiltrering> hentOppgaveFilterSett(Long listeId);
 
     KøSortering hentSorteringForListe(Long listeId);
 

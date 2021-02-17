@@ -2,6 +2,7 @@ package no.nav.foreldrepenger.los.web.app.tjenester.statistikk;
 
 import static no.nav.foreldrepenger.loslager.organisasjon.Avdeling.AVDELING_DRAMMEN_ENHET;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -9,6 +10,7 @@ import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 
+import no.nav.foreldrepenger.loslager.repository.oppgavestatistikk.NyOpppgaveStatistikkRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -28,8 +30,10 @@ import no.nav.foreldrepenger.loslager.oppgave.OppgaveEventLogg;
 import no.nav.foreldrepenger.loslager.oppgave.OppgaveEventType;
 import no.nav.foreldrepenger.loslager.repository.StatistikkRepositoryImpl;
 import no.nav.fplos.statistikk.StatistikkTjenesteImpl;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(EntityManagerFPLosAwareExtension.class)
+@ExtendWith(MockitoExtension.class)
 public class StatistikkTjenesteImplTest {
 
     private final Oppgave førstegangOppgave = Oppgave.builder().dummyOppgave(AVDELING_DRAMMEN_ENHET)
@@ -56,7 +60,7 @@ public class StatistikkTjenesteImplTest {
     @BeforeEach
     void setUp(EntityManager entityManager) {
         var statisikkRepository = new StatistikkRepositoryImpl(entityManager);
-        statistikkTjeneste = new StatistikkTjenesteImpl(statisikkRepository);
+        statistikkTjeneste = new StatistikkTjenesteImpl(statisikkRepository, mock(NyOpppgaveStatistikkRepository.class));
         this.entityManager = entityManager;
     }
 

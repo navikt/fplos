@@ -44,7 +44,7 @@ public class SaksbehandlerDtoTjeneste {
 
     public List<SaksbehandlerDto> hentAktiveSaksbehandlereTilknyttetSaksliste(Long sakslisteId) {
         var filtrering = avdelingslederTjeneste.hentOppgaveFiltering(sakslisteId)
-                .orElseThrow(() -> AvdelingslederTjenesteFeil.FACTORY.fantIkkeOppgavekø(sakslisteId).toException());
+                .orElseThrow(() -> AvdelingslederTjenesteFeil.fantIkkeOppgavekø(sakslisteId));
         return filtrering.getSaksbehandlere().stream()
                 .map(this::tilSaksbehandlerDto)
                 .flatMap(Optional::stream)

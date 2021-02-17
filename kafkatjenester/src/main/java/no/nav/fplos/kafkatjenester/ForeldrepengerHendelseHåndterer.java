@@ -4,7 +4,6 @@ import static no.nav.fplos.kafkatjenester.util.StreamUtil.safeStream;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -13,8 +12,8 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import no.nav.foreldrepenger.loslager.oppgave.Reservasjon;
-import no.nav.fplos.kø.OppgaveKøTjeneste;
-import no.nav.fplos.oppgave.OppgaveTjeneste;
+import no.nav.foreldrepenger.loslager.repository.oppgavestatistikk.KøOppgaveHendelse;
+import no.nav.fplos.oppgavestatistikk.OppgaveStatistikk;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,21 +38,17 @@ public class ForeldrepengerHendelseHåndterer {
 
     private ForeldrepengerBehandlingKlient foreldrePengerBehandlingKlient;
     private OppgaveRepository oppgaveRepository;
-    private OppgaveTjeneste oppgaveTjeneste;
-    private OppgaveKøTjeneste oppgaveKøTjeneste;
     private OppgaveEgenskapHandler oppgaveEgenskapHandler;
+    private OppgaveStatistikk oppgaveStatistikk;
 
     @Inject
     public ForeldrepengerHendelseHåndterer(ForeldrepengerBehandlingKlient foreldrePengerBehandlingKlient,
                                            OppgaveRepository oppgaveRepository,
-                                           OppgaveTjeneste oppgaveTjeneste,
-                                           OppgaveKøTjeneste oppgaveKøTjeneste,
-                                           OppgaveEgenskapHandler oppgaveEgenskapHandler) {
+                                           OppgaveEgenskapHandler oppgaveEgenskapHandler, OppgaveStatistikk oppgaveStatistikk) {
         this.foreldrePengerBehandlingKlient = foreldrePengerBehandlingKlient;
         this.oppgaveRepository = oppgaveRepository;
-        this.oppgaveTjeneste = oppgaveTjeneste;
-        this.oppgaveKøTjeneste = oppgaveKøTjeneste;
         this.oppgaveEgenskapHandler = oppgaveEgenskapHandler;
+        this.oppgaveStatistikk = oppgaveStatistikk;
     }
 
     ForeldrepengerHendelseHåndterer() {
@@ -65,7 +60,7 @@ public class ForeldrepengerHendelseHåndterer {
         BehandlingFpsak behandling = foreldrePengerBehandlingKlient.getBehandling(behandlingId);
         behandling.setYtelseType(hendelse.getYtelseType());
         OppgaveHistorikk oppgaveHistorikk = new OppgaveHistorikk(oppgaveRepository.hentOppgaveEventer(behandlingId));
-        EventResultat eventResultat = ForeldrepengerEventMapper.signifikantEventFra(behandling, oppgaveHistorikk, hendelse.getBehandlendeEnhet());
+        EventResultat eventResultat = ForeldrepengerEventMapper.finnEventResultat(behandling, oppgaveHistorikk, hendelse.getBehandlendeEnhet());
 
         switch (eventResultat) {
             case FERDIG:
@@ -119,6 +114,7 @@ public class ForeldrepengerHendelseHåndterer {
         loggEvent(papirsøknadOppgave.getBehandlingId(), OppgaveEventType.OPPRETTET, AndreKriterierType.PAPIRSØKNAD, hendelse.getBehandlendeEnhet());
         var egenskapFinner = new FpsakOppgaveEgenskapFinner(behandling);
         oppgaveEgenskapHandler.håndterOppgaveEgenskaper(papirsøknadOppgave, egenskapFinner);
+        oppgaveStatistikk.lagre(papirsøknadOppgave, KøOppgaveHendelse.ÅPNES);
     }
 
     private void håndterOpprettOppgave(Hendelse hendelse, BehandlingFpsak behandling,
@@ -130,6 +126,7 @@ public class ForeldrepengerHendelseHåndterer {
         var egenskapFinner = new FpsakOppgaveEgenskapFinner(behandling);
         loggEvent(oppgave, egenskapFinner);
         oppgaveEgenskapHandler.håndterOppgaveEgenskaper(oppgave, egenskapFinner);
+        oppgaveStatistikk.lagre(oppgave, KøOppgaveHendelse.ÅPNES);
     }
 
     private void håndterOpprettetBeslutterOppgave(Hendelse hendelse, BehandlingFpsak behandling,
@@ -142,6 +139,7 @@ public class ForeldrepengerHendelseHåndterer {
         var egenskapFinner = new FpsakOppgaveEgenskapFinner(behandling);
         loggEvent(beslutterOppgave, egenskapFinner);
         oppgaveEgenskapHandler.håndterOppgaveEgenskaper(beslutterOppgave, egenskapFinner);
+        oppgaveStatistikk.lagre(beslutterOppgave, KøOppgaveHendelse.ÅPNES);
     }
 
     private void loggEvent(Oppgave oppgave, OppgaveEgenskapFinner egenskapFinner) {
@@ -162,13 +160,9 @@ public class ForeldrepengerHendelseHåndterer {
     }
 
     private void avsluttFpsakOppgaveOgLoggEvent(BehandlingId behandlingId, OppgaveEventType eventType, LocalDateTime frist, String behandlendeEnhet) {
-        var oppgaveFinnesIKøer = oppgaveTjeneste.hentNyesteOppgaveTilknyttet(behandlingId)
-                .filter(Oppgave::getAktiv)
-                .map(oppgaveKøTjeneste::finnKøerSomInneholder)
-                .orElse(Collections.emptyList());
+        oppgaveStatistikk.lagre(behandlingId, KøOppgaveHendelse.LUKKES);
         avsluttOppgaveForBehandling(behandlingId);
         loggEvent(behandlingId, eventType, null, behandlendeEnhet, frist);
-
     }
 
     private static LocalDateTime finnVentAksjonspunktFrist(List<Aksjonspunkt> aksjonspunktListe) {
@@ -190,7 +184,7 @@ public class ForeldrepengerHendelseHåndterer {
     }
 
     private void avsluttOppgaveHvisÅpen(BehandlingId behandlingId, OppgaveHistorikk oppgaveHistorikk, String behandlendeEnhet) {
-        if (oppgaveHistorikk.erSisteEventÅpningsevent()){
+        if (oppgaveHistorikk.erÅpenOppgave()) {
             if (behandlingId != null) {
                 loggEvent(behandlingId, OppgaveEventType.LUKKET, null, behandlendeEnhet);
             }

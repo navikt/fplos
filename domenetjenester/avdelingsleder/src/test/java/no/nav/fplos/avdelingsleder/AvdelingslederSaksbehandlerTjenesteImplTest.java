@@ -36,7 +36,7 @@ public class AvdelingslederSaksbehandlerTjenesteImplTest {
     public void testHentSaksbehandlere() {
         List<Saksbehandler> saksbehandlers = avdelingslederSaksbehandlerTjeneste.hentAvdelingensSaksbehandlere(AVDELING_DRAMMEN_ENHET);
         assertThat(saksbehandlers).isEmpty();
-        avdelingslederSaksbehandlerTjeneste.leggTilSaksbehandler(NY_SAKSBEHANDLER_IDENT, AVDELING_DRAMMEN_ENHET);
+        avdelingslederSaksbehandlerTjeneste.leggSaksbehandlerTilAvdeling(NY_SAKSBEHANDLER_IDENT, AVDELING_DRAMMEN_ENHET);
         saksbehandlers = avdelingslederSaksbehandlerTjeneste.hentAvdelingensSaksbehandlere(AVDELING_DRAMMEN_ENHET);
         assertThat(saksbehandlers).isNotEmpty();
         assertThat(saksbehandlers.get(0).getId()).isNotNull();
@@ -47,7 +47,7 @@ public class AvdelingslederSaksbehandlerTjenesteImplTest {
     public void testLagreNySaksbehandler() {
         List<Saksbehandler> saksbehandlers = avdelingslederSaksbehandlerTjeneste.hentAvdelingensSaksbehandlere(AVDELING_DRAMMEN_ENHET);
         assertThat(saksbehandlers).isEmpty();
-        avdelingslederSaksbehandlerTjeneste.leggTilSaksbehandler(NY_SAKSBEHANDLER_IDENT, AVDELING_DRAMMEN_ENHET);
+        avdelingslederSaksbehandlerTjeneste.leggSaksbehandlerTilAvdeling(NY_SAKSBEHANDLER_IDENT, AVDELING_DRAMMEN_ENHET);
         saksbehandlers = avdelingslederSaksbehandlerTjeneste.hentAvdelingensSaksbehandlere(AVDELING_DRAMMEN_ENHET);
         assertThat(saksbehandlers.get(0).getSaksbehandlerIdent()).isEqualTo(NY_SAKSBEHANDLER_IDENT.toUpperCase());
         assertThat(saksbehandlers.get(0).getAvdelinger()).hasSize(1);
@@ -55,11 +55,11 @@ public class AvdelingslederSaksbehandlerTjenesteImplTest {
 
     @Test
     public void testSlettSaksbehandler() {
-        avdelingslederSaksbehandlerTjeneste.leggTilSaksbehandler(NY_SAKSBEHANDLER_IDENT, AVDELING_DRAMMEN_ENHET);
+        avdelingslederSaksbehandlerTjeneste.leggSaksbehandlerTilAvdeling(NY_SAKSBEHANDLER_IDENT, AVDELING_DRAMMEN_ENHET);
         List<Saksbehandler> saksbehandlers = avdelingslederSaksbehandlerTjeneste.hentAvdelingensSaksbehandlere(AVDELING_DRAMMEN_ENHET);
         assertThat(saksbehandlers.get(0).getSaksbehandlerIdent()).isEqualTo(NY_SAKSBEHANDLER_IDENT.toUpperCase());
         assertThat(saksbehandlers.get(0).getAvdelinger()).hasSize(1);
-        avdelingslederSaksbehandlerTjeneste.slettSaksbehandler(NY_SAKSBEHANDLER_IDENT, AVDELING_DRAMMEN_ENHET);
+        avdelingslederSaksbehandlerTjeneste.fjernSaksbehandlerFraAvdeling(NY_SAKSBEHANDLER_IDENT, AVDELING_DRAMMEN_ENHET);
         var saksb = avdelingslederSaksbehandlerTjeneste.hentAvdelingensSaksbehandlere(AVDELING_DRAMMEN_ENHET);
         assertThat(saksb).isEmpty();
     }

@@ -7,19 +7,25 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import no.nav.foreldrepenger.loslager.repository.StatistikkRepository;
+import no.nav.foreldrepenger.loslager.repository.oppgavestatistikk.NyOpppgaveStatistikkRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @ApplicationScoped
 public class StatistikkTjenesteImpl implements StatistikkTjeneste {
+    private static final Logger log = LoggerFactory.getLogger(StatistikkTjenesteImpl.class);
 
     private StatistikkRepository statisikkRepository;
+    private NyOpppgaveStatistikkRepository nyOpppgaveStatistikkRepository;
 
     StatistikkTjenesteImpl() {
         // for CDI proxy
     }
 
     @Inject
-    public StatistikkTjenesteImpl(StatistikkRepository statistikkRepository) {
+    public StatistikkTjenesteImpl(StatistikkRepository statistikkRepository, NyOpppgaveStatistikkRepository nyOpppgaveStatistikkRepository) {
         statisikkRepository = statistikkRepository;
+        this.nyOpppgaveStatistikkRepository = nyOpppgaveStatistikkRepository;
     }
 
     @Override
@@ -38,16 +44,20 @@ public class StatistikkTjenesteImpl implements StatistikkTjeneste {
 
     @Override
     public List<OppgaverForAvdelingSattManueltPaaVent> hentAntallOppgaverForAvdelingSattManueltPåVent(String avdeling) {
-        return (List<OppgaverForAvdelingSattManueltPaaVent>) statisikkRepository.hentAntallOppgaverForAvdelingSattManueltPåVent(avdeling).stream()
+        var stats = (List<OppgaverForAvdelingSattManueltPaaVent>) statisikkRepository.hentAntallOppgaverForAvdelingSattManueltPåVent(avdeling).stream()
                 .map(result -> new OppgaverForAvdelingSattManueltPaaVent((Object[]) result))
                 .collect(Collectors.toList());
+        return stats;
     }
 
     @Override
     public List<NyeOgFerdigstilteOppgaver> hentNyeOgFerdigstilteOppgaver(Long sakslisteId) {
-        return (List<NyeOgFerdigstilteOppgaver>) statisikkRepository.hentNyeOgFerdigstilteOppgaver(sakslisteId).stream() // NOSONAR
+        var stats = (List<NyeOgFerdigstilteOppgaver>) statisikkRepository.hentNyeOgFerdigstilteOppgaver(sakslisteId).stream() // NOSONAR
                 .map(result -> new NyeOgFerdigstilteOppgaver((Object[]) result))
                 .collect(Collectors.toList()); // NOSONAR
+        var nyStats = nyOpppgaveStatistikkRepository.hentStatistikk(sakslisteId);
+        nyStats.forEach(ks -> log.info("Ny statistikk viser {}", ks));
+        return stats;
     }
 
     @Override

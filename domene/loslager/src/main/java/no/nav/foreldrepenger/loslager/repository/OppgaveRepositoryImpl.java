@@ -116,29 +116,30 @@ public class OppgaveRepositoryImpl implements OppgaveRepository {
     }
 
     private <T> TypedQuery<T> lagOppgavespørring(String selection, Class<T> oppgaveClass, Oppgavespørring queryDto) {
-        String filtrerBehandlingType = queryDto.getBehandlingTyper().isEmpty() ? "": " o.behandlingType in :behtyper AND ";
-        String filtrerYtelseType = queryDto.getYtelseTyper().isEmpty() ? "": " o.fagsakYtelseType in :fagsakYtelseType AND ";
+        String filtrerBehandlingType = queryDto.getBehandlingTyper().isEmpty() ? "": "AND o.behandlingType in :behtyper ";
+        String filtrerYtelseType = queryDto.getYtelseTyper().isEmpty() ? "": "AND o.fagsakYtelseType in :fagsakYtelseType ";
 
         StringBuilder ekskluderInkluderAndreKriterier = new StringBuilder();
         for (var kriterie : queryDto.getInkluderAndreKriterierTyper()) {
-            ekskluderInkluderAndreKriterier.append("EXISTS ( SELECT  1 FROM OppgaveEgenskap oe WHERE o = oe.oppgave AND oe.aktiv = true AND oe.andreKriterierType = '" + kriterie.getKode() + "' ) AND ");
+            ekskluderInkluderAndreKriterier.append("AND EXISTS ( SELECT  1 FROM OppgaveEgenskap oe WHERE o = oe.oppgave AND oe.aktiv = true AND oe.andreKriterierType = '" + kriterie.getKode() + "' ) ");
         }
         for (var kriterie : queryDto.getEkskluderAndreKriterierTyper()) {
-            ekskluderInkluderAndreKriterier.append("NOT EXISTS (select 1 from OppgaveEgenskap oen WHERE o = oen.oppgave AND oen.aktiv = true AND oen.andreKriterierType = '").append(kriterie.getKode()).append("') AND ");
+            ekskluderInkluderAndreKriterier.append("AND NOT EXISTS (select 1 from OppgaveEgenskap oen WHERE o = oen.oppgave AND oen.aktiv = true AND oen.andreKriterierType = '").append(kriterie.getKode()).append("') ");
         }
 
         TypedQuery<T> query = entityManager.createQuery(selection + //$NON-NLS-1$ // NOSONAR
                 "INNER JOIN avdeling a ON a.avdelingEnhet = o.behandlendeEnhet " +
-                "WHERE " +
+                "WHERE 1=1" +
                 filtrerBehandlingType +
                 filtrerYtelseType +
                 ekskluderInkluderAndreKriterier +
-                "NOT EXISTS (select r from Reservasjon r where r.oppgave = o and r.reservertTil > :naa) " +
+                "AND NOT EXISTS (select r from Reservasjon r where r.oppgave = o and r.reservertTil > :naa) " +
                 tilBeslutter(queryDto) +
+                avgrenseTilOppgaveId(queryDto) +
                 "AND a.id = :enhet " +
                 "AND o.aktiv = true " + sortering(queryDto), oppgaveClass)
-                .setParameter("naa", LocalDateTime.now())
-                .setParameter("enhet", queryDto.getEnhetId());
+                .setParameter("enhet", queryDto.getEnhetId())
+                .setParameter("naa", LocalDateTime.now());
 
         if (!queryDto.getForAvdelingsleder()) {
             query.setParameter("tilbeslutter", AndreKriterierType.TIL_BESLUTTER)
@@ -175,6 +176,12 @@ public class OppgaveRepositoryImpl implements OppgaveRepository {
         }
 
         return query;
+    }
+
+    private String avgrenseTilOppgaveId(Oppgavespørring queryDto) {
+        return queryDto.getAvgrenseTilOppgaveId()
+                .map(oppgaveId -> String.format("AND o.id = %s ", oppgaveId))
+                .orElse("");
     }
 
     private String tilBeslutter(Oppgavespørring dto) {
@@ -293,7 +300,7 @@ public class OppgaveRepositoryImpl implements OppgaveRepository {
     }
 
     @Override
-    public List<OppgaveFiltrering> hentAlleOppgaveFiltreringsettTilknyttetAvdeling(Long avdelingsId) {
+    public List<OppgaveFiltrering> hentAlleOppgaveFilterSettTilknyttetAvdeling(Long avdelingsId) {
         TypedQuery<OppgaveFiltrering> listeTypedQuery = entityManager
                 .createQuery("FROM OppgaveFiltrering l WHERE l.avdeling.id = :id " +
                         OPPGAVEFILTRERING_SORTERING_NAVN, OppgaveFiltrering.class)
@@ -302,7 +309,7 @@ public class OppgaveRepositoryImpl implements OppgaveRepository {
     }
 
     @Override
-    public Optional<OppgaveFiltrering> hentFiltrering(Long listeId) {
+    public Optional<OppgaveFiltrering> hentOppgaveFilterSett(Long listeId) {
         TypedQuery<OppgaveFiltrering> listeTypedQuery = entityManager
                 .createQuery("FROM OppgaveFiltrering l WHERE l.id = :id " +
                         OPPGAVEFILTRERING_SORTERING_NAVN, OppgaveFiltrering.class)

@@ -2,7 +2,6 @@ package no.nav.fplos.avdelingsleder;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -12,6 +11,7 @@ import no.nav.foreldrepenger.loslager.organisasjon.Avdeling;
 import no.nav.foreldrepenger.loslager.organisasjon.Saksbehandler;
 import no.nav.foreldrepenger.loslager.repository.OppgaveRepository;
 import no.nav.foreldrepenger.loslager.repository.OrganisasjonRepository;
+import no.nav.vedtak.exception.TekniskException;
 
 @ApplicationScoped
 public class AvdelingslederSaksbehandlerTjenesteImpl implements AvdelingslederSaksbehandlerTjeneste {
@@ -34,34 +34,22 @@ public class AvdelingslederSaksbehandlerTjenesteImpl implements AvdelingslederSa
         return organisasjonRepository.hentAvdelingFraEnhet(avdelingEnhet)
                 .map(Avdeling::getSaksbehandlere)
                 .orElse(Collections.emptyList());
-        //return organisasjonRepository.hentAvdelingensSaksbehandlere(avdelingEnhet);
     }
 
     @Override
-    public void leggTilSaksbehandler(String saksbehandlerIdent, String avdelingEnhet) {
-        Saksbehandler saksbehandler = hentEllerLagreSaksbehandler(saksbehandlerIdent);
+    public void leggSaksbehandlerTilAvdeling(String saksbehandlerIdent, String avdelingEnhet) {
+        Saksbehandler saksbehandler = organisasjonRepository.hentSaksbehandlerHvisEksisterer(saksbehandlerIdent)
+                .orElseGet(() -> opprettSaksbehandler(saksbehandlerIdent));
         Avdeling avdeling = hentAvdeling(avdelingEnhet);
         saksbehandler.leggTilAvdeling(avdeling);
         organisasjonRepository.lagre(saksbehandler);
         organisasjonRepository.refresh(avdeling);
     }
 
-    private Avdeling hentAvdeling(String avdelingEnhet) {
-        return organisasjonRepository.hentAvdelingFraEnhet(avdelingEnhet).orElseThrow();
-    }
-
-    private Saksbehandler hentEllerLagreSaksbehandler(String saksbehandlerIdent) {
-        Optional<Saksbehandler> optionalSaksbehandler = organisasjonRepository.hentSaksbehandlerHvisEksisterer(saksbehandlerIdent);
-        if (optionalSaksbehandler.isEmpty()) {
-            organisasjonRepository.lagre(saksbehandlerFra(saksbehandlerIdent));
-            return organisasjonRepository.hentSaksbehandler(saksbehandlerIdent);
-        }
-        return optionalSaksbehandler.get();
-    }
-
     @Override
-    public void slettSaksbehandler(String saksbehandlerIdent, String avdelingEnhet) {
-        Saksbehandler saksbehandler = organisasjonRepository.hentSaksbehandler(saksbehandlerIdent);
+    public void fjernSaksbehandlerFraAvdeling(String saksbehandlerIdent, String avdelingEnhet) {
+        Saksbehandler saksbehandler = organisasjonRepository.hentSaksbehandlerHvisEksisterer(saksbehandlerIdent)
+                .orElseThrow(() -> AvdelingSaksbehandlerTjenesteFeil.finnerIkkeSaksbehandler(saksbehandlerIdent));
         saksbehandler.fjernAvdeling(organisasjonRepository.hentAvdelingFraEnhet(avdelingEnhet).orElseThrow());
         organisasjonRepository.lagre(saksbehandler);
 
@@ -74,7 +62,21 @@ public class AvdelingslederSaksbehandlerTjenesteImpl implements AvdelingslederSa
         oppgaveRepository.refresh(avdeling);
     }
 
-    private Saksbehandler saksbehandlerFra(String saksbehandlerIdent) {
-        return new Saksbehandler(saksbehandlerIdent.toUpperCase());
+    private Avdeling hentAvdeling(String avdelingEnhet) {
+        return organisasjonRepository.hentAvdelingFraEnhet(avdelingEnhet).orElseThrow();
     }
+
+    private Saksbehandler opprettSaksbehandler(String ident) {
+        var saksbehandler = new Saksbehandler(ident.toUpperCase());
+        organisasjonRepository.lagre(saksbehandler);
+        return organisasjonRepository.hentSaksbehandlerHvisEksisterer(ident)
+                .orElseThrow(() -> AvdelingSaksbehandlerTjenesteFeil.finnerIkkeSaksbehandler(ident));
+    }
+
+    private static final class AvdelingSaksbehandlerTjenesteFeil {
+        private static TekniskException finnerIkkeSaksbehandler(String ident) {
+            return new TekniskException("Finner ikke saksbehandler med ident {}", ident);
+        }
+    }
+
 }

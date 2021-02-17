@@ -16,8 +16,6 @@ public interface OrganisasjonRepository {
 
     Optional<Saksbehandler> hentSaksbehandlerHvisEksisterer(String saksbehandlerIdent);
 
-    void lagre(Avdeling avdeling);
-
     void refresh(Avdeling avdeling);
 
     List<Avdeling> hentAvdelinger();

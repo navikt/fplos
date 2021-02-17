@@ -91,7 +91,7 @@ public class TilbakekrevingHendelseHåndterer {
                                    List<Aksjonspunkt> aksjonspunkter,
                                    String behandlendeEnhet) {
         EventResultat event = TilbakekrevingEventMapper.tilbakekrevingEventFra(aksjonspunkter);
-        OppgaveEventLogg sisteOppgaveEvent = oppgaveHistorikk.getSisteÅpningsEvent();
+        OppgaveEventLogg sisteOppgaveEvent = oppgaveHistorikk.getSisteOpprettetEvent();
         boolean erTilBeslutter = egenskaper.getAndreKriterier().contains(TIL_BESLUTTER);
 
         if (event == EventResultat.OPPRETT_OPPGAVE && sisteOppgaveEvent != null && sisteOppgaveEvent.getEventType().erÅpningsevent()) {
@@ -118,7 +118,7 @@ public class TilbakekrevingHendelseHåndterer {
 
 
     private void avsluttOppgaveHvisÅpen(BehandlingId behandlingId, OppgaveHistorikk oppgaveHistorikk, String behandlendeEnhet) {
-        if (oppgaveHistorikk.erSisteEventÅpningsevent()) {
+        if (oppgaveHistorikk.erÅpenOppgave()) {
             loggEvent(behandlingId, OppgaveEventType.LUKKET, null, behandlendeEnhet);
             oppgaveRepository.avsluttOppgaveForBehandling(behandlingId);
         }

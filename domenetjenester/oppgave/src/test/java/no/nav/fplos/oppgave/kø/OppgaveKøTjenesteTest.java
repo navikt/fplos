@@ -15,9 +15,7 @@ import no.nav.foreldrepenger.loslager.repository.OppgaveRepository;
 import no.nav.foreldrepenger.loslager.repository.OppgaveRepositoryImpl;
 import no.nav.foreldrepenger.loslager.repository.OrganisasjonRepositoryImpl;
 import no.nav.fplos.avdelingsleder.AvdelingslederTjeneste;
-import no.nav.fplos.avdelingsleder.AvdelingslederTjenesteImpl;
 import no.nav.fplos.kø.OppgaveKøTjeneste;
-import no.nav.fplos.kø.OppgaveKøTjenesteImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -54,8 +52,8 @@ public class OppgaveKøTjenesteTest {
     public void setup(EntityManager entityManager) {
         oppgaveRepository = new OppgaveRepositoryImpl(entityManager);
         var organisasjonRepository = new OrganisasjonRepositoryImpl(entityManager);
-        avdelingslederTjeneste = new AvdelingslederTjenesteImpl(oppgaveRepository, organisasjonRepository);
-        oppgaveKøTjeneste = new OppgaveKøTjenesteImpl(oppgaveRepository, organisasjonRepository);
+        avdelingslederTjeneste = new AvdelingslederTjeneste(oppgaveRepository, organisasjonRepository);
+        oppgaveKøTjeneste = new OppgaveKøTjeneste(oppgaveRepository, organisasjonRepository);
         this.entityManager = entityManager;
     }
 

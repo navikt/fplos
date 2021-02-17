@@ -48,11 +48,6 @@ public class OrganisasjonRepositoryImpl implements OrganisasjonRepository {
     }
 
     @Override
-    public void lagre(Avdeling avdeling) {
-        internLagre(avdeling);
-    }
-
-    @Override
     public void refresh(Avdeling avdeling) {
         entityManager.refresh(avdeling);
     }

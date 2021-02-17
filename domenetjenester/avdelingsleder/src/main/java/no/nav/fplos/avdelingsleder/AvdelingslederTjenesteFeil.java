@@ -1,15 +1,13 @@
 package no.nav.fplos.avdelingsleder;
 
-import no.nav.vedtak.feil.Feil;
-import no.nav.vedtak.feil.FeilFactory;
-import no.nav.vedtak.feil.LogLevel;
-import no.nav.vedtak.feil.deklarasjon.DeklarerteFeil;
-import no.nav.vedtak.feil.deklarasjon.FunksjonellFeil;
+import no.nav.vedtak.exception.TekniskException;
 
-public interface AvdelingslederTjenesteFeil extends DeklarerteFeil {
 
-    AvdelingslederTjenesteFeil FACTORY = FeilFactory.create(AvdelingslederTjenesteFeil.class);
+public final class AvdelingslederTjenesteFeil {
 
-    @FunksjonellFeil(feilkode = "FP-164687", feilmelding = "Fant ikke oppgavekø med id %s", løsningsforslag = "Last siden på nytt", logLevel = LogLevel.INFO)
-    Feil fantIkkeOppgavekø(Long oppgaveFilterId);
+    public static TekniskException fantIkkeOppgavekø(Long oppgaveFilterId) {
+        var feilmelding = String.format("Fant ikke oppgavekø med id %s", oppgaveFilterId);
+        return new TekniskException("FPLOS-AVD1", feilmelding);
+    }
+
 }

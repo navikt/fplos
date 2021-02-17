@@ -12,7 +12,6 @@ import java.util.List;
 import javax.persistence.EntityManager;
 
 import no.nav.fplos.kø.OppgaveKøTjeneste;
-import no.nav.fplos.kø.OppgaveKøTjenesteImpl;
 import no.nav.fplos.reservasjon.ReservasjonTjeneste;
 import no.nav.fplos.reservasjon.ReservasjonTjenesteImpl;
 import org.junit.jupiter.api.BeforeEach;
@@ -30,7 +29,6 @@ import no.nav.foreldrepenger.loslager.repository.OppgaveRepository;
 import no.nav.foreldrepenger.loslager.repository.OppgaveRepositoryImpl;
 import no.nav.foreldrepenger.loslager.repository.OrganisasjonRepositoryImpl;
 import no.nav.fplos.avdelingsleder.AvdelingslederTjeneste;
-import no.nav.fplos.avdelingsleder.AvdelingslederTjenesteImpl;
 
 @ExtendWith(EntityManagerFPLosAwareExtension.class)
 public class OppgaveTjenesteImplTest {
@@ -58,8 +56,8 @@ public class OppgaveTjenesteImplTest {
     public void setup(EntityManager entityManager) {
         oppgaveRepository = new OppgaveRepositoryImpl(entityManager);
         var organisasjonRepository = new OrganisasjonRepositoryImpl(entityManager);
-        avdelingslederTjeneste = new AvdelingslederTjenesteImpl(oppgaveRepository, organisasjonRepository);
-        oppgaveKøTjeneste = new OppgaveKøTjenesteImpl(oppgaveRepository, organisasjonRepository);
+        avdelingslederTjeneste = new AvdelingslederTjeneste(oppgaveRepository, organisasjonRepository);
+        oppgaveKøTjeneste = new OppgaveKøTjeneste(oppgaveRepository, organisasjonRepository);
         oppgaveTjeneste = new OppgaveTjenesteImpl(oppgaveRepository);
         reservasjonTjeneste = new ReservasjonTjenesteImpl(oppgaveRepository);
         this.entityManager = entityManager;
