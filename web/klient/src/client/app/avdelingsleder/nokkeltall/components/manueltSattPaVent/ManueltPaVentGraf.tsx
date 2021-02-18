@@ -22,20 +22,30 @@ const cssText = {
   fontWeight: 400,
 };
 
+interface Koordinat {
+  x: number;
+  y: number;
+}
+
+interface KoordinatMedDato {
+  x: Date;
+  y: number;
+}
+
 const lagKoordinater = (oppgaverManueltPaVent: OppgaverManueltPaVent[]): Koordinat[] => oppgaverManueltPaVent.map((o) => ({
   x: moment(o.behandlingFrist).startOf('day').toDate().getTime(),
   y: o.antall,
 }));
 
-const lagDatastruktur = (koordinater: Koordinat[], isFireUkerValgt: boolean): Koordinat[] => {
-  const nyeKoordinater: Koordinat[] = [];
+const lagDatastruktur = (koordinater: Koordinat[], isFireUkerValgt: boolean): KoordinatMedDato[] => {
+  const nyeKoordinater: KoordinatMedDato[] = [];
   const periodeStart = moment().startOf('day').toDate();
   const periodeSlutt = moment().add(isFireUkerValgt ? 4 : 8, 'w').toDate();
 
   for (let dato = moment(periodeStart); dato.isSameOrBefore(periodeSlutt); dato = dato.add(1, 'days')) {
     const funnetKoordinat = koordinater.find((k) => moment(k.x).isSame(dato));
     nyeKoordinater.push({
-      x: dato.toDate().getDate(),
+      x: dato.toDate(),
       y: funnetKoordinat ? funnetKoordinat.y : 0,
     });
   }
@@ -44,11 +54,6 @@ const lagDatastruktur = (koordinater: Koordinat[], isFireUkerValgt: boolean): Ko
 };
 
 const harDatastrukturKun0Verdier = (koordinater: Koordinat[]): boolean => !koordinater.some((k) => k.y !== 0);
-
-interface Koordinat {
-  x: number;
-  y: number;
-}
 
 interface OwnProps {
   width: number;
@@ -101,6 +106,7 @@ const ManueltPaVentGraf: FunctionComponent<OwnProps> = ({
         />
         <YAxis style={{ text: cssText }} />
         <AreaSeries
+          // @ts-ignore Feil i react-vis
           data={data}
           onNearestX={leggTilHintVerdi}
           fill="#337c9b"
