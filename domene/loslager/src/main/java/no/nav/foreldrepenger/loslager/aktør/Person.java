@@ -1,15 +1,21 @@
 package no.nav.foreldrepenger.loslager.aktør;
 
 import static java.util.Objects.requireNonNull;
+
+import java.time.LocalDate;
 import java.util.Locale;
 import java.util.Objects;
 
-import no.nav.foreldrepenger.domene.typer.AktørId;
-
 public class Person {
-    private AktørId aktørId;
+
     private String navn;
     private Fødselsnummer fødselsnummer;
+
+    private NavBrukerKjønn kjønn;
+    private String diskresjonskode;
+    private LocalDate fødselsdato;
+    private LocalDate dødsdato;
+
 
     public Fødselsnummer getFødselsnummer() {
         return fødselsnummer;
@@ -19,8 +25,20 @@ public class Person {
         return navn;
     }
 
-    public AktørId getAktørId() {
-        return aktørId;
+    public NavBrukerKjønn getKjønn() {
+        return kjønn;
+    }
+
+    public String getDiskresjonskode() {
+        return diskresjonskode;
+    }
+
+    public LocalDate getFødselsdato() {
+        return fødselsdato;
+    }
+
+    public LocalDate getDødsdato() {
+        return dødsdato;
     }
 
     @Override
@@ -28,14 +46,13 @@ public class Person {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Person person = (Person) o;
-        return aktørId.equals(person.aktørId) &&
-                navn.equals(person.navn) &&
+        return navn.equals(person.navn) &&
                 fødselsnummer.equals(person.fødselsnummer);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(aktørId, navn, fødselsnummer);
+        return Objects.hash(navn, fødselsnummer);
     }
 
     public static class Builder {
@@ -43,11 +60,6 @@ public class Person {
         private Person personMal;
         public Builder() {
             personMal = new Person();
-        }
-
-        public Builder medAktørId(AktørId aktørId) {
-            personMal.aktørId = aktørId;
-            return this;
         }
 
         public Builder medNavn(String navn) {
@@ -60,8 +72,27 @@ public class Person {
             return this;
         }
 
+        public Builder medKjønn(NavBrukerKjønn kjønn) {
+            personMal.kjønn = kjønn;
+            return this;
+        }
+
+        public Builder medDiskresjonskode(String kode) {
+            personMal.diskresjonskode = kode;
+            return this;
+        }
+
+        public Builder medFødselsdato(LocalDate dato) {
+            personMal.fødselsdato = dato;
+            return this;
+        }
+
+        public Builder medDødsdato(LocalDate dato) {
+            personMal.dødsdato = dato;
+            return this;
+        }
+
         public Person build() {
-            requireNonNull(personMal.aktørId, "Mangler aktørId"); //$NON-NLS-1$
             requireNonNull(personMal.fødselsnummer, "Mangler ident"); //$NON-NLS-1$
             requireNonNull(personMal.navn, "Mangler navn"); //$NON-NLS-1$
             return personMal;

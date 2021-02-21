@@ -1,11 +1,10 @@
 package no.nav.fplos.person;
 
+import java.util.Random;
+
 import no.nav.foreldrepenger.domene.typer.AktørId;
 import no.nav.foreldrepenger.loslager.aktør.Fødselsnummer;
 import no.nav.foreldrepenger.loslager.aktør.Person;
-
-
-import java.util.Random;
 
 public final class FiktivTestPerson {
 
@@ -14,7 +13,6 @@ public final class FiktivTestPerson {
         AktørId aktørId = new AktørId(Long.valueOf(fnr.asValue()));
         return new Person.Builder()
                 .medFnr(fnr)
-                .medAktørId(aktørId)
                 .medNavn(navn())
                 .build();
     }

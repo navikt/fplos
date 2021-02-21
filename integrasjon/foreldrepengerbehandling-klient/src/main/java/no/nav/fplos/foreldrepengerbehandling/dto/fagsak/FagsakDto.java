@@ -1,32 +1,34 @@
 package no.nav.fplos.foreldrepengerbehandling.dto.fagsak;
 
 import java.time.LocalDate;
-import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import no.nav.foreldrepenger.loslager.oppgave.FagsakStatus;
-import no.nav.foreldrepenger.loslager.oppgave.FagsakYtelseType;
-import no.nav.fplos.foreldrepengerbehandling.dto.behandling.ResourceLink;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class FagsakDto {
 
+    private String aktoerId;
     private Long saksnummer;
     private FagsakYtelseTypeDto sakstype;
     private FagsakStatus status;
     private LocalDate barnFodt;
-    private List<ResourceLink> onceLinks;
 
     public FagsakDto() {
         // Injiseres i test
     }
 
-    public FagsakDto(Long saksnummer, FagsakYtelseTypeDto sakstype, FagsakStatus status, LocalDate barnFodt, List<ResourceLink> onceLinks) {
+    public FagsakDto(String aktoerId, Long saksnummer, FagsakYtelseTypeDto sakstype, FagsakStatus status, LocalDate barnFodt) {
+        this.aktoerId = aktoerId;
         this.saksnummer = saksnummer;
         this.sakstype = sakstype;
         this.status = status;
         this.barnFodt = barnFodt;
-        this.onceLinks = onceLinks;
+    }
+
+    public String getAktoerId() {
+        return aktoerId;
     }
 
     public Long getSaksnummer() {
@@ -45,7 +47,4 @@ public class FagsakDto {
         return barnFodt;
     }
 
-    public List<ResourceLink> getOnceLinks() {
-        return onceLinks;
-    }
 }

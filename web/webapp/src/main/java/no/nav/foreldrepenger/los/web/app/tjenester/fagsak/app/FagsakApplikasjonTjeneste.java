@@ -1,33 +1,39 @@
 package no.nav.foreldrepenger.los.web.app.tjenester.fagsak.app;
 
-import no.nav.foreldrepenger.loslager.oppgave.FagsakYtelseType;
-import no.nav.fplos.foreldrepengerbehandling.ForeldrepengerFagsakKlient;
-import no.nav.fplos.foreldrepengerbehandling.dto.behandling.ResourceLink;
-import no.nav.fplos.foreldrepengerbehandling.dto.fagsak.FagsakDto;
-import no.nav.fplos.foreldrepengerbehandling.dto.fagsak.FagsakMedPersonDto;
-import no.nav.fplos.foreldrepengerbehandling.dto.fagsak.PersonDto;
-import no.nav.vedtak.exception.IntegrasjonException;
-import no.nav.vedtak.exception.ManglerTilgangException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import static java.util.stream.Collectors.toList;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
 import java.util.Collections;
 import java.util.List;
 
-import static java.util.stream.Collectors.toList;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import no.nav.foreldrepenger.domene.typer.AktørId;
+import no.nav.foreldrepenger.loslager.aktør.Person;
+import no.nav.foreldrepenger.loslager.oppgave.FagsakYtelseType;
+import no.nav.fplos.foreldrepengerbehandling.ForeldrepengerFagsakKlient;
+import no.nav.fplos.foreldrepengerbehandling.dto.fagsak.FagsakDto;
+import no.nav.fplos.foreldrepengerbehandling.dto.fagsak.FagsakMedPersonDto;
+import no.nav.fplos.foreldrepengerbehandling.dto.fagsak.PersonDto;
+import no.nav.fplos.person.PersonTjeneste;
+import no.nav.vedtak.exception.IntegrasjonException;
+import no.nav.vedtak.exception.ManglerTilgangException;
 
 @ApplicationScoped
 public class FagsakApplikasjonTjeneste {
 
     private static final Logger log = LoggerFactory.getLogger(FagsakApplikasjonTjeneste.class);
     private ForeldrepengerFagsakKlient fagsakKlient;
+    private PersonTjeneste personTjeneste;
 
 
     @Inject
-    public FagsakApplikasjonTjeneste(ForeldrepengerFagsakKlient fagsakKlient) {
+    public FagsakApplikasjonTjeneste(ForeldrepengerFagsakKlient fagsakKlient, PersonTjeneste personTjeneste) {
         this.fagsakKlient = fagsakKlient;
+        this.personTjeneste = personTjeneste;
     }
 
     FagsakApplikasjonTjeneste() {
@@ -58,18 +64,15 @@ public class FagsakApplikasjonTjeneste {
         }
     }
 
-    private PersonDto personDtoFra(List<FagsakDto> fagsaker) {
+    private Person personDtoFra(List<FagsakDto> fagsaker) {
         return fagsaker.stream().findAny()
-                .map(FagsakDto::getOnceLinks)
-                .orElse(Collections.emptyList()).stream()
-                .filter(rl -> rl.getRel().equals("sak-bruker"))
-                .map(ResourceLink::getHref)
-                .map(href -> fagsakKlient.get(href, PersonDto.class))
-                .findFirst()
+                .map(FagsakDto::getAktoerId)
+                .flatMap(a -> personTjeneste.hentPerson(new AktørId(a)))
                 .orElse(null);
     }
 
-    private static FagsakMedPersonDto map(FagsakDto fagsakDto, PersonDto personDto) {
+    private static FagsakMedPersonDto map(FagsakDto fagsakDto, Person person) {
+        var personDto = new PersonDto(person);
         var sakstype = FagsakYtelseType.fraKode(fagsakDto.getSakstype().getKode());
         return new FagsakMedPersonDto(fagsakDto.getSaksnummer(), sakstype,
                 fagsakDto.getStatus(), personDto, fagsakDto.getBarnFodt());
