@@ -5,19 +5,14 @@ import static org.mockito.Mockito.mock;
 
 import java.util.Collection;
 
-import no.nav.fplos.foreldrepengerbehandling.ForeldrepengerFagsakKlient;
-import no.nav.fplos.foreldrepengerbehandling.dto.fagsak.FagsakMedPersonDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import no.nav.foreldrepenger.los.web.app.tjenester.fagsak.FagsakRestTjeneste;
 import no.nav.foreldrepenger.los.web.app.tjenester.fagsak.app.FagsakApplikasjonTjeneste;
 import no.nav.foreldrepenger.los.web.app.tjenester.fagsak.dto.SokefeltDto;
-import no.nav.fplos.ansatt.AnsattTjeneste;
-import no.nav.fplos.foreldrepengerbehandling.ForeldrepengerBehandlingKlient;
-import no.nav.fplos.foreldrepengerbehandling.dto.fagsak.FagsakDto;
-import no.nav.fplos.oppgave.OppgaveTjeneste;
-import no.nav.fplos.person.PersonTjeneste;
+import no.nav.fplos.foreldrepengerbehandling.ForeldrepengerFagsakKlient;
+import no.nav.fplos.foreldrepengerbehandling.dto.fagsak.FagsakMedPersonDto;
 
 public class FagsakRestTjenesteTest {
 
@@ -28,7 +23,7 @@ public class FagsakRestTjenesteTest {
     @BeforeEach
     public void oppsett() {
         klient = mock(ForeldrepengerFagsakKlient.class);
-        applikasjonTjeneste = new FagsakApplikasjonTjeneste(klient);
+        applikasjonTjeneste = new FagsakApplikasjonTjeneste(klient, null);
         tjeneste = new FagsakRestTjeneste(applikasjonTjeneste);
     }
 

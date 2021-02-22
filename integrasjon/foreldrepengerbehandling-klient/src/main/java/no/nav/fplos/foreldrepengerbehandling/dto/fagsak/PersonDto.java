@@ -1,11 +1,15 @@
 package no.nav.fplos.foreldrepengerbehandling.dto.fagsak;
 
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
+
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import java.time.LocalDate;
+import no.nav.foreldrepenger.loslager.aktør.NavBrukerKjønn;
+import no.nav.foreldrepenger.loslager.aktør.Person;
 
 @JsonAutoDetect(getterVisibility = Visibility.NONE, setterVisibility = Visibility.NONE, fieldVisibility = Visibility.ANY, isGetterVisibility = Visibility.NONE)
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -40,6 +44,15 @@ public class PersonDto {
         this.erKvinne = erKvinne;
         this.diskresjonskode = diskresjonskode;
         this.dodsdato = dodsdato;
+    }
+
+    public PersonDto(Person person) {
+        this.navn = person.getNavn();
+        this.alder = (int) ChronoUnit.YEARS.between(person.getFødselsdato(), LocalDate.now());
+        this.personnummer = person.getFødselsnummer().asValue();
+        this.erKvinne = NavBrukerKjønn.K.equals(person.getKjønn());
+        this.diskresjonskode = person.getDiskresjonskode();
+        this.dodsdato = person.getDødsdato();
     }
 
     public String getNavn() {

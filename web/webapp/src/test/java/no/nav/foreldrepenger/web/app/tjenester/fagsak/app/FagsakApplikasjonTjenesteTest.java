@@ -1,21 +1,9 @@
 package no.nav.foreldrepenger.web.app.tjenester.fagsak.app;
 
-import no.nav.foreldrepenger.domene.typer.AktørId;
-import no.nav.foreldrepenger.los.web.app.tjenester.fagsak.app.FagsakApplikasjonTjeneste;
-import no.nav.foreldrepenger.loslager.aktør.Fødselsnummer;
-import no.nav.foreldrepenger.loslager.oppgave.FagsakStatus;
-import no.nav.foreldrepenger.loslager.oppgave.FagsakYtelseType;
-import no.nav.fplos.foreldrepengerbehandling.ForeldrepengerFagsakKlient;
-import no.nav.fplos.foreldrepengerbehandling.dto.behandling.ResourceLink;
-import no.nav.fplos.foreldrepengerbehandling.dto.fagsak.FagsakDto;
-import no.nav.fplos.foreldrepengerbehandling.dto.fagsak.FagsakMedPersonDto;
-import no.nav.fplos.foreldrepengerbehandling.dto.fagsak.FagsakYtelseTypeDto;
-import no.nav.fplos.foreldrepengerbehandling.dto.fagsak.PersonDto;
-import no.nav.fplos.person.PersonTjeneste;
-import no.nav.vedtak.exception.ManglerTilgangException;
-import no.nav.vedtak.felles.integrasjon.rest.OidcRestClientFeil;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.net.URI;
 import java.time.LocalDate;
@@ -25,11 +13,27 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 
+import no.nav.foreldrepenger.domene.typer.AktørId;
+import no.nav.foreldrepenger.los.web.app.tjenester.fagsak.app.FagsakApplikasjonTjeneste;
+import no.nav.foreldrepenger.loslager.aktør.Fødselsnummer;
+import no.nav.foreldrepenger.loslager.aktør.NavBrukerKjønn;
+import no.nav.foreldrepenger.loslager.aktør.Person;
+import no.nav.foreldrepenger.loslager.oppgave.FagsakStatus;
+import no.nav.fplos.foreldrepengerbehandling.ForeldrepengerFagsakKlient;
+import no.nav.fplos.foreldrepengerbehandling.dto.fagsak.FagsakDto;
+import no.nav.fplos.foreldrepengerbehandling.dto.fagsak.FagsakMedPersonDto;
+import no.nav.fplos.foreldrepengerbehandling.dto.fagsak.FagsakYtelseTypeDto;
+import no.nav.fplos.foreldrepengerbehandling.dto.fagsak.PersonDto;
+import no.nav.fplos.person.PersonTjeneste;
+import no.nav.vedtak.exception.ManglerTilgangException;
+import no.nav.vedtak.felles.integrasjon.rest.OidcRestClientFeil;
+
+@ExtendWith(MockitoExtension.class)
 public class FagsakApplikasjonTjenesteTest {
 
     private static final Fødselsnummer FNR = new Fødselsnummer("12345678901");
@@ -44,14 +48,16 @@ public class FagsakApplikasjonTjenesteTest {
     public void oppsett() {
         personTjeneste = mock(PersonTjeneste.class);
         fagsakKlient = mock(ForeldrepengerFagsakKlient.class);
-        fagsakTjeneste = new FagsakApplikasjonTjeneste(fagsakKlient);
+        fagsakTjeneste = new FagsakApplikasjonTjeneste(fagsakKlient, personTjeneste);
     }
 
     @Test
     public void skal_hente_saker_på_fnr() {
-        FagsakDto fagsakDto = new FagsakDto(Long.valueOf(FNR.asValue()), FagsakYtelseTypeDto.FORELDREPENGER,
-                FagsakStatus.OPPRETTET, LocalDate.of(2017, Month.FEBRUARY, 1), Collections.emptyList());
+        FagsakDto fagsakDto = new FagsakDto(AktørId.dummy().getId(), Long.valueOf(FNR.asValue()), FagsakYtelseTypeDto.FORELDREPENGER,
+                FagsakStatus.OPPRETTET, LocalDate.of(2017, Month.FEBRUARY, 1));
+        Person personDto = new Person.Builder().medNavn("TEST"). medFødselsdato(LocalDate.now().minusYears(20)).medFnr(FNR). medKjønn(NavBrukerKjønn.K).build();
         when(fagsakKlient.finnFagsaker(FNR.asValue())).thenReturn(Collections.singletonList(fagsakDto));
+        when(personTjeneste.hentPerson(any())).thenReturn(Optional.of(personDto));
         LocalDate fødselsdatoBarn = LocalDate.of(2017, Month.FEBRUARY, 1);
 
         // Act
@@ -69,15 +75,14 @@ public class FagsakApplikasjonTjenesteTest {
 
     @Test
     public void skal_hente_saker_på_saksreferanse() {
-        PersonDto personDto = new PersonDto("TEST", 20, FNR.asValue(), ER_KVINNE, "", null);
-        ResourceLink rel = ResourceLink.get("test-uri", "sak-bruker", "aktørIdDtoObjekt");
+        Person personDto = new Person.Builder().medNavn("TEST"). medFødselsdato(LocalDate.now().minusYears(20)).medFnr(FNR). medKjønn(NavBrukerKjønn.K).build();
 
         List<FagsakDto> fagsakDtos = new ArrayList<>();
-        FagsakDto fagsakDto = new FagsakDto(Long.valueOf(SAKSNUMMER), FagsakYtelseTypeDto.FORELDREPENGER,
-                FagsakStatus.UNDER_BEHANDLING, LocalDate.now(), List.of(rel));
+        FagsakDto fagsakDto = new FagsakDto(AktørId.dummy().getId(), Long.valueOf(SAKSNUMMER), FagsakYtelseTypeDto.FORELDREPENGER,
+                FagsakStatus.UNDER_BEHANDLING, LocalDate.now());
         fagsakDtos.add(fagsakDto);
         when(fagsakKlient.finnFagsaker(SAKSNUMMER)).thenReturn(fagsakDtos);
-        when(fagsakKlient.get(any(), any())).thenReturn(personDto);
+        when(personTjeneste.hentPerson(any())).thenReturn(Optional.of(personDto));
 
         // Act
         List<FagsakMedPersonDto> resultFagsakDtos = fagsakTjeneste.hentSaker(SAKSNUMMER);
@@ -85,7 +90,7 @@ public class FagsakApplikasjonTjenesteTest {
         // Assert
         assertThat(resultFagsakDtos.isEmpty()).isFalse();
         assertThat(resultFagsakDtos).hasSize(1);
-        assertThat(resultFagsakDtos.get(0).getPerson()).isEqualTo(personDto);
+        assertThat(resultFagsakDtos.get(0).getPerson()).isEqualTo(new PersonDto(personDto));
     }
 
     @Test
@@ -97,7 +102,6 @@ public class FagsakApplikasjonTjenesteTest {
     @Test
     public void skal_returnere_tomt_view_ved_ukjent_fnr() {
         String ukjentFødselsnummer = "00000000000";
-        when(personTjeneste.hentPerson(any(AktørId.class))).thenReturn(Optional.empty());
         var view = fagsakTjeneste.hentSaker(ukjentFødselsnummer);
         assertThat(view.isEmpty()).isTrue();
     }
