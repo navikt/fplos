@@ -12,6 +12,8 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import no.nav.foreldrepenger.loslager.oppgave.Reservasjon;
+import no.nav.foreldrepenger.loslager.repository.oppgavestatistikk.KøOppgaveHendelse;
+import no.nav.fplos.oppgavestatistikk.OppgaveStatistikk;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,14 +39,16 @@ public class ForeldrepengerHendelseHåndterer {
     private ForeldrepengerBehandlingKlient foreldrePengerBehandlingKlient;
     private OppgaveRepository oppgaveRepository;
     private OppgaveEgenskapHandler oppgaveEgenskapHandler;
+    private OppgaveStatistikk oppgaveStatistikk;
 
     @Inject
     public ForeldrepengerHendelseHåndterer(ForeldrepengerBehandlingKlient foreldrePengerBehandlingKlient,
                                            OppgaveRepository oppgaveRepository,
-                                           OppgaveEgenskapHandler oppgaveEgenskapHandler) {
+                                           OppgaveEgenskapHandler oppgaveEgenskapHandler, OppgaveStatistikk oppgaveStatistikk) {
         this.foreldrePengerBehandlingKlient = foreldrePengerBehandlingKlient;
         this.oppgaveRepository = oppgaveRepository;
         this.oppgaveEgenskapHandler = oppgaveEgenskapHandler;
+        this.oppgaveStatistikk = oppgaveStatistikk;
     }
 
     ForeldrepengerHendelseHåndterer() {
@@ -56,10 +60,10 @@ public class ForeldrepengerHendelseHåndterer {
         BehandlingFpsak behandling = foreldrePengerBehandlingKlient.getBehandling(behandlingId);
         behandling.setYtelseType(hendelse.getYtelseType());
         OppgaveHistorikk oppgaveHistorikk = new OppgaveHistorikk(oppgaveRepository.hentOppgaveEventer(behandlingId));
-        EventResultat eventResultat = ForeldrepengerEventMapper.signifikantEventFra(behandling, oppgaveHistorikk, hendelse.getBehandlendeEnhet());
+        EventResultat eventResultat = ForeldrepengerEventMapper.finnEventResultat(behandling, oppgaveHistorikk, hendelse.getBehandlendeEnhet());
 
         switch (eventResultat) {
-            case FERDIG:
+            case IKKE_RELEVANT:
                 LOG.info("Ikke relevant for oppgaver");
                 break;
             case LUKK_OPPGAVE:
@@ -110,6 +114,7 @@ public class ForeldrepengerHendelseHåndterer {
         loggEvent(papirsøknadOppgave.getBehandlingId(), OppgaveEventType.OPPRETTET, AndreKriterierType.PAPIRSØKNAD, hendelse.getBehandlendeEnhet());
         var egenskapFinner = new FpsakOppgaveEgenskapFinner(behandling);
         oppgaveEgenskapHandler.håndterOppgaveEgenskaper(papirsøknadOppgave, egenskapFinner);
+        oppgaveStatistikk.lagre(papirsøknadOppgave, KøOppgaveHendelse.ÅPNET_OPPGAVE);
     }
 
     private void håndterOpprettOppgave(Hendelse hendelse, BehandlingFpsak behandling,
@@ -121,6 +126,7 @@ public class ForeldrepengerHendelseHåndterer {
         var egenskapFinner = new FpsakOppgaveEgenskapFinner(behandling);
         loggEvent(oppgave, egenskapFinner);
         oppgaveEgenskapHandler.håndterOppgaveEgenskaper(oppgave, egenskapFinner);
+        oppgaveStatistikk.lagre(oppgave, KøOppgaveHendelse.ÅPNET_OPPGAVE);
     }
 
     private void håndterOpprettetBeslutterOppgave(Hendelse hendelse, BehandlingFpsak behandling,
@@ -133,6 +139,7 @@ public class ForeldrepengerHendelseHåndterer {
         var egenskapFinner = new FpsakOppgaveEgenskapFinner(behandling);
         loggEvent(beslutterOppgave, egenskapFinner);
         oppgaveEgenskapHandler.håndterOppgaveEgenskaper(beslutterOppgave, egenskapFinner);
+        oppgaveStatistikk.lagre(beslutterOppgave, KøOppgaveHendelse.ÅPNET_OPPGAVE);
     }
 
     private void loggEvent(Oppgave oppgave, OppgaveEgenskapFinner egenskapFinner) {
@@ -153,6 +160,7 @@ public class ForeldrepengerHendelseHåndterer {
     }
 
     private void avsluttFpsakOppgaveOgLoggEvent(BehandlingId behandlingId, OppgaveEventType eventType, LocalDateTime frist, String behandlendeEnhet) {
+        oppgaveStatistikk.lagre(behandlingId, KøOppgaveHendelse.LUKKET_OPPGAVE);
         avsluttOppgaveForBehandling(behandlingId);
         loggEvent(behandlingId, eventType, null, behandlendeEnhet, frist);
     }
@@ -176,7 +184,7 @@ public class ForeldrepengerHendelseHåndterer {
     }
 
     private void avsluttOppgaveHvisÅpen(BehandlingId behandlingId, OppgaveHistorikk oppgaveHistorikk, String behandlendeEnhet) {
-        if (oppgaveHistorikk.erSisteEventÅpningsevent()){
+        if (oppgaveHistorikk.erÅpenOppgave()) {
             if (behandlingId != null) {
                 loggEvent(behandlingId, OppgaveEventType.LUKKET, null, behandlendeEnhet);
             }

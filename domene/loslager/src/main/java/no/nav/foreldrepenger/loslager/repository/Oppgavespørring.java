@@ -2,6 +2,7 @@ package no.nav.foreldrepenger.loslager.repository;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import no.nav.foreldrepenger.loslager.oppgave.AndreKriterierType;
@@ -28,6 +29,7 @@ public class Oppgavespørring {
     private Long filtrerFomDager;
     private Long filtrerTomDager;
     private boolean forAvdelingsleder;
+    private Long avgrenseTilOppgaveId;
 
     public Oppgavespørring(OppgaveFiltrering oppgaveFiltrering){
          sortering = oppgaveFiltrering.getSortering();
@@ -62,6 +64,11 @@ public class Oppgavespørring {
 
     public void setForAvdelingsleder(boolean forAvdelingsleder) {
         this.forAvdelingsleder = forAvdelingsleder;
+    }
+
+    public Oppgavespørring setAvgrensTilOppgaveId(Long oppgaveId) {
+        this.avgrenseTilOppgaveId = oppgaveId;
+        return this;
     }
 
     public boolean getForAvdelingsleder() {
@@ -110,6 +117,10 @@ public class Oppgavespørring {
 
     public Long getFiltrerTil() {
         return filtrerTil;
+    }
+
+    public Optional<Long> getAvgrenseTilOppgaveId() {
+        return Optional.ofNullable(avgrenseTilOppgaveId);
     }
 
     private List<AndreKriterierType> ekskluderAndreKriterierTyperFra(OppgaveFiltrering oppgaveFiltrering) {

@@ -8,7 +8,7 @@ public interface AvdelingslederSaksbehandlerTjeneste {
 
     List<Saksbehandler> hentAvdelingensSaksbehandlere(String avdelingEnhet);
 
-    void leggTilSaksbehandler(String verdi, String avdelingEnhet);
+    void leggSaksbehandlerTilAvdeling(String verdi, String avdelingEnhet);
 
-    void slettSaksbehandler(String verdi, String avdelingEnhet);
+    void fjernSaksbehandlerFraAvdeling(String verdi, String avdelingEnhet);
 }

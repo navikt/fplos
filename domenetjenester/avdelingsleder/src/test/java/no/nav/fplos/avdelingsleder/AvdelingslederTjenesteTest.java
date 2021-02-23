@@ -24,7 +24,7 @@ import no.nav.foreldrepenger.loslager.repository.OppgaveRepositoryImpl;
 import no.nav.foreldrepenger.loslager.repository.OrganisasjonRepositoryImpl;
 
 @ExtendWith(EntityManagerFPLosAwareExtension.class)
-public class AvdelingslederTjenesteImplTest {
+public class AvdelingslederTjenesteTest {
 
     private OppgaveRepository oppgaveRepository;
     private AvdelingslederTjeneste avdelingslederTjeneste;
@@ -35,13 +35,13 @@ public class AvdelingslederTjenesteImplTest {
         this.entityManager = entityManager;
         oppgaveRepository = new OppgaveRepositoryImpl(entityManager);
         var organisasjonRepository = new OrganisasjonRepositoryImpl(entityManager);
-        avdelingslederTjeneste = new AvdelingslederTjenesteImpl(oppgaveRepository, organisasjonRepository);
+        avdelingslederTjeneste = new AvdelingslederTjeneste(oppgaveRepository, organisasjonRepository);
     }
 
     @Test
     public void testLagNyListe(){
         avdelingslederTjeneste.lagNyOppgaveFiltrering(AVDELING_DRAMMEN_ENHET);
-        List<OppgaveFiltrering> oppgaveFiltreringer = oppgaveRepository.hentAlleFiltreringer(avdelingDrammen().getId());
+        List<OppgaveFiltrering> oppgaveFiltreringer = oppgaveRepository.hentAlleOppgaveFilterSettTilknyttetAvdeling(avdelingDrammen().getId());
         assertThat(oppgaveFiltreringer).isNotNull();
         assertThat(oppgaveFiltreringer.get(0).getId()).isNotNull();
         assertThat(oppgaveFiltreringer.get(0).getNavn()).isEqualTo("Ny liste");
@@ -70,7 +70,7 @@ public class AvdelingslederTjenesteImplTest {
         persistAndFlush(liste);
         avdelingslederTjeneste.slettOppgaveFiltrering(liste.getId());
         entityManager.flush();
-        assertThat(oppgaveRepository.hentAlleFiltreringer(avdelingDrammen().getId())).isEmpty();
+        assertThat(oppgaveRepository.hentAlleOppgaveFilterSettTilknyttetAvdeling(avdelingDrammen().getId())).isEmpty();
     }
 
     @Test

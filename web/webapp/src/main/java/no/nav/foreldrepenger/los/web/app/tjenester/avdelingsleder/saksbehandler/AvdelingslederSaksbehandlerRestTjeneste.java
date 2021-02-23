@@ -80,7 +80,7 @@ public class AvdelingslederSaksbehandlerRestTjeneste {
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
     public void leggTilNySaksbehandler(
             @NotNull @Parameter(description = "Brukeridentifikasjon og avdelingsid") @Valid SaksbehandlerOgAvdelingDto saksbehandlerOgAvdeling) {
-        avdelingslederSaksbehandlerTjeneste.leggTilSaksbehandler(saksbehandlerOgAvdeling.getBrukerIdent().getVerdi(),
+        avdelingslederSaksbehandlerTjeneste.leggSaksbehandlerTilAvdeling(saksbehandlerOgAvdeling.getBrukerIdent().getVerdi(),
                 saksbehandlerOgAvdeling.getAvdelingEnhet().getAvdelingEnhet());
     }
 
@@ -92,6 +92,6 @@ public class AvdelingslederSaksbehandlerRestTjeneste {
     @BeskyttetRessurs(action = BeskyttetRessursActionAttributt.CREATE, resource = AbacAttributter.OPPGAVESTYRING_AVDELINGENHET)
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
     public void slettSaksbehandler( @NotNull @Parameter(description = "Brukeridentifikasjon og avdelingsid") @Valid SaksbehandlerOgAvdelingDto saksbehandlerOgAvdeling) {
-        avdelingslederSaksbehandlerTjeneste.slettSaksbehandler(saksbehandlerOgAvdeling.getBrukerIdent().getVerdi(), saksbehandlerOgAvdeling.getAvdelingEnhet().getAvdelingEnhet());
+        avdelingslederSaksbehandlerTjeneste.fjernSaksbehandlerFraAvdeling(saksbehandlerOgAvdeling.getBrukerIdent().getVerdi(), saksbehandlerOgAvdeling.getAvdelingEnhet().getAvdelingEnhet());
     }
 }

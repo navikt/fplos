@@ -1,6 +1,7 @@
 package no.nav.fplos.kafkatjenester;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -11,6 +12,7 @@ import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 
+import no.nav.fplos.oppgavestatistikk.OppgaveStatistikk;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -28,8 +30,10 @@ import no.nav.foreldrepenger.loslager.oppgave.OppgaveEgenskap;
 import no.nav.foreldrepenger.loslager.oppgave.OppgaveEventLogg;
 import no.nav.foreldrepenger.loslager.oppgave.OppgaveEventType;
 import no.nav.foreldrepenger.loslager.repository.OppgaveRepositoryImpl;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(EntityManagerFPLosAwareExtension.class)
+@ExtendWith(MockitoExtension.class)
 public class TilbakekrevingHendelseHåndtererTest {
 
     private EntityManager entityManager;
@@ -45,7 +49,7 @@ public class TilbakekrevingHendelseHåndtererTest {
         this.entityManager = entityManager;
         var oppgaveRepository = new OppgaveRepositoryImpl(entityManager);
         var oppgaveEgenskapHandler = new OppgaveEgenskapHandler(oppgaveRepository);
-        handler = new TilbakekrevingHendelseHåndterer(oppgaveEgenskapHandler, oppgaveRepository);
+        handler = new TilbakekrevingHendelseHåndterer(oppgaveEgenskapHandler, oppgaveRepository, mock(OppgaveStatistikk.class));
     }
 
     @Test
@@ -69,20 +73,20 @@ public class TilbakekrevingHendelseHåndtererTest {
 
         sjekkAntallOppgaver(1);
         sjekkAktivOppgaveEksisterer(true);
-        sjekkOppgaveEventAntallEr(2);
+        sjekkOppgaveEventAntallEr(1);
     }
 
     @Test
-    public void skalLukkeAlleOppgaver() {
+    public void skalLukkeGamleOppgaverVedOvergangMellomBeslutterOgSaksbehandlerOppgaver() {
         var behandlingId = BehandlingId.random();
-        var førsteEvent = hendelse(åpentAksjonspunkt, behandlingId);
-        handler.håndter(førsteEvent);
+        var førsteEventOppgave = hendelse(åpentAksjonspunkt, behandlingId);
+        handler.håndter(førsteEventOppgave);
 
-        var andreEvent = hendelse(åpentBeslutter, behandlingId);
-        handler.håndter(andreEvent);
+        var andreEventBeslutterOppgave = hendelse(åpentBeslutter, behandlingId);
+        handler.håndter(andreEventBeslutterOppgave);
 
-        var tredjeEvent = hendelse(åpentAksjonspunkt, behandlingId);
-        handler.håndter(hendelse(åpentAksjonspunkt, behandlingId));
+        var tredjeEventOppgave = hendelse(åpentAksjonspunkt, behandlingId);
+        handler.håndter(tredjeEventOppgave);
 
         sjekkAntallOppgaver(3);
         sjekkKunEnAktivOppgave();

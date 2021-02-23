@@ -7,6 +7,8 @@ import java.util.stream.Collectors;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import no.nav.fplos.kø.OppgaveKøTjeneste;
+import no.nav.fplos.reservasjon.ReservasjonTjeneste;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,22 +34,28 @@ public class OppgaveDtoTjeneste {
     private static final Logger LOGGER = LoggerFactory.getLogger(OppgaveDtoTjeneste.class);
 
     private OppgaveTjeneste oppgaveTjeneste;
+    private ReservasjonTjeneste reservasjonTjeneste;
     private PersonTjeneste personTjeneste;
     private OppgaveStatusDtoTjeneste oppgaveStatusDtoTjeneste;
     private PdpKlient pdpKlient;
     private PdpRequestBuilder pdpRequestBuilder;
+    private OppgaveKøTjeneste oppgaveKøTjeneste;
 
     @Inject
     public OppgaveDtoTjeneste(OppgaveTjeneste oppgaveTjeneste,
+                              ReservasjonTjeneste reservasjonTjeneste,
                               PersonTjeneste personTjeneste,
                               OppgaveStatusDtoTjeneste oppgaveStatusDtoTjeneste,
                               PdpKlient pdpKlient,
-                              PdpRequestBuilder pdpRequestBuilder) {
+                              PdpRequestBuilder pdpRequestBuilder,
+                              OppgaveKøTjeneste oppgaveKøTjeneste) {
         this.oppgaveTjeneste = oppgaveTjeneste;
+        this.reservasjonTjeneste = reservasjonTjeneste;
         this.personTjeneste = personTjeneste;
         this.oppgaveStatusDtoTjeneste = oppgaveStatusDtoTjeneste;
         this.pdpKlient = pdpKlient;
         this.pdpRequestBuilder = pdpRequestBuilder;
+        this.oppgaveKøTjeneste = oppgaveKøTjeneste;
     }
 
     OppgaveDtoTjeneste() {
@@ -72,8 +80,8 @@ public class OppgaveDtoTjeneste {
         return new OppgaveDto(oppgave, person, oppgaveStatus);
     }
 
-    public boolean harTilgjengeligeOppgaver(SakslisteIdDto sakslisteId) {
-        return oppgaveTjeneste.hentOppgaver(sakslisteId.getVerdi())
+    public boolean finnesTilgjengeligeOppgaver(SakslisteIdDto sakslisteId) {
+        return oppgaveKøTjeneste.hentOppgaver(sakslisteId.getVerdi())
                 .stream()
                 .anyMatch(this::harTilgang);
     }
@@ -100,19 +108,19 @@ public class OppgaveDtoTjeneste {
     }
 
     public List<OppgaveDto> getOppgaverTilBehandling(Long sakslisteId) {
-        var nesteOppgaver = oppgaveTjeneste.hentOppgaver(sakslisteId, ANTALL_OPPGAVER_SOM_VISES_TIL_SAKSBEHANDLER);
+        var nesteOppgaver = oppgaveKøTjeneste.hentOppgaver(sakslisteId, ANTALL_OPPGAVER_SOM_VISES_TIL_SAKSBEHANDLER);
         var oppgaveDtos = map(nesteOppgaver);
         //Noen oppgave filteres bort i mappingen pga at saksbehandler ikke har tilgang til behandlingen
         if (nesteOppgaver.size() == oppgaveDtos.size()) {
             return oppgaveDtos;
         }
         LOGGER.info("{} behandlinger filtrert bort for saksliste {}", nesteOppgaver.size() - oppgaveDtos.size(), sakslisteId);
-        var alleOppgaver = oppgaveTjeneste.hentOppgaver(sakslisteId);
+        var alleOppgaver = oppgaveKøTjeneste.hentOppgaver(sakslisteId);
         return map(alleOppgaver, ANTALL_OPPGAVER_SOM_VISES_TIL_SAKSBEHANDLER);
     }
 
     public List<OppgaveDto> getReserverteOppgaver() {
-        var reserveringer = oppgaveTjeneste.hentReservasjonerTilknyttetAktiveOppgaver();
+        var reserveringer = reservasjonTjeneste.hentReservasjonerTilknyttetAktiveOppgaver();
         var oppgaver = reserveringer.stream()
                 .map(Reservasjon::getOppgave)
                 .collect(Collectors.toList());
@@ -120,7 +128,7 @@ public class OppgaveDtoTjeneste {
     }
 
     public List<OppgaveDto> getBehandledeOppgaver() {
-        var sistReserverteOppgaver = oppgaveTjeneste.hentSisteReserverteOppgaver();
+        var sistReserverteOppgaver = reservasjonTjeneste.hentSisteReserverteOppgaver();
         return map(sistReserverteOppgaver);
     }
 

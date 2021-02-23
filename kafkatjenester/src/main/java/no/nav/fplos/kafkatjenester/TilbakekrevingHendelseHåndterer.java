@@ -10,6 +10,8 @@ import java.util.Optional;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import no.nav.foreldrepenger.loslager.repository.oppgavestatistikk.KøOppgaveHendelse;
+import no.nav.fplos.oppgavestatistikk.OppgaveStatistikk;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,7 +25,6 @@ import no.nav.foreldrepenger.loslager.oppgave.OppgaveEventType;
 import no.nav.foreldrepenger.loslager.oppgave.TilbakekrevingOppgave;
 import no.nav.foreldrepenger.loslager.repository.OppgaveRepository;
 import no.nav.fplos.kafkatjenester.eventresultat.EventResultat;
-import no.nav.fplos.kafkatjenester.eventresultat.TilbakekrevingEventMapper;
 
 @ApplicationScoped
 public class TilbakekrevingHendelseHåndterer {
@@ -31,12 +32,15 @@ public class TilbakekrevingHendelseHåndterer {
     private static final Logger LOG = LoggerFactory.getLogger(TilbakekrevingHendelseHåndterer.class);
     private OppgaveEgenskapHandler oppgaveEgenskapHandler;
     private OppgaveRepository oppgaveRepository;
+    private OppgaveStatistikk oppgaveStatistikk;
 
     @Inject
     public TilbakekrevingHendelseHåndterer(OppgaveEgenskapHandler oppgaveEgenskapHandler,
-                                           OppgaveRepository oppgaveRepository) {
+                                           OppgaveRepository oppgaveRepository,
+                                           OppgaveStatistikk oppgaveStatistikk) {
         this.oppgaveEgenskapHandler = oppgaveEgenskapHandler;
         this.oppgaveRepository = oppgaveRepository;
+        this.oppgaveStatistikk = oppgaveStatistikk;
     }
 
     TilbakekrevingHendelseHåndterer() {
@@ -53,36 +57,47 @@ public class TilbakekrevingHendelseHåndterer {
 
         switch (event) {
             case LUKK_OPPGAVE_MANUELT_VENT:
-                LOG.info("Lukker oppgave, satt manuelt på vent.");
+                LOG.info("TBK Lukker oppgave, satt manuelt på vent.");
                 avsluttOppgaveForBehandling(behandlingId);
                 loggEvent(behandlingId, OppgaveEventType.MANU_VENT, behandlendeEnhet);
                 break;
             case LUKK_OPPGAVE:
-                LOG.info("Lukker oppgave med behandlingId {}.", behandlingId.toString());
+                LOG.info("TBK Lukker oppgave med behandlingId {}.", behandlingId.toString());
                 avsluttOppgaveForBehandling(behandlingId);
                 loggEvent(behandlingId, OppgaveEventType.LUKKET, behandlendeEnhet);
                 break;
             case OPPRETT_OPPGAVE:
                 avsluttOppgaveHvisÅpen(behandlingId, oppgaveHistorikk, behandlendeEnhet);
                 Oppgave oppgave = opprettTilbakekrevingOppgave(hendelse);
-                LOG.info("Oppretter tilbakekrevingsoppgave {} for behandlingId {}.", oppgave.getId(), behandlingId);
+                LOG.info("TBK Oppretter oppgave {} for behandlingId {}.", oppgave.getId(), behandlingId);
                 oppgaveEgenskapHandler.håndterOppgaveEgenskaper(oppgave, egenskapFinner);
+                oppgaveStatistikk.lagre(oppgave, KøOppgaveHendelse.ÅPNET_OPPGAVE);
                 loggEvent(oppgave.getBehandlingId(), OppgaveEventType.OPPRETTET, null, behandlendeEnhet);
                 break;
             case OPPRETT_BESLUTTER_OPPGAVE:
                 avsluttOppgaveHvisÅpen(behandlingId, oppgaveHistorikk, behandlendeEnhet);
                 Oppgave beslutterOppgave = opprettTilbakekrevingOppgave(hendelse);
-                LOG.info("Oppretter beslutteroppgave.");
+                LOG.info("TBK Oppretter beslutteroppgave.");
                 oppgaveEgenskapHandler.håndterOppgaveEgenskaper(beslutterOppgave, egenskapFinner);
+                oppgaveStatistikk.lagre(beslutterOppgave, KøOppgaveHendelse.ÅPNET_OPPGAVE);
                 loggEvent(behandlingId, OppgaveEventType.OPPRETTET, TIL_BESLUTTER, behandlendeEnhet);
                 break;
             case GJENÅPNE_OPPGAVE:
                 TilbakekrevingOppgave gjenåpnetOppgave = oppgaveRepository.gjenåpneTilbakekrevingOppgave(behandlingId);
+                LOG.info("TBK Gjenåpner oppgave for behandlingId {}.", behandlingId);
                 oppdaterOppgaveInformasjon(gjenåpnetOppgave, hendelse);
                 oppgaveEgenskapHandler.håndterOppgaveEgenskaper(gjenåpnetOppgave, egenskapFinner);
-                LOG.info("Gjenåpner oppgave for behandlingId {}.", behandlingId);
+                oppgaveStatistikk.lagre(gjenåpnetOppgave, KøOppgaveHendelse.ÅPNET_OPPGAVE);
                 loggEvent(gjenåpnetOppgave.getBehandlingId(), OppgaveEventType.GJENAPNET, null, behandlendeEnhet);
                 break;
+            case OPPDATER_ÅPEN_OPPGAVE:
+                var oppdaterOppgave = oppgaveRepository.hentAktivTilbakekrevingOppgave(behandlingId).orElseThrow();
+                LOG.info("TBK oppdaterer åpen tilbakekrevingOppgaveId {}", oppdaterOppgave.getId());
+                oppdaterOppgaveInformasjon(oppdaterOppgave, hendelse);
+                oppgaveEgenskapHandler.håndterOppgaveEgenskaper(oppdaterOppgave, egenskapFinner);
+                break;
+            default:
+                throw new IllegalStateException(String.format("Ukjent event %s", event));
         }
     }
 
@@ -90,22 +105,37 @@ public class TilbakekrevingHendelseHåndterer {
                                    OppgaveEgenskapFinner egenskaper,
                                    List<Aksjonspunkt> aksjonspunkter,
                                    String behandlendeEnhet) {
-        EventResultat event = TilbakekrevingEventMapper.tilbakekrevingEventFra(aksjonspunkter);
-        OppgaveEventLogg sisteOppgaveEvent = oppgaveHistorikk.getSisteÅpningsEvent();
         boolean erTilBeslutter = egenskaper.getAndreKriterier().contains(TIL_BESLUTTER);
 
-        if (event == EventResultat.OPPRETT_OPPGAVE && sisteOppgaveEvent != null && sisteOppgaveEvent.getEventType().erÅpningsevent()) {
-            if (erTilBeslutter && sisteOppgaveEvent.getAndreKriterierType() != TIL_BESLUTTER) {
+        if (aktivManuellVent(aksjonspunkter)) {
+            return EventResultat.LUKK_OPPGAVE_MANUELT_VENT;
+        } else if (harAktiveAksjonspunkt(aksjonspunkter) && oppgaveHistorikk.erÅpenOppgave()) {
+            if (erTilBeslutter && !oppgaveHistorikk.erSisteOppgaveTilBeslutter()) {
                 return EventResultat.OPPRETT_BESLUTTER_OPPGAVE;
-            } else if (erTilBeslutter && sisteOppgaveEvent.getAndreKriterierType() == TIL_BESLUTTER) {
-                return EventResultat.GJENÅPNE_OPPGAVE;
-            } else if (!erTilBeslutter && sisteOppgaveEvent.getAndreKriterierType() == TIL_BESLUTTER) {
+            } else if (erTilBeslutter) {
+                return oppgaveHistorikk.erSisteOppgaveRegistrertPåEnhet(behandlendeEnhet)
+                        ? EventResultat.OPPDATER_ÅPEN_OPPGAVE
+                        : EventResultat.OPPRETT_OPPGAVE;
+            } else if (oppgaveHistorikk.erSisteOppgaveTilBeslutter()) {
+                // ikke til beslutter pt, dermed retur fra beslutter
                 return EventResultat.OPPRETT_OPPGAVE;
-            } else if (sisteOppgaveEvent.getBehandlendeEnhet().equals(behandlendeEnhet)) {
-                return EventResultat.GJENÅPNE_OPPGAVE;
+            } else {
+                return oppgaveHistorikk.erSisteOppgaveRegistrertPåEnhet(behandlendeEnhet)
+                        ? EventResultat.OPPDATER_ÅPEN_OPPGAVE
+                        : EventResultat.OPPRETT_OPPGAVE;
             }
+        } else if (harAktiveAksjonspunkt(aksjonspunkter)) {
+            return EventResultat.OPPRETT_OPPGAVE;
         }
-        return event;
+        return EventResultat.LUKK_OPPGAVE;
+    }
+
+    private static boolean harAktiveAksjonspunkt(List<Aksjonspunkt> aksjonspunkter) {
+        return aksjonspunkter.stream().anyMatch(Aksjonspunkt::erOpprettet);
+    }
+
+    private static boolean aktivManuellVent(List<Aksjonspunkt> aksjonspunkter) {
+        return aksjonspunkter.stream().anyMatch(a -> List.of("7001", "7002").contains(a.getKode()) && a.erOpprettet());
     }
 
     protected void loggEvent(BehandlingId behandlingId, OppgaveEventType oppgaveEventType, AndreKriterierType andreKriterierType, String behandlendeEnhet) {
@@ -118,9 +148,9 @@ public class TilbakekrevingHendelseHåndterer {
 
 
     private void avsluttOppgaveHvisÅpen(BehandlingId behandlingId, OppgaveHistorikk oppgaveHistorikk, String behandlendeEnhet) {
-        if (oppgaveHistorikk.erSisteEventÅpningsevent()) {
+        if (oppgaveHistorikk.erÅpenOppgave()) {
             loggEvent(behandlingId, OppgaveEventType.LUKKET, null, behandlendeEnhet);
-            oppgaveRepository.avsluttOppgaveForBehandling(behandlingId);
+            avsluttOppgaveForBehandling(behandlingId);
         }
     }
 
@@ -131,7 +161,7 @@ public class TilbakekrevingHendelseHåndterer {
     }
 
     private TilbakekrevingOppgave opprettTilbakekrevingOppgave(TilbakekrevingHendelse hendelse) {
-        return oppgaveRepository.opprettTilbakekrevingEgenskaper(oppgaveFra(hendelse));
+        return oppgaveRepository.opprettTilbakekrevingOppgave(oppgaveFra(hendelse));
     }
 
     private TilbakekrevingOppgave oppgaveFra(TilbakekrevingHendelse hendelse) {
@@ -159,6 +189,7 @@ public class TilbakekrevingHendelseHåndterer {
     }
 
     private void avsluttOppgaveForBehandling(BehandlingId behandlingId) {
+        oppgaveStatistikk.lagre(behandlingId, KøOppgaveHendelse.LUKKET_OPPGAVE);
         oppgaveRepository.avsluttOppgaveForBehandling(behandlingId);
     }
 }

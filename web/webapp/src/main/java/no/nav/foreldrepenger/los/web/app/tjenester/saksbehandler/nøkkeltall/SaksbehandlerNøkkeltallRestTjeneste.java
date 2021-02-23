@@ -46,7 +46,7 @@ public class SaksbehandlerNøkkeltallRestTjeneste {
     public List<NyeOgFerdigstilteOppgaverDto> getNyeOgFerdigstilteOppgaver(@NotNull @QueryParam("sakslisteId") @Valid SakslisteIdDto sakslisteId) {
         return statistikkTjeneste.hentNyeOgFerdigstilteOppgaver(sakslisteId.getVerdi())
                 .stream()
-                .map(resultat -> new NyeOgFerdigstilteOppgaverDto(resultat))
+                .map(NyeOgFerdigstilteOppgaverDto::new)
                 .collect(Collectors.toList());
     }
 }

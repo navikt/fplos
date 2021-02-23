@@ -68,6 +68,10 @@
             <groupId>no.nav.foreldrepenger.los</groupId>
             <artifactId>foreldrepengerbehandling-klient</artifactId>
         </dependency>
+        <dependency>
+            <groupId>no.nav.foreldrepenger.los</groupId>
+            <artifactId>oppgave</artifactId>
+        </dependency>
     </dependencies>
 
 </project>

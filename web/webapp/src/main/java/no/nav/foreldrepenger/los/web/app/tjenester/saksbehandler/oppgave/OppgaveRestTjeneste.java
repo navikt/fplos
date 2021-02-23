@@ -21,6 +21,8 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import no.nav.fplos.kø.OppgaveKøTjeneste;
+import no.nav.fplos.reservasjon.ReservasjonTjeneste;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -58,14 +60,19 @@ public class OppgaveRestTjeneste {
     private static final int POLL_INTERVAL_MILLIS = 1000;
 
     private OppgaveTjeneste oppgaveTjeneste;
+    private OppgaveKøTjeneste oppgaveKøTjeneste;
+    private ReservasjonTjeneste reservasjonTjeneste;
     private OppgaveDtoTjeneste oppgaveDtoTjeneste;
     private SaksbehandlerDtoTjeneste saksbehandlerDtoTjeneste;
 
     @Inject
     public OppgaveRestTjeneste(OppgaveTjeneste oppgaveTjeneste,
+                               OppgaveKøTjeneste oppgaveKøTjeneste, ReservasjonTjeneste reservasjonTjeneste,
                                OppgaveDtoTjeneste oppgaveDtoTjeneste,
                                SaksbehandlerDtoTjeneste saksbehandlerDtoTjeneste) {
         this.oppgaveTjeneste = oppgaveTjeneste;
+        this.oppgaveKøTjeneste = oppgaveKøTjeneste;
+        this.reservasjonTjeneste = reservasjonTjeneste;
         this.oppgaveDtoTjeneste = oppgaveDtoTjeneste;
         this.saksbehandlerDtoTjeneste = saksbehandlerDtoTjeneste;
     }
@@ -101,26 +108,30 @@ public class OppgaveRestTjeneste {
     public Response hentNesteOppgaverOgSjekkOmDisseErNye(@NotNull @Valid @QueryParam("sakslisteId") SakslisteIdDto sakslisteId,
                                                          @Valid @QueryParam("oppgaveIder") OppgaveIderDto oppgaverIder) throws URISyntaxException {
         List<Long> oppgaveIderSomVises = oppgaverIder == null ? List.of() : oppgaverIder.getOppgaveIdeer();
-        boolean skalPolle = false;
-
         if (oppgaveIderSomVises.isEmpty()) {
-            skalPolle = !oppgaveDtoTjeneste.harTilgjengeligeOppgaver(sakslisteId);
-            if (!skalPolle) {
-                URI uri = new URI("/saksbehandler/oppgaver/resultat?sakslisteId=" + sakslisteId.getVerdi());
-                return Response.seeOther(uri).build();
+            if (!oppgaveDtoTjeneste.finnesTilgjengeligeOppgaver(sakslisteId)) {
+                return sendTilPolling(sakslisteId, oppgaverIder);
+            } else {
+                return sendTilResultat(sakslisteId);
             }
+        } else if (oppgaveTjeneste.erAlleOppgaverFortsattTilgjengelig(oppgaveIderSomVises)) {
+            return sendTilPolling(sakslisteId, oppgaverIder);
+        } else {
+            return sendTilResultat(sakslisteId);
         }
+    }
 
-        if (skalPolle || !oppgaveTjeneste.harForandretOppgaver(oppgaveIderSomVises)) {
-            String ider = oppgaverIder != null ? oppgaverIder.getVerdi() : "";
-            URI uri = new URI("/saksbehandler/oppgaver/status?sakslisteId=" + sakslisteId.getVerdi() + "&oppgaveIder=" + ider);
-            AsyncPollingStatus status = new AsyncPollingStatus(AsyncPollingStatus.Status.PENDING, "", POLL_INTERVAL_MILLIS);
-            status.setLocation(uri);
-            return Response.status(status.getStatus().getHttpStatus())
-                    .entity(status)
-                    .build();
-        }
+    private Response sendTilPolling(SakslisteIdDto sakslisteId, OppgaveIderDto oppgaverIder) throws URISyntaxException {
+        String ider = oppgaverIder != null ? oppgaverIder.getVerdi() : "";
+        URI uri = new URI("/saksbehandler/oppgaver/status?sakslisteId=" + sakslisteId.getVerdi() + "&oppgaveIder=" + ider);
+        AsyncPollingStatus status = new AsyncPollingStatus(AsyncPollingStatus.Status.PENDING, "", POLL_INTERVAL_MILLIS);
+        status.setLocation(uri);
+        return Response.status(status.getStatus().getHttpStatus())
+                .entity(status)
+                .build();
+    }
 
+    private Response sendTilResultat(@QueryParam("sakslisteId") @NotNull @Valid SakslisteIdDto sakslisteId) throws URISyntaxException {
         URI uri = new URI("/saksbehandler/oppgaver/resultat?sakslisteId=" + sakslisteId.getVerdi());
         return Response.seeOther(uri).build();
     }
@@ -145,7 +156,7 @@ public class OppgaveRestTjeneste {
     @BeskyttetRessurs(action = BeskyttetRessursActionAttributt.CREATE, resource = AbacAttributter.FAGSAK)
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
     public OppgaveStatusDto reserverOppgave(@NotNull @Parameter(description = "id til oppgaven") @Valid OppgaveIdDto oppgaveId) {
-        var reservasjon = oppgaveTjeneste.reserverOppgave(oppgaveId.getVerdi());
+        var reservasjon = reservasjonTjeneste.reserverOppgave(oppgaveId.getVerdi());
         return oppgaveDtoTjeneste.lagDtoFor(reservasjon.getOppgave(), false).getStatus();
     }
 
@@ -156,7 +167,7 @@ public class OppgaveRestTjeneste {
     @BeskyttetRessurs(action = BeskyttetRessursActionAttributt.READ, resource = AbacAttributter.FAGSAK)
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
     public OppgaveStatusDto hentReservasjon(@NotNull @Parameter(description = "id til oppgaven") @QueryParam("oppgaveId") @Valid OppgaveIdDto oppgaveId) {
-        var reservasjon = oppgaveTjeneste.hentReservasjon(oppgaveId.getVerdi());
+        var reservasjon = reservasjonTjeneste.hentReservasjon(oppgaveId.getVerdi());
         return oppgaveDtoTjeneste.lagDtoFor(reservasjon.getOppgave(), false).getStatus();
     }
 
@@ -169,7 +180,7 @@ public class OppgaveRestTjeneste {
     @BeskyttetRessurs(action = BeskyttetRessursActionAttributt.CREATE, resource = AbacAttributter.FAGSAK)
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
     public OppgaveStatusDto opphevOppgaveReservasjon(@NotNull @Parameter(description = "Id og begrunnelse") @Valid OppgaveOpphevingDto opphevetOppgave) {
-        var reservasjon = oppgaveTjeneste.frigiOppgave(opphevetOppgave.getOppgaveId().getVerdi(), opphevetOppgave.getBegrunnelse());
+        var reservasjon = reservasjonTjeneste.frigiOppgave(opphevetOppgave.getOppgaveId().getVerdi(), opphevetOppgave.getBegrunnelse());
         return oppgaveDtoTjeneste.lagDtoFor(reservasjon.getOppgave(), false).getStatus();
     }
 
@@ -181,7 +192,7 @@ public class OppgaveRestTjeneste {
     @BeskyttetRessurs(action = BeskyttetRessursActionAttributt.CREATE, resource = AbacAttributter.FAGSAK)
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
     public OppgaveStatusDto forlengOppgaveReservasjon(@NotNull @Parameter(description = "id til oppgaven") @Valid OppgaveIdDto oppgaveId) {
-        var reservasjon = oppgaveTjeneste.forlengReservasjonPåOppgave(oppgaveId.getVerdi());
+        var reservasjon = reservasjonTjeneste.forlengReservasjonPåOppgave(oppgaveId.getVerdi());
         return oppgaveDtoTjeneste.lagDtoFor(reservasjon.getOppgave(), false).getStatus();
     }
 
@@ -194,7 +205,7 @@ public class OppgaveRestTjeneste {
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
     public OppgaveStatusDto endreOppgaveReservasjon(@NotNull @Parameter(description = "forleng til dato") @Valid ReservasjonsEndringDto reservasjonsEndring) {
         var tidspunkt = ReservasjonTidspunktUtil.utledReservasjonTidspunkt(reservasjonsEndring.getReserverTil());
-        var reservasjon = oppgaveTjeneste.endreReservasjonPåOppgave(reservasjonsEndring.getOppgaveId().getVerdi(), tidspunkt);
+        var reservasjon = reservasjonTjeneste.endreReservasjonPåOppgave(reservasjonsEndring.getOppgaveId().getVerdi(), tidspunkt);
         return oppgaveDtoTjeneste.lagDtoFor(reservasjon.getOppgave(), false).getStatus();
     }
 
@@ -238,7 +249,7 @@ public class OppgaveRestTjeneste {
     @BeskyttetRessurs(action = BeskyttetRessursActionAttributt.CREATE, resource = AbacAttributter.FAGSAK)
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
     public OppgaveStatusDto flyttOppgaveReservasjon(@NotNull @Parameter(description = "id, begrunnelse og brukerident") @Valid OppgaveFlyttingDto oppgaveFlyttingDto) {
-        var reservasjon = oppgaveTjeneste.flyttReservasjon(oppgaveFlyttingDto.getOppgaveId().getVerdi(),
+        var reservasjon = reservasjonTjeneste.flyttReservasjon(oppgaveFlyttingDto.getOppgaveId().getVerdi(),
                 oppgaveFlyttingDto.getBrukerIdent().getVerdi(),
                 oppgaveFlyttingDto.getBegrunnelse());
         LOG.info("Reservasjon flyttet: {}", oppgaveFlyttingDto);
@@ -252,7 +263,7 @@ public class OppgaveRestTjeneste {
     @BeskyttetRessurs(action = BeskyttetRessursActionAttributt.READ, resource = AbacAttributter.FAGSAK, sporingslogg = false)
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
     public Integer hentAntallOppgaverForSaksliste(@NotNull @QueryParam("sakslisteId") @Valid SakslisteIdDto sakslisteId) {
-        return oppgaveTjeneste.hentAntallOppgaver(sakslisteId.getVerdi(), false);
+        return oppgaveKøTjeneste.hentAntallOppgaver(sakslisteId.getVerdi(), false);
     }
 
     @GET

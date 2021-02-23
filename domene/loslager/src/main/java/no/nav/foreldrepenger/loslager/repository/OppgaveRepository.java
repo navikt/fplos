@@ -42,9 +42,9 @@ public interface OppgaveRepository {
 
     Reservasjon hentReservasjon(Long oppgaveId);
 
-    List<OppgaveFiltrering> hentAlleFiltreringer(Long avdelingsId);
+    List<OppgaveFiltrering> hentAlleOppgaveFilterSettTilknyttetAvdeling(Long avdelingsId);
 
-    Optional<OppgaveFiltrering> hentFiltrering(Long listeId);
+    Optional<OppgaveFiltrering> hentOppgaveFilterSett(Long listeId);
 
     KøSortering hentSorteringForListe(Long listeId);
 
@@ -86,11 +86,13 @@ public interface OppgaveRepository {
 
     Oppgave opprettOppgave(Oppgave oppgave);
 
-    TilbakekrevingOppgave opprettTilbakekrevingEgenskaper(TilbakekrevingOppgave egenskaper);
-
-    Oppgave gjenåpneOppgaveForBehandling(BehandlingId behandlingId);
+    TilbakekrevingOppgave opprettTilbakekrevingOppgave(TilbakekrevingOppgave egenskaper);
 
     TilbakekrevingOppgave gjenåpneTilbakekrevingOppgave(BehandlingId behandlingId);
+
+    Optional<TilbakekrevingOppgave> hentAktivTilbakekrevingOppgave(BehandlingId behandlingId);
+
+    Oppgave gjenåpneOppgaveForBehandling(BehandlingId behandlingId);
 
     void avsluttOppgaveForBehandling(BehandlingId behandlingId);
 

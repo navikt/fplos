@@ -22,7 +22,7 @@ import no.nav.foreldrepenger.los.web.app.tjenester.felles.dto.SaksbehandlerDtoTj
 import no.nav.foreldrepenger.los.web.app.tjenester.felles.dto.SakslisteDto;
 import no.nav.foreldrepenger.los.web.app.tjenester.felles.dto.SakslisteIdDto;
 import no.nav.foreldrepenger.loslager.oppgave.OppgaveFiltrering;
-import no.nav.fplos.oppgave.OppgaveTjeneste;
+import no.nav.fplos.kø.OppgaveKøTjeneste;
 import no.nav.vedtak.sikkerhet.abac.BeskyttetRessurs;
 
 @Path("/saksbehandler/saksliste")
@@ -30,13 +30,13 @@ import no.nav.vedtak.sikkerhet.abac.BeskyttetRessurs;
 @Transactional
 public class SaksbehandlerSakslisteRestTjeneste {
 
-    private OppgaveTjeneste oppgaveTjeneste;
+    private OppgaveKøTjeneste oppgaveKøTjeneste;
     private SaksbehandlerDtoTjeneste saksbehandlerDtoTjeneste;
 
     @Inject
-    public SaksbehandlerSakslisteRestTjeneste(OppgaveTjeneste oppgaveTjeneste,
+    public SaksbehandlerSakslisteRestTjeneste(OppgaveKøTjeneste oppgaveKøTjeneste,
                                               SaksbehandlerDtoTjeneste saksbehandlerDtoTjeneste) {
-        this.oppgaveTjeneste = oppgaveTjeneste;
+        this.oppgaveKøTjeneste = oppgaveKøTjeneste;
         this.saksbehandlerDtoTjeneste = saksbehandlerDtoTjeneste;
     }
 
@@ -50,9 +50,9 @@ public class SaksbehandlerSakslisteRestTjeneste {
     @BeskyttetRessurs(action = READ, resource = AbacAttributter.FAGSAK, sporingslogg = false)
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
     public List<SakslisteDto> hentSakslister() {
-        List<OppgaveFiltrering> filtre = oppgaveTjeneste.hentOppgaveFiltreringerForPåloggetBruker();
+        List<OppgaveFiltrering> filtre = oppgaveKøTjeneste.hentOppgaveFiltreringerForPåloggetBruker();
         return filtre.stream()
-                .map(o -> new SakslisteDto(o, oppgaveTjeneste.hentAntallOppgaver(o.getId(), false)))
+                .map(o -> new SakslisteDto(o, oppgaveKøTjeneste.hentAntallOppgaver(o.getId(), false)))
                 .collect(Collectors.toList());
     }
 

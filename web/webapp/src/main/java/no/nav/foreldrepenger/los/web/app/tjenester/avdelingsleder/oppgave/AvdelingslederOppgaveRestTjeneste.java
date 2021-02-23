@@ -16,7 +16,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import no.nav.foreldrepenger.los.web.app.AbacAttributter;
 import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.dto.AvdelingEnhetDto;
 import no.nav.foreldrepenger.los.web.app.tjenester.felles.dto.SakslisteIdDto;
-import no.nav.fplos.oppgave.OppgaveTjeneste;
+import no.nav.fplos.kø.OppgaveKøTjeneste;
 import no.nav.vedtak.sikkerhet.abac.BeskyttetRessurs;
 
 @Path("avdelingsleder/oppgaver")
@@ -24,15 +24,15 @@ import no.nav.vedtak.sikkerhet.abac.BeskyttetRessurs;
 @Transactional
 public class AvdelingslederOppgaveRestTjeneste {
 
-    private OppgaveTjeneste oppgaveTjeneste;
+    private OppgaveKøTjeneste oppgaveKøTjeneste;
 
     public AvdelingslederOppgaveRestTjeneste() {
         //NOSONAR
     }
 
     @Inject
-    public AvdelingslederOppgaveRestTjeneste(OppgaveTjeneste oppgaveTjeneste) {
-        this.oppgaveTjeneste = oppgaveTjeneste;
+    public AvdelingslederOppgaveRestTjeneste(OppgaveKøTjeneste oppgaveKøTjeneste) {
+        this.oppgaveKøTjeneste = oppgaveKøTjeneste;
     }
 
     @GET
@@ -43,7 +43,7 @@ public class AvdelingslederOppgaveRestTjeneste {
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
     public Integer hentAntallOppgaverForSaksliste(@NotNull @QueryParam("sakslisteId") @Valid SakslisteIdDto sakslisteId,
                                                   @NotNull @QueryParam("avdelingEnhet") @Valid AvdelingEnhetDto avdelingEnhetDto) {
-        return oppgaveTjeneste.hentAntallOppgaver(sakslisteId.getVerdi(), true);
+        return oppgaveKøTjeneste.hentAntallOppgaver(sakslisteId.getVerdi(), true);
     }
 
     @GET
@@ -53,6 +53,6 @@ public class AvdelingslederOppgaveRestTjeneste {
     @BeskyttetRessurs(action = READ, resource = AbacAttributter.OPPGAVESTYRING_AVDELINGENHET, sporingslogg = false)
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
     public Integer hentAntallOppgaverForAvdeling(@NotNull @QueryParam("avdelingEnhet") @Valid AvdelingEnhetDto avdelingEnhetDto) {
-        return oppgaveTjeneste.hentAntallOppgaverForAvdeling(avdelingEnhetDto.getAvdelingEnhet());
+        return oppgaveKøTjeneste.hentAntallOppgaverForAvdeling(avdelingEnhetDto.getAvdelingEnhet());
     }
 }
