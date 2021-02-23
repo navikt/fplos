@@ -63,10 +63,10 @@ class OppgaveStatistikkTest {
 
         avdelingslederTjeneste.endreFiltreringAndreKriterierType(køUtenTreff.getId(), AndreKriterierType.BERØRT_BEHANDLING, true, false);
 
-        oppgaveStatistikk.lagre(oppgave, KøOppgaveHendelse.LUKKES);
+        oppgaveStatistikk.lagre(oppgave, KøOppgaveHendelse.LUKKET_OPPGAVE);
 
         var stats = oppgaveStatistikk.hentStatistikk(køMedTreff.getId());
-        var forventetKøStatistikk = new KøStatistikk(LocalDate.now(), oppgave.getBehandlingType(), KøOppgaveHendelse.LUKKES, 1L);
+        var forventetKøStatistikk = new KøStatistikk(LocalDate.now(), oppgave.getBehandlingType(), KøOppgaveHendelse.LUKKET_OPPGAVE, 1L);
         assertThat(stats).containsExactly(forventetKøStatistikk);
     }
 

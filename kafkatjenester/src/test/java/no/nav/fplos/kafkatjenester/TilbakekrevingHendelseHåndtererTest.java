@@ -1,6 +1,7 @@
 package no.nav.fplos.kafkatjenester;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -11,6 +12,7 @@ import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 
+import no.nav.fplos.oppgavestatistikk.OppgaveStatistikk;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -28,8 +30,10 @@ import no.nav.foreldrepenger.loslager.oppgave.OppgaveEgenskap;
 import no.nav.foreldrepenger.loslager.oppgave.OppgaveEventLogg;
 import no.nav.foreldrepenger.loslager.oppgave.OppgaveEventType;
 import no.nav.foreldrepenger.loslager.repository.OppgaveRepositoryImpl;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(EntityManagerFPLosAwareExtension.class)
+@ExtendWith(MockitoExtension.class)
 public class TilbakekrevingHendelseHåndtererTest {
 
     private EntityManager entityManager;
@@ -45,7 +49,7 @@ public class TilbakekrevingHendelseHåndtererTest {
         this.entityManager = entityManager;
         var oppgaveRepository = new OppgaveRepositoryImpl(entityManager);
         var oppgaveEgenskapHandler = new OppgaveEgenskapHandler(oppgaveRepository);
-        handler = new TilbakekrevingHendelseHåndterer(oppgaveEgenskapHandler, oppgaveRepository);
+        handler = new TilbakekrevingHendelseHåndterer(oppgaveEgenskapHandler, oppgaveRepository, mock(OppgaveStatistikk.class));
     }
 
     @Test

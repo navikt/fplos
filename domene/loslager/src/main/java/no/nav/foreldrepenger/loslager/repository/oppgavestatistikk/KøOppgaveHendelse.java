@@ -1,5 +1,5 @@
 package no.nav.foreldrepenger.loslager.repository.oppgavestatistikk;
 
 public enum KøOppgaveHendelse {
-    ÅPNES, LUKKES, LUKKES_PGA_VENT
+    ÅPNET_OPPGAVE, LUKKET_OPPGAVE, OPPGAVE_SATT_PÅ_VENT
 }

@@ -114,7 +114,7 @@ public class ForeldrepengerHendelseHåndterer {
         loggEvent(papirsøknadOppgave.getBehandlingId(), OppgaveEventType.OPPRETTET, AndreKriterierType.PAPIRSØKNAD, hendelse.getBehandlendeEnhet());
         var egenskapFinner = new FpsakOppgaveEgenskapFinner(behandling);
         oppgaveEgenskapHandler.håndterOppgaveEgenskaper(papirsøknadOppgave, egenskapFinner);
-        oppgaveStatistikk.lagre(papirsøknadOppgave, KøOppgaveHendelse.ÅPNES);
+        oppgaveStatistikk.lagre(papirsøknadOppgave, KøOppgaveHendelse.ÅPNET_OPPGAVE);
     }
 
     private void håndterOpprettOppgave(Hendelse hendelse, BehandlingFpsak behandling,
@@ -126,7 +126,7 @@ public class ForeldrepengerHendelseHåndterer {
         var egenskapFinner = new FpsakOppgaveEgenskapFinner(behandling);
         loggEvent(oppgave, egenskapFinner);
         oppgaveEgenskapHandler.håndterOppgaveEgenskaper(oppgave, egenskapFinner);
-        oppgaveStatistikk.lagre(oppgave, KøOppgaveHendelse.ÅPNES);
+        oppgaveStatistikk.lagre(oppgave, KøOppgaveHendelse.ÅPNET_OPPGAVE);
     }
 
     private void håndterOpprettetBeslutterOppgave(Hendelse hendelse, BehandlingFpsak behandling,
@@ -139,7 +139,7 @@ public class ForeldrepengerHendelseHåndterer {
         var egenskapFinner = new FpsakOppgaveEgenskapFinner(behandling);
         loggEvent(beslutterOppgave, egenskapFinner);
         oppgaveEgenskapHandler.håndterOppgaveEgenskaper(beslutterOppgave, egenskapFinner);
-        oppgaveStatistikk.lagre(beslutterOppgave, KøOppgaveHendelse.ÅPNES);
+        oppgaveStatistikk.lagre(beslutterOppgave, KøOppgaveHendelse.ÅPNET_OPPGAVE);
     }
 
     private void loggEvent(Oppgave oppgave, OppgaveEgenskapFinner egenskapFinner) {
@@ -160,7 +160,7 @@ public class ForeldrepengerHendelseHåndterer {
     }
 
     private void avsluttFpsakOppgaveOgLoggEvent(BehandlingId behandlingId, OppgaveEventType eventType, LocalDateTime frist, String behandlendeEnhet) {
-        oppgaveStatistikk.lagre(behandlingId, KøOppgaveHendelse.LUKKES);
+        oppgaveStatistikk.lagre(behandlingId, KøOppgaveHendelse.LUKKET_OPPGAVE);
         avsluttOppgaveForBehandling(behandlingId);
         loggEvent(behandlingId, eventType, null, behandlendeEnhet, frist);
     }
