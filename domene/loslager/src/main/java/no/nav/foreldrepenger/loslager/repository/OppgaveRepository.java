@@ -86,11 +86,13 @@ public interface OppgaveRepository {
 
     Oppgave opprettOppgave(Oppgave oppgave);
 
-    TilbakekrevingOppgave opprettTilbakekrevingEgenskaper(TilbakekrevingOppgave egenskaper);
-
-    Oppgave gjenåpneOppgaveForBehandling(BehandlingId behandlingId);
+    TilbakekrevingOppgave opprettTilbakekrevingOppgave(TilbakekrevingOppgave egenskaper);
 
     TilbakekrevingOppgave gjenåpneTilbakekrevingOppgave(BehandlingId behandlingId);
+
+    Optional<TilbakekrevingOppgave> hentAktivTilbakekrevingOppgave(BehandlingId behandlingId);
+
+    Oppgave gjenåpneOppgaveForBehandling(BehandlingId behandlingId);
 
     void avsluttOppgaveForBehandling(BehandlingId behandlingId);
 

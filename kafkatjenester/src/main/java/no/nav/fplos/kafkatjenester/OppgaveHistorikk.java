@@ -6,6 +6,7 @@ import no.nav.foreldrepenger.loslager.oppgave.OppgaveEventType;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 
 public class OppgaveHistorikk {
     private final boolean erUtenHistorikk;
@@ -39,11 +40,17 @@ public class OppgaveHistorikk {
     }
 
     public boolean erSisteOppgaveTilBeslutter() {
-        return sisteOpprettetEvent != null && sisteOpprettetEvent.getAndreKriterierType().erTilBeslutter();
+        return Optional.ofNullable(sisteOpprettetEvent)
+                .map(OppgaveEventLogg::getAndreKriterierType)
+                .map(AndreKriterierType::erTilBeslutter)
+                .orElse(false);
     }
 
     public boolean erSisteOppgavePapirsøknad() {
-        return sisteOpprettetEvent != null && sisteOpprettetEvent.getAndreKriterierType().equals(AndreKriterierType.PAPIRSØKNAD);
+        return Optional.ofNullable(sisteOpprettetEvent)
+                .map(OppgaveEventLogg::getAndreKriterierType)
+                .map(l -> l.equals(AndreKriterierType.PAPIRSØKNAD))
+                .orElse(false);
     }
 
     public boolean erSisteOppgaveRegistrertPåEnhet(String enhet) {

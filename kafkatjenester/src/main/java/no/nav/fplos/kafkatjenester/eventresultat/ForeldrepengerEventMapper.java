@@ -1,6 +1,6 @@
 package no.nav.fplos.kafkatjenester.eventresultat;
 
-import static no.nav.fplos.kafkatjenester.eventresultat.EventResultat.FERDIG;
+import static no.nav.fplos.kafkatjenester.eventresultat.EventResultat.IKKE_RELEVANT;
 import static no.nav.fplos.kafkatjenester.eventresultat.EventResultat.GJENÅPNE_OPPGAVE;
 import static no.nav.fplos.kafkatjenester.eventresultat.EventResultat.LUKK_OPPGAVE;
 import static no.nav.fplos.kafkatjenester.eventresultat.EventResultat.LUKK_OPPGAVE_MANUELT_VENT;
@@ -25,14 +25,14 @@ public class ForeldrepengerEventMapper {
 
         if (erIngenÅpne(aksjonspunkter)) {
             if (oppgaveHistorikk.erUtenHistorikk() || oppgaveHistorikk.erSisteEventLukkeevent()) {
-                return FERDIG;
+                return IKKE_RELEVANT;
             } else {
                 return LUKK_OPPGAVE;
             }
         }
         if (påVent(aksjonspunkter)) {
             if (oppgaveHistorikk.erSisteVenteEvent()) {
-                return FERDIG;
+                return IKKE_RELEVANT;
             }
             return manueltSattPåVent(aksjonspunkter) ? LUKK_OPPGAVE_MANUELT_VENT : LUKK_OPPGAVE_VENT;
         }

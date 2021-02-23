@@ -445,10 +445,18 @@ public class OppgaveRepositoryImpl implements OppgaveRepository {
     }
 
     @Override
-    public TilbakekrevingOppgave opprettTilbakekrevingEgenskaper(TilbakekrevingOppgave egenskaper) {
-        internLagre(egenskaper);
-        entityManager.refresh(egenskaper);
-        return egenskaper;
+    public TilbakekrevingOppgave opprettTilbakekrevingOppgave(TilbakekrevingOppgave oppgave) {
+        internLagre(oppgave);
+        entityManager.refresh(oppgave);
+        return oppgave;
+    }
+
+    @Override
+    public Optional<TilbakekrevingOppgave> hentAktivTilbakekrevingOppgave(BehandlingId behandlingId) {
+        return hentOppgaver(behandlingId, TilbakekrevingOppgave.class)
+                .stream()
+                .filter(Oppgave::getAktiv)
+                .findFirst();
     }
 
     @Override

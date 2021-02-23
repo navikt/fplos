@@ -63,7 +63,7 @@ public class ForeldrepengerHendelseHåndterer {
         EventResultat eventResultat = ForeldrepengerEventMapper.finnEventResultat(behandling, oppgaveHistorikk, hendelse.getBehandlendeEnhet());
 
         switch (eventResultat) {
-            case FERDIG:
+            case IKKE_RELEVANT:
                 LOG.info("Ikke relevant for oppgaver");
                 break;
             case LUKK_OPPGAVE:

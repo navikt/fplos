@@ -69,20 +69,20 @@ public class TilbakekrevingHendelseHåndtererTest {
 
         sjekkAntallOppgaver(1);
         sjekkAktivOppgaveEksisterer(true);
-        sjekkOppgaveEventAntallEr(2);
+        sjekkOppgaveEventAntallEr(1);
     }
 
     @Test
-    public void skalLukkeAlleOppgaver() {
+    public void skalLukkeGamleOppgaverVedOvergangMellomBeslutterOgSaksbehandlerOppgaver() {
         var behandlingId = BehandlingId.random();
-        var førsteEvent = hendelse(åpentAksjonspunkt, behandlingId);
-        handler.håndter(førsteEvent);
+        var førsteEventOppgave = hendelse(åpentAksjonspunkt, behandlingId);
+        handler.håndter(førsteEventOppgave);
 
-        var andreEvent = hendelse(åpentBeslutter, behandlingId);
-        handler.håndter(andreEvent);
+        var andreEventBeslutterOppgave = hendelse(åpentBeslutter, behandlingId);
+        handler.håndter(andreEventBeslutterOppgave);
 
-        var tredjeEvent = hendelse(åpentAksjonspunkt, behandlingId);
-        handler.håndter(hendelse(åpentAksjonspunkt, behandlingId));
+        var tredjeEventOppgave = hendelse(åpentAksjonspunkt, behandlingId);
+        handler.håndter(tredjeEventOppgave);
 
         sjekkAntallOppgaver(3);
         sjekkKunEnAktivOppgave();
