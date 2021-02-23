@@ -43,8 +43,10 @@ public class NyOpppgaveStatistikkRepository {
                 "SELECT TRUNC(OPPRETTET_TID), BEHANDLING_TYPE, HENDELSE, COUNT(1) AS ANTALL " +
                 "FROM STATISTIKK_KO " +
                 "WHERE OPPGAVE_FILTRERING_ID = :oppgaveFilterSettId " +
+                        "AND OPPRETTET_TID >= :fom " +
                         "GROUP BY TRUNC(OPPRETTET_TID), BEHANDLING_TYPE, HENDELSE")
-                .setParameter("oppgaveFilterSettId", oppgaveFilterSettId);
+                .setParameter("oppgaveFilterSettId", oppgaveFilterSettId)
+                .setParameter("fom", LocalDate.now().minusDays(7).atStartOfDay());
         @SuppressWarnings("unchecked")
         var result = (List<Object[]>) query.getResultList();
         return result.stream()

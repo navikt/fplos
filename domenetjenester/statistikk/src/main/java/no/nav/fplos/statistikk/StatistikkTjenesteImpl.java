@@ -55,6 +55,7 @@ public class StatistikkTjenesteImpl implements StatistikkTjeneste {
         var stats = (List<NyeOgFerdigstilteOppgaver>) statisikkRepository.hentNyeOgFerdigstilteOppgaver(sakslisteId).stream() // NOSONAR
                 .map(result -> new NyeOgFerdigstilteOppgaver((Object[]) result))
                 .collect(Collectors.toList()); // NOSONAR
+        log.info("henter statistikk for oppgaveFilterSettId {}", sakslisteId);
         var nyStats = nyOpppgaveStatistikkRepository.hentStatistikk(sakslisteId);
         nyStats.forEach(ks -> log.info("Ny statistikk viser {}", ks));
         return stats;
