@@ -36,7 +36,7 @@ public class OppgaveStatistikk {
     public void lagre(BehandlingId behandlingId, KøOppgaveHendelse køOppgaveHendelse) {
         oppgaveTjeneste.hentNyesteOppgaveTilknyttet(behandlingId)
                 .filter(Oppgave::getAktiv)
-                .ifPresentOrElse(oppgave -> lagre(oppgave, køOppgaveHendelse), () -> LOG.warn("Kan ikke lagre statistikk, fant ikke oppgave"));
+                .ifPresentOrElse(oppgave -> lagre(oppgave, køOppgaveHendelse), () -> LOG.info("Kan ikke lagre statistikk, fant ikke oppgave"));
         // TODO: kalles også når første relevante hendelse er venteaksjonspunkt.
         //  Når det er skilt i hendelsehåndterer kan man kaste exception ved inaktiv oppgave.
     }
