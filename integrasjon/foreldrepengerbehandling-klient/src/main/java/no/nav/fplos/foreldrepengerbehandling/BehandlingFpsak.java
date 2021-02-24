@@ -24,6 +24,9 @@ public class BehandlingFpsak {
     private boolean erEndringssøknad;
     private BehandlingType behandlingType;
     private FagsakYtelseType ytelseType;
+    private LocalDateTime behandlingOpprettet;
+    private String saksnummer;
+    private String aktørId;
 
     public BehandlingId getBehandlingId() {
         return behandlingId;
@@ -37,16 +40,28 @@ public class BehandlingFpsak {
         return ansvarligSaksbehandler;
     }
 
+    public LocalDateTime getBehandlingOpprettet() {
+        return behandlingOpprettet;
+    }
+
+    public String getSaksnummer() {
+        return saksnummer;
+    }
+
+    public String getAktørId() {
+        return aktørId;
+    }
+
+    public Boolean harRefusjonskravFraArbeidsgiver() {
+        return get(harRefusjonskravFraArbeidsgiver);
+    }
+
     public List<Aksjonspunkt> getAksjonspunkter() {
         var svar = get(aksjonspunkter);
         if (svar == null) {
             return List.of();
         }
         return svar;
-    }
-
-    public Boolean harRefusjonskravFraArbeidsgiver() {
-        return get(harRefusjonskravFraArbeidsgiver);
     }
 
     public boolean harGradering() {
@@ -93,8 +108,20 @@ public class BehandlingFpsak {
         return ytelseType;
     }
 
+    public String getBehandlendeEnhetNavn() {
+        return behandlendeEnhetNavn;
+    }
+
     public void setYtelseType(FagsakYtelseType ytelseType) {
         this.ytelseType = ytelseType;
+    }
+
+    public void setSaksnummer(String saksnummer) {
+        this.saksnummer = saksnummer;
+    }
+
+    public void setAktørId(String aktørId) {
+        this.aktørId = aktørId;
     }
 
     public static final class Builder {
@@ -111,6 +138,7 @@ public class BehandlingFpsak {
         private BehandlingType behandlingType;
         private FagsakYtelseType ytelseType;
         private Lazy<UttakEgenskaper> uttakEgenskaper;
+        private LocalDateTime behandlingOpprettet;
 
         private Builder() {
         }
@@ -180,6 +208,11 @@ public class BehandlingFpsak {
             return this;
         }
 
+        public Builder medBehandlingOpprettet(LocalDateTime behandlingOpprettet) {
+            this.behandlingOpprettet = behandlingOpprettet;
+            return this;
+        }
+
         public BehandlingFpsak build() {
             BehandlingFpsak behandlingFpsak = new BehandlingFpsak();
             behandlingFpsak.ansvarligSaksbehandler = this.ansvarligSaksbehandler;
@@ -190,6 +223,7 @@ public class BehandlingFpsak {
             behandlingFpsak.behandlingId = this.behandlingId;
             behandlingFpsak.uttakEgenskaper = this.uttakEgenskaper;
             behandlingFpsak.behandlingstidFrist = this.behandlingstidFrist;
+            behandlingFpsak.behandlingOpprettet = this.behandlingOpprettet;
             behandlingFpsak.førsteUttaksdag = this.førsteUttaksdag;
             behandlingFpsak.erBerørtBehandling = this.erBerørtBehandling;
             behandlingFpsak.erEndringssøknad = this.erEndringssøknad;

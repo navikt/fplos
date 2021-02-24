@@ -75,4 +75,6 @@ public class OppgaveEventLogg extends BaseEntitet{
     public LocalDateTime getFristTid() {
         return fristTid;
     }
+
+
 }

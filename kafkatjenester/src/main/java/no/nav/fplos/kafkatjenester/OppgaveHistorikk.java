@@ -23,11 +23,11 @@ public class OppgaveHistorikk {
         return sisteEventType != null && sisteEventType.erÅpningsevent();
     }
 
-    public boolean erSisteEventLukkeevent() {
+    public boolean erIngenÅpenOppgave() {
         return sisteEventType != null && sisteEventType.equals(OppgaveEventType.LUKKET);
     }
 
-    public boolean erSisteVenteEvent() {
+    public boolean erPåVent() {
         return sisteEventType != null && sisteEventType.erVenteEvent();
     }
 
@@ -39,14 +39,14 @@ public class OppgaveHistorikk {
         return sisteOpprettetEvent;
     }
 
-    public boolean erSisteOppgaveTilBeslutter() {
+    public boolean erSisteOpprettedeOppgaveTilBeslutter() {
         return Optional.ofNullable(sisteOpprettetEvent)
                 .map(OppgaveEventLogg::getAndreKriterierType)
                 .map(AndreKriterierType::erTilBeslutter)
                 .orElse(false);
     }
 
-    public boolean erSisteOppgavePapirsøknad() {
+    public boolean erSisteOpprettedeOppgavePapirsøknad() {
         return Optional.ofNullable(sisteOpprettetEvent)
                 .map(OppgaveEventLogg::getAndreKriterierType)
                 .map(l -> l.equals(AndreKriterierType.PAPIRSØKNAD))

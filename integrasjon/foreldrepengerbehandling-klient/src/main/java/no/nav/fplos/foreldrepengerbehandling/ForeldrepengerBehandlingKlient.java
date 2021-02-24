@@ -68,6 +68,7 @@ public class ForeldrepengerBehandlingKlient {
         BehandlingFpsak.Builder builder = BehandlingFpsak.builder()
                 .medBehandlingType(behandlingDto.getType())
                 .medBehandlingId(new BehandlingId(behandlingDto.getUuid()))
+                .medBehandlingOpprettet(behandlingDto.getOpprettet())
                 .medBehandlendeEnhetNavn(behandlingDto.getBehandlendeEnhetNavn())
                 .medStatus(behandlingDto.getStatus().getKode())
                 .medAnsvarligSaksbehandler(behandlingDto.getAnsvarligSaksbehandler())
