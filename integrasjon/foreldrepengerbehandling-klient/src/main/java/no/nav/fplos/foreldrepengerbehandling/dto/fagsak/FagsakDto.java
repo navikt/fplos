@@ -10,7 +10,7 @@ import no.nav.foreldrepenger.loslager.oppgave.FagsakStatus;
 public class FagsakDto {
 
     private String aktoerId;
-    private Long saksnummer;
+    //private Long saksnummer;
     private String saksnummerString;
     private FagsakYtelseTypeDto sakstype;
     private FagsakStatus status;
@@ -22,7 +22,7 @@ public class FagsakDto {
 
     public FagsakDto(String aktoerId, String saksnummerString, FagsakYtelseTypeDto sakstype, FagsakStatus status, LocalDate barnFodt) {
         this.aktoerId = aktoerId;
-        this.saksnummer = Long.parseLong(saksnummerString);
+        //this.saksnummer = Long.parseLong(saksnummerString);
         this.saksnummerString = saksnummerString;
         this.sakstype = sakstype;
         this.status = status;
@@ -33,9 +33,9 @@ public class FagsakDto {
         return aktoerId;
     }
 
-    public Long getSaksnummer() {
+    /*public Long getSaksnummer() {
         return saksnummer;
-    }
+    }*/
 
     public String getSaksnummerString() {
         return saksnummerString;

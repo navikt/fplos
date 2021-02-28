@@ -6,7 +6,7 @@ import no.nav.foreldrepenger.loslager.oppgave.FagsakYtelseType;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class FagsakBackendDto {
-    private Long saksnummer;
+    //private Long saksnummer;
     private String saksnummerString;
     private FagsakYtelseType sakstype;
     private String aktoerId;
@@ -16,13 +16,13 @@ public class FagsakBackendDto {
     public FagsakBackendDto() {
     }
 
-    public Long getSaksnummer() {
+    /* public Long getSaksnummer() {
         return saksnummer;
     }
 
     public void setSaksnummer(Long saksnummer) {
         this.saksnummer = saksnummer;
-    }
+    }*/
 
     public String getSaksnummerString() {
         return saksnummerString;
