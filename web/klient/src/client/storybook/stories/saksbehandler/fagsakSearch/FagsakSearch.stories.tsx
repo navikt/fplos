@@ -49,6 +49,7 @@ export const skalVisePersonkortOgTabellNårEnFinnerEnFagsakMedToOppgaver = () =>
     <FagsakSearch
       fagsaker={[{
         saksnummer: 12213234,
+        saksnummerString: '12213234',
         system: 'SAK',
         sakstype: {
           kode: fagsakYtelseType.FORELDREPRENGER,
@@ -73,6 +74,7 @@ export const skalVisePersonkortOgTabellNårEnFinnerEnFagsakMedToOppgaver = () =>
           erReservert: false,
         },
         saksnummer: 12213234,
+        saksnummerString: '12213234',
         personnummer: '1010',
         navn: 'Espen Utvikler',
         system: 'SAK',
@@ -99,6 +101,7 @@ export const skalVisePersonkortOgTabellNårEnFinnerEnFagsakMedToOppgaver = () =>
           erReservert: false,
         },
         saksnummer: 12213234,
+        saksnummerString: '12213234',
         personnummer: '1010',
         navn: 'Espen Utvikler',
         system: 'SAK',

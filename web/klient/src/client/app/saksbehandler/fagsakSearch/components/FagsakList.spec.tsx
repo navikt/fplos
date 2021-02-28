@@ -18,6 +18,7 @@ describe('<FagsakList>', () => {
 
   const fagsak = {
     saksnummer: 12345,
+    saksnummerString: '12345',
     system: 'FPSAK',
     sakstype: {
       navn: '',
@@ -94,6 +95,7 @@ describe('<FagsakList>', () => {
     () => {
       const fagsak2 = {
         saksnummer: 23456,
+        saksnummerString: '23456',
         system: 'FPSAK',
         sakstype: {
           navn: '',
@@ -110,6 +112,7 @@ describe('<FagsakList>', () => {
       };
       const fagsak3 = {
         saksnummer: 34567,
+        saksnummerString: '34567',
         system: 'FPSAK',
         sakstype: {
           navn: '',
@@ -138,6 +141,7 @@ describe('<FagsakList>', () => {
   it('skal vise DateLabel i tabell kun om barn er født', () => {
     const fagsak4 = {
       saksnummer: 23456,
+      saksnummerString: '23456',
       system: 'FPSAK',
       sakstype: {
         navn: '',
