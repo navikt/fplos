@@ -1,13 +1,17 @@
 package no.nav.fplos.foreldrepengerbehandling.dto.fagsak;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import no.nav.foreldrepenger.loslager.oppgave.FagsakYtelseType;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class FagsakBackendDto {
     private Long saksnummer;
+    private String saksnummerString;
     private FagsakYtelseType sakstype;
     private String aktoerId;
+
+
 
     public FagsakBackendDto() {
     }
@@ -18,6 +22,14 @@ public class FagsakBackendDto {
 
     public void setSaksnummer(Long saksnummer) {
         this.saksnummer = saksnummer;
+    }
+
+    public String getSaksnummerString() {
+        return saksnummerString;
+    }
+
+    public void setSaksnummerString(String saksnummerString) {
+        this.saksnummerString = saksnummerString;
     }
 
     public FagsakYtelseType getSakstype() {

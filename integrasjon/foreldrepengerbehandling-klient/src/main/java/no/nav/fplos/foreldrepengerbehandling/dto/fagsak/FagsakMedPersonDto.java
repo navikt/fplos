@@ -1,14 +1,16 @@
 package no.nav.fplos.foreldrepengerbehandling.dto.fagsak;
 
+import java.time.LocalDate;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import no.nav.foreldrepenger.loslager.oppgave.FagsakStatus;
 import no.nav.foreldrepenger.loslager.oppgave.FagsakYtelseType;
-
-import java.time.LocalDate;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class FagsakMedPersonDto {
     private Long saksnummer;
+    private String saksnummerString;
     private FagsakYtelseType sakstype;
     private FagsakStatus status;
     private PersonDto person;
@@ -18,10 +20,11 @@ public class FagsakMedPersonDto {
 
     }
 
-    public FagsakMedPersonDto(Long saksnummer, FagsakYtelseType sakstype,
+    public FagsakMedPersonDto(String saksnummerString, FagsakYtelseType sakstype,
                               FagsakStatus status, PersonDto person,
                               LocalDate barnFodt) {
-        this.saksnummer = saksnummer;
+        this.saksnummer = Long.parseLong(saksnummerString);
+        this.saksnummerString = saksnummerString;
         this.sakstype = sakstype;
         this.status = status;
         this.person = person;
@@ -35,6 +38,10 @@ public class FagsakMedPersonDto {
 
     public Long getSaksnummer() {
         return saksnummer;
+    }
+
+    public String getSaksnummerString() {
+        return saksnummerString;
     }
 
     public FagsakYtelseType getSakstype() {

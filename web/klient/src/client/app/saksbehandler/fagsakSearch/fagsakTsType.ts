@@ -3,6 +3,7 @@ import Person from './personTsType';
 
 type Fagsak = Readonly<{
   saksnummer: number;
+  saksnummerString: string;
   system: string;
   sakstype: Kodeverk;
   status: Kodeverk;

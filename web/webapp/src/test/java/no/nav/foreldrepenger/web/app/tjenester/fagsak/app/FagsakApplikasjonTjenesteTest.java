@@ -53,7 +53,7 @@ public class FagsakApplikasjonTjenesteTest {
 
     @Test
     public void skal_hente_saker_på_fnr() {
-        FagsakDto fagsakDto = new FagsakDto(AktørId.dummy().getId(), Long.valueOf(FNR.asValue()), FagsakYtelseTypeDto.FORELDREPENGER,
+        FagsakDto fagsakDto = new FagsakDto(AktørId.dummy().getId(), FNR.asValue(), FagsakYtelseTypeDto.FORELDREPENGER,
                 FagsakStatus.OPPRETTET, LocalDate.of(2017, Month.FEBRUARY, 1));
         Person personDto = new Person.Builder().medNavn("TEST"). medFødselsdato(LocalDate.now().minusYears(20)).medFnr(FNR). medKjønn(NavBrukerKjønn.K).build();
         when(fagsakKlient.finnFagsaker(FNR.asValue())).thenReturn(Collections.singletonList(fagsakDto));
@@ -67,7 +67,7 @@ public class FagsakApplikasjonTjenesteTest {
         assertThat(fagsakDtos.isEmpty()).isFalse();
         assertThat(fagsakDtos).hasSize(1);
         var fagsakMedPersonDto = fagsakDtos.get(0);
-        assertThat(fagsakMedPersonDto.getSaksnummer()).isEqualTo(fagsakDto.getSaksnummer());
+        assertThat(fagsakMedPersonDto.getSaksnummerString()).isEqualTo(fagsakDto.getSaksnummerString());
         assertThat(fagsakMedPersonDto.getSakstype().getKode()).isEqualTo(fagsakDto.getSakstype().getKode());
         assertThat(fagsakMedPersonDto.getStatus()).isEqualTo(fagsakDto.getStatus());
         assertThat(fagsakMedPersonDto.getBarnFodt()).isEqualTo(fødselsdatoBarn);
@@ -78,7 +78,7 @@ public class FagsakApplikasjonTjenesteTest {
         Person personDto = new Person.Builder().medNavn("TEST"). medFødselsdato(LocalDate.now().minusYears(20)).medFnr(FNR). medKjønn(NavBrukerKjønn.K).build();
 
         List<FagsakDto> fagsakDtos = new ArrayList<>();
-        FagsakDto fagsakDto = new FagsakDto(AktørId.dummy().getId(), Long.valueOf(SAKSNUMMER), FagsakYtelseTypeDto.FORELDREPENGER,
+        FagsakDto fagsakDto = new FagsakDto(AktørId.dummy().getId(), SAKSNUMMER, FagsakYtelseTypeDto.FORELDREPENGER,
                 FagsakStatus.UNDER_BEHANDLING, LocalDate.now());
         fagsakDtos.add(fagsakDto);
         when(fagsakKlient.finnFagsaker(SAKSNUMMER)).thenReturn(fagsakDtos);
