@@ -74,7 +74,7 @@ public class FagsakApplikasjonTjeneste {
     private static FagsakMedPersonDto map(FagsakDto fagsakDto, Person person) {
         var personDto = new PersonDto(person);
         var sakstype = FagsakYtelseType.fraKode(fagsakDto.getSakstype().getKode());
-        return new FagsakMedPersonDto(fagsakDto.getSaksnummer(), sakstype,
+        return new FagsakMedPersonDto(fagsakDto.getSaksnummerString(), sakstype,
                 fagsakDto.getStatus(), personDto, fagsakDto.getBarnFodt());
     }
 

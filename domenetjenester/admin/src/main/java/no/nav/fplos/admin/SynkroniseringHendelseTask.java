@@ -1,5 +1,8 @@
 package no.nav.fplos.admin;
 
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+
 import no.nav.foreldrepenger.loslager.BehandlingId;
 import no.nav.foreldrepenger.loslager.hendelse.Fagsystem;
 import no.nav.foreldrepenger.loslager.hendelse.Hendelse;
@@ -12,9 +15,6 @@ import no.nav.fplos.kafkatjenester.ForeldrepengerHendelseHåndterer;
 import no.nav.vedtak.felles.prosesstask.api.ProsessTask;
 import no.nav.vedtak.felles.prosesstask.api.ProsessTaskData;
 import no.nav.vedtak.felles.prosesstask.api.ProsessTaskHandler;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
 
 @ApplicationScoped
 @ProsessTask(SynkroniseringHendelseTask.TASKTYPE)
@@ -48,7 +48,7 @@ public class SynkroniseringHendelseTask implements ProsessTaskHandler {
         Hendelse hendelse = new Hendelse();
         hendelse.setFagsystem(Fagsystem.FPSAK);
         hendelse.setBehandlingId(BehandlingId.fromUUID(behandlingDto.getUuid()));
-        hendelse.setSaksnummer(String.valueOf(fagsakDto.getSaksnummer()));
+        hendelse.setSaksnummer(fagsakDto.getSaksnummerString());
         hendelse.setBehandlendeEnhet(behandlingDto.getBehandlendeEnhetId());
         hendelse.setAktørId(fagsakDto.getAktoerId());
         hendelse.setBehandlingOpprettetTidspunkt(behandlingDto.getOpprettet());
