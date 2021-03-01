@@ -127,7 +127,7 @@ export const UtvalgskriterierForSakslisteForm: FunctionComponent<OwnProps & Wrap
             <Column xs="3">
               <div className={styles.grayBox}>
                 <Normaltekst><FormattedMessage id="UtvalgskriterierForSakslisteForm.AntallSaker" /></Normaltekst>
-                <Undertittel>{`${antallOppgaver}` || '0'}</Undertittel>
+                <Undertittel>{antallOppgaver ? `${antallOppgaver}` : '0'}</Undertittel>
               </div>
             </Column>
           </Row>
