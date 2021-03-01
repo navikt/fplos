@@ -1,37 +1,48 @@
 package no.nav.fplos.kafkatjenester.test;
 
+import no.nav.foreldrepenger.dbstoette.DBTestUtil;
 import no.nav.foreldrepenger.domene.typer.AktørId;
+import no.nav.foreldrepenger.extensions.EntityManagerFPLosAwareExtension;
 import no.nav.foreldrepenger.loslager.BehandlingId;
 import no.nav.foreldrepenger.loslager.oppgave.BehandlingStatus;
 import no.nav.foreldrepenger.loslager.oppgave.BehandlingType;
 import no.nav.foreldrepenger.loslager.oppgave.FagsakYtelseType;
 import no.nav.foreldrepenger.loslager.oppgave.Oppgave;
 import no.nav.foreldrepenger.loslager.repository.OppgaveRepository;
+import no.nav.foreldrepenger.loslager.repository.OppgaveRepositoryImpl;
 import no.nav.fplos.foreldrepengerbehandling.Aksjonspunkt;
 import no.nav.fplos.foreldrepengerbehandling.BehandlingFpsak;
 import no.nav.fplos.foreldrepengerbehandling.Lazy;
 import no.nav.fplos.kafkatjenester.OppgaveEgenskapHandler;
 import no.nav.fplos.oppgavestatistikk.OppgaveStatistikk;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import javax.persistence.EntityManager;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import static no.nav.foreldrepenger.los.testutils.oppgave.OppgaveAssert.assertThatOppgave;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.assertj.core.api.Assertions.assertThat;
 
 
 @ExtendWith(MockitoExtension.class)
+@ExtendWith(EntityManagerFPLosAwareExtension.class)
 class OpprettOppgaveHendelseHåndtererTest {
-    private final OppgaveRepository oppgaveRepository = mock(OppgaveRepository.class);
     private final OppgaveStatistikk oppgaveStatistikk = mock(OppgaveStatistikk.class);
-    private final OppgaveEgenskapHandler oppgaveEgenskapHandler = new OppgaveEgenskapHandler(oppgaveRepository);
+    private EntityManager entityManager;
+    private OppgaveRepository oppgaveRepository;
+    private OppgaveEgenskapHandler oppgaveEgenskapHandler;
+
+    @BeforeEach
+    private void setUp(EntityManager entityManager) {
+        this.entityManager = entityManager;
+        oppgaveRepository = new OppgaveRepositoryImpl(entityManager);
+        oppgaveEgenskapHandler = new OppgaveEgenskapHandler(oppgaveRepository);
+    }
 
     @Test
     public void skalOppretteOppgave() {
@@ -42,6 +53,7 @@ class OpprettOppgaveHendelseHåndtererTest {
         var aktørId = AktørId.dummy();
         var behandlingFpsak = BehandlingFpsak.builder()
                 .medBehandlingOpprettet(behandlingOpprettet)
+                .medBehandlendeEnhetNavn("4406")
                 .medBehandlingId(behandlingId)
                 .medBehandlingType(BehandlingType.FØRSTEGANGSSØKNAD)
                 .medFørsteUttaksdag(new Lazy<>(OpprettOppgaveHendelseHåndtererTest::førsteUttaksDag))
@@ -51,31 +63,29 @@ class OpprettOppgaveHendelseHåndtererTest {
                 .medAksjonspunkter(new Lazy<>(this::aksjonspunkter))
                 .medStatus("OPPRE")
                 .build();
-
         behandlingFpsak.setSaksnummer("1234");
         behandlingFpsak.setAktørId(aktørId.getId());
         behandlingFpsak.setYtelseType(FagsakYtelseType.FORELDREPENGER);
 
         var opprettOppgaveHåndterer = new OpprettOppgaveHendelseHåndterer(oppgaveRepository, oppgaveEgenskapHandler, oppgaveStatistikk, behandlingFpsak);
         opprettOppgaveHåndterer.håndter();
-        ArgumentCaptor<Oppgave> oppgaveArgument = ArgumentCaptor.forClass(Oppgave.class);
-        verify(oppgaveRepository, times(1)).lagre(oppgaveArgument.capture());
 
-        Oppgave opprettetOppgave = oppgaveArgument.getValue();
-        assertThat(opprettetOppgave.getBehandlingOpprettet()).isEqualTo(behandlingFpsak.getBehandlingOpprettet());
-        assertThat(opprettetOppgave.getAktiv()).isTrue();
-        assertThat(opprettetOppgave.getBehandlingId()).isEqualTo(behandlingId);
-        assertThat(opprettetOppgave.getBehandlingType()).isEqualTo(BehandlingType.FØRSTEGANGSSØKNAD);
-        assertThat(opprettetOppgave.getBehandlingsfrist()).isEqualTo(behandlingstidFrist.atStartOfDay());
-        assertThat(opprettetOppgave.getAktorId()).isEqualTo(aktørId);
-        assertThat(opprettetOppgave.getForsteStonadsdag()).isEqualTo(førsteUttaksDag());
-        assertThat(opprettetOppgave.getHref()).isNull();
-        assertThat(opprettetOppgave.getFagsakSaksnummer()).isEqualTo(Long.valueOf(behandlingFpsak.getSaksnummer()));
-        assertThat(opprettetOppgave.getOppgaveAvsluttet()).isNull();
-        assertThat(opprettetOppgave.getBehandlingStatus()).isEqualTo(BehandlingStatus.fraKode(behandlingFpsak.getStatus()));
-        assertThat(opprettetOppgave.getBehandlendeEnhet()).isEqualTo(behandlingFpsak.getBehandlendeEnhetNavn());
-        assertThat(opprettetOppgave.getSystem()).isEqualTo("FPSAK");
-        assertThat(opprettetOppgave.getFagsakYtelseType()).isEqualTo(behandlingFpsak.getYtelseType());
+        var oppgave = DBTestUtil.hentUnik(entityManager, Oppgave.class);
+        assertThatOppgave(oppgave)
+                .harBehandlingOpprettet(behandlingFpsak.getBehandlingOpprettet())
+                .harAktiv(true)
+                .harBehandlingId(behandlingId)
+                .harBehandlingType(BehandlingType.FØRSTEGANGSSØKNAD)
+                .harBehandlingsfrist(behandlingstidFrist.atStartOfDay())
+                .harAktørId(aktørId)
+                .harFørsteStønadsdag(førsteUttaksDag())
+                .harHref(null)
+                .harSaksnummer(Long.valueOf(behandlingFpsak.getSaksnummer()))
+                .harOppgaveAvsluttet(null)
+                .harBehandlingStatus(BehandlingStatus.fraKode(behandlingFpsak.getStatus()))
+                .harBehandlendeEnhet(behandlingFpsak.getBehandlendeEnhetNavn())
+                .harSystem("FPSAK")
+                .harFagsakYtelseType(behandlingFpsak.getYtelseType());
     }
 
     private static LocalDate førsteUttaksDag() {
@@ -84,7 +94,7 @@ class OpprettOppgaveHendelseHåndtererTest {
 
     private List<Aksjonspunkt> aksjonspunkter() {
         var aksjonspunkt = Aksjonspunkt.builder()
-                .medDefinisjon("7001")
+                .medDefinisjon("1111")
                 .medBegrunnelse("Testbegrunnelse")
                 .medFristTid(null)
                 .medStatus("OPPR")

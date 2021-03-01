@@ -1,4 +1,4 @@
-package no.nav.fplos.person;
+package no.nav.foreldrepenger.los.testutils.person;
 
 import java.util.Random;
 
