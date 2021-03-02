@@ -24,27 +24,27 @@ public class ForeldrepengerEventMapper {
         var aksjonspunkter = behandling.getAksjonspunkter();
 
         if (erIngenÅpne(aksjonspunkter)) {
-            if (oppgaveHistorikk.erUtenHistorikk() || oppgaveHistorikk.erSisteEventLukkeevent()) {
+            if (oppgaveHistorikk.erUtenHistorikk() || oppgaveHistorikk.erIngenÅpenOppgave()) {
                 return IKKE_RELEVANT;
             } else {
                 return LUKK_OPPGAVE;
             }
         }
         if (påVent(aksjonspunkter)) {
-            if (oppgaveHistorikk.erSisteVenteEvent()) {
+            if (oppgaveHistorikk.erPåVent()) {
                 return IKKE_RELEVANT;
             }
             return manueltSattPåVent(aksjonspunkter) ? LUKK_OPPGAVE_MANUELT_VENT : LUKK_OPPGAVE_VENT;
         }
         if (tilBeslutter(aksjonspunkter)) {
-            if (oppgaveHistorikk.erSisteOppgaveTilBeslutter()
+            if (oppgaveHistorikk.erSisteOpprettedeOppgaveTilBeslutter()
                     && oppgaveHistorikk.erSisteOppgaveRegistrertPåEnhet(gjeldendeEnhet)) {
                 return GJENÅPNE_OPPGAVE; // TODO: hvis åpen oppgave - oppdater oppgave i stedet for gjenåpning
             }
             return OPPRETT_BESLUTTER_OPPGAVE;
         }
         if (erRegistrerPapirsøknad(aksjonspunkter)) {
-            if (oppgaveHistorikk.erSisteOppgavePapirsøknad()
+            if (oppgaveHistorikk.erSisteOpprettedeOppgavePapirsøknad()
                     && oppgaveHistorikk.erSisteOppgaveRegistrertPåEnhet(gjeldendeEnhet)) {
                 // TODO: oppdater åpen oppgave
                 return GJENÅPNE_OPPGAVE;
@@ -52,7 +52,7 @@ public class ForeldrepengerEventMapper {
             return OPPRETT_PAPIRSØKNAD_OPPGAVE;
         }
         if (!oppgaveHistorikk.erUtenHistorikk()) {
-            if (oppgaveHistorikk.erSisteOppgaveTilBeslutter()) {
+            if (oppgaveHistorikk.erSisteOpprettedeOppgaveTilBeslutter()) {
                 // Ingen beslutteraksjonspunkt. Returnert fra beslutter, opprett ny oppgave
                 // TODO: innføre nytt EventResultat som mapper til håndtering som setter til siste saksbehandler?
                 return OPPRETT_OPPGAVE;

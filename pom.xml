@@ -184,6 +184,17 @@
             </dependency>
             <dependency>
                 <groupId>no.nav.foreldrepenger.los</groupId>
+                <artifactId>los-testutilities</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>no.nav.foreldrepenger.los</groupId>
+                <artifactId>los-testutilities</artifactId>
+                <version>${project.version}</version>
+                <type>test-jar</type>
+            </dependency>
+            <dependency>
+                <groupId>no.nav.foreldrepenger.los</groupId>
                 <artifactId>webapp</artifactId>
                 <version>${project.version}</version>
             </dependency>
@@ -195,8 +206,8 @@
             <dependency>
                 <groupId>no.nav.foreldrepenger.los</groupId>
                 <artifactId>klient</artifactId>
-                <version>${project.version}</version>
-                <type>war</type>
+            <version>${project.version}</version>
+            <type>war</type>
             </dependency>
 
             <!-- Felles biblioteker -->

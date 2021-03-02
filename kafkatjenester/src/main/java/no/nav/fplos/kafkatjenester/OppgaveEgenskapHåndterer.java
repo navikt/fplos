@@ -19,44 +19,42 @@ import no.nav.foreldrepenger.loslager.repository.OppgaveRepository;
 
 @ApplicationScoped
 @Transactional
-public class OppgaveEgenskapHandler {
+public class OppgaveEgenskapHåndterer {
 
-    private static final Logger log = LoggerFactory.getLogger(OppgaveEgenskapHandler.class);
+    private static final Logger log = LoggerFactory.getLogger(OppgaveEgenskapHåndterer.class);
 
     private OppgaveRepository repository;
 
-    public OppgaveEgenskapHandler() {
+    public OppgaveEgenskapHåndterer() {
         // for cdi
     }
 
     @Inject
-    public OppgaveEgenskapHandler(OppgaveRepository oppgaveRepository) {
+    public OppgaveEgenskapHåndterer(OppgaveRepository oppgaveRepository) {
         this.repository = oppgaveRepository;
     }
 
-    public void håndterOppgaveEgenskaper(Oppgave oppgave, OppgaveEgenskapFinner event) {
-        var andreKriterier = event.getAndreKriterier();
+    public void håndterOppgaveEgenskaper(Oppgave oppgave, OppgaveEgenskapFinner aktuelleEgenskaper) {
+        var andreKriterier = aktuelleEgenskaper.getAndreKriterier();
         log.info("Legger på oppgaveegenskaper {}", andreKriterier);
-        List<OppgaveEgenskap> eksisterende = hentEksisterendeEgenskaper(oppgave);
+        var eksisterendeOppgaveEgenskaper = hentEksisterendeEgenskaper(oppgave);
 
         // deaktiver uaktuelle eksisterende
-        eksisterende.stream()
+        eksisterendeOppgaveEgenskaper.stream()
                 .filter(akt -> !andreKriterier.contains(akt.getAndreKriterierType()))
                 .forEach(this::deaktiver);
 
         // aktiver aktuelle eksisterende
-        eksisterende.stream()
+        eksisterendeOppgaveEgenskaper.stream()
                 .filter(akt -> andreKriterier.contains(akt.getAndreKriterierType()))
-                .forEach(oe -> aktiver(oe, event.getSaksbehandlerForTotrinn()));
+                .forEach(oe -> aktiver(oe, aktuelleEgenskaper.getSaksbehandlerForTotrinn()));
 
-        var eksisterendeOppgaveEgenskaper = eksisterende.stream()
-                .map(OppgaveEgenskap::getAndreKriterierType)
-                .collect(Collectors.toList());
+        var eksisterendeTyper = typer(eksisterendeOppgaveEgenskaper);
 
         // aktiver nye
         andreKriterier.stream()
-                .filter(akt -> !eksisterendeOppgaveEgenskaper.contains(akt))
-                .forEach(k -> opprettOppgaveEgenskap(oppgave, k, event.getSaksbehandlerForTotrinn()));
+                .filter(akt -> !eksisterendeTyper.contains(akt))
+                .forEach(k -> opprettOppgaveEgenskap(oppgave, k, aktuelleEgenskaper.getSaksbehandlerForTotrinn()));
     }
 
     private void opprettOppgaveEgenskap(Oppgave oppgave, AndreKriterierType kritere, String saksbehandler) {
@@ -85,6 +83,12 @@ public class OppgaveEgenskapHandler {
     List<OppgaveEgenskap> hentEksisterendeEgenskaper(Oppgave oppgave) {
         return Optional.ofNullable(repository.hentOppgaveEgenskaper(oppgave.getId()))
                 .orElse(Collections.emptyList());
+    }
+
+    private static List<AndreKriterierType> typer(List<OppgaveEgenskap> eksisterendeOppgaveEgenskaper) {
+        return eksisterendeOppgaveEgenskaper.stream()
+                .map(OppgaveEgenskap::getAndreKriterierType)
+                .collect(Collectors.toList());
     }
 
 }

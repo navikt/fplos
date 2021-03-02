@@ -18,6 +18,7 @@
         <module>admin</module>
         <module>ansatt</module>
         <module>statistikk</module>
+        <module>los-testutilities</module>
     </modules>
 
 </project>

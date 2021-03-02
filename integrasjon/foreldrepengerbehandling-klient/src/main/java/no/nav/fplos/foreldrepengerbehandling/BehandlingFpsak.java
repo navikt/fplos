@@ -13,7 +13,7 @@ import no.nav.foreldrepenger.loslager.oppgave.FagsakYtelseType;
 public class BehandlingFpsak {
     private BehandlingId behandlingId;
     private String status;
-    private String behandlendeEnhetNavn;
+    private String behandlendeEnhetId;
     private String ansvarligSaksbehandler;
     private Lazy<List<Aksjonspunkt>> aksjonspunkter;
     private LocalDate behandlingstidFrist;
@@ -24,6 +24,9 @@ public class BehandlingFpsak {
     private boolean erEndringssøknad;
     private BehandlingType behandlingType;
     private FagsakYtelseType ytelseType;
+    private LocalDateTime behandlingOpprettet;
+    private String saksnummer;
+    private String aktørId;
 
     public BehandlingId getBehandlingId() {
         return behandlingId;
@@ -37,16 +40,28 @@ public class BehandlingFpsak {
         return ansvarligSaksbehandler;
     }
 
+    public LocalDateTime getBehandlingOpprettet() {
+        return behandlingOpprettet;
+    }
+
+    public String getSaksnummer() {
+        return saksnummer;
+    }
+
+    public String getAktørId() {
+        return aktørId;
+    }
+
+    public Boolean harRefusjonskravFraArbeidsgiver() {
+        return get(harRefusjonskravFraArbeidsgiver);
+    }
+
     public List<Aksjonspunkt> getAksjonspunkter() {
         var svar = get(aksjonspunkter);
         if (svar == null) {
             return List.of();
         }
         return svar;
-    }
-
-    public Boolean harRefusjonskravFraArbeidsgiver() {
-        return get(harRefusjonskravFraArbeidsgiver);
     }
 
     public boolean harGradering() {
@@ -93,14 +108,26 @@ public class BehandlingFpsak {
         return ytelseType;
     }
 
+    public String getBehandlendeEnhetId() {
+        return behandlendeEnhetId;
+    }
+
     public void setYtelseType(FagsakYtelseType ytelseType) {
         this.ytelseType = ytelseType;
+    }
+
+    public void setSaksnummer(String saksnummer) {
+        this.saksnummer = saksnummer;
+    }
+
+    public void setAktørId(String aktørId) {
+        this.aktørId = aktørId;
     }
 
     public static final class Builder {
         private BehandlingId behandlingId;
         private String status;
-        private String behandlendeEnhetNavn;
+        private String behandlendeEnhetId;
         private String ansvarligSaksbehandler;
         private Lazy<List<Aksjonspunkt>> aksjonspunkter;
         private LocalDate behandlingstidFrist;
@@ -111,6 +138,7 @@ public class BehandlingFpsak {
         private BehandlingType behandlingType;
         private FagsakYtelseType ytelseType;
         private Lazy<UttakEgenskaper> uttakEgenskaper;
+        private LocalDateTime behandlingOpprettet;
 
         private Builder() {
         }
@@ -125,8 +153,8 @@ public class BehandlingFpsak {
             return this;
         }
 
-        public Builder medBehandlendeEnhetNavn(String behandlendeEnhetNavn) {
-            this.behandlendeEnhetNavn = behandlendeEnhetNavn;
+        public Builder medBehandlendeEnhetId(String behandlendeEnhetId) {
+            this.behandlendeEnhetId = behandlendeEnhetId;
             return this;
         }
 
@@ -180,16 +208,22 @@ public class BehandlingFpsak {
             return this;
         }
 
+        public Builder medBehandlingOpprettet(LocalDateTime behandlingOpprettet) {
+            this.behandlingOpprettet = behandlingOpprettet;
+            return this;
+        }
+
         public BehandlingFpsak build() {
             BehandlingFpsak behandlingFpsak = new BehandlingFpsak();
             behandlingFpsak.ansvarligSaksbehandler = this.ansvarligSaksbehandler;
             behandlingFpsak.harRefusjonskravFraArbeidsgiver = this.harRefusjonskravFraArbeidsgiver;
             behandlingFpsak.aksjonspunkter = this.aksjonspunkter;
             behandlingFpsak.status = this.status;
-            behandlingFpsak.behandlendeEnhetNavn = this.behandlendeEnhetNavn;
+            behandlingFpsak.behandlendeEnhetId = this.behandlendeEnhetId;
             behandlingFpsak.behandlingId = this.behandlingId;
             behandlingFpsak.uttakEgenskaper = this.uttakEgenskaper;
             behandlingFpsak.behandlingstidFrist = this.behandlingstidFrist;
+            behandlingFpsak.behandlingOpprettet = this.behandlingOpprettet;
             behandlingFpsak.førsteUttaksdag = this.førsteUttaksdag;
             behandlingFpsak.erBerørtBehandling = this.erBerørtBehandling;
             behandlingFpsak.erEndringssøknad = this.erEndringssøknad;
@@ -204,7 +238,7 @@ public class BehandlingFpsak {
         return "BehandlingFpsak{" +
                 "behandlingId=" + behandlingId +
                 ", status='" + status + '\'' +
-                ", behandlendeEnhetNavn='" + behandlendeEnhetNavn + '\'' +
+                ", behandlendeEnhetNavn='" + behandlendeEnhetId + '\'' +
                 ", ansvarligSaksbehandler='" + ansvarligSaksbehandler + '\'' +
                 ", behandlingstidFrist=" + behandlingstidFrist +
                 ", erBerørtBehandling=" + erBerørtBehandling +

@@ -19,7 +19,7 @@ public class FpsakOppgaveEgenskapFinner implements OppgaveEgenskapFinner {
         if (behandling.harVurderSykdom()) this.andreKriterier.add(AndreKriterierType.VURDER_SYKDOM);
         if (behandling.erBerørtBehandling()) this.andreKriterier.add(AndreKriterierType.BERØRT_BEHANDLING);
         if (erUtbetalingTilBruker(behandling)) this.andreKriterier.add(AndreKriterierType.UTBETALING_TIL_BRUKER);
-        if (endringssøknad(behandling)) this.andreKriterier.add(AndreKriterierType.ENDRINGSSØKNAD);
+        if (erEndringssøknad(behandling)) this.andreKriterier.add(AndreKriterierType.ENDRINGSSØKNAD);
 
         FpsakAksjonspunkt fpsakAksjonspunkt = new FpsakAksjonspunkt(behandling.getAksjonspunkter());
         andreKriterier.addAll(fpsakAksjonspunkt.getKriterier());
@@ -35,7 +35,7 @@ public class FpsakOppgaveEgenskapFinner implements OppgaveEgenskapFinner {
         return saksbehandlerForTotrinn;
     }
 
-    private static boolean endringssøknad(BehandlingFpsak behandling) {
+    private static boolean erEndringssøknad(BehandlingFpsak behandling) {
         // fpsak legger på endringssøknadtype også på førstegangsbehandlinger
         return behandling.getYtelseType() == FagsakYtelseType.FORELDREPENGER
                 && behandling.getBehandlingType() == BehandlingType.REVURDERING
