@@ -4,7 +4,7 @@ import java.time.LocalDate;
 
 import no.nav.foreldrepenger.loslager.oppgave.BehandlingType;
 import no.nav.foreldrepenger.loslager.oppgave.FagsakYtelseType;
-import no.nav.fplos.statistikk.OppgaverForAvdelingPerDato;
+import no.nav.fplos.domenetjenester.statistikk_gammel.OppgaverForAvdelingPerDato;
 
 public class OppgaverForAvdelingPerDatoDto {
 

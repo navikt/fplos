@@ -12,9 +12,9 @@ import no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.oppgave.dto.Beh
 import no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.oppgave.dto.OppgaveIdDto;
 import no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.oppgave.dto.SaksnummerDto;
 import no.nav.foreldrepenger.loslager.oppgave.Oppgave;
-import no.nav.fplos.admin.AdminTjeneste;
-import no.nav.fplos.admin.OppgaveSynkroniseringTaskOppretterTjeneste;
-import no.nav.fplos.admin.SynkroniseringHendelseTaskOppretterTjeneste;
+import no.nav.fplos.domenetjenester.admin.AdminTjeneste;
+import no.nav.fplos.domenetjenester.admin.OppgaveSynkroniseringTaskOppretterTjeneste;
+import no.nav.fplos.domenetjenester.admin.SynkroniseringHendelseTaskOppretterTjeneste;
 import no.nav.vedtak.sikkerhet.abac.AbacDataAttributter;
 import no.nav.vedtak.sikkerhet.abac.BeskyttetRessurs;
 import no.nav.vedtak.sikkerhet.abac.TilpassetAbacAttributt;

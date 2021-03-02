@@ -8,17 +8,45 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>domenetjenester</artifactId>
-    <packaging>pom</packaging>
+    <packaging>jar</packaging>
     <name>FPLOS :: Domenetjenester</name>
 
-    <modules>
-        <module>oppgave</module>
-        <module>person</module>
-        <module>avdelingsleder</module>
-        <module>admin</module>
-        <module>ansatt</module>
-        <module>statistikk</module>
-        <module>los-testutilities</module>
-    </modules>
+    <dependencies>
+        <dependency>
+            <groupId>no.nav.foreldrepenger.los</groupId>
+            <artifactId>person</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>javax.enterprise</groupId>
+            <artifactId>cdi-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>no.nav.foreldrepenger.los</groupId>
+            <artifactId>loslager</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>no.nav.foreldrepenger.los</groupId>
+            <artifactId>foreldrepengerbehandling-klient</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>no.nav.foreldrepenger.felles.integrasjon</groupId>
+            <artifactId>ldap-klient</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>no.nav.foreldrepenger.felles.integrasjon</groupId>
+            <artifactId>felles-integrasjon-rest-klient</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>no.nav.foreldrepenger.los</groupId>
+            <artifactId>migreringer</artifactId>
+            <type>test-jar</type>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
 
 </project>

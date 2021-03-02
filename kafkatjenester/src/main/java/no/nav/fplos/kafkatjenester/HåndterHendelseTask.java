@@ -8,6 +8,8 @@ import javax.inject.Inject;
 import no.nav.foreldrepenger.loslager.hendelse.Fagsystem;
 import no.nav.foreldrepenger.loslager.hendelse.TilbakekrevingHendelse;
 import no.nav.foreldrepenger.loslager.repository.HendelseRepository;
+import no.nav.fplos.domenetjenester.hendelsehåndterer.ForeldrepengerHendelseHåndterer;
+import no.nav.fplos.domenetjenester.hendelsehåndterer.TilbakekrevingHendelseHåndterer;
 import no.nav.vedtak.felles.prosesstask.api.ProsessTask;
 import no.nav.vedtak.felles.prosesstask.api.ProsessTaskData;
 import no.nav.vedtak.felles.prosesstask.api.ProsessTaskHandler;

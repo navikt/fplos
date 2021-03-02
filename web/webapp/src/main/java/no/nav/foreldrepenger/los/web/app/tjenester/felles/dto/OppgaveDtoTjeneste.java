@@ -7,8 +7,8 @@ import java.util.stream.Collectors;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import no.nav.fplos.kø.OppgaveKøTjeneste;
-import no.nav.fplos.reservasjon.ReservasjonTjeneste;
+import no.nav.fplos.domenetjenester.kø.OppgaveKøTjeneste;
+import no.nav.fplos.domenetjenester.reservasjon.ReservasjonTjeneste;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,7 +16,7 @@ import no.nav.foreldrepenger.los.web.app.AbacAttributter;
 import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.saksliste.FplosAbacAttributtType;
 import no.nav.foreldrepenger.loslager.oppgave.Oppgave;
 import no.nav.foreldrepenger.loslager.oppgave.Reservasjon;
-import no.nav.fplos.oppgave.OppgaveTjeneste;
+import no.nav.fplos.domenetjenester.oppgave.OppgaveTjeneste;
 import no.nav.fplos.person.IkkeTilgangPåPersonException;
 import no.nav.fplos.person.PersonTjeneste;
 import no.nav.vedtak.sikkerhet.abac.AbacAttributtSamling;

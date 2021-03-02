@@ -2,7 +2,7 @@ package no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.nøkkeltall.d
 
 import no.nav.foreldrepenger.loslager.oppgave.BehandlingType;
 import no.nav.foreldrepenger.loslager.oppgave.FagsakYtelseType;
-import no.nav.fplos.statistikk.OppgaverForAvdeling;
+import no.nav.fplos.domenetjenester.statistikk_gammel.OppgaverForAvdeling;
 
 public class OppgaverForAvdelingDto {
 

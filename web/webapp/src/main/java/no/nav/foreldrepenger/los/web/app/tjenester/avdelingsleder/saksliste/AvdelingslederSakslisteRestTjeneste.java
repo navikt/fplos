@@ -35,7 +35,7 @@ import no.nav.foreldrepenger.los.web.app.tjenester.felles.dto.SakslisteDto;
 import no.nav.foreldrepenger.los.web.app.tjenester.felles.dto.SakslisteIdDto;
 import no.nav.foreldrepenger.loslager.oppgave.OppgaveFiltrering;
 import no.nav.fplos.avdelingsleder.AvdelingslederTjeneste;
-import no.nav.fplos.kø.OppgaveKøTjeneste;
+import no.nav.fplos.domenetjenester.kø.OppgaveKøTjeneste;
 import no.nav.vedtak.sikkerhet.abac.BeskyttetRessurs;
 import no.nav.vedtak.sikkerhet.abac.BeskyttetRessursActionAttributt;
 

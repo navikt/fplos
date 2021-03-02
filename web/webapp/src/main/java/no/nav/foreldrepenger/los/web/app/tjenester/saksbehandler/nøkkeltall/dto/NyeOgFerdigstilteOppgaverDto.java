@@ -1,7 +1,7 @@
 package no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.nøkkeltall.dto;
 
 import no.nav.foreldrepenger.loslager.oppgave.BehandlingType;
-import no.nav.fplos.statistikk.NyeOgFerdigstilteOppgaver;
+import no.nav.fplos.domenetjenester.statistikk_gammel.NyeOgFerdigstilteOppgaver;
 
 import java.time.LocalDate;
 

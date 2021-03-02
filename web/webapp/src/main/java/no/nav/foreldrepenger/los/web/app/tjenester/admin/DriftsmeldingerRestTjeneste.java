@@ -6,7 +6,7 @@ import no.nav.foreldrepenger.los.web.app.AbacAttributter;
 import no.nav.foreldrepenger.los.web.app.tjenester.admin.dto.DriftsmeldingDto;
 import no.nav.foreldrepenger.los.web.app.tjenester.admin.dto.DriftsmeldingOpprettelseDto;
 import no.nav.foreldrepenger.loslager.admin.Driftsmelding;
-import no.nav.fplos.admin.DriftsmeldingTjeneste;
+import no.nav.fplos.domenetjenester.admin.DriftsmeldingTjeneste;
 import no.nav.vedtak.sikkerhet.abac.BeskyttetRessurs;
 
 import javax.enterprise.context.ApplicationScoped;

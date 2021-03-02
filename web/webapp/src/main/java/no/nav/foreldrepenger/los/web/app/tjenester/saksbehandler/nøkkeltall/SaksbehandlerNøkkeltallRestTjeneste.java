@@ -17,7 +17,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import no.nav.foreldrepenger.los.web.app.AbacAttributter;
 import no.nav.foreldrepenger.los.web.app.tjenester.felles.dto.SakslisteIdDto;
 import no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.nøkkeltall.dto.NyeOgFerdigstilteOppgaverDto;
-import no.nav.fplos.statistikk.StatistikkTjeneste;
+import no.nav.fplos.domenetjenester.statistikk_gammel.StatistikkTjeneste;
 import no.nav.vedtak.sikkerhet.abac.BeskyttetRessurs;
 import no.nav.vedtak.sikkerhet.abac.BeskyttetRessursActionAttributt;
 

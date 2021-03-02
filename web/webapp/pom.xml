@@ -76,6 +76,10 @@
             <artifactId>admin</artifactId>
         </dependency>
         <dependency>
+            <groupId>no.nav.foreldrepenger.los</groupId>
+            <artifactId>domenetjenester</artifactId>
+        </dependency>
+        <dependency>
             <groupId>no.nav.foreldrepenger.felles.sikkerhet</groupId>
             <artifactId>felles-sikkerhet</artifactId>
         </dependency>

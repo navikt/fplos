@@ -17,8 +17,8 @@ import no.nav.foreldrepenger.extensions.EntityManagerFPLosAwareExtension;
 import no.nav.foreldrepenger.los.web.app.tjenester.admin.dto.DriftsmeldingDto;
 import no.nav.foreldrepenger.los.web.app.tjenester.admin.dto.DriftsmeldingOpprettelseDto;
 import no.nav.foreldrepenger.loslager.repository.DriftsmeldingRepository;
-import no.nav.fplos.admin.DriftsmeldingTjeneste;
-import no.nav.fplos.admin.DriftsmeldingTjenesteImpl;
+import no.nav.fplos.domenetjenester.admin.DriftsmeldingTjeneste;
+import no.nav.fplos.domenetjenester.admin.DriftsmeldingTjenesteImpl;
 
 @ExtendWith(EntityManagerFPLosAwareExtension.class)
 class DriftsmeldingerRestTjenesteTest {

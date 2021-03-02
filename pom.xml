@@ -9,11 +9,11 @@
 
     <modules>
         <module>migreringer</module>
-        <module>domene</module>
+        <module>loslager</module>
         <module>domenetjenester</module>
-        <module>web</module>
         <module>kafkatjenester</module>
         <module>integrasjon</module>
+        <module>web</module>
     </modules>
 
     <properties>
@@ -179,17 +179,6 @@
             <dependency>
                 <groupId>no.nav.foreldrepenger.los</groupId>
                 <artifactId>migreringer</artifactId>
-                <version>${project.version}</version>
-                <type>test-jar</type>
-            </dependency>
-            <dependency>
-                <groupId>no.nav.foreldrepenger.los</groupId>
-                <artifactId>los-testutilities</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>no.nav.foreldrepenger.los</groupId>
-                <artifactId>los-testutilities</artifactId>
                 <version>${project.version}</version>
                 <type>test-jar</type>
             </dependency>

@@ -29,7 +29,7 @@ import no.nav.foreldrepenger.loslager.oppgave.OppgaveEgenskap;
 import no.nav.foreldrepenger.loslager.oppgave.OppgaveEventLogg;
 import no.nav.foreldrepenger.loslager.oppgave.OppgaveEventType;
 import no.nav.foreldrepenger.loslager.repository.StatistikkRepositoryImpl;
-import no.nav.fplos.statistikk.StatistikkTjenesteImpl;
+import no.nav.fplos.domenetjenester.statistikk_gammel.StatistikkTjenesteImpl;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(EntityManagerFPLosAwareExtension.class)

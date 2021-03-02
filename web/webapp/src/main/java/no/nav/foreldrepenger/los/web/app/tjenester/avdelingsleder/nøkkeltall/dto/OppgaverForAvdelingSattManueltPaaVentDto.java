@@ -1,7 +1,7 @@
 package no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.nøkkeltall.dto;
 
 import no.nav.foreldrepenger.loslager.oppgave.FagsakYtelseType;
-import no.nav.fplos.statistikk.OppgaverForAvdelingSattManueltPaaVent;
+import no.nav.fplos.domenetjenester.statistikk_gammel.OppgaverForAvdelingSattManueltPaaVent;
 
 import java.time.LocalDate;
 

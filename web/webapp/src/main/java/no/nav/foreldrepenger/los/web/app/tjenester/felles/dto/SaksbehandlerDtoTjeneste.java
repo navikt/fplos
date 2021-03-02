@@ -2,10 +2,10 @@ package no.nav.foreldrepenger.los.web.app.tjenester.felles.dto;
 
 import no.nav.foreldrepenger.loslager.organisasjon.Saksbehandler;
 import no.nav.foreldrepenger.loslager.repository.OrganisasjonRepository;
-import no.nav.fplos.ansatt.AnsattTjeneste;
+import no.nav.fplos.domenetjenester.ansatt.AnsattTjeneste;
 import no.nav.fplos.avdelingsleder.AvdelingslederTjeneste;
 import no.nav.fplos.avdelingsleder.AvdelingslederTjenesteFeil;
-import no.nav.fplos.kø.OppgaveKøTjeneste;
+import no.nav.fplos.domenetjenester.kø.OppgaveKøTjeneste;
 import no.nav.vedtak.exception.IntegrasjonException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

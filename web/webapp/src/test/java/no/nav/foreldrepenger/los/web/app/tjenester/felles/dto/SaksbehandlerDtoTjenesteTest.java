@@ -9,7 +9,7 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 
-import no.nav.fplos.kø.OppgaveKøTjeneste;
+import no.nav.fplos.domenetjenester.kø.OppgaveKøTjeneste;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -21,7 +21,7 @@ import no.nav.foreldrepenger.loslager.organisasjon.Avdeling;
 import no.nav.foreldrepenger.loslager.organisasjon.Saksbehandler;
 import no.nav.foreldrepenger.loslager.repository.OppgaveRepositoryImpl;
 import no.nav.foreldrepenger.loslager.repository.OrganisasjonRepositoryImpl;
-import no.nav.fplos.ansatt.AnsattTjeneste;
+import no.nav.fplos.domenetjenester.ansatt.AnsattTjeneste;
 import no.nav.fplos.avdelingsleder.AvdelingslederTjeneste;
 
 @ExtendWith(EntityManagerFPLosAwareExtension.class)

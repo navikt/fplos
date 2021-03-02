@@ -2,7 +2,7 @@ package no.nav.foreldrepenger.los.web.app.tjenester.felles.dto;
 
 import no.nav.foreldrepenger.loslager.oppgave.Oppgave;
 import no.nav.foreldrepenger.loslager.oppgave.Reservasjon;
-import no.nav.fplos.ansatt.AnsattTjeneste;
+import no.nav.fplos.domenetjenester.ansatt.AnsattTjeneste;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;

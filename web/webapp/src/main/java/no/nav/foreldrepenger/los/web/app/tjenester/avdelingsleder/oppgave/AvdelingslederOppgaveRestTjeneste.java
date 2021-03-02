@@ -16,7 +16,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import no.nav.foreldrepenger.los.web.app.AbacAttributter;
 import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.dto.AvdelingEnhetDto;
 import no.nav.foreldrepenger.los.web.app.tjenester.felles.dto.SakslisteIdDto;
-import no.nav.fplos.kø.OppgaveKøTjeneste;
+import no.nav.fplos.domenetjenester.kø.OppgaveKøTjeneste;
 import no.nav.vedtak.sikkerhet.abac.BeskyttetRessurs;
 
 @Path("avdelingsleder/oppgaver")
