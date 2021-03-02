@@ -19,18 +19,18 @@ import no.nav.foreldrepenger.loslager.repository.OppgaveRepository;
 
 @ApplicationScoped
 @Transactional
-public class OppgaveEgenskapHandler {
+public class OppgaveEgenskapHåndterer {
 
-    private static final Logger log = LoggerFactory.getLogger(OppgaveEgenskapHandler.class);
+    private static final Logger log = LoggerFactory.getLogger(OppgaveEgenskapHåndterer.class);
 
     private OppgaveRepository repository;
 
-    public OppgaveEgenskapHandler() {
+    public OppgaveEgenskapHåndterer() {
         // for cdi
     }
 
     @Inject
-    public OppgaveEgenskapHandler(OppgaveRepository oppgaveRepository) {
+    public OppgaveEgenskapHåndterer(OppgaveRepository oppgaveRepository) {
         this.repository = oppgaveRepository;
     }
 

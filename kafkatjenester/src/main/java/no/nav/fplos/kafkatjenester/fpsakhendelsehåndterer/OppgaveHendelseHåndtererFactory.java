@@ -1,11 +1,11 @@
-package no.nav.fplos.kafkatjenester.test;
+package no.nav.fplos.kafkatjenester.fpsakhendelsehåndterer;
 
 import no.nav.foreldrepenger.loslager.hendelse.Hendelse;
 import no.nav.foreldrepenger.loslager.repository.OppgaveRepository;
 import no.nav.fplos.foreldrepengerbehandling.Aksjonspunkt;
 import no.nav.fplos.foreldrepengerbehandling.BehandlingFpsak;
 import no.nav.fplos.foreldrepengerbehandling.ForeldrepengerBehandlingKlient;
-import no.nav.fplos.kafkatjenester.OppgaveEgenskapHandler;
+import no.nav.fplos.kafkatjenester.OppgaveEgenskapHåndterer;
 import no.nav.fplos.kafkatjenester.OppgaveHistorikk;
 import no.nav.fplos.oppgavestatistikk.OppgaveStatistikk;
 
@@ -19,7 +19,7 @@ import java.util.function.Predicate;
 public class OppgaveHendelseHåndtererFactory {
 
     private OppgaveRepository oppgaveRepository;
-    private OppgaveEgenskapHandler oppgaveEgenskapHandler;
+    private OppgaveEgenskapHåndterer oppgaveEgenskapHåndterer;
     private OppgaveStatistikk oppgaveStatistikk;
     private ForeldrepengerBehandlingKlient foreldrePengerBehandlingKlient;
 
@@ -27,10 +27,10 @@ public class OppgaveHendelseHåndtererFactory {
     @Inject
     public OppgaveHendelseHåndtererFactory(ForeldrepengerBehandlingKlient foreldrePengerBehandlingKlient,
                                            OppgaveRepository oppgaveRepository,
-                                           OppgaveEgenskapHandler oppgaveEgenskapHandler, OppgaveStatistikk oppgaveStatistikk) {
+                                           OppgaveEgenskapHåndterer oppgaveEgenskapHåndterer, OppgaveStatistikk oppgaveStatistikk) {
         this.foreldrePengerBehandlingKlient = foreldrePengerBehandlingKlient;
         this.oppgaveRepository = oppgaveRepository;
-        this.oppgaveEgenskapHandler = oppgaveEgenskapHandler;
+        this.oppgaveEgenskapHåndterer = oppgaveEgenskapHåndterer;
         this.oppgaveStatistikk = oppgaveStatistikk;
     }
 
@@ -50,7 +50,7 @@ public class OppgaveHendelseHåndtererFactory {
     protected FpsakHendelseHåndterer lagHåndterer(BehandlingFpsak behandling,
                                                   OppgaveHistorikk oppgaveHistorikk) {
         var aksjonspunkter = behandling.getAksjonspunkter();
-        var gjeldendeEnhet = behandling.getBehandlendeEnhetNavn(); //TODO: test at dette er riktig enhet
+        var gjeldendeEnhet = behandling.getBehandlendeEnhetId(); //TODO: test at dette er riktig enhet
 
         if (erIngenÅpne(aksjonspunkter)) {
             if (oppgaveHistorikk.erUtenHistorikk() || oppgaveHistorikk.erIngenÅpenOppgave()) {
@@ -90,7 +90,7 @@ public class OppgaveHendelseHåndtererFactory {
                     //? GJENÅPNE_OPPGAVE // TODO: oppdater åpen oppgave
                     //: OPPRETT_OPPGAVE;
         }
-        return new OpprettOppgaveHendelseHåndterer(oppgaveRepository, oppgaveEgenskapHandler, oppgaveStatistikk, behandling); //OPPRETT_OPPGAVE;
+        return new OpprettOppgaveHendelseHåndterer(oppgaveRepository, oppgaveEgenskapHåndterer, oppgaveStatistikk, behandling); //OPPRETT_OPPGAVE;
     }
 
 //                case OPPDATER_ÅPEN_OPPGAVE:

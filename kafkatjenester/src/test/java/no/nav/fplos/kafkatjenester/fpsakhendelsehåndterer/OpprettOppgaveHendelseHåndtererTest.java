@@ -1,4 +1,4 @@
-package no.nav.fplos.kafkatjenester.test;
+package no.nav.fplos.kafkatjenester.fpsakhendelsehåndterer;
 
 import no.nav.foreldrepenger.dbstoette.DBTestUtil;
 import no.nav.foreldrepenger.domene.typer.AktørId;
@@ -13,7 +13,7 @@ import no.nav.foreldrepenger.loslager.repository.OppgaveRepositoryImpl;
 import no.nav.fplos.foreldrepengerbehandling.Aksjonspunkt;
 import no.nav.fplos.foreldrepengerbehandling.BehandlingFpsak;
 import no.nav.fplos.foreldrepengerbehandling.Lazy;
-import no.nav.fplos.kafkatjenester.OppgaveEgenskapHandler;
+import no.nav.fplos.kafkatjenester.OppgaveEgenskapHåndterer;
 import no.nav.fplos.oppgavestatistikk.OppgaveStatistikk;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -35,25 +35,24 @@ class OpprettOppgaveHendelseHåndtererTest {
     private final OppgaveStatistikk oppgaveStatistikk = mock(OppgaveStatistikk.class);
     private EntityManager entityManager;
     private OppgaveRepository oppgaveRepository;
-    private OppgaveEgenskapHandler oppgaveEgenskapHandler;
+    private OppgaveEgenskapHåndterer oppgaveEgenskapHåndterer;
 
     @BeforeEach
     private void setUp(EntityManager entityManager) {
         this.entityManager = entityManager;
         oppgaveRepository = new OppgaveRepositoryImpl(entityManager);
-        oppgaveEgenskapHandler = new OppgaveEgenskapHandler(oppgaveRepository);
+        oppgaveEgenskapHåndterer = new OppgaveEgenskapHåndterer(oppgaveRepository);
     }
 
     @Test
-    public void skalOppretteOppgave() {
+    public void opprettOppgave() {
         var behandlingId = BehandlingId.random();
-
         var behandlingstidFrist = LocalDate.now().plusDays(10);
         var behandlingOpprettet = LocalDateTime.now();
         var aktørId = AktørId.dummy();
         var behandlingFpsak = BehandlingFpsak.builder()
                 .medBehandlingOpprettet(behandlingOpprettet)
-                .medBehandlendeEnhetNavn("4406")
+                .medBehandlendeEnhetId("4406")
                 .medBehandlingId(behandlingId)
                 .medBehandlingType(BehandlingType.FØRSTEGANGSSØKNAD)
                 .medFørsteUttaksdag(new Lazy<>(OpprettOppgaveHendelseHåndtererTest::førsteUttaksDag))
@@ -67,7 +66,7 @@ class OpprettOppgaveHendelseHåndtererTest {
         behandlingFpsak.setAktørId(aktørId.getId());
         behandlingFpsak.setYtelseType(FagsakYtelseType.FORELDREPENGER);
 
-        var opprettOppgaveHåndterer = new OpprettOppgaveHendelseHåndterer(oppgaveRepository, oppgaveEgenskapHandler, oppgaveStatistikk, behandlingFpsak);
+        var opprettOppgaveHåndterer = new OpprettOppgaveHendelseHåndterer(oppgaveRepository, oppgaveEgenskapHåndterer, oppgaveStatistikk, behandlingFpsak);
         opprettOppgaveHåndterer.håndter();
 
         var oppgave = DBTestUtil.hentUnik(entityManager, Oppgave.class);
@@ -83,7 +82,7 @@ class OpprettOppgaveHendelseHåndtererTest {
                 .harSaksnummer(Long.valueOf(behandlingFpsak.getSaksnummer()))
                 .harOppgaveAvsluttet(null)
                 .harBehandlingStatus(BehandlingStatus.fraKode(behandlingFpsak.getStatus()))
-                .harBehandlendeEnhet(behandlingFpsak.getBehandlendeEnhetNavn())
+                .harBehandlendeEnhet(behandlingFpsak.getBehandlendeEnhetId())
                 .harSystem("FPSAK")
                 .harFagsakYtelseType(behandlingFpsak.getYtelseType());
     }

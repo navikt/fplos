@@ -1,4 +1,4 @@
-package no.nav.fplos.kafkatjenester.test;
+package no.nav.fplos.kafkatjenester.fpsakhendelsehåndterer;
 
 public class LukkOppgaveHendelseHåndterer implements FpsakHendelseHåndterer {
     @Override

@@ -1,4 +1,4 @@
-package no.nav.fplos.kafkatjenester.test;
+package no.nav.fplos.kafkatjenester.fpsakhendelsehåndterer;
 
 import no.nav.foreldrepenger.loslager.oppgave.OppgaveEventLogg;
 import no.nav.foreldrepenger.loslager.oppgave.OppgaveEventType;
@@ -34,7 +34,7 @@ public class PåVentOppgaveHendelseHåndterer implements FpsakHendelseHåndterer
     public void håndter() {
         // TODO: innføre egen ventestatus der det ikke finnes oppgave fra før. Vurder å lagre oppgaveId i OppgaveEventLogg.
         var behandlingId = behandlingFpsak.getBehandlingId();
-        var behandlendeEnhet = behandlingFpsak.getBehandlendeEnhetNavn();
+        var behandlendeEnhet = behandlingFpsak.getBehandlendeEnhetId();
         var aksjonspunkter = behandlingFpsak.getAksjonspunkter();
         var type = manueltSattPåVent(aksjonspunkter) ? OppgaveEventType.MANU_VENT : OppgaveEventType.VENT;
         var aksjonspunktFrist = aksjonspunktFrist(aksjonspunkter, type);

@@ -1,6 +1,7 @@
 package no.nav.foreldrepenger.loslager.oppgave;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 import javax.persistence.Column;
 import javax.persistence.Convert;
@@ -18,7 +19,7 @@ import no.nav.foreldrepenger.loslager.BehandlingId;
 
 @Entity(name = "oppgaveEventLogg")
 @Table(name = "OPPGAVE_EVENT_LOGG")
-public class OppgaveEventLogg extends BaseEntitet{
+public class OppgaveEventLogg extends BaseEntitet {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_EVENTMOTTAK_FEILLOGG")
     private Long id;
@@ -40,7 +41,7 @@ public class OppgaveEventLogg extends BaseEntitet{
     @Embedded
     private BehandlingId behandlingId;
 
-    public OppgaveEventLogg(){
+    public OppgaveEventLogg() {
         //For automatisk generering
     }
 
@@ -49,11 +50,17 @@ public class OppgaveEventLogg extends BaseEntitet{
         this.fristTid = fristTid;
     }
 
-    public OppgaveEventLogg(BehandlingId behandlingId, OppgaveEventType eventType, AndreKriterierType andreKriterierType, String behandlendeEnhet ) {
+    public OppgaveEventLogg(BehandlingId behandlingId, OppgaveEventType eventType, AndreKriterierType andreKriterierType, String behandlendeEnhet) {
         this.eventType = eventType;
         this.andreKriterierType = andreKriterierType;
         this.behandlendeEnhet = behandlendeEnhet;
         this.behandlingId = behandlingId;
+    }
+
+    public static OppgaveEventLogg opprettetOppgaveEvent(Oppgave oppgave) {
+        var behandlingId = oppgave.getBehandlingId();
+        var behandlendeEnhet = oppgave.getBehandlendeEnhet();
+        return new OppgaveEventLogg(behandlingId, OppgaveEventType.OPPRETTET, null, behandlendeEnhet);
     }
 
     public OppgaveEventType getEventType() {
@@ -76,5 +83,47 @@ public class OppgaveEventLogg extends BaseEntitet{
         return fristTid;
     }
 
+    public static Builder builder() {
+        return new Builder();
+    }
 
+    public static class Builder {
+        private OppgaveEventLogg oppgaveEventLoggMal;
+
+        public Builder() {
+            oppgaveEventLoggMal = new OppgaveEventLogg();
+        }
+
+        public Builder behandlendeEnhet(String behandlendeEnhet) {
+            oppgaveEventLoggMal.behandlendeEnhet = behandlendeEnhet;
+            return this;
+        }
+
+        public Builder behandlingId(BehandlingId behandlingId) {
+            oppgaveEventLoggMal.behandlingId = behandlingId;
+            return this;
+        }
+
+        public Builder type(OppgaveEventType type) {
+            oppgaveEventLoggMal.eventType = type;
+            return this;
+        }
+
+        public Builder fristTid(LocalDateTime fristTid) {
+            oppgaveEventLoggMal.fristTid = fristTid;
+            return this;
+        }
+
+        public OppgaveEventLogg build() {
+            verifyStateForBuild();
+            return oppgaveEventLoggMal;
+        }
+
+        public void verifyStateForBuild() {
+            Objects.requireNonNull(oppgaveEventLoggMal.behandlingId, "behandlingId");
+            Objects.requireNonNull(oppgaveEventLoggMal.eventType, "eventType");
+            Objects.requireNonNull(oppgaveEventLoggMal.behandlendeEnhet, "behandlendeEnhet");
+        }
+
+    }
 }

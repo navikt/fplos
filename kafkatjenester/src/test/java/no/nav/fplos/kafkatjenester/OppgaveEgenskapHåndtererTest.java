@@ -33,12 +33,12 @@ import no.nav.foreldrepenger.loslager.repository.OppgaveRepositoryImpl;
 
 @ExtendWith(EntityManagerFPLosAwareExtension.class)
 @ExtendWith(MockitoExtension.class)
-public class OppgaveEgenskapHandlerTest {
+public class OppgaveEgenskapHåndtererTest {
 
     private static final BehandlingId BEHANDLING_ID = BehandlingId.random();
 
     private OppgaveRepository oppgaveRepository;
-    private OppgaveEgenskapHandler egenskapHandler;
+    private OppgaveEgenskapHåndterer egenskapHandler;
 
     @Mock
     private OppgaveEgenskapFinner oppgaveEgenskapFinner;
@@ -46,7 +46,7 @@ public class OppgaveEgenskapHandlerTest {
     @BeforeEach
     void setUp(EntityManager entityManager) {
         oppgaveRepository = new OppgaveRepositoryImpl(entityManager);
-        egenskapHandler = new OppgaveEgenskapHandler(oppgaveRepository);
+        egenskapHandler = new OppgaveEgenskapHåndterer(oppgaveRepository);
     }
 
     @Test

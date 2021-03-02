@@ -1,4 +1,4 @@
-package no.nav.fplos.kafkatjenester.test;
+package no.nav.fplos.kafkatjenester.fpsakhendelsehåndterer;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

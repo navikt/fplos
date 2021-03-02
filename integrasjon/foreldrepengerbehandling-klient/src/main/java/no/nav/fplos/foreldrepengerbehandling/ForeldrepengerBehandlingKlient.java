@@ -15,7 +15,6 @@ import java.util.Optional;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import no.nav.fplos.foreldrepengerbehandling.dto.fagsak.FagsakDto;
 import org.apache.http.client.utils.URIBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -69,7 +68,7 @@ public class ForeldrepengerBehandlingKlient {
                 .medBehandlingType(behandlingDto.getType())
                 .medBehandlingId(new BehandlingId(behandlingDto.getUuid()))
                 .medBehandlingOpprettet(behandlingDto.getOpprettet())
-                .medBehandlendeEnhetNavn(behandlingDto.getBehandlendeEnhetNavn())
+                .medBehandlendeEnhetId(behandlingDto.getBehandlendeEnhetId())
                 .medStatus(behandlingDto.getStatus().getKode())
                 .medAnsvarligSaksbehandler(behandlingDto.getAnsvarligSaksbehandler())
                 .medHarRefusjonskravFraArbeidsgiver(new Lazy<>(() -> hentHarRefusjonskrav(links)))

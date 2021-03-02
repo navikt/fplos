@@ -13,7 +13,7 @@ import no.nav.foreldrepenger.loslager.oppgave.FagsakYtelseType;
 public class BehandlingFpsak {
     private BehandlingId behandlingId;
     private String status;
-    private String behandlendeEnhetNavn;
+    private String behandlendeEnhetId;
     private String ansvarligSaksbehandler;
     private Lazy<List<Aksjonspunkt>> aksjonspunkter;
     private LocalDate behandlingstidFrist;
@@ -108,8 +108,8 @@ public class BehandlingFpsak {
         return ytelseType;
     }
 
-    public String getBehandlendeEnhetNavn() {
-        return behandlendeEnhetNavn;
+    public String getBehandlendeEnhetId() {
+        return behandlendeEnhetId;
     }
 
     public void setYtelseType(FagsakYtelseType ytelseType) {
@@ -127,7 +127,7 @@ public class BehandlingFpsak {
     public static final class Builder {
         private BehandlingId behandlingId;
         private String status;
-        private String behandlendeEnhetNavn;
+        private String behandlendeEnhetId;
         private String ansvarligSaksbehandler;
         private Lazy<List<Aksjonspunkt>> aksjonspunkter;
         private LocalDate behandlingstidFrist;
@@ -153,8 +153,8 @@ public class BehandlingFpsak {
             return this;
         }
 
-        public Builder medBehandlendeEnhetNavn(String behandlendeEnhetNavn) {
-            this.behandlendeEnhetNavn = behandlendeEnhetNavn;
+        public Builder medBehandlendeEnhetId(String behandlendeEnhetId) {
+            this.behandlendeEnhetId = behandlendeEnhetId;
             return this;
         }
 
@@ -219,7 +219,7 @@ public class BehandlingFpsak {
             behandlingFpsak.harRefusjonskravFraArbeidsgiver = this.harRefusjonskravFraArbeidsgiver;
             behandlingFpsak.aksjonspunkter = this.aksjonspunkter;
             behandlingFpsak.status = this.status;
-            behandlingFpsak.behandlendeEnhetNavn = this.behandlendeEnhetNavn;
+            behandlingFpsak.behandlendeEnhetId = this.behandlendeEnhetId;
             behandlingFpsak.behandlingId = this.behandlingId;
             behandlingFpsak.uttakEgenskaper = this.uttakEgenskaper;
             behandlingFpsak.behandlingstidFrist = this.behandlingstidFrist;
@@ -238,7 +238,7 @@ public class BehandlingFpsak {
         return "BehandlingFpsak{" +
                 "behandlingId=" + behandlingId +
                 ", status='" + status + '\'' +
-                ", behandlendeEnhetNavn='" + behandlendeEnhetNavn + '\'' +
+                ", behandlendeEnhetNavn='" + behandlendeEnhetId + '\'' +
                 ", ansvarligSaksbehandler='" + ansvarligSaksbehandler + '\'' +
                 ", behandlingstidFrist=" + behandlingstidFrist +
                 ", erBerørtBehandling=" + erBerørtBehandling +
