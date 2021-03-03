@@ -1,6 +1,6 @@
 package no.nav.foreldrepenger.los.web.app.tjenester.felles.dto;
 
-import no.nav.foreldrepenger.loslager.oppgave.Reservasjon;
+import no.nav.foreldrepenger.los.reservasjon.Reservasjon;
 import no.nav.vedtak.sikkerhet.context.SubjectHandler;
 
 import java.time.LocalDateTime;

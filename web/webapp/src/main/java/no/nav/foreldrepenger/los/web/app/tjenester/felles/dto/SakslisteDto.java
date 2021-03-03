@@ -1,12 +1,12 @@
 package no.nav.foreldrepenger.los.web.app.tjenester.felles.dto;
 
 import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.saksliste.dto.SorteringDto;
-import no.nav.foreldrepenger.loslager.oppgave.BehandlingType;
-import no.nav.foreldrepenger.loslager.oppgave.FagsakYtelseType;
-import no.nav.foreldrepenger.loslager.oppgave.FiltreringBehandlingType;
-import no.nav.foreldrepenger.loslager.oppgave.FiltreringYtelseType;
-import no.nav.foreldrepenger.loslager.oppgave.OppgaveFiltrering;
-import no.nav.foreldrepenger.loslager.organisasjon.Saksbehandler;
+import no.nav.foreldrepenger.los.oppgave.BehandlingType;
+import no.nav.foreldrepenger.los.oppgave.FagsakYtelseType;
+import no.nav.foreldrepenger.los.oppgavekø.FiltreringBehandlingType;
+import no.nav.foreldrepenger.los.oppgavekø.FiltreringYtelseType;
+import no.nav.foreldrepenger.los.oppgavekø.OppgaveFiltrering;
+import no.nav.foreldrepenger.los.organisasjon.Saksbehandler;
 
 import java.time.LocalDate;
 import java.util.ArrayList;

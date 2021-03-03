@@ -5,8 +5,8 @@ import io.swagger.v3.oas.annotations.Parameter;
 import no.nav.foreldrepenger.los.web.app.AbacAttributter;
 import no.nav.foreldrepenger.los.web.app.tjenester.admin.dto.DriftsmeldingDto;
 import no.nav.foreldrepenger.los.web.app.tjenester.admin.dto.DriftsmeldingOpprettelseDto;
-import no.nav.foreldrepenger.loslager.admin.Driftsmelding;
-import no.nav.fplos.admin.DriftsmeldingTjeneste;
+import no.nav.foreldrepenger.los.admin.driftsmelding.Driftsmelding;
+import no.nav.foreldrepenger.los.admin.driftsmelding.DriftsmeldingTjeneste;
 import no.nav.vedtak.sikkerhet.abac.BeskyttetRessurs;
 
 import javax.enterprise.context.ApplicationScoped;

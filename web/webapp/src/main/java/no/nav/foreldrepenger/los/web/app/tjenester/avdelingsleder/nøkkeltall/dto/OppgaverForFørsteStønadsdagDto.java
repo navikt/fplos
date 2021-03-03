@@ -1,6 +1,6 @@
 package no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.nøkkeltall.dto;
 
-import no.nav.fplos.statistikk.OppgaverForFørsteStønadsdag;
+import no.nav.foreldrepenger.los.statistikk.statistikk_gammel.OppgaverForFørsteStønadsdag;
 
 import java.time.LocalDate;
 

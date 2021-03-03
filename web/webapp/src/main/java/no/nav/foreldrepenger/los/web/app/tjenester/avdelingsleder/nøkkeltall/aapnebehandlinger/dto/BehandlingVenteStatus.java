@@ -1,7 +1,7 @@
 package no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.nøkkeltall.aapnebehandlinger.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import no.nav.foreldrepenger.loslager.oppgave.Kodeverdi;
+import no.nav.foreldrepenger.los.felles.Kodeverdi;
 
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum BehandlingVenteStatus implements Kodeverdi {

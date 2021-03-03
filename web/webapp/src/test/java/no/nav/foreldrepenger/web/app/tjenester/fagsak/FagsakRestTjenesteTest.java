@@ -11,8 +11,8 @@ import org.junit.jupiter.api.Test;
 import no.nav.foreldrepenger.los.web.app.tjenester.fagsak.FagsakRestTjeneste;
 import no.nav.foreldrepenger.los.web.app.tjenester.fagsak.app.FagsakApplikasjonTjeneste;
 import no.nav.foreldrepenger.los.web.app.tjenester.fagsak.dto.SokefeltDto;
-import no.nav.fplos.foreldrepengerbehandling.ForeldrepengerFagsakKlient;
-import no.nav.fplos.foreldrepengerbehandling.dto.fagsak.FagsakMedPersonDto;
+import no.nav.foreldrepenger.los.klient.fpsak.ForeldrepengerFagsakKlient;
+import no.nav.foreldrepenger.los.klient.fpsak.dto.fagsak.FagsakMedPersonDto;
 
 public class FagsakRestTjenesteTest {
 

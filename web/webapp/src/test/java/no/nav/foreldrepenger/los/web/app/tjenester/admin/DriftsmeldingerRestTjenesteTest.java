@@ -16,9 +16,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import no.nav.foreldrepenger.extensions.EntityManagerFPLosAwareExtension;
 import no.nav.foreldrepenger.los.web.app.tjenester.admin.dto.DriftsmeldingDto;
 import no.nav.foreldrepenger.los.web.app.tjenester.admin.dto.DriftsmeldingOpprettelseDto;
-import no.nav.foreldrepenger.loslager.repository.DriftsmeldingRepository;
-import no.nav.fplos.admin.DriftsmeldingTjeneste;
-import no.nav.fplos.admin.DriftsmeldingTjenesteImpl;
+import no.nav.foreldrepenger.los.admin.driftsmelding.DriftsmeldingRepository;
+import no.nav.foreldrepenger.los.admin.driftsmelding.DriftsmeldingTjeneste;
+import no.nav.foreldrepenger.los.admin.driftsmelding.DriftsmeldingTjenesteImpl;
 
 @ExtendWith(EntityManagerFPLosAwareExtension.class)
 class DriftsmeldingerRestTjenesteTest {

@@ -2,7 +2,8 @@ package no.nav.foreldrepenger.los.web.app.tjenester.admin.dto;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import no.nav.foreldrepenger.loslager.BehandlingId;
+
+import no.nav.foreldrepenger.los.domene.typer.BehandlingId;
 import no.nav.vedtak.sikkerhet.abac.AbacDataAttributter;
 import no.nav.vedtak.sikkerhet.abac.AbacDto;
 

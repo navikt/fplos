@@ -16,6 +16,20 @@
 
     <dependencies>
         <dependency>
+            <groupId>no.nav.foreldrepenger.los</groupId>
+            <artifactId>migreringer</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>no.nav.foreldrepenger.los</groupId>
+            <artifactId>domene</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>no.nav.foreldrepenger.los</groupId>
+            <artifactId>migreringer</artifactId>
+            <type>test-jar</type>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>no.nav.vedtak.prosesstask</groupId>
             <artifactId>prosesstask-legacy</artifactId>
             <version>${prosesstask.version}</version>
@@ -23,6 +37,14 @@
         <dependency>
             <groupId>no.nav.vedtak.prosesstask</groupId>
             <artifactId>prosesstask-rest-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>no.nav.foreldrepenger.felles.sikkerhet</groupId>
+            <artifactId>felles-sikkerhet</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>no.nav.foreldrepenger.felles</groupId>
+            <artifactId>felles-util</artifactId>
         </dependency>
 
         <!-- Database håndtering -->
@@ -38,50 +60,6 @@
             <groupId>com.oracle.ojdbc</groupId>
             <artifactId>ojdbc8</artifactId>
             <scope>compile</scope>
-        </dependency>
-
-        <!-- Prosjekt avhengigheter -->
-        <dependency>
-            <groupId>no.nav.foreldrepenger.los</groupId>
-            <artifactId>loslager</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>no.nav.foreldrepenger.los</groupId>
-            <artifactId>migreringer</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>no.nav.foreldrepenger.los</groupId>
-            <artifactId>migreringer</artifactId>
-            <type>test-jar</type>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>no.nav.foreldrepenger.los</groupId>
-            <artifactId>oppgave</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>no.nav.foreldrepenger.los</groupId>
-            <artifactId>foreldrepengerbehandling-klient</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>no.nav.foreldrepenger.los</groupId>
-            <artifactId>avdelingsleder</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>no.nav.foreldrepenger.los</groupId>
-            <artifactId>statistikk</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>no.nav.foreldrepenger.los</groupId>
-            <artifactId>admin</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>no.nav.foreldrepenger.felles.sikkerhet</groupId>
-            <artifactId>felles-sikkerhet</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>no.nav.foreldrepenger.felles</groupId>
-            <artifactId>felles-util</artifactId>
         </dependency>
 
         <!-- REST + WebService -->

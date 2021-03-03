@@ -17,7 +17,7 @@ import javax.ws.rs.core.MediaType;
 import io.swagger.v3.oas.annotations.Operation;
 import no.nav.foreldrepenger.los.web.app.AbacAttributter;
 import no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.oppgave.dto.BehandlingIdDto;
-import no.nav.fplos.foreldrepengerbehandling.ForeldrepengerBehandlingKlient;
+import no.nav.foreldrepenger.los.klient.fpsak.ForeldrepengerBehandlingKlient;
 import no.nav.vedtak.sikkerhet.abac.BeskyttetRessurs;
 
 @Path("/fpsak")

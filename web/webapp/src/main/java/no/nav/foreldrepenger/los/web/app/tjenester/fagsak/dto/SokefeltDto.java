@@ -1,6 +1,6 @@
 package no.nav.foreldrepenger.los.web.app.tjenester.fagsak.dto;
 
-import no.nav.foreldrepenger.domene.typer.Saksnummer;
+import no.nav.foreldrepenger.los.domene.typer.Saksnummer;
 import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.saksliste.FplosAbacAttributtType;
 import no.nav.vedtak.sikkerhet.abac.AbacDataAttributter;
 import no.nav.vedtak.sikkerhet.abac.AbacDto;
@@ -22,7 +22,7 @@ public class SokefeltDto implements AbacDto {
     public SokefeltDto(String searchString) {
         this.searchString = searchString;
     }
-    
+
     public SokefeltDto(Saksnummer saksnummer) {
         this.searchString = saksnummer.getVerdi();
     }
