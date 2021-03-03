@@ -16,10 +16,11 @@ import javax.enterprise.inject.Alternative;
 import javax.inject.Inject;
 
 import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.saksliste.FplosAbacAttributtType;
-import no.nav.foreldrepenger.loslager.BehandlingId;
-import no.nav.foreldrepenger.loslager.oppgave.Oppgave;
-import no.nav.fplos.foreldrepengerbehandling.ForeldrepengerPipKlient;
-import no.nav.fplos.domenetjenester.oppgave.OppgaveTjeneste;
+
+import no.nav.foreldrepenger.los.domene.typer.BehandlingId;
+import no.nav.foreldrepenger.los.oppgave.Oppgave;
+import no.nav.foreldrepenger.los.web.app.tjenester.abac.ForeldrepengerPipKlient;
+import no.nav.foreldrepenger.los.oppgave.OppgaveTjeneste;
 import no.nav.vedtak.exception.TekniskException;
 import no.nav.vedtak.sikkerhet.abac.AbacAttributtSamling;
 import no.nav.vedtak.sikkerhet.abac.PdpKlient;

@@ -1,8 +1,8 @@
 package no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.nøkkeltall.dto;
 
-import no.nav.foreldrepenger.loslager.oppgave.BehandlingType;
-import no.nav.foreldrepenger.loslager.oppgave.FagsakYtelseType;
-import no.nav.fplos.domenetjenester.statistikk_gammel.OppgaverForAvdeling;
+import no.nav.foreldrepenger.los.oppgave.BehandlingType;
+import no.nav.foreldrepenger.los.oppgave.FagsakYtelseType;
+import no.nav.foreldrepenger.los.statistikk.statistikk_gammel.OppgaverForAvdeling;
 
 public class OppgaverForAvdelingDto {
 

@@ -1,7 +1,7 @@
 package no.nav.foreldrepenger.los.web.app.tjenester.felles.dto;
 
-import no.nav.foreldrepenger.loslager.oppgave.AndreKriterierType;
-import no.nav.foreldrepenger.loslager.oppgave.FiltreringAndreKriterierType;
+import no.nav.foreldrepenger.los.oppgave.AndreKriterierType;
+import no.nav.foreldrepenger.los.oppgavekø.FiltreringAndreKriterierType;
 
 public class AndreKriterierDto {
 

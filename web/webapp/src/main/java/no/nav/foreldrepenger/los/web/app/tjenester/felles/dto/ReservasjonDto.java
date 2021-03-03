@@ -2,8 +2,8 @@ package no.nav.foreldrepenger.los.web.app.tjenester.felles.dto;
 
 import java.time.LocalDateTime;
 
-import no.nav.foreldrepenger.loslager.oppgave.BehandlingType;
-import no.nav.foreldrepenger.loslager.oppgave.Reservasjon;
+import no.nav.foreldrepenger.los.oppgave.BehandlingType;
+import no.nav.foreldrepenger.los.reservasjon.Reservasjon;
 
 public class ReservasjonDto {
 

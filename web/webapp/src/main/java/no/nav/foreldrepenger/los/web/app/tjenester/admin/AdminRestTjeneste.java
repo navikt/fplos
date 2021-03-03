@@ -1,7 +1,7 @@
 package no.nav.foreldrepenger.los.web.app.tjenester.admin;
 
 import io.swagger.v3.oas.annotations.Operation;
-import no.nav.foreldrepenger.domene.typer.Saksnummer;
+import no.nav.foreldrepenger.los.domene.typer.Saksnummer;
 import no.nav.foreldrepenger.los.web.app.AbacAttributter;
 import no.nav.foreldrepenger.los.web.app.tjenester.admin.dto.EnkelBehandlingIdDto;
 import no.nav.foreldrepenger.los.web.app.tjenester.admin.dto.OppgaveEventLoggDto;
@@ -11,10 +11,10 @@ import no.nav.foreldrepenger.los.web.app.tjenester.felles.dto.OppgaveDtoTjeneste
 import no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.oppgave.dto.BehandlingIdDto;
 import no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.oppgave.dto.OppgaveIdDto;
 import no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.oppgave.dto.SaksnummerDto;
-import no.nav.foreldrepenger.loslager.oppgave.Oppgave;
-import no.nav.fplos.domenetjenester.admin.AdminTjeneste;
-import no.nav.fplos.domenetjenester.admin.OppgaveSynkroniseringTaskOppretterTjeneste;
-import no.nav.fplos.domenetjenester.admin.SynkroniseringHendelseTaskOppretterTjeneste;
+import no.nav.foreldrepenger.los.oppgave.Oppgave;
+import no.nav.foreldrepenger.los.admin.AdminTjeneste;
+import no.nav.foreldrepenger.los.admin.OppgaveSynkroniseringTaskOppretterTjeneste;
+import no.nav.foreldrepenger.los.admin.SynkroniseringHendelseTaskOppretterTjeneste;
 import no.nav.vedtak.sikkerhet.abac.AbacDataAttributter;
 import no.nav.vedtak.sikkerhet.abac.BeskyttetRessurs;
 import no.nav.vedtak.sikkerhet.abac.TilpassetAbacAttributt;

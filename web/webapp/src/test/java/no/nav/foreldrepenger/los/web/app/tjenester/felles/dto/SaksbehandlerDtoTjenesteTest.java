@@ -1,6 +1,6 @@
 package no.nav.foreldrepenger.los.web.app.tjenester.felles.dto;
 
-import static no.nav.foreldrepenger.loslager.organisasjon.Avdeling.AVDELING_DRAMMEN_ENHET;
+import static no.nav.foreldrepenger.los.organisasjon.Avdeling.AVDELING_DRAMMEN_ENHET;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 
@@ -9,20 +9,20 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 
-import no.nav.fplos.domenetjenester.kø.OppgaveKøTjeneste;
+import no.nav.foreldrepenger.los.avdelingsleder.AvdelingslederTjeneste;
+import no.nav.foreldrepenger.los.oppgavekø.OppgaveKøTjeneste;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import no.nav.foreldrepenger.extensions.EntityManagerFPLosAwareExtension;
-import no.nav.foreldrepenger.loslager.oppgave.KøSortering;
-import no.nav.foreldrepenger.loslager.oppgave.OppgaveFiltrering;
-import no.nav.foreldrepenger.loslager.organisasjon.Avdeling;
-import no.nav.foreldrepenger.loslager.organisasjon.Saksbehandler;
-import no.nav.foreldrepenger.loslager.repository.OppgaveRepositoryImpl;
-import no.nav.foreldrepenger.loslager.repository.OrganisasjonRepositoryImpl;
-import no.nav.fplos.domenetjenester.ansatt.AnsattTjeneste;
-import no.nav.fplos.avdelingsleder.AvdelingslederTjeneste;
+import no.nav.foreldrepenger.los.oppgavekø.KøSortering;
+import no.nav.foreldrepenger.los.oppgavekø.OppgaveFiltrering;
+import no.nav.foreldrepenger.los.organisasjon.Avdeling;
+import no.nav.foreldrepenger.los.organisasjon.Saksbehandler;
+import no.nav.foreldrepenger.los.oppgave.OppgaveRepositoryImpl;
+import no.nav.foreldrepenger.los.organisasjon.OrganisasjonRepositoryImpl;
+import no.nav.foreldrepenger.los.organisasjon.ansatt.AnsattTjeneste;
 
 @ExtendWith(EntityManagerFPLosAwareExtension.class)
 public class SaksbehandlerDtoTjenesteTest {

@@ -3,7 +3,7 @@ package no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.nøkkeltall.a
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import no.nav.foreldrepenger.loslager.oppgave.BehandlingType;
+import no.nav.foreldrepenger.los.oppgave.BehandlingType;
 
 import java.time.LocalDate;
 

@@ -1,12 +1,12 @@
 package no.nav.foreldrepenger.los.web.app.tjenester.kodeverk.app;
 
 import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.nøkkeltall.aapnebehandlinger.dto.BehandlingVenteStatus;
-import no.nav.foreldrepenger.loslager.oppgave.AndreKriterierType;
-import no.nav.foreldrepenger.loslager.oppgave.BehandlingType;
-import no.nav.foreldrepenger.loslager.oppgave.FagsakStatus;
-import no.nav.foreldrepenger.loslager.oppgave.FagsakYtelseType;
-import no.nav.foreldrepenger.loslager.oppgave.KøSortering;
-import no.nav.foreldrepenger.loslager.oppgave.Kodeverdi;
+import no.nav.foreldrepenger.los.oppgave.AndreKriterierType;
+import no.nav.foreldrepenger.los.oppgave.BehandlingType;
+import no.nav.foreldrepenger.los.oppgave.FagsakStatus;
+import no.nav.foreldrepenger.los.oppgave.FagsakYtelseType;
+import no.nav.foreldrepenger.los.oppgavekø.KøSortering;
+import no.nav.foreldrepenger.los.felles.Kodeverdi;
 
 import javax.enterprise.context.ApplicationScoped;
 import java.util.Collection;

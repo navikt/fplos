@@ -1,6 +1,6 @@
 package no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.saksliste.dto;
 
-import no.nav.foreldrepenger.loslager.oppgave.KøSortering;
+import no.nav.foreldrepenger.los.oppgavekø.KøSortering;
 
 import java.time.LocalDate;
 

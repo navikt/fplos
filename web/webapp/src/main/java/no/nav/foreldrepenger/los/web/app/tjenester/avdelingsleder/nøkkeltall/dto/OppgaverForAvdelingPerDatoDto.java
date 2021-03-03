@@ -2,9 +2,9 @@ package no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.nøkkeltall.d
 
 import java.time.LocalDate;
 
-import no.nav.foreldrepenger.loslager.oppgave.BehandlingType;
-import no.nav.foreldrepenger.loslager.oppgave.FagsakYtelseType;
-import no.nav.fplos.domenetjenester.statistikk_gammel.OppgaverForAvdelingPerDato;
+import no.nav.foreldrepenger.los.oppgave.BehandlingType;
+import no.nav.foreldrepenger.los.oppgave.FagsakYtelseType;
+import no.nav.foreldrepenger.los.statistikk.statistikk_gammel.OppgaverForAvdelingPerDato;
 
 public class OppgaverForAvdelingPerDatoDto {
 

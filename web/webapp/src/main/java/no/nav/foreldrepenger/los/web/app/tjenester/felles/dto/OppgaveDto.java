@@ -3,12 +3,12 @@ package no.nav.foreldrepenger.los.web.app.tjenester.felles.dto;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-import no.nav.foreldrepenger.loslager.BehandlingId;
-import no.nav.foreldrepenger.loslager.aktør.Person;
-import no.nav.foreldrepenger.loslager.oppgave.BehandlingStatus;
-import no.nav.foreldrepenger.loslager.oppgave.BehandlingType;
-import no.nav.foreldrepenger.loslager.oppgave.FagsakYtelseType;
-import no.nav.foreldrepenger.loslager.oppgave.Oppgave;
+import no.nav.foreldrepenger.los.domene.typer.BehandlingId;
+import no.nav.foreldrepenger.los.domene.typer.aktør.Person;
+import no.nav.foreldrepenger.los.oppgave.BehandlingStatus;
+import no.nav.foreldrepenger.los.oppgave.BehandlingType;
+import no.nav.foreldrepenger.los.oppgave.FagsakYtelseType;
+import no.nav.foreldrepenger.los.oppgave.Oppgave;
 
 public class OppgaveDto {
     private Long id;

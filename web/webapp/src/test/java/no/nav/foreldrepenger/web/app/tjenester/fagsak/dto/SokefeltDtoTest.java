@@ -1,6 +1,6 @@
 package no.nav.foreldrepenger.web.app.tjenester.fagsak.dto;
 
-import no.nav.foreldrepenger.domene.typer.Saksnummer;
+import no.nav.foreldrepenger.los.domene.typer.Saksnummer;
 import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.saksliste.FplosAbacAttributtType;
 import no.nav.foreldrepenger.los.web.app.tjenester.fagsak.dto.SokefeltDto;
 import no.nav.vedtak.sikkerhet.abac.AbacDataAttributter;

@@ -48,8 +48,8 @@ import javax.validation.constraints.Null;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
-import no.nav.foreldrepenger.loslager.oppgave.Kodeverdi;
-import no.nav.foreldrepenger.loslager.validering.ValidKodeliste;
+import no.nav.foreldrepenger.los.felles.Kodeverdi;
+import no.nav.foreldrepenger.los.felles.util.validering.ValidKodeliste;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 

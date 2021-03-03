@@ -1,11 +1,12 @@
 package no.nav.foreldrepenger.los.web.app.tjenester.felles.dto;
 
-import no.nav.foreldrepenger.loslager.organisasjon.Saksbehandler;
-import no.nav.foreldrepenger.loslager.repository.OrganisasjonRepository;
-import no.nav.fplos.domenetjenester.ansatt.AnsattTjeneste;
-import no.nav.fplos.avdelingsleder.AvdelingslederTjeneste;
-import no.nav.fplos.avdelingsleder.AvdelingslederTjenesteFeil;
-import no.nav.fplos.domenetjenester.kø.OppgaveKøTjeneste;
+import no.nav.foreldrepenger.los.avdelingsleder.AvdelingslederTjeneste;
+import no.nav.foreldrepenger.los.avdelingsleder.AvdelingslederTjenesteFeil;
+import no.nav.foreldrepenger.los.oppgavekø.OppgaveFiltrering;
+import no.nav.foreldrepenger.los.organisasjon.Saksbehandler;
+import no.nav.foreldrepenger.los.organisasjon.OrganisasjonRepository;
+import no.nav.foreldrepenger.los.organisasjon.ansatt.AnsattTjeneste;
+import no.nav.foreldrepenger.los.oppgavekø.OppgaveKøTjeneste;
 import no.nav.vedtak.exception.IntegrasjonException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,7 +44,7 @@ public class SaksbehandlerDtoTjeneste {
     }
 
     public List<SaksbehandlerDto> hentAktiveSaksbehandlereTilknyttetSaksliste(Long sakslisteId) {
-        var filtrering = avdelingslederTjeneste.hentOppgaveFiltering(sakslisteId)
+        OppgaveFiltrering filtrering = avdelingslederTjeneste.hentOppgaveFiltering(sakslisteId)
                 .orElseThrow(() -> AvdelingslederTjenesteFeil.fantIkkeOppgavekø(sakslisteId));
         return filtrering.getSaksbehandlere().stream()
                 .map(this::tilSaksbehandlerDto)

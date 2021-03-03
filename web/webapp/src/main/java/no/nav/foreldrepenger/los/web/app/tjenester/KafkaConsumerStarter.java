@@ -7,12 +7,12 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 
-import no.nav.foreldrepenger.loslager.repository.HendelseRepository;
-import no.nav.fplos.kafkatjenester.ForeldrepengerConsumerProperties;
-import no.nav.fplos.kafkatjenester.ForeldrepengerHendelseOppretter;
-import no.nav.fplos.kafkatjenester.KafkaConsumer;
-import no.nav.fplos.kafkatjenester.TilbakekrevingConsumerProperties;
-import no.nav.fplos.kafkatjenester.TilbakekrevingHendelseOppretter;
+import no.nav.foreldrepenger.los.hendelse.hendelseoppretter.HendelseRepository;
+import no.nav.foreldrepenger.los.hendelse.hendelseoppretter.ForeldrepengerConsumerProperties;
+import no.nav.foreldrepenger.los.hendelse.hendelseoppretter.ForeldrepengerHendelseOppretter;
+import no.nav.foreldrepenger.los.hendelse.hendelseoppretter.KafkaConsumer;
+import no.nav.foreldrepenger.los.hendelse.hendelseoppretter.TilbakekrevingConsumerProperties;
+import no.nav.foreldrepenger.los.hendelse.hendelseoppretter.TilbakekrevingHendelseOppretter;
 import no.nav.vedtak.felles.prosesstask.api.ProsessTaskRepository;
 
 /**
