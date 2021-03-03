@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entity-mappings xmlns="http://xmlns.jcp.org/xml/ns/persistence/orm"
+                 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                 xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence/orm
+      http://xmlns.jcp.org/xml/ns/persistence/orm_2_1.xsd"
+                 version="2.1">
+
+    <sequence-generator name="SEQ_OPPGAVE" allocation-size="50" sequence-name="SEQ_OPPGAVE"/>
+    <sequence-generator name="SEQ_RESERVASJON" allocation-size="50" sequence-name="SEQ_RESERVASJON"/>
+    <sequence-generator name="SEQ_LISTE" allocation-size="50" sequence-name="SEQ_LISTE"/>
+    <sequence-generator name="SEQ_FILTR_BEHANDLING_TYPE" allocation-size="50" sequence-name="SEQ_FILTR_BEHANDLING_TYPE"/>
+    <sequence-generator name="SEQ_FILTRERING_YTELSE_TYPE" allocation-size="50" sequence-name="SEQ_FILTRERING_YTELSE_TYPE"/>
+    <sequence-generator name="SEQ_AVDELING" allocation-size="50" sequence-name="SEQ_AVDELING"/>
+    <sequence-generator name="SEQ_SAKSBEHANDLER" allocation-size="50" sequence-name="SEQ_SAKSBEHANDLER"/>
+    <sequence-generator name="SEQ_HENDELSE" allocation-size="50" sequence-name="SEQ_HENDELSE"/>
+    <sequence-generator name="SEQ_HENDELSE_TK_AKSJONSPUNKT" allocation-size="50" sequence-name="SEQ_HENDELSE_TK_AKSJONSPUNKT"/>
+    <entity class="no.nav.foreldrepenger.los.oppgave.Oppgave"/>
+    <entity class="no.nav.foreldrepenger.los.oppgave.OppgaveEgenskap"/>
+    <entity class="no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveEventLogg"/>
+    <entity class="no.nav.foreldrepenger.los.reservasjon.Reservasjon"/>
+    <entity class="no.nav.foreldrepenger.los.reservasjon.ReservasjonEventLogg"/>
+    <entity class="no.nav.foreldrepenger.los.oppgavekø.OppgaveFiltrering"/>
+    <entity class="no.nav.foreldrepenger.los.oppgavekø.OppgaveFiltreringOppdaterer"/>
+    <entity class="no.nav.foreldrepenger.los.oppgavekø.FiltreringBehandlingType"/>
+    <entity class="no.nav.foreldrepenger.los.oppgavekø.FiltreringYtelseType"/>
+    <entity class="no.nav.foreldrepenger.los.oppgavekø.FiltreringAndreKriterierType"/>
+    <entity class="no.nav.foreldrepenger.los.hendelse.hendelseoppretter.hendelse.Hendelse"/>
+    <entity class="no.nav.foreldrepenger.los.hendelse.hendelseoppretter.hendelse.TilbakekrevingHendelse"/>
+    <entity class="no.nav.foreldrepenger.los.hendelse.hendelseoppretter.hendelse.Aksjonspunkt"/>
+    <entity class="no.nav.foreldrepenger.los.organisasjon.Avdeling"/>
+    <entity class="no.nav.foreldrepenger.los.organisasjon.Saksbehandler"/>
+</entity-mappings>
