@@ -82,6 +82,7 @@ public class ForeldrepengerHendelseHåndterer {
                         finnManuellAksjonspunktFrist(behandling.getAksjonspunkter()), hendelse.getBehandlendeEnhet());
                 break;
             case OPPRETT_OPPGAVE:
+                avsluttOppgaveHvisÅpen(behandlingId, oppgaveHistorikk, hendelse.getBehandlendeEnhet());
                 behandling.setSaksnummer(hendelse.getSaksnummer());
                 behandling.setAktørId(hendelse.getAktørId());
                 var håndterer = new OpprettOppgaveHendelseHåndterer(oppgaveRepository, oppgaveEgenskapHåndterer,
