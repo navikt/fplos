@@ -1,4 +1,4 @@
-package no.nav.foreldrepenger.los.oppgave.risikovurdering;
+package no.nav.foreldrepenger.los.risikovurdering;
 
 import no.nav.vedtak.konfig.KonfigVerdi;
 import no.nav.vedtak.util.env.Environment;

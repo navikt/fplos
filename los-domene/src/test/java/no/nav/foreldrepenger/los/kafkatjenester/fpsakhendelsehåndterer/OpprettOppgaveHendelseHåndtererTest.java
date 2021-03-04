@@ -9,7 +9,7 @@ import no.nav.foreldrepenger.los.oppgave.OppgaveRepository;
 import no.nav.foreldrepenger.los.oppgave.OppgaveRepositoryImpl;
 import no.nav.foreldrepenger.extensions.EntityManagerFPLosAwareExtension;
 import no.nav.foreldrepenger.los.oppgave.oppgaveegenskap.AktuelleOppgaveEgenskaperTjeneste;
-import no.nav.foreldrepenger.los.oppgave.risikovurdering.RisikovurderingTjeneste;
+import no.nav.foreldrepenger.los.risikovurdering.RisikovurderingTjeneste;
 import no.nav.foreldrepenger.los.oppgave.util.OppgaveAssert;
 import no.nav.foreldrepenger.los.oppgave.BehandlingStatus;
 import no.nav.foreldrepenger.los.oppgave.BehandlingType;

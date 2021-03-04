@@ -1,17 +1,15 @@
 package no.nav.foreldrepenger.los.oppgave.oppgaveegenskap;
 
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.FpsakAksjonspunkt;
-import no.nav.foreldrepenger.los.hendelse.hendelseoppretter.hendelse.Aksjonspunkt;
 import no.nav.foreldrepenger.los.klient.fpsak.BehandlingFpsak;
 import no.nav.foreldrepenger.los.oppgave.AndreKriterierType;
 import no.nav.foreldrepenger.los.oppgave.BehandlingType;
 import no.nav.foreldrepenger.los.oppgave.FagsakYtelseType;
-import no.nav.foreldrepenger.los.oppgave.risikovurdering.RisikovurderingTjeneste;
+import no.nav.foreldrepenger.los.risikovurdering.RisikovurderingTjeneste;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 @ApplicationScoped

@@ -1,4 +1,4 @@
-package no.nav.foreldrepenger.los.oppgave.risikovurdering.modell;
+package no.nav.foreldrepenger.los.risikovurdering.modell;
 
 import no.nav.foreldrepenger.los.domene.typer.BehandlingId;
 
@@ -38,7 +38,10 @@ public class RisikoklassifiseringRepository {
 
 
     public Optional<RisikoklassifiseringEntitet> hentRisikoklassifiseringForBehandling(UUID behandlingId) {
-        TypedQuery<RisikoklassifiseringEntitet> query = entityManager.createQuery("from RisikoklassifiseringEntitet where behandlingId = :behandlingId and erAktiv = :erAktiv", RisikoklassifiseringEntitet.class);
+        var query = entityManager.createQuery(
+                "from RisikoklassifiseringEntitet " +
+                        "where behandlingId = :behandlingId " +
+                        "and erAktiv = :erAktiv", RisikoklassifiseringEntitet.class);
         query.setParameter("behandlingId", behandlingId);
         query.setParameter("erAktiv", true);
         return hentUniktResultat(query);

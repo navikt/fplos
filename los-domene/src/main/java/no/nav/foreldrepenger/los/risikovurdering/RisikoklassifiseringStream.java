@@ -1,4 +1,4 @@
-package no.nav.foreldrepenger.los.oppgave.risikovurdering;
+package no.nav.foreldrepenger.los.risikovurdering;
 
 import no.nav.vedtak.apptjeneste.AppServiceHandler;
 import org.apache.kafka.clients.CommonClientConfigs;
@@ -76,7 +76,6 @@ public class RisikoklassifiseringStream implements AppServiceHandler, KafkaInteg
     @Override
     public void start() {
         addShutdownHooks();
-
         stream.start();
         LOG.info("Starter konsumering av topic={}, tilstand={}", topic, stream.state());
     }
@@ -103,7 +102,7 @@ public class RisikoklassifiseringStream implements AppServiceHandler, KafkaInteg
 
     private void addShutdownHooks() {
         stream.setStateListener((newState, oldState) -> {
-            LOG.info("From state={} to state={}", oldState, newState);
+            LOG.info("{} - From state={} to state={}", getTopic(), oldState, newState);
 
             if (newState == KafkaStreams.State.ERROR) {
                 // if the stream has died there is no reason to keep spinning

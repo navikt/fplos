@@ -1,9 +1,9 @@
-package no.nav.foreldrepenger.los.oppgave.risikovurdering.json;
+package no.nav.foreldrepenger.los.risikovurdering.json;
 
 
 import no.nav.foreldrepenger.los.domene.typer.BehandlingId;
-import no.nav.foreldrepenger.los.oppgave.risikovurdering.modell.Kontrollresultat;
-import no.nav.foreldrepenger.los.oppgave.risikovurdering.modell.KontrollresultatWrapper;
+import no.nav.foreldrepenger.los.risikovurdering.modell.Kontrollresultat;
+import no.nav.foreldrepenger.los.risikovurdering.modell.KontrollresultatWrapper;
 import no.nav.vedtak.feil.Feil;
 import no.nav.vedtak.feil.FeilFactory;
 import no.nav.vedtak.feil.deklarasjon.DeklarerteFeil;

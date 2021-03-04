@@ -1,4 +1,4 @@
-package no.nav.foreldrepenger.los.oppgave.risikovurdering.json;
+package no.nav.foreldrepenger.los.risikovurdering.json;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;

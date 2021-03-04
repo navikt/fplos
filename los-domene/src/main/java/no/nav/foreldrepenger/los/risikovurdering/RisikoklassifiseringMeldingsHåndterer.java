@@ -1,4 +1,4 @@
-package no.nav.foreldrepenger.los.oppgave.risikovurdering;
+package no.nav.foreldrepenger.los.risikovurdering;
 
 import no.nav.vedtak.felles.prosesstask.api.ProsessTaskData;
 import no.nav.vedtak.felles.prosesstask.api.ProsessTaskRepository;

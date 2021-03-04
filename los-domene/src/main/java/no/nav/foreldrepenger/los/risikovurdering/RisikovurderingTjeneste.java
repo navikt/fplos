@@ -1,14 +1,14 @@
-package no.nav.foreldrepenger.los.oppgave.risikovurdering;
+package no.nav.foreldrepenger.los.risikovurdering;
 
 import no.nav.foreldrepenger.los.domene.typer.BehandlingId;
 import no.nav.foreldrepenger.los.oppgave.AndreKriterierType;
 import no.nav.foreldrepenger.los.oppgave.Oppgave;
 import no.nav.foreldrepenger.los.oppgave.OppgaveTjeneste;
 import no.nav.foreldrepenger.los.oppgave.oppgaveegenskap.OppgaveEgenskapTjeneste;
-import no.nav.foreldrepenger.los.oppgave.risikovurdering.modell.Kontrollresultat;
-import no.nav.foreldrepenger.los.oppgave.risikovurdering.modell.KontrollresultatWrapper;
-import no.nav.foreldrepenger.los.oppgave.risikovurdering.modell.RisikoklassifiseringEntitet;
-import no.nav.foreldrepenger.los.oppgave.risikovurdering.modell.RisikoklassifiseringRepository;
+import no.nav.foreldrepenger.los.risikovurdering.modell.Kontrollresultat;
+import no.nav.foreldrepenger.los.risikovurdering.modell.KontrollresultatWrapper;
+import no.nav.foreldrepenger.los.risikovurdering.modell.RisikoklassifiseringEntitet;
+import no.nav.foreldrepenger.los.risikovurdering.modell.RisikoklassifiseringRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,7 +44,6 @@ public class RisikovurderingTjeneste {
         oppgaveTjeneste.hentNyesteOppgaveTilknyttet(behandlingId)
                 .filter(Oppgave::getAktiv)
                 .ifPresent(o -> oppdaterOppgaveEgenskap(o, resultatWrapper));
-        //oppgaveTjeneste.hentAktivOppgave(behandlingId).ifPresent(o -> oppdaterOppgaveEgenskap(o, resultatWrapper));
         LOG.info("Lagrer kontrollresultat {}", resultatWrapper.getKontrollresultatkode());
     }
 

@@ -1,4 +1,4 @@
-package no.nav.foreldrepenger.los.oppgave.risikovurdering;
+package no.nav.foreldrepenger.los.risikovurdering;
 
 public interface KafkaIntegration {
     boolean isAlive();

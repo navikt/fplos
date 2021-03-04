@@ -1,4 +1,4 @@
-package no.nav.foreldrepenger.los.oppgave.risikovurdering.modell;
+package no.nav.foreldrepenger.los.risikovurdering.modell;
 
 import no.nav.foreldrepenger.los.domene.typer.BehandlingId;
 import no.nav.foreldrepenger.los.felles.BaseEntitet;

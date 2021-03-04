@@ -13,7 +13,8 @@ import no.nav.foreldrepenger.los.hendelse.hendelseoppretter.ForeldrepengerHendel
 import no.nav.foreldrepenger.los.hendelse.hendelseoppretter.KafkaConsumer;
 import no.nav.foreldrepenger.los.hendelse.hendelseoppretter.TilbakekrevingConsumerProperties;
 import no.nav.foreldrepenger.los.hendelse.hendelseoppretter.TilbakekrevingHendelseOppretter;
-import no.nav.foreldrepenger.los.oppgave.risikovurdering.RisikoklassifiseringStream;
+import no.nav.foreldrepenger.los.risikovurdering.RisikoklassifiseringStream;
+
 import no.nav.vedtak.felles.prosesstask.api.ProsessTaskRepository;
 
 /**

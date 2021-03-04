@@ -1,8 +1,8 @@
-package no.nav.foreldrepenger.los.oppgave.risikovurdering;
+package no.nav.foreldrepenger.los.risikovurdering;
 
-import no.nav.foreldrepenger.los.oppgave.risikovurdering.json.KontrollSerialiseringUtil;
-import no.nav.foreldrepenger.los.oppgave.risikovurdering.json.KontrollresultatMapper;
-import no.nav.foreldrepenger.los.oppgave.risikovurdering.modell.KontrollresultatWrapper;
+import no.nav.foreldrepenger.los.risikovurdering.json.KontrollSerialiseringUtil;
+import no.nav.foreldrepenger.los.risikovurdering.json.KontrollresultatMapper;
+import no.nav.foreldrepenger.los.risikovurdering.modell.KontrollresultatWrapper;
 import no.nav.vedtak.felles.prosesstask.api.ProsessTask;
 import no.nav.vedtak.felles.prosesstask.api.ProsessTaskData;
 import no.nav.vedtak.felles.prosesstask.api.ProsessTaskHandler;
