@@ -13,6 +13,7 @@ import no.nav.foreldrepenger.los.hendelse.hendelseoppretter.ForeldrepengerHendel
 import no.nav.foreldrepenger.los.hendelse.hendelseoppretter.KafkaConsumer;
 import no.nav.foreldrepenger.los.hendelse.hendelseoppretter.TilbakekrevingConsumerProperties;
 import no.nav.foreldrepenger.los.hendelse.hendelseoppretter.TilbakekrevingHendelseOppretter;
+import no.nav.foreldrepenger.los.oppgave.risikovurdering.RisikoklassifiseringStream;
 import no.nav.vedtak.felles.prosesstask.api.ProsessTaskRepository;
 
 /**
@@ -22,20 +23,15 @@ import no.nav.vedtak.felles.prosesstask.api.ProsessTaskRepository;
 public class KafkaConsumerStarter {
 
     private ProsessTaskRepository prosessTaskRepository;
-
     private HendelseRepository hendelseRepository;
-
     private ForeldrepengerConsumerProperties foreldrepengerConsumerProperties;
-
     private ForeldrepengerHendelseOppretter foreldrepengerEventHåndterer;
-
     private TilbakekrevingConsumerProperties tilbakekrevingConsumerProperties;
-
     private TilbakekrevingHendelseOppretter tilbakekrevingEventHåndterer;
-
     private EntityManager entityManager;
+    private final List<KafkaConsumer<?>> consumers = new ArrayList<>();
+    private RisikoklassifiseringStream risikoConsumer;
 
-    private List<KafkaConsumer<?>> consumers = new ArrayList<>();
 
     @Inject
     public KafkaConsumerStarter(HendelseRepository hendelseRepository,
@@ -44,7 +40,8 @@ public class KafkaConsumerStarter {
                                 ForeldrepengerHendelseOppretter foreldrepengerEventHåndterer,
                                 TilbakekrevingConsumerProperties tilbakekrevingConsumerProperties,
                                 TilbakekrevingHendelseOppretter tilbakekrevingEventHåndterer,
-                                EntityManager entityManager) {
+                                EntityManager entityManager,
+                                RisikoklassifiseringStream risikoConsumer) {
         this.hendelseRepository = hendelseRepository;
         this.prosessTaskRepository = prosessTaskRepository;
         this.foreldrepengerConsumerProperties = foreldrepengerConsumerProperties;
@@ -52,6 +49,7 @@ public class KafkaConsumerStarter {
         this.tilbakekrevingConsumerProperties = tilbakekrevingConsumerProperties;
         this.tilbakekrevingEventHåndterer = tilbakekrevingEventHåndterer;
         this.entityManager = entityManager;
+        this.risikoConsumer = risikoConsumer;
     }
 
     KafkaConsumerStarter() {
@@ -64,6 +62,7 @@ public class KafkaConsumerStarter {
         var tilbakekrevingConsumer = new KafkaConsumer<>(tilbakekrevingConsumerProperties, entityManager,
                 tilbakekrevingEventHåndterer, prosessTaskRepository, hendelseRepository);
         destroy();
+        risikoConsumer.start();
         consumers.add(foreldrepengerConsumer);
         consumers.add(tilbakekrevingConsumer);
         consumers.forEach(KafkaConsumer::start);
@@ -71,9 +70,10 @@ public class KafkaConsumerStarter {
 
     public void destroy() {
         consumers.forEach(KafkaConsumer::stop);
+        risikoConsumer.stop();
     }
 
     public boolean isKafkaAlive() {
-        return consumers.stream().allMatch(KafkaConsumer::isAlive);
+        return consumers.stream().allMatch(KafkaConsumer::isAlive) && risikoConsumer.isAlive();
     }
 }

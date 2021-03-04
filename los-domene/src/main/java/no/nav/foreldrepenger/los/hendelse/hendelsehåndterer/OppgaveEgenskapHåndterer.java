@@ -9,6 +9,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
+import no.nav.foreldrepenger.los.oppgave.oppgaveegenskap.AktuelleOppgaveEgenskaperData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,8 +35,9 @@ public class OppgaveEgenskapHåndterer {
         this.repository = oppgaveRepository;
     }
 
-    public void håndterOppgaveEgenskaper(Oppgave oppgave, OppgaveEgenskapFinner aktuelleEgenskaper) {
-        var andreKriterier = aktuelleEgenskaper.getAndreKriterier();
+    public void håndterOppgaveEgenskaper(Oppgave oppgave, AktuelleOppgaveEgenskaperData aktuelleOppgaveEgenskaperData) {
+        var andreKriterier = aktuelleOppgaveEgenskaperData.getAndreKriterierTyper();
+        var ansvarligSaksbehandler = aktuelleOppgaveEgenskaperData.getAnsvarligSaksbehandlerIdent();
         log.info("Legger på oppgaveegenskaper {}", andreKriterier);
         var eksisterendeOppgaveEgenskaper = hentEksisterendeEgenskaper(oppgave);
 
@@ -47,14 +49,14 @@ public class OppgaveEgenskapHåndterer {
         // aktiver aktuelle eksisterende
         eksisterendeOppgaveEgenskaper.stream()
                 .filter(akt -> andreKriterier.contains(akt.getAndreKriterierType()))
-                .forEach(oe -> aktiver(oe, aktuelleEgenskaper.getSaksbehandlerForTotrinn()));
+                .forEach(oe -> aktiver(oe, ansvarligSaksbehandler));
 
         var eksisterendeTyper = typer(eksisterendeOppgaveEgenskaper);
 
         // aktiver nye
         andreKriterier.stream()
                 .filter(akt -> !eksisterendeTyper.contains(akt))
-                .forEach(k -> opprettOppgaveEgenskap(oppgave, k, aktuelleEgenskaper.getSaksbehandlerForTotrinn()));
+                .forEach(k -> opprettOppgaveEgenskap(oppgave, k, ansvarligSaksbehandler));
     }
 
     private void opprettOppgaveEgenskap(Oppgave oppgave, AndreKriterierType kritere, String saksbehandler) {

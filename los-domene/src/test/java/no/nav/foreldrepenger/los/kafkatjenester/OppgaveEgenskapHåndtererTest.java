@@ -4,26 +4,22 @@ import static java.util.Collections.emptyList;
 import static no.nav.foreldrepenger.los.oppgave.AndreKriterierType.PAPIRSØKNAD;
 import static no.nav.foreldrepenger.los.oppgave.AndreKriterierType.UTLANDSSAK;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.when;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 
 import no.nav.foreldrepenger.los.domene.typer.BehandlingId;
-import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.OppgaveEgenskapFinner;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.OppgaveEgenskapHåndterer;
 import no.nav.foreldrepenger.los.oppgave.OppgaveRepository;
 import no.nav.foreldrepenger.los.oppgave.OppgaveRepositoryImpl;
+import no.nav.foreldrepenger.los.oppgave.oppgaveegenskap.AktuelleOppgaveEgenskaperData;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 
 import no.nav.foreldrepenger.extensions.EntityManagerFPLosAwareExtension;
 import no.nav.foreldrepenger.los.oppgave.AndreKriterierType;
@@ -34,16 +30,13 @@ import no.nav.foreldrepenger.los.oppgave.Oppgave;
 import no.nav.foreldrepenger.los.oppgave.OppgaveEgenskap;
 
 @ExtendWith(EntityManagerFPLosAwareExtension.class)
-@ExtendWith(MockitoExtension.class)
 public class OppgaveEgenskapHåndtererTest {
 
     private static final BehandlingId BEHANDLING_ID = BehandlingId.random();
+    private static final AktuelleOppgaveEgenskaperData INGEN_AKTUELLE_OPPGAVEEGENSKAPER = new AktuelleOppgaveEgenskaperData("IDENT", emptyList());
 
     private OppgaveRepository oppgaveRepository;
     private OppgaveEgenskapHåndterer egenskapHandler;
-
-    @Mock
-    private OppgaveEgenskapFinner oppgaveEgenskapFinner;
 
     @BeforeEach
     void setUp(EntityManager entityManager) {
@@ -54,23 +47,22 @@ public class OppgaveEgenskapHåndtererTest {
     @Test
     public void opprettOppgaveEgenskaperTest() {
         // arrange
-        var ønskedeEgenskaper = kriterieArrayOf(UTLANDSSAK, PAPIRSØKNAD);
-        when(oppgaveEgenskapFinner.getSaksbehandlerForTotrinn()).thenReturn("T12345");
-        when(oppgaveEgenskapFinner.getAndreKriterier()).thenReturn(Arrays.asList(ønskedeEgenskaper));
+        var ønskedeEgenskaper = List.of(UTLANDSSAK, PAPIRSØKNAD);
+        var aktuelleEgenskaper = new AktuelleOppgaveEgenskaperData("T12345", ønskedeEgenskaper);
 
         // act
-        egenskapHandler.håndterOppgaveEgenskaper(lagOppgave(), oppgaveEgenskapFinner);
+        egenskapHandler.håndterOppgaveEgenskaper(lagOppgave(), aktuelleEgenskaper);
 
         // assert
-        assertThat(hentAktiveKriterierPåOppgave(42L)).containsExactlyInAnyOrder(ønskedeEgenskaper);
+        assertThat(hentAktiveKriterierPåOppgave(42L)).containsAll(ønskedeEgenskaper);
     }
 
     @Test
     public void deaktiverUaktuelleEksisterendeOppgaveEgenskaper() {
         var oppgave = lagOppgave();
         oppgaveRepository.lagre(new OppgaveEgenskap(oppgave, PAPIRSØKNAD));
-        when(oppgaveEgenskapFinner.getAndreKriterier()).thenReturn(emptyList());
-        egenskapHandler.håndterOppgaveEgenskaper(oppgave, oppgaveEgenskapFinner);
+
+        egenskapHandler.håndterOppgaveEgenskaper(oppgave, INGEN_AKTUELLE_OPPGAVEEGENSKAPER);
 
         assertThat(hentAktiveKriterierPåOppgave(42L)).isEmpty();
     }
@@ -79,8 +71,9 @@ public class OppgaveEgenskapHåndtererTest {
     public void kunEttAktivtTilfelleAvHverEgenskap() {
         var oppgave = lagOppgave();
         oppgaveRepository.lagre(new OppgaveEgenskap(oppgave, UTLANDSSAK));
-        when(oppgaveEgenskapFinner.getAndreKriterier()).thenReturn(List.of(UTLANDSSAK));
-        egenskapHandler.håndterOppgaveEgenskaper(oppgave, oppgaveEgenskapFinner);
+        var aktuelleEgenskaper = new AktuelleOppgaveEgenskaperData("IDENT", List.of(UTLANDSSAK));
+
+        egenskapHandler.håndterOppgaveEgenskaper(oppgave, aktuelleEgenskaper);
 
         assertThat(hentAktiveKriterierPåOppgave(42L)).containsExactly(UTLANDSSAK);
     }
@@ -93,14 +86,10 @@ public class OppgaveEgenskapHåndtererTest {
         oppgaveRepository.lagre(new OppgaveEgenskap(oppgave, PAPIRSØKNAD));
         oppgaveRepository.lagre(new OppgaveEgenskap(oppgave, PAPIRSØKNAD));
         oppgaveRepository.lagre(new OppgaveEgenskap(oppgave, UTLANDSSAK));
-        when(oppgaveEgenskapFinner.getAndreKriterier()).thenReturn(emptyList());
-        egenskapHandler.håndterOppgaveEgenskaper(oppgave, oppgaveEgenskapFinner);
+
+        egenskapHandler.håndterOppgaveEgenskaper(oppgave, INGEN_AKTUELLE_OPPGAVEEGENSKAPER);
 
         assertThat(hentAktiveKriterierPåOppgave(42L)).isEmpty();
-    }
-
-    private static AndreKriterierType[] kriterieArrayOf(AndreKriterierType... kriterier) {
-        return kriterier; // ble hakket penere enn å ha AndreKriterierType[] overalt.
     }
 
     private List<AndreKriterierType> hentAktiveKriterierPåOppgave(Long saksnummer) {

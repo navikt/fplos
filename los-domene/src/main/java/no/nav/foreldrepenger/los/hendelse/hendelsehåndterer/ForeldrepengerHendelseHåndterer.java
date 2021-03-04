@@ -13,6 +13,8 @@ import javax.inject.Inject;
 
 import no.nav.foreldrepenger.los.domene.typer.BehandlingId;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveHistorikk;
+import no.nav.foreldrepenger.los.oppgave.oppgaveegenskap.AktuelleOppgaveEgenskaperData;
+import no.nav.foreldrepenger.los.oppgave.oppgaveegenskap.AktuelleOppgaveEgenskaperTjeneste;
 import no.nav.foreldrepenger.los.reservasjon.Reservasjon;
 import no.nav.foreldrepenger.los.statistikk.statistikk_ny.KøOppgaveHendelse;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.ny_fpsakhendelsehåndterer.OpprettOppgaveHendelseHåndterer;
@@ -45,16 +47,19 @@ public class ForeldrepengerHendelseHåndterer {
     private OppgaveRepository oppgaveRepository;
     private OppgaveEgenskapHåndterer oppgaveEgenskapHåndterer;
     private OppgaveStatistikk oppgaveStatistikk;
+    private AktuelleOppgaveEgenskaperTjeneste aktuelleOppgaveEgenskapTjeneste;
 
     @Inject
     public ForeldrepengerHendelseHåndterer(ForeldrepengerBehandlingKlient foreldrePengerBehandlingKlient,
                                            OppgaveRepository oppgaveRepository,
                                            OppgaveEgenskapHåndterer oppgaveEgenskapHåndterer,
-                                           OppgaveStatistikk oppgaveStatistikk) {
+                                           OppgaveStatistikk oppgaveStatistikk,
+                                           AktuelleOppgaveEgenskaperTjeneste aktuelleOppgaveEgenskapTjeneste) {
         this.foreldrePengerBehandlingKlient = foreldrePengerBehandlingKlient;
         this.oppgaveRepository = oppgaveRepository;
         this.oppgaveEgenskapHåndterer = oppgaveEgenskapHåndterer;
         this.oppgaveStatistikk = oppgaveStatistikk;
+        this.aktuelleOppgaveEgenskapTjeneste = aktuelleOppgaveEgenskapTjeneste;
     }
 
     ForeldrepengerHendelseHåndterer() {
@@ -62,11 +67,11 @@ public class ForeldrepengerHendelseHåndterer {
     }
 
     public void håndter(Hendelse hendelse) {
-        BehandlingId behandlingId = hendelse.getBehandlingId();
-        BehandlingFpsak behandling = foreldrePengerBehandlingKlient.getBehandling(behandlingId);
-        behandling.setYtelseType(hendelse.getYtelseType());
-        OppgaveHistorikk oppgaveHistorikk = new OppgaveHistorikk(oppgaveRepository.hentOppgaveEventer(behandlingId));
-        EventResultat eventResultat = ForeldrepengerEventMapper.finnEventResultat(behandling, oppgaveHistorikk, hendelse.getBehandlendeEnhet());
+        var behandlingId = hendelse.getBehandlingId();
+        var behandlingFpsak = foreldrePengerBehandlingKlient.getBehandling(behandlingId);
+        behandlingFpsak.setYtelseType(hendelse.getYtelseType());
+        var oppgaveHistorikk = new OppgaveHistorikk(oppgaveRepository.hentOppgaveEventer(behandlingId));
+        var eventResultat = ForeldrepengerEventMapper.finnEventResultat(behandlingFpsak, oppgaveHistorikk, hendelse.getBehandlendeEnhet());
 
         switch (eventResultat) {
             case IKKE_RELEVANT:
@@ -79,29 +84,29 @@ public class ForeldrepengerHendelseHåndterer {
             case LUKK_OPPGAVE_VENT:
                 LOG.info("Behandling satt automatisk på vent, lukker oppgave.");
                 avsluttFpsakOppgaveOgLoggEvent(behandlingId, OppgaveEventType.VENT,
-                        finnVentAksjonspunktFrist(behandling.getAksjonspunkter()), hendelse.getBehandlendeEnhet());
+                        finnVentAksjonspunktFrist(behandlingFpsak.getAksjonspunkter()), hendelse.getBehandlendeEnhet());
                 break;
             case LUKK_OPPGAVE_MANUELT_VENT:
                 LOG.info("Behandling satt manuelt på vent, lukker oppgave.");
                 avsluttFpsakOppgaveOgLoggEvent(behandlingId, OppgaveEventType.MANU_VENT,
-                        finnManuellAksjonspunktFrist(behandling.getAksjonspunkter()), hendelse.getBehandlendeEnhet());
+                        finnManuellAksjonspunktFrist(behandlingFpsak.getAksjonspunkter()), hendelse.getBehandlendeEnhet());
                 break;
             case OPPRETT_OPPGAVE:
                 avsluttOppgaveHvisÅpen(behandlingId, oppgaveHistorikk, hendelse.getBehandlendeEnhet());
-                behandling.setSaksnummer(hendelse.getSaksnummer());
-                behandling.setAktørId(hendelse.getAktørId());
+                behandlingFpsak.setSaksnummer(hendelse.getSaksnummer());
+                behandlingFpsak.setAktørId(hendelse.getAktørId());
                 var håndterer = new OpprettOppgaveHendelseHåndterer(oppgaveRepository, oppgaveEgenskapHåndterer,
-                        oppgaveStatistikk, behandling);
+                        oppgaveStatistikk, aktuelleOppgaveEgenskapTjeneste, behandlingFpsak);
                 håndterer.håndter();
                 break;
             case OPPRETT_BESLUTTER_OPPGAVE:
-                håndterOpprettetBeslutterOppgave(hendelse, behandling, oppgaveHistorikk);
+                håndterOpprettetBeslutterOppgave(hendelse, behandlingFpsak, oppgaveHistorikk);
                 break;
             case OPPRETT_PAPIRSØKNAD_OPPGAVE:
-                håndterOpprettetPapirsøknadOppgave(hendelse, behandling, oppgaveHistorikk);
+                håndterOpprettetPapirsøknadOppgave(hendelse, behandlingFpsak, oppgaveHistorikk);
                 break;
             case GJENÅPNE_OPPGAVE:
-                håndterGjenåpneOppgave(hendelse, behandling);
+                håndterGjenåpneOppgave(hendelse, behandlingFpsak);
                 break;
         }
     }
@@ -113,7 +118,8 @@ public class ForeldrepengerHendelseHåndterer {
         oppdaterOppgaveInformasjon(gjenåpnetOppgave, behandlingId, hendelse, behandling);
         loggEvent(gjenåpnetOppgave.getBehandlingId(), OppgaveEventType.GJENAPNET, null, hendelse.getBehandlendeEnhet());
         var egenskapFinner = new FpsakOppgaveEgenskapFinner(behandling);
-        oppgaveEgenskapHåndterer.håndterOppgaveEgenskaper(gjenåpnetOppgave, egenskapFinner);
+        var nyEgenskapData = aktuelleOppgaveEgenskapTjeneste.egenskaperForFpsak(behandling);
+        oppgaveEgenskapHåndterer.håndterOppgaveEgenskaper(gjenåpnetOppgave, nyEgenskapData);
     }
 
     private void håndterOpprettetPapirsøknadOppgave(Hendelse hendelse, BehandlingFpsak behandling,
@@ -124,7 +130,9 @@ public class ForeldrepengerHendelseHåndterer {
         Oppgave papirsøknadOppgave = nyOppgave(behandlingId, hendelse, behandling);
         loggEvent(papirsøknadOppgave.getBehandlingId(), OppgaveEventType.OPPRETTET, AndreKriterierType.PAPIRSØKNAD, hendelse.getBehandlendeEnhet());
         var egenskapFinner = new FpsakOppgaveEgenskapFinner(behandling);
-        oppgaveEgenskapHåndterer.håndterOppgaveEgenskaper(papirsøknadOppgave, egenskapFinner);
+        var nyEgenskapData = aktuelleOppgaveEgenskapTjeneste.egenskaperForFpsak(behandling);
+
+        oppgaveEgenskapHåndterer.håndterOppgaveEgenskaper(papirsøknadOppgave, nyEgenskapData);
         oppgaveStatistikk.lagre(papirsøknadOppgave, KøOppgaveHendelse.ÅPNET_OPPGAVE);
     }
 
@@ -137,7 +145,8 @@ public class ForeldrepengerHendelseHåndterer {
         Oppgave beslutterOppgave = nyOppgave(behandlingId, hendelse, behandling);
         var egenskapFinner = new FpsakOppgaveEgenskapFinner(behandling);
         loggEvent(beslutterOppgave, egenskapFinner);
-        oppgaveEgenskapHåndterer.håndterOppgaveEgenskaper(beslutterOppgave, egenskapFinner);
+        var aktuelleOppgaveEgenskaperData = aktuelleOppgaveEgenskapTjeneste.egenskaperForFpsak(behandling);
+        oppgaveEgenskapHåndterer.håndterOppgaveEgenskaper(beslutterOppgave, aktuelleOppgaveEgenskaperData);
         oppgaveStatistikk.lagre(beslutterOppgave, KøOppgaveHendelse.ÅPNET_OPPGAVE);
     }
 

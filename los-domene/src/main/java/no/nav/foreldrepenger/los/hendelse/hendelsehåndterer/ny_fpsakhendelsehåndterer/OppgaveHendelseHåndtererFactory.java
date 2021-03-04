@@ -4,6 +4,7 @@ import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.OppgaveEgenskapHån
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveHistorikk;
 import no.nav.foreldrepenger.los.hendelse.hendelseoppretter.hendelse.Hendelse;
 import no.nav.foreldrepenger.los.oppgave.OppgaveRepository;
+import no.nav.foreldrepenger.los.oppgave.oppgaveegenskap.AktuelleOppgaveEgenskaperTjeneste;
 import no.nav.foreldrepenger.los.statistikk.statistikk_ny.OppgaveStatistikk;
 import no.nav.foreldrepenger.los.klient.fpsak.Aksjonspunkt;
 import no.nav.foreldrepenger.los.klient.fpsak.BehandlingFpsak;
@@ -23,17 +24,20 @@ public class OppgaveHendelseHåndtererFactory {
     private OppgaveEgenskapHåndterer oppgaveEgenskapHåndterer;
     private OppgaveStatistikk oppgaveStatistikk;
     private ForeldrepengerBehandlingKlient foreldrePengerBehandlingKlient;
+    private AktuelleOppgaveEgenskaperTjeneste aktuelleOppgaveEgenskapTjeneste;
 
 
     @Inject
     public OppgaveHendelseHåndtererFactory(ForeldrepengerBehandlingKlient foreldrePengerBehandlingKlient,
                                            OppgaveRepository oppgaveRepository,
                                            OppgaveEgenskapHåndterer oppgaveEgenskapHåndterer,
-                                           OppgaveStatistikk oppgaveStatistikk) {
+                                           OppgaveStatistikk oppgaveStatistikk,
+                                           AktuelleOppgaveEgenskaperTjeneste aktuelleOppgaveEgenskapTjeneste) {
         this.foreldrePengerBehandlingKlient = foreldrePengerBehandlingKlient;
         this.oppgaveRepository = oppgaveRepository;
         this.oppgaveEgenskapHåndterer = oppgaveEgenskapHåndterer;
         this.oppgaveStatistikk = oppgaveStatistikk;
+        this.aktuelleOppgaveEgenskapTjeneste = aktuelleOppgaveEgenskapTjeneste;
     }
 
     public OppgaveHendelseHåndtererFactory() {
@@ -92,7 +96,8 @@ public class OppgaveHendelseHåndtererFactory {
                     //? GJENÅPNE_OPPGAVE // TODO: oppdater åpen oppgave
                     //: OPPRETT_OPPGAVE;
         }
-        return new OpprettOppgaveHendelseHåndterer(oppgaveRepository, oppgaveEgenskapHåndterer, oppgaveStatistikk, behandling); //OPPRETT_OPPGAVE;
+        return new OpprettOppgaveHendelseHåndterer(oppgaveRepository, oppgaveEgenskapHåndterer,
+                oppgaveStatistikk, aktuelleOppgaveEgenskapTjeneste, behandling); //OPPRETT_OPPGAVE;
     }
 
 //                case OPPDATER_ÅPEN_OPPGAVE:

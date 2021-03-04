@@ -8,6 +8,8 @@ import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.ny_fpsakhendelsehå
 import no.nav.foreldrepenger.los.oppgave.OppgaveRepository;
 import no.nav.foreldrepenger.los.oppgave.OppgaveRepositoryImpl;
 import no.nav.foreldrepenger.extensions.EntityManagerFPLosAwareExtension;
+import no.nav.foreldrepenger.los.oppgave.oppgaveegenskap.AktuelleOppgaveEgenskaperTjeneste;
+import no.nav.foreldrepenger.los.oppgave.risikovurdering.RisikovurderingTjeneste;
 import no.nav.foreldrepenger.los.oppgave.util.OppgaveAssert;
 import no.nav.foreldrepenger.los.oppgave.BehandlingStatus;
 import no.nav.foreldrepenger.los.oppgave.BehandlingType;
@@ -38,12 +40,14 @@ class OpprettOppgaveHendelseHåndtererTest {
     private EntityManager entityManager;
     private OppgaveRepository oppgaveRepository;
     private OppgaveEgenskapHåndterer oppgaveEgenskapHåndterer;
+    private AktuelleOppgaveEgenskaperTjeneste aktuelleOppgaveEgenskapTjeneste;
 
     @BeforeEach
     private void setUp(EntityManager entityManager) {
         this.entityManager = entityManager;
         oppgaveRepository = new OppgaveRepositoryImpl(entityManager);
         oppgaveEgenskapHåndterer = new OppgaveEgenskapHåndterer(oppgaveRepository);
+        aktuelleOppgaveEgenskapTjeneste = new AktuelleOppgaveEgenskaperTjeneste(mock(RisikovurderingTjeneste.class));
     }
 
     @Test
@@ -68,7 +72,8 @@ class OpprettOppgaveHendelseHåndtererTest {
         behandlingFpsak.setAktørId(aktørId.getId());
         behandlingFpsak.setYtelseType(FagsakYtelseType.FORELDREPENGER);
 
-        var opprettOppgaveHåndterer = new OpprettOppgaveHendelseHåndterer(oppgaveRepository, oppgaveEgenskapHåndterer, oppgaveStatistikk, behandlingFpsak);
+        var opprettOppgaveHåndterer = new OpprettOppgaveHendelseHåndterer(oppgaveRepository, oppgaveEgenskapHåndterer,
+                oppgaveStatistikk, aktuelleOppgaveEgenskapTjeneste, behandlingFpsak);
         opprettOppgaveHåndterer.håndter();
 
         var oppgave = DBTestUtil.hentUnik(entityManager, Oppgave.class);
