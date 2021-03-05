@@ -5,6 +5,7 @@ import no.nav.foreldrepenger.los.klient.fpsak.Aksjonspunkt;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Predicate;
 
 import static no.nav.foreldrepenger.los.felles.util.StreamUtil.safeStream;
 
@@ -16,33 +17,18 @@ public class FpsakAksjonspunkt {
     public FpsakAksjonspunkt(List<Aksjonspunkt> aksjonspunkt) {
         this.aksjonspunkt = aksjonspunkt;
 
-        if (tilBeslutter()) kriterier.add(AndreKriterierType.TIL_BESLUTTER);
-        if (erRegistrerPapirSøknad()) kriterier.add(AndreKriterierType.PAPIRSØKNAD);
-        if (erUtenlandssak()) kriterier.add(AndreKriterierType.UTLANDSSAK);
-        if (erVurderFaresignaler()) kriterier.add(AndreKriterierType.VURDER_FARESIGNALER);
+        if (finn(Aksjonspunkt::tilBeslutter)) kriterier.add(AndreKriterierType.TIL_BESLUTTER);
+        if (finn(Aksjonspunkt::erRegistrerPapirSøknad)) kriterier.add(AndreKriterierType.PAPIRSØKNAD);
+        if (finn(Aksjonspunkt::erUtenlandssak)) kriterier.add(AndreKriterierType.UTLANDSSAK);
+        if (finn(Aksjonspunkt::erVurderFaresignaler)) kriterier.add(AndreKriterierType.VURDER_FARESIGNALER);
+        if (finn(Aksjonspunkt::erVurderFormkrav)) kriterier.add(AndreKriterierType.VURDER_FORMKRAV);
     }
 
     public List<AndreKriterierType> getKriterier() {
         return kriterier;
     }
 
-//    private boolean erSelvstendigEllerFrilans() {
-//        return safeStream(aksjonspunkt).anyMatch(Aksjonspunkt::erSelvstendigEllerFrilanser);
-//    }
-
-    private boolean erVurderFaresignaler() {
-        return safeStream(aksjonspunkt).anyMatch(Aksjonspunkt::erVurderFaresignaler);
-    }
-
-    private boolean tilBeslutter() {
-        return safeStream(aksjonspunkt).anyMatch(Aksjonspunkt::tilBeslutter);
-    }
-
-    private boolean erRegistrerPapirSøknad() {
-        return safeStream(aksjonspunkt).anyMatch(Aksjonspunkt::erRegistrerPapirSøknad);
-    }
-
-    private boolean erUtenlandssak() {
-        return safeStream(aksjonspunkt).anyMatch(Aksjonspunkt::erUtenlandssak);
+    private boolean finn(Predicate<Aksjonspunkt> predicate) {
+        return safeStream(aksjonspunkt).anyMatch(predicate);
     }
 }

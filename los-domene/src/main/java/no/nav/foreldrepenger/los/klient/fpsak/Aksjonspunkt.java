@@ -15,8 +15,8 @@ public class Aksjonspunkt {
     public static final String PÅ_VENT_KODEGRUPPE_STARTS_WITH = "7";
     public static final String TIL_BESLUTTER_KODE = "5016";
     public static final List<String> REGISTRER_PAPIRSØKNAD_KODE = asList("5012", "5040", "5057", "5096");
-    //public static final List<String> SELVSTENDIG_FRILANSER_GRUPPE = asList("5038", "5039", "5042", "7072");
     public static final List<String> SELVSTENDIG_FRILANSER_GRUPPE = asList("5038", "5049");
+    public static final List<String> VURDER_FORMKRAV_GRUPPE = asList("5082", "5083");
 
     public static final String VURDER_FARESIGNALER = "5095";
     public static final String AUTOMATISK_MARKERING_SOM_UTLAND = "5068";
@@ -85,13 +85,13 @@ public class Aksjonspunkt {
         return erAutomatiskMarkertSomUtenlandssak() || erManueltMarkertSomUtenlandssak();
     }
 
+    public boolean erVurderFormkrav() {
+        return erAktiv() && VURDER_FORMKRAV_GRUPPE.contains(definisjonKode);
+    }
+
     public boolean erVurderFaresignaler() {
         return VURDER_FARESIGNALER.equals(definisjonKode) && erAktiv();
     }
-//    public boolean erSelvstendigEllerFrilanser() {
-//        return SELVSTENDIG_FRILANSER_GRUPPE.contains(definisjonKode) && erAktiv();
-
-//    }
 
     public static Aksjonspunkt aksjonspunktFra(AksjonspunktDto aksjonspunktDto) {
         return Aksjonspunkt.builder()
