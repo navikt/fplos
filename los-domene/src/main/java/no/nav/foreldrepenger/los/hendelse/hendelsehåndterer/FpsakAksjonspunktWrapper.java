@@ -9,12 +9,12 @@ import java.util.function.Predicate;
 
 import static no.nav.foreldrepenger.los.felles.util.StreamUtil.safeStream;
 
-public class FpsakAksjonspunkt {
+public class FpsakAksjonspunktWrapper {
 
     private final List<Aksjonspunkt> aksjonspunkt;
     private final List<AndreKriterierType> kriterier = new ArrayList<>();
 
-    public FpsakAksjonspunkt(List<Aksjonspunkt> aksjonspunkt) {
+    public FpsakAksjonspunktWrapper(List<Aksjonspunkt> aksjonspunkt) {
         this.aksjonspunkt = aksjonspunkt;
 
         if (finn(Aksjonspunkt::tilBeslutter)) kriterier.add(AndreKriterierType.TIL_BESLUTTER);

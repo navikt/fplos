@@ -1,6 +1,6 @@
 package no.nav.foreldrepenger.los.oppgave.oppgaveegenskap;
 
-import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.FpsakAksjonspunkt;
+import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.FpsakAksjonspunktWrapper;
 import no.nav.foreldrepenger.los.klient.fpsak.BehandlingFpsak;
 import no.nav.foreldrepenger.los.oppgave.AndreKriterierType;
 import no.nav.foreldrepenger.los.oppgave.BehandlingType;
@@ -37,8 +37,8 @@ public class AktuelleOppgaveEgenskaperTjeneste {
             egenskaper.add(AndreKriterierType.VURDER_FARESIGNALER);
         }
 
-        FpsakAksjonspunkt fpsakAksjonspunkt = new FpsakAksjonspunkt(behandlingFpsak.getAksjonspunkter());
-        egenskaper.addAll(fpsakAksjonspunkt.getKriterier());
+        var fpsakAksjonspunktWrapper = new FpsakAksjonspunktWrapper(behandlingFpsak.getAksjonspunkter());
+        egenskaper.addAll(fpsakAksjonspunktWrapper.getKriterier());
         return new AktuelleOppgaveEgenskaperData(behandlingFpsak.getAnsvarligSaksbehandler(), egenskaper);
     }
 

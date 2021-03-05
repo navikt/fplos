@@ -1,6 +1,5 @@
 package no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.ny_fpsakhendelsehåndterer;
 
-import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.FpsakOppgaveEgenskapFinner;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.OppgaveEgenskapHåndterer;
 import no.nav.foreldrepenger.los.hendelse.hendelseoppretter.hendelse.Fagsystem;
 import no.nav.foreldrepenger.los.oppgave.BehandlingStatus;
@@ -61,9 +60,6 @@ public class OpprettOppgaveHendelseHåndterer implements FpsakHendelseHåndterer
     private void opprettOppgaveEgenskaper(Oppgave oppgave) {
         var nyeEgenskaper = aktuelleOppgaveEgenskapTjeneste.egenskaperForFpsak(behandlingFpsak);
         oppgaveEgenskapHåndterer.håndterOppgaveEgenskaper(oppgave, nyeEgenskaper);
-
-        //var egenskapFinner = new FpsakOppgaveEgenskapFinner(behandlingFpsak);
-        //oppgaveEgenskapHåndterer.håndterOppgaveEgenskaper(oppgave, egenskapFinner);
     }
 
     private Oppgave oppgaveFra(BehandlingFpsak behandling) {

@@ -15,7 +15,7 @@ import static no.nav.foreldrepenger.los.oppgave.AndreKriterierType.VURDER_FORMKR
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class FpsakAksjonspunktTest {
+class FpsakAksjonspunktWrapperTest {
 
     @Test
     public void skalMappeKoderTilAndreKriterierTyper() {
@@ -29,7 +29,7 @@ class FpsakAksjonspunktTest {
 
         cases.forEach((k, v) -> {
             var ap = åpentAksjonspunkt(k);
-            var result = new FpsakAksjonspunkt(List.of(ap)).getKriterier();
+            var result = new FpsakAksjonspunktWrapper(List.of(ap)).getKriterier();
             assertThat(result).isEqualTo(List.of(v));
         });
     }
@@ -38,14 +38,14 @@ class FpsakAksjonspunktTest {
     public void skalIkkeReturnereDuplikateAndreKriterierTyper() {
         var sammeGruppeAksjonspunkter = List.of(åpentAksjonspunkt("5082"),
                 åpentAksjonspunkt("5083"));
-        var result = new FpsakAksjonspunkt(sammeGruppeAksjonspunkter).getKriterier();
+        var result = new FpsakAksjonspunktWrapper(sammeGruppeAksjonspunkter).getKriterier();
         assertThat(result).isEqualTo(List.of(VURDER_FORMKRAV));
     }
 
     @Test
     public void skalIkkeMappeInaktiveAksjonspunktTilAndreKriterierTyper() {
         var ap = Aksjonspunkt.builder().medStatus("AVBR").medDefinisjon("5082").medBegrunnelse("").build();
-        var result = new FpsakAksjonspunkt(List.of(ap)).getKriterier();
+        var result = new FpsakAksjonspunktWrapper(List.of(ap)).getKriterier();
         assertTrue(result.isEmpty());
     }
 

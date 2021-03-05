@@ -2,7 +2,6 @@ package no.nav.foreldrepenger.los.oppgave.oppgaveegenskap;
 
 import no.nav.foreldrepenger.los.oppgave.AndreKriterierType;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 

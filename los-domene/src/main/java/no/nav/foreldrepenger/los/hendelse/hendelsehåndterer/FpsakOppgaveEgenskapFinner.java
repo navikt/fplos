@@ -21,8 +21,8 @@ public class FpsakOppgaveEgenskapFinner implements OppgaveEgenskapFinner {
         if (erUtbetalingTilBruker(behandling)) this.andreKriterier.add(AndreKriterierType.UTBETALING_TIL_BRUKER);
         if (erEndringssøknad(behandling)) this.andreKriterier.add(AndreKriterierType.ENDRINGSSØKNAD);
 
-        FpsakAksjonspunkt fpsakAksjonspunkt = new FpsakAksjonspunkt(behandling.getAksjonspunkter());
-        andreKriterier.addAll(fpsakAksjonspunkt.getKriterier());
+        FpsakAksjonspunktWrapper fpsakAksjonspunktWrapper = new FpsakAksjonspunktWrapper(behandling.getAksjonspunkter());
+        andreKriterier.addAll(fpsakAksjonspunktWrapper.getKriterier());
     }
 
     @Override
