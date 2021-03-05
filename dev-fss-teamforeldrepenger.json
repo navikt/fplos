@@ -29,6 +29,7 @@
     "KAFKA_AKSJONSPUNKTHENDELSE_GROUP_ID": "KC-privat-foreldrepenger-aksjonspunkthendelse",
     "KAFKA_TILBAKEBETALING_TOPIC":  "privat-tilbakekreving-fploshendelse-v1-q1",
     "KAFKA_TILBAKEBETALING_GROUP_ID":  "KC-privat-tilbakekreving-fploshendelse-v1-q1",
+    "KAFKA_KONTROLL_RESULTAT_TOPIC": "privat-foreldrepenger-kontroll-resultat-q1",
     "KAFKA_BROKERS": "b27apvl00045.preprod.local:8443,b27apvl00046.preprod.local:8443,b27apvl00047.preprod.local:8443",
     "PDL_BASE_URL" : "http://pdl-api.default/graphql",
     "APPDYNAMICS_AGENT_ACCOUNT_NAME": "NON-PROD",
