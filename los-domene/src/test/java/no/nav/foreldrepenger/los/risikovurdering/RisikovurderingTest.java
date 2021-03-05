@@ -14,25 +14,22 @@ import no.nav.foreldrepenger.los.oppgave.oppgaveegenskap.AktuelleOppgaveEgenskap
 import no.nav.foreldrepenger.los.oppgave.oppgaveegenskap.OppgaveEgenskapTjeneste;
 import no.nav.foreldrepenger.los.risikovurdering.modell.Kontrollresultat;
 import no.nav.foreldrepenger.los.risikovurdering.modell.KontrollresultatWrapper;
+import no.nav.foreldrepenger.los.risikovurdering.modell.RisikoklassifiseringEntitet;
 import no.nav.foreldrepenger.los.risikovurdering.modell.RisikoklassifiseringRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import javax.persistence.EntityManager;
-
 import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
 
 @ExtendWith(EntityManagerFPLosAwareExtension.class)
 public class RisikovurderingTest {
 
     private EntityManager entityManager;
-    private RisikoklassifiseringRepository risikoklassifiseringRepository;
     private RisikovurderingTjeneste risikovurderingTjeneste;
     private OppgaveRepositoryImpl oppgaveRepository;
 
@@ -42,7 +39,7 @@ public class RisikovurderingTest {
         oppgaveRepository = new OppgaveRepositoryImpl(entityManager);
         var oppgaveTjeneste = new OppgaveTjenesteImpl(oppgaveRepository);
         var oppgaveEgenskapTjeneste = new OppgaveEgenskapTjeneste(oppgaveRepository);
-        risikoklassifiseringRepository = new RisikoklassifiseringRepository(entityManager);
+        var risikoklassifiseringRepository = new RisikoklassifiseringRepository(entityManager);
         risikovurderingTjeneste = new RisikovurderingTjeneste(risikoklassifiseringRepository, oppgaveTjeneste, oppgaveEgenskapTjeneste);
     }
 
@@ -51,7 +48,9 @@ public class RisikovurderingTest {
         var behandlingId = BehandlingId.random();
         var kontrollResultatWrapper = new KontrollresultatWrapper(behandlingId, Kontrollresultat.IKKE_HØY);
         risikovurderingTjeneste.lagreKontrollresultat(kontrollResultatWrapper);
-        verify(risikoklassifiseringRepository).lagreRisikoklassifisering(any(), any());
+        var risikoklassifiseringEntitet = DBTestUtil.hentUnik(entityManager, RisikoklassifiseringEntitet.class);
+        assertThat(risikoklassifiseringEntitet.getBehandlingId()).isEqualTo(behandlingId);
+        assertThat(risikoklassifiseringEntitet.getKontrollresultat()).isEqualTo(Kontrollresultat.IKKE_HØY);
     }
 
     @Test
@@ -73,7 +72,6 @@ public class RisikovurderingTest {
         var aktuelleOppgaveEgenskaperTjeneste = new AktuelleOppgaveEgenskaperTjeneste(risikovurderingTjeneste);
         var fpsakBehandling = behandlingFpsak(behandlingId);
         var aktuelleOppgaveegenskaper = aktuelleOppgaveEgenskaperTjeneste.egenskaperForFpsak(fpsakBehandling);
-
         assertThat(aktuelleOppgaveegenskaper.getAndreKriterierTyper()).containsExactly(AndreKriterierType.VURDER_FARESIGNALER);
     }
 
@@ -84,7 +82,6 @@ public class RisikovurderingTest {
         var aktuelleOppgaveEgenskaperTjeneste = new AktuelleOppgaveEgenskaperTjeneste(risikovurderingTjeneste);
         var fpsakBehandling = behandlingFpsak(behandlingId);
         var aktuelleOppgaveegenskaper = aktuelleOppgaveEgenskaperTjeneste.egenskaperForFpsak(fpsakBehandling);
-
         assertThat(aktuelleOppgaveegenskaper.getAndreKriterierTyper()).isEmpty();
     }
 
