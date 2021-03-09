@@ -87,17 +87,17 @@ public class OppgaveHendelseHåndtererFactory {
                     : new OpprettPapirsøknadOppgaveHendelseHåndterer(oppgaveRepository, oppgaveEgenskapHåndterer, oppgaveStatistikk, behandlingFpsak);
         }
 
-        if (!oppgaveHistorikk.erUtenHistorikk()) {
-            if (oppgaveHistorikk.erSisteOpprettedeOppgaveTilBeslutter()) {
-                // Ingen beslutteraksjonspunkt. Returnert fra beslutter, opprett ny oppgave
-                return new ReturFraBeslutterHendelseHåndterer(oppgaveRepository, oppgaveEgenskapHåndterer, oppgaveStatistikk, behandlingFpsak);
+        if (oppgaveHistorikk.harEksistertOppgave()) {
+            if (oppgaveHistorikk.erÅpenOppgave()) {
+                return oppgaveHistorikk.erSisteOpprettedeOppgaveTilBeslutter()
+                        ? new ReturFraBeslutterHendelseHåndterer(oppgaveRepository, oppgaveEgenskapHåndterer, oppgaveStatistikk, behandlingFpsak)
+                        : new OppdaterOppgaveegenskaperHendelseHåndterer(oppgaveRepository, oppgaveEgenskapHåndterer, oppgaveStatistikk, behandlingFpsak);
+            } else {
+                return new GjenåpneOppgaveHendelseHåndterer(oppgaveRepository, oppgaveEgenskapHåndterer, oppgaveStatistikk, behandlingFpsak);
             }
-            return oppgaveHistorikk.erIngenÅpenOppgave()
-                    ? new GjenåpneOppgaveHendelseHåndterer(oppgaveRepository, oppgaveEgenskapHåndterer, oppgaveStatistikk, behandlingFpsak)
-                    : new OppdaterOppgaveegenskaperHendelseHåndterer(oppgaveRepository, oppgaveEgenskapHåndterer, oppgaveStatistikk, behandlingFpsak);
         }
 
-        return new GenerellOpprettOppgaveHendelseHåndterer(oppgaveRepository, oppgaveEgenskapHåndterer, oppgaveStatistikk, behandlingFpsak); //OPPRETT_OPPGAVE;
+        return new GenerellOpprettOppgaveHendelseHåndterer(oppgaveRepository, oppgaveEgenskapHåndterer, oppgaveStatistikk, behandlingFpsak);
     }
 
     private static boolean finn(Predicate<Aksjonspunkt> predicate, List<Aksjonspunkt> aksjonspunkter) {

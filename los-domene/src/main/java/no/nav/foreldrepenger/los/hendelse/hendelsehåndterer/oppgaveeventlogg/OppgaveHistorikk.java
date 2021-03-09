@@ -28,6 +28,10 @@ public class OppgaveHistorikk {
                 || Objects.equals(sisteEventType, OppgaveEventType.VENT);
     }
 
+    public boolean harEksistertOppgave() {
+        return sisteOpprettetEvent != null;
+    }
+
     public boolean erPåVent() {
         return sisteEventType != null && sisteEventType.erVenteEvent();
     }
