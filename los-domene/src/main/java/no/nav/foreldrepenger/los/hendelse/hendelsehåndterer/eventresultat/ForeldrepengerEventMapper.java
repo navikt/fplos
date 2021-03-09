@@ -80,7 +80,7 @@ public class ForeldrepengerEventMapper {
     private static boolean tilBeslutter(List<Aksjonspunkt> aksjonspunkt) {
         return aksjonspunkt.stream()
                 .filter(Aksjonspunkt::erAktiv)
-                .anyMatch(Aksjonspunkt::tilBeslutter);
+                .anyMatch(Aksjonspunkt::erTilBeslutter);
     }
 
     private static boolean manueltSattPåVent(List<Aksjonspunkt> aksjonspunkt) {

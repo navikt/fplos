@@ -4,6 +4,7 @@ import static no.nav.foreldrepenger.los.oppgavekø.KøSortering.BEHANDLINGSFRIST
 import static no.nav.foreldrepenger.los.oppgavekø.KøSortering.FEILUTBETALINGSTART;
 import static no.nav.foreldrepenger.los.organisasjon.Avdeling.AVDELING_DRAMMEN_ENHET;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -302,7 +303,7 @@ public class OppgaveRepositoryImplTest {
     }
 
     @Test
-    public void avsluttSistOpprettetOppgave() {
+    public void skalKasteExceptionVedLukkingAvOppgaveDerDetFinnesFlereAktiveOppgaver() {
         Oppgave første = lagOppgave(AVDELING_DRAMMEN_ENHET);
         oppgaveRepository.opprettOppgave(første);
         Oppgave siste = lagOppgave(AVDELING_DRAMMEN_ENHET);
@@ -311,10 +312,7 @@ public class OppgaveRepositoryImplTest {
         assertThat(første()).isEqualTo(første);
         assertThat(siste().getAktiv()).isTrue();
         assertThat(første().getOpprettetTidspunkt()).isBefore(siste().getOpprettetTidspunkt());
-
-        oppgaveRepository.avsluttOppgaveForBehandling(første.getBehandlingId());
-        assertThat(første().getAktiv()).isTrue();
-        assertThat(siste().getAktiv()).isFalse();
+        assertThrows(IllegalStateException.class, () -> oppgaveRepository.avsluttOppgaveForBehandling(første.getBehandlingId()));
     }
 
     @Test

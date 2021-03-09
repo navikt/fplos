@@ -1,4 +1,4 @@
-package no.nav.foreldrepenger.los.kafkatjenester;
+package no.nav.foreldrepenger.los.hendelse.hendelsehåndterer;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;

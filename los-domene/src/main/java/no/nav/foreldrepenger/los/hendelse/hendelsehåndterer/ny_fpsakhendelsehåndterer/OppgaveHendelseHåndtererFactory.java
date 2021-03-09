@@ -19,6 +19,8 @@ import java.util.function.Predicate;
 @ApplicationScoped
 public class OppgaveHendelseHåndtererFactory {
 
+    private static final IkkeRelevantForOppgaveHendelseHåndterer IKKE_RELEVANT_FOR_OPPGAVE_HENDELSE_HÅNDTERER = new IkkeRelevantForOppgaveHendelseHåndterer();
+
     private OppgaveRepository oppgaveRepository;
     private OppgaveEgenskapHåndterer oppgaveEgenskapHåndterer;
     private OppgaveStatistikk oppgaveStatistikk;
@@ -39,9 +41,14 @@ public class OppgaveHendelseHåndtererFactory {
     public OppgaveHendelseHåndtererFactory() {
     }
 
-    public FpsakHendelseHåndterer lagHåndterer(Hendelse hendelse) {
+    public FpsakHendelseHåndterer lagHåndterer(Hendelse hendelse, BehandlingFpsak tmpFpsak) {
         var behandlingId = hendelse.getBehandlingId();
-        var behandlingFpsak = foreldrePengerBehandlingKlient.getBehandling(behandlingId);
+        BehandlingFpsak behandlingFpsak;
+        if (tmpFpsak != null) { // tmpFpsak er parameter for sammenlikning i prod før klassen tas i bruk. Bruker samme BehandlingFpsak for å sammenlikne epler med epler.
+            behandlingFpsak = tmpFpsak;
+        } else {
+            behandlingFpsak = foreldrePengerBehandlingKlient.getBehandling(behandlingId);
+        }
         behandlingFpsak.setYtelseType(hendelse.getYtelseType());
         behandlingFpsak.setSaksnummer(hendelse.getSaksnummer());
         behandlingFpsak.setAktørId(hendelse.getAktørId());
@@ -49,95 +56,56 @@ public class OppgaveHendelseHåndtererFactory {
         return lagHåndterer(behandlingFpsak, oppgaveHistorikk);
     }
 
-    protected FpsakHendelseHåndterer lagHåndterer(BehandlingFpsak behandling,
+    protected FpsakHendelseHåndterer lagHåndterer(BehandlingFpsak behandlingFpsak,
                                                   OppgaveHistorikk oppgaveHistorikk) {
-        var aksjonspunkter = behandling.getAksjonspunkter();
-        var gjeldendeEnhet = behandling.getBehandlendeEnhetId(); //TODO: test at dette er riktig enhet
+        var aksjonspunkter = behandlingFpsak.getAksjonspunkter();
 
         if (erIngenÅpne(aksjonspunkter)) {
             if (oppgaveHistorikk.erUtenHistorikk() || oppgaveHistorikk.erIngenÅpenOppgave()) {
-                return new IkkeRelevantForOppgaveHendelseHåndterer();
+                return IKKE_RELEVANT_FOR_OPPGAVE_HENDELSE_HÅNDTERER;
             } else {
-                return new LukkOppgaveHendelseHåndterer();
+                return new LukkOppgaveHendelseHåndterer(oppgaveRepository, oppgaveStatistikk, behandlingFpsak);
             }
         }
-        if (erPåVentAksjonspunkt(aksjonspunkter)) {
+
+        if (finn(Aksjonspunkt::erPåVent, aksjonspunkter)) {
             if (oppgaveHistorikk.erPåVent()) {
-                return new IkkeRelevantForOppgaveHendelseHåndterer();
+                return IKKE_RELEVANT_FOR_OPPGAVE_HENDELSE_HÅNDTERER;
             }
-            return new PåVentOppgaveHendelseHåndterer(oppgaveRepository, oppgaveStatistikk, behandling);
+            return new PåVentOppgaveHendelseHåndterer(oppgaveRepository, oppgaveStatistikk, behandlingFpsak);
         }
-        if (tilBeslutter(aksjonspunkter)) {
-            if (oppgaveHistorikk.erSisteOpprettedeOppgaveTilBeslutter()
-                    && oppgaveHistorikk.erSisteOppgaveRegistrertPåEnhet(gjeldendeEnhet)) {
-                return null; //GJENÅPNE_OPPGAVE; // TODO: hvis åpen oppgave - oppdater oppgave i stedet for gjenåpning
+
+        if (finn(Aksjonspunkt::erTilBeslutter, aksjonspunkter)) {
+            return oppgaveHistorikk.erÅpenOppgave() && oppgaveHistorikk.erSisteOpprettedeOppgaveTilBeslutter()
+                    ? new OppdaterOppgaveegenskaperHendelseHåndterer(oppgaveRepository, oppgaveEgenskapHåndterer, oppgaveStatistikk, behandlingFpsak)
+                    : new OpprettBeslutterOppgaveHendelseHåndterer(oppgaveRepository, oppgaveEgenskapHåndterer, oppgaveStatistikk, behandlingFpsak);
+        }
+
+        if (finn(Aksjonspunkt::erRegistrerPapirSøknad, aksjonspunkter)) {
+            return oppgaveHistorikk.erÅpenOppgave() && oppgaveHistorikk.erSisteOpprettedeOppgavePapirsøknad()
+                    ? new OppdaterOppgaveegenskaperHendelseHåndterer(oppgaveRepository, oppgaveEgenskapHåndterer, oppgaveStatistikk, behandlingFpsak)
+                    : new OpprettPapirsøknadOppgaveHendelseHåndterer(oppgaveRepository, oppgaveEgenskapHåndterer, oppgaveStatistikk, behandlingFpsak);
+        }
+
+        if (oppgaveHistorikk.harEksistertOppgave()) {
+            if (oppgaveHistorikk.erÅpenOppgave()) {
+                return oppgaveHistorikk.erSisteOpprettedeOppgaveTilBeslutter()
+                        ? new ReturFraBeslutterHendelseHåndterer(oppgaveRepository, oppgaveEgenskapHåndterer, oppgaveStatistikk, behandlingFpsak)
+                        : new OppdaterOppgaveegenskaperHendelseHåndterer(oppgaveRepository, oppgaveEgenskapHåndterer, oppgaveStatistikk, behandlingFpsak);
+            } else {
+                return new GjenåpneOppgaveHendelseHåndterer(oppgaveRepository, oppgaveEgenskapHåndterer, oppgaveStatistikk, behandlingFpsak);
             }
-            return null; //OPPRETT_BESLUTTER_OPPGAVE;
         }
-        if (erRegistrerPapirsøknad(aksjonspunkter)) {
-            if (oppgaveHistorikk.erSisteOpprettedeOppgavePapirsøknad()
-                    && oppgaveHistorikk.erSisteOppgaveRegistrertPåEnhet(gjeldendeEnhet)) {
-                // TODO: oppdater åpen oppgave
-                return null; //GJENÅPNE_OPPGAVE;
-            }
-            return null; //OPPRETT_PAPIRSØKNAD_OPPGAVE;
-        }
-        if (!oppgaveHistorikk.erUtenHistorikk()) {
-            if (oppgaveHistorikk.erSisteOpprettedeOppgaveTilBeslutter()) {
-                // Ingen beslutteraksjonspunkt. Returnert fra beslutter, opprett ny oppgave
-                // TODO: innføre nytt EventResultat som mapper til håndtering som setter til siste saksbehandler?
-                return null; //OPPRETT_OPPGAVE;
-            }
-            return null; //oppgaveHistorikk.erSisteOppgaveRegistrertPåEnhet(gjeldendeEnhet)
-                    //? GJENÅPNE_OPPGAVE // TODO: oppdater åpen oppgave
-                    //: OPPRETT_OPPGAVE;
-        }
-        return new OpprettOppgaveHendelseHåndterer(oppgaveRepository, oppgaveEgenskapHåndterer, oppgaveStatistikk, behandling); //OPPRETT_OPPGAVE;
+
+        return new GenerellOpprettOppgaveHendelseHåndterer(oppgaveRepository, oppgaveEgenskapHåndterer, oppgaveStatistikk, behandlingFpsak);
     }
 
-//                case OPPDATER_ÅPEN_OPPGAVE:
-//    håndterOppfriskOppgave(hendelse, behandling);
-//                break;
-//}
-//    }
-//
-//private void håndterOppfriskOppgave(Hendelse hendelse, BehandlingFpsak behandlingFpsak) {
-//        LOG.info("Oppfrisker oppgave");
-//        var behandlingId = behandlingFpsak.getBehandlingId();
-//        var oppgave = oppgaveRepository.hentOppgaver(behandlingId)
-//        .stream().filter(Oppgave::getAktiv).findFirst().orElseThrow();
-//        oppdaterOppgaveInformasjon(oppgave, behandlingId, hendelse, behandlingFpsak);
-//        var egenskapFinner = new FpsakOppgaveEgenskapFinner(behandlingFpsak);
-//        oppgaveEgenskapHandler.håndterOppgaveEgenskaper(oppgave, egenskapFinner);
-//        }
-
-    private static boolean erAktivtAksjonspunkt(List<Aksjonspunkt> aksjonspunkter, Predicate<Aksjonspunkt> predicate) {
-        return aksjonspunkter.stream()
-                .filter(Aksjonspunkt::erAktiv)
-                .anyMatch(predicate);
-    }
-
-    private static boolean erPåVentAksjonspunkt(List<Aksjonspunkt> åpneAksjonspunkt) {
-        return åpneAksjonspunkt.stream()
-                .filter(Aksjonspunkt::erAktiv)
-                .anyMatch(Aksjonspunkt::erPåVent);
-    }
-
-    private static boolean tilBeslutter(List<Aksjonspunkt> aksjonspunkt) {
-        return aksjonspunkt.stream()
-                .filter(Aksjonspunkt::erAktiv)
-                .anyMatch(Aksjonspunkt::tilBeslutter);
-    }
-
-    private static boolean erRegistrerPapirsøknad(List<Aksjonspunkt> aksjonspunkt) {
-        return aksjonspunkt.stream()
-                .filter(Aksjonspunkt::erAktiv)
-                .anyMatch(Aksjonspunkt::erRegistrerPapirSøknad);
+    private static boolean finn(Predicate<Aksjonspunkt> predicate, List<Aksjonspunkt> aksjonspunkter) {
+        return aksjonspunkter.stream().filter(Aksjonspunkt::erAktiv).anyMatch(predicate);
     }
 
     private static boolean erIngenÅpne(List<Aksjonspunkt> aksjonspunkt) {
         return aksjonspunkt.stream().noneMatch(Aksjonspunkt::erAktiv);
     }
-
 
 }

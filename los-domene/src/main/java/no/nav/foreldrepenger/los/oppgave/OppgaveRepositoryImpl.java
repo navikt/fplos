@@ -16,6 +16,8 @@ import no.nav.foreldrepenger.los.reservasjon.ReservasjonEventLogg;
 import no.nav.foreldrepenger.los.organisasjon.Avdeling;
 import no.nav.foreldrepenger.los.organisasjon.Saksbehandler;
 import no.nav.vedtak.sikkerhet.context.SubjectHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -37,6 +39,8 @@ import static no.nav.foreldrepenger.los.oppgavekø.KøSortering.FT_HELTALL;
 
 @ApplicationScoped
 public class OppgaveRepositoryImpl implements OppgaveRepository {
+
+    private static final Logger LOG = LoggerFactory.getLogger(OppgaveRepositoryImpl.class);
 
     private static final String COUNT_FRA_OPPGAVE = "SELECT count(1) from Oppgave o ";
     private static final String SELECT_FRA_OPPGAVE = "SELECT o from Oppgave o ";
@@ -456,16 +460,17 @@ public class OppgaveRepositoryImpl implements OppgaveRepository {
     }
 
     @Override
-    public Oppgave gjenåpneOppgaveForBehandling(BehandlingId behandlingId) {
-        List<Oppgave> oppgaver = hentOppgaver(behandlingId, Oppgave.class);
-        Oppgave sisteOppgave = oppgaver.stream()
-                .max(Comparator.comparing(Oppgave::getOpprettetTidspunkt))
-                .orElse(null);
-        if (sisteOppgave != null) {
-            sisteOppgave.gjenåpneOppgave();
-            internLagre(sisteOppgave);
-            entityManager.refresh(sisteOppgave);
-        }
+    public Optional<Oppgave> gjenåpneOppgaveForBehandling(BehandlingId behandlingId) {
+        var sisteOppgave = hentOppgaver(behandlingId, Oppgave.class)
+                .stream().max(Comparator.comparing(Oppgave::getOpprettetTidspunkt));
+        sisteOppgave.ifPresent(o -> {
+            if (o.getAktiv()) {
+                LOG.info(String.format("Forsøker gjenåpning av allerede aktiv oppgaveId %s", o.getId()));
+            }
+            o.gjenåpneOppgave();
+            internLagre(o);
+            entityManager.refresh(o);
+        });
         return sisteOppgave;
     }
 
@@ -486,19 +491,19 @@ public class OppgaveRepositoryImpl implements OppgaveRepository {
     @Override
     public void avsluttOppgaveForBehandling(BehandlingId behandlingId) {
         List<Oppgave> oppgaver = hentOppgaver(behandlingId, Oppgave.class);
-        if (oppgaver.isEmpty()) {
-            return;
+        var antallAktive = oppgaver.stream().filter(Oppgave::getAktiv).count();
+        if (antallAktive > 1) {
+            throw new IllegalStateException(String.format("Forventet kun én aktiv oppgave for behandlingId %s, fant %s", behandlingId, antallAktive));
         }
-        Oppgave nyesteOppgave = oppgaver.stream()
+        oppgaver.stream()
+                .filter(Oppgave::getAktiv)
                 .max(Comparator.comparing(Oppgave::getOpprettetTidspunkt))
-                .orElseThrow();
-        if (!nyesteOppgave.getAktiv()) {
-            return;
-        }
-        frigiEventuellReservasjon(nyesteOppgave.getReservasjon());
-        nyesteOppgave.avsluttOppgave();
-        internLagre(nyesteOppgave);
-        entityManager.refresh(nyesteOppgave);
+                .ifPresent(oppgave -> {
+                    frigiEventuellReservasjon(oppgave.getReservasjon());
+                    oppgave.avsluttOppgave();
+                    internLagre(oppgave);
+                    entityManager.refresh(oppgave);
+                });
     }
 
     private void frigiEventuellReservasjon(Reservasjon reservasjon) {

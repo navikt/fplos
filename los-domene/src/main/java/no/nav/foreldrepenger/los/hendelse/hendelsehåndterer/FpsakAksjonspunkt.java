@@ -17,7 +17,7 @@ public class FpsakAksjonspunkt {
     public FpsakAksjonspunkt(List<Aksjonspunkt> aksjonspunkt) {
         this.aksjonspunkt = aksjonspunkt;
 
-        if (finn(Aksjonspunkt::tilBeslutter)) kriterier.add(AndreKriterierType.TIL_BESLUTTER);
+        if (finn(Aksjonspunkt::erTilBeslutter)) kriterier.add(AndreKriterierType.TIL_BESLUTTER);
         if (finn(Aksjonspunkt::erRegistrerPapirSøknad)) kriterier.add(AndreKriterierType.PAPIRSØKNAD);
         if (finn(Aksjonspunkt::erUtenlandssak)) kriterier.add(AndreKriterierType.UTLANDSSAK);
         if (finn(Aksjonspunkt::erVurderFaresignaler)) kriterier.add(AndreKriterierType.VURDER_FARESIGNALER);

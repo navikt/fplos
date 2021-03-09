@@ -4,18 +4,27 @@ import static no.nav.foreldrepenger.los.felles.util.StreamUtil.safeStream;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import no.nav.foreldrepenger.los.domene.typer.BehandlingId;
+import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.eventresultat.EventResultat;
+import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.ny_fpsakhendelsehåndterer.FpsakHendelseHåndterer;
+import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.ny_fpsakhendelsehåndterer.GenerellOpprettOppgaveHendelseHåndterer;
+import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.ny_fpsakhendelsehåndterer.GjenåpneOppgaveHendelseHåndterer;
+import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.ny_fpsakhendelsehåndterer.IkkeRelevantForOppgaveHendelseHåndterer;
+import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.ny_fpsakhendelsehåndterer.LukkOppgaveHendelseHåndterer;
+import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.ny_fpsakhendelsehåndterer.OppgaveHendelseHåndtererFactory;
+import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.ny_fpsakhendelsehåndterer.OpprettBeslutterOppgaveHendelseHåndterer;
+import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.ny_fpsakhendelsehåndterer.OpprettPapirsøknadOppgaveHendelseHåndterer;
+import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.ny_fpsakhendelsehåndterer.PåVentOppgaveHendelseHåndterer;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveHistorikk;
 import no.nav.foreldrepenger.los.reservasjon.Reservasjon;
 import no.nav.foreldrepenger.los.statistikk.statistikk_ny.KøOppgaveHendelse;
-import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.ny_fpsakhendelsehåndterer.OpprettOppgaveHendelseHåndterer;
 
 
 import no.nav.foreldrepenger.los.statistikk.statistikk_ny.OppgaveStatistikk;
@@ -33,7 +42,6 @@ import no.nav.foreldrepenger.los.oppgave.OppgaveRepository;
 import no.nav.foreldrepenger.los.klient.fpsak.Aksjonspunkt;
 import no.nav.foreldrepenger.los.klient.fpsak.BehandlingFpsak;
 import no.nav.foreldrepenger.los.klient.fpsak.ForeldrepengerBehandlingKlient;
-import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.eventresultat.EventResultat;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.eventresultat.ForeldrepengerEventMapper;
 
 @ApplicationScoped
@@ -45,16 +53,19 @@ public class ForeldrepengerHendelseHåndterer {
     private OppgaveRepository oppgaveRepository;
     private OppgaveEgenskapHåndterer oppgaveEgenskapHåndterer;
     private OppgaveStatistikk oppgaveStatistikk;
+    private OppgaveHendelseHåndtererFactory oppgaveHendelseHåndtererFactory;
 
     @Inject
     public ForeldrepengerHendelseHåndterer(ForeldrepengerBehandlingKlient foreldrePengerBehandlingKlient,
                                            OppgaveRepository oppgaveRepository,
                                            OppgaveEgenskapHåndterer oppgaveEgenskapHåndterer,
-                                           OppgaveStatistikk oppgaveStatistikk) {
+                                           OppgaveStatistikk oppgaveStatistikk,
+                                           OppgaveHendelseHåndtererFactory oppgaveHendelseHåndtererFactory) {
         this.foreldrePengerBehandlingKlient = foreldrePengerBehandlingKlient;
         this.oppgaveRepository = oppgaveRepository;
         this.oppgaveEgenskapHåndterer = oppgaveEgenskapHåndterer;
         this.oppgaveStatistikk = oppgaveStatistikk;
+        this.oppgaveHendelseHåndtererFactory = oppgaveHendelseHåndtererFactory;
     }
 
     ForeldrepengerHendelseHåndterer() {
@@ -62,11 +73,28 @@ public class ForeldrepengerHendelseHåndterer {
     }
 
     public void håndter(Hendelse hendelse) {
-        BehandlingId behandlingId = hendelse.getBehandlingId();
-        BehandlingFpsak behandling = foreldrePengerBehandlingKlient.getBehandling(behandlingId);
+        var behandlingId = hendelse.getBehandlingId();
+        var behandling = foreldrePengerBehandlingKlient.getBehandling(behandlingId);
         behandling.setYtelseType(hendelse.getYtelseType());
-        OppgaveHistorikk oppgaveHistorikk = new OppgaveHistorikk(oppgaveRepository.hentOppgaveEventer(behandlingId));
-        EventResultat eventResultat = ForeldrepengerEventMapper.finnEventResultat(behandling, oppgaveHistorikk, hendelse.getBehandlendeEnhet());
+        var oppgaveHistorikk = new OppgaveHistorikk(oppgaveRepository.hentOppgaveEventer(behandlingId));
+        var eventResultat = ForeldrepengerEventMapper.finnEventResultat(behandling, oppgaveHistorikk, hendelse.getBehandlendeEnhet());
+
+        // sammenlikne med ny håndterermekanisme
+        // forventer at noen GJENÅPNE_OPPGAVE blir sendt til ny OppdaterOppgaveegenskaperHendelseHåndterer
+        var map = new HashMap<EventResultat, Class<? extends FpsakHendelseHåndterer>>();
+        map.put(EventResultat.IKKE_RELEVANT, IkkeRelevantForOppgaveHendelseHåndterer.class);
+        map.put(EventResultat.LUKK_OPPGAVE, LukkOppgaveHendelseHåndterer.class);
+        map.put(EventResultat.LUKK_OPPGAVE_MANUELT_VENT, PåVentOppgaveHendelseHåndterer.class);
+        map.put(EventResultat.LUKK_OPPGAVE_VENT, PåVentOppgaveHendelseHåndterer.class);
+        map.put(EventResultat.OPPRETT_OPPGAVE, GenerellOpprettOppgaveHendelseHåndterer.class);
+        map.put(EventResultat.OPPRETT_BESLUTTER_OPPGAVE, OpprettBeslutterOppgaveHendelseHåndterer.class);
+        map.put(EventResultat.OPPRETT_PAPIRSØKNAD_OPPGAVE, OpprettPapirsøknadOppgaveHendelseHåndterer.class);
+        map.put(EventResultat.GJENÅPNE_OPPGAVE, GjenåpneOppgaveHendelseHåndterer.class);
+        var nyOppgaveHåndtererKandidat = oppgaveHendelseHåndtererFactory.lagHåndterer(hendelse, behandling);
+        var forventet = map.get(eventResultat);
+        if (!nyOppgaveHåndtererKandidat.getClass().equals(forventet)) {
+            LOG.info("Eventresultat {}, kandidat: {}, saksnr {}", eventResultat, nyOppgaveHåndtererKandidat.getClass().getSimpleName(), hendelse.getSaksnummer());
+        }
 
         switch (eventResultat) {
             case IKKE_RELEVANT:
@@ -90,7 +118,7 @@ public class ForeldrepengerHendelseHåndterer {
                 avsluttOppgaveHvisÅpen(behandlingId, oppgaveHistorikk, hendelse.getBehandlendeEnhet());
                 behandling.setSaksnummer(hendelse.getSaksnummer());
                 behandling.setAktørId(hendelse.getAktørId());
-                var håndterer = new OpprettOppgaveHendelseHåndterer(oppgaveRepository, oppgaveEgenskapHåndterer,
+                var håndterer = new GenerellOpprettOppgaveHendelseHåndterer(oppgaveRepository, oppgaveEgenskapHåndterer,
                         oppgaveStatistikk, behandling);
                 håndterer.håndter();
                 break;
@@ -231,7 +259,7 @@ public class ForeldrepengerHendelseHåndterer {
 
     private Oppgave gjenåpneOppgave(BehandlingId behandlingId) {
         var oppgave = oppgaveRepository.gjenåpneOppgaveForBehandling(behandlingId);
-        Optional.ofNullable(oppgave.getReservasjon())
+        oppgave.map(Oppgave::getReservasjon)
                 .map(Reservasjon::getReservertTil)
                 .ifPresent(reservertTil -> {
                             var nå = LocalDateTime.now();
@@ -245,7 +273,7 @@ public class ForeldrepengerHendelseHåndterer {
                             }
                         }
                 );
-        return oppgave;
+        return oppgave.orElseThrow(() -> new IllegalStateException(String.format("Finner ikke oppgave for gjenåpning, behandlingId %s", behandlingId)));
     }
 
     private void avsluttOppgaveForBehandling(BehandlingId behandlingId) {

@@ -112,6 +112,11 @@ public class OppgaveEventLogg extends BaseEntitet {
             return this;
         }
 
+        public Builder andreKriterierType(AndreKriterierType andreKriterierType) {
+            oppgaveEventLoggMal.andreKriterierType = andreKriterierType;
+            return this;
+        }
+
         public Builder fristTid(LocalDateTime fristTid) {
             oppgaveEventLoggMal.fristTid = fristTid;
             return this;
