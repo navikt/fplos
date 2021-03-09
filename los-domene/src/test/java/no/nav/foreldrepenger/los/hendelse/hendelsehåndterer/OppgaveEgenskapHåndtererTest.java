@@ -1,4 +1,4 @@
-package no.nav.foreldrepenger.los.kafkatjenester;
+package no.nav.foreldrepenger.los.hendelse.hendelsehåndterer;
 
 import static java.util.Collections.emptyList;
 import static no.nav.foreldrepenger.los.oppgave.AndreKriterierType.PAPIRSØKNAD;

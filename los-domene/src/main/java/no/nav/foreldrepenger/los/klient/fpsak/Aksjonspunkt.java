@@ -64,7 +64,7 @@ public class Aksjonspunkt {
         return STATUSKODE_AVBRUTT.equals(definisjonKode);
     }
 
-    public boolean tilBeslutter() {
+    public boolean erTilBeslutter() {
         return TIL_BESLUTTER_KODE.equals(definisjonKode) && erAktiv();
     }
 

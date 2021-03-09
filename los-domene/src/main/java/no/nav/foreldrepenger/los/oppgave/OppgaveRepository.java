@@ -85,7 +85,7 @@ public interface OppgaveRepository {
 
     Optional<TilbakekrevingOppgave> hentAktivTilbakekrevingOppgave(BehandlingId behandlingId);
 
-    Oppgave gjenåpneOppgaveForBehandling(BehandlingId behandlingId);
+    Optional<Oppgave> gjenåpneOppgaveForBehandling(BehandlingId behandlingId);
 
     void avsluttOppgaveForBehandling(BehandlingId behandlingId);
 

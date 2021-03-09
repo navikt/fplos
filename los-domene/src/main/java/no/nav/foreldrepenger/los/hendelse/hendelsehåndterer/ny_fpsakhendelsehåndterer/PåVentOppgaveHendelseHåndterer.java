@@ -2,6 +2,7 @@ package no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.ny_fpsakhendelseh�
 
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveEventLogg;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveEventType;
+import no.nav.foreldrepenger.los.oppgave.Oppgave;
 import no.nav.foreldrepenger.los.oppgave.OppgaveRepository;
 import no.nav.foreldrepenger.los.statistikk.statistikk_ny.KøOppgaveHendelse;
 import no.nav.foreldrepenger.los.statistikk.statistikk_ny.OppgaveStatistikk;
@@ -32,16 +33,20 @@ public class PåVentOppgaveHendelseHåndterer implements FpsakHendelseHåndterer
 
     @Override
     public void håndter() {
-        // TODO: innføre egen ventestatus der det ikke finnes oppgave fra før. Vurder å lagre oppgaveId i OppgaveEventLogg.
         var behandlingId = behandlingFpsak.getBehandlingId();
         var behandlendeEnhet = behandlingFpsak.getBehandlendeEnhetId();
         var aksjonspunkter = behandlingFpsak.getAksjonspunkter();
-        var type = manueltSattPåVent(aksjonspunkter) ? OppgaveEventType.MANU_VENT : OppgaveEventType.VENT;
-        var aksjonspunktFrist = aksjonspunktFrist(aksjonspunkter, type);
-        LOG.info("Behandling er satt på vent, type {}", type);
-        oppgaveStatistikk.lagre(behandlingId, KøOppgaveHendelse.OPPGAVE_SATT_PÅ_VENT);
-        oppgaveRepository.avsluttOppgaveForBehandling(behandlingId);
-        var oel = new OppgaveEventLogg(behandlingId, type, null, behandlendeEnhet, aksjonspunktFrist);
+        var venteType = manueltSattPåVent(aksjonspunkter) ? OppgaveEventType.MANU_VENT : OppgaveEventType.VENT;
+        var aksjonspunktFrist = aksjonspunktFrist(aksjonspunkter, venteType);
+        var finnesAktivOppgave = oppgaveRepository.hentOppgaver(behandlingId).stream().anyMatch(Oppgave::getAktiv);
+        if (finnesAktivOppgave) {
+            LOG.info("{} behandling er satt på vent, type {}. Lukker oppgave.", system, venteType);
+            oppgaveStatistikk.lagre(behandlingId, KøOppgaveHendelse.OPPGAVE_SATT_PÅ_VENT);
+            oppgaveRepository.avsluttOppgaveForBehandling(behandlingId);
+        } else {
+            LOG.info("{} behandling er satt på vent, type {}", system, venteType);
+        }
+        var oel = new OppgaveEventLogg(behandlingId, venteType, null, behandlendeEnhet, aksjonspunktFrist);
         oppgaveRepository.lagre(oel);
     }
 

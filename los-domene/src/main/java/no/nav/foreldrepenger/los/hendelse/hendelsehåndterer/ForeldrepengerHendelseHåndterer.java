@@ -12,10 +12,10 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import no.nav.foreldrepenger.los.domene.typer.BehandlingId;
+import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.ny_fpsakhendelsehåndterer.GenerellOpprettOppgaveHendelseHåndterer;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveHistorikk;
 import no.nav.foreldrepenger.los.reservasjon.Reservasjon;
 import no.nav.foreldrepenger.los.statistikk.statistikk_ny.KøOppgaveHendelse;
-import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.ny_fpsakhendelsehåndterer.OpprettOppgaveHendelseHåndterer;
 
 
 import no.nav.foreldrepenger.los.statistikk.statistikk_ny.OppgaveStatistikk;
@@ -90,7 +90,7 @@ public class ForeldrepengerHendelseHåndterer {
                 avsluttOppgaveHvisÅpen(behandlingId, oppgaveHistorikk, hendelse.getBehandlendeEnhet());
                 behandling.setSaksnummer(hendelse.getSaksnummer());
                 behandling.setAktørId(hendelse.getAktørId());
-                var håndterer = new OpprettOppgaveHendelseHåndterer(oppgaveRepository, oppgaveEgenskapHåndterer,
+                var håndterer = new GenerellOpprettOppgaveHendelseHåndterer(oppgaveRepository, oppgaveEgenskapHåndterer,
                         oppgaveStatistikk, behandling);
                 håndterer.håndter();
                 break;
@@ -231,7 +231,7 @@ public class ForeldrepengerHendelseHåndterer {
 
     private Oppgave gjenåpneOppgave(BehandlingId behandlingId) {
         var oppgave = oppgaveRepository.gjenåpneOppgaveForBehandling(behandlingId);
-        Optional.ofNullable(oppgave.getReservasjon())
+        oppgave.map(Oppgave::getReservasjon)
                 .map(Reservasjon::getReservertTil)
                 .ifPresent(reservertTil -> {
                             var nå = LocalDateTime.now();
@@ -245,7 +245,7 @@ public class ForeldrepengerHendelseHåndterer {
                             }
                         }
                 );
-        return oppgave;
+        return oppgave.orElseThrow(() -> new IllegalStateException(String.format("Finner ikke oppgave for gjenåpning, behandlingId %s", behandlingId)));
     }
 
     private void avsluttOppgaveForBehandling(BehandlingId behandlingId) {
