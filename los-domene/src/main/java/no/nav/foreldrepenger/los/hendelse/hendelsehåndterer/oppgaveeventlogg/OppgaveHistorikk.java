@@ -4,6 +4,7 @@ import no.nav.foreldrepenger.los.oppgave.AndreKriterierType;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 public class OppgaveHistorikk {
@@ -22,7 +23,9 @@ public class OppgaveHistorikk {
     }
 
     public boolean erIngenÅpenOppgave() {
-        return sisteEventType != null && sisteEventType.equals(OppgaveEventType.LUKKET);
+        return Objects.equals(sisteEventType, OppgaveEventType.LUKKET)
+                || Objects.equals(sisteEventType, OppgaveEventType.MANU_VENT)
+                || Objects.equals(sisteEventType, OppgaveEventType.VENT);
     }
 
     public boolean erPåVent() {
