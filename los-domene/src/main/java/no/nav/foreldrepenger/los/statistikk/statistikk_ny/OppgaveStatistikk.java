@@ -2,6 +2,7 @@ package no.nav.foreldrepenger.los.statistikk.statistikk_ny;
 
 import no.nav.foreldrepenger.los.domene.typer.BehandlingId;
 import no.nav.foreldrepenger.los.oppgave.OppgaveTjeneste;
+import no.nav.foreldrepenger.los.oppgavekø.OppgaveFiltreringKnytning;
 import no.nav.foreldrepenger.los.oppgavekø.OppgaveKøTjeneste;
 import no.nav.foreldrepenger.los.oppgave.Oppgave;
 
@@ -39,6 +40,10 @@ public class OppgaveStatistikk {
         //  Når det er skilt i hendelsehåndterer kan man kaste exception ved inaktiv oppgave.
     }
 
+    public List<OppgaveFiltreringKnytning> hentOppgaveFiltreringKnytningerForOppgave(Oppgave oppgave) {
+        return oppgaveKøTjeneste.finnOppgaveFiltreringKnytninger(oppgave);
+    }
+
     public void lagre(Oppgave oppgave, KøOppgaveHendelse køOppgaveHendelse) {
         if (!oppgave.getAktiv()) {
             throw new IllegalStateException("Oppgave er ikke aktiv, kan ikke fortsette lagring av statistikk.");
@@ -55,5 +60,10 @@ public class OppgaveStatistikk {
     private void lagreHendelse(Oppgave oppgave, KøOppgaveHendelse køOppgaveHendelse) {
         oppgaveKøTjeneste.finnOppgaveFiltreringKnytninger(oppgave)
                 .forEach(ok -> statistikkRepository.lagre(ok.getOppgaveId(), ok.getOppgaveFiltreringId(), ok.getBehandlingType(), køOppgaveHendelse));
+    }
+
+    public void lagre(OppgaveknytningerFørEtterOppdatering oppgaveknytningerFørEtterOppdatering) {
+        oppgaveknytningerFørEtterOppdatering.getInnPåKø().forEach(k -> statistikkRepository.lagre(k.getOppgaveId(), k.getOppgaveFiltreringId(), k.getBehandlingType(), KøOppgaveHendelse.INN_FRA_ANNEN_KØ));
+        oppgaveknytningerFørEtterOppdatering.getUtAvKø().forEach(k -> statistikkRepository.lagre(k.getOppgaveId(), k.getOppgaveFiltreringId(), k.getBehandlingType(), KøOppgaveHendelse.UT_AV_KØ));
     }
 }
