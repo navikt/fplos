@@ -41,9 +41,14 @@ public class OppgaveHendelseHåndtererFactory {
     public OppgaveHendelseHåndtererFactory() {
     }
 
-    public FpsakHendelseHåndterer lagHåndterer(Hendelse hendelse) {
+    public FpsakHendelseHåndterer lagHåndterer(Hendelse hendelse, BehandlingFpsak tmpFpsak) {
         var behandlingId = hendelse.getBehandlingId();
-        var behandlingFpsak = foreldrePengerBehandlingKlient.getBehandling(behandlingId);
+        BehandlingFpsak behandlingFpsak;
+        if (tmpFpsak != null) { // tmpFpsak er parameter for sammenlikning i prod før klassen tas i bruk. Bruker samme BehandlingFpsak for å sammenlikne epler med epler.
+            behandlingFpsak = tmpFpsak;
+        } else {
+            behandlingFpsak = foreldrePengerBehandlingKlient.getBehandling(behandlingId);
+        }
         behandlingFpsak.setYtelseType(hendelse.getYtelseType());
         behandlingFpsak.setSaksnummer(hendelse.getSaksnummer());
         behandlingFpsak.setAktørId(hendelse.getAktørId());

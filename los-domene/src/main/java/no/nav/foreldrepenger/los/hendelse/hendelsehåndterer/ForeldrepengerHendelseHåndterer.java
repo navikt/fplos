@@ -90,9 +90,9 @@ public class ForeldrepengerHendelseHåndterer {
         map.put(EventResultat.OPPRETT_BESLUTTER_OPPGAVE, OpprettBeslutterOppgaveHendelseHåndterer.class);
         map.put(EventResultat.OPPRETT_PAPIRSØKNAD_OPPGAVE, OpprettPapirsøknadOppgaveHendelseHåndterer.class);
         map.put(EventResultat.GJENÅPNE_OPPGAVE, GjenåpneOppgaveHendelseHåndterer.class);
-        var nyOppgaveHåndtererKandidat = oppgaveHendelseHåndtererFactory.lagHåndterer(hendelse);
+        var nyOppgaveHåndtererKandidat = oppgaveHendelseHåndtererFactory.lagHåndterer(hendelse, behandling);
         var forventet = map.get(eventResultat);
-        if (!nyOppgaveHåndtererKandidat.getClass().isInstance(forventet)) {
+        if (!nyOppgaveHåndtererKandidat.getClass().equals(forventet)) {
             LOG.info("Eventresultat {}, kandidat: {}, saksnr {}", eventResultat, nyOppgaveHåndtererKandidat.getClass().getSimpleName(), hendelse.getSaksnummer());
         }
 

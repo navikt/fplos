@@ -29,7 +29,7 @@ public class OpprettPapirsøknadOppgaveHendelseHåndterer extends OpprettOppgave
                 .filter(Oppgave::getAktiv).findFirst()
                 .ifPresent(o -> {
                     throw new IllegalStateException(String.format("Finnes aktiv oppgave (oppgaveId %s) fra før, " +
-                            "gir opp håndtering av hendelse. Undersøk logikk i utledning av FpsakHendelseHåndterer", o.getId()));
+                            "gir opp håndtering av hendelse. Sannsynlig feil i logikk i utledning av FpsakHendelseHåndterer", o.getId()));
                 });
     }
 
