@@ -1,8 +1,9 @@
-package no.nav.foreldrepenger.los.hendelse.hendelsehåndterer;
+package no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.OppgaveEgenskapFinner;
 import no.nav.foreldrepenger.los.oppgave.AndreKriterierType;
 import no.nav.foreldrepenger.los.oppgave.BehandlingType;
 import no.nav.foreldrepenger.los.oppgave.FagsakYtelseType;
@@ -21,8 +22,8 @@ public class FpsakOppgaveEgenskapFinner implements OppgaveEgenskapFinner {
         if (erUtbetalingTilBruker(behandling)) this.andreKriterier.add(AndreKriterierType.UTBETALING_TIL_BRUKER);
         if (erEndringssøknad(behandling)) this.andreKriterier.add(AndreKriterierType.ENDRINGSSØKNAD);
 
-        FpsakAksjonspunkt fpsakAksjonspunkt = new FpsakAksjonspunkt(behandling.getAksjonspunkter());
-        andreKriterier.addAll(fpsakAksjonspunkt.getKriterier());
+        FpsakAksjonspunktWrapper fpsakAksjonspunktWrapper = new FpsakAksjonspunktWrapper(behandling.getAksjonspunkter());
+        andreKriterier.addAll(fpsakAksjonspunktWrapper.getKriterier());
     }
 
     @Override

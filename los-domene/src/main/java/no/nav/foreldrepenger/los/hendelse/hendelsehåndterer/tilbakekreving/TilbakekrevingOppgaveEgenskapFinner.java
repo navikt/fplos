@@ -1,8 +1,9 @@
-package no.nav.foreldrepenger.los.hendelse.hendelsehåndterer;
+package no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.tilbakekreving;
 
 import java.util.Collections;
 import java.util.List;
 
+import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.OppgaveEgenskapFinner;
 import no.nav.foreldrepenger.los.hendelse.hendelseoppretter.hendelse.Aksjonspunkt;
 import no.nav.foreldrepenger.los.oppgave.AndreKriterierType;
 

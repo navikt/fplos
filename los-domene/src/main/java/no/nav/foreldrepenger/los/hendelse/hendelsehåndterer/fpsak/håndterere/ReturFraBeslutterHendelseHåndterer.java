@@ -1,10 +1,9 @@
-package no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.ny_fpsakhendelsehåndterer;
+package no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.håndterere;
 
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.OppgaveEgenskapHåndterer;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveEventLogg;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveEventType;
 import no.nav.foreldrepenger.los.klient.fpsak.BehandlingFpsak;
-import no.nav.foreldrepenger.los.oppgave.AndreKriterierType;
 import no.nav.foreldrepenger.los.oppgave.Oppgave;
 import no.nav.foreldrepenger.los.oppgave.OppgaveRepository;
 import no.nav.foreldrepenger.los.statistikk.statistikk_ny.KøOppgaveHendelse;
@@ -12,26 +11,28 @@ import no.nav.foreldrepenger.los.statistikk.statistikk_ny.OppgaveStatistikk;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class OpprettBeslutterOppgaveHendelseHåndterer extends OpprettOppgaveHendelseHåndterer {
-    private static final Logger LOG = LoggerFactory.getLogger(OpprettBeslutterOppgaveHendelseHåndterer.class);
+public class ReturFraBeslutterHendelseHåndterer extends OpprettOppgaveHendelseHåndterer {
+
+    private static final Logger LOG = LoggerFactory.getLogger(ReturFraBeslutterHendelseHåndterer.class);
+
     private final OppgaveRepository oppgaveRepository;
     private final OppgaveStatistikk oppgaveStatistikk;
     private final BehandlingFpsak behandlingFpsak;
 
-
-    public OpprettBeslutterOppgaveHendelseHåndterer(OppgaveRepository oppgaveRepository,
-                                                    OppgaveEgenskapHåndterer oppgaveEgenskapHåndterer,
-                                                    OppgaveStatistikk oppgaveStatistikk,
-                                                    BehandlingFpsak behandlingFpsak) {
+    public ReturFraBeslutterHendelseHåndterer(OppgaveRepository oppgaveRepository,
+                                              OppgaveEgenskapHåndterer oppgaveEgenskapHåndterer,
+                                              OppgaveStatistikk oppgaveStatistikk,
+                                              BehandlingFpsak behandlingFpsak) {
         super(oppgaveRepository, oppgaveEgenskapHåndterer, oppgaveStatistikk, behandlingFpsak);
         this.oppgaveRepository = oppgaveRepository;
         this.oppgaveStatistikk = oppgaveStatistikk;
         this.behandlingFpsak = behandlingFpsak;
     }
 
+    // TODO: vurder å opprette automatisk reservasjon på saksbehandler 1
+
     @Override
     void håndterEksisterendeOppgave() {
-        // TODO: av og til er saksbehandlers oppgave allerede lukket. Vurder en sjekk på dette før man logger i OEL osv
         var behandlingId = behandlingFpsak.getBehandlingId();
         oppgaveStatistikk.lagre(behandlingId, KøOppgaveHendelse.LUKKET_OPPGAVE);
         oppgaveRepository.avsluttOppgaveForBehandling(behandlingId);
@@ -41,19 +42,17 @@ public class OpprettBeslutterOppgaveHendelseHåndterer extends OpprettOppgaveHen
                 .type(OppgaveEventType.LUKKET)
                 .build();
         oppgaveRepository.lagre(oel);
-        LOG.info("Avslutter saksbehandler1 oppgave");
+        LOG.info("Avslutter {} beslutteroppgave", system);
     }
 
     @Override
     void opprettOppgaveEventLogg(Oppgave oppgave) {
-        LOG.info("Oppretter {} oppgave til beslutter", system);
         var oel = OppgaveEventLogg.builder()
-                .type(OppgaveEventType.OPPRETTET)
-                .behandlingId(behandlingFpsak.getBehandlingId())
+                .behandlingId(oppgave.getBehandlingId())
                 .behandlendeEnhet(behandlingFpsak.getBehandlendeEnhetId())
-                .andreKriterierType(AndreKriterierType.TIL_BESLUTTER)
+                .type(OppgaveEventType.OPPRETTET)
                 .build();
         oppgaveRepository.lagre(oel);
+        LOG.info("Retur fra beslutter, oppretter {} saksbehandler-oppgave med oppgaveId {}", system, oppgave.getId());
     }
-
 }

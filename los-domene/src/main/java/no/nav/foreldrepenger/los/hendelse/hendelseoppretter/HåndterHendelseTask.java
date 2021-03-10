@@ -1,18 +1,16 @@
 package no.nav.foreldrepenger.los.hendelse.hendelseoppretter;
 
-import java.util.Objects;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-
-import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.ForeldrepengerHendelseHåndterer;
-import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.TilbakekrevingHendelseHåndterer;
-import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.ny_fpsakhendelsehåndterer.OppgaveHendelseHåndtererFactory;
+import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.OppgaveHendelseHåndtererFactory;
+import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.tilbakekreving.TilbakekrevingHendelseHåndterer;
 import no.nav.foreldrepenger.los.hendelse.hendelseoppretter.hendelse.Fagsystem;
 import no.nav.foreldrepenger.los.hendelse.hendelseoppretter.hendelse.TilbakekrevingHendelse;
 import no.nav.vedtak.felles.prosesstask.api.ProsessTask;
 import no.nav.vedtak.felles.prosesstask.api.ProsessTaskData;
 import no.nav.vedtak.felles.prosesstask.api.ProsessTaskHandler;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import java.util.Objects;
 
 @ApplicationScoped
 @ProsessTask(HåndterHendelseTask.TASKTYPE)
@@ -23,17 +21,14 @@ public class HåndterHendelseTask implements ProsessTaskHandler {
 
     private HendelseRepository hendelseRepository;
 
-    private ForeldrepengerHendelseHåndterer foreldrepengerHendelseHåndterer;
     private TilbakekrevingHendelseHåndterer tilbakekrevingHendelseHåndterer;
     private OppgaveHendelseHåndtererFactory oppgaveHendelseHåndtererFactory;
 
     @Inject
     public HåndterHendelseTask(HendelseRepository hendelseRepository,
-                               ForeldrepengerHendelseHåndterer foreldrepengerHendelseHåndterer,
                                TilbakekrevingHendelseHåndterer tilbakekrevingHendelseHåndterer,
                                OppgaveHendelseHåndtererFactory oppgaveHendelseHåndtererFactory) {
         this.hendelseRepository = hendelseRepository;
-        this.foreldrepengerHendelseHåndterer = foreldrepengerHendelseHåndterer;
         this.tilbakekrevingHendelseHåndterer = tilbakekrevingHendelseHåndterer;
         this.oppgaveHendelseHåndtererFactory = oppgaveHendelseHåndtererFactory;
     }
@@ -48,9 +43,8 @@ public class HåndterHendelseTask implements ProsessTaskHandler {
         var hendelse = hendelseRepository.hent(hendelseId);
 
         if (Objects.equals(hendelse.getFagsystem(), Fagsystem.FPSAK)) {
-            var håndterer = oppgaveHendelseHåndtererFactory.lagHåndterer(hendelse, null);
+            var håndterer = oppgaveHendelseHåndtererFactory.lagHåndterer(hendelse);
             håndterer.håndter();
-            //foreldrepengerHendelseHåndterer.håndter(hendelse);
         } else if (Objects.equals(hendelse.getFagsystem(), Fagsystem.FPTILBAKE)) {
             tilbakekrevingHendelseHåndterer.håndter((TilbakekrevingHendelse) hendelse);
 

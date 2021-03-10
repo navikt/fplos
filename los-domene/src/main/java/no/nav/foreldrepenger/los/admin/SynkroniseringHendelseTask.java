@@ -1,21 +1,20 @@
 package no.nav.foreldrepenger.los.admin;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-
-import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.ForeldrepengerHendelseHåndterer;
+import no.nav.foreldrepenger.los.admin.dto.FagsakBackendDto;
 import no.nav.foreldrepenger.los.domene.typer.BehandlingId;
-import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.ny_fpsakhendelsehåndterer.OppgaveHendelseHåndtererFactory;
+import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.OppgaveHendelseHåndtererFactory;
 import no.nav.foreldrepenger.los.hendelse.hendelseoppretter.hendelse.Fagsystem;
 import no.nav.foreldrepenger.los.hendelse.hendelseoppretter.hendelse.Hendelse;
 import no.nav.foreldrepenger.los.klient.fpsak.ForeldrepengerBehandlingKlient;
 import no.nav.foreldrepenger.los.klient.fpsak.ForeldrepengerFagsakKlient;
 import no.nav.foreldrepenger.los.klient.fpsak.dto.behandling.ResourceLink;
 import no.nav.foreldrepenger.los.klient.fpsak.dto.behandling.UtvidetBehandlingDto;
-import no.nav.foreldrepenger.los.admin.dto.FagsakBackendDto;
 import no.nav.vedtak.felles.prosesstask.api.ProsessTask;
 import no.nav.vedtak.felles.prosesstask.api.ProsessTaskData;
 import no.nav.vedtak.felles.prosesstask.api.ProsessTaskHandler;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 
 
 @ApplicationScoped
@@ -26,17 +25,14 @@ public class SynkroniseringHendelseTask implements ProsessTaskHandler {
 
     private ForeldrepengerBehandlingKlient behandlingKlient;
     private ForeldrepengerFagsakKlient fagsakKlient;
-    private ForeldrepengerHendelseHåndterer foreldrepengerHendelseHåndterer;
     private OppgaveHendelseHåndtererFactory oppgaveHendelseHåndtererFactory;
 
     @Inject
     public SynkroniseringHendelseTask(ForeldrepengerBehandlingKlient behandlingKlient,
                                       ForeldrepengerFagsakKlient fagsakKlient,
-                                      ForeldrepengerHendelseHåndterer foreldrepengerHendelseHåndterer,
                                       OppgaveHendelseHåndtererFactory oppgaveHendelseHåndtererFactory) {
         this.behandlingKlient = behandlingKlient;
         this.fagsakKlient = fagsakKlient;
-        this.foreldrepengerHendelseHåndterer = foreldrepengerHendelseHåndterer;
         this.oppgaveHendelseHåndtererFactory = oppgaveHendelseHåndtererFactory;
     }
 
@@ -60,9 +56,8 @@ public class SynkroniseringHendelseTask implements ProsessTaskHandler {
         hendelse.setBehandlingType(behandlingDto.getType());
         hendelse.setYtelseType(fagsakDto.getSakstype());
 
-        var håndterer = oppgaveHendelseHåndtererFactory.lagHåndterer(hendelse, null);
+        var håndterer = oppgaveHendelseHåndtererFactory.lagHåndterer(hendelse);
         håndterer.håndter();
-        //foreldrepengerHendelseHåndterer.håndter(hendelse);
     }
 
     private FagsakBackendDto hentFagsakDto(UtvidetBehandlingDto behandlingdto) {

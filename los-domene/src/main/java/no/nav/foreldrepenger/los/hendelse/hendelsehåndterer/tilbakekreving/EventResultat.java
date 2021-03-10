@@ -1,4 +1,4 @@
-package no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.eventresultat;
+package no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.tilbakekreving;
 
 public enum EventResultat {
     IKKE_RELEVANT,

@@ -1,6 +1,15 @@
-package no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.ny_fpsakhendelsehåndterer;
+package no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak;
 
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.OppgaveEgenskapHåndterer;
+import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.håndterere.GenerellOpprettOppgaveHendelseHåndterer;
+import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.håndterere.GjenåpneOppgaveHendelseHåndterer;
+import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.håndterere.IkkeRelevantForOppgaveHendelseHåndterer;
+import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.håndterere.LukkOppgaveHendelseHåndterer;
+import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.håndterere.OppdaterOppgaveegenskaperHendelseHåndterer;
+import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.håndterere.OpprettBeslutterOppgaveHendelseHåndterer;
+import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.håndterere.OpprettPapirsøknadOppgaveHendelseHåndterer;
+import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.håndterere.PåVentOppgaveHendelseHåndterer;
+import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.håndterere.ReturFraBeslutterHendelseHåndterer;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveHistorikk;
 import no.nav.foreldrepenger.los.hendelse.hendelseoppretter.hendelse.Hendelse;
 import no.nav.foreldrepenger.los.oppgave.OppgaveRepository;
@@ -41,14 +50,9 @@ public class OppgaveHendelseHåndtererFactory {
     public OppgaveHendelseHåndtererFactory() {
     }
 
-    public FpsakHendelseHåndterer lagHåndterer(Hendelse hendelse, BehandlingFpsak tmpFpsak) {
+    public FpsakHendelseHåndterer lagHåndterer(Hendelse hendelse) {
         var behandlingId = hendelse.getBehandlingId();
-        BehandlingFpsak behandlingFpsak;
-        if (tmpFpsak != null) { // tmpFpsak er parameter for sammenlikning i prod før klassen tas i bruk. Bruker samme BehandlingFpsak for å sammenlikne epler med epler.
-            behandlingFpsak = tmpFpsak;
-        } else {
-            behandlingFpsak = foreldrePengerBehandlingKlient.getBehandling(behandlingId);
-        }
+        var behandlingFpsak = foreldrePengerBehandlingKlient.getBehandling(behandlingId);
         behandlingFpsak.setYtelseType(hendelse.getYtelseType());
         behandlingFpsak.setSaksnummer(hendelse.getSaksnummer());
         behandlingFpsak.setAktørId(hendelse.getAktørId());

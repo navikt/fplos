@@ -1,6 +1,7 @@
-package no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.ny_fpsakhendelsehåndterer;
+package no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.håndterere;
 
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.OppgaveEgenskapHåndterer;
+import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.FpsakHendelseHåndterer;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveEventLogg;
 import no.nav.foreldrepenger.los.klient.fpsak.BehandlingFpsak;
 import no.nav.foreldrepenger.los.oppgave.Oppgave;
@@ -34,6 +35,6 @@ public class GenerellOpprettOppgaveHendelseHåndterer extends OpprettOppgaveHend
     void opprettOppgaveEventLogg(Oppgave oppgave) {
         var oel = OppgaveEventLogg.opprettetOppgaveEvent(oppgave);
         oppgaveRepository.lagre(oel);
-        LOG.info("Oppretter {}-oppgave med id {}", system, oppgave.getId());
+        LOG.info("Oppretter {}-oppgave med id {}", FpsakHendelseHåndterer.system, oppgave.getId());
     }
 }
