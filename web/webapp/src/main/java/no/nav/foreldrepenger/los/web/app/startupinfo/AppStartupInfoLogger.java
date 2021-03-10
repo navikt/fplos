@@ -58,10 +58,10 @@ class AppStartupInfoLogger {
     }
 
     private static void log(Selftests.Resultat result) {
-        OppstartFeil.FACTORY.selftestStatus(
+        LOG.info("FP-753409: Selftest {}: {}. Endpoint: {}.",
                 getStatus(result.isReady()),
                 result.getDescription(),
-                result.getEndpoint()).log(LOG);
+                result.getEndpoint());
     }
 
     private static String getStatus(boolean isHealthy) {

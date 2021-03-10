@@ -1,25 +1,31 @@
 package no.nav.foreldrepenger.los.web.app.sikkerhetsfilter;
 
-import com.google.common.base.CharMatcher;
+import static no.nav.vedtak.log.util.LoggerUtils.removeLineBreaks;
+
+import java.util.regex.Pattern;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static no.nav.vedtak.log.util.LoggerUtils.removeLineBreaks;
-
 public class SimpelHvitvasker {
-
-    // FIXME (LIBELLE): Bli kvitt Guava avhengiget her
-
-    //Legg merke til at det brukes negativen av matchingen pågrunn av bruk av replace istedet for retain.
-    private static CharMatcher kunBokstaverMatcher = CharMatcher.javaLetter().or(CharMatcher.digit()).or(CharMatcher.whitespace()).or(CharMatcher.anyOf(",.-:")).negate();
-    private static CharMatcher cookieMatcher = CharMatcher.ascii().and(CharMatcher.anyOf(";, ").negate()).negate();
-    private static CharMatcher bokstaverOgVanligeTegnMatcher = CharMatcher.javaLetter().or(CharMatcher.digit()).or(CharMatcher.whitespace()).or(CharMatcher.anyOf("-._=%&*")).negate();
 
     private static final Logger log = LoggerFactory.getLogger(SimpelHvitvasker.class);
 
+    private static final String TEGN = "a-zA-Z";
+    private static final String TALL = "0-9";
+    private static final String SPESJELLE = "æøåÆØÅAaÁáBbCcČčDdĐđEeFfGgHhIiJjKkLlMmNnŊŋOoPpRrSsŠšTtŦŧUuVvZzŽžéôèÉöüäÖÜÄ";
+
+    private static final String KUN_BOKSTAVER = "[^" + TEGN + TALL + SPESJELLE + " ,.:\\-]";
+    private static final Pattern KUN_BOKSTAVER_PATTERN = Pattern.compile(KUN_BOKSTAVER);
+
+    private static final String KUN_BOKSTAVER_OG_VANLIGE_TEGN = "[^" + TEGN + TALL + SPESJELLE + " \\-._=%&*]";
+    private static final Pattern KUN_BOKSTAVER_OG_VANLIGE_TEGN_PATTERN = Pattern.compile(KUN_BOKSTAVER_OG_VANLIGE_TEGN);
+
+    private static final String ASCII_TEGN = "[^\\p{ASCII}&&[^\\s,;]]";
+    private static final Pattern KUN_ASCII_TEGN_PATTERN = Pattern.compile(ASCII_TEGN);
+
     private SimpelHvitvasker() {
     }
-
 
     /**
      * Hvitvasker for alt som ikke er bokstaver
@@ -30,14 +36,18 @@ public class SimpelHvitvasker {
      */
     public static String hvitvaskKunBokstaver(String uvasketTekst) {
         if (uvasketTekst == null || uvasketTekst.isEmpty()) return uvasketTekst;
-        String rensetTekst = kunBokstaverMatcher.replaceFrom(uvasketTekst, '_');
-        if (!uvasketTekst.equals(rensetTekst)) {
+
+        var matcher = KUN_BOKSTAVER_PATTERN.matcher(uvasketTekst);
+        if (matcher.find()) {
+            String rensetTekst = matcher.replaceAll("_");
+
             if (log.isTraceEnabled()) {
                 log.trace(removeLineBreaks("Hvitvasking av kun bokstav tekst: fra '{}' til '{}'"),
                     removeLineBreaks(uvasketTekst), removeLineBreaks(rensetTekst));
             }
+            return rensetTekst;
         }
-        return rensetTekst;
+        return uvasketTekst;
     }
 
     /**
@@ -49,14 +59,17 @@ public class SimpelHvitvasker {
      */
     public static String hvitvaskBokstaverOgVanligeTegn(String uvasketTekst) {
         if (uvasketTekst == null || uvasketTekst.isEmpty()) return uvasketTekst;
-        String rensetTekst = bokstaverOgVanligeTegnMatcher.replaceFrom(uvasketTekst, '_');
-        if (!uvasketTekst.equals(rensetTekst)) {
+
+        var matcher = KUN_BOKSTAVER_OG_VANLIGE_TEGN_PATTERN.matcher(uvasketTekst);
+        if (matcher.find()) {
+            String rensetTekst = matcher.replaceAll("_");
             if (log.isTraceEnabled()) {
                 log.trace(removeLineBreaks("Hvitvasking av kunbokstaver og vanlige tegn: fra '{}' til '{}'"),
                     removeLineBreaks(uvasketTekst), removeLineBreaks(rensetTekst));
             }
+            return rensetTekst;
         }
-        return rensetTekst;
+        return uvasketTekst;
     }
 
     /**
@@ -68,14 +81,17 @@ public class SimpelHvitvasker {
      */
     public static String hvitvaskCookie(String uvasketTekst) {
         if (uvasketTekst == null || uvasketTekst.isEmpty()) return uvasketTekst;
-        String rensetTekst = cookieMatcher.replaceFrom(uvasketTekst, '_');
-        if (!uvasketTekst.equals(rensetTekst)) {
+
+        var matcher = KUN_ASCII_TEGN_PATTERN.matcher(uvasketTekst);
+        if (matcher.find()) {
+            var rensetTekst = matcher.replaceAll("_");
             if (log.isTraceEnabled()) {
                 log.trace(removeLineBreaks("Hvitvasking av kunbokstaver og vanlige tegn: fra '{}' til '{}'"),
                     removeLineBreaks(uvasketTekst), removeLineBreaks(rensetTekst));
             }
+            return rensetTekst;
         }
-        return rensetTekst;
+        return uvasketTekst;
     }
 
 }

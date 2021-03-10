@@ -20,7 +20,7 @@ import static no.nav.vedtak.log.util.LoggerUtils.removeLineBreaks;
 @WebFilter(urlPatterns = "/*")
 public final class XSSFilter implements Filter {
 
-    private static final Logger log = LoggerFactory.getLogger(XSSFilter.class);
+    private static final Logger LOG = LoggerFactory.getLogger(XSSFilter.class);
 
     static class FilteredRequest extends HttpServletRequestWrapper {
 
@@ -30,6 +30,7 @@ public final class XSSFilter implements Filter {
 
         @Override
         public String getParameter(String paramName) {//ikke i bruk??
+            LOG.info("XSSFilter getParameter brukes.");
             String value = super.getParameter(paramName);
             value = hvitvaksKunBokstaver(value, "parameter");
             return value;
@@ -37,6 +38,7 @@ public final class XSSFilter implements Filter {
 
         @Override
         public String[] getParameterValues(String paramName) {//ikke i bruk??
+            LOG.info("XSSFilter getParameterVaules brukes.");
             String[] values = super.getParameterValues(paramName);
             for (int index = 0; index < values.length; index++) {
                 values[index] = hvitvaksKunBokstaver(values[index], "parameter");
@@ -46,11 +48,13 @@ public final class XSSFilter implements Filter {
 
         @Override
         public String getQueryString() {
+            LOG.info("XSSFilter getQueryString brukes.");
             return hvitvaskBokstaverOgVanligeTegn(super.getQueryString(), "query");
         }
 
         @Override
         public Cookie[] getCookies() {
+            LOG.info("XSSFilter getCookies brukes.");
             Cookie[] cookies = super.getCookies();
             if (cookies != null) {
                 for (Cookie cooky : cookies) {
@@ -62,6 +66,7 @@ public final class XSSFilter implements Filter {
 
         @Override
         public String getHeader(String name) {//ikke i bruk?? .. brukes av swagger
+            LOG.info("XSSFilter getHeader brukes.");
             return hvitvaksKunBokstaver(super.getHeader(name), "header");
         }
 
@@ -84,7 +89,7 @@ public final class XSSFilter implements Filter {
             if (unsanitizedString == null || unsanitizedString.equals(result)) {
                 return unsanitizedString;
             }
-            log.info(removeLineBreaks("Sanitization av {}: fra '{}' til '{}'"), removeLineBreaks(type), removeLineBreaks(unsanitizedString), removeLineBreaks(result));//TODO (LIBELLE): flytt til sikkerhetslog //NOSONAR
+            LOG.info(removeLineBreaks("Sanitization av {}: fra '{}' til '{}'"), removeLineBreaks(type), removeLineBreaks(unsanitizedString), removeLineBreaks(result));//TODO (LIBELLE): flytt til sikkerhetslog //NOSONAR
             return result;
         }
     }

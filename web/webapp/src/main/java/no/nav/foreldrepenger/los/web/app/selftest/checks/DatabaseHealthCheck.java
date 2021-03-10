@@ -23,8 +23,6 @@ public class DatabaseHealthCheck {
 
     private final String jndiName;
 
-    // må være rask, og bruke et stabilt tabell-navn
-
     private String endpoint = null; // ukjent frem til første gangs test
 
     public DatabaseHealthCheck() {

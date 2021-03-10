@@ -1,15 +1,17 @@
 package no.nav.foreldrepenger.los.organisasjon.ansatt;
 
-import no.nav.vedtak.exception.IntegrasjonException;
-import no.nav.vedtak.felles.integrasjon.rest.OidcRestClient;
-import no.nav.vedtak.konfig.KonfigVerdi;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.net.URI;
+import java.util.Optional;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import java.net.URI;
-import java.util.Optional;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import no.nav.vedtak.exception.IntegrasjonException;
+import no.nav.vedtak.felles.integrasjon.rest.OidcRestClient;
+import no.nav.vedtak.konfig.KonfigVerdi;
 
 @ApplicationScoped
 public class EnhetstilgangConnection {
@@ -46,7 +48,7 @@ public class EnhetstilgangConnection {
             return httpClient.getReturnsOptional(uri, EnhetstilgangResponse.class);
         } catch (IntegrasjonException e) {
             // best effort for å stoppe unødvendige 404
-            if (e.getFeil().getFeilmelding().contains("http-kode '404'")) {
+            if (e.getMessage().contains("http-kode '404'")) {
                 log.info("Finner ikke ident i Axsys, returnerer tomt resultat", e);
                 return Optional.empty();
             } else throw e;

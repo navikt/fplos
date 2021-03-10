@@ -1,13 +1,10 @@
 package no.nav.foreldrepenger.los.web.app.tjenester.admin;
 
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
-import no.nav.foreldrepenger.los.web.app.AbacAttributter;
-import no.nav.foreldrepenger.los.web.app.tjenester.admin.dto.DriftsmeldingDto;
-import no.nav.foreldrepenger.los.web.app.tjenester.admin.dto.DriftsmeldingOpprettelseDto;
-import no.nav.foreldrepenger.los.admin.driftsmelding.Driftsmelding;
-import no.nav.foreldrepenger.los.admin.driftsmelding.DriftsmeldingTjeneste;
-import no.nav.vedtak.sikkerhet.abac.BeskyttetRessurs;
+import static no.nav.vedtak.sikkerhet.abac.BeskyttetRessursActionAttributt.CREATE;
+import static no.nav.vedtak.sikkerhet.abac.BeskyttetRessursActionAttributt.READ;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -21,11 +18,15 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.util.List;
-import java.util.stream.Collectors;
 
-import static no.nav.vedtak.sikkerhet.abac.BeskyttetRessursActionAttributt.CREATE;
-import static no.nav.vedtak.sikkerhet.abac.BeskyttetRessursActionAttributt.READ;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import no.nav.foreldrepenger.los.admin.driftsmelding.Driftsmelding;
+import no.nav.foreldrepenger.los.admin.driftsmelding.DriftsmeldingTjeneste;
+import no.nav.foreldrepenger.los.web.app.AbacAttributter;
+import no.nav.foreldrepenger.los.web.app.tjenester.admin.dto.DriftsmeldingDto;
+import no.nav.foreldrepenger.los.web.app.tjenester.admin.dto.DriftsmeldingOpprettelseDto;
+import no.nav.vedtak.sikkerhet.abac.BeskyttetRessurs;
 
 @Path("/driftsmeldinger")
 @Transactional
