@@ -15,6 +15,7 @@ import no.nav.foreldrepenger.los.oppgavekø.OppgaveFiltrering;
 import no.nav.foreldrepenger.los.organisasjon.Avdeling;
 import no.nav.foreldrepenger.los.avdelingsleder.AvdelingslederTjeneste;
 import no.nav.foreldrepenger.los.oppgave.OppgaveTjenesteImpl;
+import no.nav.foreldrepenger.los.statistikk.statistikk_gammel.NyeOgFerdigstilteOppgaver;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -65,7 +66,7 @@ class OppgaveStatistikkTest {
         oppgaveStatistikk.lagre(oppgave, KøOppgaveHendelse.LUKKET_OPPGAVE);
 
         var stats = oppgaveStatistikk.hentStatistikk(køMedTreff.getId());
-        var forventetKøStatistikk = new KøStatistikk(LocalDate.now(), oppgave.getBehandlingType(), KøOppgaveHendelse.LUKKET_OPPGAVE, 1L);
+        var forventetKøStatistikk = new NyeOgFerdigstilteOppgaver(LocalDate.now(), oppgave.getBehandlingType(), 0L, 1L);
         assertThat(stats).containsExactly(forventetKøStatistikk);
     }
 
@@ -84,11 +85,11 @@ class OppgaveStatistikkTest {
         oppgaveStatistikk.lagre(knytninger);
 
         var kø2 = oppgaveStatistikk.hentStatistikk(2L);
-        assertThat(kø2).containsExactly(new KøStatistikk(LocalDate.now(), BehandlingType.FØRSTEGANGSSØKNAD, KøOppgaveHendelse.UT_TIL_ANNEN_KØ, 1L));
+        assertThat(kø2).containsExactly(new NyeOgFerdigstilteOppgaver(LocalDate.now(), BehandlingType.FØRSTEGANGSSØKNAD, 0L, 1L));
         var kø1 = oppgaveStatistikk.hentStatistikk(1L);
         assertThat(kø1).isEmpty();
         var kø3 = oppgaveStatistikk.hentStatistikk(3L);
-        assertThat(kø3).containsExactly(new KøStatistikk(LocalDate.now(), BehandlingType.FØRSTEGANGSSØKNAD, KøOppgaveHendelse.INN_FRA_ANNEN_KØ, 1L));
+        assertThat(kø3).containsExactly(new NyeOgFerdigstilteOppgaver(LocalDate.now(), BehandlingType.FØRSTEGANGSSØKNAD, 1L, 0L));
     }
 
     private OppgaveFiltrering kø(Avdeling avdeling) {

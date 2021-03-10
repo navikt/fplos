@@ -9,8 +9,6 @@ public interface StatistikkRepository {
 
     List hentAntallOppgaverForAvdelingSattManueltPåVent(String avdeling);
 
-    List hentNyeOgFerdigstilteOppgaver(Long sakslisteId);
-
     List hentOppgaverPerFørsteStønadsdag(String avdeling);
 
 }

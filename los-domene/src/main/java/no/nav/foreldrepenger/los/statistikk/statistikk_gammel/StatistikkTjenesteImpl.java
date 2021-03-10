@@ -1,30 +1,22 @@
 package no.nav.foreldrepenger.los.statistikk.statistikk_gammel;
 
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-
-import no.nav.foreldrepenger.los.statistikk.statistikk_ny.NyOpppgaveStatistikkRepository;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 @ApplicationScoped
 public class StatistikkTjenesteImpl implements StatistikkTjeneste {
-    private static final Logger log = LoggerFactory.getLogger(StatistikkTjenesteImpl.class);
 
     private StatistikkRepository statisikkRepository;
-    private NyOpppgaveStatistikkRepository nyOpppgaveStatistikkRepository;
 
     StatistikkTjenesteImpl() {
         // for CDI proxy
     }
 
     @Inject
-    public StatistikkTjenesteImpl(StatistikkRepository statistikkRepository, NyOpppgaveStatistikkRepository nyOpppgaveStatistikkRepository) {
+    public StatistikkTjenesteImpl(StatistikkRepository statistikkRepository) {
         statisikkRepository = statistikkRepository;
-        this.nyOpppgaveStatistikkRepository = nyOpppgaveStatistikkRepository;
     }
 
     @Override
@@ -46,17 +38,6 @@ public class StatistikkTjenesteImpl implements StatistikkTjeneste {
         var stats = (List<OppgaverForAvdelingSattManueltPaaVent>) statisikkRepository.hentAntallOppgaverForAvdelingSattManueltPåVent(avdeling).stream()
                 .map(result -> new OppgaverForAvdelingSattManueltPaaVent((Object[]) result))
                 .collect(Collectors.toList());
-        return stats;
-    }
-
-    @Override
-    public List<NyeOgFerdigstilteOppgaver> hentNyeOgFerdigstilteOppgaver(Long sakslisteId) {
-        var stats = (List<NyeOgFerdigstilteOppgaver>) statisikkRepository.hentNyeOgFerdigstilteOppgaver(sakslisteId).stream() // NOSONAR
-                .map(result -> new NyeOgFerdigstilteOppgaver((Object[]) result))
-                .collect(Collectors.toList()); // NOSONAR
-        log.info("henter statistikk for oppgaveFilterSettId {}", sakslisteId);
-        var nyStats = nyOpppgaveStatistikkRepository.hentStatistikk(sakslisteId);
-        nyStats.forEach(ks -> log.info("Ny statistikk viser {}", ks));
         return stats;
     }
 
