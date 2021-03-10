@@ -10,6 +10,7 @@ import org.assertj.core.api.AbstractAssert;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -43,11 +44,11 @@ public class OppgaveAssert extends AbstractAssert<OppgaveAssert, Oppgave> {
 
     public OppgaveAssert harBehandlingOpprettet(LocalDateTime behandlingOpprettet) {
         isNotNull();
-        var faktisk = actual.getBehandlingOpprettet();
+        var faktisk = actual.getBehandlingOpprettet().truncatedTo(ChronoUnit.SECONDS);
         assertThat(faktisk)
                 .overridingErrorMessage("Forventet behandlingOpprettet <%s> men fikk <%s>",
                         behandlingOpprettet, faktisk)
-                .isEqualTo(behandlingOpprettet);
+                .isEqualTo(behandlingOpprettet.truncatedTo(ChronoUnit.SECONDS));
         return this;
     }
 

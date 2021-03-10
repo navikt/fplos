@@ -38,17 +38,13 @@ public class OppdaterOppgaveegenskaperHendelseHåndterer implements FpsakHendels
         var behandlingId = behandlingFpsak.getBehandlingId();
         var oppgave = oppgaveRepository.hentOppgaver(behandlingId).stream().filter(Oppgave::getAktiv).findFirst()
                 .orElseThrow(() -> new IllegalStateException(String.format("Finner ikke oppgave for oppdatering, behandlingId %s", behandlingId)));
-
         oppgaveknytningerFørEtterOppdatering.setKnytningerFørOppdatering(oppgaveStatistikk.hentOppgaveFiltreringKnytningerForOppgave(oppgave));
-
         oppdaterReservasjon(oppgave);
         oppdaterOppgave(oppgave);
         oppdaterOppgaveEgenskaper(oppgave);
         oppdaterOppgaveEventLogg();
-
         oppgaveknytningerFørEtterOppdatering.setKnytningerEtterOppdatering(oppgaveStatistikk.hentOppgaveFiltreringKnytningerForOppgave(oppgave));
         oppgaveStatistikk.lagre(oppgaveknytningerFørEtterOppdatering);
-
         LOG.info("Oppdater {} oppgaveId {}", system, oppgave.getId());
     }
 
@@ -58,6 +54,7 @@ public class OppdaterOppgaveegenskaperHendelseHåndterer implements FpsakHendels
     }
 
     private void oppdaterOppgaveEventLogg() {
+        // TODO: innfør OppgaveEventType for å skille mellom oppdatering av egenskaper og gjenåpning. Ev dropp å logge oppdateringer?
         var oel = OppgaveEventLogg.builder()
                 .behandlingId(behandlingFpsak.getBehandlingId())
                 .behandlendeEnhet(behandlingFpsak.getBehandlendeEnhetId())
@@ -66,13 +63,13 @@ public class OppdaterOppgaveegenskaperHendelseHåndterer implements FpsakHendels
         oppgaveRepository.lagre(oel);
     }
 
-    private void oppdaterReservasjon(Oppgave gjenåpnetOppgave) {
-        if (!gjenåpnetOppgave.getBehandlendeEnhet().equals(behandlingFpsak.getBehandlendeEnhetId())
-                && gjenåpnetOppgave.harAktivReservasjon()) {
-            LOG.info("OppgaveId {} flyttes til ny enhet. Fjerner aktiv reservasjon.", gjenåpnetOppgave.getId());
-            gjenåpnetOppgave.getReservasjon().frigiReservasjon("Flyttet til ny enhet");
-        } else if (gjenåpnetOppgave.harAktivReservasjon()) {
-            var reservasjon = gjenåpnetOppgave.getReservasjon();
+    private void oppdaterReservasjon(Oppgave oppgave) {
+        if (!oppgave.getBehandlendeEnhet().equals(behandlingFpsak.getBehandlendeEnhetId())
+                && oppgave.harAktivReservasjon()) {
+            LOG.info("OppgaveId {} flyttes til ny enhet. Fjerner aktiv reservasjon.", oppgave.getId());
+            oppgave.getReservasjon().frigiReservasjon("Flyttet til ny enhet");
+        } else if (oppgave.harAktivReservasjon()) {
+            var reservasjon = oppgave.getReservasjon();
             var nyReservertTil = reservasjon.getReservertTil().plusHours(2);
             LOG.info("Forlenger reservasjonId {} med to timer til {}", reservasjon.getId(), nyReservertTil);
             reservasjon.endreReservasjonPåOppgave(nyReservertTil);
