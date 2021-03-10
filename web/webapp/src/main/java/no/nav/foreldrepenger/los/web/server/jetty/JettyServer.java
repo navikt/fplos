@@ -84,7 +84,7 @@ public class JettyServer extends AbstractJettyServer {
                 .distinct()
                 .collect(Collectors.toList());
 
-        metaData.setWebInfClassesDirs(resources);
+        metaData.setWebInfClassesResources(resources);
     }
 
     @Override

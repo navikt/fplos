@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory;
 
 public class AppStartupServletContextListener implements ServletContextListener {
 
-    private static final Logger logger = LoggerFactory.getLogger(AppStartupServletContextListener.class);
+    private static final Logger LOG = LoggerFactory.getLogger(AppStartupServletContextListener.class);
 
     @Override
     public void contextInitialized(ServletContextEvent servletContextEvent) {
@@ -28,7 +28,7 @@ public class AppStartupServletContextListener implements ServletContextListener 
             appStartupInfoLogger = CDI.current().select(AppStartupInfoLogger.class).get();
             appStartupInfoLogger.logAppStartupInfo();
         } catch (Exception e) {
-            OppstartFeil.FACTORY.uventetExceptionVedOppstart(e).log(logger);
+            LOG.error("FP-753407: Uventet exception ved oppstart", e);
             // men ikke re-throw - vi ønsker ikke at oppstart skal feile pga. feil i logging
         } finally {
             if (appStartupInfoLogger != null) {

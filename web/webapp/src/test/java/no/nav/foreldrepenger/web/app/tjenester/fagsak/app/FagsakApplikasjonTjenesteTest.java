@@ -13,26 +13,24 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import no.nav.foreldrepenger.los.klient.person.PersonTjeneste;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import no.nav.foreldrepenger.los.domene.typer.aktør.AktørId;
-import no.nav.foreldrepenger.los.web.app.tjenester.fagsak.app.FagsakApplikasjonTjeneste;
 import no.nav.foreldrepenger.los.domene.typer.aktør.Fødselsnummer;
 import no.nav.foreldrepenger.los.domene.typer.aktør.NavBrukerKjønn;
 import no.nav.foreldrepenger.los.domene.typer.aktør.Person;
-import no.nav.foreldrepenger.los.oppgave.FagsakStatus;
 import no.nav.foreldrepenger.los.klient.fpsak.ForeldrepengerFagsakKlient;
 import no.nav.foreldrepenger.los.klient.fpsak.dto.fagsak.FagsakDto;
 import no.nav.foreldrepenger.los.klient.fpsak.dto.fagsak.FagsakMedPersonDto;
 import no.nav.foreldrepenger.los.klient.fpsak.dto.fagsak.FagsakYtelseTypeDto;
 import no.nav.foreldrepenger.los.klient.fpsak.dto.fagsak.PersonDto;
-
+import no.nav.foreldrepenger.los.klient.person.PersonTjeneste;
+import no.nav.foreldrepenger.los.oppgave.FagsakStatus;
+import no.nav.foreldrepenger.los.web.app.tjenester.fagsak.app.FagsakApplikasjonTjeneste;
 import no.nav.vedtak.exception.ManglerTilgangException;
-import no.nav.vedtak.felles.integrasjon.rest.OidcRestClientFeil;
 
 @ExtendWith(MockitoExtension.class)
 public class FagsakApplikasjonTjenesteTest {
@@ -124,7 +122,6 @@ public class FagsakApplikasjonTjenesteTest {
     }
 
     private static ManglerTilgangException manglerTilgangException() {
-        var fpsak403 = OidcRestClientFeil.FACTORY.manglerTilgang(URI.create("http://testuri"));
-        return new ManglerTilgangException(fpsak403);
+        return new ManglerTilgangException("F-468815", String.format("Mangler tilgang. Fikk http-kode 403 fra server [%s]", URI.create("http://testuri")));
     }
 }
