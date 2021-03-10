@@ -2,7 +2,9 @@ package no.nav.foreldrepenger.los.statistikk.statistikk_ny;
 
 import no.nav.foreldrepenger.dbstoette.DBTestUtil;
 import no.nav.foreldrepenger.extensions.EntityManagerFPLosAwareExtension;
+import no.nav.foreldrepenger.los.oppgave.BehandlingType;
 import no.nav.foreldrepenger.los.oppgave.OppgaveRepositoryImpl;
+import no.nav.foreldrepenger.los.oppgavekø.OppgaveFiltreringKnytning;
 import no.nav.foreldrepenger.los.oppgavekø.OppgaveKøTjeneste;
 import no.nav.foreldrepenger.los.organisasjon.OrganisasjonRepositoryImpl;
 import no.nav.foreldrepenger.los.oppgave.AndreKriterierType;
@@ -19,6 +21,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 import javax.persistence.EntityManager;
 import java.time.LocalDate;
+import java.util.List;
 
 import static no.nav.foreldrepenger.los.organisasjon.Avdeling.AVDELING_DRAMMEN_ENHET;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -64,6 +67,28 @@ class OppgaveStatistikkTest {
         var stats = oppgaveStatistikk.hentStatistikk(køMedTreff.getId());
         var forventetKøStatistikk = new KøStatistikk(LocalDate.now(), oppgave.getBehandlingType(), KøOppgaveHendelse.LUKKET_OPPGAVE, 1L);
         assertThat(stats).containsExactly(forventetKøStatistikk);
+    }
+
+    @Test
+    public void skalLagreStatistikkFørEtterOppdatering() {
+        var knytninger = new OppgaveknytningerFørEtterOppdatering();
+        var førOppdatering = List.of(
+                new OppgaveFiltreringKnytning(1L, 1L, BehandlingType.FØRSTEGANGSSØKNAD),
+                new OppgaveFiltreringKnytning(1L, 2L, BehandlingType.FØRSTEGANGSSØKNAD));
+
+        var etterOppdatering = List.of(
+                new OppgaveFiltreringKnytning(1L, 1L, BehandlingType.FØRSTEGANGSSØKNAD),
+                new OppgaveFiltreringKnytning(1L, 3L, BehandlingType.FØRSTEGANGSSØKNAD));
+        knytninger.setKnytningerFørOppdatering(førOppdatering);
+        knytninger.setKnytningerEtterOppdatering(etterOppdatering);
+        oppgaveStatistikk.lagre(knytninger);
+
+        var kø2 = oppgaveStatistikk.hentStatistikk(2L);
+        assertThat(kø2).containsExactly(new KøStatistikk(LocalDate.now(), BehandlingType.FØRSTEGANGSSØKNAD, KøOppgaveHendelse.UT_TIL_ANNEN_KØ, 1L));
+        var kø1 = oppgaveStatistikk.hentStatistikk(1L);
+        assertThat(kø1).isEmpty();
+        var kø3 = oppgaveStatistikk.hentStatistikk(3L);
+        assertThat(kø3).containsExactly(new KøStatistikk(LocalDate.now(), BehandlingType.FØRSTEGANGSSØKNAD, KøOppgaveHendelse.INN_FRA_ANNEN_KØ, 1L));
     }
 
     private OppgaveFiltrering kø(Avdeling avdeling) {

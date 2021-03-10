@@ -31,6 +31,7 @@ public class OpprettBeslutterOppgaveHendelseHåndterer extends OpprettOppgaveHen
 
     @Override
     void håndterEksisterendeOppgave() {
+        // TODO: av og til er saksbehandlers oppgave allerede lukket. Vurder en sjekk på dette før man logger i OEL osv
         var behandlingId = behandlingFpsak.getBehandlingId();
         oppgaveStatistikk.lagre(behandlingId, KøOppgaveHendelse.LUKKET_OPPGAVE);
         oppgaveRepository.avsluttOppgaveForBehandling(behandlingId);

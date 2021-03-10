@@ -5,6 +5,7 @@ import javax.inject.Inject;
 
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.ForeldrepengerHendelseHåndterer;
 import no.nav.foreldrepenger.los.domene.typer.BehandlingId;
+import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.ny_fpsakhendelsehåndterer.OppgaveHendelseHåndtererFactory;
 import no.nav.foreldrepenger.los.hendelse.hendelseoppretter.hendelse.Fagsystem;
 import no.nav.foreldrepenger.los.hendelse.hendelseoppretter.hendelse.Hendelse;
 import no.nav.foreldrepenger.los.klient.fpsak.ForeldrepengerBehandlingKlient;
@@ -26,14 +27,17 @@ public class SynkroniseringHendelseTask implements ProsessTaskHandler {
     private ForeldrepengerBehandlingKlient behandlingKlient;
     private ForeldrepengerFagsakKlient fagsakKlient;
     private ForeldrepengerHendelseHåndterer foreldrepengerHendelseHåndterer;
+    private OppgaveHendelseHåndtererFactory oppgaveHendelseHåndtererFactory;
 
     @Inject
     public SynkroniseringHendelseTask(ForeldrepengerBehandlingKlient behandlingKlient,
                                       ForeldrepengerFagsakKlient fagsakKlient,
-                                      ForeldrepengerHendelseHåndterer foreldrepengerHendelseHåndterer) {
+                                      ForeldrepengerHendelseHåndterer foreldrepengerHendelseHåndterer,
+                                      OppgaveHendelseHåndtererFactory oppgaveHendelseHåndtererFactory) {
         this.behandlingKlient = behandlingKlient;
         this.fagsakKlient = fagsakKlient;
         this.foreldrepengerHendelseHåndterer = foreldrepengerHendelseHåndterer;
+        this.oppgaveHendelseHåndtererFactory = oppgaveHendelseHåndtererFactory;
     }
 
     public SynkroniseringHendelseTask() {
@@ -56,7 +60,9 @@ public class SynkroniseringHendelseTask implements ProsessTaskHandler {
         hendelse.setBehandlingType(behandlingDto.getType());
         hendelse.setYtelseType(fagsakDto.getSakstype());
 
-        foreldrepengerHendelseHåndterer.håndter(hendelse);
+        var håndterer = oppgaveHendelseHåndtererFactory.lagHåndterer(hendelse, null);
+        håndterer.håndter();
+        //foreldrepengerHendelseHåndterer.håndter(hendelse);
     }
 
     private FagsakBackendDto hentFagsakDto(UtvidetBehandlingDto behandlingdto) {

@@ -64,6 +64,6 @@ public class OppgaveStatistikk {
 
     public void lagre(OppgaveknytningerFørEtterOppdatering oppgaveknytningerFørEtterOppdatering) {
         oppgaveknytningerFørEtterOppdatering.getInnPåKø().forEach(k -> statistikkRepository.lagre(k.getOppgaveId(), k.getOppgaveFiltreringId(), k.getBehandlingType(), KøOppgaveHendelse.INN_FRA_ANNEN_KØ));
-        oppgaveknytningerFørEtterOppdatering.getUtAvKø().forEach(k -> statistikkRepository.lagre(k.getOppgaveId(), k.getOppgaveFiltreringId(), k.getBehandlingType(), KøOppgaveHendelse.UT_AV_KØ));
+        oppgaveknytningerFørEtterOppdatering.getUtAvKø().forEach(k -> statistikkRepository.lagre(k.getOppgaveId(), k.getOppgaveFiltreringId(), k.getBehandlingType(), KøOppgaveHendelse.UT_TIL_ANNEN_KØ));
     }
 }

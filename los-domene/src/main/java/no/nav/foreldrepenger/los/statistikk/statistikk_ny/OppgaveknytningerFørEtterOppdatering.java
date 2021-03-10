@@ -3,7 +3,7 @@ package no.nav.foreldrepenger.los.statistikk.statistikk_ny;
 import no.nav.foreldrepenger.los.oppgavekø.OppgaveFiltreringKnytning;
 
 import java.util.List;
-import java.util.stream.Stream;
+import java.util.stream.Collectors;
 
 public class OppgaveknytningerFørEtterOppdatering {
     private List<OppgaveFiltreringKnytning> knytningerFørOppdatering;
@@ -20,12 +20,14 @@ public class OppgaveknytningerFørEtterOppdatering {
         this.knytningerEtterOppdatering = knytningerEtterOppdatering;
     }
 
-    public Stream<OppgaveFiltreringKnytning> getUtAvKø() {
-        return knytningerFørOppdatering.stream().filter(ok -> !knytningerEtterOppdatering.contains(ok));
+    public List<OppgaveFiltreringKnytning> getUtAvKø() {
+        return knytningerFørOppdatering.stream().filter(ok -> !knytningerEtterOppdatering.contains(ok))
+                .collect(Collectors.toList());
     }
 
-    public Stream<OppgaveFiltreringKnytning> getInnPåKø() {
-        return knytningerEtterOppdatering.stream().filter(ok -> !knytningerFørOppdatering.contains(ok));
+    public List<OppgaveFiltreringKnytning> getInnPåKø() {
+        return knytningerEtterOppdatering.stream().filter(ok -> !knytningerFørOppdatering.contains(ok))
+                .collect(Collectors.toList());
     }
 
 }
