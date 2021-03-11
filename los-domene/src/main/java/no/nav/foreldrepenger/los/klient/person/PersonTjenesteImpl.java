@@ -5,6 +5,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -38,11 +39,17 @@ import no.nav.pdl.PersonResponseProjection;
 import no.nav.vedtak.felles.integrasjon.pdl.Pdl;
 import no.nav.vedtak.felles.integrasjon.pdl.PdlException;
 import no.nav.vedtak.felles.integrasjon.rest.jersey.Jersey;
+import no.nav.vedtak.util.LRUCache;
 
 @ApplicationScoped
 public class PersonTjenesteImpl implements PersonTjeneste {
 
     private static final Logger LOG = LoggerFactory.getLogger(PersonTjenesteImpl.class);
+
+    private static final int DEFAULT_CACHE_SIZE = 2000;
+    private static final long DEFAULT_CACHE_TIMEOUT = TimeUnit.MILLISECONDS.convert(2, TimeUnit.HOURS);
+
+    private LRUCache<AktørId, Person> cacheAktørIdTilPerson = new LRUCache<>(DEFAULT_CACHE_SIZE, DEFAULT_CACHE_TIMEOUT);
 
     private Pdl pdl;
 
@@ -57,8 +64,11 @@ public class PersonTjenesteImpl implements PersonTjeneste {
     @Override
     public Optional<Person> hentPerson(AktørId aktørId) {
         Objects.requireNonNull(aktørId, "aktørId");
+        if (cacheAktørIdTilPerson.get(aktørId) != null) return Optional.of(cacheAktørIdTilPerson.get(aktørId));
         try {
-            return Optional.of(hentPdlPerson(aktørId)).map(this::tilPerson);
+            var person = tilPerson(hentPdlPerson(aktørId));
+            cacheAktørIdTilPerson.put(aktørId, person);
+            return Optional.of(person);
         } catch (PdlException e) {
             if (e.getStatus() == HttpStatus.SC_NOT_FOUND) {
                 return Optional.empty();

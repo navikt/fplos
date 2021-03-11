@@ -20,7 +20,7 @@ describe('<FagsakList>', () => {
     saksnummer: 12345,
     saksnummerString: '12345',
     system: 'FPSAK',
-    sakstype: {
+    fagsakYtelseType: {
       navn: '',
       kode: 'ES',
     },
@@ -97,7 +97,7 @@ describe('<FagsakList>', () => {
         saksnummer: 23456,
         saksnummerString: '23456',
         system: 'FPSAK',
-        sakstype: {
+        fagsakYtelseType: {
           navn: '',
           kode: 'TEST',
         },
@@ -114,7 +114,7 @@ describe('<FagsakList>', () => {
         saksnummer: 34567,
         saksnummerString: '34567',
         system: 'FPSAK',
-        sakstype: {
+        fagsakYtelseType: {
           navn: '',
           kode: 'TEST',
         },
@@ -143,7 +143,7 @@ describe('<FagsakList>', () => {
       saksnummer: 23456,
       saksnummerString: '23456',
       system: 'FPSAK',
-      sakstype: {
+      fagsakYtelseType: {
         navn: '',
         kode: 'TEST',
       },

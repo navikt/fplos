@@ -3,15 +3,16 @@ package no.nav.foreldrepenger.los.klient.fpsak.dto.fagsak;
 import java.time.LocalDate;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import no.nav.foreldrepenger.los.oppgave.FagsakStatus;
+import no.nav.foreldrepenger.los.oppgave.FagsakYtelseType;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class FagsakDto {
 
     private String aktoerId;
-    //private Long saksnummer;
-    private String saksnummerString;
-    private FagsakYtelseTypeDto sakstype;
+    private String saksnummer;
+    private FagsakYtelseType fagsakYtelseType;
     private FagsakStatus status;
     private LocalDate barnFodt;
 
@@ -19,11 +20,10 @@ public class FagsakDto {
         // Injiseres i test
     }
 
-    public FagsakDto(String aktoerId, String saksnummerString, FagsakYtelseTypeDto sakstype, FagsakStatus status, LocalDate barnFodt) {
+    public FagsakDto(String aktoerId, String saksnummer, FagsakYtelseType fagsakYtelseType, FagsakStatus status, LocalDate barnFodt) {
         this.aktoerId = aktoerId;
-        //this.saksnummer = Long.parseLong(saksnummerString);
-        this.saksnummerString = saksnummerString;
-        this.sakstype = sakstype;
+        this.saksnummer = saksnummer;
+        this.fagsakYtelseType = fagsakYtelseType;
         this.status = status;
         this.barnFodt = barnFodt;
     }
@@ -32,16 +32,12 @@ public class FagsakDto {
         return aktoerId;
     }
 
-    /*public Long getSaksnummer() {
+    public String getSaksnummer() {
         return saksnummer;
-    }*/
-
-    public String getSaksnummerString() {
-        return saksnummerString;
     }
 
-    public FagsakYtelseTypeDto getSakstype() {
-        return sakstype;
+    public FagsakYtelseType getFagsakYtelseType() {
+        return fagsakYtelseType;
     }
 
     public FagsakStatus getStatus() {

@@ -5,7 +5,7 @@ type Fagsak = Readonly<{
   saksnummer: number;
   saksnummerString: string;
   system: string;
-  sakstype: Kodeverk;
+  fagsakYtelseType: Kodeverk;
   status: Kodeverk;
   person: Person;
   barnFodt?: string;

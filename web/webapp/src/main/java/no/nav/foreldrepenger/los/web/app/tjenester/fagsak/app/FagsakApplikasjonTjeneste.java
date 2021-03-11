@@ -8,18 +8,16 @@ import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import no.nav.foreldrepenger.los.klient.person.PersonTjeneste;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import no.nav.foreldrepenger.los.domene.typer.aktør.AktørId;
 import no.nav.foreldrepenger.los.domene.typer.aktør.Person;
-import no.nav.foreldrepenger.los.oppgave.FagsakYtelseType;
 import no.nav.foreldrepenger.los.klient.fpsak.ForeldrepengerFagsakKlient;
 import no.nav.foreldrepenger.los.klient.fpsak.dto.fagsak.FagsakDto;
 import no.nav.foreldrepenger.los.klient.fpsak.dto.fagsak.FagsakMedPersonDto;
 import no.nav.foreldrepenger.los.klient.fpsak.dto.fagsak.PersonDto;
-
+import no.nav.foreldrepenger.los.klient.person.PersonTjeneste;
 import no.nav.vedtak.exception.IntegrasjonException;
 import no.nav.vedtak.exception.ManglerTilgangException;
 
@@ -74,8 +72,7 @@ public class FagsakApplikasjonTjeneste {
 
     private static FagsakMedPersonDto map(FagsakDto fagsakDto, Person person) {
         var personDto = new PersonDto(person);
-        var sakstype = FagsakYtelseType.fraKode(fagsakDto.getSakstype().getKode());
-        return new FagsakMedPersonDto(fagsakDto.getSaksnummerString(), sakstype,
+        return new FagsakMedPersonDto(fagsakDto.getSaksnummer(), fagsakDto.getFagsakYtelseType(),
                 fagsakDto.getStatus(), personDto, fagsakDto.getBarnFodt());
     }
 

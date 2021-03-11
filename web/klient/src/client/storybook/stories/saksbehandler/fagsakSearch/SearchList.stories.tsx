@@ -29,7 +29,7 @@ export const skalViseSøkeresultatMedEnFagsakOgTilhørendeOppgave = () => {
         saksnummer: 12213234,
         saksnummerString: '12213234',
         system: 'SAK',
-        sakstype: {
+        fagsakYtelseType: {
           kode: fagsakYtelseType.FORELDREPRENGER,
           navn: 'Foreldrepenger',
         },
