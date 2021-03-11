@@ -366,6 +366,10 @@
                     <artifactId>maven-compiler-plugin</artifactId>
                     <version>3.8.1</version>
                     <configuration>
+                        <compilerArgs>
+                            <arg>--enable-preview</arg>
+                        </compilerArgs>
+                        <parameters>true</parameters>
                         <source>${java.version}</source>
                         <target>${java.version}</target>
                         <encoding>UTF-8</encoding>
@@ -401,7 +405,7 @@
                     <configuration>
                         <rules>
                             <requireJavaVersion>
-                                <version>[11,)</version>
+                                <version>[15,)</version>
                             </requireJavaVersion>
                             <requireMavenVersion>
                                 <version>[3.5.3,)</version>
@@ -443,6 +447,9 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-surefire-plugin</artifactId>
                     <version>${surefire.version}</version>
+                    <configuration>
+                        <argLine>--enable-preview</argLine>
+                    </configuration>
                 </plugin>
                 <plugin>
                     <groupId>org.codehaus.mojo</groupId>
