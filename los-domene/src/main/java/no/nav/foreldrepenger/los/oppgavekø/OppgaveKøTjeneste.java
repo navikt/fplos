@@ -1,21 +1,22 @@
 package no.nav.foreldrepenger.los.oppgavekø;
 
-import no.nav.foreldrepenger.los.oppgave.Oppgave;
-import no.nav.foreldrepenger.los.organisasjon.Avdeling;
-import no.nav.foreldrepenger.los.organisasjon.Saksbehandler;
-import no.nav.foreldrepenger.los.oppgave.OppgaveRepository;
-import no.nav.foreldrepenger.los.oppgave.Oppgavespørring;
-import no.nav.foreldrepenger.los.organisasjon.OrganisasjonRepository;
-import no.nav.foreldrepenger.los.oppgave.OppgaveTjenesteFeil;
+import static no.nav.foreldrepenger.los.felles.util.BrukerIdent.brukerIdent;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static no.nav.foreldrepenger.los.felles.util.BrukerIdent.brukerIdent;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+
+import no.nav.foreldrepenger.los.oppgave.Oppgave;
+import no.nav.foreldrepenger.los.oppgave.OppgaveRepository;
+import no.nav.foreldrepenger.los.oppgave.Oppgavespørring;
+import no.nav.foreldrepenger.los.organisasjon.Avdeling;
+import no.nav.foreldrepenger.los.organisasjon.OrganisasjonRepository;
+import no.nav.foreldrepenger.los.organisasjon.Saksbehandler;
+import no.nav.vedtak.exception.FunksjonellException;
 
 @ApplicationScoped
 public class OppgaveKøTjeneste {
@@ -54,13 +55,12 @@ public class OppgaveKøTjeneste {
                 .filter(Optional::isPresent)
                 .map(Optional::get)
                 .collect(Collectors.toList());
-
     }
 
     public Integer hentAntallOppgaver(Long behandlingsKø, boolean forAvdelingsleder) {
         var queryDto = oppgaveRepository.hentOppgaveFilterSett(behandlingsKø)
                 .map(Oppgavespørring::new)
-                .orElseThrow(() -> OppgaveTjenesteFeil.FACTORY.fantIkkeOppgavekø(behandlingsKø).toException());
+                .orElseThrow(() -> new FunksjonellException("FP-164687", "Fant ikke oppgavekø med id " + behandlingsKø));
         queryDto.setForAvdelingsleder(forAvdelingsleder);
         return oppgaveRepository.hentAntallOppgaver(queryDto);
     }
