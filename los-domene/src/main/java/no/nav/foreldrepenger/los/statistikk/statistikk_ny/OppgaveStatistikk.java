@@ -6,6 +6,7 @@ import no.nav.foreldrepenger.los.oppgavekø.OppgaveFiltreringKnytning;
 import no.nav.foreldrepenger.los.oppgavekø.OppgaveKøTjeneste;
 import no.nav.foreldrepenger.los.oppgave.Oppgave;
 
+import no.nav.foreldrepenger.los.statistikk.statistikk_gammel.NyeOgFerdigstilteOppgaver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -51,7 +52,7 @@ public class OppgaveStatistikk {
         lagreHendelse(oppgave, køOppgaveHendelse);
     }
 
-    public List<KøStatistikk> hentStatistikk(Long køId) {
+    public List<NyeOgFerdigstilteOppgaver> hentStatistikk(Long køId) {
         var liste = statistikkRepository.hentStatistikk(køId);
         LOG.info("Hentet liste: {}", liste);
         return liste;

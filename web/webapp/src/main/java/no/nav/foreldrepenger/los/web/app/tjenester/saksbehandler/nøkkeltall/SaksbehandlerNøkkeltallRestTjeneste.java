@@ -1,7 +1,6 @@
 package no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.nøkkeltall;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -14,10 +13,10 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 
 import io.swagger.v3.oas.annotations.Operation;
+import no.nav.foreldrepenger.los.statistikk.statistikk_gammel.NyeOgFerdigstilteOppgaver;
+import no.nav.foreldrepenger.los.statistikk.statistikk_ny.OppgaveStatistikk;
 import no.nav.foreldrepenger.los.web.app.AbacAttributter;
 import no.nav.foreldrepenger.los.web.app.tjenester.felles.dto.SakslisteIdDto;
-import no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.nøkkeltall.dto.NyeOgFerdigstilteOppgaverDto;
-import no.nav.foreldrepenger.los.statistikk.statistikk_gammel.StatistikkTjeneste;
 import no.nav.vedtak.sikkerhet.abac.BeskyttetRessurs;
 import no.nav.vedtak.sikkerhet.abac.BeskyttetRessursActionAttributt;
 
@@ -26,15 +25,15 @@ import no.nav.vedtak.sikkerhet.abac.BeskyttetRessursActionAttributt;
 @Transactional
 public class SaksbehandlerNøkkeltallRestTjeneste {
 
-    private StatistikkTjeneste statistikkTjeneste;
+    private OppgaveStatistikk oppgaveStatistikk;
 
     public SaksbehandlerNøkkeltallRestTjeneste() {
         // For Rest-CDI
     }
 
     @Inject
-    public SaksbehandlerNøkkeltallRestTjeneste(StatistikkTjeneste statistikkTjeneste) {
-        this.statistikkTjeneste = statistikkTjeneste;
+    public SaksbehandlerNøkkeltallRestTjeneste(OppgaveStatistikk oppgaveStatistikk) {
+        this.oppgaveStatistikk = oppgaveStatistikk;
     }
 
     @GET
@@ -43,10 +42,7 @@ public class SaksbehandlerNøkkeltallRestTjeneste {
     @Operation(description = "Henter en oversikt over hvor mange oppgaver som er opprettet og ferdigstilt de siste syv dagene", tags = "Nøkkeltall")
     @BeskyttetRessurs(action = BeskyttetRessursActionAttributt.READ, resource = AbacAttributter.FAGSAK)
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
-    public List<NyeOgFerdigstilteOppgaverDto> getNyeOgFerdigstilteOppgaver(@NotNull @QueryParam("sakslisteId") @Valid SakslisteIdDto sakslisteId) {
-        return statistikkTjeneste.hentNyeOgFerdigstilteOppgaver(sakslisteId.getVerdi())
-                .stream()
-                .map(NyeOgFerdigstilteOppgaverDto::new)
-                .collect(Collectors.toList());
+    public List<NyeOgFerdigstilteOppgaver> getNyeOgFerdigstilteOppgaver(@NotNull @QueryParam("sakslisteId") @Valid SakslisteIdDto sakslisteId) {
+        return oppgaveStatistikk.hentStatistikk(sakslisteId.getVerdi());
     }
 }

@@ -9,7 +9,5 @@ public interface StatistikkTjeneste {
 
     List<OppgaverForAvdelingSattManueltPaaVent> hentAntallOppgaverForAvdelingSattManueltPåVent(String aveling);
 
-    List<NyeOgFerdigstilteOppgaver> hentNyeOgFerdigstilteOppgaver(Long sakslisteId);
-
     List<OppgaverForFørsteStønadsdag> hentOppgaverPerFørsteStønadsdag(String avdeling);
 }

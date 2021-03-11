@@ -77,65 +77,6 @@ public class StatistikkRepositoryImpl implements StatistikkRepository {
     }
 
     @Override
-    public List hentNyeOgFerdigstilteOppgaver(Long sakslisteId) {
-        OppgaveFiltrering oppgaveFiltrering = entityManager.find(OppgaveFiltrering.class, sakslisteId);
-        Oppgavespørring oppgavespørring = new Oppgavespørring(oppgaveFiltrering);
-
-        String filtrerBehandlingType = oppgavespørring.getBehandlingTyper().isEmpty() ? "" : " o.BEHANDLING_TYPE in ( :behtyper  ) AND ";
-        String filtrerYtelseType = oppgavespørring.getYtelseTyper().isEmpty() ? "" : " o.FAGSAK_YTELSE_TYPE in ( :fagsakytelsetype ) AND ";
-
-        StringBuilder filtrerInkluderAndreKriterier = new StringBuilder();
-        for (AndreKriterierType andreKriterierType : oppgavespørring.getInkluderAndreKriterierTyper()) {
-            filtrerInkluderAndreKriterier.append("EXISTS ( SELECT  oe.OPPGAVE_ID FROM OPPGAVE_EGENSKAP oe WHERE o.ID = oe.OPPGAVE_ID AND oe.aktiv = 'J' AND oe.ANDRE_KRITERIER_TYPE = '" + andreKriterierType.getKode() + "' ) AND ");
-        }
-
-        StringBuilder filtrerEkskluderAndreKriterier = new StringBuilder();
-        for (AndreKriterierType andreKriterierType : oppgavespørring.getEkskluderAndreKriterierTyper()) {
-            filtrerEkskluderAndreKriterier.append("NOT EXISTS (select 1 from OPPGAVE_EGENSKAP oen WHERE o.ID = oen.OPPGAVE_ID AND oen.aktiv = 'J' AND oen.ANDRE_KRITERIER_TYPE = '").append(andreKriterierType.getKode()).append("' ) AND ");
-        }
-
-        if (!oppgavespørring.getBehandlingTyper().isEmpty()) {
-            filtrerBehandlingType = filtrerBehandlingType
-                    .replace(":behtyper", oppgavespørring.getBehandlingTyper().stream()
-                            .map(BehandlingType::getKode)
-                            .collect(Collectors.joining("','", "'", "'")));
-        }
-
-        if (!oppgavespørring.getYtelseTyper().isEmpty()) {
-            filtrerYtelseType = filtrerYtelseType
-                    .replace(":fagsakytelsetype",  oppgavespørring.getYtelseTyper().stream()
-                            .map(FagsakYtelseType::getKode)
-                            .collect(Collectors.joining("','", "'", "'")));
-        }
-
-        Query query = entityManager.createNativeQuery("SELECT " +
-                "o.BEHANDLING_TYPE, " +
-                "0 AS ANTALL_NYE, " +
-                "count (1) as ANTALL_FERDIGSTILTE, " +
-                "COALESCE (trunc(o.ENDRET_TID), " +
-                "trunc(o.OPPRETTET_TID)) AS dato " +
-                "FROM OPPGAVE o " +
-                "INNER JOIN AVDELING a ON a.AVDELING_ENHET = o.BEHANDLENDE_ENHET " +
-                "INNER JOIN RESERVASJON r ON r.OPPGAVE_ID = o.ID " +
-                "WHERE " + filtrerBehandlingType + filtrerYtelseType + filtrerInkluderAndreKriterier + filtrerEkskluderAndreKriterier +
-                "    o.BEHANDLENDE_ENHET = :avdelingEnhet " +
-                "    AND ((o.ENDRET_TID IS NOT NULL AND trunc(o.ENDRET_TID) >= trunc(sysdate-7)) " +
-                "    OR (o.ENDRET_TID IS NULL AND trunc(o.OPPRETTET_TID) >= trunc(sysdate-7))) AND o.AKTIV = 'N' " +
-                "GROUP BY o.BEHANDLING_TYPE, COALESCE (trunc(o.ENDRET_TID), trunc(o.OPPRETTET_TID)) " +
-                "UNION " +
-                "SELECT o.BEHANDLING_TYPE, count (*) AS ANTALL_NYE, 0 AS ANTALL_FERDIGSTILTE, trunc(o.OPPRETTET_TID) AS dato " +
-                "FROM OPPGAVE o " +
-                "INNER JOIN AVDELING a ON a.AVDELING_ENHET = o.BEHANDLENDE_ENHET " +
-                "WHERE " + filtrerBehandlingType + filtrerYtelseType + filtrerInkluderAndreKriterier + filtrerEkskluderAndreKriterier +
-                "    o.BEHANDLENDE_ENHET = :avdelingEnhet " +
-                "AND trunc(o.OPPRETTET_TID) >= trunc(sysdate-7) " +
-                "GROUP BY o.BEHANDLING_TYPE, trunc(o.OPPRETTET_TID)")
-                .setParameter(AVDELING_ENHET, oppgaveFiltrering.getAvdeling().getAvdelingEnhet());
-
-        return query.getResultList();
-    }
-
-    @Override
     public List hentOppgaverPerFørsteStønadsdag(String avdeling) {
         return entityManager.createNativeQuery(
                 "Select trunc(o.FORSTE_STONADSDAG) as DATO, Count(o.FORSTE_STONADSDAG) AS ANTALL " +
