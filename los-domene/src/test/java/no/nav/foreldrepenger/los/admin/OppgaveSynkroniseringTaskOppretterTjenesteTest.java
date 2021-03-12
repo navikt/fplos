@@ -8,8 +8,6 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 
-import no.nav.foreldrepenger.los.oppgave.OppgaveRepository;
-import no.nav.foreldrepenger.los.oppgave.OppgaveRepositoryImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -17,6 +15,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import no.nav.foreldrepenger.dbstoette.DBTestUtil;
 import no.nav.foreldrepenger.extensions.EntityManagerFPLosAwareExtension;
 import no.nav.foreldrepenger.los.oppgave.Oppgave;
+import no.nav.foreldrepenger.los.oppgave.OppgaveRepository;
+import no.nav.foreldrepenger.los.oppgave.OppgaveRepositoryImpl;
 import no.nav.vedtak.felles.prosesstask.impl.ProsessTaskEventPubliserer;
 import no.nav.vedtak.felles.prosesstask.impl.ProsessTaskRepositoryImpl;
 
@@ -45,7 +45,7 @@ public class OppgaveSynkroniseringTaskOppretterTjenesteTest {
     @Test
     public void skalIkkeOppretteTaskForInaktivOppgave() {
         opprettOgLagreOppgave();
-        Oppgave oppgave = hentOppgave().get(0);
+        var oppgave = hentOppgave().get(0);
         oppgave.avsluttOppgave();
         oppgaveRepository.lagre(oppgave);
         opprettOgVerifiserForventetAntallTasker(0);
@@ -54,7 +54,7 @@ public class OppgaveSynkroniseringTaskOppretterTjenesteTest {
     @Test
     public void skalOppretteTaskAlleAktiveOppgaver() {
         opprettOgLagreOppgave();
-        Oppgave oppgave = hentOppgave().get(0);
+        var oppgave = hentOppgave().get(0);
         oppgave.avsluttOppgave();
         oppgaveRepository.lagre(oppgave);
 

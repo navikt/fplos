@@ -32,7 +32,11 @@ public class SakslisteAndreKriterierDto implements AbacDto {
     public SakslisteAndreKriterierDto() {
     }
 
-    public SakslisteAndreKriterierDto(SakslisteIdDto sakslisteId, AndreKriterierType andreKriterierType, boolean checked, boolean inkluder, AvdelingEnhetDto avdelingEnhet) {
+    public SakslisteAndreKriterierDto(SakslisteIdDto sakslisteId,
+                                      AndreKriterierType andreKriterierType,
+                                      boolean checked,
+                                      boolean inkluder,
+                                      AvdelingEnhetDto avdelingEnhet) {
         this.sakslisteId = sakslisteId;
         this.andreKriterierType = andreKriterierType;
         this.checked = checked;
@@ -56,7 +60,7 @@ public class SakslisteAndreKriterierDto implements AbacDto {
         return inkluder;
     }
 
-    public AvdelingEnhetDto getAvdelingEnhet(){
+    public AvdelingEnhetDto getAvdelingEnhet() {
         return avdelingEnhet;
     }
 
@@ -70,7 +74,8 @@ public class SakslisteAndreKriterierDto implements AbacDto {
 
     @Override
     public AbacDataAttributter abacAttributter() {
-        return AbacDataAttributter.opprett().leggTil(FplosAbacAttributtType.OPPGAVESTYRING_ENHET, avdelingEnhet.getAvdelingEnhet());
+        return AbacDataAttributter.opprett()
+                .leggTil(FplosAbacAttributtType.OPPGAVESTYRING_ENHET, avdelingEnhet.getAvdelingEnhet());
 
     }
 }

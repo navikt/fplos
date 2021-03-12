@@ -1,9 +1,8 @@
 package no.nav.foreldrepenger.los.domene.typer.aktør;
 
-import javax.validation.constraints.Pattern;
-
-
 import java.util.Objects;
+
+import javax.validation.constraints.Pattern;
 
 public class Fødselsnummer {
     @Pattern(regexp = "\\d{11}")
@@ -16,10 +15,6 @@ public class Fødselsnummer {
 
     public String asValue() {
         return fødselsnummer;
-    }
-
-    public static boolean erFødselsnummer(String kandidat) {
-        return kandidat.matches("\\d{11}");
     }
 
     @Override

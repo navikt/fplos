@@ -1,10 +1,8 @@
 package no.nav.foreldrepenger.los.web.app.tjenester.admin;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.ws.rs.core.Response;
@@ -14,11 +12,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import no.nav.foreldrepenger.extensions.EntityManagerFPLosAwareExtension;
-import no.nav.foreldrepenger.los.web.app.tjenester.admin.dto.DriftsmeldingDto;
-import no.nav.foreldrepenger.los.web.app.tjenester.admin.dto.DriftsmeldingOpprettelseDto;
 import no.nav.foreldrepenger.los.admin.driftsmelding.DriftsmeldingRepository;
-import no.nav.foreldrepenger.los.admin.driftsmelding.DriftsmeldingTjeneste;
 import no.nav.foreldrepenger.los.admin.driftsmelding.DriftsmeldingTjenesteImpl;
+import no.nav.foreldrepenger.los.web.app.tjenester.admin.dto.DriftsmeldingOpprettelseDto;
 
 @ExtendWith(EntityManagerFPLosAwareExtension.class)
 class DriftsmeldingerRestTjenesteTest {
@@ -27,33 +23,33 @@ class DriftsmeldingerRestTjenesteTest {
 
     @BeforeEach
     public void setUp(EntityManager entityManager) {
-        DriftsmeldingRepository driftsmeldingRepository = new DriftsmeldingRepository(entityManager);
-        DriftsmeldingTjeneste driftsmeldingTjeneste = new DriftsmeldingTjenesteImpl(driftsmeldingRepository);
+        var driftsmeldingRepository = new DriftsmeldingRepository(entityManager);
+        var driftsmeldingTjeneste = new DriftsmeldingTjenesteImpl(driftsmeldingRepository);
         driftsmeldinger = new DriftsmeldingerRestTjeneste(driftsmeldingTjeneste);
     }
 
     @Test
     public void opprettDriftsmelding() {
-        Response response = opprettMelding();
-        assertEquals(200, response.getStatus());
-        List<DriftsmeldingDto> driftsmeldingerFraTjeneste = driftsmeldinger.hentAktiveDriftsmeldinger();
-        assertEquals(1, driftsmeldingerFraTjeneste.size());
+        var response = opprettMelding();
+        assertThat(response.getStatus()).isEqualTo(200);
+        var driftsmeldingerFraTjeneste = driftsmeldinger.hentAktiveDriftsmeldinger();
+        assertThat(driftsmeldingerFraTjeneste).hasSize(1);
 
-        DriftsmeldingDto driftsmeldingDto = driftsmeldingerFraTjeneste.get(0);
-        assertEquals("Dette er en driftsmelding", driftsmeldingDto.getMelding());
-        assertTrue(omtrentSammeTid(driftsmeldingDto.getAktivFra(), LocalDateTime.now()));
-        assertTrue(omtrentSammeTid(driftsmeldingDto.getAktivTil(), LocalDateTime.now().plusHours(4)));
+        var driftsmeldingDto = driftsmeldingerFraTjeneste.get(0);
+        assertThat(driftsmeldingDto.getMelding()).isEqualTo("Dette er en driftsmelding");
+        assertThat(omtrentSammeTid(driftsmeldingDto.getAktivFra(), LocalDateTime.now())).isTrue();
+        assertThat(omtrentSammeTid(driftsmeldingDto.getAktivTil(), LocalDateTime.now().plusHours(4))).isTrue();
     }
 
     @Test
     public void deaktiverMeldinger() {
         opprettMelding();
         driftsmeldinger.deaktiverDriftsmeldinger();
-        assertEquals(driftsmeldinger.hentAktiveDriftsmeldinger().size(), 0);
+        assertThat(driftsmeldinger.hentAktiveDriftsmeldinger()).isEmpty();
     }
 
     private Response opprettMelding() {
-        DriftsmeldingOpprettelseDto opprettelseDto = new DriftsmeldingOpprettelseDto();
+        var opprettelseDto = new DriftsmeldingOpprettelseDto();
         opprettelseDto.setMelding("Dette er en driftsmelding");
         return driftsmeldinger.opprettDriftsmelding(opprettelseDto);
     }

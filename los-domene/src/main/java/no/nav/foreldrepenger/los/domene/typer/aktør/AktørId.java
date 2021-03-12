@@ -62,7 +62,7 @@ public class AktørId implements Serializable, Comparable<AktørId> {
         } else if (obj == null || !getClass().equals(obj.getClass())) {
             return false;
         }
-        AktørId other = (AktørId) obj;
+        var other = (AktørId) obj;
         return Objects.equals(aktørId, other.aktørId);
     }
 
@@ -81,7 +81,7 @@ public class AktørId implements Serializable, Comparable<AktørId> {
         return aktørId.compareTo(o.aktørId);
     }
 
-    private static AtomicLong DUMMY_AKTØRID = new AtomicLong(1000000000000L);
+    private static final AtomicLong DUMMY_AKTØRID = new AtomicLong(1000000000000L);
 
     /** Genererer dummy aktørid unikt for test. */
     public static AktørId dummy( ) {

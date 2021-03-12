@@ -27,7 +27,9 @@ public class SakslisteFagsakYtelseTypeDto implements AbacDto {
     public SakslisteFagsakYtelseTypeDto() {
     }
 
-    public SakslisteFagsakYtelseTypeDto(SakslisteIdDto sakslisteId, FagsakYtelseType fagsakYtelseType, AvdelingEnhetDto avdelingEnhet) {
+    public SakslisteFagsakYtelseTypeDto(SakslisteIdDto sakslisteId,
+                                        FagsakYtelseType fagsakYtelseType,
+                                        AvdelingEnhetDto avdelingEnhet) {
         this.sakslisteId = sakslisteId;
         this.fagsakYtelseType = fagsakYtelseType;
         this.avdelingEnhet = avdelingEnhet;
@@ -41,7 +43,9 @@ public class SakslisteFagsakYtelseTypeDto implements AbacDto {
         return fagsakYtelseType;
     }
 
-    public AvdelingEnhetDto getAvdelingEnhet() { return avdelingEnhet; }
+    public AvdelingEnhetDto getAvdelingEnhet() {
+        return avdelingEnhet;
+    }
 
     @Override
     public String toString() {
@@ -53,6 +57,7 @@ public class SakslisteFagsakYtelseTypeDto implements AbacDto {
 
     @Override
     public AbacDataAttributter abacAttributter() {
-        return AbacDataAttributter.opprett().leggTil(FplosAbacAttributtType.OPPGAVESTYRING_ENHET, avdelingEnhet.getAvdelingEnhet());
+        return AbacDataAttributter.opprett()
+                .leggTil(FplosAbacAttributtType.OPPGAVESTYRING_ENHET, avdelingEnhet.getAvdelingEnhet());
     }
 }

@@ -10,7 +10,6 @@ import no.nav.foreldrepenger.los.oppgave.OppgaveRepository;
 import no.nav.foreldrepenger.los.organisasjon.Avdeling;
 import no.nav.foreldrepenger.los.organisasjon.OrganisasjonRepository;
 import no.nav.foreldrepenger.los.organisasjon.Saksbehandler;
-import no.nav.foreldrepenger.los.oppgavekø.OppgaveFiltrering;
 import no.nav.vedtak.exception.TekniskException;
 
 @ApplicationScoped
@@ -38,9 +37,9 @@ public class AvdelingslederSaksbehandlerTjenesteImpl implements AvdelingslederSa
 
     @Override
     public void leggSaksbehandlerTilAvdeling(String saksbehandlerIdent, String avdelingEnhet) {
-        Saksbehandler saksbehandler = organisasjonRepository.hentSaksbehandlerHvisEksisterer(saksbehandlerIdent)
+        var saksbehandler = organisasjonRepository.hentSaksbehandlerHvisEksisterer(saksbehandlerIdent)
                 .orElseGet(() -> opprettSaksbehandler(saksbehandlerIdent));
-        Avdeling avdeling = hentAvdeling(avdelingEnhet);
+        var avdeling = hentAvdeling(avdelingEnhet);
         saksbehandler.leggTilAvdeling(avdeling);
         organisasjonRepository.lagre(saksbehandler);
         organisasjonRepository.refresh(avdeling);
@@ -48,14 +47,14 @@ public class AvdelingslederSaksbehandlerTjenesteImpl implements AvdelingslederSa
 
     @Override
     public void fjernSaksbehandlerFraAvdeling(String saksbehandlerIdent, String avdelingEnhet) {
-        Saksbehandler saksbehandler = organisasjonRepository.hentSaksbehandlerHvisEksisterer(saksbehandlerIdent)
+        var saksbehandler = organisasjonRepository.hentSaksbehandlerHvisEksisterer(saksbehandlerIdent)
                 .orElseThrow(() -> AvdelingSaksbehandlerTjenesteFeil.finnerIkkeSaksbehandler(saksbehandlerIdent));
         saksbehandler.fjernAvdeling(organisasjonRepository.hentAvdelingFraEnhet(avdelingEnhet).orElseThrow());
         organisasjonRepository.lagre(saksbehandler);
 
-        Avdeling avdeling = hentAvdeling(avdelingEnhet);
-        List<OppgaveFiltrering> oppgaveFiltreringList = avdeling.getOppgaveFiltrering();
-        for (OppgaveFiltrering oppgaveFiltrering : oppgaveFiltreringList) {
+        var avdeling = hentAvdeling(avdelingEnhet);
+        var oppgaveFiltreringList = avdeling.getOppgaveFiltrering();
+        for (var oppgaveFiltrering : oppgaveFiltreringList) {
             oppgaveFiltrering.fjernSaksbehandler(saksbehandler);
             oppgaveRepository.lagre(oppgaveFiltrering);
         }

@@ -1,5 +1,9 @@
 package no.nav.foreldrepenger.los.klient.fpsak;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
+import org.junit.jupiter.api.Test;
+
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -8,12 +12,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
-
 import no.nav.foreldrepenger.los.klient.fpsak.dto.behandling.BehandlingÅrsakType;
-import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
 
 
 public class BehandlingÅrsakTypeTest {
@@ -22,15 +21,15 @@ public class BehandlingÅrsakTypeTest {
 
     @Test
     public void behandlingÅrsakType() throws Exception {
-        String json = "{\"kode\": \"RE-END-FRA-BRUKER\"}";
+        var json = "{\"kode\": \"RE-END-FRA-BRUKER\"}";
         var objektet = fromJson(json, BehandlingÅrsakType.class);
-        assertEquals(BehandlingÅrsakType.RE_ENDRING_FRA_BRUKER, objektet);
+        assertThat(objektet).isEqualTo(BehandlingÅrsakType.RE_ENDRING_FRA_BRUKER);
     }
 
     @Test
     public void ukjentVerdiDeserialiseresTilNull() throws Exception {
-        String ukjentKode = "{\"kode\": \"DUMMY-UKJENT-VERDI\"}";
-        assertNull(fromJson(ukjentKode, BehandlingÅrsakType.class));
+        var ukjentKode = "{\"kode\": \"DUMMY-UKJENT-VERDI\"}";
+        assertThat(fromJson(ukjentKode, BehandlingÅrsakType.class)).isNull();
     }
 
     static <T> T fromJson(String json, Class<T> clazz) throws JsonProcessingException {
@@ -38,7 +37,7 @@ public class BehandlingÅrsakTypeTest {
     }
 
     static ObjectMapper getObjectMapper() { // hentet fra felles-integrasjon-rest-klient
-        ObjectMapper mapper = new ObjectMapper();
+        var mapper = new ObjectMapper();
         mapper.registerModule(new Jdk8Module());
         mapper.registerModule(new JavaTimeModule());
         mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);

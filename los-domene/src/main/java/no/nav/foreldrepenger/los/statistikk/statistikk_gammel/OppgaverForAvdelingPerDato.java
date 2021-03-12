@@ -10,10 +10,10 @@ import no.nav.foreldrepenger.los.oppgave.FagsakYtelseType;
 
 public class OppgaverForAvdelingPerDato {
 
-    private FagsakYtelseType fagsakYtelseType;
-    private BehandlingType behandlingType;
-    private LocalDate opprettetDato;
-    private Long antall;
+    private final FagsakYtelseType fagsakYtelseType;
+    private final BehandlingType behandlingType;
+    private final LocalDate opprettetDato;
+    private final Long antall;
 
 
     public OppgaverForAvdelingPerDato(Object[] resultat) {

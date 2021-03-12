@@ -1,5 +1,12 @@
 package no.nav.foreldrepenger.los.web.app.jackson;
 
+import java.io.IOException;
+import java.lang.reflect.Type;
+
+import org.owasp.encoder.Encode;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -7,18 +14,13 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.jsonFormatVisitors.JsonFormatVisitorWrapper;
 import com.fasterxml.jackson.databind.ser.std.StdScalarSerializer;
-import no.nav.vedtak.log.util.LoggerUtils;
-import org.owasp.encoder.Encode;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
-import java.lang.reflect.Type;
+import no.nav.vedtak.log.util.LoggerUtils;
 
 public class StringSerializer extends StdScalarSerializer<Object> {
     private static final long serialVersionUID = 1L;
 
-    private static final Logger log = LoggerFactory.getLogger(StringSerializer.class);
+    private static final Logger LOG = LoggerFactory.getLogger(StringSerializer.class);
 
     public StringSerializer() {
         super(String.class, false);
@@ -45,7 +47,7 @@ public class StringSerializer extends StdScalarSerializer<Object> {
         String originalValue = (String) value;
         String encodedValue = Encode.forHtml(originalValue);
         if (!originalValue.equals(encodedValue)) {
-            log.trace("Encoding av jsonString : fra '{}' til '{}'", LoggerUtils.removeLineBreaks(originalValue), LoggerUtils.removeLineBreaks(encodedValue)); //NOSONAR
+            LOG.trace("Encoding av jsonString : fra '{}' til '{}'", LoggerUtils.removeLineBreaks(originalValue), LoggerUtils.removeLineBreaks(encodedValue)); //NOSONAR
         }
         gen.writeString(encodedValue);
     }

@@ -1,10 +1,10 @@
 package no.nav.foreldrepenger.los.domene.typer.aktør;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 import java.util.Objects;
 import java.util.Set;
+
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class OrganisasjonsEnhet {
 
@@ -33,7 +33,7 @@ public class OrganisasjonsEnhet {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        OrganisasjonsEnhet that = (OrganisasjonsEnhet) o;
+        var that = (OrganisasjonsEnhet) o;
         return enhetId.equals(that.enhetId) &&
                 enhetNavn.equals(that.enhetNavn);
     }

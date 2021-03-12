@@ -1,7 +1,8 @@
 package no.nav.foreldrepenger.los.domene.typer;
 
-import javax.validation.constraints.Pattern;
 import java.util.Objects;
+
+import javax.validation.constraints.Pattern;
 
 
 public class Saksnummer {
@@ -24,7 +25,7 @@ public class Saksnummer {
         } else if (obj == null || !getClass().equals(obj.getClass())) {
             return false;
         }
-        Saksnummer other = (Saksnummer) obj;
+        var other = (Saksnummer) obj;
         return Objects.equals(saksnummer, other.saksnummer);
     }
 

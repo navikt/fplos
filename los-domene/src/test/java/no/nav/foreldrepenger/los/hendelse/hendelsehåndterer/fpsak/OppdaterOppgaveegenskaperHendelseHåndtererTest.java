@@ -1,5 +1,21 @@
 package no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak;
 
+import static no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.OppgaveTestUtil.behandlingFpsak;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+
+import java.time.temporal.ChronoUnit;
+
+import javax.persistence.EntityManager;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+
 import no.nav.foreldrepenger.dbstoette.DBTestUtil;
 import no.nav.foreldrepenger.extensions.EntityManagerFPLosAwareExtension;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.OppgaveEgenskapHåndterer;
@@ -12,22 +28,6 @@ import no.nav.foreldrepenger.los.oppgave.OppgaveRepositoryImpl;
 import no.nav.foreldrepenger.los.reservasjon.ReservasjonTjenesteImpl;
 import no.nav.foreldrepenger.los.statistikk.statistikk_ny.OppgaveStatistikk;
 import no.nav.foreldrepenger.los.statistikk.statistikk_ny.OppgaveknytningerFørEtterOppdatering;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
-
-import javax.persistence.EntityManager;
-import java.time.temporal.ChronoUnit;
-
-import static no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.OppgaveTestUtil.behandlingFpsak;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
 
 
 @ExtendWith(MockitoExtension.class)
@@ -62,8 +62,8 @@ class OppdaterOppgaveegenskaperHendelseHåndtererTest {
 
         // assert
         var oppgave = DBTestUtil.hentUnik(entityManager, Oppgave.class);
-        assertTrue(oppgave.getAktiv());
-        assertTrue(oppgave.harAktivReservasjon());
+        assertThat(oppgave.getAktiv()).isTrue();
+        assertThat(oppgave.harAktivReservasjon()).isTrue();
         var reservertTilEtterOppdatering = reservasjon.getReservertTil().truncatedTo(ChronoUnit.SECONDS);
         assertThat(reservertTilEtterOppdatering).isEqualTo(reservertTil.plusHours(2));
     }
@@ -78,8 +78,8 @@ class OppdaterOppgaveegenskaperHendelseHåndtererTest {
 
         //assert
         var oppgave = DBTestUtil.hentUnik(entityManager, Oppgave.class);
-        assertTrue(oppgave.getAktiv());
-        assertFalse(oppgave.harAktivReservasjon());
+        assertThat(oppgave.getAktiv()).isTrue();
+        assertThat(oppgave.harAktivReservasjon()).isFalse();
     }
 
     @Test

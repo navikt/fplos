@@ -1,16 +1,18 @@
 package no.nav.foreldrepenger.los.reservasjon;
 
-import no.nav.foreldrepenger.los.felles.util.BrukerIdent;
-import no.nav.foreldrepenger.los.oppgave.OppgaveRepository;
-import no.nav.foreldrepenger.los.oppgave.Oppgave;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.time.LocalDateTime;
+import java.util.List;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.persistence.PersistenceException;
-import java.time.LocalDateTime;
-import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import no.nav.foreldrepenger.los.felles.util.BrukerIdent;
+import no.nav.foreldrepenger.los.oppgave.Oppgave;
+import no.nav.foreldrepenger.los.oppgave.OppgaveRepository;
 
 @ApplicationScoped
 public class ReservasjonTjenesteImpl implements ReservasjonTjeneste {
@@ -39,7 +41,7 @@ public class ReservasjonTjenesteImpl implements ReservasjonTjeneste {
 
     @Override
     public Reservasjon reserverOppgave(Long oppgaveId) {
-        Reservasjon reservasjon = oppgaveRepository.hentReservasjon(oppgaveId);
+        var reservasjon = oppgaveRepository.hentReservasjon(oppgaveId);
         if (!reservasjon.erAktiv()) {
             reservasjon.reserverNormalt();
             try {
@@ -62,8 +64,8 @@ public class ReservasjonTjenesteImpl implements ReservasjonTjeneste {
 
     @Override
     public Reservasjon frigiOppgave(Long oppgaveId, String begrunnelse) {
-        Reservasjon reservasjon = oppgaveRepository.hentReservasjon(oppgaveId);
-        Oppgave oppgave = reservasjon.getOppgave();
+        var reservasjon = oppgaveRepository.hentReservasjon(oppgaveId);
+        var oppgave = reservasjon.getOppgave();
         reservasjon.frigiReservasjon(begrunnelse);
         oppgaveRepository.lagre(reservasjon);
         oppgaveRepository.refresh(oppgave);
@@ -73,7 +75,7 @@ public class ReservasjonTjenesteImpl implements ReservasjonTjeneste {
 
     @Override
     public Reservasjon flyttReservasjon(Long oppgaveId, String brukernavn, String begrunnelse) {
-        Reservasjon reservasjon = oppgaveRepository.hentReservasjon(oppgaveId);
+        var reservasjon = oppgaveRepository.hentReservasjon(oppgaveId);
         reservasjon.flyttReservasjon(brukernavn, begrunnelse);
         oppgaveRepository.lagre(reservasjon);
         oppgaveRepository.refresh(reservasjon.getOppgave());
@@ -83,7 +85,7 @@ public class ReservasjonTjenesteImpl implements ReservasjonTjeneste {
 
     @Override
     public Reservasjon forlengReservasjonPåOppgave(Long oppgaveId) {
-        Reservasjon reservasjon = oppgaveRepository.hentReservasjon(oppgaveId);
+        var reservasjon = oppgaveRepository.hentReservasjon(oppgaveId);
         reservasjon.forlengReservasjonPåOppgave();
         oppgaveRepository.lagre(reservasjon);
         oppgaveRepository.lagre(new ReservasjonEventLogg(reservasjon));
@@ -92,7 +94,7 @@ public class ReservasjonTjenesteImpl implements ReservasjonTjeneste {
 
     @Override
     public Reservasjon endreReservasjonPåOppgave(Long oppgaveId, LocalDateTime reservertTil) {
-        Reservasjon reservasjon = oppgaveRepository.hentReservasjon(oppgaveId);
+        var reservasjon = oppgaveRepository.hentReservasjon(oppgaveId);
         reservasjon.endreReservasjonPåOppgave(reservertTil);
         oppgaveRepository.lagre(reservasjon);
         oppgaveRepository.lagre(new ReservasjonEventLogg(reservasjon));

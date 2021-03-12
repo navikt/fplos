@@ -12,17 +12,17 @@ import no.nav.foreldrepenger.los.oppgavekø.KøSortering;
 import no.nav.foreldrepenger.los.oppgavekø.OppgaveFiltrering;
 
 public class Oppgavespørring {
-    private KøSortering sortering;
-    private Long enhetId;
-    private List<BehandlingType> behandlingTyper;
-    private List<FagsakYtelseType> ytelseTyper;
-    private List<AndreKriterierType> inkluderAndreKriterierTyper;
-    private List<AndreKriterierType> ekskluderAndreKriterierTyper;
-    private boolean erDynamiskPeriode;
-    private LocalDate filtrerFomDato;
-    private LocalDate filtrerTomDato;
-    private Long filtrerFra;
-    private Long filtrerTil;
+    private final KøSortering sortering;
+    private final Long enhetId;
+    private final List<BehandlingType> behandlingTyper;
+    private final List<FagsakYtelseType> ytelseTyper;
+    private final List<AndreKriterierType> inkluderAndreKriterierTyper;
+    private final List<AndreKriterierType> ekskluderAndreKriterierTyper;
+    private final boolean erDynamiskPeriode;
+    private final LocalDate filtrerFomDato;
+    private final LocalDate filtrerTomDato;
+    private final Long filtrerFra;
+    private final Long filtrerTil;
     private Long filtrerFomDager;
     private Long filtrerTomDager;
     private boolean forAvdelingsleder;

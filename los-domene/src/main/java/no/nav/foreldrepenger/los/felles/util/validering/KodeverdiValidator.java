@@ -1,10 +1,11 @@
 package no.nav.foreldrepenger.los.felles.util.validering;
 
 
-import no.nav.foreldrepenger.los.felles.Kodeverdi;
+import java.util.Objects;
 
 import javax.validation.ConstraintValidatorContext;
-import java.util.Objects;
+
+import no.nav.foreldrepenger.los.felles.Kodeverdi;
 
 public class KodeverdiValidator extends KodeverkValidator<Kodeverdi> {
 
@@ -13,7 +14,7 @@ public class KodeverdiValidator extends KodeverkValidator<Kodeverdi> {
         if (Objects.equals(null, kodeliste)) {
             return true;
         }
-        boolean ok = true;
+        var ok = true;
 
         if (!gyldigKode(kodeliste.getKode())) {
             context.buildConstraintViolationWithTemplate(invKode);

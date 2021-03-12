@@ -1,23 +1,25 @@
 package no.nav.foreldrepenger.los.admin;
 
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+import java.util.List;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import no.nav.foreldrepenger.los.domene.typer.BehandlingId;
 import no.nav.vedtak.felles.prosesstask.api.ProsessTaskData;
 import no.nav.vedtak.felles.prosesstask.api.ProsessTaskRepository;
 import no.nav.vedtak.log.mdc.MDCOperations;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
-import java.util.List;
 
 
 @ApplicationScoped
 public class SynkroniseringHendelseTaskOppretterTjeneste {
 
-    private static final Logger log = LoggerFactory.getLogger(SynkroniseringHendelseTaskOppretterTjeneste.class);
+    private static final Logger LOG = LoggerFactory.getLogger(SynkroniseringHendelseTaskOppretterTjeneste.class);
 
     private ProsessTaskRepository prosessTaskRepository;
 
@@ -35,9 +37,9 @@ public class SynkroniseringHendelseTaskOppretterTjeneste {
             return "For stor beholdning, send under 1000";
         }
 
-        final String callId = (MDCOperations.getCallId() == null ? MDCOperations.generateCallId() : MDCOperations.getCallId()) + "_";
+        final var callId = (MDCOperations.getCallId() == null ? MDCOperations.generateCallId() : MDCOperations.getCallId()) + "_";
 
-        log.info("Oppretter tasker for synkronisering av {} hendelser", behandlinger.size());
+        LOG.info("Oppretter tasker for synkronisering av {} hendelser", behandlinger.size());
         var kjøres = LocalDateTime.now();
         for (var behandling : behandlinger) {
             opprettSynkroniseringTask(behandling, callId, kjøres);
@@ -47,7 +49,7 @@ public class SynkroniseringHendelseTaskOppretterTjeneste {
     }
 
     private void opprettSynkroniseringTask(BehandlingId behandlingId, String callId, LocalDateTime kjøretidspunkt) {
-        ProsessTaskData prosessTaskData = new ProsessTaskData(SynkroniseringHendelseTask.TASKTYPE);
+        var prosessTaskData = new ProsessTaskData(SynkroniseringHendelseTask.TASKTYPE);
         prosessTaskData.setCallId(callId + behandlingId.toString());
         prosessTaskData.setPrioritet(999);
         prosessTaskData.setNesteKjøringEtter(kjøretidspunkt);

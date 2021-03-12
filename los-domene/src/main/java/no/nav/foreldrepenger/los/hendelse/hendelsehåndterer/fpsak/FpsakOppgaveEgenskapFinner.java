@@ -22,7 +22,7 @@ public class FpsakOppgaveEgenskapFinner implements OppgaveEgenskapFinner {
         if (erUtbetalingTilBruker(behandling)) this.andreKriterier.add(AndreKriterierType.UTBETALING_TIL_BRUKER);
         if (erEndringssøknad(behandling)) this.andreKriterier.add(AndreKriterierType.ENDRINGSSØKNAD);
 
-        FpsakAksjonspunktWrapper fpsakAksjonspunktWrapper = new FpsakAksjonspunktWrapper(behandling.getAksjonspunkter());
+        var fpsakAksjonspunktWrapper = new FpsakAksjonspunktWrapper(behandling.getAksjonspunkter());
         andreKriterier.addAll(fpsakAksjonspunktWrapper.getKriterier());
     }
 
@@ -44,7 +44,7 @@ public class FpsakOppgaveEgenskapFinner implements OppgaveEgenskapFinner {
     }
 
     private static boolean erUtbetalingTilBruker(BehandlingFpsak behandling) {
-        Boolean harRefusjonskrav = behandling.harRefusjonskravFraArbeidsgiver();
+        var harRefusjonskrav = behandling.harRefusjonskravFraArbeidsgiver();
         //Skal ikke ha egenskap når harRefusjonskrav er true eller null. Vi avventer inntektsmelding før vi legger på egenskapen.
         return harRefusjonskrav != null && !harRefusjonskrav;
     }

@@ -1,5 +1,10 @@
 package no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.håndterere;
 
+import static no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.OppgaveUtil.oppgave;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.OppgaveEgenskapHåndterer;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.FpsakHendelseHåndterer;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.FpsakOppgaveEgenskapFinner;
@@ -10,10 +15,6 @@ import no.nav.foreldrepenger.los.oppgave.Oppgave;
 import no.nav.foreldrepenger.los.oppgave.OppgaveRepository;
 import no.nav.foreldrepenger.los.statistikk.statistikk_ny.OppgaveStatistikk;
 import no.nav.foreldrepenger.los.statistikk.statistikk_ny.OppgaveknytningerFørEtterOppdatering;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import static no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.OppgaveUtil.oppgave;
 
 public class OppdaterOppgaveegenskaperHendelseHåndterer implements FpsakHendelseHåndterer {
     private static final Logger LOG = LoggerFactory.getLogger(OppdaterOppgaveegenskaperHendelseHåndterer.class);
@@ -46,7 +47,7 @@ public class OppdaterOppgaveegenskaperHendelseHåndterer implements FpsakHendels
         oppdaterOppgaveEventLogg();
         oppgaveknytningerFørEtterOppdatering.setKnytningerEtterOppdatering(oppgaveStatistikk.hentOppgaveFiltreringKnytningerForOppgave(oppgave));
         oppgaveStatistikk.lagre(oppgaveknytningerFørEtterOppdatering);
-        LOG.info("Oppdater {} oppgaveId {}", system, oppgave.getId());
+        LOG.info("Oppdater {} oppgaveId {}", SYSTEM, oppgave.getId());
     }
 
     private void oppdaterOppgaveEgenskaper(Oppgave gjenåpnetOppgave) {
@@ -79,7 +80,7 @@ public class OppdaterOppgaveegenskaperHendelseHåndterer implements FpsakHendels
     }
 
     private void oppdaterOppgave(Oppgave oppgave) {
-        Oppgave tmp = oppgave(behandlingFpsak);
+        var tmp = oppgave(behandlingFpsak);
         oppgave.avstemMed(tmp);
         oppgaveRepository.lagre(oppgave);
     }

@@ -1,24 +1,26 @@
 package no.nav.foreldrepenger.los.avdelingsleder;
 
-import no.nav.foreldrepenger.los.oppgave.OppgaveRepository;
-import no.nav.foreldrepenger.los.organisasjon.Avdeling;
-import no.nav.foreldrepenger.los.organisasjon.OrganisasjonRepository;
+import java.time.LocalDate;
+import java.util.List;
+import java.util.Optional;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import no.nav.foreldrepenger.los.oppgave.AndreKriterierType;
 import no.nav.foreldrepenger.los.oppgave.BehandlingType;
 import no.nav.foreldrepenger.los.oppgave.FagsakYtelseType;
+import no.nav.foreldrepenger.los.oppgave.OppgaveRepository;
 import no.nav.foreldrepenger.los.oppgavekø.FiltreringAndreKriterierType;
 import no.nav.foreldrepenger.los.oppgavekø.FiltreringBehandlingType;
 import no.nav.foreldrepenger.los.oppgavekø.FiltreringYtelseType;
 import no.nav.foreldrepenger.los.oppgavekø.KøSortering;
 import no.nav.foreldrepenger.los.oppgavekø.OppgaveFiltrering;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-import java.time.LocalDate;
-import java.util.List;
-import java.util.Optional;
+import no.nav.foreldrepenger.los.organisasjon.Avdeling;
+import no.nav.foreldrepenger.los.organisasjon.OrganisasjonRepository;
 
 
 @ApplicationScoped
@@ -26,7 +28,7 @@ public class AvdelingslederTjeneste {
 
     private OrganisasjonRepository organisasjonRepository;
     private OppgaveRepository oppgaveRepository;
-    private static final Logger log = LoggerFactory.getLogger(AvdelingslederTjeneste.class);
+    private static final Logger LOG = LoggerFactory.getLogger(AvdelingslederTjeneste.class);
 
 
     AvdelingslederTjeneste() {
@@ -40,7 +42,7 @@ public class AvdelingslederTjeneste {
     }
 
     public List<OppgaveFiltrering> hentOppgaveFiltreringer(String avdelingsEnhet){
-        Avdeling avdeling = organisasjonRepository.hentAvdelingFraEnhet(avdelingsEnhet).orElseThrow();
+        var avdeling = organisasjonRepository.hentAvdelingFraEnhet(avdelingsEnhet).orElseThrow();
         return oppgaveRepository.hentAlleOppgaveFilterSettTilknyttetAvdeling(avdeling.getId());
     }
 
@@ -49,7 +51,7 @@ public class AvdelingslederTjeneste {
     }
 
     public Long lagNyOppgaveFiltrering(String avdelingEnhet) {
-        Avdeling avdeling = organisasjonRepository.hentAvdelingFraEnhet(avdelingEnhet).orElseThrow();
+        var avdeling = organisasjonRepository.hentAvdelingFraEnhet(avdelingEnhet).orElseThrow();
         return oppgaveRepository.lagre(OppgaveFiltrering.nyTomOppgaveFiltrering(avdeling));
     }
 
@@ -58,7 +60,7 @@ public class AvdelingslederTjeneste {
     }
 
     public void slettOppgaveFiltrering(Long oppgavefiltreringId) {
-        log.info("Sletter oppgavefilter " + oppgavefiltreringId);
+        LOG.info("Sletter oppgavefilter " + oppgavefiltreringId);
         oppgaveRepository.slettListe(oppgavefiltreringId);
     }
 
@@ -67,7 +69,7 @@ public class AvdelingslederTjeneste {
     }
 
     public void endreFiltreringBehandlingType(Long oppgavefiltreringId, BehandlingType behandlingType, boolean checked) {
-        OppgaveFiltrering filtre = oppgaveRepository.hentOppgaveFilterSett(oppgavefiltreringId).orElseThrow();
+        var filtre = oppgaveRepository.hentOppgaveFilterSett(oppgavefiltreringId).orElseThrow();
         if (checked) {
             if (!behandlingType.gjelderTilbakebetaling()) {
                 settStandardSorteringHvisTidligereTilbakebetaling(oppgavefiltreringId);
@@ -148,7 +150,7 @@ public class AvdelingslederTjeneste {
     }
 
     private void settStandardSorteringHvisTidligereTilbakebetaling(Long oppgavefiltreringId) {
-        KøSortering sortering = oppgaveRepository.hentSorteringForListe(oppgavefiltreringId);
+        var sortering = oppgaveRepository.hentSorteringForListe(oppgavefiltreringId);
         if (sortering != null && sortering.getFeltkategori().equals(KøSortering.FK_TILBAKEKREVING)) {
             settSortering(oppgavefiltreringId, KøSortering.BEHANDLINGSFRIST);
         }

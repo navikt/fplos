@@ -9,19 +9,18 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 
-import no.nav.foreldrepenger.los.avdelingsleder.AvdelingslederTjeneste;
-import no.nav.foreldrepenger.los.oppgavekø.OppgaveKøTjeneste;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import no.nav.foreldrepenger.extensions.EntityManagerFPLosAwareExtension;
+import no.nav.foreldrepenger.los.avdelingsleder.AvdelingslederTjeneste;
+import no.nav.foreldrepenger.los.oppgave.OppgaveRepositoryImpl;
 import no.nav.foreldrepenger.los.oppgavekø.KøSortering;
 import no.nav.foreldrepenger.los.oppgavekø.OppgaveFiltrering;
-import no.nav.foreldrepenger.los.organisasjon.Avdeling;
-import no.nav.foreldrepenger.los.organisasjon.Saksbehandler;
-import no.nav.foreldrepenger.los.oppgave.OppgaveRepositoryImpl;
+import no.nav.foreldrepenger.los.oppgavekø.OppgaveKøTjeneste;
 import no.nav.foreldrepenger.los.organisasjon.OrganisasjonRepositoryImpl;
+import no.nav.foreldrepenger.los.organisasjon.Saksbehandler;
 import no.nav.foreldrepenger.los.organisasjon.ansatt.AnsattTjeneste;
 
 @ExtendWith(EntityManagerFPLosAwareExtension.class)
@@ -41,17 +40,17 @@ public class SaksbehandlerDtoTjenesteTest {
 
     @Test
     public void testHentSaksbehandlerNavnOgAvdelinger(EntityManager entityManager){
-        String saksbehandler1Ident = "1234567";
-        String saksbehandler2Ident = "9876543";
-        String saksbehandler3Ident = "1234";
+        var saksbehandler1Ident = "1234567";
+        var saksbehandler2Ident = "9876543";
+        var saksbehandler3Ident = "1234";
 
-        Saksbehandler saksbehandler1 = new Saksbehandler(saksbehandler1Ident);
-        Saksbehandler saksbehandler2 = new Saksbehandler(saksbehandler2Ident);
+        var saksbehandler1 = new Saksbehandler(saksbehandler1Ident);
+        var saksbehandler2 = new Saksbehandler(saksbehandler2Ident);
         entityManager.persist(saksbehandler1);
         entityManager.persist(saksbehandler2);
         entityManager.flush();
 
-        List<OppgaveFiltrering> lagtInnLister = leggInnEtSettMedLister(1, entityManager);
+        var lagtInnLister = leggInnEtSettMedLister(1, entityManager);
 
         avdelingslederTjeneste.leggSaksbehandlerTilListe(lagtInnLister.get(0).getId(), saksbehandler1.getSaksbehandlerIdent());
         entityManager.refresh(saksbehandler1);
@@ -63,10 +62,10 @@ public class SaksbehandlerDtoTjenesteTest {
     private List<OppgaveFiltrering> leggInnEtSettMedLister(int antallLister, EntityManager entityManager){
         List<OppgaveFiltrering> filtre = new ArrayList<>();
 
-        List<Avdeling> avdelings = avdelingslederTjeneste.hentAvdelinger();
+        var avdelings = avdelingslederTjeneste.hentAvdelinger();
         var avdelingDrammen = avdelings.stream().filter(avdeling -> AVDELING_DRAMMEN_ENHET.equals(avdeling.getAvdelingEnhet())).findFirst().orElseThrow();
-        for(int i = 0; i< antallLister; i++) {
-            OppgaveFiltrering oppgaveFiltrering = OppgaveFiltrering.builder().medNavn("Test " + i).medSortering(KøSortering.BEHANDLINGSFRIST).medAvdeling(avdelingDrammen).build();
+        for(var i = 0; i< antallLister; i++) {
+            var oppgaveFiltrering = OppgaveFiltrering.builder().medNavn("Test " + i).medSortering(KøSortering.BEHANDLINGSFRIST).medAvdeling(avdelingDrammen).build();
             entityManager.persist(oppgaveFiltrering);
             filtre.add(oppgaveFiltrering);
         }

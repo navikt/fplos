@@ -16,13 +16,12 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 
 import io.swagger.v3.oas.annotations.Operation;
+import no.nav.foreldrepenger.los.oppgavekø.OppgaveKøTjeneste;
 import no.nav.foreldrepenger.los.web.app.AbacAttributter;
 import no.nav.foreldrepenger.los.web.app.tjenester.felles.dto.SaksbehandlerDto;
 import no.nav.foreldrepenger.los.web.app.tjenester.felles.dto.SaksbehandlerDtoTjeneste;
 import no.nav.foreldrepenger.los.web.app.tjenester.felles.dto.SakslisteDto;
 import no.nav.foreldrepenger.los.web.app.tjenester.felles.dto.SakslisteIdDto;
-import no.nav.foreldrepenger.los.oppgavekø.OppgaveFiltrering;
-import no.nav.foreldrepenger.los.oppgavekø.OppgaveKøTjeneste;
 import no.nav.vedtak.sikkerhet.abac.BeskyttetRessurs;
 
 @Path("/saksbehandler/saksliste")
@@ -50,7 +49,7 @@ public class SaksbehandlerSakslisteRestTjeneste {
     @BeskyttetRessurs(action = READ, resource = AbacAttributter.FAGSAK, sporingslogg = false)
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
     public List<SakslisteDto> hentSakslister() {
-        List<OppgaveFiltrering> filtre = oppgaveKøTjeneste.hentOppgaveFiltreringerForPåloggetBruker();
+        var filtre = oppgaveKøTjeneste.hentOppgaveFiltreringerForPåloggetBruker();
         return filtre.stream()
                 .map(o -> new SakslisteDto(o, oppgaveKøTjeneste.hentAntallOppgaver(o.getId(), false)))
                 .collect(Collectors.toList());

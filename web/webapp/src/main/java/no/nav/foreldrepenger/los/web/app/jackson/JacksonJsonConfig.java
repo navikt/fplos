@@ -1,20 +1,21 @@
 package no.nav.foreldrepenger.los.web.app.jackson;
 
+import java.net.URISyntaxException;
+import java.util.List;
+
+import javax.ws.rs.ext.ContextResolver;
+import javax.ws.rs.ext.Provider;
+
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.fasterxml.jackson.core.Version;
 import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.Module;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import no.nav.foreldrepenger.los.web.app.IndexClasses;
 
-import javax.ws.rs.ext.ContextResolver;
-import javax.ws.rs.ext.Provider;
-import java.net.URISyntaxException;
-import java.util.List;
+import no.nav.foreldrepenger.los.web.app.IndexClasses;
 
 @Provider
 public class JacksonJsonConfig implements ContextResolver<ObjectMapper> {
@@ -32,14 +33,6 @@ public class JacksonJsonConfig implements ContextResolver<ObjectMapper> {
 
         objectMapper.registerSubtypes(getJsonTypeNameClasses());
 
-    }
-
-    public ObjectMapper getObjectMapper() {
-        return objectMapper;
-    }
-
-    public static Module defaultModule() {
-        return SER_DESER;
     }
 
     private static SimpleModule createModule() {

@@ -1,14 +1,13 @@
 package no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.util.Arrays;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.dto.InnloggetNavAnsattDto;
 import no.nav.vedtak.felles.integrasjon.ldap.LdapBruker;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 public class NavAnsattRestTjenesteTest {
     private static final String gruppenavnSaksbehandler = "Saksbehandler";
@@ -28,11 +27,11 @@ public class NavAnsattRestTjenesteTest {
 
     @Test
     public void skalMappeSaksbehandlerGruppeTilKanSaksbehandleRettighet() {
-        LdapBruker brukerUtenforSaksbehandlerGruppe = getTestBruker();
-        LdapBruker brukerISaksbehandlerGruppe = getTestBruker(gruppenavnSaksbehandler);
+        var brukerUtenforSaksbehandlerGruppe = getTestBruker();
+        var brukerISaksbehandlerGruppe = getTestBruker(gruppenavnSaksbehandler);
 
-        InnloggetNavAnsattDto innloggetBrukerUtenSaksbehandlerRettighet = saksbehandlerTjeneste.getInnloggetBrukerDto(null, brukerUtenforSaksbehandlerGruppe);
-        InnloggetNavAnsattDto innloggetBrukerMedSaksbehandlerRettighet = saksbehandlerTjeneste.getInnloggetBrukerDto(null, brukerISaksbehandlerGruppe);
+        var innloggetBrukerUtenSaksbehandlerRettighet = saksbehandlerTjeneste.getInnloggetBrukerDto(null, brukerUtenforSaksbehandlerGruppe);
+        var innloggetBrukerMedSaksbehandlerRettighet = saksbehandlerTjeneste.getInnloggetBrukerDto(null, brukerISaksbehandlerGruppe);
 
         assertThat(innloggetBrukerUtenSaksbehandlerRettighet.getKanSaksbehandle()).isFalse();
         assertThat(innloggetBrukerMedSaksbehandlerRettighet.getKanSaksbehandle()).isTrue();
@@ -40,31 +39,31 @@ public class NavAnsattRestTjenesteTest {
 
     @Test
     public void skalMappeVeilederGruppeTilKanVeiledeRettighet() {
-        LdapBruker brukerUtenforVeilederGruppe = getTestBruker();
-        LdapBruker brukerIVeilederGruppe = getTestBruker(gruppenavnVeileder);
-        InnloggetNavAnsattDto innloggetBrukerUtenVeilederRettighet = saksbehandlerTjeneste.getInnloggetBrukerDto(null, brukerUtenforVeilederGruppe);
-        InnloggetNavAnsattDto innloggetBrukerMedVeilederRettighet = saksbehandlerTjeneste.getInnloggetBrukerDto(null, brukerIVeilederGruppe);
+        var brukerUtenforVeilederGruppe = getTestBruker();
+        var brukerIVeilederGruppe = getTestBruker(gruppenavnVeileder);
+        var innloggetBrukerUtenVeilederRettighet = saksbehandlerTjeneste.getInnloggetBrukerDto(null, brukerUtenforVeilederGruppe);
+        var innloggetBrukerMedVeilederRettighet = saksbehandlerTjeneste.getInnloggetBrukerDto(null, brukerIVeilederGruppe);
         assertThat(innloggetBrukerUtenVeilederRettighet.getKanVeilede()).isFalse();
         assertThat(innloggetBrukerMedVeilederRettighet.getKanVeilede()).isTrue();
     }
 
     @Test
     public void skalMappeBeslutterGruppeTilKanBeslutteRettighet() {
-        LdapBruker brukerUtenforBeslutterGruppe = getTestBruker();
-        LdapBruker brukerIBeslutterGruppe = getTestBruker(gruppenavnBeslutter);
-        InnloggetNavAnsattDto innloggetBrukerUtenBeslutterRettighet = saksbehandlerTjeneste.getInnloggetBrukerDto(null, brukerUtenforBeslutterGruppe);
-        InnloggetNavAnsattDto innloggetBrukerMedBeslutterRettighet = saksbehandlerTjeneste.getInnloggetBrukerDto(null, brukerIBeslutterGruppe);
+        var brukerUtenforBeslutterGruppe = getTestBruker();
+        var brukerIBeslutterGruppe = getTestBruker(gruppenavnBeslutter);
+        var innloggetBrukerUtenBeslutterRettighet = saksbehandlerTjeneste.getInnloggetBrukerDto(null, brukerUtenforBeslutterGruppe);
+        var innloggetBrukerMedBeslutterRettighet = saksbehandlerTjeneste.getInnloggetBrukerDto(null, brukerIBeslutterGruppe);
         assertThat(innloggetBrukerUtenBeslutterRettighet.getKanBeslutte()).isFalse();
         assertThat(innloggetBrukerMedBeslutterRettighet.getKanBeslutte()).isTrue();
     }
 
     @Test
     public void skalMappeEgenAnsattGruppeTilKanBehandleEgenAnsattRettighet() {
-        LdapBruker brukerUtenforEgenAnsattGruppe = getTestBruker();
-        LdapBruker brukerIEgenAnsattGruppe = getTestBruker(gruppenavnEgenAnsatt);
+        var brukerUtenforEgenAnsattGruppe = getTestBruker();
+        var brukerIEgenAnsattGruppe = getTestBruker(gruppenavnEgenAnsatt);
 
-        InnloggetNavAnsattDto innloggetBrukerUtenEgenAnsattRettighet = saksbehandlerTjeneste.getInnloggetBrukerDto(null, brukerUtenforEgenAnsattGruppe);
-        InnloggetNavAnsattDto innloggetBrukerMedEgenAnsattRettighet = saksbehandlerTjeneste.getInnloggetBrukerDto(null, brukerIEgenAnsattGruppe);
+        var innloggetBrukerUtenEgenAnsattRettighet = saksbehandlerTjeneste.getInnloggetBrukerDto(null, brukerUtenforEgenAnsattGruppe);
+        var innloggetBrukerMedEgenAnsattRettighet = saksbehandlerTjeneste.getInnloggetBrukerDto(null, brukerIEgenAnsattGruppe);
 
         assertThat(innloggetBrukerUtenEgenAnsattRettighet.getKanBehandleKodeEgenAnsatt()).isFalse();
         assertThat(innloggetBrukerMedEgenAnsattRettighet.getKanBehandleKodeEgenAnsatt()).isTrue();
@@ -72,11 +71,11 @@ public class NavAnsattRestTjenesteTest {
 
     @Test
     public void skalMappeKode6GruppeTilKanBehandleKode6Rettighet() {
-        LdapBruker brukerUtenforKode6Gruppe = getTestBruker();
-        LdapBruker brukerIKode6Gruppe = getTestBruker(gruppenavnKode6);
+        var brukerUtenforKode6Gruppe = getTestBruker();
+        var brukerIKode6Gruppe = getTestBruker(gruppenavnKode6);
 
-        InnloggetNavAnsattDto innloggetBrukerUtenKode6Rettighet = saksbehandlerTjeneste.getInnloggetBrukerDto(null, brukerUtenforKode6Gruppe);
-        InnloggetNavAnsattDto innloggetBrukerMedKode6Rettighet = saksbehandlerTjeneste.getInnloggetBrukerDto(null, brukerIKode6Gruppe);
+        var innloggetBrukerUtenKode6Rettighet = saksbehandlerTjeneste.getInnloggetBrukerDto(null, brukerUtenforKode6Gruppe);
+        var innloggetBrukerMedKode6Rettighet = saksbehandlerTjeneste.getInnloggetBrukerDto(null, brukerIKode6Gruppe);
 
         assertThat(innloggetBrukerUtenKode6Rettighet.getKanBehandleKode6()).isFalse();
         assertThat(innloggetBrukerMedKode6Rettighet.getKanBehandleKode6()).isTrue();
@@ -84,11 +83,11 @@ public class NavAnsattRestTjenesteTest {
 
     @Test
     public void skalMappeKode7GruppeTilKanBehandleKode7Rettighet() {
-        LdapBruker brukerUtenforKode7Gruppe = getTestBruker();
-        LdapBruker brukerIKode7Gruppe = getTestBruker(gruppenavnKode7);
+        var brukerUtenforKode7Gruppe = getTestBruker();
+        var brukerIKode7Gruppe = getTestBruker(gruppenavnKode7);
 
-        InnloggetNavAnsattDto innloggetBrukerUtenKode7Rettighet = saksbehandlerTjeneste.getInnloggetBrukerDto(null, brukerUtenforKode7Gruppe);
-        InnloggetNavAnsattDto innloggetBrukerMedKode7Rettighet = saksbehandlerTjeneste.getInnloggetBrukerDto(null, brukerIKode7Gruppe);
+        var innloggetBrukerUtenKode7Rettighet = saksbehandlerTjeneste.getInnloggetBrukerDto(null, brukerUtenforKode7Gruppe);
+        var innloggetBrukerMedKode7Rettighet = saksbehandlerTjeneste.getInnloggetBrukerDto(null, brukerIKode7Gruppe);
 
         assertThat(innloggetBrukerUtenKode7Rettighet.getKanBehandleKode7()).isFalse();
         assertThat(innloggetBrukerMedKode7Rettighet.getKanBehandleKode7()).isTrue();

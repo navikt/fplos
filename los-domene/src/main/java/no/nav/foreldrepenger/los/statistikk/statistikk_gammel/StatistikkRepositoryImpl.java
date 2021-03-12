@@ -1,19 +1,13 @@
 package no.nav.foreldrepenger.los.statistikk.statistikk_gammel;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
-import javax.persistence.Query;
 
-import no.nav.foreldrepenger.los.oppgave.Oppgavespørring;
-import no.nav.foreldrepenger.los.oppgave.AndreKriterierType;
-import no.nav.foreldrepenger.los.oppgave.BehandlingType;
-import no.nav.foreldrepenger.los.oppgave.FagsakYtelseType;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveEventType;
-import no.nav.foreldrepenger.los.oppgavekø.OppgaveFiltrering;
+import no.nav.foreldrepenger.los.oppgave.AndreKriterierType;
 
 @ApplicationScoped
 public class StatistikkRepositoryImpl implements StatistikkRepository {
@@ -61,7 +55,7 @@ public class StatistikkRepositoryImpl implements StatistikkRepository {
 
     @Override
     public List hentAntallOppgaverForAvdelingSattManueltPåVent(String avdelingEnhet) {
-        Query query = entityManager.createNativeQuery(
+        var query = entityManager.createNativeQuery(
                 "SELECT COALESCE(trunc(oel.FRIST_TID), trunc(oel.OPPRETTET_TID + 28)) ESTIMERT_FRIST, o.FAGSAK_YTELSE_TYPE, Count(distinct oel.BEHANDLING_ID) as ANTALL " + //,
                         "FROM OPPGAVE_EVENT_LOGG oel " +
                         "INNER JOIN OPPGAVE o ON o.BEHANDLING_ID = oel.BEHANDLING_ID AND o.behandlende_enhet = :behandlendeEnhet " +

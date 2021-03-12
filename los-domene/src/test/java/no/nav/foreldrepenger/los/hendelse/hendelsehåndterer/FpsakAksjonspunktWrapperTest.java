@@ -1,20 +1,20 @@
 package no.nav.foreldrepenger.los.hendelse.hendelsehåndterer;
 
-import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.FpsakAksjonspunktWrapper;
-import no.nav.foreldrepenger.los.klient.fpsak.Aksjonspunkt;
-import no.nav.foreldrepenger.los.oppgave.AndreKriterierType;
-import org.junit.jupiter.api.Test;
-
-import java.util.HashMap;
-import java.util.List;
-
 import static no.nav.foreldrepenger.los.oppgave.AndreKriterierType.PAPIRSØKNAD;
 import static no.nav.foreldrepenger.los.oppgave.AndreKriterierType.TIL_BESLUTTER;
 import static no.nav.foreldrepenger.los.oppgave.AndreKriterierType.UTLANDSSAK;
 import static no.nav.foreldrepenger.los.oppgave.AndreKriterierType.VURDER_FARESIGNALER;
 import static no.nav.foreldrepenger.los.oppgave.AndreKriterierType.VURDER_FORMKRAV;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.util.HashMap;
+import java.util.List;
+
+import org.junit.jupiter.api.Test;
+
+import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.FpsakAksjonspunktWrapper;
+import no.nav.foreldrepenger.los.klient.fpsak.Aksjonspunkt;
+import no.nav.foreldrepenger.los.oppgave.AndreKriterierType;
 
 class FpsakAksjonspunktWrapperTest {
 
@@ -47,7 +47,7 @@ class FpsakAksjonspunktWrapperTest {
     public void skalIkkeMappeInaktiveAksjonspunktTilAndreKriterierTyper() {
         var ap = Aksjonspunkt.builder().medStatus("AVBR").medDefinisjon("5082").medBegrunnelse("").build();
         var result = new FpsakAksjonspunktWrapper(List.of(ap)).getKriterier();
-        assertTrue(result.isEmpty());
+        assertThat(result).isEmpty();
     }
 
     private static Aksjonspunkt åpentAksjonspunkt(String definisjonKode) {

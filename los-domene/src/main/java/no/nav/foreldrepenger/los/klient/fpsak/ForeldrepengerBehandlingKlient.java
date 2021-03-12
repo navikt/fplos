@@ -15,12 +15,11 @@ import java.util.Optional;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import no.nav.foreldrepenger.los.domene.typer.BehandlingId;
 import org.apache.http.client.utils.URIBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
+import no.nav.foreldrepenger.los.domene.typer.BehandlingId;
 import no.nav.foreldrepenger.los.klient.fpsak.dto.KontrollerFaktaDataDto;
 import no.nav.foreldrepenger.los.klient.fpsak.dto.KontrollerFaktaPeriodeDto;
 import no.nav.foreldrepenger.los.klient.fpsak.dto.aksjonspunkt.AksjonspunktDto;
@@ -39,7 +38,7 @@ import no.nav.vedtak.konfig.KonfigVerdi;
 @ApplicationScoped
 public class ForeldrepengerBehandlingKlient {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ForeldrepengerBehandlingKlient.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ForeldrepengerBehandlingKlient.class);
 
     private static final String FPSAK_BEHANDLINGER = "/fpsak/api/behandlinger";
     private static final String AKSJONSPUNKTER_LINK = "aksjonspunkter";
@@ -65,7 +64,7 @@ public class ForeldrepengerBehandlingKlient {
         var uri = behandlingUri(behandlingId.toString());
         var behandlingDto = oidcRestClient.get(uri, UtvidetBehandlingDto.class);
         var links = behandlingDto.getLinks();
-        BehandlingFpsak.Builder builder = BehandlingFpsak.builder()
+        var builder = BehandlingFpsak.builder()
                 .medBehandlingType(behandlingDto.getType())
                 .medBehandlingId(new BehandlingId(behandlingDto.getUuid()))
                 .medBehandlingOpprettet(behandlingDto.getOpprettet())
@@ -90,7 +89,7 @@ public class ForeldrepengerBehandlingKlient {
     public Optional<Long> getFpsakInternBehandlingId(BehandlingId eksternBehandlingId) {
         var uri = behandlingUri(eksternBehandlingId.toString());
         try {
-            UtvidetBehandlingDto behandlingDto = oidcRestClient.get(uri, UtvidetBehandlingDto.class);
+            var behandlingDto = oidcRestClient.get(uri, UtvidetBehandlingDto.class);
             return Optional.ofNullable(behandlingDto.getId());
         } catch (ManglerTilgangException e) {
             throw new InternIdMappingException(eksternBehandlingId);
@@ -138,13 +137,13 @@ public class ForeldrepengerBehandlingKlient {
     }
 
     private UttakEgenskaper hentUttakEgenskaper(BehandlingId behandlingId, List<ResourceLink> links) {
-        Optional<ResourceLink> uttakLink = velgLink(links, UTTAK_KONTROLLER_FAKTA_PERIODER_LINK);
+        var uttakLink = velgLink(links, UTTAK_KONTROLLER_FAKTA_PERIODER_LINK);
         if (uttakLink.isPresent()) {
-            Optional<KontrollerFaktaDataDto> kontrollerFaktaData = hentFraResourceLink(uttakLink.get(), KontrollerFaktaDataDto.class);
+            var kontrollerFaktaData = hentFraResourceLink(uttakLink.get(), KontrollerFaktaDataDto.class);
             if (kontrollerFaktaData.isPresent()) {
                 return new UttakEgenskaper(harVurderSykdom(kontrollerFaktaData.get()), harGraderingFra(kontrollerFaktaData.get()));
             } else {
-                LOGGER.warn("Kunne ikke hente gradering for behandlingId " + behandlingId);
+                LOG.warn("Kunne ikke hente gradering for behandlingId " + behandlingId);
             }
         }
         return null;
@@ -156,7 +155,7 @@ public class ForeldrepengerBehandlingKlient {
     }
 
     private <T> Optional<T> hentFraResourceLink(ResourceLink resourceLink, Class<T> clazz) {
-        URI uri = URI.create(fpsakBaseUrl + resourceLink.getHref());
+        var uri = URI.create(fpsakBaseUrl + resourceLink.getHref());
         return "POST".equals(resourceLink.getType().name())
                 ? oidcRestClient.postReturnsOptional(uri, resourceLink.getRequestPayload(), clazz)
                 : oidcRestClient.getReturnsOptional(uri, clazz);
@@ -178,7 +177,7 @@ public class ForeldrepengerBehandlingKlient {
 
     private static List<Aksjonspunkt> aksjonspunktFraDto(AksjonspunktDto[] aksjonspunktDtos) {
         List<Aksjonspunkt> liste = new ArrayList<>();
-        for (AksjonspunktDto dto : aksjonspunktDtos) {
+        for (var dto : aksjonspunktDtos) {
             liste.add(aksjonspunktFra(dto));
         }
         return liste;

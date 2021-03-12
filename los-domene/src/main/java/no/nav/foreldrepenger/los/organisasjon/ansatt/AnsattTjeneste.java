@@ -1,15 +1,15 @@
 package no.nav.foreldrepenger.los.organisasjon.ansatt;
 
-import no.nav.foreldrepenger.los.domene.typer.aktør.OrganisasjonsEnhet;
-import no.nav.foreldrepenger.los.organisasjon.OrganisasjonRepository;
-import no.nav.foreldrepenger.los.organisasjon.Avdeling;
-import no.nav.vedtak.felles.integrasjon.ldap.LdapBruker;
-import no.nav.vedtak.felles.integrasjon.ldap.LdapBrukeroppslag;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import java.util.List;
-import java.util.stream.Collectors;
+
+import no.nav.foreldrepenger.los.domene.typer.aktør.OrganisasjonsEnhet;
+import no.nav.foreldrepenger.los.organisasjon.Avdeling;
+import no.nav.foreldrepenger.los.organisasjon.OrganisasjonRepository;
+import no.nav.vedtak.felles.integrasjon.ldap.LdapBrukeroppslag;
 
 @ApplicationScoped
 public class AnsattTjeneste {
@@ -30,7 +30,7 @@ public class AnsattTjeneste {
     }
 
     public String hentAnsattNavn(String ident) {
-        LdapBruker ldapBruker = new LdapBrukeroppslag().hentBrukerinformasjon(ident);
+        var ldapBruker = new LdapBrukeroppslag().hentBrukerinformasjon(ident);
         return ldapBruker.getDisplayName();
     }
 

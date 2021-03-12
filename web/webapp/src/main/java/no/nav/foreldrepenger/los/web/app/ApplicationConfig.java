@@ -50,8 +50,8 @@ public class ApplicationConfig extends Application {
 
     public ApplicationConfig() {
 
-        OpenAPI oas = new OpenAPI();
-        Info info = new Info()
+        var oas = new OpenAPI();
+        var info = new Info()
                 .title("FPLOS")
                 .version("1.0")
                 .description("REST grensesnitt for fplos.");
@@ -59,7 +59,7 @@ public class ApplicationConfig extends Application {
         oas.info(info)
                 .addServersItem(new Server()
                         .url("/fplos"));
-        SwaggerConfiguration oasConfig = new SwaggerConfiguration()
+        var oasConfig = new SwaggerConfiguration()
                 .openAPI(oas)
                 .prettyPrint(true)
                 .scannerClass("io.swagger.v3.jaxrs2.integration.JaxrsAnnotationScanner")

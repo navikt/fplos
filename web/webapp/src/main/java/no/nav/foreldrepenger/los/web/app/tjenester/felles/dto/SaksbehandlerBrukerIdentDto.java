@@ -1,15 +1,17 @@
 package no.nav.foreldrepenger.los.web.app.tjenester.felles.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import no.nav.vedtak.sikkerhet.abac.AbacDataAttributter;
-import no.nav.vedtak.sikkerhet.abac.AbacDto;
-import no.nav.vedtak.util.InputValideringRegex;
+import java.util.Objects;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
-import java.util.Objects;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import no.nav.vedtak.sikkerhet.abac.AbacDataAttributter;
+import no.nav.vedtak.sikkerhet.abac.AbacDto;
+import no.nav.vedtak.util.InputValideringRegex;
 
 public class SaksbehandlerBrukerIdentDto implements AbacDto {
 
@@ -46,7 +48,7 @@ public class SaksbehandlerBrukerIdentDto implements AbacDto {
         if (this == o) return true;
         if (!(o instanceof SaksbehandlerBrukerIdentDto)) return false;
 
-        SaksbehandlerBrukerIdentDto dto = (SaksbehandlerBrukerIdentDto) o;
+        var dto = (SaksbehandlerBrukerIdentDto) o;
         return brukerIdent.equals(dto.brukerIdent);
     }
 

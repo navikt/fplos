@@ -21,8 +21,6 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import no.nav.foreldrepenger.los.oppgavekø.OppgaveKøTjeneste;
-import no.nav.foreldrepenger.los.reservasjon.ReservasjonTjeneste;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,6 +30,9 @@ import io.swagger.v3.oas.annotations.headers.Header;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import no.nav.foreldrepenger.los.oppgave.OppgaveTjeneste;
+import no.nav.foreldrepenger.los.oppgavekø.OppgaveKøTjeneste;
+import no.nav.foreldrepenger.los.reservasjon.ReservasjonTjeneste;
 import no.nav.foreldrepenger.los.web.app.AbacAttributter;
 import no.nav.foreldrepenger.los.web.app.tjenester.felles.dto.AsyncPollingStatus;
 import no.nav.foreldrepenger.los.web.app.tjenester.felles.dto.OppgaveDto;
@@ -47,7 +48,6 @@ import no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.oppgave.dto.Opp
 import no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.oppgave.dto.OppgaveOpphevingDto;
 import no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.oppgave.dto.ReservasjonsEndringDto;
 import no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.oppgave.dto.SaknummerIderDto;
-import no.nav.foreldrepenger.los.oppgave.OppgaveTjeneste;
 import no.nav.vedtak.sikkerhet.abac.BeskyttetRessurs;
 import no.nav.vedtak.sikkerhet.abac.BeskyttetRessursActionAttributt;
 
@@ -92,7 +92,7 @@ public class OppgaveRestTjeneste {
     @BeskyttetRessurs(action = READ, resource = AbacAttributter.FAGSAK)
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
     public Response hentOppgaver(@NotNull @Valid @QueryParam("sakslisteId") SakslisteIdDto sakslisteId, @Valid @QueryParam("oppgaveIder") OppgaveIderDto oppgaveIder) throws URISyntaxException {
-        URI uri = new URI(("/saksbehandler/oppgaver/status?sakslisteId=" + sakslisteId.getVerdi()) + (oppgaveIder == null ? "" : "&oppgaveIder=" + oppgaveIder.getVerdi()));
+        var uri = new URI(("/saksbehandler/oppgaver/status?sakslisteId=" + sakslisteId.getVerdi()) + (oppgaveIder == null ? "" : "&oppgaveIder=" + oppgaveIder.getVerdi()));
         return Response.accepted().location(uri).build();
     }
 
@@ -111,20 +111,19 @@ public class OppgaveRestTjeneste {
         if (oppgaveIderSomVises.isEmpty()) {
             if (!oppgaveDtoTjeneste.finnesTilgjengeligeOppgaver(sakslisteId)) {
                 return sendTilPolling(sakslisteId, oppgaverIder);
-            } else {
-                return sendTilResultat(sakslisteId);
             }
-        } else if (oppgaveTjeneste.erAlleOppgaverFortsattTilgjengelig(oppgaveIderSomVises)) {
-            return sendTilPolling(sakslisteId, oppgaverIder);
-        } else {
             return sendTilResultat(sakslisteId);
         }
+        if (oppgaveTjeneste.erAlleOppgaverFortsattTilgjengelig(oppgaveIderSomVises)) {
+            return sendTilPolling(sakslisteId, oppgaverIder);
+        }
+        return sendTilResultat(sakslisteId);
     }
 
     private Response sendTilPolling(SakslisteIdDto sakslisteId, OppgaveIderDto oppgaverIder) throws URISyntaxException {
-        String ider = oppgaverIder != null ? oppgaverIder.getVerdi() : "";
-        URI uri = new URI("/saksbehandler/oppgaver/status?sakslisteId=" + sakslisteId.getVerdi() + "&oppgaveIder=" + ider);
-        AsyncPollingStatus status = new AsyncPollingStatus(AsyncPollingStatus.Status.PENDING, "", POLL_INTERVAL_MILLIS);
+        var ider = oppgaverIder != null ? oppgaverIder.getVerdi() : "";
+        var uri = new URI("/saksbehandler/oppgaver/status?sakslisteId=" + sakslisteId.getVerdi() + "&oppgaveIder=" + ider);
+        var status = new AsyncPollingStatus(AsyncPollingStatus.Status.PENDING, "", POLL_INTERVAL_MILLIS);
         status.setLocation(uri);
         return Response.status(status.getStatus().getHttpStatus())
                 .entity(status)
@@ -132,7 +131,7 @@ public class OppgaveRestTjeneste {
     }
 
     private Response sendTilResultat(@QueryParam("sakslisteId") @NotNull @Valid SakslisteIdDto sakslisteId) throws URISyntaxException {
-        URI uri = new URI("/saksbehandler/oppgaver/resultat?sakslisteId=" + sakslisteId.getVerdi());
+        var uri = new URI("/saksbehandler/oppgaver/resultat?sakslisteId=" + sakslisteId.getVerdi());
         return Response.seeOther(uri).build();
     }
 
@@ -236,7 +235,7 @@ public class OppgaveRestTjeneste {
     @Operation(description = "Søk etter saksbehandler som er tilknyttet behandlingskø", tags = "Saksbehandler")
     @BeskyttetRessurs(action = BeskyttetRessursActionAttributt.READ, resource = AbacAttributter.FAGSAK)
     public SaksbehandlerMedAvdelingerDto søkAvdelingensSaksbehandlere(@NotNull @Parameter(description = "Brukeridentifikasjon") @Valid SaksbehandlerBrukerIdentDto brukerIdent) {
-        String ident = brukerIdent.getVerdi().toUpperCase();
+        var ident = brukerIdent.getVerdi().toUpperCase();
         var saksbehandler = saksbehandlerDtoTjeneste.hentSaksbehandlerTilknyttetMinstEnKø(ident);
         return saksbehandler.orElse(null);
     }

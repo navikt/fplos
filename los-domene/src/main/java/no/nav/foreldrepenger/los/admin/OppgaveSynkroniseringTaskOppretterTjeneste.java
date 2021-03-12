@@ -7,19 +7,19 @@ import java.util.Optional;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import no.nav.vedtak.felles.prosesstask.api.ProsessTaskData;
-import no.nav.vedtak.felles.prosesstask.api.ProsessTaskRepository;
-import no.nav.vedtak.log.mdc.MDCOperations;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import no.nav.foreldrepenger.los.oppgave.AndreKriterierType;
 import no.nav.foreldrepenger.los.oppgave.Oppgave;
 import no.nav.foreldrepenger.los.oppgave.OppgaveRepository;
+import no.nav.vedtak.felles.prosesstask.api.ProsessTaskData;
+import no.nav.vedtak.felles.prosesstask.api.ProsessTaskRepository;
+import no.nav.vedtak.log.mdc.MDCOperations;
 
 @ApplicationScoped
 public class OppgaveSynkroniseringTaskOppretterTjeneste {
-    private static final Logger log = LoggerFactory.getLogger(OppgaveSynkroniseringTaskOppretterTjeneste.class);
+    private static final Logger LOG = LoggerFactory.getLogger(OppgaveSynkroniseringTaskOppretterTjeneste.class);
     private OppgaveRepository oppgaveRepository;
     private ProsessTaskRepository prosessTaskRepository;
 
@@ -35,12 +35,12 @@ public class OppgaveSynkroniseringTaskOppretterTjeneste {
     }
 
     public String opprettOppgaveEgenskapOppdatererTask(String kriterieType) {
-        final String callId = (MDCOperations.getCallId() == null ? MDCOperations.generateCallId() : MDCOperations.getCallId()) + "_";
+        final var callId = (MDCOperations.getCallId() == null ? MDCOperations.generateCallId() : MDCOperations.getCallId()) + "_";
         var mapper = Optional.of(AndreKriterierType.fraKode(kriterieType))
                 .flatMap(OppgaveEgenskapTypeMapper::tilTypeMapper)
                 .orElseThrow();
         var oppgaver = oppgaveRepository.hentOppgaverForSynkronisering();
-        log.info("Oppretter tasker for synkronisering av oppgaveegenskap {} for {} oppgaver", mapper.getType(), oppgaver.size());
+        LOG.info("Oppretter tasker for synkronisering av oppgaveegenskap {} for {} oppgaver", mapper.getType(), oppgaver.size());
         var kjøres = LocalDateTime.now();
         for (var oppgave : oppgaver) {
             opprettSynkroniseringTask(oppgave, mapper, callId, kjøres);
@@ -50,7 +50,7 @@ public class OppgaveSynkroniseringTaskOppretterTjeneste {
     }
 
     private void opprettSynkroniseringTask(Oppgave oppgave, OppgaveEgenskapTypeMapper typeMapper, String callId, LocalDateTime kjøretidspunkt) {
-        ProsessTaskData prosessTaskData = new ProsessTaskData(OppgaveEgenskapOppdatererTask.TASKTYPE);
+        var prosessTaskData = new ProsessTaskData(OppgaveEgenskapOppdatererTask.TASKTYPE);
         prosessTaskData.setCallId(callId + oppgave.getId());
         prosessTaskData.setOppgaveId(String.valueOf(oppgave.getId()));
         prosessTaskData.setPrioritet(999);

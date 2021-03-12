@@ -1,11 +1,11 @@
 package no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg;
 
-import no.nav.foreldrepenger.los.oppgave.AndreKriterierType;
-
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+
+import no.nav.foreldrepenger.los.oppgave.AndreKriterierType;
 
 public class OppgaveHistorikk {
     private final boolean erUtenHistorikk;
@@ -38,10 +38,6 @@ public class OppgaveHistorikk {
 
     public boolean erUtenHistorikk() {
         return erUtenHistorikk;
-    }
-
-    public OppgaveEventLogg getSisteOpprettetEvent() {
-        return sisteOpprettetEvent;
     }
 
     public boolean erSisteOpprettedeOppgaveTilBeslutter() {

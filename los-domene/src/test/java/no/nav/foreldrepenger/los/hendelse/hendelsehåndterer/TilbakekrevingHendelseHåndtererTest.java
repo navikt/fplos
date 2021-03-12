@@ -12,27 +12,27 @@ import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+import no.nav.foreldrepenger.dbstoette.DBTestUtil;
+import no.nav.foreldrepenger.extensions.EntityManagerFPLosAwareExtension;
 import no.nav.foreldrepenger.los.domene.typer.BehandlingId;
+import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveEventLogg;
+import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveEventType;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.tilbakekreving.TilbakekrevingHendelseHåndterer;
 import no.nav.foreldrepenger.los.hendelse.hendelseoppretter.hendelse.Aksjonspunkt;
 import no.nav.foreldrepenger.los.hendelse.hendelseoppretter.hendelse.Fagsystem;
 import no.nav.foreldrepenger.los.hendelse.hendelseoppretter.hendelse.TilbakekrevingHendelse;
-import no.nav.foreldrepenger.los.oppgave.OppgaveRepositoryImpl;
-import no.nav.foreldrepenger.los.statistikk.statistikk_ny.OppgaveStatistikk;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-
-import no.nav.foreldrepenger.dbstoette.DBTestUtil;
-import no.nav.foreldrepenger.extensions.EntityManagerFPLosAwareExtension;
 import no.nav.foreldrepenger.los.oppgave.AndreKriterierType;
 import no.nav.foreldrepenger.los.oppgave.BehandlingType;
 import no.nav.foreldrepenger.los.oppgave.FagsakYtelseType;
 import no.nav.foreldrepenger.los.oppgave.Oppgave;
 import no.nav.foreldrepenger.los.oppgave.OppgaveEgenskap;
-import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveEventLogg;
-import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveEventType;
-import org.mockito.junit.jupiter.MockitoExtension;
+import no.nav.foreldrepenger.los.oppgave.OppgaveRepositoryImpl;
+import no.nav.foreldrepenger.los.statistikk.statistikk_ny.OppgaveStatistikk;
 
 @ExtendWith(EntityManagerFPLosAwareExtension.class)
 @ExtendWith(MockitoExtension.class)
@@ -142,7 +142,7 @@ public class TilbakekrevingHendelseHåndtererTest {
         handler.håndter(tilBeslutter);
         handler.håndter(saksbehandler);
 
-        List<OppgaveEventLogg> oppgaveEventer = DBTestUtil.hentAlle(entityManager, OppgaveEventLogg.class).stream()
+        var oppgaveEventer = DBTestUtil.hentAlle(entityManager, OppgaveEventLogg.class).stream()
                 .sorted(Comparator.comparing(OppgaveEventLogg::getOpprettetTidspunkt))
                 .collect(Collectors.toList());
 
@@ -167,7 +167,7 @@ public class TilbakekrevingHendelseHåndtererTest {
     }
 
     private void sjekkBeslutterEgenskapMedAktivstatus(boolean status) {
-        List<OppgaveEgenskap> egenskaper = DBTestUtil.hentAlle(entityManager, OppgaveEgenskap.class);
+        var egenskaper = DBTestUtil.hentAlle(entityManager, OppgaveEgenskap.class);
         assertThat(egenskaper.get(0).getAndreKriterierType()).isEqualTo(AndreKriterierType.TIL_BESLUTTER);
         assertThat(egenskaper.get(0).getAktiv()).isEqualTo(status);
     }
@@ -177,15 +177,15 @@ public class TilbakekrevingHendelseHåndtererTest {
     }
 
     private void sjekkAktivOppgaveEksisterer(boolean aktiv) {
-        List<Oppgave> oppgave = DBTestUtil.hentAlle(entityManager, Oppgave.class);
+        var oppgave = DBTestUtil.hentAlle(entityManager, Oppgave.class);
         assertThat(oppgave.get(0).getAktiv()).isEqualTo(aktiv);
-        int antallAktive = (int) oppgave.stream().filter(Oppgave::getAktiv).count();
+        var antallAktive = (int) oppgave.stream().filter(Oppgave::getAktiv).count();
         assertThat(antallAktive).isEqualTo(aktiv ? 1 : 0);
     }
 
     private void sjekkKunEnAktivOppgave() {
-        List<Oppgave> oppgave = DBTestUtil.hentAlle(entityManager, Oppgave.class);
-        long antallAktive = oppgave.stream().filter(Oppgave::getAktiv).count();
+        var oppgave = DBTestUtil.hentAlle(entityManager, Oppgave.class);
+        var antallAktive = oppgave.stream().filter(Oppgave::getAktiv).count();
         assertThat(antallAktive).isEqualTo(1L);
     }
 

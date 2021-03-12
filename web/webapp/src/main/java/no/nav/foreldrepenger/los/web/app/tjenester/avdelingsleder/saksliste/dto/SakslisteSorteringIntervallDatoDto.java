@@ -1,14 +1,15 @@
 package no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.saksliste.dto;
 
+import java.time.LocalDate;
+
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+
 import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.dto.AvdelingEnhetDto;
 import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.saksliste.FplosAbacAttributtType;
 import no.nav.foreldrepenger.los.web.app.tjenester.felles.dto.SakslisteIdDto;
 import no.nav.vedtak.sikkerhet.abac.AbacDataAttributter;
 import no.nav.vedtak.sikkerhet.abac.AbacDto;
-
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
-import java.time.LocalDate;
 
 public class SakslisteSorteringIntervallDatoDto implements AbacDto {
 
@@ -29,7 +30,10 @@ public class SakslisteSorteringIntervallDatoDto implements AbacDto {
     public SakslisteSorteringIntervallDatoDto() {
     }
 
-    public SakslisteSorteringIntervallDatoDto(SakslisteIdDto sakslisteId, LocalDate fomDato, LocalDate tomDato, AvdelingEnhetDto avdelingEnhet) {
+    public SakslisteSorteringIntervallDatoDto(SakslisteIdDto sakslisteId,
+                                              LocalDate fomDato,
+                                              LocalDate tomDato,
+                                              AvdelingEnhetDto avdelingEnhet) {
         this.sakslisteId = sakslisteId;
         this.fomDato = fomDato;
         this.tomDato = tomDato;
@@ -48,21 +52,19 @@ public class SakslisteSorteringIntervallDatoDto implements AbacDto {
         return tomDato;
     }
 
-    public AvdelingEnhetDto getAvdelingEnhet(){
+    public AvdelingEnhetDto getAvdelingEnhet() {
         return avdelingEnhet;
     }
 
     @Override
     public String toString() {
-        return "SakslisteSorteringDto{" +
-                "sakslisteId='" + sakslisteId + '\'' +
-                "fomDato='" + fomDato + '\'' +
-                "tomDato='" + tomDato + '\'' +
-                '}';
+        return "SakslisteSorteringDto{" + "sakslisteId='" + sakslisteId + '\'' + "fomDato='" + fomDato + '\''
+                + "tomDato='" + tomDato + '\'' + '}';
     }
 
     @Override
     public AbacDataAttributter abacAttributter() {
-        return AbacDataAttributter.opprett().leggTil(FplosAbacAttributtType.OPPGAVESTYRING_ENHET, avdelingEnhet.getAvdelingEnhet());
+        return AbacDataAttributter.opprett()
+                .leggTil(FplosAbacAttributtType.OPPGAVESTYRING_ENHET, avdelingEnhet.getAvdelingEnhet());
     }
 }

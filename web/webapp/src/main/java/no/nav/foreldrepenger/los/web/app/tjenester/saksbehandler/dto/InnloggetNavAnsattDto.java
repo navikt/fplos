@@ -142,13 +142,14 @@ public class InnloggetNavAnsattDto {
             return this;
         }
 
-        public Builder setKanOppgavestyre(Boolean kanOppgavestyre){
+        public Builder setKanOppgavestyre(Boolean kanOppgavestyre) {
             this.kanOppgavestyre = kanOppgavestyre;
             return this;
         }
 
         public InnloggetNavAnsattDto create() {
-            return new InnloggetNavAnsattDto(brukernavn, navn, kanSaksbehandle, kanVeilede, kanBeslutte, kanBehandleKodeEgenAnsatt, kanBehandleKode6, kanBehandleKode7, kanOppgavestyre);
+            return new InnloggetNavAnsattDto(brukernavn, navn, kanSaksbehandle, kanVeilede, kanBeslutte,
+                    kanBehandleKodeEgenAnsatt, kanBehandleKode6, kanBehandleKode7, kanOppgavestyre);
         }
     }
 }

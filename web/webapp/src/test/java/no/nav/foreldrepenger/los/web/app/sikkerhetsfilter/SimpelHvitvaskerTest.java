@@ -2,8 +2,6 @@ package no.nav.foreldrepenger.los.web.app.sikkerhetsfilter;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.util.regex.Pattern;
-
 import org.junit.jupiter.api.Test;
 
 public class SimpelHvitvaskerTest {
@@ -28,55 +26,55 @@ public class SimpelHvitvaskerTest {
 
     @Test
     public void testRestriktivHvitvaskUfarligTekst() {
-        String sanitizedString = SimpelHvitvasker.hvitvaskKunBokstaver(input_UfarligTekst);
+        var sanitizedString = SimpelHvitvasker.hvitvaskKunBokstaver(input_UfarligTekst);
         assertThat(sanitizedString).isEqualTo(resultatAvKunBokstaverHvitvasking_UfarligTekst);
     }
 
     @Test
     public void testRestriktivHvitvaskingScriptTekst() {
-        String sanitizedString = SimpelHvitvasker.hvitvaskKunBokstaver(input_scriptTekst);
+        var sanitizedString = SimpelHvitvasker.hvitvaskKunBokstaver(input_scriptTekst);
         assertThat(sanitizedString).isEqualTo(resultatAvKunBokstaverHvitvasking_ScriptTekst);
     }
 
     @Test
     public void testRestriktivHvitvaskTagTekst() {
-        String sanitizedString = SimpelHvitvasker.hvitvaskKunBokstaver(input_TagTekst);
+        var sanitizedString = SimpelHvitvasker.hvitvaskKunBokstaver(input_TagTekst);
         assertThat(sanitizedString).isEqualTo(resultatAvKunBokstaverHvitvasking_TagTekst);
     }
 
     @Test
     public void testBokstaverOgVanligeTegnHvitvaskUfarligTekst() {
-        String sanitizedString = SimpelHvitvasker.hvitvaskBokstaverOgVanligeTegn(input_UfarligTekst);
+        var sanitizedString = SimpelHvitvasker.hvitvaskBokstaverOgVanligeTegn(input_UfarligTekst);
         assertThat(sanitizedString).isEqualTo(resultatAvBokstaverOgVanligeTegn_UfarligTekst);
     }
 
     @Test
     public void testBokstaverOgVanligeTegnHvitvaskingScriptTekst() {
-        String sanitizedString = SimpelHvitvasker.hvitvaskBokstaverOgVanligeTegn(input_scriptTekst);
+        var sanitizedString = SimpelHvitvasker.hvitvaskBokstaverOgVanligeTegn(input_scriptTekst);
         assertThat(sanitizedString).isEqualTo(resultatAvBokstaverOgVanligeTegn_ScriptTekst);
     }
 
     @Test
     public void testBokstaverOgVanligeTegnHvitvaskTagTekst() {
-        String sanitizedString = SimpelHvitvasker.hvitvaskBokstaverOgVanligeTegn(input_TagTekst);
+        var sanitizedString = SimpelHvitvasker.hvitvaskBokstaverOgVanligeTegn(input_TagTekst);
         assertThat(sanitizedString).isEqualTo(resultatAvBokstaverOgVanligeTegn_TagTekst);
     }
 
     @Test
     public void testCookieHvitvaskUfarligTekst() {
-        String sanitizedString = SimpelHvitvasker.hvitvaskCookie(input_UfarligTekst);
+        var sanitizedString = SimpelHvitvasker.hvitvaskCookie(input_UfarligTekst);
         assertThat(sanitizedString).isEqualTo(resultatAvCookie_UfarligTekst);
     }
 
     @Test
     public void testCookieHvitvaskingScriptTekst() {
-        String sanitizedString = SimpelHvitvasker.hvitvaskCookie(input_scriptTekst);
+        var sanitizedString = SimpelHvitvasker.hvitvaskCookie(input_scriptTekst);
         assertThat(sanitizedString).isEqualTo(resultatAvCookie_ScriptTekst);
     }
 
     @Test
     public void testCookieHvitvaskTagTekst() {
-        String sanitizedString = SimpelHvitvasker.hvitvaskCookie(input_TagTekst);
+        var sanitizedString = SimpelHvitvasker.hvitvaskCookie(input_TagTekst);
         assertThat(sanitizedString).isEqualTo(resultatAvCookie_TagTekst);
     }
 

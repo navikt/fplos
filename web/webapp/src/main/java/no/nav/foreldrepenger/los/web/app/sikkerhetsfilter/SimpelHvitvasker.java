@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory;
 
 public class SimpelHvitvasker {
 
-    private static final Logger log = LoggerFactory.getLogger(SimpelHvitvasker.class);
+    private static final Logger LOG = LoggerFactory.getLogger(SimpelHvitvasker.class);
 
     private static final String TEGN = "a-zA-Z";
     private static final String TALL = "0-9";
@@ -41,8 +41,8 @@ public class SimpelHvitvasker {
         if (matcher.find()) {
             String rensetTekst = matcher.replaceAll("_");
 
-            if (log.isTraceEnabled()) {
-                log.trace(removeLineBreaks("Hvitvasking av kun bokstav tekst: fra '{}' til '{}'"),
+            if (LOG.isTraceEnabled()) {
+                LOG.trace(removeLineBreaks("Hvitvasking av kun bokstav tekst: fra '{}' til '{}'"),
                     removeLineBreaks(uvasketTekst), removeLineBreaks(rensetTekst));
             }
             return rensetTekst;
@@ -63,8 +63,8 @@ public class SimpelHvitvasker {
         var matcher = KUN_BOKSTAVER_OG_VANLIGE_TEGN_PATTERN.matcher(uvasketTekst);
         if (matcher.find()) {
             String rensetTekst = matcher.replaceAll("_");
-            if (log.isTraceEnabled()) {
-                log.trace(removeLineBreaks("Hvitvasking av kunbokstaver og vanlige tegn: fra '{}' til '{}'"),
+            if (LOG.isTraceEnabled()) {
+                LOG.trace(removeLineBreaks("Hvitvasking av kunbokstaver og vanlige tegn: fra '{}' til '{}'"),
                     removeLineBreaks(uvasketTekst), removeLineBreaks(rensetTekst));
             }
             return rensetTekst;
@@ -85,8 +85,8 @@ public class SimpelHvitvasker {
         var matcher = KUN_ASCII_TEGN_PATTERN.matcher(uvasketTekst);
         if (matcher.find()) {
             var rensetTekst = matcher.replaceAll("_");
-            if (log.isTraceEnabled()) {
-                log.trace(removeLineBreaks("Hvitvasking av kunbokstaver og vanlige tegn: fra '{}' til '{}'"),
+            if (LOG.isTraceEnabled()) {
+                LOG.trace(removeLineBreaks("Hvitvasking av kunbokstaver og vanlige tegn: fra '{}' til '{}'"),
                     removeLineBreaks(uvasketTekst), removeLineBreaks(rensetTekst));
             }
             return rensetTekst;

@@ -48,7 +48,7 @@ public class GjenåpneOppgaveHendelseHåndterer implements FpsakHendelseHåndter
         oppdaterOppgaveEgenskaper(oppgave);
         oppdaterOppgaveEventLogg();
         oppgaveStatistikk.lagre(oppgave, KøOppgaveHendelse.ÅPNET_OPPGAVE);
-        LOG.info("Gjenåpnet {} oppgaveId {}", system, oppgave.getId());
+        LOG.info("Gjenåpnet {} oppgaveId {}", SYSTEM, oppgave.getId());
     }
 
     private void oppdaterOppgaveEgenskaper(Oppgave gjenåpnetOppgave) {

@@ -1,22 +1,23 @@
 package no.nav.foreldrepenger.los.web.app.tjenester.felles.dto;
 
-import no.nav.foreldrepenger.los.avdelingsleder.AvdelingslederTjeneste;
-import no.nav.foreldrepenger.los.avdelingsleder.AvdelingslederTjenesteFeil;
-import no.nav.foreldrepenger.los.oppgavekø.OppgaveFiltrering;
-import no.nav.foreldrepenger.los.organisasjon.Saksbehandler;
-import no.nav.foreldrepenger.los.organisasjon.OrganisasjonRepository;
-import no.nav.foreldrepenger.los.organisasjon.ansatt.AnsattTjeneste;
-import no.nav.foreldrepenger.los.oppgavekø.OppgaveKøTjeneste;
-import no.nav.vedtak.exception.IntegrasjonException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import no.nav.foreldrepenger.los.avdelingsleder.AvdelingslederTjeneste;
+import no.nav.foreldrepenger.los.avdelingsleder.AvdelingslederTjenesteFeil;
+import no.nav.foreldrepenger.los.oppgavekø.OppgaveKøTjeneste;
+import no.nav.foreldrepenger.los.organisasjon.OrganisasjonRepository;
+import no.nav.foreldrepenger.los.organisasjon.Saksbehandler;
+import no.nav.foreldrepenger.los.organisasjon.ansatt.AnsattTjeneste;
+import no.nav.vedtak.exception.IntegrasjonException;
 
 @ApplicationScoped
 public class SaksbehandlerDtoTjeneste {
@@ -44,7 +45,7 @@ public class SaksbehandlerDtoTjeneste {
     }
 
     public List<SaksbehandlerDto> hentAktiveSaksbehandlereTilknyttetSaksliste(Long sakslisteId) {
-        OppgaveFiltrering filtrering = avdelingslederTjeneste.hentOppgaveFiltering(sakslisteId)
+        var filtrering = avdelingslederTjeneste.hentOppgaveFiltering(sakslisteId)
                 .orElseThrow(() -> AvdelingslederTjenesteFeil.fantIkkeOppgavekø(sakslisteId));
         return filtrering.getSaksbehandlere().stream()
                 .map(this::tilSaksbehandlerDto)

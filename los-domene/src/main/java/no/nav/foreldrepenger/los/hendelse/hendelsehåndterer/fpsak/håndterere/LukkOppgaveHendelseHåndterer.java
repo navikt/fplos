@@ -28,7 +28,7 @@ public class LukkOppgaveHendelseHåndterer implements FpsakHendelseHåndterer {
     @Override
     public void håndter() {
         var behandlingId = behandlingFpsak.getBehandlingId();
-        LOG.info("Lukker {}-oppgave", system);
+        LOG.info("Lukker {}-oppgave", SYSTEM);
         oppgaveStatistikk.lagre(behandlingId, KøOppgaveHendelse.LUKKET_OPPGAVE);
         oppgaveRepository.avsluttOppgaveForBehandling(behandlingId);
         var oel = OppgaveEventLogg.builder()

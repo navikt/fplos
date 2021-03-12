@@ -73,7 +73,7 @@ abstract class AbstractJettyServer {
     protected void konfigurerSikkerhet() {
         Security.setProperty(AuthConfigFactory.DEFAULT_FACTORY_SECURITY_PROPERTY, AuthConfigFactoryImpl.class.getCanonicalName());
 
-        File jaspiConf = new File(System.getProperty("conf", "./conf")+"/jaspi-conf.xml");
+        var jaspiConf = new File(System.getProperty("conf", "./conf")+"/jaspi-conf.xml");
         if(!jaspiConf.exists()) {
             throw new IllegalStateException("Missing required file: " + jaspiConf.getAbsolutePath());
         }
@@ -85,7 +85,7 @@ abstract class AbstractJettyServer {
     protected abstract void migrerDatabaser() throws IOException;
 
     protected void start(AppKonfigurasjon appKonfigurasjon) throws Exception {
-        Server server = new Server(appKonfigurasjon.getServerPort());
+        var server = new Server(appKonfigurasjon.getServerPort());
         server.setConnectors(createConnectors(appKonfigurasjon, server).toArray(new Connector[]{}));
         server.setHandler(createContext(appKonfigurasjon));
         server.start();
@@ -95,7 +95,7 @@ abstract class AbstractJettyServer {
     @SuppressWarnings("resource")
     protected List<Connector> createConnectors(AppKonfigurasjon appKonfigurasjon, Server server) {
         List<Connector> connectors = new ArrayList<>();
-        ServerConnector httpConnector = new ServerConnector(server, new HttpConnectionFactory(createHttpConfiguration()));
+        var httpConnector = new ServerConnector(server, new HttpConnectionFactory(createHttpConfiguration()));
         httpConnector.setPort(appKonfigurasjon.getServerPort());
         httpConnector.setHost(SERVER_HOST);
         connectors.add(httpConnector);
@@ -104,7 +104,7 @@ abstract class AbstractJettyServer {
     }
 
     protected WebAppContext createContext(AppKonfigurasjon appKonfigurasjon) throws IOException {
-        WebAppContext webAppContext = new WebAppContext();
+        var webAppContext = new WebAppContext();
         webAppContext.setParentLoaderPriority(true);
 
         // må hoppe litt bukk for å hente web.xml fra classpath i stedet for fra filsystem.
@@ -125,7 +125,7 @@ abstract class AbstractJettyServer {
 
     protected HttpConfiguration createHttpConfiguration() {
         // Create HTTP Config
-        HttpConfiguration httpConfig = new HttpConfiguration();
+        var httpConfig = new HttpConfiguration();
 
         // Add support for X-Forwarded headers
         httpConfig.addCustomizer( new org.eclipse.jetty.server.ForwardedRequestCustomizer() );
@@ -138,10 +138,10 @@ abstract class AbstractJettyServer {
     protected abstract Resource createResourceCollection() throws IOException;
 
     private SecurityHandler createSecurityHandler() {
-        ConstraintSecurityHandler securityHandler = new ConstraintSecurityHandler();
+        var securityHandler = new ConstraintSecurityHandler();
         securityHandler.setAuthenticatorFactory(new JaspiAuthenticatorFactory());
 
-        JAASLoginService loginService = new JAASLoginService();
+        var loginService = new JAASLoginService();
         loginService.setName("jetty-login");
         loginService.setLoginModuleName("jetty-login");
         loginService.setIdentityService(new DefaultIdentityService());

@@ -7,25 +7,23 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Arrays;
-import java.util.List;
 
 import javax.persistence.EntityManager;
 
-import no.nav.foreldrepenger.los.oppgavekø.OppgaveKøTjeneste;
-import no.nav.foreldrepenger.los.organisasjon.OrganisasjonRepositoryImpl;
-import no.nav.foreldrepenger.los.avdelingsleder.AvdelingslederTjeneste;
-import no.nav.foreldrepenger.los.reservasjon.ReservasjonTjeneste;
-import no.nav.foreldrepenger.los.reservasjon.ReservasjonTjenesteImpl;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import no.nav.foreldrepenger.dbstoette.DBTestUtil;
 import no.nav.foreldrepenger.extensions.EntityManagerFPLosAwareExtension;
+import no.nav.foreldrepenger.los.avdelingsleder.AvdelingslederTjeneste;
 import no.nav.foreldrepenger.los.oppgavekø.KøSortering;
 import no.nav.foreldrepenger.los.oppgavekø.OppgaveFiltrering;
+import no.nav.foreldrepenger.los.oppgavekø.OppgaveKøTjeneste;
 import no.nav.foreldrepenger.los.organisasjon.Avdeling;
+import no.nav.foreldrepenger.los.organisasjon.OrganisasjonRepositoryImpl;
+import no.nav.foreldrepenger.los.reservasjon.ReservasjonTjeneste;
+import no.nav.foreldrepenger.los.reservasjon.ReservasjonTjenesteImpl;
 
 
 @ExtendWith(EntityManagerFPLosAwareExtension.class)
@@ -63,7 +61,7 @@ public class OppgaveTjenesteImplTest {
 
 
     private Long leggeInnEtSettMedOppgaver() {
-        OppgaveFiltrering oppgaveFiltrering = OppgaveFiltrering.builder().medNavn("OPPRETTET")
+        var oppgaveFiltrering = OppgaveFiltrering.builder().medNavn("OPPRETTET")
                 .medSortering(KøSortering.OPPRETT_BEHANDLING)
                 .medAvdeling(avdelingDrammen()).build();
         oppgaveRepository.lagre(oppgaveFiltrering);
@@ -83,63 +81,63 @@ public class OppgaveTjenesteImplTest {
 
     @Test
     public void testEnFiltreringpåBehandlingstype() {
-        Long listeId = leggeInnEtSettMedOppgaver();
+        var listeId = leggeInnEtSettMedOppgaver();
         avdelingslederTjeneste.endreFiltreringBehandlingType(listeId, BehandlingType.FØRSTEGANGSSØKNAD, true);
-        List<Oppgave> oppgaver = oppgaveKøTjeneste.hentOppgaver(listeId);
-        Assertions.assertThat(oppgaver).hasSize(1);
+        var oppgaver = oppgaveKøTjeneste.hentOppgaver(listeId);
+        assertThat(oppgaver).hasSize(1);
     }
 
     @Test
     public void hentOppgaverSortertPåOpprettet() {
-        Oppgave andreOppgave = opprettOgLargeOppgaveTilSortering(9, 8, 10);
-        Oppgave førsteOppgave = opprettOgLargeOppgaveTilSortering(10, 0, 9);
-        Oppgave tredjeOppgave = opprettOgLargeOppgaveTilSortering(8, 9, 8);
-        Oppgave fjerdeOppgave = opprettOgLargeOppgaveTilSortering(0, 10, 0);
+        var andreOppgave = opprettOgLargeOppgaveTilSortering(9, 8, 10);
+        var førsteOppgave = opprettOgLargeOppgaveTilSortering(10, 0, 9);
+        var tredjeOppgave = opprettOgLargeOppgaveTilSortering(8, 9, 8);
+        var fjerdeOppgave = opprettOgLargeOppgaveTilSortering(0, 10, 0);
 
-        OppgaveFiltrering opprettet = OppgaveFiltrering.builder().medNavn("OPPRETTET")
+        var opprettet = OppgaveFiltrering.builder().medNavn("OPPRETTET")
                 .medSortering(KøSortering.OPPRETT_BEHANDLING)
                 .medAvdeling(avdelingDrammen()).build();
         oppgaveRepository.lagre(opprettet);
 
-        List<Oppgave> oppgaves = oppgaveKøTjeneste.hentOppgaver(opprettet.getId());
-        Assertions.assertThat(oppgaves).containsSequence(førsteOppgave, andreOppgave, tredjeOppgave, fjerdeOppgave);
+        var oppgaves = oppgaveKøTjeneste.hentOppgaver(opprettet.getId());
+        assertThat(oppgaves).containsSequence(førsteOppgave, andreOppgave, tredjeOppgave, fjerdeOppgave);
     }
 
     @Test
     public void hentOppgaverSortertPåFrist() {
-        Oppgave andreOppgave = opprettOgLargeOppgaveTilSortering(8, 9, 8);
-        Oppgave førsteOppgave = opprettOgLargeOppgaveTilSortering(0, 10, 0);
-        Oppgave tredjeOppgave = opprettOgLargeOppgaveTilSortering(9, 8, 10);
-        Oppgave fjerdeOppgave = opprettOgLargeOppgaveTilSortering(10, 0, 9);
+        var andreOppgave = opprettOgLargeOppgaveTilSortering(8, 9, 8);
+        var førsteOppgave = opprettOgLargeOppgaveTilSortering(0, 10, 0);
+        var tredjeOppgave = opprettOgLargeOppgaveTilSortering(9, 8, 10);
+        var fjerdeOppgave = opprettOgLargeOppgaveTilSortering(10, 0, 9);
 
-        OppgaveFiltrering frist = OppgaveFiltrering.builder().medNavn("FRIST")
+        var frist = OppgaveFiltrering.builder().medNavn("FRIST")
                 .medSortering(KøSortering.BEHANDLINGSFRIST)
                 .medAvdeling(avdelingDrammen()).build();
         oppgaveRepository.lagre(frist);
 
-        List<Oppgave> oppgaves = oppgaveKøTjeneste.hentOppgaver(frist.getId());
-        Assertions.assertThat(oppgaves).containsSequence(førsteOppgave, andreOppgave, tredjeOppgave, fjerdeOppgave);
+        var oppgaves = oppgaveKøTjeneste.hentOppgaver(frist.getId());
+        assertThat(oppgaves).containsSequence(førsteOppgave, andreOppgave, tredjeOppgave, fjerdeOppgave);
     }
 
     @Test
     public void hentOppgaverSortertPåFørsteStonadsdag() {
-        Oppgave fjerdeOppgave = opprettOgLargeOppgaveTilSortering(10, 0, 0);
-        Oppgave førsteOppgave = opprettOgLargeOppgaveTilSortering(8, 9, 10);
-        Oppgave tredjeOppgave = opprettOgLargeOppgaveTilSortering(9, 8, 8);
-        Oppgave andreOppgave = opprettOgLargeOppgaveTilSortering(0, 10, 9);
+        var fjerdeOppgave = opprettOgLargeOppgaveTilSortering(10, 0, 0);
+        var førsteOppgave = opprettOgLargeOppgaveTilSortering(8, 9, 10);
+        var tredjeOppgave = opprettOgLargeOppgaveTilSortering(9, 8, 8);
+        var andreOppgave = opprettOgLargeOppgaveTilSortering(0, 10, 9);
 
-        OppgaveFiltrering førsteStønadsdag = OppgaveFiltrering.builder().medNavn("STØNADSDAG")
+        var førsteStønadsdag = OppgaveFiltrering.builder().medNavn("STØNADSDAG")
                 .medSortering(KøSortering.FORSTE_STONADSDAG)
                 .medAvdeling(avdelingDrammen()).build();
         oppgaveRepository.lagre(førsteStønadsdag);
 
-        List<Oppgave> oppgaves = oppgaveKøTjeneste.hentOppgaver(førsteStønadsdag.getId());
-        Assertions.assertThat(oppgaves).containsSequence(førsteOppgave, andreOppgave, tredjeOppgave, fjerdeOppgave);
+        var oppgaves = oppgaveKøTjeneste.hentOppgaver(førsteStønadsdag.getId());
+        assertThat(oppgaves).containsSequence(førsteOppgave, andreOppgave, tredjeOppgave, fjerdeOppgave);
     }
 
 
     private Oppgave opprettOgLargeOppgaveTilSortering(int dagerSidenOpprettet, int dagersidenBehandlingsFristGikkUt, int førsteStønadsdag) {
-        Oppgave oppgave = Oppgave.builder().dummyOppgave(AVDELING_DRAMMEN_ENHET)
+        var oppgave = Oppgave.builder().dummyOppgave(AVDELING_DRAMMEN_ENHET)
                 .medBehandlingOpprettet(LocalDateTime.now().minusDays(dagerSidenOpprettet))
                 .medBehandlingsfrist(LocalDateTime.now().minusDays(dagersidenBehandlingsFristGikkUt))
                 .medForsteStonadsdag(LocalDate.now().minusDays(førsteStønadsdag))
@@ -150,7 +148,7 @@ public class OppgaveTjenesteImplTest {
 
     @Test
     public void testReservasjon() {
-        Long oppgaveFiltreringId = leggeInnEtSettMedOppgaver();
+        var oppgaveFiltreringId = leggeInnEtSettMedOppgaver();
         assertThat(oppgaveKøTjeneste.hentOppgaver(oppgaveFiltreringId)).hasSize(3);
         assertThat(reservasjonTjeneste.hentReservasjonerTilknyttetAktiveOppgaver()).hasSize(0);
         assertThat(reservasjonTjeneste.hentReservasjonerForAvdeling(AVDELING_DRAMMEN_ENHET)).hasSize(0);
@@ -171,7 +169,7 @@ public class OppgaveTjenesteImplTest {
         reservasjonTjeneste.endreReservasjonPåOppgave(førstegangOppgave.getId(), LocalDateTime.now().plusDays(3));
         assertThat(reservasjonTjeneste.hentReservasjonerTilknyttetAktiveOppgaver().get(0).getReservertTil().until(LocalDateTime.now().plusDays(3), MINUTES)).isLessThan(2);
 
-        String begrunnelse = "Test";
+        var begrunnelse = "Test";
         reservasjonTjeneste.frigiOppgave(førstegangOppgave.getId(), begrunnelse);
         assertThat(oppgaveKøTjeneste.hentOppgaver(oppgaveFiltreringId)).hasSize(3);
         assertThat(reservasjonTjeneste.hentReservasjonerTilknyttetAktiveOppgaver()).hasSize(0);
@@ -182,9 +180,9 @@ public class OppgaveTjenesteImplTest {
 
     @Test
     public void testOppgaverForandret() {
-        Oppgave andreOppgave = opprettOgLargeOppgaveTilSortering(8, 9, 10);
-        Oppgave førsteOppgave = opprettOgLargeOppgaveTilSortering(0, 10, 10);
-        List<Long> oppgaveIder = Arrays.asList(førsteOppgave.getId(), andreOppgave.getId());
+        var andreOppgave = opprettOgLargeOppgaveTilSortering(8, 9, 10);
+        var førsteOppgave = opprettOgLargeOppgaveTilSortering(0, 10, 10);
+        var oppgaveIder = Arrays.asList(førsteOppgave.getId(), andreOppgave.getId());
         assertThat(oppgaveTjeneste.erAlleOppgaverFortsattTilgjengelig(oppgaveIder)).isTrue();
         reservasjonTjeneste.reserverOppgave(førsteOppgave.getId());
         assertThat(oppgaveTjeneste.erAlleOppgaverFortsattTilgjengelig(oppgaveIder)).isFalse();

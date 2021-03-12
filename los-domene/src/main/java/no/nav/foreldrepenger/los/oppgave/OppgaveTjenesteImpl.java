@@ -1,13 +1,14 @@
 package no.nav.foreldrepenger.los.oppgave;
 
-import no.nav.foreldrepenger.los.domene.typer.BehandlingId;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+
+import no.nav.foreldrepenger.los.domene.typer.BehandlingId;
 
 @ApplicationScoped
 public class OppgaveTjenesteImpl implements OppgaveTjeneste {
@@ -28,7 +29,7 @@ public class OppgaveTjenesteImpl implements OppgaveTjeneste {
     }
 
     public boolean erAlleOppgaverFortsattTilgjengelig(List<Long> oppgaveIder) {
-        List<Oppgave> oppgaver = oppgaveRepository.sjekkOmOppgaverFortsattErTilgjengelige(oppgaveIder);
+        var oppgaver = oppgaveRepository.sjekkOmOppgaverFortsattErTilgjengelige(oppgaveIder);
         return oppgaver.size() == oppgaveIder.size();
     }
 
