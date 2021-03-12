@@ -18,6 +18,7 @@ import no.nav.foreldrepenger.los.klient.fpsak.dto.fagsak.FagsakDto;
 import no.nav.foreldrepenger.los.klient.fpsak.dto.fagsak.FagsakMedPersonDto;
 import no.nav.foreldrepenger.los.klient.fpsak.dto.fagsak.PersonDto;
 import no.nav.foreldrepenger.los.klient.person.PersonTjeneste;
+import no.nav.foreldrepenger.los.oppgave.FagsakYtelseType;
 import no.nav.vedtak.exception.IntegrasjonException;
 import no.nav.vedtak.exception.ManglerTilgangException;
 
@@ -72,7 +73,8 @@ public class FagsakApplikasjonTjeneste {
 
     private static FagsakMedPersonDto map(FagsakDto fagsakDto, Person person) {
         var personDto = new PersonDto(person);
-        return new FagsakMedPersonDto(fagsakDto.getSaksnummer(), fagsakDto.getFagsakYtelseType(),
+        return new FagsakMedPersonDto(fagsakDto.getSaksnummer(),
+                FagsakYtelseType.fraKode(fagsakDto.getFagsakYtelseType().getKode()),
                 fagsakDto.getStatus(), personDto, fagsakDto.getBarnFodt());
     }
 
