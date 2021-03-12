@@ -1,6 +1,5 @@
 package no.nav.foreldrepenger.los.web.app.exceptions;
 
-import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.ws.rs.core.MediaType;
@@ -28,16 +27,17 @@ public class GeneralRestExceptionMapper implements ExceptionMapper<ApplicationEx
 
     @Override
     public Response toResponse(ApplicationException exception) {
-        Throwable cause = exception.getCause();
+        var cause = exception.getCause();
 
         if (cause instanceof Valideringsfeil) {
             return handleValideringsfeil((Valideringsfeil) cause);
-        } else if (cause instanceof TomtResultatException) {
+        }
+        if (cause instanceof TomtResultatException) {
             return handleTomtResultatFeil((TomtResultatException) cause);
         }
 
         loggTilApplikasjonslogg(cause);
-        String callId = MDCOperations.getCallId();
+        var callId = MDCOperations.getCallId();
 
         if (cause instanceof VLException) {
             return handleVLException((VLException) cause, callId);
@@ -55,7 +55,7 @@ public class GeneralRestExceptionMapper implements ExceptionMapper<ApplicationEx
     }
 
     private Response handleValideringsfeil(Valideringsfeil valideringsfeil) {
-        List<String> feltNavn = valideringsfeil.getFeltfeil().stream()
+        var feltNavn = valideringsfeil.getFeltfeil().stream()
                 .map(FeltFeilDto::getNavn)
                 .collect(Collectors.toList());
         return Response
@@ -70,14 +70,13 @@ public class GeneralRestExceptionMapper implements ExceptionMapper<ApplicationEx
     private Response handleVLException(VLException vlException, String callId) {
         if (vlException instanceof ManglerTilgangException) {
             return ikkeTilgang(vlException);
-        } else {
-            return serverError(callId, vlException);
         }
+        return serverError(callId, vlException);
     }
 
     private Response serverError(String callId, VLException feil) {
-        String feilmelding = getVLExceptionFeilmelding(callId, feil);
-        FeilType feilType = FeilType.GENERELL_FEIL;
+        var feilmelding = getVLExceptionFeilmelding(callId, feil);
+        var feilType = FeilType.GENERELL_FEIL;
         return Response.serverError()
             .entity(new FeilDto(feilType, feilmelding))
             .type(MediaType.APPLICATION_JSON)
@@ -92,45 +91,35 @@ public class GeneralRestExceptionMapper implements ExceptionMapper<ApplicationEx
         } else {
             feilType = FeilType.MANGLER_TILGANG_FEIL;
         }
-        String feilmelding = exception.getMessage();
+        var feilmelding = exception.getMessage();
         return Response.status(Response.Status.FORBIDDEN)
             .entity(new FeilDto(feilType, feilmelding))
             .type(MediaType.APPLICATION_JSON)
             .build();
     }
 
-    private String getVLExceptionFeilmelding(String callId, VLException feil) {
-        String feilbeskrivelse = feil.getMessage();
+    private static String getVLExceptionFeilmelding(String callId, VLException feil) {
+        var feilbeskrivelse = feil.getMessage();
         if (feil instanceof FunksjonellException) {
-            String løsningsforslag = ((FunksjonellException) feil).getLøsningsforslag();
-            return "Det oppstod en feil: " //$NON-NLS-1$
-                + avsluttMedPunktum(feilbeskrivelse)
-                + avsluttMedPunktum(løsningsforslag)
-                + ". Referanse-id: " + callId; //$NON-NLS-1$
-        } else {
-            return "Det oppstod en serverfeil: " //$NON-NLS-1$
-                + avsluttMedPunktum(feilbeskrivelse)
-                + ". Meld til support med referanse-id: " + callId; //$NON-NLS-1$
+            var løsningsforslag = ((FunksjonellException) feil).getLøsningsforslag();
+            return String.format("Det oppstod en feil: %s - %s. Referanse-id: %s", feilbeskrivelse, løsningsforslag, callId);
         }
+        return String.format("Det oppstod en serverfeil: %s. Meld til support med referanse-id: %s", feilbeskrivelse, callId);
     }
 
     private Response handleGenerellFeil(Throwable cause, String callId) {
-        String generellFeilmelding = "Det oppstod en serverfeil: " + cause.getMessage() + ". Meld til support med referanse-id: " + callId; //$NON-NLS-1$ //$NON-NLS-2$
+        var generellFeilmelding = "Det oppstod en serverfeil: " + cause.getMessage() + ". Meld til support med referanse-id: " + callId;
         return Response.serverError()
             .entity(new FeilDto(FeilType.GENERELL_FEIL, generellFeilmelding))
             .type(MediaType.APPLICATION_JSON)
             .build();
     }
 
-    private String avsluttMedPunktum(String tekst) {
-        return tekst + (tekst.endsWith(".") ? " " : ". "); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-    }
-
     private void loggTilApplikasjonslogg(Throwable cause) {
         if (cause instanceof VLException) {
             LOG.warn(cause.getMessage());
         } else {
-            String message = cause.getMessage() != null ? LoggerUtils.removeLineBreaks(cause.getMessage()) : "";
+            var message = cause.getMessage() != null ? LoggerUtils.removeLineBreaks(cause.getMessage()) : "";
             LOG.error("Fikk uventet feil:" + message, cause); //NOSONAR //$NON-NLS-1$
         }
 
