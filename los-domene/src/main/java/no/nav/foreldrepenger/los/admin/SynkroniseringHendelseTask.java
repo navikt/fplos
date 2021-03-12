@@ -12,6 +12,7 @@ import no.nav.foreldrepenger.los.klient.fpsak.ForeldrepengerFagsakKlient;
 import no.nav.foreldrepenger.los.klient.fpsak.dto.behandling.ResourceLink;
 import no.nav.foreldrepenger.los.klient.fpsak.dto.behandling.UtvidetBehandlingDto;
 import no.nav.foreldrepenger.los.klient.fpsak.dto.fagsak.FagsakDto;
+import no.nav.foreldrepenger.los.oppgave.FagsakYtelseType;
 import no.nav.vedtak.felles.prosesstask.api.ProsessTask;
 import no.nav.vedtak.felles.prosesstask.api.ProsessTaskData;
 import no.nav.vedtak.felles.prosesstask.api.ProsessTaskHandler;
@@ -54,7 +55,7 @@ public class SynkroniseringHendelseTask implements ProsessTaskHandler {
         hendelse.setAktørId(fagsakDto.getAktoerId());
         hendelse.setBehandlingOpprettetTidspunkt(behandlingDto.getOpprettet());
         hendelse.setBehandlingType(behandlingDto.getType());
-        hendelse.setYtelseType(fagsakDto.getFagsakYtelseType());
+        hendelse.setYtelseType(FagsakYtelseType.fraKode(fagsakDto.getFagsakYtelseType().getKode()));
 
         var håndterer = oppgaveHendelseHåndtererFactory.lagHåndterer(hendelse);
         håndterer.håndter();

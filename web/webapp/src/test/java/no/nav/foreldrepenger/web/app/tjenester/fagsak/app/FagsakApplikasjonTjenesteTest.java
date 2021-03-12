@@ -24,10 +24,10 @@ import no.nav.foreldrepenger.los.domene.typer.aktør.NavBrukerKjønn;
 import no.nav.foreldrepenger.los.domene.typer.aktør.Person;
 import no.nav.foreldrepenger.los.klient.fpsak.ForeldrepengerFagsakKlient;
 import no.nav.foreldrepenger.los.klient.fpsak.dto.fagsak.FagsakDto;
+import no.nav.foreldrepenger.los.klient.fpsak.dto.fagsak.FagsakYtelseTypeDto;
 import no.nav.foreldrepenger.los.klient.fpsak.dto.fagsak.PersonDto;
 import no.nav.foreldrepenger.los.klient.person.PersonTjeneste;
 import no.nav.foreldrepenger.los.oppgave.FagsakStatus;
-import no.nav.foreldrepenger.los.oppgave.FagsakYtelseType;
 import no.nav.foreldrepenger.los.web.app.tjenester.fagsak.app.FagsakApplikasjonTjeneste;
 import no.nav.vedtak.exception.ManglerTilgangException;
 
@@ -51,7 +51,7 @@ public class FagsakApplikasjonTjenesteTest {
 
     @Test
     public void skal_hente_saker_på_fnr() {
-        var fagsakDto = new FagsakDto(AktørId.dummy().getId(), FNR.asValue(), FagsakYtelseType.FORELDREPENGER,
+        var fagsakDto = new FagsakDto(AktørId.dummy().getId(), FNR.asValue(), FagsakYtelseTypeDto.FORELDREPENGER,
                 FagsakStatus.OPPRETTET, LocalDate.of(2017, Month.FEBRUARY, 1));
         var personDto = new Person.Builder().medNavn("TEST")
                 .medFødselsdato(LocalDate.now().minusYears(20))
@@ -85,7 +85,7 @@ public class FagsakApplikasjonTjenesteTest {
                 .build();
 
         List<FagsakDto> fagsakDtos = new ArrayList<>();
-        var fagsakDto = new FagsakDto(AktørId.dummy().getId(), SAKSNUMMER, FagsakYtelseType.FORELDREPENGER,
+        var fagsakDto = new FagsakDto(AktørId.dummy().getId(), SAKSNUMMER, FagsakYtelseTypeDto.FORELDREPENGER,
                 FagsakStatus.UNDER_BEHANDLING, LocalDate.now());
         fagsakDtos.add(fagsakDto);
         when(fagsakKlient.finnFagsaker(SAKSNUMMER)).thenReturn(fagsakDtos);

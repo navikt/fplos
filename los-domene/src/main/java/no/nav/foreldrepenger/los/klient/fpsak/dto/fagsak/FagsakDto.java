@@ -5,14 +5,13 @@ import java.time.LocalDate;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import no.nav.foreldrepenger.los.oppgave.FagsakStatus;
-import no.nav.foreldrepenger.los.oppgave.FagsakYtelseType;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class FagsakDto {
 
     private String aktoerId;
     private String saksnummer;
-    private FagsakYtelseType fagsakYtelseType;
+    private FagsakYtelseTypeDto fagsakYtelseType;
     private FagsakStatus status;
     private LocalDate barnFodt;
 
@@ -20,7 +19,7 @@ public class FagsakDto {
         // Injiseres i test
     }
 
-    public FagsakDto(String aktoerId, String saksnummer, FagsakYtelseType fagsakYtelseType, FagsakStatus status, LocalDate barnFodt) {
+    public FagsakDto(String aktoerId, String saksnummer, FagsakYtelseTypeDto fagsakYtelseType, FagsakStatus status, LocalDate barnFodt) {
         this.aktoerId = aktoerId;
         this.saksnummer = saksnummer;
         this.fagsakYtelseType = fagsakYtelseType;
@@ -36,7 +35,7 @@ public class FagsakDto {
         return saksnummer;
     }
 
-    public FagsakYtelseType getFagsakYtelseType() {
+    public FagsakYtelseTypeDto getFagsakYtelseType() {
         return fagsakYtelseType;
     }
 
