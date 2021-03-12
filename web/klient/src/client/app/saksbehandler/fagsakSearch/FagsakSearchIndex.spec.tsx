@@ -9,7 +9,7 @@ describe('<FagsakSearchIndex>', () => {
   const fagsak = {
     saksnummer: 12345,
     system: 'FPSAK',
-    sakstype: {
+    fagsakYtelseType: {
       kode: 'ES',
       navn: 'test',
     },

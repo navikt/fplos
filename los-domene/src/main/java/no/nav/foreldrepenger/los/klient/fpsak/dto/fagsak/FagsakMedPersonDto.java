@@ -11,7 +11,7 @@ import no.nav.foreldrepenger.los.oppgave.FagsakYtelseType;
 public class FagsakMedPersonDto {
     private Long saksnummer;
     private String saksnummerString;
-    private FagsakYtelseType sakstype;
+    private FagsakYtelseType fagsakYtelseType;
     private FagsakStatus status;
     private PersonDto person;
     private LocalDate barnFodt;
@@ -20,12 +20,12 @@ public class FagsakMedPersonDto {
 
     }
 
-    public FagsakMedPersonDto(String saksnummerString, FagsakYtelseType sakstype,
+    public FagsakMedPersonDto(String saksnummer, FagsakYtelseType sakstype,
                               FagsakStatus status, PersonDto person,
                               LocalDate barnFodt) {
-        this.saksnummer = Long.parseLong(saksnummerString);
-        this.saksnummerString = saksnummerString;
-        this.sakstype = sakstype;
+        this.saksnummer = Long.parseLong(saksnummer);
+        this.saksnummerString = saksnummer;
+        this.fagsakYtelseType = sakstype;
         this.status = status;
         this.person = person;
         this.barnFodt = barnFodt;
@@ -44,8 +44,8 @@ public class FagsakMedPersonDto {
         return saksnummerString;
     }
 
-    public FagsakYtelseType getSakstype() {
-        return sakstype;
+    public FagsakYtelseType getFagsakYtelseType() {
+        return fagsakYtelseType;
     }
 
     public FagsakStatus getStatus() {

@@ -12,7 +12,7 @@ describe('<FagsakSearch>', () => {
     saksnummer: 12345,
     saksnummerString: '12345',
     system: 'FPSAK',
-    sakstype: {
+    fagsakYtelseType: {
       navn: 'Engangsstonad',
       kode: 'TEST',
     },

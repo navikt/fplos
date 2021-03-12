@@ -66,7 +66,7 @@ const FagsakList: FunctionComponent<OwnProps> = ({
     <Table headerTextCodes={headerTextCodes} classNameTable={styles.table}>
       {sorterteFagsaker.map((fagsak) => {
         const fagsakStatusType = fagsakStatuser.find((type) => type.kode === fagsak.status.kode);
-        const fagsakYtelseType = fagsakYtelseTyper.find((type) => type.kode === fagsak.sakstype.kode);
+        const fagsakYtelseType = fagsakYtelseTyper.find((type) => type.kode === fagsak.fagsakYtelseType.kode);
 
         const filtrerteOppgaver = fagsakOppgaver.filter((o) => o.saksnummer === fagsak.saksnummer);
         const oppgaver = filtrerteOppgaver.map((oppgave, index) => (
