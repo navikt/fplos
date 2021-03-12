@@ -78,12 +78,7 @@ public class AktørId implements Serializable, Comparable<AktørId> {
 
     @Override
     public int compareTo(AktørId o) {
-        // TODO: Burde ikke finnes
         return aktørId.compareTo(o.aktørId);
-    }
-
-    public static boolean erGyldigAktørId(String aktørId) {
-        return aktørId != null && VALID.matcher(aktørId).matches();
     }
 
     private static AtomicLong DUMMY_AKTØRID = new AtomicLong(1000000000000L);
