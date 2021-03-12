@@ -42,7 +42,7 @@ public class ReturFraBeslutterHendelseHåndterer extends OpprettOppgaveHendelseH
                 .type(OppgaveEventType.LUKKET)
                 .build();
         oppgaveRepository.lagre(oel);
-        LOG.info("Avslutter {} beslutteroppgave", system);
+        LOG.info("Avslutter {} beslutteroppgave", SYSTEM);
     }
 
     @Override
@@ -53,6 +53,6 @@ public class ReturFraBeslutterHendelseHåndterer extends OpprettOppgaveHendelseH
                 .type(OppgaveEventType.OPPRETTET)
                 .build();
         oppgaveRepository.lagre(oel);
-        LOG.info("Retur fra beslutter, oppretter {} saksbehandler-oppgave med oppgaveId {}", system, oppgave.getId());
+        LOG.info("Retur fra beslutter, oppretter {} saksbehandler-oppgave med oppgaveId {}", SYSTEM, oppgave.getId());
     }
 }

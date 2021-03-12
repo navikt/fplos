@@ -1,5 +1,18 @@
 package no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak;
 
+import static no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.OppgaveTestUtil.behandlingFpsak;
+import static no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.OppgaveTestUtil.førsteUttaksDag;
+import static no.nav.foreldrepenger.los.oppgave.util.OppgaveAssert.assertThatOppgave;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
+
+import javax.persistence.EntityManager;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+
 import no.nav.foreldrepenger.dbstoette.DBTestUtil;
 import no.nav.foreldrepenger.extensions.EntityManagerFPLosAwareExtension;
 import no.nav.foreldrepenger.los.domene.typer.aktør.AktørId;
@@ -12,20 +25,7 @@ import no.nav.foreldrepenger.los.oppgave.BehandlingType;
 import no.nav.foreldrepenger.los.oppgave.Oppgave;
 import no.nav.foreldrepenger.los.oppgave.OppgaveRepository;
 import no.nav.foreldrepenger.los.oppgave.OppgaveRepositoryImpl;
-import no.nav.foreldrepenger.los.oppgave.util.OppgaveAssert;
 import no.nav.foreldrepenger.los.statistikk.statistikk_ny.OppgaveStatistikk;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
-
-import javax.persistence.EntityManager;
-
-import static no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.OppgaveTestUtil.behandlingFpsak;
-import static no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.OppgaveTestUtil.førsteUttaksDag;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.mockito.Mockito.mock;
 
 
 @ExtendWith(MockitoExtension.class)
@@ -51,7 +51,7 @@ class GenerellOpprettOppgaveHendelseHåndtererTest {
         opprettOppgaveHåndterer.håndter();
 
         var oppgave = DBTestUtil.hentUnik(entityManager, Oppgave.class);
-        OppgaveAssert.assertThatOppgave(oppgave)
+        assertThatOppgave(oppgave)
                 .harBehandlingOpprettet(behandlingFpsak.getBehandlingOpprettet())
                 .harAktiv(true)
                 .harBehandlingId(behandlingFpsak.getBehandlingId())
@@ -77,8 +77,8 @@ class GenerellOpprettOppgaveHendelseHåndtererTest {
         assertThat(oppgaveEventLogg.getEventType()).isEqualTo(OppgaveEventType.OPPRETTET);
         assertThat(oppgaveEventLogg.getBehandlendeEnhet()).isEqualTo(behandlingFpsak.getBehandlendeEnhetId());
         assertThat(oppgaveEventLogg.getBehandlingId()).isEqualTo(behandlingFpsak.getBehandlingId());
-        assertNull(oppgaveEventLogg.getAndreKriterierType());
-        assertNull(oppgaveEventLogg.getFristTid());
+        assertThat(oppgaveEventLogg.getAndreKriterierType()).isNull();
+        assertThat(oppgaveEventLogg.getFristTid()).isNull();
     }
 
 }

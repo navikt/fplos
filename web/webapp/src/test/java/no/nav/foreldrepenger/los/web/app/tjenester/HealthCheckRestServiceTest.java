@@ -27,7 +27,7 @@ public class HealthCheckRestServiceTest {
         when(selftests.isKafkaAlive()).thenReturn(true);
         when(selftests.isReady()).thenReturn(true);
 
-        Response response = restTjeneste.isAlive();
+        var response = restTjeneste.isAlive();
 
         assertThat(response.getStatus()).isEqualTo(Response.Status.OK.getStatusCode());
     }
@@ -37,9 +37,9 @@ public class HealthCheckRestServiceTest {
         when(selftests.isKafkaAlive()).thenReturn(false);
         when(selftests.isReady()).thenReturn(false);
 
-        Response responseReady = restTjeneste.isReady();
+        var responseReady = restTjeneste.isReady();
 
-        Response responseAlive = restTjeneste.isAlive();
+        var responseAlive = restTjeneste.isAlive();
 
         assertThat(responseReady.getStatus()).isEqualTo(Response.Status.SERVICE_UNAVAILABLE.getStatusCode());
         assertThat(responseAlive.getStatus()).isEqualTo(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode());
@@ -50,8 +50,8 @@ public class HealthCheckRestServiceTest {
         when(selftests.isKafkaAlive()).thenReturn(true);
         when(selftests.isReady()).thenReturn(false);
 
-        Response responseReady = restTjeneste.isReady();
-        Response responseAlive = restTjeneste.isAlive();
+        var responseReady = restTjeneste.isReady();
+        var responseAlive = restTjeneste.isAlive();
 
         assertThat(responseReady.getStatus()).isEqualTo(Response.Status.SERVICE_UNAVAILABLE.getStatusCode());
         assertThat(responseAlive.getStatus()).isEqualTo(Response.Status.OK.getStatusCode());
@@ -62,8 +62,8 @@ public class HealthCheckRestServiceTest {
         when(selftests.isKafkaAlive()).thenReturn(true);
         when(selftests.isReady()).thenReturn(true);
 
-        Response responseReady = restTjeneste.isReady();
-        Response responseAlive = restTjeneste.isAlive();
+        var responseReady = restTjeneste.isReady();
+        var responseAlive = restTjeneste.isAlive();
 
         assertThat(responseReady.getStatus()).isEqualTo(Response.Status.OK.getStatusCode());
         assertThat(responseAlive.getStatus()).isEqualTo(Response.Status.OK.getStatusCode());

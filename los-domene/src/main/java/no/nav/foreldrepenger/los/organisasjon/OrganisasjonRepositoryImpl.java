@@ -57,14 +57,14 @@ public class OrganisasjonRepositoryImpl implements OrganisasjonRepository {
 
     @Override
     public Optional<Avdeling> hentAvdelingFraEnhet(String avdelingEnhet){
-        TypedQuery<Avdeling> query = entityManager.createQuery("FROM avdeling a WHERE a.avdelingEnhet = :avdelingEnhet", Avdeling.class)
+        var query = entityManager.createQuery("FROM avdeling a WHERE a.avdelingEnhet = :avdelingEnhet", Avdeling.class)
                 .setParameter("avdelingEnhet", avdelingEnhet);
         return hentUniktResultat(query);
     }
 
     @Override
     public List<Avdeling> hentAvdelinger() {
-        TypedQuery<Avdeling> listeTypedQuery = entityManager.createQuery("FROM avdeling ", Avdeling.class);
+        var listeTypedQuery = entityManager.createQuery("FROM avdeling ", Avdeling.class);
         return listeTypedQuery.getResultList();
     }
 }

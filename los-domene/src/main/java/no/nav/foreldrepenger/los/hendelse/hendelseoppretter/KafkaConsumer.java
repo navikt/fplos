@@ -81,8 +81,8 @@ public final class KafkaConsumer<T extends BehandlingProsessEventDto> {
             properties.setProperty(SaslConfigs.SASL_MECHANISM, "PLAIN");
             var password = consumerProperties.getPassword();
             if (password != null && !password.isEmpty()) {
-                String jaasTemplate = "org.apache.kafka.common.security.scram.ScramLoginModule required username=\"%s\" password=\"%s\";";
-                String jaasCfg = String.format(jaasTemplate, username, password);
+                var jaasTemplate = "org.apache.kafka.common.security.scram.ScramLoginModule required username=\"%s\" password=\"%s\";";
+                var jaasCfg = String.format(jaasTemplate, username, password);
                 properties.setProperty(SaslConfigs.SASL_JAAS_CONFIG, jaasCfg);
             }
         }
@@ -122,7 +122,7 @@ public final class KafkaConsumer<T extends BehandlingProsessEventDto> {
     }
 
     public static BehandlingProsessEventDto deserialiser(String payload) {
-        ObjectMapper mapper = new ObjectMapper();
+        var mapper = new ObjectMapper();
         mapper.enable(MapperFeature.ACCEPT_CASE_INSENSITIVE_ENUMS);
         mapper.addMixIn(BehandlingProsessEventDto.class, BehandlingProsessEventDtoMixin.class);
         try {
@@ -169,7 +169,7 @@ public final class KafkaConsumer<T extends BehandlingProsessEventDto> {
     }
 
     private ProsessTaskData opprettTask(Hendelse hendelse) {
-        ProsessTaskData prosessTaskData = new ProsessTaskData(HåndterHendelseTask.TASKTYPE);
+        var prosessTaskData = new ProsessTaskData(HåndterHendelseTask.TASKTYPE);
         prosessTaskData.setProperty(HåndterHendelseTask.HENDELSE_ID, hendelse.getId().toString());
         prosessTaskData.setPrioritet(50);
         prosessTaskData.setCallIdFraEksisterende();

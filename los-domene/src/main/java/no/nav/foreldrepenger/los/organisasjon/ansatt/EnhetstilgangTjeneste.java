@@ -1,19 +1,21 @@
 package no.nav.foreldrepenger.los.organisasjon.ansatt;
 
-import no.nav.foreldrepenger.los.domene.typer.aktør.OrganisasjonsEnhet;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import no.nav.foreldrepenger.los.domene.typer.aktør.OrganisasjonsEnhet;
+
 @ApplicationScoped
 public class EnhetstilgangTjeneste {
 
-    private static final Logger log = LoggerFactory.getLogger(EnhetstilgangTjeneste.class);
+    private static final Logger LOG = LoggerFactory.getLogger(EnhetstilgangTjeneste.class);
     private EnhetstilgangConnection connection;
 
     @Inject
@@ -27,7 +29,7 @@ public class EnhetstilgangTjeneste {
 
     public List<OrganisasjonsEnhet> hentEnhetstilganger(String ident) {
         if (!connection.isEnabled()) {
-            log.info("EnhetstilgangTjeneste deaktivert, returnerer tom liste.");
+            LOG.info("EnhetstilgangTjeneste deaktivert, returnerer tom liste.");
             return Collections.emptyList();
         }
         var enhetsTilganger = connection.hentEnhetstilganger(ident)
@@ -36,7 +38,7 @@ public class EnhetstilgangTjeneste {
                 .stream()
                 .filter(OrganisasjonsEnhet::kanBehandleForeldrepenger)
                 .collect(Collectors.toList());
-        log.info("Enhetstilgangliste har størrelse " + enhetsTilganger.size());
+        LOG.info("Enhetstilgangliste har størrelse " + enhetsTilganger.size());
         return enhetsTilganger;
     }
 

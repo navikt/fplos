@@ -12,14 +12,14 @@ import java.util.stream.Stream;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import no.nav.foreldrepenger.los.domene.typer.aktør.AktørId;
-import no.nav.foreldrepenger.los.domene.typer.aktør.Fødselsnummer;
-import no.nav.foreldrepenger.los.domene.typer.aktør.NavBrukerKjønn;
-import no.nav.foreldrepenger.los.domene.typer.aktør.Person;
 import org.apache.http.HttpStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import no.nav.foreldrepenger.los.domene.typer.aktør.AktørId;
+import no.nav.foreldrepenger.los.domene.typer.aktør.Fødselsnummer;
+import no.nav.foreldrepenger.los.domene.typer.aktør.NavBrukerKjønn;
+import no.nav.foreldrepenger.los.domene.typer.aktør.Person;
 import no.nav.pdl.Adressebeskyttelse;
 import no.nav.pdl.AdressebeskyttelseGradering;
 import no.nav.pdl.AdressebeskyttelseResponseProjection;
@@ -49,7 +49,7 @@ public class PersonTjenesteImpl implements PersonTjeneste {
     private static final int DEFAULT_CACHE_SIZE = 2000;
     private static final long DEFAULT_CACHE_TIMEOUT = TimeUnit.MILLISECONDS.convert(2, TimeUnit.HOURS);
 
-    private LRUCache<AktørId, Person> cacheAktørIdTilPerson = new LRUCache<>(DEFAULT_CACHE_SIZE, DEFAULT_CACHE_TIMEOUT);
+    private final LRUCache<AktørId, Person> cacheAktørIdTilPerson = new LRUCache<>(DEFAULT_CACHE_SIZE, DEFAULT_CACHE_TIMEOUT);
 
     private Pdl pdl;
 

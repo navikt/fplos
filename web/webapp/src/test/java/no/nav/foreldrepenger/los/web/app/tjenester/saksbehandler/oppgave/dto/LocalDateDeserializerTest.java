@@ -6,7 +6,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.io.IOException;
-import java.time.LocalDate;
 import java.time.Month;
 import java.time.format.DateTimeParseException;
 
@@ -23,7 +22,7 @@ public class LocalDateDeserializerTest {
     @Test
     public void testDeserialzieIsOk() throws IOException {
         when(jsonParser.getValueAsString()).thenReturn("2020-01-02");
-        LocalDate result = localDateDeserializer.deserialize(jsonParser, deserializationContext);
+        var result = localDateDeserializer.deserialize(jsonParser, deserializationContext);
         assertThat(result).isNotNull();
         assertThat(result.getYear()).isEqualTo(2020);
         assertThat(result.getMonth()).isEqualTo(Month.JANUARY);

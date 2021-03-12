@@ -47,7 +47,7 @@ public class OpprettBeslutterOppgaveHendelseHåndterer extends OpprettOppgaveHen
 
     @Override
     void opprettOppgaveEventLogg(Oppgave oppgave) {
-        LOG.info("Oppretter {} oppgave til beslutter", FpsakHendelseHåndterer.system);
+        LOG.info("Oppretter {} oppgave til beslutter", FpsakHendelseHåndterer.SYSTEM);
         var oel = OppgaveEventLogg.builder()
                 .type(OppgaveEventType.OPPRETTET)
                 .behandlingId(behandlingFpsak.getBehandlingId())

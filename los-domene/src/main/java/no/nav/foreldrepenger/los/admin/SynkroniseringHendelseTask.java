@@ -42,11 +42,11 @@ public class SynkroniseringHendelseTask implements ProsessTaskHandler {
 
     @Override
     public void doTask(ProsessTaskData prosessTaskData) {
-        String behandlingId = prosessTaskData.getPropertyValue(ProsessTaskData.BEHANDLING_ID);
+        var behandlingId = prosessTaskData.getPropertyValue(ProsessTaskData.BEHANDLING_ID);
         var behandlingDto = behandlingKlient.hentUtvidetBehandlingDto(behandlingId);
         var fagsakDto = hentFagsakDto(behandlingDto);
 
-        Hendelse hendelse = new Hendelse();
+        var hendelse = new Hendelse();
         hendelse.setFagsystem(Fagsystem.FPSAK);
         hendelse.setBehandlingId(BehandlingId.fromUUID(behandlingDto.getUuid()));
         hendelse.setSaksnummer(fagsakDto.getSaksnummer());

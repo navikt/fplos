@@ -1,6 +1,7 @@
 package no.nav.foreldrepenger.los.admin.driftsmelding;
 
-import no.nav.foreldrepenger.los.felles.BaseEntitet;
+import java.time.LocalDateTime;
+import java.util.Objects;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -10,8 +11,8 @@ import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.Table;
-import java.time.LocalDateTime;
-import java.util.Objects;
+
+import no.nav.foreldrepenger.los.felles.BaseEntitet;
 
 @Entity(name = "Driftsmelding")
 @Table(name = "DRIFTSMELDING")
@@ -92,7 +93,7 @@ public class Driftsmelding extends BaseEntitet {
             if (tempDriftsmelding.aktivTil == null) {
                 tempDriftsmelding.aktivTil = tempDriftsmelding.aktivFra.plusHours(4);
             }
-            Driftsmelding driftsmelding = tempDriftsmelding;
+            var driftsmelding = tempDriftsmelding;
             tempDriftsmelding = new Driftsmelding();
             return driftsmelding;
         }

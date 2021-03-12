@@ -7,8 +7,8 @@ import java.util.Date;
 
 public class OppgaverForFørsteStønadsdag {
 
-    private LocalDate forsteStonadsdag;
-    private Long antall;
+    private final LocalDate forsteStonadsdag;
+    private final Long antall;
 
     public OppgaverForFørsteStønadsdag(Object[] resultat) {
         this.forsteStonadsdag = ((Date) resultat[0]).toInstant().atZone(ZoneId.systemDefault()).toLocalDate();  // NOSONAR;

@@ -15,7 +15,7 @@ public class AppStartupServletContextListener implements ServletContextListener 
     public void contextInitialized(ServletContextEvent servletContextEvent) {
 
         // start denne async, logg til slutt når ferdig
-        Thread thread = new Thread(this::startupLogging, getClass().getSimpleName() + "-thread");
+        var thread = new Thread(this::startupLogging, getClass().getSimpleName() + "-thread");
         thread.setDaemon(true);
         thread.start();
     }

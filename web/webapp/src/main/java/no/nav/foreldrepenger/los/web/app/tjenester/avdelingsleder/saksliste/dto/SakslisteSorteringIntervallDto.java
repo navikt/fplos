@@ -34,7 +34,10 @@ public class SakslisteSorteringIntervallDto implements AbacDto {
     public SakslisteSorteringIntervallDto() {
     }
 
-    public SakslisteSorteringIntervallDto(SakslisteIdDto sakslisteId, Long fra, Long til, AvdelingEnhetDto avdelingEnhet) {
+    public SakslisteSorteringIntervallDto(SakslisteIdDto sakslisteId,
+                                          Long fra,
+                                          Long til,
+                                          AvdelingEnhetDto avdelingEnhet) {
         this.sakslisteId = sakslisteId;
         this.fra = fra;
         this.til = til;
@@ -53,22 +56,20 @@ public class SakslisteSorteringIntervallDto implements AbacDto {
         return til;
     }
 
-    public AvdelingEnhetDto getAvdelingEnhet(){
+    public AvdelingEnhetDto getAvdelingEnhet() {
         return avdelingEnhet;
     }
 
     @Override
     public String toString() {
-        return "SakslisteSorteringIntervallDto{" +
-                "sakslisteId='" + sakslisteId + '\'' +
-                "fra='" + fra + '\'' +
-                "til='" + til + '\'' +
-                '}';
+        return "SakslisteSorteringIntervallDto{" + "sakslisteId='" + sakslisteId + '\'' + "fra='" + fra + '\'' + "til='"
+                + til + '\'' + '}';
     }
 
     @Override
     public AbacDataAttributter abacAttributter() {
-        return AbacDataAttributter.opprett().leggTil(FplosAbacAttributtType.OPPGAVESTYRING_ENHET, avdelingEnhet.getAvdelingEnhet());
+        return AbacDataAttributter.opprett()
+                .leggTil(FplosAbacAttributtType.OPPGAVESTYRING_ENHET, avdelingEnhet.getAvdelingEnhet());
 
     }
 }

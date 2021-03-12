@@ -20,7 +20,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import no.nav.foreldrepenger.los.web.app.AbacAttributter;
-import no.nav.vedtak.felles.prosesstask.api.ProsessTaskData;
 import no.nav.vedtak.felles.prosesstask.api.ProsessTaskRepository;
 import no.nav.vedtak.felles.prosesstask.api.ProsessTaskStatus;
 import no.nav.vedtak.felles.prosesstask.rest.dto.ProsessTaskIdDto;
@@ -60,7 +59,7 @@ public class AdminProsesstaskRestTjeneste {
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
     public Response setTaskFerdig(@TilpassetAbacAttributt(supplierClass = AdminProsesstaskRestTjeneste.AbacDataSupplier.class)
                                   @Parameter(description = "Task som skal settes ferdig") @NotNull @Valid ProsessTaskIdDto taskId) {
-        ProsessTaskData data = prosessTaskRepository.finn(taskId.getProsessTaskId());
+        var data = prosessTaskRepository.finn(taskId.getProsessTaskId());
         if (data != null) {
             data.setStatus(ProsessTaskStatus.FERDIG);
             data.setSisteFeil(null);

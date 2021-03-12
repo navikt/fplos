@@ -1,22 +1,24 @@
 package no.nav.foreldrepenger.los.statistikk.statistikk_ny;
 
-import no.nav.foreldrepenger.los.oppgave.BehandlingType;
-import no.nav.foreldrepenger.los.statistikk.statistikk_gammel.NyeOgFerdigstilteOppgaver;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import static no.nav.foreldrepenger.los.statistikk.statistikk_ny.KøOppgaveHendelse.LUKKET_OPPGAVE;
+import static no.nav.foreldrepenger.los.statistikk.statistikk_ny.KøOppgaveHendelse.OPPGAVE_SATT_PÅ_VENT;
+import static no.nav.foreldrepenger.los.statistikk.statistikk_ny.KøOppgaveHendelse.UT_TIL_ANNEN_KØ;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-import javax.persistence.EntityManager;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static no.nav.foreldrepenger.los.statistikk.statistikk_ny.KøOppgaveHendelse.LUKKET_OPPGAVE;
-import static no.nav.foreldrepenger.los.statistikk.statistikk_ny.KøOppgaveHendelse.OPPGAVE_SATT_PÅ_VENT;
-import static no.nav.foreldrepenger.los.statistikk.statistikk_ny.KøOppgaveHendelse.UT_TIL_ANNEN_KØ;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import javax.persistence.EntityManager;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import no.nav.foreldrepenger.los.oppgave.BehandlingType;
+import no.nav.foreldrepenger.los.statistikk.statistikk_gammel.NyeOgFerdigstilteOppgaver;
 
 @ApplicationScoped
 public class NyOpppgaveStatistikkRepository {
@@ -73,7 +75,7 @@ public class NyOpppgaveStatistikkRepository {
     }
 
     private static NyeOgFerdigstilteOppgaver map(Object record) {
-        Object[] objects = (Object[]) record;
+        var objects = (Object[]) record;
         var datoFra = localDate(objects[0]); //((Date)objects[3]).toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
         var behandlingType = BehandlingType.fraKode((String)objects[1]);
         var antallNyeFra = ((BigDecimal)objects[2]).longValue();

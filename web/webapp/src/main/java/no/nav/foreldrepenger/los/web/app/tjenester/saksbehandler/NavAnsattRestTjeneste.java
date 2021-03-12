@@ -2,8 +2,6 @@ package no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler;
 
 import static no.nav.vedtak.sikkerhet.abac.BeskyttetRessursActionAttributt.READ;
 
-import java.util.Collection;
-
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
@@ -61,14 +59,14 @@ public class NavAnsattRestTjeneste {
     @Operation(description = "Returnerer fullt navn for ident", tags = "SaksbehandlerIdent")
     @BeskyttetRessurs(action = READ, resource = AbacAttributter.APPLIKASJON, sporingslogg = false)
     public InnloggetNavAnsattDto innloggetBruker() {
-        String ident = SubjectHandler.getSubjectHandler().getUid();
-        LdapBruker ldapBruker = new LdapBrukeroppslag().hentBrukerinformasjon(ident);
+        var ident = SubjectHandler.getSubjectHandler().getUid();
+        var ldapBruker = new LdapBrukeroppslag().hentBrukerinformasjon(ident);
         return getInnloggetBrukerDto(ident, ldapBruker);
     }
 
     InnloggetNavAnsattDto getInnloggetBrukerDto(String ident, LdapBruker ldapBruker) {
-        String navn = ldapBruker.getDisplayName();
-        Collection<String> grupper = LdapUtil.filtrerGrupper(ldapBruker.getGroups());
+        var navn = ldapBruker.getDisplayName();
+        var grupper = LdapUtil.filtrerGrupper(ldapBruker.getGroups());
         return InnloggetNavAnsattDto.builder()
                 .setBrukernavn(ident)
                 .setNavn(navn)

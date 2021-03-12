@@ -8,7 +8,6 @@ import java.io.IOException;
 import java.util.List;
 
 import org.eclipse.jetty.server.Connector;
-import org.eclipse.jetty.server.HttpConfiguration;
 import org.eclipse.jetty.server.HttpConnectionFactory;
 import org.eclipse.jetty.server.SecureRequestCustomizer;
 import org.eclipse.jetty.server.Server;
@@ -30,7 +29,7 @@ public class JettyDevServer extends JettyServer {
     private static final String KEYSTORE_PATH_PROP = "no.nav.modig.security.appcert.keystore";
 
     public static void main(String[] args) throws Exception {
-        JettyDevServer devServer = new JettyDevServer();
+        var devServer = new JettyDevServer();
         devServer.bootStrap();
     }
 
@@ -58,15 +57,15 @@ public class JettyDevServer extends JettyServer {
     }
 
     private static String initCryptoStoreConfig(String storeName, String storeProperty, String storePasswordProperty, String defaultPassword) {
-        String defaultLocation = getProperty("user.home", ".") + "/.modig/" + storeName + ".jks";
-        String storePath = getProperty(storeProperty, defaultLocation);
-        File storeFile = new File(storePath);
+        var defaultLocation = getProperty("user.home", ".") + "/.modig/" + storeName + ".jks";
+        var storePath = getProperty(storeProperty, defaultLocation);
+        var storeFile = new File(storePath);
         if (!storeFile.exists()) {
             throw new IllegalStateException("Finner ikke " + storeName + " i " + storePath
                     + "\n\tKonfigurer enten som System property \'" + storeProperty + "\' eller environment variabel \'"
                     + storeProperty.toUpperCase().replace('.', '_') + "\'");
         }
-        String password = getProperty(storePasswordProperty, defaultPassword);
+        var password = getProperty(storePasswordProperty, defaultPassword);
         if (password == null) {
             throw new IllegalStateException("Passord for å aksessere store " + storeName + " i " + storePath + " er null");
         }
@@ -77,7 +76,7 @@ public class JettyDevServer extends JettyServer {
     }
 
     private static String getProperty(String key, String defaultValue) {
-        String val = System.getProperty(key, defaultValue);
+        var val = System.getProperty(key, defaultValue);
         if (val == null) {
             val = System.getenv(key.toUpperCase().replace('.', '_'));
             val = val == null ? defaultValue : val;
@@ -98,17 +97,17 @@ public class JettyDevServer extends JettyServer {
     @SuppressWarnings("resource")
     @Override
     protected List<Connector> createConnectors(AppKonfigurasjon appKonfigurasjon, Server server) {
-        List<Connector> connectors = super.createConnectors(appKonfigurasjon, server);
+        var connectors = super.createConnectors(appKonfigurasjon, server);
 
-        SslContextFactory.Server sslContextFactory = new SslContextFactory.Server();
+        var sslContextFactory = new SslContextFactory.Server();
         sslContextFactory.setKeyStorePath(System.getProperty("no.nav.modig.security.appcert.keystore"));
         sslContextFactory.setKeyStorePassword(System.getProperty("no.nav.modig.security.appcert.password"));
         sslContextFactory.setKeyManagerPassword(System.getProperty("no.nav.modig.security.appcert.password"));
 
-        HttpConfiguration https = createHttpConfiguration();
+        var https = createHttpConfiguration();
         https.addCustomizer(new SecureRequestCustomizer());
 
-        ServerConnector sslConnector = new ServerConnector(server,
+        var sslConnector = new ServerConnector(server,
                 new SslConnectionFactory(sslContextFactory, "http/1.1"),
                 new HttpConnectionFactory(https));
         sslConnector.setPort(appKonfigurasjon.getSslPort());
@@ -119,7 +118,7 @@ public class JettyDevServer extends JettyServer {
 
     @Override
     protected WebAppContext createContext(AppKonfigurasjon appKonfigurasjon) throws IOException {
-        WebAppContext webAppContext = super.createContext(appKonfigurasjon);
+        var webAppContext = super.createContext(appKonfigurasjon);
         // https://www.eclipse.org/jetty/documentation/9.4.x/troubleshooting-locked-files-on-windows.html
         webAppContext.setInitParameter("org.eclipse.jetty.servlet.Default.useFileMappedBuffer", "false");
         return webAppContext;

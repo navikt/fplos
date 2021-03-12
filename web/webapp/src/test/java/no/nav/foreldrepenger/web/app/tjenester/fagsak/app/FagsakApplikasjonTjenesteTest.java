@@ -24,7 +24,6 @@ import no.nav.foreldrepenger.los.domene.typer.aktør.NavBrukerKjønn;
 import no.nav.foreldrepenger.los.domene.typer.aktør.Person;
 import no.nav.foreldrepenger.los.klient.fpsak.ForeldrepengerFagsakKlient;
 import no.nav.foreldrepenger.los.klient.fpsak.dto.fagsak.FagsakDto;
-import no.nav.foreldrepenger.los.klient.fpsak.dto.fagsak.FagsakMedPersonDto;
 import no.nav.foreldrepenger.los.klient.fpsak.dto.fagsak.PersonDto;
 import no.nav.foreldrepenger.los.klient.person.PersonTjeneste;
 import no.nav.foreldrepenger.los.oppgave.FagsakStatus;
@@ -52,39 +51,48 @@ public class FagsakApplikasjonTjenesteTest {
 
     @Test
     public void skal_hente_saker_på_fnr() {
-        FagsakDto fagsakDto = new FagsakDto(AktørId.dummy().getId(), FNR.asValue(), FagsakYtelseType.FORELDREPENGER,
+        var fagsakDto = new FagsakDto(AktørId.dummy().getId(), FNR.asValue(), FagsakYtelseType.FORELDREPENGER,
                 FagsakStatus.OPPRETTET, LocalDate.of(2017, Month.FEBRUARY, 1));
-        Person personDto = new Person.Builder().medNavn("TEST"). medFødselsdato(LocalDate.now().minusYears(20)).medFnr(FNR). medKjønn(NavBrukerKjønn.K).build();
+        var personDto = new Person.Builder().medNavn("TEST")
+                .medFødselsdato(LocalDate.now().minusYears(20))
+                .medFnr(FNR)
+                .medKjønn(NavBrukerKjønn.K)
+                .build();
         when(fagsakKlient.finnFagsaker(FNR.asValue())).thenReturn(Collections.singletonList(fagsakDto));
         when(personTjeneste.hentPerson(any())).thenReturn(Optional.of(personDto));
-        LocalDate fødselsdatoBarn = LocalDate.of(2017, Month.FEBRUARY, 1);
+        var fødselsdatoBarn = LocalDate.of(2017, Month.FEBRUARY, 1);
 
         // Act
-        List<FagsakMedPersonDto> fagsakDtos = fagsakTjeneste.hentSaker(FNR.asValue());
+        var fagsakDtos = fagsakTjeneste.hentSaker(FNR.asValue());
 
         // Assert
         assertThat(fagsakDtos.isEmpty()).isFalse();
         assertThat(fagsakDtos).hasSize(1);
         var fagsakMedPersonDto = fagsakDtos.get(0);
         assertThat(fagsakMedPersonDto.getSaksnummerString()).isEqualTo(fagsakDto.getSaksnummer());
-        assertThat(fagsakMedPersonDto.getFagsakYtelseType().getKode()).isEqualTo(fagsakDto.getFagsakYtelseType().getKode());
+        assertThat(fagsakMedPersonDto.getFagsakYtelseType().getKode()).isEqualTo(
+                fagsakDto.getFagsakYtelseType().getKode());
         assertThat(fagsakMedPersonDto.getStatus()).isEqualTo(fagsakDto.getStatus());
         assertThat(fagsakMedPersonDto.getBarnFodt()).isEqualTo(fødselsdatoBarn);
     }
 
     @Test
     public void skal_hente_saker_på_saksreferanse() {
-        Person personDto = new Person.Builder().medNavn("TEST"). medFødselsdato(LocalDate.now().minusYears(20)).medFnr(FNR). medKjønn(NavBrukerKjønn.K).build();
+        var personDto = new Person.Builder().medNavn("TEST")
+                .medFødselsdato(LocalDate.now().minusYears(20))
+                .medFnr(FNR)
+                .medKjønn(NavBrukerKjønn.K)
+                .build();
 
         List<FagsakDto> fagsakDtos = new ArrayList<>();
-        FagsakDto fagsakDto = new FagsakDto(AktørId.dummy().getId(), SAKSNUMMER, FagsakYtelseType.FORELDREPENGER,
+        var fagsakDto = new FagsakDto(AktørId.dummy().getId(), SAKSNUMMER, FagsakYtelseType.FORELDREPENGER,
                 FagsakStatus.UNDER_BEHANDLING, LocalDate.now());
         fagsakDtos.add(fagsakDto);
         when(fagsakKlient.finnFagsaker(SAKSNUMMER)).thenReturn(fagsakDtos);
         when(personTjeneste.hentPerson(any())).thenReturn(Optional.of(personDto));
 
         // Act
-        List<FagsakMedPersonDto> resultFagsakDtos = fagsakTjeneste.hentSaker(SAKSNUMMER);
+        var resultFagsakDtos = fagsakTjeneste.hentSaker(SAKSNUMMER);
 
         // Assert
         assertThat(resultFagsakDtos.isEmpty()).isFalse();
@@ -100,14 +108,14 @@ public class FagsakApplikasjonTjenesteTest {
 
     @Test
     public void skal_returnere_tomt_view_ved_ukjent_fnr() {
-        String ukjentFødselsnummer = "00000000000";
+        var ukjentFødselsnummer = "00000000000";
         var view = fagsakTjeneste.hentSaker(ukjentFødselsnummer);
         assertThat(view.isEmpty()).isTrue();
     }
 
     @Test
     public void skal_returnere_tomt_view_ved_ukjent_saksnr() {
-        ManglerTilgangException manglerTilgangException = manglerTilgangException();
+        var manglerTilgangException = manglerTilgangException();
         when(fagsakKlient.finnFagsaker(any(String.class))).thenThrow(manglerTilgangException);
 
         var view = fagsakTjeneste.hentSaker(SAKSNUMMER);
@@ -122,6 +130,7 @@ public class FagsakApplikasjonTjenesteTest {
     }
 
     private static ManglerTilgangException manglerTilgangException() {
-        return new ManglerTilgangException("F-468815", String.format("Mangler tilgang. Fikk http-kode 403 fra server [%s]", URI.create("http://testuri")));
+        return new ManglerTilgangException("F-468815",
+                String.format("Mangler tilgang. Fikk http-kode 403 fra server [%s]", URI.create("http://testuri")));
     }
 }

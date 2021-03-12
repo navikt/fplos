@@ -50,8 +50,8 @@ public class AdminRepositoryImpl implements AdminRepository {
 
     @Override
     public Oppgave deaktiverOppgave(Long oppgaveId) {
-        Oppgave oppgave = hentOppgave(oppgaveId);
-        Reservasjon reservasjon = oppgave.getReservasjon();
+        var oppgave = hentOppgave(oppgaveId);
+        var reservasjon = oppgave.getReservasjon();
         if (reservasjon != null && reservasjon.erAktiv()) {
             reservasjon.frigiReservasjon("Oppgave er avsluttet fra admin REST-tjeneste");
             lagreReservasjon(reservasjon);
@@ -64,7 +64,7 @@ public class AdminRepositoryImpl implements AdminRepository {
 
     @Override
     public Oppgave aktiverOppgave(Long oppgaveId) {
-        Oppgave oppgave = hentOppgave(oppgaveId);
+        var oppgave = hentOppgave(oppgaveId);
         oppgave.gjenåpneOppgave();
         internLagre(oppgave);
         entityManager.refresh(oppgave);
@@ -72,7 +72,7 @@ public class AdminRepositoryImpl implements AdminRepository {
     }
 
     private Oppgave hentOppgave(Long oppgaveId) {
-        Oppgave oppgave = entityManager.createQuery("Select o FROM Oppgave o where o.id = :oppgaveId", Oppgave.class)
+        var oppgave = entityManager.createQuery("Select o FROM Oppgave o where o.id = :oppgaveId", Oppgave.class)
                 .setParameter("oppgaveId", oppgaveId)
                 .setMaxResults(1).getSingleResult();
         entityManager.refresh(oppgave);

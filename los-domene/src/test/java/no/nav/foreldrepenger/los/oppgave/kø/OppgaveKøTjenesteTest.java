@@ -1,32 +1,33 @@
 package no.nav.foreldrepenger.los.oppgave.kø;
 
 
-import no.nav.foreldrepenger.dbstoette.DBTestUtil;
-import no.nav.foreldrepenger.extensions.EntityManagerFPLosAwareExtension;
-import no.nav.foreldrepenger.los.oppgave.OppgaveRepository;
-import no.nav.foreldrepenger.los.oppgave.OppgaveRepositoryImpl;
-import no.nav.foreldrepenger.los.oppgavekø.OppgaveKøTjeneste;
-import no.nav.foreldrepenger.los.organisasjon.OrganisasjonRepositoryImpl;
-import no.nav.foreldrepenger.los.oppgave.AndreKriterierType;
-import no.nav.foreldrepenger.los.oppgave.BehandlingType;
-import no.nav.foreldrepenger.los.oppgavekø.KøSortering;
-import no.nav.foreldrepenger.los.oppgave.Oppgave;
-import no.nav.foreldrepenger.los.oppgave.OppgaveEgenskap;
-import no.nav.foreldrepenger.los.oppgavekø.OppgaveFiltrering;
-import no.nav.foreldrepenger.los.organisasjon.Avdeling;
-import no.nav.foreldrepenger.los.organisasjon.Saksbehandler;
-import no.nav.foreldrepenger.los.avdelingsleder.AvdelingslederTjeneste;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-
-import javax.persistence.EntityManager;
+import static no.nav.foreldrepenger.los.organisasjon.Avdeling.AVDELING_DRAMMEN_ENHET;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static no.nav.foreldrepenger.los.organisasjon.Avdeling.AVDELING_DRAMMEN_ENHET;
-import static org.assertj.core.api.Assertions.assertThat;
+import javax.persistence.EntityManager;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+
+import no.nav.foreldrepenger.dbstoette.DBTestUtil;
+import no.nav.foreldrepenger.extensions.EntityManagerFPLosAwareExtension;
+import no.nav.foreldrepenger.los.avdelingsleder.AvdelingslederTjeneste;
+import no.nav.foreldrepenger.los.oppgave.AndreKriterierType;
+import no.nav.foreldrepenger.los.oppgave.BehandlingType;
+import no.nav.foreldrepenger.los.oppgave.Oppgave;
+import no.nav.foreldrepenger.los.oppgave.OppgaveEgenskap;
+import no.nav.foreldrepenger.los.oppgave.OppgaveRepository;
+import no.nav.foreldrepenger.los.oppgave.OppgaveRepositoryImpl;
+import no.nav.foreldrepenger.los.oppgavekø.KøSortering;
+import no.nav.foreldrepenger.los.oppgavekø.OppgaveFiltrering;
+import no.nav.foreldrepenger.los.oppgavekø.OppgaveKøTjeneste;
+import no.nav.foreldrepenger.los.organisasjon.Avdeling;
+import no.nav.foreldrepenger.los.organisasjon.OrganisasjonRepositoryImpl;
+import no.nav.foreldrepenger.los.organisasjon.Saksbehandler;
 
 @ExtendWith(EntityManagerFPLosAwareExtension.class)
 public class OppgaveKøTjenesteTest {
@@ -59,33 +60,33 @@ public class OppgaveKøTjenesteTest {
 
     @Test
     public void testToFiltreringerpåBehandlingstype() {
-        Long listeId = leggeInnEtSettMedOppgaver();
+        var listeId = leggeInnEtSettMedOppgaver();
         avdelingslederTjeneste.endreFiltreringBehandlingType(listeId, BehandlingType.FØRSTEGANGSSØKNAD, true);
         avdelingslederTjeneste.endreFiltreringBehandlingType(listeId, BehandlingType.KLAGE, true);
-        List<Oppgave> oppgaver = oppgaveKøTjeneste.hentOppgaver(listeId);
+        var oppgaver = oppgaveKøTjeneste.hentOppgaver(listeId);
         assertThat(oppgaver).hasSize(2);
     }
 
     @Test
     public void testFiltreringerpåAndreKriteriertype() {
-        Long listeId = leggeInnEtSettMedAndreKriterierOppgaver();
+        var listeId = leggeInnEtSettMedAndreKriterierOppgaver();
         avdelingslederTjeneste.endreFiltreringAndreKriterierType(listeId, AndreKriterierType.TIL_BESLUTTER, true, true);
         avdelingslederTjeneste.endreFiltreringAndreKriterierType(listeId, AndreKriterierType.PAPIRSØKNAD, true, true);
-        List<Oppgave> oppgaver = oppgaveKøTjeneste.hentOppgaver(listeId);
+        var oppgaver = oppgaveKøTjeneste.hentOppgaver(listeId);
         assertThat(oppgaver).hasSize(1);
     }
 
     @Test
     public void testUtenFiltreringpåBehandlingstype() {
-        Long oppgaveFiltreringId = leggeInnEtSettMedOppgaver();
-        List<Oppgave> oppgaver = oppgaveKøTjeneste.hentOppgaver(oppgaveFiltreringId);
+        var oppgaveFiltreringId = leggeInnEtSettMedOppgaver();
+        var oppgaver = oppgaveKøTjeneste.hentOppgaver(oppgaveFiltreringId);
         assertThat(oppgaver).hasSize(3);
     }
 
     @Test
     public void hentAlleOppgaveFiltrering() {
-        List<OppgaveFiltrering> lagtInnLister = leggInnEtSettMedLister(3);
-        Saksbehandler saksbehandler = new Saksbehandler("1234567");
+        var lagtInnLister = leggInnEtSettMedLister(3);
+        var saksbehandler = new Saksbehandler("1234567");
         entityManager.persist(saksbehandler);
         entityManager.flush();
 
@@ -93,30 +94,30 @@ public class OppgaveKøTjenesteTest {
         avdelingslederTjeneste.leggSaksbehandlerTilListe(lagtInnLister.get(2).getId(), saksbehandler.getSaksbehandlerIdent());
         entityManager.refresh(saksbehandler);
 
-        List<OppgaveFiltrering> oppgaveFiltrerings = oppgaveKøTjeneste.hentAlleOppgaveFiltrering(saksbehandler.getSaksbehandlerIdent());
+        var oppgaveFiltrerings = oppgaveKøTjeneste.hentAlleOppgaveFiltrering(saksbehandler.getSaksbehandlerIdent());
         assertThat(oppgaveFiltrerings).contains(lagtInnLister.get(0), lagtInnLister.get(2));
         assertThat(oppgaveFiltrerings).doesNotContain(lagtInnLister.get(1));
     }
 
     @Test
     public void hentAntallOppgaver() {
-        Long oppgaveFiltreringId = leggeInnEtSettMedOppgaver();
-        Integer antallOppgaver = oppgaveKøTjeneste.hentAntallOppgaver(oppgaveFiltreringId, false);
+        var oppgaveFiltreringId = leggeInnEtSettMedOppgaver();
+        var antallOppgaver = oppgaveKøTjeneste.hentAntallOppgaver(oppgaveFiltreringId, false);
         assertThat(antallOppgaver).isEqualTo(3);
     }
 
     @Test
     public void hentAntallOppgaverForAvdeling() {
         leggeInnEtSettMedOppgaver();
-        Integer antallOppgaverDrammen = oppgaveKøTjeneste.hentAntallOppgaverForAvdeling(AVDELING_DRAMMEN_ENHET);
+        var antallOppgaverDrammen = oppgaveKøTjeneste.hentAntallOppgaverForAvdeling(AVDELING_DRAMMEN_ENHET);
         assertThat(antallOppgaverDrammen).isEqualTo(3);
-        Integer antallOppgaverBergen = oppgaveKøTjeneste.hentAntallOppgaverForAvdeling(AVDELING_BERGEN_ENHET);
+        var antallOppgaverBergen = oppgaveKøTjeneste.hentAntallOppgaverForAvdeling(AVDELING_BERGEN_ENHET);
         assertThat(antallOppgaverBergen).isEqualTo(1);
     }
 
 
     private Long leggeInnEtSettMedAndreKriterierOppgaver() {
-        OppgaveFiltrering oppgaveFiltrering = OppgaveFiltrering.builder().medNavn("OPPRETTET")
+        var oppgaveFiltrering = OppgaveFiltrering.builder().medNavn("OPPRETTET")
                 .medSortering(KøSortering.OPPRETT_BEHANDLING)
                 .medAvdeling(avdelingDrammen()).build();
         oppgaveRepository.lagre(oppgaveFiltrering);
@@ -137,8 +138,8 @@ public class OppgaveKøTjenesteTest {
 
     private List<OppgaveFiltrering> leggInnEtSettMedLister(int antallLister) {
         List<OppgaveFiltrering> filtre = new ArrayList<>();
-        for (int i = 0; i < antallLister; i++) {
-            OppgaveFiltrering oppgaveFiltrering = OppgaveFiltrering.builder()
+        for (var i = 0; i < antallLister; i++) {
+            var oppgaveFiltrering = OppgaveFiltrering.builder()
                     .medNavn("Test " + i).medSortering(KøSortering.BEHANDLINGSFRIST)
                     .medAvdeling(avdelingDrammen()).build();
             entityManager.persist(oppgaveFiltrering);
@@ -150,7 +151,7 @@ public class OppgaveKøTjenesteTest {
 
 
     private Long leggeInnEtSettMedOppgaver() {
-        OppgaveFiltrering oppgaveFiltrering = OppgaveFiltrering.builder().medNavn("OPPRETTET")
+        var oppgaveFiltrering = OppgaveFiltrering.builder().medNavn("OPPRETTET")
                 .medSortering(KøSortering.OPPRETT_BEHANDLING)
                 .medAvdeling(avdelingDrammen()).build();
         oppgaveRepository.lagre(oppgaveFiltrering);

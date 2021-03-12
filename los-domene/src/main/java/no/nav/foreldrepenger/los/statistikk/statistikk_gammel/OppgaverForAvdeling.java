@@ -8,10 +8,10 @@ import no.nav.vedtak.felles.jpa.converters.BooleanToStringConverter;
 
 public class OppgaverForAvdeling {
 
-    private FagsakYtelseType fagsakYtelseType;
-    private BehandlingType behandlingType;
-    private Boolean tilBeslutter;
-    private Long antall;
+    private final FagsakYtelseType fagsakYtelseType;
+    private final BehandlingType behandlingType;
+    private final Boolean tilBeslutter;
+    private final Long antall;
 
 
     public OppgaverForAvdeling(Object[] resultat) {

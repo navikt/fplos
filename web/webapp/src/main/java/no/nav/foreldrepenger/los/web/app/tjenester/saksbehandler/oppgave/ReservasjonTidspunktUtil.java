@@ -12,7 +12,7 @@ final class ReservasjonTidspunktUtil {
     }
 
     private static void sjekkGrenseverdier(LocalDateTime tidspunkt) throws IllegalArgumentException {
-        LocalDateTime now = LocalDateTime.now();
+        var now = LocalDateTime.now();
         if (tidspunkt.isBefore(now)) {
             throw new IllegalArgumentException("Reserevasjon kan ikke avsluttes før dagens dato");
         }

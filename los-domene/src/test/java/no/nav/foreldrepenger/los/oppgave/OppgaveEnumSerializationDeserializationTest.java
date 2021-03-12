@@ -35,8 +35,8 @@ public class OppgaveEnumSerializationDeserializationTest {
     }
 
     private void testRoundtrip(Object initiell) throws JsonProcessingException {
-        String json = toJson(initiell);
-        Object roundtripped = fromJson(json, initiell.getClass());
+        var json = toJson(initiell);
+        var roundtripped = fromJson(json, initiell.getClass());
         assertThat(initiell).isEqualTo(roundtripped);
     }
 
@@ -49,7 +49,7 @@ public class OppgaveEnumSerializationDeserializationTest {
     }
 
     static ObjectMapper getObjectMapper() {
-        ObjectMapper mapper = new ObjectMapper();
+        var mapper = new ObjectMapper();
         mapper.registerModule(new Jdk8Module());
         mapper.registerModule(new JavaTimeModule());
         mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);

@@ -43,7 +43,7 @@ public class BehandlingId implements Comparable<UUID> {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        BehandlingId that = (BehandlingId) o;
+        var that = (BehandlingId) o;
         return value.equals(that.value);
     }
 

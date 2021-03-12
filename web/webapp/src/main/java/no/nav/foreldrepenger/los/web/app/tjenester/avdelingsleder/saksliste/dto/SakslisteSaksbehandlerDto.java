@@ -1,14 +1,14 @@
 package no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.saksliste.dto;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+
 import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.dto.AvdelingEnhetDto;
 import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.saksliste.FplosAbacAttributtType;
 import no.nav.foreldrepenger.los.web.app.tjenester.felles.dto.SaksbehandlerBrukerIdentDto;
 import no.nav.foreldrepenger.los.web.app.tjenester.felles.dto.SakslisteIdDto;
 import no.nav.vedtak.sikkerhet.abac.AbacDataAttributter;
 import no.nav.vedtak.sikkerhet.abac.AbacDto;
-
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
 
 public class SakslisteSaksbehandlerDto implements AbacDto {
 
@@ -29,7 +29,10 @@ public class SakslisteSaksbehandlerDto implements AbacDto {
     public SakslisteSaksbehandlerDto() {
     }
 
-    public SakslisteSaksbehandlerDto(SakslisteIdDto sakslisteId, SaksbehandlerBrukerIdentDto brukerIdent, boolean checked, AvdelingEnhetDto avdelingEnhet) {
+    public SakslisteSaksbehandlerDto(SakslisteIdDto sakslisteId,
+                                     SaksbehandlerBrukerIdentDto brukerIdent,
+                                     boolean checked,
+                                     AvdelingEnhetDto avdelingEnhet) {
         this.sakslisteId = sakslisteId;
         this.brukerIdent = brukerIdent;
         this.checked = checked;
@@ -48,7 +51,7 @@ public class SakslisteSaksbehandlerDto implements AbacDto {
         return checked;
     }
 
-    public AvdelingEnhetDto getAvdelingEnhet(){
+    public AvdelingEnhetDto getAvdelingEnhet() {
         return avdelingEnhet;
     }
 
@@ -62,12 +65,16 @@ public class SakslisteSaksbehandlerDto implements AbacDto {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof SakslisteSaksbehandlerDto)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof SakslisteSaksbehandlerDto)) {
+            return false;
+        }
 
         SakslisteSaksbehandlerDto sakslisteBehandlingstypeDto = (SakslisteSaksbehandlerDto) o;
         return sakslisteId.getVerdi().equals(sakslisteBehandlingstypeDto.sakslisteId.getVerdi())
-          && brukerIdent.getVerdi().equals(sakslisteBehandlingstypeDto.brukerIdent.getVerdi());
+                && brukerIdent.getVerdi().equals(sakslisteBehandlingstypeDto.brukerIdent.getVerdi());
     }
 
     @Override
@@ -77,7 +84,8 @@ public class SakslisteSaksbehandlerDto implements AbacDto {
 
     @Override
     public AbacDataAttributter abacAttributter() {
-        return AbacDataAttributter.opprett().leggTil(FplosAbacAttributtType.OPPGAVESTYRING_ENHET, avdelingEnhet.getAvdelingEnhet());
+        return AbacDataAttributter.opprett()
+                .leggTil(FplosAbacAttributtType.OPPGAVESTYRING_ENHET, avdelingEnhet.getAvdelingEnhet());
 
     }
 }

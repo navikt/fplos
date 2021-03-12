@@ -1,23 +1,24 @@
 package no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.håndterere;
 
-import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.FpsakHendelseHåndterer;
-import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveEventLogg;
-import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveEventType;
-import no.nav.foreldrepenger.los.oppgave.Oppgave;
-import no.nav.foreldrepenger.los.oppgave.OppgaveRepository;
-import no.nav.foreldrepenger.los.statistikk.statistikk_ny.KøOppgaveHendelse;
-import no.nav.foreldrepenger.los.statistikk.statistikk_ny.OppgaveStatistikk;
-import no.nav.foreldrepenger.los.klient.fpsak.Aksjonspunkt;
-import no.nav.foreldrepenger.los.klient.fpsak.BehandlingFpsak;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import static no.nav.foreldrepenger.los.felles.util.StreamUtil.safeStream;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Predicate;
 
-import static no.nav.foreldrepenger.los.felles.util.StreamUtil.safeStream;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.FpsakHendelseHåndterer;
+import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveEventLogg;
+import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveEventType;
+import no.nav.foreldrepenger.los.klient.fpsak.Aksjonspunkt;
+import no.nav.foreldrepenger.los.klient.fpsak.BehandlingFpsak;
+import no.nav.foreldrepenger.los.oppgave.Oppgave;
+import no.nav.foreldrepenger.los.oppgave.OppgaveRepository;
+import no.nav.foreldrepenger.los.statistikk.statistikk_ny.KøOppgaveHendelse;
+import no.nav.foreldrepenger.los.statistikk.statistikk_ny.OppgaveStatistikk;
 
 public class PåVentOppgaveHendelseHåndterer implements FpsakHendelseHåndterer {
 
@@ -26,7 +27,9 @@ public class PåVentOppgaveHendelseHåndterer implements FpsakHendelseHåndterer
     private final OppgaveStatistikk oppgaveStatistikk;
     private final BehandlingFpsak behandlingFpsak;
 
-    public PåVentOppgaveHendelseHåndterer(OppgaveRepository oppgaveRepository, OppgaveStatistikk oppgaveStatistikk, BehandlingFpsak behandling) {
+    public PåVentOppgaveHendelseHåndterer(OppgaveRepository oppgaveRepository,
+                                          OppgaveStatistikk oppgaveStatistikk,
+                                          BehandlingFpsak behandling) {
         this.oppgaveRepository = oppgaveRepository;
         this.oppgaveStatistikk = oppgaveStatistikk;
         this.behandlingFpsak = behandling;
@@ -41,11 +44,11 @@ public class PåVentOppgaveHendelseHåndterer implements FpsakHendelseHåndterer
         var aksjonspunktFrist = aksjonspunktFrist(aksjonspunkter, venteType);
         var finnesAktivOppgave = oppgaveRepository.hentOppgaver(behandlingId).stream().anyMatch(Oppgave::getAktiv);
         if (finnesAktivOppgave) {
-            LOG.info("{} behandling er satt på vent, type {}. Lukker oppgave.", system, venteType);
+            LOG.info("{} behandling er satt på vent, type {}. Lukker oppgave.", SYSTEM, venteType);
             oppgaveStatistikk.lagre(behandlingId, KøOppgaveHendelse.OPPGAVE_SATT_PÅ_VENT);
             oppgaveRepository.avsluttOppgaveForBehandling(behandlingId);
         } else {
-            LOG.info("{} behandling er satt på vent, type {}", system, venteType);
+            LOG.info("{} behandling er satt på vent, type {}", SYSTEM, venteType);
         }
         var oel = new OppgaveEventLogg(behandlingId, venteType, null, behandlendeEnhet, aksjonspunktFrist);
         oppgaveRepository.lagre(oel);
@@ -59,8 +62,7 @@ public class PåVentOppgaveHendelseHåndterer implements FpsakHendelseHåndterer
     }
 
     private static LocalDateTime finnVentefrist(List<Aksjonspunkt> aksjonspunkter, Predicate<Aksjonspunkt> predicate) {
-        return safeStream(aksjonspunkter)
-                .filter(Aksjonspunkt::erAktiv)
+        return safeStream(aksjonspunkter).filter(Aksjonspunkt::erAktiv)
                 .filter(predicate)
                 .map(Aksjonspunkt::getFristTid)
                 .filter(Objects::nonNull)
@@ -69,8 +71,6 @@ public class PåVentOppgaveHendelseHåndterer implements FpsakHendelseHåndterer
     }
 
     private static boolean manueltSattPåVent(List<Aksjonspunkt> aksjonspunkt) {
-        return aksjonspunkt.stream()
-                .filter(Aksjonspunkt::erAktiv)
-                .anyMatch(Aksjonspunkt::erManueltPåVent);
+        return aksjonspunkt.stream().filter(Aksjonspunkt::erAktiv).anyMatch(Aksjonspunkt::erManueltPåVent);
     }
 }

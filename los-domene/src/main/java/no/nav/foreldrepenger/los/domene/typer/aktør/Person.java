@@ -45,7 +45,7 @@ public class Person {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Person person = (Person) o;
+        var person = (Person) o;
         return navn.equals(person.navn) &&
                 fødselsnummer.equals(person.fødselsnummer);
     }
@@ -57,7 +57,7 @@ public class Person {
 
     public static class Builder {
 
-        private Person personMal;
+        private final Person personMal;
         public Builder() {
             personMal = new Person();
         }
@@ -104,11 +104,11 @@ public class Person {
         if (tekst == null || (tekst = tekst.trim()).isEmpty()) { // NOSONAR
             return null;
         }
-        String skilletegnPattern = "(\\s|[()\\-_.,/])";
-        char[] tegn = tekst.toLowerCase(Locale.getDefault()).toCharArray();
-        boolean nesteSkalHaStorBokstav = true;
-        for (int i = 0; i < tegn.length; i++) {
-            boolean erSkilletegn = String.valueOf(tegn[i]).matches(skilletegnPattern);
+        var skilletegnPattern = "(\\s|[()\\-_.,/])";
+        var tegn = tekst.toLowerCase(Locale.getDefault()).toCharArray();
+        var nesteSkalHaStorBokstav = true;
+        for (var i = 0; i < tegn.length; i++) {
+            var erSkilletegn = String.valueOf(tegn[i]).matches(skilletegnPattern);
             if (!erSkilletegn && nesteSkalHaStorBokstav) {
                 tegn[i] = Character.toTitleCase(tegn[i]);
             }

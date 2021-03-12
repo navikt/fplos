@@ -1,16 +1,16 @@
 package no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.saksliste.dto;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
+
 import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.dto.AvdelingEnhetDto;
 import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.saksliste.FplosAbacAttributtType;
 import no.nav.foreldrepenger.los.web.app.tjenester.felles.dto.SakslisteIdDto;
 import no.nav.vedtak.sikkerhet.abac.AbacDataAttributter;
 import no.nav.vedtak.sikkerhet.abac.AbacDto;
 import no.nav.vedtak.util.InputValideringRegex;
-
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
 
 public class SakslisteNavnDto implements AbacDto {
 
@@ -61,7 +61,7 @@ public class SakslisteNavnDto implements AbacDto {
         if (this == o) return true;
         if (!(o instanceof SakslisteNavnDto)) return false;
 
-        SakslisteNavnDto sakslisteDto = (SakslisteNavnDto) o;
+        var sakslisteDto = (SakslisteNavnDto) o;
         return sakslisteId.getVerdi().equals(sakslisteDto.sakslisteId.getVerdi());
     }
 

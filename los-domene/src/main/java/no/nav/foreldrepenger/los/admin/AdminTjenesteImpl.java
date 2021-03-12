@@ -1,17 +1,17 @@
 package no.nav.foreldrepenger.los.admin;
 
-import no.nav.foreldrepenger.los.domene.typer.BehandlingId;
-import no.nav.foreldrepenger.los.domene.typer.Saksnummer;
-
-import no.nav.foreldrepenger.los.oppgave.Oppgave;
-import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveEventLogg;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+
+import no.nav.foreldrepenger.los.domene.typer.BehandlingId;
+import no.nav.foreldrepenger.los.domene.typer.Saksnummer;
+import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveEventLogg;
+import no.nav.foreldrepenger.los.oppgave.Oppgave;
 
 @ApplicationScoped
 public class AdminTjenesteImpl implements AdminTjeneste {
@@ -29,7 +29,7 @@ public class AdminTjenesteImpl implements AdminTjeneste {
 
     @Override
     public List<Oppgave> hentOppgaver(Saksnummer saksnummer) {
-        Comparator<Oppgave> sortertAktivOpprettet = Comparator.comparing(Oppgave::getAktiv)
+        var sortertAktivOpprettet = Comparator.comparing(Oppgave::getAktiv)
                 .thenComparing(o -> Optional.ofNullable(o.getEndretTidspunkt()).orElse(o.getOpprettetTidspunkt())).reversed();
         return adminRepository.hentOppgaver(saksnummer).stream()
                 .sorted(sortertAktivOpprettet)

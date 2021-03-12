@@ -1,15 +1,5 @@
 package no.nav.foreldrepenger.los.admin;
 
-import no.nav.vedtak.felles.prosesstask.api.ProsessTask;
-import no.nav.vedtak.felles.prosesstask.api.ProsessTaskData;
-import no.nav.vedtak.felles.prosesstask.api.ProsessTaskHandler;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.Query;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
@@ -19,10 +9,21 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import javax.persistence.EntityManager;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import no.nav.vedtak.felles.prosesstask.api.ProsessTask;
+import no.nav.vedtak.felles.prosesstask.api.ProsessTaskData;
+import no.nav.vedtak.felles.prosesstask.api.ProsessTaskHandler;
+
 @ApplicationScoped
 @ProsessTask(OppgaveKorrigerEndretdatoTask.TASKTYPE)
 public class OppgaveKorrigerEndretdatoTask implements ProsessTaskHandler {
-    private static final Logger log = LoggerFactory.getLogger(OppgaveKorrigerEndretdatoTask.class);
+    private static final Logger LOG = LoggerFactory.getLogger(OppgaveKorrigerEndretdatoTask.class);
 
     public static final String TASKTYPE = "oppgaveendretdato.oppdaterer";
 
@@ -43,28 +44,28 @@ public class OppgaveKorrigerEndretdatoTask implements ProsessTaskHandler {
         var oppgave = hentOppgave(oppgaveId);
         var eventLogg = hentEventLogg(oppgave.getBehandlingId());
 
-        Optional<BehandlingEventLogg> tilhørendeOppgaveEvent = eventLogg.stream().filter(o -> {
-            var loggInnslagTid = o.getOpprettetTid();
+        var tilhørendeOppgaveEvent = eventLogg.stream().filter(o -> {
+            var loggInnslagTid = o.opprettetTid;
             var oppgaveEndretTid = oppgave.getEndretTid();
             return oppgaveEndretTid.isAfter(loggInnslagTid.minus(500, ChronoUnit.MILLIS))
                     && oppgaveEndretTid.isBefore(loggInnslagTid.plus(500, ChronoUnit.MILLIS));
         }).findFirst();
 
         if (tilhørendeOppgaveEvent.isEmpty()) {
-            log.info("Fant ingen tilhørende oppgaveEventLogg-innslag for oppgaveId {}", oppgave.getId());
+            LOG.info("Fant ingen tilhørende oppgaveEventLogg-innslag for oppgaveId {}", oppgave.getId());
         } else {
             var aktuelleEventer = eventLogg.stream()
-                    .filter(el -> tilhørendeOppgaveEvent.get().getOpprettetTid().isAfter(el.getOpprettetTid()))
+                    .filter(el -> tilhørendeOppgaveEvent.get().opprettetTid.isAfter(el.opprettetTid))
                     .collect(Collectors.toList());
 
             tilhørendeOppgaveEvent
-                    .flatMap(t -> finnEldreDuplikatEvent(aktuelleEventer, t.getType()))
-                    .map(BehandlingEventLogg::getOpprettetTid)
+                    .flatMap(t -> finnEldreDuplikatEvent(aktuelleEventer, t.type))
+                    .map(BehandlingEventLogg::opprettetTid)
                     .ifPresentOrElse(korrigertTid -> {
-                        log.info("OppgaveId: {}, eksisterende endret_tid: {}, korrigert endret_tid_2: {}", oppgave.getId(), oppgave.getEndretTid(), korrigertTid);
+                        LOG.info("OppgaveId: {}, eksisterende endret_tid: {}, korrigert endret_tid_2: {}", oppgave.getId(), oppgave.getEndretTid(), korrigertTid);
                         updateEndretTid(oppgave, korrigertTid);
                     }, () -> {
-                        log.info("OppgaveId: {}. Ikke behov for å korrigere endret_tid", oppgave.getId());
+                        LOG.info("OppgaveId: {}. Ikke behov for å korrigere endret_tid", oppgave.getId());
                         kopierEndretTidTilEndretTid2(oppgave);
                     });
         }
@@ -75,7 +76,7 @@ public class OppgaveKorrigerEndretdatoTask implements ProsessTaskHandler {
             return Optional.empty();
         }
         var candidate = eventer.get(0);
-        if (candidate.getType().equals(type)) {
+        if (candidate.type.equals(type)) {
             if (eventer.size() == 1) {
                 return Optional.of(candidate);
             } else {
@@ -87,16 +88,16 @@ public class OppgaveKorrigerEndretdatoTask implements ProsessTaskHandler {
     }
 
     private List<BehandlingEventLogg> hentEventLogg(byte[] behandlingId) {
-        Query query = entityManager.createNativeQuery("select opprettet_tid, EVENT_TYPE from OPPGAVE_EVENT_LOGG where behandling_id = :behandlingId")
+        var query = entityManager.createNativeQuery("select opprettet_tid, EVENT_TYPE from OPPGAVE_EVENT_LOGG where behandling_id = :behandlingId")
                 .setParameter("behandlingId", behandlingId);
-        List<Object[]> queryResultat = (List<Object[]>) query.getResultList();
+        var queryResultat = (List<Object[]>) query.getResultList();
         return queryResultat.stream()
                 .map(o -> {
                     var opprettetTid = ((Timestamp) o[0]).toLocalDateTime();
                     var type = (String) o[1];
                     return new BehandlingEventLogg(opprettetTid, type);
                 })
-                .sorted(Comparator.comparing(BehandlingEventLogg::getOpprettetTid).reversed())
+                .sorted(Comparator.comparing(BehandlingEventLogg::opprettetTid).reversed())
                 .collect(Collectors.toList());
 
     }
@@ -119,19 +120,19 @@ public class OppgaveKorrigerEndretdatoTask implements ProsessTaskHandler {
     }
 
     private Oppgave hentOppgave(long oppgaveId) {
-        Query query = entityManager.createNativeQuery("select ID, ENDRET_TID, behandling_id from OPPGAVE where ID = :oppgaveId")
+        var query = entityManager.createNativeQuery("select ID, ENDRET_TID, behandling_id from OPPGAVE where ID = :oppgaveId")
                 .setParameter("oppgaveId", oppgaveId);
-        Object[] queryResultat = (Object[]) query.getSingleResult();
+        var queryResultat = (Object[]) query.getSingleResult();
         var id = ((BigDecimal) queryResultat[0]).longValue();
         var endretTid = ((Timestamp) queryResultat[1]).toLocalDateTime();
         var behandlingIdBytes = ((byte[]) queryResultat[2]);
         return new Oppgave(id, endretTid, behandlingIdBytes);
     }
 
-    private class Oppgave {
-        private long id;
+    private static class Oppgave {
+        private final long id;
         private LocalDateTime endretTid;
-        private byte[] behandlingId;
+        private final byte[] behandlingId;
 
         public Oppgave(long id, LocalDateTime endretTid, byte[] behandlingId) {
             this.id = id;
@@ -156,22 +157,6 @@ public class OppgaveKorrigerEndretdatoTask implements ProsessTaskHandler {
         }
     }
 
-    private class BehandlingEventLogg {
-
-        private final LocalDateTime opprettetTid;
-        private final String type;
-
-        public BehandlingEventLogg(LocalDateTime opprettetTid, String type) {
-            this.opprettetTid = opprettetTid;
-            this.type = type;
-        }
-
-        public LocalDateTime getOpprettetTid() {
-            return opprettetTid;
-        }
-
-        public String getType() {
-            return type;
-        }
+    private static record BehandlingEventLogg(LocalDateTime opprettetTid, String type) {
     }
 }

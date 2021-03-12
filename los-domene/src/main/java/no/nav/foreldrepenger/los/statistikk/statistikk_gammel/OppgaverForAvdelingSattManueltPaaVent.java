@@ -1,17 +1,17 @@
 package no.nav.foreldrepenger.los.statistikk.statistikk_gammel;
 
-import no.nav.foreldrepenger.los.oppgave.FagsakYtelseType;
-
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Date;
 
+import no.nav.foreldrepenger.los.oppgave.FagsakYtelseType;
+
 public class OppgaverForAvdelingSattManueltPaaVent {
 
-    private FagsakYtelseType fagsakYtelseType;
-    private LocalDate estimertFrist;
-    private Long antall;
+    private final FagsakYtelseType fagsakYtelseType;
+    private final LocalDate estimertFrist;
+    private final Long antall;
 
 
     public OppgaverForAvdelingSattManueltPaaVent(Object[] resultat) {

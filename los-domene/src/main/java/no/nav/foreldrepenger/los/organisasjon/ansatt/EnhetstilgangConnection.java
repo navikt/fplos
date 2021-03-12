@@ -15,7 +15,7 @@ import no.nav.vedtak.konfig.KonfigVerdi;
 
 @ApplicationScoped
 public class EnhetstilgangConnection {
-    private static final Logger log = LoggerFactory.getLogger(EnhetstilgangConnection.class);
+    private static final Logger LOG = LoggerFactory.getLogger(EnhetstilgangConnection.class);
 
     private static final String PATH = "/api/v1/tilgang/";
     private String host;
@@ -49,7 +49,7 @@ public class EnhetstilgangConnection {
         } catch (IntegrasjonException e) {
             // best effort for å stoppe unødvendige 404
             if (e.getMessage().contains("http-kode '404'")) {
-                log.info("Finner ikke ident i Axsys, returnerer tomt resultat", e);
+                LOG.info("Finner ikke ident i Axsys, returnerer tomt resultat", e);
                 return Optional.empty();
             } else throw e;
         }

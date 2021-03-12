@@ -1,7 +1,8 @@
 package no.nav.foreldrepenger.los.web.app.sikkerhetsfilter;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import static no.nav.vedtak.log.util.LoggerUtils.removeLineBreaks;
+
+import java.io.IOException;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -13,9 +14,9 @@ import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
-import java.io.IOException;
 
-import static no.nav.vedtak.log.util.LoggerUtils.removeLineBreaks;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @WebFilter(urlPatterns = "/*")
 public final class XSSFilter implements Filter {
@@ -31,7 +32,7 @@ public final class XSSFilter implements Filter {
         @Override
         public String getParameter(String paramName) {//ikke i bruk??
             LOG.info("XSSFilter getParameter brukes.");
-            String value = super.getParameter(paramName);
+            var value = super.getParameter(paramName);
             value = hvitvaksKunBokstaver(value, "parameter");
             return value;
         }
@@ -39,8 +40,8 @@ public final class XSSFilter implements Filter {
         @Override
         public String[] getParameterValues(String paramName) {//ikke i bruk??
             LOG.info("XSSFilter getParameterVaules brukes.");
-            String[] values = super.getParameterValues(paramName);
-            for (int index = 0; index < values.length; index++) {
+            var values = super.getParameterValues(paramName);
+            for (var index = 0; index < values.length; index++) {
                 values[index] = hvitvaksKunBokstaver(values[index], "parameter");
             }
             return values;
@@ -55,9 +56,9 @@ public final class XSSFilter implements Filter {
         @Override
         public Cookie[] getCookies() {
             LOG.info("XSSFilter getCookies brukes.");
-            Cookie[] cookies = super.getCookies();
+            var cookies = super.getCookies();
             if (cookies != null) {
-                for (Cookie cooky : cookies) {
+                for (var cooky : cookies) {
                     cooky.setValue(hvitvaskCookie(cooky.getValue(), "cookie")); //NOSONAR
                 }
             }
@@ -71,17 +72,17 @@ public final class XSSFilter implements Filter {
         }
 
         private String hvitvaksKunBokstaver(String unsanitizedString, String type) {
-            String result = SimpelHvitvasker.hvitvaskKunBokstaver(unsanitizedString);
+            var result = SimpelHvitvasker.hvitvaskKunBokstaver(unsanitizedString);
             return logHvisForskjellig(unsanitizedString, type, result);
         }
 
         private String hvitvaskBokstaverOgVanligeTegn(String unsanitizedString, String type) {
-            String result = SimpelHvitvasker.hvitvaskBokstaverOgVanligeTegn(unsanitizedString);
+            var result = SimpelHvitvasker.hvitvaskBokstaverOgVanligeTegn(unsanitizedString);
             return logHvisForskjellig(unsanitizedString, type, result);
         }
 
         private String hvitvaskCookie(String unsanitizedString, String type) {
-            String result = SimpelHvitvasker.hvitvaskCookie(unsanitizedString);
+            var result = SimpelHvitvasker.hvitvaskCookie(unsanitizedString);
             return logHvisForskjellig(unsanitizedString, type, result);
         }
 

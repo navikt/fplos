@@ -7,19 +7,18 @@ import java.util.stream.Collectors;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import no.nav.foreldrepenger.los.oppgavekø.OppgaveKøTjeneste;
-import no.nav.foreldrepenger.los.klient.person.IkkeTilgangPåPersonException;
-import no.nav.foreldrepenger.los.klient.person.PersonTjeneste;
-import no.nav.foreldrepenger.los.reservasjon.ReservasjonTjeneste;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import no.nav.foreldrepenger.los.klient.person.IkkeTilgangPåPersonException;
+import no.nav.foreldrepenger.los.klient.person.PersonTjeneste;
+import no.nav.foreldrepenger.los.oppgave.Oppgave;
+import no.nav.foreldrepenger.los.oppgave.OppgaveTjeneste;
+import no.nav.foreldrepenger.los.oppgavekø.OppgaveKøTjeneste;
+import no.nav.foreldrepenger.los.reservasjon.Reservasjon;
+import no.nav.foreldrepenger.los.reservasjon.ReservasjonTjeneste;
 import no.nav.foreldrepenger.los.web.app.AbacAttributter;
 import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.saksliste.FplosAbacAttributtType;
-import no.nav.foreldrepenger.los.oppgave.Oppgave;
-import no.nav.foreldrepenger.los.reservasjon.Reservasjon;
-import no.nav.foreldrepenger.los.oppgave.OppgaveTjeneste;
-
 import no.nav.vedtak.sikkerhet.abac.AbacAttributtSamling;
 import no.nav.vedtak.sikkerhet.abac.AbacDataAttributter;
 import no.nav.vedtak.sikkerhet.abac.BeskyttetRessursActionAttributt;
@@ -32,7 +31,7 @@ public class OppgaveDtoTjeneste {
 
     public static final int ANTALL_OPPGAVER_SOM_VISES_TIL_SAKSBEHANDLER = 3;
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(OppgaveDtoTjeneste.class);
+    private static final Logger LOG = LoggerFactory.getLogger(OppgaveDtoTjeneste.class);
 
     private OppgaveTjeneste oppgaveTjeneste;
     private ReservasjonTjeneste reservasjonTjeneste;
@@ -115,7 +114,7 @@ public class OppgaveDtoTjeneste {
         if (nesteOppgaver.size() == oppgaveDtos.size()) {
             return oppgaveDtos;
         }
-        LOGGER.info("{} behandlinger filtrert bort for saksliste {}", nesteOppgaver.size() - oppgaveDtos.size(), sakslisteId);
+        LOG.info("{} behandlinger filtrert bort for saksliste {}", nesteOppgaver.size() - oppgaveDtos.size(), sakslisteId);
         var alleOppgaver = oppgaveKøTjeneste.hentOppgaver(sakslisteId);
         return map(alleOppgaver, ANTALL_OPPGAVER_SOM_VISES_TIL_SAKSBEHANDLER);
     }
@@ -151,16 +150,16 @@ public class OppgaveDtoTjeneste {
             } catch (IkkeTilgangPåBehandlingException e) {
                 logBegrensning(oppgave);
             } catch (IkkeTilgangPåPersonException e) {
-                LOGGER.warn("Kunne ikke lage OppgaveDto for oppgaveId {}, oppslag PDL feiler på grunn av manglende tilgang", oppgave.getId(), e);
+                LOG.warn("Kunne ikke lage OppgaveDto for oppgaveId {}, oppslag PDL feiler på grunn av manglende tilgang", oppgave.getId(), e);
             } catch (LagOppgaveDtoFeil e) {
-                LOGGER.warn("Kunne ikke lage OppgaveDto for oppgaveId {}, hopper over", oppgave.getId(), e);
+                LOG.warn("Kunne ikke lage OppgaveDto for oppgaveId {}, hopper over", oppgave.getId(), e);
             }
         }
         return dtoList;
     }
 
     private void logBegrensning(Oppgave oppgave) {
-        LOGGER.info("Prøver å slå opp oppgave uten å ha tilgang. Ignorerer oppgave {}", oppgave.getId());
+        LOG.info("Prøver å slå opp oppgave uten å ha tilgang. Ignorerer oppgave {}", oppgave.getId());
     }
 
     public static final class LagOppgaveDtoFeil extends RuntimeException {

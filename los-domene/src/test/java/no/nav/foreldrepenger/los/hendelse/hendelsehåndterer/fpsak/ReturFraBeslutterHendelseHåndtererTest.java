@@ -1,5 +1,19 @@
 package no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak;
 
+import static no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.OppgaveTestUtil.behandlingFpsak;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+
+import javax.persistence.EntityManager;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+
 import no.nav.foreldrepenger.dbstoette.DBTestUtil;
 import no.nav.foreldrepenger.extensions.EntityManagerFPLosAwareExtension;
 import no.nav.foreldrepenger.los.domene.typer.BehandlingId;
@@ -12,20 +26,6 @@ import no.nav.foreldrepenger.los.oppgave.OppgaveRepository;
 import no.nav.foreldrepenger.los.oppgave.OppgaveRepositoryImpl;
 import no.nav.foreldrepenger.los.statistikk.statistikk_ny.KøOppgaveHendelse;
 import no.nav.foreldrepenger.los.statistikk.statistikk_ny.OppgaveStatistikk;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mockito;
-import org.mockito.junit.jupiter.MockitoExtension;
-
-import javax.persistence.EntityManager;
-
-import static no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.OppgaveTestUtil.behandlingFpsak;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.mock;
 
 
 @ExtendWith(MockitoExtension.class)
@@ -57,7 +57,7 @@ class ReturFraBeslutterHendelseHåndtererTest {
         var oppgaver = DBTestUtil.hentAlle(entityManager, Oppgave.class);
         var inaktivOppgave = oppgaver.stream().filter(o -> !o.getAktiv()).findFirst().orElseThrow();
         var aktivOppgave = oppgaver.stream().filter(Oppgave::getAktiv).findFirst().orElseThrow();
-        assertEquals(oppgaver.size(), 2);
+        assertThat(oppgaver).hasSize(2);
         assertThat(inaktivOppgave).isNotNull();
         assertThat(aktivOppgave).isNotNull();
     }
@@ -65,15 +65,14 @@ class ReturFraBeslutterHendelseHåndtererTest {
     @Test
     public void skalOppretteOppgaveStatistikkForBeggeOppgaver() {
         new ReturFraBeslutterHendelseHåndterer(oppgaveRepository, oppgaveEgenskapHåndterer, oppgaveStatistikk, behandlingFpsak).håndter();
-        Mockito.verify(oppgaveStatistikk).lagre(any(BehandlingId.class), eq(KøOppgaveHendelse.LUKKET_OPPGAVE));
-        Mockito.verify(oppgaveStatistikk).lagre(any(Oppgave.class), eq(KøOppgaveHendelse.ÅPNET_OPPGAVE));
+        verify(oppgaveStatistikk).lagre(any(BehandlingId.class), eq(KøOppgaveHendelse.LUKKET_OPPGAVE));
+        verify(oppgaveStatistikk).lagre(any(Oppgave.class), eq(KøOppgaveHendelse.ÅPNET_OPPGAVE));
     }
 
     @Test
     public void skalOppretteOppgaveEventLoggForBeggeOppgaver() {
         new ReturFraBeslutterHendelseHåndterer(oppgaveRepository, oppgaveEgenskapHåndterer, oppgaveStatistikk, behandlingFpsak).håndter();
         var oel = DBTestUtil.hentAlle(entityManager, OppgaveEventLogg.class);
-        assertEquals(oel.size(), 2);
+        assertThat(oel).hasSize(2);
     }
-
 }

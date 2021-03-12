@@ -1,8 +1,8 @@
 package no.nav.foreldrepenger.los.oppgavekø;
 
-import no.nav.foreldrepenger.los.oppgave.BehandlingType;
-
 import java.util.Objects;
+
+import no.nav.foreldrepenger.los.oppgave.BehandlingType;
 
 public class OppgaveFiltreringKnytning {
     private final Long oppgaveId;
@@ -34,7 +34,7 @@ public class OppgaveFiltreringKnytning {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        OppgaveFiltreringKnytning that = (OppgaveFiltreringKnytning) o;
+        var that = (OppgaveFiltreringKnytning) o;
         return oppgaveId.equals(that.oppgaveId) && oppgaveFiltreringId.equals(that.oppgaveFiltreringId) && behandlingType == that.behandlingType;
     }
 

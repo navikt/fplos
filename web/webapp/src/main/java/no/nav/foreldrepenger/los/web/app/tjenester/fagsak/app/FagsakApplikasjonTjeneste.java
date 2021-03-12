@@ -24,7 +24,7 @@ import no.nav.vedtak.exception.ManglerTilgangException;
 @ApplicationScoped
 public class FagsakApplikasjonTjeneste {
 
-    private static final Logger log = LoggerFactory.getLogger(FagsakApplikasjonTjeneste.class);
+    private static final Logger LOG = LoggerFactory.getLogger(FagsakApplikasjonTjeneste.class);
     private ForeldrepengerFagsakKlient fagsakKlient;
     private PersonTjeneste personTjeneste;
 
@@ -56,7 +56,7 @@ public class FagsakApplikasjonTjeneste {
         } catch (IntegrasjonException e) {
             if (e.getMessage().contains("Finner ikke bruker med ident")) {
                 // fant ikke bruker.
-                log.info("Fant ikke bruker", e);
+                LOG.info("Fant ikke bruker", e);
                 return Collections.emptyList();
             }
             throw e;

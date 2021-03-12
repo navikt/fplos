@@ -1,13 +1,13 @@
 package no.nav.foreldrepenger.los.web.app.tjenester.fagsak.dto;
 
+import javax.validation.constraints.Digits;
+import javax.validation.constraints.NotNull;
+
 import no.nav.foreldrepenger.los.domene.typer.Saksnummer;
 import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.saksliste.FplosAbacAttributtType;
 import no.nav.vedtak.sikkerhet.abac.AbacDataAttributter;
 import no.nav.vedtak.sikkerhet.abac.AbacDto;
 import no.nav.vedtak.sikkerhet.abac.StandardAbacAttributtType;
-
-import javax.validation.constraints.Digits;
-import javax.validation.constraints.NotNull;
 
 public class SokefeltDto implements AbacDto {
 
@@ -33,7 +33,7 @@ public class SokefeltDto implements AbacDto {
 
     @Override
     public AbacDataAttributter abacAttributter() {
-        AbacDataAttributter attributter = AbacDataAttributter.opprett();
+        var attributter = AbacDataAttributter.opprett();
         if (searchString.length() == 11 /* guess - fødselsnummer */) {
             attributter
                     .leggTil(StandardAbacAttributtType.FNR, searchString)

@@ -21,7 +21,7 @@ import no.nav.foreldrepenger.los.oppgave.OppgaveRepository;
 @Transactional
 public class OppgaveEgenskapHåndterer {
 
-    private static final Logger log = LoggerFactory.getLogger(OppgaveEgenskapHåndterer.class);
+    private static final Logger LOG = LoggerFactory.getLogger(OppgaveEgenskapHåndterer.class);
 
     private OppgaveRepository repository;
 
@@ -36,7 +36,7 @@ public class OppgaveEgenskapHåndterer {
 
     public void håndterOppgaveEgenskaper(Oppgave oppgave, OppgaveEgenskapFinner aktuelleEgenskaper) {
         var andreKriterier = aktuelleEgenskaper.getAndreKriterier();
-        log.info("Legger på oppgaveegenskaper {}", andreKriterier);
+        LOG.info("Legger på oppgaveegenskaper {}", andreKriterier);
         var eksisterendeOppgaveEgenskaper = hentEksisterendeEgenskaper(oppgave);
 
         // deaktiver uaktuelle eksisterende

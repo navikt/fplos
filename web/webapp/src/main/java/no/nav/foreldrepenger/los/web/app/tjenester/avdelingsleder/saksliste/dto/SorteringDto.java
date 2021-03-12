@@ -1,8 +1,8 @@
 package no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.saksliste.dto;
 
-import no.nav.foreldrepenger.los.oppgavekø.KøSortering;
-
 import java.time.LocalDate;
+
+import no.nav.foreldrepenger.los.oppgavekø.KøSortering;
 
 public class SorteringDto {
 
@@ -13,7 +13,12 @@ public class SorteringDto {
     private LocalDate tomDato;
     private boolean erDynamiskPeriode;
 
-    public SorteringDto(KøSortering sorteringType, Long fra, Long til, LocalDate fomDato, LocalDate tomDato, boolean erDynamiskPeriode) {
+    public SorteringDto(KøSortering sorteringType,
+                        Long fra,
+                        Long til,
+                        LocalDate fomDato,
+                        LocalDate tomDato,
+                        boolean erDynamiskPeriode) {
         this.sorteringType = sorteringType;
         this.fra = fra;
         this.til = til;
