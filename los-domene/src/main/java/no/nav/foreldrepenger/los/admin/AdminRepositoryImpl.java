@@ -1,26 +1,21 @@
 package no.nav.foreldrepenger.los.admin;
 
-import java.util.Comparator;
 import java.util.List;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
-import javax.persistence.NoResultException;
 
 import no.nav.foreldrepenger.los.domene.typer.BehandlingId;
 import no.nav.foreldrepenger.los.domene.typer.Saksnummer;
-import no.nav.foreldrepenger.los.oppgave.Oppgave;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveEventLogg;
+import no.nav.foreldrepenger.los.oppgave.Oppgave;
 import no.nav.foreldrepenger.los.reservasjon.Reservasjon;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 
 @ApplicationScoped
 public class AdminRepositoryImpl implements AdminRepository {
     private static final String SELECT_FRA_OPPGAVE = "SELECT o from Oppgave o ";
-    private static final Logger log = LoggerFactory.getLogger(AdminRepositoryImpl.class);
 
     private EntityManager entityManager;
 
@@ -31,37 +26,6 @@ public class AdminRepositoryImpl implements AdminRepository {
 
     AdminRepositoryImpl(){
         // CDI
-    }
-
-    public void deaktiverSisteOppgave(BehandlingId behandlingId) {
-        List<Oppgave> oppgaver = hentOppgaverForBehandling(behandlingId);
-        if (oppgaver.isEmpty()) {
-            return;
-        }
-        Oppgave nyesteOppgave = oppgaver.stream()
-                .max(Comparator.comparing(Oppgave::getOpprettetTidspunkt))
-                .orElse(null);
-        nyesteOppgave.deaktiverOppgave();
-        internLagre(nyesteOppgave);
-        entityManager.refresh(nyesteOppgave);
-    }
-    private List<Oppgave> hentOppgaverForBehandling(BehandlingId behandlingId) {
-        return entityManager.createQuery(SELECT_FRA_OPPGAVE +
-                "WHERE o.behandlingId = :behandlingId ", Oppgave.class)
-                .setParameter("behandlingId", behandlingId)
-                .getResultList();
-    }
-    public Oppgave hentSisteOppgave(BehandlingId behandlingId) {
-        Oppgave oppgave = null;
-        try {
-            oppgave = entityManager.createQuery("Select o FROM Oppgave o where o.behandlingId = :behandlingId ORDER BY o.opprettetTidspunkt desc", Oppgave.class)
-                    .setParameter("behandlingId", behandlingId)
-                    .setMaxResults(1).getSingleResult();
-            entityManager.refresh(oppgave);
-        } catch (NoResultException nre) {
-            log.info("Fant ingen oppgave tilknyttet behandling med id {}", behandlingId, nre);
-        }
-        return oppgave;
     }
 
     @Override

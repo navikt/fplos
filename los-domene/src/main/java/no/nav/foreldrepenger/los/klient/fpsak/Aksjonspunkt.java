@@ -1,11 +1,11 @@
 package no.nav.foreldrepenger.los.klient.fpsak;
 
-import no.nav.foreldrepenger.los.klient.fpsak.dto.aksjonspunkt.AksjonspunktDto;
+import static java.util.Arrays.asList;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static java.util.Arrays.asList;
+import no.nav.foreldrepenger.los.klient.fpsak.dto.aksjonspunkt.AksjonspunktDto;
 
 public class Aksjonspunkt {
     public static final String STATUSKODE_AKTIV = "OPPR";
@@ -15,7 +15,6 @@ public class Aksjonspunkt {
     public static final String PÅ_VENT_KODEGRUPPE_STARTS_WITH = "7";
     public static final String TIL_BESLUTTER_KODE = "5016";
     public static final List<String> REGISTRER_PAPIRSØKNAD_KODE = asList("5012", "5040", "5057", "5096");
-    public static final List<String> SELVSTENDIG_FRILANSER_GRUPPE = asList("5038", "5049");
     public static final List<String> VURDER_FORMKRAV_GRUPPE = asList("5082", "5083");
 
     public static final String VURDER_FARESIGNALER = "5095";
@@ -30,14 +29,6 @@ public class Aksjonspunkt {
     private LocalDateTime fristTid;
 
     public Aksjonspunkt() {
-    }
-
-    public String getDefinisjonKode() {
-        return definisjonKode;
-    }
-
-    public String getStatusKode() {
-        return statusKode;
     }
 
     public String getBegrunnelse() {
@@ -107,7 +98,7 @@ public class Aksjonspunkt {
     }
 
     public static class Builder {
-        private Aksjonspunkt aksjonspunkt;
+        private final Aksjonspunkt aksjonspunkt;
 
         public Builder(){
             aksjonspunkt = new Aksjonspunkt();

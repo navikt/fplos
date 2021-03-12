@@ -1,9 +1,10 @@
 package no.nav.foreldrepenger.los.klient.fpsak.dto.aksjonspunkt;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import no.nav.foreldrepenger.los.klient.fpsak.dto.kodeverk.KodeDto;
-
 import java.time.LocalDateTime;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+import no.nav.foreldrepenger.los.klient.fpsak.dto.kodeverk.KodeDto;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class AksjonspunktDto {
@@ -29,42 +30,6 @@ public class AksjonspunktDto {
 
     public LocalDateTime getFristTid() {
         return fristTid;
-    }
-
-    public static AksjonspunktDto.Builder builder() {
-        return new AksjonspunktDto.Builder();
-    }
-
-    public static class Builder {
-        private AksjonspunktDto aksjonspunktDto;
-
-        public Builder(){
-            aksjonspunktDto = new AksjonspunktDto();
-        }
-
-        public Builder medDefinisjon(String definisjonKode){
-            aksjonspunktDto.definisjon = new KodeDto("", definisjonKode,"");
-            return this;
-        }
-
-        public Builder medStatus(String statusKode){
-            aksjonspunktDto.status = new KodeDto("", statusKode, "");
-            return this;
-        }
-
-        public Builder medBegrunnelse(String begrunnelse){
-            aksjonspunktDto.begrunnelse = begrunnelse;
-            return this;
-        }
-
-        public Builder medFristTid(LocalDateTime fristTid){
-            aksjonspunktDto.fristTid = fristTid;
-            return this;
-        }
-
-        public AksjonspunktDto build() {
-            return aksjonspunktDto;
-        }
     }
 
     @Override
