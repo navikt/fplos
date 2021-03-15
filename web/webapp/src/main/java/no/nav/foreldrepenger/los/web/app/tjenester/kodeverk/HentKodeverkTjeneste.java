@@ -1,20 +1,21 @@
-package no.nav.foreldrepenger.los.web.app.tjenester.kodeverk.app;
+package no.nav.foreldrepenger.los.web.app.tjenester.kodeverk;
 
-import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.nøkkeltall.aapnebehandlinger.dto.BehandlingVenteStatus;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+
+import javax.enterprise.context.ApplicationScoped;
+
+import no.nav.foreldrepenger.los.felles.Kodeverdi;
 import no.nav.foreldrepenger.los.oppgave.AndreKriterierType;
 import no.nav.foreldrepenger.los.oppgave.BehandlingType;
 import no.nav.foreldrepenger.los.oppgave.FagsakStatus;
 import no.nav.foreldrepenger.los.oppgave.FagsakYtelseType;
 import no.nav.foreldrepenger.los.oppgavekø.KøSortering;
-import no.nav.foreldrepenger.los.felles.Kodeverdi;
-
-import javax.enterprise.context.ApplicationScoped;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.nøkkeltall.aapnebehandlinger.dto.BehandlingVenteStatus;
 
 @ApplicationScoped
-class HentKodeverkTjenesteImpl implements HentKodeverkTjeneste {
+class HentKodeverkTjeneste {
 
     private final static Map<String, Collection<? extends Kodeverdi>> KODEVERK = Map.of(
             BehandlingType.class.getSimpleName(), List.of(BehandlingType.values()),
@@ -25,12 +26,11 @@ class HentKodeverkTjenesteImpl implements HentKodeverkTjeneste {
             BehandlingVenteStatus.class.getSimpleName(), List.of(BehandlingVenteStatus.values()));
 
 
-    HentKodeverkTjenesteImpl() {
+    HentKodeverkTjeneste() {
         // cdi
     }
 
-    @Override
-    public Map<String, Collection<? extends Kodeverdi>> hentGruppertKodeliste() {
+    Map<String, Collection<? extends Kodeverdi>> hentGruppertKodeliste() {
         return KODEVERK;
     }
 }

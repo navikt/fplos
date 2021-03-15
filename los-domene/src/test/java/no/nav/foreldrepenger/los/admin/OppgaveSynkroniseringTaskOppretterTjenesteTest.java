@@ -16,7 +16,6 @@ import no.nav.foreldrepenger.dbstoette.DBTestUtil;
 import no.nav.foreldrepenger.extensions.EntityManagerFPLosAwareExtension;
 import no.nav.foreldrepenger.los.oppgave.Oppgave;
 import no.nav.foreldrepenger.los.oppgave.OppgaveRepository;
-import no.nav.foreldrepenger.los.oppgave.OppgaveRepositoryImpl;
 import no.nav.vedtak.felles.prosesstask.impl.ProsessTaskEventPubliserer;
 import no.nav.vedtak.felles.prosesstask.impl.ProsessTaskRepositoryImpl;
 
@@ -30,7 +29,7 @@ public class OppgaveSynkroniseringTaskOppretterTjenesteTest {
     @BeforeEach
     void setUp(EntityManager entityManager) {
         this.entityManager = entityManager;
-        oppgaveRepository = new OppgaveRepositoryImpl(entityManager);
+        oppgaveRepository = new OppgaveRepository(entityManager);
         synkroniseringTjeneste = new OppgaveSynkroniseringTaskOppretterTjeneste(oppgaveRepository,
                 new ProsessTaskRepositoryImpl(entityManager, () -> "user",
                 mock(ProsessTaskEventPubliserer.class)));

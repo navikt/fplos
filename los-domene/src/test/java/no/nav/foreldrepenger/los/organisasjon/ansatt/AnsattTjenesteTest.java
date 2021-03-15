@@ -17,7 +17,7 @@ import org.mockito.Mockito;
 import no.nav.foreldrepenger.extensions.EntityManagerFPLosAwareExtension;
 import no.nav.foreldrepenger.los.domene.typer.aktør.OrganisasjonsEnhet;
 import no.nav.foreldrepenger.los.organisasjon.Avdeling;
-import no.nav.foreldrepenger.los.organisasjon.OrganisasjonRepositoryImpl;
+import no.nav.foreldrepenger.los.organisasjon.OrganisasjonRepository;
 
 @ExtendWith(EntityManagerFPLosAwareExtension.class)
 class AnsattTjenesteTest {
@@ -27,7 +27,7 @@ class AnsattTjenesteTest {
 
     @BeforeEach
     public void setup(EntityManager entityManager) {
-        var organisasjonRepository = new OrganisasjonRepositoryImpl(entityManager);
+        var organisasjonRepository = new OrganisasjonRepository(entityManager);
         enhetstilgangTjeneste = Mockito.mock(EnhetstilgangTjeneste.class);
         ansattTjeneste = new AnsattTjeneste(enhetstilgangTjeneste, organisasjonRepository);
     }

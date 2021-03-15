@@ -22,8 +22,8 @@ import no.nav.foreldrepenger.los.oppgave.BehandlingType;
 import no.nav.foreldrepenger.los.oppgave.FagsakYtelseType;
 import no.nav.foreldrepenger.los.oppgave.Oppgave;
 import no.nav.foreldrepenger.los.oppgave.OppgaveEgenskap;
-import no.nav.foreldrepenger.los.statistikk.statistikk_gammel.StatistikkRepositoryImpl;
-import no.nav.foreldrepenger.los.statistikk.statistikk_gammel.StatistikkTjenesteImpl;
+import no.nav.foreldrepenger.los.statistikk.statistikk_gammel.StatistikkRepository;
+import no.nav.foreldrepenger.los.statistikk.statistikk_gammel.StatistikkTjeneste;
 import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.nøkkeltall.dto.OppgaverForAvdelingDto;
 import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.nøkkeltall.dto.OppgaverForAvdelingPerDatoDto;
 import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.nøkkeltall.dto.OppgaverForAvdelingSattManueltPaaVentDto;
@@ -31,7 +31,7 @@ import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.nøkkeltall.dt
 
 @ExtendWith(EntityManagerFPLosAwareExtension.class)
 @ExtendWith(MockitoExtension.class)
-public class StatistikkTjenesteImplTest {
+public class StatistikkTjenesteTest {
 
     private final Oppgave førstegangOppgave = Oppgave.builder()
             .dummyOppgave(AVDELING_DRAMMEN_ENHET)
@@ -68,13 +68,13 @@ public class StatistikkTjenesteImplTest {
             .medBehandlingType(BehandlingType.FØRSTEGANGSSØKNAD)
             .build();
 
-    private StatistikkTjenesteImpl statistikkTjeneste;
+    private StatistikkTjeneste statistikkTjeneste;
     private EntityManager entityManager;
 
     @BeforeEach
     void setUp(EntityManager entityManager) {
-        var statisikkRepository = new StatistikkRepositoryImpl(entityManager);
-        statistikkTjeneste = new StatistikkTjenesteImpl(statisikkRepository);
+        var statisikkRepository = new StatistikkRepository(entityManager);
+        statistikkTjeneste = new StatistikkTjeneste(statisikkRepository);
         this.entityManager = entityManager;
     }
 

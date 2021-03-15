@@ -14,11 +14,10 @@ import no.nav.foreldrepenger.los.oppgave.AndreKriterierType;
 import no.nav.foreldrepenger.los.oppgave.BehandlingType;
 import no.nav.foreldrepenger.los.oppgave.FagsakYtelseType;
 import no.nav.foreldrepenger.los.oppgave.OppgaveRepository;
-import no.nav.foreldrepenger.los.oppgave.OppgaveRepositoryImpl;
 import no.nav.foreldrepenger.los.oppgavekø.KøSortering;
 import no.nav.foreldrepenger.los.oppgavekø.OppgaveFiltrering;
 import no.nav.foreldrepenger.los.organisasjon.Avdeling;
-import no.nav.foreldrepenger.los.organisasjon.OrganisasjonRepositoryImpl;
+import no.nav.foreldrepenger.los.organisasjon.OrganisasjonRepository;
 
 @ExtendWith(EntityManagerFPLosAwareExtension.class)
 public class AvdelingslederTjenesteTest {
@@ -30,8 +29,8 @@ public class AvdelingslederTjenesteTest {
     @BeforeEach
     public void setup(EntityManager entityManager){
         this.entityManager = entityManager;
-        oppgaveRepository = new OppgaveRepositoryImpl(entityManager);
-        var organisasjonRepository = new OrganisasjonRepositoryImpl(entityManager);
+        oppgaveRepository = new OppgaveRepository(entityManager);
+        var organisasjonRepository = new OrganisasjonRepository(entityManager);
         avdelingslederTjeneste = new AvdelingslederTjeneste(oppgaveRepository, organisasjonRepository);
     }
 

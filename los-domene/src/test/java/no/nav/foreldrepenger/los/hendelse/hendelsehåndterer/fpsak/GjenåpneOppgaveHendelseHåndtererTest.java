@@ -22,7 +22,6 @@ import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.Op
 import no.nav.foreldrepenger.los.klient.fpsak.BehandlingFpsak;
 import no.nav.foreldrepenger.los.oppgave.Oppgave;
 import no.nav.foreldrepenger.los.oppgave.OppgaveRepository;
-import no.nav.foreldrepenger.los.oppgave.OppgaveRepositoryImpl;
 import no.nav.foreldrepenger.los.statistikk.statistikk_ny.OppgaveStatistikk;
 
 
@@ -39,7 +38,7 @@ class GjenåpneOppgaveHendelseHåndtererTest {
     @BeforeEach
     private void setUp(EntityManager entityManager) {
         this.entityManager = entityManager;
-        oppgaveRepository = new OppgaveRepositoryImpl(entityManager);
+        oppgaveRepository = new OppgaveRepository(entityManager);
         oppgaveEgenskapHåndterer = new OppgaveEgenskapHåndterer(oppgaveRepository);
 
         behandlingFpsak = behandlingFpsak();

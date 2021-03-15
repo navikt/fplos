@@ -24,8 +24,7 @@ import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.håndterere.O
 import no.nav.foreldrepenger.los.klient.fpsak.BehandlingFpsak;
 import no.nav.foreldrepenger.los.oppgave.Oppgave;
 import no.nav.foreldrepenger.los.oppgave.OppgaveRepository;
-import no.nav.foreldrepenger.los.oppgave.OppgaveRepositoryImpl;
-import no.nav.foreldrepenger.los.reservasjon.ReservasjonTjenesteImpl;
+import no.nav.foreldrepenger.los.reservasjon.ReservasjonTjeneste;
 import no.nav.foreldrepenger.los.statistikk.statistikk_ny.OppgaveStatistikk;
 import no.nav.foreldrepenger.los.statistikk.statistikk_ny.OppgaveknytningerFørEtterOppdatering;
 
@@ -38,14 +37,14 @@ class OppdaterOppgaveegenskaperHendelseHåndtererTest {
     private EntityManager entityManager;
     private OppgaveRepository oppgaveRepository;
     private OppgaveEgenskapHåndterer oppgaveEgenskapHåndterer;
-    private ReservasjonTjenesteImpl reservasjonTjeneste;
+    private ReservasjonTjeneste reservasjonTjeneste;
 
     @BeforeEach
     private void setUp(EntityManager entityManager) {
         this.entityManager = entityManager;
-        oppgaveRepository = new OppgaveRepositoryImpl(entityManager);
+        oppgaveRepository = new OppgaveRepository(entityManager);
         oppgaveEgenskapHåndterer = new OppgaveEgenskapHåndterer(oppgaveRepository);
-        reservasjonTjeneste = new ReservasjonTjenesteImpl(oppgaveRepository);
+        reservasjonTjeneste = new ReservasjonTjeneste(oppgaveRepository);
     }
 
     @Test

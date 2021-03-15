@@ -1,15 +1,40 @@
 package no.nav.foreldrepenger.los.admin.driftsmelding;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
-public interface DriftsmeldingTjeneste {
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 
-    void opprettDriftsmelding(Driftsmelding driftsmelding);
+@ApplicationScoped
+public class DriftsmeldingTjeneste {
 
-    List<Driftsmelding> hentAlleDriftsmeldinger();
+    private DriftsmeldingRepository driftsmeldingRepository;
 
-    List<Driftsmelding> hentAktiveDriftsmeldinger();
+    @Inject
+    public DriftsmeldingTjeneste(DriftsmeldingRepository driftsmeldingRepository) {
+        this.driftsmeldingRepository = driftsmeldingRepository;
+    }
 
-    void deaktiverDriftsmeldinger();
+    public DriftsmeldingTjeneste() {
+    }
 
+    public void opprettDriftsmelding(Driftsmelding driftsmelding) {
+        driftsmeldingRepository.lagre(driftsmelding);
+    }
+
+    public List<Driftsmelding> hentAlleDriftsmeldinger() {
+        return driftsmeldingRepository.hentMeldinger();
+    }
+
+    public List<Driftsmelding> hentAktiveDriftsmeldinger() {
+        return hentAlleDriftsmeldinger().stream()
+                .filter(Driftsmelding::erAktiv)
+                .collect(Collectors.toList());
+    }
+
+    public void deaktiverDriftsmeldinger() {
+        driftsmeldingRepository.deaktiverDriftsmeldinger();
+
+    }
 }

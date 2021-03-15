@@ -21,13 +21,12 @@ import no.nav.foreldrepenger.los.oppgavekø.KøSortering;
 import no.nav.foreldrepenger.los.oppgavekø.OppgaveFiltrering;
 import no.nav.foreldrepenger.los.oppgavekø.OppgaveKøTjeneste;
 import no.nav.foreldrepenger.los.organisasjon.Avdeling;
-import no.nav.foreldrepenger.los.organisasjon.OrganisasjonRepositoryImpl;
+import no.nav.foreldrepenger.los.organisasjon.OrganisasjonRepository;
 import no.nav.foreldrepenger.los.reservasjon.ReservasjonTjeneste;
-import no.nav.foreldrepenger.los.reservasjon.ReservasjonTjenesteImpl;
 
 
 @ExtendWith(EntityManagerFPLosAwareExtension.class)
-public class OppgaveTjenesteImplTest {
+public class OppgaveTjenesteTest {
 
     private static final String AVDELING_BERGEN_ENHET = "4812";
 
@@ -50,12 +49,12 @@ public class OppgaveTjenesteImplTest {
 
     @BeforeEach
     public void setup(EntityManager entityManager) {
-        oppgaveRepository = new OppgaveRepositoryImpl(entityManager);
-        var organisasjonRepository = new OrganisasjonRepositoryImpl(entityManager);
+        oppgaveRepository = new OppgaveRepository(entityManager);
+        var organisasjonRepository = new OrganisasjonRepository(entityManager);
         avdelingslederTjeneste = new AvdelingslederTjeneste(oppgaveRepository, organisasjonRepository);
         oppgaveKøTjeneste = new OppgaveKøTjeneste(oppgaveRepository, organisasjonRepository);
-        oppgaveTjeneste = new OppgaveTjenesteImpl(oppgaveRepository);
-        reservasjonTjeneste = new ReservasjonTjenesteImpl(oppgaveRepository);
+        oppgaveTjeneste = new OppgaveTjeneste(oppgaveRepository);
+        reservasjonTjeneste = new ReservasjonTjeneste(oppgaveRepository);
         this.entityManager = entityManager;
     }
 

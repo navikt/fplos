@@ -3,10 +3,10 @@ package no.nav.foreldrepenger.los.statistikk.statistikk_ny;
 import no.nav.foreldrepenger.dbstoette.DBTestUtil;
 import no.nav.foreldrepenger.extensions.EntityManagerFPLosAwareExtension;
 import no.nav.foreldrepenger.los.oppgave.BehandlingType;
-import no.nav.foreldrepenger.los.oppgave.OppgaveRepositoryImpl;
+import no.nav.foreldrepenger.los.oppgave.OppgaveRepository;
 import no.nav.foreldrepenger.los.oppgavekø.OppgaveFiltreringKnytning;
 import no.nav.foreldrepenger.los.oppgavekø.OppgaveKøTjeneste;
-import no.nav.foreldrepenger.los.organisasjon.OrganisasjonRepositoryImpl;
+import no.nav.foreldrepenger.los.organisasjon.OrganisasjonRepository;
 import no.nav.foreldrepenger.los.oppgave.AndreKriterierType;
 import no.nav.foreldrepenger.los.oppgavekø.KøSortering;
 import no.nav.foreldrepenger.los.oppgave.Oppgave;
@@ -14,7 +14,7 @@ import no.nav.foreldrepenger.los.oppgave.OppgaveEgenskap;
 import no.nav.foreldrepenger.los.oppgavekø.OppgaveFiltrering;
 import no.nav.foreldrepenger.los.organisasjon.Avdeling;
 import no.nav.foreldrepenger.los.avdelingsleder.AvdelingslederTjeneste;
-import no.nav.foreldrepenger.los.oppgave.OppgaveTjenesteImpl;
+import no.nav.foreldrepenger.los.oppgave.OppgaveTjeneste;
 import no.nav.foreldrepenger.los.statistikk.statistikk_gammel.NyeOgFerdigstilteOppgaver;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -38,12 +38,12 @@ class OppgaveStatistikkTest {
     @BeforeEach
     public void setUp(EntityManager entityManager) {
         this.entityManager = entityManager;
-        var oppgaveRepository = new OppgaveRepositoryImpl(entityManager);
-        var organisasjonRepository = new OrganisasjonRepositoryImpl(entityManager);
+        var oppgaveRepository = new OppgaveRepository(entityManager);
+        var organisasjonRepository = new OrganisasjonRepository(entityManager);
         this.avdelingslederTjeneste = new AvdelingslederTjeneste(oppgaveRepository, organisasjonRepository);
         var oppgaveKøTjeneste = new OppgaveKøTjeneste(oppgaveRepository, organisasjonRepository);
         var statistikkRepository = new NyOpppgaveStatistikkRepository(entityManager);
-        var oppgaveTjeneste = new OppgaveTjenesteImpl(oppgaveRepository);
+        var oppgaveTjeneste = new OppgaveTjeneste(oppgaveRepository);
         oppgaveStatistikk = new OppgaveStatistikk(oppgaveKøTjeneste, oppgaveTjeneste, statistikkRepository);
     }
 

@@ -31,7 +31,7 @@ import no.nav.foreldrepenger.los.oppgavekø.OppgaveFiltrering;
 import no.nav.foreldrepenger.los.organisasjon.Avdeling;
 
 @ExtendWith(EntityManagerFPLosAwareExtension.class)
-public class OppgaveRepositoryImplTest {
+public class OppgaveRepositoryTest {
 
     private static final BehandlingId behandlingId1 = new BehandlingId(UUID.nameUUIDFromBytes("uuid_1".getBytes()));
     private static final BehandlingId behandlingId2 = new BehandlingId(UUID.nameUUIDFromBytes("uuid_2".getBytes()));
@@ -45,7 +45,7 @@ public class OppgaveRepositoryImplTest {
     @BeforeEach
     public void setup(EntityManager entityManager) {
         this.entityManager = entityManager;
-        oppgaveRepository = new OppgaveRepositoryImpl(entityManager);
+        oppgaveRepository = new OppgaveRepository(entityManager);
     }
 
     @Test

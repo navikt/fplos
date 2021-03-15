@@ -21,7 +21,6 @@ import no.nav.foreldrepenger.los.oppgave.AndreKriterierType;
 import no.nav.foreldrepenger.los.oppgave.Oppgave;
 import no.nav.foreldrepenger.los.oppgave.OppgaveEgenskap;
 import no.nav.foreldrepenger.los.oppgave.OppgaveRepository;
-import no.nav.foreldrepenger.los.oppgave.OppgaveRepositoryImpl;
 import no.nav.vedtak.felles.prosesstask.api.ProsessTaskData;
 import no.nav.vedtak.felles.prosesstask.api.ProsessTaskHandler;
 
@@ -35,7 +34,7 @@ public class OppgaveEgenskapOppdatererTaskTest {
 
     @BeforeEach
     public void setup(EntityManager entityManager) {
-        oppgaveRepository = new OppgaveRepositoryImpl(entityManager);
+        oppgaveRepository = new OppgaveRepository(entityManager);
         this.entityManager = entityManager;
     }
 

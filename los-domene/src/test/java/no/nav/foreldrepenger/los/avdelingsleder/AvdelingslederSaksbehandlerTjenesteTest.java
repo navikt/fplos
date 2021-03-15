@@ -10,11 +10,11 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import no.nav.foreldrepenger.extensions.EntityManagerFPLosAwareExtension;
-import no.nav.foreldrepenger.los.oppgave.OppgaveRepositoryImpl;
-import no.nav.foreldrepenger.los.organisasjon.OrganisasjonRepositoryImpl;
+import no.nav.foreldrepenger.los.oppgave.OppgaveRepository;
+import no.nav.foreldrepenger.los.organisasjon.OrganisasjonRepository;
 
 @ExtendWith(EntityManagerFPLosAwareExtension.class)
-public class AvdelingslederSaksbehandlerTjenesteImplTest {
+public class AvdelingslederSaksbehandlerTjenesteTest {
 
     private static final String NY_SAKSBEHANDLER_IDENT = "zNySaksbehandler";
 
@@ -22,9 +22,9 @@ public class AvdelingslederSaksbehandlerTjenesteImplTest {
 
     @BeforeEach
     public void setup(EntityManager entityManager){
-        var oppgaveRepository = new OppgaveRepositoryImpl(entityManager);
-        var organisasjonRepository = new OrganisasjonRepositoryImpl(entityManager);
-        avdelingslederSaksbehandlerTjeneste = new AvdelingslederSaksbehandlerTjenesteImpl(oppgaveRepository, organisasjonRepository);
+        var oppgaveRepository = new OppgaveRepository(entityManager);
+        var organisasjonRepository = new OrganisasjonRepository(entityManager);
+        avdelingslederSaksbehandlerTjeneste = new AvdelingslederSaksbehandlerTjeneste(oppgaveRepository, organisasjonRepository);
     }
 
     @Test

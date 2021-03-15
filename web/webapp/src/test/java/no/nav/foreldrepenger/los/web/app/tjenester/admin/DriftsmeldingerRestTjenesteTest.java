@@ -13,7 +13,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 import no.nav.foreldrepenger.extensions.EntityManagerFPLosAwareExtension;
 import no.nav.foreldrepenger.los.admin.driftsmelding.DriftsmeldingRepository;
-import no.nav.foreldrepenger.los.admin.driftsmelding.DriftsmeldingTjenesteImpl;
+import no.nav.foreldrepenger.los.admin.driftsmelding.DriftsmeldingTjeneste;
 import no.nav.foreldrepenger.los.web.app.tjenester.admin.dto.DriftsmeldingOpprettelseDto;
 
 @ExtendWith(EntityManagerFPLosAwareExtension.class)
@@ -24,7 +24,7 @@ class DriftsmeldingerRestTjenesteTest {
     @BeforeEach
     public void setUp(EntityManager entityManager) {
         var driftsmeldingRepository = new DriftsmeldingRepository(entityManager);
-        var driftsmeldingTjeneste = new DriftsmeldingTjenesteImpl(driftsmeldingRepository);
+        var driftsmeldingTjeneste = new DriftsmeldingTjeneste(driftsmeldingRepository);
         driftsmeldinger = new DriftsmeldingerRestTjeneste(driftsmeldingTjeneste);
     }
 

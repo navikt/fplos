@@ -1,26 +1,101 @@
 package no.nav.foreldrepenger.los.reservasjon;
 
-import no.nav.foreldrepenger.los.oppgave.Oppgave;
-
 import java.time.LocalDateTime;
 import java.util.List;
 
-public interface ReservasjonTjeneste {
-    List<Reservasjon> hentReservasjonerTilknyttetAktiveOppgaver();
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import javax.persistence.PersistenceException;
 
-    Reservasjon reserverOppgave(Long oppgaveId);
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-    Reservasjon hentReservasjon(Long oppgaveId);
+import no.nav.foreldrepenger.los.felles.util.BrukerIdent;
+import no.nav.foreldrepenger.los.oppgave.Oppgave;
+import no.nav.foreldrepenger.los.oppgave.OppgaveRepository;
 
-    Reservasjon frigiOppgave(Long oppgaveId, String begrunnelse);
+@ApplicationScoped
+public class ReservasjonTjeneste {
 
-    Reservasjon forlengReservasjonPåOppgave(Long oppgaveId);
+    private static final Logger LOG = LoggerFactory.getLogger(ReservasjonTjeneste.class);
 
-    Reservasjon endreReservasjonPåOppgave(Long oppgaveId, LocalDateTime forlengTil);
+    private OppgaveRepository oppgaveRepository;
 
-    Reservasjon flyttReservasjon(Long oppgaveId, String brukernavn, String begrunnelse);
+    @Inject
+    public ReservasjonTjeneste(OppgaveRepository oppgaveRepository) {
+        this.oppgaveRepository = oppgaveRepository;
+    }
 
-    List<Reservasjon> hentReservasjonerForAvdeling(String avdelingEnhet);
+    public ReservasjonTjeneste() {
+    }
 
-    List<Oppgave> hentSisteReserverteOppgaver();
+    public List<Reservasjon> hentReservasjonerTilknyttetAktiveOppgaver() {
+        return oppgaveRepository.hentReservasjonerTilknyttetAktiveOppgaver(BrukerIdent.brukerIdent());
+    }
+
+    public List<Reservasjon> hentReservasjonerForAvdeling(String avdelingEnhet) {
+        return oppgaveRepository.hentAlleReservasjonerForAvdeling(avdelingEnhet);
+    }
+
+    public Reservasjon reserverOppgave(Long oppgaveId) {
+        var reservasjon = oppgaveRepository.hentReservasjon(oppgaveId);
+        if (!reservasjon.erAktiv()) {
+            reservasjon.reserverNormalt();
+            try {
+                oppgaveRepository.lagre(reservasjon);
+                oppgaveRepository.refresh(reservasjon.getOppgave());
+                oppgaveRepository.lagre(new ReservasjonEventLogg(reservasjon));
+            } catch (PersistenceException e) {
+                // ignorerer feil ettersom ReservasjonDto til frontend vil vise at reservasjon tilhører annen
+                LOG.info("Antatt kollisjon på reservasjon", e);
+                oppgaveRepository.refresh(reservasjon.getOppgave());
+            }
+        }
+        return reservasjon;
+    }
+
+    public Reservasjon hentReservasjon(Long oppgaveId) {
+        return oppgaveRepository.hentReservasjon(oppgaveId);
+    }
+
+    public Reservasjon frigiOppgave(Long oppgaveId, String begrunnelse) {
+        var reservasjon = oppgaveRepository.hentReservasjon(oppgaveId);
+        var oppgave = reservasjon.getOppgave();
+        reservasjon.frigiReservasjon(begrunnelse);
+        oppgaveRepository.lagre(reservasjon);
+        oppgaveRepository.refresh(oppgave);
+        oppgaveRepository.lagre(new ReservasjonEventLogg(reservasjon));
+        return reservasjon;
+    }
+
+    public Reservasjon flyttReservasjon(Long oppgaveId, String brukernavn, String begrunnelse) {
+        var reservasjon = oppgaveRepository.hentReservasjon(oppgaveId);
+        reservasjon.flyttReservasjon(brukernavn, begrunnelse);
+        oppgaveRepository.lagre(reservasjon);
+        oppgaveRepository.refresh(reservasjon.getOppgave());
+        oppgaveRepository.lagre(new ReservasjonEventLogg(reservasjon));
+        return reservasjon;
+    }
+
+    public Reservasjon forlengReservasjonPåOppgave(Long oppgaveId) {
+        var reservasjon = oppgaveRepository.hentReservasjon(oppgaveId);
+        reservasjon.forlengReservasjonPåOppgave();
+        oppgaveRepository.lagre(reservasjon);
+        oppgaveRepository.lagre(new ReservasjonEventLogg(reservasjon));
+        return reservasjon;
+    }
+
+    public Reservasjon endreReservasjonPåOppgave(Long oppgaveId, LocalDateTime reservertTil) {
+        var reservasjon = oppgaveRepository.hentReservasjon(oppgaveId);
+        reservasjon.endreReservasjonPåOppgave(reservertTil);
+        oppgaveRepository.lagre(reservasjon);
+        oppgaveRepository.lagre(new ReservasjonEventLogg(reservasjon));
+        return reservasjon;
+    }
+
+    public List<Oppgave> hentSisteReserverteOppgaver() {
+        return oppgaveRepository.hentSisteReserverteOppgaver(BrukerIdent.brukerIdent());
+    }
+
+
 }

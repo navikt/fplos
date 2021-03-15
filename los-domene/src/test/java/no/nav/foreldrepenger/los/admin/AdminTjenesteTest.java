@@ -17,19 +17,18 @@ import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.Op
 import no.nav.foreldrepenger.los.oppgave.BehandlingType;
 import no.nav.foreldrepenger.los.oppgave.Oppgave;
 import no.nav.foreldrepenger.los.oppgave.OppgaveRepository;
-import no.nav.foreldrepenger.los.oppgave.OppgaveRepositoryImpl;
 
 @ExtendWith(EntityManagerFPLosAwareExtension.class)
-public class AdminTjenesteImplTest {
+public class AdminTjenesteTest {
 
     private OppgaveRepository oppgaveRepository;
-    private AdminTjenesteImpl adminTjeneste;
+    private AdminTjeneste adminTjeneste;
 
     @BeforeEach
     void setUp(EntityManager entityManager) {
-        oppgaveRepository = new OppgaveRepositoryImpl(entityManager);
-        var adminRepository = new AdminRepositoryImpl(entityManager);
-        adminTjeneste = new AdminTjenesteImpl(adminRepository);
+        oppgaveRepository = new OppgaveRepository(entityManager);
+        var adminRepository = new AdminRepository(entityManager);
+        adminTjeneste = new AdminTjeneste(adminRepository);
     }
 
     private final Oppgave førstegangOppgave = Oppgave.builder()
