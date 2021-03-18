@@ -9,6 +9,7 @@ env:
   ORACLE_IMAGE: docker.pkg.github.com/navikt/fpsak-autotest/oracle-flattened
   CLUSTER: dev-fss
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  GH_ACCESS_TOKEN: ${{ secrets.NOTIFICATION }}
   IMAGE_BASE: docker.pkg.github.com/${{ github.repository }}/fplos
 
 jobs:
@@ -45,7 +46,7 @@ jobs:
         id: oracle
         shell: bash
         run: |
-          echo  $GITHUB_TOKEN | docker login --username "x-access-token" --password-stdin https://docker.pkg.github.com
+          echo  $GH_ACCESS_TOKEN | docker login --username "x-access-token" --password-stdin https://docker.pkg.github.com
           echo "Henter og starter Oracle image $ORACLE_IMAGE"
           docker-compose -f oracle/docker-compose.yml pull
           rm -f nohup.out
