@@ -31,7 +31,6 @@ public final class XSSFilter implements Filter {
 
         @Override
         public String getParameter(String paramName) {//ikke i bruk??
-            LOG.info("XSSFilter getParameter brukes.");
             var value = super.getParameter(paramName);
             value = hvitvaksKunBokstaver(value, "parameter");
             return value;
@@ -39,7 +38,6 @@ public final class XSSFilter implements Filter {
 
         @Override
         public String[] getParameterValues(String paramName) {//ikke i bruk??
-            LOG.info("XSSFilter getParameterVaules brukes.");
             var values = super.getParameterValues(paramName);
             for (var index = 0; index < values.length; index++) {
                 values[index] = hvitvaksKunBokstaver(values[index], "parameter");
@@ -49,13 +47,11 @@ public final class XSSFilter implements Filter {
 
         @Override
         public String getQueryString() {
-            LOG.info("XSSFilter getQueryString brukes.");
             return hvitvaskBokstaverOgVanligeTegn(super.getQueryString(), "query");
         }
 
         @Override
         public Cookie[] getCookies() {
-            LOG.info("XSSFilter getCookies brukes.");
             var cookies = super.getCookies();
             if (cookies != null) {
                 for (var cooky : cookies) {
@@ -67,7 +63,6 @@ public final class XSSFilter implements Filter {
 
         @Override
         public String getHeader(String name) {//ikke i bruk?? .. brukes av swagger
-            LOG.info("XSSFilter getHeader brukes.");
             return hvitvaksKunBokstaver(super.getHeader(name), "header");
         }
 
