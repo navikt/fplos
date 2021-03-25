@@ -56,7 +56,7 @@ public class GeneralRestExceptionMapper implements ExceptionMapper<ApplicationEx
 
     private Response handleValideringsfeil(Valideringsfeil valideringsfeil) {
         var feltNavn = valideringsfeil.getFeltfeil().stream()
-                .map(FeltFeilDto::getNavn)
+                .map(FeltFeilDto::navn)
                 .collect(Collectors.toList());
         return Response
             .status(Response.Status.BAD_REQUEST)
