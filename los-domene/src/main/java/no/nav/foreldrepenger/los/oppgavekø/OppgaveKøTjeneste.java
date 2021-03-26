@@ -10,6 +10,9 @@ import java.util.stream.Collectors;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import no.nav.foreldrepenger.los.oppgave.Oppgave;
 import no.nav.foreldrepenger.los.oppgave.OppgaveRepository;
 import no.nav.foreldrepenger.los.oppgave.Oppgavespørring;
@@ -20,6 +23,8 @@ import no.nav.vedtak.exception.FunksjonellException;
 
 @ApplicationScoped
 public class OppgaveKøTjeneste {
+
+    private static final Logger LOG = LoggerFactory.getLogger(OppgaveKøTjeneste.class);
 
     private OppgaveRepository oppgaveRepository;
     private OrganisasjonRepository organisasjonRepository;
@@ -46,10 +51,10 @@ public class OppgaveKøTjeneste {
 
     public List<OppgaveFiltreringKnytning> finnOppgaveFiltreringKnytninger(Oppgave oppgave) {
         var enhet = oppgave.getBehandlendeEnhet();
-        var orgnr = organisasjonRepository.hentAvdelingFraEnhet(enhet)
+        var avdelingId = organisasjonRepository.hentAvdelingFraEnhet(enhet)
                 .map(Avdeling::getId)
                 .orElseThrow();
-        var potensielleKøer = oppgaveRepository.hentAlleOppgaveFilterSettTilknyttetAvdeling(orgnr);
+        var potensielleKøer = oppgaveRepository.hentAlleOppgaveFilterSettTilknyttetAvdeling(avdelingId);
         return potensielleKøer.stream()
                 .map(pk -> finnOppgaveFiltreringKnytning(oppgave, pk))
                 .filter(Optional::isPresent)
@@ -92,6 +97,9 @@ public class OppgaveKøTjeneste {
     private boolean oppgaveTilfredstillerOppgaveFiltreringSett(Oppgave oppgave, OppgaveFiltrering oppgaveFiltrering) {
         var oppgavespørring = new Oppgavespørring(oppgaveFiltrering);
         oppgavespørring.setAvgrensTilOppgaveId(oppgave.getId());
-        return oppgaveRepository.hentOppgaver(oppgavespørring).size() > 0;
+        var oppgaver = oppgaveRepository.hentOppgaver(oppgavespørring);
+        LOG.info("Sjekker om oppgave {} tilfredstiller filtrering {}. Spørring {}. Resultat {}", oppgave.getId(), oppgaveFiltrering.getId(),
+                oppgavespørring, oppgaver.size() > 0);
+        return oppgaver.size() > 0;
     }
 }

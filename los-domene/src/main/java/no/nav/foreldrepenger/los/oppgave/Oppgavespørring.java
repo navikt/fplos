@@ -23,29 +23,34 @@ public class Oppgavespørring {
     private final LocalDate filtrerTomDato;
     private final Long filtrerFra;
     private final Long filtrerTil;
-    private Long filtrerFomDager;
-    private Long filtrerTomDager;
     private boolean forAvdelingsleder;
     private Long avgrenseTilOppgaveId;
 
-    public Oppgavespørring(OppgaveFiltrering oppgaveFiltrering){
-         sortering = oppgaveFiltrering.getSortering();
-         enhetId = oppgaveFiltrering.getAvdeling().getId();
-         behandlingTyper = behandlingTypeFra(oppgaveFiltrering);
-         ytelseTyper = ytelseType(oppgaveFiltrering);
-         inkluderAndreKriterierTyper = inkluderAndreKriterierTyperFra(oppgaveFiltrering);
-         ekskluderAndreKriterierTyper = ekskluderAndreKriterierTyperFra(oppgaveFiltrering);
-         erDynamiskPeriode = oppgaveFiltrering.getErDynamiskPeriode();
-         filtrerFomDato = oppgaveFiltrering.getFomDato();
-         filtrerTomDato = oppgaveFiltrering.getTomDato();
-         filtrerFra = oppgaveFiltrering.getFra();
-         filtrerTil = oppgaveFiltrering.getTil();
+    public Oppgavespørring(OppgaveFiltrering oppgaveFiltrering) {
+        sortering = oppgaveFiltrering.getSortering();
+        enhetId = oppgaveFiltrering.getAvdeling().getId();
+        behandlingTyper = behandlingTypeFra(oppgaveFiltrering);
+        ytelseTyper = ytelseType(oppgaveFiltrering);
+        inkluderAndreKriterierTyper = inkluderAndreKriterierTyperFra(oppgaveFiltrering);
+        ekskluderAndreKriterierTyper = ekskluderAndreKriterierTyperFra(oppgaveFiltrering);
+        erDynamiskPeriode = oppgaveFiltrering.getErDynamiskPeriode();
+        filtrerFomDato = oppgaveFiltrering.getFomDato();
+        filtrerTomDato = oppgaveFiltrering.getTomDato();
+        filtrerFra = oppgaveFiltrering.getFra();
+        filtrerTil = oppgaveFiltrering.getTil();
     }
 
-    public Oppgavespørring(Long enhetId, KøSortering sortering, List<BehandlingType> behandlingTyper,
-                           List<FagsakYtelseType> ytelseTyper, List<AndreKriterierType> inkluderAndreKriterierTyper,
-                           List<AndreKriterierType> ekskluderAndreKriterierTyper, boolean erDynamiskPeriode,
-                           LocalDate filtrerFomDato, LocalDate filtrerTomDato, Long filtrerFra, Long filtrerTil) {
+    public Oppgavespørring(Long enhetId,
+                           KøSortering sortering,
+                           List<BehandlingType> behandlingTyper,
+                           List<FagsakYtelseType> ytelseTyper,
+                           List<AndreKriterierType> inkluderAndreKriterierTyper,
+                           List<AndreKriterierType> ekskluderAndreKriterierTyper,
+                           boolean erDynamiskPeriode,
+                           LocalDate filtrerFomDato,
+                           LocalDate filtrerTomDato,
+                           Long filtrerFra,
+                           Long filtrerTil) {
         this.sortering = sortering;
         this.enhetId = enhetId;
         this.behandlingTyper = behandlingTyper;
@@ -121,28 +126,42 @@ public class Oppgavespørring {
     }
 
     private List<AndreKriterierType> ekskluderAndreKriterierTyperFra(OppgaveFiltrering oppgaveFiltrering) {
-        return oppgaveFiltrering.getFiltreringAndreKriterierTyper().stream()
+        return oppgaveFiltrering.getFiltreringAndreKriterierTyper()
+                .stream()
                 .filter(FiltreringAndreKriterierType::isEkskluder)
                 .map(FiltreringAndreKriterierType::getAndreKriterierType)
                 .collect(Collectors.toList());
     }
 
     private List<AndreKriterierType> inkluderAndreKriterierTyperFra(OppgaveFiltrering oppgaveFiltrering) {
-        return oppgaveFiltrering.getFiltreringAndreKriterierTyper().stream()
+        return oppgaveFiltrering.getFiltreringAndreKriterierTyper()
+                .stream()
                 .filter(FiltreringAndreKriterierType::isInkluder)
                 .map(FiltreringAndreKriterierType::getAndreKriterierType)
                 .collect(Collectors.toList());
     }
 
     private List<FagsakYtelseType> ytelseType(OppgaveFiltrering oppgaveFiltrering) {
-        return oppgaveFiltrering.getFiltreringYtelseTyper().stream()
+        return oppgaveFiltrering.getFiltreringYtelseTyper()
+                .stream()
                 .map(FiltreringYtelseType::getFagsakYtelseType)
                 .collect(Collectors.toList());
     }
 
     private List<BehandlingType> behandlingTypeFra(OppgaveFiltrering oppgaveFiltrering) {
-        return oppgaveFiltrering.getFiltreringBehandlingTyper().stream()
+        return oppgaveFiltrering.getFiltreringBehandlingTyper()
+                .stream()
                 .map(FiltreringBehandlingType::getBehandlingType)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public String toString() {
+        return "Oppgavespørring{" + "sortering=" + sortering + ", enhetId=" + enhetId + ", behandlingTyper="
+                + behandlingTyper + ", ytelseTyper=" + ytelseTyper + ", inkluderAndreKriterierTyper="
+                + inkluderAndreKriterierTyper + ", ekskluderAndreKriterierTyper=" + ekskluderAndreKriterierTyper
+                + ", erDynamiskPeriode=" + erDynamiskPeriode + ", filtrerFomDato=" + filtrerFomDato
+                + ", filtrerTomDato=" + filtrerTomDato + ", filtrerFra=" + filtrerFra + ", filtrerTil=" + filtrerTil
+                + ", forAvdelingsleder=" + forAvdelingsleder + ", avgrenseTilOppgaveId=" + avgrenseTilOppgaveId + '}';
     }
 }
