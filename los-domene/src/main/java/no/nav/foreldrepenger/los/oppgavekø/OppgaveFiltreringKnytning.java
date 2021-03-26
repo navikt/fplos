@@ -31,6 +31,12 @@ public class OppgaveFiltreringKnytning {
     }
 
     @Override
+    public String toString() {
+        return "OppgaveFiltreringKnytning{" + "oppgaveId=" + oppgaveId + ", oppgaveFiltreringId=" + oppgaveFiltreringId
+                + ", behandlingType=" + behandlingType + '}';
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;

@@ -1,18 +1,19 @@
 package no.nav.foreldrepenger.los.statistikk.statistikk_ny;
 
-import no.nav.foreldrepenger.los.domene.typer.BehandlingId;
-import no.nav.foreldrepenger.los.oppgave.OppgaveTjeneste;
-import no.nav.foreldrepenger.los.oppgavekø.OppgaveFiltreringKnytning;
-import no.nav.foreldrepenger.los.oppgavekø.OppgaveKøTjeneste;
-import no.nav.foreldrepenger.los.oppgave.Oppgave;
-
-import no.nav.foreldrepenger.los.statistikk.statistikk_gammel.NyeOgFerdigstilteOppgaver;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.List;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import no.nav.foreldrepenger.los.domene.typer.BehandlingId;
+import no.nav.foreldrepenger.los.oppgave.Oppgave;
+import no.nav.foreldrepenger.los.oppgave.OppgaveTjeneste;
+import no.nav.foreldrepenger.los.oppgavekø.OppgaveFiltreringKnytning;
+import no.nav.foreldrepenger.los.oppgavekø.OppgaveKøTjeneste;
+import no.nav.foreldrepenger.los.statistikk.statistikk_gammel.NyeOgFerdigstilteOppgaver;
 
 @ApplicationScoped
 public class OppgaveStatistikk {
@@ -34,7 +35,9 @@ public class OppgaveStatistikk {
     }
 
     public void lagre(BehandlingId behandlingId, KøOppgaveHendelse køOppgaveHendelse) {
-        oppgaveTjeneste.hentNyesteOppgaveTilknyttet(behandlingId)
+        var nyesteOppgaveTilknyttetBehandling = oppgaveTjeneste.hentNyesteOppgaveTilknyttet(behandlingId);
+        LOG.info("Nyeste oppgave tilknyttet behandling er {}", nyesteOppgaveTilknyttetBehandling);
+        nyesteOppgaveTilknyttetBehandling
                 .filter(Oppgave::getAktiv)
                 .ifPresentOrElse(oppgave -> lagre(oppgave, køOppgaveHendelse), () -> LOG.info("Kan ikke lagre statistikk, fant ikke oppgave"));
         // TODO: kalles også når første relevante hendelse er venteaksjonspunkt.
@@ -59,7 +62,10 @@ public class OppgaveStatistikk {
     }
 
     private void lagreHendelse(Oppgave oppgave, KøOppgaveHendelse køOppgaveHendelse) {
-        oppgaveKøTjeneste.finnOppgaveFiltreringKnytninger(oppgave)
+        LOG.info("Lagrer køoppgavehendelse. Oppgave {}, Hendelse {}", oppgave, køOppgaveHendelse);
+        var oppgaveFiltreringKnytninger = oppgaveKøTjeneste.finnOppgaveFiltreringKnytninger(oppgave);
+        LOG.info("Oppgavefilterknytninger for oppgave {} er {}", oppgave, oppgaveFiltreringKnytninger);
+        oppgaveFiltreringKnytninger
                 .forEach(ok -> statistikkRepository.lagre(ok.getOppgaveId(), ok.getOppgaveFiltreringId(), ok.getBehandlingType(), køOppgaveHendelse));
     }
 

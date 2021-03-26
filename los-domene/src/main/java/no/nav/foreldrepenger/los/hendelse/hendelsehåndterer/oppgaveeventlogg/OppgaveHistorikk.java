@@ -65,4 +65,10 @@ public class OppgaveHistorikk {
                 .max(Comparator.comparing(OppgaveEventLogg::getOpprettetTidspunkt))
                 .orElse(null);
     }
+
+    @Override
+    public String toString() {
+        return "OppgaveHistorikk{" + "erUtenHistorikk=" + erUtenHistorikk + ", sisteOpprettetEvent="
+                + sisteOpprettetEvent + ", sisteEventType=" + sisteEventType + '}';
+    }
 }

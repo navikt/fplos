@@ -1,11 +1,9 @@
 package no.nav.foreldrepenger.los.oppgave;
 
 
-import no.nav.foreldrepenger.los.domene.typer.BehandlingId;
-import no.nav.foreldrepenger.los.domene.typer.aktør.AktørId;
-import no.nav.foreldrepenger.los.felles.BaseEntitet;
-import no.nav.foreldrepenger.los.reservasjon.Reservasjon;
-import no.nav.vedtak.felles.jpa.converters.BooleanToStringConverter;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.UUID;
 
 import javax.persistence.Column;
 import javax.persistence.Convert;
@@ -18,9 +16,12 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.UUID;
+
+import no.nav.foreldrepenger.los.domene.typer.BehandlingId;
+import no.nav.foreldrepenger.los.domene.typer.aktør.AktørId;
+import no.nav.foreldrepenger.los.felles.BaseEntitet;
+import no.nav.foreldrepenger.los.reservasjon.Reservasjon;
+import no.nav.vedtak.felles.jpa.converters.BooleanToStringConverter;
 
 @Entity(name = "Oppgave")
 @Table(name = "OPPGAVE")
@@ -167,6 +168,12 @@ public class Oppgave extends BaseEntitet {
     public void gjenåpneOppgave() {
         aktiv = true;
         oppgaveAvsluttet = null;
+    }
+
+    @Override
+    public String toString() {
+        return "Oppgave{" + "id=" + id + ", fagsakSaksnummer=" + fagsakSaksnummer + ", aktiv=" + aktiv + ", system='"
+                + system + '\'' + '}';
     }
 
     public void avstemMed(Oppgave other) {

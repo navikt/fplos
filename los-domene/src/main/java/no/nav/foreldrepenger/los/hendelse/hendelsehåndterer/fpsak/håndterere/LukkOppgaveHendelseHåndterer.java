@@ -1,5 +1,8 @@
 package no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.håndterere;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.FpsakHendelseHåndterer;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveEventLogg;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveEventType;
@@ -7,8 +10,6 @@ import no.nav.foreldrepenger.los.klient.fpsak.BehandlingFpsak;
 import no.nav.foreldrepenger.los.oppgave.OppgaveRepository;
 import no.nav.foreldrepenger.los.statistikk.statistikk_ny.KøOppgaveHendelse;
 import no.nav.foreldrepenger.los.statistikk.statistikk_ny.OppgaveStatistikk;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class LukkOppgaveHendelseHåndterer implements FpsakHendelseHåndterer {
 
@@ -28,7 +29,7 @@ public class LukkOppgaveHendelseHåndterer implements FpsakHendelseHåndterer {
     @Override
     public void håndter() {
         var behandlingId = behandlingFpsak.getBehandlingId();
-        LOG.info("Lukker {}-oppgave", SYSTEM);
+        LOG.info("Håndterer hendelse for å lukke oppgave, behandling {}, system {}", behandlingId,  SYSTEM);
         oppgaveStatistikk.lagre(behandlingId, KøOppgaveHendelse.LUKKET_OPPGAVE);
         oppgaveRepository.avsluttOppgaveForBehandling(behandlingId);
         var oel = OppgaveEventLogg.builder()

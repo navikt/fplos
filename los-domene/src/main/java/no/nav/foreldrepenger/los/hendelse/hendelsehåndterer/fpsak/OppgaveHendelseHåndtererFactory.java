@@ -1,5 +1,14 @@
 package no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak;
 
+import java.util.List;
+import java.util.function.Predicate;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.OppgaveEgenskapHåndterer;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.håndterere.GenerellOpprettOppgaveHendelseHåndterer;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.håndterere.GjenåpneOppgaveHendelseHåndterer;
@@ -12,22 +21,16 @@ import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.håndterere.P
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.håndterere.ReturFraBeslutterHendelseHåndterer;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveHistorikk;
 import no.nav.foreldrepenger.los.hendelse.hendelseoppretter.hendelse.Hendelse;
-import no.nav.foreldrepenger.los.oppgave.OppgaveRepository;
-import no.nav.foreldrepenger.los.statistikk.statistikk_ny.OppgaveStatistikk;
 import no.nav.foreldrepenger.los.klient.fpsak.Aksjonspunkt;
 import no.nav.foreldrepenger.los.klient.fpsak.BehandlingFpsak;
 import no.nav.foreldrepenger.los.klient.fpsak.ForeldrepengerBehandlingKlient;
-
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-
-import java.util.List;
-import java.util.function.Predicate;
+import no.nav.foreldrepenger.los.oppgave.OppgaveRepository;
+import no.nav.foreldrepenger.los.statistikk.statistikk_ny.OppgaveStatistikk;
 
 @ApplicationScoped
 public class OppgaveHendelseHåndtererFactory {
 
+    private static final Logger LOG = LoggerFactory.getLogger(OppgaveHendelseHåndtererFactory.class);
     private static final IkkeRelevantForOppgaveHendelseHåndterer IKKE_RELEVANT_FOR_OPPGAVE_HENDELSE_HÅNDTERER = new IkkeRelevantForOppgaveHendelseHåndterer();
 
     private OppgaveRepository oppgaveRepository;
@@ -56,12 +59,17 @@ public class OppgaveHendelseHåndtererFactory {
         behandlingFpsak.setYtelseType(hendelse.getYtelseType());
         behandlingFpsak.setSaksnummer(hendelse.getSaksnummer());
         behandlingFpsak.setAktørId(hendelse.getAktørId());
-        var oppgaveHistorikk = new OppgaveHistorikk(oppgaveRepository.hentOppgaveEventer(behandlingId));
-        return lagHåndterer(behandlingFpsak, oppgaveHistorikk);
+        var eventer = oppgaveRepository.hentOppgaveEventer(behandlingId);
+        LOG.info("Henter tidigere oppgaveeventer for behandling {} {}", hendelse.getBehandlingId(), eventer);
+        var oppgaveHistorikk = new OppgaveHistorikk(eventer);
+        var hendelseHåndterer = lagHåndterer(behandlingFpsak, oppgaveHistorikk);
+        LOG.info("Utledet hendelsehåndterer er av type {}", hendelseHåndterer.getClass().getSimpleName());
+        return hendelseHåndterer;
     }
 
-    protected FpsakHendelseHåndterer lagHåndterer(BehandlingFpsak behandlingFpsak,
-                                                  OppgaveHistorikk oppgaveHistorikk) {
+    protected FpsakHendelseHåndterer lagHåndterer(BehandlingFpsak behandlingFpsak, OppgaveHistorikk oppgaveHistorikk) {
+        LOG.info("Utleder hendelsehåndterer for behandlingId {}, oppgavehistorikk {}", behandlingFpsak.getBehandlingId(),
+                oppgaveHistorikk);
         var aksjonspunkter = behandlingFpsak.getAksjonspunkter();
 
         if (erIngenÅpne(aksjonspunkter)) {

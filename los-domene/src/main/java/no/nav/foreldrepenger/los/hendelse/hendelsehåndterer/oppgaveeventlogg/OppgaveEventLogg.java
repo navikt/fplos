@@ -90,6 +90,13 @@ public class OppgaveEventLogg extends BaseEntitet {
         return new Builder();
     }
 
+    @Override
+    public String toString() {
+        return "OppgaveEventLogg{" + "id=" + id + ", eventType=" + eventType + ", andreKriterierType="
+                + andreKriterierType + ", behandlendeEnhet='" + behandlendeEnhet + '\'' + ", fristTid=" + fristTid
+                + ", behandlingId=" + behandlingId + '}';
+    }
+
     public static class Builder {
         private OppgaveEventLogg oppgaveEventLoggMal;
 
