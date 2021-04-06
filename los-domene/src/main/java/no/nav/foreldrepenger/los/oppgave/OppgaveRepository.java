@@ -114,8 +114,9 @@ public class OppgaveRepository {
         var ekskluderInkluderAndreKriterier = new StringBuilder();
         for (var kriterie : queryDto.getInkluderAndreKriterierTyper()) {
             ekskluderInkluderAndreKriterier.append(
-                    "AND EXISTS ( SELECT  1 FROM OppgaveEgenskap oe WHERE o = oe.oppgave AND oe.aktiv = true AND oe.andreKriterierType = '"
-                            + kriterie.getKode() + "' ) ");
+                    "AND EXISTS ( SELECT  1 FROM OppgaveEgenskap oe WHERE o = oe.oppgave AND oe.aktiv = true AND oe.andreKriterierType = '")
+                    .append(kriterie.getKode())
+                    .append("' ) ");
         }
         for (var kriterie : queryDto.getEkskluderAndreKriterierTyper()) {
             ekskluderInkluderAndreKriterier.append(
@@ -125,14 +126,15 @@ public class OppgaveRepository {
         }
 
         var query = entityManager.createQuery(selection + //$NON-NLS-1$ // NOSONAR
-                "INNER JOIN avdeling a ON a.avdelingEnhet = o.behandlendeEnhet " + "WHERE 1=1" + filtrerBehandlingType
+                "INNER JOIN avdeling a ON a.avdelingEnhet = o.behandlendeEnhet " + "WHERE 1=1 " + filtrerBehandlingType
                 + filtrerYtelseType + ekskluderInkluderAndreKriterier
-                + "AND NOT EXISTS (select r from Reservasjon r where r.oppgave = o and r.reservertTil > :naa) "
+                + avgrensPåAktiveReservasjoner(queryDto)
                 + tilBeslutter(queryDto) + avgrenseTilOppgaveId(queryDto) + "AND a.id = :enhet " + "AND o.aktiv = true "
                 + sortering(queryDto), oppgaveClass)
-                .setParameter("enhet", queryDto.getEnhetId())
-                .setParameter("naa", LocalDateTime.now());
-
+                .setParameter("enhet", queryDto.getEnhetId());
+        if (!queryDto.ignorerReserversjoner()) {
+            query.setParameter("naa", LocalDateTime.now());
+        }
         if (!queryDto.getForAvdelingsleder()) {
             query.setParameter("tilbeslutter", AndreKriterierType.TIL_BESLUTTER).setParameter("uid", finnBrukernavn());
         }
@@ -179,6 +181,10 @@ public class OppgaveRepository {
         }
 
         return query;
+    }
+
+    private String avgrensPåAktiveReservasjoner(Oppgavespørring queryDto) {
+        return queryDto.ignorerReserversjoner() ? "" : "AND NOT EXISTS (select r from Reservasjon r where r.oppgave = o and r.reservertTil > :naa) ";
     }
 
     private String avgrenseTilOppgaveId(Oppgavespørring queryDto) {

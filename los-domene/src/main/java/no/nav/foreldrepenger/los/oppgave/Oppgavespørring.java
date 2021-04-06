@@ -25,6 +25,7 @@ public class Oppgavespørring {
     private final Long filtrerTil;
     private boolean forAvdelingsleder;
     private Long avgrenseTilOppgaveId;
+    private boolean ignorerReserversjoner;
 
     public Oppgavespørring(OppgaveFiltrering oppgaveFiltrering) {
         sortering = oppgaveFiltrering.getSortering();
@@ -62,6 +63,14 @@ public class Oppgavespørring {
         this.filtrerTomDato = filtrerTomDato;
         this.filtrerFra = filtrerFra;
         this.filtrerTil = filtrerTil;
+    }
+
+    public boolean ignorerReserversjoner() {
+        return ignorerReserversjoner;
+    }
+
+    public void setIgnorerReserversjoner(boolean ignorerReserversjoner) {
+        this.ignorerReserversjoner = ignorerReserversjoner;
     }
 
     public void setForAvdelingsleder(boolean forAvdelingsleder) {

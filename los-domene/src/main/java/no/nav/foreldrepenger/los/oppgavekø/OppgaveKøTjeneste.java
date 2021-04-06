@@ -71,7 +71,7 @@ public class OppgaveKøTjeneste {
     }
 
     public Integer hentAntallOppgaverForAvdeling(String avdelingsEnhet) {
-        Avdeling avdeling = organisasjonRepository.hentAvdelingFraEnhet(avdelingsEnhet).orElseThrow();
+        var avdeling = organisasjonRepository.hentAvdelingFraEnhet(avdelingsEnhet).orElseThrow();
         return oppgaveRepository.hentAntallOppgaverForAvdeling(avdeling.getId());
     }
 
@@ -97,9 +97,10 @@ public class OppgaveKøTjeneste {
     private boolean oppgaveTilfredstillerOppgaveFiltreringSett(Oppgave oppgave, OppgaveFiltrering oppgaveFiltrering) {
         var oppgavespørring = new Oppgavespørring(oppgaveFiltrering);
         oppgavespørring.setAvgrensTilOppgaveId(oppgave.getId());
-        var oppgaver = oppgaveRepository.hentOppgaver(oppgavespørring);
+        oppgavespørring.setIgnorerReserversjoner(true);
+        var antall = oppgaveRepository.hentAntallOppgaver(oppgavespørring);
         LOG.info("Sjekker om oppgave {} tilfredstiller filtrering {}. Spørring {}. Resultat {}", oppgave.getId(), oppgaveFiltrering.getId(),
-                oppgavespørring, oppgaver.size() > 0);
-        return oppgaver.size() > 0;
+                oppgavespørring, antall > 0);
+        return antall > 0;
     }
 }
