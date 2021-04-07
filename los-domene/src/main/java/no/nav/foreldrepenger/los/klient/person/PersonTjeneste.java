@@ -6,8 +6,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -120,13 +118,9 @@ public class PersonTjeneste {
     }
 
     private static String navn(Navn navn) {
-        if (navn.getForkortetNavn() != null) {
+        if (navn.getForkortetNavn() != null)
             return navn.getForkortetNavn();
-        }
-        return Stream.of(navn.getFornavn(), navn.getMellomnavn(), navn.getEtternavn())
-                .filter(Objects::nonNull)
-                .filter(s -> !s.isBlank())
-                .collect(Collectors.joining(" "));
+        return navn.getEtternavn() + " " + navn.getFornavn() + (navn.getMellomnavn() == null ? "" : " " + navn.getMellomnavn());
     }
 
     private static Fødselsnummer fnr(List<Folkeregisteridentifikator> folkeregisteridentifikator) {
