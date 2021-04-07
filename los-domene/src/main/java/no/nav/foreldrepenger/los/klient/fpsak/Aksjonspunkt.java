@@ -17,7 +17,6 @@ public class Aksjonspunkt {
     public static final List<String> REGISTRER_PAPIRSØKNAD_KODE = asList("5012", "5040", "5057", "5096");
     public static final List<String> VURDER_FORMKRAV_GRUPPE = asList("5082", "5083");
 
-    public static final String VURDER_FARESIGNALER = "5095";
     public static final String AUTOMATISK_MARKERING_SOM_UTLAND = "5068";
     public static final String MANUELL_MARKERING_SOM_UTLAND = "6068";
     public static final String EØS_BOSATT_NORGE = "EØS_BOSATT_NORGE";
@@ -78,10 +77,6 @@ public class Aksjonspunkt {
 
     public boolean erVurderFormkrav() {
         return erAktiv() && VURDER_FORMKRAV_GRUPPE.contains(definisjonKode);
-    }
-
-    public boolean erVurderFaresignaler() {
-        return VURDER_FARESIGNALER.equals(definisjonKode) && erAktiv();
     }
 
     public static Aksjonspunkt aksjonspunktFra(AksjonspunktDto aksjonspunktDto) {

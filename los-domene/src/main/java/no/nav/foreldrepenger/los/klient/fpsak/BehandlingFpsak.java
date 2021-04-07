@@ -1,12 +1,15 @@
 package no.nav.foreldrepenger.los.klient.fpsak;
 
-import no.nav.foreldrepenger.los.domene.typer.BehandlingId;
-import no.nav.foreldrepenger.los.oppgave.BehandlingType;
-import no.nav.foreldrepenger.los.oppgave.FagsakYtelseType;
-
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
+
+import no.nav.foreldrepenger.los.domene.typer.BehandlingId;
+import no.nav.foreldrepenger.los.klient.fpsak.dto.Kontrollresultat;
+import no.nav.foreldrepenger.los.klient.fpsak.dto.KontrollresultatDto;
+import no.nav.foreldrepenger.los.oppgave.BehandlingType;
+import no.nav.foreldrepenger.los.oppgave.FagsakYtelseType;
 
 public class BehandlingFpsak {
     private BehandlingId behandlingId;
@@ -18,6 +21,7 @@ public class BehandlingFpsak {
     private Lazy<LocalDate> førsteUttaksdag;
     private Lazy<Boolean> harRefusjonskravFraArbeidsgiver;
     private Lazy<UttakEgenskaper> uttakEgenskaper;
+    private Lazy<KontrollresultatDto> kontrollresultat;
     private boolean erBerørtBehandling;
     private boolean erEndringssøknad;
     private BehandlingType behandlingType;
@@ -122,6 +126,14 @@ public class BehandlingFpsak {
         this.aktørId = aktørId;
     }
 
+    public boolean harFareSignaler() {
+        var kr = Lazy.get(kontrollresultat);
+        if (kr == null) {
+            return false;
+        }
+        return Objects.equals(kr.kontrollresultat(), Kontrollresultat.HOY);
+    }
+
     public static final class Builder {
         private BehandlingId behandlingId;
         private String status;
@@ -137,6 +149,7 @@ public class BehandlingFpsak {
         private FagsakYtelseType ytelseType;
         private Lazy<UttakEgenskaper> uttakEgenskaper;
         private LocalDateTime behandlingOpprettet;
+        private Lazy<KontrollresultatDto> kontrollresultat;
 
         private Builder() {
         }
@@ -211,6 +224,11 @@ public class BehandlingFpsak {
             return this;
         }
 
+        public Builder medKontrollresultat(Lazy<KontrollresultatDto> kontrollresultat) {
+            this.kontrollresultat = kontrollresultat;
+            return this;
+        }
+
         public BehandlingFpsak build() {
             BehandlingFpsak behandlingFpsak = new BehandlingFpsak();
             behandlingFpsak.ansvarligSaksbehandler = this.ansvarligSaksbehandler;
@@ -227,6 +245,7 @@ public class BehandlingFpsak {
             behandlingFpsak.erEndringssøknad = this.erEndringssøknad;
             behandlingFpsak.behandlingType = this.behandlingType;
             behandlingFpsak.ytelseType = this.ytelseType;
+            behandlingFpsak.kontrollresultat = this.kontrollresultat;
             return behandlingFpsak;
         }
     }
@@ -243,6 +262,7 @@ public class BehandlingFpsak {
                 ", erEndringssøknad=" + erEndringssøknad +
                 ", behandlingType=" + behandlingType +
                 ", ytelseType=" + ytelseType +
+                ", kontrollresultat=" + kontrollresultat +
                 '}';
     }
 }

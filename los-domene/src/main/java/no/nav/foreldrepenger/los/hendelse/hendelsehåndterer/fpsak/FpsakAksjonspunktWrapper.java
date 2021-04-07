@@ -1,13 +1,13 @@
 package no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak;
 
-import no.nav.foreldrepenger.los.oppgave.AndreKriterierType;
-import no.nav.foreldrepenger.los.klient.fpsak.Aksjonspunkt;
+import static no.nav.foreldrepenger.los.felles.util.StreamUtil.safeStream;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
 
-import static no.nav.foreldrepenger.los.felles.util.StreamUtil.safeStream;
+import no.nav.foreldrepenger.los.klient.fpsak.Aksjonspunkt;
+import no.nav.foreldrepenger.los.oppgave.AndreKriterierType;
 
 public class FpsakAksjonspunktWrapper {
 
@@ -19,7 +19,6 @@ public class FpsakAksjonspunktWrapper {
         if (finn(Aksjonspunkt::erTilBeslutter)) kriterier.add(AndreKriterierType.TIL_BESLUTTER);
         if (finn(Aksjonspunkt::erRegistrerPapirSøknad)) kriterier.add(AndreKriterierType.PAPIRSØKNAD);
         if (finn(Aksjonspunkt::erUtenlandssak)) kriterier.add(AndreKriterierType.UTLANDSSAK);
-        if (finn(Aksjonspunkt::erVurderFaresignaler)) kriterier.add(AndreKriterierType.VURDER_FARESIGNALER);
         if (finn(Aksjonspunkt::erVurderFormkrav)) kriterier.add(AndreKriterierType.VURDER_FORMKRAV);
     }
 
