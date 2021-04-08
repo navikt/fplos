@@ -22,6 +22,7 @@ import org.slf4j.LoggerFactory;
 import no.nav.foreldrepenger.los.domene.typer.BehandlingId;
 import no.nav.foreldrepenger.los.klient.fpsak.dto.KontrollerFaktaDataDto;
 import no.nav.foreldrepenger.los.klient.fpsak.dto.KontrollerFaktaPeriodeDto;
+import no.nav.foreldrepenger.los.klient.fpsak.dto.KontrollresultatDto;
 import no.nav.foreldrepenger.los.klient.fpsak.dto.aksjonspunkt.AksjonspunktDto;
 import no.nav.foreldrepenger.los.klient.fpsak.dto.behandling.BehandlingÅrsakDto;
 import no.nav.foreldrepenger.los.klient.fpsak.dto.behandling.BehandlingÅrsakType;
@@ -44,6 +45,7 @@ public class ForeldrepengerBehandlingKlient {
     private static final String AKSJONSPUNKTER_LINK = "aksjonspunkter";
     private static final String INNTEKT_ARBEID_YTELSE_LINK = "inntekt-arbeid-ytelse";
     private static final String UTTAK_KONTROLLER_FAKTA_PERIODER_LINK = "uttak-kontroller-fakta-perioder";
+    private static final String KONTROLLRESULTAT = "kontrollresultat";
     private static final String YTELSEFORDELING_LINK = "ytelsefordeling";
 
     private OidcRestClient oidcRestClient;
@@ -77,6 +79,7 @@ public class ForeldrepengerBehandlingKlient {
                 .medFørsteUttaksdag(new Lazy<>(() -> hentFørsteUttaksdato(links)))
                 .medErBerørtBehandling(harBehandlingÅrsakType(behandlingDto, BehandlingÅrsakType.BERØRT_BEHANDLING))
                 .medErEndringssøknad(harBehandlingÅrsakType(behandlingDto, BehandlingÅrsakType.RE_ENDRING_FRA_BRUKER))
+                .medKontrollresultat(new Lazy<>(() -> hentKontrollresultat(links)))
                 .medUttakEgenskaper(new Lazy<>(() -> hentUttakEgenskaper(behandlingId, links)));
         return builder.build();
     }
@@ -147,6 +150,11 @@ public class ForeldrepengerBehandlingKlient {
             }
         }
         return null;
+    }
+
+    private KontrollresultatDto hentKontrollresultat(List<ResourceLink> links) {
+        return velgLink(links, KONTROLLRESULTAT).flatMap(resourceLink -> hentFraResourceLink(resourceLink, KontrollresultatDto.class))
+                .orElse(null);
     }
 
     private boolean harVurderSykdom(KontrollerFaktaDataDto kontrollerFaktaDataDto) {

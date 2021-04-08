@@ -3,7 +3,6 @@ package no.nav.foreldrepenger.los.hendelse.hendelsehåndterer;
 import static no.nav.foreldrepenger.los.oppgave.AndreKriterierType.PAPIRSØKNAD;
 import static no.nav.foreldrepenger.los.oppgave.AndreKriterierType.TIL_BESLUTTER;
 import static no.nav.foreldrepenger.los.oppgave.AndreKriterierType.UTLANDSSAK;
-import static no.nav.foreldrepenger.los.oppgave.AndreKriterierType.VURDER_FARESIGNALER;
 import static no.nav.foreldrepenger.los.oppgave.AndreKriterierType.VURDER_FORMKRAV;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -26,7 +25,6 @@ class FpsakAksjonspunktWrapperTest {
         cases.put("5016", TIL_BESLUTTER);
         cases.put("5012", PAPIRSØKNAD); // finnes flere i gruppen
         cases.put("5068", UTLANDSSAK); // finnes flere i gruppen
-        cases.put("5095", VURDER_FARESIGNALER);
 
         cases.forEach((k, v) -> {
             var ap = åpentAksjonspunkt(k);
