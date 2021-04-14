@@ -143,7 +143,7 @@ public class OppgaveDtoTjeneste {
 
     private List<OppgaveDto> map(List<Oppgave> oppgaver, int maksAntall) {
         List<OppgaveDto> dtoList = new ArrayList<>();
-        for (int i = 0; i < oppgaver.size() && dtoList.size() < maksAntall; i++) {
+        for (var i = 0; i < oppgaver.size() && dtoList.size() < maksAntall; i++) {
             var oppgave = oppgaver.get(i);
             try {
                 dtoList.add(lagDtoFor(oppgave, true));

@@ -35,11 +35,13 @@ public class SimpelHvitvasker {
      * @return ferdig vasket tekst
      */
     public static String hvitvaskKunBokstaver(String uvasketTekst) {
-        if (uvasketTekst == null || uvasketTekst.isEmpty()) return uvasketTekst;
+        if (uvasketTekst == null || uvasketTekst.isEmpty()) {
+            return uvasketTekst;
+        }
 
         var matcher = KUN_BOKSTAVER_PATTERN.matcher(uvasketTekst);
         if (matcher.find()) {
-            String rensetTekst = matcher.replaceAll("_");
+            var rensetTekst = matcher.replaceAll("_");
 
             if (LOG.isTraceEnabled()) {
                 LOG.trace(removeLineBreaks("Hvitvasking av kun bokstav tekst: fra '{}' til '{}'"),
@@ -58,11 +60,13 @@ public class SimpelHvitvasker {
      * @return ferdig vasket tekst
      */
     public static String hvitvaskBokstaverOgVanligeTegn(String uvasketTekst) {
-        if (uvasketTekst == null || uvasketTekst.isEmpty()) return uvasketTekst;
+        if (uvasketTekst == null || uvasketTekst.isEmpty()) {
+            return uvasketTekst;
+        }
 
         var matcher = KUN_BOKSTAVER_OG_VANLIGE_TEGN_PATTERN.matcher(uvasketTekst);
         if (matcher.find()) {
-            String rensetTekst = matcher.replaceAll("_");
+            var rensetTekst = matcher.replaceAll("_");
             if (LOG.isTraceEnabled()) {
                 LOG.trace(removeLineBreaks("Hvitvasking av kunbokstaver og vanlige tegn: fra '{}' til '{}'"),
                     removeLineBreaks(uvasketTekst), removeLineBreaks(rensetTekst));
@@ -80,7 +84,9 @@ public class SimpelHvitvasker {
      * @return ferdig vasket tekst
      */
     public static String hvitvaskCookie(String uvasketTekst) {
-        if (uvasketTekst == null || uvasketTekst.isEmpty()) return uvasketTekst;
+        if (uvasketTekst == null || uvasketTekst.isEmpty()) {
+            return uvasketTekst;
+        }
 
         var matcher = KUN_ASCII_TEGN_PATTERN.matcher(uvasketTekst);
         if (matcher.find()) {

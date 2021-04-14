@@ -75,7 +75,7 @@ public class TilbakekrevingHendelse extends Hendelse {
     }
 
     public void setAksjonspunkter(List<Aksjonspunkt> aksjonspunkter) {
-        for (Aksjonspunkt aksjonspunkt : aksjonspunkter) {
+        for (var aksjonspunkt : aksjonspunkter) {
             aksjonspunkt.setHendelse(this);
         }
         this.aksjonspunkter = aksjonspunkter;

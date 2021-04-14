@@ -43,8 +43,12 @@ public class Person {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         var person = (Person) o;
         return navn.equals(person.navn) &&
                 fødselsnummer.equals(person.fødselsnummer);

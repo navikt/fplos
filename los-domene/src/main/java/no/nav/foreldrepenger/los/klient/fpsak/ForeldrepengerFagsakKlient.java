@@ -1,17 +1,19 @@
 package no.nav.foreldrepenger.los.klient.fpsak;
 
-import no.nav.foreldrepenger.los.klient.fpsak.dto.SokefeltDto;
-import no.nav.foreldrepenger.los.klient.fpsak.dto.fagsak.FagsakDto;
-import no.nav.vedtak.felles.integrasjon.rest.OidcRestClient;
-import no.nav.vedtak.konfig.KonfigVerdi;
-import org.apache.http.client.utils.URIBuilder;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Arrays;
 import java.util.List;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+
+import org.apache.http.client.utils.URIBuilder;
+
+import no.nav.foreldrepenger.los.klient.fpsak.dto.SokefeltDto;
+import no.nav.foreldrepenger.los.klient.fpsak.dto.fagsak.FagsakDto;
+import no.nav.vedtak.felles.integrasjon.rest.OidcRestClient;
+import no.nav.vedtak.konfig.KonfigVerdi;
 
 @ApplicationScoped
 public class ForeldrepengerFagsakKlient {
@@ -43,7 +45,7 @@ public class ForeldrepengerFagsakKlient {
             var uriBuilder = new URIBuilder(baseUrl);
             uriBuilder.setPath(href.getPath());
             uriBuilder.setCustomQuery(href.getQuery());
-            URI uri = uriBuilder.build();
+            var uri = uriBuilder.build();
             return oidcRestClient.get(uri, cls);
         } catch (URISyntaxException e) {
             throw new IllegalArgumentException("Konstruksjon av uri til endepunkt som henter " + cls.getSimpleName() + " feiler", e);

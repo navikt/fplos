@@ -22,7 +22,8 @@ public class Saksnummer {
     public boolean equals(Object obj) {
         if (obj == this) {
             return true;
-        } else if (obj == null || !getClass().equals(obj.getClass())) {
+        }
+        if (obj == null || !getClass().equals(obj.getClass())) {
             return false;
         }
         var other = (Saksnummer) obj;

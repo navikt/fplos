@@ -31,7 +31,9 @@ public enum BehandlingStatus {
 
     @JsonCreator
     public static BehandlingStatus fraKode(@JsonProperty("kode") String kode) {
-        if (kode.equals("-")) return null;
+        if (kode.equals("-")) {
+            return null;
+        }
         return Arrays.stream(values())
                 .filter(v -> v.kode.equals(kode))
                 .findFirst()

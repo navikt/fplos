@@ -73,7 +73,7 @@ public final class Databaseskjemainitialisering {
 
     private static void migrer(DBProperties dbProperties) {
         LOG.info("Migrerer {}", dbProperties.schema());
-        Flyway flyway = new Flyway();
+        var flyway = new Flyway();
         flyway.setBaselineOnMigrate(true);
         flyway.setDataSource(dbProperties.dataSource());
         flyway.setTable("schema_version");
@@ -104,8 +104,8 @@ public final class Databaseskjemainitialisering {
     }
 
     private static String fileScriptLocation(String relativePath) {
-        File baseDir = new File(".").getAbsoluteFile();
-        File location = new File(baseDir, relativePath);
+        var baseDir = new File(".").getAbsoluteFile();
+        var location = new File(baseDir, relativePath);
         while (!location.exists()) {
             baseDir = baseDir.getParentFile();
             if (baseDir == null || !baseDir.isDirectory()) {

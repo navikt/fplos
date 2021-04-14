@@ -72,7 +72,7 @@ public class SakslisteSaksbehandlerDto implements AbacDto {
             return false;
         }
 
-        SakslisteSaksbehandlerDto sakslisteBehandlingstypeDto = (SakslisteSaksbehandlerDto) o;
+        var sakslisteBehandlingstypeDto = (SakslisteSaksbehandlerDto) o;
         return sakslisteId.getVerdi().equals(sakslisteBehandlingstypeDto.sakslisteId.getVerdi())
                 && brukerIdent.getVerdi().equals(sakslisteBehandlingstypeDto.brukerIdent.getVerdi());
     }

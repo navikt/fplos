@@ -31,8 +31,12 @@ public class OrganisasjonsEnhet {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         var that = (OrganisasjonsEnhet) o;
         return enhetId.equals(that.enhetId) &&
                 enhetNavn.equals(that.enhetNavn);

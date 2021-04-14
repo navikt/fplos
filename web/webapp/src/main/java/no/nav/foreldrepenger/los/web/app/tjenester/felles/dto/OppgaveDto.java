@@ -127,10 +127,14 @@ public class OppgaveDto {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof OppgaveDto)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof OppgaveDto)) {
+            return false;
+        }
 
-        OppgaveDto oppgaveDto = (OppgaveDto) o;
+        var oppgaveDto = (OppgaveDto) o;
         if (saksnummer.equals(oppgaveDto.saksnummer)) {
             return true;
         }
@@ -139,7 +143,7 @@ public class OppgaveDto {
 
     @Override
     public int hashCode() {
-        int result = saksnummer.hashCode();
+        var result = saksnummer.hashCode();
         return 31 * result + behandlingId.hashCode();
     }
 

@@ -16,12 +16,24 @@ public class FpsakOppgaveEgenskapFinner implements OppgaveEgenskapFinner {
     public FpsakOppgaveEgenskapFinner(BehandlingFpsak behandling) {
         this.saksbehandlerForTotrinn = behandling.getAnsvarligSaksbehandler();
 
-        if (behandling.harGradering()) this.andreKriterier.add(AndreKriterierType.SOKT_GRADERING);
-        if (behandling.harVurderSykdom()) this.andreKriterier.add(AndreKriterierType.VURDER_SYKDOM);
-        if (behandling.erBerørtBehandling()) this.andreKriterier.add(AndreKriterierType.BERØRT_BEHANDLING);
-        if (erUtbetalingTilBruker(behandling)) this.andreKriterier.add(AndreKriterierType.UTBETALING_TIL_BRUKER);
-        if (erEndringssøknad(behandling)) this.andreKriterier.add(AndreKriterierType.ENDRINGSSØKNAD);
-        if (behandling.harFareSignaler()) this.andreKriterier.add(AndreKriterierType.VURDER_FARESIGNALER);
+        if (behandling.harGradering()) {
+            this.andreKriterier.add(AndreKriterierType.SOKT_GRADERING);
+        }
+        if (behandling.harVurderSykdom()) {
+            this.andreKriterier.add(AndreKriterierType.VURDER_SYKDOM);
+        }
+        if (behandling.erBerørtBehandling()) {
+            this.andreKriterier.add(AndreKriterierType.BERØRT_BEHANDLING);
+        }
+        if (erUtbetalingTilBruker(behandling)) {
+            this.andreKriterier.add(AndreKriterierType.UTBETALING_TIL_BRUKER);
+        }
+        if (erEndringssøknad(behandling)) {
+            this.andreKriterier.add(AndreKriterierType.ENDRINGSSØKNAD);
+        }
+        if (behandling.harFareSignaler()) {
+            this.andreKriterier.add(AndreKriterierType.VURDER_FARESIGNALER);
+        }
 
         var fpsakAksjonspunktWrapper = new FpsakAksjonspunktWrapper(behandling.getAksjonspunkter());
         andreKriterier.addAll(fpsakAksjonspunktWrapper.getKriterier());

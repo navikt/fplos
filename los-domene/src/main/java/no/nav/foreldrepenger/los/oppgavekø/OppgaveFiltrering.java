@@ -198,7 +198,7 @@ public class OppgaveFiltrering extends BaseEntitet {
         }
 
         public OppgaveFiltrering build(){
-            OppgaveFiltrering oppgaveFiltrering = tempOppgaveFiltrering;
+            var oppgaveFiltrering = tempOppgaveFiltrering;
             tempOppgaveFiltrering = new OppgaveFiltrering();
             return oppgaveFiltrering;
         }

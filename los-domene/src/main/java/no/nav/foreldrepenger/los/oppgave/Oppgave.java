@@ -292,7 +292,7 @@ public class Oppgave extends BaseEntitet {
         }
 
         public Oppgave build(){
-            Oppgave oppgave = tempOppgave;
+            var oppgave = tempOppgave;
             tempOppgave = new Oppgave();
             return oppgave;
         }

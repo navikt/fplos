@@ -59,7 +59,8 @@ public class AktørId implements Serializable, Comparable<AktørId> {
     public boolean equals(Object obj) {
         if (obj == this) {
             return true;
-        } else if (obj == null || !getClass().equals(obj.getClass())) {
+        }
+        if (obj == null || !getClass().equals(obj.getClass())) {
             return false;
         }
         var other = (AktørId) obj;

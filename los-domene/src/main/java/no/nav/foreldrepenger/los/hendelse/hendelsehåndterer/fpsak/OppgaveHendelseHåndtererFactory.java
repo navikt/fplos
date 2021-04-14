@@ -75,9 +75,8 @@ public class OppgaveHendelseHåndtererFactory {
         if (erIngenÅpne(aksjonspunkter)) {
             if (oppgaveHistorikk.erUtenHistorikk() || oppgaveHistorikk.erIngenÅpenOppgave()) {
                 return IKKE_RELEVANT_FOR_OPPGAVE_HENDELSE_HÅNDTERER;
-            } else {
-                return new LukkOppgaveHendelseHåndterer(oppgaveRepository, oppgaveStatistikk, behandlingFpsak);
             }
+            return new LukkOppgaveHendelseHåndterer(oppgaveRepository, oppgaveStatistikk, behandlingFpsak);
         }
 
         if (finn(Aksjonspunkt::erPåVent, aksjonspunkter)) {
@@ -104,9 +103,8 @@ public class OppgaveHendelseHåndtererFactory {
                 return oppgaveHistorikk.erSisteOpprettedeOppgaveTilBeslutter()
                         ? new ReturFraBeslutterHendelseHåndterer(oppgaveRepository, oppgaveEgenskapHåndterer, oppgaveStatistikk, behandlingFpsak)
                         : new OppdaterOppgaveegenskaperHendelseHåndterer(oppgaveRepository, oppgaveEgenskapHåndterer, oppgaveStatistikk, behandlingFpsak);
-            } else {
-                return new GjenåpneOppgaveHendelseHåndterer(oppgaveRepository, oppgaveEgenskapHåndterer, oppgaveStatistikk, behandlingFpsak);
             }
+            return new GjenåpneOppgaveHendelseHåndterer(oppgaveRepository, oppgaveEgenskapHåndterer, oppgaveStatistikk, behandlingFpsak);
         }
 
         return new GenerellOpprettOppgaveHendelseHåndterer(oppgaveRepository, oppgaveEgenskapHåndterer, oppgaveStatistikk, behandlingFpsak);

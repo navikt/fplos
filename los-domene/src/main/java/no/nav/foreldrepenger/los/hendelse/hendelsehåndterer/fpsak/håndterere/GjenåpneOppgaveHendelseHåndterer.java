@@ -88,7 +88,7 @@ public class GjenåpneOppgaveHendelseHåndterer implements FpsakHendelseHåndter
     }
 
     private void oppdaterOppgave(Oppgave oppgave) {
-        Oppgave tmp = oppgave(behandlingFpsak);
+        var tmp = oppgave(behandlingFpsak);
         oppgave.avstemMed(tmp);
         oppgaveRepository.lagre(oppgave);
     }

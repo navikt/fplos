@@ -24,9 +24,13 @@ public class Fødselsnummer {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Fødselsnummer that = (Fødselsnummer) o;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        var that = (Fødselsnummer) o;
         return fødselsnummer.equals(that.fødselsnummer);
     }
 

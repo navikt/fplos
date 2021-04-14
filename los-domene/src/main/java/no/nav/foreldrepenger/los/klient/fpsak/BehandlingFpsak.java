@@ -230,7 +230,7 @@ public class BehandlingFpsak {
         }
 
         public BehandlingFpsak build() {
-            BehandlingFpsak behandlingFpsak = new BehandlingFpsak();
+            var behandlingFpsak = new BehandlingFpsak();
             behandlingFpsak.ansvarligSaksbehandler = this.ansvarligSaksbehandler;
             behandlingFpsak.harRefusjonskravFraArbeidsgiver = this.harRefusjonskravFraArbeidsgiver;
             behandlingFpsak.aksjonspunkter = this.aksjonspunkter;

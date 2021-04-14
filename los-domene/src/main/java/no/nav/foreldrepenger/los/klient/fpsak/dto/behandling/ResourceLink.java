@@ -1,12 +1,12 @@
 package no.nav.foreldrepenger.los.klient.fpsak.dto.behandling;
 
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.sun.istack.NotNull;
-
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Objects;
+
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.sun.istack.NotNull;
 
 @JsonAutoDetect(getterVisibility = JsonAutoDetect.Visibility.NONE,
         setterVisibility = JsonAutoDetect.Visibility.NONE,
@@ -81,10 +81,11 @@ public class ResourceLink {
     public boolean equals(Object obj) {
         if (obj == this) {
             return true;
-        } else if (obj == null || !this.getClass().equals(obj.getClass())) {
+        }
+        if (obj == null || !this.getClass().equals(obj.getClass())) {
             return false;
         }
-        ResourceLink other = (ResourceLink) obj;
+        var other = (ResourceLink) obj;
         return Objects.equals(this.href, other.href)
                 && Objects.equals(this.rel, other.rel)
                 && Objects.equals(this.type, other.type);

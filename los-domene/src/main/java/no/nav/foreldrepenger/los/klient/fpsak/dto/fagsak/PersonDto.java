@@ -90,25 +90,30 @@ public class PersonDto {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o)
+        if (this == o) {
             return true;
-        if (!(o instanceof PersonDto))
+        }
+        if (!(o instanceof PersonDto)) {
             return false;
+        }
 
-        PersonDto personDto = (PersonDto) o;
+        var personDto = (PersonDto) o;
 
-        if (!navn.equals(personDto.navn))
+        if (!navn.equals(personDto.navn)) {
             return false;
-        if (!alder.equals(personDto.alder))
+        }
+        if (!alder.equals(personDto.alder)) {
             return false;
-        if (!personnummer.equals(personDto.personnummer))
+        }
+        if (!personnummer.equals(personDto.personnummer)) {
             return false;
+        }
         return erKvinne.equals(personDto.erKvinne);
     }
 
     @Override
     public int hashCode() {
-        int result = navn.hashCode();
+        var result = navn.hashCode();
         result = 31 * result + alder.hashCode();
         result = 31 * result + personnummer.hashCode();
         result = 31 * result + erKvinne.hashCode();

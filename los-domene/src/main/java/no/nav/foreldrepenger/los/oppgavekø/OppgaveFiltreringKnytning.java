@@ -38,8 +38,12 @@ public class OppgaveFiltreringKnytning {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         var that = (OppgaveFiltreringKnytning) o;
         return oppgaveId.equals(that.oppgaveId) && oppgaveFiltreringId.equals(that.oppgaveFiltreringId) && behandlingType == that.behandlingType;
     }

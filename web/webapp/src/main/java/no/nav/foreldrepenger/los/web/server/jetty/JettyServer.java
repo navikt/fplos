@@ -38,7 +38,7 @@ public class JettyServer extends AbstractJettyServer {
     public static void main(String[] args) throws Exception {
         JettyServer jettyServer;
         if (args.length > 0) {
-            int serverPort = Integer.parseUnsignedInt(args[0]);
+            var serverPort = Integer.parseUnsignedInt(args[0]);
             jettyServer = new JettyServer(serverPort);
         } else {
             jettyServer = new JettyServer();
@@ -69,7 +69,7 @@ public class JettyServer extends AbstractJettyServer {
 
     @Override
     protected WebAppContext createContext(AppKonfigurasjon appKonfigurasjon) throws IOException {
-        WebAppContext webAppContext = super.createContext(appKonfigurasjon);
+        var webAppContext = super.createContext(appKonfigurasjon);
         webAppContext.setParentLoaderPriority(true);
         updateMetaData(webAppContext.getMetaData());
         return webAppContext;
@@ -79,7 +79,7 @@ public class JettyServer extends AbstractJettyServer {
         // Find path to class-files while starting jetty from development environment.
         List<Class<?>> appClasses = Arrays.asList(ApplicationConfig.class, IssoApplication.class);
 
-        List<Resource> resources = appClasses.stream()
+        var resources = appClasses.stream()
                 .map(c -> Resource.newResource(c.getProtectionDomain().getCodeSource().getLocation()))
                 .distinct()
                 .collect(Collectors.toList());

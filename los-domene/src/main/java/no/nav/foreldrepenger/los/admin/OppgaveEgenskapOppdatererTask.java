@@ -1,16 +1,17 @@
 package no.nav.foreldrepenger.los.admin;
 
-import no.nav.foreldrepenger.los.oppgave.Oppgave;
-import no.nav.foreldrepenger.los.oppgave.OppgaveEgenskap;
-import no.nav.foreldrepenger.los.oppgave.OppgaveRepository;
-import no.nav.foreldrepenger.los.klient.fpsak.ForeldrepengerBehandlingKlient;
-import no.nav.vedtak.felles.prosesstask.api.ProsessTask;
-import no.nav.vedtak.felles.prosesstask.api.ProsessTaskData;
-import no.nav.vedtak.felles.prosesstask.api.ProsessTaskHandler;
+import java.util.List;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import java.util.List;
+
+import no.nav.foreldrepenger.los.klient.fpsak.ForeldrepengerBehandlingKlient;
+import no.nav.foreldrepenger.los.oppgave.Oppgave;
+import no.nav.foreldrepenger.los.oppgave.OppgaveEgenskap;
+import no.nav.foreldrepenger.los.oppgave.OppgaveRepository;
+import no.nav.vedtak.felles.prosesstask.api.ProsessTask;
+import no.nav.vedtak.felles.prosesstask.api.ProsessTaskData;
+import no.nav.vedtak.felles.prosesstask.api.ProsessTaskHandler;
 
 @ApplicationScoped
 @ProsessTask(OppgaveEgenskapOppdatererTask.TASKTYPE)
@@ -38,7 +39,7 @@ public class OppgaveEgenskapOppdatererTask implements ProsessTaskHandler {
         var oppgave = oppgaveRepository.hentOppgave(oppgaveId);
         var eksisterendeEgenskaper = oppgaveRepository.hentOppgaveEgenskaper(oppgaveId);
 
-        boolean eksistererAktivEgenskap = eksistererAktivEgenskap(eksisterendeEgenskaper, egenskapMapper);
+        var eksistererAktivEgenskap = eksistererAktivEgenskap(eksisterendeEgenskaper, egenskapMapper);
         if (oppgave.getAktiv() && !eksistererAktivEgenskap) {
             var behandling = fpsakKlient.getBehandling(oppgave.getBehandlingId());
             if (egenskapMapper.erEgenskapAktuell(behandling)) {
@@ -51,7 +52,7 @@ public class OppgaveEgenskapOppdatererTask implements ProsessTaskHandler {
     private static OppgaveEgenskap lagAktivEgenskap(Oppgave oppgave, List<OppgaveEgenskap> eksisterendeEgenskaper,
                                                     OppgaveEgenskapTypeMapper oppgaveEgenskapTypeMapper) {
         var type = oppgaveEgenskapTypeMapper.getType();
-        OppgaveEgenskap egenskap = eksisterendeEgenskaper.stream()
+        var egenskap = eksisterendeEgenskaper.stream()
                 .filter(oe -> oe.getAndreKriterierType().equals(type))
                 .findAny()
                 .orElseGet(() -> new OppgaveEgenskap(oppgave, type));

@@ -21,15 +21,14 @@ public final class RequestContextHandler {
         var requestContext = CDI.current().select(RequestContext.class, UnboundLiteral.INSTANCE).get();
         if (requestContext.isActive()) {
             return supplier.get();
-        } else {
+        }
 
-            try {
-                requestContext.activate();
-                return supplier.get();
-            } finally {
-                requestContext.invalidate();
-                requestContext.deactivate();
-            }
+        try {
+            requestContext.activate();
+            return supplier.get();
+        } finally {
+            requestContext.invalidate();
+            requestContext.deactivate();
         }
     }
 

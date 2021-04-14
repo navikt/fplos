@@ -51,7 +51,8 @@ public class EnhetstilgangConnection {
             if (e.getMessage().contains("http-kode '404'")) {
                 LOG.info("Finner ikke ident i Axsys, returnerer tomt resultat", e);
                 return Optional.empty();
-            } else throw e;
+            }
+            throw e;
         }
     }
 

@@ -77,8 +77,9 @@ public class AvdelingslederTjeneste {
             oppgaveRepository.lagre(new FiltreringBehandlingType(filtre, behandlingType));
         } else {
             oppgaveRepository.slettFiltreringBehandlingType(oppgavefiltreringId, behandlingType);
-            if (ingenBehandlingsTypeErValgtEtterAtTilbakekrevingErValgtBort(behandlingType, oppgavefiltreringId))
+            if (ingenBehandlingsTypeErValgtEtterAtTilbakekrevingErValgtBort(behandlingType, oppgavefiltreringId)) {
                 settStandardSorteringHvisTidligereTilbakebetaling(oppgavefiltreringId);
+            }
         }
         oppgaveRepository.refresh(filtre);
     }
@@ -144,7 +145,9 @@ public class AvdelingslederTjeneste {
     }
 
     private boolean ingenBehandlingsTypeErValgtEtterAtTilbakekrevingErValgtBort(BehandlingType behandlingType, Long oppgavefiltreringId) {
-        if (!behandlingType.gjelderTilbakebetaling()) return false;
+        if (!behandlingType.gjelderTilbakebetaling()) {
+            return false;
+        }
         var filter = hentFiltrering(oppgavefiltreringId);
         return filter.getFiltreringBehandlingTyper().isEmpty();
     }

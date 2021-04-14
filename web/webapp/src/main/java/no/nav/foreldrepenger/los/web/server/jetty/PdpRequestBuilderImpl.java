@@ -57,8 +57,9 @@ public class PdpRequestBuilderImpl implements PdpRequestBuilder {
         Set<Long> oppgaveIdList = attributter.getVerdier(FplosAbacAttributtType.OPPGAVE_ID);
         Set<UUID> behandlingIdList = attributter.getVerdier(StandardAbacAttributtType.BEHANDLING_UUID);
 
-        if (oppgaveIdList.size() > 0 && behandlingIdList.size() > 0)
+        if (oppgaveIdList.size() > 0 && behandlingIdList.size() > 0) {
             throw PdpRequestBuilderFeil.støtterIkkeBådeOppgaveIdOgBehandlingId();
+        }
 
         if (oppgaveIdList.size() > 0) {
             var oppgave = oppgaveTjeneste.hentOppgave(oppgaveIdList.iterator().next());
@@ -76,12 +77,13 @@ public class PdpRequestBuilderImpl implements PdpRequestBuilder {
 
     private void leggTilAttributterForBehandling(PdpRequest pdpRequest, Oppgave oppgave) {
         var system = oppgave.getSystem();
-        if ("FPSAK".equals(system))
+        if ("FPSAK".equals(system)) {
             leggTilAttributterForFpsakBehandling(pdpRequest, oppgave);
-        else if ("FPTILBAKE".equals(system))
+        } else if ("FPTILBAKE".equals(system)) {
             leggTilAttributterForFptilbakeBehandling(pdpRequest, oppgave);
-        else
+        } else {
             throw PdpRequestBuilderFeil.ukjentSystem(system);
+        }
     }
 
     private void leggTilAttributterForFpsakBehandling(PdpRequest pdpRequest, Oppgave oppgave) {

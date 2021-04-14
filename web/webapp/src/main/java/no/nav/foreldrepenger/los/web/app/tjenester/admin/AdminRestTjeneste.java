@@ -102,7 +102,7 @@ public class AdminRestTjeneste {
     @BeskyttetRessurs(action = READ, resource = AbacAttributter.OPPGAVESTYRING)
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
     public List<OppgaveDto> hentAlleOppgaverForBehandling(@NotNull @QueryParam("behandlingId") @Valid BehandlingIdDto behandlingId) {
-        List<Oppgave> oppgaver = adminTjeneste.hentAlleOppgaverForBehandling(behandlingId.getValue());
+        var oppgaver = adminTjeneste.hentAlleOppgaverForBehandling(behandlingId.getValue());
         return oppgaver.stream()
                 .map(this::map)
                 .collect(toList());

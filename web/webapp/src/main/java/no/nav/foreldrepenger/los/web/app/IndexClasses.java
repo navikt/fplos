@@ -47,9 +47,8 @@ public class IndexClasses {
         if ("file".equals(scanLocation.getScheme())) {
             // må regenerere index fra fil system i IDE ved å scanne dir, ellers kan den mulig være utdatert (når kjører Jetty i IDE f.eks)
             return scanIndexFromFilesystem(scanLocation);
-        } else {
-            return getPersistedJandexIndex(scanLocation);
         }
+        return getPersistedJandexIndex(scanLocation);
 
     }
 

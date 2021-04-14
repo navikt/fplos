@@ -61,7 +61,9 @@ public class PersonTjeneste {
 
     public Optional<Person> hentPerson(AktørId aktørId) {
         Objects.requireNonNull(aktørId, "aktørId");
-        if (cacheAktørIdTilPerson.get(aktørId) != null) return Optional.of(cacheAktørIdTilPerson.get(aktørId));
+        if (cacheAktørIdTilPerson.get(aktørId) != null) {
+            return Optional.of(cacheAktørIdTilPerson.get(aktørId));
+        }
         try {
             var person = tilPerson(hentPdlPerson(aktørId));
             cacheAktørIdTilPerson.put(aktørId, person);
@@ -118,8 +120,9 @@ public class PersonTjeneste {
     }
 
     private static String navn(Navn navn) {
-        if (navn.getForkortetNavn() != null)
+        if (navn.getForkortetNavn() != null) {
             return navn.getForkortetNavn();
+        }
         return navn.getEtternavn() + " " + navn.getFornavn() + (navn.getMellomnavn() == null ? "" : " " + navn.getMellomnavn());
     }
 
@@ -147,8 +150,9 @@ public class PersonTjeneste {
                 .findFirst().orElse(null);
 
         // TODO: lag kodeverk som passer med losfront sin diskresjonskodeType.ts - trenger bare disse 2
-        if (AdressebeskyttelseGradering.STRENGT_FORTROLIG.equals(kode) || AdressebeskyttelseGradering.STRENGT_FORTROLIG_UTLAND.equals(kode))
+        if (AdressebeskyttelseGradering.STRENGT_FORTROLIG.equals(kode) || AdressebeskyttelseGradering.STRENGT_FORTROLIG_UTLAND.equals(kode)) {
             return "SPSF";
+        }
         return AdressebeskyttelseGradering.FORTROLIG.equals(kode) ? "SPFO" : null;
     }
 }

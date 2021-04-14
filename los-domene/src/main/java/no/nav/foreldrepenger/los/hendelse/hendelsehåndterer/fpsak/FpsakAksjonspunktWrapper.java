@@ -16,10 +16,18 @@ public class FpsakAksjonspunktWrapper {
 
     public FpsakAksjonspunktWrapper(List<Aksjonspunkt> aksjonspunkt) {
         this.aksjonspunkt = aksjonspunkt;
-        if (finn(Aksjonspunkt::erTilBeslutter)) kriterier.add(AndreKriterierType.TIL_BESLUTTER);
-        if (finn(Aksjonspunkt::erRegistrerPapirSøknad)) kriterier.add(AndreKriterierType.PAPIRSØKNAD);
-        if (finn(Aksjonspunkt::erUtenlandssak)) kriterier.add(AndreKriterierType.UTLANDSSAK);
-        if (finn(Aksjonspunkt::erVurderFormkrav)) kriterier.add(AndreKriterierType.VURDER_FORMKRAV);
+        if (finn(Aksjonspunkt::erTilBeslutter)) {
+            kriterier.add(AndreKriterierType.TIL_BESLUTTER);
+        }
+        if (finn(Aksjonspunkt::erRegistrerPapirSøknad)) {
+            kriterier.add(AndreKriterierType.PAPIRSØKNAD);
+        }
+        if (finn(Aksjonspunkt::erUtenlandssak)) {
+            kriterier.add(AndreKriterierType.UTLANDSSAK);
+        }
+        if (finn(Aksjonspunkt::erVurderFormkrav)) {
+            kriterier.add(AndreKriterierType.VURDER_FORMKRAV);
+        }
     }
 
     public List<AndreKriterierType> getKriterier() {

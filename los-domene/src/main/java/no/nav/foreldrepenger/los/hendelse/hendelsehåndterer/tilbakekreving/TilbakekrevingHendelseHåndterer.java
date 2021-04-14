@@ -110,22 +110,25 @@ public class TilbakekrevingHendelseHåndterer {
 
         if (aktivManuellVent(aksjonspunkter)) {
             return EventResultat.LUKK_OPPGAVE_MANUELT_VENT;
-        } else if (harAktiveAksjonspunkt(aksjonspunkter) && oppgaveHistorikk.erÅpenOppgave()) {
+        }
+        if (harAktiveAksjonspunkt(aksjonspunkter) && oppgaveHistorikk.erÅpenOppgave()) {
             if (erTilBeslutter && !oppgaveHistorikk.erSisteOpprettedeOppgaveTilBeslutter()) {
                 return EventResultat.OPPRETT_BESLUTTER_OPPGAVE;
-            } else if (erTilBeslutter) {
-                return oppgaveHistorikk.erSisteOppgaveRegistrertPåEnhet(behandlendeEnhet)
-                        ? EventResultat.OPPDATER_ÅPEN_OPPGAVE
-                        : EventResultat.OPPRETT_OPPGAVE;
-            } else if (oppgaveHistorikk.erSisteOpprettedeOppgaveTilBeslutter()) {
-                // ikke til beslutter pt, dermed retur fra beslutter
-                return EventResultat.OPPRETT_OPPGAVE;
-            } else {
+            }
+            if (erTilBeslutter) {
                 return oppgaveHistorikk.erSisteOppgaveRegistrertPåEnhet(behandlendeEnhet)
                         ? EventResultat.OPPDATER_ÅPEN_OPPGAVE
                         : EventResultat.OPPRETT_OPPGAVE;
             }
-        } else if (harAktiveAksjonspunkt(aksjonspunkter)) {
+            if (oppgaveHistorikk.erSisteOpprettedeOppgaveTilBeslutter()) {
+                // ikke til beslutter pt, dermed retur fra beslutter
+                return EventResultat.OPPRETT_OPPGAVE;
+            }
+            return oppgaveHistorikk.erSisteOppgaveRegistrertPåEnhet(behandlendeEnhet)
+                        ? EventResultat.OPPDATER_ÅPEN_OPPGAVE
+                        : EventResultat.OPPRETT_OPPGAVE;
+        }
+        if (harAktiveAksjonspunkt(aksjonspunkter)) {
             return EventResultat.OPPRETT_OPPGAVE;
         }
         return EventResultat.LUKK_OPPGAVE;

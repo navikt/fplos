@@ -145,9 +145,8 @@ public class ForeldrepengerBehandlingKlient {
             var kontrollerFaktaData = hentFraResourceLink(uttakLink.get(), KontrollerFaktaDataDto.class);
             if (kontrollerFaktaData.isPresent()) {
                 return new UttakEgenskaper(harVurderSykdom(kontrollerFaktaData.get()), harGraderingFra(kontrollerFaktaData.get()));
-            } else {
-                LOG.warn("Kunne ikke hente gradering for behandlingId " + behandlingId);
             }
+            LOG.warn("Kunne ikke hente gradering for behandlingId " + behandlingId);
         }
         return null;
     }

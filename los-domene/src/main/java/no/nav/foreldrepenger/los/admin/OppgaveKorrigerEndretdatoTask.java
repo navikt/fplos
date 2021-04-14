@@ -79,10 +79,9 @@ public class OppgaveKorrigerEndretdatoTask implements ProsessTaskHandler {
         if (candidate.type.equals(type)) {
             if (eventer.size() == 1) {
                 return Optional.of(candidate);
-            } else {
-                var nextCandidate = finnEldreDuplikatEvent(eventer.subList(1, eventer.size()), type);
-                return nextCandidate.isPresent() ? nextCandidate : Optional.of(candidate);
             }
+            var nextCandidate = finnEldreDuplikatEvent(eventer.subList(1, eventer.size()), type);
+            return nextCandidate.isPresent() ? nextCandidate : Optional.of(candidate);
         }
         return Optional.empty();
     }

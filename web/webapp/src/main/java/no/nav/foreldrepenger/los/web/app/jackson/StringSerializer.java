@@ -32,20 +32,20 @@ public class StringSerializer extends StdScalarSerializer<Object> {
     @Deprecated
     @Override
     public boolean isEmpty(Object value) {
-        String str = (String) value;
+        var str = (String) value;
         return str == null || str.length() == 0;
     }
 
     @Override
     public boolean isEmpty(SerializerProvider prov, Object value) {
-        String str = (String) value;
+        var str = (String) value;
         return str == null || str.length() == 0;
     }
 
     @Override
     public void serialize(Object value, JsonGenerator gen, SerializerProvider provider) throws IOException {
-        String originalValue = (String) value;
-        String encodedValue = Encode.forHtml(originalValue);
+        var originalValue = (String) value;
+        var encodedValue = Encode.forHtml(originalValue);
         if (!originalValue.equals(encodedValue)) {
             LOG.trace("Encoding av jsonString : fra '{}' til '{}'", LoggerUtils.removeLineBreaks(originalValue), LoggerUtils.removeLineBreaks(encodedValue)); //NOSONAR
         }

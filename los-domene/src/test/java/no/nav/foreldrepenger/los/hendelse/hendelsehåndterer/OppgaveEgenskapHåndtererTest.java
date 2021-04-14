@@ -116,7 +116,7 @@ public class OppgaveEgenskapHåndtererTest {
     }
 
     private Oppgave lagOppgave() {
-        Oppgave oppgave = Oppgave.builder()
+        var oppgave = Oppgave.builder()
                 .medFagsakSaksnummer(42L)
                 .medBehandlingId(BEHANDLING_ID)
                 .medAktorId(1L)

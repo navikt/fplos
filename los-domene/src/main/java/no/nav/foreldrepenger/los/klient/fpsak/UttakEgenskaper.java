@@ -29,8 +29,12 @@ public class UttakEgenskaper {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         var that = (UttakEgenskaper) o;
         return vurderSykdom == that.vurderSykdom &&
                 gradering == that.gradering;

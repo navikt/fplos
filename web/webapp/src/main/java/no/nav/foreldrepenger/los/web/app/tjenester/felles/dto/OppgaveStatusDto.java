@@ -1,9 +1,9 @@
 package no.nav.foreldrepenger.los.web.app.tjenester.felles.dto;
 
+import java.time.LocalDateTime;
+
 import no.nav.foreldrepenger.los.reservasjon.Reservasjon;
 import no.nav.vedtak.sikkerhet.context.SubjectHandler;
-
-import java.time.LocalDateTime;
 
 public class OppgaveStatusDto {
 
@@ -15,7 +15,7 @@ public class OppgaveStatusDto {
     private FlyttetReservasjonDto flyttetReservasjon;
 
     static OppgaveStatusDto reservert(Reservasjon reservasjon, String reservertAvNavn, String navnFlyttetAv) {
-        ReservasjonDto reservasjonDto = new ReservasjonDto(reservasjon, reservertAvNavn, navnFlyttetAv);
+        var reservasjonDto = new ReservasjonDto(reservasjon, reservertAvNavn, navnFlyttetAv);
         return new OppgaveStatusDto(true, reservasjonDto);
     }
 

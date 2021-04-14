@@ -45,8 +45,12 @@ public class SaksbehandlerBrukerIdentDto implements AbacDto {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof SaksbehandlerBrukerIdentDto)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof SaksbehandlerBrukerIdentDto)) {
+            return false;
+        }
 
         var dto = (SaksbehandlerBrukerIdentDto) o;
         return brukerIdent.equals(dto.brukerIdent);

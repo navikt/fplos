@@ -117,7 +117,8 @@ public class RestApiInputValideringDtoTest extends RestApiTester {
         var type = field.getType();
         if (field.getType().isEnum()) {
             return Collections.singletonList(Collections.singletonList(Valid.class));
-        } else if (Collection.class.isAssignableFrom(type) || Map.class.isAssignableFrom(type)) {
+        }
+        if (Collection.class.isAssignableFrom(type) || Map.class.isAssignableFrom(type)) {
             if (brukerGenerics(field)) {
                 var args = ((ParameterizedType) field.getGenericType()).getActualTypeArguments();
                 if (Arrays.stream(args).allMatch(UNNTATT_FRA_VALIDERING::containsKey)) {
