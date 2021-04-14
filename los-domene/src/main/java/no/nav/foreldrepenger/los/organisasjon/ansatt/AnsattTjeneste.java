@@ -42,8 +42,8 @@ public class AnsattTjeneste {
         }
         return enhetstilgangTjeneste.hentEnhetstilganger(ident)
                 .stream()
-                .filter(oe -> aktuelleEnhetIder.contains(oe.getEnhetId()))
-                .map(OrganisasjonsEnhet::getEnhetNavn)
+                .filter(oe -> aktuelleEnhetIder.contains(oe.id()))
+                .map(OrganisasjonsEnhet::navn)
                 .collect(Collectors.toList());
     }
 

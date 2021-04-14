@@ -7,7 +7,7 @@ import no.nav.foreldrepenger.los.felles.Kodeverdi;
 
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;
-import java.util.Arrays;
+
 import java.util.Map;
 import java.util.Optional;
 

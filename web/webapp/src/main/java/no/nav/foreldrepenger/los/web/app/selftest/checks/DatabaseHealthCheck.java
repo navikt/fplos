@@ -1,9 +1,7 @@
 package no.nav.foreldrepenger.los.web.app.selftest.checks;
 
 import java.sql.Connection;
-import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.Locale;
 
 import javax.enterprise.context.ApplicationScoped;

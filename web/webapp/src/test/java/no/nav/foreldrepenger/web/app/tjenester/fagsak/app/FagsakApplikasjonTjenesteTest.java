@@ -36,7 +36,6 @@ public class FagsakApplikasjonTjenesteTest {
 
     private static final Fødselsnummer FNR = new Fødselsnummer("12345678901");
     private static final String SAKSNUMMER = "123";
-    private static final boolean ER_KVINNE = true;
 
     private FagsakApplikasjonTjeneste fagsakTjeneste;
     private ForeldrepengerFagsakKlient fagsakKlient;
@@ -51,19 +50,19 @@ public class FagsakApplikasjonTjenesteTest {
 
     @Test
     public void skal_hente_saker_på_fnr() {
-        var fagsakDto = new FagsakDto(AktørId.dummy().getId(), FNR.asValue(), FagsakYtelseTypeDto.FORELDREPENGER,
+        var fagsakDto = new FagsakDto(AktørId.dummy().getId(), FNR.value(), FagsakYtelseTypeDto.FORELDREPENGER,
                 FagsakStatus.OPPRETTET, LocalDate.of(2017, Month.FEBRUARY, 1));
         var personDto = new Person.Builder().medNavn("TEST")
                 .medFødselsdato(LocalDate.now().minusYears(20))
                 .medFnr(FNR)
                 .medKjønn(NavBrukerKjønn.K)
                 .build();
-        when(fagsakKlient.finnFagsaker(FNR.asValue())).thenReturn(Collections.singletonList(fagsakDto));
+        when(fagsakKlient.finnFagsaker(FNR.value())).thenReturn(Collections.singletonList(fagsakDto));
         when(personTjeneste.hentPerson(any())).thenReturn(Optional.of(personDto));
         var fødselsdatoBarn = LocalDate.of(2017, Month.FEBRUARY, 1);
 
         // Act
-        var fagsakDtos = fagsakTjeneste.hentSaker(FNR.asValue());
+        var fagsakDtos = fagsakTjeneste.hentSaker(FNR.value());
 
         // Assert
         assertThat(fagsakDtos.isEmpty()).isFalse();
@@ -125,7 +124,7 @@ public class FagsakApplikasjonTjenesteTest {
     @Test
     public void skal_returnere_tomt_view_ved_403_fra_fpsak_ved_fnrsøk() {
         when(fagsakKlient.finnFagsaker(any())).thenThrow(manglerTilgangException());
-        var view = fagsakTjeneste.hentSaker(FNR.asValue());
+        var view = fagsakTjeneste.hentSaker(FNR.value());
         assertThat(view).isEmpty();
     }
 

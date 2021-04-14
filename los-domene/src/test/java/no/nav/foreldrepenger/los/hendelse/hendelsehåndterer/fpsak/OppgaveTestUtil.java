@@ -1,16 +1,17 @@
 package no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
+
 import no.nav.foreldrepenger.los.domene.typer.BehandlingId;
+import no.nav.foreldrepenger.los.domene.typer.Saksnummer;
 import no.nav.foreldrepenger.los.domene.typer.aktør.AktørId;
 import no.nav.foreldrepenger.los.klient.fpsak.Aksjonspunkt;
 import no.nav.foreldrepenger.los.klient.fpsak.BehandlingFpsak;
 import no.nav.foreldrepenger.los.klient.fpsak.Lazy;
 import no.nav.foreldrepenger.los.oppgave.BehandlingType;
 import no.nav.foreldrepenger.los.oppgave.FagsakYtelseType;
-
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.List;
 
 public class OppgaveTestUtil {
 
@@ -34,7 +35,7 @@ public class OppgaveTestUtil {
                 .medAksjonspunkter(new Lazy<>(OppgaveTestUtil::aksjonspunkter))
                 .medStatus("OPPRE")
                 .build();
-        behandlingFpsak.setSaksnummer("1234");
+        behandlingFpsak.setSaksnummer(new Saksnummer("1234"));
         behandlingFpsak.setAktørId(aktørId.getId());
         behandlingFpsak.setYtelseType(FagsakYtelseType.FORELDREPENGER);
         return behandlingFpsak;

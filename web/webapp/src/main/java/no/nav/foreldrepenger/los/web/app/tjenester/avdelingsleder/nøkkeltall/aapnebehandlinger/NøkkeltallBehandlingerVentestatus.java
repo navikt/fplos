@@ -1,7 +1,7 @@
 package no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.nøkkeltall.aapnebehandlinger;
 
 import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.nøkkeltall.aapnebehandlinger.dto.NøkkeltallBehandlingVentestatusDto;
-import no.nav.vedtak.felles.integrasjon.rest.jersey.Jersey;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

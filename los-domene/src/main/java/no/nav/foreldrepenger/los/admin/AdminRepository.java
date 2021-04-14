@@ -31,7 +31,7 @@ public class AdminRepository {
     public List<Oppgave> hentOppgaver(Saksnummer saksnummer) {
         return entityManager.createQuery(SELECT_FRA_OPPGAVE +
                 "WHERE o.fagsakSaksnummer = :saksnummer", Oppgave.class)
-                .setParameter("saksnummer", Long.valueOf(saksnummer.getVerdi()))
+                .setParameter("saksnummer", saksnummer.longValue())
                 .getResultList();
     }
 

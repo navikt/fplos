@@ -1,5 +1,14 @@
 package no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.håndterere;
 
+import static no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.OppgaveUtil.oppgave;
+
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.util.Optional;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.OppgaveEgenskapHåndterer;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.FpsakHendelseHåndterer;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.FpsakOppgaveEgenskapFinner;
@@ -11,15 +20,8 @@ import no.nav.foreldrepenger.los.oppgave.OppgaveRepository;
 import no.nav.foreldrepenger.los.reservasjon.Reservasjon;
 import no.nav.foreldrepenger.los.statistikk.statistikk_ny.KøOppgaveHendelse;
 import no.nav.foreldrepenger.los.statistikk.statistikk_ny.OppgaveStatistikk;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import java.time.Duration;
-import java.time.LocalDateTime;
-import java.util.Optional;
-
-import static no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.OppgaveUtil.oppgave;
-
+@SuppressWarnings("ClassCanBeRecord")
 public class GjenåpneOppgaveHendelseHåndterer implements FpsakHendelseHåndterer {
     private static final Logger LOG = LoggerFactory.getLogger(GjenåpneOppgaveHendelseHåndterer.class);
 

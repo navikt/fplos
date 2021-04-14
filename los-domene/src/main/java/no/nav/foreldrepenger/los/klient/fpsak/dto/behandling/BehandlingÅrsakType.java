@@ -1,16 +1,16 @@
 package no.nav.foreldrepenger.los.klient.fpsak.dto.behandling;
 
+import java.util.Arrays;
+
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-
-import java.util.Arrays;
 
 public enum BehandlingÅrsakType {
     BERØRT_BEHANDLING("BERØRT-BEHANDLING", "Endring i den andre forelderens uttak"),
     RE_ENDRING_FRA_BRUKER("RE-END-FRA-BRUKER", "Endringssøknad fra bruker");
 
-    private String navn;
-    private String kode;
+    private final String navn;
+    private final String kode;
 
     BehandlingÅrsakType(String kode, String navn) {
         this.navn = navn;

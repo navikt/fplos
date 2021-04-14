@@ -13,6 +13,7 @@ import no.nav.vedtak.log.mdc.MDCOperations;
 /**
  * Dependent scope siden vi lukker denne når vi er ferdig.
  */
+@SuppressWarnings("ClassCanBeRecord")
 @Dependent
 class AppStartupInfoLogger {
 
@@ -49,7 +50,7 @@ class AppStartupInfoLogger {
 
         log(selftestsResultat);
 
-        log(APPLIKASJONENS_STATUS + ": {}", getStatus(selftestsResultat.isReady()));
+        log(APPLIKASJONENS_STATUS + ": {}", getStatus(selftestsResultat.ready()));
         log(SELFTEST + " " + SLUTT);
     }
 
@@ -59,9 +60,9 @@ class AppStartupInfoLogger {
 
     private static void log(Selftests.Resultat result) {
         LOG.info("FP-753409: Selftest {}: {}. Endpoint: {}.",
-                getStatus(result.isReady()),
-                result.getDescription(),
-                result.getEndpoint());
+                getStatus(result.ready()),
+                result.description(),
+                result.endpoint());
     }
 
     private static String getStatus(boolean isHealthy) {

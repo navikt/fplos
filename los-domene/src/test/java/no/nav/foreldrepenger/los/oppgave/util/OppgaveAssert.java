@@ -1,18 +1,20 @@
 package no.nav.foreldrepenger.los.oppgave.util;
 
-import no.nav.foreldrepenger.los.domene.typer.BehandlingId;
-import no.nav.foreldrepenger.los.domene.typer.aktør.AktørId;
-import no.nav.foreldrepenger.los.oppgave.BehandlingStatus;
-import no.nav.foreldrepenger.los.oppgave.BehandlingType;
-import no.nav.foreldrepenger.los.oppgave.FagsakYtelseType;
-import no.nav.foreldrepenger.los.oppgave.Oppgave;
-import org.assertj.core.api.AbstractAssert;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import org.assertj.core.api.AbstractAssert;
+
+import no.nav.foreldrepenger.los.domene.typer.BehandlingId;
+import no.nav.foreldrepenger.los.domene.typer.Saksnummer;
+import no.nav.foreldrepenger.los.domene.typer.aktør.AktørId;
+import no.nav.foreldrepenger.los.oppgave.BehandlingStatus;
+import no.nav.foreldrepenger.los.oppgave.BehandlingType;
+import no.nav.foreldrepenger.los.oppgave.FagsakYtelseType;
+import no.nav.foreldrepenger.los.oppgave.Oppgave;
 
 public class OppgaveAssert extends AbstractAssert<OppgaveAssert, Oppgave> {
 
@@ -24,12 +26,12 @@ public class OppgaveAssert extends AbstractAssert<OppgaveAssert, Oppgave> {
         return new OppgaveAssert(actual);
     }
 
-    public OppgaveAssert harSaksnummer(Long saksnummer) {
+    public OppgaveAssert harSaksnummer(Saksnummer saksnummer) {
         isNotNull();
         assertThat(actual.getFagsakSaksnummer())
                 .overridingErrorMessage("Forventet saksnummer <%s> men fikk <%s>",
                         saksnummer, actual.getFagsakSaksnummer())
-                .isEqualTo(saksnummer);
+                .isEqualTo(saksnummer.longValue());
         return this;
     }
 

@@ -24,10 +24,10 @@ import no.nav.foreldrepenger.los.klient.fpsak.dto.KontrollerFaktaDataDto;
 import no.nav.foreldrepenger.los.klient.fpsak.dto.KontrollerFaktaPeriodeDto;
 import no.nav.foreldrepenger.los.klient.fpsak.dto.KontrollresultatDto;
 import no.nav.foreldrepenger.los.klient.fpsak.dto.aksjonspunkt.AksjonspunktDto;
+import no.nav.foreldrepenger.los.klient.fpsak.dto.behandling.BehandlingDto;
 import no.nav.foreldrepenger.los.klient.fpsak.dto.behandling.BehandlingÅrsakDto;
 import no.nav.foreldrepenger.los.klient.fpsak.dto.behandling.BehandlingÅrsakType;
 import no.nav.foreldrepenger.los.klient.fpsak.dto.behandling.ResourceLink;
-import no.nav.foreldrepenger.los.klient.fpsak.dto.behandling.UtvidetBehandlingDto;
 import no.nav.foreldrepenger.los.klient.fpsak.dto.inntektarbeidytelse.Beløp;
 import no.nav.foreldrepenger.los.klient.fpsak.dto.inntektarbeidytelse.InntektArbeidYtelseDto;
 import no.nav.foreldrepenger.los.klient.fpsak.dto.inntektarbeidytelse.InntektsmeldingDto;
@@ -64,18 +64,18 @@ public class ForeldrepengerBehandlingKlient {
 
     public BehandlingFpsak getBehandling(BehandlingId behandlingId) {
         var uri = behandlingUri(behandlingId.toString());
-        var behandlingDto = oidcRestClient.get(uri, UtvidetBehandlingDto.class);
-        var links = behandlingDto.getLinks();
+        var behandlingDto = oidcRestClient.get(uri, BehandlingDto.class);
+        var links = behandlingDto.links();
         var builder = BehandlingFpsak.builder()
-                .medBehandlingType(behandlingDto.getType())
-                .medBehandlingId(new BehandlingId(behandlingDto.getUuid()))
-                .medBehandlingOpprettet(behandlingDto.getOpprettet())
-                .medBehandlendeEnhetId(behandlingDto.getBehandlendeEnhetId())
-                .medStatus(behandlingDto.getStatus().getKode())
-                .medAnsvarligSaksbehandler(behandlingDto.getAnsvarligSaksbehandler())
+                .medBehandlingType(behandlingDto.type())
+                .medBehandlingId(new BehandlingId(behandlingDto.uuid()))
+                .medBehandlingOpprettet(behandlingDto.opprettet())
+                .medBehandlendeEnhetId(behandlingDto.behandlendeEnhetId())
+                .medStatus(behandlingDto.status().getKode())
+                .medAnsvarligSaksbehandler(behandlingDto.ansvarligSaksbehandler())
                 .medHarRefusjonskravFraArbeidsgiver(new Lazy<>(() -> hentHarRefusjonskrav(links)))
                 .medAksjonspunkter(new Lazy<>(() -> hentAksjonspunkter(links)))
-                .medBehandlingstidFrist(behandlingDto.getBehandlingsfristTid())
+                .medBehandlingstidFrist(behandlingDto.behandlingsfristTid())
                 .medFørsteUttaksdag(new Lazy<>(() -> hentFørsteUttaksdato(links)))
                 .medErBerørtBehandling(harBehandlingÅrsakType(behandlingDto, BehandlingÅrsakType.BERØRT_BEHANDLING))
                 .medErEndringssøknad(harBehandlingÅrsakType(behandlingDto, BehandlingÅrsakType.RE_ENDRING_FRA_BRUKER))
@@ -84,16 +84,16 @@ public class ForeldrepengerBehandlingKlient {
         return builder.build();
     }
 
-    public UtvidetBehandlingDto hentUtvidetBehandlingDto(String behandlingId) {
+    public BehandlingDto hentUtvidetBehandlingDto(String behandlingId) {
         var uri = behandlingUri(behandlingId);
-        return oidcRestClient.get(uri, UtvidetBehandlingDto.class);
+        return oidcRestClient.get(uri, BehandlingDto.class);
     }
 
     public Optional<Long> getFpsakInternBehandlingId(BehandlingId eksternBehandlingId) {
         var uri = behandlingUri(eksternBehandlingId.toString());
         try {
-            var behandlingDto = oidcRestClient.get(uri, UtvidetBehandlingDto.class);
-            return Optional.ofNullable(behandlingDto.getId());
+            var behandlingDto = oidcRestClient.get(uri, BehandlingDto.class);
+            return Optional.ofNullable(behandlingDto.id());
         } catch (ManglerTilgangException e) {
             throw new InternIdMappingException(eksternBehandlingId);
         }
@@ -109,11 +109,10 @@ public class ForeldrepengerBehandlingKlient {
         }
     }
 
-    private static boolean harBehandlingÅrsakType(UtvidetBehandlingDto dto, BehandlingÅrsakType type) {
-        return Optional.ofNullable(dto.getBehandlingÅrsaker())
-                .orElseGet(Collections::emptyList)
+    private static boolean harBehandlingÅrsakType(BehandlingDto dto, BehandlingÅrsakType type) {
+        return dto.behandlingÅrsaker()
                 .stream()
-                .map(BehandlingÅrsakDto::getBehandlingÅrsakType)
+                .map(BehandlingÅrsakDto::behandlingÅrsakType)
                 .filter(Objects::nonNull)
                 .anyMatch(t -> t.equals(type));
     }
@@ -191,9 +190,7 @@ public class ForeldrepengerBehandlingKlient {
     }
 
     private static Optional<ResourceLink> velgLink(List<ResourceLink> links, String typeLink) {
-        return Optional.ofNullable(links)
-                .orElseGet(Collections::emptyList)
-                .stream()
+        return links.stream()
                 .filter(l -> l.getRel().equals(typeLink))
                 .findFirst();
     }

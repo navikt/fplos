@@ -49,7 +49,7 @@ public class PersonDto {
     public PersonDto(Person person) {
         this.navn = person.getNavn();
         this.alder = (int) ChronoUnit.YEARS.between(person.getFødselsdato(), LocalDate.now());
-        this.personnummer = person.getFødselsnummer().asValue();
+        this.personnummer = person.getFødselsnummer().value();
         this.erKvinne = NavBrukerKjønn.K.equals(person.getKjønn());
         this.diskresjonskode = person.getDiskresjonskode();
         this.dodsdato = person.getDødsdato();

@@ -48,7 +48,7 @@ public class OppgaveDto {
 
     private void leggTilPersonInformasjon(Person person) {
         this.navn = person.getNavn();
-        this.personnummer = person.getFødselsnummer().asValue();
+        this.personnummer = person.getFødselsnummer().value();
     }
 
     public Long getId() {

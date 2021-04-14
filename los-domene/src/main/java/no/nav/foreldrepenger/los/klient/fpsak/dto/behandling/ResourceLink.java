@@ -15,17 +15,17 @@ public class ResourceLink {
 
     @JsonProperty("href")
     @NotNull
-    private URI href;
+    private final URI href;
 
     /** Link relationship type. */
     @JsonProperty("rel")
     @NotNull
-    private String rel;
+    private final String rel;
 
     /** Http Method type. */
     @JsonProperty("type")
     @NotNull
-    private HttpMethod type;
+    private final HttpMethod type;
 
     @JsonProperty("requestPayload")
     private Object requestPayload;
