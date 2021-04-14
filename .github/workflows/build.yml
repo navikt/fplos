@@ -5,12 +5,7 @@ on:
     branches:
       - master
 env:
-  APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
-  ORACLE_IMAGE: docker.pkg.github.com/navikt/fpsak-autotest/oracle-flattened
-  CLUSTER: dev-fss
-  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  GH_ACCESS_TOKEN: ${{ secrets.NOTIFICATION }}
-  IMAGE_BASE: docker.pkg.github.com/${{ github.repository }}/fplos
+  IMAGE_BASE: ghcr.io/${{ github.repository }}
 
 jobs:
   build:
@@ -21,37 +16,38 @@ jobs:
         uses: actions/checkout@v2
       - run:  git fetch --prune --unshallow
 
-      - name: Cache maven repository
-        uses: actions/cache@v1
+      - name: Henter maven avhengigheter som er cachet
+        uses: actions/cache@v2.1.4
         with:
           path: ~/.m2/repository
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-maven-
 
-      - name: Setup Java 16
-        uses: actions/setup-java@v1
+      - uses: actions/setup-java@v2
         with:
-          java-version: 1.16
+          distribution: 'adopt'
+          java-version: 16
 
       - name: Sette opp Node
         uses: actions/setup-node@v1
         with:
           node-version: 12.x
 
-      - name: Hent tag
-        run: |
-          echo "BUILD_VERSION=$(date +%Y.%m.%d.%H%M%S)-$(echo $GITHUB_SHA | cut -c1-7)" >> $GITHUB_ENV
+      - name: Log into ghcr registry
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
       - name: Hent og start Oracle image
         id: oracle
         shell: bash
         run: |
-          echo  $GH_ACCESS_TOKEN | docker login --username "x-access-token" --password-stdin https://docker.pkg.github.com
-          echo "Henter og starter Oracle image $ORACLE_IMAGE"
-          docker-compose -f oracle/docker-compose.yml pull
-          rm -f nohup.out
-          docker-compose -f oracle/docker-compose.yml up oracle >nohup.out 2>&1 &
+          echo "Henter og starter Oracle image"
+          cd .oracle
+          docker-compose up --quiet-pull > nohup.out 2>&1 &
           sh -c 'tail -n +0 -f nohup.out | { sed "/Disconnected/q" && kill $$; }' || true
+
+      - name: Set build version
+        run: |
+          echo "BUILD_VERSION=$(date +%Y.%m.%d.%H%M%S)-$(echo $GITHUB_SHA | cut -c1-7)" >> $GITHUB_ENV
 
       - name: Kompiler
         run: |
@@ -60,14 +56,12 @@ jobs:
         env:
           TZ: Europe/Oslo
           GITHUB_USERNAME: x-access-token
-          GITHUB_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
-
+          GITHUB_PASSWORD: ${{ secrets.GH_ACCESS_TOKEN }} # Må ha denne fordi vi henter artifakt fra andre repo i NAV
 
       - name: Bygg, tag og push Docker image
         run: |
-          docker build --pull --tag ${IMAGE_BASE}:${TAG} .
-          echo  $GITHUB_TOKEN | docker login docker.pkg.github.com -u ${GITHUB_REPOSITORY} --password-stdin
-          docker push ${IMAGE_BASE}:${TAG}
+          docker build --pull --tag ${IMAGE_BASE}:${TAG} --tag ${IMAGE_BASE}:latest .
+          docker push ${IMAGE_BASE} --all-tags
 
       - name: Lukk gamle bygg-issues
         if: success()
@@ -95,7 +89,7 @@ jobs:
         if: success()
         uses: actions/github-script@v3
         with:
-          github-token: ${{secrets.NOTIFICATION}}
+          github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
               github.issues.create( {
                 owner: context.issue.owner,
