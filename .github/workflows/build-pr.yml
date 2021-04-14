@@ -33,7 +33,7 @@ jobs:
       - name: Log into ghcr registry
         # GITHUB_TOKEN fungere ikke for PR enda... https://github.community/t/cant-authenticate-with-actions-token-for-pr-event/170752
         # run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login --username "x-access-token" --password-stdin ghcr.io
-        run: echo "${{ secrets.GH_ACCESS_TOKEN }}" | docker login --username "x-access-token" --password-stdin ghcr.io
+        run: echo "${{ secrets.NOTIFICATION }}" | docker login --username "x-access-token" --password-stdin ghcr.io
 
       - name: Hent og start Oracle image
         id: oracle
@@ -48,4 +48,4 @@ jobs:
         env:
           TZ: Europe/Oslo
           GITHUB_USERNAME: x-access-token
-          GITHUB_PASSWORD: ${{ secrets.GH_ACCESS_TOKEN }} # Må ha denne fordi vi henter artifakt fra andre repo i NAV
+          GITHUB_PASSWORD: ${{ secrets.NOTIFICATION }} # Må ha denne fordi vi henter artifakt fra andre repo i NAV
