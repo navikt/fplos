@@ -18,7 +18,7 @@
         <revision>2.8.2</revision>
         <sha1></sha1>
         <changelist>-SNAPSHOT</changelist>
-        <java.version>15</java.version>
+        <java.version>16</java.version>
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -366,10 +366,6 @@
                     <artifactId>maven-compiler-plugin</artifactId>
                     <version>3.8.1</version>
                     <configuration>
-                        <compilerArgs>
-                            <arg>--enable-preview</arg>
-                        </compilerArgs>
-                        <parameters>true</parameters>
                         <source>${java.version}</source>
                         <target>${java.version}</target>
                         <encoding>UTF-8</encoding>
@@ -405,7 +401,7 @@
                     <configuration>
                         <rules>
                             <requireJavaVersion>
-                                <version>[15,)</version>
+                                <version>[16,)</version>
                             </requireJavaVersion>
                             <requireMavenVersion>
                                 <version>[3.5.3,)</version>
@@ -448,7 +444,7 @@
                     <artifactId>maven-surefire-plugin</artifactId>
                     <version>${surefire.version}</version>
                     <configuration>
-                        <argLine>--enable-preview</argLine>
+                        <argLine>--illegal-access=permit</argLine>
                     </configuration>
                 </plugin>
                 <plugin>
@@ -560,101 +556,6 @@
 
         </plugins>
     </build>
-
-    <profiles>
-        <profile>
-            <id>runSonar</id>
-            <activation>
-                <activeByDefault>false</activeByDefault>
-            </activation>
-            <properties>
-                <!-- maven.root bør overstyres fra cmdline -->
-                <maven.root>${project.basedir}</maven.root>
-
-                <sonar.language/>
-                <sonar.core.codeCoveragePlugin>jacoco</sonar.core.codeCoveragePlugin>
-                <sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
-                <sonar.sourceEncoding>UTF-8</sonar.sourceEncoding>
-                <sonar.java.source>1.15</sonar.java.source>
-                <sonar.sources>.</sonar.sources>
-                <sonar.inclusions>src/main/java/**,src/client/**</sonar.inclusions>
-                <sonar.exclusions>
-                    **/test/**,
-                    **/testutilities/**,
-                    **/fitnesse/**,
-                    **/swagger/**,
-                    **/docs/**,
-                    **/node_modules/**,
-                    **/node/**,
-                    **/coverage/**,
-                    **/_scripts/*,
-                    **/webpack.*,
-                    **/eslint/*,
-                    **/bin/**,
-                    **/target/**,
-                    **/*.spec.jsx,
-                    **/*.spec.js,
-                    **/test-helpers/**,
-                    **/app/kodeverk/**,
-                    **/jetty/**
-                </sonar.exclusions>
-                <sonar.coverage.exclusions>${sonar.exclusions}</sonar.coverage.exclusions>
-                <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
-                <sonar.jacoco.reportPaths>${maven.root}/target/jacoco.exec</sonar.jacoco.reportPaths>
-                <sonar.javascript.lcov.reportPaths>${maven.root}/web/klient/coverage/lcov.info
-                </sonar.javascript.lcov.reportPaths>
-                <sonar.javascript.file.suffixes>.js,.jsx</sonar.javascript.file.suffixes>
-                <sonar.leak.period>previous_analysis</sonar.leak.period>
-            </properties>
-
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.jacoco</groupId>
-                        <artifactId>jacoco-maven-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <id>agent</id>
-                                <goals>
-                                    <goal>prepare-agent</goal>
-                                </goals>
-                                <configuration>
-                                    <propertyName>jacoco.agent.argLine</propertyName>
-                                    <destFile>${sonar.jacoco.reportPaths}</destFile>
-                                    <append>true</append>
-                                    <excludes>${sonar.coverage.exclusions}</excludes>
-                                </configuration>
-                            </execution>
-                            <execution>
-                                <id>agent-it</id>
-                                <goals>
-                                    <goal>prepare-agent-integration</goal>
-                                </goals>
-                                <configuration>
-                                    <propertyName>jacoco.agent.argLine</propertyName>
-                                    <destFile>${sonar.jacoco.reportPaths}</destFile>
-                                    <append>true</append>
-                                    <excludes>${sonar.coverage.exclusions}</excludes>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-surefire-plugin</artifactId>
-                        <configuration>
-                            <useFile>true</useFile>
-                            <argLine>${jacoco.agent.argLine} -Xms256m -Dfile.encoding=UTF-8 -Dlog.level.no.nav=WARN
-                            </argLine>
-                        </configuration>
-                    </plugin>
-
-                </plugins>
-            </build>
-        </profile>
-
-    </profiles>
 
     <scm>
         <url>https://github.com/navikt/fplos</url>
