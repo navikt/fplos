@@ -1,4 +1,4 @@
-FROM navikt/java:15-appdynamics
+FROM navikt/java:16-appdynamics
 
 ENV APP_NAME=fplos
 ENV APPD_ENABLED=true
@@ -25,4 +25,4 @@ COPY web/klient/target/public/ /app/klient/public/
 
 COPY export-vault-secrets.sh /init-scripts/
 
-ENV JAVA_OPTS="-XX:MaxRAMPercentage=75.0 -Djava.security.egd=file:/dev/./urandom -Duser.timezone=Europe/Oslo -Dklient=./klient -Dlogback.configurationFile=./conf/logback.xml --enable-preview"
+ENV JAVA_OPTS="-XX:MaxRAMPercentage=75.0 -Djava.security.egd=file:/dev/./urandom -Duser.timezone=Europe/Oslo -Dklient=./klient -Dlogback.configurationFile=./conf/logback.xml --illegal-access=permit"
