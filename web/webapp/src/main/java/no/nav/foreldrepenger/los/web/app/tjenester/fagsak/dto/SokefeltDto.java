@@ -24,7 +24,7 @@ public class SokefeltDto implements AbacDto {
     }
 
     public SokefeltDto(Saksnummer saksnummer) {
-        this.searchString = saksnummer.getVerdi();
+        this.searchString = saksnummer.value();
     }
 
     public String getSearchString() {

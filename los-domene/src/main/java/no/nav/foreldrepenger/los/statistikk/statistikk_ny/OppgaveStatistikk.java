@@ -66,11 +66,11 @@ public class OppgaveStatistikk {
         var oppgaveFiltreringKnytninger = oppgaveKøTjeneste.finnOppgaveFiltreringKnytninger(oppgave);
         LOG.info("Oppgavefilterknytninger for oppgave {} er {}", oppgave, oppgaveFiltreringKnytninger);
         oppgaveFiltreringKnytninger
-                .forEach(ok -> statistikkRepository.lagre(ok.getOppgaveId(), ok.getOppgaveFiltreringId(), ok.getBehandlingType(), køOppgaveHendelse));
+                .forEach(ok -> statistikkRepository.lagre(ok.oppgaveId(), ok.oppgaveFiltreringId(), ok.behandlingType(), køOppgaveHendelse));
     }
 
     public void lagre(OppgaveknytningerFørEtterOppdatering oppgaveknytningerFørEtterOppdatering) {
-        oppgaveknytningerFørEtterOppdatering.getInnPåKø().forEach(k -> statistikkRepository.lagre(k.getOppgaveId(), k.getOppgaveFiltreringId(), k.getBehandlingType(), KøOppgaveHendelse.INN_FRA_ANNEN_KØ));
-        oppgaveknytningerFørEtterOppdatering.getUtAvKø().forEach(k -> statistikkRepository.lagre(k.getOppgaveId(), k.getOppgaveFiltreringId(), k.getBehandlingType(), KøOppgaveHendelse.UT_TIL_ANNEN_KØ));
+        oppgaveknytningerFørEtterOppdatering.getInnPåKø().forEach(k -> statistikkRepository.lagre(k.oppgaveId(), k.oppgaveFiltreringId(), k.behandlingType(), KøOppgaveHendelse.INN_FRA_ANNEN_KØ));
+        oppgaveknytningerFørEtterOppdatering.getUtAvKø().forEach(k -> statistikkRepository.lagre(k.oppgaveId(), k.oppgaveFiltreringId(), k.behandlingType(), KøOppgaveHendelse.UT_TIL_ANNEN_KØ));
     }
 }

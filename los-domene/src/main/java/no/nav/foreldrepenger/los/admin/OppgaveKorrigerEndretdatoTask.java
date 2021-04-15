@@ -157,5 +157,6 @@ public class OppgaveKorrigerEndretdatoTask implements ProsessTaskHandler {
     }
 
     private static record BehandlingEventLogg(LocalDateTime opprettetTid, String type) {
+
     }
 }

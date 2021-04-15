@@ -59,7 +59,7 @@ class GenerellOpprettOppgaveHendelseHåndtererTest {
                 .harAktørId(new AktørId(behandlingFpsak.getAktørId()))
                 .harFørsteStønadsdag(førsteUttaksDag())
                 .harHref(null)
-                .harSaksnummer(Long.valueOf(behandlingFpsak.getSaksnummer()))
+                .harSaksnummer(behandlingFpsak.getSaksnummer())
                 .harOppgaveAvsluttet(null)
                 .harBehandlingStatus(BehandlingStatus.fraKode(behandlingFpsak.getStatus()))
                 .harBehandlendeEnhet(behandlingFpsak.getBehandlendeEnhetId())

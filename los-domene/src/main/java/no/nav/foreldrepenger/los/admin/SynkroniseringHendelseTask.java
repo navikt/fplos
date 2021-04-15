@@ -9,8 +9,8 @@ import no.nav.foreldrepenger.los.hendelse.hendelseoppretter.hendelse.Fagsystem;
 import no.nav.foreldrepenger.los.hendelse.hendelseoppretter.hendelse.Hendelse;
 import no.nav.foreldrepenger.los.klient.fpsak.ForeldrepengerBehandlingKlient;
 import no.nav.foreldrepenger.los.klient.fpsak.ForeldrepengerFagsakKlient;
+import no.nav.foreldrepenger.los.klient.fpsak.dto.behandling.BehandlingDto;
 import no.nav.foreldrepenger.los.klient.fpsak.dto.behandling.ResourceLink;
-import no.nav.foreldrepenger.los.klient.fpsak.dto.behandling.UtvidetBehandlingDto;
 import no.nav.foreldrepenger.los.klient.fpsak.dto.fagsak.FagsakDto;
 import no.nav.foreldrepenger.los.oppgave.FagsakYtelseType;
 import no.nav.vedtak.felles.prosesstask.api.ProsessTask;
@@ -49,20 +49,20 @@ public class SynkroniseringHendelseTask implements ProsessTaskHandler {
 
         var hendelse = new Hendelse();
         hendelse.setFagsystem(Fagsystem.FPSAK);
-        hendelse.setBehandlingId(BehandlingId.fromUUID(behandlingDto.getUuid()));
+        hendelse.setBehandlingId(BehandlingId.fromUUID(behandlingDto.uuid()));
         hendelse.setSaksnummer(fagsakDto.getSaksnummer());
-        hendelse.setBehandlendeEnhet(behandlingDto.getBehandlendeEnhetId());
+        hendelse.setBehandlendeEnhet(behandlingDto.behandlendeEnhetId());
         hendelse.setAktørId(fagsakDto.getAktoerId());
-        hendelse.setBehandlingOpprettetTidspunkt(behandlingDto.getOpprettet());
-        hendelse.setBehandlingType(behandlingDto.getType());
+        hendelse.setBehandlingOpprettetTidspunkt(behandlingDto.opprettet());
+        hendelse.setBehandlingType(behandlingDto.type());
         hendelse.setYtelseType(FagsakYtelseType.fraKode(fagsakDto.getFagsakYtelseType().getKode()));
 
         var håndterer = oppgaveHendelseHåndtererFactory.lagHåndterer(hendelse);
         håndterer.håndter();
     }
 
-    private FagsakDto hentFagsakDto(UtvidetBehandlingDto behandlingdto) {
-        return behandlingdto.getLinks().stream()
+    private FagsakDto hentFagsakDto(BehandlingDto behandlingdto) {
+        return behandlingdto.links().stream()
                 .filter(rl -> rl.getRel().equals("fagsak"))
                 .findFirst()
                 .map(ResourceLink::getHref)

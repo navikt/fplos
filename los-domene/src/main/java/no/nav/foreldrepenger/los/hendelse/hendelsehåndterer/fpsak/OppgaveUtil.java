@@ -12,7 +12,7 @@ public class OppgaveUtil {
     public static Oppgave oppgave(BehandlingFpsak behandlingFpsak) {
         return Oppgave.builder()
                 .medSystem(Fagsystem.FPSAK.name())
-                .medFagsakSaksnummer(Long.valueOf(behandlingFpsak.getSaksnummer()))
+                .medFagsakSaksnummer(behandlingFpsak.getSaksnummer().longValue())
                 .medAktorId(Long.valueOf(behandlingFpsak.getAktørId()))
                 .medBehandlendeEnhet(behandlingFpsak.getBehandlendeEnhetId())
                 .medBehandlingType(behandlingFpsak.getBehandlingType())

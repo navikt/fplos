@@ -7,38 +7,11 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import no.nav.foreldrepenger.los.klient.fpsak.dto.kodeverk.KodeDto;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class AksjonspunktDto {
-    private KodeDto definisjon;
-    private KodeDto status;
-    private String begrunnelse;
-    private LocalDateTime fristTid;
+public record AksjonspunktDto(KodeDto definisjon, KodeDto status, String begrunnelse, LocalDateTime fristTid) {
 
-    public AksjonspunktDto() {
-    }
-
-    public KodeDto getDefinisjon() {
-        return definisjon;
-    }
-
-    public KodeDto getStatus() {
-        return status;
-    }
-
-    public String getBegrunnelse() {
-        return begrunnelse;
-    }
-
-    public LocalDateTime getFristTid() {
-        return fristTid;
-    }
-
+    //Må override siden begrunnelse er sensitivt
     @Override
     public String toString() {
-        return "AksjonspunktDto{" +
-                "definisjon=" + definisjon +
-                ", status=" + status +
-                ", begrunnelse='" + begrunnelse + '\'' +
-                ", fristTid=" + fristTid +
-                '}';
+        return "AksjonspunktDto{" + "definisjon=" + definisjon + ", status=" + status + ", fristTid=" + fristTid + '}';
     }
 }

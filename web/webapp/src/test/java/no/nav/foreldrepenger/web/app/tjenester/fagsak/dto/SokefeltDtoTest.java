@@ -13,7 +13,7 @@ import no.nav.vedtak.sikkerhet.abac.StandardAbacAttributtType;
 public class SokefeltDtoTest {
 
     @Test
-    public void skal_ha_spesial_abac_type_når_det_er_et_fødslelsnummer_siden_alle_sakene_kan_være_knyttet_til_andre_parter() throws Exception {
+    public void skal_ha_spesial_abac_type_når_det_er_et_fødslelsnummer_siden_alle_sakene_kan_være_knyttet_til_andre_parter() {
         var fnr = "07078518434";
         var dto = new SokefeltDto(fnr);
 
@@ -24,10 +24,10 @@ public class SokefeltDtoTest {
     }
 
     @Test
-    public void skal_ha_normal_saksnummer_abac_type_når_det_ikke_er_et_fødslelsnummer() throws Exception {
+    public void skal_ha_normal_saksnummer_abac_type_når_det_ikke_er_et_fødslelsnummer() {
         var saksnummer  = new Saksnummer("123123123123");
         var dto = new SokefeltDto(saksnummer);
 
-        assertThat(dto.abacAttributter()).isEqualTo(AbacDataAttributter.opprett().leggTil(StandardAbacAttributtType.SAKSNUMMER,saksnummer.getVerdi()));
+        assertThat(dto.abacAttributter()).isEqualTo(AbacDataAttributter.opprett().leggTil(StandardAbacAttributtType.SAKSNUMMER,saksnummer.value()));
     }
 }

@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Objects;
 
 import no.nav.foreldrepenger.los.domene.typer.BehandlingId;
+import no.nav.foreldrepenger.los.domene.typer.Saksnummer;
 import no.nav.foreldrepenger.los.klient.fpsak.dto.Kontrollresultat;
 import no.nav.foreldrepenger.los.klient.fpsak.dto.KontrollresultatDto;
 import no.nav.foreldrepenger.los.oppgave.BehandlingType;
@@ -27,7 +28,7 @@ public class BehandlingFpsak {
     private BehandlingType behandlingType;
     private FagsakYtelseType ytelseType;
     private LocalDateTime behandlingOpprettet;
-    private String saksnummer;
+    private Saksnummer saksnummer;
     private String aktørId;
 
     public BehandlingId getBehandlingId() {
@@ -46,7 +47,7 @@ public class BehandlingFpsak {
         return behandlingOpprettet;
     }
 
-    public String getSaksnummer() {
+    public Saksnummer getSaksnummer() {
         return saksnummer;
     }
 
@@ -71,7 +72,7 @@ public class BehandlingFpsak {
         if (svar == null) {
             return false;
         }
-        return svar.isGradering();
+        return svar.gradering();
     }
 
     public boolean harVurderSykdom() {
@@ -79,7 +80,7 @@ public class BehandlingFpsak {
         if (svar == null) {
             return false;
         }
-        return svar.isVurderSykdom();
+        return svar.vurderSykdom();
     }
 
     public boolean erBerørtBehandling() {
@@ -118,7 +119,7 @@ public class BehandlingFpsak {
         this.ytelseType = ytelseType;
     }
 
-    public void setSaksnummer(String saksnummer) {
+    public void setSaksnummer(Saksnummer saksnummer) {
         this.saksnummer = saksnummer;
     }
 

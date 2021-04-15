@@ -11,6 +11,7 @@ import no.nav.foreldrepenger.los.oppgave.OppgaveRepository;
 import no.nav.foreldrepenger.los.statistikk.statistikk_ny.KøOppgaveHendelse;
 import no.nav.foreldrepenger.los.statistikk.statistikk_ny.OppgaveStatistikk;
 
+@SuppressWarnings("ClassCanBeRecord")
 public class LukkOppgaveHendelseHåndterer implements FpsakHendelseHåndterer {
 
     private static final Logger LOG = LoggerFactory.getLogger(LukkOppgaveHendelseHåndterer.class);

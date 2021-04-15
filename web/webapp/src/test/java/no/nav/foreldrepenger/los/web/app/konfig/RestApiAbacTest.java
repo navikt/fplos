@@ -44,7 +44,7 @@ public class RestApiAbacTest {
     }
 
     @Test
-    public void alle_input_parametre_til_restmetoder_implementer_AbacDto_eller_spesifiserer_AbacDataSupplier() throws Exception {
+    public void alle_input_parametre_til_restmetoder_implementer_AbacDto_eller_spesifiserer_AbacDataSupplier() {
         var feilmelding = "Parameter på %s.%s av type %s må implementere " + AbacDto.class.getSimpleName() + ", eller være annotatert med @TilpassetAbacAttributt.\n";
         var feilmeldinger = new StringBuilder();
 

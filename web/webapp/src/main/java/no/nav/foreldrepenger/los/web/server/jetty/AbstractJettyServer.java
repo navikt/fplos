@@ -68,7 +68,7 @@ abstract class AbstractJettyServer {
         konfigurerJndi();
     }
 
-    protected abstract void konfigurerMiljø() throws Exception;
+    protected abstract void konfigurerMiljø();
 
     protected void konfigurerSikkerhet() {
         Security.setProperty(AuthConfigFactory.DEFAULT_FACTORY_SECURITY_PROPERTY, AuthConfigFactoryImpl.class.getCanonicalName());
@@ -82,7 +82,7 @@ abstract class AbstractJettyServer {
 
     protected abstract void konfigurerJndi() throws Exception;
 
-    protected abstract void migrerDatabaser() throws IOException;
+    protected abstract void migrerDatabaser();
 
     protected void start(AppKonfigurasjon appKonfigurasjon) throws Exception {
         var server = new Server(appKonfigurasjon.getServerPort());

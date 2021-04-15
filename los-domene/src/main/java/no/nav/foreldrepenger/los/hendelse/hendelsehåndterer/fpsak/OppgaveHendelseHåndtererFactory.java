@@ -9,6 +9,7 @@ import javax.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import no.nav.foreldrepenger.los.domene.typer.Saksnummer;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.OppgaveEgenskapHåndterer;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.håndterere.GenerellOpprettOppgaveHendelseHåndterer;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.håndterere.GjenåpneOppgaveHendelseHåndterer;
@@ -57,7 +58,7 @@ public class OppgaveHendelseHåndtererFactory {
         var behandlingId = hendelse.getBehandlingId();
         var behandlingFpsak = foreldrePengerBehandlingKlient.getBehandling(behandlingId);
         behandlingFpsak.setYtelseType(hendelse.getYtelseType());
-        behandlingFpsak.setSaksnummer(hendelse.getSaksnummer());
+        behandlingFpsak.setSaksnummer(new Saksnummer(hendelse.getSaksnummer()));
         behandlingFpsak.setAktørId(hendelse.getAktørId());
         var eventer = oppgaveRepository.hentOppgaveEventer(behandlingId);
         LOG.info("Henter tidigere oppgaveeventer for behandling {} {}", hendelse.getBehandlingId(), eventer);
