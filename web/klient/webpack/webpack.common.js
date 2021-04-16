@@ -89,7 +89,7 @@ const config = {
       test: /\.(svg)$/,
       loader: 'file-loader',
       options: {
-        name: '[name]_[hash].[ext]',
+        name: '[name]_[contenthash].[ext]',
       },
       include: [IMG_DIR],
     }],
@@ -97,7 +97,7 @@ const config = {
 
   plugins: [
     new MiniCssExtractPlugin({
-      filename: isDevelopment ? 'style.css' : 'style_[contenthash].css',
+      filename: isDevelopment ? 'style[name].css' : 'style[name]_[contenthash].css',
       ignoreOrder: true,
     }),
     new CircularDependencyPlugin({

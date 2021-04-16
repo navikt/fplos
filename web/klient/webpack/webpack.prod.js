@@ -10,7 +10,7 @@ const APP_DIR = path.resolve(ROOT_DIR, 'app');
 
 const config = {
   mode: 'production',
-  devtool: 'source-maps',
+  devtool: 'source-map',
   performance: { hints: false },
 
   entry: [
@@ -37,8 +37,6 @@ const config = {
     minimizer: [
       new TerserPlugin({
         parallel: true,
-        cache: true,
-        sourceMap: true,
       }),
       new OptimizeCSSAssetsPlugin({}),
     ],

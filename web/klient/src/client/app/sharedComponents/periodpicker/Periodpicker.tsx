@@ -29,7 +29,7 @@ interface StateProps {
 const getStartDateInput = (props: OwnProps) => haystack(props, props.names[0]).input;
 const getEndDateInput = (props: OwnProps) => haystack(props, props.names[1]).input;
 const isValidDate = (date: Date): boolean => moment(date, DDMMYYYY_DATE_FORMAT, true).isValid();
-const createPeriod = (startDay: Date, endDay: Date): string => `${moment(startDay)
+const createPeriod = (startDay?: Date | null, endDay?: Date | null): string => `${moment(startDay)
   .format(DDMMYYYY_DATE_FORMAT)} - ${moment(endDay).format(DDMMYYYY_DATE_FORMAT)}`;
 
 class Periodpicker extends Component<OwnProps, StateProps> {
@@ -112,7 +112,6 @@ class Periodpicker extends Component<OwnProps, StateProps> {
         to: moment(currentEndDate, DDMMYYYY_DATE_FORMAT).toDate(),
       };
 
-      // @ts-ignore https://github.com/gpbl/react-day-picker/issues/1009
       const newRange = DateUtils.addDayToRange(selectedDay, range);
       const period = createPeriod(newRange.from, newRange.to);
       this.setState({ period });

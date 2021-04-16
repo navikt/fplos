@@ -6,6 +6,9 @@ const IMAGE_DIR = path.join(APP_DIR, 'images');
 const CSS_DIR = path.join(APP_DIR, 'styles');
 
 module.exports = {
+  core: {
+    builder: "webpack5",
+  },
   stories: ['../src/client/storybook/stories/**/*.stories.@(js|tsx)'],
   addons: ['@storybook/addon-docs/preset', '@storybook/addon-actions/register', '@storybook/addon-knobs/register'],
   webpackFinal: async (config, { configType }) => {
@@ -17,7 +20,7 @@ module.exports = {
       return data;
     });
 
-    config.devtool = 'cheap-module-eval-source-map';
+    config.devtool = 'eval-cheap-source-map';
 
     // Make whatever fine-grained changes you need
     config.module.rules = config.module.rules.concat({
@@ -109,13 +112,13 @@ module.exports = {
       test: /\.(jpg|png|svg)$/,
       loader: 'file-loader',
       options: {
-        name: '[name]_[hash].[ext]',
+        name: '[name]_[contenthash].[ext]',
       },
       include: [IMAGE_DIR],
     });
 
     config.plugins.push(new MiniCssExtractPlugin({
-      filename: 'style.css',
+      filename: 'style[name].css',
       ignoreOrder: true,
     }));
 

@@ -9,7 +9,7 @@ const APP_DIR = path.resolve(ROOT_DIR, 'app');
 
 const config = {
   mode: 'development',
-  devtool: 'cheap-module-eval-source-map',
+  devtool: 'eval-cheap-source-map',
 
   entry: [
    'babel-polyfill',
@@ -34,7 +34,7 @@ const config = {
   ],
 
   optimization: {
-    namedModules: true,
+    moduleIds: 'named',
     splitChunks: {
       chunks: 'all',
     },
