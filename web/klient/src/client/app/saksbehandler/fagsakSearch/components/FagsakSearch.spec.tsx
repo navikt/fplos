@@ -1,6 +1,7 @@
 import React from 'react';
 import { shallow } from 'enzyme';
 import sinon from 'sinon';
+import { FormattedMessage } from 'react-intl';
 
 import FagsakSearch from './FagsakSearch';
 import PersonInfo from './person/PersonInfo';
@@ -50,26 +51,23 @@ describe('<FagsakSearch>', () => {
     expect(wrapper.find(FagsakList)).toHaveLength(0);
   });
 
-  it(
-    'skal vise søkefelt og label for ingen søketreff når ingen fagsaker blir hentet',
-    () => {
-      const wrapper = shallow(<FagsakSearch
-        fagsaker={[]}
-        fagsakOppgaver={[]}
-        searchFagsakCallback={sinon.spy()}
-        selectOppgaveCallback={sinon.spy()}
-        searchResultReceived
-        selectFagsakCallback={sinon.spy()}
-        searchStarted
-        resetSearch={sinon.spy()}
-      />);
+  it('skal vise søkefelt og label for ingen søketreff når ingen fagsaker blir hentet', () => {
+    const wrapper = shallow(<FagsakSearch
+      fagsaker={[]}
+      fagsakOppgaver={[]}
+      searchFagsakCallback={sinon.spy()}
+      selectOppgaveCallback={sinon.spy()}
+      searchResultReceived
+      selectFagsakCallback={sinon.spy()}
+      searchStarted
+      resetSearch={sinon.spy()}
+    />);
 
-      expect(wrapper.find(SearchForm)).toHaveLength(1);
-      const labelComp = wrapper.find('Normaltekst');
-      expect(labelComp).toHaveLength(1);
-      expect(labelComp.find('FormattedMessage').prop('id')).toEqual('FagsakSearch.ZeroSearchResults');
-    },
-  );
+    expect(wrapper.find(SearchForm)).toHaveLength(1);
+    const labelComp = wrapper.find('Normaltekst');
+    expect(labelComp).toHaveLength(1);
+    expect(labelComp.find(FormattedMessage).prop('id')).toEqual('FagsakSearch.ZeroSearchResults');
+  });
 
   it(
     'skal vise søkefelt og søketreff der person og to fagsaker blir vist',
