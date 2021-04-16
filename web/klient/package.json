@@ -159,6 +159,9 @@
     "webpack-merge": "^5.7.3"
   },
   "resolutions": {
+    "is-svg": "4.3.1",
+    "ssri": "8.0.1",
+    "y18n": "4.0.1",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-test-renderer": "^17.0.2"
