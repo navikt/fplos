@@ -17,11 +17,11 @@ public class InntektsmeldingDto {
         // trengs for deserialisering av JSON
     }
 
-    public String getArbeidsgiver() {
+    public String arbeidsgiver() {
         return arbeidsgiver;
     }
 
-    public String getArbeidsgiverOrgnr() {
+    public String arbeidsgiverOrgnr() {
         return arbeidsgiverOrgnr;
     }
 
@@ -33,23 +33,23 @@ public class InntektsmeldingDto {
         this.arbeidsgiverOrgnr = arbeidsgiverOrgnr;
     }
 
-    public LocalDate getArbeidsgiverStartdato() {
+    public LocalDate arbeidsgiverStartdato() {
         return arbeidsgiverStartdato;
     }
 
-    public void setArbeidsgiverStartdato(LocalDate arbeidsgiverStartdato) {
+    public void arbeidsgiverStartdato(LocalDate arbeidsgiverStartdato) {
         this.arbeidsgiverStartdato = arbeidsgiverStartdato;
     }
 
-    public List<UtsettelsePeriodeDto> getUtsettelsePerioder() {
+    public List<UtsettelsePeriodeDto> utsettelsePerioder() {
         return utsettelsePerioder;
     }
 
-    public List<GraderingPeriodeDto> getGraderingPerioder() {
+    public List<GraderingPeriodeDto> graderingPerioder() {
         return graderingPerioder;
     }
 
-    public Beløp getGetRefusjonBeløpPerMnd() {
+    public Beløp getRefusjonBeløpPerMnd() {
         return getRefusjonBeløpPerMnd;
     }
 

@@ -1,30 +1,12 @@
 package no.nav.foreldrepenger.los.klient.fpsak.dto.inntektarbeidytelse;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import no.nav.foreldrepenger.los.klient.fpsak.dto.kodeverk.KodeDto;
-
 import java.time.LocalDate;
 
-public class UtsettelsePeriodeDto {
+import com.fasterxml.jackson.annotation.JsonProperty;
 
-    @JsonProperty("fom")
-    private LocalDate fom;
+import no.nav.foreldrepenger.los.klient.fpsak.dto.kodeverk.KodeDto;
 
-    @JsonProperty("tom")
-    private LocalDate tom;
+public record UtsettelsePeriodeDto(LocalDate fom, LocalDate tom, @JsonProperty("utsettelseArsak") KodeDto uttsettelseÅrsak) {
 
-    @JsonProperty("utsettelseArsak")
-    private KodeDto utsettelseÅrsak;
-
-    public LocalDate getFom() {
-        return fom;
-    }
-
-    public LocalDate getTom() {
-        return tom;
-    }
-
-    public KodeDto getUtsettelseArsak() {
-        return utsettelseÅrsak;
-    }
+    
 }

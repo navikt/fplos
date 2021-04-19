@@ -1,28 +1,20 @@
 package no.nav.foreldrepenger.los.klient.fpsak.dto.inntektarbeidytelse;
 
 import java.math.BigDecimal;
+import java.util.Objects;
 
-public class Beløp {
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+public record Beløp(@JsonProperty("verdi") BigDecimal value) implements Comparable<Beløp> {
 
     public static final Beløp ZERO = new Beløp(BigDecimal.ZERO);
 
-    private BigDecimal verdi;
-
-    Beløp(){}
-
-    public Beløp(BigDecimal verdi) {
-        this.verdi = verdi;
+    public Beløp {
+        Objects.requireNonNull(value, "Trenger value");
     }
 
-    public BigDecimal getVerdi() {
-        return verdi;
-    }
-
-    public void setVerdi(BigDecimal verdi) {
-        this.verdi = verdi;
-    }
-
+    @Override
     public int compareTo(Beløp annetBeløp) {
-        return verdi.compareTo(annetBeløp.verdi);
+        return value.compareTo(annetBeløp.value);
     }
 }

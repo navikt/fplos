@@ -1,18 +1,10 @@
 package no.nav.foreldrepenger.los.klient.fpsak.dto.inntektarbeidytelse;
 
-import java.util.Collections;
 import java.util.List;
 
-public class InntektArbeidYtelseDto {
+public record InntektArbeidYtelseDto(List<InntektsmeldingDto> inntektsmeldinger) {
 
-    private List<InntektsmeldingDto> inntektsmeldinger = Collections.emptyList();
-
-    public void setInntektsmeldinger(List<InntektsmeldingDto> inntektsmeldinger) {
-        this.inntektsmeldinger = inntektsmeldinger;
+    public List<InntektsmeldingDto> inntektsmeldinger() {
+        return inntektsmeldinger == null ? List.of() : inntektsmeldinger;
     }
-
-    public List<InntektsmeldingDto> getInntektsmeldinger() {
-        return inntektsmeldinger;
-    }
-
 }

@@ -50,12 +50,12 @@ public class SynkroniseringHendelseTask implements ProsessTaskHandler {
         var hendelse = new Hendelse();
         hendelse.setFagsystem(Fagsystem.FPSAK);
         hendelse.setBehandlingId(BehandlingId.fromUUID(behandlingDto.uuid()));
-        hendelse.setSaksnummer(fagsakDto.getSaksnummer());
+        hendelse.setSaksnummer(fagsakDto.saksnummer());
         hendelse.setBehandlendeEnhet(behandlingDto.behandlendeEnhetId());
-        hendelse.setAktørId(fagsakDto.getAktoerId());
+        hendelse.setAktørId(fagsakDto.aktoerId());
         hendelse.setBehandlingOpprettetTidspunkt(behandlingDto.opprettet());
         hendelse.setBehandlingType(behandlingDto.type());
-        hendelse.setYtelseType(FagsakYtelseType.fraKode(fagsakDto.getFagsakYtelseType().getKode()));
+        hendelse.setYtelseType(FagsakYtelseType.fraKode(fagsakDto.fagsakYtelseType().getKode()));
 
         var håndterer = oppgaveHendelseHåndtererFactory.lagHåndterer(hendelse);
         håndterer.håndter();
