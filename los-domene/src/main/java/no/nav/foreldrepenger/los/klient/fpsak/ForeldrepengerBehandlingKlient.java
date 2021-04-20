@@ -127,7 +127,7 @@ public class ForeldrepengerBehandlingKlient {
     private LocalDate hentFørsteUttaksdato(List<ResourceLink> links) {
         return velgLink(links, YTELSEFORDELING_LINK)
                 .flatMap(yf -> hentFraResourceLink(yf, YtelseFordelingDto.class))
-                .map(YtelseFordelingDto::getFørsteUttaksdato)
+                .map(YtelseFordelingDto::førsteUttaksdato)
                 .orElse(null);
     }
 
@@ -156,7 +156,7 @@ public class ForeldrepengerBehandlingKlient {
     }
 
     private boolean harVurderSykdom(KontrollerFaktaDataDto kontrollerFaktaDataDto) {
-        return kontrollerFaktaDataDto.getPerioder().stream()
+        return kontrollerFaktaDataDto.perioder().stream()
                 .anyMatch(KontrollerFaktaPeriodeDto::gjelderSykdom);
     }
 
@@ -168,7 +168,7 @@ public class ForeldrepengerBehandlingKlient {
     }
 
     private static boolean harGraderingFra(KontrollerFaktaDataDto faktaDataDto) {
-        return faktaDataDto.getPerioder().stream()
+        return faktaDataDto.perioder().stream()
                 .map(KontrollerFaktaPeriodeDto::getArbeidstidsprosent)
                 .filter(Objects::nonNull)
                 .anyMatch(a -> a.compareTo(BigDecimal.ZERO) != 0);

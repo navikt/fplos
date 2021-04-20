@@ -2,15 +2,9 @@ package no.nav.foreldrepenger.los.klient.fpsak.dto;
 
 import java.util.List;
 
-public class KontrollerFaktaDataDto {
+public record KontrollerFaktaDataDto(List<KontrollerFaktaPeriodeDto> perioder) {
 
-    private List<KontrollerFaktaPeriodeDto> perioder;
-
-    public void setPerioder(List<KontrollerFaktaPeriodeDto> perioder) {
-        this.perioder = perioder;
-    }
-
-    public List<KontrollerFaktaPeriodeDto> getPerioder() {
-        return perioder;
+    public List<KontrollerFaktaPeriodeDto> perioder() {
+        return perioder == null ? List.of() : perioder;
     }
 }

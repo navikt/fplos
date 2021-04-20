@@ -1,12 +1,10 @@
 package no.nav.foreldrepenger.los.klient.fpsak.dto;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 import java.math.BigDecimal;
 
-@JsonIgnoreProperties(ignoreUnknown = true)
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class KontrollerFaktaPeriodeDto {
 
     private OverføringÅrsak overføringÅrsak;

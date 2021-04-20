@@ -1,59 +1,31 @@
 package no.nav.foreldrepenger.los.klient.fpsak.dto.inntektarbeidytelse;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
-public class InntektsmeldingDto {
-    private String arbeidsgiver;
-    private String arbeidsgiverOrgnr;
-    private LocalDate arbeidsgiverStartdato;
-
-    private List<UtsettelsePeriodeDto> utsettelsePerioder = new ArrayList<>();
-    private List<GraderingPeriodeDto> graderingPerioder = new ArrayList<>();
-    private Beløp getRefusjonBeløpPerMnd;
-
-    InntektsmeldingDto() {
-        // trengs for deserialisering av JSON
-    }
-
-    public String arbeidsgiver() {
-        return arbeidsgiver;
-    }
-
-    public String arbeidsgiverOrgnr() {
-        return arbeidsgiverOrgnr;
-    }
-
-    public void setArbeidsgiver(String arbeidsgiver) {
-        this.arbeidsgiver = arbeidsgiver;
-    }
-
-    public void setArbeidsgiverOrgnr(String arbeidsgiverOrgnr) {
-        this.arbeidsgiverOrgnr = arbeidsgiverOrgnr;
-    }
-
-    public LocalDate arbeidsgiverStartdato() {
-        return arbeidsgiverStartdato;
-    }
-
-    public void arbeidsgiverStartdato(LocalDate arbeidsgiverStartdato) {
-        this.arbeidsgiverStartdato = arbeidsgiverStartdato;
-    }
+public record InntektsmeldingDto(String arbeidsgiver,
+                                 String arbeidsgiverOrgnr,
+                                 LocalDate arbeidsgiverStartdato,
+                                 List<UtsettelsePeriodeDto> utsettelsePerioder,
+                                 List<GraderingPeriodeDto> graderingPerioder,
+                                 Beløp getRefusjonBeløpPerMnd) {
 
     public List<UtsettelsePeriodeDto> utsettelsePerioder() {
-        return utsettelsePerioder;
+        return utsettelsePerioder == null ? List.of() : utsettelsePerioder;
     }
 
     public List<GraderingPeriodeDto> graderingPerioder() {
-        return graderingPerioder;
+        return graderingPerioder == null ? List.of() : graderingPerioder;
     }
 
-    public Beløp getRefusjonBeløpPerMnd() {
-        return getRefusjonBeløpPerMnd;
+    @Override
+    public String toString() {
+        return "InntektsmeldingDto{" + "arbeidsgiverOrgnr='" + maskOrgnr(arbeidsgiverOrgnr) + '\'' + ", arbeidsgiverStartdato="
+                + arbeidsgiverStartdato + ", utsettelsePerioder=" + utsettelsePerioder + ", graderingPerioder="
+                + graderingPerioder + ", getRefusjonBeløpPerMnd=" + getRefusjonBeløpPerMnd + '}';
     }
 
-    public void setGetRefusjonBeløpPerMnd(Beløp getRefusjonBeløpPerMnd) {
-        this.getRefusjonBeløpPerMnd = getRefusjonBeløpPerMnd;
+    private static String maskOrgnr(String arbeidsgiverOrgnr) {
+        return arbeidsgiverOrgnr.replaceAll("^\\d{5}", "*****");
     }
 }

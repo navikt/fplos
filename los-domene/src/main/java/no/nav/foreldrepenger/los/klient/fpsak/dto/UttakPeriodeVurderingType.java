@@ -1,10 +1,8 @@
 package no.nav.foreldrepenger.los.klient.fpsak.dto;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-@JsonIgnoreProperties(ignoreUnknown = true)
 public enum UttakPeriodeVurderingType {
     PERIODE_OK, PERIODE_OK_ENDRET, PERIODE_KAN_IKKE_AVKLARES, PERIODE_IKKE_VURDERT;
 
