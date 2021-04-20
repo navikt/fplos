@@ -175,8 +175,8 @@ public class ForeldrepengerBehandlingKlient {
     }
 
     private static boolean harRefusjonskrav(InntektArbeidYtelseDto inntektArbeidYtelseDto) {
-        return inntektArbeidYtelseDto.getInntektsmeldinger().stream()
-                .map(InntektsmeldingDto::getGetRefusjonBeløpPerMnd)
+        return inntektArbeidYtelseDto.inntektsmeldinger().stream()
+                .map(InntektsmeldingDto::getRefusjonBeløpPerMnd)
                 .filter(Objects::nonNull)
                 .anyMatch(refusjonsbeløp -> refusjonsbeløp.compareTo(Beløp.ZERO) > 0);
     }

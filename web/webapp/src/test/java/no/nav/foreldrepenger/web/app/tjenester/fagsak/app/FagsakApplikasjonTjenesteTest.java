@@ -68,11 +68,11 @@ public class FagsakApplikasjonTjenesteTest {
         assertThat(fagsakDtos.isEmpty()).isFalse();
         assertThat(fagsakDtos).hasSize(1);
         var fagsakMedPersonDto = fagsakDtos.get(0);
-        assertThat(fagsakMedPersonDto.getSaksnummerString()).isEqualTo(fagsakDto.getSaksnummer());
-        assertThat(fagsakMedPersonDto.getFagsakYtelseType().getKode()).isEqualTo(
-                fagsakDto.getFagsakYtelseType().getKode());
-        assertThat(fagsakMedPersonDto.getStatus()).isEqualTo(fagsakDto.getStatus());
-        assertThat(fagsakMedPersonDto.getBarnFodt()).isEqualTo(fødselsdatoBarn);
+        assertThat(fagsakMedPersonDto.saksnummerString()).isEqualTo(fagsakDto.saksnummer());
+        assertThat(fagsakMedPersonDto.fagsakYtelseType().getKode()).isEqualTo(
+                fagsakDto.fagsakYtelseType().getKode());
+        assertThat(fagsakMedPersonDto.status()).isEqualTo(fagsakDto.status());
+        assertThat(fagsakMedPersonDto.barnFodt()).isEqualTo(fødselsdatoBarn);
     }
 
     @Test
@@ -96,7 +96,7 @@ public class FagsakApplikasjonTjenesteTest {
         // Assert
         assertThat(resultFagsakDtos.isEmpty()).isFalse();
         assertThat(resultFagsakDtos).hasSize(1);
-        assertThat(resultFagsakDtos.get(0).getPerson()).isEqualTo(new PersonDto(personDto));
+        assertThat(resultFagsakDtos.get(0).person()).isEqualTo(new PersonDto(personDto));
     }
 
     @Test
