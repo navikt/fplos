@@ -4,6 +4,12 @@ on:
   push:
     branches:
       - master
+    paths-ignore:
+      - '**.md'
+      - '**.MD'
+      - '.gitignore'
+      - 'LICENCE'
+      - 'CODEOWNERS'
 env:
   IMAGE_BASE: ghcr.io/${{ github.repository }}
 
@@ -65,7 +71,7 @@ jobs:
 
       - name: Lukk gamle bygg-issues
         if: success()
-        uses: actions/github-script@v3
+        uses: actions/github-script@v4
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
@@ -87,7 +93,7 @@ jobs:
 
       - name: Opprett issue, trigg deploy til dev-fss
         if: success()
-        uses: actions/github-script@v3
+        uses: actions/github-script@v4
         with:
           github-token: ${{secrets.NOTIFICATION}}
           script: |

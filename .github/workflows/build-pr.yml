@@ -1,9 +1,13 @@
 name: Bygg PR eller branches
 
 on:
-  push:
-    branches-ignore:
-      - master
+  pull_request_target:
+    paths-ignore:
+      - '**.md'
+      - '**.MD'
+      - '.gitignore'
+      - 'LICENCE'
+      - 'CODEOWNERS'
 
 jobs:
   build:
