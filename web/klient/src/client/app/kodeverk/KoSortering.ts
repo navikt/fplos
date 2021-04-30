@@ -4,6 +4,6 @@ enum KoSortering {
   BELOP = 'BELOP',
   FEILUTBETALINGSTART = 'FEILUTBETALINGSTART',
   FORSTE_STONADSDAG = 'FORSTONAD',
-};
+}
 
 export default KoSortering;

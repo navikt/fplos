@@ -92,7 +92,7 @@ export const OppgaverTabell: FunctionComponent<OwnProps & WrappedComponentProps>
   } = restApiHooks.useRestApiRunner(RestApiPathsKeys.OPPGAVER_TIL_BEHANDLING);
 
   const fetchSakslisteOppgaverPolling = (keepData: boolean, sakslisteId: number, oppgaveIder?: string) => {
-    hentReserverteOppgaver({}, true);
+    hentReserverteOppgaver(undefined, true);
     hentOppgaverTilBehandling(oppgaveIder ? { sakslisteId, oppgaveIder } : { sakslisteId }, keepData)
       .then((response) => (!response || typeof response === 'string' || !doPolling
         ? Promise.resolve()
@@ -105,7 +105,7 @@ export const OppgaverTabell: FunctionComponent<OwnProps & WrappedComponentProps>
   }, [valgtSakslisteId]);
 
   const forlengOppgaveReservasjonFn = useCallback((oppgaveId: number): Promise<any> => forlengOppgavereservasjon({ oppgaveId })
-    .then(() => hentReserverteOppgaver({}, true)), []);
+    .then(() => hentReserverteOppgaver(undefined, true)), []);
 
   const ref = useRef<Record<number, HTMLDivElement | null>>({});
 

@@ -28,13 +28,13 @@ export const RestApiGlobalStatePathsKeys = {
   FPTILBAKE_URL: new RestKey<{ verdi: string }, void>('FPTILBAKE_URL'),
   AVDELINGER: new RestKey<Avdeling[], void>('AVDELINGER'),
   DRIFTSMELDINGER: new RestKey<Driftsmelding[], void>('DRIFTSMELDINGER'),
-}
+};
 
 export const RestApiPathsKeys = {
   SEARCH_FAGSAK: new RestKey<Fagsak[], {searchString: string; skalReservere: boolean}>('SEARCH_FAGSAK'),
   OPPGAVER_FOR_FAGSAKER: new RestKey<Oppgave[], { saksnummerListe: string }>('OPPGAVER_FOR_FAGSAKER'),
   SAKSLISTE: new RestKey<Saksliste[], void>('SAKSLISTE'),
-  RESERVERTE_OPPGAVER: new RestKey<Oppgave[], {}>('RESERVERTE_OPPGAVER'),
+  RESERVERTE_OPPGAVER: new RestKey<Oppgave[], void>('RESERVERTE_OPPGAVER'),
   OPPGAVER_TIL_BEHANDLING: new RestKey<Oppgave[], { sakslisteId: number, oppgaveIder?: string }>('OPPGAVER_TIL_BEHANDLING'),
   OPPHEV_OPPGAVERESERVASJON: new RestKey<void, { oppgaveId: number, begrunnelse: string }>('OPPHEV_OPPGAVERESERVASJON'),
   FORLENG_OPPGAVERESERVASJON: new RestKey<Oppgave[], { oppgaveId: number }>('FORLENG_OPPGAVERESERVASJON'),
@@ -52,17 +52,6 @@ export const RestApiPathsKeys = {
   SAKSBEHANDLERE_FOR_AVDELING: new RestKey<SaksbehandlerAvdeling[], { avdelingEnhet: string }>('SAKSBEHANDLERE_FOR_AVDELING'),
   OPPGAVE_AVDELING_ANTALL: new RestKey<number, { avdelingEnhet: string }>('OPPGAVE_AVDELING_ANTALL'),
   OPPGAVE_ANTALL: new RestKey<number, { sakslisteId: number, avdelingEnhet: string }>('OPPGAVE_ANTALL'),
-  OPPRETT_NY_SAKSLISTE: new RestKey<{sakslisteId: string}, { avdelingEnhet: string }>('OPPRETT_NY_SAKSLISTE'),
-  SLETT_SAKSLISTE: new RestKey<void, { sakslisteId: number, avdelingEnhet: string }>('SLETT_SAKSLISTE'),
-  LAGRE_SAKSLISTE_NAVN: new RestKey<void, { sakslisteId: number, navn: string, avdelingEnhet: string }>('LAGRE_SAKSLISTE_NAVN'),
-  LAGRE_SAKSLISTE_BEHANDLINGSTYPE: new RestKey<void, { sakslisteId: number, avdelingEnhet: string, behandlingType: Kodeverk, checked: boolean }>('LAGRE_SAKSLISTE_BEHANDLINGSTYPE'),
-  LAGRE_SAKSLISTE_FAGSAK_YTELSE_TYPE: new RestKey<void, { sakslisteId: number, avdelingEnhet: string, fagsakYtelseType?: string }>('LAGRE_SAKSLISTE_FAGSAK_YTELSE_TYPE'),
-  LAGRE_SAKSLISTE_SORTERING: new RestKey<void, { sakslisteId: number, sakslisteSorteringValg: string, avdelingEnhet: string }>('LAGRE_SAKSLISTE_SORTERING'),
-  LAGRE_SAKSLISTE_SORTERING_DYNAMISK_PERIDE: new RestKey<void, { sakslisteId: number, avdelingEnhet: string }>('LAGRE_SAKSLISTE_SORTERING_DYNAMISK_PERIDE'),
-  LAGRE_SAKSLISTE_SORTERING_TIDSINTERVALL_DATO: new RestKey<void, { sakslisteId: number, avdelingEnhet: string, fomDato: string, tomDato: string }>('LAGRE_SAKSLISTE_SORTERING_TIDSINTERVALL_DATO'),
-  LAGRE_SAKSLISTE_SORTERING_INTERVALL: new RestKey<void, {sakslisteId: number, fra: number, til: number, avdelingEnhet: string}>('LAGRE_SAKSLISTE_SORTERING_INTERVALL'),
-  LAGRE_SAKSLISTE_ANDRE_KRITERIER: new RestKey<void, {  sakslisteId: number, avdelingEnhet: string, andreKriterierType: Kodeverk, checked: boolean, inkluder: boolean }>('LAGRE_SAKSLISTE_ANDRE_KRITERIER'),
-  LAGRE_SAKSLISTE_SAKSBEHANDLER: new RestKey<void, { sakslisteId: number, brukerIdent: string, checked: boolean, avdelingEnhet: string }>('LAGRE_SAKSLISTE_SAKSBEHANDLER'),
   SAKSBEHANDLER_SOK: new RestKey<SaksbehandlerAvdeling, { brukerIdent: string }>('SAKSBEHANDLER_SOK'),
   OPPRETT_NY_SAKSBEHANDLER: new RestKey<void, { brukerIdent: string, avdelingEnhet: string }>('OPPRETT_NY_SAKSBEHANDLER'),
   SLETT_SAKSBEHANDLER: new RestKey<void, { brukerIdent: string, avdelingEnhet: string }>('SLETT_SAKSBEHANDLER'),
@@ -73,7 +62,34 @@ export const RestApiPathsKeys = {
   HENT_OPPGAVER_APNE_ELLER_PA_VENT: new RestKey<OppgaverSomErApneEllerPaVent[], { avdelingEnhet: string }>('HENT_OPPGAVER_APNE_ELLER_PA_VENT'),
   RESERVASJONER_FOR_AVDELING: new RestKey<Reservasjon[], { avdelingEnhet: string }>('RESERVASJONER_FOR_AVDELING'),
   AVDELINGSLEDER_OPPHEVER_RESERVASJON: new RestKey<void, { oppgaveId: number }>('AVDELINGSLEDER_OPPHEVER_RESERVASJON'),
-}
+  OPPRETT_NY_SAKSLISTE: new RestKey<{sakslisteId: string}, { avdelingEnhet: string }>('OPPRETT_NY_SAKSLISTE'),
+  SLETT_SAKSLISTE: new RestKey<void, { sakslisteId: number, avdelingEnhet: string }>('SLETT_SAKSLISTE'),
+  LAGRE_SAKSLISTE_NAVN: new RestKey<void, { sakslisteId: number, navn: string, avdelingEnhet: string }>('LAGRE_SAKSLISTE_NAVN'),
+  LAGRE_SAKSLISTE_BEHANDLINGSTYPE: new RestKey<void, {
+    sakslisteId: number, avdelingEnhet: string, behandlingType: Kodeverk, checked: boolean,
+  }>('LAGRE_SAKSLISTE_BEHANDLINGSTYPE'),
+  LAGRE_SAKSLISTE_FAGSAK_YTELSE_TYPE: new RestKey<void, {
+    sakslisteId: number, avdelingEnhet: string, fagsakYtelseType?: string,
+  }>('LAGRE_SAKSLISTE_FAGSAK_YTELSE_TYPE'),
+  LAGRE_SAKSLISTE_SORTERING: new RestKey<void, {
+    sakslisteId: number, sakslisteSorteringValg: string, avdelingEnhet: string,
+  }>('LAGRE_SAKSLISTE_SORTERING'),
+  LAGRE_SAKSLISTE_SORTERING_DYNAMISK_PERIDE: new RestKey<void, {
+    sakslisteId: number, avdelingEnhet: string,
+  }>('LAGRE_SAKSLISTE_SORTERING_DYNAMISK_PERIDE'),
+  LAGRE_SAKSLISTE_SORTERING_TIDSINTERVALL_DATO: new RestKey<void, {
+    sakslisteId: number, avdelingEnhet: string, fomDato: string, tomDato: string,
+  }>('LAGRE_SAKSLISTE_SORTERING_TIDSINTERVALL_DATO'),
+  LAGRE_SAKSLISTE_SORTERING_INTERVALL: new RestKey<void, {
+    sakslisteId: number, fra: number, til: number, avdelingEnhet: string,
+  }>('LAGRE_SAKSLISTE_SORTERING_INTERVALL'),
+  LAGRE_SAKSLISTE_ANDRE_KRITERIER: new RestKey<void, {
+    sakslisteId: number, avdelingEnhet: string, andreKriterierType: Kodeverk, checked: boolean, inkluder: boolean,
+  }>('LAGRE_SAKSLISTE_ANDRE_KRITERIER'),
+  LAGRE_SAKSLISTE_SAKSBEHANDLER: new RestKey<void, {
+    sakslisteId: number, brukerIdent: string, checked: boolean, avdelingEnhet: string,
+  }>('LAGRE_SAKSLISTE_SAKSBEHANDLER'),
+};
 
 export const endpoints = new RestApiConfigBuilder()
   .withGet('/fplos/api/saksbehandler', RestApiGlobalStatePathsKeys.NAV_ANSATT)
