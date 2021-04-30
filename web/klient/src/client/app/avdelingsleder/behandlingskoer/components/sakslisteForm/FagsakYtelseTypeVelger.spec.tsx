@@ -3,26 +3,26 @@ import sinon from 'sinon';
 import { shallow } from 'enzyme';
 
 import { requestApi, RestApiGlobalStatePathsKeys, RestApiPathsKeys } from 'data/fplosRestApi';
-import kodeverkTyper from 'kodeverk/kodeverkTyper';
-import fagsakYtelseType from 'kodeverk/fagsakYtelseType';
+import KodeverkType from 'kodeverk/kodeverkTyper';
+import FagsakYtelseType from 'kodeverk/fagsakYtelseType';
 import { RadioOption, RadioGroupField } from 'form/FinalFields';
 
 import FagsakYtelseTypeVelger from './FagsakYtelseTypeVelger';
 
 describe('<FagsakYtelseTypeVelger>', () => {
   const fagsakYtelseTyper = [{
-    kode: fagsakYtelseType.ENGANGSSTONAD,
+    kode: FagsakYtelseType.ENGANGSSTONAD,
     navn: 'Engangsstønad',
   }, {
-    kode: fagsakYtelseType.FORELDREPRENGER,
+    kode: FagsakYtelseType.FORELDREPRENGER,
     navn: 'Foreldrepenger',
   }, {
-    kode: fagsakYtelseType.SVANGERSKAPPENGER,
+    kode: FagsakYtelseType.SVANGERSKAPPENGER,
     navn: 'Svangerskapspenger',
   }];
 
   const alleKodeverk = {
-    [kodeverkTyper.FAGSAK_YTELSE_TYPE]: fagsakYtelseTyper,
+    [KodeverkType.FAGSAK_YTELSE_TYPE]: fagsakYtelseTyper,
   };
 
   it('skal vise checkboxer for ytelsetyper', () => {
@@ -36,8 +36,8 @@ describe('<FagsakYtelseTypeVelger>', () => {
 
     const radios = wrapper.find(RadioOption);
     expect(radios).toHaveLength(4);
-    expect(radios.first().prop('value')).toEqual(fagsakYtelseType.FORELDREPRENGER);
-    expect(radios.at(1).prop('value')).toEqual(fagsakYtelseType.ENGANGSSTONAD);
+    expect(radios.first().prop('value')).toEqual(FagsakYtelseType.FORELDREPRENGER);
+    expect(radios.at(1).prop('value')).toEqual(FagsakYtelseType.ENGANGSSTONAD);
     expect(radios.last().prop('value')).toEqual('');
   });
 
@@ -56,7 +56,7 @@ describe('<FagsakYtelseTypeVelger>', () => {
 
     const radioGroup = wrapper.find(RadioGroupField);
     // @ts-ignore
-    await radioGroup.prop('onChange')(fagsakYtelseType.ENGANGSSTONAD);
+    await radioGroup.prop('onChange')(FagsakYtelseType.ENGANGSSTONAD);
 
     expect(hentAvdelingensSakslister.calledOnce).toBe(true);
     const { args } = hentAvdelingensSakslister.getCalls()[0];

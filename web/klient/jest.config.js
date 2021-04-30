@@ -21,6 +21,7 @@ module.exports = {
         "^sharedComponents(.*)$": "<rootDir>/src/client/app/sharedComponents$1",
         "^avdelingsleder(.*)$": "<rootDir>/src/client/app/avdelingsleder$1",
         "^saksbehandler(.*)$": "<rootDir>/src/client/app/saksbehandler$1",
+        "^types(.*)$": "<rootDir>/src/client/app/types$1",
         "^utils(.*)$": "<rootDir>/src/client/app/utils$1",
         "^testHelpers(.*)$": "<rootDir>/src/client/testHelpers$1",
       },

@@ -3,7 +3,7 @@ import { shallow } from 'enzyme';
 import sinon from 'sinon';
 
 import { requestApi, RestApiGlobalStatePathsKeys } from 'data/fplosRestApi';
-import kodeverkTyper from 'kodeverk/kodeverkTyper';
+import KodeverkType from 'kodeverk/kodeverkTyper';
 import Table from 'sharedComponents/table/Table';
 import FagsakList, { getSorterteFagsaker } from './FagsakList';
 
@@ -59,8 +59,8 @@ describe('<FagsakList>', () => {
   ];
 
   const alleKodeverk = {
-    [kodeverkTyper.FAGSAK_STATUS]: fagsakStatusTyper,
-    [kodeverkTyper.FAGSAK_YTELSE_TYPE]: fagsakYtelseTyper,
+    [KodeverkType.FAGSAK_STATUS]: fagsakStatusTyper,
+    [KodeverkType.FAGSAK_YTELSE_TYPE]: fagsakYtelseTyper,
   };
 
   it('skal vise en tabell med en rad og tilhørende kolonnedata', () => {

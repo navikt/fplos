@@ -3,22 +3,22 @@ import sinon from 'sinon';
 import { shallow } from 'enzyme';
 
 import { requestApi, RestApiGlobalStatePathsKeys, RestApiPathsKeys } from 'data/fplosRestApi';
-import kodeverkTyper from 'kodeverk/kodeverkTyper';
-import andreKriterierType from 'kodeverk/andreKriterierType';
+import KodeverkType from 'kodeverk/kodeverkTyper';
+import AndreKriterierType from 'kodeverk/andreKriterierType';
 import { CheckboxField, RadioGroupField, RadioOption } from 'form/FinalFields';
 import AndreKriterierVelger from './AndreKriterierVelger';
 
 describe('<AndreKriterierVelger>', () => {
   const andreKriterier = [{
-    kode: andreKriterierType.TIL_BESLUTTER,
+    kode: AndreKriterierType.TIL_BESLUTTER,
     navn: 'Til beslutter',
   }, {
-    kode: andreKriterierType.REGISTRER_PAPIRSOKNAD,
+    kode: AndreKriterierType.REGISTRER_PAPIRSOKNAD,
     navn: 'Registrer papirsøknad',
   }];
 
   const alleKodeverk = {
-    [kodeverkTyper.ANDRE_KRITERIER_TYPE]: andreKriterier,
+    [KodeverkType.ANDRE_KRITERIER_TYPE]: andreKriterier,
   };
 
   it('skal vise checkbox for Til beslutter', () => {
@@ -35,7 +35,7 @@ describe('<AndreKriterierVelger>', () => {
     const checkboxer = wrapper.find(CheckboxField);
     expect(checkboxer).toHaveLength(2);
     const tilBeslutterCheckbox = checkboxer.first();
-    expect(tilBeslutterCheckbox.prop('name')).toEqual(andreKriterierType.TIL_BESLUTTER);
+    expect(tilBeslutterCheckbox.prop('name')).toEqual(AndreKriterierType.TIL_BESLUTTER);
 
     expect(wrapper.find(RadioGroupField)).toHaveLength(0);
     expect(wrapper.find(RadioOption)).toHaveLength(0);
@@ -55,7 +55,7 @@ describe('<AndreKriterierVelger>', () => {
     const checkboxer = wrapper.find(CheckboxField);
     expect(checkboxer).toHaveLength(2);
     const tilBeslutterCheckbox = checkboxer.last();
-    expect(tilBeslutterCheckbox.prop('name')).toEqual(andreKriterierType.REGISTRER_PAPIRSOKNAD);
+    expect(tilBeslutterCheckbox.prop('name')).toEqual(AndreKriterierType.REGISTRER_PAPIRSOKNAD);
   });
 
   it('skal lagre valgt for Til beslutter ved klikk på checkbox', () => {
@@ -77,7 +77,7 @@ describe('<AndreKriterierVelger>', () => {
     const lagreSakslisteAndreKriterierCallData = requestApi.getRequestMockData(RestApiPathsKeys.LAGRE_SAKSLISTE_ANDRE_KRITERIER);
     expect(lagreSakslisteAndreKriterierCallData).toHaveLength(1);
     expect(lagreSakslisteAndreKriterierCallData[0].params.sakslisteId).toEqual(1);
-    expect(lagreSakslisteAndreKriterierCallData[0].params.andreKriterierType.kode).toEqual(andreKriterierType.TIL_BESLUTTER);
+    expect(lagreSakslisteAndreKriterierCallData[0].params.andreKriterierType.kode).toEqual(AndreKriterierType.TIL_BESLUTTER);
     expect(lagreSakslisteAndreKriterierCallData[0].params.checked).toBe(true);
     expect(lagreSakslisteAndreKriterierCallData[0].params.inkluder).toBe(true);
     expect(lagreSakslisteAndreKriterierCallData[0].params.avdelingEnhet).toEqual('3');
@@ -104,7 +104,7 @@ describe('<AndreKriterierVelger>', () => {
       const lagreSakslisteAndreKriterierCallData = requestApi.getRequestMockData(RestApiPathsKeys.LAGRE_SAKSLISTE_ANDRE_KRITERIER);
       expect(lagreSakslisteAndreKriterierCallData).toHaveLength(1);
       expect(lagreSakslisteAndreKriterierCallData[0].params.sakslisteId).toEqual(1);
-      expect(lagreSakslisteAndreKriterierCallData[0].params.andreKriterierType.kode).toEqual(andreKriterierType.REGISTRER_PAPIRSOKNAD);
+      expect(lagreSakslisteAndreKriterierCallData[0].params.andreKriterierType.kode).toEqual(AndreKriterierType.REGISTRER_PAPIRSOKNAD);
       expect(lagreSakslisteAndreKriterierCallData[0].params.checked).toBe(true);
       expect(lagreSakslisteAndreKriterierCallData[0].params.inkluder).toBe(true);
       expect(lagreSakslisteAndreKriterierCallData[0].params.avdelingEnhet).toEqual('3');
@@ -117,8 +117,8 @@ describe('<AndreKriterierVelger>', () => {
       valgtSakslisteId={1}
       valgtAvdelingEnhet="3"
       values={{
-        [andreKriterierType.TIL_BESLUTTER]: true,
-        [`${andreKriterierType.TIL_BESLUTTER}_inkluder`]: true,
+        [AndreKriterierType.TIL_BESLUTTER]: true,
+        [`${AndreKriterierType.TIL_BESLUTTER}_inkluder`]: true,
       }}
       hentAvdelingensSakslister={sinon.spy()}
       hentAntallOppgaver={sinon.spy()}
@@ -135,8 +135,8 @@ describe('<AndreKriterierVelger>', () => {
       valgtSakslisteId={1}
       valgtAvdelingEnhet="3"
       values={{
-        [andreKriterierType.TIL_BESLUTTER]: true,
-        [`${andreKriterierType.TIL_BESLUTTER}_inkluder`]: true,
+        [AndreKriterierType.TIL_BESLUTTER]: true,
+        [`${AndreKriterierType.TIL_BESLUTTER}_inkluder`]: true,
       }}
       hentAvdelingensSakslister={sinon.spy()}
       hentAntallOppgaver={sinon.spy()}
@@ -148,7 +148,7 @@ describe('<AndreKriterierVelger>', () => {
     const lagreSakslisteAndreKriterierCallData = requestApi.getRequestMockData(RestApiPathsKeys.LAGRE_SAKSLISTE_ANDRE_KRITERIER);
     expect(lagreSakslisteAndreKriterierCallData).toHaveLength(1);
     expect(lagreSakslisteAndreKriterierCallData[0].params.sakslisteId).toEqual(1);
-    expect(lagreSakslisteAndreKriterierCallData[0].params.andreKriterierType.kode).toEqual(andreKriterierType.TIL_BESLUTTER);
+    expect(lagreSakslisteAndreKriterierCallData[0].params.andreKriterierType.kode).toEqual(AndreKriterierType.TIL_BESLUTTER);
     expect(lagreSakslisteAndreKriterierCallData[0].params.checked).toBe(true);
     expect(lagreSakslisteAndreKriterierCallData[0].params.inkluder).toBe(false);
     expect(lagreSakslisteAndreKriterierCallData[0].params.avdelingEnhet).toEqual('3');

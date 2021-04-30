@@ -3,50 +3,50 @@ import sinon from 'sinon';
 import { Form } from 'react-final-form';
 
 import { requestApi, RestApiGlobalStatePathsKeys } from 'data/fplosRestApi';
-import kodeverkTyper from 'kodeverk/kodeverkTyper';
+import KodeverkType from 'kodeverk/kodeverkTyper';
 import { shallowWithIntl } from 'testHelpers/intl-enzyme-test-helper';
-import behandlingType from 'kodeverk/behandlingType';
+import BehandlingType from 'kodeverk/behandlingType';
 import { RadioOption } from 'form/FinalFields';
-import fagsakYtelseType from 'kodeverk/fagsakYtelseType';
+import FagsakYtelseType from 'kodeverk/fagsakYtelseType';
+import OppgaverForAvdeling from 'types/avdelingsleder/oppgaverForAvdelingTsType';
 import { FordelingAvBehandlingstypePanel } from './FordelingAvBehandlingstypePanel';
 import FordelingAvBehandlingstypeGraf from './FordelingAvBehandlingstypeGraf';
-import OppgaverForAvdeling from './oppgaverForAvdelingTsType';
 
 describe('<FordelingAvBehandlingstypePanel>', () => {
   const fagsakYtelseTyper = [{
-    kode: fagsakYtelseType.ENGANGSSTONAD,
+    kode: FagsakYtelseType.ENGANGSSTONAD,
     navn: 'Engangsstønad',
   }, {
-    kode: fagsakYtelseType.FORELDREPRENGER,
+    kode: FagsakYtelseType.FORELDREPRENGER,
     navn: 'Foreldrepenger',
   }];
   const behandlingTyper = [{
-    kode: behandlingType.FORSTEGANGSSOKNAD,
+    kode: BehandlingType.FORSTEGANGSSOKNAD,
     navn: 'Førstegangssøknad',
   }, {
-    kode: behandlingType.KLAGE,
+    kode: BehandlingType.KLAGE,
     navn: 'Klage',
   }, {
-    kode: behandlingType.DOKUMENTINNSYN,
+    kode: BehandlingType.DOKUMENTINNSYN,
     navn: 'Dokumentinnsyn',
   }, {
-    kode: behandlingType.REVURDERING,
+    kode: BehandlingType.REVURDERING,
     navn: 'Revurdering',
   }, {
-    kode: behandlingType.TILBAKEBETALING,
+    kode: BehandlingType.TILBAKEBETALING,
     navn: 'Tilbakebetaling',
   }, {
-    kode: behandlingType.TILBAKEBETALING_REVURDERING,
+    kode: BehandlingType.TILBAKEBETALING_REVURDERING,
     navn: 'Tilbakebet-rev',
   }];
   const forstegangssoknad = {
-    kode: behandlingType.FORSTEGANGSSOKNAD,
+    kode: BehandlingType.FORSTEGANGSSOKNAD,
     navn: 'Førstegangssøknad',
   };
 
   const alleKodeverk = {
-    [kodeverkTyper.BEHANDLING_TYPE]: behandlingTyper,
-    [kodeverkTyper.FAGSAK_YTELSE_TYPE]: fagsakYtelseTyper,
+    [KodeverkType.BEHANDLING_TYPE]: behandlingTyper,
+    [KodeverkType.FAGSAK_YTELSE_TYPE]: fagsakYtelseTyper,
   };
 
   it('skal vise ytelsetyper i radioknapper', () => {
@@ -76,7 +76,7 @@ describe('<FordelingAvBehandlingstypePanel>', () => {
 
   it('skal filtrere bort engangsstønader', () => {
     const valuesMock = {
-      valgtYtelseType: fagsakYtelseType.FORELDREPRENGER,
+      valgtYtelseType: FagsakYtelseType.FORELDREPRENGER,
     };
     const oppgaverForAvdeling = [{
       fagsakYtelseType: fagsakYtelseTyper[0],
@@ -106,7 +106,7 @@ describe('<FordelingAvBehandlingstypePanel>', () => {
 
   it('skal filtrere bort foreldrepenger', () => {
     const valuesMock = {
-      valgtYtelseType: fagsakYtelseType.ENGANGSSTONAD,
+      valgtYtelseType: FagsakYtelseType.ENGANGSSTONAD,
     };
     const oppgaverForAvdeling = [{
       fagsakYtelseType: fagsakYtelseTyper[0],

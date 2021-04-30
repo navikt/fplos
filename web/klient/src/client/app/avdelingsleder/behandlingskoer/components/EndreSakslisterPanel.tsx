@@ -6,13 +6,13 @@ import Image from 'sharedComponents/Image';
 import { restApiHooks, RestApiPathsKeys } from 'data/fplosRestApi';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import pilNedUrl from 'images/pil-ned.svg';
-import Saksbehandler from 'avdelingsleder/saksbehandlere/saksbehandlerTsType';
+import Saksliste from 'types/avdelingsleder/sakslisteTsType';
+import Saksbehandler from 'types/avdelingsleder/saksbehandlerTsType';
 import GjeldendeSakslisterTabell from './GjeldendeSakslisterTabell';
 import SaksbehandlereForSakslisteForm from './saksbehandlerForm/SaksbehandlereForSakslisteForm';
 import UtvalgskriterierForSakslisteForm from './sakslisteForm/UtvalgskriterierForSakslisteForm';
 
 import styles from './endreSakslisterPanel.less';
-import Saksliste from '../sakslisteTsType';
 
 const EMPTY_ARRAY: Saksliste[] = [];
 

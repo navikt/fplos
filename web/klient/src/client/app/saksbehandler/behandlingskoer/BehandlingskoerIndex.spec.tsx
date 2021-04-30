@@ -3,7 +3,7 @@ import { shallow } from 'enzyme';
 import sinon from 'sinon';
 
 import { requestApi, RestApiPathsKeys } from 'data/fplosRestApi';
-import behandlingStatus from 'kodeverk/behandlingStatus';
+import BehandlingStatus from 'kodeverk/behandlingStatus';
 import SakslistePanel from './components/SakslistePanel';
 import BehandlingskoerIndex from './BehandlingskoerIndex';
 import BehandlingPollingTimoutModal from './components/BehandlingPollingTimoutModal';
@@ -72,7 +72,7 @@ describe('<BehandlingskoerIndex>', () => {
       navn: 'test',
     },
     behandlingStatus: {
-      kode: behandlingStatus.OPPRETTET,
+      kode: BehandlingStatus.OPPRETTET,
       navn: '',
     },
     opprettetTidspunkt: '2018-01-12',

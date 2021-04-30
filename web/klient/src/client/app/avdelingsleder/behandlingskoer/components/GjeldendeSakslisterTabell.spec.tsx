@@ -4,38 +4,38 @@ import sinon from 'sinon';
 import { FormattedMessage } from 'react-intl';
 
 import { requestApi, RestApiGlobalStatePathsKeys, RestApiPathsKeys } from 'data/fplosRestApi';
-import kodeverkTyper from 'kodeverk/kodeverkTyper';
+import KodeverkType from 'kodeverk/kodeverkTyper';
 import Image from 'sharedComponents/Image';
-import behandlingType from 'kodeverk/behandlingType';
-import fagsakYtelseType from 'kodeverk/fagsakYtelseType';
+import BehandlingType from 'kodeverk/behandlingType';
+import FagsakYtelseType from 'kodeverk/fagsakYtelseType';
 import Table from 'sharedComponents/table/Table';
 import TableRow from 'sharedComponents/table/TableRow';
 import TableColumn from 'sharedComponents/table/TableColumn';
+import Saksliste from 'types/avdelingsleder/sakslisteTsType';
 import SletteSakslisteModal from './SletteSakslisteModal';
 import { GjeldendeSakslisterTabell } from './GjeldendeSakslisterTabell';
-import Saksliste from '../sakslisteTsType';
 
 describe('<GjeldendeSakslisterTabell>', () => {
   const behandlingstyper = [{
-    kode: behandlingType.FORSTEGANGSSOKNAD,
+    kode: BehandlingType.FORSTEGANGSSOKNAD,
     navn: '',
   }, {
-    kode: behandlingType.KLAGE,
+    kode: BehandlingType.KLAGE,
     navn: '',
   },
   ];
   const fagsakYtelseTyper = [{
-    kode: fagsakYtelseType.ENGANGSSTONAD,
+    kode: FagsakYtelseType.ENGANGSSTONAD,
     navn: '',
   }, {
-    kode: fagsakYtelseType.FORELDREPRENGER,
+    kode: FagsakYtelseType.FORELDREPRENGER,
     navn: '',
   },
   ];
 
   const alleKodeverk = {
-    [kodeverkTyper.BEHANDLING_TYPE]: behandlingstyper,
-    [kodeverkTyper.FAGSAK_YTELSE_TYPE]: fagsakYtelseTyper,
+    [KodeverkType.BEHANDLING_TYPE]: behandlingstyper,
+    [KodeverkType.FAGSAK_YTELSE_TYPE]: fagsakYtelseTyper,
   };
 
   it('skal ikke vise tabell når ingen sakslister finnes', () => {

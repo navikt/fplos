@@ -7,8 +7,9 @@ import {
 } from 'nav-frontend-typografi';
 import { Column, Row } from 'nav-frontend-grid';
 
-import Kodeverk from 'kodeverk/kodeverkTsType';
-import kodeverkTyper from 'kodeverk/kodeverkTyper';
+import Kodeverk from 'types/kodeverkTsType';
+import Saksliste from 'types/avdelingsleder/sakslisteTsType';
+import KodeverkType from 'kodeverk/kodeverkTyper';
 import Image from 'sharedComponents/Image';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import Table from 'sharedComponents/table/Table';
@@ -20,7 +21,6 @@ import removeIcon from 'images/remove.svg';
 import { restApiHooks, RestApiPathsKeys } from 'data/fplosRestApi';
 import useKodeverk from 'data/useKodeverk';
 import SletteSakslisteModal from './SletteSakslisteModal';
-import Saksliste from '../sakslisteTsType';
 
 import styles from './gjeldendeSakslisterTabell.less';
 
@@ -86,8 +86,8 @@ export const GjeldendeSakslisterTabell: FunctionComponent<OwnProps> = ({
   const [valgtSaksliste, setValgtSakslisteTemp] = useState<Saksliste>();
   const tabRef = useRef<(HTMLDivElement | null)[]>([]);
 
-  const behandlingTyper = useKodeverk(kodeverkTyper.BEHANDLING_TYPE);
-  const fagsakYtelseTyper = useKodeverk(kodeverkTyper.FAGSAK_YTELSE_TYPE);
+  const behandlingTyper = useKodeverk(KodeverkType.BEHANDLING_TYPE);
+  const fagsakYtelseTyper = useKodeverk(KodeverkType.FAGSAK_YTELSE_TYPE);
 
   const { startRequest: fjernSaksliste } = restApiHooks.useRestApiRunner(RestApiPathsKeys.SLETT_SAKSLISTE);
 

@@ -2,8 +2,8 @@ import React, { FunctionComponent, useEffect, useCallback } from 'react';
 
 import { restApiHooks, RestApiPathsKeys } from 'data/fplosRestApi';
 
+import Reservasjon from 'types/avdelingsleder/reservasjonTsType';
 import ReservasjonerTabell from './components/ReservasjonerTabell';
-import Reservasjon from './reservasjonTsType';
 
 const EMPTY_ARRAY: Reservasjon[] = [];
 

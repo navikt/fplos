@@ -2,12 +2,12 @@ import React, { FunctionComponent } from 'react';
 
 import { restApiHooks, RestApiPathsKeys } from 'data/fplosRestApi';
 
+import OppgaverForAvdeling from 'types/avdelingsleder/oppgaverForAvdelingTsType';
+import OppgaveForDato from 'types/avdelingsleder/oppgaverForDatoTsType';
+import OppgaverManueltPaVent from 'types/avdelingsleder/oppgaverManueltPaVentTsType';
+import OppgaverForForsteStonadsdag from 'types/avdelingsleder/oppgaverForForsteStonadsdagTsType';
+import OppgaverSomErApneEllerPaVent from 'types/avdelingsleder/oppgaverSomErApneEllerPaVentTsType';
 import NokkeltallPanel from './components/NokkeltallPanel';
-import OppgaverForAvdeling from './components/fordelingAvBehandlingstype/oppgaverForAvdelingTsType';
-import OppgaveForDato from './components/tilBehandling/oppgaverForDatoTsType';
-import OppgaverManueltPaVent from './components/manueltSattPaVent/oppgaverManueltPaVentTsType';
-import OppgaverForForsteStonadsdag from './components/antallBehandlingerPerForsteStonadsdag/oppgaverForForsteStonadsdagTsType';
-import OppgaverSomErApneEllerPaVent from './components/apneOgPaVentBehandlinger/oppgaverSomErApneEllerPaVentTsType';
 
 const EMPTY_ARRAY_AVDELING: OppgaverForAvdeling[] = [];
 const EMPTY_ARRAY_DATO: OppgaveForDato[] = [];

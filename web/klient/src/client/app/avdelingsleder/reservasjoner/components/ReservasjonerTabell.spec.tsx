@@ -5,7 +5,7 @@ import { FormattedMessage } from 'react-intl';
 
 import Table from 'sharedComponents/table/Table';
 import TableRow from 'sharedComponents/table/TableRow';
-import behandlingType from 'kodeverk/behandlingType';
+import BehandlingType from 'kodeverk/behandlingType';
 import TableColumn from 'sharedComponents/table/TableColumn';
 import ReservasjonerTabell from './ReservasjonerTabell';
 
@@ -31,7 +31,7 @@ describe('<ReservasjonerTabell>', () => {
       reservertAvNavn: 'Espen Utvikler',
       reservertTilTidspunkt: '2020-02-02T14:30:00',
       behandlingType: {
-        kode: behandlingType.FORSTEGANGSSOKNAD,
+        kode: BehandlingType.FORSTEGANGSSOKNAD,
         navn: 'Førstegangsbehandling',
       },
       oppgaveSaksNr: 10,
@@ -41,7 +41,7 @@ describe('<ReservasjonerTabell>', () => {
       reservertAvNavn: 'Auto Joachim',
       reservertTilTidspunkt: '2020-02-01T10:19:00',
       behandlingType: {
-        kode: behandlingType.REVURDERING,
+        kode: BehandlingType.REVURDERING,
         navn: 'Revurdering',
       },
       oppgaveSaksNr: 25,

@@ -2,7 +2,7 @@ import React from 'react';
 import { shallow } from 'enzyme';
 import moment from 'moment';
 
-import behandlingType from 'kodeverk/behandlingType';
+import BehandlingType from 'kodeverk/behandlingType';
 import NyeOgFerdigstilteOppgaverForSisteSyvPanel from './NyeOgFerdigstilteOppgaverForSisteSyvPanel';
 import NyeOgFerdigstilteOppgaverForSisteSyvGraf from './NyeOgFerdigstilteOppgaverForSisteSyvGraf';
 
@@ -10,7 +10,7 @@ describe('<NyeOgFerdigstilteOppgaverForSisteSyvPanel>', () => {
   it('skal vise rendre komponent', () => {
     const nyeOgFerdigstilteOppgaver = [{
       behandlingType: {
-        kode: behandlingType.FORSTEGANGSSOKNAD,
+        kode: BehandlingType.FORSTEGANGSSOKNAD,
         navn: 'FORSTEGANGSSOKNAD',
       },
       antallNye: 12,
@@ -33,7 +33,7 @@ describe('<NyeOgFerdigstilteOppgaverForSisteSyvPanel>', () => {
     const atteDagerSiden = moment().subtract(8, 'days').format();
     const nyeOgFerdigstilteOppgaver = [{
       behandlingType: {
-        kode: behandlingType.FORSTEGANGSSOKNAD,
+        kode: BehandlingType.FORSTEGANGSSOKNAD,
         navn: 'FORSTEGANGSSOKNAD',
       },
       antallNye: 12,
@@ -41,7 +41,7 @@ describe('<NyeOgFerdigstilteOppgaverForSisteSyvPanel>', () => {
       dato: iDag,
     }, {
       behandlingType: {
-        kode: behandlingType.KLAGE,
+        kode: BehandlingType.KLAGE,
         navn: 'KLAGE',
       },
       antallNye: 1,
@@ -49,7 +49,7 @@ describe('<NyeOgFerdigstilteOppgaverForSisteSyvPanel>', () => {
       dato: iGar,
     }, {
       behandlingType: {
-        kode: behandlingType.DOKUMENTINNSYN,
+        kode: BehandlingType.DOKUMENTINNSYN,
         navn: 'INNSYN',
       },
       antallNye: 8,

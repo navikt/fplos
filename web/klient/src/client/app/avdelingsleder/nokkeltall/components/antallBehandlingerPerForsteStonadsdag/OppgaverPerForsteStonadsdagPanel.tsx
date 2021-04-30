@@ -3,8 +3,8 @@ import { FormattedMessage } from 'react-intl';
 import { Element } from 'nav-frontend-typografi';
 
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
+import OppgaverForForsteStonadsdag from 'types/avdelingsleder/oppgaverForForsteStonadsdagTsType';
 import OppgaverPerForsteStonadsdagGraf from './OppgaverPerForsteStonadsdagGraf';
-import OppgaverForForsteStonadsdag from './oppgaverForForsteStonadsdagTsType';
 
 interface OwnProps {
   width: number;

@@ -5,9 +5,9 @@ import NavFrontendChevron from 'nav-frontend-chevron';
 
 import { requestApi, RestApiPathsKeys } from 'data/fplosRestApi';
 import { shallowWithIntl, intlMock } from 'testHelpers/intl-enzyme-test-helper';
-import behandlingType from 'kodeverk/behandlingType';
-import behandlingStatus from 'kodeverk/behandlingStatus';
-import fagsakYtelseType from 'kodeverk/fagsakYtelseType';
+import BehandlingType from 'kodeverk/behandlingType';
+import BehandlingStatus from 'kodeverk/behandlingStatus';
+import FagsakYtelseType from 'kodeverk/fagsakYtelseType';
 import DateLabel from 'sharedComponents/DateLabel';
 import TableRow from 'sharedComponents/table/TableRow';
 import TableColumn from 'sharedComponents/table/TableColumn';
@@ -31,18 +31,18 @@ describe('<OppgaverTabell>', () => {
       navn: 'Espen Utvikler',
       system: 'FPSAK',
       behandlingstype: {
-        kode: behandlingType.FORSTEGANGSSOKNAD,
+        kode: BehandlingType.FORSTEGANGSSOKNAD,
         navn: 'Førstegangssøknad',
       },
       opprettetTidspunkt: '2019-01-02',
       behandlingsfrist: '2019-03-03',
       erTilSaksbehandling: true,
       fagsakYtelseType: {
-        kode: fagsakYtelseType.FORELDREPRENGER,
+        kode: FagsakYtelseType.FORELDREPRENGER,
         navn: 'FP',
       },
       behandlingStatus: {
-        kode: behandlingStatus.OPPRETTET,
+        kode: BehandlingStatus.OPPRETTET,
         navn: '',
       },
       href: '',
@@ -57,18 +57,18 @@ describe('<OppgaverTabell>', () => {
       navn: 'Espen Solstråle',
       system: 'FPSAK',
       behandlingstype: {
-        kode: behandlingType.FORSTEGANGSSOKNAD,
+        kode: BehandlingType.FORSTEGANGSSOKNAD,
         navn: 'Førstegangssøknad far',
       },
       opprettetTidspunkt: '2018-01-02',
       behandlingsfrist: '2018-03-03',
       erTilSaksbehandling: true,
       fagsakYtelseType: {
-        kode: fagsakYtelseType.FORELDREPRENGER,
+        kode: FagsakYtelseType.FORELDREPRENGER,
         navn: 'FP',
       },
       behandlingStatus: {
-        kode: behandlingStatus.OPPRETTET,
+        kode: BehandlingStatus.OPPRETTET,
         navn: '',
       },
       href: '',
@@ -117,18 +117,18 @@ describe('<OppgaverTabell>', () => {
         navn: 'Espen Utvikler',
         system: 'FPSAK',
         behandlingstype: {
-          kode: behandlingType.FORSTEGANGSSOKNAD,
+          kode: BehandlingType.FORSTEGANGSSOKNAD,
           navn: 'Førstegangssøknad',
         },
         opprettetTidspunkt: '2019-01-02',
         behandlingsfrist: '2019-03-03',
         erTilSaksbehandling: true,
         fagsakYtelseType: {
-          kode: fagsakYtelseType.FORELDREPRENGER,
+          kode: FagsakYtelseType.FORELDREPRENGER,
           navn: 'FP',
         },
         behandlingStatus: {
-          kode: behandlingStatus.OPPRETTET,
+          kode: BehandlingStatus.OPPRETTET,
           navn: '',
         },
         href: '',
@@ -144,18 +144,18 @@ describe('<OppgaverTabell>', () => {
         navn: 'Espen Solstråle',
         system: 'FPSAK',
         behandlingstype: {
-          kode: behandlingType.FORSTEGANGSSOKNAD,
+          kode: BehandlingType.FORSTEGANGSSOKNAD,
           navn: 'Førstegangssøknad far',
         },
         opprettetTidspunkt: '2018-01-02',
         behandlingsfrist: '2018-03-03',
         erTilSaksbehandling: true,
         fagsakYtelseType: {
-          kode: fagsakYtelseType.FORELDREPRENGER,
+          kode: FagsakYtelseType.FORELDREPRENGER,
           navn: 'FP',
         },
         behandlingStatus: {
-          kode: behandlingStatus.OPPRETTET,
+          kode: BehandlingStatus.OPPRETTET,
           navn: '',
         },
         href: '',
@@ -225,18 +225,18 @@ describe('<OppgaverTabell>', () => {
       navn: 'Espen Solstråle',
       system: 'FPSAK',
       behandlingstype: {
-        kode: behandlingType.FORSTEGANGSSOKNAD,
+        kode: BehandlingType.FORSTEGANGSSOKNAD,
         navn: 'Førstegangssøknad far',
       },
       opprettetTidspunkt: '2018-01-02',
       behandlingsfrist: '2018-03-03',
       erTilSaksbehandling: true,
       fagsakYtelseType: {
-        kode: fagsakYtelseType.FORELDREPRENGER,
+        kode: FagsakYtelseType.FORELDREPRENGER,
         navn: 'FP',
       },
       behandlingStatus: {
-        kode: behandlingStatus.OPPRETTET,
+        kode: BehandlingStatus.OPPRETTET,
         navn: '',
       },
       href: '',

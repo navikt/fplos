@@ -13,12 +13,12 @@ import Image from 'sharedComponents/Image';
 import { FlexContainer, FlexRow, FlexColumn } from 'sharedComponents/flexGrid';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import LabelWithHeader from 'sharedComponents/LabelWithHeader';
-import Saksliste from 'saksbehandler/behandlingskoer/sakslisteTsType';
+import Saksliste from 'types/saksbehandler/sakslisteTsType';
+import Saksbehandler from 'types/saksbehandler/saksbehandlerTsType';
 import { SelectField } from 'form/FinalFields';
 import gruppeHoverUrl from 'images/gruppe_hover.svg';
 import gruppeUrl from 'images/gruppe.svg';
 import { restApiHooks, RestApiPathsKeys } from 'data/fplosRestApi';
-import Saksbehandler from '../saksbehandlerTsType';
 
 import styles from './sakslisteVelgerForm.less';
 

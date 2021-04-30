@@ -15,7 +15,7 @@ import {
 } from 'utils/validation/validators';
 import { TextAreaField, InputField } from 'form/FinalFields';
 import Modal from 'sharedComponents/Modal';
-import SaksbehandlerForFlytting from './saksbehandlerForFlyttingTsType';
+import SaksbehandlerForFlytting from 'types/saksbehandler/saksbehandlerForFlyttingTsType';
 
 import styles from './flyttReservasjonModal.less';
 

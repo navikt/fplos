@@ -6,7 +6,7 @@ import { Undertittel, Normaltekst } from 'nav-frontend-typografi';
 import { restApiHooks, RestApiPathsKeys, RestApiGlobalStatePathsKeys } from 'data/fplosRestApi';
 import { getFpsakHref, getFptilbakeHref } from 'app/paths';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
-import Oppgave from '../../oppgaveTsType';
+import Oppgave from 'types/saksbehandler/oppgaveTsType';
 
 const getClickEvent = (openFpsak: (oppgave: Oppgave) => void, oppgave: Oppgave) => () => openFpsak(oppgave);
 

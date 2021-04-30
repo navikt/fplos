@@ -4,15 +4,16 @@ import React, {
 
 import { getValueFromLocalStorage } from 'utils/localStorageHelper';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
+import OppgaverForAvdeling from 'types/avdelingsleder/oppgaverForAvdelingTsType';
+import OppgaveForDato from 'types/avdelingsleder/oppgaverForDatoTsType';
+import OppgaverForForsteStonadsdag from 'types/avdelingsleder/oppgaverForForsteStonadsdagTsType';
+import OppgaverManueltPaVent from 'types/avdelingsleder/oppgaverManueltPaVentTsType';
+import OppgaverSomErApneEllerPaVent from 'types/avdelingsleder/oppgaverSomErApneEllerPaVentTsType';
+
 import FordelingAvBehandlingstypePanel from './fordelingAvBehandlingstype/FordelingAvBehandlingstypePanel';
 import TilBehandlingPanel from './tilBehandling/TilBehandlingPanel';
 import ManueltPaVentPanel from './manueltSattPaVent/ManueltPaVentPanel';
 import OppgaverPerForsteStonadsdagPanel from './antallBehandlingerPerForsteStonadsdag/OppgaverPerForsteStonadsdagPanel';
-import OppgaverForAvdeling from './fordelingAvBehandlingstype/oppgaverForAvdelingTsType';
-import OppgaveForDato from './tilBehandling/oppgaverForDatoTsType';
-import OppgaverForForsteStonadsdag from './antallBehandlingerPerForsteStonadsdag/oppgaverForForsteStonadsdagTsType';
-import OppgaverManueltPaVent from './manueltSattPaVent/oppgaverManueltPaVentTsType';
-import OppgaverSomErApneEllerPaVent from './apneOgPaVentBehandlinger/oppgaverSomErApneEllerPaVentTsType';
 import OppgaverSomErApneEllerPaVentPanel from './apneOgPaVentBehandlinger/OppgaverSomErApneEllerPaVentPanel';
 
 interface OwnProps {

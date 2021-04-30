@@ -10,8 +10,8 @@ import { Normaltekst, Undertekst } from 'nav-frontend-typografi';
 
 import { FlexContainer, FlexRow, FlexColumn } from 'sharedComponents/flexGrid';
 import { DDMMYYYY_DATE_FORMAT } from 'utils/formats';
-import behandlingType from 'kodeverk/behandlingType';
-import Kodeverk from 'kodeverk/kodeverkTsType';
+import BehandlingType from 'kodeverk/behandlingType';
+import Kodeverk from 'types/kodeverkTsType';
 
 import 'react-vis/dist/style.css';
 
@@ -20,20 +20,20 @@ import styles from './tilBehandlingGraf.less';
 const LEGEND_WIDTH = 260;
 
 const behandlingstypeOrder = [
-  behandlingType.TILBAKEBETALING_REVURDERING,
-  behandlingType.TILBAKEBETALING,
-  behandlingType.DOKUMENTINNSYN,
-  behandlingType.KLAGE,
-  behandlingType.REVURDERING,
-  behandlingType.FORSTEGANGSSOKNAD];
+  BehandlingType.TILBAKEBETALING_REVURDERING,
+  BehandlingType.TILBAKEBETALING,
+  BehandlingType.DOKUMENTINNSYN,
+  BehandlingType.KLAGE,
+  BehandlingType.REVURDERING,
+  BehandlingType.FORSTEGANGSSOKNAD];
 
 const behandlingstypeFarger = {
-  [behandlingType.TILBAKEBETALING_REVURDERING]: '#ef5d28',
-  [behandlingType.TILBAKEBETALING]: '#ff842f',
-  [behandlingType.DOKUMENTINNSYN]: '#ffd23b',
-  [behandlingType.KLAGE]: '#826ba1',
-  [behandlingType.REVURDERING]: '#3385d1',
-  [behandlingType.FORSTEGANGSSOKNAD]: '#85d5f0',
+  [BehandlingType.TILBAKEBETALING_REVURDERING]: '#ef5d28',
+  [BehandlingType.TILBAKEBETALING]: '#ff842f',
+  [BehandlingType.DOKUMENTINNSYN]: '#ffd23b',
+  [BehandlingType.KLAGE]: '#826ba1',
+  [BehandlingType.REVURDERING]: '#3385d1',
+  [BehandlingType.FORSTEGANGSSOKNAD]: '#85d5f0',
 };
 
 const cssText = {
@@ -49,8 +49,8 @@ type Koordinat = {
 }
 
 const sorterBehandlingtyper = (b1: string, b2: string): number => {
-  const index1 = behandlingstypeOrder.indexOf(b1);
-  const index2 = behandlingstypeOrder.indexOf(b2);
+  const index1 = behandlingstypeOrder.findIndex((bo) => bo === b1);
+  const index2 = behandlingstypeOrder.findIndex((bo) => bo === b2);
   if (index1 === index2) {
     return 0;
   }
@@ -190,7 +190,9 @@ const TilBehandlingGraf: FunctionComponent<OwnProps> = ({
                   key={k}
                   data={data[k]}
                   onNearestX={index === 0 ? onNearestX : () => undefined}
+                  // @ts-ignore Fiks
                   fill={behandlingstypeFarger[k]}
+                  // @ts-ignore Fiks
                   stroke={behandlingstypeFarger[k]}
                 />
               ))}
@@ -219,6 +221,7 @@ const TilBehandlingGraf: FunctionComponent<OwnProps> = ({
             <DiscreteColorLegend
               items={reversertSorterteBehandlingstyper.map((key) => ({
                 title: finnBehandlingTypeNavn(behandlingTyper, key),
+                // @ts-ignore Fiks
                 color: behandlingstypeFarger[key],
                 strokeWidth: 12,
               }))}

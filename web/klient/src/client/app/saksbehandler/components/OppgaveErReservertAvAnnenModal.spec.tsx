@@ -8,9 +8,9 @@ import { Hovedknapp } from 'nav-frontend-knapper';
 import Modal from 'sharedComponents/Modal';
 import { getDateAndTime } from 'utils/dateUtils';
 import { shallowWithIntl, intlMock } from 'testHelpers/intl-enzyme-test-helper';
-import behandlingStatus from 'kodeverk/behandlingStatus';
-import fagsakYtelseType from 'kodeverk/fagsakYtelseType';
-import behandlingType from 'kodeverk/behandlingType';
+import BehandlingStatus from 'kodeverk/behandlingStatus';
+import FagsakYtelseType from 'kodeverk/fagsakYtelseType';
+import BehandlingType from 'kodeverk/behandlingType';
 import OppgaveErReservertAvAnnenModal from './OppgaveErReservertAvAnnenModal';
 
 describe('<OppgaveErReservertAvAnnenModal>', () => {
@@ -32,18 +32,18 @@ describe('<OppgaveErReservertAvAnnenModal>', () => {
     navn: 'Espen Utvikler',
     system: 'FPSAK',
     behandlingstype: {
-      kode: behandlingType.FORSTEGANGSSOKNAD,
+      kode: BehandlingType.FORSTEGANGSSOKNAD,
       navn: '',
     },
     opprettetTidspunkt: '2017-01-01',
     behandlingsfrist: '2017-01-01',
     erTilSaksbehandling: true,
     fagsakYtelseType: {
-      kode: fagsakYtelseType.FORELDREPRENGER,
+      kode: FagsakYtelseType.FORELDREPRENGER,
       navn: 'FP',
     },
     behandlingStatus: {
-      kode: behandlingStatus.OPPRETTET,
+      kode: BehandlingStatus.OPPRETTET,
       navn: '',
     },
     href: '',

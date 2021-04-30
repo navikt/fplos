@@ -2,7 +2,7 @@ import React from 'react';
 import { shallow } from 'enzyme';
 import Lenke from 'nav-frontend-lenker';
 
-import Oppgave from 'saksbehandler/oppgaveTsType';
+import Oppgave from 'types/saksbehandler/oppgaveTsType';
 import { requestApi, RestApiPathsKeys, RestApiGlobalStatePathsKeys } from 'data/fplosRestApi';
 import SistBehandledeSaker from './SistBehandledeSaker';
 

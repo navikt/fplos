@@ -8,21 +8,20 @@ import { FormattedMessage, injectIntl, WrappedComponentProps } from 'react-intl'
 import { Normaltekst } from 'nav-frontend-typografi';
 import Panel from 'nav-frontend-paneler';
 
-import Kodeverk from 'kodeverk/kodeverkTsType';
-import behandlingType from 'kodeverk/behandlingType';
-
-import NyeOgFerdigstilteOppgaver from '../../nyeOgFerdigstilteOppgaverTsType';
+import Kodeverk from 'types/kodeverkTsType';
+import BehandlingType from 'kodeverk/behandlingType';
+import NyeOgFerdigstilteOppgaver from 'types/saksbehandler/nyeOgFerdigstilteOppgaverTsType';
 
 import 'react-vis/dist/style.css';
 import styles from './nyeOgFerdigstilteOppgaverForIdagGraf.less';
 
 const behandlingstypeOrder = [
-  behandlingType.TILBAKEBETALING_REVURDERING,
-  behandlingType.TILBAKEBETALING,
-  behandlingType.DOKUMENTINNSYN,
-  behandlingType.KLAGE,
-  behandlingType.REVURDERING,
-  behandlingType.FORSTEGANGSSOKNAD];
+  BehandlingType.TILBAKEBETALING_REVURDERING,
+  BehandlingType.TILBAKEBETALING,
+  BehandlingType.DOKUMENTINNSYN,
+  BehandlingType.KLAGE,
+  BehandlingType.REVURDERING,
+  BehandlingType.FORSTEGANGSSOKNAD];
 
 const cssText = {
   fontFamily: 'Source Sans Pro, Arial, sans-serif',
@@ -59,7 +58,7 @@ export const lagDatastrukturForFerdigstilte = (
 ): Koordinat[] => settCustomHoydePaSoylene(
   nyeOgFerdigstilteOppgaver.map((value) => ({
     x: value.antallFerdigstilte,
-    y: behandlingstypeOrder.indexOf(value.behandlingType.kode) + 1,
+    y: behandlingstypeOrder.findIndex((bo) => bo === value.behandlingType.kode) + 1,
   })), true,
 );
 
@@ -68,7 +67,7 @@ export const lagDatastrukturForNye = (
 ): Koordinat[] => settCustomHoydePaSoylene(nyeOgFerdigstilteOppgaver
   .map((value) => ({
     x: value.antallNye,
-    y: behandlingstypeOrder.indexOf(value.behandlingType.kode) + 1,
+    y: behandlingstypeOrder.findIndex((bo) => bo === value.behandlingType.kode) + 1,
   })), false);
 
 interface OwnProps {
@@ -115,7 +114,7 @@ export const NyeOgFerdigstilteOppgaverForIdagGraf: FunctionComponent<OwnProps & 
   }, [hintVerdi]);
 
   const finnBehandlingTypeNavn = useCallback((_v: number, i: number): string => {
-    if (behandlingstypeOrder[i] === behandlingType.FORSTEGANGSSOKNAD) {
+    if (behandlingstypeOrder[i] === BehandlingType.FORSTEGANGSSOKNAD) {
       return intl.formatMessage({ id: 'NyeOgFerdigstilteOppgaverForIdagGraf.Førstegangsbehandling' });
     }
 

@@ -5,41 +5,41 @@ import { IntlShape } from 'react-intl';
 import { Form } from 'react-final-form';
 
 import { requestApi, RestApiGlobalStatePathsKeys } from 'data/fplosRestApi';
-import kodeverkTyper from 'kodeverk/kodeverkTyper';
+import KodeverkType from 'kodeverk/kodeverkTyper';
 import { ISO_DATE_FORMAT } from 'utils/formats';
 import { RadioOption, SelectField } from 'form/FinalFields';
-import fagsakYtelseType from 'kodeverk/fagsakYtelseType';
-import behandlingType from 'kodeverk/behandlingType';
+import FagsakYtelseType from 'kodeverk/fagsakYtelseType';
+import BehandlingType from 'kodeverk/behandlingType';
+import OppgaveForDato from 'types/avdelingsleder/oppgaverForDatoTsType';
 import { shallowWithIntl, intlMock } from 'testHelpers/intl-enzyme-test-helper';
 import { TilBehandlingPanel, ALLE_YTELSETYPER_VALGT } from './TilBehandlingPanel';
 import TilBehandlingGraf from './TilBehandlingGraf';
-import OppgaveForDato from './oppgaverForDatoTsType';
 
 describe('<TilBehandlingPanel>', () => {
   const intl: Partial<IntlShape> = {
     ...intlMock,
   };
   const fagsakYtelseTyper = [{
-    kode: fagsakYtelseType.ENGANGSSTONAD,
+    kode: FagsakYtelseType.ENGANGSSTONAD,
     navn: 'Engangsstønad',
   }, {
-    kode: fagsakYtelseType.FORELDREPRENGER,
+    kode: FagsakYtelseType.FORELDREPRENGER,
     navn: 'Foreldrepenger',
   }];
 
   const behandlingTyper = [{
-    kode: behandlingType.FORSTEGANGSSOKNAD,
+    kode: BehandlingType.FORSTEGANGSSOKNAD,
     navn: 'Førstegangssøknad',
   }];
 
   const forstegangssoknad = {
-    kode: behandlingType.FORSTEGANGSSOKNAD,
+    kode: BehandlingType.FORSTEGANGSSOKNAD,
     navn: 'Førstegangssøknad',
   };
 
   const alleKodeverk = {
-    [kodeverkTyper.BEHANDLING_TYPE]: behandlingTyper,
-    [kodeverkTyper.FAGSAK_YTELSE_TYPE]: fagsakYtelseTyper,
+    [KodeverkType.BEHANDLING_TYPE]: behandlingTyper,
+    [KodeverkType.FAGSAK_YTELSE_TYPE]: fagsakYtelseTyper,
   };
 
   it(
@@ -48,8 +48,8 @@ describe('<TilBehandlingPanel>', () => {
       requestApi.mock(RestApiGlobalStatePathsKeys.KODEVERK, alleKodeverk);
 
       const valuesMock = {
-        [fagsakYtelseType.FORELDREPRENGER]: true,
-        [fagsakYtelseType.ENGANGSSTONAD]: true,
+        [FagsakYtelseType.FORELDREPRENGER]: true,
+        [FagsakYtelseType.ENGANGSSTONAD]: true,
         ukevalg: '2',
       };
       const oppgaverPerDato: OppgaveForDato[] = [];
@@ -158,7 +158,7 @@ describe('<TilBehandlingPanel>', () => {
     requestApi.mock(RestApiGlobalStatePathsKeys.KODEVERK, alleKodeverk);
 
     const valuesMock = {
-      ytelseType: fagsakYtelseType.FORELDREPRENGER,
+      ytelseType: FagsakYtelseType.FORELDREPRENGER,
       ukevalg: '2',
     };
     const oppgaverPerDato = [{
@@ -191,7 +191,7 @@ describe('<TilBehandlingPanel>', () => {
     requestApi.mock(RestApiGlobalStatePathsKeys.KODEVERK, alleKodeverk);
 
     const valuesMock = {
-      ytelseType: fagsakYtelseType.ENGANGSSTONAD,
+      ytelseType: FagsakYtelseType.ENGANGSSTONAD,
       ukevalg: '2',
     };
     const oppgaverPerDato = [{

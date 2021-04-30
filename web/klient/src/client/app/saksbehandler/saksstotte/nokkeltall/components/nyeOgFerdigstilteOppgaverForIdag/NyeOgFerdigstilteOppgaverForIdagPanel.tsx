@@ -3,12 +3,12 @@ import moment from 'moment';
 import { FormattedMessage } from 'react-intl';
 import { Undertittel, Element } from 'nav-frontend-typografi';
 
-import kodeverkTyper from 'kodeverk/kodeverkTyper';
+import KodeverkType from 'kodeverk/kodeverkTyper';
 import { ISO_DATE_FORMAT } from 'utils/formats';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import useKodeverk from 'data/useKodeverk';
+import NyeOgFerdigstilteOppgaver from 'types/saksbehandler/nyeOgFerdigstilteOppgaverTsType';
 import NyeOgFerdigstilteOppgaverForIdagGraf from './NyeOgFerdigstilteOppgaverForIdagGraf';
-import NyeOgFerdigstilteOppgaver from '../../nyeOgFerdigstilteOppgaverTsType';
 
 export const getNyeOgFerdigstilteForIDag = (nyeOgFerdigstilte: NyeOgFerdigstilteOppgaver[] = []): NyeOgFerdigstilteOppgaver[] => {
   const iDag = moment();
@@ -29,7 +29,7 @@ const NyeOgFerdigstilteOppgaverForIdagPanel: FunctionComponent<OwnProps> = ({
   height,
   nyeOgFerdigstilteOppgaver,
 }) => {
-  const behandlingTyper = useKodeverk(kodeverkTyper.BEHANDLING_TYPE);
+  const behandlingTyper = useKodeverk(KodeverkType.BEHANDLING_TYPE);
 
   const filtrerteNyeOgFerdigstilteOppgaver = useMemo(() => getNyeOgFerdigstilteForIDag(nyeOgFerdigstilteOppgaver), [nyeOgFerdigstilteOppgaver]);
 

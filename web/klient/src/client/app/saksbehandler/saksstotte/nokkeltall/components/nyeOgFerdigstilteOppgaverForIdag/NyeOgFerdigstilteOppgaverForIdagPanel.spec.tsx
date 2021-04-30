@@ -3,16 +3,16 @@ import { shallow } from 'enzyme';
 import moment from 'moment';
 
 import { requestApi, RestApiGlobalStatePathsKeys } from 'data/fplosRestApi';
-import behandlingType from 'kodeverk/behandlingType';
-import kodeverkTyper from 'kodeverk/kodeverkTyper';
+import BehandlingType from 'kodeverk/behandlingType';
+import KodeverkType from 'kodeverk/kodeverkTyper';
 import NyeOgFerdigstilteOppgaverForIdagPanel, { getNyeOgFerdigstilteForIDag } from './NyeOgFerdigstilteOppgaverForIdagPanel';
 import NyeOgFerdigstilteOppgaverForIdagGraf from './NyeOgFerdigstilteOppgaverForIdagGraf';
 
 describe('<NyeOgFerdigstilteOppgaverForIdagPanel>', () => {
   it('skal vise rendre komponent', () => {
     const alleKodeverk = {
-      [kodeverkTyper.BEHANDLING_TYPE]: [{
-        kode: behandlingType.FORSTEGANGSSOKNAD,
+      [KodeverkType.BEHANDLING_TYPE]: [{
+        kode: BehandlingType.FORSTEGANGSSOKNAD,
         navn: 'FORSTEGANGSSOKNAD',
       }],
     };
@@ -21,7 +21,7 @@ describe('<NyeOgFerdigstilteOppgaverForIdagPanel>', () => {
 
     const nyeOgFerdigstilteOppgaver = [{
       behandlingType: {
-        kode: behandlingType.FORSTEGANGSSOKNAD,
+        kode: BehandlingType.FORSTEGANGSSOKNAD,
         navn: 'FORSTEGANGSSOKNAD',
       },
       antallNye: 12,
@@ -42,7 +42,7 @@ describe('<NyeOgFerdigstilteOppgaverForIdagPanel>', () => {
     const iDag = moment().format();
     const nyeOgFerdigstilteOppgaver = [{
       behandlingType: {
-        kode: behandlingType.FORSTEGANGSSOKNAD,
+        kode: BehandlingType.FORSTEGANGSSOKNAD,
         navn: 'FORSTEGANGSSOKNAD',
       },
       antallNye: 12,
@@ -50,7 +50,7 @@ describe('<NyeOgFerdigstilteOppgaverForIdagPanel>', () => {
       dato: iDag,
     }, {
       behandlingType: {
-        kode: behandlingType.KLAGE,
+        kode: BehandlingType.KLAGE,
         navn: 'KLAGE',
       },
       antallNye: 1,
@@ -58,7 +58,7 @@ describe('<NyeOgFerdigstilteOppgaverForIdagPanel>', () => {
       dato: moment().add(1, 'days').format(),
     }, {
       behandlingType: {
-        kode: behandlingType.DOKUMENTINNSYN,
+        kode: BehandlingType.DOKUMENTINNSYN,
         navn: 'INNSYN',
       },
       antallNye: 8,

@@ -11,8 +11,7 @@ import Image from 'sharedComponents/Image';
 import advarselIcon from 'images/advarsel.svg';
 import { hasValidSaksnummerOrFodselsnummerFormat } from 'utils/validation/validators';
 import { InputField, CheckboxField } from 'form/FinalFields';
-
-import NavAnsatt from 'app/navAnsattTsType';
+import NavAnsatt from 'types/navAnsattTsType';
 
 import styles from './searchForm.less';
 

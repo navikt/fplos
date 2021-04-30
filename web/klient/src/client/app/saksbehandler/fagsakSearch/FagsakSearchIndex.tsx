@@ -5,10 +5,10 @@ import React, {
 import { errorOfType, ErrorTypes, getErrorResponseData } from 'data/rest-api';
 import { restApiHooks, RestApiPathsKeys } from 'data/fplosRestApi';
 import OppgaveErReservertAvAnnenModal from 'saksbehandler/components/OppgaveErReservertAvAnnenModal';
-import Fagsak from 'saksbehandler/fagsakSearch/fagsakTsType';
+import Fagsak from 'types/saksbehandler/fagsakTsType';
 import { getFpsakHref, getFptilbakeHref } from 'app/paths';
-import OppgaveStatus from 'saksbehandler/oppgaveStatusTsType';
-import Oppgave from 'saksbehandler/oppgaveTsType';
+import OppgaveStatus from 'types/saksbehandler/oppgaveStatusTsType';
+import Oppgave from 'types/saksbehandler/oppgaveTsType';
 import FagsakSearch from './components/FagsakSearch';
 
 const getGoToFpsakFn = (fpsakUrl: string) => (saksnummer: number, behandlingId?: number) => {

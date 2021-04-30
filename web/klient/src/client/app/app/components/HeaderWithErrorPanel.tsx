@@ -11,7 +11,8 @@ import UserPanel from '@navikt/nap-user-panel';
 import { useRestApiError, useRestApiErrorDispatcher } from 'data/rest-api-hooks';
 import { restApiHooks, RestApiGlobalStatePathsKeys } from 'data/fplosRestApi';
 import { RETTSKILDE_URL, SYSTEMRUTINE_URL } from 'data/eksterneLenker';
-import NavAnsatt from 'app/navAnsattTsType';
+import NavAnsatt from 'types/navAnsattTsType';
+import Driftsmelding from 'types/driftsmeldingTsType';
 
 import { AVDELINGSLEDER_PATH, BASE_PATH } from '../paths';
 import ErrorMessagePanel from './ErrorMessagePanel';
@@ -19,7 +20,6 @@ import HeaderAvdelingListe from './HeaderAvdelingListe';
 
 import styles from './headerWithErrorPanel.less';
 import ErrorFormatter from '../feilhandtering/ErrorFormatter';
-import Driftsmelding from '../driftsmeldingTsType';
 import DriftsmeldingPanel from './DriftsmeldingPanel';
 
 interface OwnProps {

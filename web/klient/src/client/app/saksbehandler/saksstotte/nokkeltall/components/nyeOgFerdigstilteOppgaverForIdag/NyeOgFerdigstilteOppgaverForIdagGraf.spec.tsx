@@ -6,7 +6,7 @@ import { IntlShape } from 'react-intl';
 import { ISO_DATE_FORMAT } from 'utils/formats';
 import { shallowWithIntl, intlMock } from 'testHelpers/intl-enzyme-test-helper';
 
-import behandlingType from 'kodeverk/behandlingType';
+import BehandlingType from 'kodeverk/behandlingType';
 import NyeOgFerdigstilteOppgaverForIdagGraf from './NyeOgFerdigstilteOppgaverForIdagGraf';
 
 describe('<NyeOgFerdigstilteOppgaverForIdagGraf>', () => {
@@ -14,22 +14,22 @@ describe('<NyeOgFerdigstilteOppgaverForIdagGraf>', () => {
     ...intlMock,
   };
   const behandlingTyper = [{
-    kode: behandlingType.FORSTEGANGSSOKNAD,
+    kode: BehandlingType.FORSTEGANGSSOKNAD,
     navn: 'Førstegangssøknad',
   }, {
-    kode: behandlingType.KLAGE,
+    kode: BehandlingType.KLAGE,
     navn: 'Klage',
   }, {
-    kode: behandlingType.DOKUMENTINNSYN,
+    kode: BehandlingType.DOKUMENTINNSYN,
     navn: 'Dokumentinnsyn',
   }, {
-    kode: behandlingType.REVURDERING,
+    kode: BehandlingType.REVURDERING,
     navn: 'Revurdering',
   }, {
-    kode: behandlingType.TILBAKEBETALING,
+    kode: BehandlingType.TILBAKEBETALING,
     navn: 'Tilbakebetaling',
   }, {
-    kode: behandlingType.TILBAKEBETALING_REVURDERING,
+    kode: BehandlingType.TILBAKEBETALING_REVURDERING,
     navn: 'Tilbakebet-rev',
   }];
 
@@ -50,7 +50,7 @@ describe('<NyeOgFerdigstilteOppgaverForIdagGraf>', () => {
   it('skal vise graf med 7 satt på x-linja når data har maksverdi x=5', () => {
     const nyeOgFerdigstilteOppgaver = [{
       behandlingType: {
-        kode: behandlingType.FORSTEGANGSSOKNAD,
+        kode: BehandlingType.FORSTEGANGSSOKNAD,
         navn: 'FORSTEGANGSSOKNAD',
       },
       antallNye: 12,
@@ -76,7 +76,7 @@ describe('<NyeOgFerdigstilteOppgaverForIdagGraf>', () => {
     () => {
       const nyeOgFerdigstilteOppgaver = [{
         behandlingType: {
-          kode: behandlingType.FORSTEGANGSSOKNAD,
+          kode: BehandlingType.FORSTEGANGSSOKNAD,
           navn: 'FORSTEGANGSSOKNAD',
         },
         antallNye: 12,

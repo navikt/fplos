@@ -3,10 +3,10 @@ import React, {
 } from 'react';
 
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
+import NyeOgFerdigstilteOppgaver from 'types/saksbehandler/nyeOgFerdigstilteOppgaverTsType';
 
 import NyeOgFerdigstilteOppgaverForIdagPanel from './nyeOgFerdigstilteOppgaverForIdag/NyeOgFerdigstilteOppgaverForIdagPanel';
 import NyeOgFerdigstilteOppgaverForSisteSyvPanel from './nyeOgFerdigstilteOppgaverForSisteSyv/NyeOgFerdigstilteOppgaverForSisteSyvPanel';
-import NyeOgFerdigstilteOppgaver from '../nyeOgFerdigstilteOppgaverTsType';
 
 interface OwnProps {
   nyeOgFerdigstilteOppgaver?: NyeOgFerdigstilteOppgaver[];

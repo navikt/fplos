@@ -13,7 +13,7 @@ import {
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import { InputField } from 'form/FinalFields';
 import { restApiHooks, RestApiPathsKeys } from 'data/fplosRestApi';
-import Saksliste from '../../sakslisteTsType';
+import Saksliste from 'types/avdelingsleder/sakslisteTsType';
 import AutoLagringVedBlur from './AutoLagringVedBlur';
 import BehandlingstypeVelger from './BehandlingstypeVelger';
 import AndreKriterierVelger from './AndreKriterierVelger';
@@ -85,7 +85,8 @@ export const UtvalgskriterierForSakslisteForm: FunctionComponent<OwnProps & Wrap
   hentAvdelingensSakslister,
   hentOppgaverForAvdelingAntall,
 }) => {
-  const { data: antallOppgaver, startRequest: hentAntallOppgaverForSaksliste } = restApiHooks.useRestApiRunner(RestApiPathsKeys.OPPGAVE_ANTALL);
+  const { data: antallOppgaver, startRequest: hentAntallOppgaverForSaksliste } = restApiHooks
+    .useRestApiRunner<number>(RestApiPathsKeys.OPPGAVE_ANTALL);
   useEffect(() => {
     hentAntallOppgaverForSaksliste({ sakslisteId: valgtSaksliste.sakslisteId, avdelingEnhet: valgtAvdelingEnhet });
   }, [valgtSaksliste.sakslisteId]);

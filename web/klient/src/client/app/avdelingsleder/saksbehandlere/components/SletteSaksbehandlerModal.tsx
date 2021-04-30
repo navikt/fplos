@@ -6,9 +6,9 @@ import { Normaltekst } from 'nav-frontend-typografi';
 
 import Image from 'sharedComponents/Image';
 import Modal from 'sharedComponents/Modal';
+import Saksbehandler from 'types/avdelingsleder/saksbehandlerTsType';
 
 import advarselImageUrl from 'images/advarsel.svg';
-import Saksbehandler from '../saksbehandlerTsType';
 
 import styles from './sletteSaksbehandlerModal.less';
 

@@ -1,5 +1,5 @@
-import Kodeverk from 'kodeverk/kodeverkTsType';
-import KoSorteringType from './KoSorteringTsType';
+import Kodeverk from '../kodeverkTsType';
+import KoSorteringType from './koSorteringTsType';
 
 type AnnetKriterie = Readonly<{
   andreKriterierType: Kodeverk;

@@ -4,39 +4,39 @@ import { Hint, VerticalRectSeries } from 'react-vis';
 
 import { shallowWithIntl, intlMock } from 'testHelpers/intl-enzyme-test-helper';
 import { ISO_DATE_FORMAT } from 'utils/formats';
-import behandlingType from 'kodeverk/behandlingType';
-import behandlingVenteStatus from 'kodeverk/behandlingVenteStatus';
+import BehandlingType from 'kodeverk/behandlingType';
+import BehandlingVenteStatus from 'kodeverk/behandlingVenteStatus';
 import OppgaverSomErApneEllerPaVentGraf from './OppgaverSomErApneEllerPaVentGraf';
 
 const oppgaverApneEllerPaVent = [{
   behandlingVenteStatus: {
-    kode: behandlingVenteStatus.PA_VENT,
+    kode: BehandlingVenteStatus.PA_VENT,
     navn: 'På vent',
   },
   behandlingType: {
-    kode: behandlingType.FORSTEGANGSSOKNAD,
+    kode: BehandlingType.FORSTEGANGSSOKNAD,
     navn: 'Førstegangssøknad',
   },
   førsteUttakMåned: moment().startOf('month').format(ISO_DATE_FORMAT),
   antall: 2,
 }, {
   behandlingVenteStatus: {
-    kode: behandlingVenteStatus.IKKE_PA_VENT,
+    kode: BehandlingVenteStatus.IKKE_PA_VENT,
     navn: 'Ikke på vent',
   },
   behandlingType: {
-    kode: behandlingType.FORSTEGANGSSOKNAD,
+    kode: BehandlingType.FORSTEGANGSSOKNAD,
     navn: 'Førstegangssøknad',
   },
   førsteUttakMåned: moment().startOf('month').format(ISO_DATE_FORMAT),
   antall: 5,
 }, {
   behandlingVenteStatus: {
-    kode: behandlingVenteStatus.PA_VENT,
+    kode: BehandlingVenteStatus.PA_VENT,
     navn: 'På vent',
   },
   behandlingType: {
-    kode: behandlingType.KLAGE,
+    kode: BehandlingType.KLAGE,
     navn: 'Klage',
   },
   antall: 6,

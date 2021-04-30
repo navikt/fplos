@@ -13,8 +13,9 @@ import { restApiHooks, RestApiPathsKeys, RestApiGlobalStatePathsKeys } from 'dat
 import LoadingPanel from 'sharedComponents/LoadingPanel';
 import { parseQueryString } from 'utils/urlUtils';
 import { getAvdelingslederPanelLocationCreator } from 'app/paths';
-import NavAnsatt from 'app/navAnsattTsType';
-import Avdeling from 'app/avdelingTsType';
+import NavAnsatt from 'types/navAnsattTsType';
+import Avdeling from 'types/avdelingsleder/avdelingTsType';
+import Saksbehandler from 'types/avdelingsleder/saksbehandlerTsType';
 import useTrackRouteParam from 'app/data/useTrackRouteParam';
 import AvdelingslederDashboard from './components/AvdelingslederDashboard';
 import IkkeTilgangTilAvdelingslederPanel from './components/IkkeTilgangTilAvdelingslederPanel';
@@ -26,7 +27,6 @@ import EndreBehandlingskoerIndex from './behandlingskoer/EndreBehandlingskoerInd
 
 import styles from './avdelingslederIndex.less';
 import ReservasjonerIndex from './reservasjoner/ReservasjonerIndex';
-import Saksbehandler from './saksbehandlere/saksbehandlerTsType';
 
 const EMPTY_ARRAY: Saksbehandler[] = [];
 

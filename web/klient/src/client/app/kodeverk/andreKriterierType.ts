@@ -1,7 +1,7 @@
-const andreKriterierType = {
-  TIL_BESLUTTER: 'TIL_BESLUTTER',
-  REGISTRER_PAPIRSOKNAD: 'PAPIRSOKNAD',
-  UTBETALING_TIL_BRUKER: 'UTBETALING_TIL_BRUKER',
+enum AndreKriterierType {
+  TIL_BESLUTTER = 'TIL_BESLUTTER',
+  REGISTRER_PAPIRSOKNAD = 'PAPIRSOKNAD',
+  UTBETALING_TIL_BRUKER = 'UTBETALING_TIL_BRUKER',
 };
 
-export default andreKriterierType;
+export default AndreKriterierType;

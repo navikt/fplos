@@ -5,7 +5,7 @@ import { Hovedknapp, Knapp } from 'nav-frontend-knapper';
 import { Undertittel } from 'nav-frontend-typografi';
 
 import { restApiHooks, RestApiPathsKeys } from 'data/fplosRestApi';
-import Oppgave from 'saksbehandler/oppgaveTsType';
+import Oppgave from 'types/saksbehandler/oppgaveTsType';
 import {
   hasValidText, maxLength, minLength, required,
 } from 'utils/validation/validators';

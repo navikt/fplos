@@ -7,12 +7,12 @@ import { Element } from 'nav-frontend-typografi';
 import StoreValuesInLocalStorage from 'form/StoreValuesInLocalStorage';
 import { RadioGroupField, RadioOption } from 'form/FinalFields';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
-import fagsakYtelseType from 'kodeverk/fagsakYtelseType';
-import kodeverkTyper from 'kodeverk/kodeverkTyper';
-import Kodeverk from 'kodeverk/kodeverkTsType';
+import FagsakYtelseType from 'kodeverk/fagsakYtelseType';
+import KodeverkType from 'kodeverk/kodeverkTyper';
+import Kodeverk from 'types/kodeverkTsType';
 import useKodeverk from 'data/useKodeverk';
+import OppgaverForAvdeling from 'types/avdelingsleder/oppgaverForAvdelingTsType';
 import FordelingAvBehandlingstypeGraf from './FordelingAvBehandlingstypeGraf';
-import OppgaverForAvdeling from './oppgaverForAvdelingTsType';
 
 const finnFagsakYtelseTypeNavn = (fagsakYtelseTyper: Kodeverk[], valgtFagsakYtelseType: string) => {
   const type = fagsakYtelseTyper.find((fyt) => fyt.kode === valgtFagsakYtelseType);
@@ -44,8 +44,8 @@ export const FordelingAvBehandlingstypePanel: FunctionComponent<OwnProps> = ({
   oppgaverForAvdeling,
   getValueFromLocalStorage,
 }) => {
-  const fagsakYtelseTyper = useKodeverk(kodeverkTyper.FAGSAK_YTELSE_TYPE);
-  const behandlingTyper = useKodeverk(kodeverkTyper.BEHANDLING_TYPE);
+  const fagsakYtelseTyper = useKodeverk(KodeverkType.FAGSAK_YTELSE_TYPE);
+  const behandlingTyper = useKodeverk(KodeverkType.BEHANDLING_TYPE);
   const stringFromStorage = getValueFromLocalStorage(formName);
   const lagredeVerdier = stringFromStorage ? JSON.parse(stringFromStorage) : undefined;
   return (
@@ -61,16 +61,16 @@ export const FordelingAvBehandlingstypePanel: FunctionComponent<OwnProps> = ({
           <VerticalSpacer sixteenPx />
           <RadioGroupField name="valgtYtelseType">
             <RadioOption
-              value={fagsakYtelseType.FORELDREPRENGER}
-              label={finnFagsakYtelseTypeNavn(fagsakYtelseTyper, fagsakYtelseType.FORELDREPRENGER)}
+              value={FagsakYtelseType.FORELDREPRENGER}
+              label={finnFagsakYtelseTypeNavn(fagsakYtelseTyper, FagsakYtelseType.FORELDREPRENGER)}
             />
             <RadioOption
-              value={fagsakYtelseType.ENGANGSSTONAD}
-              label={finnFagsakYtelseTypeNavn(fagsakYtelseTyper, fagsakYtelseType.ENGANGSSTONAD)}
+              value={FagsakYtelseType.ENGANGSSTONAD}
+              label={finnFagsakYtelseTypeNavn(fagsakYtelseTyper, FagsakYtelseType.ENGANGSSTONAD)}
             />
             <RadioOption
-              value={fagsakYtelseType.SVANGERSKAPPENGER}
-              label={finnFagsakYtelseTypeNavn(fagsakYtelseTyper, fagsakYtelseType.SVANGERSKAPPENGER)}
+              value={FagsakYtelseType.SVANGERSKAPPENGER}
+              label={finnFagsakYtelseTypeNavn(fagsakYtelseTyper, FagsakYtelseType.SVANGERSKAPPENGER)}
             />
             <RadioOption
               value={ALLE_YTELSETYPER_VALGT}

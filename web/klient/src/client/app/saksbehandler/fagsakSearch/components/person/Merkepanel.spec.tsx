@@ -2,7 +2,7 @@ import React from 'react';
 import { shallowWithIntl, intlMock } from 'testHelpers/intl-enzyme-test-helper';
 
 import { FormattedMessage, IntlShape } from 'react-intl';
-import diskresjonskodeType from 'kodeverk/diskresjonskodeType';
+import DiskresjonskodeType from 'kodeverk/diskresjonskodeType';
 import { MerkePanel } from './Merkepanel';
 
 describe('<MerkePanel>', () => {
@@ -12,7 +12,7 @@ describe('<MerkePanel>', () => {
   it('skal sjekke at kun merking om død vises når person er død', () => {
     const wrapper = shallowWithIntl(<MerkePanel
       erDod
-      diskresjonskode={diskresjonskodeType.KODE6}
+      diskresjonskode={DiskresjonskodeType.KODE6}
       intl={intl as IntlShape}
     />);
     expect(wrapper.find(FormattedMessage).prop('id')).toBe('MerkePanel.Dod');

@@ -11,8 +11,8 @@ import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import Table from 'sharedComponents/table/Table';
 import TableRow from 'sharedComponents/table/TableRow';
 import TableColumn from 'sharedComponents/table/TableColumn';
+import Saksbehandler from 'types/avdelingsleder/saksbehandlerTsType';
 import SletteSaksbehandlerModal from './SletteSaksbehandlerModal';
-import Saksbehandler from '../saksbehandlerTsType';
 
 import styles from './saksbehandlereTabell.less';
 

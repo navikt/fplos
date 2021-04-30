@@ -23,6 +23,7 @@
 			"sharedComponents/*": ["app/sharedComponents/*"],
 			"avdelingsleder/*": ["app/avdelingsleder/*"],
 			"saksbehandler/*": ["app/saksbehandler/*"],
+			"types/*": ["app/types/*"],
 			"utils/*": ["app/utils/*"],
 			"testHelpers/*": ["testHelpers/*"],
 		  }

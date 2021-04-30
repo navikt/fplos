@@ -3,7 +3,7 @@ import { action } from '@storybook/addon-actions';
 
 import { requestApi, RestApiGlobalStatePathsKeys } from 'data/fplosRestApi';
 import { GjeldendeSakslisterTabell } from 'avdelingsleder/behandlingskoer/components/GjeldendeSakslisterTabell';
-import Saksliste from 'avdelingsleder/behandlingskoer/sakslisteTsType';
+import Saksliste from 'types/avdelingsleder/sakslisteTsType';
 
 import alleKodeverk from '../../../mocks/alleKodeverk.json';
 import withIntl from '../../../decorators/withIntl';

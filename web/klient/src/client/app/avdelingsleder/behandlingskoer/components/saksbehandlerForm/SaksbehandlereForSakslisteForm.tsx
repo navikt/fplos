@@ -8,8 +8,8 @@ import { Row, Column } from 'nav-frontend-grid';
 import { restApiHooks, RestApiPathsKeys } from 'data/fplosRestApi';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import { CheckboxField } from 'form/FinalFields';
-import Saksbehandler from 'avdelingsleder/saksbehandlere/saksbehandlerTsType';
-import Saksliste from '../../sakslisteTsType';
+import Saksbehandler from 'types/avdelingsleder/saksbehandlerTsType';
+import Saksliste from 'types/avdelingsleder/sakslisteTsType';
 
 import styles from './saksbehandlereForSakslisteForm.less';
 

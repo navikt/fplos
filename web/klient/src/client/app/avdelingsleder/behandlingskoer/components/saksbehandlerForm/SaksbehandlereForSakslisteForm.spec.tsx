@@ -5,7 +5,7 @@ import { Form } from 'react-final-form';
 import { FormattedMessage } from 'react-intl';
 import { Column } from 'nav-frontend-grid';
 
-import andreKriterierType from 'kodeverk/andreKriterierType';
+import AndreKriterierType from 'kodeverk/andreKriterierType';
 import { CheckboxField } from 'form/FinalFields';
 import SaksbehandlereForSakslisteForm from './SaksbehandlereForSakslisteForm';
 
@@ -16,13 +16,13 @@ describe('<SaksbehandlereForSakslisteForm>', () => {
     sistEndret: '2017-08-31',
     andreKriterier: [{
       andreKriterierType: {
-        kode: andreKriterierType.TIL_BESLUTTER,
+        kode: AndreKriterierType.TIL_BESLUTTER,
         navn: 'Til beslutter',
       },
       inkluder: true,
     }, {
       andreKriterierType: {
-        kode: andreKriterierType.REGISTRER_PAPIRSOKNAD,
+        kode: AndreKriterierType.REGISTRER_PAPIRSOKNAD,
         navn: 'Registrer papirsøknad',
       },
       inkluder: true,

@@ -2,8 +2,8 @@ import React, { FunctionComponent } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { Normaltekst } from 'nav-frontend-typografi';
 
-import Oppgave from 'saksbehandler/oppgaveTsType';
-import Fagsak from 'saksbehandler/fagsakSearch/fagsakTsType';
+import Oppgave from 'types/saksbehandler/oppgaveTsType';
+import Fagsak from 'types/saksbehandler/fagsakTsType';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import PersonInfo from './person/PersonInfo';
 import SearchForm from './SearchForm';

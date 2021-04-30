@@ -6,11 +6,11 @@ import { Form } from 'react-final-form';
 import { FlexColumn, FlexContainer, FlexRow } from 'sharedComponents/flexGrid';
 import StoreValuesInLocalStorage from 'form/StoreValuesInLocalStorage';
 import { CheckboxField } from 'form/FinalFields';
-import kodeverkTyper from 'kodeverk/kodeverkTyper';
+import KodeverkType from 'kodeverk/kodeverkTyper';
 import useKodeverk from 'data/useKodeverk';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
-import behandlingType from 'kodeverk/behandlingType';
-import OppgaverSomErApneEllerPaVent from './oppgaverSomErApneEllerPaVentTsType';
+import BehandlingType from 'kodeverk/behandlingType';
+import OppgaverSomErApneEllerPaVent from 'types/avdelingsleder/oppgaverSomErApneEllerPaVentTsType';
 import OppgaverSomErApneEllerPaVentGraf from './OppgaverSomErApneEllerPaVentGraf';
 
 const formName = 'oppgaverSomErApneEllerPaVent';
@@ -31,14 +31,14 @@ export const OppgaverSomErApneEllerPaVentPanel: FunctionComponent<OwnProps> = ({
   oppgaverApneEllerPaVent,
   getValueFromLocalStorage,
 }) => {
-  const behandlingTyper = useKodeverk(kodeverkTyper.BEHANDLING_TYPE);
+  const behandlingTyper = useKodeverk(KodeverkType.BEHANDLING_TYPE);
   const stringFromStorage = getValueFromLocalStorage(formName);
   const lagredeVerdier = stringFromStorage ? JSON.parse(stringFromStorage) : undefined;
 
   const filtrerteBehandlingstyper = useMemo(() => behandlingTyper
-    .filter((type) => type.kode !== behandlingType.TILBAKEBETALING
-    && type.kode !== behandlingType.TILBAKEBETALING_REVURDERING
-    && type.kode !== behandlingType.SOKNAD), []);
+    .filter((type) => type.kode !== BehandlingType.TILBAKEBETALING
+    && type.kode !== BehandlingType.TILBAKEBETALING_REVURDERING
+    && type.kode !== BehandlingType.SOKNAD), []);
 
   const formDefaultValues = useMemo(() => Object.values(filtrerteBehandlingstyper).reduce((app, type) => ({
     ...app,

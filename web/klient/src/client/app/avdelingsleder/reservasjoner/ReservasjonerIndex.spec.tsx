@@ -2,7 +2,7 @@ import { shallow } from 'enzyme';
 import React from 'react';
 
 import { requestApi, RestApiPathsKeys } from 'data/fplosRestApi';
-import behandlingType from 'kodeverk/behandlingType';
+import BehandlingType from 'kodeverk/behandlingType';
 import { ReservasjonerIndex } from './ReservasjonerIndex';
 import ReservasjonerTabell from './components/ReservasjonerTabell';
 
@@ -17,7 +17,7 @@ describe('<ReservasjonerIndex>', () => {
         oppgaveId: 1,
         oppgaveSaksNr: 2,
         behandlingType: {
-          kode: behandlingType.FORSTEGANGSSOKNAD,
+          kode: BehandlingType.FORSTEGANGSSOKNAD,
           kodeverk: '',
         },
       }];

@@ -1,9 +1,9 @@
 import React, { FunctionComponent } from 'react';
 
 import { restApiHooks, RestApiPathsKeys } from 'data/fplosRestApi';
+import NyeOgFerdigstilteOppgaver from 'types/saksbehandler/nyeOgFerdigstilteOppgaverTsType';
 
 import SaksbehandlerNokkeltallPanel from './components/SaksbehandlerNokkeltallPanel';
-import NyeOgFerdigstilteOppgaver from './nyeOgFerdigstilteOppgaverTsType';
 
 interface OwnProps {
   valgtSakslisteId: number;

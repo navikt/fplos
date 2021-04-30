@@ -6,7 +6,7 @@ import Image from 'sharedComponents/Image';
 import urlMann from 'images/mann.svg';
 import urlKvinne from 'images/kvinne.svg';
 
-import Person from '../../personTsType';
+import Person from 'types/saksbehandler/personTsType';
 import AlderVisning from './Aldervisning';
 import MerkePanel from './Merkepanel';
 

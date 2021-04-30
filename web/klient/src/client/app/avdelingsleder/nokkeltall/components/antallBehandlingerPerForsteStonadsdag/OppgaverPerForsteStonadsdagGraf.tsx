@@ -8,9 +8,9 @@ import Panel from 'nav-frontend-paneler';
 import { Normaltekst, Undertekst } from 'nav-frontend-typografi';
 
 import { DDMMYYYY_DATE_FORMAT } from 'utils/formats';
+import OppgaverForForsteStonadsdag from 'types/avdelingsleder/oppgaverForForsteStonadsdagTsType';
 
 import styles from './oppgaverPerForsteStonadsdagGraf.less';
-import OppgaverForForsteStonadsdag from './oppgaverForForsteStonadsdagTsType';
 
 export const lagKoordinater = (oppgaverPerForsteStonadsdag: OppgaverForForsteStonadsdag[]): Koordinat[] => oppgaverPerForsteStonadsdag
   .map((o) => ({

@@ -3,9 +3,9 @@ import sinon from 'sinon';
 import { IntlShape, FormattedMessage } from 'react-intl';
 
 import { shallowWithIntl, intlMock } from 'testHelpers/intl-enzyme-test-helper';
-import behandlingStatus from 'kodeverk/behandlingStatus';
-import behandlingType from 'kodeverk/behandlingType';
-import fagsakYtelseType from 'kodeverk/fagsakYtelseType';
+import BehandlingStatus from 'kodeverk/behandlingStatus';
+import BehandlingType from 'kodeverk/behandlingType';
+import FagsakYtelseType from 'kodeverk/fagsakYtelseType';
 import { OppgaveReservasjonForlengetModal } from './OppgaveReservasjonForlengetModal';
 
 describe('<OppgaveReservasjonForlengetModal>', () => {
@@ -25,18 +25,18 @@ describe('<OppgaveReservasjonForlengetModal>', () => {
     navn: 'Espen Utvikler',
     system: 'FPSAK',
     behandlingstype: {
-      kode: behandlingType.FORSTEGANGSSOKNAD,
+      kode: BehandlingType.FORSTEGANGSSOKNAD,
       navn: '',
     },
     opprettetTidspunkt: '2017-01-01',
     behandlingsfrist: '2017-01-01',
     erTilSaksbehandling: true,
     fagsakYtelseType: {
-      kode: fagsakYtelseType.ENGANGSSTONAD,
+      kode: FagsakYtelseType.ENGANGSSTONAD,
       navn: '',
     },
     behandlingStatus: {
-      kode: behandlingStatus.OPPRETTET,
+      kode: BehandlingStatus.OPPRETTET,
       navn: '',
     },
     href: '',

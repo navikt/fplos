@@ -1,7 +1,7 @@
 import React, { Component, MouseEvent } from 'react';
 import { FormattedMessage } from 'react-intl';
 
-import Oppgave from 'saksbehandler/oppgaveTsType';
+import Oppgave from 'types/saksbehandler/oppgaveTsType';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import { getDateAndTime } from 'utils/dateUtils';
 import MenuButton from './MenuButton';

@@ -2,7 +2,7 @@ import React from 'react';
 import { shallow } from 'enzyme';
 
 import { requestApi, RestApiPathsKeys } from 'data/fplosRestApi';
-import behandlingType from 'kodeverk/behandlingType';
+import BehandlingType from 'kodeverk/behandlingType';
 
 import SaksbehandlerNokkeltallIndex from './SaksbehandlerNokkeltallIndex';
 import SaksbehandlerNokkeltallPanel from './components/SaksbehandlerNokkeltallPanel';
@@ -11,7 +11,7 @@ describe('<SaksbehandlerNokkeltallIndex>', () => {
   it('skal hente statistikk ved lasting av komponent', () => {
     const oppgaver = [{
       behandlingType: {
-        kode: behandlingType.FORSTEGANGSSOKNAD,
+        kode: BehandlingType.FORSTEGANGSSOKNAD,
         kodeverk: 'test',
       },
       antallNye: 1,

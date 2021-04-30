@@ -4,10 +4,10 @@ import React, {
 
 import { restApiHooks, RestApiPathsKeys } from 'data/fplosRestApi';
 
-import Saksliste from 'saksbehandler/behandlingskoer/sakslisteTsType';
+import Saksliste from 'types/saksbehandler/sakslisteTsType';
 import { getFpsakHref, getFptilbakeHref } from 'app/paths';
-import OppgaveStatus from 'saksbehandler/oppgaveStatusTsType';
-import Oppgave from 'saksbehandler/oppgaveTsType';
+import OppgaveStatus from 'types/saksbehandler/oppgaveStatusTsType';
+import Oppgave from 'types/saksbehandler/oppgaveTsType';
 import OppgaveErReservertAvAnnenModal from 'saksbehandler/components/OppgaveErReservertAvAnnenModal';
 import SakslistePanel from './components/SakslistePanel';
 

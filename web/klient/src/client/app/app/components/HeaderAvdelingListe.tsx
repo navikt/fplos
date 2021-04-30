@@ -6,10 +6,9 @@ import UserPanel from '@navikt/nap-user-panel';
 import BoxedListWithSelection from '@navikt/boxed-list-with-selection';
 
 import { getValueFromLocalStorage, setValueInLocalStorage, removeValueFromLocalStorage } from 'utils/localStorageHelper';
-import Avdeling from 'app/avdelingTsType';
+import Avdeling from 'types/avdelingsleder/avdelingTsType';
+import NavAnsatt from 'types/navAnsattTsType';
 import { restApiHooks, RestApiGlobalStatePathsKeys } from 'data/fplosRestApi';
-
-import NavAnsatt from 'app/navAnsattTsType';
 
 interface OwnProps {
   erLenkePanelApent: boolean;

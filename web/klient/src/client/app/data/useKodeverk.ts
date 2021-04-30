@@ -1,4 +1,4 @@
-import Kodeverk from 'kodeverk/kodeverkTsType';
+import Kodeverk from 'types/kodeverkTsType';
 import { RestApiGlobalStatePathsKeys, restApiHooks } from './fplosRestApi';
 
 /**

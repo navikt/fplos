@@ -3,7 +3,7 @@ import sinon from 'sinon';
 import { IntlShape } from 'react-intl';
 
 import { requestApi, RestApiGlobalStatePathsKeys, RestApiPathsKeys } from 'data/fplosRestApi';
-import kodeverkTyper from 'kodeverk/kodeverkTyper';
+import KodeverkType from 'kodeverk/kodeverkTyper';
 import { shallowWithIntl, intlMock } from 'testHelpers/intl-enzyme-test-helper';
 import KoSortering from 'kodeverk/KoSortering';
 import { RadioGroupField, RadioOption } from 'form/FinalFields';
@@ -27,7 +27,7 @@ describe('<SorteringVelger>', () => {
   }];
 
   const alleKodeverk = {
-    [kodeverkTyper.KO_SORTERING]: koSorteringTyper,
+    [KodeverkType.KO_SORTERING]: koSorteringTyper,
   };
 
   it('skal vise radioknapper for alle sorteringsvalg', () => {
