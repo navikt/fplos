@@ -6,7 +6,6 @@ import { Knapp } from 'nav-frontend-knapper';
 import Panel from 'nav-frontend-paneler';
 
 import { restApiHooks, RestApiPathsKeys } from 'data/fplosRestApi';
-import Oppgave from 'types/saksbehandler/oppgaveTsType';
 import { DatepickerField } from 'form/FinalFields';
 import styles from 'saksbehandler/behandlingskoer/components/menu/oppgaveReservasjonEndringDatoModal.less';
 import Modal from 'sharedComponents/Modal';
