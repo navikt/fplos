@@ -14,7 +14,7 @@ interface OwnProps {
 export const ReservasjonerIndex: FunctionComponent<OwnProps> = ({
   valgtAvdelingEnhet,
 }) => {
-  const { data: reservasjoner = EMPTY_ARRAY, startRequest: hentAvdelingensReservasjoner } = restApiHooks.useRestApiRunner<Reservasjon[]>(
+  const { data: reservasjoner = EMPTY_ARRAY, startRequest: hentAvdelingensReservasjoner } = restApiHooks.useRestApiRunner(
     RestApiPathsKeys.RESERVASJONER_FOR_AVDELING,
   );
   const { startRequest: opphevOppgaveReservasjon } = restApiHooks.useRestApiRunner(RestApiPathsKeys.AVDELINGSLEDER_OPPHEVER_RESERVASJON);

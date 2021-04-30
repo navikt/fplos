@@ -13,9 +13,7 @@ import { restApiHooks, RestApiPathsKeys, RestApiGlobalStatePathsKeys } from 'dat
 import LoadingPanel from 'sharedComponents/LoadingPanel';
 import { parseQueryString } from 'utils/urlUtils';
 import { getAvdelingslederPanelLocationCreator } from 'app/paths';
-import NavAnsatt from 'types/navAnsattTsType';
-import Avdeling from 'types/avdelingsleder/avdelingTsType';
-import Saksbehandler from 'types/avdelingsleder/saksbehandlerTsType';
+import Saksbehandler from 'types/avdelingsleder/saksbehandlerAvdelingTsType';
 import useTrackRouteParam from 'app/data/useTrackRouteParam';
 import AvdelingslederDashboard from './components/AvdelingslederDashboard';
 import IkkeTilgangTilAvdelingslederPanel from './components/IkkeTilgangTilAvdelingslederPanel';
@@ -108,13 +106,13 @@ export const AvdelingslederIndex: FunctionComponent<OwnProps> = ({
     isQueryParam: true,
   });
 
-  const { kanOppgavestyre, kanBehandleKode6 } = restApiHooks.useGlobalStateRestApiData<NavAnsatt>(RestApiGlobalStatePathsKeys.NAV_ANSATT);
-  const avdelinger = restApiHooks.useGlobalStateRestApiData<Avdeling[]>(RestApiGlobalStatePathsKeys.AVDELINGER);
+  const { kanOppgavestyre, kanBehandleKode6 } = restApiHooks.useGlobalStateRestApiData(RestApiGlobalStatePathsKeys.NAV_ANSATT);
+  const avdelinger = restApiHooks.useGlobalStateRestApiData(RestApiGlobalStatePathsKeys.AVDELINGER);
 
   const {
     startRequest: hentAvdelingensSb, data: avdelingensSaksbehandlere = EMPTY_ARRAY,
-  } = restApiHooks.useRestApiRunner<Saksbehandler[]>(RestApiPathsKeys.SAKSBEHANDLERE_FOR_AVDELING);
-  const hentAvdelingensSaksbehandlere = useCallback((params) => hentAvdelingensSb(params, true), []);
+  } = restApiHooks.useRestApiRunner(RestApiPathsKeys.SAKSBEHANDLERE_FOR_AVDELING);
+  const hentAvdelingensSaksbehandlere = useCallback((params: { avdelingEnhet: string }) => hentAvdelingensSb(params, true), []);
 
   useEffect(() => {
     if (valgtAvdelingEnhet) {

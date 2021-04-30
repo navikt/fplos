@@ -68,7 +68,7 @@ describe('<OppgaverSomErApneEllerPaVentPanel>', () => {
   it('skal vise alle behandlingstyper utenom tilbakekrevingsrelaterte i checkboxer', () => {
     const valuesMock = {};
 
-    requestApi.mock(RestApiGlobalStatePathsKeys.KODEVERK, alleKodeverk);
+    requestApi.mock(RestApiGlobalStatePathsKeys.KODEVERK.name, alleKodeverk);
 
     const wrapper = shallowWithIntl(<OppgaverSomErApneEllerPaVentPanel
       width={300}
@@ -96,7 +96,7 @@ describe('<OppgaverSomErApneEllerPaVentPanel>', () => {
       [BehandlingType.REVURDERING]: true,
     };
 
-    requestApi.mock(RestApiGlobalStatePathsKeys.KODEVERK, alleKodeverk);
+    requestApi.mock(RestApiGlobalStatePathsKeys.KODEVERK.name, alleKodeverk);
 
     const wrapper = shallowWithIntl(<OppgaverSomErApneEllerPaVentPanel
       width={300}
@@ -117,7 +117,7 @@ describe('<OppgaverSomErApneEllerPaVentPanel>', () => {
       [BehandlingType.REVURDERING]: false,
     };
 
-    requestApi.mock(RestApiGlobalStatePathsKeys.KODEVERK, alleKodeverk);
+    requestApi.mock(RestApiGlobalStatePathsKeys.KODEVERK.name, alleKodeverk);
 
     const wrapper = shallowWithIntl(<OppgaverSomErApneEllerPaVentPanel
       width={300}

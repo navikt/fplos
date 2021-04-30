@@ -74,9 +74,9 @@ describe('<OppgaverTabell>', () => {
       href: '',
     }];
 
-    requestApi.mock(RestApiPathsKeys.FORLENG_OPPGAVERESERVASJON, undefined);
-    requestApi.mock(RestApiPathsKeys.RESERVERTE_OPPGAVER, []);
-    requestApi.mock(RestApiPathsKeys.OPPGAVER_TIL_BEHANDLING, oppgaverTilBehandling);
+    requestApi.mock(RestApiPathsKeys.FORLENG_OPPGAVERESERVASJON.name, undefined);
+    requestApi.mock(RestApiPathsKeys.RESERVERTE_OPPGAVER.name, []);
+    requestApi.mock(RestApiPathsKeys.OPPGAVER_TIL_BEHANDLING.name, oppgaverTilBehandling);
     const wrapper = shallowWithIntl(<OppgaverTabell
       intl={intl as IntlShape}
       reserverOppgave={sinon.spy()}
@@ -161,9 +161,9 @@ describe('<OppgaverTabell>', () => {
         href: '',
       }];
 
-      requestApi.mock(RestApiPathsKeys.FORLENG_OPPGAVERESERVASJON, undefined);
-      requestApi.mock(RestApiPathsKeys.RESERVERTE_OPPGAVER, reserverteOppgaver);
-      requestApi.mock(RestApiPathsKeys.OPPGAVER_TIL_BEHANDLING, oppgaverTilBehandling);
+      requestApi.mock(RestApiPathsKeys.FORLENG_OPPGAVERESERVASJON.name, undefined);
+      requestApi.mock(RestApiPathsKeys.RESERVERTE_OPPGAVER.name, reserverteOppgaver);
+      requestApi.mock(RestApiPathsKeys.OPPGAVER_TIL_BEHANDLING.name, oppgaverTilBehandling);
 
       const wrapper = shallowWithIntl(<OppgaverTabell
         intl={intl as IntlShape}
@@ -242,9 +242,9 @@ describe('<OppgaverTabell>', () => {
       href: '',
     }];
 
-    requestApi.mock(RestApiPathsKeys.FORLENG_OPPGAVERESERVASJON, undefined);
-    requestApi.mock(RestApiPathsKeys.RESERVERTE_OPPGAVER, reserverteOppgaver);
-    requestApi.mock(RestApiPathsKeys.OPPGAVER_TIL_BEHANDLING, []);
+    requestApi.mock(RestApiPathsKeys.FORLENG_OPPGAVERESERVASJON.name, undefined);
+    requestApi.mock(RestApiPathsKeys.RESERVERTE_OPPGAVER.name, reserverteOppgaver);
+    requestApi.mock(RestApiPathsKeys.OPPGAVER_TIL_BEHANDLING.name, []);
 
     const wrapper = shallowWithIntl(<OppgaverTabell
       intl={intl as IntlShape}

@@ -131,7 +131,7 @@ describe('<SaksbehandlereTabell>', () => {
       avdelingsnavn: ['NAV Oslo'],
     }];
 
-    requestApi.mock(RestApiPathsKeys.SLETT_SAKSBEHANDLER, {});
+    requestApi.mock(RestApiPathsKeys.SLETT_SAKSBEHANDLER.name, {});
 
     const wrapper = shallow(<SaksbehandlereTabell
       saksbehandlere={saksbehandlere}
@@ -153,7 +153,7 @@ describe('<SaksbehandlereTabell>', () => {
 
     expect(wrapper.find(SletteSaksbehandlerModal)).toHaveLength(0);
 
-    const fjernSaksbehandlerCallData = requestApi.getRequestMockData(RestApiPathsKeys.SLETT_SAKSBEHANDLER);
+    const fjernSaksbehandlerCallData = requestApi.getRequestMockData(RestApiPathsKeys.SLETT_SAKSBEHANDLER.name);
     expect(fjernSaksbehandlerCallData).toHaveLength(1);
     expect(fjernSaksbehandlerCallData[0].params.brukerIdent).toEqual(saksbehandlere[0].brukerIdent);
     expect(fjernSaksbehandlerCallData[0].params.avdelingEnhet).toEqual('2');

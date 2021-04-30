@@ -22,7 +22,7 @@ export default {
 };
 
 export const skalViseSøkeresultatMedEnFagsakOgTilhørendeOppgave = () => {
-  requestApi.mock(RestApiGlobalStatePathsKeys.KODEVERK, alleKodeverk);
+  requestApi.mock(RestApiGlobalStatePathsKeys.KODEVERK.name, alleKodeverk);
   return (
     <FagsakList
       fagsaker={[{

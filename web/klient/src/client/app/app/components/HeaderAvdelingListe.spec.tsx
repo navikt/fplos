@@ -22,8 +22,8 @@ const avdelingerData = [{
 
 describe('<HeaderAvdelingListe>', () => {
   it('skal vise to avdelinger i header', () => {
-    requestApi.mock(RestApiGlobalStatePathsKeys.AVDELINGER, avdelingerData);
-    requestApi.mock(RestApiGlobalStatePathsKeys.NAV_ANSATT, navAnsatt);
+    requestApi.mock(RestApiGlobalStatePathsKeys.AVDELINGER.name, avdelingerData);
+    requestApi.mock(RestApiGlobalStatePathsKeys.NAV_ANSATT.name, navAnsatt);
 
     const wrapper = shallow(<HeaderAvdelingListe
       erLenkePanelApent
@@ -46,8 +46,8 @@ describe('<HeaderAvdelingListe>', () => {
   });
 
   it('skal velge ny avdeling', () => {
-    requestApi.mock(RestApiGlobalStatePathsKeys.AVDELINGER, avdelingerData);
-    requestApi.mock(RestApiGlobalStatePathsKeys.NAV_ANSATT, navAnsatt);
+    requestApi.mock(RestApiGlobalStatePathsKeys.AVDELINGER.name, avdelingerData);
+    requestApi.mock(RestApiGlobalStatePathsKeys.NAV_ANSATT.name, navAnsatt);
 
     const setValgtAvdelingFn = sinon.spy();
 

@@ -37,7 +37,7 @@ const alleKodeverk = {
 
 describe('<BehandlingstypeVelger>', () => {
   it('skal vise checkboxer for behandlingstyper', () => {
-    requestApi.mock(RestApiGlobalStatePathsKeys.KODEVERK, alleKodeverk);
+    requestApi.mock(RestApiGlobalStatePathsKeys.KODEVERK.name, alleKodeverk);
 
     const wrapper = shallow(<BehandlingstypeVelger
       valgtSakslisteId={1}
@@ -53,8 +53,8 @@ describe('<BehandlingstypeVelger>', () => {
   });
 
   it('skal lagre behandlingstype ved klikk på checkbox', () => {
-    requestApi.mock(RestApiGlobalStatePathsKeys.KODEVERK, alleKodeverk);
-    requestApi.mock(RestApiPathsKeys.LAGRE_SAKSLISTE_BEHANDLINGSTYPE, {});
+    requestApi.mock(RestApiGlobalStatePathsKeys.KODEVERK.name, alleKodeverk);
+    requestApi.mock(RestApiPathsKeys.LAGRE_SAKSLISTE_BEHANDLINGSTYPE.name, {});
 
     const wrapper = shallow(<BehandlingstypeVelger
       valgtSakslisteId={1}
@@ -67,7 +67,7 @@ describe('<BehandlingstypeVelger>', () => {
     // @ts-ignore
     checkbox.first().prop('onChange')(true);
 
-    const lagreSakslisteBehandlingstypeCallData = requestApi.getRequestMockData(RestApiPathsKeys.LAGRE_SAKSLISTE_BEHANDLINGSTYPE);
+    const lagreSakslisteBehandlingstypeCallData = requestApi.getRequestMockData(RestApiPathsKeys.LAGRE_SAKSLISTE_BEHANDLINGSTYPE.name);
     expect(lagreSakslisteBehandlingstypeCallData).toHaveLength(1);
     expect(lagreSakslisteBehandlingstypeCallData[0].params.sakslisteId).toEqual(1);
     expect(lagreSakslisteBehandlingstypeCallData[0].params.behandlingType).toEqual(behandlingTyper[0]);

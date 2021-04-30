@@ -1,36 +1,47 @@
 import { useState, useCallback } from 'react';
 
 import {
-  REQUEST_POLLING_CANCELLED, ErrorType, AbstractRequestApi,
+  REQUEST_POLLING_CANCELLED, ErrorType, AbstractRequestApi, RestKey,
 } from 'data/rest-api';
 
 import RestApiState from '../RestApiState';
 
-interface RestApiData<T> {
-  startRequest: (params?: any, keepData?: boolean) => Promise<T | undefined>;
-  resetRequestData: () => void;
+export type RestApiData<T> = {
   state: RestApiState;
   error?: ErrorType;
   data?: T;
 }
 
+export type RunnerOutput<T, P> = {
+  startRequest: (params?: P, keepData?: boolean) => Promise<T | undefined>;
+  resetRequestData: () => void;
+} & RestApiData<T>;
+
+const DEFAULT_STATE = {
+  state: RestApiState.NOT_STARTED,
+  error: undefined,
+  data: undefined,
+};
+
 /**
  * For mocking i unit-test
  */
-export const getUseRestApiRunnerMock = (requestApi: AbstractRequestApi) => (function useRestApiRunner<T>(key: string):RestApiData<T> {
-  const [data, setData] = useState({
-    state: RestApiState.NOT_STARTED,
-    data: undefined,
-    error: undefined,
-  });
+export const getUseRestApiRunnerMock = (
+  requestApi: AbstractRequestApi,
+) => (function useRestApiRunner<T, P>(
+  key: RestKey<T, P>,
+): RunnerOutput<T, P> {
+  const [data, setData] = useState(DEFAULT_STATE);
 
-  const startRequest = (params?: any):Promise<T> => {
-    const response = requestApi.startRequest(key, params);
+  const startRequest = (params?: P):Promise<T> => {
+    const response = requestApi.startRequest<T, P>(key.name, params);
     setData({
       state: RestApiState.SUCCESS,
+      // @ts-ignore
       data: response,
       error: undefined,
     });
+    // @ts-ignore
     return Promise.resolve(response);
   };
 
@@ -44,61 +55,47 @@ export const getUseRestApiRunnerMock = (requestApi: AbstractRequestApi) => (func
 /**
  * Hook som gir deg ein funksjon til å starte restkall, i tillegg til kallets status/resultat/feil
  */
-const getUseRestApiRunner = (requestApi: AbstractRequestApi) => (function useRestApiRunner<T>(key: string):RestApiData<T> {
-  const [data, setData] = useState<{
-    state: RestApiState;
-    error?: ErrorType;
-    data?: T;
-  }>({
-    state: RestApiState.NOT_STARTED,
-    data: undefined,
-    error: undefined,
-  });
+const getUseRestApiRunner = (requestApi: AbstractRequestApi) => (function useRestApiRunner<T, P>(
+  key: RestKey<T, P>,
+): RunnerOutput<T, P> {
+  const [data, setData] = useState<RestApiData<T>>(DEFAULT_STATE);
 
-  const startRequest = useCallback((params?: any, keepData = false):Promise<T | undefined> => {
-    if (requestApi.hasPath(key)) {
+  const startRequest = useCallback((params?: P, keepData = false): Promise<T | undefined> => {
+    if (requestApi.hasPath(key.name)) {
       setData((oldState) => ({
         state: RestApiState.LOADING,
         data: keepData ? oldState.data : undefined,
         error: undefined,
       }));
 
-      return requestApi.startRequest(key, params)
-        .then((dataRes: { payload: any }) => {
-          if (dataRes.payload !== REQUEST_POLLING_CANCELLED) {
-            setData({
-              state: RestApiState.SUCCESS,
-              data: dataRes.payload,
-              error: undefined,
-            });
-          }
+      return requestApi.startRequest<T, P>(key.name, params)
+        .then((dataRes) => {
+          setData({
+            state: RestApiState.SUCCESS,
+            data: dataRes.payload,
+            error: undefined,
+          });
           return Promise.resolve(dataRes.payload);
         })
         .catch((error: Error) => {
-          setData({
-            state: RestApiState.ERROR,
-            data: undefined,
-            error,
-          });
-          throw error;
+          if (error?.message !== REQUEST_POLLING_CANCELLED) {
+            setData({
+              state: RestApiState.ERROR,
+              data: undefined,
+              error,
+            });
+            throw error;
+          }
+          return undefined;
         });
     }
 
-    setData({
-      state: RestApiState.NOT_STARTED,
-      error: undefined,
-      data: undefined,
-    });
-
+    setData(DEFAULT_STATE);
     return Promise.resolve(undefined);
   }, []);
 
   const resetRequestData = useCallback(() => {
-    setData({
-      state: RestApiState.NOT_STARTED,
-      data: undefined,
-      error: undefined,
-    });
+    setData(DEFAULT_STATE);
   }, []);
 
   return {

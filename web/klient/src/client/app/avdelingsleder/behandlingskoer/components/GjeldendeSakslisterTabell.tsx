@@ -8,7 +8,7 @@ import {
 import { Column, Row } from 'nav-frontend-grid';
 
 import Kodeverk from 'types/kodeverkTsType';
-import Saksliste from 'types/avdelingsleder/sakslisteTsType';
+import Saksliste from 'types/avdelingsleder/sakslisteAvdelingTsType';
 import KodeverkType from 'kodeverk/kodeverkTyper';
 import Image from 'sharedComponents/Image';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';

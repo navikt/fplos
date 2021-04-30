@@ -46,14 +46,14 @@ const FagsakSearchIndex: FunctionComponent<OwnProps> = ({
   const [sokStartet, setSokStartet] = useState(false);
   const [sokFerdig, setSokFerdig] = useState(false);
 
-  const { startRequest: reserverOppgave } = restApiHooks.useRestApiRunner<OppgaveStatus>(RestApiPathsKeys.RESERVER_OPPGAVE);
+  const { startRequest: reserverOppgave } = restApiHooks.useRestApiRunner(RestApiPathsKeys.RESERVER_OPPGAVE);
   const {
     startRequest: sokFagsak, resetRequestData: resetFagsakSok, data: fagsaker = EMPTY_ARRAY_FAGSAK, error: fagsakError,
-  } = restApiHooks.useRestApiRunner<Fagsak[]>(RestApiPathsKeys.SEARCH_FAGSAK);
+  } = restApiHooks.useRestApiRunner(RestApiPathsKeys.SEARCH_FAGSAK);
   const { startRequest: hentOppgaverForFagsaker, data: fagsakOppgaver = EMPTY_ARRAY_OPPGAVER } = restApiHooks
-    .useRestApiRunner<Oppgave[]>(RestApiPathsKeys.OPPGAVER_FOR_FAGSAKER);
-  const { startRequest: hentReservasjonsstatus } = restApiHooks.useRestApiRunner<OppgaveStatus>(RestApiPathsKeys.HENT_RESERVASJONSSTATUS);
-  const { startRequest: hentFpsakInternBehandlingId } = restApiHooks.useRestApiRunner<number>(RestApiPathsKeys.FPSAK_BEHANDLING_ID);
+    .useRestApiRunner(RestApiPathsKeys.OPPGAVER_FOR_FAGSAKER);
+  const { startRequest: hentReservasjonsstatus } = restApiHooks.useRestApiRunner(RestApiPathsKeys.HENT_RESERVASJONSSTATUS);
+  const { startRequest: hentFpsakInternBehandlingId } = restApiHooks.useRestApiRunner(RestApiPathsKeys.FPSAK_BEHANDLING_ID);
 
   const searchResultAccessDenied = fagsakError && errorOfType(fagsakError, ErrorTypes.MANGLER_TILGANG_FEIL) ? getErrorResponseData(fagsakError) : undefined;
 

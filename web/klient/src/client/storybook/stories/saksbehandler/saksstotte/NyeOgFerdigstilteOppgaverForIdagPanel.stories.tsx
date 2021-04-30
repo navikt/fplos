@@ -22,7 +22,7 @@ export default {
 };
 
 export const skalViseGrafForNyeOgFerdigstilteOppgaverForIdag = () => {
-  requestApi.mock(RestApiGlobalStatePathsKeys.KODEVERK, alleKodeverk);
+  requestApi.mock(RestApiGlobalStatePathsKeys.KODEVERK.name, alleKodeverk);
   return (
     <NyeOgFerdigstilteOppgaverForIdagPanel
       width={700}

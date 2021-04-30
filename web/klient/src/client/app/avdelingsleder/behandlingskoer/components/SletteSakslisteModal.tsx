@@ -6,7 +6,7 @@ import { Normaltekst } from 'nav-frontend-typografi';
 
 import Image from 'sharedComponents/Image';
 import Modal from 'sharedComponents/Modal';
-import Saksliste from 'types/avdelingsleder/sakslisteTsType';
+import Saksliste from 'types/avdelingsleder/sakslisteAvdelingTsType';
 
 import advarselImageUrl from 'images/advarsel.svg';
 

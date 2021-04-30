@@ -22,8 +22,8 @@ const navAnsatt = {
 };
 
 export const skalViseHeaderUtenAvdelingsvelger = () => {
-  requestApi.mock(RestApiGlobalStatePathsKeys.NAV_ANSATT, navAnsatt);
-  requestApi.mock(RestApiGlobalStatePathsKeys.DRIFTSMELDINGER, []);
+  requestApi.mock(RestApiGlobalStatePathsKeys.NAV_ANSATT.name, navAnsatt);
+  requestApi.mock(RestApiGlobalStatePathsKeys.DRIFTSMELDINGER.name, []);
 
   return (
     <div style={{ marginLeft: '-40px' }}>
@@ -48,9 +48,9 @@ export const skalViseHeaderMedAvdelingsvelger = () => {
     kreverKode6: false,
   }];
 
-  requestApi.mock(RestApiGlobalStatePathsKeys.NAV_ANSATT, navAnsatt);
-  requestApi.mock(RestApiGlobalStatePathsKeys.DRIFTSMELDINGER, []);
-  requestApi.mock(RestApiGlobalStatePathsKeys.AVDELINGER, avdelinger);
+  requestApi.mock(RestApiGlobalStatePathsKeys.NAV_ANSATT.name, navAnsatt);
+  requestApi.mock(RestApiGlobalStatePathsKeys.DRIFTSMELDINGER.name, []);
+  requestApi.mock(RestApiGlobalStatePathsKeys.AVDELINGER.name, avdelinger);
 
   return (
     <div style={{ marginLeft: '-40px' }}>
@@ -73,8 +73,8 @@ export const skalViseHeaderMedKunEnFeilmelding = () => {
     }],
   };
 
-  requestApi.mock(RestApiGlobalStatePathsKeys.NAV_ANSATT, navAnsatt);
-  requestApi.mock(RestApiGlobalStatePathsKeys.DRIFTSMELDINGER, []);
+  requestApi.mock(RestApiGlobalStatePathsKeys.NAV_ANSATT.name, navAnsatt);
+  requestApi.mock(RestApiGlobalStatePathsKeys.DRIFTSMELDINGER.name, []);
 
   return (
     <div style={{ marginLeft: '-40px' }}>
@@ -116,8 +116,8 @@ export const skalViseHeaderMedMerEnnFemFeilmeldinger = () => {
     errormessage: 'Dette er ein feil',
   };
 
-  requestApi.mock(RestApiGlobalStatePathsKeys.NAV_ANSATT, navAnsatt);
-  requestApi.mock(RestApiGlobalStatePathsKeys.DRIFTSMELDINGER, []);
+  requestApi.mock(RestApiGlobalStatePathsKeys.NAV_ANSATT.name, navAnsatt);
+  requestApi.mock(RestApiGlobalStatePathsKeys.DRIFTSMELDINGER.name, []);
 
   return (
     <div style={{ marginLeft: '-40px' }}>

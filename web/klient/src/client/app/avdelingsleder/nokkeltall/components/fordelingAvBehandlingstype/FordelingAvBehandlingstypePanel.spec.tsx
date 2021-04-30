@@ -55,7 +55,7 @@ describe('<FordelingAvBehandlingstypePanel>', () => {
     };
     const oppgaverForAvdeling: OppgaverForAvdeling[] = [];
 
-    requestApi.mock(RestApiGlobalStatePathsKeys.KODEVERK, alleKodeverk);
+    requestApi.mock(RestApiGlobalStatePathsKeys.KODEVERK.name, alleKodeverk);
 
     const wrapper = shallowWithIntl(<FordelingAvBehandlingstypePanel
       width={300}
@@ -90,7 +90,7 @@ describe('<FordelingAvBehandlingstypePanel>', () => {
       antall: 1,
     }];
 
-    requestApi.mock(RestApiGlobalStatePathsKeys.KODEVERK, alleKodeverk);
+    requestApi.mock(RestApiGlobalStatePathsKeys.KODEVERK.name, alleKodeverk);
     const wrapper = shallowWithIntl(<FordelingAvBehandlingstypePanel
       width={300}
       height={200}
@@ -120,7 +120,7 @@ describe('<FordelingAvBehandlingstypePanel>', () => {
       antall: 1,
     }];
 
-    requestApi.mock(RestApiGlobalStatePathsKeys.KODEVERK, alleKodeverk);
+    requestApi.mock(RestApiGlobalStatePathsKeys.KODEVERK.name, alleKodeverk);
 
     const wrapper = shallowWithIntl(<FordelingAvBehandlingstypePanel
       width={300}

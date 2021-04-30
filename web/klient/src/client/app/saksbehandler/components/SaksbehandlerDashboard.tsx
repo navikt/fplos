@@ -21,8 +21,8 @@ export const SaksbehandlerDashboard: FunctionComponent<OwnProps> = ({
   valgtSakslisteId,
   setValgtSakslisteId,
 }) => {
-  const fpsakUrl = restApiHooks.useGlobalStateRestApiData<{ verdi: string }>(RestApiGlobalStatePathsKeys.FPSAK_URL);
-  const fptilbakeUrl = restApiHooks.useGlobalStateRestApiData<{ verdi: string }>(RestApiGlobalStatePathsKeys.FPTILBAKE_URL);
+  const fpsakUrl = restApiHooks.useGlobalStateRestApiData(RestApiGlobalStatePathsKeys.FPSAK_URL);
+  const fptilbakeUrl = restApiHooks.useGlobalStateRestApiData(RestApiGlobalStatePathsKeys.FPTILBAKE_URL);
   return (
     <div>
       <div className={styles.oppgaveContainer}>

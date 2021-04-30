@@ -28,7 +28,7 @@ const SakslistePanel: FunctionComponent<OwnProps> = ({
   setValgtSakslisteId,
   valgtSakslisteId,
 }) => {
-  const { startRequest: fetchAntallOppgaver, data: antallOppgaver } = restApiHooks.useRestApiRunner<number>(RestApiPathsKeys.BEHANDLINGSKO_OPPGAVE_ANTALL);
+  const { startRequest: fetchAntallOppgaver, data: antallOppgaver } = restApiHooks.useRestApiRunner(RestApiPathsKeys.BEHANDLINGSKO_OPPGAVE_ANTALL);
 
   return (
     <>

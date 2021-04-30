@@ -22,7 +22,7 @@ describe('<AndreKriterierVelger>', () => {
   };
 
   it('skal vise checkbox for Til beslutter', () => {
-    requestApi.mock(RestApiGlobalStatePathsKeys.KODEVERK, alleKodeverk);
+    requestApi.mock(RestApiGlobalStatePathsKeys.KODEVERK.name, alleKodeverk);
 
     const wrapper = shallow(<AndreKriterierVelger
       valgtSakslisteId={1}
@@ -42,7 +42,7 @@ describe('<AndreKriterierVelger>', () => {
   });
 
   it('skal vise checkbox for Registrere papirsøknad', () => {
-    requestApi.mock(RestApiGlobalStatePathsKeys.KODEVERK, alleKodeverk);
+    requestApi.mock(RestApiGlobalStatePathsKeys.KODEVERK.name, alleKodeverk);
 
     const wrapper = shallow(<AndreKriterierVelger
       valgtSakslisteId={1}
@@ -59,8 +59,8 @@ describe('<AndreKriterierVelger>', () => {
   });
 
   it('skal lagre valgt for Til beslutter ved klikk på checkbox', () => {
-    requestApi.mock(RestApiGlobalStatePathsKeys.KODEVERK, alleKodeverk);
-    requestApi.mock(RestApiPathsKeys.LAGRE_SAKSLISTE_ANDRE_KRITERIER, {});
+    requestApi.mock(RestApiGlobalStatePathsKeys.KODEVERK.name, alleKodeverk);
+    requestApi.mock(RestApiPathsKeys.LAGRE_SAKSLISTE_ANDRE_KRITERIER.name, {});
 
     const wrapper = shallow(<AndreKriterierVelger
       valgtSakslisteId={1}
@@ -74,7 +74,7 @@ describe('<AndreKriterierVelger>', () => {
     // @ts-ignore
     checkbox.prop('onChange')(true);
 
-    const lagreSakslisteAndreKriterierCallData = requestApi.getRequestMockData(RestApiPathsKeys.LAGRE_SAKSLISTE_ANDRE_KRITERIER);
+    const lagreSakslisteAndreKriterierCallData = requestApi.getRequestMockData(RestApiPathsKeys.LAGRE_SAKSLISTE_ANDRE_KRITERIER.name);
     expect(lagreSakslisteAndreKriterierCallData).toHaveLength(1);
     expect(lagreSakslisteAndreKriterierCallData[0].params.sakslisteId).toEqual(1);
     expect(lagreSakslisteAndreKriterierCallData[0].params.andreKriterierType.kode).toEqual(AndreKriterierType.TIL_BESLUTTER);
@@ -86,8 +86,8 @@ describe('<AndreKriterierVelger>', () => {
   it(
     'skal lagre valgt for Registrere papirsoknad ved klikk på checkbox',
     () => {
-      requestApi.mock(RestApiGlobalStatePathsKeys.KODEVERK, alleKodeverk);
-      requestApi.mock(RestApiPathsKeys.LAGRE_SAKSLISTE_ANDRE_KRITERIER, {});
+      requestApi.mock(RestApiGlobalStatePathsKeys.KODEVERK.name, alleKodeverk);
+      requestApi.mock(RestApiPathsKeys.LAGRE_SAKSLISTE_ANDRE_KRITERIER.name, {});
 
       const wrapper = shallow(<AndreKriterierVelger
         valgtSakslisteId={1}
@@ -101,7 +101,7 @@ describe('<AndreKriterierVelger>', () => {
       // @ts-ignore
       checkbox.prop('onChange')(true);
 
-      const lagreSakslisteAndreKriterierCallData = requestApi.getRequestMockData(RestApiPathsKeys.LAGRE_SAKSLISTE_ANDRE_KRITERIER);
+      const lagreSakslisteAndreKriterierCallData = requestApi.getRequestMockData(RestApiPathsKeys.LAGRE_SAKSLISTE_ANDRE_KRITERIER.name);
       expect(lagreSakslisteAndreKriterierCallData).toHaveLength(1);
       expect(lagreSakslisteAndreKriterierCallData[0].params.sakslisteId).toEqual(1);
       expect(lagreSakslisteAndreKriterierCallData[0].params.andreKriterierType.kode).toEqual(AndreKriterierType.REGISTRER_PAPIRSOKNAD);
@@ -112,7 +112,7 @@ describe('<AndreKriterierVelger>', () => {
   );
 
   it('skal vise radioknapper for å ta med eller fjerne', () => {
-    requestApi.mock(RestApiGlobalStatePathsKeys.KODEVERK, alleKodeverk);
+    requestApi.mock(RestApiGlobalStatePathsKeys.KODEVERK.name, alleKodeverk);
     const wrapper = shallow(<AndreKriterierVelger
       valgtSakslisteId={1}
       valgtAvdelingEnhet="3"
@@ -129,8 +129,8 @@ describe('<AndreKriterierVelger>', () => {
   });
 
   it('skal valge å fjerne inkludering av beslutter', () => {
-    requestApi.mock(RestApiGlobalStatePathsKeys.KODEVERK, alleKodeverk);
-    requestApi.mock(RestApiPathsKeys.LAGRE_SAKSLISTE_ANDRE_KRITERIER, {});
+    requestApi.mock(RestApiGlobalStatePathsKeys.KODEVERK.name, alleKodeverk);
+    requestApi.mock(RestApiPathsKeys.LAGRE_SAKSLISTE_ANDRE_KRITERIER.name, {});
     const wrapper = shallow(<AndreKriterierVelger
       valgtSakslisteId={1}
       valgtAvdelingEnhet="3"
@@ -145,7 +145,7 @@ describe('<AndreKriterierVelger>', () => {
     // @ts-ignore
     wrapper.find(RadioGroupField).prop('onChange')(false);
 
-    const lagreSakslisteAndreKriterierCallData = requestApi.getRequestMockData(RestApiPathsKeys.LAGRE_SAKSLISTE_ANDRE_KRITERIER);
+    const lagreSakslisteAndreKriterierCallData = requestApi.getRequestMockData(RestApiPathsKeys.LAGRE_SAKSLISTE_ANDRE_KRITERIER.name);
     expect(lagreSakslisteAndreKriterierCallData).toHaveLength(1);
     expect(lagreSakslisteAndreKriterierCallData[0].params.sakslisteId).toEqual(1);
     expect(lagreSakslisteAndreKriterierCallData[0].params.andreKriterierType.kode).toEqual(AndreKriterierType.TIL_BESLUTTER);

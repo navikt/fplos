@@ -423,7 +423,7 @@ describe('<SakslisteVelgerForm>', () => {
 
     const formProps = { values: { sakslisteId: '1' } };
 
-    requestApi.mock(RestApiPathsKeys.SAKSLISTE_SAKSBEHANDLERE, saksbehandlere);
+    requestApi.mock(RestApiPathsKeys.SAKSLISTE_SAKSBEHANDLERE.name, saksbehandlere);
 
     const wrapper = shallowWithIntl(<SakslisteVelgerForm.WrappedComponent
       intl={intl as IntlShape}

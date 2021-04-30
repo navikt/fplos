@@ -17,7 +17,7 @@ describe('<NyeOgFerdigstilteOppgaverForIdagPanel>', () => {
       }],
     };
 
-    requestApi.mock(RestApiGlobalStatePathsKeys.KODEVERK, alleKodeverk);
+    requestApi.mock(RestApiGlobalStatePathsKeys.KODEVERK.name, alleKodeverk);
 
     const nyeOgFerdigstilteOppgaver = [{
       behandlingType: {

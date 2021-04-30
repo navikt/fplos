@@ -45,7 +45,7 @@ describe('<TilBehandlingPanel>', () => {
   it(
     'skal vise ukevalg i dropdown og valg av ytelsetype i radioknapper',
     () => {
-      requestApi.mock(RestApiGlobalStatePathsKeys.KODEVERK, alleKodeverk);
+      requestApi.mock(RestApiGlobalStatePathsKeys.KODEVERK.name, alleKodeverk);
 
       const valuesMock = {
         [FagsakYtelseType.FORELDREPRENGER]: true,
@@ -84,7 +84,7 @@ describe('<TilBehandlingPanel>', () => {
   );
 
   it('skal filtrere bort alt som er eldre enn to uker', () => {
-    requestApi.mock(RestApiGlobalStatePathsKeys.KODEVERK, alleKodeverk);
+    requestApi.mock(RestApiGlobalStatePathsKeys.KODEVERK.name, alleKodeverk);
 
     const valuesMock = {
       ytelseType: 'ALLE',
@@ -120,7 +120,7 @@ describe('<TilBehandlingPanel>', () => {
   it(
     'skal ikke filtrere bort alt som er eldre enn to uker når fire uker er valgt i filter',
     () => {
-      requestApi.mock(RestApiGlobalStatePathsKeys.KODEVERK, alleKodeverk);
+      requestApi.mock(RestApiGlobalStatePathsKeys.KODEVERK.name, alleKodeverk);
 
       const valuesMock = {
         ytelseType: 'ALLE',
@@ -155,7 +155,7 @@ describe('<TilBehandlingPanel>', () => {
   );
 
   it('skal filtrere bort engangsstønader', () => {
-    requestApi.mock(RestApiGlobalStatePathsKeys.KODEVERK, alleKodeverk);
+    requestApi.mock(RestApiGlobalStatePathsKeys.KODEVERK.name, alleKodeverk);
 
     const valuesMock = {
       ytelseType: FagsakYtelseType.FORELDREPRENGER,
@@ -188,7 +188,7 @@ describe('<TilBehandlingPanel>', () => {
   });
 
   it('skal filtrere bort foreldrepenger', () => {
-    requestApi.mock(RestApiGlobalStatePathsKeys.KODEVERK, alleKodeverk);
+    requestApi.mock(RestApiGlobalStatePathsKeys.KODEVERK.name, alleKodeverk);
 
     const valuesMock = {
       ytelseType: FagsakYtelseType.ENGANGSSTONAD,
@@ -221,7 +221,7 @@ describe('<TilBehandlingPanel>', () => {
   });
 
   it('skal slå sammen like behandlingstyper og opprettetDatoer', () => {
-    requestApi.mock(RestApiGlobalStatePathsKeys.KODEVERK, alleKodeverk);
+    requestApi.mock(RestApiGlobalStatePathsKeys.KODEVERK.name, alleKodeverk);
 
     const valuesMock = {
       ytelseType: ALLE_YTELSETYPER_VALGT,

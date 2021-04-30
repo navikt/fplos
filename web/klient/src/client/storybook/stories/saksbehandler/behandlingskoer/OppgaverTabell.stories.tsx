@@ -17,9 +17,9 @@ export default {
 };
 
 export const skalViseTomOppgaveTabell = () => {
-  requestApi.mock(RestApiPathsKeys.FORLENG_OPPGAVERESERVASJON, {});
-  requestApi.mock(RestApiPathsKeys.RESERVERTE_OPPGAVER, []);
-  requestApi.mock(RestApiPathsKeys.OPPGAVER_TIL_BEHANDLING, []);
+  requestApi.mock(RestApiPathsKeys.FORLENG_OPPGAVERESERVASJON.name, {});
+  requestApi.mock(RestApiPathsKeys.RESERVERTE_OPPGAVER.name, []);
+  requestApi.mock(RestApiPathsKeys.OPPGAVER_TIL_BEHANDLING.name, []);
 
   return (
     <OppgaverTabell
@@ -92,9 +92,9 @@ export const skalViseTabellMedBådeLedigOgReservertOppgave = () => {
     href: '',
   }];
 
-  requestApi.mock(RestApiPathsKeys.FORLENG_OPPGAVERESERVASJON, {});
-  requestApi.mock(RestApiPathsKeys.RESERVERTE_OPPGAVER, reserverteOppgaver);
-  requestApi.mock(RestApiPathsKeys.OPPGAVER_TIL_BEHANDLING, oppgaverTilBehandling);
+  requestApi.mock(RestApiPathsKeys.FORLENG_OPPGAVERESERVASJON.name, {});
+  requestApi.mock(RestApiPathsKeys.RESERVERTE_OPPGAVER.name, reserverteOppgaver);
+  requestApi.mock(RestApiPathsKeys.OPPGAVER_TIL_BEHANDLING.name, oppgaverTilBehandling);
 
   return (
     <div style={{ width: '80%' }}>

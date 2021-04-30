@@ -14,7 +14,7 @@ export default {
 };
 
 export const skalViseModalForEndringAvReservasjon = () => {
-  requestApi.mock(RestApiPathsKeys.ENDRE_OPPGAVERESERVASJON, {});
+  requestApi.mock(RestApiPathsKeys.ENDRE_OPPGAVERESERVASJON.name, {});
 
   return (
     <OppgaveReservasjonEndringDatoModal

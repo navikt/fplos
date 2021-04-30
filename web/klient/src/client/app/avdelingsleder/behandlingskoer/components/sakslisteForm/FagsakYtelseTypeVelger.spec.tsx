@@ -26,7 +26,7 @@ describe('<FagsakYtelseTypeVelger>', () => {
   };
 
   it('skal vise checkboxer for ytelsetyper', () => {
-    requestApi.mock(RestApiGlobalStatePathsKeys.KODEVERK, alleKodeverk);
+    requestApi.mock(RestApiGlobalStatePathsKeys.KODEVERK.name, alleKodeverk);
     const wrapper = shallow(<FagsakYtelseTypeVelger
       valgtSakslisteId={1}
       valgtAvdelingEnhet="3"
@@ -44,8 +44,8 @@ describe('<FagsakYtelseTypeVelger>', () => {
   it('skal lagre ytelsetype ved klikk på checkbox', async () => {
     const hentAvdelingensSakslister = sinon.spy();
     const hentAntallOppgaver = sinon.spy();
-    requestApi.mock(RestApiGlobalStatePathsKeys.KODEVERK, alleKodeverk);
-    requestApi.mock(RestApiPathsKeys.LAGRE_SAKSLISTE_FAGSAK_YTELSE_TYPE, {});
+    requestApi.mock(RestApiGlobalStatePathsKeys.KODEVERK.name, alleKodeverk);
+    requestApi.mock(RestApiPathsKeys.LAGRE_SAKSLISTE_FAGSAK_YTELSE_TYPE.name, {});
 
     const wrapper = shallow(<FagsakYtelseTypeVelger
       valgtSakslisteId={1}

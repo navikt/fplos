@@ -11,8 +11,6 @@ import UserPanel from '@navikt/nap-user-panel';
 import { useRestApiError, useRestApiErrorDispatcher } from 'data/rest-api-hooks';
 import { restApiHooks, RestApiGlobalStatePathsKeys } from 'data/fplosRestApi';
 import { RETTSKILDE_URL, SYSTEMRUTINE_URL } from 'data/eksterneLenker';
-import NavAnsatt from 'types/navAnsattTsType';
-import Driftsmelding from 'types/driftsmeldingTsType';
 
 import { AVDELINGSLEDER_PATH, BASE_PATH } from '../paths';
 import ErrorMessagePanel from './ErrorMessagePanel';
@@ -81,8 +79,8 @@ const HeaderWithErrorPanel: FunctionComponent<OwnProps & WrappedComponentProps> 
   const [erLenkePanelApent, setLenkePanelApent] = useState(false);
   const [erAvdelingerPanelApent, setAvdelingerPanelApent] = useState(false);
 
-  const navAnsatt = restApiHooks.useGlobalStateRestApiData<NavAnsatt>(RestApiGlobalStatePathsKeys.NAV_ANSATT);
-  const driftsmeldinger = restApiHooks.useGlobalStateRestApiData<Driftsmelding[]>(RestApiGlobalStatePathsKeys.DRIFTSMELDINGER);
+  const navAnsatt = restApiHooks.useGlobalStateRestApiData(RestApiGlobalStatePathsKeys.NAV_ANSATT);
+  const driftsmeldinger = restApiHooks.useGlobalStateRestApiData(RestApiGlobalStatePathsKeys.DRIFTSMELDINGER);
 
   const errorMessages = useRestApiError() || [];
   const formaterteFeilmeldinger = useMemo(() => new ErrorFormatter().format(errorMessages, crashMessage), [errorMessages]);

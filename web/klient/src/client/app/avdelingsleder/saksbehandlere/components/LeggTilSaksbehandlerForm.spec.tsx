@@ -19,8 +19,8 @@ describe('<LeggTilSaksbehandlerForm>', () => {
     () => {
       const formProps = { handleSubmit: sinon.spy() };
 
-      requestApi.mock(RestApiPathsKeys.SAKSBEHANDLER_SOK);
-      requestApi.mock(RestApiPathsKeys.OPPRETT_NY_SAKSBEHANDLER);
+      requestApi.mock(RestApiPathsKeys.SAKSBEHANDLER_SOK.name);
+      requestApi.mock(RestApiPathsKeys.OPPRETT_NY_SAKSBEHANDLER.name);
 
       const wrapper = shallowWithIntl(<LeggTilSaksbehandlerForm.WrappedComponent
         intl={intl as IntlShape}
@@ -45,8 +45,8 @@ describe('<LeggTilSaksbehandlerForm>', () => {
       };
       const formProps = { handleSubmit: sinon.spy() };
 
-      requestApi.mock(RestApiPathsKeys.SAKSBEHANDLER_SOK, saksbehandler);
-      requestApi.mock(RestApiPathsKeys.OPPRETT_NY_SAKSBEHANDLER);
+      requestApi.mock(RestApiPathsKeys.SAKSBEHANDLER_SOK.name, saksbehandler);
+      requestApi.mock(RestApiPathsKeys.OPPRETT_NY_SAKSBEHANDLER.name);
 
       const wrapper = shallowWithIntl(<LeggTilSaksbehandlerForm.WrappedComponent
         intl={intl as IntlShape}
@@ -81,8 +81,8 @@ describe('<LeggTilSaksbehandlerForm>', () => {
       const resetFormFn = sinon.spy();
       const formProps = { handleSubmit: sinon.spy(), form: { reset: resetFormFn } };
 
-      requestApi.mock(RestApiPathsKeys.SAKSBEHANDLER_SOK, saksbehandler);
-      requestApi.mock(RestApiPathsKeys.OPPRETT_NY_SAKSBEHANDLER);
+      requestApi.mock(RestApiPathsKeys.SAKSBEHANDLER_SOK.name, saksbehandler);
+      requestApi.mock(RestApiPathsKeys.OPPRETT_NY_SAKSBEHANDLER.name);
 
       const wrapper = shallowWithIntl(<LeggTilSaksbehandlerForm.WrappedComponent
         intl={intl as IntlShape}
@@ -102,7 +102,7 @@ describe('<LeggTilSaksbehandlerForm>', () => {
       const func = nullstillKnapp.prop('onClick') as () => void;
       func();
 
-      const lagreSakslisteAndreKriterierCallData = requestApi.getRequestMockData(RestApiPathsKeys.SAKSBEHANDLER_SOK);
+      const lagreSakslisteAndreKriterierCallData = requestApi.getRequestMockData(RestApiPathsKeys.SAKSBEHANDLER_SOK.name);
       expect(lagreSakslisteAndreKriterierCallData).toHaveLength(1);
 
       expect(resetFormFn.calledOnce).toBe(true);
@@ -120,8 +120,8 @@ describe('<LeggTilSaksbehandlerForm>', () => {
       const resetFormFn = sinon.spy();
       const formProps = { handleSubmit: sinon.spy(), form: { reset: resetFormFn } };
 
-      requestApi.mock(RestApiPathsKeys.SAKSBEHANDLER_SOK, saksbehandler);
-      requestApi.mock(RestApiPathsKeys.OPPRETT_NY_SAKSBEHANDLER);
+      requestApi.mock(RestApiPathsKeys.SAKSBEHANDLER_SOK.name, saksbehandler);
+      requestApi.mock(RestApiPathsKeys.OPPRETT_NY_SAKSBEHANDLER.name);
 
       const wrapper = shallowWithIntl(<LeggTilSaksbehandlerForm.WrappedComponent
         intl={intl as IntlShape}
@@ -141,7 +141,7 @@ describe('<LeggTilSaksbehandlerForm>', () => {
       const func = leggTilKnapp.prop('onClick') as () => void;
       await func();
 
-      const lagreSakslisteAndreKriterierCallData = requestApi.getRequestMockData(RestApiPathsKeys.SAKSBEHANDLER_SOK);
+      const lagreSakslisteAndreKriterierCallData = requestApi.getRequestMockData(RestApiPathsKeys.SAKSBEHANDLER_SOK.name);
       expect(lagreSakslisteAndreKriterierCallData).toHaveLength(1);
 
       expect(resetFormFn.calledOnce).toBe(true);
@@ -156,8 +156,8 @@ describe('<LeggTilSaksbehandlerForm>', () => {
     };
     const formProps = { handleSubmit: sinon.spy() };
 
-    requestApi.mock(RestApiPathsKeys.SAKSBEHANDLER_SOK, saksbehandler);
-    requestApi.mock(RestApiPathsKeys.OPPRETT_NY_SAKSBEHANDLER);
+    requestApi.mock(RestApiPathsKeys.SAKSBEHANDLER_SOK.name, saksbehandler);
+    requestApi.mock(RestApiPathsKeys.OPPRETT_NY_SAKSBEHANDLER.name);
 
     const wrapper = shallowWithIntl(<LeggTilSaksbehandlerForm.WrappedComponent
       intl={intl as IntlShape}
@@ -182,8 +182,8 @@ describe('<LeggTilSaksbehandlerForm>', () => {
     async () => {
       const formProps = { handleSubmit: sinon.spy() };
 
-      requestApi.mock(RestApiPathsKeys.SAKSBEHANDLER_SOK);
-      requestApi.mock(RestApiPathsKeys.OPPRETT_NY_SAKSBEHANDLER);
+      requestApi.mock(RestApiPathsKeys.SAKSBEHANDLER_SOK.name);
+      requestApi.mock(RestApiPathsKeys.OPPRETT_NY_SAKSBEHANDLER.name);
 
       const wrapper = shallowWithIntl(<LeggTilSaksbehandlerForm.WrappedComponent
         intl={intl as IntlShape}
@@ -214,8 +214,8 @@ describe('<LeggTilSaksbehandlerForm>', () => {
       };
       const formProps = { handleSubmit: sinon.spy() };
 
-      requestApi.mock(RestApiPathsKeys.SAKSBEHANDLER_SOK, saksbehandler);
-      requestApi.mock(RestApiPathsKeys.OPPRETT_NY_SAKSBEHANDLER);
+      requestApi.mock(RestApiPathsKeys.SAKSBEHANDLER_SOK.name, saksbehandler);
+      requestApi.mock(RestApiPathsKeys.OPPRETT_NY_SAKSBEHANDLER.name);
 
       const wrapper = shallowWithIntl(<LeggTilSaksbehandlerForm.WrappedComponent
         intl={intl as IntlShape}

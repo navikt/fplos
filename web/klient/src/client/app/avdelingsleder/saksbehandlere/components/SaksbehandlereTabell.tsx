@@ -11,7 +11,7 @@ import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import Table from 'sharedComponents/table/Table';
 import TableRow from 'sharedComponents/table/TableRow';
 import TableColumn from 'sharedComponents/table/TableColumn';
-import Saksbehandler from 'types/avdelingsleder/saksbehandlerTsType';
+import Saksbehandler from 'types/avdelingsleder/saksbehandlerAvdelingTsType';
 import SletteSaksbehandlerModal from './SletteSaksbehandlerModal';
 
 import styles from './saksbehandlereTabell.less';
@@ -40,7 +40,7 @@ const SaksbehandlereTabell: FunctionComponent<OwnProps> = ({
 }) => {
   const [valgtSaksbehandler, setValgtSaksbehandler] = useState<Saksbehandler>();
 
-  const { startRequest: fjernSaksbehandler } = restApiHooks.useRestApiRunner<Saksbehandler>(RestApiPathsKeys.SLETT_SAKSBEHANDLER);
+  const { startRequest: fjernSaksbehandler } = restApiHooks.useRestApiRunner(RestApiPathsKeys.SLETT_SAKSBEHANDLER);
 
   const fjernSaksbehandlerFn = useCallback((saksbehandler: Saksbehandler) => {
     fjernSaksbehandler({ brukerIdent: saksbehandler.brukerIdent, avdelingEnhet: valgtAvdelingEnhet })

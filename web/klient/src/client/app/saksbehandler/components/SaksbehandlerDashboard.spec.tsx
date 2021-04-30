@@ -10,8 +10,8 @@ import { SaksbehandlerDashboard } from './SaksbehandlerDashboard';
 
 describe('<SaksbehandlerDashboard>', () => {
   it('skal vise dashboard uten fagsak-søk', () => {
-    requestApi.mock(RestApiGlobalStatePathsKeys.FPSAK_URL, 'url');
-    requestApi.mock(RestApiGlobalStatePathsKeys.FPTILBAKE_URL, 'url');
+    requestApi.mock(RestApiGlobalStatePathsKeys.FPSAK_URL.name, 'url');
+    requestApi.mock(RestApiGlobalStatePathsKeys.FPTILBAKE_URL.name, 'url');
     const wrapper = shallow(<SaksbehandlerDashboard
       valgtSakslisteId={1}
       setValgtSakslisteId={() => undefined}
@@ -22,8 +22,8 @@ describe('<SaksbehandlerDashboard>', () => {
   });
 
   it('skal vise dashboard med fagsak-søk', () => {
-    requestApi.mock(RestApiGlobalStatePathsKeys.FPSAK_URL, 'url');
-    requestApi.mock(RestApiGlobalStatePathsKeys.FPTILBAKE_URL, 'url');
+    requestApi.mock(RestApiGlobalStatePathsKeys.FPSAK_URL.name, 'url');
+    requestApi.mock(RestApiGlobalStatePathsKeys.FPTILBAKE_URL.name, 'url');
     const wrapper = shallow(<SaksbehandlerDashboard
       valgtSakslisteId={1}
       setValgtSakslisteId={() => undefined}

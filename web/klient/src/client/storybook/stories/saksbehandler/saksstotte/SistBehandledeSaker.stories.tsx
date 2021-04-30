@@ -16,9 +16,9 @@ export default {
 };
 
 export const skalViseIngenBehandlinger = () => {
-  requestApi.mock(RestApiGlobalStatePathsKeys.FPSAK_URL, { value: 'fpsak-url' });
-  requestApi.mock(RestApiGlobalStatePathsKeys.FPTILBAKE_URL, { value: 'fptilbake-url' });
-  requestApi.mock(RestApiPathsKeys.BEHANDLEDE_OPPGAVER);
+  requestApi.mock(RestApiGlobalStatePathsKeys.FPSAK_URL.name, { value: 'fpsak-url' });
+  requestApi.mock(RestApiGlobalStatePathsKeys.FPTILBAKE_URL.name, { value: 'fptilbake-url' });
+  requestApi.mock(RestApiPathsKeys.BEHANDLEDE_OPPGAVER.name);
   return (
     <SistBehandledeSaker />
   );
@@ -31,9 +31,9 @@ export const skalViseSistBehandlendeSaker = () => {
     navn: 'Espen Utvikler',
   }];
 
-  requestApi.mock(RestApiGlobalStatePathsKeys.FPSAK_URL, { value: 'fpsak-url' });
-  requestApi.mock(RestApiGlobalStatePathsKeys.FPTILBAKE_URL, { value: 'fptilbake-url' });
-  requestApi.mock(RestApiPathsKeys.BEHANDLEDE_OPPGAVER, behandledeOppgaver);
+  requestApi.mock(RestApiGlobalStatePathsKeys.FPSAK_URL.name, { value: 'fpsak-url' });
+  requestApi.mock(RestApiGlobalStatePathsKeys.FPTILBAKE_URL.name, { value: 'fptilbake-url' });
+  requestApi.mock(RestApiPathsKeys.BEHANDLEDE_OPPGAVER.name, behandledeOppgaver);
 
   return (
     <SistBehandledeSaker />

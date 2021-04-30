@@ -6,8 +6,8 @@ import Image from 'sharedComponents/Image';
 import { restApiHooks, RestApiPathsKeys } from 'data/fplosRestApi';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import pilNedUrl from 'images/pil-ned.svg';
-import Saksliste from 'types/avdelingsleder/sakslisteTsType';
-import Saksbehandler from 'types/avdelingsleder/saksbehandlerTsType';
+import Saksliste from 'types/avdelingsleder/sakslisteAvdelingTsType';
+import Saksbehandler from 'types/avdelingsleder/saksbehandlerAvdelingTsType';
 import GjeldendeSakslisterTabell from './GjeldendeSakslisterTabell';
 import SaksbehandlereForSakslisteForm from './saksbehandlerForm/SaksbehandlereForSakslisteForm';
 import UtvalgskriterierForSakslisteForm from './sakslisteForm/UtvalgskriterierForSakslisteForm';
@@ -36,17 +36,17 @@ const EndreSakslisterPanel: FunctionComponent<OwnProps & WrappedComponentProps> 
   resetValgtSakslisteId,
 }) => {
   const { data: oppgaverForAvdelingAntall, startRequest: hentOppgaverForAvdelingAntall } = restApiHooks
-    .useRestApiRunner<number>(RestApiPathsKeys.OPPGAVE_AVDELING_ANTALL);
+    .useRestApiRunner(RestApiPathsKeys.OPPGAVE_AVDELING_ANTALL);
   const { data: sakslister = EMPTY_ARRAY, startRequest: hentAvdelingensSl } = restApiHooks
-    .useRestApiRunner<Saksliste[]>(RestApiPathsKeys.SAKSLISTER_FOR_AVDELING);
-  const hentAvdelingensSakslister = useCallback((params) => hentAvdelingensSl(params, true), []);
+    .useRestApiRunner(RestApiPathsKeys.SAKSLISTER_FOR_AVDELING);
+  const hentAvdelingensSakslister = useCallback((params: { avdelingEnhet: string }) => hentAvdelingensSl(params, true), []);
   useEffect(() => {
     hentOppgaverForAvdelingAntall({ avdelingEnhet: valgtAvdelingEnhet });
     hentAvdelingensSakslister({ avdelingEnhet: valgtAvdelingEnhet });
   }, [valgtAvdelingEnhet]);
 
   const { data: nySakslisteObject, startRequest: lagNySaksliste } = restApiHooks
-    .useRestApiRunner<{sakslisteId: string}>(RestApiPathsKeys.OPPRETT_NY_SAKSLISTE);
+    .useRestApiRunner(RestApiPathsKeys.OPPRETT_NY_SAKSLISTE);
   const lagNySakslisteOgHentAvdelingensSakslisterPåNytt = useCallback((avdelingEnhet) => {
     lagNySaksliste({ avdelingEnhet }).then(() => {
       resetValgtSakslisteId();

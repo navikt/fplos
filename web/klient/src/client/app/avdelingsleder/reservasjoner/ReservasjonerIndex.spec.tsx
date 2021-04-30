@@ -22,8 +22,8 @@ describe('<ReservasjonerIndex>', () => {
         },
       }];
 
-      requestApi.mock(RestApiPathsKeys.RESERVASJONER_FOR_AVDELING, reservasjoner);
-      requestApi.mock(RestApiPathsKeys.AVDELINGSLEDER_OPPHEVER_RESERVASJON, undefined);
+      requestApi.mock(RestApiPathsKeys.RESERVASJONER_FOR_AVDELING.name, reservasjoner);
+      requestApi.mock(RestApiPathsKeys.AVDELINGSLEDER_OPPHEVER_RESERVASJON.name, undefined);
 
       const wrapper = shallow(<ReservasjonerIndex
         valgtAvdelingEnhet="2"

@@ -157,7 +157,7 @@ export const SakslisteVelgerForm: FunctionComponent<OwnProps & WrappedComponentP
   setValueInLocalStorage,
   removeValueFromLocalStorage,
 }) => {
-  const { data: saksbehandlere, startRequest: fetchSaksbehandlere } = restApiHooks.useRestApiRunner<Saksbehandler[]>(RestApiPathsKeys.SAKSLISTE_SAKSBEHANDLERE);
+  const { data: saksbehandlere, startRequest: fetchSaksbehandlere } = restApiHooks.useRestApiRunner(RestApiPathsKeys.SAKSLISTE_SAKSBEHANDLERE);
 
   useEffect(() => {
     if (sakslister.length > 0) {

@@ -45,8 +45,8 @@ describe('<FlyttReservasjonModal>', () => {
         values: {},
       };
 
-      requestApi.mock(RestApiPathsKeys.FLYTT_RESERVASJON_SAKSBEHANDLER_SOK);
-      requestApi.mock(RestApiPathsKeys.FLYTT_RESERVASJON);
+      requestApi.mock(RestApiPathsKeys.FLYTT_RESERVASJON_SAKSBEHANDLER_SOK.name);
+      requestApi.mock(RestApiPathsKeys.FLYTT_RESERVASJON.name);
 
       const wrapper = shallowWithIntl(
         <FlyttReservasjonModal.WrappedComponent
@@ -82,8 +82,8 @@ describe('<FlyttReservasjonModal>', () => {
       values: {},
     };
 
-    requestApi.mock(RestApiPathsKeys.FLYTT_RESERVASJON_SAKSBEHANDLER_SOK, saksbehandler);
-    requestApi.mock(RestApiPathsKeys.FLYTT_RESERVASJON);
+    requestApi.mock(RestApiPathsKeys.FLYTT_RESERVASJON_SAKSBEHANDLER_SOK.name, saksbehandler);
+    requestApi.mock(RestApiPathsKeys.FLYTT_RESERVASJON.name);
 
     const wrapper = shallowWithIntl(
       <FlyttReservasjonModal.WrappedComponent
@@ -169,8 +169,8 @@ describe('<FlyttReservasjonModal>', () => {
       },
     };
 
-    requestApi.mock(RestApiPathsKeys.FLYTT_RESERVASJON_SAKSBEHANDLER_SOK);
-    requestApi.mock(RestApiPathsKeys.FLYTT_RESERVASJON);
+    requestApi.mock(RestApiPathsKeys.FLYTT_RESERVASJON_SAKSBEHANDLER_SOK.name);
+    requestApi.mock(RestApiPathsKeys.FLYTT_RESERVASJON.name);
 
     const wrapper = shallowWithIntl(
       <FlyttReservasjonModal.WrappedComponent
@@ -210,8 +210,8 @@ describe('<FlyttReservasjonModal>', () => {
         },
       };
 
-      requestApi.mock(RestApiPathsKeys.FLYTT_RESERVASJON_SAKSBEHANDLER_SOK, saksbehandler);
-      requestApi.mock(RestApiPathsKeys.FLYTT_RESERVASJON, {});
+      requestApi.mock(RestApiPathsKeys.FLYTT_RESERVASJON_SAKSBEHANDLER_SOK.name, saksbehandler);
+      requestApi.mock(RestApiPathsKeys.FLYTT_RESERVASJON.name, {});
 
       const wrapper = shallowWithIntl(
         <FlyttReservasjonModal.WrappedComponent

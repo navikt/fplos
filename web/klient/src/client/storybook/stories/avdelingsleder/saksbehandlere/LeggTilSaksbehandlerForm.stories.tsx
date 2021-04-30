@@ -20,7 +20,7 @@ export const skalVisePanelForÅLeggeTilSaksbehandlere = () => {
     avdelingsnavn: ['NAV Viken'],
   };
 
-  requestApi.mock(RestApiPathsKeys.SAKSBEHANDLER_SOK, saksbehandler);
+  requestApi.mock(RestApiPathsKeys.SAKSBEHANDLER_SOK.name, saksbehandler);
 
   return (
     <LeggTilSaksbehandlerForm
@@ -38,7 +38,7 @@ export const skalVisePanelForNårSaksbehandlerErLagtTilAllerede = () => {
     avdelingsnavn: ['NAV Viken'],
   };
 
-  requestApi.mock(RestApiPathsKeys.SAKSBEHANDLER_SOK, saksbehandler);
+  requestApi.mock(RestApiPathsKeys.SAKSBEHANDLER_SOK.name, saksbehandler);
 
   return (
     <LeggTilSaksbehandlerForm

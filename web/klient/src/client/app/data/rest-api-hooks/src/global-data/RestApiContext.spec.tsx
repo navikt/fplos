@@ -3,7 +3,7 @@ import { mount } from 'enzyme';
 import sinon from 'sinon';
 import { act } from 'react-dom/test-utils';
 
-import { AbstractRequestApi } from 'data/rest-api';
+import { AbstractRequestApi, RestKey } from 'data/rest-api';
 
 import { RestApiErrorProvider } from '../error/RestApiErrorContext';
 import { RestApiProvider } from './RestApiContext';
@@ -48,9 +48,10 @@ const dataHentetFraBackend = { id: 1 };
 const useGlobalStateRestApi = getUseGlobalStateRestApi(new RequestApiTestMock(dataHentetFraBackend));
 
 const TestGlobalData = ({ setValue }: { setValue: any }) => {
-  useGlobalStateRestApi('BEHANDLING');
+  const BEHANDLING = new RestKey('BEHANDLING');
+  useGlobalStateRestApi(BEHANDLING);
 
-  const data = useGlobalStateRestApiData('BEHANDLING');
+  const data = useGlobalStateRestApiData(BEHANDLING);
   useEffect(() => {
     setValue(data);
   }, [data]);

@@ -64,7 +64,7 @@ class RequestApi extends AbstractRequestApi {
     return false;
   }
 
-  public startRequest = async (endpointName: string, params?: any): Promise<{ payload: any }> => {
+  public startRequest = async <T, P>(endpointName: string, params?: P): Promise<{ payload: T }> => {
     const endpointConfig = this.endpointConfigList.find((c) => c.name === endpointName);
     if (!endpointConfig) {
       throw new Error(`Mangler konfig for endepunkt ${endpointName}`);
@@ -96,7 +96,7 @@ class RequestApi extends AbstractRequestApi {
         ...this.activeRunners,
         [endpointName]: runner,
       };
-      const result = await runner.start(params || link?.requestPayload);
+      const result = await runner.start<T, P>(params || link?.requestPayload);
       delete this.activeRunners[endpointName];
       return result;
     } catch (error) {

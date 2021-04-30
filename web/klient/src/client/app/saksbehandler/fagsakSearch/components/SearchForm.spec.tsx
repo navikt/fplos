@@ -15,7 +15,7 @@ describe('<SearchForm>', () => {
     ...intlMock,
   };
   it('skal ha et søkefelt og en søkeknapp', () => {
-    requestApi.mock(RestApiGlobalStatePathsKeys.NAV_ANSATT, { kanSaksbehandle: true });
+    requestApi.mock(RestApiGlobalStatePathsKeys.NAV_ANSATT.name, { kanSaksbehandle: true });
     const formProps = { handleSubmit: sinon.spy(), values: { searchString: '' } };
     const wrapper = shallow(<SearchForm.WrappedComponent
       intl={intl as IntlShape}
@@ -30,7 +30,7 @@ describe('<SearchForm>', () => {
   });
 
   it('skal utføre søk når en trykker på søkeknapp', () => {
-    requestApi.mock(RestApiGlobalStatePathsKeys.NAV_ANSATT, { kanSaksbehandle: true });
+    requestApi.mock(RestApiGlobalStatePathsKeys.NAV_ANSATT.name, { kanSaksbehandle: true });
     const onButtonClick = sinon.spy();
     const formProps = { handleSubmit: onButtonClick, values: { searchString: '' } };
 

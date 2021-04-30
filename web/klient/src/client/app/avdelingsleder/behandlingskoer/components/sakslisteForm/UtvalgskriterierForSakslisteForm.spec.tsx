@@ -120,8 +120,8 @@ describe('<UtvalgskriterierForSakslisteForm>', () => {
       antallBehandlinger: 1,
     };
 
-    requestApi.mock(RestApiPathsKeys.OPPGAVE_ANTALL);
-    requestApi.mock(RestApiPathsKeys.LAGRE_SAKSLISTE_NAVN);
+    requestApi.mock(RestApiPathsKeys.OPPGAVE_ANTALL.name);
+    requestApi.mock(RestApiPathsKeys.LAGRE_SAKSLISTE_NAVN.name);
 
     const wrapper = shallowWithIntl(<UtvalgskriterierForSakslisteForm.WrappedComponent
       intl={intl as IntlShape}
@@ -139,7 +139,7 @@ describe('<UtvalgskriterierForSakslisteForm>', () => {
       navn: 'Foreldrepenger',
     });
 
-    const lagreSakslisteNavnCallData = requestApi.getRequestMockData(RestApiPathsKeys.LAGRE_SAKSLISTE_NAVN);
+    const lagreSakslisteNavnCallData = requestApi.getRequestMockData(RestApiPathsKeys.LAGRE_SAKSLISTE_NAVN.name);
     expect(lagreSakslisteNavnCallData).toHaveLength(1);
     expect(lagreSakslisteNavnCallData[0].params.sakslisteId).toEqual(1);
     expect(lagreSakslisteNavnCallData[0].params.navn).toEqual('Foreldrepenger');

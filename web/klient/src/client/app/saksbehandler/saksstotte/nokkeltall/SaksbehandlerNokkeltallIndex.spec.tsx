@@ -19,7 +19,7 @@ describe('<SaksbehandlerNokkeltallIndex>', () => {
       dato: '2019-01-01',
     }];
 
-    requestApi.mock(RestApiPathsKeys.HENT_NYE_OG_FERDIGSTILTE_OPPGAVER, oppgaver);
+    requestApi.mock(RestApiPathsKeys.HENT_NYE_OG_FERDIGSTILTE_OPPGAVER.name, oppgaver);
 
     const wrapper = shallow(<SaksbehandlerNokkeltallIndex valgtSakslisteId={2} />);
 
