@@ -22,7 +22,7 @@ export const skalViseVelgerAvAndreKriterier = () => {
     [`${andreKriterierType.TIL_BESLUTTER}_inkluder`]: true,
   };
 
-  requestApi.mock(RestApiGlobalStatePathsKeys.KODEVERK, alleKodeverk);
+  requestApi.mock(RestApiGlobalStatePathsKeys.KODEVERK.name, alleKodeverk);
 
   return (
     <Form

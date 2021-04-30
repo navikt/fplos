@@ -6,7 +6,7 @@ import { FormattedMessage } from 'react-intl';
 import { Normaltekst, Undertekst } from 'nav-frontend-typografi';
 
 import { DDMMYYYY_DATE_FORMAT, ISO_DATE_FORMAT } from 'utils/formats';
-import fagsakYtelseType from 'kodeverk/fagsakYtelseType';
+import FagsakYtelseType from 'kodeverk/fagsakYtelseType';
 import ManueltPaVentGraf from './ManueltPaVentGraf';
 
 describe('<ManueltPaVentGraf>', () => {
@@ -26,21 +26,21 @@ describe('<ManueltPaVentGraf>', () => {
   it('skal vise crosshair med antall behandlinger for i morgen', () => {
     const oppgaverManeultPaVent = [{
       fagsakYtelseType: {
-        kode: fagsakYtelseType.FORELDREPRENGER,
+        kode: FagsakYtelseType.FORELDREPRENGER,
         navn: 'Foreldrepenger',
       },
       behandlingFrist: moment().format(ISO_DATE_FORMAT),
       antall: 1,
     }, {
       fagsakYtelseType: {
-        kode: fagsakYtelseType.FORELDREPRENGER,
+        kode: FagsakYtelseType.FORELDREPRENGER,
         navn: 'Foreldrepenger',
       },
       behandlingFrist: moment().add(1, 'd').format(ISO_DATE_FORMAT),
       antall: 2,
     }, {
       fagsakYtelseType: {
-        kode: fagsakYtelseType.FORELDREPRENGER,
+        kode: FagsakYtelseType.FORELDREPRENGER,
         navn: 'Foreldrepenger',
       },
       behandlingFrist: moment().add(2, 'd').format(ISO_DATE_FORMAT),

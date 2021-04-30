@@ -3,49 +3,49 @@ import sinon from 'sinon';
 import { Form } from 'react-final-form';
 
 import { requestApi, RestApiGlobalStatePathsKeys } from 'data/fplosRestApi';
-import kodeverkTyper from 'kodeverk/kodeverkTyper';
+import KodeverkType from 'kodeverk/kodeverkTyper';
 import { shallowWithIntl } from 'testHelpers/intl-enzyme-test-helper';
-import behandlingType from 'kodeverk/behandlingType';
+import BehandlingType from 'kodeverk/behandlingType';
 import { CheckboxField } from 'form/FinalFields';
-import behandlingVenteStatus from 'kodeverk/behandlingVenteStatus';
+import BehandlingVenteStatus from 'kodeverk/behandlingVenteStatus';
 
 import { OppgaverSomErApneEllerPaVentPanel } from './OppgaverSomErApneEllerPaVentPanel';
 import OppgaverSomErApneEllerPaVentGraf from './OppgaverSomErApneEllerPaVentGraf';
 
 describe('<OppgaverSomErApneEllerPaVentPanel>', () => {
   const behandlingTyper = [{
-    kode: behandlingType.FORSTEGANGSSOKNAD,
+    kode: BehandlingType.FORSTEGANGSSOKNAD,
     navn: 'Førstegangssøknad',
   }, {
-    kode: behandlingType.KLAGE,
+    kode: BehandlingType.KLAGE,
     navn: 'Klage',
   }, {
-    kode: behandlingType.DOKUMENTINNSYN,
+    kode: BehandlingType.DOKUMENTINNSYN,
     navn: 'Dokumentinnsyn',
   }, {
-    kode: behandlingType.REVURDERING,
+    kode: BehandlingType.REVURDERING,
     navn: 'Revurdering',
   }, {
-    kode: behandlingType.TILBAKEBETALING,
+    kode: BehandlingType.TILBAKEBETALING,
     navn: 'Tilbakebetaling',
   }, {
-    kode: behandlingType.TILBAKEBETALING_REVURDERING,
+    kode: BehandlingType.TILBAKEBETALING_REVURDERING,
     navn: 'Tilbakebet-rev',
   }];
 
   const alleKodeverk = {
-    [kodeverkTyper.BEHANDLING_TYPE]: behandlingTyper,
+    [KodeverkType.BEHANDLING_TYPE]: behandlingTyper,
   };
 
   const oppgaverApneEllerPaVent = [{
     antall: 3,
     behandlingType: {
-      kode: behandlingType.FORSTEGANGSSOKNAD,
+      kode: BehandlingType.FORSTEGANGSSOKNAD,
       navn: 'Førstegangssøknad',
       kodeverk: '',
     },
     behandlingVenteStatus: {
-      kode: behandlingVenteStatus.IKKE_PA_VENT,
+      kode: BehandlingVenteStatus.IKKE_PA_VENT,
       navn: 'Ikke på vent',
       kodeverk: '',
     },
@@ -53,12 +53,12 @@ describe('<OppgaverSomErApneEllerPaVentPanel>', () => {
   }, {
     antall: 5,
     behandlingType: {
-      kode: behandlingType.REVURDERING,
+      kode: BehandlingType.REVURDERING,
       navn: 'Revurdering',
       kodeverk: '',
     },
     behandlingVenteStatus: {
-      kode: behandlingVenteStatus.PA_VENT,
+      kode: BehandlingVenteStatus.PA_VENT,
       navn: 'På vent',
       kodeverk: '',
     },
@@ -68,7 +68,7 @@ describe('<OppgaverSomErApneEllerPaVentPanel>', () => {
   it('skal vise alle behandlingstyper utenom tilbakekrevingsrelaterte i checkboxer', () => {
     const valuesMock = {};
 
-    requestApi.mock(RestApiGlobalStatePathsKeys.KODEVERK, alleKodeverk);
+    requestApi.mock(RestApiGlobalStatePathsKeys.KODEVERK.name, alleKodeverk);
 
     const wrapper = shallowWithIntl(<OppgaverSomErApneEllerPaVentPanel
       width={300}
@@ -92,11 +92,11 @@ describe('<OppgaverSomErApneEllerPaVentPanel>', () => {
 
   it('skal ikke filtrere bort data når alle checkboxer er valgt', () => {
     const valuesMock = {
-      [behandlingType.FORSTEGANGSSOKNAD]: true,
-      [behandlingType.REVURDERING]: true,
+      [BehandlingType.FORSTEGANGSSOKNAD]: true,
+      [BehandlingType.REVURDERING]: true,
     };
 
-    requestApi.mock(RestApiGlobalStatePathsKeys.KODEVERK, alleKodeverk);
+    requestApi.mock(RestApiGlobalStatePathsKeys.KODEVERK.name, alleKodeverk);
 
     const wrapper = shallowWithIntl(<OppgaverSomErApneEllerPaVentPanel
       width={300}
@@ -113,11 +113,11 @@ describe('<OppgaverSomErApneEllerPaVentPanel>', () => {
 
   it('skal filtrere bort revurderinger når kun førstegangsbehandling-checkbox er valgt', () => {
     const valuesMock = {
-      [behandlingType.FORSTEGANGSSOKNAD]: true,
-      [behandlingType.REVURDERING]: false,
+      [BehandlingType.FORSTEGANGSSOKNAD]: true,
+      [BehandlingType.REVURDERING]: false,
     };
 
-    requestApi.mock(RestApiGlobalStatePathsKeys.KODEVERK, alleKodeverk);
+    requestApi.mock(RestApiGlobalStatePathsKeys.KODEVERK.name, alleKodeverk);
 
     const wrapper = shallowWithIntl(<OppgaverSomErApneEllerPaVentPanel
       width={300}
@@ -130,6 +130,6 @@ describe('<OppgaverSomErApneEllerPaVentPanel>', () => {
     const graf = wrapper.find(OppgaverSomErApneEllerPaVentGraf);
     expect(graf).toHaveLength(1);
     expect(graf.prop('oppgaverApneEllerPaVent')).toEqual(oppgaverApneEllerPaVent
-      .filter((oppgave) => oppgave.behandlingType.kode !== behandlingType.REVURDERING));
+      .filter((oppgave) => oppgave.behandlingType.kode !== BehandlingType.REVURDERING));
   });
 });

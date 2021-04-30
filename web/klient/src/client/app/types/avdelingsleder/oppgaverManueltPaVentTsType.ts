@@ -1,4 +1,4 @@
-import Kodeverk from 'kodeverk/kodeverkTsType';
+import Kodeverk from '../kodeverkTsType';
 
 type OppgaverManueltPaVent = Readonly<{
   fagsakYtelseType: Kodeverk;

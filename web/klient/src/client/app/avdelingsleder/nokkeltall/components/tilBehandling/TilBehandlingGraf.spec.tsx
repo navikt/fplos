@@ -5,27 +5,27 @@ import { AreaSeries, Crosshair } from 'react-vis';
 import { Normaltekst, Undertekst } from 'nav-frontend-typografi';
 
 import { ISO_DATE_FORMAT, DDMMYYYY_DATE_FORMAT } from 'utils/formats';
-import behandlingType from 'kodeverk/behandlingType';
+import BehandlingType from 'kodeverk/behandlingType';
 import TilBehandlingGraf, { OppgaveForDatoGraf } from './TilBehandlingGraf';
 
 describe('<TilBehandlingGraf>', () => {
   const behandlingTyper = [{
-    kode: behandlingType.FORSTEGANGSSOKNAD,
+    kode: BehandlingType.FORSTEGANGSSOKNAD,
     navn: 'Førstegangssøknad',
   }, {
-    kode: behandlingType.KLAGE,
+    kode: BehandlingType.KLAGE,
     navn: 'Klage',
   }, {
-    kode: behandlingType.DOKUMENTINNSYN,
+    kode: BehandlingType.DOKUMENTINNSYN,
     navn: 'Dokumentinnsyn',
   }, {
-    kode: behandlingType.REVURDERING,
+    kode: BehandlingType.REVURDERING,
     navn: 'Revurdering',
   }, {
-    kode: behandlingType.TILBAKEBETALING,
+    kode: BehandlingType.TILBAKEBETALING,
     navn: 'Tilbakebetaling',
   }, {
-    kode: behandlingType.TILBAKEBETALING_REVURDERING,
+    kode: BehandlingType.TILBAKEBETALING_REVURDERING,
     navn: 'Tilbakebet-rev',
   }];
 

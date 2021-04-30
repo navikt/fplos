@@ -7,7 +7,7 @@ import { Hovedknapp } from 'nav-frontend-knapper';
 import { getDateAndTime } from 'utils/dateUtils';
 import Modal from 'sharedComponents/Modal';
 import Image from 'sharedComponents/Image';
-import Oppgave from 'saksbehandler/oppgaveTsType';
+import Oppgave from 'types/saksbehandler/oppgaveTsType';
 
 import innvilgetImageUrl from 'images/sharedComponents/innvilget_valgt.svg';
 

@@ -35,7 +35,7 @@ export const skalViseValgtKøOgUtvalgskriterier = () => {
     avdelingsnavn: [],
   }];
 
-  requestApi.mock(RestApiPathsKeys.SAKSLISTE_SAKSBEHANDLERE, saksbehandlere);
+  requestApi.mock(RestApiPathsKeys.SAKSLISTE_SAKSBEHANDLERE.name, saksbehandlere);
 
   return (
     <SakslisteVelgerForm

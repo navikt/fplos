@@ -4,44 +4,44 @@ import sinon from 'sinon';
 import { FormattedMessage } from 'react-intl';
 
 import { requestApi, RestApiGlobalStatePathsKeys, RestApiPathsKeys } from 'data/fplosRestApi';
-import kodeverkTyper from 'kodeverk/kodeverkTyper';
+import KodeverkType from 'kodeverk/kodeverkTyper';
 import Image from 'sharedComponents/Image';
-import behandlingType from 'kodeverk/behandlingType';
-import fagsakYtelseType from 'kodeverk/fagsakYtelseType';
+import BehandlingType from 'kodeverk/behandlingType';
+import FagsakYtelseType from 'kodeverk/fagsakYtelseType';
 import Table from 'sharedComponents/table/Table';
 import TableRow from 'sharedComponents/table/TableRow';
 import TableColumn from 'sharedComponents/table/TableColumn';
+import Saksliste from 'types/avdelingsleder/sakslisteAvdelingTsType';
 import SletteSakslisteModal from './SletteSakslisteModal';
 import { GjeldendeSakslisterTabell } from './GjeldendeSakslisterTabell';
-import Saksliste from '../sakslisteTsType';
 
 describe('<GjeldendeSakslisterTabell>', () => {
   const behandlingstyper = [{
-    kode: behandlingType.FORSTEGANGSSOKNAD,
+    kode: BehandlingType.FORSTEGANGSSOKNAD,
     navn: '',
   }, {
-    kode: behandlingType.KLAGE,
+    kode: BehandlingType.KLAGE,
     navn: '',
   },
   ];
   const fagsakYtelseTyper = [{
-    kode: fagsakYtelseType.ENGANGSSTONAD,
+    kode: FagsakYtelseType.ENGANGSSTONAD,
     navn: '',
   }, {
-    kode: fagsakYtelseType.FORELDREPRENGER,
+    kode: FagsakYtelseType.FORELDREPRENGER,
     navn: '',
   },
   ];
 
   const alleKodeverk = {
-    [kodeverkTyper.BEHANDLING_TYPE]: behandlingstyper,
-    [kodeverkTyper.FAGSAK_YTELSE_TYPE]: fagsakYtelseTyper,
+    [KodeverkType.BEHANDLING_TYPE]: behandlingstyper,
+    [KodeverkType.FAGSAK_YTELSE_TYPE]: fagsakYtelseTyper,
   };
 
   it('skal ikke vise tabell når ingen sakslister finnes', () => {
     const sakslister: Saksliste[] = [];
 
-    requestApi.mock(RestApiGlobalStatePathsKeys.KODEVERK, alleKodeverk);
+    requestApi.mock(RestApiGlobalStatePathsKeys.KODEVERK.name, alleKodeverk);
 
     const wrapper = shallow(<GjeldendeSakslisterTabell
       sakslister={sakslister}
@@ -78,7 +78,7 @@ describe('<GjeldendeSakslisterTabell>', () => {
       antallBehandlinger: 1,
     }];
 
-    requestApi.mock(RestApiGlobalStatePathsKeys.KODEVERK, alleKodeverk);
+    requestApi.mock(RestApiGlobalStatePathsKeys.KODEVERK.name, alleKodeverk);
 
     const wrapper = shallow(<GjeldendeSakslisterTabell
       sakslister={sakslister}
@@ -107,7 +107,7 @@ describe('<GjeldendeSakslisterTabell>', () => {
     const sakslister: Saksliste[] = [];
     const lagNySakslisteFn = sinon.spy();
 
-    requestApi.mock(RestApiGlobalStatePathsKeys.KODEVERK, alleKodeverk);
+    requestApi.mock(RestApiGlobalStatePathsKeys.KODEVERK.name, alleKodeverk);
 
     const wrapper = shallow(<GjeldendeSakslisterTabell
       sakslister={sakslister}
@@ -131,7 +131,7 @@ describe('<GjeldendeSakslisterTabell>', () => {
     const sakslister: Saksliste[] = [];
     const lagNySakslisteFn = sinon.spy();
 
-    requestApi.mock(RestApiGlobalStatePathsKeys.KODEVERK, alleKodeverk);
+    requestApi.mock(RestApiGlobalStatePathsKeys.KODEVERK.name, alleKodeverk);
 
     const wrapper = shallow(<GjeldendeSakslisterTabell
       sakslister={sakslister}
@@ -159,7 +159,7 @@ describe('<GjeldendeSakslisterTabell>', () => {
       const sakslister: Saksliste[] = [];
       const lagNySakslisteFn = sinon.spy();
 
-      requestApi.mock(RestApiGlobalStatePathsKeys.KODEVERK, alleKodeverk);
+      requestApi.mock(RestApiGlobalStatePathsKeys.KODEVERK.name, alleKodeverk);
 
       const wrapper = shallow(<GjeldendeSakslisterTabell
         sakslister={sakslister}
@@ -194,7 +194,7 @@ describe('<GjeldendeSakslisterTabell>', () => {
     }];
     const setValgtSakslisteIdFn = sinon.spy();
 
-    requestApi.mock(RestApiGlobalStatePathsKeys.KODEVERK, alleKodeverk);
+    requestApi.mock(RestApiGlobalStatePathsKeys.KODEVERK.name, alleKodeverk);
 
     const wrapper = shallow(<GjeldendeSakslisterTabell
       sakslister={sakslister}
@@ -227,7 +227,7 @@ describe('<GjeldendeSakslisterTabell>', () => {
         antallBehandlinger: 1,
       }];
 
-      requestApi.mock(RestApiGlobalStatePathsKeys.KODEVERK, alleKodeverk);
+      requestApi.mock(RestApiGlobalStatePathsKeys.KODEVERK.name, alleKodeverk);
 
       const wrapper = shallow(<GjeldendeSakslisterTabell
         sakslister={sakslister}
@@ -265,7 +265,7 @@ describe('<GjeldendeSakslisterTabell>', () => {
       antallBehandlinger: 1,
     }];
 
-    requestApi.mock(RestApiGlobalStatePathsKeys.KODEVERK, alleKodeverk);
+    requestApi.mock(RestApiGlobalStatePathsKeys.KODEVERK.name, alleKodeverk);
 
     const wrapper = shallow(<GjeldendeSakslisterTabell
       sakslister={sakslister}
@@ -302,8 +302,8 @@ describe('<GjeldendeSakslisterTabell>', () => {
       antallBehandlinger: 1,
     }];
 
-    requestApi.mock(RestApiGlobalStatePathsKeys.KODEVERK, alleKodeverk);
-    requestApi.mock(RestApiPathsKeys.SLETT_SAKSLISTE, {});
+    requestApi.mock(RestApiGlobalStatePathsKeys.KODEVERK.name, alleKodeverk);
+    requestApi.mock(RestApiPathsKeys.SLETT_SAKSLISTE.name, {});
 
     const wrapper = shallow(<GjeldendeSakslisterTabell
       sakslister={sakslister}
@@ -328,7 +328,7 @@ describe('<GjeldendeSakslisterTabell>', () => {
 
     expect(wrapper.find(SletteSakslisteModal)).toHaveLength(0);
 
-    const fjernSakslisterCallData = requestApi.getRequestMockData(RestApiPathsKeys.SLETT_SAKSLISTE);
+    const fjernSakslisterCallData = requestApi.getRequestMockData(RestApiPathsKeys.SLETT_SAKSLISTE.name);
     expect(fjernSakslisterCallData).toHaveLength(1);
     expect(fjernSakslisterCallData[0].params.sakslisteId).toEqual(1);
     expect(fjernSakslisterCallData[0].params.avdelingEnhet).toEqual('2');
@@ -345,7 +345,7 @@ describe('<GjeldendeSakslisterTabell>', () => {
       antallBehandlinger: 1,
     }];
 
-    requestApi.mock(RestApiGlobalStatePathsKeys.KODEVERK, alleKodeverk);
+    requestApi.mock(RestApiGlobalStatePathsKeys.KODEVERK.name, alleKodeverk);
 
     const wrapper = shallow(<GjeldendeSakslisterTabell
       sakslister={sakslister}

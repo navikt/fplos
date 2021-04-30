@@ -3,11 +3,11 @@ import sinon from 'sinon';
 import { IntlShape } from 'react-intl';
 import { Form } from 'react-final-form';
 
-import behandlingStatus from 'kodeverk/behandlingStatus';
-import fagsakYtelseType from 'kodeverk/fagsakYtelseType';
+import BehandlingStatus from 'kodeverk/behandlingStatus';
+import FagsakYtelseType from 'kodeverk/fagsakYtelseType';
 import { TextAreaField } from 'form/FinalFields';
 import { shallowWithIntl, intlMock } from 'testHelpers/intl-enzyme-test-helper';
-import behandlingType from 'kodeverk/behandlingType';
+import BehandlingType from 'kodeverk/behandlingType';
 import OpphevReservasjonModal from './OpphevReservasjonModal';
 
 describe('<OpphevReservasjonModal>', () => {
@@ -25,18 +25,18 @@ describe('<OpphevReservasjonModal>', () => {
     personnummer: '1234567',
     navn: 'Espen Utvikler',
     behandlingstype: {
-      kode: behandlingType.FORSTEGANGSSOKNAD,
+      kode: BehandlingType.FORSTEGANGSSOKNAD,
       navn: '',
     },
     opprettetTidspunkt: '2017-01-01',
     behandlingsfrist: '2017-01-01',
     erTilSaksbehandling: true,
     fagsakYtelseType: {
-      kode: fagsakYtelseType.ENGANGSSTONAD,
+      kode: FagsakYtelseType.ENGANGSSTONAD,
       navn: '',
     },
     behandlingStatus: {
-      kode: behandlingStatus.OPPRETTET,
+      kode: BehandlingStatus.OPPRETTET,
       navn: '',
     },
     system: '',

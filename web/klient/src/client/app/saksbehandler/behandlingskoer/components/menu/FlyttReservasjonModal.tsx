@@ -15,7 +15,7 @@ import {
 } from 'utils/validation/validators';
 import { TextAreaField, InputField } from 'form/FinalFields';
 import Modal from 'sharedComponents/Modal';
-import SaksbehandlerForFlytting from './saksbehandlerForFlyttingTsType';
+import SaksbehandlerForFlytting from 'types/saksbehandler/saksbehandlerForFlyttingTsType';
 
 import styles from './flyttReservasjonModal.less';
 
@@ -57,8 +57,8 @@ export const FlyttReservasjonModal: FunctionComponent<OwnProps & WrappedComponen
 }) => {
   const {
     startRequest, state, data: saksbehandler, resetRequestData,
-  } = restApiHooks.useRestApiRunner<SaksbehandlerForFlytting>(RestApiPathsKeys.FLYTT_RESERVASJON_SAKSBEHANDLER_SOK);
-  const finnSaksbehandler = useCallback((brukerIdent) => startRequest(brukerIdent), []);
+  } = restApiHooks.useRestApiRunner(RestApiPathsKeys.FLYTT_RESERVASJON_SAKSBEHANDLER_SOK);
+  const finnSaksbehandler = useCallback((brukerIdent: string) => startRequest(brukerIdent), []);
 
   const { startRequest: flyttOppgavereservasjon } = restApiHooks.useRestApiRunner(RestApiPathsKeys.FLYTT_RESERVASJON);
   const flyttReservasjon = useCallback((brukerident: string, begrunnelse: string) => flyttOppgavereservasjon({

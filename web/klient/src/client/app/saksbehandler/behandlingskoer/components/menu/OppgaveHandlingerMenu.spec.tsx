@@ -3,9 +3,9 @@ import { shallow } from 'enzyme';
 import sinon from 'sinon';
 import { FormattedMessage } from 'react-intl';
 
-import behandlingStatus from 'kodeverk/behandlingStatus';
-import fagsakYtelseType from 'kodeverk/fagsakYtelseType';
-import behandlingType from 'kodeverk/behandlingType';
+import BehandlingStatus from 'kodeverk/behandlingStatus';
+import FagsakYtelseType from 'kodeverk/fagsakYtelseType';
+import BehandlingType from 'kodeverk/behandlingType';
 import OppgaveHandlingerMenu from './OppgaveHandlingerMenu';
 import OpphevReservasjonModal from './OpphevReservasjonModal';
 import OppgaveReservasjonForlengetModal from './OppgaveReservasjonForlengetModal';
@@ -25,18 +25,18 @@ describe('<OppgaveHandlingerMenu>', () => {
     navn: 'Espen Utvikler',
     system: 'FPSAK',
     behandlingstype: {
-      kode: behandlingType.FORSTEGANGSSOKNAD,
+      kode: BehandlingType.FORSTEGANGSSOKNAD,
       navn: '',
     },
     opprettetTidspunkt: '2017-01-01',
     behandlingsfrist: '2017-01-01',
     erTilSaksbehandling: true,
     fagsakYtelseType: {
-      kode: fagsakYtelseType.FORELDREPRENGER,
+      kode: FagsakYtelseType.FORELDREPRENGER,
       navn: 'FP',
     },
     behandlingStatus: {
-      kode: behandlingStatus.OPPRETTET,
+      kode: BehandlingStatus.OPPRETTET,
       navn: '',
     },
     href: '',

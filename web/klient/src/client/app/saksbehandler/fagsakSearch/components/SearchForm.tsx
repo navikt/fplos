@@ -12,8 +12,6 @@ import advarselIcon from 'images/advarsel.svg';
 import { hasValidSaksnummerOrFodselsnummerFormat } from 'utils/validation/validators';
 import { InputField, CheckboxField } from 'form/FinalFields';
 
-import NavAnsatt from 'app/navAnsattTsType';
-
 import styles from './searchForm.less';
 
 const isButtonDisabled = (
@@ -45,7 +43,7 @@ const SearchForm: FunctionComponent<OwnProps & WrappedComponentProps> = ({
   searchResultAccessDenied,
   resetSearch,
 }) => {
-  const { kanSaksbehandle } = restApiHooks.useGlobalStateRestApiData<NavAnsatt>(RestApiGlobalStatePathsKeys.NAV_ANSATT);
+  const { kanSaksbehandle } = restApiHooks.useGlobalStateRestApiData(RestApiGlobalStatePathsKeys.NAV_ANSATT);
   return (
     <Form
       onSubmit={onSubmit}

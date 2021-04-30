@@ -119,6 +119,7 @@ const config = {
       data: path.join(APP_DIR, 'data'),
       kodeverk: path.join(APP_DIR, 'kodeverk'),
       sharedComponents: path.join(APP_DIR, 'sharedComponents'),
+      types: path.join(APP_DIR, 'types'),
       utils: path.join(APP_DIR, 'utils'),
     },
     extensions: ['.js', '.jsx', '.tsx', '.ts', '.less'],

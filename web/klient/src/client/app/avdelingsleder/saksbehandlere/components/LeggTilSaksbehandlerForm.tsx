@@ -13,7 +13,7 @@ import { required } from 'utils/validation/validators';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import { InputField } from 'form/FinalFields';
 import { FlexContainer, FlexRow, FlexColumn } from 'sharedComponents/flexGrid';
-import Saksbehandler from '../saksbehandlerTsType';
+import Saksbehandler from 'types/avdelingsleder/saksbehandlerAvdelingTsType';
 
 import styles from './leggTilSaksbehandlerForm.less';
 
@@ -42,9 +42,9 @@ export const LeggTilSaksbehandlerForm: FunctionComponent<OwnProps & WrappedCompo
 
   const {
     data: saksbehandler, startRequest: finnSaksbehandler, state, resetRequestData: resetSaksbehandlerSok,
-  } = restApiHooks.useRestApiRunner<Saksbehandler>(RestApiPathsKeys.SAKSBEHANDLER_SOK);
+  } = restApiHooks.useRestApiRunner(RestApiPathsKeys.SAKSBEHANDLER_SOK);
 
-  const { startRequest: leggTilSaksbehandler } = restApiHooks.useRestApiRunner<Saksbehandler>(RestApiPathsKeys.OPPRETT_NY_SAKSBEHANDLER);
+  const { startRequest: leggTilSaksbehandler } = restApiHooks.useRestApiRunner(RestApiPathsKeys.OPPRETT_NY_SAKSBEHANDLER);
 
   const erLagtTilAllerede = erSaksbehandlerLagtTilAllerede(avdelingensSaksbehandlere, saksbehandler);
 

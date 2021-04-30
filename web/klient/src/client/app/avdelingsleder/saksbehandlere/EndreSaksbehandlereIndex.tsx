@@ -1,6 +1,7 @@
 import React, { FunctionComponent } from 'react';
 
-import Saksbehandler from './saksbehandlerTsType';
+import Saksbehandler from 'types/avdelingsleder/saksbehandlerAvdelingTsType';
+
 import SaksbehandlerePanel from './components/SaksbehandlerePanel';
 
 interface OwnProps {

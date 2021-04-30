@@ -2,7 +2,7 @@ import React from 'react';
 import { shallow } from 'enzyme';
 import sinon from 'sinon';
 
-import Saksliste from 'saksbehandler/behandlingskoer/sakslisteTsType';
+import Saksliste from 'types/saksbehandler/sakslisteTsType';
 
 import SakslisteVelgerForm from './SakslisteVelgerForm';
 import OppgaverTabell from './OppgaverTabell';

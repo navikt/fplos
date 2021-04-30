@@ -19,8 +19,8 @@ export default {
 };
 
 export const skalViseSakslisteOppsettPanel = () => {
-  requestApi.mock(RestApiGlobalStatePathsKeys.KODEVERK, alleKodeverk);
-  requestApi.mock(RestApiPathsKeys.OPPGAVE_ANTALL);
+  requestApi.mock(RestApiGlobalStatePathsKeys.KODEVERK.name, alleKodeverk);
+  requestApi.mock(RestApiPathsKeys.OPPGAVE_ANTALL.name);
   return (
     <UtvalgskriterierForSakslisteForm
       valgtSaksliste={{

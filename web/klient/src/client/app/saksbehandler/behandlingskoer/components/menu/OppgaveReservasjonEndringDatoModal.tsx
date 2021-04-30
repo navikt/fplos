@@ -6,7 +6,6 @@ import { Knapp } from 'nav-frontend-knapper';
 import Panel from 'nav-frontend-paneler';
 
 import { restApiHooks, RestApiPathsKeys } from 'data/fplosRestApi';
-import Oppgave from 'saksbehandler/oppgaveTsType';
 import { DatepickerField } from 'form/FinalFields';
 import styles from 'saksbehandler/behandlingskoer/components/menu/oppgaveReservasjonEndringDatoModal.less';
 import Modal from 'sharedComponents/Modal';
@@ -39,7 +38,7 @@ const OppgaveReservasjonEndringDatoModal: FunctionComponent<OwnProps & WrappedCo
   hentReserverteOppgaver,
   endreReserverasjonState,
 }) => {
-  const { startRequest: endreOppgavereservasjon } = restApiHooks.useRestApiRunner<Oppgave[]>(RestApiPathsKeys.ENDRE_OPPGAVERESERVASJON);
+  const { startRequest: endreOppgavereservasjon } = restApiHooks.useRestApiRunner(RestApiPathsKeys.ENDRE_OPPGAVERESERVASJON);
 
   const endreOppgaveReservasjonFn = useCallback((reserverTil: string) => endreOppgavereservasjon({ oppgaveId, reserverTil })
     .then(() => {

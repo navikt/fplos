@@ -5,11 +5,11 @@ import { Undertekst } from 'nav-frontend-typografi';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import { restApiHooks, RestApiPathsKeys } from 'data/fplosRestApi';
 import useKodeverk from 'data/useKodeverk';
-import kodeverkTyper from 'kodeverk/kodeverkTyper';
-import behandlingType from 'kodeverk/behandlingType';
+import KodeverkType from 'kodeverk/kodeverkTyper';
+import BehandlingType from 'kodeverk/behandlingType';
 import { CheckboxField } from 'form/FinalFields';
 
-const behandlingstypeOrder = Object.values(behandlingType);
+const behandlingstypeOrder = Object.values(BehandlingType);
 
 interface OwnProps {
   valgtSakslisteId: number;
@@ -28,7 +28,7 @@ const BehandlingstypeVelger: FunctionComponent<OwnProps> = ({
   hentAntallOppgaver,
 }) => {
   const { startRequest: lagreSakslisteBehandlingstype } = restApiHooks.useRestApiRunner(RestApiPathsKeys.LAGRE_SAKSLISTE_BEHANDLINGSTYPE);
-  const alleBehandlingTyper = useKodeverk(kodeverkTyper.BEHANDLING_TYPE);
+  const alleBehandlingTyper = useKodeverk(KodeverkType.BEHANDLING_TYPE);
   const behandlingTyper = useMemo(() => behandlingstypeOrder.map((kode) => alleBehandlingTyper.find((bt) => bt.kode === kode)),
     []);
   return (

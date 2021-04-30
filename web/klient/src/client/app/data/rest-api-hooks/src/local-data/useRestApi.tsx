@@ -2,7 +2,7 @@ import {
   useState, useEffect, DependencyList,
 } from 'react';
 
-import { REQUEST_POLLING_CANCELLED, AbstractRequestApi } from 'data/rest-api';
+import { REQUEST_POLLING_CANCELLED, AbstractRequestApi, RestKey } from 'data/rest-api';
 
 import RestApiState from '../RestApiState';
 
@@ -27,62 +27,67 @@ const defaultOptions = {
 /**
  * For mocking i unit-test
  */
-export const getUseRestApiMock = (requestApi: AbstractRequestApi) => (function useRestApi<T>(
-  key: string, params?: any, options: Options = defaultOptions,
+export const getUseRestApiMock = (requestApi: AbstractRequestApi) => (function useRestApi<T, P>(
+  key: RestKey<T, P>, params?: P, options: Options = defaultOptions,
 ):RestApiData<T> {
   return {
     state: options.suspendRequest ? RestApiState.NOT_STARTED : RestApiState.SUCCESS,
     error: undefined,
-    data: options.suspendRequest ? undefined : requestApi.startRequest(key, params),
+    // @ts-ignore
+    data: options.suspendRequest ? undefined : requestApi.startRequest<T, P>(key.name, params),
   };
 });
+
+const DEFAULT_STATE = {
+  state: RestApiState.NOT_STARTED,
+  error: undefined,
+  data: undefined,
+};
 
 /**
   * Hook som utfører et restkall ved mount. En kan i tillegg legge ved en dependencies-liste som kan trigge ny henting når data
   * blir oppdatert. Hook returnerer rest-kallets status/resultat/feil
   */
-const getUseRestApi = (requestApi: AbstractRequestApi) => (function useRestApi<T>(key: string, params?: any, options?: Options):RestApiData<T> {
+const getUseRestApi = (requestApi: AbstractRequestApi) => (function useRestApi<T, P>(
+  key: RestKey<T, P>, params?: P, options?: Options,
+):RestApiData<T> {
   const allOptions = { ...defaultOptions, ...options };
 
-  const [data, setData] = useState<RestApiData<T>>({
-    state: RestApiState.NOT_STARTED,
-    error: undefined,
-    data: undefined,
-  });
+  const [data, setData] = useState<RestApiData<T>>(DEFAULT_STATE);
 
   useEffect(() => {
-    if (requestApi.hasPath(key) && !allOptions.suspendRequest) {
+    if (requestApi.hasPath(key.name) && !allOptions.suspendRequest) {
       setData((oldState) => ({
         state: RestApiState.LOADING,
         error: undefined,
         data: allOptions.keepData ? oldState.data : undefined,
       }));
 
-      requestApi.startRequest(key, params)
-        .then((dataRes: { payload: any }) => {
-          if (dataRes.payload !== REQUEST_POLLING_CANCELLED) {
-            setData({
-              state: RestApiState.SUCCESS,
-              data: dataRes.payload,
-              error: undefined,
-            });
-          }
+      requestApi.startRequest<T, P>(key.name, params)
+        .then((dataRes) => {
+          setData({
+            state: RestApiState.SUCCESS,
+            data: dataRes.payload,
+            error: undefined,
+          });
         })
         .catch((error: Error) => {
-          setData({
-            state: RestApiState.ERROR,
-            data: undefined,
-            error,
-          });
+          if (error?.message !== REQUEST_POLLING_CANCELLED) {
+            setData({
+              state: RestApiState.ERROR,
+              data: undefined,
+              error,
+            });
+          }
         });
-    } else if (!requestApi.hasPath(key)) {
-      setData({
-        state: RestApiState.NOT_STARTED,
-        error: undefined,
-        data: undefined,
-      });
+    } else if (!requestApi.hasPath(key.name)) {
+      setData(DEFAULT_STATE);
     }
   }, [...allOptions.updateTriggers]);
+
+  if (!requestApi.hasPath(key.name) && allOptions.suspendRequest) {
+    return DEFAULT_STATE;
+  }
 
   return data;
 });

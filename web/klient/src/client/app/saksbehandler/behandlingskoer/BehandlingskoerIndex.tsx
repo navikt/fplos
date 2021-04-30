@@ -4,10 +4,10 @@ import React, {
 
 import { restApiHooks, RestApiPathsKeys } from 'data/fplosRestApi';
 
-import Saksliste from 'saksbehandler/behandlingskoer/sakslisteTsType';
+import Saksliste from 'types/saksbehandler/sakslisteTsType';
 import { getFpsakHref, getFptilbakeHref } from 'app/paths';
-import OppgaveStatus from 'saksbehandler/oppgaveStatusTsType';
-import Oppgave from 'saksbehandler/oppgaveTsType';
+import OppgaveStatus from 'types/saksbehandler/oppgaveStatusTsType';
+import Oppgave from 'types/saksbehandler/oppgaveTsType';
 import OppgaveErReservertAvAnnenModal from 'saksbehandler/components/OppgaveErReservertAvAnnenModal';
 import SakslistePanel from './components/SakslistePanel';
 
@@ -58,10 +58,10 @@ const BehandlingskoerIndex: FunctionComponent<OwnProps> = ({
   const [reservertOppgave, setReservertOppgave] = useState<Oppgave>();
   const [reservertOppgaveStatus, setReservertOppgaveStatus] = useState<OppgaveStatus>();
 
-  const { data: sakslister = EMPTY_ARRAY } = restApiHooks.useRestApi<Saksliste[]>(RestApiPathsKeys.SAKSLISTE);
+  const { data: sakslister = EMPTY_ARRAY } = restApiHooks.useRestApi(RestApiPathsKeys.SAKSLISTE);
 
-  const { startRequest: reserverOppgave } = restApiHooks.useRestApiRunner<OppgaveStatus>(RestApiPathsKeys.RESERVER_OPPGAVE);
-  const { startRequest: hentFpsakInternBehandlingId } = restApiHooks.useRestApiRunner<number>(RestApiPathsKeys.FPSAK_BEHANDLING_ID);
+  const { startRequest: reserverOppgave } = restApiHooks.useRestApiRunner(RestApiPathsKeys.RESERVER_OPPGAVE);
+  const { startRequest: hentFpsakInternBehandlingId } = restApiHooks.useRestApiRunner(RestApiPathsKeys.FPSAK_BEHANDLING_ID);
 
   const reserverOppgaveOgApne = useCallback((oppgave: Oppgave) => {
     if (oppgave.status.erReservert) {

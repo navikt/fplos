@@ -10,12 +10,12 @@ import {
 import moment from 'moment';
 import Panel from 'nav-frontend-paneler';
 
-import behandlingVenteStatus from 'kodeverk/behandlingVenteStatus';
+import BehandlingVenteStatus from 'kodeverk/behandlingVenteStatus';
 import { FlexContainer, FlexRow, FlexColumn } from 'sharedComponents/flexGrid';
+import OppgaverSomErApneEllerPaVent from 'types/avdelingsleder/oppgaverSomErApneEllerPaVentTsType';
 
 import 'react-vis/dist/style.css';
 import styles from './oppgaverSomErApneEllerPaVentGraf.less';
-import OppgaverSomErApneEllerPaVent from './oppgaverSomErApneEllerPaVentTsType';
 
 const LEGEND_WIDTH = 210;
 
@@ -160,9 +160,9 @@ const OppgaverSomErApneEllerPaVentGraf: FunctionComponent<OwnProps & WrappedComp
   const [periodeStart, periodeSlutt] = useMemo(() => finnGrafPeriode(oppgaverApneEllerPaVent), [oppgaverApneEllerPaVent]);
 
   const oppgaverPaVentPerDato = useMemo(() => finnAntallPerDato(oppgaverApneEllerPaVent
-    .filter((o) => o.behandlingVenteStatus.kode === behandlingVenteStatus.PA_VENT)), [oppgaverApneEllerPaVent]);
+    .filter((o) => o.behandlingVenteStatus.kode === BehandlingVenteStatus.PA_VENT)), [oppgaverApneEllerPaVent]);
   const oppgaverIkkePaVentPerDato = useMemo(() => finnAntallPerDato(oppgaverApneEllerPaVent
-    .filter((o) => o.behandlingVenteStatus.kode === behandlingVenteStatus.IKKE_PA_VENT)), [oppgaverApneEllerPaVent]);
+    .filter((o) => o.behandlingVenteStatus.kode === BehandlingVenteStatus.IKKE_PA_VENT)), [oppgaverApneEllerPaVent]);
 
   const isEmpty = oppgaverPaVentPerDato.length === 0 && oppgaverIkkePaVentPerDato.length === 0;
 

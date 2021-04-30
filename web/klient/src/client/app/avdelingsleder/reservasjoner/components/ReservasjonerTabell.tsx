@@ -2,7 +2,7 @@ import React, { Component, ReactNode } from 'react';
 import { Element, Normaltekst } from 'nav-frontend-typografi';
 import { FormattedMessage } from 'react-intl';
 
-import Reservasjon from 'avdelingsleder/reservasjoner/reservasjonTsType';
+import Reservasjon from 'types/avdelingsleder/reservasjonTsType';
 import Table from 'sharedComponents/table/Table';
 import TableRow from 'sharedComponents/table/TableRow';
 import TableColumn from 'sharedComponents/table/TableColumn';

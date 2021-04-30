@@ -17,7 +17,7 @@ export default {
 };
 
 export const skalViseSøkeskjema = () => {
-  requestApi.mock(RestApiGlobalStatePathsKeys.NAV_ANSATT, {
+  requestApi.mock(RestApiGlobalStatePathsKeys.NAV_ANSATT.name, {
     kanSaksbehandle: true,
   });
   return (
@@ -30,7 +30,7 @@ export const skalViseSøkeskjema = () => {
 };
 
 export const skalViseSøkeskjemaNårEnIkkeKanVelgeÅReservere = () => {
-  requestApi.mock(RestApiGlobalStatePathsKeys.NAV_ANSATT, {
+  requestApi.mock(RestApiGlobalStatePathsKeys.NAV_ANSATT.name, {
     kanSaksbehandle: false,
   });
   return (
@@ -43,7 +43,7 @@ export const skalViseSøkeskjemaNårEnIkkeKanVelgeÅReservere = () => {
 };
 
 export const skalViseSøkeskjemaNårSøkPågår = () => {
-  requestApi.mock(RestApiGlobalStatePathsKeys.NAV_ANSATT, {
+  requestApi.mock(RestApiGlobalStatePathsKeys.NAV_ANSATT.name, {
     kanSaksbehandle: true,
   });
   return (

@@ -6,9 +6,9 @@ import { Form, FormSpy } from 'react-final-form';
 import { requestApi, RestApiPathsKeys } from 'data/fplosRestApi';
 import Image from 'sharedComponents/Image';
 import LabelWithHeader from 'sharedComponents/LabelWithHeader';
-import behandlingType from 'kodeverk/behandlingType';
-import fagsakYtelseType from 'kodeverk/fagsakYtelseType';
-import andreKriterierType from 'kodeverk/andreKriterierType';
+import BehandlingType from 'kodeverk/behandlingType';
+import FagsakYtelseType from 'kodeverk/fagsakYtelseType';
+import AndreKriterierType from 'kodeverk/andreKriterierType';
 import { SelectField } from 'form/FinalFields';
 import { shallowWithIntl, intlMock } from 'testHelpers/intl-enzyme-test-helper';
 import SakslisteVelgerForm from './SakslisteVelgerForm';
@@ -166,7 +166,7 @@ describe('<SakslisteVelgerForm>', () => {
         sakslisteId: 1,
         navn: 'Testliste 1',
         behandlingTyper: [{
-          kode: behandlingType.FORSTEGANGSSOKNAD,
+          kode: BehandlingType.FORSTEGANGSSOKNAD,
           navn: 'Førstegangssøknad',
         }],
         fagsakYtelseTyper: [],
@@ -210,14 +210,14 @@ describe('<SakslisteVelgerForm>', () => {
       sakslisteId: 1,
       navn: 'Testliste 1',
       behandlingTyper: [{
-        kode: behandlingType.FORSTEGANGSSOKNAD,
+        kode: BehandlingType.FORSTEGANGSSOKNAD,
         navn: 'Førstegangssøknad',
       }, {
-        kode: behandlingType.KLAGE,
+        kode: BehandlingType.KLAGE,
         navn: 'Klage',
       }],
       fagsakYtelseTyper: [{
-        kode: fagsakYtelseType.ENGANGSSTONAD,
+        kode: FagsakYtelseType.ENGANGSSTONAD,
         navn: 'Engangsstønad',
       }],
       andreKriterier: [],
@@ -261,7 +261,7 @@ describe('<SakslisteVelgerForm>', () => {
       fagsakYtelseTyper: [],
       andreKriterier: [{
         andreKriterierType: {
-          kode: andreKriterierType.TIL_BESLUTTER,
+          kode: AndreKriterierType.TIL_BESLUTTER,
           navn: 'Til beslutter',
         },
         inkluder: true,
@@ -304,7 +304,7 @@ describe('<SakslisteVelgerForm>', () => {
       fagsakYtelseTyper: [],
       andreKriterier: [{
         andreKriterierType: {
-          kode: andreKriterierType.TIL_BESLUTTER,
+          kode: AndreKriterierType.TIL_BESLUTTER,
           navn: 'Til beslutter',
         },
         inkluder: false,
@@ -423,7 +423,7 @@ describe('<SakslisteVelgerForm>', () => {
 
     const formProps = { values: { sakslisteId: '1' } };
 
-    requestApi.mock(RestApiPathsKeys.SAKSLISTE_SAKSBEHANDLERE, saksbehandlere);
+    requestApi.mock(RestApiPathsKeys.SAKSLISTE_SAKSBEHANDLERE.name, saksbehandlere);
 
     const wrapper = shallowWithIntl(<SakslisteVelgerForm.WrappedComponent
       intl={intl as IntlShape}

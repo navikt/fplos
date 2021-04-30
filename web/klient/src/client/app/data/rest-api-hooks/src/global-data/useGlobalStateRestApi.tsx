@@ -2,7 +2,7 @@ import {
   useState, useEffect, useContext, DependencyList,
 } from 'react';
 
-import { AbstractRequestApi } from 'data/rest-api';
+import { AbstractRequestApi, RestKey } from 'data/rest-api';
 
 import { RestApiDispatchContext } from './RestApiContext';
 import RestApiState from '../RestApiState';
@@ -26,20 +26,23 @@ const defaultOptions = {
 /**
  * For mocking i unit-test
  */
-export const getUseGlobalStateRestApiMock = (requestApi: AbstractRequestApi) => (function useGlobalStateRestApi<T>(key: string, params?: any):RestApiData<T> {
+export const getUseGlobalStateRestApiMock = (requestApi: AbstractRequestApi) => (function useGlobalStateRestApi<T, P>(
+  key: RestKey<T, P>, params?: P,
+):RestApiData<T> {
   return {
     state: RestApiState.SUCCESS,
     error: undefined,
-    data: requestApi.startRequest(key, params),
+    // @ts-ignore
+    data: requestApi.startRequest<T, P>(key.name, params),
   };
 });
 
 /**
  * Hook som henter data fra backend og deretter lagrer i @see RestApiContext
  */
-const getUseGlobalStateRestApi = (requestApi: AbstractRequestApi) => (function useGlobalStateRestApi<T>(
-  key: string,
-  params?: any,
+const getUseGlobalStateRestApi = (requestApi: AbstractRequestApi) => (function useGlobalStateRestApi<T, P>(
+  key: RestKey<T, P>,
+  params?: P,
   options?: Options,
 ):RestApiData<T> {
   const allOptions = { ...defaultOptions, ...options };
@@ -53,8 +56,8 @@ const getUseGlobalStateRestApi = (requestApi: AbstractRequestApi) => (function u
   const dispatch = useContext(RestApiDispatchContext);
 
   useEffect(() => {
-    if (dispatch && requestApi.hasPath(key) && !allOptions.suspendRequest) {
-      dispatch({ type: 'remove', key });
+    if (dispatch && requestApi.hasPath(key.name) && !allOptions.suspendRequest) {
+      dispatch({ type: 'remove', key: key.name });
 
       setData({
         state: RestApiState.LOADING,
@@ -62,9 +65,9 @@ const getUseGlobalStateRestApi = (requestApi: AbstractRequestApi) => (function u
         data: undefined,
       });
 
-      requestApi.startRequest(key, params)
+      requestApi.startRequest<T, P>(key.name, params)
         .then((dataRes:{ payload: any }) => {
-          dispatch({ type: 'success', key, data: dataRes.payload });
+          dispatch({ type: 'success', key: key.name, data: dataRes.payload });
           setData({
             state: RestApiState.SUCCESS,
             data: dataRes.payload,

@@ -9,7 +9,7 @@ import { Normaltekst, Undertekst } from 'nav-frontend-typografi';
 import { ISO_DATE_FORMAT, DDMMYYYY_DATE_FORMAT } from 'utils/formats';
 import { shallowWithIntl, intlMock } from 'testHelpers/intl-enzyme-test-helper';
 
-import behandlingType from 'kodeverk/behandlingType';
+import BehandlingType from 'kodeverk/behandlingType';
 import NyeOgFerdigstilteOppgaverForSisteSyvGraf from './NyeOgFerdigstilteOppgaverForSisteSyvGraf';
 
 describe('<NyeOgFerdigstilteOppgaverForSisteSyvGraf>', () => {
@@ -40,7 +40,7 @@ describe('<NyeOgFerdigstilteOppgaverForSisteSyvGraf>', () => {
     () => {
       const nyeOgFerdigstilteOppgaver = [{
         behandlingType: {
-          kode: behandlingType.FORSTEGANGSSOKNAD,
+          kode: BehandlingType.FORSTEGANGSSOKNAD,
           navn: 'FORSTEGANGSSOKNAD',
         },
         antallNye: 11,
@@ -48,7 +48,7 @@ describe('<NyeOgFerdigstilteOppgaverForSisteSyvGraf>', () => {
         dato: moment().subtract(1, 'd').format(ISO_DATE_FORMAT),
       }, {
         behandlingType: {
-          kode: behandlingType.FORSTEGANGSSOKNAD,
+          kode: BehandlingType.FORSTEGANGSSOKNAD,
           navn: 'FORSTEGANGSSOKNAD',
         },
         antallNye: 12,
@@ -56,7 +56,7 @@ describe('<NyeOgFerdigstilteOppgaverForSisteSyvGraf>', () => {
         dato: moment().subtract(2, 'd').format(ISO_DATE_FORMAT),
       }, {
         behandlingType: {
-          kode: behandlingType.FORSTEGANGSSOKNAD,
+          kode: BehandlingType.FORSTEGANGSSOKNAD,
           navn: 'FORSTEGANGSSOKNAD',
         },
         antallNye: 13,
@@ -64,7 +64,7 @@ describe('<NyeOgFerdigstilteOppgaverForSisteSyvGraf>', () => {
         dato: moment().subtract(3, 'd').format(ISO_DATE_FORMAT),
       }, {
         behandlingType: {
-          kode: behandlingType.FORSTEGANGSSOKNAD,
+          kode: BehandlingType.FORSTEGANGSSOKNAD,
           navn: 'FORSTEGANGSSOKNAD',
         },
         antallNye: 14,
@@ -72,7 +72,7 @@ describe('<NyeOgFerdigstilteOppgaverForSisteSyvGraf>', () => {
         dato: moment().subtract(4, 'd').format(ISO_DATE_FORMAT),
       }, {
         behandlingType: {
-          kode: behandlingType.FORSTEGANGSSOKNAD,
+          kode: BehandlingType.FORSTEGANGSSOKNAD,
           navn: 'FORSTEGANGSSOKNAD',
         },
         antallNye: 15,
@@ -80,7 +80,7 @@ describe('<NyeOgFerdigstilteOppgaverForSisteSyvGraf>', () => {
         dato: moment().subtract(5, 'd').format(ISO_DATE_FORMAT),
       }, {
         behandlingType: {
-          kode: behandlingType.FORSTEGANGSSOKNAD,
+          kode: BehandlingType.FORSTEGANGSSOKNAD,
           navn: 'FORSTEGANGSSOKNAD',
         },
         antallNye: 16,
@@ -88,7 +88,7 @@ describe('<NyeOgFerdigstilteOppgaverForSisteSyvGraf>', () => {
         dato: moment().subtract(6, 'd').format(ISO_DATE_FORMAT),
       }, {
         behandlingType: {
-          kode: behandlingType.FORSTEGANGSSOKNAD,
+          kode: BehandlingType.FORSTEGANGSSOKNAD,
           navn: 'FORSTEGANGSSOKNAD',
         },
         antallNye: 17,
@@ -177,7 +177,7 @@ describe('<NyeOgFerdigstilteOppgaverForSisteSyvGraf>', () => {
     () => {
       const nyeOgFerdigstilteOppgaver = [{
         behandlingType: {
-          kode: behandlingType.FORSTEGANGSSOKNAD,
+          kode: BehandlingType.FORSTEGANGSSOKNAD,
           navn: 'FORSTEGANGSSOKNAD',
         },
         antallNye: 12,

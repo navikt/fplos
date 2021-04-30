@@ -3,7 +3,7 @@ import sinon from 'sinon';
 import { IntlShape } from 'react-intl';
 
 import { requestApi, RestApiGlobalStatePathsKeys, RestApiPathsKeys } from 'data/fplosRestApi';
-import kodeverkTyper from 'kodeverk/kodeverkTyper';
+import KodeverkType from 'kodeverk/kodeverkTyper';
 import { shallowWithIntl, intlMock } from 'testHelpers/intl-enzyme-test-helper';
 import KoSortering from 'kodeverk/KoSortering';
 import { RadioGroupField, RadioOption } from 'form/FinalFields';
@@ -27,11 +27,11 @@ describe('<SorteringVelger>', () => {
   }];
 
   const alleKodeverk = {
-    [kodeverkTyper.KO_SORTERING]: koSorteringTyper,
+    [KodeverkType.KO_SORTERING]: koSorteringTyper,
   };
 
   it('skal vise radioknapper for alle sorteringsvalg', () => {
-    requestApi.mock(RestApiGlobalStatePathsKeys.KODEVERK, alleKodeverk);
+    requestApi.mock(RestApiGlobalStatePathsKeys.KODEVERK.name, alleKodeverk);
 
     const wrapper = shallowWithIntl(<SorteringVelger.WrappedComponent
       intl={intl as IntlShape}
@@ -54,9 +54,9 @@ describe('<SorteringVelger>', () => {
   });
 
   it('skal lagre sortering ved klikk på radioknapp', () => {
-    requestApi.mock(RestApiGlobalStatePathsKeys.KODEVERK, alleKodeverk);
-    requestApi.mock(RestApiPathsKeys.LAGRE_SAKSLISTE_SORTERING, {});
-    requestApi.mock(RestApiPathsKeys.LAGRE_SAKSLISTE_SORTERING_INTERVALL);
+    requestApi.mock(RestApiGlobalStatePathsKeys.KODEVERK.name, alleKodeverk);
+    requestApi.mock(RestApiPathsKeys.LAGRE_SAKSLISTE_SORTERING.name, {});
+    requestApi.mock(RestApiPathsKeys.LAGRE_SAKSLISTE_SORTERING_INTERVALL.name);
 
     const wrapper = shallowWithIntl(<SorteringVelger.WrappedComponent
       intl={intl as IntlShape}
@@ -76,7 +76,7 @@ describe('<SorteringVelger>', () => {
     // @ts-ignore
     felt.prop('onChange')(KoSortering.OPPRETT_BEHANDLING);
 
-    const lagreSakslisteSorteringCallData = requestApi.getRequestMockData(RestApiPathsKeys.LAGRE_SAKSLISTE_SORTERING);
+    const lagreSakslisteSorteringCallData = requestApi.getRequestMockData(RestApiPathsKeys.LAGRE_SAKSLISTE_SORTERING.name);
     expect(lagreSakslisteSorteringCallData).toHaveLength(1);
     expect(lagreSakslisteSorteringCallData[0].params.sakslisteId).toEqual(1);
     expect(lagreSakslisteSorteringCallData[0].params.sakslisteSorteringValg).toEqual(KoSortering.OPPRETT_BEHANDLING);

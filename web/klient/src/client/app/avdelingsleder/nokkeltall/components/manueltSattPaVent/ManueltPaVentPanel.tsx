@@ -10,11 +10,11 @@ import StoreValuesInLocalStorage from 'form/StoreValuesInLocalStorage';
 import { RadioGroupField, RadioOption, SelectField } from 'form/FinalFields';
 import useKodeverk from 'data/useKodeverk';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
-import fagsakYtelseType from 'kodeverk/fagsakYtelseType';
-import kodeverkTyper from 'kodeverk/kodeverkTyper';
-import Kodeverk from 'kodeverk/kodeverkTsType';
+import FagsakYtelseType from 'kodeverk/fagsakYtelseType';
+import KodeverkType from 'kodeverk/kodeverkTyper';
+import Kodeverk from 'types/kodeverkTsType';
+import OppgaverManueltPaVent from 'types/avdelingsleder/oppgaverManueltPaVentTsType';
 import ManueltPaVentGraf from './ManueltPaVentGraf';
-import OppgaverManueltPaVent from './oppgaverManueltPaVentTsType';
 
 import styles from './manueltPaVentPanel.less';
 
@@ -64,7 +64,7 @@ export const ManueltPaVentPanel: FunctionComponent<OwnProps & WrappedComponentPr
   oppgaverManueltPaVent,
   getValueFromLocalStorage,
 }) => {
-  const fagsakYtelseTyper = useKodeverk(kodeverkTyper.FAGSAK_YTELSE_TYPE);
+  const fagsakYtelseTyper = useKodeverk(KodeverkType.FAGSAK_YTELSE_TYPE);
   const stringFromStorage = getValueFromLocalStorage(formName);
   const lagredeVerdier = stringFromStorage ? JSON.parse(stringFromStorage) : undefined;
   return (
@@ -91,16 +91,16 @@ export const ManueltPaVentPanel: FunctionComponent<OwnProps & WrappedComponentPr
               <div className={styles.radioPadding}>
                 <RadioGroupField name="valgtYtelsetype">
                   <RadioOption
-                    value={fagsakYtelseType.FORELDREPRENGER}
-                    label={finnFagsakYtelseTypeNavn(fagsakYtelseTyper, fagsakYtelseType.FORELDREPRENGER)}
+                    value={FagsakYtelseType.FORELDREPRENGER}
+                    label={finnFagsakYtelseTypeNavn(fagsakYtelseTyper, FagsakYtelseType.FORELDREPRENGER)}
                   />
                   <RadioOption
-                    value={fagsakYtelseType.ENGANGSSTONAD}
-                    label={finnFagsakYtelseTypeNavn(fagsakYtelseTyper, fagsakYtelseType.ENGANGSSTONAD)}
+                    value={FagsakYtelseType.ENGANGSSTONAD}
+                    label={finnFagsakYtelseTypeNavn(fagsakYtelseTyper, FagsakYtelseType.ENGANGSSTONAD)}
                   />
                   <RadioOption
-                    value={fagsakYtelseType.SVANGERSKAPPENGER}
-                    label={finnFagsakYtelseTypeNavn(fagsakYtelseTyper, fagsakYtelseType.SVANGERSKAPPENGER)}
+                    value={FagsakYtelseType.SVANGERSKAPPENGER}
+                    label={finnFagsakYtelseTypeNavn(fagsakYtelseTyper, FagsakYtelseType.SVANGERSKAPPENGER)}
                   />
                   <RadioOption
                     value={ALLE_YTELSETYPER_VALGT}

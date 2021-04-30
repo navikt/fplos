@@ -10,8 +10,7 @@ import Panel from 'nav-frontend-paneler';
 import { Normaltekst, Undertekst } from 'nav-frontend-typografi';
 
 import { DDMMYYYY_DATE_FORMAT } from 'utils/formats';
-
-import NyeOgFerdigstilteOppgaver from '../../nyeOgFerdigstilteOppgaverTsType';
+import NyeOgFerdigstilteOppgaver from 'types/saksbehandler/nyeOgFerdigstilteOppgaverTsType';
 
 import 'react-vis/dist/style.css';
 import styles from './nyeOgFerdigstilteOppgaverForSisteSyvGraf.less';

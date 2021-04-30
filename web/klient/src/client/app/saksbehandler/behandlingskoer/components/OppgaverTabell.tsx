@@ -10,8 +10,8 @@ import TimeoutError from 'data/rest-api/src/requestApi/error/TimeoutError';
 import { getDateAndTime } from 'utils/dateUtils';
 import Image from 'sharedComponents/Image';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
-import Oppgave from 'saksbehandler/oppgaveTsType';
-import OppgaveStatus from 'saksbehandler/oppgaveStatusTsType';
+import Oppgave from 'types/saksbehandler/oppgaveTsType';
+import OppgaveStatus from 'types/saksbehandler/oppgaveStatusTsType';
 import Table from 'sharedComponents/table/Table';
 import TableRow from 'sharedComponents/table/TableRow';
 import TableColumn from 'sharedComponents/table/TableColumn';
@@ -82,17 +82,17 @@ export const OppgaverTabell: FunctionComponent<OwnProps & WrappedComponentProps>
     top: 0,
   });
 
-  const { startRequest: forlengOppgavereservasjon } = restApiHooks.useRestApiRunner<Oppgave[]>(RestApiPathsKeys.FORLENG_OPPGAVERESERVASJON);
+  const { startRequest: forlengOppgavereservasjon } = restApiHooks.useRestApiRunner(RestApiPathsKeys.FORLENG_OPPGAVERESERVASJON);
 
   const { startRequest: hentReserverteOppgaver, data: reserverteOppgaver = EMPTY_ARRAY } = restApiHooks
-    .useRestApiRunner<Oppgave[]>(RestApiPathsKeys.RESERVERTE_OPPGAVER);
+    .useRestApiRunner(RestApiPathsKeys.RESERVERTE_OPPGAVER);
 
   const {
     startRequest: hentOppgaverTilBehandling, data: oppgaverTilBehandling = EMPTY_ARRAY, error: hentOppgaverTilBehandlingError,
-  } = restApiHooks.useRestApiRunner<Oppgave[]>(RestApiPathsKeys.OPPGAVER_TIL_BEHANDLING);
+  } = restApiHooks.useRestApiRunner(RestApiPathsKeys.OPPGAVER_TIL_BEHANDLING);
 
   const fetchSakslisteOppgaverPolling = (keepData: boolean, sakslisteId: number, oppgaveIder?: string) => {
-    hentReserverteOppgaver({}, true);
+    hentReserverteOppgaver(undefined, true);
     hentOppgaverTilBehandling(oppgaveIder ? { sakslisteId, oppgaveIder } : { sakslisteId }, keepData)
       .then((response) => (!response || typeof response === 'string' || !doPolling
         ? Promise.resolve()
@@ -105,7 +105,7 @@ export const OppgaverTabell: FunctionComponent<OwnProps & WrappedComponentProps>
   }, [valgtSakslisteId]);
 
   const forlengOppgaveReservasjonFn = useCallback((oppgaveId: number): Promise<any> => forlengOppgavereservasjon({ oppgaveId })
-    .then(() => hentReserverteOppgaver({}, true)), []);
+    .then(() => hentReserverteOppgaver(undefined, true)), []);
 
   const ref = useRef<Record<number, HTMLDivElement | null>>({});
 

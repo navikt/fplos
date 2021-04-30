@@ -1,15 +1,15 @@
 import React, { Fragment, FunctionComponent, useMemo } from 'react';
 import NavFrontendChevron from 'nav-frontend-chevron';
 
-import Oppgave from 'saksbehandler/oppgaveTsType';
-import kodeverkTyper from 'kodeverk/kodeverkTyper';
+import Oppgave from 'types/saksbehandler/oppgaveTsType';
+import KodeverkType from 'kodeverk/kodeverkTyper';
 import Table from 'sharedComponents/table/Table';
 import TableRow from 'sharedComponents/table/TableRow';
 import TableColumn from 'sharedComponents/table/TableColumn';
 import DateLabel from 'sharedComponents/DateLabel';
-import fagsakStatus from 'kodeverk/fagsakStatus';
+import FagsakStatus from 'kodeverk/fagsakStatus';
 import useKodeverk from 'data/useKodeverk';
-import Fagsak from '../fagsakTsType';
+import Fagsak from 'types/saksbehandler/fagsakTsType';
 
 import styles from './fagsakList.less';
 
@@ -36,9 +36,9 @@ const getFagsakCallback = (
 ) => (_event: React.KeyboardEvent | React.MouseEvent, saksnummer: number) => selectFagsakCallback(saksnummer);
 
 export const getSorterteFagsaker = (fagsaker: Fagsak[] = []) => fagsaker.concat().sort((fagsak1, fagsak2) => {
-  if (fagsak1.status.kode === fagsakStatus.AVSLUTTET && fagsak2.status.kode !== fagsakStatus.AVSLUTTET) {
+  if (fagsak1.status.kode === FagsakStatus.AVSLUTTET && fagsak2.status.kode !== FagsakStatus.AVSLUTTET) {
     return 1;
-  } if (fagsak1.status.kode !== fagsakStatus.AVSLUTTET && fagsak2.status.kode === fagsakStatus.AVSLUTTET) {
+  } if (fagsak1.status.kode !== FagsakStatus.AVSLUTTET && fagsak2.status.kode === FagsakStatus.AVSLUTTET) {
     return -1;
   }
   const changeTimeFagsak1 = fagsak1.endret ? fagsak1.endret : fagsak1.opprettet;
@@ -57,8 +57,8 @@ const FagsakList: FunctionComponent<OwnProps> = ({
   selectFagsakCallback,
   selectOppgaveCallback,
 }) => {
-  const fagsakStatuser = useKodeverk(kodeverkTyper.FAGSAK_STATUS);
-  const fagsakYtelseTyper = useKodeverk(kodeverkTyper.FAGSAK_YTELSE_TYPE);
+  const fagsakStatuser = useKodeverk(KodeverkType.FAGSAK_STATUS);
+  const fagsakYtelseTyper = useKodeverk(KodeverkType.FAGSAK_YTELSE_TYPE);
 
   const sorterteFagsaker = useMemo(() => getSorterteFagsaker(fagsaker), [fagsaker]);
 

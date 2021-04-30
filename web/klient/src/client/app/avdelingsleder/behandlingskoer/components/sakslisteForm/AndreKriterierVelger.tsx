@@ -4,7 +4,7 @@ import { Undertekst } from 'nav-frontend-typografi';
 
 import { restApiHooks, RestApiPathsKeys } from 'data/fplosRestApi';
 import useKodeverk from 'data/useKodeverk';
-import kodeverkTyper from 'kodeverk/kodeverkTyper';
+import KodeverkType from 'kodeverk/kodeverkTyper';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import ArrowBox from 'sharedComponents/ArrowBox';
 import { CheckboxField, RadioGroupField, RadioOption } from 'form/FinalFields';
@@ -29,7 +29,7 @@ const AndreKriterierVelger: FunctionComponent<OwnProps> = ({
   hentAvdelingensSakslister,
   hentAntallOppgaver,
 }) => {
-  const andreKriterierTyper = useKodeverk(kodeverkTyper.ANDRE_KRITERIER_TYPE);
+  const andreKriterierTyper = useKodeverk(KodeverkType.ANDRE_KRITERIER_TYPE);
   const { startRequest: lagreSakslisteAndreKriterier } = restApiHooks.useRestApiRunner(RestApiPathsKeys.LAGRE_SAKSLISTE_ANDRE_KRITERIER);
 
   return (

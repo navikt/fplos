@@ -3,8 +3,8 @@ import { FormattedMessage } from 'react-intl';
 import { Undertittel } from 'nav-frontend-typografi';
 
 import { getValueFromLocalStorage, setValueInLocalStorage, removeValueFromLocalStorage } from 'utils/localStorageHelper';
-import Saksliste from 'saksbehandler/behandlingskoer/sakslisteTsType';
-import Oppgave from 'saksbehandler/oppgaveTsType';
+import Saksliste from 'types/saksbehandler/sakslisteTsType';
+import Oppgave from 'types/saksbehandler/oppgaveTsType';
 import { restApiHooks, RestApiPathsKeys } from 'data/fplosRestApi';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import SakslisteVelgerForm from './SakslisteVelgerForm';
@@ -28,7 +28,7 @@ const SakslistePanel: FunctionComponent<OwnProps> = ({
   setValgtSakslisteId,
   valgtSakslisteId,
 }) => {
-  const { startRequest: fetchAntallOppgaver, data: antallOppgaver } = restApiHooks.useRestApiRunner<number>(RestApiPathsKeys.BEHANDLINGSKO_OPPGAVE_ANTALL);
+  const { startRequest: fetchAntallOppgaver, data: antallOppgaver } = restApiHooks.useRestApiRunner(RestApiPathsKeys.BEHANDLINGSKO_OPPGAVE_ANTALL);
 
   return (
     <>

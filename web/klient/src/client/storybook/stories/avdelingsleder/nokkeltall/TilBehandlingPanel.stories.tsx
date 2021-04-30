@@ -21,7 +21,7 @@ export default {
 };
 
 export const skalViseGrafForAntallOppgaverTilBehandlingPerDag = () => {
-  requestApi.mock(RestApiGlobalStatePathsKeys.KODEVERK, alleKodeverk);
+  requestApi.mock(RestApiGlobalStatePathsKeys.KODEVERK.name, alleKodeverk);
   return (
     <TilBehandlingPanel
       width={700}

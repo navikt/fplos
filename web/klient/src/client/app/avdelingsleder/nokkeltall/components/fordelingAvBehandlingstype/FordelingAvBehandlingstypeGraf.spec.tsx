@@ -4,8 +4,8 @@ import {
   XYPlot, YAxis, HorizontalRectSeries, Hint,
 } from 'react-vis';
 
-import behandlingType from 'kodeverk/behandlingType';
-import fagsakYtelseType from 'kodeverk/fagsakYtelseType';
+import BehandlingType from 'kodeverk/behandlingType';
+import FagsakYtelseType from 'kodeverk/fagsakYtelseType';
 import { shallowWithIntl, intlMock } from 'testHelpers/intl-enzyme-test-helper';
 import FordelingAvBehandlingstypeGraf from './FordelingAvBehandlingstypeGraf';
 
@@ -15,32 +15,32 @@ describe('<FordelingAvBehandlingstypeGraf>', () => {
   };
 
   const fagsakYtelseTyper = [{
-    kode: fagsakYtelseType.ENGANGSSTONAD,
+    kode: FagsakYtelseType.ENGANGSSTONAD,
     navn: 'Engangsstønad',
   }, {
-    kode: fagsakYtelseType.FORELDREPRENGER,
+    kode: FagsakYtelseType.FORELDREPRENGER,
     navn: 'Foreldrepenger',
   }, {
-    kode: fagsakYtelseType.SVANGERSKAPPENGER,
+    kode: FagsakYtelseType.SVANGERSKAPPENGER,
     navn: 'Svangerskapspenger',
   }];
   const behandlingTyper = [{
-    kode: behandlingType.FORSTEGANGSSOKNAD,
+    kode: BehandlingType.FORSTEGANGSSOKNAD,
     navn: 'Førstegangssøknad',
   }, {
-    kode: behandlingType.KLAGE,
+    kode: BehandlingType.KLAGE,
     navn: 'Klage',
   }, {
-    kode: behandlingType.DOKUMENTINNSYN,
+    kode: BehandlingType.DOKUMENTINNSYN,
     navn: 'Dokumentinnsyn',
   }, {
-    kode: behandlingType.REVURDERING,
+    kode: BehandlingType.REVURDERING,
     navn: 'Revurdering',
   }, {
-    kode: behandlingType.TILBAKEBETALING,
+    kode: BehandlingType.TILBAKEBETALING,
     navn: 'Tilbakebetaling',
   }, {
-    kode: behandlingType.TILBAKEBETALING_REVURDERING,
+    kode: BehandlingType.TILBAKEBETALING_REVURDERING,
     navn: 'Tilbakebet-rev',
   }];
 

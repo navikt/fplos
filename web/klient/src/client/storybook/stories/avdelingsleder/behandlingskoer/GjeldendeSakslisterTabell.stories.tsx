@@ -3,7 +3,7 @@ import { action } from '@storybook/addon-actions';
 
 import { requestApi, RestApiGlobalStatePathsKeys } from 'data/fplosRestApi';
 import { GjeldendeSakslisterTabell } from 'avdelingsleder/behandlingskoer/components/GjeldendeSakslisterTabell';
-import Saksliste from 'avdelingsleder/behandlingskoer/sakslisteTsType';
+import Saksliste from 'types/avdelingsleder/sakslisteAvdelingTsType';
 
 import alleKodeverk from '../../../mocks/alleKodeverk.json';
 import withIntl from '../../../decorators/withIntl';
@@ -17,7 +17,7 @@ export default {
 
 export const skalVisePanelNårDetIkkeFinnesBehandlingskøer = () => {
   const [sakslister, setSaksliste] = useState<Saksliste[]>([]);
-  requestApi.mock(RestApiGlobalStatePathsKeys.KODEVERK, alleKodeverk);
+  requestApi.mock(RestApiGlobalStatePathsKeys.KODEVERK.name, alleKodeverk);
   return (
     <GjeldendeSakslisterTabell
       sakslister={sakslister}
@@ -44,7 +44,7 @@ export const skalVisePanelNårDetFinnesEnBehandlingskø = () => {
     saksbehandlerIdenter: ['R23233'],
     antallBehandlinger: 1,
   }]);
-  requestApi.mock(RestApiGlobalStatePathsKeys.KODEVERK, alleKodeverk);
+  requestApi.mock(RestApiGlobalStatePathsKeys.KODEVERK.name, alleKodeverk);
   return (
     <GjeldendeSakslisterTabell
       sakslister={sakslister}

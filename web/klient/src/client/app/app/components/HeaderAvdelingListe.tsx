@@ -6,10 +6,8 @@ import UserPanel from '@navikt/nap-user-panel';
 import BoxedListWithSelection from '@navikt/boxed-list-with-selection';
 
 import { getValueFromLocalStorage, setValueInLocalStorage, removeValueFromLocalStorage } from 'utils/localStorageHelper';
-import Avdeling from 'app/avdelingTsType';
+import Avdeling from 'types/avdelingsleder/avdelingTsType';
 import { restApiHooks, RestApiGlobalStatePathsKeys } from 'data/fplosRestApi';
-
-import NavAnsatt from 'app/navAnsattTsType';
 
 interface OwnProps {
   erLenkePanelApent: boolean;
@@ -47,9 +45,9 @@ const HeaderAvdelingListe: FunctionComponent<OwnProps> = ({
   setValgtAvdelingEnhet,
   valgtAvdelingEnhet,
 }) => {
-  const { data: avdelinger } = restApiHooks.useGlobalStateRestApi<Avdeling[]>(RestApiGlobalStatePathsKeys.AVDELINGER);
+  const { data: avdelinger } = restApiHooks.useGlobalStateRestApi(RestApiGlobalStatePathsKeys.AVDELINGER);
 
-  const navAnsatt = restApiHooks.useGlobalStateRestApiData<NavAnsatt>(RestApiGlobalStatePathsKeys.NAV_ANSATT);
+  const navAnsatt = restApiHooks.useGlobalStateRestApiData(RestApiGlobalStatePathsKeys.NAV_ANSATT);
 
   useEffect(() => {
     setAvdeling(setValgtAvdelingEnhet, avdelinger, valgtAvdelingEnhet);

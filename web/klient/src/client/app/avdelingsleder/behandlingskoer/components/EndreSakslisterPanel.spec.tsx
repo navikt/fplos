@@ -26,9 +26,9 @@ describe('<EndreSakslisterPanel>', () => {
         antallBehandlinger: 1,
       }];
 
-      requestApi.mock(RestApiPathsKeys.OPPGAVE_AVDELING_ANTALL, 1);
-      requestApi.mock(RestApiPathsKeys.SAKSLISTER_FOR_AVDELING, sakslister);
-      requestApi.mock(RestApiPathsKeys.OPPRETT_NY_SAKSLISTE, undefined);
+      requestApi.mock(RestApiPathsKeys.OPPGAVE_AVDELING_ANTALL.name, 1);
+      requestApi.mock(RestApiPathsKeys.SAKSLISTER_FOR_AVDELING.name, sakslister);
+      requestApi.mock(RestApiPathsKeys.OPPRETT_NY_SAKSLISTE.name, undefined);
 
       const wrapper = shallowWithIntl(<EndreSakslisterPanel.WrappedComponent
         intl={intl as IntlShape}
@@ -54,9 +54,9 @@ describe('<EndreSakslisterPanel>', () => {
       antallBehandlinger: 1,
     }];
 
-    requestApi.mock(RestApiPathsKeys.OPPGAVE_AVDELING_ANTALL, 1);
-    requestApi.mock(RestApiPathsKeys.SAKSLISTER_FOR_AVDELING, sakslister);
-    requestApi.mock(RestApiPathsKeys.OPPRETT_NY_SAKSLISTE, undefined);
+    requestApi.mock(RestApiPathsKeys.OPPGAVE_AVDELING_ANTALL.name, 1);
+    requestApi.mock(RestApiPathsKeys.SAKSLISTER_FOR_AVDELING.name, sakslister);
+    requestApi.mock(RestApiPathsKeys.OPPRETT_NY_SAKSLISTE.name, undefined);
 
     const wrapper = shallowWithIntl(<EndreSakslisterPanel.WrappedComponent
       intl={intl as IntlShape}

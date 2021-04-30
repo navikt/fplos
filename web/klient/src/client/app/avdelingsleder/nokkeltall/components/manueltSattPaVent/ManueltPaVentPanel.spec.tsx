@@ -5,14 +5,14 @@ import moment from 'moment';
 import { IntlShape } from 'react-intl';
 
 import { requestApi, RestApiGlobalStatePathsKeys } from 'data/fplosRestApi';
-import kodeverkTyper from 'kodeverk/kodeverkTyper';
+import KodeverkType from 'kodeverk/kodeverkTyper';
 import { ISO_DATE_FORMAT } from 'utils/formats';
 import { RadioOption, SelectField } from 'form/FinalFields';
-import fagsakYtelseType from 'kodeverk/fagsakYtelseType';
+import FagsakYtelseType from 'kodeverk/fagsakYtelseType';
+import OppgaverManueltPaVent from 'types/avdelingsleder/oppgaverManueltPaVentTsType';
 import { shallowWithIntl, intlMock } from 'testHelpers/intl-enzyme-test-helper';
 import ManueltPaVentPanel, { ALLE_YTELSETYPER_VALGT } from './ManueltPaVentPanel';
 import ManueltPaVentGraf from './ManueltPaVentGraf';
-import OppgaverManueltPaVent from './oppgaverManueltPaVentTsType';
 
 describe('<ManueltPaVentPanel>', () => {
   const intl: Partial<IntlShape> = {
@@ -20,15 +20,15 @@ describe('<ManueltPaVentPanel>', () => {
   };
 
   const fagsakYtelseTyper = [{
-    kode: fagsakYtelseType.ENGANGSSTONAD,
+    kode: FagsakYtelseType.ENGANGSSTONAD,
     navn: 'Engangsstønad',
   }, {
-    kode: fagsakYtelseType.FORELDREPRENGER,
+    kode: FagsakYtelseType.FORELDREPRENGER,
     navn: 'Foreldrepenger',
   }];
 
   const alleKodeverk = {
-    [kodeverkTyper.FAGSAK_YTELSE_TYPE]: fagsakYtelseTyper,
+    [KodeverkType.FAGSAK_YTELSE_TYPE]: fagsakYtelseTyper,
   };
 
   it(
@@ -40,7 +40,7 @@ describe('<ManueltPaVentPanel>', () => {
       };
       const oppgaverManueltPaVent: OppgaverManueltPaVent[] = [];
 
-      requestApi.mock(RestApiGlobalStatePathsKeys.KODEVERK, alleKodeverk);
+      requestApi.mock(RestApiGlobalStatePathsKeys.KODEVERK.name, alleKodeverk);
 
       const wrapper = shallowWithIntl(<ManueltPaVentPanel.WrappedComponent
         intl={intl as IntlShape}
@@ -86,7 +86,7 @@ describe('<ManueltPaVentPanel>', () => {
       antall: 1,
     }];
 
-    requestApi.mock(RestApiGlobalStatePathsKeys.KODEVERK, alleKodeverk);
+    requestApi.mock(RestApiGlobalStatePathsKeys.KODEVERK.name, alleKodeverk);
 
     const wrapper = shallowWithIntl(<ManueltPaVentPanel.WrappedComponent
       intl={intl as IntlShape}
@@ -120,7 +120,7 @@ describe('<ManueltPaVentPanel>', () => {
         antall: 1,
       }];
 
-      requestApi.mock(RestApiGlobalStatePathsKeys.KODEVERK, alleKodeverk);
+      requestApi.mock(RestApiGlobalStatePathsKeys.KODEVERK.name, alleKodeverk);
 
       const wrapper = shallowWithIntl(<ManueltPaVentPanel.WrappedComponent
         intl={intl as IntlShape}
@@ -140,7 +140,7 @@ describe('<ManueltPaVentPanel>', () => {
 
   it('skal filtrere bort engangsstønader', () => {
     const valuesMock = {
-      valgtYtelsetype: fagsakYtelseType.FORELDREPRENGER,
+      valgtYtelsetype: FagsakYtelseType.FORELDREPRENGER,
       ukevalg: '4',
     };
     const oppgaverManueltPaVent = [{
@@ -153,7 +153,7 @@ describe('<ManueltPaVentPanel>', () => {
       antall: 1,
     }];
 
-    requestApi.mock(RestApiGlobalStatePathsKeys.KODEVERK, alleKodeverk);
+    requestApi.mock(RestApiGlobalStatePathsKeys.KODEVERK.name, alleKodeverk);
 
     const wrapper = shallowWithIntl(<ManueltPaVentPanel.WrappedComponent
       intl={intl as IntlShape}
@@ -171,7 +171,7 @@ describe('<ManueltPaVentPanel>', () => {
 
   it('skal filtrere bort foreldrepenger', () => {
     const valuesMock = {
-      valgtYtelsetype: fagsakYtelseType.ENGANGSSTONAD,
+      valgtYtelsetype: FagsakYtelseType.ENGANGSSTONAD,
       ukevalg: '4',
     };
     const oppgaverManueltPaVent = [{
@@ -184,7 +184,7 @@ describe('<ManueltPaVentPanel>', () => {
       antall: 1,
     }];
 
-    requestApi.mock(RestApiGlobalStatePathsKeys.KODEVERK, alleKodeverk);
+    requestApi.mock(RestApiGlobalStatePathsKeys.KODEVERK.name, alleKodeverk);
 
     const wrapper = shallowWithIntl(<ManueltPaVentPanel.WrappedComponent
       intl={intl as IntlShape}

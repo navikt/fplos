@@ -22,10 +22,10 @@ export default {
 };
 
 export const skalViseAtIngentingBleFunnet = () => {
-  requestApi.mock(RestApiGlobalStatePathsKeys.NAV_ANSATT, {
+  requestApi.mock(RestApiGlobalStatePathsKeys.NAV_ANSATT.name, {
     kanSaksbehandle: true,
   });
-  requestApi.mock(RestApiGlobalStatePathsKeys.KODEVERK, alleKodeverk);
+  requestApi.mock(RestApiGlobalStatePathsKeys.KODEVERK.name, alleKodeverk);
   return (
     <FagsakSearch
       fagsaker={[]}
@@ -41,10 +41,10 @@ export const skalViseAtIngentingBleFunnet = () => {
 };
 
 export const skalVisePersonkortOgTabellNårEnFinnerEnFagsakMedToOppgaver = () => {
-  requestApi.mock(RestApiGlobalStatePathsKeys.NAV_ANSATT, {
+  requestApi.mock(RestApiGlobalStatePathsKeys.NAV_ANSATT.name, {
     kanSaksbehandle: true,
   });
-  requestApi.mock(RestApiGlobalStatePathsKeys.KODEVERK, alleKodeverk);
+  requestApi.mock(RestApiGlobalStatePathsKeys.KODEVERK.name, alleKodeverk);
   return (
     <FagsakSearch
       fagsaker={[{

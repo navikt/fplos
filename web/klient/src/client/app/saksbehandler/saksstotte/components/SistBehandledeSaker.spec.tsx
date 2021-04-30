@@ -2,7 +2,7 @@ import React from 'react';
 import { shallow } from 'enzyme';
 import Lenke from 'nav-frontend-lenker';
 
-import Oppgave from 'saksbehandler/oppgaveTsType';
+import Oppgave from 'types/saksbehandler/oppgaveTsType';
 import { requestApi, RestApiPathsKeys, RestApiGlobalStatePathsKeys } from 'data/fplosRestApi';
 import SistBehandledeSaker from './SistBehandledeSaker';
 
@@ -62,9 +62,9 @@ describe('<SistBehandledeSaker>', () => {
       href: '',
     }];
 
-    requestApi.mock(RestApiGlobalStatePathsKeys.FPSAK_URL, { verdi: 'url' });
-    requestApi.mock(RestApiGlobalStatePathsKeys.FPTILBAKE_URL, { verdi: 'url' });
-    requestApi.mock(RestApiPathsKeys.BEHANDLEDE_OPPGAVER, oppgaver);
+    requestApi.mock(RestApiGlobalStatePathsKeys.FPSAK_URL.name, { verdi: 'url' });
+    requestApi.mock(RestApiGlobalStatePathsKeys.FPTILBAKE_URL.name, { verdi: 'url' });
+    requestApi.mock(RestApiPathsKeys.BEHANDLEDE_OPPGAVER.name, oppgaver);
 
     const wrapper = shallow(<SistBehandledeSaker />);
 
@@ -79,9 +79,9 @@ describe('<SistBehandledeSaker>', () => {
     () => {
       const oppgaver: Oppgave[] = [];
 
-      requestApi.mock(RestApiGlobalStatePathsKeys.FPSAK_URL, { verdi: 'url' });
-      requestApi.mock(RestApiGlobalStatePathsKeys.FPTILBAKE_URL, { verdi: 'url' });
-      requestApi.mock(RestApiPathsKeys.BEHANDLEDE_OPPGAVER, oppgaver);
+      requestApi.mock(RestApiGlobalStatePathsKeys.FPSAK_URL.name, { verdi: 'url' });
+      requestApi.mock(RestApiGlobalStatePathsKeys.FPTILBAKE_URL.name, { verdi: 'url' });
+      requestApi.mock(RestApiPathsKeys.BEHANDLEDE_OPPGAVER.name, oppgaver);
 
       const wrapper = shallow(<SistBehandledeSaker />);
 

@@ -7,7 +7,7 @@ import Link from './LinkTsType';
  * de enkelte endepunktene. Det blir så satt opp RequestRunner's for endepunktene. Desse kan hentes via metoden @see getRequestRunner.
  */
 abstract class AbstractRequestApi {
-  public abstract startRequest(endpointName: string, params?: any, isCachingOn?: boolean): any;
+  public abstract startRequest<T, P>(endpointName: string, params?: P, isCachingOn?: boolean): Promise<{ payload: T }>;
 
   public abstract hasPath(endpointName: string): boolean;
 

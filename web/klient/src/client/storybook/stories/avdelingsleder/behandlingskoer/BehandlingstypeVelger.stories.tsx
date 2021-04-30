@@ -21,7 +21,7 @@ export const skalViseVelgerForBehandlingstyper = () => {
     [behandlingType.FORSTEGANGSSOKNAD]: true,
   };
 
-  requestApi.mock(RestApiGlobalStatePathsKeys.KODEVERK, alleKodeverk);
+  requestApi.mock(RestApiGlobalStatePathsKeys.KODEVERK.name, alleKodeverk);
 
   return (
     <Form

@@ -10,9 +10,9 @@ import {
 import Panel from 'nav-frontend-paneler';
 
 import { FlexContainer, FlexRow, FlexColumn } from 'sharedComponents/flexGrid';
-import Kodeverk from 'kodeverk/kodeverkTsType';
-import behandlingType from 'kodeverk/behandlingType';
-import OppgaverForAvdeling from './oppgaverForAvdelingTsType';
+import Kodeverk from 'types/kodeverkTsType';
+import BehandlingType from 'kodeverk/behandlingType';
+import OppgaverForAvdeling from 'types/avdelingsleder/oppgaverForAvdelingTsType';
 
 import 'react-vis/dist/style.css';
 import styles from './fordelingAvBehandlingstypeGraf.less';
@@ -20,12 +20,12 @@ import styles from './fordelingAvBehandlingstypeGraf.less';
 const LEGEND_WIDTH = 210;
 
 const behandlingstypeOrder = [
-  behandlingType.TILBAKEBETALING_REVURDERING,
-  behandlingType.TILBAKEBETALING,
-  behandlingType.DOKUMENTINNSYN,
-  behandlingType.KLAGE,
-  behandlingType.REVURDERING,
-  behandlingType.FORSTEGANGSSOKNAD];
+  BehandlingType.TILBAKEBETALING_REVURDERING,
+  BehandlingType.TILBAKEBETALING,
+  BehandlingType.DOKUMENTINNSYN,
+  BehandlingType.KLAGE,
+  BehandlingType.REVURDERING,
+  BehandlingType.FORSTEGANGSSOKNAD];
 
 const settCustomHoydePaSoylene = (data: { x: number; y: number }[]): Koordinat[] => {
   const transformert = data.map((el) => ({
@@ -46,7 +46,7 @@ const settCustomHoydePaSoylene = (data: { x: number; y: number }[]): Koordinat[]
 const formatData = (oppgaverForAvdeling: OppgaverForAvdeling[]): { x: number; y: number }[] => {
   const sammenslatteBehandlingstyper = oppgaverForAvdeling
     .reduce((acc, o) => {
-      const index = behandlingstypeOrder.indexOf(o.behandlingType.kode) + 1;
+      const index = behandlingstypeOrder.findIndex((bo) => bo === o.behandlingType.kode) + 1;
       return {
         ...acc,
         [index]: (acc[index] ? acc[index] + o.antall : o.antall),

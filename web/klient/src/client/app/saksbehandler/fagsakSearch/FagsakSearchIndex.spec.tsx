@@ -29,11 +29,11 @@ describe('<FagsakSearchIndex>', () => {
   const fagsaker = [fagsak, { ...fagsak, saksnummer: 23456 }];
 
   it('skal sette opp søkeskjermbilde for fagsaker', async () => {
-    requestApi.mock(RestApiPathsKeys.SEARCH_FAGSAK, fagsaker);
-    requestApi.mock(RestApiPathsKeys.RESERVER_OPPGAVE);
-    requestApi.mock(RestApiPathsKeys.OPPGAVER_FOR_FAGSAKER);
-    requestApi.mock(RestApiPathsKeys.HENT_RESERVASJONSSTATUS);
-    requestApi.mock(RestApiPathsKeys.FPSAK_BEHANDLING_ID);
+    requestApi.mock(RestApiPathsKeys.SEARCH_FAGSAK.name, fagsaker);
+    requestApi.mock(RestApiPathsKeys.RESERVER_OPPGAVE.name);
+    requestApi.mock(RestApiPathsKeys.OPPGAVER_FOR_FAGSAKER.name);
+    requestApi.mock(RestApiPathsKeys.HENT_RESERVASJONSSTATUS.name);
+    requestApi.mock(RestApiPathsKeys.FPSAK_BEHANDLING_ID.name);
 
     const wrapper = shallow(<FagsakSearchIndex
       fpsakUrl=""

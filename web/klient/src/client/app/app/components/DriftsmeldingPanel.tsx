@@ -2,7 +2,7 @@ import React, { FunctionComponent } from 'react';
 import { Row, Column } from 'nav-frontend-grid';
 import { Undertekst } from 'nav-frontend-typografi';
 import advarselImageUrl from 'images/advarsel-sirkel-fyll.svg';
-import Driftsmelding from 'app/driftsmeldingTsType';
+import Driftsmelding from 'types/driftsmeldingTsType';
 
 import Image from 'sharedComponents/Image';
 import styles from './driftsmeldingPanel.less';

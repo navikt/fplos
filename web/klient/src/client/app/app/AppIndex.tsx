@@ -44,7 +44,7 @@ export class AppIndex extends Component<RouterProps, StateProps> {
 
   componentDidUpdate = (): void => {
     const state = this.context;
-    const navAnsatt = state[RestApiGlobalStatePathsKeys.NAV_ANSATT];
+    const navAnsatt = state[RestApiGlobalStatePathsKeys.NAV_ANSATT.name];
     const funksjonellTid = navAnsatt ? navAnsatt.funksjonellTid : undefined;
 
     if (funksjonellTid) {

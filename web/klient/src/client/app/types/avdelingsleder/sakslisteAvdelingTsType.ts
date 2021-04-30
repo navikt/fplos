@@ -1,12 +1,12 @@
-import Kodeverk from 'kodeverk/kodeverkTsType';
-import KoSorteringType from './KoSorteringTsType';
+import Kodeverk from '../kodeverkTsType';
+import KoSorteringType from './koSorteringTsType';
 
 type AnnetKriterie = Readonly<{
   andreKriterierType: Kodeverk;
   inkluder: boolean;
 }>
 
-type Saksliste = Readonly<{
+type SakslisteAvdeling = Readonly<{
   sakslisteId: number;
   navn?: string;
   behandlingTyper?: Kodeverk[];
@@ -25,4 +25,4 @@ type Saksliste = Readonly<{
   antallBehandlinger: number;
 }>;
 
-export default Saksliste;
+export default SakslisteAvdeling;

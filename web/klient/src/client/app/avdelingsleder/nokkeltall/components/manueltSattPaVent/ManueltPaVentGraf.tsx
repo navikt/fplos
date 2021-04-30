@@ -11,7 +11,7 @@ import { Normaltekst, Undertekst } from 'nav-frontend-typografi';
 
 import { DDMMYYYY_DATE_FORMAT } from 'utils/formats';
 
-import OppgaverManueltPaVent from './oppgaverManueltPaVentTsType';
+import OppgaverManueltPaVent from 'types/avdelingsleder/oppgaverManueltPaVentTsType';
 
 import styles from './manueltPaVentGraf.less';
 

@@ -1,7 +1,7 @@
 import React, { FunctionComponent } from 'react';
 
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
-import Saksbehandler from '../saksbehandlerTsType';
+import Saksbehandler from 'types/avdelingsleder/saksbehandlerAvdelingTsType';
 import LeggTilSaksbehandlerForm from './LeggTilSaksbehandlerForm';
 import SaksbehandlereTabell from './SaksbehandlereTabell';
 

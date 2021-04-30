@@ -4,7 +4,7 @@ import { IntlShape } from 'react-intl';
 import { Form } from 'react-final-form';
 
 import { requestApi, RestApiPathsKeys } from 'data/fplosRestApi';
-import andreKriterierType from 'kodeverk/andreKriterierType';
+import AndreKriterierType from 'kodeverk/andreKriterierType';
 import { InputField } from 'form/FinalFields';
 import { shallowWithIntl, intlMock } from 'testHelpers/intl-enzyme-test-helper';
 import UtvalgskriterierForSakslisteForm from './UtvalgskriterierForSakslisteForm';
@@ -22,10 +22,10 @@ describe('<UtvalgskriterierForSakslisteForm>', () => {
       navn: 'Nyansatte',
       sistEndret: '2017-08-31',
       andreKriterierTyper: [{
-        kode: andreKriterierType.TIL_BESLUTTER,
+        kode: AndreKriterierType.TIL_BESLUTTER,
         navn: 'Til beslutter',
       }, {
-        kode: andreKriterierType.REGISTRER_PAPIRSOKNAD,
+        kode: AndreKriterierType.REGISTRER_PAPIRSOKNAD,
         navn: 'Registrer papirsøknad',
       }],
       saksbehandlerIdenter: [],
@@ -120,8 +120,8 @@ describe('<UtvalgskriterierForSakslisteForm>', () => {
       antallBehandlinger: 1,
     };
 
-    requestApi.mock(RestApiPathsKeys.OPPGAVE_ANTALL);
-    requestApi.mock(RestApiPathsKeys.LAGRE_SAKSLISTE_NAVN);
+    requestApi.mock(RestApiPathsKeys.OPPGAVE_ANTALL.name);
+    requestApi.mock(RestApiPathsKeys.LAGRE_SAKSLISTE_NAVN.name);
 
     const wrapper = shallowWithIntl(<UtvalgskriterierForSakslisteForm.WrappedComponent
       intl={intl as IntlShape}
@@ -139,7 +139,7 @@ describe('<UtvalgskriterierForSakslisteForm>', () => {
       navn: 'Foreldrepenger',
     });
 
-    const lagreSakslisteNavnCallData = requestApi.getRequestMockData(RestApiPathsKeys.LAGRE_SAKSLISTE_NAVN);
+    const lagreSakslisteNavnCallData = requestApi.getRequestMockData(RestApiPathsKeys.LAGRE_SAKSLISTE_NAVN.name);
     expect(lagreSakslisteNavnCallData).toHaveLength(1);
     expect(lagreSakslisteNavnCallData[0].params.sakslisteId).toEqual(1);
     expect(lagreSakslisteNavnCallData[0].params.navn).toEqual('Foreldrepenger');
@@ -154,13 +154,13 @@ describe('<UtvalgskriterierForSakslisteForm>', () => {
       saksbehandlerIdenter: [],
       andreKriterier: [{
         andreKriterierType: {
-          kode: andreKriterierType.TIL_BESLUTTER,
+          kode: AndreKriterierType.TIL_BESLUTTER,
           navn: 'Til beslutter',
         },
         inkluder: true,
       }, {
         andreKriterierType: {
-          kode: andreKriterierType.REGISTRER_PAPIRSOKNAD,
+          kode: AndreKriterierType.REGISTRER_PAPIRSOKNAD,
           navn: 'Registrer papirsoknad',
         },
         inkluder: false,
@@ -187,10 +187,10 @@ describe('<UtvalgskriterierForSakslisteForm>', () => {
       fomDato: undefined,
       tomDato: undefined,
       erDynamiskPeriode: undefined,
-      [andreKriterierType.REGISTRER_PAPIRSOKNAD]: true,
-      [`${andreKriterierType.REGISTRER_PAPIRSOKNAD}_inkluder`]: false,
-      [andreKriterierType.TIL_BESLUTTER]: true,
-      [`${andreKriterierType.TIL_BESLUTTER}_inkluder`]: true,
+      [AndreKriterierType.REGISTRER_PAPIRSOKNAD]: true,
+      [`${AndreKriterierType.REGISTRER_PAPIRSOKNAD}_inkluder`]: false,
+      [AndreKriterierType.TIL_BESLUTTER]: true,
+      [`${AndreKriterierType.TIL_BESLUTTER}_inkluder`]: true,
     });
   });
 });

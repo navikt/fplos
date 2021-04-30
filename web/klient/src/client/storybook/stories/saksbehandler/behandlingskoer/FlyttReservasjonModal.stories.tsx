@@ -20,7 +20,7 @@ export const skalViseModalForFlyttingAvReservasjon = () => {
     avdelingsnavn: ['NAV Viken'],
   };
 
-  requestApi.mock(RestApiPathsKeys.FLYTT_RESERVASJON_SAKSBEHANDLER_SOK, saksbehandler);
+  requestApi.mock(RestApiPathsKeys.FLYTT_RESERVASJON_SAKSBEHANDLER_SOK.name, saksbehandler);
 
   return (
     <FlyttReservasjonModal

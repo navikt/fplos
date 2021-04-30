@@ -1,6 +1,6 @@
 import React, { FunctionComponent, useState, useCallback } from 'react';
 
-import Saksbehandler from 'avdelingsleder/saksbehandlere/saksbehandlerTsType';
+import Saksbehandler from 'types/avdelingsleder/saksbehandlerAvdelingTsType';
 import EndreSakslisterPanel from './components/EndreSakslisterPanel';
 
 interface OwnProps {

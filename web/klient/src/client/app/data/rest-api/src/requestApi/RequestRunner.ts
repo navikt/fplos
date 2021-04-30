@@ -112,13 +112,13 @@ class RequestRunner {
     this.isCancelled = true;
   }
 
-  start = async (params: any): Promise<{payload: any}> => {
+  start = async <T, P>(params: P): Promise<{payload: T}> => {
     this.notify(EventType.REQUEST_STARTED);
 
     try {
       const response = await this.execute(this.path, this.restMethod, params);
       if (this.isCancelled) {
-        return { payload: REQUEST_POLLING_CANCELLED };
+        throw new Error(REQUEST_POLLING_CANCELLED);
       }
 
       const responseData = response && 'data' in response ? response.data : undefined;

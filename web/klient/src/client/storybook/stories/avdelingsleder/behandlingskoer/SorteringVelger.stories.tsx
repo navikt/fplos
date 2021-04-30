@@ -27,7 +27,7 @@ export const skalViseSorteringsvelgerNårMangeBehandlingstyperErValgt = () => {
     erDynamiskPeriode: true,
   };
 
-  requestApi.mock(RestApiGlobalStatePathsKeys.KODEVERK, alleKodeverk);
+  requestApi.mock(RestApiGlobalStatePathsKeys.KODEVERK.name, alleKodeverk);
 
   return (
     <Form
@@ -67,7 +67,7 @@ export const skalViseSorteringsvelgerNårKunTilbakekrevingErValgt = () => {
     erDynamiskPeriode: true,
   };
 
-  requestApi.mock(RestApiGlobalStatePathsKeys.KODEVERK, alleKodeverk);
+  requestApi.mock(RestApiGlobalStatePathsKeys.KODEVERK.name, alleKodeverk);
 
   return (
     <Form

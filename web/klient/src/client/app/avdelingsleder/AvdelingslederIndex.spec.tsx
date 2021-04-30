@@ -32,8 +32,8 @@ describe('<AvdelingslederIndex>', () => {
       selected: AvdelingslederPanels.BEHANDLINGSKOER, location,
     }));
 
-    requestApi.mock(RestApiGlobalStatePathsKeys.NAV_ANSATT, navAnsatt);
-    requestApi.mock(RestApiGlobalStatePathsKeys.AVDELINGER, []);
+    requestApi.mock(RestApiGlobalStatePathsKeys.NAV_ANSATT.name, navAnsatt);
+    requestApi.mock(RestApiGlobalStatePathsKeys.AVDELINGER.name, []);
 
     const wrapper = shallow(<AvdelingslederIndex />);
     expect(wrapper.find(LoadingPanel)).toHaveLength(1);
@@ -47,8 +47,8 @@ describe('<AvdelingslederIndex>', () => {
         selected: AvdelingslederPanels.BEHANDLINGSKOER, location,
       }));
 
-      requestApi.mock(RestApiGlobalStatePathsKeys.NAV_ANSATT, navAnsatt);
-      requestApi.mock(RestApiGlobalStatePathsKeys.AVDELINGER, []);
+      requestApi.mock(RestApiGlobalStatePathsKeys.NAV_ANSATT.name, navAnsatt);
+      requestApi.mock(RestApiGlobalStatePathsKeys.AVDELINGER.name, []);
       const wrapper = shallow(<AvdelingslederIndex
         valgtAvdelingEnhet="1"
       />);
@@ -62,8 +62,8 @@ describe('<AvdelingslederIndex>', () => {
       selected: AvdelingslederPanels.BEHANDLINGSKOER, location,
     }));
 
-    requestApi.mock(RestApiGlobalStatePathsKeys.NAV_ANSATT, navAnsatt);
-    requestApi.mock(RestApiGlobalStatePathsKeys.AVDELINGER, []);
+    requestApi.mock(RestApiGlobalStatePathsKeys.NAV_ANSATT.name, navAnsatt);
+    requestApi.mock(RestApiGlobalStatePathsKeys.AVDELINGER.name, []);
     const wrapper = shallow(<AvdelingslederIndex
       valgtAvdelingEnhet="1"
     />);
@@ -89,8 +89,8 @@ describe('<AvdelingslederIndex>', () => {
       selected: AvdelingslederPanels.BEHANDLINGSKOER, location,
     }));
 
-    requestApi.mock(RestApiGlobalStatePathsKeys.NAV_ANSATT, navAnsatt);
-    requestApi.mock(RestApiGlobalStatePathsKeys.AVDELINGER, []);
+    requestApi.mock(RestApiGlobalStatePathsKeys.NAV_ANSATT.name, navAnsatt);
+    requestApi.mock(RestApiGlobalStatePathsKeys.AVDELINGER.name, []);
     const wrapper = shallow(<AvdelingslederIndex
       valgtAvdelingEnhet="1"
     />);
@@ -103,8 +103,8 @@ describe('<AvdelingslederIndex>', () => {
     const contextStub = sinon.stub(useTrackRouteParam, 'default').callsFake(() => ({
       selected: AvdelingslederPanels.SAKSBEHANDLERE, location,
     }));
-    requestApi.mock(RestApiGlobalStatePathsKeys.NAV_ANSATT, navAnsatt);
-    requestApi.mock(RestApiGlobalStatePathsKeys.AVDELINGER, []);
+    requestApi.mock(RestApiGlobalStatePathsKeys.NAV_ANSATT.name, navAnsatt);
+    requestApi.mock(RestApiGlobalStatePathsKeys.AVDELINGER.name, []);
     const wrapper = shallow(<AvdelingslederIndex
       valgtAvdelingEnhet="1"
     />);
@@ -117,8 +117,8 @@ describe('<AvdelingslederIndex>', () => {
     const contextStub = sinon.stub(useTrackRouteParam, 'default').callsFake(() => ({
       selected: AvdelingslederPanels.NOKKELTALL, location,
     }));
-    requestApi.mock(RestApiGlobalStatePathsKeys.NAV_ANSATT, navAnsatt);
-    requestApi.mock(RestApiGlobalStatePathsKeys.AVDELINGER, []);
+    requestApi.mock(RestApiGlobalStatePathsKeys.NAV_ANSATT.name, navAnsatt);
+    requestApi.mock(RestApiGlobalStatePathsKeys.AVDELINGER.name, []);
     const wrapper = shallow(<AvdelingslederIndex
       valgtAvdelingEnhet="1"
     />);
@@ -135,8 +135,8 @@ describe('<AvdelingslederIndex>', () => {
     const contextStub = sinon.stub(useTrackRouteParam, 'default').callsFake(() => ({
       selected: AvdelingslederPanels.RESERVASJONER, location,
     }));
-    requestApi.mock(RestApiGlobalStatePathsKeys.NAV_ANSATT, navAnsattIkkeOppgavestyrer);
-    requestApi.mock(RestApiGlobalStatePathsKeys.AVDELINGER, []);
+    requestApi.mock(RestApiGlobalStatePathsKeys.NAV_ANSATT.name, navAnsattIkkeOppgavestyrer);
+    requestApi.mock(RestApiGlobalStatePathsKeys.AVDELINGER.name, []);
     const wrapper = shallow(<AvdelingslederIndex />);
 
     expect(wrapper.find(IkkeTilgangTilAvdelingslederPanel)).toHaveLength(1);
