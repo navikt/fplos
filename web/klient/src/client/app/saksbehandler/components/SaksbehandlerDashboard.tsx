@@ -23,6 +23,11 @@ export const SaksbehandlerDashboard: FunctionComponent<OwnProps> = ({
 }) => {
   const fpsakUrl = restApiHooks.useGlobalStateRestApiData(RestApiGlobalStatePathsKeys.FPSAK_URL);
   const fptilbakeUrl = restApiHooks.useGlobalStateRestApiData(RestApiGlobalStatePathsKeys.FPTILBAKE_URL);
+
+  if (!fpsakUrl) {
+    return null;
+  }
+
   return (
     <div>
       <div className={styles.oppgaveContainer}>

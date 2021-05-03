@@ -12,7 +12,6 @@ const config = {
   devtool: 'eval-cheap-source-map',
 
   entry: [
-   'babel-polyfill',
    'webpack-dev-server/client?http://localhost:9100',
    'webpack/hot/only-dev-server',
     APP_DIR + '/index.tsx',
