@@ -6,34 +6,13 @@ import no.nav.foreldrepenger.los.oppgave.BehandlingType;
 import no.nav.foreldrepenger.los.oppgave.FagsakYtelseType;
 import no.nav.foreldrepenger.los.statistikk.statistikk_gammel.OppgaverForAvdelingPerDato;
 
-public class OppgaverForAvdelingPerDatoDto {
-
-    private FagsakYtelseType fagsakYtelseType;
-    private BehandlingType behandlingType;
-    private java.time.LocalDate opprettetDato;
-    private Long antall;
-
+public record OppgaverForAvdelingPerDatoDto(FagsakYtelseType fagsakYtelseType,
+                                            BehandlingType behandlingType,
+                                            LocalDate opprettetDato,
+                                            Long antall) {
 
     public OppgaverForAvdelingPerDatoDto(OppgaverForAvdelingPerDato oppgaverForAvdeling) {
-        fagsakYtelseType = oppgaverForAvdeling.getFagsakYtelseType();
-        behandlingType = oppgaverForAvdeling.getBehandlingType();
-        opprettetDato = oppgaverForAvdeling.getOpprettetDato();
-        antall = oppgaverForAvdeling.getAntall();
-    }
-
-    public FagsakYtelseType getFagsakYtelseType() {
-        return fagsakYtelseType;
-    }
-
-    public BehandlingType getBehandlingType() {
-        return behandlingType;
-    }
-
-    public LocalDate getOpprettetDato() {
-        return opprettetDato;
-    }
-
-    public Long getAntall() {
-        return antall;
+        this(oppgaverForAvdeling.getFagsakYtelseType(), oppgaverForAvdeling.getBehandlingType(), oppgaverForAvdeling.getOpprettetDato(),
+                oppgaverForAvdeling.getAntall());
     }
 }

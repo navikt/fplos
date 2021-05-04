@@ -15,7 +15,6 @@ import no.nav.vedtak.util.InputValideringRegex;
 
 public class SaksbehandlerBrukerIdentDto implements AbacDto {
 
-    //FIXME Bytt ut med spesifikk brukerIdent-annotering?
     @JsonProperty("brukerIdent")
     @NotNull
     @Size(max = 100)

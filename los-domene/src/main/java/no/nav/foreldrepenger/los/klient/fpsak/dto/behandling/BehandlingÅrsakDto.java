@@ -1,8 +1,9 @@
 package no.nav.foreldrepenger.los.klient.fpsak.dto.behandling;
 
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.annotation.JsonProperty;
+public record BehandlingÅrsakDto(BehandlingÅrsakType behandlingArsakType,
+                                 BehandlingÅrsakType behandlingÅrsakType) {
 
-@JsonAutoDetect(getterVisibility = JsonAutoDetect.Visibility.NONE, setterVisibility = JsonAutoDetect.Visibility.NONE, fieldVisibility = JsonAutoDetect.Visibility.ANY)
-public record BehandlingÅrsakDto(@JsonProperty("behandlingArsakType") BehandlingÅrsakType behandlingÅrsakType) {
+    public BehandlingÅrsakType behandlingÅrsakType() {
+        return behandlingÅrsakType == null ? behandlingArsakType : behandlingÅrsakType;
+    }
 }

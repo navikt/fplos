@@ -8,12 +8,12 @@ import no.nav.foreldrepenger.los.domene.typer.aktør.NavBrukerKjønn;
 import no.nav.foreldrepenger.los.domene.typer.aktør.Person;
 
 public record PersonDto(String navn, Integer alder, String personnummer, Boolean erKvinne,
-                        String diskresjonskode, LocalDate dodsdato) {
+                        String diskresjonskode, LocalDate dodsdato, LocalDate dødsdato) {
 
     public PersonDto(Person person) {
         this(person.getNavn(), (int) ChronoUnit.YEARS.between(person.getFødselsdato(), LocalDate.now()),
                 person.getFødselsnummer().value(), NavBrukerKjønn.K.equals(person.getKjønn()),
-                person.getDiskresjonskode(), person.getDødsdato());
+                person.getDiskresjonskode(), person.getDødsdato(), person.getDødsdato());
     }
 
     @Override

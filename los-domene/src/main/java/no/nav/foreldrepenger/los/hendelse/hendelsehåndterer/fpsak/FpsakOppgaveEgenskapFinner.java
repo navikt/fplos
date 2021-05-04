@@ -17,7 +17,7 @@ public class FpsakOppgaveEgenskapFinner implements OppgaveEgenskapFinner {
         this.saksbehandlerForTotrinn = behandling.getAnsvarligSaksbehandler();
 
         if (behandling.harGradering()) {
-            this.andreKriterier.add(AndreKriterierType.SOKT_GRADERING);
+            this.andreKriterier.add(AndreKriterierType.SØKT_GRADERING);
         }
         if (behandling.harVurderSykdom()) {
             this.andreKriterier.add(AndreKriterierType.VURDER_SYKDOM);

@@ -1,19 +1,21 @@
-package no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.nøkkeltall.aapnebehandlinger;
+package no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.nøkkeltall.åpnebehandlinger;
 
-import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.nøkkeltall.aapnebehandlinger.dto.NøkkeltallBehandlingVentestatusDto;
-import no.nav.vedtak.felles.integrasjon.rest.jersey.AbstractJerseyOidcRestClient;
-import no.nav.vedtak.konfig.KonfigVerdi;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import static javax.ws.rs.core.MediaType.APPLICATION_JSON_TYPE;
+
+import java.net.URI;
+import java.util.List;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.Response;
-import java.net.URI;
-import java.util.List;
 
-import static javax.ws.rs.core.MediaType.APPLICATION_JSON_TYPE;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.nøkkeltall.åpnebehandlinger.dto.NøkkeltallBehandlingVentestatusDto;
+import no.nav.vedtak.felles.integrasjon.rest.jersey.AbstractJerseyOidcRestClient;
+import no.nav.vedtak.konfig.KonfigVerdi;
 
 @ApplicationScoped
 public class JerseyFpsakKlient extends AbstractJerseyOidcRestClient {

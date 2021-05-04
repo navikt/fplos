@@ -89,9 +89,9 @@ public class PdpRequestBuilderImpl implements PdpRequestBuilder {
     private void leggTilAttributterForFpsakBehandling(PdpRequest pdpRequest, Oppgave oppgave) {
         var dto = foreldrepengerPipKlient.hentPipdataForBehandling(oppgave.getBehandlingId());
 
-        pdpRequest.put(FplosAbacAttributtType.RESOURCE_FORELDREPENGER_SAK_SAKSSTATUS, dto.getFagsakStatus());
-        pdpRequest.put(FplosAbacAttributtType.RESOURCE_FORELDREPENGER_SAK_BEHANDLINGSSTATUS, dto.getBehandlingStatus());
-        pdpRequest.put(RESOURCE_FELLES_PERSON_AKTOERID_RESOURCE, dto.getAktørIder());
+        pdpRequest.put(FplosAbacAttributtType.RESOURCE_FORELDREPENGER_SAK_SAKSSTATUS, dto.fagsakStatus());
+        pdpRequest.put(FplosAbacAttributtType.RESOURCE_FORELDREPENGER_SAK_BEHANDLINGSSTATUS, dto.behandlingStatus());
+        pdpRequest.put(RESOURCE_FELLES_PERSON_AKTOERID_RESOURCE, dto.aktørIder());
     }
 
     private void leggTilAttributterForFptilbakeBehandling(PdpRequest pdpRequest, Oppgave oppgave) {

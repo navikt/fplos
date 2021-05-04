@@ -7,14 +7,13 @@ import java.util.Date;
 
 import no.nav.foreldrepenger.los.oppgave.FagsakYtelseType;
 
-public class OppgaverForAvdelingSattManueltPaaVent {
+public class OppgaverForAvdelingSattManueltPåVent {
 
     private final FagsakYtelseType fagsakYtelseType;
     private final LocalDate estimertFrist;
     private final Long antall;
 
-
-    public OppgaverForAvdelingSattManueltPaaVent(Object[] resultat) {
+    public OppgaverForAvdelingSattManueltPåVent(Object[] resultat) {
         fagsakYtelseType = FagsakYtelseType.fraKode((String) resultat[1]);  // NOSONAR
         estimertFrist = ((Date) resultat[0]).toInstant().atZone(ZoneId.systemDefault()).toLocalDate();  // NOSONAR
         antall = ((BigDecimal) resultat[2]).longValue();  // NOSONAR

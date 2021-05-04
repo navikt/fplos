@@ -7,13 +7,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 import no.nav.foreldrepenger.los.oppgave.BehandlingStatus;
 import no.nav.foreldrepenger.los.oppgave.BehandlingType;
 
-@JsonAutoDetect(getterVisibility = JsonAutoDetect.Visibility.NONE, setterVisibility = JsonAutoDetect.Visibility.NONE, fieldVisibility = JsonAutoDetect.Visibility.ANY)
 public record BehandlingDto(Long id,
                             UUID uuid,
                             Long versjon,
@@ -27,8 +23,10 @@ public record BehandlingDto(Long id,
                             String behandlendeEnhetId,
                             String behandlendeEnhetNavn,
                             boolean erAktivPapirsoknad,
+                            boolean erAktivPapirsøknad,
                             LocalDate behandlingsfristTid,
-                            @JsonProperty("behandlingArsaker") List<BehandlingÅrsakDto> behandlingÅrsaker,
+                            List<BehandlingÅrsakDto> behandlingÅrsaker,
+                            List<BehandlingÅrsakDto> behandlingArsaker,
                             List<ResourceLink> links,
                             String ansvarligSaksbehandler) {
 
@@ -39,7 +37,10 @@ public record BehandlingDto(Long id,
 
     @Override
     public List<BehandlingÅrsakDto> behandlingÅrsaker() {
-        return nullsafe(behandlingÅrsaker);
+        if (behandlingArsaker == null) {
+            return nullsafe(behandlingÅrsaker);
+        }
+        return behandlingArsaker;
     }
 
     private static <T> List<T> nullsafe(List<T> links) {

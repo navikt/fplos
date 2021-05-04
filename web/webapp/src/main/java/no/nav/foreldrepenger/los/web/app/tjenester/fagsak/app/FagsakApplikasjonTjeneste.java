@@ -66,7 +66,7 @@ public class FagsakApplikasjonTjeneste {
 
     private Person personDtoFra(List<FagsakDto> fagsaker) {
         return fagsaker.stream().findAny()
-                .map(FagsakDto::aktoerId)
+                .map(FagsakDto::aktørId)
                 .flatMap(a -> personTjeneste.hentPerson(new AktørId(a)))
                 .orElse(null);
     }
@@ -75,7 +75,7 @@ public class FagsakApplikasjonTjeneste {
         var personDto = new PersonDto(person);
         return new FagsakMedPersonDto(fagsakDto.saksnummer(),
                 FagsakYtelseType.fraKode(fagsakDto.fagsakYtelseType().getKode()),
-                fagsakDto.status(), personDto, fagsakDto.barnFodt());
+                fagsakDto.status(), personDto, fagsakDto.barnFødt(), fagsakDto.barnFødt());
     }
 
 }

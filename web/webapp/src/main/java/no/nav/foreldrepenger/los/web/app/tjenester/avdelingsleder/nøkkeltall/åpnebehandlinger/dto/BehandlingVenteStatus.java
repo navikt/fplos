@@ -1,4 +1,4 @@
-package no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.nøkkeltall.aapnebehandlinger.dto;
+package no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.nøkkeltall.åpnebehandlinger.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import no.nav.foreldrepenger.los.felles.Kodeverdi;

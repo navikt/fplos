@@ -133,7 +133,7 @@ public class OppgaveRepository {
                 + sortering(queryDto), oppgaveClass)
                 .setParameter("enhet", queryDto.getEnhetId());
         if (!queryDto.ignorerReserversjoner()) {
-            query.setParameter("naa", LocalDateTime.now());
+            query.setParameter("nå", LocalDateTime.now());
         }
         if (!queryDto.getForAvdelingsleder()) {
             query.setParameter("tilbeslutter", AndreKriterierType.TIL_BESLUTTER).setParameter("uid", finnBrukernavn());
@@ -184,7 +184,7 @@ public class OppgaveRepository {
     }
 
     private String avgrensPåAktiveReservasjoner(Oppgavespørring queryDto) {
-        return queryDto.ignorerReserversjoner() ? "" : "AND NOT EXISTS (select r from Reservasjon r where r.oppgave = o and r.reservertTil > :naa) ";
+        return queryDto.ignorerReserversjoner() ? "" : "AND NOT EXISTS (select r from Reservasjon r where r.oppgave = o and r.reservertTil > :nå) ";
     }
 
     private String avgrenseTilOppgaveId(Oppgavespørring queryDto) {
@@ -273,18 +273,18 @@ public class OppgaveRepository {
     public List<Reservasjon> hentReservasjonerTilknyttetAktiveOppgaver(String uid) {
         var oppgaveTypedQuery = entityManager.createQuery(
                 "Select r from Reservasjon r " + "INNER JOIN Oppgave o ON r.oppgave = o "
-                        + "WHERE r.reservertTil > :naa AND upper(r.reservertAv) = upper( :uid ) AND o.aktiv = true",
+                        + "WHERE r.reservertTil > :nå AND upper(r.reservertAv) = upper( :uid ) AND o.aktiv = true",
                 Reservasjon.class) //$NON-NLS-1$
-                .setParameter("naa", LocalDateTime.now()).setParameter("uid", uid);
+                .setParameter("nå", LocalDateTime.now()).setParameter("uid", uid);
         return oppgaveTypedQuery.getResultList();
     }
 
     public List<Reservasjon> hentAlleReservasjonerForAvdeling(String avdelingEnhet) {
         var listeTypedQuery = entityManager.createQuery(
                 "Select r FROM Reservasjon r INNER JOIN Oppgave o ON r.oppgave = o "
-                        + "WHERE r.reservertTil > :naa AND o.behandlendeEnhet = :behandlendeEnhet "
+                        + "WHERE r.reservertTil > :nå AND o.behandlendeEnhet = :behandlendeEnhet "
                         + "ORDER BY r.reservertAv", Reservasjon.class)
-                .setParameter("naa", LocalDateTime.now())
+                .setParameter("nå", LocalDateTime.now())
                 .setParameter("behandlendeEnhet", avdelingEnhet);
         return listeTypedQuery.getResultList();
     }
@@ -409,9 +409,9 @@ public class OppgaveRepository {
     public List<Oppgave> sjekkOmOppgaverFortsattErTilgjengelige(List<Long> oppgaveIder) {
         return entityManager.createQuery(
                 SELECT_FRA_OPPGAVE + " INNER JOIN avdeling a ON a.avdelingEnhet = o.behandlendeEnhet WHERE "
-                        + "NOT EXISTS (select r from Reservasjon r where r.oppgave = o and r.reservertTil > :naa) "
+                        + "NOT EXISTS (select r from Reservasjon r where r.oppgave = o and r.reservertTil > :nå) "
                         + "AND o.id IN ( :oppgaveId ) " + "AND o.aktiv = true", Oppgave.class) //$NON-NLS-1$
-                .setParameter("naa", LocalDateTime.now()).setParameter("oppgaveId", oppgaveIder).getResultList();
+                .setParameter("nå", LocalDateTime.now()).setParameter("oppgaveId", oppgaveIder).getResultList();
 
     }
 

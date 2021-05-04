@@ -1,4 +1,4 @@
-package no.nav.foreldrepenger.dbstoette;
+package no.nav.foreldrepenger.dbstøtte;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

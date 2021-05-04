@@ -1,14 +1,16 @@
 package no.nav.foreldrepenger.los.oppgave;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import no.nav.foreldrepenger.los.felles.Kodeverdi;
+import java.util.Arrays;
+import java.util.Optional;
 
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;
-import java.util.Arrays;
-import java.util.Optional;
+
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import no.nav.foreldrepenger.los.felles.Kodeverdi;
 
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum AndreKriterierType implements Kodeverdi {
@@ -17,7 +19,7 @@ public enum AndreKriterierType implements Kodeverdi {
     PAPIRSØKNAD("PAPIRSOKNAD", "Registrer papirsøknad"),
     UTBETALING_TIL_BRUKER("UTBETALING_TIL_BRUKER", "Utbetaling til bruker"),
     UTLANDSSAK("UTLANDSSAK", "Utland"),
-    SOKT_GRADERING("SOKT_GRADERING", "Søkt gradering"),
+    SØKT_GRADERING("SOKT_GRADERING", "Søkt gradering"),
     VURDER_SYKDOM("VURDER_SYKDOM", "Vurder sykdom"),
     VURDER_FARESIGNALER("VURDER_FARESIGNALER", "Vurder faresignaler"),
     BERØRT_BEHANDLING("BERØRT_BEHANDLING", "Berørt behandling"),

@@ -82,13 +82,13 @@ public class AdminRestTjeneste {
     }
 
     @GET
-    @Path("/sepaaeventer")
+    @Path("/sepåeventer")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Operation(description = "Se på oppgave", tags = "admin")
     @BeskyttetRessurs(action = READ, resource = AbacAttributter.OPPGAVESTYRING)
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
-    public List<OppgaveEventLoggDto> hentEventlogg(@NotNull @QueryParam("behandlingId") @Valid BehandlingIdDto behandlingId) {
+    public List<OppgaveEventLoggDto> sePåEventer(@NotNull @QueryParam("behandlingId") @Valid BehandlingIdDto behandlingId) {
         var oppgaveEventLogger = adminTjeneste.hentEventer(behandlingId.getValue());
         return oppgaveEventLogger.stream()
                 .map(OppgaveEventLoggDto::new)

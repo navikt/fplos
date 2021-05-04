@@ -32,9 +32,9 @@ public class StatistikkTjeneste {
                 .collect(Collectors.toList()); // NOSONAR
     }
 
-    public List<OppgaverForAvdelingSattManueltPaaVent> hentAntallOppgaverForAvdelingSattManueltPåVent(String avdeling) {
-        return (List<OppgaverForAvdelingSattManueltPaaVent>) statisikkRepository.hentAntallOppgaverForAvdelingSattManueltPåVent(avdeling).stream()
-                .map(result -> new OppgaverForAvdelingSattManueltPaaVent((Object[]) result))
+    public List<OppgaverForAvdelingSattManueltPåVent> hentAntallOppgaverForAvdelingSattManueltPåVent(String avdeling) {
+        return (List<OppgaverForAvdelingSattManueltPåVent>) statisikkRepository.hentAntallOppgaverForAvdelingSattManueltPåVent(avdeling).stream()
+                .map(result -> new OppgaverForAvdelingSattManueltPåVent((Object[]) result))
                 .collect(Collectors.toList());
     }
 
