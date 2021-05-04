@@ -17,7 +17,7 @@ public enum KøSortering implements Kodeverdi {
 
     BEHANDLINGSFRIST("BEHFRIST", "Dato for behandlingsfrist"),
     OPPRETT_BEHANDLING("OPPRBEH", "Dato for opprettelse av behandling"),
-    FØRSTE_STONADSDAG("FORSTONAD", "Dato for første stønadsdag"),
+    FØRSTE_STØNADSDAG("FORSTONAD", "Dato for første stønadsdag"),
     BELØP("BELOP", "Feilutbetalt beløp", "HELTALL", "TILBAKEKREVING"),
     FEILUTBETALINGSTART("FEILUTBETALINGSTART", "Dato for første feilutbetaling", "DATO", "TILBAKEKREVING");
 

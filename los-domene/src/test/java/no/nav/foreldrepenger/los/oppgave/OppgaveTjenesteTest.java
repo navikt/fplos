@@ -126,7 +126,7 @@ public class OppgaveTjenesteTest {
         var andreOppgave = opprettOgLargeOppgaveTilSortering(0, 10, 9);
 
         var førsteStønadsdag = OppgaveFiltrering.builder().medNavn("STØNADSDAG")
-                .medSortering(KøSortering.FØRSTE_STONADSDAG)
+                .medSortering(KøSortering.FØRSTE_STØNADSDAG)
                 .medAvdeling(avdelingDrammen()).build();
         oppgaveRepository.lagre(førsteStønadsdag);
 
