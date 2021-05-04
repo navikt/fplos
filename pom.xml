@@ -26,8 +26,8 @@
 
         <fp-kontrakter.version>5.1-20200225123631-afeacc4</fp-kontrakter.version>
         <tjenestespesifikasjoner.version>1.2019.12.18-12.22-ce897c4eb2c1</tjenestespesifikasjoner.version>
-        <felles.version>3.1.11</felles.version>
-        <prosesstask.version>2.5.16</prosesstask.version>
+        <felles.version>3.2.41</felles.version>
+        <prosesstask.version>2.5.18</prosesstask.version>
 
         <!-- Eksterne -->
         <woodstox.version>6.2.3</woodstox.version>
@@ -433,9 +433,6 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-surefire-plugin</artifactId>
                     <version>${surefire.version}</version>
-                    <configuration>
-                        <argLine>--illegal-access=permit</argLine>
-                    </configuration>
                 </plugin>
                 <plugin>
                     <groupId>org.codehaus.mojo</groupId>

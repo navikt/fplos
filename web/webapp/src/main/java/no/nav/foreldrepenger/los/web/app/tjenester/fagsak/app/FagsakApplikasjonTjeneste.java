@@ -44,8 +44,12 @@ public class FagsakApplikasjonTjeneste {
         if (!søkestreng.matches("\\d+")) {
             return Collections.emptyList();
         }
+        var brukSøkeStreng = søkestreng;
+        if (søkestreng.length() == 11) {
+            brukSøkeStreng = personTjeneste.hentAktørIdForPersonIdent(søkestreng).map(AktørId::getId).orElse(søkestreng);
+        }
         try {
-            var fagsaker = fagsakKlient.finnFagsaker(søkestreng);
+            var fagsaker = fagsakKlient.finnFagsaker(brukSøkeStreng);
             if (fagsaker.isEmpty()) {
                 return Collections.emptyList();
             }
