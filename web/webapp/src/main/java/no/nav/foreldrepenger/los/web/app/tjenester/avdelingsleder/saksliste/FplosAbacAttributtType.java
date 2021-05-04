@@ -5,8 +5,7 @@ import no.nav.vedtak.sikkerhet.abac.AbacAttributtType;
 public enum FplosAbacAttributtType implements AbacAttributtType {
 
     OPPGAVESTYRING_ENHET,
-    OPPGAVE_ID,
-    SAKER_MED_FNR;
+    OPPGAVE_ID;
 
     public static final String SUBJECT_FELLES_ENHETIDLISTE = "no.nav.abac.attributter.subject.felles.enhetidliste";
     public static final String RESOURCE_FORELDREPENGER_SAK_BEHANDLINGSSTATUS = "no.nav.abac.attributter.resource.foreldrepenger.sak.behandlingsstatus";
@@ -25,8 +24,4 @@ public enum FplosAbacAttributtType implements AbacAttributtType {
         return false;
     }
 
-    @Override
-    public String getSporingsloggKode() {
-        return sporingsloggEksternKode;
-    }
 }

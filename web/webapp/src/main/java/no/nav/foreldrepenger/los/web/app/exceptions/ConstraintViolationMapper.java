@@ -25,8 +25,8 @@ public class ConstraintViolationMapper implements ExceptionMapper<ConstraintViol
     public Response toResponse(ConstraintViolationException exception) {
         var constraintViolations = exception.getConstraintViolations();
 
-        if (constraintViolations.isEmpty() && exception instanceof ResteasyViolationException) {
-            return håndterFeilKonfigurering((ResteasyViolationException) exception);
+        if (constraintViolations.isEmpty() && exception instanceof ResteasyViolationException resteasyViolationException) {
+            return håndterFeilKonfigurering(resteasyViolationException);
         }
         log(exception);
         return lagResponse(exception);
@@ -78,6 +78,6 @@ public class ConstraintViolationMapper implements ExceptionMapper<ConstraintViol
     }
 
     private static String getFeltNavn(Path propertyPath) {
-        return propertyPath instanceof PathImpl ? ((PathImpl) propertyPath).getLeafNode().toString() : null;
+        return propertyPath instanceof PathImpl pi ? pi.getLeafNode().toString() : null;
     }
 }

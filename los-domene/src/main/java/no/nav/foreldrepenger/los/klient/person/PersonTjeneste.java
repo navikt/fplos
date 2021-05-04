@@ -27,13 +27,20 @@ import no.nav.pdl.Foedsel;
 import no.nav.pdl.FoedselResponseProjection;
 import no.nav.pdl.Folkeregisteridentifikator;
 import no.nav.pdl.FolkeregisteridentifikatorResponseProjection;
+import no.nav.pdl.HentIdenterQueryRequest;
 import no.nav.pdl.HentPersonQueryRequest;
+import no.nav.pdl.IdentGruppe;
+import no.nav.pdl.IdentInformasjon;
+import no.nav.pdl.IdentInformasjonResponseProjection;
+import no.nav.pdl.Identliste;
+import no.nav.pdl.IdentlisteResponseProjection;
 import no.nav.pdl.Kjoenn;
 import no.nav.pdl.KjoennResponseProjection;
 import no.nav.pdl.KjoennType;
 import no.nav.pdl.Navn;
 import no.nav.pdl.NavnResponseProjection;
 import no.nav.pdl.PersonResponseProjection;
+import no.nav.vedtak.exception.VLException;
 import no.nav.vedtak.felles.integrasjon.pdl.Pdl;
 import no.nav.vedtak.felles.integrasjon.pdl.PdlException;
 import no.nav.vedtak.felles.integrasjon.rest.jersey.Jersey;
@@ -57,6 +64,28 @@ public class PersonTjeneste {
     }
 
     public PersonTjeneste() {
+    }
+
+    public Optional<AktørId> hentAktørIdForPersonIdent(String personIdent) {
+        var request = new HentIdenterQueryRequest();
+        request.setIdent(personIdent);
+        request.setGrupper(List.of(IdentGruppe.AKTORID));
+        request.setHistorikk(Boolean.FALSE);
+        var projection = new IdentlisteResponseProjection()
+                .identer(new IdentInformasjonResponseProjection().ident());
+
+        final Identliste identliste;
+
+        try {
+            identliste = pdl.hentIdenter(request, projection);
+        } catch (VLException v) {
+            if (Pdl.PDL_KLIENT_NOT_FOUND_KODE.equals(v.getKode())) {
+                return Optional.empty();
+            }
+            throw v;
+        }
+
+        return identliste.getIdenter().stream().findFirst().map(IdentInformasjon::getIdent).map(AktørId::new);
     }
 
     public Optional<Person> hentPerson(AktørId aktørId) {

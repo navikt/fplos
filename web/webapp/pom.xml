@@ -1,7 +1,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <properties>
-        <swagger-ui.version>3.47.1</swagger-ui.version>
+        <swagger-ui.version>3.48.0</swagger-ui.version>
     </properties>
 
     <parent>
@@ -45,6 +45,10 @@
         <dependency>
             <groupId>no.nav.foreldrepenger.felles</groupId>
             <artifactId>felles-util</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>no.nav.foreldrepenger.felles</groupId>
+            <artifactId>felles-abac-legacy</artifactId>
         </dependency>
 
         <!-- Database håndtering -->
@@ -222,11 +226,6 @@
             <dependency>
                 <groupId>ch.qos.logback</groupId>
                 <artifactId>logback-classic</artifactId>
-            </dependency>
-            <dependency>
-                <groupId>no.nav.foreldrepenger.felles</groupId>
-                <artifactId>felles-sikkerhet-testutilities</artifactId>
-                <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>org.webjars</groupId>

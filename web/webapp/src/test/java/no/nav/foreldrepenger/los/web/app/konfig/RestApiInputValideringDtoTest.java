@@ -135,8 +135,7 @@ public class RestApiInputValideringDtoTest extends RestApiTester {
         for (var method : finnAlleRestMetoder()) {
             parametre.addAll(Arrays.asList(method.getParameterTypes()));
             for (var type : method.getGenericParameterTypes()) {
-                if (type instanceof ParameterizedType) {
-                    var genericTypes = (ParameterizedType) type;
+                if (type instanceof ParameterizedType genericTypes) {
                     for (var gen : genericTypes.getActualTypeArguments()) {
                         parametre.add((Class<?>) gen);
                     }

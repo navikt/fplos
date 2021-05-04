@@ -5,7 +5,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.jupiter.api.Test;
 
 import no.nav.foreldrepenger.los.domene.typer.Saksnummer;
-import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.saksliste.FplosAbacAttributtType;
 import no.nav.foreldrepenger.los.web.app.tjenester.fagsak.dto.SøkefeltDto;
 import no.nav.vedtak.sikkerhet.abac.AbacDataAttributter;
 import no.nav.vedtak.sikkerhet.abac.StandardAbacAttributtType;
@@ -19,7 +18,6 @@ public class SøkefeltDtoTest {
 
         assertThat(dto.abacAttributter()).isEqualTo(AbacDataAttributter.opprett()
                 .leggTil(StandardAbacAttributtType.FNR, fnr)
-                .leggTil(FplosAbacAttributtType.SAKER_MED_FNR, fnr)
         );
     }
 
