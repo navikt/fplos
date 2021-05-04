@@ -170,7 +170,7 @@ public class TilbakekrevingHendelseHåndterer {
 
     private TilbakekrevingOppgave oppgaveFra(TilbakekrevingHendelse hendelse) {
         return TilbakekrevingOppgave.tbuilder()
-                .medBelop(hendelse.getFeilutbetaltBeløp())
+                .medBeløp(hendelse.getFeilutbetaltBeløp())
                 .medFeilutbetalingStart(feilutbetalingStart(hendelse))
                 .medHref(hendelse.getHref())
                 .medSystem(hendelse.getFagsystem().name())

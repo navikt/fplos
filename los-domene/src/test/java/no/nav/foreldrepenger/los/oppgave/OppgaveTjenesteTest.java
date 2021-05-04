@@ -119,14 +119,14 @@ public class OppgaveTjenesteTest {
     }
 
     @Test
-    public void hentOppgaverSortertPåFørsteStonadsdag() {
+    public void hentOppgaverSortertPåFørsteStønadsdag() {
         var fjerdeOppgave = opprettOgLargeOppgaveTilSortering(10, 0, 0);
         var førsteOppgave = opprettOgLargeOppgaveTilSortering(8, 9, 10);
         var tredjeOppgave = opprettOgLargeOppgaveTilSortering(9, 8, 8);
         var andreOppgave = opprettOgLargeOppgaveTilSortering(0, 10, 9);
 
         var førsteStønadsdag = OppgaveFiltrering.builder().medNavn("STØNADSDAG")
-                .medSortering(KøSortering.FORSTE_STONADSDAG)
+                .medSortering(KøSortering.FØRSTE_STONADSDAG)
                 .medAvdeling(avdelingDrammen()).build();
         oppgaveRepository.lagre(førsteStønadsdag);
 
@@ -139,7 +139,7 @@ public class OppgaveTjenesteTest {
         var oppgave = Oppgave.builder().dummyOppgave(AVDELING_DRAMMEN_ENHET)
                 .medBehandlingOpprettet(LocalDateTime.now().minusDays(dagerSidenOpprettet))
                 .medBehandlingsfrist(LocalDateTime.now().minusDays(dagersidenBehandlingsFristGikkUt))
-                .medForsteStonadsdag(LocalDate.now().minusDays(førsteStønadsdag))
+                .medFørsteStønadsdag(LocalDate.now().minusDays(førsteStønadsdag))
                 .build();
         oppgaveRepository.lagre(oppgave);
         return oppgave;

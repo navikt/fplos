@@ -1,7 +1,5 @@
 package no.nav.foreldrepenger.los.oppgave;
 
-import no.nav.foreldrepenger.los.domene.typer.BehandlingId;
-
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
@@ -10,6 +8,8 @@ import javax.persistence.Entity;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 
+import no.nav.foreldrepenger.los.domene.typer.BehandlingId;
+
 
 @Entity(name = "TilbakekrevingOppgave")
 @PrimaryKeyJoinColumn(name = "OPPGAVE_ID")
@@ -17,13 +17,13 @@ import javax.persistence.Table;
 public class TilbakekrevingOppgave extends Oppgave{
 
     @Column(name = "BELOP")
-    private BigDecimal belop;
+    private BigDecimal beløp;
 
     @Column(name = "FEILUTBETALINGSTART")
     protected LocalDateTime feilutbetalingstart;
 
-    public BigDecimal getBelop() {
-        return belop;
+    public BigDecimal getBeløp() {
+        return beløp;
     }
 
     public LocalDateTime getFeilutbetalingstart() {
@@ -37,7 +37,7 @@ public class TilbakekrevingOppgave extends Oppgave{
         this.behandlendeEnhet = other.behandlendeEnhet;
         this.behandlingsfrist = other.behandlingsfrist;
         this.fagsakSaksnummer = other.fagsakSaksnummer;
-        this.forsteStonadsdag = other.forsteStonadsdag;
+        this.førsteStønadsdag = other.førsteStønadsdag;
         this.behandlingStatus = other.behandlingStatus;
         this.behandlingType = other.behandlingType;
         this.fagsakYtelseType = other.fagsakYtelseType;
@@ -45,7 +45,7 @@ public class TilbakekrevingOppgave extends Oppgave{
         this.href = other.href;
         this.reservasjon = other.reservasjon;
         this.feilutbetalingstart = other.feilutbetalingstart;
-        this.belop = other.belop;
+        this.beløp = other.beløp;
     }
 
     public TilbakekrevingOppgave() {
@@ -62,8 +62,8 @@ public class TilbakekrevingOppgave extends Oppgave{
             tempOppgave = new TilbakekrevingOppgave();
         }
 
-        public TilbakekrevingOppgave.Builder medBelop(BigDecimal belop) {
-            this.tempOppgave.belop = belop;
+        public TilbakekrevingOppgave.Builder medBeløp(BigDecimal beløp) {
+            this.tempOppgave.beløp = beløp;
             return this;
         }
 
@@ -135,7 +135,7 @@ public class TilbakekrevingOppgave extends Oppgave{
     @Override
     public String toString() {
         return "TilbakekrevingOppgave{" +
-                "belop=" + belop +
+                "beløp=" + beløp +
                 ", feilutbetalingstart=" + feilutbetalingstart +
                 ", id=" + id +
                 ", fagsakSaksnummer=" + fagsakSaksnummer +
@@ -143,7 +143,7 @@ public class TilbakekrevingOppgave extends Oppgave{
                 ", behandlendeEnhet='" + behandlendeEnhet + '\'' +
                 ", behandlingsfrist=" + behandlingsfrist +
                 ", behandlingOpprettet=" + behandlingOpprettet +
-                ", forsteStonadsdag=" + forsteStonadsdag +
+                ", førsteStønadsdag=" + førsteStønadsdag +
                 ", behandlingStatus=" + behandlingStatus +
                 ", behandlingType=" + behandlingType +
                 ", fagsakYtelseType=" + fagsakYtelseType +

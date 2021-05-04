@@ -7,7 +7,7 @@ import no.nav.foreldrepenger.los.statistikk.statistikk_gammel.OppgaverForFørste
 public record OppgaverForFørsteStønadsdagDto(LocalDate forsteStonadsdag, LocalDate førsteStønadsdag, Long antall) {
 
     public OppgaverForFørsteStønadsdagDto(OppgaverForFørsteStønadsdag oppgaverForFørsteStønadsdag) {
-        this(oppgaverForFørsteStønadsdag.førsteStonadsdag(), oppgaverForFørsteStønadsdag.førsteStonadsdag(),
+        this(oppgaverForFørsteStønadsdag.førsteStønadsdag(), oppgaverForFørsteStønadsdag.førsteStønadsdag(),
                 oppgaverForFørsteStønadsdag.antall());
     }
 }

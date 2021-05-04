@@ -22,7 +22,7 @@ public class OppgaveUtil {
                 .medUtfortFraAdmin(false)
                 .medBehandlingStatus(BehandlingStatus.fraKode(behandlingFpsak.getStatus()))
                 .medBehandlingId(behandlingFpsak.getBehandlingId())
-                .medForsteStonadsdag(behandlingFpsak.getFørsteUttaksdag())
+                .medFørsteStønadsdag(behandlingFpsak.getFørsteUttaksdag())
                 .medBehandlingsfrist(behandlingFpsak.getBehandlingstidFrist())
                 .build();
     }

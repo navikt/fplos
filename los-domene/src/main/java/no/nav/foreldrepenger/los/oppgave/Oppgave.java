@@ -48,7 +48,7 @@ public class Oppgave extends BaseEntitet {
     protected LocalDateTime behandlingOpprettet;
 
     @Column(name = "FORSTE_STONADSDAG")
-    protected LocalDate forsteStonadsdag;
+    protected LocalDate førsteStønadsdag;
 
     @Convert(converter = BehandlingStatus.KodeverdiConverter.class)
     @Column(name = "BEHANDLING_STATUS")
@@ -129,8 +129,8 @@ public class Oppgave extends BaseEntitet {
         return behandlingOpprettet;
     }
 
-    public LocalDate getForsteStonadsdag() {
-        return forsteStonadsdag;
+    public LocalDate getFørsteStønadsdag() {
+        return førsteStønadsdag;
     }
 
     public BehandlingStatus getBehandlingStatus() {
@@ -183,7 +183,7 @@ public class Oppgave extends BaseEntitet {
         this.behandlendeEnhet = other.behandlendeEnhet;
         this.behandlingsfrist = other.behandlingsfrist;
         this.fagsakSaksnummer = other.fagsakSaksnummer;
-        this.forsteStonadsdag = other.forsteStonadsdag;
+        this.førsteStønadsdag = other.førsteStønadsdag;
         this.behandlingStatus = other.behandlingStatus;
         this.behandlingType = other.behandlingType;
         this.fagsakYtelseType = other.fagsakYtelseType;
@@ -247,8 +247,8 @@ public class Oppgave extends BaseEntitet {
             return this;
         }
 
-        public Builder medForsteStonadsdag(LocalDate forsteStonadsdag){
-            tempOppgave.forsteStonadsdag = forsteStonadsdag;
+        public Builder medFørsteStønadsdag(LocalDate førsteStønadsdag){
+            tempOppgave.førsteStønadsdag = førsteStønadsdag;
             return this;
         }
         public Builder medBehandlingStatus(BehandlingStatus behandlingStatus){
@@ -286,7 +286,7 @@ public class Oppgave extends BaseEntitet {
             tempOppgave.behandlendeEnhet = enhet;
             tempOppgave.behandlingsfrist = LocalDateTime.now();
             tempOppgave.behandlingOpprettet = LocalDateTime.now();
-            tempOppgave.forsteStonadsdag = LocalDate.now().plusMonths(1);
+            tempOppgave.førsteStønadsdag = LocalDate.now().plusMonths(1);
             tempOppgave.behandlingStatus = BehandlingStatus.UTREDES;
             return this;
         }

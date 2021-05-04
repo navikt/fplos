@@ -1,22 +1,24 @@
 package no.nav.foreldrepenger.los.oppgavekø;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import no.nav.foreldrepenger.los.felles.Kodeverdi;
+import java.util.Arrays;
+import java.util.Optional;
 
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;
-import java.util.Arrays;
-import java.util.Optional;
+
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import no.nav.foreldrepenger.los.felles.Kodeverdi;
 
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum KøSortering implements Kodeverdi {
 
     BEHANDLINGSFRIST("BEHFRIST", "Dato for behandlingsfrist"),
     OPPRETT_BEHANDLING("OPPRBEH", "Dato for opprettelse av behandling"),
-    FORSTE_STONADSDAG("FORSTONAD", "Dato for første stønadsdag"),
-    BELOP("BELOP", "Feilutbetalt beløp", "HELTALL", "TILBAKEKREVING"),
+    FØRSTE_STONADSDAG("FORSTONAD", "Dato for første stønadsdag"),
+    BELØP("BELOP", "Feilutbetalt beløp", "HELTALL", "TILBAKEKREVING"),
     FEILUTBETALINGSTART("FEILUTBETALINGSTART", "Dato for første feilutbetaling", "DATO", "TILBAKEKREVING");
 
     @JsonProperty("kode")

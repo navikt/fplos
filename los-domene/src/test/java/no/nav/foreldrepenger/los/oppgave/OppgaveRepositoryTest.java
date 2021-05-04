@@ -335,13 +335,13 @@ public class OppgaveRepositoryTest {
         var oppgaveUtenStartDato = tilbakekrevingOppgaveBuilder()
                 .medBehandlingOpprettet(LocalDateTime.now().minusDays(2L))
                 .medBehandlingId(behandlingId1)
-                .medBelop(BigDecimal.valueOf(0L))
+                .medBeløp(BigDecimal.valueOf(0L))
                 .medFeilutbetalingStart(null)
                 .build();
         var oppgaveMedStartDato = tilbakekrevingOppgaveBuilder()
                 .medBehandlingId(behandlingId2)
                 .medBehandlingOpprettet(LocalDateTime.now().minusDays(1L))
-                .medBelop(BigDecimal.valueOf(10L))
+                .medBeløp(BigDecimal.valueOf(10L))
                 .medFeilutbetalingStart(LocalDateTime.now())
                 .build();
         oppgaveRepository.lagre(oppgaveUtenStartDato);

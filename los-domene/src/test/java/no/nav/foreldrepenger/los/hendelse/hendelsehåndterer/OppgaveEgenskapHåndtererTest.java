@@ -125,7 +125,7 @@ public class OppgaveEgenskapHåndtererTest {
                 .medBehandlendeEnhet("0000")
                 .medBehandlingsfrist(LocalDateTime.now())
                 .medBehandlingOpprettet(LocalDateTime.now())
-                .medForsteStonadsdag(LocalDate.now().plusMonths(1))
+                .medFørsteStønadsdag(LocalDate.now().plusMonths(1))
                 .medBehandlingStatus(BehandlingStatus.UTREDES)
                 .build();
         oppgaveRepository.lagre(oppgave);

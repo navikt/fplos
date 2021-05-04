@@ -87,6 +87,16 @@ public class NøkkeltallRestTjeneste {
     @BeskyttetRessurs(action = BeskyttetRessursActionAttributt.READ, resource = AbacAttributter.OPPGAVESTYRING_AVDELINGENHET)
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
     public List<OppgaverForFørsteStønadsdagDto> getOppgaverPerFørsteStønadsdag(@NotNull @QueryParam("avdelingEnhet") @Valid AvdelingEnhetDto avdelingEnhet) {
+        return getOppgaverPerFørsteStønadsdagNew(avdelingEnhet);
+    }
+
+    @GET
+    @Path("/behandlinger-første-stønadsdag")
+    @Produces("application/json")
+    @Operation(description = "Første stønadsdag", tags = "AvdelingslederTall")
+    @BeskyttetRessurs(action = BeskyttetRessursActionAttributt.READ, resource = AbacAttributter.OPPGAVESTYRING_AVDELINGENHET)
+    @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
+    public List<OppgaverForFørsteStønadsdagDto> getOppgaverPerFørsteStønadsdagNew(@NotNull @QueryParam("avdelingEnhet") @Valid AvdelingEnhetDto avdelingEnhet) {
         return statistikkTjeneste.hentOppgaverPerFørsteStønadsdag(avdelingEnhet.getAvdelingEnhet())
                 .stream()
                 .map(OppgaverForFørsteStønadsdagDto::new)

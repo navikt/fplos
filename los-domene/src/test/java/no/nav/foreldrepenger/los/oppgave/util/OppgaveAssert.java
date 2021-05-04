@@ -101,9 +101,9 @@ public class OppgaveAssert extends AbstractAssert<OppgaveAssert, Oppgave> {
 
     public OppgaveAssert harFørsteStønadsdag(LocalDate førsteStønadsdag) {
         isNotNull();
-        assertThat(actual.getForsteStonadsdag())
+        assertThat(actual.getFørsteStønadsdag())
                 .overridingErrorMessage("Forventet førsteStønadsdag <%s> men fikk <%s>",
-                        førsteStønadsdag, actual.getForsteStonadsdag())
+                        førsteStønadsdag, actual.getFørsteStønadsdag())
                 .isEqualTo(førsteStønadsdag);
         return this;
     }
