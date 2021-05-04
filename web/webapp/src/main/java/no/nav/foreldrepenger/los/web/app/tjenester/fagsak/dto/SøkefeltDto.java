@@ -9,21 +9,21 @@ import no.nav.vedtak.sikkerhet.abac.AbacDataAttributter;
 import no.nav.vedtak.sikkerhet.abac.AbacDto;
 import no.nav.vedtak.sikkerhet.abac.StandardAbacAttributtType;
 
-public class SokefeltDto implements AbacDto {
+public class SøkefeltDto implements AbacDto {
 
     @NotNull
     @Digits(integer = 18, fraction = 0)
     private String searchString;
 
     @SuppressWarnings("unused")
-    private SokefeltDto() { // NOSONAR
+    private SøkefeltDto() { // NOSONAR
     }
 
-    public SokefeltDto(String searchString) {
+    public SøkefeltDto(String searchString) {
         this.searchString = searchString;
     }
 
-    public SokefeltDto(Saksnummer saksnummer) {
+    public SøkefeltDto(Saksnummer saksnummer) {
         this.searchString = saksnummer.value();
     }
 

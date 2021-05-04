@@ -1,20 +1,9 @@
 package no.nav.foreldrepenger.los.web.app.tjenester.felles.dto;
 
-public class SaksbehandlerDto {
+public record SaksbehandlerDto(SaksbehandlerBrukerIdentDto brukerIdent, String navn) {
 
-    private SaksbehandlerBrukerIdentDto brukerIdent;
-    private String navn;
-
-    SaksbehandlerDto(SaksbehandlerBrukerIdentDto brukerIdent, String navn) {
-        this.brukerIdent = brukerIdent;
-        this.navn = navn;
-    }
-
-    public SaksbehandlerBrukerIdentDto getBrukerIdent() {
-        return brukerIdent;
-    }
-
-    public String getNavn() {
-        return navn;
+    @Override
+    public String toString() {
+        return "SaksbehandlerDto{" + "brukerIdent=" + brukerIdent + '}';
     }
 }

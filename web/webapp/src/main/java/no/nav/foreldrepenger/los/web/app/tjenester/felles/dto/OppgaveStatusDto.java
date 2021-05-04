@@ -25,17 +25,17 @@ public class OppgaveStatusDto {
 
     private OppgaveStatusDto(boolean erReservert, ReservasjonDto reservasjonDto) {
         this.erReservert = erReservert;
-        this.reservertTilTidspunkt = reservasjonDto.getReservertTilTidspunkt();
-        this.reservertAvUid = reservasjonDto.getReservertAvUid();
-        this.reservertAvNavn = reservasjonDto.getReservertAvNavn();
+        this.reservertTilTidspunkt = reservasjonDto.reservertTilTidspunkt();
+        this.reservertAvUid = reservasjonDto.reservertAvUid();
+        this.reservertAvNavn = reservasjonDto.reservertAvNavn();
         this.erReservertAvInnloggetBruker = isErReservertAvInnloggetBruker(reservertAvUid);
 
-        if (reservasjonDto.getFlyttetTidspunkt() != null) {
+        if (reservasjonDto.flyttetTidspunkt() != null) {
             flyttetReservasjon = new FlyttetReservasjonDto(
-                    reservasjonDto.getFlyttetTidspunkt(),
-                    reservasjonDto.getFlyttetAv(),
-                    reservasjonDto.getFlyttetAvNavn(),
-                    reservasjonDto.getBegrunnelse());
+                    reservasjonDto.flyttetTidspunkt(),
+                    reservasjonDto.flyttetAv(),
+                    reservasjonDto.flyttetAvNavn(),
+                    reservasjonDto.begrunnelse());
         }
     }
 

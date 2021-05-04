@@ -2,34 +2,5 @@ package no.nav.foreldrepenger.los.web.app.tjenester.abac;
 
 import java.util.Set;
 
-public class PipDto {
-
-    private Set<String> aktørIder;
-    private String fagsakStatus;
-    private String behandlingStatus;
-
-
-    public Set<String> getAktørIder() {
-        return aktørIder;
-    }
-
-    public void setAktørIder(Set<String> aktørIder) {
-        this.aktørIder = aktørIder;
-    }
-
-    public String getFagsakStatus() {
-        return fagsakStatus;
-    }
-
-    public void setFagsakStatus(String fagsakStatus) {
-        this.fagsakStatus = fagsakStatus;
-    }
-
-    public String getBehandlingStatus() {
-        return behandlingStatus;
-    }
-
-    public void setBehandlingStatus(String behandlingStatus) {
-        this.behandlingStatus = behandlingStatus;
-    }
+public record PipDto(Set<String> aktørIder, String fagsakStatus, String behandlingStatus) {
 }

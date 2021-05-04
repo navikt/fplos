@@ -21,7 +21,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-import no.nav.foreldrepenger.dbstoette.DBTestUtil;
+import no.nav.foreldrepenger.dbstøtte.DBTestUtil;
 import no.nav.foreldrepenger.extensions.EntityManagerFPLosAwareExtension;
 import no.nav.foreldrepenger.los.domene.typer.BehandlingId;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveEventLogg;
@@ -112,7 +112,7 @@ public class OppgaveRepositoryTest {
                 Collections.emptyList(),
                 Collections.emptyList(),
                 List.of(AndreKriterierType.UTLANDSSAK), // inkluderes
-                List.of(AndreKriterierType.SOKT_GRADERING), // ekskluderes
+                List.of(AndreKriterierType.SØKT_GRADERING), // ekskluderes
                 false,
                 null,
                 null,

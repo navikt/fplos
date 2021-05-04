@@ -16,12 +16,12 @@ public class SaksbehandlerMedAvdelingerDto {
 
     @JsonProperty("brukerIdent")
     public String getBrukerIdent() {
-        return saksbehandlerDto.getBrukerIdent().getVerdi();
+        return saksbehandlerDto.brukerIdent().getVerdi();
     }
 
     @JsonProperty("navn")
     public String getNavn() {
-        return saksbehandlerDto.getNavn();
+        return saksbehandlerDto.navn();
     }
 
     public List<String> getAvdelingsnavn() {

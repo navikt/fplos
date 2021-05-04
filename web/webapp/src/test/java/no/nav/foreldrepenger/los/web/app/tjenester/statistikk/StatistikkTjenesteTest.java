@@ -26,7 +26,7 @@ import no.nav.foreldrepenger.los.statistikk.statistikk_gammel.StatistikkReposito
 import no.nav.foreldrepenger.los.statistikk.statistikk_gammel.StatistikkTjeneste;
 import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.nøkkeltall.dto.OppgaverForAvdelingDto;
 import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.nøkkeltall.dto.OppgaverForAvdelingPerDatoDto;
-import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.nøkkeltall.dto.OppgaverForAvdelingSattManueltPaaVentDto;
+import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.nøkkeltall.dto.OppgaverForAvdelingSattManueltPåVentDto;
 import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.nøkkeltall.dto.OppgaverForFørsteStønadsdagDto;
 
 @ExtendWith(EntityManagerFPLosAwareExtension.class)
@@ -104,18 +104,18 @@ public class StatistikkTjenesteTest {
                 .collect(Collectors.toList());
 
         assertThat(resultater).hasSize(4);
-        assertThat(resultater.get(0).getFagsakYtelseType()).isEqualTo(FagsakYtelseType.FORELDREPENGER);
-        assertThat(resultater.get(0).getBehandlingType()).isEqualTo(BehandlingType.FØRSTEGANGSSØKNAD);
-        assertThat(resultater.get(0).getTilBehandling()).isEqualTo(false);
-        assertThat(resultater.get(0).getAntall()).isEqualTo(2L);
+        assertThat(resultater.get(0).fagsakYtelseType()).isEqualTo(FagsakYtelseType.FORELDREPENGER);
+        assertThat(resultater.get(0).behandlingType()).isEqualTo(BehandlingType.FØRSTEGANGSSØKNAD);
+        assertThat(resultater.get(0).tilBehandling()).isEqualTo(false);
+        assertThat(resultater.get(0).antall()).isEqualTo(2L);
 
-        assertThat(resultater.get(1).getFagsakYtelseType()).isEqualTo(FagsakYtelseType.FORELDREPENGER);
-        assertThat(resultater.get(1).getBehandlingType()).isEqualTo(BehandlingType.FØRSTEGANGSSØKNAD);
-        assertThat(resultater.get(1).getTilBehandling()).isEqualTo(true);
-        assertThat(resultater.get(1).getAntall()).isEqualTo(2L);
+        assertThat(resultater.get(1).fagsakYtelseType()).isEqualTo(FagsakYtelseType.FORELDREPENGER);
+        assertThat(resultater.get(1).behandlingType()).isEqualTo(BehandlingType.FØRSTEGANGSSØKNAD);
+        assertThat(resultater.get(1).tilBehandling()).isEqualTo(true);
+        assertThat(resultater.get(1).antall()).isEqualTo(2L);
 
-        assertThat(resultater.get(2).getAntall()).isEqualTo(1L);
-        assertThat(resultater.get(3).getAntall()).isEqualTo(1L);
+        assertThat(resultater.get(2).antall()).isEqualTo(1L);
+        assertThat(resultater.get(3).antall()).isEqualTo(1L);
     }
 
 
@@ -127,12 +127,12 @@ public class StatistikkTjenesteTest {
                 .map(OppgaverForAvdelingPerDatoDto::new)
                 .collect(Collectors.toList());
         assertThat(resultater).hasSize(3);
-        assertThat(resultater.get(0).getFagsakYtelseType()).isEqualTo(FagsakYtelseType.FORELDREPENGER);
-        assertThat(resultater.get(0).getBehandlingType()).isEqualTo(BehandlingType.FØRSTEGANGSSØKNAD);
-        assertThat(resultater.get(0).getOpprettetDato()).isEqualTo(LocalDate.now());
-        assertThat(resultater.get(0).getAntall()).isEqualTo(4L);
-        assertThat(resultater.get(1).getAntall()).isEqualTo(1L);
-        assertThat(resultater.get(2).getAntall()).isEqualTo(1L);
+        assertThat(resultater.get(0).fagsakYtelseType()).isEqualTo(FagsakYtelseType.FORELDREPENGER);
+        assertThat(resultater.get(0).behandlingType()).isEqualTo(BehandlingType.FØRSTEGANGSSØKNAD);
+        assertThat(resultater.get(0).opprettetDato()).isEqualTo(LocalDate.now());
+        assertThat(resultater.get(0).antall()).isEqualTo(4L);
+        assertThat(resultater.get(1).antall()).isEqualTo(1L);
+        assertThat(resultater.get(2).antall()).isEqualTo(1L);
     }
 
     @Test
@@ -146,10 +146,10 @@ public class StatistikkTjenesteTest {
                 .map(OppgaverForAvdelingPerDatoDto::new)
                 .collect(Collectors.toList());
         assertThat(resultater).hasSize(8);
-        assertThat(resultater.get(0).getFagsakYtelseType()).isEqualTo(FagsakYtelseType.FORELDREPENGER);
-        assertThat(resultater.get(0).getOpprettetDato()).isEqualTo(LocalDate.now().minusDays(27));
+        assertThat(resultater.get(0).fagsakYtelseType()).isEqualTo(FagsakYtelseType.FORELDREPENGER);
+        assertThat(resultater.get(0).opprettetDato()).isEqualTo(LocalDate.now().minusDays(27));
         resultater.remove(0);
-        resultater.forEach(resultat -> assertThat(resultat.getBehandlingType().equals(BehandlingType.KLAGE)));
+        resultater.forEach(resultat -> assertThat(resultat.behandlingType().equals(BehandlingType.KLAGE)));
     }
 
     @Test
@@ -157,13 +157,13 @@ public class StatistikkTjenesteTest {
         leggInnEttSettMedOppgaveEventer();
         var resultater = statistikkTjeneste.hentAntallOppgaverForAvdelingSattManueltPåVent(AVDELING_DRAMMEN_ENHET)
                 .stream()
-                .map(OppgaverForAvdelingSattManueltPaaVentDto::new)
+                .map(OppgaverForAvdelingSattManueltPåVentDto::new)
                 .collect(Collectors.toList());
         assertThat(resultater).hasSize(2);
         var resultatDto = resultater.get(1);
-        assertThat(resultatDto.getAntall()).isEqualTo(2L);
-        assertThat(resultatDto.getBehandlingFrist()).isEqualTo(LocalDate.now().plusDays(28));
-        assertThat(resultatDto.getFagsakYtelseType()).isEqualTo(FagsakYtelseType.FORELDREPENGER);
+        assertThat(resultatDto.antall()).isEqualTo(2L);
+        assertThat(resultatDto.behandlingFrist()).isEqualTo(LocalDate.now().plusDays(28));
+        assertThat(resultatDto.fagsakYtelseType()).isEqualTo(FagsakYtelseType.FORELDREPENGER);
     }
 
 
@@ -175,8 +175,8 @@ public class StatistikkTjenesteTest {
                 .map(OppgaverForFørsteStønadsdagDto::new)
                 .collect(Collectors.toList());
         assertThat(resultater).hasSize(1);
-        assertThat(resultater.get(0).getForsteStonadsdag()).isEqualTo(LocalDate.now().plusMonths(1));
-        assertThat(resultater.get(0).getAntall()).isEqualTo(6L);
+        assertThat(resultater.get(0).førsteStønadsdag()).isEqualTo(LocalDate.now().plusMonths(1));
+        assertThat(resultater.get(0).antall()).isEqualTo(6L);
     }
 
     private void leggInnEttSettMedOppgaveEventer() {

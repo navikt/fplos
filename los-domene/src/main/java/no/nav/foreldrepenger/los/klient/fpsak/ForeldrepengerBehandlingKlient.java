@@ -169,7 +169,7 @@ public class ForeldrepengerBehandlingKlient {
 
     private static boolean harGraderingFra(KontrollerFaktaDataDto faktaDataDto) {
         return faktaDataDto.perioder().stream()
-                .map(KontrollerFaktaPeriodeDto::getArbeidstidsprosent)
+                .map(KontrollerFaktaPeriodeDto::arbeidstidsprosent)
                 .filter(Objects::nonNull)
                 .anyMatch(a -> a.compareTo(BigDecimal.ZERO) != 0);
     }

@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 import no.nav.foreldrepenger.los.klient.fpsak.ForeldrepengerFagsakKlient;
 import no.nav.foreldrepenger.los.web.app.tjenester.fagsak.FagsakRestTjeneste;
 import no.nav.foreldrepenger.los.web.app.tjenester.fagsak.app.FagsakApplikasjonTjeneste;
-import no.nav.foreldrepenger.los.web.app.tjenester.fagsak.dto.SokefeltDto;
+import no.nav.foreldrepenger.los.web.app.tjenester.fagsak.dto.SøkefeltDto;
 
 public class FagsakRestTjenesteTest {
 
@@ -24,7 +24,7 @@ public class FagsakRestTjenesteTest {
 
     @Test
     public void skal_returnere_tom_liste_dersom_tomt_view() {
-        var fagsakDtos = tjeneste.søkFagsaker(new SokefeltDto("ugyldig_søkestreng"));
+        var fagsakDtos = tjeneste.søkFagsaker(new SøkefeltDto("ugyldig_søkestreng"));
         assertThat(fagsakDtos).hasSize(0);
     }
 }

@@ -50,8 +50,8 @@ public class FagsakApplikasjonTjenesteTest {
 
     @Test
     public void skal_hente_saker_på_fnr() {
-        var fagsakDto = new FagsakDto(AktørId.dummy().getId(), FNR.value(), FagsakYtelseTypeDto.FORELDREPENGER,
-                FagsakStatus.OPPRETTET, LocalDate.of(2017, Month.FEBRUARY, 1));
+        var fagsakDto = new FagsakDto(AktørId.dummy().getId(), AktørId.dummy().getId(), FNR.value(), FagsakYtelseTypeDto.FORELDREPENGER,
+                FagsakStatus.OPPRETTET, LocalDate.of(2017, Month.FEBRUARY, 1), LocalDate.of(2017, Month.FEBRUARY, 1));
         var personDto = new Person.Builder().medNavn("TEST")
                 .medFødselsdato(LocalDate.now().minusYears(20))
                 .medFnr(FNR)
@@ -72,7 +72,7 @@ public class FagsakApplikasjonTjenesteTest {
         assertThat(fagsakMedPersonDto.fagsakYtelseType().getKode()).isEqualTo(
                 fagsakDto.fagsakYtelseType().getKode());
         assertThat(fagsakMedPersonDto.status()).isEqualTo(fagsakDto.status());
-        assertThat(fagsakMedPersonDto.barnFodt()).isEqualTo(fødselsdatoBarn);
+        assertThat(fagsakMedPersonDto.barnFødt()).isEqualTo(fødselsdatoBarn);
     }
 
     @Test
@@ -84,8 +84,8 @@ public class FagsakApplikasjonTjenesteTest {
                 .build();
 
         List<FagsakDto> fagsakDtos = new ArrayList<>();
-        var fagsakDto = new FagsakDto(AktørId.dummy().getId(), SAKSNUMMER, FagsakYtelseTypeDto.FORELDREPENGER,
-                FagsakStatus.UNDER_BEHANDLING, LocalDate.now());
+        var fagsakDto = new FagsakDto(AktørId.dummy().getId(), AktørId.dummy().getId(), SAKSNUMMER, FagsakYtelseTypeDto.FORELDREPENGER,
+                FagsakStatus.UNDER_BEHANDLING, LocalDate.now(), LocalDate.now());
         fagsakDtos.add(fagsakDto);
         when(fagsakKlient.finnFagsaker(SAKSNUMMER)).thenReturn(fagsakDtos);
         when(personTjeneste.hentPerson(any())).thenReturn(Optional.of(personDto));

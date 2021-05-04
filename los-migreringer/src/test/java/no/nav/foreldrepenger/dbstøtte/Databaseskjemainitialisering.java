@@ -1,6 +1,6 @@
-package no.nav.foreldrepenger.dbstoette;
+package no.nav.foreldrepenger.dbstøtte;
 
-import static no.nav.foreldrepenger.dbstoette.DBTestUtil.kjøresAvMaven;
+import static no.nav.foreldrepenger.dbstøtte.DBTestUtil.kjøresAvMaven;
 
 import java.io.File;
 

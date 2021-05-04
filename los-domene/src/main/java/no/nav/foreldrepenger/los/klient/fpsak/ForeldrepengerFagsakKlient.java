@@ -10,7 +10,7 @@ import javax.inject.Inject;
 
 import org.apache.http.client.utils.URIBuilder;
 
-import no.nav.foreldrepenger.los.klient.fpsak.dto.SokefeltDto;
+import no.nav.foreldrepenger.los.klient.fpsak.dto.SøkefeltDto;
 import no.nav.foreldrepenger.los.klient.fpsak.dto.fagsak.FagsakDto;
 import no.nav.vedtak.felles.integrasjon.rest.OidcRestClient;
 import no.nav.vedtak.konfig.KonfigVerdi;
@@ -18,7 +18,7 @@ import no.nav.vedtak.konfig.KonfigVerdi;
 @ApplicationScoped
 public class ForeldrepengerFagsakKlient {
 
-    private static final String FAGSAK_SOK = "/fpsak/api/fagsak/sok";
+    private static final String FAGSAK_SØK = "/fpsak/api/fagsak/sok";
     private OidcRestClient oidcRestClient;
     private String baseUrl;
 
@@ -34,9 +34,9 @@ public class ForeldrepengerFagsakKlient {
     }
 
     public List<FagsakDto> finnFagsaker(String søkestreng) {
-        var uri = URI.create(baseUrl + FAGSAK_SOK);
-        var sokefeltDto = new SokefeltDto(søkestreng);
-        var fagsakDtoer = oidcRestClient.post(uri, sokefeltDto, FagsakDto[].class);
+        var uri = URI.create(baseUrl + FAGSAK_SØK);
+        var søkefeltDto = new SøkefeltDto(søkestreng);
+        var fagsakDtoer = oidcRestClient.post(uri, søkefeltDto, FagsakDto[].class);
         return Arrays.asList(fagsakDtoer);
     }
 

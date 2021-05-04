@@ -1,6 +1,6 @@
 package no.nav.foreldrepenger.los.statistikk.statistikk_ny;
 
-import no.nav.foreldrepenger.dbstoette.DBTestUtil;
+import no.nav.foreldrepenger.dbstøtte.DBTestUtil;
 import no.nav.foreldrepenger.extensions.EntityManagerFPLosAwareExtension;
 import no.nav.foreldrepenger.los.oppgave.BehandlingType;
 import no.nav.foreldrepenger.los.oppgave.OppgaveRepository;

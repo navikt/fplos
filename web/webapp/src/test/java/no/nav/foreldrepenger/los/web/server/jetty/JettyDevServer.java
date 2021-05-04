@@ -1,7 +1,7 @@
 package no.nav.foreldrepenger.los.web.server.jetty;
 
-import static no.nav.foreldrepenger.dbstoette.Databaseskjemainitialisering.migrer;
-import static no.nav.foreldrepenger.dbstoette.Databaseskjemainitialisering.settJndiOppslag;
+import static no.nav.foreldrepenger.dbstøtte.Databaseskjemainitialisering.migrer;
+import static no.nav.foreldrepenger.dbstøtte.Databaseskjemainitialisering.settJndiOppslag;
 
 import java.io.File;
 import java.io.IOException;

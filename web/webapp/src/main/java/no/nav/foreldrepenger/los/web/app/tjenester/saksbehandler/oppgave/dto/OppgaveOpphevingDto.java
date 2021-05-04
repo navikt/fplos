@@ -40,7 +40,7 @@ public class OppgaveOpphevingDto implements AbacDto {
     public String toString() {
         return "OppgaveOpphevingDto{" +
                 "oppgaveId=" + oppgaveId +
-                ", begrunnelse='" + begrunnelse + '\'' +
+                ", begrunnelse='***'" +
                 '}';
     }
 

@@ -52,7 +52,7 @@ public class SynkroniseringHendelseTask implements ProsessTaskHandler {
         hendelse.setBehandlingId(BehandlingId.fromUUID(behandlingDto.uuid()));
         hendelse.setSaksnummer(fagsakDto.saksnummer());
         hendelse.setBehandlendeEnhet(behandlingDto.behandlendeEnhetId());
-        hendelse.setAktørId(fagsakDto.aktoerId());
+        hendelse.setAktørId(fagsakDto.aktørId());
         hendelse.setBehandlingOpprettetTidspunkt(behandlingDto.opprettet());
         hendelse.setBehandlingType(behandlingDto.type());
         hendelse.setYtelseType(FagsakYtelseType.fraKode(fagsakDto.fagsakYtelseType().getKode()));

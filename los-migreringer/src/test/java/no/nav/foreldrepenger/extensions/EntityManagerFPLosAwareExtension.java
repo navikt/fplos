@@ -4,7 +4,7 @@ package no.nav.foreldrepenger.extensions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import no.nav.foreldrepenger.dbstoette.Databaseskjemainitialisering;
+import no.nav.foreldrepenger.dbstøtte.Databaseskjemainitialisering;
 import no.nav.vedtak.felles.testutilities.db.EntityManagerAwareExtension;
 
 public class EntityManagerFPLosAwareExtension extends EntityManagerAwareExtension {
