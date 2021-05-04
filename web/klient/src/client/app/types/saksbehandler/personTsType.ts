@@ -4,7 +4,7 @@ type Person = Readonly<{
   personnummer: string;
   erKvinne: boolean;
   diskresjonskode?: string;
-  dodsdato?: string;
+  dødsdato?: string;
 }>
 
 export default Person;

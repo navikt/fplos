@@ -24,7 +24,7 @@ interface OwnProps {
  * Eksempel:
  * ```html
  * <PersonInfo person={navn:"Ola" alder:{40} personnummer:"12345678910" erKvinne:false
- * erDod:false diskresjonskode:"6" dodsdato:"1990.03.03"} medPanel />
+ * erDod:false diskresjonskode:"6" dødsdato:"1990.03.03"} medPanel />
  * ```
  */
 const PersonInfo: FunctionComponent<OwnProps & WrappedComponentProps> = ({
@@ -32,7 +32,7 @@ const PersonInfo: FunctionComponent<OwnProps & WrappedComponentProps> = ({
   intl,
 }) => {
   const {
-    erKvinne, dodsdato, diskresjonskode, alder, navn, personnummer,
+    erKvinne, dødsdato, diskresjonskode, alder, navn, personnummer,
   } = person;
   return (
     <>
@@ -46,14 +46,14 @@ const PersonInfo: FunctionComponent<OwnProps & WrappedComponentProps> = ({
           <Undertittel>
             {navn}
             {' '}
-            <AlderVisning erDod={!!dodsdato} alder={alder} dodsdato={dodsdato} />
+            <AlderVisning erDod={!!dødsdato} alder={alder} dodsdato={dødsdato} />
           </Undertittel>
           <Undertekst>
             {personnummer}
           </Undertekst>
         </div>
         <div>
-          <MerkePanel erDod={!!dodsdato} diskresjonskode={diskresjonskode} />
+          <MerkePanel erDod={!!dødsdato} diskresjonskode={diskresjonskode} />
         </div>
       </div>
     </>

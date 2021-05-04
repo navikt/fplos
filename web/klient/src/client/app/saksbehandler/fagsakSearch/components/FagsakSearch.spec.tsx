@@ -21,7 +21,7 @@ describe('<FagsakSearch>', () => {
       navn: 'Under behandling',
       kode: 'UBEH',
     },
-    barnFodt: '13‎.‎02‎.‎2017‎',
+    barnFødt: '13‎.‎02‎.‎2017‎',
     opprettet: '13‎.‎02‎.‎2017‎ ‎09‎:‎54‎:‎22',
     endret: '13‎.‎02‎.‎2017‎',
     person: {

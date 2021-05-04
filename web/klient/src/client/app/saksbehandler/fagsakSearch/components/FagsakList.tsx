@@ -81,7 +81,7 @@ const FagsakList: FunctionComponent<OwnProps> = ({
             <TableColumn>{oppgave.fagsakYtelseType.navn}</TableColumn>
             <TableColumn>{oppgave.behandlingstype.navn}</TableColumn>
             <TableColumn>{oppgave.behandlingStatus ? oppgave.behandlingStatus.navn : ''}</TableColumn>
-            <TableColumn>{fagsak.barnFodt ? <DateLabel dateString={fagsak.barnFodt} /> : null}</TableColumn>
+            <TableColumn>{fagsak.barnFødt ? <DateLabel dateString={fagsak.barnFødt} /> : null}</TableColumn>
             <TableColumn><NavFrontendChevron /></TableColumn>
           </TableRow>
         ));
@@ -98,7 +98,7 @@ const FagsakList: FunctionComponent<OwnProps> = ({
               <TableColumn>{fagsakYtelseType ? fagsakYtelseType.navn : ''}</TableColumn>
               <TableColumn />
               <TableColumn>{fagsakStatusType ? fagsakStatusType.navn : ''}</TableColumn>
-              <TableColumn>{fagsak.barnFodt ? <DateLabel dateString={fagsak.barnFodt} /> : null}</TableColumn>
+              <TableColumn>{fagsak.barnFødt ? <DateLabel dateString={fagsak.barnFødt} /> : null}</TableColumn>
               <TableColumn><NavFrontendChevron /></TableColumn>
             </TableRow>
             {oppgaver.length > 0 && oppgaver}
