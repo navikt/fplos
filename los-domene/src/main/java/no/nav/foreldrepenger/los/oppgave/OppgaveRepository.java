@@ -53,8 +53,8 @@ public class OppgaveRepository {
     private static final String SYNKENDE_REKKEFØLGE = " DESC";
     private static final String BEHANDLINGSFRIST = "o.behandlingsfrist";
     private static final String BEHANDLINGOPPRETTET = "o.behandlingOpprettet";
-    private static final String FØRSTE_STØNADSDAG = "o.forsteStonadsdag";
-    private static final String BELØP = "o.belop";
+    private static final String FØRSTE_STØNADSDAG = "o.førsteStønadsdag";
+    private static final String BELØP = "o.beløp";
     private static final String FEILUTBETALINGSTART = "o.feilutbetalingstart";
     private static final String OPPGAVEFILTRERING_SORTERING_NAVN = "ORDER BY l.navn";
 
