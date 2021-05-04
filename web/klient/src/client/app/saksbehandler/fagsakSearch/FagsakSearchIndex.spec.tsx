@@ -17,7 +17,7 @@ describe('<FagsakSearchIndex>', () => {
       kode: 'OPPR',
       navn: 'test',
     },
-    barnFodt: '10.10.2017',
+    barnFødt: '10.10.2017',
     person: {
       navn: 'Espen',
       alder: 38,

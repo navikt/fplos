@@ -65,7 +65,7 @@ export const skalVisePersonkortOgTabellNårEnFinnerEnFagsakMedToOppgaver = () =>
           personnummer: '232434234',
           erKvinne: false,
         },
-        barnFodt: '2019-12-12',
+        barnFødt: '2019-12-12',
         opprettet: '2020-01-01',
       }]}
       fagsakOppgaver={[{

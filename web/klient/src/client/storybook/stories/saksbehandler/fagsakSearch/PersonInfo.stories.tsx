@@ -30,7 +30,7 @@ export const skalPersonkortForDødKvinne = () => (
       alder: 41,
       personnummer: '23232332',
       erKvinne: true,
-      dodsdato: '2020-10-10',
+      dødsdato: '2020-10-10',
     }}
   />
 );

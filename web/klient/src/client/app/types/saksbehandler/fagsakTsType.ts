@@ -8,7 +8,7 @@ type Fagsak = Readonly<{
   fagsakYtelseType: Kodeverk;
   status: Kodeverk;
   person: Person;
-  barnFodt?: string;
+  barnFødt?: string;
   behandlingStatus?: Kodeverk;
   opprettet: string;
   endret?: string;

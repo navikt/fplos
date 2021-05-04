@@ -21,7 +21,7 @@ describe('<PersonInfo>', () => {
       erDod: false,
       erVerge: true,
       diskresjonskode: '6',
-      dodsdato: '2017.01.01',
+      dødsdato: '2017.01.01',
       personstatusType: {
         kode: 'test',
         navn: 'test',
