@@ -14,17 +14,17 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 
 import io.swagger.v3.oas.annotations.Operation;
+import no.nav.foreldrepenger.los.statistikk.statistikk_gammel.StatistikkTjeneste;
 import no.nav.foreldrepenger.los.web.app.AbacAttributter;
 import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.dto.AvdelingEnhetDto;
 import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.nøkkeltall.dto.OppgaverForAvdelingDto;
 import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.nøkkeltall.dto.OppgaverForAvdelingPerDatoDto;
 import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.nøkkeltall.dto.OppgaverForAvdelingSattManueltPåVentDto;
 import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.nøkkeltall.dto.OppgaverForFørsteStønadsdagDto;
-import no.nav.foreldrepenger.los.statistikk.statistikk_gammel.StatistikkTjeneste;
 import no.nav.vedtak.sikkerhet.abac.BeskyttetRessurs;
 import no.nav.vedtak.sikkerhet.abac.BeskyttetRessursActionAttributt;
 
-@Path("/avdelingsleder/nokkeltall")
+@Path("/avdelingsleder/nøkkeltall")
 @ApplicationScoped
 @Transactional
 public class NøkkeltallRestTjeneste {
@@ -81,22 +81,12 @@ public class NøkkeltallRestTjeneste {
     }
 
     @GET
-    @Path("/behandlinger-forste-stonadsdag")
-    @Produces("application/json")
-    @Operation(description = "Første stønadsdag", tags = "AvdelingslederTall")
-    @BeskyttetRessurs(action = BeskyttetRessursActionAttributt.READ, resource = AbacAttributter.OPPGAVESTYRING_AVDELINGENHET)
-    @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
-    public List<OppgaverForFørsteStønadsdagDto> getOppgaverPerFørsteStønadsdag(@NotNull @QueryParam("avdelingEnhet") @Valid AvdelingEnhetDto avdelingEnhet) {
-        return getOppgaverPerFørsteStønadsdagNew(avdelingEnhet);
-    }
-
-    @GET
     @Path("/behandlinger-første-stønadsdag")
     @Produces("application/json")
     @Operation(description = "Første stønadsdag", tags = "AvdelingslederTall")
     @BeskyttetRessurs(action = BeskyttetRessursActionAttributt.READ, resource = AbacAttributter.OPPGAVESTYRING_AVDELINGENHET)
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
-    public List<OppgaverForFørsteStønadsdagDto> getOppgaverPerFørsteStønadsdagNew(@NotNull @QueryParam("avdelingEnhet") @Valid AvdelingEnhetDto avdelingEnhet) {
+    public List<OppgaverForFørsteStønadsdagDto> getOppgaverPerFørsteStønadsdag(@NotNull @QueryParam("avdelingEnhet") @Valid AvdelingEnhetDto avdelingEnhet) {
         return statistikkTjeneste.hentOppgaverPerFørsteStønadsdag(avdelingEnhet.getAvdelingEnhet())
                 .stream()
                 .map(OppgaverForFørsteStønadsdagDto::new)

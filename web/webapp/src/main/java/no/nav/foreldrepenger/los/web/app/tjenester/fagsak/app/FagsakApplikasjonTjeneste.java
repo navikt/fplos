@@ -79,7 +79,7 @@ public class FagsakApplikasjonTjeneste {
         var personDto = new PersonDto(person);
         return new FagsakMedPersonDto(fagsakDto.saksnummer(),
                 FagsakYtelseType.fraKode(fagsakDto.fagsakYtelseType().getKode()),
-                fagsakDto.status(), personDto, fagsakDto.barnFødt(), fagsakDto.barnFødt());
+                fagsakDto.status(), personDto, fagsakDto.barnFødt());
     }
 
 }

@@ -229,22 +229,12 @@ public class OppgaveRestTjeneste {
     }
 
     @POST
-    @Path("/flytt/sok")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    @Operation(description = "Søk etter saksbehandler som er tilknyttet behandlingskø", tags = "Saksbehandler")
-    @BeskyttetRessurs(action = BeskyttetRessursActionAttributt.READ, resource = AbacAttributter.FAGSAK)
-    public SaksbehandlerMedAvdelingerDto søkAvdelingensSaksbehandlere(@NotNull @Parameter(description = "Brukeridentifikasjon") @Valid SaksbehandlerBrukerIdentDto brukerIdent) {
-        return søkAvdelingensSaksbehandlereNew(brukerIdent);
-    }
-
-    @POST
     @Path("/flytt/søk")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Operation(description = "Søk etter saksbehandler som er tilknyttet behandlingskø", tags = "Saksbehandler")
     @BeskyttetRessurs(action = BeskyttetRessursActionAttributt.READ, resource = AbacAttributter.FAGSAK)
-    public SaksbehandlerMedAvdelingerDto søkAvdelingensSaksbehandlereNew(@NotNull @Parameter(description = "Brukeridentifikasjon") @Valid SaksbehandlerBrukerIdentDto brukerIdent) {
+    public SaksbehandlerMedAvdelingerDto søkAvdelingensSaksbehandlere(@NotNull @Parameter(description = "Brukeridentifikasjon") @Valid SaksbehandlerBrukerIdentDto brukerIdent) {
         var ident = brukerIdent.getVerdi().toUpperCase();
         var saksbehandler = saksbehandlerDtoTjeneste.hentSaksbehandlerTilknyttetMinstEnKø(ident);
         return saksbehandler.orElse(null);

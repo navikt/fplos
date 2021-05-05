@@ -20,7 +20,7 @@ import no.nav.foreldrepenger.los.web.app.tjenester.felles.dto.SakslisteIdDto;
 import no.nav.vedtak.sikkerhet.abac.BeskyttetRessurs;
 import no.nav.vedtak.sikkerhet.abac.BeskyttetRessursActionAttributt;
 
-@Path("/saksbehandler/nokkeltall")
+@Path("/saksbehandler/nøkkeltall")
 @ApplicationScoped
 @Transactional
 public class SaksbehandlerNøkkeltallRestTjeneste {
