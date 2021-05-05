@@ -125,7 +125,9 @@ class RequestRunner {
       this.notify(EventType.REQUEST_FINISHED, responseData, this.isPollingRequest);
       return responseData ? { payload: responseData } : { payload: undefined };
     } catch (error) {
-      new RequestErrorEventHandler(this.notify, this.isPollingRequest).handleError(error);
+      if (error?.message !== REQUEST_POLLING_CANCELLED) {
+        new RequestErrorEventHandler(this.notify, this.isPollingRequest).handleError(error);
+      }
       throw error;
     }
   }
