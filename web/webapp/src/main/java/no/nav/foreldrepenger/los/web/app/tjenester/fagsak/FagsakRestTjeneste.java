@@ -37,22 +37,12 @@ public class FagsakRestTjeneste {
     }
 
     @POST
-    @Path("/sok")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Operation(description = "Søk etter saker på saksnummer eller fødselsnummer", tags = "Fagsaker")
-    @BeskyttetRessurs(action = BeskyttetRessursActionAttributt.READ, resource = AbacAttributter.FAGSAK)
-    @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
-    public List<FagsakMedPersonDto> søkFagsaker(@Parameter(description = "Søkestreng kan være saksnummer, fødselsnummer eller D-nummer.") @Valid SøkefeltDto søkestreng) {
-        return søkFagsakerNew(søkestreng);
-    }
-
-    @POST
     @Path("/søk")
     @Consumes(MediaType.APPLICATION_JSON)
     @Operation(description = "Søk etter saker på saksnummer eller fødselsnummer", tags = "Fagsaker")
     @BeskyttetRessurs(action = BeskyttetRessursActionAttributt.READ, resource = AbacAttributter.FAGSAK)
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
-    public List<FagsakMedPersonDto> søkFagsakerNew(@Parameter(description = "Søkestreng kan være saksnummer, fødselsnummer eller D-nummer.") @Valid SøkefeltDto søkestreng) {
+    public List<FagsakMedPersonDto> søkFagsaker(@Parameter(description = "Søkestreng kan være saksnummer, fødselsnummer eller D-nummer.") @Valid SøkefeltDto søkestreng) {
         return fagsakApplikasjonTjeneste.hentSaker(søkestreng.getSearchString().trim());
     }
 }

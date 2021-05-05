@@ -19,7 +19,7 @@ import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.nøkkeltall.å
 import no.nav.vedtak.sikkerhet.abac.BeskyttetRessurs;
 import no.nav.vedtak.sikkerhet.abac.BeskyttetRessursActionAttributt;
 
-@Path("/avdelingsleder/nokkeltall")
+@Path("/avdelingsleder/nøkkeltall")
 @ApplicationScoped
 @Transactional
 public class NøkkeltallÅpneBehandlingerRestTjeneste {
@@ -32,17 +32,6 @@ public class NøkkeltallÅpneBehandlingerRestTjeneste {
     @Inject
     public NøkkeltallÅpneBehandlingerRestTjeneste(NøkkeltallBehandlingerVentestatus statistikkTjeneste) {
         this.nøkkeltallBehandlingerVentestatus = statistikkTjeneste;
-    }
-
-    //TODO øæå fjern
-    @GET
-    @Path("/aapne-behandlinger")
-    @Produces("application/json")
-    @Operation(description = "AapneBehandlinger", tags = "AvdelingslederTall")
-    @BeskyttetRessurs(action = BeskyttetRessursActionAttributt.READ, resource = AbacAttributter.OPPGAVESTYRING_AVDELINGENHET)
-    @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
-    public List<NøkkeltallBehandlingVentestatusDto> getAlleOppgaverForAvdeling2(@NotNull @QueryParam("avdelingEnhet") @Valid AvdelingEnhetDto avdelingEnhet) {
-        return getAlleOppgaverForAvdeling(avdelingEnhet);
     }
 
     @GET
