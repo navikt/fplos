@@ -17,7 +17,7 @@ public class ForeldrepengerHendelseOppretter implements HendelseOppretter<FpsakB
         var hendelse = new Hendelse();
         hendelse.setBehandlendeEnhet(dto.getBehandlendeEnhet());
         hendelse.setYtelseType(FagsakYtelseType.fraKode(dto.getYtelseTypeKode()));
-        hendelse.setFagsystem(Fagsystem.valueOf(dto.getFagsystem().name()));
+        hendelse.setFagsystem(Fagsystem.valueOf(dto.getFagsystem()));
         hendelse.setBehandlingType(BehandlingType.fraKode(dto.getBehandlingTypeKode()));
         hendelse.setSaksnummer(dto.getSaksnummer());
         hendelse.setBehandlingOpprettetTidspunkt(dto.getOpprettetBehandling());
