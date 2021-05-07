@@ -27,7 +27,7 @@ public class TilbakekrevingHendelseOppretter implements HendelseOppretter<Tilbak
 
         tilbakekrevingHendelse.setBehandlendeEnhet(dto.getBehandlendeEnhet());
         tilbakekrevingHendelse.setYtelseType(FagsakYtelseType.fraKode(dto.getYtelseTypeKode()));
-        tilbakekrevingHendelse.setFagsystem(Fagsystem.valueOf(dto.getFagsystem().name()));
+        tilbakekrevingHendelse.setFagsystem(Fagsystem.valueOf(dto.getFagsystem()));
         tilbakekrevingHendelse.setBehandlingType(BehandlingType.fraKode(dto.getBehandlingTypeKode()));
         tilbakekrevingHendelse.setSaksnummer(dto.getSaksnummer());
         tilbakekrevingHendelse.setBehandlingOpprettetTidspunkt(dto.getOpprettetBehandling());
