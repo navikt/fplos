@@ -88,13 +88,36 @@ public class PersonTjeneste {
         return identliste.getIdenter().stream().findFirst().map(IdentInformasjon::getIdent).map(AktørId::new);
     }
 
+    private Fødselsnummer hentFødselsnummerForAktørId(AktørId aktørId) {
+        var request = new HentIdenterQueryRequest();
+        request.setIdent(aktørId.getId());
+        request.setGrupper(List.of(IdentGruppe.FOLKEREGISTERIDENT, IdentGruppe.NPID));
+        request.setHistorikk(Boolean.FALSE);
+        var projection = new IdentlisteResponseProjection()
+                .identer(new IdentInformasjonResponseProjection().ident());
+
+        final Identliste identliste;
+
+        try {
+            identliste = pdl.hentIdenter(request, projection);
+        } catch (VLException v) {
+            if (Pdl.PDL_KLIENT_NOT_FOUND_KODE.equals(v.getKode())) {
+                return null;
+            }
+            throw v;
+        }
+        return identliste.getIdenter().stream().findFirst().map(IdentInformasjon::getIdent).map(Fødselsnummer::new).orElse(null);
+    }
+
     public Optional<Person> hentPerson(AktørId aktørId) {
         Objects.requireNonNull(aktørId, "aktørId");
         if (cacheAktørIdTilPerson.get(aktørId) != null) {
             return Optional.of(cacheAktørIdTilPerson.get(aktørId));
         }
         try {
-            var person = tilPerson(hentPdlPerson(aktørId));
+            var fnr = hentFødselsnummerForAktørId(aktørId);
+            var pdlperson = hentPdlPerson(aktørId);
+            var person = tilPerson(pdlperson, fnr);
             cacheAktørIdTilPerson.put(aktørId, person);
             return Optional.of(person);
         } catch (PdlException e) {
@@ -122,7 +145,7 @@ public class PersonTjeneste {
         return pdl.hentPerson(query, projection);
     }
 
-    private Person tilPerson(no.nav.pdl.Person person) {
+    private Person tilPerson(no.nav.pdl.Person person, Fødselsnummer fnr) {
         var fødselsdato = person.getFoedsel().stream()
                 .map(Foedsel::getFoedselsdato)
                 .filter(Objects::nonNull)
@@ -132,7 +155,8 @@ public class PersonTjeneste {
                 .filter(Objects::nonNull)
                 .findFirst().map(d -> LocalDate.parse(d, DateTimeFormatter.ISO_LOCAL_DATE)).orElse(null);
         return new Person.Builder()
-                .medFnr(fnr(person.getFolkeregisteridentifikator()))
+                //.medFnr(fnr(person.getFolkeregisteridentifikator()))
+                .medFnr(fnr)
                 .medNavn(navn(person.getNavn()))
                 .medFødselsdato(fødselsdato)
                 .medDødsdato(dødsdato)
