@@ -128,7 +128,14 @@ public final class KafkaConsumer<T extends BehandlingProsessEventDto> {
         try {
             return mapper.readValue(payload, BehandlingProsessEventDto.class);
         } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
+            LOG.warn("Ignorerer uleselig hendelse", payload);
+            return null;
+            //throw new RuntimeException(e);
+        }
+        catch (Exception e) {
+            LOG.warn("Ignorerer uleselig hendelse", payload);
+            return null;
+            //throw new RuntimeException(e);
         }
     }
 
@@ -160,10 +167,12 @@ public final class KafkaConsumer<T extends BehandlingProsessEventDto> {
         @Override
         protected Void doWork(EntityManager em) {
             var dto = deserialiser(String.valueOf(payload));
-            LOG.info("Håndterer event {}", dto.getEksternId());
-            var hendelse = hendelseOppretter.opprett((T) dto);
-            hendelseRepository.lagre(hendelse);
-            prosessTaskRepository.lagre(opprettTask(hendelse));
+            if (dto != null) {
+                LOG.info("Håndterer event {}", dto.getEksternId());
+                var hendelse = hendelseOppretter.opprett((T) dto);
+                hendelseRepository.lagre(hendelse);
+                prosessTaskRepository.lagre(opprettTask(hendelse));
+            }
             return null;
         }
     }
