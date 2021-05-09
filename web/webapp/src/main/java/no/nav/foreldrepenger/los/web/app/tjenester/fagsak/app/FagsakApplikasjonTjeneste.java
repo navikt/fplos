@@ -70,8 +70,7 @@ public class FagsakApplikasjonTjeneste {
 
     private Person personDtoFra(List<FagsakDto> fagsaker) {
         return fagsaker.stream().findAny()
-                .map(FagsakDto::aktørId)
-                .flatMap(a -> personTjeneste.hentPerson(new AktørId(a)))
+                .flatMap(f -> personTjeneste.hentPerson(new AktørId(f.aktørId()), f.saksnummer()))
                 .orElse(null);
     }
 
