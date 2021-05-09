@@ -58,7 +58,7 @@ public class FagsakApplikasjonTjenesteTest {
                 .medKjønn(NavBrukerKjønn.K)
                 .build();
         when(fagsakKlient.finnFagsaker(FNR.value())).thenReturn(Collections.singletonList(fagsakDto));
-        when(personTjeneste.hentPerson(any())).thenReturn(Optional.of(personDto));
+        when(personTjeneste.hentPerson(any(), any())).thenReturn(Optional.of(personDto));
         var fødselsdatoBarn = LocalDate.of(2017, Month.FEBRUARY, 1);
 
         // Act
@@ -88,7 +88,7 @@ public class FagsakApplikasjonTjenesteTest {
                 FagsakStatus.UNDER_BEHANDLING, LocalDate.now(), LocalDate.now());
         fagsakDtos.add(fagsakDto);
         when(fagsakKlient.finnFagsaker(SAKSNUMMER)).thenReturn(fagsakDtos);
-        when(personTjeneste.hentPerson(any())).thenReturn(Optional.of(personDto));
+        when(personTjeneste.hentPerson(any(), any())).thenReturn(Optional.of(personDto));
 
         // Act
         var resultFagsakDtos = fagsakTjeneste.hentSaker(SAKSNUMMER);

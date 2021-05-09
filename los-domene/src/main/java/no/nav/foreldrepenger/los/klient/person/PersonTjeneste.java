@@ -109,15 +109,14 @@ public class PersonTjeneste {
         return identliste.getIdenter().stream().findFirst().map(IdentInformasjon::getIdent).map(Fødselsnummer::new).orElse(null);
     }
 
-    public Optional<Person> hentPerson(AktørId aktørId) {
+    public Optional<Person> hentPerson(AktørId aktørId, String saksnummer) {
         Objects.requireNonNull(aktørId, "aktørId");
         if (cacheAktørIdTilPerson.get(aktørId) != null) {
             return Optional.of(cacheAktørIdTilPerson.get(aktørId));
         }
         try {
-            var fnr = hentFødselsnummerForAktørId(aktørId);
             var pdlperson = hentPdlPerson(aktørId);
-            var person = tilPerson(pdlperson, fnr);
+            var person = tilPerson(pdlperson, aktørId, saksnummer);
             cacheAktørIdTilPerson.put(aktørId, person);
             return Optional.of(person);
         } catch (PdlException e) {
@@ -145,7 +144,8 @@ public class PersonTjeneste {
         return pdl.hentPerson(query, projection);
     }
 
-    private Person tilPerson(no.nav.pdl.Person person, Fødselsnummer fnr) {
+    private Person tilPerson(no.nav.pdl.Person person, AktørId aktørId, String saksnummer) {
+        var fnr = fnr(person.getFolkeregisteridentifikator(), aktørId, saksnummer);
         var fødselsdato = person.getFoedsel().stream()
                 .map(Foedsel::getFoedselsdato)
                 .filter(Objects::nonNull)
@@ -155,7 +155,6 @@ public class PersonTjeneste {
                 .filter(Objects::nonNull)
                 .findFirst().map(d -> LocalDate.parse(d, DateTimeFormatter.ISO_LOCAL_DATE)).orElse(null);
         return new Person.Builder()
-                //.medFnr(fnr(person.getFolkeregisteridentifikator()))
                 .medFnr(fnr)
                 .medNavn(navn(person.getNavn()))
                 .medFødselsdato(fødselsdato)
@@ -179,13 +178,22 @@ public class PersonTjeneste {
         return navn.getEtternavn() + " " + navn.getFornavn() + (navn.getMellomnavn() == null ? "" : " " + navn.getMellomnavn());
     }
 
-    private static Fødselsnummer fnr(List<Folkeregisteridentifikator> folkeregisteridentifikator) {
-        return folkeregisteridentifikator.stream()
+    private Fødselsnummer fnr(List<Folkeregisteridentifikator> folkeregisteridentifikator, AktørId aktørId, String saksnummer) {
+        var fraHentPerson = folkeregisteridentifikator.stream()
                 .filter(i -> i.getStatus().equals("I_BRUK"))
                 .map(Folkeregisteridentifikator::getIdentifikasjonsnummer)
                 .map(Fødselsnummer::new)
-                .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("Fant ikke fødselsnummer"));
+                .findFirst();
+        if (fraHentPerson.isEmpty()) {
+            var fnr = hentFødselsnummerForAktørId(aktørId);
+            if (fnr != null) {
+                LOG.warn("PDL mangler fnr i hentPerson for sak {} , fant FNR fra hentIdenter", saksnummer);
+            } else {
+                LOG.warn("PDL mangler fnr i hentPerson for sak {} , ingen FNR fra hentIdenter", saksnummer);
+            }
+            return fnr;
+        }
+        return fraHentPerson.orElseThrow(() -> new IllegalArgumentException("Fant ikke fødselsnummer"));
     }
 
     private static NavBrukerKjønn mapKjønn(no.nav.pdl.Person person) {
