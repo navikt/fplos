@@ -66,7 +66,8 @@ class OppgaveStatistikkTest {
         oppgaveStatistikk.lagre(oppgave, KøOppgaveHendelse.LUKKET_OPPGAVE);
 
         var stats = oppgaveStatistikk.hentStatistikk(køMedTreff.getId());
-        var forventetKøStatistikk = new NyeOgFerdigstilteOppgaver(LocalDate.now(), oppgave.getBehandlingType(), 0L, 1L);
+        var statsdato = stats.stream().map(NyeOgFerdigstilteOppgaver::dato).findFirst().orElse(LocalDate.now());
+        var forventetKøStatistikk = new NyeOgFerdigstilteOppgaver(statsdato, oppgave.getBehandlingType(), 0L, 1L);
         assertThat(stats).containsExactly(forventetKøStatistikk);
     }
 
@@ -85,11 +86,13 @@ class OppgaveStatistikkTest {
         oppgaveStatistikk.lagre(knytninger);
 
         var kø2 = oppgaveStatistikk.hentStatistikk(2L);
-        assertThat(kø2).containsExactly(new NyeOgFerdigstilteOppgaver(LocalDate.now(), BehandlingType.FØRSTEGANGSSØKNAD, 0L, 1L));
+        var kø2dato = kø2.stream().map(NyeOgFerdigstilteOppgaver::dato).findFirst().orElse(LocalDate.now());
+        assertThat(kø2).containsExactly(new NyeOgFerdigstilteOppgaver(kø2dato, BehandlingType.FØRSTEGANGSSØKNAD, 0L, 1L));
         var kø1 = oppgaveStatistikk.hentStatistikk(1L);
         assertThat(kø1).isEmpty();
         var kø3 = oppgaveStatistikk.hentStatistikk(3L);
-        assertThat(kø3).containsExactly(new NyeOgFerdigstilteOppgaver(LocalDate.now(), BehandlingType.FØRSTEGANGSSØKNAD, 1L, 0L));
+        var kø3dato = kø3.stream().map(NyeOgFerdigstilteOppgaver::dato).findFirst().orElse(LocalDate.now());
+        assertThat(kø3).containsExactly(new NyeOgFerdigstilteOppgaver(kø3dato, BehandlingType.FØRSTEGANGSSØKNAD, 1L, 0L));
     }
 
     private OppgaveFiltrering kø(Avdeling avdeling) {
