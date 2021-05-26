@@ -43,7 +43,6 @@ export const RestApiPathsKeys = {
   RESERVER_OPPGAVE: new RestKey<OppgaveStatus, { oppgaveId: number }>('RESERVER_OPPGAVE'),
   FLYTT_RESERVASJON_SAKSBEHANDLER_SOK: new RestKey<SaksbehandlerForFlytting, string>('FLYTT_RESERVASJON_SAKSBEHANDLER_SOK'),
   HENT_RESERVASJONSSTATUS: new RestKey<OppgaveStatus, { oppgaveId: number }>('HENT_RESERVASJONSSTATUS'),
-  FPSAK_BEHANDLING_ID: new RestKey<number, { uuid: string }>('FPSAK_BEHANDLING_ID'),
   HENT_NYE_OG_FERDIGSTILTE_OPPGAVER: new RestKey<NyeOgFerdigstilteOppgaver[], { sakslisteId: number }>('HENT_NYE_OG_FERDIGSTILTE_OPPGAVER'),
   SAKSLISTE_SAKSBEHANDLERE: new RestKey<Saksbehandler[], { sakslisteId: number }>('SAKSLISTE_SAKSBEHANDLERE'),
   BEHANDLINGSKO_OPPGAVE_ANTALL: new RestKey<number, {sakslisteId: number}>('BEHANDLINGSKO_OPPGAVE_ANTALL'),
@@ -140,7 +139,6 @@ export const endpoints = new RestApiConfigBuilder()
   .withGet('/fplos/api/saksbehandler/oppgaver/oppgaver-for-fagsaker', RestApiPathsKeys.OPPGAVER_FOR_FAGSAKER)
   .withGet('/fplos/api/saksbehandler/oppgaver/reservasjon-status', RestApiPathsKeys.HENT_RESERVASJONSSTATUS)
   .withGet('/fplos/api/saksbehandler/nøkkeltall/nye-og-ferdigstilte-oppgaver', RestApiPathsKeys.HENT_NYE_OG_FERDIGSTILTE_OPPGAVER)
-  .withGet('/fplos/api/fpsak/behandlingId', RestApiPathsKeys.FPSAK_BEHANDLING_ID)
   .withGet('/fplos/api/saksbehandler/saksliste/saksbehandlere', RestApiPathsKeys.SAKSLISTE_SAKSBEHANDLERE)
   .withGet('/fplos/api/saksbehandler/oppgaver/antall', RestApiPathsKeys.BEHANDLINGSKO_OPPGAVE_ANTALL)
   .withGet('/fplos/api/saksbehandler/oppgaver/behandlede', RestApiPathsKeys.BEHANDLEDE_OPPGAVER)
