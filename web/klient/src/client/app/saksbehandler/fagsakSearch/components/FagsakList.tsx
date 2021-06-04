@@ -25,15 +25,15 @@ const headerTextCodes = [
 interface OwnProps {
   fagsaker: Fagsak[];
   fagsakOppgaver: Oppgave[];
-  selectFagsakCallback: (saksnummer: number) => void;
+  selectFagsakCallback: (system: string, saksnummer: number) => void;
   selectOppgaveCallback: (oppgave: Oppgave) => void;
 }
 
 const getSelectOppgaveCallback = (oppgave: Oppgave, selectOppgaveCallback: (oppgave: Oppgave) => void) => () => selectOppgaveCallback(oppgave);
 
 const getFagsakCallback = (
-  selectFagsakCallback: (saksnummer: number) => void,
-) => (_event: React.KeyboardEvent | React.MouseEvent, saksnummer: number) => selectFagsakCallback(saksnummer);
+  selectFagsakCallback: (system: string, saksnummer: number) => void,
+) => (_event: React.KeyboardEvent | React.MouseEvent, saksnummer: number) => selectFagsakCallback('FPSAK', saksnummer);
 
 export const getSorterteFagsaker = (fagsaker: Fagsak[] = []) => fagsaker.concat().sort((fagsak1, fagsak2) => {
   if (fagsak1.status.kode === FagsakStatus.AVSLUTTET && fagsak2.status.kode !== FagsakStatus.AVSLUTTET) {

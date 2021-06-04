@@ -31,7 +31,7 @@ export const getUseRestApiRunnerMock = (
 ) => (function useRestApiRunner<T, P>(
   key: RestKey<T, P>,
 ): RunnerOutput<T, P> {
-  const [data, setData] = useState(DEFAULT_STATE);
+  const [data, setData] = useState<RestApiData<T>>(DEFAULT_STATE);
 
   const startRequest = (params?: P):Promise<T> => {
     const response = requestApi.startRequest<T, P>(key.name, params);

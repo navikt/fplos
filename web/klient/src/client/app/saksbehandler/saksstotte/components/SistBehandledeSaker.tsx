@@ -4,7 +4,7 @@ import Lenke from 'nav-frontend-lenker';
 import { Undertittel, Normaltekst } from 'nav-frontend-typografi';
 
 import { restApiHooks, RestApiPathsKeys, RestApiGlobalStatePathsKeys } from 'data/fplosRestApi';
-import { getFpsakHref, getFptilbakeHref } from 'app/paths';
+import { åpneFagsak } from 'app/paths';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import Oppgave from 'types/saksbehandler/oppgaveTsType';
 
@@ -21,15 +21,9 @@ const SistBehandledeSaker: FunctionComponent = () => {
   const { data: sistBehandledeSaker = EMPTY_ARRAY } = restApiHooks.useRestApi(RestApiPathsKeys.BEHANDLEDE_OPPGAVER);
   const fpsakUrl = restApiHooks.useGlobalStateRestApiData(RestApiGlobalStatePathsKeys.FPSAK_URL);
   const fptilbakeUrl = restApiHooks.useGlobalStateRestApiData(RestApiGlobalStatePathsKeys.FPTILBAKE_URL);
-  const { startRequest: hentFpsakInternBehandlingId } = restApiHooks.useRestApiRunner(RestApiPathsKeys.FPSAK_BEHANDLING_ID);
 
   const openFpsak = useCallback((oppgave: Oppgave) => {
-    if (oppgave.system === 'FPSAK') {
-      hentFpsakInternBehandlingId({ uuid: oppgave.behandlingId })
-        .then((fagsystemInternId) => window.location.assign(getFpsakHref(fpsakUrl.verdi, oppgave.saksnummer, fagsystemInternId)));
-    } else if (oppgave.system === 'FPTILBAKE') {
-      window.location.assign(getFptilbakeHref(fptilbakeUrl.verdi, oppgave.href));
-    } else throw new Error('Fagsystemet for oppgaven er ukjent');
+    åpneFagsak(fpsakUrl.verdi, fptilbakeUrl.verdi, oppgave.system, oppgave.saksnummer, oppgave.behandlingId);
   }, [fpsakUrl, fptilbakeUrl]);
 
   return (

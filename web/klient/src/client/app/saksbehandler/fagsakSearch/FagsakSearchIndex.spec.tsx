@@ -33,7 +33,6 @@ describe('<FagsakSearchIndex>', () => {
     requestApi.mock(RestApiPathsKeys.RESERVER_OPPGAVE.name);
     requestApi.mock(RestApiPathsKeys.OPPGAVER_FOR_FAGSAKER.name);
     requestApi.mock(RestApiPathsKeys.HENT_RESERVASJONSSTATUS.name);
-    requestApi.mock(RestApiPathsKeys.FPSAK_BEHANDLING_ID.name);
 
     const wrapper = shallow(<FagsakSearchIndex
       fpsakUrl=""

@@ -24,7 +24,19 @@ export const getAvdelingslederPanelLocationCreator = (location: Location) => (av
   location, { fane: avdelingslederPanel },
 );
 
-export const getFpsakHref = (fpsakUrl: string, saksnummer: number, fagsystemInternId?: number) => (fagsystemInternId
+export const getHref = (fpsakUrl: string, saksnummer: number, fagsystemInternId?: string) => (fagsystemInternId
   ? `${fpsakUrl}/fagsak/${saksnummer}/behandling/${fagsystemInternId}/?punkt=default&fakta=default` : `${fpsakUrl}/fagsak/${saksnummer}/`);
 
-export const getFptilbakeHref = (fptilbakeUrl: string, path: string) => `${fptilbakeUrl}${path}`;
+export const åpneFagsak = (
+  fpsakUrl: string,
+  fptilbakeUrl: string,
+  system: string,
+  saksnummer: number,
+  behandlingId?: string,
+) => {
+  if (system === 'FPSAK' || system === 'FPTILBAKE') {
+    window.location.assign(getHref(system === 'FPSAK' ? fpsakUrl : fptilbakeUrl, saksnummer, behandlingId));
+  } else {
+    throw new Error('Fagsystemet for oppgaven er ukjent');
+  }
+}

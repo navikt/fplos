@@ -88,7 +88,6 @@ describe('<BehandlingskoerIndex>', () => {
   it('skal ikke vise behandlingskøer når det ikke finnes sakslister', () => {
     requestApi.mock(RestApiPathsKeys.SAKSLISTE.name, []);
     requestApi.mock(RestApiPathsKeys.RESERVER_OPPGAVE.name);
-    requestApi.mock(RestApiPathsKeys.FPSAK_BEHANDLING_ID.name);
 
     const wrapper = shallow(<BehandlingskoerIndex
       fpsakUrl="www.fpsak.no"
@@ -105,7 +104,6 @@ describe('<BehandlingskoerIndex>', () => {
     () => {
       requestApi.mock(RestApiPathsKeys.SAKSLISTE.name, sakslister);
       requestApi.mock(RestApiPathsKeys.RESERVER_OPPGAVE.name, undefined);
-      requestApi.mock(RestApiPathsKeys.FPSAK_BEHANDLING_ID.name, undefined);
 
       const wrapper = shallow(<BehandlingskoerIndex
         fpsakUrl="www.fpsak.no"
@@ -125,7 +123,6 @@ describe('<BehandlingskoerIndex>', () => {
         erReservert: true,
         erReservertAvInnloggetBruker: true,
       });
-      requestApi.mock(RestApiPathsKeys.FPSAK_BEHANDLING_ID.name, 1);
 
       const wrapper = shallow(<BehandlingskoerIndex
         fpsakUrl="www.fpsak.no"
@@ -141,10 +138,6 @@ describe('<BehandlingskoerIndex>', () => {
       const reserverOppgaveCallData = requestApi.getRequestMockData(RestApiPathsKeys.RESERVER_OPPGAVE.name);
       expect(reserverOppgaveCallData).toHaveLength(1);
       expect(reserverOppgaveCallData[0].params.oppgaveId).toEqual(1);
-
-      const hentFpsakInternBehandlingIdCallData = requestApi.getRequestMockData(RestApiPathsKeys.FPSAK_BEHANDLING_ID.name);
-      expect(hentFpsakInternBehandlingIdCallData).toHaveLength(1);
-      expect(hentFpsakInternBehandlingIdCallData[0].params.uuid).toEqual('d10e592c-e5bd-4f24-95a6-8eb1ed48f068');
     },
   );
 
@@ -153,7 +146,6 @@ describe('<BehandlingskoerIndex>', () => {
     () => {
       requestApi.mock(RestApiPathsKeys.SAKSLISTE.name, sakslister);
       requestApi.mock(RestApiPathsKeys.RESERVER_OPPGAVE.name);
-      requestApi.mock(RestApiPathsKeys.FPSAK_BEHANDLING_ID.name, {});
 
       const wrapper = shallow(<BehandlingskoerIndex
         fpsakUrl="www.fpsak.no"
@@ -175,10 +167,6 @@ describe('<BehandlingskoerIndex>', () => {
 
       const reserverOppgaveCallData = requestApi.getRequestMockData(RestApiPathsKeys.RESERVER_OPPGAVE.name);
       expect(reserverOppgaveCallData).toHaveLength(0);
-
-      const hentFpsakInternBehandlingIdCallData = requestApi.getRequestMockData(RestApiPathsKeys.FPSAK_BEHANDLING_ID.name);
-      expect(hentFpsakInternBehandlingIdCallData).toHaveLength(1);
-      expect(hentFpsakInternBehandlingIdCallData[0].params.uuid).toEqual('d10e592c-e5bd-4f24-95a6-8eb1ed48f068');
     },
   );
 });

@@ -66,7 +66,7 @@ const getUseGlobalStateRestApi = (requestApi: AbstractRequestApi) => (function u
       });
 
       requestApi.startRequest<T, P>(key.name, params)
-        .then((dataRes:{ payload: any }) => {
+        .then((dataRes:{ payload: T }) => {
           dispatch({ type: 'success', key: key.name, data: dataRes.payload });
           setData({
             state: RestApiState.SUCCESS,

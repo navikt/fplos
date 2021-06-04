@@ -16,7 +16,7 @@ interface OwnProps {
   fagsakOppgaver: Oppgave[];
   searchFagsakCallback: (values: { searchString: string, skalReservere: boolean }) => void;
   searchResultReceived: boolean;
-  selectFagsakCallback: (saksnummer: number) => void;
+  selectFagsakCallback: (system: string, saksnummer: number) => void;
   selectOppgaveCallback: (oppgave: Oppgave) => void;
   searchStarted: boolean;
   searchResultAccessDenied?: {
