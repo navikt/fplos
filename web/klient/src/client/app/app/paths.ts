@@ -39,4 +39,4 @@ export const åpneFagsak = (
   } else {
     throw new Error('Fagsystemet for oppgaven er ukjent');
   }
-}
+};
