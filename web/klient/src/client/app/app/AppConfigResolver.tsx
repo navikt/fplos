@@ -21,13 +21,11 @@ const AppConfigResolver: FunctionComponent<OwnProps> = ({
   const { state: stateNavAnsatt } = restApiHooks.useGlobalStateRestApi(RestApiGlobalStatePathsKeys.NAV_ANSATT);
   const { state: stateKodeverk } = restApiHooks.useGlobalStateRestApi(RestApiGlobalStatePathsKeys.KODEVERK);
   const { state: stateFpsakUrl } = restApiHooks.useGlobalStateRestApi(RestApiGlobalStatePathsKeys.FPSAK_URL);
-  const { state: stateFptilbakeUrl } = restApiHooks.useGlobalStateRestApi(RestApiGlobalStatePathsKeys.FPTILBAKE_URL);
   const { state: stateDriftsmeldinger } = restApiHooks.useGlobalStateRestApi(RestApiGlobalStatePathsKeys.DRIFTSMELDINGER);
 
   if (stateNavAnsatt === RestApiState.LOADING
     || stateKodeverk === RestApiState.LOADING
     || stateFpsakUrl === RestApiState.LOADING
-    || stateFptilbakeUrl === RestApiState.LOADING
     || stateDriftsmeldinger === RestApiState.LOADING) {
     return <LoadingPanel />;
   }

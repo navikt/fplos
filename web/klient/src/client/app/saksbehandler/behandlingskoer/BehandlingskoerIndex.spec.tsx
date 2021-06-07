@@ -91,7 +91,6 @@ describe('<BehandlingskoerIndex>', () => {
 
     const wrapper = shallow(<BehandlingskoerIndex
       fpsakUrl="www.fpsak.no"
-      fptilbakeUrl="www.fptilbake.no"
       setValgtSakslisteId={sinon.spy()}
     />);
 
@@ -107,7 +106,6 @@ describe('<BehandlingskoerIndex>', () => {
 
       const wrapper = shallow(<BehandlingskoerIndex
         fpsakUrl="www.fpsak.no"
-        fptilbakeUrl="www.fptilbake.no"
         setValgtSakslisteId={sinon.spy()}
       />);
 
@@ -126,7 +124,6 @@ describe('<BehandlingskoerIndex>', () => {
 
       const wrapper = shallow(<BehandlingskoerIndex
         fpsakUrl="www.fpsak.no"
-        fptilbakeUrl="www.fptilbake.no"
         setValgtSakslisteId={sinon.spy()}
       />);
 
@@ -149,7 +146,6 @@ describe('<BehandlingskoerIndex>', () => {
 
       const wrapper = shallow(<BehandlingskoerIndex
         fpsakUrl="www.fpsak.no"
-        fptilbakeUrl="www.fptilbake.no"
         setValgtSakslisteId={sinon.spy()}
       />);
 

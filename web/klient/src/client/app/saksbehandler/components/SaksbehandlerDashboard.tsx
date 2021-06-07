@@ -22,7 +22,6 @@ export const SaksbehandlerDashboard: FunctionComponent<OwnProps> = ({
   setValgtSakslisteId,
 }) => {
   const fpsakUrl = restApiHooks.useGlobalStateRestApiData(RestApiGlobalStatePathsKeys.FPSAK_URL);
-  const fptilbakeUrl = restApiHooks.useGlobalStateRestApiData(RestApiGlobalStatePathsKeys.FPTILBAKE_URL);
 
   if (!fpsakUrl) {
     return null;
@@ -37,11 +36,10 @@ export const SaksbehandlerDashboard: FunctionComponent<OwnProps> = ({
               <Panel className={styles.sakslistePanel}>
                 <BehandlingskoerIndex
                   fpsakUrl={fpsakUrl.verdi}
-                  fptilbakeUrl={fptilbakeUrl.verdi}
                   valgtSakslisteId={valgtSakslisteId}
                   setValgtSakslisteId={setValgtSakslisteId}
                 />
-                <FagsakSearchIndex fpsakUrl={fpsakUrl.verdi} fptilbakeUrl={fptilbakeUrl.verdi} />
+                <FagsakSearchIndex fpsakUrl={fpsakUrl.verdi} />
               </Panel>
             </div>
           </div>

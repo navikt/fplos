@@ -20,11 +20,10 @@ const EMPTY_ARRAY: Oppgave[] = [];
 const SistBehandledeSaker: FunctionComponent = () => {
   const { data: sistBehandledeSaker = EMPTY_ARRAY } = restApiHooks.useRestApi(RestApiPathsKeys.BEHANDLEDE_OPPGAVER);
   const fpsakUrl = restApiHooks.useGlobalStateRestApiData(RestApiGlobalStatePathsKeys.FPSAK_URL);
-  const fptilbakeUrl = restApiHooks.useGlobalStateRestApiData(RestApiGlobalStatePathsKeys.FPTILBAKE_URL);
 
   const openFpsak = useCallback((oppgave: Oppgave) => {
-    åpneFagsak(fpsakUrl.verdi, fptilbakeUrl.verdi, oppgave.system, oppgave.saksnummer, oppgave.behandlingId);
-  }, [fpsakUrl, fptilbakeUrl]);
+    åpneFagsak(fpsakUrl.verdi, oppgave.system, oppgave.saksnummer, oppgave.behandlingId);
+  }, [fpsakUrl]);
 
   return (
     <>

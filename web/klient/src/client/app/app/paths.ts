@@ -29,13 +29,12 @@ export const getHref = (fpsakUrl: string, saksnummer: number, fagsystemInternId?
 
 export const åpneFagsak = (
   fpsakUrl: string,
-  fptilbakeUrl: string,
   system: string,
   saksnummer: number,
   behandlingId?: string,
 ) => {
   if (system === 'FPSAK' || system === 'FPTILBAKE') {
-    window.location.assign(getHref(system === 'FPSAK' ? fpsakUrl : fptilbakeUrl, saksnummer, behandlingId));
+    window.location.assign(getHref(fpsakUrl, saksnummer, behandlingId));
   } else {
     throw new Error('Fagsystemet for oppgaven er ukjent');
   }

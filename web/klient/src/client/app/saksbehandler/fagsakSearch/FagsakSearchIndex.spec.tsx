@@ -36,7 +36,6 @@ describe('<FagsakSearchIndex>', () => {
 
     const wrapper = shallow(<FagsakSearchIndex
       fpsakUrl=""
-      fptilbakeUrl=""
     />);
 
     const fagsakSearchIndex = wrapper.find(FagsakSearch);
