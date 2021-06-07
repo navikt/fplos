@@ -16,14 +16,12 @@ const EMPTY_ARRAY: Saksliste[] = [];
 const openSak = (
   oppgave: Oppgave,
   fpsakUrl: string,
-  fptilbakeUrl: string,
 ) => {
-  åpneFagsak(fpsakUrl, fptilbakeUrl, oppgave.system, oppgave.saksnummer, oppgave.behandlingId);
+  åpneFagsak(fpsakUrl, oppgave.system, oppgave.saksnummer, oppgave.behandlingId);
 };
 
 interface OwnProps {
   fpsakUrl: string;
-  fptilbakeUrl: string;
   valgtSakslisteId?: number;
   setValgtSakslisteId: (sakslisteId: number) => void;
 }
@@ -35,7 +33,6 @@ const BehandlingskoerIndex: FunctionComponent<OwnProps> = ({
   valgtSakslisteId,
   setValgtSakslisteId,
   fpsakUrl,
-  fptilbakeUrl,
 }) => {
   const [reservertAvAnnenSaksbehandler, setReservertAvAnnenSaksbehandler] = useState<boolean>(false);
   const [reservertOppgave, setReservertOppgave] = useState<Oppgave>();
@@ -47,12 +44,12 @@ const BehandlingskoerIndex: FunctionComponent<OwnProps> = ({
 
   const reserverOppgaveOgApne = useCallback((oppgave: Oppgave) => {
     if (oppgave.status.erReservert) {
-      openSak(oppgave, fpsakUrl, fptilbakeUrl);
+      openSak(oppgave, fpsakUrl);
     } else {
       reserverOppgave({ oppgaveId: oppgave.id })
         .then((nyOppgaveStatus) => {
           if (nyOppgaveStatus && nyOppgaveStatus.erReservert && nyOppgaveStatus.erReservertAvInnloggetBruker) {
-            openSak(oppgave, fpsakUrl, fptilbakeUrl);
+            openSak(oppgave, fpsakUrl);
           } else if (nyOppgaveStatus && nyOppgaveStatus.erReservert && !nyOppgaveStatus.erReservertAvInnloggetBruker) {
             setReservertAvAnnenSaksbehandler(true);
             setReservertOppgave(oppgave);
@@ -60,15 +57,15 @@ const BehandlingskoerIndex: FunctionComponent<OwnProps> = ({
           }
         });
     }
-  }, [fpsakUrl, fptilbakeUrl]);
+  }, [fpsakUrl]);
 
   const lukkErReservertModalOgOpneOppgave = useCallback((oppgave: Oppgave) => {
     setReservertAvAnnenSaksbehandler(false);
     setReservertOppgave(undefined);
     setReservertOppgaveStatus(undefined);
 
-    openSak(oppgave, fpsakUrl, fptilbakeUrl);
-  }, [fpsakUrl, fptilbakeUrl]);
+    openSak(oppgave, fpsakUrl);
+  }, [fpsakUrl]);
 
   if (sakslister.length === 0) {
     return null;

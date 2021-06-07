@@ -93,7 +93,6 @@ export const RestApiPathsKeys = {
 export const endpoints = new RestApiConfigBuilder()
   .withGet('/fplos/api/saksbehandler', RestApiGlobalStatePathsKeys.NAV_ANSATT)
   .withGet('/fplos/api/konfig/fpsak-url', RestApiGlobalStatePathsKeys.FPSAK_URL)
-  .withGet('/fplos/api/konfig/fptilbake-url', RestApiGlobalStatePathsKeys.FPTILBAKE_URL)
   .withGet('/fplos/api/kodeverk', RestApiGlobalStatePathsKeys.KODEVERK)
   .withGet('/fplos/api/driftsmeldinger', RestApiGlobalStatePathsKeys.DRIFTSMELDINGER)
 

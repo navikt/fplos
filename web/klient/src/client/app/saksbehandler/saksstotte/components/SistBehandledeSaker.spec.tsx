@@ -63,7 +63,6 @@ describe('<SistBehandledeSaker>', () => {
     }];
 
     requestApi.mock(RestApiGlobalStatePathsKeys.FPSAK_URL.name, { verdi: 'url' });
-    requestApi.mock(RestApiGlobalStatePathsKeys.FPTILBAKE_URL.name, { verdi: 'url' });
     requestApi.mock(RestApiPathsKeys.BEHANDLEDE_OPPGAVER.name, oppgaver);
 
     const wrapper = shallow(<SistBehandledeSaker />);
@@ -80,7 +79,6 @@ describe('<SistBehandledeSaker>', () => {
       const oppgaver: Oppgave[] = [];
 
       requestApi.mock(RestApiGlobalStatePathsKeys.FPSAK_URL.name, { verdi: 'url' });
-      requestApi.mock(RestApiGlobalStatePathsKeys.FPTILBAKE_URL.name, { verdi: 'url' });
       requestApi.mock(RestApiPathsKeys.BEHANDLEDE_OPPGAVER.name, oppgaver);
 
       const wrapper = shallow(<SistBehandledeSaker />);

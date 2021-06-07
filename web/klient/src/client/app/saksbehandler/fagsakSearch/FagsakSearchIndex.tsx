@@ -11,13 +11,12 @@ import OppgaveStatus from 'types/saksbehandler/oppgaveStatusTsType';
 import Oppgave from 'types/saksbehandler/oppgaveTsType';
 import FagsakSearch from './components/FagsakSearch';
 
-const getGoToSakFn = (fpsakUrl: string, fptilbakeUrl: string) => (system: string, saksnummer: number, behandlingId?: string) => {
-  åpneFagsak(fpsakUrl, fptilbakeUrl, system, saksnummer, behandlingId);
+const getGoToSakFn = (fpsakUrl: string) => (system: string, saksnummer: number, behandlingId?: string) => {
+  åpneFagsak(fpsakUrl, system, saksnummer, behandlingId);
 };
 
 interface OwnProps {
   fpsakUrl: string;
-  fptilbakeUrl: string;
 }
 
 const EMPTY_ARRAY_FAGSAK: Fagsak[] = [];
@@ -31,9 +30,8 @@ const EMPTY_ARRAY_OPPGAVER: Oppgave[] = [];
  */
 const FagsakSearchIndex: FunctionComponent<OwnProps> = ({
   fpsakUrl,
-  fptilbakeUrl,
 }) => {
-  const goToSak = getGoToSakFn(fpsakUrl, fptilbakeUrl);
+  const goToSak = getGoToSakFn(fpsakUrl);
 
   const [skalReservere, setSkalReservere] = useState(false);
   const [reservertAvAnnenSaksbehandler, setReservertAvAnnenSaksbehandler] = useState(false);
