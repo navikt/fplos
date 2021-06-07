@@ -11,7 +11,6 @@
   "env": {
     "LOADBALANCER_URL": "https://app.adeo.no",
     "FPSAK_FRONTEND_URL": "https://app.adeo.no/fpsak",
-    "FPTILBAKE_FRONTEND_URL":  "https://app.adeo.no",
     "SECURITYTOKENSERVICE_URL": "https://sts.adeo.no/SecurityTokenServiceProvider/",
     "ABAC_PDP_ENDPOINT_URL": "http://abac-foreldrepenger.teamabac/application/authorize",
     "OPENIDCONNECT_ISSOHOST": "https://isso.adeo.no:443/isso/oauth2",
