@@ -19,16 +19,13 @@ public class KonfigRestTjeneste {
 
     private String fpsakFrontendUrl;
 
-    private String fptilbakeFrontendUrl;
-
     public KonfigRestTjeneste() {
         //NOSONAR
     }
 
     @Inject
-    public KonfigRestTjeneste(@KonfigVerdi("fpsak.frontend.url") String fpsakFrontendUrl, @KonfigVerdi("fptilbake.frontend.url") String fptilbakeFrontendUrl) {
+    public KonfigRestTjeneste(@KonfigVerdi("fpsak.frontend.url") String fpsakFrontendUrl) {
         this.fpsakFrontendUrl = fpsakFrontendUrl;
-        this.fptilbakeFrontendUrl = fptilbakeFrontendUrl;
     }
 
     @GET
@@ -39,16 +36,6 @@ public class KonfigRestTjeneste {
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
     public Konfig hentFpsakUrl() {
         return new Konfig(fpsakFrontendUrl);
-    }
-
-    @GET
-    @Path("/fptilbake-url")
-    @Produces("application/json")
-    @Operation(description = "Henter basis lenke til FPTILBAKE.", tags = "Konfigurasjon")
-    @BeskyttetRessurs(action = READ, resource = AbacAttributter.APPLIKASJON, sporingslogg = false)
-    @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
-    public Konfig hentFptilbakeUrl() {
-        return new Konfig(fptilbakeFrontendUrl);
     }
 
     public static class Konfig {
