@@ -15,7 +15,6 @@ import no.nav.vedtak.felles.prosesstask.api.ProsessTaskData;
 import no.nav.vedtak.felles.prosesstask.api.ProsessTaskRepository;
 import no.nav.vedtak.log.mdc.MDCOperations;
 
-
 @ApplicationScoped
 public class SynkroniseringHendelseTaskOppretterTjeneste {
 

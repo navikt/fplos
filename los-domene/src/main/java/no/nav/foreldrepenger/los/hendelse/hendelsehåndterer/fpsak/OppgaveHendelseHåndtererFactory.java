@@ -24,7 +24,7 @@ import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.Op
 import no.nav.foreldrepenger.los.hendelse.hendelseoppretter.hendelse.Hendelse;
 import no.nav.foreldrepenger.los.klient.fpsak.Aksjonspunkt;
 import no.nav.foreldrepenger.los.klient.fpsak.BehandlingFpsak;
-import no.nav.foreldrepenger.los.klient.fpsak.ForeldrepengerBehandlingKlient;
+import no.nav.foreldrepenger.los.klient.fpsak.FPBehandling;
 import no.nav.foreldrepenger.los.oppgave.OppgaveRepository;
 import no.nav.foreldrepenger.los.statistikk.statistikk_ny.OppgaveStatistikk;
 
@@ -37,14 +37,13 @@ public class OppgaveHendelseHåndtererFactory {
     private OppgaveRepository oppgaveRepository;
     private OppgaveEgenskapHåndterer oppgaveEgenskapHåndterer;
     private OppgaveStatistikk oppgaveStatistikk;
-    private ForeldrepengerBehandlingKlient foreldrePengerBehandlingKlient;
-
+    private FPBehandling foreldrePengerBehandlingKlient;
 
     @Inject
-    public OppgaveHendelseHåndtererFactory(ForeldrepengerBehandlingKlient foreldrePengerBehandlingKlient,
-                                           OppgaveRepository oppgaveRepository,
-                                           OppgaveEgenskapHåndterer oppgaveEgenskapHåndterer,
-                                           OppgaveStatistikk oppgaveStatistikk) {
+    public OppgaveHendelseHåndtererFactory(FPBehandling foreldrePengerBehandlingKlient,
+            OppgaveRepository oppgaveRepository,
+            OppgaveEgenskapHåndterer oppgaveEgenskapHåndterer,
+            OppgaveStatistikk oppgaveStatistikk) {
         this.foreldrePengerBehandlingKlient = foreldrePengerBehandlingKlient;
         this.oppgaveRepository = oppgaveRepository;
         this.oppgaveEgenskapHåndterer = oppgaveEgenskapHåndterer;
@@ -103,7 +102,8 @@ public class OppgaveHendelseHåndtererFactory {
             if (oppgaveHistorikk.erÅpenOppgave()) {
                 return oppgaveHistorikk.erSisteOpprettedeOppgaveTilBeslutter()
                         ? new ReturFraBeslutterHendelseHåndterer(oppgaveRepository, oppgaveEgenskapHåndterer, oppgaveStatistikk, behandlingFpsak)
-                        : new OppdaterOppgaveegenskaperHendelseHåndterer(oppgaveRepository, oppgaveEgenskapHåndterer, oppgaveStatistikk, behandlingFpsak);
+                        : new OppdaterOppgaveegenskaperHendelseHåndterer(oppgaveRepository, oppgaveEgenskapHåndterer, oppgaveStatistikk,
+                                behandlingFpsak);
             }
             return new GjenåpneOppgaveHendelseHåndterer(oppgaveRepository, oppgaveEgenskapHåndterer, oppgaveStatistikk, behandlingFpsak);
         }

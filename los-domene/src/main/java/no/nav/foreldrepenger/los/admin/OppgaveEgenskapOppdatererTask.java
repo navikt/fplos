@@ -5,7 +5,7 @@ import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import no.nav.foreldrepenger.los.klient.fpsak.ForeldrepengerBehandlingKlient;
+import no.nav.foreldrepenger.los.klient.fpsak.FPBehandling;
 import no.nav.foreldrepenger.los.oppgave.Oppgave;
 import no.nav.foreldrepenger.los.oppgave.OppgaveEgenskap;
 import no.nav.foreldrepenger.los.oppgave.OppgaveRepository;
@@ -20,10 +20,10 @@ public class OppgaveEgenskapOppdatererTask implements ProsessTaskHandler {
     public static final String EGENSKAPMAPPER = "oppgaveegenskap.egenskapmapper";
 
     private OppgaveRepository oppgaveRepository;
-    private ForeldrepengerBehandlingKlient fpsakKlient;
+    private FPBehandling fpsakKlient;
 
     @Inject
-    public OppgaveEgenskapOppdatererTask(OppgaveRepository oppgaveRepository, ForeldrepengerBehandlingKlient fpsakKlient) {
+    public OppgaveEgenskapOppdatererTask(OppgaveRepository oppgaveRepository, FPBehandling fpsakKlient) {
         this.oppgaveRepository = oppgaveRepository;
         this.fpsakKlient = fpsakKlient;
     }
@@ -50,7 +50,7 @@ public class OppgaveEgenskapOppdatererTask implements ProsessTaskHandler {
     }
 
     private static OppgaveEgenskap lagAktivEgenskap(Oppgave oppgave, List<OppgaveEgenskap> eksisterendeEgenskaper,
-                                                    OppgaveEgenskapTypeMapper oppgaveEgenskapTypeMapper) {
+            OppgaveEgenskapTypeMapper oppgaveEgenskapTypeMapper) {
         var type = oppgaveEgenskapTypeMapper.getType();
         var egenskap = eksisterendeEgenskaper.stream()
                 .filter(oe -> oe.getAndreKriterierType().equals(type))
