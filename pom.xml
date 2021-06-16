@@ -26,8 +26,8 @@
 
         <fp-kontrakter.version>5.2.3</fp-kontrakter.version>
         <tjenestespesifikasjoner.version>1.2019.12.18-12.22-ce897c4eb2c1</tjenestespesifikasjoner.version>
-        <felles.version>3.2.104</felles.version>
-        <prosesstask.version>2.5.29</prosesstask.version>
+        <felles.version>3.2.102</felles.version>
+        <prosesstask.version>2.5.28</prosesstask.version>
 
         <!-- Eksterne -->
         <woodstox.version>6.2.3</woodstox.version>
