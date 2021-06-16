@@ -4,7 +4,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Optional;
 
-import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
@@ -17,7 +16,6 @@ import no.nav.foreldrepenger.los.klient.fpsak.dto.behandling.BehandlingDto;
 import no.nav.foreldrepenger.los.klient.fpsak.dto.behandling.ResourceLink;
 import no.nav.vedtak.felles.integrasjon.rest.OidcRestClient;
 
-@ApplicationScoped
 @Deprecated
 @Dependent
 /**
