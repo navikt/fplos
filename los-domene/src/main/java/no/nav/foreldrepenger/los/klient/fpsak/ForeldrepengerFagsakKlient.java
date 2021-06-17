@@ -16,7 +16,7 @@ import no.nav.vedtak.felles.integrasjon.rest.OidcRestClient;
 import no.nav.vedtak.konfig.KonfigVerdi;
 
 @ApplicationScoped
-public class ForeldrepengerFagsakKlient {
+public class ForeldrepengerFagsakKlient implements Fagsaker {
 
     private static final String FAGSAK_SØK = "/fpsak/api/fagsak/sok";
     private OidcRestClient oidcRestClient;
@@ -24,7 +24,7 @@ public class ForeldrepengerFagsakKlient {
 
     @Inject
     public ForeldrepengerFagsakKlient(OidcRestClient oidcRestClient,
-                                      @KonfigVerdi(value = "fpsak.url", defaultVerdi = "http://fpsak") String baseUrl) {
+            @KonfigVerdi(value = "fpsak.url", defaultVerdi = "http://fpsak") String baseUrl) {
         this.oidcRestClient = oidcRestClient;
         this.baseUrl = baseUrl;
     }
@@ -33,6 +33,7 @@ public class ForeldrepengerFagsakKlient {
         // CDI
     }
 
+    @Override
     public List<FagsakDto> finnFagsaker(String søkestreng) {
         var uri = URI.create(baseUrl + FAGSAK_SØK);
         var søkefeltDto = new SøkefeltDto(søkestreng);
@@ -40,6 +41,7 @@ public class ForeldrepengerFagsakKlient {
         return Arrays.asList(fagsakDtoer);
     }
 
+    @Override
     public <T> T get(URI href, Class<T> cls) {
         try {
             var uriBuilder = new URIBuilder(baseUrl);

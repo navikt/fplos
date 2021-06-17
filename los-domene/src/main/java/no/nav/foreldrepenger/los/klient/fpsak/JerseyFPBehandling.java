@@ -13,12 +13,12 @@ import javax.inject.Inject;
 import no.nav.foreldrepenger.konfig.KonfigVerdi;
 import no.nav.foreldrepenger.los.klient.fpsak.dto.behandling.BehandlingDto;
 import no.nav.foreldrepenger.los.klient.fpsak.dto.behandling.ResourceLink;
-import no.nav.vedtak.felles.integrasjon.rest.jersey.AbstractJerseyRestClient;
+import no.nav.vedtak.felles.integrasjon.rest.jersey.AbstractJerseyOidcRestClient;
 import no.nav.vedtak.felles.integrasjon.rest.jersey.Jersey;
 
 @Jersey
 @Dependent
-public class JerseyFPBehandling extends AbstractJerseyRestClient implements FPBehandling {
+public class JerseyFPBehandling extends AbstractJerseyOidcRestClient implements FPBehandling {
 
     private static final String BEHANDLING_ID = "behandlingId";
 
