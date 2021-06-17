@@ -94,9 +94,7 @@ public class ApplicationConfig extends Application {
         classes.add(AdminRestTjeneste.class);
         classes.add(AdminProsesstaskRestTjeneste.class);
         classes.add(SaksbehandlerNøkkeltallRestTjeneste.class);
-        classes.add(FpsakRestTjeneste.class);
         classes.add(ProsessTaskRestTjeneste.class);
-
         classes.add(ConstraintViolationMapper.class);
         classes.add(JsonMappingExceptionMapper.class);
         classes.add(JsonParseExceptionMapper.class);
