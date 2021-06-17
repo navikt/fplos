@@ -7,7 +7,7 @@ import no.nav.foreldrepenger.los.domene.typer.BehandlingId;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.OppgaveHendelseHåndtererFactory;
 import no.nav.foreldrepenger.los.hendelse.hendelseoppretter.hendelse.Fagsystem;
 import no.nav.foreldrepenger.los.hendelse.hendelseoppretter.hendelse.Hendelse;
-import no.nav.foreldrepenger.los.klient.fpsak.FPBehandling;
+import no.nav.foreldrepenger.los.klient.fpsak.ForeldrepengerBehandling;
 import no.nav.foreldrepenger.los.klient.fpsak.ForeldrepengerFagsakKlient;
 import no.nav.foreldrepenger.los.klient.fpsak.dto.behandling.BehandlingDto;
 import no.nav.foreldrepenger.los.klient.fpsak.dto.behandling.ResourceLink;
@@ -23,12 +23,12 @@ public class SynkroniseringHendelseTask implements ProsessTaskHandler {
 
     public static final String TASKTYPE = "synkronisering.hendelse";
 
-    private FPBehandling behandlingKlient;
+    private ForeldrepengerBehandling behandlingKlient;
     private ForeldrepengerFagsakKlient fagsakKlient;
     private OppgaveHendelseHåndtererFactory oppgaveHendelseHåndtererFactory;
 
     @Inject
-    public SynkroniseringHendelseTask(FPBehandling behandlingKlient,
+    public SynkroniseringHendelseTask(ForeldrepengerBehandling behandlingKlient,
             ForeldrepengerFagsakKlient fagsakKlient,
             OppgaveHendelseHåndtererFactory oppgaveHendelseHåndtererFactory) {
         this.behandlingKlient = behandlingKlient;

@@ -24,7 +24,7 @@ import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.Op
 import no.nav.foreldrepenger.los.hendelse.hendelseoppretter.hendelse.Hendelse;
 import no.nav.foreldrepenger.los.klient.fpsak.Aksjonspunkt;
 import no.nav.foreldrepenger.los.klient.fpsak.BehandlingFpsak;
-import no.nav.foreldrepenger.los.klient.fpsak.FPBehandling;
+import no.nav.foreldrepenger.los.klient.fpsak.ForeldrepengerBehandling;
 import no.nav.foreldrepenger.los.oppgave.OppgaveRepository;
 import no.nav.foreldrepenger.los.statistikk.statistikk_ny.OppgaveStatistikk;
 
@@ -37,10 +37,10 @@ public class OppgaveHendelseHåndtererFactory {
     private OppgaveRepository oppgaveRepository;
     private OppgaveEgenskapHåndterer oppgaveEgenskapHåndterer;
     private OppgaveStatistikk oppgaveStatistikk;
-    private FPBehandling foreldrePengerBehandlingKlient;
+    private ForeldrepengerBehandling foreldrePengerBehandlingKlient;
 
     @Inject
-    public OppgaveHendelseHåndtererFactory(FPBehandling foreldrePengerBehandlingKlient,
+    public OppgaveHendelseHåndtererFactory(ForeldrepengerBehandling foreldrePengerBehandlingKlient,
             OppgaveRepository oppgaveRepository,
             OppgaveEgenskapHåndterer oppgaveEgenskapHåndterer,
             OppgaveStatistikk oppgaveStatistikk) {

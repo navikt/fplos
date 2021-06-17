@@ -16,9 +16,8 @@ import no.nav.vedtak.felles.integrasjon.rest.OidcRestClient;
 import no.nav.vedtak.konfig.KonfigVerdi;
 
 @ApplicationScoped
-public class ForeldrepengerFagsakKlient implements Fagsaker {
+public class ForeldrepengerFagsakKlient implements ForeldrepengerFagsaker {
 
-    private static final String FAGSAK_SØK = "/fpsak/api/fagsak/sok";
     private OidcRestClient oidcRestClient;
     private String baseUrl;
 

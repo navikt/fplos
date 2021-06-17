@@ -2,7 +2,7 @@ package no.nav.foreldrepenger.los.klient.fpsak;
 
 import java.util.function.Supplier;
 
-public class Lazy<V> {
+class Lazy<V> {
 
     private final Supplier<V> supplier;
     private V result;

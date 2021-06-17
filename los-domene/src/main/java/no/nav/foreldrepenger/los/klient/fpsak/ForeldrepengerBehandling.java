@@ -27,9 +27,10 @@ import no.nav.foreldrepenger.los.klient.fpsak.dto.inntektarbeidytelse.InntektArb
 import no.nav.foreldrepenger.los.klient.fpsak.dto.inntektarbeidytelse.InntektsmeldingDto;
 import no.nav.foreldrepenger.los.klient.fpsak.dto.ytelsefordeling.YtelseFordelingDto;
 
-public interface FPBehandling {
+public interface ForeldrepengerBehandling {
 
-    static final Logger LOG = LoggerFactory.getLogger(FPBehandling.class);
+    static final String BEHANDLING_ID = "behandlingId";
+    static final Logger LOG = LoggerFactory.getLogger(ForeldrepengerBehandling.class);
     static final String FPSAK_BEHANDLINGER = "/fpsak/api/behandlinger";
     static final String AKSJONSPUNKTER_LINK = "aksjonspunkter";
     static final String INNTEKT_ARBEID_YTELSE_LINK = "inntekt-arbeid-ytelse";
@@ -73,7 +74,7 @@ public interface FPBehandling {
     private List<Aksjonspunkt> hentAksjonspunkter(List<ResourceLink> links) {
         return velgLink(links, AKSJONSPUNKTER_LINK)
                 .flatMap(ap -> hentFraResourceLink(ap, AksjonspunktDto[].class))
-                .map(FPBehandling::aksjonspunktFraDto)
+                .map(ForeldrepengerBehandling::aksjonspunktFraDto)
                 .orElse(Collections.emptyList());
     }
 
@@ -87,7 +88,7 @@ public interface FPBehandling {
     private Boolean hentHarRefusjonskrav(List<ResourceLink> links) {
         return velgLink(links, INNTEKT_ARBEID_YTELSE_LINK)
                 .flatMap(iay -> hentFraResourceLink(iay, InntektArbeidYtelseDto.class))
-                .map(FPBehandling::harRefusjonskrav)
+                .map(ForeldrepengerBehandling::harRefusjonskrav)
                 .orElse(null); // har ikke inntektsmelding enda, kan ikke vurdere refusjonskrav
     }
 
