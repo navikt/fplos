@@ -39,6 +39,7 @@ import no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.NavAnsattRestTj
 import no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.nøkkeltall.SaksbehandlerNøkkeltallRestTjeneste;
 import no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.oppgave.OppgaveRestTjeneste;
 import no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.saksliste.SaksbehandlerSakslisteRestTjeneste;
+import no.nav.vedtak.felles.integrasjon.rest.jersey.TimingFilter;
 import no.nav.vedtak.felles.prosesstask.rest.ProsessTaskRestTjeneste;
 
 @ApplicationPath(ApplicationConfig.API_URI)
@@ -100,7 +101,7 @@ public class ApplicationConfig extends Application {
         classes.add(JsonParseExceptionMapper.class);
         classes.add(GeneralRestExceptionMapper.class);
         classes.add(JacksonJsonConfig.class);
-
+        classes.add(TimingFilter.class);
         classes.add(SwaggerSerializers.class);
         classes.add(OpenApiResource.class);
 

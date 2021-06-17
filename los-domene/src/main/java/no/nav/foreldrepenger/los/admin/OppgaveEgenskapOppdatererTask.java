@@ -5,7 +5,7 @@ import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import no.nav.foreldrepenger.los.klient.fpsak.FPBehandling;
+import no.nav.foreldrepenger.los.klient.fpsak.ForeldrepengerBehandling;
 import no.nav.foreldrepenger.los.oppgave.Oppgave;
 import no.nav.foreldrepenger.los.oppgave.OppgaveEgenskap;
 import no.nav.foreldrepenger.los.oppgave.OppgaveRepository;
@@ -20,10 +20,10 @@ public class OppgaveEgenskapOppdatererTask implements ProsessTaskHandler {
     public static final String EGENSKAPMAPPER = "oppgaveegenskap.egenskapmapper";
 
     private OppgaveRepository oppgaveRepository;
-    private FPBehandling fpsakKlient;
+    private ForeldrepengerBehandling fpsakKlient;
 
     @Inject
-    public OppgaveEgenskapOppdatererTask(OppgaveRepository oppgaveRepository, FPBehandling fpsakKlient) {
+    public OppgaveEgenskapOppdatererTask(OppgaveRepository oppgaveRepository, ForeldrepengerBehandling fpsakKlient) {
         this.oppgaveRepository = oppgaveRepository;
         this.fpsakKlient = fpsakKlient;
     }

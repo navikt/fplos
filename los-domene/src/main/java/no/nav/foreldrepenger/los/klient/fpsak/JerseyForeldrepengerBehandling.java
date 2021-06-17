@@ -18,34 +18,41 @@ import no.nav.vedtak.felles.integrasjon.rest.jersey.Jersey;
 
 @Jersey
 @Dependent
-public class JerseyFPBehandling extends AbstractJerseyOidcRestClient implements FPBehandling {
-
-    private static final String BEHANDLING_ID = "behandlingId";
+public class JerseyForeldrepengerBehandling extends AbstractJerseyOidcRestClient implements ForeldrepengerBehandling {
 
     private final URI baseUri;
 
     @Inject
-    public JerseyFPBehandling(@KonfigVerdi(value = "fpsak.url", defaultVerdi = "http://fpsak") URI baseUri) {
+    public JerseyForeldrepengerBehandling(@KonfigVerdi(value = "fpsak.url", defaultVerdi = "http://fpsak") URI baseUri) {
         this.baseUri = baseUri;
     }
 
     @Override
     public BehandlingDto hentUtvidetBehandlingDto(String id) {
-        return invoke(id);
+        LOG.trace("Henter behandling for {}", id);
+        var res = invoke(id);
+        LOG.info("Hentet behandling for {} OK", id);
+        return res;
     }
 
     @Override
-    public <T> Optional<T> hentFraResourceLink(ResourceLink resourceLink, Class<T> clazz) {
-        if (POST.equals(resourceLink.getType())) {
-            Optional.ofNullable(invoke(client.target(baseUri)
-                    .path(resourceLink.getHref().toString())
+    public <T> Optional<T> hentFraResourceLink(ResourceLink link, Class<T> clazz) {
+        LOG.trace("Henter fra resource link  {}", link);
+        if (POST.equals(link.getType())) {
+            var res = Optional.ofNullable(invoke(client.target(baseUri)
+                    .path(link.getHref().toString())
                     .request(APPLICATION_JSON_TYPE)
-                    .buildPost(json(resourceLink.getRequestPayload())), clazz));
+                    .buildPost(json(link.getRequestPayload())), clazz));
+            LOG.info("Hentet med POST fra resource link {} OK", link);
+            return res;
         }
-        return Optional.ofNullable(invoke(client.target(baseUri)
-                .path(resourceLink.getHref().toString())
+        var res = Optional.ofNullable(invoke(client.target(baseUri)
+                .path(link.getHref().toString())
                 .request(APPLICATION_JSON_TYPE)
                 .buildGet(), clazz));
+        LOG.info("Hentet med GET fra resource link {} OK", link);
+        return res;
+
     }
 
     private BehandlingDto invoke(String id) {
