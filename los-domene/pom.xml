@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
         <groupId>no.nav.foreldrepenger.los</groupId>
         <artifactId>fplos</artifactId>
@@ -12,6 +13,16 @@
     <name>Fplos :: Domene</name>
 
     <dependencies>
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-core</artifactId>
+            <version>5.4.31.Final</version>
+        </dependency>
+        <dependency>
+            <groupId>no.nav.foreldrepenger</groupId>
+            <artifactId>konfig</artifactId>
+            <version>1.1.3</version>
+        </dependency>
         <dependency>
             <groupId>no.nav.foreldrepenger.felles.integrasjon</groupId>
             <artifactId>ldap-klient</artifactId>
@@ -29,7 +40,8 @@
             <artifactId>felles-db</artifactId>
         </dependency>
         <dependency>
-            <!-- TODO: fjern denne avhengigheten når felles-sikkerhet er delt opp. Trengs inntil videre for å spore bruker ident (i BaseEntitet). bør refactoreres -->
+            <!-- TODO: fjern denne avhengigheten når felles-sikkerhet er delt opp. Trengs inntil videre for å spore bruker 
+                ident (i BaseEntitet). bør refactoreres -->
             <groupId>no.nav.foreldrepenger.felles.sikkerhet</groupId>
             <artifactId>felles-sikkerhet</artifactId>
         </dependency>

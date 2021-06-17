@@ -33,7 +33,6 @@ import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.reservasjoner.
 import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.saksbehandler.AvdelingslederSaksbehandlerRestTjeneste;
 import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.saksliste.AvdelingslederSakslisteRestTjeneste;
 import no.nav.foreldrepenger.los.web.app.tjenester.fagsak.FagsakRestTjeneste;
-import no.nav.foreldrepenger.los.web.app.tjenester.fpsak.FpsakRestTjeneste;
 import no.nav.foreldrepenger.los.web.app.tjenester.kodeverk.KodeverkRestTjeneste;
 import no.nav.foreldrepenger.los.web.app.tjenester.konfig.KonfigRestTjeneste;
 import no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.NavAnsattRestTjeneste;
@@ -41,7 +40,6 @@ import no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.nøkkeltall.Sak
 import no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.oppgave.OppgaveRestTjeneste;
 import no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.saksliste.SaksbehandlerSakslisteRestTjeneste;
 import no.nav.vedtak.felles.prosesstask.rest.ProsessTaskRestTjeneste;
-
 
 @ApplicationPath(ApplicationConfig.API_URI)
 public class ApplicationConfig extends Application {
@@ -96,9 +94,7 @@ public class ApplicationConfig extends Application {
         classes.add(AdminRestTjeneste.class);
         classes.add(AdminProsesstaskRestTjeneste.class);
         classes.add(SaksbehandlerNøkkeltallRestTjeneste.class);
-        classes.add(FpsakRestTjeneste.class);
         classes.add(ProsessTaskRestTjeneste.class);
-
         classes.add(ConstraintViolationMapper.class);
         classes.add(JsonMappingExceptionMapper.class);
         classes.add(JsonParseExceptionMapper.class);
