@@ -49,9 +49,7 @@ public class JerseyForeldrepengerFagsaker extends AbstractJerseyOidcRestClient i
     public <T> T get(URI href, Class<T> clazz) {
         var target = client.target(baseUri)
                 .path(href.getRawPath());
-        QueryUtil.split(href.getQuery())
-                .stream()
-                .forEach(qp -> target.queryParam(qp.getName(), qp.getValue()));
+        target = QueryUtil.addQueryParams(href, target);
         LOG.trace(CONFIDENTIAL, "Get for {}", target.getUri());
         var res = invoke(target
                 .request(APPLICATION_JSON_TYPE)

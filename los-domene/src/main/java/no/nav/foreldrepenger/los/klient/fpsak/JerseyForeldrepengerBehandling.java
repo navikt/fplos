@@ -10,9 +10,6 @@ import java.util.Optional;
 
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
-import javax.ws.rs.client.WebTarget;
-
-import org.apache.http.NameValuePair;
 
 import no.nav.foreldrepenger.konfig.KonfigVerdi;
 import no.nav.foreldrepenger.los.klient.fpsak.dto.behandling.BehandlingDto;
@@ -43,7 +40,8 @@ public class JerseyForeldrepengerBehandling extends AbstractJerseyOidcRestClient
     public <T> Optional<T> hentFraResourceLink(ResourceLink link, Class<T> clazz) {
         var target = client.target(baseUri)
                 .path(link.getHref().getRawPath());
-        target = addQueryParams(link, target);
+        target = QueryUtil.addQueryParams(link.getHref(), target);
+
         LOG.info(CONFIDENTIAL, "Henter fra URL {}", target.getUri());
         if (POST.equals(link.getType())) {
             var res = Optional.ofNullable(invoke(target
@@ -57,14 +55,6 @@ public class JerseyForeldrepengerBehandling extends AbstractJerseyOidcRestClient
                 .buildGet(), clazz));
         LOG.info(CONFIDENTIAL, "Hentet med GET fra URL {} OK", target.getUri());
         return res;
-
-    }
-
-    private WebTarget addQueryParams(ResourceLink link, WebTarget target) {
-        for (NameValuePair q : QueryUtil.split(link.getHref().getQuery())) {
-            target = target.queryParam(q.getName(), q.getValue());
-        }
-        return target;
     }
 
     private BehandlingDto invoke(String id) {
