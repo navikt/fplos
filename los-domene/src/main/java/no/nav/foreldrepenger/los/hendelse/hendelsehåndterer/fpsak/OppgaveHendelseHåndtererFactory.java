@@ -27,6 +27,7 @@ import no.nav.foreldrepenger.los.klient.fpsak.BehandlingFpsak;
 import no.nav.foreldrepenger.los.klient.fpsak.ForeldrepengerBehandling;
 import no.nav.foreldrepenger.los.oppgave.OppgaveRepository;
 import no.nav.foreldrepenger.los.statistikk.statistikk_ny.OppgaveStatistikk;
+import no.nav.vedtak.felles.integrasjon.rest.jersey.Jersey;
 
 @ApplicationScoped
 public class OppgaveHendelseHåndtererFactory {
@@ -40,7 +41,7 @@ public class OppgaveHendelseHåndtererFactory {
     private ForeldrepengerBehandling foreldrePengerBehandlingKlient;
 
     @Inject
-    public OppgaveHendelseHåndtererFactory(ForeldrepengerBehandling foreldrePengerBehandlingKlient,
+    public OppgaveHendelseHåndtererFactory(@Jersey ForeldrepengerBehandling foreldrePengerBehandlingKlient,
             OppgaveRepository oppgaveRepository,
             OppgaveEgenskapHåndterer oppgaveEgenskapHåndterer,
             OppgaveStatistikk oppgaveStatistikk) {

@@ -22,7 +22,7 @@ import no.nav.foreldrepenger.los.domene.typer.aktør.AktørId;
 import no.nav.foreldrepenger.los.domene.typer.aktør.Fødselsnummer;
 import no.nav.foreldrepenger.los.domene.typer.aktør.NavBrukerKjønn;
 import no.nav.foreldrepenger.los.domene.typer.aktør.Person;
-import no.nav.foreldrepenger.los.klient.fpsak.ForeldrepengerFagsakKlient;
+import no.nav.foreldrepenger.los.klient.fpsak.ForeldrepengerFagsaker;
 import no.nav.foreldrepenger.los.klient.fpsak.dto.fagsak.FagsakDto;
 import no.nav.foreldrepenger.los.klient.fpsak.dto.fagsak.FagsakYtelseTypeDto;
 import no.nav.foreldrepenger.los.klient.fpsak.dto.fagsak.PersonDto;
@@ -38,13 +38,13 @@ public class FagsakApplikasjonTjenesteTest {
     private static final String SAKSNUMMER = "123";
 
     private FagsakApplikasjonTjeneste fagsakTjeneste;
-    private ForeldrepengerFagsakKlient fagsakKlient;
+    private ForeldrepengerFagsaker fagsakKlient;
     private PersonTjeneste personTjeneste;
 
     @BeforeEach
     public void oppsett() {
         personTjeneste = mock(PersonTjeneste.class);
-        fagsakKlient = mock(ForeldrepengerFagsakKlient.class);
+        fagsakKlient = mock(ForeldrepengerFagsaker.class);
         fagsakTjeneste = new FagsakApplikasjonTjeneste(fagsakKlient, personTjeneste);
     }
 

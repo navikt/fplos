@@ -11,10 +11,8 @@ import org.apache.http.client.utils.URIBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import no.nav.foreldrepenger.los.domene.typer.BehandlingId;
 import no.nav.foreldrepenger.los.klient.fpsak.dto.behandling.BehandlingDto;
 import no.nav.foreldrepenger.los.klient.fpsak.dto.behandling.ResourceLink;
-import no.nav.vedtak.exception.ManglerTilgangException;
 import no.nav.vedtak.felles.integrasjon.rest.OidcRestClient;
 import no.nav.vedtak.konfig.KonfigVerdi;
 
@@ -44,16 +42,6 @@ public class ForeldrepengerBehandlingKlient implements ForeldrepengerBehandling 
     public BehandlingDto hentUtvidetBehandlingDto(String behandlingId) {
         var uri = behandlingUri(behandlingId);
         return oidcRestClient.get(uri, BehandlingDto.class);
-    }
-
-    public Optional<Long> getFpsakInternBehandlingId(BehandlingId eksternBehandlingId) {
-        var uri = behandlingUri(eksternBehandlingId.toString());
-        try {
-            var behandlingDto = oidcRestClient.get(uri, BehandlingDto.class);
-            return Optional.ofNullable(behandlingDto.id());
-        } catch (ManglerTilgangException e) {
-            throw new InternIdMappingException(eksternBehandlingId);
-        }
     }
 
     private URI behandlingUri(String id) {

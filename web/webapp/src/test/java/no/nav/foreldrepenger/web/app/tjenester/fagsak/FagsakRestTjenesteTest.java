@@ -6,7 +6,7 @@ import static org.mockito.Mockito.mock;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import no.nav.foreldrepenger.los.klient.fpsak.ForeldrepengerFagsakKlient;
+import no.nav.foreldrepenger.los.klient.fpsak.ForeldrepengerFagsaker;
 import no.nav.foreldrepenger.los.web.app.tjenester.fagsak.FagsakRestTjeneste;
 import no.nav.foreldrepenger.los.web.app.tjenester.fagsak.app.FagsakApplikasjonTjeneste;
 import no.nav.foreldrepenger.los.web.app.tjenester.fagsak.dto.SøkefeltDto;
@@ -17,7 +17,7 @@ public class FagsakRestTjenesteTest {
 
     @BeforeEach
     public void oppsett() {
-        var klient = mock(ForeldrepengerFagsakKlient.class);
+        var klient = mock(ForeldrepengerFagsaker.class);
         var applikasjonTjeneste = new FagsakApplikasjonTjeneste(klient, null);
         tjeneste = new FagsakRestTjeneste(applikasjonTjeneste);
     }

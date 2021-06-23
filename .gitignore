@@ -11,6 +11,7 @@ dep.txt
 .settings
 _*.sh
 bin
+.factorypath
 app.properties
 app.properties.backup
 app-local.properties

@@ -11,7 +11,6 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 import javax.ws.rs.core.GenericType;
 
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,27 +47,17 @@ public class JerseyForeldrepengerFagsaker extends AbstractJerseyOidcRestClient i
 
     @Override
     public <T> T get(URI href, Class<T> clazz) {
-        LOG.trace("Get for {}", href);
-        var params = split(href.getQuery());
-        var res = invoke(client.target(baseUri)
-                .path(href.getPath().toString())
-                .queryParam(params.key(), params.value)
+        var target = client.target(baseUri)
+                .path(href.getRawPath());
+        QueryUtil.split(href.getQuery())
+                .stream()
+                .forEach(qp -> target.queryParam(qp.getName(), qp.getValue()));
+        LOG.trace(CONFIDENTIAL, "Get for {}", target.getUri());
+        var res = invoke(target
                 .request(APPLICATION_JSON_TYPE)
                 .buildGet(), clazz);
-        LOG.info("Get for  {} OK", href);
+        LOG.info(CONFIDENTIAL, "Get for  {} OK", target.getUri());
         return res;
-    }
-
-    private static Query split(String query) {
-        var parts = StringUtils.split(query, '=');
-        if (parts.length != 2) {
-            throw new IllegalArgumentException("Uventet query " + query);
-        }
-        return new Query(parts[0], parts[1]);
-    }
-
-    private static record Query(String key, String value) {
-
     }
 
     @Override
