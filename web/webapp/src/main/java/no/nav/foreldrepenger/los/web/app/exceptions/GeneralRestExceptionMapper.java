@@ -12,7 +12,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 
-import no.nav.foreldrepenger.los.klient.fpsak.InternIdMappingException;
 import no.nav.vedtak.exception.FunksjonellException;
 import no.nav.vedtak.exception.ManglerTilgangException;
 import no.nav.vedtak.exception.VLException;
@@ -84,16 +83,9 @@ public class GeneralRestExceptionMapper implements ExceptionMapper<ApplicationEx
     }
 
     private Response ikkeTilgang(VLException exception) {
-        final FeilType feilType;
-        if (exception instanceof InternIdMappingException) {
-            //Må returnere generell for å få rød feilmelding i front. Frontend har problemer med å vise manglende tilgang
-            feilType = FeilType.GENERELL_FEIL;
-        } else {
-            feilType = FeilType.MANGLER_TILGANG_FEIL;
-        }
         var feilmelding = exception.getMessage();
         return Response.status(Response.Status.FORBIDDEN)
-            .entity(new FeilDto(feilType, feilmelding))
+            .entity(new FeilDto(FeilType.MANGLER_TILGANG_FEIL, feilmelding))
             .type(MediaType.APPLICATION_JSON)
             .build();
     }
