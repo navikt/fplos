@@ -9,6 +9,7 @@ import no.nav.foreldrepenger.los.klient.fpsak.ForeldrepengerBehandling;
 import no.nav.foreldrepenger.los.oppgave.Oppgave;
 import no.nav.foreldrepenger.los.oppgave.OppgaveEgenskap;
 import no.nav.foreldrepenger.los.oppgave.OppgaveRepository;
+import no.nav.vedtak.felles.integrasjon.rest.jersey.Jersey;
 import no.nav.vedtak.felles.prosesstask.api.ProsessTask;
 import no.nav.vedtak.felles.prosesstask.api.ProsessTaskData;
 import no.nav.vedtak.felles.prosesstask.api.ProsessTaskHandler;
@@ -23,7 +24,7 @@ public class OppgaveEgenskapOppdatererTask implements ProsessTaskHandler {
     private ForeldrepengerBehandling fpsakKlient;
 
     @Inject
-    public OppgaveEgenskapOppdatererTask(OppgaveRepository oppgaveRepository, ForeldrepengerBehandling fpsakKlient) {
+    public OppgaveEgenskapOppdatererTask(OppgaveRepository oppgaveRepository, @Jersey ForeldrepengerBehandling fpsakKlient) {
         this.oppgaveRepository = oppgaveRepository;
         this.fpsakKlient = fpsakKlient;
     }

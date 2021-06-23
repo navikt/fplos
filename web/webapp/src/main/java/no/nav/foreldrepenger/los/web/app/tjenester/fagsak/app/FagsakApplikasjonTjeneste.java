@@ -13,7 +13,7 @@ import org.slf4j.LoggerFactory;
 
 import no.nav.foreldrepenger.los.domene.typer.aktør.AktørId;
 import no.nav.foreldrepenger.los.domene.typer.aktør.Person;
-import no.nav.foreldrepenger.los.klient.fpsak.ForeldrepengerFagsakKlient;
+import no.nav.foreldrepenger.los.klient.fpsak.ForeldrepengerFagsaker;
 import no.nav.foreldrepenger.los.klient.fpsak.dto.fagsak.FagsakDto;
 import no.nav.foreldrepenger.los.klient.fpsak.dto.fagsak.FagsakMedPersonDto;
 import no.nav.foreldrepenger.los.klient.fpsak.dto.fagsak.PersonDto;
@@ -21,23 +21,23 @@ import no.nav.foreldrepenger.los.klient.person.PersonTjeneste;
 import no.nav.foreldrepenger.los.oppgave.FagsakYtelseType;
 import no.nav.vedtak.exception.IntegrasjonException;
 import no.nav.vedtak.exception.ManglerTilgangException;
+import no.nav.vedtak.felles.integrasjon.rest.jersey.Jersey;
 
 @ApplicationScoped
 public class FagsakApplikasjonTjeneste {
 
     private static final Logger LOG = LoggerFactory.getLogger(FagsakApplikasjonTjeneste.class);
-    private ForeldrepengerFagsakKlient fagsakKlient;
+    private ForeldrepengerFagsaker fagsakKlient;
     private PersonTjeneste personTjeneste;
 
-
     @Inject
-    public FagsakApplikasjonTjeneste(ForeldrepengerFagsakKlient fagsakKlient, PersonTjeneste personTjeneste) {
+    public FagsakApplikasjonTjeneste(@Jersey ForeldrepengerFagsaker fagsakKlient, PersonTjeneste personTjeneste) {
         this.fagsakKlient = fagsakKlient;
         this.personTjeneste = personTjeneste;
     }
 
     FagsakApplikasjonTjeneste() {
-        //CDI runner
+        // CDI runner
     }
 
     public List<FagsakMedPersonDto> hentSaker(String søkestreng) {

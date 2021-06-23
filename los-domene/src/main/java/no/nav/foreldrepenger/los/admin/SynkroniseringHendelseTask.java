@@ -8,11 +8,12 @@ import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.OppgaveHendel
 import no.nav.foreldrepenger.los.hendelse.hendelseoppretter.hendelse.Fagsystem;
 import no.nav.foreldrepenger.los.hendelse.hendelseoppretter.hendelse.Hendelse;
 import no.nav.foreldrepenger.los.klient.fpsak.ForeldrepengerBehandling;
-import no.nav.foreldrepenger.los.klient.fpsak.ForeldrepengerFagsakKlient;
+import no.nav.foreldrepenger.los.klient.fpsak.ForeldrepengerFagsaker;
 import no.nav.foreldrepenger.los.klient.fpsak.dto.behandling.BehandlingDto;
 import no.nav.foreldrepenger.los.klient.fpsak.dto.behandling.ResourceLink;
 import no.nav.foreldrepenger.los.klient.fpsak.dto.fagsak.FagsakDto;
 import no.nav.foreldrepenger.los.oppgave.FagsakYtelseType;
+import no.nav.vedtak.felles.integrasjon.rest.jersey.Jersey;
 import no.nav.vedtak.felles.prosesstask.api.ProsessTask;
 import no.nav.vedtak.felles.prosesstask.api.ProsessTaskData;
 import no.nav.vedtak.felles.prosesstask.api.ProsessTaskHandler;
@@ -24,12 +25,12 @@ public class SynkroniseringHendelseTask implements ProsessTaskHandler {
     public static final String TASKTYPE = "synkronisering.hendelse";
 
     private ForeldrepengerBehandling behandlingKlient;
-    private ForeldrepengerFagsakKlient fagsakKlient;
+    private ForeldrepengerFagsaker fagsakKlient;
     private OppgaveHendelseHåndtererFactory oppgaveHendelseHåndtererFactory;
 
     @Inject
-    public SynkroniseringHendelseTask(ForeldrepengerBehandling behandlingKlient,
-            ForeldrepengerFagsakKlient fagsakKlient,
+    public SynkroniseringHendelseTask(@Jersey ForeldrepengerBehandling behandlingKlient,
+            @Jersey ForeldrepengerFagsaker fagsakKlient,
             OppgaveHendelseHåndtererFactory oppgaveHendelseHåndtererFactory) {
         this.behandlingKlient = behandlingKlient;
         this.fagsakKlient = fagsakKlient;

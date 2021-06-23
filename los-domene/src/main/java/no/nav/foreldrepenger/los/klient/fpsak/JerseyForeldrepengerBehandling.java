@@ -3,12 +3,16 @@ package no.nav.foreldrepenger.los.klient.fpsak;
 import static javax.ws.rs.client.Entity.json;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON_TYPE;
 import static no.nav.foreldrepenger.los.klient.fpsak.dto.behandling.ResourceLink.HttpMethod.POST;
+import static no.nav.vedtak.util.env.ConfidentialMarkerFilter.CONFIDENTIAL;
 
 import java.net.URI;
 import java.util.Optional;
 
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
+import javax.ws.rs.client.WebTarget;
+
+import org.apache.http.NameValuePair;
 
 import no.nav.foreldrepenger.konfig.KonfigVerdi;
 import no.nav.foreldrepenger.los.klient.fpsak.dto.behandling.BehandlingDto;
@@ -37,22 +41,30 @@ public class JerseyForeldrepengerBehandling extends AbstractJerseyOidcRestClient
 
     @Override
     public <T> Optional<T> hentFraResourceLink(ResourceLink link, Class<T> clazz) {
-        LOG.trace("Henter fra resource link  {}", link);
+        var target = client.target(baseUri)
+                .path(link.getHref().getRawPath());
+        target = addQueryParams(link, target);
+        LOG.info(CONFIDENTIAL, "Henter fra URL {}", target.getUri());
         if (POST.equals(link.getType())) {
-            var res = Optional.ofNullable(invoke(client.target(baseUri)
-                    .path(link.getHref().toString())
+            var res = Optional.ofNullable(invoke(target
                     .request(APPLICATION_JSON_TYPE)
                     .buildPost(json(link.getRequestPayload())), clazz));
-            LOG.info("Hentet med POST fra resource link {} OK", link);
+            LOG.info(CONFIDENTIAL, "Hentet med POST fra URL {} OK", target.getUri());
             return res;
         }
-        var res = Optional.ofNullable(invoke(client.target(baseUri)
-                .path(link.getHref().toString())
+        var res = Optional.ofNullable(invoke(target
                 .request(APPLICATION_JSON_TYPE)
                 .buildGet(), clazz));
-        LOG.info("Hentet med GET fra resource link {} OK", link);
+        LOG.info(CONFIDENTIAL, "Hentet med GET fra URL {} OK", target.getUri());
         return res;
 
+    }
+
+    private WebTarget addQueryParams(ResourceLink link, WebTarget target) {
+        for (NameValuePair q : QueryUtil.split(link.getHref().getQuery())) {
+            target = target.queryParam(q.getName(), q.getValue());
+        }
+        return target;
     }
 
     private BehandlingDto invoke(String id) {
