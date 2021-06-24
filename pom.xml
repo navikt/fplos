@@ -124,19 +124,6 @@
                 <type>war</type>
             </dependency>
 
-            <dependency>
-                <groupId>no.nav.vedtak.prosesstask</groupId>
-                <artifactId>prosesstask-root</artifactId>
-                <version>${prosesstask.version}</version>
-                <scope>import</scope>
-                <type>pom</type>
-            </dependency>
-            <dependency>
-                <groupId>no.nav.vedtak.prosesstask</groupId>
-                <artifactId>prosesstask</artifactId>
-                <version>${prosesstask.version}</version>
-            </dependency>
-
             <!-- Felles biblioteker -->
             <dependency>
                 <groupId>no.nav.foreldrepenger.felles</groupId>
@@ -156,6 +143,14 @@
                 <groupId>no.nav.foreldrepenger.felles.integrasjon</groupId>
                 <artifactId>felles-integrasjon-pom</artifactId>
                 <version>${felles.version}</version>
+                <scope>import</scope>
+                <type>pom</type>
+            </dependency>
+            <dependency>
+                <!-- Importeres etter felles-root og felles for å sikre samme avhengigheter gjennom hele! -->
+                <groupId>no.nav.vedtak.prosesstask</groupId>
+                <artifactId>prosesstask-root</artifactId>
+                <version>${prosesstask.version}</version>
                 <scope>import</scope>
                 <type>pom</type>
             </dependency>
