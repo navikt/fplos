@@ -35,6 +35,7 @@ module.exports = {
         '<rootDir>/src/client/testHelpers/setup-test-env.ts',
         '<rootDir>/src/client/testHelpers/setup-test-env-hooks.ts',
       ],
+      testEnvironment: 'jsdom',
       testMatch: ['**/?(*.)+(spec).+(ts|tsx)'],
       testPathIgnorePatterns: ['/node_modules/'],
       transform: {
