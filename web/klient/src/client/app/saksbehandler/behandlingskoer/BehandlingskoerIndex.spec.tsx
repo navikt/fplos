@@ -15,6 +15,7 @@ describe('<BehandlingskoerIndex>', () => {
   beforeEach(() => {
     // @ts-ignore
     global.window = {
+      // @ts-ignore
       location: {
         assign: () => undefined,
       },
