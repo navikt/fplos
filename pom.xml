@@ -26,7 +26,7 @@
 
         <fp-kontrakter.version>6.0.2</fp-kontrakter.version>
         <tjenestespesifikasjoner.version>1.2019.12.18-12.22-ce897c4eb2c1</tjenestespesifikasjoner.version>
-        <felles.version>3.2.123</felles.version>
+        <felles.version>4.0.3</felles.version>
         <prosesstask.version>2.6.3</prosesstask.version>
 
         <!-- Eksterne -->
