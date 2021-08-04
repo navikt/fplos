@@ -6,12 +6,17 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.Response;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import io.swagger.v3.oas.annotations.Operation;
 import no.nav.foreldrepenger.los.web.app.selftest.Selftests;
 
 @Path("/health")
 @ApplicationScoped
 public class HealthCheckRestService {
+
+    private static final Logger LOG = LoggerFactory.getLogger(HealthCheckRestService.class);
 
     private static final String RESPONSE_CACHE_KEY = "Cache-Control";
     private static final String RESPONSE_CACHE_VAL = "must-revalidate,no-cache,no-store";
@@ -35,6 +40,12 @@ public class HealthCheckRestService {
     @Path("isAlive")
     @Operation(description = "sjekker om poden lever", tags = "nais", hidden = true)
     public Response isAlive() {
+        if (selftests == null) {
+            LOG.warn("LOS STARTUP healthcheck/selftests er null");
+            return Response.ok(RESPONSE_OK)
+                    .header(RESPONSE_CACHE_KEY, RESPONSE_CACHE_VAL)
+                    .build();
+        }
         if (selftests.isKafkaAlive()) {
             return Response.ok(RESPONSE_OK)
                     .header(RESPONSE_CACHE_KEY, RESPONSE_CACHE_VAL)
@@ -52,6 +63,12 @@ public class HealthCheckRestService {
     @Path("isReady")
     @Operation(description = "sjekker om poden er klar", tags = "nais", hidden = true)
     public Response isReady() {
+        if (selftests == null) {
+            LOG.warn("LOS STARTUP healthcheck/selftests er null");
+            return Response.ok(RESPONSE_OK)
+                    .header(RESPONSE_CACHE_KEY, RESPONSE_CACHE_VAL)
+                    .build();
+        }
         if (selftests.isReady()) {
             return Response.ok(RESPONSE_OK)
                     .header(RESPONSE_CACHE_KEY, RESPONSE_CACHE_VAL)
