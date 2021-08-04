@@ -280,7 +280,7 @@
             <dependency>
                 <groupId>ch.qos.logback</groupId>
                 <artifactId>logback-classic</artifactId>
-                <version>1.2.3</version>
+                <version>1.2.5</version>
             </dependency>
             <dependency>
                 <groupId>net.logstash.logback</groupId>
@@ -290,7 +290,7 @@
             <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>jul-to-slf4j</artifactId>
-                <version>1.7.31</version>
+                <version>1.7.32</version>
             </dependency>
 
 
@@ -375,7 +375,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-enforcer-plugin</artifactId>
-                    <version>3.0.0-M3</version>
+                    <version>3.0.0</version>
                     <executions>
                         <execution>
                             <id>enforce-versions</id>

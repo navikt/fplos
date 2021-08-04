@@ -28,7 +28,7 @@ public class KodeverkRestTjeneste {
     }
 
     public KodeverkRestTjeneste() {
-        // for resteasy
+        // for cdi
     }
 
     @GET
