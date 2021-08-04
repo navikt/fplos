@@ -3,12 +3,12 @@ package no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.oppgave;
 import static no.nav.foreldrepenger.los.web.app.tjenester.felles.dto.OppgaveDtoTjeneste.ANTALL_OPPGAVER_SOM_VISES_TIL_SAKSBEHANDLER;
 import static no.nav.vedtak.sikkerhet.abac.BeskyttetRessursActionAttributt.READ;
 
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
@@ -18,6 +18,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -51,13 +52,17 @@ import no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.oppgave.dto.Sak
 import no.nav.vedtak.sikkerhet.abac.BeskyttetRessurs;
 import no.nav.vedtak.sikkerhet.abac.BeskyttetRessursActionAttributt;
 
-@Path("/saksbehandler/oppgaver")
+@Path(OppgaveRestTjeneste.OPPGAVER_BASE_PATH)
 @ApplicationScoped
 @Transactional
 public class OppgaveRestTjeneste {
 
     private static final Logger LOG = LoggerFactory.getLogger(OppgaveRestTjeneste.class);
     private static final int POLL_INTERVAL_MILLIS = 1000;
+
+    public static final String OPPGAVER_BASE_PATH =  "/saksbehandler/oppgaver";
+    public static final String OPPGAVER_STATUS_PATH =  "/status";
+    public static final String OPPGAVER_RESULTAT_PATH =  "/resultat";
 
     private OppgaveTjeneste oppgaveTjeneste;
     private OppgaveKøTjeneste oppgaveKøTjeneste;
@@ -91,13 +96,14 @@ public class OppgaveRestTjeneste {
             })
     @BeskyttetRessurs(action = READ, resource = AbacAttributter.FAGSAK)
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
-    public Response hentOppgaver(@NotNull @Valid @QueryParam("sakslisteId") SakslisteIdDto sakslisteId, @Valid @QueryParam("oppgaveIder") OppgaveIderDto oppgaveIder) throws URISyntaxException {
-        var uri = new URI(("/saksbehandler/oppgaver/status?sakslisteId=" + sakslisteId.getVerdi()) + (oppgaveIder == null ? "" : "&oppgaveIder=" + oppgaveIder.getVerdi()));
-        return Response.accepted().location(uri).build();
+    public Response hentOppgaver(@Context HttpServletRequest request,
+                                 @NotNull @Valid @QueryParam("sakslisteId") SakslisteIdDto sakslisteId,
+                                 @Valid @QueryParam("oppgaveIder") OppgaveIderDto oppgaveIder) throws URISyntaxException {
+        return Redirect.sendTilStatus(request, sakslisteId, oppgaveIder);
     }
 
     @GET
-    @Path("/status")
+    @Path(OPPGAVER_STATUS_PATH)
     @Operation(description = "Url for å polle på oppgaver asynkront", tags = "Saksbehandler",
             responses = {
                     @ApiResponse(responseCode = "200", description = "Returnerer Status", content = @Content(schema = @Schema(implementation = AsyncPollingStatus.class))),
@@ -105,38 +111,24 @@ public class OppgaveRestTjeneste {
             })
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
     @BeskyttetRessurs(action = READ, resource = AbacAttributter.FAGSAK)
-    public Response hentNesteOppgaverOgSjekkOmDisseErNye(@NotNull @Valid @QueryParam("sakslisteId") SakslisteIdDto sakslisteId,
+    public Response hentNesteOppgaverOgSjekkOmDisseErNye(@Context HttpServletRequest request,
+                                                         @NotNull @Valid @QueryParam("sakslisteId") SakslisteIdDto sakslisteId,
                                                          @Valid @QueryParam("oppgaveIder") OppgaveIderDto oppgaverIder) throws URISyntaxException {
         List<Long> oppgaveIderSomVises = oppgaverIder == null ? List.of() : oppgaverIder.getOppgaveIdeer();
         if (oppgaveIderSomVises.isEmpty()) {
             if (!oppgaveDtoTjeneste.finnesTilgjengeligeOppgaver(sakslisteId)) {
-                return sendTilPolling(sakslisteId, oppgaverIder);
+                return Redirect.sendTilPolling(request, sakslisteId, oppgaverIder);
             }
-            return sendTilResultat(sakslisteId);
+            return Redirect.sendTilResultat(request, sakslisteId);
         }
         if (oppgaveTjeneste.erAlleOppgaverFortsattTilgjengelig(oppgaveIderSomVises)) {
-            return sendTilPolling(sakslisteId, oppgaverIder);
+            return Redirect.sendTilPolling(request, sakslisteId, oppgaverIder);
         }
-        return sendTilResultat(sakslisteId);
-    }
-
-    private Response sendTilPolling(SakslisteIdDto sakslisteId, OppgaveIderDto oppgaverIder) throws URISyntaxException {
-        var ider = oppgaverIder != null ? oppgaverIder.getVerdi() : "";
-        var uri = new URI("/saksbehandler/oppgaver/status?sakslisteId=" + sakslisteId.getVerdi() + "&oppgaveIder=" + ider);
-        var status = new AsyncPollingStatus(AsyncPollingStatus.Status.PENDING, "", POLL_INTERVAL_MILLIS);
-        status.setLocation(uri);
-        return Response.status(status.getStatus().getHttpStatus())
-                .entity(status)
-                .build();
-    }
-
-    private Response sendTilResultat(@QueryParam("sakslisteId") @NotNull @Valid SakslisteIdDto sakslisteId) throws URISyntaxException {
-        var uri = new URI("/saksbehandler/oppgaver/resultat?sakslisteId=" + sakslisteId.getVerdi());
-        return Response.seeOther(uri).build();
+        return Redirect.sendTilResultat(request, sakslisteId);
     }
 
     @GET
-    @Path("/resultat")
+    @Path(OPPGAVER_RESULTAT_PATH)
     @Produces(MediaType.APPLICATION_JSON)
     @Operation(description = "Hent " + ANTALL_OPPGAVER_SOM_VISES_TIL_SAKSBEHANDLER + " neste oppgaver", tags = "Saksbehandler",
             responses = {
