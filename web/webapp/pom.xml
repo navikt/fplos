@@ -69,12 +69,28 @@
         <!-- REST + WebService -->
         <dependency>
             <groupId>no.nav.foreldrepenger.felles.integrasjon</groupId>
-            <artifactId>felles-integrasjon-rest</artifactId>
+            <artifactId>felles-integrasjon-rest-klient</artifactId>
         </dependency>
 
         <dependency>
-            <groupId>no.nav.foreldrepenger.felles.integrasjon</groupId>
-            <artifactId>felles-integrasjon-rest-klient</artifactId>
+            <groupId>org.glassfish.jersey.containers</groupId>
+            <artifactId>jersey-container-servlet</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.jersey.media</groupId>
+            <artifactId>jersey-media-json-jackson</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.jersey.ext.cdi</groupId>
+            <artifactId>jersey-cdi1x-servlet</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.jersey.ext</groupId>
+            <artifactId>jersey-bean-validation</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.jersey.inject</groupId>
+            <artifactId>jersey-hk2</artifactId>
         </dependency>
 
         <!-- CDI -->
@@ -128,27 +144,6 @@
             <artifactId>geronimo-osgi-locator</artifactId>
         </dependency>
 
-
-        <dependency>
-            <groupId>org.glassfish.jersey.containers</groupId>
-            <artifactId>jersey-container-servlet</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.glassfish.jersey.media</groupId>
-            <artifactId>jersey-media-json-jackson</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.glassfish.jersey.ext.cdi</groupId>
-            <artifactId>jersey-cdi1x-servlet</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.glassfish.jersey.ext</groupId>
-            <artifactId>jersey-bean-validation</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.glassfish.jersey.inject</groupId>
-            <artifactId>jersey-hk2</artifactId>
-        </dependency>
 
         <dependency>
             <groupId>io.prometheus</groupId>

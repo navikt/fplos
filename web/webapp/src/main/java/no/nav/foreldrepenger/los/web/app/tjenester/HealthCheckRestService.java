@@ -40,12 +40,6 @@ public class HealthCheckRestService {
     @Path("isAlive")
     @Operation(description = "sjekker om poden lever", tags = "nais", hidden = true)
     public Response isAlive() {
-        if (selftests == null) {
-            LOG.warn("LOS STARTUP healthcheck/selftests er null");
-            return Response.ok(RESPONSE_OK)
-                    .header(RESPONSE_CACHE_KEY, RESPONSE_CACHE_VAL)
-                    .build();
-        }
         if (selftests.isKafkaAlive()) {
             return Response.ok(RESPONSE_OK)
                     .header(RESPONSE_CACHE_KEY, RESPONSE_CACHE_VAL)
@@ -63,12 +57,6 @@ public class HealthCheckRestService {
     @Path("isReady")
     @Operation(description = "sjekker om poden er klar", tags = "nais", hidden = true)
     public Response isReady() {
-        if (selftests == null) {
-            LOG.warn("LOS STARTUP healthcheck/selftests er null");
-            return Response.ok(RESPONSE_OK)
-                    .header(RESPONSE_CACHE_KEY, RESPONSE_CACHE_VAL)
-                    .build();
-        }
         if (selftests.isReady()) {
             return Response.ok(RESPONSE_OK)
                     .header(RESPONSE_CACHE_KEY, RESPONSE_CACHE_VAL)
