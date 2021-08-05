@@ -2,12 +2,15 @@ package no.nav.foreldrepenger.los.web.app;
 
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javax.ws.rs.ApplicationPath;
-import javax.ws.rs.core.Application;
+
+import org.glassfish.jersey.server.ResourceConfig;
+import org.glassfish.jersey.server.ServerProperties;
 
 import io.swagger.v3.jaxrs2.SwaggerSerializers;
 import io.swagger.v3.jaxrs2.integration.resources.OpenApiResource;
@@ -17,10 +20,7 @@ import io.swagger.v3.oas.integration.SwaggerConfiguration;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.servers.Server;
-import no.nav.foreldrepenger.los.web.app.exceptions.ConstraintViolationMapper;
-import no.nav.foreldrepenger.los.web.app.exceptions.GeneralRestExceptionMapper;
-import no.nav.foreldrepenger.los.web.app.exceptions.JsonMappingExceptionMapper;
-import no.nav.foreldrepenger.los.web.app.exceptions.JsonParseExceptionMapper;
+import no.nav.foreldrepenger.los.web.app.exceptions.KnownExceptionMappers;
 import no.nav.foreldrepenger.los.web.app.jackson.JacksonJsonConfig;
 import no.nav.foreldrepenger.los.web.app.tjenester.admin.AdminProsesstaskRestTjeneste;
 import no.nav.foreldrepenger.los.web.app.tjenester.admin.AdminRestTjeneste;
@@ -43,7 +43,7 @@ import no.nav.vedtak.felles.integrasjon.rest.jersey.TimingFilter;
 import no.nav.vedtak.felles.prosesstask.rest.ProsessTaskRestTjeneste;
 
 @ApplicationPath(ApplicationConfig.API_URI)
-public class ApplicationConfig extends Application {
+public class ApplicationConfig extends ResourceConfig {
 
     static final String API_URI = "/api";
 
@@ -73,10 +73,22 @@ public class ApplicationConfig extends Application {
         } catch (OpenApiConfigurationException e) {
             throw new RuntimeException(e.getMessage(), e);
         }
+
+        property(ServerProperties.BV_SEND_ERROR_IN_RESPONSE, true);
+        register(SwaggerSerializers.class);
+        register(OpenApiResource.class);
+        register(JacksonJsonConfig.class);
+        register(TimingFilter.class);
+
+        registerClasses(getApplicationClasses());
+
+        registerInstances(new LinkedHashSet<>(new KnownExceptionMappers().getExceptionMappers()));
+
+        property(ServerProperties.PROCESSING_RESPONSE_ERRORS_ENABLED, true);
     }
 
-    @Override
-    public Set<Class<?>> getClasses() {
+
+    private static Set<Class<?>> getApplicationClasses() {
         Set<Class<?>> classes = new HashSet<>();
         classes.add(FagsakRestTjeneste.class);
         classes.add(NavAnsattRestTjeneste.class);
@@ -96,14 +108,6 @@ public class ApplicationConfig extends Application {
         classes.add(AdminProsesstaskRestTjeneste.class);
         classes.add(SaksbehandlerNøkkeltallRestTjeneste.class);
         classes.add(ProsessTaskRestTjeneste.class);
-        classes.add(ConstraintViolationMapper.class);
-        classes.add(JsonMappingExceptionMapper.class);
-        classes.add(JsonParseExceptionMapper.class);
-        classes.add(GeneralRestExceptionMapper.class);
-        classes.add(JacksonJsonConfig.class);
-        classes.add(TimingFilter.class);
-        classes.add(SwaggerSerializers.class);
-        classes.add(OpenApiResource.class);
 
         return Collections.unmodifiableSet(classes);
     }
