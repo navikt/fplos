@@ -1,3 +1,4 @@
+import { AxiosInstance } from 'axios';
 import HttpClientApi from '../HttpClientApiTsType';
 import NotificationMapper from './NotificationMapper';
 import Link from './LinkTsType';
@@ -141,6 +142,34 @@ class RequestApi extends AbstractRequestApi {
 
   public resetCache = (): void => {
   }
+
+  public getAxios = (): AxiosInstance => this.httpClientApi.axiosInstance;
+
+  public getUrl = (endpointName: string): string => {
+    const endpointConfig = this.endpointConfigList.find((c) => c.name === endpointName);
+    if (!endpointConfig) {
+      throw new Error(`Mangler konfig for endepunkt ${endpointName}`);
+    }
+    const link = this.findLinks(endpointConfig.rel);
+    const url = link?.href || endpointConfig?.path;
+    if (!url) {
+      throw new Error(`Mangler url for endepunkt ${endpointName}`);
+    }
+    return url;
+  };
+
+  public getRestType = (endpointName: string): string => {
+    const endpointConfig = this.endpointConfigList.find((c) => c.name === endpointName);
+    if (!endpointConfig) {
+      throw new Error(`Mangler konfig for endepunkt ${endpointName}`);
+    }
+    const link = this.findLinks(endpointConfig.rel);
+    const type = link?.type || endpointConfig?.restMethod;
+    if (!type) {
+      throw new Error(`Mangler type for endepunkt ${endpointName}`);
+    }
+    return type;
+  };
 
   public isMock = (): boolean => false;
 

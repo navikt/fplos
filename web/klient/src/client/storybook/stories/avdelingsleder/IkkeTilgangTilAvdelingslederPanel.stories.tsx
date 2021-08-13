@@ -10,6 +10,6 @@ export default {
   decorators: [withIntl],
 };
 
-export const skalViseIkkeTilgangTilAvdelingsleder = () => (
+export const IkkeTilgangTilAvdelingsleder = () => (
   <IkkeTilgangTilAvdelingslederPanel />
 );

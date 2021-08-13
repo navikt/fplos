@@ -1,11 +1,14 @@
 import React from 'react';
 import moment from 'moment';
+import { Story } from '@storybook/react';
 
-import { requestApi, RestApiGlobalStatePathsKeys } from 'data/fplosRestApi';
+import { RestApiGlobalStatePathsKeys } from 'data/fplosRestApi';
 import { ISO_DATE_FORMAT } from 'utils/formats';
 import fagsakYtelseType from 'kodeverk/fagsakYtelseType';
 import ManueltPaVentPanel from 'avdelingsleder/nokkeltall/components/manueltSattPaVent/ManueltPaVentPanel';
+import OppgaverManueltPaVent from 'types/avdelingsleder/oppgaverManueltPaVentTsType';
 
+import RestApiMock from '../../../utils/RestApiMock';
 import alleKodeverk from '../../../mocks/alleKodeverk.json';
 import withRestApiProvider from '../../../decorators/withRestApi';
 import withIntl from '../../../decorators/withIntl';
@@ -22,35 +25,47 @@ export default {
 // https://github.com/storybookjs/storybook/issues/12208
 const FIVE = 5;
 
-export const skalViseGrafForAntallBehandlingerSomErSattManueltPaVent = () => {
-  requestApi.mock(RestApiGlobalStatePathsKeys.KODEVERK.name, alleKodeverk);
+const Template: Story<{ oppgaverManueltPaVent: OppgaverManueltPaVent[] }> = ({
+  oppgaverManueltPaVent,
+}) => {
+  const data = [
+    { key: RestApiGlobalStatePathsKeys.KODEVERK.name, data: alleKodeverk },
+  ];
+
   return (
-    <ManueltPaVentPanel
-      width={700}
-      height={300}
-      oppgaverManueltPaVent={[{
-        fagsakYtelseType: {
-          kode: fagsakYtelseType.FORELDREPRENGER,
-          navn: 'Foreldreprenger',
-        },
-        behandlingFrist: moment().format(ISO_DATE_FORMAT),
-        antall: 10,
-      }, {
-        fagsakYtelseType: {
-          kode: fagsakYtelseType.ENGANGSSTONAD,
-          navn: 'Engangsstønad',
-        },
-        behandlingFrist: moment().add(FIVE, 'd').format(ISO_DATE_FORMAT),
-        antall: 4,
-      }, {
-        fagsakYtelseType: {
-          kode: fagsakYtelseType.ENGANGSSTONAD,
-          navn: 'Engangsstønad',
-        },
-        behandlingFrist: moment().add(FIVE, 'w').format(ISO_DATE_FORMAT),
-        antall: 14,
-      }]}
-      getValueFromLocalStorage={() => ''}
-    />
+    <RestApiMock data={data}>
+      <ManueltPaVentPanel
+        width={700}
+        height={300}
+        oppgaverManueltPaVent={oppgaverManueltPaVent}
+        getValueFromLocalStorage={() => ''}
+      />
+    </RestApiMock>
   );
+};
+
+export const GrafForAntallBehandlingerSomErSattManueltPaVent = Template.bind({});
+GrafForAntallBehandlingerSomErSattManueltPaVent.args = {
+  oppgaverManueltPaVent: [{
+    fagsakYtelseType: {
+      kode: fagsakYtelseType.FORELDREPRENGER,
+      navn: 'Foreldreprenger',
+    },
+    behandlingFrist: moment().format(ISO_DATE_FORMAT),
+    antall: 10,
+  }, {
+    fagsakYtelseType: {
+      kode: fagsakYtelseType.ENGANGSSTONAD,
+      navn: 'Engangsstønad',
+    },
+    behandlingFrist: moment().add(FIVE, 'd').format(ISO_DATE_FORMAT),
+    antall: 4,
+  }, {
+    fagsakYtelseType: {
+      kode: fagsakYtelseType.ENGANGSSTONAD,
+      navn: 'Engangsstønad',
+    },
+    behandlingFrist: moment().add(FIVE, 'w').format(ISO_DATE_FORMAT),
+    antall: 14,
+  }],
 };

@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
+import { Story } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
 
 import { AVDELINGSLEDER_PATH } from 'app/paths';
 import EventType from 'data/rest-api/src/requestApi/eventType';
 import HeaderWithErrorPanel from 'app/components/HeaderWithErrorPanel';
-import { requestApi, RestApiGlobalStatePathsKeys } from 'data/fplosRestApi';
+import { RestApiGlobalStatePathsKeys } from 'data/fplosRestApi';
 import { RestApiErrorProvider } from 'data/rest-api-hooks';
 
+import RestApiMock from '../utils/RestApiMock';
 import withIntl from '../decorators/withIntl';
 import withRestApiProvider from '../decorators/withRestApi';
 
@@ -16,29 +18,66 @@ export default {
   decorators: [withIntl, withRestApiProvider],
 };
 
-const navAnsatt = {
+const getNavAnsatt = (kanOppgavestyre = false) => ({
   navn: 'Espen Utvikler',
-  kanOppgavestyre: false,
-};
+  kanOppgavestyre,
+});
 
-export const skalViseHeaderUtenAvdelingsvelger = () => {
-  requestApi.mock(RestApiGlobalStatePathsKeys.NAV_ANSATT.name, navAnsatt);
-  requestApi.mock(RestApiGlobalStatePathsKeys.DRIFTSMELDINGER.name, []);
+interface Props {
+  queryStrings: {
+    errormessage?: string;
+    errorcode?: string;
+  };
+  avdelinger?: any;
+  setValgtAvdelingEnhet?: any;
+  locationPathname?: string;
+  errorInitialState?: any;
+}
+
+const Template: Story<Props> = ({
+  queryStrings,
+  setValgtAvdelingEnhet,
+  avdelinger,
+  locationPathname,
+  errorInitialState,
+}) => {
+  const [valgtAvdelingEnhet, setValgtAvdeling] = useState<string | undefined>(undefined);
+
+  const data = [
+    { key: RestApiGlobalStatePathsKeys.NAV_ANSATT.name, data: getNavAnsatt(!!avdelinger) },
+    { key: RestApiGlobalStatePathsKeys.DRIFTSMELDINGER.name, data: [] },
+  ];
+  if (avdelinger) {
+    data.push({ key: RestApiGlobalStatePathsKeys.AVDELINGER.name, data: avdelinger });
+  }
 
   return (
-    <div style={{ marginLeft: '-40px' }}>
-      <HeaderWithErrorPanel
-        queryStrings={{}}
-        setValgtAvdelingEnhet={action('button-click')}
-        setSiteHeight={action('button-click')}
-      />
-    </div>
+    <RestApiMock data={data}>
+      <RestApiErrorProvider initialState={errorInitialState}>
+        <div style={{ marginLeft: '-40px' }}>
+          <HeaderWithErrorPanel
+            queryStrings={queryStrings}
+            setValgtAvdelingEnhet={setValgtAvdelingEnhet || setValgtAvdeling}
+            setSiteHeight={action('button-click')}
+            valgtAvdelingEnhet={valgtAvdelingEnhet}
+            locationPathname={locationPathname}
+          />
+        </div>
+      </RestApiErrorProvider>
+    </RestApiMock>
   );
 };
 
-export const skalViseHeaderMedAvdelingsvelger = () => {
-  const [valgtAvdelingEnhet, setValgtAvdeling] = useState<string>();
-  const avdelinger = [{
+export const HeaderUtenAvdelingsvelger = Template.bind({});
+HeaderUtenAvdelingsvelger.args = {
+  queryStrings: {},
+  setValgtAvdelingEnhet: action('button-click'),
+};
+
+export const HeaderMedAvdelingsvelger = Template.bind({});
+HeaderMedAvdelingsvelger.args = {
+  queryStrings: {},
+  avdelinger: [{
     avdelingEnhet: 'VIK',
     navn: 'NAV Viken',
     kreverKode6: false,
@@ -46,51 +85,29 @@ export const skalViseHeaderMedAvdelingsvelger = () => {
     avdelingEnhet: 'OSL',
     navn: 'NAV Oslo',
     kreverKode6: false,
-  }];
-
-  requestApi.mock(RestApiGlobalStatePathsKeys.NAV_ANSATT.name, navAnsatt);
-  requestApi.mock(RestApiGlobalStatePathsKeys.DRIFTSMELDINGER.name, []);
-  requestApi.mock(RestApiGlobalStatePathsKeys.AVDELINGER.name, avdelinger);
-
-  return (
-    <div style={{ marginLeft: '-40px' }}>
-      <HeaderWithErrorPanel
-        queryStrings={{}}
-        valgtAvdelingEnhet={valgtAvdelingEnhet}
-        setValgtAvdelingEnhet={setValgtAvdeling}
-        setSiteHeight={action('button-click')}
-        locationPathname={AVDELINGSLEDER_PATH}
-      />
-    </div>
-  );
+  }],
+  locationPathname: AVDELINGSLEDER_PATH,
 };
 
-export const skalViseHeaderMedKunEnFeilmelding = () => {
-  const errorInitialState = {
+export const HeaderMedKunEnFeilmelding = Template.bind({});
+HeaderMedKunEnFeilmelding.args = {
+  queryStrings: {},
+  setValgtAvdelingEnhet: action('button-click'),
+  errorInitialState: {
     errors: [{
       type: EventType.REQUEST_ERROR,
       feilmelding: 'Dette er en feilmelding',
     }],
-  };
-
-  requestApi.mock(RestApiGlobalStatePathsKeys.NAV_ANSATT.name, navAnsatt);
-  requestApi.mock(RestApiGlobalStatePathsKeys.DRIFTSMELDINGER.name, []);
-
-  return (
-    <div style={{ marginLeft: '-40px' }}>
-      <RestApiErrorProvider initialState={errorInitialState}>
-        <HeaderWithErrorPanel
-          queryStrings={{}}
-          setValgtAvdelingEnhet={action('button-click')}
-          setSiteHeight={action('button-click')}
-        />
-      </RestApiErrorProvider>
-    </div>
-  );
+  },
 };
 
-export const skalViseHeaderMedMerEnnFemFeilmeldinger = () => {
-  const errorInitialState = {
+export const HeaderMedMerEnnFemFeilmeldinger = Template.bind({});
+HeaderMedMerEnnFemFeilmeldinger.args = {
+  queryStrings: {
+    errormessage: 'Dette er ein feil',
+  },
+  setValgtAvdelingEnhet: action('button-click'),
+  errorInitialState: {
     errors: [{
       type: EventType.REQUEST_ERROR,
       feilmelding: 'Rest-kallet feilet',
@@ -111,23 +128,5 @@ export const skalViseHeaderMedMerEnnFemFeilmeldinger = () => {
       type: EventType.REQUEST_ERROR,
       feilmelding: 'Rest-kallet feilet 5',
     }],
-  };
-  const queryStrings = {
-    errormessage: 'Dette er ein feil',
-  };
-
-  requestApi.mock(RestApiGlobalStatePathsKeys.NAV_ANSATT.name, navAnsatt);
-  requestApi.mock(RestApiGlobalStatePathsKeys.DRIFTSMELDINGER.name, []);
-
-  return (
-    <div style={{ marginLeft: '-40px' }}>
-      <RestApiErrorProvider initialState={errorInitialState}>
-        <HeaderWithErrorPanel
-          queryStrings={queryStrings}
-          setValgtAvdelingEnhet={action('button-click')}
-          setSiteHeight={action('button-click')}
-        />
-      </RestApiErrorProvider>
-    </div>
-  );
+  },
 };

@@ -13,6 +13,6 @@ export default {
 
 ReactModal.setAppElement = () => null;
 
-export const skalViseTimeoutModal = () => (
+export const TimeoutModal = () => (
   <BehandlingPollingTimoutModal />
 );

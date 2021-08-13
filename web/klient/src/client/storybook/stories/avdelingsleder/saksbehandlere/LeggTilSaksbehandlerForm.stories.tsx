@@ -1,11 +1,14 @@
 import React from 'react';
+import { Story } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
 
-import { requestApi, RestApiPathsKeys } from 'data/fplosRestApi';
+import { RestApiPathsKeys } from 'data/fplosRestApi';
 import LeggTilSaksbehandlerForm from 'avdelingsleder/saksbehandlere/components/LeggTilSaksbehandlerForm';
+import SaksbehandlerAvdeling from 'types/avdelingsleder/saksbehandlerAvdelingTsType';
 
 import withIntl from '../../../decorators/withIntl';
 import withRestApiProvider from '../../../decorators/withRestApi';
+import RestApiMock from '../../../utils/RestApiMock';
 
 export default {
   title: 'avdelingsleder/saksbehandlere/LeggTilSaksbehandlerForm',
@@ -13,38 +16,37 @@ export default {
   decorators: [withIntl, withRestApiProvider],
 };
 
-export const skalVisePanelForÅLeggeTilSaksbehandlere = () => {
-  const saksbehandler = {
-    brukerIdent: 'R232323',
-    navn: 'Espen Utvikler',
-    avdelingsnavn: ['NAV Viken'],
-  };
+const saksbehandler = {
+  brukerIdent: 'R232323',
+  navn: 'Espen Utvikler',
+  avdelingsnavn: ['NAV Viken'],
+};
 
-  requestApi.mock(RestApiPathsKeys.SAKSBEHANDLER_SOK.name, saksbehandler);
+interface Props {
+  avdelingensSaksbehandlere?: SaksbehandlerAvdeling[];
+}
+
+const Template: Story<Props> = ({
+  avdelingensSaksbehandlere,
+}) => {
+  const data = [
+    { key: RestApiPathsKeys.SAKSBEHANDLER_SOK.name, data: saksbehandler },
+  ];
 
   return (
-    <LeggTilSaksbehandlerForm
-      avdelingensSaksbehandlere={[]}
-      hentAvdelingensSaksbehandlere={action('button-click')}
-      valgtAvdelingEnhet="NAV Viken"
-    />
+    <RestApiMock data={data}>
+      <LeggTilSaksbehandlerForm
+        avdelingensSaksbehandlere={avdelingensSaksbehandlere || []}
+        hentAvdelingensSaksbehandlere={action('button-click')}
+        valgtAvdelingEnhet="NAV Viken"
+      />
+    </RestApiMock>
   );
 };
 
-export const skalVisePanelForNårSaksbehandlerErLagtTilAllerede = () => {
-  const saksbehandler = {
-    brukerIdent: 'R232323',
-    navn: 'Espen Utvikler',
-    avdelingsnavn: ['NAV Viken'],
-  };
+export const PanelForÅLeggeTilSaksbehandlere = Template.bind({});
 
-  requestApi.mock(RestApiPathsKeys.SAKSBEHANDLER_SOK.name, saksbehandler);
-
-  return (
-    <LeggTilSaksbehandlerForm
-      avdelingensSaksbehandlere={[saksbehandler]}
-      hentAvdelingensSaksbehandlere={action('button-click')}
-      valgtAvdelingEnhet="NAV Viken"
-    />
-  );
+export const PanelForNårSaksbehandlerErLagtTilAllerede = Template.bind({});
+PanelForNårSaksbehandlerErLagtTilAllerede.args = {
+  avdelingensSaksbehandlere: [saksbehandler],
 };

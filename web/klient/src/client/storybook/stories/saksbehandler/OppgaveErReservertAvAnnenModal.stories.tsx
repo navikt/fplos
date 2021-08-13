@@ -17,7 +17,7 @@ export default {
 
 ReactModal.setAppElement = () => null;
 
-export const skalViseAtOppgaveErReservertAvAnnenSaksbehandler = () => (
+export const OppgaveErReservertAvAnnenSaksbehandler = () => (
   <OppgaveErReservertAvAnnenModal
     lukkErReservertModalOgOpneOppgave={action('button-click')}
     oppgave={{

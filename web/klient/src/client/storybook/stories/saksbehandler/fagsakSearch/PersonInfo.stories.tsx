@@ -1,4 +1,5 @@
 import React from 'react';
+import { Story } from '@storybook/react';
 
 import PersonInfo from 'saksbehandler/fagsakSearch/components/person/PersonInfo';
 import diskresjonskodeType from 'kodeverk/diskresjonskodeType';
@@ -11,26 +12,34 @@ export default {
   decorators: [withIntl],
 };
 
-export const skalPersonkortMedDiskresjonskodeForMann = () => (
+const Template: Story<{ navn: string, erKvinne: boolean, diskresjonskode?: string, dødsdato?: string }> = ({
+  navn,
+  erKvinne,
+  diskresjonskode,
+  dødsdato,
+}) => (
   <PersonInfo
     person={{
-      navn: 'Espen Utvikler',
+      navn,
       alder: 41,
       personnummer: '23232332',
-      erKvinne: false,
-      diskresjonskode: diskresjonskodeType.KODE7,
+      erKvinne,
+      diskresjonskode,
+      dødsdato,
     }}
   />
 );
 
-export const skalPersonkortForDødKvinne = () => (
-  <PersonInfo
-    person={{
-      navn: 'Olga Pettersen',
-      alder: 41,
-      personnummer: '23232332',
-      erKvinne: true,
-      dødsdato: '2020-10-10',
-    }}
-  />
-);
+export const PersonkortMedDiskresjonskodeForMann = Template.bind({});
+PersonkortMedDiskresjonskodeForMann.args = {
+  navn: 'Espen Utvikler',
+  erKvinne: false,
+  diskresjonskode: diskresjonskodeType.KODE7,
+};
+
+export const PersonkortForDødKvinne = Template.bind({});
+PersonkortForDødKvinne.args = {
+  navn: 'Olga Pettersen',
+  erKvinne: true,
+  dødsdato: '2020-10-10',
+};
