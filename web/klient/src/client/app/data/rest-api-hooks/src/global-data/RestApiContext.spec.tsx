@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { mount } from 'enzyme';
 import sinon from 'sinon';
 import { act } from 'react-dom/test-utils';
+import { AxiosInstance } from 'axios';
 
 import { AbstractRequestApi, RestKey } from 'data/rest-api';
 
@@ -33,6 +34,12 @@ class RequestApiTestMock extends AbstractRequestApi {
   public setRequestPendingHandler = () => {}
 
   public setLinks = () => {}
+
+  public getAxios = () => ({} as AxiosInstance)
+
+  public getUrl = (endpointName: string) => endpointName
+
+  public getRestType = (endpointName: string) => endpointName;
 
   public mock = () => { throw new Error('Not Implemented'); };
 

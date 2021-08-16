@@ -36,7 +36,7 @@ class RequestApiMock extends AbstractRequestApi {
 
   public resetCache = () => {}
 
-  public getAxios = (): AxiosInstance => undefined;
+  public getAxios = (): AxiosInstance => ({} as AxiosInstance);
 
   public getUrl = (endpointName: string): string => endpointName;
 
