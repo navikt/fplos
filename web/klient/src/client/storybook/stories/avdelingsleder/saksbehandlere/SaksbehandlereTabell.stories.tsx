@@ -1,6 +1,8 @@
 import React from 'react';
+import { Story } from '@storybook/react';
 
 import SaksbehandlereTabell from 'avdelingsleder/saksbehandlere/components/SaksbehandlereTabell';
+import Saksbehandler from 'types/avdelingsleder/saksbehandlerAvdelingTsType';
 
 import withRestApiProvider from '../../../decorators/withRestApi';
 import withIntl from '../../../decorators/withIntl';
@@ -11,16 +13,21 @@ export default {
   decorators: [withIntl, withRestApiProvider],
 };
 
-export const skalViseTomTabell = () => (
+const Template: Story<{ saksbehandlere?: Saksbehandler[] }> = ({
+  saksbehandlere,
+}) => (
   <SaksbehandlereTabell
-    saksbehandlere={[]}
+    saksbehandlere={saksbehandlere || []}
     hentAvdelingensSaksbehandlere={() => undefined}
     valgtAvdelingEnhet="NAV Viken"
   />
 );
 
-export const skalViseSaksbehandlereITabell = () => {
-  const saksbehandlere = [{
+export const TomTabell = Template.bind({});
+
+export const SaksbehandlereITabell = Template.bind({});
+SaksbehandlereITabell.args = {
+  saksbehandlere: [{
     brukerIdent: 'R12122',
     navn: 'Espen Utvikler',
     avdelingsnavn: ['NAV Viken'],
@@ -28,13 +35,5 @@ export const skalViseSaksbehandlereITabell = () => {
     brukerIdent: 'S53343',
     navn: 'Steffen',
     avdelingsnavn: ['NAV Oslo'],
-  }];
-
-  return (
-    <SaksbehandlereTabell
-      saksbehandlere={saksbehandlere}
-      hentAvdelingensSaksbehandlere={() => undefined}
-      valgtAvdelingEnhet="NAV Viken"
-    />
-  );
+  }],
 };

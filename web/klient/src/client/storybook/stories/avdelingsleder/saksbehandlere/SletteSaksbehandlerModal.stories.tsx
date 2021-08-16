@@ -11,7 +11,7 @@ export default {
   decorators: [withIntl],
 };
 
-export const skalViseModalForSlettingAvSaksbehandler = () => (
+export const ModalForSlettingAvSaksbehandler = () => (
   <SletteSaksbehandlerModal
     valgtSaksbehandler={{
       brukerIdent: 'R12122',

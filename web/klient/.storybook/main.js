@@ -20,7 +20,7 @@ module.exports = {
       return data;
     });
 
-    config.devtool = 'eval-cheap-source-map';
+    config.devtool = 'inline-source-map';
 
     // Make whatever fine-grained changes you need
     config.module.rules = config.module.rules.concat({

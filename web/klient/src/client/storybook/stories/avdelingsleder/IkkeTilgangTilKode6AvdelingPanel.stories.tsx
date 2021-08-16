@@ -10,6 +10,6 @@ export default {
   decorators: [withIntl],
 };
 
-export const skalViseIkkeTilgangGrunnetKode6 = () => (
+export const IkkeTilgangGrunnetKode6 = () => (
   <IkkeTilgangTilKode6AvdelingPanel />
 );

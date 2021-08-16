@@ -14,7 +14,7 @@ export default {
   decorators: [withIntl],
 };
 
-export const skalViseGrafForOppgaverPerFørsteStønadsdag = () => (
+export const GrafForOppgaverPerFørsteStønadsdag = () => (
   <OppgaverPerForsteStonadsdagPanel
     width={700}
     height={300}

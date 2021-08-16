@@ -11,6 +11,6 @@ export default {
   decorators: [withIntl, withRouter],
 };
 
-export const skalViseSideKanIkkeFinnes = () => (
+export const SideFinnesIkke = () => (
   <MissingPage />
 );

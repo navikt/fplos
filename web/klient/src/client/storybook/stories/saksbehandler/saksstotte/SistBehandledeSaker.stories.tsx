@@ -1,8 +1,11 @@
 import React from 'react';
+import { Story } from '@storybook/react';
 
-import { requestApi, RestApiPathsKeys, RestApiGlobalStatePathsKeys } from 'data/fplosRestApi';
+import { RestApiPathsKeys, RestApiGlobalStatePathsKeys } from 'data/fplosRestApi';
 import SistBehandledeSaker from 'saksbehandler/saksstotte/components/SistBehandledeSaker';
+import Oppgave from 'types/saksbehandler/oppgaveTsType';
 
+import RestApiMock from '../../../utils/RestApiMock';
 import withRestApiProvider from '../../../decorators/withRestApi';
 import withIntl from '../../../decorators/withIntl';
 
@@ -15,25 +18,28 @@ export default {
   ],
 };
 
-export const skalViseIngenBehandlinger = () => {
-  requestApi.mock(RestApiGlobalStatePathsKeys.FPSAK_URL.name, { value: 'fpsak-url' });
-  requestApi.mock(RestApiPathsKeys.BEHANDLEDE_OPPGAVER.name);
+const Template: Story<{ behandledeOppgaver?: Oppgave[] }> = ({
+  behandledeOppgaver,
+}) => {
+  const data = [
+    { key: RestApiGlobalStatePathsKeys.FPSAK_URL.name, data: { value: 'fpsak-url' } },
+    { key: RestApiPathsKeys.BEHANDLEDE_OPPGAVER.name, data: behandledeOppgaver },
+  ];
+
   return (
-    <SistBehandledeSaker />
+    <RestApiMock data={data}>
+      <SistBehandledeSaker />
+    </RestApiMock>
   );
 };
 
-export const skalViseSistBehandlendeSaker = () => {
-  const behandledeOppgaver = [{
-    behandlingId: 1,
+export const IngenBehandlinger = Template.bind({});
+
+export const SistBehandlendeSaker = Template.bind({});
+SistBehandlendeSaker.args = {
+  behandledeOppgaver: [{
+    id: 1,
     personnummer: '334342323',
     navn: 'Espen Utvikler',
-  }];
-
-  requestApi.mock(RestApiGlobalStatePathsKeys.FPSAK_URL.name, { value: 'fpsak-url' });
-  requestApi.mock(RestApiPathsKeys.BEHANDLEDE_OPPGAVER.name, behandledeOppgaver);
-
-  return (
-    <SistBehandledeSaker />
-  );
+  } as Oppgave],
 };

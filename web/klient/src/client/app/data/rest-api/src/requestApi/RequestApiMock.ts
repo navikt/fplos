@@ -1,3 +1,4 @@
+import { AxiosInstance } from 'axios';
 import RequestRunner from './RequestRunner';
 import AbstractRequestApi from './AbstractRequestApi';
 
@@ -34,6 +35,12 @@ class RequestApiMock extends AbstractRequestApi {
   public setAddErrorMessageHandler = () => {};
 
   public resetCache = () => {}
+
+  public getAxios = (): AxiosInstance => ({} as AxiosInstance);
+
+  public getUrl = (endpointName: string): string => endpointName;
+
+  public getRestType = (endpointName: string): string => endpointName;
 
   public isMock = () => true;
 

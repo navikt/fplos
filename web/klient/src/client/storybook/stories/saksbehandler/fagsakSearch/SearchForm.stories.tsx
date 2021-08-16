@@ -1,9 +1,11 @@
 import React from 'react';
 import { action } from '@storybook/addon-actions';
+import { Story } from '@storybook/react';
 
-import { requestApi, RestApiGlobalStatePathsKeys } from 'data/fplosRestApi';
+import { RestApiGlobalStatePathsKeys } from 'data/fplosRestApi';
 import SearchForm from 'saksbehandler/fagsakSearch/components/SearchForm';
 
+import RestApiMock from '../../../utils/RestApiMock';
 import withRestApiProvider from '../../../decorators/withRestApi';
 import withIntl from '../../../decorators/withIntl';
 
@@ -16,41 +18,39 @@ export default {
   ],
 };
 
-export const skalViseSøkeskjema = () => {
-  requestApi.mock(RestApiGlobalStatePathsKeys.NAV_ANSATT.name, {
-    kanSaksbehandle: true,
-  });
+const Template: Story<{ kanSaksbehandle: boolean, searchStarted: boolean }> = ({
+  kanSaksbehandle,
+  searchStarted,
+}) => {
+  const data = [
+    { key: RestApiGlobalStatePathsKeys.NAV_ANSATT.name, data: { kanSaksbehandle } },
+  ];
+
   return (
-    <SearchForm
-      onSubmit={action('button-click')}
-      searchStarted={false}
-      resetSearch={action('button-click')}
-    />
+    <RestApiMock data={data}>
+      <SearchForm
+        onSubmit={action('button-click')}
+        searchStarted={searchStarted}
+        resetSearch={action('button-click')}
+      />
+    </RestApiMock>
   );
 };
 
-export const skalViseSøkeskjemaNårEnIkkeKanVelgeÅReservere = () => {
-  requestApi.mock(RestApiGlobalStatePathsKeys.NAV_ANSATT.name, {
-    kanSaksbehandle: false,
-  });
-  return (
-    <SearchForm
-      onSubmit={action('button-click')}
-      searchStarted={false}
-      resetSearch={action('button-click')}
-    />
-  );
+export const Søkeskjema = Template.bind({});
+Søkeskjema.args = {
+  kanSaksbehandle: true,
+  searchStarted: false,
 };
 
-export const skalViseSøkeskjemaNårSøkPågår = () => {
-  requestApi.mock(RestApiGlobalStatePathsKeys.NAV_ANSATT.name, {
-    kanSaksbehandle: true,
-  });
-  return (
-    <SearchForm
-      onSubmit={action('button-click')}
-      searchStarted
-      resetSearch={action('button-click')}
-    />
-  );
+export const SøkeskjemaNårEnIkkeKanVelgeÅReservere = Template.bind({});
+SøkeskjemaNårEnIkkeKanVelgeÅReservere.args = {
+  kanSaksbehandle: false,
+  searchStarted: false,
+};
+
+export const SøkeskjemaNårSøkPågår = Template.bind({});
+SøkeskjemaNårSøkPågår.args = {
+  kanSaksbehandle: true,
+  searchStarted: true,
 };

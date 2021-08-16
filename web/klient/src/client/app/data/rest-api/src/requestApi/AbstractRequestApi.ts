@@ -1,3 +1,4 @@
+import { AxiosInstance } from 'axios';
 import Link from './LinkTsType';
 
 /**
@@ -20,6 +21,12 @@ abstract class AbstractRequestApi {
   public abstract resetCache(): void;
 
   public abstract isMock(): boolean;
+
+  public abstract getAxios(): AxiosInstance;
+
+  public abstract getUrl(endpointName: string): string;
+
+  public abstract getRestType(endpointName: string): string;
 
   public abstract mock(endpointName: string, data?: any): void;
 

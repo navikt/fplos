@@ -15,7 +15,7 @@ export default {
   decorators: [withIntl],
 };
 
-export const skalViseGrafForNyeOgFerdigstilteOppgaver = () => (
+export const GrafForNyeOgFerdigstilteOppgaver = () => (
   <NyeOgFerdigstilteOppgaverForSisteSyvPanel
     width={700}
     height={200}
