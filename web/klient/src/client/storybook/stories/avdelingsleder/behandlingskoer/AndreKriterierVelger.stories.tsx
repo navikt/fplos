@@ -3,7 +3,7 @@ import { Form } from 'react-final-form';
 import { action } from '@storybook/addon-actions';
 import { Story } from '@storybook/react';
 
-import { RestApiGlobalStatePathsKeys } from 'data/fplosRestApi';
+import { RestApiGlobalStatePathsKeys, RestApiPathsKeys } from 'data/fplosRestApi';
 import AndreKriterierVelger from 'avdelingsleder/behandlingskoer/components/sakslisteForm/AndreKriterierVelger';
 import andreKriterierType from 'kodeverk/andreKriterierType';
 
@@ -23,6 +23,7 @@ const Template: Story<{ verdier: Record<string, boolean> }> = ({
 }) => {
   const data = [
     { key: RestApiGlobalStatePathsKeys.KODEVERK.name, data: alleKodeverk },
+    { key: RestApiPathsKeys.LAGRE_SAKSLISTE_ANDRE_KRITERIER.name, data: {} },
   ];
 
   return (

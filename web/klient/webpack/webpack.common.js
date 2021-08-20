@@ -7,6 +7,7 @@ const ROOT_DIR = path.resolve(__dirname, '../src/client');
 const APP_DIR = path.join(ROOT_DIR, 'app');
 const IMG_DIR = path.join(ROOT_DIR, 'images');
 const STYLE_DIR = path.join(ROOT_DIR, 'styles');
+const STORYBOOK_DIR = path.join(ROOT_DIR, 'storybook');
 
 const isDevelopment = JSON.stringify(process.env.NODE_ENV) === '"development"';
 
@@ -121,6 +122,7 @@ const config = {
       sharedComponents: path.join(APP_DIR, 'sharedComponents'),
       types: path.join(APP_DIR, 'types'),
       utils: path.join(APP_DIR, 'utils'),
+      stories: path.join(STORYBOOK_DIR, 'stories'),
     },
     extensions: ['.js', '.jsx', '.tsx', '.ts', '.less'],
   },

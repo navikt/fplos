@@ -32,6 +32,10 @@ interface Props {
   setValgtAvdelingEnhet?: any;
   locationPathname?: string;
   errorInitialState?: any;
+  driftsmeldinger?: {
+    id: string,
+    melding: string,
+  }[];
 }
 
 const Template: Story<Props> = ({
@@ -40,12 +44,13 @@ const Template: Story<Props> = ({
   avdelinger,
   locationPathname,
   errorInitialState,
+  driftsmeldinger = [],
 }) => {
   const [valgtAvdelingEnhet, setValgtAvdeling] = useState<string | undefined>(undefined);
 
   const data = [
     { key: RestApiGlobalStatePathsKeys.NAV_ANSATT.name, data: getNavAnsatt(!!avdelinger) },
-    { key: RestApiGlobalStatePathsKeys.DRIFTSMELDINGER.name, data: [] },
+    { key: RestApiGlobalStatePathsKeys.DRIFTSMELDINGER.name, data: driftsmeldinger },
   ];
   if (avdelinger) {
     data.push({ key: RestApiGlobalStatePathsKeys.AVDELINGER.name, data: avdelinger });
@@ -129,4 +134,17 @@ HeaderMedMerEnnFemFeilmeldinger.args = {
       feilmelding: 'Rest-kallet feilet 5',
     }],
   },
+};
+
+export const HeaderMedDriftsmeldinger = Template.bind({});
+HeaderMedDriftsmeldinger.args = {
+  queryStrings: {},
+  setValgtAvdelingEnhet: action('button-click'),
+  driftsmeldinger: [{
+    id: '1',
+    melding: 'Dette er driftsmelding 1',
+  }, {
+    id: '2',
+    melding: 'Dette er driftsmelding 2',
+  }],
 };

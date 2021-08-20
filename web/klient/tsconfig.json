@@ -26,6 +26,7 @@
 			"types/*": ["app/types/*"],
 			"utils/*": ["app/utils/*"],
 			"testHelpers/*": ["testHelpers/*"],
+			"stories/*": ["storybook/stories/*"],
 		  }
 	},
 	"include": [

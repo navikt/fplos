@@ -11,6 +11,6 @@ export default {
   decorators: [withIntl, withRouter],
 };
 
-export const SideFinnesIkke = () => (
+export const Default = () => (
   <MissingPage />
 );

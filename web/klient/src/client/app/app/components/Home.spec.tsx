@@ -1,11 +1,21 @@
 import React from 'react';
-import { shallow } from 'enzyme';
+import { Router } from 'react-router-dom';
+import { createBrowserHistory } from 'history';
+import { render, screen } from '@testing-library/react';
 
 import Home from './Home';
 
-describe('<Home>', () => {
-  it('skal rendre komponent', () => {
-    const wrapper = shallow(<Home headerHeight={1} />);
-    expect(wrapper.find('Switch')).toHaveLength(1);
+const history = createBrowserHistory<any>({
+  basename: '/',
+});
+
+describe('<MissingPage>', () => {
+  it('skal vise laste-side når ingen rute er valgt', async () => {
+    render(
+      <Router history={history}>
+        <Home headerHeight={1} />
+      </Router>,
+    );
+    expect(await screen.findByText('Venter...')).toBeInTheDocument();
   });
 });

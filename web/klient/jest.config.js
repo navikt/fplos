@@ -24,6 +24,7 @@ module.exports = {
         "^types(.*)$": "<rootDir>/src/client/app/types$1",
         "^utils(.*)$": "<rootDir>/src/client/app/utils$1",
         "^testHelpers(.*)$": "<rootDir>/src/client/testHelpers$1",
+        "^stories(.*)$": "<rootDir>/src/client/storybook/stories$1",
       },
       roots: [
         '<rootDir>/src/client/',
@@ -33,7 +34,6 @@ module.exports = {
       ],
       setupFilesAfterEnv: [
         '<rootDir>/src/client/testHelpers/setup-test-env.ts',
-        '<rootDir>/src/client/testHelpers/setup-test-env-hooks.ts',
       ],
       testEnvironment: 'jsdom',
       testMatch: ['**/?(*.)+(spec).+(ts|tsx)'],
