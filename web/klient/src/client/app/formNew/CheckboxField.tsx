@@ -16,7 +16,7 @@ const CheckboxField: FunctionComponent<OwnProps> = ({
   name,
   label,
   validate = [],
-  defaultValue,
+  defaultValue = false,
   readOnly = false,
   ...otherProps
 }) => {

@@ -1,78 +1,23 @@
 import React from 'react';
-import sinon from 'sinon';
-import { IntlShape } from 'react-intl';
-import { Form } from 'react-final-form';
+import { render, screen } from '@testing-library/react';
+import { composeStories } from '@storybook/testing-react';
+import userEvent from '@testing-library/user-event';
+import * as stories from 'stories/saksbehandler/behandlingskoer/OpphevReservasjonModal.stories';
 
-import BehandlingStatus from 'kodeverk/behandlingStatus';
-import FagsakYtelseType from 'kodeverk/fagsakYtelseType';
-import { TextAreaField } from 'form/FinalFields';
-import { shallowWithIntl, intlMock } from 'testHelpers/intl-enzyme-test-helper';
-import BehandlingType from 'kodeverk/behandlingType';
-import OpphevReservasjonModal from './OpphevReservasjonModal';
+const { Default } = composeStories(stories);
 
 describe('<OpphevReservasjonModal>', () => {
-  const intl: Partial<IntlShape> = {
-    ...intlMock,
-  };
-  const oppgave = {
-    id: 1,
-    status: {
-      erReservert: false,
-      reservertTilTidspunkt: '2017-08-02T00:54:25.455',
-    },
-    saksnummer: 1,
-    behandlingId: '2',
-    personnummer: '1234567',
-    navn: 'Espen Utvikler',
-    behandlingstype: {
-      kode: BehandlingType.FORSTEGANGSSOKNAD,
-      navn: '',
-    },
-    opprettetTidspunkt: '2017-01-01',
-    behandlingsfrist: '2017-01-01',
-    erTilSaksbehandling: true,
-    fagsakYtelseType: {
-      kode: FagsakYtelseType.ENGANGSSTONAD,
-      navn: '',
-    },
-    behandlingStatus: {
-      kode: BehandlingStatus.OPPRETTET,
-      navn: '',
-    },
-    system: '',
-    href: '',
-  };
+  it('skal vise modal for oppheving av reservasjon', async () => {
+    const begrunnelse = 'Dette er en begrunnelse';
 
-  it(
-    'skal rendre modal for å oppgi begrunnelse for oppheving av reservasjon',
-    () => {
-      const wrapper = shallowWithIntl(
-        <OpphevReservasjonModal.WrappedComponent
-          intl={intl as IntlShape}
-          showModal
-          oppgave={oppgave}
-          cancel={sinon.spy()}
-          toggleMenu={sinon.spy()}
-          hentReserverteOppgaver={sinon.spy()}
-        />,
-      );
+    const utils = render(<Default opphevData={{ oppgaveId: 1, begrunnelse }} />);
 
-      const form = wrapper.find(Form);
-      expect(form).toHaveLength(1);
+    expect(await screen.findByText('Når en reservert sak frigjøres er begrunnelse obligatorisk')).toBeInTheDocument();
 
-      const handleSubmitFn = sinon.spy();
-      // @ts-ignore Fiks
-      const renderFn = form.prop('render') as ({ handleSubmit: any }) => void;
-      // @ts-ignore Fiks
-      const formWrapper = shallowWithIntl(renderFn({
-        handleSubmit: handleSubmitFn,
-      }));
+    const begrunnelseInput = utils.getByLabelText('Når en reservert sak frigjøres er begrunnelse obligatorisk');
+    userEvent.type(begrunnelseInput, begrunnelse);
 
-      expect(formWrapper.find(TextAreaField)).toHaveLength(1);
-
-      formWrapper.find('form').simulate('submit');
-
-      expect(handleSubmitFn.calledOnce).toBe(true);
-    },
-  );
+    expect(await screen.findByText('OK')).toBeInTheDocument();
+    userEvent.click(screen.getByText('OK'));
+  });
 });

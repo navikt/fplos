@@ -19,11 +19,12 @@ export default {
   decorators: [withIntl, withRestApiProvider],
 };
 
-const Template: Story<{ oppgave: Oppgave }> = ({
+const Template: Story<{ oppgave: Oppgave, opphevData: any }> = ({
   oppgave,
+  opphevData,
 }) => {
   const data = [
-    { key: RestApiPathsKeys.OPPHEV_OPPGAVERESERVASJON.name, data: {} },
+    { key: RestApiPathsKeys.OPPHEV_OPPGAVERESERVASJON.name, data: opphevData },
   ];
 
   return (
@@ -39,8 +40,9 @@ const Template: Story<{ oppgave: Oppgave }> = ({
   );
 };
 
-export const ModalForEndringAvReservasjon = Template.bind({});
-ModalForEndringAvReservasjon.args = {
+export const Default = Template.bind({});
+Default.args = {
+  opphevData: {},
   oppgave: {
     id: 1,
     status: {
