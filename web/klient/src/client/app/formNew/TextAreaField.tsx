@@ -65,7 +65,7 @@ const TextAreaField: FunctionComponent<OwnProps> = ({
         </div>
       )}
       <NavTextarea
-        label={<Label input={label} readOnly />}
+        label={<Label input={label} readOnly={false} />}
         feil={errors[name] && errors[name].message}
         {...field}
         {...otherProps}

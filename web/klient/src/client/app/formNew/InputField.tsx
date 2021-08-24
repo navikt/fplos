@@ -11,6 +11,7 @@ interface OwnProps {
   validate?: ((value: string) => any)[];
   defaultValue?: string;
   readOnly?: boolean;
+  autoFocus?: boolean;
 }
 
 const InputField: FunctionComponent<OwnProps> = ({
