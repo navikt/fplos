@@ -18,7 +18,7 @@ const InputField: FunctionComponent<OwnProps> = ({
   name,
   label,
   validate = [],
-  defaultValue,
+  defaultValue = '',
   readOnly = false,
   ...otherProps
 }) => {
