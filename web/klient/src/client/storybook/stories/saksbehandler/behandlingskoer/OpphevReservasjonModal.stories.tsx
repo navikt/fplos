@@ -19,9 +19,14 @@ export default {
   decorators: [withIntl, withRestApiProvider],
 };
 
-const Template: Story<{ oppgave: Oppgave, opphevData: any }> = ({
+const Template: Story<{
+  oppgave: Oppgave,
+  opphevData: any,
+  hentReserverteOppgaver: (params: any, keepData: boolean) => void,
+}> = ({
   oppgave,
   opphevData,
+  hentReserverteOppgaver,
 }) => {
   const data = [
     { key: RestApiPathsKeys.OPPHEV_OPPGAVERESERVASJON.name, data: opphevData },
@@ -33,7 +38,7 @@ const Template: Story<{ oppgave: Oppgave, opphevData: any }> = ({
         showModal
         oppgave={oppgave}
         cancel={action('button-click')}
-        hentReserverteOppgaver={action('button-click')}
+        hentReserverteOppgaver={hentReserverteOppgaver}
         toggleMenu={action('button-click')}
       />
     </RestApiMock>
@@ -43,6 +48,7 @@ const Template: Story<{ oppgave: Oppgave, opphevData: any }> = ({
 export const Default = Template.bind({});
 Default.args = {
   opphevData: {},
+  hentReserverteOppgaver: action('button-click'),
   oppgave: {
     id: 1,
     status: {

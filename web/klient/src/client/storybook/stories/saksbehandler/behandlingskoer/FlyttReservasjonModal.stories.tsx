@@ -21,6 +21,7 @@ const Template: Story<{
   hentReserverteOppgaver: (params: any, keepData: boolean) => void
 }> = ({
   saksbehandler,
+  hentReserverteOppgaver,
 }) => {
   const data = [
     { key: RestApiPathsKeys.FLYTT_RESERVASJON_SAKSBEHANDLER_SOK.name, data: saksbehandler },
@@ -34,7 +35,7 @@ const Template: Story<{
         oppgaveId={1}
         closeModal={action('button-click')}
         toggleMenu={action('button-click')}
-        hentReserverteOppgaver={action('button-click')}
+        hentReserverteOppgaver={hentReserverteOppgaver}
       />
     </RestApiMock>
   );

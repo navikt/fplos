@@ -58,6 +58,6 @@ describe('<FlyttReservasjonModal>', () => {
     userEvent.click(screen.getByText('OK'));
 
     await waitFor(() => expect(hentReserverteOppgaver).toHaveBeenCalledTimes(1));
-    expect(hentReserverteOppgaver).toHaveBeenNthCalledWith(1, {});
+    expect(hentReserverteOppgaver).toHaveBeenNthCalledWith(1, {}, true);
   });
 });
