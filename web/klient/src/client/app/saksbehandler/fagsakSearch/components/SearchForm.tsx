@@ -1,16 +1,18 @@
 import React, { FunctionComponent } from 'react';
-import { injectIntl, WrappedComponentProps, FormattedMessage } from 'react-intl';
-import { Form } from 'react-final-form';
-import { Knapp } from 'nav-frontend-knapper';
+import { FormattedMessage, injectIntl, WrappedComponentProps } from 'react-intl';
+import { useForm } from 'react-hook-form';
 import { Undertittel } from 'nav-frontend-typografi';
+import { Knapp } from 'nav-frontend-knapper';
 
-import { restApiHooks, RestApiGlobalStatePathsKeys } from 'data/fplosRestApi';
-import { FlexContainer, FlexRow, FlexColumn } from 'sharedComponents/flexGrid';
-import VerticalSpacer from 'sharedComponents/VerticalSpacer';
-import Image from 'sharedComponents/Image';
 import advarselIcon from 'images/advarsel.svg';
+import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import { hasValidSaksnummerOrFodselsnummerFormat } from 'utils/validation/validators';
-import { InputField, CheckboxField } from 'form/FinalFields';
+import { restApiHooks, RestApiGlobalStatePathsKeys } from 'data/fplosRestApi';
+import { FlexColumn, FlexContainer, FlexRow } from 'sharedComponents/flexGrid';
+import Image from 'sharedComponents/Image';
+import InputField from '../../../formNew/InputField';
+import Form from '../../../formNew/Form';
+import CheckboxField from '../../../formNew/CheckboxField';
 
 import styles from './searchForm.less';
 
@@ -21,6 +23,11 @@ const isButtonDisabled = (
     feilmelding?: string;
   },
 ) => (!searchResultAccessDenied?.feilmelding && searchStarted) || !searchString;
+
+type FormValues = {
+  skalReservere: boolean;
+  searchString: string;
+};
 
 interface OwnProps {
   onSubmit: (values: { searchString: string, skalReservere: boolean }) => void;
@@ -39,48 +46,49 @@ interface OwnProps {
 const SearchForm: FunctionComponent<OwnProps & WrappedComponentProps> = ({
   intl,
   onSubmit,
-  searchStarted,
   searchResultAccessDenied,
+  searchStarted,
   resetSearch,
 }) => {
   const { kanSaksbehandle } = restApiHooks.useGlobalStateRestApiData(RestApiGlobalStatePathsKeys.NAV_ANSATT);
+  const formMethods = useForm<FormValues>();
+
+  const searchStringValue = formMethods.watch('searchString');
+
   return (
-    <Form
-      onSubmit={onSubmit}
-      render={({ handleSubmit, values }) => (
-        <form className={styles.container} onSubmit={handleSubmit}>
-          <Undertittel>{intl.formatMessage({ id: 'Search.SearchFagsakOrPerson' })}</Undertittel>
-          {kanSaksbehandle && (
-          <>
-            <VerticalSpacer sixteenPx />
-            <CheckboxField name="skalReservere" label={intl.formatMessage({ id: 'Search.ReserverBehandling' })} onClick={resetSearch} />
-          </>
-          )}
-          <VerticalSpacer eightPx />
-          <FlexContainer>
-            <FlexRow>
-              <FlexColumn>
-                <InputField
-                  name="searchString"
-                  parse={(s = '') => s.trim()}
-                  label={intl.formatMessage({ id: 'Search.SaksnummerOrPersonId' })}
-                  bredde="L"
-                  validate={[hasValidSaksnummerOrFodselsnummerFormat]}
-                />
-              </FlexColumn>
-              <FlexColumn>
-                <Knapp
-                  mini
-                  htmlType="submit"
-                  className={styles.button}
-                  spinner={!searchResultAccessDenied?.feilmelding && searchStarted}
-                  disabled={isButtonDisabled(values.searchString, searchStarted, searchResultAccessDenied)}
-                >
-                  <FormattedMessage id="Search.Search" />
-                </Knapp>
-              </FlexColumn>
-            </FlexRow>
-            {searchResultAccessDenied?.feilmelding && (
+    <Form<FormValues> onSubmit={onSubmit} formMethods={formMethods}>
+      <div className={styles.container}>
+        <Undertittel>{intl.formatMessage({ id: 'Search.SearchFagsakOrPerson' })}</Undertittel>
+        {kanSaksbehandle && (
+        <>
+          <VerticalSpacer sixteenPx />
+          <CheckboxField name="skalReservere" label={intl.formatMessage({ id: 'Search.ReserverBehandling' })} onClick={resetSearch} />
+        </>
+        )}
+        <VerticalSpacer eightPx />
+        <FlexContainer>
+          <FlexRow>
+            <FlexColumn>
+              <InputField
+                name="searchString"
+                label={intl.formatMessage({ id: 'Search.SaksnummerOrPersonId' })}
+                bredde="L"
+                validate={[hasValidSaksnummerOrFodselsnummerFormat(intl)]}
+              />
+            </FlexColumn>
+            <FlexColumn>
+              <Knapp
+                mini
+                htmlType="submit"
+                className={styles.button}
+                spinner={!searchResultAccessDenied?.feilmelding && searchStarted}
+                disabled={isButtonDisabled(searchStringValue, searchStarted, searchResultAccessDenied)}
+              >
+                <FormattedMessage id="Search.Search" />
+              </Knapp>
+            </FlexColumn>
+          </FlexRow>
+          {searchResultAccessDenied?.feilmelding && (
             <>
               <VerticalSpacer eightPx />
               <FlexRow>
@@ -92,11 +100,10 @@ const SearchForm: FunctionComponent<OwnProps & WrappedComponentProps> = ({
                 </FlexColumn>
               </FlexRow>
             </>
-            )}
-          </FlexContainer>
-        </form>
-      )}
-    />
+          )}
+        </FlexContainer>
+      </div>
+    </Form>
   );
 };
 

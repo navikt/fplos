@@ -1,4 +1,5 @@
 import moment from 'moment';
+import { IntlShape } from 'react-intl';
 import { DDMMYYYY_DATE_FORMAT } from 'utils/formats';
 import {
   isRequiredMessage, minLengthMessage, invalidNumberMessage, maxLengthMessage, minValueMessage, maxValueMessage, invalidDateMessage,
@@ -30,9 +31,9 @@ const hasValidPosOrNegInt = (text: string): FormValidationResultOrNull => (isEmp
   || integerOptionalNegativeRegex.test(text) ? null : invalidIntegerMessage(text));
 export const hasValidPosOrNegInteger = (text: string): FormValidationResultOrNull => (hasValidPosOrNegNumber(text) || hasValidPosOrNegInt(text));
 
-export const hasValidSaksnummerOrFodselsnummerFormat = (text: string): FormValidationResultOrNull => (isEmpty(text)
+export const hasValidSaksnummerOrFodselsnummerFormat = (intl: IntlShape) => (text: string): FormValidationResultOrNull => (isEmpty(text)
   || saksnummerOrFodselsnummerPattern.test(text)
-  ? null : invalidSaksnummerOrFodselsnummerFormatMessage());
+  ? null : invalidSaksnummerOrFodselsnummerFormatMessage(intl));
 
 export const hasValidDate = (text: string): FormValidationResultOrNull => (isEmpty(text) || isoDateRegex.test(text) ? null : invalidDateMessage());
 export const dateBeforeOrEqual = (latest: moment.Moment | Date | string) => (text: moment.Moment | string): FormValidationResultOrNull => (

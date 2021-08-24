@@ -18,9 +18,14 @@ export default {
   ],
 };
 
-const Template: Story<{ kanSaksbehandle: boolean, searchStarted: boolean }> = ({
+const Template: Story<{
+  kanSaksbehandle: boolean,
+  searchStarted: boolean,
+  onSubmit: (values: { searchString: string, skalReservere: boolean }) => void,
+}> = ({
   kanSaksbehandle,
   searchStarted,
+  onSubmit,
 }) => {
   const data = [
     { key: RestApiGlobalStatePathsKeys.NAV_ANSATT.name, data: { kanSaksbehandle } },
@@ -29,7 +34,7 @@ const Template: Story<{ kanSaksbehandle: boolean, searchStarted: boolean }> = ({
   return (
     <RestApiMock data={data}>
       <SearchForm
-        onSubmit={action('button-click')}
+        onSubmit={onSubmit}
         searchStarted={searchStarted}
         resetSearch={action('button-click')}
       />
@@ -39,18 +44,21 @@ const Template: Story<{ kanSaksbehandle: boolean, searchStarted: boolean }> = ({
 
 export const Søkeskjema = Template.bind({});
 Søkeskjema.args = {
+  onSubmit: action('button-click'),
   kanSaksbehandle: true,
   searchStarted: false,
 };
 
 export const SøkeskjemaNårEnIkkeKanVelgeÅReservere = Template.bind({});
 SøkeskjemaNårEnIkkeKanVelgeÅReservere.args = {
+  onSubmit: action('button-click'),
   kanSaksbehandle: false,
   searchStarted: false,
 };
 
 export const SøkeskjemaNårSøkPågår = Template.bind({});
 SøkeskjemaNårSøkPågår.args = {
+  onSubmit: action('button-click'),
   kanSaksbehandle: true,
   searchStarted: true,
 };

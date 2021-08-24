@@ -1,10 +1,12 @@
+import { IntlShape } from 'react-intl';
+
 export type FormValidationResult = {
   id?: string,
   length?: number,
   text?: string,
   limit?: string;
   value?: string;
-}[];
+} | string;
 
 export const isRequiredMessage = (): FormValidationResult => ([{ id: 'ValidationMessage.NotEmpty' }]);
 export const minLengthMessage = (length: number): FormValidationResult => ([{ id: 'ValidationMessage.MinLength' }, { length }]);
@@ -21,7 +23,8 @@ export const datesNotEqual = (value: string): FormValidationResult => ([{ id: 'V
 export const invalidFodselsnummerFormatMessage = (): FormValidationResult => ([{ id: 'ValidationMessage.InvalidFodselsnummerFormat' }]);
 export const invalidFodselsnummerMessage = (): FormValidationResult => ([{ id: 'ValidationMessage.InvalidFodselsnummer' }]);
 export const sammeFodselsnummerSomSokerMessage = (): FormValidationResult => ([{ id: 'ValidationMessage.SammeFodselsnummerSomSoker' }]);
-export const invalidSaksnummerOrFodselsnummerFormatMessage = () => ([{ id: 'ValidationMessage.InvalidSaksnummerOrFodselsnummerFormat' }]);
+export const invalidSaksnummerOrFodselsnummerFormatMessage = (intl: IntlShape) => intl
+  .formatMessage({ id: 'ValidationMessage.InvalidSaksnummerOrFodselsnummerFormat' });
 export const invalidTextMessage = (text: string): FormValidationResult => ([{ id: 'ValidationMessage.InvalidText' }, { text }]);
 export const invalidValueMessage = (value: string): FormValidationResult => ([{ id: 'ValidationMessage.InvalidValue' }, { value }]);
 export const arrayMinLengthMessage = (length: number): FormValidationResult => ([{ id: 'ValidationMessage.ArrayMinLength' }, { length }]);
