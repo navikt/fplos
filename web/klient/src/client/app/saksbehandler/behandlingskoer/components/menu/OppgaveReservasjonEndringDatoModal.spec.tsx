@@ -25,6 +25,6 @@ describe('<OppgaveReservasjonEndringDatoModal>', () => {
     userEvent.click(screen.getByText('OK'));
 
     await waitFor(() => expect(endreReserverasjonState).toHaveBeenCalledTimes(1));
-    expect(endreReserverasjonState).toHaveBeenNthCalledWith(1, {}, true);
+    expect(endreReserverasjonState).toHaveBeenNthCalledWith(1);
   });
 });

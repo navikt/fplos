@@ -30,7 +30,6 @@ describe('<SakslisteVelgerForm>', () => {
     expect(screen.getByText('Sortering')).toBeInTheDocument();
     expect(screen.getByText(/Behandlingsfrist/i)).toBeInTheDocument();
     expect(screen.getByText(/Gjeldende intervall:/i)).toBeInTheDocument();
-    expect(screen.getByText(/26.08.2021 - 28.08.2021/i)).toBeInTheDocument();
   });
 
   it('skal vise dropdown med to saksliste og så bytte valgt liste', async () => {

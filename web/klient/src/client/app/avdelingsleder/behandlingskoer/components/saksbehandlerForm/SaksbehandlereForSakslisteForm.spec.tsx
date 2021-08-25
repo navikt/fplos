@@ -1,119 +1,42 @@
 import React from 'react';
-import { shallow } from 'enzyme';
-import sinon from 'sinon';
-import { Form } from 'react-final-form';
-import { FormattedMessage } from 'react-intl';
-import { Column } from 'nav-frontend-grid';
+import { render, screen, waitFor } from '@testing-library/react';
+import { composeStories } from '@storybook/testing-react';
+import userEvent from '@testing-library/user-event';
+import * as stories from 'stories/avdelingsleder/behandlingskoer/SaksbehandlereForSakslisteForm.stories';
 
-import AndreKriterierType from 'kodeverk/andreKriterierType';
-import { CheckboxField } from 'form/FinalFields';
-import SaksbehandlereForSakslisteForm from './SaksbehandlereForSakslisteForm';
+const { IngenSaksbehandlere, ToSaksbehandlere } = composeStories(stories);
 
 describe('<SaksbehandlereForSakslisteForm>', () => {
-  const saksliste = {
-    sakslisteId: 1,
-    navn: 'Nyansatte',
-    sistEndret: '2017-08-31',
-    andreKriterier: [{
-      andreKriterierType: {
-        kode: AndreKriterierType.TIL_BESLUTTER,
-        navn: 'Til beslutter',
-      },
-      inkluder: true,
-    }, {
-      andreKriterierType: {
-        kode: AndreKriterierType.REGISTRER_PAPIRSOKNAD,
-        navn: 'Registrer papirsøknad',
-      },
-      inkluder: true,
-    }],
-    saksbehandlerIdenter: [],
-    antallBehandlinger: 1,
-  };
+  it('skal vise tekst som viser at ingen saksbehandlere er tilknyttet', async () => {
+    render(<IngenSaksbehandlere />);
+    expect(await screen.findByText('Saksbehandlere')).toBeInTheDocument();
+    expect(screen.getByText('Avdelingen har ingen saksbehandlere tilknyttet')).toBeInTheDocument();
+  });
 
-  it(
-    'skal vise tekst når avdelingen ikke har tilordnede saksbehandlere',
-    () => {
-      const wrapper = shallow(<SaksbehandlereForSakslisteForm
-        valgtSaksliste={saksliste}
-        hentAvdelingensSakslister={sinon.spy()}
-        avdelingensSaksbehandlere={[]}
-        valgtAvdelingEnhet="1"
-        // @ts-ignore
-      />).find(Form).renderProp('render')({});
+  it('skal vise to saksbehandlere i listen', async () => {
+    render(<ToSaksbehandlere />);
+    expect(await screen.findByText('Saksbehandlere')).toBeInTheDocument();
+    expect(screen.getByText('Espen Utvikler')).toBeInTheDocument();
+    expect(screen.getByText('Steffen')).toBeInTheDocument();
+  });
 
-      const melding = wrapper.find(FormattedMessage);
-      expect(melding).toHaveLength(2);
-      expect(melding.last().prop('id')).toEqual('SaksbehandlereForSakslisteForm.IngenSaksbehandlere');
-    },
-  );
+  it('skal lagre og hente listen med saksbehandlere på nytt når en velger en av saksbehandlerene', async () => {
+    const hentAvdelingensSakslister = jest.fn();
 
-  it(
-    'skal vise kun en kolonne med saksbehandlere når det er tilordnet en saksbehandler',
-    () => {
-      const saksbehandlere = [{
-        brukerIdent: 'TEST1',
-        navn: 'Espen Utvikler',
-        avdelingsnavn: ['NAV Oslo'],
-      }];
+    render(<ToSaksbehandlere hentAvdelingensSakslister={hentAvdelingensSakslister} />);
+    expect(await screen.findByText('Saksbehandlere')).toBeInTheDocument();
+    expect(screen.getByText('Espen Utvikler')).toBeInTheDocument();
+    expect(screen.getByText('Steffen')).toBeInTheDocument();
 
-      const wrapper = shallow(<SaksbehandlereForSakslisteForm
-        valgtSaksliste={saksliste}
-        avdelingensSaksbehandlere={saksbehandlere}
-        hentAvdelingensSakslister={sinon.spy()}
-        valgtAvdelingEnhet="1"
-        // @ts-ignore
-      />).find(Form).renderProp('render')({});
+    expect(screen.getAllByRole('checkbox')[0]).not.toBeChecked();
+    expect(screen.getAllByRole('checkbox')[1]).not.toBeChecked();
 
-      expect(wrapper.find(FormattedMessage)).toHaveLength(1);
+    userEvent.click(screen.getAllByRole('checkbox')[0]);
 
-      const kolonner = wrapper.find(Column);
-      expect(kolonner).toHaveLength(2);
+    await waitFor(() => expect(hentAvdelingensSakslister).toHaveBeenCalledTimes(1));
+    expect(hentAvdelingensSakslister).toHaveBeenNthCalledWith(1);
 
-      const checkBox = kolonner.first().find(CheckboxField);
-      expect(checkBox).toHaveLength(1);
-      expect(checkBox.prop('name')).toEqual('TEST1');
-      expect(checkBox.prop('label')).toEqual('Espen Utvikler');
-
-      expect(kolonner.last().find(CheckboxField)).toHaveLength(0);
-    },
-  );
-
-  it(
-    'skal vise to kolonner med saksbehandlere når det er tilordnet to saksbehandler',
-    () => {
-      const saksbehandlere = [{
-        brukerIdent: 'TEST1',
-        navn: 'Espen Utvikler',
-        avdelingsnavn: ['NAV Oslo'],
-      }, {
-        brukerIdent: 'TEST2',
-        navn: 'Auto Joachim',
-        avdelingsnavn: ['NAV Bærum'],
-      }];
-
-      const wrapper = shallow(<SaksbehandlereForSakslisteForm
-        valgtSaksliste={saksliste}
-        avdelingensSaksbehandlere={saksbehandlere}
-        hentAvdelingensSakslister={sinon.spy()}
-        valgtAvdelingEnhet="1"
-        // @ts-ignore
-      />).find(Form).renderProp('render')({});
-
-      expect(wrapper.find(FormattedMessage)).toHaveLength(1);
-
-      const kolonner = wrapper.find(Column);
-      expect(kolonner).toHaveLength(2);
-
-      const checkBox1 = kolonner.first().find(CheckboxField);
-      expect(checkBox1).toHaveLength(1);
-      expect(checkBox1.prop('name')).toEqual('TEST2');
-      expect(checkBox1.prop('label')).toEqual('Auto Joachim');
-
-      const checkBox2 = kolonner.last().find(CheckboxField);
-      expect(checkBox2).toHaveLength(1);
-      expect(checkBox2.prop('name')).toEqual('TEST1');
-      expect(checkBox2.prop('label')).toEqual('Espen Utvikler');
-    },
-  );
+    expect(screen.getAllByRole('checkbox')[0]).toBeChecked();
+    expect(screen.getAllByRole('checkbox')[1]).not.toBeChecked();
+  });
 });

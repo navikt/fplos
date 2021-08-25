@@ -1,7 +1,7 @@
 import React, { FunctionComponent } from 'react';
 import { Checkbox as NavCheckbox } from 'nav-frontend-skjema';
 import { useController, useFormContext } from 'react-hook-form';
-import Label from './Label';
+import { Normaltekst } from 'nav-frontend-typografi';
 
 interface OwnProps {
   name: string;
@@ -10,6 +10,7 @@ interface OwnProps {
   validate?: ((value: string) => any)[];
   defaultValue?: boolean;
   readOnly?: boolean;
+  onChange?: (isChecked: boolean) => void;
 }
 
 const CheckboxField: FunctionComponent<OwnProps> = ({
@@ -18,6 +19,7 @@ const CheckboxField: FunctionComponent<OwnProps> = ({
   validate = [],
   defaultValue = false,
   readOnly = false,
+  onChange,
   ...otherProps
 }) => {
   const { formState: { errors } } = useFormContext();
@@ -36,11 +38,17 @@ const CheckboxField: FunctionComponent<OwnProps> = ({
 
   return (
     <NavCheckbox
-      label={<Label input={label} readOnly={false} />}
+      label={<Normaltekst>{label}</Normaltekst>}
       feil={errors[name] && errors[name].message}
       disabled={readOnly}
       {...field}
       {...otherProps}
+      onChange={(value) => {
+        field.onChange((value));
+        if (onChange) {
+          onChange(value.currentTarget.checked);
+        }
+      }}
     />
   );
 };

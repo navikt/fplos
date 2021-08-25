@@ -45,7 +45,8 @@ const DatepickerField: FunctionComponent<OwnProps> = ({
     [index]: (value: any) => fn(value) || true,
   }), {});
 
-  const { field } = useController({
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { field: { ref, ...inputProps } } = useController({
     name,
     defaultValue: '',
     rules: {
@@ -54,7 +55,7 @@ const DatepickerField: FunctionComponent<OwnProps> = ({
   });
 
   if (readOnly) {
-    return <ReadOnlyField label={<Label input={label} readOnly />} input={field.value} />;
+    return <ReadOnlyField label={<Label input={label} readOnly />} input={inputProps.value} />;
   }
 
   return (
@@ -64,9 +65,9 @@ const DatepickerField: FunctionComponent<OwnProps> = ({
         dayPickerProps={{
           disabledDays,
         }}
-        {...field}
+        {...inputProps}
         {...otherProps}
-        onChange={(value) => field.onChange(parse(acceptedFormatToIso(value)))}
+        onChange={(value) => inputProps.onChange(parse(acceptedFormatToIso(value)))}
       />
       {errors[name] && (
         <SkjemaelementFeilmelding id={errors[name].message}>
