@@ -1,5 +1,5 @@
 import React, { FunctionComponent } from 'react';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import { injectIntl, WrappedComponentProps, FormattedMessage } from 'react-intl';
 import { Form } from 'react-final-form';
 import { Element } from 'nav-frontend-typografi';
@@ -32,8 +32,8 @@ const erDatoInnenforPeriode = (oppgaveForAvdeling: OppgaveForDato, ukevalg: stri
   if (ukevalg === uker[1].kode) {
     return true;
   }
-  const toUkerSiden = moment().subtract(2, 'w');
-  return moment(oppgaveForAvdeling.opprettetDato).isSameOrAfter(toUkerSiden);
+  const toUkerSiden = dayjs().subtract(2, 'w');
+  return dayjs(oppgaveForAvdeling.opprettetDato).isSameOrAfter(toUkerSiden);
 };
 
 const finnFagsakYtelseTypeNavn = (fagsakYtelseTyper: Kodeverk[], valgtFagsakYtelseType: string): string => {

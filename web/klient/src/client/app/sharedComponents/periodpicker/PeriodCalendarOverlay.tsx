@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { injectIntl, WrappedComponentProps } from 'react-intl';
 import DayPicker, { AfterModifier, BeforeModifier, Modifier } from 'react-day-picker';
-import moment from 'moment';
+import dayjs from 'dayjs';
 
 import { getRelatedTargetIE11, isIE11 } from 'utils/browserUtils';
 
@@ -71,11 +71,11 @@ class PeriodCalendarOverlay extends Component<OwnProps & WrappedComponentProps> 
     if (disabledDays) {
       const { before: intervalStart } = disabledDays as BeforeModifier;
       if (intervalStart) {
-        isSelectable = moment(selectedDate).isSameOrAfter(moment(intervalStart).startOf('day'));
+        isSelectable = dayjs(selectedDate).isSameOrAfter(dayjs(intervalStart).startOf('day'));
       }
       const { after: intervalEnd } = disabledDays as AfterModifier;
       if (isSelectable && intervalEnd) {
-        isSelectable = moment(selectedDate).isSameOrBefore(moment(intervalEnd).endOf('day'));
+        isSelectable = dayjs(selectedDate).isSameOrBefore(dayjs(intervalEnd).endOf('day'));
       }
     }
     if (isSelectable) {
@@ -135,7 +135,7 @@ class PeriodCalendarOverlay extends Component<OwnProps & WrappedComponentProps> 
           onDayClick={this.onDayClick}
           onKeyDown={this.onKeyDown}
           disabledDays={disabledDays}
-          initialMonth={endDate || moment().toDate()}
+          initialMonth={endDate || dayjs().toDate()}
         />
       </div>
     );

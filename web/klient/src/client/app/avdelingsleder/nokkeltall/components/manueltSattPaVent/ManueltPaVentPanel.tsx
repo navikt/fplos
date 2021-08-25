@@ -2,7 +2,7 @@ import React, { FunctionComponent } from 'react';
 import { injectIntl, WrappedComponentProps, FormattedMessage } from 'react-intl';
 
 import { Form } from 'react-final-form';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import { Element } from 'nav-frontend-typografi';
 import { Row, Column } from 'nav-frontend-grid';
 
@@ -39,8 +39,8 @@ const erDatoInnenforPeriode = (behandlingFrist: string, ukevalg: string): boolea
     return true;
   }
 
-  const dataOmFireUker = moment().add(4, 'w');
-  return moment(behandlingFrist).isSameOrBefore(dataOmFireUker);
+  const dataOmFireUker = dayjs().add(4, 'w');
+  return dayjs(behandlingFrist).isSameOrBefore(dataOmFireUker);
 };
 
 interface OwnProps {

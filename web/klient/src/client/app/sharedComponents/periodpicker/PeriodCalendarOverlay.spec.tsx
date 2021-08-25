@@ -1,5 +1,5 @@
 import React, { FocusEvent, KeyboardEvent } from 'react';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import DayPicker from 'react-day-picker';
 import sinon from 'sinon';
 
@@ -14,8 +14,8 @@ describe('<PeriodCalendarOverlay>', () => {
       className="test"
       dayPickerClassName="test"
       elementIsCalendarButton={sinon.spy()}
-      startDate={moment().toDate()}
-      endDate={moment().toDate()}
+      startDate={dayjs().toDate()}
+      endDate={dayjs().toDate()}
       disabled
     />);
 
@@ -23,8 +23,8 @@ describe('<PeriodCalendarOverlay>', () => {
   });
 
   it('skal vise overlay', () => {
-    const startDate = moment('2017-08-31').toDate();
-    const endDate = moment('2018-08-31').toDate();
+    const startDate = dayjs('2017-08-31').toDate();
+    const endDate = dayjs('2018-08-31').toDate();
     const wrapper = shallowWithIntl(<PeriodCalendarOverlay.WrappedComponent
       intl={intlMock}
       onDayChange={sinon.spy()}
@@ -62,8 +62,8 @@ describe('<PeriodCalendarOverlay>', () => {
         className="test"
         dayPickerClassName="test"
         elementIsCalendarButton={elementIsCalendarButton}
-        startDate={moment('2017-08-31').toDate()}
-        endDate={moment('2018-08-31').toDate()}
+        startDate={dayjs('2017-08-31').toDate()}
+        endDate={dayjs('2018-08-31').toDate()}
         onClose={onCloseCallback}
       />);
 
@@ -80,8 +80,8 @@ describe('<PeriodCalendarOverlay>', () => {
       className="test"
       dayPickerClassName="test"
       elementIsCalendarButton={sinon.spy()}
-      startDate={moment('2017-08-31').toDate()}
-      endDate={moment('2018-08-31').toDate()}
+      startDate={dayjs('2017-08-31').toDate()}
+      endDate={dayjs('2018-08-31').toDate()}
       onClose={onCloseCallback}
     />);
 
@@ -101,8 +101,8 @@ describe('<PeriodCalendarOverlay>', () => {
         className="test"
         dayPickerClassName="test"
         elementIsCalendarButton={sinon.spy()}
-        startDate={moment('2017-08-31').toDate()}
-        endDate={moment('2018-08-31').toDate()}
+        startDate={dayjs('2017-08-31').toDate()}
+        endDate={dayjs('2018-08-31').toDate()}
         onClose={onCloseCallback}
       />);
 
@@ -121,8 +121,8 @@ describe('<PeriodCalendarOverlay>', () => {
       className="test"
       dayPickerClassName="test"
       elementIsCalendarButton={sinon.spy()}
-      startDate={moment('2017-08-31').toDate()}
-      endDate={moment('2018-08-31').toDate()}
+      startDate={dayjs('2017-08-31').toDate()}
+      endDate={dayjs('2018-08-31').toDate()}
       onClose={sinon.spy()}
     />);
 
@@ -151,8 +151,8 @@ describe('<PeriodCalendarOverlay>', () => {
         className="test"
         dayPickerClassName="test"
         elementIsCalendarButton={sinon.spy()}
-        startDate={moment('2017-08-31').toDate()}
-        endDate={moment('2018-08-31').toDate()}
+        startDate={dayjs('2017-08-31').toDate()}
+        endDate={dayjs('2018-08-31').toDate()}
         disabledDays={disabledDays}
         onClose={sinon.spy()}
       />);
@@ -183,8 +183,8 @@ describe('<PeriodCalendarOverlay>', () => {
         className="test"
         dayPickerClassName="test"
         elementIsCalendarButton={sinon.spy()}
-        startDate={moment('2017-08-31').toDate()}
-        endDate={moment('2018-08-31').toDate()}
+        startDate={dayjs('2017-08-31').toDate()}
+        endDate={dayjs('2018-08-31').toDate()}
         disabledDays={disabledDays}
         onClose={sinon.spy()}
       />);
@@ -211,8 +211,8 @@ describe('<PeriodCalendarOverlay>', () => {
         className="test"
         dayPickerClassName="test"
         elementIsCalendarButton={sinon.spy()}
-        startDate={moment('2017-08-31').toDate()}
-        endDate={moment('2018-08-31').toDate()}
+        startDate={dayjs('2017-08-31').toDate()}
+        endDate={dayjs('2018-08-31').toDate()}
         disabledDays={disabledDays}
         onClose={sinon.spy()}
       />);

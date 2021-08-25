@@ -1,7 +1,7 @@
 import React from 'react';
 import sinon from 'sinon';
 import { Form } from 'react-final-form';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import { IntlShape } from 'react-intl';
 
 import { requestApi, RestApiGlobalStatePathsKeys } from 'data/fplosRestApi';
@@ -78,11 +78,11 @@ describe('<ManueltPaVentPanel>', () => {
     };
     const oppgaverManueltPaVent = [{
       fagsakYtelseType: fagsakYtelseTyper[0],
-      behandlingFrist: moment().add(5, 'w').format(ISO_DATE_FORMAT),
+      behandlingFrist: dayjs().add(5, 'w').format(ISO_DATE_FORMAT),
       antall: 1,
     }, {
       fagsakYtelseType: fagsakYtelseTyper[1],
-      behandlingFrist: moment().add(3, 'w').format(ISO_DATE_FORMAT),
+      behandlingFrist: dayjs().add(3, 'w').format(ISO_DATE_FORMAT),
       antall: 1,
     }];
 
@@ -112,11 +112,11 @@ describe('<ManueltPaVentPanel>', () => {
       };
       const oppgaverManueltPaVent = [{
         fagsakYtelseType: fagsakYtelseTyper[0],
-        behandlingFrist: moment().add(4, 'w').format(ISO_DATE_FORMAT),
+        behandlingFrist: dayjs().add(4, 'w').format(ISO_DATE_FORMAT),
         antall: 1,
       }, {
         fagsakYtelseType: fagsakYtelseTyper[1],
-        behandlingFrist: moment().add(7, 'w').format(ISO_DATE_FORMAT),
+        behandlingFrist: dayjs().add(7, 'w').format(ISO_DATE_FORMAT),
         antall: 1,
       }];
 
@@ -145,11 +145,11 @@ describe('<ManueltPaVentPanel>', () => {
     };
     const oppgaverManueltPaVent = [{
       fagsakYtelseType: fagsakYtelseTyper[0],
-      behandlingFrist: moment().format(ISO_DATE_FORMAT),
+      behandlingFrist: dayjs().format(ISO_DATE_FORMAT),
       antall: 1,
     }, {
       fagsakYtelseType: fagsakYtelseTyper[1],
-      behandlingFrist: moment().format(ISO_DATE_FORMAT),
+      behandlingFrist: dayjs().format(ISO_DATE_FORMAT),
       antall: 1,
     }];
 
@@ -176,11 +176,11 @@ describe('<ManueltPaVentPanel>', () => {
     };
     const oppgaverManueltPaVent = [{
       fagsakYtelseType: fagsakYtelseTyper[0],
-      behandlingFrist: moment().format(ISO_DATE_FORMAT),
+      behandlingFrist: dayjs().format(ISO_DATE_FORMAT),
       antall: 1,
     }, {
       fagsakYtelseType: fagsakYtelseTyper[1],
-      behandlingFrist: moment().format(ISO_DATE_FORMAT),
+      behandlingFrist: dayjs().format(ISO_DATE_FORMAT),
       antall: 1,
     }];
 

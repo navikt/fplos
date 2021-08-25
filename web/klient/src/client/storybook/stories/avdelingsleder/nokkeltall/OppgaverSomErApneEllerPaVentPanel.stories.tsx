@@ -1,5 +1,5 @@
 import React from 'react';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import { Story } from '@storybook/react';
 
 import { RestApiGlobalStatePathsKeys } from 'data/fplosRestApi';
@@ -53,7 +53,7 @@ GrafForAntallOppgaverTilBehandlingPerDag.args = {
       kode: behandlingType.FORSTEGANGSSOKNAD,
       navn: 'Førstegangssøknad',
     },
-    førsteUttakMåned: moment().startOf('month').format(ISO_DATE_FORMAT),
+    førsteUttakMåned: dayjs().startOf('month').format(ISO_DATE_FORMAT),
     antall: 2,
   }, {
     behandlingVenteStatus: {
@@ -64,7 +64,7 @@ GrafForAntallOppgaverTilBehandlingPerDag.args = {
       kode: behandlingType.FORSTEGANGSSOKNAD,
       navn: 'Førstegangssøknad',
     },
-    førsteUttakMåned: moment().startOf('month').format(ISO_DATE_FORMAT),
+    førsteUttakMåned: dayjs().startOf('month').format(ISO_DATE_FORMAT),
     antall: 5,
   }, {
     behandlingVenteStatus: {
@@ -75,7 +75,7 @@ GrafForAntallOppgaverTilBehandlingPerDag.args = {
       kode: behandlingType.REVURDERING,
       navn: 'Revurdering',
     },
-    førsteUttakMåned: moment().startOf('month').subtract(4, 'M').format(ISO_DATE_FORMAT),
+    førsteUttakMåned: dayjs().startOf('month').subtract(4, 'M').format(ISO_DATE_FORMAT),
     antall: 2,
   }, {
     behandlingVenteStatus: {
@@ -106,7 +106,7 @@ GrafForAntallOppgaverTilBehandlingPerDag.args = {
       kode: behandlingType.REVURDERING,
       navn: 'Revurdering',
     },
-    førsteUttakMåned: moment().startOf('month').subtract(4, 'M').format(ISO_DATE_FORMAT),
+    førsteUttakMåned: dayjs().startOf('month').subtract(4, 'M').format(ISO_DATE_FORMAT),
     antall: 6,
   }, {
     behandlingVenteStatus: {
@@ -117,7 +117,7 @@ GrafForAntallOppgaverTilBehandlingPerDag.args = {
       kode: behandlingType.DOKUMENTINNSYN,
       navn: 'Dokumentinnsyn',
     },
-    førsteUttakMåned: moment().startOf('month').subtract(10, 'M').format(ISO_DATE_FORMAT),
+    førsteUttakMåned: dayjs().startOf('month').subtract(10, 'M').format(ISO_DATE_FORMAT),
     antall: 3,
   }, {
     behandlingVenteStatus: {
@@ -128,7 +128,7 @@ GrafForAntallOppgaverTilBehandlingPerDag.args = {
       kode: behandlingType.DOKUMENTINNSYN,
       navn: 'Dokumentinnsyn',
     },
-    førsteUttakMåned: moment().startOf('month').subtract(10, 'M').format(ISO_DATE_FORMAT),
+    førsteUttakMåned: dayjs().startOf('month').subtract(10, 'M').format(ISO_DATE_FORMAT),
     antall: 5,
   }],
 };

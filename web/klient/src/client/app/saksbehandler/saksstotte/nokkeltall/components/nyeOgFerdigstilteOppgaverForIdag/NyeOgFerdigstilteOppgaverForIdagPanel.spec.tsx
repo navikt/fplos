@@ -1,6 +1,6 @@
 import React from 'react';
 import { shallow } from 'enzyme';
-import moment from 'moment';
+import dayjs from 'dayjs';
 
 import { requestApi, RestApiGlobalStatePathsKeys } from 'data/fplosRestApi';
 import BehandlingType from 'kodeverk/behandlingType';
@@ -39,7 +39,7 @@ describe('<NyeOgFerdigstilteOppgaverForIdagPanel>', () => {
   });
 
   it('skal filtrere bort alle andre enn dagens oppgaver', () => {
-    const iDag = moment().format();
+    const iDag = dayjs().format();
     const nyeOgFerdigstilteOppgaver = [{
       behandlingType: {
         kode: BehandlingType.FORSTEGANGSSOKNAD,
@@ -55,7 +55,7 @@ describe('<NyeOgFerdigstilteOppgaverForIdagPanel>', () => {
       },
       antallNye: 1,
       antallFerdigstilte: 6,
-      dato: moment().add(1, 'days').format(),
+      dato: dayjs().add(1, 'days').format(),
     }, {
       behandlingType: {
         kode: BehandlingType.DOKUMENTINNSYN,
@@ -63,7 +63,7 @@ describe('<NyeOgFerdigstilteOppgaverForIdagPanel>', () => {
       },
       antallNye: 8,
       antallFerdigstilte: 9,
-      dato: moment().subtract(1, 'days').format(),
+      dato: dayjs().subtract(1, 'days').format(),
     }];
 
     const filtrerteOppgaver = getNyeOgFerdigstilteForIDag(nyeOgFerdigstilteOppgaver);

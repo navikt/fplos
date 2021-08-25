@@ -1,7 +1,7 @@
 import React from 'react';
 import sinon from 'sinon';
 import { IntlShape, FormattedMessage } from 'react-intl';
-import moment from 'moment';
+import dayjs from 'dayjs';
 
 import { Hovedknapp } from 'nav-frontend-knapper';
 
@@ -17,7 +17,7 @@ describe('<OppgaveErReservertAvAnnenModal>', () => {
   const intl: Partial<IntlShape> = {
     ...intlMock,
   };
-  const dato = moment().add(2, 'hours').format();
+  const dato = dayjs().add(2, 'hours').format();
   const oppgave = {
     id: 1,
     status: {

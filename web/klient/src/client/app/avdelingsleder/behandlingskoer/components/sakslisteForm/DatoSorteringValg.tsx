@@ -1,6 +1,6 @@
 import React, { FunctionComponent } from 'react';
 import { FormattedMessage, WrappedComponentProps } from 'react-intl';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import { Undertekst } from 'nav-frontend-typografi';
 
 import { FlexColumn, FlexContainer, FlexRow } from 'sharedComponents/flexGrid';
@@ -18,7 +18,7 @@ import AutoLagringVedBlur from './AutoLagringVedBlur';
 
 import styles from './sorteringVelger.less';
 
-const finnDato = (antallDager: number) => moment().add(antallDager, 'd').format();
+const finnDato = (antallDager: number) => dayjs().add(antallDager, 'd').format();
 
 const getLagreDatoFn = (
   lagreSakslisteSorteringTidsintervallDato: (params?: any, keepData?: boolean | undefined) => Promise<unknown>,
@@ -31,7 +31,7 @@ const getLagreDatoFn = (
 ) => (e: any) => {
   let dato = e.target.value;
   if (dato) {
-    dato = moment(dato, DDMMYYYY_DATE_FORMAT, true);
+    dato = dayjs(dato, DDMMYYYY_DATE_FORMAT, true);
   }
   if (!dato || dato.isValid()) {
     const d = dato ? dato.format(ISO_DATE_FORMAT) : dato;

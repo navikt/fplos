@@ -1,5 +1,5 @@
 import React from 'react';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import { XYPlot, Hint, HorizontalRectSeries } from 'react-vis';
 import { IntlShape } from 'react-intl';
 
@@ -55,7 +55,7 @@ describe('<NyeOgFerdigstilteOppgaverForIdagGraf>', () => {
       },
       antallNye: 12,
       antallFerdigstilte: 2,
-      dato: moment().format(ISO_DATE_FORMAT),
+      dato: dayjs().format(ISO_DATE_FORMAT),
     }];
 
     const wrapper = shallowWithIntl(<NyeOgFerdigstilteOppgaverForIdagGraf.WrappedComponent
@@ -81,7 +81,7 @@ describe('<NyeOgFerdigstilteOppgaverForIdagGraf>', () => {
         },
         antallNye: 12,
         antallFerdigstilte: 2,
-        dato: moment().format(ISO_DATE_FORMAT),
+        dato: dayjs().format(ISO_DATE_FORMAT),
       }];
 
       const wrapper = shallowWithIntl(<NyeOgFerdigstilteOppgaverForIdagGraf.WrappedComponent

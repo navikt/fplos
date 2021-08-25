@@ -1,4 +1,6 @@
-import moment from 'moment';
+import dayjs from 'dayjs';
+import isSameOrAfter from 'dayjs/plugin/isSameOrAfter';
+import isSameOrBefore from 'dayjs/plugin/isSameOrBefore';
 import { IntlShape } from 'react-intl';
 import { DDMMYYYY_DATE_FORMAT } from 'utils/formats';
 import {
@@ -10,6 +12,9 @@ import {
   isoDateRegex, numberOptionalNegativeRegex, integerOptionalNegativeRegex, textRegex,
   textGyldigRegex, isEmpty, nameRegex, nameGyldigRegex, saksnummerOrFodselsnummerPattern,
 } from './validatorsHelper';
+
+dayjs.extend(isSameOrAfter);
+dayjs.extend(isSameOrBefore);
 
 type InputValue = string | number | boolean;
 
@@ -35,25 +40,28 @@ export const hasValidSaksnummerOrFodselsnummerFormat = (intl: IntlShape) => (tex
   || saksnummerOrFodselsnummerPattern.test(text)
   ? null : invalidSaksnummerOrFodselsnummerFormatMessage(intl));
 
-export const hasValidDate = (text: string): FormValidationResultOrNull => (isEmpty(text) || isoDateRegex.test(text) ? null : invalidDateMessage());
-export const dateBeforeOrEqual = (latest: moment.Moment | Date | string) => (text: moment.Moment | string): FormValidationResultOrNull => (
-  (isEmpty(text) || moment(text).isSameOrBefore(moment(latest).startOf('day')))
+export const hasValidDate = (intl: IntlShape) => (text: string): FormValidationResultOrNull => (isEmpty(text)
+  || isoDateRegex.test(text) ? null : invalidDateMessage(intl));
+export const dateBeforeOrEqual = (intl: IntlShape, latest: dayjs.Dayjs | Date | string) => (text: dayjs.Dayjs | string): FormValidationResultOrNull => (
+  (isEmpty(text) || dayjs(text).isSameOrBefore(dayjs(latest).startOf('day')))
     ? null
-    : dateNotBeforeOrEqualMessage(moment(latest).format(DDMMYYYY_DATE_FORMAT))
+    : dateNotBeforeOrEqualMessage(intl, dayjs(latest).format(DDMMYYYY_DATE_FORMAT))
 );
 const getErrorMessage = (
-  earliest: moment.Moment | Date | string,
-  customErrorMessage?: (date: string) => FormValidationResultOrNull,
+  intl: IntlShape,
+  earliest: dayjs.Dayjs | Date | string,
+  customErrorMessage?: (intl: IntlShape, date: string) => FormValidationResultOrNull,
 ): FormValidationResultOrNull => {
-  const date = moment(earliest).format(DDMMYYYY_DATE_FORMAT);
-  return customErrorMessage ? customErrorMessage(date) : dateNotAfterOrEqualMessage(date);
+  const date = dayjs(earliest).format(DDMMYYYY_DATE_FORMAT);
+  return customErrorMessage ? customErrorMessage(intl, date) : dateNotAfterOrEqualMessage(intl, date);
 };
-export const dateAfterOrEqual = (earliest: moment.Moment | Date | string, customErrorMessageFunction?: (date: string) => FormValidationResultOrNull) => (
-  text: moment.Moment | string,
+export const dateAfterOrEqual = (intl: IntlShape, earliest: dayjs.Dayjs | Date | string,
+  customErrorMessageFunction?: (intl: IntlShape, date: string) => FormValidationResultOrNull) => (
+  text: dayjs.Dayjs | string,
 ): FormValidationResultOrNull => (
-  (isEmpty(text) || moment(text).isSameOrAfter(moment(earliest).startOf('day')))
+  (isEmpty(text) || dayjs(text).isSameOrAfter(dayjs(earliest).startOf('day')))
     ? null
-    : getErrorMessage(earliest, customErrorMessageFunction)
+    : getErrorMessage(intl, earliest, customErrorMessageFunction)
 );
 
 export const hasValidText = (text: string): FormValidationResultOrNull => {

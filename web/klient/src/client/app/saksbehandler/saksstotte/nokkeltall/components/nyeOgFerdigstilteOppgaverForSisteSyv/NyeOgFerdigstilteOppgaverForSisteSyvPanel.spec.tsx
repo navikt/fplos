@@ -1,6 +1,6 @@
 import React from 'react';
 import { shallow } from 'enzyme';
-import moment from 'moment';
+import dayjs from 'dayjs';
 
 import BehandlingType from 'kodeverk/behandlingType';
 import NyeOgFerdigstilteOppgaverForSisteSyvPanel from './NyeOgFerdigstilteOppgaverForSisteSyvPanel';
@@ -28,9 +28,9 @@ describe('<NyeOgFerdigstilteOppgaverForSisteSyvPanel>', () => {
   });
 
   it('skal filtrere bort dagens oppgaver', () => {
-    const iDag = moment().format();
-    const iGar = moment().subtract(1, 'days').format();
-    const atteDagerSiden = moment().subtract(8, 'days').format();
+    const iDag = dayjs().format();
+    const iGar = dayjs().subtract(1, 'days').format();
+    const atteDagerSiden = dayjs().subtract(8, 'days').format();
     const nyeOgFerdigstilteOppgaver = [{
       behandlingType: {
         kode: BehandlingType.FORSTEGANGSSOKNAD,

@@ -13,11 +13,13 @@ export const minLengthMessage = (length: number): FormValidationResult => ([{ id
 export const maxLengthMessage = (length: number): FormValidationResult => ([{ id: 'ValidationMessage.MaxLength' }, { length }]);
 export const minValueMessage = (length: number): FormValidationResult => ([{ id: 'ValidationMessage.MinValue' }, { length }]);
 export const maxValueMessage = (length: number): FormValidationResult => ([{ id: 'ValidationMessage.MaxValue' }, { length }]);
-export const invalidDateMessage = (): FormValidationResult => ([{ id: 'ValidationMessage.InvalidDate' }]);
+export const invalidDateMessage = (intl: IntlShape): string => intl.formatMessage({ id: 'ValidationMessage.InvalidDate' });
 export const invalidIntegerMessage = (text: string): FormValidationResult => ([{ id: 'ValidationMessage.InvalidInteger' }, { text }]);
 export const invalidDecimalMessage = (text: string): FormValidationResult => ([{ id: 'ValidationMessage.InvalidDecimal' }, { text }]);
-export const dateNotBeforeOrEqualMessage = (limit: string): FormValidationResult => ([{ id: 'ValidationMessage.DateNotBeforeOrEqual' }, { limit }]);
-export const dateNotAfterOrEqualMessage = (limit: string): FormValidationResult => ([{ id: 'ValidationMessage.DateNotAfterOrEqual' }, { limit }]);
+export const dateNotBeforeOrEqualMessage = (intl: IntlShape, limit: string): string => intl
+  .formatMessage({ id: 'ValidationMessage.DateNotBeforeOrEqual' }, { limit });
+export const dateNotAfterOrEqualMessage = (intl: IntlShape, limit: string): string => intl
+  .formatMessage({ id: 'ValidationMessage.DateNotAfterOrEqual' }, { limit });
 export const dateRangesOverlappingMessage = (): FormValidationResult => ([{ id: 'ValidationMessage.DateRangesOverlapping' }]);
 export const datesNotEqual = (value: string): FormValidationResult => ([{ id: 'ValidationMessage.DatesNotEqual' }, { value }]);
 export const invalidFodselsnummerFormatMessage = (): FormValidationResult => ([{ id: 'ValidationMessage.InvalidFodselsnummerFormat' }]);

@@ -1,5 +1,5 @@
 import React from 'react';
-import moment from 'moment';
+import dayjs from 'dayjs';
 
 import { ISO_DATE_FORMAT } from 'utils/formats';
 import {
@@ -19,25 +19,25 @@ export const GrafForOppgaverPerFørsteStønadsdag = () => (
     width={700}
     height={300}
     oppgaverPerForsteStonadsdag={[{
-      forsteStonadsdag: moment().subtract(14, 'd').format(ISO_DATE_FORMAT),
+      forsteStonadsdag: dayjs().subtract(14, 'd').format(ISO_DATE_FORMAT),
       antall: 10,
     }, {
-      forsteStonadsdag: moment().subtract(13, 'd').format(ISO_DATE_FORMAT),
+      forsteStonadsdag: dayjs().subtract(13, 'd').format(ISO_DATE_FORMAT),
       antall: 9,
     }, {
-      forsteStonadsdag: moment().subtract(12, 'd').format(ISO_DATE_FORMAT),
+      forsteStonadsdag: dayjs().subtract(12, 'd').format(ISO_DATE_FORMAT),
       antall: 6,
     }, {
-      forsteStonadsdag: moment().subtract(11, 'd').format(ISO_DATE_FORMAT),
+      forsteStonadsdag: dayjs().subtract(11, 'd').format(ISO_DATE_FORMAT),
       antall: 11,
     }, {
-      forsteStonadsdag: moment().subtract(10, 'd').format(ISO_DATE_FORMAT),
+      forsteStonadsdag: dayjs().subtract(10, 'd').format(ISO_DATE_FORMAT),
       antall: 15,
     }, {
-      forsteStonadsdag: moment().subtract(9, 'd').format(ISO_DATE_FORMAT),
+      forsteStonadsdag: dayjs().subtract(9, 'd').format(ISO_DATE_FORMAT),
       antall: 20,
     }, {
-      forsteStonadsdag: moment().subtract(8, 'd').format(ISO_DATE_FORMAT),
+      forsteStonadsdag: dayjs().subtract(8, 'd').format(ISO_DATE_FORMAT),
       antall: 13,
     }]}
   />

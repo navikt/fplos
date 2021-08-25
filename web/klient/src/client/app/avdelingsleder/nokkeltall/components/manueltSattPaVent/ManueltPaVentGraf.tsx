@@ -4,7 +4,7 @@ import React, {
 import {
   XYPlot, XAxis, YAxis, AreaSeries, Crosshair, HorizontalGridLines,
 } from 'react-vis';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import { FormattedMessage } from 'react-intl';
 import Panel from 'nav-frontend-paneler';
 import { Normaltekst, Undertekst } from 'nav-frontend-typografi';
@@ -33,17 +33,17 @@ interface KoordinatMedDato {
 }
 
 const lagKoordinater = (oppgaverManueltPaVent: OppgaverManueltPaVent[]): Koordinat[] => oppgaverManueltPaVent.map((o) => ({
-  x: moment(o.behandlingFrist).startOf('day').toDate().getTime(),
+  x: dayjs(o.behandlingFrist).startOf('day').toDate().getTime(),
   y: o.antall,
 }));
 
 const lagDatastruktur = (koordinater: Koordinat[], isFireUkerValgt: boolean): KoordinatMedDato[] => {
   const nyeKoordinater: KoordinatMedDato[] = [];
-  const periodeStart = moment().startOf('day').toDate();
-  const periodeSlutt = moment().add(isFireUkerValgt ? 4 : 8, 'w').toDate();
+  const periodeStart = dayjs().startOf('day').toDate();
+  const periodeSlutt = dayjs().add(isFireUkerValgt ? 4 : 8, 'w').toDate();
 
-  for (let dato = moment(periodeStart); dato.isSameOrBefore(periodeSlutt); dato = dato.add(1, 'days')) {
-    const funnetKoordinat = koordinater.find((k) => moment(k.x).isSame(dato));
+  for (let dato = dayjs(periodeStart); dato.isSameOrBefore(periodeSlutt); dato = dato.add(1, 'days')) {
+    const funnetKoordinat = koordinater.find((k) => dayjs(k.x).isSame(dato));
     nyeKoordinater.push({
       x: dato.toDate(),
       y: funnetKoordinat ? funnetKoordinat.y : 0,
@@ -101,7 +101,7 @@ const ManueltPaVentGraf: FunctionComponent<OwnProps> = ({
         <HorizontalGridLines />
         <XAxis
           tickTotal={6}
-          tickFormat={(x) => moment(x).format(DDMMYYYY_DATE_FORMAT)}
+          tickFormat={(x) => dayjs(x).format(DDMMYYYY_DATE_FORMAT)}
           style={{ text: cssText }}
         />
         <YAxis style={{ text: cssText }} />
@@ -122,7 +122,7 @@ const ManueltPaVentGraf: FunctionComponent<OwnProps> = ({
           }}
         >
           <div className={styles.crosshair}>
-            <Normaltekst>{`${moment(crosshairValues[0].x).format(DDMMYYYY_DATE_FORMAT)}`}</Normaltekst>
+            <Normaltekst>{`${dayjs(crosshairValues[0].x).format(DDMMYYYY_DATE_FORMAT)}`}</Normaltekst>
             <Undertekst>
               <FormattedMessage id="ManueltPaVentGraf.Antall" values={{ antall: crosshairValues[0].y }} />
             </Undertekst>

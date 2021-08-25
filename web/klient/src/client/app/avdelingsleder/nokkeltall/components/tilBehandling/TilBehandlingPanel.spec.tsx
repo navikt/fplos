@@ -1,5 +1,5 @@
 import React from 'react';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import sinon from 'sinon';
 import { IntlShape } from 'react-intl';
 import { Form } from 'react-final-form';
@@ -93,12 +93,12 @@ describe('<TilBehandlingPanel>', () => {
     const oppgaverPerDato = [{
       fagsakYtelseType: fagsakYtelseTyper[0],
       behandlingType: forstegangssoknad,
-      opprettetDato: moment().subtract(13, 'd').format(ISO_DATE_FORMAT),
+      opprettetDato: dayjs().subtract(13, 'd').format(ISO_DATE_FORMAT),
       antall: 1,
     }, {
       fagsakYtelseType: fagsakYtelseTyper[1],
       behandlingType: forstegangssoknad,
-      opprettetDato: moment().subtract(14, 'd').format(ISO_DATE_FORMAT),
+      opprettetDato: dayjs().subtract(14, 'd').format(ISO_DATE_FORMAT),
       antall: 1,
     }];
 
@@ -129,12 +129,12 @@ describe('<TilBehandlingPanel>', () => {
       const oppgaverPerDato = [{
         fagsakYtelseType: fagsakYtelseTyper[0],
         behandlingType: forstegangssoknad,
-        opprettetDato: moment().subtract(13, 'd').format(ISO_DATE_FORMAT),
+        opprettetDato: dayjs().subtract(13, 'd').format(ISO_DATE_FORMAT),
         antall: 1,
       }, {
         fagsakYtelseType: fagsakYtelseTyper[1],
         behandlingType: forstegangssoknad,
-        opprettetDato: moment().subtract(14, 'd').format(ISO_DATE_FORMAT),
+        opprettetDato: dayjs().subtract(14, 'd').format(ISO_DATE_FORMAT),
         antall: 1,
       }];
 
@@ -164,12 +164,12 @@ describe('<TilBehandlingPanel>', () => {
     const oppgaverPerDato = [{
       fagsakYtelseType: fagsakYtelseTyper[0],
       behandlingType: forstegangssoknad,
-      opprettetDato: moment().format(ISO_DATE_FORMAT),
+      opprettetDato: dayjs().format(ISO_DATE_FORMAT),
       antall: 1,
     }, {
       fagsakYtelseType: fagsakYtelseTyper[1],
       behandlingType: forstegangssoknad,
-      opprettetDato: moment().format(ISO_DATE_FORMAT),
+      opprettetDato: dayjs().format(ISO_DATE_FORMAT),
       antall: 1,
     }];
 
@@ -197,12 +197,12 @@ describe('<TilBehandlingPanel>', () => {
     const oppgaverPerDato = [{
       fagsakYtelseType: fagsakYtelseTyper[0],
       behandlingType: forstegangssoknad,
-      opprettetDato: moment().format(ISO_DATE_FORMAT),
+      opprettetDato: dayjs().format(ISO_DATE_FORMAT),
       antall: 1,
     }, {
       fagsakYtelseType: fagsakYtelseTyper[1],
       behandlingType: forstegangssoknad,
-      opprettetDato: moment().format(ISO_DATE_FORMAT),
+      opprettetDato: dayjs().format(ISO_DATE_FORMAT),
       antall: 1,
     }];
 
@@ -230,12 +230,12 @@ describe('<TilBehandlingPanel>', () => {
     const oppgaverPerDato = [{
       fagsakYtelseType: fagsakYtelseTyper[0],
       behandlingType: forstegangssoknad,
-      opprettetDato: moment().format(ISO_DATE_FORMAT),
+      opprettetDato: dayjs().format(ISO_DATE_FORMAT),
       antall: 1,
     }, {
       fagsakYtelseType: fagsakYtelseTyper[1],
       behandlingType: forstegangssoknad,
-      opprettetDato: moment().format(ISO_DATE_FORMAT),
+      opprettetDato: dayjs().format(ISO_DATE_FORMAT),
       antall: 1,
     }];
 
@@ -252,7 +252,7 @@ describe('<TilBehandlingPanel>', () => {
     expect(graf).toHaveLength(1);
     expect(graf.prop('oppgaverPerDato')).toEqual([{
       behandlingType: forstegangssoknad,
-      opprettetDato: moment().format(ISO_DATE_FORMAT),
+      opprettetDato: dayjs().format(ISO_DATE_FORMAT),
       antall: 2,
     }]);
   });

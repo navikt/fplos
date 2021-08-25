@@ -1,4 +1,4 @@
-import moment from 'moment';
+import dayjs from 'dayjs';
 
 import { DDMMYYYY_DATE_FORMAT, ISO_DATE_FORMAT } from 'utils/formats';
 import {
@@ -7,7 +7,7 @@ import {
   hasValidText, hasValidName, hasValidSaksnummerOrFodselsnummerFormat,
 } from './validators';
 
-const today = moment();
+const today = dayjs();
 const todayAsISO = today.format(ISO_DATE_FORMAT);
 const todayAsDDMMYYYY = today.format(DDMMYYYY_DATE_FORMAT);
 

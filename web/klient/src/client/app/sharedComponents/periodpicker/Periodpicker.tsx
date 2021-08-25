@@ -1,5 +1,5 @@
 import React, { ReactNode, Component } from 'react';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import { Input } from 'nav-frontend-skjema';
 import { DateUtils, Modifier } from 'react-day-picker';
 
@@ -28,9 +28,9 @@ interface StateProps {
 
 const getStartDateInput = (props: OwnProps) => haystack(props, props.names[0]).input;
 const getEndDateInput = (props: OwnProps) => haystack(props, props.names[1]).input;
-const isValidDate = (date: Date): boolean => moment(date, DDMMYYYY_DATE_FORMAT, true).isValid();
-const createPeriod = (startDay?: Date | null, endDay?: Date | null): string => `${moment(startDay)
-  .format(DDMMYYYY_DATE_FORMAT)} - ${moment(endDay).format(DDMMYYYY_DATE_FORMAT)}`;
+const isValidDate = (date: Date): boolean => dayjs(date, DDMMYYYY_DATE_FORMAT, true).isValid();
+const createPeriod = (startDay?: Date | null, endDay?: Date | null): string => `${dayjs(startDay)
+  .format(DDMMYYYY_DATE_FORMAT)} - ${dayjs(endDay).format(DDMMYYYY_DATE_FORMAT)}`;
 
 class Periodpicker extends Component<OwnProps, StateProps> {
   buttonRef: HTMLButtonElement;
@@ -108,8 +108,8 @@ class Periodpicker extends Component<OwnProps, StateProps> {
 
     if (isValidDate(currentStartDate)) {
       const range = {
-        from: moment(currentStartDate, DDMMYYYY_DATE_FORMAT).toDate(),
-        to: moment(currentEndDate, DDMMYYYY_DATE_FORMAT).toDate(),
+        from: dayjs(currentStartDate, DDMMYYYY_DATE_FORMAT).toDate(),
+        to: dayjs(currentEndDate, DDMMYYYY_DATE_FORMAT).toDate(),
       };
 
       const newRange = DateUtils.addDayToRange(selectedDay, range);
@@ -150,7 +150,7 @@ class Periodpicker extends Component<OwnProps, StateProps> {
   parseToDate(name: string): Date | undefined {
     const nameFromProps = haystack(this.props, name);
     const day = nameFromProps.input.value;
-    return isValidDate(day) ? moment(day, DDMMYYYY_DATE_FORMAT).toDate() : undefined;
+    return isValidDate(day) ? dayjs(day, DDMMYYYY_DATE_FORMAT).toDate() : undefined;
   }
 
   toggleShowCalendar(): void {

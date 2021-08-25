@@ -1,5 +1,5 @@
 import React from 'react';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import { Hint, VerticalRectSeries } from 'react-vis';
 
 import { shallowWithIntl, intlMock } from 'testHelpers/intl-enzyme-test-helper';
@@ -17,7 +17,7 @@ const oppgaverApneEllerPaVent = [{
     kode: BehandlingType.FORSTEGANGSSOKNAD,
     navn: 'Førstegangssøknad',
   },
-  førsteUttakMåned: moment().startOf('month').format(ISO_DATE_FORMAT),
+  førsteUttakMåned: dayjs().startOf('month').format(ISO_DATE_FORMAT),
   antall: 2,
 }, {
   behandlingVenteStatus: {
@@ -28,7 +28,7 @@ const oppgaverApneEllerPaVent = [{
     kode: BehandlingType.FORSTEGANGSSOKNAD,
     navn: 'Førstegangssøknad',
   },
-  førsteUttakMåned: moment().startOf('month').format(ISO_DATE_FORMAT),
+  førsteUttakMåned: dayjs().startOf('month').format(ISO_DATE_FORMAT),
   antall: 5,
 }, {
   behandlingVenteStatus: {

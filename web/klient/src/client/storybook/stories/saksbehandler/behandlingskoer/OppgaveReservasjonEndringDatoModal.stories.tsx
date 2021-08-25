@@ -15,7 +15,9 @@ export default {
   decorators: [withIntl, withRestApiProvider],
 };
 
-const Template: Story = () => {
+const Template: Story<{ endreReserverasjonState: () => void }> = ({
+  endreReserverasjonState,
+}) => {
   const data = [
     { key: RestApiPathsKeys.ENDRE_OPPGAVERESERVASJON.name, data: {} },
   ];
@@ -27,11 +29,14 @@ const Template: Story = () => {
         closeModal={action('button-click')}
         reserverTilDefault=""
         oppgaveId={1}
-        endreReserverasjonState={action('button-click')}
+        endreReserverasjonState={endreReserverasjonState}
         hentReserverteOppgaver={action('button-click')}
       />
     </RestApiMock>
   );
 };
 
-export const ModalForEndringAvReservasjon = Template.bind({});
+export const Default = Template.bind({});
+Default.args = {
+  endreReserverasjonState: action('button-click'),
+};

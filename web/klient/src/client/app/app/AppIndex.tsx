@@ -1,6 +1,6 @@
 import React, { Component, ReactNode } from 'react';
 import { withRouter, match } from 'react-router-dom';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import { Location, History } from 'history';
 
 import { parseQueryString } from 'utils/urlUtils';
@@ -49,10 +49,10 @@ export class AppIndex extends Component<RouterProps, StateProps> {
 
     if (funksjonellTid) {
       // TODO (TOR) Dette endrar jo berre moment. Kva med kode som brukar Date direkte?
-      const diffInMinutes = moment().diff(funksjonellTid, 'minutes');
+      const diffInMinutes = dayjs().diff(funksjonellTid, 'minutes');
       // Hvis diffInMinutes har avvik på over 5min: override moment.now (ref. http://momentjs.com/docs/#/customization/now/)
       if (diffInMinutes >= 5 || diffInMinutes <= -5) {
-        const diff = moment().diff(funksjonellTid);
+        const diff = dayjs().diff(funksjonellTid);
         moment.now = () => Date.now() - diff;
       }
     }

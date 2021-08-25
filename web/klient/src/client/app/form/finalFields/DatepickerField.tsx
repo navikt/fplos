@@ -1,6 +1,6 @@
 import React, { FunctionComponent } from 'react';
 import { Field } from 'react-final-form';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import { FieldValidator } from 'final-form';
 
 import { ISO_DATE_FORMAT, DDMMYYYY_DATE_FORMAT, ACCEPTED_DATE_INPUT_FORMATS } from 'utils/formats';
@@ -14,7 +14,7 @@ const composeValidators = (validators: FieldValidator<any>[]): FieldValidator<an
 ) => validators.reduce((error, validator) => error || validator(value, {}), undefined);
 
 const isoToDdMmYyyy = (string: string): string => {
-  const parsedDate = moment(string, ISO_DATE_FORMAT, true);
+  const parsedDate = dayjs(string, ISO_DATE_FORMAT, true);
   if (parsedDate.isValid()) {
     return parsedDate.format(DDMMYYYY_DATE_FORMAT);
   }
@@ -23,7 +23,7 @@ const isoToDdMmYyyy = (string: string): string => {
 
 const acceptedFormatToIso = (string: string): string => {
   const validDate = ACCEPTED_DATE_INPUT_FORMATS
-    .map((format) => moment(string, format, true))
+    .map((format) => dayjs(string, format, true))
     .find((parsedDate) => parsedDate.isValid());
   if (validDate) {
     return validDate.format(ISO_DATE_FORMAT);

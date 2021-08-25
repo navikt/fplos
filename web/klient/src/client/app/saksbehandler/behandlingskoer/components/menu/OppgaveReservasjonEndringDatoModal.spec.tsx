@@ -1,41 +1,30 @@
-import sinon from 'sinon';
 import React from 'react';
-import { IntlShape } from 'react-intl';
-import { Form } from 'react-final-form';
+import {
+  fireEvent, render, screen, waitFor,
+} from '@testing-library/react';
+import { composeStories } from '@storybook/testing-react';
+import userEvent from '@testing-library/user-event';
+import * as stories from 'stories/saksbehandler/behandlingskoer/OppgaveReservasjonEndringDatoModal.stories';
+import dayjs from 'dayjs';
 
-import { intlMock, shallowWithIntl } from 'testHelpers/intl-enzyme-test-helper';
-import OppgaveReservasjonEndringDatoModal from 'saksbehandler/behandlingskoer/components/menu/OppgaveReservasjonEndringDatoModal';
-import { DatepickerField } from 'form/FinalFields';
+const { Default } = composeStories(stories);
 
 describe('<OppgaveReservasjonEndringDatoModal>', () => {
-  const intl: Partial<IntlShape> = {
-    ...intlMock,
-  };
-  it('skal rendre modal for å gi mulighet for valg av dato', () => {
-    const wrapper = shallowWithIntl(
-      <OppgaveReservasjonEndringDatoModal.WrappedComponent
-        intl={intl as IntlShape}
-        showModal
-        closeModal={sinon.spy()}
-        reserverTilDefault="2020-08-02T00:54:25.455"
-        oppgaveId={1}
-        endreReserverasjonState={sinon.spy()}
-        hentReserverteOppgaver={sinon.spy()}
-      />,
-    );
-    const form = wrapper.find(Form);
-    expect(form).toHaveLength(1);
+  it('skal vise modal for oppheving av reservasjon og velge dato', async () => {
+    const endreReserverasjonState = jest.fn();
 
-    const handleSubmitFn = sinon.spy();
-    // @ts-ignore Fiks
-    const func = form.prop('render') as ({ handleSubmit: any }) => void;
-    // @ts-ignore Fiks
-    const formWrapper = shallowWithIntl(func({
-      handleSubmit: handleSubmitFn,
-    }));
-    const datepickerField = formWrapper.find(DatepickerField);
-    expect(datepickerField).toHaveLength(1);
-    formWrapper.find('form').simulate('submit');
-    expect(handleSubmitFn.calledOnce).toBe(true);
+    render(<Default endreReserverasjonState={endreReserverasjonState} />);
+
+    expect(await screen.findByText('Velg dato som reservasjonen avsluttes')).toBeInTheDocument();
+
+    const datoInput = screen.getByRole('textbox');
+    userEvent.type(datoInput, dayjs().format('DD.MM.YYYY'));
+    fireEvent.blur(datoInput);
+
+    expect(await screen.findByText('OK')).toBeInTheDocument();
+    userEvent.click(screen.getByText('OK'));
+
+    await waitFor(() => expect(endreReserverasjonState).toHaveBeenCalledTimes(1));
+    expect(endreReserverasjonState).toHaveBeenNthCalledWith(1, {}, true);
   });
 });

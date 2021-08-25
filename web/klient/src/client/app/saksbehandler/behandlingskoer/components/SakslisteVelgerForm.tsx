@@ -1,7 +1,7 @@
 import React, {
   ReactNode, FunctionComponent, useEffect, useMemo, ReactElement,
 } from 'react';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import { useForm } from 'react-hook-form';
 import {
   injectIntl, WrappedComponentProps, FormattedMessage, IntlShape,
@@ -108,8 +108,8 @@ const getSorteringsnavn = (intl: IntlShape, saksliste?: Saksliste): string => {
     }
     values = {
       navn: sorteringType.navn,
-      fomDato: fomDato ? moment(fomDato).format(DDMMYYYY_DATE_FORMAT) : undefined,
-      tomDato: tomDato ? moment(tomDato).format(DDMMYYYY_DATE_FORMAT) : undefined,
+      fomDato: fomDato ? dayjs(fomDato).format(DDMMYYYY_DATE_FORMAT) : undefined,
+      tomDato: tomDato ? dayjs(tomDato).format(DDMMYYYY_DATE_FORMAT) : undefined,
       br: <br />,
     };
   } else {
@@ -118,8 +118,8 @@ const getSorteringsnavn = (intl: IntlShape, saksliste?: Saksliste): string => {
     }
     values = {
       navn: sorteringType.navn,
-      fomDato: fra ? moment().add(fra, 'days').format(DDMMYYYY_DATE_FORMAT) : undefined,
-      tomDato: til ? moment().add(til, 'days').format(DDMMYYYY_DATE_FORMAT) : undefined,
+      fomDato: fra ? dayjs().add(fra, 'days').format(DDMMYYYY_DATE_FORMAT) : undefined,
+      tomDato: til ? dayjs().add(til, 'days').format(DDMMYYYY_DATE_FORMAT) : undefined,
       br: <br />,
     };
   }

@@ -1,5 +1,5 @@
 import React from 'react';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import { shallow } from 'enzyme';
 import { AreaSeries, Crosshair } from 'react-vis';
 import { Normaltekst, Undertekst } from 'nav-frontend-typografi';
@@ -48,7 +48,7 @@ describe('<TilBehandlingGraf>', () => {
     const dager = isToUkerValgt ? 14 : 28;
     expect(data).toHaveLength(dager);
     for (let i = 0; i < dager; i += 1) {
-      const dato = moment().startOf('day').subtract(dager - 1 - i, 'd');
+      const dato = dayjs().startOf('day').subtract(dager - 1 - i, 'd');
       expect(dato.toDate()).toEqual(data[i].x);
     }
   };
@@ -58,15 +58,15 @@ describe('<TilBehandlingGraf>', () => {
     () => {
       const oppgaverPerDato = [{
         behandlingType: behandlingTyper[0],
-        opprettetDato: moment().format(ISO_DATE_FORMAT),
+        opprettetDato: dayjs().format(ISO_DATE_FORMAT),
         antall: 1,
       }, {
         behandlingType: behandlingTyper[0],
-        opprettetDato: moment().subtract(1, 'd').format(ISO_DATE_FORMAT),
+        opprettetDato: dayjs().subtract(1, 'd').format(ISO_DATE_FORMAT),
         antall: 2,
       }, {
         behandlingType: behandlingTyper[1],
-        opprettetDato: moment().format(ISO_DATE_FORMAT),
+        opprettetDato: dayjs().format(ISO_DATE_FORMAT),
         antall: 3,
       }];
 
@@ -106,15 +106,15 @@ describe('<TilBehandlingGraf>', () => {
     () => {
       const oppgaverPerDato = [{
         behandlingType: behandlingTyper[0],
-        opprettetDato: moment().format(ISO_DATE_FORMAT),
+        opprettetDato: dayjs().format(ISO_DATE_FORMAT),
         antall: 1,
       }, {
         behandlingType: behandlingTyper[0],
-        opprettetDato: moment().subtract(1, 'd').format(ISO_DATE_FORMAT),
+        opprettetDato: dayjs().subtract(1, 'd').format(ISO_DATE_FORMAT),
         antall: 2,
       }, {
         behandlingType: behandlingTyper[1],
-        opprettetDato: moment().format(ISO_DATE_FORMAT),
+        opprettetDato: dayjs().format(ISO_DATE_FORMAT),
         antall: 3,
       }];
 
@@ -154,15 +154,15 @@ describe('<TilBehandlingGraf>', () => {
     () => {
       const oppgaverPerDato = [{
         behandlingType: behandlingTyper[0],
-        opprettetDato: moment().format(ISO_DATE_FORMAT),
+        opprettetDato: dayjs().format(ISO_DATE_FORMAT),
         antall: 1,
       }, {
         behandlingType: behandlingTyper[0],
-        opprettetDato: moment().subtract(1, 'd').format(ISO_DATE_FORMAT),
+        opprettetDato: dayjs().subtract(1, 'd').format(ISO_DATE_FORMAT),
         antall: 2,
       }, {
         behandlingType: behandlingTyper[1],
-        opprettetDato: moment().format(ISO_DATE_FORMAT),
+        opprettetDato: dayjs().format(ISO_DATE_FORMAT),
         antall: 3,
       }];
 
@@ -177,14 +177,14 @@ describe('<TilBehandlingGraf>', () => {
       const areaSeries = wrapper.find(AreaSeries);
       expect(areaSeries).toHaveLength(2);
 
-      const valgtPunkt = { x: moment().startOf('day').toDate(), y: 1 };
+      const valgtPunkt = { x: dayjs().startOf('day').toDate(), y: 1 };
       const func = areaSeries.first().prop('onNearestX') as any;
       func(valgtPunkt);
 
       const crosshair = wrapper.find(Crosshair);
       expect(crosshair).toHaveLength(1);
 
-      expect(crosshair.find(Normaltekst).childAt(0).text()).toEqual(moment().format(DDMMYYYY_DATE_FORMAT));
+      expect(crosshair.find(Normaltekst).childAt(0).text()).toEqual(dayjs().format(DDMMYYYY_DATE_FORMAT));
       const tekst = crosshair.find(Undertekst);
       expect(tekst).toHaveLength(2);
       expect(tekst.first().childAt(0).text()).toEqual(`Klage: ${3}`);

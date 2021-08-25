@@ -1,7 +1,7 @@
 import React from 'react';
 import { shallow } from 'enzyme';
 import sinon from 'sinon';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import { Input } from 'nav-frontend-skjema';
 
 import { DDMMYYYY_DATE_FORMAT } from 'utils/formats';
@@ -38,8 +38,8 @@ describe('<Periodpicker>', () => {
 
     const overlay = wrapper.find(PeriodCalendarOverlay);
     expect(overlay).toHaveLength(1);
-    expect(overlay.prop('startDate')).toEqual(moment('30.08.2017', DDMMYYYY_DATE_FORMAT).toDate());
-    expect(overlay.prop('endDate')).toEqual(moment('31.10.2017', DDMMYYYY_DATE_FORMAT).toDate());
+    expect(overlay.prop('startDate')).toEqual(dayjs('30.08.2017', DDMMYYYY_DATE_FORMAT).toDate());
+    expect(overlay.prop('endDate')).toEqual(dayjs('31.10.2017', DDMMYYYY_DATE_FORMAT).toDate());
   });
 
   it(
@@ -56,7 +56,7 @@ describe('<Periodpicker>', () => {
       wrapper.setState({ showCalendar: true });
 
       const overlay = wrapper.find(PeriodCalendarOverlay);
-      overlay.prop('onDayChange')(moment('30.08.2017', DDMMYYYY_DATE_FORMAT).toDate());
+      overlay.prop('onDayChange')(dayjs('30.08.2017', DDMMYYYY_DATE_FORMAT).toDate());
       wrapper.update();
 
       const inputField = wrapper.find(Input);
@@ -83,7 +83,7 @@ describe('<Periodpicker>', () => {
       wrapper.setState({ showCalendar: true });
 
       const overlay = wrapper.find(PeriodCalendarOverlay);
-      overlay.prop('onDayChange')(moment('30.07.2017', DDMMYYYY_DATE_FORMAT).toDate());
+      overlay.prop('onDayChange')(dayjs('30.07.2017', DDMMYYYY_DATE_FORMAT).toDate());
       wrapper.update();
 
       const updatedInputField = wrapper.find(Input);
@@ -110,7 +110,7 @@ describe('<Periodpicker>', () => {
       wrapper.setState({ showCalendar: true });
 
       const overlay = wrapper.find(PeriodCalendarOverlay);
-      overlay.prop('onDayChange')(moment('30.11.2017', DDMMYYYY_DATE_FORMAT).toDate());
+      overlay.prop('onDayChange')(dayjs('30.11.2017', DDMMYYYY_DATE_FORMAT).toDate());
       wrapper.update();
 
       const updatedInputField = wrapper.find(Input);

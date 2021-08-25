@@ -1,7 +1,7 @@
 import React, {
   useMemo, useState, FunctionComponent, useCallback,
 } from 'react';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import {
   XYPlot, XAxis, YAxis, HorizontalGridLines, AreaSeries, DiscreteColorLegend, Crosshair, MarkSeries,
 } from 'react-vis';
@@ -60,7 +60,7 @@ const sorterBehandlingtyper = (b1: string, b2: string): number => {
 const konverterTilKoordinaterGruppertPaBehandlingstype = (oppgaverForAvdeling: OppgaveForDatoGraf[]): Record<string, Koordinat[]> => oppgaverForAvdeling
   .reduce((acc, o) => {
     const nyKoordinat = {
-      x: moment(o.opprettetDato).startOf('day').toDate(),
+      x: dayjs(o.opprettetDato).startOf('day').toDate(),
       y: o.antall,
     };
 
@@ -73,14 +73,14 @@ const konverterTilKoordinaterGruppertPaBehandlingstype = (oppgaverForAvdeling: O
 
 const fyllInnManglendeDatoerOgSorterEtterDato = (
   data: Record<string, Koordinat[]>,
-  periodeStart: moment.Moment,
-  periodeSlutt: moment.Moment,
+  periodeStart: dayjs.Dayjs,
+  periodeSlutt: dayjs.Dayjs,
 ): Record<string, Koordinat[]> => Object.keys(data).reduce((acc, behandlingstype) => {
   const behandlingstypeData = data[behandlingstype];
   const koordinater = [];
 
-  for (let dato = moment(periodeStart); dato.isSameOrBefore(periodeSlutt); dato = dato.add(1, 'days')) {
-    const funnetDato = behandlingstypeData.find((d) => moment(d.x).startOf('day').isSame(dato.startOf('day')));
+  for (let dato = dayjs(periodeStart); dato.isSameOrBefore(periodeSlutt); dato = dato.add(1, 'days')) {
+    const funnetDato = behandlingstypeData.find((d) => dayjs(d.x).startOf('day').isSame(dato.startOf('day')));
     koordinater.push(funnetDato || {
       x: dato.toDate(),
       y: 0,
@@ -143,8 +143,8 @@ const TilBehandlingGraf: FunctionComponent<OwnProps> = ({
     setCrosshairValues([value]);
   }, []);
 
-  const periodeStart = moment().subtract(isToUkerValgt ? 2 : 4, 'w').add(1, 'd');
-  const periodeSlutt = moment();
+  const periodeStart = dayjs().subtract(isToUkerValgt ? 2 : 4, 'w').add(1, 'd');
+  const periodeSlutt = dayjs();
 
   const koordinater = useMemo(() => konverterTilKoordinaterGruppertPaBehandlingstype(oppgaverPerDato), [oppgaverPerDato]);
   const data = useMemo(() => fyllInnManglendeDatoerOgSorterEtterDato(koordinater, periodeStart, periodeSlutt), [koordinater, periodeStart, periodeSlutt]);
@@ -176,11 +176,11 @@ const TilBehandlingGraf: FunctionComponent<OwnProps> = ({
               onMouseLeave={onMouseLeave}
               {...plotPropsWhenEmpty}
             >
-              <MarkSeries data={[{ x: moment().subtract(1, 'd').toDate(), y: 0 }]} style={{ display: 'none' }} />
+              <MarkSeries data={[{ x: dayjs().subtract(1, 'd').toDate(), y: 0 }]} style={{ display: 'none' }} />
               <HorizontalGridLines />
               <XAxis
                 tickTotal={5}
-                tickFormat={(t) => moment(t).format(DDMMYYYY_DATE_FORMAT)}
+                tickFormat={(t) => dayjs(t).format(DDMMYYYY_DATE_FORMAT)}
                 style={{ text: cssText }}
               />
               <YAxis style={{ text: cssText }} />
@@ -206,7 +206,7 @@ const TilBehandlingGraf: FunctionComponent<OwnProps> = ({
                   }}
                 >
                   <div className={styles.crosshair}>
-                    <Normaltekst>{`${moment(crosshairValues[0].x).format(DDMMYYYY_DATE_FORMAT)}`}</Normaltekst>
+                    <Normaltekst>{`${dayjs(crosshairValues[0].x).format(DDMMYYYY_DATE_FORMAT)}`}</Normaltekst>
                     { reversertSorterteBehandlingstyper.map((key) => (
                       <Undertekst key={key}>
                         {`${finnBehandlingTypeNavn(behandlingTyper, key)}: ${finnAntallForBehandlingstypeOgDato(data, key, crosshairValues[0].x)}`}
