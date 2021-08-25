@@ -28,6 +28,8 @@ interface OwnProps{
     before: Date;
     after: Date;
   };
+  onBlur?: (values: any) => void;
+  shouldValidateOnBlur?: boolean;
 }
 
 const DatepickerField: FunctionComponent<OwnProps> = ({
@@ -37,9 +39,11 @@ const DatepickerField: FunctionComponent<OwnProps> = ({
   parse = (value) => value,
   validate = [],
   disabledDays,
+  shouldValidateOnBlur = false,
+  onBlur,
   ...otherProps
 }) => {
-  const { formState: { errors } } = useFormContext();
+  const { formState: { errors }, trigger } = useFormContext();
   const validationFunctions = validate.reduce((acc, fn, index) => ({
     ...acc,
     [index]: (value: any) => fn(value) || true,
@@ -64,6 +68,17 @@ const DatepickerField: FunctionComponent<OwnProps> = ({
       <Datepicker
         dayPickerProps={{
           disabledDays,
+          onBlur: async (values) => {
+            inputProps.onBlur();
+            if (shouldValidateOnBlur) {
+              const isValidationOk = await trigger();
+              if (onBlur && isValidationOk) {
+                onBlur(values);
+              }
+            } else if (onBlur) {
+              onBlur(values);
+            }
+          },
         }}
         {...inputProps}
         {...otherProps}

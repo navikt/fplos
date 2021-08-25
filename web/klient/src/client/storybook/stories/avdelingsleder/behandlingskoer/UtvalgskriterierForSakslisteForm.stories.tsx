@@ -24,6 +24,7 @@ const Template: Story = () => {
   const data = [
     { key: RestApiGlobalStatePathsKeys.KODEVERK.name, data: alleKodeverk },
     { key: RestApiPathsKeys.OPPGAVE_ANTALL.name, data: 1 },
+    { key: RestApiPathsKeys.LAGRE_SAKSLISTE_SORTERING_INTERVALL.name, data: undefined },
   ];
 
   return (

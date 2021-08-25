@@ -9,20 +9,25 @@ interface OwnProps {
   label?: string;
   bredde?: 'fullbredde' | 'XXL' | 'XL' | 'L' | 'M' | 'S' | 'XS' | 'XXS';
   validate?: ((value: string) => any)[];
-  defaultValue?: string;
   readOnly?: boolean;
-  autoFocus?: boolean;
+  className?: string;
+  placeholder?: string;
+  onBlur?: (values: any) => void;
+  shouldValidateOnBlur?: boolean;
 }
 
 const InputField: FunctionComponent<OwnProps> = ({
   name,
   label,
   validate = [],
-  defaultValue = '',
   readOnly = false,
-  ...otherProps
+  bredde,
+  shouldValidateOnBlur = false,
+  onBlur,
+  className,
+  placeholder,
 }) => {
-  const { formState: { errors } } = useFormContext();
+  const { formState: { errors }, trigger } = useFormContext();
   const validationFunctions = validate.reduce((acc, fn, index) => ({
     ...acc,
     [index]: (value: any) => fn(value) || true,
@@ -30,7 +35,6 @@ const InputField: FunctionComponent<OwnProps> = ({
 
   const { field } = useController({
     name,
-    defaultValue,
     rules: {
       validate: validationFunctions,
     },
@@ -42,10 +46,23 @@ const InputField: FunctionComponent<OwnProps> = ({
 
   return (
     <NavInput
+      className={className}
+      placeholder={placeholder}
       label={<Label input={label} readOnly={false} />}
       feil={errors[name] && errors[name].message}
+      bredde={bredde}
       {...field}
-      {...otherProps}
+      onBlur={async (values) => {
+        field.onBlur();
+        if (shouldValidateOnBlur) {
+          const isValidationOk = await trigger();
+          if (onBlur && isValidationOk) {
+            onBlur(values);
+          }
+        } else if (onBlur) {
+          onBlur(values);
+        }
+      }}
     />
   );
 };

@@ -20,21 +20,23 @@ type InputValue = string | number | boolean;
 
 export type FormValidationResultOrNull = FormValidationResult | null;
 
-export const required = (value: InputValue): FormValidationResultOrNull => (isEmpty(value) ? isRequiredMessage() : null);
+export const required = (intl: IntlShape) => (value: InputValue): FormValidationResultOrNull => (isEmpty(value) ? isRequiredMessage(intl) : null);
 
-export const minLength = (length: number) => (text: string): FormValidationResultOrNull => (isEmpty(text)
-  || text.toString().trim().length >= length ? null : minLengthMessage(length));
-export const maxLength = (length: number) => (text: string): FormValidationResultOrNull => (isEmpty(text)
-  || text.toString().trim().length <= length ? null : maxLengthMessage(length));
+export const minLength = (length: number) => (intl: IntlShape) => (text: string): FormValidationResultOrNull => (isEmpty(text)
+  || text.toString().trim().length >= length ? null : minLengthMessage(intl, length));
+export const maxLength = (length: number) => (intl: IntlShape) => (text: string): FormValidationResultOrNull => (isEmpty(text)
+  || text.toString().trim().length <= length ? null : maxLengthMessage(intl, length));
 
 export const minValue = (length: number) => (number: number): FormValidationResultOrNull => (number >= length ? null : minValueMessage(length));
 export const maxValue = (length: number) => (number: number): FormValidationResultOrNull => (number <= length ? null : maxValueMessage(length));
 
-const hasValidPosOrNegNumber = (text: string): FormValidationResultOrNull => (isEmpty(text)
-  || numberOptionalNegativeRegex.test(text) ? null : invalidNumberMessage(text));
-const hasValidPosOrNegInt = (text: string): FormValidationResultOrNull => (isEmpty(text)
-  || integerOptionalNegativeRegex.test(text) ? null : invalidIntegerMessage(text));
-export const hasValidPosOrNegInteger = (text: string): FormValidationResultOrNull => (hasValidPosOrNegNumber(text) || hasValidPosOrNegInt(text));
+const hasValidPosOrNegNumber = (intl: IntlShape) => (text: string): FormValidationResultOrNull => (isEmpty(text)
+  || numberOptionalNegativeRegex.test(text) ? null : invalidNumberMessage(intl, text));
+const hasValidPosOrNegInt = (intl: IntlShape) => (text: string): FormValidationResultOrNull => (isEmpty(text)
+  || integerOptionalNegativeRegex.test(text) ? null : invalidIntegerMessage(intl, text));
+export const hasValidPosOrNegInteger = (intl: IntlShape) => (
+  text: string,
+): FormValidationResultOrNull => (hasValidPosOrNegNumber(intl)(text) || hasValidPosOrNegInt(intl)(text));
 
 export const hasValidSaksnummerOrFodselsnummerFormat = (intl: IntlShape) => (text: string): FormValidationResultOrNull => (isEmpty(text)
   || saksnummerOrFodselsnummerPattern.test(text)
@@ -64,18 +66,18 @@ export const dateAfterOrEqual = (intl: IntlShape, earliest: dayjs.Dayjs | Date |
     : getErrorMessage(intl, earliest, customErrorMessageFunction)
 );
 
-export const hasValidText = (text: string): FormValidationResultOrNull => {
+export const hasValidText = (intl: IntlShape) => (text: string): FormValidationResultOrNull => {
   if (!textRegex.test(text)) {
     const illegalChars = text.replace(textGyldigRegex, '');
-    return invalidTextMessage(illegalChars.replace(/[\t]/g, 'Tabulatortegn'));
+    return invalidTextMessage(intl, illegalChars.replace(/[\t]/g, 'Tabulatortegn'));
   }
   return null;
 };
 
-export const hasValidName = (text: string): FormValidationResultOrNull => {
+export const hasValidName = (intl: IntlShape) => (text: string): FormValidationResultOrNull => {
   if (!nameRegex.test(text)) {
     const illegalChars = text.replace(nameGyldigRegex, '');
-    return invalidTextMessage(illegalChars.replace(/[\t]/g, 'Tabulatortegn'));
+    return invalidTextMessage(intl, illegalChars.replace(/[\t]/g, 'Tabulatortegn'));
   }
   return null;
 };

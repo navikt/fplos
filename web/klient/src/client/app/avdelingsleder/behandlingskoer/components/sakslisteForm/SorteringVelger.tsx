@@ -1,12 +1,8 @@
 import React, { FunctionComponent } from 'react';
 import { FormattedMessage, injectIntl, WrappedComponentProps } from 'react-intl';
-
 import { Undertekst } from 'nav-frontend-typografi';
 
 import { restApiHooks, RestApiPathsKeys } from 'data/fplosRestApi';
-import {
-  RadioGroupField, RadioOption,
-} from 'form/FinalFields';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import KodeverkType from 'kodeverk/kodeverkTyper';
 import Kodeverk from 'types/kodeverkTsType';
@@ -14,6 +10,8 @@ import BehandlingType from 'kodeverk/behandlingType';
 import useKodeverk from 'data/useKodeverk';
 import KoSorteringType from 'types/avdelingsleder/koSorteringTsType';
 
+import RadioGroupField from '../../../../formNew/RadioGroupField';
+import RadioOption from '../../../../formNew/RadioOption';
 import DatoSorteringValg from './DatoSorteringValg';
 import BelopSorteringValg from './BelopSorteringValg';
 

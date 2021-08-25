@@ -7,14 +7,12 @@ import { FlexColumn, FlexContainer, FlexRow } from 'sharedComponents/flexGrid';
 import { hasValidDate, hasValidPosOrNegInteger } from 'utils/validation/validators';
 import DateLabel from 'sharedComponents/DateLabel';
 import { restApiHooks, RestApiPathsKeys } from 'data/fplosRestApi';
-import {
-  InputField, CheckboxField, DatepickerField,
-} from 'form/FinalFields';
 import { ISO_DATE_FORMAT, DDMMYYYY_DATE_FORMAT } from 'utils/formats';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import ArrowBox from 'sharedComponents/ArrowBox';
-
-import AutoLagringVedBlur from './AutoLagringVedBlur';
+import InputField from '../../../../formNew/InputField';
+import CheckboxField from '../../../../formNew/CheckboxField';
+import DatepickerField from '../../../../formNew/DatepickerField';
 
 import styles from './sorteringVelger.less';
 
@@ -86,6 +84,15 @@ export const DatoSorteringValg: FunctionComponent<OwnProps & WrappedComponentPro
     .useRestApiRunner(RestApiPathsKeys.LAGRE_SAKSLISTE_SORTERING_DYNAMISK_PERIDE);
   const { startRequest: lagreSakslisteSorteringTidsintervallDato } = restApiHooks
     .useRestApiRunner(RestApiPathsKeys.LAGRE_SAKSLISTE_SORTERING_TIDSINTERVALL_DATO);
+
+  const lagre = (values: { fra: number, til: number }) => lagreSakslisteSorteringTidsintervallDager({
+    sakslisteId: valgtSakslisteId, fra: values.fra, til: values.til, avdelingEnhet: valgtAvdelingEnhet,
+  })
+    .then(() => {
+      hentAntallOppgaver(valgtSakslisteId, valgtAvdelingEnhet);
+      hentAvdelingensSakslister({ avdelingEnhet: valgtAvdelingEnhet });
+    });
+
   return (
     <ArrowBox>
       <Undertekst>
@@ -94,16 +101,6 @@ export const DatoSorteringValg: FunctionComponent<OwnProps & WrappedComponentPro
 
       {erDynamiskPeriode && (
       <>
-        <AutoLagringVedBlur
-          lagre={(values: { fra: number, til: number }) => lagreSakslisteSorteringTidsintervallDager({
-            sakslisteId: valgtSakslisteId, fra: values.fra, til: values.til, avdelingEnhet: valgtAvdelingEnhet,
-          })
-            .then(() => {
-              hentAntallOppgaver(valgtSakslisteId, valgtAvdelingEnhet);
-              hentAvdelingensSakslister({ avdelingEnhet: valgtAvdelingEnhet });
-            })}
-          fieldNames={['fra', 'til']}
-        />
         <FlexContainer>
           <FlexRow>
             <FlexColumn>
@@ -111,9 +108,10 @@ export const DatoSorteringValg: FunctionComponent<OwnProps & WrappedComponentPro
                 name="fra"
                 className={styles.dato}
                 label={intl.formatMessage({ id: 'SorteringVelger.Fom' })}
-                validate={[hasValidPosOrNegInteger]}
-                onBlurValidation
+                validate={[hasValidPosOrNegInteger(intl)]}
                 bredde="XS"
+                onBlur={lagre}
+                shouldValidateOnBlur
               />
               {(fra || fra === 0) && (
               <Undertekst>
@@ -131,9 +129,10 @@ export const DatoSorteringValg: FunctionComponent<OwnProps & WrappedComponentPro
                 name="til"
                 className={styles.dato}
                 label={intl.formatMessage({ id: 'SorteringVelger.Tom' })}
-                validate={[hasValidPosOrNegInteger]}
-                onBlurValidation
+                validate={[hasValidPosOrNegInteger(intl)]}
                 bredde="XS"
+                onBlur={lagre}
+                shouldValidateOnBlur
               />
               {(til || til === 0) && (
               <Undertekst>
@@ -157,9 +156,9 @@ export const DatoSorteringValg: FunctionComponent<OwnProps & WrappedComponentPro
             <FlexColumn>
               <DatepickerField
                 name="fomDato"
-                label={{ id: 'SorteringVelger.Fom' }}
-                onBlurValidation
-                validate={[hasValidDate]}
+                label={intl.formatMessage({ id: 'SorteringVelger.Fom' })}
+                shouldValidateOnBlur
+                validate={[hasValidDate(intl)]}
                 onBlur={getLagreDatoFn(lagreSakslisteSorteringTidsintervallDato, hentAntallOppgaver, hentAvdelingensSakslister,
                   valgtSakslisteId, valgtAvdelingEnhet, tomDato, true)}
               />
@@ -172,9 +171,9 @@ export const DatoSorteringValg: FunctionComponent<OwnProps & WrappedComponentPro
             <FlexColumn className={styles.tomDato}>
               <DatepickerField
                 name="tomDato"
-                label={{ id: 'SorteringVelger.Tom' }}
-                onBlurValidation
-                validate={[hasValidDate]}
+                label={intl.formatMessage({ id: 'SorteringVelger.Tom' })}
+                shouldValidateOnBlur
+                validate={[hasValidDate(intl)]}
                 onBlur={getLagreDatoFn(lagreSakslisteSorteringTidsintervallDato, hentAntallOppgaver, hentAvdelingensSakslister,
                   valgtSakslisteId, valgtAvdelingEnhet, fomDato, false)}
               />

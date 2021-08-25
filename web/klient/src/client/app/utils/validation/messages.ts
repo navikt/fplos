@@ -8,13 +8,13 @@ export type FormValidationResult = {
   value?: string;
 } | string;
 
-export const isRequiredMessage = (): FormValidationResult => ([{ id: 'ValidationMessage.NotEmpty' }]);
-export const minLengthMessage = (length: number): FormValidationResult => ([{ id: 'ValidationMessage.MinLength' }, { length }]);
-export const maxLengthMessage = (length: number): FormValidationResult => ([{ id: 'ValidationMessage.MaxLength' }, { length }]);
+export const isRequiredMessage = (intl: IntlShape): string => intl.formatMessage({ id: 'ValidationMessage.NotEmpty' });
+export const minLengthMessage = (intl: IntlShape, length: number): string => intl.formatMessage({ id: 'ValidationMessage.MinLength' }, { length });
+export const maxLengthMessage = (intl: IntlShape, length: number): string => intl.formatMessage({ id: 'ValidationMessage.MaxLength' }, { length });
 export const minValueMessage = (length: number): FormValidationResult => ([{ id: 'ValidationMessage.MinValue' }, { length }]);
 export const maxValueMessage = (length: number): FormValidationResult => ([{ id: 'ValidationMessage.MaxValue' }, { length }]);
 export const invalidDateMessage = (intl: IntlShape): string => intl.formatMessage({ id: 'ValidationMessage.InvalidDate' });
-export const invalidIntegerMessage = (text: string): FormValidationResult => ([{ id: 'ValidationMessage.InvalidInteger' }, { text }]);
+export const invalidIntegerMessage = (intl: IntlShape, text: string): string => intl.formatMessage({ id: 'ValidationMessage.InvalidInteger' }, { text });
 export const invalidDecimalMessage = (text: string): FormValidationResult => ([{ id: 'ValidationMessage.InvalidDecimal' }, { text }]);
 export const dateNotBeforeOrEqualMessage = (intl: IntlShape, limit: string): string => intl
   .formatMessage({ id: 'ValidationMessage.DateNotBeforeOrEqual' }, { limit });
@@ -27,10 +27,11 @@ export const invalidFodselsnummerMessage = (): FormValidationResult => ([{ id: '
 export const sammeFodselsnummerSomSokerMessage = (): FormValidationResult => ([{ id: 'ValidationMessage.SammeFodselsnummerSomSoker' }]);
 export const invalidSaksnummerOrFodselsnummerFormatMessage = (intl: IntlShape) => intl
   .formatMessage({ id: 'ValidationMessage.InvalidSaksnummerOrFodselsnummerFormat' });
-export const invalidTextMessage = (text: string): FormValidationResult => ([{ id: 'ValidationMessage.InvalidText' }, { text }]);
+export const invalidTextMessage = (intl: IntlShape, text: string): string => intl.formatMessage({ id: 'ValidationMessage.InvalidText' }, { text });
 export const invalidValueMessage = (value: string): FormValidationResult => ([{ id: 'ValidationMessage.InvalidValue' }, { value }]);
 export const arrayMinLengthMessage = (length: number): FormValidationResult => ([{ id: 'ValidationMessage.ArrayMinLength' }, { length }]);
 export const invalidDatesInPeriodMessage = (): FormValidationResult => ([{ id: 'ValidationMessage.InvalidDatesInPeriod' }]);
 export const invalidPeriodMessage = (): FormValidationResult => ([{ id: 'ValidationMessage.InvalidPeriod' }]);
 export const invalidPeriodRangeMessage = (): FormValidationResult => ([{ id: 'ValidationMessage.InvalidPeriodRange' }]);
-export const invalidNumberMessage = (text: string): FormValidationResult => ([{ id: 'ValidationMessage.InvalidNumber' }, { text }]);
+export const invalidNumberMessage = (intl: IntlShape, text: string): string => intl
+  .formatMessage({ id: 'ValidationMessage.InvalidNumber' }, { text });
