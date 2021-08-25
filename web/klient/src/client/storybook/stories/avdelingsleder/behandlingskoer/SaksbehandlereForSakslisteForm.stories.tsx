@@ -5,9 +5,11 @@ import { Story } from '@storybook/react';
 import Saksliste from 'types/avdelingsleder/sakslisteAvdelingTsType';
 import SaksbehandlereForSakslisteForm from 'avdelingsleder/behandlingskoer/components/saksbehandlerForm/SaksbehandlereForSakslisteForm';
 import SaksbehandlerAvdeling from 'types/avdelingsleder/saksbehandlerAvdelingTsType';
+import { RestApiPathsKeys } from 'data/fplosRestApi';
 
 import withIntl from '../../../decorators/withIntl';
 import withRestApiProvider from '../../../decorators/withRestApi';
+import RestApiMock from '../../../utils/RestApiMock';
 
 export default {
   title: 'avdelingsleder/behandlingskoer/SaksbehandlereForSakslisteForm',
@@ -23,14 +25,22 @@ const Template: Story<{
   saksliste,
   avdelingensSaksbehandlere,
   hentAvdelingensSakslister,
-}) => (
-  <SaksbehandlereForSakslisteForm
-    valgtSaksliste={saksliste}
-    avdelingensSaksbehandlere={avdelingensSaksbehandlere}
-    hentAvdelingensSakslister={hentAvdelingensSakslister}
-    valgtAvdelingEnhet="NAV Viken"
-  />
-);
+}) => {
+  const data = [
+    { key: RestApiPathsKeys.LAGRE_SAKSLISTE_SAKSBEHANDLER.name, data: {} },
+  ];
+
+  return (
+    <RestApiMock data={data}>
+      <SaksbehandlereForSakslisteForm
+        valgtSaksliste={saksliste}
+        avdelingensSaksbehandlere={avdelingensSaksbehandlere}
+        hentAvdelingensSakslister={hentAvdelingensSakslister}
+        valgtAvdelingEnhet="NAV Viken"
+      />
+    </RestApiMock>
+  );
+};
 
 export const IngenSaksbehandlere = Template.bind({});
 IngenSaksbehandlere.args = {

@@ -34,9 +34,10 @@ describe('<SaksbehandlereForSakslisteForm>', () => {
     userEvent.click(screen.getAllByRole('checkbox')[0]);
 
     await waitFor(() => expect(hentAvdelingensSakslister).toHaveBeenCalledTimes(1));
-    expect(hentAvdelingensSakslister).toHaveBeenNthCalledWith(1);
+    expect(hentAvdelingensSakslister).toHaveBeenNthCalledWith(1, { avdelingEnhet: 'NAV Viken' });
 
     expect(screen.getAllByRole('checkbox')[0]).toBeChecked();
+
     expect(screen.getAllByRole('checkbox')[1]).not.toBeChecked();
   });
 });
