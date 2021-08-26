@@ -1,11 +1,9 @@
 import React, { FunctionComponent } from 'react';
 import { FormattedMessage } from 'react-intl';
-
-import { Form } from 'react-final-form';
+import { useForm } from 'react-hook-form';
 import { Element } from 'nav-frontend-typografi';
 
 import StoreValuesInLocalStorage from 'form/StoreValuesInLocalStorage';
-import { RadioGroupField, RadioOption } from 'form/FinalFields';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import FagsakYtelseType from 'kodeverk/fagsakYtelseType';
 import KodeverkType from 'kodeverk/kodeverkTyper';
@@ -13,6 +11,9 @@ import Kodeverk from 'types/kodeverkTsType';
 import useKodeverk from 'data/useKodeverk';
 import OppgaverForAvdeling from 'types/avdelingsleder/oppgaverForAvdelingTsType';
 import FordelingAvBehandlingstypeGraf from './FordelingAvBehandlingstypeGraf';
+import RadioGroupField from '../../../../formNew/RadioGroupField';
+import RadioOption from '../../../../formNew/RadioOption';
+import Form from '../../../../formNew/Form';
 
 const finnFagsakYtelseTypeNavn = (fagsakYtelseTyper: Kodeverk[], valgtFagsakYtelseType: string) => {
   const type = fagsakYtelseTyper.find((fyt) => fyt.kode === valgtFagsakYtelseType);
@@ -22,6 +23,10 @@ const finnFagsakYtelseTypeNavn = (fagsakYtelseTyper: Kodeverk[], valgtFagsakYtel
 export const ALLE_YTELSETYPER_VALGT = 'ALLE';
 
 interface InitialValues {
+  valgtYtelseType: string;
+}
+
+type FormValues = {
   valgtYtelseType: string;
 }
 
@@ -48,45 +53,46 @@ export const FordelingAvBehandlingstypePanel: FunctionComponent<OwnProps> = ({
   const behandlingTyper = useKodeverk(KodeverkType.BEHANDLING_TYPE);
   const stringFromStorage = getValueFromLocalStorage(formName);
   const lagredeVerdier = stringFromStorage ? JSON.parse(stringFromStorage) : undefined;
+
+  const formMethods = useForm<FormValues>({
+    defaultValues: lagredeVerdier || formDefaultValues,
+  });
+
+  const values = formMethods.watch();
+
   return (
-    <Form
-      onSubmit={() => undefined}
-      initialValues={lagredeVerdier || formDefaultValues}
-      render={({ values }) => (
-        <div>
-          <StoreValuesInLocalStorage stateKey={formName} values={values} />
-          <Element>
-            <FormattedMessage id="FordelingAvBehandlingstypePanel.Fordeling" />
-          </Element>
-          <VerticalSpacer sixteenPx />
-          <RadioGroupField name="valgtYtelseType">
-            <RadioOption
-              value={FagsakYtelseType.FORELDREPRENGER}
-              label={finnFagsakYtelseTypeNavn(fagsakYtelseTyper, FagsakYtelseType.FORELDREPRENGER)}
-            />
-            <RadioOption
-              value={FagsakYtelseType.ENGANGSSTONAD}
-              label={finnFagsakYtelseTypeNavn(fagsakYtelseTyper, FagsakYtelseType.ENGANGSSTONAD)}
-            />
-            <RadioOption
-              value={FagsakYtelseType.SVANGERSKAPPENGER}
-              label={finnFagsakYtelseTypeNavn(fagsakYtelseTyper, FagsakYtelseType.SVANGERSKAPPENGER)}
-            />
-            <RadioOption
-              value={ALLE_YTELSETYPER_VALGT}
-              label={<FormattedMessage id="FordelingAvBehandlingstypePanel.Alle" />}
-            />
-          </RadioGroupField>
-          <FordelingAvBehandlingstypeGraf
-            width={width}
-            height={height}
-            behandlingTyper={behandlingTyper}
-            oppgaverForAvdeling={oppgaverForAvdeling ? oppgaverForAvdeling
-              .filter((ofa) => (values.valgtYtelseType === ALLE_YTELSETYPER_VALGT ? true : values.valgtYtelseType === ofa.fagsakYtelseType.kode)) : []}
-          />
-        </div>
-      )}
-    />
+    <Form<FormValues> formMethods={formMethods}>
+      <StoreValuesInLocalStorage stateKey={formName} values={values} />
+      <Element>
+        <FormattedMessage id="FordelingAvBehandlingstypePanel.Fordeling" />
+      </Element>
+      <VerticalSpacer sixteenPx />
+      <RadioGroupField name="valgtYtelseType">
+        <RadioOption
+          value={FagsakYtelseType.FORELDREPRENGER}
+          label={finnFagsakYtelseTypeNavn(fagsakYtelseTyper, FagsakYtelseType.FORELDREPRENGER)}
+        />
+        <RadioOption
+          value={FagsakYtelseType.ENGANGSSTONAD}
+          label={finnFagsakYtelseTypeNavn(fagsakYtelseTyper, FagsakYtelseType.ENGANGSSTONAD)}
+        />
+        <RadioOption
+          value={FagsakYtelseType.SVANGERSKAPPENGER}
+          label={finnFagsakYtelseTypeNavn(fagsakYtelseTyper, FagsakYtelseType.SVANGERSKAPPENGER)}
+        />
+        <RadioOption
+          value={ALLE_YTELSETYPER_VALGT}
+          label={<FormattedMessage id="FordelingAvBehandlingstypePanel.Alle" />}
+        />
+      </RadioGroupField>
+      <FordelingAvBehandlingstypeGraf
+        width={width}
+        height={height}
+        behandlingTyper={behandlingTyper}
+        oppgaverForAvdeling={oppgaverForAvdeling ? oppgaverForAvdeling
+          .filter((ofa) => (values.valgtYtelseType === ALLE_YTELSETYPER_VALGT ? true : values.valgtYtelseType === ofa.fagsakYtelseType.kode)) : []}
+      />
+    </Form>
   );
 };
 

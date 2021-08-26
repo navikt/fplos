@@ -1,12 +1,11 @@
 import React, { FunctionComponent } from 'react';
 import dayjs from 'dayjs';
 import { injectIntl, WrappedComponentProps, FormattedMessage } from 'react-intl';
-import { Form } from 'react-final-form';
+import { useForm } from 'react-hook-form';
 import { Element } from 'nav-frontend-typografi';
 import { Row, Column } from 'nav-frontend-grid';
 
 import StoreValuesInLocalStorage from 'form/StoreValuesInLocalStorage';
-import { RadioGroupField, RadioOption, SelectField } from 'form/FinalFields';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import useKodeverk from 'data/useKodeverk';
 import FagsakYtelseType from 'kodeverk/fagsakYtelseType';
@@ -14,6 +13,10 @@ import KodeverkType from 'kodeverk/kodeverkTyper';
 import Kodeverk from 'types/kodeverkTsType';
 import OppgaveForDato from 'types/avdelingsleder/oppgaverForDatoTsType';
 import TilBehandlingGraf, { OppgaveForDatoGraf } from './TilBehandlingGraf';
+import RadioGroupField from '../../../../formNew/RadioGroupField';
+import RadioOption from '../../../../formNew/RadioOption';
+import SelectField from '../../../../formNew/SelectField';
+import Form from '../../../../formNew/Form';
 
 import styles from './tilBehandlingPanel.less';
 
@@ -67,6 +70,11 @@ interface OwnProps {
   getValueFromLocalStorage: (key: string) => string | undefined;
 }
 
+type FormValues = {
+  ukevalg: string;
+  ytelseType: string;
+}
+
 const formName = 'tilBehandlingForm';
 const formDefaultValues = { ytelseType: ALLE_YTELSETYPER_VALGT, ukevalg: UKE_2 };
 
@@ -84,61 +92,62 @@ export const TilBehandlingPanel: FunctionComponent<OwnProps & WrappedComponentPr
   const fagsakYtelseTyper = useKodeverk(KodeverkType.FAGSAK_YTELSE_TYPE);
   const stringFromStorage = getValueFromLocalStorage(formName);
   const lagredeVerdier = stringFromStorage ? JSON.parse(stringFromStorage) : undefined;
+
+  const formMethods = useForm<FormValues>({
+    defaultValues: lagredeVerdier || formDefaultValues,
+  });
+
+  const values = formMethods.watch();
+
   return (
-    <Form
-      onSubmit={() => undefined}
-      initialValues={lagredeVerdier || formDefaultValues}
-      render={({ values }) => (
-        <>
-          <StoreValuesInLocalStorage stateKey={formName} values={values} />
-          <Element>
-            <FormattedMessage id="TilBehandlingPanel.TilBehandling" />
-          </Element>
-          <VerticalSpacer eightPx />
-          <Row>
-            <Column xs="2">
-              <SelectField
-                name="ukevalg"
-                label=""
-                selectValues={uker.map((u) => <option key={u.kode} value={u.kode}>{intl.formatMessage({ id: u.tekstKode })}</option>)}
-                bredde="l"
-              />
-            </Column>
-            <Column xs="8">
-              <div className={styles.radioPadding}>
-                <RadioGroupField name="ytelseType">
-                  <RadioOption
-                    value={FagsakYtelseType.FORELDREPRENGER}
-                    label={finnFagsakYtelseTypeNavn(fagsakYtelseTyper, FagsakYtelseType.FORELDREPRENGER)}
-                  />
-                  <RadioOption
-                    value={FagsakYtelseType.ENGANGSSTONAD}
-                    label={finnFagsakYtelseTypeNavn(fagsakYtelseTyper, FagsakYtelseType.ENGANGSSTONAD)}
-                  />
-                  <RadioOption
-                    value={FagsakYtelseType.SVANGERSKAPPENGER}
-                    label={finnFagsakYtelseTypeNavn(fagsakYtelseTyper, FagsakYtelseType.SVANGERSKAPPENGER)}
-                  />
-                  <RadioOption
-                    value={ALLE_YTELSETYPER_VALGT}
-                    label={<FormattedMessage id="FordelingAvBehandlingstypePanel.Alle" />}
-                  />
-                </RadioGroupField>
-              </div>
-            </Column>
-          </Row>
-          <TilBehandlingGraf
-            width={width}
-            height={height}
-            isToUkerValgt={values.ukevalg === UKE_2}
-            behandlingTyper={behandlingTyper}
-            oppgaverPerDato={oppgaverPerDato ? slaSammenLikeBehandlingstyperOgDatoer(oppgaverPerDato
-              .filter((ofa) => (values.ytelseType === ALLE_YTELSETYPER_VALGT ? true : values.ytelseType === ofa.fagsakYtelseType.kode))
-              .filter((ofa) => erDatoInnenforPeriode(ofa, values.ukevalg))) : []}
+    <Form<FormValues> formMethods={formMethods}>
+      <StoreValuesInLocalStorage stateKey={formName} values={values} />
+      <Element>
+        <FormattedMessage id="TilBehandlingPanel.TilBehandling" />
+      </Element>
+      <VerticalSpacer eightPx />
+      <Row>
+        <Column xs="2">
+          <SelectField
+            name="ukevalg"
+            label=""
+            selectValues={uker.map((u) => <option key={u.kode} value={u.kode}>{intl.formatMessage({ id: u.tekstKode })}</option>)}
+            bredde="l"
           />
-        </>
-      )}
-    />
+        </Column>
+        <Column xs="8">
+          <div className={styles.radioPadding}>
+            <RadioGroupField name="ytelseType">
+              <RadioOption
+                value={FagsakYtelseType.FORELDREPRENGER}
+                label={finnFagsakYtelseTypeNavn(fagsakYtelseTyper, FagsakYtelseType.FORELDREPRENGER)}
+              />
+              <RadioOption
+                value={FagsakYtelseType.ENGANGSSTONAD}
+                label={finnFagsakYtelseTypeNavn(fagsakYtelseTyper, FagsakYtelseType.ENGANGSSTONAD)}
+              />
+              <RadioOption
+                value={FagsakYtelseType.SVANGERSKAPPENGER}
+                label={finnFagsakYtelseTypeNavn(fagsakYtelseTyper, FagsakYtelseType.SVANGERSKAPPENGER)}
+              />
+              <RadioOption
+                value={ALLE_YTELSETYPER_VALGT}
+                label={<FormattedMessage id="FordelingAvBehandlingstypePanel.Alle" />}
+              />
+            </RadioGroupField>
+          </div>
+        </Column>
+      </Row>
+      <TilBehandlingGraf
+        width={width}
+        height={height}
+        isToUkerValgt={values.ukevalg === UKE_2}
+        behandlingTyper={behandlingTyper}
+        oppgaverPerDato={oppgaverPerDato ? slaSammenLikeBehandlingstyperOgDatoer(oppgaverPerDato
+          .filter((ofa) => (values.ytelseType === ALLE_YTELSETYPER_VALGT ? true : values.ytelseType === ofa.fagsakYtelseType.kode))
+          .filter((ofa) => erDatoInnenforPeriode(ofa, values.ukevalg))) : []}
+      />
+    </Form>
   );
 };
 
