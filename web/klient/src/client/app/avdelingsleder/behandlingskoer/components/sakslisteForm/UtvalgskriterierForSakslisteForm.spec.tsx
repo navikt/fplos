@@ -8,25 +8,26 @@ const { MedGittNavn, MedDefaultNavn } = composeStories(stories);
 
 describe('<UtvalgskriterierForSakslisteForm>', () => {
   it('skal vise sakslistenavn som saksbehandler har skrive inn', async () => {
-    render(<MedGittNavn />);
+    const { getByLabelText } = render(<MedGittNavn />);
     expect(await screen.findByText('Navn')).toBeInTheDocument();
-    expect(screen.getByText('Saksliste 1')).toBeInTheDocument();
+    expect(getByLabelText('Navn')).toHaveValue('liste');
   });
 
   it('skal vise default sakslistenavn', async () => {
-    render(<MedDefaultNavn />);
+    const { getByLabelText } = render(<MedDefaultNavn />);
     expect(await screen.findByText('Navn')).toBeInTheDocument();
-    expect(screen.getByText('Saksliste 1')).toBeInTheDocument();
+    expect(getByLabelText('Navn')).toHaveValue('Ny behandlingskø');
   });
 
-  it('skal vise feilmelding når en fjerner verdi fra navn-feltet', async () => {
-    const { getByLabelText } = render(<MedDefaultNavn />);
+  it('skal vise feilmelding når en fjerner nok tegn til at navnet blir færre enn 3 tegn langt', async () => {
+    const { getByLabelText } = render(<MedGittNavn />);
+
     expect(await screen.findByText('Navn')).toBeInTheDocument();
 
     const navnInput = getByLabelText('Navn');
-    userEvent.type(navnInput, '');
+    userEvent.type(navnInput, '{backspace}{backspace}{backspace}');
     fireEvent.blur(navnInput);
 
-    expect(await screen.findByText('Feltet må fylles ut')).toBeInTheDocument();
+    expect(await screen.findByText('Du må skrive minst 3 tegn')).toBeInTheDocument();
   });
 });

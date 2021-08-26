@@ -88,7 +88,7 @@ const Template: Story<{ sakslisteNavn: string }> = ({
 
 export const MedGittNavn = Template.bind({});
 MedGittNavn.args = {
-  sakslisteNavn: 'Saksliste 1',
+  sakslisteNavn: 'liste',
 };
 
 export const MedDefaultNavn = Template.bind({});
