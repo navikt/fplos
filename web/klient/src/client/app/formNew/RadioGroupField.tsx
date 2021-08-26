@@ -54,7 +54,7 @@ const RadioGroupField: FunctionComponent<OwnProps> = ({
       name: field.name,
       value: radioOption.props.value,
       onChange: customOnChange,
-      checked: radioOption.props.value.toString() === field.value,
+      checked: radioOption.props.value.toString() === field.value.toString(),
     })), [children, field.value, customOnChange]);
 
   const feil = errors[name] && errors[name].message;

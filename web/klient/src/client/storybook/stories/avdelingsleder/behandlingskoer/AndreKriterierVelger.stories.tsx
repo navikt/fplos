@@ -48,8 +48,8 @@ const Template: Story<{ defaultVerdier: Record<string, boolean> }> = ({
   );
 };
 
-export const VelgAndreKriterier = Template.bind({});
-VelgAndreKriterier.args = {
+export const Default = Template.bind({});
+Default.args = {
   defaultVerdier: {
     [andreKriterierType.TIL_BESLUTTER]: true,
     [`${andreKriterierType.TIL_BESLUTTER}_inkluder`]: true,
