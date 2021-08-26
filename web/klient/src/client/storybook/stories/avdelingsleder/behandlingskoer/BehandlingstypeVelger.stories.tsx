@@ -45,8 +45,8 @@ const Template: Story<{ verdier: Record<string, boolean> }> = ({
   );
 };
 
-export const VelgBehandlingstyper = Template.bind({});
-VelgBehandlingstyper.args = {
+export const Default = Template.bind({});
+Default.args = {
   verdier: {
     [behandlingType.FORSTEGANGSSOKNAD]: true,
   },

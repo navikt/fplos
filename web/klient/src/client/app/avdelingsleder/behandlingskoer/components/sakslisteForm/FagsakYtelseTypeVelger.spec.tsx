@@ -1,67 +1,21 @@
 import React from 'react';
-import sinon from 'sinon';
-import { shallow } from 'enzyme';
+import { render, screen, waitFor } from '@testing-library/react';
+import { composeStories } from '@storybook/testing-react';
+import userEvent from '@testing-library/user-event';
+import * as stories from 'stories/avdelingsleder/behandlingskoer/FagsakYtelseTypeVelger.stories';
 
-import { requestApi, RestApiGlobalStatePathsKeys, RestApiPathsKeys } from 'data/fplosRestApi';
-import KodeverkType from 'kodeverk/kodeverkTyper';
-import FagsakYtelseType from 'kodeverk/fagsakYtelseType';
-import { RadioOption, RadioGroupField } from 'form/FinalFields';
-
-import FagsakYtelseTypeVelger from './FagsakYtelseTypeVelger';
+const { Default } = composeStories(stories);
 
 describe('<FagsakYtelseTypeVelger>', () => {
-  const fagsakYtelseTyper = [{
-    kode: FagsakYtelseType.ENGANGSSTONAD,
-    navn: 'Engangsstønad',
-  }, {
-    kode: FagsakYtelseType.FORELDREPRENGER,
-    navn: 'Foreldrepenger',
-  }, {
-    kode: FagsakYtelseType.SVANGERSKAPPENGER,
-    navn: 'Svangerskapspenger',
-  }];
+  it('skal vise checkboxer for stønadstyper og så velge engangsstønad', async () => {
+    const { getByLabelText } = render(<Default />);
+    expect(await screen.findByText('Stønadstype')).toBeInTheDocument();
+    expect(getByLabelText('Foreldrepenger')).toBeChecked();
+    expect(getByLabelText('Engangsstønad')).not.toBeChecked();
 
-  const alleKodeverk = {
-    [KodeverkType.FAGSAK_YTELSE_TYPE]: fagsakYtelseTyper,
-  };
+    userEvent.click(screen.getByText('Engangsstønad'));
 
-  it('skal vise checkboxer for ytelsetyper', () => {
-    requestApi.mock(RestApiGlobalStatePathsKeys.KODEVERK.name, alleKodeverk);
-    const wrapper = shallow(<FagsakYtelseTypeVelger
-      valgtSakslisteId={1}
-      valgtAvdelingEnhet="3"
-      hentAvdelingensSakslister={sinon.spy()}
-      hentAntallOppgaver={sinon.spy()}
-    />);
-
-    const radios = wrapper.find(RadioOption);
-    expect(radios).toHaveLength(4);
-    expect(radios.first().prop('value')).toEqual(FagsakYtelseType.FORELDREPRENGER);
-    expect(radios.at(1).prop('value')).toEqual(FagsakYtelseType.ENGANGSSTONAD);
-    expect(radios.last().prop('value')).toEqual('');
-  });
-
-  it('skal lagre ytelsetype ved klikk på checkbox', async () => {
-    const hentAvdelingensSakslister = sinon.spy();
-    const hentAntallOppgaver = sinon.spy();
-    requestApi.mock(RestApiGlobalStatePathsKeys.KODEVERK.name, alleKodeverk);
-    requestApi.mock(RestApiPathsKeys.LAGRE_SAKSLISTE_FAGSAK_YTELSE_TYPE.name, {});
-
-    const wrapper = shallow(<FagsakYtelseTypeVelger
-      valgtSakslisteId={1}
-      valgtAvdelingEnhet="3"
-      hentAvdelingensSakslister={hentAvdelingensSakslister}
-      hentAntallOppgaver={hentAntallOppgaver}
-    />);
-
-    const radioGroup = wrapper.find(RadioGroupField);
-    // @ts-ignore
-    await radioGroup.prop('onChange')(FagsakYtelseType.ENGANGSSTONAD);
-
-    expect(hentAvdelingensSakslister.calledOnce).toBe(true);
-    const { args } = hentAvdelingensSakslister.getCalls()[0];
-    expect(args).toHaveLength(1);
-    expect(args[0]).toEqual({ avdelingEnhet: '3' });
-    expect(hentAntallOppgaver.calledOnce).toBe(true);
+    await waitFor(() => expect(getByLabelText('Engangsstønad')).toBeChecked());
+    expect(getByLabelText('Foreldrepenger')).not.toBeChecked();
   });
 });

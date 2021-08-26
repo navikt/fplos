@@ -21,8 +21,9 @@ export default {
   decorators: [withIntl, withRestApiProvider],
 };
 
-const Template: Story<{ valgteBehandlingtyper: Kodeverk[] }> = ({
+const Template: Story<{ valgteBehandlingtyper: Kodeverk[], erDynamiskPeriode: boolean }> = ({
   valgteBehandlingtyper,
+  erDynamiskPeriode,
 }) => {
   const data = [
     { key: RestApiGlobalStatePathsKeys.KODEVERK.name, data: alleKodeverk },
@@ -38,7 +39,7 @@ const Template: Story<{ valgteBehandlingtyper: Kodeverk[] }> = ({
     til: 3,
     fomDato: '2020.01.10',
     tomDato: '2020.10.01',
-    erDynamiskPeriode: true,
+    erDynamiskPeriode,
   };
 
   const formMethods = useForm({
@@ -74,6 +75,19 @@ SorteringsvelgerNårMangeBehandlingstyperErValgt.args = {
     kode: behandlingType.DOKUMENTINNSYN,
     navn: 'Innsyn',
   }],
+  erDynamiskPeriode: false,
+};
+
+export const SorteringsvelgerNårDynamiskPeriodeErValgt = Template.bind({});
+SorteringsvelgerNårDynamiskPeriodeErValgt.args = {
+  valgteBehandlingtyper: [{
+    kode: behandlingType.FORSTEGANGSSOKNAD,
+    navn: 'Førstegang',
+  }, {
+    kode: behandlingType.DOKUMENTINNSYN,
+    navn: 'Innsyn',
+  }],
+  erDynamiskPeriode: true,
 };
 
 export const SorteringsvelgerNårKunTilbakekrevingErValgt = Template.bind({});
@@ -82,4 +96,5 @@ SorteringsvelgerNårKunTilbakekrevingErValgt.args = {
     kode: behandlingType.TILBAKEBETALING,
     navn: 'Tilbakekreving',
   }],
+  erDynamiskPeriode: false,
 };

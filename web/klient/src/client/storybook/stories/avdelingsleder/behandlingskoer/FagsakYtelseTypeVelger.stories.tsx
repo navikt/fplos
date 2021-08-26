@@ -45,8 +45,8 @@ const Template: Story<{ verdier: Record<string, string> }> = ({
   );
 };
 
-export const VelgFagsakYtelseTyper = Template.bind({});
-VelgFagsakYtelseTyper.args = {
+export const Default = Template.bind({});
+Default.args = {
   verdier: {
     fagsakYtelseType: fagsakYtelseType.FORELDREPRENGER,
   },
