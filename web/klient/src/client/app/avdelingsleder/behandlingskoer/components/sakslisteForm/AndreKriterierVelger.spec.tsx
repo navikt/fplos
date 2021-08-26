@@ -11,22 +11,22 @@ describe('<AndreKriterierVelger>', () => {
     const { getByLabelText } = render(<Default />);
     expect(await screen.findByText('Til beslutter')).toBeInTheDocument();
     expect(getByLabelText('Til beslutter')).toBeChecked();
-    expect(getByLabelText('Ta med i køen')).not.toBeChecked();
-    expect(getByLabelText('Fjern fra køen')).toBeChecked();
+    expect(getByLabelText('Ta med i køen')).toBeChecked();
+    expect(getByLabelText('Fjern fra køen')).not.toBeChecked();
   });
 
-  xit('skal velge Registrer papirsøknad og fjerne dette fra køen', async () => {
-    render(<Default />);
+  it('skal velge Registrer papirsøknad og fjerne dette fra køen', async () => {
+    const { getAllByLabelText } = render(<Default />);
     expect(await screen.findByText('Registrer papirsøknad')).toBeInTheDocument();
 
     userEvent.click(screen.getByText('Registrer papirsøknad'));
 
-    expect(screen.getAllByText('Ta med i køen')[1]).not.toBeChecked();
-    expect(screen.getAllByText('Fjern fra køen')[1]).not.toBeChecked();
+    expect(getAllByLabelText('Ta med i køen')[1]).not.toBeChecked();
+    expect(getAllByLabelText('Fjern fra køen')[1]).not.toBeChecked();
 
-    userEvent.click(screen.getAllByText('Fjern fra køen')[1]);
+    userEvent.click(getAllByLabelText('Fjern fra køen')[1]);
 
-    await waitFor(() => expect(screen.getAllByText('Fjern fra køen')[1]).toBeChecked());
-    expect(screen.getAllByText('Ta med i køen')[1]).not.toBeChecked();
+    await waitFor(() => expect(getAllByLabelText('Fjern fra køen')[1]).toBeChecked());
+    expect(getAllByLabelText('Ta med i køen')[1]).not.toBeChecked();
   });
 });
