@@ -10,9 +10,7 @@ import { restApiHooks, RestApiPathsKeys } from 'data/fplosRestApi';
 import { ISO_DATE_FORMAT, DDMMYYYY_DATE_FORMAT } from 'utils/formats';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import ArrowBox from 'sharedComponents/ArrowBox';
-import InputField from '../../../../formNew/InputField';
-import CheckboxField from '../../../../formNew/CheckboxField';
-import DatepickerField from '../../../../formNew/DatepickerField';
+import { InputField, CheckboxField, DatepickerField } from 'form/formIndex';
 
 import styles from './sorteringVelger.less';
 

@@ -7,9 +7,7 @@ import useKodeverk from 'data/useKodeverk';
 import KodeverkType from 'kodeverk/kodeverkTyper';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import ArrowBox from 'sharedComponents/ArrowBox';
-import CheckboxField from '../../../../formNew/CheckboxField';
-import RadioGroupField from '../../../../formNew/RadioGroupField';
-import RadioOption from '../../../../formNew/RadioOption';
+import { CheckboxField, RadioGroupField, RadioOption } from 'form/formIndex';
 
 import styles from './andreKriterierVelger.less';
 

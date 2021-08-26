@@ -7,6 +7,9 @@ import { Element } from 'nav-frontend-typografi';
 import { Row, Column } from 'nav-frontend-grid';
 
 import StoreValuesInLocalStorage from 'form/StoreValuesInLocalStorage';
+import {
+  Form, RadioGroupField, RadioOption, SelectField,
+} from 'form/formIndex';
 import useKodeverk from 'data/useKodeverk';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import FagsakYtelseType from 'kodeverk/fagsakYtelseType';
@@ -14,10 +17,6 @@ import KodeverkType from 'kodeverk/kodeverkTyper';
 import Kodeverk from 'types/kodeverkTsType';
 import OppgaverManueltPaVent from 'types/avdelingsleder/oppgaverManueltPaVentTsType';
 import ManueltPaVentGraf from './ManueltPaVentGraf';
-import RadioGroupField from '../../../../formNew/RadioGroupField';
-import RadioOption from '../../../../formNew/RadioOption';
-import SelectField from '../../../../formNew/SelectField';
-import Form from '../../../../formNew/Form';
 
 import styles from './manueltPaVentPanel.less';
 

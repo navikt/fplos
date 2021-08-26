@@ -6,8 +6,8 @@ import { useForm } from 'react-hook-form';
 import { RestApiGlobalStatePathsKeys, RestApiPathsKeys } from 'data/fplosRestApi';
 import BehandlingstypeVelger from 'avdelingsleder/behandlingskoer/components/sakslisteForm/BehandlingstypeVelger';
 import behandlingType from 'kodeverk/behandlingType';
+import { Form } from 'form/formIndex';
 
-import Form from '../../../../app/formNew/Form';
 import withIntl from '../../../decorators/withIntl';
 import alleKodeverk from '../../../mocks/alleKodeverk.json';
 import withRestApiProvider from '../../../decorators/withRestApi';

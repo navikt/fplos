@@ -5,14 +5,13 @@ import { Element } from 'nav-frontend-typografi';
 
 import { FlexColumn, FlexContainer, FlexRow } from 'sharedComponents/flexGrid';
 import StoreValuesInLocalStorage from 'form/StoreValuesInLocalStorage';
+import { Form, CheckboxField } from 'form/formIndex';
 import KodeverkType from 'kodeverk/kodeverkTyper';
 import useKodeverk from 'data/useKodeverk';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import BehandlingType from 'kodeverk/behandlingType';
 import OppgaverSomErApneEllerPaVent from 'types/avdelingsleder/oppgaverSomErApneEllerPaVentTsType';
 import OppgaverSomErApneEllerPaVentGraf from './OppgaverSomErApneEllerPaVentGraf';
-import CheckboxField from '../../../../formNew/CheckboxField';
-import Form from '../../../../formNew/Form';
 
 const formName = 'oppgaverSomErApneEllerPaVent';
 

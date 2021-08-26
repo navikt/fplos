@@ -5,18 +5,17 @@ import { useForm } from 'react-hook-form';
 import { Element } from 'nav-frontend-typografi';
 import { Row, Column } from 'nav-frontend-grid';
 
-import StoreValuesInLocalStorage from 'form/StoreValuesInLocalStorage';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import useKodeverk from 'data/useKodeverk';
 import FagsakYtelseType from 'kodeverk/fagsakYtelseType';
 import KodeverkType from 'kodeverk/kodeverkTyper';
 import Kodeverk from 'types/kodeverkTsType';
 import OppgaveForDato from 'types/avdelingsleder/oppgaverForDatoTsType';
+import StoreValuesInLocalStorage from 'form/StoreValuesInLocalStorage';
+import {
+  Form, RadioGroupField, RadioOption, SelectField,
+} from 'form/formIndex';
 import TilBehandlingGraf, { OppgaveForDatoGraf } from './TilBehandlingGraf';
-import RadioGroupField from '../../../../formNew/RadioGroupField';
-import RadioOption from '../../../../formNew/RadioOption';
-import SelectField from '../../../../formNew/SelectField';
-import Form from '../../../../formNew/Form';
 
 import styles from './tilBehandlingPanel.less';
 

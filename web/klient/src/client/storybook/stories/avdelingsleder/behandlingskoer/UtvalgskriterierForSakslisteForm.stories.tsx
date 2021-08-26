@@ -20,7 +20,9 @@ export default {
   decorators: [withIntl, withRestApiProvider],
 };
 
-const Template: Story = () => {
+const Template: Story<{ sakslisteNavn: string }> = ({
+  sakslisteNavn,
+}) => {
   const data = [
     { key: RestApiGlobalStatePathsKeys.KODEVERK.name, data: alleKodeverk },
     { key: RestApiPathsKeys.OPPGAVE_ANTALL.name, data: 1 },
@@ -39,7 +41,7 @@ const Template: Story = () => {
       <UtvalgskriterierForSakslisteForm
         valgtSaksliste={{
           sakslisteId: 1,
-          navn: 'Saksliste 1',
+          navn: sakslisteNavn,
           sistEndret: '2020-10-10',
           saksbehandlerIdenter: [],
           antallBehandlinger: 1,
@@ -84,4 +86,12 @@ const Template: Story = () => {
   );
 };
 
-export const SakslisteOppsettPanel = Template.bind({});
+export const MedGittNavn = Template.bind({});
+MedGittNavn.args = {
+  sakslisteNavn: 'Saksliste 1',
+};
+
+export const MedDefaultNavn = Template.bind({});
+MedDefaultNavn.args = {
+  sakslisteNavn: undefined,
+};

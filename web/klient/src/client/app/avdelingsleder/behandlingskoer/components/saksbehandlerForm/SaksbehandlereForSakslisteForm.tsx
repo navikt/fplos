@@ -9,8 +9,7 @@ import { restApiHooks, RestApiPathsKeys } from 'data/fplosRestApi';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import Saksbehandler from 'types/avdelingsleder/saksbehandlerAvdelingTsType';
 import Saksliste from 'types/avdelingsleder/sakslisteAvdelingTsType';
-import Form from '../../../../formNew/Form';
-import CheckboxField from '../../../../formNew/CheckboxField';
+import { Form, CheckboxField } from 'form/formIndex';
 
 import styles from './saksbehandlereForSakslisteForm.less';
 

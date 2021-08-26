@@ -3,17 +3,15 @@ import { FormattedMessage } from 'react-intl';
 import { useForm } from 'react-hook-form';
 import { Element } from 'nav-frontend-typografi';
 
-import StoreValuesInLocalStorage from 'form/StoreValuesInLocalStorage';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import FagsakYtelseType from 'kodeverk/fagsakYtelseType';
 import KodeverkType from 'kodeverk/kodeverkTyper';
 import Kodeverk from 'types/kodeverkTsType';
 import useKodeverk from 'data/useKodeverk';
+import StoreValuesInLocalStorage from 'form/StoreValuesInLocalStorage';
+import { Form, RadioGroupField, RadioOption } from 'form/formIndex';
 import OppgaverForAvdeling from 'types/avdelingsleder/oppgaverForAvdelingTsType';
 import FordelingAvBehandlingstypeGraf from './FordelingAvBehandlingstypeGraf';
-import RadioGroupField from '../../../../formNew/RadioGroupField';
-import RadioOption from '../../../../formNew/RadioOption';
-import Form from '../../../../formNew/Form';
 
 const finnFagsakYtelseTypeNavn = (fagsakYtelseTyper: Kodeverk[], valgtFagsakYtelseType: string) => {
   const type = fagsakYtelseTyper.find((fyt) => fyt.kode === valgtFagsakYtelseType);

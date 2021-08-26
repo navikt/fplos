@@ -10,9 +10,7 @@ import {
   hasValidText, maxLength, minLength, required,
 } from 'utils/validation/validators';
 import Modal from 'sharedComponents/Modal';
-
-import TextAreaField from '../../../../formNew/TextAreaField';
-import Form from '../../../../formNew/Form';
+import { Form, TextAreaField } from 'form/formIndex';
 import styles from './opphevReservasjonModal.less';
 
 const minLength3 = minLength(3);

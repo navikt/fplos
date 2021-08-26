@@ -5,7 +5,7 @@ import React, { FunctionComponent } from 'react';
 import { FlexColumn, FlexContainer, FlexRow } from 'sharedComponents/flexGrid';
 import { hasValidPosOrNegInteger } from 'utils/validation/validators';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
-import InputField from '../../../../formNew/InputField';
+import { InputField } from 'form/formIndex';
 
 import styles from './sorteringVelger.less';
 

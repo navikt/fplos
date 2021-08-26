@@ -6,12 +6,12 @@ import { useForm } from 'react-hook-form';
 import { RestApiGlobalStatePathsKeys, RestApiPathsKeys } from 'data/fplosRestApi';
 import FagsakYtelseTypeVelger from 'avdelingsleder/behandlingskoer/components/sakslisteForm/FagsakYtelseTypeVelger';
 import fagsakYtelseType from 'kodeverk/fagsakYtelseType';
+import { Form } from 'form/formIndex';
 
 import withIntl from '../../../decorators/withIntl';
 import alleKodeverk from '../../../mocks/alleKodeverk.json';
 import withRestApiProvider from '../../../decorators/withRestApi';
 import RestApiMock from '../../../utils/RestApiMock';
-import Form from '../../../../app/formNew/Form';
 
 export default {
   title: 'avdelingsleder/behandlingskoer/FagsakYtelseTypeVelger',

@@ -8,12 +8,12 @@ import SorteringVelger from 'avdelingsleder/behandlingskoer/components/saksliste
 import behandlingType from 'kodeverk/behandlingType';
 import koSortering from 'kodeverk/KoSortering';
 import Kodeverk from 'types/kodeverkTsType';
+import { Form } from 'form/formIndex';
 
 import alleKodeverk from '../../../mocks/alleKodeverk.json';
 import withIntl from '../../../decorators/withIntl';
 import withRestApiProvider from '../../../decorators/withRestApi';
 import RestApiMock from '../../../utils/RestApiMock';
-import Form from '../../../../app/formNew/Form';
 
 export default {
   title: 'avdelingsleder/behandlingskoer/SorteringVelger',

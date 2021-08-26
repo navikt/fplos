@@ -10,9 +10,7 @@ import { hasValidSaksnummerOrFodselsnummerFormat } from 'utils/validation/valida
 import { restApiHooks, RestApiGlobalStatePathsKeys } from 'data/fplosRestApi';
 import { FlexColumn, FlexContainer, FlexRow } from 'sharedComponents/flexGrid';
 import Image from 'sharedComponents/Image';
-import InputField from '../../../formNew/InputField';
-import Form from '../../../formNew/Form';
-import CheckboxField from '../../../formNew/CheckboxField';
+import { Form, InputField, CheckboxField } from 'form/formIndex';
 
 import styles from './searchForm.less';
 

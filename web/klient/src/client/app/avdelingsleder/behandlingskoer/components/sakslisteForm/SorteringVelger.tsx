@@ -9,9 +9,8 @@ import Kodeverk from 'types/kodeverkTsType';
 import BehandlingType from 'kodeverk/behandlingType';
 import useKodeverk from 'data/useKodeverk';
 import KoSorteringType from 'types/avdelingsleder/koSorteringTsType';
+import { RadioOption, RadioGroupField } from 'form/formIndex';
 
-import RadioGroupField from '../../../../formNew/RadioGroupField';
-import RadioOption from '../../../../formNew/RadioOption';
 import DatoSorteringValg from './DatoSorteringValg';
 import BelopSorteringValg from './BelopSorteringValg';
 

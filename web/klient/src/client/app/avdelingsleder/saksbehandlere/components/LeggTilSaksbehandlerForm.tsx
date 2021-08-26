@@ -13,8 +13,7 @@ import { required } from 'utils/validation/validators';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import { FlexContainer, FlexRow, FlexColumn } from 'sharedComponents/flexGrid';
 import Saksbehandler from 'types/avdelingsleder/saksbehandlerAvdelingTsType';
-import Form from '../../../formNew/Form';
-import InputField from '../../../formNew/InputField';
+import { Form, InputField } from 'form/formIndex';
 
 import styles from './leggTilSaksbehandlerForm.less';
 

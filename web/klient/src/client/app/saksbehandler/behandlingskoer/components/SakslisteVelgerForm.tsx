@@ -18,8 +18,7 @@ import Saksbehandler from 'types/saksbehandler/saksbehandlerTsType';
 import gruppeHoverUrl from 'images/gruppe_hover.svg';
 import gruppeUrl from 'images/gruppe.svg';
 import { restApiHooks, RestApiPathsKeys } from 'data/fplosRestApi';
-import Form from '../../../formNew/Form';
-import SelectField from '../../../formNew/SelectField';
+import { Form, SelectField } from 'form/formIndex';
 
 import styles from './sakslisteVelgerForm.less';
 

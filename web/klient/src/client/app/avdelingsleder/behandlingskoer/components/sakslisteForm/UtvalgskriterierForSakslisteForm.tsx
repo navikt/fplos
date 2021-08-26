@@ -12,13 +12,12 @@ import {
 } from 'utils/validation/validators';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import { restApiHooks, RestApiPathsKeys } from 'data/fplosRestApi';
+import { Form, InputField } from 'form/formIndex';
 import Saksliste from 'types/avdelingsleder/sakslisteAvdelingTsType';
 import BehandlingstypeVelger from './BehandlingstypeVelger';
 import AndreKriterierVelger from './AndreKriterierVelger';
 import FagsakYtelseTypeVelger from './FagsakYtelseTypeVelger';
 import SorteringVelger from './SorteringVelger';
-import Form from '../../../../formNew/Form';
-import InputField from '../../../../formNew/InputField';
 
 import styles from './utvalgskriterierForSakslisteForm.less';
 

@@ -9,8 +9,7 @@ import { restApiHooks, RestApiPathsKeys } from 'data/fplosRestApi';
 import styles from 'saksbehandler/behandlingskoer/components/menu/oppgaveReservasjonEndringDatoModal.less';
 import Modal from 'sharedComponents/Modal';
 import { dateAfterOrEqual, dateBeforeOrEqual, hasValidDate } from 'utils/validation/validators';
-import Form from '../../../../formNew/Form';
-import DatepickerField from '../../../../formNew/DatepickerField';
+import { Form, DatepickerField } from 'form/formIndex';
 
 const thirtyDaysFromNow = () => {
   const result = new Date();

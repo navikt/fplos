@@ -52,8 +52,9 @@ export class AppIndex extends Component<RouterProps, StateProps> {
       const diffInMinutes = dayjs().diff(funksjonellTid, 'minutes');
       // Hvis diffInMinutes har avvik på over 5min: override moment.now (ref. http://momentjs.com/docs/#/customization/now/)
       if (diffInMinutes >= 5 || diffInMinutes <= -5) {
-        const diff = dayjs().diff(funksjonellTid);
-        moment.now = () => Date.now() - diff;
+        // TODO ta i bruk dayjs
+        // const diff = dayjs().diff(funksjonellTid);
+        // moment.now = () => Date.now() - diff;
       }
     }
   }
