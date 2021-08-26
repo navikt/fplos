@@ -1,4 +1,4 @@
-import React, { FunctionComponent } from 'react';
+import React, { FunctionComponent, useCallback, useMemo } from 'react';
 import classnames from 'classnames/bind';
 import { SkjemaGruppe as NavSkjemaGruppe } from 'nav-frontend-skjema';
 import { useController, useFormContext } from 'react-hook-form';
@@ -40,18 +40,22 @@ const RadioGroupField: FunctionComponent<OwnProps> = ({
     name,
   });
 
-  const customOnChange = (value: any) => {
-    field.onChange(value);
+  const customOnChange = useCallback((e: any) => {
+    field.onChange(e);
     if (onChange) {
-      onChange(value);
+      onChange(e.target.value);
     }
-  };
+  }, [field, onChange]);
 
-  const options = children
+  const options = useMemo(() => children
     .filter((radioOption) => !!radioOption)
     .map((radioOption) => React.cloneElement(radioOption, {
-      key: JSON.stringify(radioOption.props.value), name: field.name, value: field.value, onChange: customOnChange,
-    }));
+      key: JSON.stringify(radioOption.props.value),
+      name: field.name,
+      value: radioOption.props.value,
+      onChange: customOnChange,
+      checked: radioOption.props.value.toString() === field.value,
+    })), [children, field.value, customOnChange]);
 
   const feil = errors[name] && errors[name].message;
 

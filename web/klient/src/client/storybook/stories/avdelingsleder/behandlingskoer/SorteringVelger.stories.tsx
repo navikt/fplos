@@ -1,9 +1,9 @@
 import React from 'react';
-import { Form } from 'react-final-form';
 import { action } from '@storybook/addon-actions';
 import { Story } from '@storybook/react';
+import { useForm } from 'react-hook-form';
 
-import { RestApiGlobalStatePathsKeys } from 'data/fplosRestApi';
+import { RestApiGlobalStatePathsKeys, RestApiPathsKeys } from 'data/fplosRestApi';
 import SorteringVelger from 'avdelingsleder/behandlingskoer/components/sakslisteForm/SorteringVelger';
 import behandlingType from 'kodeverk/behandlingType';
 import koSortering from 'kodeverk/KoSortering';
@@ -13,6 +13,7 @@ import alleKodeverk from '../../../mocks/alleKodeverk.json';
 import withIntl from '../../../decorators/withIntl';
 import withRestApiProvider from '../../../decorators/withRestApi';
 import RestApiMock from '../../../utils/RestApiMock';
+import Form from '../../../../app/formNew/Form';
 
 export default {
   title: 'avdelingsleder/behandlingskoer/SorteringVelger',
@@ -25,6 +26,10 @@ const Template: Story<{ valgteBehandlingtyper: Kodeverk[] }> = ({
 }) => {
   const data = [
     { key: RestApiGlobalStatePathsKeys.KODEVERK.name, data: alleKodeverk },
+    { key: RestApiPathsKeys.LAGRE_SAKSLISTE_SORTERING.name, data: undefined },
+    { key: RestApiPathsKeys.LAGRE_SAKSLISTE_SORTERING_INTERVALL.name, data: undefined },
+    { key: RestApiPathsKeys.LAGRE_SAKSLISTE_SORTERING_DYNAMISK_PERIDE.name, data: undefined },
+    { key: RestApiPathsKeys.LAGRE_SAKSLISTE_SORTERING_TIDSINTERVALL_DATO.name, data: undefined },
   ];
 
   const verdier = {
@@ -36,26 +41,26 @@ const Template: Story<{ valgteBehandlingtyper: Kodeverk[] }> = ({
     erDynamiskPeriode: true,
   };
 
+  const formMethods = useForm({
+    defaultValues: verdier,
+  });
+
   return (
     <RestApiMock data={data}>
-      <Form
-        onSubmit={() => undefined}
-        initialValues={verdier}
-        render={() => (
-          <SorteringVelger
-            valgtSakslisteId={1}
-            valgteBehandlingtyper={valgteBehandlingtyper}
-            valgtAvdelingEnhet="NAV Viken"
-            erDynamiskPeriode={verdier.erDynamiskPeriode}
-            fra={verdier.fra}
-            til={verdier.til}
-            fomDato={verdier.fomDato}
-            tomDato={verdier.tomDato}
-            hentAvdelingensSakslister={action('button-click')}
-            hentAntallOppgaver={action('button-click')}
-          />
-        )}
-      />
+      <Form formMethods={formMethods}>
+        <SorteringVelger
+          valgtSakslisteId={1}
+          valgteBehandlingtyper={valgteBehandlingtyper}
+          valgtAvdelingEnhet="NAV Viken"
+          erDynamiskPeriode={verdier.erDynamiskPeriode}
+          fra={verdier.fra}
+          til={verdier.til}
+          fomDato={verdier.fomDato}
+          tomDato={verdier.tomDato}
+          hentAvdelingensSakslister={action('button-click')}
+          hentAntallOppgaver={action('button-click')}
+        />
+      </Form>
     </RestApiMock>
   );
 };

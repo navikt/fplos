@@ -1,12 +1,13 @@
 import React from 'react';
-import { Form } from 'react-final-form';
 import { action } from '@storybook/addon-actions';
 import { Story } from '@storybook/react';
+import { useForm } from 'react-hook-form';
 
-import { RestApiGlobalStatePathsKeys } from 'data/fplosRestApi';
+import { RestApiGlobalStatePathsKeys, RestApiPathsKeys } from 'data/fplosRestApi';
 import BehandlingstypeVelger from 'avdelingsleder/behandlingskoer/components/sakslisteForm/BehandlingstypeVelger';
 import behandlingType from 'kodeverk/behandlingType';
 
+import Form from '../../../../app/formNew/Form';
 import withIntl from '../../../decorators/withIntl';
 import alleKodeverk from '../../../mocks/alleKodeverk.json';
 import withRestApiProvider from '../../../decorators/withRestApi';
@@ -23,22 +24,23 @@ const Template: Story<{ verdier: Record<string, boolean> }> = ({
 }) => {
   const data = [
     { key: RestApiGlobalStatePathsKeys.KODEVERK.name, data: alleKodeverk },
+    { key: RestApiPathsKeys.LAGRE_SAKSLISTE_BEHANDLINGSTYPE.name, data: undefined },
   ];
+
+  const formMethods = useForm({
+    defaultValues: verdier,
+  });
 
   return (
     <RestApiMock data={data}>
-      <Form
-        onSubmit={() => undefined}
-        initialValues={verdier}
-        render={() => (
-          <BehandlingstypeVelger
-            valgtSakslisteId={1}
-            valgtAvdelingEnhet="NAV Viken"
-            hentAvdelingensSakslister={action('button-click')}
-            hentAntallOppgaver={action('button-click')}
-          />
-        )}
-      />
+      <Form formMethods={formMethods}>
+        <BehandlingstypeVelger
+          valgtSakslisteId={1}
+          valgtAvdelingEnhet="NAV Viken"
+          hentAvdelingensSakslister={action('button-click')}
+          hentAntallOppgaver={action('button-click')}
+        />
+      </Form>
     </RestApiMock>
   );
 };

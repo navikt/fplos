@@ -1,4 +1,4 @@
-import React, { FunctionComponent, CSSProperties } from 'react';
+import React, { FunctionComponent, CSSProperties, ReactNode } from 'react';
 import { Radio as NavRadio } from 'nav-frontend-skjema';
 import { Normaltekst } from 'nav-frontend-typografi';
 
@@ -10,6 +10,8 @@ export interface RadioOptionProps {
   value: any;
   style?: CSSProperties;
   onChange?: (value: any) => void;
+  checked?: boolean;
+  children?: ReactNode | ReactNode[];
 }
 
 export const RadioOption: FunctionComponent<RadioOptionProps> = ({
@@ -18,18 +20,22 @@ export const RadioOption: FunctionComponent<RadioOptionProps> = ({
   value,
   style,
   onChange,
+  checked,
+  children,
 }) => (
   <div style={style}>
     <NavRadio
       name={name}
       label={<Label input={label} typographyElement={Normaltekst} />}
-      checked={value === true}
+      checked={checked}
+      value={value}
       onChange={(newValue) => {
         if (onChange) {
           onChange((newValue));
         }
       }}
     />
+    {checked && children}
   </div>
 );
 

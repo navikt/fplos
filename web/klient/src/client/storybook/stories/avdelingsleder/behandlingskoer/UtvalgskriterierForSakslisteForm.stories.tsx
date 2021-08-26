@@ -24,7 +24,14 @@ const Template: Story = () => {
   const data = [
     { key: RestApiGlobalStatePathsKeys.KODEVERK.name, data: alleKodeverk },
     { key: RestApiPathsKeys.OPPGAVE_ANTALL.name, data: 1 },
+    { key: RestApiPathsKeys.LAGRE_SAKSLISTE_NAVN.name, data: undefined },
+    { key: RestApiPathsKeys.LAGRE_SAKSLISTE_SORTERING.name, data: undefined },
     { key: RestApiPathsKeys.LAGRE_SAKSLISTE_SORTERING_INTERVALL.name, data: undefined },
+    { key: RestApiPathsKeys.LAGRE_SAKSLISTE_SORTERING_DYNAMISK_PERIDE.name, data: undefined },
+    { key: RestApiPathsKeys.LAGRE_SAKSLISTE_SORTERING_TIDSINTERVALL_DATO.name, data: undefined },
+    { key: RestApiPathsKeys.LAGRE_SAKSLISTE_FAGSAK_YTELSE_TYPE.name, data: undefined },
+    { key: RestApiPathsKeys.LAGRE_SAKSLISTE_BEHANDLINGSTYPE.name, data: undefined },
+    { key: RestApiPathsKeys.LAGRE_SAKSLISTE_ANDRE_KRITERIER.name, data: undefined },
   ];
 
   return (
