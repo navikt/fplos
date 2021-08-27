@@ -22,8 +22,8 @@ const getLagreDatoFn = (
   hentAvdelingensSakslister: (params: {avdelingEnhet: string}) => void,
   valgtSakslisteId: number,
   valgtAvdelingEnhet: string,
-  annenDato: string,
   erFomDato: boolean,
+  annenDato?: string,
 ) => (e: any) => {
   let dato = e.target.value;
   if (dato) {
@@ -59,8 +59,8 @@ interface OwnProps {
   erDynamiskPeriode: boolean;
   fra?: number;
   til?: number;
-  fomDato: string;
-  tomDato: string;
+  fomDato?: string;
+  tomDato?: string;
   hentAvdelingensSakslister: (params: {avdelingEnhet: string}) => void;
   hentAntallOppgaver: (sakslisteId: number, avdelingEnhet: string) => void;
 }
@@ -158,7 +158,7 @@ export const DatoSorteringValg: FunctionComponent<OwnProps & WrappedComponentPro
                 shouldValidateOnBlur
                 validate={[hasValidDate(intl)]}
                 onBlur={getLagreDatoFn(lagreSakslisteSorteringTidsintervallDato, hentAntallOppgaver, hentAvdelingensSakslister,
-                  valgtSakslisteId, valgtAvdelingEnhet, tomDato, true)}
+                  valgtSakslisteId, valgtAvdelingEnhet, true, tomDato)}
               />
             </FlexColumn>
             <FlexColumn>
@@ -173,7 +173,7 @@ export const DatoSorteringValg: FunctionComponent<OwnProps & WrappedComponentPro
                 shouldValidateOnBlur
                 validate={[hasValidDate(intl)]}
                 onBlur={getLagreDatoFn(lagreSakslisteSorteringTidsintervallDato, hentAntallOppgaver, hentAvdelingensSakslister,
-                  valgtSakslisteId, valgtAvdelingEnhet, fomDato, false)}
+                  valgtSakslisteId, valgtAvdelingEnhet, false, fomDato)}
               />
             </FlexColumn>
           </FlexRow>

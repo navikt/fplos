@@ -2,7 +2,6 @@ import { AxiosInstance } from 'axios';
 import HttpClientApi from '../HttpClientApiTsType';
 import NotificationMapper from './NotificationMapper';
 import Link from './LinkTsType';
-import AbstractRequestApi from './AbstractRequestApi';
 import RequestRunner from './RequestRunner';
 import RequestConfig, { RequestType } from '../RequestConfig';
 
@@ -38,7 +37,7 @@ const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
  * Denne klassen opprettes med en referanse til et HttpClientApi (for eksempel Axios), context-path og konfig for
  * de enkelte endepunktene. Det blir så satt opp RequestRunner's for endepunktene. Desse kan hentes via metoden @see getRequestRunner.
  */
-class RequestApi extends AbstractRequestApi {
+class RequestApi {
   httpClientApi: HttpClientApi;
 
   endpointConfigList: RequestConfig[];
@@ -50,7 +49,6 @@ class RequestApi extends AbstractRequestApi {
   activeRunners: Record<string, RequestRunner> = {};
 
   constructor(httpClientApi: HttpClientApi, endpointConfigList: RequestConfig[]) {
-    super();
     this.httpClientApi = httpClientApi;
     this.endpointConfigList = endpointConfigList;
   }
@@ -170,20 +168,6 @@ class RequestApi extends AbstractRequestApi {
     }
     return type;
   };
-
-  public isMock = (): boolean => false;
-
-  // Kun for test
-  public mock = () => { throw new Error('Not Implemented'); };
-
-  // Kun for test
-  public setMissingPath = () => { throw new Error('Not Implemented'); };
-
-  // Kun for test
-  public getRequestMockData = () => { throw new Error('Not Implemented'); };
-
-  // Kun for test
-  public clearAllMockData = () => { throw new Error('Not Implemented'); };
 }
 
 export default RequestApi;

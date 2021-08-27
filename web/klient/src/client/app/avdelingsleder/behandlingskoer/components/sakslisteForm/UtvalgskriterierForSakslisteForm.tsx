@@ -24,12 +24,27 @@ import styles from './utvalgskriterierForSakslisteForm.less';
 const minLength3 = minLength(3);
 const maxLength100 = maxLength(100);
 
-const finnDagerSomTall = (antallDager: string): undefined | number => {
+type FormValues = {
+  sakslisteId: number
+  navn: string;
+  fagsakYtelseType: string;
+  sortering?: string;
+  erDynamiskPeriode?: boolean;
+  fra?: string;
+  til?: string;
+  fomDato?: string;
+  tomDato?: string;
+}
+
+const finnDagerSomTall = (antallDager?: string): undefined | number => {
+  if (antallDager === undefined) {
+    return undefined;
+  }
   const nr = Number.parseInt(antallDager, 10);
   return Number.isNaN(nr) ? undefined : nr;
 };
 
-const buildInitialValues = (intl: IntlShape, valgtSaksliste: Saksliste): InitialValues => {
+const buildInitialValues = (intl: IntlShape, valgtSaksliste: Saksliste): FormValues => {
   const behandlingTypes = valgtSaksliste.behandlingTyper ? valgtSaksliste.behandlingTyper.reduce((acc, bt) => ({ ...acc, [bt.kode]: true }), {}) : {};
   const fagsakYtelseType = valgtSaksliste.fagsakYtelseTyper && valgtSaksliste.fagsakYtelseTyper.length > 0
     ? valgtSaksliste.fagsakYtelseTyper[0].kode : '';
@@ -45,8 +60,8 @@ const buildInitialValues = (intl: IntlShape, valgtSaksliste: Saksliste): Initial
     sortering: valgtSaksliste.sortering ? valgtSaksliste.sortering.sorteringType.kode : undefined,
     fomDato: valgtSaksliste.sortering ? valgtSaksliste.sortering.fomDato : undefined,
     tomDato: valgtSaksliste.sortering ? valgtSaksliste.sortering.tomDato : undefined,
-    fra: valgtSaksliste.sortering ? valgtSaksliste.sortering.fra : undefined,
-    til: valgtSaksliste.sortering ? valgtSaksliste.sortering.til : undefined,
+    fra: valgtSaksliste.sortering ? valgtSaksliste.sortering.fra?.toString() : undefined,
+    til: valgtSaksliste.sortering ? valgtSaksliste.sortering.til?.toString() : undefined,
     erDynamiskPeriode: valgtSaksliste.sortering ? valgtSaksliste.sortering.erDynamiskPeriode : undefined,
     fagsakYtelseType,
     ...andreKriterierTyper,
@@ -60,30 +75,6 @@ interface OwnProps {
   valgtAvdelingEnhet: string;
   hentAvdelingensSakslister: (params: {avdelingEnhet: string}) => void;
   hentOppgaverForAvdelingAntall: (params: {avdelingEnhet: string}) => void;
-}
-
-interface InitialValues {
-  sakslisteId: number;
-  navn: string;
-  sortering?: string;
-  fomDato?: string;
-  tomDato?: string;
-  fra?: number;
-  til?: number;
-  erDynamiskPeriode?: boolean;
-  fagsakYtelseType: string;
-}
-
-type FormValues = {
-  sakslisteId: number
-  navn: string;
-  fagsakYtelseType: string;
-  sortering: string;
-  erDynamiskPeriode: boolean;
-  fra: string;
-  til: string;
-  fomDato: string;
-  tomDato: string;
 }
 
 /**
@@ -178,7 +169,7 @@ export const UtvalgskriterierForSakslisteForm: FunctionComponent<OwnProps & Wrap
               valgtSakslisteId={valgtSaksliste.sakslisteId}
               valgteBehandlingtyper={valgtSaksliste.behandlingTyper}
               valgtAvdelingEnhet={valgtAvdelingEnhet}
-              erDynamiskPeriode={values.erDynamiskPeriode}
+              erDynamiskPeriode={!!values.erDynamiskPeriode}
               fra={finnDagerSomTall(values.fra)}
               til={finnDagerSomTall(values.til)}
               fomDato={values.fomDato}

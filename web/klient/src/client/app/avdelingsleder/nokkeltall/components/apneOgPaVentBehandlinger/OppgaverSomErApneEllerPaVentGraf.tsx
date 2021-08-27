@@ -40,7 +40,7 @@ interface Koordinat {
 
 const getYearText = (month: number, intl: IntlShape): string => intl.formatMessage({ id: `OppgaverSomErApneEllerPaVentGraf.${month}` });
 
-const finnGrafPeriode = (oppgaverSomErApneEllerPaVent: OppgaverSomErApneEllerPaVent[]): moment.Moment[] => {
+const finnGrafPeriode = (oppgaverSomErApneEllerPaVent: OppgaverSomErApneEllerPaVent[]): dayjs.Dayjs[] => {
   let periodeStart = dayjs().subtract(9, 'M');
   let periodeSlutt = dayjs().add(1, 'M');
 

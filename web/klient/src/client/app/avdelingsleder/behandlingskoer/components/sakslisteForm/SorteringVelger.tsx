@@ -21,8 +21,8 @@ interface OwnProps {
   erDynamiskPeriode: boolean;
   fra?: number;
   til?: number;
-  fomDato: string;
-  tomDato: string;
+  fomDato?: string;
+  tomDato?: string;
   hentAvdelingensSakslister: (params: {avdelingEnhet: string}) => void;
   hentAntallOppgaver: (sakslisteId: number, avdelingEnhet: string) => void;
 }

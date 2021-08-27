@@ -9,6 +9,7 @@ interface OwnProps {
   validate?: ((value: string) => any)[];
   readOnly?: boolean;
   onChange?: (isChecked: boolean) => void;
+  onClick?: () => void;
 }
 
 const CheckboxField: FunctionComponent<OwnProps> = ({
@@ -17,6 +18,7 @@ const CheckboxField: FunctionComponent<OwnProps> = ({
   validate = [],
   readOnly = false,
   onChange,
+  onClick,
 }) => {
   const { formState: { errors } } = useFormContext();
   const validationFunctions = useMemo(() => validate.reduce((acc, fn, index) => ({
@@ -42,6 +44,11 @@ const CheckboxField: FunctionComponent<OwnProps> = ({
         field.onChange((value));
         if (onChange) {
           onChange(value.currentTarget.checked);
+        }
+      }}
+      onClick={() => {
+        if (onClick) {
+          onClick();
         }
       }}
     />

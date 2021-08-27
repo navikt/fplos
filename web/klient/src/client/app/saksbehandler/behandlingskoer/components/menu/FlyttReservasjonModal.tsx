@@ -103,7 +103,7 @@ export const FlyttReservasjonModal: FunctionComponent<OwnProps & WrappedComponen
                 name="brukerIdent"
                 label={intl.formatMessage({ id: 'FlyttReservasjonModal.Brukerident' })}
                 bredde="S"
-                validate={[required, minLength7, maxLength7]}
+                validate={[required(intl), minLength7(intl), maxLength7(intl)]}
                 autoFocus
               />
             </FlexColumn>
@@ -138,7 +138,7 @@ export const FlyttReservasjonModal: FunctionComponent<OwnProps & WrappedComponen
         <TextAreaField
           name="begrunnelse"
           label={intl.formatMessage({ id: 'FlyttReservasjonModal.Begrunn' })}
-          validate={[required, maxLength500, minLength3, hasValidText]}
+          validate={[required(intl), maxLength500(intl), minLength3(intl), hasValidText(intl)]}
           maxLength={500}
         />
         <Hovedknapp

@@ -65,7 +65,7 @@ const OpphevReservasjonModal: FunctionComponent<OwnProps & WrappedComponentProps
         <TextAreaField
           name="begrunnelse"
           label={intl.formatMessage({ id: 'OpphevReservasjonModal.Hjelpetekst' })}
-          validate={[required, maxLength500, minLength3, hasValidText]}
+          validate={[required(intl), maxLength500(intl), minLength3(intl), hasValidText(intl)]}
           maxLength={500}
         />
         <Hovedknapp
