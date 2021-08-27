@@ -1,16 +1,16 @@
 import React from 'react';
-import { shallow } from 'enzyme';
+import { render, screen } from '@testing-library/react';
 
 import AvdelingslederDashboard from './AvdelingslederDashboard';
 
 describe('<AvdelingslederDashboard>', () => {
-  it('skal vise dashboard', () => {
-    const wrapper = shallow(
+  it('skal vise dashboard', async () => {
+    render(
       <AvdelingslederDashboard>
         <div>test</div>
       </AvdelingslederDashboard>,
     );
 
-    expect(wrapper.childAt(0).text()).toEqual('test');
+    expect(await screen.findByText('test')).toBeInTheDocument();
   });
 });
