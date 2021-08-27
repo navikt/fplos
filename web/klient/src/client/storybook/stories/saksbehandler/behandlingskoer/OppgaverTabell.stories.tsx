@@ -40,10 +40,8 @@ const Template: Story<{ oppgaverTilBehandling?: Oppgave[], reserverteOppgaver?: 
   );
 };
 
-export const TomOppgaveTabell = Template.bind({});
-
-export const TabellMedBådeLedigOgReservertOppgave = Template.bind({});
-TabellMedBådeLedigOgReservertOppgave.args = {
+export const Default = Template.bind({});
+Default.args = {
   oppgaverTilBehandling: [{
     id: 1,
     status: {
@@ -105,3 +103,5 @@ TabellMedBådeLedigOgReservertOppgave.args = {
     href: '',
   }],
 };
+
+export const TomOppgaveTabell = Template.bind({});
