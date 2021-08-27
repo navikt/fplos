@@ -7,6 +7,7 @@ import {
 } from 'react-vis';
 import Panel from 'nav-frontend-paneler';
 import { Normaltekst, Undertekst } from 'nav-frontend-typografi';
+import isSameOrBefore from 'dayjs/plugin/isSameOrBefore';
 
 import { FlexContainer, FlexRow, FlexColumn } from 'sharedComponents/flexGrid';
 import { DDMMYYYY_DATE_FORMAT } from 'utils/formats';
@@ -16,6 +17,8 @@ import Kodeverk from 'types/kodeverkTsType';
 import 'react-vis/dist/style.css';
 
 import styles from './tilBehandlingGraf.less';
+
+dayjs.extend(isSameOrBefore);
 
 const LEGEND_WIDTH = 260;
 

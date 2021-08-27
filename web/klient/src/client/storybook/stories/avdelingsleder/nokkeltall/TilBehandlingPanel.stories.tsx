@@ -42,8 +42,8 @@ const Template: Story<{ oppgaverPerDato: OppgaveForDato[] }> = ({
   );
 };
 
-export const GrafForAntallOppgaverTilBehandlingPerDag = Template.bind({});
-GrafForAntallOppgaverTilBehandlingPerDag.args = {
+export const Default = Template.bind({});
+Default.args = {
   oppgaverPerDato: [{
     fagsakYtelseType: {
       kode: fagsakYtelseType.FORELDREPRENGER,

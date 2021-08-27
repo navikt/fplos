@@ -4,6 +4,7 @@ import { injectIntl, WrappedComponentProps, FormattedMessage } from 'react-intl'
 import { useForm } from 'react-hook-form';
 import { Element } from 'nav-frontend-typografi';
 import { Row, Column } from 'nav-frontend-grid';
+import isSameOrAfter from 'dayjs/plugin/isSameOrAfter';
 
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import useKodeverk from 'data/useKodeverk';
@@ -18,6 +19,8 @@ import {
 import TilBehandlingGraf, { OppgaveForDatoGraf } from './TilBehandlingGraf';
 
 import styles from './tilBehandlingPanel.less';
+
+dayjs.extend(isSameOrAfter);
 
 export const ALLE_YTELSETYPER_VALGT = 'ALLE';
 export const UKE_2 = '2';
