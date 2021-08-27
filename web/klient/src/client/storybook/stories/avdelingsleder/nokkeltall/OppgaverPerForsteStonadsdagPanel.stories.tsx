@@ -14,7 +14,7 @@ export default {
   decorators: [withIntl],
 };
 
-export const GrafForOppgaverPerFørsteStønadsdag = () => (
+export const Default = () => (
   <OppgaverPerForsteStonadsdagPanel
     width={700}
     height={300}

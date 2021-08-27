@@ -18,7 +18,7 @@ afterAll(() => {
 });
 
 describe('<TilBehandlingPanel>', () => {
-  it('skal vise', async () => {
+  it('skal vise graffilter', async () => {
     const { getByLabelText } = render(<Default />);
     expect(await screen.findByText('Antall til behandling')).toBeInTheDocument();
 

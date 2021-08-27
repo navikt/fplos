@@ -44,8 +44,8 @@ const Template: Story<{ oppgaverManueltPaVent: OppgaverManueltPaVent[] }> = ({
   );
 };
 
-export const GrafForAntallBehandlingerSomErSattManueltPaVent = Template.bind({});
-GrafForAntallBehandlingerSomErSattManueltPaVent.args = {
+export const Default = Template.bind({});
+Default.args = {
   oppgaverManueltPaVent: [{
     fagsakYtelseType: {
       kode: fagsakYtelseType.FORELDREPRENGER,

@@ -5,6 +5,7 @@ import {
   XYPlot, XAxis, YAxis, AreaSeries, Crosshair, HorizontalGridLines,
 } from 'react-vis';
 import dayjs from 'dayjs';
+import isSameOrBefore from 'dayjs/plugin/isSameOrBefore';
 import { FormattedMessage } from 'react-intl';
 import Panel from 'nav-frontend-paneler';
 import { Normaltekst, Undertekst } from 'nav-frontend-typografi';
@@ -14,6 +15,8 @@ import { DDMMYYYY_DATE_FORMAT } from 'utils/formats';
 import OppgaverManueltPaVent from 'types/avdelingsleder/oppgaverManueltPaVentTsType';
 
 import styles from './manueltPaVentGraf.less';
+
+dayjs.extend(isSameOrBefore);
 
 const cssText = {
   fontFamily: 'Source Sans Pro, Arial, sans-serif',

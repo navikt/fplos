@@ -3,6 +3,8 @@ import {
   XYPlot, XAxis, YAxis, AreaSeries, Crosshair, HorizontalGridLines,
 } from 'react-vis';
 import dayjs from 'dayjs';
+import isSameOrBefore from 'dayjs/plugin/isSameOrBefore';
+import isSameOrAfter from 'dayjs/plugin/isSameOrAfter';
 import { FormattedMessage } from 'react-intl';
 import Panel from 'nav-frontend-paneler';
 import { Normaltekst, Undertekst } from 'nav-frontend-typografi';
@@ -11,6 +13,9 @@ import { DDMMYYYY_DATE_FORMAT } from 'utils/formats';
 import OppgaverForForsteStonadsdag from 'types/avdelingsleder/oppgaverForForsteStonadsdagTsType';
 
 import styles from './oppgaverPerForsteStonadsdagGraf.less';
+
+dayjs.extend(isSameOrBefore);
+dayjs.extend(isSameOrAfter);
 
 export const lagKoordinater = (oppgaverPerForsteStonadsdag: OppgaverForForsteStonadsdag[]): Koordinat[] => oppgaverPerForsteStonadsdag
   .map((o) => ({

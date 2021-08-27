@@ -42,8 +42,8 @@ const Template: Story<{ oppgaverApneEllerPaVent: OppgaverSomErApneEllerPaVent[] 
   );
 };
 
-export const GrafForAntallOppgaverTilBehandlingPerDag = Template.bind({});
-GrafForAntallOppgaverTilBehandlingPerDag.args = {
+export const Default = Template.bind({});
+Default.args = {
   oppgaverApneEllerPaVent: [{
     behandlingVenteStatus: {
       kode: behandlingVenteStatus.PA_VENT,

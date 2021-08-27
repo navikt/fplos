@@ -42,8 +42,8 @@ const Template: Story<{ oppgaverForAvdeling: OppgaverForAvdeling[] }> = ({
   );
 };
 
-export const GrafForFordelingAvBehandlingstyper = Template.bind({});
-GrafForFordelingAvBehandlingstyper.args = {
+export const Default = Template.bind({});
+Default.args = {
   oppgaverForAvdeling: [{
     fagsakYtelseType: {
       kode: fagsakYtelseType.FORELDREPRENGER,
