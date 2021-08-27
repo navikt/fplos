@@ -3,9 +3,11 @@ import { Story } from '@storybook/react';
 
 import SaksbehandlereTabell from 'avdelingsleder/saksbehandlere/components/SaksbehandlereTabell';
 import Saksbehandler from 'types/avdelingsleder/saksbehandlerAvdelingTsType';
+import { RestApiPathsKeys } from 'data/fplosRestApi';
 
 import withRestApiProvider from '../../../decorators/withRestApi';
 import withIntl from '../../../decorators/withIntl';
+import RestApiMock from '../../../utils/RestApiMock';
 
 export default {
   title: 'avdelingsleder/saksbehandlere/SaksbehandlereTabell',
@@ -13,20 +15,30 @@ export default {
   decorators: [withIntl, withRestApiProvider],
 };
 
-const Template: Story<{ saksbehandlere?: Saksbehandler[] }> = ({
+const Template: Story<{
+  saksbehandlere?: Saksbehandler[],
+  hentAvdelingensSaksbehandlere: (params: {avdelingEnhet: string}) => void
+}> = ({
   saksbehandlere,
-}) => (
-  <SaksbehandlereTabell
-    saksbehandlere={saksbehandlere || []}
-    hentAvdelingensSaksbehandlere={() => undefined}
-    valgtAvdelingEnhet="NAV Viken"
-  />
-);
+  hentAvdelingensSaksbehandlere,
+}) => {
+  const data = [
+    { key: RestApiPathsKeys.SLETT_SAKSBEHANDLER.name, data: undefined },
+  ];
 
-export const TomTabell = Template.bind({});
+  return (
+    <RestApiMock data={data}>
+      <SaksbehandlereTabell
+        saksbehandlere={saksbehandlere || []}
+        hentAvdelingensSaksbehandlere={hentAvdelingensSaksbehandlere}
+        valgtAvdelingEnhet="NAV Viken"
+      />
+    </RestApiMock>
+  );
+};
 
-export const SaksbehandlereITabell = Template.bind({});
-SaksbehandlereITabell.args = {
+export const Default = Template.bind({});
+Default.args = {
   saksbehandlere: [{
     brukerIdent: 'R12122',
     navn: 'Espen Utvikler',
@@ -36,4 +48,10 @@ SaksbehandlereITabell.args = {
     navn: 'Steffen',
     avdelingsnavn: ['NAV Oslo'],
   }],
+  hentAvdelingensSaksbehandlere: () => undefined,
+};
+
+export const TomTabell = Template.bind({});
+Template.args = {
+  hentAvdelingensSaksbehandlere: () => undefined,
 };
