@@ -1,98 +1,22 @@
 import React from 'react';
-import { shallow } from 'enzyme';
-import sinon from 'sinon';
-import { FormattedMessage } from 'react-intl';
+import { render, screen } from '@testing-library/react';
+import { composeStories } from '@storybook/testing-react';
+import * as stories from 'stories/saksbehandler/fagsakSearch/FagsakSearch.stories';
 
-import FagsakSearch from './FagsakSearch';
-import PersonInfo from './person/PersonInfo';
-import SearchForm from './SearchForm';
-import FagsakList from './FagsakList';
+const { Default, IngentingBleFunnet } = composeStories(stories);
 
 describe('<FagsakSearch>', () => {
-  const fagsak = {
-    saksnummer: 12345,
-    saksnummerString: '12345',
-    system: 'FPSAK',
-    fagsakYtelseType: {
-      navn: 'Engangsstonad',
-      kode: 'TEST',
-    },
-    status: {
-      navn: 'Under behandling',
-      kode: 'UBEH',
-    },
-    barnFødt: '13‎.‎02‎.‎2017‎',
-    opprettet: '13‎.‎02‎.‎2017‎ ‎09‎:‎54‎:‎22',
-    endret: '13‎.‎02‎.‎2017‎',
-    person: {
-      navn: 'Frida',
-      alder: 44,
-      personnummer: '0405198632231',
-      erKvinne: true,
-      erDod: false,
-    },
-  };
+  it('skal vise tabell med saksnummer og behandlinger', async () => {
+    render(<Default />);
 
-  it('skal kun vise søkefelt før søk er startet', () => {
-    const searchFagsakFunction = sinon.spy();
-    const wrapper = shallow(<FagsakSearch
-      fagsaker={[]}
-      fagsakOppgaver={[]}
-      searchFagsakCallback={searchFagsakFunction}
-      selectOppgaveCallback={sinon.spy()}
-      searchResultReceived={false}
-      selectFagsakCallback={sinon.spy()}
-      searchStarted
-      resetSearch={sinon.spy()}
-    />);
-
-    expect(wrapper.find(SearchForm)).toHaveLength(1);
-    expect(wrapper.find(PersonInfo)).toHaveLength(0);
-    expect(wrapper.find(FagsakList)).toHaveLength(0);
+    expect(await screen.findByText('Søk på sak eller person')).toBeInTheDocument();
+    expect(screen.getByText('Espen Utvikler')).toBeInTheDocument();
+    expect(screen.getByText('41 år')).toBeInTheDocument();
+    expect(screen.getByText('12213234')).toBeInTheDocument();
   });
 
-  it('skal vise søkefelt og label for ingen søketreff når ingen fagsaker blir hentet', () => {
-    const wrapper = shallow(<FagsakSearch
-      fagsaker={[]}
-      fagsakOppgaver={[]}
-      searchFagsakCallback={sinon.spy()}
-      selectOppgaveCallback={sinon.spy()}
-      searchResultReceived
-      selectFagsakCallback={sinon.spy()}
-      searchStarted
-      resetSearch={sinon.spy()}
-    />);
-
-    expect(wrapper.find(SearchForm)).toHaveLength(1);
-    const labelComp = wrapper.find('Normaltekst');
-    expect(labelComp).toHaveLength(1);
-    expect(labelComp.find(FormattedMessage).prop('id')).toEqual('FagsakSearch.ZeroSearchResults');
+  it('skal ikke finne noe på bruker', async () => {
+    render(<IngentingBleFunnet />);
+    expect(await screen.findByText('Søket ga ingen treff eller du mangler tilgang til saken')).toBeInTheDocument();
   });
-
-  it(
-    'skal vise søkefelt og søketreff der person og to fagsaker blir vist',
-    () => {
-      const searchFagsakFunction = sinon.spy();
-      const selectFagsakFunction = sinon.spy();
-      const wrapper = shallow(<FagsakSearch
-        fagsaker={[fagsak, fagsak]}
-        fagsakOppgaver={[]}
-        searchFagsakCallback={searchFagsakFunction}
-        selectOppgaveCallback={sinon.spy()}
-        searchResultReceived
-        selectFagsakCallback={selectFagsakFunction}
-        searchStarted
-        resetSearch={sinon.spy()}
-      />);
-
-      expect(wrapper.find(SearchForm)).toHaveLength(1);
-
-      const personComp = wrapper.find(PersonInfo);
-      expect(personComp).toHaveLength(1);
-
-      const fagsakListComp = wrapper.find(FagsakList);
-      expect(fagsakListComp).toHaveLength(1);
-      expect(fagsakListComp.prop('selectFagsakCallback')).toEqual(selectFagsakFunction);
-    },
-  );
 });

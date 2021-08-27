@@ -45,8 +45,8 @@ const Template: Story<{ fagsaker: Fagsak[], fagsakOppgaver: Oppgave[] }> = ({
   );
 };
 
-export const SøkeresultatMedEnFagsakOgTilhørendeOppgave = Template.bind({});
-SøkeresultatMedEnFagsakOgTilhørendeOppgave.args = {
+export const Default = Template.bind({});
+Default.args = {
   fagsaker: [{
     saksnummer: 12213234,
     saksnummerString: '12213234',
