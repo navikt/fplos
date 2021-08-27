@@ -1,89 +1,20 @@
 import React from 'react';
-import { shallow } from 'enzyme';
-import Lenke from 'nav-frontend-lenker';
+import { render, screen } from '@testing-library/react';
+import { composeStories } from '@storybook/testing-react';
+import * as stories from 'stories/saksbehandler/saksstotte/SistBehandledeSaker.stories';
 
-import Oppgave from 'types/saksbehandler/oppgaveTsType';
-import { requestApi, RestApiPathsKeys, RestApiGlobalStatePathsKeys } from 'data/fplosRestApi';
-import SistBehandledeSaker from './SistBehandledeSaker';
+const { Default, IngenBehandlinger } = composeStories(stories);
 
 describe('<SistBehandledeSaker>', () => {
-  it('skal vise sist behandlede saker som lenker i en liste', () => {
-    const oppgaver = [{
-      id: 3,
-      status: {
-        erReservert: false,
-      },
-      saksnummer: 1,
-      behandlingId: '9280ce92-0958-43b5-89ef-9c57838f9e6d',
-      personnummer: '123456789',
-      navn: 'Espen Utvikler',
-      system: 'FPSAK',
-      behandlingstype: {
-        kode: 'test',
-        navn: 'test',
-      },
-      behandlingStatus: {
-        kode: 'test',
-        navn: 'test',
-      },
-      opprettetTidspunkt: '2018-01-01',
-      behandlingsfrist: '2018-01-01',
-      fagsakYtelseType: {
-        kode: 'test',
-        navn: 'test',
-      },
-      erTilSaksbehandling: true,
-      href: '',
-    }, {
-      id: 4,
-      status: {
-        erReservert: false,
-      },
-      saksnummer: 2,
-      behandlingId: 'd2e74e79-5662-4a09-be3f-52fbcdf109ad',
-      personnummer: '657643535',
-      navn: 'Espen Solstråle',
-      system: 'FPSAK',
-      behandlingstype: {
-        kode: 'test',
-        navn: 'test',
-      },
-      behandlingStatus: {
-        kode: 'test',
-        navn: 'test',
-      },
-      opprettetTidspunkt: '2018-01-01',
-      behandlingsfrist: '2018-01-01',
-      fagsakYtelseType: {
-        kode: 'test',
-        navn: 'test',
-      },
-      erTilSaksbehandling: true,
-      href: '',
-    }];
-
-    requestApi.mock(RestApiGlobalStatePathsKeys.FPSAK_URL.name, { verdi: 'url' });
-    requestApi.mock(RestApiPathsKeys.BEHANDLEDE_OPPGAVER.name, oppgaver);
-
-    const wrapper = shallow(<SistBehandledeSaker />);
-
-    const links = wrapper.find(Lenke);
-    expect(links).toHaveLength(2);
-    expect(links.first().childAt(0).text()).toEqual('Espen Utvikler 123456789');
-    expect(links.last().childAt(0).text()).toEqual('Espen Solstråle 657643535');
+  it('skal vise sist behandlede saker', async () => {
+    render(<Default />);
+    expect(await screen.findByText('Siste behandlinger')).toBeInTheDocument();
+    expect(screen.getByText('Espen Utvikler 334342323')).toBeInTheDocument();
   });
 
-  it(
-    'skal ikke vise noen lenker når ingen behandlede saker blir funnet',
-    () => {
-      const oppgaver: Oppgave[] = [];
-
-      requestApi.mock(RestApiGlobalStatePathsKeys.FPSAK_URL.name, { verdi: 'url' });
-      requestApi.mock(RestApiPathsKeys.BEHANDLEDE_OPPGAVER.name, oppgaver);
-
-      const wrapper = shallow(<SistBehandledeSaker />);
-
-      expect(wrapper.find(Lenke)).toHaveLength(0);
-    },
-  );
+  it('skal vise ingen behandlinger', async () => {
+    render(<IngenBehandlinger />);
+    expect(await screen.findByText('Siste behandlinger')).toBeInTheDocument();
+    expect(screen.getByText('Ingen behandlinger')).toBeInTheDocument();
+  });
 });

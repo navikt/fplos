@@ -42,10 +42,8 @@ const Template: Story<{ nyeOgFerdigstilteOppgaver?: NyeOgFerdigstilteOppgaver[] 
   );
 };
 
-export const IngenBehandlinger = Template.bind({});
-
-export const GrafForNyeOgFerdigstilteOppgaverForIdag = Template.bind({});
-GrafForNyeOgFerdigstilteOppgaverForIdag.args = {
+export const Default = Template.bind({});
+Default.args = {
   nyeOgFerdigstilteOppgaver: [{
     behandlingType: {
       kode: behandlingType.FORSTEGANGSSOKNAD,
@@ -80,3 +78,5 @@ GrafForNyeOgFerdigstilteOppgaverForIdag.args = {
     dato: dayjs().format(ISO_DATE_FORMAT),
   }],
 };
+
+export const IngenBehandlinger = Template.bind({});
