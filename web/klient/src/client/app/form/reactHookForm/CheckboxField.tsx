@@ -28,7 +28,6 @@ const CheckboxField: FunctionComponent<OwnProps> = ({
 
   const { field } = useController({
     name,
-    defaultValue: false,
     rules: {
       validate: validationFunctions,
     },
@@ -41,10 +40,10 @@ const CheckboxField: FunctionComponent<OwnProps> = ({
       disabled={readOnly}
       checked={field.value === true}
       {...field}
-      onChange={(value) => {
-        field.onChange((value));
+      onChange={(event) => {
+        field.onChange(event);
         if (onChange) {
-          onChange(value.currentTarget.checked);
+          onChange(event.currentTarget.checked);
         }
       }}
       onClick={() => {

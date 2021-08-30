@@ -76,6 +76,7 @@ const OppgaveReservasjonEndringDatoModal: FunctionComponent<OwnProps & WrappedCo
             name="reserverTil"
             validate={[hasValidDate(intl), dateAfterOrEqual(intl, new Date()), dateBeforeOrEqual(intl, thirtyDaysFromNow())]}
             disabledDays={{ before: new Date(), after: thirtyDaysFromNow() }}
+            alwaysShowCalendar
           />
           <Row className={styles.buttonRow}>
             <Column>

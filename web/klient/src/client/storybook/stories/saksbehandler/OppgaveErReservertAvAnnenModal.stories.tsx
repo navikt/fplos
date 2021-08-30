@@ -17,7 +17,7 @@ export default {
   decorators: [withIntl],
 };
 
-export const oppgaveForResevertAvAnnenModal = {
+const oppgaveForResevertAvAnnenModal = {
   id: 1,
   status: {
     erReservert: false,

@@ -37,8 +37,8 @@ const Template: Story<{ valgteBehandlingtyper: Kodeverk[], erDynamiskPeriode: bo
     sortering: koSortering.BEHANDLINGSFRIST,
     fra: 2,
     til: 3,
-    fomDato: '2020.01.10',
-    tomDato: '2020.10.01',
+    fomDato: '2020-01-10',
+    tomDato: '2020-10-01',
     erDynamiskPeriode,
   };
 

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { injectIntl, WrappedComponentProps } from 'react-intl';
-import dayjs from 'dayjs';
+import moment from 'moment';
 import DayPicker, { Modifier } from 'react-day-picker';
 
 import { DDMMYYYY_DATE_FORMAT } from 'utils/formats';
@@ -86,7 +86,7 @@ class CalendarOverlay extends Component<OwnProps & WrappedComponentProps> {
 
   parseDateValue(): Date | undefined {
     const { value } = this.props;
-    const parsedValue = dayjs(value, DDMMYYYY_DATE_FORMAT, true);
+    const parsedValue = moment(value, DDMMYYYY_DATE_FORMAT, true);
     if (parsedValue.isValid()) {
       return parsedValue.toDate();
     }

@@ -4,7 +4,6 @@ import Saksbehandler from 'types/avdelingsleder/saksbehandlerAvdelingTsType';
 import EndreSakslisterPanel from './components/EndreSakslisterPanel';
 
 interface OwnProps {
-  valgtSakslisteId?: number;
   valgtAvdelingEnhet: string;
   avdelingensSaksbehandlere: Saksbehandler[];
 }

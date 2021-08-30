@@ -12,7 +12,7 @@ interface OwnProps {
   readOnly?: boolean;
   className?: string;
   placeholder?: string;
-  onBlur?: (values: any) => void;
+  onBlur?: (value: any) => void;
   shouldValidateOnBlur?: boolean;
   autoFocus?: boolean;
 }
@@ -54,16 +54,17 @@ const InputField: FunctionComponent<OwnProps> = ({
       feil={errors[name] && errors[name].message}
       bredde={bredde}
       {...field}
+      value={field.value ? field.value : ''}
       autoFocus={autoFocus}
-      onBlur={async (values) => {
+      onBlur={async (event) => {
         field.onBlur();
         if (shouldValidateOnBlur) {
           const isValidationOk = await trigger();
           if (onBlur && isValidationOk) {
-            onBlur(values);
+            onBlur(event?.target?.value);
           }
         } else if (onBlur) {
-          onBlur(values);
+          onBlur(event?.target?.value);
         }
       }}
     />

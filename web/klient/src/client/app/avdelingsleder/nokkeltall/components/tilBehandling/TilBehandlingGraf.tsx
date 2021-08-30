@@ -1,13 +1,12 @@
 import React, {
   useMemo, useState, FunctionComponent, useCallback,
 } from 'react';
-import dayjs from 'dayjs';
+import moment from 'moment';
 import {
   XYPlot, XAxis, YAxis, HorizontalGridLines, AreaSeries, DiscreteColorLegend, Crosshair, MarkSeries,
 } from 'react-vis';
 import Panel from 'nav-frontend-paneler';
 import { Normaltekst, Undertekst } from 'nav-frontend-typografi';
-import isSameOrBefore from 'dayjs/plugin/isSameOrBefore';
 
 import { FlexContainer, FlexRow, FlexColumn } from 'sharedComponents/flexGrid';
 import { DDMMYYYY_DATE_FORMAT } from 'utils/formats';
@@ -17,8 +16,6 @@ import Kodeverk from 'types/kodeverkTsType';
 import 'react-vis/dist/style.css';
 
 import styles from './tilBehandlingGraf.less';
-
-dayjs.extend(isSameOrBefore);
 
 const LEGEND_WIDTH = 260;
 
@@ -63,7 +60,7 @@ const sorterBehandlingtyper = (b1: string, b2: string): number => {
 const konverterTilKoordinaterGruppertPaBehandlingstype = (oppgaverForAvdeling: OppgaveForDatoGraf[]): Record<string, Koordinat[]> => oppgaverForAvdeling
   .reduce((acc, o) => {
     const nyKoordinat = {
-      x: dayjs(o.opprettetDato).startOf('day').toDate(),
+      x: moment(o.opprettetDato).startOf('day').toDate(),
       y: o.antall,
     };
 
@@ -76,14 +73,14 @@ const konverterTilKoordinaterGruppertPaBehandlingstype = (oppgaverForAvdeling: O
 
 const fyllInnManglendeDatoerOgSorterEtterDato = (
   data: Record<string, Koordinat[]>,
-  periodeStart: dayjs.Dayjs,
-  periodeSlutt: dayjs.Dayjs,
+  periodeStart: moment.Moment,
+  periodeSlutt: moment.Moment,
 ): Record<string, Koordinat[]> => Object.keys(data).reduce((acc, behandlingstype) => {
   const behandlingstypeData = data[behandlingstype];
   const koordinater = [];
 
-  for (let dato = dayjs(periodeStart); dato.isSameOrBefore(periodeSlutt); dato = dato.add(1, 'days')) {
-    const funnetDato = behandlingstypeData.find((d) => dayjs(d.x).startOf('day').isSame(dato.startOf('day')));
+  for (let dato = moment(periodeStart); dato.isSameOrBefore(periodeSlutt); dato = dato.add(1, 'days')) {
+    const funnetDato = behandlingstypeData.find((d) => moment(d.x).startOf('day').isSame(dato.startOf('day')));
     koordinater.push(funnetDato || {
       x: dato.toDate(),
       y: 0,
@@ -146,8 +143,8 @@ const TilBehandlingGraf: FunctionComponent<OwnProps> = ({
     setCrosshairValues([value]);
   }, []);
 
-  const periodeStart = dayjs().subtract(isToUkerValgt ? 2 : 4, 'w').add(1, 'd');
-  const periodeSlutt = dayjs();
+  const periodeStart = moment().subtract(isToUkerValgt ? 2 : 4, 'w').add(1, 'd');
+  const periodeSlutt = moment();
 
   const koordinater = useMemo(() => konverterTilKoordinaterGruppertPaBehandlingstype(oppgaverPerDato), [oppgaverPerDato]);
   const data = useMemo(() => fyllInnManglendeDatoerOgSorterEtterDato(koordinater, periodeStart, periodeSlutt), [koordinater, periodeStart, periodeSlutt]);
@@ -179,11 +176,11 @@ const TilBehandlingGraf: FunctionComponent<OwnProps> = ({
               onMouseLeave={onMouseLeave}
               {...plotPropsWhenEmpty}
             >
-              <MarkSeries data={[{ x: dayjs().subtract(1, 'd').toDate(), y: 0 }]} style={{ display: 'none' }} />
+              <MarkSeries data={[{ x: moment().subtract(1, 'd').toDate(), y: 0 }]} style={{ display: 'none' }} />
               <HorizontalGridLines />
               <XAxis
                 tickTotal={5}
-                tickFormat={(t) => dayjs(t).format(DDMMYYYY_DATE_FORMAT)}
+                tickFormat={(t) => moment(t).format(DDMMYYYY_DATE_FORMAT)}
                 style={{ text: cssText }}
               />
               <YAxis style={{ text: cssText }} />
@@ -209,7 +206,7 @@ const TilBehandlingGraf: FunctionComponent<OwnProps> = ({
                   }}
                 >
                   <div className={styles.crosshair}>
-                    <Normaltekst>{`${dayjs(crosshairValues[0].x).format(DDMMYYYY_DATE_FORMAT)}`}</Normaltekst>
+                    <Normaltekst>{`${moment(crosshairValues[0].x).format(DDMMYYYY_DATE_FORMAT)}`}</Normaltekst>
                     { reversertSorterteBehandlingstyper.map((key) => (
                       <Undertekst key={key}>
                         {`${finnBehandlingTypeNavn(behandlingTyper, key)}: ${finnAntallForBehandlingstypeOgDato(data, key, crosshairValues[0].x)}`}

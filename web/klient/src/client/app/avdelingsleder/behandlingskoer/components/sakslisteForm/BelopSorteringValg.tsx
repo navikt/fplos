@@ -7,6 +7,7 @@ import { hasValidPosOrNegInteger } from 'utils/validation/validators';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import { InputField } from 'form/formIndex';
 
+import { useFormContext } from 'react-hook-form';
 import styles from './sorteringVelger.less';
 
 interface OwnProps {
@@ -25,8 +26,18 @@ export const BelopSorteringValg: FunctionComponent<OwnProps & WrappedComponentPr
   hentAvdelingensSakslister,
   hentAntallOppgaver,
 }) => {
-  const lagre = (values: { fra: number, til: number }) => lagreSakslisteSorteringNumerisk({
-    sakslisteId: valgtSakslisteId, fra: values.fra, til: values.til, avdelingEnhet: valgtAvdelingEnhet,
+  const { watch } = useFormContext();
+  const fraVerdi = watch('fra');
+  const tilVerdi = watch('til');
+
+  const lagreFra = (nyFraVerdi: number) => lagreSakslisteSorteringNumerisk({
+    sakslisteId: valgtSakslisteId, fra: nyFraVerdi, til: tilVerdi, avdelingEnhet: valgtAvdelingEnhet,
+  }).then(() => {
+    hentAntallOppgaver(valgtSakslisteId, valgtAvdelingEnhet);
+    hentAvdelingensSakslister({ avdelingEnhet: valgtAvdelingEnhet });
+  });
+  const lagreTil = (nyTilVerdi: number) => lagreSakslisteSorteringNumerisk({
+    sakslisteId: valgtSakslisteId, fra: fraVerdi, til: nyTilVerdi, avdelingEnhet: valgtAvdelingEnhet,
   }).then(() => {
     hentAntallOppgaver(valgtSakslisteId, valgtAvdelingEnhet);
     hentAvdelingensSakslister({ avdelingEnhet: valgtAvdelingEnhet });
@@ -47,7 +58,7 @@ export const BelopSorteringValg: FunctionComponent<OwnProps & WrappedComponentPr
                 placeholder={intl.formatMessage({ id: 'SorteringVelger.Fra' })}
                 validate={[hasValidPosOrNegInteger(intl)]}
                 bredde="XS"
-                onBlur={lagre}
+                onBlur={lagreFra}
                 shouldValidateOnBlur
               />
 
@@ -64,7 +75,7 @@ export const BelopSorteringValg: FunctionComponent<OwnProps & WrappedComponentPr
                 placeholder={intl.formatMessage({ id: 'SorteringVelger.Til' })}
                 validate={[hasValidPosOrNegInteger(intl)]}
                 bredde="XS"
-                onBlur={lagre}
+                onBlur={lagreTil}
                 shouldValidateOnBlur
               />
             </FlexColumn>

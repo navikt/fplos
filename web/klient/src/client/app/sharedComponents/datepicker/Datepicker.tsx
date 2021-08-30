@@ -1,7 +1,8 @@
 import React, { ReactNode, Component, ChangeEvent } from 'react';
-import dayjs from 'dayjs';
+import moment from 'moment';
 import { Input } from 'nav-frontend-skjema';
 import classnames from 'classnames/bind';
+import { Modifier } from 'react-day-picker';
 
 import { DDMMYYYY_DATE_FORMAT } from 'utils/formats';
 import CalendarOverlay from './CalendarOverlay';
@@ -17,11 +18,11 @@ interface OwnProps {
   feil?: { feilmelding?: string };
   disabled?: boolean;
   onChange: (dato: string | ChangeEvent) => void;
-  onBlur: () => void;
+  onBlur: (event: any) => void;
   value?: string;
   initialMonth?: Date;
   numberOfMonths?: number;
-  disabledDays?: Date | Date[];
+  disabledDays?: Modifier | Modifier[];
   alwaysShowCalendar?: boolean;
 }
 
@@ -88,7 +89,7 @@ class Datepicker extends Component<OwnProps, StateProps> {
 
   handleDayChange(selectedDay: Date): void {
     if (selectedDay) {
-      const parsed = dayjs(selectedDay);
+      const parsed = moment(selectedDay);
       if (parsed.isValid()) {
         const { onChange } = this.props;
         onChange(parsed.format(DDMMYYYY_DATE_FORMAT));

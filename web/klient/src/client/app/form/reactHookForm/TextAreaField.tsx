@@ -23,7 +23,6 @@ interface OwnProps {
   maxLength?: number;
   badges?: Badges[];
   validate?: ((value: string) => any)[];
-  defaultValue?: string;
 }
 
 const TextAreaField: FunctionComponent<OwnProps> = ({
@@ -31,7 +30,6 @@ const TextAreaField: FunctionComponent<OwnProps> = ({
   label,
   validate = [],
   readOnly,
-  defaultValue = '',
   badges,
   ...otherProps
 }) => {
@@ -43,7 +41,6 @@ const TextAreaField: FunctionComponent<OwnProps> = ({
 
   const { field } = useController({
     name,
-    defaultValue,
     rules: {
       validate: validationFunctions,
     },
@@ -68,6 +65,7 @@ const TextAreaField: FunctionComponent<OwnProps> = ({
         label={<Label input={label} readOnly={false} />}
         feil={errors[name] && errors[name].message}
         {...field}
+        value={field.value ? field.value : ''}
         {...otherProps}
       />
     </div>

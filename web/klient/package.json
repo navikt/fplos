@@ -45,6 +45,7 @@
     "dayjs": "^1.10.6",
     "history": "^4.10.1",
     "lodash.throttle": "^4.1.1",
+    "moment": "2.29.1",
     "nav-datovelger": "12.1.1",
     "nav-frontend-chevron": "1.0.30",
     "nav-frontend-chevron-style": "1.0.4",

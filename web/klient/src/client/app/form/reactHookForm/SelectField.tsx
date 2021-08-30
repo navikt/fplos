@@ -14,7 +14,6 @@ interface OwnProps {
   onClick?: () => void;
   validate?: ((value: string) => any)[];
   readOnly?: boolean;
-  defaultValue?: boolean;
   selectValues: React.ReactElement[];
   placeholder?: ReactNode;
   hideValueOnDisable?: boolean;
@@ -27,7 +26,6 @@ const SelectField: FunctionComponent<OwnProps> = ({
   selectValues,
   validate = [],
   readOnly = false,
-  defaultValue,
   placeholder = ' ',
   hideValueOnDisable = false,
   bredde,
@@ -41,7 +39,6 @@ const SelectField: FunctionComponent<OwnProps> = ({
 
   const { field } = useController({
     name,
-    defaultValue,
     rules: {
       validate: validationFunctions,
     },
