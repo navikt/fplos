@@ -1,6 +1,7 @@
 import React, { FunctionComponent } from 'react';
 import { FormattedMessage, WrappedComponentProps } from 'react-intl';
 import dayjs from 'dayjs';
+import { useFormContext } from 'react-hook-form';
 import { Undertekst } from 'nav-frontend-typografi';
 
 import { FlexColumn, FlexContainer, FlexRow } from 'sharedComponents/flexGrid';
@@ -83,8 +84,19 @@ export const DatoSorteringValg: FunctionComponent<OwnProps & WrappedComponentPro
   const { startRequest: lagreSakslisteSorteringTidsintervallDato } = restApiHooks
     .useRestApiRunner(RestApiPathsKeys.LAGRE_SAKSLISTE_SORTERING_TIDSINTERVALL_DATO);
 
-  const lagre = (values: { fra: number, til: number }) => lagreSakslisteSorteringTidsintervallDager({
-    sakslisteId: valgtSakslisteId, fra: values.fra, til: values.til, avdelingEnhet: valgtAvdelingEnhet,
+  const { watch } = useFormContext();
+  const fraVerdi = watch('fra');
+  const tilVerdi = watch('til');
+
+  const lagreFra = (nyFraVerdi: number) => lagreSakslisteSorteringTidsintervallDager({
+    sakslisteId: valgtSakslisteId, fra: nyFraVerdi, til: tilVerdi, avdelingEnhet: valgtAvdelingEnhet,
+  })
+    .then(() => {
+      hentAntallOppgaver(valgtSakslisteId, valgtAvdelingEnhet);
+      hentAvdelingensSakslister({ avdelingEnhet: valgtAvdelingEnhet });
+    });
+  const lagreTil = (nyTilVerdi: number) => lagreSakslisteSorteringTidsintervallDager({
+    sakslisteId: valgtSakslisteId, fra: fraVerdi, til: nyTilVerdi, avdelingEnhet: valgtAvdelingEnhet,
   })
     .then(() => {
       hentAntallOppgaver(valgtSakslisteId, valgtAvdelingEnhet);
@@ -108,7 +120,7 @@ export const DatoSorteringValg: FunctionComponent<OwnProps & WrappedComponentPro
                 label={intl.formatMessage({ id: 'SorteringVelger.Fom' })}
                 validate={[hasValidPosOrNegInteger(intl)]}
                 bredde="XS"
-                onBlur={lagre}
+                onBlur={lagreFra}
                 shouldValidateOnBlur
               />
               {(fra || fra === 0) && (
@@ -129,7 +141,7 @@ export const DatoSorteringValg: FunctionComponent<OwnProps & WrappedComponentPro
                 label={intl.formatMessage({ id: 'SorteringVelger.Tom' })}
                 validate={[hasValidPosOrNegInteger(intl)]}
                 bredde="XS"
-                onBlur={lagre}
+                onBlur={lagreTil}
                 shouldValidateOnBlur
               />
               {(til || til === 0) && (
