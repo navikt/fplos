@@ -28,8 +28,9 @@ describe('<SaksbehandlereForSakslisteForm>', () => {
     expect(screen.getByText('Espen Utvikler')).toBeInTheDocument();
     expect(screen.getByText('Steffen')).toBeInTheDocument();
 
+    expect(screen.getAllByRole('checkbox')).toHaveLength(2);
     expect(screen.getAllByRole('checkbox')[0]).not.toBeChecked();
-    expect(screen.getAllByRole('checkbox')[1]).not.toBeChecked();
+    expect(screen.getAllByRole('checkbox')[1]).toBeChecked();
 
     userEvent.click(screen.getAllByRole('checkbox')[0]);
 
@@ -37,7 +38,6 @@ describe('<SaksbehandlereForSakslisteForm>', () => {
     expect(hentAvdelingensSakslister).toHaveBeenNthCalledWith(1, { avdelingEnhet: 'NAV Viken' });
 
     expect(screen.getAllByRole('checkbox')[0]).toBeChecked();
-
-    expect(screen.getAllByRole('checkbox')[1]).not.toBeChecked();
+    expect(screen.getAllByRole('checkbox')[1]).toBeChecked();
   });
 });

@@ -22,7 +22,7 @@ describe('<FlyttReservasjonModal>', () => {
     expect(await screen.findByText('Flytt reservasjonen til annen saksbehandler')).toBeInTheDocument();
 
     const brukerIdentInput = utils.getByLabelText('Brukerident');
-    userEvent.type(brukerIdentInput, 'TESTIDENT');
+    userEvent.type(brukerIdentInput, 'TESTTES');
 
     expect(await screen.findByText('Søk')).toBeInTheDocument();
     expect(screen.getByText('Søk')).not.toBeDisabled();
@@ -40,7 +40,7 @@ describe('<FlyttReservasjonModal>', () => {
     expect(await screen.findByText('Flytt reservasjonen til annen saksbehandler')).toBeInTheDocument();
 
     const brukerIdentInput = utils.getByLabelText('Brukerident');
-    userEvent.type(brukerIdentInput, 'TESTIDENT');
+    userEvent.type(brukerIdentInput, 'TESTTES');
 
     expect(await screen.findByText('Søk')).toBeInTheDocument();
     expect(screen.getByText('Søk')).not.toBeDisabled();

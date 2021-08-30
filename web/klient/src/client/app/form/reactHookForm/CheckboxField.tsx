@@ -28,6 +28,7 @@ const CheckboxField: FunctionComponent<OwnProps> = ({
 
   const { field } = useController({
     name,
+    defaultValue: false,
     rules: {
       validate: validationFunctions,
     },
