@@ -22,8 +22,10 @@ export type StringOrNull = string | null;
 export const required = (intl: IntlShape) => (value: InputValue): StringOrNull => (isEmpty(value) ? isRequiredMessage(intl) : null);
 
 export const minLength = (length: number) => (intl: IntlShape) => (text: string): StringOrNull => (isEmpty(text)
+// eslint-disable-next-line react/destructuring-assignment
   || text.toString().trim().length >= length ? null : minLengthMessage(intl, length));
 export const maxLength = (length: number) => (intl: IntlShape) => (text: string): StringOrNull => (isEmpty(text)
+// eslint-disable-next-line react/destructuring-assignment
   || text.toString().trim().length <= length ? null : maxLengthMessage(intl, length));
 
 export const minValue = (length: number) => (intl: IntlShape) => (number: number): StringOrNull => (number >= length ? null : minValueMessage(intl, length));

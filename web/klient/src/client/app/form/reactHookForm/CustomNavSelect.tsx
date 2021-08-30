@@ -1,6 +1,5 @@
 import React, { Component, ReactNode } from 'react';
 import { Select as NavSelect } from 'nav-frontend-skjema';
-import { FieldRenderProps } from 'react-final-form';
 import Label from './Label';
 
 interface OwnProps {
@@ -23,7 +22,7 @@ class CustomNavSelect extends Component<OwnProps> {
 
   selectElement: ReactNode
 
-  constructor(props: OwnProps & FieldRenderProps<any>) {
+  constructor(props: OwnProps) {
     super(props);
     this.getOptionValues = this.getOptionValues.bind(this);
     this.checkCorrespondingOptionForValue = this.checkCorrespondingOptionForValue.bind(this);
