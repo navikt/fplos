@@ -7,7 +7,7 @@ import { restApiHooks, RestApiPathsKeys } from 'data/fplosRestApi';
 import useKodeverk from 'data/useKodeverk';
 import KodeverkType from 'kodeverk/kodeverkTyper';
 import BehandlingType from 'kodeverk/behandlingType';
-import { CheckboxField } from 'form/FinalFields';
+import { CheckboxField } from 'form/formIndex';
 
 const behandlingstypeOrder = Object.values(BehandlingType);
 

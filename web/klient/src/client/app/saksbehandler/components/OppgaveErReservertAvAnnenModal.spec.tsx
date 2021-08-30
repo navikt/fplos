@@ -1,96 +1,59 @@
 import React from 'react';
-import sinon from 'sinon';
-import { IntlShape, FormattedMessage } from 'react-intl';
-import moment from 'moment';
-
-import { Hovedknapp } from 'nav-frontend-knapper';
-
-import Modal from 'sharedComponents/Modal';
-import { getDateAndTime } from 'utils/dateUtils';
-import { shallowWithIntl, intlMock } from 'testHelpers/intl-enzyme-test-helper';
+import { render, screen, waitFor } from '@testing-library/react';
+import { composeStories } from '@storybook/testing-react';
+import userEvent from '@testing-library/user-event';
+import * as stories from 'stories/saksbehandler/OppgaveErReservertAvAnnenModal.stories';
+import BehandlingType from 'kodeverk/behandlingType';
 import BehandlingStatus from 'kodeverk/behandlingStatus';
 import FagsakYtelseType from 'kodeverk/fagsakYtelseType';
-import BehandlingType from 'kodeverk/behandlingType';
-import OppgaveErReservertAvAnnenModal from './OppgaveErReservertAvAnnenModal';
+
+const { Default } = composeStories(stories);
+
+const oppgaveForResevertAvAnnenModal = {
+  id: 1,
+  status: {
+    erReservert: false,
+    flyttetReservasjon: {
+      tidspunkt: '2019-02-02',
+      uid: '23423',
+      navn: 'Espen Utvikler',
+      begrunnelse: 'Flyttet',
+    },
+  },
+  saksnummer: 1234,
+  personnummer: '1212',
+  navn: 'Espen Utvikler',
+  system: 'SAK',
+  behandlingstype: {
+    kode: BehandlingType.FORSTEGANGSSOKNAD,
+    navn: 'Førstegangssøknad',
+  },
+  behandlingStatus: {
+    kode: BehandlingStatus.BEHANDLING_UTREDES,
+    navn: 'Behandling utredes',
+  },
+  opprettetTidspunkt: '2019-01-01',
+  behandlingsfrist: '2019-01-01',
+  fagsakYtelseType: {
+    kode: FagsakYtelseType.FORELDREPRENGER,
+    navn: 'Foreldrepenger',
+  },
+  erTilSaksbehandling: true,
+  behandlingId: '1',
+  href: '',
+};
 
 describe('<OppgaveErReservertAvAnnenModal>', () => {
-  const intl: Partial<IntlShape> = {
-    ...intlMock,
-  };
-  const dato = moment().add(2, 'hours').format();
-  const oppgave = {
-    id: 1,
-    status: {
-      erReservert: false,
-      reservertTilTidspunkt: dato,
-      reservertAvNavn: 'Espen Utvikler',
-      reservertAvUid: '123455',
-    },
-    saksnummer: 1,
-    behandlingId: '2',
-    personnummer: '1234567',
-    navn: 'Espen Utvikler',
-    system: 'FPSAK',
-    behandlingstype: {
-      kode: BehandlingType.FORSTEGANGSSOKNAD,
-      navn: '',
-    },
-    opprettetTidspunkt: '2017-01-01',
-    behandlingsfrist: '2017-01-01',
-    erTilSaksbehandling: true,
-    fagsakYtelseType: {
-      kode: FagsakYtelseType.FORELDREPRENGER,
-      navn: 'FP',
-    },
-    behandlingStatus: {
-      kode: BehandlingStatus.OPPRETTET,
-      navn: '',
-    },
-    href: '',
-  };
+  it('skal modal og lukke den ved trykk på Ok-knappen', async () => {
+    const lukkErReservertModalOgOpneOppgave = jest.fn();
+    render(<Default lukkErReservertModalOgOpneOppgave={lukkErReservertModalOgOpneOppgave} />);
+    expect(await screen.findByText(
+      'Espen Utvikler (E232323) arbeider nå med denne behandlingen (reservert fram t.o.m 01.01.2020 - 00:00)',
+    )).toBeInTheDocument();
 
-  it('skal vise modal med reservasjonsdata', () => {
-    const wrapper = shallowWithIntl(
-      <OppgaveErReservertAvAnnenModal.WrappedComponent
-        intl={intl as IntlShape}
-        lukkErReservertModalOgOpneOppgave={sinon.spy()}
-        oppgave={oppgave}
-        oppgaveStatus={oppgave.status}
-      />,
-    );
+    userEvent.click(screen.getByText('OK'));
 
-    expect(wrapper.find(Modal)).toHaveLength(1);
-    const fmessage = wrapper.find(FormattedMessage);
-    expect(fmessage).toHaveLength(1);
-    const dagOgTidspunkt = getDateAndTime(dato);
-    expect(fmessage.prop('values')).toEqual({
-      date: dagOgTidspunkt?.date,
-      time: dagOgTidspunkt?.time,
-      saksbehandlerid: '123455',
-      saksbehandlernavn: 'Espen Utvikler',
-    });
-  });
-
-  it('skal lukke modal og åpne oppgave ved trykk på knapp', () => {
-    const lukkOgApneFn = sinon.spy();
-    const wrapper = shallowWithIntl(
-      <OppgaveErReservertAvAnnenModal.WrappedComponent
-        intl={intl as IntlShape}
-        lukkErReservertModalOgOpneOppgave={lukkOgApneFn}
-        oppgave={oppgave}
-        oppgaveStatus={oppgave.status}
-      />,
-    );
-
-    const knapp = wrapper.find(Hovedknapp);
-    expect(knapp).toHaveLength(1);
-
-    const clickFn = knapp.prop('onClick') as () => void;
-    clickFn();
-
-    expect(lukkOgApneFn.calledOnce).toBe(true);
-    const { args } = lukkOgApneFn.getCalls()[0];
-    expect(args).toHaveLength(1);
-    expect(args[0]).toEqual(oppgave);
+    await waitFor(() => expect(lukkErReservertModalOgOpneOppgave).toHaveBeenCalledTimes(1));
+    expect(lukkErReservertModalOgOpneOppgave).toHaveBeenNthCalledWith(1, oppgaveForResevertAvAnnenModal);
   });
 });

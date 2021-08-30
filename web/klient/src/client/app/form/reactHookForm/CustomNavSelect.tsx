@@ -1,6 +1,6 @@
 import React, { Component, ReactNode } from 'react';
 import { Select as NavSelect } from 'nav-frontend-skjema';
-import { FieldRenderProps } from 'react-final-form';
+import Label from './Label';
 
 interface OwnProps {
   selectValues: React.ReactElement[];
@@ -8,9 +8,13 @@ interface OwnProps {
   value?: ReactNode;
   hideValueOnDisable?: boolean;
   disabled?: boolean;
+  bredde?: 'fullbredde' | 'xxl' | 'xl' | 'l' | 'm' | 's' | 'xs';
+  className?: string;
+  label?: string;
+  feil?: string;
 }
 
-class CustomNavSelect extends Component<OwnProps & FieldRenderProps<any>> {
+class CustomNavSelect extends Component<OwnProps> {
   static defaultProps = {
     hideValueOnDisable: false,
     disabled: false,
@@ -18,7 +22,7 @@ class CustomNavSelect extends Component<OwnProps & FieldRenderProps<any>> {
 
   selectElement: ReactNode
 
-  constructor(props: OwnProps & FieldRenderProps<any>) {
+  constructor(props: OwnProps) {
     super(props);
     this.getOptionValues = this.getOptionValues.bind(this);
     this.checkCorrespondingOptionForValue = this.checkCorrespondingOptionForValue.bind(this);
@@ -68,7 +72,7 @@ class CustomNavSelect extends Component<OwnProps & FieldRenderProps<any>> {
       handleSelectRef,
       selectedValue,
       props: {
-        placeholder, selectValues, value, hideValueOnDisable, disabled, ...otherProps
+        placeholder, selectValues, value, hideValueOnDisable, disabled, label, ...otherProps
       },
     } = this;
     return (
@@ -77,6 +81,7 @@ class CustomNavSelect extends Component<OwnProps & FieldRenderProps<any>> {
         selectRef={handleSelectRef}
         value={hideValueOnDisable && disabled ? '' : selectedValue(value)}
         disabled={disabled}
+        label={<Label input={label} readOnly={false} />}
       >
         {placeholder && <option value="" disabled>{placeholder}</option>}
         {selectValues}

@@ -3,7 +3,7 @@ import { Router } from 'react-router-dom';
 import { createBrowserHistory } from 'history';
 
 const history = createBrowserHistory<any>({
-  basename: '/fplos/',
+  basename: '/',
 });
 
 const withRouterProvider = (story: any) => (

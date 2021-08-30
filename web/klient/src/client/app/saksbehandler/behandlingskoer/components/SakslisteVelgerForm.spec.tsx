@@ -1,453 +1,62 @@
-import React, { ReactElement } from 'react';
-import sinon from 'sinon';
-import { IntlShape, FormattedMessage } from 'react-intl';
-import { Form, FormSpy } from 'react-final-form';
+import React from 'react';
+import { render, screen } from '@testing-library/react';
+import { composeStories } from '@storybook/testing-react';
+import userEvent from '@testing-library/user-event';
+import * as stories from 'stories/saksbehandler/behandlingskoer/SakslisteVelgerForm.stories';
 
-import { requestApi, RestApiPathsKeys } from 'data/fplosRestApi';
-import Image from 'sharedComponents/Image';
-import LabelWithHeader from 'sharedComponents/LabelWithHeader';
-import BehandlingType from 'kodeverk/behandlingType';
-import FagsakYtelseType from 'kodeverk/fagsakYtelseType';
-import AndreKriterierType from 'kodeverk/andreKriterierType';
-import { SelectField } from 'form/FinalFields';
-import { shallowWithIntl, intlMock } from 'testHelpers/intl-enzyme-test-helper';
-import SakslisteVelgerForm from './SakslisteVelgerForm';
+const { Default, MedToSakslister } = composeStories(stories);
 
 describe('<SakslisteVelgerForm>', () => {
-  const intl: Partial<IntlShape> = {
-    ...intlMock,
-  };
-  it('skal vise dropdown med to sakslister', () => {
-    const formProps = { };
-    const sakslister = [{
-      sakslisteId: 1,
-      navn: 'Testliste 1',
-      behandlingTyper: [],
-      fagsakYtelseTyper: [],
-      andreKriterier: [],
-      sortering: {
-        sorteringType: {
-          kode: 'test',
-          navn: 'test',
-        },
-        fra: 1,
-        til: 2,
-        fomDato: '2019-01-01',
-        tomDato: '2019-01-10',
-        erDynamiskPeriode: false,
-      },
-    }, {
-      sakslisteId: 2,
-      navn: 'Testliste 2',
-      behandlingTyper: [],
-      fagsakYtelseTyper: [],
-      andreKriterier: [],
-      sortering: {
-        sorteringType: {
-          kode: 'test',
-          navn: 'test',
-        },
-        fra: 1,
-        til: 2,
-        fomDato: '2019-01-01',
-        tomDato: '2019-01-10',
-        erDynamiskPeriode: false,
-      },
-    }];
+  it('skal vise dropdown med en saksliste', async () => {
+    const { getByText } = render(<Default />);
 
-    const wrapper = shallowWithIntl(<SakslisteVelgerForm.WrappedComponent
-      intl={intl as IntlShape}
-      sakslister={sakslister}
-      setValgtSakslisteId={sinon.spy()}
-      fetchAntallOppgaver={sinon.spy()}
-      getValueFromLocalStorage={sinon.spy()}
-      setValueInLocalStorage={sinon.spy()}
-      removeValueFromLocalStorage={sinon.spy()}
-      // @ts-ignore
-    />).find(Form).renderProp('render')(formProps);
+    expect(await screen.findByText('Utvalgskriterier')).toBeInTheDocument();
 
-    const select = wrapper.find(SelectField);
-    expect(select).toHaveLength(1);
-    const options = select.prop('selectValues') as { key: number; props: { value: string; children: string }}[];
-    expect(options[0].key).toEqual('1');
-    expect(options[0].props.value).toEqual('1');
-    expect(options[0].props.children).toEqual('Testliste 1');
-    expect(options[1].key).toEqual('2');
-    expect(options[1].props.value).toEqual('2');
-    expect(options[1].props.children).toEqual('Testliste 2');
+    expect(await screen.findByText('Saksliste 1')).toBeInTheDocument();
+    expect(screen.queryByText('Saksliste 2')).not.toBeInTheDocument();
+
+    expect((getByText('Saksliste 1') as HTMLOptionElement).selected).toBeTruthy();
+
+    expect(screen.getByText('Stønadstype')).toBeInTheDocument();
+    expect(screen.getByText('Foreldrepenger')).toBeInTheDocument();
+
+    expect(screen.getByText('Behandlingstype')).toBeInTheDocument();
+    expect(screen.getByText('Førstegangssøknad')).toBeInTheDocument();
+    expect(screen.getByText('Revurdering')).toBeInTheDocument();
+
+    expect(screen.getByText('Andre filter')).toBeInTheDocument();
+    expect(screen.getByText('Til beslutter')).toBeInTheDocument();
+
+    expect(screen.getByText('Sortering')).toBeInTheDocument();
+    expect(screen.getByText(/Behandlingsfrist/i)).toBeInTheDocument();
+    expect(screen.getByText(/Gjeldende intervall:/i)).toBeInTheDocument();
   });
 
-  it(
-    'skal ikke vise informasjon om saksliste når ingen saksliste er valgt',
-    () => {
-      const sakslister = [{
-        sakslisteId: 1,
-        navn: 'Testliste 1',
-        behandlingTyper: [],
-        fagsakYtelseTyper: [],
-        andreKriterier: [],
-        sortering: {
-          sorteringType: {
-            kode: 'test',
-            navn: 'test',
-          },
-          fra: 1,
-          til: 2,
-          fomDato: '2019-01-01',
-          tomDato: '2019-01-10',
-          erDynamiskPeriode: false,
-        },
-      }];
+  it('skal vise dropdown med to saksliste og så bytte valgt liste', async () => {
+    const { getByLabelText, getByText } = render(<MedToSakslister />);
 
-      const formProps = { values: { sakslisteId: undefined } };
+    expect(await screen.findByText('Utvalgskriterier')).toBeInTheDocument();
 
-      const wrapper = shallowWithIntl(<SakslisteVelgerForm.WrappedComponent
-        intl={intl as IntlShape}
-        sakslister={sakslister}
-        setValgtSakslisteId={sinon.spy()}
-        fetchAntallOppgaver={sinon.spy()}
-        getValueFromLocalStorage={sinon.spy()}
-        setValueInLocalStorage={sinon.spy()}
-        removeValueFromLocalStorage={sinon.spy()}
-        // @ts-ignore
-      />).find(Form).renderProp('render')(formProps);
+    expect(screen.getByText('Saksliste 1')).toBeInTheDocument();
+    expect(screen.getByText('Saksliste 2')).toBeInTheDocument();
 
-      expect(wrapper.find(LabelWithHeader)).toHaveLength(0);
-    },
-  );
+    expect((getByText('Saksliste 1') as HTMLOptionElement).selected).toBeTruthy();
+    expect((getByText('Saksliste 2') as HTMLOptionElement).selected).toBeFalsy();
 
-  it(
-    'skal vise at alle behandlingstyper og fagsakYtelseTyper er valgt når ingen verdier er oppgitt',
-    () => {
-      const sakslister = [{
-        sakslisteId: 1,
-        navn: 'Testliste 1',
-        behandlingTyper: [],
-        fagsakYtelseTyper: [],
-        andreKriterier: [],
-        sortering: {
-          sorteringType: {
-            kode: 'test',
-            navn: 'Sortert på noko',
-          },
-          fra: 1,
-          til: 2,
-          fomDato: '2019-01-01',
-          tomDato: '2019-01-10',
-          erDynamiskPeriode: false,
-        },
-      }];
+    expect(screen.getByText('Foreldrepenger')).toBeInTheDocument();
 
-      const formProps = { values: { sakslisteId: '1' } };
+    userEvent.selectOptions(getByLabelText('Behandlingskø'), '2');
 
-      const wrapper = shallowWithIntl(<SakslisteVelgerForm.WrappedComponent
-        intl={intl as IntlShape}
-        sakslister={sakslister}
-        setValgtSakslisteId={sinon.spy()}
-        fetchAntallOppgaver={sinon.spy()}
-        getValueFromLocalStorage={sinon.spy()}
-        setValueInLocalStorage={sinon.spy()}
-        removeValueFromLocalStorage={sinon.spy()}
-        // @ts-ignore
-      />).find(Form).renderProp('render')(formProps);
+    expect((getByText('Saksliste 1') as HTMLOptionElement).selected).toBeFalsy();
+    expect((getByText('Saksliste 2') as HTMLOptionElement).selected).toBeTruthy();
 
-      const labels = wrapper.find(LabelWithHeader);
-      expect(labels).toHaveLength(4);
-      expect(labels.first().prop('texts')).toEqual(['Alle']);
-      expect(labels.at(0).prop('texts')).toEqual(['Alle']);
-      expect(labels.at(1).prop('texts')).toEqual(['Alle']);
-    },
-  );
+    expect(await screen.findByText('Svangerskapspenger')).toBeInTheDocument();
 
-  it(
-    'skal vise at alle behandlingstyper er valgt når alle verdiene er oppgitt',
-    () => {
-      const sakslister = [{
-        sakslisteId: 1,
-        navn: 'Testliste 1',
-        behandlingTyper: [{
-          kode: BehandlingType.FORSTEGANGSSOKNAD,
-          navn: 'Førstegangssøknad',
-        }],
-        fagsakYtelseTyper: [],
-        andreKriterier: [],
-        sortering: {
-          sorteringType: {
-            kode: 'test',
-            navn: 'Sortert på noko',
-          },
-          fra: 1,
-          til: 2,
-          fomDato: '2019-01-01',
-          tomDato: '2019-01-10',
-          erDynamiskPeriode: false,
-        },
-      }];
+    expect(screen.getByText('Behandlingstype')).toBeInTheDocument();
+    expect(screen.getByText('Førstegangssøknad')).toBeInTheDocument();
+    expect(screen.getByText('Klage')).toBeInTheDocument();
 
-      const formProps = { values: { sakslisteId: '1' } };
-
-      // totaltBehandlingTypeAntall er satt til 1 som er lik antall behandlingstypar satt på sakslisten
-      const wrapper = shallowWithIntl(<SakslisteVelgerForm.WrappedComponent
-        intl={intl as IntlShape}
-        sakslister={sakslister}
-        setValgtSakslisteId={sinon.spy()}
-        fetchAntallOppgaver={sinon.spy()}
-        getValueFromLocalStorage={sinon.spy()}
-        setValueInLocalStorage={sinon.spy()}
-        removeValueFromLocalStorage={sinon.spy()}
-        // @ts-ignore
-      />).find(Form).renderProp('render')(formProps);
-
-      const labels = wrapper.find(LabelWithHeader);
-      expect(labels).toHaveLength(4);
-      expect(labels.first().prop('texts')).toEqual(['Alle']);
-      expect(labels.at(1).prop('texts')).toEqual(['Førstegangssøknad']);
-    },
-  );
-
-  it('skal vise valgte behandlingstyper og fagsakYtelseTyper', () => {
-    const sakslister = [{
-      sakslisteId: 1,
-      navn: 'Testliste 1',
-      behandlingTyper: [{
-        kode: BehandlingType.FORSTEGANGSSOKNAD,
-        navn: 'Førstegangssøknad',
-      }, {
-        kode: BehandlingType.KLAGE,
-        navn: 'Klage',
-      }],
-      fagsakYtelseTyper: [{
-        kode: FagsakYtelseType.ENGANGSSTONAD,
-        navn: 'Engangsstønad',
-      }],
-      andreKriterier: [],
-      sortering: {
-        sorteringType: {
-          kode: 'test',
-          navn: 'Sortert på noko',
-        },
-        fra: 1,
-        til: 2,
-        fomDato: '2019-01-01',
-        tomDato: '2019-01-10',
-        erDynamiskPeriode: false,
-      },
-    }];
-
-    const formProps = { values: { sakslisteId: '1' } };
-
-    const wrapper = shallowWithIntl(<SakslisteVelgerForm.WrappedComponent
-      intl={intl as IntlShape}
-      sakslister={sakslister}
-      setValgtSakslisteId={sinon.spy()}
-      fetchAntallOppgaver={sinon.spy()}
-      getValueFromLocalStorage={sinon.spy()}
-      setValueInLocalStorage={sinon.spy()}
-      removeValueFromLocalStorage={sinon.spy()}
-      // @ts-ignore
-    />).find(Form).renderProp('render')(formProps);
-
-    const labels = wrapper.find(LabelWithHeader);
-    expect(labels).toHaveLength(4);
-    expect(labels.first().prop('texts')).toEqual(['Engangsstønad']);
-    expect(labels.at(1).prop('texts')).toEqual(['Førstegangssøknad', 'Klage']);
-  });
-
-  it('skal vise valgte andre kriterier som er inkluderte', () => {
-    const sakslister = [{
-      sakslisteId: 1,
-      navn: 'Testliste 1',
-      behandlingTyper: [],
-      fagsakYtelseTyper: [],
-      andreKriterier: [{
-        andreKriterierType: {
-          kode: AndreKriterierType.TIL_BESLUTTER,
-          navn: 'Til beslutter',
-        },
-        inkluder: true,
-      }],
-      sortering: {
-        sorteringType: {
-          kode: 'test',
-          navn: 'test',
-        },
-        fra: 1,
-        til: 2,
-        fomDato: '2019-01-01',
-        tomDato: '2019-01-10',
-        erDynamiskPeriode: false,
-      },
-    }];
-
-    const formProps = { values: { sakslisteId: '1' } };
-    const wrapper = shallowWithIntl(<SakslisteVelgerForm.WrappedComponent
-      intl={intl as IntlShape}
-      sakslister={sakslister}
-      setValgtSakslisteId={sinon.spy()}
-      fetchAntallOppgaver={sinon.spy()}
-      getValueFromLocalStorage={sinon.spy()}
-      setValueInLocalStorage={sinon.spy()}
-      removeValueFromLocalStorage={sinon.spy()}
-      // @ts-ignore
-    />).find(Form).renderProp('render')(formProps);
-
-    const labels = wrapper.find(LabelWithHeader);
-    expect(labels).toHaveLength(4);
-    expect(labels.at(2).prop('texts')).toEqual(['Til beslutter']);
-  });
-
-  it('skal vise valgte andre kriterier som er ekskludert', () => {
-    const sakslister = [{
-      sakslisteId: 1,
-      navn: 'Testliste 1',
-      behandlingTyper: [],
-      fagsakYtelseTyper: [],
-      andreKriterier: [{
-        andreKriterierType: {
-          kode: AndreKriterierType.TIL_BESLUTTER,
-          navn: 'Til beslutter',
-        },
-        inkluder: false,
-      }],
-      sortering: {
-        sorteringType: {
-          kode: 'test',
-          navn: 'test',
-        },
-        fra: 1,
-        til: 2,
-        fomDato: '2019-01-01',
-        tomDato: '2019-01-10',
-        erDynamiskPeriode: false,
-      },
-    }];
-
-    const formProps = { values: { sakslisteId: '1' } };
-
-    const wrapper = shallowWithIntl(<SakslisteVelgerForm.WrappedComponent
-      intl={intl as IntlShape}
-      sakslister={sakslister}
-      setValgtSakslisteId={sinon.spy()}
-      fetchAntallOppgaver={sinon.spy()}
-      getValueFromLocalStorage={sinon.spy()}
-      setValueInLocalStorage={sinon.spy()}
-      removeValueFromLocalStorage={sinon.spy()}
-      // @ts-ignore
-    />).find(Form).renderProp('render')(formProps);
-
-    const labels = wrapper.find(LabelWithHeader);
-    expect(labels).toHaveLength(4);
-    expect(labels.at(2).prop('texts')).toEqual(['Uten: Til beslutter']);
-  });
-
-  it('skal vise at alle andre kriterier er valgte', () => {
-    const sakslister = [{
-      sakslisteId: 1,
-      navn: 'Testliste 1',
-      behandlingTyper: [],
-      fagsakYtelseTyper: [],
-      andreKriterier: [],
-      sortering: {
-        sorteringType: {
-          kode: 'test',
-          navn: 'test',
-        },
-        fra: 1,
-        til: 2,
-        fomDato: '2019-01-01',
-        tomDato: '2019-01-10',
-        erDynamiskPeriode: false,
-      },
-    }];
-
-    const formProps = { values: { sakslisteId: '1' } };
-
-    const wrapper = shallowWithIntl(<SakslisteVelgerForm.WrappedComponent
-      intl={intl as IntlShape}
-      sakslister={sakslister}
-      setValgtSakslisteId={sinon.spy()}
-      fetchAntallOppgaver={sinon.spy()}
-      getValueFromLocalStorage={sinon.spy()}
-      setValueInLocalStorage={sinon.spy()}
-      removeValueFromLocalStorage={sinon.spy()}
-      // @ts-ignore
-    />).find(Form).renderProp('render')(formProps);
-
-    const labels = wrapper.find(LabelWithHeader);
-    expect(labels).toHaveLength(4);
-    expect(labels.at(2).prop('texts')).toEqual(['Alle']);
-  });
-
-  it('skal vise køens saksbehandlere i tooltip', async () => {
-    const sakslister = [{
-      sakslisteId: 1,
-      navn: 'Testliste 1',
-      behandlingTyper: [],
-      fagsakYtelseTyper: [],
-      andreKriterier: [],
-      sortering: {
-        sorteringType: {
-          kode: 'test',
-          navn: 'test',
-        },
-        fra: 1,
-        til: 2,
-        fomDato: '2019-01-01',
-        tomDato: '2019-01-10',
-        erDynamiskPeriode: false,
-      },
-    }];
-
-    const saksbehandlere = [{
-      brukerIdent: {
-        brukerIdent: 'T120101',
-        verdi: 'T120101',
-      },
-      navn: 'Espen Utvikler',
-      avdelingsnavn: [],
-    }, {
-      brukerIdent: {
-        brukerIdent: 'A120102',
-        verdi: 'A120102',
-      },
-      navn: 'Auto Joachim',
-      avdelingsnavn: [],
-    }, {
-      brukerIdent: {
-        brukerIdent: 'T120102',
-        verdi: 'T120102',
-      },
-      navn: 'Helge Ingstad',
-      avdelingsnavn: [],
-    }];
-
-    const formProps = { values: { sakslisteId: '1' } };
-
-    requestApi.mock(RestApiPathsKeys.SAKSLISTE_SAKSBEHANDLERE.name, saksbehandlere);
-
-    const wrapper = shallowWithIntl(<SakslisteVelgerForm.WrappedComponent
-      intl={intl as IntlShape}
-      sakslister={sakslister}
-      setValgtSakslisteId={sinon.spy()}
-      fetchAntallOppgaver={sinon.spy()}
-      getValueFromLocalStorage={sinon.spy()}
-      setValueInLocalStorage={sinon.spy()}
-      removeValueFromLocalStorage={sinon.spy()}
-    />);
-
-    // @ts-ignore
-    const innerWrapper = wrapper.find(Form).renderProp('render')(formProps);
-
-    const formSpy = innerWrapper.find(FormSpy);
-    // @ts-ignore
-    await formSpy.prop('onChange')({ values: { sakslisteId: 1 }, dirtyFields: { sakslisteId: 1 } });
-
-    // @ts-ignore
-    const updatedInnerWrapper = wrapper.find(Form).renderProp('render')(formProps);
-
-    const image = updatedInnerWrapper.find(Image);
-    expect(image).toHaveLength(1);
-    const tooltip = shallowWithIntl(image.prop('tooltip') as ReactElement);
-    expect(tooltip.find(FormattedMessage).prop('id')).toEqual('SakslisteVelgerForm.SaksbehandlerToolip');
+    expect(screen.getByText('Andre filter')).toBeInTheDocument();
+    expect(screen.getByText('Utbetaling til bruker')).toBeInTheDocument();
   });
 });

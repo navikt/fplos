@@ -1,18 +1,15 @@
 import React, { FunctionComponent } from 'react';
 import { FormattedMessage, injectIntl, WrappedComponentProps } from 'react-intl';
-
 import { Undertekst } from 'nav-frontend-typografi';
 
 import { restApiHooks, RestApiPathsKeys } from 'data/fplosRestApi';
-import {
-  RadioGroupField, RadioOption,
-} from 'form/FinalFields';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import KodeverkType from 'kodeverk/kodeverkTyper';
 import Kodeverk from 'types/kodeverkTsType';
 import BehandlingType from 'kodeverk/behandlingType';
 import useKodeverk from 'data/useKodeverk';
 import KoSorteringType from 'types/avdelingsleder/koSorteringTsType';
+import { RadioOption, RadioGroupField } from 'form/formIndex';
 
 import DatoSorteringValg from './DatoSorteringValg';
 import BelopSorteringValg from './BelopSorteringValg';
@@ -24,8 +21,8 @@ interface OwnProps {
   erDynamiskPeriode: boolean;
   fra?: number;
   til?: number;
-  fomDato: string;
-  tomDato: string;
+  fomDato?: string;
+  tomDato?: string;
   hentAvdelingensSakslister: (params: {avdelingEnhet: string}) => void;
   hentAntallOppgaver: (sakslisteId: number, avdelingEnhet: string) => void;
 }

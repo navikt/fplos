@@ -1,5 +1,5 @@
 import React from 'react';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import { Story } from '@storybook/react';
 
 import { RestApiGlobalStatePathsKeys } from 'data/fplosRestApi';
@@ -42,8 +42,8 @@ const Template: Story<{ oppgaverPerDato: OppgaveForDato[] }> = ({
   );
 };
 
-export const GrafForAntallOppgaverTilBehandlingPerDag = Template.bind({});
-GrafForAntallOppgaverTilBehandlingPerDag.args = {
+export const Default = Template.bind({});
+Default.args = {
   oppgaverPerDato: [{
     fagsakYtelseType: {
       kode: fagsakYtelseType.FORELDREPRENGER,
@@ -53,7 +53,7 @@ GrafForAntallOppgaverTilBehandlingPerDag.args = {
       kode: behandlingType.FORSTEGANGSSOKNAD,
       navn: 'Førstegangssøknad',
     },
-    opprettetDato: moment().format(ISO_DATE_FORMAT),
+    opprettetDato: dayjs().format(ISO_DATE_FORMAT),
     antall: 1,
   }, {
     fagsakYtelseType: {
@@ -64,7 +64,7 @@ GrafForAntallOppgaverTilBehandlingPerDag.args = {
       kode: behandlingType.FORSTEGANGSSOKNAD,
       navn: 'Førstegangssøknad',
     },
-    opprettetDato: moment().subtract(3, 'd').format(ISO_DATE_FORMAT),
+    opprettetDato: dayjs().subtract(3, 'd').format(ISO_DATE_FORMAT),
     antall: 2,
   }, {
     fagsakYtelseType: {
@@ -75,7 +75,7 @@ GrafForAntallOppgaverTilBehandlingPerDag.args = {
       kode: behandlingType.KLAGE,
       navn: 'Klage',
     },
-    opprettetDato: moment().subtract(4, 'd').format(ISO_DATE_FORMAT),
+    opprettetDato: dayjs().subtract(4, 'd').format(ISO_DATE_FORMAT),
     antall: 2,
   }, {
     fagsakYtelseType: {
@@ -86,7 +86,7 @@ GrafForAntallOppgaverTilBehandlingPerDag.args = {
       kode: behandlingType.FORSTEGANGSSOKNAD,
       navn: 'Førstegangssøknad',
     },
-    opprettetDato: moment().subtract(4, 'd').format(ISO_DATE_FORMAT),
+    opprettetDato: dayjs().subtract(4, 'd').format(ISO_DATE_FORMAT),
     antall: 6,
   }, {
     fagsakYtelseType: {
@@ -97,7 +97,7 @@ GrafForAntallOppgaverTilBehandlingPerDag.args = {
       kode: behandlingType.DOKUMENTINNSYN,
       navn: 'Dokumentinnsyn',
     },
-    opprettetDato: moment().subtract(10, 'd').format(ISO_DATE_FORMAT),
+    opprettetDato: dayjs().subtract(10, 'd').format(ISO_DATE_FORMAT),
     antall: 3,
   }, {
     fagsakYtelseType: {
@@ -108,7 +108,7 @@ GrafForAntallOppgaverTilBehandlingPerDag.args = {
       kode: behandlingType.DOKUMENTINNSYN,
       navn: 'Dokumentinnsyn',
     },
-    opprettetDato: moment().subtract(16, 'd').format(ISO_DATE_FORMAT),
+    opprettetDato: dayjs().subtract(16, 'd').format(ISO_DATE_FORMAT),
     antall: 3,
   }],
 };

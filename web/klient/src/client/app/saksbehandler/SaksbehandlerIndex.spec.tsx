@@ -1,12 +1,14 @@
 import React from 'react';
-import { shallow } from 'enzyme';
+import { render, screen } from '@testing-library/react';
+import { composeStories } from '@storybook/testing-react';
+import * as stories from 'stories/saksbehandler/SaksbehandlerIndex.stories';
 
-import SaksbehandlerIndex from './SaksbehandlerIndex';
-import SaksbehandlerDashboard from './components/SaksbehandlerDashboard';
+const { Default } = composeStories(stories);
 
 describe('<SaksbehandlerIndex>', () => {
-  it('skal vise saksbehandler dashboard', () => {
-    const wrapper = shallow(<SaksbehandlerIndex />);
-    expect(wrapper.find(SaksbehandlerDashboard)).toHaveLength(1);
+  it('skal vise sist behandlede saker', async () => {
+    render(<Default />);
+    expect(await screen.findByText('Søk på sak eller person')).toBeInTheDocument();
+    expect(screen.getByText('Siste behandlinger')).toBeInTheDocument();
   });
 });

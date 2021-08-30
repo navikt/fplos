@@ -1,13 +1,15 @@
 import React, { FunctionComponent } from 'react';
 import { injectIntl, WrappedComponentProps, FormattedMessage } from 'react-intl';
+import { useForm } from 'react-hook-form';
 
-import { Form } from 'react-final-form';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import { Element } from 'nav-frontend-typografi';
 import { Row, Column } from 'nav-frontend-grid';
 
 import StoreValuesInLocalStorage from 'form/StoreValuesInLocalStorage';
-import { RadioGroupField, RadioOption, SelectField } from 'form/FinalFields';
+import {
+  Form, RadioGroupField, RadioOption, SelectField,
+} from 'form/formIndex';
 import useKodeverk from 'data/useKodeverk';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import FagsakYtelseType from 'kodeverk/fagsakYtelseType';
@@ -39,8 +41,8 @@ const erDatoInnenforPeriode = (behandlingFrist: string, ukevalg: string): boolea
     return true;
   }
 
-  const dataOmFireUker = moment().add(4, 'w');
-  return moment(behandlingFrist).isSameOrBefore(dataOmFireUker);
+  const dataOmFireUker = dayjs().add(4, 'w');
+  return dayjs(behandlingFrist).isSameOrBefore(dataOmFireUker);
 };
 
 interface OwnProps {
@@ -53,6 +55,11 @@ interface OwnProps {
 
 const formName = 'manueltPaVentForm';
 const formDefaultValues = { valgtYtelsetype: ALLE_YTELSETYPER_VALGT, ukevalg: UKE_4 };
+
+type FormValues = {
+  ukevalg: string;
+  valgtYtelsetype: string;
+}
 
 /**
  * ManueltPaVentPanel.
@@ -67,60 +74,61 @@ export const ManueltPaVentPanel: FunctionComponent<OwnProps & WrappedComponentPr
   const fagsakYtelseTyper = useKodeverk(KodeverkType.FAGSAK_YTELSE_TYPE);
   const stringFromStorage = getValueFromLocalStorage(formName);
   const lagredeVerdier = stringFromStorage ? JSON.parse(stringFromStorage) : undefined;
+
+  const formMethods = useForm<FormValues>({
+    defaultValues: lagredeVerdier || formDefaultValues,
+  });
+
+  const values = formMethods.watch();
+
   return (
-    <Form
-      onSubmit={() => undefined}
-      initialValues={lagredeVerdier || formDefaultValues}
-      render={({ values }) => (
-        <div>
-          <StoreValuesInLocalStorage stateKey={formName} values={values} />
-          <Element>
-            <FormattedMessage id="ManueltPaVentPanel.SattPaVent" />
-          </Element>
-          <VerticalSpacer sixteenPx />
-          <Row>
-            <Column xs="2">
-              <SelectField
-                name="ukevalg"
-                label=""
-                selectValues={uker.map((u) => <option key={u.kode} value={u.kode}>{intl.formatMessage({ id: u.tekstKode })}</option>)}
-                bredde="l"
-              />
-            </Column>
-            <Column xs="8">
-              <div className={styles.radioPadding}>
-                <RadioGroupField name="valgtYtelsetype">
-                  <RadioOption
-                    value={FagsakYtelseType.FORELDREPRENGER}
-                    label={finnFagsakYtelseTypeNavn(fagsakYtelseTyper, FagsakYtelseType.FORELDREPRENGER)}
-                  />
-                  <RadioOption
-                    value={FagsakYtelseType.ENGANGSSTONAD}
-                    label={finnFagsakYtelseTypeNavn(fagsakYtelseTyper, FagsakYtelseType.ENGANGSSTONAD)}
-                  />
-                  <RadioOption
-                    value={FagsakYtelseType.SVANGERSKAPPENGER}
-                    label={finnFagsakYtelseTypeNavn(fagsakYtelseTyper, FagsakYtelseType.SVANGERSKAPPENGER)}
-                  />
-                  <RadioOption
-                    value={ALLE_YTELSETYPER_VALGT}
-                    label={<FormattedMessage id="ManueltPaVentPanel.Alle" />}
-                  />
-                </RadioGroupField>
-              </div>
-            </Column>
-          </Row>
-          <ManueltPaVentGraf
-            width={width}
-            height={height}
-            isFireUkerValgt={values.ukevalg === UKE_4}
-            oppgaverManueltPaVent={oppgaverManueltPaVent && oppgaverManueltPaVent
-              .filter((ompv) => (values.valgtYtelsetype === ALLE_YTELSETYPER_VALGT ? true : values.valgtYtelsetype === ompv.fagsakYtelseType.kode))
-              .filter((ompv) => erDatoInnenforPeriode(ompv.behandlingFrist, values.ukevalg))}
+    <Form<FormValues> formMethods={formMethods}>
+      <StoreValuesInLocalStorage stateKey={formName} values={values} />
+      <Element>
+        <FormattedMessage id="ManueltPaVentPanel.SattPaVent" />
+      </Element>
+      <VerticalSpacer sixteenPx />
+      <Row>
+        <Column xs="2">
+          <SelectField
+            name="ukevalg"
+            label=""
+            selectValues={uker.map((u) => <option key={u.kode} value={u.kode}>{intl.formatMessage({ id: u.tekstKode })}</option>)}
+            bredde="l"
           />
-        </div>
-      )}
-    />
+        </Column>
+        <Column xs="8">
+          <div className={styles.radioPadding}>
+            <RadioGroupField name="valgtYtelsetype">
+              <RadioOption
+                value={FagsakYtelseType.FORELDREPRENGER}
+                label={finnFagsakYtelseTypeNavn(fagsakYtelseTyper, FagsakYtelseType.FORELDREPRENGER)}
+              />
+              <RadioOption
+                value={FagsakYtelseType.ENGANGSSTONAD}
+                label={finnFagsakYtelseTypeNavn(fagsakYtelseTyper, FagsakYtelseType.ENGANGSSTONAD)}
+              />
+              <RadioOption
+                value={FagsakYtelseType.SVANGERSKAPPENGER}
+                label={finnFagsakYtelseTypeNavn(fagsakYtelseTyper, FagsakYtelseType.SVANGERSKAPPENGER)}
+              />
+              <RadioOption
+                value={ALLE_YTELSETYPER_VALGT}
+                label={<FormattedMessage id="ManueltPaVentPanel.Alle" />}
+              />
+            </RadioGroupField>
+          </div>
+        </Column>
+      </Row>
+      <ManueltPaVentGraf
+        width={width}
+        height={height}
+        isFireUkerValgt={values.ukevalg === UKE_4}
+        oppgaverManueltPaVent={oppgaverManueltPaVent && oppgaverManueltPaVent
+          .filter((ompv) => (values.valgtYtelsetype === ALLE_YTELSETYPER_VALGT ? true : values.valgtYtelsetype === ompv.fagsakYtelseType.kode))
+          .filter((ompv) => erDatoInnenforPeriode(ompv.behandlingFrist, values.ukevalg))}
+      />
+    </Form>
   );
 };
 

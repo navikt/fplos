@@ -3,7 +3,7 @@ import { IntlShape } from 'react-intl';
 import {
   XYPlot, AreaSeries, Crosshair,
 } from 'react-vis';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import { Normaltekst, Undertekst } from 'nav-frontend-typografi';
 
 import { ISO_DATE_FORMAT, DDMMYYYY_DATE_FORMAT } from 'utils/formats';
@@ -29,7 +29,7 @@ describe('<NyeOgFerdigstilteOppgaverForSisteSyvGraf>', () => {
       const xYPlot = wrapper.find(XYPlot);
       expect(xYPlot).toHaveLength(1);
       expect(xYPlot.prop('xDomain')).toEqual(
-        [moment().subtract(7, 'd').startOf('day').toDate(), moment().subtract(1, 'd').startOf('day').toDate()],
+        [dayjs().subtract(7, 'd').startOf('day').toDate(), dayjs().subtract(1, 'd').startOf('day').toDate()],
       );
       expect(xYPlot.prop('yDomain')).toEqual([0, 50]);
     },
@@ -45,7 +45,7 @@ describe('<NyeOgFerdigstilteOppgaverForSisteSyvGraf>', () => {
         },
         antallNye: 11,
         antallFerdigstilte: 1,
-        dato: moment().subtract(1, 'd').format(ISO_DATE_FORMAT),
+        dato: dayjs().subtract(1, 'd').format(ISO_DATE_FORMAT),
       }, {
         behandlingType: {
           kode: BehandlingType.FORSTEGANGSSOKNAD,
@@ -53,7 +53,7 @@ describe('<NyeOgFerdigstilteOppgaverForSisteSyvGraf>', () => {
         },
         antallNye: 12,
         antallFerdigstilte: 2,
-        dato: moment().subtract(2, 'd').format(ISO_DATE_FORMAT),
+        dato: dayjs().subtract(2, 'd').format(ISO_DATE_FORMAT),
       }, {
         behandlingType: {
           kode: BehandlingType.FORSTEGANGSSOKNAD,
@@ -61,7 +61,7 @@ describe('<NyeOgFerdigstilteOppgaverForSisteSyvGraf>', () => {
         },
         antallNye: 13,
         antallFerdigstilte: 3,
-        dato: moment().subtract(3, 'd').format(ISO_DATE_FORMAT),
+        dato: dayjs().subtract(3, 'd').format(ISO_DATE_FORMAT),
       }, {
         behandlingType: {
           kode: BehandlingType.FORSTEGANGSSOKNAD,
@@ -69,7 +69,7 @@ describe('<NyeOgFerdigstilteOppgaverForSisteSyvGraf>', () => {
         },
         antallNye: 14,
         antallFerdigstilte: 4,
-        dato: moment().subtract(4, 'd').format(ISO_DATE_FORMAT),
+        dato: dayjs().subtract(4, 'd').format(ISO_DATE_FORMAT),
       }, {
         behandlingType: {
           kode: BehandlingType.FORSTEGANGSSOKNAD,
@@ -77,7 +77,7 @@ describe('<NyeOgFerdigstilteOppgaverForSisteSyvGraf>', () => {
         },
         antallNye: 15,
         antallFerdigstilte: 5,
-        dato: moment().subtract(5, 'd').format(ISO_DATE_FORMAT),
+        dato: dayjs().subtract(5, 'd').format(ISO_DATE_FORMAT),
       }, {
         behandlingType: {
           kode: BehandlingType.FORSTEGANGSSOKNAD,
@@ -85,7 +85,7 @@ describe('<NyeOgFerdigstilteOppgaverForSisteSyvGraf>', () => {
         },
         antallNye: 16,
         antallFerdigstilte: 6,
-        dato: moment().subtract(6, 'd').format(ISO_DATE_FORMAT),
+        dato: dayjs().subtract(6, 'd').format(ISO_DATE_FORMAT),
       }, {
         behandlingType: {
           kode: BehandlingType.FORSTEGANGSSOKNAD,
@@ -93,7 +93,7 @@ describe('<NyeOgFerdigstilteOppgaverForSisteSyvGraf>', () => {
         },
         antallNye: 17,
         antallFerdigstilte: 7,
-        dato: moment().subtract(7, 'd').format(ISO_DATE_FORMAT),
+        dato: dayjs().subtract(7, 'd').format(ISO_DATE_FORMAT),
       }];
 
       const wrapper = shallowWithIntl(<NyeOgFerdigstilteOppgaverForSisteSyvGraf.WrappedComponent
@@ -107,31 +107,31 @@ describe('<NyeOgFerdigstilteOppgaverForSisteSyvGraf>', () => {
       expect(areaSeries).toHaveLength(2);
 
       const ferdigstilteOppgaver = [{
-        x: moment().subtract(7, 'd').startOf('day').toDate()
+        x: dayjs().subtract(7, 'd').startOf('day').toDate()
           .getTime(),
         y: 7,
       }, {
-        x: moment().subtract(6, 'd').startOf('day').toDate()
+        x: dayjs().subtract(6, 'd').startOf('day').toDate()
           .getTime(),
         y: 6,
       }, {
-        x: moment().subtract(5, 'd').startOf('day').toDate()
+        x: dayjs().subtract(5, 'd').startOf('day').toDate()
           .getTime(),
         y: 5,
       }, {
-        x: moment().subtract(4, 'd').startOf('day').toDate()
+        x: dayjs().subtract(4, 'd').startOf('day').toDate()
           .getTime(),
         y: 4,
       }, {
-        x: moment().subtract(3, 'd').startOf('day').toDate()
+        x: dayjs().subtract(3, 'd').startOf('day').toDate()
           .getTime(),
         y: 3,
       }, {
-        x: moment().subtract(2, 'd').startOf('day').toDate()
+        x: dayjs().subtract(2, 'd').startOf('day').toDate()
           .getTime(),
         y: 2,
       }, {
-        x: moment().subtract(1, 'd').startOf('day').toDate()
+        x: dayjs().subtract(1, 'd').startOf('day').toDate()
           .getTime(),
         y: 1,
       }];
@@ -139,31 +139,31 @@ describe('<NyeOgFerdigstilteOppgaverForSisteSyvGraf>', () => {
       expect(dataArea1).toEqual(ferdigstilteOppgaver);
 
       const nyeOppgaver = [{
-        x: moment().subtract(7, 'd').startOf('day').toDate()
+        x: dayjs().subtract(7, 'd').startOf('day').toDate()
           .getTime(),
         y: 17,
       }, {
-        x: moment().subtract(6, 'd').startOf('day').toDate()
+        x: dayjs().subtract(6, 'd').startOf('day').toDate()
           .getTime(),
         y: 16,
       }, {
-        x: moment().subtract(5, 'd').startOf('day').toDate()
+        x: dayjs().subtract(5, 'd').startOf('day').toDate()
           .getTime(),
         y: 15,
       }, {
-        x: moment().subtract(4, 'd').startOf('day').toDate()
+        x: dayjs().subtract(4, 'd').startOf('day').toDate()
           .getTime(),
         y: 14,
       }, {
-        x: moment().subtract(3, 'd').startOf('day').toDate()
+        x: dayjs().subtract(3, 'd').startOf('day').toDate()
           .getTime(),
         y: 13,
       }, {
-        x: moment().subtract(2, 'd').startOf('day').toDate()
+        x: dayjs().subtract(2, 'd').startOf('day').toDate()
           .getTime(),
         y: 12,
       }, {
-        x: moment().subtract(1, 'd').startOf('day').toDate()
+        x: dayjs().subtract(1, 'd').startOf('day').toDate()
           .getTime(),
         y: 11,
       }];
@@ -182,7 +182,7 @@ describe('<NyeOgFerdigstilteOppgaverForSisteSyvGraf>', () => {
         },
         antallNye: 12,
         antallFerdigstilte: 2,
-        dato: moment().subtract(1, 'd').format(ISO_DATE_FORMAT),
+        dato: dayjs().subtract(1, 'd').format(ISO_DATE_FORMAT),
       }];
 
       const wrapper = shallowWithIntl(<NyeOgFerdigstilteOppgaverForSisteSyvGraf.WrappedComponent
@@ -195,7 +195,7 @@ describe('<NyeOgFerdigstilteOppgaverForSisteSyvGraf>', () => {
       const areaSeries = wrapper.find(AreaSeries);
       expect(areaSeries).toHaveLength(2);
       const valgtPunkt = {
-        x: moment().startOf('day').subtract(1, 'd').toDate()
+        x: dayjs().startOf('day').subtract(1, 'd').toDate()
           .getTime(),
         y: 1,
       };
@@ -205,7 +205,7 @@ describe('<NyeOgFerdigstilteOppgaverForSisteSyvGraf>', () => {
       const crosshair = wrapper.find(Crosshair);
       expect(crosshair).toHaveLength(1);
 
-      expect(crosshair.find(Normaltekst).childAt(0).text()).toEqual(moment().subtract(1, 'd').format(DDMMYYYY_DATE_FORMAT));
+      expect(crosshair.find(Normaltekst).childAt(0).text()).toEqual(dayjs().subtract(1, 'd').format(DDMMYYYY_DATE_FORMAT));
       const tekst = crosshair.find(Undertekst);
       expect(tekst).toHaveLength(2);
       expect(tekst.first().childAt(0).prop('values').antall).toEqual(2);

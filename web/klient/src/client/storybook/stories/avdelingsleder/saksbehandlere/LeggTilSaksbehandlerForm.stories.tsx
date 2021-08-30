@@ -24,29 +24,47 @@ const saksbehandler = {
 
 interface Props {
   avdelingensSaksbehandlere?: SaksbehandlerAvdeling[];
+  funnetSaksbehandler?: SaksbehandlerAvdeling;
+  hentAvdelingensSaksbehandlere: (params: {avdelingEnhet: string}) => void;
 }
 
 const Template: Story<Props> = ({
   avdelingensSaksbehandlere,
+  funnetSaksbehandler,
+  hentAvdelingensSaksbehandlere,
 }) => {
   const data = [
-    { key: RestApiPathsKeys.SAKSBEHANDLER_SOK.name, data: saksbehandler },
+    { key: RestApiPathsKeys.SAKSBEHANDLER_SOK.name, data: funnetSaksbehandler },
+    { key: RestApiPathsKeys.OPPRETT_NY_SAKSBEHANDLER.name, data: undefined },
   ];
 
   return (
     <RestApiMock data={data}>
       <LeggTilSaksbehandlerForm
         avdelingensSaksbehandlere={avdelingensSaksbehandlere || []}
-        hentAvdelingensSaksbehandlere={action('button-click')}
+        hentAvdelingensSaksbehandlere={hentAvdelingensSaksbehandlere}
         valgtAvdelingEnhet="NAV Viken"
       />
     </RestApiMock>
   );
 };
 
-export const PanelForÅLeggeTilSaksbehandlere = Template.bind({});
+export const Default = Template.bind({});
+Default.args = {
+  funnetSaksbehandler: saksbehandler,
+  hentAvdelingensSaksbehandlere: action('button-click'),
+};
 
-export const PanelForNårSaksbehandlerErLagtTilAllerede = Template.bind({});
-PanelForNårSaksbehandlerErLagtTilAllerede.args = {
+export const AlleredeLagtTil = Template.bind({});
+AlleredeLagtTil.args = {
   avdelingensSaksbehandlere: [saksbehandler],
+  funnetSaksbehandler: saksbehandler,
+  hentAvdelingensSaksbehandlere: action('button-click'),
+};
+
+export const SaksbehandlerFinnesIkke = Template.bind({});
+SaksbehandlerFinnesIkke.args = {
+  avdelingensSaksbehandlere: [saksbehandler],
+  funnetSaksbehandler: undefined,
+  hentAvdelingensSaksbehandlere: action('button-click'),
 };

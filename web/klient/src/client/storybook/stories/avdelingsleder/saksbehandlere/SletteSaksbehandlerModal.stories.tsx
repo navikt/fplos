@@ -1,7 +1,9 @@
 import React from 'react';
 import { action } from '@storybook/addon-actions';
+import { Story } from '@storybook/react';
 
 import SletteSaksbehandlerModal from 'avdelingsleder/saksbehandlere/components/SletteSaksbehandlerModal';
+import Saksbehandler from 'types/avdelingsleder/saksbehandlerAvdelingTsType';
 
 import withIntl from '../../../decorators/withIntl';
 
@@ -11,7 +13,11 @@ export default {
   decorators: [withIntl],
 };
 
-export const ModalForSlettingAvSaksbehandler = () => (
+const Template: Story<{
+  fjernSaksbehandler: (saksbehandler: Saksbehandler) => void;
+}> = ({
+  fjernSaksbehandler,
+}) => (
   <SletteSaksbehandlerModal
     valgtSaksbehandler={{
       brukerIdent: 'R12122',
@@ -19,6 +25,11 @@ export const ModalForSlettingAvSaksbehandler = () => (
       avdelingsnavn: [],
     }}
     closeSletteModal={action('button-click')}
-    fjernSaksbehandler={action('button-click')}
+    fjernSaksbehandler={fjernSaksbehandler}
   />
 );
+
+export const Default = Template.bind({});
+Default.args = {
+  fjernSaksbehandler: action('button-click'),
+};

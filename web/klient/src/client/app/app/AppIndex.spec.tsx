@@ -1,10 +1,7 @@
 import React from 'react';
-import { shallow } from 'enzyme';
-import { Location, History } from 'history';
-import { match } from 'react-router-dom';
-
-import HeaderWithErrorPanel from './components/HeaderWithErrorPanel';
-
+import { render, screen } from '@testing-library/react';
+import { createBrowserHistory, Location, History } from 'history';
+import { Router, match } from 'react-router-dom';
 import { AppIndex } from './AppIndex';
 
 const LocationMock = {
@@ -12,51 +9,41 @@ const LocationMock = {
   state: {},
 } as Location;
 
+const history = createBrowserHistory<any>({
+  basename: '/',
+});
+
 describe('<AppIndex>', () => {
-  it(
-    'skal vise hjem-skjermbilde inkludert header men ikke feilmelding',
-    () => {
-      const wrapper = shallow(<AppIndex
-        location={LocationMock}
-        history={{} as History}
-        match={{} as match}
-      />);
+  it('skal vise hjem-skjermbildet', async () => {
+    render(
+      <Router history={history}>
+        <AppIndex
+          location={LocationMock}
+          history={{} as History}
+          match={{} as match}
+        />
+      </Router>,
+    );
 
-      const headerComp = wrapper.find(HeaderWithErrorPanel);
-      expect(headerComp).toHaveLength(1);
-
-      const homeComp = wrapper.find('Home');
-      expect(homeComp).toHaveLength(1);
-    },
-  );
-
-  it('skal vise hjem-skjermbilde inkludert header og feilmelding', () => {
-    const wrapper = shallow(<AppIndex
-      location={LocationMock}
-      history={{} as History}
-      match={{} as match}
-    />);
-
-    const headerComp = wrapper.find(HeaderWithErrorPanel);
-    expect(headerComp).toHaveLength(1);
-
-    const homeComp = wrapper.find('Home');
-    expect(homeComp).toHaveLength(1);
+    expect(await screen.findByText('Svangerskap, fødsel og adopsjon')).toBeInTheDocument();
   });
 
-  it('skal vise query-feilmelding', () => {
+  it('skal vise hjem-skjermbildet med feilmelding som kommer via url', async () => {
     const location = {
       search: '?errormessage=Det+finnes+ingen+sak+med+denne+referansen%3A+266',
       state: {},
-    };
+    } as Location;
 
-    const wrapper = shallow(<AppIndex
-      location={location as Location}
-      history={{} as History}
-      match={{} as match}
-    />);
+    render(
+      <Router history={history}>
+        <AppIndex
+          location={location}
+          history={{} as History}
+          match={{} as match}
+        />
+      </Router>,
+    );
 
-    const headerComp = wrapper.find(HeaderWithErrorPanel);
-    expect(headerComp.prop('queryStrings')).toEqual({ errormessage: 'Det finnes ingen sak med denne referansen: 266' });
+    expect(await screen.findByText('Det finnes ingen sak med denne referansen: 266')).toBeInTheDocument();
   });
 });

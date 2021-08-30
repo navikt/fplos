@@ -1,72 +1,84 @@
-import moment from 'moment';
+import dayjs from 'dayjs';
+import isSameOrAfter from 'dayjs/plugin/isSameOrAfter';
+import isSameOrBefore from 'dayjs/plugin/isSameOrBefore';
+import { IntlShape } from 'react-intl';
 import { DDMMYYYY_DATE_FORMAT } from 'utils/formats';
 import {
   isRequiredMessage, minLengthMessage, invalidNumberMessage, maxLengthMessage, minValueMessage, maxValueMessage, invalidDateMessage,
   invalidIntegerMessage, dateNotBeforeOrEqualMessage, dateNotAfterOrEqualMessage, invalidTextMessage, invalidSaksnummerOrFodselsnummerFormatMessage,
-  FormValidationResult,
 } from './messages';
 import {
   isoDateRegex, numberOptionalNegativeRegex, integerOptionalNegativeRegex, textRegex,
   textGyldigRegex, isEmpty, nameRegex, nameGyldigRegex, saksnummerOrFodselsnummerPattern,
 } from './validatorsHelper';
 
+dayjs.extend(isSameOrAfter);
+dayjs.extend(isSameOrBefore);
+
 type InputValue = string | number | boolean;
 
-export type FormValidationResultOrNull = FormValidationResult | null;
+export type StringOrNull = string | null;
 
-export const required = (value: InputValue): FormValidationResultOrNull => (isEmpty(value) ? isRequiredMessage() : null);
+export const required = (intl: IntlShape) => (value: InputValue): StringOrNull => (isEmpty(value) ? isRequiredMessage(intl) : null);
 
-export const minLength = (length: number) => (text: string): FormValidationResultOrNull => (isEmpty(text)
-  || text.toString().trim().length >= length ? null : minLengthMessage(length));
-export const maxLength = (length: number) => (text: string): FormValidationResultOrNull => (isEmpty(text)
-  || text.toString().trim().length <= length ? null : maxLengthMessage(length));
+export const minLength = (length: number) => (intl: IntlShape) => (text: string): StringOrNull => (isEmpty(text)
+// eslint-disable-next-line react/destructuring-assignment
+  || text.toString().trim().length >= length ? null : minLengthMessage(intl, length));
+export const maxLength = (length: number) => (intl: IntlShape) => (text: string): StringOrNull => (isEmpty(text)
+// eslint-disable-next-line react/destructuring-assignment
+  || text.toString().trim().length <= length ? null : maxLengthMessage(intl, length));
 
-export const minValue = (length: number) => (number: number): FormValidationResultOrNull => (number >= length ? null : minValueMessage(length));
-export const maxValue = (length: number) => (number: number): FormValidationResultOrNull => (number <= length ? null : maxValueMessage(length));
+export const minValue = (length: number) => (intl: IntlShape) => (number: number): StringOrNull => (number >= length ? null : minValueMessage(intl, length));
+export const maxValue = (length: number) => (intl: IntlShape) => (number: number): StringOrNull => (number <= length ? null : maxValueMessage(intl, length));
 
-const hasValidPosOrNegNumber = (text: string): FormValidationResultOrNull => (isEmpty(text)
-  || numberOptionalNegativeRegex.test(text) ? null : invalidNumberMessage(text));
-const hasValidPosOrNegInt = (text: string): FormValidationResultOrNull => (isEmpty(text)
-  || integerOptionalNegativeRegex.test(text) ? null : invalidIntegerMessage(text));
-export const hasValidPosOrNegInteger = (text: string): FormValidationResultOrNull => (hasValidPosOrNegNumber(text) || hasValidPosOrNegInt(text));
+const hasValidPosOrNegNumber = (intl: IntlShape) => (text: string): StringOrNull => (isEmpty(text)
+  || numberOptionalNegativeRegex.test(text) ? null : invalidNumberMessage(intl, text));
+const hasValidPosOrNegInt = (intl: IntlShape) => (text: string): StringOrNull => (isEmpty(text)
+  || integerOptionalNegativeRegex.test(text) ? null : invalidIntegerMessage(intl, text));
+export const hasValidPosOrNegInteger = (intl: IntlShape) => (
+  text: string,
+): StringOrNull => (hasValidPosOrNegNumber(intl)(text) || hasValidPosOrNegInt(intl)(text));
 
-export const hasValidSaksnummerOrFodselsnummerFormat = (text: string): FormValidationResultOrNull => (isEmpty(text)
+export const hasValidSaksnummerOrFodselsnummerFormat = (intl: IntlShape) => (text: string): StringOrNull => (isEmpty(text)
   || saksnummerOrFodselsnummerPattern.test(text)
-  ? null : invalidSaksnummerOrFodselsnummerFormatMessage());
+  ? null : invalidSaksnummerOrFodselsnummerFormatMessage(intl));
 
-export const hasValidDate = (text: string): FormValidationResultOrNull => (isEmpty(text) || isoDateRegex.test(text) ? null : invalidDateMessage());
-export const dateBeforeOrEqual = (latest: moment.Moment | Date | string) => (text: moment.Moment | string): FormValidationResultOrNull => (
-  (isEmpty(text) || moment(text).isSameOrBefore(moment(latest).startOf('day')))
+export const hasValidDate = (intl: IntlShape) => (text: string): StringOrNull => (isEmpty(text)
+  || isoDateRegex.test(text) ? null : invalidDateMessage(intl));
+export const dateBeforeOrEqual = (intl: IntlShape, latest: dayjs.Dayjs | Date | string) => (text: dayjs.Dayjs | string): StringOrNull => (
+  (isEmpty(text) || dayjs(text).isSameOrBefore(dayjs(latest).startOf('day')))
     ? null
-    : dateNotBeforeOrEqualMessage(moment(latest).format(DDMMYYYY_DATE_FORMAT))
+    : dateNotBeforeOrEqualMessage(intl, dayjs(latest).format(DDMMYYYY_DATE_FORMAT))
 );
 const getErrorMessage = (
-  earliest: moment.Moment | Date | string,
-  customErrorMessage?: (date: string) => FormValidationResultOrNull,
-): FormValidationResultOrNull => {
-  const date = moment(earliest).format(DDMMYYYY_DATE_FORMAT);
-  return customErrorMessage ? customErrorMessage(date) : dateNotAfterOrEqualMessage(date);
+  intl: IntlShape,
+  earliest: dayjs.Dayjs | Date | string,
+  customErrorMessage?: (intl: IntlShape, date: string) => StringOrNull,
+): StringOrNull => {
+  const date = dayjs(earliest).format(DDMMYYYY_DATE_FORMAT);
+  return customErrorMessage ? customErrorMessage(intl, date) : dateNotAfterOrEqualMessage(intl, date);
 };
-export const dateAfterOrEqual = (earliest: moment.Moment | Date | string, customErrorMessageFunction?: (date: string) => FormValidationResultOrNull) => (
-  text: moment.Moment | string,
-): FormValidationResultOrNull => (
-  (isEmpty(text) || moment(text).isSameOrAfter(moment(earliest).startOf('day')))
+export const dateAfterOrEqual = (intl: IntlShape, earliest: dayjs.Dayjs | Date | string,
+  customErrorMessageFunction?: (intl: IntlShape, date: string) => StringOrNull) => (
+  text: dayjs.Dayjs | string,
+): StringOrNull => (
+  (isEmpty(text) || dayjs(text).isSameOrAfter(dayjs(earliest).startOf('day')))
     ? null
-    : getErrorMessage(earliest, customErrorMessageFunction)
+    : getErrorMessage(intl, earliest, customErrorMessageFunction)
 );
 
-export const hasValidText = (text: string): FormValidationResultOrNull => {
+export const hasValidText = (intl: IntlShape) => (text: string): StringOrNull => {
   if (!textRegex.test(text)) {
     const illegalChars = text.replace(textGyldigRegex, '');
-    return invalidTextMessage(illegalChars.replace(/[\t]/g, 'Tabulatortegn'));
+    return invalidTextMessage(intl, illegalChars.replace(/[\t]/g, 'Tabulatortegn'));
   }
   return null;
 };
 
-export const hasValidName = (text: string): FormValidationResultOrNull => {
+export const hasValidName = (intl: IntlShape) => (text: string): StringOrNull => {
   if (!nameRegex.test(text)) {
     const illegalChars = text.replace(nameGyldigRegex, '');
-    return invalidTextMessage(illegalChars.replace(/[\t]/g, 'Tabulatortegn'));
+    return invalidTextMessage(intl, illegalChars.replace(/[\t]/g, 'Tabulatortegn'));
   }
   return null;
 };

@@ -2,7 +2,7 @@ import {
   useState, useEffect, DependencyList, useRef,
 } from 'react';
 
-import { AbstractRequestApi, RestKey } from 'data/rest-api';
+import { RequestApi, RestKey } from 'data/rest-api';
 
 import RestApiState from '../RestApiState';
 
@@ -25,7 +25,6 @@ export interface Options {
   updateTriggers?: DependencyList;
   keepData?: boolean;
   suspendRequest?: boolean;
-  isCachingOn?: boolean;
 }
 
 const defaultOptions = {
@@ -34,24 +33,6 @@ const defaultOptions = {
   suspendRequest: false,
   isCachingOn: false,
 };
-
-/**
- * For mocking i unit-test
- */
-export const getUseMultipleRestApiMock = (requestApi: AbstractRequestApi) => (function useMultipleRestApi<T, P>(
-  endpoints: EndpointData[], options: Options = defaultOptions,
-):RestApiData<T> {
-  const endpointData = endpoints.reduce((acc, endpoint) => ({
-    ...acc,
-    [format(endpoint.key.name)]: requestApi.startRequest<T, P>(endpoint.key.name, endpoint.params),
-  }), {});
-  return {
-    state: options.suspendRequest ? RestApiState.NOT_STARTED : RestApiState.SUCCESS,
-    error: undefined,
-    // @ts-ignore
-    data: options.suspendRequest ? undefined : endpointData,
-  };
-});
 
 const DEFAULT_STATE = {
   state: RestApiState.NOT_STARTED,
@@ -63,7 +44,7 @@ const DEFAULT_STATE = {
   * Hook som utfører et restkall ved mount. En kan i tillegg legge ved en dependencies-liste som kan trigge ny henting når data
   * blir oppdatert. Hook returnerer rest-kallets status/resultat/feil
   */
-const getUseMultipleRestApi = (requestApi: AbstractRequestApi) => (function useMultipleRestApi<T, P>(
+const getUseMultipleRestApi = (requestApi: RequestApi) => (function useMultipleRestApi<T, P>(
   endpoints: EndpointData[],
   options?: Options,
 ):RestApiData<T> {
@@ -87,7 +68,7 @@ const getUseMultipleRestApi = (requestApi: AbstractRequestApi) => (function useM
 
       const filteredEndpoints = endpoints.filter((e) => requestApi.hasPath(e.key.name));
 
-      Promise.all(filteredEndpoints.map((e) => requestApi.startRequest<T, P>(e.key.name, e.params, allOptions.isCachingOn)))
+      Promise.all(filteredEndpoints.map((e) => requestApi.startRequest<T, P>(e.key.name, e.params)))
         .then((dataRes) => {
           setData({
             state: RestApiState.SUCCESS,

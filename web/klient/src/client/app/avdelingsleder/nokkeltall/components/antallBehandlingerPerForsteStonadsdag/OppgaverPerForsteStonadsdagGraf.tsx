@@ -2,7 +2,9 @@ import React, { FunctionComponent, useState, useMemo } from 'react';
 import {
   XYPlot, XAxis, YAxis, AreaSeries, Crosshair, HorizontalGridLines,
 } from 'react-vis';
-import moment from 'moment';
+import dayjs from 'dayjs';
+import isSameOrBefore from 'dayjs/plugin/isSameOrBefore';
+import isSameOrAfter from 'dayjs/plugin/isSameOrAfter';
 import { FormattedMessage } from 'react-intl';
 import Panel from 'nav-frontend-paneler';
 import { Normaltekst, Undertekst } from 'nav-frontend-typografi';
@@ -12,25 +14,28 @@ import OppgaverForForsteStonadsdag from 'types/avdelingsleder/oppgaverForForsteS
 
 import styles from './oppgaverPerForsteStonadsdagGraf.less';
 
+dayjs.extend(isSameOrBefore);
+dayjs.extend(isSameOrAfter);
+
 export const lagKoordinater = (oppgaverPerForsteStonadsdag: OppgaverForForsteStonadsdag[]): Koordinat[] => oppgaverPerForsteStonadsdag
   .map((o) => ({
-    x: moment(o.forsteStonadsdag).startOf('day').toDate().getTime(),
+    x: dayjs(o.forsteStonadsdag).startOf('day').toDate().getTime(),
     y: o.antall,
   }));
 
 export const lagDatastruktur = (koordinater: Koordinat[]): Koordinat[] => {
   const nyeKoordinater = [];
   const periodeStart = koordinater
-    .map((koordinat) => moment(koordinat.x))
-    .reduce((tidligesteDato, dato) => (tidligesteDato.isSameOrBefore(dato) ? tidligesteDato : dato), moment().startOf('day'))
+    .map((koordinat) => dayjs(koordinat.x))
+    .reduce((tidligesteDato, dato) => (tidligesteDato.isSameOrBefore(dato) ? tidligesteDato : dato), dayjs().startOf('day'))
     .toDate();
   const periodeSlutt = koordinater
-    .map((koordinat) => moment(koordinat.x))
-    .reduce((senesteDato, dato) => (senesteDato.isSameOrAfter(dato) ? senesteDato : dato), moment().startOf('day'))
+    .map((koordinat) => dayjs(koordinat.x))
+    .reduce((senesteDato, dato) => (senesteDato.isSameOrAfter(dato) ? senesteDato : dato), dayjs().startOf('day'))
     .toDate();
 
-  for (let dato = moment(periodeStart); dato.isSameOrBefore(periodeSlutt); dato = dato.add(1, 'days')) {
-    const funnetKoordinat = koordinater.find((k) => moment(k.x).isSame(dato));
+  for (let dato = dayjs(periodeStart); dato.isSameOrBefore(periodeSlutt); dato = dato.add(1, 'days')) {
+    const funnetKoordinat = koordinater.find((k) => dayjs(k.x).isSame(dato));
     nyeKoordinater.push({
       x: dato.toDate().getTime(),
       y: funnetKoordinat ? funnetKoordinat.y : 0,
@@ -84,12 +89,12 @@ const OppgaverPerForsteStonadsdagGraf: FunctionComponent<OwnProps> = ({
         height={height}
         xType="time"
         onMouseLeave={() => setCrosshairValues([])}
-        {...(isEmpty ? { yDomain: [0, 50], xDomain: [moment().subtract(5, 'd'), moment().add(5, 'd')] } : {})}
+        {...(isEmpty ? { yDomain: [0, 50], xDomain: [dayjs().subtract(5, 'd'), dayjs().add(5, 'd')] } : {})}
       >
         <HorizontalGridLines />
         <XAxis
           tickTotal={5}
-          tickFormat={(x) => moment(x).format(DDMMYYYY_DATE_FORMAT)}
+          tickFormat={(x) => dayjs(x).format(DDMMYYYY_DATE_FORMAT)}
           style={{ text: cssText }}
         />
         <YAxis style={{ text: cssText }} />
@@ -100,7 +105,7 @@ const OppgaverPerForsteStonadsdagGraf: FunctionComponent<OwnProps> = ({
           stroke="#337c9b"
         />
         <Crosshair
-          values={[{ x: moment().toDate(), y: 0 }]}
+          values={[{ x: dayjs().toDate(), y: 0 }]}
           style={{
             line: {
               background: '#c30000',
@@ -122,7 +127,7 @@ const OppgaverPerForsteStonadsdagGraf: FunctionComponent<OwnProps> = ({
             }}
           >
             <div className={styles.crosshair}>
-              <Normaltekst>{`${moment(crosshairValues[0].x).format(DDMMYYYY_DATE_FORMAT)}`}</Normaltekst>
+              <Normaltekst>{`${dayjs(crosshairValues[0].x).format(DDMMYYYY_DATE_FORMAT)}`}</Normaltekst>
               <Undertekst>
                 <FormattedMessage id="ManueltPaVentGraf.Antall" values={{ antall: crosshairValues[0].y }} />
               </Undertekst>

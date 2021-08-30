@@ -2,7 +2,7 @@ import React, { FunctionComponent, useEffect, useCallback } from 'react';
 import {
   injectIntl, WrappedComponentProps, FormattedMessage, IntlShape,
 } from 'react-intl';
-import { Form } from 'react-final-form';
+import { useForm } from 'react-hook-form';
 import { Hovedknapp, Knapp } from 'nav-frontend-knapper';
 import { Normaltekst, Element } from 'nav-frontend-typografi';
 
@@ -13,9 +13,9 @@ import { FlexContainer, FlexRow, FlexColumn } from 'sharedComponents/flexGrid';
 import {
   hasValidText, maxLength, minLength, required,
 } from 'utils/validation/validators';
-import { TextAreaField, InputField } from 'form/FinalFields';
 import Modal from 'sharedComponents/Modal';
 import SaksbehandlerForFlytting from 'types/saksbehandler/saksbehandlerForFlyttingTsType';
+import { Form, TextAreaField, InputField } from 'form/formIndex';
 
 import styles from './flyttReservasjonModal.less';
 
@@ -33,6 +33,13 @@ const formatText = (state: RestApiState, intl: IntlShape, saksbehandler?: Saksbe
     ? `${saksbehandler.navn}, ${saksbehandler.avdelingsnavn.join(', ')}`
     : '';
 };
+
+type SøkFormValues = {
+  brukerIdent: string;
+}
+type LagreFormValues = {
+  begrunnelse: string;
+}
 
 interface OwnProps {
   showModal: boolean;
@@ -70,6 +77,12 @@ export const FlyttReservasjonModal: FunctionComponent<OwnProps & WrappedComponen
     resetRequestData();
   }, []);
 
+  const søkFormMethods = useForm<SøkFormValues>();
+  const brukerIdentValue = søkFormMethods.watch('brukerIdent');
+
+  const lagreFormMethods = useForm<LagreFormValues>();
+  const begrunnelseValue = lagreFormMethods.watch('begrunnelse');
+
   return (
     <Modal
       className={styles.modal}
@@ -78,84 +91,73 @@ export const FlyttReservasjonModal: FunctionComponent<OwnProps & WrappedComponen
       contentLabel={intl.formatMessage({ id: 'FlyttReservasjonModal.FlyttReservasjon' })}
       onRequestClose={closeModal}
     >
-      <Form
-        onSubmit={(values) => finnSaksbehandler(values.brukerIdent)}
-        render={({
-          handleSubmit, values,
-        }) => (
-          <form onSubmit={handleSubmit}>
-            <Element>
-              <FormattedMessage id="FlyttReservasjonModal.FlyttReservasjon" />
-            </Element>
-            <VerticalSpacer eightPx />
-            <FlexContainer>
-              <FlexRow>
-                <FlexColumn>
-                  <InputField
-                    name="brukerIdent"
-                    label={intl.formatMessage({ id: 'FlyttReservasjonModal.Brukerident' })}
-                    bredde="S"
-                    validate={[required, minLength7, maxLength7]}
-                    autoFocus
-                  />
-                </FlexColumn>
-                <FlexColumn>
-                  <Hovedknapp
-                    mini
-                    htmlType="submit"
-                    className={styles.button}
-                    spinner={state === RestApiState.LOADING}
-                    disabled={!values.brukerIdent || state === RestApiState.LOADING}
-                  >
-                    <FormattedMessage id="FlyttReservasjonModal.Sok" />
-                  </Hovedknapp>
-                </FlexColumn>
-              </FlexRow>
-            </FlexContainer>
-            {state === RestApiState.SUCCESS && (
-              <>
-                <Normaltekst>{formatText(state, intl, saksbehandler)}</Normaltekst>
-                <VerticalSpacer sixteenPx />
-              </>
-            )}
-          </form>
+      <Form<SøkFormValues> formMethods={søkFormMethods} onSubmit={(values) => finnSaksbehandler(values.brukerIdent)}>
+        <Element>
+          <FormattedMessage id="FlyttReservasjonModal.FlyttReservasjon" />
+        </Element>
+        <VerticalSpacer eightPx />
+        <FlexContainer>
+          <FlexRow>
+            <FlexColumn>
+              <InputField
+                name="brukerIdent"
+                label={intl.formatMessage({ id: 'FlyttReservasjonModal.Brukerident' })}
+                bredde="S"
+                validate={[required(intl), minLength7(intl), maxLength7(intl)]}
+                autoFocus
+              />
+            </FlexColumn>
+            <FlexColumn>
+              <Hovedknapp
+                mini
+                htmlType="submit"
+                className={styles.button}
+                spinner={state === RestApiState.LOADING}
+                disabled={!brukerIdentValue || state === RestApiState.LOADING}
+              >
+                <FormattedMessage id="FlyttReservasjonModal.Sok" />
+              </Hovedknapp>
+            </FlexColumn>
+          </FlexRow>
+        </FlexContainer>
+        {state === RestApiState.SUCCESS && (
+          <>
+            <Normaltekst>{formatText(state, intl, saksbehandler)}</Normaltekst>
+            <VerticalSpacer sixteenPx />
+          </>
         )}
-      />
+      </Form>
       <VerticalSpacer sixteenPx />
-      <Form
+      <Form<LagreFormValues>
+        formMethods={lagreFormMethods}
         onSubmit={(values) => {
           toggleMenu();
           flyttReservasjon(saksbehandler ? saksbehandler.brukerIdent : '', values.begrunnelse);
         }}
-        render={({
-          handleSubmit, values,
-        }) => (
-          <form onSubmit={handleSubmit}>
-            <TextAreaField
-              name="begrunnelse"
-              label={intl.formatMessage({ id: 'FlyttReservasjonModal.Begrunn' })}
-              validate={[required, maxLength500, minLength3, hasValidText]}
-              maxLength={500}
-            />
-            <Hovedknapp
-              className={styles.submitButton}
-              mini
-              htmlType="submit"
-              disabled={!saksbehandler || (!values.begrunnelse || values.begrunnelse.length < 3)}
-            >
-              {intl.formatMessage({ id: 'FlyttReservasjonModal.Ok' })}
-            </Hovedknapp>
-            <Knapp
-              className={styles.cancelButton}
-              mini
-              htmlType="reset"
-              onClick={closeModal}
-            >
-              {intl.formatMessage({ id: 'FlyttReservasjonModal.Avbryt' })}
-            </Knapp>
-          </form>
-        )}
-      />
+      >
+        <TextAreaField
+          name="begrunnelse"
+          label={intl.formatMessage({ id: 'FlyttReservasjonModal.Begrunn' })}
+          validate={[required(intl), maxLength500(intl), minLength3(intl), hasValidText(intl)]}
+          maxLength={500}
+        />
+        <Hovedknapp
+          className={styles.submitButton}
+          mini
+          htmlType="submit"
+          disabled={!saksbehandler || (!begrunnelseValue || begrunnelseValue.length < 3)}
+        >
+          {intl.formatMessage({ id: 'FlyttReservasjonModal.Ok' })}
+        </Hovedknapp>
+        <Knapp
+          className={styles.cancelButton}
+          mini
+          htmlType="reset"
+          onClick={closeModal}
+        >
+          {intl.formatMessage({ id: 'FlyttReservasjonModal.Avbryt' })}
+        </Knapp>
+      </Form>
     </Modal>
   );
 };

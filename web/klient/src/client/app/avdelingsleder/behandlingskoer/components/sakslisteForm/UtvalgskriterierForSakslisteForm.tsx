@@ -1,8 +1,8 @@
 import React, { FunctionComponent, useEffect, useCallback } from 'react';
-import { Form } from 'react-final-form';
 import {
   injectIntl, WrappedComponentProps, FormattedMessage, IntlShape,
 } from 'react-intl';
+import { useForm } from 'react-hook-form';
 import Panel from 'nav-frontend-paneler';
 import { Undertittel, Element, Normaltekst } from 'nav-frontend-typografi';
 
@@ -11,10 +11,9 @@ import {
   required, minLength, maxLength, hasValidName,
 } from 'utils/validation/validators';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
-import { InputField } from 'form/FinalFields';
 import { restApiHooks, RestApiPathsKeys } from 'data/fplosRestApi';
+import { Form, InputField } from 'form/formIndex';
 import Saksliste from 'types/avdelingsleder/sakslisteAvdelingTsType';
-import AutoLagringVedBlur from './AutoLagringVedBlur';
 import BehandlingstypeVelger from './BehandlingstypeVelger';
 import AndreKriterierVelger from './AndreKriterierVelger';
 import FagsakYtelseTypeVelger from './FagsakYtelseTypeVelger';
@@ -25,12 +24,27 @@ import styles from './utvalgskriterierForSakslisteForm.less';
 const minLength3 = minLength(3);
 const maxLength100 = maxLength(100);
 
-const finnDagerSomTall = (antallDager: string): undefined | number => {
+type FormValues = {
+  sakslisteId: number
+  navn: string;
+  fagsakYtelseType: string;
+  sortering?: string;
+  erDynamiskPeriode?: boolean;
+  fra?: string;
+  til?: string;
+  fomDato?: string;
+  tomDato?: string;
+}
+
+const finnDagerSomTall = (antallDager?: string): undefined | number => {
+  if (antallDager === undefined) {
+    return undefined;
+  }
   const nr = Number.parseInt(antallDager, 10);
   return Number.isNaN(nr) ? undefined : nr;
 };
 
-const buildInitialValues = (intl: IntlShape, valgtSaksliste: Saksliste): InitialValues => {
+const buildInitialValues = (intl: IntlShape, valgtSaksliste: Saksliste): FormValues => {
   const behandlingTypes = valgtSaksliste.behandlingTyper ? valgtSaksliste.behandlingTyper.reduce((acc, bt) => ({ ...acc, [bt.kode]: true }), {}) : {};
   const fagsakYtelseType = valgtSaksliste.fagsakYtelseTyper && valgtSaksliste.fagsakYtelseTyper.length > 0
     ? valgtSaksliste.fagsakYtelseTyper[0].kode : '';
@@ -46,8 +60,8 @@ const buildInitialValues = (intl: IntlShape, valgtSaksliste: Saksliste): Initial
     sortering: valgtSaksliste.sortering ? valgtSaksliste.sortering.sorteringType.kode : undefined,
     fomDato: valgtSaksliste.sortering ? valgtSaksliste.sortering.fomDato : undefined,
     tomDato: valgtSaksliste.sortering ? valgtSaksliste.sortering.tomDato : undefined,
-    fra: valgtSaksliste.sortering ? valgtSaksliste.sortering.fra : undefined,
-    til: valgtSaksliste.sortering ? valgtSaksliste.sortering.til : undefined,
+    fra: valgtSaksliste.sortering ? valgtSaksliste.sortering.fra?.toString() : undefined,
+    til: valgtSaksliste.sortering ? valgtSaksliste.sortering.til?.toString() : undefined,
     erDynamiskPeriode: valgtSaksliste.sortering ? valgtSaksliste.sortering.erDynamiskPeriode : undefined,
     fagsakYtelseType,
     ...andreKriterierTyper,
@@ -61,18 +75,6 @@ interface OwnProps {
   valgtAvdelingEnhet: string;
   hentAvdelingensSakslister: (params: {avdelingEnhet: string}) => void;
   hentOppgaverForAvdelingAntall: (params: {avdelingEnhet: string}) => void;
-}
-
-interface InitialValues {
-  sakslisteId: number;
-  navn: string;
-  sortering?: string;
-  fomDato?: string;
-  tomDato?: string;
-  fra?: number;
-  til?: number;
-  erDynamiskPeriode?: boolean;
-  fagsakYtelseType: string;
 }
 
 /**
@@ -98,86 +100,87 @@ export const UtvalgskriterierForSakslisteForm: FunctionComponent<OwnProps & Wrap
 
   const { startRequest: lagreSakslisteNavn } = restApiHooks.useRestApiRunner(RestApiPathsKeys.LAGRE_SAKSLISTE_NAVN);
 
-  const tranformValues = useCallback((values: {sakslisteId: number; navn: string}): void => {
-    lagreSakslisteNavn({ sakslisteId: values.sakslisteId, navn: values.navn, avdelingEnhet: valgtAvdelingEnhet })
+  const tranformValues = useCallback((nyttNavn: string): void => {
+    lagreSakslisteNavn({ sakslisteId: valgtSaksliste.sakslisteId, navn: nyttNavn, avdelingEnhet: valgtAvdelingEnhet })
       .then(() => hentAvdelingensSakslister({ avdelingEnhet: valgtAvdelingEnhet }));
-  }, [valgtAvdelingEnhet]);
+  }, [valgtAvdelingEnhet, valgtSaksliste]);
+
+  const formMethods = useForm<FormValues>({
+    defaultValues: buildInitialValues(intl, valgtSaksliste),
+  });
+
+  const values = formMethods.watch();
 
   return (
-    <Form
-      onSubmit={() => undefined}
-      initialValues={buildInitialValues(intl, valgtSaksliste)}
-      render={({ values }) => (
-        <Panel className={styles.panel}>
-          <AutoLagringVedBlur lagre={tranformValues} fieldNames={['navn']} />
-          <Element>
-            <FormattedMessage id="UtvalgskriterierForSakslisteForm.Utvalgskriterier" />
-          </Element>
-          <VerticalSpacer eightPx />
-          <Row>
-            <Column xs="9">
-              <InputField
-                name="navn"
-                label={intl.formatMessage({ id: 'UtvalgskriterierForSakslisteForm.Navn' })}
-                validate={[required, minLength3, maxLength100, hasValidName]}
-                onBlurValidation
-                bredde="L"
-                autoFocus
-              />
-            </Column>
-            <Column xs="3">
-              <div className={styles.grayBox}>
-                <Normaltekst><FormattedMessage id="UtvalgskriterierForSakslisteForm.AntallSaker" /></Normaltekst>
-                <Undertittel>{antallOppgaver ? `${antallOppgaver}` : '0'}</Undertittel>
-              </div>
-            </Column>
-          </Row>
-          <Row>
-            <Column xs="6" className={styles.stonadstypeRadios}>
-              <FagsakYtelseTypeVelger
-                valgtSakslisteId={valgtSaksliste.sakslisteId}
-                valgtAvdelingEnhet={valgtAvdelingEnhet}
-                hentAvdelingensSakslister={hentAvdelingensSakslister}
-                hentAntallOppgaver={hentAntallOppgaver}
-              />
-            </Column>
-          </Row>
-          <Row>
-            <Column xs="3">
-              <BehandlingstypeVelger
-                valgtSakslisteId={valgtSaksliste.sakslisteId}
-                valgtAvdelingEnhet={valgtAvdelingEnhet}
-                hentAvdelingensSakslister={hentAvdelingensSakslister}
-                hentAntallOppgaver={hentAntallOppgaver}
-              />
-            </Column>
-            <Column xs="4">
-              <AndreKriterierVelger
-                valgtSakslisteId={valgtSaksliste.sakslisteId}
-                valgtAvdelingEnhet={valgtAvdelingEnhet}
-                values={values}
-                hentAvdelingensSakslister={hentAvdelingensSakslister}
-                hentAntallOppgaver={hentAntallOppgaver}
-              />
-            </Column>
-            <Column xs="4">
-              <SorteringVelger
-                valgtSakslisteId={valgtSaksliste.sakslisteId}
-                valgteBehandlingtyper={valgtSaksliste.behandlingTyper}
-                valgtAvdelingEnhet={valgtAvdelingEnhet}
-                erDynamiskPeriode={values.erDynamiskPeriode}
-                fra={finnDagerSomTall(values.fra)}
-                til={finnDagerSomTall(values.til)}
-                fomDato={values.fomDato}
-                tomDato={values.tomDato}
-                hentAvdelingensSakslister={hentAvdelingensSakslister}
-                hentAntallOppgaver={hentAntallOppgaver}
-              />
-            </Column>
-          </Row>
-        </Panel>
-      )}
-    />
+    <Form<FormValues> formMethods={formMethods}>
+      <Panel className={styles.panel}>
+        <Element>
+          <FormattedMessage id="UtvalgskriterierForSakslisteForm.Utvalgskriterier" />
+        </Element>
+        <VerticalSpacer eightPx />
+        <Row>
+          <Column xs="9">
+            <InputField
+              name="navn"
+              label={intl.formatMessage({ id: 'UtvalgskriterierForSakslisteForm.Navn' })}
+              validate={[required(intl), minLength3(intl), maxLength100(intl), hasValidName(intl)]}
+              bredde="L"
+              onBlur={tranformValues}
+              shouldValidateOnBlur
+            />
+          </Column>
+          <Column xs="3">
+            <div className={styles.grayBox}>
+              <Normaltekst><FormattedMessage id="UtvalgskriterierForSakslisteForm.AntallSaker" /></Normaltekst>
+              <Undertittel>{antallOppgaver ? `${antallOppgaver}` : '0'}</Undertittel>
+            </div>
+          </Column>
+        </Row>
+        <Row>
+          <Column xs="6" className={styles.stonadstypeRadios}>
+            <FagsakYtelseTypeVelger
+              valgtSakslisteId={valgtSaksliste.sakslisteId}
+              valgtAvdelingEnhet={valgtAvdelingEnhet}
+              hentAvdelingensSakslister={hentAvdelingensSakslister}
+              hentAntallOppgaver={hentAntallOppgaver}
+            />
+          </Column>
+        </Row>
+        <Row>
+          <Column xs="3">
+            <BehandlingstypeVelger
+              valgtSakslisteId={valgtSaksliste.sakslisteId}
+              valgtAvdelingEnhet={valgtAvdelingEnhet}
+              hentAvdelingensSakslister={hentAvdelingensSakslister}
+              hentAntallOppgaver={hentAntallOppgaver}
+            />
+          </Column>
+          <Column xs="4">
+            <AndreKriterierVelger
+              valgtSakslisteId={valgtSaksliste.sakslisteId}
+              valgtAvdelingEnhet={valgtAvdelingEnhet}
+              values={values}
+              hentAvdelingensSakslister={hentAvdelingensSakslister}
+              hentAntallOppgaver={hentAntallOppgaver}
+            />
+          </Column>
+          <Column xs="4">
+            <SorteringVelger
+              valgtSakslisteId={valgtSaksliste.sakslisteId}
+              valgteBehandlingtyper={valgtSaksliste.behandlingTyper}
+              valgtAvdelingEnhet={valgtAvdelingEnhet}
+              erDynamiskPeriode={!!values.erDynamiskPeriode}
+              fra={finnDagerSomTall(values.fra)}
+              til={finnDagerSomTall(values.til)}
+              fomDato={values.fomDato}
+              tomDato={values.tomDato}
+              hentAvdelingensSakslister={hentAvdelingensSakslister}
+              hentAntallOppgaver={hentAntallOppgaver}
+            />
+          </Column>
+        </Row>
+      </Panel>
+    </Form>
   );
 };
 

@@ -1,5 +1,5 @@
 import React from 'react';
-import moment from 'moment';
+import dayjs from 'dayjs';
 
 import { ISO_DATE_FORMAT } from 'utils/formats';
 import behandlingType from 'kodeverk/behandlingType';
@@ -15,7 +15,7 @@ export default {
   decorators: [withIntl],
 };
 
-export const GrafForNyeOgFerdigstilteOppgaver = () => (
+export const Default = () => (
   <NyeOgFerdigstilteOppgaverForSisteSyvPanel
     width={700}
     height={200}
@@ -26,7 +26,7 @@ export const GrafForNyeOgFerdigstilteOppgaver = () => (
       },
       antallNye: 10,
       antallFerdigstilte: 20,
-      dato: moment().subtract(1, 'd').format(ISO_DATE_FORMAT),
+      dato: dayjs().subtract(1, 'd').format(ISO_DATE_FORMAT),
     }, {
       behandlingType: {
         kode: behandlingType.FORSTEGANGSSOKNAD,
@@ -34,7 +34,7 @@ export const GrafForNyeOgFerdigstilteOppgaver = () => (
       },
       antallNye: 30,
       antallFerdigstilte: 15,
-      dato: moment().subtract(3, 'd').format(ISO_DATE_FORMAT),
+      dato: dayjs().subtract(3, 'd').format(ISO_DATE_FORMAT),
     }, {
       behandlingType: {
         kode: behandlingType.KLAGE,
@@ -42,7 +42,7 @@ export const GrafForNyeOgFerdigstilteOppgaver = () => (
       },
       antallNye: 23,
       antallFerdigstilte: 2,
-      dato: moment().subtract(4, 'd').format(ISO_DATE_FORMAT),
+      dato: dayjs().subtract(4, 'd').format(ISO_DATE_FORMAT),
     }, {
       behandlingType: {
         kode: behandlingType.KLAGE,
@@ -50,7 +50,7 @@ export const GrafForNyeOgFerdigstilteOppgaver = () => (
       },
       antallNye: 23,
       antallFerdigstilte: 2,
-      dato: moment().subtract(5, 'd').format(ISO_DATE_FORMAT),
+      dato: dayjs().subtract(5, 'd').format(ISO_DATE_FORMAT),
     }]}
   />
 );

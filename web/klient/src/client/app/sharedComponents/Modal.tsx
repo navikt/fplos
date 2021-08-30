@@ -16,7 +16,7 @@ interface OwnProps {
  * Presentasjonskomponent. Wrapper Modal-komponenten fra nav-frontend-biblioteket, men tillater ikke bruk av propertien 'shouldCloseOnOverlayClick'.
  */
 export const Modal: FunctionComponent<OwnProps> = ({ children, ...otherProps }) => {
-  NavModal.setAppElement('div#app');
+  NavModal.setAppElement(process.env.NODE_ENV !== 'test' ? 'div#app' : 'div');
   return (
     <NavModal {...otherProps}>
       {children}

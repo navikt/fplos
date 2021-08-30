@@ -1,5 +1,5 @@
 import React from 'react';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import { Story } from '@storybook/react';
 
 import { RestApiGlobalStatePathsKeys } from 'data/fplosRestApi';
@@ -42,10 +42,8 @@ const Template: Story<{ nyeOgFerdigstilteOppgaver?: NyeOgFerdigstilteOppgaver[] 
   );
 };
 
-export const IngenBehandlinger = Template.bind({});
-
-export const GrafForNyeOgFerdigstilteOppgaverForIdag = Template.bind({});
-GrafForNyeOgFerdigstilteOppgaverForIdag.args = {
+export const Default = Template.bind({});
+Default.args = {
   nyeOgFerdigstilteOppgaver: [{
     behandlingType: {
       kode: behandlingType.FORSTEGANGSSOKNAD,
@@ -53,7 +51,7 @@ GrafForNyeOgFerdigstilteOppgaverForIdag.args = {
     },
     antallNye: 10,
     antallFerdigstilte: 20,
-    dato: moment().format(ISO_DATE_FORMAT),
+    dato: dayjs().format(ISO_DATE_FORMAT),
   }, {
     behandlingType: {
       kode: behandlingType.KLAGE,
@@ -61,7 +59,7 @@ GrafForNyeOgFerdigstilteOppgaverForIdag.args = {
     },
     antallNye: 23,
     antallFerdigstilte: 2,
-    dato: moment().format(ISO_DATE_FORMAT),
+    dato: dayjs().format(ISO_DATE_FORMAT),
   }, {
     behandlingType: {
       kode: behandlingType.REVURDERING,
@@ -69,7 +67,7 @@ GrafForNyeOgFerdigstilteOppgaverForIdag.args = {
     },
     antallNye: 3,
     antallFerdigstilte: 24,
-    dato: moment().format(ISO_DATE_FORMAT),
+    dato: dayjs().format(ISO_DATE_FORMAT),
   }, {
     behandlingType: {
       kode: behandlingType.DOKUMENTINNSYN,
@@ -77,6 +75,8 @@ GrafForNyeOgFerdigstilteOppgaverForIdag.args = {
     },
     antallNye: 23,
     antallFerdigstilte: 12,
-    dato: moment().format(ISO_DATE_FORMAT),
+    dato: dayjs().format(ISO_DATE_FORMAT),
   }],
 };
+
+export const IngenBehandlinger = Template.bind({});

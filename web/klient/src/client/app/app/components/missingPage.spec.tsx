@@ -1,22 +1,16 @@
 import React from 'react';
-import { shallow } from 'enzyme';
-import { Link } from 'react-router-dom';
-import { FormattedMessage } from 'react-intl';
-import Panel from 'nav-frontend-paneler';
+import { render, screen } from '@testing-library/react';
+import { composeStories } from '@storybook/testing-react';
+import * as stories from 'stories/MissingPage.stories';
 
-import MissingPage from './MissingPage';
+const { Default } = composeStories(stories);
 
 describe('<MissingPage>', () => {
-  it(
-    'skal vise en feilmelding og en lenke som leder tilbake til hovedside',
-    () => {
-      const wrapper = shallow(<MissingPage />);
+  it('skal vise feilside med teksten Side finnes ikke', async () => {
+    render(<Default />);
 
-      expect(wrapper.find(Panel)).toHaveLength(1);
-      expect(wrapper.find(FormattedMessage)).toHaveLength(2);
-      const link = wrapper.find(Link);
-      expect(link).toHaveLength(1);
-      expect(link.prop('to')).toEqual('/');
-    },
-  );
+    expect(await screen.findByText('Side finnes ikke')).toBeInTheDocument();
+
+    expect(screen.getByText('Hjem')).toBeInTheDocument();
+  });
 });

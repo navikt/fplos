@@ -7,8 +7,8 @@ import { restApiHooks, RestApiPathsKeys } from 'data/fplosRestApi';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import FagsakYtelseType from 'kodeverk/fagsakYtelseType';
 import KodeverkType from 'kodeverk/kodeverkTyper';
-import { RadioGroupField, RadioOption } from 'form/FinalFields';
 import useKodeverk from 'data/useKodeverk';
+import { RadioOption, RadioGroupField } from 'form/formIndex';
 
 const finnFagsakYtelseTypeNavn = (fagsakYtelseTyper: Kodeverk[], valgtFagsakYtelseType: string) => {
   const type = fagsakYtelseTyper.find((fyt) => fyt.kode === valgtFagsakYtelseType);

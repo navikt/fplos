@@ -33,13 +33,13 @@ const Template: Story<{ behandledeOppgaver?: Oppgave[] }> = ({
   );
 };
 
-export const IngenBehandlinger = Template.bind({});
-
-export const SistBehandlendeSaker = Template.bind({});
-SistBehandlendeSaker.args = {
+export const Default = Template.bind({});
+Default.args = {
   behandledeOppgaver: [{
     id: 1,
     personnummer: '334342323',
     navn: 'Espen Utvikler',
   } as Oppgave],
 };
+
+export const IngenBehandlinger = Template.bind({});

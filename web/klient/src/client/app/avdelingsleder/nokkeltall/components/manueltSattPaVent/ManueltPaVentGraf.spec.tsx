@@ -1,5 +1,5 @@
 import React from 'react';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import { shallow } from 'enzyme';
 import { AreaSeries, Crosshair, XYPlot } from 'react-vis';
 import { FormattedMessage } from 'react-intl';
@@ -29,21 +29,21 @@ describe('<ManueltPaVentGraf>', () => {
         kode: FagsakYtelseType.FORELDREPRENGER,
         navn: 'Foreldrepenger',
       },
-      behandlingFrist: moment().format(ISO_DATE_FORMAT),
+      behandlingFrist: dayjs().format(ISO_DATE_FORMAT),
       antall: 1,
     }, {
       fagsakYtelseType: {
         kode: FagsakYtelseType.FORELDREPRENGER,
         navn: 'Foreldrepenger',
       },
-      behandlingFrist: moment().add(1, 'd').format(ISO_DATE_FORMAT),
+      behandlingFrist: dayjs().add(1, 'd').format(ISO_DATE_FORMAT),
       antall: 2,
     }, {
       fagsakYtelseType: {
         kode: FagsakYtelseType.FORELDREPRENGER,
         navn: 'Foreldrepenger',
       },
-      behandlingFrist: moment().add(2, 'd').format(ISO_DATE_FORMAT),
+      behandlingFrist: dayjs().add(2, 'd').format(ISO_DATE_FORMAT),
       antall: 3,
     }];
 
@@ -59,14 +59,14 @@ describe('<ManueltPaVentGraf>', () => {
 
     const func = areaSeries.first().prop('onNearestX') as any;
     func({
-      x: moment().add(1, 'd').toDate(),
+      x: dayjs().add(1, 'd').toDate(),
       y: 2,
     });
 
     const crosshair = wrapper.find(Crosshair);
     expect(crosshair).toHaveLength(1);
 
-    expect(crosshair.find(Normaltekst).childAt(0).text()).toEqual(moment().add(1, 'd').format(DDMMYYYY_DATE_FORMAT));
+    expect(crosshair.find(Normaltekst).childAt(0).text()).toEqual(dayjs().add(1, 'd').format(DDMMYYYY_DATE_FORMAT));
     const tekst = crosshair.find(Undertekst);
     expect(tekst).toHaveLength(1);
     expect(tekst.first().find(FormattedMessage).prop('values')).toEqual({ antall: 2 });

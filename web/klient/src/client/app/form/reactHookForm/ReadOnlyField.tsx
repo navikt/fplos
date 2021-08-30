@@ -2,7 +2,6 @@ import React, { FunctionComponent } from 'react';
 import { Normaltekst } from 'nav-frontend-typografi';
 
 import EditedIcon from 'sharedComponents/EditedIcon';
-import { FieldRenderProps } from 'react-final-form';
 import Label, { LabelType } from './Label';
 
 import styles from './readOnlyField.less';
@@ -14,7 +13,7 @@ interface OwnProps {
   isEdited?: boolean;
 }
 
-export const ReadOnlyField: FunctionComponent<OwnProps & FieldRenderProps<any>> = ({
+export const ReadOnlyField: FunctionComponent<OwnProps & any> = ({
   label,
   input,
   isEdited,

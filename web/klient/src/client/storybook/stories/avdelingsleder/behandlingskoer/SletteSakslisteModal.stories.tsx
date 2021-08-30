@@ -1,7 +1,9 @@
 import React from 'react';
 import { action } from '@storybook/addon-actions';
+import { Story } from '@storybook/react';
 
 import SletteSakslisteModal from 'avdelingsleder/behandlingskoer/components/SletteSakslisteModal';
+import Saksliste from 'types/avdelingsleder/sakslisteAvdelingTsType';
 
 import withIntl from '../../../decorators/withIntl';
 
@@ -11,7 +13,13 @@ export default {
   decorators: [withIntl],
 };
 
-export const skalViseModalForSlettingAvSaksliste = () => (
+const Template: Story<{
+  cancel: () => void;
+  submit: (saksliste: Saksliste) => void;
+}> = ({
+  cancel,
+  submit,
+}) => (
   <SletteSakslisteModal
     valgtSaksliste={{
       sakslisteId: 1,
@@ -20,7 +28,13 @@ export const skalViseModalForSlettingAvSaksliste = () => (
       saksbehandlerIdenter: [],
       antallBehandlinger: 2,
     }}
-    cancel={action('button-click')}
-    submit={action('button-click')}
+    cancel={cancel}
+    submit={submit}
   />
 );
+
+export const Default = Template.bind({});
+Default.args = {
+  cancel: action('button-click'),
+  submit: action('button-click'),
+};

@@ -43,8 +43,8 @@ const Template: Story<{ saksbehandlere: Saksbehandler[], sakslister: Saksliste[]
   );
 };
 
-export const ValgtKøOgUtvalgskriterier = Template.bind({});
-ValgtKøOgUtvalgskriterier.args = {
+export const Default = Template.bind({});
+Default.args = {
   saksbehandlere: [{
     brukerIdent: {
       brukerIdent: '32434',
@@ -78,6 +78,86 @@ ValgtKøOgUtvalgskriterier.args = {
       andreKriterierType: {
         kode: andreKriterierType.TIL_BESLUTTER,
         navn: 'Til beslutter',
+      },
+      inkluder: true,
+    }],
+    sortering: {
+      sorteringType: {
+        kode: koSortering.BEHANDLINGSFRIST,
+        navn: 'Behandlingsfrist',
+      },
+      fra: 2,
+      til: 4,
+      erDynamiskPeriode: true,
+    },
+  }],
+};
+
+export const MedToSakslister = Template.bind({});
+MedToSakslister.args = {
+  saksbehandlere: [{
+    brukerIdent: {
+      brukerIdent: '32434',
+      verdi: '32434',
+    },
+    navn: 'Espen Utvikler',
+    avdelingsnavn: [],
+  }, {
+    brukerIdent: {
+      brukerIdent: '31111',
+      verdi: '32111',
+    },
+    navn: 'Auto Joakim',
+    avdelingsnavn: [],
+  }],
+  sakslister: [{
+    sakslisteId: 1,
+    navn: 'Saksliste 1',
+    behandlingTyper: [{
+      kode: behandlingType.FORSTEGANGSSOKNAD,
+      navn: 'Førstegangssøknad',
+    }, {
+      kode: behandlingType.REVURDERING,
+      navn: 'Revurdering',
+    }],
+    fagsakYtelseTyper: [{
+      kode: fagsakYtelseType.FORELDREPRENGER,
+      navn: 'Foreldrepenger',
+    }],
+    andreKriterier: [{
+      andreKriterierType: {
+        kode: andreKriterierType.TIL_BESLUTTER,
+        navn: 'Til beslutter',
+      },
+      inkluder: true,
+    }],
+    sortering: {
+      sorteringType: {
+        kode: koSortering.BEHANDLINGSFRIST,
+        navn: 'Behandlingsfrist',
+      },
+      fra: 2,
+      til: 4,
+      erDynamiskPeriode: true,
+    },
+  }, {
+    sakslisteId: 2,
+    navn: 'Saksliste 2',
+    behandlingTyper: [{
+      kode: behandlingType.FORSTEGANGSSOKNAD,
+      navn: 'Førstegangssøknad',
+    }, {
+      kode: behandlingType.KLAGE,
+      navn: 'Klage',
+    }],
+    fagsakYtelseTyper: [{
+      kode: fagsakYtelseType.SVANGERSKAPPENGER,
+      navn: 'Svangerskapspenger',
+    }],
+    andreKriterier: [{
+      andreKriterierType: {
+        kode: andreKriterierType.UTBETALING_TIL_BRUKER,
+        navn: 'Utbetaling til bruker',
       },
       inkluder: true,
     }],

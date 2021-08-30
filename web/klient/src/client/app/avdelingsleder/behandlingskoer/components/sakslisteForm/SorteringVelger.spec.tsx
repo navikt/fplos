@@ -1,85 +1,86 @@
 import React from 'react';
-import sinon from 'sinon';
-import { IntlShape } from 'react-intl';
+import { fireEvent, render, screen } from '@testing-library/react';
+import { composeStories } from '@storybook/testing-react';
+import * as stories from 'stories/avdelingsleder/behandlingskoer/SorteringVelger.stories';
+import userEvent from '@testing-library/user-event';
 
-import { requestApi, RestApiGlobalStatePathsKeys, RestApiPathsKeys } from 'data/fplosRestApi';
-import KodeverkType from 'kodeverk/kodeverkTyper';
-import { shallowWithIntl, intlMock } from 'testHelpers/intl-enzyme-test-helper';
-import KoSortering from 'kodeverk/KoSortering';
-import { RadioGroupField, RadioOption } from 'form/FinalFields';
-import SorteringVelger from './SorteringVelger';
+const {
+  SorteringsvelgerNårMangeBehandlingstyperErValgt,
+  SorteringsvelgerNårKunTilbakekrevingErValgt,
+  SorteringsvelgerNårDynamiskPeriodeErValgt,
+} = composeStories(stories);
 
 describe('<SorteringVelger>', () => {
-  const intl: Partial<IntlShape> = {
-    ...intlMock,
-  };
-
-  const koSorteringTyper = [{
-    kode: KoSortering.OPPRETT_BEHANDLING,
-    navn: 'opprett',
-    felttype: '',
-    feltkategori: '',
-  }, {
-    kode: KoSortering.BEHANDLINGSFRIST,
-    navn: 'frist',
-    felttype: '',
-    feltkategori: '',
-  }];
-
-  const alleKodeverk = {
-    [KodeverkType.KO_SORTERING]: koSorteringTyper,
-  };
-
-  it('skal vise radioknapper for alle sorteringsvalg', () => {
-    requestApi.mock(RestApiGlobalStatePathsKeys.KODEVERK.name, alleKodeverk);
-
-    const wrapper = shallowWithIntl(<SorteringVelger.WrappedComponent
-      intl={intl as IntlShape}
-      valgtSakslisteId={1}
-      valgtAvdelingEnhet="1"
-      erDynamiskPeriode={false}
-      valgteBehandlingtyper={[]}
-      fra={10}
-      til={10}
-      fomDato="2020.01.01"
-      tomDato="2020.10.01"
-      hentAvdelingensSakslister={sinon.spy()}
-      hentAntallOppgaver={sinon.spy()}
-    />);
-
-    const options = wrapper.find(RadioOption);
-    expect(options).toHaveLength(2);
-    expect(options.first().prop('value')).toEqual(KoSortering.OPPRETT_BEHANDLING);
-    expect(options.last().prop('value')).toEqual(KoSortering.BEHANDLINGSFRIST);
+  it('skal vise tre sorteringsvalg når mange behandlingstyper er valgt', async () => {
+    const { getByLabelText } = render(<SorteringsvelgerNårMangeBehandlingstyperErValgt />);
+    expect(await screen.findByText('Dato for behandlingsfrist')).toBeInTheDocument();
+    expect(getByLabelText('Dato for behandlingsfrist')).toBeChecked();
+    expect(getByLabelText('Dato for opprettelse av behandling')).not.toBeChecked();
+    expect(getByLabelText('Dato for første stønadsdag')).not.toBeChecked();
+    expect(screen.queryByText('Feilutbetalt beløp')).not.toBeInTheDocument();
+    expect(screen.queryByText('Dato for første feilutbetaling')).not.toBeInTheDocument();
   });
 
-  it('skal lagre sortering ved klikk på radioknapp', () => {
-    requestApi.mock(RestApiGlobalStatePathsKeys.KODEVERK.name, alleKodeverk);
-    requestApi.mock(RestApiPathsKeys.LAGRE_SAKSLISTE_SORTERING.name, {});
-    requestApi.mock(RestApiPathsKeys.LAGRE_SAKSLISTE_SORTERING_INTERVALL.name);
+  it('skal vise datovelger der dynamisk periode ikke er valgt', async () => {
+    const { getByLabelText } = render(<SorteringsvelgerNårMangeBehandlingstyperErValgt />);
+    expect(await screen.findByText('Dato for behandlingsfrist')).toBeInTheDocument();
+    expect(screen.getByText('Ta kun med behandlinger med dato')).toBeInTheDocument();
+    expect(screen.getByText('F.o.m.')).toBeInTheDocument();
+    expect(screen.getByText('T.o.m.')).toBeInTheDocument();
 
-    const wrapper = shallowWithIntl(<SorteringVelger.WrappedComponent
-      intl={intl as IntlShape}
-      valgtSakslisteId={1}
-      valgtAvdelingEnhet="3"
-      erDynamiskPeriode={false}
-      valgteBehandlingtyper={[]}
-      fra={10}
-      til={10}
-      fomDato="2020.01.01"
-      tomDato="2020.10.01"
-      hentAvdelingensSakslister={sinon.spy()}
-      hentAntallOppgaver={sinon.spy()}
-    />);
+    expect(getByLabelText('Dynamisk periode')).not.toBeChecked();
+  });
 
-    const felt = wrapper.find(RadioGroupField);
-    // @ts-ignore
-    felt.prop('onChange')(KoSortering.OPPRETT_BEHANDLING);
+  it('skal vise datovelger der dynamisk periode er valgt', async () => {
+    const { getByLabelText } = render(<SorteringsvelgerNårDynamiskPeriodeErValgt />);
+    expect(await screen.findByText('Dato for behandlingsfrist')).toBeInTheDocument();
+    expect(screen.getByText('Ta kun med behandlinger med dato')).toBeInTheDocument();
+    expect(screen.getByText('F.o.m.')).toBeInTheDocument();
+    expect(screen.getByText('T.o.m.')).toBeInTheDocument();
 
-    const lagreSakslisteSorteringCallData = requestApi.getRequestMockData(RestApiPathsKeys.LAGRE_SAKSLISTE_SORTERING.name);
-    expect(lagreSakslisteSorteringCallData).toHaveLength(1);
-    expect(lagreSakslisteSorteringCallData[0].params.sakslisteId).toEqual(1);
-    expect(lagreSakslisteSorteringCallData[0].params.sakslisteSorteringValg).toEqual(KoSortering.OPPRETT_BEHANDLING);
-    expect(lagreSakslisteSorteringCallData[0].params.avdelingEnhet).toEqual('3');
+    expect(getByLabelText('Dynamisk periode')).toBeChecked();
+  });
+
+  it('skal vise vis beløpvelger når Feilutbetalt beløp er valgt', async () => {
+    render(<SorteringsvelgerNårKunTilbakekrevingErValgt />);
+    expect(await screen.findByText('Dato for behandlingsfrist')).toBeInTheDocument();
+
+    userEvent.click(screen.getByText('Feilutbetalt beløp'));
+
+    expect(await screen.findByText('Ta kun med behandlinger mellom')).toBeInTheDocument();
+    expect(screen.getAllByText('kr')[0]).toBeInTheDocument();
+    expect(screen.getAllByText('kr')[1]).toBeInTheDocument();
+  });
+
+  it('skal vise feilmelding når en skriver inn bokstaver i beløpfelt', async () => {
+    render(<SorteringsvelgerNårKunTilbakekrevingErValgt />);
+    expect(await screen.findByText('Dato for behandlingsfrist')).toBeInTheDocument();
+
+    userEvent.click(screen.getByText('Feilutbetalt beløp'));
+
+    expect(await screen.findByText('Ta kun med behandlinger mellom')).toBeInTheDocument();
+
+    const fraInput = screen.getAllByRole('textbox')[0];
+    userEvent.type(fraInput, 'bokstaver');
+    fireEvent.blur(fraInput);
+
+    expect(await screen.findByText('Feltet kan kun inneholde tall')).toBeInTheDocument();
+
+    const tilInput = screen.getAllByRole('textbox')[1];
+    userEvent.type(tilInput, 'bokstaver');
+    fireEvent.blur(tilInput);
+
+    expect(await screen.findByText('Feltet kan kun inneholde tall')).toBeInTheDocument();
+    expect(screen.getAllByText('Feltet kan kun inneholde tall')).toHaveLength(2);
+  });
+
+  it('skal vise fem sorteringsvalg når kun tilbakekreving er valgt', async () => {
+    const { getByLabelText } = render(<SorteringsvelgerNårKunTilbakekrevingErValgt />);
+    expect(await screen.findByText('Dato for behandlingsfrist')).toBeInTheDocument();
+    expect(getByLabelText('Dato for behandlingsfrist')).toBeChecked();
+    expect(getByLabelText('Dato for opprettelse av behandling')).not.toBeChecked();
+    expect(getByLabelText('Dato for første stønadsdag')).not.toBeChecked();
+    expect(getByLabelText('Feilutbetalt beløp')).not.toBeChecked();
+    expect(getByLabelText('Dato for første feilutbetaling')).not.toBeChecked();
   });
 });

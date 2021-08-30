@@ -1,7 +1,7 @@
 import React, {
   FunctionComponent, useState, useMemo, useCallback,
 } from 'react';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import {
   XYPlot, XAxis, YAxis, HorizontalGridLines, AreaSeries, DiscreteColorLegend, Crosshair,
 } from 'react-vis';
@@ -19,11 +19,11 @@ export const slaSammenBehandlingstyperOgFyllInnTomme = (nyeOgFerdigstilteOppgave
 { antallNye: number; antallFerdigstilte: number; dato: Date}[] => {
   const oppgaver = [];
   if (nyeOgFerdigstilteOppgaver.length > 0) {
-    const iDag = moment().startOf('day');
-    const atteDagerSiden = moment().subtract(7, 'days').startOf('day');
+    const iDag = dayjs().startOf('day');
+    const atteDagerSiden = dayjs().subtract(7, 'days').startOf('day');
 
     for (let dato = atteDagerSiden; dato.isBefore(iDag); dato = dato.add(1, 'days')) {
-      const dataForDato = nyeOgFerdigstilteOppgaver.filter((o) => moment(o.dato).startOf('day').isSame(dato));
+      const dataForDato = nyeOgFerdigstilteOppgaver.filter((o) => dayjs(o.dato).startOf('day').isSame(dato));
       if (dataForDato.length === 0) {
         oppgaver.push({
           antallNye: 0,
@@ -95,7 +95,7 @@ export const NyeOgFerdigstilteOppgaverForSisteSyvGraf: FunctionComponent<OwnProp
 
   const plotPropsWhenEmpty = useMemo(() => (isEmpty ? {
     yDomain: [0, 50],
-    xDomain: [moment().subtract(7, 'd').startOf('day').toDate(), moment().subtract(1, 'd').startOf('day').toDate()],
+    xDomain: [dayjs().subtract(7, 'd').startOf('day').toDate(), dayjs().subtract(1, 'd').startOf('day').toDate()],
   } : {}), [isEmpty]);
 
   return (
@@ -115,7 +115,7 @@ export const NyeOgFerdigstilteOppgaverForSisteSyvGraf: FunctionComponent<OwnProp
         <HorizontalGridLines />
         <XAxis
           tickTotal={3}
-          tickFormat={(t) => moment(t).format(DDMMYYYY_DATE_FORMAT)}
+          tickFormat={(t) => dayjs(t).format(DDMMYYYY_DATE_FORMAT)}
           style={{ text: cssText }}
         />
         <YAxis style={{ text: cssText }} />
@@ -142,7 +142,7 @@ export const NyeOgFerdigstilteOppgaverForSisteSyvGraf: FunctionComponent<OwnProp
           }}
         >
           <div className={styles.crosshair}>
-            <Normaltekst>{`${moment(crosshairValues[0].x).format(DDMMYYYY_DATE_FORMAT)}`}</Normaltekst>
+            <Normaltekst>{`${dayjs(crosshairValues[0].x).format(DDMMYYYY_DATE_FORMAT)}`}</Normaltekst>
             <Undertekst>
               <FormattedMessage
                 id="NyeOgFerdigstilteOppgaverForSisteSyvGraf.FerdigstiltAntall"

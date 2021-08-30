@@ -32,7 +32,7 @@ const SistBehandledeSaker: FunctionComponent = () => {
       {sistBehandledeSaker.length === 0
       && <Normaltekst><FormattedMessage id="SistBehandledeSaker.IngenBehandlinger" /></Normaltekst>}
       {sistBehandledeSaker.map((sbs, index) => (
-        <Fragment key={sbs.behandlingId}>
+        <Fragment key={sbs.id}>
           <Normaltekst>
             {sbs.navn
               ? (

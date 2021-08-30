@@ -1,5 +1,5 @@
 import React from 'react';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import { Story } from '@storybook/react';
 
 import { RestApiGlobalStatePathsKeys } from 'data/fplosRestApi';
@@ -44,28 +44,28 @@ const Template: Story<{ oppgaverManueltPaVent: OppgaverManueltPaVent[] }> = ({
   );
 };
 
-export const GrafForAntallBehandlingerSomErSattManueltPaVent = Template.bind({});
-GrafForAntallBehandlingerSomErSattManueltPaVent.args = {
+export const Default = Template.bind({});
+Default.args = {
   oppgaverManueltPaVent: [{
     fagsakYtelseType: {
       kode: fagsakYtelseType.FORELDREPRENGER,
       navn: 'Foreldreprenger',
     },
-    behandlingFrist: moment().format(ISO_DATE_FORMAT),
+    behandlingFrist: dayjs().format(ISO_DATE_FORMAT),
     antall: 10,
   }, {
     fagsakYtelseType: {
       kode: fagsakYtelseType.ENGANGSSTONAD,
       navn: 'Engangsstønad',
     },
-    behandlingFrist: moment().add(FIVE, 'd').format(ISO_DATE_FORMAT),
+    behandlingFrist: dayjs().add(FIVE, 'd').format(ISO_DATE_FORMAT),
     antall: 4,
   }, {
     fagsakYtelseType: {
       kode: fagsakYtelseType.ENGANGSSTONAD,
       navn: 'Engangsstønad',
     },
-    behandlingFrist: moment().add(FIVE, 'w').format(ISO_DATE_FORMAT),
+    behandlingFrist: dayjs().add(FIVE, 'w').format(ISO_DATE_FORMAT),
     antall: 14,
   }],
 };

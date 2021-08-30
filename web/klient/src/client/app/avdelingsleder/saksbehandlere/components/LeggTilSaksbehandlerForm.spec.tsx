@@ -1,238 +1,50 @@
 import React from 'react';
-import sinon from 'sinon';
-import { IntlShape } from 'react-intl';
-import { Form } from 'react-final-form';
-import { Normaltekst } from 'nav-frontend-typografi';
+import { render, screen, waitFor } from '@testing-library/react';
+import { composeStories } from '@storybook/testing-react';
+import userEvent from '@testing-library/user-event';
+import * as stories from 'stories/avdelingsleder/saksbehandlere/LeggTilSaksbehandlerForm.stories';
 
-import { requestApi, RestApiPathsKeys } from 'data/fplosRestApi';
-import { Hovedknapp, Knapp } from 'nav-frontend-knapper';
-import { shallowWithIntl, intlMock } from 'testHelpers/intl-enzyme-test-helper';
-import LeggTilSaksbehandlerForm from './LeggTilSaksbehandlerForm';
+const { Default, SaksbehandlerFinnesIkke } = composeStories(stories);
 
 describe('<LeggTilSaksbehandlerForm>', () => {
-  const intl: Partial<IntlShape> = {
-    ...intlMock,
-  };
+  it('skal vise at oppgitt brukerident ikke finnes', async () => {
+    const utils = render(<SaksbehandlerFinnesIkke />);
 
-  it(
-    'skal vise form for å søke opp saksbehandlere men ikke knapper for å legge til og nullstille',
-    () => {
-      const formProps = { handleSubmit: sinon.spy() };
+    expect(await screen.findByText('Legg til saksbehandler')).toBeInTheDocument();
 
-      requestApi.mock(RestApiPathsKeys.SAKSBEHANDLER_SOK.name);
-      requestApi.mock(RestApiPathsKeys.OPPRETT_NY_SAKSBEHANDLER.name);
+    const brukerIdentInput = utils.getByLabelText('Brukerident');
+    userEvent.type(brukerIdentInput, 'TESTIDENT');
 
-      const wrapper = shallowWithIntl(<LeggTilSaksbehandlerForm.WrappedComponent
-        intl={intl as IntlShape}
-        valgtAvdelingEnhet="2"
-        avdelingensSaksbehandlere={[]}
-        hentAvdelingensSaksbehandlere={sinon.spy()}
-        // @ts-ignore
-      />).find(Form).renderProp('render')(formProps);
+    expect(await screen.findByText('Søk')).toBeInTheDocument();
+    expect(screen.getByText('Søk')).not.toBeDisabled();
 
-      expect(wrapper.find(Knapp)).toHaveLength(1);
-      expect(wrapper.find(Hovedknapp)).toHaveLength(0);
-    },
-  );
+    userEvent.click(screen.getByText('Søk'));
 
-  it(
-    'skal vise form etter at saksbehandler er søkt opp, med knapp for å legge til og nullstille',
-    async () => {
-      const saksbehandler = {
-        brukerIdent: 'TEST1',
-        navn: 'Espen Utvikler',
-        avdelingsnavn: ['NAV Oslo'],
-      };
-      const formProps = { handleSubmit: sinon.spy() };
-
-      requestApi.mock(RestApiPathsKeys.SAKSBEHANDLER_SOK.name, saksbehandler);
-      requestApi.mock(RestApiPathsKeys.OPPRETT_NY_SAKSBEHANDLER.name);
-
-      const wrapper = shallowWithIntl(<LeggTilSaksbehandlerForm.WrappedComponent
-        intl={intl as IntlShape}
-        valgtAvdelingEnhet="2"
-        avdelingensSaksbehandlere={[]}
-        hentAvdelingensSaksbehandlere={sinon.spy()}
-      />);
-
-      // @ts-ignore
-      await wrapper.find(Form).prop('onSubmit')({ brukerIdent: saksbehandler.brukerIdent });
-
-      // @ts-ignore
-      const innerWrapper = wrapper.find(Form).renderProp('render')(formProps);
-
-      expect(innerWrapper.find(Knapp)).toHaveLength(2);
-      expect(innerWrapper.find(Hovedknapp)).toHaveLength(1);
-
-      const tekst = innerWrapper.find(Normaltekst);
-      expect(tekst).toHaveLength(1);
-      expect(tekst.childAt(0).text()).toEqual('Espen Utvikler, NAV Oslo');
-    },
-  );
-
-  it(
-    'skal nullstille form state og funnet saksbehandler ved trykk på nullstill',
-    async () => {
-      const saksbehandler = {
-        brukerIdent: 'TEST1',
-        navn: 'Espen Utvikler',
-        avdelingsnavn: ['NAV Oslo'],
-      };
-      const resetFormFn = sinon.spy();
-      const formProps = { handleSubmit: sinon.spy(), form: { reset: resetFormFn } };
-
-      requestApi.mock(RestApiPathsKeys.SAKSBEHANDLER_SOK.name, saksbehandler);
-      requestApi.mock(RestApiPathsKeys.OPPRETT_NY_SAKSBEHANDLER.name);
-
-      const wrapper = shallowWithIntl(<LeggTilSaksbehandlerForm.WrappedComponent
-        intl={intl as IntlShape}
-        valgtAvdelingEnhet="2"
-        avdelingensSaksbehandlere={[]}
-        hentAvdelingensSaksbehandlere={sinon.spy()}
-      />);
-
-      // @ts-ignore
-      await wrapper.find(Form).prop('onSubmit')({ brukerIdent: saksbehandler.brukerIdent });
-
-      // @ts-ignore
-      const innerWrapper = wrapper.find(Form).renderProp('render')(formProps);
-
-      const nullstillKnapp = innerWrapper.find(Knapp).last();
-
-      const func = nullstillKnapp.prop('onClick') as () => void;
-      func();
-
-      const lagreSakslisteAndreKriterierCallData = requestApi.getRequestMockData(RestApiPathsKeys.SAKSBEHANDLER_SOK.name);
-      expect(lagreSakslisteAndreKriterierCallData).toHaveLength(1);
-
-      expect(resetFormFn.calledOnce).toBe(true);
-    },
-  );
-
-  it(
-    'skal legge til saksbehandler ved trykk på knapp for legg til',
-    async () => {
-      const saksbehandler = {
-        brukerIdent: 'TEST1',
-        navn: 'Espen Utvikler',
-        avdelingsnavn: ['NAV Oslo'],
-      };
-      const resetFormFn = sinon.spy();
-      const formProps = { handleSubmit: sinon.spy(), form: { reset: resetFormFn } };
-
-      requestApi.mock(RestApiPathsKeys.SAKSBEHANDLER_SOK.name, saksbehandler);
-      requestApi.mock(RestApiPathsKeys.OPPRETT_NY_SAKSBEHANDLER.name);
-
-      const wrapper = shallowWithIntl(<LeggTilSaksbehandlerForm.WrappedComponent
-        intl={intl as IntlShape}
-        valgtAvdelingEnhet="2"
-        avdelingensSaksbehandlere={[]}
-        hentAvdelingensSaksbehandlere={sinon.spy()}
-      />);
-
-      // @ts-ignore
-      await wrapper.find(Form).prop('onSubmit')({ brukerIdent: saksbehandler.brukerIdent });
-
-      // @ts-ignore
-      const innerWrapper = wrapper.find(Form).renderProp('render')(formProps);
-
-      const leggTilKnapp = innerWrapper.find(Hovedknapp);
-
-      const func = leggTilKnapp.prop('onClick') as () => void;
-      await func();
-
-      const lagreSakslisteAndreKriterierCallData = requestApi.getRequestMockData(RestApiPathsKeys.SAKSBEHANDLER_SOK.name);
-      expect(lagreSakslisteAndreKriterierCallData).toHaveLength(1);
-
-      expect(resetFormFn.calledOnce).toBe(true);
-    },
-  );
-
-  it('skal vise tekst som viser funnet brukerinformasjon', async () => {
-    const saksbehandler = {
-      brukerIdent: 'TEST1',
-      navn: 'Espen Utvikler',
-      avdelingsnavn: ['NAV Oslo'],
-    };
-    const formProps = { handleSubmit: sinon.spy() };
-
-    requestApi.mock(RestApiPathsKeys.SAKSBEHANDLER_SOK.name, saksbehandler);
-    requestApi.mock(RestApiPathsKeys.OPPRETT_NY_SAKSBEHANDLER.name);
-
-    const wrapper = shallowWithIntl(<LeggTilSaksbehandlerForm.WrappedComponent
-      intl={intl as IntlShape}
-      valgtAvdelingEnhet="2"
-      avdelingensSaksbehandlere={[]}
-      hentAvdelingensSaksbehandlere={sinon.spy()}
-    />);
-
-    // @ts-ignore
-    await wrapper.find(Form).prop('onSubmit')({ brukerIdent: saksbehandler.brukerIdent });
-
-    // @ts-ignore
-    const innerWrapper = wrapper.find(Form).renderProp('render')(formProps);
-
-    const tekstKomp = innerWrapper.find(Normaltekst);
-    expect(tekstKomp).toHaveLength(1);
-    expect(tekstKomp.childAt(0).text()).toEqual('Espen Utvikler, NAV Oslo');
+    expect(await screen.findByText('Kan ikke finne brukerident')).toBeInTheDocument();
+    expect(screen.getByText('Legg til i listen')).toBeDisabled();
   });
 
-  it(
-    'skal vise tekst som viser at brukerident ikke finnes etter søk på ugyldig bruker',
-    async () => {
-      const formProps = { handleSubmit: sinon.spy() };
+  it('skal finne brukerident og så legge saksbehandler til listen', async () => {
+    const hentAvdelingensSaksbehandlere = jest.fn();
+    const utils = render(<Default hentAvdelingensSaksbehandlere={hentAvdelingensSaksbehandlere} />);
 
-      requestApi.mock(RestApiPathsKeys.SAKSBEHANDLER_SOK.name);
-      requestApi.mock(RestApiPathsKeys.OPPRETT_NY_SAKSBEHANDLER.name);
+    expect(await screen.findByText('Legg til saksbehandler')).toBeInTheDocument();
 
-      const wrapper = shallowWithIntl(<LeggTilSaksbehandlerForm.WrappedComponent
-        intl={intl as IntlShape}
-        valgtAvdelingEnhet="2"
-        avdelingensSaksbehandlere={[]}
-        hentAvdelingensSaksbehandlere={sinon.spy()}
-      />);
+    const brukerIdentInput = utils.getByLabelText('Brukerident');
+    userEvent.type(brukerIdentInput, 'TESTIDENT');
 
-      // @ts-ignore
-      await wrapper.find(Form).prop('onSubmit')({ brukerIdent: 'TEST1' });
+    expect(await screen.findByText('Søk')).toBeInTheDocument();
+    expect(screen.getByText('Søk')).not.toBeDisabled();
 
-      // @ts-ignore
-      const innerWrapper = wrapper.find(Form).renderProp('render')(formProps);
+    userEvent.click(screen.getByText('Søk'));
 
-      const tekstKomp = innerWrapper.find(Normaltekst);
-      expect(tekstKomp).toHaveLength(1);
-      expect(tekstKomp.childAt(0).text()).toEqual('Kan ikke finne brukerident');
-    },
-  );
+    expect(await screen.findByText('Espen Utvikler, NAV Viken')).toBeInTheDocument();
 
-  it(
-    'skal vise tekst som viser at brukerident allerede er lagt til',
-    async () => {
-      const saksbehandler = {
-        brukerIdent: 'TEST1',
-        navn: 'Espen Utvikler',
-        avdelingsnavn: ['NAV Oslo'],
-      };
-      const formProps = { handleSubmit: sinon.spy() };
+    await waitFor(() => expect(screen.getByText('Legg til i listen')).not.toBeDisabled());
 
-      requestApi.mock(RestApiPathsKeys.SAKSBEHANDLER_SOK.name, saksbehandler);
-      requestApi.mock(RestApiPathsKeys.OPPRETT_NY_SAKSBEHANDLER.name);
+    userEvent.click(screen.getByText('Legg til i listen'));
 
-      const wrapper = shallowWithIntl(<LeggTilSaksbehandlerForm.WrappedComponent
-        intl={intl as IntlShape}
-        valgtAvdelingEnhet="2"
-        avdelingensSaksbehandlere={[saksbehandler]}
-        hentAvdelingensSaksbehandlere={sinon.spy()}
-      />);
-
-      // @ts-ignore
-      await wrapper.find(Form).prop('onSubmit')({ brukerIdent: saksbehandler.brukerIdent });
-
-      // @ts-ignore
-      const innerWrapper = wrapper.find(Form).renderProp('render')(formProps);
-
-      const tekstKomp = innerWrapper.find(Normaltekst);
-      expect(tekstKomp).toHaveLength(1);
-      expect(tekstKomp.childAt(0).text()).toEqual('Espen Utvikler, NAV Oslo (Brukerident finnes allerede i listen)');
-    },
-  );
+    await waitFor(() => expect(hentAvdelingensSaksbehandlere).toHaveBeenCalledTimes(1));
+    expect(hentAvdelingensSaksbehandlere).toHaveBeenNthCalledWith(1, { avdelingEnhet: 'NAV Viken' });
+  });
 });

@@ -93,7 +93,7 @@ class RequestRunner {
       this.isPollingRequest = true;
       try {
         return await this.execLongPolling(response.headers.location);
-      } catch (error) {
+      } catch (error: any) {
         const responseData = error.response ? error.response.data : undefined;
         if (responseData && hasLocationAndStatusDelayedOrHalted(responseData)) {
           response = await this.httpClientApi.get(responseData.location);
@@ -124,7 +124,7 @@ class RequestRunner {
       const responseData = response && 'data' in response ? response.data : undefined;
       this.notify(EventType.REQUEST_FINISHED, responseData, this.isPollingRequest);
       return responseData ? { payload: responseData } : { payload: undefined };
-    } catch (error) {
+    } catch (error: any) {
       if (error?.message !== REQUEST_POLLING_CANCELLED) {
         new RequestErrorEventHandler(this.notify, this.isPollingRequest).handleError(error);
       }

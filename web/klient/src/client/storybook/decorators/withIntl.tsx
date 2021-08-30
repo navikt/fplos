@@ -3,7 +3,7 @@ import { createIntl, createIntlCache, RawIntlProvider } from 'react-intl';
 
 import data from '../../app/sprak/nb_NO.json';
 
-const intl = createIntl({
+export const intl = createIntl({
   locale: 'nb-NO',
   messages: data,
 }, createIntlCache());

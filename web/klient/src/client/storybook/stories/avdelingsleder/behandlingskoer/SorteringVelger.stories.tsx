@@ -1,13 +1,14 @@
 import React from 'react';
-import { Form } from 'react-final-form';
 import { action } from '@storybook/addon-actions';
 import { Story } from '@storybook/react';
+import { useForm } from 'react-hook-form';
 
-import { RestApiGlobalStatePathsKeys } from 'data/fplosRestApi';
+import { RestApiGlobalStatePathsKeys, RestApiPathsKeys } from 'data/fplosRestApi';
 import SorteringVelger from 'avdelingsleder/behandlingskoer/components/sakslisteForm/SorteringVelger';
 import behandlingType from 'kodeverk/behandlingType';
 import koSortering from 'kodeverk/KoSortering';
 import Kodeverk from 'types/kodeverkTsType';
+import { Form } from 'form/formIndex';
 
 import alleKodeverk from '../../../mocks/alleKodeverk.json';
 import withIntl from '../../../decorators/withIntl';
@@ -20,42 +21,47 @@ export default {
   decorators: [withIntl, withRestApiProvider],
 };
 
-const Template: Story<{ valgteBehandlingtyper: Kodeverk[] }> = ({
+const Template: Story<{ valgteBehandlingtyper: Kodeverk[], erDynamiskPeriode: boolean }> = ({
   valgteBehandlingtyper,
+  erDynamiskPeriode,
 }) => {
   const data = [
     { key: RestApiGlobalStatePathsKeys.KODEVERK.name, data: alleKodeverk },
+    { key: RestApiPathsKeys.LAGRE_SAKSLISTE_SORTERING.name, data: undefined },
+    { key: RestApiPathsKeys.LAGRE_SAKSLISTE_SORTERING_INTERVALL.name, data: undefined },
+    { key: RestApiPathsKeys.LAGRE_SAKSLISTE_SORTERING_DYNAMISK_PERIDE.name, data: undefined },
+    { key: RestApiPathsKeys.LAGRE_SAKSLISTE_SORTERING_TIDSINTERVALL_DATO.name, data: undefined },
   ];
 
   const verdier = {
     sortering: koSortering.BEHANDLINGSFRIST,
     fra: 2,
     til: 3,
-    fomDato: '2020.01.10',
-    tomDato: '2020.10.01',
-    erDynamiskPeriode: true,
+    fomDato: '2020-01-10',
+    tomDato: '2020-10-01',
+    erDynamiskPeriode,
   };
+
+  const formMethods = useForm({
+    defaultValues: verdier,
+  });
 
   return (
     <RestApiMock data={data}>
-      <Form
-        onSubmit={() => undefined}
-        initialValues={verdier}
-        render={() => (
-          <SorteringVelger
-            valgtSakslisteId={1}
-            valgteBehandlingtyper={valgteBehandlingtyper}
-            valgtAvdelingEnhet="NAV Viken"
-            erDynamiskPeriode={verdier.erDynamiskPeriode}
-            fra={verdier.fra}
-            til={verdier.til}
-            fomDato={verdier.fomDato}
-            tomDato={verdier.tomDato}
-            hentAvdelingensSakslister={action('button-click')}
-            hentAntallOppgaver={action('button-click')}
-          />
-        )}
-      />
+      <Form formMethods={formMethods}>
+        <SorteringVelger
+          valgtSakslisteId={1}
+          valgteBehandlingtyper={valgteBehandlingtyper}
+          valgtAvdelingEnhet="NAV Viken"
+          erDynamiskPeriode={verdier.erDynamiskPeriode}
+          fra={verdier.fra}
+          til={verdier.til}
+          fomDato={verdier.fomDato}
+          tomDato={verdier.tomDato}
+          hentAvdelingensSakslister={action('button-click')}
+          hentAntallOppgaver={action('button-click')}
+        />
+      </Form>
     </RestApiMock>
   );
 };
@@ -69,6 +75,19 @@ SorteringsvelgerNårMangeBehandlingstyperErValgt.args = {
     kode: behandlingType.DOKUMENTINNSYN,
     navn: 'Innsyn',
   }],
+  erDynamiskPeriode: false,
+};
+
+export const SorteringsvelgerNårDynamiskPeriodeErValgt = Template.bind({});
+SorteringsvelgerNårDynamiskPeriodeErValgt.args = {
+  valgteBehandlingtyper: [{
+    kode: behandlingType.FORSTEGANGSSOKNAD,
+    navn: 'Førstegang',
+  }, {
+    kode: behandlingType.DOKUMENTINNSYN,
+    navn: 'Innsyn',
+  }],
+  erDynamiskPeriode: true,
 };
 
 export const SorteringsvelgerNårKunTilbakekrevingErValgt = Template.bind({});
@@ -77,4 +96,5 @@ SorteringsvelgerNårKunTilbakekrevingErValgt.args = {
     kode: behandlingType.TILBAKEBETALING,
     navn: 'Tilbakekreving',
   }],
+  erDynamiskPeriode: false,
 };

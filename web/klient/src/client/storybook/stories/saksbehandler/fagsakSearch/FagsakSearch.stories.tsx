@@ -50,14 +50,8 @@ const Template: Story<{ fagsaker: Fagsak[], fagsakOppgaver: Oppgave[] }> = ({
   );
 };
 
-export const IngentingBleFunnet = Template.bind({});
-IngentingBleFunnet.args = {
-  fagsaker: [],
-  fagsakOppgaver: [],
-};
-
-export const PersonkortOgTabellNårEnFinnerEnFagsakMedToOppgaver = Template.bind({});
-PersonkortOgTabellNårEnFinnerEnFagsakMedToOppgaver.args = {
+export const Default = Template.bind({});
+Default.args = {
   fagsaker: [{
     saksnummer: 12213234,
     saksnummerString: '12213234',
@@ -132,4 +126,10 @@ PersonkortOgTabellNårEnFinnerEnFagsakMedToOppgaver.args = {
     behandlingId: '12344',
     href: '',
   }],
+};
+
+export const IngentingBleFunnet = Template.bind({});
+IngentingBleFunnet.args = {
+  fagsaker: [],
+  fagsakOppgaver: [],
 };

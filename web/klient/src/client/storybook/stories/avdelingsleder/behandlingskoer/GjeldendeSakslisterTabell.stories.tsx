@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { action } from '@storybook/addon-actions';
 import { Story } from '@storybook/react';
 
-import { RestApiGlobalStatePathsKeys } from 'data/fplosRestApi';
+import { RestApiGlobalStatePathsKeys, RestApiPathsKeys } from 'data/fplosRestApi';
 import { GjeldendeSakslisterTabell } from 'avdelingsleder/behandlingskoer/components/GjeldendeSakslisterTabell';
 import Saksliste from 'types/avdelingsleder/sakslisteAvdelingTsType';
 
@@ -22,6 +22,7 @@ interface Props {
   nyeSakslister: Saksliste[];
   valgtSakslisteId?: number;
   oppgaverForAvdelingAntall?: number;
+  hentAvdelingensSakslister: () => Saksliste[];
 }
 
 const Template: Story<Props> = ({
@@ -29,22 +30,24 @@ const Template: Story<Props> = ({
   nyeSakslister,
   valgtSakslisteId,
   oppgaverForAvdelingAntall,
+  hentAvdelingensSakslister,
 }) => {
   const [sakslister, setSaksliste] = useState<Saksliste[]>(saksliste || []);
 
   const data = [
     { key: RestApiGlobalStatePathsKeys.KODEVERK.name, data: alleKodeverk },
+    { key: RestApiPathsKeys.SLETT_SAKSLISTE.name, data: {} },
   ];
 
   return (
     <RestApiMock data={data}>
       <GjeldendeSakslisterTabell
         sakslister={sakslister}
-        valgtAvdelingEnhet=""
+        valgtAvdelingEnhet="1"
         setValgtSakslisteId={action('button-click')}
         lagNySaksliste={() => setSaksliste((oldState) => oldState.concat(nyeSakslister))}
         resetValgtSakslisteId={action('button-click')}
-        hentAvdelingensSakslister={action('button-click') as () => Saksliste[]}
+        hentAvdelingensSakslister={hentAvdelingensSakslister}
         valgtSakslisteId={valgtSakslisteId}
         oppgaverForAvdelingAntall={oppgaverForAvdelingAntall}
       />
@@ -61,6 +64,7 @@ TabellNårDetIkkeFinnesBehandlingskøer.args = {
     saksbehandlerIdenter: [],
     antallBehandlinger: 1,
   }],
+  hentAvdelingensSakslister: action('button-click') as () => Saksliste[],
 };
 
 export const TabellNårDetFinnesEnBehandlingskø = Template.bind({});
@@ -81,4 +85,5 @@ TabellNårDetFinnesEnBehandlingskø.args = {
     antallBehandlinger: 1,
   }],
   oppgaverForAvdelingAntall: 1,
+  hentAvdelingensSakslister: action('button-click') as () => Saksliste[],
 };

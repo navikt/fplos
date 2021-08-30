@@ -20,10 +20,20 @@ export default {
   decorators: [withIntl, withRestApiProvider],
 };
 
-const Template: Story = () => {
+const Template: Story<{ sakslisteNavn: string }> = ({
+  sakslisteNavn,
+}) => {
   const data = [
     { key: RestApiGlobalStatePathsKeys.KODEVERK.name, data: alleKodeverk },
     { key: RestApiPathsKeys.OPPGAVE_ANTALL.name, data: 1 },
+    { key: RestApiPathsKeys.LAGRE_SAKSLISTE_NAVN.name, data: undefined },
+    { key: RestApiPathsKeys.LAGRE_SAKSLISTE_SORTERING.name, data: undefined },
+    { key: RestApiPathsKeys.LAGRE_SAKSLISTE_SORTERING_INTERVALL.name, data: undefined },
+    { key: RestApiPathsKeys.LAGRE_SAKSLISTE_SORTERING_DYNAMISK_PERIDE.name, data: undefined },
+    { key: RestApiPathsKeys.LAGRE_SAKSLISTE_SORTERING_TIDSINTERVALL_DATO.name, data: undefined },
+    { key: RestApiPathsKeys.LAGRE_SAKSLISTE_FAGSAK_YTELSE_TYPE.name, data: undefined },
+    { key: RestApiPathsKeys.LAGRE_SAKSLISTE_BEHANDLINGSTYPE.name, data: undefined },
+    { key: RestApiPathsKeys.LAGRE_SAKSLISTE_ANDRE_KRITERIER.name, data: undefined },
   ];
 
   return (
@@ -31,7 +41,7 @@ const Template: Story = () => {
       <UtvalgskriterierForSakslisteForm
         valgtSaksliste={{
           sakslisteId: 1,
-          navn: 'Saksliste 1',
+          navn: sakslisteNavn,
           sistEndret: '2020-10-10',
           saksbehandlerIdenter: [],
           antallBehandlinger: 1,
@@ -76,4 +86,12 @@ const Template: Story = () => {
   );
 };
 
-export const SakslisteOppsettPanel = Template.bind({});
+export const MedGittNavn = Template.bind({});
+MedGittNavn.args = {
+  sakslisteNavn: 'liste',
+};
+
+export const MedDefaultNavn = Template.bind({});
+MedDefaultNavn.args = {
+  sakslisteNavn: undefined,
+};

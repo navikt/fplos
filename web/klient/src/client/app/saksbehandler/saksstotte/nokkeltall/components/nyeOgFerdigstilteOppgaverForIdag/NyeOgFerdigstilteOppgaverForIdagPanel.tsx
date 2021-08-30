@@ -1,5 +1,5 @@
 import React, { FunctionComponent, useMemo } from 'react';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import { FormattedMessage } from 'react-intl';
 import { Undertittel, Element } from 'nav-frontend-typografi';
 
@@ -11,8 +11,8 @@ import NyeOgFerdigstilteOppgaver from 'types/saksbehandler/nyeOgFerdigstilteOppg
 import NyeOgFerdigstilteOppgaverForIdagGraf from './NyeOgFerdigstilteOppgaverForIdagGraf';
 
 export const getNyeOgFerdigstilteForIDag = (nyeOgFerdigstilte: NyeOgFerdigstilteOppgaver[] = []): NyeOgFerdigstilteOppgaver[] => {
-  const iDag = moment();
-  return nyeOgFerdigstilte.filter((oppgave) => iDag.isSame(moment(oppgave.dato, ISO_DATE_FORMAT), 'day'));
+  const iDag = dayjs();
+  return nyeOgFerdigstilte.filter((oppgave) => iDag.isSame(dayjs(oppgave.dato, ISO_DATE_FORMAT), 'day'));
 };
 
 interface OwnProps {

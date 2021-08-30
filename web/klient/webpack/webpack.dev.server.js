@@ -8,30 +8,37 @@ if (process.argv.includes('--no-fix')) {
 }
 
 const options = {
-  contentBase: 'src/client',
+  static: {
+    directory: 'src/client',
+    watch: true,
+  },
   proxy: {
     '**/(sprak|api)/**': {
       target: 'http://localhost:8071',
       secure: false,
     },
   },
-  publicPath: config.output.publicPath,
   hot: true,
-  noInfo: true,
   historyApiFallback: true,
-  stats: {
-    children: false,
-    colors: true,
+  devMiddleware: {
+    publicPath: config.output.publicPath,
+    stats: {
+      children: false,
+      colors: true,
+    },
   },
+  port: 9100,
 };
 
 const wds = new WebpackDevServer(webpack(config), options);
 
-wds.listen(9100, 'localhost', (err) => {
-  if (err) {
+(async () => {
+  try {
+    await wds.start();
+  } catch (error) {
     return console.log(err); // NOSONAR
   }
 
   console.log('Listening at http://localhost:9100/');
-  return null;
-});
+  return undefined;
+})();
