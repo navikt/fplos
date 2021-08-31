@@ -1,4 +1,4 @@
-import React, { FunctionComponent, useMemo } from 'react';
+import React, { FunctionComponent, useMemo, useEffect } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { useForm } from 'react-hook-form';
 import Panel from 'nav-frontend-paneler';
@@ -44,9 +44,15 @@ const SaksbehandlereForSakslisteForm: FunctionComponent<OwnProps> = ({
 
   const { startRequest: knyttSaksbehandlerTilSaksliste } = restApiHooks.useRestApiRunner(RestApiPathsKeys.LAGRE_SAKSLISTE_SAKSBEHANDLER);
 
+  const defaultValues = valgtSaksliste.saksbehandlerIdenter.reduce((acc, brukerIdent) => ({ ...acc, [brukerIdent]: true }), {});
+
   const formMethods = useForm<FormValues>({
-    defaultValues: valgtSaksliste.saksbehandlerIdenter.reduce((acc, brukerIdent) => ({ ...acc, [brukerIdent]: true }), {}),
+    defaultValues,
   });
+
+  useEffect(() => {
+    formMethods.reset(defaultValues);
+  }, [valgtSaksliste.sakslisteId]);
 
   return (
     <Form<FormValues> formMethods={formMethods}>
