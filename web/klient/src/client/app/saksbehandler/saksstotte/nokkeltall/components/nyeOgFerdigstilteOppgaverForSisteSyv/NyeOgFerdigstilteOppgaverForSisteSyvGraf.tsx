@@ -67,8 +67,12 @@ export const NyeOgFerdigstilteOppgaverForIdagGraf: FunctionComponent<OwnProps & 
             axisPointer: {
               type: 'cross',
               label: {
-                backgroundColor: '#6a7985',
-                formatter: (params) => dateFormat(params.value as string),
+                formatter: (params) => {
+                  if (params.axisDimension === 'y') {
+                    return parseInt(params.value as string, 10).toString();
+                  }
+                  return dateFormat(params.value as string);
+                },
               },
             },
           },

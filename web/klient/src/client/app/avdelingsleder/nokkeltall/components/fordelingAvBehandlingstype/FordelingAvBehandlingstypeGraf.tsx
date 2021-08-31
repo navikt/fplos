@@ -56,8 +56,8 @@ const FordelingAvBehandlingstypeGraf: FunctionComponent<OwnProps & WrappedCompon
     return type ? type.navn : '';
   }), [behandlingTyper]);
 
-  const tilBehandlingData = slåSammen(oppgaverForAvdeling.filter((o) => o.tilBehandling));
-  const tilBeslutterData = slåSammen(oppgaverForAvdeling.filter((o) => !o.tilBehandling));
+  const tilBehandlingData = useMemo(() => slåSammen(oppgaverForAvdeling.filter((o) => o.tilBehandling)), [oppgaverForAvdeling]);
+  const tilBeslutterData = useMemo(() => slåSammen(oppgaverForAvdeling.filter((o) => !o.tilBehandling)), [oppgaverForAvdeling]);
 
   return (
     <Panel>
@@ -67,8 +67,8 @@ const FordelingAvBehandlingstypeGraf: FunctionComponent<OwnProps & WrappedCompon
         option={{
           tooltip: {
             trigger: 'axis',
-            axisPointer: { // Use axis to trigger tooltip
-              type: 'shadow', // 'shadow' as default; can also be 'line' or 'shadow'
+            axisPointer: {
+              type: 'shadow',
             },
           },
           legend: {

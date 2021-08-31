@@ -1,37 +1,19 @@
 import React, {
-  useState, useMemo, FunctionComponent, useCallback,
+  FunctionComponent, useMemo,
 } from 'react';
-import {
-  XYPlot, XAxis, YAxis, AreaSeries, Crosshair, HorizontalGridLines,
-} from 'react-vis';
 import dayjs from 'dayjs';
 import isSameOrBefore from 'dayjs/plugin/isSameOrBefore';
-import { FormattedMessage } from 'react-intl';
 import Panel from 'nav-frontend-paneler';
-import { Normaltekst, Undertekst } from 'nav-frontend-typografi';
-
-import { DDMMYYYY_DATE_FORMAT } from 'utils/formats';
 
 import OppgaverManueltPaVent from 'types/avdelingsleder/oppgaverManueltPaVentTsType';
 
-import styles from './manueltPaVentGraf.less';
+import ReactECharts from 'sharedComponents/echart/ReactEcharts';
+import { dateFormat } from 'utils/dateUtils';
 
 dayjs.extend(isSameOrBefore);
 
-const cssText = {
-  fontFamily: 'Source Sans Pro, Arial, sans-serif',
-  fontSize: '1rem',
-  lineHeight: '1.375rem',
-  fontWeight: 400,
-};
-
 interface Koordinat {
   x: number;
-  y: number;
-}
-
-interface KoordinatMedDato {
-  x: Date;
   y: number;
 }
 
@@ -40,23 +22,18 @@ const lagKoordinater = (oppgaverManueltPaVent: OppgaverManueltPaVent[]): Koordin
   y: o.antall,
 }));
 
-const lagDatastruktur = (koordinater: Koordinat[], isFireUkerValgt: boolean): KoordinatMedDato[] => {
-  const nyeKoordinater: KoordinatMedDato[] = [];
+const lagDatastruktur = (koordinater: Koordinat[], isFireUkerValgt: boolean): (number | Date)[][] => {
+  const nyeKoordinater = [];
   const periodeStart = dayjs().startOf('day').toDate();
   const periodeSlutt = dayjs().add(isFireUkerValgt ? 4 : 8, 'w').toDate();
 
   for (let dato = dayjs(periodeStart); dato.isSameOrBefore(periodeSlutt); dato = dato.add(1, 'days')) {
     const funnetKoordinat = koordinater.find((k) => dayjs(k.x).isSame(dato));
-    nyeKoordinater.push({
-      x: dato.toDate(),
-      y: funnetKoordinat ? funnetKoordinat.y : 0,
-    });
+    nyeKoordinater.push([dato.toDate(), funnetKoordinat ? funnetKoordinat.y : 0]);
   }
 
   return nyeKoordinater;
 };
-
-const harDatastrukturKun0Verdier = (koordinater: Koordinat[]): boolean => !koordinater.some((k) => k.y !== 0);
 
 interface OwnProps {
   width: number;
@@ -74,65 +51,46 @@ const ManueltPaVentGraf: FunctionComponent<OwnProps> = ({
   isFireUkerValgt,
   oppgaverManueltPaVent,
 }) => {
-  const [crosshairValues, setCrosshairValues] = useState<Koordinat[]>([]);
-
   const koordinater = useMemo(() => lagKoordinater(oppgaverManueltPaVent), [oppgaverManueltPaVent]);
   const data = useMemo(() => lagDatastruktur(koordinater, isFireUkerValgt), [koordinater, isFireUkerValgt]);
-  const isEmpty = useMemo(() => harDatastrukturKun0Verdier(koordinater), [koordinater]);
-
-  const leggTilHintVerdi = useCallback((value: {x: number; y: number}) => {
-    setCrosshairValues([value]);
-  }, []);
-  const fjernHintVerdi = useCallback(() => {
-    setCrosshairValues([]);
-  }, []);
-
   return (
-    <Panel className={styles.panel}>
-      <XYPlot
-        dontCheckIfEmpty={isEmpty}
-        margin={{
-          left: 40, right: 70, top: 10, bottom: 30,
-        }}
+    <Panel>
+      <ReactECharts
         width={width}
         height={height}
-        xType="time"
-        stackBy="y"
-        onMouseLeave={fjernHintVerdi}
-        {...(isEmpty ? { yDomain: [0, 50] } : {})}
-      >
-        <HorizontalGridLines />
-        <XAxis
-          tickTotal={6}
-          tickFormat={(x) => dayjs(x).format(DDMMYYYY_DATE_FORMAT)}
-          style={{ text: cssText }}
-        />
-        <YAxis style={{ text: cssText }} />
-        <AreaSeries
-          // @ts-ignore Feil i react-vis
-          data={data}
-          onNearestX={leggTilHintVerdi}
-          fill="#337c9b"
-          stroke="#337c9b"
-        />
-        {crosshairValues.length > 0 && (
-        <Crosshair
-          values={crosshairValues}
-          style={{
-            line: {
-              background: '#3e3832',
+        option={{
+          tooltip: {
+            trigger: 'axis',
+            axisPointer: {
+              snap: true,
+              label: {
+                formatter: (params) => {
+                  if (params.axisDimension === 'y') {
+                    return parseInt(params.value as string, 10).toString();
+                  }
+                  return dateFormat(params.value as string);
+                },
+              },
             },
-          }}
-        >
-          <div className={styles.crosshair}>
-            <Normaltekst>{`${dayjs(crosshairValues[0].x).format(DDMMYYYY_DATE_FORMAT)}`}</Normaltekst>
-            <Undertekst>
-              <FormattedMessage id="ManueltPaVentGraf.Antall" values={{ antall: crosshairValues[0].y }} />
-            </Undertekst>
-          </div>
-        </Crosshair>
-        )}
-      </XYPlot>
+          },
+          xAxis: {
+            type: 'time',
+            boundaryGap: false,
+            axisLabel: {
+              formatter: '{dd}.{MM}.{yyyy}',
+            },
+          },
+          yAxis: {
+            type: 'value',
+          },
+          series: [{
+            data,
+            type: 'line',
+            areaStyle: {},
+          }],
+          color: ['#337c9b'],
+        }}
+      />
     </Panel>
   );
 };
