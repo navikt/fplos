@@ -128,8 +128,6 @@
 
   "NyeOgFerdigstilteOppgaverForIdagGraf.Ferdigstilte": "Ferdigstilte",
   "NyeOgFerdigstilteOppgaverForIdagGraf.Nye": "Nye",
-  "NyeOgFerdigstilteOppgaverForIdagGraf.FerdigstiltAntall": "Antall ferdigstilte: {antall}",
-  "NyeOgFerdigstilteOppgaverForIdagGraf.NyeAntall": "Antall nye: {antall}",
   "NyeOgFerdigstilteOppgaverForIdagGraf.Førstegangsbehandling": "Førstegangsbeh.",
 
   "NyeOgFerdigstilteOppgaverForIdagPanel.NyeOgFerdigstilte": "Nye og ferdigstilte behandlinger",
