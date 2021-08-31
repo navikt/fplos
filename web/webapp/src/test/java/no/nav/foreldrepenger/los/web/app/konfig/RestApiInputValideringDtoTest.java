@@ -51,7 +51,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 
 import no.nav.foreldrepenger.los.felles.Kodeverdi;
-import no.nav.foreldrepenger.los.felles.util.validering.ValidKodeliste;
+import no.nav.foreldrepenger.los.felles.util.validering.ValidKodeverk;
 import no.nav.foreldrepenger.los.web.app.IndexClasses;
 
 public class RestApiInputValideringDtoTest extends RestApiTester {
@@ -70,7 +70,7 @@ public class RestApiInputValideringDtoTest extends RestApiTester {
     }
 
     private static final List<Class<? extends Object>> ALLOWED_ENUM_ANNOTATIONS = Arrays.asList(JsonProperty.class, JsonValue.class, JsonIgnore.class,
-            Valid.class, Null.class, NotNull.class, ValidKodeliste.class);
+            Valid.class, Null.class, NotNull.class, ValidKodeverk.class);
 
     @SuppressWarnings("rawtypes")
     private static final Map<Class, List<List<Class<? extends Annotation>>>> UNNTATT_FRA_VALIDERING = new HashMap<>() {
@@ -207,7 +207,7 @@ public class RestApiInputValideringDtoTest extends RestApiTester {
     }
 
     private static void validerHarValidkodelisteAnnotering(Field field) {
-        if (field.getAnnotation(ValidKodeliste.class) == null) {
+        if (field.getAnnotation(ValidKodeverk.class) == null) {
             throw new AssertionError("Feltet " + field + " er et kodeverk, og må ha @ValidKodeverk-annotering");
         }
     }
@@ -280,9 +280,9 @@ public class RestApiInputValideringDtoTest extends RestApiTester {
             var annotatedTypes = annType.getAnnotatedActualTypeArguments();
             for (var at : List.of(annotatedTypes)) {
                 if (erKodeverk(at.getType())) {
-                    if (!at.isAnnotationPresent(ValidKodeliste.class)) {
+                    if (!at.isAnnotationPresent(ValidKodeverk.class)) {
                         throw new IllegalArgumentException(
-                                "Feltet " + field + " har ikke påkrevd annotering for kodeverk: @" + ValidKodeliste.class.getSimpleName());
+                                "Feltet " + field + " har ikke påkrevd annotering for kodeverk: @" + ValidKodeverk.class.getSimpleName());
                     }
                 }
             }

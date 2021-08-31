@@ -3,7 +3,6 @@ package no.nav.foreldrepenger.los.klient.fpsak;
 import static javax.ws.rs.client.Entity.json;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON_TYPE;
 import static no.nav.foreldrepenger.los.klient.fpsak.dto.behandling.ResourceLink.HttpMethod.POST;
-import static no.nav.vedtak.util.env.ConfidentialMarkerFilter.CONFIDENTIAL;
 
 import java.net.URI;
 import java.util.Optional;
@@ -42,19 +41,14 @@ public class JerseyForeldrepengerBehandling extends AbstractJerseyOidcRestClient
                 .path(link.getHref().getRawPath());
         target = QueryUtil.addQueryParams(link.getHref(), target);
 
-        LOG.info(CONFIDENTIAL, "Henter fra URL {}", target.getUri());
         if (POST.equals(link.getType())) {
-            var res = Optional.ofNullable(invoke(target
+            return Optional.ofNullable(invoke(target
                     .request(APPLICATION_JSON_TYPE)
                     .buildPost(json(link.getRequestPayload())), clazz));
-            LOG.info(CONFIDENTIAL, "Hentet med POST fra URL {} OK", target.getUri());
-            return res;
         }
-        var res = Optional.ofNullable(invoke(target
+        return Optional.ofNullable(invoke(target
                 .request(APPLICATION_JSON_TYPE)
                 .buildGet(), clazz));
-        LOG.info(CONFIDENTIAL, "Hentet med GET fra URL {} OK", target.getUri());
-        return res;
     }
 
     private BehandlingDto invoke(String id) {

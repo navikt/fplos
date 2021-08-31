@@ -106,7 +106,6 @@ public class OppgaveRepositoryTest {
     @Test
     public void testOppgaveSpørringMedEgenskaperfiltrering() {
         var saksnummerHit = setupOppgaveMedEgenskaper(AndreKriterierType.UTLANDSSAK, AndreKriterierType.UTBETALING_TIL_BRUKER);
-        var saksnummerMiss = setupOppgaveMedEgenskaper(AndreKriterierType.PAPIRSØKNAD);
         var oppgaveQuery = new Oppgavespørring(avdelingIdForDrammen(),
                 BEHANDLINGSFRIST,
                 Collections.emptyList(),
@@ -118,7 +117,6 @@ public class OppgaveRepositoryTest {
                 null,
                 null,
                 null);
-        //List<Oppgave> alleOppgaver = oppgaveRepository.hentOppgaver(alleOppgaverQuery);
         var oppgaver = oppgaveRepository.hentOppgaver(oppgaveQuery);
         assertThat(oppgaver).hasSize(1);
         assertThat(oppgaver.get(0).getFagsakSaksnummer()).isEqualTo(saksnummerHit);

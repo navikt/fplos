@@ -7,7 +7,7 @@ import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.dto.AvdelingEn
 import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.saksliste.FplosAbacAttributtType;
 import no.nav.foreldrepenger.los.web.app.tjenester.felles.dto.SakslisteIdDto;
 import no.nav.foreldrepenger.los.oppgave.FagsakYtelseType;
-import no.nav.foreldrepenger.los.felles.util.validering.ValidKodeliste;
+import no.nav.foreldrepenger.los.felles.util.validering.ValidKodeverk;
 import no.nav.vedtak.sikkerhet.abac.AbacDataAttributter;
 import no.nav.vedtak.sikkerhet.abac.AbacDto;
 
@@ -17,7 +17,7 @@ public class SakslisteFagsakYtelseTypeDto implements AbacDto {
     @Valid
     private SakslisteIdDto sakslisteId;
 
-    @ValidKodeliste
+    @ValidKodeverk
     private FagsakYtelseType fagsakYtelseType;
 
     @NotNull

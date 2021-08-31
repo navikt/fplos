@@ -3,7 +3,7 @@ package no.nav.foreldrepenger.los.hendelse.hendelseoppretter;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import no.nav.vedtak.konfig.KonfigVerdi;
+import no.nav.foreldrepenger.konfig.KonfigVerdi;
 
 @ApplicationScoped
 public class TilbakekrevingConsumerProperties implements KafkaConsumerProperties {

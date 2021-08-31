@@ -11,10 +11,6 @@ public class FpsakBehandlingProsessEventDto extends BehandlingProsessEventDto {
         super(builder);
     }
 
-    public static FpsakBehandlingProsessEventDto.Builder<?> builder() {
-        return new FpsakBehandlingProsessEventDto.BuilderImpl();
-    }
-
     private static class BuilderImpl extends FpsakBehandlingProsessEventDto.Builder<FpsakBehandlingProsessEventDto.BuilderImpl> {
         private BuilderImpl() {
         }
@@ -24,10 +20,7 @@ public class FpsakBehandlingProsessEventDto extends BehandlingProsessEventDto {
         }
     }
 
-    public abstract static class Builder<T extends FpsakBehandlingProsessEventDto.Builder<T>> extends no.nav.vedtak.felles.integrasjon.kafka.BehandlingProsessEventDto.Builder<T> {
-
-        public Builder() {
-        }
+    public abstract static class Builder<T extends FpsakBehandlingProsessEventDto.Builder<T>> extends BehandlingProsessEventDto.Builder<T> {
 
         public FpsakBehandlingProsessEventDto build() {
             return new FpsakBehandlingProsessEventDto(this);

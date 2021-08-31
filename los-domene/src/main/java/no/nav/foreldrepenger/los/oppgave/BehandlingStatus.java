@@ -1,15 +1,14 @@
 package no.nav.foreldrepenger.los.oppgave;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import java.util.Arrays;
+import java.util.Optional;
 
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
+
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum BehandlingStatus {
@@ -38,11 +37,6 @@ public enum BehandlingStatus {
                 .filter(v -> v.kode.equals(kode))
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("Ukjent BehandlingStatus: " + kode));
-    }
-
-    public static List<BehandlingStatus> getEnums() {
-        return Arrays.stream(values())
-                .collect(Collectors.toList());
     }
 
     @Converter(autoApply = true)

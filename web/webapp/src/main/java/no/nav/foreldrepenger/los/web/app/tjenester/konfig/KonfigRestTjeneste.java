@@ -9,8 +9,8 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
 import io.swagger.v3.oas.annotations.Operation;
+import no.nav.foreldrepenger.konfig.KonfigVerdi;
 import no.nav.foreldrepenger.los.web.app.AbacAttributter;
-import no.nav.vedtak.konfig.KonfigVerdi;
 import no.nav.vedtak.sikkerhet.abac.BeskyttetRessurs;
 
 @Path("/konfig")
@@ -19,13 +19,13 @@ public class KonfigRestTjeneste {
 
     private String fpsakFrontendUrl;
 
-    public KonfigRestTjeneste() {
-        //NOSONAR
-    }
-
     @Inject
     public KonfigRestTjeneste(@KonfigVerdi("fpsak.frontend.url") String fpsakFrontendUrl) {
         this.fpsakFrontendUrl = fpsakFrontendUrl;
+    }
+
+    KonfigRestTjeneste() {
+        //CDI
     }
 
     @GET

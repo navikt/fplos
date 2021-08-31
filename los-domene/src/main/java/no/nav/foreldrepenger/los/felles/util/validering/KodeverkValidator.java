@@ -7,7 +7,7 @@ import javax.validation.ConstraintValidator;
 
 import no.nav.vedtak.util.InputValideringRegex;
 
-public abstract class KodeverkValidator<T> implements ConstraintValidator<ValidKodeliste, T> {
+public abstract class KodeverkValidator<T> implements ConstraintValidator<ValidKodeverk, T> {
 
     static final String invKode = "kodeverks kode feilet validering"; // NOSONAR
     static final String invNavn = "kodeverks navn feilet validering"; // NOSONAR
@@ -15,7 +15,7 @@ public abstract class KodeverkValidator<T> implements ConstraintValidator<ValidK
     Pattern kodeverkPattern = Pattern.compile(InputValideringRegex.KODEVERK);
 
     @Override
-    public void initialize(ValidKodeliste validKodeliste) {
+    public void initialize(ValidKodeverk validKodeliste) {
         // ikke noe å gjøre
     }
 

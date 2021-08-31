@@ -6,12 +6,12 @@ import no.nav.foreldrepenger.los.oppgavekø.KøSortering;
 
 public class SorteringDto {
 
-    private KøSortering sorteringType;
-    private Long fra;
-    private Long til;
-    private LocalDate fomDato;
-    private LocalDate tomDato;
-    private boolean erDynamiskPeriode;
+    private final KøSortering sorteringType;
+    private final Long fra;
+    private final Long til;
+    private final LocalDate fomDato;
+    private final LocalDate tomDato;
+    private final boolean erDynamiskPeriode;
 
     public SorteringDto(KøSortering sorteringType,
                         Long fra,
