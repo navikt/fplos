@@ -105,9 +105,15 @@ export const UtvalgskriterierForSakslisteForm: FunctionComponent<OwnProps & Wrap
       .then(() => hentAvdelingensSakslister({ avdelingEnhet: valgtAvdelingEnhet }));
   }, [valgtAvdelingEnhet, valgtSaksliste]);
 
+  const defaultValues = buildInitialValues(intl, valgtSaksliste);
+
   const formMethods = useForm<FormValues>({
-    defaultValues: buildInitialValues(intl, valgtSaksliste),
+    defaultValues,
   });
+
+  useEffect(() => {
+    formMethods.reset(defaultValues);
+  }, [valgtSaksliste.sakslisteId]);
 
   const values = formMethods.watch();
 

@@ -1,6 +1,6 @@
 import dayjs from 'dayjs';
 
-import { ISO_DATE_FORMAT } from 'utils/formats';
+import { DDMMYYYY_DATE_FORMAT, ISO_DATE_FORMAT } from 'utils/formats';
 import { intlMock } from 'testHelpers/intl-enzyme-test-helper';
 import {
   required, minLength, maxLength, minValue, maxValue,
@@ -126,7 +126,8 @@ describe('Validators', () => {
 
     it('skal feile når dato ikke er før eller lik spesifisert dato', () => {
       const result = dateBeforeOrEqual(intlMock, today)('2100-12-10');
-      expect(result).toEqual('Dato må være før eller lik 30.08.2021');
+      const iDag = dayjs().format(DDMMYYYY_DATE_FORMAT);
+      expect(result).toEqual(`Dato må være før eller lik ${iDag}`);
     });
 
     it('skal ikke feile når dato er tom', () => {
@@ -149,7 +150,8 @@ describe('Validators', () => {
 
     it('skal feile når dato er før spesifisert dato', () => {
       const result = dateAfterOrEqual(intlMock, today)('2000-12-10');
-      expect(result).toEqual('Dato må være etter eller lik 30.08.2021');
+      const iDag = dayjs().format(DDMMYYYY_DATE_FORMAT);
+      expect(result).toEqual(`Dato må være etter eller lik ${iDag}`);
     });
 
     it('skal ikke feile når dato er tom', () => {
