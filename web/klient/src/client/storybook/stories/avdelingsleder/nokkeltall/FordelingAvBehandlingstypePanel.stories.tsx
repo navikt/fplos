@@ -77,5 +77,27 @@ Default.args = {
     },
     tilBehandling: true,
     antall: 14,
+  }, {
+    fagsakYtelseType: {
+      kode: fagsakYtelseType.ENGANGSSTONAD,
+      navn: 'Engangsstønad',
+    },
+    behandlingType: {
+      kode: behandlingType.REVURDERING,
+      navn: 'Revurdering',
+    },
+    tilBehandling: false,
+    antall: 4,
+  }, {
+    fagsakYtelseType: {
+      kode: fagsakYtelseType.FORELDREPRENGER,
+      navn: 'Engangsstønad',
+    },
+    behandlingType: {
+      kode: behandlingType.TILBAKEBETALING,
+      navn: 'Tilbakebetaling',
+    },
+    tilBehandling: false,
+    antall: 6,
   }],
 };

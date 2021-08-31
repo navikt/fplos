@@ -72,8 +72,6 @@
 
   "FordelingAvBehandlingstypeGraf.TilBehandling": "Til behandling",
   "FordelingAvBehandlingstypeGraf.TilBeslutter": "Til beslutter",
-  "FordelingAvBehandlingstypeGraf.TotaltAntall": "Totalt antall: {antall}",
-  "FordelingAvBehandlingstypeGraf.Antall": "Antall: {antall}",
 
   "GjeldendeSakslisterTabell.GjeldendeLister": "Gjeldende behandlingskøer",
   "GjeldendeSakslisterTabell.IngenLister": "Ingen behandlingskøer er laget",
