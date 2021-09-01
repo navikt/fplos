@@ -6,7 +6,6 @@ import Kodeverk from 'types/kodeverkTsType';
 import BehandlingType from 'kodeverk/behandlingType';
 import OppgaverForAvdeling from 'types/avdelingsleder/oppgaverForAvdelingTsType';
 
-import 'react-vis/dist/style.css';
 import ReactECharts from 'sharedComponents/echart/ReactEcharts';
 
 const behandlingstypeOrder = [

@@ -1,44 +1,20 @@
-import React, {
-  useMemo, FunctionComponent, useState, useCallback,
-} from 'react';
-import {
-  XYPlot, XAxis, YAxis, HorizontalGridLines, VerticalRectSeries, DiscreteColorLegend, Hint,
-} from 'react-vis';
-import {
-  injectIntl, IntlShape, WrappedComponentProps,
-} from 'react-intl';
+import React, { FunctionComponent, useMemo } from 'react';
+import { injectIntl, IntlShape, WrappedComponentProps } from 'react-intl';
 import dayjs from 'dayjs';
 import Panel from 'nav-frontend-paneler';
 
-import BehandlingVenteStatus from 'kodeverk/behandlingVenteStatus';
-import { FlexContainer, FlexRow, FlexColumn } from 'sharedComponents/flexGrid';
+import ReactECharts from 'sharedComponents/echart/ReactEcharts';
 import OppgaverSomErApneEllerPaVent from 'types/avdelingsleder/oppgaverSomErApneEllerPaVentTsType';
-
-import 'react-vis/dist/style.css';
-import styles from './oppgaverSomErApneEllerPaVentGraf.less';
-
-const LEGEND_WIDTH = 210;
+import BehandlingVenteStatus from 'kodeverk/behandlingVenteStatus';
 
 const UKJENT_DATO = 'UKJENT_DATO';
+
+const getYearText = (month: number, intl: IntlShape): string => intl.formatMessage({ id: `OppgaverSomErApneEllerPaVentGraf.${month}` });
 
 interface KoordinatDatoEllerUkjent {
   x: string;
   y: number;
 }
-
-interface KoordinatDato {
-  x: dayjs.Dayjs;
-  y: number;
-}
-
-interface Koordinat {
-  x: number;
-  x0: number;
-  y: number;
-  y0: number;
-}
-
-const getYearText = (month: number, intl: IntlShape): string => intl.formatMessage({ id: `OppgaverSomErApneEllerPaVentGraf.${month}` });
 
 const finnGrafPeriode = (oppgaverSomErApneEllerPaVent: OppgaverSomErApneEllerPaVent[]): dayjs.Dayjs[] => {
   let periodeStart = dayjs().subtract(9, 'M');
@@ -75,12 +51,9 @@ const finnAntallPerDato = (oppgaverSomErApneEllerPaVent: OppgaverSomErApneEllerP
     .map((k) => ({ x: k, y: antallPerDatoOgUkjent[k] }));
 };
 
-const lagKoordinatForDato = (dato: dayjs.Dayjs, oppgaver: KoordinatDatoEllerUkjent[]): KoordinatDato => {
+const lagKoordinatForDato = (dato: dayjs.Dayjs, oppgaver: KoordinatDatoEllerUkjent[]): (number | Date)[] => {
   const eksisterendeDato = oppgaver.filter((o) => o.x !== UKJENT_DATO).find((o) => dayjs(o.x).isSame(dato));
-  return {
-    x: eksisterendeDato ? dayjs(eksisterendeDato.x) : dato,
-    y: eksisterendeDato ? eksisterendeDato.y : 0,
-  };
+  return [eksisterendeDato ? dayjs(eksisterendeDato.x).toDate() : dato.toDate(), eksisterendeDato ? eksisterendeDato.y : 0];
 };
 
 const fyllInnManglendeDatoerOgSorterEtterDato = (
@@ -88,9 +61,10 @@ const fyllInnManglendeDatoerOgSorterEtterDato = (
   oppgaverIkkePaVent: KoordinatDatoEllerUkjent[],
   periodeStart: dayjs.Dayjs,
   periodeSlutt: dayjs.Dayjs,
-): { koordinaterPaVent: KoordinatDato[], koordinaterIkkePaVent: KoordinatDato[] } => {
-  const koordinaterPaVent: KoordinatDato[] = [];
-  const koordinaterIkkePaVent: KoordinatDato[] = [];
+): { koordinaterPaVent: (number | Date)[][], koordinaterIkkePaVent: (number | Date
+)[][] } => {
+  const koordinaterPaVent: (number | Date)[][] = [];
+  const koordinaterIkkePaVent: (number | Date)[][] = [];
 
   let dato = dayjs(periodeStart);
   do {
@@ -99,34 +73,13 @@ const fyllInnManglendeDatoerOgSorterEtterDato = (
     dato = dayjs(dato.add(1, 'month'));
   } while (dato.isBefore(periodeSlutt));
 
-  koordinaterPaVent.push({
-    x: periodeSlutt,
-    y: oppgaverPaVent.find((d) => d.x === UKJENT_DATO)?.y || 0,
-  });
-  koordinaterIkkePaVent.push({
-    x: periodeSlutt,
-    y: oppgaverIkkePaVent.find((d) => d.x === UKJENT_DATO)?.y || 0,
-  });
+  koordinaterPaVent.push([periodeSlutt.toDate(), oppgaverPaVent.find((d) => d.x === UKJENT_DATO)?.y || 0]);
+  koordinaterIkkePaVent.push([periodeSlutt.toDate(), oppgaverIkkePaVent.find((d) => d.x === UKJENT_DATO)?.y || 0]);
 
   return {
     koordinaterPaVent,
     koordinaterIkkePaVent,
   };
-};
-
-const settCustomBreddePaSoylene = (data: KoordinatDato[]): Koordinat[] => data.map((el, index) => ({
-  ...el,
-  x0: index + 1 - 0.30,
-  x: index + 1 + 0.30,
-  y: el.y,
-  y0: 0,
-}));
-
-const cssText = {
-  fontFamily: 'Source Sans Pro, Arial, sans-serif',
-  fontSize: '1rem',
-  lineHeight: '1.375rem',
-  fontWeight: 400,
 };
 
 interface OwnProps {
@@ -145,126 +98,103 @@ const OppgaverSomErApneEllerPaVentGraf: FunctionComponent<OwnProps & WrappedComp
   height,
   oppgaverApneEllerPaVent,
 }) => {
-  const [hintVerdi, setHintVerdi] = useState<{ paVent: boolean, verdi: Koordinat }>();
-
-  const leggTilHintVerdiPaVent = useCallback((verdi: Koordinat): void => {
-    setHintVerdi({ paVent: true, verdi });
-  }, []);
-  const leggTilHintVerdiIkkePaVent = useCallback((verdi: Koordinat): void => {
-    setHintVerdi({ paVent: false, verdi });
-  }, []);
-  const fjernHintVerdi = useCallback((): void => {
-    setHintVerdi(undefined);
-  }, []);
-
-  const [periodeStart, periodeSlutt] = useMemo(() => finnGrafPeriode(oppgaverApneEllerPaVent), [oppgaverApneEllerPaVent]);
+  const paVentTekst = intl.formatMessage({ id: 'OppgaverSomErApneEllerPaVentGraf.PaVent' });
+  const ikkePaVentTekst = intl.formatMessage({ id: 'OppgaverSomErApneEllerPaVentGraf.IkkePaVent' });
+  const ukjentTekst = intl.formatMessage({ id: 'OppgaverSomErApneEllerPaVentGraf.Ukjent' });
+  const datoTekst = intl.formatMessage({ id: 'OppgaverSomErApneEllerPaVentGraf.Dato' });
 
   const oppgaverPaVentPerDato = useMemo(() => finnAntallPerDato(oppgaverApneEllerPaVent
     .filter((o) => o.behandlingVenteStatus.kode === BehandlingVenteStatus.PA_VENT)), [oppgaverApneEllerPaVent]);
   const oppgaverIkkePaVentPerDato = useMemo(() => finnAntallPerDato(oppgaverApneEllerPaVent
     .filter((o) => o.behandlingVenteStatus.kode === BehandlingVenteStatus.IKKE_PA_VENT)), [oppgaverApneEllerPaVent]);
 
-  const isEmpty = oppgaverPaVentPerDato.length === 0 && oppgaverIkkePaVentPerDato.length === 0;
+  const [periodeStart, periodeSlutt] = useMemo(() => finnGrafPeriode(oppgaverApneEllerPaVent), [oppgaverApneEllerPaVent]);
 
   const { koordinaterPaVent, koordinaterIkkePaVent } = useMemo(() => fyllInnManglendeDatoerOgSorterEtterDato(
     oppgaverPaVentPerDato, oppgaverIkkePaVentPerDato, periodeStart, periodeSlutt,
   ), [oppgaverPaVentPerDato, oppgaverIkkePaVentPerDato, periodeStart, periodeSlutt]);
 
-  const rectSeriesKoordinaterPaVent = useMemo(() => settCustomBreddePaSoylene(koordinaterPaVent), [koordinaterPaVent]);
-  const rectSeriesKoordinaterIkkePaVent = useMemo(() => settCustomBreddePaSoylene(koordinaterIkkePaVent), [koordinaterIkkePaVent]);
-
-  const plotPropsWhenEmpty = isEmpty ? {
-    yDomain: [0, 10],
-    xDomain: [periodeStart.toDate(), periodeSlutt.toDate()],
-  } : {};
-
   return (
-    <Panel className={styles.panel}>
-      <FlexContainer>
-        <FlexRow>
-          <FlexColumn>
-            {/* @ts-ignore Feil i @types/react-vis yDomain og xDomain har en funksjon */}
-            <XYPlot
-              dontCheckIfEmpty={isEmpty}
-              margin={{
-                left: 50, right: 10, top: 30, bottom: 50,
-              }}
-              width={width - LEGEND_WIDTH > 0 ? width - LEGEND_WIDTH : 100 + LEGEND_WIDTH}
-              height={height}
-              stackBy="y"
-              {...plotPropsWhenEmpty}
-            >
-              <HorizontalGridLines />
-              <XAxis
-                style={{ text: cssText }}
-                // @ts-ignore Feil i @types/react-vis Kan returnere Element
-                tickFormat={(index) => {
-                  // TODO (TOR) Kvifor får ein av og til flyttall her?
-                  const erFlyttall = index % 1 !== 0;
-                  if (isEmpty || erFlyttall) {
-                    return '';
+    <Panel>
+      <ReactECharts
+        width={width}
+        height={height}
+        option={{
+          tooltip: {
+            trigger: 'axis',
+            axisPointer: {
+              type: 'shadow',
+              label: {
+                formatter: (params) => {
+                  const dato = dayjs(params.value);
+                  if (dato.isSame(periodeSlutt)) {
+                    return `${ukjentTekst} ${datoTekst}`;
                   }
+                  return `${getYearText(dato.month(), intl)} - ${dato.year()}`;
+                },
+              },
+            },
+          },
+          legend: {
+            data: [paVentTekst, ikkePaVentTekst],
+          },
+          grid: {
+            left: '3%',
+            right: '4%',
+            bottom: '3%',
+            containLabel: true,
+          },
+          xAxis: [
+            {
+              type: 'category',
+              boundaryGap: false,
+              axisLabel: {
+                formatter: (value: any) => {
+                  const dato = dayjs(value);
+                  const erSiste = dato.isSame(periodeSlutt);
+                  const maned = erSiste ? ukjentTekst : getYearText(dato.month(), intl);
+                  const ar = erSiste ? datoTekst : dato.year();
 
-                  const koordinat = koordinaterPaVent.length > 0 ? koordinaterPaVent : koordinaterIkkePaVent;
-                  const erSiste = index === koordinat.length;
-                  const xVerdi = koordinat[index - 1].x;
-                  const dato = erSiste ? intl.formatMessage({ id: 'OppgaverSomErApneEllerPaVentGraf.Ukjent' }) : getYearText(xVerdi.month(), intl);
-                  const ar = erSiste ? intl.formatMessage({ id: 'OppgaverSomErApneEllerPaVentGraf.Dato' }) : xVerdi.year();
-
-                  return (
-                    <tspan>
-                      <tspan x="0" dy="1em">{dato}</tspan>
-                      <tspan x="0" dy="1em">{ar}</tspan>
-                    </tspan>
-                  );
-                }}
-              />
-              <YAxis
-                style={{ text: cssText }}
-                title={intl.formatMessage({ id: 'OppgaverSomErApneEllerPaVentGraf.AntallGraf' })}
-              />
-              <VerticalRectSeries
-                data={rectSeriesKoordinaterIkkePaVent}
-                // @ts-ignore Feil i @types/react-vis
-                onValueMouseOver={leggTilHintVerdiIkkePaVent}
-                onValueMouseOut={fjernHintVerdi}
-                fill="#38a161"
-                stroke="#38a161"
-              />
-              <VerticalRectSeries
-                data={rectSeriesKoordinaterPaVent}
-                // @ts-ignore Feil i @types/react-vis
-                onValueMouseOver={leggTilHintVerdiPaVent}
-                onValueMouseOut={fjernHintVerdi}
-                fill="#85d5f0"
-                stroke="#85d5f0"
-              />
-              {hintVerdi && (
-                <Hint value={hintVerdi.verdi}>
-                  <div className={styles.hint}>
-                    {intl.formatMessage({
-                      id: hintVerdi.paVent
-                        ? 'OppgaverSomErApneEllerPaVentGraf.AntallPaVent' : 'OppgaverSomErApneEllerPaVentGraf.AntallIkkePaVent',
-                    }, {
-                      antall: hintVerdi.verdi.y0 ? hintVerdi.verdi.y - hintVerdi.verdi.y0 : hintVerdi.verdi.y,
-                    })}
-                  </div>
-                </Hint>
-              )}
-            </XYPlot>
-          </FlexColumn>
-          <FlexColumn>
-            <DiscreteColorLegend
-              items={[
-                // @ts-ignore Feil i @types/react-vis
-                { title: intl.formatMessage({ id: 'OppgaverSomErApneEllerPaVentGraf.PaVent' }), color: '#85d5f0', strokeWidth: 12 },
-                // @ts-ignore Feil i @types/react-vis
-                { title: intl.formatMessage({ id: 'OppgaverSomErApneEllerPaVentGraf.IkkePaVent' }), color: '#38a161', strokeWidth: 12 },
-              ]}
-            />
-          </FlexColumn>
-        </FlexRow>
-      </FlexContainer>
+                  return `${maned}\n${ar}`;
+                },
+              },
+            },
+          ],
+          yAxis: [
+            {
+              type: 'value',
+              name: intl.formatMessage({ id: 'OppgaverSomErApneEllerPaVentGraf.AntallGraf' }),
+            },
+          ],
+          series: [
+            {
+              name: paVentTekst,
+              type: 'bar',
+              stack: 'total',
+              label: {
+                show: true,
+              },
+              emphasis: {
+                focus: 'series',
+              },
+              data: koordinaterPaVent,
+            },
+            {
+              name: ikkePaVentTekst,
+              type: 'bar',
+              stack: 'total',
+              label: {
+                show: true,
+              },
+              emphasis: {
+                focus: 'series',
+              },
+              data: koordinaterIkkePaVent,
+            },
+          ],
+          color: ['#85d5f0', '#38a161'],
+        }}
+      />
     </Panel>
   );
 };

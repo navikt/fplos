@@ -19,6 +19,7 @@ import {
 import TilBehandlingGraf, { OppgaveForDatoGraf } from './TilBehandlingGraf';
 
 import styles from './tilBehandlingPanel.less';
+import TilBehandlingGrafNy from './TilBehandlingGrafNy';
 
 dayjs.extend(isSameOrAfter);
 
@@ -140,6 +141,15 @@ export const TilBehandlingPanel: FunctionComponent<OwnProps & WrappedComponentPr
           </div>
         </Column>
       </Row>
+      <TilBehandlingGrafNy
+        width={width}
+        height={height}
+        isToUkerValgt={values.ukevalg === UKE_2}
+        behandlingTyper={behandlingTyper}
+        oppgaverPerDato={oppgaverPerDato ? slaSammenLikeBehandlingstyperOgDatoer(oppgaverPerDato
+          .filter((ofa) => (values.ytelseType === ALLE_YTELSETYPER_VALGT ? true : values.ytelseType === ofa.fagsakYtelseType.kode))
+          .filter((ofa) => erDatoInnenforPeriode(ofa, values.ukevalg))) : []}
+      />
       <TilBehandlingGraf
         width={width}
         height={height}
