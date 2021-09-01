@@ -11,7 +11,7 @@ import org.slf4j.LoggerFactory;
 
 import no.nav.vedtak.exception.IntegrasjonException;
 import no.nav.vedtak.felles.integrasjon.rest.OidcRestClient;
-import no.nav.vedtak.konfig.KonfigVerdi;
+import no.nav.foreldrepenger.konfig.KonfigVerdi;
 
 @ApplicationScoped
 public class EnhetstilgangConnection {
@@ -31,7 +31,7 @@ public class EnhetstilgangConnection {
         this.enabled = enabled;
     }
 
-    public EnhetstilgangConnection() {
+    EnhetstilgangConnection() {
         // CDI
     }
 

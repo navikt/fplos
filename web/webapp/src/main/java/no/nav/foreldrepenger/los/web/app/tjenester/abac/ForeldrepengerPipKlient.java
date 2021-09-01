@@ -5,12 +5,11 @@ import java.net.URISyntaxException;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import no.nav.foreldrepenger.los.domene.typer.BehandlingId;
 import org.apache.http.client.utils.URIBuilder;
 
-
+import no.nav.foreldrepenger.konfig.KonfigVerdi;
+import no.nav.foreldrepenger.los.domene.typer.BehandlingId;
 import no.nav.vedtak.felles.integrasjon.rest.SystemUserOidcRestClient;
-import no.nav.vedtak.konfig.KonfigVerdi;
 import no.nav.vedtak.util.LRUCache;
 
 @ApplicationScoped

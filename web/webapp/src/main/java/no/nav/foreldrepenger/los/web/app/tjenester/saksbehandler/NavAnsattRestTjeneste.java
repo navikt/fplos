@@ -16,7 +16,7 @@ import no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.dto.InnloggetNa
 import no.nav.foreldrepenger.los.web.app.util.LdapUtil;
 import no.nav.vedtak.felles.integrasjon.ldap.LdapBruker;
 import no.nav.vedtak.felles.integrasjon.ldap.LdapBrukeroppslag;
-import no.nav.vedtak.konfig.KonfigVerdi;
+import no.nav.foreldrepenger.konfig.KonfigVerdi;
 import no.nav.vedtak.sikkerhet.abac.BeskyttetRessurs;
 import no.nav.vedtak.sikkerhet.context.SubjectHandler;
 
@@ -31,9 +31,6 @@ public class NavAnsattRestTjeneste {
     private String gruppenavnKode6;
     private String gruppenavnKode7;
     private String gruppenavnOppgavestyrer;
-    public NavAnsattRestTjeneste() {
-        //NOSONAR
-    }
 
     @Inject
     public NavAnsattRestTjeneste(
@@ -54,6 +51,10 @@ public class NavAnsattRestTjeneste {
         this.gruppenavnOppgavestyrer = gruppenavnOppgavestyrer;
     }
 
+    NavAnsattRestTjeneste() {
+        //CDI
+    }
+
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Operation(description = "Returnerer fullt navn for ident", tags = "SaksbehandlerIdent")
@@ -65,8 +66,8 @@ public class NavAnsattRestTjeneste {
     }
 
     InnloggetNavAnsattDto getInnloggetBrukerDto(String ident, LdapBruker ldapBruker) {
-        var navn = ldapBruker.getDisplayName();
-        var grupper = LdapUtil.filtrerGrupper(ldapBruker.getGroups());
+        var navn = ldapBruker.displayName();
+        var grupper = LdapUtil.filtrerGrupper(ldapBruker.groups());
         return InnloggetNavAnsattDto.builder()
                 .setBrukernavn(ident)
                 .setNavn(navn)

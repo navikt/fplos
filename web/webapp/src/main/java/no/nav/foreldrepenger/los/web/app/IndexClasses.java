@@ -30,8 +30,8 @@ public class IndexClasses {
 
     private static final ConcurrentMap<URI, IndexClasses> INDEXES = new ConcurrentHashMap<>();
 
-    private URI scanLocation;
-    private String jandexIndexFileName;
+    private final URI scanLocation;
+    private final String jandexIndexFileName;
 
     private IndexClasses(URI location) {
         this(location, "jandex.idx");
@@ -68,8 +68,7 @@ public class IndexClasses {
                     }
                 });
             }
-            var index = indexer.complete();
-            return index;
+            return indexer.complete();
         } catch (IOException e) {
             throw new IllegalStateException("Fikk ikke lest path " + location + ", kan ikke scanne klasser", e);
         }
@@ -158,9 +157,5 @@ public class IndexClasses {
 
     public static IndexClasses getIndexFor(final URI location) {
         return INDEXES.computeIfAbsent(location, uri -> new IndexClasses(uri));
-    }
-
-    public static IndexClasses getIndexFor(final URI location, final String jandexIdxFileName) {
-        return INDEXES.computeIfAbsent(location, uri -> new IndexClasses(uri, jandexIdxFileName));
     }
 }

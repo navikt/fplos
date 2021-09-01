@@ -16,7 +16,8 @@ public class DriftsmeldingTjeneste {
         this.driftsmeldingRepository = driftsmeldingRepository;
     }
 
-    public DriftsmeldingTjeneste() {
+    DriftsmeldingTjeneste() {
+        //CDI
     }
 
     public void opprettDriftsmelding(Driftsmelding driftsmelding) {

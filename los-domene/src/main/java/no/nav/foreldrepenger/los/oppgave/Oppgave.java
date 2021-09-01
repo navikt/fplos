@@ -178,7 +178,6 @@ public class Oppgave extends BaseEntitet {
 
     public void avstemMed(Oppgave other) {
         this.behandlingOpprettet = other.behandlingOpprettet;
-        this.href = other.href;
         this.aktorId = other.aktorId;
         this.behandlendeEnhet = other.behandlendeEnhet;
         this.behandlingsfrist = other.behandlingsfrist;

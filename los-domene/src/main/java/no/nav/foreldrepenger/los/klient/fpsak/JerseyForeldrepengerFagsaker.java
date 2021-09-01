@@ -2,7 +2,6 @@ package no.nav.foreldrepenger.los.klient.fpsak;
 
 import static javax.ws.rs.client.Entity.json;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON_TYPE;
-import static no.nav.vedtak.util.env.ConfidentialMarkerFilter.CONFIDENTIAL;
 
 import java.net.URI;
 import java.util.List;
@@ -35,7 +34,6 @@ public class JerseyForeldrepengerFagsaker extends AbstractJerseyOidcRestClient i
 
     @Override
     public List<FagsakDto> finnFagsaker(String søkestreng) {
-        LOG.trace(CONFIDENTIAL, "Finner fagsaker for {}", søkestreng);
         var saker = invoke(client.target(baseUri)
                 .path(FAGSAK_SØK)
                 .request(APPLICATION_JSON_TYPE)
@@ -50,12 +48,9 @@ public class JerseyForeldrepengerFagsaker extends AbstractJerseyOidcRestClient i
         var target = client.target(baseUri)
                 .path(href.getRawPath());
         target = QueryUtil.addQueryParams(href, target);
-        LOG.trace(CONFIDENTIAL, "Get for {}", target.getUri());
-        var res = invoke(target
+        return invoke(target
                 .request(APPLICATION_JSON_TYPE)
                 .buildGet(), clazz);
-        LOG.info(CONFIDENTIAL, "Get for  {} OK", target.getUri());
-        return res;
     }
 
     @Override

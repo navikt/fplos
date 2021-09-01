@@ -58,7 +58,6 @@ import no.nav.vedtak.sikkerhet.abac.BeskyttetRessursActionAttributt;
 public class OppgaveRestTjeneste {
 
     private static final Logger LOG = LoggerFactory.getLogger(OppgaveRestTjeneste.class);
-    private static final int POLL_INTERVAL_MILLIS = 1000;
 
     public static final String OPPGAVER_BASE_PATH =  "/saksbehandler/oppgaver";
     public static final String OPPGAVER_STATUS_PATH =  "/status";
