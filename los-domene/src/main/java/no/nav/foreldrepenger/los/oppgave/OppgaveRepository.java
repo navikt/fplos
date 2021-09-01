@@ -255,11 +255,11 @@ public class OppgaveRepository {
     private String filtrerStatisk(String sortering, LocalDate fomDato, LocalDate tomDato) {
         var datoFiltrering = "";
         if (fomDato != null && tomDato != null) {
-            datoFiltrering = "AND " + sortering + " > :filterFomDato AND " + sortering + " < :filterTomDato ";
+            datoFiltrering = "AND " + sortering + " >= :filterFomDato AND " + sortering + " <= :filterTomDato ";
         } else if (fomDato != null) {
-            datoFiltrering = "AND " + sortering + " > :filterFomDato ";
+            datoFiltrering = "AND " + sortering + " >= :filterFomDato ";
         } else if (tomDato != null) {
-            datoFiltrering = "AND " + sortering + " < :filterTomDato ";
+            datoFiltrering = "AND " + sortering + " <= :filterTomDato ";
         }
         return datoFiltrering + SORTERING + sortering;
     }
