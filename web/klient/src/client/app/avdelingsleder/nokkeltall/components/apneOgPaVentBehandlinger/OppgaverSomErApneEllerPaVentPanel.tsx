@@ -16,7 +16,6 @@ import OppgaverSomErApneEllerPaVentGraf from './OppgaverSomErApneEllerPaVentGraf
 const formName = 'oppgaverSomErApneEllerPaVent';
 
 interface OwnProps {
-  width: number;
   height: number;
   oppgaverApneEllerPaVent: OppgaverSomErApneEllerPaVent[];
   getValueFromLocalStorage: (key: string) => string | undefined;
@@ -26,7 +25,6 @@ interface OwnProps {
  * OppgaverSomErApneEllerPaVentPanel.
  */
 export const OppgaverSomErApneEllerPaVentPanel: FunctionComponent<OwnProps> = ({
-  width,
   height,
   oppgaverApneEllerPaVent,
   getValueFromLocalStorage,
@@ -72,7 +70,6 @@ export const OppgaverSomErApneEllerPaVentPanel: FunctionComponent<OwnProps> = ({
       </FlexContainer>
       <VerticalSpacer sixteenPx />
       <OppgaverSomErApneEllerPaVentGraf
-        width={width}
         height={height}
         oppgaverApneEllerPaVent={oppgaverApneEllerPaVent.filter((oav) => values[oav.behandlingType.kode])}
       />

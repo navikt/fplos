@@ -16,7 +16,6 @@ export default {
 
 export const Default = () => (
   <OppgaverPerForsteStonadsdagPanel
-    width={700}
     height={300}
     oppgaverPerForsteStonadsdag={[{
       forsteStonadsdag: dayjs().subtract(14, 'd').format(ISO_DATE_FORMAT),

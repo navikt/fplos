@@ -17,7 +17,6 @@ export default {
 
 export const Default = () => (
   <NyeOgFerdigstilteOppgaverForSisteSyvPanel
-    width={700}
     height={200}
     nyeOgFerdigstilteOppgaver={[{
       behandlingType: {

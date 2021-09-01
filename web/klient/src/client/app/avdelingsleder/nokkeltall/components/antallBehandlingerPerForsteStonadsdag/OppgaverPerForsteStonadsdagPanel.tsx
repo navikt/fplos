@@ -7,7 +7,6 @@ import OppgaverForForsteStonadsdag from 'types/avdelingsleder/oppgaverForForsteS
 import OppgaverPerForsteStonadsdagGraf from './OppgaverPerForsteStonadsdagGraf';
 
 interface OwnProps {
-  width: number;
   height: number;
   oppgaverPerForsteStonadsdag: OppgaverForForsteStonadsdag[];
 }
@@ -16,7 +15,6 @@ interface OwnProps {
  * OppgaverPerForsteStonadsdagPanel.
  */
 export const OppgaverPerForsteStonadsdagPanel: FunctionComponent<OwnProps> = ({
-  width,
   height,
   oppgaverPerForsteStonadsdag,
 }) => (
@@ -26,7 +24,6 @@ export const OppgaverPerForsteStonadsdagPanel: FunctionComponent<OwnProps> = ({
     </Element>
     <VerticalSpacer sixteenPx />
     <OppgaverPerForsteStonadsdagGraf
-      width={width}
       height={height}
       oppgaverPerForsteStonadsdag={oppgaverPerForsteStonadsdag}
     />

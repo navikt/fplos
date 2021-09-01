@@ -43,7 +43,6 @@ export const lagDatastruktur = (koordinater: Koordinat[]): number[][] => {
 };
 
 interface OwnProps {
-  width: number;
   height: number;
   oppgaverPerForsteStonadsdag: OppgaverForForsteStonadsdag[];
 }
@@ -52,7 +51,6 @@ interface OwnProps {
  * OppgaverPerForsteStonadsdagGraf.
  */
 const OppgaverPerForsteStonadsdagGraf: FunctionComponent<OwnProps> = ({
-  width,
   height,
   oppgaverPerForsteStonadsdag,
 }) => {
@@ -61,7 +59,6 @@ const OppgaverPerForsteStonadsdagGraf: FunctionComponent<OwnProps> = ({
   return (
     <Panel>
       <ReactECharts
-        width={width}
         height={height}
         option={{
           tooltip: {

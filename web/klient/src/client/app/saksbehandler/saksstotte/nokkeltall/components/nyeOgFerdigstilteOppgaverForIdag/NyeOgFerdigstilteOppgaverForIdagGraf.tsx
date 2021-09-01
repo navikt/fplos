@@ -15,7 +15,6 @@ const behandlingstypeOrder = [
   BehandlingType.FORSTEGANGSSOKNAD];
 
 interface OwnProps {
-  width: number;
   height: number;
   behandlingTyper: Kodeverk[];
   nyeOgFerdigstilteOppgaver: NyeOgFerdigstilteOppgaver[];
@@ -26,7 +25,6 @@ interface OwnProps {
  */
 export const NyeOgFerdigstilteOppgaverForIdagGraf: FunctionComponent<OwnProps & WrappedComponentProps> = ({
   intl,
-  width,
   height,
   nyeOgFerdigstilteOppgaver,
   behandlingTyper,
@@ -61,7 +59,6 @@ export const NyeOgFerdigstilteOppgaverForIdagGraf: FunctionComponent<OwnProps & 
   return (
     <Panel>
       <ReactECharts
-        width={width}
         height={height}
         option={{
           tooltip: {

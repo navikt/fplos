@@ -6,14 +6,12 @@ import type { EChartsOption, ECharts } from 'echarts';
 export interface OwnProps {
   option: EChartsOption;
   style?: CSSProperties;
-  width: number;
   height: number;
 }
 
 const ReactECharts: FunctionComponent<OwnProps> = ({
   option,
   style,
-  width,
   height,
 }): JSX.Element => {
   const chartRef = useRef<HTMLDivElement>(null);
@@ -42,7 +40,7 @@ const ReactECharts: FunctionComponent<OwnProps> = ({
     }
   }, [chartRef.current, option]);
 
-  return <div ref={chartRef} style={{ width, height, ...style }} />;
+  return <div ref={chartRef} style={{ width: 'auto', height, ...style }} />;
 };
 
 export default ReactECharts;

@@ -29,7 +29,6 @@ type FormValues = {
 }
 
 interface OwnProps {
-  width: number;
   height: number;
   oppgaverForAvdeling: OppgaverForAvdeling[];
   getValueFromLocalStorage: (key: string) => string| undefined;
@@ -42,7 +41,6 @@ const formDefaultValues: InitialValues = { valgtYtelseType: ALLE_YTELSETYPER_VAL
  * FordelingAvBehandlingstypePanel.
  */
 export const FordelingAvBehandlingstypePanel: FunctionComponent<OwnProps> = ({
-  width,
   height,
   oppgaverForAvdeling,
   getValueFromLocalStorage,
@@ -84,7 +82,6 @@ export const FordelingAvBehandlingstypePanel: FunctionComponent<OwnProps> = ({
         />
       </RadioGroupField>
       <FordelingAvBehandlingstypeGraf
-        width={width}
         height={height}
         behandlingTyper={behandlingTyper}
         oppgaverForAvdeling={oppgaverForAvdeling ? oppgaverForAvdeling

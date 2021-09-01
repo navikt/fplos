@@ -84,7 +84,6 @@ const fyllInnManglendeDatoerOgSorterEtterDato = (
 
 interface OwnProps {
   intl: any;
-  width: number;
   height: number;
   oppgaverApneEllerPaVent: OppgaverSomErApneEllerPaVent[];
 }
@@ -94,7 +93,6 @@ interface OwnProps {
  */
 const OppgaverSomErApneEllerPaVentGraf: FunctionComponent<OwnProps & WrappedComponentProps> = ({
   intl,
-  width,
   height,
   oppgaverApneEllerPaVent,
 }) => {
@@ -117,7 +115,6 @@ const OppgaverSomErApneEllerPaVentGraf: FunctionComponent<OwnProps & WrappedComp
   return (
     <Panel>
       <ReactECharts
-        width={width}
         height={height}
         option={{
           tooltip: {

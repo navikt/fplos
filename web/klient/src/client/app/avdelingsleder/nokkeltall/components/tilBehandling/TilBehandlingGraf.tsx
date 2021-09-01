@@ -84,7 +84,6 @@ const fyllInnManglendeDatoerOgSorterEtterDato = (
 }, {});
 
 interface OwnProps {
-  width: number;
   height: number;
   behandlingTyper: Kodeverk[];
   oppgaverPerDato: OppgaveForDatoGraf[];
@@ -95,7 +94,6 @@ interface OwnProps {
  * TilBehandlingGraf
  */
 export const TilBehandlingGraf: FunctionComponent<OwnProps> = ({
-  width,
   height,
   oppgaverPerDato,
   isToUkerValgt,
@@ -116,7 +114,6 @@ export const TilBehandlingGraf: FunctionComponent<OwnProps> = ({
   return (
     <Panel>
       <ReactECharts
-        width={width}
         height={height}
         option={{
           tooltip: {

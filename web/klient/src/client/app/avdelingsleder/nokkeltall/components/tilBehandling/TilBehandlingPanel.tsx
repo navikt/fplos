@@ -68,7 +68,6 @@ const slaSammenLikeBehandlingstyperOgDatoer = (oppgaverForAvdeling: OppgaveForDa
 };
 
 interface OwnProps {
-  width: number;
   height: number;
   oppgaverPerDato: OppgaveForDato[];
   getValueFromLocalStorage: (key: string) => string | undefined;
@@ -87,7 +86,6 @@ const formDefaultValues = { ytelseType: ALLE_YTELSETYPER_VALGT, ukevalg: UKE_2 }
  */
 export const TilBehandlingPanel: FunctionComponent<OwnProps & WrappedComponentProps> = ({
   intl,
-  width,
   height,
   oppgaverPerDato,
   getValueFromLocalStorage,
@@ -143,7 +141,6 @@ export const TilBehandlingPanel: FunctionComponent<OwnProps & WrappedComponentPr
         </Column>
       </Row>
       <TilBehandlingGraf
-        width={width}
         height={height}
         isToUkerValgt={values.ukevalg === UKE_2}
         behandlingTyper={behandlingTyper}

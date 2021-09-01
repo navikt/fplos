@@ -31,7 +31,6 @@ const slåSammen = (oppgaverForAvdeling: OppgaverForAvdeling[]): number[] => {
 
 interface OwnProps {
   intl: any;
-  width: number;
   height: number;
   behandlingTyper: Kodeverk[];
   oppgaverForAvdeling: OppgaverForAvdeling[];
@@ -42,7 +41,6 @@ interface OwnProps {
  */
 const FordelingAvBehandlingstypeGraf: FunctionComponent<OwnProps & WrappedComponentProps> = ({
   intl,
-  width,
   height,
   oppgaverForAvdeling,
   behandlingTyper,
@@ -61,7 +59,6 @@ const FordelingAvBehandlingstypeGraf: FunctionComponent<OwnProps & WrappedCompon
   return (
     <Panel>
       <ReactECharts
-        width={width}
         height={height}
         option={{
           tooltip: {

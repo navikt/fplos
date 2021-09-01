@@ -33,7 +33,6 @@ const Template: Story<{ oppgaverApneEllerPaVent: OppgaverSomErApneEllerPaVent[] 
   return (
     <RestApiMock data={data}>
       <OppgaverSomErApneEllerPaVentPanel
-        width={700}
         height={300}
         oppgaverApneEllerPaVent={oppgaverApneEllerPaVent}
         getValueFromLocalStorage={() => ''}

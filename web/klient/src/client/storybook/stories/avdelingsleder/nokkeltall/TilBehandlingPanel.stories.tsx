@@ -33,7 +33,6 @@ const Template: Story<{ oppgaverPerDato: OppgaveForDato[] }> = ({
   return (
     <RestApiMock data={data}>
       <TilBehandlingPanel
-        width={700}
         height={300}
         oppgaverPerDato={oppgaverPerDato}
         getValueFromLocalStorage={() => ''}

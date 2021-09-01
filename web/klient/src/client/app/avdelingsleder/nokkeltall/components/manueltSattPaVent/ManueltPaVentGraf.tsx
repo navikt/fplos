@@ -36,7 +36,6 @@ const lagDatastruktur = (koordinater: Koordinat[], isFireUkerValgt: boolean): (n
 };
 
 interface OwnProps {
-  width: number;
   height: number;
   isFireUkerValgt: boolean;
   oppgaverManueltPaVent: OppgaverManueltPaVent[];
@@ -46,7 +45,6 @@ interface OwnProps {
  * ManueltPaVentGraf.
  */
 const ManueltPaVentGraf: FunctionComponent<OwnProps> = ({
-  width,
   height,
   isFireUkerValgt,
   oppgaverManueltPaVent,
@@ -56,7 +54,6 @@ const ManueltPaVentGraf: FunctionComponent<OwnProps> = ({
   return (
     <Panel>
       <ReactECharts
-        width={width}
         height={height}
         option={{
           tooltip: {

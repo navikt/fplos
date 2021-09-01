@@ -47,7 +47,6 @@ const erDatoInnenforPeriode = (behandlingFrist: string, ukevalg: string): boolea
 
 interface OwnProps {
   intl: any;
-  width: number;
   height: number;
   oppgaverManueltPaVent: OppgaverManueltPaVent[];
   getValueFromLocalStorage: (key: string) => string | undefined;
@@ -66,7 +65,6 @@ type FormValues = {
  */
 export const ManueltPaVentPanel: FunctionComponent<OwnProps & WrappedComponentProps> = ({
   intl,
-  width,
   height,
   oppgaverManueltPaVent,
   getValueFromLocalStorage,
@@ -121,7 +119,6 @@ export const ManueltPaVentPanel: FunctionComponent<OwnProps & WrappedComponentPr
         </Column>
       </Row>
       <ManueltPaVentGraf
-        width={width}
         height={height}
         isFireUkerValgt={values.ukevalg === UKE_4}
         oppgaverManueltPaVent={oppgaverManueltPaVent && oppgaverManueltPaVent
