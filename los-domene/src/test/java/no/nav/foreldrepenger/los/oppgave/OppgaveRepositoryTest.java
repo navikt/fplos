@@ -10,7 +10,6 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -109,8 +108,8 @@ public class OppgaveRepositoryTest {
         var saksnummerMiss = setupOppgaveMedEgenskaper(AndreKriterierType.PAPIRSØKNAD);
         var oppgaveQuery = new Oppgavespørring(avdelingIdForDrammen(),
                 BEHANDLINGSFRIST,
-                Collections.emptyList(),
-                Collections.emptyList(),
+                List.of(),
+                List.of(),
                 List.of(AndreKriterierType.UTLANDSSAK), // inkluderes
                 List.of(AndreKriterierType.SØKT_GRADERING), // ekskluderes
                 false,
@@ -315,8 +314,8 @@ public class OppgaveRepositoryTest {
                 KøSortering.OPPRETT_BEHANDLING,
                 List.of(BehandlingType.FØRSTEGANGSSØKNAD),
                 List.of(FagsakYtelseType.FORELDREPENGER),
-                Collections.emptyList(),
-                Collections.emptyList(),
+                List.of(),
+                List.of(),
                 false, //erDynamiskPeriode
                 null,
                 filtrerTomDato,
@@ -324,6 +323,41 @@ public class OppgaveRepositoryTest {
                 null);
         var oppgaveResultat = oppgaveRepository.hentOppgaver(query);
         assertThat(oppgaveResultat).containsExactly(aktuellOppgave);
+    }
+
+    @Test
+    public void filtrerPåFørsteStønadsdag() {
+        var oppgave1 = basicOppgaveBuilder()
+                .medFørsteStønadsdag(LocalDate.now().minusDays(1))
+                .build();
+        var oppgave2 = basicOppgaveBuilder()
+                .medFørsteStønadsdag(LocalDate.now())
+                .build();
+        var oppgave3 = basicOppgaveBuilder()
+                .medFørsteStønadsdag(LocalDate.now().plusDays(5))
+                .build();
+        oppgaveRepository.lagre(oppgave1);
+        oppgaveRepository.lagre(oppgave2);
+        oppgaveRepository.lagre(oppgave3);
+        assertThat(filterOppgaver(oppgave1.getFørsteStønadsdag(), oppgave3.getFørsteStønadsdag()))
+                .containsExactlyInAnyOrder(oppgave2, oppgave1, oppgave3);
+        assertThat(filterOppgaver(oppgave1.getFørsteStønadsdag(), oppgave1.getFørsteStønadsdag())).containsExactly(oppgave1);
+        assertThat(filterOppgaver(oppgave1.getFørsteStønadsdag().minusDays(10), oppgave1.getFørsteStønadsdag().minusDays(1))).isEmpty();
+    }
+
+    private List<Oppgave> filterOppgaver(LocalDate filtrerFomDato, LocalDate filtrerTomDato) {
+        var query = new Oppgavespørring(avdelingIdForDrammen(),
+                KøSortering.FØRSTE_STØNADSDAG,
+                List.of(),
+                List.of(),
+                List.of(),
+                List.of(),
+                false,
+                filtrerFomDato,
+                filtrerTomDato,
+                null,
+                null);
+        return oppgaveRepository.hentOppgaver(query);
     }
 
     @Test
@@ -349,10 +383,10 @@ public class OppgaveRepositoryTest {
 
         var query = new Oppgavespørring(avdelingIdForDrammen(),
                 FEILUTBETALINGSTART,
-                Collections.emptyList(),
-                Collections.emptyList(),
-                Collections.emptyList(), // inkluderes
-                Collections.emptyList(), //ekskluderes
+                List.of(),
+                List.of(),
+                List.of(), // inkluderes
+                List.of(), //ekskluderes
                 false,
                 null,
                 null,
@@ -378,6 +412,15 @@ public class OppgaveRepositoryTest {
     }
 
     private Oppgave lagOppgave(LocalDate opprettetDato) {
+        return basicOppgaveBuilder(opprettetDato)
+                .build();
+    }
+
+    private Oppgave.Builder basicOppgaveBuilder() {
+        return basicOppgaveBuilder(LocalDate.now());
+    }
+
+    private Oppgave.Builder basicOppgaveBuilder(LocalDate opprettetDato) {
         return Oppgave.builder()
                 .medFagsakSaksnummer(1337L)
                 .medBehandlingId(behandlingId1)
@@ -387,8 +430,7 @@ public class OppgaveRepositoryTest {
                 .medAktiv(true)
                 .medBehandlingsfrist(LocalDateTime.now())
                 .medBehandlendeEnhet(AVDELING_DRAMMEN_ENHET)
-                .medBehandlingOpprettet(opprettetDato.atStartOfDay())
-                .build();
+                .medBehandlingOpprettet(opprettetDato.atStartOfDay());
     }
 
     private Oppgave lagOppgave(String behandlendeEnhet) {
