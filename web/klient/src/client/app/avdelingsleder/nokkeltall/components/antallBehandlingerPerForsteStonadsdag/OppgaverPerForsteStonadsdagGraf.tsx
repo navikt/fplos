@@ -1,21 +1,22 @@
-import React, { FunctionComponent, useState, useMemo } from 'react';
-import {
-  XYPlot, XAxis, YAxis, AreaSeries, Crosshair, HorizontalGridLines,
-} from 'react-vis';
+import React, {
+  FunctionComponent, useMemo,
+} from 'react';
 import dayjs from 'dayjs';
 import isSameOrBefore from 'dayjs/plugin/isSameOrBefore';
 import isSameOrAfter from 'dayjs/plugin/isSameOrAfter';
-import { FormattedMessage } from 'react-intl';
 import Panel from 'nav-frontend-paneler';
-import { Normaltekst, Undertekst } from 'nav-frontend-typografi';
 
-import { DDMMYYYY_DATE_FORMAT } from 'utils/formats';
+import ReactECharts from 'sharedComponents/echart/ReactEcharts';
+import { dateFormat } from 'utils/dateUtils';
 import OppgaverForForsteStonadsdag from 'types/avdelingsleder/oppgaverForForsteStonadsdagTsType';
-
-import styles from './oppgaverPerForsteStonadsdagGraf.less';
 
 dayjs.extend(isSameOrBefore);
 dayjs.extend(isSameOrAfter);
+
+interface Koordinat {
+  x: number;
+  y: number;
+}
 
 export const lagKoordinater = (oppgaverPerForsteStonadsdag: OppgaverForForsteStonadsdag[]): Koordinat[] => oppgaverPerForsteStonadsdag
   .map((o) => ({
@@ -23,7 +24,7 @@ export const lagKoordinater = (oppgaverPerForsteStonadsdag: OppgaverForForsteSto
     y: o.antall,
   }));
 
-export const lagDatastruktur = (koordinater: Koordinat[]): Koordinat[] => {
+export const lagDatastruktur = (koordinater: Koordinat[]): number[][] => {
   const nyeKoordinater = [];
   const periodeStart = koordinater
     .map((koordinat) => dayjs(koordinat.x))
@@ -36,27 +37,10 @@ export const lagDatastruktur = (koordinater: Koordinat[]): Koordinat[] => {
 
   for (let dato = dayjs(periodeStart); dato.isSameOrBefore(periodeSlutt); dato = dato.add(1, 'days')) {
     const funnetKoordinat = koordinater.find((k) => dayjs(k.x).isSame(dato));
-    nyeKoordinater.push({
-      x: dato.toDate().getTime(),
-      y: funnetKoordinat ? funnetKoordinat.y : 0,
-    });
+    nyeKoordinater.push([dato.toDate().getTime(), funnetKoordinat ? funnetKoordinat.y : 0]);
   }
   return nyeKoordinater;
 };
-
-export const harDatastrukturKun0Verdier = (koordinater: Koordinat[]): boolean => !koordinater.some((k) => k.y !== 0);
-
-const cssText = {
-  fontFamily: 'Source Sans Pro, Arial, sans-serif',
-  fontSize: '1rem',
-  lineHeight: '1.375rem',
-  fontWeight: 400,
-};
-
-interface Koordinat {
-  x: number;
-  y: number;
-}
 
 interface OwnProps {
   width: number;
@@ -72,69 +56,41 @@ const OppgaverPerForsteStonadsdagGraf: FunctionComponent<OwnProps> = ({
   height,
   oppgaverPerForsteStonadsdag,
 }) => {
-  const [crosshairValues, setCrosshairValues] = useState<Koordinat[]>([]);
-
   const koordinater = useMemo(() => lagKoordinater(oppgaverPerForsteStonadsdag), [oppgaverPerForsteStonadsdag]);
   const data = useMemo(() => lagDatastruktur(koordinater), [koordinater]);
-  const isEmpty = useMemo(() => harDatastrukturKun0Verdier(koordinater), [koordinater]);
-
   return (
-    <Panel className={styles.panel}>
-      <XYPlot
-        dontCheckIfEmpty={isEmpty}
-        margin={{
-          left: 40, right: 70, top: 10, bottom: 30,
-        }}
+    <Panel>
+      <ReactECharts
         width={width}
         height={height}
-        xType="time"
-        onMouseLeave={() => setCrosshairValues([])}
-        {...(isEmpty ? { yDomain: [0, 50], xDomain: [dayjs().subtract(5, 'd'), dayjs().add(5, 'd')] } : {})}
-      >
-        <HorizontalGridLines />
-        <XAxis
-          tickTotal={5}
-          tickFormat={(x) => dayjs(x).format(DDMMYYYY_DATE_FORMAT)}
-          style={{ text: cssText }}
-        />
-        <YAxis style={{ text: cssText }} />
-        <AreaSeries
-          data={data}
-          onNearestX={(value: {x: number; y: number}) => setCrosshairValues([value])}
-          fill="#337c9b"
-          stroke="#337c9b"
-        />
-        <Crosshair
-          values={[{ x: dayjs().toDate(), y: 0 }]}
-          style={{
-            line: {
-              background: '#c30000',
-            },
-          }}
-        >
-          <div className={styles.crosshairDagensDato}>
-            <FormattedMessage id="OppgaverPerForsteStonadsdagGraf.DagensDato" values={{ br: <br /> }} />
-          </div>
-        </Crosshair>
-
-        {!isEmpty && crosshairValues.length > 0 && (
-          <Crosshair
-            values={crosshairValues}
-            style={{
-              line: {
-                background: '#3e3832',
+        option={{
+          tooltip: {
+            trigger: 'axis',
+            axisPointer: {
+              snap: true,
+              label: {
+                formatter: (params) => dateFormat(params.value as string),
               },
-            }}
-          >
-            <div className={styles.crosshair}>
-              <Normaltekst>{`${dayjs(crosshairValues[0].x).format(DDMMYYYY_DATE_FORMAT)}`}</Normaltekst>
-              <Undertekst>
-                <FormattedMessage id="ManueltPaVentGraf.Antall" values={{ antall: crosshairValues[0].y }} />
-              </Undertekst>
-            </div>
-          </Crosshair>
-        )}
-      </XYPlot>
+            },
+          },
+          xAxis: {
+            type: 'time',
+            boundaryGap: false,
+            axisLabel: {
+              formatter: '{dd}.{MM}.{yyyy}',
+            },
+          },
+          yAxis: {
+            type: 'value',
+          },
+          series: [{
+            data,
+            type: 'line',
+            areaStyle: {},
+          }],
+          color: ['#337c9b'],
+        }}
+      />
     </Panel>
   );
 };
