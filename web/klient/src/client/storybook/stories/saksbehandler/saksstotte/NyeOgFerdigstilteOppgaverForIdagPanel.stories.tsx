@@ -34,7 +34,6 @@ const Template: Story<{ nyeOgFerdigstilteOppgaver?: NyeOgFerdigstilteOppgaver[] 
   return (
     <RestApiMock data={data}>
       <NyeOgFerdigstilteOppgaverForIdagPanel
-        width={700}
         height={300}
         nyeOgFerdigstilteOppgaver={nyeOgFerdigstilteOppgaver}
       />

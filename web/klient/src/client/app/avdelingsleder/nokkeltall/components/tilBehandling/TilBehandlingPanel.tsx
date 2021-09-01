@@ -5,6 +5,7 @@ import { useForm } from 'react-hook-form';
 import { Element } from 'nav-frontend-typografi';
 import { Row, Column } from 'nav-frontend-grid';
 import isSameOrAfter from 'dayjs/plugin/isSameOrAfter';
+import isSameOrBefore from 'dayjs/plugin/isSameOrBefore';
 
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import useKodeverk from 'data/useKodeverk';
@@ -21,6 +22,7 @@ import TilBehandlingGraf, { OppgaveForDatoGraf } from './TilBehandlingGraf';
 import styles from './tilBehandlingPanel.less';
 
 dayjs.extend(isSameOrAfter);
+dayjs.extend(isSameOrBefore);
 
 export const ALLE_YTELSETYPER_VALGT = 'ALLE';
 export const UKE_2 = '2';
@@ -66,7 +68,6 @@ const slaSammenLikeBehandlingstyperOgDatoer = (oppgaverForAvdeling: OppgaveForDa
 };
 
 interface OwnProps {
-  width: number;
   height: number;
   oppgaverPerDato: OppgaveForDato[];
   getValueFromLocalStorage: (key: string) => string | undefined;
@@ -85,7 +86,6 @@ const formDefaultValues = { ytelseType: ALLE_YTELSETYPER_VALGT, ukevalg: UKE_2 }
  */
 export const TilBehandlingPanel: FunctionComponent<OwnProps & WrappedComponentProps> = ({
   intl,
-  width,
   height,
   oppgaverPerDato,
   getValueFromLocalStorage,
@@ -141,7 +141,6 @@ export const TilBehandlingPanel: FunctionComponent<OwnProps & WrappedComponentPr
         </Column>
       </Row>
       <TilBehandlingGraf
-        width={width}
         height={height}
         isToUkerValgt={values.ukevalg === UKE_2}
         behandlingTyper={behandlingTyper}

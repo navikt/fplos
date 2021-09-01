@@ -16,7 +16,6 @@ export const getNyeOgFerdigstilteForIDag = (nyeOgFerdigstilte: NyeOgFerdigstilte
 };
 
 interface OwnProps {
-  width: number;
   height: number;
   nyeOgFerdigstilteOppgaver?: NyeOgFerdigstilteOppgaver[];
 }
@@ -25,7 +24,6 @@ interface OwnProps {
  * NyeOgFerdigstilteOppgaverForIdagPanel.
  */
 const NyeOgFerdigstilteOppgaverForIdagPanel: FunctionComponent<OwnProps> = ({
-  width,
   height,
   nyeOgFerdigstilteOppgaver,
 }) => {
@@ -43,7 +41,6 @@ const NyeOgFerdigstilteOppgaverForIdagPanel: FunctionComponent<OwnProps> = ({
         <FormattedMessage id="NyeOgFerdigstilteOppgaverForIdagPanel.IDag" />
       </Element>
       <NyeOgFerdigstilteOppgaverForIdagGraf
-        width={width}
         height={height}
         nyeOgFerdigstilteOppgaver={filtrerteNyeOgFerdigstilteOppgaver}
         behandlingTyper={behandlingTyper}

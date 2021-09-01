@@ -14,7 +14,6 @@ export const getNyeOgFerdigstilteForSisteSyvDager = (nyeOgFerdigstilte: NyeOgFer
 };
 
 interface OwnProps {
-  width: number;
   height: number;
   nyeOgFerdigstilteOppgaver?: NyeOgFerdigstilteOppgaver[];
 }
@@ -23,7 +22,6 @@ interface OwnProps {
  * NyeOgFerdigstilteOppgaverForSisteSyvPanel.
  */
 const NyeOgFerdigstilteOppgaverForSisteSyvPanel: FunctionComponent<OwnProps> = ({
-  width,
   height,
   nyeOgFerdigstilteOppgaver,
 }) => {
@@ -35,7 +33,6 @@ const NyeOgFerdigstilteOppgaverForSisteSyvPanel: FunctionComponent<OwnProps> = (
         <FormattedMessage id="NyeOgFerdigstilteOppgaverForSisteSyvPanel.SisteSyv" />
       </Element>
       <NyeOgFerdigstilteOppgaverForSisteSyvGraf
-        width={width}
         height={height}
         nyeOgFerdigstilteOppgaver={filtrertenyeOgFerdigstilteOppgaver}
       />
