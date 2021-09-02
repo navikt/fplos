@@ -2,7 +2,7 @@ import React, { FunctionComponent } from 'react';
 import NavModal from 'nav-frontend-modal';
 
 interface OwnProps {
-  className: string;
+  className?: string;
   closeButton: boolean;
   isOpen: boolean;
   contentLabel: string;

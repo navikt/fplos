@@ -1,12 +1,14 @@
 import React from 'react';
-import { shallow } from 'enzyme';
-import LoadingPanel from './LoadingPanel';
+import { render, screen } from '@testing-library/react';
+import { composeStories } from '@storybook/testing-react';
+import * as stories from 'stories/sharedComponents/LoadingPanel.stories';
+
+const { Default } = composeStories(stories);
 
 describe('<LoadingPanel>', () => {
-  it('skal rendre modal', () => {
-    const wrapper = shallow(<LoadingPanel />);
+  it('skal vise lasteikon', async () => {
+    render(<Default />);
 
-    const spinner = wrapper.find('NavFrontendSpinner');
-    expect(spinner).toHaveLength(1);
+    expect(await screen.findByText('Venter...')).toBeInTheDocument();
   });
 });
