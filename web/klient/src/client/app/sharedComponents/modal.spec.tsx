@@ -1,28 +1,14 @@
 import React from 'react';
-import { shallow } from 'enzyme';
-import Modal from './Modal';
+import { render, screen } from '@testing-library/react';
+import { composeStories } from '@storybook/testing-react';
+import * as stories from 'stories/sharedComponents/Modal.stories';
 
-const otherProps = {
-  className: '',
-  closeButton: true,
-  isOpen: true,
-  contentLabel: 'test',
-  onRequestClose: () => undefined,
-};
+const { Default } = composeStories(stories);
 
 describe('<Modal>', () => {
-  it('skal rendre modal med children', () => {
-    const wrapper = shallow(
-      <div id="app">
-        <Modal
-          {...otherProps}
-          shouldCloseOnOverlayClick={false}
-        >
-          <div className="content">test</div>
-        </Modal>
-      </div>,
-    );
-    expect(wrapper.find('div.content')).toHaveLength(1);
-    expect(wrapper.find(Modal).prop('shouldCloseOnOverlayClick')).toBe(false);
+  it('skal rendre modal', async () => {
+    render(<Default />);
+
+    expect(await screen.findByText('Lukk')).toBeInTheDocument();
   });
 });

@@ -43,7 +43,6 @@ const config = {
         }, {
           loader: 'css-loader',
           options: {
-            url: false,
             importLoaders: 1,
             modules: {
               localIdentName: '[name]_[local]_[contenthash:base64:5]',
@@ -74,9 +73,6 @@ const config = {
           },
         }, {
           loader: 'css-loader',
-          options: {
-            url: false,
-          },
         }, {
           loader: 'less-loader',
           options: {
