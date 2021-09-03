@@ -2,7 +2,6 @@ const path = require('path');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const CORE_DIR = path.resolve(__dirname, '../node_modules');
 const APP_DIR = path.resolve(__dirname, '../src/client');
-const IMAGE_DIR = path.join(APP_DIR, 'images');
 const CSS_DIR = path.join(APP_DIR, 'styles');
 
 module.exports = {
@@ -12,14 +11,6 @@ module.exports = {
   stories: ['../src/client/storybook/stories/**/*.stories.@(js|tsx)'],
   addons: ['@storybook/addon-docs/preset', '@storybook/addon-actions/register'],
   webpackFinal: async (config, { configType }) => {
-    //Fjern default svg-loader
-    config.module.rules = config.module.rules.map( data => {
-      if (/svg\|/.test(String(data.test))) {
-        data.test = /\.(ico|jpg|jpeg|png|gif|eot|otf|webp|ttf|woff|woff2|cur|ani)(\?.*)?$/;
-      }
-      return data;
-    });
-
     config.devtool = 'inline-source-map';
 
     // Make whatever fine-grained changes you need
@@ -108,13 +99,6 @@ module.exports = {
           },
         }],
       include: [CSS_DIR, CORE_DIR],
-    }, {
-      test: /\.(jpg|png|svg)$/,
-      loader: 'file-loader',
-      options: {
-        name: '[name]_[contenthash].[ext]',
-      },
-      include: [IMAGE_DIR],
     });
 
     config.plugins.push(new MiniCssExtractPlugin({
