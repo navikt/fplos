@@ -164,8 +164,12 @@
     "webpack-merge": "^5.8.0"
   },
   "resolutions": {
+    "browserslist": "^4.16.5",
+    "glob-parent": "^6.0.0",
+    "immer": "^9.0.6",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
-    "react-test-renderer": "^17.0.2"
+    "react-test-renderer": "^17.0.2",
+    "trim": "^1.0.1"
   }
 }
