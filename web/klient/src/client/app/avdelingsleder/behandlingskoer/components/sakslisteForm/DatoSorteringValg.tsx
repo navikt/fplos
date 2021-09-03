@@ -1,6 +1,7 @@
 import React, { FunctionComponent } from 'react';
 import { FormattedMessage, WrappedComponentProps } from 'react-intl';
 import dayjs from 'dayjs';
+import customParseFormat from 'dayjs/plugin/customParseFormat';
 import { useFormContext } from 'react-hook-form';
 import { Undertekst } from 'nav-frontend-typografi';
 
@@ -14,6 +15,8 @@ import ArrowBox from 'sharedComponents/ArrowBox';
 import { InputField, CheckboxField, DatepickerField } from 'form/formIndex';
 
 import styles from './sorteringVelger.less';
+
+dayjs.extend(customParseFormat);
 
 const finnDato = (antallDager: number) => dayjs().add(antallDager, 'd').format();
 

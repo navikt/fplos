@@ -1,10 +1,13 @@
 import React, { Component } from 'react';
 import { injectIntl, WrappedComponentProps } from 'react-intl';
-import moment from 'moment';
+import dayjs from 'dayjs';
+import customParseFormat from 'dayjs/plugin/customParseFormat';
 import DayPicker, { Modifier } from 'react-day-picker';
 
 import { DDMMYYYY_DATE_FORMAT } from 'utils/formats';
 import { getRelatedTargetIE11, isIE11 } from 'utils/browserUtils';
+
+dayjs.extend(customParseFormat);
 
 const getRelatedTarget = (e: React.FocusEvent): Promise<any> => {
   if (isIE11()) {
@@ -86,7 +89,7 @@ class CalendarOverlay extends Component<OwnProps & WrappedComponentProps> {
 
   parseDateValue(): Date | undefined {
     const { value } = this.props;
-    const parsedValue = moment(value, DDMMYYYY_DATE_FORMAT, true);
+    const parsedValue = dayjs(value, DDMMYYYY_DATE_FORMAT, true);
     if (parsedValue.isValid()) {
       return parsedValue.toDate();
     }
