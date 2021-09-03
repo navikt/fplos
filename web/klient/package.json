@@ -28,7 +28,7 @@
     "deploy-storybook": "build-storybook -o .static_storybook && storybook-to-ghpages --existing-output-dir=.static_storybook"
   },
   "dependencies": {
-    "@babel/runtime": "^7.14.8",
+    "@babel/runtime": "^7.15.4",
     "@formatjs/intl-datetimeformat": "^4.2.3",
     "@formatjs/intl-numberformat": "^7.2.3",
     "@navikt/boxed-list-with-links": "1.0.4",
@@ -66,7 +66,7 @@
     "nav-frontend-modal-style": "2.0.1",
     "nav-frontend-paneler": "3.0.1",
     "nav-frontend-paneler-style": "2.0.1",
-    "nav-frontend-skjema": "4.0.1",
+    "nav-frontend-skjema": "4.0.2",
     "nav-frontend-skjema-style": "3.0.1",
     "nav-frontend-spinner": "3.0.1",
     "nav-frontend-spinner-style": "1.0.2",
@@ -86,9 +86,9 @@
     "react-vis": "^1.11.7"
   },
   "devDependencies": {
-    "@babel/core": "^7.15.0",
-    "@babel/eslint-parser": "^7.15.0",
-    "@babel/preset-env": "^7.15.0",
+    "@babel/core": "^7.15.4",
+    "@babel/eslint-parser": "^7.15.4",
+    "@babel/preset-env": "^7.15.4",
     "@babel/preset-react": "^7.14.5",
     "@babel/preset-typescript": "^7.15.0",
     "@babel/register": "^7.15.3",
@@ -125,7 +125,7 @@
     "babel-loader": "^8.2.2",
     "cache-loader": "^4.1.0",
     "cross-env": "^7.0.3",
-    "css-loader": "^5.2.7",
+    "css-loader": "^6.2.0",
     "enzyme": "^3.11.0",
     "eslint": "^7.32.0",
     "eslint-config-airbnb": "^18.2.1",
@@ -155,22 +155,17 @@
     "sinon": "^11.1.2",
     "stylelint": "^13.13.1",
     "stylelint-order": "^4.1.0",
-    "terser-webpack-plugin": "^5.2.0",
+    "terser-webpack-plugin": "^5.2.2",
     "thread-loader": "^3.0.4",
     "typescript": "^4.4.2",
-    "webpack": "^5.51.1",
+    "webpack": "^5.51.2",
     "webpack-cli": "4.8.0",
     "webpack-dev-server": "^4.1.0",
     "webpack-merge": "^5.8.0"
   },
   "resolutions": {
-    "browserslist": "^4.16.5",
-    "glob-parent": "^6.0.0",
-    "normalize-url": "^4.5.1",
-    "prismjs": "^1.24.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
-    "react-test-renderer": "^17.0.2",
-    "trim": "^1.0.1"
+    "react-test-renderer": "^17.0.2"
   }
 }
