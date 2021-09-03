@@ -5,6 +5,7 @@ const MiniCssExtractPlugin = require("mini-css-extract-plugin")
 const CORE_DIR = path.resolve(__dirname, '../node_modules');
 const ROOT_DIR = path.resolve(__dirname, '../src/client');
 const APP_DIR = path.join(ROOT_DIR, 'app');
+const IMG_DIR = path.join(ROOT_DIR, 'images');
 const STYLE_DIR = path.join(ROOT_DIR, 'styles');
 const STORYBOOK_DIR = path.join(ROOT_DIR, 'storybook');
 
@@ -37,11 +38,12 @@ const config = {
         {
           loader: MiniCssExtractPlugin.loader,
           options: {
-            publicPath: isDevelopment ? './' : '.',
+            publicPath: isDevelopment ? './' : '',
           },
         }, {
           loader: 'css-loader',
           options: {
+            url: !isDevelopment,
             importLoaders: 1,
             modules: {
               localIdentName: '[name]_[local]_[contenthash:base64:5]',
@@ -72,6 +74,9 @@ const config = {
           },
         }, {
           loader: 'css-loader',
+          options: {
+            url: !isDevelopment,
+          },
         }, {
           loader: 'less-loader',
           options: {
@@ -86,8 +91,12 @@ const config = {
       ],
       include: [STYLE_DIR, CORE_DIR],
     }, {
-      test: /\.svg/,
-      type: 'asset/resource',
+      test: /\.(svg)$/,
+      loader: 'file-loader',
+      options: {
+        name: '[name]_[contenthash].[ext]',
+      },
+      include: [IMG_DIR],
     }],
   },
 
