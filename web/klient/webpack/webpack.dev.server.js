@@ -18,7 +18,6 @@ const options = {
       secure: false,
     },
   },
-  hot: true,
   historyApiFallback: true,
   devMiddleware: {
     publicPath: config.output.publicPath,
