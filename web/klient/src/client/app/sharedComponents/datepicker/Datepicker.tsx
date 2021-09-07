@@ -1,7 +1,7 @@
 import React, { ReactNode, Component, ChangeEvent } from 'react';
-import moment from 'moment';
 import { Input } from 'nav-frontend-skjema';
 import classnames from 'classnames/bind';
+import dayjs from 'dayjs';
 import { Modifier } from 'react-day-picker';
 
 import { DDMMYYYY_DATE_FORMAT } from 'utils/formats';
@@ -89,7 +89,7 @@ class Datepicker extends Component<OwnProps, StateProps> {
 
   handleDayChange(selectedDay: Date): void {
     if (selectedDay) {
-      const parsed = moment(selectedDay);
+      const parsed = dayjs(selectedDay);
       if (parsed.isValid()) {
         const { onChange } = this.props;
         onChange(parsed.format(DDMMYYYY_DATE_FORMAT));

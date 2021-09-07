@@ -1,4 +1,3 @@
-import sinon from 'sinon';
 import axios from 'axios';
 
 import AsyncPollingStatus from './asyncPollingStatus';
@@ -10,19 +9,19 @@ import HttpClientApi from '../HttpClientApiTsType';
 class NotificationHelper {
   mapper: NotificationMapper;
 
-  requestStartedCallback = sinon.spy();
+  requestStartedCallback = jest.fn();
 
-  requestFinishedCallback = sinon.spy();
+  requestFinishedCallback = jest.fn();
 
-  requestErrorCallback = sinon.spy();
+  requestErrorCallback = jest.fn();
 
-  statusRequestStartedCallback = sinon.spy();
+  statusRequestStartedCallback = jest.fn();
 
-  statusRequestFinishedCallback = sinon.spy();
+  statusRequestFinishedCallback = jest.fn();
 
-  updatePollingMessageCallback = sinon.spy();
+  updatePollingMessageCallback = jest.fn();
 
-  addPollingTimeoutEventHandler = sinon.spy();
+  addPollingTimeoutEventHandler = jest.fn();
 
   constructor() {
     const mapper = new NotificationMapper();
@@ -75,10 +74,9 @@ describe('RequestRunner', () => {
     const result = await process.start(params);
 
     expect(result).toStrictEqual({ payload: 'data' });
-    expect(notificationHelper.requestStartedCallback.calledOnce).toBe(true);
-    expect(notificationHelper.requestFinishedCallback.calledOnce).toBe(true);
-    expect(notificationHelper.requestFinishedCallback.getCalls()[0].args[0]).toBe('data');
-    expect(notificationHelper.requestErrorCallback.called).toBe(false);
+    expect(notificationHelper.requestStartedCallback).toHaveBeenCalledTimes(1);
+    expect(notificationHelper.requestFinishedCallback).toHaveBeenCalledTimes(1);
+    expect(notificationHelper.requestFinishedCallback).toHaveBeenNthCalledWith(1, 'data', 'REQUEST_FINISHED', false);
   });
 
   it(
@@ -137,11 +135,11 @@ describe('RequestRunner', () => {
         message: 'Maximum polling attempts exceeded',
       });
 
-      expect(notificationHelper.requestStartedCallback.calledOnce).toBe(true);
-      expect(notificationHelper.statusRequestStartedCallback.calledOnce).toBe(true);
-      expect(notificationHelper.statusRequestFinishedCallback.calledOnce).toBe(true);
-      expect(notificationHelper.updatePollingMessageCallback.calledOnce).toBe(true);
-      expect(notificationHelper.updatePollingMessageCallback.getCalls()[0].args[0]).toBe('Polling continues');
+      expect(notificationHelper.requestStartedCallback).toHaveBeenCalledTimes(1);
+      expect(notificationHelper.statusRequestStartedCallback).toHaveBeenCalledTimes(1);
+      expect(notificationHelper.statusRequestFinishedCallback).toHaveBeenCalledTimes(1);
+      expect(notificationHelper.updatePollingMessageCallback).toHaveBeenCalledTimes(1);
+      expect(notificationHelper.updatePollingMessageCallback).toHaveBeenNthCalledWith(1, 'Polling continues', 'UPDATE_POLLING_MESSAGE', undefined);
     },
   );
 
@@ -221,6 +219,6 @@ describe('RequestRunner', () => {
     const result = await process.start(params);
 
     expect(result).toStrictEqual({ payload: undefined });
-    expect(notificationHelper.requestFinishedCallback.getCalls()[0].args[0]).toBe(null);
+    expect(notificationHelper.requestFinishedCallback).toHaveBeenNthCalledWith(1, null, 'REQUEST_FINISHED', false);
   });
 });
