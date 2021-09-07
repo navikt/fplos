@@ -13,6 +13,6 @@ export default {
 
 ReactModal.setAppElement = () => null;
 
-export const TimeoutModal = () => (
+export const Default = () => (
   <BehandlingPollingTimoutModal />
 );

@@ -14,7 +14,7 @@ export default {
   decorators: [withIntl],
 };
 
-export const ModalForEndringAvReservasjon = () => (
+export const Default = () => (
   <OppgaveReservasjonForlengetModal
     showModal
     oppgave={{

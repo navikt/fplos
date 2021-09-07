@@ -12,7 +12,7 @@ export default {
   decorators: [withIntl],
 };
 
-export const skalViseAtIngenReservasjonerBleFunnet = () => (
+export const ViseAtIngenReservasjonerBleFunnet = () => (
   <ReservasjonerTabell
     reservasjoner={[]}
     opphevReservasjon={action('button-click') as () => Promise<string>}
@@ -20,7 +20,7 @@ export const skalViseAtIngenReservasjonerBleFunnet = () => (
   />
 );
 
-export const skalViseTabellMedReservasjoner = () => {
+export const VisTabellMedReservasjoner = () => {
   const [reservasjoner, fjernReservasjon] = useState([{
     reservertAvUid: 'wsfwer-sdsfd',
     reservertAvNavn: 'Espen Utvikler',
