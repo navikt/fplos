@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import { composeStories } from '@storybook/testing-react';
 import userEvent from '@testing-library/user-event';
 import * as stories from './OppgaveHandlingerMenu.stories';
@@ -27,6 +27,44 @@ describe('<OppgaveHandlingerMenu>', () => {
 
     userEvent.click(screen.getAllByRole('button')[0]);
 
-    expect(screen.findByText('Når en reservert sak frigjøres er begrunnelse obligatorisk')).toBeInTheDocument();
+    expect(await screen.findByText('Når en reservert sak frigjøres er begrunnelse obligatorisk')).toBeInTheDocument();
+
+    userEvent.click(screen.getByText('Avbryt'));
+
+    await waitFor(() => expect(screen.queryByText('Når en reservert sak frigjøres er begrunnelse obligatorisk')).not.toBeInTheDocument());
+  });
+
+  it('skal åpne modal for å forlenge reservasjon', async () => {
+    render(<Default />);
+
+    expect(await screen.findByText('Reservert til 02.08.2021 - 00:54')).toBeInTheDocument();
+
+    userEvent.click(screen.getAllByRole('button')[1]);
+
+    expect(await screen.findByText('Behandlingen er reservert på deg')).toBeInTheDocument();
+  });
+
+  it('skal åpne modal for å reservere med dato', async () => {
+    render(<Default />);
+
+    expect(await screen.findByText('Reservert til 02.08.2021 - 00:54')).toBeInTheDocument();
+
+    userEvent.click(screen.getAllByRole('button')[2]);
+
+    expect(await screen.findByText('Velg dato som reservasjonen avsluttes')).toBeInTheDocument();
+  });
+
+  it('skal åpne og lukke modal for å flytte reservasjon', async () => {
+    render(<Default />);
+
+    expect(await screen.findByText('Reservert til 02.08.2021 - 00:54')).toBeInTheDocument();
+
+    userEvent.click(screen.getAllByRole('button')[3]);
+
+    expect(await screen.findByText('Flytt reservasjonen til annen saksbehandler')).toBeInTheDocument();
+
+    userEvent.click(screen.getByText('Avbryt'));
+
+    await waitFor(() => expect(screen.queryByText('Flytt reservasjonen til annen saksbehandler')).not.toBeInTheDocument());
   });
 });
