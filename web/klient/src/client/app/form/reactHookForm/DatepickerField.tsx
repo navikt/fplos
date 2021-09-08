@@ -1,6 +1,6 @@
 import React, { FunctionComponent } from 'react';
-import moment from 'moment';
 import { useController, useFormContext } from 'react-hook-form';
+import dayjs from 'dayjs';
 
 import { ACCEPTED_DATE_INPUT_FORMATS, DDMMYYYY_DATE_FORMAT, ISO_DATE_FORMAT } from 'utils/formats';
 import Datepicker from 'sharedComponents/datepicker/Datepicker';
@@ -28,7 +28,7 @@ interface OwnProps {
 }
 
 const isoToDdMmYyyy = (string: string): string => {
-  const parsedDate = moment(string, ISO_DATE_FORMAT, true);
+  const parsedDate = dayjs(string, ISO_DATE_FORMAT, true);
   if (parsedDate.isValid()) {
     return parsedDate.format(DDMMYYYY_DATE_FORMAT);
   }
@@ -37,7 +37,7 @@ const isoToDdMmYyyy = (string: string): string => {
 
 const acceptedFormatToIso = (string: string): string => {
   const validDate = ACCEPTED_DATE_INPUT_FORMATS
-    .map((format) => moment(string, format, true))
+    .map((format) => dayjs(string, format, true))
     .find((parsedDate) => parsedDate.isValid());
   if (validDate) {
     return validDate.format(ISO_DATE_FORMAT);

@@ -2,7 +2,7 @@ import React from 'react';
 import { render, screen, waitFor } from '@testing-library/react';
 import { composeStories } from '@storybook/testing-react';
 import userEvent from '@testing-library/user-event';
-import * as stories from 'stories/avdelingsleder/behandlingskoer/BehandlingstypeVelger.stories';
+import * as stories from './BehandlingstypeVelger.stories';
 
 const { Default } = composeStories(stories);
 

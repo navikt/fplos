@@ -2,10 +2,10 @@ import React from 'react';
 import { render, screen, waitFor } from '@testing-library/react';
 import { composeStories } from '@storybook/testing-react';
 import userEvent from '@testing-library/user-event';
-import * as stories from 'stories/saksbehandler/OppgaveErReservertAvAnnenModal.stories';
 import BehandlingType from 'kodeverk/behandlingType';
 import BehandlingStatus from 'kodeverk/behandlingStatus';
 import FagsakYtelseType from 'kodeverk/fagsakYtelseType';
+import * as stories from './OppgaveErReservertAvAnnenModal.stories';
 
 const { Default } = composeStories(stories);
 

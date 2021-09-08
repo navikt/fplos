@@ -164,13 +164,15 @@ export class OppgaveHandlingerMenu extends Component<OwnProps, OwnState> {
     return (
       <>
         <div className={styles.containerMenu} style={getOffsetPositionStyle(offset)} ref={(node) => { this.node = node; }}>
-          <FormattedMessage
-            id="OppgaveHandlingerMenu.ReservertTil"
-            values={{
-              ...getDateAndTime(oppgave.status.reservertTilTidspunkt),
-              b: (...chunks: any) => <b>{chunks}</b>,
-            }}
-          />
+          {oppgave.status.reservertTilTidspunkt && (
+            <FormattedMessage
+              id="OppgaveHandlingerMenu.ReservertTil"
+              values={{
+                ...getDateAndTime(oppgave.status.reservertTilTidspunkt),
+                b: (...chunks: any) => <b>{chunks}</b>,
+              }}
+            />
+          )}
           <VerticalSpacer eightPx />
           <MenuButton onClick={this.showBegrunnelseModal} ref={this.menuButtonRef}>
             <FormattedMessage id="OppgaveHandlingerMenu.LeggTilbake" values={{ br: <br /> }} />
@@ -178,6 +180,7 @@ export class OppgaveHandlingerMenu extends Component<OwnProps, OwnState> {
           <MenuButton onClick={this.forlengReserverasjon}>
             <FormattedMessage id="OppgaveHandlingerMenu.ForlengReservasjon" values={{ br: <br /> }} />
           </MenuButton>
+
           <MenuButton onClick={this.showReservasjonEndringDato}>
             <FormattedMessage id="OppgaveHandlingerMenu.EndreReservasjon" />
           </MenuButton>

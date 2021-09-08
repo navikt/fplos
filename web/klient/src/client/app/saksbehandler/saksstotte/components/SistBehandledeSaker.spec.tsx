@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { composeStories } from '@storybook/testing-react';
-import * as stories from 'stories/saksbehandler/saksstotte/SistBehandledeSaker.stories';
+import * as stories from './SistBehandledeSaker.stories';
 
 const { Default, IngenBehandlinger } = composeStories(stories);
 

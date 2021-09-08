@@ -1,7 +1,6 @@
 import dayjs from 'dayjs';
-
+import intlMock from 'testHelpers/intl-test-helper';
 import { DDMMYYYY_DATE_FORMAT, ISO_DATE_FORMAT } from 'utils/formats';
-import { intlMock } from 'testHelpers/intl-enzyme-test-helper';
 import {
   required, minLength, maxLength, minValue, maxValue,
   hasValidDate, dateBeforeOrEqual, dateAfterOrEqual,

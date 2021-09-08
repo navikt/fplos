@@ -3,12 +3,13 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const CORE_DIR = path.resolve(__dirname, '../node_modules');
 const APP_DIR = path.resolve(__dirname, '../src/client');
 const CSS_DIR = path.join(APP_DIR, 'styles');
+const STORYBOOK_DIR = path.join(APP_DIR, 'storybookUtils');
 
 module.exports = {
   core: {
     builder: "webpack5",
   },
-  stories: ['../src/client/storybook/stories/**/*.stories.@(js|tsx)'],
+  stories: ['../src/client/app/**/*.stories.@(tsx)'],
   addons: ['@storybook/addon-docs/preset', '@storybook/addon-actions/register'],
   webpackFinal: async (config, { configType }) => {
     config.devtool = 'inline-source-map';
@@ -119,6 +120,7 @@ module.exports = {
       kodeverk: path.join(APP_DIR, 'app/kodeverk'),
       sharedComponents: path.join(APP_DIR, 'app/sharedComponents'),
       utils: path.join(APP_DIR, 'app/utils'),
+      storybookUtils: STORYBOOK_DIR,
     };
     
     config.resolve.extensions.push('.ts', '.tsx', '.less');

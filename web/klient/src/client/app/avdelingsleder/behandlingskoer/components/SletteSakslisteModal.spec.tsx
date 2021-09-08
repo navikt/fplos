@@ -2,7 +2,7 @@ import React from 'react';
 import { render, screen, waitFor } from '@testing-library/react';
 import { composeStories } from '@storybook/testing-react';
 import userEvent from '@testing-library/user-event';
-import * as stories from 'stories/avdelingsleder/behandlingskoer/SletteSakslisteModal.stories';
+import * as stories from './SletteSakslisteModal.stories';
 
 const { Default } = composeStories(stories);
 

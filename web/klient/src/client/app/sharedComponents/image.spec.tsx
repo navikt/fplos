@@ -2,7 +2,7 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { composeStories } from '@storybook/testing-react';
-import * as stories from 'stories/sharedComponents/Image.stories';
+import * as stories from './Image.stories';
 
 const { Default, KlikkbartIkon } = composeStories(stories);
 

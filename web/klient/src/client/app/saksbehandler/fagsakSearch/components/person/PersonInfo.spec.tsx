@@ -1,50 +1,26 @@
 import React from 'react';
-import { IntlShape } from 'react-intl';
-import { Undertittel, Undertekst } from 'nav-frontend-typografi';
+import { render, screen } from '@testing-library/react';
+import { composeStories } from '@storybook/testing-react';
+import * as stories from './PersonInfo.stories';
 
-import { shallowWithIntl, intlMock } from 'testHelpers/intl-enzyme-test-helper';
-import Image from 'sharedComponents/Image';
-import PersonInfo from './PersonInfo';
-import AlderVisning from './Aldervisning';
-import MerkePanel from './Merkepanel';
+const { PersonkortMedDiskresjonskodeForMann, PersonkortForDødKvinne } = composeStories(stories);
 
 describe('<PersonInfo>', () => {
-  const intl: Partial<IntlShape> = {
-    ...intlMock,
-  };
-  it('skal sjekke at props blir brukt korrekt', () => {
-    const person = {
-      navn: 'frida',
-      alder: 40,
-      personnummer: '12345678910',
-      erKvinne: true,
-      erDod: false,
-      erVerge: true,
-      diskresjonskode: '6',
-      dødsdato: '2017.01.01',
-      personstatusType: {
-        kode: 'test',
-        navn: 'test',
-      },
-    };
-    const wrapper = shallowWithIntl(<PersonInfo.WrappedComponent
-      intl={intl as IntlShape}
-      person={person}
-    />);
+  it('skal vise personkort for mann som har diskresjonskode 7', async () => {
+    render(<PersonkortMedDiskresjonskodeForMann />);
 
-    const image = wrapper.find(Image);
-    expect(image.prop('alt')).toEqual('Personinformasjon');
+    expect(await screen.findByText('Espen Utvikler')).toBeInTheDocument();
+    expect(screen.getByText('41 år')).toBeInTheDocument();
+    expect(screen.getByText('23232332')).toBeInTheDocument();
+    expect(screen.getByText('Kode 7')).toBeInTheDocument();
+  });
 
-    const innholdstittel = wrapper.find(Undertittel);
-    expect(innholdstittel.childAt(0).text()).toEqual('frida');
+  it('skal vise personkort for død kvinne', async () => {
+    render(<PersonkortForDødKvinne />);
 
-    const aldervisning = wrapper.find(AlderVisning);
-    expect(aldervisning.prop('alder')).toEqual(40);
-
-    const normaltekst = wrapper.find(Undertekst);
-    expect(normaltekst.childAt(0).text()).toEqual('12345678910');
-
-    const merkepanel = wrapper.find(MerkePanel);
-    expect(merkepanel.prop('diskresjonskode')).toEqual('6');
+    expect(await screen.findByText('Olga Pettersen')).toBeInTheDocument();
+    expect(screen.getByText('10.10.2020')).toBeInTheDocument();
+    expect(screen.getByText('23232332')).toBeInTheDocument();
+    expect(screen.getByText('DØD')).toBeInTheDocument();
   });
 });

@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { composeStories } from '@storybook/testing-react';
-import * as stories from 'stories/avdelingsleder/nokkeltall/OppgaverSomErApneEllerPaVentPanel.stories';
+import * as stories from './OppgaverSomErApneEllerPaVentPanel.stories';
 
 const { Default } = composeStories(stories);
 
