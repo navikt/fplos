@@ -1,5 +1,4 @@
 import React from 'react';
-import ReactModal from 'react-modal';
 import { Story } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
 
@@ -50,8 +49,6 @@ const oppgaveForResevertAvAnnenModal = {
   behandlingId: '1',
   href: '',
 };
-
-ReactModal.setAppElement = () => null;
 
 const Template: Story<{ lukkErReservertModalOgOpneOppgave: (oppgave: Oppgave) => void; }> = ({
   lukkErReservertModalOgOpneOppgave,
