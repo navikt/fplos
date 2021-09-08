@@ -70,6 +70,14 @@ const ManueltPaVentGraf: FunctionComponent<OwnProps> = ({
               },
             },
           },
+          toolbox: {
+            feature: {
+              saveAsImage: {
+                title: 'Lagre ',
+                name: 'Antall_behandlinger_satt_på_vent_manuelt',
+              },
+            },
+          },
           xAxis: {
             type: 'time',
             boundaryGap: false,

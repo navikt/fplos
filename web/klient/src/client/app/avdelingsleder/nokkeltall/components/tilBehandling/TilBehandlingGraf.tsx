@@ -130,6 +130,14 @@ export const TilBehandlingGraf: FunctionComponent<OwnProps> = ({
               },
             },
           },
+          toolbox: {
+            feature: {
+              saveAsImage: {
+                title: 'Lagre ',
+                name: 'Antall_til_behandling',
+              },
+            },
+          },
           legend: {
             data: reversertSorterteBehandlingstyper.map((type) => finnBehandlingTypeNavn(behandlingTyper, type)),
           },
