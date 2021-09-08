@@ -24,7 +24,7 @@
     "build": "cross-env NODE_ENV=production webpack --progress --config webpack/webpack.prod.js",
     "postinstall": "yarn build && yarn test && yarn ts-check && yarn less:lint",
     "doc": "react-asciidoc-generator ./src/client/app/ -o ../../docs/generated/react.adoc --handlebar-template src/docs/asciidoc-template.handlebars ",
-    "storybook": "start-storybook -p 9101 -c .storybook",
+    "storybook": "cross-env NODE_ENV=test start-storybook -p 9101 -c .storybook",
     "deploy-storybook": "build-storybook -o .static_storybook && storybook-to-ghpages --existing-output-dir=.static_storybook"
   },
   "dependencies": {
