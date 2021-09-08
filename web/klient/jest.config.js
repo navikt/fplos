@@ -31,6 +31,7 @@ module.exports = {
       ],
       setupFiles: [
         '<rootDir>/src/client/testHelpers/setup.js',
+        'jest-canvas-mock',
       ],
       setupFilesAfterEnv: [
         '<rootDir>/src/client/testHelpers/setup-test-env.ts',

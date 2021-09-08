@@ -8,7 +8,7 @@ const { Søkeskjema } = composeStories(stories);
 
 describe('<SearchForm>', () => {
   // TODO Fiks test
-  it.skip('skal skrive inn ugyldig fødselsnummer og vise feilmelding', async () => {
+  it('skal skrive inn ugyldig fødselsnummer og vise feilmelding', async () => {
     const onSubmitMock = jest.fn();
     const utils = render(<Søkeskjema onSubmit={onSubmitMock} />);
 

@@ -17,6 +17,8 @@ const AxiosMock: FunctionComponent<Props> = ({ children, data }) => {
     data.forEach((d) => {
       if (requestApi.getRestType(d.key) === 'GET') {
         apiMock.onGet(requestApi.getUrl(d.key)).reply(200, d.data);
+      } else if (requestApi.getRestType(d.key) === 'GET_ASYNC') {
+        apiMock.onGet(requestApi.getUrl(d.key)).replyOnce(200, d.data);
       } else {
         apiMock.onPost(requestApi.getUrl(d.key)).reply(200, d.data);
       }

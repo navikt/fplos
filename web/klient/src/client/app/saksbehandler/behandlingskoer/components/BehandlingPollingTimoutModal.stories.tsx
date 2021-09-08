@@ -1,5 +1,4 @@
 import React from 'react';
-import ReactModal from 'react-modal';
 
 import BehandlingPollingTimoutModal from 'saksbehandler/behandlingskoer/components/BehandlingPollingTimoutModal';
 
@@ -10,8 +9,6 @@ export default {
   component: BehandlingPollingTimoutModal,
   decorators: [withIntl],
 };
-
-ReactModal.setAppElement = () => null;
 
 export const Default = () => (
   <BehandlingPollingTimoutModal />
