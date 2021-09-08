@@ -20,7 +20,7 @@ describe('<OppgaveHandlingerMenu>', () => {
     expect(screen.getByText(/annen saksbehandler/i)).toBeInTheDocument();
   });
 
-  it.skip('skal åpne og lukke modal for oppheving av reservasjon', async () => {
+  it('skal åpne og lukke modal for oppheving av reservasjon', async () => {
     render(<Default />);
 
     expect(await screen.findByText('Reservert til 02.08.2021 - 00:54')).toBeInTheDocument();

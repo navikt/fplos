@@ -6,7 +6,7 @@ import * as stories from './NyeOgFerdigstilteOppgaverForIdagPanel.stories';
 const { Default } = composeStories(stories);
 
 describe('<NyeOgFerdigstilteOppgaverForIdagPanel>', () => {
-  it.skip('skal rendre graf', async () => {
+  it('skal rendre graf', async () => {
     render(<Default />);
     expect(await screen.findByText('Nye og ferdigstilte behandlinger')).toBeInTheDocument();
   });

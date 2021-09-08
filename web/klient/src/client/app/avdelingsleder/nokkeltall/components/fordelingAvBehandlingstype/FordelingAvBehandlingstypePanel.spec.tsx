@@ -6,7 +6,7 @@ import * as stories from './FordelingAvBehandlingstypePanel.stories';
 const { Default } = composeStories(stories);
 
 describe('<FordelingAvBehandlingstypePanel>', () => {
-  it.skip('skal vise graffilter', async () => {
+  it('skal vise graffilter', async () => {
     const { getByLabelText } = render(<Default />);
     expect(await screen.findByText('Antall åpne behandlinger')).toBeInTheDocument();
 

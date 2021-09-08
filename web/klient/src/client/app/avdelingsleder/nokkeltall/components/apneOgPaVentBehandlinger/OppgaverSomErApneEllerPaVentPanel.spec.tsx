@@ -6,7 +6,7 @@ import * as stories from './OppgaverSomErApneEllerPaVentPanel.stories';
 const { Default } = composeStories(stories);
 
 describe('<OppgaverSomErApneEllerPaVentPanel>', () => {
-  it.skip('skal vise graffilter', async () => {
+  it('skal vise graffilter', async () => {
     const { getByLabelText } = render(<Default />);
     expect(await screen.findByText('Status - åpne behandlinger')).toBeInTheDocument();
 
