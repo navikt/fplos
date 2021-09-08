@@ -2,7 +2,7 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { composeStories } from '@storybook/testing-react';
 import userEvent from '@testing-library/user-event';
-import * as stories from 'stories/avdelingsleder/AvdelingslederIndex.stories';
+import * as stories from './AvdelingslederIndex.stories';
 
 const { Default, LasteIkonFørValgtAvdelingErSatt, HarIkkeTilgang } = composeStories(stories);
 

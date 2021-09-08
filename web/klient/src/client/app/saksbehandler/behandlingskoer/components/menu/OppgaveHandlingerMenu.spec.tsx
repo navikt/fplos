@@ -2,7 +2,7 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { composeStories } from '@storybook/testing-react';
 import userEvent from '@testing-library/user-event';
-import * as stories from 'stories/saksbehandler/behandlingskoer/OppgaveHandlingerMenu.stories';
+import * as stories from './OppgaveHandlingerMenu.stories';
 
 const { Default } = composeStories(stories);
 

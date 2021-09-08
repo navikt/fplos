@@ -2,7 +2,7 @@ import React from 'react';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { composeStories } from '@storybook/testing-react';
-import * as stories from 'stories/saksbehandler/fagsakSearch/SearchForm.stories';
+import * as stories from './SearchForm.stories';
 
 const { Søkeskjema } = composeStories(stories);
 

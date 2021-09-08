@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { composeStories } from '@storybook/testing-react';
-import * as stories from 'stories/saksbehandler/behandlingskoer/BehandlingPollingTimoutModal.stories';
+import * as stories from './BehandlingPollingTimoutModal.stories';
 
 const { Default } = composeStories(stories);
 

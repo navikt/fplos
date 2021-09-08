@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { composeStories } from '@storybook/testing-react';
-import * as stories from 'stories/avdelingsleder/reservasjoner/ReservasjonerTabell.stories';
+import * as stories from './ReservasjonerTabell.stories';
 
 const { ViseAtIngenReservasjonerBleFunnet, VisTabellMedReservasjoner } = composeStories(stories);
 

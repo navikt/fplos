@@ -2,7 +2,7 @@ import React from 'react';
 import { render, screen, waitFor } from '@testing-library/react';
 import { composeStories } from '@storybook/testing-react';
 import userEvent from '@testing-library/user-event';
-import * as stories from 'stories/avdelingsleder/saksbehandlere/LeggTilSaksbehandlerForm.stories';
+import * as stories from './LeggTilSaksbehandlerForm.stories';
 
 const { Default, SaksbehandlerFinnesIkke } = composeStories(stories);
 
