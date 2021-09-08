@@ -132,6 +132,14 @@ const OppgaverSomErApneEllerPaVentGraf: FunctionComponent<OwnProps & WrappedComp
               },
             },
           },
+          toolbox: {
+            feature: {
+              saveAsImage: {
+                title: 'Lagre ',
+                name: 'Status_åpne_behandlinger',
+              },
+            },
+          },
           legend: {
             data: [paVentTekst, ikkePaVentTekst],
           },

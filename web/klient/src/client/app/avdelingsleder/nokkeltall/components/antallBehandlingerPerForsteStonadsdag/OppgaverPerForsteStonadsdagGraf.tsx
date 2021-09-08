@@ -70,6 +70,14 @@ const OppgaverPerForsteStonadsdagGraf: FunctionComponent<OwnProps> = ({
               },
             },
           },
+          toolbox: {
+            feature: {
+              saveAsImage: {
+                title: 'Lagre ',
+                name: 'Antall_førstegangsbehandlinger_fordelt_på_første_stønadsdag',
+              },
+            },
+          },
           xAxis: {
             type: 'time',
             boundaryGap: false,

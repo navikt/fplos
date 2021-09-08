@@ -67,6 +67,14 @@ const FordelingAvBehandlingstypeGraf: FunctionComponent<OwnProps & WrappedCompon
               type: 'shadow',
             },
           },
+          toolbox: {
+            feature: {
+              saveAsImage: {
+                title: 'Lagre ',
+                name: 'Antall_åpne_behandlinger',
+              },
+            },
+          },
           legend: {
             data: [tilBehandlingTekst, tilBeslutterTekst],
           },
