@@ -42,6 +42,8 @@
   "Calendar.Month.10": "November",
   "Calendar.Month.11": "Desember",
 
+  "DateTimeLabel.Kl": "Kl.",
+
   "EndreSakslisterPanel.KnyttetMotSaksbehandlere": "Behandlingskøen benyttes av disse saksbehandlerne",
   "EndreSakslisterPanel.Saksbehandlere": "Tilknyttede saksbehandlere",
   "BehandlingstypeVelger.Behandlingstype": "Behandlingstype",

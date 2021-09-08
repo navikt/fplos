@@ -81,12 +81,12 @@ Default.args = {
       erReservert: true,
     },
     saksnummer: 1234,
-    personnummer: '1212',
-    navn: 'Espen Utvikler',
+    personnummer: '233',
+    navn: 'Helge Utvikler',
     system: 'SAK',
     behandlingstype: {
-      kode: behandlingType.FORSTEGANGSSOKNAD,
-      navn: 'Førstegangssøknad',
+      kode: behandlingType.KLAGE,
+      navn: 'Klage',
     },
     behandlingStatus: {
       kode: behandlingStatus.BEHANDLING_UTREDES,
