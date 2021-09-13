@@ -7,8 +7,10 @@ import static no.nav.foreldrepenger.los.statistikk.statistikk_ny.KøOppgaveHende
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -31,7 +33,8 @@ public class NyOpppgaveStatistikkRepository {
         this.entityManager = entityManager;
     }
 
-    public NyOpppgaveStatistikkRepository() {
+    NyOpppgaveStatistikkRepository() {
+        //CDI
     }
 
     public void lagre(Long oppgaveId, Long oppgaveFilterSettId, BehandlingType behandlingType, KøOppgaveHendelse køOppgaveHendelse) {
@@ -46,7 +49,7 @@ public class NyOpppgaveStatistikkRepository {
     }
 
     public List<NyeOgFerdigstilteOppgaver> hentStatistikk(Long oppgaveFilterSettId) {
-        final var tellesSomFerdigstilt = List.of(LUKKET_OPPGAVE, UT_TIL_ANNEN_KØ, OPPGAVE_SATT_PÅ_VENT).stream()
+        final var tellesSomFerdigstilt = Stream.of(LUKKET_OPPGAVE, UT_TIL_ANNEN_KØ, OPPGAVE_SATT_PÅ_VENT)
                 .map(KøOppgaveHendelse::name).collect(Collectors.toList());
         var query = entityManager.createNativeQuery(
                 """
@@ -69,14 +72,27 @@ public class NyOpppgaveStatistikkRepository {
                 .setParameter("fom", LocalDate.now().minusDays(7).atStartOfDay());
         @SuppressWarnings("unchecked")
         var result = (List<Object[]>) query.getResultList();
-        return result.stream()
-                .map(NyOpppgaveStatistikkRepository::map)
-                .collect(Collectors.toList());
+        var stats = result.stream().map(NyOpppgaveStatistikkRepository::map).collect(Collectors.toList());
+        return slåSammen(stats);
     }
+
+    private List<NyeOgFerdigstilteOppgaver> slåSammen(List<NyeOgFerdigstilteOppgaver> stats) {
+        var map = new HashMap<Key, NyeOgFerdigstilteOppgaver>();
+        for (var nfo : stats) {
+            var key = new Key(nfo.dato(), nfo.behandlingType());
+            var value = map.getOrDefault(key, new NyeOgFerdigstilteOppgaver(key.dato, key.behandlingType,
+                    0L, 0L));
+            map.put(key, new NyeOgFerdigstilteOppgaver(key.dato, key.behandlingType, value.antallNye() + nfo.antallNye(),
+                    value.antallFerdigstilte() + nfo.antallFerdigstilte()));
+        }
+        return map.values().stream().toList();
+    }
+
+    private static record Key(LocalDate dato, BehandlingType behandlingType) { }
 
     private static NyeOgFerdigstilteOppgaver map(Object record) {
         var objects = (Object[]) record;
-        var datoFra = localDate(objects[0]); //((Date)objects[3]).toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        var datoFra = localDate(objects[0]);
         var behandlingType = BehandlingType.fraKode((String)objects[1]);
         var antallNyeFra = ((BigDecimal)objects[2]).longValue();
         var antallFerdigstilte = ((BigDecimal)objects[3]).longValue();

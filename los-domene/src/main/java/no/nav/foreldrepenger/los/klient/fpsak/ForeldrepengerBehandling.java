@@ -29,14 +29,14 @@ import no.nav.foreldrepenger.los.klient.fpsak.dto.ytelsefordeling.YtelseFordelin
 
 public interface ForeldrepengerBehandling {
 
-    static final String BEHANDLING_ID = "behandlingId";
-    static final Logger LOG = LoggerFactory.getLogger(ForeldrepengerBehandling.class);
-    static final String FPSAK_BEHANDLINGER = "/fpsak/api/behandlinger";
-    static final String AKSJONSPUNKTER_LINK = "aksjonspunkter";
-    static final String INNTEKT_ARBEID_YTELSE_LINK = "inntekt-arbeid-ytelse";
-    static final String UTTAK_KONTROLLER_FAKTA_PERIODER_LINK = "uttak-kontroller-fakta-perioder";
-    static final String KONTROLLRESULTAT = "kontrollresultat";
-    static final String YTELSEFORDELING_LINK = "ytelsefordeling";
+    String BEHANDLING_ID = "behandlingId";
+    Logger LOG = LoggerFactory.getLogger(ForeldrepengerBehandling.class);
+    String FPSAK_BEHANDLINGER = "/fpsak/api/behandlinger";
+    String AKSJONSPUNKTER_LINK = "aksjonspunkter";
+    String INNTEKT_ARBEID_YTELSE_LINK = "inntekt-arbeid-ytelse";
+    String UTTAK_KONTROLLER_FAKTA_PERIODER_LINK = "uttak-kontroller-fakta-perioder";
+    String KONTROLLRESULTAT = "kontrollresultat";
+    String YTELSEFORDELING_LINK = "ytelsefordeling";
 
     <T> Optional<T> hentFraResourceLink(ResourceLink resourceLink, Class<T> clazz);
 
