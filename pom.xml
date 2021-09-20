@@ -48,7 +48,7 @@
         <javaslang.version>2.0.6</javaslang.version>
         <owaspencoder.version>1.2.3</owaspencoder.version>
         <ojdbc.version>19.3.0.0</ojdbc.version>
-        <kafka.version>2.8.0</kafka.version>
+        <kafka.version>2.8.1</kafka.version>
         <validation-api.version>2.0.1.Final</validation-api.version>
     </properties>
 
