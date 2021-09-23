@@ -15,6 +15,7 @@ interface OwnProps {
   onBlur?: (value: any) => void;
   shouldValidateOnBlur?: boolean;
   autoFocus?: boolean;
+  parse?: (value: any) => string;
 }
 
 const InputField: FunctionComponent<OwnProps> = ({
@@ -28,6 +29,7 @@ const InputField: FunctionComponent<OwnProps> = ({
   className,
   placeholder,
   autoFocus,
+  parse = (value: string) => value,
 }) => {
   const { formState: { errors }, trigger } = useFormContext();
   const validationFunctions = validate.reduce((acc, fn, index) => ({
@@ -56,6 +58,9 @@ const InputField: FunctionComponent<OwnProps> = ({
       {...field}
       value={field.value ? field.value : ''}
       autoFocus={autoFocus}
+      onChange={(event) => {
+        field.onChange(parse(event?.target?.value));
+      }}
       onBlur={async (event) => {
         field.onBlur();
         if (shouldValidateOnBlur) {
