@@ -72,6 +72,7 @@ const SearchForm: FunctionComponent<OwnProps & WrappedComponentProps> = ({
                 label={intl.formatMessage({ id: 'Search.SaksnummerOrPersonId' })}
                 bredde="L"
                 validate={[hasValidSaksnummerOrFodselsnummerFormat(intl)]}
+                parse={(s = '') => s.trim()}
               />
             </FlexColumn>
             <FlexColumn>

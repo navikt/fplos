@@ -150,7 +150,6 @@ export const TilBehandlingGraf: FunctionComponent<OwnProps> = ({
           xAxis: [
             {
               type: 'time',
-              boundaryGap: false,
               axisLabel: {
                 formatter: '{dd}.{MM}.{yyyy}',
               },
