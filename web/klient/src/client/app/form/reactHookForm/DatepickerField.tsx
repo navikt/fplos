@@ -1,12 +1,15 @@
 import React, { FunctionComponent } from 'react';
 import { useController, useFormContext } from 'react-hook-form';
 import dayjs from 'dayjs';
+import customParseFormat from 'dayjs/plugin/customParseFormat';
 
 import { ACCEPTED_DATE_INPUT_FORMATS, DDMMYYYY_DATE_FORMAT, ISO_DATE_FORMAT } from 'utils/formats';
 import Datepicker from 'sharedComponents/datepicker/Datepicker';
 
 import ReadOnlyField from './ReadOnlyField';
 import Label, { LabelType } from './Label';
+
+dayjs.extend(customParseFormat);
 
 interface OwnProps {
   name: string;
