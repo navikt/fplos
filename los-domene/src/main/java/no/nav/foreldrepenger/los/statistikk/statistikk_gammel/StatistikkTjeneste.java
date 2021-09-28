@@ -1,7 +1,6 @@
 package no.nav.foreldrepenger.los.statistikk.statistikk_gammel;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -21,26 +20,18 @@ public class StatistikkTjeneste {
     }
 
     public List<OppgaverForAvdeling> hentAlleOppgaverForAvdeling(String avdeling) {
-        return statisikkRepository.hentAlleOppgaverForAvdeling(avdeling).stream() // NOSONAR
-                .map(resultat -> new OppgaverForAvdeling((Object[]) resultat))
-                .collect(Collectors.toList()); // NOSONAR
+        return statisikkRepository.hentAlleOppgaverForAvdeling(avdeling);
     }
 
     public List<OppgaverForAvdelingPerDato> hentAntallOppgaverForAvdelingPerDato(String avdeling) {
-        return (List<OppgaverForAvdelingPerDato>) statisikkRepository.hentAlleOppgaverForAvdelingPerDato(avdeling).stream() // NOSONAR
-                .map(resultat -> new OppgaverForAvdelingPerDato((Object[]) resultat))
-                .collect(Collectors.toList()); // NOSONAR
+        return statisikkRepository.hentAlleOppgaverForAvdelingPerDato(avdeling);
     }
 
     public List<OppgaverForAvdelingSattManueltPåVent> hentAntallOppgaverForAvdelingSattManueltPåVent(String avdeling) {
-        return (List<OppgaverForAvdelingSattManueltPåVent>) statisikkRepository.hentAntallOppgaverForAvdelingSattManueltPåVent(avdeling).stream()
-                .map(result -> new OppgaverForAvdelingSattManueltPåVent((Object[]) result))
-                .collect(Collectors.toList());
+        return statisikkRepository.hentAntallOppgaverForAvdelingSattManueltPåVent(avdeling);
     }
 
     public List<OppgaverForFørsteStønadsdag> hentOppgaverPerFørsteStønadsdag(String avdeling) {
-        return (List<OppgaverForFørsteStønadsdag>) statisikkRepository.hentOppgaverPerFørsteStønadsdag(avdeling).stream() // NOSONAR
-                .map(result -> new OppgaverForFørsteStønadsdag((Object[]) result))
-                .collect(Collectors.toList()); // NOSONAR
+        return statisikkRepository.hentOppgaverPerFørsteStønadsdag(avdeling);
     }
 }
