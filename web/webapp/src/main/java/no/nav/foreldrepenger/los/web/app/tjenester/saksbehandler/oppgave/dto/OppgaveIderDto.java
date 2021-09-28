@@ -45,7 +45,7 @@ public class OppgaveIderDto implements AbacDto {
         if (null == oppgaveIder){
             return new ArrayList<>();
         }
-        return Arrays.asList(oppgaveIder.trim().split("_")).stream().map(opgid -> Long.valueOf(opgid)).collect(Collectors.toList());
+        return Arrays.stream(oppgaveIder.trim().split("_")).map(opgid -> Long.valueOf(opgid)).collect(Collectors.toList());
     }
 
     @Override
