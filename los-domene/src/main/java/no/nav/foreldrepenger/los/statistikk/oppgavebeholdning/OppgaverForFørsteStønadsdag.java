@@ -1,4 +1,4 @@
-package no.nav.foreldrepenger.los.statistikk.statistikk_gammel;
+package no.nav.foreldrepenger.los.statistikk.oppgavebeholdning;
 
 import java.time.LocalDate;
 

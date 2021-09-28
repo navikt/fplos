@@ -1,4 +1,4 @@
-package no.nav.foreldrepenger.los.statistikk.statistikk_gammel;
+package no.nav.foreldrepenger.los.statistikk.oppgavebeholdning;
 
 import java.math.BigDecimal;
 import java.time.ZoneId;
@@ -119,7 +119,7 @@ public class StatistikkRepository {
         var behandlingType = BehandlingType.fraKode((String) row[1]); // NOSONAR
         var tilBeslutter = new BooleanToStringConverter().convertToEntityAttribute((String) row[2]); // NOSONAR
         var antall = ((BigDecimal) row[3]).longValue(); // NOSONAR
-        return new OppgaverForAvdeling(fagsakYtelseType, behandlingType, tilBeslutter, antall);
+        return new OppgaverForAvdeling(fagsakYtelseType, behandlingType, !tilBeslutter, antall);
     }
 
     private static OppgaverForAvdelingPerDato mapOppgaverForAvdelingPerDato(Object[] row) {

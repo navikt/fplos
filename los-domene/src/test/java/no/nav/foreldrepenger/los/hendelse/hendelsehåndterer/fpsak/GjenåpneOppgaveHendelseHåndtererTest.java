@@ -22,13 +22,13 @@ import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.Op
 import no.nav.foreldrepenger.los.klient.fpsak.BehandlingFpsak;
 import no.nav.foreldrepenger.los.oppgave.Oppgave;
 import no.nav.foreldrepenger.los.oppgave.OppgaveRepository;
-import no.nav.foreldrepenger.los.statistikk.statistikk_ny.OppgaveStatistikk;
+import no.nav.foreldrepenger.los.statistikk.kø.KøStatistikkTjeneste;
 
 
 @ExtendWith(MockitoExtension.class)
 @ExtendWith(EntityManagerFPLosAwareExtension.class)
 class GjenåpneOppgaveHendelseHåndtererTest {
-    private final OppgaveStatistikk oppgaveStatistikk = mock(OppgaveStatistikk.class);
+    private final KøStatistikkTjeneste køStatistikk = mock(KøStatistikkTjeneste.class);
     private EntityManager entityManager;
     private OppgaveRepository oppgaveRepository;
     private OppgaveEgenskapHåndterer oppgaveEgenskapHåndterer;
@@ -53,7 +53,7 @@ class GjenåpneOppgaveHendelseHåndtererTest {
 
     @Test
     public void skalGjenåpneEksisterendeOppgave() {
-        new GjenåpneOppgaveHendelseHåndterer(oppgaveRepository, oppgaveEgenskapHåndterer, oppgaveStatistikk, behandlingFpsak).håndter();
+        new GjenåpneOppgaveHendelseHåndterer(oppgaveRepository, oppgaveEgenskapHåndterer, køStatistikk, behandlingFpsak).håndter();
 
         var oppgave = DBTestUtil.hentUnik(entityManager, Oppgave.class);
         assertThat(oppgave.getAktiv()).isTrue();
@@ -66,7 +66,7 @@ class GjenåpneOppgaveHendelseHåndtererTest {
 
     @Test
     public void skalOppretteOppgaveEventLogg() {
-        new GjenåpneOppgaveHendelseHåndterer(oppgaveRepository, oppgaveEgenskapHåndterer, oppgaveStatistikk, behandlingFpsak).håndter();
+        new GjenåpneOppgaveHendelseHåndterer(oppgaveRepository, oppgaveEgenskapHåndterer, køStatistikk, behandlingFpsak).håndter();
 
         var oel = DBTestUtil.hentUnik(entityManager, OppgaveEventLogg.class);
         assertThat(oel.getBehandlingId()).isEqualTo(behandlingFpsak.getBehandlingId());

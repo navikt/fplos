@@ -1,4 +1,4 @@
-package no.nav.foreldrepenger.los.statistikk.statistikk_gammel;
+package no.nav.foreldrepenger.los.statistikk.oppgavebeholdning;
 
 import java.util.List;
 
@@ -6,16 +6,16 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 @ApplicationScoped
-public class StatistikkTjeneste {
+public class OppgaveBeholdningStatistikkTjeneste {
 
     private StatistikkRepository statisikkRepository;
 
-    StatistikkTjeneste() {
+    OppgaveBeholdningStatistikkTjeneste() {
         // for CDI proxy
     }
 
     @Inject
-    public StatistikkTjeneste(StatistikkRepository statistikkRepository) {
+    public OppgaveBeholdningStatistikkTjeneste(StatistikkRepository statistikkRepository) {
         statisikkRepository = statistikkRepository;
     }
 

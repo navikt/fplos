@@ -24,13 +24,13 @@ import no.nav.foreldrepenger.los.oppgave.BehandlingStatus;
 import no.nav.foreldrepenger.los.oppgave.BehandlingType;
 import no.nav.foreldrepenger.los.oppgave.Oppgave;
 import no.nav.foreldrepenger.los.oppgave.OppgaveRepository;
-import no.nav.foreldrepenger.los.statistikk.statistikk_ny.OppgaveStatistikk;
+import no.nav.foreldrepenger.los.statistikk.kø.KøStatistikkTjeneste;
 
 
 @ExtendWith(MockitoExtension.class)
 @ExtendWith(EntityManagerFPLosAwareExtension.class)
 class GenerellOpprettOppgaveHendelseHåndtererTest {
-    private final OppgaveStatistikk oppgaveStatistikk = mock(OppgaveStatistikk.class);
+    private final KøStatistikkTjeneste køStatistikk = mock(KøStatistikkTjeneste.class);
     private EntityManager entityManager;
     private OppgaveRepository oppgaveRepository;
     private OppgaveEgenskapHåndterer oppgaveEgenskapHåndterer;
@@ -46,7 +46,7 @@ class GenerellOpprettOppgaveHendelseHåndtererTest {
     public void skalLagreOppgaveMedFelterFraBehandling() {
         var behandlingFpsak = behandlingFpsak();
 
-        var opprettOppgaveHåndterer = new GenerellOpprettOppgaveHendelseHåndterer(oppgaveRepository, oppgaveEgenskapHåndterer, oppgaveStatistikk, behandlingFpsak);
+        var opprettOppgaveHåndterer = new GenerellOpprettOppgaveHendelseHåndterer(oppgaveRepository, oppgaveEgenskapHåndterer, køStatistikk, behandlingFpsak);
         opprettOppgaveHåndterer.håndter();
 
         var oppgave = DBTestUtil.hentUnik(entityManager, Oppgave.class);
@@ -70,7 +70,7 @@ class GenerellOpprettOppgaveHendelseHåndtererTest {
     @Test
     public void skalOppretteOppgaveEventLogg() {
         var behandlingFpsak = behandlingFpsak();
-        new GenerellOpprettOppgaveHendelseHåndterer(oppgaveRepository, oppgaveEgenskapHåndterer,oppgaveStatistikk, behandlingFpsak).håndter();
+        new GenerellOpprettOppgaveHendelseHåndterer(oppgaveRepository, oppgaveEgenskapHåndterer, køStatistikk, behandlingFpsak).håndter();
 
         var oppgaveEventLogg = DBTestUtil.hentUnik(entityManager, OppgaveEventLogg.class);
         assertThat(oppgaveEventLogg.getEventType()).isEqualTo(OppgaveEventType.OPPRETTET);

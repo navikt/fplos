@@ -13,8 +13,8 @@ import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.Op
 import no.nav.foreldrepenger.los.klient.fpsak.BehandlingFpsak;
 import no.nav.foreldrepenger.los.oppgave.Oppgave;
 import no.nav.foreldrepenger.los.oppgave.OppgaveRepository;
-import no.nav.foreldrepenger.los.statistikk.statistikk_ny.OppgaveStatistikk;
-import no.nav.foreldrepenger.los.statistikk.statistikk_ny.OppgaveknytningerFørEtterOppdatering;
+import no.nav.foreldrepenger.los.statistikk.kø.KøStatistikkTjeneste;
+import no.nav.foreldrepenger.los.statistikk.kø.OppgaveknytningerFørEtterOppdatering;
 
 public class OppdaterOppgaveegenskaperHendelseHåndterer implements FpsakHendelseHåndterer {
     private static final Logger LOG = LoggerFactory.getLogger(OppdaterOppgaveegenskaperHendelseHåndterer.class);
@@ -22,16 +22,16 @@ public class OppdaterOppgaveegenskaperHendelseHåndterer implements FpsakHendels
     private final BehandlingFpsak behandlingFpsak;
     private final OppgaveRepository oppgaveRepository;
     private final OppgaveEgenskapHåndterer oppgaveEgenskapHåndterer;
-    private final OppgaveStatistikk oppgaveStatistikk;
+    private final KøStatistikkTjeneste køStatistikk;
     private final OppgaveknytningerFørEtterOppdatering oppgaveknytningerFørEtterOppdatering = new OppgaveknytningerFørEtterOppdatering();
 
     public OppdaterOppgaveegenskaperHendelseHåndterer(OppgaveRepository oppgaveRepository,
                                                       OppgaveEgenskapHåndterer oppgaveEgenskapHåndterer,
-                                                      OppgaveStatistikk oppgaveStatistikk,
+                                                      KøStatistikkTjeneste køStatistikk,
                                                       BehandlingFpsak behandlingFpsak) {
         this.oppgaveRepository = oppgaveRepository;
         this.oppgaveEgenskapHåndterer = oppgaveEgenskapHåndterer;
-        this.oppgaveStatistikk = oppgaveStatistikk;
+        this.køStatistikk = køStatistikk;
         this.behandlingFpsak = behandlingFpsak;
     }
 
@@ -40,13 +40,13 @@ public class OppdaterOppgaveegenskaperHendelseHåndterer implements FpsakHendels
         var behandlingId = behandlingFpsak.getBehandlingId();
         var oppgave = oppgaveRepository.hentOppgaver(behandlingId).stream().filter(Oppgave::getAktiv).findFirst()
                 .orElseThrow(() -> new IllegalStateException(String.format("Finner ikke oppgave for oppdatering, behandlingId %s", behandlingId)));
-        oppgaveknytningerFørEtterOppdatering.setKnytningerFørOppdatering(oppgaveStatistikk.hentOppgaveFiltreringKnytningerForOppgave(oppgave));
+        oppgaveknytningerFørEtterOppdatering.setKnytningerFørOppdatering(køStatistikk.hentOppgaveFiltreringKnytningerForOppgave(oppgave));
         oppdaterReservasjon(oppgave);
         oppdaterOppgave(oppgave);
         oppdaterOppgaveEgenskaper(oppgave);
         oppdaterOppgaveEventLogg();
-        oppgaveknytningerFørEtterOppdatering.setKnytningerEtterOppdatering(oppgaveStatistikk.hentOppgaveFiltreringKnytningerForOppgave(oppgave));
-        oppgaveStatistikk.lagre(oppgaveknytningerFørEtterOppdatering);
+        oppgaveknytningerFørEtterOppdatering.setKnytningerEtterOppdatering(køStatistikk.hentOppgaveFiltreringKnytningerForOppgave(oppgave));
+        køStatistikk.lagre(oppgaveknytningerFørEtterOppdatering);
         LOG.info("Oppdater {} oppgaveId {}", SYSTEM, oppgave.getId());
     }
 

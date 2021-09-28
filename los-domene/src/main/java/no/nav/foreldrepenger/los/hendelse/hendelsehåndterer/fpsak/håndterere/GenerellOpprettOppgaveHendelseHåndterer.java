@@ -9,7 +9,7 @@ import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.Op
 import no.nav.foreldrepenger.los.klient.fpsak.BehandlingFpsak;
 import no.nav.foreldrepenger.los.oppgave.Oppgave;
 import no.nav.foreldrepenger.los.oppgave.OppgaveRepository;
-import no.nav.foreldrepenger.los.statistikk.statistikk_ny.OppgaveStatistikk;
+import no.nav.foreldrepenger.los.statistikk.kø.KøStatistikkTjeneste;
 
 public class GenerellOpprettOppgaveHendelseHåndterer extends OpprettOppgaveHendelseHåndterer {
     private static final Logger LOG = LoggerFactory.getLogger(GenerellOpprettOppgaveHendelseHåndterer.class);
@@ -19,9 +19,9 @@ public class GenerellOpprettOppgaveHendelseHåndterer extends OpprettOppgaveHend
 
     public GenerellOpprettOppgaveHendelseHåndterer(OppgaveRepository oppgaveRepository,
                                                    OppgaveEgenskapHåndterer oppgaveEgenskapHåndterer,
-                                                   OppgaveStatistikk oppgaveStatistikk,
+                                                   KøStatistikkTjeneste køStatistikk,
                                                    BehandlingFpsak behandlingFpsak) {
-        super(oppgaveRepository, oppgaveEgenskapHåndterer, oppgaveStatistikk, behandlingFpsak);
+        super(oppgaveRepository, oppgaveEgenskapHåndterer, køStatistikk, behandlingFpsak);
         this.oppgaveRepository = oppgaveRepository;
         this.behandlingFpsak = behandlingFpsak;
     }

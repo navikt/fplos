@@ -25,15 +25,15 @@ import no.nav.foreldrepenger.los.klient.fpsak.BehandlingFpsak;
 import no.nav.foreldrepenger.los.oppgave.Oppgave;
 import no.nav.foreldrepenger.los.oppgave.OppgaveRepository;
 import no.nav.foreldrepenger.los.reservasjon.ReservasjonTjeneste;
-import no.nav.foreldrepenger.los.statistikk.statistikk_ny.OppgaveStatistikk;
-import no.nav.foreldrepenger.los.statistikk.statistikk_ny.OppgaveknytningerFørEtterOppdatering;
+import no.nav.foreldrepenger.los.statistikk.kø.KøStatistikkTjeneste;
+import no.nav.foreldrepenger.los.statistikk.kø.OppgaveknytningerFørEtterOppdatering;
 
 
 @ExtendWith(MockitoExtension.class)
 @ExtendWith(EntityManagerFPLosAwareExtension.class)
 class OppdaterOppgaveegenskaperHendelseHåndtererTest {
 
-    private final OppgaveStatistikk oppgaveStatistikk = mock(OppgaveStatistikk.class);
+    private final KøStatistikkTjeneste køStatistikk = mock(KøStatistikkTjeneste.class);
     private EntityManager entityManager;
     private OppgaveRepository oppgaveRepository;
     private OppgaveEgenskapHåndterer oppgaveEgenskapHåndterer;
@@ -51,13 +51,13 @@ class OppdaterOppgaveegenskaperHendelseHåndtererTest {
     public void skalVidereføreReservasjonVedOppdateringer() {
         // arrange
         var behandlingFpsak = behandlingFpsak();
-        new GenerellOpprettOppgaveHendelseHåndterer(oppgaveRepository, oppgaveEgenskapHåndterer, oppgaveStatistikk, behandlingFpsak).håndter();
+        new GenerellOpprettOppgaveHendelseHåndterer(oppgaveRepository, oppgaveEgenskapHåndterer, køStatistikk, behandlingFpsak).håndter();
         var oppgaveId = DBTestUtil.hentUnik(entityManager, Oppgave.class).getId();
         var reservasjon = reservasjonTjeneste.reserverOppgave(oppgaveId);
         var reservertTil = reservasjon.getReservertTil().truncatedTo(ChronoUnit.SECONDS);
 
         // act
-        new OppdaterOppgaveegenskaperHendelseHåndterer(oppgaveRepository, oppgaveEgenskapHåndterer, oppgaveStatistikk, behandlingFpsak).håndter();
+        new OppdaterOppgaveegenskaperHendelseHåndterer(oppgaveRepository, oppgaveEgenskapHåndterer, køStatistikk, behandlingFpsak).håndter();
 
         // assert
         var oppgave = DBTestUtil.hentUnik(entityManager, Oppgave.class);
@@ -73,7 +73,7 @@ class OppdaterOppgaveegenskaperHendelseHåndtererTest {
         var behandlingFpsak = lagBehandlingFpsakMedEksisterendeOppgave();
 
         // act
-        new OppdaterOppgaveegenskaperHendelseHåndterer(oppgaveRepository, oppgaveEgenskapHåndterer, oppgaveStatistikk, behandlingFpsak).håndter();
+        new OppdaterOppgaveegenskaperHendelseHåndterer(oppgaveRepository, oppgaveEgenskapHåndterer, køStatistikk, behandlingFpsak).håndter();
 
         //assert
         var oppgave = DBTestUtil.hentUnik(entityManager, Oppgave.class);
@@ -83,15 +83,15 @@ class OppdaterOppgaveegenskaperHendelseHåndtererTest {
 
     @Test
     public void skalKasteFeilDersomIkkeEksistererAktivOppgave() {
-        var håndterer = new OppdaterOppgaveegenskaperHendelseHåndterer(oppgaveRepository, oppgaveEgenskapHåndterer, oppgaveStatistikk, behandlingFpsak());
+        var håndterer = new OppdaterOppgaveegenskaperHendelseHåndterer(oppgaveRepository, oppgaveEgenskapHåndterer, køStatistikk, behandlingFpsak());
         assertThrows(IllegalStateException.class, håndterer::håndter);
     }
 
     @Test
     public void skalLagreOppgaveStatistikk() {
         var behandlingFpsak = lagBehandlingFpsakMedEksisterendeOppgave();
-        new OppdaterOppgaveegenskaperHendelseHåndterer(oppgaveRepository, oppgaveEgenskapHåndterer, oppgaveStatistikk, behandlingFpsak).håndter();
-        verify(oppgaveStatistikk).lagre(any(OppgaveknytningerFørEtterOppdatering.class));
+        new OppdaterOppgaveegenskaperHendelseHåndterer(oppgaveRepository, oppgaveEgenskapHåndterer, køStatistikk, behandlingFpsak).håndter();
+        verify(køStatistikk).lagre(any(OppgaveknytningerFørEtterOppdatering.class));
     }
 
     private BehandlingFpsak lagBehandlingFpsakMedEksisterendeOppgave() {

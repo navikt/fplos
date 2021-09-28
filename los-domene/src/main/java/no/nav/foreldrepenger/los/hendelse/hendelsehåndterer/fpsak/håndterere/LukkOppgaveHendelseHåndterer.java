@@ -8,22 +8,22 @@ import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.Op
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveEventType;
 import no.nav.foreldrepenger.los.klient.fpsak.BehandlingFpsak;
 import no.nav.foreldrepenger.los.oppgave.OppgaveRepository;
-import no.nav.foreldrepenger.los.statistikk.statistikk_ny.KøOppgaveHendelse;
-import no.nav.foreldrepenger.los.statistikk.statistikk_ny.OppgaveStatistikk;
+import no.nav.foreldrepenger.los.statistikk.kø.KøOppgaveHendelse;
+import no.nav.foreldrepenger.los.statistikk.kø.KøStatistikkTjeneste;
 
 @SuppressWarnings("ClassCanBeRecord")
 public class LukkOppgaveHendelseHåndterer implements FpsakHendelseHåndterer {
 
     private static final Logger LOG = LoggerFactory.getLogger(LukkOppgaveHendelseHåndterer.class);
     private final OppgaveRepository oppgaveRepository;
-    private final OppgaveStatistikk oppgaveStatistikk;
+    private final KøStatistikkTjeneste køStatistikk;
     private final BehandlingFpsak behandlingFpsak;
 
     public LukkOppgaveHendelseHåndterer(OppgaveRepository oppgaveRepository,
-                                           OppgaveStatistikk oppgaveStatistikk,
+                                           KøStatistikkTjeneste køStatistikk,
                                            BehandlingFpsak behandlingFpsak) {
         this.oppgaveRepository = oppgaveRepository;
-        this.oppgaveStatistikk = oppgaveStatistikk;
+        this.køStatistikk = køStatistikk;
         this.behandlingFpsak = behandlingFpsak;
     }
 
@@ -31,7 +31,7 @@ public class LukkOppgaveHendelseHåndterer implements FpsakHendelseHåndterer {
     public void håndter() {
         var behandlingId = behandlingFpsak.getBehandlingId();
         LOG.info("Håndterer hendelse for å lukke oppgave, behandling {}, system {}", behandlingId,  SYSTEM);
-        oppgaveStatistikk.lagre(behandlingId, KøOppgaveHendelse.LUKKET_OPPGAVE);
+        køStatistikk.lagre(behandlingId, KøOppgaveHendelse.LUKKET_OPPGAVE);
         oppgaveRepository.avsluttOppgaveForBehandling(behandlingId);
         var oel = OppgaveEventLogg.builder()
                 .behandlendeEnhet(behandlingFpsak.getBehandlendeEnhetId())

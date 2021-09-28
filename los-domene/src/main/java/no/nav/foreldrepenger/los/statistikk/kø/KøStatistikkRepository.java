@@ -1,8 +1,8 @@
-package no.nav.foreldrepenger.los.statistikk.statistikk_ny;
+package no.nav.foreldrepenger.los.statistikk.kø;
 
-import static no.nav.foreldrepenger.los.statistikk.statistikk_ny.KøOppgaveHendelse.LUKKET_OPPGAVE;
-import static no.nav.foreldrepenger.los.statistikk.statistikk_ny.KøOppgaveHendelse.OPPGAVE_SATT_PÅ_VENT;
-import static no.nav.foreldrepenger.los.statistikk.statistikk_ny.KøOppgaveHendelse.UT_TIL_ANNEN_KØ;
+import static no.nav.foreldrepenger.los.statistikk.kø.KøOppgaveHendelse.LUKKET_OPPGAVE;
+import static no.nav.foreldrepenger.los.statistikk.kø.KøOppgaveHendelse.OPPGAVE_SATT_PÅ_VENT;
+import static no.nav.foreldrepenger.los.statistikk.kø.KøOppgaveHendelse.UT_TIL_ANNEN_KØ;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
@@ -20,20 +20,20 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import no.nav.foreldrepenger.los.oppgave.BehandlingType;
-import no.nav.foreldrepenger.los.statistikk.statistikk_gammel.NyeOgFerdigstilteOppgaver;
+import no.nav.foreldrepenger.los.statistikk.oppgavebeholdning.NyeOgFerdigstilteOppgaver;
 
 @ApplicationScoped
-public class NyOpppgaveStatistikkRepository {
-    private static final Logger LOG = LoggerFactory.getLogger(NyOpppgaveStatistikkRepository.class);
+public class KøStatistikkRepository {
+    private static final Logger LOG = LoggerFactory.getLogger(KøStatistikkRepository.class);
 
     private EntityManager entityManager;
 
     @Inject
-    public NyOpppgaveStatistikkRepository(EntityManager entityManager) {
+    public KøStatistikkRepository(EntityManager entityManager) {
         this.entityManager = entityManager;
     }
 
-    NyOpppgaveStatistikkRepository() {
+    KøStatistikkRepository() {
         //CDI
     }
 
@@ -72,7 +72,7 @@ public class NyOpppgaveStatistikkRepository {
                 .setParameter("fom", LocalDate.now().minusDays(7).atStartOfDay());
         @SuppressWarnings("unchecked")
         var result = (List<Object[]>) query.getResultList();
-        var stats = result.stream().map(NyOpppgaveStatistikkRepository::map).collect(Collectors.toList());
+        var stats = result.stream().map(KøStatistikkRepository::map).collect(Collectors.toList());
         return slåSammen(stats);
     }
 

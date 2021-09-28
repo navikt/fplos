@@ -13,11 +13,11 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 
 import io.swagger.v3.oas.annotations.Operation;
-import no.nav.foreldrepenger.los.statistikk.statistikk_gammel.OppgaverForAvdeling;
-import no.nav.foreldrepenger.los.statistikk.statistikk_gammel.OppgaverForAvdelingPerDato;
-import no.nav.foreldrepenger.los.statistikk.statistikk_gammel.OppgaverForAvdelingSattManueltPåVent;
-import no.nav.foreldrepenger.los.statistikk.statistikk_gammel.OppgaverForFørsteStønadsdag;
-import no.nav.foreldrepenger.los.statistikk.statistikk_gammel.StatistikkTjeneste;
+import no.nav.foreldrepenger.los.statistikk.oppgavebeholdning.OppgaverForAvdeling;
+import no.nav.foreldrepenger.los.statistikk.oppgavebeholdning.OppgaverForAvdelingPerDato;
+import no.nav.foreldrepenger.los.statistikk.oppgavebeholdning.OppgaverForAvdelingSattManueltPåVent;
+import no.nav.foreldrepenger.los.statistikk.oppgavebeholdning.OppgaverForFørsteStønadsdag;
+import no.nav.foreldrepenger.los.statistikk.oppgavebeholdning.OppgaveBeholdningStatistikkTjeneste;
 import no.nav.foreldrepenger.los.web.app.AbacAttributter;
 import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.dto.AvdelingEnhetDto;
 import no.nav.vedtak.sikkerhet.abac.BeskyttetRessurs;
@@ -28,15 +28,15 @@ import no.nav.vedtak.sikkerhet.abac.BeskyttetRessursActionAttributt;
 @Transactional
 public class NøkkeltallRestTjeneste {
 
-    private StatistikkTjeneste statistikkTjeneste;
+    private OppgaveBeholdningStatistikkTjeneste oppgaveBeholdningStatistikkTjeneste;
 
     public NøkkeltallRestTjeneste() {
         // For Rest-CDI
     }
 
     @Inject
-    public NøkkeltallRestTjeneste(StatistikkTjeneste statistikkTjeneste) {
-        this.statistikkTjeneste = statistikkTjeneste;
+    public NøkkeltallRestTjeneste(OppgaveBeholdningStatistikkTjeneste oppgaveBeholdningStatistikkTjeneste) {
+        this.oppgaveBeholdningStatistikkTjeneste = oppgaveBeholdningStatistikkTjeneste;
     }
 
     @GET
@@ -46,7 +46,7 @@ public class NøkkeltallRestTjeneste {
     @BeskyttetRessurs(action = BeskyttetRessursActionAttributt.READ, resource = AbacAttributter.OPPGAVESTYRING_AVDELINGENHET)
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
     public List<OppgaverForAvdeling> getAlleOppgaverForAvdeling(@NotNull @QueryParam("avdelingEnhet") @Valid AvdelingEnhetDto avdelingEnhet) {
-        return statistikkTjeneste.hentAlleOppgaverForAvdeling(avdelingEnhet.getAvdelingEnhet());
+        return oppgaveBeholdningStatistikkTjeneste.hentAlleOppgaverForAvdeling(avdelingEnhet.getAvdelingEnhet());
     }
 
     @GET
@@ -56,7 +56,7 @@ public class NøkkeltallRestTjeneste {
     @BeskyttetRessurs(action = BeskyttetRessursActionAttributt.READ, resource = AbacAttributter.OPPGAVESTYRING_AVDELINGENHET)
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
     public List<OppgaverForAvdelingPerDato> getAntallOppgaverForAvdelingPerDato(@NotNull @QueryParam("avdelingEnhet") @Valid AvdelingEnhetDto avdelingEnhet) {
-        return statistikkTjeneste.hentAntallOppgaverForAvdelingPerDato(avdelingEnhet.getAvdelingEnhet());
+        return oppgaveBeholdningStatistikkTjeneste.hentAntallOppgaverForAvdelingPerDato(avdelingEnhet.getAvdelingEnhet());
     }
 
     @GET
@@ -66,7 +66,7 @@ public class NøkkeltallRestTjeneste {
     @BeskyttetRessurs(action = BeskyttetRessursActionAttributt.READ, resource = AbacAttributter.OPPGAVESTYRING_AVDELINGENHET)
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
     public List<OppgaverForAvdelingSattManueltPåVent> getAntallOppgaverSattPåManuellVentForAvdeling(@NotNull @QueryParam("avdelingEnhet") @Valid AvdelingEnhetDto avdelingEnhet) {
-        return statistikkTjeneste.hentAntallOppgaverForAvdelingSattManueltPåVent(avdelingEnhet.getAvdelingEnhet());
+        return oppgaveBeholdningStatistikkTjeneste.hentAntallOppgaverForAvdelingSattManueltPåVent(avdelingEnhet.getAvdelingEnhet());
     }
 
     @GET
@@ -76,6 +76,6 @@ public class NøkkeltallRestTjeneste {
     @BeskyttetRessurs(action = BeskyttetRessursActionAttributt.READ, resource = AbacAttributter.OPPGAVESTYRING_AVDELINGENHET)
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
     public List<OppgaverForFørsteStønadsdag> getOppgaverPerFørsteStønadsdag(@NotNull @QueryParam("avdelingEnhet") @Valid AvdelingEnhetDto avdelingEnhet) {
-        return statistikkTjeneste.hentOppgaverPerFørsteStønadsdag(avdelingEnhet.getAvdelingEnhet());
+        return oppgaveBeholdningStatistikkTjeneste.hentOppgaverPerFørsteStønadsdag(avdelingEnhet.getAvdelingEnhet());
     }
 }
