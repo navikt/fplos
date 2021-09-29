@@ -1,4 +1,4 @@
-package no.nav.foreldrepenger.los.statistikk.statistikk_ny;
+package no.nav.foreldrepenger.los.statistikk.kø;
 
 import no.nav.foreldrepenger.los.oppgavekø.OppgaveFiltreringKnytning;
 

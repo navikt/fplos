@@ -17,21 +17,21 @@ import no.nav.foreldrepenger.los.klient.fpsak.Aksjonspunkt;
 import no.nav.foreldrepenger.los.klient.fpsak.BehandlingFpsak;
 import no.nav.foreldrepenger.los.oppgave.Oppgave;
 import no.nav.foreldrepenger.los.oppgave.OppgaveRepository;
-import no.nav.foreldrepenger.los.statistikk.statistikk_ny.KøOppgaveHendelse;
-import no.nav.foreldrepenger.los.statistikk.statistikk_ny.OppgaveStatistikk;
+import no.nav.foreldrepenger.los.statistikk.kø.KøOppgaveHendelse;
+import no.nav.foreldrepenger.los.statistikk.kø.KøStatistikkTjeneste;
 
 public class PåVentOppgaveHendelseHåndterer implements FpsakHendelseHåndterer {
 
     private static final Logger LOG = LoggerFactory.getLogger(PåVentOppgaveHendelseHåndterer.class);
     private final OppgaveRepository oppgaveRepository;
-    private final OppgaveStatistikk oppgaveStatistikk;
+    private final KøStatistikkTjeneste køStatistikk;
     private final BehandlingFpsak behandlingFpsak;
 
     public PåVentOppgaveHendelseHåndterer(OppgaveRepository oppgaveRepository,
-                                          OppgaveStatistikk oppgaveStatistikk,
+                                          KøStatistikkTjeneste køStatistikk,
                                           BehandlingFpsak behandling) {
         this.oppgaveRepository = oppgaveRepository;
-        this.oppgaveStatistikk = oppgaveStatistikk;
+        this.køStatistikk = køStatistikk;
         this.behandlingFpsak = behandling;
     }
 
@@ -45,7 +45,7 @@ public class PåVentOppgaveHendelseHåndterer implements FpsakHendelseHåndterer
         var finnesAktivOppgave = oppgaveRepository.hentOppgaver(behandlingId).stream().anyMatch(Oppgave::getAktiv);
         if (finnesAktivOppgave) {
             LOG.info("{} behandling er satt på vent, type {}. Lukker oppgave.", SYSTEM, venteType);
-            oppgaveStatistikk.lagre(behandlingId, KøOppgaveHendelse.OPPGAVE_SATT_PÅ_VENT);
+            køStatistikk.lagre(behandlingId, KøOppgaveHendelse.OPPGAVE_SATT_PÅ_VENT);
             oppgaveRepository.avsluttOppgaveForBehandling(behandlingId);
         } else {
             LOG.info("{} behandling er satt på vent, type {}", SYSTEM, venteType);

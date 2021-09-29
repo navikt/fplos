@@ -18,8 +18,8 @@ import no.nav.foreldrepenger.los.klient.fpsak.BehandlingFpsak;
 import no.nav.foreldrepenger.los.oppgave.Oppgave;
 import no.nav.foreldrepenger.los.oppgave.OppgaveRepository;
 import no.nav.foreldrepenger.los.reservasjon.Reservasjon;
-import no.nav.foreldrepenger.los.statistikk.statistikk_ny.KøOppgaveHendelse;
-import no.nav.foreldrepenger.los.statistikk.statistikk_ny.OppgaveStatistikk;
+import no.nav.foreldrepenger.los.statistikk.kø.KøOppgaveHendelse;
+import no.nav.foreldrepenger.los.statistikk.kø.KøStatistikkTjeneste;
 
 @SuppressWarnings("ClassCanBeRecord")
 public class GjenåpneOppgaveHendelseHåndterer implements FpsakHendelseHåndterer {
@@ -28,15 +28,15 @@ public class GjenåpneOppgaveHendelseHåndterer implements FpsakHendelseHåndter
     private final BehandlingFpsak behandlingFpsak;
     private final OppgaveRepository oppgaveRepository;
     private final OppgaveEgenskapHåndterer oppgaveEgenskapHåndterer;
-    private final OppgaveStatistikk oppgaveStatistikk;
+    private final KøStatistikkTjeneste køStatistikk;
 
     public GjenåpneOppgaveHendelseHåndterer(OppgaveRepository oppgaveRepository,
                                            OppgaveEgenskapHåndterer oppgaveEgenskapHåndterer,
-                                           OppgaveStatistikk oppgaveStatistikk,
+                                           KøStatistikkTjeneste køStatistikk,
                                            BehandlingFpsak behandlingFpsak) {
         this.oppgaveRepository = oppgaveRepository;
         this.oppgaveEgenskapHåndterer = oppgaveEgenskapHåndterer;
-        this.oppgaveStatistikk = oppgaveStatistikk;
+        this.køStatistikk = køStatistikk;
         this.behandlingFpsak = behandlingFpsak;
     }
 
@@ -49,7 +49,7 @@ public class GjenåpneOppgaveHendelseHåndterer implements FpsakHendelseHåndter
         oppdaterOppgave(oppgave);
         oppdaterOppgaveEgenskaper(oppgave);
         oppdaterOppgaveEventLogg();
-        oppgaveStatistikk.lagre(oppgave, KøOppgaveHendelse.ÅPNET_OPPGAVE);
+        køStatistikk.lagre(oppgave, KøOppgaveHendelse.ÅPNET_OPPGAVE);
         LOG.info("Gjenåpnet {} oppgaveId {}", SYSTEM, oppgave.getId());
     }
 

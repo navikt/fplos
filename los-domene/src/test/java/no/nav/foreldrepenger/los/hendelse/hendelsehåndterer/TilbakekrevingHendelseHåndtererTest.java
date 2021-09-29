@@ -32,7 +32,7 @@ import no.nav.foreldrepenger.los.oppgave.FagsakYtelseType;
 import no.nav.foreldrepenger.los.oppgave.Oppgave;
 import no.nav.foreldrepenger.los.oppgave.OppgaveEgenskap;
 import no.nav.foreldrepenger.los.oppgave.OppgaveRepository;
-import no.nav.foreldrepenger.los.statistikk.statistikk_ny.OppgaveStatistikk;
+import no.nav.foreldrepenger.los.statistikk.kø.KøStatistikkTjeneste;
 
 @ExtendWith(EntityManagerFPLosAwareExtension.class)
 @ExtendWith(MockitoExtension.class)
@@ -51,7 +51,7 @@ public class TilbakekrevingHendelseHåndtererTest {
         this.entityManager = entityManager;
         var oppgaveRepository = new OppgaveRepository(entityManager);
         var oppgaveEgenskapHandler = new OppgaveEgenskapHåndterer(oppgaveRepository);
-        handler = new TilbakekrevingHendelseHåndterer(oppgaveEgenskapHandler, oppgaveRepository, mock(OppgaveStatistikk.class));
+        handler = new TilbakekrevingHendelseHåndterer(oppgaveEgenskapHandler, oppgaveRepository, mock(KøStatistikkTjeneste.class));
     }
 
     @Test

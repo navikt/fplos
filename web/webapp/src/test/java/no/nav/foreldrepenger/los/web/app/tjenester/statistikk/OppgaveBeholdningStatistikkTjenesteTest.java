@@ -4,7 +4,6 @@ import static no.nav.foreldrepenger.los.organisasjon.Avdeling.AVDELING_DRAMMEN_E
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.time.LocalDate;
-import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 
@@ -22,16 +21,12 @@ import no.nav.foreldrepenger.los.oppgave.BehandlingType;
 import no.nav.foreldrepenger.los.oppgave.FagsakYtelseType;
 import no.nav.foreldrepenger.los.oppgave.Oppgave;
 import no.nav.foreldrepenger.los.oppgave.OppgaveEgenskap;
-import no.nav.foreldrepenger.los.statistikk.statistikk_gammel.StatistikkRepository;
-import no.nav.foreldrepenger.los.statistikk.statistikk_gammel.StatistikkTjeneste;
-import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.nøkkeltall.dto.OppgaverForAvdelingDto;
-import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.nøkkeltall.dto.OppgaverForAvdelingPerDatoDto;
-import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.nøkkeltall.dto.OppgaverForAvdelingSattManueltPåVentDto;
-import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.nøkkeltall.dto.OppgaverForFørsteStønadsdagDto;
+import no.nav.foreldrepenger.los.statistikk.oppgavebeholdning.StatistikkRepository;
+import no.nav.foreldrepenger.los.statistikk.oppgavebeholdning.OppgaveBeholdningStatistikkTjeneste;
 
 @ExtendWith(EntityManagerFPLosAwareExtension.class)
 @ExtendWith(MockitoExtension.class)
-public class StatistikkTjenesteTest {
+public class OppgaveBeholdningStatistikkTjenesteTest {
 
     private final Oppgave førstegangOppgave = Oppgave.builder()
             .dummyOppgave(AVDELING_DRAMMEN_ENHET)
@@ -68,13 +63,13 @@ public class StatistikkTjenesteTest {
             .medBehandlingType(BehandlingType.FØRSTEGANGSSØKNAD)
             .build();
 
-    private StatistikkTjeneste statistikkTjeneste;
+    private OppgaveBeholdningStatistikkTjeneste oppgaveBeholdningStatistikkTjeneste;
     private EntityManager entityManager;
 
     @BeforeEach
     void setUp(EntityManager entityManager) {
         var statisikkRepository = new StatistikkRepository(entityManager);
-        statistikkTjeneste = new StatistikkTjeneste(statisikkRepository);
+        oppgaveBeholdningStatistikkTjeneste = new OppgaveBeholdningStatistikkTjeneste(statisikkRepository);
         this.entityManager = entityManager;
     }
 
@@ -98,10 +93,7 @@ public class StatistikkTjenesteTest {
     @Test
     public void hentAlleOppgaverForAvdelingTest() {
         leggInnEttSettMedOppgaver();
-        var resultater = statistikkTjeneste.hentAlleOppgaverForAvdeling(AVDELING_DRAMMEN_ENHET)
-                .stream()
-                .map(OppgaverForAvdelingDto::new)
-                .collect(Collectors.toList());
+        var resultater = oppgaveBeholdningStatistikkTjeneste.hentAlleOppgaverForAvdeling(AVDELING_DRAMMEN_ENHET);
 
         assertThat(resultater).hasSize(4);
         assertThat(resultater.get(0).fagsakYtelseType()).isEqualTo(FagsakYtelseType.FORELDREPENGER);
@@ -122,10 +114,7 @@ public class StatistikkTjenesteTest {
     @Test
     public void hentAntallOppgaverForAvdelingPerDatoTest() {
         leggInnEttSettMedOppgaver();
-        var resultater = statistikkTjeneste.hentAntallOppgaverForAvdelingPerDato(AVDELING_DRAMMEN_ENHET)
-                .stream()
-                .map(OppgaverForAvdelingPerDatoDto::new)
-                .collect(Collectors.toList());
+        var resultater = oppgaveBeholdningStatistikkTjeneste.hentAntallOppgaverForAvdelingPerDato(AVDELING_DRAMMEN_ENHET);
         assertThat(resultater).hasSize(3);
         assertThat(resultater.get(0).fagsakYtelseType()).isEqualTo(FagsakYtelseType.FORELDREPENGER);
         assertThat(resultater.get(0).behandlingType()).isEqualTo(BehandlingType.FØRSTEGANGSSØKNAD);
@@ -141,24 +130,18 @@ public class StatistikkTjenesteTest {
         leggTilOppgave(førstegangOppgave2, 28, 28);//skal ikke komme i resultatssettet
         leggTilOppgave(annenAvdeling, 10, 4);//skal ikke komme i resultatssettet
         leggTilOppgave(klageOppgave, 10, 4);
-        var resultater = statistikkTjeneste.hentAntallOppgaverForAvdelingPerDato(AVDELING_DRAMMEN_ENHET)
-                .stream()
-                .map(OppgaverForAvdelingPerDatoDto::new)
-                .collect(Collectors.toList());
+        var resultater = oppgaveBeholdningStatistikkTjeneste.hentAntallOppgaverForAvdelingPerDato(AVDELING_DRAMMEN_ENHET);
         assertThat(resultater).hasSize(8);
         assertThat(resultater.get(0).fagsakYtelseType()).isEqualTo(FagsakYtelseType.FORELDREPENGER);
         assertThat(resultater.get(0).opprettetDato()).isEqualTo(LocalDate.now().minusDays(27));
         resultater.remove(0);
-        resultater.forEach(resultat -> assertThat(resultat.behandlingType().equals(BehandlingType.KLAGE)));
+        resultater.forEach(resultat -> assertThat(resultat.behandlingType()).isEqualTo((BehandlingType.KLAGE)));
     }
 
     @Test
     public void hentHentStatistikkForManueltPåVent() {
         leggInnEttSettMedOppgaveEventer();
-        var resultater = statistikkTjeneste.hentAntallOppgaverForAvdelingSattManueltPåVent(AVDELING_DRAMMEN_ENHET)
-                .stream()
-                .map(OppgaverForAvdelingSattManueltPåVentDto::new)
-                .collect(Collectors.toList());
+        var resultater = oppgaveBeholdningStatistikkTjeneste.hentAntallOppgaverForAvdelingSattManueltPåVent(AVDELING_DRAMMEN_ENHET);
         assertThat(resultater).hasSize(2);
         var resultatDto = resultater.get(1);
         assertThat(resultatDto.antall()).isEqualTo(2L);
@@ -170,10 +153,7 @@ public class StatistikkTjenesteTest {
     @Test
     public void hentOppgaverPerFørsteStønadsdag() {
         leggInnEttSettMedOppgaver();
-        var resultater = statistikkTjeneste.hentOppgaverPerFørsteStønadsdag(AVDELING_DRAMMEN_ENHET)
-                .stream()
-                .map(OppgaverForFørsteStønadsdagDto::new)
-                .collect(Collectors.toList());
+        var resultater = oppgaveBeholdningStatistikkTjeneste.hentOppgaverPerFørsteStønadsdag(AVDELING_DRAMMEN_ENHET);
         assertThat(resultater).hasSize(1);
         assertThat(resultater.get(0).førsteStønadsdag()).isEqualTo(LocalDate.now().plusMonths(1));
         assertThat(resultater.get(0).antall()).isEqualTo(6L);

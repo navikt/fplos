@@ -6,8 +6,8 @@ import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.FpsakOppgaveE
 import no.nav.foreldrepenger.los.klient.fpsak.BehandlingFpsak;
 import no.nav.foreldrepenger.los.oppgave.Oppgave;
 import no.nav.foreldrepenger.los.oppgave.OppgaveRepository;
-import no.nav.foreldrepenger.los.statistikk.statistikk_ny.KøOppgaveHendelse;
-import no.nav.foreldrepenger.los.statistikk.statistikk_ny.OppgaveStatistikk;
+import no.nav.foreldrepenger.los.statistikk.kø.KøOppgaveHendelse;
+import no.nav.foreldrepenger.los.statistikk.kø.KøStatistikkTjeneste;
 
 import static no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.OppgaveUtil.oppgave;
 
@@ -16,16 +16,16 @@ public abstract class OpprettOppgaveHendelseHåndterer implements FpsakHendelseH
 
     private final OppgaveRepository oppgaveRepository;
     private final OppgaveEgenskapHåndterer oppgaveEgenskapHåndterer;
-    private final OppgaveStatistikk oppgaveStatistikk;
+    private final KøStatistikkTjeneste køStatistikk;
     private final BehandlingFpsak behandlingFpsak;
 
     public OpprettOppgaveHendelseHåndterer(OppgaveRepository oppgaveRepository,
                                            OppgaveEgenskapHåndterer oppgaveEgenskapHåndterer,
-                                           OppgaveStatistikk oppgaveStatistikk,
+                                           KøStatistikkTjeneste køStatistikk,
                                            BehandlingFpsak behandlingFpsak) {
         this.oppgaveRepository = oppgaveRepository;
         this.oppgaveEgenskapHåndterer = oppgaveEgenskapHåndterer;
-        this.oppgaveStatistikk = oppgaveStatistikk;
+        this.køStatistikk = køStatistikk;
         this.behandlingFpsak = behandlingFpsak;
     }
 
@@ -35,7 +35,7 @@ public abstract class OpprettOppgaveHendelseHåndterer implements FpsakHendelseH
         var oppgave = opprettOppgave();
         opprettOppgaveEgenskaper(oppgave);
         opprettOppgaveEventLogg(oppgave);
-        oppgaveStatistikk.lagre(oppgave, KøOppgaveHendelse.ÅPNET_OPPGAVE);
+        køStatistikk.lagre(oppgave, KøOppgaveHendelse.ÅPNET_OPPGAVE);
     }
 
     abstract void opprettOppgaveEventLogg(Oppgave oppgave);

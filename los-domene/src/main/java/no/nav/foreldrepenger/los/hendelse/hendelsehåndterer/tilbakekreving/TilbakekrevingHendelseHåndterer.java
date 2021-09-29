@@ -25,8 +25,8 @@ import no.nav.foreldrepenger.los.oppgave.AndreKriterierType;
 import no.nav.foreldrepenger.los.oppgave.Oppgave;
 import no.nav.foreldrepenger.los.oppgave.OppgaveRepository;
 import no.nav.foreldrepenger.los.oppgave.TilbakekrevingOppgave;
-import no.nav.foreldrepenger.los.statistikk.statistikk_ny.KøOppgaveHendelse;
-import no.nav.foreldrepenger.los.statistikk.statistikk_ny.OppgaveStatistikk;
+import no.nav.foreldrepenger.los.statistikk.kø.KøOppgaveHendelse;
+import no.nav.foreldrepenger.los.statistikk.kø.KøStatistikkTjeneste;
 
 @ApplicationScoped
 public class TilbakekrevingHendelseHåndterer {
@@ -34,15 +34,15 @@ public class TilbakekrevingHendelseHåndterer {
     private static final Logger LOG = LoggerFactory.getLogger(TilbakekrevingHendelseHåndterer.class);
     private OppgaveEgenskapHåndterer oppgaveEgenskapHåndterer;
     private OppgaveRepository oppgaveRepository;
-    private OppgaveStatistikk oppgaveStatistikk;
+    private KøStatistikkTjeneste køStatistikk;
 
     @Inject
     public TilbakekrevingHendelseHåndterer(OppgaveEgenskapHåndterer oppgaveEgenskapHåndterer,
                                            OppgaveRepository oppgaveRepository,
-                                           OppgaveStatistikk oppgaveStatistikk) {
+                                           KøStatistikkTjeneste køStatistikk) {
         this.oppgaveEgenskapHåndterer = oppgaveEgenskapHåndterer;
         this.oppgaveRepository = oppgaveRepository;
-        this.oppgaveStatistikk = oppgaveStatistikk;
+        this.køStatistikk = køStatistikk;
     }
 
     TilbakekrevingHendelseHåndterer() {
@@ -73,7 +73,7 @@ public class TilbakekrevingHendelseHåndterer {
                 Oppgave oppgave = opprettTilbakekrevingOppgave(hendelse);
                 LOG.info("TBK Oppretter oppgave {} for behandlingId {}.", oppgave.getId(), behandlingId);
                 oppgaveEgenskapHåndterer.håndterOppgaveEgenskaper(oppgave, egenskapFinner);
-                oppgaveStatistikk.lagre(oppgave, KøOppgaveHendelse.ÅPNET_OPPGAVE);
+                køStatistikk.lagre(oppgave, KøOppgaveHendelse.ÅPNET_OPPGAVE);
                 loggEvent(oppgave.getBehandlingId(), OppgaveEventType.OPPRETTET, null, behandlendeEnhet);
             }
             case OPPRETT_BESLUTTER_OPPGAVE -> {
@@ -81,7 +81,7 @@ public class TilbakekrevingHendelseHåndterer {
                 Oppgave beslutterOppgave = opprettTilbakekrevingOppgave(hendelse);
                 LOG.info("TBK Oppretter beslutteroppgave.");
                 oppgaveEgenskapHåndterer.håndterOppgaveEgenskaper(beslutterOppgave, egenskapFinner);
-                oppgaveStatistikk.lagre(beslutterOppgave, KøOppgaveHendelse.ÅPNET_OPPGAVE);
+                køStatistikk.lagre(beslutterOppgave, KøOppgaveHendelse.ÅPNET_OPPGAVE);
                 loggEvent(behandlingId, OppgaveEventType.OPPRETTET, TIL_BESLUTTER, behandlendeEnhet);
             }
             case GJENÅPNE_OPPGAVE -> {
@@ -89,7 +89,7 @@ public class TilbakekrevingHendelseHåndterer {
                 LOG.info("TBK Gjenåpner oppgave for behandlingId {}.", behandlingId);
                 oppdaterOppgaveInformasjon(gjenåpnetOppgave, hendelse);
                 oppgaveEgenskapHåndterer.håndterOppgaveEgenskaper(gjenåpnetOppgave, egenskapFinner);
-                oppgaveStatistikk.lagre(gjenåpnetOppgave, KøOppgaveHendelse.ÅPNET_OPPGAVE);
+                køStatistikk.lagre(gjenåpnetOppgave, KøOppgaveHendelse.ÅPNET_OPPGAVE);
                 loggEvent(gjenåpnetOppgave.getBehandlingId(), OppgaveEventType.GJENAPNET, null, behandlendeEnhet);
             }
             case OPPDATER_ÅPEN_OPPGAVE -> {
@@ -193,7 +193,7 @@ public class TilbakekrevingHendelseHåndterer {
     }
 
     private void avsluttOppgaveForBehandling(BehandlingId behandlingId) {
-        oppgaveStatistikk.lagre(behandlingId, KøOppgaveHendelse.LUKKET_OPPGAVE);
+        køStatistikk.lagre(behandlingId, KøOppgaveHendelse.LUKKET_OPPGAVE);
         oppgaveRepository.avsluttOppgaveForBehandling(behandlingId);
     }
 }

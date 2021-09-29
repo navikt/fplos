@@ -8,25 +8,25 @@ import no.nav.foreldrepenger.los.klient.fpsak.BehandlingFpsak;
 import no.nav.foreldrepenger.los.oppgave.AndreKriterierType;
 import no.nav.foreldrepenger.los.oppgave.Oppgave;
 import no.nav.foreldrepenger.los.oppgave.OppgaveRepository;
-import no.nav.foreldrepenger.los.statistikk.statistikk_ny.KøOppgaveHendelse;
-import no.nav.foreldrepenger.los.statistikk.statistikk_ny.OppgaveStatistikk;
+import no.nav.foreldrepenger.los.statistikk.kø.KøOppgaveHendelse;
+import no.nav.foreldrepenger.los.statistikk.kø.KøStatistikkTjeneste;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class OpprettBeslutterOppgaveHendelseHåndterer extends OpprettOppgaveHendelseHåndterer {
     private static final Logger LOG = LoggerFactory.getLogger(OpprettBeslutterOppgaveHendelseHåndterer.class);
     private final OppgaveRepository oppgaveRepository;
-    private final OppgaveStatistikk oppgaveStatistikk;
+    private final KøStatistikkTjeneste køStatistikk;
     private final BehandlingFpsak behandlingFpsak;
 
 
     public OpprettBeslutterOppgaveHendelseHåndterer(OppgaveRepository oppgaveRepository,
                                                     OppgaveEgenskapHåndterer oppgaveEgenskapHåndterer,
-                                                    OppgaveStatistikk oppgaveStatistikk,
+                                                    KøStatistikkTjeneste køStatistikk,
                                                     BehandlingFpsak behandlingFpsak) {
-        super(oppgaveRepository, oppgaveEgenskapHåndterer, oppgaveStatistikk, behandlingFpsak);
+        super(oppgaveRepository, oppgaveEgenskapHåndterer, køStatistikk, behandlingFpsak);
         this.oppgaveRepository = oppgaveRepository;
-        this.oppgaveStatistikk = oppgaveStatistikk;
+        this.køStatistikk = køStatistikk;
         this.behandlingFpsak = behandlingFpsak;
     }
 
@@ -34,7 +34,7 @@ public class OpprettBeslutterOppgaveHendelseHåndterer extends OpprettOppgaveHen
     void håndterEksisterendeOppgave() {
         // TODO: av og til er saksbehandlers oppgave allerede lukket. Vurder en sjekk på dette før man logger i OEL osv
         var behandlingId = behandlingFpsak.getBehandlingId();
-        oppgaveStatistikk.lagre(behandlingId, KøOppgaveHendelse.LUKKET_OPPGAVE);
+        køStatistikk.lagre(behandlingId, KøOppgaveHendelse.LUKKET_OPPGAVE);
         oppgaveRepository.avsluttOppgaveForBehandling(behandlingId);
         var oel = OppgaveEventLogg.builder()
                 .behandlingId(behandlingId)

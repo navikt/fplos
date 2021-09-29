@@ -21,14 +21,14 @@ import no.nav.foreldrepenger.los.domene.typer.BehandlingId;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.håndterere.LukkOppgaveHendelseHåndterer;
 import no.nav.foreldrepenger.los.oppgave.Oppgave;
 import no.nav.foreldrepenger.los.oppgave.OppgaveRepository;
-import no.nav.foreldrepenger.los.statistikk.statistikk_ny.KøOppgaveHendelse;
-import no.nav.foreldrepenger.los.statistikk.statistikk_ny.OppgaveStatistikk;
+import no.nav.foreldrepenger.los.statistikk.kø.KøOppgaveHendelse;
+import no.nav.foreldrepenger.los.statistikk.kø.KøStatistikkTjeneste;
 
 
 @ExtendWith(MockitoExtension.class)
 @ExtendWith(EntityManagerFPLosAwareExtension.class)
 class LukkOppgaveHendelseHåndtererTest {
-    private final OppgaveStatistikk oppgaveStatistikk = mock(OppgaveStatistikk.class);
+    private final KøStatistikkTjeneste køStatistikk = mock(KøStatistikkTjeneste.class);
     private EntityManager entityManager;
     private OppgaveRepository oppgaveRepository;
 
@@ -43,7 +43,7 @@ class LukkOppgaveHendelseHåndtererTest {
         var behandlingFpsak = behandlingFpsak();
         oppgaveRepository.lagre(oppgave(behandlingFpsak));
 
-        new LukkOppgaveHendelseHåndterer(oppgaveRepository, oppgaveStatistikk, behandlingFpsak).håndter();
+        new LukkOppgaveHendelseHåndterer(oppgaveRepository, køStatistikk, behandlingFpsak).håndter();
 
         var oppgave = DBTestUtil.hentUnik(entityManager, Oppgave.class);
         assertThat(oppgave.getAktiv()).isFalse();
@@ -54,10 +54,10 @@ class LukkOppgaveHendelseHåndtererTest {
         var behandlingFpsak = behandlingFpsak();
         oppgaveRepository.lagre(oppgave(behandlingFpsak));
 
-        new LukkOppgaveHendelseHåndterer(oppgaveRepository, oppgaveStatistikk, behandlingFpsak).håndter();
+        new LukkOppgaveHendelseHåndterer(oppgaveRepository, køStatistikk, behandlingFpsak).håndter();
 
         // NB tester ikke rekkefølge på kall
-        verify(oppgaveStatistikk).lagre(any(BehandlingId.class), eq(KøOppgaveHendelse.LUKKET_OPPGAVE));
+        verify(køStatistikk).lagre(any(BehandlingId.class), eq(KøOppgaveHendelse.LUKKET_OPPGAVE));
     }
 
 }
