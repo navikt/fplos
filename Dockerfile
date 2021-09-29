@@ -1,4 +1,4 @@
-FROM navikt/java:16-appdynamics
+FROM navikt/java:17-appdynamics
 
 ENV APP_NAME=fplos
 ENV APPD_ENABLED=true

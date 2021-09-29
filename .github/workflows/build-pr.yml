@@ -27,7 +27,7 @@ jobs:
       - uses: actions/setup-java@v2
         with:
           distribution: 'adopt'
-          java-version: 16
+          java-version: 17
 
       - name: Sette opp Node
         uses: actions/setup-node@v2.4.1
