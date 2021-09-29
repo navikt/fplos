@@ -18,7 +18,7 @@
         <revision>2.8.2</revision>
         <sha1></sha1>
         <changelist>-SNAPSHOT</changelist>
-        <java.version>16</java.version>
+        <java.version>17</java.version>
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -95,6 +95,7 @@
     </dependencies>
 
     <dependencyManagement>
+
         <dependencies>
             <dependency>
                 <groupId>no.nav.foreldrepenger.los</groupId>
@@ -122,6 +123,13 @@
                 <artifactId>klient</artifactId>
                 <version>${project.version}</version>
                 <type>war</type>
+            </dependency>
+
+            <!-- trengs for Java17 inntil jetty 10.0.7 kommer -->
+            <dependency>
+                <groupId>org.ow2.asm</groupId>
+                <artifactId>asm</artifactId>
+                <version>9.2</version>
             </dependency>
 
             <!-- Felles biblioteker -->
@@ -387,7 +395,7 @@
                     <configuration>
                         <rules>
                             <requireJavaVersion>
-                                <version>[16,)</version>
+                                <version>[17,)</version>
                             </requireJavaVersion>
                             <requireMavenVersion>
                                 <version>[3.5.3,)</version>
