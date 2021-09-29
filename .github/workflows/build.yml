@@ -35,7 +35,7 @@ jobs:
           java-version: 16
 
       - name: Sette opp Node
-        uses: actions/setup-node@v2.4.0
+        uses: actions/setup-node@v2.4.1
         with:
           node-version: 12.x
 
@@ -75,18 +75,18 @@ jobs:
 
       - name: Lukk gamle bygg-issues
         if: success()
-        uses: actions/github-script@v4
+        uses: actions/github-script@v5
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            github.issues.listForRepo({
+            github.rest.issues.listForRepo({
               owner: context.repo.owner,
               repo: context.repo.repo,
               state: 'open',
               labels: ['bygg']
             }).then(response => {
               response.data.forEach(issue => {
-                github.issues.update({
+                github.rest.issues.update({
                   owner: context.repo.owner,
                   repo: context.repo.repo,
                   issue_number: issue.number,
@@ -103,11 +103,11 @@ jobs:
 
       - name: Opprett issue, trigg deploy til dev-fss
         if: success()
-        uses: actions/github-script@v4
+        uses: actions/github-script@v5
         with:
           github-token: ${{ steps.get-token.outputs.token }}
           script: |
-              github.issues.create( {
+              github.rest.issues.create( {
                 owner: context.issue.owner,
                 repo: context.issue.repo,
                 labels: ['bygg'],
@@ -116,7 +116,7 @@ jobs:
                       const issue = { owner: context.issue.owner,
                       repo: context.issue.repo,
                       issue_number: response.data.number }
-                     github.issues.createComment({...issue,
+                     github.rest.issues.createComment({...issue,
                             title: 'Deploy av ${{ env.TAG }}',
                             body: '/promote dev-fss'})
                });
