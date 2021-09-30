@@ -15,10 +15,11 @@ import no.nav.vedtak.felles.prosesstask.api.ProsessTaskData;
 import no.nav.vedtak.felles.prosesstask.api.ProsessTaskHandler;
 
 @ApplicationScoped
-@ProsessTask(OppgaveEgenskapOppdatererTask.TASKTYPE)
+@ProsessTask("oppgaveegenskap.oppdaterer")
 public class OppgaveEgenskapOppdatererTask implements ProsessTaskHandler {
-    public static final String TASKTYPE = "oppgaveegenskap.oppdaterer";
-    public static final String EGENSKAPMAPPER = "oppgaveegenskap.egenskapmapper";
+
+    public static final String EGENSKAPMAPPER_TASK_KEY = "oppgaveegenskap.egenskapmapper";
+    public static final String OPPGAVE_ID_TASK_KEY = "oppgaveId";
 
     private OppgaveRepository oppgaveRepository;
     private ForeldrepengerBehandling fpsakKlient;
@@ -35,8 +36,8 @@ public class OppgaveEgenskapOppdatererTask implements ProsessTaskHandler {
 
     @Override
     public void doTask(ProsessTaskData prosessTaskData) {
-        var oppgaveId = Long.parseLong(prosessTaskData.getPropertyValue(ProsessTaskData.OPPGAVE_ID));
-        var egenskapMapper = OppgaveEgenskapTypeMapper.valueOf(prosessTaskData.getPropertyValue(EGENSKAPMAPPER));
+        var oppgaveId = Long.parseLong(prosessTaskData.getPropertyValue(OPPGAVE_ID_TASK_KEY));
+        var egenskapMapper = OppgaveEgenskapTypeMapper.valueOf(prosessTaskData.getPropertyValue(EGENSKAPMAPPER_TASK_KEY));
         var oppgave = oppgaveRepository.hentOppgave(oppgaveId);
         var eksisterendeEgenskaper = oppgaveRepository.hentOppgaveEgenskaper(oppgaveId);
 

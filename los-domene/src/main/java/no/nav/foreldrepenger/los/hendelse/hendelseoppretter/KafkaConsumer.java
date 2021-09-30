@@ -28,7 +28,7 @@ import no.nav.foreldrepenger.los.hendelse.hendelseoppretter.hendelse.Hendelse;
 import no.nav.vedtak.felles.integrasjon.kafka.BehandlingProsessEventDto;
 import no.nav.vedtak.felles.jpa.TransactionHandler;
 import no.nav.vedtak.felles.prosesstask.api.ProsessTaskData;
-import no.nav.vedtak.felles.prosesstask.api.ProsessTaskRepository;
+import no.nav.vedtak.felles.prosesstask.api.ProsessTaskTjeneste;
 import no.nav.vedtak.log.mdc.MDCOperations;
 
 public final class KafkaConsumer<T extends BehandlingProsessEventDto> {
@@ -39,19 +39,19 @@ public final class KafkaConsumer<T extends BehandlingProsessEventDto> {
     private KafkaConsumerProperties properties;
     private EntityManager entityManager;
     private HendelseOppretter<T> hendelseOppretter;
-    private ProsessTaskRepository prosessTaskRepository;
+    private ProsessTaskTjeneste prosessTaskTjeneste;
     private HendelseRepository hendelseRepository;
 
     public KafkaConsumer(KafkaConsumerProperties properties,
                          EntityManager entityManager,
                          HendelseOppretter<T> hendelseOppretter,
-                         ProsessTaskRepository prosessTaskRepository,
+                         ProsessTaskTjeneste prosessTaskTjeneste,
                          HendelseRepository hendelseRepository) {
         this.streams = lagKafkaStreams(properties);
         this.properties = properties;
         this.entityManager = entityManager;
         this.hendelseOppretter = hendelseOppretter;
-        this.prosessTaskRepository = prosessTaskRepository;
+        this.prosessTaskTjeneste = prosessTaskTjeneste;
         this.hendelseRepository = hendelseRepository;
     }
 
@@ -171,14 +171,14 @@ public final class KafkaConsumer<T extends BehandlingProsessEventDto> {
                 LOG.info("Håndterer event {}", dto.getEksternId());
                 var hendelse = hendelseOppretter.opprett((T) dto);
                 hendelseRepository.lagre(hendelse);
-                prosessTaskRepository.lagre(opprettTask(hendelse));
+                prosessTaskTjeneste.lagre(opprettTask(hendelse));
             }
             return null;
         }
     }
 
     private ProsessTaskData opprettTask(Hendelse hendelse) {
-        var prosessTaskData = new ProsessTaskData(HåndterHendelseTask.TASKTYPE);
+        var prosessTaskData = ProsessTaskData.forProsessTask(HåndterHendelseTask.class);
         prosessTaskData.setProperty(HåndterHendelseTask.HENDELSE_ID, hendelse.getId().toString());
         prosessTaskData.setPrioritet(50);
         prosessTaskData.setCallIdFraEksisterende();

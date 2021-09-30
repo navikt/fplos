@@ -21,11 +21,11 @@ import no.nav.vedtak.felles.prosesstask.api.ProsessTaskData;
 import no.nav.vedtak.felles.prosesstask.api.ProsessTaskHandler;
 
 @ApplicationScoped
-@ProsessTask(OppgaveKorrigerEndretdatoTask.TASKTYPE)
+@ProsessTask("oppgaveendretdato.oppdaterer")
 public class OppgaveKorrigerEndretdatoTask implements ProsessTaskHandler {
     private static final Logger LOG = LoggerFactory.getLogger(OppgaveKorrigerEndretdatoTask.class);
 
-    public static final String TASKTYPE = "oppgaveendretdato.oppdaterer";
+    public static final String OPPGAVE_ID_TASK_KEY = "oppgaveId";
 
     private EntityManager entityManager;
 
@@ -34,13 +34,13 @@ public class OppgaveKorrigerEndretdatoTask implements ProsessTaskHandler {
         this.entityManager = entityManager;
     }
 
-    public OppgaveKorrigerEndretdatoTask() {
+    OppgaveKorrigerEndretdatoTask() {
         // CDI
     }
 
     @Override
     public void doTask(ProsessTaskData prosessTaskData) {
-        var oppgaveId = Long.parseLong(prosessTaskData.getPropertyValue(ProsessTaskData.OPPGAVE_ID));
+        var oppgaveId = Long.parseLong(prosessTaskData.getPropertyValue(OPPGAVE_ID_TASK_KEY));
         var oppgave = hentOppgave(oppgaveId);
         var eventLogg = hentEventLogg(oppgave.getBehandlingId());
 

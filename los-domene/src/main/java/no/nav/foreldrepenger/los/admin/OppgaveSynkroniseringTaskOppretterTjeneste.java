@@ -14,14 +14,14 @@ import no.nav.foreldrepenger.los.oppgave.AndreKriterierType;
 import no.nav.foreldrepenger.los.oppgave.Oppgave;
 import no.nav.foreldrepenger.los.oppgave.OppgaveRepository;
 import no.nav.vedtak.felles.prosesstask.api.ProsessTaskData;
-import no.nav.vedtak.felles.prosesstask.api.ProsessTaskRepository;
+import no.nav.vedtak.felles.prosesstask.api.ProsessTaskTjeneste;
 import no.nav.vedtak.log.mdc.MDCOperations;
 
 @ApplicationScoped
 public class OppgaveSynkroniseringTaskOppretterTjeneste {
     private static final Logger LOG = LoggerFactory.getLogger(OppgaveSynkroniseringTaskOppretterTjeneste.class);
     private OppgaveRepository oppgaveRepository;
-    private ProsessTaskRepository prosessTaskRepository;
+    private ProsessTaskTjeneste prosessTaskTjeneste;
 
     OppgaveSynkroniseringTaskOppretterTjeneste() {
         // for CDI proxy
@@ -29,12 +29,12 @@ public class OppgaveSynkroniseringTaskOppretterTjeneste {
 
     @Inject
     public OppgaveSynkroniseringTaskOppretterTjeneste(OppgaveRepository oppgaveRepository,
-                                                      ProsessTaskRepository prosessTaskRepository) {
+                                                      ProsessTaskTjeneste prosessTaskTjeneste) {
         this.oppgaveRepository = oppgaveRepository;
-        this.prosessTaskRepository = prosessTaskRepository;
+        this.prosessTaskTjeneste = prosessTaskTjeneste;
     }
 
-    public String opprettOppgaveEgenskapOppdatererTask(String kriterieType) {
+    public int opprettOppgaveEgenskapOppdatererTask(String kriterieType) {
         final var callId = (MDCOperations.getCallId() == null ? MDCOperations.generateCallId() : MDCOperations.getCallId()) + "_";
         var mapper = Optional.of(AndreKriterierType.fraKode(kriterieType))
                 .flatMap(OppgaveEgenskapTypeMapper::tilTypeMapper)
@@ -46,16 +46,16 @@ public class OppgaveSynkroniseringTaskOppretterTjeneste {
             opprettSynkroniseringTask(oppgave, mapper, callId, kjøres);
             kjøres = kjøres.plus(500, ChronoUnit.MILLIS);
         }
-        return OppgaveEgenskapOppdatererTask.TASKTYPE + "-" + oppgaver.size();
+        return oppgaver.size();
     }
 
     private void opprettSynkroniseringTask(Oppgave oppgave, OppgaveEgenskapTypeMapper typeMapper, String callId, LocalDateTime kjøretidspunkt) {
-        var prosessTaskData = new ProsessTaskData(OppgaveEgenskapOppdatererTask.TASKTYPE);
+        var prosessTaskData = ProsessTaskData.forProsessTask(OppgaveEgenskapOppdatererTask.class);
         prosessTaskData.setCallId(callId + oppgave.getId());
-        prosessTaskData.setOppgaveId(String.valueOf(oppgave.getId()));
         prosessTaskData.setPrioritet(999);
         prosessTaskData.setNesteKjøringEtter(kjøretidspunkt);
-        prosessTaskData.setProperty(OppgaveEgenskapOppdatererTask.EGENSKAPMAPPER, typeMapper.name());
-        prosessTaskRepository.lagre(prosessTaskData);
+        prosessTaskData.setProperty(OppgaveEgenskapOppdatererTask.OPPGAVE_ID_TASK_KEY, String.valueOf(oppgave.getId()));
+        prosessTaskData.setProperty(OppgaveEgenskapOppdatererTask.EGENSKAPMAPPER_TASK_KEY, typeMapper.name());
+        prosessTaskTjeneste.lagre(prosessTaskData);
     }
 }
