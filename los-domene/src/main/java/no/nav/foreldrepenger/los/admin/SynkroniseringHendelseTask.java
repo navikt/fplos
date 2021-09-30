@@ -23,6 +23,7 @@ import no.nav.vedtak.felles.prosesstask.api.ProsessTaskHandler;
 public class SynkroniseringHendelseTask implements ProsessTaskHandler {
 
     public static final String TASKTYPE = "synkronisering.hendelse";
+    public static final String BEHANDLING_ID_TASK_KEY = "behandlingId";
 
     private ForeldrepengerBehandling behandlingKlient;
     private ForeldrepengerFagsaker fagsakKlient;
@@ -43,7 +44,7 @@ public class SynkroniseringHendelseTask implements ProsessTaskHandler {
 
     @Override
     public void doTask(ProsessTaskData prosessTaskData) {
-        var behandlingId = prosessTaskData.getPropertyValue(ProsessTaskData.BEHANDLING_ID);
+        var behandlingId = prosessTaskData.getPropertyValue(BEHANDLING_ID_TASK_KEY);
         var behandlingDto = behandlingKlient.hentUtvidetBehandlingDto(behandlingId);
         var fagsakDto = hentFagsakDto(behandlingDto);
 

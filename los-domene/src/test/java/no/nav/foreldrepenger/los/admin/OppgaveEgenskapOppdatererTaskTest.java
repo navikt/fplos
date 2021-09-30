@@ -41,9 +41,9 @@ public class OppgaveEgenskapOppdatererTaskTest {
     @Test
     public void skalLeggeTilEndringssøknadEgenskap() {
         var oppgave = opprettOgLagreOppgave();
-        var prosessTaskData = new ProsessTaskData(OppgaveEgenskapOppdatererTask.TASKTYPE);
-        prosessTaskData.setOppgaveId(String.valueOf(oppgave.getId()));
-        prosessTaskData.setProperty(OppgaveEgenskapOppdatererTask.EGENSKAPMAPPER, OppgaveEgenskapTypeMapper.EGENSKAP_ENDRINGSSØKNAD.name());
+        var prosessTaskData = ProsessTaskData.forProsessTask(OppgaveEgenskapOppdatererTask.class);
+        prosessTaskData.setProperty(OppgaveEgenskapOppdatererTask.OPPGAVE_ID_TASK_KEY, String.valueOf(oppgave.getId()));
+        prosessTaskData.setProperty(OppgaveEgenskapOppdatererTask.EGENSKAPMAPPER_TASK_KEY, OppgaveEgenskapTypeMapper.EGENSKAP_ENDRINGSSØKNAD.name());
         mockErEndringssøknadMedVerdi(true);
         createTask().doTask(prosessTaskData);
         verifiserEgenskap(AndreKriterierType.ENDRINGSSØKNAD);
@@ -56,9 +56,9 @@ public class OppgaveEgenskapOppdatererTaskTest {
     @Test
     public void skalIkkeLeggeTilEgenskapNårIkkeAktuelt() {
         var oppgave = opprettOgLagreOppgave();
-        var prosessTaskData = new ProsessTaskData(OppgaveEgenskapOppdatererTask.TASKTYPE);
-        prosessTaskData.setOppgaveId(String.valueOf(oppgave.getId()));
-        prosessTaskData.setProperty(OppgaveEgenskapOppdatererTask.EGENSKAPMAPPER, OppgaveEgenskapTypeMapper.EGENSKAP_ENDRINGSSØKNAD.name());
+        var prosessTaskData = ProsessTaskData.forProsessTask(OppgaveEgenskapOppdatererTask.class);
+        prosessTaskData.setProperty(OppgaveEgenskapOppdatererTask.OPPGAVE_ID_TASK_KEY, String.valueOf(oppgave.getId()));
+        prosessTaskData.setProperty(OppgaveEgenskapOppdatererTask.EGENSKAPMAPPER_TASK_KEY, OppgaveEgenskapTypeMapper.EGENSKAP_ENDRINGSSØKNAD.name());
         mockErEndringssøknadMedVerdi(false);
         createTask().doTask(prosessTaskData);
         var oppgaveEgenskaper = DBTestUtil.hentAlle(entityManager, OppgaveEgenskap.class);
@@ -68,9 +68,9 @@ public class OppgaveEgenskapOppdatererTaskTest {
     @Test
     public void skalLeggeTilBerørtBehandlingEgenskap() {
         var oppgave = opprettOgLagreOppgave();
-        var prosessTaskData = new ProsessTaskData(OppgaveEgenskapOppdatererTask.TASKTYPE);
-        prosessTaskData.setOppgaveId(String.valueOf(oppgave.getId()));
-        prosessTaskData.setProperty(OppgaveEgenskapOppdatererTask.EGENSKAPMAPPER, OppgaveEgenskapTypeMapper.EGENSKAP_BERØRTBEHANDLING.name());
+        var prosessTaskData = ProsessTaskData.forProsessTask(OppgaveEgenskapOppdatererTask.class);
+        prosessTaskData.setProperty(OppgaveEgenskapOppdatererTask.OPPGAVE_ID_TASK_KEY, String.valueOf(oppgave.getId()));
+        prosessTaskData.setProperty(OppgaveEgenskapOppdatererTask.EGENSKAPMAPPER_TASK_KEY, OppgaveEgenskapTypeMapper.EGENSKAP_BERØRTBEHANDLING.name());
         mockErBerørtBehandling();
         createTask().doTask(prosessTaskData);
         verifiserEgenskap(AndreKriterierType.BERØRT_BEHANDLING);
@@ -83,9 +83,9 @@ public class OppgaveEgenskapOppdatererTaskTest {
         egenskap.deaktiverOppgaveEgenskap();
         oppgaveRepository.lagre(egenskap);
 
-        var prosessTaskData = new ProsessTaskData(OppgaveEgenskapOppdatererTask.TASKTYPE);
-        prosessTaskData.setOppgaveId(String.valueOf(oppgave.getId()));
-        prosessTaskData.setProperty(OppgaveEgenskapOppdatererTask.EGENSKAPMAPPER, OppgaveEgenskapTypeMapper.EGENSKAP_BERØRTBEHANDLING.name());
+        var prosessTaskData = ProsessTaskData.forProsessTask(OppgaveEgenskapOppdatererTask.class);
+        prosessTaskData.setProperty(OppgaveEgenskapOppdatererTask.OPPGAVE_ID_TASK_KEY, String.valueOf(oppgave.getId()));
+        prosessTaskData.setProperty(OppgaveEgenskapOppdatererTask.EGENSKAPMAPPER_TASK_KEY, OppgaveEgenskapTypeMapper.EGENSKAP_BERØRTBEHANDLING.name());
 
         mockErBerørtBehandling();
         createTask().doTask(prosessTaskData);
@@ -98,9 +98,9 @@ public class OppgaveEgenskapOppdatererTaskTest {
         oppgave.deaktiverOppgave();
         oppgaveRepository.lagre(oppgave);
 
-        var prosessTaskData = new ProsessTaskData(OppgaveEgenskapOppdatererTask.TASKTYPE);
-        prosessTaskData.setOppgaveId(String.valueOf(oppgave.getId()));
-        prosessTaskData.setProperty(OppgaveEgenskapOppdatererTask.EGENSKAPMAPPER, OppgaveEgenskapTypeMapper.EGENSKAP_BERØRTBEHANDLING.name());
+        var prosessTaskData = ProsessTaskData.forProsessTask(OppgaveEgenskapOppdatererTask.class);
+        prosessTaskData.setProperty(OppgaveEgenskapOppdatererTask.OPPGAVE_ID_TASK_KEY, String.valueOf(oppgave.getId()));
+        prosessTaskData.setProperty(OppgaveEgenskapOppdatererTask.EGENSKAPMAPPER_TASK_KEY, OppgaveEgenskapTypeMapper.EGENSKAP_BERØRTBEHANDLING.name());
 
         mockErBerørtBehandling();
         createTask().doTask(prosessTaskData);

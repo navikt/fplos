@@ -18,6 +18,7 @@ import no.nav.foreldrepenger.los.oppgave.Oppgave;
 import no.nav.foreldrepenger.los.oppgave.OppgaveRepository;
 import no.nav.vedtak.felles.prosesstask.impl.ProsessTaskEventPubliserer;
 import no.nav.vedtak.felles.prosesstask.impl.ProsessTaskRepositoryImpl;
+import no.nav.vedtak.felles.prosesstask.impl.ProsessTaskTjenesteImpl;
 
 @ExtendWith(EntityManagerFPLosAwareExtension.class)
 public class OppgaveSynkroniseringTaskOppretterTjenesteTest {
@@ -30,9 +31,10 @@ public class OppgaveSynkroniseringTaskOppretterTjenesteTest {
     void setUp(EntityManager entityManager) {
         this.entityManager = entityManager;
         oppgaveRepository = new OppgaveRepository(entityManager);
+        var prosessTaskRepository = new ProsessTaskRepositoryImpl(entityManager, () -> "user",
+                mock(ProsessTaskEventPubliserer.class));
         synkroniseringTjeneste = new OppgaveSynkroniseringTaskOppretterTjeneste(oppgaveRepository,
-                new ProsessTaskRepositoryImpl(entityManager, () -> "user",
-                mock(ProsessTaskEventPubliserer.class)));
+                new ProsessTaskTjenesteImpl(prosessTaskRepository));
     }
 
     @Test
@@ -65,7 +67,7 @@ public class OppgaveSynkroniseringTaskOppretterTjenesteTest {
 
     private void opprettOgVerifiserForventetAntallTasker(int antallForventet) {
         var antallRapport = synkroniseringTjeneste.opprettOppgaveEgenskapOppdatererTask(BERØRT_BEHANDLING.getKode());
-        assertThat(antallRapport).isEqualTo(OppgaveEgenskapOppdatererTask.TASKTYPE + "-" + antallForventet);
+        assertThat(antallRapport).isEqualTo(antallForventet);
     }
 
     private void opprettOgLagreOppgave() {

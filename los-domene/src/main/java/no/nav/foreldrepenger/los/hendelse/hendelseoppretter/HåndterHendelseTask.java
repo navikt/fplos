@@ -17,12 +17,11 @@ import no.nav.vedtak.felles.prosesstask.api.ProsessTaskData;
 import no.nav.vedtak.felles.prosesstask.api.ProsessTaskHandler;
 
 @ApplicationScoped
-@ProsessTask(HåndterHendelseTask.TASKTYPE)
+@ProsessTask(value = "håndter.hendelse", firstDelay = 10, thenDelay = 10)
 public class HåndterHendelseTask implements ProsessTaskHandler {
 
     private static final Logger LOG = LoggerFactory.getLogger(HåndterHendelseTask.class);
 
-    public static final String TASKTYPE = "håndter.hendelse";
     public static final String HENDELSE_ID = "hendelseId";
 
     private HendelseRepository hendelseRepository;

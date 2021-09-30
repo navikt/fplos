@@ -31,7 +31,7 @@ public class AnsattTjeneste {
 
     public String hentAnsattNavn(String ident) {
         var ldapBruker = new LdapBrukeroppslag().hentBrukerinformasjon(ident);
-        return ldapBruker.getDisplayName();
+        return ldapBruker.displayName();
     }
 
     public List<String> hentAvdelingerNavnForAnsatt(String ident) {

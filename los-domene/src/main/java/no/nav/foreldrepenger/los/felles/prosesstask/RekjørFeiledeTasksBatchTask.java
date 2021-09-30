@@ -11,9 +11,8 @@ import no.nav.vedtak.felles.prosesstask.api.ProsessTaskData;
 import no.nav.vedtak.felles.prosesstask.api.ProsessTaskHandler;
 
 @ApplicationScoped
-@ProsessTask(RekjørFeiledeTasksBatchTask.TASKTYPE)
+@ProsessTask(value = "retry.feilendeTasks", cronExpression = "0 20 7 * * *", maxFailedRuns = 1)
 public class RekjørFeiledeTasksBatchTask implements ProsessTaskHandler {
-    public static final String TASKTYPE = "retry.feilendeTasks";
     private static final Logger LOG = LoggerFactory.getLogger(RekjørFeiledeTasksBatchTask.class);
     private final BatchProsessTaskRepository taskRepository;
 

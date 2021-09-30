@@ -20,8 +20,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import no.nav.foreldrepenger.los.web.app.AbacAttributter;
-import no.nav.vedtak.felles.prosesstask.api.ProsessTaskRepository;
 import no.nav.vedtak.felles.prosesstask.api.ProsessTaskStatus;
+import no.nav.vedtak.felles.prosesstask.api.ProsessTaskTjeneste;
 import no.nav.vedtak.felles.prosesstask.rest.dto.ProsessTaskIdDto;
 import no.nav.vedtak.sikkerhet.abac.AbacDataAttributter;
 import no.nav.vedtak.sikkerhet.abac.BeskyttetRessurs;
@@ -33,15 +33,15 @@ import no.nav.vedtak.sikkerhet.abac.TilpassetAbacAttributt;
 @Transactional
 public class AdminProsesstaskRestTjeneste {
 
-    private ProsessTaskRepository prosessTaskRepository;
+    private ProsessTaskTjeneste prosessTaskTjeneste;
 
     public AdminProsesstaskRestTjeneste() {
         // For CDI
     }
 
     @Inject
-    public AdminProsesstaskRestTjeneste(ProsessTaskRepository prosessTaskRepository) {
-        this.prosessTaskRepository = prosessTaskRepository;
+    public AdminProsesstaskRestTjeneste(ProsessTaskTjeneste prosessTaskTjeneste) {
+        this.prosessTaskTjeneste = prosessTaskTjeneste;
     }
 
     @POST
@@ -59,12 +59,12 @@ public class AdminProsesstaskRestTjeneste {
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
     public Response setTaskFerdig(@TilpassetAbacAttributt(supplierClass = AdminProsesstaskRestTjeneste.AbacDataSupplier.class)
                                   @Parameter(description = "Task som skal settes ferdig") @NotNull @Valid ProsessTaskIdDto taskId) {
-        var data = prosessTaskRepository.finn(taskId.getProsessTaskId());
+        var data = prosessTaskTjeneste.finn(taskId.getProsessTaskId());
         if (data != null) {
             data.setStatus(ProsessTaskStatus.FERDIG);
             data.setSisteFeil(null);
             data.setSisteFeilKode(null);
-            prosessTaskRepository.lagre(data);
+            prosessTaskTjeneste.lagre(data);
             return Response.ok().build();
         }
         return Response.status(Response.Status.BAD_REQUEST).build();

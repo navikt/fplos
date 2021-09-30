@@ -7,13 +7,13 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 
-import no.nav.foreldrepenger.los.hendelse.hendelseoppretter.HendelseRepository;
 import no.nav.foreldrepenger.los.hendelse.hendelseoppretter.ForeldrepengerConsumerProperties;
 import no.nav.foreldrepenger.los.hendelse.hendelseoppretter.ForeldrepengerHendelseOppretter;
+import no.nav.foreldrepenger.los.hendelse.hendelseoppretter.HendelseRepository;
 import no.nav.foreldrepenger.los.hendelse.hendelseoppretter.KafkaConsumer;
 import no.nav.foreldrepenger.los.hendelse.hendelseoppretter.TilbakekrevingConsumerProperties;
 import no.nav.foreldrepenger.los.hendelse.hendelseoppretter.TilbakekrevingHendelseOppretter;
-import no.nav.vedtak.felles.prosesstask.api.ProsessTaskRepository;
+import no.nav.vedtak.felles.prosesstask.api.ProsessTaskTjeneste;
 
 /**
  * Triggers start of Kafka consum
@@ -21,7 +21,7 @@ import no.nav.vedtak.felles.prosesstask.api.ProsessTaskRepository;
 @ApplicationScoped
 public class KafkaConsumerStarter {
 
-    private ProsessTaskRepository prosessTaskRepository;
+    private ProsessTaskTjeneste prosessTaskTjeneste;
 
     private HendelseRepository hendelseRepository;
 
@@ -39,14 +39,14 @@ public class KafkaConsumerStarter {
 
     @Inject
     public KafkaConsumerStarter(HendelseRepository hendelseRepository,
-                                ProsessTaskRepository prosessTaskRepository,
+                                ProsessTaskTjeneste prosessTaskTjeneste,
                                 ForeldrepengerConsumerProperties foreldrepengerConsumerProperties,
                                 ForeldrepengerHendelseOppretter foreldrepengerEventHåndterer,
                                 TilbakekrevingConsumerProperties tilbakekrevingConsumerProperties,
                                 TilbakekrevingHendelseOppretter tilbakekrevingEventHåndterer,
                                 EntityManager entityManager) {
         this.hendelseRepository = hendelseRepository;
-        this.prosessTaskRepository = prosessTaskRepository;
+        this.prosessTaskTjeneste = prosessTaskTjeneste;
         this.foreldrepengerConsumerProperties = foreldrepengerConsumerProperties;
         this.foreldrepengerEventHåndterer = foreldrepengerEventHåndterer;
         this.tilbakekrevingConsumerProperties = tilbakekrevingConsumerProperties;
@@ -60,9 +60,9 @@ public class KafkaConsumerStarter {
 
     public void start() {
         var foreldrepengerConsumer = new KafkaConsumer<>(foreldrepengerConsumerProperties, entityManager,
-                foreldrepengerEventHåndterer, prosessTaskRepository, hendelseRepository);
+                foreldrepengerEventHåndterer, prosessTaskTjeneste, hendelseRepository);
         var tilbakekrevingConsumer = new KafkaConsumer<>(tilbakekrevingConsumerProperties, entityManager,
-                tilbakekrevingEventHåndterer, prosessTaskRepository, hendelseRepository);
+                tilbakekrevingEventHåndterer, prosessTaskTjeneste, hendelseRepository);
         destroy();
         consumers.add(foreldrepengerConsumer);
         consumers.add(tilbakekrevingConsumer);
