@@ -17,7 +17,7 @@ public class DatabaseHealthCheck {
 
     private static final Logger LOG = LoggerFactory.getLogger(DatabaseHealthCheck.class);
     private static final String JDBC_DEFAULT_DS = "jdbc/defaultDS";
-    private static final String SQL_QUERY = "select count(1) from PROSESS_TASK_TYPE";
+    private static final String SQL_QUERY = "select count(1) from PROSESS_TASK";
 
     private final String jndiName;
 
