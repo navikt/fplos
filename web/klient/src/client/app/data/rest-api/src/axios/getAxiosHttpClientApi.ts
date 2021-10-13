@@ -14,7 +14,9 @@ const getAxiosHttpClientApi = (): HttpClientApi => {
   axiosInstance.interceptors.request.use((c): any => {
     const navCallId = `CallId_${(new Date()).getTime()}_${Math.floor(Math.random() * 1000000000)}`;
     const config = { ...c };
-    config.headers['Nav-Callid'] = navCallId;
+    if (config.headers) {
+      config.headers['Nav-Callid'] = navCallId;
+    }
     return config;
   });
 
