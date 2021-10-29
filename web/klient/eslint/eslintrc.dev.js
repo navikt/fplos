@@ -14,7 +14,6 @@ const config = {
 
   rules: {
     'no-debugger': OFF,
-    'import/no-extraneous-dependencies': OFF,
   },
 };
 

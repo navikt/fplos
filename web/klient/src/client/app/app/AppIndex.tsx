@@ -34,8 +34,6 @@ interface StateProps {
  * og kodeverk fra server og lagre desse i klientens state.
  */
 export class AppIndex extends Component<RouterProps, StateProps> {
-  static contextType = RestApiStateContext;
-
   state = {
     headerHeight: 0,
     valgtAvdelingEnhet: undefined,
@@ -57,7 +55,7 @@ export class AppIndex extends Component<RouterProps, StateProps> {
         // moment.now = () => Date.now() - diff;
       }
     }
-  }
+  };
 
   componentDidCatch = (error: Error, info: { componentStack: string }): void => {
     const crashMessage = [
@@ -69,17 +67,21 @@ export class AppIndex extends Component<RouterProps, StateProps> {
     ].join(' ');
 
     this.setState((state) => ({ ...state, crashMessage }));
-  }
+  };
 
   setValgtAvdelingEnhet = (valgtAvdelingEnhet: string) => {
     this.setState((state) => ({ ...state, valgtAvdelingEnhet }));
-  }
+  };
 
   setSiteHeight = (headerHeight: number): void => {
     document.documentElement.setAttribute('style', `height: calc(100% - ${headerHeight}px)`);
     this.setState((state) => ({ ...state, headerHeight }));
-  }
+  };
 
+  static contextType = RestApiStateContext;
+
+  // TODO Kvifor feiler denne i eslint?
+  // eslint-disable-next-line react/require-render-return
   render = (): ReactNode => {
     const {
       location,
@@ -107,7 +109,7 @@ export class AppIndex extends Component<RouterProps, StateProps> {
         </LanguageProvider>
       </AppConfigResolver>
     );
-  }
+  };
 }
 
 // @ts-ignore Endre til funksjonelle komponent

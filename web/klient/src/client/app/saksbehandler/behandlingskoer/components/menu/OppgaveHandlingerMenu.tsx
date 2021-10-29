@@ -53,10 +53,6 @@ interface OwnState {
  * OppgaveHandlingerMenu
  */
 export class OppgaveHandlingerMenu extends Component<OwnProps, OwnState> {
-  node: any;
-
-  menuButtonRef: any;
-
   constructor(props: OwnProps) {
     super(props);
 
@@ -75,11 +71,11 @@ export class OppgaveHandlingerMenu extends Component<OwnProps, OwnState> {
     if (this.menuButtonRef && this.menuButtonRef.current) {
       this.menuButtonRef.current.focus();
     }
-  }
+  };
 
   componentWillUnmount = () => {
     toggleEventListeners(false, this.handleOutsideClick);
-  }
+  };
 
   handleOutsideClick = (event: MouseEvent<HTMLButtonElement>) => {
     const { imageNode } = this.props;
@@ -92,37 +88,41 @@ export class OppgaveHandlingerMenu extends Component<OwnProps, OwnState> {
 
     const { toggleMenu, oppgave } = this.props;
     toggleMenu(oppgave);
-  }
+  };
+
+  node: any;
+
+  menuButtonRef: any;
 
   showBegrunnelseModal = () => {
     toggleEventListeners(false, this.handleOutsideClick);
     this.setState((prevState) => ({ ...prevState, showOpphevReservasjonModal: true }));
-  }
+  };
 
   closeBegrunnelseModal = () => {
     const { toggleMenu, oppgave } = this.props;
     toggleMenu(oppgave);
     toggleEventListeners(true, this.handleOutsideClick);
     this.setState((prevState) => ({ ...prevState, showOpphevReservasjonModal: false }));
-  }
+  };
 
   showFlytteModal = () => {
     toggleEventListeners(false, this.handleOutsideClick);
     this.setState((prevState) => ({ ...prevState, showFlyttReservasjonModal: true }));
-  }
+  };
 
   closeFlytteModal = () => {
     const { toggleMenu, oppgave } = this.props;
     toggleMenu(oppgave);
     toggleEventListeners(true, this.handleOutsideClick);
     this.setState((prevState) => ({ ...prevState, showFlyttReservasjonModal: false }));
-  }
+  };
 
   closeForlengReservasjonModal = (event: MouseEvent<HTMLButtonElement>) => {
     const { toggleMenu, oppgave } = this.props;
     toggleMenu(oppgave);
     this.handleOutsideClick(event);
-  }
+  };
 
   forlengReserverasjon = () => {
     const { oppgave, forlengOppgaveReservasjon } = this.props;
@@ -130,29 +130,31 @@ export class OppgaveHandlingerMenu extends Component<OwnProps, OwnState> {
       toggleEventListeners(false, this.handleOutsideClick);
       this.setState((prevState) => ({ ...prevState, showForlengetReservasjonModal: true }));
     });
-  }
+  };
 
   closeReservasjonEndringDatoModal = (event: MouseEvent<HTMLButtonElement>) => {
     const { toggleMenu, oppgave } = this.props;
     toggleMenu(oppgave);
     this.handleOutsideClick(event);
-  }
+  };
 
   showReservasjonEndringDato = () => {
     toggleEventListeners(false, this.handleOutsideClick);
     this.setState((prevState) => ({ ...prevState, showReservasjonEndringDatoModal: true }));
-  }
+  };
 
   endreReserverasjonState = () => {
     toggleEventListeners(false, this.handleOutsideClick);
     this.setState((prevState) => ({ ...prevState, showForlengetReservasjonModal: true }));
-  }
+  };
 
   toggleMeny = () => {
     const { toggleMenu, oppgave } = this.props;
     toggleMenu(oppgave);
-  }
+  };
 
+  // TODO Kvifor feiler denne i eslint?
+  // eslint-disable-next-line react/require-render-return
   render = () => {
     const {
       oppgave, offset, hentReserverteOppgaver,
@@ -225,7 +227,7 @@ export class OppgaveHandlingerMenu extends Component<OwnProps, OwnState> {
         )}
       </>
     );
-  }
+  };
 }
 
 export default OppgaveHandlingerMenu;

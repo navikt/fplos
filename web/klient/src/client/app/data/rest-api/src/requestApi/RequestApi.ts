@@ -61,7 +61,7 @@ class RequestApi {
       return true;
     }
     return false;
-  }
+  };
 
   public startRequest = async <T, P>(endpointName: string, params?: P): Promise<{ payload: T }> => {
     const endpointConfig = this.endpointConfigList.find((c) => c.name === endpointName);
@@ -102,7 +102,7 @@ class RequestApi {
       delete this.activeRunners[endpointName];
       throw error;
     }
-  }
+  };
 
   public hasPath = (endpointName: string): boolean => {
     const endpointConfig = this.endpointConfigList.find((c) => c.name === endpointName);
@@ -118,7 +118,7 @@ class RequestApi {
       ...this.links,
       [linkCategory]: links,
     };
-  }
+  };
 
   public setRequestPendingHandler = (requestPendingHandler: (message?: string) => void): void => {
     this.notificationMapper.addUpdatePollingMessageEventHandler((data) => {
@@ -130,16 +130,13 @@ class RequestApi {
     this.notificationMapper.addRequestErrorEventHandlers(() => {
       requestPendingHandler();
     });
-  }
+  };
 
   public setAddErrorMessageHandler = (addErrorMessage: (message: string) => void): void => {
     this.notificationMapper.addRequestErrorEventHandlers((errorData, type) => {
       addErrorMessage({ ...errorData, type });
     });
   };
-
-  public resetCache = (): void => {
-  }
 
   public getAxios = (): AxiosInstance => this.httpClientApi.axiosInstance;
 

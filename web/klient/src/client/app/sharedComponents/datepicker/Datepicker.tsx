@@ -33,10 +33,6 @@ interface StateProps {
 }
 
 class Datepicker extends Component<OwnProps, StateProps> {
-  buttonRef: HTMLButtonElement;
-
-  inputRef: HTMLDivElement;
-
   static defaultProps = {
     label: '',
     placeholder: 'dd.mm.åååå',
@@ -98,6 +94,10 @@ class Datepicker extends Component<OwnProps, StateProps> {
       }
     }
   }
+
+  inputRef: HTMLDivElement;
+
+  buttonRef: HTMLButtonElement;
 
   toggleShowCalendar(): void {
     const { showCalendar } = this.state;

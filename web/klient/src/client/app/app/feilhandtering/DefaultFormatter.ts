@@ -8,8 +8,10 @@ interface ErrorData {
 }
 
 class DefaultFormatter implements Formatter<ErrorData | string> {
-  isOfType = () => true
+  // eslint-disable-next-line class-methods-use-this
+  isOfType = () => true;
 
+  // eslint-disable-next-line class-methods-use-this
   format = (errorData: ErrorData | string): ErrorMessage | undefined => {
     if (typeof errorData === 'string') {
       return ErrorMessage.withMessage(errorData);

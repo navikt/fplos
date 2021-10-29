@@ -1,6 +1,7 @@
 const path = require('path');
 const CircularDependencyPlugin = require('circular-dependency-plugin');
-const MiniCssExtractPlugin = require("mini-css-extract-plugin")
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const ESLintPlugin = require('eslint-webpack-plugin');
 
 const CORE_DIR = path.resolve(__dirname, '../node_modules');
 const ROOT_DIR = path.resolve(__dirname, '../src/client');
@@ -13,18 +14,6 @@ const isDevelopment = JSON.stringify(process.env.NODE_ENV) === '"development"';
 const config = {
   module: {
     rules: [{
-      test: /\.(tsx?|ts?)$/,
-      enforce: 'pre',
-      loader: 'eslint-loader',
-      options: {
-        failOnWarning: false,
-        failOnError: !isDevelopment,
-        configFile: isDevelopment ? './eslint/eslintrc.dev.js' : './eslint/eslintrc.prod.js',
-        fix: isDevelopment,
-        cache: true,
-      },
-      include: [APP_DIR],
-    }, {
       test: /\.(tsx?|ts?)$/,
       loader: 'babel-loader',
       options: {
@@ -92,6 +81,15 @@ const config = {
   },
 
   plugins: [
+    new ESLintPlugin({
+      context: APP_DIR,
+      extensions: ['tsx', 'ts'],
+      failOnWarning: false,
+      failOnError: !isDevelopment,
+      fix: isDevelopment,
+      overrideConfigFile: isDevelopment ? './eslint/eslintrc.dev.js' : './eslint/eslintrc.prod.js',
+      cache: true,
+    }),
     new MiniCssExtractPlugin({
       filename: isDevelopment ? 'style[name].css' : 'style[name]_[contenthash].css',
       ignoreOrder: true,
