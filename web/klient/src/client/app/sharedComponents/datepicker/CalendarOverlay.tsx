@@ -30,8 +30,6 @@ interface OwnProps {
 }
 
 class CalendarOverlay extends Component<OwnProps & WrappedComponentProps> {
-  calendarRootRef: HTMLDivElement
-
   static defaultProps = {
     value: '',
     disabled: false,
@@ -86,6 +84,8 @@ class CalendarOverlay extends Component<OwnProps & WrappedComponentProps> {
       firstDayOfWeek: 1,
     };
   }
+
+  calendarRootRef: HTMLDivElement;
 
   parseDateValue(): Date | undefined {
     const { value } = this.props;

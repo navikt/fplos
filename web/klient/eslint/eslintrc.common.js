@@ -47,6 +47,9 @@ const config = {
     'react/state-in-constructor': OFF,
     'react/prop-types': OFF,
     'jest/valid-expect': OFF,
+    'import/no-extraneous-dependencies': ['error', {
+      devDependencies: ['**/*.spec.ts', '**/*.spec.tsx', '**/*.stories.tsx', '**/storybookUtils/*', '**/testHelpers/*'],
+    }],
 
     // note you must disable the base rule as it can report incorrect errors
     'no-use-before-define': OFF,

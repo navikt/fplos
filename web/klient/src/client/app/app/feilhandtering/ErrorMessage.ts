@@ -1,11 +1,11 @@
 class ErrorMessage {
-  text: string
+  text: string;
 
-  code: string
+  code: string;
 
-  params: any
+  params: any;
 
-  type?: any
+  type?: any;
 
   static withMessage(message: string, type?: any) {
     const errorMessage = new ErrorMessage();

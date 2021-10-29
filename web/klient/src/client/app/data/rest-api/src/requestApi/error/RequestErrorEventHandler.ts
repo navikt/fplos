@@ -45,9 +45,9 @@ interface FormatedError {
 }
 
 class RequestErrorEventHandler {
-  notify: NotificationEmitter
+  notify: NotificationEmitter;
 
-  isPollingRequest: boolean
+  isPollingRequest: boolean;
 
   constructor(notificationEmitter: NotificationEmitter, isPollingRequest: boolean) {
     this.notify = notificationEmitter;
@@ -85,10 +85,12 @@ class RequestErrorEventHandler {
     return Promise.resolve();
   };
 
+  // eslint-disable-next-line class-methods-use-this
   private getFormattedData = (
     data: string | Record<string, any>,
   ): string | Record<string, any> => (isString(data) ? { message: data } : data);
 
+  // eslint-disable-next-line class-methods-use-this
   private findErrorData = (
     response: {data?: any; status?: number; statusText?: string},
   ): string | ErrorResponse => (response.data ? response.data : response.statusText);

@@ -11,6 +11,7 @@ interface ErrorMessage {
 }
 
 class ErrorFormatter {
+  // eslint-disable-next-line class-methods-use-this
   format = (errorMessages: ErrorMessage[], crashMessage?: string) => {
     const allErrorMessages = [];
     if (crashMessage) {
@@ -27,7 +28,7 @@ class ErrorFormatter {
     }
 
     return allErrorMessages;
-  }
+  };
 }
 
 export default ErrorFormatter;

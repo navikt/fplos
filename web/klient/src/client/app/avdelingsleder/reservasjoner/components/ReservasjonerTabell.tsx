@@ -54,28 +54,30 @@ class ReservasjonerTabell extends Component<OwnProps, StateTsProps> {
 
   closeReservasjonEndringDatoModal = (): void => {
     this.setState((prevState) => ({ ...prevState, showReservasjonEndringDatoModal: false }));
-  }
+  };
 
   showReservasjonEndringDato = (reservasjon: Reservasjon): void => {
     this.setState((prevState) => ({ ...prevState, showReservasjonEndringDatoModal: true, valgtReservasjon: reservasjon }));
-  }
+  };
 
   endreReserverasjonState = (): void => {
     this.setState((prevState) => ({ ...prevState, showReservasjonEndringDatoModal: false }));
-  }
+  };
 
   showFlytteModal = (reservasjon: Reservasjon): void => {
     this.setState((prevState) => ({ ...prevState, showFlyttReservasjonModal: true, valgtReservasjon: reservasjon }));
-  }
+  };
 
   closeFlytteModal = (): void => {
     this.setState((prevState) => ({ ...prevState, showFlyttReservasjonModal: false }));
-  }
+  };
 
   toggleMenu = (): void => {
     this.setState((prevState) => ({ ...prevState, showFlyttReservasjonModal: false }));
-  }
+  };
 
+  // TODO Kvifor feiler denne i eslint?
+  // eslint-disable-next-line react/require-render-return
   render = (): ReactNode => {
     const {
       reservasjoner, opphevReservasjon, hentAvdelingensReservasjoner,
@@ -154,7 +156,7 @@ class ReservasjonerTabell extends Component<OwnProps, StateTsProps> {
         )}
       </>
     );
-  }
+  };
 }
 
 export default ReservasjonerTabell;

@@ -16,6 +16,7 @@ class RestGatewayTimeoutOrNotFoundFormatter {
 
   isOfType = (type: string) => type === this.type;
 
+  // eslint-disable-next-line class-methods-use-this
   format = (errorData: ErrorData) => ErrorMessage.withMessageCode(TIMEOUT_MESSAGE_CODE, {
     contextPath: errorData.location ? findContextPath(errorData.location) : '',
     location: errorData.location,
