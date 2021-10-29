@@ -26,7 +26,6 @@ public record BehandlingDto(Long id,
                             boolean erAktivPapirsøknad,
                             LocalDate behandlingsfristTid,
                             List<BehandlingÅrsakDto> behandlingÅrsaker,
-                            List<BehandlingÅrsakDto> behandlingArsaker,
                             List<ResourceLink> links,
                             String ansvarligSaksbehandler) {
 
@@ -37,10 +36,7 @@ public record BehandlingDto(Long id,
 
     @Override
     public List<BehandlingÅrsakDto> behandlingÅrsaker() {
-        if (behandlingArsaker == null) {
-            return nullsafe(behandlingÅrsaker);
-        }
-        return behandlingArsaker;
+        return nullsafe(behandlingÅrsaker);
     }
 
     private static <T> List<T> nullsafe(List<T> links) {
