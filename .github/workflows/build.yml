@@ -21,18 +21,11 @@ jobs:
       - name: Sjekk ut kode
         uses: actions/checkout@v2
       - run:  git fetch --prune --unshallow
-
-      - name: Henter maven avhengigheter som er cachet
-        uses: actions/cache@v2.1.6
-        with:
-          path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: ${{ runner.os }}-maven-
-
       - uses: actions/setup-java@v2
         with:
           distribution: 'adopt'
           java-version: 17
+          cache: 'maven'
 
       - name: Sette opp Node
         uses: actions/setup-node@v2.4.1
@@ -61,12 +54,11 @@ jobs:
 
       - name: Kompiler
         run: |
-          mvn jacoco:prepare-agent install -e --quiet --batch-mode --settings .github/workflows/.m2/settings.xml -Dchangelist= -Dsha1=-${BUILD_VERSION} -Djacoco.destFile=$(pwd)/target/jacoco.exec
-          echo "TAG=$(mvn help:evaluate --batch-mode --settings .github/workflows/.m2/settings.xml --file .flattened -Dexpression=project.version -q -DforceStdout)" >> $GITHUB_ENV
+          mvn jacoco:prepare-agent install -e --quiet --batch-mode --settings .github/.m2/settings.xml -Dchangelist= -Dsha1=-${BUILD_VERSION} -Djacoco.destFile=$(pwd)/target/jacoco.exec
+          echo "TAG=$(mvn help:evaluate --batch-mode --settings .github/.m2/settings.xml --file .flattened -Dexpression=project.version -q -DforceStdout)" >> $GITHUB_ENV
         env:
           TZ: Europe/Oslo
-          GITHUB_USERNAME: x-access-token
-          GITHUB_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Bygg, tag og push Docker image
         run: |
@@ -107,16 +99,17 @@ jobs:
         with:
           github-token: ${{ steps.get-token.outputs.token }}
           script: |
-              github.rest.issues.create( {
-                owner: context.issue.owner,
-                repo: context.issue.repo,
-                labels: ['bygg'],
-                title: 'Deploy av ${{ env.TAG }}'})
-              .then(response => {
-                      const issue = { owner: context.issue.owner,
-                      repo: context.issue.repo,
-                      issue_number: response.data.number }
-                     github.rest.issues.createComment({...issue,
-                            title: 'Deploy av ${{ env.TAG }}',
-                            body: '/promote dev-fss'})
-               });
+            github.rest.issues.create( {
+              owner: context.issue.owner,
+              repo: context.issue.repo,
+              labels: ['bygg'],
+              title: 'Deploy av ${{ env.TAG }}',
+              body: '${{ github.sha }}'})
+            .then(response => {
+                    const issue = { owner: context.issue.owner,
+                    repo: context.issue.repo,
+                    issue_number: response.data.number }
+                   github.rest.issues.createComment({...issue,
+                          title: 'Deploy av ${{ env.TAG }}',
+                          body: '/promote dev-fss'})
+             });

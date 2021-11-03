@@ -13,21 +13,12 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-
-      - name: Sjekk ut kode
-        uses: actions/checkout@v2
-
-      - name: Henter maven avhengigheter som er cachet
-        uses: actions/cache@v2.1.6
-        with:
-          path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: ${{ runner.os }}-maven-
-
+      - uses: actions/checkout@v2
       - uses: actions/setup-java@v2
         with:
           distribution: 'adopt'
           java-version: 17
+          cache: 'maven'
 
       - name: Sette opp Node
         uses: actions/setup-node@v2.4.1
@@ -50,8 +41,7 @@ jobs:
           sh -c 'tail -n +0 -f nohup.out | { sed "/Disconnected/q" && kill $$; }' || true
 
       - name: Kompiler
-        run: mvn --quiet clean install --batch-mode --settings .github/workflows/.m2/settings.xml -Dchangelist= -Dsha1=-$TAG
+        run: mvn --quiet clean install --batch-mode --settings .github/.m2/settings.xml -Dchangelist= -Dsha1=-$TAG
         env:
           TZ: Europe/Oslo
-          GITHUB_USERNAME: x-access-token
-          GITHUB_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
