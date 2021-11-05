@@ -576,7 +576,6 @@
    COMMENT ON COLUMN "SAKSBEHANDLER"."ID" IS 'PK';
    COMMENT ON COLUMN "SAKSBEHANDLER"."SAKSBEHANDLER_IDENT" IS 'Saksbehandlerident';
 -- INSERTING into AVDELING
-SET DEFINE OFF;
 Insert into AVDELING (ID,AVDELING_ENHET,NAVN) values (SEQ_AVDELING.nextval,'4806','NAV Familie- og pensjonsytelser Drammen');
 Insert into AVDELING (ID,AVDELING_ENHET,NAVN) values (SEQ_AVDELING.nextval,'4842','NAV Familie- og pensjonsytelser Stord');
 Insert into AVDELING (ID,AVDELING_ENHET,NAVN) values (SEQ_AVDELING.nextval,'4833','NAV Familie- og pensjonsytelser Oslo 1');
@@ -588,7 +587,6 @@ Insert into AVDELING (ID,AVDELING_ENHET,NAVN) values (SEQ_AVDELING.nextval,'4802
 Insert into AVDELING (ID,AVDELING_ENHET,NAVN) values (SEQ_AVDELING.nextval,'2103','NAV Viken');
 
 -- INSERTING into KODELISTE
-SET DEFINE OFF;
 Insert into KODELISTE (ID,KODEVERK,KODE,OFFISIELL_KODE,BESKRIVELSE,GYLDIG_FOM,GYLDIG_TOM) values (seq_kodeliste.nextval,'ARKIV_FILTYPE','PDF','PDF','Filtype PDF',to_date('01.07.2006','DD.MM.RRRR'),to_date('31.12.9999','DD.MM.RRRR'));
 Insert into KODELISTE (ID,KODEVERK,KODE,OFFISIELL_KODE,BESKRIVELSE,GYLDIG_FOM,GYLDIG_TOM) values (seq_kodeliste.nextval,'ARKIV_FILTYPE','PDFA','PDFA','Filtype PDFA',to_date('01.07.2006','DD.MM.RRRR'),to_date('31.12.9999','DD.MM.RRRR'));
 Insert into KODELISTE (ID,KODEVERK,KODE,OFFISIELL_KODE,BESKRIVELSE,GYLDIG_FOM,GYLDIG_TOM) values (seq_kodeliste.nextval,'ARKIV_FILTYPE','XML','XML','Filtype XML',to_date('01.07.2006','DD.MM.RRRR'),to_date('31.12.9999','DD.MM.RRRR'));
@@ -699,7 +697,6 @@ Insert into KODELISTE (ID,KODEVERK,KODE,OFFISIELL_KODE,BESKRIVELSE,GYLDIG_FOM,GY
 
 
 -- INSERTING into KODELISTE_NAVN_I18N
-SET DEFINE OFF;
 Insert into KODELISTE_NAVN_I18N (ID,KL_KODEVERK,KL_KODE,SPRAK,NAVN) values (SEQ_KODELISTE_NAVN_I18N.nextval,'ARKIV_FILTYPE','PDF','NB','PDF');
 Insert into KODELISTE_NAVN_I18N (ID,KL_KODEVERK,KL_KODE,SPRAK,NAVN) values (SEQ_KODELISTE_NAVN_I18N.nextval,'ARKIV_FILTYPE','PDFA','NB','PDFA');
 Insert into KODELISTE_NAVN_I18N (ID,KL_KODEVERK,KL_KODE,SPRAK,NAVN) values (SEQ_KODELISTE_NAVN_I18N.nextval,'ARKIV_FILTYPE','XML','NB','XML');
@@ -808,7 +805,6 @@ Insert into KODELISTE_NAVN_I18N (ID,KL_KODEVERK,KL_KODE,SPRAK,NAVN) values (SEQ_
 Insert into KODELISTE_NAVN_I18N (ID,KL_KODEVERK,KL_KODE,SPRAK,NAVN) values (SEQ_KODELISTE_NAVN_I18N.nextval,'ANDRE_KRITERIER','SOKT_GRADERING','NB','Søkt gradering');
 Insert into KODELISTE_NAVN_I18N (ID,KL_KODEVERK,KL_KODE,SPRAK,NAVN) VALUES (seq_kodeliste.nextval, 'BEHANDLING_TYPE', 'BT-008', 'NB', 'Anke');
 -- INSERTING into KODEVERK
-SET DEFINE OFF;
 Insert into KODEVERK (KODE,KODEVERK_EIER,KODEVERK_EIER_REF,KODEVERK_EIER_VER,KODEVERK_EIER_NAVN,KODEVERK_SYNK_NYE,KODEVERK_SYNK_EKSISTERENDE,NAVN,BESKRIVELSE,SAMMENSATT) values ('BEHANDLING_TEMA','Kodeverkforvaltning','http://nav.no/kodeverk/Kodeverk/Behandlingstema','9','Behandlingstema','N','N','Behandlingstema','NAV Behandlingstema', 'N');
 Insert into KODEVERK (KODE,KODEVERK_EIER,KODEVERK_EIER_REF,KODEVERK_EIER_VER,KODEVERK_EIER_NAVN,KODEVERK_SYNK_NYE,KODEVERK_SYNK_EKSISTERENDE,NAVN,BESKRIVELSE,SAMMENSATT) values ('TEMA','Kodeverkforvaltning','http://nav.no/kodeverk/Kodeverk/Tema','2','Tema','N','N','Tema','NAV Tema', 'N');
 Insert into KODEVERK (KODE,KODEVERK_EIER,KODEVERK_EIER_REF,KODEVERK_EIER_VER,KODEVERK_EIER_NAVN,KODEVERK_SYNK_NYE,KODEVERK_SYNK_EKSISTERENDE,NAVN,BESKRIVELSE,SAMMENSATT) values ('DOKUMENT_TYPE_ID','Kodeverkforvaltning','http://nav.no/kodeverk/Kodeverk/DokumentTypeId-er','2','DokumentTypeId-er','J','N','DokumentTypeId-er','Typen til et mottatt dokument. Dette er et subset av DokumentTyper; inngÃ¥ende dokumenter, for eksempel sÃ¸knad, terminbekreftelse o.l', 'N');
@@ -830,7 +826,6 @@ Insert into KODEVERK (KODE,KODEVERK_EIER,KODEVERK_EIER_REF,KODEVERK_EIER_VER,KOD
 Insert into KODEVERK (KODE,KODEVERK_EIER,KODEVERK_EIER_REF,KODEVERK_EIER_VER,KODEVERK_EIER_NAVN,KODEVERK_SYNK_NYE,KODEVERK_SYNK_EKSISTERENDE,NAVN,BESKRIVELSE,SAMMENSATT) values ('FAGSAK_STATUS','VL',null,null,null,'J','J','FagsakStatus','Internt kodeverk for statuser på fagsaker.', 'N');
 Insert into KODEVERK (KODE,KODEVERK_EIER,KODEVERK_EIER_REF,KODEVERK_EIER_VER,KODEVERK_EIER_NAVN,KODEVERK_SYNK_NYE,KODEVERK_SYNK_EKSISTERENDE,NAVN,BESKRIVELSE,SAMMENSATT) values ('BEHANDLING_STATUS','VL',null,null,null,'J','J','BehandlingStatus','Internt kodeverk for behandling status.', 'N');
 -- INSERTING into KONFIG_VERDI
-SET DEFINE OFF;
 Insert into KONFIG_VERDI (ID,KONFIG_KODE,KONFIG_GRUPPE,KONFIG_VERDI,GYLDIG_FOM) values (SEQ_KONFIG_VERDI.nextval,'behandling.venter.frist.lengde','INGEN','P2W',to_date('01.01.2016','DD.MM.RRRR'));
 Insert into KONFIG_VERDI (ID,KONFIG_KODE,KONFIG_GRUPPE,KONFIG_VERDI,GYLDIG_FOM) values (SEQ_KONFIG_VERDI.nextval,'virtuell.saksbehandler.navn','INGEN','Vedtaksløsning Prosess',to_date('01.01.2016','DD.MM.RRRR'));
 Insert into KONFIG_VERDI (ID,KONFIG_KODE,KONFIG_GRUPPE,KONFIG_VERDI,GYLDIG_FOM) values (SEQ_KONFIG_VERDI.nextval,'relaterte.ytelser.periode.start','INGEN','P10M',to_date('01.01.2016','DD.MM.RRRR'));
@@ -846,10 +841,8 @@ Insert into KONFIG_VERDI (ID,KONFIG_KODE,KONFIG_GRUPPE,KONFIG_VERDI,GYLDIG_FOM) 
 Insert into KONFIG_VERDI (ID,KONFIG_KODE,KONFIG_GRUPPE,KONFIG_VERDI,GYLDIG_FOM) values (SEQ_KONFIG_VERDI.nextval,'systemrutine.url','INGEN','https://navet.adeo.no/ansatt/Fag/Regelverk+og+rutiner/Saksbehandling',to_date('01.01.2016','DD.MM.RRRR'));
 Insert into KONFIG_VERDI (ID,KONFIG_KODE,KONFIG_GRUPPE,KONFIG_VERDI,GYLDIG_FOM) values (SEQ_KONFIG_VERDI.nextval,'bruker.gruppenavn.oppgavestyrer','INGEN','0000-GA-fpsak-Oppgavestyrer',to_date('01.01.2016','DD.MM.RRRR'));
 -- INSERTING into KONFIG_VERDI_GRUPPE
-SET DEFINE OFF;
 Insert into KONFIG_VERDI_GRUPPE (KODE,NAVN,BESKRIVELSE) values ('INGEN','-','Ingen gruppe definert (default).  Brukes istdf. NULL siden dette inngår i en Primary Key. Koder som ikke er del av en gruppe må alltid være unike.');
 -- INSERTING into KONFIG_VERDI_KODE
-SET DEFINE OFF;
 Insert into KONFIG_VERDI_KODE (KODE,KONFIG_GRUPPE,NAVN,KONFIG_TYPE,BESKRIVELSE) values ('behandling.venter.frist.lengde','INGEN','Frist - Behandling venter','PERIOD','Sett behandling på vent  (i en angitt periode, eks. P2W = 2 uker');
 Insert into KONFIG_VERDI_KODE (KODE,KONFIG_GRUPPE,NAVN,KONFIG_TYPE,BESKRIVELSE) values ('virtuell.saksbehandler.navn','INGEN','Virtuell saksbehandler navn','STRING','Setter saksbehandler navn når prosessen er gått automatisk. Kun for visning internt i løsning');
 Insert into KONFIG_VERDI_KODE (KODE,KONFIG_GRUPPE,NAVN,KONFIG_TYPE,BESKRIVELSE) values ('relaterte.ytelser.periode.start','INGEN','Relaterte ytelser periode start','PERIOD','Periode bakover i tid fra dagens dato det skal søkes etter relaterte ytelser i Infotrygd og Arena. Default P10M (10 måneder) før dagens dato');
@@ -865,7 +858,6 @@ Insert into KONFIG_VERDI_KODE (KODE,KONFIG_GRUPPE,NAVN,KONFIG_TYPE,BESKRIVELSE) 
 Insert into KONFIG_VERDI_KODE (KODE,KONFIG_GRUPPE,NAVN,KONFIG_TYPE,BESKRIVELSE) values ('systemrutine.url','INGEN','Systemrutiner URL','URI','Lenke til systemrutiner');
 Insert into KONFIG_VERDI_KODE (KODE,KONFIG_GRUPPE,NAVN,KONFIG_TYPE,BESKRIVELSE) values ('bruker.gruppenavn.oppgavestyrer','INGEN','Gruppenavn for rolle oppgavestyrer','STRING','Gruppenavn for rolle egen oppgavestyrer');
 -- INSERTING into KONFIG_VERDI_TYPE
-SET DEFINE OFF;
 Insert into KONFIG_VERDI_TYPE (KODE,NAVN,BESKRIVELSE) values ('BOOLEAN','Boolske verdier','Støtter J(a) / N(ei) flagg');
 Insert into KONFIG_VERDI_TYPE (KODE,NAVN,BESKRIVELSE) values ('PERIOD','Periode verdier','ISO 8601 Periode verdier.  Eks. P10M (10 måneder), P1D (1 dag) ');
 Insert into KONFIG_VERDI_TYPE (KODE,NAVN,BESKRIVELSE) values ('DURATION','Periode verdier','ISO 8601 Duration (tid) verdier.  Eks. PT1H (1 time), PT1M (1 minutt) ');
@@ -1621,11 +1613,11 @@ Insert into KONFIG_VERDI_TYPE (KODE,NAVN,BESKRIVELSE) values ('URI','Uniform Res
   ALTER TABLE "RESERVASJON" ADD CONSTRAINT "FK_RESERVASJON_1" FOREIGN KEY ("OPPGAVE_ID")
 	  REFERENCES "OPPGAVE" ("ID") ENABLE;
 
-	  
+
 /* Justeringer for baseline før migrering til Postgress.
 -- 1.
 
-declare 
+declare
    inst_rank number;
 begin
     select max("installed_rank")+1 into inst_rank from "schema_version";
@@ -1633,9 +1625,9 @@ begin
 end;
 /
 
- -- 2. 
+ -- 2.
 create table "schema_version_history"  as SELECT * FROM "schema_version" where "version" < to_char('2');
- 
+
 -- 3.
 delete from  "schema_version" where "version" < to_char('2');
 commit;

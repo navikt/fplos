@@ -60,10 +60,14 @@ public class JettyServer extends AbstractJettyServer {
     protected void migrerDatabaser() {
         var cfg = dataSourceKonfig.defaultDS();
         LOG.info("Migrerer {}", cfg);
-        var flyway = new Flyway();
-        flyway.setDataSource(cfg.getDatasource());
-        flyway.setLocations(cfg.getLocations());
-        flyway.setBaselineOnMigrate(true);
+
+        var flywayConfig = Flyway.configure()
+                .baselineOnMigrate(true)
+                .dataSource(cfg.getDatasource())
+                .table("schema_version")
+                .locations(cfg.getLocations());
+
+        var flyway = new Flyway(flywayConfig);
         flyway.migrate();
     }
 

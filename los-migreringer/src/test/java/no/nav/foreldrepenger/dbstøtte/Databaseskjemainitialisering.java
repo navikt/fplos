@@ -65,8 +65,7 @@ public final class Databaseskjemainitialisering {
 
     private static void settJndiOppslag(DBProperties properties) {
         try {
-            var props = properties;
-            new EnvEntry("jdbc/" + props.dsName(), props.dataSource());
+            new EnvEntry("jdbc/" + properties.dsName(), properties.dataSource());
         } catch (Exception e) {
             throw new RuntimeException("Feil under registrering av Jndi-entry for default datasource", e);
         }
@@ -74,12 +73,13 @@ public final class Databaseskjemainitialisering {
 
     private static void migrer(DBProperties dbProperties) {
         LOG.info("Migrerer {}", dbProperties.schema());
-        var flyway = new Flyway();
-        flyway.setBaselineOnMigrate(true);
-        flyway.setDataSource(dbProperties.dataSource());
-        flyway.setTable("schema_version");
-        flyway.setLocations(dbProperties.scriptLocation());
-        flyway.setCleanOnValidationError(true);
+        var flywayConfig = Flyway.configure()
+         .baselineOnMigrate(true)
+         .dataSource(dbProperties.dataSource())
+         .locations(dbProperties.scriptLocation())
+         .cleanOnValidationError(true);
+
+        var flyway = new Flyway(flywayConfig);
         if (!ENV.isLocal()) {
             throw new IllegalStateException("Forventer at denne migreringen bare kjøres lokalt");
         }
