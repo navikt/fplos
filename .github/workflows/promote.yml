@@ -40,7 +40,8 @@ jobs:
                   PRINT_PAYLOAD: true
                   APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
                   CLUSTER: ${{ env.CLUSTER }}
-                  RESOURCE: .deploy/${{ env.CLUSTER }}-${{ env.NAMESPACE }}.yaml
+                  RESOURCE: .deploy/naiserator.yaml
+                  VARS: .deploy/${{ env.CLUSTER }}-${{ env.NAMESPACE }}.json
 
             - name: Oppdater kommentar med deployment status ved feil
               if: failure()
