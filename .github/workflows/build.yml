@@ -87,29 +87,46 @@ jobs:
               });
             });
 
+      -  name: Opprett deployment issue
+         id: createdeployissue
+         if: success()
+         uses: actions/github-script@v5
+         with:
+           github-token: ${{secrets.GITHUB_TOKEN}}
+           script: |
+             github.rest.issues.create( {
+               owner: context.issue.owner,
+               repo: context.issue.repo,
+               labels: ['deployment'],
+               title: 'Deploy av ${{ env.TAG }}',
+               body: '${{ github.sha }}'})
+             .then(response => {
+                     core.setOutput('number', response.data.number);
+              });
+
       - uses: navikt/github-app-token-generator@v1
         id: get-token
         with:
           private-key: ${{ secrets.FP_PRIVATE_KEY }}
           app-id: ${{ secrets.FP_APP_ID }}
 
-      - name: Opprett issue, trigg deploy til dev-fss
+      - name: Trigg deploy til dev-fss
         if: success()
-        uses: actions/github-script@v5
-        with:
-          github-token: ${{ steps.get-token.outputs.token }}
-          script: |
-            github.rest.issues.create( {
-              owner: context.issue.owner,
-              repo: context.issue.repo,
-              labels: ['bygg'],
-              title: 'Deploy av ${{ env.TAG }}',
-              body: '${{ github.sha }}'})
-            .then(response => {
-                    const issue = { owner: context.issue.owner,
-                    repo: context.issue.repo,
-                    issue_number: response.data.number }
-                   github.rest.issues.createComment({...issue,
-                          title: 'Deploy av ${{ env.TAG }}',
-                          body: '/promote dev-fss'})
-             });
+        run: |
+          curl -XPOST -u "x-access-token:${{ steps.get-token.outputs.token }}" \
+          -H "Accept: application/vnd.github.v3+json" \
+          https://api.github.com/repos/${{ github.repository }}/dispatches \
+          -d '{
+                "event_type": "promote-command",
+                "client_payload": {
+                  "github": {
+                      "payload": {
+                          "issue": {
+                              "number": "${{ steps.createdeployissue.outputs.number }}"
+                  }}},
+                  "slash_command": {
+                      "args": {
+                          "unnamed": {
+                              "arg1": "dev-fss"
+                  }}}
+                }'
