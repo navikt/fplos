@@ -38,7 +38,7 @@ jobs:
               uses: nais/deploy/actions/deploy@v1
               env:
                   PRINT_PAYLOAD: true
-                  APIKEY: ${{ secrets.DEPLOY_KEY }}
+                  APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
                   CLUSTER: ${{ env.CLUSTER }}
                   RESOURCE: .deploy/${{ env.CLUSTER }}-${{ env.NAMESPACE }}.yaml
 
