@@ -34,7 +34,7 @@ public class SjekkDbStrukturTest {
     @Test
     public void sjekk_at_alle_tabeller_er_dokumentert() throws Exception {
         var sql = "SELECT table_name FROM all_tab_comments WHERE (comments IS NULL OR comments in ('', 'MISSING COLUMN COMMENT')) "
-                + "AND owner=sys_context('userenv', 'current_schema') AND table_name NOT LIKE 'flyway_%' AND table_name not like 'HT_%'";
+                + "AND owner=sys_context('userenv', 'current_schema') AND table_name NOT LIKE 'schema_%' AND table_name not like 'HT_%'";
         List<String> avvik = new ArrayList<>();
         try (var conn = ds.getConnection(); var stmt = conn.prepareStatement(sql); var rs = stmt.executeQuery()) {
 
@@ -56,7 +56,7 @@ public class SjekkDbStrukturTest {
                   FROM all_col_comments t 
                  WHERE (t.comments IS NULL OR t.comments = '') 
                    AND t.owner = sys_context('userenv','current_schema') 
-                   AND t.table_name NOT LIKE 'flyway_%' AND upper(t.table_name) NOT LIKE 'HT_%'
+                   AND (upper(t.table_name) NOT LIKE 'SCHEMA_%' AND upper(t.table_name) NOT LIKE 'HT_%')
                    AND NOT EXISTS (SELECT 1 FROM all_constraints a, all_cons_columns b 
                                     WHERE a.table_name = b.table_name 
                                       AND b.table_name = t.table_name 
@@ -175,7 +175,7 @@ public class SjekkDbStrukturTest {
                 WHERE table_name
                 NOT IN ( SELECT ac.table_name FROM all_constraints ac
                         WHERE ac.constraint_type ='P' and at.owner=ac.owner and ac.constraint_name like 'PK_%')
-                AND at.owner=upper(?) and at.table_name not like 'flyway_%' and at.table_name not like 'HT_%'
+                AND at.owner=upper(?) and at.table_name not like 'schema_%' and at.table_name not like 'HT_%'
                 """;
 
         List<String> avvik = new ArrayList<>();
@@ -238,7 +238,7 @@ public class SjekkDbStrukturTest {
                 from all_ind_columns
                 where table_owner=upper(?)
                 and index_name not like 'PK_%' and index_name not like 'IDX_%' and index_name not like 'UIDX_%'
-                and table_name not like 'flyway_%'
+                and table_name not like 'schema_%'
                 """;
 
         List<String> avvik = new ArrayList<>();
@@ -322,7 +322,7 @@ public class SjekkDbStrukturTest {
                 SELECT TABLE_NAME, COLUMN_NAME, DATA_TYPE, CHAR_USED, CHAR_LENGTH
                 FROM ALL_TAB_COLS
                 WHERE DATA_TYPE = 'VARCHAR2'
-                AND CHAR_USED !='C' AND TABLE_NAME NOT LIKE 'flyway_%' AND CHAR_LENGTH>1 AND OWNER=upper(?)
+                AND CHAR_USED !='C' AND TABLE_NAME NOT LIKE '‰schema_%' AND CHAR_LENGTH>1 AND OWNER=upper(?)
                 ORDER BY 1, 2
                 """;
 

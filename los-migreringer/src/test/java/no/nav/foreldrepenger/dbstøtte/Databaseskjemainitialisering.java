@@ -77,6 +77,7 @@ public final class Databaseskjemainitialisering {
                 .baselineOnMigrate(true)
                 .dataSource(dbProperties.dataSource())
                 .locations(dbProperties.scriptLocation())
+                .table("schema_version")
                 .cleanOnValidationError(true)
                 .load();
 
