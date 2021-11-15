@@ -56,7 +56,7 @@ public class SjekkDbStrukturTest {
                   FROM all_col_comments t 
                  WHERE (t.comments IS NULL OR t.comments = '') 
                    AND t.owner = sys_context('userenv','current_schema') 
-                   AND (upper(t.table_name) NOT LIKE 'SCHEMA_%' AND upper(t.table_name) NOT LIKE 'HT_%')
+                   AND ( upper(t.table_name) NOT LIKE 'SCHEMA_%' AND upper(t.table_name) NOT LIKE 'HT_%') 
                    AND NOT EXISTS (SELECT 1 FROM all_constraints a, all_cons_columns b 
                                     WHERE a.table_name = b.table_name 
                                       AND b.table_name = t.table_name 
@@ -322,7 +322,7 @@ public class SjekkDbStrukturTest {
                 SELECT TABLE_NAME, COLUMN_NAME, DATA_TYPE, CHAR_USED, CHAR_LENGTH
                 FROM ALL_TAB_COLS
                 WHERE DATA_TYPE = 'VARCHAR2'
-                AND CHAR_USED !='C' AND TABLE_NAME NOT LIKE '‰schema_%' AND CHAR_LENGTH>1 AND OWNER=upper(?)
+                AND CHAR_USED !='C' AND TABLE_NAME NOT LIKE '‰schema%' AND CHAR_LENGTH>1 AND OWNER=upper(?)
                 ORDER BY 1, 2
                 """;
 
