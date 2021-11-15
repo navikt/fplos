@@ -73,13 +73,13 @@ public final class Databaseskjemainitialisering {
 
     private static void migrer(DBProperties dbProperties) {
         LOG.info("Migrerer {}", dbProperties.schema());
-        var flywayConfig = Flyway.configure()
-         .baselineOnMigrate(true)
-         .dataSource(dbProperties.dataSource())
-         .locations(dbProperties.scriptLocation())
-         .cleanOnValidationError(true);
+        var flyway = Flyway.configure()
+                .baselineOnMigrate(true)
+                .dataSource(dbProperties.dataSource())
+                .locations(dbProperties.scriptLocation())
+                .cleanOnValidationError(true)
+                .load();
 
-        var flyway = new Flyway(flywayConfig);
         if (!ENV.isLocal()) {
             throw new IllegalStateException("Forventer at denne migreringen bare kjøres lokalt");
         }

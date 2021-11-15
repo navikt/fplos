@@ -61,13 +61,13 @@ public class JettyServer extends AbstractJettyServer {
         var cfg = dataSourceKonfig.defaultDS();
         LOG.info("Migrerer {}", cfg);
 
-        var flywayConfig = Flyway.configure()
+        var flyway = Flyway.configure()
                 .baselineOnMigrate(true)
                 .dataSource(cfg.getDatasource())
                 .table("schema_version")
-                .locations(cfg.getLocations());
+                .locations(cfg.getLocations())
+                .load();
 
-        var flyway = new Flyway(flywayConfig);
         flyway.migrate();
     }
 
