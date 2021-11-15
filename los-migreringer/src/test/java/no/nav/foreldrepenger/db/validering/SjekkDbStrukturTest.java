@@ -322,7 +322,7 @@ public class SjekkDbStrukturTest {
                 SELECT TABLE_NAME, COLUMN_NAME, DATA_TYPE, CHAR_USED, CHAR_LENGTH
                 FROM ALL_TAB_COLS
                 WHERE DATA_TYPE = 'VARCHAR2'
-                AND CHAR_USED !='C' AND TABLE_NAME NOT LIKE '‰schema%' AND CHAR_LENGTH>1 AND OWNER=upper(?)
+                AND CHAR_USED !='C' AND TABLE_NAME NOT LIKE '%schema%' AND CHAR_LENGTH>1 AND OWNER=upper(?)
                 ORDER BY 1, 2
                 """;
 
