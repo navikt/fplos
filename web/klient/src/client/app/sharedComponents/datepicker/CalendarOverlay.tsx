@@ -35,6 +35,8 @@ class CalendarOverlay extends Component<OwnProps & WrappedComponentProps> {
     disabled: false,
   };
 
+  calendarRootRef: HTMLDivElement;
+
   constructor(props: OwnProps & WrappedComponentProps) {
     super(props);
     this.onBlur = this.onBlur.bind(this);
@@ -84,8 +86,6 @@ class CalendarOverlay extends Component<OwnProps & WrappedComponentProps> {
       firstDayOfWeek: 1,
     };
   }
-
-  calendarRootRef: HTMLDivElement;
 
   parseDateValue(): Date | undefined {
     const { value } = this.props;

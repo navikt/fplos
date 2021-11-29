@@ -29,7 +29,9 @@ const getMethod = (httpClientApi: HttpClientApi, restMethod: string, isResponseB
   return httpClientApi.postBlob;
 };
 
-const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+const wait = (ms: number) => new Promise((resolve) => {
+  setTimeout(resolve, ms);
+});
 
 /**
  * RequestApi

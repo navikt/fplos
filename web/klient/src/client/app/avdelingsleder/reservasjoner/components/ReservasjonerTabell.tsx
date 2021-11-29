@@ -41,6 +41,8 @@ interface StateTsProps {
   valgtReservasjon?: Reservasjon;
 }
 
+// TODO Skriv om til funksjonell komponent
+
 class ReservasjonerTabell extends Component<OwnProps, StateTsProps> {
   constructor(props: OwnProps) {
     super(props);
@@ -76,8 +78,7 @@ class ReservasjonerTabell extends Component<OwnProps, StateTsProps> {
     this.setState((prevState) => ({ ...prevState, showFlyttReservasjonModal: false }));
   };
 
-  // TODO Kvifor feiler denne i eslint?
-  // eslint-disable-next-line react/require-render-return
+  // eslint-disable-next-line react/no-arrow-function-lifecycle
   render = (): ReactNode => {
     const {
       reservasjoner, opphevReservasjon, hentAvdelingensReservasjoner,

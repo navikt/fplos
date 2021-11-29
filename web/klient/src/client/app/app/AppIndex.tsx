@@ -25,6 +25,8 @@ interface StateProps {
   crashMessage?: string;
 }
 
+// TODO refaktorer til funksjonell komponent
+
 /**
  * AppIndex
  *
@@ -34,12 +36,15 @@ interface StateProps {
  * og kodeverk fra server og lagre desse i klientens state.
  */
 export class AppIndex extends Component<RouterProps, StateProps> {
+  static contextType = RestApiStateContext;
+
   state = {
     headerHeight: 0,
     valgtAvdelingEnhet: undefined,
     crashMessage: undefined,
   };
 
+  // eslint-disable-next-line react/no-arrow-function-lifecycle
   componentDidUpdate = (): void => {
     const state = this.context;
     const navAnsatt = state[RestApiGlobalStatePathsKeys.NAV_ANSATT.name];
@@ -57,6 +62,7 @@ export class AppIndex extends Component<RouterProps, StateProps> {
     }
   };
 
+  // eslint-disable-next-line react/no-arrow-function-lifecycle
   componentDidCatch = (error: Error, info: { componentStack: string }): void => {
     const crashMessage = [
       error.toString(),
@@ -78,10 +84,8 @@ export class AppIndex extends Component<RouterProps, StateProps> {
     this.setState((state) => ({ ...state, headerHeight }));
   };
 
-  static contextType = RestApiStateContext;
-
   // TODO Kvifor feiler denne i eslint?
-  // eslint-disable-next-line react/require-render-return
+  // eslint-disable-next-line react/no-arrow-function-lifecycle
   render = (): ReactNode => {
     const {
       location,
