@@ -16,7 +16,7 @@ describe('<AppIndex>', () => {
 
   it('skal vise hjem-skjermbildet med feilmelding som kommer via url', async () => {
     render(
-      <MemoryRouter initialEntries={['/test?errormessage=Det+finnes+ingen+sak+med+denne+referansen%3A+266']}>
+      <MemoryRouter initialEntries={['?errormessage=Det+finnes+ingen+sak+med+denne+referansen%3A+266']}>
         <AppIndex />
       </MemoryRouter>,
     );

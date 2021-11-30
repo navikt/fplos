@@ -25,7 +25,7 @@
     "postinstall": "yarn build && yarn test && yarn ts-check && yarn less:lint",
     "doc": "react-asciidoc-generator ./src/client/app/ -o ../../docs/generated/react.adoc --handlebar-template src/docs/asciidoc-template.handlebars ",
     "storybook": "cross-env NODE_OPTIONS='--openssl-legacy-provider' NODE_ENV=test start-storybook -p 9101 -c .storybook",
-    "deploy-storybook": "cross-env NODE_ENV=test build-storybook -o .static_storybook && storybook-to-ghpages --existing-output-dir=.static_storybook"
+    "deploy-storybook": "cross-env NODE_OPTIONS='--openssl-legacy-provider' NODE_ENV=test build-storybook -o .static_storybook && storybook-to-ghpages --existing-output-dir=.static_storybook"
   },
   "dependencies": {
     "@babel/runtime": "^7.15.4",
