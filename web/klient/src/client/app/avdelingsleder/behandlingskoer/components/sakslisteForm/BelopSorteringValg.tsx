@@ -48,45 +48,43 @@ export const BelopSorteringValg: FunctionComponent<OwnProps & WrappedComponentPr
       <Undertekst>
         <FormattedMessage id="SorteringVelger.FiltrerPaHeltall" />
       </Undertekst>
-      <>
-        <FlexContainer>
-          <FlexRow>
-            <FlexColumn>
-              <InputField
-                name="fra"
-                className={styles.dato}
-                placeholder={intl.formatMessage({ id: 'SorteringVelger.Fra' })}
-                validate={[hasValidPosOrNegInteger(intl)]}
-                bredde="XS"
-                onBlur={lagreFra}
-                shouldValidateOnBlur
-              />
+      <FlexContainer>
+        <FlexRow>
+          <FlexColumn>
+            <InputField
+              name="fra"
+              className={styles.dato}
+              placeholder={intl.formatMessage({ id: 'SorteringVelger.Fra' })}
+              validate={[hasValidPosOrNegInteger(intl)]}
+              bredde="XS"
+              onBlur={lagreFra}
+              shouldValidateOnBlur
+            />
 
-            </FlexColumn>
-            <FlexColumn>
-              <Undertekst className={styles.beløp}>
-                <FormattedMessage id="SorteringVelger.Valuta" />
-              </Undertekst>
-            </FlexColumn>
-            <FlexColumn>
-              <InputField
-                name="til"
-                className={styles.dato}
-                placeholder={intl.formatMessage({ id: 'SorteringVelger.Til' })}
-                validate={[hasValidPosOrNegInteger(intl)]}
-                bredde="XS"
-                onBlur={lagreTil}
-                shouldValidateOnBlur
-              />
-            </FlexColumn>
-            <FlexColumn>
-              <Undertekst className={styles.beløp}>
-                <FormattedMessage id="SorteringVelger.Valuta" />
-              </Undertekst>
-            </FlexColumn>
-          </FlexRow>
-        </FlexContainer>
-      </>
+          </FlexColumn>
+          <FlexColumn>
+            <Undertekst className={styles.beløp}>
+              <FormattedMessage id="SorteringVelger.Valuta" />
+            </Undertekst>
+          </FlexColumn>
+          <FlexColumn>
+            <InputField
+              name="til"
+              className={styles.dato}
+              placeholder={intl.formatMessage({ id: 'SorteringVelger.Til' })}
+              validate={[hasValidPosOrNegInteger(intl)]}
+              bredde="XS"
+              onBlur={lagreTil}
+              shouldValidateOnBlur
+            />
+          </FlexColumn>
+          <FlexColumn>
+            <Undertekst className={styles.beløp}>
+              <FormattedMessage id="SorteringVelger.Valuta" />
+            </Undertekst>
+          </FlexColumn>
+        </FlexRow>
+      </FlexContainer>
       <VerticalSpacer eightPx />
     </ArrowBox>
   );

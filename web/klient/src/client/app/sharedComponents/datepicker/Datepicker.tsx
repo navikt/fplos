@@ -44,6 +44,10 @@ class Datepicker extends Component<OwnProps, StateProps> {
     disabledDays: {},
   };
 
+  inputRef: HTMLDivElement;
+
+  buttonRef: HTMLButtonElement;
+
   constructor(props: OwnProps) {
     super(props);
     this.state = { showCalendar: false };
@@ -94,10 +98,6 @@ class Datepicker extends Component<OwnProps, StateProps> {
       }
     }
   }
-
-  inputRef: HTMLDivElement;
-
-  buttonRef: HTMLButtonElement;
 
   toggleShowCalendar(): void {
     const { showCalendar } = this.state;

@@ -18,8 +18,8 @@ import { Form, InputField } from 'form/formIndex';
 import styles from './leggTilSaksbehandlerForm.less';
 
 const erSaksbehandlerLagtTilAllerede = (
-  avdelingensSaksbehandlere: Saksbehandler[] = [],
   saksbehandler?: Saksbehandler,
+  avdelingensSaksbehandlere: Saksbehandler[] = [],
 ) => avdelingensSaksbehandlere instanceof Array
     && avdelingensSaksbehandlere.some((s) => saksbehandler && s.brukerIdent.toLowerCase() === saksbehandler.brukerIdent.toLowerCase());
 
@@ -50,7 +50,7 @@ export const LeggTilSaksbehandlerForm: FunctionComponent<OwnProps & WrappedCompo
 
   const { startRequest: leggTilSaksbehandler } = restApiHooks.useRestApiRunner(RestApiPathsKeys.OPPRETT_NY_SAKSBEHANDLER);
 
-  const erLagtTilAllerede = erSaksbehandlerLagtTilAllerede(avdelingensSaksbehandlere, saksbehandler);
+  const erLagtTilAllerede = erSaksbehandlerLagtTilAllerede(saksbehandler, avdelingensSaksbehandlere);
 
   const leggTilSaksbehandlerFn = (resetFormValues: () => void) => {
     if (saksbehandler) {

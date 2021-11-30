@@ -12,7 +12,9 @@ const HTTP_ACCEPTED = 202;
 const MAX_POLLING_ATTEMPTS = 150;
 export const REQUEST_POLLING_CANCELLED = 'INTERNAL_CANCELLATION';
 
-const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+const wait = (ms: number) => new Promise((resolve) => {
+  setTimeout(resolve, ms);
+});
 
 const hasLocationAndStatusDelayedOrHalted = (
   responseData: { location: string, status: string },

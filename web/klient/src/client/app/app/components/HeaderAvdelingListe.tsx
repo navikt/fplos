@@ -1,9 +1,9 @@
 import React, {
   useEffect, FunctionComponent,
 } from 'react';
-import Popover from '@navikt/nap-popover';
-import UserPanel from '@navikt/nap-user-panel';
-import BoxedListWithSelection from '@navikt/boxed-list-with-selection';
+import {
+  BoxedListWithSelection, Popover, UserPanel,
+} from '@navikt/fp-react-components';
 
 import { getValueFromLocalStorage, setValueInLocalStorage, removeValueFromLocalStorage } from 'utils/localStorageHelper';
 import Avdeling from 'types/avdelingsleder/avdelingTsType';
@@ -75,7 +75,7 @@ const HeaderAvdelingListe: FunctionComponent<OwnProps> = ({
             />
           ),
           placement: 'bottom-start',
-          positionFixed: true,
+          strategy: 'fixed',
         }}
         referenceProps={{
           // eslint-disable-next-line react/prop-types

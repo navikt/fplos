@@ -113,7 +113,6 @@ export const DatoSorteringValg: FunctionComponent<OwnProps & WrappedComponentPro
       </Undertekst>
 
       {erDynamiskPeriode && (
-      <>
         <FlexContainer>
           <FlexRow>
             <FlexColumn>
@@ -160,10 +159,8 @@ export const DatoSorteringValg: FunctionComponent<OwnProps & WrappedComponentPro
             </FlexColumn>
           </FlexRow>
         </FlexContainer>
-      </>
       )}
       {!erDynamiskPeriode && (
-      <>
         <FlexContainer>
           <FlexRow>
             <FlexColumn>
@@ -193,7 +190,6 @@ export const DatoSorteringValg: FunctionComponent<OwnProps & WrappedComponentPro
             </FlexColumn>
           </FlexRow>
         </FlexContainer>
-      </>
       )}
       <CheckboxField
         name="erDynamiskPeriode"
