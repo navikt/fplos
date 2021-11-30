@@ -9,6 +9,9 @@ on:
       - 'LICENCE'
       - 'CODEOWNERS'
 
+env:
+  READER_TOKEN: ${{ secrets.READER_TOKEN }}
+
 jobs:
   build:
     runs-on: ubuntu-latest
