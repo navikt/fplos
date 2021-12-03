@@ -114,7 +114,6 @@ public class OppgaveDto {
                 ", status=" + status.isErReservert() + //$NON-NLS-1$
                 ", saksnummer=" + saksnummer+ //$NON-NLS-1$
                 ", behandlingId=" + behandlingId + //$NON-NLS-1$
-                ", navn=" + navn + //$NON-NLS-1$
                 ", system=" + system + //$NON-NLS-1$
                 ", behandlingstype=" + behandlingstype + //$NON-NLS-1$
                 ", opprettetTidspunkt=" + opprettetTidspunkt + //$NON-NLS-1$
