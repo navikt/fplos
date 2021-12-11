@@ -57,7 +57,6 @@ public class ApplicationConfig extends Application {
                 .title("FPLOS")
                 .version("1.0")
                 .description("REST grensesnitt for fplos.");
-
         oas.info(info)
                 .addServersItem(new Server()
                         .url("/fplos"));
@@ -67,7 +66,6 @@ public class ApplicationConfig extends Application {
                 .scannerClass("io.swagger.v3.jaxrs2.integration.JaxrsAnnotationScanner")
                 .resourcePackages(Stream.of("no.nav")
                         .collect(Collectors.toSet()));
-
         try {
             new GenericOpenApiContextBuilder<>()
                     .openApiConfiguration(oasConfig)
