@@ -13,6 +13,7 @@ https://confluence.adeo.no/display/TVF/FP-LOS
 ## Bygge og kjøre docker lokalt
 Greit for å undersøke om containerne fungerer. Har lagt med noen variabler i `docker.list` denne er ikke 100% og bør
 trolig settes fra feks `application-local.properties`, men det er nok til å sjekke at basisen fungerer.
+
 ```
 mvn -B -Dfile.encoding=UTF-8 -DinstallAtEnd=true -DdeployAtEnd=true  -DskipTests clean install
 
