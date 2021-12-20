@@ -39,7 +39,7 @@
         <jandex.version>2.4.1.Final</jandex.version>
         <logstash.version>7.0.1</logstash.version>
         <metrics.version>4.1.12.1</metrics.version>
-        <prometheus.version>0.12.0</prometheus.version>
+        <prometheus.version>0.14.1</prometheus.version>
         <swagger.version>2.1.11</swagger.version>
         <flyway.version>8.2.1</flyway.version>
 
