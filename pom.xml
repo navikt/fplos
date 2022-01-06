@@ -24,7 +24,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
-        <fp-kontrakter.version>6.0.6</fp-kontrakter.version>
+        <fp-kontrakter.version>6.1.2</fp-kontrakter.version>
         <tjenestespesifikasjoner.version>1.2019.12.18-12.22-ce897c4eb2c1</tjenestespesifikasjoner.version>
         <felles.version>4.0.11</felles.version>
         <prosesstask.version>3.0.6</prosesstask.version>
@@ -39,9 +39,9 @@
         <jandex.version>2.4.1.Final</jandex.version>
         <logstash.version>7.0.1</logstash.version>
         <metrics.version>4.1.12.1</metrics.version>
-        <prometheus.version>0.12.0</prometheus.version>
-        <swagger.version>2.1.11</swagger.version>
-        <flyway.version>8.2.1</flyway.version>
+        <prometheus.version>0.14.1</prometheus.version>
+        <swagger.version>2.1.12</swagger.version>
+        <flyway.version>8.4.0</flyway.version>
 
         <!-- Transitive avh. versjoner for å sikre unikhet (enforcer dependencyConvergence). Skal ikke benyttes direkte av vår egen kode. -->
         <jasypt.version>1.9.3</jasypt.version>
@@ -288,7 +288,7 @@
             <dependency>
                 <groupId>ch.qos.logback</groupId>
                 <artifactId>logback-classic</artifactId>
-                <version>1.2.7</version>
+                <version>1.2.10</version>
             </dependency>
             <dependency>
                 <groupId>net.logstash.logback</groupId>
@@ -456,7 +456,7 @@
                 <plugin>
                     <groupId>com.github.eirslett</groupId>
                     <artifactId>frontend-maven-plugin</artifactId>
-                    <version>1.12.0</version>
+                    <version>1.12.1</version>
                 </plugin>
                 <plugin>
                     <groupId>org.codehaus.mojo</groupId>
