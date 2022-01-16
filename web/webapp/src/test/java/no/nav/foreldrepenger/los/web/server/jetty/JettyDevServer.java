@@ -23,10 +23,6 @@ public class JettyDevServer extends JettyServer {
     /**
      * @link https://docs.oracle.com/en/java/javase/11/security/java-secure-socket-extension-jsse-reference-guide.html
      */
-    private static final String TRUSTSTORE_PASSW_PROP = "javax.net.ssl.trustStorePassword";
-    private static final String TRUSTSTORE_PATH_PROP = "javax.net.ssl.trustStore";
-    private static final String KEYSTORE_PASSW_PROP = "no.nav.modig.security.appcert.password";
-    private static final String KEYSTORE_PATH_PROP = "no.nav.modig.security.appcert.keystore";
 
     public static void main(String[] args) throws Exception {
         var devServer = new JettyDevServer();
@@ -47,13 +43,8 @@ public class JettyDevServer extends JettyServer {
         System.setProperty("conf", "src/main/resources/jetty/");
         super.konfigurerSikkerhet();
 
-        // truststore avgjør hva vi stoler på av sertifikater når vi gjør utadgående TLS kall
-        initCryptoStoreConfig("truststore", TRUSTSTORE_PATH_PROP, TRUSTSTORE_PASSW_PROP, "changeit");
-
-        // keystore genererer sertifikat og TLS for innkommende kall. Bruker standard prop hvis definert, ellers faller tilbake på modig props
-        var keystoreProp = System.getProperty("javax.net.ssl.keyStore") != null ? "javax.net.ssl.keyStore" : KEYSTORE_PATH_PROP;
-        var keystorePasswProp = System.getProperty("javax.net.ssl.keyStorePassword") != null ? "javax.net.ssl.keyStorePassword" : KEYSTORE_PASSW_PROP;
-        initCryptoStoreConfig("keystore", keystoreProp, keystorePasswProp, "devillokeystore1234");
+        initCryptoStoreConfig("truststore", "javax.net.ssl.trustStore", "javax.net.ssl.trustStorePassword", "changeit");
+        initCryptoStoreConfig("keystore", "javax.net.ssl.keyStore", "javax.net.ssl.keyStorePassword", "devillokeystore1234");
     }
 
     private static String initCryptoStoreConfig(String storeName, String storeProperty, String storePasswordProperty, String defaultPassword) {
@@ -100,9 +91,9 @@ public class JettyDevServer extends JettyServer {
         var connectors = super.createConnectors(appKonfigurasjon, server);
 
         var sslContextFactory = new SslContextFactory.Server();
-        sslContextFactory.setKeyStorePath(System.getProperty("no.nav.modig.security.appcert.keystore"));
-        sslContextFactory.setKeyStorePassword(System.getProperty("no.nav.modig.security.appcert.password"));
-        sslContextFactory.setKeyManagerPassword(System.getProperty("no.nav.modig.security.appcert.password"));
+        sslContextFactory.setKeyStorePath(System.getProperty("javax.net.ssl.keyStore"));
+        sslContextFactory.setKeyStorePassword(System.getProperty("javax.net.ssl.keyStorePassword"));
+        sslContextFactory.setKeyManagerPassword(System.getProperty("javax.net.ssl.keyStorePassword"));
 
         var https = createHttpConfiguration();
         https.addCustomizer(new SecureRequestCustomizer());
