@@ -14,7 +14,9 @@ import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.StreamsBuilder;
 import org.apache.kafka.streams.StreamsConfig;
+import org.apache.kafka.streams.Topology;
 import org.apache.kafka.streams.errors.LogAndFailExceptionHandler;
+import org.apache.kafka.streams.kstream.Consumed;
 import org.apache.kafka.streams.processor.Processor;
 import org.apache.kafka.streams.processor.ProcessorContext;
 import org.slf4j.Logger;
@@ -63,7 +65,12 @@ public final class KafkaConsumer<T extends BehandlingProsessEventDto> {
 
     private KafkaStreams lagKafkaStreams(KafkaConsumerProperties properties) {
         var builder = new StreamsBuilder();
-        builder.stream(properties.getTopic()).process(MyProcessor::new);
+        if (IS_DEV) {
+            // Problem med lite trafikk. Enable for prod dersom problem oppstår der
+            builder.stream(properties.getTopic(), Consumed.with(Topology.AutoOffsetReset.LATEST)).process(MyProcessor::new);
+        } else {
+            builder.stream(properties.getTopic()).process(MyProcessor::new);
+        }
 
         var topology = builder.build();
         return new KafkaStreams(topology, setupProperties(properties));
@@ -71,10 +78,6 @@ public final class KafkaConsumer<T extends BehandlingProsessEventDto> {
 
     private Properties setupProperties(KafkaConsumerProperties consumerProperties) {
         var properties = new Properties();
-        if (IS_DEV) {
-            // Problem med lite trafikk. Enable for prod dersom problem oppstår der (men vurder da "latest")
-            properties.setProperty(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
-        }
         properties.setProperty(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, consumerProperties.getBootstrapServers());
         properties.setProperty(ConsumerConfig.MAX_POLL_RECORDS_CONFIG, "1");
         properties.setProperty(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, consumerProperties.getOffsetResetPolicy());
