@@ -72,8 +72,8 @@ public final class KafkaConsumer<T extends BehandlingProsessEventDto> {
     private Properties setupProperties(KafkaConsumerProperties consumerProperties) {
         var properties = new Properties();
         if (IS_DEV) {
-            // Problem med lite trafikk. Enable for prod dersom problem oppstår der
-            properties.setProperty(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "latest");
+            // Problem med lite trafikk. Enable for prod dersom problem oppstår der (men vurder da "latest")
+            properties.setProperty(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
         }
         properties.setProperty(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, consumerProperties.getBootstrapServers());
         properties.setProperty(ConsumerConfig.MAX_POLL_RECORDS_CONFIG, "1");
