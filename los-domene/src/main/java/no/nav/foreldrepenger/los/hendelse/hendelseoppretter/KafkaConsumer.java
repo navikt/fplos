@@ -24,6 +24,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import no.nav.foreldrepenger.konfig.Environment;
 import no.nav.foreldrepenger.los.hendelse.hendelseoppretter.hendelse.Hendelse;
 import no.nav.vedtak.felles.integrasjon.kafka.BehandlingProsessEventDto;
 import no.nav.vedtak.felles.jpa.TransactionHandler;
@@ -33,6 +34,7 @@ import no.nav.vedtak.log.mdc.MDCOperations;
 
 public final class KafkaConsumer<T extends BehandlingProsessEventDto> {
 
+    private static final boolean IS_DEV = Environment.current().isDev();
     private static final Logger LOG = LoggerFactory.getLogger(KafkaConsumer.class);
 
     private KafkaStreams streams;
@@ -60,7 +62,6 @@ public final class KafkaConsumer<T extends BehandlingProsessEventDto> {
     }
 
     private KafkaStreams lagKafkaStreams(KafkaConsumerProperties properties) {
-        //var consumed = Consumed.with(Topology.AutoOffsetReset.EARLIEST);
         var builder = new StreamsBuilder();
         builder.stream(properties.getTopic()).process(MyProcessor::new);
 
@@ -70,6 +71,10 @@ public final class KafkaConsumer<T extends BehandlingProsessEventDto> {
 
     private Properties setupProperties(KafkaConsumerProperties consumerProperties) {
         var properties = new Properties();
+        if (IS_DEV) {
+            // Problem med lite trafikk. Enable for prod dersom problem oppstår der
+            properties.setProperty(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "latest");
+        }
         properties.setProperty(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, consumerProperties.getBootstrapServers());
         properties.setProperty(ConsumerConfig.MAX_POLL_RECORDS_CONFIG, "1");
         properties.setProperty(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, consumerProperties.getOffsetResetPolicy());
