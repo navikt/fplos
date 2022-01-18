@@ -24,24 +24,21 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
-        <fp-kontrakter.version>6.1.2</fp-kontrakter.version>
-        <tjenestespesifikasjoner.version>1.2019.12.18-12.22-ce897c4eb2c1</tjenestespesifikasjoner.version>
-        <felles.version>4.0.11</felles.version>
-        <prosesstask.version>3.0.6</prosesstask.version>
+        <fp-kontrakter.version>6.1.3</fp-kontrakter.version>
+        <felles.version>4.1.11</felles.version>
+        <prosesstask.version>3.1.6</prosesstask.version>
 
         <!-- Eksterne -->
         <woodstox.version>6.2.3</woodstox.version>
         <surefire.version>2.22.2</surefire.version>
         <asm.version>6.2.1</asm.version>
-        <geronimo.jaspi.version>2.0.0</geronimo.jaspi.version>
-        <geronimo.osgi.version>1.1</geronimo.osgi.version>
         <hamcrest.version>1.3</hamcrest.version>
-        <jandex.version>2.4.1.Final</jandex.version>
+        <jandex.version>2.4.2.Final</jandex.version>
         <logstash.version>7.0.1</logstash.version>
         <metrics.version>4.1.12.1</metrics.version>
         <prometheus.version>0.14.1</prometheus.version>
         <swagger.version>2.1.12</swagger.version>
-        <flyway.version>8.4.0</flyway.version>
+        <flyway.version>8.4.1</flyway.version>
 
         <!-- Transitive avh. versjoner for å sikre unikhet (enforcer dependencyConvergence). Skal ikke benyttes direkte av vår egen kode. -->
         <jasypt.version>1.9.3</jasypt.version>
@@ -66,16 +63,6 @@
             <groupId>no.nav.foreldrepenger.felles</groupId>
             <artifactId>felles-testutilities</artifactId>
             <scope>test</scope>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.junit.vintage</groupId>
-                    <artifactId>junit-vintage-engine</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>junit</groupId>
-                    <artifactId>junit</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
@@ -273,18 +260,6 @@
                 <version>1.0.0</version>
             </dependency>
 
-            <!-- Sikkerhet -->
-            <dependency>
-                <groupId>org.apache.geronimo.components</groupId>
-                <artifactId>geronimo-jaspi</artifactId>
-                <version>${geronimo.jaspi.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.geronimo.specs</groupId>
-                <artifactId>geronimo-osgi-locator</artifactId>
-                <version>${geronimo.osgi.version}</version>
-            </dependency>
-
             <!-- logging -->
             <dependency>
                 <groupId>ch.qos.logback</groupId>
@@ -299,7 +274,7 @@
             <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>jul-to-slf4j</artifactId>
-                <version>1.7.32</version>
+                <version>1.7.33</version>
             </dependency>
 
 
@@ -333,7 +308,7 @@
             <dependency>
                 <groupId>com.zaxxer</groupId>
                 <artifactId>HikariCP</artifactId>
-                <version>5.0.0</version>
+                <version>5.0.1</version>
             </dependency>
             <dependency>
                 <groupId>org.glassfish</groupId>
@@ -359,7 +334,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
-                    <version>3.8.1</version>
+                    <version>3.9.0</version>
                     <configuration>
                         <source>${java.version}</source>
                         <target>${java.version}</target>
@@ -417,7 +392,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-jar-plugin</artifactId>
-                    <version>3.2.0</version>
+                    <version>3.2.2</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -532,7 +507,7 @@
             <plugin>
                 <groupId>org.jboss.jandex</groupId>
                 <artifactId>jandex-maven-plugin</artifactId>
-                <version>1.2.1</version>
+                <version>1.1.1</version>
                 <executions>
                     <execution>
                         <id>make-index</id>

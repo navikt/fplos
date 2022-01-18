@@ -6,9 +6,4 @@ public class JettyDevKonfigurasjon extends JettyWebKonfigurasjon {
         super(8071);
     }
 
-    @Override
-    public int getSslPort() {
-        return 8445;
-    }
-
 }

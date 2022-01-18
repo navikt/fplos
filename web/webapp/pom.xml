@@ -135,15 +135,6 @@
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-jaspi</artifactId>
         </dependency>
-        <dependency>
-            <groupId>org.apache.geronimo.components</groupId>
-            <artifactId>geronimo-jaspi</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.geronimo.specs</groupId>
-            <artifactId>geronimo-osgi-locator</artifactId>
-        </dependency>
-
 
         <dependency>
             <groupId>io.prometheus</groupId>
@@ -169,12 +160,6 @@
         <dependency>
             <groupId>com.papertrailapp</groupId>
             <artifactId>logback-syslog4j</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>ch.qos.logback</groupId>
-                    <artifactId>logback-classic</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <dependency>
             <!-- redirect java.utils.logging til slf4j (og videre til logback) -->
@@ -245,16 +230,6 @@
                 <groupId>org.hibernate</groupId>
                 <artifactId>hibernate-core</artifactId>
                 <version>5.6.3.Final</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.geronimo.components</groupId>
-                <artifactId>geronimo-jaspi</artifactId>
-                <version>2.0.0</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.geronimo.specs</groupId>
-                <artifactId>geronimo-osgi-locator</artifactId>
-                <version>1.1</version>
             </dependency>
             <dependency>
                 <groupId>ch.qos.logback</groupId>
