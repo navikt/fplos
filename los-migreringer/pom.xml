@@ -15,6 +15,10 @@
 
         <!-- NAV -->
         <!-- Eksterne -->
+        <dependency>
+            <groupId>org.flywaydb</groupId>
+            <artifactId>flyway-core</artifactId>
+        </dependency>
         <!-- Test avhengigheter -->
         <dependency>
             <groupId>ch.qos.logback</groupId>

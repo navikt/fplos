@@ -8,11 +8,8 @@ import java.io.IOException;
 import java.util.List;
 
 import org.eclipse.jetty.server.Connector;
-import org.eclipse.jetty.server.HttpConnectionFactory;
 import org.eclipse.jetty.server.SecureRequestCustomizer;
 import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.server.ServerConnector;
-import org.eclipse.jetty.server.SslConnectionFactory;
 import org.eclipse.jetty.util.resource.Resource;
 import org.eclipse.jetty.util.resource.ResourceCollection;
 import org.eclipse.jetty.util.ssl.SslContextFactory;
@@ -44,7 +41,6 @@ public class JettyDevServer extends JettyServer {
         super.konfigurerSikkerhet();
 
         initCryptoStoreConfig("truststore", "javax.net.ssl.trustStore", "javax.net.ssl.trustStorePassword", "changeit");
-        initCryptoStoreConfig("keystore", "javax.net.ssl.keyStore", "javax.net.ssl.keyStorePassword", "devillokeystore1234");
     }
 
     private static String initCryptoStoreConfig(String storeName, String storeProperty, String storePasswordProperty, String defaultPassword) {
@@ -97,12 +93,6 @@ public class JettyDevServer extends JettyServer {
 
         var https = createHttpConfiguration();
         https.addCustomizer(new SecureRequestCustomizer());
-
-        var sslConnector = new ServerConnector(server,
-                new SslConnectionFactory(sslContextFactory, "http/1.1"),
-                new HttpConnectionFactory(https));
-        sslConnector.setPort(appKonfigurasjon.getSslPort());
-        connectors.add(sslConnector);
 
         return connectors;
     }
