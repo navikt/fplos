@@ -121,7 +121,7 @@ public class OppgaveRestTjeneste {
             return Redirect.sendTilResultat(request, sakslisteId);
         }
         if (oppgaveTjeneste.erAlleOppgaverFortsattTilgjengelig(oppgaveIderSomVises)) {
-            LOG.info("Alle oppgaver fortsatt tilgjengelig for sakliste {}: {}", sakslisteId.getVerdi(), oppgaveIderSomVises);
+            LOG.debug("Alle oppgaver fortsatt tilgjengelig for sakliste {}: {}", sakslisteId.getVerdi(), oppgaveIderSomVises);
             return Redirect.sendTilPolling(request, sakslisteId, oppgaverIder);
         }
         return Redirect.sendTilResultat(request, sakslisteId);
@@ -137,7 +137,7 @@ public class OppgaveRestTjeneste {
     @BeskyttetRessurs(action = READ, resource = AbacAttributter.FAGSAK)
     public List<OppgaveDto> getOppgaverTilBehandling(@NotNull @QueryParam("sakslisteId") @Valid SakslisteIdDto sakslisteId) {
         var oppgaverTilBehandling = oppgaveDtoTjeneste.getOppgaverTilBehandling(sakslisteId.getVerdi());
-        LOG.info("Oppgaver til behandling for saksliste {}: {}", sakslisteId.getVerdi(), oppgaverTilBehandling);
+        LOG.debug("Oppgaver til behandling for saksliste {}: {}", sakslisteId.getVerdi(), oppgaverTilBehandling);
         return oppgaverTilBehandling;
     }
 

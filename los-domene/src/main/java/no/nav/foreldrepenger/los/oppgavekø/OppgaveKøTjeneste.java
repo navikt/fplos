@@ -99,7 +99,7 @@ public class OppgaveKøTjeneste {
         oppgavespørring.setAvgrensTilOppgaveId(oppgave.getId());
         oppgavespørring.setIgnorerReserversjoner(true);
         var antall = oppgaveRepository.hentAntallOppgaver(oppgavespørring);
-        LOG.info("Sjekker om oppgave {} tilfredstiller filtrering {}. Spørring {}. Resultat {}", oppgave.getId(), oppgaveFiltrering.getId(),
+        LOG.debug("Sjekker om oppgave {} tilfredstiller filtrering {}. Spørring {}. Resultat {}", oppgave.getId(), oppgaveFiltrering.getId(),
                 oppgavespørring, antall > 0);
         return antall > 0;
     }
