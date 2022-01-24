@@ -81,22 +81,6 @@ public class JettyDevServer extends JettyServer {
         migrer();
     }
 
-    @SuppressWarnings("resource")
-    @Override
-    protected List<Connector> createConnectors(AppKonfigurasjon appKonfigurasjon, Server server) {
-        var connectors = super.createConnectors(appKonfigurasjon, server);
-
-        var sslContextFactory = new SslContextFactory.Server();
-        sslContextFactory.setKeyStorePath(System.getProperty("javax.net.ssl.keyStore"));
-        sslContextFactory.setKeyStorePassword(System.getProperty("javax.net.ssl.keyStorePassword"));
-        sslContextFactory.setKeyManagerPassword(System.getProperty("javax.net.ssl.keyStorePassword"));
-
-        var https = createHttpConfiguration();
-        https.addCustomizer(new SecureRequestCustomizer());
-
-        return connectors;
-    }
-
     @Override
     protected WebAppContext createContext(AppKonfigurasjon appKonfigurasjon) throws IOException {
         var webAppContext = super.createContext(appKonfigurasjon);
