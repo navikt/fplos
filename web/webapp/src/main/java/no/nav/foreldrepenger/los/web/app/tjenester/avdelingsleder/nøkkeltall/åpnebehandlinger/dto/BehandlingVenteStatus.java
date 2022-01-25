@@ -1,7 +1,13 @@
 package no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.nøkkeltall.åpnebehandlinger.dto;
 
+import java.util.Arrays;
+
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import no.nav.foreldrepenger.los.felles.Kodeverdi;
+import no.nav.foreldrepenger.los.klient.fpsak.dto.kodeverk.TempAvledeKode;
 
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum BehandlingVenteStatus implements Kodeverdi {
@@ -15,6 +21,18 @@ public enum BehandlingVenteStatus implements Kodeverdi {
     BehandlingVenteStatus(String kode, String navn) {
         this.kode = kode;
         this.navn = navn;
+    }
+
+    @JsonCreator(mode = JsonCreator.Mode.DELEGATING)
+    public static BehandlingVenteStatus fraKode(@JsonProperty(value = "kode") Object node) {
+        if (node == null) {
+            return null;
+        }
+        var kode = TempAvledeKode.getVerdi(BehandlingVenteStatus.class, node, "kode");
+        return Arrays.stream(values())
+                .filter(v -> v.kode.equals(kode))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("Ukjent BehandlingType: " + kode));
     }
 
     @Override

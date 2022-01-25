@@ -12,18 +12,14 @@ import no.nav.foreldrepenger.los.oppgave.BehandlingType;
 
 public record BehandlingDto(Long id,
                             UUID uuid,
-                            Long versjon,
                             BehandlingType type,
                             BehandlingStatus status,
                             Long fagsakId,
                             LocalDateTime opprettet,
                             LocalDateTime avsluttet,
-                            LocalDateTime endret,
-                            String endretAvBrukernavn,
                             String behandlendeEnhetId,
-                            String behandlendeEnhetNavn,
-                            boolean erAktivPapirsoknad,
-                            boolean erAktivPapirsøknad,
+                            boolean erAktivPapirsoknad, // ubrukt
+                            boolean erAktivPapirsøknad, // ubrukt - hva er planen?
                             LocalDate behandlingsfristTid,
                             List<BehandlingÅrsakDto> behandlingÅrsaker,
                             List<ResourceLink> links,
