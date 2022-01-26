@@ -10,7 +10,9 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+
 import no.nav.foreldrepenger.los.felles.Kodeverdi;
+import no.nav.foreldrepenger.los.klient.fpsak.dto.kodeverk.TempAvledeKode;
 
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum BehandlingType implements Kodeverdi {
@@ -47,8 +49,12 @@ public enum BehandlingType implements Kodeverdi {
         return this == TILBAKEBETALING || this == TILBAKEBETALING_REVURDERING;
     }
 
-    @JsonCreator
-    public static BehandlingType fraKode(@JsonProperty("kode") String kode) {
+    @JsonCreator(mode = JsonCreator.Mode.DELEGATING)
+    public static BehandlingType fraKode(@JsonProperty(value = "kode") Object node) {
+        if (node == null) {
+            return null;
+        }
+        var kode = TempAvledeKode.getVerdi(BehandlingType.class, node, "kode");
         return Arrays.stream(values())
                 .filter(v -> v.kode.equals(kode))
                 .findFirst()

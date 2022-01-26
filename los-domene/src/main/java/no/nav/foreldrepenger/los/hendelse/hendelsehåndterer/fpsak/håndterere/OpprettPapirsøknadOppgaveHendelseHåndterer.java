@@ -50,7 +50,7 @@ public class OpprettPapirsøknadOppgaveHendelseHåndterer extends OpprettOppgave
                 .build();
         oppgaveRepository.lagre(oel);
         LOG.info("Oppretter {}-oppgave med id {} og av type {}", SYSTEM, oppgave.getId(),
-                AndreKriterierType.PAPIRSØKNAD.getNavn());
+                AndreKriterierType.PAPIRSØKNAD.getKode());
     }
 
 }
