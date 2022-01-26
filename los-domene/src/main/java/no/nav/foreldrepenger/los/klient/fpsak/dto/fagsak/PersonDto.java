@@ -7,13 +7,11 @@ import java.util.Objects;
 import no.nav.foreldrepenger.los.domene.typer.aktør.NavBrukerKjønn;
 import no.nav.foreldrepenger.los.domene.typer.aktør.Person;
 
-public record PersonDto(String navn, Integer alder, String personnummer, Boolean erKvinne,
-                        String diskresjonskode, LocalDate dødsdato) {
+public record PersonDto(String navn, Integer alder, String personnummer, Boolean erKvinne) {
 
     public PersonDto(Person person) {
         this(person.getNavn(), (int) ChronoUnit.YEARS.between(person.getFødselsdato(), LocalDate.now()),
-                person.getFødselsnummer().value(), NavBrukerKjønn.K.equals(person.getKjønn()),
-                person.getDiskresjonskode(), person.getDødsdato());
+                person.getFødselsnummer().value(), NavBrukerKjønn.K.equals(person.getKjønn()));
     }
 
     @Override
