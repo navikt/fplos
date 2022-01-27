@@ -1,8 +1,6 @@
-import Kodeverk from '../kodeverkTsType';
-
 type OppgaverForAvdeling = Readonly<{
-  fagsakYtelseType: Kodeverk;
-  behandlingType: Kodeverk;
+  fagsakYtelseType: string;
+  behandlingType: string;
   tilBehandling: boolean;
   antall: number;
 }>;

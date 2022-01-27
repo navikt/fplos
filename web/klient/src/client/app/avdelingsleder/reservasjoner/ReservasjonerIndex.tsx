@@ -1,6 +1,6 @@
 import React, { FunctionComponent, useEffect, useCallback } from 'react';
 
-import { restApiHooks, RestApiPathsKeys } from 'data/fplosRestApi';
+import { RestApiGlobalStatePathsKeys, restApiHooks, RestApiPathsKeys } from 'data/fplosRestApi';
 
 import Reservasjon from 'types/avdelingsleder/reservasjonTsType';
 import ReservasjonerTabell from './components/ReservasjonerTabell';
@@ -19,6 +19,8 @@ export const ReservasjonerIndex: FunctionComponent<OwnProps> = ({
   );
   const { startRequest: opphevOppgaveReservasjon } = restApiHooks.useRestApiRunner(RestApiPathsKeys.AVDELINGSLEDER_OPPHEVER_RESERVASJON);
 
+  const alleKodeverk = restApiHooks.useGlobalStateRestApiData(RestApiGlobalStatePathsKeys.KODEVERK);
+
   useEffect(() => {
     hentAvdelingensReservasjoner({ avdelingEnhet: valgtAvdelingEnhet });
   }, []);
@@ -34,6 +36,7 @@ export const ReservasjonerIndex: FunctionComponent<OwnProps> = ({
       opphevReservasjon={opphevOppgaveReservasjonFn}
       reservasjoner={reservasjoner}
       hentAvdelingensReservasjoner={endreOppgaveReservasjonFn}
+      alleKodeverk={alleKodeverk}
     />
   );
 };

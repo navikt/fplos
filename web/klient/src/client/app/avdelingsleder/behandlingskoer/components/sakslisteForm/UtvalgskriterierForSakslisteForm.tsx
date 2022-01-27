@@ -45,14 +45,14 @@ const finnDagerSomTall = (antallDager?: string): undefined | number => {
 };
 
 const buildInitialValues = (intl: IntlShape, valgtSaksliste: Saksliste): FormValues => {
-  const behandlingTypes = valgtSaksliste.behandlingTyper ? valgtSaksliste.behandlingTyper.reduce((acc, bt) => ({ ...acc, [bt.kode]: true }), {}) : {};
+  const behandlingTypes = valgtSaksliste.behandlingTyper ? valgtSaksliste.behandlingTyper.reduce((acc, bt) => ({ ...acc, [bt]: true }), {}) : {};
   const fagsakYtelseType = valgtSaksliste.fagsakYtelseTyper && valgtSaksliste.fagsakYtelseTyper.length > 0
-    ? valgtSaksliste.fagsakYtelseTyper[0].kode : '';
+    ? valgtSaksliste.fagsakYtelseTyper[0] : '';
 
   const andreKriterierTyper = valgtSaksliste.andreKriterier
-    ? valgtSaksliste.andreKriterier.reduce((acc, ak) => ({ ...acc, [ak.andreKriterierType.kode]: true }), {}) : {};
+    ? valgtSaksliste.andreKriterier.reduce((acc, ak) => ({ ...acc, [ak.andreKriterierType]: true }), {}) : {};
   const andreKriterierInkluder = valgtSaksliste.andreKriterier
-    ? valgtSaksliste.andreKriterier.reduce((acc, ak) => ({ ...acc, [`${ak.andreKriterierType.kode}_inkluder`]: ak.inkluder }), {}) : {};
+    ? valgtSaksliste.andreKriterier.reduce((acc, ak) => ({ ...acc, [`${ak.andreKriterierType}_inkluder`]: ak.inkluder }), {}) : {};
 
   return {
     sakslisteId: valgtSaksliste.sakslisteId,

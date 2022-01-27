@@ -17,8 +17,11 @@ import Saksliste from 'types/saksbehandler/sakslisteTsType';
 import Saksbehandler from 'types/saksbehandler/saksbehandlerTsType';
 import gruppeHoverUrl from 'images/gruppe_hover.svg';
 import gruppeUrl from 'images/gruppe.svg';
-import { restApiHooks, RestApiPathsKeys } from 'data/fplosRestApi';
+import { RestApiGlobalStatePathsKeys, restApiHooks, RestApiPathsKeys } from 'data/fplosRestApi';
 import { Form, SelectField } from 'form/formIndex';
+import AlleKodeverk from 'types/alleKodeverkTsType';
+import { getKodeverknavnFraKode } from 'utils/kodeverkUtils';
+import KodeverkType from 'kodeverk/kodeverkTyper';
 
 import styles from './sakslisteVelgerForm.less';
 
@@ -66,16 +69,22 @@ const getInitialValues = (
 
 const getValgtSaksliste = (sakslister: Saksliste[], sakslisteId: string) => sakslister.find((s) => sakslisteId === `${s.sakslisteId}`);
 
-const getStonadstyper = (intl: IntlShape, saksliste?: Saksliste) => (saksliste && saksliste.fagsakYtelseTyper.length > 0
-  ? saksliste.fagsakYtelseTyper.map((type) => type.navn) : [intl.formatMessage({ id: 'SakslisteVelgerForm.Alle' })]);
+const getStonadstyper = (intl: IntlShape, alleKodeverk: AlleKodeverk, saksliste?: Saksliste) => (saksliste && saksliste.fagsakYtelseTyper.length > 0
+  ? saksliste.fagsakYtelseTyper.map((type) => getKodeverknavnFraKode(type, KodeverkType.FAGSAK_YTELSE_TYPE, alleKodeverk))
+  : [intl.formatMessage({ id: 'SakslisteVelgerForm.Alle' })]);
 
-const getBehandlingstyper = (intl: IntlShape, saksliste?: Saksliste) => (saksliste && saksliste.behandlingTyper.length > 0
-  ? saksliste.behandlingTyper.map((type) => type.navn) : [intl.formatMessage({ id: 'SakslisteVelgerForm.Alle' })]);
+const getBehandlingstyper = (intl: IntlShape, alleKodeverk: AlleKodeverk, saksliste?: Saksliste) => (saksliste && saksliste.behandlingTyper.length > 0
+  ? saksliste.behandlingTyper.map((type) => getKodeverknavnFraKode(type, KodeverkType.BEHANDLING_TYPE, alleKodeverk))
+  : [intl.formatMessage({ id: 'SakslisteVelgerForm.Alle' })]);
 
-const getAndreKriterier = (intl: IntlShape, saksliste?: Saksliste) => {
+const getAndreKriterier = (intl: IntlShape, alleKodeverk: AlleKodeverk, saksliste?: Saksliste) => {
   if (saksliste && saksliste.andreKriterier.length > 0) {
-    return saksliste.andreKriterier.map((ak) => (ak.inkluder ? ak.andreKriterierType.navn
-      : intl.formatMessage({ id: 'SakslisteVelgerForm.Uten' }, { kriterie: ak.andreKriterierType.navn })));
+    return saksliste.andreKriterier.map((ak) => (ak.inkluder
+      ? getKodeverknavnFraKode(ak.andreKriterierType, KodeverkType.ANDRE_KRITERIER_TYPE, alleKodeverk)
+      : intl.formatMessage({ id: 'SakslisteVelgerForm.Uten' }, {
+        kriterie: getKodeverknavnFraKode(
+          ak.andreKriterierType, KodeverkType.ANDRE_KRITERIER_TYPE, alleKodeverk),
+      })));
   }
   return [intl.formatMessage({ id: 'SakslisteVelgerForm.Alle' })];
 };
@@ -87,7 +96,7 @@ type Values = {
   navn: string | undefined;
 }
 
-const getSorteringsnavn = (intl: IntlShape, saksliste?: Saksliste): string => {
+const getSorteringsnavn = (intl: IntlShape, alleKodeverk: AlleKodeverk, saksliste?: Saksliste): string => {
   if (!saksliste || !saksliste.sortering) {
     return '';
   }
@@ -103,20 +112,20 @@ const getSorteringsnavn = (intl: IntlShape, saksliste?: Saksliste): string => {
   };
   if (!erDynamiskPeriode) {
     if (!fomDato && !tomDato) {
-      return sorteringType.navn;
+      return getKodeverknavnFraKode(sorteringType, KodeverkType.KO_SORTERING, alleKodeverk);
     }
     values = {
-      navn: sorteringType.navn,
+      navn: getKodeverknavnFraKode(sorteringType, KodeverkType.KO_SORTERING, alleKodeverk),
       fomDato: fomDato ? dayjs(fomDato).format(DDMMYYYY_DATE_FORMAT) : undefined,
       tomDato: tomDato ? dayjs(tomDato).format(DDMMYYYY_DATE_FORMAT) : undefined,
       br: <br />,
     };
   } else {
     if (!fra && !til) {
-      return sorteringType.navn;
+      return getKodeverknavnFraKode(sorteringType, KodeverkType.KO_SORTERING, alleKodeverk);
     }
     values = {
-      navn: sorteringType.navn,
+      navn: getKodeverknavnFraKode(sorteringType, KodeverkType.KO_SORTERING, alleKodeverk),
       fomDato: fra ? dayjs().add(fra, 'days').format(DDMMYYYY_DATE_FORMAT) : undefined,
       tomDato: til ? dayjs().add(til, 'days').format(DDMMYYYY_DATE_FORMAT) : undefined,
       br: <br />,
@@ -162,6 +171,7 @@ export const SakslisteVelgerForm: FunctionComponent<OwnProps & WrappedComponentP
   removeValueFromLocalStorage,
 }) => {
   const { data: saksbehandlere, startRequest: fetchSaksbehandlere } = restApiHooks.useRestApiRunner(RestApiPathsKeys.SAKSLISTE_SAKSBEHANDLERE);
+  const alleKodeverk = restApiHooks.useGlobalStateRestApiData(RestApiGlobalStatePathsKeys.KODEVERK);
 
   useEffect(() => {
     if (sakslister.length > 0) {
@@ -221,25 +231,25 @@ export const SakslisteVelgerForm: FunctionComponent<OwnProps & WrappedComponentP
               <FlexColumn className={styles.marginFilters}>
                 <LabelWithHeader
                   header={intl.formatMessage({ id: 'SakslisteVelgerForm.Stonadstype' })}
-                  texts={getStonadstyper(intl, getValgtSaksliste(sakslister, sakslisteId))}
+                  texts={getStonadstyper(intl, alleKodeverk, getValgtSaksliste(sakslister, sakslisteId))}
                 />
               </FlexColumn>
               <FlexColumn className={styles.marginFilters}>
                 <LabelWithHeader
                   header={intl.formatMessage({ id: 'SakslisteVelgerForm.Behandlingstype' })}
-                  texts={getBehandlingstyper(intl, getValgtSaksliste(sakslister, sakslisteId))}
+                  texts={getBehandlingstyper(intl, alleKodeverk, getValgtSaksliste(sakslister, sakslisteId))}
                 />
               </FlexColumn>
               <FlexColumn className={styles.marginFilters}>
                 <LabelWithHeader
                   header={intl.formatMessage({ id: 'SakslisteVelgerForm.AndreKriterier' })}
-                  texts={getAndreKriterier(intl, getValgtSaksliste(sakslister, sakslisteId))}
+                  texts={getAndreKriterier(intl, alleKodeverk, getValgtSaksliste(sakslister, sakslisteId))}
                 />
               </FlexColumn>
               <FlexColumn className={styles.marginFilters}>
                 <LabelWithHeader
                   header={intl.formatMessage({ id: 'SakslisteVelgerForm.Sortering' })}
-                  texts={[getSorteringsnavn(intl, getValgtSaksliste(sakslister, sakslisteId))]}
+                  texts={[getSorteringsnavn(intl, alleKodeverk, getValgtSaksliste(sakslister, sakslisteId))]}
                 />
               </FlexColumn>
             </>

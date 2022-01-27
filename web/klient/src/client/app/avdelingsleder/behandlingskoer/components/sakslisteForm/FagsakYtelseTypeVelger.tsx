@@ -2,7 +2,7 @@ import React, { useMemo, FunctionComponent } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { Undertekst } from 'nav-frontend-typografi';
 
-import Kodeverk from 'types/kodeverkTsType';
+import KodeverkMedNavn from 'types/kodeverkMedNavnTsType';
 import { restApiHooks, RestApiPathsKeys } from 'data/fplosRestApi';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import FagsakYtelseType from 'kodeverk/fagsakYtelseType';
@@ -10,7 +10,7 @@ import KodeverkType from 'kodeverk/kodeverkTyper';
 import useKodeverk from 'data/useKodeverk';
 import { RadioOption, RadioGroupField } from 'form/formIndex';
 
-const finnFagsakYtelseTypeNavn = (fagsakYtelseTyper: Kodeverk[], valgtFagsakYtelseType: string) => {
+const finnFagsakYtelseTypeNavn = (fagsakYtelseTyper: KodeverkMedNavn[], valgtFagsakYtelseType: string) => {
   const type = fagsakYtelseTyper.find((fyt) => fyt.kode === valgtFagsakYtelseType);
   return type ? type.navn : '';
 };

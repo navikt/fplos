@@ -14,13 +14,13 @@ import useKodeverk from 'data/useKodeverk';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import FagsakYtelseType from 'kodeverk/fagsakYtelseType';
 import KodeverkType from 'kodeverk/kodeverkTyper';
-import Kodeverk from 'types/kodeverkTsType';
+import KodeverkMedNavn from 'types/kodeverkMedNavnTsType';
 import OppgaverManueltPaVent from 'types/avdelingsleder/oppgaverManueltPaVentTsType';
 import ManueltPaVentGraf from './ManueltPaVentGraf';
 
 import styles from './manueltPaVentPanel.less';
 
-const finnFagsakYtelseTypeNavn = (fagsakYtelseTyper: Kodeverk[], valgtFagsakYtelseType: string): string => {
+const finnFagsakYtelseTypeNavn = (fagsakYtelseTyper: KodeverkMedNavn[], valgtFagsakYtelseType: string): string => {
   const type = fagsakYtelseTyper.find((fyt) => fyt.kode === valgtFagsakYtelseType);
   return type ? type.navn : '';
 };
@@ -122,7 +122,7 @@ export const ManueltPaVentPanel: FunctionComponent<OwnProps & WrappedComponentPr
         height={height}
         isFireUkerValgt={values.ukevalg === UKE_4}
         oppgaverManueltPaVent={oppgaverManueltPaVent && oppgaverManueltPaVent
-          .filter((ompv) => (values.valgtYtelsetype === ALLE_YTELSETYPER_VALGT ? true : values.valgtYtelsetype === ompv.fagsakYtelseType.kode))
+          .filter((ompv) => (values.valgtYtelsetype === ALLE_YTELSETYPER_VALGT ? true : values.valgtYtelsetype === ompv.fagsakYtelseType))
           .filter((ompv) => erDatoInnenforPeriode(ompv.behandlingFrist, values.ukevalg))}
       />
     </Form>

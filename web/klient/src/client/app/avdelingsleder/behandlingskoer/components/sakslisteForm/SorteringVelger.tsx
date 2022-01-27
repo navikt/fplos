@@ -5,7 +5,6 @@ import { Undertekst } from 'nav-frontend-typografi';
 import { restApiHooks, RestApiPathsKeys } from 'data/fplosRestApi';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import KodeverkType from 'kodeverk/kodeverkTyper';
-import Kodeverk from 'types/kodeverkTsType';
 import BehandlingType from 'kodeverk/behandlingType';
 import useKodeverk from 'data/useKodeverk';
 import KoSorteringType from 'types/avdelingsleder/koSorteringTsType';
@@ -16,7 +15,7 @@ import BelopSorteringValg from './BelopSorteringValg';
 
 interface OwnProps {
   valgtSakslisteId: number;
-  valgteBehandlingtyper?: Kodeverk[];
+  valgteBehandlingtyper?: string[];
   valgtAvdelingEnhet: string;
   erDynamiskPeriode: boolean;
   fra?: number;
@@ -27,10 +26,10 @@ interface OwnProps {
   hentAntallOppgaver: (sakslisteId: number, avdelingEnhet: string) => void;
 }
 
-const bareTilbakekrevingValgt = (valgteBehandlingtyper?: Kodeverk[]) => valgteBehandlingtyper
-  && valgteBehandlingtyper.some((type) => type.kode === BehandlingType.TILBAKEBETALING
-    || type.kode === BehandlingType.TILBAKEBETALING_REVURDERING)
-  && !valgteBehandlingtyper.some((type) => (type.kode !== BehandlingType.TILBAKEBETALING && type.kode !== BehandlingType.TILBAKEBETALING_REVURDERING));
+const bareTilbakekrevingValgt = (valgteBehandlingtyper?: string[]) => valgteBehandlingtyper
+  && valgteBehandlingtyper.some((type) => type === BehandlingType.TILBAKEBETALING
+    || type === BehandlingType.TILBAKEBETALING_REVURDERING)
+  && !valgteBehandlingtyper.some((type) => (type !== BehandlingType.TILBAKEBETALING && type !== BehandlingType.TILBAKEBETALING_REVURDERING));
 
 /**
  * SorteringVelger

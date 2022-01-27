@@ -7,7 +7,7 @@ import {
 } from 'nav-frontend-typografi';
 import { Column, Row } from 'nav-frontend-grid';
 
-import Kodeverk from 'types/kodeverkTsType';
+import KodeverkMedNavn from 'types/kodeverkMedNavnTsType';
 import Saksliste from 'types/avdelingsleder/sakslisteAvdelingTsType';
 import KodeverkType from 'kodeverk/kodeverkTyper';
 import Image from 'sharedComponents/Image';
@@ -34,25 +34,25 @@ const headerTextCodes = [
   'EMPTY_1',
 ];
 
-const formatStonadstyper = (fagsakYtelseTyper: Kodeverk[], valgteFagsakYtelseTyper?: Kodeverk[]): string | ReactNode => {
+const formatStonadstyper = (fagsakYtelseTyper: KodeverkMedNavn[], valgteFagsakYtelseTyper?: string[]): string | ReactNode => {
   if (!valgteFagsakYtelseTyper || valgteFagsakYtelseTyper.length === 0) {
     return <FormattedMessage id="GjeldendeSakslisterTabell.Alle" />;
   }
 
   return valgteFagsakYtelseTyper.map((fyt) => {
-    const type = fagsakYtelseTyper.find((def) => def.kode === fyt.kode);
+    const type = fagsakYtelseTyper.find((def) => def.kode === fyt);
     return type ? type.navn : '';
   }).join(', ');
 };
 
-const formatBehandlingstyper = (behandlingTyper: Kodeverk[], valgteBehandlingTyper?: Kodeverk[]): string | ReactNode => {
+const formatBehandlingstyper = (behandlingTyper: KodeverkMedNavn[], valgteBehandlingTyper?: string[]): string | ReactNode => {
   if (!valgteBehandlingTyper || valgteBehandlingTyper.length === 0
     || valgteBehandlingTyper.length === behandlingTyper.length) {
     return <FormattedMessage id="GjeldendeSakslisterTabell.Alle" />;
   }
 
   return valgteBehandlingTyper.map((bt) => {
-    const type = behandlingTyper.find((def) => def.kode === bt.kode);
+    const type = behandlingTyper.find((def) => def.kode === bt);
     return type ? type.navn : '';
   }).join(', ');
 };

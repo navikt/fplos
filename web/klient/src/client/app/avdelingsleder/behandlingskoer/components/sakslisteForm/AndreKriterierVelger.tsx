@@ -48,7 +48,7 @@ const AndreKriterierVelger: FunctionComponent<OwnProps> = ({
             onChange={(isChecked) => lagreSakslisteAndreKriterier({
               sakslisteId: valgtSakslisteId,
               avdelingEnhet: valgtAvdelingEnhet,
-              andreKriterierType: akt,
+              andreKriterierType: akt.kode,
               checked: isChecked,
               inkluder: true,
             }).then(() => {
@@ -66,7 +66,7 @@ const AndreKriterierVelger: FunctionComponent<OwnProps> = ({
                     onChange={(skalInkludere) => lagreSakslisteAndreKriterier({
                       sakslisteId: valgtSakslisteId,
                       avdelingEnhet: valgtAvdelingEnhet,
-                      andreKriterierType: akt,
+                      andreKriterierType: akt.kode,
                       checked: true,
                       inkluder: skalInkludere,
                     }).then(() => {

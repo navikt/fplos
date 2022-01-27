@@ -2,7 +2,7 @@ import React from 'react';
 import { action } from '@storybook/addon-actions';
 import { Story } from '@storybook/react';
 
-import { RestApiPathsKeys } from 'data/fplosRestApi';
+import { RestApiGlobalStatePathsKeys, RestApiPathsKeys } from 'data/fplosRestApi';
 import SakslisteVelgerForm from 'saksbehandler/behandlingskoer/components/SakslisteVelgerForm';
 import behandlingType from 'kodeverk/behandlingType';
 import fagsakYtelseType from 'kodeverk/fagsakYtelseType';
@@ -10,6 +10,7 @@ import koSortering from 'kodeverk/KoSortering';
 import andreKriterierType from 'kodeverk/andreKriterierType';
 import Saksliste from 'types/saksbehandler/sakslisteTsType';
 import Saksbehandler from 'types/saksbehandler/saksbehandlerTsType';
+import alleKodeverk from 'storybookUtils/mocks/alleKodeverk.json';
 
 import withIntl from 'storybookUtils/decorators/withIntl';
 import withRestApiProvider from 'storybookUtils/decorators/withRestApi';
@@ -27,6 +28,7 @@ const Template: Story<{ saksbehandlere: Saksbehandler[], sakslister: Saksliste[]
 }) => {
   const data = [
     { key: RestApiPathsKeys.SAKSLISTE_SAKSBEHANDLERE.name, data: saksbehandlere },
+    { key: RestApiGlobalStatePathsKeys.KODEVERK.name, data: alleKodeverk },
   ];
 
   return (
@@ -63,29 +65,14 @@ Default.args = {
   sakslister: [{
     sakslisteId: 1,
     navn: 'Saksliste 1',
-    behandlingTyper: [{
-      kode: behandlingType.FORSTEGANGSSOKNAD,
-      navn: 'Førstegangssøknad',
-    }, {
-      kode: behandlingType.REVURDERING,
-      navn: 'Revurdering',
-    }],
-    fagsakYtelseTyper: [{
-      kode: fagsakYtelseType.FORELDREPRENGER,
-      navn: 'Foreldrepenger',
-    }],
+    behandlingTyper: [behandlingType.FORSTEGANGSSOKNAD, behandlingType.REVURDERING],
+    fagsakYtelseTyper: [fagsakYtelseType.FORELDREPRENGER],
     andreKriterier: [{
-      andreKriterierType: {
-        kode: andreKriterierType.TIL_BESLUTTER,
-        navn: 'Til beslutter',
-      },
+      andreKriterierType: andreKriterierType.TIL_BESLUTTER,
       inkluder: true,
     }],
     sortering: {
-      sorteringType: {
-        kode: koSortering.BEHANDLINGSFRIST,
-        navn: 'Behandlingsfrist',
-      },
+      sorteringType: koSortering.BEHANDLINGSFRIST,
       fra: 2,
       til: 4,
       erDynamiskPeriode: true,
@@ -113,29 +100,14 @@ MedToSakslister.args = {
   sakslister: [{
     sakslisteId: 1,
     navn: 'Saksliste 1',
-    behandlingTyper: [{
-      kode: behandlingType.FORSTEGANGSSOKNAD,
-      navn: 'Førstegangssøknad',
-    }, {
-      kode: behandlingType.REVURDERING,
-      navn: 'Revurdering',
-    }],
-    fagsakYtelseTyper: [{
-      kode: fagsakYtelseType.FORELDREPRENGER,
-      navn: 'Foreldrepenger',
-    }],
+    behandlingTyper: [behandlingType.FORSTEGANGSSOKNAD, behandlingType.REVURDERING],
+    fagsakYtelseTyper: [fagsakYtelseType.FORELDREPRENGER],
     andreKriterier: [{
-      andreKriterierType: {
-        kode: andreKriterierType.TIL_BESLUTTER,
-        navn: 'Til beslutter',
-      },
+      andreKriterierType: andreKriterierType.TIL_BESLUTTER,
       inkluder: true,
     }],
     sortering: {
-      sorteringType: {
-        kode: koSortering.BEHANDLINGSFRIST,
-        navn: 'Behandlingsfrist',
-      },
+      sorteringType: koSortering.BEHANDLINGSFRIST,
       fra: 2,
       til: 4,
       erDynamiskPeriode: true,
@@ -143,29 +115,14 @@ MedToSakslister.args = {
   }, {
     sakslisteId: 2,
     navn: 'Saksliste 2',
-    behandlingTyper: [{
-      kode: behandlingType.FORSTEGANGSSOKNAD,
-      navn: 'Førstegangssøknad',
-    }, {
-      kode: behandlingType.KLAGE,
-      navn: 'Klage',
-    }],
-    fagsakYtelseTyper: [{
-      kode: fagsakYtelseType.SVANGERSKAPPENGER,
-      navn: 'Svangerskapspenger',
-    }],
+    behandlingTyper: [behandlingType.FORSTEGANGSSOKNAD, behandlingType.KLAGE],
+    fagsakYtelseTyper: [fagsakYtelseType.SVANGERSKAPPENGER],
     andreKriterier: [{
-      andreKriterierType: {
-        kode: andreKriterierType.UTBETALING_TIL_BRUKER,
-        navn: 'Utbetaling til bruker',
-      },
+      andreKriterierType: andreKriterierType.UTBETALING_TIL_BRUKER,
       inkluder: true,
     }],
     sortering: {
-      sorteringType: {
-        kode: koSortering.BEHANDLINGSFRIST,
-        navn: 'Behandlingsfrist',
-      },
+      sorteringType: koSortering.BEHANDLINGSFRIST,
       fra: 2,
       til: 4,
       erDynamiskPeriode: true,

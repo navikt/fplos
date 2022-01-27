@@ -24,20 +24,11 @@ const oppgaveForResevertAvAnnenModal = {
   personnummer: '1212',
   navn: 'Espen Utvikler',
   system: 'SAK',
-  behandlingstype: {
-    kode: BehandlingType.FORSTEGANGSSOKNAD,
-    navn: 'Førstegangssøknad',
-  },
-  behandlingStatus: {
-    kode: BehandlingStatus.BEHANDLING_UTREDES,
-    navn: 'Behandling utredes',
-  },
+  behandlingstype: BehandlingType.FORSTEGANGSSOKNAD,
+  behandlingStatus: BehandlingStatus.BEHANDLING_UTREDES,
   opprettetTidspunkt: '2019-01-01',
   behandlingsfrist: '2019-01-01',
-  fagsakYtelseType: {
-    kode: FagsakYtelseType.FORELDREPRENGER,
-    navn: 'Foreldrepenger',
-  },
+  fagsakYtelseType: FagsakYtelseType.FORELDREPRENGER,
   erTilSaksbehandling: true,
   behandlingId: '1',
   href: '',

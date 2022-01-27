@@ -44,89 +44,41 @@ const Template: Story<{ oppgaverApneEllerPaVent: OppgaverSomErApneEllerPaVent[] 
 export const Default = Template.bind({});
 Default.args = {
   oppgaverApneEllerPaVent: [{
-    behandlingVenteStatus: {
-      kode: behandlingVenteStatus.PA_VENT,
-      navn: 'På vent',
-    },
-    behandlingType: {
-      kode: behandlingType.FORSTEGANGSSOKNAD,
-      navn: 'Førstegangssøknad',
-    },
+    behandlingVenteStatus: behandlingVenteStatus.PA_VENT,
+    behandlingType: behandlingType.FORSTEGANGSSOKNAD,
     førsteUttakMåned: dayjs().startOf('month').format(ISO_DATE_FORMAT),
     antall: 2,
   }, {
-    behandlingVenteStatus: {
-      kode: behandlingVenteStatus.IKKE_PA_VENT,
-      navn: 'Ikke på vent',
-    },
-    behandlingType: {
-      kode: behandlingType.FORSTEGANGSSOKNAD,
-      navn: 'Førstegangssøknad',
-    },
+    behandlingVenteStatus: behandlingVenteStatus.IKKE_PA_VENT,
+    behandlingType: behandlingType.FORSTEGANGSSOKNAD,
     førsteUttakMåned: dayjs().startOf('month').format(ISO_DATE_FORMAT),
     antall: 5,
   }, {
-    behandlingVenteStatus: {
-      kode: behandlingVenteStatus.IKKE_PA_VENT,
-      navn: 'Ikke på vent',
-    },
-    behandlingType: {
-      kode: behandlingType.REVURDERING,
-      navn: 'Revurdering',
-    },
+    behandlingVenteStatus: behandlingVenteStatus.IKKE_PA_VENT,
+    behandlingType: behandlingType.REVURDERING,
     førsteUttakMåned: dayjs().startOf('month').subtract(4, 'M').format(ISO_DATE_FORMAT),
     antall: 2,
   }, {
-    behandlingVenteStatus: {
-      kode: behandlingVenteStatus.IKKE_PA_VENT,
-      navn: 'Ikke på vent',
-    },
-    behandlingType: {
-      kode: behandlingType.KLAGE,
-      navn: 'Klage',
-    },
+    behandlingVenteStatus: behandlingVenteStatus.IKKE_PA_VENT,
+    behandlingType: behandlingType.KLAGE,
     antall: 2,
   }, {
-    behandlingVenteStatus: {
-      kode: behandlingVenteStatus.PA_VENT,
-      navn: 'På vent',
-    },
-    behandlingType: {
-      kode: behandlingType.KLAGE,
-      navn: 'Klage',
-    },
+    behandlingVenteStatus: behandlingVenteStatus.PA_VENT,
+    behandlingType: behandlingType.KLAGE,
     antall: 6,
   }, {
-    behandlingVenteStatus: {
-      kode: behandlingVenteStatus.PA_VENT,
-      navn: 'På vent',
-    },
-    behandlingType: {
-      kode: behandlingType.REVURDERING,
-      navn: 'Revurdering',
-    },
+    behandlingVenteStatus: behandlingVenteStatus.PA_VENT,
+    behandlingType: behandlingType.REVURDERING,
     førsteUttakMåned: dayjs().startOf('month').subtract(4, 'M').format(ISO_DATE_FORMAT),
     antall: 6,
   }, {
-    behandlingVenteStatus: {
-      kode: behandlingVenteStatus.PA_VENT,
-      navn: 'På vent',
-    },
-    behandlingType: {
-      kode: behandlingType.DOKUMENTINNSYN,
-      navn: 'Dokumentinnsyn',
-    },
+    behandlingVenteStatus: behandlingVenteStatus.PA_VENT,
+    behandlingType: behandlingType.DOKUMENTINNSYN,
     førsteUttakMåned: dayjs().startOf('month').subtract(10, 'M').format(ISO_DATE_FORMAT),
     antall: 3,
   }, {
-    behandlingVenteStatus: {
-      kode: behandlingVenteStatus.IKKE_PA_VENT,
-      navn: 'Ikke på vent',
-    },
-    behandlingType: {
-      kode: behandlingType.DOKUMENTINNSYN,
-      navn: 'Dokumentinnsyn',
-    },
+    behandlingVenteStatus: behandlingVenteStatus.IKKE_PA_VENT,
+    behandlingType: behandlingType.DOKUMENTINNSYN,
     førsteUttakMåned: dayjs().startOf('month').subtract(10, 'M').format(ISO_DATE_FORMAT),
     antall: 5,
   }],

@@ -12,6 +12,9 @@ import CalendarToggleButton from 'sharedComponents/datepicker/CalendarToggleButt
 import OppgaveReservasjonEndringDatoModal from 'saksbehandler/behandlingskoer/components/menu/OppgaveReservasjonEndringDatoModal';
 import FlyttReservasjonModal from 'saksbehandler/behandlingskoer/components/menu/FlyttReservasjonModal';
 import { getDateAndTime } from 'utils/dateUtils';
+import AlleKodeverk from 'types/alleKodeverkTsType';
+import { getKodeverknavnFraKode } from 'utils/kodeverkUtils';
+import KodeverkType from 'kodeverk/kodeverkTyper';
 
 import removeIcon from 'images/remove.svg';
 import gruppeHoverUrl from 'images/gruppe_hover.svg';
@@ -33,6 +36,7 @@ interface OwnProps {
   reservasjoner: Reservasjon[];
   opphevReservasjon: (oppgaveId: number) => Promise<string>;
   hentAvdelingensReservasjoner: () => void;
+  alleKodeverk: AlleKodeverk;
 }
 
 interface StateTsProps {
@@ -81,7 +85,7 @@ class ReservasjonerTabell extends Component<OwnProps, StateTsProps> {
   // eslint-disable-next-line react/no-arrow-function-lifecycle
   render = (): ReactNode => {
     const {
-      reservasjoner, opphevReservasjon, hentAvdelingensReservasjoner,
+      reservasjoner, opphevReservasjon, hentAvdelingensReservasjoner, alleKodeverk,
     } = this.props;
     const {
       showReservasjonEndringDatoModal, showFlyttReservasjonModal, valgtReservasjon,
@@ -105,7 +109,7 @@ class ReservasjonerTabell extends Component<OwnProps, StateTsProps> {
               <TableRow key={reservasjon.oppgaveId}>
                 <TableColumn>{reservasjon.reservertAvNavn}</TableColumn>
                 <TableColumn>{reservasjon.oppgaveSaksNr}</TableColumn>
-                <TableColumn>{reservasjon.behandlingType.navn}</TableColumn>
+                <TableColumn>{getKodeverknavnFraKode(reservasjon.behandlingType, KodeverkType.BEHANDLING_TYPE, alleKodeverk)}</TableColumn>
                 <TableColumn>
                   <FormattedMessage
                     id="ReservasjonerTabell.ReservertTilFormat"

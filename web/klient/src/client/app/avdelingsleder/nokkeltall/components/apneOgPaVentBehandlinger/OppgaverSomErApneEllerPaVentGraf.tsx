@@ -102,9 +102,9 @@ const OppgaverSomErApneEllerPaVentGraf: FunctionComponent<OwnProps & WrappedComp
   const datoTekst = intl.formatMessage({ id: 'OppgaverSomErApneEllerPaVentGraf.Dato' });
 
   const oppgaverPaVentPerDato = useMemo(() => finnAntallPerDato(oppgaverApneEllerPaVent
-    .filter((o) => o.behandlingVenteStatus.kode === BehandlingVenteStatus.PA_VENT)), [oppgaverApneEllerPaVent]);
+    .filter((o) => o.behandlingVenteStatus === BehandlingVenteStatus.PA_VENT)), [oppgaverApneEllerPaVent]);
   const oppgaverIkkePaVentPerDato = useMemo(() => finnAntallPerDato(oppgaverApneEllerPaVent
-    .filter((o) => o.behandlingVenteStatus.kode === BehandlingVenteStatus.IKKE_PA_VENT)), [oppgaverApneEllerPaVent]);
+    .filter((o) => o.behandlingVenteStatus === BehandlingVenteStatus.IKKE_PA_VENT)), [oppgaverApneEllerPaVent]);
 
   const [periodeStart, periodeSlutt] = useMemo(() => finnGrafPeriode(oppgaverApneEllerPaVent), [oppgaverApneEllerPaVent]);
 

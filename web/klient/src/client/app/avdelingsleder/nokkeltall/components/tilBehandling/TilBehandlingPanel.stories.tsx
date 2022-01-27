@@ -44,69 +44,33 @@ const Template: Story<{ oppgaverPerDato: OppgaveForDato[] }> = ({
 export const Default = Template.bind({});
 Default.args = {
   oppgaverPerDato: [{
-    fagsakYtelseType: {
-      kode: fagsakYtelseType.FORELDREPRENGER,
-      navn: 'Foreldreprenger',
-    },
-    behandlingType: {
-      kode: behandlingType.FORSTEGANGSSOKNAD,
-      navn: 'Førstegangssøknad',
-    },
+    fagsakYtelseType: fagsakYtelseType.FORELDREPRENGER,
+    behandlingType: behandlingType.FORSTEGANGSSOKNAD,
     opprettetDato: dayjs().format(ISO_DATE_FORMAT),
     antall: 1,
   }, {
-    fagsakYtelseType: {
-      kode: fagsakYtelseType.FORELDREPRENGER,
-      navn: 'Foreldreprenger',
-    },
-    behandlingType: {
-      kode: behandlingType.FORSTEGANGSSOKNAD,
-      navn: 'Førstegangssøknad',
-    },
+    fagsakYtelseType: fagsakYtelseType.FORELDREPRENGER,
+    behandlingType: behandlingType.FORSTEGANGSSOKNAD,
     opprettetDato: dayjs().subtract(3, 'd').format(ISO_DATE_FORMAT),
     antall: 2,
   }, {
-    fagsakYtelseType: {
-      kode: fagsakYtelseType.FORELDREPRENGER,
-      navn: 'Foreldreprenger',
-    },
-    behandlingType: {
-      kode: behandlingType.KLAGE,
-      navn: 'Klage',
-    },
+    fagsakYtelseType: fagsakYtelseType.FORELDREPRENGER,
+    behandlingType: behandlingType.KLAGE,
     opprettetDato: dayjs().subtract(4, 'd').format(ISO_DATE_FORMAT),
     antall: 2,
   }, {
-    fagsakYtelseType: {
-      kode: fagsakYtelseType.FORELDREPRENGER,
-      navn: 'Foreldreprenger',
-    },
-    behandlingType: {
-      kode: behandlingType.FORSTEGANGSSOKNAD,
-      navn: 'Førstegangssøknad',
-    },
+    fagsakYtelseType: fagsakYtelseType.FORELDREPRENGER,
+    behandlingType: behandlingType.FORSTEGANGSSOKNAD,
     opprettetDato: dayjs().subtract(4, 'd').format(ISO_DATE_FORMAT),
     antall: 6,
   }, {
-    fagsakYtelseType: {
-      kode: fagsakYtelseType.FORELDREPRENGER,
-      navn: 'Foreldreprenger',
-    },
-    behandlingType: {
-      kode: behandlingType.DOKUMENTINNSYN,
-      navn: 'Dokumentinnsyn',
-    },
+    fagsakYtelseType: fagsakYtelseType.FORELDREPRENGER,
+    behandlingType: behandlingType.DOKUMENTINNSYN,
     opprettetDato: dayjs().subtract(10, 'd').format(ISO_DATE_FORMAT),
     antall: 3,
   }, {
-    fagsakYtelseType: {
-      kode: fagsakYtelseType.FORELDREPRENGER,
-      navn: 'Foreldreprenger',
-    },
-    behandlingType: {
-      kode: behandlingType.DOKUMENTINNSYN,
-      navn: 'Dokumentinnsyn',
-    },
+    fagsakYtelseType: fagsakYtelseType.FORELDREPRENGER,
+    behandlingType: behandlingType.DOKUMENTINNSYN,
     opprettetDato: dayjs().subtract(16, 'd').format(ISO_DATE_FORMAT),
     antall: 3,
   }],

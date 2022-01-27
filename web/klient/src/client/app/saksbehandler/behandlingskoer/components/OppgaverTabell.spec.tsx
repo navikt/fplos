@@ -13,7 +13,7 @@ describe('<OppgaverTabell>', () => {
     expect(screen.getByText('Helge Utvikler 233')).toBeInTheDocument();
     expect(screen.getByText('Klage')).toBeInTheDocument();
     expect(screen.getByText('Espen Utvikler 1212')).toBeInTheDocument();
-    expect(screen.getByText('Førstegangssøknad')).toBeInTheDocument();
+    expect(screen.getByText('Førstegangsbehandling')).toBeInTheDocument();
   });
 
   it('skal vise tom tabell når det ikke er behandlinger for køen', async () => {

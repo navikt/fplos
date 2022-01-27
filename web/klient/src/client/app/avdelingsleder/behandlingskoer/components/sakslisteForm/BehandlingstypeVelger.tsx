@@ -50,7 +50,7 @@ const BehandlingstypeVelger: FunctionComponent<OwnProps> = ({
               onChange={(isChecked) => lagreSakslisteBehandlingstype({
                 sakslisteId: valgtSakslisteId,
                 avdelingEnhet: valgtAvdelingEnhet,
-                behandlingType: bt,
+                behandlingType: bt.kode,
                 checked: isChecked,
               }).then(() => {
                 hentAntallOppgaver(valgtSakslisteId, valgtAvdelingEnhet);

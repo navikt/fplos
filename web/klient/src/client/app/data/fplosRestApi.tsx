@@ -1,4 +1,3 @@
-import Kodeverk from 'types/kodeverkTsType';
 import NavAnsatt from 'types/navAnsattTsType';
 import Driftsmelding from 'types/driftsmeldingTsType';
 import Avdeling from 'types/avdelingsleder/avdelingTsType';
@@ -17,12 +16,13 @@ import NyeOgFerdigstilteOppgaver from 'types/saksbehandler/nyeOgFerdigstilteOppg
 import OppgaveStatus from 'types/saksbehandler/oppgaveStatusTsType';
 import SaksbehandlerForFlytting from 'types/saksbehandler/saksbehandlerForFlyttingTsType';
 import Fagsak from 'types/saksbehandler/fagsakTsType';
+import AlleKodeverk from 'types/alleKodeverkTsType';
 
 import { RestApiConfigBuilder, createRequestApi, RestKey } from './rest-api';
 import { RestApiHooks } from './rest-api-hooks';
 
 export const RestApiGlobalStatePathsKeys = {
-  KODEVERK: new RestKey<{[key: string]: Kodeverk[]}, void>('KODEVERK'),
+  KODEVERK: new RestKey<AlleKodeverk, void>('KODEVERK'),
   NAV_ANSATT: new RestKey<NavAnsatt, void>('NAV_ANSATT'),
   FPSAK_URL: new RestKey<{ verdi: string }, void>('FPSAK_URL'),
   FPTILBAKE_URL: new RestKey<{ verdi: string }, void>('FPTILBAKE_URL'),
@@ -65,7 +65,7 @@ export const RestApiPathsKeys = {
   SLETT_SAKSLISTE: new RestKey<void, { sakslisteId: number, avdelingEnhet: string }>('SLETT_SAKSLISTE'),
   LAGRE_SAKSLISTE_NAVN: new RestKey<void, { sakslisteId: number, navn: string, avdelingEnhet: string }>('LAGRE_SAKSLISTE_NAVN'),
   LAGRE_SAKSLISTE_BEHANDLINGSTYPE: new RestKey<void, {
-    sakslisteId: number, avdelingEnhet: string, behandlingType: Kodeverk, checked: boolean,
+    sakslisteId: number, avdelingEnhet: string, behandlingType: string, checked: boolean,
   }>('LAGRE_SAKSLISTE_BEHANDLINGSTYPE'),
   LAGRE_SAKSLISTE_FAGSAK_YTELSE_TYPE: new RestKey<void, {
     sakslisteId: number, avdelingEnhet: string, fagsakYtelseType?: string,
@@ -83,7 +83,7 @@ export const RestApiPathsKeys = {
     sakslisteId: number, fra: number, til: number, avdelingEnhet: string,
   }>('LAGRE_SAKSLISTE_SORTERING_INTERVALL'),
   LAGRE_SAKSLISTE_ANDRE_KRITERIER: new RestKey<void, {
-    sakslisteId: number, avdelingEnhet: string, andreKriterierType: Kodeverk, checked: boolean, inkluder: boolean,
+    sakslisteId: number, avdelingEnhet: string, andreKriterierType: string, checked: boolean, inkluder: boolean,
   }>('LAGRE_SAKSLISTE_ANDRE_KRITERIER'),
   LAGRE_SAKSLISTE_SAKSBEHANDLER: new RestKey<void, {
     sakslisteId: number, brukerIdent: string, checked: boolean, avdelingEnhet: string,
