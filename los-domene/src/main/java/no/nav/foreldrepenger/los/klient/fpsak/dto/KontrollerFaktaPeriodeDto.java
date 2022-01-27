@@ -4,7 +4,6 @@ import java.math.BigDecimal;
 
 public record KontrollerFaktaPeriodeDto(OverføringÅrsak overføringÅrsak,
                                         UtsettelseÅrsak utsettelseÅrsak,
-                                        UttakPeriodeVurderingType resultat,
                                         BigDecimal arbeidstidsprosent) {
 
     public boolean gjelderSykdom() {
@@ -12,12 +11,10 @@ public record KontrollerFaktaPeriodeDto(OverføringÅrsak overføringÅrsak,
     }
 
     private boolean overføringGjelderSykdom() {
-        return overføringÅrsak != null && resultat != null
-                && overføringÅrsak.gjelderSykdom() && resultat.erOmsøktOgIkkeAvklart();
+        return overføringÅrsak != null && overføringÅrsak.gjelderSykdom();
     }
 
     private boolean utsettelseGjelderSykdom() {
-        return utsettelseÅrsak != null && resultat != null
-                && utsettelseÅrsak.gjelderSykdom() && resultat.erOmsøktOgIkkeAvklart();
+        return utsettelseÅrsak != null && utsettelseÅrsak.gjelderSykdom();
     }
 }

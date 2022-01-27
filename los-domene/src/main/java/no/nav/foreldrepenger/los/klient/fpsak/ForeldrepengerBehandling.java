@@ -98,7 +98,10 @@ public interface ForeldrepengerBehandling {
         if (uttakLink.isPresent()) {
             var kontrollerFaktaData = hentFraResourceLink(uttakLink.get(), KontrollerFaktaDataDto.class);
             if (kontrollerFaktaData.isPresent()) {
-                return new UttakEgenskaper(harVurderSykdom(kontrollerFaktaData.get()), harGraderingFra(kontrollerFaktaData.get()));
+                var uttakEgenskaper = new UttakEgenskaper(harVurderSykdom(kontrollerFaktaData.get()),
+                        harGraderingFra(kontrollerFaktaData.get()));
+                LOG.info("Utleder uttaksegenskaper {}", uttakEgenskaper);
+                return uttakEgenskaper;
             }
             LOG.warn("Kunne ikke hente gradering for behandlingId " + behandlingId);
         }
