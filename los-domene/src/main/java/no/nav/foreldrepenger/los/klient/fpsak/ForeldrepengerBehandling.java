@@ -57,6 +57,7 @@ public interface ForeldrepengerBehandling {
                 .medBehandlingstidFrist(behandlingDto.behandlingsfristTid())
                 .medFørsteUttaksdag(new Lazy<>(() -> hentFørsteUttaksdato(links)))
                 .medErBerørtBehandling(harBehandlingÅrsakType(behandlingDto, BehandlingÅrsakType.BERØRT_BEHANDLING))
+                .medErPleiepengerBehandling(harBehandlingÅrsakType(behandlingDto, BehandlingÅrsakType.RE_VEDTAK_PLEIEPENGER))
                 .medErEndringssøknad(harBehandlingÅrsakType(behandlingDto, BehandlingÅrsakType.RE_ENDRING_FRA_BRUKER))
                 .medKontrollresultat(new Lazy<>(() -> hentKontrollresultat(links)))
                 .medUttakEgenskaper(new Lazy<>(() -> hentUttakEgenskaper(behandlingId, links)));

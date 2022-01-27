@@ -25,6 +25,7 @@ public class BehandlingFpsak {
     private Lazy<KontrollresultatDto> kontrollresultat;
     private boolean erBerørtBehandling;
     private boolean erEndringssøknad;
+    private boolean erPleiepengerBehandling;
     private BehandlingType behandlingType;
     private FagsakYtelseType ytelseType;
     private LocalDateTime behandlingOpprettet;
@@ -76,6 +77,9 @@ public class BehandlingFpsak {
     }
 
     public boolean harVurderSykdom() {
+        if (erPleiepengerBehandling) {
+            return true;
+        }
         var svar = Lazy.get(uttakEgenskaper);
         if (svar == null) {
             return false;
@@ -146,6 +150,7 @@ public class BehandlingFpsak {
         private Lazy<Boolean> harRefusjonskravFraArbeidsgiver;
         private boolean erBerørtBehandling = false;
         private boolean erEndringssøknad = false;
+        private boolean erPleiepengerBehandling = false;
         private BehandlingType behandlingType;
         private FagsakYtelseType ytelseType;
         private Lazy<UttakEgenskaper> uttakEgenskaper;
@@ -205,6 +210,11 @@ public class BehandlingFpsak {
             return this;
         }
 
+        public Builder medErPleiepengerBehandling(boolean erPleiepengerBehandling) {
+            this.erPleiepengerBehandling = erPleiepengerBehandling;
+            return this;
+        }
+
         public Builder medErEndringssøknad(boolean erEndringssøknad) {
             this.erEndringssøknad = erEndringssøknad;
             return this;
@@ -243,6 +253,7 @@ public class BehandlingFpsak {
             behandlingFpsak.behandlingOpprettet = this.behandlingOpprettet;
             behandlingFpsak.førsteUttaksdag = this.førsteUttaksdag;
             behandlingFpsak.erBerørtBehandling = this.erBerørtBehandling;
+            behandlingFpsak.erPleiepengerBehandling = this.erPleiepengerBehandling;
             behandlingFpsak.erEndringssøknad = this.erEndringssøknad;
             behandlingFpsak.behandlingType = this.behandlingType;
             behandlingFpsak.ytelseType = this.ytelseType;
@@ -261,6 +272,7 @@ public class BehandlingFpsak {
                 ", behandlingstidFrist=" + behandlingstidFrist +
                 ", erBerørtBehandling=" + erBerørtBehandling +
                 ", erEndringssøknad=" + erEndringssøknad +
+                ", erPleiepengerBehandling=" + erPleiepengerBehandling +
                 ", behandlingType=" + behandlingType +
                 ", ytelseType=" + ytelseType +
                 ", kontrollresultat=" + kontrollresultat +

@@ -7,7 +7,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public enum BehandlingÅrsakType {
     BERØRT_BEHANDLING("BERØRT-BEHANDLING", "Endring i den andre forelderens uttak"),
-    RE_ENDRING_FRA_BRUKER("RE-END-FRA-BRUKER", "Endringssøknad fra bruker");
+    RE_ENDRING_FRA_BRUKER("RE-END-FRA-BRUKER", "Endringssøknad fra bruker"),
+    RE_VEDTAK_PLEIEPENGER("RE-VEDTAK-PSB", "Pleiepenger");
 
     private final String navn;
     private final String kode;

@@ -27,4 +27,12 @@ class FpsakOppgaveEgenskapFinnerTest {
                 .build());
         assertThat(resultat.getAndreKriterier()).doesNotContain(AndreKriterierType.VURDER_FARESIGNALER);
     }
+
+    @Test
+    void skalVurdereSykdomHvisPleiepenger() {
+        var resultat = new FpsakOppgaveEgenskapFinner(BehandlingFpsak.builder()
+                .medErPleiepengerBehandling(true)
+                .build());
+        assertThat(resultat.getAndreKriterier()).contains(AndreKriterierType.VURDER_SYKDOM);
+    }
 }
