@@ -57,6 +57,7 @@ public interface ForeldrepengerBehandling {
                 .medBehandlingstidFrist(behandlingDto.behandlingsfristTid())
                 .medFørsteUttaksdag(new Lazy<>(() -> hentFørsteUttaksdato(links)))
                 .medErBerørtBehandling(harBehandlingÅrsakType(behandlingDto, BehandlingÅrsakType.BERØRT_BEHANDLING))
+                .medErPleiepengerBehandling(harBehandlingÅrsakType(behandlingDto, BehandlingÅrsakType.RE_VEDTAK_PLEIEPENGER))
                 .medErEndringssøknad(harBehandlingÅrsakType(behandlingDto, BehandlingÅrsakType.RE_ENDRING_FRA_BRUKER))
                 .medKontrollresultat(new Lazy<>(() -> hentKontrollresultat(links)))
                 .medUttakEgenskaper(new Lazy<>(() -> hentUttakEgenskaper(behandlingId, links)));
@@ -97,7 +98,10 @@ public interface ForeldrepengerBehandling {
         if (uttakLink.isPresent()) {
             var kontrollerFaktaData = hentFraResourceLink(uttakLink.get(), KontrollerFaktaDataDto.class);
             if (kontrollerFaktaData.isPresent()) {
-                return new UttakEgenskaper(harVurderSykdom(kontrollerFaktaData.get()), harGraderingFra(kontrollerFaktaData.get()));
+                var uttakEgenskaper = new UttakEgenskaper(harVurderSykdom(kontrollerFaktaData.get()),
+                        harGraderingFra(kontrollerFaktaData.get()));
+                LOG.info("Utleder uttaksegenskaper {}", uttakEgenskaper);
+                return uttakEgenskaper;
             }
             LOG.warn("Kunne ikke hente gradering for behandlingId " + behandlingId);
         }
