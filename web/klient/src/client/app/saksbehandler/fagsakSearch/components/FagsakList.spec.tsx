@@ -12,6 +12,5 @@ describe('<FagsakList>', () => {
     expect(await screen.findByText('Saksnummer')).toBeInTheDocument();
     expect(screen.getByText('12213234')).toBeInTheDocument();
     expect(screen.getByText('Under behandling')).toBeInTheDocument();
-    expect(screen.getByText('Behandling utredes')).toBeInTheDocument();
   });
 });

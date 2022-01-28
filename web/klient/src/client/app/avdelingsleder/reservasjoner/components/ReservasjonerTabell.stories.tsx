@@ -3,6 +3,7 @@ import { action } from '@storybook/addon-actions';
 
 import ReservasjonerTabell from 'avdelingsleder/reservasjoner/components/ReservasjonerTabell';
 import behandlingType from 'kodeverk/behandlingType';
+import alleKodeverk from 'storybookUtils/mocks/alleKodeverk.json';
 
 import withIntl from 'storybookUtils/decorators/withIntl';
 
@@ -17,6 +18,7 @@ export const ViseAtIngenReservasjonerBleFunnet = () => (
     reservasjoner={[]}
     opphevReservasjon={action('button-click') as () => Promise<string>}
     hentAvdelingensReservasjoner={action('button-click')}
+    alleKodeverk={alleKodeverk}
   />
 );
 
@@ -27,20 +29,14 @@ export const VisTabellMedReservasjoner = () => {
     reservertTilTidspunkt: '2020-01-10',
     oppgaveId: 1,
     oppgaveSaksNr: 122234,
-    behandlingType: {
-      kode: behandlingType.FORSTEGANGSSOKNAD,
-      navn: 'Førstegangssøknad',
-    },
+    behandlingType: behandlingType.FORSTEGANGSSOKNAD,
   }, {
     reservertAvUid: 'gtfbrt-tbrtb',
     reservertAvNavn: 'Eirik Utvikler',
     reservertTilTidspunkt: '2020-01-01',
     oppgaveId: 2,
     oppgaveSaksNr: 23454,
-    behandlingType: {
-      kode: behandlingType.KLAGE,
-      navn: 'Klage',
-    },
+    behandlingType: behandlingType.KLAGE,
   }]);
 
   const opphevReservasjon = useCallback((oppgaveId) => {
@@ -52,6 +48,7 @@ export const VisTabellMedReservasjoner = () => {
       reservasjoner={reservasjoner}
       opphevReservasjon={opphevReservasjon as () => Promise<string>}
       hentAvdelingensReservasjoner={action('button-click')}
+      alleKodeverk={alleKodeverk}
     />
   );
 };

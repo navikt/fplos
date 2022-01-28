@@ -5,7 +5,7 @@ import { FormattedMessage, injectIntl, WrappedComponentProps } from 'react-intl'
 import { Normaltekst, Element } from 'nav-frontend-typografi';
 import NavFrontendChevron from 'nav-frontend-chevron';
 
-import { restApiHooks, RestApiPathsKeys } from 'data/fplosRestApi';
+import { RestApiGlobalStatePathsKeys, restApiHooks, RestApiPathsKeys } from 'data/fplosRestApi';
 import TimeoutError from 'data/rest-api/src/requestApi/error/TimeoutError';
 import { getDateAndTime } from 'utils/dateUtils';
 import Image from 'sharedComponents/Image';
@@ -14,6 +14,8 @@ import Oppgave from 'types/saksbehandler/oppgaveTsType';
 import OppgaveStatus from 'types/saksbehandler/oppgaveStatusTsType';
 import Table from 'sharedComponents/table/Table';
 import TableRow from 'sharedComponents/table/TableRow';
+import { getKodeverknavnFraKode } from 'utils/kodeverkUtils';
+import KodeverkType from 'kodeverk/kodeverkTyper';
 import TableColumn from 'sharedComponents/table/TableColumn';
 import DateLabel from 'sharedComponents/DateLabel';
 import menuIconBlueUrl from 'images/ic-menu-18px_blue.svg';
@@ -81,6 +83,8 @@ export const OppgaverTabell: FunctionComponent<OwnProps & WrappedComponentProps>
     left: 0,
     top: 0,
   });
+
+  const alleKodeverk = restApiHooks.useGlobalStateRestApiData(RestApiGlobalStatePathsKeys.KODEVERK);
 
   const { startRequest: forlengOppgavereservasjon } = restApiHooks.useRestApiRunner(RestApiPathsKeys.FORLENG_OPPGAVERESERVASJON);
 
@@ -171,7 +175,7 @@ export const OppgaverTabell: FunctionComponent<OwnProps & WrappedComponentProps>
                 model={oppgave}
               >
                 <TableColumn>{oppgave.navn ? `${oppgave.navn} ${oppgave.personnummer}` : '<navn>'}</TableColumn>
-                <TableColumn>{oppgave.behandlingstype.navn}</TableColumn>
+                <TableColumn>{getKodeverknavnFraKode(oppgave.behandlingstype, KodeverkType.BEHANDLING_TYPE, alleKodeverk)}</TableColumn>
                 <TableColumn>{oppgave.opprettetTidspunkt && <DateLabel dateString={oppgave.opprettetTidspunkt} />}</TableColumn>
                 <TableColumn>{oppgave.behandlingsfrist && <DateLabel dateString={oppgave.behandlingsfrist} />}</TableColumn>
                 <TableColumn>

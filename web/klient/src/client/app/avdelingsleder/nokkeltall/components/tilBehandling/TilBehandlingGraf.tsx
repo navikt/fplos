@@ -2,10 +2,10 @@ import React, { FunctionComponent, useMemo } from 'react';
 import dayjs from 'dayjs';
 import Panel from 'nav-frontend-paneler';
 import ReactECharts from 'sharedComponents/echart/ReactEcharts';
-import Kodeverk from 'types/kodeverkTsType';
 import BehandlingType from 'kodeverk/behandlingType';
 import { dateFormat } from 'utils/dateUtils';
 import { ISO_DATE_FORMAT } from 'utils/formats';
+import KodeverkMedNavn from 'types/kodeverkMedNavnTsType';
 
 const behandlingstypeOrder = [
   BehandlingType.TILBAKEBETALING_REVURDERING,
@@ -26,7 +26,7 @@ const behandlingstypeFarger = {
 };
 
 export interface OppgaveForDatoGraf {
-  behandlingType: Kodeverk;
+  behandlingType: string;
   opprettetDato: string;
   antall: number;
 }
@@ -45,7 +45,7 @@ const sorterBehandlingtyper = (b1: string, b2: string): number => {
   return index1 > index2 ? -1 : 1;
 };
 
-const finnBehandlingTypeNavn = (behandlingTyper: Kodeverk[], behandlingTypeKode: string): string => {
+const finnBehandlingTypeNavn = (behandlingTyper: KodeverkMedNavn[], behandlingTypeKode: string): string => {
   const type = behandlingTyper.find((bt) => bt.kode === behandlingTypeKode);
   return type ? type.navn : '';
 };
@@ -57,10 +57,10 @@ const konverterTilKoordinaterGruppertPaBehandlingstype = (oppgaverForAvdeling: O
       y: o.antall,
     };
 
-    const eksisterendeKoordinater = acc[o.behandlingType.kode];
+    const eksisterendeKoordinater = acc[o.behandlingType];
     return {
       ...acc,
-      [o.behandlingType.kode]: (eksisterendeKoordinater ? eksisterendeKoordinater.concat(nyKoordinat) : [nyKoordinat]),
+      [o.behandlingType]: (eksisterendeKoordinater ? eksisterendeKoordinater.concat(nyKoordinat) : [nyKoordinat]),
     };
   }, {} as Record<string, Koordinat[]>);
 
@@ -85,7 +85,7 @@ const fyllInnManglendeDatoerOgSorterEtterDato = (
 
 interface OwnProps {
   height: number;
-  behandlingTyper: Kodeverk[];
+  behandlingTyper: KodeverkMedNavn[];
   oppgaverPerDato: OppgaveForDatoGraf[];
   isToUkerValgt: boolean;
 }

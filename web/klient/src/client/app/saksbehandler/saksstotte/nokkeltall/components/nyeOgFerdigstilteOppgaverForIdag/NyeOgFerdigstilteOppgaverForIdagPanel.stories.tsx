@@ -43,34 +43,22 @@ const Template: Story<{ nyeOgFerdigstilteOppgaver?: NyeOgFerdigstilteOppgaver[] 
 export const Default = Template.bind({});
 Default.args = {
   nyeOgFerdigstilteOppgaver: [{
-    behandlingType: {
-      kode: behandlingType.FORSTEGANGSSOKNAD,
-      navn: 'Førstegangssøknad',
-    },
+    behandlingType: behandlingType.FORSTEGANGSSOKNAD,
     antallNye: 10,
     antallFerdigstilte: 20,
     dato: dayjs().format(ISO_DATE_FORMAT),
   }, {
-    behandlingType: {
-      kode: behandlingType.KLAGE,
-      navn: 'Klage',
-    },
+    behandlingType: behandlingType.KLAGE,
     antallNye: 23,
     antallFerdigstilte: 2,
     dato: dayjs().format(ISO_DATE_FORMAT),
   }, {
-    behandlingType: {
-      kode: behandlingType.REVURDERING,
-      navn: 'Revurdering',
-    },
+    behandlingType: behandlingType.REVURDERING,
     antallNye: 3,
     antallFerdigstilte: 24,
     dato: dayjs().format(ISO_DATE_FORMAT),
   }, {
-    behandlingType: {
-      kode: behandlingType.DOKUMENTINNSYN,
-      navn: 'Dokumentinnsyn',
-    },
+    behandlingType: behandlingType.DOKUMENTINNSYN,
     antallNye: 23,
     antallFerdigstilte: 12,
     dato: dayjs().format(ISO_DATE_FORMAT),

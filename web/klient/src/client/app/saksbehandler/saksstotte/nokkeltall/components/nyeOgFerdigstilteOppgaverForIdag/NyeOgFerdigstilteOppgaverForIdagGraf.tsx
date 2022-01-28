@@ -1,10 +1,10 @@
 import React, { FunctionComponent, useMemo } from 'react';
 import { injectIntl, WrappedComponentProps } from 'react-intl';
 import Panel from 'nav-frontend-paneler';
-import Kodeverk from 'types/kodeverkTsType';
 import NyeOgFerdigstilteOppgaver from 'types/saksbehandler/nyeOgFerdigstilteOppgaverTsType';
 import BehandlingType from 'kodeverk/behandlingType';
 import ReactECharts from 'sharedComponents/echart/ReactEcharts';
+import KodeverkMedNavn from 'types/kodeverkMedNavnTsType';
 
 const behandlingstypeOrder = [
   BehandlingType.TILBAKEBETALING_REVURDERING,
@@ -16,7 +16,7 @@ const behandlingstypeOrder = [
 
 interface OwnProps {
   height: number;
-  behandlingTyper: Kodeverk[];
+  behandlingTyper: KodeverkMedNavn[];
   nyeOgFerdigstilteOppgaver: NyeOgFerdigstilteOppgaver[];
 }
 
@@ -42,14 +42,14 @@ export const NyeOgFerdigstilteOppgaverForIdagGraf: FunctionComponent<OwnProps & 
   const nyLabel = intl.formatMessage({ id: 'NyeOgFerdigstilteOppgaverForIdagGraf.Nye' });
 
   const dataFerdigstilte = useMemo(() => behandlingstypeOrder.map((type) => {
-    const oppgave = nyeOgFerdigstilteOppgaver.find((o) => o.behandlingType.kode === type);
+    const oppgave = nyeOgFerdigstilteOppgaver.find((o) => o.behandlingType === type);
     if (oppgave) {
       return oppgave.antallFerdigstilte;
     }
     return 0;
   }), [nyeOgFerdigstilteOppgaver]);
   const dataNye = useMemo(() => behandlingstypeOrder.map((type) => {
-    const oppgave = nyeOgFerdigstilteOppgaver.find((o) => o.behandlingType.kode === type);
+    const oppgave = nyeOgFerdigstilteOppgaver.find((o) => o.behandlingType === type);
     if (oppgave) {
       return oppgave.antallNye;
     }

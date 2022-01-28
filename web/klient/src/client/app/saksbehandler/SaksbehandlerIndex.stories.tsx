@@ -45,25 +45,13 @@ const Template: Story = () => {
           til: 4,
           erDynamiskPeriode: true,
         },
-        behandlingTyper: [{
-          kode: BehandlingType.FORSTEGANGSSOKNAD,
-          navn: 'Førstegangssøknad',
-        }],
-        fagsakYtelseTyper: [{
-          kode: FagsakYtelseType.FORELDREPRENGER,
-          navn: 'Foreldrepenger',
-        }],
+        behandlingTyper: [BehandlingType.FORSTEGANGSSOKNAD],
+        fagsakYtelseTyper: [FagsakYtelseType.FORELDREPRENGER],
         andreKriterier: [{
-          andreKriterierType: {
-            kode: AndreKriterierType.TIL_BESLUTTER,
-            navn: 'Til beslutter',
-          },
+          andreKriterierType: AndreKriterierType.TIL_BESLUTTER,
           inkluder: true,
         }, {
-          andreKriterierType: {
-            kode: AndreKriterierType.REGISTRER_PAPIRSOKNAD,
-            navn: 'Registrer papirsøknad',
-          },
+          andreKriterierType: AndreKriterierType.REGISTRER_PAPIRSOKNAD,
           inkluder: false,
         }],
       }],
@@ -80,20 +68,11 @@ const Template: Story = () => {
         personnummer: '1212',
         navn: 'Espen Utvikler',
         system: 'SAK',
-        behandlingstype: {
-          kode: BehandlingType.FORSTEGANGSSOKNAD,
-          navn: 'Førstegangssøknad',
-        },
-        behandlingStatus: {
-          kode: BehandlingStatus.BEHANDLING_UTREDES,
-          navn: 'Behandling utredes',
-        },
+        behandlingstype: BehandlingType.FORSTEGANGSSOKNAD,
+        behandlingStatus: BehandlingStatus.BEHANDLING_UTREDES,
         opprettetTidspunkt: '2019-01-01',
         behandlingsfrist: '2019-01-01',
-        fagsakYtelseType: {
-          kode: FagsakYtelseType.FORELDREPRENGER,
-          navn: 'Foreldrepenger',
-        },
+        fagsakYtelseType: FagsakYtelseType.FORELDREPRENGER,
         erTilSaksbehandling: true,
         behandlingId: '2',
         href: '',
@@ -138,20 +117,11 @@ const Template: Story = () => {
         personnummer: '1212',
         navn: 'Espen Utvikler',
         system: 'SAK',
-        behandlingstype: {
-          kode: BehandlingType.FORSTEGANGSSOKNAD,
-          navn: 'Førstegangssøknad',
-        },
-        behandlingStatus: {
-          kode: BehandlingStatus.BEHANDLING_UTREDES,
-          navn: 'Behandling utredes',
-        },
+        behandlingstype: BehandlingType.FORSTEGANGSSOKNAD,
+        behandlingStatus: BehandlingStatus.BEHANDLING_UTREDES,
         opprettetTidspunkt: '2019-01-01',
         behandlingsfrist: '2019-01-01',
-        fagsakYtelseType: {
-          kode: FagsakYtelseType.FORELDREPRENGER,
-          navn: 'Foreldrepenger',
-        },
+        fagsakYtelseType: FagsakYtelseType.FORELDREPRENGER,
         erTilSaksbehandling: true,
         behandlingId: '1',
         href: '',
@@ -162,66 +132,42 @@ const Template: Story = () => {
     {
       key: RestApiPathsKeys.HENT_NYE_OG_FERDIGSTILTE_OPPGAVER.name,
       data: [{
-        behandlingType: {
-          kode: BehandlingType.FORSTEGANGSSOKNAD,
-          navn: 'Førstegangssøknad',
-        },
+        behandlingType: BehandlingType.FORSTEGANGSSOKNAD,
         antallNye: 10,
         antallFerdigstilte: 20,
         dato: dayjs().format(ISO_DATE_FORMAT),
       }, {
-        behandlingType: {
-          kode: BehandlingType.KLAGE,
-          navn: 'Klage',
-        },
+        behandlingType: BehandlingType.KLAGE,
         antallNye: 23,
         antallFerdigstilte: 2,
         dato: dayjs().format(ISO_DATE_FORMAT),
       }, {
-        behandlingType: {
-          kode: BehandlingType.REVURDERING,
-          navn: 'Revurdering',
-        },
+        behandlingType: BehandlingType.REVURDERING,
         antallNye: 3,
         antallFerdigstilte: 24,
         dato: dayjs().format(ISO_DATE_FORMAT),
       }, {
-        behandlingType: {
-          kode: BehandlingType.DOKUMENTINNSYN,
-          navn: 'Dokumentinnsyn',
-        },
+        behandlingType: BehandlingType.DOKUMENTINNSYN,
         antallNye: 23,
         antallFerdigstilte: 12,
         dato: dayjs().format(ISO_DATE_FORMAT),
       }, {
-        behandlingType: {
-          kode: BehandlingType.FORSTEGANGSSOKNAD,
-          navn: 'Førstegangssøknad',
-        },
+        behandlingType: BehandlingType.FORSTEGANGSSOKNAD,
         antallNye: 10,
         antallFerdigstilte: 20,
         dato: dayjs().subtract(1, 'd').format(ISO_DATE_FORMAT),
       }, {
-        behandlingType: {
-          kode: BehandlingType.FORSTEGANGSSOKNAD,
-          navn: 'Førstegangssøknad',
-        },
+        behandlingType: BehandlingType.FORSTEGANGSSOKNAD,
         antallNye: 30,
         antallFerdigstilte: 15,
         dato: dayjs().subtract(3, 'd').format(ISO_DATE_FORMAT),
       }, {
-        behandlingType: {
-          kode: BehandlingType.KLAGE,
-          navn: 'Klage',
-        },
+        behandlingType: BehandlingType.KLAGE,
         antallNye: 23,
         antallFerdigstilte: 2,
         dato: dayjs().subtract(4, 'd').format(ISO_DATE_FORMAT),
       }, {
-        behandlingType: {
-          kode: BehandlingType.KLAGE,
-          navn: 'Klage',
-        },
+        behandlingType: BehandlingType.KLAGE,
         antallNye: 23,
         antallFerdigstilte: 2,
         dato: dayjs().subtract(5, 'd').format(ISO_DATE_FORMAT),

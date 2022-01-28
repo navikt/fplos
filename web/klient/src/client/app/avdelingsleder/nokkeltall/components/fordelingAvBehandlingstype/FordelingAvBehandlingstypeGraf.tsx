@@ -2,11 +2,11 @@ import React, { FunctionComponent, useMemo } from 'react';
 import { injectIntl, WrappedComponentProps } from 'react-intl';
 import Panel from 'nav-frontend-paneler';
 
-import Kodeverk from 'types/kodeverkTsType';
 import BehandlingType from 'kodeverk/behandlingType';
 import OppgaverForAvdeling from 'types/avdelingsleder/oppgaverForAvdelingTsType';
 
 import ReactECharts from 'sharedComponents/echart/ReactEcharts';
+import KodeverkMedNavn from 'types/kodeverkMedNavnTsType';
 
 const behandlingstypeOrder = [
   BehandlingType.TILBAKEBETALING_REVURDERING,
@@ -19,7 +19,7 @@ const behandlingstypeOrder = [
 const slåSammen = (oppgaverForAvdeling: OppgaverForAvdeling[]): number[] => {
   const test = oppgaverForAvdeling
     .reduce((acc, o) => {
-      const index = behandlingstypeOrder.findIndex((bo) => bo === o.behandlingType.kode) + 1;
+      const index = behandlingstypeOrder.findIndex((bo) => bo === o.behandlingType) + 1;
       return {
         ...acc,
         [index]: (acc[index] ? acc[index] + o.antall : o.antall),
@@ -32,7 +32,7 @@ const slåSammen = (oppgaverForAvdeling: OppgaverForAvdeling[]): number[] => {
 interface OwnProps {
   intl: any;
   height: number;
-  behandlingTyper: Kodeverk[];
+  behandlingTyper: KodeverkMedNavn[];
   oppgaverForAvdeling: OppgaverForAvdeling[];
 }
 

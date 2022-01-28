@@ -71,7 +71,7 @@ export const OppgaverSomErApneEllerPaVentPanel: FunctionComponent<OwnProps> = ({
       <VerticalSpacer sixteenPx />
       <OppgaverSomErApneEllerPaVentGraf
         height={height}
-        oppgaverApneEllerPaVent={oppgaverApneEllerPaVent.filter((oav) => values[oav.behandlingType.kode])}
+        oppgaverApneEllerPaVent={oppgaverApneEllerPaVent.filter((oav) => values[oav.behandlingType])}
       />
     </Form>
   );

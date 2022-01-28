@@ -21,7 +21,7 @@ describe('<SakslisteVelgerForm>', () => {
     expect(screen.getByText('Foreldrepenger')).toBeInTheDocument();
 
     expect(screen.getByText('Behandlingstype')).toBeInTheDocument();
-    expect(screen.getByText('Førstegangssøknad')).toBeInTheDocument();
+    expect(screen.getByText('Førstegangsbehandling')).toBeInTheDocument();
     expect(screen.getByText('Revurdering')).toBeInTheDocument();
 
     expect(screen.getByText('Andre filter')).toBeInTheDocument();
@@ -53,7 +53,7 @@ describe('<SakslisteVelgerForm>', () => {
     expect(await screen.findByText('Svangerskapspenger')).toBeInTheDocument();
 
     expect(screen.getByText('Behandlingstype')).toBeInTheDocument();
-    expect(screen.getByText('Førstegangssøknad')).toBeInTheDocument();
+    expect(screen.getByText('Førstegangsbehandling')).toBeInTheDocument();
     expect(screen.getByText('Klage')).toBeInTheDocument();
 
     expect(screen.getByText('Andre filter')).toBeInTheDocument();

@@ -11,12 +11,12 @@ import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import useKodeverk from 'data/useKodeverk';
 import FagsakYtelseType from 'kodeverk/fagsakYtelseType';
 import KodeverkType from 'kodeverk/kodeverkTyper';
-import Kodeverk from 'types/kodeverkTsType';
 import OppgaveForDato from 'types/avdelingsleder/oppgaverForDatoTsType';
 import StoreValuesInLocalStorage from 'form/StoreValuesInLocalStorage';
 import {
   Form, RadioGroupField, RadioOption, SelectField,
 } from 'form/formIndex';
+import KodeverkMedNavn from 'types/kodeverkMedNavnTsType';
 import TilBehandlingGraf, { OppgaveForDatoGraf } from './TilBehandlingGraf';
 
 import styles from './tilBehandlingPanel.less';
@@ -43,7 +43,7 @@ const erDatoInnenforPeriode = (oppgaveForAvdeling: OppgaveForDato, ukevalg: stri
   return dayjs(oppgaveForAvdeling.opprettetDato).isSameOrAfter(toUkerSiden);
 };
 
-const finnFagsakYtelseTypeNavn = (fagsakYtelseTyper: Kodeverk[], valgtFagsakYtelseType: string): string => {
+const finnFagsakYtelseTypeNavn = (fagsakYtelseTyper: KodeverkMedNavn[], valgtFagsakYtelseType: string): string => {
   const type = fagsakYtelseTyper.find((fyt) => fyt.kode === valgtFagsakYtelseType);
   return type ? type.navn : '';
 };
@@ -52,7 +52,7 @@ const slaSammenLikeBehandlingstyperOgDatoer = (oppgaverForAvdeling: OppgaveForDa
   const sammenslatte: OppgaveForDatoGraf[] = [];
 
   oppgaverForAvdeling.forEach((o) => {
-    const index = sammenslatte.findIndex((s) => s.behandlingType.kode === o.behandlingType.kode && s.opprettetDato === o.opprettetDato);
+    const index = sammenslatte.findIndex((s) => s.behandlingType === o.behandlingType && s.opprettetDato === o.opprettetDato);
     if (index === -1) {
       sammenslatte.push(o);
     } else {
@@ -145,7 +145,7 @@ export const TilBehandlingPanel: FunctionComponent<OwnProps & WrappedComponentPr
         isToUkerValgt={values.ukevalg === UKE_2}
         behandlingTyper={behandlingTyper}
         oppgaverPerDato={oppgaverPerDato ? slaSammenLikeBehandlingstyperOgDatoer(oppgaverPerDato
-          .filter((ofa) => (values.ytelseType === ALLE_YTELSETYPER_VALGT ? true : values.ytelseType === ofa.fagsakYtelseType.kode))
+          .filter((ofa) => (values.ytelseType === ALLE_YTELSETYPER_VALGT ? true : values.ytelseType === ofa.fagsakYtelseType))
           .filter((ofa) => erDatoInnenforPeriode(ofa, values.ukevalg))) : []}
       />
     </Form>
