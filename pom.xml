@@ -43,7 +43,6 @@
         <!-- Transitive avh. versjoner for å sikre unikhet (enforcer dependencyConvergence). Skal ikke benyttes direkte av vår egen kode. -->
         <jasypt.version>1.9.3</jasypt.version>
         <javaslang.version>2.0.6</javaslang.version>
-        <owaspencoder.version>1.2.3</owaspencoder.version>
         <ojdbc.version>19.3.0.0</ojdbc.version>
         <kafka.version>3.1.0</kafka.version>
         <validation-api.version>2.0.1.Final</validation-api.version>
@@ -203,11 +202,6 @@
                 <groupId>io.swagger.core.v3</groupId>
                 <artifactId>swagger-annotations</artifactId>
                 <version>${swagger.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.owasp.encoder</groupId>
-                <artifactId>encoder</artifactId>
-                <version>${owaspencoder.version}</version>
             </dependency>
 
             <!-- Metrics -->

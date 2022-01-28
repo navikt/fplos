@@ -21,7 +21,6 @@ public class ReservasjonsEndringDto implements AbacDto {
 
     @JsonProperty("reserverTil")
     @NotNull
-    @JsonDeserialize(using = LocalDateDeserializer.class)
     private LocalDate reserverTil;
 
     public ReservasjonsEndringDto() {

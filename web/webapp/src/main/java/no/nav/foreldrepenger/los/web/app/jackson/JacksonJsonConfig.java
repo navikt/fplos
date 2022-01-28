@@ -20,7 +20,8 @@ import no.nav.foreldrepenger.los.web.app.IndexClasses;
 @Provider
 public class JacksonJsonConfig implements ContextResolver<ObjectMapper> {
 
-    private static final SimpleModule SER_DESER = createModule();
+    private static final SimpleModule SER_DESER = new SimpleModule("VL-REST_MED_INNTEKTSMELDING",
+            new Version(1, 0, 0, null, null, null));
     private final ObjectMapper objectMapper;
 
     public JacksonJsonConfig() {
@@ -32,18 +33,6 @@ public class JacksonJsonConfig implements ContextResolver<ObjectMapper> {
         objectMapper.registerModule(SER_DESER);
 
         objectMapper.registerSubtypes(getJsonTypeNameClasses());
-
-    }
-
-    private static SimpleModule createModule() {
-        var module = new SimpleModule("VL-REST_MED_INNTEKTSMELDING", new Version(1, 0, 0, null, null, null));
-
-        addSerializers(module);
-        return module;
-    }
-
-    private static void addSerializers(SimpleModule module) {
-        module.addSerializer(new StringSerializer());
     }
 
     @Override
