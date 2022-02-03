@@ -25,8 +25,8 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
         <fp-kontrakter.version>6.1.4</fp-kontrakter.version>
-        <felles.version>4.1.16</felles.version>
-        <prosesstask.version>3.1.6</prosesstask.version>
+        <felles.version>4.1.17</felles.version>
+        <prosesstask.version>3.1.7</prosesstask.version>
 
         <!-- Eksterne -->
         <woodstox.version>6.2.3</woodstox.version>
@@ -38,7 +38,7 @@
         <metrics.version>4.1.12.1</metrics.version>
         <prometheus.version>0.14.1</prometheus.version>
         <swagger.version>2.1.12</swagger.version>
-        <flyway.version>8.4.3</flyway.version>
+        <flyway.version>8.4.4</flyway.version>
 
         <!-- Transitive avh. versjoner for å sikre unikhet (enforcer dependencyConvergence). Skal ikke benyttes direkte av vår egen kode. -->
         <jasypt.version>1.9.3</jasypt.version>
