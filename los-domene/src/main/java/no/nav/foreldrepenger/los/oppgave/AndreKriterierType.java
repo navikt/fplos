@@ -53,7 +53,7 @@ public enum AndreKriterierType implements Kodeverdi {
         return this.equals(TIL_BESLUTTER);
     }
 
-    @JsonCreator
+    @JsonCreator(mode = JsonCreator.Mode.DELEGATING)
     public static AndreKriterierType fraKode(@JsonProperty(value = "kode") Object node) {
         if (node == null) {
             return null;

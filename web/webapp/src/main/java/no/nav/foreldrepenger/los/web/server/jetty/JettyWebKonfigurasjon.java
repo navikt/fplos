@@ -1,13 +1,18 @@
 package no.nav.foreldrepenger.los.web.server.jetty;
 
+import no.nav.vedtak.sikkerhet.ContextPathHolder;
+
 public class JettyWebKonfigurasjon implements AppKonfigurasjon {
     private static final String CONTEXT_PATH = "/fplos";
 
     private Integer serverPort;
 
-    public JettyWebKonfigurasjon() {}
+    public JettyWebKonfigurasjon() {
+        ContextPathHolder.instance(CONTEXT_PATH);
+    }
 
     public JettyWebKonfigurasjon(int serverPort) {
+        this();
         this.serverPort = serverPort;
     }
 
