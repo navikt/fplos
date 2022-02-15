@@ -53,7 +53,7 @@ public class OppgaveKøTjeneste {
         var enhet = oppgave.getBehandlendeEnhet();
         var avdelingId = organisasjonRepository.hentAvdelingFraEnhet(enhet)
                 .map(Avdeling::getId)
-                .orElseThrow();
+                .orElseThrow(() -> new IllegalStateException("Finner ikke avdeling fra enhet " + enhet + ". OppgaveId " + oppgave.getId()));
         var potensielleKøer = oppgaveRepository.hentAlleOppgaveFilterSettTilknyttetAvdeling(avdelingId);
         return potensielleKøer.stream()
                 .map(pk -> finnOppgaveFiltreringKnytning(oppgave, pk))
