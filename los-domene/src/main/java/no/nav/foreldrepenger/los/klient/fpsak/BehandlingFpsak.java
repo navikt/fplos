@@ -87,6 +87,10 @@ public class BehandlingFpsak {
         return svar.vurderSykdom();
     }
 
+    public boolean erRevurderingPgaPleiepenger() {
+        return erPleiepengerBehandling;
+    }
+
     public boolean erBerørtBehandling() {
         return erBerørtBehandling;
     }
