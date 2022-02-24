@@ -21,16 +21,18 @@ public class BehandlingÅrsakTypeTest {
 
     @Test
     public void behandlingÅrsakType() throws Exception {
-        var json = "{\"kode\": \"RE-END-FRA-BRUKER\"}";
-        var objektet = fromJson(json, BehandlingÅrsakType.class);
-        assertThat(objektet).isEqualTo(BehandlingÅrsakType.RE_ENDRING_FRA_BRUKER);
+        var json = "{\"type\": \"RE-END-FRA-BRUKER\"}";
+        var objektet = fromJson(json, TestRec.class);
+        assertThat(objektet.type()).isEqualTo(BehandlingÅrsakType.RE_ENDRING_FRA_BRUKER);
     }
 
     @Test
     public void ukjentVerdiDeserialiseresTilNull() throws Exception {
-        var ukjentKode = "{\"kode\": \"DUMMY-UKJENT-VERDI\"}";
-        assertThat(fromJson(ukjentKode, BehandlingÅrsakType.class)).isNull();
+        var ukjentKode = "{\"type\": \"DUMMY-UKJENT-VERDI\"}";
+        assertThat(fromJson(ukjentKode, TestRec.class).type()).isEqualTo(BehandlingÅrsakType.UDEFINERT);
     }
+
+    private static record TestRec(BehandlingÅrsakType type) {}
 
     static <T> T fromJson(String json, Class<T> clazz) throws JsonProcessingException {
         return mapper.readValue(json, clazz);
@@ -43,6 +45,7 @@ public class BehandlingÅrsakTypeTest {
         mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
         mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        mapper.enable(DeserializationFeature.READ_UNKNOWN_ENUM_VALUES_USING_DEFAULT_VALUE);
         return mapper;
     }
 

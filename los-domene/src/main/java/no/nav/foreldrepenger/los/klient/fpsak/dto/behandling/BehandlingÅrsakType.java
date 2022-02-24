@@ -1,11 +1,16 @@
 package no.nav.foreldrepenger.los.klient.fpsak.dto.behandling;
 
+import com.fasterxml.jackson.annotation.JsonEnumDefaultValue;
 import com.fasterxml.jackson.annotation.JsonValue;
+
 
 public enum BehandlingÅrsakType {
     BERØRT_BEHANDLING("BERØRT-BEHANDLING", "Endring i den andre forelderens uttak"),
     RE_ENDRING_FRA_BRUKER("RE-END-FRA-BRUKER", "Endringssøknad fra bruker"),
-    RE_VEDTAK_PLEIEPENGER("RE-VEDTAK-PSB", "Pleiepenger");
+    RE_VEDTAK_PLEIEPENGER("RE-VEDTAK-PSB", "Pleiepenger"),
+    @JsonEnumDefaultValue
+    UDEFINERT("-", "Ukjent")
+    ;
 
     private final String navn;
     @JsonValue
