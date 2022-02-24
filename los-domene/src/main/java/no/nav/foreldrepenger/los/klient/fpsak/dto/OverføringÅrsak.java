@@ -1,14 +1,20 @@
 package no.nav.foreldrepenger.los.klient.fpsak.dto;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonValue;
 
 public enum OverføringÅrsak {
-    INSTITUSJONSOPPHOLD_ANNEN_FORELDER, SYKDOM_ANNEN_FORELDER, IKKE_RETT_ANNEN_FORELDER, ALENEOMSORG;
 
-    @JsonCreator
-    public static OverføringÅrsak fraKode(@JsonProperty("kode") String kode) {
-        return kode.equals("-") ? null : valueOf(kode);
+    INSTITUSJONSOPPHOLD_ANNEN_FORELDER("INSTITUSJONSOPPHOLD_ANNEN_FORELDER"),
+    SYKDOM_ANNEN_FORELDER("SYKDOM_ANNEN_FORELDER"),
+    IKKE_RETT_ANNEN_FORELDER("IKKE_RETT_ANNEN_FORELDER"),
+    ALENEOMSORG("ALENEOMSORG"),
+    UDEFINERT("-")
+    ;
+    @JsonValue
+    private String kode;
+
+    OverføringÅrsak(String kode) {
+        this.kode = kode;
     }
 
     boolean gjelderSykdom() {

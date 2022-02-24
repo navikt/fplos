@@ -24,8 +24,8 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
-        <fp-kontrakter.version>6.1.4</fp-kontrakter.version>
-        <felles.version>4.1.17</felles.version>
+        <fp-kontrakter.version>6.1.9</fp-kontrakter.version>
+        <felles.version>4.1.18</felles.version>
         <prosesstask.version>3.1.7</prosesstask.version>
 
         <!-- Eksterne -->
@@ -37,8 +37,8 @@
         <logstash.version>7.0.1</logstash.version>
         <metrics.version>4.1.12.1</metrics.version>
         <prometheus.version>0.15.0</prometheus.version>
-        <swagger.version>2.1.12</swagger.version>
-        <flyway.version>8.5.0</flyway.version>
+        <swagger.version>2.1.13</swagger.version>
+        <flyway.version>8.5.1</flyway.version>
 
         <!-- Transitive avh. versjoner for å sikre unikhet (enforcer dependencyConvergence). Skal ikke benyttes direkte av vår egen kode. -->
         <jasypt.version>1.9.3</jasypt.version>
@@ -114,7 +114,7 @@
             <dependency>
                 <groupId>org.eclipse.jetty</groupId>
                 <artifactId>jetty-bom</artifactId>
-                <version>10.0.7</version>
+                <version>10.0.8</version>
                 <scope>import</scope>
                 <type>pom</type>
             </dependency>
