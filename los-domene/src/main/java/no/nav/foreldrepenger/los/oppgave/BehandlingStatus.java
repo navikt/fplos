@@ -10,6 +10,8 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import no.nav.foreldrepenger.los.klient.fpsak.dto.kodeverk.TempAvledeKode;
+
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum BehandlingStatus {
     AVSLUTTET("AVSLU"),
@@ -28,11 +30,12 @@ public enum BehandlingStatus {
         return kode;
     }
 
-    @JsonCreator
-    public static BehandlingStatus fraKode(@JsonProperty("kode") String kode) {
-        if (kode.equals("-")) {
+    @JsonCreator(mode = JsonCreator.Mode.DELEGATING)
+    public static BehandlingStatus fraKode(@JsonProperty(value = "kode") Object node) {
+        if (node == null) {
             return null;
         }
+        var kode = TempAvledeKode.getVerdi(BehandlingStatus.class, node, "kode");
         return Arrays.stream(values())
                 .filter(v -> v.kode.equals(kode))
                 .findFirst()
