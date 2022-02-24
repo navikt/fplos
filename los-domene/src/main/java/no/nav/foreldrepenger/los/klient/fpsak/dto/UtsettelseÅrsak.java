@@ -1,35 +1,29 @@
 package no.nav.foreldrepenger.los.klient.fpsak.dto;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonValue;
 
 public enum UtsettelseÅrsak {
-    ANNET,
-    SYKDOM,
-    INSTITUSJONSOPPHOLD_SØKER,
-    INSTITUSJONSOPPHOLD_BARNET;
+    ARBEID("ARBEID"),
+    FERIE("LOVBESTEMT_FERIE"),
+    SYKDOM("SYKDOM"),
+    INSTITUSJON_SØKER("INSTITUSJONSOPPHOLD_SØKER"),
+    INSTITUSJON_BARN("INSTITUSJONSOPPHOLD_BARNET"),
+    HV_OVELSE("HV_OVELSE"),
+    NAV_TILTAK("NAV_TILTAK"),
+    FRI("FRI"),
+    UDEFINERT("-");
 
-    @JsonCreator
-    public static UtsettelseÅrsak fraKode(@JsonProperty("kode") String kode) {
-        if (kode == null || kode.equals("-")) {
-            return null;
-        }
-        if (kode.equals(SYKDOM.name())) {
-            return SYKDOM;
-        }
-        if (kode.equals(INSTITUSJONSOPPHOLD_BARNET.name())) {
-            return INSTITUSJONSOPPHOLD_BARNET;
-        }
-        if (kode.equals(INSTITUSJONSOPPHOLD_SØKER.name())) {
-            return INSTITUSJONSOPPHOLD_SØKER;
-        }
-        return ANNET;
+    @JsonValue
+    private String kode;
+
+    UtsettelseÅrsak(String kode) {
+        this.kode = kode;
     }
 
     boolean gjelderSykdom() {
         return this.equals(SYKDOM) ||
-                this.equals(INSTITUSJONSOPPHOLD_SØKER) ||
-                this.equals(INSTITUSJONSOPPHOLD_BARNET);
+                this.equals(INSTITUSJON_SØKER) ||
+                this.equals(INSTITUSJON_BARN);
     }
 
 }

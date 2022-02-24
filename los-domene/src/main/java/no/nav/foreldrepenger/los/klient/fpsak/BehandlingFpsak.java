@@ -140,7 +140,7 @@ public class BehandlingFpsak {
         if (kr == null) {
             return false;
         }
-        return Objects.equals(kr.kontrollresultat(), Kontrollresultat.HOY);
+        return Objects.equals(kr.kontrollresultat(), Kontrollresultat.HØY);
     }
 
     public static final class Builder {

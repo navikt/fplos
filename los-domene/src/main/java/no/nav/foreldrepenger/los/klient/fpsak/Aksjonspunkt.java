@@ -81,8 +81,8 @@ public class Aksjonspunkt {
 
     public static Aksjonspunkt aksjonspunktFra(AksjonspunktDto aksjonspunktDto) {
         return Aksjonspunkt.builder()
-                .medDefinisjon(aksjonspunktDto.definisjon().kode())
-                .medStatus(aksjonspunktDto.status().kode())
+                .medDefinisjon(aksjonspunktDto.definisjon())
+                .medStatus(aksjonspunktDto.status())
                 .medBegrunnelse(aksjonspunktDto.begrunnelse())
                 .medFristTid(aksjonspunktDto.fristTid())
                 .build();
