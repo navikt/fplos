@@ -10,6 +10,7 @@ import no.nav.foreldrepenger.los.domene.typer.aktør.AktørId;
 import no.nav.foreldrepenger.los.klient.fpsak.Aksjonspunkt;
 import no.nav.foreldrepenger.los.klient.fpsak.BehandlingFpsak;
 import no.nav.foreldrepenger.los.klient.fpsak.Lazy;
+import no.nav.foreldrepenger.los.oppgave.BehandlingStatus;
 import no.nav.foreldrepenger.los.oppgave.BehandlingType;
 import no.nav.foreldrepenger.los.oppgave.FagsakYtelseType;
 
@@ -33,7 +34,7 @@ public class OppgaveTestUtil {
                 .medErEndringssøknad(false)
                 .medBehandlingstidFrist(behandlingstidFrist)
                 .medAksjonspunkter(new Lazy<>(OppgaveTestUtil::aksjonspunkter))
-                .medStatus("OPPRE")
+                .medStatus(BehandlingStatus.OPPRETTET)
                 .build();
         behandlingFpsak.setSaksnummer(new Saksnummer("1234"));
         behandlingFpsak.setAktørId(aktørId.getId());

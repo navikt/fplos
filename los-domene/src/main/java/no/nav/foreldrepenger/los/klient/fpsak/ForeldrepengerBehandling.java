@@ -23,8 +23,8 @@ import no.nav.foreldrepenger.los.klient.fpsak.dto.behandling.BehandlingÅrsakDto
 import no.nav.foreldrepenger.los.klient.fpsak.dto.behandling.BehandlingÅrsakType;
 import no.nav.foreldrepenger.los.klient.fpsak.dto.behandling.ResourceLink;
 import no.nav.foreldrepenger.los.klient.fpsak.dto.inntektarbeidytelse.Beløp;
-import no.nav.foreldrepenger.los.klient.fpsak.dto.inntektarbeidytelse.InntektsmeldingerDto;
 import no.nav.foreldrepenger.los.klient.fpsak.dto.inntektarbeidytelse.InntektsmeldingDto;
+import no.nav.foreldrepenger.los.klient.fpsak.dto.inntektarbeidytelse.InntektsmeldingerDto;
 import no.nav.foreldrepenger.los.klient.fpsak.dto.ytelsefordeling.YtelseFordelingDto;
 
 public interface ForeldrepengerBehandling {
@@ -50,7 +50,7 @@ public interface ForeldrepengerBehandling {
                 .medBehandlingId(new BehandlingId(behandlingDto.uuid()))
                 .medBehandlingOpprettet(behandlingDto.opprettet())
                 .medBehandlendeEnhetId(behandlingDto.behandlendeEnhetId())
-                .medStatus(behandlingDto.status().getKode())
+                .medStatus(behandlingDto.status())
                 .medAnsvarligSaksbehandler(behandlingDto.ansvarligSaksbehandler())
                 .medHarRefusjonskravFraArbeidsgiver(new Lazy<>(() -> hentHarRefusjonskrav(links)))
                 .medAksjonspunkter(new Lazy<>(() -> hentAksjonspunkter(links)))

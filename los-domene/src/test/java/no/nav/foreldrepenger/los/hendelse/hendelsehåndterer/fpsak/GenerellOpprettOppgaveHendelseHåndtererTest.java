@@ -20,7 +20,6 @@ import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.OppgaveEgenskapHån
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.håndterere.GenerellOpprettOppgaveHendelseHåndterer;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveEventLogg;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveEventType;
-import no.nav.foreldrepenger.los.oppgave.BehandlingStatus;
 import no.nav.foreldrepenger.los.oppgave.BehandlingType;
 import no.nav.foreldrepenger.los.oppgave.Oppgave;
 import no.nav.foreldrepenger.los.oppgave.OppgaveRepository;
@@ -61,7 +60,7 @@ class GenerellOpprettOppgaveHendelseHåndtererTest {
                 .harHref(null)
                 .harSaksnummer(behandlingFpsak.getSaksnummer())
                 .harOppgaveAvsluttet(null)
-                .harBehandlingStatus(BehandlingStatus.fraKode(behandlingFpsak.getStatus()))
+                .harBehandlingStatus(behandlingFpsak.getStatus())
                 .harBehandlendeEnhet(behandlingFpsak.getBehandlendeEnhetId())
                 .harSystem("FPSAK")
                 .harFagsakYtelseType(behandlingFpsak.getYtelseType());
