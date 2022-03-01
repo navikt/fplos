@@ -2,8 +2,7 @@ package no.nav.foreldrepenger.los.web.app.tjenester.kodeverk;
 
 import static no.nav.vedtak.sikkerhet.abac.BeskyttetRessursActionAttributt.READ;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.io.IOException;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -11,9 +10,14 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.swagger.v3.oas.annotations.Operation;
 import no.nav.foreldrepenger.los.web.app.AbacAttributter;
+import no.nav.foreldrepenger.los.web.app.jackson.JacksonJsonConfig;
 import no.nav.vedtak.sikkerhet.abac.BeskyttetRessurs;
 
 @Path("/kodeverk")
@@ -21,6 +25,13 @@ import no.nav.vedtak.sikkerhet.abac.BeskyttetRessurs;
 public class KodeverkRestTjeneste {
 
     private HentKodeverkTjeneste hentKodeverkTjeneste; // NOSONAR
+
+    private final JacksonJsonConfig jsonMapper = new JacksonJsonConfig(true); // generere fulle kodeverdi-objekt
+
+    private final ObjectMapper objectMapper = jsonMapper.getObjectMapper();
+
+    private String kodelisteCache;
+
 
     @Inject
     public KodeverkRestTjeneste(HentKodeverkTjeneste hentKodeverkTjeneste) {
@@ -36,12 +47,18 @@ public class KodeverkRestTjeneste {
     @Operation(description = "Henter kodeliste", tags = "Kodeverk")
     @BeskyttetRessurs(action = READ, resource = AbacAttributter.APPLIKASJON, sporingslogg = false)
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
-    public Map<String, Object> hentGruppertKodeliste() {
-        Map<String, Object> kodelisterGruppertPåType = new HashMap<>();
+    public Response hentGruppertKodeliste() throws IOException {
+        var kodelisteJson = getKodeverkRawJson();
+        return Response.ok()
+            .entity(kodelisteJson)
+            .type(MediaType.APPLICATION_JSON)
+            .build();
+    }
 
-        var grupperteKodelister = hentKodeverkTjeneste.hentGruppertKodeliste();
-        grupperteKodelister.forEach(kodelisterGruppertPåType::put);
-
-        return kodelisterGruppertPåType;
+    private String getKodeverkRawJson() throws JsonProcessingException {
+        if (kodelisteCache == null) {
+            kodelisteCache = objectMapper.writeValueAsString(hentKodeverkTjeneste.hentGruppertKodeliste());
+        }
+        return kodelisteCache;
     }
 }
