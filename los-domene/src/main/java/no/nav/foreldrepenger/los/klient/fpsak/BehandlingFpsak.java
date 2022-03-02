@@ -9,12 +9,13 @@ import no.nav.foreldrepenger.los.domene.typer.BehandlingId;
 import no.nav.foreldrepenger.los.domene.typer.Saksnummer;
 import no.nav.foreldrepenger.los.klient.fpsak.dto.Kontrollresultat;
 import no.nav.foreldrepenger.los.klient.fpsak.dto.KontrollresultatDto;
+import no.nav.foreldrepenger.los.oppgave.BehandlingStatus;
 import no.nav.foreldrepenger.los.oppgave.BehandlingType;
 import no.nav.foreldrepenger.los.oppgave.FagsakYtelseType;
 
 public class BehandlingFpsak {
     private BehandlingId behandlingId;
-    private String status;
+    private BehandlingStatus status;
     private String behandlendeEnhetId;
     private String ansvarligSaksbehandler;
     private Lazy<List<Aksjonspunkt>> aksjonspunkter;
@@ -36,7 +37,7 @@ public class BehandlingFpsak {
         return behandlingId;
     }
 
-    public String getStatus() {
+    public BehandlingStatus getStatus() {
         return status;
     }
 
@@ -145,7 +146,7 @@ public class BehandlingFpsak {
 
     public static final class Builder {
         private BehandlingId behandlingId;
-        private String status;
+        private BehandlingStatus status;
         private String behandlendeEnhetId;
         private String ansvarligSaksbehandler;
         private Lazy<List<Aksjonspunkt>> aksjonspunkter;
@@ -169,7 +170,7 @@ public class BehandlingFpsak {
             return this;
         }
 
-        public Builder medStatus(String status) {
+        public Builder medStatus(BehandlingStatus status) {
             this.status = status;
             return this;
         }

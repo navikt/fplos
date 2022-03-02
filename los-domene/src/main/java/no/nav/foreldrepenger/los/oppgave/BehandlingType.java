@@ -6,15 +6,10 @@ import java.util.Optional;
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonValue;
 
 import no.nav.foreldrepenger.los.felles.Kodeverdi;
-import no.nav.foreldrepenger.los.klient.fpsak.dto.kodeverk.TempAvledeKode;
 
-@JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum BehandlingType implements Kodeverdi {
     FØRSTEGANGSSØKNAD ("BT-002", "Førstegangsbehandling"),
     KLAGE("BT-003", "Klage"),
@@ -25,6 +20,7 @@ public enum BehandlingType implements Kodeverdi {
     ANKE("BT-008", "Anke"),
     TILBAKEBETALING_REVURDERING ("BT-009", "Tilbakebet-rev");
 
+    @JsonValue
     private String kode;
     private final String navn;
     public static final String kodeverk = "BEHANDLING_TYPE";
@@ -44,17 +40,14 @@ public enum BehandlingType implements Kodeverdi {
         return kodeverk;
     }
 
-    @JsonIgnore
     public boolean gjelderTilbakebetaling() {
         return this == TILBAKEBETALING || this == TILBAKEBETALING_REVURDERING;
     }
 
-    @JsonCreator(mode = JsonCreator.Mode.DELEGATING)
-    public static BehandlingType fraKode(@JsonProperty(value = "kode") Object node) {
-        if (node == null) {
+    public static BehandlingType fraKode(String kode) {
+        if (kode == null) {
             return null;
         }
-        var kode = TempAvledeKode.getVerdi(BehandlingType.class, node, "kode");
         return Arrays.stream(values())
                 .filter(v -> v.kode.equals(kode))
                 .findFirst()

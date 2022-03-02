@@ -6,14 +6,10 @@ import java.util.Optional;
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonValue;
 
 import no.nav.foreldrepenger.los.felles.Kodeverdi;
-import no.nav.foreldrepenger.los.klient.fpsak.dto.kodeverk.TempAvledeKode;
 
-@JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum FagsakYtelseType implements Kodeverdi {
     ENGANGSTØNAD("ES", "Engangsstønad"),
     FORELDREPENGER("FP", "Foreldrepenger"),
@@ -25,6 +21,7 @@ public enum FagsakYtelseType implements Kodeverdi {
             FORELDREPENGER.getKode(), FORELDREPENGER,
             SVANGERSKAPSPENGER.getKode(), SVANGERSKAPSPENGER
     );
+    @JsonValue
     private final String kode;
     private final String navn;
 
@@ -33,12 +30,10 @@ public enum FagsakYtelseType implements Kodeverdi {
         this.navn = navn;
     }
 
-    @JsonCreator(mode = JsonCreator.Mode.DELEGATING)
-    public static FagsakYtelseType fraKode(@JsonProperty(value = "kode") Object node) {
-        if (node == null) {
+    public static FagsakYtelseType fraKode(String kode) {
+        if (kode == null) {
             return null;
         }
-        var kode = TempAvledeKode.getVerdi(FagsakYtelseType.class, node, "kode");
         return Optional.ofNullable(kode)
                 .map(KODEVERDI_MAP::get)
                 .orElseThrow(() -> new IllegalArgumentException("Ukjent FagsakYtelseType: " + kode));
