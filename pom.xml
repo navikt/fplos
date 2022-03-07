@@ -38,7 +38,7 @@
         <metrics.version>4.1.12.1</metrics.version>
         <prometheus.version>0.15.0</prometheus.version>
         <swagger.version>2.1.13</swagger.version>
-        <flyway.version>8.5.1</flyway.version>
+        <flyway.version>8.5.2</flyway.version>
 
         <!-- Transitive avh. versjoner for å sikre unikhet (enforcer dependencyConvergence). Skal ikke benyttes direkte av vår egen kode. -->
         <jasypt.version>1.9.3</jasypt.version>
