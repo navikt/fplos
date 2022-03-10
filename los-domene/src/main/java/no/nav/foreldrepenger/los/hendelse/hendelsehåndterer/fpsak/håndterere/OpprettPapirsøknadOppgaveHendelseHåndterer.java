@@ -29,15 +29,7 @@ public class OpprettPapirsøknadOppgaveHendelseHåndterer extends OpprettOppgave
 
     @Override
     void håndterEksisterendeOppgave() {
-        oppgaveRepository.hentOppgaver(behandlingFpsak.getBehandlingId())
-                .stream()
-                .filter(Oppgave::getAktiv)
-                .findFirst()
-                .ifPresent(o -> {
-                    throw new IllegalStateException(String.format("Finnes aktiv oppgave (oppgaveId %s) fra før, "
-                                    + "gir opp håndtering av hendelse. Sannsynlig feil i logikk i utledning av FpsakHendelseHåndterer",
-                            o.getId()));
-                });
+        oppgaveRepository.avsluttOppgaveForBehandling(behandlingFpsak.getBehandlingId());
     }
 
     @Override

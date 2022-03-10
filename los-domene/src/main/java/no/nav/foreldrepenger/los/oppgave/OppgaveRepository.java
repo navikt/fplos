@@ -35,6 +35,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static no.nav.foreldrepenger.los.oppgavekø.KøSortering.FT_DATO;
 import static no.nav.foreldrepenger.los.oppgavekø.KøSortering.FT_HELTALL;
@@ -457,22 +458,23 @@ public class OppgaveRepository {
     }
 
     public void avsluttOppgaveForBehandling(BehandlingId behandlingId) {
-        var oppgaver = hentOppgaver(behandlingId, Oppgave.class);
-        var antallAktive = oppgaver.stream().filter(Oppgave::getAktiv).count();
-        if (antallAktive > 1) {
+        var aktiveOppgaver = hentOppgaver(behandlingId, Oppgave.class)
+                .stream()
+                .filter(Oppgave::getAktiv)
+                .collect(Collectors.toList());
+        if (aktiveOppgaver.size() > 1) {
             throw new IllegalStateException(
                     String.format("Forventet kun én aktiv oppgave for behandlingId %s, fant %s", behandlingId,
-                            antallAktive));
+                            aktiveOppgaver));
         }
-        oppgaver.stream()
-                .filter(Oppgave::getAktiv)
-                .max(Comparator.comparing(Oppgave::getOpprettetTidspunkt))
-                .ifPresent(oppgave -> {
-                    frigiEventuellReservasjon(oppgave.getReservasjon());
-                    oppgave.avsluttOppgave();
-                    internLagre(oppgave);
-                    entityManager.refresh(oppgave);
-                });
+
+        for (Oppgave oppgave : aktiveOppgaver) {
+            LOG.info("Avslutter oppgave for behandling {}", behandlingId);
+            frigiEventuellReservasjon(oppgave.getReservasjon());
+            oppgave.avsluttOppgave();
+            internLagre(oppgave);
+            entityManager.refresh(oppgave);
+        }
     }
 
     private void frigiEventuellReservasjon(Reservasjon reservasjon) {
