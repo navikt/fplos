@@ -5,6 +5,7 @@ import static no.nav.foreldrepenger.los.oppgavekø.KøSortering.FEILUTBETALINGST
 import static no.nav.foreldrepenger.los.organisasjon.Avdeling.AVDELING_DRAMMEN_ENHET;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.mock;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -16,6 +17,7 @@ import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 
+import no.nav.foreldrepenger.los.reservasjon.ReservasjonTjeneste;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -39,12 +41,14 @@ public class OppgaveRepositoryTest {
 
     private EntityManager entityManager;
     private OppgaveRepository oppgaveRepository;
+    private OppgaveTjeneste oppgaveTjeneste;
 
 
     @BeforeEach
     public void setup(EntityManager entityManager) {
         this.entityManager = entityManager;
         oppgaveRepository = new OppgaveRepository(entityManager);
+        oppgaveTjeneste = new OppgaveTjeneste(oppgaveRepository, mock(ReservasjonTjeneste.class));
     }
 
     @Test
@@ -283,7 +287,7 @@ public class OppgaveRepositoryTest {
         var oppgaveKommerPåNytt = lagOppgave(AVDELING_DRAMMEN_ENHET);
         oppgaveRepository.opprettOppgave(oppgave);
         assertThat(DBTestUtil.hentAlle(entityManager, Oppgave.class)).hasSize(1);
-        oppgaveRepository.avsluttOppgaveForBehandling(oppgave.getBehandlingId());
+        oppgaveTjeneste.avsluttOppgaveForBehandling(oppgave.getBehandlingId());
         oppgaveRepository.opprettOppgave(oppgaveKommerPåNytt);
         assertThat(DBTestUtil.hentAlle(entityManager, Oppgave.class)).hasSize(2);
     }
@@ -298,7 +302,7 @@ public class OppgaveRepositoryTest {
         assertThat(første()).isEqualTo(første);
         assertThat(siste().getAktiv()).isTrue();
         assertThat(første().getOpprettetTidspunkt()).isBefore(siste().getOpprettetTidspunkt());
-        assertThrows(IllegalStateException.class, () -> oppgaveRepository.avsluttOppgaveForBehandling(første.getBehandlingId()));
+        assertThrows(IllegalStateException.class, () -> oppgaveTjeneste.avsluttOppgaveForBehandling(første.getBehandlingId()));
     }
 
     @Test

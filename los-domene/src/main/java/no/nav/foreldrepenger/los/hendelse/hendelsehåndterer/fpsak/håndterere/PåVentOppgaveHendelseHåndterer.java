@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.Predicate;
 
+import no.nav.foreldrepenger.los.oppgave.OppgaveTjeneste;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,21 +17,20 @@ import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.Op
 import no.nav.foreldrepenger.los.klient.fpsak.Aksjonspunkt;
 import no.nav.foreldrepenger.los.klient.fpsak.BehandlingFpsak;
 import no.nav.foreldrepenger.los.oppgave.Oppgave;
-import no.nav.foreldrepenger.los.oppgave.OppgaveRepository;
 import no.nav.foreldrepenger.los.statistikk.kø.KøOppgaveHendelse;
 import no.nav.foreldrepenger.los.statistikk.kø.KøStatistikkTjeneste;
 
 public class PåVentOppgaveHendelseHåndterer implements FpsakHendelseHåndterer {
 
     private static final Logger LOG = LoggerFactory.getLogger(PåVentOppgaveHendelseHåndterer.class);
-    private final OppgaveRepository oppgaveRepository;
+    private final OppgaveTjeneste oppgaveTjeneste;
     private final KøStatistikkTjeneste køStatistikk;
     private final BehandlingFpsak behandlingFpsak;
 
-    public PåVentOppgaveHendelseHåndterer(OppgaveRepository oppgaveRepository,
+    public PåVentOppgaveHendelseHåndterer(OppgaveTjeneste oppgaveTjeneste,
                                           KøStatistikkTjeneste køStatistikk,
                                           BehandlingFpsak behandling) {
-        this.oppgaveRepository = oppgaveRepository;
+        this.oppgaveTjeneste = oppgaveTjeneste;
         this.køStatistikk = køStatistikk;
         this.behandlingFpsak = behandling;
     }
@@ -42,16 +42,16 @@ public class PåVentOppgaveHendelseHåndterer implements FpsakHendelseHåndterer
         var aksjonspunkter = behandlingFpsak.getAksjonspunkter();
         var venteType = manueltSattPåVent(aksjonspunkter) ? OppgaveEventType.MANU_VENT : OppgaveEventType.VENT;
         var aksjonspunktFrist = aksjonspunktFrist(aksjonspunkter, venteType);
-        var finnesAktivOppgave = oppgaveRepository.hentOppgaver(behandlingId).stream().anyMatch(Oppgave::getAktiv);
-        if (finnesAktivOppgave) {
-            LOG.info("{} behandling er satt på vent, type {}. Lukker oppgave.", SYSTEM, venteType);
-            køStatistikk.lagre(behandlingId, KøOppgaveHendelse.OPPGAVE_SATT_PÅ_VENT);
-            oppgaveRepository.avsluttOppgaveForBehandling(behandlingId);
-        } else {
-            LOG.info("{} behandling er satt på vent, type {}", SYSTEM, venteType);
-        }
+        oppgaveTjeneste.hentNyesteOppgaveTilknyttet(behandlingId)
+                .filter(Oppgave::getAktiv)
+                .ifPresentOrElse(o -> {
+                            LOG.info("{} behandling er satt på vent, type {}. Lukker oppgave.", SYSTEM, venteType);
+                            køStatistikk.lagre(behandlingId, KøOppgaveHendelse.OPPGAVE_SATT_PÅ_VENT);
+                            oppgaveTjeneste.avsluttOppgaveForBehandling(behandlingId);
+                        },
+                        () -> LOG.info("{} behandling er satt på vent, type {}", SYSTEM, venteType));
         var oel = new OppgaveEventLogg(behandlingId, venteType, null, behandlendeEnhet, aksjonspunktFrist);
-        oppgaveRepository.lagre(oel);
+        oppgaveTjeneste.lagre(oel);
     }
 
     private static LocalDateTime aksjonspunktFrist(List<Aksjonspunkt> aksjonspunkter, OppgaveEventType type) {

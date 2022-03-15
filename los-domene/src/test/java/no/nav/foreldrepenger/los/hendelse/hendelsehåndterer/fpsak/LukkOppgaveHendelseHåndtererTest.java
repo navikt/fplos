@@ -10,6 +10,8 @@ import static org.mockito.Mockito.verify;
 
 import javax.persistence.EntityManager;
 
+import no.nav.foreldrepenger.los.oppgave.OppgaveTjeneste;
+import no.nav.foreldrepenger.los.reservasjon.ReservasjonTjeneste;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -29,21 +31,22 @@ import no.nav.foreldrepenger.los.statistikk.kø.KøStatistikkTjeneste;
 @ExtendWith(EntityManagerFPLosAwareExtension.class)
 class LukkOppgaveHendelseHåndtererTest {
     private final KøStatistikkTjeneste køStatistikk = mock(KøStatistikkTjeneste.class);
+    private final ReservasjonTjeneste reservasjonTjeneste = mock(ReservasjonTjeneste.class);
     private EntityManager entityManager;
-    private OppgaveRepository oppgaveRepository;
+    private OppgaveTjeneste oppgaveTjeneste;
 
     @BeforeEach
     private void setUp(EntityManager entityManager) {
         this.entityManager = entityManager;
-        oppgaveRepository = new OppgaveRepository(entityManager);
+        oppgaveTjeneste = new OppgaveTjeneste(new OppgaveRepository(entityManager), reservasjonTjeneste);
     }
 
     @Test
     public void skalLukkeÅpenOppgave() {
         var behandlingFpsak = behandlingFpsak();
-        oppgaveRepository.lagre(oppgave(behandlingFpsak));
+        oppgaveTjeneste.lagre(oppgave(behandlingFpsak));
 
-        new LukkOppgaveHendelseHåndterer(oppgaveRepository, køStatistikk, behandlingFpsak).håndter();
+        new LukkOppgaveHendelseHåndterer(oppgaveTjeneste, køStatistikk, behandlingFpsak).håndter();
 
         var oppgave = DBTestUtil.hentUnik(entityManager, Oppgave.class);
         assertThat(oppgave.getAktiv()).isFalse();
@@ -52,9 +55,9 @@ class LukkOppgaveHendelseHåndtererTest {
     @Test
     public void skalOppdatereOppgavestatistikk() {
         var behandlingFpsak = behandlingFpsak();
-        oppgaveRepository.lagre(oppgave(behandlingFpsak));
+        oppgaveTjeneste.lagre(oppgave(behandlingFpsak));
 
-        new LukkOppgaveHendelseHåndterer(oppgaveRepository, køStatistikk, behandlingFpsak).håndter();
+        new LukkOppgaveHendelseHåndterer(oppgaveTjeneste, køStatistikk, behandlingFpsak).håndter();
 
         // NB tester ikke rekkefølge på kall
         verify(køStatistikk).lagre(any(BehandlingId.class), eq(KøOppgaveHendelse.LUKKET_OPPGAVE));

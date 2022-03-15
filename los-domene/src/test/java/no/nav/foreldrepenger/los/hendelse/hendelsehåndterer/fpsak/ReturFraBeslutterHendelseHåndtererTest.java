@@ -9,6 +9,8 @@ import static org.mockito.Mockito.verify;
 
 import javax.persistence.EntityManager;
 
+import no.nav.foreldrepenger.los.oppgave.OppgaveTjeneste;
+import no.nav.foreldrepenger.los.reservasjon.ReservasjonTjeneste;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -35,11 +37,13 @@ class ReturFraBeslutterHendelseHåndtererTest {
     private OppgaveRepository oppgaveRepository;
     private OppgaveEgenskapHåndterer oppgaveEgenskapHåndterer;
     private BehandlingFpsak behandlingFpsak;
+    private OppgaveTjeneste oppgaveTjeneste;
 
     @BeforeEach
     private void setUp(EntityManager entityManager) {
         this.entityManager = entityManager;
         oppgaveRepository = new OppgaveRepository(entityManager);
+        oppgaveTjeneste = new OppgaveTjeneste(oppgaveRepository, mock(ReservasjonTjeneste.class));
         oppgaveEgenskapHåndterer = new OppgaveEgenskapHåndterer(oppgaveRepository);
         behandlingFpsak = behandlingFpsak();
         var eksisterendeOppgave = Oppgave.builder()
@@ -52,7 +56,7 @@ class ReturFraBeslutterHendelseHåndtererTest {
 
     @Test
     public void skalAvslutteBeslutterOppgave() {
-        new ReturFraBeslutterHendelseHåndterer(oppgaveRepository, oppgaveEgenskapHåndterer, køStatistikk, behandlingFpsak).håndter();
+        new ReturFraBeslutterHendelseHåndterer(oppgaveTjeneste, oppgaveEgenskapHåndterer, køStatistikk, behandlingFpsak).håndter();
         var oppgaver = DBTestUtil.hentAlle(entityManager, Oppgave.class);
         var inaktivOppgave = oppgaver.stream().filter(o -> !o.getAktiv()).findFirst().orElseThrow();
         var aktivOppgave = oppgaver.stream().filter(Oppgave::getAktiv).findFirst().orElseThrow();
@@ -63,14 +67,14 @@ class ReturFraBeslutterHendelseHåndtererTest {
 
     @Test
     public void skalOppretteOppgaveStatistikkForBeggeOppgaver() {
-        new ReturFraBeslutterHendelseHåndterer(oppgaveRepository, oppgaveEgenskapHåndterer, køStatistikk, behandlingFpsak).håndter();
+        new ReturFraBeslutterHendelseHåndterer(oppgaveTjeneste, oppgaveEgenskapHåndterer, køStatistikk, behandlingFpsak).håndter();
         verify(køStatistikk).lagre(any(BehandlingId.class), eq(KøOppgaveHendelse.LUKKET_OPPGAVE));
         verify(køStatistikk).lagre(any(Oppgave.class), eq(KøOppgaveHendelse.ÅPNET_OPPGAVE));
     }
 
     @Test
     public void skalOppretteOppgaveEventLoggForBeggeOppgaver() {
-        new ReturFraBeslutterHendelseHåndterer(oppgaveRepository, oppgaveEgenskapHåndterer, køStatistikk, behandlingFpsak).håndter();
+        new ReturFraBeslutterHendelseHåndterer(oppgaveTjeneste, oppgaveEgenskapHåndterer, køStatistikk, behandlingFpsak).håndter();
         var oel = DBTestUtil.hentAlle(entityManager, OppgaveEventLogg.class);
         assertThat(oel).hasSize(2);
     }

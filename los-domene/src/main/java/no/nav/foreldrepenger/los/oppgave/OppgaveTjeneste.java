@@ -10,6 +10,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import no.nav.foreldrepenger.los.domene.typer.BehandlingId;
+import no.nav.foreldrepenger.los.felles.BaseEntitet;
 import no.nav.foreldrepenger.los.reservasjon.ReservasjonTjeneste;
 
 import static no.nav.foreldrepenger.los.reservasjon.ReservasjonKonstanter.OPPGAVE_AVSLUTTET;
@@ -66,6 +67,27 @@ public class OppgaveTjeneste {
                     oppgaveRepository.refresh(oppgave);
                 });
     }
+
+    public TilbakekrevingOppgave gjenåpneTilbakekrevingOppgave(BehandlingId behandlingId) {
+        var oppgaver = oppgaveRepository.hentOppgaver(behandlingId, TilbakekrevingOppgave.class);
+        var sisteOppgave = oppgaver.stream().max(Comparator.comparing(Oppgave::getOpprettetTidspunkt)).orElse(null);
+        if (sisteOppgave != null) {
+            sisteOppgave.gjenåpneOppgave();
+            oppgaveRepository.lagre(sisteOppgave);
+            oppgaveRepository.refresh(sisteOppgave);
+        }
+        return sisteOppgave;
+    }
+
+    public Optional<TilbakekrevingOppgave> hentAktivTilbakekrevingOppgave(BehandlingId behandlingId) {
+        return oppgaveRepository.hentOppgaver(behandlingId, TilbakekrevingOppgave.class).stream()
+                .filter(Oppgave::getAktiv).findFirst();
+    }
+
+    public <U extends BaseEntitet> void lagre(U entitet) {
+        oppgaveRepository.lagre(entitet);
+    }
+
 
     private static LocalDateTime aktuellDato(Oppgave oppgave) {
         return oppgave.getOppgaveAvsluttet() == null ? oppgave.getOpprettetTidspunkt() : oppgave.getOppgaveAvsluttet();

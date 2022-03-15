@@ -52,7 +52,7 @@ public class AvdelingslederTjeneste {
 
     public Long lagNyOppgaveFiltrering(String avdelingEnhet) {
         var avdeling = organisasjonRepository.hentAvdelingFraEnhet(avdelingEnhet).orElseThrow();
-        return oppgaveRepository.lagre(OppgaveFiltrering.nyTomOppgaveFiltrering(avdeling));
+        return oppgaveRepository.lagreFiltrering(OppgaveFiltrering.nyTomOppgaveFiltrering(avdeling));
     }
 
     public void giListeNyttNavn(Long sakslisteId, String navn) {
