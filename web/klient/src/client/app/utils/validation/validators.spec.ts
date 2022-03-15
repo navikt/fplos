@@ -192,7 +192,7 @@ describe('Validators', () => {
     it(
       'skal ikke feile når saksnummer eller fødselsnummer har gyldig pattern',
       () => {
-        const result = hasValidSaksnummerOrFodselsnummerFormat(intlMock)('22121588017');
+        const result = hasValidSaksnummerOrFodselsnummerFormat(intlMock)('11111111111');
         expect(result).toBeNull();
       },
     );
@@ -200,7 +200,7 @@ describe('Validators', () => {
     it(
       'skal feile når saksnummer eller fødselsnummer har ugyldig pattern',
       () => {
-        const result = hasValidSaksnummerOrFodselsnummerFormat(intlMock)('0501851212-d');
+        const result = hasValidSaksnummerOrFodselsnummerFormat(intlMock)('1111111111-d');
         expect(result).toEqual('Ugyldig saksnummer eller fødselsnummer');
       },
     );
