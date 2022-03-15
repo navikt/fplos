@@ -24,7 +24,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
-        <fp-kontrakter.version>6.1.14</fp-kontrakter.version>
+        <fp-kontrakter.version>6.1.18</fp-kontrakter.version>
         <felles.version>4.1.18</felles.version>
         <prosesstask.version>3.1.7</prosesstask.version>
 
