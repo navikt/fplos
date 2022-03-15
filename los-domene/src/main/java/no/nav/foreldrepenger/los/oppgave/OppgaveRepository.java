@@ -37,8 +37,10 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static no.nav.foreldrepenger.los.felles.util.BrukerIdent.brukerIdent;
 import static no.nav.foreldrepenger.los.oppgavekø.KøSortering.FT_DATO;
 import static no.nav.foreldrepenger.los.oppgavekø.KøSortering.FT_HELTALL;
+import static no.nav.foreldrepenger.los.reservasjon.ReservasjonKonstanter.OPPGAVE_AVSLUTTET;
 
 @ApplicationScoped
 public class OppgaveRepository {
@@ -137,7 +139,7 @@ public class OppgaveRepository {
             query.setParameter("nå", LocalDateTime.now());
         }
         if (!queryDto.getForAvdelingsleder()) {
-            query.setParameter("tilbeslutter", AndreKriterierType.TIL_BESLUTTER).setParameter("uid", finnBrukernavn());
+            query.setParameter("tilbeslutter", AndreKriterierType.TIL_BESLUTTER).setParameter("uid", brukerIdent());
         }
         if (!queryDto.getBehandlingTyper().isEmpty()) {
             query.setParameter("behtyper", queryDto.getBehandlingTyper());
@@ -265,31 +267,6 @@ public class OppgaveRepository {
         return datoFiltrering + SORTERING + sortering;
     }
 
-    private static String finnBrukernavn() {
-        var brukerident = SubjectHandler.getSubjectHandler().getUid();
-        return brukerident
-                != null ? brukerident.toUpperCase() : BaseEntitet.BRUKERNAVN_NÅR_SIKKERHETSKONTEKST_IKKE_FINNES;
-    }
-
-    public List<Reservasjon> hentReservasjonerTilknyttetAktiveOppgaver(String uid) {
-        var oppgaveTypedQuery = entityManager.createQuery(
-                "Select r from Reservasjon r " + "INNER JOIN Oppgave o ON r.oppgave = o "
-                        + "WHERE r.reservertTil > :nå AND upper(r.reservertAv) = upper( :uid ) AND o.aktiv = true",
-                Reservasjon.class) //$NON-NLS-1$
-                .setParameter("nå", LocalDateTime.now()).setParameter("uid", uid);
-        return oppgaveTypedQuery.getResultList();
-    }
-
-    public List<Reservasjon> hentAlleReservasjonerForAvdeling(String avdelingEnhet) {
-        var listeTypedQuery = entityManager.createQuery(
-                "Select r FROM Reservasjon r INNER JOIN Oppgave o ON r.oppgave = o "
-                        + "WHERE r.reservertTil > :nå AND o.behandlendeEnhet = :behandlendeEnhet "
-                        + "ORDER BY r.reservertAv", Reservasjon.class)
-                .setParameter("nå", LocalDateTime.now())
-                .setParameter("behandlendeEnhet", avdelingEnhet);
-        return listeTypedQuery.getResultList();
-    }
-
     public List<Oppgave> hentAktiveOppgaverForSaksnummer(Collection<Long> fagsakSaksnummerListe) {
         return entityManager.createQuery(
                 SELECT_FRA_OPPGAVE + "WHERE o.fagsakSaksnummer in :fagsakSaksnummerListe " + "AND o.aktiv = true "
@@ -306,6 +283,10 @@ public class OppgaveRepository {
             return new Reservasjon(entityManager.find(Oppgave.class, oppgaveId));
         }
         return query.getResultList().get(0);
+    }
+
+    public void lagre(Reservasjon reservasjon) {
+        internLagre(reservasjon);
     }
 
     public List<OppgaveFiltrering> hentAlleOppgaveFilterSettTilknyttetAvdeling(Long avdelingsId) {
@@ -326,10 +307,6 @@ public class OppgaveRepository {
         var listeTypedQuery = entityManager.createQuery("SELECT l.sortering FROM OppgaveFiltrering l WHERE l.id = :id ",
                 KøSortering.class).setParameter("id", listeId);
         return listeTypedQuery.getResultStream().findFirst().orElse(null);
-    }
-
-    public void lagre(Reservasjon reservasjon) {
-        internLagre(reservasjon);
     }
 
     public void lagre(Oppgave oppgave) {
@@ -457,6 +434,7 @@ public class OppgaveRepository {
         return sisteOppgave;
     }
 
+    @Deprecated
     public void avsluttOppgaveForBehandling(BehandlingId behandlingId) {
         var aktiveOppgaver = hentOppgaver(behandlingId, Oppgave.class)
                 .stream()
@@ -479,17 +457,10 @@ public class OppgaveRepository {
 
     private void frigiEventuellReservasjon(Reservasjon reservasjon) {
         if (reservasjon != null && reservasjon.erAktiv()) {
-            reservasjon.frigiReservasjon("Oppgave avsluttet");
+            reservasjon.frigiReservasjon(OPPGAVE_AVSLUTTET);
             lagre(reservasjon);
             lagre(new ReservasjonEventLogg(reservasjon));
         }
-    }
-
-    public List<Oppgave> hentSisteReserverteOppgaver(String uid) {
-        return entityManager.createQuery("SELECT o FROM Oppgave o " + "INNER JOIN Reservasjon r ON r.oppgave = o "
-                        + "WHERE upper(r.reservertAv) = upper( :uid ) ORDER BY coalesce(r.endretTidspunkt, r.opprettetTidspunkt) DESC ",
-                Oppgave.class) //$NON-NLS-1$
-                .setParameter("uid", uid).setMaxResults(10).getResultList();
     }
 
     public void lagre(OppgaveEgenskap oppgaveEgenskap) {

@@ -3,6 +3,7 @@ package no.nav.foreldrepenger.los.oppgave;
 import static java.time.temporal.ChronoUnit.MINUTES;
 import static no.nav.foreldrepenger.los.organisasjon.Avdeling.AVDELING_DRAMMEN_ENHET;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -10,6 +11,7 @@ import java.util.Arrays;
 
 import javax.persistence.EntityManager;
 
+import no.nav.foreldrepenger.los.reservasjon.ReservasjonRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -30,11 +32,12 @@ public class OppgaveTjenesteTest {
 
     private static final String AVDELING_BERGEN_ENHET = "4812";
 
+    private EntityManager entityManager;
     private OppgaveRepository oppgaveRepository;
+    private ReservasjonRepository reservasjonRepository;
     private OppgaveKøTjeneste oppgaveKøTjeneste;
     private OppgaveTjeneste oppgaveTjeneste;
     private ReservasjonTjeneste reservasjonTjeneste;
-
     private AvdelingslederTjeneste avdelingslederTjeneste;
 
     private final Oppgave førstegangOppgave = Oppgave.builder().dummyOppgave(AVDELING_DRAMMEN_ENHET)
@@ -45,7 +48,6 @@ public class OppgaveTjenesteTest {
             .medBehandlingType(BehandlingType.INNSYN).build();
     private final Oppgave førstegangOppgaveBergen = Oppgave.builder().dummyOppgave(AVDELING_BERGEN_ENHET)
             .medBehandlingType(BehandlingType.FØRSTEGANGSSØKNAD).build();
-    private EntityManager entityManager;
 
     @BeforeEach
     public void setup(EntityManager entityManager) {
@@ -53,8 +55,9 @@ public class OppgaveTjenesteTest {
         var organisasjonRepository = new OrganisasjonRepository(entityManager);
         avdelingslederTjeneste = new AvdelingslederTjeneste(oppgaveRepository, organisasjonRepository);
         oppgaveKøTjeneste = new OppgaveKøTjeneste(oppgaveRepository, organisasjonRepository);
-        oppgaveTjeneste = new OppgaveTjeneste(oppgaveRepository);
-        reservasjonTjeneste = new ReservasjonTjeneste(oppgaveRepository);
+        oppgaveTjeneste = new OppgaveTjeneste(oppgaveRepository, reservasjonTjeneste);
+        reservasjonRepository = new ReservasjonRepository(entityManager);
+        reservasjonTjeneste = new ReservasjonTjeneste(oppgaveRepository, reservasjonRepository);
         this.entityManager = entityManager;
     }
 
@@ -149,32 +152,36 @@ public class OppgaveTjenesteTest {
     public void testReservasjon() {
         var oppgaveFiltreringId = leggeInnEtSettMedOppgaver();
         assertThat(oppgaveKøTjeneste.hentOppgaver(oppgaveFiltreringId)).hasSize(3);
-        assertThat(reservasjonTjeneste.hentReservasjonerTilknyttetAktiveOppgaver()).hasSize(0);
+        assertThat(reservasjonTjeneste.hentSaksbehandlersReserverteAktiveOppgaver()).hasSize(0);
         assertThat(reservasjonTjeneste.hentReservasjonerForAvdeling(AVDELING_DRAMMEN_ENHET)).hasSize(0);
-        assertThat(reservasjonTjeneste.hentSisteReserverteOppgaver()).hasSize(0);
+        assertThat(reservasjonTjeneste.hentSaksbehandlersSisteReserverteOppgaver()).hasSize(0);
 
         reservasjonTjeneste.reserverOppgave(førstegangOppgave.getId());
         assertThat(oppgaveKøTjeneste.hentOppgaver(oppgaveFiltreringId)).hasSize(2);
-        assertThat(reservasjonTjeneste.hentReservasjonerTilknyttetAktiveOppgaver()).hasSize(1);
+        assertThat(reservasjonTjeneste.hentSaksbehandlersReserverteAktiveOppgaver()).hasSize(1);
         assertThat(reservasjonTjeneste.hentReservasjonerForAvdeling(AVDELING_DRAMMEN_ENHET)).hasSize(1);
         assertThat(reservasjonTjeneste.hentReservasjonerForAvdeling(AVDELING_BERGEN_ENHET)).hasSize(0);
-        assertThat(reservasjonTjeneste.hentReservasjonerTilknyttetAktiveOppgaver().get(0).getReservertTil().until(LocalDateTime.now().plusHours(2), MINUTES)).isLessThan(2);
-        assertThat(reservasjonTjeneste.hentSisteReserverteOppgaver()).hasSize(1);
+        var reservasjon = reservasjonTjeneste.hentSaksbehandlersReserverteAktiveOppgaver().stream()
+                .map(Oppgave::getReservasjon)
+                .findAny()
+                .orElseGet(() -> fail("Ingen oppgave"));
+        assertThat(reservasjon.getReservertTil().until(LocalDateTime.now().plusHours(2), MINUTES)).isLessThan(2);
+        assertThat(reservasjonTjeneste.hentSaksbehandlersSisteReserverteOppgaver()).hasSize(1);
 
         reservasjonTjeneste.forlengReservasjonPåOppgave(førstegangOppgave.getId());
-        assertThat(reservasjonTjeneste.hentReservasjonerTilknyttetAktiveOppgaver().get(0).getReservertTil().until(LocalDateTime.now().plusHours(26), MINUTES)).isLessThan(2);
-        assertThat(reservasjonTjeneste.hentReservasjonerForAvdeling(AVDELING_DRAMMEN_ENHET).get(0).getReservertTil().until(LocalDateTime.now().plusHours(26), MINUTES)).isLessThan(2);
+        assertThat(reservasjon.getReservertTil().until(LocalDateTime.now().plusHours(26), MINUTES)).isLessThan(2);
+        assertThat(reservasjon.getReservertTil().until(LocalDateTime.now().plusHours(26), MINUTES)).isLessThan(2);
 
         reservasjonTjeneste.endreReservasjonPåOppgave(førstegangOppgave.getId(), LocalDateTime.now().plusDays(3));
-        assertThat(reservasjonTjeneste.hentReservasjonerTilknyttetAktiveOppgaver().get(0).getReservertTil().until(LocalDateTime.now().plusDays(3), MINUTES)).isLessThan(2);
+        assertThat(reservasjon.getReservertTil().until(LocalDateTime.now().plusDays(3), MINUTES)).isLessThan(2);
 
         var begrunnelse = "Test";
-        reservasjonTjeneste.frigiOppgave(førstegangOppgave.getId(), begrunnelse);
+        reservasjonTjeneste.slettReservasjon(førstegangOppgave.getId(), begrunnelse);
         assertThat(oppgaveKøTjeneste.hentOppgaver(oppgaveFiltreringId)).hasSize(3);
-        assertThat(reservasjonTjeneste.hentReservasjonerTilknyttetAktiveOppgaver()).hasSize(0);
+        assertThat(reservasjonTjeneste.hentSaksbehandlersReserverteAktiveOppgaver()).hasSize(0);
         assertThat(reservasjonTjeneste.hentReservasjonerForAvdeling(AVDELING_DRAMMEN_ENHET)).hasSize(0);
-        assertThat(reservasjonTjeneste.hentSisteReserverteOppgaver()).hasSize(1);
-        assertThat(reservasjonTjeneste.hentSisteReserverteOppgaver().get(0).getReservasjon().getBegrunnelse()).isEqualTo(begrunnelse);
+        assertThat(reservasjonTjeneste.hentSaksbehandlersSisteReserverteOppgaver()).hasSize(1);
+        assertThat(reservasjonTjeneste.hentSaksbehandlersSisteReserverteOppgaver().get(0).getReservasjon().getBegrunnelse()).isEqualTo(begrunnelse);
     }
 
     @Test

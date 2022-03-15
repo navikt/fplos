@@ -11,6 +11,7 @@ import java.time.temporal.ChronoUnit;
 
 import javax.persistence.EntityManager;
 
+import no.nav.foreldrepenger.los.reservasjon.ReservasjonRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -38,13 +39,15 @@ class OppdaterOppgaveegenskaperHendelseHåndtererTest {
     private OppgaveRepository oppgaveRepository;
     private OppgaveEgenskapHåndterer oppgaveEgenskapHåndterer;
     private ReservasjonTjeneste reservasjonTjeneste;
+    private ReservasjonRepository reservasjonRepository;
 
     @BeforeEach
     private void setUp(EntityManager entityManager) {
         this.entityManager = entityManager;
         oppgaveRepository = new OppgaveRepository(entityManager);
+        reservasjonRepository = new ReservasjonRepository(entityManager);
         oppgaveEgenskapHåndterer = new OppgaveEgenskapHåndterer(oppgaveRepository);
-        reservasjonTjeneste = new ReservasjonTjeneste(oppgaveRepository);
+        reservasjonTjeneste = new ReservasjonTjeneste(oppgaveRepository, reservasjonRepository);
     }
 
     @Test

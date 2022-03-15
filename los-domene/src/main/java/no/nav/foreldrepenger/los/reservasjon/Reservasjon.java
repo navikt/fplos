@@ -14,7 +14,6 @@ import javax.persistence.Table;
 
 import no.nav.foreldrepenger.los.felles.BaseEntitet;
 import no.nav.foreldrepenger.los.oppgave.Oppgave;
-import no.nav.vedtak.sikkerhet.context.SubjectHandler;
 
 @Entity(name = "Reservasjon")
 @Table(name = "RESERVASJON")
@@ -80,14 +79,6 @@ public class Reservasjon extends BaseEntitet {
         return begrunnelse;
     }
 
-    public void reserverNormalt(){
-        reservertTil = LocalDateTime.now().plusHours(8);
-        reservertAv = finnBrukernavn();
-        flyttetAv = null;
-        flyttetTidspunkt = null;
-        begrunnelse = null;
-    }
-
     public void frigiReservasjon(String begrunnelse) {
         reservertTil = LocalDateTime.now().minusSeconds(1);
         if (reservertAv == null) {
@@ -115,12 +106,27 @@ public class Reservasjon extends BaseEntitet {
         begrunnelse = begrunnelseForFlytting;
     }
 
-    private static String finnBrukernavn() {
-        var brukerident = SubjectHandler.getSubjectHandler().getUid();
-        return brukerident != null ? brukerident.toUpperCase() : BRUKERNAVN_NÅR_SIKKERHETSKONTEKST_IKKE_FINNES;
-    }
-
     public boolean erAktiv() {
         return reservertTil != null && reservertTil.isAfter(LocalDateTime.now());
+    }
+
+    public void setReservertTil(LocalDateTime dateTime) {
+        this.reservertTil = dateTime;
+    }
+
+    public void setReservertAv(String reservertAv) {
+        this.reservertAv = reservertAv;
+    }
+
+    public void setFlyttetAv(String flyttetAv) {
+        this.flyttetAv = flyttetAv;
+    }
+
+    public void setFlyttetTidspunkt(LocalDateTime flyttetTidspunkt) {
+        this.flyttetTidspunkt = flyttetTidspunkt;
+    }
+
+    public void setBegrunnelse(String begrunnelse) {
+        this.begrunnelse = begrunnelse;
     }
 }

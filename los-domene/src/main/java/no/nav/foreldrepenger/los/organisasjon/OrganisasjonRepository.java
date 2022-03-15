@@ -22,16 +22,12 @@ public class OrganisasjonRepository {
         this.entityManager = entityManager;
     }
 
-    OrganisasjonRepository(){
-    }
-
-    private void internLagre(Object skaLagres) {
-        entityManager.persist(skaLagres);
-        entityManager.flush();
+    OrganisasjonRepository() {
     }
 
     public void lagre(Saksbehandler saksbehandler) {
-        internLagre(saksbehandler);
+        entityManager.persist(saksbehandler);
+        entityManager.flush();
     }
 
     public Saksbehandler hentSaksbehandler(String saksbehandlerIdent) {
@@ -47,11 +43,14 @@ public class OrganisasjonRepository {
     }
 
     private TypedQuery<Saksbehandler> hentSaksbehandlerQuery(String saksbehandlerIdent) {
-        return entityManager.createQuery("FROM saksbehandler s WHERE upper(s.saksbehandlerIdent) = upper( :saksbehandlerIdent )", Saksbehandler.class)
-                    .setParameter("saksbehandlerIdent", saksbehandlerIdent.toUpperCase());
+        return entityManager.createQuery("""
+                        FROM saksbehandler s
+                        WHERE upper(s.saksbehandlerIdent) = upper( :ident )
+                        """, Saksbehandler.class)
+                .setParameter("ident", saksbehandlerIdent.toUpperCase());
     }
 
-    public Optional<Avdeling> hentAvdelingFraEnhet(String avdelingEnhet){
+    public Optional<Avdeling> hentAvdelingFraEnhet(String avdelingEnhet) {
         var query = entityManager.createQuery("FROM avdeling a WHERE a.avdelingEnhet = :avdelingEnhet", Avdeling.class)
                 .setParameter("avdelingEnhet", avdelingEnhet);
         return hentUniktResultat(query);
