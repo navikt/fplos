@@ -57,7 +57,7 @@ const buildInitialValues = (intl: IntlShape, valgtSaksliste: Saksliste): FormVal
   return {
     sakslisteId: valgtSaksliste.sakslisteId,
     navn: valgtSaksliste.navn ? valgtSaksliste.navn : intl.formatMessage({ id: 'UtvalgskriterierForSakslisteForm.NyListe' }),
-    sortering: valgtSaksliste.sortering ? valgtSaksliste.sortering.sorteringType.kode : undefined,
+    sortering: valgtSaksliste.sortering ? valgtSaksliste.sortering.sorteringType : undefined,
     fomDato: valgtSaksliste.sortering ? valgtSaksliste.sortering.fomDato : undefined,
     tomDato: valgtSaksliste.sortering ? valgtSaksliste.sortering.tomDato : undefined,
     fra: valgtSaksliste.sortering ? valgtSaksliste.sortering.fra?.toString() : undefined,

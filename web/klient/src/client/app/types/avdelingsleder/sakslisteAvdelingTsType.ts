@@ -1,5 +1,3 @@
-import KoSorteringType from './koSorteringTsType';
-
 type AnnetKriterie = Readonly<{
   andreKriterierType: string;
   inkluder: boolean;
@@ -12,7 +10,7 @@ type SakslisteAvdeling = Readonly<{
   fagsakYtelseTyper?: string[];
   sistEndret: string;
   sortering?: {
-    sorteringType: KoSorteringType;
+    sorteringType: string;
     fra?: number;
     til?: number;
     fomDato?: string;

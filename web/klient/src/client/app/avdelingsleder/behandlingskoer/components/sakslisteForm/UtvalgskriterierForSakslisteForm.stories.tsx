@@ -46,12 +46,7 @@ const Template: Story<{ sakslisteNavn: string }> = ({
           saksbehandlerIdenter: [],
           antallBehandlinger: 1,
           sortering: {
-            sorteringType: {
-              kode: koSortering.BEHANDLINGSFRIST,
-              navn: 'Behandlingsfrist',
-              felttype: '',
-              feltkategori: '',
-            },
+            sorteringType: koSortering.BEHANDLINGSFRIST,
             fra: 1,
             til: 4,
             erDynamiskPeriode: true,
