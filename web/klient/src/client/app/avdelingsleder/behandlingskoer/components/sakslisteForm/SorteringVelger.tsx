@@ -18,10 +18,6 @@ interface OwnProps {
   valgteBehandlingtyper?: string[];
   valgtAvdelingEnhet: string;
   erDynamiskPeriode: boolean;
-  fra?: number;
-  til?: number;
-  fomDato?: string;
-  tomDato?: string;
   hentAvdelingensSakslister: (params: {avdelingEnhet: string}) => void;
   hentAntallOppgaver: (sakslisteId: number, avdelingEnhet: string) => void;
 }
@@ -40,10 +36,6 @@ const SorteringVelger: FunctionComponent<OwnProps & WrappedComponentProps> = ({
   valgteBehandlingtyper,
   valgtAvdelingEnhet,
   erDynamiskPeriode,
-  fra,
-  til,
-  fomDato,
-  tomDato,
   hentAvdelingensSakslister,
   hentAntallOppgaver,
 }) => {
@@ -84,10 +76,6 @@ const SorteringVelger: FunctionComponent<OwnProps & WrappedComponentProps> = ({
                   lagreSakslisteSorteringTidsintervallDager={lagreSakslisteSorteringNumeriskIntervall}
                   valgtAvdelingEnhet={valgtAvdelingEnhet}
                   erDynamiskPeriode={erDynamiskPeriode}
-                  fra={fra}
-                  til={til}
-                  fomDato={fomDato}
-                  tomDato={tomDato}
                   hentAvdelingensSakslister={hentAvdelingensSakslister}
                   hentAntallOppgaver={hentAntallOppgaver}
                 />

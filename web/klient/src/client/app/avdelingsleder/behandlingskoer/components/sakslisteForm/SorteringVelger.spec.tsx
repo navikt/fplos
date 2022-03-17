@@ -71,7 +71,7 @@ describe('<SorteringVelger>', () => {
     fireEvent.blur(tilInput);
 
     expect(await screen.findByText('Feltet kan kun inneholde tall')).toBeInTheDocument();
-    expect(screen.getAllByText('Feltet kan kun inneholde tall')).toHaveLength(2);
+    expect(screen.findAllByText('Feltet kan kun inneholde tall')).toHaveLength(2);
   });
 
   it('skal vise fem sorteringsvalg når kun tilbakekreving er valgt', async () => {

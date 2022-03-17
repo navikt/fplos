@@ -6,6 +6,7 @@ import { useController, useFormContext } from 'react-hook-form';
 import { LabelType } from './Label';
 import { RadioOptionProps } from './RadioOption';
 import OptionGrid, { Direction } from './OptionGrid';
+import { getError, getValidationRules } from './formUtils';
 
 import styles from './radioGroupField.less';
 
@@ -21,6 +22,8 @@ interface OwnProps {
   onChange?: (value: any) => void;
   readOnly?: boolean;
   isEdited?: boolean;
+  validate?: ((value: string) => any)[];
+  parse?: (value: string) => any;
 }
 
 const RadioGroupField: FunctionComponent<OwnProps> = ({
@@ -33,19 +36,25 @@ const RadioGroupField: FunctionComponent<OwnProps> = ({
   children,
   spaceBetween,
   direction,
+  validate = [],
+  parse = (value) => value,
 }) => {
   const { formState: { errors } } = useFormContext();
-
   const { field } = useController({
     name,
+    rules: {
+      validate: useMemo(() => getValidationRules(validate), [validate]),
+    },
   });
 
   const customOnChange = useCallback((e: any) => {
-    field.onChange(e);
+    field.onChange(parse(e.target.value));
     if (onChange) {
       onChange(e.target.value);
     }
   }, [field, onChange]);
+
+  const showCheckedOnly = readOnly && field.value !== null && field.value !== undefined && field.value !== '';
 
   const options = useMemo(() => children
     .filter((radioOption) => !!radioOption)
@@ -54,10 +63,13 @@ const RadioGroupField: FunctionComponent<OwnProps> = ({
       name: field.name,
       value: radioOption.props.value,
       onChange: customOnChange,
+      groupDisabled: readOnly,
       checked: radioOption.props.value.toString() === field.value?.toString(),
-    })), [children, field.value, customOnChange]);
+    }))
+    .filter((radioOption) => !showCheckedOnly || radioOption.props.value.toString() === field.value?.toString()),
+  [children, field.value, customOnChange]);
 
-  const feil = errors[name] && errors[name].message;
+  const feil = getError(errors, name);
 
   return (
     <NavSkjemaGruppe

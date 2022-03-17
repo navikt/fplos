@@ -1,6 +1,6 @@
 import React, { Component, ReactNode } from 'react';
 import { Select as NavSelect } from 'nav-frontend-skjema';
-import Label from './Label';
+import Label, { LabelType } from './Label';
 
 interface OwnProps {
   selectValues: React.ReactElement[];
@@ -10,8 +10,9 @@ interface OwnProps {
   disabled?: boolean;
   bredde?: 'fullbredde' | 'xxl' | 'xl' | 'l' | 'm' | 's' | 'xs';
   className?: string;
-  label?: string;
+  label?: LabelType;
   feil?: string;
+  onChange?: (event: any) => void;
 }
 
 class CustomNavSelect extends Component<OwnProps> {
@@ -35,7 +36,6 @@ class CustomNavSelect extends Component<OwnProps> {
     this.checkCorrespondingOptionForValue();
   }
 
-  // TODO Kva for type blir returnert her?
   getOptionValues(): any {
     const { props: { selectValues } } = this;
     return selectValues
@@ -51,10 +51,11 @@ class CustomNavSelect extends Component<OwnProps> {
 
   checkCorrespondingOptionForValue(): void {
     const { getOptionValues, props: { value } } = this;
+    const n = value || '';
     // (aa) added "&& value !== ''" as to not spam other browsers
-    if (!getOptionValues().includes(value) && value !== '') {
+    if (!getOptionValues().includes(n) && n !== '') {
       // eslint-disable-next-line no-console
-      console.warn(`No corresponding option found for value '${value}'`); // NOSONAR Viser ikke sensitiv info
+      console.warn(`No corresponding option found for value '${n}'`); // NOSONAR Viser ikke sensitiv info
     }
   }
 

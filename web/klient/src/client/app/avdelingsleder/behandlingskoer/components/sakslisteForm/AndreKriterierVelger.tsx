@@ -73,13 +73,14 @@ const AndreKriterierVelger: FunctionComponent<OwnProps> = ({
                       hentAntallOppgaver(valgtSakslisteId, valgtAvdelingEnhet);
                       hentAvdelingensSakslister({ avdelingEnhet: valgtAvdelingEnhet });
                     })}
+                    parse={(value: string) => value === 'true'}
                   >
                     <RadioOption
-                      value
+                      value="true"
                       label={<FormattedMessage id="AndreKriterierVelger.TaMed" />}
                     />
                     <RadioOption
-                      value={false}
+                      value="false"
                       label={<FormattedMessage id="AndreKriterierVelger.Fjern" />}
                     />
                   </RadioGroupField>

@@ -53,10 +53,6 @@ const Template: Story<{ valgteBehandlingtyper: string[], erDynamiskPeriode: bool
           valgteBehandlingtyper={valgteBehandlingtyper}
           valgtAvdelingEnhet="NAV Viken"
           erDynamiskPeriode={verdier.erDynamiskPeriode}
-          fra={verdier.fra}
-          til={verdier.til}
-          fomDato={verdier.fomDato}
-          tomDato={verdier.tomDato}
           hentAvdelingensSakslister={action('button-click')}
           hentAntallOppgaver={action('button-click')}
         />
