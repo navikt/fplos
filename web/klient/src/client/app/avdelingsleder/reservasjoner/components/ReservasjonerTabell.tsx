@@ -8,7 +8,6 @@ import TableRow from 'sharedComponents/table/TableRow';
 import TableColumn from 'sharedComponents/table/TableColumn';
 import Image from 'sharedComponents/Image';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
-import CalendarToggleButton from 'sharedComponents/datepicker/CalendarToggleButton';
 import OppgaveReservasjonEndringDatoModal from 'saksbehandler/behandlingskoer/components/menu/OppgaveReservasjonEndringDatoModal';
 import FlyttReservasjonModal from 'saksbehandler/behandlingskoer/components/menu/FlyttReservasjonModal';
 import { getDateAndTime } from 'utils/dateUtils';
@@ -20,6 +19,7 @@ import removeIcon from 'images/remove.svg';
 import gruppeHoverUrl from 'images/gruppe_hover.svg';
 import gruppeUrl from 'images/gruppe.svg';
 
+import CalendarToggleButton from './CalendarToggleButton';
 import styles from './reservasjonerTabell.less';
 
 const headerTextCodes = [

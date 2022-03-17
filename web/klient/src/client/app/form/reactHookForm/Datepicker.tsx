@@ -33,7 +33,7 @@ export interface DatepickerProps {
 
 const Datepicker: FunctionComponent<DatepickerProps> = ({
   name,
-  validate,
+  validate = [],
   limitations,
   label,
   ariaLabel,
