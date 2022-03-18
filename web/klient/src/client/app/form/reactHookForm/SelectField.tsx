@@ -1,23 +1,28 @@
-import React, { FunctionComponent, ReactNode } from 'react';
+import React, { useMemo, FunctionComponent, ReactNode } from 'react';
 import { useController, useFormContext } from 'react-hook-form';
 import classnames from 'classnames/bind';
 
+import { LabelType } from './Label';
 import CustomNavSelect from './CustomNavSelect';
 import styles from './selectField.less';
 import ReadOnlyField from './ReadOnlyField';
+import { getError, getValidationRules } from './formUtils';
 
 const classNames = classnames.bind(styles);
 
 interface OwnProps {
   name: string;
-  label: string;
-  onClick?: () => void;
+  label: LabelType;
+  onClick?: (event: any) => void;
+  onChange?: (event: any) => void;
   validate?: ((value: string) => any)[];
   readOnly?: boolean;
   selectValues: React.ReactElement[];
   placeholder?: ReactNode;
   hideValueOnDisable?: boolean;
   bredde?: 'fullbredde' | 'xxl' | 'xl' | 'l' | 'm' | 's' | 'xs';
+  disabled?: boolean;
+  className?: string;
 }
 
 const SelectField: FunctionComponent<OwnProps> = ({
@@ -29,26 +34,23 @@ const SelectField: FunctionComponent<OwnProps> = ({
   placeholder = ' ',
   hideValueOnDisable = false,
   bredde,
+  onChange,
+  className,
   ...otherProps
 }) => {
   const { formState: { errors } } = useFormContext();
-  const validationFunctions = validate.reduce((acc, fn, index) => ({
-    ...acc,
-    [index]: (value: any) => fn(value) || true,
-  }), {});
 
   const { field } = useController({
     name,
     rules: {
-      validate: validationFunctions,
+      validate: useMemo(() => getValidationRules(validate), [validate]),
     },
   });
 
   if (readOnly) {
     const option = selectValues.map((sv) => sv.props).find((o) => o.value === field.value);
     const value = option ? option.children : undefined;
-    // @ts-ignore Fiks
-    return <ReadOnlyField input={{ value }} {...otherProps} />;
+    return <ReadOnlyField value={value} {...otherProps} />;
   }
 
   return (
@@ -56,11 +58,17 @@ const SelectField: FunctionComponent<OwnProps> = ({
       selectValues={selectValues}
       placeholder={placeholder}
       hideValueOnDisable={hideValueOnDisable}
-      className={classNames('navSelect', { navSelectReadOnly: readOnly })}
+      className={classNames('navSelect', className, { navSelectReadOnly: readOnly })}
       label={label}
-      feil={errors[name] && errors[name].message}
+      feil={getError(errors, name)}
       bredde={bredde}
       {...field}
+      onChange={(evt) => {
+        if (onChange) {
+          onChange(evt);
+        }
+        field.onChange(evt);
+      }}
       {...otherProps}
     />
   );

@@ -52,7 +52,7 @@ describe('<SorteringVelger>', () => {
     expect(screen.getAllByText('kr')[1]).toBeInTheDocument();
   });
 
-  it('skal vise feilmelding når en skriver inn bokstaver i beløpfelt', async () => {
+  it('skal vise feilmelding når en skriver inn bokstaver i fra-beløpfelt', async () => {
     render(<SorteringsvelgerNårKunTilbakekrevingErValgt />);
     expect(await screen.findByText('Dato for behandlingsfrist')).toBeInTheDocument();
 
@@ -65,13 +65,21 @@ describe('<SorteringVelger>', () => {
     fireEvent.blur(fraInput);
 
     expect(await screen.findByText('Feltet kan kun inneholde tall')).toBeInTheDocument();
+  });
+
+  it('skal vise feilmelding når en skriver inn bokstaver i til-beløpfelt', async () => {
+    render(<SorteringsvelgerNårKunTilbakekrevingErValgt />);
+    expect(await screen.findByText('Dato for behandlingsfrist')).toBeInTheDocument();
+
+    userEvent.click(screen.getByText('Feilutbetalt beløp'));
+
+    expect(await screen.findByText('Ta kun med behandlinger mellom')).toBeInTheDocument();
 
     const tilInput = screen.getAllByRole('textbox')[1];
     userEvent.type(tilInput, 'bokstaver');
     fireEvent.blur(tilInput);
 
     expect(await screen.findByText('Feltet kan kun inneholde tall')).toBeInTheDocument();
-    expect(screen.getAllByText('Feltet kan kun inneholde tall')).toHaveLength(2);
   });
 
   it('skal vise fem sorteringsvalg når kun tilbakekreving er valgt', async () => {

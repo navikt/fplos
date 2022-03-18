@@ -73,10 +73,10 @@ const OppgaveReservasjonEndringDatoModal: FunctionComponent<OwnProps & WrappedCo
             <FormattedMessage id="OppgaveReservasjonEndringDatoModal.Header" />
           </h3>
           <DatepickerField
+            label=""
             name="reserverTil"
             validate={[hasValidDate(intl), dateAfterOrEqual(intl, new Date()), dateBeforeOrEqual(intl, thirtyDaysFromNow())]}
             disabledDays={{ before: new Date(), after: thirtyDaysFromNow() }}
-            alwaysShowCalendar
           />
           <Row className={styles.buttonRow}>
             <Column>

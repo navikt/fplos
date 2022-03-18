@@ -6,6 +6,7 @@ import { FlexColumn, FlexContainer, FlexRow } from 'sharedComponents/flexGrid';
 import { hasValidPosOrNegInteger } from 'utils/validation/validators';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import { InputField } from 'form/formIndex';
+import useDebounce from 'form/useDebounce';
 
 import { useFormContext } from 'react-hook-form';
 import styles from './sorteringVelger.less';
@@ -43,6 +44,9 @@ export const BelopSorteringValg: FunctionComponent<OwnProps & WrappedComponentPr
     hentAvdelingensSakslister({ avdelingEnhet: valgtAvdelingEnhet });
   });
 
+  const lagreFraDebounce = useDebounce<number>('fra', lagreFra);
+  const lagreTilDebounce = useDebounce<number>('til', lagreTil);
+
   return (
     <ArrowBox>
       <Undertekst>
@@ -57,8 +61,7 @@ export const BelopSorteringValg: FunctionComponent<OwnProps & WrappedComponentPr
               placeholder={intl.formatMessage({ id: 'SorteringVelger.Fra' })}
               validate={[hasValidPosOrNegInteger(intl)]}
               bredde="XS"
-              onBlur={lagreFra}
-              shouldValidateOnBlur
+              onChange={lagreFraDebounce}
             />
 
           </FlexColumn>
@@ -74,8 +77,7 @@ export const BelopSorteringValg: FunctionComponent<OwnProps & WrappedComponentPr
               placeholder={intl.formatMessage({ id: 'SorteringVelger.Til' })}
               validate={[hasValidPosOrNegInteger(intl)]}
               bredde="XS"
-              onBlur={lagreTil}
-              shouldValidateOnBlur
+              onChange={lagreTilDebounce}
             />
           </FlexColumn>
           <FlexColumn>
