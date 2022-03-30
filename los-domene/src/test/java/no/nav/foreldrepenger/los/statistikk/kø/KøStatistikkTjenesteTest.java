@@ -15,6 +15,8 @@ import no.nav.foreldrepenger.los.oppgavekø.OppgaveFiltrering;
 import no.nav.foreldrepenger.los.organisasjon.Avdeling;
 import no.nav.foreldrepenger.los.avdelingsleder.AvdelingslederTjeneste;
 import no.nav.foreldrepenger.los.oppgave.OppgaveTjeneste;
+import no.nav.foreldrepenger.los.reservasjon.ReservasjonRepository;
+import no.nav.foreldrepenger.los.reservasjon.ReservasjonTjeneste;
 import no.nav.foreldrepenger.los.statistikk.oppgavebeholdning.NyeOgFerdigstilteOppgaver;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -43,7 +45,9 @@ class KøStatistikkTjenesteTest {
         this.avdelingslederTjeneste = new AvdelingslederTjeneste(oppgaveRepository, organisasjonRepository);
         var oppgaveKøTjeneste = new OppgaveKøTjeneste(oppgaveRepository, organisasjonRepository);
         var statistikkRepository = new KøStatistikkRepository(entityManager);
-        var oppgaveTjeneste = new OppgaveTjeneste(oppgaveRepository);
+        var reservasjonRepository = new ReservasjonRepository(entityManager);
+        var reservasjonTjeneste = new ReservasjonTjeneste(oppgaveRepository, reservasjonRepository);
+        var oppgaveTjeneste = new OppgaveTjeneste(oppgaveRepository, reservasjonTjeneste);
         køStatistikk = new KøStatistikkTjeneste(oppgaveKøTjeneste, oppgaveTjeneste, statistikkRepository);
     }
 

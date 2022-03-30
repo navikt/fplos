@@ -2,7 +2,6 @@ package no.nav.foreldrepenger.los.web.app.tjenester.felles.dto;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -15,7 +14,6 @@ import no.nav.foreldrepenger.los.klient.person.PersonTjeneste;
 import no.nav.foreldrepenger.los.oppgave.Oppgave;
 import no.nav.foreldrepenger.los.oppgave.OppgaveTjeneste;
 import no.nav.foreldrepenger.los.oppgavekø.OppgaveKøTjeneste;
-import no.nav.foreldrepenger.los.reservasjon.Reservasjon;
 import no.nav.foreldrepenger.los.reservasjon.ReservasjonTjeneste;
 import no.nav.foreldrepenger.los.web.app.AbacAttributter;
 import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.saksliste.FplosAbacAttributtType;
@@ -119,16 +117,13 @@ public class OppgaveDtoTjeneste {
         return map(alleOppgaver, ANTALL_OPPGAVER_SOM_VISES_TIL_SAKSBEHANDLER);
     }
 
-    public List<OppgaveDto> getReserverteOppgaver() {
-        var reserveringer = reservasjonTjeneste.hentReservasjonerTilknyttetAktiveOppgaver();
-        var oppgaver = reserveringer.stream()
-                .map(Reservasjon::getOppgave)
-                .collect(Collectors.toList());
+    public List<OppgaveDto> getSaksbehandlersReserverteAktiveOppgaver() {
+        var oppgaver = reservasjonTjeneste.hentSaksbehandlersReserverteAktiveOppgaver();
         return map(oppgaver);
     }
 
-    public List<OppgaveDto> getBehandledeOppgaver() {
-        var sistReserverteOppgaver = reservasjonTjeneste.hentSisteReserverteOppgaver();
+    public List<OppgaveDto> getSaksbehandlersSisteReserverteOppgaver() {
+        var sistReserverteOppgaver = reservasjonTjeneste.hentSaksbehandlersSisteReserverteOppgaver();
         return map(sistReserverteOppgaver);
     }
 

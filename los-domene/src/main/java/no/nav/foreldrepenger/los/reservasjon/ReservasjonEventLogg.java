@@ -14,6 +14,10 @@ import no.nav.foreldrepenger.los.felles.BaseEntitet;
 @Entity(name = "reservasjonEventLogg")
 @Table(name = "RESERVASJON_EVENT_LOGG")
 public class ReservasjonEventLogg extends BaseEntitet {
+
+    // Todo: vurder sanering ved innføring en-til-mange forhold mellom Oppgave-Reservasjon.
+    // må ta vare på historikk tilsvarende reservasjonseventlogg
+
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_RESERVASJON_EVENT_LOGG")
     private Long id;
@@ -83,5 +87,70 @@ public class ReservasjonEventLogg extends BaseEntitet {
 
     public String getBegrunnelse() {
         return begrunnelse;
+    }
+
+
+    public static final class Builder {
+        private Long reservasjonId;
+        private Long oppgaveId;
+        private LocalDateTime reservertTil;
+        private String reservertAv;
+        private String flyttetAv;
+        private LocalDateTime flyttetTidspunkt;
+        private String begrunnelse;
+
+        private Builder() {
+        }
+
+        public static Builder builder() {
+            return new Builder();
+        }
+
+        public Builder reservasjonId(Long reservasjonId) {
+            this.reservasjonId = reservasjonId;
+            return this;
+        }
+
+        public Builder oppgaveId(Long oppgaveId) {
+            this.oppgaveId = oppgaveId;
+            return this;
+        }
+
+        public Builder reservertTil(LocalDateTime reservertTil) {
+            this.reservertTil = reservertTil;
+            return this;
+        }
+
+        public Builder reservertAv(String reservertAv) {
+            this.reservertAv = reservertAv;
+            return this;
+        }
+
+        public Builder flyttetAv(String flyttetAv) {
+            this.flyttetAv = flyttetAv;
+            return this;
+        }
+
+        public Builder flyttetTidspunkt(LocalDateTime flyttetTidspunkt) {
+            this.flyttetTidspunkt = flyttetTidspunkt;
+            return this;
+        }
+
+        public Builder begrunnelse(String begrunnelse) {
+            this.begrunnelse = begrunnelse;
+            return this;
+        }
+
+        public ReservasjonEventLogg build() {
+            ReservasjonEventLogg reservasjonEventLogg = new ReservasjonEventLogg();
+            reservasjonEventLogg.reservertAv = this.reservertAv;
+            reservasjonEventLogg.begrunnelse = this.begrunnelse;
+            reservasjonEventLogg.flyttetAv = this.flyttetAv;
+            reservasjonEventLogg.reservertTil = this.reservertTil;
+            reservasjonEventLogg.flyttetTidspunkt = this.flyttetTidspunkt;
+            reservasjonEventLogg.oppgaveId = this.oppgaveId;
+            reservasjonEventLogg.reservasjonId = this.reservasjonId;
+            return reservasjonEventLogg;
+        }
     }
 }

@@ -6,6 +6,7 @@ import java.util.function.Predicate;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import no.nav.foreldrepenger.los.oppgave.OppgaveTjeneste;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,17 +37,19 @@ public class OppgaveHendelseHåndtererFactory {
     private static final IkkeRelevantForOppgaveHendelseHåndterer IKKE_RELEVANT_FOR_OPPGAVE_HENDELSE_HÅNDTERER = new IkkeRelevantForOppgaveHendelseHåndterer();
 
     private OppgaveRepository oppgaveRepository;
+    private OppgaveTjeneste oppgaveTjeneste;
     private OppgaveEgenskapHåndterer oppgaveEgenskapHåndterer;
     private KøStatistikkTjeneste køStatistikk;
     private ForeldrepengerBehandling foreldrePengerBehandlingKlient;
 
     @Inject
     public OppgaveHendelseHåndtererFactory(@Jersey ForeldrepengerBehandling foreldrePengerBehandlingKlient,
-            OppgaveRepository oppgaveRepository,
-            OppgaveEgenskapHåndterer oppgaveEgenskapHåndterer,
-            KøStatistikkTjeneste køStatistikk) {
+                                           OppgaveRepository oppgaveRepository,
+                                           OppgaveTjeneste oppgaveTjeneste, OppgaveEgenskapHåndterer oppgaveEgenskapHåndterer,
+                                           KøStatistikkTjeneste køStatistikk) {
         this.foreldrePengerBehandlingKlient = foreldrePengerBehandlingKlient;
         this.oppgaveRepository = oppgaveRepository;
+        this.oppgaveTjeneste = oppgaveTjeneste;
         this.oppgaveEgenskapHåndterer = oppgaveEgenskapHåndterer;
         this.køStatistikk = køStatistikk;
     }
@@ -77,39 +80,39 @@ public class OppgaveHendelseHåndtererFactory {
             if (oppgaveHistorikk.erUtenHistorikk() || oppgaveHistorikk.erIngenÅpenOppgave()) {
                 return IKKE_RELEVANT_FOR_OPPGAVE_HENDELSE_HÅNDTERER;
             }
-            return new LukkOppgaveHendelseHåndterer(oppgaveRepository, køStatistikk, behandlingFpsak);
+            return new LukkOppgaveHendelseHåndterer(oppgaveTjeneste, køStatistikk, behandlingFpsak);
         }
 
         if (finn(Aksjonspunkt::erPåVent, aksjonspunkter)) {
             if (oppgaveHistorikk.erPåVent()) {
                 return IKKE_RELEVANT_FOR_OPPGAVE_HENDELSE_HÅNDTERER;
             }
-            return new PåVentOppgaveHendelseHåndterer(oppgaveRepository, køStatistikk, behandlingFpsak);
+            return new PåVentOppgaveHendelseHåndterer(oppgaveTjeneste, køStatistikk, behandlingFpsak);
         }
 
         if (finn(Aksjonspunkt::erTilBeslutter, aksjonspunkter)) {
             return oppgaveHistorikk.erÅpenOppgave() && oppgaveHistorikk.erSisteOpprettedeOppgaveTilBeslutter()
                     ? new OppdaterOppgaveegenskaperHendelseHåndterer(oppgaveRepository, oppgaveEgenskapHåndterer, køStatistikk, behandlingFpsak)
-                    : new OpprettBeslutterOppgaveHendelseHåndterer(oppgaveRepository, oppgaveEgenskapHåndterer, køStatistikk, behandlingFpsak);
+                    : new OpprettBeslutterOppgaveHendelseHåndterer(oppgaveTjeneste, oppgaveEgenskapHåndterer, køStatistikk, behandlingFpsak);
         }
 
         if (finn(Aksjonspunkt::erRegistrerPapirSøknad, aksjonspunkter)) {
             return oppgaveHistorikk.erÅpenOppgave() && oppgaveHistorikk.erSisteOpprettedeOppgavePapirsøknad()
                     ? new OppdaterOppgaveegenskaperHendelseHåndterer(oppgaveRepository, oppgaveEgenskapHåndterer, køStatistikk, behandlingFpsak)
-                    : new OpprettPapirsøknadOppgaveHendelseHåndterer(oppgaveRepository, oppgaveEgenskapHåndterer, køStatistikk, behandlingFpsak);
+                    : new OpprettPapirsøknadOppgaveHendelseHåndterer(oppgaveTjeneste, oppgaveEgenskapHåndterer, køStatistikk, behandlingFpsak);
         }
 
         if (oppgaveHistorikk.harEksistertOppgave()) {
             if (oppgaveHistorikk.erÅpenOppgave()) {
                 return oppgaveHistorikk.erSisteOpprettedeOppgaveTilBeslutter()
-                        ? new ReturFraBeslutterHendelseHåndterer(oppgaveRepository, oppgaveEgenskapHåndterer, køStatistikk, behandlingFpsak)
+                        ? new ReturFraBeslutterHendelseHåndterer(oppgaveTjeneste, oppgaveEgenskapHåndterer, køStatistikk, behandlingFpsak)
                         : new OppdaterOppgaveegenskaperHendelseHåndterer(oppgaveRepository, oppgaveEgenskapHåndterer, køStatistikk,
                                 behandlingFpsak);
             }
             return new GjenåpneOppgaveHendelseHåndterer(oppgaveRepository, oppgaveEgenskapHåndterer, køStatistikk, behandlingFpsak);
         }
 
-        return new GenerellOpprettOppgaveHendelseHåndterer(oppgaveRepository, oppgaveEgenskapHåndterer, køStatistikk, behandlingFpsak);
+        return new GenerellOpprettOppgaveHendelseHåndterer(oppgaveTjeneste, oppgaveEgenskapHåndterer, køStatistikk, behandlingFpsak);
     }
 
     private static boolean finn(Predicate<Aksjonspunkt> predicate, List<Aksjonspunkt> aksjonspunkter) {

@@ -12,6 +12,8 @@ import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.Op
 import no.nav.foreldrepenger.los.oppgave.Oppgave;
 import no.nav.foreldrepenger.los.reservasjon.Reservasjon;
 
+import static no.nav.foreldrepenger.los.reservasjon.ReservasjonKonstanter.SLETTET_AV_ADMIN;
+
 
 @ApplicationScoped
 public class AdminRepository {
@@ -51,7 +53,7 @@ public class AdminRepository {
         var oppgave = hentOppgave(oppgaveId);
         var reservasjon = oppgave.getReservasjon();
         if (reservasjon != null && reservasjon.erAktiv()) {
-            reservasjon.frigiReservasjon("Oppgave er avsluttet fra admin REST-tjeneste");
+            reservasjon.frigiReservasjon(SLETTET_AV_ADMIN);
             lagreReservasjon(reservasjon);
         }
         oppgave.avsluttOppgave();
