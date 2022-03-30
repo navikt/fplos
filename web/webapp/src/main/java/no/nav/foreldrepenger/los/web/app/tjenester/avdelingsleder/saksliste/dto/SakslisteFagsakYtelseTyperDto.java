@@ -2,6 +2,7 @@ package no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.saksliste.dto
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.dto.AvdelingEnhetDto;
 import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.saksliste.FplosAbacAttributtType;
@@ -22,6 +23,7 @@ public class SakslisteFagsakYtelseTyperDto implements AbacDto {
 
     @Valid
     @NotNull
+    @Size(min = 1)
     private List<@ValidKodeverk FagsakYtelseType> fagsakYtelseTyper;
 
     @NotNull
