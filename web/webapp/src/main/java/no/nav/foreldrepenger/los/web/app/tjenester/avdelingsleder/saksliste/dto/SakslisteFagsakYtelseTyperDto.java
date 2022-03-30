@@ -20,6 +20,8 @@ public class SakslisteFagsakYtelseTyperDto implements AbacDto {
     @Valid
     private SakslisteIdDto sakslisteId;
 
+    @Valid
+    @NotNull
     private List<@ValidKodeverk FagsakYtelseType> fagsakYtelseTyper;
 
     @NotNull
