@@ -98,6 +98,16 @@ public class AvdelingslederTjeneste {
         oppgaveRepository.refresh(filter);
     }
 
+    public void endreFiltreringYtelseTyper(Long oppgavefiltreringId, List<FagsakYtelseType> fagsakYtelseType) {
+        var filter = hentFiltrering(oppgavefiltreringId);
+        filter.getFiltreringYtelseTyper().stream()
+                .map(FiltreringYtelseType::getFagsakYtelseType)
+                .forEach(yt -> oppgaveRepository.slettFiltreringYtelseType(oppgavefiltreringId, yt));
+        fagsakYtelseType.stream()
+                .map(yt -> new FiltreringYtelseType(filter, yt))
+                .forEach(oppgaveRepository::lagre);
+    }
+
     public void endreFiltreringAndreKriterierType(Long oppgavefiltreringId, AndreKriterierType andreKriterierType, boolean checked, boolean inkluder) {
         oppgaveRepository.slettFiltreringAndreKriterierType(oppgavefiltreringId, andreKriterierType);
         var filterSett = hentFiltrering(oppgavefiltreringId);

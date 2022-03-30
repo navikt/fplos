@@ -24,15 +24,7 @@ import no.nav.foreldrepenger.los.avdelingsleder.AvdelingslederTjeneste;
 import no.nav.foreldrepenger.los.oppgavekø.OppgaveKøTjeneste;
 import no.nav.foreldrepenger.los.web.app.AbacAttributter;
 import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.dto.AvdelingEnhetDto;
-import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.saksliste.dto.SakslisteAndreKriterierDto;
-import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.saksliste.dto.SakslisteBehandlingstypeDto;
-import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.saksliste.dto.SakslisteFagsakYtelseTypeDto;
-import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.saksliste.dto.SakslisteNavnDto;
-import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.saksliste.dto.SakslisteOgAvdelingDto;
-import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.saksliste.dto.SakslisteSaksbehandlerDto;
-import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.saksliste.dto.SakslisteSorteringDto;
-import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.saksliste.dto.SakslisteSorteringIntervallDatoDto;
-import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.saksliste.dto.SakslisteSorteringIntervallDto;
+import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.saksliste.dto.*;
 import no.nav.foreldrepenger.los.web.app.tjenester.felles.dto.SakslisteDto;
 import no.nav.foreldrepenger.los.web.app.tjenester.felles.dto.SakslisteIdDto;
 import no.nav.vedtak.sikkerhet.abac.BeskyttetRessurs;
@@ -43,6 +35,7 @@ import no.nav.vedtak.sikkerhet.abac.BeskyttetRessursActionAttributt;
 @Transactional
 public class AvdelingslederSakslisteRestTjeneste {
 
+    public static final String AVDELINGSLEDER_SAKSLISTER = "AvdelingslederSakslister";
     private AvdelingslederTjeneste avdelingslederTjeneste;
     private OppgaveKøTjeneste oppgaveKøTjeneste;
 
@@ -58,7 +51,7 @@ public class AvdelingslederSakslisteRestTjeneste {
 
     @GET
     @Produces("application/json")
-    @Operation(description = "Henter alle sakslister for avdeling", tags = "AvdelingslederSakslister")
+    @Operation(description = "Henter alle sakslister for avdeling", tags = AVDELINGSLEDER_SAKSLISTER)
     @BeskyttetRessurs(action = READ, resource = AbacAttributter.OPPGAVESTYRING_AVDELINGENHET, sporingslogg = false)
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
     public List<SakslisteDto> hentAvdelingensSakslister(@NotNull @QueryParam("avdelingEnhet") @Valid AvdelingEnhetDto avdelingEnhet) {
@@ -71,7 +64,7 @@ public class AvdelingslederSakslisteRestTjeneste {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @Operation(description = "Lag ny saksliste", tags = "AvdelingslederSakslister")
+    @Operation(description = "Lag ny saksliste", tags = AVDELINGSLEDER_SAKSLISTER)
     @BeskyttetRessurs(action = BeskyttetRessursActionAttributt.CREATE, resource = AbacAttributter.OPPGAVESTYRING_AVDELINGENHET)
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
     public SakslisteIdDto opprettNySaksliste(@NotNull @Parameter(description = "enhet til avdelingsenheten som det skal opprettes ny saksliste for") @Valid AvdelingEnhetDto avdelingEnhetDto) {
@@ -83,7 +76,7 @@ public class AvdelingslederSakslisteRestTjeneste {
     @Path("/slett")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @Operation(description = "Fjern saksliste", tags = "AvdelingslederSakslister")
+    @Operation(description = "Fjern saksliste", tags = AVDELINGSLEDER_SAKSLISTER)
     @BeskyttetRessurs(action = BeskyttetRessursActionAttributt.CREATE, resource = AbacAttributter.OPPGAVESTYRING)
 //    @BeskyttetRessurs(action = BeskyttetRessursActionAttributt.CREATE, resource = AbacAttributter.OPPGAVESTYRING_AVDELINGENHET)
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
@@ -95,7 +88,7 @@ public class AvdelingslederSakslisteRestTjeneste {
     @Path("/navn")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @Operation(description = "Lagre sakslistens navn", tags = "AvdelingslederSakslister")
+    @Operation(description = "Lagre sakslistens navn", tags = AVDELINGSLEDER_SAKSLISTER)
     @BeskyttetRessurs(action = BeskyttetRessursActionAttributt.CREATE, resource = AbacAttributter.OPPGAVESTYRING_AVDELINGENHET)
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
     public void lagreNavn(@NotNull @Parameter(description = "Sakslistens navn") @Valid SakslisteNavnDto sakslisteNavn) {
@@ -106,7 +99,7 @@ public class AvdelingslederSakslisteRestTjeneste {
     @Path("/behandlingstype")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @Operation(description = "Lagre sakslistens behandlingstype", tags = "AvdelingslederSakslister")
+    @Operation(description = "Lagre sakslistens behandlingstype", tags = AVDELINGSLEDER_SAKSLISTER)
     @BeskyttetRessurs(action = BeskyttetRessursActionAttributt.CREATE, resource = AbacAttributter.OPPGAVESTYRING_AVDELINGENHET)
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
     public void lagreBehandlingstype(@NotNull @Parameter(description = "Sakslistens behandlingstype") @Valid SakslisteBehandlingstypeDto sakslisteBehandlingstype) {
@@ -118,7 +111,7 @@ public class AvdelingslederSakslisteRestTjeneste {
     @Path("/ytelsetype")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @Operation(description = "Lagre sakslistens behandlingstype", tags = "AvdelingslederSakslister")
+    @Operation(description = "Lagre sakslistens behandlingstype", tags = AVDELINGSLEDER_SAKSLISTER)
     @BeskyttetRessurs(action = BeskyttetRessursActionAttributt.CREATE, resource = AbacAttributter.OPPGAVESTYRING_AVDELINGENHET)
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
     public void lagreFagsakYtelseType(@NotNull @Parameter(description = "Sakslistens ytelsetype") @Valid SakslisteFagsakYtelseTypeDto sakslisteFagsakYtelseTypeDto) {
@@ -127,11 +120,24 @@ public class AvdelingslederSakslisteRestTjeneste {
                 sakslisteFagsakYtelseTypeDto.getFagsakYtelseType());
     }
 
+
+    @POST
+    @Path("/ytelsetyper")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Operation(description = "Lagre behandlingstyper", tags = AVDELINGSLEDER_SAKSLISTER)
+    @BeskyttetRessurs(action = BeskyttetRessursActionAttributt.CREATE, resource = AbacAttributter.OPPGAVESTYRING_AVDELINGENHET)
+    @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
+    public void lagreFagsakYtelseTyper(@NotNull @Parameter(description = "Ytelsestyper") @Valid SakslisteFagsakYtelseTyperDto dto) {
+        avdelingslederTjeneste.endreFiltreringYtelseTyper(dto.sakslisteId().getVerdi(), dto.fagsakYtelseType());
+    }
+
+
     @POST
     @Path("/andre-kriterier")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @Operation(description = "Lagre sakslistens 'Andre kriterier'", tags = "AvdelingslederSakslister")
+    @Operation(description = "Lagre sakslistens 'Andre kriterier'", tags = AVDELINGSLEDER_SAKSLISTER)
     @BeskyttetRessurs(action = BeskyttetRessursActionAttributt.CREATE, resource = AbacAttributter.OPPGAVESTYRING_AVDELINGENHET)
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
     public void lagreAndreKriterierType(@NotNull @Parameter(description = "Sakslistens 'andre kriterier'") @Valid SakslisteAndreKriterierDto sakslisteAndreKriterierDto) {
@@ -146,7 +152,7 @@ public class AvdelingslederSakslisteRestTjeneste {
     @Path("/sortering")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @Operation(description = "Sett sakslistens sortering", tags = "AvdelingslederSakslister")
+    @Operation(description = "Sett sakslistens sortering", tags = AVDELINGSLEDER_SAKSLISTER)
     @BeskyttetRessurs(action = BeskyttetRessursActionAttributt.CREATE, resource = AbacAttributter.OPPGAVESTYRING_AVDELINGENHET)
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
     public void lagreSortering(@NotNull @Parameter(description = "Sakslistens sortering") @Valid SakslisteSorteringDto sakslisteSortering) {
@@ -158,7 +164,7 @@ public class AvdelingslederSakslisteRestTjeneste {
     @Path("/sortering-tidsintervall-dato")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @Operation(description = "Sett sakslistens sorteringintervall ved start og slutt datoer", tags = "AvdelingslederSakslister")
+    @Operation(description = "Sett sakslistens sorteringintervall ved start og slutt datoer", tags = AVDELINGSLEDER_SAKSLISTER)
     @BeskyttetRessurs(action = BeskyttetRessursActionAttributt.CREATE, resource = AbacAttributter.OPPGAVESTYRING_AVDELINGENHET)
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
     public void lagreSorteringTidsintervallDato(@NotNull @Parameter(description = "Sakslistens sorteringsintervall gitt datoer") @Valid SakslisteSorteringIntervallDatoDto sakslisteSorteringIntervallDato) {
@@ -171,7 +177,7 @@ public class AvdelingslederSakslisteRestTjeneste {
     @Path("/sortering-tidsintervall-dager") //Bruker ikke bare til intervall på dager
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @Operation(description = "Sett sakslistens sorteringsintervall", tags = "AvdelingslederSakslister")
+    @Operation(description = "Sett sakslistens sorteringsintervall", tags = AVDELINGSLEDER_SAKSLISTER)
     @BeskyttetRessurs(action = BeskyttetRessursActionAttributt.CREATE, resource = AbacAttributter.OPPGAVESTYRING_AVDELINGENHET)
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
     public void lagreSorteringTidsintervallDager(@NotNull @Parameter(description = "Sakslistens sortering") @Valid SakslisteSorteringIntervallDto intervall) {
@@ -182,7 +188,7 @@ public class AvdelingslederSakslisteRestTjeneste {
     @Path("/sortering-numerisk-intervall")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @Operation(description = "Sett sakslistens sorteringsintervall", tags = "AvdelingslederSakslister")
+    @Operation(description = "Sett sakslistens sorteringsintervall", tags = AVDELINGSLEDER_SAKSLISTER)
     @BeskyttetRessurs(action = BeskyttetRessursActionAttributt.CREATE, resource = AbacAttributter.OPPGAVESTYRING_AVDELINGENHET)
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
     public void lagreSorteringTidsintervall(@NotNull @Parameter(description = "Intervall som filtrererer/sorterer numerisk") @Valid SakslisteSorteringIntervallDto intervall) {
@@ -193,7 +199,7 @@ public class AvdelingslederSakslisteRestTjeneste {
     @Path("/sortering-tidsintervall-type")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @Operation(description = "Sett sakslistens sorteringsintervall i dager", tags = "AvdelingslederSakslister")
+    @Operation(description = "Sett sakslistens sorteringsintervall i dager", tags = AVDELINGSLEDER_SAKSLISTER)
     @BeskyttetRessurs(action = BeskyttetRessursActionAttributt.CREATE, resource = AbacAttributter.OPPGAVESTYRING_AVDELINGENHET)
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
     public void lagreSorteringTidsintervallValg(@NotNull @Parameter(description = "id til sakslisten") @Valid SakslisteOgAvdelingDto sakslisteOgAvdelingDto) {
@@ -208,7 +214,7 @@ public class AvdelingslederSakslisteRestTjeneste {
     @Path("/saksbehandler")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @Operation(description = "Legger til eller fjerner koblingen mellom saksliste og saksbehandler", tags = "AvdelingslederSakslister")
+    @Operation(description = "Legger til eller fjerner koblingen mellom saksliste og saksbehandler", tags = AVDELINGSLEDER_SAKSLISTER)
     @BeskyttetRessurs(action = BeskyttetRessursActionAttributt.CREATE, resource = AbacAttributter.OPPGAVESTYRING_AVDELINGENHET)
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
     public void leggSaksbehandlerTilSaksliste(@NotNull @Parameter(description = "Knytning mellom saksbehandler og saksliste") @Valid SakslisteSaksbehandlerDto sakslisteSaksbehandler) {
