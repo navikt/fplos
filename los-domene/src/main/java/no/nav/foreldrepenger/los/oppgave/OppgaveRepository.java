@@ -366,8 +366,7 @@ public class OppgaveRepository {
     }
 
     public List<Oppgave> sjekkOmOppgaverFortsattErTilgjengelige(List<Long> oppgaveIder) {
-        return entityManager.createQuery(
-                        """
+        return entityManager.createQuery("""
                                 select o from Oppgave o
                                 where not exists (
                                     select 1

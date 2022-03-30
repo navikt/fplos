@@ -2,6 +2,8 @@ package no.nav.foreldrepenger.los.web.app.tjenester.felles.dto;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -123,8 +125,11 @@ public class OppgaveDtoTjeneste {
     }
 
     public List<OppgaveDto> getSaksbehandlersSisteReserverteOppgaver() {
-        var sistReserverteOppgaver = reservasjonTjeneste.hentSaksbehandlersSisteReserverteOppgaver();
-        return map(sistReserverteOppgaver);
+        return reservasjonTjeneste.hentSaksbehandlersSisteReserverteOppgaver()
+                .stream()
+                .map(this::tilDtoSvelgFeil)
+                .flatMap(Optional::stream)
+                .collect(Collectors.toList());
     }
 
     public List<OppgaveDto> hentOppgaverForFagsaker(List<Long> saksnummerListe) {
@@ -134,6 +139,14 @@ public class OppgaveDtoTjeneste {
 
     private List<OppgaveDto> map(List<Oppgave> oppgaver) {
         return map(oppgaver, oppgaver.size());
+    }
+
+    private Optional<OppgaveDto> tilDtoSvelgFeil(Oppgave oppgave) {
+        try {
+            return Optional.of(lagDtoFor(oppgave, true));
+        } catch (Exception e) {
+            return Optional.empty();
+        }
     }
 
     private List<OppgaveDto> map(List<Oppgave> oppgaver, int maksAntall) {
