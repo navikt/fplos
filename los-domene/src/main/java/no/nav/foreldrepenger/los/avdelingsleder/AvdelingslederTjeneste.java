@@ -99,6 +99,7 @@ public class AvdelingslederTjeneste {
     }
 
     public void endreFiltreringYtelseTyper(Long oppgavefiltreringId, List<FagsakYtelseType> fagsakYtelseType) {
+        LOG.info("Henter oppgavefiltreringId {}", oppgavefiltreringId);
         var filter = hentFiltrering(oppgavefiltreringId);
         filter.getFiltreringYtelseTyper().stream()
                 .map(FiltreringYtelseType::getFagsakYtelseType)
