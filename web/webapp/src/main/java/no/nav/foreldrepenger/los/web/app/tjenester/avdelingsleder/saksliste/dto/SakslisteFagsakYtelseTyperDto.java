@@ -14,16 +14,55 @@ import no.nav.vedtak.sikkerhet.abac.AbacDto;
 import java.util.List;
 
 
-public record SakslisteFagsakYtelseTyperDto(
-        @NotNull @Valid SakslisteIdDto sakslisteId,
-        List<@ValidKodeverk FagsakYtelseType> fagsakYtelseType,
-        @NotNull @Valid AvdelingEnhetDto avdelingEnhet
-) implements AbacDto {
+public class SakslisteFagsakYtelseTyperDto implements AbacDto {
+
+    @NotNull
+    @Valid
+    private SakslisteIdDto sakslisteId;
+
+    private List<@ValidKodeverk FagsakYtelseType> fagsakYtelseTyper;
+
+    @NotNull
+    @Valid
+    private AvdelingEnhetDto avdelingEnhet;
+
+    public SakslisteFagsakYtelseTyperDto() {
+    }
+
+    public SakslisteFagsakYtelseTyperDto(SakslisteIdDto sakslisteId,
+                                         List<FagsakYtelseType> fagsakYtelseTyper,
+                                         AvdelingEnhetDto avdelingEnhet) {
+        this.sakslisteId = sakslisteId;
+        this.fagsakYtelseTyper = fagsakYtelseTyper;
+        this.avdelingEnhet = avdelingEnhet;
+    }
+
+    public Long getSakslisteId() {
+        return sakslisteId.getVerdi();
+    }
+
+    public List<FagsakYtelseType> getFagsakYtelseTyper() {
+        return fagsakYtelseTyper;
+    }
+
+    public AvdelingEnhetDto getAvdelingEnhet() {
+        return avdelingEnhet;
+    }
+
+    @Override
+    public String toString() {
+        return "SakslisteFagsakYtelseTyperDto{" +
+                "sakslisteId=" + sakslisteId +
+                ", fagsakYtelseTyper=" + fagsakYtelseTyper +
+                ", avdelingEnhet=" + avdelingEnhet +
+                '}';
+    }
 
     @Override
     public AbacDataAttributter abacAttributter() {
         return AbacDataAttributter.opprett()
                 .leggTil(FplosAbacAttributtType.OPPGAVESTYRING_ENHET, avdelingEnhet.getAvdelingEnhet());
+
     }
 }
 

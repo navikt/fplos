@@ -129,7 +129,7 @@ public class AvdelingslederSakslisteRestTjeneste {
     @BeskyttetRessurs(action = BeskyttetRessursActionAttributt.CREATE, resource = AbacAttributter.OPPGAVESTYRING_AVDELINGENHET)
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
     public void lagreFagsakYtelseTyper(@NotNull @Parameter(description = "Ytelsestyper") @Valid SakslisteFagsakYtelseTyperDto dto) {
-        avdelingslederTjeneste.endreFiltreringYtelseTyper(dto.sakslisteId().getVerdi(), dto.fagsakYtelseType());
+        avdelingslederTjeneste.endreFiltreringYtelseTyper(dto.getSakslisteId(), dto.getFagsakYtelseTyper());
     }
 
 
