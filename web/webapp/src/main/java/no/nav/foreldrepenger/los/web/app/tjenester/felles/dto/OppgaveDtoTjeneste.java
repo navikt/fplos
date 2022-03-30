@@ -3,6 +3,7 @@ package no.nav.foreldrepenger.los.web.app.tjenester.felles.dto;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -25,6 +26,8 @@ import no.nav.vedtak.sikkerhet.abac.BeskyttetRessursActionAttributt;
 import no.nav.vedtak.sikkerhet.abac.PdpKlient;
 import no.nav.vedtak.sikkerhet.abac.PdpRequestBuilder;
 import no.nav.vedtak.sikkerhet.context.SubjectHandler;
+
+import static no.nav.foreldrepenger.los.util.OptionalUtil.tryOrEmpty;
 
 @ApplicationScoped
 public class OppgaveDtoTjeneste {
@@ -127,7 +130,7 @@ public class OppgaveDtoTjeneste {
     public List<OppgaveDto> getSaksbehandlersSisteReserverteOppgaver() {
         return reservasjonTjeneste.hentSaksbehandlersSisteReserverteOppgaver()
                 .stream()
-                .map(this::tilDtoSvelgFeil)
+                .map(o -> tryOrEmpty(() -> lagDtoFor(o, true)))
                 .flatMap(Optional::stream)
                 .collect(Collectors.toList());
     }
@@ -141,13 +144,6 @@ public class OppgaveDtoTjeneste {
         return map(oppgaver, oppgaver.size());
     }
 
-    private Optional<OppgaveDto> tilDtoSvelgFeil(Oppgave oppgave) {
-        try {
-            return Optional.of(lagDtoFor(oppgave, true));
-        } catch (Exception e) {
-            return Optional.empty();
-        }
-    }
 
     private List<OppgaveDto> map(List<Oppgave> oppgaver, int maksAntall) {
         List<OppgaveDto> dtoList = new ArrayList<>();
