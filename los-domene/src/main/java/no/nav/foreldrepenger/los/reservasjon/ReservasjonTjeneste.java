@@ -138,7 +138,6 @@ public class ReservasjonTjeneste {
         reservasjon.setReservertAv(saksbehandler);
         reservasjon.setBegrunnelse(begrunnelse);
         reservasjon.setReservertTil(reservertTil);
-        reservasjon.setFlyttetAv(BaseEntitet.BRUKERNAVN_NÅR_SIKKERHETSKONTEKST_IKKE_FINNES);
         reservasjon.setFlyttetTidspunkt(LocalDateTime.now());
         reservasjonRepository.lagre(reservasjon);
         var rel = new ReservasjonEventLogg(reservasjon);
