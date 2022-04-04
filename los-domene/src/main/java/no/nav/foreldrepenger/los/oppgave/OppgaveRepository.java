@@ -267,14 +267,11 @@ public class OppgaveRepository {
                 .getResultList();
     }
 
-    public Reservasjon hentReservasjon(Long oppgaveId) {
-        var query = entityManager.createQuery("from Reservasjon r WHERE r.oppgave.id = :id ", Reservasjon.class)
-                .setParameter("id", oppgaveId);//$NON-NLS-1$
-        var resultList = query.getResultList();
-        if (resultList.isEmpty()) {
-            return new Reservasjon(entityManager.find(Oppgave.class, oppgaveId));
-        }
-        return query.getResultList().get(0);
+    public Optional<Reservasjon> hentReservasjon(Long oppgaveId) {
+        return entityManager.createQuery("from Reservasjon r WHERE r.oppgave.id = :id ", Reservasjon.class)
+                .setParameter("id", oppgaveId)
+                .getResultStream()
+                .findFirst();
     }
 
     public List<OppgaveFiltrering> hentAlleOppgaveFilterSettTilknyttetAvdeling(Long avdelingsId) {

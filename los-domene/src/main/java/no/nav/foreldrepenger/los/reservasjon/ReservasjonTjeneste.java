@@ -8,6 +8,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.persistence.PersistenceException;
 
+import no.nav.foreldrepenger.los.felles.BaseEntitet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,13 +44,20 @@ public class ReservasjonTjeneste {
     }
 
     public Reservasjon reserverOppgave(Long oppgaveId) {
-        var reservasjon = oppgaveRepository.hentReservasjon(oppgaveId);
+        return reserverOppgave(oppgaveRepository.hentOppgave(oppgaveId));
+    }
+
+    public Reservasjon reserverOppgave(Oppgave oppgave) {
+        var reservasjon = oppgaveRepository.hentReservasjon(oppgave.getId())
+                .map((r -> {
+                    r.setFlyttetTidspunkt(null);
+                    r.setBegrunnelse(null);
+                    r.setFlyttetAv(null);
+                    return r;
+                })).orElseGet(() -> new Reservasjon(oppgave));
         if (!reservasjon.erAktiv()) {
             reservasjon.setReservertTil(standardReservasjon());
             reservasjon.setReservertAv(brukerIdent());
-            reservasjon.setFlyttetAv(null);
-            reservasjon.setFlyttetTidspunkt(null);
-            reservasjon.setBegrunnelse(null);
             try {
                 oppgaveRepository.lagre(reservasjon);
                 oppgaveRepository.refresh(reservasjon.getOppgave());
@@ -64,7 +72,7 @@ public class ReservasjonTjeneste {
     }
 
     public Reservasjon hentReservasjon(Long oppgaveId) {
-        return oppgaveRepository.hentReservasjon(oppgaveId);
+        return oppgaveRepository.hentReservasjon(oppgaveId).orElse(null);
     }
 
     public Optional<Reservasjon> slettReservasjon(Long oppgaveId, String begrunnelse) {
@@ -81,38 +89,31 @@ public class ReservasjonTjeneste {
         return reservasjon;
     }
 
-    public Reservasjon saksbehandlerSlettReservasjon(Long oppgaveId, String begrunnelse) {
-        var reservasjon = oppgaveRepository.hentReservasjon(oppgaveId);
-        var oppgave = reservasjon.getOppgave();
-        reservasjon.setReservertTil(LocalDateTime.now().minusSeconds(1));
-        oppgaveRepository.lagre(reservasjon);
-
-        var rel = ReservasjonEventLogg.Builder.builder()
-                .begrunnelse(begrunnelse);
-        return reservasjon;
-    }
-
     public Reservasjon flyttReservasjon(Long oppgaveId, String brukernavn, String begrunnelse) {
-        var reservasjon = oppgaveRepository.hentReservasjon(oppgaveId);
-        reservasjon.flyttReservasjon(brukernavn, begrunnelse);
-        oppgaveRepository.lagre(reservasjon);
-        oppgaveRepository.refresh(reservasjon.getOppgave());
-        oppgaveRepository.lagre(new ReservasjonEventLogg(reservasjon));
-        return reservasjon;
+        return oppgaveRepository.hentReservasjon(oppgaveId)
+                .map(r -> {
+                    r.flyttReservasjon(brukernavn, begrunnelse);
+                    oppgaveRepository.lagre(r);
+                    oppgaveRepository.refresh(r.getOppgave());
+                    oppgaveRepository.lagre(new ReservasjonEventLogg(r));
+                    return r;
+                })
+                .orElseThrow(() -> new IllegalStateException("Fant ikke reservasjon tilknyttet oppgaveId " + oppgaveId));
     }
 
     public Reservasjon forlengReservasjonPåOppgave(Long oppgaveId) {
-        var reservasjon = oppgaveRepository.hentReservasjon(oppgaveId);
+        var reservasjon = oppgaveRepository.hentReservasjon(oppgaveId)
+                .orElseThrow(() -> new IllegalStateException("Fant ikke reservasjon tilknyttet oppgaveId " + oppgaveId));
         reservasjon.forlengReservasjonPåOppgave();
         reservasjon.setReservertTil(utvidetReservasjon(reservasjon.getReservertTil()));
-        reservasjon.setReservertAv(brukerIdent()); // todo: fjernes? Gir ikke mening å oppdatere?
         oppgaveRepository.lagre(reservasjon);
         oppgaveRepository.lagre(new ReservasjonEventLogg(reservasjon));
         return reservasjon;
     }
 
     public Reservasjon endreReservasjonPåOppgave(Long oppgaveId, LocalDateTime reservertTil) {
-        var reservasjon = oppgaveRepository.hentReservasjon(oppgaveId);
+        var reservasjon = oppgaveRepository.hentReservasjon(oppgaveId)
+                .orElseThrow(() -> new IllegalStateException("Fant ikke reservasjon tilknyttet oppgaveId " + oppgaveId));
         reservasjon.endreReservasjonPåOppgave(reservertTil);
         oppgaveRepository.lagre(reservasjon);
         oppgaveRepository.lagre(new ReservasjonEventLogg(reservasjon));
@@ -131,4 +132,16 @@ public class ReservasjonTjeneste {
         return eksisterende.plusHours(24);
     }
 
+    public void opprettReservasjon(Oppgave id, String saksbehandler, String begrunnelse) {
+        var reservertTil = LocalDateTime.now().plusHours(24);
+        var reservasjon = new Reservasjon(id);
+        reservasjon.setReservertAv(saksbehandler);
+        reservasjon.setBegrunnelse(begrunnelse);
+        reservasjon.setReservertTil(reservertTil);
+        reservasjon.setFlyttetAv(BaseEntitet.BRUKERNAVN_NÅR_SIKKERHETSKONTEKST_IKKE_FINNES);
+        reservasjon.setFlyttetTidspunkt(LocalDateTime.now());
+        reservasjonRepository.lagre(reservasjon);
+        var rel = new ReservasjonEventLogg(reservasjon);
+        reservasjonRepository.lagre(rel);
+    }
 }

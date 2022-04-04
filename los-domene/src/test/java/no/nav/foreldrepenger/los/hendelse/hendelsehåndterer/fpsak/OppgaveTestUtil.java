@@ -35,6 +35,7 @@ public class OppgaveTestUtil {
                 .medBehandlingstidFrist(behandlingstidFrist)
                 .medAksjonspunkter(new Lazy<>(OppgaveTestUtil::aksjonspunkter))
                 .medStatus(BehandlingStatus.OPPRETTET)
+                .medAnsvarligSaksbehandler("saksbehandler")
                 .build();
         behandlingFpsak.setSaksnummer(new Saksnummer("1234"));
         behandlingFpsak.setAktørId(aktørId.getId());

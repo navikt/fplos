@@ -29,8 +29,8 @@ import no.nav.foreldrepenger.los.klient.fpsak.dto.ytelsefordeling.YtelseFordelin
 
 public interface ForeldrepengerBehandling {
 
-    String BEHANDLING_ID = "behandlingId";
     Logger LOG = LoggerFactory.getLogger(ForeldrepengerBehandling.class);
+    String BEHANDLING_ID = "behandlingId";
     String FPSAK_BEHANDLINGER = "/fpsak/api/behandlinger";
     String AKSJONSPUNKTER_LINK = "aksjonspunkter";
     String INNTEKTSMELDINGER_LINK = "inntektsmeldinger";

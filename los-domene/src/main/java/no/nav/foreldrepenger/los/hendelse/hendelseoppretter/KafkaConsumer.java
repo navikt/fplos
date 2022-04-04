@@ -34,6 +34,8 @@ import no.nav.vedtak.felles.prosesstask.api.ProsessTaskData;
 import no.nav.vedtak.felles.prosesstask.api.ProsessTaskTjeneste;
 import no.nav.vedtak.log.mdc.MDCOperations;
 
+import static no.nav.vedtak.log.util.ConfidentialMarkerFilter.CONFIDENTIAL;
+
 public final class KafkaConsumer<T extends BehandlingProsessEventDto> {
 
     private static final boolean IS_DEV = Environment.current().isDev();
@@ -177,6 +179,9 @@ public final class KafkaConsumer<T extends BehandlingProsessEventDto> {
             var dto = deserialiser(String.valueOf(payload));
             if (dto != null) {
                 LOG.info("Håndterer event {}", dto.getEksternId());
+                LOG.info("Steg {}, ap {}",
+                        dto.getBehandlingSteg(),
+                        dto.getAksjonspunktKoderMedStatusListe());
                 var hendelse = hendelseOppretter.opprett((T) dto);
                 hendelseRepository.lagre(hendelse);
                 prosessTaskTjeneste.lagre(opprettTask(hendelse));

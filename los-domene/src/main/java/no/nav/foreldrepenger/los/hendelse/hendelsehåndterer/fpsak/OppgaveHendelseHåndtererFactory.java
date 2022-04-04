@@ -7,6 +7,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import no.nav.foreldrepenger.los.oppgave.OppgaveTjeneste;
+import no.nav.foreldrepenger.los.reservasjon.ReservasjonTjeneste;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,6 +39,7 @@ public class OppgaveHendelseHåndtererFactory {
 
     private OppgaveRepository oppgaveRepository;
     private OppgaveTjeneste oppgaveTjeneste;
+    private ReservasjonTjeneste reservasjonTjeneste;
     private OppgaveEgenskapHåndterer oppgaveEgenskapHåndterer;
     private KøStatistikkTjeneste køStatistikk;
     private ForeldrepengerBehandling foreldrePengerBehandlingKlient;
@@ -45,11 +47,14 @@ public class OppgaveHendelseHåndtererFactory {
     @Inject
     public OppgaveHendelseHåndtererFactory(@Jersey ForeldrepengerBehandling foreldrePengerBehandlingKlient,
                                            OppgaveRepository oppgaveRepository,
-                                           OppgaveTjeneste oppgaveTjeneste, OppgaveEgenskapHåndterer oppgaveEgenskapHåndterer,
+                                           OppgaveTjeneste oppgaveTjeneste,
+                                           ReservasjonTjeneste reservasjonTjeneste,
+                                           OppgaveEgenskapHåndterer oppgaveEgenskapHåndterer,
                                            KøStatistikkTjeneste køStatistikk) {
         this.foreldrePengerBehandlingKlient = foreldrePengerBehandlingKlient;
         this.oppgaveRepository = oppgaveRepository;
         this.oppgaveTjeneste = oppgaveTjeneste;
+        this.reservasjonTjeneste = reservasjonTjeneste;
         this.oppgaveEgenskapHåndterer = oppgaveEgenskapHåndterer;
         this.køStatistikk = køStatistikk;
     }
@@ -105,7 +110,7 @@ public class OppgaveHendelseHåndtererFactory {
         if (oppgaveHistorikk.harEksistertOppgave()) {
             if (oppgaveHistorikk.erÅpenOppgave()) {
                 return oppgaveHistorikk.erSisteOpprettedeOppgaveTilBeslutter()
-                        ? new ReturFraBeslutterHendelseHåndterer(oppgaveTjeneste, oppgaveEgenskapHåndterer, køStatistikk, behandlingFpsak)
+                        ? new ReturFraBeslutterHendelseHåndterer(oppgaveTjeneste, oppgaveEgenskapHåndterer, reservasjonTjeneste, køStatistikk, behandlingFpsak)
                         : new OppdaterOppgaveegenskaperHendelseHåndterer(oppgaveRepository, oppgaveEgenskapHåndterer, køStatistikk,
                                 behandlingFpsak);
             }

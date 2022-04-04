@@ -42,7 +42,7 @@ public abstract class OpprettOppgaveHendelseHåndterer implements FpsakHendelseH
 
     abstract void håndterEksisterendeOppgave();
 
-    private Oppgave opprettOppgave() {
+    Oppgave opprettOppgave() {
         var oppgave = oppgave(behandlingFpsak);
         oppgaveTjeneste.lagre(oppgave);
         return oppgave;

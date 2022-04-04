@@ -4,12 +4,13 @@ import static no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.Oppgav
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 import javax.persistence.EntityManager;
 
 import no.nav.foreldrepenger.los.oppgave.OppgaveTjeneste;
+import no.nav.foreldrepenger.los.reservasjon.Reservasjon;
+import no.nav.foreldrepenger.los.reservasjon.ReservasjonRepository;
 import no.nav.foreldrepenger.los.reservasjon.ReservasjonTjeneste;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -38,12 +39,14 @@ class ReturFraBeslutterHendelseHåndtererTest {
     private OppgaveEgenskapHåndterer oppgaveEgenskapHåndterer;
     private BehandlingFpsak behandlingFpsak;
     private OppgaveTjeneste oppgaveTjeneste;
+    private ReservasjonTjeneste reservasjonTjeneste;
 
     @BeforeEach
     private void setUp(EntityManager entityManager) {
         this.entityManager = entityManager;
         oppgaveRepository = new OppgaveRepository(entityManager);
-        oppgaveTjeneste = new OppgaveTjeneste(oppgaveRepository, mock(ReservasjonTjeneste.class));
+        reservasjonTjeneste = new ReservasjonTjeneste(oppgaveRepository, new ReservasjonRepository(entityManager));
+        oppgaveTjeneste = new OppgaveTjeneste(oppgaveRepository, reservasjonTjeneste); //mock(ReservasjonTjeneste.class));
         oppgaveEgenskapHåndterer = new OppgaveEgenskapHåndterer(oppgaveRepository);
         behandlingFpsak = behandlingFpsak();
         var eksisterendeOppgave = Oppgave.builder()
@@ -56,7 +59,7 @@ class ReturFraBeslutterHendelseHåndtererTest {
 
     @Test
     public void skalAvslutteBeslutterOppgave() {
-        new ReturFraBeslutterHendelseHåndterer(oppgaveTjeneste, oppgaveEgenskapHåndterer, køStatistikk, behandlingFpsak).håndter();
+        new ReturFraBeslutterHendelseHåndterer(oppgaveTjeneste, oppgaveEgenskapHåndterer, reservasjonTjeneste, køStatistikk, behandlingFpsak).håndter();
         var oppgaver = DBTestUtil.hentAlle(entityManager, Oppgave.class);
         var inaktivOppgave = oppgaver.stream().filter(o -> !o.getAktiv()).findFirst().orElseThrow();
         var aktivOppgave = oppgaver.stream().filter(Oppgave::getAktiv).findFirst().orElseThrow();
@@ -67,15 +70,23 @@ class ReturFraBeslutterHendelseHåndtererTest {
 
     @Test
     public void skalOppretteOppgaveStatistikkForBeggeOppgaver() {
-        new ReturFraBeslutterHendelseHåndterer(oppgaveTjeneste, oppgaveEgenskapHåndterer, køStatistikk, behandlingFpsak).håndter();
+        new ReturFraBeslutterHendelseHåndterer(oppgaveTjeneste, oppgaveEgenskapHåndterer, reservasjonTjeneste, køStatistikk, behandlingFpsak).håndter();
         verify(køStatistikk).lagre(any(BehandlingId.class), eq(KøOppgaveHendelse.LUKKET_OPPGAVE));
         verify(køStatistikk).lagre(any(Oppgave.class), eq(KøOppgaveHendelse.ÅPNET_OPPGAVE));
     }
 
     @Test
     public void skalOppretteOppgaveEventLoggForBeggeOppgaver() {
-        new ReturFraBeslutterHendelseHåndterer(oppgaveTjeneste, oppgaveEgenskapHåndterer, køStatistikk, behandlingFpsak).håndter();
+        new ReturFraBeslutterHendelseHåndterer(oppgaveTjeneste, oppgaveEgenskapHåndterer, reservasjonTjeneste, køStatistikk, behandlingFpsak).håndter();
         var oel = DBTestUtil.hentAlle(entityManager, OppgaveEventLogg.class);
         assertThat(oel).hasSize(2);
+    }
+
+    @Test
+    public void skalOppretteReservasjonTilSaksbehandler() {
+        new ReturFraBeslutterHendelseHåndterer(oppgaveTjeneste, oppgaveEgenskapHåndterer, reservasjonTjeneste, køStatistikk, behandlingFpsak).håndter();
+        var reservasjoner = DBTestUtil.hentAlle(entityManager, Reservasjon.class);
+        assertThat(reservasjoner).hasSize(1);
+
     }
 }

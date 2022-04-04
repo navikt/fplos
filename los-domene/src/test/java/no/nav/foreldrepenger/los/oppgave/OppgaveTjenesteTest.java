@@ -156,7 +156,7 @@ public class OppgaveTjenesteTest {
         assertThat(reservasjonTjeneste.hentReservasjonerForAvdeling(AVDELING_DRAMMEN_ENHET)).hasSize(0);
         assertThat(reservasjonTjeneste.hentSaksbehandlersSisteReserverteOppgaver()).hasSize(0);
 
-        reservasjonTjeneste.reserverOppgave(førstegangOppgave.getId());
+        reservasjonTjeneste.reserverOppgave(førstegangOppgave);
         assertThat(oppgaveKøTjeneste.hentOppgaver(oppgaveFiltreringId)).hasSize(2);
         assertThat(reservasjonTjeneste.hentSaksbehandlersReserverteAktiveOppgaver()).hasSize(1);
         assertThat(reservasjonTjeneste.hentReservasjonerForAvdeling(AVDELING_DRAMMEN_ENHET)).hasSize(1);
@@ -190,7 +190,7 @@ public class OppgaveTjenesteTest {
         var førsteOppgave = opprettOgLargeOppgaveTilSortering(0, 10, 10);
         var oppgaveIder = Arrays.asList(førsteOppgave.getId(), andreOppgave.getId());
         assertThat(oppgaveTjeneste.erAlleOppgaverFortsattTilgjengelig(oppgaveIder)).isTrue();
-        reservasjonTjeneste.reserverOppgave(førsteOppgave.getId());
+        reservasjonTjeneste.reserverOppgave(førsteOppgave);
         assertThat(oppgaveTjeneste.erAlleOppgaverFortsattTilgjengelig(oppgaveIder)).isFalse();
     }
 }
