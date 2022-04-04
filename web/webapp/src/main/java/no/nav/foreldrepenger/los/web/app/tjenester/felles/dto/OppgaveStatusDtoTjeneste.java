@@ -1,12 +1,12 @@
 package no.nav.foreldrepenger.los.web.app.tjenester.felles.dto;
 
 import no.nav.foreldrepenger.los.oppgave.Oppgave;
-import no.nav.foreldrepenger.los.reservasjon.Reservasjon;
 import no.nav.foreldrepenger.los.organisasjon.ansatt.AnsattTjeneste;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import java.util.Optional;
+
+import static no.nav.foreldrepenger.los.felles.util.OptionalUtil.tryOrEmpty;
 
 @ApplicationScoped
 public class OppgaveStatusDtoTjeneste {
@@ -24,19 +24,24 @@ public class OppgaveStatusDtoTjeneste {
 
     OppgaveStatusDto lagStatusFor(Oppgave oppgave) {
         if (oppgave.harAktivReservasjon()) {
-            var flyttetAv = hentFlyttetAv(oppgave.getReservasjon()).orElse(null);
-            var reservertAv = oppgave.getReservasjon().getReservertAv();
-            return OppgaveStatusDto.reservert(oppgave.getReservasjon(), hentNavn(reservertAv), flyttetAv);
+            var reservasjon = oppgave.getReservasjon();
+            var flyttetAvIdent = reservasjon.getFlyttetAv().orElse(null);
+            var flyttetAvNavn = hentNavn(flyttetAvIdent);
+            var reservertAvNavn = reservasjon.getReservertAv().equalsIgnoreCase(flyttetAvIdent)
+                    ? flyttetAvNavn
+                    : hentNavn(reservasjon.getReservertAv());
+            return OppgaveStatusDto.reservert(reservasjon, reservertAvNavn, flyttetAvNavn);
         }
         return OppgaveStatusDto.ikkeReservert();
     }
 
-    private Optional<String> hentFlyttetAv(Reservasjon reservasjon) {
-        var flyttetAv = reservasjon.getFlyttetAv();
-        return flyttetAv.map(this::hentNavn);
-    }
-
-    private String hentNavn(String saksbehandlerIdent) {
-        return ansattTjeneste.hentAnsattNavn(saksbehandlerIdent);
+    private String hentNavn(String ident) {
+        if (ident == null) {
+            return null;
+        } else if ("SRVFPLOS".equalsIgnoreCase(ident)) {
+            return "Fplos";
+        }
+        return tryOrEmpty(() -> ansattTjeneste.hentAnsattNavn(ident))
+                .orElse("Ukjent");
     }
 }

@@ -3,7 +3,6 @@ package no.nav.foreldrepenger.los.web.app.tjenester.felles.dto;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -27,7 +26,7 @@ import no.nav.vedtak.sikkerhet.abac.PdpKlient;
 import no.nav.vedtak.sikkerhet.abac.PdpRequestBuilder;
 import no.nav.vedtak.sikkerhet.context.SubjectHandler;
 
-import static no.nav.foreldrepenger.los.util.OptionalUtil.tryOrEmpty;
+import static no.nav.foreldrepenger.los.felles.util.OptionalUtil.tryOrEmpty;
 
 @ApplicationScoped
 public class OppgaveDtoTjeneste {

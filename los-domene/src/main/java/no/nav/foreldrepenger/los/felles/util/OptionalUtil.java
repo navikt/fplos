@@ -1,4 +1,4 @@
-package no.nav.foreldrepenger.los.util;
+package no.nav.foreldrepenger.los.felles.util;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

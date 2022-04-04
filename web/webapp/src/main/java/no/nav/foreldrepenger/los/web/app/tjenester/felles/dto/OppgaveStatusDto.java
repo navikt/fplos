@@ -3,7 +3,8 @@ package no.nav.foreldrepenger.los.web.app.tjenester.felles.dto;
 import java.time.LocalDateTime;
 
 import no.nav.foreldrepenger.los.reservasjon.Reservasjon;
-import no.nav.vedtak.sikkerhet.context.SubjectHandler;
+
+import static no.nav.foreldrepenger.los.felles.util.BrukerIdent.brukerIdent;
 
 public class OppgaveStatusDto {
 
@@ -64,8 +65,7 @@ public class OppgaveStatusDto {
     }
 
     private static boolean isErReservertAvInnloggetBruker(String reservertAvUid) {
-        return reservertAvUid != null
-                && reservertAvUid.equalsIgnoreCase(SubjectHandler.getSubjectHandler().getUid());
+        return reservertAvUid != null && reservertAvUid.equalsIgnoreCase(brukerIdent());
     }
 
     public FlyttetReservasjonDto getFlyttetReservasjon() {

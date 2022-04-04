@@ -94,10 +94,6 @@ public class Reservasjon extends BaseEntitet {
         reservertAv = finnBrukernavn();
     }
 
-    public void endreReservasjonPåOppgave(LocalDateTime reservertTil) {
-        this.reservertTil = reservertTil;
-    }
-
     public void flyttReservasjon(String brukernavn, String begrunnelseForFlytting) {
         reservertTil = reservertTil.plusHours(24);
         reservertAv = brukernavn;
@@ -110,8 +106,8 @@ public class Reservasjon extends BaseEntitet {
         return reservertTil != null && reservertTil.isAfter(LocalDateTime.now());
     }
 
-    public void setReservertTil(LocalDateTime dateTime) {
-        this.reservertTil = dateTime;
+    public void setReservertTil(LocalDateTime reservertTil) {
+        this.reservertTil = reservertTil;
     }
 
     public void setReservertAv(String reservertAv) {

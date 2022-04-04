@@ -74,7 +74,7 @@ public class OppdaterOppgaveegenskaperHendelseHåndterer implements FpsakHendels
             var reservasjon = oppgave.getReservasjon();
             var nyReservertTil = reservasjon.getReservertTil().plusHours(2);
             LOG.info("Forlenger reservasjonId {} med to timer til {}", reservasjon.getId(), nyReservertTil);
-            reservasjon.endreReservasjonPåOppgave(nyReservertTil);
+            reservasjon.setReservertTil(nyReservertTil);
             oppgaveRepository.lagre(reservasjon);
         }
     }

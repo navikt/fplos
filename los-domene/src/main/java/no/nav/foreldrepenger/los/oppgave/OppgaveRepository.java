@@ -28,7 +28,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static no.nav.foreldrepenger.los.felles.util.BrukerIdent.brukerIdent;
 import static no.nav.foreldrepenger.los.oppgavekø.KøSortering.FT_DATO;

@@ -114,7 +114,7 @@ public class ReservasjonTjeneste {
     public Reservasjon endreReservasjonPåOppgave(Long oppgaveId, LocalDateTime reservertTil) {
         var reservasjon = oppgaveRepository.hentReservasjon(oppgaveId)
                 .orElseThrow(() -> new IllegalStateException("Fant ikke reservasjon tilknyttet oppgaveId " + oppgaveId));
-        reservasjon.endreReservasjonPåOppgave(reservertTil);
+        reservasjon.setReservertTil(reservertTil);
         oppgaveRepository.lagre(reservasjon);
         oppgaveRepository.lagre(new ReservasjonEventLogg(reservasjon));
         return reservasjon;
@@ -132,12 +132,13 @@ public class ReservasjonTjeneste {
         return eksisterende.plusHours(24);
     }
 
-    public void opprettReservasjon(Oppgave id, String saksbehandler, String begrunnelse) {
+    public void opprettReservasjon(Oppgave oppgave, String saksbehandler, String begrunnelse) {
         var reservertTil = LocalDateTime.now().plusHours(24);
-        var reservasjon = new Reservasjon(id);
+        var reservasjon = new Reservasjon(oppgave);
         reservasjon.setReservertAv(saksbehandler);
         reservasjon.setBegrunnelse(begrunnelse);
         reservasjon.setReservertTil(reservertTil);
+        reservasjon.setFlyttetAv(brukerIdent());
         reservasjon.setFlyttetTidspunkt(LocalDateTime.now());
         reservasjonRepository.lagre(reservasjon);
         var rel = new ReservasjonEventLogg(reservasjon);
