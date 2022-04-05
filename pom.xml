@@ -37,7 +37,7 @@
         <logstash.version>7.0.1</logstash.version>
         <metrics.version>4.1.12.1</metrics.version>
         <prometheus.version>0.15.0</prometheus.version>
-        <swagger.version>2.1.13</swagger.version>
+        <swagger.version>2.2.0</swagger.version>
         <flyway.version>8.5.4</flyway.version>
 
         <!-- Transitive avh. versjoner for å sikre unikhet (enforcer dependencyConvergence). Skal ikke benyttes direkte av vår egen kode. -->
