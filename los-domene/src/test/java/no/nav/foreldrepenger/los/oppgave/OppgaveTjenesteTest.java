@@ -176,7 +176,7 @@ public class OppgaveTjenesteTest {
         assertThat(reservasjon.getReservertTil().until(LocalDateTime.now().plusDays(3), MINUTES)).isLessThan(2);
 
         var begrunnelse = "Test";
-        reservasjonTjeneste.slettReservasjon(førstegangOppgave.getId(), begrunnelse);
+        reservasjonTjeneste.slettReservasjonMedEventLogg(førstegangOppgave.getReservasjon(), begrunnelse);
         assertThat(oppgaveKøTjeneste.hentOppgaver(oppgaveFiltreringId)).hasSize(3);
         assertThat(reservasjonTjeneste.hentSaksbehandlersReserverteAktiveOppgaver()).hasSize(0);
         assertThat(reservasjonTjeneste.hentReservasjonerForAvdeling(AVDELING_DRAMMEN_ENHET)).hasSize(0);

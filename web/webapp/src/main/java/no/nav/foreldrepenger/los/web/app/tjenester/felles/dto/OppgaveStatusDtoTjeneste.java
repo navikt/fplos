@@ -25,7 +25,7 @@ public class OppgaveStatusDtoTjeneste {
     OppgaveStatusDto lagStatusFor(Oppgave oppgave) {
         if (oppgave.harAktivReservasjon()) {
             var reservasjon = oppgave.getReservasjon();
-            var flyttetAvIdent = reservasjon.getFlyttetAv().orElse(null);
+            var flyttetAvIdent = reservasjon.getFlyttetAv();
             var flyttetAvNavn = hentNavn(flyttetAvIdent);
             var reservertAvNavn = reservasjon.getReservertAv().equalsIgnoreCase(flyttetAvIdent)
                     ? flyttetAvNavn

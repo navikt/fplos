@@ -41,7 +41,7 @@ public class ReturFraBeslutterHendelseHåndterer extends OpprettOppgaveHendelseH
     void håndterEksisterendeOppgave() {
         var behandlingId = behandlingFpsak.getBehandlingId();
         køStatistikk.lagre(behandlingId, KøOppgaveHendelse.LUKKET_OPPGAVE);
-        oppgaveTjeneste.avsluttOppgaveForBehandling(behandlingId);
+        oppgaveTjeneste.avsluttOppgaveUtenEventLogg(behandlingId);
         var oel = OppgaveEventLogg.builder()
                 .behandlingId(behandlingId)
                 .behandlendeEnhet(behandlingFpsak.getBehandlendeEnhetId())

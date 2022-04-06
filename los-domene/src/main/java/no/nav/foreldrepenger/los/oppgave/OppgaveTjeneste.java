@@ -11,6 +11,8 @@ import javax.inject.Inject;
 
 import no.nav.foreldrepenger.los.domene.typer.BehandlingId;
 import no.nav.foreldrepenger.los.felles.BaseEntitet;
+import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveEventLogg;
+import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveEventType;
 import no.nav.foreldrepenger.los.reservasjon.ReservasjonTjeneste;
 
 import static no.nav.foreldrepenger.los.reservasjon.ReservasjonKonstanter.OPPGAVE_AVSLUTTET;
@@ -48,7 +50,7 @@ public class OppgaveTjeneste {
                 .min((o1, o2) -> aktuellDato(o2).compareTo(aktuellDato(o1)));
     }
 
-    public void avsluttOppgaveForBehandling(BehandlingId behandlingId) {
+    public void avsluttOppgaveUtenEventLogg(BehandlingId behandlingId) {
         var oppgaver = oppgaveRepository.hentOppgaver(behandlingId);
         var antallAktive = oppgaver.stream().filter(Oppgave::getAktiv).count();
         if (antallAktive > 1) {
@@ -60,12 +62,25 @@ public class OppgaveTjeneste {
                 .filter(Oppgave::getAktiv)
                 .max(Comparator.comparing(Oppgave::getOpprettetTidspunkt))
                 .ifPresent(oppgave -> {
-                    reservasjonTjeneste.slettReservasjon(oppgave.getId(), OPPGAVE_AVSLUTTET);
+                    reservasjonTjeneste.slettReservasjonMedEventLogg(oppgave.getReservasjon(), OPPGAVE_AVSLUTTET);
                     oppgave.setAktiv(false);
                     oppgave.setOppgaveAvsluttet(LocalDateTime.now());
                     oppgaveRepository.lagre(oppgave);
                     oppgaveRepository.refresh(oppgave);
                 });
+    }
+
+    public void avsluttOppgaveMedEventLogg(Long oppgaveId, String begrunnelse) {
+        var oppgave = oppgaveRepository.hentOppgave(oppgaveId);
+        oppgave.setAktiv(false);
+        oppgave.setOppgaveAvsluttet(LocalDateTime.now());
+        reservasjonTjeneste.slettReservasjonMedEventLogg(oppgave.getReservasjon(), begrunnelse);
+        oppgaveRepository.lagre(oppgave);
+        var oel = new OppgaveEventLogg.Builder()
+                .behandlendeEnhet(oppgave.getBehandlendeEnhet())
+                .type(OppgaveEventType.LUKKET)
+                .build();
+        oppgaveRepository.lagre(oel);
     }
 
     public TilbakekrevingOppgave gjenåpneTilbakekrevingOppgave(BehandlingId behandlingId) {

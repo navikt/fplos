@@ -18,7 +18,7 @@ public record ReservasjonDto(LocalDateTime reservertTilTidspunkt,
 
     public ReservasjonDto(Reservasjon reservasjon, String reservertAvNavn, String navnFlyttetAv) {
         this(reservasjon.getReservertTil(), reservasjon.getReservertAv(), reservertAvNavn, reservasjon.getFlyttetTidspunkt(),
-                reservasjon.getFlyttetAv().orElse(null), navnFlyttetAv, reservasjon.getBegrunnelse(), reservasjon.getOppgave().getId(),
+                reservasjon.getFlyttetAv(), navnFlyttetAv, reservasjon.getBegrunnelse(), reservasjon.getOppgave().getId(),
                 reservasjon.getOppgave().getFagsakSaksnummer(), reservasjon.getOppgave().getBehandlingType());
     }
 

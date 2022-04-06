@@ -1,6 +1,7 @@
 package no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.håndterere;
 
 import static no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.OppgaveUtil.oppgave;
+import static no.nav.foreldrepenger.los.reservasjon.ReservasjonKonstanter.NY_ENHET;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -69,7 +70,7 @@ public class OppdaterOppgaveegenskaperHendelseHåndterer implements FpsakHendels
         if (!oppgave.getBehandlendeEnhet().equals(behandlingFpsak.getBehandlendeEnhetId())
                 && oppgave.harAktivReservasjon()) {
             LOG.info("OppgaveId {} flyttes til ny enhet. Fjerner aktiv reservasjon.", oppgave.getId());
-            oppgave.getReservasjon().frigiReservasjon("Flyttet til ny enhet");
+            oppgave.getReservasjon().frigiReservasjon(NY_ENHET);
         } else if (oppgave.harAktivReservasjon()) {
             var reservasjon = oppgave.getReservasjon();
             var nyReservertTil = reservasjon.getReservertTil().plusHours(2);

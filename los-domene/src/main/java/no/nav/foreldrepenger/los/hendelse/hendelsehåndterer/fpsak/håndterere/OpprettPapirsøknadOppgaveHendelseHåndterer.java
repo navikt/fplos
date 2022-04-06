@@ -10,7 +10,6 @@ import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.Op
 import no.nav.foreldrepenger.los.klient.fpsak.BehandlingFpsak;
 import no.nav.foreldrepenger.los.oppgave.AndreKriterierType;
 import no.nav.foreldrepenger.los.oppgave.Oppgave;
-import no.nav.foreldrepenger.los.oppgave.OppgaveRepository;
 import no.nav.foreldrepenger.los.statistikk.kø.KøStatistikkTjeneste;
 
 public class OpprettPapirsøknadOppgaveHendelseHåndterer extends OpprettOppgaveHendelseHåndterer {
@@ -30,7 +29,7 @@ public class OpprettPapirsøknadOppgaveHendelseHåndterer extends OpprettOppgave
 
     @Override
     void håndterEksisterendeOppgave() {
-        oppgaveTjeneste.avsluttOppgaveForBehandling(behandlingFpsak.getBehandlingId());
+        oppgaveTjeneste.avsluttOppgaveUtenEventLogg(behandlingFpsak.getBehandlingId());
     }
 
     @Override

@@ -7,6 +7,8 @@ import static org.mockito.Mockito.mock;
 
 import javax.persistence.EntityManager;
 
+import no.nav.foreldrepenger.los.reservasjon.ReservasjonRepository;
+import no.nav.foreldrepenger.los.reservasjon.ReservasjonTjeneste;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -32,6 +34,7 @@ class GjenåpneOppgaveHendelseHåndtererTest {
     private EntityManager entityManager;
     private OppgaveRepository oppgaveRepository;
     private OppgaveEgenskapHåndterer oppgaveEgenskapHåndterer;
+    private ReservasjonTjeneste reservasjonTjeneste;
     private BehandlingFpsak behandlingFpsak;
     private Oppgave kopiAvEksisterendeOppgave;
 
@@ -40,6 +43,7 @@ class GjenåpneOppgaveHendelseHåndtererTest {
         this.entityManager = entityManager;
         oppgaveRepository = new OppgaveRepository(entityManager);
         oppgaveEgenskapHåndterer = new OppgaveEgenskapHåndterer(oppgaveRepository);
+        reservasjonTjeneste = new ReservasjonTjeneste(oppgaveRepository, new ReservasjonRepository(entityManager));
 
         behandlingFpsak = behandlingFpsak();
         var eksisterendeOppgave = Oppgave.builder()
@@ -53,7 +57,7 @@ class GjenåpneOppgaveHendelseHåndtererTest {
 
     @Test
     public void skalGjenåpneEksisterendeOppgave() {
-        new GjenåpneOppgaveHendelseHåndterer(oppgaveRepository, oppgaveEgenskapHåndterer, køStatistikk, behandlingFpsak).håndter();
+        new GjenåpneOppgaveHendelseHåndterer(oppgaveRepository, oppgaveEgenskapHåndterer, køStatistikk, behandlingFpsak, reservasjonTjeneste).håndter();
 
         var oppgave = DBTestUtil.hentUnik(entityManager, Oppgave.class);
         assertThat(oppgave.getAktiv()).isTrue();
@@ -66,7 +70,7 @@ class GjenåpneOppgaveHendelseHåndtererTest {
 
     @Test
     public void skalOppretteOppgaveEventLogg() {
-        new GjenåpneOppgaveHendelseHåndterer(oppgaveRepository, oppgaveEgenskapHåndterer, køStatistikk, behandlingFpsak).håndter();
+        new GjenåpneOppgaveHendelseHåndterer(oppgaveRepository, oppgaveEgenskapHåndterer, køStatistikk, behandlingFpsak, reservasjonTjeneste).håndter();
 
         var oel = DBTestUtil.hentUnik(entityManager, OppgaveEventLogg.class);
         assertThat(oel.getBehandlingId()).isEqualTo(behandlingFpsak.getBehandlingId());

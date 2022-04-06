@@ -52,7 +52,7 @@ public class ReservasjonEventLogg extends BaseEntitet {
         this.oppgaveId = reservasjon.getOppgave().getId();
         this.reservertTil = reservasjon.getReservertTil();
         this.reservertAv = reservasjon.getReservertAv();
-        this.flyttetAv = reservasjon.getFlyttetAv().orElse(null);
+        this.flyttetAv = reservasjon.getFlyttetAv();
         this.flyttetTidspunkt = reservasjon.getFlyttetTidspunkt();
         this.begrunnelse = reservasjon.getBegrunnelse();
     }

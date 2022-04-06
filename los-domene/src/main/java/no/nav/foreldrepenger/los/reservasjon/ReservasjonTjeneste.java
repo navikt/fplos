@@ -75,28 +75,37 @@ public class ReservasjonTjeneste {
         return oppgaveRepository.hentReservasjon(oppgaveId).orElse(null);
     }
 
-    public Optional<Reservasjon> slettReservasjon(Long oppgaveId, String begrunnelse) {
+    public Optional<Reservasjon> slettReservasjonMedEventLogg(Long oppgaveId, String begrunnelse) {
         var reservasjon = reservasjonRepository.hentAktivReservasjon(oppgaveId);
-        reservasjon.ifPresentOrElse(res -> {
-                    res.setReservertTil(LocalDateTime.now().minusSeconds(1));
-                    res.setFlyttetAv(null);
-                    res.setFlyttetTidspunkt(null);
-                    res.setBegrunnelse(begrunnelse);
-                    reservasjonRepository.lagre(res);
-                    reservasjonRepository.lagre(new ReservasjonEventLogg(res));
-                }, () -> LOG.info("Forsøker slette reservasjon, men fant ingen for oppgaveId {}", oppgaveId)
+        reservasjon.ifPresentOrElse(res -> slettReservasjonMedEventLogg(res, begrunnelse),
+                () -> LOG.info("Forsøker slette reservasjon, men fant ingen for oppgaveId {}", oppgaveId)
         );
         return reservasjon;
     }
 
+    public void slettReservasjonMedEventLogg(Reservasjon reservasjon, String begrunnelse) {
+        if (reservasjon != null) {
+            reservasjon.setReservertTil(LocalDateTime.now().minusSeconds(1));
+            reservasjon.setFlyttetAv(null);
+            reservasjon.setFlyttetTidspunkt(null);
+            reservasjon.setBegrunnelse(begrunnelse);
+            reservasjonRepository.lagre(reservasjon);
+            reservasjonRepository.lagre(new ReservasjonEventLogg(reservasjon));
+        }
+    }
+
     public Reservasjon flyttReservasjon(Long oppgaveId, String brukernavn, String begrunnelse) {
         return oppgaveRepository.hentReservasjon(oppgaveId)
-                .map(r -> {
-                    r.flyttReservasjon(brukernavn, begrunnelse);
-                    oppgaveRepository.lagre(r);
-                    oppgaveRepository.refresh(r.getOppgave());
-                    oppgaveRepository.lagre(new ReservasjonEventLogg(r));
-                    return r;
+                .map(res -> {
+                    res.setReservertTil(res.getReservertTil().plusHours(24));
+                    res.setReservertAv(brukernavn);
+                    res.setFlyttetAv(brukerIdent());
+                    res.setFlyttetTidspunkt(LocalDateTime.now());
+                    res.setBegrunnelse(begrunnelse);
+                    oppgaveRepository.lagre(res);
+                    oppgaveRepository.refresh(res.getOppgave());
+                    oppgaveRepository.lagre(new ReservasjonEventLogg(res));
+                    return res;
                 })
                 .orElseThrow(() -> new IllegalStateException("Fant ikke reservasjon tilknyttet oppgaveId " + oppgaveId));
     }
@@ -104,7 +113,6 @@ public class ReservasjonTjeneste {
     public Reservasjon forlengReservasjonPåOppgave(Long oppgaveId) {
         var reservasjon = oppgaveRepository.hentReservasjon(oppgaveId)
                 .orElseThrow(() -> new IllegalStateException("Fant ikke reservasjon tilknyttet oppgaveId " + oppgaveId));
-        reservasjon.forlengReservasjonPåOppgave();
         reservasjon.setReservertTil(utvidetReservasjon(reservasjon.getReservertTil()));
         oppgaveRepository.lagre(reservasjon);
         oppgaveRepository.lagre(new ReservasjonEventLogg(reservasjon));

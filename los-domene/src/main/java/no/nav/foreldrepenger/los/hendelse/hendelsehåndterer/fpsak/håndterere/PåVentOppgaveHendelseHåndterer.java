@@ -47,7 +47,7 @@ public class PåVentOppgaveHendelseHåndterer implements FpsakHendelseHåndterer
                 .ifPresentOrElse(o -> {
                             LOG.info("{} behandling er satt på vent, type {}. Lukker oppgave.", SYSTEM, venteType);
                             køStatistikk.lagre(behandlingId, KøOppgaveHendelse.OPPGAVE_SATT_PÅ_VENT);
-                            oppgaveTjeneste.avsluttOppgaveForBehandling(behandlingId);
+                            oppgaveTjeneste.avsluttOppgaveUtenEventLogg(behandlingId);
                         },
                         () -> LOG.info("{} behandling er satt på vent, type {}", SYSTEM, venteType));
         var oel = new OppgaveEventLogg(behandlingId, venteType, null, behandlendeEnhet, aksjonspunktFrist);

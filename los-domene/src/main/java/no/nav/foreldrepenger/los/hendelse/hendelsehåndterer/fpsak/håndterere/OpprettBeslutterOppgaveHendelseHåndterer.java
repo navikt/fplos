@@ -7,7 +7,6 @@ import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.Op
 import no.nav.foreldrepenger.los.klient.fpsak.BehandlingFpsak;
 import no.nav.foreldrepenger.los.oppgave.AndreKriterierType;
 import no.nav.foreldrepenger.los.oppgave.Oppgave;
-import no.nav.foreldrepenger.los.oppgave.OppgaveRepository;
 import no.nav.foreldrepenger.los.oppgave.OppgaveTjeneste;
 import no.nav.foreldrepenger.los.statistikk.kø.KøOppgaveHendelse;
 import no.nav.foreldrepenger.los.statistikk.kø.KøStatistikkTjeneste;
@@ -36,7 +35,7 @@ public class OpprettBeslutterOppgaveHendelseHåndterer extends OpprettOppgaveHen
         // TODO: av og til er saksbehandlers oppgave allerede lukket. Vurder en sjekk på dette før man logger i OEL osv
         var behandlingId = behandlingFpsak.getBehandlingId();
         køStatistikk.lagre(behandlingId, KøOppgaveHendelse.LUKKET_OPPGAVE);
-        oppgaveTjeneste.avsluttOppgaveForBehandling(behandlingId);
+        oppgaveTjeneste.avsluttOppgaveUtenEventLogg(behandlingId);
         var oel = OppgaveEventLogg.builder()
                 .behandlingId(behandlingId)
                 .behandlendeEnhet(behandlingFpsak.getBehandlendeEnhetId())

@@ -173,12 +173,12 @@ public class OppgaveRestTjeneste {
     @BeskyttetRessurs(action = BeskyttetRessursActionAttributt.CREATE, resource = AbacAttributter.FAGSAK)
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
     public OppgaveStatusDto opphevOppgaveReservasjon(@NotNull @Parameter(description = "Id og begrunnelse") @Valid OppgaveOpphevingDto opphevetOppgave) {
-        var reservasjon = reservasjonTjeneste.slettReservasjon(opphevetOppgave.getOppgaveId().getVerdi(), opphevetOppgave.getBegrunnelse());
+        var reservasjon = reservasjonTjeneste.slettReservasjonMedEventLogg(opphevetOppgave.getOppgaveId().getVerdi(), opphevetOppgave.getBegrunnelse());
         return reservasjon
                 .map(res -> oppgaveDtoTjeneste.lagDtoFor(res.getOppgave(), false))
                 .map(OppgaveDto::getStatus)
                 .orElseGet(() -> {
-                    LOG.warn("Fant ikke reservasjon tilknyttet oppgaveId {} for sletting, returnerer null", opphevetOppgave.getOppgaveId());
+                    LOG.info("Fant ikke reservasjon tilknyttet oppgaveId {} for sletting, returnerer null", opphevetOppgave.getOppgaveId());
                     return null;
                 });
     }
