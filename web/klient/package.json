@@ -20,12 +20,12 @@
     "lint": "eslint \"src/client/**/*.ts*\"",
     "lint:fix": "eslint --fix --cache \"src/client/**/*.ts*\"",
     "less:lint": "stylelint \"src/client/app/**/*.less\"",
-    "dev": "cross-env NODE_OPTIONS='--openssl-legacy-provider' NODE_ENV=development node webpack/webpack.dev.server.js --config webpack/webpack.dev.js",
-    "build": "cross-env NODE_OPTIONS='--openssl-legacy-provider' NODE_ENV=production webpack --progress --config webpack/webpack.prod.js",
+    "dev": "cross-env NODE_ENV=development node webpack/webpack.dev.server.js --config webpack/webpack.dev.js",
+    "build": "cross-env NODE_ENV=production webpack --progress --config webpack/webpack.prod.js",
     "postinstall": "yarn build && yarn test && yarn ts-check && yarn less:lint",
     "doc": "react-asciidoc-generator ./src/client/app/ -o ../../docs/generated/react.adoc --handlebar-template src/docs/asciidoc-template.handlebars ",
-    "storybook": "cross-env NODE_OPTIONS='--openssl-legacy-provider' NODE_ENV=test start-storybook -p 9101 -c .storybook",
-    "deploy-storybook": "cross-env NODE_OPTIONS='--openssl-legacy-provider' NODE_ENV=test build-storybook -o .static_storybook && storybook-to-ghpages --existing-output-dir=.static_storybook"
+    "storybook": "cross-env NODE_ENV=test start-storybook -p 9101 -c .storybook",
+    "deploy-storybook": "cross-env NODE_ENV=test build-storybook -o .static_storybook && storybook-to-ghpages --existing-output-dir=.static_storybook"
   },
   "dependencies": {
     "@babel/runtime": "^7.17.7",
