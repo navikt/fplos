@@ -160,8 +160,8 @@ public class OppgaveRestTjeneste {
     @BeskyttetRessurs(action = BeskyttetRessursActionAttributt.READ, resource = AbacAttributter.FAGSAK)
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
     public OppgaveStatusDto hentReservasjon(@NotNull @Parameter(description = "id til oppgaven") @QueryParam("oppgaveId") @Valid OppgaveIdDto oppgaveId) {
-        var reservasjon = reservasjonTjeneste.hentReservasjon(oppgaveId.getVerdi());
-        return oppgaveDtoTjeneste.lagDtoFor(reservasjon.getOppgave(), false).getStatus();
+        var oppgave = oppgaveTjeneste.hentOppgave(oppgaveId.getVerdi());
+        return oppgaveDtoTjeneste.lagDtoFor(oppgave, false).getStatus();
     }
 
 
