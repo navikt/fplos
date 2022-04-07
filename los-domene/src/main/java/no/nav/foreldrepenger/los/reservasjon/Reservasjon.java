@@ -1,7 +1,6 @@
 package no.nav.foreldrepenger.los.reservasjon;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -48,7 +47,6 @@ public class Reservasjon extends BaseEntitet {
 
     public Reservasjon(Oppgave oppgave) {
         this.oppgave = oppgave;
-        reservertAv = finnBrukernavn();
     }
 
     public Long getId() {

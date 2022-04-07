@@ -84,8 +84,8 @@ public class AvdelingReservasjonerRestTjeneste {
     public OppgaveStatusDto opphevOppgaveReservasjon(@NotNull @Parameter(description = "Id for oppgave som reservasjonen er tilknyttet") @Valid OppgaveIdDto oppgaveId) {
         var reservasjon = reservasjonTjeneste.slettReservasjonMedEventLogg(oppgaveId.getVerdi(), RESERVASJON_AVSLUTTET_AVDELINGSLEDER);
         return reservasjon
-                .map(res -> oppgaveDtoTjeneste.lagDtoFor(res.getOppgave(), false))
-                .map(OppgaveDto::getStatus)
+                .map(Reservasjon::getOppgave)
+                .map(oppgaveDtoTjeneste::lagOppgaveStatusUtenTilgangsjekk)
                 .orElseGet(() -> {
                     LOG.warn("Fant ikke reservasjon tilknyttet oppgaveId {} for sletting, returnerer null", oppgaveId);
                     return null;

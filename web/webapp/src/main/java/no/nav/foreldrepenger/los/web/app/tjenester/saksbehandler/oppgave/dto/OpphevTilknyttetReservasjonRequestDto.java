@@ -9,7 +9,7 @@ import no.nav.vedtak.sikkerhet.abac.AbacDataAttributter;
 import no.nav.vedtak.sikkerhet.abac.AbacDto;
 import no.nav.vedtak.util.InputValideringRegex;
 
-public class OppgaveOpphevingDto implements AbacDto {
+public class OpphevTilknyttetReservasjonRequestDto implements AbacDto {
 
     @NotNull
     @Valid
@@ -20,10 +20,10 @@ public class OppgaveOpphevingDto implements AbacDto {
     @Pattern(regexp = InputValideringRegex.FRITEKST)
     private String begrunnelse;
 
-    public OppgaveOpphevingDto() {
+    public OpphevTilknyttetReservasjonRequestDto() {
     }
 
-    public OppgaveOpphevingDto(OppgaveIdDto oppgaveId, String begrunnelse) {
+    public OpphevTilknyttetReservasjonRequestDto(OppgaveIdDto oppgaveId, String begrunnelse) {
         this.oppgaveId = oppgaveId;
         this.begrunnelse = begrunnelse;
     }

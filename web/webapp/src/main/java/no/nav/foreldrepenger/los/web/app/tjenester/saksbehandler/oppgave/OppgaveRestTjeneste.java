@@ -22,6 +22,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import no.nav.foreldrepenger.los.reservasjon.Reservasjon;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,7 +47,7 @@ import no.nav.foreldrepenger.los.web.app.tjenester.felles.dto.SakslisteIdDto;
 import no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.oppgave.dto.OppgaveFlyttingDto;
 import no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.oppgave.dto.OppgaveIdDto;
 import no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.oppgave.dto.OppgaveIderDto;
-import no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.oppgave.dto.OppgaveOpphevingDto;
+import no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.oppgave.dto.OpphevTilknyttetReservasjonRequestDto;
 import no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.oppgave.dto.ReservasjonsEndringDto;
 import no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.oppgave.dto.SaknummerIderDto;
 import no.nav.vedtak.sikkerhet.abac.BeskyttetRessurs;
@@ -161,7 +162,8 @@ public class OppgaveRestTjeneste {
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
     public OppgaveStatusDto hentReservasjon(@NotNull @Parameter(description = "id til oppgaven") @QueryParam("oppgaveId") @Valid OppgaveIdDto oppgaveId) {
         var oppgave = oppgaveTjeneste.hentOppgave(oppgaveId.getVerdi());
-        return oppgaveDtoTjeneste.lagDtoFor(oppgave, false).getStatus();
+        var oppgaveDto = oppgaveDtoTjeneste.lagDtoFor(oppgave, false);
+        return oppgaveDto.getStatus();
     }
 
 
@@ -172,13 +174,13 @@ public class OppgaveRestTjeneste {
     @Operation(description = "Opphev reservasjon av oppgave", tags = "Saksbehandler")
     @BeskyttetRessurs(action = BeskyttetRessursActionAttributt.CREATE, resource = AbacAttributter.FAGSAK)
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
-    public OppgaveStatusDto opphevOppgaveReservasjon(@NotNull @Parameter(description = "Id og begrunnelse") @Valid OppgaveOpphevingDto opphevetOppgave) {
-        var reservasjon = reservasjonTjeneste.slettReservasjonMedEventLogg(opphevetOppgave.getOppgaveId().getVerdi(), opphevetOppgave.getBegrunnelse());
+    public OppgaveStatusDto opphevReservasjonTilknyttetOppgave(@NotNull @Parameter(description = "Id og begrunnelse") @Valid OpphevTilknyttetReservasjonRequestDto request) {
+        var reservasjon = reservasjonTjeneste.slettReservasjonMedEventLogg(request.getOppgaveId().getVerdi(), request.getBegrunnelse());
         return reservasjon
-                .map(res -> oppgaveDtoTjeneste.lagDtoFor(res.getOppgave(), false))
-                .map(OppgaveDto::getStatus)
+                .map(Reservasjon::getOppgave)
+                .map(oppgaveDtoTjeneste::lagOppgaveStatusUtenTilgangsjekk)
                 .orElseGet(() -> {
-                    LOG.info("Fant ikke reservasjon tilknyttet oppgaveId {} for sletting, returnerer null", opphevetOppgave.getOppgaveId());
+                    LOG.info("Fant ikke reservasjon tilknyttet oppgaveId {} for sletting, returnerer null", request.getOppgaveId());
                     return null;
                 });
     }

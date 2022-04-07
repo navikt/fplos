@@ -8,7 +8,6 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.persistence.PersistenceException;
 
-import no.nav.foreldrepenger.los.felles.BaseEntitet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -71,10 +70,6 @@ public class ReservasjonTjeneste {
         return reservasjon;
     }
 
-    public Reservasjon hentReservasjon(Long oppgaveId) {
-        return oppgaveRepository.hentReservasjon(oppgaveId).orElse(null);
-    }
-
     public Optional<Reservasjon> slettReservasjonMedEventLogg(Long oppgaveId, String begrunnelse) {
         var reservasjon = reservasjonRepository.hentAktivReservasjon(oppgaveId);
         reservasjon.ifPresentOrElse(res -> slettReservasjonMedEventLogg(res, begrunnelse),
@@ -132,14 +127,6 @@ public class ReservasjonTjeneste {
         return reservasjonRepository.hentSaksbehandlersSisteReserverteOppgaver(brukerIdent());
     }
 
-    private static LocalDateTime standardReservasjon() {
-        return LocalDateTime.now().plusHours(8);
-    }
-
-    private static LocalDateTime utvidetReservasjon(LocalDateTime eksisterende) {
-        return eksisterende.plusHours(24);
-    }
-
     public void opprettReservasjon(Oppgave oppgave, String saksbehandler, String begrunnelse) {
         var reservertTil = LocalDateTime.now().plusHours(24);
         var reservasjon = new Reservasjon(oppgave);
@@ -151,5 +138,13 @@ public class ReservasjonTjeneste {
         reservasjonRepository.lagre(reservasjon);
         var rel = new ReservasjonEventLogg(reservasjon);
         reservasjonRepository.lagre(rel);
+    }
+
+    private static LocalDateTime standardReservasjon() {
+        return LocalDateTime.now().plusHours(8);
+    }
+
+    private static LocalDateTime utvidetReservasjon(LocalDateTime eksisterende) {
+        return eksisterende.plusHours(24);
     }
 }

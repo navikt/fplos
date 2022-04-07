@@ -62,7 +62,8 @@ public class PåVentOppgaveHendelseHåndterer implements FpsakHendelseHåndterer
     }
 
     private static LocalDateTime finnVentefrist(List<Aksjonspunkt> aksjonspunkter, Predicate<Aksjonspunkt> predicate) {
-        return safeStream(aksjonspunkter).filter(Aksjonspunkt::erAktiv)
+        return safeStream(aksjonspunkter)
+                .filter(Aksjonspunkt::erAktiv)
                 .filter(predicate)
                 .map(Aksjonspunkt::getFristTid)
                 .filter(Objects::nonNull)

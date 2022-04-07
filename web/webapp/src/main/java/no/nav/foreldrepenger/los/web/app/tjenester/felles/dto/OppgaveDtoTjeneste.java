@@ -70,7 +70,6 @@ public class OppgaveDtoTjeneste {
      *                                 sjekkes tilgangen til behandlingen/oppgaven ved mottaket av restkallet gjennom {@link no.nav.vedtak.sikkerhet.abac.BeskyttetRessursInterceptor}.
      *                                 Applikasjonen har noen kall som ikke går rett på en behandling/oppgave, men som returnerer oppgaver,
      *                                 i disse tilfellene må sjekkTilgangPåBehandling være true.
-     *
      */
     public OppgaveDto lagDtoFor(Oppgave oppgave, boolean sjekkTilgangPåBehandling) throws IkkeTilgangPåBehandlingException {
         if (sjekkTilgangPåBehandling) {
@@ -80,6 +79,16 @@ public class OppgaveDtoTjeneste {
                 .orElseThrow(() -> new LagOppgaveDtoFeil("Finner ikke person tilknyttet oppgaveId " + oppgave.getId()));
         var oppgaveStatus = oppgaveStatusDtoTjeneste.lagStatusFor(oppgave);
         return new OppgaveDto(oppgave, person, oppgaveStatus);
+    }
+
+    /**
+     * @param oppgave Metoden skal kun brukes ved kall fra endepunkt som tar inn {@link no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.oppgave.dto.BehandlingIdDto}
+     *                eller {@link no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.oppgave.dto.OppgaveIdDto}. Tilgangssjekk dekkes for slike endepunkt gjennom
+     *                {@link no.nav.vedtak.sikkerhet.abac.BeskyttetRessursInterceptor}.
+     * @return
+     */
+    public OppgaveStatusDto lagOppgaveStatusUtenTilgangsjekk(Oppgave oppgave) {
+        return oppgaveStatusDtoTjeneste.lagStatusFor(oppgave);
     }
 
     public boolean finnesTilgjengeligeOppgaver(SakslisteIdDto sakslisteId) {
