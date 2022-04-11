@@ -16,7 +16,7 @@
 
     <properties>
         <revision>2.8.2</revision>
-        <sha1></sha1>
+        <sha1/>
         <changelist>-SNAPSHOT</changelist>
         <java.version>17</java.version>
         <maven.compiler.source>${java.version}</maven.compiler.source>
@@ -34,7 +34,7 @@
         <asm.version>6.2.1</asm.version>
         <hamcrest.version>1.3</hamcrest.version>
         <jandex.version>2.4.2.Final</jandex.version>
-        <logstash.version>7.0.1</logstash.version>
+        <logstash.version>7.1</logstash.version>
         <metrics.version>4.1.12.1</metrics.version>
         <prometheus.version>0.15.0</prometheus.version>
         <swagger.version>2.1.13</swagger.version>
