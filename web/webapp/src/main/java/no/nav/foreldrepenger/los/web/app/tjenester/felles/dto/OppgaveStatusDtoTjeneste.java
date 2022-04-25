@@ -50,7 +50,8 @@ public class OppgaveStatusDtoTjeneste {
 
     private OppgaveStatusDto systembrukerSpesialTilfelle(Reservasjon reservasjon) {
         // hack for å forskjønne visning av systembrukers navn i frontend
-        reservasjon.setFlyttetAv("Fplos");
-        return OppgaveStatusDto.reservert(reservasjon, hentNavn(reservasjon.getReservertAv()), "oppgavesystem");
+        var flyttetReservasjonDto = new FlyttetReservasjonDto(reservasjon.getFlyttetTidspunkt(),
+                "Fplos", "oppgavesystem", reservasjon.getBegrunnelse());
+        return OppgaveStatusDto.reservert(reservasjon, hentNavn(reservasjon.getReservertAv()), flyttetReservasjonDto);
     }
 }
