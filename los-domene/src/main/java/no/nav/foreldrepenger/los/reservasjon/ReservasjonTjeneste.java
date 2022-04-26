@@ -15,6 +15,7 @@ import no.nav.foreldrepenger.los.oppgave.Oppgave;
 import no.nav.foreldrepenger.los.oppgave.OppgaveRepository;
 
 import static no.nav.foreldrepenger.los.felles.util.BrukerIdent.brukerIdent;
+import static no.nav.foreldrepenger.los.felles.util.DateAndTimeUtil.justerTilNesteUkedag;
 
 
 @ApplicationScoped
@@ -128,7 +129,7 @@ public class ReservasjonTjeneste {
     }
 
     public void opprettReservasjon(Oppgave oppgave, String saksbehandler, String begrunnelse) {
-        var reservertTil = LocalDateTime.now().plusHours(24);
+        var reservertTil = LocalDateTime.now().plusHours(24).with(justerTilNesteUkedag);
         var reservasjon = new Reservasjon(oppgave);
         reservasjon.setReservertAv(saksbehandler);
         reservasjon.setBegrunnelse(begrunnelse);
