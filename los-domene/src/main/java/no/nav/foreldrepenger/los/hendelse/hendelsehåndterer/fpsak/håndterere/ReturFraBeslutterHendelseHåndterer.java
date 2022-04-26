@@ -14,10 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class ReturFraBeslutterHendelseHåndterer extends OpprettOppgaveHendelseHåndterer {
-
     private static final Logger LOG = LoggerFactory.getLogger(ReturFraBeslutterHendelseHåndterer.class);
-    private static final boolean IS_PROD = Environment.current().isProd();
-
     private final OppgaveTjeneste oppgaveTjeneste;
     private final KøStatistikkTjeneste køStatistikk;
     private final BehandlingFpsak behandlingFpsak;
@@ -54,10 +51,8 @@ public class ReturFraBeslutterHendelseHåndterer extends OpprettOppgaveHendelseH
     @Override
     Oppgave opprettOppgave() {
         var oppgave = super.opprettOppgave();
-        if (!IS_PROD) {
-            reservasjonTjeneste.opprettReservasjon(oppgave, behandlingFpsak.getAnsvarligSaksbehandler(), "Retur fra beslutter");
-            LOG.info("Retur fra beslutter, oppretter oppgave og flytter reservasjon til ansvarlig saksbehandler");
-        }
+        reservasjonTjeneste.opprettReservasjon(oppgave, behandlingFpsak.getAnsvarligSaksbehandler(), "Retur fra beslutter");
+        LOG.info("Retur fra beslutter, oppretter oppgave og flytter reservasjon til ansvarlig saksbehandler");
         return oppgave;
     }
 
