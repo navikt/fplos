@@ -22,6 +22,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import no.nav.foreldrepenger.los.reservasjon.Reservasjon;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,7 +47,7 @@ import no.nav.foreldrepenger.los.web.app.tjenester.felles.dto.SakslisteIdDto;
 import no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.oppgave.dto.OppgaveFlyttingDto;
 import no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.oppgave.dto.OppgaveIdDto;
 import no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.oppgave.dto.OppgaveIderDto;
-import no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.oppgave.dto.OppgaveOpphevingDto;
+import no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.oppgave.dto.OpphevTilknyttetReservasjonRequestDto;
 import no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.oppgave.dto.ReservasjonsEndringDto;
 import no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.oppgave.dto.SaknummerIderDto;
 import no.nav.vedtak.sikkerhet.abac.BeskyttetRessurs;
@@ -121,6 +122,7 @@ public class OppgaveRestTjeneste {
             return Redirect.sendTilResultat(request, sakslisteId);
         }
         if (oppgaveTjeneste.erAlleOppgaverFortsattTilgjengelig(oppgaveIderSomVises)) {
+            LOG.debug("Alle oppgaver fortsatt tilgjengelig for sakliste {}: {}", sakslisteId.getVerdi(), oppgaveIderSomVises);
             return Redirect.sendTilPolling(request, sakslisteId, oppgaverIder);
         }
         return Redirect.sendTilResultat(request, sakslisteId);
@@ -135,7 +137,9 @@ public class OppgaveRestTjeneste {
             })
     @BeskyttetRessurs(action = READ, resource = AbacAttributter.FAGSAK)
     public List<OppgaveDto> getOppgaverTilBehandling(@NotNull @QueryParam("sakslisteId") @Valid SakslisteIdDto sakslisteId) {
-        return oppgaveDtoTjeneste.getOppgaverTilBehandling(sakslisteId.getVerdi());
+        var oppgaverTilBehandling = oppgaveDtoTjeneste.getOppgaverTilBehandling(sakslisteId.getVerdi());
+        LOG.debug("Oppgaver til behandling for saksliste {}: {}", sakslisteId.getVerdi(), oppgaverTilBehandling);
+        return oppgaverTilBehandling;
     }
 
     @POST
@@ -157,8 +161,9 @@ public class OppgaveRestTjeneste {
     @BeskyttetRessurs(action = BeskyttetRessursActionAttributt.READ, resource = AbacAttributter.FAGSAK)
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
     public OppgaveStatusDto hentReservasjon(@NotNull @Parameter(description = "id til oppgaven") @QueryParam("oppgaveId") @Valid OppgaveIdDto oppgaveId) {
-        var reservasjon = reservasjonTjeneste.hentReservasjon(oppgaveId.getVerdi());
-        return oppgaveDtoTjeneste.lagDtoFor(reservasjon.getOppgave(), false).getStatus();
+        var oppgave = oppgaveTjeneste.hentOppgave(oppgaveId.getVerdi());
+        var oppgaveDto = oppgaveDtoTjeneste.lagDtoFor(oppgave, false);
+        return oppgaveDto.getStatus();
     }
 
 
@@ -169,9 +174,15 @@ public class OppgaveRestTjeneste {
     @Operation(description = "Opphev reservasjon av oppgave", tags = "Saksbehandler")
     @BeskyttetRessurs(action = BeskyttetRessursActionAttributt.CREATE, resource = AbacAttributter.FAGSAK)
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
-    public OppgaveStatusDto opphevOppgaveReservasjon(@NotNull @Parameter(description = "Id og begrunnelse") @Valid OppgaveOpphevingDto opphevetOppgave) {
-        var reservasjon = reservasjonTjeneste.frigiOppgave(opphevetOppgave.getOppgaveId().getVerdi(), opphevetOppgave.getBegrunnelse());
-        return oppgaveDtoTjeneste.lagDtoFor(reservasjon.getOppgave(), false).getStatus();
+    public OppgaveStatusDto opphevReservasjonTilknyttetOppgave(@NotNull @Parameter(description = "Id og begrunnelse") @Valid OpphevTilknyttetReservasjonRequestDto request) {
+        var reservasjon = reservasjonTjeneste.slettReservasjonMedEventLogg(request.getOppgaveId().getVerdi(), request.getBegrunnelse());
+        return reservasjon
+                .map(Reservasjon::getOppgave)
+                .map(oppgaveDtoTjeneste::lagOppgaveStatusUtenTilgangsjekk)
+                .orElseGet(() -> {
+                    LOG.info("Fant ikke reservasjon tilknyttet oppgaveId {} for sletting, returnerer null", request.getOppgaveId());
+                    return null;
+                });
     }
 
     @POST
@@ -206,7 +217,7 @@ public class OppgaveRestTjeneste {
     @BeskyttetRessurs(action = BeskyttetRessursActionAttributt.READ, resource = AbacAttributter.FAGSAK)
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
     public List<OppgaveDto> getReserverteOppgaver() {
-        return oppgaveDtoTjeneste.getReserverteOppgaver();
+        return oppgaveDtoTjeneste.getSaksbehandlersReserverteAktiveOppgaver();
     }
 
     @GET
@@ -216,7 +227,7 @@ public class OppgaveRestTjeneste {
     @BeskyttetRessurs(action = BeskyttetRessursActionAttributt.READ, resource = AbacAttributter.FAGSAK)
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
     public List<OppgaveDto> getBehandledeOppgaver() {
-        return oppgaveDtoTjeneste.getBehandledeOppgaver();
+        return oppgaveDtoTjeneste.getSaksbehandlersSisteReserverteOppgaver();
     }
 
     @POST

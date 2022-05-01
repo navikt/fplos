@@ -14,6 +14,7 @@ import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import { restApiHooks, RestApiPathsKeys } from 'data/fplosRestApi';
 import { Form, InputField } from 'form/formIndex';
 import Saksliste from 'types/avdelingsleder/sakslisteAvdelingTsType';
+import useDebounce from 'form/useDebounce';
 import BehandlingstypeVelger from './BehandlingstypeVelger';
 import AndreKriterierVelger from './AndreKriterierVelger';
 import FagsakYtelseTypeVelger from './FagsakYtelseTypeVelger';
@@ -36,28 +37,20 @@ type FormValues = {
   tomDato?: string;
 }
 
-const finnDagerSomTall = (antallDager?: string): undefined | number => {
-  if (antallDager === undefined) {
-    return undefined;
-  }
-  const nr = Number.parseInt(antallDager, 10);
-  return Number.isNaN(nr) ? undefined : nr;
-};
-
 const buildInitialValues = (intl: IntlShape, valgtSaksliste: Saksliste): FormValues => {
-  const behandlingTypes = valgtSaksliste.behandlingTyper ? valgtSaksliste.behandlingTyper.reduce((acc, bt) => ({ ...acc, [bt.kode]: true }), {}) : {};
+  const behandlingTypes = valgtSaksliste.behandlingTyper ? valgtSaksliste.behandlingTyper.reduce((acc, bt) => ({ ...acc, [bt]: true }), {}) : {};
   const fagsakYtelseType = valgtSaksliste.fagsakYtelseTyper && valgtSaksliste.fagsakYtelseTyper.length > 0
-    ? valgtSaksliste.fagsakYtelseTyper[0].kode : '';
+    ? valgtSaksliste.fagsakYtelseTyper[0] : '';
 
   const andreKriterierTyper = valgtSaksliste.andreKriterier
-    ? valgtSaksliste.andreKriterier.reduce((acc, ak) => ({ ...acc, [ak.andreKriterierType.kode]: true }), {}) : {};
+    ? valgtSaksliste.andreKriterier.reduce((acc, ak) => ({ ...acc, [ak.andreKriterierType]: true }), {}) : {};
   const andreKriterierInkluder = valgtSaksliste.andreKriterier
-    ? valgtSaksliste.andreKriterier.reduce((acc, ak) => ({ ...acc, [`${ak.andreKriterierType.kode}_inkluder`]: ak.inkluder }), {}) : {};
+    ? valgtSaksliste.andreKriterier.reduce((acc, ak) => ({ ...acc, [`${ak.andreKriterierType}_inkluder`]: ak.inkluder }), {}) : {};
 
   return {
     sakslisteId: valgtSaksliste.sakslisteId,
     navn: valgtSaksliste.navn ? valgtSaksliste.navn : intl.formatMessage({ id: 'UtvalgskriterierForSakslisteForm.NyListe' }),
-    sortering: valgtSaksliste.sortering ? valgtSaksliste.sortering.sorteringType.kode : undefined,
+    sortering: valgtSaksliste.sortering ? valgtSaksliste.sortering.sorteringType : undefined,
     fomDato: valgtSaksliste.sortering ? valgtSaksliste.sortering.fomDato : undefined,
     tomDato: valgtSaksliste.sortering ? valgtSaksliste.sortering.tomDato : undefined,
     fra: valgtSaksliste.sortering ? valgtSaksliste.sortering.fra?.toString() : undefined,
@@ -111,6 +104,8 @@ export const UtvalgskriterierForSakslisteForm: FunctionComponent<OwnProps & Wrap
     defaultValues,
   });
 
+  const lagreNavn = useDebounce<string>('navn', tranformValues, formMethods.trigger);
+
   useEffect(() => {
     formMethods.reset(defaultValues);
   }, [valgtSaksliste.sakslisteId]);
@@ -131,8 +126,7 @@ export const UtvalgskriterierForSakslisteForm: FunctionComponent<OwnProps & Wrap
               label={intl.formatMessage({ id: 'UtvalgskriterierForSakslisteForm.Navn' })}
               validate={[required(intl), minLength3(intl), maxLength100(intl), hasValidName(intl)]}
               bredde="L"
-              onBlur={tranformValues}
-              shouldValidateOnBlur
+              onChange={lagreNavn}
             />
           </Column>
           <Column xs="3">
@@ -176,10 +170,6 @@ export const UtvalgskriterierForSakslisteForm: FunctionComponent<OwnProps & Wrap
               valgteBehandlingtyper={valgtSaksliste.behandlingTyper}
               valgtAvdelingEnhet={valgtAvdelingEnhet}
               erDynamiskPeriode={!!values.erDynamiskPeriode}
-              fra={finnDagerSomTall(values.fra)}
-              til={finnDagerSomTall(values.til)}
-              fomDato={values.fomDato}
-              tomDato={values.tomDato}
               hentAvdelingensSakslister={hentAvdelingensSakslister}
               hentAntallOppgaver={hentAntallOppgaver}
             />

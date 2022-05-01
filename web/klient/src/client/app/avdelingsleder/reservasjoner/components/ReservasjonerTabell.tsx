@@ -8,15 +8,18 @@ import TableRow from 'sharedComponents/table/TableRow';
 import TableColumn from 'sharedComponents/table/TableColumn';
 import Image from 'sharedComponents/Image';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
-import CalendarToggleButton from 'sharedComponents/datepicker/CalendarToggleButton';
 import OppgaveReservasjonEndringDatoModal from 'saksbehandler/behandlingskoer/components/menu/OppgaveReservasjonEndringDatoModal';
 import FlyttReservasjonModal from 'saksbehandler/behandlingskoer/components/menu/FlyttReservasjonModal';
 import { getDateAndTime } from 'utils/dateUtils';
+import AlleKodeverk from 'types/alleKodeverkTsType';
+import { getKodeverknavnFraKode } from 'utils/kodeverkUtils';
+import KodeverkType from 'kodeverk/kodeverkTyper';
 
 import removeIcon from 'images/remove.svg';
 import gruppeHoverUrl from 'images/gruppe_hover.svg';
 import gruppeUrl from 'images/gruppe.svg';
 
+import CalendarToggleButton from './CalendarToggleButton';
 import styles from './reservasjonerTabell.less';
 
 const headerTextCodes = [
@@ -33,6 +36,7 @@ interface OwnProps {
   reservasjoner: Reservasjon[];
   opphevReservasjon: (oppgaveId: number) => Promise<string>;
   hentAvdelingensReservasjoner: () => void;
+  alleKodeverk: AlleKodeverk;
 }
 
 interface StateTsProps {
@@ -40,6 +44,8 @@ interface StateTsProps {
   showFlyttReservasjonModal: boolean;
   valgtReservasjon?: Reservasjon;
 }
+
+// TODO Skriv om til funksjonell komponent
 
 class ReservasjonerTabell extends Component<OwnProps, StateTsProps> {
   constructor(props: OwnProps) {
@@ -76,11 +82,10 @@ class ReservasjonerTabell extends Component<OwnProps, StateTsProps> {
     this.setState((prevState) => ({ ...prevState, showFlyttReservasjonModal: false }));
   };
 
-  // TODO Kvifor feiler denne i eslint?
-  // eslint-disable-next-line react/require-render-return
+  // eslint-disable-next-line react/no-arrow-function-lifecycle
   render = (): ReactNode => {
     const {
-      reservasjoner, opphevReservasjon, hentAvdelingensReservasjoner,
+      reservasjoner, opphevReservasjon, hentAvdelingensReservasjoner, alleKodeverk,
     } = this.props;
     const {
       showReservasjonEndringDatoModal, showFlyttReservasjonModal, valgtReservasjon,
@@ -104,7 +109,7 @@ class ReservasjonerTabell extends Component<OwnProps, StateTsProps> {
               <TableRow key={reservasjon.oppgaveId}>
                 <TableColumn>{reservasjon.reservertAvNavn}</TableColumn>
                 <TableColumn>{reservasjon.oppgaveSaksNr}</TableColumn>
-                <TableColumn>{reservasjon.behandlingType.navn}</TableColumn>
+                <TableColumn>{getKodeverknavnFraKode(reservasjon.behandlingType, KodeverkType.BEHANDLING_TYPE, alleKodeverk)}</TableColumn>
                 <TableColumn>
                   <FormattedMessage
                     id="ReservasjonerTabell.ReservertTilFormat"

@@ -2,7 +2,6 @@ package no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak;
 
 import no.nav.foreldrepenger.los.hendelse.hendelseoppretter.hendelse.Fagsystem;
 import no.nav.foreldrepenger.los.klient.fpsak.BehandlingFpsak;
-import no.nav.foreldrepenger.los.oppgave.BehandlingStatus;
 import no.nav.foreldrepenger.los.oppgave.Oppgave;
 
 public class OppgaveUtil {
@@ -20,7 +19,7 @@ public class OppgaveUtil {
                 .medAktiv(true)
                 .medBehandlingOpprettet(behandlingFpsak.getBehandlingOpprettet())
                 .medUtfortFraAdmin(false)
-                .medBehandlingStatus(BehandlingStatus.fraKode(behandlingFpsak.getStatus()))
+                .medBehandlingStatus(behandlingFpsak.getStatus())
                 .medBehandlingId(behandlingFpsak.getBehandlingId())
                 .medFørsteStønadsdag(behandlingFpsak.getFørsteUttaksdag())
                 .medBehandlingsfrist(behandlingFpsak.getBehandlingstidFrist())

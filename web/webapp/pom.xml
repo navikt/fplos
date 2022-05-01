@@ -1,8 +1,8 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <properties>
-        <swagger-ui.version>4.1.0</swagger-ui.version>
-        <jersey.version>2.34</jersey.version>
+        <swagger-ui.version>4.10.3</swagger-ui.version>
+        <jersey.version>2.35</jersey.version>
     </properties>
 
     <parent>
@@ -135,15 +135,6 @@
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-jaspi</artifactId>
         </dependency>
-        <dependency>
-            <groupId>org.apache.geronimo.components</groupId>
-            <artifactId>geronimo-jaspi</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.geronimo.specs</groupId>
-            <artifactId>geronimo-osgi-locator</artifactId>
-        </dependency>
-
 
         <dependency>
             <groupId>io.prometheus</groupId>
@@ -169,12 +160,6 @@
         <dependency>
             <groupId>com.papertrailapp</groupId>
             <artifactId>logback-syslog4j</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>ch.qos.logback</groupId>
-                    <artifactId>logback-classic</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <dependency>
             <!-- redirect java.utils.logging til slf4j (og videre til logback) -->
@@ -183,11 +168,6 @@
         </dependency>
 
         <!-- Annet -->
-        <dependency>
-            <groupId>org.owasp.encoder</groupId>
-            <artifactId>encoder</artifactId>
-        </dependency>
-
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-core</artifactId>
@@ -244,17 +224,7 @@
             <dependency>
                 <groupId>org.hibernate</groupId>
                 <artifactId>hibernate-core</artifactId>
-                <version>5.6.1.Final</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.geronimo.components</groupId>
-                <artifactId>geronimo-jaspi</artifactId>
-                <version>2.0.0</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.geronimo.specs</groupId>
-                <artifactId>geronimo-osgi-locator</artifactId>
-                <version>1.1</version>
+                <version>5.6.8.Final</version>
             </dependency>
             <dependency>
                 <groupId>ch.qos.logback</groupId>

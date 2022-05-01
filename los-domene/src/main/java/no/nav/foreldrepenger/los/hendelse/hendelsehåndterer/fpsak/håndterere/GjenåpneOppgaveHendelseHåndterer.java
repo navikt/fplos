@@ -1,11 +1,13 @@
 package no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.håndterere;
 
 import static no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.OppgaveUtil.oppgave;
+import static no.nav.foreldrepenger.los.reservasjon.ReservasjonKonstanter.NY_ENHET;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
+import no.nav.foreldrepenger.los.reservasjon.ReservasjonTjeneste;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,15 +31,18 @@ public class GjenåpneOppgaveHendelseHåndterer implements FpsakHendelseHåndter
     private final OppgaveRepository oppgaveRepository;
     private final OppgaveEgenskapHåndterer oppgaveEgenskapHåndterer;
     private final KøStatistikkTjeneste køStatistikk;
+    private final ReservasjonTjeneste reservasjonTjeneste;
 
     public GjenåpneOppgaveHendelseHåndterer(OppgaveRepository oppgaveRepository,
-                                           OppgaveEgenskapHåndterer oppgaveEgenskapHåndterer,
-                                           KøStatistikkTjeneste køStatistikk,
-                                           BehandlingFpsak behandlingFpsak) {
+                                            OppgaveEgenskapHåndterer oppgaveEgenskapHåndterer,
+                                            KøStatistikkTjeneste køStatistikk,
+                                            BehandlingFpsak behandlingFpsak,
+                                            ReservasjonTjeneste reservasjonTjeneste) {
         this.oppgaveRepository = oppgaveRepository;
         this.oppgaveEgenskapHåndterer = oppgaveEgenskapHåndterer;
         this.køStatistikk = køStatistikk;
         this.behandlingFpsak = behandlingFpsak;
+        this.reservasjonTjeneste = reservasjonTjeneste;
     }
 
     @Override
@@ -85,7 +90,7 @@ public class GjenåpneOppgaveHendelseHåndterer implements FpsakHendelseHåndter
         if (!gjenåpnetOppgave.getBehandlendeEnhet().equals(behandlingFpsak.getBehandlendeEnhetId())
                 && gjenåpnetOppgave.harAktivReservasjon()) {
             LOG.info("OppgaveId {} flyttes til ny enhet. Fjerner aktiv reservasjon.", gjenåpnetOppgave.getId());
-            gjenåpnetOppgave.getReservasjon().frigiReservasjon("Flyttet til ny enhet");
+            reservasjonTjeneste.slettReservasjonMedEventLogg(gjenåpnetOppgave.getReservasjon(), NY_ENHET);
         }
     }
 

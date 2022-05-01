@@ -1,4 +1,4 @@
-import React, { FunctionComponent } from 'react';
+import React, { FunctionComponent, useMemo } from 'react';
 import { useController, useFormContext } from 'react-hook-form';
 import { Textarea as NavTextarea } from 'nav-frontend-skjema';
 import EtikettFokus from 'nav-frontend-etiketter';
@@ -7,6 +7,7 @@ import Label, { LabelType } from './Label';
 
 import styles from './textAreaField.less';
 import ReadOnlyField from './ReadOnlyField';
+import { getError, getValidationRules } from './formUtils';
 
 type BadgesType = 'suksess' | 'info' | 'advarsel' | 'fokus';
 
@@ -23,6 +24,10 @@ interface OwnProps {
   maxLength?: number;
   badges?: Badges[];
   validate?: ((value: string) => any)[];
+  textareaClass?: string;
+  placeholder?: string;
+  parse?: (value: string | number) => string | number;
+  autoFocus?: boolean;
 }
 
 const TextAreaField: FunctionComponent<OwnProps> = ({
@@ -31,23 +36,19 @@ const TextAreaField: FunctionComponent<OwnProps> = ({
   validate = [],
   readOnly,
   badges,
+  parse = (value) => value,
   ...otherProps
 }) => {
   const { formState: { errors } } = useFormContext();
-  const validationFunctions = validate.reduce((acc, fn, index) => ({
-    ...acc,
-    [index]: (value: any) => fn(value) || true,
-  }), {});
-
   const { field } = useController({
     name,
     rules: {
-      validate: validationFunctions,
+      validate: useMemo(() => getValidationRules(validate), [validate]),
     },
   });
 
   if (readOnly) {
-    return <ReadOnlyField label={<Label input={label} readOnly />} input={field.value} />;
+    return <ReadOnlyField label={label} value={field.value} type="textarea" />;
   }
 
   return (
@@ -63,8 +64,10 @@ const TextAreaField: FunctionComponent<OwnProps> = ({
       )}
       <NavTextarea
         label={<Label input={label} readOnly={false} />}
-        feil={errors[name] && errors[name].message}
+        autoComplete="off"
+        feil={getError(errors, name)}
         {...field}
+        onChange={(event) => field.onChange(event.currentTarget.value !== '' ? parse(event.currentTarget.value) : undefined)}
         value={field.value ? field.value : ''}
         {...otherProps}
       />

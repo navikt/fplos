@@ -157,6 +157,14 @@ public class Oppgave extends BaseEntitet {
         return new Builder();
     }
 
+    public void setAktiv(boolean aktiv) {
+        this.aktiv = aktiv;
+    }
+
+    public void setOppgaveAvsluttet(LocalDateTime avsluttet) {
+        this.oppgaveAvsluttet = avsluttet;
+    }
+
     public void deaktiverOppgave() {
         aktiv = false;
     }

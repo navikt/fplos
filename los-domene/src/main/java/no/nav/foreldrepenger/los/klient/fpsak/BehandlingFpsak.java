@@ -9,12 +9,13 @@ import no.nav.foreldrepenger.los.domene.typer.BehandlingId;
 import no.nav.foreldrepenger.los.domene.typer.Saksnummer;
 import no.nav.foreldrepenger.los.klient.fpsak.dto.Kontrollresultat;
 import no.nav.foreldrepenger.los.klient.fpsak.dto.KontrollresultatDto;
+import no.nav.foreldrepenger.los.oppgave.BehandlingStatus;
 import no.nav.foreldrepenger.los.oppgave.BehandlingType;
 import no.nav.foreldrepenger.los.oppgave.FagsakYtelseType;
 
 public class BehandlingFpsak {
     private BehandlingId behandlingId;
-    private String status;
+    private BehandlingStatus status;
     private String behandlendeEnhetId;
     private String ansvarligSaksbehandler;
     private Lazy<List<Aksjonspunkt>> aksjonspunkter;
@@ -25,6 +26,7 @@ public class BehandlingFpsak {
     private Lazy<KontrollresultatDto> kontrollresultat;
     private boolean erBerørtBehandling;
     private boolean erEndringssøknad;
+    private boolean erPleiepengerBehandling;
     private BehandlingType behandlingType;
     private FagsakYtelseType ytelseType;
     private LocalDateTime behandlingOpprettet;
@@ -35,7 +37,7 @@ public class BehandlingFpsak {
         return behandlingId;
     }
 
-    public String getStatus() {
+    public BehandlingStatus getStatus() {
         return status;
     }
 
@@ -76,11 +78,18 @@ public class BehandlingFpsak {
     }
 
     public boolean harVurderSykdom() {
+        if (erPleiepengerBehandling) {
+            return true;
+        }
         var svar = Lazy.get(uttakEgenskaper);
         if (svar == null) {
             return false;
         }
         return svar.vurderSykdom();
+    }
+
+    public boolean erRevurderingPgaPleiepenger() {
+        return erPleiepengerBehandling;
     }
 
     public boolean erBerørtBehandling() {
@@ -132,12 +141,12 @@ public class BehandlingFpsak {
         if (kr == null) {
             return false;
         }
-        return Objects.equals(kr.kontrollresultat(), Kontrollresultat.HOY);
+        return Objects.equals(kr.kontrollresultat(), Kontrollresultat.HØY);
     }
 
     public static final class Builder {
         private BehandlingId behandlingId;
-        private String status;
+        private BehandlingStatus status;
         private String behandlendeEnhetId;
         private String ansvarligSaksbehandler;
         private Lazy<List<Aksjonspunkt>> aksjonspunkter;
@@ -146,6 +155,7 @@ public class BehandlingFpsak {
         private Lazy<Boolean> harRefusjonskravFraArbeidsgiver;
         private boolean erBerørtBehandling = false;
         private boolean erEndringssøknad = false;
+        private boolean erPleiepengerBehandling = false;
         private BehandlingType behandlingType;
         private FagsakYtelseType ytelseType;
         private Lazy<UttakEgenskaper> uttakEgenskaper;
@@ -160,7 +170,7 @@ public class BehandlingFpsak {
             return this;
         }
 
-        public Builder medStatus(String status) {
+        public Builder medStatus(BehandlingStatus status) {
             this.status = status;
             return this;
         }
@@ -205,6 +215,11 @@ public class BehandlingFpsak {
             return this;
         }
 
+        public Builder medErPleiepengerBehandling(boolean erPleiepengerBehandling) {
+            this.erPleiepengerBehandling = erPleiepengerBehandling;
+            return this;
+        }
+
         public Builder medErEndringssøknad(boolean erEndringssøknad) {
             this.erEndringssøknad = erEndringssøknad;
             return this;
@@ -243,6 +258,7 @@ public class BehandlingFpsak {
             behandlingFpsak.behandlingOpprettet = this.behandlingOpprettet;
             behandlingFpsak.førsteUttaksdag = this.førsteUttaksdag;
             behandlingFpsak.erBerørtBehandling = this.erBerørtBehandling;
+            behandlingFpsak.erPleiepengerBehandling = this.erPleiepengerBehandling;
             behandlingFpsak.erEndringssøknad = this.erEndringssøknad;
             behandlingFpsak.behandlingType = this.behandlingType;
             behandlingFpsak.ytelseType = this.ytelseType;
@@ -261,6 +277,7 @@ public class BehandlingFpsak {
                 ", behandlingstidFrist=" + behandlingstidFrist +
                 ", erBerørtBehandling=" + erBerørtBehandling +
                 ", erEndringssøknad=" + erEndringssøknad +
+                ", erPleiepengerBehandling=" + erPleiepengerBehandling +
                 ", behandlingType=" + behandlingType +
                 ", ytelseType=" + ytelseType +
                 ", kontrollresultat=" + kontrollresultat +

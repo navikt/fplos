@@ -3,6 +3,7 @@ import { render, screen } from '@testing-library/react';
 import { composeStories } from '@storybook/testing-react';
 import * as stories from './ReservasjonerTabell.stories';
 
+// @ts-ignore Ta vekk når fiksa
 const { ViseAtIngenReservasjonerBleFunnet, VisTabellMedReservasjoner } = composeStories(stories);
 
 describe('<ReservasjonerTabell>', () => {

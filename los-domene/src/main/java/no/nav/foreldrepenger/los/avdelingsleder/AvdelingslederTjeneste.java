@@ -52,7 +52,7 @@ public class AvdelingslederTjeneste {
 
     public Long lagNyOppgaveFiltrering(String avdelingEnhet) {
         var avdeling = organisasjonRepository.hentAvdelingFraEnhet(avdelingEnhet).orElseThrow();
-        return oppgaveRepository.lagre(OppgaveFiltrering.nyTomOppgaveFiltrering(avdeling));
+        return oppgaveRepository.lagreFiltrering(OppgaveFiltrering.nyTomOppgaveFiltrering(avdeling));
     }
 
     public void giListeNyttNavn(Long sakslisteId, String navn) {
@@ -96,6 +96,17 @@ public class AvdelingslederTjeneste {
             oppgaveRepository.lagre(new FiltreringYtelseType(filter, fagsakYtelseType));
         }
         oppgaveRepository.refresh(filter);
+    }
+
+    public void endreFiltreringYtelseTyper(Long oppgavefiltreringId, List<FagsakYtelseType> fagsakYtelseType) {
+        LOG.info("Henter oppgavefiltreringId {}", oppgavefiltreringId);
+        var filter = hentFiltrering(oppgavefiltreringId);
+        filter.getFiltreringYtelseTyper().stream()
+                .map(FiltreringYtelseType::getFagsakYtelseType)
+                .forEach(yt -> oppgaveRepository.slettFiltreringYtelseType(oppgavefiltreringId, yt));
+        fagsakYtelseType.stream()
+                .map(yt -> new FiltreringYtelseType(filter, yt))
+                .forEach(oppgaveRepository::lagre);
     }
 
     public void endreFiltreringAndreKriterierType(Long oppgavefiltreringId, AndreKriterierType andreKriterierType, boolean checked, boolean inkluder) {

@@ -6,13 +6,10 @@ import java.util.Optional;
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonValue;
 
 import no.nav.foreldrepenger.los.felles.Kodeverdi;
 
-@JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum KøSortering implements Kodeverdi {
 
     BEHANDLINGSFRIST("BEHFRIST", "Dato for behandlingsfrist"),
@@ -21,13 +18,10 @@ public enum KøSortering implements Kodeverdi {
     BELØP("BELOP", "Feilutbetalt beløp", "HELTALL", "TILBAKEKREVING"),
     FEILUTBETALINGSTART("FEILUTBETALINGSTART", "Dato for første feilutbetaling", "DATO", "TILBAKEKREVING");
 
-    @JsonProperty("kode")
+    @JsonValue
     private String kode;
-    @JsonProperty("navn")
     private final String navn;
-    @JsonProperty("felttype")
     private final String felttype;
-    @JsonProperty("feltkategori")
     private final String feltkategori;
 
     public static final String KODEVERK = "KO_SORTERING";
@@ -71,13 +65,6 @@ public enum KøSortering implements Kodeverdi {
         return feltkategori;
     }
 
-    @JsonCreator(mode = JsonCreator.Mode.DELEGATING)
-    public static KøSortering fraKode(@JsonProperty("kode") String kode) {
-        return Arrays.stream(values())
-                .filter(v -> v.kode.equals(kode))
-                .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("Ukjent KøSortering: " + kode));
-    }
 
     @Converter(autoApply = true)
     public static class KodeverdiConverter implements AttributeConverter<KøSortering, String> {
@@ -91,8 +78,15 @@ public enum KøSortering implements Kodeverdi {
         @Override
         public KøSortering convertToEntityAttribute(String dbData) {
             return Optional.ofNullable(dbData)
-                    .map(KøSortering::fraKode)
+                    .map(KodeverdiConverter::fraKode)
                     .orElse(null);
+        }
+
+        private static KøSortering fraKode(String kode) {
+            return Arrays.stream(values())
+                .filter(v -> v.kode.equals(kode))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("Ukjent KøSortering: " + kode));
         }
     }
 }

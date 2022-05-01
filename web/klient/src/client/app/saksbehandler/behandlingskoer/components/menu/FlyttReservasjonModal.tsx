@@ -105,6 +105,7 @@ export const FlyttReservasjonModal: FunctionComponent<OwnProps & WrappedComponen
                 bredde="S"
                 validate={[required(intl), minLength7(intl), maxLength7(intl)]}
                 autoFocus
+                autoComplete
               />
             </FlexColumn>
             <FlexColumn>

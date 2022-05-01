@@ -20,34 +20,44 @@ import no.nav.foreldrepenger.los.web.app.IndexClasses;
 @Provider
 public class JacksonJsonConfig implements ContextResolver<ObjectMapper> {
 
-    private static final SimpleModule SER_DESER = createModule();
     private final ObjectMapper objectMapper;
 
     public JacksonJsonConfig() {
+        this(false);
+    }
+
+    public JacksonJsonConfig(boolean serialiserKodeverdiSomObjekt) {
+        objectMapper = createbjectMapper(createModule(serialiserKodeverdiSomObjekt));
+    }
+
+    private ObjectMapper createbjectMapper(SimpleModule simpleModule) {
+        final ObjectMapper objectMapper;
         objectMapper = new ObjectMapper();
         objectMapper.registerModule(new Jdk8Module());
         objectMapper.registerModule(new JavaTimeModule());
         objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        objectMapper.registerModule(SER_DESER);
+        objectMapper.registerModule(simpleModule);
 
         objectMapper.registerSubtypes(getJsonTypeNameClasses());
-
-    }
-
-    private static SimpleModule createModule() {
-        var module = new SimpleModule("VL-REST_MED_INNTEKTSMELDING", new Version(1, 0, 0, null, null, null));
-
-        addSerializers(module);
-        return module;
-    }
-
-    private static void addSerializers(SimpleModule module) {
-        module.addSerializer(new StringSerializer());
+        return objectMapper;
     }
 
     @Override
     public ObjectMapper getContext(Class<?> type) {
+        return objectMapper;
+    }
+
+    private static SimpleModule createModule(boolean serialiserKodeverdiSomObjekt) {
+        var module = new SimpleModule("VL-REST", new Version(1, 0, 0, null, null, null));
+
+        module.addSerializer(new KodeverdiSerializer(serialiserKodeverdiSomObjekt));
+
+        return module;
+    }
+
+
+    public ObjectMapper getObjectMapper() {
         return objectMapper;
     }
 

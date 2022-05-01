@@ -51,14 +51,8 @@ Default.args = {
     saksnummer: 12213234,
     saksnummerString: '12213234',
     system: 'SAK',
-    fagsakYtelseType: {
-      kode: fagsakYtelseType.FORELDREPRENGER,
-      navn: 'Foreldrepenger',
-    },
-    status: {
-      kode: fagsakStatus.UNDER_BEHANDLING,
-      navn: 'Under behandling',
-    },
+    fagsakYtelseType: fagsakYtelseType.FORELDREPRENGER,
+    status: fagsakStatus.UNDER_BEHANDLING,
     person: {
       navn: 'Espen Utvikler',
       alder: 41,
@@ -77,20 +71,11 @@ Default.args = {
     personnummer: '1010',
     navn: 'Espen Utvikler',
     system: 'SAK',
-    behandlingstype: {
-      kode: behandlingType.FORSTEGANGSSOKNAD,
-      navn: 'Førstegangssøknad',
-    },
-    behandlingStatus: {
-      kode: behandlingStatus.BEHANDLING_UTREDES,
-      navn: 'Behandling utredes',
-    },
+    behandlingstype: behandlingType.FORSTEGANGSSOKNAD,
+    behandlingStatus: behandlingStatus.BEHANDLING_UTREDES,
     opprettetTidspunkt: '2020-01-01',
     behandlingsfrist: '2020-01-01',
-    fagsakYtelseType: {
-      kode: fagsakYtelseType.FORELDREPRENGER,
-      navn: 'Foreldrepenger',
-    },
+    fagsakYtelseType: fagsakYtelseType.FORELDREPRENGER,
     erTilSaksbehandling: true,
     behandlingId: '12344',
     href: '',

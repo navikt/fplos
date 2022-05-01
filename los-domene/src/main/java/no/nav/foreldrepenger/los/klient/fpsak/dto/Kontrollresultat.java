@@ -1,16 +1,19 @@
 package no.nav.foreldrepenger.los.klient.fpsak.dto;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonValue;
 
 public enum Kontrollresultat {
 
-    HOY,
-    IKKE_HOY,
-    IKKE_KLASSIFISERT;
+    HØY("HOY"),
+    IKKE_HØY("IKKE_HOY"),
+    IKKE_KLASSIFISERT("IKKE_KLASSIFISERT"),
+    UDEFINERT("-"),
+    ;
 
-    @JsonCreator
-    public static Kontrollresultat fraKode(@JsonProperty("kode") String kode) {
-        return kode.equals("-") ? null : valueOf(kode);
+    @JsonValue
+    private String kode;
+
+    Kontrollresultat(String kode) {
+        this.kode = kode;
     }
 }

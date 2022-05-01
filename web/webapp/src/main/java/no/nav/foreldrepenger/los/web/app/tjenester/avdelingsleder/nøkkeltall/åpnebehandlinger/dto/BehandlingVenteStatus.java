@@ -1,13 +1,14 @@
 package no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.nøkkeltall.åpnebehandlinger.dto;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonValue;
+
 import no.nav.foreldrepenger.los.felles.Kodeverdi;
 
-@JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum BehandlingVenteStatus implements Kodeverdi {
     PÅ_VENT("PÅ_VENT", "På vent"),
     IKKE_PÅ_VENT("IKKE_PÅ_VENT", "Ikke på vent");
 
+    @JsonValue
     private String kode;
     private final String navn;
     public static final String kodeverk = "BEHANDLING_VENTE_STATUS";

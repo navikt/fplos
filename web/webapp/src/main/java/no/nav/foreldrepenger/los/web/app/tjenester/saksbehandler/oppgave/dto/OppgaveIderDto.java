@@ -18,7 +18,7 @@ public class OppgaveIderDto implements AbacDto {
 
     @JsonProperty("oppgaveIder")
     @NotNull
-    @Pattern(regexp = "^[0-9_]+$")
+    @Pattern(regexp = "^[0-9,]+$")
     private final String oppgaveIder;
 
     public OppgaveIderDto() {
@@ -45,7 +45,7 @@ public class OppgaveIderDto implements AbacDto {
         if (null == oppgaveIder){
             return new ArrayList<>();
         }
-        return Arrays.stream(oppgaveIder.trim().split("_")).map(opgid -> Long.valueOf(opgid)).collect(Collectors.toList());
+        return Arrays.stream(oppgaveIder.trim().split(",")).map(opgid -> Long.valueOf(opgid)).collect(Collectors.toList());
     }
 
     @Override

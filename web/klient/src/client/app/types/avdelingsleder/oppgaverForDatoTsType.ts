@@ -1,8 +1,6 @@
-import Kodeverk from '../kodeverkTsType';
-
 type OppgaveForDato = Readonly<{
-  fagsakYtelseType: Kodeverk;
-  behandlingType: Kodeverk;
+  fagsakYtelseType: string;
+  behandlingType: string;
   opprettetDato: string;
   antall: number;
 }>

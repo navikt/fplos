@@ -10,6 +10,8 @@ import DateLabel from 'sharedComponents/DateLabel';
 import FagsakStatus from 'kodeverk/fagsakStatus';
 import useKodeverk from 'data/useKodeverk';
 import Fagsak from 'types/saksbehandler/fagsakTsType';
+import { getKodeverknavnFraKode } from 'utils/kodeverkUtils';
+import { RestApiGlobalStatePathsKeys, restApiHooks } from 'data/fplosRestApi';
 
 import styles from './fagsakList.less';
 
@@ -36,9 +38,9 @@ const getFagsakCallback = (
 ) => (_event: React.KeyboardEvent | React.MouseEvent, saksnummer: number) => selectFagsakCallback('FPSAK', saksnummer);
 
 export const getSorterteFagsaker = (fagsaker: Fagsak[] = []) => fagsaker.concat().sort((fagsak1, fagsak2) => {
-  if (fagsak1.status.kode === FagsakStatus.AVSLUTTET && fagsak2.status.kode !== FagsakStatus.AVSLUTTET) {
+  if (fagsak1.status === FagsakStatus.AVSLUTTET && fagsak2.status !== FagsakStatus.AVSLUTTET) {
     return 1;
-  } if (fagsak1.status.kode !== FagsakStatus.AVSLUTTET && fagsak2.status.kode === FagsakStatus.AVSLUTTET) {
+  } if (fagsak1.status !== FagsakStatus.AVSLUTTET && fagsak2.status === FagsakStatus.AVSLUTTET) {
     return -1;
   }
   const changeTimeFagsak1 = fagsak1.endret ? fagsak1.endret : fagsak1.opprettet;
@@ -59,14 +61,15 @@ const FagsakList: FunctionComponent<OwnProps> = ({
 }) => {
   const fagsakStatuser = useKodeverk(KodeverkType.FAGSAK_STATUS);
   const fagsakYtelseTyper = useKodeverk(KodeverkType.FAGSAK_YTELSE_TYPE);
+  const alleKodeverk = restApiHooks.useGlobalStateRestApiData(RestApiGlobalStatePathsKeys.KODEVERK);
 
   const sorterteFagsaker = useMemo(() => getSorterteFagsaker(fagsaker), [fagsaker]);
 
   return (
     <Table headerTextCodes={headerTextCodes} classNameTable={styles.table}>
       {sorterteFagsaker.map((fagsak) => {
-        const fagsakStatusType = fagsakStatuser.find((type) => type.kode === fagsak.status.kode);
-        const fagsakYtelseType = fagsakYtelseTyper.find((type) => type.kode === fagsak.fagsakYtelseType.kode);
+        const fagsakStatusType = fagsakStatuser.find((type) => type.kode === fagsak.status);
+        const fagsakYtelseType = fagsakYtelseTyper.find((type) => type.kode === fagsak.fagsakYtelseType);
 
         const filtrerteOppgaver = fagsakOppgaver.filter((o) => o.saksnummer === fagsak.saksnummer);
         const oppgaver = filtrerteOppgaver.map((oppgave, index) => (
@@ -78,9 +81,11 @@ const FagsakList: FunctionComponent<OwnProps> = ({
             isDashedBottomBorder={filtrerteOppgaver.length > index + 1}
           >
             <TableColumn />
-            <TableColumn>{oppgave.fagsakYtelseType.navn}</TableColumn>
-            <TableColumn>{oppgave.behandlingstype.navn}</TableColumn>
-            <TableColumn>{oppgave.behandlingStatus ? oppgave.behandlingStatus.navn : ''}</TableColumn>
+            <TableColumn>{getKodeverknavnFraKode(oppgave.fagsakYtelseType, KodeverkType.FAGSAK_YTELSE_TYPE, alleKodeverk)}</TableColumn>
+            <TableColumn>{getKodeverknavnFraKode(oppgave.behandlingstype, KodeverkType.BEHANDLING_TYPE, alleKodeverk)}</TableColumn>
+            <TableColumn>
+              {oppgave.behandlingStatus ? getKodeverknavnFraKode(oppgave.behandlingStatus, KodeverkType.BEHANDLING_STATUS, alleKodeverk) : ''}
+            </TableColumn>
             <TableColumn>{fagsak.barnFødt ? <DateLabel dateString={fagsak.barnFødt} /> : null}</TableColumn>
             <TableColumn><NavFrontendChevron /></TableColumn>
           </TableRow>

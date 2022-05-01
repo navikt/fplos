@@ -6,14 +6,14 @@ import { Element } from 'nav-frontend-typografi';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import FagsakYtelseType from 'kodeverk/fagsakYtelseType';
 import KodeverkType from 'kodeverk/kodeverkTyper';
-import Kodeverk from 'types/kodeverkTsType';
 import useKodeverk from 'data/useKodeverk';
 import StoreValuesInLocalStorage from 'form/StoreValuesInLocalStorage';
 import { Form, RadioGroupField, RadioOption } from 'form/formIndex';
 import OppgaverForAvdeling from 'types/avdelingsleder/oppgaverForAvdelingTsType';
+import KodeverkMedNavn from 'types/kodeverkMedNavnTsType';
 import FordelingAvBehandlingstypeGraf from './FordelingAvBehandlingstypeGraf';
 
-const finnFagsakYtelseTypeNavn = (fagsakYtelseTyper: Kodeverk[], valgtFagsakYtelseType: string) => {
+const finnFagsakYtelseTypeNavn = (fagsakYtelseTyper: KodeverkMedNavn[], valgtFagsakYtelseType: string) => {
   const type = fagsakYtelseTyper.find((fyt) => fyt.kode === valgtFagsakYtelseType);
   return type ? type.navn : '';
 };
@@ -85,7 +85,7 @@ export const FordelingAvBehandlingstypePanel: FunctionComponent<OwnProps> = ({
         height={height}
         behandlingTyper={behandlingTyper}
         oppgaverForAvdeling={oppgaverForAvdeling ? oppgaverForAvdeling
-          .filter((ofa) => (values.valgtYtelseType === ALLE_YTELSETYPER_VALGT ? true : values.valgtYtelseType === ofa.fagsakYtelseType.kode)) : []}
+          .filter((ofa) => (values.valgtYtelseType === ALLE_YTELSETYPER_VALGT ? true : values.valgtYtelseType === ofa.fagsakYtelseType)) : []}
       />
     </Form>
   );

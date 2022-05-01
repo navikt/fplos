@@ -1,15 +1,14 @@
-import Kodeverk from '../kodeverkTsType';
 import Person from './personTsType';
 
 type Fagsak = Readonly<{
   saksnummer: number;
   saksnummerString: string;
   system: string;
-  fagsakYtelseType: Kodeverk;
-  status: Kodeverk;
+  fagsakYtelseType: string;
+  status: string;
   person: Person;
   barnFødt?: string;
-  behandlingStatus?: Kodeverk;
+  behandlingStatus?: string;
   opprettet: string;
   endret?: string;
   href?: string;

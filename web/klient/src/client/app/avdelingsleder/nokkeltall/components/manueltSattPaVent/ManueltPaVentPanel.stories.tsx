@@ -46,24 +46,15 @@ const Template: Story<{ oppgaverManueltPaVent: OppgaverManueltPaVent[] }> = ({
 export const Default = Template.bind({});
 Default.args = {
   oppgaverManueltPaVent: [{
-    fagsakYtelseType: {
-      kode: fagsakYtelseType.FORELDREPRENGER,
-      navn: 'Foreldreprenger',
-    },
+    fagsakYtelseType: fagsakYtelseType.FORELDREPRENGER,
     behandlingFrist: dayjs().format(ISO_DATE_FORMAT),
     antall: 10,
   }, {
-    fagsakYtelseType: {
-      kode: fagsakYtelseType.ENGANGSSTONAD,
-      navn: 'Engangsstønad',
-    },
+    fagsakYtelseType: fagsakYtelseType.ENGANGSSTONAD,
     behandlingFrist: dayjs().add(FIVE, 'd').format(ISO_DATE_FORMAT),
     antall: 4,
   }, {
-    fagsakYtelseType: {
-      kode: fagsakYtelseType.ENGANGSSTONAD,
-      navn: 'Engangsstønad',
-    },
+    fagsakYtelseType: fagsakYtelseType.ENGANGSSTONAD,
     behandlingFrist: dayjs().add(FIVE, 'w').format(ISO_DATE_FORMAT),
     antall: 14,
   }],

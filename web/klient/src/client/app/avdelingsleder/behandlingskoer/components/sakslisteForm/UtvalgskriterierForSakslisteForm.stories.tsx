@@ -46,35 +46,18 @@ const Template: Story<{ sakslisteNavn: string }> = ({
           saksbehandlerIdenter: [],
           antallBehandlinger: 1,
           sortering: {
-            sorteringType: {
-              kode: koSortering.BEHANDLINGSFRIST,
-              navn: 'Behandlingsfrist',
-              felttype: '',
-              feltkategori: '',
-            },
+            sorteringType: koSortering.BEHANDLINGSFRIST,
             fra: 1,
             til: 4,
             erDynamiskPeriode: true,
           },
-          behandlingTyper: [{
-            kode: behandlingType.FORSTEGANGSSOKNAD,
-            navn: 'Førstegangssøknad',
-          }],
-          fagsakYtelseTyper: [{
-            kode: fagsakYtelseType.FORELDREPRENGER,
-            navn: 'Foreldrepenger',
-          }],
+          behandlingTyper: [behandlingType.FORSTEGANGSSOKNAD],
+          fagsakYtelseTyper: [fagsakYtelseType.FORELDREPRENGER],
           andreKriterier: [{
-            andreKriterierType: {
-              kode: andreKriterierType.TIL_BESLUTTER,
-              navn: 'Til beslutter',
-            },
+            andreKriterierType: andreKriterierType.TIL_BESLUTTER,
             inkluder: true,
           }, {
-            andreKriterierType: {
-              kode: andreKriterierType.REGISTRER_PAPIRSOKNAD,
-              navn: 'Registrer papirsøknad',
-            },
+            andreKriterierType: andreKriterierType.REGISTRER_PAPIRSOKNAD,
             inkluder: false,
           }],
         }}

@@ -7,7 +7,7 @@ import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.Op
 import no.nav.foreldrepenger.los.klient.fpsak.BehandlingFpsak;
 import no.nav.foreldrepenger.los.oppgave.AndreKriterierType;
 import no.nav.foreldrepenger.los.oppgave.Oppgave;
-import no.nav.foreldrepenger.los.oppgave.OppgaveRepository;
+import no.nav.foreldrepenger.los.oppgave.OppgaveTjeneste;
 import no.nav.foreldrepenger.los.statistikk.kø.KøOppgaveHendelse;
 import no.nav.foreldrepenger.los.statistikk.kø.KøStatistikkTjeneste;
 import org.slf4j.Logger;
@@ -15,17 +15,17 @@ import org.slf4j.LoggerFactory;
 
 public class OpprettBeslutterOppgaveHendelseHåndterer extends OpprettOppgaveHendelseHåndterer {
     private static final Logger LOG = LoggerFactory.getLogger(OpprettBeslutterOppgaveHendelseHåndterer.class);
-    private final OppgaveRepository oppgaveRepository;
+    private final OppgaveTjeneste oppgaveTjeneste;
     private final KøStatistikkTjeneste køStatistikk;
     private final BehandlingFpsak behandlingFpsak;
 
 
-    public OpprettBeslutterOppgaveHendelseHåndterer(OppgaveRepository oppgaveRepository,
+    public OpprettBeslutterOppgaveHendelseHåndterer(OppgaveTjeneste oppgaveTjeneste,
                                                     OppgaveEgenskapHåndterer oppgaveEgenskapHåndterer,
                                                     KøStatistikkTjeneste køStatistikk,
                                                     BehandlingFpsak behandlingFpsak) {
-        super(oppgaveRepository, oppgaveEgenskapHåndterer, køStatistikk, behandlingFpsak);
-        this.oppgaveRepository = oppgaveRepository;
+        super(oppgaveTjeneste, oppgaveEgenskapHåndterer, køStatistikk, behandlingFpsak);
+        this.oppgaveTjeneste = oppgaveTjeneste;
         this.køStatistikk = køStatistikk;
         this.behandlingFpsak = behandlingFpsak;
     }
@@ -35,13 +35,13 @@ public class OpprettBeslutterOppgaveHendelseHåndterer extends OpprettOppgaveHen
         // TODO: av og til er saksbehandlers oppgave allerede lukket. Vurder en sjekk på dette før man logger i OEL osv
         var behandlingId = behandlingFpsak.getBehandlingId();
         køStatistikk.lagre(behandlingId, KøOppgaveHendelse.LUKKET_OPPGAVE);
-        oppgaveRepository.avsluttOppgaveForBehandling(behandlingId);
+        oppgaveTjeneste.avsluttOppgaveUtenEventLogg(behandlingId);
         var oel = OppgaveEventLogg.builder()
                 .behandlingId(behandlingId)
                 .behandlendeEnhet(behandlingFpsak.getBehandlendeEnhetId())
                 .type(OppgaveEventType.LUKKET)
                 .build();
-        oppgaveRepository.lagre(oel);
+        oppgaveTjeneste.lagre(oel);
         LOG.info("Avslutter saksbehandler1 oppgave");
     }
 
@@ -54,7 +54,7 @@ public class OpprettBeslutterOppgaveHendelseHåndterer extends OpprettOppgaveHen
                 .behandlendeEnhet(behandlingFpsak.getBehandlendeEnhetId())
                 .andreKriterierType(AndreKriterierType.TIL_BESLUTTER)
                 .build();
-        oppgaveRepository.lagre(oel);
+        oppgaveTjeneste.lagre(oel);
     }
 
 }

@@ -1,15 +1,10 @@
 import React from 'react';
-import { Router } from 'react-router-dom';
-import { createBrowserHistory } from 'history';
+import { BrowserRouter } from 'react-router-dom';
 
-const history = createBrowserHistory<any>({
-  basename: '/',
-});
-
-const withRouterProvider = (story: any) => (
-  <Router history={history}>
-    { story() }
-  </Router>
+const withRouterProvider = (Story: any) => (
+  <BrowserRouter basename="/">
+    <Story />
+  </BrowserRouter>
 );
 
 export default withRouterProvider;

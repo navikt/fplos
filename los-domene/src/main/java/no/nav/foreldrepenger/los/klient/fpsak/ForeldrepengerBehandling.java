@@ -23,17 +23,17 @@ import no.nav.foreldrepenger.los.klient.fpsak.dto.behandling.BehandlingÅrsakDto
 import no.nav.foreldrepenger.los.klient.fpsak.dto.behandling.BehandlingÅrsakType;
 import no.nav.foreldrepenger.los.klient.fpsak.dto.behandling.ResourceLink;
 import no.nav.foreldrepenger.los.klient.fpsak.dto.inntektarbeidytelse.Beløp;
-import no.nav.foreldrepenger.los.klient.fpsak.dto.inntektarbeidytelse.InntektArbeidYtelseDto;
 import no.nav.foreldrepenger.los.klient.fpsak.dto.inntektarbeidytelse.InntektsmeldingDto;
+import no.nav.foreldrepenger.los.klient.fpsak.dto.inntektarbeidytelse.InntektsmeldingerDto;
 import no.nav.foreldrepenger.los.klient.fpsak.dto.ytelsefordeling.YtelseFordelingDto;
 
 public interface ForeldrepengerBehandling {
 
-    String BEHANDLING_ID = "behandlingId";
     Logger LOG = LoggerFactory.getLogger(ForeldrepengerBehandling.class);
+    String BEHANDLING_ID = "behandlingId";
     String FPSAK_BEHANDLINGER = "/fpsak/api/behandlinger";
     String AKSJONSPUNKTER_LINK = "aksjonspunkter";
-    String INNTEKT_ARBEID_YTELSE_LINK = "inntekt-arbeid-ytelse";
+    String INNTEKTSMELDINGER_LINK = "inntektsmeldinger";
     String UTTAK_KONTROLLER_FAKTA_PERIODER_LINK = "uttak-kontroller-fakta-perioder";
     String KONTROLLRESULTAT = "kontrollresultat";
     String YTELSEFORDELING_LINK = "ytelsefordeling";
@@ -50,13 +50,14 @@ public interface ForeldrepengerBehandling {
                 .medBehandlingId(new BehandlingId(behandlingDto.uuid()))
                 .medBehandlingOpprettet(behandlingDto.opprettet())
                 .medBehandlendeEnhetId(behandlingDto.behandlendeEnhetId())
-                .medStatus(behandlingDto.status().getKode())
+                .medStatus(behandlingDto.status())
                 .medAnsvarligSaksbehandler(behandlingDto.ansvarligSaksbehandler())
                 .medHarRefusjonskravFraArbeidsgiver(new Lazy<>(() -> hentHarRefusjonskrav(links)))
                 .medAksjonspunkter(new Lazy<>(() -> hentAksjonspunkter(links)))
                 .medBehandlingstidFrist(behandlingDto.behandlingsfristTid())
                 .medFørsteUttaksdag(new Lazy<>(() -> hentFørsteUttaksdato(links)))
                 .medErBerørtBehandling(harBehandlingÅrsakType(behandlingDto, BehandlingÅrsakType.BERØRT_BEHANDLING))
+                .medErPleiepengerBehandling(harBehandlingÅrsakType(behandlingDto, BehandlingÅrsakType.RE_VEDTAK_PLEIEPENGER))
                 .medErEndringssøknad(harBehandlingÅrsakType(behandlingDto, BehandlingÅrsakType.RE_ENDRING_FRA_BRUKER))
                 .medKontrollresultat(new Lazy<>(() -> hentKontrollresultat(links)))
                 .medUttakEgenskaper(new Lazy<>(() -> hentUttakEgenskaper(behandlingId, links)));
@@ -86,8 +87,8 @@ public interface ForeldrepengerBehandling {
     }
 
     private Boolean hentHarRefusjonskrav(List<ResourceLink> links) {
-        return velgLink(links, INNTEKT_ARBEID_YTELSE_LINK)
-                .flatMap(iay -> hentFraResourceLink(iay, InntektArbeidYtelseDto.class))
+        return velgLink(links, INNTEKTSMELDINGER_LINK)
+                .flatMap(iay -> hentFraResourceLink(iay, InntektsmeldingerDto.class))
                 .map(ForeldrepengerBehandling::harRefusjonskrav)
                 .orElse(null); // har ikke inntektsmelding enda, kan ikke vurdere refusjonskrav
     }
@@ -97,7 +98,10 @@ public interface ForeldrepengerBehandling {
         if (uttakLink.isPresent()) {
             var kontrollerFaktaData = hentFraResourceLink(uttakLink.get(), KontrollerFaktaDataDto.class);
             if (kontrollerFaktaData.isPresent()) {
-                return new UttakEgenskaper(harVurderSykdom(kontrollerFaktaData.get()), harGraderingFra(kontrollerFaktaData.get()));
+                var uttakEgenskaper = new UttakEgenskaper(harVurderSykdom(kontrollerFaktaData.get()),
+                        harGraderingFra(kontrollerFaktaData.get()));
+                LOG.info("Utleder uttaksegenskaper {}", uttakEgenskaper);
+                return uttakEgenskaper;
             }
             LOG.warn("Kunne ikke hente gradering for behandlingId " + behandlingId);
         }
@@ -121,7 +125,7 @@ public interface ForeldrepengerBehandling {
                 .anyMatch(a -> a.compareTo(BigDecimal.ZERO) != 0);
     }
 
-    private static boolean harRefusjonskrav(InntektArbeidYtelseDto inntektArbeidYtelseDto) {
+    private static boolean harRefusjonskrav(InntektsmeldingerDto inntektArbeidYtelseDto) {
         return inntektArbeidYtelseDto.inntektsmeldinger().stream()
                 .map(InntektsmeldingDto::getRefusjonBeløpPerMnd)
                 .filter(Objects::nonNull)

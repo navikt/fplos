@@ -7,11 +7,13 @@ import Label, { LabelType } from './Label';
 export interface RadioOptionProps {
   name?: string;
   label: LabelType;
-  value: any;
+  value: string | number;
   style?: CSSProperties;
   onChange?: (value: any) => void;
   checked?: boolean;
   children?: ReactNode | ReactNode[];
+  groupDisabled?: boolean;
+  disabled?: boolean;
 }
 
 export const RadioOption: FunctionComponent<RadioOptionProps> = ({
@@ -21,7 +23,9 @@ export const RadioOption: FunctionComponent<RadioOptionProps> = ({
   style,
   onChange,
   checked,
+  groupDisabled,
   children,
+  disabled,
 }) => (
   <div style={style}>
     <NavRadio
@@ -29,6 +33,7 @@ export const RadioOption: FunctionComponent<RadioOptionProps> = ({
       label={<Label input={label} typographyElement={Normaltekst} />}
       checked={checked}
       value={value}
+      disabled={disabled || groupDisabled}
       onChange={(newValue) => {
         if (onChange) {
           onChange((newValue));

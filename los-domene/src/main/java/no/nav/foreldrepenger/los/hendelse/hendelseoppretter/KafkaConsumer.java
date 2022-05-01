@@ -14,7 +14,9 @@ import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.StreamsBuilder;
 import org.apache.kafka.streams.StreamsConfig;
+import org.apache.kafka.streams.Topology;
 import org.apache.kafka.streams.errors.LogAndFailExceptionHandler;
+import org.apache.kafka.streams.kstream.Consumed;
 import org.apache.kafka.streams.processor.Processor;
 import org.apache.kafka.streams.processor.ProcessorContext;
 import org.slf4j.Logger;
@@ -24,6 +26,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import no.nav.foreldrepenger.konfig.Environment;
 import no.nav.foreldrepenger.los.hendelse.hendelseoppretter.hendelse.Hendelse;
 import no.nav.vedtak.felles.integrasjon.kafka.BehandlingProsessEventDto;
 import no.nav.vedtak.felles.jpa.TransactionHandler;
@@ -31,8 +34,11 @@ import no.nav.vedtak.felles.prosesstask.api.ProsessTaskData;
 import no.nav.vedtak.felles.prosesstask.api.ProsessTaskTjeneste;
 import no.nav.vedtak.log.mdc.MDCOperations;
 
+import static no.nav.vedtak.log.util.ConfidentialMarkerFilter.CONFIDENTIAL;
+
 public final class KafkaConsumer<T extends BehandlingProsessEventDto> {
 
+    private static final boolean IS_DEV = Environment.current().isDev();
     private static final Logger LOG = LoggerFactory.getLogger(KafkaConsumer.class);
 
     private KafkaStreams streams;
@@ -60,9 +66,13 @@ public final class KafkaConsumer<T extends BehandlingProsessEventDto> {
     }
 
     private KafkaStreams lagKafkaStreams(KafkaConsumerProperties properties) {
-        //var consumed = Consumed.with(Topology.AutoOffsetReset.EARLIEST);
         var builder = new StreamsBuilder();
-        builder.stream(properties.getTopic()).process(MyProcessor::new);
+        if (IS_DEV) {
+            // Problem med lite trafikk. Enable for prod dersom problem oppstår der
+            builder.stream(properties.getTopic(), Consumed.with(Topology.AutoOffsetReset.LATEST)).process(MyProcessor::new);
+        } else {
+            builder.stream(properties.getTopic()).process(MyProcessor::new);
+        }
 
         var topology = builder.build();
         return new KafkaStreams(topology, setupProperties(properties));
@@ -169,6 +179,9 @@ public final class KafkaConsumer<T extends BehandlingProsessEventDto> {
             var dto = deserialiser(String.valueOf(payload));
             if (dto != null) {
                 LOG.info("Håndterer event {}", dto.getEksternId());
+                LOG.info("Steg {}, ap {}",
+                        dto.getBehandlingSteg(),
+                        dto.getAksjonspunktKoderMedStatusListe());
                 var hendelse = hendelseOppretter.opprett((T) dto);
                 hendelseRepository.lagre(hendelse);
                 prosessTaskTjeneste.lagre(opprettTask(hendelse));

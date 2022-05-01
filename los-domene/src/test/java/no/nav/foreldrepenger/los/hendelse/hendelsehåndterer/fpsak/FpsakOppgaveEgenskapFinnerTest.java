@@ -15,7 +15,7 @@ class FpsakOppgaveEgenskapFinnerTest {
     @Test
     void skalLeggeTilFaresignaler() {
         var resultat = new FpsakOppgaveEgenskapFinner(BehandlingFpsak.builder()
-                .medKontrollresultat(new Lazy<>(() -> new KontrollresultatDto(Kontrollresultat.HOY)))
+                .medKontrollresultat(new Lazy<>(() -> new KontrollresultatDto(Kontrollresultat.HØY)))
                 .build());
         assertThat(resultat.getAndreKriterier()).contains(AndreKriterierType.VURDER_FARESIGNALER);
     }
@@ -23,8 +23,16 @@ class FpsakOppgaveEgenskapFinnerTest {
     @Test
     void skalIkkeLeggeTilFaresignalerHvisIkkeHøy() {
         var resultat = new FpsakOppgaveEgenskapFinner(BehandlingFpsak.builder()
-                .medKontrollresultat(new Lazy<>(() -> new KontrollresultatDto(Kontrollresultat.IKKE_HOY)))
+                .medKontrollresultat(new Lazy<>(() -> new KontrollresultatDto(Kontrollresultat.IKKE_HØY)))
                 .build());
         assertThat(resultat.getAndreKriterier()).doesNotContain(AndreKriterierType.VURDER_FARESIGNALER);
+    }
+
+    @Test
+    void skalVurdereSykdomHvisPleiepenger() {
+        var resultat = new FpsakOppgaveEgenskapFinner(BehandlingFpsak.builder()
+                .medErPleiepengerBehandling(true)
+                .build());
+        assertThat(resultat.getAndreKriterier()).contains(AndreKriterierType.VURDER_SYKDOM);
     }
 }

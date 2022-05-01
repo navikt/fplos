@@ -1,7 +1,6 @@
 import React from 'react';
-import { createBrowserHistory } from 'history';
 import { render } from 'react-dom';
-import { Router } from 'react-router-dom';
+import { BrowserRouter } from 'react-router-dom';
 import { init } from '@sentry/browser';
 
 import AppIndex from 'app/AppIndex';
@@ -17,23 +16,19 @@ polyfill().then(() => {
     environment,
   });
 
-  const history = createBrowserHistory<any>({
-    basename: '/fplos/',
-  });
-
   const renderFunc = () => {
     const app = document.getElementById('app');
     if (app === null) {
       throw new Error('No app element');
     }
     render(
-      <Router history={history}>
+      <BrowserRouter basename="/fplos/">
         <RestApiProvider>
           <RestApiErrorProvider>
             <AppIndex />
           </RestApiErrorProvider>
         </RestApiProvider>
-      </Router>,
+      </BrowserRouter>,
       app,
     );
   };

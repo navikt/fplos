@@ -1,5 +1,6 @@
 package no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.håndterere;
 
+import no.nav.foreldrepenger.los.oppgave.OppgaveTjeneste;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -14,24 +15,22 @@ import no.nav.foreldrepenger.los.statistikk.kø.KøStatistikkTjeneste;
 public class GenerellOpprettOppgaveHendelseHåndterer extends OpprettOppgaveHendelseHåndterer {
     private static final Logger LOG = LoggerFactory.getLogger(GenerellOpprettOppgaveHendelseHåndterer.class);
 
-    private final OppgaveRepository oppgaveRepository;
+    private final OppgaveTjeneste oppgaveTjeneste;
     private final BehandlingFpsak behandlingFpsak;
 
-    public GenerellOpprettOppgaveHendelseHåndterer(OppgaveRepository oppgaveRepository,
+    public GenerellOpprettOppgaveHendelseHåndterer(OppgaveTjeneste oppgaveTjeneste,
                                                    OppgaveEgenskapHåndterer oppgaveEgenskapHåndterer,
                                                    KøStatistikkTjeneste køStatistikk,
                                                    BehandlingFpsak behandlingFpsak) {
-        super(oppgaveRepository, oppgaveEgenskapHåndterer, køStatistikk, behandlingFpsak);
-        this.oppgaveRepository = oppgaveRepository;
+        super(oppgaveTjeneste, oppgaveEgenskapHåndterer, køStatistikk, behandlingFpsak);
+        this.oppgaveTjeneste = oppgaveTjeneste;
         this.behandlingFpsak = behandlingFpsak;
     }
 
     @Override
     void håndterEksisterendeOppgave() {
-        oppgaveRepository.hentOppgaver(behandlingFpsak.getBehandlingId())
-                .stream()
+        oppgaveTjeneste.hentNyesteOppgaveTilknyttet(behandlingFpsak.getBehandlingId())
                 .filter(Oppgave::getAktiv)
-                .findFirst()
                 .ifPresent(o -> {
                     throw new IllegalStateException(
                             String.format("Finnes aktiv oppgave (oppgaveId %s) fra før, gir opp håndtering av hendelse",
@@ -42,7 +41,7 @@ public class GenerellOpprettOppgaveHendelseHåndterer extends OpprettOppgaveHend
     @Override
     void opprettOppgaveEventLogg(Oppgave oppgave) {
         var oel = OppgaveEventLogg.opprettetOppgaveEvent(oppgave);
-        oppgaveRepository.lagre(oel);
+        oppgaveTjeneste.lagre(oel);
         LOG.info("Oppretter {}-oppgave med id {}", FpsakHendelseHåndterer.SYSTEM, oppgave.getId());
     }
 }

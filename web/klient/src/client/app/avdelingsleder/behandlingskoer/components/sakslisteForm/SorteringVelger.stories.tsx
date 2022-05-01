@@ -7,7 +7,6 @@ import { RestApiGlobalStatePathsKeys, RestApiPathsKeys } from 'data/fplosRestApi
 import SorteringVelger from 'avdelingsleder/behandlingskoer/components/sakslisteForm/SorteringVelger';
 import behandlingType from 'kodeverk/behandlingType';
 import koSortering from 'kodeverk/KoSortering';
-import Kodeverk from 'types/kodeverkTsType';
 import { Form } from 'form/formIndex';
 
 import RestApiMock from 'storybookUtils/RestApiMock';
@@ -21,7 +20,7 @@ export default {
   decorators: [withIntl, withRestApiProvider],
 };
 
-const Template: Story<{ valgteBehandlingtyper: Kodeverk[], erDynamiskPeriode: boolean }> = ({
+const Template: Story<{ valgteBehandlingtyper: string[], erDynamiskPeriode: boolean }> = ({
   valgteBehandlingtyper,
   erDynamiskPeriode,
 }) => {
@@ -54,10 +53,6 @@ const Template: Story<{ valgteBehandlingtyper: Kodeverk[], erDynamiskPeriode: bo
           valgteBehandlingtyper={valgteBehandlingtyper}
           valgtAvdelingEnhet="NAV Viken"
           erDynamiskPeriode={verdier.erDynamiskPeriode}
-          fra={verdier.fra}
-          til={verdier.til}
-          fomDato={verdier.fomDato}
-          tomDato={verdier.tomDato}
           hentAvdelingensSakslister={action('button-click')}
           hentAntallOppgaver={action('button-click')}
         />
@@ -68,33 +63,18 @@ const Template: Story<{ valgteBehandlingtyper: Kodeverk[], erDynamiskPeriode: bo
 
 export const SorteringsvelgerNårMangeBehandlingstyperErValgt = Template.bind({});
 SorteringsvelgerNårMangeBehandlingstyperErValgt.args = {
-  valgteBehandlingtyper: [{
-    kode: behandlingType.FORSTEGANGSSOKNAD,
-    navn: 'Førstegang',
-  }, {
-    kode: behandlingType.DOKUMENTINNSYN,
-    navn: 'Innsyn',
-  }],
+  valgteBehandlingtyper: [behandlingType.FORSTEGANGSSOKNAD, behandlingType.DOKUMENTINNSYN],
   erDynamiskPeriode: false,
 };
 
 export const SorteringsvelgerNårDynamiskPeriodeErValgt = Template.bind({});
 SorteringsvelgerNårDynamiskPeriodeErValgt.args = {
-  valgteBehandlingtyper: [{
-    kode: behandlingType.FORSTEGANGSSOKNAD,
-    navn: 'Førstegang',
-  }, {
-    kode: behandlingType.DOKUMENTINNSYN,
-    navn: 'Innsyn',
-  }],
+  valgteBehandlingtyper: [behandlingType.FORSTEGANGSSOKNAD, behandlingType.DOKUMENTINNSYN],
   erDynamiskPeriode: true,
 };
 
 export const SorteringsvelgerNårKunTilbakekrevingErValgt = Template.bind({});
 SorteringsvelgerNårKunTilbakekrevingErValgt.args = {
-  valgteBehandlingtyper: [{
-    kode: behandlingType.TILBAKEBETALING,
-    navn: 'Tilbakekreving',
-  }],
+  valgteBehandlingtyper: [behandlingType.TILBAKEBETALING],
   erDynamiskPeriode: false,
 };

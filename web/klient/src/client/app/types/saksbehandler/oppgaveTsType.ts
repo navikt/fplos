@@ -1,4 +1,3 @@
-import Kodeverk from '../kodeverkTsType';
 import OppgaveStatus from './oppgaveStatusTsType';
 
 type Oppgave = Readonly<{
@@ -8,11 +7,11 @@ type Oppgave = Readonly<{
   personnummer: string;
   navn: string;
   system: string;
-  behandlingstype: Kodeverk;
-  behandlingStatus: Kodeverk;
+  behandlingstype: string;
+  behandlingStatus: string;
   opprettetTidspunkt: string;
   behandlingsfrist: string;
-  fagsakYtelseType: Kodeverk;
+  fagsakYtelseType: string;
   erTilSaksbehandling: boolean;
   behandlingId: string;
   href: string;

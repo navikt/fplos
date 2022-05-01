@@ -44,58 +44,28 @@ const Template: Story<{ oppgaverForAvdeling: OppgaverForAvdeling[] }> = ({
 export const Default = Template.bind({});
 Default.args = {
   oppgaverForAvdeling: [{
-    fagsakYtelseType: {
-      kode: fagsakYtelseType.FORELDREPRENGER,
-      navn: 'Foreldreprenger',
-    },
-    behandlingType: {
-      kode: behandlingType.FORSTEGANGSSOKNAD,
-      navn: 'Førstegangssøknad',
-    },
+    fagsakYtelseType: fagsakYtelseType.FORELDREPRENGER,
+    behandlingType: behandlingType.FORSTEGANGSSOKNAD,
     tilBehandling: true,
     antall: 10,
   }, {
-    fagsakYtelseType: {
-      kode: fagsakYtelseType.ENGANGSSTONAD,
-      navn: 'Engangsstønad',
-    },
-    behandlingType: {
-      kode: behandlingType.KLAGE,
-      navn: 'Klage',
-    },
+    fagsakYtelseType: fagsakYtelseType.ENGANGSSTONAD,
+    behandlingType: behandlingType.KLAGE,
     tilBehandling: true,
     antall: 4,
   }, {
-    fagsakYtelseType: {
-      kode: fagsakYtelseType.ENGANGSSTONAD,
-      navn: 'Engangsstønad',
-    },
-    behandlingType: {
-      kode: behandlingType.REVURDERING,
-      navn: 'Revurdering',
-    },
+    fagsakYtelseType: fagsakYtelseType.ENGANGSSTONAD,
+    behandlingType: behandlingType.REVURDERING,
     tilBehandling: true,
     antall: 14,
   }, {
-    fagsakYtelseType: {
-      kode: fagsakYtelseType.ENGANGSSTONAD,
-      navn: 'Engangsstønad',
-    },
-    behandlingType: {
-      kode: behandlingType.REVURDERING,
-      navn: 'Revurdering',
-    },
+    fagsakYtelseType: fagsakYtelseType.ENGANGSSTONAD,
+    behandlingType: behandlingType.REVURDERING,
     tilBehandling: false,
     antall: 4,
   }, {
-    fagsakYtelseType: {
-      kode: fagsakYtelseType.FORELDREPRENGER,
-      navn: 'Engangsstønad',
-    },
-    behandlingType: {
-      kode: behandlingType.TILBAKEBETALING,
-      navn: 'Tilbakebetaling',
-    },
+    fagsakYtelseType: fagsakYtelseType.FORELDREPRENGER,
+    behandlingType: behandlingType.TILBAKEBETALING,
     tilBehandling: false,
     antall: 6,
   }],

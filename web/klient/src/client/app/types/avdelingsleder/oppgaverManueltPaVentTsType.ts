@@ -1,7 +1,5 @@
-import Kodeverk from '../kodeverkTsType';
-
 type OppgaverManueltPaVent = Readonly<{
-  fagsakYtelseType: Kodeverk;
+  fagsakYtelseType: string;
   behandlingFrist: string;
   antall: number;
 }>

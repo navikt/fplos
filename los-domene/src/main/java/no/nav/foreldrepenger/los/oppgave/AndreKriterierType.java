@@ -6,13 +6,10 @@ import java.util.Optional;
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonValue;
 
 import no.nav.foreldrepenger.los.felles.Kodeverdi;
 
-@JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum AndreKriterierType implements Kodeverdi {
 
     TIL_BESLUTTER("TIL_BESLUTTER", "Til beslutter"),
@@ -21,12 +18,14 @@ public enum AndreKriterierType implements Kodeverdi {
     UTLANDSSAK("UTLANDSSAK", "Utland"),
     SØKT_GRADERING("SOKT_GRADERING", "Søkt gradering"),
     VURDER_SYKDOM("VURDER_SYKDOM", "Vurder sykdom"),
+    PLEIEPENGER("PLEIEPENGER", "Pleiepenger"),
     VURDER_FARESIGNALER("VURDER_FARESIGNALER", "Vurder faresignaler"),
     BERØRT_BEHANDLING("BERØRT_BEHANDLING", "Berørt behandling"),
     ENDRINGSSØKNAD("ENDRINGSSOKNAD", "Endringssøknad"),
     VURDER_FORMKRAV("VURDER_FORMKRAV", "Vurder formkrav");
     //SELVSTENDIG_FRILANSER("SELVSTENDIG_FRILANSER", "Selvstendig næringsdrivende eller frilanser")
 
+    @JsonValue
     private String kode;
     private final String navn;
     public static final String KODEVERK = "ANDRE_KRITERIER";
@@ -52,12 +51,11 @@ public enum AndreKriterierType implements Kodeverdi {
         return this.equals(TIL_BESLUTTER);
     }
 
-    @JsonCreator
-    public static AndreKriterierType fraKode(@JsonProperty("kode") String kode) {
+    public static AndreKriterierType fraKode(String kode) {
         return Arrays.stream(values())
-                .filter(v -> v.kode.equals(kode))
-                .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("Ukjent AndreKriterierType: " + kode));
+            .filter(v -> v.kode.equals(kode))
+            .findFirst()
+            .orElseThrow(() -> new IllegalArgumentException("Ukjent AndreKriterierType: " + kode));
     }
 
     @Converter(autoApply = true)
@@ -75,5 +73,7 @@ public enum AndreKriterierType implements Kodeverdi {
                     .map(AndreKriterierType::fraKode)
                     .orElse(null);
         }
+
+
     }
 }

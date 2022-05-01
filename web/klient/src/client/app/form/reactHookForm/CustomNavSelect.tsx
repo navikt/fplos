@@ -1,6 +1,6 @@
 import React, { Component, ReactNode } from 'react';
 import { Select as NavSelect } from 'nav-frontend-skjema';
-import Label from './Label';
+import Label, { LabelType } from './Label';
 
 interface OwnProps {
   selectValues: React.ReactElement[];
@@ -10,8 +10,9 @@ interface OwnProps {
   disabled?: boolean;
   bredde?: 'fullbredde' | 'xxl' | 'xl' | 'l' | 'm' | 's' | 'xs';
   className?: string;
-  label?: string;
+  label?: LabelType;
   feil?: string;
+  onChange?: (event: any) => void;
 }
 
 class CustomNavSelect extends Component<OwnProps> {
@@ -24,7 +25,6 @@ class CustomNavSelect extends Component<OwnProps> {
     super(props);
     this.getOptionValues = this.getOptionValues.bind(this);
     this.checkCorrespondingOptionForValue = this.checkCorrespondingOptionForValue.bind(this);
-    this.handleSelectRef = this.handleSelectRef.bind(this);
     this.selectedValue = this.selectedValue.bind(this);
   }
 
@@ -36,21 +36,12 @@ class CustomNavSelect extends Component<OwnProps> {
     this.checkCorrespondingOptionForValue();
   }
 
-  handleSelectRef(selectRef?: ReactNode): void {
-    if (selectRef) {
-      this.selectElement = selectRef;
-    }
-  }
-
-  // TODO Kva for type blir returnert her?
   getOptionValues(): any {
     const { props: { selectValues } } = this;
     return selectValues
       .map((option) => option.props)
       .map((props = {}) => props.value);
   }
-
-  selectElement: ReactNode;
 
   selectedValue(value: ReactNode): any {
     const selectedValue = this.getOptionValues().find((optionValue: ReactNode) => optionValue === value);
@@ -60,16 +51,16 @@ class CustomNavSelect extends Component<OwnProps> {
 
   checkCorrespondingOptionForValue(): void {
     const { getOptionValues, props: { value } } = this;
+    const n = value || '';
     // (aa) added "&& value !== ''" as to not spam other browsers
-    if (!getOptionValues().includes(value) && value !== '') {
+    if (!getOptionValues().includes(n) && n !== '') {
       // eslint-disable-next-line no-console
-      console.warn(`No corresponding option found for value '${value}'`); // NOSONAR Viser ikke sensitiv info
+      console.warn(`No corresponding option found for value '${n}'`); // NOSONAR Viser ikke sensitiv info
     }
   }
 
   render() {
     const {
-      handleSelectRef,
       selectedValue,
       props: {
         placeholder, selectValues, value, hideValueOnDisable, disabled, label, ...otherProps
@@ -78,7 +69,6 @@ class CustomNavSelect extends Component<OwnProps> {
     return (
       <NavSelect
         {...otherProps}
-        selectRef={handleSelectRef}
         value={hideValueOnDisable && disabled ? '' : selectedValue(value)}
         disabled={disabled}
         label={<Label input={label} readOnly={false} />}

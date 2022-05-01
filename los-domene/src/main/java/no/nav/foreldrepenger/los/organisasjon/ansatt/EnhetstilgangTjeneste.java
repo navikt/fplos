@@ -32,14 +32,12 @@ public class EnhetstilgangTjeneste {
             LOG.info("EnhetstilgangTjeneste deaktivert, returnerer tom liste.");
             return Collections.emptyList();
         }
-        var enhetsTilganger = connection.hentEnhetstilganger(ident)
+        return connection.hentEnhetstilganger(ident)
                 .map(EnhetstilgangResponse::getEnheter)
                 .orElse(Collections.emptyList())
                 .stream()
                 .filter(OrganisasjonsEnhet::kanBehandleForeldrepenger)
                 .collect(Collectors.toList());
-        LOG.info("Enhetstilgangliste har størrelse " + enhetsTilganger.size());
-        return enhetsTilganger;
     }
 
 }

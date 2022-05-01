@@ -1,7 +1,5 @@
-import Kodeverk from '../kodeverkTsType';
-
 type NyeOgFerdigstilteOppgaver = Readonly<{
-  behandlingType: Kodeverk;
+  behandlingType: string;
   antallNye: number;
   antallFerdigstilte: number;
   dato: string;

@@ -1,17 +1,15 @@
 package no.nav.foreldrepenger.los.oppgave;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import no.nav.foreldrepenger.los.felles.Kodeverdi;
+import java.util.Map;
+import java.util.Optional;
 
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;
 
-import java.util.Map;
-import java.util.Optional;
+import com.fasterxml.jackson.annotation.JsonValue;
 
-@JsonFormat(shape = JsonFormat.Shape.OBJECT)
+import no.nav.foreldrepenger.los.felles.Kodeverdi;
+
 public enum FagsakYtelseType implements Kodeverdi {
     ENGANGSTØNAD("ES", "Engangsstønad"),
     FORELDREPENGER("FP", "Foreldrepenger"),
@@ -23,6 +21,7 @@ public enum FagsakYtelseType implements Kodeverdi {
             FORELDREPENGER.getKode(), FORELDREPENGER,
             SVANGERSKAPSPENGER.getKode(), SVANGERSKAPSPENGER
     );
+    @JsonValue
     private final String kode;
     private final String navn;
 
@@ -31,8 +30,10 @@ public enum FagsakYtelseType implements Kodeverdi {
         this.navn = navn;
     }
 
-    @JsonCreator(mode = JsonCreator.Mode.DELEGATING)
-    public static FagsakYtelseType fraKode(@JsonProperty("kode") String kode) {
+    public static FagsakYtelseType fraKode(String kode) {
+        if (kode == null) {
+            return null;
+        }
         return Optional.ofNullable(kode)
                 .map(KODEVERDI_MAP::get)
                 .orElseThrow(() -> new IllegalArgumentException("Ukjent FagsakYtelseType: " + kode));

@@ -48,7 +48,7 @@ const AndreKriterierVelger: FunctionComponent<OwnProps> = ({
             onChange={(isChecked) => lagreSakslisteAndreKriterier({
               sakslisteId: valgtSakslisteId,
               avdelingEnhet: valgtAvdelingEnhet,
-              andreKriterierType: akt,
+              andreKriterierType: akt.kode,
               checked: isChecked,
               inkluder: true,
             }).then(() => {
@@ -66,20 +66,21 @@ const AndreKriterierVelger: FunctionComponent<OwnProps> = ({
                     onChange={(skalInkludere) => lagreSakslisteAndreKriterier({
                       sakslisteId: valgtSakslisteId,
                       avdelingEnhet: valgtAvdelingEnhet,
-                      andreKriterierType: akt,
+                      andreKriterierType: akt.kode,
                       checked: true,
                       inkluder: skalInkludere,
                     }).then(() => {
                       hentAntallOppgaver(valgtSakslisteId, valgtAvdelingEnhet);
                       hentAvdelingensSakslister({ avdelingEnhet: valgtAvdelingEnhet });
                     })}
+                    parse={(value: string) => value === 'true'}
                   >
                     <RadioOption
-                      value
+                      value="true"
                       label={<FormattedMessage id="AndreKriterierVelger.TaMed" />}
                     />
                     <RadioOption
-                      value={false}
+                      value="false"
                       label={<FormattedMessage id="AndreKriterierVelger.Fjern" />}
                     />
                   </RadioGroupField>

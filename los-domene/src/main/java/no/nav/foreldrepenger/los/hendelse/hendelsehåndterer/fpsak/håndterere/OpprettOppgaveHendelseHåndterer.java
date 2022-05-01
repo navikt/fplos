@@ -5,7 +5,7 @@ import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.FpsakHendelse
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.FpsakOppgaveEgenskapFinner;
 import no.nav.foreldrepenger.los.klient.fpsak.BehandlingFpsak;
 import no.nav.foreldrepenger.los.oppgave.Oppgave;
-import no.nav.foreldrepenger.los.oppgave.OppgaveRepository;
+import no.nav.foreldrepenger.los.oppgave.OppgaveTjeneste;
 import no.nav.foreldrepenger.los.statistikk.kø.KøOppgaveHendelse;
 import no.nav.foreldrepenger.los.statistikk.kø.KøStatistikkTjeneste;
 
@@ -14,16 +14,16 @@ import static no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.Oppgav
 
 public abstract class OpprettOppgaveHendelseHåndterer implements FpsakHendelseHåndterer {
 
-    private final OppgaveRepository oppgaveRepository;
+    private final OppgaveTjeneste oppgaveTjeneste;
     private final OppgaveEgenskapHåndterer oppgaveEgenskapHåndterer;
     private final KøStatistikkTjeneste køStatistikk;
     private final BehandlingFpsak behandlingFpsak;
 
-    public OpprettOppgaveHendelseHåndterer(OppgaveRepository oppgaveRepository,
+    public OpprettOppgaveHendelseHåndterer(OppgaveTjeneste oppgaveTjeneste,
                                            OppgaveEgenskapHåndterer oppgaveEgenskapHåndterer,
                                            KøStatistikkTjeneste køStatistikk,
                                            BehandlingFpsak behandlingFpsak) {
-        this.oppgaveRepository = oppgaveRepository;
+        this.oppgaveTjeneste = oppgaveTjeneste;
         this.oppgaveEgenskapHåndterer = oppgaveEgenskapHåndterer;
         this.køStatistikk = køStatistikk;
         this.behandlingFpsak = behandlingFpsak;
@@ -42,9 +42,9 @@ public abstract class OpprettOppgaveHendelseHåndterer implements FpsakHendelseH
 
     abstract void håndterEksisterendeOppgave();
 
-    private Oppgave opprettOppgave() {
+    Oppgave opprettOppgave() {
         var oppgave = oppgave(behandlingFpsak);
-        oppgaveRepository.lagre(oppgave);
+        oppgaveTjeneste.lagre(oppgave);
         return oppgave;
     }
 

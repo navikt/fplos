@@ -9,7 +9,6 @@ RUN mkdir /app/conf
 
 # Config
 COPY web/webapp/target/classes/logback*.xml /app/conf/
-COPY web/webapp/target/classes/jetty/jaspi-conf.xml /app/conf/
 
 # Application Container (Jetty)
 COPY web/webapp/target/app.jar /app/

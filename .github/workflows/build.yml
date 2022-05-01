@@ -12,6 +12,7 @@ on:
       - 'CODEOWNERS'
 env:
   IMAGE_BASE: ghcr.io/${{ github.repository }}
+  READER_TOKEN: ${{ secrets.READER_TOKEN }}
 
 jobs:
   build:
@@ -19,21 +20,23 @@ jobs:
     steps:
 
       - name: Sjekk ut kode
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - run:  git fetch --prune --unshallow
       - uses: actions/setup-java@v2
         with:
-          distribution: 'adopt'
+          distribution: 'temurin'
           java-version: 17
           cache: 'maven'
 
       - name: Sette opp Node
-        uses: actions/setup-node@v2.4.1
+        uses: actions/setup-node@v3
         with:
-          node-version: 17.x
+          node-version: 17.8.0
+          registry-url: https://npm.pkg.github.com/
+          scope: '@navikt'
 
       - name: Login to GitHub Packages Docker Registry
-        uses: docker/login-action@f054a8b539a109f9f41c372932f1ae047eff08c9 # Use commit-sha1 instead of tag for security concerns
+        uses: docker/login-action@dd4fa0671be5250ee6f50aedf4cb05514abda2c7 # Use commit-sha1 instead of tag for security concerns
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
@@ -46,7 +49,7 @@ jobs:
           echo "Henter og starter Oracle image"
           cd .oracle
           docker-compose up --quiet-pull > nohup.out 2>&1 &
-          sh -c 'tail -n +0 -f nohup.out | { sed "/Disconnected/q" && kill $$; }' || true
+          sh -c 'tail -n +0 -f nohup.out | { sed "/Database opened./q" && kill $$; }' || true
 
       - name: Set build version
         run: |
@@ -67,7 +70,7 @@ jobs:
 
       - name: Lukk gamle bygg-issues
         if: success()
-        uses: actions/github-script@v5
+        uses: actions/github-script@v6
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
@@ -75,7 +78,7 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               state: 'open',
-              labels: ['bygg']
+              labels: ['deployment']
             }).then(response => {
               response.data.forEach(issue => {
                 github.rest.issues.update({
@@ -90,7 +93,7 @@ jobs:
       -  name: Opprett deployment issue
          id: createdeployissue
          if: success()
-         uses: actions/github-script@v5
+         uses: actions/github-script@v6
          with:
            github-token: ${{secrets.GITHUB_TOKEN}}
            script: |

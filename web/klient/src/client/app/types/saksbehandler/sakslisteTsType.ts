@@ -1,18 +1,16 @@
-import Kodeverk from '../kodeverkTsType';
-
 type AnnetKriterie = Readonly<{
-  andreKriterierType: Kodeverk;
+  andreKriterierType: string;
   inkluder: boolean;
 }>;
 
 type Saksliste = Readonly<{
   sakslisteId: number;
   navn: string;
-  behandlingTyper: Kodeverk[];
-  fagsakYtelseTyper: Kodeverk[];
+  behandlingTyper: string[];
+  fagsakYtelseTyper: string[];
   andreKriterier: AnnetKriterie[];
   sortering?: {
-    sorteringType: Kodeverk;
+    sorteringType: string;
     fra?: number;
     til?: number;
     fomDato?: string;

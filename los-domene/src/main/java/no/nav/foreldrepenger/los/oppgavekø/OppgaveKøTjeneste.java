@@ -53,7 +53,7 @@ public class OppgaveKøTjeneste {
         var enhet = oppgave.getBehandlendeEnhet();
         var avdelingId = organisasjonRepository.hentAvdelingFraEnhet(enhet)
                 .map(Avdeling::getId)
-                .orElseThrow();
+                .orElseThrow(() -> new IllegalStateException("Finner ikke avdeling fra enhet " + enhet + ". OppgaveId " + oppgave.getId()));
         var potensielleKøer = oppgaveRepository.hentAlleOppgaveFilterSettTilknyttetAvdeling(avdelingId);
         return potensielleKøer.stream()
                 .map(pk -> finnOppgaveFiltreringKnytning(oppgave, pk))
@@ -99,7 +99,7 @@ public class OppgaveKøTjeneste {
         oppgavespørring.setAvgrensTilOppgaveId(oppgave.getId());
         oppgavespørring.setIgnorerReserversjoner(true);
         var antall = oppgaveRepository.hentAntallOppgaver(oppgavespørring);
-        LOG.info("Sjekker om oppgave {} tilfredstiller filtrering {}. Spørring {}. Resultat {}", oppgave.getId(), oppgaveFiltrering.getId(),
+        LOG.debug("Sjekker om oppgave {} tilfredstiller filtrering {}. Spørring {}. Resultat {}", oppgave.getId(), oppgaveFiltrering.getId(),
                 oppgavespørring, antall > 0);
         return antall > 0;
     }

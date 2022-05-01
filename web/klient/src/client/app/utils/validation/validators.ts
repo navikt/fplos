@@ -69,6 +69,7 @@ export const dateAfterOrEqual = (intl: IntlShape, earliest: dayjs.Dayjs | Date |
 
 export const hasValidText = (intl: IntlShape) => (text: string): StringOrNull => {
   if (!textRegex.test(text)) {
+    // eslint-disable-next-line react/destructuring-assignment
     const illegalChars = text.replace(textGyldigRegex, '');
     return invalidTextMessage(intl, illegalChars.replace(/[\t]/g, 'Tabulatortegn'));
   }
@@ -77,6 +78,7 @@ export const hasValidText = (intl: IntlShape) => (text: string): StringOrNull =>
 
 export const hasValidName = (intl: IntlShape) => (text: string): StringOrNull => {
   if (!nameRegex.test(text)) {
+    // eslint-disable-next-line react/destructuring-assignment
     const illegalChars = text.replace(nameGyldigRegex, '');
     return invalidTextMessage(intl, illegalChars.replace(/[\t]/g, 'Tabulatortegn'));
   }

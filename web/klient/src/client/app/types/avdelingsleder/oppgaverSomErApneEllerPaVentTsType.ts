@@ -1,9 +1,7 @@
-import Kodeverk from '../kodeverkTsType';
-
 type OppgaverSomErApneEllerPaVent = Readonly<{
   antall: number;
-  behandlingType: Kodeverk;
-  behandlingVenteStatus: Kodeverk;
+  behandlingType: string;
+  behandlingVenteStatus: string;
   førsteUttakMåned?: string;
 }>
 

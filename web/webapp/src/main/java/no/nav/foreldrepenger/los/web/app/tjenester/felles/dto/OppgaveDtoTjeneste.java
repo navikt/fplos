@@ -2,6 +2,7 @@ package no.nav.foreldrepenger.los.web.app.tjenester.felles.dto;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -15,7 +16,6 @@ import no.nav.foreldrepenger.los.klient.person.PersonTjeneste;
 import no.nav.foreldrepenger.los.oppgave.Oppgave;
 import no.nav.foreldrepenger.los.oppgave.OppgaveTjeneste;
 import no.nav.foreldrepenger.los.oppgavekø.OppgaveKøTjeneste;
-import no.nav.foreldrepenger.los.reservasjon.Reservasjon;
 import no.nav.foreldrepenger.los.reservasjon.ReservasjonTjeneste;
 import no.nav.foreldrepenger.los.web.app.AbacAttributter;
 import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.saksliste.FplosAbacAttributtType;
@@ -25,6 +25,8 @@ import no.nav.vedtak.sikkerhet.abac.BeskyttetRessursActionAttributt;
 import no.nav.vedtak.sikkerhet.abac.PdpKlient;
 import no.nav.vedtak.sikkerhet.abac.PdpRequestBuilder;
 import no.nav.vedtak.sikkerhet.context.SubjectHandler;
+
+import static no.nav.foreldrepenger.los.felles.util.OptionalUtil.tryOrEmpty;
 
 @ApplicationScoped
 public class OppgaveDtoTjeneste {
@@ -68,7 +70,6 @@ public class OppgaveDtoTjeneste {
      *                                 sjekkes tilgangen til behandlingen/oppgaven ved mottaket av restkallet gjennom {@link no.nav.vedtak.sikkerhet.abac.BeskyttetRessursInterceptor}.
      *                                 Applikasjonen har noen kall som ikke går rett på en behandling/oppgave, men som returnerer oppgaver,
      *                                 i disse tilfellene må sjekkTilgangPåBehandling være true.
-     *
      */
     public OppgaveDto lagDtoFor(Oppgave oppgave, boolean sjekkTilgangPåBehandling) throws IkkeTilgangPåBehandlingException {
         if (sjekkTilgangPåBehandling) {
@@ -78,6 +79,16 @@ public class OppgaveDtoTjeneste {
                 .orElseThrow(() -> new LagOppgaveDtoFeil("Finner ikke person tilknyttet oppgaveId " + oppgave.getId()));
         var oppgaveStatus = oppgaveStatusDtoTjeneste.lagStatusFor(oppgave);
         return new OppgaveDto(oppgave, person, oppgaveStatus);
+    }
+
+    /**
+     * @param oppgave Metoden skal kun brukes ved kall fra endepunkt som tar inn {@link no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.oppgave.dto.BehandlingIdDto}
+     *                eller {@link no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.oppgave.dto.OppgaveIdDto}. Tilgangssjekk dekkes for slike endepunkt gjennom
+     *                {@link no.nav.vedtak.sikkerhet.abac.BeskyttetRessursInterceptor}.
+     * @return
+     */
+    public OppgaveStatusDto lagOppgaveStatusUtenTilgangsjekk(Oppgave oppgave) {
+        return oppgaveStatusDtoTjeneste.lagStatusFor(oppgave);
     }
 
     public boolean finnesTilgjengeligeOppgaver(SakslisteIdDto sakslisteId) {
@@ -119,17 +130,17 @@ public class OppgaveDtoTjeneste {
         return map(alleOppgaver, ANTALL_OPPGAVER_SOM_VISES_TIL_SAKSBEHANDLER);
     }
 
-    public List<OppgaveDto> getReserverteOppgaver() {
-        var reserveringer = reservasjonTjeneste.hentReservasjonerTilknyttetAktiveOppgaver();
-        var oppgaver = reserveringer.stream()
-                .map(Reservasjon::getOppgave)
-                .collect(Collectors.toList());
+    public List<OppgaveDto> getSaksbehandlersReserverteAktiveOppgaver() {
+        var oppgaver = reservasjonTjeneste.hentSaksbehandlersReserverteAktiveOppgaver();
         return map(oppgaver);
     }
 
-    public List<OppgaveDto> getBehandledeOppgaver() {
-        var sistReserverteOppgaver = reservasjonTjeneste.hentSisteReserverteOppgaver();
-        return map(sistReserverteOppgaver);
+    public List<OppgaveDto> getSaksbehandlersSisteReserverteOppgaver() {
+        return reservasjonTjeneste.hentSaksbehandlersSisteReserverteOppgaver()
+                .stream()
+                .map(o -> tryOrEmpty(() -> lagDtoFor(o, true)))
+                .flatMap(Optional::stream)
+                .collect(Collectors.toList());
     }
 
     public List<OppgaveDto> hentOppgaverForFagsaker(List<Long> saksnummerListe) {
@@ -140,6 +151,7 @@ public class OppgaveDtoTjeneste {
     private List<OppgaveDto> map(List<Oppgave> oppgaver) {
         return map(oppgaver, oppgaver.size());
     }
+
 
     private List<OppgaveDto> map(List<Oppgave> oppgaver, int maksAntall) {
         List<OppgaveDto> dtoList = new ArrayList<>();

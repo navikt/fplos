@@ -10,20 +10,11 @@ import java.util.UUID;
 import no.nav.foreldrepenger.los.oppgave.BehandlingStatus;
 import no.nav.foreldrepenger.los.oppgave.BehandlingType;
 
-public record BehandlingDto(Long id,
-                            UUID uuid,
-                            Long versjon,
+public record BehandlingDto(UUID uuid,
                             BehandlingType type,
                             BehandlingStatus status,
-                            Long fagsakId,
                             LocalDateTime opprettet,
-                            LocalDateTime avsluttet,
-                            LocalDateTime endret,
-                            String endretAvBrukernavn,
                             String behandlendeEnhetId,
-                            String behandlendeEnhetNavn,
-                            boolean erAktivPapirsoknad,
-                            boolean erAktivPapirsøknad,
                             LocalDate behandlingsfristTid,
                             List<BehandlingÅrsakDto> behandlingÅrsaker,
                             List<ResourceLink> links,

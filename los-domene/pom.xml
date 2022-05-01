@@ -16,12 +16,12 @@
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-core</artifactId>
-            <version>5.6.1.Final</version>
+            <version>5.6.8.Final</version>
         </dependency>
         <dependency>
             <groupId>no.nav.foreldrepenger</groupId>
             <artifactId>konfig</artifactId>
-            <version>1.1.4</version>
+            <version>1.1.5</version>
         </dependency>
         <dependency>
             <groupId>no.nav.foreldrepenger.felles.integrasjon</groupId>
@@ -40,7 +40,7 @@
             <artifactId>felles-db</artifactId>
         </dependency>
         <dependency>
-            <!-- TODO: fjern denne avhengigheten når felles-sikkerhet er delt opp. Trengs inntil videre for å spore bruker 
+            <!-- TODO: fjern denne avhengigheten når felles-sikkerhet er delt opp. Trengs inntil videre for å spore bruker
                 ident (i BaseEntitet). bør refactoreres -->
             <groupId>no.nav.foreldrepenger.felles.sikkerhet</groupId>
             <artifactId>felles-sikkerhet</artifactId>

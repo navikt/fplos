@@ -1,5 +1,6 @@
 package no.nav.foreldrepenger.los.web.app.exceptions;
 
+import javax.ws.rs.ProcessingException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ExceptionMapper;
@@ -20,20 +21,23 @@ public class GeneralRestExceptionMapper implements ExceptionMapper<Throwable> {
 
     private static final Logger LOG = LoggerFactory.getLogger(GeneralRestExceptionMapper.class);
 
-
     @Override
     public Response toResponse(Throwable feil) {
         try {
-            if (feil instanceof TomtResultatException) {
-                return handleTomtResultatFeil(getExceptionMelding(feil));
-            }
-            if (feil instanceof ManglerTilgangException) {
-                return ikkeTilgang(getExceptionMelding(feil));
-            }
-            loggTilApplikasjonslogg(feil);
-            return serverError(getExceptionFullFeilmelding(feil));
+            return handleException(feil);
         } finally {
             MDC.remove("prosess"); //$NON-NLS-1$
+        }
+    }
+
+    private Response handleException(Throwable feil) {
+        if (feil instanceof TomtResultatException) {
+            return handleTomtResultatFeil(getExceptionMelding(feil));
+        } else if (feil instanceof ManglerTilgangException) {
+            return ikkeTilgang(getExceptionMelding(feil));
+        } else {
+            loggTilApplikasjonslogg(feil);
+            return serverError(getExceptionFullFeilmelding(feil));
         }
     }
 
@@ -59,19 +63,21 @@ public class GeneralRestExceptionMapper implements ExceptionMapper<Throwable> {
                 .build();
     }
 
+    private static void loggTilApplikasjonslogg(Throwable feil) {
+        var melding = "Fikk uventet feil: " + getExceptionMelding(feil);
+        LOG.warn(melding, feil);
+    }
+
     private static String getExceptionFullFeilmelding(Throwable feil) {
         var callId = MDCOperations.getCallId();
         var feilbeskrivelse = getExceptionMelding(feil);
         if (feil instanceof FunksjonellException fe) {
             var løsningsforslag = getTextForField(fe.getLøsningsforslag());
             return String.format("Det oppstod en feil: %s - %s. Referanse-id: %s", feilbeskrivelse, løsningsforslag, callId);
-        }
-        return String.format("Det oppstod en serverfeil: %s. Meld til support med referanse-id: %s", feilbeskrivelse, callId);
-    }
-
-    private static void loggTilApplikasjonslogg(Throwable feil) {
-        var melding = "Fikk uventet feil: " + getExceptionMelding(feil);
-        LOG.warn(melding, feil);
+        } else if (feil instanceof ProcessingException) {
+            return String.format("Det oppstod en feil mot eksternt system: %s. Meld til support med referanse-id: %s", feilbeskrivelse, callId);
+        } else
+            return String.format("Det oppstod en serverfeil: %s. Meld til support med referanse-id: %s", feilbeskrivelse, callId);
     }
 
     private static String getExceptionMelding(Throwable feil) {

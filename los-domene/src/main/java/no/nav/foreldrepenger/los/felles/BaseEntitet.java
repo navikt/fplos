@@ -61,7 +61,7 @@ public class BaseEntitet implements Serializable {
     }
 
 
-    private static String finnBrukernavn() {
+    protected static String finnBrukernavn() {
         var brukerident = SubjectHandler.getSubjectHandler().getUid();
         return brukerident != null ? brukerident.toUpperCase() : BRUKERNAVN_NÅR_SIKKERHETSKONTEKST_IKKE_FINNES;
     }

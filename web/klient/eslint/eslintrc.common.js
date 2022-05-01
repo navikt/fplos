@@ -47,8 +47,15 @@ const config = {
     'react/state-in-constructor': OFF,
     'react/prop-types': OFF,
     'jest/valid-expect': OFF,
+    'function-paren-newline': OFF,
+    'function-call-argument-newline': OFF,
+    'no-restricted-exports': OFF,
     'import/no-extraneous-dependencies': ['error', {
       devDependencies: ['**/*.spec.ts', '**/*.spec.tsx', '**/*.stories.tsx', '**/storybookUtils/*', '**/testHelpers/*'],
+    }],
+    'react/function-component-definition': ['error', {
+      namedComponents: 'arrow-function',
+      unnamedComponents: 'arrow-function',
     }],
 
     // note you must disable the base rule as it can report incorrect errors
@@ -60,6 +67,7 @@ const config = {
     '@typescript-eslint/no-unused-vars': [ERROR],
 
     // TODO (TOR) Ignorert inntil videre grunnet kost/nytte
+    'react/no-unstable-nested-components': OFF,
     'react/jsx-props-no-spreading': OFF,
     'jsx-a11y/control-has-associated-label': OFF,
     '@typescript-eslint/no-empty-function': OFF,

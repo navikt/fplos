@@ -6,11 +6,8 @@ import java.util.Optional;
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonValue;
 
-@JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum BehandlingStatus {
     AVSLUTTET("AVSLU"),
     FATTER_VEDTAK("FVED"),
@@ -18,6 +15,7 @@ public enum BehandlingStatus {
     OPPRETTET("OPPRE"),
     UTREDES("UTRED");
 
+    @JsonValue
     private String kode;
 
     BehandlingStatus(String kode) {
@@ -28,16 +26,6 @@ public enum BehandlingStatus {
         return kode;
     }
 
-    @JsonCreator
-    public static BehandlingStatus fraKode(@JsonProperty("kode") String kode) {
-        if (kode.equals("-")) {
-            return null;
-        }
-        return Arrays.stream(values())
-                .filter(v -> v.kode.equals(kode))
-                .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("Ukjent BehandlingStatus: " + kode));
-    }
 
     @Converter(autoApply = true)
     public static class KodeverdiConverter implements AttributeConverter<BehandlingStatus, String> {
@@ -51,8 +39,15 @@ public enum BehandlingStatus {
         @Override
         public BehandlingStatus convertToEntityAttribute(String dbData) {
             return Optional.ofNullable(dbData)
-                    .map(BehandlingStatus::fraKode)
+                    .map(KodeverdiConverter::fraKode)
                     .orElse(null);
+        }
+
+        private static BehandlingStatus fraKode(String kode) {
+            return Arrays.stream(values())
+                .filter(v -> v.kode.equals(kode))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("Ukjent BehandlingStatus: " + kode));
         }
     }
 }

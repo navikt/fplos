@@ -1,5 +1,5 @@
 import React, { FunctionComponent, Suspense } from 'react';
-import { Route, Switch } from 'react-router-dom';
+import { Route, Routes } from 'react-router-dom';
 
 import LoadingPanel from 'sharedComponents/LoadingPanel';
 
@@ -26,11 +26,11 @@ const Home: FunctionComponent<OwnProps> = ({
 }) => (
   <div className={styles.content} style={{ margin: `${headerHeight + 10}px auto 0` }}>
     <Suspense fallback={<LoadingPanel />}>
-      <Switch>
-        <Route exact path="/" component={SaksbehandlerIndex} />
-        <Route exact path="/avdelingsleder" render={(props) => <AvdelingslederIndex {...props} valgtAvdelingEnhet={valgtAvdelingEnhet} />} />
-        <Route component={MissingPage} />
-      </Switch>
+      <Routes>
+        <Route path="/" element={<SaksbehandlerIndex />} />
+        <Route path="/avdelingsleder" element={<AvdelingslederIndex valgtAvdelingEnhet={valgtAvdelingEnhet} />} />
+        <Route element={<MissingPage />} />
+      </Routes>
     </Suspense>
   </div>
 );

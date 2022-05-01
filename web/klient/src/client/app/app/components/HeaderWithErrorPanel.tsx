@@ -2,11 +2,9 @@ import React, {
   useState, useEffect, FunctionComponent, useRef, useCallback, useMemo,
 } from 'react';
 import { injectIntl, WrappedComponentProps } from 'react-intl';
-import Popover from '@navikt/nap-popover';
-import SystemButton from '@navikt/nap-system-button';
-import BoxedListWithLinks from '@navikt/boxed-list-with-links';
-import Header from '@navikt/nap-header';
-import UserPanel from '@navikt/nap-user-panel';
+import {
+  BoxedListWithLinks, Header, Popover, SystemButton, UserPanel,
+} from '@navikt/fp-react-components';
 
 import { useRestApiError, useRestApiErrorDispatcher } from 'data/rest-api-hooks';
 import { restApiHooks, RestApiGlobalStatePathsKeys } from 'data/fplosRestApi';
@@ -140,10 +138,9 @@ const HeaderWithErrorPanel: FunctionComponent<OwnProps & WrappedComponentProps> 
                 />
               ),
               placement: 'bottom-start',
-              positionFixed: true,
+              strategy: 'fixed',
             }}
             referenceProps={{
-              // eslint-disable-next-line react/prop-types
               children: ({ ref }) => (
                 <div ref={ref}>
                   <SystemButton

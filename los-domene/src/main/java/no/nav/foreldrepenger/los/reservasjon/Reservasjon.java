@@ -1,7 +1,6 @@
 package no.nav.foreldrepenger.los.reservasjon;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -14,7 +13,6 @@ import javax.persistence.Table;
 
 import no.nav.foreldrepenger.los.felles.BaseEntitet;
 import no.nav.foreldrepenger.los.oppgave.Oppgave;
-import no.nav.vedtak.sikkerhet.context.SubjectHandler;
 
 @Entity(name = "Reservasjon")
 @Table(name = "RESERVASJON")
@@ -49,7 +47,6 @@ public class Reservasjon extends BaseEntitet {
 
     public Reservasjon(Oppgave oppgave) {
         this.oppgave = oppgave;
-        reservertAv = finnBrukernavn();
     }
 
     public Long getId() {
@@ -68,8 +65,8 @@ public class Reservasjon extends BaseEntitet {
         return reservertAv;
     }
 
-    public Optional<String> getFlyttetAv() {
-        return Optional.ofNullable(flyttetAv);
+    public String getFlyttetAv() {
+        return flyttetAv;
     }
 
     public LocalDateTime getFlyttetTidspunkt() {
@@ -78,14 +75,6 @@ public class Reservasjon extends BaseEntitet {
 
     public String getBegrunnelse() {
         return begrunnelse;
-    }
-
-    public void reserverNormalt(){
-        reservertTil = LocalDateTime.now().plusHours(8);
-        reservertAv = finnBrukernavn();
-        flyttetAv = null;
-        flyttetTidspunkt = null;
-        begrunnelse = null;
     }
 
     public void frigiReservasjon(String begrunnelse) {
@@ -98,26 +87,24 @@ public class Reservasjon extends BaseEntitet {
         this.begrunnelse = begrunnelse;
     }
 
-    public void forlengReservasjonPåOppgave() {
-        reservertTil = reservertTil.plusHours(24);
-        reservertAv = finnBrukernavn();
-    }
-
-    public void endreReservasjonPåOppgave(LocalDateTime reservertTil) {
+    public void setReservertTil(LocalDateTime reservertTil) {
         this.reservertTil = reservertTil;
     }
 
-    public void flyttReservasjon(String brukernavn, String begrunnelseForFlytting) {
-        reservertTil = reservertTil.plusHours(24);
-        reservertAv = brukernavn;
-        flyttetAv = finnBrukernavn();
-        flyttetTidspunkt = LocalDateTime.now();
-        begrunnelse = begrunnelseForFlytting;
+    public void setReservertAv(String reservertAv) {
+        this.reservertAv = reservertAv;
     }
 
-    private static String finnBrukernavn() {
-        var brukerident = SubjectHandler.getSubjectHandler().getUid();
-        return brukerident != null ? brukerident.toUpperCase() : BRUKERNAVN_NÅR_SIKKERHETSKONTEKST_IKKE_FINNES;
+    public void setFlyttetAv(String flyttetAv) {
+        this.flyttetAv = flyttetAv;
+    }
+
+    public void setFlyttetTidspunkt(LocalDateTime flyttetTidspunkt) {
+        this.flyttetTidspunkt = flyttetTidspunkt;
+    }
+
+    public void setBegrunnelse(String begrunnelse) {
+        this.begrunnelse = begrunnelse;
     }
 
     public boolean erAktiv() {

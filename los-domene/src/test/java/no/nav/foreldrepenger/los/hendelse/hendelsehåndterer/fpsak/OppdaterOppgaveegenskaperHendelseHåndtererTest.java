@@ -11,6 +11,8 @@ import java.time.temporal.ChronoUnit;
 
 import javax.persistence.EntityManager;
 
+import no.nav.foreldrepenger.los.oppgave.OppgaveTjeneste;
+import no.nav.foreldrepenger.los.reservasjon.ReservasjonRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -38,29 +40,31 @@ class OppdaterOppgaveegenskaperHendelseHåndtererTest {
     private OppgaveRepository oppgaveRepository;
     private OppgaveEgenskapHåndterer oppgaveEgenskapHåndterer;
     private ReservasjonTjeneste reservasjonTjeneste;
+    private OppgaveTjeneste oppgaveTjeneste;
 
     @BeforeEach
     private void setUp(EntityManager entityManager) {
         this.entityManager = entityManager;
         oppgaveRepository = new OppgaveRepository(entityManager);
+        ReservasjonRepository reservasjonRepository = new ReservasjonRepository(entityManager);
         oppgaveEgenskapHåndterer = new OppgaveEgenskapHåndterer(oppgaveRepository);
-        reservasjonTjeneste = new ReservasjonTjeneste(oppgaveRepository);
+        oppgaveTjeneste = new OppgaveTjeneste(oppgaveRepository, reservasjonTjeneste);
+        reservasjonTjeneste = new ReservasjonTjeneste(oppgaveRepository, reservasjonRepository);
     }
 
     @Test
     public void skalVidereføreReservasjonVedOppdateringer() {
         // arrange
         var behandlingFpsak = behandlingFpsak();
-        new GenerellOpprettOppgaveHendelseHåndterer(oppgaveRepository, oppgaveEgenskapHåndterer, køStatistikk, behandlingFpsak).håndter();
-        var oppgaveId = DBTestUtil.hentUnik(entityManager, Oppgave.class).getId();
-        var reservasjon = reservasjonTjeneste.reserverOppgave(oppgaveId);
+        new GenerellOpprettOppgaveHendelseHåndterer(oppgaveTjeneste, oppgaveEgenskapHåndterer, køStatistikk, behandlingFpsak).håndter();
+        var oppgave = DBTestUtil.hentUnik(entityManager, Oppgave.class);
+        var reservasjon = reservasjonTjeneste.reserverOppgave(oppgave);
         var reservertTil = reservasjon.getReservertTil().truncatedTo(ChronoUnit.SECONDS);
 
         // act
         new OppdaterOppgaveegenskaperHendelseHåndterer(oppgaveRepository, oppgaveEgenskapHåndterer, køStatistikk, behandlingFpsak).håndter();
 
         // assert
-        var oppgave = DBTestUtil.hentUnik(entityManager, Oppgave.class);
         assertThat(oppgave.getAktiv()).isTrue();
         assertThat(oppgave.harAktivReservasjon()).isTrue();
         var reservertTilEtterOppdatering = reservasjon.getReservertTil().truncatedTo(ChronoUnit.SECONDS);
@@ -101,7 +105,7 @@ class OppdaterOppgaveegenskaperHendelseHåndtererTest {
                 .medAktiv(true)
                 .medBehandlingId(behandlingFpsak.getBehandlingId()).build();
         oppgaveRepository.lagre(eksisterendeOppgave);
-        reservasjonTjeneste.reserverOppgave(eksisterendeOppgave.getId());
+        reservasjonTjeneste.reserverOppgave(eksisterendeOppgave);
         return behandlingFpsak;
     }
 

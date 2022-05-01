@@ -49,10 +49,16 @@ interface OwnState {
   showFlyttReservasjonModal: boolean;
 }
 
+// TODO Refaktorer til funksjonell komponent
+
 /**
  * OppgaveHandlingerMenu
  */
 export class OppgaveHandlingerMenu extends Component<OwnProps, OwnState> {
+  node: any;
+
+  menuButtonRef: any;
+
   constructor(props: OwnProps) {
     super(props);
 
@@ -67,12 +73,14 @@ export class OppgaveHandlingerMenu extends Component<OwnProps, OwnState> {
     toggleEventListeners(true, this.handleOutsideClick);
   }
 
+  // eslint-disable-next-line react/no-arrow-function-lifecycle
   componentDidMount = () => {
     if (this.menuButtonRef && this.menuButtonRef.current) {
       this.menuButtonRef.current.focus();
     }
   };
 
+  // eslint-disable-next-line react/no-arrow-function-lifecycle
   componentWillUnmount = () => {
     toggleEventListeners(false, this.handleOutsideClick);
   };
@@ -89,10 +97,6 @@ export class OppgaveHandlingerMenu extends Component<OwnProps, OwnState> {
     const { toggleMenu, oppgave } = this.props;
     toggleMenu(oppgave);
   };
-
-  node: any;
-
-  menuButtonRef: any;
 
   showBegrunnelseModal = () => {
     toggleEventListeners(false, this.handleOutsideClick);
@@ -153,8 +157,7 @@ export class OppgaveHandlingerMenu extends Component<OwnProps, OwnState> {
     toggleMenu(oppgave);
   };
 
-  // TODO Kvifor feiler denne i eslint?
-  // eslint-disable-next-line react/require-render-return
+  // eslint-disable-next-line react/no-arrow-function-lifecycle
   render = () => {
     const {
       oppgave, offset, hentReserverteOppgaver,

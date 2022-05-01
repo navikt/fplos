@@ -22,6 +22,9 @@ public class FpsakOppgaveEgenskapFinner implements OppgaveEgenskapFinner {
         if (behandling.harVurderSykdom()) {
             this.andreKriterier.add(AndreKriterierType.VURDER_SYKDOM);
         }
+        if (behandling.erRevurderingPgaPleiepenger()) {
+            this.andreKriterier.add(AndreKriterierType.PLEIEPENGER);
+        }
         if (behandling.erBerørtBehandling()) {
             this.andreKriterier.add(AndreKriterierType.BERØRT_BEHANDLING);
         }

@@ -12,6 +12,8 @@ import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 
+import no.nav.foreldrepenger.los.oppgave.*;
+import no.nav.foreldrepenger.los.reservasjon.ReservasjonTjeneste;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -26,12 +28,6 @@ import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.tilbakekreving.Tilb
 import no.nav.foreldrepenger.los.hendelse.hendelseoppretter.hendelse.Aksjonspunkt;
 import no.nav.foreldrepenger.los.hendelse.hendelseoppretter.hendelse.Fagsystem;
 import no.nav.foreldrepenger.los.hendelse.hendelseoppretter.hendelse.TilbakekrevingHendelse;
-import no.nav.foreldrepenger.los.oppgave.AndreKriterierType;
-import no.nav.foreldrepenger.los.oppgave.BehandlingType;
-import no.nav.foreldrepenger.los.oppgave.FagsakYtelseType;
-import no.nav.foreldrepenger.los.oppgave.Oppgave;
-import no.nav.foreldrepenger.los.oppgave.OppgaveEgenskap;
-import no.nav.foreldrepenger.los.oppgave.OppgaveRepository;
 import no.nav.foreldrepenger.los.statistikk.kø.KøStatistikkTjeneste;
 
 @ExtendWith(EntityManagerFPLosAwareExtension.class)
@@ -51,7 +47,8 @@ public class TilbakekrevingHendelseHåndtererTest {
         this.entityManager = entityManager;
         var oppgaveRepository = new OppgaveRepository(entityManager);
         var oppgaveEgenskapHandler = new OppgaveEgenskapHåndterer(oppgaveRepository);
-        handler = new TilbakekrevingHendelseHåndterer(oppgaveEgenskapHandler, oppgaveRepository, mock(KøStatistikkTjeneste.class));
+        var oppgaveTjeneste = new OppgaveTjeneste(oppgaveRepository, mock(ReservasjonTjeneste.class));
+        handler = new TilbakekrevingHendelseHåndterer(oppgaveEgenskapHandler, oppgaveRepository, oppgaveTjeneste, mock(KøStatistikkTjeneste.class));
     }
 
     @Test
