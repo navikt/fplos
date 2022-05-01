@@ -52,8 +52,6 @@ spec:
         mountPath: /var/run/secrets/nais.io/srvfplos
       - kvPath: {{ldapuserkv}}
         mountPath: /var/run/secrets/nais.io/ldap
-      - kvPath: /kv/{{cluster}}/fss/fplos/{{namespace}}
-        mountPath: /var/run/secrets/nais.io/vault
   env:
 {{#each env}}
    - name: {{@key}}

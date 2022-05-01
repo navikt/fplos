@@ -1,5 +1,4 @@
 {
-  "cluster": "prod",
   "oracleconfigkv":  "/oracle/data/prod/config/fplos_p",
   "oraclecredskv": "/oracle/data/prod/creds/fplos_p-fplos_p",
   "serviceuserkv": "/serviceuser/data/prod/srvfplos",
