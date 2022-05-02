@@ -12,6 +12,7 @@ on:
       - 'CODEOWNERS'
 env:
   IMAGE_BASE: ghcr.io/${{ github.repository }}
+  READER_TOKEN: ${{ secrets.READER_TOKEN }}
   TZ: "Europe/Oslo"
 
 jobs:
