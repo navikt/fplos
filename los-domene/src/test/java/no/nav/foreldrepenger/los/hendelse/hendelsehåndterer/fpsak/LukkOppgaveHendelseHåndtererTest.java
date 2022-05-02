@@ -18,7 +18,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import no.nav.foreldrepenger.dbstøtte.DBTestUtil;
-import no.nav.foreldrepenger.extensions.EntityManagerFPLosAwareExtension;
+import no.nav.foreldrepenger.extensions.JpaExtension;
 import no.nav.foreldrepenger.los.domene.typer.BehandlingId;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.håndterere.LukkOppgaveHendelseHåndterer;
 import no.nav.foreldrepenger.los.oppgave.Oppgave;
@@ -28,7 +28,7 @@ import no.nav.foreldrepenger.los.statistikk.kø.KøStatistikkTjeneste;
 
 
 @ExtendWith(MockitoExtension.class)
-@ExtendWith(EntityManagerFPLosAwareExtension.class)
+@ExtendWith(JpaExtension.class)
 class LukkOppgaveHendelseHåndtererTest {
     private final KøStatistikkTjeneste køStatistikk = mock(KøStatistikkTjeneste.class);
     private final ReservasjonTjeneste reservasjonTjeneste = mock(ReservasjonTjeneste.class);

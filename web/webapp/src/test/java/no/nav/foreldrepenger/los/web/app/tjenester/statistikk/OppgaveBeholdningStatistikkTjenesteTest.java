@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import no.nav.foreldrepenger.extensions.EntityManagerFPLosAwareExtension;
+import no.nav.foreldrepenger.extensions.JpaExtension;
 import no.nav.foreldrepenger.los.domene.typer.BehandlingId;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveEventLogg;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveEventType;
@@ -24,7 +24,7 @@ import no.nav.foreldrepenger.los.oppgave.OppgaveEgenskap;
 import no.nav.foreldrepenger.los.statistikk.oppgavebeholdning.StatistikkRepository;
 import no.nav.foreldrepenger.los.statistikk.oppgavebeholdning.OppgaveBeholdningStatistikkTjeneste;
 
-@ExtendWith(EntityManagerFPLosAwareExtension.class)
+@ExtendWith(JpaExtension.class)
 @ExtendWith(MockitoExtension.class)
 public class OppgaveBeholdningStatistikkTjenesteTest {
 
@@ -110,8 +110,14 @@ public class OppgaveBeholdningStatistikkTjenesteTest {
         assertThat(resultater.get(3).antall()).isEqualTo(1L);
     }
 
-
     @Test
+    //FIXME - denne testen feiler fra midnatt til kl 01:00
+    /*
+     * [ERROR] Failures:
+     * [ERROR]   OppgaveBeholdningStatistikkTjenesteTest.hentAntallOppgaverForAvdelingPerDatoTest:118
+     * Expected size: 3 but was: 0 in:
+     * []
+     */
     public void hentAntallOppgaverForAvdelingPerDatoTest() {
         leggInnEttSettMedOppgaver();
         var resultater = oppgaveBeholdningStatistikkTjeneste.hentAntallOppgaverForAvdelingPerDato(AVDELING_DRAMMEN_ENHET);
@@ -125,6 +131,12 @@ public class OppgaveBeholdningStatistikkTjenesteTest {
     }
 
     @Test
+    //FIXME - denne testen feiler fra midnatt til kl 01:00
+    /*
+     * [ERROR]   OppgaveBeholdningStatistikkTjenesteTest.hentAntallOppgaverForAvdelingPerDatoTest2:136
+     * expected: 2022-04-05 (java.time.LocalDate)
+     *  but was: 2022-04-04 (java.time.LocalDate)
+     */
     public void hentAntallOppgaverForAvdelingPerDatoTest2() {
         leggTilOppgave(førstegangOppgave, 27, 27);
         leggTilOppgave(førstegangOppgave2, 28, 28);//skal ikke komme i resultatssettet

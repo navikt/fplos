@@ -1,7 +1,7 @@
 package no.nav.foreldrepenger.los.statistikk.kø;
 
 import no.nav.foreldrepenger.dbstøtte.DBTestUtil;
-import no.nav.foreldrepenger.extensions.EntityManagerFPLosAwareExtension;
+import no.nav.foreldrepenger.extensions.JpaExtension;
 import no.nav.foreldrepenger.los.oppgave.BehandlingType;
 import no.nav.foreldrepenger.los.oppgave.OppgaveRepository;
 import no.nav.foreldrepenger.los.oppgavekø.OppgaveFiltreringKnytning;
@@ -30,7 +30,7 @@ import static no.nav.foreldrepenger.los.organisasjon.Avdeling.AVDELING_DRAMMEN_E
 import static org.assertj.core.api.Assertions.assertThat;
 
 
-@ExtendWith(EntityManagerFPLosAwareExtension.class)
+@ExtendWith(JpaExtension.class)
 class KøStatistikkTjenesteTest {
 
     private EntityManager entityManager;
