@@ -4,7 +4,7 @@
 
     <groupId>no.nav.foreldrepenger.los</groupId>
     <artifactId>fplos</artifactId>
-    <version>${revision}${sha1}${changelist}</version>
+    <version>${revision}</version>
     <packaging>pom</packaging>
     <name>FPLOS :: Root</name>
 
@@ -15,9 +15,7 @@
     </modules>
 
     <properties>
-        <revision>2.8.2</revision>
-        <sha1/>
-        <changelist>-SNAPSHOT</changelist>
+        <revision>2.8.2-SNAPSHOT</revision>
         <java.version>17</java.version>
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
@@ -451,13 +449,6 @@
                     <flattenedPomFilename>.flattened</flattenedPomFilename>
                 </configuration>
                 <executions>
-                    <execution>
-                        <id>flatten</id>
-                        <phase>process-resources</phase>
-                        <goals>
-                            <goal>flatten</goal>
-                        </goals>
-                    </execution>
                     <execution>
                         <id>flatten.clean</id>
                         <phase>clean</phase>

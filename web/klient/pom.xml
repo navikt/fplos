@@ -6,7 +6,7 @@
     <parent>
         <groupId>no.nav.foreldrepenger.los</groupId>
         <artifactId>web</artifactId>
-        <version>${revision}${sha1}${changelist}</version>
+        <version>${revision}</version>
     </parent>
 
     <artifactId>web-klient</artifactId>

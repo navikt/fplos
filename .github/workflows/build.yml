@@ -53,19 +53,18 @@ jobs:
 
       - name: Set build version
         run: |
-          echo "BUILD_VERSION=$(date +%Y.%m.%d.%H%M%S)-$(echo $GITHUB_SHA | cut -c1-7)" >> $GITHUB_ENV
+          echo "BUILD_VERSION=2.8.2-$(date +%Y.%m.%d.%H%M%S)-$(echo $GITHUB_SHA | cut -c1-7)" >> $GITHUB_ENV
 
       - name: Kompiler
         run: |
-          mvn jacoco:prepare-agent install -e --quiet --batch-mode --settings .github/.m2/settings.xml -Dchangelist= -Dsha1=-${BUILD_VERSION} -Djacoco.destFile=$(pwd)/target/jacoco.exec
-          echo "TAG=$(mvn help:evaluate --batch-mode --settings .github/.m2/settings.xml --file .flattened -Dexpression=project.version -q -DforceStdout)" >> $GITHUB_ENV
+          mvn jacoco:prepare-agent install -e -q -B -s .github/.m2/settings.xml -Drevision=-${BUILD_VERSION} -Djacoco.destFile=$(pwd)/target/jacoco.exec
         env:
           TZ: Europe/Oslo
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Bygg, tag og push Docker image
         run: |
-          docker build --pull --tag ${IMAGE_BASE}:${TAG} --tag ${IMAGE_BASE}:latest .
+          docker build --pull --tag ${IMAGE_BASE}:${BUILD_VERSION} --tag ${IMAGE_BASE}:latest .
           docker push ${IMAGE_BASE} --all-tags
 
       - name: Lukk gamle bygg-issues
@@ -101,7 +100,7 @@ jobs:
                owner: context.issue.owner,
                repo: context.issue.repo,
                labels: ['deployment'],
-               title: 'Deploy av ${{ env.TAG }}',
+               title: 'Deploy av ${{ env.BUILD_VERSION }}',
                body: '${{ github.sha }}'})
              .then(response => {
                      core.setOutput('number', response.data.number);
