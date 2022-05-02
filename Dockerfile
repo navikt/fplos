@@ -1,18 +1,14 @@
 FROM navikt/java:17-appdynamics
 
-ENV APP_NAME=fplos
+LABEL org.opencontainers.image.source=https://github.com/navikt/fplos
 ENV APPD_ENABLED=true
-ENV APPDYNAMICS_CONTROLLER_HOST_NAME=appdynamics.adeo.no
-ENV APPDYNAMICS_CONTROLLER_PORT=443
-ENV APPDYNAMICS_CONTROLLER_SSL_ENABLED=true
 ENV TZ=Europe/Oslo
 
 RUN mkdir /app/lib
-RUN mkdir /app/webapp
 RUN mkdir /app/conf
 
 # Config
-COPY web/webapp/target/classes/logback.xml /app/conf/
+COPY web/webapp/target/classes/logback*.xml /app/conf/
 
 # Application Container (Jetty)
 COPY web/webapp/target/app.jar /app/
@@ -22,6 +18,12 @@ COPY web/webapp/target/lib/*.jar /app/lib/
 COPY web/klient/target/index.html /app/klient/
 COPY web/klient/target/public/ /app/klient/public/
 
-COPY export-vault-secrets.sh /init-scripts/
+ENV JAVA_OPTS="-XX:MaxRAMPercentage=75.0 \
+                -Djava.security.egd=file:/dev/./urandom \
+                -Duser.timezone=Europe/Oslo \
+                -Dklient=./klient \
+                -Dlogback.configurationFile=conf/logback.xml"
 
-ENV JAVA_OPTS="-XX:MaxRAMPercentage=75.0 -Djava.security.egd=file:/dev/./urandom -Duser.timezone=Europe/Oslo -Dklient=./klient -Dlogback.configurationFile=./conf/logback.xml"
+# Export vault properties
+COPY .scripts/03-import-appd.sh /init-scripts/03-import-appd.sh
+COPY .scripts/05-import-users.sh /init-scripts/05-import-users.sh

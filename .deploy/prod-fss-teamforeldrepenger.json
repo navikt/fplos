@@ -1,10 +1,9 @@
 {
-  "cluster": "prod",
+  "environment": "prod",
   "oracleconfigkv":  "/oracle/data/prod/config/fplos_p",
   "oraclecredskv": "/oracle/data/prod/creds/fplos_p-fplos_p",
   "serviceuserkv": "/serviceuser/data/prod/srvfplos",
   "ldapuserkv": "/serviceuser/data/prod/srvssolinux",
-  "namespace": "teamforeldrepenger",
   "ingresses":  ["https://fplos.nais.adeo.no", "https://app.adeo.no/fplos"],
   "minReplica": "2",
   "maxReplica": "3",
