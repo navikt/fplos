@@ -15,7 +15,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import no.nav.foreldrepenger.dbstøtte.DBTestUtil;
-import no.nav.foreldrepenger.extensions.EntityManagerFPLosAwareExtension;
+import no.nav.foreldrepenger.extensions.JpaExtension;
 import no.nav.foreldrepenger.los.domene.typer.aktør.AktørId;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.OppgaveEgenskapHåndterer;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.håndterere.GjenåpneOppgaveHendelseHåndterer;
@@ -28,7 +28,7 @@ import no.nav.foreldrepenger.los.statistikk.kø.KøStatistikkTjeneste;
 
 
 @ExtendWith(MockitoExtension.class)
-@ExtendWith(EntityManagerFPLosAwareExtension.class)
+@ExtendWith(JpaExtension.class)
 class GjenåpneOppgaveHendelseHåndtererTest {
     private final KøStatistikkTjeneste køStatistikk = mock(KøStatistikkTjeneste.class);
     private EntityManager entityManager;

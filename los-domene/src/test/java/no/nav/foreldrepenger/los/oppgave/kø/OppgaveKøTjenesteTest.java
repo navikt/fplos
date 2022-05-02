@@ -14,7 +14,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import no.nav.foreldrepenger.dbstøtte.DBTestUtil;
-import no.nav.foreldrepenger.extensions.EntityManagerFPLosAwareExtension;
+import no.nav.foreldrepenger.extensions.JpaExtension;
 import no.nav.foreldrepenger.los.avdelingsleder.AvdelingslederTjeneste;
 import no.nav.foreldrepenger.los.oppgave.AndreKriterierType;
 import no.nav.foreldrepenger.los.oppgave.BehandlingType;
@@ -28,7 +28,7 @@ import no.nav.foreldrepenger.los.organisasjon.Avdeling;
 import no.nav.foreldrepenger.los.organisasjon.OrganisasjonRepository;
 import no.nav.foreldrepenger.los.organisasjon.Saksbehandler;
 
-@ExtendWith(EntityManagerFPLosAwareExtension.class)
+@ExtendWith(JpaExtension.class)
 public class OppgaveKøTjenesteTest {
 
     private static final String AVDELING_BERGEN_ENHET = "4812";

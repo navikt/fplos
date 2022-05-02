@@ -1,26 +1,29 @@
 package no.nav.foreldrepenger.extensions;
 
 
+import java.util.TimeZone;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import no.nav.foreldrepenger.dbstøtte.Databaseskjemainitialisering;
+import no.nav.foreldrepenger.konfig.Environment;
 import no.nav.vedtak.felles.testutilities.db.EntityManagerAwareExtension;
 
-public class EntityManagerFPLosAwareExtension extends EntityManagerAwareExtension {
+public class JpaExtension extends EntityManagerAwareExtension {
 
-    private static final Logger LOG = LoggerFactory.getLogger(EntityManagerFPLosAwareExtension.class);
+    private static final Logger LOG = LoggerFactory.getLogger(JpaExtension.class);
+    private static final boolean isNotRunningUnderMaven = Environment.current().getProperty("maven.cmd.line.args") == null;
+
 
     @Override
     protected void init() {
-        if (System.getenv("MAVEN_CMD_LINE_ARGS") == null) {
+        TimeZone.setDefault(TimeZone.getTimeZone("Europe/Oslo"));
+        if (isNotRunningUnderMaven) {
+            LOG.info("Kjører IKKE under maven");
             // prøver alltid migrering hvis endring, ellers funker det dårlig i IDE.
-            LOG.warn("Kjører migreringer");
             Databaseskjemainitialisering.migrerForUnitTests();
         }
-        // Maven kjører testen
-        // kun kjør migreringer i migreringer modul
-
         Databaseskjemainitialisering.settJndiOppslagForUnitTests();
     }
 }

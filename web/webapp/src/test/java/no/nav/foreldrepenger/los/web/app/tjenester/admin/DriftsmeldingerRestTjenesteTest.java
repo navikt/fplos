@@ -11,12 +11,12 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-import no.nav.foreldrepenger.extensions.EntityManagerFPLosAwareExtension;
+import no.nav.foreldrepenger.extensions.JpaExtension;
 import no.nav.foreldrepenger.los.admin.driftsmelding.DriftsmeldingRepository;
 import no.nav.foreldrepenger.los.admin.driftsmelding.DriftsmeldingTjeneste;
 import no.nav.foreldrepenger.los.web.app.tjenester.admin.dto.DriftsmeldingOpprettelseDto;
 
-@ExtendWith(EntityManagerFPLosAwareExtension.class)
+@ExtendWith(JpaExtension.class)
 class DriftsmeldingerRestTjenesteTest {
 
     private DriftsmeldingerRestTjeneste driftsmeldinger;

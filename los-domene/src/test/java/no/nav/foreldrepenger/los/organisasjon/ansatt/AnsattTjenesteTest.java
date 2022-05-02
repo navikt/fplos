@@ -14,12 +14,12 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 
-import no.nav.foreldrepenger.extensions.EntityManagerFPLosAwareExtension;
+import no.nav.foreldrepenger.extensions.JpaExtension;
 import no.nav.foreldrepenger.los.domene.typer.aktør.OrganisasjonsEnhet;
 import no.nav.foreldrepenger.los.organisasjon.Avdeling;
 import no.nav.foreldrepenger.los.organisasjon.OrganisasjonRepository;
 
-@ExtendWith(EntityManagerFPLosAwareExtension.class)
+@ExtendWith(JpaExtension.class)
 class AnsattTjenesteTest {
 
     private AnsattTjeneste ansattTjeneste;
