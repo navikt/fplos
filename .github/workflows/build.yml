@@ -1,4 +1,4 @@
-name: Build, push, and deploy
+name: Bygg og deploy
 
 on:
   push:
@@ -13,16 +13,22 @@ on:
 env:
   IMAGE_BASE: ghcr.io/${{ github.repository }}
   READER_TOKEN: ${{ secrets.READER_TOKEN }}
+  TZ: "Europe/Oslo"
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v3
 
-      - name: Sjekk ut kode
-        uses: actions/checkout@v3
-      - run:  git fetch --prune --unshallow
-      - uses: actions/setup-java@v2
+      - name: Setup maven
+        uses: whelk-io/maven-settings-xml-action@v20
+        with:
+          repositories: '[{ "id": "github", "name": "github", "url": "https://maven.pkg.github.com/${{ github.repository }}", "releases": { "enabled": "true" }, "snapshots": { "enabled": "false" } }]'
+          servers: '[{ "id": "github", "username": "${{ github.actor }}", "password": "${{ secrets.READER_TOKEN }}" }]'
+          output_file: settings.xml
+
+      - uses: actions/setup-java@v3
         with:
           distribution: 'temurin'
           java-version: 17
@@ -57,10 +63,9 @@ jobs:
 
       - name: Kompiler
         run: |
-          mvn jacoco:prepare-agent install -e -q -B -s .github/.m2/settings.xml -Drevision=-${BUILD_VERSION} -Djacoco.destFile=$(pwd)/target/jacoco.exec
-        env:
-          TZ: Europe/Oslo
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          echo "Building artifacts $BUILD_VERSION"
+          mvn verify -q -e -B -s settings.xml -Drevision=${BUILD_VERSION} -Dfile.encoding=UTF-8
+          echo "Build artifacts"
 
       - name: Bygg, tag og push Docker image
         run: |
@@ -89,22 +94,22 @@ jobs:
               });
             });
 
-      -  name: Opprett deployment issue
-         id: createdeployissue
-         if: success()
-         uses: actions/github-script@v6
-         with:
-           github-token: ${{secrets.GITHUB_TOKEN}}
-           script: |
-             github.rest.issues.create( {
-               owner: context.issue.owner,
-               repo: context.issue.repo,
-               labels: ['deployment'],
-               title: 'Deploy av ${{ env.BUILD_VERSION }}',
-               body: '${{ github.sha }}'})
-             .then(response => {
-                     core.setOutput('number', response.data.number);
-              });
+      - name: Opprett deployment issue
+        id: createdeployissue
+        if: success()
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{secrets.GITHUB_TOKEN}}
+          script: |
+            github.rest.issues.create( {
+              owner: context.issue.owner,
+              repo: context.issue.repo,
+              labels: ['deployment'],
+              title: 'Deploy av ${{ env.BUILD_VERSION }}',
+              body: '${{ github.sha }}'})
+            .then(response => {
+                    core.setOutput('number', response.data.number);
+             });
 
       - uses: navikt/github-app-token-generator@v1
         id: get-token
