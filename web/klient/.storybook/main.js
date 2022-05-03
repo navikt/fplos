@@ -102,7 +102,7 @@ module.exports = {
       failOnError: false,
       fix: true,
       overrideConfigFile: path.resolve(__dirname, '../eslint/eslintrc.dev.js'),
-      cache: true,
+      lintDirtyModulesOnly: true,
     }));
 
     config.resolve.alias =  {

@@ -4,7 +4,7 @@ import React, {
 import { injectIntl, WrappedComponentProps } from 'react-intl';
 import {
   BoxedListWithLinks, Header, Popover, SystemButton, UserPanel,
-} from '@navikt/fp-react-components';
+} from '@navikt/ft-plattform-komponenter';
 
 import { useRestApiError, useRestApiErrorDispatcher } from 'data/rest-api-hooks';
 import { restApiHooks, RestApiGlobalStatePathsKeys } from 'data/fplosRestApi';
