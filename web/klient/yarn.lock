@@ -2105,13 +2105,13 @@
   resolved "https://npm.pkg.github.com/download/@navikt/fnrvalidator/1.1.4/57aacaca4b4d6c045625ec4e86cc6029f566f6388de258d45f93ef027f888219#b2ce64cb24b3726f715eee110f9f3fde37b907f7"
   integrity sha512-EZBwlNhp886E57GuknLB6G9Bnv4nl+e5K12B/2BeLpWZENxCmcQ+5oFvIThvEsU+LVOdfJxxGOxSvrwe5ZB3pQ==
 
-"@navikt/ft-form-hooks@1.0.5":
-  version "1.0.5"
-  resolved "https://npm.pkg.github.com/download/@navikt/ft-form-hooks/1.0.5/d9cc578954f0aa649c35976e2e03fe246d698d4edca5f8ffa2a859080e6ea118#ffe8b7ce67a1caa969f74fdb112db0920d13a086"
-  integrity sha512-RW/4yejKdwCixdwBHvVjXDkRTnXUXI+pyT0cjnTk1D9k2noZoFqW9sM36b0+NscopGVrEAeV4scYN4EFM9x9yw==
+"@navikt/ft-form-hooks@1.0.7":
+  version "1.0.7"
+  resolved "https://npm.pkg.github.com/download/@navikt/ft-form-hooks/1.0.7/fa80fd293c61be97fce820a0c8928b0432b73c3cb219e1debca0ec6af73a222e#2208c22ec4e7229cf1a9ee4334ee5e8cc8a55a58"
+  integrity sha512-ZR+AHdDydkjTdGIFB4VY6a59DYuOnOj/M/4YpIT7c0W4NzawKFIitpoRQkrVjjeM9yZAw/G8pKSaJW8aHJSk1Q==
   dependencies:
     "@navikt/ft-types" "^1.0.4"
-    "@navikt/ft-ui-komponenter" "^1.0.5"
+    "@navikt/ft-ui-komponenter" "^1.0.6"
     "@navikt/ft-utils" "^1.0.5"
     classnames "2.3.1"
     dayjs "1.11.1"
@@ -2156,10 +2156,10 @@
   dependencies:
     "@navikt/ft-kodeverk" "^1.0.2"
 
-"@navikt/ft-ui-komponenter@1.0.5", "@navikt/ft-ui-komponenter@^1.0.5":
-  version "1.0.5"
-  resolved "https://npm.pkg.github.com/download/@navikt/ft-ui-komponenter/1.0.5/dcab0e3894e0bfa00127510e0be355b88a8b1b3b06986747375663a58205177f#b7783dc30ce89018491b1d63a9913479782554db"
-  integrity sha512-jpnRardTEoPcFwUWkw9mjRH4hOTsZI5+brey/KIDmU/XsX6GLTfYvB5ZFemABEWmhrxUOh9dHBicg5UqOslhsw==
+"@navikt/ft-ui-komponenter@1.0.6", "@navikt/ft-ui-komponenter@^1.0.6":
+  version "1.0.6"
+  resolved "https://npm.pkg.github.com/download/@navikt/ft-ui-komponenter/1.0.6/04ceb5466d8194600b50b78c27b52ef8e43454fd2ba01c7edabaef27f174da51#8d42c7fb1c2df9fed7755322348ec5a70c1268a9"
+  integrity sha512-8IvyJFRrLK+1OyVxqgGQ9yRjPAt7pl2m/MIVV5ZOsAdmJliVl7khs0Wf394LYslfBFOJEdLJIoqt8i/irsuuQQ==
   dependencies:
     "@navikt/fnrvalidator" "1.1.4"
     "@navikt/ft-utils" "^1.0.5"
