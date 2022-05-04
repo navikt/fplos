@@ -64,5 +64,5 @@ jobs:
           echo "Building $BUILD_VERSION"
           mvn package -q -B -s settings.xml -Drevision=${BUILD_VERSION}
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
+          READER_TOKEN: ${{ secrets.READER_TOKEN }}
 
