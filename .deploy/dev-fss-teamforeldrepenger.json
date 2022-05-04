@@ -8,26 +8,6 @@
   "minReplica": "2",
   "maxReplica": "3",
   "env": {
-    "LOADBALANCER_URL": "https://app-q1.adeo.no",
-    "APPDYNAMICS_AGENT_ACCOUNT_NAME": "NON-PROD",
-    "ABAC_ATTRIBUTT_DRIFT": "no.nav.abac.attributter.foreldrepenger.drift",
-    "ABAC_PDP_ENDPOINT_URL": "http://abac-foreldrepenger.teamabac/application/authorize",
-    "OIDC_OPEN_AM_WELL_KNOWN_URL": "https://isso-q.adeo.no:443/isso/oauth2/.well-known/openid-configuration",
-    "OIDC_STS_WELL_KNOWN_URL":  "https://security-token-service.nais.preprod.local/.well-known/openid-configuration",
-    "OIDC_OPEN_AM_CLIENT_ID": "fplos-q1",
-    "OPENIDCONNECT_USERNAME": "fplos-q1",
-    "OPENIDCONNECT_ISSOHOST": "https://isso-q.adeo.no:443/isso/oauth2",
-    "LDAP_USER_BASEDN": "ou=NAV,ou=BusinessUnits,dc=preprod,dc=local",
-    "LDAP_SERVICEUSER_BASEDN": "ou=ServiceAccounts,dc=preprod,dc=local",
-    "LDAP_DOMAIN": "PREPROD.LOCAL",
-    "LDAP_BASEDN": "dc=preprod,dc=local",
-    "LDAP_URL": "ldaps://ldapgw.preprod.local",
-    "KAFKA_AKSJONSPUNKTHENDELSE_TOPIC": "privat-foreldrepenger-aksjonspunkthendelse-q1",
-    "KAFKA_AKSJONSPUNKTHENDELSE_GROUP_ID": "KC-privat-foreldrepenger-aksjonspunkthendelse",
-    "KAFKA_TILBAKEBETALING_TOPIC":  "privat-tilbakekreving-fploshendelse-v1-q1",
-    "KAFKA_TILBAKEBETALING_GROUP_ID":  "KC-privat-tilbakekreving-fploshendelse-v1-q1",
-    "KAFKA_BROKERS": "b27apvl00045.preprod.local:8443,b27apvl00046.preprod.local:8443,b27apvl00047.preprod.local:8443",
-    "FPSAK_FRONTEND_URL": "https://app-q1.adeo.no/fpsak",
-    "PDL_BASE_URL" : "http://pdl-api.pdl/graphql"
+    "APPDYNAMICS_AGENT_ACCOUNT_NAME": "NON-PROD"
   }
 }

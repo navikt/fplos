@@ -16,7 +16,7 @@ public class ForeldrepengerConsumerProperties implements KafkaConsumerProperties
 
     @Inject
     public ForeldrepengerConsumerProperties(@KonfigVerdi("kafka.aksjonspunkthendelse.topic") String topic,
-                                            @KonfigVerdi("kafka.brokers") String bootstrapServers,
+                                            @KonfigVerdi("kafka.bootstrap.servers") String bootstrapServers,
                                             @KonfigVerdi("kafka.aksjonspunkthendelse.group.id") String groupId,
                                             @KonfigVerdi(value = "kafka.auto.offset.reset", defaultVerdi = "none") String offsetResetPolicy,
                                             @KonfigVerdi("systembruker.username") String username,
