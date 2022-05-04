@@ -9,8 +9,8 @@ import Oppgave from 'types/saksbehandler/oppgaveTsType';
 import {
   hasValidText, maxLength, minLength, required,
 } from '@navikt/ft-utils';
-import { Modal } from '@navikt/ft-ui-komponenter';
 import { Form, TextAreaField } from '@navikt/ft-form-hooks';
+import Modal from 'app/Modal';
 import styles from './opphevReservasjonModal.less';
 
 const minLength3 = minLength(3);

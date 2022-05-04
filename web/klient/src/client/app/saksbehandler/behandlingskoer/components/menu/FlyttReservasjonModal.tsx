@@ -9,8 +9,9 @@ import { Normaltekst, Element } from 'nav-frontend-typografi';
 import { RestApiState } from 'data/rest-api-hooks';
 import { restApiHooks, RestApiPathsKeys } from 'data/fplosRestApi';
 import {
-  VerticalSpacer, FlexContainer, FlexRow, FlexColumn, Modal,
+  VerticalSpacer, FlexContainer, FlexRow, FlexColumn,
 } from '@navikt/ft-ui-komponenter';
+import Modal from 'app/Modal';
 import {
   hasValidText, maxLength, minLength, required,
 } from '@navikt/ft-utils';

@@ -5,7 +5,8 @@ import { Normaltekst } from 'nav-frontend-typografi';
 import { Hovedknapp } from 'nav-frontend-knapper';
 
 import { getDateAndTime } from '@navikt/ft-utils';
-import { Image, Modal } from '@navikt/ft-ui-komponenter';
+import { Image } from '@navikt/ft-ui-komponenter';
+import Modal from 'app/Modal';
 import Oppgave from 'types/saksbehandler/oppgaveTsType';
 
 import innvilgetImageUrl from 'images/sharedComponents/innvilget_valgt.svg';
