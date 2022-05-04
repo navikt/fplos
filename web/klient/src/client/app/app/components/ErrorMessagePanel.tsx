@@ -4,7 +4,7 @@ import { Row, Column } from 'nav-frontend-grid';
 import { Undertekst } from 'nav-frontend-typografi';
 
 import Lukknapp from 'nav-frontend-lukknapp';
-import decodeHtmlEntity from 'utils/decodeHtmlEntityUtils';
+import { decodeHtmlEntity } from '@navikt/ft-utils';
 
 import EventType from 'data/rest-api/src/requestApi/eventType';
 import styles from './errorMessagePanel.less';

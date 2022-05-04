@@ -16,7 +16,7 @@ import NyeOgFerdigstilteOppgaver from 'types/saksbehandler/nyeOgFerdigstilteOppg
 import OppgaveStatus from 'types/saksbehandler/oppgaveStatusTsType';
 import SaksbehandlerForFlytting from 'types/saksbehandler/saksbehandlerForFlyttingTsType';
 import Fagsak from 'types/saksbehandler/fagsakTsType';
-import AlleKodeverk from 'types/alleKodeverkTsType';
+import { AlleKodeverk } from '@navikt/ft-types';
 
 import { RestApiConfigBuilder, createRequestApi, RestKey } from './rest-api';
 import { RestApiHooks } from './rest-api-hooks';

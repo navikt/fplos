@@ -6,7 +6,7 @@ import { useForm } from 'react-hook-form';
 import { RestApiGlobalStatePathsKeys, RestApiPathsKeys } from 'data/fplosRestApi';
 import AndreKriterierVelger from 'avdelingsleder/behandlingskoer/components/sakslisteForm/AndreKriterierVelger';
 import andreKriterierType from 'kodeverk/andreKriterierType';
-import { Form } from 'form/formIndex';
+import { Form } from '@navikt/ft-form-hooks';
 
 import RestApiMock from 'storybookUtils/RestApiMock';
 import withIntl from 'storybookUtils/decorators/withIntl';

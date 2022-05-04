@@ -2,7 +2,7 @@ import React, { FunctionComponent } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { Normaltekst } from 'nav-frontend-typografi';
 
-import DateLabel from 'sharedComponents/DateLabel';
+import { DateLabel } from '@navikt/ft-ui-komponenter';
 
 import styles from './aldervisning.less';
 

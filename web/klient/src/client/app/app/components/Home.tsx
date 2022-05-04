@@ -1,7 +1,7 @@
 import React, { FunctionComponent, Suspense } from 'react';
 import { Route, Routes } from 'react-router-dom';
 
-import LoadingPanel from 'sharedComponents/LoadingPanel';
+import { LoadingPanel } from '@navikt/ft-ui-komponenter';
 
 import MissingPage from './MissingPage';
 

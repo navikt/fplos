@@ -2,19 +2,18 @@ import React, { FunctionComponent } from 'react';
 import { FormattedMessage, WrappedComponentProps } from 'react-intl';
 import dayjs from 'dayjs';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
-import { useFormContext } from 'react-hook-form';
 import { Undertekst } from 'nav-frontend-typografi';
 
-import { FlexColumn, FlexContainer, FlexRow } from 'sharedComponents/flexGrid';
-import { hasValidDate, hasValidPosOrNegInteger } from 'utils/validation/validators';
-import DateLabel from 'sharedComponents/DateLabel';
+import {
+  DateLabel, FlexColumn, FlexContainer, FlexRow, VerticalSpacer, ArrowBox,
+} from '@navikt/ft-ui-komponenter';
+import { hasValidDate, ISO_DATE_FORMAT, hasValidPosOrNegInteger } from '@navikt/ft-utils';
 import { restApiHooks, RestApiPathsKeys } from 'data/fplosRestApi';
-import { ISO_DATE_FORMAT } from 'utils/formats';
-import VerticalSpacer from 'sharedComponents/VerticalSpacer';
-import ArrowBox from 'sharedComponents/ArrowBox';
-import { InputField, CheckboxField, DatepickerField } from 'form/formIndex';
+import {
+  InputField, CheckboxField, Datepicker, formHooks,
+} from '@navikt/ft-form-hooks';
 
-import useDebounce from 'form/useDebounce';
+import useDebounce from 'data/useDebounce';
 import styles from './sorteringVelger.less';
 
 dayjs.extend(customParseFormat);
@@ -80,7 +79,7 @@ export const DatoSorteringValg: FunctionComponent<OwnProps & WrappedComponentPro
   const { startRequest: lagreSakslisteSorteringTidsintervallDato } = restApiHooks
     .useRestApiRunner(RestApiPathsKeys.LAGRE_SAKSLISTE_SORTERING_TIDSINTERVALL_DATO);
 
-  const { watch } = useFormContext();
+  const { watch } = formHooks.useFormContext();
   const fraVerdi = watch('fra');
   const tilVerdi = watch('til');
   const fomDatoVerdi = watch('fomDato');
@@ -125,7 +124,7 @@ export const DatoSorteringValg: FunctionComponent<OwnProps & WrappedComponentPro
                 name="fra"
                 className={styles.dato}
                 label={intl.formatMessage({ id: 'SorteringVelger.Fom' })}
-                validate={[hasValidPosOrNegInteger(intl)]}
+                validate={[hasValidPosOrNegInteger]}
                 bredde="XS"
                 onChange={lagreFraDebounce}
               />
@@ -145,7 +144,7 @@ export const DatoSorteringValg: FunctionComponent<OwnProps & WrappedComponentPro
                 name="til"
                 className={styles.dato}
                 label={intl.formatMessage({ id: 'SorteringVelger.Tom' })}
-                validate={[hasValidPosOrNegInteger(intl)]}
+                validate={[hasValidPosOrNegInteger]}
                 bredde="XS"
                 onChange={lagreTilDebounce}
               />
@@ -167,10 +166,10 @@ export const DatoSorteringValg: FunctionComponent<OwnProps & WrappedComponentPro
         <FlexContainer>
           <FlexRow>
             <FlexColumn>
-              <DatepickerField
+              <Datepicker
                 name="fomDato"
                 label={intl.formatMessage({ id: 'SorteringVelger.Fom' })}
-                validate={[hasValidDate(intl)]}
+                validate={[hasValidDate]}
                 onChange={lagreFomDatoDebounce}
               />
             </FlexColumn>
@@ -180,10 +179,10 @@ export const DatoSorteringValg: FunctionComponent<OwnProps & WrappedComponentPro
               </Undertekst>
             </FlexColumn>
             <FlexColumn className={styles.tomDato}>
-              <DatepickerField
+              <Datepicker
                 name="tomDato"
                 label={intl.formatMessage({ id: 'SorteringVelger.Tom' })}
-                validate={[hasValidDate(intl)]}
+                validate={[hasValidDate]}
                 onChange={lagreTomDatoDebounce}
               />
             </FlexColumn>

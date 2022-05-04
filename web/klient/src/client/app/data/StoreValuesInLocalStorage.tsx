@@ -1,5 +1,5 @@
 import { FunctionComponent, useEffect } from 'react';
-import { setValueInLocalStorage } from 'utils/localStorageHelper';
+import { setValueInLocalStorage } from './localStorageHelper';
 
 interface OwnProps {
   stateKey: string;

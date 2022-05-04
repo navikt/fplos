@@ -1,4 +1,4 @@
-import { dateFormat, timeFormat } from 'utils/dateUtils';
+import { dateFormat, timeFormat } from '@navikt/ft-utils';
 import ErrorEventType from './errorEventType';
 import ErrorMessage from './ErrorMessage';
 import Formatter from './Formatter';

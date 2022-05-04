@@ -7,7 +7,7 @@ import { RestApiGlobalStatePathsKeys, RestApiPathsKeys } from 'data/fplosRestApi
 import SorteringVelger from 'avdelingsleder/behandlingskoer/components/sakslisteForm/SorteringVelger';
 import behandlingType from 'kodeverk/behandlingType';
 import koSortering from 'kodeverk/KoSortering';
-import { Form } from 'form/formIndex';
+import { Form } from '@navikt/ft-form-hooks';
 
 import RestApiMock from 'storybookUtils/RestApiMock';
 import withIntl from 'storybookUtils/decorators/withIntl';

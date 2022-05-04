@@ -6,10 +6,10 @@ import { Element } from 'nav-frontend-typografi';
 import { Row, Column } from 'nav-frontend-grid';
 
 import { restApiHooks, RestApiPathsKeys } from 'data/fplosRestApi';
-import VerticalSpacer from 'sharedComponents/VerticalSpacer';
+import { VerticalSpacer } from '@navikt/ft-ui-komponenter';
 import Saksbehandler from 'types/avdelingsleder/saksbehandlerAvdelingTsType';
 import Saksliste from 'types/avdelingsleder/sakslisteAvdelingTsType';
-import { Form, CheckboxField } from 'form/formIndex';
+import { Form, CheckboxField } from '@navikt/ft-form-hooks';
 
 import styles from './saksbehandlereForSakslisteForm.less';
 

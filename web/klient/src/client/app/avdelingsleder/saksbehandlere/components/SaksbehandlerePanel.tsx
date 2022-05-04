@@ -1,6 +1,6 @@
 import React, { FunctionComponent } from 'react';
 
-import VerticalSpacer from 'sharedComponents/VerticalSpacer';
+import { VerticalSpacer } from '@navikt/ft-ui-komponenter';
 import Saksbehandler from 'types/avdelingsleder/saksbehandlerAvdelingTsType';
 import LeggTilSaksbehandlerForm from './LeggTilSaksbehandlerForm';
 import SaksbehandlereTabell from './SaksbehandlereTabell';

@@ -3,7 +3,7 @@ import dayjs from 'dayjs';
 import { Story } from '@storybook/react';
 
 import { RestApiGlobalStatePathsKeys } from 'data/fplosRestApi';
-import { ISO_DATE_FORMAT } from 'utils/formats';
+import { ISO_DATE_FORMAT } from '@navikt/ft-utils';
 import behandlingType from 'kodeverk/behandlingType';
 import OppgaverSomErApneEllerPaVentPanel from 'avdelingsleder/nokkeltall/components/apneOgPaVentBehandlinger/OppgaverSomErApneEllerPaVentPanel';
 import behandlingVenteStatus from 'kodeverk/behandlingVenteStatus';

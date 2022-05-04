@@ -9,12 +9,12 @@ import { Undertittel, Element, Normaltekst } from 'nav-frontend-typografi';
 import { Row, Column } from 'nav-frontend-grid';
 import {
   required, minLength, maxLength, hasValidName,
-} from 'utils/validation/validators';
-import VerticalSpacer from 'sharedComponents/VerticalSpacer';
+} from '@navikt/ft-utils';
+import { VerticalSpacer } from '@navikt/ft-ui-komponenter';
 import { restApiHooks, RestApiPathsKeys } from 'data/fplosRestApi';
-import { Form, InputField } from 'form/formIndex';
+import { Form, InputField } from '@navikt/ft-form-hooks';
 import Saksliste from 'types/avdelingsleder/sakslisteAvdelingTsType';
-import useDebounce from 'form/useDebounce';
+import useDebounce from 'data/useDebounce';
 import BehandlingstypeVelger from './BehandlingstypeVelger';
 import AndreKriterierVelger from './AndreKriterierVelger';
 import FagsakYtelseTypeVelger from './FagsakYtelseTypeVelger';
@@ -124,7 +124,7 @@ export const UtvalgskriterierForSakslisteForm: FunctionComponent<OwnProps & Wrap
             <InputField
               name="navn"
               label={intl.formatMessage({ id: 'UtvalgskriterierForSakslisteForm.Navn' })}
-              validate={[required(intl), minLength3(intl), maxLength100(intl), hasValidName(intl)]}
+              validate={[required, minLength3, maxLength100, hasValidName]}
               bredde="L"
               onChange={lagreNavn}
             />

@@ -10,8 +10,8 @@ import Tabs from 'nav-frontend-tabs';
 import { Undertittel } from 'nav-frontend-typografi';
 
 import { restApiHooks, RestApiPathsKeys, RestApiGlobalStatePathsKeys } from 'data/fplosRestApi';
-import LoadingPanel from 'sharedComponents/LoadingPanel';
-import { parseQueryString } from 'utils/urlUtils';
+import { LoadingPanel } from '@navikt/ft-ui-komponenter';
+import { parseQueryString } from '@navikt/ft-utils';
 import { getAvdelingslederPanelLocationCreator } from 'app/paths';
 import Saksbehandler from 'types/avdelingsleder/saksbehandlerAvdelingTsType';
 import useTrackRouteParam from 'app/data/useTrackRouteParam';

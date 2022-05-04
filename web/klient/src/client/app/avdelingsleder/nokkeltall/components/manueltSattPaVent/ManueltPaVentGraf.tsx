@@ -7,8 +7,8 @@ import Panel from 'nav-frontend-paneler';
 
 import OppgaverManueltPaVent from 'types/avdelingsleder/oppgaverManueltPaVentTsType';
 
-import ReactECharts from 'sharedComponents/echart/ReactEcharts';
-import { dateFormat } from 'utils/dateUtils';
+import { ReactECharts } from '@navikt/ft-ui-komponenter';
+import { dateFormat } from '@navikt/ft-utils';
 
 dayjs.extend(isSameOrBefore);
 

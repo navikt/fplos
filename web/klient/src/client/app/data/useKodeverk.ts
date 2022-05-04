@@ -1,4 +1,4 @@
-import KodeverkMedNavn from 'types/kodeverkMedNavnTsType';
+import { KodeverkMedNavn } from '@navikt/ft-types';
 import { RestApiGlobalStatePathsKeys, restApiHooks } from './fplosRestApi';
 
 /**

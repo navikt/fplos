@@ -2,8 +2,8 @@ import React, {
   useRef, FunctionComponent,
 } from 'react';
 
-import { getValueFromLocalStorage } from 'utils/localStorageHelper';
-import VerticalSpacer from 'sharedComponents/VerticalSpacer';
+import { getValueFromLocalStorage } from 'data/localStorageHelper';
+import { VerticalSpacer } from '@navikt/ft-ui-komponenter';
 import OppgaverForAvdeling from 'types/avdelingsleder/oppgaverForAvdelingTsType';
 import OppgaveForDato from 'types/avdelingsleder/oppgaverForDatoTsType';
 import OppgaverForForsteStonadsdag from 'types/avdelingsleder/oppgaverForForsteStonadsdagTsType';

@@ -9,11 +9,12 @@ import { Normaltekst, Element } from 'nav-frontend-typografi';
 
 import { restApiHooks, RestApiPathsKeys } from 'data/fplosRestApi';
 import { RestApiState } from 'data/rest-api-hooks';
-import { required } from 'utils/validation/validators';
-import VerticalSpacer from 'sharedComponents/VerticalSpacer';
-import { FlexContainer, FlexRow, FlexColumn } from 'sharedComponents/flexGrid';
+import { required } from '@navikt/ft-utils';
+import {
+  FlexContainer, FlexRow, FlexColumn, VerticalSpacer,
+} from '@navikt/ft-ui-komponenter';
 import Saksbehandler from 'types/avdelingsleder/saksbehandlerAvdelingTsType';
-import { Form, InputField } from 'form/formIndex';
+import { Form, InputField } from '@navikt/ft-form-hooks';
 
 import styles from './leggTilSaksbehandlerForm.less';
 
@@ -101,7 +102,7 @@ export const LeggTilSaksbehandlerForm: FunctionComponent<OwnProps & WrappedCompo
               name="brukerIdent"
               label={intl.formatMessage({ id: 'LeggTilSaksbehandlerForm.Brukerident' })}
               bredde="S"
-              validate={[required(intl)]}
+              validate={[required]}
             />
           </FlexColumn>
           <FlexColumn>

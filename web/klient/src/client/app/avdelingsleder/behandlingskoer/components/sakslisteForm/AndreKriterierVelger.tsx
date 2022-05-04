@@ -5,9 +5,8 @@ import { Undertekst } from 'nav-frontend-typografi';
 import { restApiHooks, RestApiPathsKeys } from 'data/fplosRestApi';
 import useKodeverk from 'data/useKodeverk';
 import KodeverkType from 'kodeverk/kodeverkTyper';
-import VerticalSpacer from 'sharedComponents/VerticalSpacer';
-import ArrowBox from 'sharedComponents/ArrowBox';
-import { CheckboxField, RadioGroupField, RadioOption } from 'form/formIndex';
+import { VerticalSpacer, ArrowBox } from '@navikt/ft-ui-komponenter';
+import { CheckboxField, RadioGroupField, RadioOption } from '@navikt/ft-form-hooks';
 
 import styles from './andreKriterierVelger.less';
 

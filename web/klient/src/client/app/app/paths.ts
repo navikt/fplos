@@ -1,6 +1,6 @@
 import { Location } from 'history';
 
-import { formatQueryString, parseQueryString } from 'utils/urlUtils';
+import { formatQueryString, parseQueryString } from '@navikt/ft-utils';
 
 export const BASE_PATH = '/fplos';
 export const AVDELINGSLEDER_PATH = 'avdelingsleder';

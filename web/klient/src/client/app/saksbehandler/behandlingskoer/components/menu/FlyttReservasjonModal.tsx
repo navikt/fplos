@@ -8,14 +8,14 @@ import { Normaltekst, Element } from 'nav-frontend-typografi';
 
 import { RestApiState } from 'data/rest-api-hooks';
 import { restApiHooks, RestApiPathsKeys } from 'data/fplosRestApi';
-import VerticalSpacer from 'sharedComponents/VerticalSpacer';
-import { FlexContainer, FlexRow, FlexColumn } from 'sharedComponents/flexGrid';
+import {
+  VerticalSpacer, FlexContainer, FlexRow, FlexColumn, Modal,
+} from '@navikt/ft-ui-komponenter';
 import {
   hasValidText, maxLength, minLength, required,
-} from 'utils/validation/validators';
-import Modal from 'sharedComponents/Modal';
+} from '@navikt/ft-utils';
 import SaksbehandlerForFlytting from 'types/saksbehandler/saksbehandlerForFlyttingTsType';
-import { Form, TextAreaField, InputField } from 'form/formIndex';
+import { Form, TextAreaField, InputField } from '@navikt/ft-form-hooks';
 
 import styles from './flyttReservasjonModal.less';
 
@@ -103,7 +103,7 @@ export const FlyttReservasjonModal: FunctionComponent<OwnProps & WrappedComponen
                 name="brukerIdent"
                 label={intl.formatMessage({ id: 'FlyttReservasjonModal.Brukerident' })}
                 bredde="S"
-                validate={[required(intl), minLength7(intl), maxLength7(intl)]}
+                validate={[required, minLength7, maxLength7]}
                 autoFocus
                 autoComplete
               />
@@ -139,7 +139,7 @@ export const FlyttReservasjonModal: FunctionComponent<OwnProps & WrappedComponen
         <TextAreaField
           name="begrunnelse"
           label={intl.formatMessage({ id: 'FlyttReservasjonModal.Begrunn' })}
-          validate={[required(intl), maxLength500(intl), minLength3(intl), hasValidText(intl)]}
+          validate={[required, maxLength500, minLength3, hasValidText]}
           maxLength={500}
         />
         <Hovedknapp

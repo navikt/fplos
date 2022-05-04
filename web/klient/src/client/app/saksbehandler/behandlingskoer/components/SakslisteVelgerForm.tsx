@@ -8,19 +8,17 @@ import {
 } from 'react-intl';
 import { Element, Normaltekst } from 'nav-frontend-typografi';
 
-import { DDMMYYYY_DATE_FORMAT } from 'utils/formats';
-import Image from 'sharedComponents/Image';
-import { FlexContainer, FlexRow, FlexColumn } from 'sharedComponents/flexGrid';
-import VerticalSpacer from 'sharedComponents/VerticalSpacer';
-import LabelWithHeader from 'sharedComponents/LabelWithHeader';
+import { DDMMYYYY_DATE_FORMAT, getKodeverknavnFraKode } from '@navikt/ft-utils';
+import {
+  Image, FlexContainer, FlexRow, FlexColumn, VerticalSpacer, LabelWithHeader,
+} from '@navikt/ft-ui-komponenter';
 import Saksliste from 'types/saksbehandler/sakslisteTsType';
 import Saksbehandler from 'types/saksbehandler/saksbehandlerTsType';
 import gruppeHoverUrl from 'images/gruppe_hover.svg';
 import gruppeUrl from 'images/gruppe.svg';
 import { RestApiGlobalStatePathsKeys, restApiHooks, RestApiPathsKeys } from 'data/fplosRestApi';
-import { Form, SelectField } from 'form/formIndex';
-import AlleKodeverk from 'types/alleKodeverkTsType';
-import { getKodeverknavnFraKode } from 'utils/kodeverkUtils';
+import { Form, SelectField } from '@navikt/ft-form-hooks';
+import { AlleKodeverk } from '@navikt/ft-types';
 import KodeverkType from 'kodeverk/kodeverkTyper';
 
 import styles from './sakslisteVelgerForm.less';
@@ -70,20 +68,20 @@ const getInitialValues = (
 const getValgtSaksliste = (sakslister: Saksliste[], sakslisteId: string) => sakslister.find((s) => sakslisteId === `${s.sakslisteId}`);
 
 const getStonadstyper = (intl: IntlShape, alleKodeverk: AlleKodeverk, saksliste?: Saksliste) => (saksliste && saksliste.fagsakYtelseTyper.length > 0
-  ? saksliste.fagsakYtelseTyper.map((type) => getKodeverknavnFraKode(type, KodeverkType.FAGSAK_YTELSE_TYPE, alleKodeverk))
+  ? saksliste.fagsakYtelseTyper.map((type) => getKodeverknavnFraKode(alleKodeverk, KodeverkType.FAGSAK_YTELSE_TYPE, type))
   : [intl.formatMessage({ id: 'SakslisteVelgerForm.Alle' })]);
 
 const getBehandlingstyper = (intl: IntlShape, alleKodeverk: AlleKodeverk, saksliste?: Saksliste) => (saksliste && saksliste.behandlingTyper.length > 0
-  ? saksliste.behandlingTyper.map((type) => getKodeverknavnFraKode(type, KodeverkType.BEHANDLING_TYPE, alleKodeverk))
+  ? saksliste.behandlingTyper.map((type) => getKodeverknavnFraKode(alleKodeverk, KodeverkType.BEHANDLING_TYPE, type))
   : [intl.formatMessage({ id: 'SakslisteVelgerForm.Alle' })]);
 
 const getAndreKriterier = (intl: IntlShape, alleKodeverk: AlleKodeverk, saksliste?: Saksliste) => {
   if (saksliste && saksliste.andreKriterier.length > 0) {
     return saksliste.andreKriterier.map((ak) => (ak.inkluder
-      ? getKodeverknavnFraKode(ak.andreKriterierType, KodeverkType.ANDRE_KRITERIER_TYPE, alleKodeverk)
+      ? getKodeverknavnFraKode(alleKodeverk, KodeverkType.ANDRE_KRITERIER_TYPE, ak.andreKriterierType)
       : intl.formatMessage({ id: 'SakslisteVelgerForm.Uten' }, {
         kriterie: getKodeverknavnFraKode(
-          ak.andreKriterierType, KodeverkType.ANDRE_KRITERIER_TYPE, alleKodeverk),
+          alleKodeverk, KodeverkType.ANDRE_KRITERIER_TYPE, ak.andreKriterierType),
       })));
   }
   return [intl.formatMessage({ id: 'SakslisteVelgerForm.Alle' })];
@@ -112,20 +110,20 @@ const getSorteringsnavn = (intl: IntlShape, alleKodeverk: AlleKodeverk, sakslist
   };
   if (!erDynamiskPeriode) {
     if (!fomDato && !tomDato) {
-      return getKodeverknavnFraKode(sorteringType, KodeverkType.KO_SORTERING, alleKodeverk);
+      return getKodeverknavnFraKode(alleKodeverk, KodeverkType.KO_SORTERING, sorteringType);
     }
     values = {
-      navn: getKodeverknavnFraKode(sorteringType, KodeverkType.KO_SORTERING, alleKodeverk),
+      navn: getKodeverknavnFraKode(alleKodeverk, KodeverkType.KO_SORTERING, sorteringType),
       fomDato: fomDato ? dayjs(fomDato).format(DDMMYYYY_DATE_FORMAT) : undefined,
       tomDato: tomDato ? dayjs(tomDato).format(DDMMYYYY_DATE_FORMAT) : undefined,
       br: <br />,
     };
   } else {
     if (!fra && !til) {
-      return getKodeverknavnFraKode(sorteringType, KodeverkType.KO_SORTERING, alleKodeverk);
+      return getKodeverknavnFraKode(alleKodeverk, KodeverkType.KO_SORTERING, sorteringType);
     }
     values = {
-      navn: getKodeverknavnFraKode(sorteringType, KodeverkType.KO_SORTERING, alleKodeverk),
+      navn: getKodeverknavnFraKode(alleKodeverk, KodeverkType.KO_SORTERING, sorteringType),
       fomDato: fra ? dayjs().add(fra, 'days').format(DDMMYYYY_DATE_FORMAT) : undefined,
       tomDato: til ? dayjs().add(til, 'days').format(DDMMYYYY_DATE_FORMAT) : undefined,
       br: <br />,

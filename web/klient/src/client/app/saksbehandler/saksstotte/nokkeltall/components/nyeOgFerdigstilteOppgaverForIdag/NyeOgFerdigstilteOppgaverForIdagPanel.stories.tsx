@@ -4,7 +4,7 @@ import { Story } from '@storybook/react';
 
 import { RestApiGlobalStatePathsKeys } from 'data/fplosRestApi';
 import behandlingType from 'kodeverk/behandlingType';
-import { ISO_DATE_FORMAT } from 'utils/formats';
+import { ISO_DATE_FORMAT } from '@navikt/ft-utils';
 
 import NyeOgFerdigstilteOppgaver from 'types/saksbehandler/nyeOgFerdigstilteOppgaverTsType';
 import RestApiMock from 'storybookUtils/RestApiMock';

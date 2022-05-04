@@ -4,8 +4,7 @@ import { Row, Column } from 'nav-frontend-grid';
 import { Hovedknapp } from 'nav-frontend-knapper';
 import { Normaltekst } from 'nav-frontend-typografi';
 
-import Image from 'sharedComponents/Image';
-import Modal from 'sharedComponents/Modal';
+import { Image, Modal } from '@navikt/ft-ui-komponenter';
 
 import advarselImageUrl from 'images/advarsel.svg';
 

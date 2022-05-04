@@ -3,14 +3,13 @@ import NavFrontendChevron from 'nav-frontend-chevron';
 
 import Oppgave from 'types/saksbehandler/oppgaveTsType';
 import KodeverkType from 'kodeverk/kodeverkTyper';
-import Table from 'sharedComponents/table/Table';
-import TableRow from 'sharedComponents/table/TableRow';
-import TableColumn from 'sharedComponents/table/TableColumn';
-import DateLabel from 'sharedComponents/DateLabel';
+import {
+  Table, TableRow, TableColumn, DateLabel,
+} from '@navikt/ft-ui-komponenter';
 import FagsakStatus from 'kodeverk/fagsakStatus';
 import useKodeverk from 'data/useKodeverk';
 import Fagsak from 'types/saksbehandler/fagsakTsType';
-import { getKodeverknavnFraKode } from 'utils/kodeverkUtils';
+import { getKodeverknavnFraKode } from '@navikt/ft-utils';
 import { RestApiGlobalStatePathsKeys, restApiHooks } from 'data/fplosRestApi';
 
 import styles from './fagsakList.less';
@@ -35,7 +34,11 @@ const getSelectOppgaveCallback = (oppgave: Oppgave, selectOppgaveCallback: (oppg
 
 const getFagsakCallback = (
   selectFagsakCallback: (system: string, saksnummer: number) => void,
-) => (_event: React.KeyboardEvent | React.MouseEvent, saksnummer: number) => selectFagsakCallback('FPSAK', saksnummer);
+) => (_event: React.KeyboardEvent | React.MouseEvent, saksnummer?: number) => {
+  if (saksnummer) {
+    selectFagsakCallback('FPSAK', saksnummer);
+  }
+};
 
 export const getSorterteFagsaker = (fagsaker: Fagsak[] = []) => fagsaker.concat().sort((fagsak1, fagsak2) => {
   if (fagsak1.status === FagsakStatus.AVSLUTTET && fagsak2.status !== FagsakStatus.AVSLUTTET) {
@@ -73,7 +76,7 @@ const FagsakList: FunctionComponent<OwnProps> = ({
 
         const filtrerteOppgaver = fagsakOppgaver.filter((o) => o.saksnummer === fagsak.saksnummer);
         const oppgaver = filtrerteOppgaver.map((oppgave, index) => (
-          <TableRow
+          <TableRow<number>
             key={`oppgave${oppgave.id}`}
             id={oppgave.id}
             onMouseDown={getSelectOppgaveCallback(oppgave, selectOppgaveCallback)}
@@ -81,10 +84,10 @@ const FagsakList: FunctionComponent<OwnProps> = ({
             isDashedBottomBorder={filtrerteOppgaver.length > index + 1}
           >
             <TableColumn />
-            <TableColumn>{getKodeverknavnFraKode(oppgave.fagsakYtelseType, KodeverkType.FAGSAK_YTELSE_TYPE, alleKodeverk)}</TableColumn>
-            <TableColumn>{getKodeverknavnFraKode(oppgave.behandlingstype, KodeverkType.BEHANDLING_TYPE, alleKodeverk)}</TableColumn>
+            <TableColumn>{getKodeverknavnFraKode(alleKodeverk, KodeverkType.FAGSAK_YTELSE_TYPE, oppgave.fagsakYtelseType)}</TableColumn>
+            <TableColumn>{getKodeverknavnFraKode(alleKodeverk, KodeverkType.BEHANDLING_TYPE, oppgave.behandlingstype)}</TableColumn>
             <TableColumn>
-              {oppgave.behandlingStatus ? getKodeverknavnFraKode(oppgave.behandlingStatus, KodeverkType.BEHANDLING_STATUS, alleKodeverk) : ''}
+              {oppgave.behandlingStatus ? getKodeverknavnFraKode(alleKodeverk, KodeverkType.BEHANDLING_STATUS, oppgave.behandlingStatus) : ''}
             </TableColumn>
             <TableColumn>{fagsak.barnFødt ? <DateLabel dateString={fagsak.barnFødt} /> : null}</TableColumn>
             <TableColumn><NavFrontendChevron /></TableColumn>
@@ -93,7 +96,7 @@ const FagsakList: FunctionComponent<OwnProps> = ({
 
         return (
           <Fragment key={`fagsak${fagsak.saksnummer}`}>
-            <TableRow
+            <TableRow<number>
               id={fagsak.saksnummer}
               onMouseDown={getFagsakCallback(selectFagsakCallback)}
               onKeyDown={getFagsakCallback(selectFagsakCallback)}

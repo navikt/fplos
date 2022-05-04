@@ -4,7 +4,7 @@ import React, {
 
 import { requestApi, restApiHooks, RestApiGlobalStatePathsKeys } from 'data/fplosRestApi';
 import { RestApiState, useRestApiErrorDispatcher } from 'data/rest-api-hooks';
-import LoadingPanel from 'sharedComponents/LoadingPanel';
+import { LoadingPanel } from '@navikt/ft-ui-komponenter';
 
 interface OwnProps {
   children: ReactElement;

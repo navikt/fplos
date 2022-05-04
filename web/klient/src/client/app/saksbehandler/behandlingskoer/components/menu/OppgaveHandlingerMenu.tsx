@@ -2,8 +2,8 @@ import React, { Component, MouseEvent } from 'react';
 import { FormattedMessage } from 'react-intl';
 
 import Oppgave from 'types/saksbehandler/oppgaveTsType';
-import VerticalSpacer from 'sharedComponents/VerticalSpacer';
-import { getDateAndTime } from 'utils/dateUtils';
+import { VerticalSpacer } from '@navikt/ft-ui-komponenter';
+import { getDateAndTime } from '@navikt/ft-utils';
 import MenuButton from './MenuButton';
 import OpphevReservasjonModal from './OpphevReservasjonModal';
 import OppgaveReservasjonForlengetModal from './OppgaveReservasjonForlengetModal';

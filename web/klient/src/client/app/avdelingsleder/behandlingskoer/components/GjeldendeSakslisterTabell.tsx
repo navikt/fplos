@@ -7,15 +7,12 @@ import {
 } from 'nav-frontend-typografi';
 import { Column, Row } from 'nav-frontend-grid';
 
-import KodeverkMedNavn from 'types/kodeverkMedNavnTsType';
+import { KodeverkMedNavn } from '@navikt/ft-types';
 import Saksliste from 'types/avdelingsleder/sakslisteAvdelingTsType';
 import KodeverkType from 'kodeverk/kodeverkTyper';
-import Image from 'sharedComponents/Image';
-import VerticalSpacer from 'sharedComponents/VerticalSpacer';
-import Table from 'sharedComponents/table/Table';
-import TableRow from 'sharedComponents/table/TableRow';
-import TableColumn from 'sharedComponents/table/TableColumn';
-import DateLabel from 'sharedComponents/DateLabel';
+import {
+  Image, VerticalSpacer, Table, TableRow, TableColumn, DateLabel,
+} from '@navikt/ft-ui-komponenter';
 import addCircleIcon from 'images/add-circle.svg';
 import removeIcon from 'images/remove.svg';
 import { restApiHooks, RestApiPathsKeys } from 'data/fplosRestApi';
@@ -97,7 +94,7 @@ export const GjeldendeSakslisterTabell: FunctionComponent<OwnProps> = ({
     tabRef.current = tabRef.current.slice(0, sakslister.length);
   }, [sakslister]);
 
-  const setValgtSaksliste = async (event: React.MouseEvent | React.KeyboardEvent, id: number): Promise<string | undefined> => {
+  const setValgtSaksliste = async (event: React.MouseEvent | React.KeyboardEvent, id?: number): Promise<string | undefined> => {
     // @ts-ignore Fiks
     if (tabRef.current.some((node) => node && node.contains(event.target))) {
       return;
@@ -107,7 +104,9 @@ export const GjeldendeSakslisterTabell: FunctionComponent<OwnProps> = ({
     // der en endrer navn og så trykker direkte på en annen behandlingskø vil ikke lagringen skje før etter at ny kø er valgt.
     await wait(100);
 
-    setValgtSakslisteId(id);
+    if (id) {
+      setValgtSakslisteId(id);
+    }
   };
 
   const lagNySakslisteFn = useCallback((event: KeyboardEvent): void => {

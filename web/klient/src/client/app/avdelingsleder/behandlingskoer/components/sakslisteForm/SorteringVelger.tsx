@@ -3,12 +3,12 @@ import { FormattedMessage, injectIntl, WrappedComponentProps } from 'react-intl'
 import { Undertekst } from 'nav-frontend-typografi';
 
 import { restApiHooks, RestApiPathsKeys } from 'data/fplosRestApi';
-import VerticalSpacer from 'sharedComponents/VerticalSpacer';
+import { VerticalSpacer } from '@navikt/ft-ui-komponenter';
 import KodeverkType from 'kodeverk/kodeverkTyper';
 import BehandlingType from 'kodeverk/behandlingType';
 import useKodeverk from 'data/useKodeverk';
 import KoSorteringType from 'types/avdelingsleder/koSorteringTsType';
-import { RadioOption, RadioGroupField } from 'form/formIndex';
+import { RadioOption, RadioGroupField } from '@navikt/ft-form-hooks';
 
 import DatoSorteringValg from './DatoSorteringValg';
 import BelopSorteringValg from './BelopSorteringValg';

@@ -7,17 +7,13 @@ import NavFrontendChevron from 'nav-frontend-chevron';
 
 import { RestApiGlobalStatePathsKeys, restApiHooks, RestApiPathsKeys } from 'data/fplosRestApi';
 import TimeoutError from 'data/rest-api/src/requestApi/error/TimeoutError';
-import { getDateAndTime } from 'utils/dateUtils';
-import Image from 'sharedComponents/Image';
-import VerticalSpacer from 'sharedComponents/VerticalSpacer';
+import { getDateAndTime, getKodeverknavnFraKode } from '@navikt/ft-utils';
+import {
+  Image, VerticalSpacer, Table, TableRow, TableColumn, DateLabel,
+} from '@navikt/ft-ui-komponenter';
 import Oppgave from 'types/saksbehandler/oppgaveTsType';
 import OppgaveStatus from 'types/saksbehandler/oppgaveStatusTsType';
-import Table from 'sharedComponents/table/Table';
-import TableRow from 'sharedComponents/table/TableRow';
-import { getKodeverknavnFraKode } from 'utils/kodeverkUtils';
 import KodeverkType from 'kodeverk/kodeverkTyper';
-import TableColumn from 'sharedComponents/table/TableColumn';
-import DateLabel from 'sharedComponents/DateLabel';
 import menuIconBlueUrl from 'images/ic-menu-18px_blue.svg';
 import menuIconBlackUrl from 'images/ic-menu-18px_black.svg';
 import bubbletextUrl from 'images/bubbletext.svg';
@@ -113,12 +109,14 @@ export const OppgaverTabell: FunctionComponent<OwnProps & WrappedComponentProps>
 
   const ref = useRef<Record<number, HTMLDivElement | null>>({});
 
-  const goToFagsak = useCallback((event: React.MouseEvent | React.KeyboardEvent, _id: number, oppgave: Oppgave) => {
+  const goToFagsak = useCallback((event: React.MouseEvent | React.KeyboardEvent, _id?: number, oppgave?: Oppgave) => {
     // @ts-ignore Fiks
     if (ref.current && Object.keys(ref.current).some((key) => ref.current[key] && ref.current[key].contains(event.target))) {
       return;
     }
-    reserverOppgave(oppgave);
+    if (oppgave) {
+      reserverOppgave(oppgave);
+    }
   }, [ref.current]);
 
   const toggleMenu = useCallback((valgtOppgave: Oppgave) => {
@@ -167,7 +165,7 @@ export const OppgaverTabell: FunctionComponent<OwnProps & WrappedComponentProps>
         <>
           <Table headerTextCodes={headerTextCodes}>
             {alleOppgaver.map((oppgave) => (
-              <TableRow
+              <TableRow<number, Oppgave>
                 key={oppgave.id}
                 onMouseDown={goToFagsak}
                 onKeyDown={goToFagsak}
@@ -175,7 +173,7 @@ export const OppgaverTabell: FunctionComponent<OwnProps & WrappedComponentProps>
                 model={oppgave}
               >
                 <TableColumn>{oppgave.navn ? `${oppgave.navn} ${oppgave.personnummer}` : '<navn>'}</TableColumn>
-                <TableColumn>{getKodeverknavnFraKode(oppgave.behandlingstype, KodeverkType.BEHANDLING_TYPE, alleKodeverk)}</TableColumn>
+                <TableColumn>{getKodeverknavnFraKode(alleKodeverk, KodeverkType.BEHANDLING_TYPE, oppgave.behandlingstype)}</TableColumn>
                 <TableColumn>{oppgave.opprettetTidspunkt && <DateLabel dateString={oppgave.opprettetTidspunkt} />}</TableColumn>
                 <TableColumn>{oppgave.behandlingsfrist && <DateLabel dateString={oppgave.behandlingsfrist} />}</TableColumn>
                 <TableColumn>
