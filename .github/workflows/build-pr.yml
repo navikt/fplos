@@ -37,6 +37,8 @@ jobs:
           node-version: 17.8.0
           registry-url: https://npm.pkg.github.com/
           scope: '@navikt'
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
 
       - name: Login to GitHub Packages Docker Registry
         uses: docker/login-action@dd4fa0671be5250ee6f50aedf4cb05514abda2c7 # Use commit-sha1 instead of tag for security concerns
@@ -57,9 +59,10 @@ jobs:
         run: |
           echo "BUILD_VERSION=2.8.2-$(date +%Y.%m.%d.%H%M%S)-$(echo $GITHUB_SHA | cut -c1-7)" >> $GITHUB_ENV
 
-
       - name: Kompiler
         run: |
           echo "Building $BUILD_VERSION"
           mvn package -q -B -s settings.xml -Drevision=${BUILD_VERSION}
-        
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
+
