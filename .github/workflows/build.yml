@@ -66,6 +66,8 @@ jobs:
           echo "Building artifacts $BUILD_VERSION"
           mvn verify -q -e -B -s settings.xml -Drevision=${BUILD_VERSION} -Dfile.encoding=UTF-8
           echo "Build artifacts"
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
 
       - name: Bygg, tag og push Docker image
         run: |

@@ -49,6 +49,9 @@ jobs:
           echo "Building snyk-snapshot"
           mvn -B -s settings.xml versions:set -DnewVersion=snyk-snapshot
           mvn install -q -B -s settings.xml -DskipTests
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
+
       - name: Run Snyk monitor
         run: >
           snyk monitor
