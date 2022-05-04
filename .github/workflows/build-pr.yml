@@ -65,4 +65,3 @@ jobs:
           mvn package -q -B -s settings.xml -Drevision=${BUILD_VERSION}
         env:
           READER_TOKEN: ${{ secrets.READER_TOKEN }}
-

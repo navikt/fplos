@@ -16,7 +16,7 @@ public class TilbakekrevingConsumerProperties implements KafkaConsumerProperties
 
     @Inject
     public TilbakekrevingConsumerProperties(@KonfigVerdi("kafka.tilbakebetaling.topic") String topic,
-                                            @KonfigVerdi("kafka.brokers") String bootstrapServers,
+                                            @KonfigVerdi("kafka.bootstrap.servers") String bootstrapServers,
                                             @KonfigVerdi(value = "kafka.auto.offset.reset", defaultVerdi = "none") String offsetResetPolicy,
                                             @KonfigVerdi("kafka.tilbakebetaling.group.id") String groupId,
                                             @KonfigVerdi("systembruker.username") String username,
