@@ -50,7 +50,7 @@ jobs:
           mvn -B -s settings.xml versions:set -DnewVersion=snyk-snapshot
           mvn install -q -B -s settings.xml -DskipTests
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
+          READER_TOKEN: ${{ secrets.READER_TOKEN }}
 
       - name: Run Snyk monitor
         run: >
