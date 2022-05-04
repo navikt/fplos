@@ -2,7 +2,7 @@ import React from 'react';
 import { Story } from '@storybook/react';
 import dayjs from 'dayjs';
 
-import { ISO_DATE_FORMAT } from 'utils/formats';
+import { ISO_DATE_FORMAT } from '@navikt/ft-utils';
 import { RestApiGlobalStatePathsKeys, RestApiPathsKeys } from 'data/fplosRestApi';
 import RestApiMock from 'storybookUtils/RestApiMock';
 import withIntl from 'storybookUtils/decorators/withIntl';

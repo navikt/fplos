@@ -2,7 +2,7 @@ import React, { FunctionComponent } from 'react';
 import { injectIntl, WrappedComponentProps } from 'react-intl';
 import { Undertittel, Undertekst } from 'nav-frontend-typografi';
 
-import Image from 'sharedComponents/Image';
+import { Image } from '@navikt/ft-ui-komponenter';
 import urlMann from 'images/mann.svg';
 import urlKvinne from 'images/kvinne.svg';
 

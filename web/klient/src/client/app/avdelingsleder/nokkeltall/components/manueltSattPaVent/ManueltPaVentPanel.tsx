@@ -6,15 +6,15 @@ import dayjs from 'dayjs';
 import { Element } from 'nav-frontend-typografi';
 import { Row, Column } from 'nav-frontend-grid';
 
-import StoreValuesInLocalStorage from 'form/StoreValuesInLocalStorage';
+import StoreValuesInLocalStorage from 'data/StoreValuesInLocalStorage';
 import {
   Form, RadioGroupField, RadioOption, SelectField,
-} from 'form/formIndex';
+} from '@navikt/ft-form-hooks';
 import useKodeverk from 'data/useKodeverk';
-import VerticalSpacer from 'sharedComponents/VerticalSpacer';
+import { VerticalSpacer } from '@navikt/ft-ui-komponenter';
 import FagsakYtelseType from 'kodeverk/fagsakYtelseType';
 import KodeverkType from 'kodeverk/kodeverkTyper';
-import KodeverkMedNavn from 'types/kodeverkMedNavnTsType';
+import { KodeverkMedNavn } from '@navikt/ft-types';
 import OppgaverManueltPaVent from 'types/avdelingsleder/oppgaverManueltPaVentTsType';
 import ManueltPaVentGraf from './ManueltPaVentGraf';
 

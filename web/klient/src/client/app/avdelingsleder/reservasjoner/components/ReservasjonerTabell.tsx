@@ -3,16 +3,13 @@ import { Element, Normaltekst } from 'nav-frontend-typografi';
 import { FormattedMessage } from 'react-intl';
 
 import Reservasjon from 'types/avdelingsleder/reservasjonTsType';
-import Table from 'sharedComponents/table/Table';
-import TableRow from 'sharedComponents/table/TableRow';
-import TableColumn from 'sharedComponents/table/TableColumn';
-import Image from 'sharedComponents/Image';
-import VerticalSpacer from 'sharedComponents/VerticalSpacer';
+import {
+  Table, TableRow, TableColumn, Image, VerticalSpacer,
+} from '@navikt/ft-ui-komponenter';
 import OppgaveReservasjonEndringDatoModal from 'saksbehandler/behandlingskoer/components/menu/OppgaveReservasjonEndringDatoModal';
 import FlyttReservasjonModal from 'saksbehandler/behandlingskoer/components/menu/FlyttReservasjonModal';
-import { getDateAndTime } from 'utils/dateUtils';
-import AlleKodeverk from 'types/alleKodeverkTsType';
-import { getKodeverknavnFraKode } from 'utils/kodeverkUtils';
+import { getDateAndTime, getKodeverknavnFraKode } from '@navikt/ft-utils';
+import { AlleKodeverk } from '@navikt/ft-types';
 import KodeverkType from 'kodeverk/kodeverkTyper';
 
 import removeIcon from 'images/remove.svg';
@@ -109,7 +106,7 @@ class ReservasjonerTabell extends Component<OwnProps, StateTsProps> {
               <TableRow key={reservasjon.oppgaveId}>
                 <TableColumn>{reservasjon.reservertAvNavn}</TableColumn>
                 <TableColumn>{reservasjon.oppgaveSaksNr}</TableColumn>
-                <TableColumn>{getKodeverknavnFraKode(reservasjon.behandlingType, KodeverkType.BEHANDLING_TYPE, alleKodeverk)}</TableColumn>
+                <TableColumn>{getKodeverknavnFraKode(alleKodeverk, KodeverkType.BEHANDLING_TYPE, reservasjon.behandlingType)}</TableColumn>
                 <TableColumn>
                   <FormattedMessage
                     id="ReservasjonerTabell.ReservertTilFormat"

@@ -3,12 +3,13 @@ import { FormattedMessage } from 'react-intl';
 import { useForm } from 'react-hook-form';
 import { Element } from 'nav-frontend-typografi';
 
-import { FlexColumn, FlexContainer, FlexRow } from 'sharedComponents/flexGrid';
-import StoreValuesInLocalStorage from 'form/StoreValuesInLocalStorage';
-import { Form, CheckboxField } from 'form/formIndex';
+import {
+  VerticalSpacer, FlexColumn, FlexContainer, FlexRow,
+} from '@navikt/ft-ui-komponenter';
+import StoreValuesInLocalStorage from 'data/StoreValuesInLocalStorage';
+import { Form, CheckboxField } from '@navikt/ft-form-hooks';
 import KodeverkType from 'kodeverk/kodeverkTyper';
 import useKodeverk from 'data/useKodeverk';
-import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import BehandlingType from 'kodeverk/behandlingType';
 import OppgaverSomErApneEllerPaVent from 'types/avdelingsleder/oppgaverSomErApneEllerPaVentTsType';
 import OppgaverSomErApneEllerPaVentGraf from './OppgaverSomErApneEllerPaVentGraf';

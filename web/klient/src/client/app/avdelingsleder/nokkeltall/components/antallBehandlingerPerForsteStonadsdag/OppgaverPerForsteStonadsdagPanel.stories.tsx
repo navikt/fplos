@@ -1,7 +1,7 @@
 import React from 'react';
 import dayjs from 'dayjs';
 
-import { ISO_DATE_FORMAT } from 'utils/formats';
+import { ISO_DATE_FORMAT } from '@navikt/ft-utils';
 import {
   OppgaverPerForsteStonadsdagPanel,
 } from 'avdelingsleder/nokkeltall/components/antallBehandlingerPerForsteStonadsdag/OppgaverPerForsteStonadsdagPanel';

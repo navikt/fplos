@@ -3,9 +3,9 @@ import React, {
 } from 'react';
 import {
   BoxedListWithSelection, Popover, UserPanel,
-} from '@navikt/fp-react-components';
+} from '@navikt/ft-plattform-komponenter';
 
-import { getValueFromLocalStorage, setValueInLocalStorage, removeValueFromLocalStorage } from 'utils/localStorageHelper';
+import { getValueFromLocalStorage, setValueInLocalStorage, removeValueFromLocalStorage } from 'data/localStorageHelper';
 import Avdeling from 'types/avdelingsleder/avdelingTsType';
 import { restApiHooks, RestApiGlobalStatePathsKeys } from 'data/fplosRestApi';
 

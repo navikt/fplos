@@ -8,9 +8,9 @@ import { restApiHooks, RestApiPathsKeys } from 'data/fplosRestApi';
 import Oppgave from 'types/saksbehandler/oppgaveTsType';
 import {
   hasValidText, maxLength, minLength, required,
-} from 'utils/validation/validators';
-import Modal from 'sharedComponents/Modal';
-import { Form, TextAreaField } from 'form/formIndex';
+} from '@navikt/ft-utils';
+import { Form, TextAreaField } from '@navikt/ft-form-hooks';
+import Modal from 'app/Modal';
 import styles from './opphevReservasjonModal.less';
 
 const minLength3 = minLength(3);
@@ -65,7 +65,7 @@ const OpphevReservasjonModal: FunctionComponent<OwnProps & WrappedComponentProps
         <TextAreaField
           name="begrunnelse"
           label={intl.formatMessage({ id: 'OpphevReservasjonModal.Hjelpetekst' })}
-          validate={[required(intl), maxLength500(intl), minLength3(intl), hasValidText(intl)]}
+          validate={[required, maxLength500, minLength3, hasValidText]}
           maxLength={500}
         />
         <Hovedknapp

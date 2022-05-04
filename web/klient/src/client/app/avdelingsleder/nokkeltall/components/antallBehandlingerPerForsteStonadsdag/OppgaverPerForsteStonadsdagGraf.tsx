@@ -6,8 +6,8 @@ import isSameOrBefore from 'dayjs/plugin/isSameOrBefore';
 import isSameOrAfter from 'dayjs/plugin/isSameOrAfter';
 import Panel from 'nav-frontend-paneler';
 
-import ReactECharts from 'sharedComponents/echart/ReactEcharts';
-import { dateFormat } from 'utils/dateUtils';
+import { ReactECharts } from '@navikt/ft-ui-komponenter';
+import { dateFormat } from '@navikt/ft-utils';
 import OppgaverForForsteStonadsdag from 'types/avdelingsleder/oppgaverForForsteStonadsdagTsType';
 
 dayjs.extend(isSameOrBefore);

@@ -4,7 +4,7 @@ import { Normaltekst } from 'nav-frontend-typografi';
 
 import Oppgave from 'types/saksbehandler/oppgaveTsType';
 import Fagsak from 'types/saksbehandler/fagsakTsType';
-import VerticalSpacer from 'sharedComponents/VerticalSpacer';
+import { VerticalSpacer } from '@navikt/ft-ui-komponenter';
 import PersonInfo from './person/PersonInfo';
 import SearchForm from './SearchForm';
 import FagsakList from './FagsakList';

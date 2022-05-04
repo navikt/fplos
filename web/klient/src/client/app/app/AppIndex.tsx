@@ -4,7 +4,7 @@ import React, {
 import { useLocation } from 'react-router-dom';
 import dayjs from 'dayjs';
 
-import { parseQueryString } from 'utils/urlUtils';
+import { parseQueryString } from '@navikt/ft-utils';
 import { restApiHooks, RestApiGlobalStatePathsKeys } from 'data/fplosRestApi';
 import AppConfigResolver from './AppConfigResolver';
 import LanguageProvider from './LanguageProvider';
@@ -13,6 +13,9 @@ import Home from './components/Home';
 import ErrorBoundary from './ErrorBoundary';
 
 import '../../styles/global.less';
+import '@navikt/ft-ui-komponenter/dist/style.css';
+import '@navikt/ft-form-hooks/dist/style.css';
+import '@navikt/ft-plattform-komponenter/dist/style.css';
 
 /**
  * AppIndex

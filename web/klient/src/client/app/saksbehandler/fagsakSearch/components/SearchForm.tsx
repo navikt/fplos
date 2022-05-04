@@ -5,12 +5,12 @@ import { Undertittel } from 'nav-frontend-typografi';
 import { Knapp } from 'nav-frontend-knapper';
 
 import advarselIcon from 'images/advarsel.svg';
-import VerticalSpacer from 'sharedComponents/VerticalSpacer';
-import { hasValidSaksnummerOrFodselsnummerFormat } from 'utils/validation/validators';
+import {
+  FlexColumn, FlexContainer, FlexRow, VerticalSpacer, Image,
+} from '@navikt/ft-ui-komponenter';
+import { hasValidSaksnummerOrFodselsnummerFormat } from '@navikt/ft-utils';
 import { restApiHooks, RestApiGlobalStatePathsKeys } from 'data/fplosRestApi';
-import { FlexColumn, FlexContainer, FlexRow } from 'sharedComponents/flexGrid';
-import Image from 'sharedComponents/Image';
-import { Form, InputField, CheckboxField } from 'form/formIndex';
+import { Form, InputField, CheckboxField } from '@navikt/ft-form-hooks';
 
 import styles from './searchForm.less';
 
@@ -71,8 +71,8 @@ const SearchForm: FunctionComponent<OwnProps & WrappedComponentProps> = ({
                 name="searchString"
                 label={intl.formatMessage({ id: 'Search.SaksnummerOrPersonId' })}
                 bredde="L"
-                validate={[hasValidSaksnummerOrFodselsnummerFormat(intl)]}
-                parse={(s = '') => s.trim()}
+                validate={[hasValidSaksnummerOrFodselsnummerFormat]}
+                parse={(s = '') => s.toString().trim()}
               />
             </FlexColumn>
             <FlexColumn>

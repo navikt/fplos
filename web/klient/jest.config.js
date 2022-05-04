@@ -16,13 +16,10 @@ module.exports = {
 
         "^app(.*)$": "<rootDir>/src/client/app/app$1",
         "^data(.*)$": "<rootDir>/src/client/app/data$1",
-        "^form(.*)$": "<rootDir>/src/client/app/form$1",
         "^kodeverk(.*)$": "<rootDir>/src/client/app/kodeverk$1",
-        "^sharedComponents(.*)$": "<rootDir>/src/client/app/sharedComponents$1",
         "^avdelingsleder(.*)$": "<rootDir>/src/client/app/avdelingsleder$1",
         "^saksbehandler(.*)$": "<rootDir>/src/client/app/saksbehandler$1",
         "^types(.*)$": "<rootDir>/src/client/app/types$1",
-        "^utils(.*)$": "<rootDir>/src/client/app/utils$1",
         "^testHelpers(.*)$": "<rootDir>/src/client/testHelpers$1",
         "^storybookUtils(.*)$": "<rootDir>/src/client/storybookUtils$1",
       },

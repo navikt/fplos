@@ -4,8 +4,8 @@ import { FormattedMessage } from 'react-intl';
 import { Undertittel, Element } from 'nav-frontend-typografi';
 
 import KodeverkType from 'kodeverk/kodeverkTyper';
-import { ISO_DATE_FORMAT } from 'utils/formats';
-import VerticalSpacer from 'sharedComponents/VerticalSpacer';
+import { ISO_DATE_FORMAT } from '@navikt/ft-utils';
+import { VerticalSpacer } from '@navikt/ft-ui-komponenter';
 import useKodeverk from 'data/useKodeverk';
 import NyeOgFerdigstilteOppgaver from 'types/saksbehandler/nyeOgFerdigstilteOppgaverTsType';
 import NyeOgFerdigstilteOppgaverForIdagGraf from './NyeOgFerdigstilteOppgaverForIdagGraf';

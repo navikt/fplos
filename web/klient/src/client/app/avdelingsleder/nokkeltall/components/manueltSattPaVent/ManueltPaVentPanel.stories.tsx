@@ -3,7 +3,7 @@ import dayjs from 'dayjs';
 import { Story } from '@storybook/react';
 
 import { RestApiGlobalStatePathsKeys } from 'data/fplosRestApi';
-import { ISO_DATE_FORMAT } from 'utils/formats';
+import { ISO_DATE_FORMAT } from '@navikt/ft-utils';
 import fagsakYtelseType from 'kodeverk/fagsakYtelseType';
 import ManueltPaVentPanel from 'avdelingsleder/nokkeltall/components/manueltSattPaVent/ManueltPaVentPanel';
 import OppgaverManueltPaVent from 'types/avdelingsleder/oppgaverManueltPaVentTsType';

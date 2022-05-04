@@ -3,8 +3,8 @@ import { injectIntl, WrappedComponentProps } from 'react-intl';
 import Panel from 'nav-frontend-paneler';
 import NyeOgFerdigstilteOppgaver from 'types/saksbehandler/nyeOgFerdigstilteOppgaverTsType';
 import BehandlingType from 'kodeverk/behandlingType';
-import ReactECharts from 'sharedComponents/echart/ReactEcharts';
-import KodeverkMedNavn from 'types/kodeverkMedNavnTsType';
+import { ReactECharts } from '@navikt/ft-ui-komponenter';
+import { KodeverkMedNavn } from '@navikt/ft-types';
 
 const behandlingstypeOrder = [
   BehandlingType.TILBAKEBETALING_REVURDERING,

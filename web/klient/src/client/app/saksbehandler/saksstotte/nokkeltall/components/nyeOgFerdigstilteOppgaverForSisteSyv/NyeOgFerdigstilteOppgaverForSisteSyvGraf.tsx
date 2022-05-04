@@ -3,8 +3,8 @@ import { injectIntl, WrappedComponentProps } from 'react-intl';
 import Panel from 'nav-frontend-paneler';
 import dayjs from 'dayjs';
 import NyeOgFerdigstilteOppgaver from 'types/saksbehandler/nyeOgFerdigstilteOppgaverTsType';
-import ReactECharts from 'sharedComponents/echart/ReactEcharts';
-import { dateFormat } from 'utils/dateUtils';
+import { ReactECharts } from '@navikt/ft-ui-komponenter';
+import { dateFormat } from '@navikt/ft-utils';
 
 export const slaSammenBehandlingstyperOgFyllInnTomme = (nyeOgFerdigstilteOppgaver: NyeOgFerdigstilteOppgaver[]):
 { antallNye: number; antallFerdigstilte: number; dato: Date}[] => {

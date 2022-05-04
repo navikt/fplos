@@ -2,12 +2,12 @@ import React, { FunctionComponent, useMemo } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { Undertekst } from 'nav-frontend-typografi';
 
-import VerticalSpacer from 'sharedComponents/VerticalSpacer';
+import { VerticalSpacer } from '@navikt/ft-ui-komponenter';
 import { restApiHooks, RestApiPathsKeys } from 'data/fplosRestApi';
 import useKodeverk from 'data/useKodeverk';
 import KodeverkType from 'kodeverk/kodeverkTyper';
 import BehandlingType from 'kodeverk/behandlingType';
-import { CheckboxField } from 'form/formIndex';
+import { CheckboxField } from '@navikt/ft-form-hooks';
 
 const behandlingstypeOrder = Object.values(BehandlingType);
 

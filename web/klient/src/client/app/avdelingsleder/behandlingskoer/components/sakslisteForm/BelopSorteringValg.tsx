@@ -1,14 +1,13 @@
 import { Undertekst } from 'nav-frontend-typografi';
 import { FormattedMessage, WrappedComponentProps } from 'react-intl';
-import ArrowBox from 'sharedComponents/ArrowBox';
+import {
+  FlexColumn, FlexContainer, FlexRow, ArrowBox, VerticalSpacer,
+} from '@navikt/ft-ui-komponenter';
 import React, { FunctionComponent } from 'react';
-import { FlexColumn, FlexContainer, FlexRow } from 'sharedComponents/flexGrid';
-import { hasValidPosOrNegInteger } from 'utils/validation/validators';
-import VerticalSpacer from 'sharedComponents/VerticalSpacer';
-import { InputField } from 'form/formIndex';
-import useDebounce from 'form/useDebounce';
+import { hasValidPosOrNegInteger } from '@navikt/ft-utils';
+import { InputField, formHooks } from '@navikt/ft-form-hooks';
+import useDebounce from 'data/useDebounce';
 
-import { useFormContext } from 'react-hook-form';
 import styles from './sorteringVelger.less';
 
 interface OwnProps {
@@ -27,7 +26,7 @@ export const BelopSorteringValg: FunctionComponent<OwnProps & WrappedComponentPr
   hentAvdelingensSakslister,
   hentAntallOppgaver,
 }) => {
-  const { watch } = useFormContext();
+  const { watch } = formHooks.useFormContext();
   const fraVerdi = watch('fra');
   const tilVerdi = watch('til');
 
@@ -59,7 +58,7 @@ export const BelopSorteringValg: FunctionComponent<OwnProps & WrappedComponentPr
               name="fra"
               className={styles.dato}
               placeholder={intl.formatMessage({ id: 'SorteringVelger.Fra' })}
-              validate={[hasValidPosOrNegInteger(intl)]}
+              validate={[hasValidPosOrNegInteger]}
               bredde="XS"
               onChange={lagreFraDebounce}
             />
@@ -75,7 +74,7 @@ export const BelopSorteringValg: FunctionComponent<OwnProps & WrappedComponentPr
               name="til"
               className={styles.dato}
               placeholder={intl.formatMessage({ id: 'SorteringVelger.Til' })}
-              validate={[hasValidPosOrNegInteger(intl)]}
+              validate={[hasValidPosOrNegInteger]}
               bredde="XS"
               onChange={lagreTilDebounce}
             />

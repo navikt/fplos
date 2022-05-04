@@ -5,7 +5,7 @@ import { Undertittel, Normaltekst } from 'nav-frontend-typografi';
 
 import { restApiHooks, RestApiPathsKeys, RestApiGlobalStatePathsKeys } from 'data/fplosRestApi';
 import { åpneFagsak } from 'app/paths';
-import VerticalSpacer from 'sharedComponents/VerticalSpacer';
+import { VerticalSpacer } from '@navikt/ft-ui-komponenter';
 import Oppgave from 'types/saksbehandler/oppgaveTsType';
 
 const getClickEvent = (openFpsak: (oppgave: Oppgave) => void, oppgave: Oppgave) => () => openFpsak(oppgave);

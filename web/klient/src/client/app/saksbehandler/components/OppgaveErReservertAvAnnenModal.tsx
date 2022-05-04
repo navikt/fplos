@@ -4,11 +4,11 @@ import { Row, Column } from 'nav-frontend-grid';
 import { Hovedknapp } from 'nav-frontend-knapper';
 import { Normaltekst } from 'nav-frontend-typografi';
 
-import { getDateAndTime } from 'utils/dateUtils';
+import { getDateAndTime } from '@navikt/ft-utils';
 import OppgaveStatus from 'types/saksbehandler/oppgaveStatusTsType';
 import Oppgave from 'types/saksbehandler/oppgaveTsType';
-import Image from 'sharedComponents/Image';
-import Modal from 'sharedComponents/Modal';
+import { Image } from '@navikt/ft-ui-komponenter';
+import Modal from 'app/Modal';
 
 import advarselImageUrl from 'images/advarsel.svg';
 

@@ -7,9 +7,9 @@ import Panel from 'nav-frontend-paneler';
 
 import { restApiHooks, RestApiPathsKeys } from 'data/fplosRestApi';
 import styles from 'saksbehandler/behandlingskoer/components/menu/oppgaveReservasjonEndringDatoModal.less';
-import Modal from 'sharedComponents/Modal';
-import { dateAfterOrEqual, dateBeforeOrEqual, hasValidDate } from 'utils/validation/validators';
-import { Form, DatepickerField } from 'form/formIndex';
+import Modal from 'app/Modal';
+import { dateAfterOrEqual, dateBeforeOrEqual, hasValidDate } from '@navikt/ft-utils';
+import { Form, Datepicker } from '@navikt/ft-form-hooks';
 
 const thirtyDaysFromNow = () => {
   const result = new Date();
@@ -72,10 +72,10 @@ const OppgaveReservasjonEndringDatoModal: FunctionComponent<OwnProps & WrappedCo
           <h3>
             <FormattedMessage id="OppgaveReservasjonEndringDatoModal.Header" />
           </h3>
-          <DatepickerField
+          <Datepicker
             label=""
             name="reserverTil"
-            validate={[hasValidDate(intl), dateAfterOrEqual(intl, new Date()), dateBeforeOrEqual(intl, thirtyDaysFromNow())]}
+            validate={[hasValidDate, dateAfterOrEqual(new Date()), dateBeforeOrEqual(thirtyDaysFromNow())]}
             disabledDays={{ before: new Date(), after: thirtyDaysFromNow() }}
           />
           <Row className={styles.buttonRow}>

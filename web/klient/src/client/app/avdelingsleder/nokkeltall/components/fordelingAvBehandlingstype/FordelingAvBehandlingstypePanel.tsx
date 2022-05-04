@@ -3,14 +3,14 @@ import { FormattedMessage } from 'react-intl';
 import { useForm } from 'react-hook-form';
 import { Element } from 'nav-frontend-typografi';
 
-import VerticalSpacer from 'sharedComponents/VerticalSpacer';
+import { VerticalSpacer } from '@navikt/ft-ui-komponenter';
 import FagsakYtelseType from 'kodeverk/fagsakYtelseType';
 import KodeverkType from 'kodeverk/kodeverkTyper';
 import useKodeverk from 'data/useKodeverk';
-import StoreValuesInLocalStorage from 'form/StoreValuesInLocalStorage';
-import { Form, RadioGroupField, RadioOption } from 'form/formIndex';
+import StoreValuesInLocalStorage from 'data/StoreValuesInLocalStorage';
+import { Form, RadioGroupField, RadioOption } from '@navikt/ft-form-hooks';
 import OppgaverForAvdeling from 'types/avdelingsleder/oppgaverForAvdelingTsType';
-import KodeverkMedNavn from 'types/kodeverkMedNavnTsType';
+import { KodeverkMedNavn } from '@navikt/ft-types';
 import FordelingAvBehandlingstypeGraf from './FordelingAvBehandlingstypeGraf';
 
 const finnFagsakYtelseTypeNavn = (fagsakYtelseTyper: KodeverkMedNavn[], valgtFagsakYtelseType: string) => {

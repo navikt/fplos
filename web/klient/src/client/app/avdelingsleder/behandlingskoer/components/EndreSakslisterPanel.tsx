@@ -2,9 +2,8 @@ import React, { FunctionComponent, useCallback, useEffect } from 'react';
 import { injectIntl, FormattedMessage, WrappedComponentProps } from 'react-intl';
 import { Row, Column } from 'nav-frontend-grid';
 
-import Image from 'sharedComponents/Image';
+import { Image, VerticalSpacer } from '@navikt/ft-ui-komponenter';
 import { restApiHooks, RestApiPathsKeys } from 'data/fplosRestApi';
-import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import pilNedUrl from 'images/pil-ned.svg';
 import Saksliste from 'types/avdelingsleder/sakslisteAvdelingTsType';
 import Saksbehandler from 'types/avdelingsleder/saksbehandlerAvdelingTsType';

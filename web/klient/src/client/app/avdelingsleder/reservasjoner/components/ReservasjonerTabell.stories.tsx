@@ -18,7 +18,7 @@ export const ViseAtIngenReservasjonerBleFunnet = () => (
     reservasjoner={[]}
     opphevReservasjon={action('button-click') as () => Promise<string>}
     hentAvdelingensReservasjoner={action('button-click')}
-    alleKodeverk={alleKodeverk}
+    alleKodeverk={alleKodeverk as any}
   />
 );
 
@@ -48,7 +48,7 @@ export const VisTabellMedReservasjoner = () => {
       reservasjoner={reservasjoner}
       opphevReservasjon={opphevReservasjon as () => Promise<string>}
       hentAvdelingensReservasjoner={action('button-click')}
-      alleKodeverk={alleKodeverk}
+      alleKodeverk={alleKodeverk as any}
     />
   );
 };

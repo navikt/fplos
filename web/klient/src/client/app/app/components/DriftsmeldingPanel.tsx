@@ -4,7 +4,7 @@ import { Undertekst } from 'nav-frontend-typografi';
 import advarselImageUrl from 'images/advarsel-sirkel-fyll.svg';
 import Driftsmelding from 'types/driftsmeldingTsType';
 
-import Image from 'sharedComponents/Image';
+import { Image } from '@navikt/ft-ui-komponenter';
 import styles from './driftsmeldingPanel.less';
 
 interface OwnProps {

@@ -5,12 +5,10 @@ import { FormattedMessage } from 'react-intl';
 import { Normaltekst, Element } from 'nav-frontend-typografi';
 
 import { restApiHooks, RestApiPathsKeys } from 'data/fplosRestApi';
-import Image from 'sharedComponents/Image';
+import {
+  Table, TableRow, TableColumn, Image, VerticalSpacer,
+} from '@navikt/ft-ui-komponenter';
 import removeIcon from 'images/remove.svg';
-import VerticalSpacer from 'sharedComponents/VerticalSpacer';
-import Table from 'sharedComponents/table/Table';
-import TableRow from 'sharedComponents/table/TableRow';
-import TableColumn from 'sharedComponents/table/TableColumn';
 import Saksbehandler from 'types/avdelingsleder/saksbehandlerAvdelingTsType';
 import SletteSaksbehandlerModal from './SletteSaksbehandlerModal';
 

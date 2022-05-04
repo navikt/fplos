@@ -6,7 +6,7 @@ import { useForm } from 'react-hook-form';
 import { RestApiGlobalStatePathsKeys, RestApiPathsKeys } from 'data/fplosRestApi';
 import FagsakYtelseTypeVelger from 'avdelingsleder/behandlingskoer/components/sakslisteForm/FagsakYtelseTypeVelger';
 import fagsakYtelseType from 'kodeverk/fagsakYtelseType';
-import { Form } from 'form/formIndex';
+import { Form } from '@navikt/ft-form-hooks';
 
 import RestApiMock from 'storybookUtils/RestApiMock';
 import withIntl from 'storybookUtils/decorators/withIntl';

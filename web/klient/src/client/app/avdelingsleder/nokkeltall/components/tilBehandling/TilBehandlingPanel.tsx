@@ -7,16 +7,16 @@ import { Row, Column } from 'nav-frontend-grid';
 import isSameOrAfter from 'dayjs/plugin/isSameOrAfter';
 import isSameOrBefore from 'dayjs/plugin/isSameOrBefore';
 
-import VerticalSpacer from 'sharedComponents/VerticalSpacer';
+import { VerticalSpacer } from '@navikt/ft-ui-komponenter';
 import useKodeverk from 'data/useKodeverk';
 import FagsakYtelseType from 'kodeverk/fagsakYtelseType';
 import KodeverkType from 'kodeverk/kodeverkTyper';
 import OppgaveForDato from 'types/avdelingsleder/oppgaverForDatoTsType';
-import StoreValuesInLocalStorage from 'form/StoreValuesInLocalStorage';
+import StoreValuesInLocalStorage from 'data/StoreValuesInLocalStorage';
 import {
   Form, RadioGroupField, RadioOption, SelectField,
-} from 'form/formIndex';
-import KodeverkMedNavn from 'types/kodeverkMedNavnTsType';
+} from '@navikt/ft-form-hooks';
+import { KodeverkMedNavn } from '@navikt/ft-types';
 import TilBehandlingGraf, { OppgaveForDatoGraf } from './TilBehandlingGraf';
 
 import styles from './tilBehandlingPanel.less';
