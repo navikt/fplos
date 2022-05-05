@@ -178,16 +178,16 @@ public class JettyServer {
         ctx.setInitParameter("org.eclipse.jetty.servlet.Default.dirAllowed", "false");
         ctx.setAttribute("org.eclipse.jetty.server.webapp.WebInfIncludeJarPattern",
                 "^.*jersey-.*.jar$|^.*felles-.*.jar$");
-        //ctx.setAttribute("org.eclipse.jetty.annotations.multiThreaded", false);
+        ctx.setAttribute("org.eclipse.jetty.annotations.multiThreaded", false);
         ctx.setSecurityHandler(createSecurityHandler());
         updateMetaData(ctx.getMetaData());
         ctx.setThrowUnavailableOnStartupException(true);
         return ctx;
     }
 
-    private static ResourceCollection createResourceCollection() {
+    private static ResourceCollection createResourceCollection() throws IOException {
         return new ResourceCollection(
-                Resource.newClassPathResource(System.getProperty("klient", "./klient")),
+                Resource.newResource(System.getProperty("klient", "./klient")),
                 Resource.newClassPathResource("META-INF/resources/webjars/"),
                 Resource.newClassPathResource("/web"),
                 Resource.newClassPathResource("META-INF/resources")/** i18n */);
