@@ -187,13 +187,10 @@ public class JettyServer {
     }
 
     private static ResourceCollection createResourceCollection() throws IOException {
-        var resourceCollection = new ResourceCollection(
+        return new ResourceCollection(
+                Resource.newClassPathResource(System.getProperty("klient", "./klient")),
                 Resource.newClassPathResource("/META-INF/resources/webjars/"),
                 Resource.newClassPathResource("/web"));
-        if (!ENV.isLocal()) {
-            resourceCollection.addPath(System.getProperty("klient", "./klient"));
-        }
-        return resourceCollection;
     }
 
     private static SecurityHandler createSecurityHandler() {
