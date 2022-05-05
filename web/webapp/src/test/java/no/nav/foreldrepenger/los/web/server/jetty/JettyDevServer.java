@@ -1,101 +1,24 @@
 package no.nav.foreldrepenger.los.web.server.jetty;
 
-import static no.nav.foreldrepenger.dbstøtte.Databaseskjemainitialisering.migrer;
-import static no.nav.foreldrepenger.dbstøtte.Databaseskjemainitialisering.settJndiOppslag;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.List;
-
-import org.eclipse.jetty.server.Connector;
-import org.eclipse.jetty.server.SecureRequestCustomizer;
-import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.util.resource.Resource;
-import org.eclipse.jetty.util.resource.ResourceCollection;
-import org.eclipse.jetty.util.ssl.SslContextFactory;
-import org.eclipse.jetty.webapp.WebAppContext;
+import no.nav.foreldrepenger.konfig.Environment;
 
 public class JettyDevServer extends JettyServer {
 
-    /**
-     * @link https://docs.oracle.com/en/java/javase/11/security/java-secure-socket-extension-jsse-reference-guide.html
-     */
+
+    private static final Environment ENV = Environment.current();
 
     public static void main(String[] args) throws Exception {
-        var devServer = new JettyDevServer();
-        devServer.bootStrap();
+        jettyServer(args).bootStrap();
     }
 
-    public JettyDevServer() {
-        super(new JettyDevKonfigurasjon());
-    }
-
-    @Override
-    protected void konfigurerMiljø() {
-
-    }
-
-    @Override
-    protected void konfigurerSikkerhet() {
-        System.setProperty("conf", "src/main/resources/jetty/");
-        super.konfigurerSikkerhet();
-
-        initCryptoStoreConfig("truststore", "javax.net.ssl.trustStore", "javax.net.ssl.trustStorePassword", "changeit");
-    }
-
-    private static String initCryptoStoreConfig(String storeName, String storeProperty, String storePasswordProperty, String defaultPassword) {
-        var defaultLocation = getProperty("user.home", ".") + "/.modig/" + storeName + ".jks";
-        var storePath = getProperty(storeProperty, defaultLocation);
-        var storeFile = new File(storePath);
-        if (!storeFile.exists()) {
-            throw new IllegalStateException("Finner ikke " + storeName + " i " + storePath
-                    + "\n\tKonfigurer enten som System property \'" + storeProperty + "\' eller environment variabel \'"
-                    + storeProperty.toUpperCase().replace('.', '_') + "\'");
+    protected static JettyDevServer jettyServer(String[] args) {
+        if (args.length > 0) {
+            return new JettyDevServer(Integer.parseUnsignedInt(args[0]));
         }
-        var password = getProperty(storePasswordProperty, defaultPassword);
-        if (password == null) {
-            throw new IllegalStateException("Passord for å aksessere store " + storeName + " i " + storePath + " er null");
-        }
-
-        System.setProperty(storeProperty, storeFile.getAbsolutePath());
-        System.setProperty(storePasswordProperty, password);
-        return storePath;
+        return new JettyDevServer(ENV.getProperty("server.port", Integer.class, 8071));
     }
 
-    private static String getProperty(String key, String defaultValue) {
-        var val = System.getProperty(key, defaultValue);
-        if (val == null) {
-            val = System.getenv(key.toUpperCase().replace('.', '_'));
-            val = val == null ? defaultValue : val;
-        }
-        return val;
+    private JettyDevServer(int serverPort) {
+        super(serverPort);
     }
-
-    @Override
-    protected void konfigurerJndi() {
-        settJndiOppslag();
-    }
-
-    @Override
-    protected void migrerDatabaser() {
-        migrer();
-    }
-
-    @Override
-    protected WebAppContext createContext(AppKonfigurasjon appKonfigurasjon) throws IOException {
-        var webAppContext = super.createContext(appKonfigurasjon);
-        // https://www.eclipse.org/jetty/documentation/9.4.x/troubleshooting-locked-files-on-windows.html
-        webAppContext.setInitParameter("org.eclipse.jetty.servlet.Default.useFileMappedBuffer", "false");
-        return webAppContext;
-    }
-
-    @Override
-    protected ResourceCollection createResourceCollection() {
-        return new ResourceCollection(
-                Resource.newClassPathResource("/META-INF/resources/webjars/"),
-                Resource.newClassPathResource("/web"),
-                Resource.newClassPathResource("/META-INF/resources")/** i18n */
-        );
-    }
-
 }

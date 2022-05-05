@@ -1,4 +1,4 @@
-package no.nav.foreldrepenger.los.web.server.jetty;
+package no.nav.foreldrepenger.los.web.server.jetty.abac;
 
 import static no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.saksliste.FplosAbacAttributtType.SUBJECT_FELLES_ENHETIDLISTE;
 import static no.nav.vedtak.sikkerhet.abac.NavAbacCommonAttributter.RESOURCE_FELLES_DOMENE;
