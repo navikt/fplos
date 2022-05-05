@@ -156,7 +156,6 @@ public class JettyServer {
     }
 
     private static HttpConfiguration createHttpConfiguration() {
-        // Create HTTP Config
         var httpConfig = new HttpConfiguration();
         // Add support for X-Forwarded headers
         httpConfig.addCustomizer( new org.eclipse.jetty.server.ForwardedRequestCustomizer() );
@@ -177,7 +176,7 @@ public class JettyServer {
         ctx.setContextPath(CONTEXT_PATH);
         ctx.setBaseResource(createResourceCollection());
         ctx.setInitParameter("org.eclipse.jetty.servlet.Default.dirAllowed", "false");
-        ctx.setAttribute("org.eclipse.jetty.server.webapp.ContainerIncludeJarPattern",
+        ctx.setAttribute("org.eclipse.jetty.server.webapp.WebInfIncludeJarPattern",
                 "^.*jersey-.*.jar$|^.*felles-.*.jar$");
         ctx.setAttribute("org.eclipse.jetty.annotations.multiThreaded", false);
         ctx.setSecurityHandler(createSecurityHandler());
@@ -186,12 +185,12 @@ public class JettyServer {
         return ctx;
     }
 
-    private static ResourceCollection createResourceCollection() throws IOException {
+    private static ResourceCollection createResourceCollection() {
         return new ResourceCollection(
                 Resource.newClassPathResource(System.getProperty("klient", "./klient")),
-                Resource.newClassPathResource("/META-INF/resources/webjars/"),
+                Resource.newClassPathResource("META-INF/resources/webjars/"),
                 Resource.newClassPathResource("/web"),
-                Resource.newClassPathResource("/META-INF/resources")/** i18n */);
+                Resource.newClassPathResource("META-INF/resources")/** i18n */);
     }
 
     private static SecurityHandler createSecurityHandler() {
