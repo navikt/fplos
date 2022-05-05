@@ -1,4 +1,4 @@
-package no.nav.foreldrepenger.los.web.server.jetty;
+package no.nav.foreldrepenger.los.web.server.jetty.abac;
 
 import static no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.saksliste.FplosAbacAttributtType.RESOURCE_FORELDREPENGER_SAK_AKSJONSPUNKT_TYPE;
 import static no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.saksliste.FplosAbacAttributtType.RESOURCE_FORELDREPENGER_SAK_ANSVARLIG_SAKSBEHANDLER;
