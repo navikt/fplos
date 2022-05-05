@@ -190,7 +190,8 @@ public class JettyServer {
         return new ResourceCollection(
                 Resource.newClassPathResource(System.getProperty("klient", "./klient")),
                 Resource.newClassPathResource("/META-INF/resources/webjars/"),
-                Resource.newClassPathResource("/web"));
+                Resource.newClassPathResource("/web"),
+                Resource.newClassPathResource("/META-INF/resources")/** i18n */);
     }
 
     private static SecurityHandler createSecurityHandler() {
