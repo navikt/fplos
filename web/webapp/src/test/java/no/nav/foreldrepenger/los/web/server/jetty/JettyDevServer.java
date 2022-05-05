@@ -4,7 +4,6 @@ import no.nav.foreldrepenger.konfig.Environment;
 
 public class JettyDevServer extends JettyServer {
 
-
     private static final Environment ENV = Environment.current();
 
     public static void main(String[] args) throws Exception {
