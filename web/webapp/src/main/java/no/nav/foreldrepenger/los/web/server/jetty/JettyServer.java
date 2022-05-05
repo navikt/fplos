@@ -178,7 +178,7 @@ public class JettyServer {
         ctx.setInitParameter("org.eclipse.jetty.servlet.Default.dirAllowed", "false");
         ctx.setAttribute("org.eclipse.jetty.server.webapp.WebInfIncludeJarPattern",
                 "^.*jersey-.*.jar$|^.*felles-.*.jar$");
-        ctx.setAttribute("org.eclipse.jetty.annotations.multiThreaded", false);
+        //ctx.setAttribute("org.eclipse.jetty.annotations.multiThreaded", false);
         ctx.setSecurityHandler(createSecurityHandler());
         updateMetaData(ctx.getMetaData());
         ctx.setThrowUnavailableOnStartupException(true);
