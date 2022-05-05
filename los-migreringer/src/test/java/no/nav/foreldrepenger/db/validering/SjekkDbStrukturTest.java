@@ -1,6 +1,5 @@
 package no.nav.foreldrepenger.db.validering;
 
-import static no.nav.foreldrepenger.dbstøtte.Databaseskjemainitialisering.dbProperties;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.ArrayList;
@@ -25,10 +24,8 @@ public class SjekkDbStrukturTest {
 
     @BeforeAll
     public static void setup() {
-        var dbconp = dbProperties(Databaseskjemainitialisering.DEFAULT_DS_NAME,
-                Databaseskjemainitialisering.JUNIT_SCHEMA);
-        ds = dbconp.dataSource();
-        schema = dbconp.schema();
+        ds = Databaseskjemainitialisering.initUnitTestDataSource();
+        schema = Databaseskjemainitialisering.USER;
     }
 
     @Test
