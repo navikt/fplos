@@ -5,7 +5,7 @@ import Panel from 'nav-frontend-paneler';
 import BehandlingType from 'kodeverk/behandlingType';
 import OppgaverForAvdeling from 'types/avdelingsleder/oppgaverForAvdelingTsType';
 
-import { ReactECharts } from '@navikt/ft-ui-komponenter';
+import ReactECharts from 'app/ReactECharts';
 import { KodeverkMedNavn } from '@navikt/ft-types';
 
 const behandlingstypeOrder = [
