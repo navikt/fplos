@@ -14,7 +14,7 @@ import {
 import Modal from 'app/Modal';
 import {
   hasValidText, maxLength, minLength, required,
-} from '@navikt/ft-utils';
+} from '@navikt/ft-form-validators';
 import SaksbehandlerForFlytting from 'types/saksbehandler/saksbehandlerForFlyttingTsType';
 import { Form, TextAreaField, InputField } from '@navikt/ft-form-hooks';
 

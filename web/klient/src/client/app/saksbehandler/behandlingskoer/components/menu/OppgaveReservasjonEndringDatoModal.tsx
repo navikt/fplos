@@ -8,7 +8,7 @@ import Panel from 'nav-frontend-paneler';
 import { restApiHooks, RestApiPathsKeys } from 'data/fplosRestApi';
 import styles from 'saksbehandler/behandlingskoer/components/menu/oppgaveReservasjonEndringDatoModal.less';
 import Modal from 'app/Modal';
-import { dateAfterOrEqual, dateBeforeOrEqual, hasValidDate } from '@navikt/ft-utils';
+import { dateAfterOrEqual, dateBeforeOrEqual, hasValidDate } from '@navikt/ft-form-validators';
 import { Form, Datepicker } from '@navikt/ft-form-hooks';
 
 const thirtyDaysFromNow = () => {

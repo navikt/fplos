@@ -1496,19 +1496,19 @@
   resolved "https://registry.yarnpkg.com/@emotion/weak-memoize/-/weak-memoize-0.2.5.tgz#8eed982e2ee6f7f4e44c253e12962980791efd46"
   integrity sha512-6U71C2Wp7r5XtFtQzYrW5iKFT67OixrSxjI4MptCHzdSVlgabczzqLe0ZSgnub/5Kp4hSbpDB1tMytZY9pwxxA==
 
-"@eslint/eslintrc@^1.2.2":
-  version "1.2.2"
-  resolved "https://registry.yarnpkg.com/@eslint/eslintrc/-/eslintrc-1.2.2.tgz#4989b9e8c0216747ee7cca314ae73791bb281aae"
-  integrity sha512-lTVWHs7O2hjBFZunXTZYnYqtB9GakA1lnxIf+gKq2nY5gxkkNi/lQvveW6t8gFdOHTg6nG50Xs95PrLqVpcaLg==
+"@eslint/eslintrc@^1.2.3":
+  version "1.2.3"
+  resolved "https://registry.yarnpkg.com/@eslint/eslintrc/-/eslintrc-1.2.3.tgz#fcaa2bcef39e13d6e9e7f6271f4cc7cae1174886"
+  integrity sha512-uGo44hIwoLGNyduRpjdEpovcbMdd+Nv7amtmJxnKmI8xj6yd5LncmSwDa5NgX/41lIFJtkjD6YdVfgEzPfJ5UA==
   dependencies:
     ajv "^6.12.4"
     debug "^4.3.2"
-    espree "^9.3.1"
+    espree "^9.3.2"
     globals "^13.9.0"
     ignore "^5.2.0"
     import-fresh "^3.2.1"
     js-yaml "^4.1.0"
-    minimatch "^3.0.4"
+    minimatch "^3.1.2"
     strip-json-comments "^3.1.1"
 
 "@floating-ui/core@^0.6.2":
@@ -2070,26 +2070,26 @@
     call-me-maybe "^1.0.1"
     glob-to-regexp "^0.3.0"
 
-"@navikt/ds-css@^0.17.0":
-  version "0.17.0"
-  resolved "https://npm.pkg.github.com/download/@navikt/ds-css/0.17.0/0595bee3e05c4a2a399a082ab5d868838c27ade973de053c9945bb81967c9616#49fbc36fd11d01bc5e9bd4a59e8387e903ac3002"
-  integrity sha512-dT28NGB0toDer5KsSnIib+ACP2n/AG11vFbwI9gTTuZNo6pP2VRP2WbiXUB7mUO7BJcleMXl7ALkILwv5q0aVw==
+"@navikt/ds-css@^0.17.1":
+  version "0.17.1"
+  resolved "https://npm.pkg.github.com/download/@navikt/ds-css/0.17.1/31eada8a80f477edfb7edb51320b2cde8549b019ed03cb89563115e96a1eb91c#edaade6b3c027d233662f95709d8cd522d458433"
+  integrity sha512-GEr8jvkmKXja0cYIJYdyt7K/aE6FSlmb9VUNsl6BBlSNiSIsM7RO/lzRiF5QJOSHBJmdcY0cPqeaIUsAoyyUkg==
 
-"@navikt/ds-icons@^0.8.11", "@navikt/ds-icons@^0.8.7":
-  version "0.8.11"
-  resolved "https://npm.pkg.github.com/download/@navikt/ds-icons/0.8.11/9d23d99d977655dbf28547b15069539716f76f9dd23239eed7cfdca1f9de9564#b9e2e62d0c6145f86c9688a59c97049657af80cb"
-  integrity sha512-1oO4hp1wnJUgLlw/YqT5w+N2UAhEBNuoOD+ngY3QhoQAyj6MLsIkw/778hD93qZAB5f2msfFvDqLUsYOSCHCdQ==
+"@navikt/ds-icons@^0.8.12":
+  version "0.8.12"
+  resolved "https://npm.pkg.github.com/download/@navikt/ds-icons/0.8.12/eec20f24488fe707842f2c7b0d6d41c5bc15853b4bed4f0cf33051d76a9b1dc9#de50a9d1230214e47c970be8344cd1f3cca491e3"
+  integrity sha512-RcLrUOiJpdhiVKhpfV7NpciLU91CLCa5X/Vcze1o2q29iWrLU1tsp441IXLeHVc+4ESr65+KUb9WjAKuKXaCAw==
   dependencies:
     uuid "^8.3.2"
 
-"@navikt/ds-react@^0.18.3":
-  version "0.18.3"
-  resolved "https://npm.pkg.github.com/download/@navikt/ds-react/0.18.3/b24af0e2ab401b42cb44be0d5e9e6814c55dbe1803063a407340cc527d463c6d#ab2e997e589da412da138deef54d33947b0b2e4f"
-  integrity sha512-c+ffL3fMU4jVJGTdV9q/Q1YM4+xAa9280TlFRWIWGUzsodhiS0Bh4Dm+uuyMfvizPEz8Dfyyg4zOH0LA7aWdBg==
+"@navikt/ds-react@^0.18.6":
+  version "0.18.6"
+  resolved "https://npm.pkg.github.com/download/@navikt/ds-react/0.18.6/5076702ba67b3cce6939b1de9fcc7b6769c6471406739d61770ce28ceaf4297e#8598a46afc6e80ce338c1453d43d112331230d38"
+  integrity sha512-VfPdiB9ozDAN8XPF/ZLOLIFa8CkfSvnveFycHaQb7dvCCgf5Mvqbdp7KYq43210HsHk0fhB7p+dJmKcVgPb6lw==
   dependencies:
     "@floating-ui/react-dom" "0.6.0"
     "@material-ui/core" "^4.12.3"
-    "@navikt/ds-icons" "^0.8.11"
+    "@navikt/ds-icons" "^0.8.12"
     "@popperjs/core" "^2.10.1"
     "@radix-ui/react-tabs" "0.1.5"
     "@radix-ui/react-toggle-group" "0.1.5"
@@ -2105,18 +2105,19 @@
   resolved "https://npm.pkg.github.com/download/@navikt/fnrvalidator/1.1.4/57aacaca4b4d6c045625ec4e86cc6029f566f6388de258d45f93ef027f888219#b2ce64cb24b3726f715eee110f9f3fde37b907f7"
   integrity sha512-EZBwlNhp886E57GuknLB6G9Bnv4nl+e5K12B/2BeLpWZENxCmcQ+5oFvIThvEsU+LVOdfJxxGOxSvrwe5ZB3pQ==
 
-"@navikt/ft-form-hooks@1.0.7":
-  version "1.0.7"
-  resolved "https://npm.pkg.github.com/download/@navikt/ft-form-hooks/1.0.7/fa80fd293c61be97fce820a0c8928b0432b73c3cb219e1debca0ec6af73a222e#2208c22ec4e7229cf1a9ee4334ee5e8cc8a55a58"
-  integrity sha512-ZR+AHdDydkjTdGIFB4VY6a59DYuOnOj/M/4YpIT7c0W4NzawKFIitpoRQkrVjjeM9yZAw/G8pKSaJW8aHJSk1Q==
+"@navikt/ft-form-hooks@1.0.9":
+  version "1.0.9"
+  resolved "https://npm.pkg.github.com/download/@navikt/ft-form-hooks/1.0.9/f51f534f140246f77100531a9f12efe84c29b2a1c88e0b224870c2d53d63d5c6#3eb270371a7fe210d7419e21ab08932de708d71a"
+  integrity sha512-sjhSk4wW62ol8l4+oaV+oIZbDCr7ZAgSqMTkm0iu5TwfCIG1h26MsVXN+4uQnMMKK74qLFzY+oUTOn+Nu0EIuQ==
   dependencies:
-    "@navikt/ft-types" "^1.0.4"
-    "@navikt/ft-ui-komponenter" "^1.0.6"
-    "@navikt/ft-utils" "^1.0.5"
+    "@navikt/ft-form-validators" "^1.0.2"
+    "@navikt/ft-types" "^1.0.6"
+    "@navikt/ft-ui-komponenter" "^1.0.8"
+    "@navikt/ft-utils" "^1.0.7"
     classnames "2.3.1"
-    dayjs "1.11.1"
+    dayjs "1.11.2"
     lodash.throttle "4.1.1"
-    nav-datovelger "12.4.0"
+    nav-datovelger "12.4.1"
     nav-frontend-core "6.0.1"
     nav-frontend-etiketter "3.0.2"
     nav-frontend-etiketter-style "2.0.2"
@@ -2134,37 +2135,44 @@
     react "17.0.2"
     react-hook-form "7.30.0"
 
-"@navikt/ft-kodeverk@^1.0.2":
+"@navikt/ft-form-validators@1.0.2", "@navikt/ft-form-validators@^1.0.2":
   version "1.0.2"
-  resolved "https://npm.pkg.github.com/download/@navikt/ft-kodeverk/1.0.2/a7cab69aea91d24f60138cceccc65152f782acf02aa06abb5da119fe4e0d38e8#870d2cd357a3b584f6e4238fad75192ba4e77c8b"
-  integrity sha512-zg5O6HIOUjS3qNDEi/pvAAo07JSN/2aYCsnf5xckVWGekqQDIp5CoKuh2EaAcpvGqqRPZwX1S2OQJpWMkjdZYA==
-
-"@navikt/ft-plattform-komponenter@1.0.4":
-  version "1.0.4"
-  resolved "https://npm.pkg.github.com/download/@navikt/ft-plattform-komponenter/1.0.4/62af3552dc6c6cae66ef804a45130d71f0cdc4c11630f6a00a4da76c51df0214#45b3bcc68670bf912ddc3d0eba26984b3273e6fa"
-  integrity sha512-MAYoW3j1JYY9fHYhuCshSRWW2uhmVMO4e+tkD1PyGu9pVwQhpYI/XYzr5wspPMjKJp1ykerBVCMLMh/dlQ7ElA==
+  resolved "https://npm.pkg.github.com/download/@navikt/ft-form-validators/1.0.2/198afdb9c5ce255469043e69855ba2f6f047c634200bbc993223d8d9172db960#d36d1f778c924ba35a081a1f650bae540232deaf"
+  integrity sha512-osnnSOWa9VbTWvgL4JFpJEz2eyn8Ega1CMSBiw7MSCwHxLjuNrFYoFiZAMIj+zvAGtRfU34nSlzfNMNVRWPH5g==
   dependencies:
-    "@navikt/ds-css" "^0.17.0"
-    "@navikt/ds-icons" "^0.8.7"
-    "@navikt/ds-react" "^0.18.3"
-    "@navikt/ft-utils" "^1.0.5"
+    "@navikt/ft-utils" "^1.0.7"
+    moment "2.29.3"
 
-"@navikt/ft-types@^1.0.4":
+"@navikt/ft-kodeverk@^1.0.4":
   version "1.0.4"
-  resolved "https://npm.pkg.github.com/download/@navikt/ft-types/1.0.4/27d39f247776df85cd7558df316d552e6448e9a506c64a3235bc4aa8b2b24ab4#85b1ddac1afb91cdea7b390be71fb5521d0116d3"
-  integrity sha512-kui8cO5tURztoAnMLoMRbwKELMD3pJJKXZB4FLQ+dZCeETb9/G4Es0d3HSSpijKQdrvcwZp0eqXnzZjjzUGIWw==
-  dependencies:
-    "@navikt/ft-kodeverk" "^1.0.2"
+  resolved "https://npm.pkg.github.com/download/@navikt/ft-kodeverk/1.0.4/b60068c6f926d988459e2304f51e8ffb126b02e6ee5d7eede98e9542f26b3c51#2d55405699eb097dd06300609f68b6ab072f0bbd"
+  integrity sha512-hAKFege7nvzDUBDioxXbXZcxf8YxGQU5AViStKEbvBegMDW/7MZAxbrAf+F5TfBJXj8s5XAhciSyT76FNBpi/A==
 
-"@navikt/ft-ui-komponenter@1.0.6", "@navikt/ft-ui-komponenter@^1.0.6":
+"@navikt/ft-plattform-komponenter@1.0.6":
   version "1.0.6"
-  resolved "https://npm.pkg.github.com/download/@navikt/ft-ui-komponenter/1.0.6/04ceb5466d8194600b50b78c27b52ef8e43454fd2ba01c7edabaef27f174da51#8d42c7fb1c2df9fed7755322348ec5a70c1268a9"
-  integrity sha512-8IvyJFRrLK+1OyVxqgGQ9yRjPAt7pl2m/MIVV5ZOsAdmJliVl7khs0Wf394LYslfBFOJEdLJIoqt8i/irsuuQQ==
+  resolved "https://npm.pkg.github.com/download/@navikt/ft-plattform-komponenter/1.0.6/f092e36e9c9a47302ef89b86793a7e0d65d96d8a698b4f05baac6d97d1758f3d#5c3b46b15c91ad0700e2678d35a242626491e8d9"
+  integrity sha512-3x3gHsLa2fUIB/xoxlUD6tPzpbG3J/dx4kpN87Zy6xU7o3qN7IyvqLStO6XNc5CUZFZb3KcpNRIKH4cObTAi/A==
+  dependencies:
+    "@navikt/ds-css" "^0.17.1"
+    "@navikt/ds-icons" "^0.8.12"
+    "@navikt/ds-react" "^0.18.6"
+    "@navikt/ft-utils" "^1.0.7"
+
+"@navikt/ft-types@^1.0.6":
+  version "1.0.6"
+  resolved "https://npm.pkg.github.com/download/@navikt/ft-types/1.0.6/4b1fc957448531b8619837b8a958cd03e6b97b55a8eefe7c6723bcf56062680d#de0c101267a3ff2d481b86abb59ec6d7b2a6f2eb"
+  integrity sha512-/eV8fsP2py3F9AzEm79qXjZcsFoK87ZLpXAr5zkAslmHacaT2ztq01dKr7QFvWDwkgQy48cHQrRwCCkGMrMKNA==
+  dependencies:
+    "@navikt/ft-kodeverk" "^1.0.4"
+
+"@navikt/ft-ui-komponenter@1.0.8", "@navikt/ft-ui-komponenter@^1.0.8":
+  version "1.0.8"
+  resolved "https://npm.pkg.github.com/download/@navikt/ft-ui-komponenter/1.0.8/72c58af138713339135a78158aafaa154568888f754d0a0bb20dae4551b52d5b#9d09333ce327ca3080dd1fdb12c1b5896c34117b"
+  integrity sha512-MdqQK+9hYfGbT0TdgYHXuP1jrEzjAQf6onOqyCtdupLLM56CjzPgDl6VqVaazUil84HgDgH1myI04rbY18Knpw==
   dependencies:
     "@navikt/fnrvalidator" "1.1.4"
-    "@navikt/ft-utils" "^1.0.5"
+    "@navikt/ft-utils" "^1.0.7"
     classnames "2.3.1"
-    echarts "5.3.2"
     moment "2.29.3"
     nav-frontend-core "6.0.1"
     nav-frontend-grid "2.0.1"
@@ -2192,14 +2200,14 @@
     react-intl "5.24.8"
     react-modal "3.15.1"
 
-"@navikt/ft-utils@1.0.5", "@navikt/ft-utils@^1.0.5":
-  version "1.0.5"
-  resolved "https://npm.pkg.github.com/download/@navikt/ft-utils/1.0.5/5201821f1a906d96fc4831e6f3b9f33015ee4dc4a4cbfe88512b842fa6a509e2#f957ef5e4523f16a1710bdc52b29b26a1b0b3cdb"
-  integrity sha512-t/sornwmSzilgVJTtirD0EZJWAHRtych4EiutFv5BKdUcnr5zomOCeS0verLLOo3dkJ4IT3nmuwKu09U8Br7Hw==
+"@navikt/ft-utils@1.0.7", "@navikt/ft-utils@^1.0.7":
+  version "1.0.7"
+  resolved "https://npm.pkg.github.com/download/@navikt/ft-utils/1.0.7/6ef576d9570982feb886ae108f50bd13d23a54a1a261ce150bac545da7baa5e6#18812ed4eb234bf6e57decab0616ac4baef4a840"
+  integrity sha512-l4MkOicS0iLhI5Haesp1MkeF8eNHAGW+v3LTYZ6xbWzYFo+pyKKXR5gxyPS83EsUVP5X5SPkWfITUgyt85bQ3g==
   dependencies:
-    "@navikt/ft-kodeverk" "^1.0.2"
-    "@navikt/ft-types" "^1.0.4"
-    dayjs "1.11.1"
+    "@navikt/ft-kodeverk" "^1.0.4"
+    "@navikt/ft-types" "^1.0.6"
+    dayjs "1.11.2"
     moment "2.29.3"
     react-intl "5.24.8"
 
@@ -4413,7 +4421,7 @@ acorn-import-assertions@^1.7.6:
   resolved "https://registry.yarnpkg.com/acorn-import-assertions/-/acorn-import-assertions-1.8.0.tgz#ba2b5939ce62c238db6d93d81c9b111b29b855e9"
   integrity sha512-m7VZ3jwz4eK6A4Vtt8Ew1/mNbP24u0FhdyfA7fSvnJR6LMdfOYnmuIrrJAgrYfYJ10F/otaHTtrtrtmHdMNzEw==
 
-acorn-jsx@^5.3.1:
+acorn-jsx@^5.3.1, acorn-jsx@^5.3.2:
   version "5.3.2"
   resolved "https://registry.yarnpkg.com/acorn-jsx/-/acorn-jsx-5.3.2.tgz#7ed5bb55908b3b2f1bc55c6af1653bada7f07937"
   integrity sha512-rq9s+JNhf0IChjtDXxllJ7g41oZk5SlXtp0LHwyA5cejwn7vKmKp4pPri6YEePv2PU65sAsegbXtIinmDFDXgQ==
@@ -4433,10 +4441,15 @@ acorn@^7.1.1, acorn@^7.4.1:
   resolved "https://registry.yarnpkg.com/acorn/-/acorn-7.4.1.tgz#feaed255973d2e77555b83dbc08851a6c63520fa"
   integrity sha512-nQyp0o1/mNdbTO1PO6kHkwSrmgZ0MT/jCCpNiwbUjGoRN4dlBhqJtoQuCnEOKzgTVwg0ZWiCoQy6SxMebQVh8A==
 
-acorn@^8.2.4, acorn@^8.4.1, acorn@^8.5.0, acorn@^8.7.0:
+acorn@^8.2.4, acorn@^8.4.1, acorn@^8.5.0:
   version "8.7.0"
   resolved "https://registry.yarnpkg.com/acorn/-/acorn-8.7.0.tgz#90951fde0f8f09df93549481e5fc141445b791cf"
   integrity sha512-V/LGr1APy+PXIwKebEWrkZPwoeoF+w1jiOBUmuxuiUIaOHtob8Qc9BTrYo7VuI5fR8tqsy+buA2WFooR5olqvQ==
+
+acorn@^8.7.1:
+  version "8.7.1"
+  resolved "https://registry.yarnpkg.com/acorn/-/acorn-8.7.1.tgz#0197122c843d1bf6d0a5e83220a788f278f63c30"
+  integrity sha512-Xx54uLJQZ19lKygFXOWsscKUbsBZW0CPykPhVQdhIeIwrbPmJzqeASDInc8nKBnp/JT6igTs82qPXz069H8I/A==
 
 address@^1.0.1:
   version "1.1.2"
@@ -4816,7 +4829,7 @@ async-limiter@~1.0.0:
   resolved "https://registry.yarnpkg.com/async-limiter/-/async-limiter-1.0.1.tgz#dd379e94f0db8310b08291f9d64c3209766617fd"
   integrity sha512-csOlWGAcRFJaI6m+F2WKdnMKr4HhdhFVBk0H/QbJFMCr+uO2kwohwXQPxw/9OCxp05r5ghVBFSyioixx3gfkNQ==
 
-async@2.6.4, async@^2.1.4, async@^2.6.2:
+async@2.6.4, async@^2.1.4:
   version "2.6.4"
   resolved "https://registry.yarnpkg.com/async/-/async-2.6.4.tgz#706b7ff6084664cd7eae713f6f965433b5504221"
   integrity sha512-mzo5dfJYwAn29PeiJ0zvwTo04zj8HDJj0Mn8TD7sno7q12prdbnasKJHhkm2c1LgrhlJ0teaea8860oxi51mGA==
@@ -6492,10 +6505,10 @@ data-urls@^3.0.1:
     whatwg-mimetype "^3.0.0"
     whatwg-url "^10.0.0"
 
-dayjs@1.11.1:
-  version "1.11.1"
-  resolved "https://registry.yarnpkg.com/dayjs/-/dayjs-1.11.1.tgz#90b33a3dda3417258d48ad2771b415def6545eb0"
-  integrity sha512-ER7EjqVAMkRRsxNCC5YqJ9d9VQYuWdGt7aiH2qA5R5wt8ZmWaP2dLUSIK6y/kVzLMlmh1Tvu5xUf4M/wdGJ5KA==
+dayjs@1.11.2:
+  version "1.11.2"
+  resolved "https://registry.yarnpkg.com/dayjs/-/dayjs-1.11.2.tgz#fa0f5223ef0d6724b3d8327134890cfe3d72fbe5"
+  integrity sha512-F4LXf1OeU9hrSYRPTTj/6FbO4HTjPKXvEIC1P2kcnFurViINCVk3ZV0xAS3XVx9MkMsXbbqlK6hjseaYbgKEHw==
 
 debug@2.6.9, debug@^2.2.0, debug@^2.3.3, debug@^2.6.0, debug@^2.6.9:
   version "2.6.9"
@@ -6511,7 +6524,7 @@ debug@4, debug@^4.1.0, debug@^4.1.1, debug@^4.3.2:
   dependencies:
     ms "2.1.2"
 
-debug@^3.0.0, debug@^3.1.1, debug@^3.2.6, debug@^3.2.7:
+debug@^3.0.0, debug@^3.2.6, debug@^3.2.7:
   version "3.2.7"
   resolved "https://registry.yarnpkg.com/debug/-/debug-3.2.7.tgz#72580b7e9145fb39b6676f9c5e5fb100b934179a"
   integrity sha512-CFjzYYAi4ThfiQvizrFQevTTXHtnCqWfe7x1AhgEscTz6ZbLbfoLRLPugTQyBth6f8ZERVUSyWHFD/7Wu4t1XQ==
@@ -7195,10 +7208,10 @@ eslint-plugin-import@2.26.0:
     resolve "^1.22.0"
     tsconfig-paths "^3.14.1"
 
-eslint-plugin-jest@26.1.4:
-  version "26.1.4"
-  resolved "https://registry.yarnpkg.com/eslint-plugin-jest/-/eslint-plugin-jest-26.1.4.tgz#8e3410093ff4439d0c3a371add5bf9e05623a57a"
-  integrity sha512-wgqxujmqc2qpvZqMFWCh6Cniqc8lWpapvXt9j/19DmBDqeDaYhJrSRezYR1SKyemvjx+9e9kny/dgRahraHImA==
+eslint-plugin-jest@26.1.5:
+  version "26.1.5"
+  resolved "https://registry.yarnpkg.com/eslint-plugin-jest/-/eslint-plugin-jest-26.1.5.tgz#6cfca264818d6d6aa120b019dab4d62b6aa8e775"
+  integrity sha512-su89aDuljL9bTjEufTXmKUMSFe2kZUL9bi7+woq+C2ukHZordhtfPm4Vg+tdioHBaKf8v3/FXW9uV0ksqhYGFw==
   dependencies:
     "@typescript-eslint/utils" "^5.10.0"
 
@@ -7245,10 +7258,10 @@ eslint-plugin-react@7.29.4:
     semver "^6.3.0"
     string.prototype.matchall "^4.0.6"
 
-eslint-plugin-testing-library@5.3.1:
-  version "5.3.1"
-  resolved "https://registry.yarnpkg.com/eslint-plugin-testing-library/-/eslint-plugin-testing-library-5.3.1.tgz#7638ee79cc86fd8bb57d671af35a1cbaa77e9548"
-  integrity sha512-OfF4dlG/q6ck6DL3P8Z0FPdK0dU5K57gsBu7eUcaVbwYKaNzjgejnXiM9CCUevppORkvfek+9D3Uj/9ZZ8Vz8g==
+eslint-plugin-testing-library@5.4.0:
+  version "5.4.0"
+  resolved "https://registry.yarnpkg.com/eslint-plugin-testing-library/-/eslint-plugin-testing-library-5.4.0.tgz#614767a470bc9ffa4b4308cdbc31d3ec6f6a99ad"
+  integrity sha512-XjxIf4g33KaZXxRNbR33+0WcRQ/zt8N0R58IY6/kkHnrY6zPsC1gs3u5cTZr5eUmCZN/sjoPak3uF5vHGKg2wg==
   dependencies:
     "@typescript-eslint/utils" "^5.13.0"
 
@@ -7304,12 +7317,12 @@ eslint-webpack-plugin@3.1.1:
     normalize-path "^3.0.0"
     schema-utils "^3.1.1"
 
-eslint@8.14.0:
-  version "8.14.0"
-  resolved "https://registry.yarnpkg.com/eslint/-/eslint-8.14.0.tgz#62741f159d9eb4a79695b28ec4989fcdec623239"
-  integrity sha512-3/CE4aJX7LNEiE3i6FeodHmI/38GZtWCsAtsymScmzYapx8q1nVVb+eLcLSzATmCPXw5pT4TqVs1E0OmxAd9tw==
+eslint@8.15.0:
+  version "8.15.0"
+  resolved "https://registry.yarnpkg.com/eslint/-/eslint-8.15.0.tgz#fea1d55a7062da48d82600d2e0974c55612a11e9"
+  integrity sha512-GG5USZ1jhCu8HJkzGgeK8/+RGnHaNYZGrGDzUtigK3BsGESW/rs2az23XqE0WVwDxy1VRvvjSSGu5nB0Bu+6SA==
   dependencies:
-    "@eslint/eslintrc" "^1.2.2"
+    "@eslint/eslintrc" "^1.2.3"
     "@humanwhocodes/config-array" "^0.9.2"
     ajv "^6.10.0"
     chalk "^4.0.0"
@@ -7320,7 +7333,7 @@ eslint@8.14.0:
     eslint-scope "^7.1.1"
     eslint-utils "^3.0.0"
     eslint-visitor-keys "^3.3.0"
-    espree "^9.3.1"
+    espree "^9.3.2"
     esquery "^1.4.0"
     esutils "^2.0.2"
     fast-deep-equal "^3.1.3"
@@ -7336,7 +7349,7 @@ eslint@8.14.0:
     json-stable-stringify-without-jsonify "^1.0.1"
     levn "^0.4.1"
     lodash.merge "^4.6.2"
-    minimatch "^3.0.4"
+    minimatch "^3.1.2"
     natural-compare "^1.4.0"
     optionator "^0.9.1"
     regexpp "^3.2.0"
@@ -7345,13 +7358,13 @@ eslint@8.14.0:
     text-table "^0.2.0"
     v8-compile-cache "^2.0.3"
 
-espree@^9.3.1:
-  version "9.3.1"
-  resolved "https://registry.yarnpkg.com/espree/-/espree-9.3.1.tgz#8793b4bc27ea4c778c19908e0719e7b8f4115bcd"
-  integrity sha512-bvdyLmJMfwkV3NCRl5ZhJf22zBFo1y8bYh3VYb+bfzqNB4Je68P2sSuXyuFquzWLebHpNd2/d5uv7yoP9ISnGQ==
+espree@^9.3.2:
+  version "9.3.2"
+  resolved "https://registry.yarnpkg.com/espree/-/espree-9.3.2.tgz#f58f77bd334731182801ced3380a8cc859091596"
+  integrity sha512-D211tC7ZwouTIuY5x9XnS0E9sWNChB7IYKX/Xp5eQj3nFXhqmiUDB9q27y76oFl8jTg3pXcQx/bpxMfs3CIZbA==
   dependencies:
-    acorn "^8.7.0"
-    acorn-jsx "^5.3.1"
+    acorn "^8.7.1"
+    acorn-jsx "^5.3.2"
     eslint-visitor-keys "^3.3.0"
 
 esprima@^4.0.0, esprima@^4.0.1, esprima@~4.0.0:
@@ -10890,7 +10903,7 @@ mixin-deep@^1.2.0:
     for-in "^1.0.2"
     is-extendable "^1.0.1"
 
-mkdirp@^0.5.1, mkdirp@^0.5.3, mkdirp@^0.5.4, mkdirp@^0.5.5:
+mkdirp@^0.5.1, mkdirp@^0.5.3, mkdirp@^0.5.4:
   version "0.5.5"
   resolved "https://registry.yarnpkg.com/mkdirp/-/mkdirp-0.5.5.tgz#d91cefd62d1436ca0f41620e251288d420099def"
   integrity sha512-NKmAlESf6jMGym1++R0Ra7wvhV+wFW63FaSOFPwRahvea0gMUcGUhVeAg/0BC0wiv9ih5NYPB1Wn1UEI1/L+xQ==
@@ -10991,10 +11004,10 @@ natural-compare@^1.4.0:
   resolved "https://registry.yarnpkg.com/natural-compare/-/natural-compare-1.4.0.tgz#4abebfeed7541f2c27acfb29bdbbd15c8d5ba4f7"
   integrity sha1-Sr6/7tdUHywnrPspvbvRXI1bpPc=
 
-nav-datovelger@12.4.0:
-  version "12.4.0"
-  resolved "https://registry.yarnpkg.com/nav-datovelger/-/nav-datovelger-12.4.0.tgz#0b88c378cd061387708a07a52578a6128875c232"
-  integrity sha512-nPHlxkL8zo7nHThFOprx3YuNHpFqJvS8RS1aDuTeEAdB3YOoNTmD222y3rZF+LtZKfMDndXsLotfM8nh3Ai08w==
+nav-datovelger@12.4.1:
+  version "12.4.1"
+  resolved "https://registry.yarnpkg.com/nav-datovelger/-/nav-datovelger-12.4.1.tgz#daf49751284ef3cc06f1844c277da0989480b450"
+  integrity sha512-/GP49YSyT6p8IXR8kGDeX8nmmL2I9fiVdsUJSFlXZQO7Ofst3dSElXeBRhjhBk1AMcWBGO72LK2WajQJTeHzug==
   dependencies:
     focus-trap-react "^8.6.0"
 
@@ -11939,15 +11952,6 @@ popper.js@1.16.1-lts:
   version "1.16.1-lts"
   resolved "https://registry.yarnpkg.com/popper.js/-/popper.js-1.16.1-lts.tgz#cf6847b807da3799d80ee3d6d2f90df8a3f50b05"
   integrity sha512-Kjw8nKRl1m+VrSFCoVGPph93W/qrSO7ZkqPpTf7F4bk/sqcfWK019dWBUpE/fBOsOQY1dks/Bmcbfn1heM/IsA==
-
-portfinder@^1.0.28:
-  version "1.0.28"
-  resolved "https://registry.yarnpkg.com/portfinder/-/portfinder-1.0.28.tgz#67c4622852bd5374dd1dd900f779f53462fac778"
-  integrity sha512-Se+2isanIcEqf2XMHjyUKskczxbPH7dQnlMjXX6+dybayyHvAf/TCgyMRlzf/B6QDhAEFOGes0pzRo3by4AbMA==
-  dependencies:
-    async "^2.6.2"
-    debug "^3.1.1"
-    mkdirp "^0.5.5"
 
 posix-character-classes@^0.1.0:
   version "0.1.1"
@@ -15272,10 +15276,10 @@ webpack-dev-middleware@^5.3.1:
     range-parser "^1.2.1"
     schema-utils "^4.0.0"
 
-webpack-dev-server@4.8.1:
-  version "4.8.1"
-  resolved "https://registry.yarnpkg.com/webpack-dev-server/-/webpack-dev-server-4.8.1.tgz#58f9d797710d6e25fa17d6afab8708f958c11a29"
-  integrity sha512-dwld70gkgNJa33czmcj/PlKY/nOy/BimbrgZRaR9vDATBQAYgLzggR0nxDtPLJiLrMgZwbE6RRfJ5vnBBasTyg==
+webpack-dev-server@4.9.0:
+  version "4.9.0"
+  resolved "https://registry.yarnpkg.com/webpack-dev-server/-/webpack-dev-server-4.9.0.tgz#737dbf44335bb8bde68f8f39127fc401c97a1557"
+  integrity sha512-+Nlb39iQSOSsFv0lWUuUTim3jDQO8nhK3E68f//J2r5rIcp4lULHXz2oZ0UVdEeWXEh5lSzYUlzarZhDAeAVQw==
   dependencies:
     "@types/bonjour" "^3.5.9"
     "@types/connect-history-api-fallback" "^1.3.5"
@@ -15297,7 +15301,6 @@ webpack-dev-server@4.8.1:
     ipaddr.js "^2.0.1"
     open "^8.0.9"
     p-retry "^4.5.0"
-    portfinder "^1.0.28"
     rimraf "^3.0.2"
     schema-utils "^4.0.0"
     selfsigned "^2.0.1"

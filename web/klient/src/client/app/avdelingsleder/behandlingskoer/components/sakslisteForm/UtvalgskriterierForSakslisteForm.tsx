@@ -9,7 +9,7 @@ import { Undertittel, Element, Normaltekst } from 'nav-frontend-typografi';
 import { Row, Column } from 'nav-frontend-grid';
 import {
   required, minLength, maxLength, hasValidName,
-} from '@navikt/ft-utils';
+} from '@navikt/ft-form-validators';
 import { VerticalSpacer } from '@navikt/ft-ui-komponenter';
 import { restApiHooks, RestApiPathsKeys } from 'data/fplosRestApi';
 import { Form, InputField } from '@navikt/ft-form-hooks';

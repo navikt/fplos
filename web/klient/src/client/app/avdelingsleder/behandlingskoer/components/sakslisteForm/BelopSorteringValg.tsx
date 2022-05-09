@@ -4,7 +4,7 @@ import {
   FlexColumn, FlexContainer, FlexRow, ArrowBox, VerticalSpacer,
 } from '@navikt/ft-ui-komponenter';
 import React, { FunctionComponent } from 'react';
-import { hasValidPosOrNegInteger } from '@navikt/ft-utils';
+import { hasValidPosOrNegInteger } from '@navikt/ft-form-validators';
 import { InputField, formHooks } from '@navikt/ft-form-hooks';
 import useDebounce from 'data/useDebounce';
 

@@ -156,19 +156,21 @@ const HeaderWithErrorPanel: FunctionComponent<OwnProps & WrappedComponentProps> 
               ),
             }}
           />
-          {skalViseAvdelinger && (
-            <HeaderAvdelingListe
-              erLenkePanelApent={erLenkePanelApent}
-              setLenkePanelApent={setLenkePanelApent}
-              erAvdelingerPanelApent={erAvdelingerPanelApent}
-              setAvdelingerPanelApent={setAvdelingerPanelApent}
-              valgtAvdelingEnhet={valgtAvdelingEnhet}
-              setValgtAvdelingEnhet={setValgtAvdelingEnhet}
-            />
-          )}
-          {!skalViseAvdelinger && navAnsatt && (
-            <UserPanel name={navAnsatt.navn} />
-          )}
+          <>
+            {skalViseAvdelinger && (
+              <HeaderAvdelingListe
+                erLenkePanelApent={erLenkePanelApent}
+                setLenkePanelApent={setLenkePanelApent}
+                erAvdelingerPanelApent={erAvdelingerPanelApent}
+                setAvdelingerPanelApent={setAvdelingerPanelApent}
+                valgtAvdelingEnhet={valgtAvdelingEnhet}
+                setValgtAvdelingEnhet={setValgtAvdelingEnhet}
+              />
+            )}
+            {!skalViseAvdelinger && navAnsatt && (
+              <UserPanel name={navAnsatt.navn} />
+            )}
+          </>
         </Header>
       </div>
       <DriftsmeldingPanel
