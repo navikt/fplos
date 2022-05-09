@@ -8,7 +8,7 @@ import advarselIcon from 'images/advarsel.svg';
 import {
   FlexColumn, FlexContainer, FlexRow, VerticalSpacer, Image,
 } from '@navikt/ft-ui-komponenter';
-import { hasValidSaksnummerOrFodselsnummerFormat } from '@navikt/ft-utils';
+import { hasValidSaksnummerOrFodselsnummerFormat } from '@navikt/ft-form-validators';
 import { restApiHooks, RestApiGlobalStatePathsKeys } from 'data/fplosRestApi';
 import { Form, InputField, CheckboxField } from '@navikt/ft-form-hooks';
 

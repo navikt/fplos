@@ -8,7 +8,7 @@ import { restApiHooks, RestApiPathsKeys } from 'data/fplosRestApi';
 import Oppgave from 'types/saksbehandler/oppgaveTsType';
 import {
   hasValidText, maxLength, minLength, required,
-} from '@navikt/ft-utils';
+} from '@navikt/ft-form-validators';
 import { Form, TextAreaField } from '@navikt/ft-form-hooks';
 import Modal from 'app/Modal';
 import styles from './opphevReservasjonModal.less';

@@ -7,7 +7,8 @@ import { Undertekst } from 'nav-frontend-typografi';
 import {
   DateLabel, FlexColumn, FlexContainer, FlexRow, VerticalSpacer, ArrowBox,
 } from '@navikt/ft-ui-komponenter';
-import { hasValidDate, ISO_DATE_FORMAT, hasValidPosOrNegInteger } from '@navikt/ft-utils';
+import { ISO_DATE_FORMAT } from '@navikt/ft-utils';
+import { hasValidDate, hasValidPosOrNegInteger } from '@navikt/ft-form-validators';
 import { restApiHooks, RestApiPathsKeys } from 'data/fplosRestApi';
 import {
   InputField, CheckboxField, Datepicker, formHooks,

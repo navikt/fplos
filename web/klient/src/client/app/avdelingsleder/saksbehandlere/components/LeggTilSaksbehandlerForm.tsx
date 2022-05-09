@@ -9,7 +9,7 @@ import { Normaltekst, Element } from 'nav-frontend-typografi';
 
 import { restApiHooks, RestApiPathsKeys } from 'data/fplosRestApi';
 import { RestApiState } from 'data/rest-api-hooks';
-import { required } from '@navikt/ft-utils';
+import { required } from '@navikt/ft-form-validators';
 import {
   FlexContainer, FlexRow, FlexColumn, VerticalSpacer,
 } from '@navikt/ft-ui-komponenter';
