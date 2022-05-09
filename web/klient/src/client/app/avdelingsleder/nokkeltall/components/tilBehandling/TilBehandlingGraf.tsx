@@ -2,7 +2,7 @@ import React, { FunctionComponent, useMemo } from 'react';
 import dayjs from 'dayjs';
 import Panel from 'nav-frontend-paneler';
 import { KodeverkMedNavn } from '@navikt/ft-types';
-import { ReactECharts } from '@navikt/ft-ui-komponenter';
+import ReactECharts from 'app/ReactECharts';
 import BehandlingType from 'kodeverk/behandlingType';
 import { ISO_DATE_FORMAT, dateFormat } from '@navikt/ft-utils';
 

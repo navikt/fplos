@@ -3,7 +3,7 @@ import { injectIntl, WrappedComponentProps } from 'react-intl';
 import Panel from 'nav-frontend-paneler';
 import NyeOgFerdigstilteOppgaver from 'types/saksbehandler/nyeOgFerdigstilteOppgaverTsType';
 import BehandlingType from 'kodeverk/behandlingType';
-import { ReactECharts } from '@navikt/ft-ui-komponenter';
+import ReactECharts from 'app/ReactECharts';
 import { KodeverkMedNavn } from '@navikt/ft-types';
 
 const behandlingstypeOrder = [
