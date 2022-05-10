@@ -9,9 +9,10 @@ import javax.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import no.nav.vedtak.exception.IntegrasjonException;
 import no.nav.vedtak.felles.integrasjon.rest.OidcRestClient;
 import no.nav.foreldrepenger.konfig.KonfigVerdi;
+
+import static no.nav.foreldrepenger.los.felles.util.OptionalUtil.tryOrEmpty;
 
 @ApplicationScoped
 public class EnhetstilgangConnection {
@@ -40,20 +41,11 @@ public class EnhetstilgangConnection {
     }
 
     public Optional<EnhetstilgangResponse> hentEnhetstilganger(String ident) {
-        return hentEnhetstilganger(uri(ident));
+        return tryOrEmpty(() -> hentEnhetstilganger(uri(ident)));
     }
 
-    private Optional<EnhetstilgangResponse> hentEnhetstilganger(URI uri) {
-        try {
-            return httpClient.getReturnsOptional(uri, EnhetstilgangResponse.class);
-        } catch (IntegrasjonException e) {
-            // best effort for å stoppe unødvendige 404
-            if (e.getMessage().contains("http-kode '404'")) {
-                LOG.info("Finner ikke ident i Axsys, returnerer tomt resultat", e);
-                return Optional.empty();
-            }
-            throw e;
-        }
+    private EnhetstilgangResponse hentEnhetstilganger(URI uri) {
+        return httpClient.get(uri, EnhetstilgangResponse.class);
     }
 
     private URI uri(String ident) {
