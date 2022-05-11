@@ -7,24 +7,16 @@ import static no.nav.vedtak.log.metrics.MetricsUtil.REGISTRY;
 
 public final class CustomMetrics {
 
-    private static final Counter FAILURE_COUNTER = counter("failure");
-    private static final Counter SUCCESS_COUNTER = counter("success");
+    public static final Counter TRY_OR_EMPTY_FAILURE_COUNTER = counter("failure");
+    public static final Counter TRY_OR_EMPTY_SUCCESS_COUNTER = counter("success");
 
     private CustomMetrics() {
     }
 
-    public static void success() {
-        SUCCESS_COUNTER.increment();
-    }
-
-    public static void failure() {
-        FAILURE_COUNTER.increment();
-    }
-
     private static Counter counter(String status) {
-        return Counter.builder("foreldrepenger.fplos.besteffort")
+        return Counter.builder("foreldrepenger.fplos.tryorempty")
                 .tag("status", status)
-                .description("TryOrEmpty result")
+                .description("TryOrEmpty best effort result")
                 .register(REGISTRY);
     }
 
