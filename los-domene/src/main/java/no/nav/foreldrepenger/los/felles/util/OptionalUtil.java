@@ -15,9 +15,12 @@ public final class OptionalUtil {
 
     public static <T> Optional<T> tryOrEmpty(Supplier<T> c) {
         try {
-            return Optional.of(c.get());
+            var result = Optional.of(c.get());
+            CustomMetrics.success();
+            return result;
         } catch (Exception e) {
             LOG.info("Fikk exception, fortsetter med Optional.empty()", e);
+            CustomMetrics.failure();
             return Optional.empty();
         }
     }
