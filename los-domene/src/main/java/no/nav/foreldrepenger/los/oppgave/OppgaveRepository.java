@@ -8,7 +8,6 @@ import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.Op
 import no.nav.foreldrepenger.los.oppgavekø.OppgaveFiltrering;
 import no.nav.foreldrepenger.los.oppgavekø.OppgaveFiltreringOppdaterer;
 import no.nav.foreldrepenger.los.reservasjon.Reservasjon;
-import no.nav.foreldrepenger.los.organisasjon.Avdeling;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,6 +27,9 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static no.nav.foreldrepenger.los.felles.util.BrukerIdent.brukerIdent;
 import static no.nav.foreldrepenger.los.oppgavekø.KøSortering.FT_DATO;
@@ -100,32 +102,40 @@ public class OppgaveRepository {
         return oppgaveTypedQuery.getResultList();
     }
 
+    private static String andreKriterierSubquery(Oppgavespørring queryDto) {
+        final Function<String, String> template = kode ->
+                String.format("( SELECT 1 FROM OppgaveEgenskap oe WHERE o = oe.oppgave AND oe.aktiv = true AND oe.andreKriterierType = '%s') ", kode);
+        var inkluderKriterier = queryDto.getInkluderAndreKriterierTyper().stream()
+                .map(AndreKriterierType::getKode)
+                .map(k -> "AND EXISTS " + template.apply(k));
+        var ekskluderKriterier = queryDto.getEkskluderAndreKriterierTyper().stream()
+                .map(AndreKriterierType::getKode)
+                .map(k -> "AND NOT EXISTS " + template.apply(k));
+        return Stream.concat(inkluderKriterier, ekskluderKriterier).collect(Collectors.joining("\n"));
+    }
+
+    private static String filtrerBehandlingType(Oppgavespørring queryDto) {
+        return queryDto.getBehandlingTyper().isEmpty() ? "" : "AND o.behandlingType in :behtyper ";
+    }
+
+    private static String filtrerYtelseType(Oppgavespørring queryDto) {
+        return queryDto.getYtelseTyper().isEmpty() ? "" : "AND o.fagsakYtelseType in :fagsakYtelseType ";
+    }
+
     private <T> TypedQuery<T> lagOppgavespørring(String selection, Class<T> oppgaveClass, Oppgavespørring queryDto) {
-        var filtrerBehandlingType = queryDto.getBehandlingTyper().isEmpty() ? "" : "AND o.behandlingType in :behtyper ";
-        var filtrerYtelseType = queryDto.getYtelseTyper()
-                .isEmpty() ? "" : "AND o.fagsakYtelseType in :fagsakYtelseType ";
-
-        var ekskluderInkluderAndreKriterier = new StringBuilder();
-        for (var kriterie : queryDto.getInkluderAndreKriterierTyper()) {
-            ekskluderInkluderAndreKriterier.append(
-                    "AND EXISTS ( SELECT  1 FROM OppgaveEgenskap oe WHERE o = oe.oppgave AND oe.aktiv = true AND oe.andreKriterierType = '")
-                    .append(kriterie.getKode())
-                    .append("' ) ");
-        }
-        for (var kriterie : queryDto.getEkskluderAndreKriterierTyper()) {
-            ekskluderInkluderAndreKriterier.append(
-                    "AND NOT EXISTS (select 1 from OppgaveEgenskap oen WHERE o = oen.oppgave AND oen.aktiv = true AND oen.andreKriterierType = '")
-                    .append(kriterie.getKode())
-                    .append("') ");
-        }
-
         var query = entityManager.createQuery(selection + //$NON-NLS-1$ // NOSONAR
-                "INNER JOIN avdeling a ON a.avdelingEnhet = o.behandlendeEnhet " + "WHERE 1=1 " + filtrerBehandlingType
-                + filtrerYtelseType + ekskluderInkluderAndreKriterier
-                + avgrensPåAktiveReservasjoner(queryDto)
-                + tilBeslutter(queryDto) + avgrenseTilOppgaveId(queryDto) + "AND a.id = :enhet " + "AND o.aktiv = true "
-                + sortering(queryDto), oppgaveClass)
-                .setParameter("enhet", queryDto.getEnhetId());
+                "INNER JOIN avdeling a ON a.avdelingEnhet = o.behandlendeEnhet WHERE 1=1 "
+                + filtrerBehandlingType(queryDto)
+                + filtrerYtelseType(queryDto)
+                + andreKriterierSubquery(queryDto)
+                + reserverteSubquery(queryDto)
+                + tilBeslutter(queryDto)
+                + avgrenseTilOppgaveId(queryDto)
+                + "AND a.id = :enhet "
+                + "AND o.aktiv = true "
+                + sortering(queryDto), oppgaveClass);
+
+        query.setParameter("enhet", queryDto.getEnhetId());
         if (!queryDto.ignorerReserversjoner()) {
             query.setParameter("nå", LocalDateTime.now());
         }
@@ -177,21 +187,25 @@ public class OppgaveRepository {
         return query;
     }
 
-    private String avgrensPåAktiveReservasjoner(Oppgavespørring queryDto) {
+    private static String reserverteSubquery(Oppgavespørring queryDto) {
         return queryDto.ignorerReserversjoner() ? "" : "AND NOT EXISTS (select r from Reservasjon r where r.oppgave = o and r.reservertTil > :nå) ";
     }
 
-    private String avgrenseTilOppgaveId(Oppgavespørring queryDto) {
+    private static String avgrenseTilOppgaveId(Oppgavespørring queryDto) {
         return queryDto.getAvgrenseTilOppgaveId()
                 .map(oppgaveId -> String.format("AND o.id = %s ", oppgaveId))
                 .orElse("");
     }
 
-    private String tilBeslutter(Oppgavespørring dto) {
-        return dto.getForAvdelingsleder() ? "" :
-                "AND NOT EXISTS (select oetilbesl.oppgave from OppgaveEgenskap oetilbesl "
-                        + "where oetilbesl.oppgave = o AND oetilbesl.aktiv = true AND oetilbesl.andreKriterierType = :tilbeslutter "
-                        + "AND upper(oetilbesl.sisteSaksbehandlerForTotrinn) = upper( :uid ) ) ";
+    private static String tilBeslutter(Oppgavespørring dto) {
+        return dto.getForAvdelingsleder() ? "" : """
+                AND NOT EXISTS (
+                    select oetilbesl.oppgave from OppgaveEgenskap oetilbesl
+                    where oetilbesl.oppgave = o
+                        AND oetilbesl.aktiv = true
+                        AND oetilbesl.andreKriterierType = :tilbeslutter
+                        AND upper(oetilbesl.sisteSaksbehandlerForTotrinn) = upper(:uid)
+                )""";
     }
 
     private String sortering(Oppgavespørring oppgavespørring) {
