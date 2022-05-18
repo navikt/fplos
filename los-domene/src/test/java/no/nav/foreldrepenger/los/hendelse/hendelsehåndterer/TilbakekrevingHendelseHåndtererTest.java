@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 
+import no.nav.foreldrepenger.los.domene.typer.aktør.AktørId;
 import no.nav.foreldrepenger.los.oppgave.*;
 import no.nav.foreldrepenger.los.reservasjon.ReservasjonTjeneste;
 import org.junit.jupiter.api.BeforeEach;
@@ -205,7 +206,7 @@ public class TilbakekrevingHendelseHåndtererTest {
         tilbakekrevingHendelse.setBehandlingId(behandlingId);
         tilbakekrevingHendelse.setSaksnummer("123");
         tilbakekrevingHendelse.setBehandlendeEnhet("0300");
-        tilbakekrevingHendelse.setAktørId("345");
+        tilbakekrevingHendelse.setAktørId(AktørId.dummy().getId());
         tilbakekrevingHendelse.setBehandlingType(BehandlingType.FØRSTEGANGSSØKNAD);
         tilbakekrevingHendelse.setBehandlingOpprettetTidspunkt(LocalDateTime.now());
         tilbakekrevingHendelse.setYtelseType(FagsakYtelseType.FORELDREPENGER);

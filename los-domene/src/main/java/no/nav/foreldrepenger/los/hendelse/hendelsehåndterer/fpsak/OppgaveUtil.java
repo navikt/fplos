@@ -1,5 +1,6 @@
 package no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak;
 
+import no.nav.foreldrepenger.los.domene.typer.aktør.AktørId;
 import no.nav.foreldrepenger.los.hendelse.hendelseoppretter.hendelse.Fagsystem;
 import no.nav.foreldrepenger.los.klient.fpsak.BehandlingFpsak;
 import no.nav.foreldrepenger.los.oppgave.Oppgave;
@@ -12,7 +13,7 @@ public class OppgaveUtil {
         return Oppgave.builder()
                 .medSystem(Fagsystem.FPSAK.name())
                 .medFagsakSaksnummer(behandlingFpsak.getSaksnummer().longValue())
-                .medAktorId(Long.valueOf(behandlingFpsak.getAktørId()))
+                .medAktørId(new AktørId(behandlingFpsak.getAktørId()))
                 .medBehandlendeEnhet(behandlingFpsak.getBehandlendeEnhetId())
                 .medBehandlingType(behandlingFpsak.getBehandlingType())
                 .medFagsakYtelseType(behandlingFpsak.getYtelseType())

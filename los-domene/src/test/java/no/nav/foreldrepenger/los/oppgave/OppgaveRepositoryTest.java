@@ -17,6 +17,7 @@ import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 
+import no.nav.foreldrepenger.los.domene.typer.aktør.AktørId;
 import no.nav.foreldrepenger.los.reservasjon.ReservasjonTjeneste;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -426,7 +427,7 @@ public class OppgaveRepositoryTest {
         return Oppgave.builder()
                 .medFagsakSaksnummer(1337L)
                 .medBehandlingId(behandlingId1)
-                .medAktorId(5000000L)
+                .medAktørId(AktørId.dummy())
                 .medBehandlingType(BehandlingType.FØRSTEGANGSSØKNAD)
                 .medFagsakYtelseType(FagsakYtelseType.FORELDREPENGER)
                 .medAktiv(true)
@@ -439,7 +440,8 @@ public class OppgaveRepositoryTest {
         return Oppgave.builder()
                 .medFagsakSaksnummer(1337L)
                 .medBehandlingId(behandlingId1)
-                .medAktorId(5000000L).medBehandlendeEnhet(behandlendeEnhet)
+                .medAktørId(AktørId.dummy())
+                .medBehandlendeEnhet(behandlendeEnhet)
                 .medBehandlingType(BehandlingType.FØRSTEGANGSSØKNAD)
                 .medFagsakYtelseType(FagsakYtelseType.FORELDREPENGER)
                 .medAktiv(true)
@@ -454,6 +456,7 @@ public class OppgaveRepositoryTest {
                 .medSystem("FPTILBAKE")
                 .medBehandlingType(BehandlingType.TILBAKEBETALING)
                 .medAktiv(true)
-                .medAktorId(1L).medBehandlendeEnhet(AVDELING_DRAMMEN_ENHET);
+                .medAktorId(AktørId.dummy())
+                .medBehandlendeEnhet(AVDELING_DRAMMEN_ENHET);
     }
 }

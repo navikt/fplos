@@ -92,9 +92,9 @@ public class OppgaveAssert extends AbstractAssert<OppgaveAssert, Oppgave> {
 
     public OppgaveAssert harAktørId(AktørId aktørId) {
         isNotNull();
-        assertThat(actual.getAktorId())
+        assertThat(actual.getAktørId())
                 .overridingErrorMessage("Forventet aktørId <%s> men fikk <%s>",
-                        aktørId, actual.getAktorId())
+                        aktørId, actual.getAktørId())
                 .isEqualTo(aktørId);
         return this;
     }

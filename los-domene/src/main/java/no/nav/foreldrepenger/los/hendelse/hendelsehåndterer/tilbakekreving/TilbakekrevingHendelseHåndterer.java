@@ -10,6 +10,7 @@ import java.util.Optional;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import no.nav.foreldrepenger.los.domene.typer.aktør.AktørId;
 import no.nav.foreldrepenger.los.oppgave.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -175,7 +176,7 @@ public class TilbakekrevingHendelseHåndterer {
                 .medHref(hendelse.getHref())
                 .medSystem(hendelse.getFagsystem().name())
                 .medFagsakSaksnummer(Long.valueOf(hendelse.getSaksnummer()))
-                .medAktorId(Long.valueOf(hendelse.getAktørId()))
+                .medAktorId(new AktørId(hendelse.getAktørId()))
                 .medBehandlendeEnhet(hendelse.getBehandlendeEnhet())
                 .medBehandlingType(hendelse.getBehandlingType())
                 .medFagsakYtelseType(hendelse.getYtelseType())

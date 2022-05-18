@@ -9,11 +9,14 @@ import javax.persistence.Column;
 import javax.persistence.Convert;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import javax.persistence.JoinColumn;
+import javax.persistence.MapsId;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
@@ -35,8 +38,8 @@ public class Oppgave extends BaseEntitet {
     @Column(name = "FAGSAK_SAKSNR")
     protected Long fagsakSaksnummer;
 
-    @Column(name = "AKTOR_ID")
-    protected Long aktorId;
+    @Embedded
+    protected AktørId aktørId;
 
     @Column(name = "BEHANDLENDE_ENHET")
     protected String behandlendeEnhet;
@@ -93,8 +96,8 @@ public class Oppgave extends BaseEntitet {
         return fagsakSaksnummer;
     }
 
-    public AktørId getAktorId() {
-        return new AktørId(aktorId);
+    public AktørId getAktørId() {
+        return aktørId;
     }
 
     public BehandlingType getBehandlingType() {
@@ -186,7 +189,7 @@ public class Oppgave extends BaseEntitet {
 
     public void avstemMed(Oppgave other) {
         this.behandlingOpprettet = other.behandlingOpprettet;
-        this.aktorId = other.aktorId;
+        this.aktørId = other.aktørId;
         this.behandlendeEnhet = other.behandlendeEnhet;
         this.behandlingsfrist = other.behandlingsfrist;
         this.fagsakSaksnummer = other.fagsakSaksnummer;
@@ -219,8 +222,8 @@ public class Oppgave extends BaseEntitet {
             return this;
         }
 
-        public Builder medAktorId(Long aktorId){
-            tempOppgave.aktorId = aktorId;
+        public Builder medAktørId(AktørId aktørId){
+            tempOppgave.aktørId = aktørId;
             return this;
         }
 
@@ -287,7 +290,7 @@ public class Oppgave extends BaseEntitet {
         public Builder dummyOppgave(String enhet){
             tempOppgave.behandlingId = new BehandlingId(UUID.nameUUIDFromBytes("331133L".getBytes()));
             tempOppgave.fagsakSaksnummer = 3478293L;
-            tempOppgave.aktorId = 770099L;
+            tempOppgave.aktørId = AktørId.dummy();
             tempOppgave.fagsakYtelseType = FagsakYtelseType.FORELDREPENGER;
             tempOppgave.behandlingType = BehandlingType.FØRSTEGANGSSØKNAD;
             tempOppgave.behandlendeEnhet = enhet;

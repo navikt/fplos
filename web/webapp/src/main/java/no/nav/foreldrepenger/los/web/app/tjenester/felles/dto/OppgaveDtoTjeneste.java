@@ -75,7 +75,7 @@ public class OppgaveDtoTjeneste {
         if (sjekkTilgangPåBehandling) {
             sjekkTilgang(oppgave);
         }
-        var person = personTjeneste.hentPerson(oppgave.getAktorId(), String.valueOf(oppgave.getFagsakSaksnummer()))
+        var person = personTjeneste.hentPerson(oppgave.getAktørId(), String.valueOf(oppgave.getFagsakSaksnummer()))
                 .orElseThrow(() -> new LagOppgaveDtoFeil("Finner ikke person tilknyttet oppgaveId " + oppgave.getId()));
         var oppgaveStatus = oppgaveStatusDtoTjeneste.lagStatusFor(oppgave);
         return new OppgaveDto(oppgave, person, oppgaveStatus);

@@ -9,6 +9,7 @@ import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 
 import no.nav.foreldrepenger.los.domene.typer.BehandlingId;
+import no.nav.foreldrepenger.los.domene.typer.aktør.AktørId;
 
 
 @Entity(name = "TilbakekrevingOppgave")
@@ -33,7 +34,7 @@ public class TilbakekrevingOppgave extends Oppgave{
     public void avstemMed(TilbakekrevingOppgave other) {
         this.behandlingOpprettet = other.behandlingOpprettet;
         this.href = other.href;
-        this.aktorId = other.aktorId;
+        this.aktørId = other.aktørId;
         this.behandlendeEnhet = other.behandlendeEnhet;
         this.behandlingsfrist = other.behandlingsfrist;
         this.fagsakSaksnummer = other.fagsakSaksnummer;
@@ -82,8 +83,8 @@ public class TilbakekrevingOppgave extends Oppgave{
             return this;
         }
 
-        public Builder medAktorId(Long aktorId){
-            tempOppgave.aktorId = aktorId;
+        public Builder medAktorId(AktørId aktorId){
+            tempOppgave.aktørId = aktorId;
             return this;
         }
 
@@ -139,7 +140,7 @@ public class TilbakekrevingOppgave extends Oppgave{
                 ", feilutbetalingstart=" + feilutbetalingstart +
                 ", id=" + id +
                 ", fagsakSaksnummer=" + fagsakSaksnummer +
-                ", aktorId=" + aktorId +
+                ", aktørId=" + aktørId +
                 ", behandlendeEnhet='" + behandlendeEnhet + '\'' +
                 ", behandlingsfrist=" + behandlingsfrist +
                 ", behandlingOpprettet=" + behandlingOpprettet +

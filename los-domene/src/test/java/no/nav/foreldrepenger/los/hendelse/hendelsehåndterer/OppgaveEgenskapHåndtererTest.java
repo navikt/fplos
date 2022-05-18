@@ -15,6 +15,7 @@ import java.util.stream.Collectors;
 import javax.persistence.EntityManager;
 
 import no.nav.foreldrepenger.los.domene.typer.BehandlingId;
+import no.nav.foreldrepenger.los.domene.typer.aktør.AktørId;
 import no.nav.foreldrepenger.los.oppgave.OppgaveRepository;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -119,7 +120,7 @@ public class OppgaveEgenskapHåndtererTest {
         var oppgave = Oppgave.builder()
                 .medFagsakSaksnummer(42L)
                 .medBehandlingId(BEHANDLING_ID)
-                .medAktorId(1L)
+                .medAktørId(AktørId.dummy())
                 .medFagsakYtelseType(FagsakYtelseType.FORELDREPENGER)
                 .medBehandlingType(BehandlingType.FØRSTEGANGSSØKNAD)
                 .medBehandlendeEnhet("0000")
