@@ -7,6 +7,7 @@ import java.util.Objects;
 
 import no.nav.foreldrepenger.los.domene.typer.BehandlingId;
 import no.nav.foreldrepenger.los.domene.typer.Saksnummer;
+import no.nav.foreldrepenger.los.domene.typer.aktør.AktørId;
 import no.nav.foreldrepenger.los.klient.fpsak.dto.Kontrollresultat;
 import no.nav.foreldrepenger.los.klient.fpsak.dto.KontrollresultatDto;
 import no.nav.foreldrepenger.los.oppgave.BehandlingStatus;
@@ -161,6 +162,8 @@ public class BehandlingFpsak {
         private Lazy<UttakEgenskaper> uttakEgenskaper;
         private LocalDateTime behandlingOpprettet;
         private Lazy<KontrollresultatDto> kontrollresultat;
+        private AktørId aktørId;
+        private Saksnummer saksnummer;
 
         private Builder() {
         }
@@ -245,6 +248,16 @@ public class BehandlingFpsak {
             return this;
         }
 
+        public Builder medAktørId(AktørId aktørId) {
+            this.aktørId = aktørId;
+            return this;
+        }
+
+        public Builder medSaksnummer(Saksnummer saksnummer) {
+            this.saksnummer = saksnummer;
+            return this;
+        }
+
         public BehandlingFpsak build() {
             var behandlingFpsak = new BehandlingFpsak();
             behandlingFpsak.ansvarligSaksbehandler = this.ansvarligSaksbehandler;
@@ -263,6 +276,8 @@ public class BehandlingFpsak {
             behandlingFpsak.behandlingType = this.behandlingType;
             behandlingFpsak.ytelseType = this.ytelseType;
             behandlingFpsak.kontrollresultat = this.kontrollresultat;
+            behandlingFpsak.aktørId = this.aktørId.getId();
+            behandlingFpsak.saksnummer = this.saksnummer;
             return behandlingFpsak;
         }
     }

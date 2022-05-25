@@ -20,7 +20,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import no.nav.foreldrepenger.dbstøtte.DBTestUtil;
 import no.nav.foreldrepenger.extensions.JpaExtension;
 import no.nav.foreldrepenger.los.domene.typer.BehandlingId;
-import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.håndterere.LukkOppgaveHendelseHåndterer;
+import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.håndterere.LukkOppgaveOppgavetransisjonHåndterer;
 import no.nav.foreldrepenger.los.oppgave.Oppgave;
 import no.nav.foreldrepenger.los.oppgave.OppgaveRepository;
 import no.nav.foreldrepenger.los.statistikk.kø.KøOppgaveHendelse;
@@ -34,11 +34,13 @@ class LukkOppgaveHendelseHåndtererTest {
     private final ReservasjonTjeneste reservasjonTjeneste = mock(ReservasjonTjeneste.class);
     private EntityManager entityManager;
     private OppgaveTjeneste oppgaveTjeneste;
+    private LukkOppgaveOppgavetransisjonHåndterer lukkOppgave;
 
     @BeforeEach
     private void setUp(EntityManager entityManager) {
         this.entityManager = entityManager;
         oppgaveTjeneste = new OppgaveTjeneste(new OppgaveRepository(entityManager), reservasjonTjeneste);
+        lukkOppgave = new LukkOppgaveOppgavetransisjonHåndterer(oppgaveTjeneste, køStatistikk);
     }
 
     @Test
@@ -46,7 +48,8 @@ class LukkOppgaveHendelseHåndtererTest {
         var behandlingFpsak = behandlingFpsak();
         oppgaveTjeneste.lagre(oppgave(behandlingFpsak));
 
-        new LukkOppgaveHendelseHåndterer(oppgaveTjeneste, køStatistikk, behandlingFpsak).håndter();
+        lukkOppgave.håndter(behandlingFpsak);
+
 
         var oppgave = DBTestUtil.hentUnik(entityManager, Oppgave.class);
         assertThat(oppgave.getAktiv()).isFalse();
@@ -57,7 +60,7 @@ class LukkOppgaveHendelseHåndtererTest {
         var behandlingFpsak = behandlingFpsak();
         oppgaveTjeneste.lagre(oppgave(behandlingFpsak));
 
-        new LukkOppgaveHendelseHåndterer(oppgaveTjeneste, køStatistikk, behandlingFpsak).håndter();
+        lukkOppgave.håndter(behandlingFpsak);
 
         // NB tester ikke rekkefølge på kall
         verify(køStatistikk).lagre(any(BehandlingId.class), eq(KøOppgaveHendelse.LUKKET_OPPGAVE));

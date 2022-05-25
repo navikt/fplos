@@ -84,4 +84,8 @@ public class ReservasjonRepository {
         entityManager.persist(entity);
         entityManager.flush();
     }
+
+    public <U extends BaseEntitet> void refresh(U entity) {
+        entityManager.refresh(entity);
+    }
 }

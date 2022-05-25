@@ -7,11 +7,11 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.Predicate;
 
+import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.FpsakOppgavetransisjonHåndterer;
 import no.nav.foreldrepenger.los.oppgave.OppgaveTjeneste;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.FpsakHendelseHåndterer;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveEventLogg;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveEventType;
 import no.nav.foreldrepenger.los.klient.fpsak.Aksjonspunkt;
@@ -20,23 +20,28 @@ import no.nav.foreldrepenger.los.oppgave.Oppgave;
 import no.nav.foreldrepenger.los.statistikk.kø.KøOppgaveHendelse;
 import no.nav.foreldrepenger.los.statistikk.kø.KøStatistikkTjeneste;
 
-public class PåVentOppgaveHendelseHåndterer implements FpsakHendelseHåndterer {
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 
-    private static final Logger LOG = LoggerFactory.getLogger(PåVentOppgaveHendelseHåndterer.class);
-    private final OppgaveTjeneste oppgaveTjeneste;
-    private final KøStatistikkTjeneste køStatistikk;
-    private final BehandlingFpsak behandlingFpsak;
+@ApplicationScoped
+public class PåVentOppgaveOppgavetransisjonHåndterer implements FpsakOppgavetransisjonHåndterer {
 
-    public PåVentOppgaveHendelseHåndterer(OppgaveTjeneste oppgaveTjeneste,
-                                          KøStatistikkTjeneste køStatistikk,
-                                          BehandlingFpsak behandling) {
+    private static final Logger LOG = LoggerFactory.getLogger(PåVentOppgaveOppgavetransisjonHåndterer.class);
+    private OppgaveTjeneste oppgaveTjeneste;
+    private KøStatistikkTjeneste køStatistikk;
+
+    @Inject
+    public PåVentOppgaveOppgavetransisjonHåndterer(OppgaveTjeneste oppgaveTjeneste,
+                                                   KøStatistikkTjeneste køStatistikk) {
         this.oppgaveTjeneste = oppgaveTjeneste;
         this.køStatistikk = køStatistikk;
-        this.behandlingFpsak = behandling;
+    }
+
+    public PåVentOppgaveOppgavetransisjonHåndterer() {
     }
 
     @Override
-    public void håndter() {
+    public void håndter(BehandlingFpsak behandlingFpsak) {
         var behandlingId = behandlingFpsak.getBehandlingId();
         var behandlendeEnhet = behandlingFpsak.getBehandlendeEnhetId();
         var aksjonspunkter = behandlingFpsak.getAksjonspunkter();
@@ -47,11 +52,16 @@ public class PåVentOppgaveHendelseHåndterer implements FpsakHendelseHåndterer
                 .ifPresentOrElse(o -> {
                             LOG.info("{} behandling er satt på vent, type {}. Lukker oppgave.", SYSTEM, venteType);
                             køStatistikk.lagre(behandlingId, KøOppgaveHendelse.OPPGAVE_SATT_PÅ_VENT);
-                            oppgaveTjeneste.avsluttOppgaveUtenEventLogg(behandlingId);
+                            oppgaveTjeneste.avsluttOppgaveUtenEventLoggAvsluttTilknyttetReservasjon(behandlingId);
                         },
                         () -> LOG.info("{} behandling er satt på vent, type {}", SYSTEM, venteType));
         var oel = new OppgaveEventLogg(behandlingId, venteType, null, behandlendeEnhet, aksjonspunktFrist);
         oppgaveTjeneste.lagre(oel);
+    }
+
+    @Override
+    public Oppgavetransisjon kanHåndtere() {
+        return Oppgavetransisjon.SETT_PÅ_VENT;
     }
 
     private static LocalDateTime aksjonspunktFrist(List<Aksjonspunkt> aksjonspunkter, OppgaveEventType type) {

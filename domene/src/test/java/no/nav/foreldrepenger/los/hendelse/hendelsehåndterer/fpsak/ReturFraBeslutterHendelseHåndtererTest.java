@@ -21,7 +21,7 @@ import no.nav.foreldrepenger.dbstøtte.DBTestUtil;
 import no.nav.foreldrepenger.extensions.JpaExtension;
 import no.nav.foreldrepenger.los.domene.typer.BehandlingId;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.OppgaveEgenskapHåndterer;
-import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.håndterere.ReturFraBeslutterHendelseHåndterer;
+import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.håndterere.ReturFraBeslutterOppgavetransisjonHåndterer;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveEventLogg;
 import no.nav.foreldrepenger.los.klient.fpsak.BehandlingFpsak;
 import no.nav.foreldrepenger.los.oppgave.Oppgave;
@@ -40,6 +40,7 @@ class ReturFraBeslutterHendelseHåndtererTest {
     private BehandlingFpsak behandlingFpsak;
     private OppgaveTjeneste oppgaveTjeneste;
     private ReservasjonTjeneste reservasjonTjeneste;
+    private ReturFraBeslutterOppgavetransisjonHåndterer returFraBeslutterHåndterer;
 
     @BeforeEach
     private void setUp(EntityManager entityManager) {
@@ -55,11 +56,12 @@ class ReturFraBeslutterHendelseHåndtererTest {
                 .medBehandlingId(behandlingFpsak.getBehandlingId())
                 .build();
         oppgaveRepository.lagre(eksisterendeOppgave);
+        returFraBeslutterHåndterer = new ReturFraBeslutterOppgavetransisjonHåndterer(oppgaveTjeneste, oppgaveEgenskapHåndterer, reservasjonTjeneste, køStatistikk);
     }
 
     @Test
     public void skalAvslutteBeslutterOppgave() {
-        new ReturFraBeslutterHendelseHåndterer(oppgaveTjeneste, oppgaveEgenskapHåndterer, reservasjonTjeneste, køStatistikk, behandlingFpsak).håndter();
+        returFraBeslutterHåndterer.håndter(behandlingFpsak);
         var oppgaver = DBTestUtil.hentAlle(entityManager, Oppgave.class);
         var inaktivOppgave = oppgaver.stream().filter(o -> !o.getAktiv()).findFirst().orElseThrow();
         var aktivOppgave = oppgaver.stream().filter(Oppgave::getAktiv).findFirst().orElseThrow();
@@ -70,21 +72,21 @@ class ReturFraBeslutterHendelseHåndtererTest {
 
     @Test
     public void skalOppretteOppgaveStatistikkForBeggeOppgaver() {
-        new ReturFraBeslutterHendelseHåndterer(oppgaveTjeneste, oppgaveEgenskapHåndterer, reservasjonTjeneste, køStatistikk, behandlingFpsak).håndter();
+        returFraBeslutterHåndterer.håndter(behandlingFpsak);
         verify(køStatistikk).lagre(any(BehandlingId.class), eq(KøOppgaveHendelse.LUKKET_OPPGAVE));
         verify(køStatistikk).lagre(any(Oppgave.class), eq(KøOppgaveHendelse.ÅPNET_OPPGAVE));
     }
 
     @Test
     public void skalOppretteOppgaveEventLoggForBeggeOppgaver() {
-        new ReturFraBeslutterHendelseHåndterer(oppgaveTjeneste, oppgaveEgenskapHåndterer, reservasjonTjeneste, køStatistikk, behandlingFpsak).håndter();
+        returFraBeslutterHåndterer.håndter(behandlingFpsak);
         var oel = DBTestUtil.hentAlle(entityManager, OppgaveEventLogg.class);
         assertThat(oel).hasSize(2);
     }
 
     @Test
     public void skalOppretteReservasjonTilSaksbehandler() {
-        new ReturFraBeslutterHendelseHåndterer(oppgaveTjeneste, oppgaveEgenskapHåndterer, reservasjonTjeneste, køStatistikk, behandlingFpsak).håndter();
+        returFraBeslutterHåndterer.håndter(behandlingFpsak);
         var reservasjoner = DBTestUtil.hentAlle(entityManager, Reservasjon.class);
         assertThat(reservasjoner).hasSize(1);
 

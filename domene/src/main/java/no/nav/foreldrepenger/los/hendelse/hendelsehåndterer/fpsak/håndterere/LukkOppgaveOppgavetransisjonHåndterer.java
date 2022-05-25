@@ -1,43 +1,52 @@
 package no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.håndterere;
 
+import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.FpsakOppgavetransisjonHåndterer;
 import no.nav.foreldrepenger.los.oppgave.OppgaveTjeneste;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.FpsakHendelseHåndterer;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveEventLogg;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveEventType;
 import no.nav.foreldrepenger.los.klient.fpsak.BehandlingFpsak;
 import no.nav.foreldrepenger.los.statistikk.kø.KøOppgaveHendelse;
 import no.nav.foreldrepenger.los.statistikk.kø.KøStatistikkTjeneste;
 
-@SuppressWarnings("ClassCanBeRecord")
-public class LukkOppgaveHendelseHåndterer implements FpsakHendelseHåndterer {
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 
-    private static final Logger LOG = LoggerFactory.getLogger(LukkOppgaveHendelseHåndterer.class);
-    private final OppgaveTjeneste oppgaveTjeneste;
-    private final KøStatistikkTjeneste køStatistikk;
-    private final BehandlingFpsak behandlingFpsak;
+@ApplicationScoped
+public class LukkOppgaveOppgavetransisjonHåndterer implements FpsakOppgavetransisjonHåndterer {
 
-    public LukkOppgaveHendelseHåndterer(OppgaveTjeneste oppgaveTjeneste,
-                                        KøStatistikkTjeneste køStatistikk,
-                                        BehandlingFpsak behandlingFpsak) {
+    private static final Logger LOG = LoggerFactory.getLogger(LukkOppgaveOppgavetransisjonHåndterer.class);
+    private OppgaveTjeneste oppgaveTjeneste;
+    private KøStatistikkTjeneste køStatistikk;
+
+    @Inject
+    public LukkOppgaveOppgavetransisjonHåndterer(OppgaveTjeneste oppgaveTjeneste,
+                                                 KøStatistikkTjeneste køStatistikk) {
         this.oppgaveTjeneste = oppgaveTjeneste;
         this.køStatistikk = køStatistikk;
-        this.behandlingFpsak = behandlingFpsak;
+    }
+
+    public LukkOppgaveOppgavetransisjonHåndterer() {
     }
 
     @Override
-    public void håndter() {
+    public void håndter(BehandlingFpsak behandlingFpsak) {
         var behandlingId = behandlingFpsak.getBehandlingId();
         LOG.info("Håndterer hendelse for å lukke oppgave, behandling {}, system {}", behandlingId,  SYSTEM);
         køStatistikk.lagre(behandlingId, KøOppgaveHendelse.LUKKET_OPPGAVE);
-        oppgaveTjeneste.avsluttOppgaveUtenEventLogg(behandlingId);
+        oppgaveTjeneste.avsluttOppgaveUtenEventLoggAvsluttTilknyttetReservasjon(behandlingId);
         var oel = OppgaveEventLogg.builder()
                 .behandlendeEnhet(behandlingFpsak.getBehandlendeEnhetId())
                 .type(OppgaveEventType.LUKKET)
                 .behandlingId(behandlingId)
                 .build();
         oppgaveTjeneste.lagre(oel);
+    }
+
+    @Override
+    public Oppgavetransisjon kanHåndtere() {
+        return Oppgavetransisjon.LUKK_OPPGAVE;
     }
 }

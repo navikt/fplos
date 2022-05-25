@@ -3,6 +3,7 @@ package no.nav.foreldrepenger.los.oppgave;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Set;
 import java.util.UUID;
 
 import javax.persistence.Column;
@@ -15,8 +16,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
-import javax.persistence.JoinColumn;
-import javax.persistence.MapsId;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
@@ -61,6 +61,9 @@ public class Oppgave extends BaseEntitet {
     @Column(name = "BEHANDLING_TYPE")
     protected BehandlingType behandlingType = BehandlingType.INNSYN;
 
+    @OneToMany(mappedBy = "oppgave", fetch = FetchType.LAZY)
+    protected Set<OppgaveEgenskap> oppgaveEgenskaper;
+
     @Convert(converter = FagsakYtelseType.KodeverdiConverter.class)
     @Column(name = "FAGSAK_YTELSE_TYPE")
     protected FagsakYtelseType fagsakYtelseType;
@@ -85,7 +88,7 @@ public class Oppgave extends BaseEntitet {
     @Column(name = "HREF")
     protected String href;
 
-    @OneToOne(mappedBy = "oppgave")
+    @OneToOne(mappedBy = "oppgave", fetch = FetchType.LAZY)
     protected Reservasjon reservasjon;
 
     public Long getId() {
@@ -112,8 +115,8 @@ public class Oppgave extends BaseEntitet {
         return behandlendeEnhet;
     }
 
-    public Boolean getAktiv() {
-        return aktiv;
+    public boolean getAktiv() {
+        return aktiv != null && aktiv;
     }
 
     public String getSystem() {
@@ -144,16 +147,16 @@ public class Oppgave extends BaseEntitet {
         return oppgaveAvsluttet;
     }
 
-    public Boolean getUtfortFraAdmin() {
-        return utfortFraAdmin;
-    }
-
     public Reservasjon getReservasjon() {
         return reservasjon;
     }
 
     public String getHref() {
         return href;
+    }
+
+    public Set<OppgaveEgenskap> getOppgaveEgenskaper() {
+        return oppgaveEgenskaper == null ? Set.of() : oppgaveEgenskaper;
     }
 
     public static Builder builder(){
@@ -168,9 +171,6 @@ public class Oppgave extends BaseEntitet {
         this.oppgaveAvsluttet = avsluttet;
     }
 
-    public void deaktiverOppgave() {
-        aktiv = false;
-    }
     public void avsluttOppgave() {
         aktiv = false;
         oppgaveAvsluttet = LocalDateTime.now();
@@ -181,28 +181,14 @@ public class Oppgave extends BaseEntitet {
         oppgaveAvsluttet = null;
     }
 
+    public boolean harAktivReservasjon() {
+        return reservasjon != null && reservasjon.erAktiv();
+    }
+
     @Override
     public String toString() {
         return "Oppgave{" + "id=" + id + ", fagsakSaksnummer=" + fagsakSaksnummer + ", aktiv=" + aktiv + ", system='"
                 + system + '\'' + '}';
-    }
-
-    public void avstemMed(Oppgave other) {
-        this.behandlingOpprettet = other.behandlingOpprettet;
-        this.aktørId = other.aktørId;
-        this.behandlendeEnhet = other.behandlendeEnhet;
-        this.behandlingsfrist = other.behandlingsfrist;
-        this.fagsakSaksnummer = other.fagsakSaksnummer;
-        this.førsteStønadsdag = other.førsteStønadsdag;
-        this.behandlingStatus = other.behandlingStatus;
-        this.behandlingType = other.behandlingType;
-        this.fagsakYtelseType = other.fagsakYtelseType;
-        this.system = other.system;
-        this.href = other.href;
-    }
-
-    public boolean harAktivReservasjon() {
-        return reservasjon != null && reservasjon.erAktiv();
     }
 
     public static class Builder {

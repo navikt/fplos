@@ -20,6 +20,10 @@ public class OppgaveTestUtil {
     }
 
     public static BehandlingFpsak behandlingFpsak() {
+        return behandlingFpsakBuilder().build();
+    }
+
+    public static BehandlingFpsak.Builder behandlingFpsakBuilder() {
         var behandlingId = BehandlingId.random();
         var behandlingstidFrist = LocalDate.now().plusDays(10);
         var behandlingOpprettet = LocalDateTime.now();
@@ -36,10 +40,9 @@ public class OppgaveTestUtil {
                 .medAksjonspunkter(new Lazy<>(OppgaveTestUtil::aksjonspunkter))
                 .medStatus(BehandlingStatus.OPPRETTET)
                 .medAnsvarligSaksbehandler("saksbehandler")
-                .build();
-        behandlingFpsak.setSaksnummer(new Saksnummer("1234"));
-        behandlingFpsak.setAktørId(aktørId.getId());
-        behandlingFpsak.setYtelseType(FagsakYtelseType.FORELDREPENGER);
+                .medAktørId(aktørId)
+                .medYtelseType(FagsakYtelseType.FORELDREPENGER)
+                .medSaksnummer(new Saksnummer("1234"));
         return behandlingFpsak;
     }
 

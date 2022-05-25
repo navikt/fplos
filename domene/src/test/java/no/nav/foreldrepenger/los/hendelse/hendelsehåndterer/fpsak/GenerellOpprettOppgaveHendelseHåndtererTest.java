@@ -19,7 +19,7 @@ import no.nav.foreldrepenger.dbstøtte.DBTestUtil;
 import no.nav.foreldrepenger.extensions.JpaExtension;
 import no.nav.foreldrepenger.los.domene.typer.aktør.AktørId;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.OppgaveEgenskapHåndterer;
-import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.håndterere.GenerellOpprettOppgaveHendelseHåndterer;
+import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.håndterere.GenerellOpprettOppgaveOppgavetransisjonHåndterer;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveEventLogg;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveEventType;
 import no.nav.foreldrepenger.los.statistikk.kø.KøStatistikkTjeneste;
@@ -32,6 +32,7 @@ class GenerellOpprettOppgaveHendelseHåndtererTest {
     private EntityManager entityManager;
     private OppgaveEgenskapHåndterer oppgaveEgenskapHåndterer;
     private OppgaveTjeneste oppgaveTjeneste;
+    private GenerellOpprettOppgaveOppgavetransisjonHåndterer opprettOppgaveHåndterer;
 
     @BeforeEach
     private void setUp(EntityManager entityManager) {
@@ -39,13 +40,13 @@ class GenerellOpprettOppgaveHendelseHåndtererTest {
         var oppgaveRepository = new OppgaveRepository(entityManager);
         oppgaveTjeneste = new OppgaveTjeneste(oppgaveRepository, mock(ReservasjonTjeneste.class));
         oppgaveEgenskapHåndterer = new OppgaveEgenskapHåndterer(oppgaveRepository);
+        opprettOppgaveHåndterer = new GenerellOpprettOppgaveOppgavetransisjonHåndterer(oppgaveTjeneste, oppgaveEgenskapHåndterer, køStatistikk);
     }
 
     @Test
     public void skalLagreOppgaveMedFelterFraBehandling() {
         var behandlingFpsak = behandlingFpsak();
-        var opprettOppgaveHåndterer = new GenerellOpprettOppgaveHendelseHåndterer(oppgaveTjeneste, oppgaveEgenskapHåndterer, køStatistikk, behandlingFpsak);
-        opprettOppgaveHåndterer.håndter();
+        opprettOppgaveHåndterer.håndter(behandlingFpsak);
         var oppgave = DBTestUtil.hentUnik(entityManager, Oppgave.class);
         assertThatOppgave(oppgave)
                 .harBehandlingOpprettet(behandlingFpsak.getBehandlingOpprettet())
@@ -67,7 +68,7 @@ class GenerellOpprettOppgaveHendelseHåndtererTest {
     @Test
     public void skalOppretteOppgaveEventLogg() {
         var behandlingFpsak = behandlingFpsak();
-        new GenerellOpprettOppgaveHendelseHåndterer(oppgaveTjeneste, oppgaveEgenskapHåndterer, køStatistikk, behandlingFpsak).håndter();
+        opprettOppgaveHåndterer.håndter(behandlingFpsak);
 
         var oppgaveEventLogg = DBTestUtil.hentUnik(entityManager, OppgaveEventLogg.class);
         assertThat(oppgaveEventLogg.getEventType()).isEqualTo(OppgaveEventType.OPPRETTET);

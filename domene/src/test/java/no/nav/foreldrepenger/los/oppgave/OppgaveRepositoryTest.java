@@ -288,7 +288,7 @@ public class OppgaveRepositoryTest {
         var oppgaveKommerPåNytt = lagOppgave(AVDELING_DRAMMEN_ENHET);
         oppgaveRepository.opprettOppgave(oppgave);
         assertThat(DBTestUtil.hentAlle(entityManager, Oppgave.class)).hasSize(1);
-        oppgaveTjeneste.avsluttOppgaveUtenEventLogg(oppgave.getBehandlingId());
+        oppgaveTjeneste.avsluttOppgaveUtenEventLoggAvsluttTilknyttetReservasjon(oppgave.getBehandlingId());
         oppgaveRepository.opprettOppgave(oppgaveKommerPåNytt);
         assertThat(DBTestUtil.hentAlle(entityManager, Oppgave.class)).hasSize(2);
     }
@@ -303,7 +303,7 @@ public class OppgaveRepositoryTest {
         assertThat(første()).isEqualTo(første);
         assertThat(siste().getAktiv()).isTrue();
         assertThat(første().getOpprettetTidspunkt()).isBefore(siste().getOpprettetTidspunkt());
-        assertThrows(IllegalStateException.class, () -> oppgaveTjeneste.avsluttOppgaveUtenEventLogg(første.getBehandlingId()));
+        assertThrows(IllegalStateException.class, () -> oppgaveTjeneste.avsluttOppgaveUtenEventLoggAvsluttTilknyttetReservasjon(første.getBehandlingId()));
     }
 
     @Test

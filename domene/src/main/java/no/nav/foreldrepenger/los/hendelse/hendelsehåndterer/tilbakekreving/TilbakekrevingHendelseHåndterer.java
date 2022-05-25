@@ -195,6 +195,6 @@ public class TilbakekrevingHendelseHåndterer {
 
     private void avsluttOppgaveForBehandling(BehandlingId behandlingId) {
         køStatistikk.lagre(behandlingId, KøOppgaveHendelse.LUKKET_OPPGAVE);
-        oppgaveTjeneste.avsluttOppgaveUtenEventLogg(behandlingId);
+        oppgaveTjeneste.avsluttOppgaveUtenEventLoggAvsluttTilknyttetReservasjon(behandlingId);
     }
 }
