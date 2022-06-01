@@ -15,7 +15,6 @@ public class JpaExtension extends EntityManagerAwareExtension {
     private static final Logger LOG = LoggerFactory.getLogger(JpaExtension.class);
     private static final boolean isNotRunningUnderMaven = Environment.current().getProperty("maven.cmd.line.args") == null;
 
-
     @Override
     protected void init() {
         TimeZone.setDefault(TimeZone.getTimeZone("Europe/Oslo"));
