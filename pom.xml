@@ -15,8 +15,8 @@
     <name>FPLOS :: Root</name>
 
     <modules>
-        <module>los-migreringer</module>
-        <module>los-domene</module>
+        <module>migreringer</module>
+        <module>domene</module>
         <module>web</module>
     </modules>
 

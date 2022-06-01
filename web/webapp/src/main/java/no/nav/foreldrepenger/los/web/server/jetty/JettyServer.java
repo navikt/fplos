@@ -186,6 +186,12 @@ public class JettyServer {
     }
 
     private static ResourceCollection createResourceCollection() throws IOException {
+        if (ENV.isLocal()) {
+            return new ResourceCollection(
+                    Resource.newClassPathResource("META-INF/resources/webjars/"),
+                    Resource.newClassPathResource("/web"),
+                    Resource.newClassPathResource("META-INF/resources")/** i18n */);
+        }
         return new ResourceCollection(
                 Resource.newResource(System.getProperty("klient", "./klient")),
                 Resource.newClassPathResource("META-INF/resources/webjars/"),
