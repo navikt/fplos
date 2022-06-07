@@ -1,2 +1,0 @@
-ALTER TABLE OPPGAVE ADD ENDRET_TID_2 TIMESTAMP (3);
-COMMENT ON COLUMN OPPGAVE.ENDRET_TID_2 IS 'Temp kolonne for opprydding etter kafkaproblemer 5.10.2020';
