@@ -1,4 +1,6 @@
-import React, { Component, ReactNode } from 'react';
+import React, {
+  FunctionComponent, useState, useCallback, useMemo,
+} from 'react';
 import { Element, Normaltekst } from 'nav-frontend-typografi';
 import { FormattedMessage } from 'react-intl';
 
@@ -36,129 +38,106 @@ interface OwnProps {
   alleKodeverk: AlleKodeverk;
 }
 
-interface StateTsProps {
-  showReservasjonEndringDatoModal: boolean;
-  showFlyttReservasjonModal: boolean;
-  valgtReservasjon?: Reservasjon;
-}
+const ReservasjonerTabell: FunctionComponent<OwnProps> = ({
+  reservasjoner,
+  opphevReservasjon,
+  hentAvdelingensReservasjoner,
+  alleKodeverk,
+}) => {
+  const [showReservasjonEndringDatoModal, setShowReservasjonEndringDatoModal] = useState(false);
+  const [showFlyttReservasjonModal, setShowFlyttReservasjonModal] = useState(false);
+  const [valgtReservasjon, setValgtReservasjon] = useState<Reservasjon | undefined>(undefined);
 
-// TODO Skriv om til funksjonell komponent
+  const closeReservasjonEndringDatoModal = useCallback(() => {
+    setShowReservasjonEndringDatoModal(false);
+  }, []);
 
-class ReservasjonerTabell extends Component<OwnProps, StateTsProps> {
-  constructor(props: OwnProps) {
-    super(props);
+  const showReservasjonEndringDato = useCallback((reservasjon: Reservasjon): void => {
+    setShowReservasjonEndringDatoModal(true);
+    setValgtReservasjon(reservasjon);
+  }, []);
 
-    this.state = {
-      showReservasjonEndringDatoModal: false,
-      showFlyttReservasjonModal: false,
-      valgtReservasjon: undefined,
-    };
-  }
+  const showFlytteModal = useCallback((reservasjon: Reservasjon): void => {
+    setShowFlyttReservasjonModal(true);
+    setValgtReservasjon(reservasjon);
+  }, []);
 
-  closeReservasjonEndringDatoModal = (): void => {
-    this.setState((prevState) => ({ ...prevState, showReservasjonEndringDatoModal: false }));
-  };
+  const closeFlytteModal = useCallback(() => {
+    setShowFlyttReservasjonModal(false);
+  }, []);
 
-  showReservasjonEndringDato = (reservasjon: Reservasjon): void => {
-    this.setState((prevState) => ({ ...prevState, showReservasjonEndringDatoModal: true, valgtReservasjon: reservasjon }));
-  };
+  const sorterteReservasjoner = useMemo(() => reservasjoner
+    .sort((reservasjon1, reservasjon2) => reservasjon1.reservertAvNavn.localeCompare(reservasjon2.reservertAvNavn)),
+  [reservasjoner]);
 
-  endreReserverasjonState = (): void => {
-    this.setState((prevState) => ({ ...prevState, showReservasjonEndringDatoModal: false }));
-  };
-
-  showFlytteModal = (reservasjon: Reservasjon): void => {
-    this.setState((prevState) => ({ ...prevState, showFlyttReservasjonModal: true, valgtReservasjon: reservasjon }));
-  };
-
-  closeFlytteModal = (): void => {
-    this.setState((prevState) => ({ ...prevState, showFlyttReservasjonModal: false }));
-  };
-
-  toggleMenu = (): void => {
-    this.setState((prevState) => ({ ...prevState, showFlyttReservasjonModal: false }));
-  };
-
-  // eslint-disable-next-line react/no-arrow-function-lifecycle
-  render = (): ReactNode => {
-    const {
-      reservasjoner, opphevReservasjon, hentAvdelingensReservasjoner, alleKodeverk,
-    } = this.props;
-    const {
-      showReservasjonEndringDatoModal, showFlyttReservasjonModal, valgtReservasjon,
-    } = this.state;
-
-    const sorterteReservasjoner = reservasjoner.sort((reservasjon1, reservasjon2) => reservasjon1.reservertAvNavn.localeCompare(reservasjon2.reservertAvNavn));
-
-    return (
-      <>
-        <Element><FormattedMessage id="ReservasjonerTabell.Reservasjoner" /></Element>
-        {sorterteReservasjoner.length === 0 && (
-          <>
-            <VerticalSpacer eightPx />
-            <Normaltekst><FormattedMessage id="ReservasjonerTabell.IngenReservasjoner" /></Normaltekst>
-            <VerticalSpacer eightPx />
-          </>
-        )}
-        {sorterteReservasjoner.length > 0 && (
-          <Table headerTextCodes={headerTextCodes} noHover>
-            {sorterteReservasjoner.map((reservasjon) => (
-              <TableRow key={reservasjon.oppgaveId}>
-                <TableColumn>{reservasjon.reservertAvNavn}</TableColumn>
-                <TableColumn>{reservasjon.oppgaveSaksNr}</TableColumn>
-                <TableColumn>{getKodeverknavnFraKode(alleKodeverk, KodeverkType.BEHANDLING_TYPE, reservasjon.behandlingType)}</TableColumn>
-                <TableColumn>
-                  <FormattedMessage
-                    id="ReservasjonerTabell.ReservertTilFormat"
-                    values={getDateAndTime(reservasjon.reservertTilTidspunkt)}
-                  />
-                </TableColumn>
-                <TableColumn>
-                  <CalendarToggleButton
-                    toggleShowCalendar={() => this.showReservasjonEndringDato(reservasjon)}
-                    className={styles.calendarToggleButton}
-                  />
-                </TableColumn>
-                <TableColumn>
-                  <Image
-                    src={gruppeUrl}
-                    srcHover={gruppeHoverUrl}
-                    onMouseDown={() => this.showFlytteModal(reservasjon)}
-                  />
-                </TableColumn>
-                <TableColumn>
-                  <Image
-                    src={removeIcon}
-                    className={styles.removeImage}
-                    onMouseDown={() => opphevReservasjon(reservasjon.oppgaveId)}
-                  />
-                </TableColumn>
-              </TableRow>
-            ))}
-          </Table>
-        )}
-        {valgtReservasjon && showReservasjonEndringDatoModal && (
-          <OppgaveReservasjonEndringDatoModal
-            showModal={showReservasjonEndringDatoModal}
-            closeModal={this.closeReservasjonEndringDatoModal}
-            reserverTilDefault={valgtReservasjon.reservertTilTidspunkt}
-            endreReserverasjonState={this.endreReserverasjonState}
-            hentReserverteOppgaver={hentAvdelingensReservasjoner}
-            oppgaveId={valgtReservasjon.oppgaveId}
-          />
-        )}
-        {valgtReservasjon && showFlyttReservasjonModal && (
-          <FlyttReservasjonModal
-            showModal={showFlyttReservasjonModal}
-            closeModal={this.closeFlytteModal}
-            oppgaveId={valgtReservasjon.oppgaveId}
-            toggleMenu={this.toggleMenu}
-            hentReserverteOppgaver={hentAvdelingensReservasjoner}
-          />
-        )}
-      </>
-    );
-  };
-}
+  return (
+    <>
+      <Element><FormattedMessage id="ReservasjonerTabell.Reservasjoner" /></Element>
+      {sorterteReservasjoner.length === 0 && (
+        <>
+          <VerticalSpacer eightPx />
+          <Normaltekst><FormattedMessage id="ReservasjonerTabell.IngenReservasjoner" /></Normaltekst>
+          <VerticalSpacer eightPx />
+        </>
+      )}
+      {sorterteReservasjoner.length > 0 && (
+        <Table headerTextCodes={headerTextCodes} noHover>
+          {sorterteReservasjoner.map((reservasjon) => (
+            <TableRow key={reservasjon.oppgaveId}>
+              <TableColumn>{reservasjon.reservertAvNavn}</TableColumn>
+              <TableColumn>{reservasjon.oppgaveSaksNr}</TableColumn>
+              <TableColumn>{getKodeverknavnFraKode(alleKodeverk, KodeverkType.BEHANDLING_TYPE, reservasjon.behandlingType)}</TableColumn>
+              <TableColumn>
+                <FormattedMessage
+                  id="ReservasjonerTabell.ReservertTilFormat"
+                  values={getDateAndTime(reservasjon.reservertTilTidspunkt)}
+                />
+              </TableColumn>
+              <TableColumn>
+                <CalendarToggleButton
+                  toggleShowCalendar={() => showReservasjonEndringDato(reservasjon)}
+                  className={styles.calendarToggleButton}
+                />
+              </TableColumn>
+              <TableColumn>
+                <Image
+                  src={gruppeUrl}
+                  srcHover={gruppeHoverUrl}
+                  onMouseDown={() => showFlytteModal(reservasjon)}
+                />
+              </TableColumn>
+              <TableColumn>
+                <Image
+                  src={removeIcon}
+                  className={styles.removeImage}
+                  onMouseDown={() => opphevReservasjon(reservasjon.oppgaveId)}
+                />
+              </TableColumn>
+            </TableRow>
+          ))}
+        </Table>
+      )}
+      {valgtReservasjon && showReservasjonEndringDatoModal && (
+        <OppgaveReservasjonEndringDatoModal
+          showModal={showReservasjonEndringDatoModal}
+          closeModal={closeReservasjonEndringDatoModal}
+          reserverTilDefault={valgtReservasjon.reservertTilTidspunkt}
+          endreReserverasjonState={closeReservasjonEndringDatoModal}
+          hentReserverteOppgaver={hentAvdelingensReservasjoner}
+          oppgaveId={valgtReservasjon.oppgaveId}
+        />
+      )}
+      {valgtReservasjon && showFlyttReservasjonModal && (
+        <FlyttReservasjonModal
+          showModal={showFlyttReservasjonModal}
+          closeModal={closeFlytteModal}
+          oppgaveId={valgtReservasjon.oppgaveId}
+          toggleMenu={closeFlytteModal}
+          hentReserverteOppgaver={hentAvdelingensReservasjoner}
+        />
+      )}
+    </>
+  );
+};
 
 export default ReservasjonerTabell;

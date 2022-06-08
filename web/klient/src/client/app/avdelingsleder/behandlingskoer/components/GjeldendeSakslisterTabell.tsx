@@ -1,5 +1,5 @@
 import React, {
-  useState, KeyboardEvent, ReactNode, FunctionComponent, useEffect, useRef, useCallback,
+  useState, KeyboardEvent, FunctionComponent, useEffect, useRef, useCallback,
 } from 'react';
 import { FormattedMessage } from 'react-intl';
 import {
@@ -31,24 +31,24 @@ const headerTextCodes = [
   'EMPTY_1',
 ];
 
-const formatStonadstyper = (fagsakYtelseTyper: KodeverkMedNavn[], valgteFagsakYtelseTyper?: string[]): string | ReactNode => {
+const formatStonadstyper = (fagsakYtelseTyper: KodeverkMedNavn[], valgteFagsakYtelseTyper?: string[]) => {
   if (!valgteFagsakYtelseTyper || valgteFagsakYtelseTyper.length === 0) {
     return <FormattedMessage id="GjeldendeSakslisterTabell.Alle" />;
   }
 
-  return valgteFagsakYtelseTyper.map((fyt) => {
+  return valgteFagsakYtelseTyper.map<string>((fyt) => {
     const type = fagsakYtelseTyper.find((def) => def.kode === fyt);
     return type ? type.navn : '';
   }).join(', ');
 };
 
-const formatBehandlingstyper = (behandlingTyper: KodeverkMedNavn[], valgteBehandlingTyper?: string[]): string | ReactNode => {
+const formatBehandlingstyper = (behandlingTyper: KodeverkMedNavn[], valgteBehandlingTyper?: string[]) => {
   if (!valgteBehandlingTyper || valgteBehandlingTyper.length === 0
     || valgteBehandlingTyper.length === behandlingTyper.length) {
     return <FormattedMessage id="GjeldendeSakslisterTabell.Alle" />;
   }
 
-  return valgteBehandlingTyper.map((bt) => {
+  return valgteBehandlingTyper.map<string>((bt) => {
     const type = behandlingTyper.find((def) => def.kode === bt);
     return type ? type.navn : '';
   }).join(', ');

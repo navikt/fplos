@@ -1,5 +1,5 @@
 import React, {
-  useState, useRef, ReactNode, FunctionComponent, useCallback, useMemo, useEffect,
+  useState, useRef, FunctionComponent, useCallback, useMemo, useEffect,
 } from 'react';
 import { FormattedMessage, injectIntl, WrappedComponentProps } from 'react-intl';
 import { Normaltekst, Element } from 'nav-frontend-typografi';
@@ -128,7 +128,7 @@ export const OppgaverTabell: FunctionComponent<OwnProps & WrappedComponentProps>
     }
   }, [ref.current, showMenu]);
 
-  const createTooltip = useCallback((oppgaveStatus: OppgaveStatus): ReactNode | undefined => {
+  const createTooltip = useCallback((oppgaveStatus: OppgaveStatus) => {
     const { flyttetReservasjon } = oppgaveStatus;
     if (!flyttetReservasjon) {
       return undefined;

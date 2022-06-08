@@ -1,10 +1,10 @@
-import React, { ReactNode, FunctionComponent } from 'react';
+import React, { FunctionComponent } from 'react';
 import { IntlProvider } from 'react-intl';
 
 import data from '../sprak/nb_NO.json';
 
 interface OwnProps {
-  children: ReactNode;
+  children: any;
 }
 
 /**
