@@ -1,10 +1,10 @@
 import React, {
-  ReactNode, FunctionComponent, useEffect, useMemo, ReactElement,
+  FunctionComponent, useEffect, useMemo,
 } from 'react';
 import dayjs from 'dayjs';
 import { useForm } from 'react-hook-form';
 import {
-  injectIntl, WrappedComponentProps, FormattedMessage, IntlShape,
+  useIntl, FormattedMessage, IntlShape,
 } from 'react-intl';
 import { Element, Normaltekst } from 'nav-frontend-typografi';
 
@@ -87,13 +87,6 @@ const getAndreKriterier = (intl: IntlShape, alleKodeverk: AlleKodeverk, sakslist
   return [intl.formatMessage({ id: 'SakslisteVelgerForm.Alle' })];
 };
 
-type Values = {
-  br: ReactElement;
-  fomDato: string | undefined;
-  tomDato: string |undefined;
-  navn: string | undefined;
-}
-
 const getSorteringsnavn = (intl: IntlShape, alleKodeverk: AlleKodeverk, saksliste?: Saksliste): string => {
   if (!saksliste || !saksliste.sortering) {
     return '';
@@ -102,7 +95,7 @@ const getSorteringsnavn = (intl: IntlShape, alleKodeverk: AlleKodeverk, sakslist
   const {
     erDynamiskPeriode, sorteringType, fra, til, fomDato, tomDato,
   } = saksliste.sortering;
-  let values: Values = {
+  let values: Record<string, string | JSX.Element | undefined > = {
     br: <br />,
     fomDato: undefined,
     tomDato: undefined,
@@ -138,7 +131,7 @@ const getSorteringsnavn = (intl: IntlShape, alleKodeverk: AlleKodeverk, sakslist
   return intl.formatMessage({ id: 'SakslisteVelgerForm.Sorteringsinfo' }, values) as string;
 };
 
-const createTooltip = (saksbehandlere?: Saksbehandler[]): ReactNode | undefined => {
+const createTooltip = (saksbehandlere?: Saksbehandler[]) => {
   if (!saksbehandlere || saksbehandlere.length === 0) {
     return undefined;
   }
@@ -159,8 +152,7 @@ type FormValues = {
  * SakslisteVelgerForm
  *
  */
-export const SakslisteVelgerForm: FunctionComponent<OwnProps & WrappedComponentProps> = ({
-  intl,
+export const SakslisteVelgerForm: FunctionComponent<OwnProps> = ({
   sakslister,
   setValgtSakslisteId,
   fetchAntallOppgaver,
@@ -168,6 +160,8 @@ export const SakslisteVelgerForm: FunctionComponent<OwnProps & WrappedComponentP
   setValueInLocalStorage,
   removeValueFromLocalStorage,
 }) => {
+  const intl = useIntl();
+
   const { data: saksbehandlere, startRequest: fetchSaksbehandlere } = restApiHooks.useRestApiRunner(RestApiPathsKeys.SAKSLISTE_SAKSBEHANDLERE);
   const alleKodeverk = restApiHooks.useGlobalStateRestApiData(RestApiGlobalStatePathsKeys.KODEVERK);
 
@@ -258,4 +252,4 @@ export const SakslisteVelgerForm: FunctionComponent<OwnProps & WrappedComponentP
   );
 };
 
-export default injectIntl(SakslisteVelgerForm);
+export default SakslisteVelgerForm;

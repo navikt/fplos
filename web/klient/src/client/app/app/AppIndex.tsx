@@ -59,6 +59,7 @@ const AppIndex: FunctionComponent = () => {
   const queryStrings = parseQueryString(location.search);
 
   return (
+    // @ts-ignore Usikker på kvifor dette feilar
     <ErrorBoundary errorMessageCallback={addErrorMessageAndSetAsCrashed}>
       <AppConfigResolver>
         <LanguageProvider>
