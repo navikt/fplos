@@ -47,7 +47,7 @@ public class PåVentOppgaveOppgavetransisjonHåndterer implements FpsakOppgavetr
         var aksjonspunkter = behandlingFpsak.getAksjonspunkter();
         var venteType = manueltSattPåVent(aksjonspunkter) ? OppgaveEventType.MANU_VENT : OppgaveEventType.VENT;
         var aksjonspunktFrist = aksjonspunktFrist(aksjonspunkter, venteType);
-        oppgaveTjeneste.hentNyesteOppgaveTilknyttet(behandlingId)
+        oppgaveTjeneste.hentAktivOppgave(behandlingId)
                 .filter(Oppgave::getAktiv)
                 .ifPresentOrElse(o -> {
                             LOG.info("{} behandling er satt på vent, type {}. Lukker oppgave.", SYSTEM, venteType);

@@ -494,4 +494,19 @@ public class OppgaveRepository {
                 .getResultList();
     }
 
+    public Optional<Oppgave> hentAktivOppgave(BehandlingId behandlingId) {
+        var oppgaver = entityManager.createQuery("""
+                FROM Oppgave o
+                where o.behandlingId = :behandlingId
+                and o.aktiv = :aktiv
+                """, Oppgave.class)
+                .setParameter("behandlingId", behandlingId)
+                .setParameter("aktiv", true)
+                .getResultList();
+        if (oppgaver.size() > 1) {
+            LOG.warn("Flere enn én aktive oppgaver for behandlingId {}", behandlingId);
+        }
+        return oppgaver.stream().max(Comparator.comparing(Oppgave::getOpprettetTidspunkt));
+    }
+
 }

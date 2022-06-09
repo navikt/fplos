@@ -39,7 +39,7 @@ public class OppdaterOppgaveOppgavetransisjonHåndterer implements FpsakOppgavet
 
     @Override
     public void håndter(BehandlingFpsak behandlingFpsak) {
-        var eksisterendeOppgave = oppgaveTjeneste.hentNyesteOppgaveTilknyttet(behandlingFpsak.getBehandlingId())
+        var eksisterendeOppgave = oppgaveTjeneste.hentAktivOppgave(behandlingFpsak.getBehandlingId())
                 .orElseThrow(() -> new IllegalStateException("Fant ikke eksisterende oppgave"));
         var nyOppgave = lagOppgave(behandlingFpsak);
         flyttReservasjon(eksisterendeOppgave, nyOppgave);

@@ -67,10 +67,14 @@ class OppdaterOppgaveHendelseHåndtererTest {
     public void gammelReservasjonVidereføresPåNyOppgave() {
         reservasjonTjeneste.reserverOppgave(DBTestUtil.hentUnik(entityManager, Oppgave.class));
         oppgaveOppdaterer.håndter(behandlingFpsak);
+        oppgaveOppdaterer.håndter(behandlingFpsak);
         var oppgaver = hentAlle(entityManager, Oppgave.class);
+        assertThatOppgave(oppgaver.get(0)).harAktiv(false);
+        assertThatOppgave(oppgaver.get(1)).harAktiv(false);
+        assertThatOppgave(oppgaver.get(2)).harAktiv(true);
         var gammelReservasjon = oppgaver.get(0).getReservasjon();
         assertThat(gammelReservasjon.getReservertTil()).isBefore(LocalDateTime.now());
-        var nyReservasjon = oppgaver.get(1).getReservasjon();
+        var nyReservasjon = oppgaver.get(2).getReservasjon();
         assertThat(nyReservasjon.getReservertTil()).isAfter(LocalDateTime.now());
     }
 

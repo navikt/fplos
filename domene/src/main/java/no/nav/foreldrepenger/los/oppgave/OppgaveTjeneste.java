@@ -50,6 +50,10 @@ public class OppgaveTjeneste {
                 .min((o1, o2) -> aktuellDato(o2).compareTo(aktuellDato(o1)));
     }
 
+    public Optional<Oppgave> hentAktivOppgave(BehandlingId behandlingId) {
+        return oppgaveRepository.hentAktivOppgave(behandlingId);
+    }
+
     public void avsluttOppgaveUtenEventLoggAvsluttTilknyttetReservasjon(BehandlingId behandlingId) {
         var oppgaver = oppgaveRepository.hentOppgaver(behandlingId);
         var antallAktive = oppgaver.stream().filter(Oppgave::getAktiv).count();

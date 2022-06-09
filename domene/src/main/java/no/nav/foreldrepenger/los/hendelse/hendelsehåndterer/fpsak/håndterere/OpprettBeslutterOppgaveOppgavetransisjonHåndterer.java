@@ -63,7 +63,7 @@ public class OpprettBeslutterOppgaveOppgavetransisjonHåndterer implements Fpsak
     }
 
     private void håndterEksisterendeOppgave(BehandlingId behandlingId, BehandlingFpsak behandlingFpsak) {
-        oppgaveTjeneste.hentNyesteOppgaveTilknyttet(behandlingId)
+        oppgaveTjeneste.hentAktivOppgave(behandlingId)
                 .stream().peek(o -> LOG.trace("HåndterEksisterendeOppgave, peek på oppgave {}", o))
                 .findFirst()
                 .filter(Oppgave::getAktiv)

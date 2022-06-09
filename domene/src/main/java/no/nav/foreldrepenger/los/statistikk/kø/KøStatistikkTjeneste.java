@@ -43,7 +43,7 @@ public class KøStatistikkTjeneste {
     }
 
     public void lagre(BehandlingId behandlingId, KøOppgaveHendelse køOppgaveHendelse) {
-        var nyesteOppgaveTilknyttetBehandling = oppgaveTjeneste.hentNyesteOppgaveTilknyttet(behandlingId);
+        var nyesteOppgaveTilknyttetBehandling = oppgaveTjeneste.hentAktivOppgave(behandlingId);
         LOG.info("Nyeste oppgave tilknyttet behandling er {}", nyesteOppgaveTilknyttetBehandling);
         nyesteOppgaveTilknyttetBehandling
                 .filter(Oppgave::getAktiv)
