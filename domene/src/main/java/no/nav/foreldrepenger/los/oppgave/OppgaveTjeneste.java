@@ -50,7 +50,7 @@ public class OppgaveTjeneste {
                 .min((o1, o2) -> aktuellDato(o2).compareTo(aktuellDato(o1)));
     }
 
-    public void avsluttOppgaveUtenEventLogg(BehandlingId behandlingId) {
+    public void avsluttOppgaveUtenEventLoggAvsluttTilknyttetReservasjon(BehandlingId behandlingId) {
         var oppgaver = oppgaveRepository.hentOppgaver(behandlingId);
         var antallAktive = oppgaver.stream().filter(Oppgave::getAktiv).count();
         if (antallAktive > 1) {
@@ -70,17 +70,24 @@ public class OppgaveTjeneste {
                 });
     }
 
-    public void avsluttOppgaveMedEventLogg(Long oppgaveId, String begrunnelse) {
-        var oppgave = oppgaveRepository.hentOppgave(oppgaveId);
+    public void avsluttOppgaveMedEventLogg(Oppgave oppgave, String begrunnelse) {
         oppgave.setAktiv(false);
         oppgave.setOppgaveAvsluttet(LocalDateTime.now());
         reservasjonTjeneste.slettReservasjonMedEventLogg(oppgave.getReservasjon(), begrunnelse);
         oppgaveRepository.lagre(oppgave);
         var oel = new OppgaveEventLogg.Builder()
+                .behandlingId(oppgave.getBehandlingId())
                 .behandlendeEnhet(oppgave.getBehandlendeEnhet())
                 .type(OppgaveEventType.LUKKET)
                 .build();
         oppgaveRepository.lagre(oel);
+    }
+
+    public void avsluttKunOppgaveUtenEventlogg(Oppgave oppgave) {
+        oppgave.setAktiv(false);
+        oppgave.setOppgaveAvsluttet(LocalDateTime.now());
+        oppgaveRepository.lagre(oppgave);
+        oppgaveRepository.refresh(oppgave);
     }
 
     public TilbakekrevingOppgave gjenåpneTilbakekrevingOppgave(BehandlingId behandlingId) {

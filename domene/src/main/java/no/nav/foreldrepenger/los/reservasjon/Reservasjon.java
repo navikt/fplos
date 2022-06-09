@@ -2,6 +2,7 @@ package no.nav.foreldrepenger.los.reservasjon;
 
 import java.time.LocalDateTime;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -22,8 +23,8 @@ public class Reservasjon extends BaseEntitet {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_RESERVASJON")
     private Long id;
 
-    @OneToOne(optional = false)
-    @JoinColumn(name = "oppgave_id", nullable = false, updatable = false)
+    @OneToOne(optional = false, cascade = CascadeType.REFRESH)
+    @JoinColumn(name = "oppgave_id", nullable = false)
     private Oppgave oppgave;
 
     @Column(name = "RESERVERT_TIL")
@@ -89,6 +90,10 @@ public class Reservasjon extends BaseEntitet {
 
     public void setReservertTil(LocalDateTime reservertTil) {
         this.reservertTil = reservertTil;
+    }
+
+    public void setOppgave(Oppgave oppgave) {
+        this.oppgave = oppgave;
     }
 
     public void setReservertAv(String reservertAv) {

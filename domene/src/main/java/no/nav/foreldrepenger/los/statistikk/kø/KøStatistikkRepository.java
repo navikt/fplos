@@ -51,28 +51,44 @@ public class KøStatistikkRepository {
     public List<NyeOgFerdigstilteOppgaver> hentStatistikk(Long oppgaveFilterSettId) {
         final var tellesSomFerdigstilt = Stream.of(LUKKET_OPPGAVE, UT_TIL_ANNEN_KØ, OPPGAVE_SATT_PÅ_VENT)
                 .map(KøOppgaveHendelse::name).collect(Collectors.toList());
-        var query = entityManager.createNativeQuery(
-                """
-                        SELECT TRUNC(OPPRETTET_TID), BEHANDLING_TYPE, 0 as ANTALL_NYE, COUNT(1) AS ANTALL_FERDIGSTILTE 
-                        FROM STATISTIKK_KO 
-                        WHERE OPPGAVE_FILTRERING_ID = :oppgaveFilterSettId 
-                            AND OPPRETTET_TID >= :fom
-                            AND HENDELSE IN (:tellesSomFerdigstilt) 
-                        GROUP BY TRUNC(OPPRETTET_TID), BEHANDLING_TYPE
-                        UNION 
-                        SELECT TRUNC(OPPRETTET_TID), BEHANDLING_TYPE, COUNT(1) as ANTALL_NYE, 0 AS ANTALL_FERDIGSTILTE 
-                        FROM STATISTIKK_KO 
-                        WHERE OPPGAVE_FILTRERING_ID = :oppgaveFilterSettId 
-                            AND OPPRETTET_TID >= :fom
-                            AND HENDELSE NOT IN (:tellesSomFerdigstilt) 
-                        GROUP BY TRUNC(OPPRETTET_TID), BEHANDLING_TYPE
-                        """)
+        var query = entityManager.createNativeQuery("""
+                with stats as (
+                    select distinct
+                    trunc(kø.opprettet_tid) as dato
+                    , kø.behandling_type
+                    , case when kø.hendelse in :tellesSomFerdigstilt then 'ferdigstilte' else 'nye' end as res
+                    , o.behandling_id as behandling_id
+                    FROM STATISTIKK_KO kø
+                    join oppgave o on o.id = kø.oppgave_id
+                    WHERE kø.OPPGAVE_FILTRERING_ID = :oppgaveFilterSettId
+                    AND kø.OPPRETTET_TID >= :fom
+                )
+                select dato, behandling_type,
+                (
+                    select count(1)
+                    from stats stny
+                    where stny.dato = st.dato
+                    and stny.behandling_type = st.behandling_type
+                    and stny.res = 'nye'
+                ) as antall_nye,
+                (
+                    select count(1)
+                    from stats stf
+                    where stf.dato = st.dato
+                    and stf.behandling_type = st.behandling_type
+                    and stf.res = 'ferdigstilte'
+                ) as antall_ferdigstilt
+                from stats st
+                group by dato, behandling_type
+                """)
                 .setParameter("oppgaveFilterSettId", oppgaveFilterSettId)
                 .setParameter("tellesSomFerdigstilt", tellesSomFerdigstilt)
                 .setParameter("fom", LocalDate.now().minusDays(7).atStartOfDay());
         @SuppressWarnings("unchecked")
         var result = (List<Object[]>) query.getResultList();
-        var stats = result.stream().map(KøStatistikkRepository::map).collect(Collectors.toList());
+        var stats = result.stream()
+                .map(KøStatistikkRepository::map)
+                .collect(Collectors.toList());
         return slåSammen(stats);
     }
 
@@ -88,7 +104,7 @@ public class KøStatistikkRepository {
         return map.values().stream().toList();
     }
 
-    private static record Key(LocalDate dato, BehandlingType behandlingType) { }
+    private record Key(LocalDate dato, BehandlingType behandlingType) { }
 
     private static NyeOgFerdigstilteOppgaver map(Object record) {
         var objects = (Object[]) record;

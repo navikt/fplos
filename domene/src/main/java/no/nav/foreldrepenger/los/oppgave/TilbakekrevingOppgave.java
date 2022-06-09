@@ -15,7 +15,7 @@ import no.nav.foreldrepenger.los.domene.typer.aktør.AktørId;
 @Entity(name = "TilbakekrevingOppgave")
 @PrimaryKeyJoinColumn(name = "OPPGAVE_ID")
 @Table(name = "TILBAKEKREVING_EGENSKAPER")
-public class TilbakekrevingOppgave extends Oppgave{
+public class TilbakekrevingOppgave extends Oppgave {
 
     @Column(name = "BELOP")
     private BigDecimal beløp;

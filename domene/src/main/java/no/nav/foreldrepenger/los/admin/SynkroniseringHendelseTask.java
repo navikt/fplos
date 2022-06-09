@@ -4,7 +4,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import no.nav.foreldrepenger.los.domene.typer.BehandlingId;
-import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.OppgaveHendelseHåndtererFactory;
+import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.FpsakOppgaveHendelseHåndterer;
 import no.nav.foreldrepenger.los.hendelse.hendelseoppretter.hendelse.Fagsystem;
 import no.nav.foreldrepenger.los.hendelse.hendelseoppretter.hendelse.Hendelse;
 import no.nav.foreldrepenger.los.klient.fpsak.ForeldrepengerBehandling;
@@ -26,15 +26,15 @@ public class SynkroniseringHendelseTask implements ProsessTaskHandler {
 
     private ForeldrepengerBehandling behandlingKlient;
     private ForeldrepengerFagsaker fagsakKlient;
-    private OppgaveHendelseHåndtererFactory oppgaveHendelseHåndtererFactory;
+    private FpsakOppgaveHendelseHåndterer fpsakOppgaveHendelseHåndterer;
 
     @Inject
     public SynkroniseringHendelseTask(@Jersey ForeldrepengerBehandling behandlingKlient,
             @Jersey ForeldrepengerFagsaker fagsakKlient,
-            OppgaveHendelseHåndtererFactory oppgaveHendelseHåndtererFactory) {
+            FpsakOppgaveHendelseHåndterer fpsakOppgaveHendelseHåndterer) {
         this.behandlingKlient = behandlingKlient;
         this.fagsakKlient = fagsakKlient;
-        this.oppgaveHendelseHåndtererFactory = oppgaveHendelseHåndtererFactory;
+        this.fpsakOppgaveHendelseHåndterer = fpsakOppgaveHendelseHåndterer;
     }
 
     public SynkroniseringHendelseTask() {
@@ -57,8 +57,7 @@ public class SynkroniseringHendelseTask implements ProsessTaskHandler {
         hendelse.setBehandlingType(behandlingDto.type());
         hendelse.setYtelseType(fagsakDto.fagsakYtelseType());
 
-        var håndterer = oppgaveHendelseHåndtererFactory.lagHåndterer(hendelse);
-        håndterer.håndter();
+        fpsakOppgaveHendelseHåndterer.håndter(hendelse);
     }
 
     private FagsakDto hentFagsakDto(BehandlingDto behandlingdto) {

@@ -8,6 +8,8 @@ import static org.mockito.Mockito.when;
 
 import javax.persistence.EntityManager;
 
+import no.nav.foreldrepenger.los.domene.typer.aktør.AktørId;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -95,7 +97,7 @@ public class OppgaveEgenskapOppdatererTaskTest {
     @Test
     public void skalIkkeSynkronisereInaktiveOppgaver() {
         var oppgave = opprettOgLagreOppgave();
-        oppgave.deaktiverOppgave();
+        oppgave.avsluttOppgave();
         oppgaveRepository.lagre(oppgave);
 
         var prosessTaskData = ProsessTaskData.forProsessTask(OppgaveEgenskapOppdatererTask.class);
@@ -123,12 +125,12 @@ public class OppgaveEgenskapOppdatererTaskTest {
 
     private void mockErBerørtBehandling() {
         when(FPSAK_KLIENT_MOCK.getBehandling(any(BehandlingId.class)))
-                .thenReturn(builder().medErBerørtBehandling(true).build());
+                .thenReturn(builder().medAktørId(AktørId.dummy()).medErBerørtBehandling(true).build());
     }
 
     private void mockErEndringssøknadMedVerdi(boolean erEndringssøknad) {
         when(FPSAK_KLIENT_MOCK.getBehandling(any(BehandlingId.class)))
-                .thenReturn(builder().medErEndringssøknad(erEndringssøknad).build());
+                .thenReturn(builder().medAktørId(AktørId.dummy()).medErEndringssøknad(erEndringssøknad).build());
     }
 
     private static BehandlingFpsak.Builder builder() {

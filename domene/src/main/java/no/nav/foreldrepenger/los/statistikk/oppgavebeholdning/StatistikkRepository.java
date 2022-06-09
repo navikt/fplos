@@ -90,7 +90,7 @@ public class StatistikkRepository {
     @SuppressWarnings("unchecked")
     public List<OppgaverForFørsteStønadsdag> hentOppgaverPerFørsteStønadsdag(String avdeling) {
         return (List<OppgaverForFørsteStønadsdag>) entityManager.createNativeQuery("""
-                Select trunc(o.FORSTE_STONADSDAG) as DATO, Count(o.FORSTE_STONADSDAG) AS ANTALL 
+                Select trunc(o.FORSTE_STONADSDAG) as DATO, Count(1) AS ANTALL 
                 FROM OPPGAVE o INNER JOIN avdeling a ON a.AVDELING_ENHET = o.BEHANDLENDE_ENHET 
                 WHERE a.AVDELING_ENHET =:avdelingEnhet AND NOT o.AKTIV='N' AND o.FORSTE_STONADSDAG IS NOT NULL 
                 GROUP BY trunc(o.FORSTE_STONADSDAG) ORDER BY trunc(o.FORSTE_STONADSDAG)
