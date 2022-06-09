@@ -163,6 +163,7 @@ public class ReservasjonTjeneste {
         nyReservasjon.setReservertAv(reservasjon.getReservertAv());
         nyReservasjon.setBegrunnelse(reservasjon.getBegrunnelse());
         reservasjonRepository.lagre(nyReservasjon);
+        reservasjonRepository.refresh(oppgave);
         return nyReservasjon;
     }
 

@@ -21,6 +21,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import javax.persistence.EntityManager;
 
+import java.time.LocalDateTime;
+
 import static no.nav.foreldrepenger.dbstøtte.DBTestUtil.hentAlle;
 import static no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.OppgaveUtil.oppgave;
 import static no.nav.foreldrepenger.los.oppgave.util.OppgaveAssert.assertThatOppgave;
@@ -62,14 +64,14 @@ class OppdaterOppgaveHendelseHåndtererTest {
     }
 
     @Test
-    public void skalFlytteAktivReservasjon() {
+    public void gammelReservasjonVidereføresPåNyOppgave() {
         reservasjonTjeneste.reserverOppgave(DBTestUtil.hentUnik(entityManager, Oppgave.class));
         oppgaveOppdaterer.håndter(behandlingFpsak);
         var oppgaver = hentAlle(entityManager, Oppgave.class);
-        var reservasjonTilknyttetNyOppgave = oppgaver.get(1).getReservasjon();
-        assertThat(reservasjonTilknyttetNyOppgave).isNotNull();
-        var gammelRes = oppgaver.get(0).getReservasjon();
-        assertThat(gammelRes).isNull();
+        var gammelReservasjon = oppgaver.get(0).getReservasjon();
+        assertThat(gammelReservasjon.getReservertTil()).isBefore(LocalDateTime.now());
+        var nyReservasjon = oppgaver.get(1).getReservasjon();
+        assertThat(nyReservasjon.getReservertTil()).isAfter(LocalDateTime.now());
     }
 
     @Test
