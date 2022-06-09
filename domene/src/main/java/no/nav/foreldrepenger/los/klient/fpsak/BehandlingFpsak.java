@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 import no.nav.foreldrepenger.los.domene.typer.BehandlingId;
 import no.nav.foreldrepenger.los.domene.typer.Saksnummer;
@@ -276,7 +277,9 @@ public class BehandlingFpsak {
             behandlingFpsak.behandlingType = this.behandlingType;
             behandlingFpsak.ytelseType = this.ytelseType;
             behandlingFpsak.kontrollresultat = this.kontrollresultat;
-            behandlingFpsak.aktørId = this.aktørId.getId();
+            behandlingFpsak.aktørId = Optional.ofNullable(this.aktørId)
+                    .map(AktørId::getId)
+                    .orElse(null);
             behandlingFpsak.saksnummer = this.saksnummer;
             return behandlingFpsak;
         }
