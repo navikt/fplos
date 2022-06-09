@@ -14,7 +14,6 @@ import org.slf4j.LoggerFactory;
 
 import no.nav.foreldrepenger.los.domene.typer.Saksnummer;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.FpsakOppgavetransisjonHåndterer.Oppgavetransisjon;
-import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.håndterere.IkkeRelevantForOppgaveOppgavetransisjonHåndterer;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveHistorikk;
 import no.nav.foreldrepenger.los.hendelse.hendelseoppretter.hendelse.Hendelse;
 import no.nav.foreldrepenger.los.klient.fpsak.ForeldrepengerBehandling;
@@ -31,9 +30,8 @@ import static no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.Transi
 public class FpsakOppgaveHendelseHåndterer {
 
     private static final Logger LOG = LoggerFactory.getLogger(FpsakOppgaveHendelseHåndterer.class);
-    private static final IkkeRelevantForOppgaveOppgavetransisjonHåndterer IKKE_RELEVANT_FOR_OPPGAVE_HENDELSE_HÅNDTERER = new IkkeRelevantForOppgaveOppgavetransisjonHåndterer();
-    private Instance<FpsakOppgavetransisjonHåndterer> håndterere;
     private OppgaveRepository oppgaveRepository;
+    private Instance<FpsakOppgavetransisjonHåndterer> håndterere;
     private ForeldrepengerBehandling foreldrePengerBehandlingKlient;
 
     @Inject
@@ -73,7 +71,7 @@ public class FpsakOppgaveHendelseHåndterer {
 
     private FpsakOppgavetransisjonHåndterer håndtererForTransisjon(Oppgavetransisjon type) {
         return håndterere.stream()
-                .filter(hh -> hh.kanHåndtere() == type)
+                .filter(th -> th.kanHåndtere() == type)
                 .findFirst()
                 .orElseThrow(() -> new IllegalStateException("Fant ingen håndterer for type" + type));
     }
