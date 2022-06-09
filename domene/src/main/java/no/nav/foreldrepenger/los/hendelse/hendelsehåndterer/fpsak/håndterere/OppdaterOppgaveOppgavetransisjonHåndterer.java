@@ -43,7 +43,7 @@ public class OppdaterOppgaveOppgavetransisjonHåndterer implements FpsakOppgavet
                 .orElseThrow(() -> new IllegalStateException("Fant ikke eksisterende oppgave"));
         var nyOppgave = lagOppgave(behandlingFpsak);
         flyttReservasjon(eksisterendeOppgave, nyOppgave);
-        oppgaveTjeneste.avsluttKunOppgaveUtenEventlogg(eksisterendeOppgave);
+        oppgaveTjeneste.avsluttOppgaveOgReservasjonUtenEventlogg(eksisterendeOppgave);
     }
 
     @Override
@@ -57,8 +57,9 @@ public class OppdaterOppgaveOppgavetransisjonHåndterer implements FpsakOppgavet
         boolean aktivReservasjon = gammelReservasjon != null && gammelReservasjon.erAktiv();
         if (!erNyEnhet && aktivReservasjon) {
             var nyVarighetTil = gammelReservasjon.getReservertTil().plusHours(2);
-            LOG.info("Forlenger reservasjonId {} med to timer til {}", gammelReservasjon.getId(), nyVarighetTil);
-            reservasjonTjeneste.reserverOppgaveBasertPåEksisterendeReservasjon(nyOppgave, gammelReservasjon, nyVarighetTil);
+            var reservasjon = reservasjonTjeneste.reserverOppgaveBasertPåEksisterendeReservasjon(nyOppgave, gammelReservasjon, nyVarighetTil);
+            LOG.info("Oppretter ny forlenget reservasjonId {} varighet til {} reservert_av {}",
+                    reservasjon.getId(), reservasjon.getReservertTil(), reservasjon.getReservertAv());
         } else if (erNyEnhet && aktivReservasjon) {
             reservasjonTjeneste.slettReservasjonMedEventLogg(gammelReservasjon, NY_ENHET);
             LOG.info("Overfører oppgave til ny enhet. Avslutter eksisterende reservasjon.");

@@ -157,11 +157,13 @@ public class ReservasjonTjeneste {
         lagreMedEventLogg(reservasjon);
     }
 
-    public void reserverOppgaveBasertPåEksisterendeReservasjon(Oppgave oppgave, Reservasjon reservasjon, LocalDateTime nyVarighetTil) {
-        reservasjon.setOppgave(oppgave);
-        reservasjon.setReservertTil(nyVarighetTil);
-        reservasjonRepository.lagre(reservasjon);
-        reservasjonRepository.refresh(reservasjon);
+    public Reservasjon reserverOppgaveBasertPåEksisterendeReservasjon(Oppgave oppgave, Reservasjon reservasjon, LocalDateTime nyVarighetTil) {
+        var nyReservasjon = new Reservasjon(oppgave);
+        nyReservasjon.setReservertTil(nyVarighetTil);
+        nyReservasjon.setReservertAv(reservasjon.getReservertAv());
+        nyReservasjon.setBegrunnelse(reservasjon.getBegrunnelse());
+        reservasjonRepository.lagre(nyReservasjon);
+        return nyReservasjon;
     }
 
     private void lagreMedEventLogg(Reservasjon reservasjon) {

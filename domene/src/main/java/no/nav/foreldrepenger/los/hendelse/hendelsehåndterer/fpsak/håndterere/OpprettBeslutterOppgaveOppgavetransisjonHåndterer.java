@@ -64,6 +64,8 @@ public class OpprettBeslutterOppgaveOppgavetransisjonHåndterer implements Fpsak
 
     private void håndterEksisterendeOppgave(BehandlingId behandlingId, BehandlingFpsak behandlingFpsak) {
         oppgaveTjeneste.hentNyesteOppgaveTilknyttet(behandlingId)
+                .stream().peek(o -> LOG.trace("HåndterEksisterendeOppgave, peek på oppgave {}", o))
+                .findFirst()
                 .filter(Oppgave::getAktiv)
                 .ifPresentOrElse(sbo -> {
                     køStatistikk.lagre(sbo, KøOppgaveHendelse.LUKKET_OPPGAVE);

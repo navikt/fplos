@@ -83,11 +83,11 @@ public class OppgaveTjeneste {
         oppgaveRepository.lagre(oel);
     }
 
-    public void avsluttKunOppgaveUtenEventlogg(Oppgave oppgave) {
+    public void avsluttOppgaveOgReservasjonUtenEventlogg(Oppgave oppgave) {
         oppgave.setAktiv(false);
         oppgave.setOppgaveAvsluttet(LocalDateTime.now());
         oppgaveRepository.lagre(oppgave);
-        oppgaveRepository.refresh(oppgave);
+        reservasjonTjeneste.slettReservasjonMedEventLogg(oppgave.getId(), "OppdaterOppgave");
     }
 
     public TilbakekrevingOppgave gjenåpneTilbakekrevingOppgave(BehandlingId behandlingId) {
