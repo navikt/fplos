@@ -27,9 +27,17 @@ public class ReservasjonRepository {
                         select o from Oppgave o
                         inner join Reservasjon r on r.oppgave = o
                         where upper(r.reservertAv) = upper( :uid )
+                        and not exists(
+                            select 1
+                            from Oppgave o2
+                            inner join Reservasjon r2 on r2.oppgave = o2
+                            where o2.behandlingId = o.behandlingId
+                            and o2.opprettetTidspunkt > o.opprettetTidspunkt
+                            and upper(r2.reservertAv) = upper( :uid )
+                        )
                         order by coalesce(r.endretTidspunkt, r.opprettetTidspunkt) desc
                         """, Oppgave.class) //$NON-NLS-1$
-                .setParameter("uid", uid).setMaxResults(10).getResultList();
+                .setParameter("uid", uid).setMaxResults(15).getResultList();
     }
 
     public List<Oppgave> hentSaksbehandlersReserverteAktiveOppgaver(String uid) {

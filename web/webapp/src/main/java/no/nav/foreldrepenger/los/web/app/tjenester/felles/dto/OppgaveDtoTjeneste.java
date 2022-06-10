@@ -140,6 +140,7 @@ public class OppgaveDtoTjeneste {
                 .stream()
                 .map(o -> tryOrEmpty(() -> lagDtoFor(o, true)))
                 .flatMap(Optional::stream)
+                .limit(10)
                 .collect(Collectors.toList());
     }
 
