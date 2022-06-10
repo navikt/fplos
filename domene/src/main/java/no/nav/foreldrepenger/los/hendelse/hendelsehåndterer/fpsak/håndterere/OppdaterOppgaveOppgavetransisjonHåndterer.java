@@ -19,6 +19,8 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -59,23 +61,24 @@ public class OppdaterOppgaveOppgavetransisjonHåndterer implements FpsakOppgavet
     }
 
     private void vedlikeholdKøStatistikk(Oppgave eksisterendeOppgave, Oppgave nyOppgave) {
+        // kan erstattes med query basert på oppgavebeholdning når beholdningen er bygget opp for tilbakekreving og fpsak-oppgaver
         var køKnytningerGammelOppgave = køStatistikkTjeneste.hentOppgaveFiltreringKnytningerForOppgave(eksisterendeOppgave);
         var køKnytningerNyOppgave = køStatistikkTjeneste.hentOppgaveFiltreringKnytningerForOppgave(nyOppgave);
         var knytninger = Stream.concat(køKnytningerGammelOppgave.stream(), køKnytningerNyOppgave.stream())
                 .collect(Collectors.groupingBy(OppgaveFiltreringKnytning::oppgaveId,
                         Collectors.mapping(OppgaveFiltreringKnytning::oppgaveFiltreringId, Collectors.toList())));
-        var utAvKø = knytninger.get(eksisterendeOppgave.getId());
-        var innPåKø = knytninger.get(nyOppgave.getId());
-        if (utAvKø != null && innPåKø != null) {
+        var utAvKø = Optional.ofNullable(knytninger.get(eksisterendeOppgave.getId())).orElse(List.of());
+        var innPåKø = Optional.ofNullable(knytninger.get(nyOppgave.getId())).orElse(List.of());
+        if (!utAvKø.isEmpty() || !innPåKø.isEmpty()) {
             utAvKø = new ArrayList<>(utAvKø);
             innPåKø = new ArrayList<>(innPåKø);
             utAvKø.removeAll(innPåKø);
-            innPåKø.removeAll(knytninger.get(eksisterendeOppgave.getId()));
+            innPåKø.removeAll(Optional.ofNullable(knytninger.get(eksisterendeOppgave.getId())).orElse(List.of()));
         }
         LOG.info("Køstatistikk-knytninger mellom oppgaveId og oppgaveFiltreringId: {}. På vei ut av køer {}, på vei inn i køer {}",
                 knytninger, utAvKø, innPåKø);
-        køStatistikkTjeneste.lagre(eksisterendeOppgave, KøOppgaveHendelse.UT_TIL_ANNEN_KØ);
-        køStatistikkTjeneste.lagre(nyOppgave, KøOppgaveHendelse.INN_FRA_ANNEN_KØ);
+        innPåKø.forEach(i -> køStatistikkTjeneste.lagre(nyOppgave, i, KøOppgaveHendelse.INN_FRA_ANNEN_KØ));
+        utAvKø.forEach(i -> køStatistikkTjeneste.lagre(nyOppgave, i, KøOppgaveHendelse.UT_TIL_ANNEN_KØ));
     }
 
     @Override

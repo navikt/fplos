@@ -71,4 +71,8 @@ public class KøStatistikkTjeneste {
         oppgaveFiltreringKnytninger
                 .forEach(ok -> statistikkRepository.lagre(ok.oppgaveId(), ok.oppgaveFiltreringId(), ok.behandlingType(), køOppgaveHendelse));
     }
+
+    public void lagre(Oppgave oppgave, Long køId, KøOppgaveHendelse hendelse) {
+        statistikkRepository.lagre(oppgave.getId(), køId, oppgave.getBehandlingType(), hendelse);
+    }
 }
