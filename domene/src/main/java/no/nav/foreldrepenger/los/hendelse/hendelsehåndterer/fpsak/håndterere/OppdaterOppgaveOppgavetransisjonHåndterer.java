@@ -6,13 +6,21 @@ import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.FpsakOppgavet
 import no.nav.foreldrepenger.los.klient.fpsak.BehandlingFpsak;
 import no.nav.foreldrepenger.los.oppgave.Oppgave;
 import no.nav.foreldrepenger.los.oppgave.OppgaveTjeneste;
+import no.nav.foreldrepenger.los.oppgavekø.OppgaveFiltreringKnytning;
 import no.nav.foreldrepenger.los.reservasjon.ReservasjonTjeneste;
+
+import no.nav.foreldrepenger.los.statistikk.kø.KøOppgaveHendelse;
+import no.nav.foreldrepenger.los.statistikk.kø.KøStatistikkTjeneste;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+
+import java.util.ArrayList;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.OppgaveUtil.oppgave;
 import static no.nav.foreldrepenger.los.reservasjon.ReservasjonKonstanter.NY_ENHET;
@@ -24,14 +32,17 @@ public class OppdaterOppgaveOppgavetransisjonHåndterer implements FpsakOppgavet
     private ReservasjonTjeneste reservasjonTjeneste;
     private OppgaveEgenskapHåndterer oppgaveEgenskapHåndterer;
     private OppgaveTjeneste oppgaveTjeneste;
+    private KøStatistikkTjeneste køStatistikkTjeneste;
 
     @Inject
     public OppdaterOppgaveOppgavetransisjonHåndterer(OppgaveTjeneste oppgaveTjeneste,
                                                      ReservasjonTjeneste reservasjonTjeneste,
-                                                     OppgaveEgenskapHåndterer oppgaveEgenskapHåndterer) {
+                                                     OppgaveEgenskapHåndterer oppgaveEgenskapHåndterer,
+                                                     KøStatistikkTjeneste køStatistikkTjeneste) {
         this.reservasjonTjeneste = reservasjonTjeneste;
         this.oppgaveEgenskapHåndterer = oppgaveEgenskapHåndterer;
         this.oppgaveTjeneste = oppgaveTjeneste;
+        this.køStatistikkTjeneste = køStatistikkTjeneste;
     }
 
     public OppdaterOppgaveOppgavetransisjonHåndterer() {
@@ -42,8 +53,29 @@ public class OppdaterOppgaveOppgavetransisjonHåndterer implements FpsakOppgavet
         var eksisterendeOppgave = oppgaveTjeneste.hentAktivOppgave(behandlingFpsak.getBehandlingId())
                 .orElseThrow(() -> new IllegalStateException("Fant ikke eksisterende oppgave"));
         var nyOppgave = lagOppgave(behandlingFpsak);
+        vedlikeholdKøStatistikk(eksisterendeOppgave, nyOppgave);
         flyttReservasjon(eksisterendeOppgave, nyOppgave);
         oppgaveTjeneste.avsluttOppgaveOgReservasjonUtenEventlogg(eksisterendeOppgave);
+    }
+
+    private void vedlikeholdKøStatistikk(Oppgave eksisterendeOppgave, Oppgave nyOppgave) {
+        var køKnytningerGammelOppgave = køStatistikkTjeneste.hentOppgaveFiltreringKnytningerForOppgave(eksisterendeOppgave);
+        var køKnytningerNyOppgave = køStatistikkTjeneste.hentOppgaveFiltreringKnytningerForOppgave(nyOppgave);
+        var knytninger = Stream.concat(køKnytningerGammelOppgave.stream(), køKnytningerNyOppgave.stream())
+                .collect(Collectors.groupingBy(OppgaveFiltreringKnytning::oppgaveId,
+                        Collectors.mapping(OppgaveFiltreringKnytning::oppgaveFiltreringId, Collectors.toList())));
+        var utAvKø = knytninger.get(eksisterendeOppgave.getId());
+        var innPåKø = knytninger.get(nyOppgave.getId());
+        if (utAvKø != null && innPåKø != null) {
+            utAvKø = new ArrayList<>(utAvKø);
+            innPåKø = new ArrayList<>(innPåKø);
+            utAvKø.removeAll(innPåKø);
+            innPåKø.removeAll(knytninger.get(eksisterendeOppgave.getId()));
+        }
+        LOG.info("Køstatistikk-knytninger mellom oppgaveId og oppgaveFiltreringId: {}. På vei ut av køer {}, på vei inn i køer {}",
+                knytninger, utAvKø, innPåKø);
+        køStatistikkTjeneste.lagre(eksisterendeOppgave, KøOppgaveHendelse.UT_TIL_ANNEN_KØ);
+        køStatistikkTjeneste.lagre(nyOppgave, KøOppgaveHendelse.INN_FRA_ANNEN_KØ);
     }
 
     @Override

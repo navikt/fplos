@@ -162,7 +162,7 @@ public class ReservasjonTjeneste {
         nyReservasjon.setReservertTil(nyVarighetTil);
         nyReservasjon.setReservertAv(reservasjon.getReservertAv());
         nyReservasjon.setBegrunnelse(reservasjon.getBegrunnelse());
-        reservasjonRepository.lagre(nyReservasjon);
+        lagreMedEventLogg(nyReservasjon);
         reservasjonRepository.refresh(oppgave);
         return nyReservasjon;
     }
