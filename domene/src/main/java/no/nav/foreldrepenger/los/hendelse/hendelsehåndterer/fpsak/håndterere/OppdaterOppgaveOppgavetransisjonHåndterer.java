@@ -3,6 +3,7 @@ package no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.håndterere;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.OppgaveEgenskapHåndterer;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.FpsakOppgaveEgenskapFinner;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.FpsakOppgavetransisjonHåndterer;
+import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveEventType;
 import no.nav.foreldrepenger.los.klient.fpsak.BehandlingFpsak;
 import no.nav.foreldrepenger.los.oppgave.Oppgave;
 import no.nav.foreldrepenger.los.oppgave.OppgaveTjeneste;
@@ -18,6 +19,7 @@ import org.slf4j.LoggerFactory;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -26,6 +28,7 @@ import java.util.stream.Stream;
 
 import static no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.OppgaveUtil.oppgave;
 import static no.nav.foreldrepenger.los.reservasjon.ReservasjonKonstanter.NY_ENHET;
+import static no.nav.foreldrepenger.los.reservasjon.ReservasjonKonstanter.RESERVASJON_VIDEREFØRT_NY_OPPGAVE;
 
 @ApplicationScoped
 public class OppdaterOppgaveOppgavetransisjonHåndterer implements FpsakOppgavetransisjonHåndterer {
@@ -57,7 +60,7 @@ public class OppdaterOppgaveOppgavetransisjonHåndterer implements FpsakOppgavet
         var nyOppgave = lagOppgave(behandlingFpsak);
         vedlikeholdKøStatistikk(eksisterendeOppgave, nyOppgave);
         flyttReservasjon(eksisterendeOppgave, nyOppgave);
-        oppgaveTjeneste.avsluttOppgaveOgReservasjonUtenEventlogg(eksisterendeOppgave);
+        oppgaveTjeneste.avsluttOppgaveMedEventLogg(eksisterendeOppgave, OppgaveEventType.GJENAPNET, RESERVASJON_VIDEREFØRT_NY_OPPGAVE);
     }
 
     private void vedlikeholdKøStatistikk(Oppgave eksisterendeOppgave, Oppgave nyOppgave) {
@@ -91,8 +94,13 @@ public class OppdaterOppgaveOppgavetransisjonHåndterer implements FpsakOppgavet
         boolean erNyEnhet = !eksisterendeOppgave.getBehandlendeEnhet().equals(nyOppgave.getBehandlendeEnhet());
         boolean aktivReservasjon = gammelReservasjon != null && gammelReservasjon.erAktiv();
         if (!erNyEnhet && aktivReservasjon) {
-            var nyVarighetTil = gammelReservasjon.getReservertTil().plusHours(2);
-            var reservasjon = reservasjonTjeneste.reserverOppgaveBasertPåEksisterendeReservasjon(nyOppgave, gammelReservasjon, nyVarighetTil);
+            var eksisterendeVarighetTil = gammelReservasjon.getReservertTil();
+            var kandidatVarighetTil = LocalDateTime.now().plusHours(2);
+            var nyVarighetTil = kandidatVarighetTil.isAfter(eksisterendeVarighetTil)
+                    ? kandidatVarighetTil
+                    : eksisterendeVarighetTil;
+            var reservasjon = reservasjonTjeneste.reserverOppgaveBasertPåEksisterendeReservasjon(nyOppgave,
+                    gammelReservasjon, nyVarighetTil);
             LOG.info("Oppretter ny forlenget reservasjonId {} varighet til {} reservert_av {}",
                     reservasjon.getId(), reservasjon.getReservertTil(), reservasjon.getReservertAv());
         } else if (erNyEnhet && aktivReservasjon) {
