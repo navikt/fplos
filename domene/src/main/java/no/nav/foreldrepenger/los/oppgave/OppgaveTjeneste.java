@@ -74,24 +74,17 @@ public class OppgaveTjeneste {
                 });
     }
 
-    public void avsluttOppgaveMedEventLogg(Oppgave oppgave, String begrunnelse) {
+    public void avsluttOppgaveMedEventLogg(Oppgave oppgave, OppgaveEventType oppgaveEventType, String begrunnelseReservasjonEvent) {
         oppgave.setAktiv(false);
         oppgave.setOppgaveAvsluttet(LocalDateTime.now());
-        reservasjonTjeneste.slettReservasjonMedEventLogg(oppgave.getReservasjon(), begrunnelse);
+        reservasjonTjeneste.slettReservasjonMedEventLogg(oppgave.getReservasjon(), begrunnelseReservasjonEvent);
         oppgaveRepository.lagre(oppgave);
         var oel = new OppgaveEventLogg.Builder()
                 .behandlingId(oppgave.getBehandlingId())
                 .behandlendeEnhet(oppgave.getBehandlendeEnhet())
-                .type(OppgaveEventType.LUKKET)
+                .type(oppgaveEventType)
                 .build();
         oppgaveRepository.lagre(oel);
-    }
-
-    public void avsluttOppgaveOgReservasjonUtenEventlogg(Oppgave oppgave) {
-        oppgave.setAktiv(false);
-        oppgave.setOppgaveAvsluttet(LocalDateTime.now());
-        oppgaveRepository.lagre(oppgave);
-        reservasjonTjeneste.slettReservasjonMedEventLogg(oppgave.getId(), "OppdaterOppgave");
     }
 
     public TilbakekrevingOppgave gjenåpneTilbakekrevingOppgave(BehandlingId behandlingId) {

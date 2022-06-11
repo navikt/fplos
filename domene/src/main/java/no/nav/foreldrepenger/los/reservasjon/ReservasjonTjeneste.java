@@ -85,13 +85,19 @@ public class ReservasjonTjeneste {
     }
 
     public void slettReservasjonMedEventLogg(Reservasjon reservasjon, String begrunnelse) {
-        if (reservasjon != null) {
+        if (reservasjon != null && reservasjon.erAktiv()) {
+            var rel = ReservasjonEventLogg.Builder.builder()
+                    .reservasjonId(reservasjon.getId())
+                    .oppgaveId(reservasjon.getOppgave().getId())
+                    .reservertAv(reservasjon.getReservertAv())
+                    .reservertTil(reservasjon.getReservertTil())
+                    .flyttetAv(reservasjon.getFlyttetAv())
+                    .flyttetTidspunkt(reservasjon.getFlyttetTidspunkt())
+                    .begrunnelse(begrunnelse)
+                    .build();
+            reservasjonRepository.lagre(rel);
             reservasjon.setReservertTil(LocalDateTime.now().minusSeconds(1));
-            reservasjon.setFlyttetAv(null);
-            reservasjon.setFlyttetTidspunkt(null);
-            reservasjon.setBegrunnelse(begrunnelse);
             reservasjonRepository.lagre(reservasjon);
-            reservasjonRepository.lagre(new ReservasjonEventLogg(reservasjon));
         }
     }
 

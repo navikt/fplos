@@ -69,7 +69,7 @@ public class OpprettBeslutterOppgaveOppgavetransisjonHåndterer implements Fpsak
                 .filter(Oppgave::getAktiv)
                 .ifPresentOrElse(sbo -> {
                     køStatistikk.lagre(sbo, KøOppgaveHendelse.LUKKET_OPPGAVE);
-                    oppgaveTjeneste.avsluttOppgaveMedEventLogg(sbo, ReservasjonKonstanter.OPPGAVE_AVSLUTTET);
+                    oppgaveTjeneste.avsluttOppgaveMedEventLogg(sbo, OppgaveEventType.LUKKET, ReservasjonKonstanter.OPPGAVE_AVSLUTTET);
                     LOG.info("Avslutter saksbehandler1 oppgave");
                 }, () -> LOG.info("Fant ingen aktiv saksbehandler1-oppgave"));
     }

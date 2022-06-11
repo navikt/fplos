@@ -181,7 +181,6 @@ public class OppgaveTjenesteTest {
         assertThat(reservasjonTjeneste.hentSaksbehandlersReserverteAktiveOppgaver()).hasSize(0);
         assertThat(reservasjonTjeneste.hentReservasjonerForAvdeling(AVDELING_DRAMMEN_ENHET)).hasSize(0);
         assertThat(reservasjonTjeneste.hentSaksbehandlersSisteReserverteOppgaver()).hasSize(1);
-        assertThat(reservasjonTjeneste.hentSaksbehandlersSisteReserverteOppgaver().get(0).getReservasjon().getBegrunnelse()).isEqualTo(begrunnelse);
     }
 
     @Test
