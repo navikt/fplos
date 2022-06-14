@@ -46,7 +46,7 @@ describe('<SorteringVelger>', () => {
     render(<SorteringsvelgerNårKunTilbakekrevingErValgt />);
     expect(await screen.findByText('Dato for behandlingsfrist')).toBeInTheDocument();
 
-    userEvent.click(screen.getByText('Feilutbetalt beløp'));
+    await userEvent.click(screen.getByText('Feilutbetalt beløp'));
 
     expect(await screen.findByText('Ta kun med behandlinger mellom')).toBeInTheDocument();
     expect(screen.getAllByText('kr')[0]).toBeInTheDocument();
@@ -57,12 +57,12 @@ describe('<SorteringVelger>', () => {
     render(<SorteringsvelgerNårKunTilbakekrevingErValgt />);
     expect(await screen.findByText('Dato for behandlingsfrist')).toBeInTheDocument();
 
-    userEvent.click(screen.getByText('Feilutbetalt beløp'));
+    await userEvent.click(screen.getByText('Feilutbetalt beløp'));
 
     expect(await screen.findByText('Ta kun med behandlinger mellom')).toBeInTheDocument();
 
     const fraInput = screen.getAllByRole('textbox')[0];
-    userEvent.type(fraInput, 'bokstaver');
+    await userEvent.type(fraInput, 'bokstaver');
 
     expect(await screen.findByText('Feltet kan kun inneholde tall')).toBeInTheDocument();
   });
@@ -71,12 +71,12 @@ describe('<SorteringVelger>', () => {
     render(<SorteringsvelgerNårKunTilbakekrevingErValgt />);
     expect(await screen.findByText('Dato for behandlingsfrist')).toBeInTheDocument();
 
-    userEvent.click(screen.getByText('Feilutbetalt beløp'));
+    await userEvent.click(screen.getByText('Feilutbetalt beløp'));
 
     expect(await screen.findByText('Ta kun med behandlinger mellom')).toBeInTheDocument();
 
     const tilInput = screen.getAllByRole('textbox')[1];
-    userEvent.type(tilInput, 'bokstaver');
+    await userEvent.type(tilInput, 'bokstaver');
 
     expect(await screen.findByText('Feltet kan kun inneholde tall')).toBeInTheDocument();
   });

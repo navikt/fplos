@@ -22,12 +22,12 @@ describe('<FlyttReservasjonModal>', () => {
     expect(await screen.findByText('Flytt reservasjonen til annen saksbehandler')).toBeInTheDocument();
 
     const brukerIdentInput = utils.getByLabelText('Brukerident');
-    userEvent.type(brukerIdentInput, 'TESTTES');
+    await userEvent.type(brukerIdentInput, 'TESTTES');
 
     expect(await screen.findByText('Søk')).toBeInTheDocument();
     expect(screen.getByText('Søk')).not.toBeDisabled();
 
-    userEvent.click(screen.getByText('Søk'));
+    await userEvent.click(screen.getByText('Søk'));
 
     expect(await screen.findByText('Kan ikke finne brukerident')).toBeInTheDocument();
     expect(screen.getByText('OK')).toBeDisabled();
@@ -40,22 +40,22 @@ describe('<FlyttReservasjonModal>', () => {
     expect(await screen.findByText('Flytt reservasjonen til annen saksbehandler')).toBeInTheDocument();
 
     const brukerIdentInput = utils.getByLabelText('Brukerident');
-    userEvent.type(brukerIdentInput, 'TESTTES');
+    await userEvent.type(brukerIdentInput, 'TESTTES');
 
     expect(await screen.findByText('Søk')).toBeInTheDocument();
     expect(screen.getByText('Søk')).not.toBeDisabled();
 
-    userEvent.click(screen.getByText('Søk'));
+    await userEvent.click(screen.getByText('Søk'));
 
     expect(await screen.findByText('Espen Utvikler, NAV Viken')).toBeInTheDocument();
     expect(screen.getByText('OK')).toBeDisabled();
 
     const begrunnelseInput = utils.getByLabelText('Begrunn flytting av reservasjonen');
-    userEvent.type(begrunnelseInput, 'Dette er en begrunnelse');
+    await userEvent.type(begrunnelseInput, 'Dette er en begrunnelse');
 
     await waitFor(() => expect(screen.getByText('OK')).not.toBeDisabled());
 
-    userEvent.click(screen.getByText('OK'));
+    await userEvent.click(screen.getByText('OK'));
 
     await waitFor(() => expect(hentReserverteOppgaver).toHaveBeenCalledTimes(1));
     expect(hentReserverteOppgaver).toHaveBeenNthCalledWith(1, {}, true);

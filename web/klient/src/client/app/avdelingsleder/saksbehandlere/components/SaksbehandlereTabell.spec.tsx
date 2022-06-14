@@ -33,11 +33,11 @@ describe('<SaksbehandlereTabell>', () => {
     render(<Default hentAvdelingensSaksbehandlere={hentAvdelingensSaksbehandlere} />);
     expect(await screen.findByText('Tilgjengelige saksbehandlere')).toBeInTheDocument();
 
-    userEvent.click(screen.getAllByRole('img')[0]);
+    await userEvent.click(screen.getAllByRole('img')[0]);
 
     expect(await screen.findByText('Ønsker du å slette Espen Utvikler?')).toBeInTheDocument();
 
-    userEvent.click(screen.getByText('Ja'));
+    await userEvent.click(screen.getByText('Ja'));
 
     await waitFor(() => expect(hentAvdelingensSaksbehandlere).toHaveBeenCalledTimes(1));
     expect(hentAvdelingensSaksbehandlere).toHaveBeenNthCalledWith(1, { avdelingEnhet: 'NAV Viken' });

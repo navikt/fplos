@@ -1,5 +1,5 @@
 import React, { FunctionComponent, useCallback, useEffect } from 'react';
-import { injectIntl, FormattedMessage, WrappedComponentProps } from 'react-intl';
+import { FormattedMessage, useIntl } from 'react-intl';
 import { Row, Column } from 'nav-frontend-grid';
 
 import { Image, VerticalSpacer } from '@navikt/ft-ui-komponenter';
@@ -26,14 +26,14 @@ interface OwnProps {
 /**
  * EndreSakslisterPanel
  */
-const EndreSakslisterPanel: FunctionComponent<OwnProps & WrappedComponentProps> = ({
+const EndreSakslisterPanel: FunctionComponent<OwnProps> = ({
   setValgtSakslisteId,
   valgtSakslisteId,
-  intl,
   valgtAvdelingEnhet,
   avdelingensSaksbehandlere,
   resetValgtSakslisteId,
 }) => {
+  const intl = useIntl();
   const { data: oppgaverForAvdelingAntall, startRequest: hentOppgaverForAvdelingAntall } = restApiHooks
     .useRestApiRunner(RestApiPathsKeys.OPPGAVE_AVDELING_ANTALL);
   const { data: sakslister = EMPTY_ARRAY, startRequest: hentAvdelingensSl } = restApiHooks
@@ -102,4 +102,4 @@ const EndreSakslisterPanel: FunctionComponent<OwnProps & WrappedComponentProps> 
   );
 };
 
-export default injectIntl(EndreSakslisterPanel);
+export default EndreSakslisterPanel;

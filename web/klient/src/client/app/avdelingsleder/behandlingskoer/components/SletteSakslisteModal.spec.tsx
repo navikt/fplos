@@ -12,7 +12,7 @@ describe('<SletteSakslisteModal>', () => {
     render(<Default submit={submit} />);
     expect(await screen.findByText('Ønsker du å slette Saksliste 1?')).toBeInTheDocument();
 
-    userEvent.click(screen.getByText('Ja'));
+    await userEvent.click(screen.getByText('Ja'));
 
     await waitFor(() => expect(submit).toHaveBeenCalledTimes(1));
     expect(submit).toHaveBeenNthCalledWith(1, {
@@ -29,7 +29,7 @@ describe('<SletteSakslisteModal>', () => {
     render(<Default cancel={cancel} />);
     expect(await screen.findByText('Ønsker du å slette Saksliste 1?')).toBeInTheDocument();
 
-    userEvent.click(screen.getByText('Nei'));
+    await userEvent.click(screen.getByText('Nei'));
 
     await waitFor(() => expect(cancel).toHaveBeenCalledTimes(1));
   });

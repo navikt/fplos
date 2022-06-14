@@ -1,5 +1,7 @@
 import React from 'react';
-import { render, screen, waitFor } from '@testing-library/react';
+import {
+  fireEvent, render, screen, waitFor,
+} from '@testing-library/react';
 import { composeStories } from '@storybook/testing-react';
 import userEvent from '@testing-library/user-event';
 import * as stories from './GjeldendeSakslisterTabell.stories';
@@ -12,7 +14,7 @@ describe('<GjeldendeSakslisterTabell>', () => {
     expect(await screen.findByText('Ingen behandlingskøer er laget')).toBeInTheDocument();
     expect(screen.queryByText('Navn')).not.toBeInTheDocument();
 
-    userEvent.click(screen.getByText('Legg til behandlingskø'));
+    await userEvent.click(screen.getByText('Legg til behandlingskø'));
 
     expect(await screen.findByText('Navn')).toBeInTheDocument();
     expect(await screen.findByText('Ny liste')).toBeInTheDocument();
@@ -23,11 +25,11 @@ describe('<GjeldendeSakslisterTabell>', () => {
     render(<TabellNårDetFinnesEnBehandlingskø hentAvdelingensSakslister={hentAvdelingensSakslister} />);
     expect(await screen.findByText('Navn')).toBeInTheDocument();
 
-    userEvent.click(screen.getAllByRole('img')[0]);
+    await userEvent.click(screen.getAllByRole('img')[0]);
 
     expect(await screen.findByText('Ønsker du å slette Saksliste 1?')).toBeInTheDocument();
 
-    userEvent.click(screen.getByText('Ja'));
+    await userEvent.click(screen.getByText('Ja'));
 
     await waitFor(() => expect(hentAvdelingensSakslister).toHaveBeenCalledTimes(1));
     expect(hentAvdelingensSakslister).toHaveBeenNthCalledWith(1, { avdelingEnhet: '1' });
@@ -38,10 +40,14 @@ describe('<GjeldendeSakslisterTabell>', () => {
     expect(await screen.findByText('Ingen behandlingskøer er laget')).toBeInTheDocument();
     expect(screen.queryByText('Navn')).not.toBeInTheDocument();
 
-    userEvent.tab();
-    userEvent.keyboard('{enter}');
+    await fireEvent.keyDown(screen.getByText('Legg til behandlingskø'), {
+      key: 'Enter',
+      code: 'Enter',
+      keyCode: 13,
+      charCode: 13,
+    });
 
-    expect(await screen.findByText('Navn')).toBeInTheDocument();
+    expect(screen.getByText('Navn')).toBeInTheDocument();
     expect(screen.getByText('Ny liste')).toBeInTheDocument();
   });
 });

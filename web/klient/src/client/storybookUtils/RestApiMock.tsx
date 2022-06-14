@@ -25,7 +25,7 @@ const RestApiMock: FunctionComponent<Props> = ({
 
   return (
     <RestApiGlobalStateMock data={dataMedGlobalMarkør.filter((d) => d.erGlobalData)}>
-      <AxiosMock data={dataMedGlobalMarkør}>
+      <AxiosMock data={dataMedGlobalMarkør.filter((d) => !d.erGlobalData)}>
         {children}
       </AxiosMock>
     </RestApiGlobalStateMock>

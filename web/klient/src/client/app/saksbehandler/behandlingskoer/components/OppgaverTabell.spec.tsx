@@ -10,7 +10,7 @@ describe('<OppgaverTabell>', () => {
     render(<Default />);
 
     expect(await screen.findByText('Neste behandlinger (0 i køen)')).toBeInTheDocument();
-    expect(screen.getByText('Helge Utvikler 233')).toBeInTheDocument();
+    expect(await screen.findByText('Helge Utvikler 233')).toBeInTheDocument();
     expect(screen.getByText('Klage')).toBeInTheDocument();
     expect(screen.getByText('Espen Utvikler 1212')).toBeInTheDocument();
     expect(screen.getByText('Førstegangsbehandling')).toBeInTheDocument();

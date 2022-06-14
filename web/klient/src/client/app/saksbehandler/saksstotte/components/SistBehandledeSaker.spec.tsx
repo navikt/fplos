@@ -9,7 +9,7 @@ describe('<SistBehandledeSaker>', () => {
   it('skal vise sist behandlede saker', async () => {
     render(<Default />);
     expect(await screen.findByText('Siste behandlinger')).toBeInTheDocument();
-    expect(screen.getByText('Espen Utvikler 334342323')).toBeInTheDocument();
+    expect(await screen.findByText('Espen Utvikler 334342323')).toBeInTheDocument();
   });
 
   it('skal vise ingen behandlinger', async () => {
