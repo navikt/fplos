@@ -1,7 +1,8 @@
 import React from 'react';
-import { fireEvent, render, screen } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import { composeStories } from '@storybook/testing-react';
 import userEvent from '@testing-library/user-event';
+
 import * as stories from './SorteringVelger.stories';
 
 const {
@@ -62,7 +63,6 @@ describe('<SorteringVelger>', () => {
 
     const fraInput = screen.getAllByRole('textbox')[0];
     userEvent.type(fraInput, 'bokstaver');
-    fireEvent.blur(fraInput);
 
     expect(await screen.findByText('Feltet kan kun inneholde tall')).toBeInTheDocument();
   });
@@ -77,7 +77,6 @@ describe('<SorteringVelger>', () => {
 
     const tilInput = screen.getAllByRole('textbox')[1];
     userEvent.type(tilInput, 'bokstaver');
-    fireEvent.blur(tilInput);
 
     expect(await screen.findByText('Feltet kan kun inneholde tall')).toBeInTheDocument();
   });

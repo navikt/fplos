@@ -1,4 +1,4 @@
-import React, { FunctionComponent } from 'react';
+import React, { FunctionComponent, ReactElement } from 'react';
 import NavModal from 'nav-frontend-modal';
 
 interface OwnProps {
@@ -8,6 +8,7 @@ interface OwnProps {
   contentLabel: string;
   onRequestClose: () => void;
   shouldCloseOnOverlayClick?: boolean;
+  children: ReactElement | ReactElement[];
 }
 
 /**

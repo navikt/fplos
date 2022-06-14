@@ -46,7 +46,7 @@ const EndreSakslisterPanel: FunctionComponent<OwnProps & WrappedComponentProps> 
 
   const { data: nySakslisteObject, startRequest: lagNySaksliste } = restApiHooks
     .useRestApiRunner(RestApiPathsKeys.OPPRETT_NY_SAKSLISTE);
-  const lagNySakslisteOgHentAvdelingensSakslisterPåNytt = useCallback((avdelingEnhet) => {
+  const lagNySakslisteOgHentAvdelingensSakslisterPåNytt = useCallback((avdelingEnhet: string) => {
     lagNySaksliste({ avdelingEnhet }).then(() => {
       resetValgtSakslisteId();
       hentAvdelingensSakslister({ avdelingEnhet });

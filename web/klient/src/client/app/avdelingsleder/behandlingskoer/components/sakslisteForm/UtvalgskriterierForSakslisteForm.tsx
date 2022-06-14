@@ -86,7 +86,7 @@ export const UtvalgskriterierForSakslisteForm: FunctionComponent<OwnProps & Wrap
     hentAntallOppgaverForSaksliste({ sakslisteId: valgtSaksliste.sakslisteId, avdelingEnhet: valgtAvdelingEnhet });
   }, [valgtSaksliste.sakslisteId]);
 
-  const hentAntallOppgaver = useCallback((sakslisteId, avdelingEnhet) => {
+  const hentAntallOppgaver = useCallback((sakslisteId: number, avdelingEnhet: string) => {
     hentAntallOppgaverForSaksliste({ sakslisteId, avdelingEnhet });
     hentOppgaverForAvdelingAntall({ avdelingEnhet });
   }, []);
