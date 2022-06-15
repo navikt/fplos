@@ -13,15 +13,13 @@ describe('<UtvalgskriterierForSakslisteForm>', () => {
     expect(getByLabelText('Navn')).toHaveValue('liste');
   });
 
-  // TODO Fiks - Request feilar
-  it.skip('skal vise default sakslistenavn', async () => {
+  it('skal vise default sakslistenavn', async () => {
     const { getByLabelText } = render(<MedDefaultNavn />);
     expect(await screen.findByText('Navn')).toBeInTheDocument();
     expect(getByLabelText('Navn')).toHaveValue('Ny behandlingskø');
   });
 
-  // TODO Fiks - Request feilar
-  it.skip('skal vise feilmelding når en fjerner nok tegn til at navnet blir færre enn 3 tegn langt', async () => {
+  it('skal vise feilmelding når en fjerner nok tegn til at navnet blir færre enn 3 tegn langt', async () => {
     const { getByLabelText } = render(<MedGittNavn />);
 
     expect(await screen.findByText('Navn')).toBeInTheDocument();

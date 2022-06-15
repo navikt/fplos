@@ -12,8 +12,7 @@ describe('<AvdelingslederIndex>', () => {
     expect(await screen.findByText('Venter...')).toBeInTheDocument();
   });
 
-  // TODO Fiks - Request feilar
-  it.skip('skal vise avdelingsleder dashboard etter at valgt avdeling er satt', async () => {
+  it('skal vise avdelingsleder dashboard etter at valgt avdeling er satt', async () => {
     render(<Default />);
     expect(await screen.findByText('Gjeldende behandlingskøer')).toBeInTheDocument();
     expect(screen.getByText('Nøkkeltall')).toBeInTheDocument();
@@ -22,8 +21,7 @@ describe('<AvdelingslederIndex>', () => {
     expect(screen.getByText('Gjeldende behandlingskøer')).toBeInTheDocument();
   });
 
-  // TODO Fiks - Request feilar
-  it.skip('skal velge de ulike panelene', async () => {
+  it('skal velge de ulike panelene', async () => {
     render(<Default />);
     expect(await screen.findByText('Gjeldende behandlingskøer')).toBeInTheDocument();
     expect(screen.getByText('Nøkkeltall')).toBeInTheDocument();
