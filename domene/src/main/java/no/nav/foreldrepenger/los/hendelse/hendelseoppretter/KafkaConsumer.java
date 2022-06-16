@@ -178,8 +178,8 @@ public final class KafkaConsumer<T extends BehandlingProsessEventDto> {
         protected Void doWork(EntityManager em) {
             var dto = deserialiser(String.valueOf(payload));
             if (dto != null) {
-                LOG.info("Håndterer event {}", dto.getEksternId());
-                LOG.info("Steg {}, ap {}",
+                LOG.info("Håndterer hendelse for eksternId {}, steg {}, ap {}",
+                        dto.getEksternId(),
                         dto.getBehandlingSteg(),
                         dto.getAksjonspunktKoderMedStatusListe());
                 var hendelse = hendelseOppretter.opprett((T) dto);
@@ -194,7 +194,7 @@ public final class KafkaConsumer<T extends BehandlingProsessEventDto> {
         var prosessTaskData = ProsessTaskData.forProsessTask(HåndterHendelseTask.class);
         prosessTaskData.setProperty(HåndterHendelseTask.HENDELSE_ID, hendelse.getId().toString());
         prosessTaskData.setPrioritet(50);
-        prosessTaskData.setCallIdFraEksisterende();
+        prosessTaskData.setCallId(MDCOperations.getCallId());
         //setter gruppe og sekvens for rekkefølge
         prosessTaskData.setGruppe(hendelse.getBehandlingId().toString());
         prosessTaskData.setSekvens(String.valueOf(Instant.now().toEpochMilli()));
