@@ -219,8 +219,9 @@ public final class KafkaConsumer<T extends BehandlingProsessEventDto> {
         }
 
         private String navCallId() {
-            var header = callIdFraHeader();
-            return header.isEmpty() || header.get().isEmpty() ? MDCOperations.generateCallId() : header.get();
+            return callIdFraHeader()
+                    .filter(s -> !s.isEmpty())
+                    .orElseGet(MDCOperations::generateCallId);
         }
 
         private Optional<String> callIdFraHeader() {

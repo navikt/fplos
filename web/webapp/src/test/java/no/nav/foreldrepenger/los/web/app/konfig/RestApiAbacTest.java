@@ -7,8 +7,8 @@ import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.List;
 import java.util.Set;
+import java.util.stream.Stream;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -24,23 +24,21 @@ public class RestApiAbacTest {
 
     /**
      * IKKE ignorer denne testen, sikrer at REST-endepunkter får tilgangskontroll
-     * <p>
-     * Kontakt Team Humle hvis du trenger hjelp til å endre koden din slik at den går igjennom her     *
      */
     @Test
     public void alle_restmetoder_er_annotert_med_BeskyttetRessurs() {
-        for (var restMethod : RestApiTester.finnAlleRestMetoder()) {
-            if (restMethod.getAnnotation(BeskyttetRessurs.class) == null) {
-                throw new AssertionError("Mangler @" + BeskyttetRessurs.class.getSimpleName() + "-annotering på " + restMethod);
-            }
+        var manglerAnnotering = RestApiTester.finnAlleRestMetoder().stream()
+                .filter(m -> m.getAnnotation(BeskyttetRessurs.class) == null)
+                .map(m -> m.getDeclaringClass().getName() + "." + m.getName())
+                .toList();
+        if (!manglerAnnotering.isEmpty()) {
+            throw new AssertionError("Mangler @" + BeskyttetRessurs.class.getSimpleName() + "-annotering på " + manglerAnnotering);
         }
     }
 
     @Test
     public void sjekk_at_ingen_metoder_er_annotert_med_dummy_verdier() {
-        for (var metode : RestApiTester.finnAlleRestMetoder()) {
-            assertAtIngenBrukerDummyVerdierPåBeskyttetRessurs(metode);
-        }
+        RestApiTester.finnAlleRestMetoder().forEach(RestApiAbacTest::assertAtIngenBrukerDummyVerdierPåBeskyttetRessurs);
     }
 
     @Test
@@ -71,15 +69,15 @@ public class RestApiAbacTest {
         }
     }
 
-    private boolean harAbacKonfigurasjon(Annotation[] parameterAnnotations, Class<?> parameterType) {
+    private static boolean harAbacKonfigurasjon(Annotation[] parameterAnnotations, Class<?> parameterType) {
         var ret = AbacDto.class.isAssignableFrom(parameterType) || IgnorerteInputTyper.ignore(parameterType);
-        if(!ret) {
-            ret = List.of(parameterAnnotations).stream().anyMatch(a -> TilpassetAbacAttributt.class.equals(a.annotationType()));
+        if (!ret) {
+            ret = Stream.of(parameterAnnotations).anyMatch(a -> TilpassetAbacAttributt.class.equals(a.annotationType()));
         }
         return ret;
     }
 
-    private void assertAtIngenBrukerDummyVerdierPåBeskyttetRessurs(Method metode) {
+    private static void assertAtIngenBrukerDummyVerdierPåBeskyttetRessurs(Method metode) {
         var klasse = metode.getDeclaringClass();
         var annotation = metode.getAnnotation(BeskyttetRessurs.class);
         if (annotation != null && annotation.action() == BeskyttetRessursActionAttributt.DUMMY) {
