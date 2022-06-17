@@ -17,11 +17,9 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import io.swagger.v3.oas.annotations.Operation;
-import no.nav.foreldrepenger.los.admin.OppgaveSynkroniseringTaskOppretterTjeneste;
 import no.nav.foreldrepenger.los.admin.SynkroniseringHendelseTaskOppretterTjeneste;
 import no.nav.foreldrepenger.los.web.app.AbacAttributter;
 import no.nav.foreldrepenger.los.web.app.tjenester.admin.dto.EnkelBehandlingIdDto;
-import no.nav.foreldrepenger.los.web.app.tjenester.admin.dto.OppgaveKriterieTypeDto;
 import no.nav.vedtak.sikkerhet.abac.BeskyttetRessurs;
 
 @Path("/admin")
@@ -29,29 +27,15 @@ import no.nav.vedtak.sikkerhet.abac.BeskyttetRessurs;
 @Transactional
 public class AdminRestTjeneste {
 
-    private OppgaveSynkroniseringTaskOppretterTjeneste synkroniseringTjeneste;
     private SynkroniseringHendelseTaskOppretterTjeneste synkroniseringHendelseTaskOppretterTjeneste;
 
     @Inject
-    public AdminRestTjeneste(OppgaveSynkroniseringTaskOppretterTjeneste synkroniseringTjeneste,
-                             SynkroniseringHendelseTaskOppretterTjeneste synkroniseringHendelseTaskOppretterTjeneste) {
-        this.synkroniseringTjeneste = synkroniseringTjeneste;
+    public AdminRestTjeneste(SynkroniseringHendelseTaskOppretterTjeneste synkroniseringHendelseTaskOppretterTjeneste) {
         this.synkroniseringHendelseTaskOppretterTjeneste = synkroniseringHendelseTaskOppretterTjeneste;
     }
 
     public AdminRestTjeneste() {
         // For Rest-CDI
-    }
-
-    @POST
-    @Path("/synkroniser-egenskap")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Operation(description = "Synkroniserer spesifisert oppgaveegenskap/kriterietype for åpne oppgaver", tags = "admin")
-    @BeskyttetRessurs(action = CREATE, resource = AbacAttributter.DRIFT)
-    @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
-    public Response synkroniserBerørtBehandling(@NotNull @Valid OppgaveKriterieTypeDto oppgaveKriterieTypeDto) {
-        var antallTasker = synkroniseringTjeneste.opprettOppgaveEgenskapOppdatererTask(oppgaveKriterieTypeDto.oppgaveEgenskap());
-        return Response.ok(antallTasker).build();
     }
 
     @POST
