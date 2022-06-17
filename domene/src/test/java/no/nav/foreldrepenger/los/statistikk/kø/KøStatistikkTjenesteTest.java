@@ -1,6 +1,6 @@
 package no.nav.foreldrepenger.los.statistikk.kø;
 
-import no.nav.foreldrepenger.dbstøtte.DBTestUtil;
+import no.nav.foreldrepenger.los.DBTestUtil;
 import no.nav.foreldrepenger.extensions.JpaExtension;
 import no.nav.foreldrepenger.los.oppgave.OppgaveRepository;
 import no.nav.foreldrepenger.los.oppgavekø.OppgaveKøTjeneste;

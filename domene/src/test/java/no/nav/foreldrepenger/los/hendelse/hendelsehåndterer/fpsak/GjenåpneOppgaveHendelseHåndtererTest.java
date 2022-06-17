@@ -5,10 +5,12 @@ import static no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.Oppgav
 import static no.nav.foreldrepenger.los.oppgave.util.OppgaveAssert.assertThatOppgave;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.fail;
 import static org.mockito.Mockito.mock;
 
 import javax.persistence.EntityManager;
 
+import no.nav.foreldrepenger.los.felles.BaseEntitet;
 import no.nav.foreldrepenger.los.oppgave.OppgaveTjeneste;
 import no.nav.foreldrepenger.los.reservasjon.ReservasjonRepository;
 import no.nav.foreldrepenger.los.reservasjon.ReservasjonTjeneste;
@@ -17,7 +19,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import no.nav.foreldrepenger.dbstøtte.DBTestUtil;
+import no.nav.foreldrepenger.los.DBTestUtil;
 import no.nav.foreldrepenger.extensions.JpaExtension;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.OppgaveEgenskapHåndterer;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.håndterere.GjenåpneOppgaveOppgavetransisjonHåndterer;
@@ -29,6 +31,7 @@ import no.nav.foreldrepenger.los.oppgave.OppgaveRepository;
 import no.nav.foreldrepenger.los.statistikk.kø.KøStatistikkTjeneste;
 
 import java.time.LocalDateTime;
+import java.util.Comparator;
 
 
 @ExtendWith(MockitoExtension.class)
@@ -107,7 +110,9 @@ class GjenåpneOppgaveHendelseHåndtererTest {
         gjenåpneOppgaveHåndterer.håndter(behandlingFpsakBygget);
 
         var oppgave = DBTestUtil.hentAlle(entityManager, Oppgave.class);
-        assertThatOppgave(oppgave.get(1))
+        var sisteOppgave = oppgave.stream().max(Comparator.comparing(BaseEntitet::getOpprettetTidspunkt))
+                .orElseGet(() -> fail("Fant ikke oppgave"));
+        assertThatOppgave(sisteOppgave)
                 .harAktiv(true)
                 .harBehandlingId(behandlingFpsakBygget.getBehandlingId())
                 .harBehandlendeEnhet(kopiAvEksisterendeOppgave.getBehandlendeEnhet());

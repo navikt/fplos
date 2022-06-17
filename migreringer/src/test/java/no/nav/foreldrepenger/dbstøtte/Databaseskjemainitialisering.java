@@ -1,9 +1,6 @@
 package no.nav.foreldrepenger.dbstøtte;
 
 import static java.lang.Runtime.getRuntime;
-import static no.nav.foreldrepenger.dbstøtte.DBTestUtil.kjøresAvMaven;
-
-import java.io.File;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -13,8 +10,6 @@ import javax.sql.DataSource;
 import org.eclipse.jetty.plus.jndi.EnvEntry;
 import org.flywaydb.core.Flyway;
 import org.flywaydb.core.api.FlywayException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;

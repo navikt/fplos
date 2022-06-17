@@ -1,6 +1,7 @@
 package no.nav.foreldrepenger.los.hendelse.hendelsehåndterer;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 
 import java.math.BigDecimal;
@@ -13,6 +14,7 @@ import java.util.stream.Collectors;
 import javax.persistence.EntityManager;
 
 import no.nav.foreldrepenger.los.domene.typer.aktør.AktørId;
+import no.nav.foreldrepenger.los.felles.BaseEntitet;
 import no.nav.foreldrepenger.los.oppgave.*;
 import no.nav.foreldrepenger.los.reservasjon.ReservasjonTjeneste;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,7 +22,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import no.nav.foreldrepenger.dbstøtte.DBTestUtil;
+import no.nav.foreldrepenger.los.DBTestUtil;
 import no.nav.foreldrepenger.extensions.JpaExtension;
 import no.nav.foreldrepenger.los.domene.typer.BehandlingId;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveEventLogg;
@@ -56,7 +58,6 @@ public class TilbakekrevingHendelseHåndtererTest {
     public void skalOppretteOppgave() {
         var event = hendelse(åpentAksjonspunkt, BehandlingId.random());
         handler.håndter(event);
-
         sjekkAntallOppgaver(1);
         sjekkAktivOppgaveEksisterer(true);
         sjekkOppgaveEventAntallEr(1);
@@ -165,9 +166,9 @@ public class TilbakekrevingHendelseHåndtererTest {
     }
 
     private void sjekkBeslutterEgenskapMedAktivstatus(boolean status) {
-        var egenskaper = DBTestUtil.hentAlle(entityManager, OppgaveEgenskap.class);
-        assertThat(egenskaper.get(0).getAndreKriterierType()).isEqualTo(AndreKriterierType.TIL_BESLUTTER);
-        assertThat(egenskaper.get(0).getAktiv()).isEqualTo(status);
+        var egenskaper = DBTestUtil.hentUnik(entityManager, OppgaveEgenskap.class);
+        assertThat(egenskaper.getAndreKriterierType()).isEqualTo(AndreKriterierType.TIL_BESLUTTER);
+        assertThat(egenskaper.getAktiv()).isEqualTo(status);
     }
 
     private void sjekkAntallOppgaver(int antall) {
@@ -176,7 +177,9 @@ public class TilbakekrevingHendelseHåndtererTest {
 
     private void sjekkAktivOppgaveEksisterer(boolean aktiv) {
         var oppgave = DBTestUtil.hentAlle(entityManager, Oppgave.class);
-        assertThat(oppgave.get(0).getAktiv()).isEqualTo(aktiv);
+        var sisteOppgave = oppgave.stream().max(Comparator.comparing(BaseEntitet::getOpprettetTidspunkt));
+        assertTrue(sisteOppgave.isPresent());
+        assertThat(sisteOppgave.map(Oppgave::getAktiv).orElse(false)).isEqualTo(aktiv);
         var antallAktive = (int) oppgave.stream().filter(Oppgave::getAktiv).count();
         assertThat(antallAktive).isEqualTo(aktiv ? 1 : 0);
     }
