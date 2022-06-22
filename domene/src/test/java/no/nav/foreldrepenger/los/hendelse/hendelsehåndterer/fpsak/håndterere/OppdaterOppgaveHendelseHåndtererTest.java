@@ -1,9 +1,25 @@
 package no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.håndterere;
 
-import no.nav.foreldrepenger.los.DBTestUtil;
-import no.nav.foreldrepenger.extensions.JpaExtension;
+import static no.nav.foreldrepenger.los.DBTestUtil.hentAlle;
+import static no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.OppgaveUtil.oppgave;
+import static no.nav.foreldrepenger.los.oppgave.util.OppgaveAssert.assertThatOppgave;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
-import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.OppgaveEgenskapHåndterer;
+import java.time.LocalDateTime;
+import java.util.List;
+
+import javax.persistence.EntityManager;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+import no.nav.foreldrepenger.extensions.JpaExtension;
+import no.nav.foreldrepenger.los.DBTestUtil;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.OppgaveTestUtil;
 import no.nav.foreldrepenger.los.klient.fpsak.BehandlingFpsak;
 import no.nav.foreldrepenger.los.oppgave.BehandlingType;
@@ -15,26 +31,7 @@ import no.nav.foreldrepenger.los.oppgavekø.OppgaveFiltreringKnytning;
 import no.nav.foreldrepenger.los.reservasjon.Reservasjon;
 import no.nav.foreldrepenger.los.reservasjon.ReservasjonRepository;
 import no.nav.foreldrepenger.los.reservasjon.ReservasjonTjeneste;
-
 import no.nav.foreldrepenger.los.statistikk.kø.KøStatistikkTjeneste;
-
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
-
-import javax.persistence.EntityManager;
-
-import java.time.LocalDateTime;
-import java.util.List;
-
-import static no.nav.foreldrepenger.los.DBTestUtil.hentAlle;
-import static no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.OppgaveUtil.oppgave;
-import static no.nav.foreldrepenger.los.oppgave.util.OppgaveAssert.assertThatOppgave;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 @ExtendWith(JpaExtension.class)
@@ -45,7 +42,6 @@ class OppdaterOppgaveHendelseHåndtererTest {
     private BehandlingFpsak.Builder behandlingFpsakBuilder = OppgaveTestUtil.behandlingFpsakBuilder().medErBerørtBehandling(true);
     private BehandlingFpsak behandlingFpsak = behandlingFpsakBuilder.build();
     private OppgaveTjeneste oppgaveTjeneste;
-    private OppgaveEgenskapHåndterer oppgaveEgenskapHåndterer;
     private OppdaterOppgaveOppgavetransisjonHåndterer oppgaveOppdaterer;
     private KøStatistikkTjeneste køStatistikkTjeneste;
 
@@ -55,10 +51,9 @@ class OppdaterOppgaveHendelseHåndtererTest {
         var oppgaveRepository = new OppgaveRepository(entityManager);
         reservasjonTjeneste = new ReservasjonTjeneste(oppgaveRepository, new ReservasjonRepository(entityManager));
         oppgaveTjeneste = new OppgaveTjeneste(oppgaveRepository, reservasjonTjeneste);
-        oppgaveEgenskapHåndterer = new OppgaveEgenskapHåndterer(oppgaveRepository);
         oppgaveRepository.lagre(oppgave(behandlingFpsak));
         this.køStatistikkTjeneste = mock(KøStatistikkTjeneste.class);
-        oppgaveOppdaterer = new OppdaterOppgaveOppgavetransisjonHåndterer(oppgaveTjeneste, reservasjonTjeneste, oppgaveEgenskapHåndterer, køStatistikkTjeneste);
+        oppgaveOppdaterer = new OppdaterOppgaveOppgavetransisjonHåndterer(oppgaveTjeneste, reservasjonTjeneste, køStatistikkTjeneste);
 
         when(køStatistikkTjeneste.hentOppgaveFiltreringKnytningerForOppgave(any())).thenAnswer(
                 o -> List.of(new OppgaveFiltreringKnytning(o.getArgument(0, Oppgave.class).getId(), 1L, BehandlingType.ANKE),

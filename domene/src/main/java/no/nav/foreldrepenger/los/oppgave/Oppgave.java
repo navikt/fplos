@@ -5,7 +5,9 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Convert;
 import javax.persistence.Embedded;
@@ -23,6 +25,8 @@ import javax.persistence.Table;
 import no.nav.foreldrepenger.los.domene.typer.BehandlingId;
 import no.nav.foreldrepenger.los.domene.typer.aktør.AktørId;
 import no.nav.foreldrepenger.los.felles.BaseEntitet;
+import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.OppgaveEgenskapFinner;
+import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.FpsakOppgaveEgenskapFinner;
 import no.nav.foreldrepenger.los.reservasjon.Reservasjon;
 import no.nav.vedtak.felles.jpa.converters.BooleanToStringConverter;
 
@@ -61,7 +65,7 @@ public class Oppgave extends BaseEntitet {
     @Column(name = "BEHANDLING_TYPE")
     protected BehandlingType behandlingType = BehandlingType.INNSYN;
 
-    @OneToMany(mappedBy = "oppgave", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "oppgave", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     protected Set<OppgaveEgenskap> oppgaveEgenskaper;
 
     @Convert(converter = FagsakYtelseType.KodeverdiConverter.class)
@@ -189,6 +193,17 @@ public class Oppgave extends BaseEntitet {
     public String toString() {
         return "Oppgave{" + "id=" + id + ", fagsakSaksnummer=" + fagsakSaksnummer + ", aktiv=" + aktiv + ", system='"
                 + system + '\'' + '}';
+    }
+
+    public void setOppgaveEgenskaper(OppgaveEgenskapFinner egenskapFinner) {
+        var oppgaveEgenskaper = egenskapFinner.getAndreKriterier().stream()
+                .map(akt -> {
+                    if (akt == AndreKriterierType.TIL_BESLUTTER) {
+                        return new OppgaveEgenskap(this, akt, egenskapFinner.getSaksbehandlerForTotrinn());
+                    }
+                    return new OppgaveEgenskap(this, akt);
+                }).collect(Collectors.toSet());
+        this.oppgaveEgenskaper = oppgaveEgenskaper;
     }
 
     public static class Builder {

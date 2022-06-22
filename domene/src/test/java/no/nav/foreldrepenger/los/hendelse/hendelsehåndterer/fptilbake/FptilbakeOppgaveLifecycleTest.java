@@ -31,7 +31,6 @@ import no.nav.foreldrepenger.los.DBTestUtil;
 import no.nav.foreldrepenger.los.domene.typer.BehandlingId;
 import no.nav.foreldrepenger.los.domene.typer.aktør.AktørId;
 import no.nav.foreldrepenger.los.felles.BaseEntitet;
-import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.OppgaveEgenskapHåndterer;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fptilbake.FptilbakeOppgavehendelseHåndterer.FptilbakeData;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveEventLogg;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveHistorikk;
@@ -71,16 +70,15 @@ class FptilbakeOppgaveLifecycleTest {
     void setUp(EntityManager entityManager) {
         this.entityManager = entityManager;
         var oppgaveRepository = new OppgaveRepository(entityManager);
-        var oppgaveEgenskapHandler = new OppgaveEgenskapHåndterer(oppgaveRepository);
         reservasjonTjeneste = new ReservasjonTjeneste(oppgaveRepository, new ReservasjonRepository(entityManager));
         var oppgaveTjeneste = new OppgaveTjeneste(oppgaveRepository, reservasjonTjeneste);
         var statistikkMock = mock(KøStatistikkTjeneste.class);
-        opprettOppgaveHandler = new OpprettOppgaveTransisjon(oppgaveEgenskapHandler, statistikkMock, oppgaveTjeneste);
-        endreEnhetHandler = new EndreEnhetTransisjon(oppgaveEgenskapHandler, statistikkMock, oppgaveTjeneste);
-        oppdaterOppgave = new OppdaterOppgaveTransisjon(oppgaveEgenskapHandler, statistikkMock, oppgaveTjeneste, reservasjonTjeneste);
+        opprettOppgaveHandler = new OpprettOppgaveTransisjon(statistikkMock, oppgaveTjeneste);
+        endreEnhetHandler = new EndreEnhetTransisjon(statistikkMock, oppgaveTjeneste);
+        oppdaterOppgave = new OppdaterOppgaveTransisjon(statistikkMock, oppgaveTjeneste, reservasjonTjeneste);
         lukkOppgaveTransisjon = new LukkOppgaveTransisjon(statistikkMock, oppgaveTjeneste);
-        tilBeslutterTransisjon = new TilBeslutterOppgaveTransisjon(statistikkMock, oppgaveTjeneste, oppgaveEgenskapHandler);
-        returFraBeslutterOppgaveTransisjon = new ReturFraBeslutterOppgaveTransisjon(oppgaveEgenskapHandler, oppgaveTjeneste, statistikkMock, reservasjonTjeneste);
+        tilBeslutterTransisjon = new TilBeslutterOppgaveTransisjon(statistikkMock, oppgaveTjeneste);
+        returFraBeslutterOppgaveTransisjon = new ReturFraBeslutterOppgaveTransisjon(oppgaveTjeneste, statistikkMock, reservasjonTjeneste);
     }
 
     @Test

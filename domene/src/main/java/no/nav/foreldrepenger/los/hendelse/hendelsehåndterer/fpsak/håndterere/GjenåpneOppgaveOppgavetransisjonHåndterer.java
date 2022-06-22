@@ -7,40 +7,36 @@ import java.time.temporal.ChronoUnit;
 import java.util.Comparator;
 import java.util.List;
 
-import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.FpsakOppgavetransisjonHåndterer;
-import no.nav.foreldrepenger.los.reservasjon.ReservasjonTjeneste;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.OppgaveEgenskapHåndterer;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.FpsakOppgaveEgenskapFinner;
+import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.FpsakOppgavetransisjonHåndterer;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveEventLogg;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveEventType;
 import no.nav.foreldrepenger.los.klient.fpsak.BehandlingFpsak;
 import no.nav.foreldrepenger.los.oppgave.Oppgave;
 import no.nav.foreldrepenger.los.oppgave.OppgaveRepository;
+import no.nav.foreldrepenger.los.reservasjon.ReservasjonTjeneste;
 import no.nav.foreldrepenger.los.statistikk.kø.KøOppgaveHendelse;
 import no.nav.foreldrepenger.los.statistikk.kø.KøStatistikkTjeneste;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
 
 @ApplicationScoped
 public class GjenåpneOppgaveOppgavetransisjonHåndterer implements FpsakOppgavetransisjonHåndterer {
     private static final Logger LOG = LoggerFactory.getLogger(GjenåpneOppgaveOppgavetransisjonHåndterer.class);
 
     private OppgaveRepository oppgaveRepository;
-    private OppgaveEgenskapHåndterer oppgaveEgenskapHåndterer;
     private KøStatistikkTjeneste køStatistikk;
     private ReservasjonTjeneste reservasjonTjeneste;
 
     @Inject
     public GjenåpneOppgaveOppgavetransisjonHåndterer(OppgaveRepository oppgaveRepository,
-                                                     OppgaveEgenskapHåndterer oppgaveEgenskapHåndterer,
                                                      KøStatistikkTjeneste køStatistikk,
                                                      ReservasjonTjeneste reservasjonTjeneste) {
         this.oppgaveRepository = oppgaveRepository;
-        this.oppgaveEgenskapHåndterer = oppgaveEgenskapHåndterer;
         this.køStatistikk = køStatistikk;
         this.reservasjonTjeneste = reservasjonTjeneste;
     }
@@ -84,7 +80,7 @@ public class GjenåpneOppgaveOppgavetransisjonHåndterer implements FpsakOppgave
 
     private void opprettOppgaveEgenskaper(Oppgave oppgave, BehandlingFpsak behandlingFpsak) {
         var egenskapFinner = new FpsakOppgaveEgenskapFinner(behandlingFpsak);
-        oppgaveEgenskapHåndterer.håndterOppgaveEgenskaper(oppgave, egenskapFinner);
+        oppgave.setOppgaveEgenskaper(egenskapFinner);
     }
 
     private void oppdaterOppgaveEventLogg(BehandlingFpsak behandlingFpsak) {

@@ -20,7 +20,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import no.nav.foreldrepenger.los.DBTestUtil;
 import no.nav.foreldrepenger.extensions.JpaExtension;
 import no.nav.foreldrepenger.los.domene.typer.BehandlingId;
-import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.OppgaveEgenskapHåndterer;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.håndterere.ReturFraBeslutterOppgavetransisjonHåndterer;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveEventLogg;
 import no.nav.foreldrepenger.los.klient.fpsak.BehandlingFpsak;
@@ -35,8 +34,6 @@ import no.nav.foreldrepenger.los.statistikk.kø.KøStatistikkTjeneste;
 class ReturFraBeslutterHendelseHåndtererTest {
     private final KøStatistikkTjeneste køStatistikk = mock(KøStatistikkTjeneste.class);
     private EntityManager entityManager;
-    private OppgaveRepository oppgaveRepository;
-    private OppgaveEgenskapHåndterer oppgaveEgenskapHåndterer;
     private BehandlingFpsak behandlingFpsak;
     private OppgaveTjeneste oppgaveTjeneste;
     private ReservasjonTjeneste reservasjonTjeneste;
@@ -45,10 +42,9 @@ class ReturFraBeslutterHendelseHåndtererTest {
     @BeforeEach
     private void setUp(EntityManager entityManager) {
         this.entityManager = entityManager;
-        oppgaveRepository = new OppgaveRepository(entityManager);
+        OppgaveRepository oppgaveRepository = new OppgaveRepository(entityManager);
         reservasjonTjeneste = new ReservasjonTjeneste(oppgaveRepository, new ReservasjonRepository(entityManager));
         oppgaveTjeneste = new OppgaveTjeneste(oppgaveRepository, reservasjonTjeneste); //mock(ReservasjonTjeneste.class));
-        oppgaveEgenskapHåndterer = new OppgaveEgenskapHåndterer(oppgaveRepository);
         behandlingFpsak = behandlingFpsak();
         var eksisterendeOppgave = Oppgave.builder()
                 .dummyOppgave("1111")
@@ -56,7 +52,7 @@ class ReturFraBeslutterHendelseHåndtererTest {
                 .medBehandlingId(behandlingFpsak.getBehandlingId())
                 .build();
         oppgaveRepository.lagre(eksisterendeOppgave);
-        returFraBeslutterHåndterer = new ReturFraBeslutterOppgavetransisjonHåndterer(oppgaveTjeneste, oppgaveEgenskapHåndterer, reservasjonTjeneste, køStatistikk);
+        returFraBeslutterHåndterer = new ReturFraBeslutterOppgavetransisjonHåndterer(oppgaveTjeneste, reservasjonTjeneste, køStatistikk);
     }
 
     @Test

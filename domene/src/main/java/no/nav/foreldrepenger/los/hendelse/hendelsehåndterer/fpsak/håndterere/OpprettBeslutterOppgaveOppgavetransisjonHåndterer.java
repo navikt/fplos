@@ -1,7 +1,6 @@
 package no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.håndterere;
 
 import no.nav.foreldrepenger.los.domene.typer.BehandlingId;
-import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.OppgaveEgenskapHåndterer;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.FpsakOppgaveEgenskapFinner;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.FpsakOppgavetransisjonHåndterer;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveEventLogg;
@@ -27,16 +26,13 @@ public class OpprettBeslutterOppgaveOppgavetransisjonHåndterer implements Fpsak
     private static final Logger LOG = LoggerFactory.getLogger(OpprettBeslutterOppgaveOppgavetransisjonHåndterer.class);
     private OppgaveTjeneste oppgaveTjeneste;
     private KøStatistikkTjeneste køStatistikk;
-    private OppgaveEgenskapHåndterer oppgaveEgenskapHåndterer;
 
 
     @Inject
     public OpprettBeslutterOppgaveOppgavetransisjonHåndterer(OppgaveTjeneste oppgaveTjeneste,
-                                                             OppgaveEgenskapHåndterer oppgaveEgenskapHåndterer,
                                                              KøStatistikkTjeneste køStatistikk) {
         this.oppgaveTjeneste = oppgaveTjeneste;
         this.køStatistikk = køStatistikk;
-        this.oppgaveEgenskapHåndterer = oppgaveEgenskapHåndterer;
     }
 
     public OpprettBeslutterOppgaveOppgavetransisjonHåndterer() {
@@ -46,7 +42,6 @@ public class OpprettBeslutterOppgaveOppgavetransisjonHåndterer implements Fpsak
     public void håndter(BehandlingFpsak behandlingFpsak) {
         håndterEksisterendeOppgave(behandlingFpsak.getBehandlingId(), behandlingFpsak);
         var oppgave = opprettOppgave(behandlingFpsak);
-        opprettOppgaveEgenskaper(oppgave, behandlingFpsak);
         opprettOppgaveEventLogg(oppgave, behandlingFpsak);
         køStatistikk.lagre(oppgave, KøOppgaveHendelse.ÅPNET_OPPGAVE);
     }
@@ -58,6 +53,8 @@ public class OpprettBeslutterOppgaveOppgavetransisjonHåndterer implements Fpsak
 
     private Oppgave opprettOppgave(BehandlingFpsak behandlingFpsak) {
         var oppgave = oppgave(behandlingFpsak);
+        var egenskapFinner = new FpsakOppgaveEgenskapFinner(behandlingFpsak);
+        oppgave.setOppgaveEgenskaper(egenskapFinner);
         oppgaveTjeneste.lagre(oppgave);
         return oppgave;
     }
@@ -72,11 +69,6 @@ public class OpprettBeslutterOppgaveOppgavetransisjonHåndterer implements Fpsak
                     oppgaveTjeneste.avsluttOppgaveMedEventLogg(sbo, OppgaveEventType.LUKKET, ReservasjonKonstanter.OPPGAVE_AVSLUTTET);
                     LOG.info("Avslutter saksbehandler1 oppgave");
                 }, () -> LOG.info("Fant ingen aktiv saksbehandler1-oppgave"));
-    }
-
-    private void opprettOppgaveEgenskaper(Oppgave oppgave, BehandlingFpsak behandlingFpsak) {
-        var egenskapFinner = new FpsakOppgaveEgenskapFinner(behandlingFpsak);
-        oppgaveEgenskapHåndterer.håndterOppgaveEgenskaper(oppgave, egenskapFinner);
     }
 
     private void opprettOppgaveEventLogg(Oppgave oppgave, BehandlingFpsak behandlingFpsak) {

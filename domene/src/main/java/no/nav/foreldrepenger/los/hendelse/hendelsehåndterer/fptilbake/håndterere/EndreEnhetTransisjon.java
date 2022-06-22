@@ -1,12 +1,9 @@
 package no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fptilbake.håndterere;
 
-import no.nav.foreldrepenger.los.domene.typer.aktør.AktørId;
-import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.OppgaveEgenskapHåndterer;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fptilbake.FptilbakeOppgavetransisjonHåndterer;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveEventLogg;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveEventType;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fptilbake.FptilbakeOppgaveEgenskapFinner;
-import no.nav.foreldrepenger.los.hendelse.hendelseoppretter.hendelse.TilbakekrevingHendelse;
 import no.nav.foreldrepenger.los.oppgave.AndreKriterierType;
 import no.nav.foreldrepenger.los.oppgave.OppgaveTjeneste;
 import no.nav.foreldrepenger.los.oppgave.TilbakekrevingOppgave;
@@ -20,10 +17,8 @@ import org.slf4j.LoggerFactory;
 
 import javax.enterprise.context.ApplicationScoped;
 
-import java.time.LocalDate;
-import java.util.Optional;
-
 import static no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fptilbake.FptilbakeOppgavehendelseHåndterer.*;
+import static no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fptilbake.håndterere.OppgaveUtil.oppgaveFra;
 
 // håndterer hendelser hvor enhet avviker fra enhet tilknyttet åpen oppgave
 @ApplicationScoped
@@ -31,17 +26,14 @@ public class EndreEnhetTransisjon implements FptilbakeOppgavetransisjonHåndtere
 
     private static final Logger LOG = LoggerFactory.getLogger(EndreEnhetTransisjon.class);
 
-    private OppgaveEgenskapHåndterer oppgaveEgenskapHåndterer;
     private KøStatistikkTjeneste køStatistikkTjeneste;
     private OppgaveTjeneste oppgaveTjeneste;
 
     public EndreEnhetTransisjon() {
     }
 
-    public EndreEnhetTransisjon(OppgaveEgenskapHåndterer oppgaveEgenskapHåndterer,
-                                KøStatistikkTjeneste køStatistikkTjeneste,
+    public EndreEnhetTransisjon(KøStatistikkTjeneste køStatistikkTjeneste,
                                 OppgaveTjeneste oppgaveTjeneste) {
-        this.oppgaveEgenskapHåndterer = oppgaveEgenskapHåndterer;
         this.køStatistikkTjeneste = køStatistikkTjeneste;
         this.oppgaveTjeneste = oppgaveTjeneste;
     }
@@ -61,8 +53,7 @@ public class EndreEnhetTransisjon implements FptilbakeOppgavetransisjonHåndtere
         var aksjonspunkter = data.hendelse().getAksjonspunkter();
         var ansvarligSaksbehandler = data.hendelse().getAnsvarligSaksbehandler();
         var egenskapFinner = new FptilbakeOppgaveEgenskapFinner(aksjonspunkter, ansvarligSaksbehandler);
-        TilbakekrevingOppgave oppgave = oppgaveTjeneste.lagre(oppgaveFra(data.hendelse()));
-        oppgaveEgenskapHåndterer.håndterOppgaveEgenskaper(oppgave, egenskapFinner);
+        var oppgave = nyOppgave(data);
         køStatistikkTjeneste.lagre(oppgave, KøOppgaveHendelse.ÅPNET_OPPGAVE);
         var oel = OppgaveEventLogg.builder()
                 .type(OppgaveEventType.OPPRETTET)
@@ -75,6 +66,12 @@ public class EndreEnhetTransisjon implements FptilbakeOppgavetransisjonHåndtere
         LOG.info("TBK: flytter oppgave til ny enhet for behandlingId {}.", oppgave.getBehandlingId());
     }
 
+    private TilbakekrevingOppgave nyOppgave(FptilbakeData data) {
+        var nyOppgave = oppgaveFra(data.hendelse());
+        nyOppgave.setOppgaveEgenskaper(data.egenskapFinner());
+        oppgaveTjeneste.lagre(nyOppgave);
+        return nyOppgave;
+    }
 
     private void avsluttOppgave(FptilbakeData data) {
         var hendelse = data.hendelse();
@@ -84,24 +81,4 @@ public class EndreEnhetTransisjon implements FptilbakeOppgavetransisjonHåndtere
         oppgaveTjeneste.avsluttOppgaveMedEventLogg(oppgave, OppgaveEventType.LUKKET, ReservasjonKonstanter.NY_ENHET);
     }
 
-    private static TilbakekrevingOppgave oppgaveFra(TilbakekrevingHendelse hendelse) {
-        var feilutbetalingStart = Optional.ofNullable(hendelse.getFørsteFeilutbetalingDato())
-                .map(LocalDate::atStartOfDay)
-                .orElse(null);
-        return TilbakekrevingOppgave.tbuilder()
-                .medBeløp(hendelse.getFeilutbetaltBeløp())
-                .medFeilutbetalingStart(feilutbetalingStart)
-                .medHref(hendelse.getHref())
-                .medSystem(hendelse.getFagsystem().name())
-                .medFagsakSaksnummer(Long.valueOf(hendelse.getSaksnummer()))
-                .medAktorId(new AktørId(hendelse.getAktørId()))
-                .medBehandlendeEnhet(hendelse.getBehandlendeEnhet())
-                .medBehandlingType(hendelse.getBehandlingType())
-                .medFagsakYtelseType(hendelse.getYtelseType())
-                .medAktiv(true)
-                .medBehandlingOpprettet(hendelse.getBehandlingOpprettetTidspunkt())
-                .medUtfortFraAdmin(false)
-                .medBehandlingId(hendelse.getBehandlingId())
-                .build();
-    }
 }

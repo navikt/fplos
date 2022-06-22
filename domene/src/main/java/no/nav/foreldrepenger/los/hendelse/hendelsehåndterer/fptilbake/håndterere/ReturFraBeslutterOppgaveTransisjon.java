@@ -4,10 +4,11 @@ import static no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fptilbake.h�
 
 import javax.enterprise.context.ApplicationScoped;
 
+import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fptilbake.FptilbakeOppgaveEgenskapFinner;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.OppgaveEgenskapHåndterer;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fptilbake.FptilbakeOppgavehendelseHåndterer.FptilbakeData;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fptilbake.FptilbakeOppgavetransisjonHåndterer;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveEventLogg;
@@ -23,7 +24,6 @@ import no.nav.foreldrepenger.los.statistikk.kø.KøStatistikkTjeneste;
 public class ReturFraBeslutterOppgaveTransisjon implements FptilbakeOppgavetransisjonHåndterer {
 
     private static final Logger LOG = LoggerFactory.getLogger(ReturFraBeslutterOppgaveTransisjon.class);
-    private OppgaveEgenskapHåndterer oppgaveEgenskapHåndterer;
     private OppgaveTjeneste oppgaveTjeneste;
     private KøStatistikkTjeneste køStatistikk;
     private ReservasjonTjeneste reservasjonTjeneste;
@@ -31,11 +31,9 @@ public class ReturFraBeslutterOppgaveTransisjon implements FptilbakeOppgavetrans
     public ReturFraBeslutterOppgaveTransisjon() {
     }
 
-    public ReturFraBeslutterOppgaveTransisjon(OppgaveEgenskapHåndterer oppgaveEgenskapHåndterer,
-                                              OppgaveTjeneste oppgaveTjeneste,
+    public ReturFraBeslutterOppgaveTransisjon(OppgaveTjeneste oppgaveTjeneste,
                                               KøStatistikkTjeneste køStatistikk,
                                               ReservasjonTjeneste reservasjonTjeneste) {
-        this.oppgaveEgenskapHåndterer = oppgaveEgenskapHåndterer;
         this.oppgaveTjeneste = oppgaveTjeneste;
         this.køStatistikk = køStatistikk;
         this.reservasjonTjeneste = reservasjonTjeneste;
@@ -50,7 +48,6 @@ public class ReturFraBeslutterOppgaveTransisjon implements FptilbakeOppgavetrans
     public void håndter(FptilbakeData data) {
         håndterEksisterendeOppgave(data);
         var saksbehandlerOppgave = opprettOppgave(data);
-        oppgaveEgenskapHåndterer.håndterOppgaveEgenskaper(saksbehandlerOppgave, data.egenskapFinner());
         var oel = OppgaveEventLogg.builder()
                 .behandlingId(data.hendelse().getBehandlingId())
                 .behandlendeEnhet(data.hendelse().getBehandlendeEnhet())
@@ -63,6 +60,7 @@ public class ReturFraBeslutterOppgaveTransisjon implements FptilbakeOppgavetrans
 
     private Oppgave opprettOppgave(FptilbakeData data) {
         var oppgave = oppgaveFra(data.hendelse());
+        oppgave.setOppgaveEgenskaper(data.egenskapFinner());
         oppgaveTjeneste.lagre(oppgave);
         reservasjonTjeneste.opprettReservasjon(oppgave, data.hendelse().getAnsvarligSaksbehandler(), ReservasjonKonstanter.RETUR_FRA_BESLUTTER);
         LOG.info("Retur fra beslutter, oppretter oppgave og flytter reservasjon til ansvarlig saksbehandler");

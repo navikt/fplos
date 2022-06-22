@@ -9,7 +9,6 @@ import no.nav.foreldrepenger.los.statistikk.kø.KøOppgaveHendelse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.OppgaveEgenskapHåndterer;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveEventLogg;
 import no.nav.foreldrepenger.los.klient.fpsak.BehandlingFpsak;
 import no.nav.foreldrepenger.los.oppgave.Oppgave;
@@ -26,14 +25,11 @@ public class GenerellOpprettOppgaveOppgavetransisjonHåndterer implements FpsakO
 
     private OppgaveTjeneste oppgaveTjeneste;
     private KøStatistikkTjeneste køStatistikk;
-    private OppgaveEgenskapHåndterer oppgaveEgenskapHåndterer;
 
     @Inject
     public GenerellOpprettOppgaveOppgavetransisjonHåndterer(OppgaveTjeneste oppgaveTjeneste,
-                                                            OppgaveEgenskapHåndterer oppgaveEgenskapHåndterer,
                                                             KøStatistikkTjeneste køStatistikk) {
         this.oppgaveTjeneste = oppgaveTjeneste;
-        this.oppgaveEgenskapHåndterer = oppgaveEgenskapHåndterer;
         this.køStatistikk = køStatistikk;
     }
 
@@ -44,7 +40,6 @@ public class GenerellOpprettOppgaveOppgavetransisjonHåndterer implements FpsakO
     public void håndter(BehandlingFpsak behandlingFpsak) {
         håndterEksisterendeOppgave(behandlingFpsak.getBehandlingId());
         var oppgave = opprettOppgave(behandlingFpsak);
-        opprettOppgaveEgenskaper(oppgave, behandlingFpsak);
         opprettOppgaveEventLogg(oppgave);
         køStatistikk.lagre(oppgave, KøOppgaveHendelse.ÅPNET_OPPGAVE);
     }
@@ -56,13 +51,10 @@ public class GenerellOpprettOppgaveOppgavetransisjonHåndterer implements FpsakO
 
     private Oppgave opprettOppgave(BehandlingFpsak behandlingFpsak) {
         var oppgave = oppgave(behandlingFpsak);
+        var egenskapFinner = new FpsakOppgaveEgenskapFinner(behandlingFpsak);
+        oppgave.setOppgaveEgenskaper(egenskapFinner);
         oppgaveTjeneste.lagre(oppgave);
         return oppgave;
-    }
-
-    private void opprettOppgaveEgenskaper(Oppgave oppgave, BehandlingFpsak behandlingFpsak) {
-        var egenskapFinner = new FpsakOppgaveEgenskapFinner(behandlingFpsak);
-        oppgaveEgenskapHåndterer.håndterOppgaveEgenskaper(oppgave, egenskapFinner);
     }
 
     void håndterEksisterendeOppgave(BehandlingId behandlingId) {

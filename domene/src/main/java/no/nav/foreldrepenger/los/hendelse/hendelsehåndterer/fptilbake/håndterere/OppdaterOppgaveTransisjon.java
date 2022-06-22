@@ -1,8 +1,8 @@
 package no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fptilbake.håndterere;
 
+import static no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fptilbake.håndterere.OppgaveUtil.oppgaveFra;
 import static no.nav.foreldrepenger.los.reservasjon.ReservasjonKonstanter.RESERVASJON_VIDEREFØRT_NY_OPPGAVE;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,16 +15,11 @@ import javax.enterprise.context.ApplicationScoped;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import no.nav.foreldrepenger.los.domene.typer.aktør.AktørId;
-import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.OppgaveEgenskapHåndterer;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fptilbake.FptilbakeOppgavehendelseHåndterer.FptilbakeData;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fptilbake.FptilbakeOppgavetransisjonHåndterer;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveEventType;
-import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fptilbake.FptilbakeOppgaveEgenskapFinner;
-import no.nav.foreldrepenger.los.hendelse.hendelseoppretter.hendelse.TilbakekrevingHendelse;
 import no.nav.foreldrepenger.los.oppgave.Oppgave;
 import no.nav.foreldrepenger.los.oppgave.OppgaveTjeneste;
-import no.nav.foreldrepenger.los.oppgave.TilbakekrevingOppgave;
 import no.nav.foreldrepenger.los.oppgavekø.OppgaveFiltreringKnytning;
 import no.nav.foreldrepenger.los.reservasjon.ReservasjonTjeneste;
 import no.nav.foreldrepenger.los.statistikk.kø.KøOppgaveHendelse;
@@ -35,9 +30,6 @@ public class OppdaterOppgaveTransisjon implements FptilbakeOppgavetransisjonHån
 
     private static final Logger LOG = LoggerFactory.getLogger(OppdaterOppgaveTransisjon.class);
 
-
-    private OppgaveEgenskapHåndterer oppgaveEgenskapHåndterer;
-
     private KøStatistikkTjeneste køStatistikkTjeneste;
     private OppgaveTjeneste oppgaveTjeneste;
     private ReservasjonTjeneste reservasjonTjeneste;
@@ -46,11 +38,9 @@ public class OppdaterOppgaveTransisjon implements FptilbakeOppgavetransisjonHån
     public OppdaterOppgaveTransisjon() {
     }
 
-    public OppdaterOppgaveTransisjon(OppgaveEgenskapHåndterer oppgaveEgenskapHåndterer,
-                                     KøStatistikkTjeneste køStatistikkTjeneste,
+    public OppdaterOppgaveTransisjon(KøStatistikkTjeneste køStatistikkTjeneste,
                                      OppgaveTjeneste oppgaveTjeneste,
                                      ReservasjonTjeneste reservasjonTjeneste) {
-        this.oppgaveEgenskapHåndterer = oppgaveEgenskapHåndterer;
         this.køStatistikkTjeneste = køStatistikkTjeneste;
         this.oppgaveTjeneste = oppgaveTjeneste;
         this.reservasjonTjeneste = reservasjonTjeneste;
@@ -66,7 +56,7 @@ public class OppdaterOppgaveTransisjon implements FptilbakeOppgavetransisjonHån
     public void håndter(FptilbakeData data) {
         var eksisterendeOppgave = oppgaveTjeneste.hentAktivOppgave(data.hendelse().getBehandlingId())
                 .orElseThrow(() -> new IllegalStateException("Fant ikke eksisterende oppgave"));
-        var nyOppgave = lagOppgave(data.hendelse());
+        var nyOppgave = lagOppgave(data);
         vedlikeholdKøStatistikk(eksisterendeOppgave, nyOppgave);
         flyttReservasjon(eksisterendeOppgave, nyOppgave);
         oppgaveTjeneste.avsluttOppgaveMedEventLogg(eksisterendeOppgave, OppgaveEventType.GJENAPNET, RESERVASJON_VIDEREFØRT_NY_OPPGAVE);
@@ -109,30 +99,11 @@ public class OppdaterOppgaveTransisjon implements FptilbakeOppgavetransisjonHån
         }
     }
 
-    private Oppgave lagOppgave(TilbakekrevingHendelse hendelse) {
-        var egenskapFinner = new FptilbakeOppgaveEgenskapFinner(hendelse.getAksjonspunkter(), hendelse.getAnsvarligSaksbehandler());
-        var nyOppgave = oppgaveFra(hendelse);
+    private Oppgave lagOppgave(FptilbakeData data) {
+        var nyOppgave = oppgaveFra(data.hendelse());
+        nyOppgave.setOppgaveEgenskaper(data.egenskapFinner());
         oppgaveTjeneste.lagre(nyOppgave);
-        oppgaveEgenskapHåndterer.håndterOppgaveEgenskaper(nyOppgave, egenskapFinner);
         return nyOppgave;
     }
 
-    private static TilbakekrevingOppgave oppgaveFra(TilbakekrevingHendelse hendelse) {
-        var feilutbetalingStart = Optional.ofNullable(hendelse.getFørsteFeilutbetalingDato()).map(LocalDate::atStartOfDay).orElse(null);
-        return TilbakekrevingOppgave.tbuilder()
-                .medBeløp(hendelse.getFeilutbetaltBeløp())
-                .medFeilutbetalingStart(feilutbetalingStart)
-                .medHref(hendelse.getHref())
-                .medSystem(hendelse.getFagsystem().name())
-                .medFagsakSaksnummer(Long.valueOf(hendelse.getSaksnummer()))
-                .medAktorId(new AktørId(hendelse.getAktørId()))
-                .medBehandlendeEnhet(hendelse.getBehandlendeEnhet())
-                .medBehandlingType(hendelse.getBehandlingType())
-                .medFagsakYtelseType(hendelse.getYtelseType())
-                .medAktiv(true)
-                .medBehandlingOpprettet(hendelse.getBehandlingOpprettetTidspunkt())
-                .medUtfortFraAdmin(false)
-                .medBehandlingId(hendelse.getBehandlingId())
-                .build();
-    }
 }

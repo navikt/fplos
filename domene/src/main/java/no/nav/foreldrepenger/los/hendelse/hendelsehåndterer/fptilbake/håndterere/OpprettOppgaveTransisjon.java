@@ -7,7 +7,6 @@ import javax.enterprise.context.ApplicationScoped;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.OppgaveEgenskapHåndterer;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fptilbake.FptilbakeOppgavehendelseHåndterer.FptilbakeData;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fptilbake.FptilbakeOppgavetransisjonHåndterer;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveEventLogg;
@@ -16,7 +15,6 @@ import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fptilbake.Fptilbake
 import no.nav.foreldrepenger.los.oppgave.AndreKriterierType;
 import no.nav.foreldrepenger.los.oppgave.Oppgave;
 import no.nav.foreldrepenger.los.oppgave.OppgaveTjeneste;
-import no.nav.foreldrepenger.los.oppgave.TilbakekrevingOppgave;
 import no.nav.foreldrepenger.los.statistikk.kø.KøOppgaveHendelse;
 import no.nav.foreldrepenger.los.statistikk.kø.KøStatistikkTjeneste;
 
@@ -25,7 +23,6 @@ import no.nav.foreldrepenger.los.statistikk.kø.KøStatistikkTjeneste;
 public class OpprettOppgaveTransisjon implements FptilbakeOppgavetransisjonHåndterer {
 
     private static final Logger LOG = LoggerFactory.getLogger(OpprettOppgaveTransisjon.class);
-    private OppgaveEgenskapHåndterer oppgaveEgenskapHåndterer;
     private KøStatistikkTjeneste køStatistikkTjeneste;
 
     private OppgaveTjeneste oppgaveTjeneste;
@@ -34,10 +31,8 @@ public class OpprettOppgaveTransisjon implements FptilbakeOppgavetransisjonHånd
     public OpprettOppgaveTransisjon() {
     }
 
-    public OpprettOppgaveTransisjon(OppgaveEgenskapHåndterer oppgaveEgenskapHåndterer,
-                                    KøStatistikkTjeneste køStatistikkTjeneste,
+    public OpprettOppgaveTransisjon(KøStatistikkTjeneste køStatistikkTjeneste,
                                     OppgaveTjeneste oppgaveTjeneste) {
-        this.oppgaveEgenskapHåndterer = oppgaveEgenskapHåndterer;
         this.køStatistikkTjeneste = køStatistikkTjeneste;
         this.oppgaveTjeneste = oppgaveTjeneste;
     }
@@ -53,8 +48,9 @@ public class OpprettOppgaveTransisjon implements FptilbakeOppgavetransisjonHånd
         var ansvarligSaksbehandler = data.hendelse().getAnsvarligSaksbehandler();
         var egenskapFinner = new FptilbakeOppgaveEgenskapFinner(aksjonspunkter, ansvarligSaksbehandler);
         boolean erBeslutteroppgave = egenskapFinner.getAndreKriterier().contains(AndreKriterierType.TIL_BESLUTTER);
-        TilbakekrevingOppgave oppgave = oppgaveTjeneste.lagre(oppgaveFra(data.hendelse()));
-        oppgaveEgenskapHåndterer.håndterOppgaveEgenskaper(oppgave, egenskapFinner);
+        var oppgave = oppgaveFra(data.hendelse());
+        oppgave.setOppgaveEgenskaper(data.egenskapFinner());
+        oppgaveTjeneste.lagre(oppgave);
         køStatistikkTjeneste.lagre(oppgave, KøOppgaveHendelse.ÅPNET_OPPGAVE);
         loggOpprettelse(oppgave, erBeslutteroppgave);
         LOG.info("TBK Oppretter oppgave {} for behandlingId {}.", oppgave.getId(), oppgave.getBehandlingId());

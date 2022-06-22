@@ -1,6 +1,5 @@
 package no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.håndterere;
 
-import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.OppgaveEgenskapHåndterer;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.FpsakOppgaveEgenskapFinner;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.FpsakOppgavetransisjonHåndterer;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveEventLogg;
@@ -25,17 +24,14 @@ public class ReturFraBeslutterOppgavetransisjonHåndterer implements FpsakOppgav
     private OppgaveTjeneste oppgaveTjeneste;
     private KøStatistikkTjeneste køStatistikk;
     private ReservasjonTjeneste reservasjonTjeneste;
-    private OppgaveEgenskapHåndterer oppgaveEgenskapHåndterer;
 
     @Inject
     public ReturFraBeslutterOppgavetransisjonHåndterer(OppgaveTjeneste oppgaveTjeneste,
-                                                       OppgaveEgenskapHåndterer oppgaveEgenskapHåndterer,
                                                        ReservasjonTjeneste reservasjonTjeneste,
                                                        KøStatistikkTjeneste køStatistikk) {
         this.oppgaveTjeneste = oppgaveTjeneste;
         this.reservasjonTjeneste = reservasjonTjeneste;
         this.køStatistikk = køStatistikk;
-        this.oppgaveEgenskapHåndterer = oppgaveEgenskapHåndterer;
     }
 
     public ReturFraBeslutterOppgavetransisjonHåndterer() {
@@ -44,7 +40,6 @@ public class ReturFraBeslutterOppgavetransisjonHåndterer implements FpsakOppgav
     public void håndter(BehandlingFpsak behandlingFpsak) {
         håndterEksisterendeOppgave(behandlingFpsak);
         var oppgave = opprettOppgave(behandlingFpsak);
-        opprettOppgaveEgenskaper(oppgave, behandlingFpsak);
         opprettOppgaveEventLogg(oppgave, behandlingFpsak);
         køStatistikk.lagre(oppgave, KøOppgaveHendelse.ÅPNET_OPPGAVE);
     }
@@ -69,6 +64,8 @@ public class ReturFraBeslutterOppgavetransisjonHåndterer implements FpsakOppgav
 
     private Oppgave opprettOppgave(BehandlingFpsak behandlingFpsak) {
         var oppgave = oppgave(behandlingFpsak);
+        var egenskapFinner = new FpsakOppgaveEgenskapFinner(behandlingFpsak);
+        oppgave.setOppgaveEgenskaper(egenskapFinner);
         oppgaveTjeneste.lagre(oppgave);
         reservasjonTjeneste.opprettReservasjon(oppgave, behandlingFpsak.getAnsvarligSaksbehandler(), "Retur fra beslutter");
         LOG.info("Retur fra beslutter, oppretter oppgave og flytter reservasjon til ansvarlig saksbehandler");
@@ -86,10 +83,5 @@ public class ReturFraBeslutterOppgavetransisjonHåndterer implements FpsakOppgav
         LOG.info("Retur fra beslutter, oppretter {} saksbehandler-oppgave med oppgaveId {}", SYSTEM, oppgave.getId());
     }
 
-
-    private void opprettOppgaveEgenskaper(Oppgave oppgave, BehandlingFpsak behandlingFpsak) {
-        var egenskapFinner = new FpsakOppgaveEgenskapFinner(behandlingFpsak);
-        oppgaveEgenskapHåndterer.håndterOppgaveEgenskaper(oppgave, egenskapFinner);
-    }
 
 }

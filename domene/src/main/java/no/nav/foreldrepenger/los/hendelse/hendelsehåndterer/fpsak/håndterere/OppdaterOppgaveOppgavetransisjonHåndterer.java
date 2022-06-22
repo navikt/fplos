@@ -1,23 +1,8 @@
 package no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.håndterere;
 
-import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.OppgaveEgenskapHåndterer;
-import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.FpsakOppgaveEgenskapFinner;
-import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.FpsakOppgavetransisjonHåndterer;
-import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveEventType;
-import no.nav.foreldrepenger.los.klient.fpsak.BehandlingFpsak;
-import no.nav.foreldrepenger.los.oppgave.Oppgave;
-import no.nav.foreldrepenger.los.oppgave.OppgaveTjeneste;
-import no.nav.foreldrepenger.los.oppgavekø.OppgaveFiltreringKnytning;
-import no.nav.foreldrepenger.los.reservasjon.ReservasjonTjeneste;
-
-import no.nav.foreldrepenger.los.statistikk.kø.KøOppgaveHendelse;
-import no.nav.foreldrepenger.los.statistikk.kø.KøStatistikkTjeneste;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
+import static no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.OppgaveUtil.oppgave;
+import static no.nav.foreldrepenger.los.reservasjon.ReservasjonKonstanter.NY_ENHET;
+import static no.nav.foreldrepenger.los.reservasjon.ReservasjonKonstanter.RESERVASJON_VIDEREFØRT_NY_OPPGAVE;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -26,26 +11,36 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.OppgaveUtil.oppgave;
-import static no.nav.foreldrepenger.los.reservasjon.ReservasjonKonstanter.NY_ENHET;
-import static no.nav.foreldrepenger.los.reservasjon.ReservasjonKonstanter.RESERVASJON_VIDEREFØRT_NY_OPPGAVE;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.FpsakOppgaveEgenskapFinner;
+import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.FpsakOppgavetransisjonHåndterer;
+import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveEventType;
+import no.nav.foreldrepenger.los.klient.fpsak.BehandlingFpsak;
+import no.nav.foreldrepenger.los.oppgave.Oppgave;
+import no.nav.foreldrepenger.los.oppgave.OppgaveTjeneste;
+import no.nav.foreldrepenger.los.oppgavekø.OppgaveFiltreringKnytning;
+import no.nav.foreldrepenger.los.reservasjon.ReservasjonTjeneste;
+import no.nav.foreldrepenger.los.statistikk.kø.KøOppgaveHendelse;
+import no.nav.foreldrepenger.los.statistikk.kø.KøStatistikkTjeneste;
 
 @ApplicationScoped
 public class OppdaterOppgaveOppgavetransisjonHåndterer implements FpsakOppgavetransisjonHåndterer {
 
     private static final Logger LOG = LoggerFactory.getLogger(OppdaterOppgaveOppgavetransisjonHåndterer.class);
     private ReservasjonTjeneste reservasjonTjeneste;
-    private OppgaveEgenskapHåndterer oppgaveEgenskapHåndterer;
     private OppgaveTjeneste oppgaveTjeneste;
     private KøStatistikkTjeneste køStatistikkTjeneste;
 
     @Inject
     public OppdaterOppgaveOppgavetransisjonHåndterer(OppgaveTjeneste oppgaveTjeneste,
                                                      ReservasjonTjeneste reservasjonTjeneste,
-                                                     OppgaveEgenskapHåndterer oppgaveEgenskapHåndterer,
                                                      KøStatistikkTjeneste køStatistikkTjeneste) {
         this.reservasjonTjeneste = reservasjonTjeneste;
-        this.oppgaveEgenskapHåndterer = oppgaveEgenskapHåndterer;
         this.oppgaveTjeneste = oppgaveTjeneste;
         this.køStatistikkTjeneste = køStatistikkTjeneste;
     }
@@ -111,14 +106,10 @@ public class OppdaterOppgaveOppgavetransisjonHåndterer implements FpsakOppgavet
 
     private Oppgave lagOppgave(BehandlingFpsak behandlingFpsak) {
         var nyOppgave = oppgave(behandlingFpsak);
-        oppgaveTjeneste.lagre(nyOppgave);
-        oppdaterOppgaveEgenskaper(nyOppgave, behandlingFpsak);
-        return nyOppgave;
-    }
-
-    private void oppdaterOppgaveEgenskaper(Oppgave gjenåpnetOppgave, BehandlingFpsak behandlingFpsak) {
         var egenskapFinner = new FpsakOppgaveEgenskapFinner(behandlingFpsak);
-        oppgaveEgenskapHåndterer.håndterOppgaveEgenskaper(gjenåpnetOppgave, egenskapFinner);
+        nyOppgave.setOppgaveEgenskaper(egenskapFinner);
+        oppgaveTjeneste.lagre(nyOppgave);
+        return nyOppgave;
     }
 
 }

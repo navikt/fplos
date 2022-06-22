@@ -21,7 +21,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import no.nav.foreldrepenger.los.DBTestUtil;
 import no.nav.foreldrepenger.extensions.JpaExtension;
-import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.OppgaveEgenskapHåndterer;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.håndterere.GjenåpneOppgaveOppgavetransisjonHåndterer;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveEventLogg;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveEventType;
@@ -40,7 +39,6 @@ class GjenåpneOppgaveHendelseHåndtererTest {
     private final KøStatistikkTjeneste køStatistikk = mock(KøStatistikkTjeneste.class);
     private EntityManager entityManager;
     private OppgaveRepository oppgaveRepository;
-    private OppgaveEgenskapHåndterer oppgaveEgenskapHåndterer;
     private ReservasjonTjeneste reservasjonTjeneste;
     private BehandlingFpsak.Builder behandlingFpsak;
     private Oppgave kopiAvEksisterendeOppgave;
@@ -52,7 +50,6 @@ class GjenåpneOppgaveHendelseHåndtererTest {
     private void setUp(EntityManager entityManager) {
         this.entityManager = entityManager;
         oppgaveRepository = new OppgaveRepository(entityManager);
-        oppgaveEgenskapHåndterer = new OppgaveEgenskapHåndterer(oppgaveRepository);
         reservasjonTjeneste = new ReservasjonTjeneste(oppgaveRepository, new ReservasjonRepository(entityManager));
         oppgaveTjeneste = new OppgaveTjeneste(oppgaveRepository, reservasjonTjeneste);
 
@@ -62,7 +59,7 @@ class GjenåpneOppgaveHendelseHåndtererTest {
         oppgaveRepository.lagre(eksisterendeOppgave);
 
         reservasjonTjeneste.reserverOppgave(eksisterendeOppgave);
-        gjenåpneOppgaveHåndterer = new GjenåpneOppgaveOppgavetransisjonHåndterer(oppgaveRepository, oppgaveEgenskapHåndterer, køStatistikk, reservasjonTjeneste);
+        gjenåpneOppgaveHåndterer = new GjenåpneOppgaveOppgavetransisjonHåndterer(oppgaveRepository, køStatistikk, reservasjonTjeneste);
     }
 
     @Test
