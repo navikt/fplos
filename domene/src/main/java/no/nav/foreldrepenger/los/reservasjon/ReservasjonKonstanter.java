@@ -10,6 +10,7 @@ public final class ReservasjonKonstanter {
     public static final String NY_ENHET = "Flyttet til ny enhet";
 
     public static final String SLETTET_AV_ADMIN = "Oppgave er avsluttet fra admin REST-tjeneste";
+    public static String RETUR_FRA_BESLUTTER = "Retur fra beslutter";
 
 
     public static boolean tekstBlantReservasjonKonstanter(String kandidat) {

@@ -71,7 +71,7 @@ public class GjenåpneOppgaveOppgavetransisjonHåndterer implements FpsakOppgave
                                                  Oppgave nyOppgave,
                                                  BehandlingFpsak behandlingFpsak) {
         eksisterendeOppgaver.stream()
-                .peek(o -> LOG.info("Ser på oppgave {}", o.getId()))
+                .peek(o -> LOG.info("Ser på oppgaveId {}", o.getId()))
                 .max(Comparator.comparing(Oppgave::getOpprettetTidspunkt))
                 .filter(o -> o.getBehandlendeEnhet().equals(behandlingFpsak.getBehandlendeEnhetId()))
                 .map(Oppgave::getReservasjon)

@@ -75,9 +75,9 @@ public class OppgaveTjeneste {
     }
 
     public void avsluttOppgaveMedEventLogg(Oppgave oppgave, OppgaveEventType oppgaveEventType, String begrunnelseReservasjonEvent) {
+        reservasjonTjeneste.slettReservasjonMedEventLogg(oppgave.getReservasjon(), begrunnelseReservasjonEvent);
         oppgave.setAktiv(false);
         oppgave.setOppgaveAvsluttet(LocalDateTime.now());
-        reservasjonTjeneste.slettReservasjonMedEventLogg(oppgave.getReservasjon(), begrunnelseReservasjonEvent);
         oppgaveRepository.lagre(oppgave);
         var oel = new OppgaveEventLogg.Builder()
                 .behandlingId(oppgave.getBehandlingId())
@@ -103,8 +103,9 @@ public class OppgaveTjeneste {
                 .filter(Oppgave::getAktiv).findFirst();
     }
 
-    public <U extends BaseEntitet> void lagre(U entitet) {
+    public <U extends BaseEntitet> U lagre(U entitet) {
         oppgaveRepository.lagre(entitet);
+        return entitet;
     }
 
 

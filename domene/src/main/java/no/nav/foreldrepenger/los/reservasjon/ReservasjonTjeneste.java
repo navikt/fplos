@@ -146,6 +146,7 @@ public class ReservasjonTjeneste {
         reservasjon.setFlyttetAv(brukerIdent());
         reservasjon.setFlyttetTidspunkt(LocalDateTime.now());
         reservasjonRepository.lagre(reservasjon);
+        reservasjonRepository.refresh(reservasjon.getOppgave());
         var rel = new ReservasjonEventLogg(reservasjon);
         reservasjonRepository.lagre(rel);
     }

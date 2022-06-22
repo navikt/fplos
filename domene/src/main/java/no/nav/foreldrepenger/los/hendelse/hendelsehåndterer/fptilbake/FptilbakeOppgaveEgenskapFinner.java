@@ -1,4 +1,4 @@
-package no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.tilbakekreving;
+package no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fptilbake;
 
 import java.util.Collections;
 import java.util.List;
@@ -7,11 +7,11 @@ import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.OppgaveEgenskapFinn
 import no.nav.foreldrepenger.los.hendelse.hendelseoppretter.hendelse.Aksjonspunkt;
 import no.nav.foreldrepenger.los.oppgave.AndreKriterierType;
 
-public class TilbakekrevingOppgaveEgenskapFinner implements OppgaveEgenskapFinner {
+public class FptilbakeOppgaveEgenskapFinner implements OppgaveEgenskapFinner {
     private final List<AndreKriterierType> andreKriterier;
     private final String saksbehandlerForTotrinn;
 
-    public TilbakekrevingOppgaveEgenskapFinner(List<Aksjonspunkt> aksjonspunkter, String saksbehandler) {
+    public FptilbakeOppgaveEgenskapFinner(List<Aksjonspunkt> aksjonspunkter, String saksbehandler) {
         this.andreKriterier = fra(aksjonspunkter);
         this.saksbehandlerForTotrinn = saksbehandler;
     }
