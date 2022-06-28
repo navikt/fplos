@@ -44,8 +44,7 @@ public class OppgaveStatusDtoTjeneste {
         if (ident == null) {
             return null;
         }
-        return tryOrEmpty(() -> ansattTjeneste.hentAnsattNavn(ident))
-                .orElse("Ukjent");
+        return tryOrEmpty(() -> ansattTjeneste.hentAnsattNavn(ident)).orElse("Ukjent");
     }
 
     private OppgaveStatusDto systembrukerSpesialTilfelle(Reservasjon reservasjon) {

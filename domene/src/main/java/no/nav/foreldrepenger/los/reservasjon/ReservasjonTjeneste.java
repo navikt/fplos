@@ -167,6 +167,8 @@ public class ReservasjonTjeneste {
         var nyReservasjon = new Reservasjon(oppgave);
         nyReservasjon.setReservertTil(nyVarighetTil);
         nyReservasjon.setReservertAv(reservasjon.getReservertAv());
+        nyReservasjon.setFlyttetTidspunkt(reservasjon.getFlyttetTidspunkt());
+        nyReservasjon.setFlyttetAv(reservasjon.getFlyttetAv());
         nyReservasjon.setBegrunnelse(reservasjon.getBegrunnelse());
         lagreMedEventLogg(nyReservasjon);
         reservasjonRepository.refresh(oppgave);

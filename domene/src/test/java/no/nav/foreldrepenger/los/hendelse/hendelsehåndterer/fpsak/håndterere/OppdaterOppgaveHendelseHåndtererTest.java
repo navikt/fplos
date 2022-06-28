@@ -70,7 +70,7 @@ class OppdaterOppgaveHendelseHåndtererTest {
     public void skalErstatteGammelOppgaveMedNy() {
         oppgaveOppdaterer.håndter(behandlingFpsak);
         var oppgaver = hentAlle(entityManager, Oppgave.class);
-        assertThat(oppgaver.stream().count()).isEqualTo(2);
+        assertThat(oppgaver.size()).isEqualTo(2);
         var gammelOppgave = oppgaver.get(0);
         var nyOppgave = oppgaver.get(1);
         assertThatOppgave(gammelOppgave).harAktiv(false);

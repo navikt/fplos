@@ -36,7 +36,7 @@ public class OppgaveStatusDto {
         this.reservertAvNavn = reservasjonDto.reservertAvNavn();
         this.erReservertAvInnloggetBruker = isErReservertAvInnloggetBruker(reservertAvUid);
 
-        if (reservasjonDto.flyttetTidspunkt() != null) {
+        if (reservasjonDto.begrunnelse() != null || reservasjonDto.flyttetTidspunkt() != null) {
             if (flyttetReservasjonDto != null) {
                 flyttetReservasjon = flyttetReservasjonDto;
             } else {
