@@ -28,7 +28,6 @@ const maxLength100 = maxLength(100);
 type FormValues = {
   sakslisteId: number
   navn: string;
-  fagsakYtelseType: string;
   sortering?: string;
   erDynamiskPeriode?: boolean;
   fra?: string;
@@ -39,8 +38,7 @@ type FormValues = {
 
 const buildInitialValues = (intl: IntlShape, valgtSaksliste: Saksliste): FormValues => {
   const behandlingTypes = valgtSaksliste.behandlingTyper ? valgtSaksliste.behandlingTyper.reduce((acc, bt) => ({ ...acc, [bt]: true }), {}) : {};
-  const fagsakYtelseType = valgtSaksliste.fagsakYtelseTyper && valgtSaksliste.fagsakYtelseTyper.length > 0
-    ? valgtSaksliste.fagsakYtelseTyper[0] : '';
+  const fagsakYtelseTypes = valgtSaksliste.fagsakYtelseTyper ? valgtSaksliste.fagsakYtelseTyper.reduce((acc, fyt) => ({ ...acc, [fyt]: true }), {}) : {};
 
   const andreKriterierTyper = valgtSaksliste.andreKriterier
     ? valgtSaksliste.andreKriterier.reduce((acc, ak) => ({ ...acc, [ak.andreKriterierType]: true }), {}) : {};
@@ -56,10 +54,10 @@ const buildInitialValues = (intl: IntlShape, valgtSaksliste: Saksliste): FormVal
     fra: valgtSaksliste.sortering ? valgtSaksliste.sortering.fra?.toString() : undefined,
     til: valgtSaksliste.sortering ? valgtSaksliste.sortering.til?.toString() : undefined,
     erDynamiskPeriode: valgtSaksliste.sortering ? valgtSaksliste.sortering.erDynamiskPeriode : undefined,
-    fagsakYtelseType,
     ...andreKriterierTyper,
     ...andreKriterierInkluder,
     ...behandlingTypes,
+    ...fagsakYtelseTypes,
   };
 };
 
@@ -119,7 +117,7 @@ export const UtvalgskriterierForSakslisteForm: FunctionComponent<OwnProps & Wrap
           <FormattedMessage id="UtvalgskriterierForSakslisteForm.Utvalgskriterier" />
         </Element>
         <VerticalSpacer eightPx />
-        <Row>
+        <Row className={styles.utvalgskriterieRad}>
           <Column xs="9">
             <InputField
               name="navn"
@@ -136,20 +134,14 @@ export const UtvalgskriterierForSakslisteForm: FunctionComponent<OwnProps & Wrap
             </div>
           </Column>
         </Row>
-        <VerticalSpacer eightPx />
         <Row>
-          <Column xs="6" className={styles.stonadstypeRadios}>
+          <Column xs="3">
             <FagsakYtelseTypeVelger
               valgtSakslisteId={valgtSaksliste.sakslisteId}
               valgtAvdelingEnhet={valgtAvdelingEnhet}
               hentAvdelingensSakslister={hentAvdelingensSakslister}
               hentAntallOppgaver={hentAntallOppgaver}
             />
-          </Column>
-        </Row>
-        <VerticalSpacer sixteenPx />
-        <Row>
-          <Column xs="3">
             <BehandlingstypeVelger
               valgtSakslisteId={valgtSaksliste.sakslisteId}
               valgtAvdelingEnhet={valgtAvdelingEnhet}

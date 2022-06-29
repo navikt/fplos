@@ -16,6 +16,6 @@ describe('<FagsakYtelseTypeVelger>', () => {
     await userEvent.click(screen.getByText('Engangsstønad'));
 
     await waitFor(() => expect(getByLabelText('Engangsstønad')).toBeChecked());
-    expect(getByLabelText('Foreldrepenger')).not.toBeChecked();
+    expect(getByLabelText('Foreldrepenger')).toBeChecked();
   });
 });

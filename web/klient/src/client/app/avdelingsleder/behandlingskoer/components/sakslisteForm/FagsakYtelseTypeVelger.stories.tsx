@@ -5,13 +5,13 @@ import { useForm } from 'react-hook-form';
 
 import { RestApiGlobalStatePathsKeys, RestApiPathsKeys } from 'data/fplosRestApi';
 import FagsakYtelseTypeVelger from 'avdelingsleder/behandlingskoer/components/sakslisteForm/FagsakYtelseTypeVelger';
-import fagsakYtelseType from 'kodeverk/fagsakYtelseType';
 import { Form } from '@navikt/ft-form-hooks';
 
 import RestApiMock from 'storybookUtils/RestApiMock';
 import withIntl from 'storybookUtils/decorators/withIntl';
 import withRestApiProvider from 'storybookUtils/decorators/withRestApi';
 import alleKodeverk from 'storybookUtils/mocks/alleKodeverk.json';
+import { FagsakYtelseType } from '@navikt/ft-kodeverk';
 
 export default {
   title: 'avdelingsleder/behandlingskoer/FagsakYtelseTypeVelger',
@@ -19,7 +19,7 @@ export default {
   decorators: [withIntl, withRestApiProvider],
 };
 
-const Template: Story<{ verdier: Record<string, string> }> = ({
+const Template: Story<{ verdier: Record<string, boolean> }> = ({
   verdier,
 }) => {
   const data = [
@@ -48,6 +48,6 @@ const Template: Story<{ verdier: Record<string, string> }> = ({
 export const Default = Template.bind({});
 Default.args = {
   verdier: {
-    fagsakYtelseType: fagsakYtelseType.FORELDREPRENGER,
+    [FagsakYtelseType.FORELDREPENGER]: true,
   },
 };

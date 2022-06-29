@@ -68,7 +68,7 @@ export const RestApiPathsKeys = {
     sakslisteId: number, avdelingEnhet: string, behandlingType: string, checked: boolean,
   }>('LAGRE_SAKSLISTE_BEHANDLINGSTYPE'),
   LAGRE_SAKSLISTE_FAGSAK_YTELSE_TYPE: new RestKey<void, {
-    sakslisteId: number, avdelingEnhet: string, fagsakYtelseType?: string,
+    sakslisteId: number, avdelingEnhet: string, fagsakYtelseType: string, checked: boolean
   }>('LAGRE_SAKSLISTE_FAGSAK_YTELSE_TYPE'),
   LAGRE_SAKSLISTE_SORTERING: new RestKey<void, {
     sakslisteId: number, sakslisteSorteringValg: string, avdelingEnhet: string,
@@ -106,7 +106,7 @@ export const endpoints = new RestApiConfigBuilder()
   .withPost('/fplos/api/avdelingsleder/sakslister/slett', RestApiPathsKeys.SLETT_SAKSLISTE)
   .withPost('/fplos/api/avdelingsleder/sakslister/navn', RestApiPathsKeys.LAGRE_SAKSLISTE_NAVN)
   .withPost('/fplos/api/avdelingsleder/sakslister/behandlingstype', RestApiPathsKeys.LAGRE_SAKSLISTE_BEHANDLINGSTYPE)
-  .withPost('/fplos/api/avdelingsleder/sakslister/ytelsetype', RestApiPathsKeys.LAGRE_SAKSLISTE_FAGSAK_YTELSE_TYPE)
+  .withPost('/fplos/api/avdelingsleder/sakslister/ytelsetyper', RestApiPathsKeys.LAGRE_SAKSLISTE_FAGSAK_YTELSE_TYPE)
   .withPost('/fplos/api/avdelingsleder/sakslister/sortering', RestApiPathsKeys.LAGRE_SAKSLISTE_SORTERING)
   .withPost('/fplos/api/avdelingsleder/sakslister/sortering-tidsintervall-type', RestApiPathsKeys.LAGRE_SAKSLISTE_SORTERING_DYNAMISK_PERIDE)
   .withPost('/fplos/api/avdelingsleder/sakslister/sortering-tidsintervall-dato', RestApiPathsKeys.LAGRE_SAKSLISTE_SORTERING_TIDSINTERVALL_DATO)
