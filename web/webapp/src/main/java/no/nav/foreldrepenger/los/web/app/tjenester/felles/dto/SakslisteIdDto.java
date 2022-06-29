@@ -43,4 +43,18 @@ public class SakslisteIdDto implements AbacDto {
     public AbacDataAttributter abacAttributter() {
         return AbacDataAttributter.opprett();
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        SakslisteIdDto that = (SakslisteIdDto) o;
+        return sakslisteId.equals(that.sakslisteId) && abacAttributter().equals(that.abacAttributter());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(sakslisteId);
+    }
+
 }
