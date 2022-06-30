@@ -3,6 +3,7 @@ package no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fptilbake.håndter
 import static no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fptilbake.håndterere.OppgaveUtil.oppgaveFra;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,6 +32,7 @@ public class OpprettOppgaveTransisjon implements FptilbakeOppgavetransisjonHånd
     public OpprettOppgaveTransisjon() {
     }
 
+    @Inject
     public OpprettOppgaveTransisjon(KøStatistikkTjeneste køStatistikkTjeneste,
                                     OppgaveTjeneste oppgaveTjeneste) {
         this.køStatistikkTjeneste = køStatistikkTjeneste;

@@ -4,6 +4,7 @@ import static no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fptilbake.h�
 import static no.nav.foreldrepenger.los.oppgave.AndreKriterierType.TIL_BESLUTTER;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,6 +29,7 @@ public class TilBeslutterOppgaveTransisjon implements FptilbakeOppgavetransisjon
     public TilBeslutterOppgaveTransisjon() {
     }
 
+    @Inject
     public TilBeslutterOppgaveTransisjon(KøStatistikkTjeneste køStatistikk,
                                          OppgaveTjeneste oppgaveTjeneste) {
         this.køStatistikk = køStatistikk;

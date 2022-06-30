@@ -16,6 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 
 import static no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fptilbake.FptilbakeOppgavehendelseHåndterer.*;
 import static no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fptilbake.håndterere.OppgaveUtil.oppgaveFra;
@@ -32,6 +33,7 @@ public class EndreEnhetTransisjon implements FptilbakeOppgavetransisjonHåndtere
     public EndreEnhetTransisjon() {
     }
 
+    @Inject
     public EndreEnhetTransisjon(KøStatistikkTjeneste køStatistikkTjeneste,
                                 OppgaveTjeneste oppgaveTjeneste) {
         this.køStatistikkTjeneste = køStatistikkTjeneste;

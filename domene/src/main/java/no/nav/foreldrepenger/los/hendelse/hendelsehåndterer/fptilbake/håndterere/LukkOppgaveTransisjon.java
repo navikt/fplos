@@ -13,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 
 import static no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fptilbake.FptilbakeOppgavetransisjonHåndterer.Oppgavetransisjon.LUKK_OPPGAVE;
 
@@ -28,6 +29,7 @@ public class LukkOppgaveTransisjon implements FptilbakeOppgavetransisjonHåndter
     public LukkOppgaveTransisjon() {
     }
 
+    @Inject
     public LukkOppgaveTransisjon(KøStatistikkTjeneste køStatistikk, OppgaveTjeneste oppgaveTjeneste) {
         this.køStatistikk = køStatistikk;
         this.oppgaveTjeneste = oppgaveTjeneste;

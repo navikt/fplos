@@ -3,6 +3,7 @@ package no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fptilbake.håndter
 import static no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fptilbake.håndterere.OppgaveUtil.oppgaveFra;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fptilbake.FptilbakeOppgaveEgenskapFinner;
 
@@ -31,6 +32,7 @@ public class ReturFraBeslutterOppgaveTransisjon implements FptilbakeOppgavetrans
     public ReturFraBeslutterOppgaveTransisjon() {
     }
 
+    @Inject
     public ReturFraBeslutterOppgaveTransisjon(OppgaveTjeneste oppgaveTjeneste,
                                               KøStatistikkTjeneste køStatistikk,
                                               ReservasjonTjeneste reservasjonTjeneste) {
