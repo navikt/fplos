@@ -15,7 +15,7 @@ import org.slf4j.LoggerFactory;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import static no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fptilbake.FptilbakeOppgavetransisjonHåndterer.Oppgavetransisjon.LUKK_OPPGAVE;
+import static no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fptilbake.FptilbakeOppgavetransisjonHåndterer.Oppgavetransisjon.SETT_PÅ_VENT;
 
 @ApplicationScoped
 public class ManueltVentOppgaveTransisjon implements FptilbakeOppgavetransisjonHåndterer {
@@ -37,7 +37,7 @@ public class ManueltVentOppgaveTransisjon implements FptilbakeOppgavetransisjonH
 
     @Override
     public Oppgavetransisjon kanHåndtere() {
-        return LUKK_OPPGAVE;
+        return SETT_PÅ_VENT;
     }
 
     @Override
