@@ -73,6 +73,7 @@ const EndreSakslisterPanel: FunctionComponent<OwnProps & WrappedComponentProps> 
       {valgtSakId && valgtSaksliste && (
         <>
           <UtvalgskriterierForSakslisteForm
+            key={valgtSaksliste.sakslisteId}
             valgtSaksliste={valgtSaksliste}
             valgtAvdelingEnhet={valgtAvdelingEnhet}
             hentAvdelingensSakslister={hentAvdelingensSakslister}
