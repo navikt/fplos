@@ -32,7 +32,7 @@ describe('<SaksbehandlereForSakslisteForm>', () => {
     expect(screen.getAllByRole('checkbox')[0]).not.toBeChecked();
     expect(screen.getAllByRole('checkbox')[1]).toBeChecked();
 
-    userEvent.click(screen.getAllByRole('checkbox')[0]);
+    await userEvent.click(screen.getAllByRole('checkbox')[0]);
 
     await waitFor(() => expect(hentAvdelingensSakslister).toHaveBeenCalledTimes(1));
     expect(hentAvdelingensSakslister).toHaveBeenNthCalledWith(1, { avdelingEnhet: 'NAV Viken' });

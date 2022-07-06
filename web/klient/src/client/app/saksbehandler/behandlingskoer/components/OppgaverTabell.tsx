@@ -1,7 +1,7 @@
 import React, {
   useState, useRef, FunctionComponent, useCallback, useMemo, useEffect,
 } from 'react';
-import { FormattedMessage, injectIntl, WrappedComponentProps } from 'react-intl';
+import { FormattedMessage, useIntl } from 'react-intl';
 import { Normaltekst, Element } from 'nav-frontend-typografi';
 import NavFrontendChevron from 'nav-frontend-chevron';
 
@@ -66,13 +66,14 @@ interface OwnProps {
 /**
  * OppgaverTabell
  */
-export const OppgaverTabell: FunctionComponent<OwnProps & WrappedComponentProps> = ({
-  intl,
+const OppgaverTabell: FunctionComponent<OwnProps> = ({
   reserverOppgave,
   antallOppgaver = 0,
   valgtSakslisteId,
   doPolling = true,
 }) => {
+  const intl = useIntl();
+
   const [showMenu, setShowMenu] = useState(false);
   const [valgtOppgaveId, setValgtOppgaveId] = useState<number>();
   const [offset, setOffset] = useState({
@@ -220,4 +221,4 @@ export const OppgaverTabell: FunctionComponent<OwnProps & WrappedComponentProps>
   );
 };
 
-export default injectIntl(OppgaverTabell);
+export default OppgaverTabell;

@@ -25,11 +25,11 @@ describe('<OppgaveHandlingerMenu>', () => {
 
     expect(await screen.findByText('Reservert til 02.08.2021 - 00:54')).toBeInTheDocument();
 
-    userEvent.click(screen.getAllByRole('button')[0]);
+    await userEvent.click(screen.getAllByRole('button')[0]);
 
     expect(await screen.findByText('Når en reservert sak frigjøres er begrunnelse obligatorisk')).toBeInTheDocument();
 
-    userEvent.click(screen.getByText('Avbryt'));
+    await userEvent.click(screen.getByText('Avbryt'));
 
     await waitFor(() => expect(screen.queryByText('Når en reservert sak frigjøres er begrunnelse obligatorisk')).not.toBeInTheDocument());
   });
@@ -39,7 +39,7 @@ describe('<OppgaveHandlingerMenu>', () => {
 
     expect(await screen.findByText('Reservert til 02.08.2021 - 00:54')).toBeInTheDocument();
 
-    userEvent.click(screen.getAllByRole('button')[1]);
+    await userEvent.click(screen.getAllByRole('button')[1]);
 
     expect(await screen.findByText('Behandlingen er reservert på deg')).toBeInTheDocument();
   });
@@ -49,7 +49,7 @@ describe('<OppgaveHandlingerMenu>', () => {
 
     expect(await screen.findByText('Reservert til 02.08.2021 - 00:54')).toBeInTheDocument();
 
-    userEvent.click(screen.getAllByRole('button')[2]);
+    await userEvent.click(screen.getAllByRole('button')[2]);
 
     expect(await screen.findByText('Velg dato som reservasjonen avsluttes')).toBeInTheDocument();
   });
@@ -59,11 +59,11 @@ describe('<OppgaveHandlingerMenu>', () => {
 
     expect(await screen.findByText('Reservert til 02.08.2021 - 00:54')).toBeInTheDocument();
 
-    userEvent.click(screen.getAllByRole('button')[3]);
+    await userEvent.click(screen.getAllByRole('button')[3]);
 
     expect(await screen.findByText('Flytt reservasjonen til annen saksbehandler')).toBeInTheDocument();
 
-    userEvent.click(screen.getByText('Avbryt'));
+    await userEvent.click(screen.getByText('Avbryt'));
 
     await waitFor(() => expect(screen.queryByText('Flytt reservasjonen til annen saksbehandler')).not.toBeInTheDocument());
   });

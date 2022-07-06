@@ -18,7 +18,7 @@ describe('<MenuButton>', () => {
 
     expect(await screen.findByText('test')).toBeInTheDocument();
 
-    userEvent.click(screen.getByRole('button'));
+    await userEvent.click(screen.getByRole('button'));
 
     await waitFor(() => expect(onClick).toHaveBeenCalledTimes(1));
   });

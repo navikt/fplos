@@ -6,7 +6,7 @@ import Home from './Home';
 
 describe('<MissingPage>', () => {
   it('skal vise laste-side når ingen rute er valgt', async () => {
-    render(
+    await render(
       <MemoryRouter>
         <Home headerHeight={1} />
       </MemoryRouter>,

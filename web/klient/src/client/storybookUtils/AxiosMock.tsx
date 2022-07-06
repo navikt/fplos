@@ -1,19 +1,21 @@
-import { FunctionComponent, useEffect } from 'react';
+import React, { FunctionComponent, useEffect, useState } from 'react';
 import MockAdapter from 'axios-mock-adapter';
 import { requestApi } from 'data/fplosRestApi';
+import { LoadingPanel } from '@navikt/ft-ui-komponenter';
 
 interface Props {
-    children: any;
-    data: {
-      key: string;
-      data: any,
-    }[];
+  children: any;
+  data: {
+    key: string;
+    data: any,
+  }[];
 }
 
-const apiMock = new MockAdapter(requestApi.getAxios());
-
 const AxiosMock: FunctionComponent<Props> = ({ children, data }) => {
+  const [showChildren, setShowChildren] = useState(false);
+
   useEffect(() => {
+    const apiMock = new MockAdapter(requestApi.getAxios());
     data.forEach((d) => {
       if (requestApi.getRestType(d.key) === 'GET') {
         apiMock.onGet(requestApi.getUrl(d.key)).reply(200, d.data);
@@ -24,11 +26,14 @@ const AxiosMock: FunctionComponent<Props> = ({ children, data }) => {
       }
     });
 
+    setShowChildren(true);
+
     return () => {
-      apiMock.reset();
+      apiMock.restore();
     };
-  });
-  return children;
+  }, []);
+
+  return showChildren ? children : <LoadingPanel />;
 };
 
 export default AxiosMock;

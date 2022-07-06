@@ -47,7 +47,7 @@ const AppIndex: FunctionComponent = () => {
     }
   }, [navAnsatt?.funksjonellTid]);
 
-  const setSiteHeight = useCallback((newHeaderHeight): void => {
+  const setSiteHeight = useCallback((newHeaderHeight: number): void => {
     document.documentElement.setAttribute('style', `height: calc(100% - ${newHeaderHeight}px)`);
     setHeaderHeight(newHeaderHeight);
   }, []);

@@ -18,11 +18,11 @@ describe('<OppgaveReservasjonEndringDatoModal>', () => {
     expect(await screen.findByText('Velg dato som reservasjonen avsluttes')).toBeInTheDocument();
 
     const datoInput = screen.getByRole('textbox');
-    userEvent.type(datoInput, dayjs().format('DD.MM.YYYY'));
+    await userEvent.type(datoInput, dayjs().format('DD.MM.YYYY'));
     fireEvent.blur(datoInput);
 
     expect(await screen.findByText('OK')).toBeInTheDocument();
-    userEvent.click(screen.getByText('OK'));
+    await userEvent.click(screen.getByText('OK'));
 
     await waitFor(() => expect(endreReserverasjonState).toHaveBeenCalledTimes(1));
     expect(endreReserverasjonState).toHaveBeenNthCalledWith(1);

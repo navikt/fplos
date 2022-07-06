@@ -36,7 +36,7 @@ describe('<HeaderWithErrorPanel>', () => {
     expect(await screen.findByText('Svangerskap, fødsel og adopsjon')).toBeInTheDocument();
     expect(screen.getByText('Dette er en feilmelding')).toBeInTheDocument();
 
-    userEvent.click(screen.getAllByRole('button')[1]);
+    await userEvent.click(screen.getAllByRole('button')[1]);
 
     await waitFor(() => expect(screen.queryByText('Dette er en feilmelding')).not.toBeInTheDocument());
   });

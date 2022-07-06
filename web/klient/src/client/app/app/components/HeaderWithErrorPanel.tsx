@@ -37,7 +37,7 @@ const useOutsideClickEvent = (
   setAvdelingerPanelApent: (erApent: boolean) => void,
 ) => {
   const wrapperRef = useRef<HTMLDivElement>(null);
-  const handleClickOutside = useCallback((event) => {
+  const handleClickOutside = useCallback((event: any) => {
     if (wrapperRef.current && !wrapperRef.current.contains(event.target)) {
       setLenkePanelApent(false);
       setAvdelingerPanelApent(false);
@@ -120,6 +120,7 @@ const HeaderWithErrorPanel: FunctionComponent<OwnProps & WrappedComponentProps> 
   return (
     <header ref={fixedHeaderRef} className={styles.container}>
       <div ref={wrapperRef}>
+        {/* @ts-ignore Ta vekk når type i Header er fiksa */}
         <Header
           title={intl.formatMessage({ id: 'Header.Foreldrepenger' })}
           titleHref={BASE_PATH}

@@ -1,5 +1,5 @@
 import React from 'react';
-import { render } from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
 import { init } from '@sentry/browser';
 
@@ -17,11 +17,12 @@ polyfill().then(() => {
   });
 
   const renderFunc = () => {
-    const app = document.getElementById('app');
-    if (app === null) {
+    const container = document.getElementById('app');
+    if (container === null) {
       throw new Error('No app element');
     }
-    render(
+    const root = createRoot(container);
+    root.render(
       <BrowserRouter basename="/fplos/">
         <RestApiProvider>
           <RestApiErrorProvider>
@@ -29,7 +30,6 @@ polyfill().then(() => {
           </RestApiErrorProvider>
         </RestApiProvider>
       </BrowserRouter>,
-      app,
     );
   };
 

@@ -19,9 +19,9 @@ describe('<SearchForm>', () => {
     expect(screen.getByText('Saksnummer eller fødselsnummer/D-nummer')).toBeInTheDocument();
 
     const saksnrEllerFødselsnrInput = utils.getByLabelText('Saksnummer eller fødselsnummer/D-nummer');
-    userEvent.type(saksnrEllerFødselsnrInput, 'Dette er ikke et gyldig nr');
+    await userEvent.type(saksnrEllerFødselsnrInput, 'Dette er ikke et gyldig nr');
 
-    userEvent.click(screen.getAllByRole('button')[0]);
+    await userEvent.click(screen.getAllByRole('button')[0]);
 
     expect(await screen.findByText('Ugyldig saksnummer eller fødselsnummer')).toBeInTheDocument();
 
@@ -39,9 +39,9 @@ describe('<SearchForm>', () => {
     expect(screen.getByText('Saksnummer eller fødselsnummer/D-nummer')).toBeInTheDocument();
 
     const saksnrEllerFødselsnrInput = utils.getByLabelText('Saksnummer eller fødselsnummer/D-nummer');
-    userEvent.type(saksnrEllerFødselsnrInput, '07078518434');
+    await userEvent.type(saksnrEllerFødselsnrInput, '07078518434');
 
-    userEvent.click(screen.getAllByRole('button')[0]);
+    await userEvent.click(screen.getAllByRole('button')[0]);
 
     await waitFor(() => expect(screen.queryByText('Ugyldig saksnummer eller fødselsnummer')).not.toBeInTheDocument());
 
@@ -58,13 +58,13 @@ describe('<SearchForm>', () => {
 
     expect(await screen.findByText('Søk på sak eller person')).toBeInTheDocument();
 
-    userEvent.click(screen.getByText('Reserver behandlingen ved søk'));
+    await userEvent.click(screen.getByText('Reserver behandlingen ved søk'));
 
     expect(await screen.findByText('Saksnummer eller fødselsnummer/D-nummer')).toBeInTheDocument();
     const saksnrEllerFødselsnrInput = utils.getByLabelText('Saksnummer eller fødselsnummer/D-nummer');
-    userEvent.type(saksnrEllerFødselsnrInput, '07078518434');
+    await userEvent.type(saksnrEllerFødselsnrInput, '07078518434');
 
-    userEvent.click(screen.getAllByRole('button')[0]);
+    await userEvent.click(screen.getAllByRole('button')[0]);
 
     await waitFor(() => expect(screen.queryByText('Ugyldig saksnummer eller fødselsnummer')).not.toBeInTheDocument());
 

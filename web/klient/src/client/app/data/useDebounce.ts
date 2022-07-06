@@ -3,6 +3,8 @@ import debounce from 'lodash.debounce';
 import { UseFormTrigger } from 'react-hook-form';
 import { formHooks } from '@navikt/ft-form-hooks';
 
+export const getTimeoutValue = () => (process.env.NODE_ENV === 'test' ? 0 : 1000);
+
 const useDebounce = <Value, >(
   feltNavn: string,
   funksjon: (verdier: Value) => void,
@@ -13,7 +15,7 @@ const useDebounce = <Value, >(
 
   const lagre = useCallback(debounce((verdi: Value) => {
     validationTrigger(feltNavn).then((isValid) => isValid && funksjon(verdi));
-  }, 1000), [funksjon]);
+  }, getTimeoutValue()), [funksjon]);
 
   useEffect(() => () => lagre.cancel(), []);
 

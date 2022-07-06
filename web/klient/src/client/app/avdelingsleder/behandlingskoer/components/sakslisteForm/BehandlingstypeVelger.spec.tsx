@@ -19,7 +19,7 @@ describe('<BehandlingstypeVelger>', () => {
     expect(await screen.findByText('Behandlingstype')).toBeInTheDocument();
     expect(getByLabelText('Klage')).not.toBeChecked();
 
-    userEvent.click(screen.getByText('Klage'));
+    await userEvent.click(screen.getByText('Klage'));
 
     await waitFor(() => expect(getByLabelText('Klage')).toBeChecked());
   });

@@ -42,7 +42,7 @@ describe('<OppgaveErReservertAvAnnenModal>', () => {
       'Espen Utvikler (E232323) arbeider nå med denne behandlingen (reservert fram t.o.m 01.01.2020 - 00:00)',
     )).toBeInTheDocument();
 
-    userEvent.click(screen.getByText('OK'));
+    await userEvent.click(screen.getByText('OK'));
 
     await waitFor(() => expect(lukkErReservertModalOgOpneOppgave).toHaveBeenCalledTimes(1));
     expect(lukkErReservertModalOgOpneOppgave).toHaveBeenNthCalledWith(1, oppgaveForResevertAvAnnenModal);

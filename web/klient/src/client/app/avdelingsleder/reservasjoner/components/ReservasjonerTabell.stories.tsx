@@ -39,7 +39,7 @@ export const VisTabellMedReservasjoner = () => {
     behandlingType: behandlingType.KLAGE,
   }]);
 
-  const opphevReservasjon = useCallback((oppgaveId) => {
+  const opphevReservasjon = useCallback((oppgaveId: number) => {
     fjernReservasjon((oldState) => oldState.filter((s) => s.oppgaveId !== oppgaveId));
   }, []);
 

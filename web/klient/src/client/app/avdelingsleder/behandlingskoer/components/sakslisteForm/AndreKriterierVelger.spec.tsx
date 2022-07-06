@@ -19,12 +19,12 @@ describe('<AndreKriterierVelger>', () => {
     const { getAllByLabelText } = render(<Default />);
     expect(await screen.findByText('Registrer papirsøknad')).toBeInTheDocument();
 
-    userEvent.click(screen.getByText('Registrer papirsøknad'));
+    await userEvent.click(screen.getByText('Registrer papirsøknad'));
 
     expect(getAllByLabelText('Ta med i køen')[1]).not.toBeChecked();
     expect(getAllByLabelText('Fjern fra køen')[1]).not.toBeChecked();
 
-    userEvent.click(getAllByLabelText('Fjern fra køen')[1]);
+    await userEvent.click(getAllByLabelText('Fjern fra køen')[1]);
 
     await waitFor(() => expect(getAllByLabelText('Fjern fra køen')[1]).toBeChecked());
     expect(getAllByLabelText('Ta med i køen')[1]).not.toBeChecked();

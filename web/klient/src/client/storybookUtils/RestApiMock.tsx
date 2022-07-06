@@ -1,4 +1,4 @@
-import React, { FunctionComponent } from 'react';
+import React, { FunctionComponent, useMemo } from 'react';
 import { RestApiGlobalStatePathsKeys } from 'data/fplosRestApi';
 import AxiosMock from './AxiosMock';
 import RestApiGlobalStateMock from './RestApiGlobalStateMock';
@@ -15,17 +15,20 @@ const RestApiMock: FunctionComponent<Props> = ({
   children,
   data,
 }) => {
-  const dataMedGlobalMarkør = data.map((d) => {
+  const dataMedGlobalMarkør = useMemo(() => data.map((d) => {
     const erGlobalData = Object.values(RestApiGlobalStatePathsKeys).some((key) => key.name === d.key);
     return {
       ...d,
       erGlobalData,
     };
-  });
+  }), [data]);
+
+  const globalData = useMemo(() => dataMedGlobalMarkør.filter((d) => d.erGlobalData), [dataMedGlobalMarkør]);
+  const axiosData = useMemo(() => dataMedGlobalMarkør.filter((d) => !d.erGlobalData), [dataMedGlobalMarkør]);
 
   return (
-    <RestApiGlobalStateMock data={dataMedGlobalMarkør.filter((d) => d.erGlobalData)}>
-      <AxiosMock data={dataMedGlobalMarkør}>
+    <RestApiGlobalStateMock data={globalData}>
+      <AxiosMock data={axiosData}>
         {children}
       </AxiosMock>
     </RestApiGlobalStateMock>

@@ -1,5 +1,5 @@
 import React, { FunctionComponent, useCallback } from 'react';
-import { injectIntl, WrappedComponentProps, FormattedMessage } from 'react-intl';
+import { FormattedMessage, useIntl } from 'react-intl';
 import { useForm } from 'react-hook-form';
 import { Hovedknapp, Knapp } from 'nav-frontend-knapper';
 import { Undertittel } from 'nav-frontend-typografi';
@@ -33,14 +33,14 @@ type OwnProps = Readonly<{
  *
  * Presentasjonskomponent. Modal som lar en begrunne hvorfor en sak skal frigjøres.
  */
-const OpphevReservasjonModal: FunctionComponent<OwnProps & WrappedComponentProps> = ({
-  intl,
+const OpphevReservasjonModal: FunctionComponent<OwnProps> = ({
   showModal,
   cancel,
   oppgave,
   toggleMenu,
   hentReserverteOppgaver,
 }) => {
+  const intl = useIntl();
   const { startRequest: opphevOppgavereservasjon } = restApiHooks.useRestApiRunner(RestApiPathsKeys.OPPHEV_OPPGAVERESERVASJON);
 
   const opphevReservasjonFn = useCallback((begrunnelse: string) => opphevOppgavereservasjon({ oppgaveId: oppgave.id, begrunnelse })
@@ -89,4 +89,4 @@ const OpphevReservasjonModal: FunctionComponent<OwnProps & WrappedComponentProps
   );
 };
 
-export default injectIntl(OpphevReservasjonModal);
+export default OpphevReservasjonModal;

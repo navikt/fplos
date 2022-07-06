@@ -13,5 +13,7 @@ export const Default = () => (
     isOpen
     closeButton
     onRequestClose={() => undefined}
-  />
+  >
+    <div>test</div>
+  </Modal>
 );

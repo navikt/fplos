@@ -12,7 +12,7 @@ describe('<SletteSaksbehandlerModal>', () => {
     render(<Default fjernSaksbehandler={fjernSaksbehandler} />);
     expect(await screen.findByText('Ønsker du å slette Espen Utvikler?')).toBeInTheDocument();
 
-    userEvent.click(screen.getByText('Ja'));
+    await userEvent.click(screen.getByText('Ja'));
 
     await waitFor(() => expect(fjernSaksbehandler).toHaveBeenCalledTimes(1));
   });
