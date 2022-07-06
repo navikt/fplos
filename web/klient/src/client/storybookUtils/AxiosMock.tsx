@@ -29,7 +29,7 @@ const AxiosMock: FunctionComponent<Props> = ({ children, data }) => {
     setShowChildren(true);
 
     return () => {
-      apiMock.reset();
+      apiMock.restore();
     };
   }, []);
 

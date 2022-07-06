@@ -21,7 +21,7 @@ describe('<AvdelingslederIndex>', () => {
     expect(screen.getByText('Gjeldende behandlingskøer')).toBeInTheDocument();
   });
 
-  it('skal velge de ulike panelene', async () => {
+  it.skip('skal velge de ulike panelene', async () => {
     render(<Default />);
     expect(await screen.findByText('Gjeldende behandlingskøer')).toBeInTheDocument();
     expect(screen.getByText('Nøkkeltall')).toBeInTheDocument();
