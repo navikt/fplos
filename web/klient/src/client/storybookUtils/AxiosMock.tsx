@@ -32,6 +32,7 @@ const AxiosMock: FunctionComponent<Props> = ({ children, data }) => {
       apiMock.reset();
     };
   }, []);
+
   return showChildren ? children : <LoadingPanel />;
 };
 

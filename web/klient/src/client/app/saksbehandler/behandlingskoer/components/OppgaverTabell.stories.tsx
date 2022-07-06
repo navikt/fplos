@@ -30,7 +30,6 @@ const Template: Story<{ oppgaverTilBehandling?: Oppgave[], reserverteOppgaver?: 
     { key: RestApiPathsKeys.RESERVERTE_OPPGAVER.name, data: reserverteOppgaver },
     { key: RestApiPathsKeys.OPPGAVER_TIL_BEHANDLING.name, data: oppgaverTilBehandling },
   ];
-
   return (
     <RestApiMock data={data}>
       <OppgaverTabell

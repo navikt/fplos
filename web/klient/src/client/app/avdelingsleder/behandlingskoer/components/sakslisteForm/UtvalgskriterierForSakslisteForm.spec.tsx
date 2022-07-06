@@ -26,7 +26,7 @@ describe('<UtvalgskriterierForSakslisteForm>', () => {
 
     const navnInput = getByLabelText('Navn');
     await userEvent.type(navnInput, '{Backspace}{Backspace}{Backspace}');
-    fireEvent.blur(navnInput);
+    await fireEvent.blur(navnInput);
 
     expect(await screen.findByText('Du må skrive minst 3 tegn')).toBeInTheDocument();
   });
