@@ -23,6 +23,7 @@ module.exports = {
         "^testHelpers(.*)$": "<rootDir>/src/client/testHelpers$1",
         "^storybookUtils(.*)$": "<rootDir>/src/client/storybookUtils$1",
       },
+      resolver: './jest.resolver.js',
       roots: [
         '<rootDir>/src/client/',
       ],

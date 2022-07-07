@@ -24,11 +24,10 @@ const RestApiMock: FunctionComponent<Props> = ({
   }), [data]);
 
   const globalData = useMemo(() => dataMedGlobalMarkør.filter((d) => d.erGlobalData), [dataMedGlobalMarkør]);
-  const axiosData = useMemo(() => dataMedGlobalMarkør.filter((d) => !d.erGlobalData), [dataMedGlobalMarkør]);
 
   return (
     <RestApiGlobalStateMock data={globalData}>
-      <AxiosMock data={axiosData}>
+      <AxiosMock data={data}>
         {children}
       </AxiosMock>
     </RestApiGlobalStateMock>

@@ -7,13 +7,13 @@ const { Default, IngenBehandlinger } = composeStories(stories);
 
 describe('<SistBehandledeSaker>', () => {
   it('skal vise sist behandlede saker', async () => {
-    await render(<Default />);
+    render(<Default />);
     expect(await screen.findByText('Siste behandlinger')).toBeInTheDocument();
     expect(await screen.findByText('Espen Utvikler 334342323')).toBeInTheDocument();
   });
 
   it('skal vise ingen behandlinger', async () => {
-    await render(<IngenBehandlinger />);
+    render(<IngenBehandlinger />);
     expect(await screen.findByText('Siste behandlinger')).toBeInTheDocument();
     expect(screen.getByText('Ingen behandlinger')).toBeInTheDocument();
   });

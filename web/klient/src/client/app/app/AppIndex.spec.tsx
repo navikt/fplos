@@ -1,4 +1,3 @@
-/*
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
@@ -23,12 +22,5 @@ describe('<AppIndex>', () => {
     );
 
     expect(await screen.findByText('Det finnes ingen sak med denne referansen: 266')).toBeInTheDocument();
-  });
-});
-*/
-
-describe('<AppIndex>', () => {
-  it('test', () => {
-    expect(true).toBeTruthy();
   });
 });

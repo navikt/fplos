@@ -32,7 +32,7 @@ describe('<SakslisteVelgerForm>', () => {
     expect(screen.getByText(/Gjeldende intervall:/i)).toBeInTheDocument();
   });
 
-  it.skip('skal vise dropdown med to saksliste og så bytte valgt liste', async () => {
+  it('skal vise dropdown med to saksliste og så bytte valgt liste', async () => {
     const { getByLabelText, getByText } = render(<MedToSakslister />);
 
     expect(await screen.findByText('Utvalgskriterier')).toBeInTheDocument();
@@ -50,7 +50,7 @@ describe('<SakslisteVelgerForm>', () => {
     expect((getByText('Saksliste 1') as HTMLOptionElement).selected).toBeFalsy();
     expect((getByText('Saksliste 2') as HTMLOptionElement).selected).toBeTruthy();
 
-    expect(screen.findByText('Svangerskapspenger')).toBeInTheDocument();
+    expect(screen.getByText('Svangerskapspenger')).toBeInTheDocument();
 
     expect(screen.getByText('Behandlingstype')).toBeInTheDocument();
     expect(screen.getByText('Førstegangsbehandling')).toBeInTheDocument();
