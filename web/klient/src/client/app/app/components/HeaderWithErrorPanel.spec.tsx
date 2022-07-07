@@ -1,4 +1,3 @@
-/*
 import React from 'react';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
@@ -14,7 +13,7 @@ describe('<HeaderWithErrorPanel>', () => {
     render(<HeaderUtenAvdelingsvelger />);
 
     expect(await screen.findByText('Svangerskap, fødsel og adopsjon')).toBeInTheDocument();
-    expect(screen.getByText('Espen Utvikler')).toBeInTheDocument();
+    expect(await screen.findByText('Espen Utvikler')).toBeInTheDocument();
 
     expect(await screen.findByText('Rettskildene')).toBeInTheDocument();
     expect(screen.getByText('Systemrutine')).toBeInTheDocument();
@@ -24,7 +23,7 @@ describe('<HeaderWithErrorPanel>', () => {
     render(<HeaderMedAvdelingsvelger />);
 
     expect(await screen.findByText('Svangerskap, fødsel og adopsjon')).toBeInTheDocument();
-    expect(screen.getByText('Espen Utvikler')).toBeInTheDocument();
+    expect(await screen.findByText('Espen Utvikler')).toBeInTheDocument();
 
     expect(await screen.findAllByText('VIK NAV Viken')).toHaveLength(2);
     expect(screen.getByText('OSL NAV Oslo')).toBeInTheDocument();
@@ -57,12 +56,5 @@ describe('<HeaderWithErrorPanel>', () => {
     expect(await screen.findByText('Svangerskap, fødsel og adopsjon')).toBeInTheDocument();
     expect(screen.getByText('Dette er driftsmelding 1')).toBeInTheDocument();
     expect(screen.getByText('Dette er driftsmelding 2')).toBeInTheDocument();
-  });
-});
-*/
-
-describe('<HeaderWithErrorPanel>', () => {
-  it('test', () => {
-    expect(true).toBeTruthy();
   });
 });
