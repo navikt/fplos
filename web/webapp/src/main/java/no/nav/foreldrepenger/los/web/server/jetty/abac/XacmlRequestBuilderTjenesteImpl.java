@@ -15,20 +15,27 @@ import javax.enterprise.inject.Alternative;
 
 import no.nav.vedtak.sikkerhet.abac.PdpRequest;
 import no.nav.vedtak.sikkerhet.pdp.XacmlRequestBuilderTjeneste;
-import no.nav.vedtak.sikkerhet.pdp.xacml.XacmlAttributeSet;
+import no.nav.vedtak.sikkerhet.pdp2.xacml.XacmlAttributeSet;
 import no.nav.vedtak.sikkerhet.pdp.xacml.XacmlRequestBuilder;
+import no.nav.vedtak.sikkerhet.pdp2.xacml.XacmlRequestBuilder2;
+import no.nav.vedtak.sikkerhet.pdp2.XacmlRequestBuilder2Tjeneste;
 
 @Dependent
 @Alternative
 @Priority(2)
-public class XacmlRequestBuilderTjenesteImpl implements XacmlRequestBuilderTjeneste {
+public class XacmlRequestBuilderTjenesteImpl implements XacmlRequestBuilderTjeneste, XacmlRequestBuilder2Tjeneste {
 
     public XacmlRequestBuilderTjenesteImpl() {
     }
 
     @Override
     public XacmlRequestBuilder lagXacmlRequestBuilder(PdpRequest pdpRequest) {
-        var xacmlBuilder = new XacmlRequestBuilder();
+        return new XacmlRequestBuilder();
+    }
+
+    @Override
+    public XacmlRequestBuilder2 lagXacmlRequestBuilder2(PdpRequest pdpRequest) {
+        var xacmlBuilder = new XacmlRequestBuilder2();
 
         var actionAttributeSet = new XacmlAttributeSet();
         actionAttributeSet.addAttribute(XACML10_ACTION_ACTION_ID, pdpRequest.getString(XACML10_ACTION_ACTION_ID));
@@ -47,7 +54,7 @@ public class XacmlRequestBuilderTjenesteImpl implements XacmlRequestBuilderTjene
         return xacmlBuilder;
     }
 
-    private void populerResources(XacmlRequestBuilder xacmlBuilder, PdpRequest pdpRequest, String aktørId) {
+    private void populerResources(XacmlRequestBuilder2 xacmlBuilder, PdpRequest pdpRequest, String aktørId) {
         var aksjonspunktTyper = pdpRequest.getListOfString(RESOURCE_FORELDREPENGER_SAK_AKSJONSPUNKT_TYPE);
         if (aksjonspunktTyper.isEmpty()) {
             xacmlBuilder.addResourceAttributeSet(byggRessursAttributter(pdpRequest, aktørId, null));
