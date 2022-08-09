@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,7 +49,7 @@ public class OppgaveDtoTjeneste {
                               ReservasjonTjeneste reservasjonTjeneste,
                               PersonTjeneste personTjeneste,
                               OppgaveStatusDtoTjeneste oppgaveStatusDtoTjeneste,
-                              PdpKlient pdpKlient,
+                              @Named("pdp2") PdpKlient pdpKlient,
                               PdpRequestBuilder pdpRequestBuilder,
                               OppgaveKøTjeneste oppgaveKøTjeneste) {
         this.oppgaveTjeneste = oppgaveTjeneste;
