@@ -49,7 +49,7 @@ class GjenåpneOppgaveHendelseHåndtererTest {
     private GjenåpneOppgaveOppgavetransisjonHåndterer gjenåpneOppgaveHåndterer;
 
     @BeforeEach
-    private void setUp(EntityManager entityManager) {
+    void setUp(EntityManager entityManager) {
         this.entityManager = entityManager;
         oppgaveRepository = new OppgaveRepository(entityManager);
         oppgaveEgenskapHåndterer = new OppgaveEgenskapHåndterer(oppgaveRepository);

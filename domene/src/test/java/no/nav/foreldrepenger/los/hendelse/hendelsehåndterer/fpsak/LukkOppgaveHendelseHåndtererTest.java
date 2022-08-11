@@ -37,7 +37,7 @@ class LukkOppgaveHendelseHåndtererTest {
     private LukkOppgaveOppgavetransisjonHåndterer lukkOppgave;
 
     @BeforeEach
-    private void setUp(EntityManager entityManager) {
+    void setUp(EntityManager entityManager) {
         this.entityManager = entityManager;
         oppgaveTjeneste = new OppgaveTjeneste(new OppgaveRepository(entityManager), reservasjonTjeneste);
         lukkOppgave = new LukkOppgaveOppgavetransisjonHåndterer(oppgaveTjeneste, køStatistikk);

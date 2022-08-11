@@ -35,7 +35,7 @@ class GenerellOpprettOppgaveHendelseHåndtererTest {
     private GenerellOpprettOppgaveOppgavetransisjonHåndterer opprettOppgaveHåndterer;
 
     @BeforeEach
-    private void setUp(EntityManager entityManager) {
+    void setUp(EntityManager entityManager) {
         this.entityManager = entityManager;
         var oppgaveRepository = new OppgaveRepository(entityManager);
         oppgaveTjeneste = new OppgaveTjeneste(oppgaveRepository, mock(ReservasjonTjeneste.class));
