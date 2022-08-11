@@ -50,7 +50,7 @@ class OppdaterOppgaveHendelseHåndtererTest {
     private KøStatistikkTjeneste køStatistikkTjeneste;
 
     @BeforeEach
-    private void setUp(EntityManager entityManager) {
+    void setUp(EntityManager entityManager) {
         this.entityManager = entityManager;
         var oppgaveRepository = new OppgaveRepository(entityManager);
         reservasjonTjeneste = new ReservasjonTjeneste(oppgaveRepository, new ReservasjonRepository(entityManager));

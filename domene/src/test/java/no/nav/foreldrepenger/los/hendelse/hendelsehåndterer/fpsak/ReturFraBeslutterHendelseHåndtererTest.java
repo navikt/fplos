@@ -43,7 +43,7 @@ class ReturFraBeslutterHendelseHåndtererTest {
     private ReturFraBeslutterOppgavetransisjonHåndterer returFraBeslutterHåndterer;
 
     @BeforeEach
-    private void setUp(EntityManager entityManager) {
+    void setUp(EntityManager entityManager) {
         this.entityManager = entityManager;
         oppgaveRepository = new OppgaveRepository(entityManager);
         reservasjonTjeneste = new ReservasjonTjeneste(oppgaveRepository, new ReservasjonRepository(entityManager));
