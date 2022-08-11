@@ -1,5 +1,7 @@
 package no.nav.foreldrepenger.los.web.app.tjenester.felles.dto;
 
+import static no.nav.foreldrepenger.los.felles.util.OptionalUtil.tryOrEmpty;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -7,7 +9,6 @@ import java.util.stream.Collectors;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,8 +27,6 @@ import no.nav.vedtak.sikkerhet.abac.BeskyttetRessursActionAttributt;
 import no.nav.vedtak.sikkerhet.abac.PdpKlient;
 import no.nav.vedtak.sikkerhet.abac.PdpRequestBuilder;
 import no.nav.vedtak.sikkerhet.context.SubjectHandler;
-
-import static no.nav.foreldrepenger.los.felles.util.OptionalUtil.tryOrEmpty;
 
 @ApplicationScoped
 public class OppgaveDtoTjeneste {
@@ -49,7 +48,7 @@ public class OppgaveDtoTjeneste {
                               ReservasjonTjeneste reservasjonTjeneste,
                               PersonTjeneste personTjeneste,
                               OppgaveStatusDtoTjeneste oppgaveStatusDtoTjeneste,
-                              @Named("pdp2") PdpKlient pdpKlient,
+                              PdpKlient pdpKlient,
                               PdpRequestBuilder pdpRequestBuilder,
                               OppgaveKøTjeneste oppgaveKøTjeneste) {
         this.oppgaveTjeneste = oppgaveTjeneste;
