@@ -24,7 +24,7 @@
         <revision>2.8.2-SNAPSHOT</revision>
         <java.version>17</java.version>
 
-        <fp-kontrakter.version>6.1.23</fp-kontrakter.version>
+        <fp-kontrakter.version>6.1.25</fp-kontrakter.version>
         <felles.version>4.1.34</felles.version>
         <prosesstask.version>3.1.9</prosesstask.version>
     </properties>
