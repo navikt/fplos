@@ -105,14 +105,15 @@ public class OppgaveDtoTjeneste {
 
     private boolean harTilgang(Oppgave oppgave) {
         var token = Token.withOidcToken(SubjectHandler.getSubjectHandler().getOpenIDToken());
+        var dataAttributter = AbacDataAttributter.opprett().leggTil(FplosAbacAttributtType.OPPGAVE_ID, oppgave.getId());
         var brRequest = BeskyttetRessursAttributter.builder()
                 .medActionType(ActionType.READ)
                 .medUserId(SubjectHandler.getSubjectHandler().getUid())
                 .medToken(token)
                 .medResourceType(ResourceType.FAGSAK)
                 .medPepId(APPNAVN)
-                .medServicePath(OPPGAVER_BASE_PATH + OPPGAVER_STATUS_PATH);
-        var dataAttributter = AbacDataAttributter.opprett().leggTil(FplosAbacAttributtType.OPPGAVE_ID, oppgave.getId());
+                .medServicePath(OPPGAVER_BASE_PATH + OPPGAVER_STATUS_PATH)
+                .medDataAttributter(dataAttributter);
         var pdpRequest = pdpRequestBuilder.lagAppRessursData(dataAttributter);
         var tilgangsbeslutning = pdpKlient.forespørTilgang(brRequest.build(), pdpRequestBuilder.abacDomene(), pdpRequest);
         return tilgangsbeslutning.fikkTilgang();
