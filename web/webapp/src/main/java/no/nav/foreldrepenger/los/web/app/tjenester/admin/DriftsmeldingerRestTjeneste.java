@@ -1,8 +1,5 @@
 package no.nav.foreldrepenger.los.web.app.tjenester.admin;
 
-import static no.nav.vedtak.sikkerhet.abac.BeskyttetRessursActionAttributt.CREATE;
-import static no.nav.vedtak.sikkerhet.abac.BeskyttetRessursActionAttributt.READ;
-
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -23,10 +20,11 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import no.nav.foreldrepenger.los.admin.driftsmelding.Driftsmelding;
 import no.nav.foreldrepenger.los.admin.driftsmelding.DriftsmeldingTjeneste;
-import no.nav.foreldrepenger.los.web.app.AbacAttributter;
 import no.nav.foreldrepenger.los.web.app.tjenester.admin.dto.DriftsmeldingDto;
 import no.nav.foreldrepenger.los.web.app.tjenester.admin.dto.DriftsmeldingOpprettelseDto;
 import no.nav.vedtak.sikkerhet.abac.BeskyttetRessurs;
+import no.nav.vedtak.sikkerhet.abac.beskyttet.ActionType;
+import no.nav.vedtak.sikkerhet.abac.beskyttet.ResourceType;
 
 @Path("/driftsmeldinger")
 @Transactional
@@ -46,7 +44,7 @@ public class DriftsmeldingerRestTjeneste {
     @Produces(MediaType.APPLICATION_JSON)
     @Operation(description = "Driftsmeldinger", tags = "admin")
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
-    @BeskyttetRessurs(action = READ, resource = AbacAttributter.APPLIKASJON, sporingslogg = false)
+    @BeskyttetRessurs(actionType = ActionType.READ, resourceType = ResourceType.APPLIKASJON, sporingslogg = false)
     public List<DriftsmeldingDto> hentAktiveDriftsmeldinger() {
         return driftsmeldingTjeneste.hentAktiveDriftsmeldinger().stream()
                 .map(DriftsmeldingerRestTjeneste::tilDto)
@@ -58,7 +56,7 @@ public class DriftsmeldingerRestTjeneste {
     @Produces(MediaType.APPLICATION_JSON)
     @Operation(description = "Driftsmeldinger", tags = "admin")
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
-    @BeskyttetRessurs(action = READ, resource = AbacAttributter.APPLIKASJON, sporingslogg = false)
+    @BeskyttetRessurs(actionType = ActionType.READ, resourceType = ResourceType.APPLIKASJON, sporingslogg = false)
     public List<DriftsmeldingDto> hentAlleDriftsmeldinger() {
         return driftsmeldingTjeneste.hentAlleDriftsmeldinger().stream()
                 .map(DriftsmeldingerRestTjeneste::tilDto)
@@ -71,7 +69,7 @@ public class DriftsmeldingerRestTjeneste {
     @Produces(MediaType.APPLICATION_JSON)
     @Operation(description = "Driftsmeldinger", tags = "admin")
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
-    @BeskyttetRessurs(action = CREATE, resource = AbacAttributter.DRIFT, sporingslogg = false)
+    @BeskyttetRessurs(actionType = ActionType.CREATE, resourceType = ResourceType.DRIFT, sporingslogg = false)
     public Response opprettDriftsmelding(@Parameter(description = "jepp") @NotNull @Valid DriftsmeldingOpprettelseDto dto) {
         var melding = tilDriftsmelding(dto);
         driftsmeldingTjeneste.opprettDriftsmelding(melding);
@@ -83,7 +81,7 @@ public class DriftsmeldingerRestTjeneste {
     @Consumes(MediaType.APPLICATION_JSON)
     @Operation(description = "Driftsmeldinger", tags = "admin")
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
-    @BeskyttetRessurs(action = CREATE, resource = AbacAttributter.DRIFT, sporingslogg = false)
+    @BeskyttetRessurs(actionType = ActionType.CREATE, resourceType = ResourceType.DRIFT, sporingslogg = false)
     public Response deaktiverDriftsmeldinger() {
         driftsmeldingTjeneste.deaktiverDriftsmeldinger();
         return Response.ok().build();

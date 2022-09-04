@@ -1,6 +1,7 @@
 package no.nav.foreldrepenger.dbstøtte;
 
 import static java.lang.Runtime.getRuntime;
+
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
 

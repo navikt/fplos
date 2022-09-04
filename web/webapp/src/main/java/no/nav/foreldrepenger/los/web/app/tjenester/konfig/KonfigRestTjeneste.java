@@ -1,7 +1,5 @@
 package no.nav.foreldrepenger.los.web.app.tjenester.konfig;
 
-import static no.nav.vedtak.sikkerhet.abac.BeskyttetRessursActionAttributt.READ;
-
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.ws.rs.GET;
@@ -10,8 +8,9 @@ import javax.ws.rs.Produces;
 
 import io.swagger.v3.oas.annotations.Operation;
 import no.nav.foreldrepenger.konfig.KonfigVerdi;
-import no.nav.foreldrepenger.los.web.app.AbacAttributter;
 import no.nav.vedtak.sikkerhet.abac.BeskyttetRessurs;
+import no.nav.vedtak.sikkerhet.abac.beskyttet.ActionType;
+import no.nav.vedtak.sikkerhet.abac.beskyttet.ResourceType;
 
 @Path("/konfig")
 @ApplicationScoped
@@ -32,7 +31,7 @@ public class KonfigRestTjeneste {
     @Path("/fpsak-url")
     @Produces("application/json")
     @Operation(description = "Henter basis lenke til FPSAK.", tags = "Konfigurasjon")
-    @BeskyttetRessurs(action = READ, resource = AbacAttributter.APPLIKASJON, sporingslogg = false)
+    @BeskyttetRessurs(actionType = ActionType.READ, resourceType = ResourceType.APPLIKASJON, sporingslogg = false)
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
     public Konfig hentFpsakUrl() {
         return new Konfig(fpsakFrontendUrl);

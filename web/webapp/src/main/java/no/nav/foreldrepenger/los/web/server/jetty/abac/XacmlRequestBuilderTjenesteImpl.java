@@ -1,7 +1,5 @@
 package no.nav.foreldrepenger.los.web.server.jetty.abac;
 
-import static no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.saksliste.FplosAbacAttributtType.RESOURCE_FORELDREPENGER_SAK_AKSJONSPUNKT_TYPE;
-import static no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.saksliste.FplosAbacAttributtType.RESOURCE_FORELDREPENGER_SAK_ANSVARLIG_SAKSBEHANDLER;
 import static no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.saksliste.FplosAbacAttributtType.RESOURCE_FORELDREPENGER_SAK_BEHANDLINGSSTATUS;
 import static no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.saksliste.FplosAbacAttributtType.RESOURCE_FORELDREPENGER_SAK_SAKSSTATUS;
 import static no.nav.vedtak.sikkerhet.abac.NavAbacCommonAttributter.RESOURCE_FELLES_DOMENE;
@@ -49,14 +47,7 @@ public class XacmlRequestBuilderTjenesteImpl implements XacmlRequestBuilderTjene
     }
 
     private void populerResources(XacmlRequestBuilder xacmlBuilder, PdpRequest pdpRequest, String aktørId) {
-        var aksjonspunktTyper = pdpRequest.getListOfString(RESOURCE_FORELDREPENGER_SAK_AKSJONSPUNKT_TYPE);
-        if (aksjonspunktTyper.isEmpty()) {
-            xacmlBuilder.addResourceAttributeSet(byggRessursAttributter(pdpRequest, aktørId, null));
-        } else {
-            for (var aksjonspunktType : aksjonspunktTyper) {
-                xacmlBuilder.addResourceAttributeSet(byggRessursAttributter(pdpRequest, aktørId, aksjonspunktType));
-            }
-        }
+        xacmlBuilder.addResourceAttributeSet(byggRessursAttributter(pdpRequest, aktørId, null));
     }
 
     private XacmlAttributeSet byggRessursAttributter(PdpRequest pdpRequest, String aktørId, String aksjonsounktType) {
@@ -66,13 +57,8 @@ public class XacmlRequestBuilderTjenesteImpl implements XacmlRequestBuilderTjene
                 pdpRequest.getString(RESOURCE_FELLES_RESOURCE_TYPE));
         setOptionalValueinAttributeSet(resourceAttributeSet, pdpRequest, RESOURCE_FORELDREPENGER_SAK_SAKSSTATUS);
         setOptionalValueinAttributeSet(resourceAttributeSet, pdpRequest, RESOURCE_FORELDREPENGER_SAK_BEHANDLINGSSTATUS);
-        setOptionalValueinAttributeSet(resourceAttributeSet, pdpRequest,
-                RESOURCE_FORELDREPENGER_SAK_ANSVARLIG_SAKSBEHANDLER);
         if (aktørId != null) {
             resourceAttributeSet.addAttribute(RESOURCE_FELLES_PERSON_AKTOERID_RESOURCE, aktørId);
-        }
-        if (aksjonsounktType != null) {
-            resourceAttributeSet.addAttribute(RESOURCE_FORELDREPENGER_SAK_AKSJONSPUNKT_TYPE, aksjonsounktType);
         }
 
         return resourceAttributeSet;
