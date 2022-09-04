@@ -1,7 +1,5 @@
 package no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.saksliste;
 
-import static no.nav.vedtak.sikkerhet.abac.BeskyttetRessursActionAttributt.READ;
-
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -17,12 +15,13 @@ import javax.ws.rs.QueryParam;
 
 import io.swagger.v3.oas.annotations.Operation;
 import no.nav.foreldrepenger.los.oppgavekø.OppgaveKøTjeneste;
-import no.nav.foreldrepenger.los.web.app.AbacAttributter;
 import no.nav.foreldrepenger.los.web.app.tjenester.felles.dto.SaksbehandlerDto;
 import no.nav.foreldrepenger.los.web.app.tjenester.felles.dto.SaksbehandlerDtoTjeneste;
 import no.nav.foreldrepenger.los.web.app.tjenester.felles.dto.SakslisteDto;
 import no.nav.foreldrepenger.los.web.app.tjenester.felles.dto.SakslisteIdDto;
 import no.nav.vedtak.sikkerhet.abac.BeskyttetRessurs;
+import no.nav.vedtak.sikkerhet.abac.beskyttet.ActionType;
+import no.nav.vedtak.sikkerhet.abac.beskyttet.ResourceType;
 
 @Path("/saksbehandler/saksliste")
 @ApplicationScoped
@@ -46,7 +45,7 @@ public class SaksbehandlerSakslisteRestTjeneste {
     @GET
     @Produces("application/json")
     @Operation(description = "Henter sakslister", tags = "Saksliste")
-    @BeskyttetRessurs(action = READ, resource = AbacAttributter.FAGSAK, sporingslogg = false)
+    @BeskyttetRessurs(actionType = ActionType.READ, resourceType = ResourceType.FAGSAK, sporingslogg = false)
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
     public List<SakslisteDto> hentSakslister() {
         var filtre = oppgaveKøTjeneste.hentOppgaveFiltreringerForPåloggetBruker();
@@ -59,7 +58,7 @@ public class SaksbehandlerSakslisteRestTjeneste {
     @Path("/saksbehandlere")
     @Produces("application/json")
     @Operation(description = "Henter saksbehandlere tilknyttet en saksliste", tags = "Saksliste")
-    @BeskyttetRessurs(action = READ, resource = AbacAttributter.FAGSAK, sporingslogg = false)
+    @BeskyttetRessurs(actionType = ActionType.READ, resourceType = ResourceType.FAGSAK, sporingslogg = false)
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
     public List<SaksbehandlerDto> hentSakslistensAktiveSaksbehandlere(@NotNull @QueryParam("sakslisteId") @Valid SakslisteIdDto sakslisteId) {
         return saksbehandlerDtoTjeneste.hentAktiveSaksbehandlereTilknyttetSaksliste(sakslisteId.getVerdi());

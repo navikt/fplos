@@ -1,6 +1,8 @@
 package no.nav.foreldrepenger.los.web.app.tjenester.felles.dto;
 
 import static no.nav.foreldrepenger.los.felles.util.OptionalUtil.tryOrEmpty;
+import static no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.oppgave.OppgaveRestTjeneste.OPPGAVER_BASE_PATH;
+import static no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.oppgave.OppgaveRestTjeneste.OPPGAVER_STATUS_PATH;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,19 +15,21 @@ import javax.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import no.nav.foreldrepenger.konfig.Environment;
 import no.nav.foreldrepenger.los.klient.person.IkkeTilgangPåPersonException;
 import no.nav.foreldrepenger.los.klient.person.PersonTjeneste;
 import no.nav.foreldrepenger.los.oppgave.Oppgave;
 import no.nav.foreldrepenger.los.oppgave.OppgaveTjeneste;
 import no.nav.foreldrepenger.los.oppgavekø.OppgaveKøTjeneste;
 import no.nav.foreldrepenger.los.reservasjon.ReservasjonTjeneste;
-import no.nav.foreldrepenger.los.web.app.AbacAttributter;
 import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.saksliste.FplosAbacAttributtType;
-import no.nav.vedtak.sikkerhet.abac.AbacAttributtSamling;
 import no.nav.vedtak.sikkerhet.abac.AbacDataAttributter;
-import no.nav.vedtak.sikkerhet.abac.BeskyttetRessursActionAttributt;
 import no.nav.vedtak.sikkerhet.abac.PdpKlient;
 import no.nav.vedtak.sikkerhet.abac.PdpRequestBuilder;
+import no.nav.vedtak.sikkerhet.abac.Token;
+import no.nav.vedtak.sikkerhet.abac.beskyttet.ActionType;
+import no.nav.vedtak.sikkerhet.abac.beskyttet.ResourceType;
+import no.nav.vedtak.sikkerhet.abac.internal.BeskyttetRessursAttributter;
 import no.nav.vedtak.sikkerhet.context.SubjectHandler;
 
 @ApplicationScoped
@@ -34,6 +38,8 @@ public class OppgaveDtoTjeneste {
     public static final int ANTALL_OPPGAVER_SOM_VISES_TIL_SAKSBEHANDLER = 3;
 
     private static final Logger LOG = LoggerFactory.getLogger(OppgaveDtoTjeneste.class);
+
+    private static final String APPNAVN = Environment.current().getNaisAppName();
 
     private OppgaveTjeneste oppgaveTjeneste;
     private ReservasjonTjeneste reservasjonTjeneste;
@@ -98,9 +104,17 @@ public class OppgaveDtoTjeneste {
     }
 
     private boolean harTilgang(Oppgave oppgave) {
-        var abacAttributtSamling = abacAttributtSamling(oppgave);
-        var pdpRequest = pdpRequestBuilder.lagPdpRequest(abacAttributtSamling);
-        var tilgangsbeslutning = pdpKlient.forespørTilgang(pdpRequest);
+        var token = Token.withOidcToken(SubjectHandler.getSubjectHandler().getOpenIDToken());
+        var brRequest = BeskyttetRessursAttributter.builder()
+                .medActionType(ActionType.READ)
+                .medUserId(SubjectHandler.getSubjectHandler().getUid())
+                .medToken(token)
+                .medResourceType(ResourceType.FAGSAK)
+                .medPepId(APPNAVN)
+                .medServicePath(OPPGAVER_BASE_PATH + OPPGAVER_STATUS_PATH);
+        var dataAttributter = AbacDataAttributter.opprett().leggTil(FplosAbacAttributtType.OPPGAVE_ID, oppgave.getId());
+        var pdpRequest = pdpRequestBuilder.lagAppRessursData(dataAttributter);
+        var tilgangsbeslutning = pdpKlient.forespørTilgang(brRequest.build(), pdpRequestBuilder.abacDomene(), pdpRequest);
         return tilgangsbeslutning.fikkTilgang();
     }
 
@@ -108,14 +122,6 @@ public class OppgaveDtoTjeneste {
         if (!harTilgang(oppgave)) {
             throw new IkkeTilgangPåBehandlingException(oppgave.getBehandlingId());
         }
-    }
-
-    private AbacAttributtSamling abacAttributtSamling(Oppgave oppgave) {
-        return AbacAttributtSamling
-                .medJwtToken(SubjectHandler.getSubjectHandler().getInternSsoToken())
-                .setActionType(BeskyttetRessursActionAttributt.READ)
-                .setResource(AbacAttributter.FAGSAK)
-                .leggTil(AbacDataAttributter.opprett().leggTil(FplosAbacAttributtType.OPPGAVE_ID, oppgave.getId()));
     }
 
     public List<OppgaveDto> getOppgaverTilBehandling(Long sakslisteId) {

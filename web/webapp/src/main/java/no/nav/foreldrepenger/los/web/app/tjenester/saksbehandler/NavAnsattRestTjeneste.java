@@ -1,7 +1,5 @@
 package no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler;
 
-import static no.nav.vedtak.sikkerhet.abac.BeskyttetRessursActionAttributt.READ;
-
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
@@ -11,13 +9,14 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import io.swagger.v3.oas.annotations.Operation;
-import no.nav.foreldrepenger.los.web.app.AbacAttributter;
+import no.nav.foreldrepenger.konfig.KonfigVerdi;
 import no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.dto.InnloggetNavAnsattDto;
 import no.nav.foreldrepenger.los.web.app.util.LdapUtil;
 import no.nav.vedtak.felles.integrasjon.ldap.LdapBruker;
 import no.nav.vedtak.felles.integrasjon.ldap.LdapBrukeroppslag;
-import no.nav.foreldrepenger.konfig.KonfigVerdi;
 import no.nav.vedtak.sikkerhet.abac.BeskyttetRessurs;
+import no.nav.vedtak.sikkerhet.abac.beskyttet.ActionType;
+import no.nav.vedtak.sikkerhet.abac.beskyttet.ResourceType;
 import no.nav.vedtak.sikkerhet.context.SubjectHandler;
 
 @Path("/saksbehandler")
@@ -58,7 +57,7 @@ public class NavAnsattRestTjeneste {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Operation(description = "Returnerer fullt navn for ident", tags = "SaksbehandlerIdent")
-    @BeskyttetRessurs(action = READ, resource = AbacAttributter.APPLIKASJON, sporingslogg = false)
+    @BeskyttetRessurs(actionType = ActionType.READ, resourceType = ResourceType.APPLIKASJON, sporingslogg = false)
     public InnloggetNavAnsattDto innloggetBruker() {
         var ident = SubjectHandler.getSubjectHandler().getUid();
         var ldapBruker = new LdapBrukeroppslag().hentBrukerinformasjon(ident);

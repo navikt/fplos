@@ -14,11 +14,11 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.junit.jupiter.api.Test;
 
-import no.nav.foreldrepenger.los.web.app.AbacAttributter;
 import no.nav.vedtak.sikkerhet.abac.AbacDto;
 import no.nav.vedtak.sikkerhet.abac.BeskyttetRessurs;
-import no.nav.vedtak.sikkerhet.abac.BeskyttetRessursActionAttributt;
 import no.nav.vedtak.sikkerhet.abac.TilpassetAbacAttributt;
+import no.nav.vedtak.sikkerhet.abac.beskyttet.ActionType;
+import no.nav.vedtak.sikkerhet.abac.beskyttet.ResourceType;
 
 public class RestApiAbacTest {
 
@@ -80,11 +80,11 @@ public class RestApiAbacTest {
     private static void assertAtIngenBrukerDummyVerdierPåBeskyttetRessurs(Method metode) {
         var klasse = metode.getDeclaringClass();
         var annotation = metode.getAnnotation(BeskyttetRessurs.class);
-        if (annotation != null && annotation.action() == BeskyttetRessursActionAttributt.DUMMY) {
+        if (annotation != null && annotation.actionType() == ActionType.DUMMY) {
             fail(klasse.getSimpleName() + "." + metode.getName() + " Ikke bruk DUMMY-verdi for "
-                    + BeskyttetRessursActionAttributt.class.getSimpleName());
-        } else if (annotation != null && annotation.property().isEmpty() && !Set.of(AbacAttributter.FAGSAK, AbacAttributter.OPPGAVESTYRING_AVDELINGENHET,
-                AbacAttributter.OPPGAVESTYRING, AbacAttributter.APPLIKASJON, AbacAttributter.DRIFT).contains(annotation.resource())) {
+                    + ActionType.class.getSimpleName());
+        } else if (annotation != null && annotation.property().isEmpty() && !Set.of(ResourceType.FAGSAK, ResourceType.OPPGAVESTYRING_AVDELINGENHET,
+                ResourceType.OPPGAVESTYRING, ResourceType.APPLIKASJON, ResourceType.DRIFT).contains(annotation.resourceType())) {
             fail(klasse.getSimpleName() + "." + metode.getName() + " Resource ligger ikke i AbacAttributter");
         }
     }

@@ -13,15 +13,15 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 
 import io.swagger.v3.oas.annotations.Operation;
+import no.nav.foreldrepenger.los.statistikk.oppgavebeholdning.OppgaveBeholdningStatistikkTjeneste;
 import no.nav.foreldrepenger.los.statistikk.oppgavebeholdning.OppgaverForAvdeling;
 import no.nav.foreldrepenger.los.statistikk.oppgavebeholdning.OppgaverForAvdelingPerDato;
 import no.nav.foreldrepenger.los.statistikk.oppgavebeholdning.OppgaverForAvdelingSattManueltPåVent;
 import no.nav.foreldrepenger.los.statistikk.oppgavebeholdning.OppgaverForFørsteStønadsdag;
-import no.nav.foreldrepenger.los.statistikk.oppgavebeholdning.OppgaveBeholdningStatistikkTjeneste;
-import no.nav.foreldrepenger.los.web.app.AbacAttributter;
 import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.dto.AvdelingEnhetDto;
 import no.nav.vedtak.sikkerhet.abac.BeskyttetRessurs;
-import no.nav.vedtak.sikkerhet.abac.BeskyttetRessursActionAttributt;
+import no.nav.vedtak.sikkerhet.abac.beskyttet.ActionType;
+import no.nav.vedtak.sikkerhet.abac.beskyttet.ResourceType;
 
 @Path("/avdelingsleder/nøkkeltall")
 @ApplicationScoped
@@ -43,7 +43,7 @@ public class NøkkeltallRestTjeneste {
     @Path("/behandlinger-under-arbeid")
     @Produces("application/json")
     @Operation(description = "UnderArbeid", tags = "AvdelingslederTall")
-    @BeskyttetRessurs(action = BeskyttetRessursActionAttributt.READ, resource = AbacAttributter.OPPGAVESTYRING_AVDELINGENHET)
+    @BeskyttetRessurs(actionType = ActionType.READ, resourceType = ResourceType.OPPGAVESTYRING_AVDELINGENHET)
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
     public List<OppgaverForAvdeling> getAlleOppgaverForAvdeling(@NotNull @QueryParam("avdelingEnhet") @Valid AvdelingEnhetDto avdelingEnhet) {
         return oppgaveBeholdningStatistikkTjeneste.hentAlleOppgaverForAvdeling(avdelingEnhet.getAvdelingEnhet());
@@ -53,7 +53,7 @@ public class NøkkeltallRestTjeneste {
     @Path("/behandlinger-under-arbeid-historikk")
     @Produces("application/json")
     @Operation(description = "UA Historikk", tags = "AvdelingslederTall")
-    @BeskyttetRessurs(action = BeskyttetRessursActionAttributt.READ, resource = AbacAttributter.OPPGAVESTYRING_AVDELINGENHET)
+    @BeskyttetRessurs(actionType = ActionType.READ, resourceType = ResourceType.OPPGAVESTYRING_AVDELINGENHET)
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
     public List<OppgaverForAvdelingPerDato> getAntallOppgaverForAvdelingPerDato(@NotNull @QueryParam("avdelingEnhet") @Valid AvdelingEnhetDto avdelingEnhet) {
         return oppgaveBeholdningStatistikkTjeneste.hentAntallOppgaverForAvdelingPerDato(avdelingEnhet.getAvdelingEnhet());
@@ -63,7 +63,7 @@ public class NøkkeltallRestTjeneste {
     @Path("/behandlinger-manuelt-vent-historikk")
     @Produces("application/json")
     @Operation(description = "ManueltVent Historikk", tags = "AvdelingslederTall")
-    @BeskyttetRessurs(action = BeskyttetRessursActionAttributt.READ, resource = AbacAttributter.OPPGAVESTYRING_AVDELINGENHET)
+    @BeskyttetRessurs(actionType = ActionType.READ, resourceType = ResourceType.OPPGAVESTYRING_AVDELINGENHET)
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
     public List<OppgaverForAvdelingSattManueltPåVent> getAntallOppgaverSattPåManuellVentForAvdeling(@NotNull @QueryParam("avdelingEnhet") @Valid AvdelingEnhetDto avdelingEnhet) {
         return oppgaveBeholdningStatistikkTjeneste.hentAntallOppgaverForAvdelingSattManueltPåVent(avdelingEnhet.getAvdelingEnhet());
@@ -73,7 +73,7 @@ public class NøkkeltallRestTjeneste {
     @Path("/behandlinger-første-stønadsdag")
     @Produces("application/json")
     @Operation(description = "Første stønadsdag", tags = "AvdelingslederTall")
-    @BeskyttetRessurs(action = BeskyttetRessursActionAttributt.READ, resource = AbacAttributter.OPPGAVESTYRING_AVDELINGENHET)
+    @BeskyttetRessurs(actionType = ActionType.READ, resourceType = ResourceType.OPPGAVESTYRING_AVDELINGENHET)
     @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
     public List<OppgaverForFørsteStønadsdag> getOppgaverPerFørsteStønadsdag(@NotNull @QueryParam("avdelingEnhet") @Valid AvdelingEnhetDto avdelingEnhet) {
         return oppgaveBeholdningStatistikkTjeneste.hentOppgaverPerFørsteStønadsdag(avdelingEnhet.getAvdelingEnhet());

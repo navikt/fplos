@@ -7,6 +7,7 @@ import static no.nav.vedtak.sikkerhet.abac.NavAbacCommonAttributter.RESOURCE_FEL
 import static no.nav.vedtak.sikkerhet.abac.NavAbacCommonAttributter.XACML10_ACTION_ACTION_ID;
 
 import java.util.ArrayList;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
@@ -15,18 +16,22 @@ import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.Alternative;
 import javax.inject.Inject;
 
-import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.saksliste.FplosAbacAttributtType;
-
 import no.nav.foreldrepenger.los.domene.typer.BehandlingId;
+import no.nav.foreldrepenger.los.hendelse.hendelseoppretter.hendelse.Fagsystem;
 import no.nav.foreldrepenger.los.oppgave.Oppgave;
-import no.nav.foreldrepenger.los.web.app.tjenester.abac.ForeldrepengerPipKlient;
 import no.nav.foreldrepenger.los.oppgave.OppgaveTjeneste;
+import no.nav.foreldrepenger.los.web.app.tjenester.abac.ForeldrepengerPipKlient;
+import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.saksliste.FplosAbacAttributtType;
 import no.nav.vedtak.exception.TekniskException;
 import no.nav.vedtak.sikkerhet.abac.AbacAttributtSamling;
+import no.nav.vedtak.sikkerhet.abac.AbacDataAttributter;
 import no.nav.vedtak.sikkerhet.abac.PdpKlient;
 import no.nav.vedtak.sikkerhet.abac.PdpRequest;
 import no.nav.vedtak.sikkerhet.abac.PdpRequestBuilder;
 import no.nav.vedtak.sikkerhet.abac.StandardAbacAttributtType;
+import no.nav.vedtak.sikkerhet.abac.pdp.AppRessursData;
+import no.nav.vedtak.sikkerhet.abac.pdp.BehandlingStatus;
+import no.nav.vedtak.sikkerhet.abac.pdp.FagsakStatus;
 
 @Dependent
 @Alternative
@@ -73,6 +78,46 @@ public class PdpRequestBuilderImpl implements PdpRequestBuilder {
         }
 
         return pdpRequest;
+    }
+
+    @Override
+    public boolean nyttAbacGrensesnitt() {
+        return true;
+    }
+
+    @Override
+    public AppRessursData lagAppRessursData(AbacDataAttributter dataAttributter) {
+        Set<Long> oppgaveIdList = dataAttributter.getVerdier(FplosAbacAttributtType.OPPGAVE_ID);
+        Set<UUID> behandlingIdList = dataAttributter.getVerdier(StandardAbacAttributtType.BEHANDLING_UUID);
+
+        if (!oppgaveIdList.isEmpty() && !behandlingIdList.isEmpty()) {
+            throw PdpRequestBuilderFeil.støtterIkkeBådeOppgaveIdOgBehandlingId();
+        }
+
+        Oppgave oppgave  = null;
+        if (!oppgaveIdList.isEmpty()) {
+            oppgave = oppgaveTjeneste.hentOppgave(oppgaveIdList.iterator().next());
+        } else if (!behandlingIdList.isEmpty()) {
+            var behandlingId = new BehandlingId(behandlingIdList.iterator().next());
+             oppgave = oppgaveTjeneste.hentNyesteOppgaveTilknyttet(behandlingId)
+                    .orElseThrow(() -> PdpRequestBuilderFeil.finnerIkkeOppgaveTilknyttetBehandling(behandlingId));
+        }
+
+        var ressursData = AppRessursData.builder();
+        if (oppgave != null) {
+            var system = oppgave.getSystem();
+            if (Fagsystem.FPSAK.name().equals(system)) {
+                var dto = foreldrepengerPipKlient.hentPipdataForBehandling(oppgave.getBehandlingId());
+                ressursData.leggTilAktørIdSet(dto.aktørIder());
+                Optional.ofNullable(dto.fagsakStatus()).map(FagsakStatus::valueOf).ifPresent(ressursData::medFagsakStatus);
+                Optional.ofNullable(dto.behandlingStatus()).map(BehandlingStatus::valueOf).ifPresent(ressursData::medBehandlingStatus);
+            } else if (Fagsystem.FPTILBAKE.name().equals(system)) {
+                ressursData.leggTilAktørId(oppgave.getAktørId().getId());
+            } else {
+                throw PdpRequestBuilderFeil.ukjentSystem(system);
+            }
+        }
+        return ressursData.build();
     }
 
     private void leggTilAttributterForBehandling(PdpRequest pdpRequest, Oppgave oppgave) {
