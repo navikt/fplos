@@ -32,6 +32,7 @@ import no.nav.vedtak.sikkerhet.abac.StandardAbacAttributtType;
 import no.nav.vedtak.sikkerhet.abac.pdp.AppRessursData;
 import no.nav.vedtak.sikkerhet.abac.pdp.BehandlingStatus;
 import no.nav.vedtak.sikkerhet.abac.pdp.FagsakStatus;
+import no.nav.vedtak.sikkerhet.abac.pdp.ForeldrepengerDataKeys;
 
 @Dependent
 @Alternative
@@ -109,8 +110,8 @@ public class PdpRequestBuilderImpl implements PdpRequestBuilder {
             if (Fagsystem.FPSAK.name().equals(system)) {
                 var dto = foreldrepengerPipKlient.hentPipdataForBehandling(oppgave.getBehandlingId());
                 ressursData.leggTilAktørIdSet(dto.aktørIder());
-                Optional.ofNullable(dto.fagsakStatus()).map(FagsakStatus::valueOf).ifPresent(ressursData::medFagsakStatus);
-                Optional.ofNullable(dto.behandlingStatus()).map(BehandlingStatus::valueOf).ifPresent(ressursData::medBehandlingStatus);
+                Optional.ofNullable(dto.fagsakStatus()).ifPresent(fss -> ressursData.leggTilRessurs(ForeldrepengerDataKeys.FAGSAK_STATUS, fss));
+                Optional.ofNullable(dto.behandlingStatus()).ifPresent(bhs -> ressursData.leggTilRessurs(ForeldrepengerDataKeys.BEHANDLING_STATUS, bhs));
             } else if (Fagsystem.FPTILBAKE.name().equals(system)) {
                 ressursData.leggTilAktørId(oppgave.getAktørId().getId());
             } else {
