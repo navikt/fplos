@@ -10,20 +10,21 @@ import org.apache.http.client.utils.URIBuilder;
 import no.nav.foreldrepenger.konfig.KonfigVerdi;
 import no.nav.foreldrepenger.los.domene.typer.BehandlingId;
 import no.nav.vedtak.felles.integrasjon.rest.SystemUserOidcRestClient;
+import no.nav.vedtak.sikkerhet.abac.pipdata.AbacPipDto;
 import no.nav.vedtak.util.LRUCache;
 
 @ApplicationScoped
 public class ForeldrepengerPipKlient {
 
-    private static final String FPSAK_PIP_ENDPOINT = "/fpsak/api/pip/pipdata-for-behandling";
+    private static final String FPSAK_PIP_ENDPOINT = "/fpsak/api/pip/pipdata-for-behandling-appintern";
 
-    private static final int PIP_CACHE_SIZE = 300;
+    private static final int PIP_CACHE_SIZE = 500;
     private static final int PIP_CACHE_TIMEOUT_MILLIS = 30000;
 
     private SystemUserOidcRestClient systemUserOidcRestClient;
     private String fpsakBaseUrl;
 
-    private LRUCache<BehandlingId, PipDto> pipCache;
+    private LRUCache<BehandlingId, AbacPipDto> pipCache;
 
     @Inject
     public ForeldrepengerPipKlient(SystemUserOidcRestClient systemUserOidcRestClient,
@@ -37,7 +38,7 @@ public class ForeldrepengerPipKlient {
         //CDI
     }
 
-    public PipDto hentPipdataForBehandling(BehandlingId behandlingId) {
+    public AbacPipDto hentPipdataForBehandling(BehandlingId behandlingId) {
         var cached = pipCache.get(behandlingId);
         if (cached != null) {
             return cached;
@@ -47,11 +48,11 @@ public class ForeldrepengerPipKlient {
         return ny;
     }
 
-    private PipDto hentFraFpsak(BehandlingId behandlingId) {
+    private AbacPipDto hentFraFpsak(BehandlingId behandlingId) {
         try {
             var pipUriBuilder = new URIBuilder(fpsakBaseUrl + FPSAK_PIP_ENDPOINT);
             pipUriBuilder.setParameter("behandlingUuid", behandlingId.toString());
-            return systemUserOidcRestClient.getReturnsOptional(pipUriBuilder.build(), PipDto.class)
+            return systemUserOidcRestClient.getReturnsOptional(pipUriBuilder.build(), AbacPipDto.class)
                     .orElseThrow(IllegalStateException::new);
         } catch (URISyntaxException e) {
             throw new RuntimeException(e);
