@@ -1,5 +1,5 @@
 import { Undertekst } from 'nav-frontend-typografi';
-import { FormattedMessage, WrappedComponentProps } from 'react-intl';
+import { FormattedMessage } from 'react-intl';
 import {
   FlexColumn, FlexContainer, FlexRow, ArrowBox, VerticalSpacer,
 } from '@navikt/ft-ui-komponenter';
@@ -18,8 +18,7 @@ interface OwnProps {
   hentAntallOppgaver: (sakslisteId: number, avdelingEnhet: string) => void;
 }
 
-export const BelopSorteringValg: FunctionComponent<OwnProps & WrappedComponentProps> = ({
-  intl,
+const BelopSorteringValg: FunctionComponent<OwnProps> = ({
   valgtSakslisteId,
   valgtAvdelingEnhet,
   lagreSakslisteSorteringNumerisk,
@@ -57,12 +56,9 @@ export const BelopSorteringValg: FunctionComponent<OwnProps & WrappedComponentPr
             <InputField
               name="fra"
               className={styles.dato}
-              placeholder={intl.formatMessage({ id: 'SorteringVelger.Fra' })}
               validate={[hasValidPosOrNegInteger]}
-              bredde="XS"
               onChange={lagreFraDebounce}
             />
-
           </FlexColumn>
           <FlexColumn>
             <Undertekst className={styles.beløp}>
@@ -73,9 +69,7 @@ export const BelopSorteringValg: FunctionComponent<OwnProps & WrappedComponentPr
             <InputField
               name="til"
               className={styles.dato}
-              placeholder={intl.formatMessage({ id: 'SorteringVelger.Til' })}
               validate={[hasValidPosOrNegInteger]}
-              bredde="XS"
               onChange={lagreTilDebounce}
             />
           </FlexColumn>

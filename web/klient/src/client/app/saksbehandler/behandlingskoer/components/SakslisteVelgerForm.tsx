@@ -206,7 +206,6 @@ export const SakslisteVelgerForm: FunctionComponent<OwnProps> = ({
               label={intl.formatMessage({ id: 'SakslisteVelgerForm.Saksliste' })}
               selectValues={sakslister
                 .map((saksliste) => (<option key={saksliste.sakslisteId} value={`${saksliste.sakslisteId}`}>{saksliste.navn}</option>))}
-              bredde="l"
             />
           </FlexColumn>
           {sakslisteId && (

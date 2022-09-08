@@ -1,6 +1,5 @@
 import React, { useMemo, FunctionComponent } from 'react';
 import { FormattedMessage } from 'react-intl';
-import { Undertekst } from 'nav-frontend-typografi';
 
 import { KodeverkMedNavn } from '@navikt/ft-types';
 import { restApiHooks, RestApiPathsKeys } from 'data/fplosRestApi';
@@ -8,7 +7,7 @@ import { VerticalSpacer } from '@navikt/ft-ui-komponenter';
 import FagsakYtelseType from 'kodeverk/fagsakYtelseType';
 import KodeverkType from 'kodeverk/kodeverkTyper';
 import useKodeverk from 'data/useKodeverk';
-import { RadioOption, RadioGroupField } from '@navikt/ft-form-hooks';
+import { RadioGroupPanel } from '@navikt/ft-form-hooks';
 
 const finnFagsakYtelseTypeNavn = (fagsakYtelseTyper: KodeverkMedNavn[], valgtFagsakYtelseType: string) => {
   const type = fagsakYtelseTyper.find((fyt) => fyt.kode === valgtFagsakYtelseType);
@@ -37,12 +36,11 @@ const FagsakYtelseTypeVelger: FunctionComponent<OwnProps> = ({
     []);
   return (
     <>
-      <Undertekst>
-        <FormattedMessage id="FagsakYtelseTypeVelger.Stonadstype" />
-      </Undertekst>
       <VerticalSpacer eightPx />
-      <RadioGroupField
+      <RadioGroupPanel
         name="fagsakYtelseType"
+        label={<FormattedMessage id="FagsakYtelseTypeVelger.Stonadstype" />}
+        isHorizontal
         onChange={(fyt) => lagreSakslisteFagsakYtelseType(fyt !== ''
           ? { sakslisteId: valgtSakslisteId, avdelingEnhet: valgtAvdelingEnhet, fagsakYtelseType: fyt }
           : { sakslisteId: valgtSakslisteId, avdelingEnhet: valgtAvdelingEnhet })
@@ -50,24 +48,20 @@ const FagsakYtelseTypeVelger: FunctionComponent<OwnProps> = ({
             hentAntallOppgaver(valgtSakslisteId, valgtAvdelingEnhet);
             hentAvdelingensSakslister({ avdelingEnhet: valgtAvdelingEnhet });
           })}
-      >
-        <RadioOption
-          value={FagsakYtelseType.FORELDREPRENGER}
-          label={finnFagsakYtelseTypeNavn(fagsakYtelseTyper, FagsakYtelseType.FORELDREPRENGER)}
-        />
-        <RadioOption
-          value={FagsakYtelseType.ENGANGSSTONAD}
-          label={finnFagsakYtelseTypeNavn(fagsakYtelseTyper, FagsakYtelseType.ENGANGSSTONAD)}
-        />
-        <RadioOption
-          value={FagsakYtelseType.SVANGERSKAPPENGER}
-          label={finnFagsakYtelseTypeNavn(fagsakYtelseTyper, FagsakYtelseType.SVANGERSKAPPENGER)}
-        />
-        <RadioOption
-          value=""
-          label={<FormattedMessage id="FagsakYtelseTypeVelger.Alle" />}
-        />
-      </RadioGroupField>
+        radios={[{
+          value: FagsakYtelseType.FORELDREPRENGER,
+          label: finnFagsakYtelseTypeNavn(fagsakYtelseTyper, FagsakYtelseType.FORELDREPRENGER),
+        }, {
+          value: FagsakYtelseType.ENGANGSSTONAD,
+          label: finnFagsakYtelseTypeNavn(fagsakYtelseTyper, FagsakYtelseType.ENGANGSSTONAD),
+        }, {
+          value: FagsakYtelseType.SVANGERSKAPPENGER,
+          label: finnFagsakYtelseTypeNavn(fagsakYtelseTyper, FagsakYtelseType.SVANGERSKAPPENGER),
+        }, {
+          value: '',
+          label: <FormattedMessage id="FagsakYtelseTypeVelger.Alle" />,
+        }]}
+      />
     </>
   );
 };

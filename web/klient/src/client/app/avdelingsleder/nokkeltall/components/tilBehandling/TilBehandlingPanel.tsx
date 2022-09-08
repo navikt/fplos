@@ -13,13 +13,9 @@ import FagsakYtelseType from 'kodeverk/fagsakYtelseType';
 import KodeverkType from 'kodeverk/kodeverkTyper';
 import OppgaveForDato from 'types/avdelingsleder/oppgaverForDatoTsType';
 import StoreValuesInLocalStorage from 'data/StoreValuesInLocalStorage';
-import {
-  Form, RadioGroupField, RadioOption, SelectField,
-} from '@navikt/ft-form-hooks';
+import { Form, RadioGroupPanel, SelectField } from '@navikt/ft-form-hooks';
 import { KodeverkMedNavn } from '@navikt/ft-types';
 import TilBehandlingGraf, { OppgaveForDatoGraf } from './TilBehandlingGraf';
-
-import styles from './tilBehandlingPanel.less';
 
 dayjs.extend(isSameOrAfter);
 dayjs.extend(isSameOrBefore);
@@ -114,32 +110,29 @@ export const TilBehandlingPanel: FunctionComponent<OwnProps & WrappedComponentPr
             name="ukevalg"
             label=""
             selectValues={uker.map((u) => <option key={u.kode} value={u.kode}>{intl.formatMessage({ id: u.tekstKode })}</option>)}
-            bredde="l"
           />
         </Column>
         <Column xs="8">
-          <div className={styles.radioPadding}>
-            <RadioGroupField name="ytelseType">
-              <RadioOption
-                value={FagsakYtelseType.FORELDREPRENGER}
-                label={finnFagsakYtelseTypeNavn(fagsakYtelseTyper, FagsakYtelseType.FORELDREPRENGER)}
-              />
-              <RadioOption
-                value={FagsakYtelseType.ENGANGSSTONAD}
-                label={finnFagsakYtelseTypeNavn(fagsakYtelseTyper, FagsakYtelseType.ENGANGSSTONAD)}
-              />
-              <RadioOption
-                value={FagsakYtelseType.SVANGERSKAPPENGER}
-                label={finnFagsakYtelseTypeNavn(fagsakYtelseTyper, FagsakYtelseType.SVANGERSKAPPENGER)}
-              />
-              <RadioOption
-                value={ALLE_YTELSETYPER_VALGT}
-                label={<FormattedMessage id="FordelingAvBehandlingstypePanel.Alle" />}
-              />
-            </RadioGroupField>
-          </div>
+          <RadioGroupPanel
+            name="ytelseType"
+            isHorizontal
+            radios={[{
+              value: FagsakYtelseType.FORELDREPRENGER,
+              label: finnFagsakYtelseTypeNavn(fagsakYtelseTyper, FagsakYtelseType.FORELDREPRENGER),
+            }, {
+              value: FagsakYtelseType.ENGANGSSTONAD,
+              label: finnFagsakYtelseTypeNavn(fagsakYtelseTyper, FagsakYtelseType.ENGANGSSTONAD),
+            }, {
+              value: FagsakYtelseType.SVANGERSKAPPENGER,
+              label: finnFagsakYtelseTypeNavn(fagsakYtelseTyper, FagsakYtelseType.SVANGERSKAPPENGER),
+            }, {
+              value: ALLE_YTELSETYPER_VALGT,
+              label: <FormattedMessage id="FordelingAvBehandlingstypePanel.Alle" />,
+            }]}
+          />
         </Column>
       </Row>
+      <VerticalSpacer sixteenPx />
       <TilBehandlingGraf
         height={height}
         isToUkerValgt={values.ukevalg === UKE_2}

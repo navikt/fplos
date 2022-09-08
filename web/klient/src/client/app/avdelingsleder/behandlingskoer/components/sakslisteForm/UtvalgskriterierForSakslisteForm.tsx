@@ -125,8 +125,8 @@ export const UtvalgskriterierForSakslisteForm: FunctionComponent<OwnProps & Wrap
               name="navn"
               label={intl.formatMessage({ id: 'UtvalgskriterierForSakslisteForm.Navn' })}
               validate={[required, minLength3, maxLength100, hasValidName]}
-              bredde="L"
               onChange={lagreNavn}
+              className={styles.bredde}
             />
           </Column>
           <Column xs="3">
@@ -136,6 +136,7 @@ export const UtvalgskriterierForSakslisteForm: FunctionComponent<OwnProps & Wrap
             </div>
           </Column>
         </Row>
+        <VerticalSpacer eightPx />
         <Row>
           <Column xs="6" className={styles.stonadstypeRadios}>
             <FagsakYtelseTypeVelger
@@ -146,6 +147,7 @@ export const UtvalgskriterierForSakslisteForm: FunctionComponent<OwnProps & Wrap
             />
           </Column>
         </Row>
+        <VerticalSpacer sixteenPx />
         <Row>
           <Column xs="3">
             <BehandlingstypeVelger

@@ -1,5 +1,5 @@
 import React, { FunctionComponent } from 'react';
-import { FormattedMessage, WrappedComponentProps } from 'react-intl';
+import { FormattedMessage, useIntl } from 'react-intl';
 import dayjs from 'dayjs';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
 import { Undertekst } from 'nav-frontend-typografi';
@@ -66,8 +66,7 @@ interface OwnProps {
   hentAntallOppgaver: (sakslisteId: number, avdelingEnhet: string) => void;
 }
 
-export const DatoSorteringValg: FunctionComponent<OwnProps & WrappedComponentProps> = ({
-  intl,
+const DatoSorteringValg: FunctionComponent<OwnProps> = ({
   valgtSakslisteId,
   valgtAvdelingEnhet,
   erDynamiskPeriode,
@@ -75,6 +74,8 @@ export const DatoSorteringValg: FunctionComponent<OwnProps & WrappedComponentPro
   hentAvdelingensSakslister,
   hentAntallOppgaver,
 }) => {
+  const intl = useIntl();
+
   const { startRequest: lagreSakslisteSorteringErDynamiskPeriode } = restApiHooks
     .useRestApiRunner(RestApiPathsKeys.LAGRE_SAKSLISTE_SORTERING_DYNAMISK_PERIDE);
   const { startRequest: lagreSakslisteSorteringTidsintervallDato } = restApiHooks
@@ -112,12 +113,14 @@ export const DatoSorteringValg: FunctionComponent<OwnProps & WrappedComponentPro
   const lagreTomDatoDebounce = useDebounce<string>('tomDato', lagreTomDato);
 
   return (
-    <ArrowBox>
-      <Undertekst>
-        <FormattedMessage id="SorteringVelger.FiltrerPaTidsintervall" />
-      </Undertekst>
+    <>
+      <VerticalSpacer eightPx />
+      <ArrowBox>
+        <Undertekst>
+          <FormattedMessage id="SorteringVelger.FiltrerPaTidsintervall" />
+        </Undertekst>
 
-      {erDynamiskPeriode && (
+        {erDynamiskPeriode && (
         <FlexContainer>
           <FlexRow>
             <FlexColumn>
@@ -126,7 +129,6 @@ export const DatoSorteringValg: FunctionComponent<OwnProps & WrappedComponentPro
                 className={styles.dato}
                 label={intl.formatMessage({ id: 'SorteringVelger.Fom' })}
                 validate={[hasValidPosOrNegInteger]}
-                bredde="XS"
                 onChange={lagreFraDebounce}
               />
               {(fraVerdi || fraVerdi === 0) && (
@@ -146,7 +148,6 @@ export const DatoSorteringValg: FunctionComponent<OwnProps & WrappedComponentPro
                 className={styles.dato}
                 label={intl.formatMessage({ id: 'SorteringVelger.Tom' })}
                 validate={[hasValidPosOrNegInteger]}
-                bredde="XS"
                 onChange={lagreTilDebounce}
               />
               {(tilVerdi || tilVerdi === 0) && (
@@ -162,8 +163,8 @@ export const DatoSorteringValg: FunctionComponent<OwnProps & WrappedComponentPro
             </FlexColumn>
           </FlexRow>
         </FlexContainer>
-      )}
-      {!erDynamiskPeriode && (
+        )}
+        {!erDynamiskPeriode && (
         <FlexContainer>
           <FlexRow>
             <FlexColumn>
@@ -189,19 +190,20 @@ export const DatoSorteringValg: FunctionComponent<OwnProps & WrappedComponentPro
             </FlexColumn>
           </FlexRow>
         </FlexContainer>
-      )}
-      <VerticalSpacer eightPx />
-      <CheckboxField
-        name="erDynamiskPeriode"
-        label={intl.formatMessage({ id: 'SorteringVelger.DynamiskPeriode' })}
-        onChange={() => lagreSakslisteSorteringErDynamiskPeriode({ sakslisteId: valgtSakslisteId, avdelingEnhet: valgtAvdelingEnhet })
-          .then(() => {
-            hentAntallOppgaver(valgtSakslisteId, valgtAvdelingEnhet);
-            hentAvdelingensSakslister({ avdelingEnhet: valgtAvdelingEnhet });
-          })}
-      />
-      <VerticalSpacer eightPx />
-    </ArrowBox>
+        )}
+        <VerticalSpacer eightPx />
+        <CheckboxField
+          name="erDynamiskPeriode"
+          label={intl.formatMessage({ id: 'SorteringVelger.DynamiskPeriode' })}
+          onChange={() => lagreSakslisteSorteringErDynamiskPeriode({ sakslisteId: valgtSakslisteId, avdelingEnhet: valgtAvdelingEnhet })
+            .then(() => {
+              hentAntallOppgaver(valgtSakslisteId, valgtAvdelingEnhet);
+              hentAvdelingensSakslister({ avdelingEnhet: valgtAvdelingEnhet });
+            })}
+        />
+        <VerticalSpacer eightPx />
+      </ArrowBox>
+    </>
   );
 };
 

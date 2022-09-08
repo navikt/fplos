@@ -8,7 +8,7 @@ import FagsakYtelseType from 'kodeverk/fagsakYtelseType';
 import KodeverkType from 'kodeverk/kodeverkTyper';
 import useKodeverk from 'data/useKodeverk';
 import StoreValuesInLocalStorage from 'data/StoreValuesInLocalStorage';
-import { Form, RadioGroupField, RadioOption } from '@navikt/ft-form-hooks';
+import { Form, RadioGroupPanel } from '@navikt/ft-form-hooks';
 import OppgaverForAvdeling from 'types/avdelingsleder/oppgaverForAvdelingTsType';
 import { KodeverkMedNavn } from '@navikt/ft-types';
 import FordelingAvBehandlingstypeGraf from './FordelingAvBehandlingstypeGraf';
@@ -63,24 +63,24 @@ export const FordelingAvBehandlingstypePanel: FunctionComponent<OwnProps> = ({
         <FormattedMessage id="FordelingAvBehandlingstypePanel.Fordeling" />
       </Element>
       <VerticalSpacer sixteenPx />
-      <RadioGroupField name="valgtYtelseType">
-        <RadioOption
-          value={FagsakYtelseType.FORELDREPRENGER}
-          label={finnFagsakYtelseTypeNavn(fagsakYtelseTyper, FagsakYtelseType.FORELDREPRENGER)}
-        />
-        <RadioOption
-          value={FagsakYtelseType.ENGANGSSTONAD}
-          label={finnFagsakYtelseTypeNavn(fagsakYtelseTyper, FagsakYtelseType.ENGANGSSTONAD)}
-        />
-        <RadioOption
-          value={FagsakYtelseType.SVANGERSKAPPENGER}
-          label={finnFagsakYtelseTypeNavn(fagsakYtelseTyper, FagsakYtelseType.SVANGERSKAPPENGER)}
-        />
-        <RadioOption
-          value={ALLE_YTELSETYPER_VALGT}
-          label={<FormattedMessage id="FordelingAvBehandlingstypePanel.Alle" />}
-        />
-      </RadioGroupField>
+      <RadioGroupPanel
+        name="valgtYtelseType"
+        isHorizontal
+        radios={[{
+          value: FagsakYtelseType.FORELDREPRENGER,
+          label: finnFagsakYtelseTypeNavn(fagsakYtelseTyper, FagsakYtelseType.FORELDREPRENGER),
+        }, {
+          value: FagsakYtelseType.ENGANGSSTONAD,
+          label: finnFagsakYtelseTypeNavn(fagsakYtelseTyper, FagsakYtelseType.ENGANGSSTONAD),
+        }, {
+          value: FagsakYtelseType.SVANGERSKAPPENGER,
+          label: finnFagsakYtelseTypeNavn(fagsakYtelseTyper, FagsakYtelseType.SVANGERSKAPPENGER),
+        }, {
+          value: ALLE_YTELSETYPER_VALGT,
+          label: <FormattedMessage id="FordelingAvBehandlingstypePanel.Alle" />,
+        }]}
+      />
+      <VerticalSpacer sixteenPx />
       <FordelingAvBehandlingstypeGraf
         height={height}
         behandlingTyper={behandlingTyper}
