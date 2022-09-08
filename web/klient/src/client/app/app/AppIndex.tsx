@@ -12,6 +12,8 @@ import HeaderWithErrorPanel from './components/HeaderWithErrorPanel';
 import Home from './components/Home';
 import ErrorBoundary from './ErrorBoundary';
 
+import '@navikt/ds-css';
+
 import '../../styles/global.less';
 import '@navikt/ft-ui-komponenter/dist/style.css';
 import '@navikt/ft-form-hooks/dist/style.css';

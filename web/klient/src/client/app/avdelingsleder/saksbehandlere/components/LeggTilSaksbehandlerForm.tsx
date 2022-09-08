@@ -101,7 +101,6 @@ export const LeggTilSaksbehandlerForm: FunctionComponent<OwnProps & WrappedCompo
             <InputField
               name="brukerIdent"
               label={intl.formatMessage({ id: 'LeggTilSaksbehandlerForm.Brukerident' })}
-              bredde="S"
               validate={[required]}
             />
           </FlexColumn>

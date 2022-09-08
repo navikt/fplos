@@ -1,14 +1,12 @@
 import React, { FunctionComponent } from 'react';
-import { FormattedMessage, injectIntl, WrappedComponentProps } from 'react-intl';
-import { Undertekst } from 'nav-frontend-typografi';
+import { FormattedMessage } from 'react-intl';
 
 import { restApiHooks, RestApiPathsKeys } from 'data/fplosRestApi';
-import { VerticalSpacer } from '@navikt/ft-ui-komponenter';
 import KodeverkType from 'kodeverk/kodeverkTyper';
 import BehandlingType from 'kodeverk/behandlingType';
 import useKodeverk from 'data/useKodeverk';
 import KoSorteringType from 'types/avdelingsleder/koSorteringTsType';
-import { RadioOption, RadioGroupField } from '@navikt/ft-form-hooks';
+import { RadioGroupPanel } from '@navikt/ft-form-hooks';
 
 import DatoSorteringValg from './DatoSorteringValg';
 import BelopSorteringValg from './BelopSorteringValg';
@@ -30,8 +28,7 @@ const bareTilbakekrevingValgt = (valgteBehandlingtyper?: string[]) => valgteBeha
 /**
  * SorteringVelger
  */
-const SorteringVelger: FunctionComponent<OwnProps & WrappedComponentProps> = ({
-  intl,
+const SorteringVelger: FunctionComponent<OwnProps> = ({
   valgtSakslisteId,
   valgteBehandlingtyper,
   valgtAvdelingEnhet,
@@ -44,34 +41,26 @@ const SorteringVelger: FunctionComponent<OwnProps & WrappedComponentProps> = ({
   const koSorteringer = useKodeverk<KoSorteringType>(KodeverkType.KO_SORTERING);
 
   return (
-    <>
-      <Undertekst>
-        <FormattedMessage id="SorteringVelger.Sortering" />
-      </Undertekst>
-      <VerticalSpacer eightPx />
-      <RadioGroupField
-        name="sortering"
-        direction="vertical"
-        onChange={(sorteringType) => lagreSakslisteSortering({
-          sakslisteId: valgtSakslisteId,
-          sakslisteSorteringValg: sorteringType,
-          avdelingEnhet: valgtAvdelingEnhet,
-        }).then(() => {
-          hentAntallOppgaver(valgtSakslisteId, valgtAvdelingEnhet);
-          hentAvdelingensSakslister({ avdelingEnhet: valgtAvdelingEnhet });
-        })}
-      >
-        {koSorteringer
-          .filter((koSortering) => koSortering.feltkategori !== 'TILBAKEKREVING' || bareTilbakekrevingValgt(valgteBehandlingtyper))
-          .map((koSortering) => (
-            <RadioOption
-              key={koSortering.kode}
-              value={koSortering.kode}
-              label={koSortering.navn}
-            >
+    <RadioGroupPanel
+      name="sortering"
+      label={<FormattedMessage id="SorteringVelger.Sortering" />}
+      onChange={(sorteringType) => lagreSakslisteSortering({
+        sakslisteId: valgtSakslisteId,
+        sakslisteSorteringValg: sorteringType,
+        avdelingEnhet: valgtAvdelingEnhet,
+      }).then(() => {
+        hentAntallOppgaver(valgtSakslisteId, valgtAvdelingEnhet);
+        hentAvdelingensSakslister({ avdelingEnhet: valgtAvdelingEnhet });
+      })}
+      radios={koSorteringer
+        .filter((koSortering) => koSortering.feltkategori !== 'TILBAKEKREVING' || bareTilbakekrevingValgt(valgteBehandlingtyper))
+        .map((koSortering) => ({
+          value: koSortering.kode,
+          label: koSortering.navn,
+          element: (
+            <>
               {(koSortering.felttype === 'DATO') && (
                 <DatoSorteringValg
-                  intl={intl}
                   valgtSakslisteId={valgtSakslisteId}
                   lagreSakslisteSorteringTidsintervallDager={lagreSakslisteSorteringNumeriskIntervall}
                   valgtAvdelingEnhet={valgtAvdelingEnhet}
@@ -82,7 +71,6 @@ const SorteringVelger: FunctionComponent<OwnProps & WrappedComponentProps> = ({
               )}
               {(koSortering.felttype === 'HELTALL') && (
                 <BelopSorteringValg
-                  intl={intl}
                   valgtSakslisteId={valgtSakslisteId}
                   lagreSakslisteSorteringNumerisk={lagreSakslisteSorteringNumeriskIntervall}
                   valgtAvdelingEnhet={valgtAvdelingEnhet}
@@ -90,11 +78,11 @@ const SorteringVelger: FunctionComponent<OwnProps & WrappedComponentProps> = ({
                   hentAntallOppgaver={hentAntallOppgaver}
                 />
               )}
-            </RadioOption>
-          ))}
-      </RadioGroupField>
-    </>
+            </>
+          ),
+        }))}
+    />
   );
 };
 
-export default injectIntl(SorteringVelger);
+export default SorteringVelger;

@@ -7,9 +7,7 @@ import { Element } from 'nav-frontend-typografi';
 import { Row, Column } from 'nav-frontend-grid';
 
 import StoreValuesInLocalStorage from 'data/StoreValuesInLocalStorage';
-import {
-  Form, RadioGroupField, RadioOption, SelectField,
-} from '@navikt/ft-form-hooks';
+import { Form, RadioGroupPanel, SelectField } from '@navikt/ft-form-hooks';
 import useKodeverk from 'data/useKodeverk';
 import { VerticalSpacer } from '@navikt/ft-ui-komponenter';
 import FagsakYtelseType from 'kodeverk/fagsakYtelseType';
@@ -17,8 +15,6 @@ import KodeverkType from 'kodeverk/kodeverkTyper';
 import { KodeverkMedNavn } from '@navikt/ft-types';
 import OppgaverManueltPaVent from 'types/avdelingsleder/oppgaverManueltPaVentTsType';
 import ManueltPaVentGraf from './ManueltPaVentGraf';
-
-import styles from './manueltPaVentPanel.less';
 
 const finnFagsakYtelseTypeNavn = (fagsakYtelseTyper: KodeverkMedNavn[], valgtFagsakYtelseType: string): string => {
   const type = fagsakYtelseTyper.find((fyt) => fyt.kode === valgtFagsakYtelseType);
@@ -63,7 +59,7 @@ type FormValues = {
 /**
  * ManueltPaVentPanel.
  */
-export const ManueltPaVentPanel: FunctionComponent<OwnProps & WrappedComponentProps> = ({
+const ManueltPaVentPanel: FunctionComponent<OwnProps & WrappedComponentProps> = ({
   intl,
   height,
   oppgaverManueltPaVent,
@@ -92,32 +88,29 @@ export const ManueltPaVentPanel: FunctionComponent<OwnProps & WrappedComponentPr
             name="ukevalg"
             label=""
             selectValues={uker.map((u) => <option key={u.kode} value={u.kode}>{intl.formatMessage({ id: u.tekstKode })}</option>)}
-            bredde="l"
           />
         </Column>
         <Column xs="8">
-          <div className={styles.radioPadding}>
-            <RadioGroupField name="valgtYtelsetype">
-              <RadioOption
-                value={FagsakYtelseType.FORELDREPRENGER}
-                label={finnFagsakYtelseTypeNavn(fagsakYtelseTyper, FagsakYtelseType.FORELDREPRENGER)}
-              />
-              <RadioOption
-                value={FagsakYtelseType.ENGANGSSTONAD}
-                label={finnFagsakYtelseTypeNavn(fagsakYtelseTyper, FagsakYtelseType.ENGANGSSTONAD)}
-              />
-              <RadioOption
-                value={FagsakYtelseType.SVANGERSKAPPENGER}
-                label={finnFagsakYtelseTypeNavn(fagsakYtelseTyper, FagsakYtelseType.SVANGERSKAPPENGER)}
-              />
-              <RadioOption
-                value={ALLE_YTELSETYPER_VALGT}
-                label={<FormattedMessage id="ManueltPaVentPanel.Alle" />}
-              />
-            </RadioGroupField>
-          </div>
+          <RadioGroupPanel
+            name="valgtYtelsetype"
+            isHorizontal
+            radios={[{
+              value: FagsakYtelseType.FORELDREPRENGER,
+              label: finnFagsakYtelseTypeNavn(fagsakYtelseTyper, FagsakYtelseType.FORELDREPRENGER),
+            }, {
+              value: FagsakYtelseType.ENGANGSSTONAD,
+              label: finnFagsakYtelseTypeNavn(fagsakYtelseTyper, FagsakYtelseType.ENGANGSSTONAD),
+            }, {
+              value: FagsakYtelseType.SVANGERSKAPPENGER,
+              label: finnFagsakYtelseTypeNavn(fagsakYtelseTyper, FagsakYtelseType.SVANGERSKAPPENGER),
+            }, {
+              value: ALLE_YTELSETYPER_VALGT,
+              label: <FormattedMessage id="ManueltPaVentPanel.Alle" />,
+            }]}
+          />
         </Column>
       </Row>
+      <VerticalSpacer sixteenPx />
       <ManueltPaVentGraf
         height={height}
         isFireUkerValgt={values.ukevalg === UKE_4}

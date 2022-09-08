@@ -1,12 +1,12 @@
 import React, { Fragment, FunctionComponent } from 'react';
 import { FormattedMessage } from 'react-intl';
-import { Undertekst } from 'nav-frontend-typografi';
+import { Element } from 'nav-frontend-typografi';
 
 import { restApiHooks, RestApiPathsKeys } from 'data/fplosRestApi';
 import useKodeverk from 'data/useKodeverk';
 import KodeverkType from 'kodeverk/kodeverkTyper';
 import { VerticalSpacer, ArrowBox } from '@navikt/ft-ui-komponenter';
-import { CheckboxField, RadioGroupField, RadioOption } from '@navikt/ft-form-hooks';
+import { CheckboxField, RadioGroupPanel } from '@navikt/ft-form-hooks';
 
 import styles from './andreKriterierVelger.less';
 
@@ -33,9 +33,9 @@ const AndreKriterierVelger: FunctionComponent<OwnProps> = ({
 
   return (
     <>
-      <Undertekst>
+      <Element>
         <FormattedMessage id="AndreKriterierVelger.AndreKriterier" />
-      </Undertekst>
+      </Element>
       <VerticalSpacer eightPx />
       {andreKriterierTyper.map((akt) => (
         <Fragment key={akt.kode}>
@@ -60,8 +60,10 @@ const AndreKriterierVelger: FunctionComponent<OwnProps> = ({
               <VerticalSpacer sixteenPx />
               <div className={styles.arrowbox}>
                 <ArrowBox alignOffset={30}>
-                  <RadioGroupField
+                  <RadioGroupPanel
                     name={`${akt.kode}_inkluder`}
+                    isHorizontal
+                    isTrueOrFalseSelection
                     onChange={(skalInkludere) => lagreSakslisteAndreKriterier({
                       sakslisteId: valgtSakslisteId,
                       avdelingEnhet: valgtAvdelingEnhet,
@@ -72,17 +74,14 @@ const AndreKriterierVelger: FunctionComponent<OwnProps> = ({
                       hentAntallOppgaver(valgtSakslisteId, valgtAvdelingEnhet);
                       hentAvdelingensSakslister({ avdelingEnhet: valgtAvdelingEnhet });
                     })}
-                    parse={(value: string) => value === 'true'}
-                  >
-                    <RadioOption
-                      value="true"
-                      label={<FormattedMessage id="AndreKriterierVelger.TaMed" />}
-                    />
-                    <RadioOption
-                      value="false"
-                      label={<FormattedMessage id="AndreKriterierVelger.Fjern" />}
-                    />
-                  </RadioGroupField>
+                    radios={[{
+                      value: 'true',
+                      label: <FormattedMessage id="AndreKriterierVelger.TaMed" />,
+                    }, {
+                      value: 'false',
+                      label: <FormattedMessage id="AndreKriterierVelger.Fjern" />,
+                    }]}
+                  />
                 </ArrowBox>
               </div>
             </>

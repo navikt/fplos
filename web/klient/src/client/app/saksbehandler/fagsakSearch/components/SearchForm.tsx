@@ -70,7 +70,6 @@ const SearchForm: FunctionComponent<OwnProps & WrappedComponentProps> = ({
               <InputField
                 name="searchString"
                 label={intl.formatMessage({ id: 'Search.SaksnummerOrPersonId' })}
-                bredde="L"
                 validate={[hasValidSaksnummerOrFodselsnummerFormat]}
                 parse={(s = '') => s.toString().trim()}
               />

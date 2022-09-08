@@ -1,6 +1,6 @@
 import React, { FunctionComponent, useMemo } from 'react';
 import { FormattedMessage } from 'react-intl';
-import { Undertekst } from 'nav-frontend-typografi';
+import { Element } from 'nav-frontend-typografi';
 
 import { VerticalSpacer } from '@navikt/ft-ui-komponenter';
 import { restApiHooks, RestApiPathsKeys } from 'data/fplosRestApi';
@@ -33,9 +33,9 @@ const BehandlingstypeVelger: FunctionComponent<OwnProps> = ({
     []);
   return (
     <>
-      <Undertekst>
+      <Element>
         <FormattedMessage id="BehandlingstypeVelger.Behandlingstype" />
-      </Undertekst>
+      </Element>
       <VerticalSpacer eightPx />
       {behandlingTyper.map((bt) => {
         if (!bt) {

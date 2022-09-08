@@ -103,7 +103,6 @@ export const FlyttReservasjonModal: FunctionComponent<OwnProps & WrappedComponen
               <InputField
                 name="brukerIdent"
                 label={intl.formatMessage({ id: 'FlyttReservasjonModal.Brukerident' })}
-                bredde="S"
                 validate={[required, minLength7, maxLength7]}
                 autoFocus
                 autoComplete
