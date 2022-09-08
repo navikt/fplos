@@ -2892,7 +2892,7 @@
     call-me-maybe "^1.0.1"
     glob-to-regexp "^0.3.0"
 
-"@navikt/ds-css@^1.2.5", "@navikt/ds-css@^1.2.6":
+"@navikt/ds-css@^1.2.6":
   version "1.2.6"
   resolved "https://npm.pkg.github.com/download/@navikt/ds-css/1.2.6/6f4f8571301674fe5f27e0531f4c78fad89d4ffb#6f4f8571301674fe5f27e0531f4c78fad89d4ffb"
   integrity sha512-5DJsDpzB56Fbnlg8hd7GqT55i0FxKazMCNYrIAbBx7LTZf/89ypSyUeZ+dJ9YVDHE3lXNByrIfocfVdIpNAwdA==
@@ -2902,7 +2902,7 @@
   resolved "https://npm.pkg.github.com/download/@navikt/ds-icons/1.2.6/73f6c2f1e18cc67e6e867205cbe8b413dd4db648#73f6c2f1e18cc67e6e867205cbe8b413dd4db648"
   integrity sha512-g+emSneScHW6WjNIqIS22trveW2BxhqoXNxrvJiZfTU9JO4i2B9T2vDzLZjP9rT6o8ocVxDAwDBExh4g6UYIzw==
 
-"@navikt/ds-react@^1.2.5", "@navikt/ds-react@^1.2.6":
+"@navikt/ds-react@^1.2.6":
   version "1.2.6"
   resolved "https://npm.pkg.github.com/download/@navikt/ds-react/1.2.6/d0bf7c380c4f3d8990ab6f8dd3e4d8c1d7bd8449#d0bf7c380c4f3d8990ab6f8dd3e4d8c1d7bd8449"
   integrity sha512-xtGcrMr2CWAFvR+whLC1YIDbQKnJNhVpr1vaeYmpHejJlzLUAuT8mYtUnxYrd1QZms7rxyajj8sCseNnlmMdKg==
