@@ -65,7 +65,7 @@ const FagsakSearch: FunctionComponent<OwnProps> = ({
         <PersonInfo person={fagsaker[0].person} />
         <VerticalSpacer sixteenPx />
         <Normaltekst>
-          <FormattedMessage id="FagsakSearch.FlereApneSaker" />
+          <FormattedMessage id="FagsakSearch.FlereSakerEllerBehandlinger" />
         </Normaltekst>
         <FagsakList
           selectFagsakCallback={selectFagsakCallback}
