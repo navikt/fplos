@@ -25,7 +25,7 @@
         <java.version>17</java.version>
 
         <fp-kontrakter.version>6.1.25</fp-kontrakter.version>
-        <felles.version>4.1.36</felles.version>
+        <felles.version>4.1.37</felles.version>
         <prosesstask.version>3.1.10</prosesstask.version>
     </properties>
 
