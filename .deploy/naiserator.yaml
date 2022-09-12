@@ -41,6 +41,18 @@ spec:
     requests:
       cpu: 200m
       memory: 512Mi
+  azure:
+    application:
+      enabled: true
+      claims:
+        extra:
+          - "NAVident"
+          - "azp_name"
+  accessPolicy:
+    inbound:
+      rules:
+        - application: fp-frontend-azure
+          cluster: dev-fss
   vault:
     enabled: true
     paths:
