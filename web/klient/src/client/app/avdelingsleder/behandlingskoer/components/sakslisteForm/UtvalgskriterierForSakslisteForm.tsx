@@ -3,8 +3,9 @@ import {
   injectIntl, WrappedComponentProps, FormattedMessage, IntlShape,
 } from 'react-intl';
 import { useForm } from 'react-hook-form';
-import Panel from 'nav-frontend-paneler';
-import { Undertittel, Element, Normaltekst } from 'nav-frontend-typografi';
+import {
+  Heading, BodyShort, Panel, Label,
+} from '@navikt/ds-react';
 
 import { Row, Column } from 'nav-frontend-grid';
 import {
@@ -115,9 +116,9 @@ export const UtvalgskriterierForSakslisteForm: FunctionComponent<OwnProps & Wrap
   return (
     <Form<FormValues> formMethods={formMethods}>
       <Panel className={styles.panel}>
-        <Element>
+        <Label size="small">
           <FormattedMessage id="UtvalgskriterierForSakslisteForm.Utvalgskriterier" />
-        </Element>
+        </Label>
         <VerticalSpacer eightPx />
         <Row>
           <Column xs="9">
@@ -131,8 +132,8 @@ export const UtvalgskriterierForSakslisteForm: FunctionComponent<OwnProps & Wrap
           </Column>
           <Column xs="3">
             <div className={styles.grayBox}>
-              <Normaltekst><FormattedMessage id="UtvalgskriterierForSakslisteForm.AntallSaker" /></Normaltekst>
-              <Undertittel>{antallOppgaver ? `${antallOppgaver}` : '0'}</Undertittel>
+              <BodyShort size="small"><FormattedMessage id="UtvalgskriterierForSakslisteForm.AntallSaker" /></BodyShort>
+              <Heading size="small">{antallOppgaver ? `${antallOppgaver}` : '0'}</Heading>
             </div>
           </Column>
         </Row>

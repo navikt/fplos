@@ -1,9 +1,8 @@
 import React, { FunctionComponent } from 'react';
 import { injectIntl, WrappedComponentProps, FormattedMessage } from 'react-intl';
 import { useForm } from 'react-hook-form';
-
 import dayjs from 'dayjs';
-import { Element } from 'nav-frontend-typografi';
+import { Label } from '@navikt/ds-react';
 import { Row, Column } from 'nav-frontend-grid';
 
 import StoreValuesInLocalStorage from 'data/StoreValuesInLocalStorage';
@@ -78,9 +77,9 @@ const ManueltPaVentPanel: FunctionComponent<OwnProps & WrappedComponentProps> = 
   return (
     <Form<FormValues> formMethods={formMethods}>
       <StoreValuesInLocalStorage stateKey={formName} values={values} />
-      <Element>
+      <Label size="small">
         <FormattedMessage id="ManueltPaVentPanel.SattPaVent" />
-      </Element>
+      </Label>
       <VerticalSpacer sixteenPx />
       <Row>
         <Column xs="2">

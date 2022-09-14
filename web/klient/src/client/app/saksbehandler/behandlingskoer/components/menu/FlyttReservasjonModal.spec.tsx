@@ -12,8 +12,8 @@ describe('<FlyttReservasjonModal>', () => {
 
     expect(await screen.findByText('Flytt reservasjonen til annen saksbehandler')).toBeInTheDocument();
 
-    expect(screen.getByText('Søk')).toBeDisabled();
-    expect(screen.getByText('OK')).toBeDisabled();
+    expect(screen.getByText('Søk').closest('button')).toBeDisabled();
+    expect(screen.getByText('OK').closest('button')).toBeDisabled();
   });
 
   it('skal vise at oppgitt brukerident ikke finnes', async () => {
@@ -30,7 +30,7 @@ describe('<FlyttReservasjonModal>', () => {
     await userEvent.click(screen.getByText('Søk'));
 
     expect(await screen.findByText('Kan ikke finne brukerident')).toBeInTheDocument();
-    expect(screen.getByText('OK')).toBeDisabled();
+    expect(screen.getByText('OK').closest('button')).toBeDisabled();
   });
 
   it('skal vise finne brukerident og så lagre begrunnelse for flytting', async () => {
@@ -48,7 +48,7 @@ describe('<FlyttReservasjonModal>', () => {
     await userEvent.click(screen.getByText('Søk'));
 
     expect(await screen.findByText('Espen Utvikler, NAV Viken')).toBeInTheDocument();
-    expect(screen.getByText('OK')).toBeDisabled();
+    expect(screen.getByText('OK').closest('button')).toBeDisabled();
 
     const begrunnelseInput = utils.getByLabelText('Begrunn flytting av reservasjonen');
     await userEvent.type(begrunnelseInput, 'Dette er en begrunnelse');

@@ -1,7 +1,7 @@
 import React, { FunctionComponent, useMemo } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { useForm } from 'react-hook-form';
-import { Element } from 'nav-frontend-typografi';
+import { Label } from '@navikt/ds-react';
 
 import {
   VerticalSpacer, FlexColumn, FlexContainer, FlexRow,
@@ -53,9 +53,9 @@ export const OppgaverSomErApneEllerPaVentPanel: FunctionComponent<OwnProps> = ({
   return (
     <Form formMethods={formMethods}>
       <StoreValuesInLocalStorage stateKey={formName} values={values} />
-      <Element>
+      <Label size="small">
         <FormattedMessage id="OppgaverSomErApneEllerPaVentPanel.Apne" />
-      </Element>
+      </Label>
       <VerticalSpacer sixteenPx />
       <FlexContainer>
         <FlexRow>

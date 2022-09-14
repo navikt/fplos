@@ -3,8 +3,8 @@ import React, {
 } from 'react';
 import { FormattedMessage } from 'react-intl';
 import {
-  Normaltekst, Undertekst, Element, Undertittel,
-} from 'nav-frontend-typografi';
+  BodyShort, Detail, Label, Heading,
+} from '@navikt/ds-react';
 import { Column, Row } from 'nav-frontend-grid';
 
 import { KodeverkMedNavn } from '@navikt/ft-types';
@@ -136,23 +136,23 @@ export const GjeldendeSakslisterTabell: FunctionComponent<OwnProps> = ({
     <>
       <Row>
         <Column xs="9">
-          <Element>
+          <Label size="small">
             <FormattedMessage id="GjeldendeSakslisterTabell.GjeldendeLister" />
-          </Element>
+          </Label>
         </Column>
         <Column xs="3">
           <div className={styles.grayBox}>
-            <Normaltekst>
+            <BodyShort size="small">
               <FormattedMessage id="GjeldendeSakslisterTabell.OppgaverForAvdeling" />
-            </Normaltekst>
-            <Undertittel>{oppgaverForAvdelingAntall || '0'}</Undertittel>
+            </BodyShort>
+            <Heading size="small">{oppgaverForAvdelingAntall || '0'}</Heading>
           </div>
         </Column>
       </Row>
       {sakslister.length === 0 && (
         <>
           <VerticalSpacer eightPx />
-          <Normaltekst><FormattedMessage id="GjeldendeSakslisterTabell.IngenLister" /></Normaltekst>
+          <BodyShort size="small"><FormattedMessage id="GjeldendeSakslisterTabell.IngenLister" /></BodyShort>
           <VerticalSpacer eightPx />
         </>
       )}
@@ -197,9 +197,9 @@ export const GjeldendeSakslisterTabell: FunctionComponent<OwnProps> = ({
         onKeyDown={lagNySakslisteFn}
       >
         <Image className={styles.addCircleIcon} src={addCircleIcon} />
-        <Undertekst className={styles.imageText}>
+        <Detail size="small" className={styles.imageText}>
           <FormattedMessage id="GjeldendeSakslisterTabell.LeggTilListe" />
-        </Undertekst>
+        </Detail>
       </div>
       {valgtSaksliste && (
         <SletteSakslisteModal

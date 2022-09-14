@@ -1,8 +1,7 @@
 import React, { FunctionComponent } from 'react';
 import { injectIntl, WrappedComponentProps, FormattedMessage } from 'react-intl';
 import { Row, Column } from 'nav-frontend-grid';
-import { Hovedknapp, Knapp } from 'nav-frontend-knapper';
-import { Normaltekst } from 'nav-frontend-typografi';
+import { Button, BodyShort } from '@navikt/ds-react';
 
 import { Image } from '@navikt/ft-ui-komponenter';
 import Modal from 'app/Modal';
@@ -32,9 +31,9 @@ const SletteSaksbehandlerModal: FunctionComponent<OwnProps & WrappedComponentPro
   <Modal
     className={styles.modal}
     closeButton={false}
-    isOpen
-    contentLabel={intl.formatMessage({ id: 'SletteSaksbehandlerModal.SletteModal' })}
-    onRequestClose={closeSletteModal}
+    open
+    aria-label={intl.formatMessage({ id: 'SletteSaksbehandlerModal.SletteModal' })}
+    onClose={closeSletteModal}
   >
     <Row>
       <Column xs="1">
@@ -46,28 +45,28 @@ const SletteSaksbehandlerModal: FunctionComponent<OwnProps & WrappedComponentPro
         <div className={styles.divider} />
       </Column>
       <Column xs="6" className={styles.text}>
-        <Normaltekst>
+        <BodyShort size="small">
           <FormattedMessage id="SletteSaksbehandlerModal.SletteSaksbehandler" values={{ saksbehandlerNavn: valgtSaksbehandler.navn }} />
-        </Normaltekst>
+        </BodyShort>
       </Column>
       <Column xs="4">
-        <Hovedknapp
+        <Button
           className={styles.submitButton}
-          mini
-          htmlType="submit"
+          size="small"
+          variant="primary"
           onClick={() => fjernSaksbehandler(valgtSaksbehandler)}
           autoFocus
         >
           {intl.formatMessage({ id: 'SletteSaksbehandlerModal.Ja' })}
-        </Hovedknapp>
-        <Knapp
+        </Button>
+        <Button
           className={styles.cancelButton}
-          mini
-          htmlType="reset"
+          size="small"
+          variant="secondary"
           onClick={closeSletteModal}
         >
           {intl.formatMessage({ id: 'SletteSaksbehandlerModal.Nei' })}
-        </Knapp>
+        </Button>
       </Column>
     </Row>
   </Modal>

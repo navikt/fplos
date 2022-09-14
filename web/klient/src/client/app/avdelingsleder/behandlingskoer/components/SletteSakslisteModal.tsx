@@ -1,8 +1,7 @@
 import React, { FunctionComponent } from 'react';
 import { injectIntl, WrappedComponentProps, FormattedMessage } from 'react-intl';
 import { Row, Column } from 'nav-frontend-grid';
-import { Hovedknapp, Knapp } from 'nav-frontend-knapper';
-import { Normaltekst } from 'nav-frontend-typografi';
+import { Button, BodyShort } from '@navikt/ds-react';
 
 import { Image } from '@navikt/ft-ui-komponenter';
 import Modal from 'app/Modal';
@@ -33,9 +32,9 @@ export const SletteSakslisteModal: FunctionComponent<OwnProps & WrappedComponent
   <Modal
     className={styles.modal}
     closeButton={false}
-    isOpen
-    contentLabel={intl.formatMessage({ id: 'SletteSakslisteModal.SletteModal' })}
-    onRequestClose={cancel}
+    open
+    aria-label={intl.formatMessage({ id: 'SletteSakslisteModal.SletteModal' })}
+    onClose={cancel}
   >
     <Row>
       <Column xs="1">
@@ -47,28 +46,28 @@ export const SletteSakslisteModal: FunctionComponent<OwnProps & WrappedComponent
         <div className={styles.divider} />
       </Column>
       <Column xs="6" className={styles.text}>
-        <Normaltekst>
+        <BodyShort size="small">
           <FormattedMessage id="SletteSakslisteModal.SletteSaksliste" values={{ sakslisteNavn: valgtSaksliste.navn }} />
-        </Normaltekst>
+        </BodyShort>
       </Column>
       <Column xs="4">
-        <Hovedknapp
+        <Button
           className={styles.submitButton}
-          mini
-          htmlType="submit"
+          size="small"
+          variant="primary"
           onClick={() => submit(valgtSaksliste)}
           autoFocus
         >
           {intl.formatMessage({ id: 'SletteSakslisteModal.Ja' })}
-        </Hovedknapp>
-        <Knapp
+        </Button>
+        <Button
           className={styles.cancelButton}
-          mini
-          htmlType="reset"
+          size="small"
+          variant="secondary"
           onClick={cancel}
         >
           {intl.formatMessage({ id: 'SletteSakslisteModal.Nei' })}
-        </Knapp>
+        </Button>
       </Column>
     </Row>
   </Modal>

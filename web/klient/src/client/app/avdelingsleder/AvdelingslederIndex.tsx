@@ -1,13 +1,10 @@
 import React, {
-  FunctionComponent, useMemo, useEffect, useCallback, ReactElement,
+  FunctionComponent, useMemo, useEffect, useCallback,
 } from 'react';
 import { FormattedMessage } from 'react-intl';
-import classnames from 'classnames/bind';
-import { NavLink } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { Location } from 'history';
-import Panel from 'nav-frontend-paneler';
-import Tabs from 'nav-frontend-tabs';
-import { Undertittel } from 'nav-frontend-typografi';
+import { Heading, Panel, Tabs } from '@navikt/ds-react';
 
 import { restApiHooks, RestApiPathsKeys, RestApiGlobalStatePathsKeys } from 'data/fplosRestApi';
 import { LoadingPanel } from '@navikt/ft-ui-komponenter';
@@ -22,13 +19,9 @@ import AvdelingslederPanels from './avdelingslederPanels';
 import NokkeltallIndex from './nokkeltall/NokkeltallIndex';
 import EndreSaksbehandlereIndex from './saksbehandlere/EndreSaksbehandlereIndex';
 import EndreBehandlingskoerIndex from './behandlingskoer/EndreBehandlingskoerIndex';
-
-import styles from './avdelingslederIndex.less';
 import ReservasjonerIndex from './reservasjoner/ReservasjonerIndex';
 
 const EMPTY_ARRAY: Saksbehandler[] = [];
-
-const classNames = classnames.bind(styles);
 
 const renderAvdelingslederPanel = (
   avdelingslederPanel: string,
@@ -72,24 +65,6 @@ interface OwnProps {
   valgtAvdelingEnhet?: string;
 }
 
-const getTab = (
-  avdelingslederPanel: string,
-  activeAvdelingslederPanel: string,
-  getAvdelingslederPanelLocation: (avdelingslederPanel: string) => any,
-) => ({
-  label: (<Undertittel><FormattedMessage id={messageId[avdelingslederPanel]} /></Undertittel>),
-  aktiv: avdelingslederPanel === activeAvdelingslederPanel,
-  // eslint-disable-next-line react/prop-types
-  linkCreator: ({ children, className }: { children: ReactElement, className: string }) => (
-    <NavLink
-      to={getAvdelingslederPanelLocation(avdelingslederPanel)}
-      className={classNames(className, 'link', { isActive: activeAvdelingslederPanel === avdelingslederPanel })}
-    >
-      {children}
-    </NavLink>
-  ),
-});
-
 const getPanelFromUrlOrDefault = (location: Location) => {
   const panelFromUrl = parseQueryString(location.search);
   return panelFromUrl.avdelingsleder ? panelFromUrl.avdelingsleder : AvdelingslederPanels.BEHANDLINGSKOER;
@@ -98,7 +73,7 @@ const getPanelFromUrlOrDefault = (location: Location) => {
 /**
  * AvdelingslederIndex
  */
-export const AvdelingslederIndex: FunctionComponent<OwnProps> = ({
+const AvdelingslederIndex: FunctionComponent<OwnProps> = ({
   valgtAvdelingEnhet,
 }) => {
   const { selected: activeAvdelingslederPanelTemp, location } = useTrackRouteParam<string>({
@@ -123,6 +98,8 @@ export const AvdelingslederIndex: FunctionComponent<OwnProps> = ({
   const getAvdelingslederPanelLocation = getAvdelingslederPanelLocationCreator(location);
   const activeAvdelingslederPanel = activeAvdelingslederPanelTemp || getPanelFromUrlOrDefault(location);
 
+  const navigate = useNavigate();
+
   const erKode6Avdeling = useMemo(() => {
     const avdeling = avdelinger instanceof Array && avdelinger.find((a) => a.avdelingEnhet === valgtAvdelingEnhet);
     return avdeling ? avdeling.kreverKode6 : false;
@@ -136,14 +113,31 @@ export const AvdelingslederIndex: FunctionComponent<OwnProps> = ({
     return (
       <AvdelingslederDashboard key={valgtAvdelingEnhet}>
         <div>
-          <Tabs tabs={[
-            getTab(AvdelingslederPanels.BEHANDLINGSKOER, activeAvdelingslederPanel, getAvdelingslederPanelLocation),
-            getTab(AvdelingslederPanels.NOKKELTALL, activeAvdelingslederPanel, getAvdelingslederPanelLocation),
-            getTab(AvdelingslederPanels.SAKSBEHANDLERE, activeAvdelingslederPanel, getAvdelingslederPanelLocation),
-            getTab(AvdelingslederPanels.RESERVASJONER, activeAvdelingslederPanel, getAvdelingslederPanelLocation),
-          ]}
-          />
-          <Panel className={styles.panelPadding}>
+          <Tabs
+            size="small"
+            value={activeAvdelingslederPanel}
+            onChange={(avdelingslederPanel: string) => { navigate(getAvdelingslederPanelLocation(avdelingslederPanel)); }}
+          >
+            <Tabs.List>
+              <Tabs.Tab
+                value={AvdelingslederPanels.BEHANDLINGSKOER}
+                label={<Heading size="small"><FormattedMessage id={messageId[AvdelingslederPanels.BEHANDLINGSKOER]} /></Heading>}
+              />
+              <Tabs.Tab
+                value={AvdelingslederPanels.NOKKELTALL}
+                label={<Heading size="small"><FormattedMessage id={messageId[AvdelingslederPanels.NOKKELTALL]} /></Heading>}
+              />
+              <Tabs.Tab
+                value={AvdelingslederPanels.SAKSBEHANDLERE}
+                label={<Heading size="small"><FormattedMessage id={messageId[AvdelingslederPanels.SAKSBEHANDLERE]} /></Heading>}
+              />
+              <Tabs.Tab
+                value={AvdelingslederPanels.RESERVASJONER}
+                label={<Heading size="small"><FormattedMessage id={messageId[AvdelingslederPanels.RESERVASJONER]} /></Heading>}
+              />
+            </Tabs.List>
+          </Tabs>
+          <Panel>
             {renderAvdelingslederPanel(activeAvdelingslederPanel, valgtAvdelingEnhet, hentAvdelingensSaksbehandlere, avdelingensSaksbehandlere)}
           </Panel>
         </div>

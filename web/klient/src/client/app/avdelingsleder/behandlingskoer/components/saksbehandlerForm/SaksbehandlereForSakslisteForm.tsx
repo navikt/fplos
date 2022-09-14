@@ -1,8 +1,7 @@
 import React, { FunctionComponent, useMemo, useEffect } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { useForm } from 'react-hook-form';
-import Panel from 'nav-frontend-paneler';
-import { Element } from 'nav-frontend-typografi';
+import { Label, Panel } from '@navikt/ds-react';
 import { Row, Column } from 'nav-frontend-grid';
 
 import { restApiHooks, RestApiPathsKeys } from 'data/fplosRestApi';
@@ -57,9 +56,9 @@ const SaksbehandlereForSakslisteForm: FunctionComponent<OwnProps> = ({
   return (
     <Form<FormValues> formMethods={formMethods}>
       <Panel className={styles.panel}>
-        <Element>
+        <Label size="small">
           <FormattedMessage id="SaksbehandlereForSakslisteForm.Saksbehandlere" />
-        </Element>
+        </Label>
         <VerticalSpacer sixteenPx />
         {sorterteAvdelingensSaksbehandlere.length === 0 && (
           <FormattedMessage id="SaksbehandlereForSakslisteForm.IngenSaksbehandlere" />

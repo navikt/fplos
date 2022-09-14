@@ -1,9 +1,8 @@
 import React, { FunctionComponent, useMemo } from 'react';
 import { injectIntl, WrappedComponentProps, IntlShape } from 'react-intl';
 import { Row, Column } from 'nav-frontend-grid';
-import { Undertekst } from 'nav-frontend-typografi';
-
-import Lukknapp from 'nav-frontend-lukknapp';
+import { Button, Detail } from '@navikt/ds-react';
+import { Close } from '@navikt/ds-icons';
 import { decodeHtmlEntity } from '@navikt/ft-utils';
 
 import EventType from 'data/rest-api/src/requestApi/eventType';
@@ -70,14 +69,19 @@ const ErrorMessagePanel: FunctionComponent<OwnProps & WrappedComponentProps> = (
       {feilmeldinger.map((message) => (
         <Row key={message}>
           <Column xs="11">
-            <Undertekst className={styles.wordWrap}>
+            <Detail size="small" className={styles.wordWrap}>
               {`${decodeHtmlEntity(message)} `}
-            </Undertekst>
+            </Detail>
           </Column>
         </Row>
       ))}
       <div className={styles.lukkContainer}>
-        <Lukknapp hvit onClick={removeErrorMessages}>{intl.formatMessage({ id: 'ErrorMessagePanel.Close' })}</Lukknapp>
+        <Button
+          variant="tertiary"
+          icon={<Close color="white" />}
+          onClick={removeErrorMessages}
+          aria-label={intl.formatMessage({ id: 'ErrorMessagePanel.Close' })}
+        />
       </div>
     </div>
   );

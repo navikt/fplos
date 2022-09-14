@@ -1,5 +1,6 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
+import { act } from 'react-dom/test-utils';
 import { composeStories } from '@storybook/testing-react';
 import * as stories from './OppgaverTabell.stories';
 
@@ -7,7 +8,9 @@ const { Default, TomOppgaveTabell } = composeStories(stories);
 
 describe('<OppgaverTabell>', () => {
   it('skal vise tabell med behandlinger', async () => {
-    render(<Default />);
+    await act(async () => {
+      render(<Default />);
+    });
 
     expect(await screen.findByText('Neste behandlinger (0 i køen)')).toBeInTheDocument();
     expect(await screen.findByText('Helge Utvikler 233')).toBeInTheDocument();

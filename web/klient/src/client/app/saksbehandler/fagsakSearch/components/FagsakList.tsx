@@ -1,5 +1,5 @@
 import React, { Fragment, FunctionComponent, useMemo } from 'react';
-import NavFrontendChevron from 'nav-frontend-chevron';
+import { Next } from '@navikt/ds-icons';
 
 import Oppgave from 'types/saksbehandler/oppgaveTsType';
 import KodeverkType from 'kodeverk/kodeverkTyper';
@@ -90,7 +90,7 @@ const FagsakList: FunctionComponent<OwnProps> = ({
               {oppgave.behandlingStatus ? getKodeverknavnFraKode(alleKodeverk, KodeverkType.BEHANDLING_STATUS, oppgave.behandlingStatus) : ''}
             </TableColumn>
             <TableColumn>{fagsak.barnFødt ? <DateLabel dateString={fagsak.barnFødt} /> : null}</TableColumn>
-            <TableColumn><NavFrontendChevron /></TableColumn>
+            <TableColumn><Next /></TableColumn>
           </TableRow>
         ));
 
@@ -107,7 +107,7 @@ const FagsakList: FunctionComponent<OwnProps> = ({
               <TableColumn />
               <TableColumn>{fagsakStatusType ? fagsakStatusType.navn : ''}</TableColumn>
               <TableColumn>{fagsak.barnFødt ? <DateLabel dateString={fagsak.barnFødt} /> : null}</TableColumn>
-              <TableColumn><NavFrontendChevron /></TableColumn>
+              <TableColumn><Next /></TableColumn>
             </TableRow>
             {oppgaver.length > 0 && oppgaver}
           </Fragment>

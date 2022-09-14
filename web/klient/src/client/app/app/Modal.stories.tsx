@@ -9,10 +9,10 @@ export default {
 
 export const Default = () => (
   <Modal
-    contentLabel="Dette er en advarsel"
-    isOpen
+    aria-label="Dette er en advarsel"
+    open
     closeButton
-    onRequestClose={() => undefined}
+    onClose={() => undefined}
   >
     <div>test</div>
   </Modal>

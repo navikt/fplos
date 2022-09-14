@@ -1,8 +1,7 @@
 import React, { FunctionComponent } from 'react';
 import { Link } from 'react-router-dom';
 import { FormattedMessage } from 'react-intl';
-import Panel from 'nav-frontend-paneler';
-import { Undertittel, Normaltekst } from 'nav-frontend-typografi';
+import { Panel, BodyShort, Heading } from '@navikt/ds-react';
 
 import styles from './missingPage.less';
 
@@ -14,14 +13,14 @@ import styles from './missingPage.less';
  */
 const MissingPage: FunctionComponent = () => (
   <Panel className={styles.container}>
-    <Undertittel>
+    <Heading size="small">
       <FormattedMessage id="MissingPage.PageIsMissing" />
-    </Undertittel>
-    <Normaltekst>
+    </Heading>
+    <BodyShort size="small">
       <Link to="/">
         <FormattedMessage id="MissingPage.Home" />
       </Link>
-    </Normaltekst>
+    </BodyShort>
   </Panel>
 );
 

@@ -10,6 +10,6 @@ describe('<Modal>', () => {
   it('skal rendre modal', async () => {
     render(<Default />);
 
-    expect(await screen.findByText('Lukk')).toBeInTheDocument();
+    expect(await screen.findByText('Lukk modalvindu')).toBeInTheDocument();
   });
 });

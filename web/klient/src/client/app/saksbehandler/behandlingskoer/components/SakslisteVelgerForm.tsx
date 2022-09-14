@@ -6,7 +6,7 @@ import { useForm } from 'react-hook-form';
 import {
   useIntl, FormattedMessage, IntlShape,
 } from 'react-intl';
-import { Element, Normaltekst } from 'nav-frontend-typografi';
+import { Label, BodyShort } from '@navikt/ds-react';
 
 import { DDMMYYYY_DATE_FORMAT, getKodeverknavnFraKode } from '@navikt/ft-utils';
 import {
@@ -138,8 +138,8 @@ const createTooltip = (saksbehandlere?: Saksbehandler[]) => {
 
   return (
     <div>
-      <Element><FormattedMessage id="SakslisteVelgerForm.SaksbehandlerToolip" /></Element>
-      {saksbehandlere.map((s) => s.navn).sort((n1, n2) => n1.localeCompare(n2)).map((navn) => (<Normaltekst key={navn}>{navn}</Normaltekst>))}
+      <Label size="small"><FormattedMessage id="SakslisteVelgerForm.SaksbehandlerToolip" /></Label>
+      {saksbehandlere.map((s) => s.navn).sort((n1, n2) => n1.localeCompare(n2)).map((navn) => (<BodyShort size="small" key={navn}>{navn}</BodyShort>))}
     </div>
   );
 };
@@ -196,7 +196,7 @@ export const SakslisteVelgerForm: FunctionComponent<OwnProps> = ({
 
   return (
     <Form<FormValues> formMethods={formMethods}>
-      <Element><FormattedMessage id="SakslisteVelgerForm.Utvalgskriterier" /></Element>
+      <Label size="small"><FormattedMessage id="SakslisteVelgerForm.Utvalgskriterier" /></Label>
       <VerticalSpacer eightPx />
       <FlexContainer>
         <FlexRow>

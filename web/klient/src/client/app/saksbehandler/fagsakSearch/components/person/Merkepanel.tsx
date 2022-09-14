@@ -1,9 +1,8 @@
 import React, { FunctionComponent } from 'react';
 import { injectIntl, WrappedComponentProps, FormattedMessage } from 'react-intl';
-import DiskresjonskodeType from 'kodeverk/diskresjonskodeType';
+import { Tag } from '@navikt/ds-react';
 
-import { EtikettAdvarsel, EtikettInfo, EtikettFokus } from 'nav-frontend-etiketter';
-import styles from './merkepanel.less';
+import DiskresjonskodeType from 'kodeverk/diskresjonskodeType';
 
 interface OwnProps {
   erDod?: boolean;
@@ -13,36 +12,36 @@ interface OwnProps {
 /**
  * MerkePanel
  *
- * Presentasjonskomponent. Definerer visning av personens merkinger. (Søker)
+ * Definerer visning av personens merkinger. (Søker)
  *
  * Eksempel:
  * ```html
  *  <MerkePanel erDod={false} diskresjonskode="SPSF"  />
  * ```
  */
-export const MerkePanel: FunctionComponent<OwnProps & WrappedComponentProps> = ({
+const MerkePanel: FunctionComponent<OwnProps & WrappedComponentProps> = ({
   intl,
   erDod,
   diskresjonskode,
 }) => (
-  <div className={styles.merkePanel}>
+  <>
     {erDod && (
-      <EtikettInfo className={styles.dodMerke} title={intl.formatMessage({ id: 'MerkePanel.DodTittel' })}>
+      <Tag variant="info" title={intl.formatMessage({ id: 'MerkePanel.DodTittel' })}>
         <FormattedMessage id="MerkePanel.Dod" />
-      </EtikettInfo>
+      </Tag>
     )}
     {diskresjonskode === DiskresjonskodeType.KODE6 && !erDod && (
-      <EtikettAdvarsel className={styles.merkeDiskresjonskoder} title={intl.formatMessage({ id: 'MerkePanel.Diskresjon6Tittel' })}>
+      <Tag variant="error" title={intl.formatMessage({ id: 'MerkePanel.Diskresjon6Tittel' })}>
         <FormattedMessage id="MerkePanel.Diskresjon6" />
-      </EtikettAdvarsel>
+      </Tag>
     )}
 
     {diskresjonskode === DiskresjonskodeType.KODE7 && !erDod && (
-      <EtikettFokus className={styles.merkeDiskresjonskoder} title={intl.formatMessage({ id: 'MerkePanel.Diskresjon7Tittel' })}>
+      <Tag variant="warning" title={intl.formatMessage({ id: 'MerkePanel.Diskresjon7Tittel' })}>
         <FormattedMessage id="MerkePanel.Diskresjon7" />
-      </EtikettFokus>
+      </Tag>
     )}
-  </div>
+  </>
 );
 
 MerkePanel.defaultProps = {

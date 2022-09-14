@@ -1,7 +1,6 @@
 import React, { useCallback, Fragment, FunctionComponent } from 'react';
 import { FormattedMessage } from 'react-intl';
-import Lenke from 'nav-frontend-lenker';
-import { Undertittel, Normaltekst } from 'nav-frontend-typografi';
+import { Link, BodyShort, Heading } from '@navikt/ds-react';
 
 import { restApiHooks, RestApiPathsKeys, RestApiGlobalStatePathsKeys } from 'data/fplosRestApi';
 import { åpneFagsak } from 'app/paths';
@@ -27,28 +26,30 @@ const SistBehandledeSaker: FunctionComponent = () => {
 
   return (
     <>
-      <Undertittel><FormattedMessage id="SistBehandledeSaker.SistBehandledeSaker" /></Undertittel>
+      <Heading size="small"><FormattedMessage id="SistBehandledeSaker.SistBehandledeSaker" /></Heading>
       <VerticalSpacer eightPx />
       {sistBehandledeSaker.length === 0
-      && <Normaltekst><FormattedMessage id="SistBehandledeSaker.IngenBehandlinger" /></Normaltekst>}
+      && <BodyShort size="small"><FormattedMessage id="SistBehandledeSaker.IngenBehandlinger" /></BodyShort>}
       {sistBehandledeSaker.map((sbs, index) => (
         <Fragment key={sbs.id}>
-          <Normaltekst>
+          <BodyShort size="small">
             {sbs.navn
               ? (
-                <Lenke
+                // eslint-disable-next-line jsx-a11y/anchor-is-valid
+                <Link
                   href="#"
                   onClick={getClickEvent(openFpsak, sbs)}
                 >
                   {`${sbs.navn} ${sbs.personnummer}`}
-                </Lenke>
+                </Link>
               )
               : (
-                <Lenke href="#" onClick={getClickEvent(openFpsak, sbs)}>
+                // eslint-disable-next-line jsx-a11y/anchor-is-valid
+                <Link href="#" onClick={getClickEvent(openFpsak, sbs)}>
                   <FormattedMessage id="SistBehandledeSaker.Behandling" values={{ index: index + 1 }} />
-                </Lenke>
+                </Link>
               )}
-          </Normaltekst>
+          </BodyShort>
           <VerticalSpacer eightPx />
         </Fragment>
       ))}

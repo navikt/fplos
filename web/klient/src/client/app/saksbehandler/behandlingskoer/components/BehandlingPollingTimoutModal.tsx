@@ -1,8 +1,7 @@
 import React, { FunctionComponent } from 'react';
 import { injectIntl, WrappedComponentProps, FormattedMessage } from 'react-intl';
 import { Row, Column } from 'nav-frontend-grid';
-import { Hovedknapp } from 'nav-frontend-knapper';
-import { Normaltekst } from 'nav-frontend-typografi';
+import { Button, BodyShort } from '@navikt/ds-react';
 
 import { Image } from '@navikt/ft-ui-komponenter';
 import Modal from 'app/Modal';
@@ -21,10 +20,10 @@ const BehandlingPollingTimoutModal: FunctionComponent<WrappedComponentProps> = (
 }) => (
   <Modal
     className={styles.modal}
-    isOpen
+    open
     closeButton={false}
-    contentLabel={intl.formatMessage({ id: 'BehandlingPollingTimoutModal.TimeoutMelding' })}
-    onRequestClose={() => window.location.reload()}
+    aria-label={intl.formatMessage({ id: 'BehandlingPollingTimoutModal.TimeoutMelding' })}
+    onClose={() => window.location.reload()}
   >
     <Row>
       <Column xs="1">
@@ -36,21 +35,21 @@ const BehandlingPollingTimoutModal: FunctionComponent<WrappedComponentProps> = (
         <div className={styles.divider} />
       </Column>
       <Column xs="9" className={styles.text}>
-        <Normaltekst><FormattedMessage id="BehandlingPollingTimoutModal.TimeoutMelding" /></Normaltekst>
+        <BodyShort size="small"><FormattedMessage id="BehandlingPollingTimoutModal.TimeoutMelding" /></BodyShort>
       </Column>
     </Row>
     <Row>
       <Column xs="7" />
       <Column xs="5">
-        <Hovedknapp
+        <Button
           className={styles.submitButton}
-          mini
-          htmlType="button"
+          size="small"
+          variant="secondary"
           onClick={() => window.location.reload()}
           autoFocus
         >
           {intl.formatMessage({ id: 'BehandlingPollingTimoutModal.Oppfrisk' })}
-        </Hovedknapp>
+        </Button>
       </Column>
     </Row>
   </Modal>

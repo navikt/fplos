@@ -1,6 +1,6 @@
 import React, { FunctionComponent, useMemo } from 'react';
 import { injectIntl, WrappedComponentProps } from 'react-intl';
-import Panel from 'nav-frontend-paneler';
+import { Panel } from '@navikt/ds-react';
 
 import BehandlingType from 'kodeverk/behandlingType';
 import OppgaverForAvdeling from 'types/avdelingsleder/oppgaverForAvdelingTsType';

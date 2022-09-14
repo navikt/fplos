@@ -1,5 +1,5 @@
 import React, { FunctionComponent } from 'react';
-import Panel from 'nav-frontend-paneler';
+import { Panel } from '@navikt/ds-react';
 
 import { restApiHooks, RestApiGlobalStatePathsKeys } from 'data/fplosRestApi';
 

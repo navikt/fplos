@@ -1,6 +1,6 @@
 import React, { FunctionComponent } from 'react';
 import { FormattedMessage } from 'react-intl';
-import { Element } from 'nav-frontend-typografi';
+import { Label } from '@navikt/ds-react';
 
 import { VerticalSpacer } from '@navikt/ft-ui-komponenter';
 import OppgaverForForsteStonadsdag from 'types/avdelingsleder/oppgaverForForsteStonadsdagTsType';
@@ -19,9 +19,9 @@ export const OppgaverPerForsteStonadsdagPanel: FunctionComponent<OwnProps> = ({
   oppgaverPerForsteStonadsdag,
 }) => (
   <>
-    <Element>
+    <Label size="small">
       <FormattedMessage id="OppgaverPerForsteStonadsdagPanel.FordeltPaForsteStonadsdag" />
-    </Element>
+    </Label>
     <VerticalSpacer sixteenPx />
     <OppgaverPerForsteStonadsdagGraf
       height={height}

@@ -1,8 +1,7 @@
 import React, { FunctionComponent, useCallback } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { useForm } from 'react-hook-form';
-import { Hovedknapp, Knapp } from 'nav-frontend-knapper';
-import { Undertittel } from 'nav-frontend-typografi';
+import { Button, Heading } from '@navikt/ds-react';
 
 import { restApiHooks, RestApiPathsKeys } from 'data/fplosRestApi';
 import Oppgave from 'types/saksbehandler/oppgaveTsType';
@@ -55,35 +54,35 @@ const OpphevReservasjonModal: FunctionComponent<OwnProps> = ({
   return (
     <Modal
       className={styles.modal}
-      isOpen={showModal}
+      open={showModal}
       closeButton={false}
-      contentLabel={intl.formatMessage({ id: 'OpphevReservasjonModal.Begrunnelse' })}
-      onRequestClose={cancel}
+      aria-label={intl.formatMessage({ id: 'OpphevReservasjonModal.Begrunnelse' })}
+      onClose={cancel}
     >
       <Form<FormValues> formMethods={formMethods} onSubmit={(values) => opphevReservasjonFn(values.begrunnelse)}>
-        <Undertittel><FormattedMessage id="OpphevReservasjonModal.Begrunnelse" /></Undertittel>
+        <Heading size="small"><FormattedMessage id="OpphevReservasjonModal.Begrunnelse" /></Heading>
         <TextAreaField
           name="begrunnelse"
           label={intl.formatMessage({ id: 'OpphevReservasjonModal.Hjelpetekst' })}
           validate={[required, maxLength500, minLength3, hasValidText]}
           maxLength={500}
         />
-        <Hovedknapp
+        <Button
           className={styles.submitButton}
-          mini
-          htmlType="submit"
+          size="small"
+          variant="primary"
           autoFocus
         >
           <FormattedMessage id="OpphevReservasjonModal.Ok" />
-        </Hovedknapp>
-        <Knapp
+        </Button>
+        <Button
           className={styles.cancelButton}
-          mini
-          htmlType="reset"
+          size="small"
+          variant="secondary"
           onClick={cancel}
         >
           <FormattedMessage id="OpphevReservasjonModal.Avbryt" />
-        </Knapp>
+        </Button>
       </Form>
     </Modal>
   );

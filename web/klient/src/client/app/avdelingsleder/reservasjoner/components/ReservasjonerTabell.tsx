@@ -1,7 +1,7 @@
 import React, {
   FunctionComponent, useState, useCallback, useMemo,
 } from 'react';
-import { Element, Normaltekst } from 'nav-frontend-typografi';
+import { Label, BodyShort } from '@navikt/ds-react';
 import { FormattedMessage } from 'react-intl';
 
 import Reservasjon from 'types/avdelingsleder/reservasjonTsType';
@@ -72,11 +72,11 @@ const ReservasjonerTabell: FunctionComponent<OwnProps> = ({
 
   return (
     <>
-      <Element><FormattedMessage id="ReservasjonerTabell.Reservasjoner" /></Element>
+      <Label size="small"><FormattedMessage id="ReservasjonerTabell.Reservasjoner" /></Label>
       {sorterteReservasjoner.length === 0 && (
         <>
           <VerticalSpacer eightPx />
-          <Normaltekst><FormattedMessage id="ReservasjonerTabell.IngenReservasjoner" /></Normaltekst>
+          <BodyShort size="small"><FormattedMessage id="ReservasjonerTabell.IngenReservasjoner" /></BodyShort>
           <VerticalSpacer eightPx />
         </>
       )}

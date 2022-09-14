@@ -1,8 +1,7 @@
 import React, { FunctionComponent } from 'react';
 import { injectIntl, WrappedComponentProps, FormattedMessage } from 'react-intl';
 import { Row, Column } from 'nav-frontend-grid';
-import { Normaltekst } from 'nav-frontend-typografi';
-import { Hovedknapp } from 'nav-frontend-knapper';
+import { Button, BodyShort } from '@navikt/ds-react';
 
 import { getDateAndTime } from '@navikt/ft-utils';
 import { Image } from '@navikt/ft-ui-komponenter';
@@ -30,10 +29,10 @@ export const OppgaveReservasjonForlengetModal: FunctionComponent<OwnProps & Wrap
 }) => (
   <Modal
     className={styles.modal}
-    isOpen={showModal}
+    open={showModal}
     closeButton={false}
-    contentLabel={intl.formatMessage({ id: 'OppgaveReservasjonForlengetModal.Reservert' })}
-    onRequestClose={closeModal as () => void}
+    aria-label={intl.formatMessage({ id: 'OppgaveReservasjonForlengetModal.Reservert' })}
+    onClose={closeModal as () => void}
   >
     <Row>
       <Column xs="1">
@@ -45,22 +44,23 @@ export const OppgaveReservasjonForlengetModal: FunctionComponent<OwnProps & Wrap
         <div className={styles.divider} />
       </Column>
       <Column xs="9">
-        <Normaltekst>
+        <BodyShort size="small">
           <FormattedMessage id="OppgaveReservasjonForlengetModal.Reservert" />
-        </Normaltekst>
-        <Normaltekst>
+        </BodyShort>
+        <BodyShort size="small">
           <FormattedMessage id="OppgaveReservasjonForlengetModal.Til" values={getDateAndTime(oppgave.status.reservertTilTidspunkt)} />
-        </Normaltekst>
+        </BodyShort>
       </Column>
       <Column xs="2">
-        <Hovedknapp
-          mini
+        <Button
+          size="small"
+          variant="secondary"
           className={styles.button}
           onClick={closeModal}
           autoFocus
         >
           {intl.formatMessage({ id: 'OppgaveReservasjonForlengetModal.Ok' })}
-        </Hovedknapp>
+        </Button>
       </Column>
 
     </Row>

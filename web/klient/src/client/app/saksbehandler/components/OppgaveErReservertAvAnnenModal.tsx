@@ -1,8 +1,7 @@
 import React, { FunctionComponent, useCallback } from 'react';
 import { injectIntl, WrappedComponentProps, FormattedMessage } from 'react-intl';
 import { Row, Column } from 'nav-frontend-grid';
-import { Hovedknapp } from 'nav-frontend-knapper';
-import { Normaltekst } from 'nav-frontend-typografi';
+import { Button, BodyShort } from '@navikt/ds-react';
 
 import { getDateAndTime } from '@navikt/ft-utils';
 import OppgaveStatus from 'types/saksbehandler/oppgaveStatusTsType';
@@ -35,10 +34,10 @@ const OppgaveErReservertAvAnnenModal: FunctionComponent<OwnProps & WrappedCompon
   return (
     <Modal
       className={styles.modal}
-      isOpen
+      open
       closeButton={false}
-      contentLabel={intl.formatMessage({ id: 'OppgaveErReservertAvAnnenModal.ReservertAvEnkel' })}
-      onRequestClose={lukk}
+      aria-label={intl.formatMessage({ id: 'OppgaveErReservertAvAnnenModal.ReservertAvEnkel' })}
+      onClose={lukk}
     >
       <Row>
         <Column xs="1">
@@ -50,7 +49,7 @@ const OppgaveErReservertAvAnnenModal: FunctionComponent<OwnProps & WrappedCompon
           <div className={styles.divider} />
         </Column>
         <Column xs="8" className={styles.text}>
-          <Normaltekst>
+          <BodyShort size="small">
             <FormattedMessage
               id="OppgaveErReservertAvAnnenModal.ReservertAv"
               values={{
@@ -59,18 +58,18 @@ const OppgaveErReservertAvAnnenModal: FunctionComponent<OwnProps & WrappedCompon
                 ...getDateAndTime(oppgaveStatus.reservertTilTidspunkt),
               }}
             />
-          </Normaltekst>
+          </BodyShort>
         </Column>
         <Column xs="2">
-          <Hovedknapp
+          <Button
             className={styles.okButton}
-            mini
-            htmlType="button"
+            size="small"
+            variant="primary"
             onClick={lukk}
             autoFocus
           >
             {intl.formatMessage({ id: 'OppgaveErReservertAvAnnenModal.Ok' })}
-          </Hovedknapp>
+          </Button>
         </Column>
       </Row>
     </Modal>

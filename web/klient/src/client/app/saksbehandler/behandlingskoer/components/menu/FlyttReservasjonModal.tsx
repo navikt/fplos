@@ -3,8 +3,7 @@ import {
   injectIntl, WrappedComponentProps, FormattedMessage, IntlShape,
 } from 'react-intl';
 import { useForm } from 'react-hook-form';
-import { Hovedknapp, Knapp } from 'nav-frontend-knapper';
-import { Normaltekst, Element } from 'nav-frontend-typografi';
+import { Label, Button, BodyShort } from '@navikt/ds-react';
 
 import { RestApiState } from 'data/rest-api-hooks';
 import { restApiHooks, RestApiPathsKeys } from 'data/fplosRestApi';
@@ -87,15 +86,15 @@ export const FlyttReservasjonModal: FunctionComponent<OwnProps & WrappedComponen
   return (
     <Modal
       className={styles.modal}
-      isOpen={showModal}
+      open={showModal}
       closeButton={false}
-      contentLabel={intl.formatMessage({ id: 'FlyttReservasjonModal.FlyttReservasjon' })}
-      onRequestClose={closeModal}
+      aria-label={intl.formatMessage({ id: 'FlyttReservasjonModal.FlyttReservasjon' })}
+      onClose={closeModal}
     >
       <Form<SøkFormValues> formMethods={søkFormMethods} onSubmit={(values) => finnSaksbehandler(values.brukerIdent)}>
-        <Element>
+        <Label size="small">
           <FormattedMessage id="FlyttReservasjonModal.FlyttReservasjon" />
-        </Element>
+        </Label>
         <VerticalSpacer eightPx />
         <FlexContainer>
           <FlexRow>
@@ -109,21 +108,21 @@ export const FlyttReservasjonModal: FunctionComponent<OwnProps & WrappedComponen
               />
             </FlexColumn>
             <FlexColumn>
-              <Hovedknapp
-                mini
-                htmlType="submit"
+              <Button
+                size="small"
+                variant="primary"
                 className={styles.button}
-                spinner={state === RestApiState.LOADING}
+                loading={state === RestApiState.LOADING}
                 disabled={!brukerIdentValue || state === RestApiState.LOADING}
               >
                 <FormattedMessage id="FlyttReservasjonModal.Sok" />
-              </Hovedknapp>
+              </Button>
             </FlexColumn>
           </FlexRow>
         </FlexContainer>
         {state === RestApiState.SUCCESS && (
           <>
-            <Normaltekst>{formatText(state, intl, saksbehandler)}</Normaltekst>
+            <BodyShort size="small">{formatText(state, intl, saksbehandler)}</BodyShort>
             <VerticalSpacer sixteenPx />
           </>
         )}
@@ -142,22 +141,22 @@ export const FlyttReservasjonModal: FunctionComponent<OwnProps & WrappedComponen
           validate={[required, maxLength500, minLength3, hasValidText]}
           maxLength={500}
         />
-        <Hovedknapp
+        <Button
           className={styles.submitButton}
-          mini
-          htmlType="submit"
+          size="small"
+          variant="primary"
           disabled={!saksbehandler || (!begrunnelseValue || begrunnelseValue.length < 3)}
         >
           {intl.formatMessage({ id: 'FlyttReservasjonModal.Ok' })}
-        </Hovedknapp>
-        <Knapp
+        </Button>
+        <Button
           className={styles.cancelButton}
-          mini
-          htmlType="reset"
+          size="small"
+          variant="primary"
           onClick={closeModal}
         >
           {intl.formatMessage({ id: 'FlyttReservasjonModal.Avbryt' })}
-        </Knapp>
+        </Button>
       </Form>
     </Modal>
   );

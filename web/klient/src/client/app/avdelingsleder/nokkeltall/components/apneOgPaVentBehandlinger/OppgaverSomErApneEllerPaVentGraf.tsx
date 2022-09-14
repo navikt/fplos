@@ -1,7 +1,7 @@
 import React, { FunctionComponent, useMemo } from 'react';
 import { injectIntl, IntlShape, WrappedComponentProps } from 'react-intl';
 import dayjs from 'dayjs';
-import Panel from 'nav-frontend-paneler';
+import { Panel } from '@navikt/ds-react';
 
 import ReactECharts from 'app/ReactECharts';
 import OppgaverSomErApneEllerPaVent from 'types/avdelingsleder/oppgaverSomErApneEllerPaVentTsType';

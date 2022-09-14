@@ -1,7 +1,7 @@
 import React, { FunctionComponent } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { useForm } from 'react-hook-form';
-import { Element } from 'nav-frontend-typografi';
+import { Label } from '@navikt/ds-react';
 
 import { VerticalSpacer } from '@navikt/ft-ui-komponenter';
 import FagsakYtelseType from 'kodeverk/fagsakYtelseType';
@@ -59,9 +59,9 @@ export const FordelingAvBehandlingstypePanel: FunctionComponent<OwnProps> = ({
   return (
     <Form<FormValues> formMethods={formMethods}>
       <StoreValuesInLocalStorage stateKey={formName} values={values} />
-      <Element>
+      <Label size="small">
         <FormattedMessage id="FordelingAvBehandlingstypePanel.Fordeling" />
-      </Element>
+      </Label>
       <VerticalSpacer sixteenPx />
       <RadioGroupPanel
         name="valgtYtelseType"

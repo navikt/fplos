@@ -8,7 +8,7 @@ const { Default, LasteIkonFørValgtAvdelingErSatt, HarIkkeTilgang } = composeSto
 describe('<AvdelingslederIndex>', () => {
   it('skal vise lasteikon før valgt avdeling er satt', async () => {
     render(<LasteIkonFørValgtAvdelingErSatt />);
-    expect(await screen.findByText('Venter...')).toBeInTheDocument();
+    expect(await screen.findByText('venter...')).toBeInTheDocument();
   });
 
   it('skal vise avdelingsleder dashboard etter at valgt avdeling er satt', async () => {

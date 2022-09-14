@@ -1,6 +1,6 @@
 import React, { FunctionComponent } from 'react';
 import { FormattedMessage } from 'react-intl';
-import { Normaltekst } from 'nav-frontend-typografi';
+import { BodyShort } from '@navikt/ds-react';
 
 import Oppgave from 'types/saksbehandler/oppgaveTsType';
 import Fagsak from 'types/saksbehandler/fagsakTsType';
@@ -58,15 +58,15 @@ const FagsakSearch: FunctionComponent<OwnProps> = ({
     />
 
     {searchResultReceived && fagsaker && fagsaker.length === 0
-      && <Normaltekst className={styles.label}><FormattedMessage id="FagsakSearch.ZeroSearchResults" /></Normaltekst>}
+      && <BodyShort size="small" className={styles.label}><FormattedMessage id="FagsakSearch.ZeroSearchResults" /></BodyShort>}
 
     {searchResultReceived && skalViseListe(fagsaker, fagsakOppgaver) && (
       <>
         <PersonInfo person={fagsaker[0].person} />
         <VerticalSpacer sixteenPx />
-        <Normaltekst>
+        <BodyShort size="small">
           <FormattedMessage id="FagsakSearch.FlereSakerEllerBehandlinger" />
-        </Normaltekst>
+        </BodyShort>
         <FagsakList
           selectFagsakCallback={selectFagsakCallback}
           selectOppgaveCallback={selectOppgaveCallback}

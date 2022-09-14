@@ -4,8 +4,7 @@ import {
 } from 'react-intl';
 import { useForm } from 'react-hook-form';
 
-import { Hovedknapp, Knapp } from 'nav-frontend-knapper';
-import { Normaltekst, Element } from 'nav-frontend-typografi';
+import { BodyShort, Button, Label } from '@navikt/ds-react';
 
 import { restApiHooks, RestApiPathsKeys } from 'data/fplosRestApi';
 import { RestApiState } from 'data/rest-api-hooks';
@@ -91,9 +90,9 @@ export const LeggTilSaksbehandlerForm: FunctionComponent<OwnProps & WrappedCompo
 
   return (
     <Form<FormValues> formMethods={formMethods} onSubmit={(values: { brukerIdent: string}) => finnSaksbehandler({ brukerIdent: values.brukerIdent })}>
-      <Element>
+      <Label size="small">
         <FormattedMessage id="LeggTilSaksbehandlerForm.LeggTil" />
-      </Element>
+      </Label>
       <VerticalSpacer eightPx />
       <FlexContainer>
         <FlexRow>
@@ -105,49 +104,49 @@ export const LeggTilSaksbehandlerForm: FunctionComponent<OwnProps & WrappedCompo
             />
           </FlexColumn>
           <FlexColumn>
-            <Knapp
-              mini
-              htmlType="submit"
+            <Button
+              size="small"
+              variant="secondary"
               className={styles.button}
-              spinner={formMethods.formState.isSubmitting}
+              loading={formMethods.formState.isSubmitting}
               disabled={formMethods.formState.isSubmitting || leggerTilNySaksbehandler}
               tabIndex={0}
             >
               <FormattedMessage id="LeggTilSaksbehandlerForm.Sok" />
-            </Knapp>
+            </Button>
           </FlexColumn>
         </FlexRow>
       </FlexContainer>
       {state === RestApiState.SUCCESS && (
       <>
-        <Normaltekst>
+        <BodyShort size="small">
           {formattedText}
-        </Normaltekst>
+        </BodyShort>
         <VerticalSpacer sixteenPx />
         <FlexContainer>
           <FlexRow>
             <FlexColumn>
-              <Hovedknapp
-                mini
+              <Button
+                size="small"
+                variant="primary"
                 autoFocus
-                htmlType="button"
                 onClick={() => leggTilSaksbehandlerFn(formMethods.reset)}
-                spinner={leggerTilNySaksbehandler}
+                loading={leggerTilNySaksbehandler}
                 disabled={leggerTilNySaksbehandler || erLagtTilAllerede || !saksbehandler}
               >
                 <FormattedMessage id="LeggTilSaksbehandlerForm.LeggTilIListen" />
-              </Hovedknapp>
+              </Button>
             </FlexColumn>
             <FlexColumn>
-              <Knapp
-                mini
-                htmlType="button"
+              <Button
+                size="small"
+                variant="secondary"
                 tabIndex={0}
                 disabled={leggerTilNySaksbehandler}
                 onClick={() => resetSaksbehandlerSokFn(formMethods.reset)}
               >
                 <FormattedMessage id="LeggTilSaksbehandlerForm.Nullstill" />
-              </Knapp>
+              </Button>
             </FlexColumn>
           </FlexRow>
         </FlexContainer>
