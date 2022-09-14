@@ -47,7 +47,8 @@ const Template: Story<{ verdier: Record<string, boolean> }> = ({
 
 export const Default = Template.bind({});
 Default.args = {
-  verdier: {
-    [FagsakYtelseType.FORELDREPENGER]: true,
-  },
+    verdier: {
+        [FagsakYtelseType.FORELDREPENGER]: true,
+        [FagsakYtelseType.ENGANGSSTONAD]: true,
+    },
 };

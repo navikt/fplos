@@ -1,6 +1,6 @@
 import React, { useMemo, FunctionComponent } from 'react';
 import { FormattedMessage } from 'react-intl';
-import { Undertekst } from 'nav-frontend-typografi';
+import { Element } from 'nav-frontend-typografi';
 
 import { KodeverkMedNavn } from '@navikt/ft-types';
 import { restApiHooks, RestApiPathsKeys } from 'data/fplosRestApi';
@@ -37,9 +37,9 @@ const FagsakYtelseTypeVelger: FunctionComponent<OwnProps> = ({
     []);
   return (
     <>
-      <Undertekst>
+      <Element>
         <FormattedMessage id="FagsakYtelseTypeVelger.Stonadstype" />
-      </Undertekst>
+      </Element>
       <VerticalSpacer eightPx />
       {fagsakYtelseTyper.map((fyt) => (
         <React.Fragment key={fyt.kode}>

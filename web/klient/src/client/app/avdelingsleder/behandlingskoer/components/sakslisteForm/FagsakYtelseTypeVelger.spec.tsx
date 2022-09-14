@@ -11,11 +11,11 @@ describe('<FagsakYtelseTypeVelger>', () => {
     const { getByLabelText } = render(<Default />);
     expect(await screen.findByText('Stønadstype')).toBeInTheDocument();
     expect(getByLabelText('Foreldrepenger')).toBeChecked();
-    expect(getByLabelText('Engangsstønad')).not.toBeChecked();
+    expect(getByLabelText('Engangsstønad')).toBeChecked();
 
     await userEvent.click(screen.getByText('Engangsstønad'));
 
-    await waitFor(() => expect(getByLabelText('Engangsstønad')).toBeChecked());
+    await waitFor(() => expect(getByLabelText('Engangsstønad')).not.toBeChecked());
     expect(getByLabelText('Foreldrepenger')).toBeChecked();
   });
 });
