@@ -1,6 +1,6 @@
 import React, { FunctionComponent } from 'react';
 import { FormattedMessage } from 'react-intl';
-import { Undertittel } from 'nav-frontend-typografi';
+import { Heading } from '@navikt/ds-react';
 
 import { getValueFromLocalStorage, setValueInLocalStorage, removeValueFromLocalStorage } from 'data/localStorageHelper';
 import Saksliste from 'types/saksbehandler/sakslisteTsType';
@@ -32,7 +32,7 @@ const SakslistePanel: FunctionComponent<OwnProps> = ({
 
   return (
     <>
-      <Undertittel><FormattedMessage id="SakslistePanel.StartBehandling" /></Undertittel>
+      <Heading size="small"><FormattedMessage id="SakslistePanel.StartBehandling" /></Heading>
       <div className={styles.container}>
         <SakslisteVelgerForm
           sakslister={sakslister}

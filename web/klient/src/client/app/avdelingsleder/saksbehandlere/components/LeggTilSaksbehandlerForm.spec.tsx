@@ -21,7 +21,7 @@ describe('<LeggTilSaksbehandlerForm>', () => {
     await userEvent.click(screen.getByText('Søk'));
 
     expect(await screen.findByText('Kan ikke finne brukerident')).toBeInTheDocument();
-    expect(screen.getByText('Legg til i listen')).toBeDisabled();
+    expect(screen.getByText('Legg til i listen').closest('button')).toBeDisabled();
   });
 
   it('skal finne brukerident og så legge saksbehandler til listen', async () => {

@@ -2,7 +2,7 @@ import React, { FunctionComponent } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import dayjs from 'dayjs';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
-import { Undertekst } from 'nav-frontend-typografi';
+import { Detail } from '@navikt/ds-react';
 
 import {
   DateLabel, FlexColumn, FlexContainer, FlexRow, VerticalSpacer, ArrowBox,
@@ -116,9 +116,9 @@ const DatoSorteringValg: FunctionComponent<OwnProps> = ({
     <>
       <VerticalSpacer eightPx />
       <ArrowBox>
-        <Undertekst>
+        <Detail size="small">
           <FormattedMessage id="SorteringVelger.FiltrerPaTidsintervall" />
-        </Undertekst>
+        </Detail>
 
         {erDynamiskPeriode && (
         <FlexContainer>
@@ -132,15 +132,15 @@ const DatoSorteringValg: FunctionComponent<OwnProps> = ({
                 onChange={lagreFraDebounce}
               />
               {(fraVerdi || fraVerdi === 0) && (
-              <Undertekst>
+              <Detail size="small">
                 <DateLabel dateString={finnDato(fraVerdi)} />
-              </Undertekst>
+              </Detail>
               )}
             </FlexColumn>
             <FlexColumn>
-              <Undertekst className={styles.dager}>
+              <Detail size="small" className={styles.dager}>
                 <FormattedMessage id="SorteringVelger.DagerMedBindestrek" />
-              </Undertekst>
+              </Detail>
             </FlexColumn>
             <FlexColumn>
               <InputField
@@ -151,15 +151,15 @@ const DatoSorteringValg: FunctionComponent<OwnProps> = ({
                 onChange={lagreTilDebounce}
               />
               {(tilVerdi || tilVerdi === 0) && (
-              <Undertekst>
+              <Detail size="small">
                 <DateLabel dateString={finnDato(tilVerdi)} />
-              </Undertekst>
+              </Detail>
               )}
             </FlexColumn>
             <FlexColumn>
-              <Undertekst className={styles.dagerMedBindestrek}>
+              <Detail size="small" className={styles.dagerMedBindestrek}>
                 <FormattedMessage id="SorteringVelger.Dager" />
-              </Undertekst>
+              </Detail>
             </FlexColumn>
           </FlexRow>
         </FlexContainer>
@@ -176,9 +176,9 @@ const DatoSorteringValg: FunctionComponent<OwnProps> = ({
               />
             </FlexColumn>
             <FlexColumn>
-              <Undertekst className={styles.dager}>
+              <Detail size="small" className={styles.dager}>
                 <FormattedMessage id="SorteringVelger.Bindestrek" />
-              </Undertekst>
+              </Detail>
             </FlexColumn>
             <FlexColumn className={styles.tomDato}>
               <Datepicker

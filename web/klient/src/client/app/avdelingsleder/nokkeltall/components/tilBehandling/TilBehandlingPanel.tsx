@@ -2,7 +2,7 @@ import React, { FunctionComponent } from 'react';
 import dayjs from 'dayjs';
 import { injectIntl, WrappedComponentProps, FormattedMessage } from 'react-intl';
 import { useForm } from 'react-hook-form';
-import { Element } from 'nav-frontend-typografi';
+import { Label } from '@navikt/ds-react';
 import { Row, Column } from 'nav-frontend-grid';
 import isSameOrAfter from 'dayjs/plugin/isSameOrAfter';
 import isSameOrBefore from 'dayjs/plugin/isSameOrBefore';
@@ -100,9 +100,9 @@ export const TilBehandlingPanel: FunctionComponent<OwnProps & WrappedComponentPr
   return (
     <Form<FormValues> formMethods={formMethods}>
       <StoreValuesInLocalStorage stateKey={formName} values={values} />
-      <Element>
+      <Label size="small">
         <FormattedMessage id="TilBehandlingPanel.TilBehandling" />
-      </Element>
+      </Label>
       <VerticalSpacer eightPx />
       <Row>
         <Column xs="2">

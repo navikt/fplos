@@ -2,8 +2,8 @@ import React, {
   useState, useRef, FunctionComponent, useCallback, useMemo, useEffect,
 } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
-import { Normaltekst, Element } from 'nav-frontend-typografi';
-import NavFrontendChevron from 'nav-frontend-chevron';
+import { BodyShort, Label } from '@navikt/ds-react';
+import { Next } from '@navikt/ds-icons';
 
 import { RestApiGlobalStatePathsKeys, restApiHooks, RestApiPathsKeys } from 'data/fplosRestApi';
 import TimeoutError from 'data/rest-api/src/requestApi/error/TimeoutError';
@@ -144,7 +144,7 @@ const OppgaverTabell: FunctionComponent<OwnProps> = ({
       br: <br />,
     };
     return (
-      <Normaltekst><FormattedMessage id="OppgaverTabell.OverfortReservasjonTooltip" values={textValues} /></Normaltekst>
+      <BodyShort size="small"><FormattedMessage id="OppgaverTabell.OverfortReservasjonTooltip" values={textValues} /></BodyShort>
     );
   }, []);
 
@@ -155,11 +155,11 @@ const OppgaverTabell: FunctionComponent<OwnProps> = ({
     <>
       {hentOppgaverTilBehandlingError instanceof TimeoutError
         && <BehandlingPollingTimoutModal />}
-      <Element><FormattedMessage id="OppgaverTabell.DineNesteSaker" values={{ antall: antallOppgaver }} /></Element>
+      <Label size="small"><FormattedMessage id="OppgaverTabell.DineNesteSaker" values={{ antall: antallOppgaver }} /></Label>
       {alleOppgaver.length === 0 && (
         <>
           <VerticalSpacer eightPx />
-          <Normaltekst><FormattedMessage id="OppgaverTabell.IngenOppgaver" /></Normaltekst>
+          <BodyShort size="small"><FormattedMessage id="OppgaverTabell.IngenOppgaver" /></BodyShort>
         </>
       )}
       {alleOppgaver.length > 0 && (
@@ -188,7 +188,7 @@ const OppgaverTabell: FunctionComponent<OwnProps> = ({
                   )}
                 </TableColumn>
                 <TableColumn className={oppgave.underBehandling ? styles.noPadding : undefined}>
-                  {!oppgave.underBehandling && <NavFrontendChevron /> }
+                  {!oppgave.underBehandling && <Next /> }
                   {oppgave.underBehandling && (
                     <div ref={(el) => { ref.current = { ...ref.current, [oppgave.id]: el }; }}>
                       <Image

@@ -1,5 +1,5 @@
 import React, { ReactNode, FunctionComponent } from 'react';
-import { Undertekst } from 'nav-frontend-typografi';
+import { Detail } from '@navikt/ds-react';
 
 import styles from './menuButton.less';
 
@@ -19,7 +19,7 @@ const MenuButton: FunctionComponent<OwnProps> = React.forwardRef(({
   children,
 }, ref: any) => (
   <button ref={ref} className={styles.button} onClick={onClick} type="button">
-    <Undertekst>{children}</Undertekst>
+    <Detail size="small">{children}</Detail>
   </button>
 ));
 

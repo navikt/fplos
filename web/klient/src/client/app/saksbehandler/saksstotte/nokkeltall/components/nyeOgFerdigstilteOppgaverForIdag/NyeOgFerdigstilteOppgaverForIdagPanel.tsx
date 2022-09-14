@@ -1,7 +1,7 @@
 import React, { FunctionComponent, useMemo } from 'react';
 import dayjs from 'dayjs';
 import { FormattedMessage } from 'react-intl';
-import { Undertittel, Element } from 'nav-frontend-typografi';
+import { Heading, Label } from '@navikt/ds-react';
 
 import KodeverkType from 'kodeverk/kodeverkTyper';
 import { ISO_DATE_FORMAT } from '@navikt/ft-utils';
@@ -33,13 +33,13 @@ const NyeOgFerdigstilteOppgaverForIdagPanel: FunctionComponent<OwnProps> = ({
 
   return (
     <>
-      <Undertittel>
+      <Heading size="small">
         <FormattedMessage id="NyeOgFerdigstilteOppgaverForIdagPanel.NyeOgFerdigstilte" />
-      </Undertittel>
+      </Heading>
       <VerticalSpacer eightPx />
-      <Element>
+      <Label size="small">
         <FormattedMessage id="NyeOgFerdigstilteOppgaverForIdagPanel.IDag" />
-      </Element>
+      </Label>
       <NyeOgFerdigstilteOppgaverForIdagGraf
         height={height}
         nyeOgFerdigstilteOppgaver={filtrerteNyeOgFerdigstilteOppgaver}

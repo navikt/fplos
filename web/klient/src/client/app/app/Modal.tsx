@@ -1,12 +1,12 @@
 import React, { FunctionComponent, ReactElement } from 'react';
-import NavModal from 'nav-frontend-modal';
+import { Modal as NavModal } from '@navikt/ds-react';
 
 interface OwnProps {
   className?: string;
   closeButton: boolean;
-  isOpen: boolean;
-  contentLabel: string;
-  onRequestClose: () => void;
+  open: boolean;
+  'aria-label': string;
+  onClose: () => void;
   shouldCloseOnOverlayClick?: boolean;
   children: ReactElement | ReactElement[];
 }
@@ -14,13 +14,18 @@ interface OwnProps {
 /**
  * Modal
  *
- * Presentasjonskomponent. Wrapper Modal-komponenten fra nav-frontend-biblioteket, men tillater ikke bruk av propertien 'shouldCloseOnOverlayClick'.
+ * Wrapper Modal-komponenten fra nav-frontend-biblioteket.
  */
-export const Modal: FunctionComponent<OwnProps> = ({ children, ...otherProps }) => {
-  NavModal.setAppElement(process.env.NODE_ENV !== 'test' ? 'div#app' : 'div');
+const Modal: FunctionComponent<OwnProps> = ({ children, ...otherProps }) => {
+  if (NavModal.setAppElement) {
+    NavModal.setAppElement(process.env.NODE_ENV !== 'test' ? 'div#app' : 'div');
+  }
+
   return (
     <NavModal {...otherProps}>
-      {children}
+      <NavModal.Content>
+        {children}
+      </NavModal.Content>
     </NavModal>
   );
 };

@@ -1,6 +1,6 @@
 import React, { FunctionComponent } from 'react';
 import { Row, Column } from 'nav-frontend-grid';
-import { Undertekst } from 'nav-frontend-typografi';
+import { Detail } from '@navikt/ds-react';
 import advarselImageUrl from 'images/advarsel-sirkel-fyll.svg';
 import Driftsmelding from 'types/driftsmeldingTsType';
 
@@ -32,9 +32,9 @@ const DriftsmeldingPanel: FunctionComponent<OwnProps> = ({
               className={styles.driftsInfo}
               src={advarselImageUrl}
             />
-            <Undertekst className={styles.wordWrap}>
+            <Detail size="small" className={styles.wordWrap}>
               {`${message.melding}`}
-            </Undertekst>
+            </Detail>
           </Column>
         </Row>
       ))}

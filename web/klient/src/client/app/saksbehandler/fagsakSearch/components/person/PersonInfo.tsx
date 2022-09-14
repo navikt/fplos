@@ -1,8 +1,10 @@
 import React, { FunctionComponent } from 'react';
 import { injectIntl, WrappedComponentProps } from 'react-intl';
-import { Undertittel, Undertekst } from 'nav-frontend-typografi';
+import { Heading, Detail } from '@navikt/ds-react';
 
-import { Image } from '@navikt/ft-ui-komponenter';
+import {
+  FlexContainer, FlexRow, FlexColumn, Image,
+} from '@navikt/ft-ui-komponenter';
 import urlMann from 'images/mann.svg';
 import urlKvinne from 'images/kvinne.svg';
 
@@ -19,7 +21,7 @@ interface OwnProps {
 /**
  * PersonInfo
  *
- * Presentasjonskomponent. Definerer visning av personen relatert til fagsak. (Søker)
+ * Definerer visning av personen relatert til fagsak. (Søker)
  *
  * Eksempel:
  * ```html
@@ -35,28 +37,30 @@ const PersonInfo: FunctionComponent<OwnProps & WrappedComponentProps> = ({
     erKvinne, dødsdato, diskresjonskode, alder, navn, personnummer,
   } = person;
   return (
-    <>
-      <Image
-        className={styles.icon}
-        src={erKvinne ? urlKvinne : urlMann}
-        alt={intl.formatMessage({ id: 'Person.ImageText' })}
-      />
-      <div className={styles.infoPlaceholder}>
-        <div>
-          <Undertittel>
+    <FlexContainer>
+      <FlexRow>
+        <FlexColumn>
+          <Image
+            className={styles.icon}
+            src={erKvinne ? urlKvinne : urlMann}
+            alt={intl.formatMessage({ id: 'Person.ImageText' })}
+          />
+        </FlexColumn>
+        <FlexColumn>
+          <Heading size="small">
             {navn}
             {' '}
             <AlderVisning erDod={!!dødsdato} alder={alder} dodsdato={dødsdato} />
-          </Undertittel>
-          <Undertekst>
+          </Heading>
+          <Detail size="small">
             {personnummer}
-          </Undertekst>
-        </div>
-        <div>
+          </Detail>
+        </FlexColumn>
+        <FlexColumn>
           <MerkePanel erDod={!!dødsdato} diskresjonskode={diskresjonskode} />
-        </div>
-      </div>
-    </>
+        </FlexColumn>
+      </FlexRow>
+    </FlexContainer>
   );
 };
 

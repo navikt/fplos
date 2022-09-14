@@ -1,8 +1,7 @@
 import React, { FunctionComponent } from 'react';
 import { FormattedMessage, injectIntl, WrappedComponentProps } from 'react-intl';
 import { useForm } from 'react-hook-form';
-import { Undertittel } from 'nav-frontend-typografi';
-import { Knapp } from 'nav-frontend-knapper';
+import { Heading, Button } from '@navikt/ds-react';
 
 import advarselIcon from 'images/advarsel.svg';
 import {
@@ -56,7 +55,7 @@ const SearchForm: FunctionComponent<OwnProps & WrappedComponentProps> = ({
   return (
     <Form<FormValues> onSubmit={onSubmit} formMethods={formMethods}>
       <div className={styles.container}>
-        <Undertittel>{intl.formatMessage({ id: 'Search.SearchFagsakOrPerson' })}</Undertittel>
+        <Heading size="small">{intl.formatMessage({ id: 'Search.SearchFagsakOrPerson' })}</Heading>
         {kanSaksbehandle && (
         <>
           <VerticalSpacer sixteenPx />
@@ -74,16 +73,15 @@ const SearchForm: FunctionComponent<OwnProps & WrappedComponentProps> = ({
                 parse={(s = '') => s.toString().trim()}
               />
             </FlexColumn>
-            <FlexColumn>
-              <Knapp
-                mini
-                htmlType="submit"
-                className={styles.button}
-                spinner={!searchResultAccessDenied?.feilmelding && searchStarted}
+            <FlexColumn className={styles.button}>
+              <Button
+                size="small"
+                variant="secondary"
+                loading={!searchResultAccessDenied?.feilmelding && searchStarted}
                 disabled={isButtonDisabled(searchStringValue, searchStarted, searchResultAccessDenied)}
               >
                 <FormattedMessage id="Search.Search" />
-              </Knapp>
+              </Button>
             </FlexColumn>
           </FlexRow>
           {searchResultAccessDenied?.feilmelding && (

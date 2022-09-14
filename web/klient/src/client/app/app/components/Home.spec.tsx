@@ -11,6 +11,6 @@ describe('<MissingPage>', () => {
         <Home headerHeight={1} />
       </MemoryRouter>,
     );
-    expect(await screen.findByText('Venter...')).toBeInTheDocument();
+    expect(await screen.findByText('venter...')).toBeInTheDocument();
   });
 });

@@ -1,10 +1,10 @@
 import React, { FunctionComponent } from 'react';
 import { injectIntl, WrappedComponentProps, FormattedMessage } from 'react-intl';
-import { Row, Column } from 'nav-frontend-grid';
-import { Hovedknapp, Knapp } from 'nav-frontend-knapper';
-import { Normaltekst } from 'nav-frontend-typografi';
+import { Button, BodyShort } from '@navikt/ds-react';
 
-import { Image } from '@navikt/ft-ui-komponenter';
+import {
+  FlexColumn, FlexContainer, FlexRow, Image,
+} from '@navikt/ft-ui-komponenter';
 import Modal from 'app/Modal';
 import Saksliste from 'types/avdelingsleder/sakslisteAvdelingTsType';
 
@@ -33,44 +33,48 @@ export const SletteSakslisteModal: FunctionComponent<OwnProps & WrappedComponent
   <Modal
     className={styles.modal}
     closeButton={false}
-    isOpen
-    contentLabel={intl.formatMessage({ id: 'SletteSakslisteModal.SletteModal' })}
-    onRequestClose={cancel}
+    open
+    aria-label={intl.formatMessage({ id: 'SletteSakslisteModal.SletteModal' })}
+    onClose={cancel}
   >
-    <Row>
-      <Column xs="1">
-        <Image
-          className={styles.image}
-          alt={intl.formatMessage({ id: 'SletteSakslisteModal.SletteModal' })}
-          src={advarselImageUrl}
-        />
-        <div className={styles.divider} />
-      </Column>
-      <Column xs="6" className={styles.text}>
-        <Normaltekst>
-          <FormattedMessage id="SletteSakslisteModal.SletteSaksliste" values={{ sakslisteNavn: valgtSaksliste.navn }} />
-        </Normaltekst>
-      </Column>
-      <Column xs="4">
-        <Hovedknapp
-          className={styles.submitButton}
-          mini
-          htmlType="submit"
-          onClick={() => submit(valgtSaksliste)}
-          autoFocus
-        >
-          {intl.formatMessage({ id: 'SletteSakslisteModal.Ja' })}
-        </Hovedknapp>
-        <Knapp
-          className={styles.cancelButton}
-          mini
-          htmlType="reset"
-          onClick={cancel}
-        >
-          {intl.formatMessage({ id: 'SletteSakslisteModal.Nei' })}
-        </Knapp>
-      </Column>
-    </Row>
+    <FlexContainer>
+      <FlexRow>
+        <FlexColumn>
+          <Image
+            className={styles.image}
+            alt={intl.formatMessage({ id: 'SletteSakslisteModal.SletteModal' })}
+            src={advarselImageUrl}
+          />
+          <div className={styles.divider} />
+        </FlexColumn>
+        <FlexColumn className={styles.text}>
+          <BodyShort size="small">
+            <FormattedMessage id="SletteSakslisteModal.SletteSaksliste" values={{ sakslisteNavn: valgtSaksliste.navn }} />
+          </BodyShort>
+        </FlexColumn>
+        <FlexColumn>
+          <Button
+            className={styles.submitButton}
+            size="small"
+            variant="primary"
+            onClick={() => submit(valgtSaksliste)}
+            autoFocus
+          >
+            {intl.formatMessage({ id: 'SletteSakslisteModal.Ja' })}
+          </Button>
+        </FlexColumn>
+        <FlexColumn>
+          <Button
+            className={styles.cancelButton}
+            size="small"
+            variant="secondary"
+            onClick={cancel}
+          >
+            {intl.formatMessage({ id: 'SletteSakslisteModal.Nei' })}
+          </Button>
+        </FlexColumn>
+      </FlexRow>
+    </FlexContainer>
   </Modal>
 );
 

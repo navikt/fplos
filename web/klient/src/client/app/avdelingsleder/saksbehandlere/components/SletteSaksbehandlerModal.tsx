@@ -1,10 +1,10 @@
 import React, { FunctionComponent } from 'react';
 import { injectIntl, WrappedComponentProps, FormattedMessage } from 'react-intl';
-import { Row, Column } from 'nav-frontend-grid';
-import { Hovedknapp, Knapp } from 'nav-frontend-knapper';
-import { Normaltekst } from 'nav-frontend-typografi';
+import { Button, BodyShort } from '@navikt/ds-react';
 
-import { Image } from '@navikt/ft-ui-komponenter';
+import {
+  FlexColumn, FlexContainer, FlexRow, Image,
+} from '@navikt/ft-ui-komponenter';
 import Modal from 'app/Modal';
 import Saksbehandler from 'types/avdelingsleder/saksbehandlerAvdelingTsType';
 
@@ -32,44 +32,48 @@ const SletteSaksbehandlerModal: FunctionComponent<OwnProps & WrappedComponentPro
   <Modal
     className={styles.modal}
     closeButton={false}
-    isOpen
-    contentLabel={intl.formatMessage({ id: 'SletteSaksbehandlerModal.SletteModal' })}
-    onRequestClose={closeSletteModal}
+    open
+    aria-label={intl.formatMessage({ id: 'SletteSaksbehandlerModal.SletteModal' })}
+    onClose={closeSletteModal}
   >
-    <Row>
-      <Column xs="1">
-        <Image
-          className={styles.image}
-          alt={intl.formatMessage({ id: 'SletteSaksbehandlerModal.SletteModal' })}
-          src={advarselImageUrl}
-        />
-        <div className={styles.divider} />
-      </Column>
-      <Column xs="6" className={styles.text}>
-        <Normaltekst>
-          <FormattedMessage id="SletteSaksbehandlerModal.SletteSaksbehandler" values={{ saksbehandlerNavn: valgtSaksbehandler.navn }} />
-        </Normaltekst>
-      </Column>
-      <Column xs="4">
-        <Hovedknapp
-          className={styles.submitButton}
-          mini
-          htmlType="submit"
-          onClick={() => fjernSaksbehandler(valgtSaksbehandler)}
-          autoFocus
-        >
-          {intl.formatMessage({ id: 'SletteSaksbehandlerModal.Ja' })}
-        </Hovedknapp>
-        <Knapp
-          className={styles.cancelButton}
-          mini
-          htmlType="reset"
-          onClick={closeSletteModal}
-        >
-          {intl.formatMessage({ id: 'SletteSaksbehandlerModal.Nei' })}
-        </Knapp>
-      </Column>
-    </Row>
+    <FlexContainer>
+      <FlexRow>
+        <FlexColumn>
+          <Image
+            className={styles.image}
+            alt={intl.formatMessage({ id: 'SletteSaksbehandlerModal.SletteModal' })}
+            src={advarselImageUrl}
+          />
+          <div className={styles.divider} />
+        </FlexColumn>
+        <FlexColumn className={styles.text}>
+          <BodyShort size="small">
+            <FormattedMessage id="SletteSaksbehandlerModal.SletteSaksbehandler" values={{ saksbehandlerNavn: valgtSaksbehandler.navn }} />
+          </BodyShort>
+        </FlexColumn>
+        <FlexColumn>
+          <Button
+            className={styles.submitButton}
+            size="small"
+            variant="primary"
+            onClick={() => fjernSaksbehandler(valgtSaksbehandler)}
+            autoFocus
+          >
+            {intl.formatMessage({ id: 'SletteSaksbehandlerModal.Ja' })}
+          </Button>
+        </FlexColumn>
+        <FlexColumn>
+          <Button
+            className={styles.cancelButton}
+            size="small"
+            variant="secondary"
+            onClick={closeSletteModal}
+          >
+            {intl.formatMessage({ id: 'SletteSaksbehandlerModal.Nei' })}
+          </Button>
+        </FlexColumn>
+      </FlexRow>
+    </FlexContainer>
   </Modal>
 );
 

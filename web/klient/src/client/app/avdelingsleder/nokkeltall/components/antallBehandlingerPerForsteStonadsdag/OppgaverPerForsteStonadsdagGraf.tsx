@@ -4,7 +4,7 @@ import React, {
 import dayjs from 'dayjs';
 import isSameOrBefore from 'dayjs/plugin/isSameOrBefore';
 import isSameOrAfter from 'dayjs/plugin/isSameOrAfter';
-import Panel from 'nav-frontend-paneler';
+import { Panel } from '@navikt/ds-react';
 
 import ReactECharts from 'app/ReactECharts';
 import { dateFormat } from '@navikt/ft-utils';

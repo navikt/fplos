@@ -1,15 +1,14 @@
 import React, { MouseEvent, FunctionComponent, useCallback } from 'react';
 import { injectIntl, WrappedComponentProps, FormattedMessage } from 'react-intl';
 import { useForm } from 'react-hook-form';
-import { Column, Row } from 'nav-frontend-grid';
-import { Knapp } from 'nav-frontend-knapper';
-import Panel from 'nav-frontend-paneler';
+import { Panel, Button } from '@navikt/ds-react';
 
 import { restApiHooks, RestApiPathsKeys } from 'data/fplosRestApi';
 import styles from 'saksbehandler/behandlingskoer/components/menu/oppgaveReservasjonEndringDatoModal.less';
 import Modal from 'app/Modal';
 import { dateAfterOrEqual, dateBeforeOrEqual, hasValidDate } from '@navikt/ft-form-validators';
 import { Form, Datepicker } from '@navikt/ft-form-hooks';
+import { FlexColumn, FlexContainer, FlexRow } from '@navikt/ft-ui-komponenter';
 
 const thirtyDaysFromNow = () => {
   const result = new Date();
@@ -62,10 +61,10 @@ const OppgaveReservasjonEndringDatoModal: FunctionComponent<OwnProps & WrappedCo
   return (
     <Modal
       className={styles.modal}
-      isOpen={showModal}
+      open={showModal}
       closeButton={false}
-      contentLabel={intl.formatMessage({ id: 'OppgaveReservasjonEndringDatoModal.Header' })}
-      onRequestClose={closeModal as () => void}
+      aria-label={intl.formatMessage({ id: 'OppgaveReservasjonEndringDatoModal.Header' })}
+      onClose={closeModal as () => void}
     >
       <Form<FormValues> formMethods={søkFormMethods} onSubmit={(values) => endreOppgaveReservasjonFn(values.reserverTil)}>
         <Panel className={styles.panel}>
@@ -78,27 +77,32 @@ const OppgaveReservasjonEndringDatoModal: FunctionComponent<OwnProps & WrappedCo
             validate={[hasValidDate, dateAfterOrEqual(new Date()), dateBeforeOrEqual(thirtyDaysFromNow())]}
             disabledDays={{ before: new Date(), after: thirtyDaysFromNow() }}
           />
-          <Row className={styles.buttonRow}>
-            <Column>
-              <div className={styles.buttonBox}>
-                <Knapp
-                  mini
-                  className={styles.button}
-                  autoFocus
-                >
-                  <FormattedMessage id="OppgaveReservasjonEndringDatoModal.Ok" />
-                </Knapp>
-
-                <Knapp
-                  mini
-                  className={styles.button}
-                  onClick={closeModal}
-                >
-                  <FormattedMessage id="OppgaveReservasjonEndringDatoModal.Avbryt" />
-                </Knapp>
-              </div>
-            </Column>
-          </Row>
+          <div className={styles.buttonBox}>
+            <FlexContainer>
+              <FlexRow className={styles.buttonRow}>
+                <FlexColumn>
+                  <Button
+                    size="small"
+                    variant="secondary"
+                    className={styles.button}
+                    autoFocus
+                  >
+                    <FormattedMessage id="OppgaveReservasjonEndringDatoModal.Ok" />
+                  </Button>
+                </FlexColumn>
+                <FlexColumn>
+                  <Button
+                    size="small"
+                    variant="secondary"
+                    className={styles.button}
+                    onClick={closeModal}
+                  >
+                    <FormattedMessage id="OppgaveReservasjonEndringDatoModal.Avbryt" />
+                  </Button>
+                </FlexColumn>
+              </FlexRow>
+            </FlexContainer>
+          </div>
         </Panel>
       </Form>
     </Modal>

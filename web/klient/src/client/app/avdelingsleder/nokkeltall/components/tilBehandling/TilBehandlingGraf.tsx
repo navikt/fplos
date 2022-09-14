@@ -1,6 +1,6 @@
 import React, { FunctionComponent, useMemo } from 'react';
 import dayjs from 'dayjs';
-import Panel from 'nav-frontend-paneler';
+import { Panel } from '@navikt/ds-react';
 import { KodeverkMedNavn } from '@navikt/ft-types';
 import ReactECharts from 'app/ReactECharts';
 import BehandlingType from 'kodeverk/behandlingType';

@@ -1,6 +1,6 @@
 import React, { FunctionComponent, useMemo } from 'react';
 import { injectIntl, WrappedComponentProps } from 'react-intl';
-import Panel from 'nav-frontend-paneler';
+import { Panel } from '@navikt/ds-react';
 import dayjs from 'dayjs';
 import NyeOgFerdigstilteOppgaver from 'types/saksbehandler/nyeOgFerdigstilteOppgaverTsType';
 import ReactECharts from 'app/ReactECharts';

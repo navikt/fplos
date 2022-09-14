@@ -1,4 +1,4 @@
-import { Undertekst } from 'nav-frontend-typografi';
+import { Detail } from '@navikt/ds-react';
 import { FormattedMessage } from 'react-intl';
 import {
   FlexColumn, FlexContainer, FlexRow, ArrowBox, VerticalSpacer,
@@ -47,9 +47,9 @@ const BelopSorteringValg: FunctionComponent<OwnProps> = ({
 
   return (
     <ArrowBox>
-      <Undertekst>
+      <Detail size="small">
         <FormattedMessage id="SorteringVelger.FiltrerPaHeltall" />
-      </Undertekst>
+      </Detail>
       <FlexContainer>
         <FlexRow>
           <FlexColumn>
@@ -61,9 +61,9 @@ const BelopSorteringValg: FunctionComponent<OwnProps> = ({
             />
           </FlexColumn>
           <FlexColumn>
-            <Undertekst className={styles.beløp}>
+            <Detail size="small" className={styles.beløp}>
               <FormattedMessage id="SorteringVelger.Valuta" />
-            </Undertekst>
+            </Detail>
           </FlexColumn>
           <FlexColumn>
             <InputField
@@ -74,9 +74,9 @@ const BelopSorteringValg: FunctionComponent<OwnProps> = ({
             />
           </FlexColumn>
           <FlexColumn>
-            <Undertekst className={styles.beløp}>
+            <Detail size="small" className={styles.beløp}>
               <FormattedMessage id="SorteringVelger.Valuta" />
-            </Undertekst>
+            </Detail>
           </FlexColumn>
         </FlexRow>
       </FlexContainer>

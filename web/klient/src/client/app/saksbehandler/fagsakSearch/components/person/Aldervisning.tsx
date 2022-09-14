@@ -1,6 +1,6 @@
 import React, { FunctionComponent } from 'react';
 import { FormattedMessage } from 'react-intl';
-import { Normaltekst } from 'nav-frontend-typografi';
+import { BodyShort } from '@navikt/ds-react';
 
 import { DateLabel } from '@navikt/ft-ui-komponenter';
 
@@ -24,11 +24,11 @@ const AlderVisning: FunctionComponent<OwnProps> = ({
 }) => {
   if (erDod) {
     return (
-      <Normaltekst className={styles.displayInline}>
+      <BodyShort size="small" className={styles.displayInline}>
         { dodsdato
           ? <DateLabel dateString={dodsdato} />
           : <FormattedMessage id="Person.ManglerDodsdato" />}
-      </Normaltekst>
+      </BodyShort>
     );
   }
 

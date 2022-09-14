@@ -2,7 +2,7 @@ import React, {
   FunctionComponent, useState, useCallback, useMemo,
 } from 'react';
 import { FormattedMessage } from 'react-intl';
-import { Normaltekst, Element } from 'nav-frontend-typografi';
+import { BodyShort, Label } from '@navikt/ds-react';
 
 import { restApiHooks, RestApiPathsKeys } from 'data/fplosRestApi';
 import {
@@ -51,11 +51,11 @@ const SaksbehandlereTabell: FunctionComponent<OwnProps> = ({
 
   return (
     <>
-      <Element><FormattedMessage id="SaksbehandlereTabell.Saksbehandlere" /></Element>
+      <Label size="small"><FormattedMessage id="SaksbehandlereTabell.Saksbehandlere" /></Label>
       {sorterteSaksbehandlere.length === 0 && (
         <>
           <VerticalSpacer eightPx />
-          <Normaltekst><FormattedMessage id="SaksbehandlereTabell.IngenSaksbehandlere" /></Normaltekst>
+          <BodyShort size="small"><FormattedMessage id="SaksbehandlereTabell.IngenSaksbehandlere" /></BodyShort>
           <VerticalSpacer eightPx />
         </>
       )}

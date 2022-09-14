@@ -1,7 +1,7 @@
 import React, { FunctionComponent, useMemo } from 'react';
 import dayjs from 'dayjs';
 import { FormattedMessage } from 'react-intl';
-import { Element } from 'nav-frontend-typografi';
+import { Label } from '@navikt/ds-react';
 
 import NyeOgFerdigstilteOppgaver from 'types/saksbehandler/nyeOgFerdigstilteOppgaverTsType';
 import { ISO_DATE_FORMAT } from '@navikt/ft-utils';
@@ -29,9 +29,9 @@ const NyeOgFerdigstilteOppgaverForSisteSyvPanel: FunctionComponent<OwnProps> = (
   return (
     <>
       <VerticalSpacer eightPx />
-      <Element>
+      <Label size="small">
         <FormattedMessage id="NyeOgFerdigstilteOppgaverForSisteSyvPanel.SisteSyv" />
-      </Element>
+      </Label>
       <NyeOgFerdigstilteOppgaverForSisteSyvGraf
         height={height}
         nyeOgFerdigstilteOppgaver={filtrertenyeOgFerdigstilteOppgaver}

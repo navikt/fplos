@@ -1,6 +1,6 @@
 import React, { Fragment, FunctionComponent } from 'react';
 import { FormattedMessage } from 'react-intl';
-import { Element } from 'nav-frontend-typografi';
+import { Label } from '@navikt/ds-react';
 
 import { restApiHooks, RestApiPathsKeys } from 'data/fplosRestApi';
 import useKodeverk from 'data/useKodeverk';
@@ -33,9 +33,9 @@ const AndreKriterierVelger: FunctionComponent<OwnProps> = ({
 
   return (
     <>
-      <Element>
+      <Label size="small">
         <FormattedMessage id="AndreKriterierVelger.AndreKriterier" />
-      </Element>
+      </Label>
       <VerticalSpacer eightPx />
       {andreKriterierTyper.map((akt) => (
         <Fragment key={akt.kode}>
