@@ -73,11 +73,10 @@ const SearchForm: FunctionComponent<OwnProps & WrappedComponentProps> = ({
                 parse={(s = '') => s.toString().trim()}
               />
             </FlexColumn>
-            <FlexColumn>
+            <FlexColumn className={styles.button}>
               <Button
                 size="small"
                 variant="secondary"
-                className={styles.button}
                 loading={!searchResultAccessDenied?.feilmelding && searchStarted}
                 disabled={isButtonDisabled(searchStringValue, searchStarted, searchResultAccessDenied)}
               >

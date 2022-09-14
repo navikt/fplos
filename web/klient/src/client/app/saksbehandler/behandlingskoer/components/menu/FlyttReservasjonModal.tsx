@@ -107,11 +107,10 @@ export const FlyttReservasjonModal: FunctionComponent<OwnProps & WrappedComponen
                 autoComplete
               />
             </FlexColumn>
-            <FlexColumn>
+            <FlexColumn className={styles.buttonDiv}>
               <Button
                 size="small"
                 variant="primary"
-                className={styles.button}
                 loading={state === RestApiState.LOADING}
                 disabled={!brukerIdentValue || state === RestApiState.LOADING}
               >
@@ -141,22 +140,31 @@ export const FlyttReservasjonModal: FunctionComponent<OwnProps & WrappedComponen
           validate={[required, maxLength500, minLength3, hasValidText]}
           maxLength={500}
         />
-        <Button
-          className={styles.submitButton}
-          size="small"
-          variant="primary"
-          disabled={!saksbehandler || (!begrunnelseValue || begrunnelseValue.length < 3)}
-        >
-          {intl.formatMessage({ id: 'FlyttReservasjonModal.Ok' })}
-        </Button>
-        <Button
-          className={styles.cancelButton}
-          size="small"
-          variant="primary"
-          onClick={closeModal}
-        >
-          {intl.formatMessage({ id: 'FlyttReservasjonModal.Avbryt' })}
-        </Button>
+        <VerticalSpacer sixteenPx />
+        <FlexContainer>
+          <FlexRow>
+            <FlexColumn>
+              <Button
+                className={styles.submitButton}
+                size="small"
+                variant="primary"
+                disabled={!saksbehandler || (!begrunnelseValue || begrunnelseValue.length < 3)}
+              >
+                {intl.formatMessage({ id: 'FlyttReservasjonModal.Ok' })}
+              </Button>
+            </FlexColumn>
+            <FlexColumn>
+              <Button
+                className={styles.cancelButton}
+                size="small"
+                variant="primary"
+                onClick={closeModal}
+              >
+                {intl.formatMessage({ id: 'FlyttReservasjonModal.Avbryt' })}
+              </Button>
+            </FlexColumn>
+          </FlexRow>
+        </FlexContainer>
       </Form>
     </Modal>
   );

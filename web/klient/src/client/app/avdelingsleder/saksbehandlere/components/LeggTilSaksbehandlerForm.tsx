@@ -103,11 +103,10 @@ export const LeggTilSaksbehandlerForm: FunctionComponent<OwnProps & WrappedCompo
               validate={[required]}
             />
           </FlexColumn>
-          <FlexColumn>
+          <FlexColumn className={styles.button}>
             <Button
               size="small"
               variant="secondary"
-              className={styles.button}
               loading={formMethods.formState.isSubmitting}
               disabled={formMethods.formState.isSubmitting || leggerTilNySaksbehandler}
               tabIndex={0}

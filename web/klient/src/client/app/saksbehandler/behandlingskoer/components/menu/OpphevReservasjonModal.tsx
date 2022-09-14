@@ -10,6 +10,9 @@ import {
 } from '@navikt/ft-form-validators';
 import { Form, TextAreaField } from '@navikt/ft-form-hooks';
 import Modal from 'app/Modal';
+import {
+  FlexColumn, FlexContainer, FlexRow, VerticalSpacer,
+} from '@navikt/ft-ui-komponenter';
 import styles from './opphevReservasjonModal.less';
 
 const minLength3 = minLength(3);
@@ -67,22 +70,31 @@ const OpphevReservasjonModal: FunctionComponent<OwnProps> = ({
           validate={[required, maxLength500, minLength3, hasValidText]}
           maxLength={500}
         />
-        <Button
-          className={styles.submitButton}
-          size="small"
-          variant="primary"
-          autoFocus
-        >
-          <FormattedMessage id="OpphevReservasjonModal.Ok" />
-        </Button>
-        <Button
-          className={styles.cancelButton}
-          size="small"
-          variant="secondary"
-          onClick={cancel}
-        >
-          <FormattedMessage id="OpphevReservasjonModal.Avbryt" />
-        </Button>
+        <VerticalSpacer sixteenPx />
+        <FlexContainer>
+          <FlexRow>
+            <FlexColumn>
+              <Button
+                className={styles.submitButton}
+                size="small"
+                variant="primary"
+                autoFocus
+              >
+                <FormattedMessage id="OpphevReservasjonModal.Ok" />
+              </Button>
+            </FlexColumn>
+            <FlexColumn>
+              <Button
+                className={styles.cancelButton}
+                size="small"
+                variant="secondary"
+                onClick={cancel}
+              >
+                <FormattedMessage id="OpphevReservasjonModal.Avbryt" />
+              </Button>
+            </FlexColumn>
+          </FlexRow>
+        </FlexContainer>
       </Form>
     </Modal>
   );
