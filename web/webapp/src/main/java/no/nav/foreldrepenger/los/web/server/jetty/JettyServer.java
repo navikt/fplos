@@ -229,8 +229,8 @@ public class JettyServer {
         var corsFilter = ctx.addFilter(CrossOriginFilter.class, "/*", dispatcherType);
 
         corsFilter.setInitParameter(CrossOriginFilter.ALLOWED_ORIGINS_PARAM, ENV.getProperty("cors.allowed.origins", "*"));
-        corsFilter.setInitParameter(CrossOriginFilter.ALLOWED_HEADERS_PARAM, ENV.getProperty("cors.allowed.headers"));
-        corsFilter.setInitParameter(CrossOriginFilter.ALLOWED_METHODS_PARAM, ENV.getProperty("cors.allowed.methods"));
+        corsFilter.setInitParameter(CrossOriginFilter.ALLOWED_HEADERS_PARAM, ENV.getProperty("cors.allowed.headers", "*"));
+        corsFilter.setInitParameter(CrossOriginFilter.ALLOWED_METHODS_PARAM, ENV.getProperty("cors.allowed.methods", "*"));
     }
 
     private static List<Class<?>> getWebInfClasses() {
