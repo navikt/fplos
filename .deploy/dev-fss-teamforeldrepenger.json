@@ -7,7 +7,8 @@
   "ingresses":  [
     "https://app-q1.adeo.no/fplos",
     "https://fplos-q1.nais.preprod.local",
-    "https://fplos.dev.intern.nav.no"
+    "https://fplos.dev.intern.nav.no",
+    "https://fplos.dev-fss-pub.nais.io"
   ],
   "minReplica": "1",
   "maxReplica": "2",
