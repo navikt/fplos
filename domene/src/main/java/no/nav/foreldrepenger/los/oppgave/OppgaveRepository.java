@@ -159,10 +159,9 @@ public class OppgaveRepository {
             } else if (FT_DATO.equalsIgnoreCase(queryDto.getSortering().getFelttype())) {
                 if (queryDto.getFiltrerFra() != null) {
                     query.setParameter("filterFomDager",
-                            KøSortering.FØRSTE_STØNADSDAG.equals(queryDto.getSortering()) ? LocalDate.now()
-                                    .plusDays(queryDto.getFiltrerFra()) : LocalDateTime.now()
-                                    .plusDays(queryDto.getFiltrerFra())
-                                    .with(LocalTime.MIN));
+                            KøSortering.FØRSTE_STØNADSDAG.equals(queryDto.getSortering())
+                                    ? LocalDate.now().plusDays(queryDto.getFiltrerFra())
+                                    : LocalDateTime.now().plusDays(queryDto.getFiltrerFra()).with(LocalTime.MIN));
                 }
                 if (queryDto.getFiltrerTil() != null) {
                     query.setParameter("filterTomDager",
@@ -198,7 +197,9 @@ public class OppgaveRepository {
     }
 
     private static String tilBeslutter(Oppgavespørring dto) {
-        return dto.getForAvdelingsleder() ? "" : """
+        return dto.getForAvdelingsleder()
+                ? ""
+                : """
                 AND NOT EXISTS (
                     select oetilbesl.oppgave from OppgaveEgenskap oetilbesl
                     where oetilbesl.oppgave = o
@@ -211,27 +212,27 @@ public class OppgaveRepository {
     private String sortering(Oppgavespørring oppgavespørring) {
         var sortering = oppgavespørring.getSortering();
         if (KøSortering.BEHANDLINGSFRIST.equals(sortering)) {
-            return oppgavespørring.isErDynamiskPeriode() ? filtrerDynamisk(BEHANDLINGSFRIST,
-                    oppgavespørring.getFiltrerFra(), oppgavespørring.getFiltrerTil()) : filtrerStatisk(BEHANDLINGSFRIST,
-                    oppgavespørring.getFiltrerFomDato(), oppgavespørring.getFiltrerTomDato());
+            return oppgavespørring.isErDynamiskPeriode()
+                    ? filtrerDynamisk(BEHANDLINGSFRIST, oppgavespørring.getFiltrerFra(), oppgavespørring.getFiltrerTil())
+                    : filtrerStatisk(BEHANDLINGSFRIST, oppgavespørring.getFiltrerFomDato(), oppgavespørring.getFiltrerTomDato());
         }
         if (KøSortering.OPPRETT_BEHANDLING.equals(sortering)) {
-            return oppgavespørring.isErDynamiskPeriode() ? filtrerDynamisk(BEHANDLINGOPPRETTET,
-                    oppgavespørring.getFiltrerFra(), oppgavespørring.getFiltrerTil()) : filtrerStatisk(
-                    BEHANDLINGOPPRETTET, oppgavespørring.getFiltrerFomDato(), oppgavespørring.getFiltrerTomDato());
+            return oppgavespørring.isErDynamiskPeriode()
+                    ? filtrerDynamisk(BEHANDLINGOPPRETTET, oppgavespørring.getFiltrerFra(), oppgavespørring.getFiltrerTil())
+                    : filtrerStatisk(BEHANDLINGOPPRETTET, oppgavespørring.getFiltrerFomDato(), oppgavespørring.getFiltrerTomDato());
         }
         if (KøSortering.FØRSTE_STØNADSDAG.equals(sortering)) {
-            return oppgavespørring.isErDynamiskPeriode() ? filtrerDynamisk(FØRSTE_STØNADSDAG,
-                    oppgavespørring.getFiltrerFra(), oppgavespørring.getFiltrerTil()) : filtrerStatisk(
-                    FØRSTE_STØNADSDAG, oppgavespørring.getFiltrerFomDato(), oppgavespørring.getFiltrerTomDato());
+            return oppgavespørring.isErDynamiskPeriode()
+                    ? filtrerDynamisk(FØRSTE_STØNADSDAG, oppgavespørring.getFiltrerFra(), oppgavespørring.getFiltrerTil())
+                    : filtrerStatisk(FØRSTE_STØNADSDAG, oppgavespørring.getFiltrerFomDato(), oppgavespørring.getFiltrerTomDato());
         }
         if (KøSortering.BELØP.equals(sortering)) {
             return filtrerNumerisk(BELØP, oppgavespørring.getFiltrerFra(), oppgavespørring.getFiltrerTil());
         }
         if (KøSortering.FEILUTBETALINGSTART.equals(sortering)) {
-            return oppgavespørring.isErDynamiskPeriode() ? filtrerDynamisk(FEILUTBETALINGSTART,
-                    oppgavespørring.getFiltrerFra(), oppgavespørring.getFiltrerTil()) : filtrerStatisk(
-                    FEILUTBETALINGSTART, oppgavespørring.getFiltrerFomDato(), oppgavespørring.getFiltrerTomDato());
+            return oppgavespørring.isErDynamiskPeriode()
+                    ? filtrerDynamisk(FEILUTBETALINGSTART, oppgavespørring.getFiltrerFra(), oppgavespørring.getFiltrerTil())
+                    : filtrerStatisk(FEILUTBETALINGSTART, oppgavespørring.getFiltrerFomDato(), oppgavespørring.getFiltrerTomDato());
         }
         return SORTERING + BEHANDLINGOPPRETTET;
     }
@@ -454,6 +455,7 @@ public class OppgaveRepository {
 
     public void settSorteringTidsintervallDato(Long oppgaveFiltreringId, LocalDate fomDato, LocalDate tomDato) {
         entityManager.persist(entityManager.find(OppgaveFiltreringOppdaterer.class, oppgaveFiltreringId)
+                .endreErDynamiskPeriode(false)
                 .endreFomDato(fomDato)
                 .endreTomDato(tomDato));
         entityManager.flush();
@@ -462,6 +464,7 @@ public class OppgaveRepository {
     public void settSorteringNumeriskIntervall(Long oppgaveFiltreringId, Long fra, Long til) {
         entityManager.persist(entityManager.find(OppgaveFiltreringOppdaterer.class, oppgaveFiltreringId)
                 .endreFraVerdi(fra)
+                .endreErDynamiskPeriode(true)
                 .endreTilVerdi(til));
         entityManager.flush();
     }
@@ -474,12 +477,6 @@ public class OppgaveRepository {
                 .endreFraVerdi(null)
                 .endreTilVerdi(null));
         entityManager.flush();
-    }
-
-    public List<Oppgave> hentOppgaverForSynkronisering() {
-        return entityManager.createQuery("FROM Oppgave o where o.aktiv = true AND o.system = :system", Oppgave.class)
-                .setParameter("system", "FPSAK")
-                .getResultList();
     }
 
     public Oppgave hentOppgave(Long oppgaveId) {
