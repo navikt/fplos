@@ -2,7 +2,6 @@ package no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.saksliste.dto
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 
 import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.dto.AvdelingEnhetDto;
 import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.saksliste.FplosAbacAttributtType;
@@ -11,8 +10,6 @@ import no.nav.foreldrepenger.los.oppgave.FagsakYtelseType;
 import no.nav.foreldrepenger.los.felles.util.validering.ValidKodeverk;
 import no.nav.vedtak.sikkerhet.abac.AbacDataAttributter;
 import no.nav.vedtak.sikkerhet.abac.AbacDto;
-
-import java.util.List;
 
 
 public class SakslisteFagsakYtelseTyperDto implements AbacDto {
@@ -23,41 +20,47 @@ public class SakslisteFagsakYtelseTyperDto implements AbacDto {
 
     @Valid
     @NotNull
-    @Size(min = 1)
-    private List<@ValidKodeverk FagsakYtelseType> fagsakYtelseTyper;
+    private @ValidKodeverk FagsakYtelseType fagsakYtelseType;
 
     @NotNull
     @Valid
     private AvdelingEnhetDto avdelingEnhet;
 
+    private boolean checked;
+
     public SakslisteFagsakYtelseTyperDto() {
     }
 
     public SakslisteFagsakYtelseTyperDto(SakslisteIdDto sakslisteId,
-                                         List<FagsakYtelseType> fagsakYtelseTyper,
-                                         AvdelingEnhetDto avdelingEnhet) {
+                                         FagsakYtelseType fagsakYtelseType,
+                                         AvdelingEnhetDto avdelingEnhet, boolean checked) {
         this.sakslisteId = sakslisteId;
-        this.fagsakYtelseTyper = fagsakYtelseTyper;
+        this.fagsakYtelseType = fagsakYtelseType;
         this.avdelingEnhet = avdelingEnhet;
+        this.checked = checked;
     }
 
     public Long getSakslisteId() {
         return sakslisteId.getVerdi();
     }
 
-    public List<FagsakYtelseType> getFagsakYtelseTyper() {
-        return fagsakYtelseTyper;
+    public FagsakYtelseType getFagsakYtelseType() {
+        return fagsakYtelseType;
     }
 
     public AvdelingEnhetDto getAvdelingEnhet() {
         return avdelingEnhet;
     }
 
+    public boolean isChecked() {
+        return checked;
+    }
+
     @Override
     public String toString() {
         return "SakslisteFagsakYtelseTyperDto{" +
                 "sakslisteId=" + sakslisteId +
-                ", fagsakYtelseTyper=" + fagsakYtelseTyper +
+                ", fagsakYtelseTyper=" + fagsakYtelseType +
                 ", avdelingEnhet=" + avdelingEnhet +
                 '}';
     }
