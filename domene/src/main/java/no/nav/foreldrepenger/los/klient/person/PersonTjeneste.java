@@ -43,7 +43,7 @@ import no.nav.pdl.PersonResponseProjection;
 import no.nav.vedtak.exception.VLException;
 import no.nav.vedtak.felles.integrasjon.pdl.Pdl;
 import no.nav.vedtak.felles.integrasjon.pdl.PdlException;
-import no.nav.vedtak.felles.integrasjon.rest.jersey.Jersey;
+import no.nav.vedtak.felles.integrasjon.rest.NativeClient;
 import no.nav.vedtak.util.LRUCache;
 
 @ApplicationScoped
@@ -59,7 +59,7 @@ public class PersonTjeneste {
     private Pdl pdl;
 
     @Inject
-    public PersonTjeneste(@Jersey Pdl pdl) {
+    public PersonTjeneste(@NativeClient Pdl pdl) {
         this.pdl = pdl;
     }
 
