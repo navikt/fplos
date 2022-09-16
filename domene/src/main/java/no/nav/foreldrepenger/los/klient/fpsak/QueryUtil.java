@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.UriBuilder;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.NameValuePair;
@@ -29,6 +30,13 @@ final class QueryUtil {
     }
 
     static WebTarget addQueryParams(URI href, WebTarget target) {
+        for (var q : QueryUtil.split(href.getQuery())) {
+            target = target.queryParam(q.getName(), q.getValue());
+        }
+        return target;
+    }
+
+    static UriBuilder addQueryParams(URI href, UriBuilder target) {
         for (var q : QueryUtil.split(href.getQuery())) {
             target = target.queryParam(q.getName(), q.getValue());
         }

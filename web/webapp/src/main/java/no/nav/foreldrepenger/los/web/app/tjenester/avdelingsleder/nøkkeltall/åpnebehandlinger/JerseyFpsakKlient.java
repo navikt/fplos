@@ -13,12 +13,14 @@ import javax.ws.rs.core.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import no.nav.foreldrepenger.konfig.KonfigVerdi;
 import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.nøkkeltall.åpnebehandlinger.dto.NøkkeltallBehandlingVentestatusDto;
 import no.nav.vedtak.felles.integrasjon.rest.jersey.AbstractJerseyOidcRestClient;
-import no.nav.foreldrepenger.konfig.KonfigVerdi;
+import no.nav.vedtak.felles.integrasjon.rest.jersey.Jersey;
 
+@Jersey
 @ApplicationScoped
-public class JerseyFpsakKlient extends AbstractJerseyOidcRestClient {
+public class JerseyFpsakKlient extends AbstractJerseyOidcRestClient implements FpsakKlient {
     private static final String DEFAULT_FPSAK_BASE_URI = "http://fpsak";
     private static final String ÅPNE_BEHANDLING_PATH = "/fpsak/api/los-nokkeltall/behandlinger-ventestatus";
     private static final Logger LOG = LoggerFactory.getLogger(JerseyFpsakKlient.class);
