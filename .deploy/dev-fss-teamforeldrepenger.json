@@ -6,7 +6,6 @@
   "ldapuserkv": "/serviceuser/data/dev/srvssolinux",
   "ingresses":  [
     "https://app-q1.adeo.no/fplos",
-    "https://fplos-q1.nais.preprod.local",
     "https://fplos.dev.intern.nav.no",
     "https://fplos.dev-fss-pub.nais.io"
   ],
@@ -15,5 +14,20 @@
   "env": {
     "APPDYNAMICS_AGENT_ACCOUNT_NAME": "NON-PROD",
     "APPD_ENABLED": "false"
-  }
+  },
+  "AZURE_IAC_RULES": [
+    {
+      "app": "fp-swagger",
+      "namespace": "teamforeldrepenger",
+      "cluster": "dev-fss",
+      "scopes": [
+        "swagger"
+      ]
+    },
+    {
+      "app": "fp-frontend-azure",
+      "namespace": "teamforeldrepenger",
+      "cluster": "dev-gcp"
+    }
+  ]
 }
