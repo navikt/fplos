@@ -12,20 +12,21 @@ import javax.ws.rs.core.UriBuilder;
 import no.nav.foreldrepenger.los.klient.fpsak.dto.behandling.BehandlingDto;
 import no.nav.foreldrepenger.los.klient.fpsak.dto.behandling.ResourceLink;
 import no.nav.vedtak.felles.integrasjon.rest.NativeClient;
+import no.nav.vedtak.felles.integrasjon.rest.RestClient;
 import no.nav.vedtak.felles.integrasjon.rest.RestClientConfig;
-import no.nav.vedtak.felles.integrasjon.rest.RestCompact;
 import no.nav.vedtak.felles.integrasjon.rest.RestConfig;
+import no.nav.vedtak.felles.integrasjon.rest.RestRequest;
 
 @Dependent
 @NativeClient
 @RestClientConfig(endpointProperty = "fpsak.url", endpointDefault = "http://fpsak") // TODO - ønsker bruke appliaction = men ressurslenkene begynner med /<fpapp>/api/...
 public class NativeForeldrepengerBehandling implements ForeldrepengerBehandling {
 
-    private final RestCompact klient;
+    private final RestClient klient;
     private final URI baseUri;
 
     @Inject
-    public NativeForeldrepengerBehandling(RestCompact klient) {
+    public NativeForeldrepengerBehandling(RestClient klient) {
         this.klient = klient;
         this.baseUri = RestConfig.endpointFromAnnotation(NativeForeldrepengerBehandling.class);
     }
@@ -34,7 +35,7 @@ public class NativeForeldrepengerBehandling implements ForeldrepengerBehandling 
     public BehandlingDto hentUtvidetBehandlingDto(String id) {
         LOG.trace("Henter behandling for {}", id);
         var target = UriBuilder.fromUri(baseUri).path(FPSAK_BEHANDLINGER).queryParam(BEHANDLING_ID, id).build();
-        var res = klient.getValue(NativeForeldrepengerBehandling.class, target, BehandlingDto.class);
+        var res = klient.send(RestRequest.newGET(target, NativeForeldrepengerBehandling.class), BehandlingDto.class);
         LOG.info("Hentet behandling for {} OK", id);
         return res;
     }
@@ -45,9 +46,10 @@ public class NativeForeldrepengerBehandling implements ForeldrepengerBehandling 
         target = QueryUtil.addQueryParams(link.getHref(), target);
 
         if (POST.equals(link.getType())) {
-            return Optional.ofNullable(klient.postValue(NativeForeldrepengerBehandling.class, target.build(), link.getRequestPayload(), clazz));
+            var request = RestRequest.newPOSTJson(link.getRequestPayload(), target.build(), NativeForeldrepengerBehandling.class);
+            return Optional.ofNullable(klient.send(request, clazz));
         }
-        return Optional.ofNullable(klient.getValue(NativeForeldrepengerBehandling.class, target.build(), clazz));
+        return Optional.ofNullable(klient.send(RestRequest.newGET(target.build(), NativeForeldrepengerBehandling.class), clazz));
     }
 
     @Override
