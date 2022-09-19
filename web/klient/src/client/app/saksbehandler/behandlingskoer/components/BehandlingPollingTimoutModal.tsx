@@ -47,6 +47,7 @@ const BehandlingPollingTimoutModal: FunctionComponent<WrappedComponentProps> = (
           variant="secondary"
           onClick={() => window.location.reload()}
           autoFocus
+          type="button"
         >
           {intl.formatMessage({ id: 'BehandlingPollingTimoutModal.Oppfrisk' })}
         </Button>

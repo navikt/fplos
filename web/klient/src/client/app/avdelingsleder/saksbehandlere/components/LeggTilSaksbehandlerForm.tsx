@@ -132,6 +132,7 @@ export const LeggTilSaksbehandlerForm: FunctionComponent<OwnProps & WrappedCompo
                 onClick={() => leggTilSaksbehandlerFn(formMethods.reset)}
                 loading={leggerTilNySaksbehandler}
                 disabled={leggerTilNySaksbehandler || erLagtTilAllerede || !saksbehandler}
+                type="button"
               >
                 <FormattedMessage id="LeggTilSaksbehandlerForm.LeggTilIListen" />
               </Button>
@@ -143,6 +144,7 @@ export const LeggTilSaksbehandlerForm: FunctionComponent<OwnProps & WrappedCompo
                 tabIndex={0}
                 disabled={leggerTilNySaksbehandler}
                 onClick={() => resetSaksbehandlerSokFn(formMethods.reset)}
+                type="button"
               >
                 <FormattedMessage id="LeggTilSaksbehandlerForm.Nullstill" />
               </Button>

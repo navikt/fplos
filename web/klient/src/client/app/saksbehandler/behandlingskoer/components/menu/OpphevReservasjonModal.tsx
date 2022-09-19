@@ -89,6 +89,7 @@ const OpphevReservasjonModal: FunctionComponent<OwnProps> = ({
                 size="small"
                 variant="secondary"
                 onClick={cancel}
+                type="button"
               >
                 <FormattedMessage id="OpphevReservasjonModal.Avbryt" />
               </Button>

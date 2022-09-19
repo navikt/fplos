@@ -67,6 +67,7 @@ const OppgaveErReservertAvAnnenModal: FunctionComponent<OwnProps & WrappedCompon
             variant="primary"
             onClick={lukk}
             autoFocus
+            type="button"
           >
             {intl.formatMessage({ id: 'OppgaveErReservertAvAnnenModal.Ok' })}
           </Button>

@@ -159,6 +159,7 @@ export const FlyttReservasjonModal: FunctionComponent<OwnProps & WrappedComponen
                 size="small"
                 variant="primary"
                 onClick={closeModal}
+                type="button"
               >
                 {intl.formatMessage({ id: 'FlyttReservasjonModal.Avbryt' })}
               </Button>

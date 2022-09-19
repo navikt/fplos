@@ -96,6 +96,7 @@ const OppgaveReservasjonEndringDatoModal: FunctionComponent<OwnProps & WrappedCo
                     variant="secondary"
                     className={styles.button}
                     onClick={closeModal}
+                    type="button"
                   >
                     <FormattedMessage id="OppgaveReservasjonEndringDatoModal.Avbryt" />
                   </Button>

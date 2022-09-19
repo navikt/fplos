@@ -81,6 +81,7 @@ const ErrorMessagePanel: FunctionComponent<OwnProps & WrappedComponentProps> = (
           icon={<Close color="white" />}
           onClick={removeErrorMessages}
           aria-label={intl.formatMessage({ id: 'ErrorMessagePanel.Close' })}
+          type="button"
         />
       </div>
     </div>

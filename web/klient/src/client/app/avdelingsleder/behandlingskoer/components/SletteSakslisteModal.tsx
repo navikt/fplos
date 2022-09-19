@@ -59,6 +59,7 @@ export const SletteSakslisteModal: FunctionComponent<OwnProps & WrappedComponent
             variant="primary"
             onClick={() => submit(valgtSaksliste)}
             autoFocus
+            type="button"
           >
             {intl.formatMessage({ id: 'SletteSakslisteModal.Ja' })}
           </Button>
@@ -69,6 +70,7 @@ export const SletteSakslisteModal: FunctionComponent<OwnProps & WrappedComponent
             size="small"
             variant="secondary"
             onClick={cancel}
+            type="button"
           >
             {intl.formatMessage({ id: 'SletteSakslisteModal.Nei' })}
           </Button>
