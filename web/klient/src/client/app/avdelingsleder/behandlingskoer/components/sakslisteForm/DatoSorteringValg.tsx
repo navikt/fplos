@@ -115,94 +115,96 @@ const DatoSorteringValg: FunctionComponent<OwnProps> = ({
   return (
     <>
       <VerticalSpacer eightPx />
-      <ArrowBox>
-        <Detail size="small">
-          <FormattedMessage id="SorteringVelger.FiltrerPaTidsintervall" />
-        </Detail>
+      <div className={styles.arrowBoxWidth}>
+        <ArrowBox>
+          <Detail size="small">
+            <FormattedMessage id="SorteringVelger.FiltrerPaTidsintervall" />
+          </Detail>
 
-        {erDynamiskPeriode && (
-        <FlexContainer>
-          <FlexRow>
-            <FlexColumn>
-              <InputField
-                name="fra"
-                className={styles.dato}
-                label={intl.formatMessage({ id: 'SorteringVelger.Fom' })}
-                validate={[hasValidPosOrNegInteger]}
-                onChange={lagreFraDebounce}
-              />
-              {(fraVerdi || fraVerdi === 0) && (
-              <Detail size="small">
-                <DateLabel dateString={finnDato(fraVerdi)} />
-              </Detail>
-              )}
-            </FlexColumn>
-            <FlexColumn>
-              <Detail size="small" className={styles.dager}>
-                <FormattedMessage id="SorteringVelger.DagerMedBindestrek" />
-              </Detail>
-            </FlexColumn>
-            <FlexColumn>
-              <InputField
-                name="til"
-                className={styles.dato}
-                label={intl.formatMessage({ id: 'SorteringVelger.Tom' })}
-                validate={[hasValidPosOrNegInteger]}
-                onChange={lagreTilDebounce}
-              />
-              {(tilVerdi || tilVerdi === 0) && (
-              <Detail size="small">
-                <DateLabel dateString={finnDato(tilVerdi)} />
-              </Detail>
-              )}
-            </FlexColumn>
-            <FlexColumn>
-              <Detail size="small" className={styles.dagerMedBindestrek}>
-                <FormattedMessage id="SorteringVelger.Dager" />
-              </Detail>
-            </FlexColumn>
-          </FlexRow>
-        </FlexContainer>
-        )}
-        {!erDynamiskPeriode && (
-        <FlexContainer>
-          <FlexRow>
-            <FlexColumn>
-              <Datepicker
-                name="fomDato"
-                label={intl.formatMessage({ id: 'SorteringVelger.Fom' })}
-                validate={[hasValidDate]}
-                onChange={lagreFomDatoDebounce}
-              />
-            </FlexColumn>
-            <FlexColumn>
-              <Detail size="small" className={styles.dager}>
-                <FormattedMessage id="SorteringVelger.Bindestrek" />
-              </Detail>
-            </FlexColumn>
-            <FlexColumn className={styles.tomDato}>
-              <Datepicker
-                name="tomDato"
-                label={intl.formatMessage({ id: 'SorteringVelger.Tom' })}
-                validate={[hasValidDate]}
-                onChange={lagreTomDatoDebounce}
-              />
-            </FlexColumn>
-          </FlexRow>
-        </FlexContainer>
-        )}
-        <VerticalSpacer eightPx />
-        <CheckboxField
-          name="erDynamiskPeriode"
-          label={intl.formatMessage({ id: 'SorteringVelger.DynamiskPeriode' })}
-          onChange={() => lagreSakslisteSorteringErDynamiskPeriode({ sakslisteId: valgtSakslisteId, avdelingEnhet: valgtAvdelingEnhet })
-            .then(() => {
-              hentAntallOppgaver(valgtSakslisteId, valgtAvdelingEnhet);
-              hentAvdelingensSakslister({ avdelingEnhet: valgtAvdelingEnhet });
-            })}
-        />
-        <VerticalSpacer eightPx />
-      </ArrowBox>
+          {erDynamiskPeriode && (
+            <FlexContainer>
+              <FlexRow>
+                <FlexColumn>
+                  <InputField
+                    name="fra"
+                    className={styles.dato}
+                    label={intl.formatMessage({ id: 'SorteringVelger.Fom' })}
+                    validate={[hasValidPosOrNegInteger]}
+                    onChange={lagreFraDebounce}
+                  />
+                  {(fraVerdi || fraVerdi === 0) && (
+                  <Detail size="small">
+                    <DateLabel dateString={finnDato(fraVerdi)} />
+                  </Detail>
+                  )}
+                </FlexColumn>
+                <FlexColumn>
+                  <Detail size="small" className={styles.dager}>
+                    <FormattedMessage id="SorteringVelger.DagerMedBindestrek" />
+                  </Detail>
+                </FlexColumn>
+                <FlexColumn>
+                  <InputField
+                    name="til"
+                    className={styles.dato}
+                    label={intl.formatMessage({ id: 'SorteringVelger.Tom' })}
+                    validate={[hasValidPosOrNegInteger]}
+                    onChange={lagreTilDebounce}
+                  />
+                  {(tilVerdi || tilVerdi === 0) && (
+                  <Detail size="small">
+                    <DateLabel dateString={finnDato(tilVerdi)} />
+                  </Detail>
+                  )}
+                </FlexColumn>
+                <FlexColumn>
+                  <Detail size="small" className={styles.dagerMedBindestrek}>
+                    <FormattedMessage id="SorteringVelger.Dager" />
+                  </Detail>
+                </FlexColumn>
+              </FlexRow>
+            </FlexContainer>
+          )}
+          {!erDynamiskPeriode && (
+            <FlexContainer>
+              <FlexRow>
+                <FlexColumn>
+                  <Datepicker
+                    name="fomDato"
+                    label={intl.formatMessage({ id: 'SorteringVelger.Fom' })}
+                    validate={[hasValidDate]}
+                    onChange={lagreFomDatoDebounce}
+                  />
+                </FlexColumn>
+                <FlexColumn>
+                  <Detail size="small" className={styles.dager}>
+                    <FormattedMessage id="SorteringVelger.Bindestrek" />
+                  </Detail>
+                </FlexColumn>
+                <FlexColumn className={styles.tomDato}>
+                  <Datepicker
+                    name="tomDato"
+                    label={intl.formatMessage({ id: 'SorteringVelger.Tom' })}
+                    validate={[hasValidDate]}
+                    onChange={lagreTomDatoDebounce}
+                  />
+                </FlexColumn>
+              </FlexRow>
+            </FlexContainer>
+          )}
+          <VerticalSpacer eightPx />
+          <CheckboxField
+            name="erDynamiskPeriode"
+            label={intl.formatMessage({ id: 'SorteringVelger.DynamiskPeriode' })}
+            onChange={() => lagreSakslisteSorteringErDynamiskPeriode({ sakslisteId: valgtSakslisteId, avdelingEnhet: valgtAvdelingEnhet })
+              .then(() => {
+                hentAntallOppgaver(valgtSakslisteId, valgtAvdelingEnhet);
+                hentAvdelingensSakslister({ avdelingEnhet: valgtAvdelingEnhet });
+              })}
+          />
+          <VerticalSpacer eightPx />
+        </ArrowBox>
+      </div>
     </>
   );
 };

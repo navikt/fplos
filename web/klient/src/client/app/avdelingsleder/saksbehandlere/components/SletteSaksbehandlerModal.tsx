@@ -58,6 +58,7 @@ const SletteSaksbehandlerModal: FunctionComponent<OwnProps & WrappedComponentPro
             variant="primary"
             onClick={() => fjernSaksbehandler(valgtSaksbehandler)}
             autoFocus
+            type="button"
           >
             {intl.formatMessage({ id: 'SletteSaksbehandlerModal.Ja' })}
           </Button>
@@ -68,6 +69,7 @@ const SletteSaksbehandlerModal: FunctionComponent<OwnProps & WrappedComponentPro
             size="small"
             variant="secondary"
             onClick={closeSletteModal}
+            type="button"
           >
             {intl.formatMessage({ id: 'SletteSaksbehandlerModal.Nei' })}
           </Button>

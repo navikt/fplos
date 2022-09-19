@@ -58,6 +58,7 @@ export const OppgaveReservasjonForlengetModal: FunctionComponent<OwnProps & Wrap
           className={styles.button}
           onClick={closeModal}
           autoFocus
+          type="button"
         >
           {intl.formatMessage({ id: 'OppgaveReservasjonForlengetModal.Ok' })}
         </Button>
