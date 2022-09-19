@@ -14,9 +14,10 @@ import org.slf4j.LoggerFactory;
 import no.nav.foreldrepenger.los.klient.fpsak.dto.SøkefeltDto;
 import no.nav.foreldrepenger.los.klient.fpsak.dto.fagsak.FagsakDto;
 import no.nav.vedtak.felles.integrasjon.rest.NativeClient;
+import no.nav.vedtak.felles.integrasjon.rest.RestClient;
 import no.nav.vedtak.felles.integrasjon.rest.RestClientConfig;
-import no.nav.vedtak.felles.integrasjon.rest.RestCompact;
 import no.nav.vedtak.felles.integrasjon.rest.RestConfig;
+import no.nav.vedtak.felles.integrasjon.rest.RestRequest;
 
 @Dependent
 @NativeClient
@@ -25,12 +26,12 @@ public class NativeForeldrepengerFagsaker implements ForeldrepengerFagsaker {
 
     private static final Logger LOG = LoggerFactory.getLogger(NativeForeldrepengerFagsaker.class);
 
-    private final RestCompact klient;
+    private final RestClient klient;
     private final URI baseUri;
     private final URI søkURI;
 
     @Inject
-    public NativeForeldrepengerFagsaker(RestCompact klient) {
+    public NativeForeldrepengerFagsaker(RestClient klient) {
         this.klient = klient;
         this.baseUri = RestConfig.endpointFromAnnotation(NativeForeldrepengerFagsaker.class);
         this.søkURI = URI.create(baseUri + ForeldrepengerFagsaker.FAGSAK_SØK);
@@ -38,7 +39,8 @@ public class NativeForeldrepengerFagsaker implements ForeldrepengerFagsaker {
 
     @Override
     public List<FagsakDto> finnFagsaker(String søkestreng) {
-        var respons = klient.postValue(NativeForeldrepengerFagsaker.class, søkURI, new SøkefeltDto(søkestreng), FagsakDto[].class);
+        var request = RestRequest.newPOSTJson(new SøkefeltDto(søkestreng), søkURI, NativeForeldrepengerFagsaker.class);
+        var respons = klient.send(request, FagsakDto[].class);
         return Arrays.asList(respons);
     }
 
@@ -46,7 +48,7 @@ public class NativeForeldrepengerFagsaker implements ForeldrepengerFagsaker {
     public <T> T get(URI href, Class<T> clazz) {
         var target = UriBuilder.fromUri(baseUri).path(href.getRawPath());
         target = QueryUtil.addQueryParams(href, target);
-        return klient.getValue(NativeForeldrepengerFagsaker.class, target.build(), clazz);
+        return klient.send(RestRequest.newRequest(RestRequest.Method.get(), target.build(), NativeForeldrepengerFagsaker.class), clazz);
     }
 
     @Override
