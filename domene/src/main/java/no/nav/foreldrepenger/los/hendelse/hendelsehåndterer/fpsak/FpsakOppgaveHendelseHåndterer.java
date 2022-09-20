@@ -1,30 +1,29 @@
 package no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.Any;
-import javax.enterprise.inject.Instance;
-import javax.inject.Inject;
-
-import no.nav.foreldrepenger.los.domene.typer.BehandlingId;
-import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveEventLogg;
-import no.nav.foreldrepenger.los.klient.fpsak.BehandlingFpsak;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import no.nav.foreldrepenger.los.domene.typer.Saksnummer;
-import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.FpsakOppgavetransisjonHåndterer.Oppgavetransisjon;
-import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveHistorikk;
-import no.nav.foreldrepenger.los.hendelse.hendelseoppretter.hendelse.Hendelse;
-import no.nav.foreldrepenger.los.klient.fpsak.ForeldrepengerBehandling;
-import no.nav.foreldrepenger.los.oppgave.OppgaveRepository;
-import no.nav.vedtak.felles.integrasjon.rest.jersey.Jersey;
+import static no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.TransisjonUtleder.utledAktuellTransisjon;
 
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.TransisjonUtleder.utledAktuellTransisjon;
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.Any;
+import javax.enterprise.inject.Instance;
+import javax.inject.Inject;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import no.nav.foreldrepenger.los.domene.typer.BehandlingId;
+import no.nav.foreldrepenger.los.domene.typer.Saksnummer;
+import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.FpsakOppgavetransisjonHåndterer.Oppgavetransisjon;
+import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveEventLogg;
+import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveHistorikk;
+import no.nav.foreldrepenger.los.hendelse.hendelseoppretter.hendelse.Hendelse;
+import no.nav.foreldrepenger.los.klient.fpsak.BehandlingFpsak;
+import no.nav.foreldrepenger.los.klient.fpsak.ForeldrepengerBehandling;
+import no.nav.foreldrepenger.los.oppgave.OppgaveRepository;
+import no.nav.vedtak.felles.integrasjon.rest.NativeClient;
 
 @ApplicationScoped
 public class FpsakOppgaveHendelseHåndterer {
@@ -37,7 +36,7 @@ public class FpsakOppgaveHendelseHåndterer {
     @Inject
     public FpsakOppgaveHendelseHåndterer(OppgaveRepository oppgaveRepository,
                                          @Any Instance<FpsakOppgavetransisjonHåndterer> håndterere,
-                                         @Jersey ForeldrepengerBehandling foreldrePengerBehandlingKlient) {
+                                         @NativeClient ForeldrepengerBehandling foreldrePengerBehandlingKlient) {
         this.oppgaveRepository = oppgaveRepository;
         this.håndterere = håndterere;
         this.foreldrePengerBehandlingKlient = foreldrePengerBehandlingKlient;

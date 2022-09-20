@@ -1,5 +1,7 @@
 package no.nav.foreldrepenger.los.organisasjon.ansatt;
 
+import static no.nav.foreldrepenger.los.felles.util.OptionalUtil.tryOrEmpty;
+
 import java.net.URI;
 import java.util.Optional;
 
@@ -9,24 +11,25 @@ import javax.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import no.nav.vedtak.felles.integrasjon.rest.OidcRestClient;
 import no.nav.foreldrepenger.konfig.KonfigVerdi;
-
-import static no.nav.foreldrepenger.los.felles.util.OptionalUtil.tryOrEmpty;
+import no.nav.vedtak.felles.integrasjon.rest.RestClient;
+import no.nav.vedtak.felles.integrasjon.rest.RestClientConfig;
+import no.nav.vedtak.felles.integrasjon.rest.RestRequest;
+import no.nav.vedtak.felles.integrasjon.rest.TokenFlow;
 
 @ApplicationScoped
+@RestClientConfig(tokenConfig = TokenFlow.CONTEXT, endpointProperty = "axsys.url", endpointDefault = "http://axsys.default")
 public class EnhetstilgangConnection {
     private static final Logger LOG = LoggerFactory.getLogger(EnhetstilgangConnection.class);
 
     private static final String PATH = "/api/v1/tilgang/";
     private String host;
-    private OidcRestClient httpClient;
+    private RestClient httpClient;
     private boolean enabled;
 
     @Inject
-    public EnhetstilgangConnection(@KonfigVerdi(value = "axsys.url", defaultVerdi = "http://axsys.default") String host,
-                                   @KonfigVerdi(value = "axsys.enabled", defaultVerdi = "true") boolean enabled,
-                                   OidcRestClient httpClient) {
+    public EnhetstilgangConnection(RestClient httpClient,
+                                   @KonfigVerdi(value = "axsys.enabled", defaultVerdi = "true") boolean enabled) {
         this.host = host;
         this.httpClient = httpClient;
         this.enabled = enabled;
@@ -45,7 +48,8 @@ public class EnhetstilgangConnection {
     }
 
     private EnhetstilgangResponse hentEnhetstilganger(URI uri) {
-        return httpClient.get(uri, EnhetstilgangResponse.class);
+        var request = RestRequest.newGET(uri, TokenFlow.CONTEXT, null);
+        return httpClient.send(request, EnhetstilgangResponse.class);
     }
 
     private URI uri(String ident) {

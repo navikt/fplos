@@ -12,7 +12,7 @@ import no.nav.foreldrepenger.los.klient.fpsak.ForeldrepengerFagsaker;
 import no.nav.foreldrepenger.los.klient.fpsak.dto.behandling.BehandlingDto;
 import no.nav.foreldrepenger.los.klient.fpsak.dto.behandling.ResourceLink;
 import no.nav.foreldrepenger.los.klient.fpsak.dto.fagsak.FagsakDto;
-import no.nav.vedtak.felles.integrasjon.rest.jersey.Jersey;
+import no.nav.vedtak.felles.integrasjon.rest.NativeClient;
 import no.nav.vedtak.felles.prosesstask.api.ProsessTask;
 import no.nav.vedtak.felles.prosesstask.api.ProsessTaskData;
 import no.nav.vedtak.felles.prosesstask.api.ProsessTaskHandler;
@@ -29,8 +29,8 @@ public class SynkroniseringHendelseTask implements ProsessTaskHandler {
     private FpsakOppgaveHendelseHåndterer fpsakOppgaveHendelseHåndterer;
 
     @Inject
-    public SynkroniseringHendelseTask(@Jersey ForeldrepengerBehandling behandlingKlient,
-            @Jersey ForeldrepengerFagsaker fagsakKlient,
+    public SynkroniseringHendelseTask(@NativeClient ForeldrepengerBehandling behandlingKlient,
+            @NativeClient ForeldrepengerFagsaker fagsakKlient,
             FpsakOppgaveHendelseHåndterer fpsakOppgaveHendelseHåndterer) {
         this.behandlingKlient = behandlingKlient;
         this.fagsakKlient = fagsakKlient;
