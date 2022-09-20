@@ -4,37 +4,41 @@ import java.net.URI;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.enterprise.context.Dependent;
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import javax.ws.rs.core.UriBuilder;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import no.nav.foreldrepenger.los.klient.fpsak.dto.SøkefeltDto;
 import no.nav.foreldrepenger.los.klient.fpsak.dto.fagsak.FagsakDto;
+import no.nav.vedtak.felles.integrasjon.rest.FpApplication;
 import no.nav.vedtak.felles.integrasjon.rest.NativeClient;
 import no.nav.vedtak.felles.integrasjon.rest.RestClient;
 import no.nav.vedtak.felles.integrasjon.rest.RestClientConfig;
 import no.nav.vedtak.felles.integrasjon.rest.RestConfig;
 import no.nav.vedtak.felles.integrasjon.rest.RestRequest;
+import no.nav.vedtak.felles.integrasjon.rest.TokenFlow;
 
-@Dependent
+@ApplicationScoped
 @NativeClient
-@RestClientConfig(endpointProperty = "fpsak.url", endpointDefault = "http://fpsak") // TODO - ønsker bruke appliaction = men ressurslenkene begynner med /<fpapp>/api/...
+@RestClientConfig(tokenConfig = TokenFlow.CONTEXT, application = FpApplication.FPSAK)
 public class NativeForeldrepengerFagsaker implements ForeldrepengerFagsaker {
 
     private static final Logger LOG = LoggerFactory.getLogger(NativeForeldrepengerFagsaker.class);
 
-    private final RestClient klient;
-    private final URI baseUri;
-    private final URI søkURI;
+    private RestClient klient;
+    private URI baseUri;
+    private URI søkURI;
+
+    NativeForeldrepengerFagsaker() {
+    }
 
     @Inject
     public NativeForeldrepengerFagsaker(RestClient klient) {
         this.klient = klient;
-        this.baseUri = RestConfig.endpointFromAnnotation(NativeForeldrepengerFagsaker.class);
-        this.søkURI = URI.create(baseUri + ForeldrepengerFagsaker.FAGSAK_SØK);
+        this.baseUri = RestConfig.contextPathFromAnnotation(NativeForeldrepengerFagsaker.class);
+        this.søkURI = URI.create(baseUri + "/api/fagsak/sok");
     }
 
     @Override
@@ -46,9 +50,10 @@ public class NativeForeldrepengerFagsaker implements ForeldrepengerFagsaker {
 
     @Override
     public <T> T get(URI href, Class<T> clazz) {
-        var target = UriBuilder.fromUri(baseUri).path(href.getRawPath());
-        target = QueryUtil.addQueryParams(href, target);
-        return klient.send(RestRequest.newRequest(RestRequest.Method.get(), target.build(), NativeForeldrepengerFagsaker.class), clazz);
+        var linkpath = href.toString();
+        var path = linkpath.startsWith("/fpsak") ?  linkpath.replaceFirst("/fpsak", "") : linkpath;
+        var target = URI.create(baseUri + path);
+        return klient.send(RestRequest.newRequest(RestRequest.Method.get(), target, NativeForeldrepengerFagsaker.class), clazz);
     }
 
     @Override
