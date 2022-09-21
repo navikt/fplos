@@ -40,7 +40,7 @@ public class NativeForeldrepengerBehandling implements ForeldrepengerBehandling 
     @Override
     public BehandlingDto hentUtvidetBehandlingDto(String id) {
         LOG.trace("Henter behandling for {}", id);
-        var target = UriBuilder.fromUri(baseUri).path(FPSAK_BEHANDLINGER).queryParam(BEHANDLING_ID, id).build();
+        var target = UriBuilder.fromUri(baseUri).path("/api/behandlinger").queryParam(BEHANDLING_ID, id).build();
         var res = klient.send(RestRequest.newGET(target, NativeForeldrepengerBehandling.class), BehandlingDto.class);
         LOG.info("Hentet behandling for {} OK", id);
         return res;
