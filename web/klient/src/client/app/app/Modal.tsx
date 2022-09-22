@@ -14,7 +14,7 @@ interface OwnProps {
 /**
  * Modal
  *
- * Wrapper Modal-komponenten fra nav-frontend-biblioteket.
+ * Wrapper Modal-komponenten fra ds-react biblioteket.
  */
 const Modal: FunctionComponent<OwnProps> = ({ children, ...otherProps }) => {
   if (NavModal.setAppElement) {

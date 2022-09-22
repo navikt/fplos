@@ -1,13 +1,11 @@
-// CSS-endringer för felleskomponenter og globaler så som fra core/og muligen import fra alla andra komponenter
-@import '@{coreModulePath}nav-frontend-core/less/core';
 @import './dayPicker';
-
+ 
 body {
-	height: 100%;
-	line-height: 1.42857143;
-	color: #3e3832;
-	background-color: #efefef;
-	margin: 0;
+  height: 100%;
+  line-height: 1.42857143;
+  color: #3e3832;
+  background-color: #efefef;
+  margin: 0;
 }
 
 :global(.cal-wrap) {
@@ -15,66 +13,59 @@ body {
 }
 
 :global(.modal__overlay) {
-   background-color: rgba(61, 56, 49, 0.9);
+  background-color: rgba(61,56,49,0.9);
 }
 
-// Text-area custom styling
 :global(.textarea--medMeta__teller) {
-   color: @navMorkGra;
-   font-size: 0.8rem;
-   font-style: italic;
+  color: var(--navds-global-color-gray-900);
+  font-size: 0.8rem;
+  font-style: italic;
 }
 
 :global(.lenke) {
-  color: @navBla;
-  border: 0;
+  color: var(--navds-global-color-blue-500);
+ 	border: 0;
   padding: 0;
   background: none;
   text-decoration: none;
-  border-bottom: solid 1px @navGra40;
+  border-bottom: solid 1px var(--navds-global-color-gray-200);
   cursor: pointer;
-
-  &:hover,
-  &--hover {
-    border-bottom-color: @navBla;
-  }
-
-  &:focus,
-  &--focus {
-    outline: none;
-    background-color: @navOransjeLighten40;
-  }
-
-  &:active,
-  &--active {
-    color: @navDypBla;
-    border-bottom-color: @navDypBla;
-  }
-
-  &--frittstaende {
-    border-bottom: 0;
-  }
 }
 
-:global(.skjemaelement > .skjemaelement) {
-  &__feilmelding {
-    margin-top: 1rem;
-  }
+:global(.lenke):hover, :global(.lenke)--hover {
+  border-bottom-color: var(--navds-global-color-blue-500);
+}
+
+:global(.lenke):focus, :global(.lenke)--focus {
+  outline: none;
+  background-color: var(--navds-global-color-orange-300);
+}
+
+:global(.lenke):active, :global(.lenke)--active {
+  color: var(--navds-global-color-deepblue-500);
+  border-bottom-color: var(--navds-global-color-deepblue-500);
+}
+
+:global(.lenke)--frittstaende {
+  border-bottom: 0;
+}
+
+:global(.skjemaelement > .skjemaelement)__feilmelding {
+  margin-top: 1rem;
 }
 
 :global(.skjemaelement > .skjemaelement__input) {
   padding: 9px;
- }
+}
 
-//TODO (TOR) Dette bør kunna gjerast på ein bedre måte (Har lagt til float:left for å få vist to månedar for periodevelgjar)
 :global(.DayPicker-Month) {
   display: table;
   border-collapse: collapse;
   border-spacing: 0;
   -webkit-user-select: none;
-     -moz-user-select: none;
-      -ms-user-select: none;
-          user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
   margin: 0 1rem;
   margin-top: 1rem;
   float: left;
@@ -101,9 +92,7 @@ body {
 }
 
 @media (max-width: 1024px) {
-
-    .panel-container-mixin{
-        width: 100%;
-    }
+  .panel-container-mixin {
+ 	 width: 100%;
+	}
 }
-

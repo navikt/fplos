@@ -1,6 +1,5 @@
 import React, { FunctionComponent, useMemo } from 'react';
 import { injectIntl, WrappedComponentProps, IntlShape } from 'react-intl';
-import { Row, Column } from 'nav-frontend-grid';
 import { Button, Detail } from '@navikt/ds-react';
 import { Close } from '@navikt/ds-icons';
 import { decodeHtmlEntity } from '@navikt/ft-utils';
@@ -67,13 +66,9 @@ const ErrorMessagePanel: FunctionComponent<OwnProps & WrappedComponentProps> = (
   return (
     <div className={styles.container}>
       {feilmeldinger.map((message) => (
-        <Row key={message}>
-          <Column xs="11">
-            <Detail size="small" className={styles.wordWrap}>
-              {`${decodeHtmlEntity(message)} `}
-            </Detail>
-          </Column>
-        </Row>
+        <Detail key={message} size="small" className={styles.wordWrap}>
+          {`${decodeHtmlEntity(message)} `}
+        </Detail>
       ))}
       <div className={styles.lukkContainer}>
         <Button

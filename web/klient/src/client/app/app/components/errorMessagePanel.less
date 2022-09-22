@@ -1,7 +1,5 @@
-@import '@{coreModulePath}nav-frontend-core/less/_variabler';
-
 .container {
-  background-color: @redError;
+  background-color: var(--navds-global-color-red-500);
   color: white;
   display: block;
   max-height: 120px;
@@ -22,12 +20,12 @@
   cursor: pointer;
   padding: 0;
   text-decoration: none;
+}
 
-  &:focus,
-  &:hover {
-    border-bottom-color: @navGra40;
-    color: @navGra40;
-  }
+.link:focus,
+.link:hover {
+  border-bottom-color: var(--navds-global-color-gray-200);
+  color: var(--navds-global-color-gray-200);
 }
 
 .lukkContainer {

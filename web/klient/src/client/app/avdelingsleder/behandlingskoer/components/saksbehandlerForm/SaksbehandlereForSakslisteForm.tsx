@@ -2,10 +2,11 @@ import React, { FunctionComponent, useMemo, useEffect } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { useForm } from 'react-hook-form';
 import { Label, Panel } from '@navikt/ds-react';
-import { Row, Column } from 'nav-frontend-grid';
 
 import { restApiHooks, RestApiPathsKeys } from 'data/fplosRestApi';
-import { VerticalSpacer } from '@navikt/ft-ui-komponenter';
+import {
+  FlexColumn, FlexContainer, FlexRow, VerticalSpacer,
+} from '@navikt/ft-ui-komponenter';
 import Saksbehandler from 'types/avdelingsleder/saksbehandlerAvdelingTsType';
 import Saksliste from 'types/avdelingsleder/sakslisteAvdelingTsType';
 import { Form, CheckboxField } from '@navikt/ft-form-hooks';
@@ -64,42 +65,44 @@ const SaksbehandlereForSakslisteForm: FunctionComponent<OwnProps> = ({
           <FormattedMessage id="SaksbehandlereForSakslisteForm.IngenSaksbehandlere" />
         )}
         {sorterteAvdelingensSaksbehandlere.length > 0 && (
-        <Row>
-          <Column xs="6">
-            {avdelingensSaksbehandlereVenstreListe.map((s) => (
-              <React.Fragment key={s.brukerIdent}>
-                <CheckboxField
-                  name={s.brukerIdent}
-                  label={s.navn}
-                  onChange={(isChecked) => knyttSaksbehandlerTilSaksliste({
-                    sakslisteId: valgtSaksliste.sakslisteId,
-                    brukerIdent: s.brukerIdent,
-                    checked: isChecked,
-                    avdelingEnhet: valgtAvdelingEnhet,
-                  }).then(() => hentAvdelingensSakslister({ avdelingEnhet: valgtAvdelingEnhet }))}
-                />
-                <VerticalSpacer fourPx />
-              </React.Fragment>
-            ))}
-          </Column>
-          <Column xs="6">
-            {avdelingensSaksbehandlereHoyreListe.map((s) => (
-              <React.Fragment key={s.brukerIdent}>
-                <CheckboxField
-                  name={s.brukerIdent}
-                  label={s.navn}
-                  onChange={(isChecked) => knyttSaksbehandlerTilSaksliste({
-                    sakslisteId: valgtSaksliste.sakslisteId,
-                    brukerIdent: s.brukerIdent,
-                    checked: isChecked,
-                    avdelingEnhet: valgtAvdelingEnhet,
-                  }).then(() => hentAvdelingensSakslister({ avdelingEnhet: valgtAvdelingEnhet }))}
-                />
-                <VerticalSpacer fourPx />
-              </React.Fragment>
-            ))}
-          </Column>
-        </Row>
+          <FlexContainer>
+            <FlexRow>
+              <FlexColumn className={styles.colLeft}>
+                {avdelingensSaksbehandlereVenstreListe.map((s) => (
+                  <React.Fragment key={s.brukerIdent}>
+                    <CheckboxField
+                      name={s.brukerIdent}
+                      label={s.navn}
+                      onChange={(isChecked) => knyttSaksbehandlerTilSaksliste({
+                        sakslisteId: valgtSaksliste.sakslisteId,
+                        brukerIdent: s.brukerIdent,
+                        checked: isChecked,
+                        avdelingEnhet: valgtAvdelingEnhet,
+                      }).then(() => hentAvdelingensSakslister({ avdelingEnhet: valgtAvdelingEnhet }))}
+                    />
+                    <VerticalSpacer fourPx />
+                  </React.Fragment>
+                ))}
+              </FlexColumn>
+              <FlexColumn>
+                {avdelingensSaksbehandlereHoyreListe.map((s) => (
+                  <React.Fragment key={s.brukerIdent}>
+                    <CheckboxField
+                      name={s.brukerIdent}
+                      label={s.navn}
+                      onChange={(isChecked) => knyttSaksbehandlerTilSaksliste({
+                        sakslisteId: valgtSaksliste.sakslisteId,
+                        brukerIdent: s.brukerIdent,
+                        checked: isChecked,
+                        avdelingEnhet: valgtAvdelingEnhet,
+                      }).then(() => hentAvdelingensSakslister({ avdelingEnhet: valgtAvdelingEnhet }))}
+                    />
+                    <VerticalSpacer fourPx />
+                  </React.Fragment>
+                ))}
+              </FlexColumn>
+            </FlexRow>
+          </FlexContainer>
         )}
       </Panel>
     </Form>

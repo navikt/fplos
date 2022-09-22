@@ -4,14 +4,15 @@ import {
 } from 'react-intl';
 import { useForm } from 'react-hook-form';
 import {
-  Heading, BodyShort, Panel, Label,
+  Heading, BodyShort, Panel,
 } from '@navikt/ds-react';
 
-import { Row, Column } from 'nav-frontend-grid';
 import {
   required, minLength, maxLength, hasValidName,
 } from '@navikt/ft-form-validators';
-import { VerticalSpacer } from '@navikt/ft-ui-komponenter';
+import {
+  FlexColumn, FlexContainer, FlexRow, VerticalSpacer,
+} from '@navikt/ft-ui-komponenter';
 import { restApiHooks, RestApiPathsKeys } from 'data/fplosRestApi';
 import { Form, InputField } from '@navikt/ft-form-hooks';
 import Saksliste from 'types/avdelingsleder/sakslisteAvdelingTsType';
@@ -114,62 +115,64 @@ export const UtvalgskriterierForSakslisteForm: FunctionComponent<OwnProps & Wrap
   return (
     <Form<FormValues> formMethods={formMethods}>
       <Panel className={styles.panel}>
-        <Label size="small">
+        <Heading size="small">
           <FormattedMessage id="UtvalgskriterierForSakslisteForm.Utvalgskriterier" />
-        </Label>
+        </Heading>
         <VerticalSpacer eightPx />
-        <Row className={styles.utvalgskriterieRad}>
-          <Column xs="9">
-            <InputField
-              name="navn"
-              label={intl.formatMessage({ id: 'UtvalgskriterierForSakslisteForm.Navn' })}
-              validate={[required, minLength3, maxLength100, hasValidName]}
-              onChange={lagreNavn}
-              className={styles.bredde}
-            />
-          </Column>
-          <Column xs="3">
-            <div className={styles.grayBox}>
-              <BodyShort size="small"><FormattedMessage id="UtvalgskriterierForSakslisteForm.AntallSaker" /></BodyShort>
-              <Heading size="small">{antallOppgaver ? `${antallOppgaver}` : '0'}</Heading>
-            </div>
-          </Column>
-        </Row>
-        <Row>
-          <Column xs="3">
-            <FagsakYtelseTypeVelger
-              valgtSakslisteId={valgtSaksliste.sakslisteId}
-              valgtAvdelingEnhet={valgtAvdelingEnhet}
-              hentAvdelingensSakslister={hentAvdelingensSakslister}
-              hentAntallOppgaver={hentAntallOppgaver}
-            />
-            <BehandlingstypeVelger
-              valgtSakslisteId={valgtSaksliste.sakslisteId}
-              valgtAvdelingEnhet={valgtAvdelingEnhet}
-              hentAvdelingensSakslister={hentAvdelingensSakslister}
-              hentAntallOppgaver={hentAntallOppgaver}
-            />
-          </Column>
-          <Column xs="4">
-            <AndreKriterierVelger
-              valgtSakslisteId={valgtSaksliste.sakslisteId}
-              valgtAvdelingEnhet={valgtAvdelingEnhet}
-              values={values}
-              hentAvdelingensSakslister={hentAvdelingensSakslister}
-              hentAntallOppgaver={hentAntallOppgaver}
-            />
-          </Column>
-          <Column xs="4">
-            <SorteringVelger
-              valgtSakslisteId={valgtSaksliste.sakslisteId}
-              valgteBehandlingtyper={valgtSaksliste.behandlingTyper}
-              valgtAvdelingEnhet={valgtAvdelingEnhet}
-              erDynamiskPeriode={!!values.erDynamiskPeriode}
-              hentAvdelingensSakslister={hentAvdelingensSakslister}
-              hentAntallOppgaver={hentAntallOppgaver}
-            />
-          </Column>
-        </Row>
+        <FlexContainer>
+          <FlexRow className={styles.utvalgskriterieRad}>
+            <FlexColumn>
+              <InputField
+                name="navn"
+                label={intl.formatMessage({ id: 'UtvalgskriterierForSakslisteForm.Navn' })}
+                validate={[required, minLength3, maxLength100, hasValidName]}
+                onChange={lagreNavn}
+                className={styles.bredde}
+              />
+            </FlexColumn>
+            <FlexColumn className={styles.colRight}>
+              <div className={styles.grayBox}>
+                <BodyShort size="small"><FormattedMessage id="UtvalgskriterierForSakslisteForm.AntallSaker" /></BodyShort>
+                <Heading size="small">{antallOppgaver ? `${antallOppgaver}` : '0'}</Heading>
+              </div>
+            </FlexColumn>
+          </FlexRow>
+          <FlexRow spaceBetween>
+            <FlexColumn>
+              <FagsakYtelseTypeVelger
+                valgtSakslisteId={valgtSaksliste.sakslisteId}
+                valgtAvdelingEnhet={valgtAvdelingEnhet}
+                hentAvdelingensSakslister={hentAvdelingensSakslister}
+                hentAntallOppgaver={hentAntallOppgaver}
+              />
+              <BehandlingstypeVelger
+                valgtSakslisteId={valgtSaksliste.sakslisteId}
+                valgtAvdelingEnhet={valgtAvdelingEnhet}
+                hentAvdelingensSakslister={hentAvdelingensSakslister}
+                hentAntallOppgaver={hentAntallOppgaver}
+              />
+            </FlexColumn>
+            <FlexColumn>
+              <AndreKriterierVelger
+                valgtSakslisteId={valgtSaksliste.sakslisteId}
+                valgtAvdelingEnhet={valgtAvdelingEnhet}
+                values={values}
+                hentAvdelingensSakslister={hentAvdelingensSakslister}
+                hentAntallOppgaver={hentAntallOppgaver}
+              />
+            </FlexColumn>
+            <FlexColumn>
+              <SorteringVelger
+                valgtSakslisteId={valgtSaksliste.sakslisteId}
+                valgteBehandlingtyper={valgtSaksliste.behandlingTyper}
+                valgtAvdelingEnhet={valgtAvdelingEnhet}
+                erDynamiskPeriode={!!values.erDynamiskPeriode}
+                hentAvdelingensSakslister={hentAvdelingensSakslister}
+                hentAntallOppgaver={hentAntallOppgaver}
+              />
+            </FlexColumn>
+          </FlexRow>
+        </FlexContainer>
       </Panel>
     </Form>
   );
