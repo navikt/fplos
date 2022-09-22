@@ -21,7 +21,7 @@ import no.nav.vedtak.felles.integrasjon.rest.TokenFlow;
 
 @ApplicationScoped
 @NativeClient
-@RestClientConfig(tokenConfig = TokenFlow.CONTEXT, application = FpApplication.FPSAK)
+@RestClientConfig(tokenConfig = TokenFlow.ADAPTIVE, application = FpApplication.FPSAK)
 public class NativeForeldrepengerBehandling implements ForeldrepengerBehandling {
 
     private RestClient klient;
