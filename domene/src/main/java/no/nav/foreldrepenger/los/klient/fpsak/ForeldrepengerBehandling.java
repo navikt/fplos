@@ -31,7 +31,6 @@ public interface ForeldrepengerBehandling {
 
     Logger LOG = LoggerFactory.getLogger(ForeldrepengerBehandling.class);
     String BEHANDLING_ID = "behandlingId";
-    String FPSAK_BEHANDLINGER = "/fpsak/api/behandlinger";
     String AKSJONSPUNKTER_LINK = "aksjonspunkter";
     String INNTEKTSMELDINGER_LINK = "inntektsmeldinger";
     String UTTAK_KONTROLLER_FAKTA_PERIODER_LINK = "uttak-kontroller-fakta-perioder";
