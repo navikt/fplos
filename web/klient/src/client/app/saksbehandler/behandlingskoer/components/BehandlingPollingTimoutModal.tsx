@@ -1,9 +1,10 @@
 import React, { FunctionComponent } from 'react';
 import { injectIntl, WrappedComponentProps, FormattedMessage } from 'react-intl';
-import { Row, Column } from 'nav-frontend-grid';
-import { Button, BodyShort } from '@navikt/ds-react';
+import { Button, Label } from '@navikt/ds-react';
+import {
+  FlexColumn, FlexContainer, FlexRow, FloatRight, Image, VerticalSpacer,
+} from '@navikt/ft-ui-komponenter';
 
-import { Image } from '@navikt/ft-ui-komponenter';
 import Modal from 'app/Modal';
 
 import advarselImageUrl from 'images/advarsel.svg';
@@ -25,34 +26,34 @@ const BehandlingPollingTimoutModal: FunctionComponent<WrappedComponentProps> = (
     aria-label={intl.formatMessage({ id: 'BehandlingPollingTimoutModal.TimeoutMelding' })}
     onClose={() => window.location.reload()}
   >
-    <Row>
-      <Column xs="1">
-        <Image
-          className={styles.image}
-          alt={intl.formatMessage({ id: 'BehandlingPollingTimoutModal.TimeoutMelding' })}
-          src={advarselImageUrl}
-        />
-        <div className={styles.divider} />
-      </Column>
-      <Column xs="9" className={styles.text}>
-        <BodyShort size="small"><FormattedMessage id="BehandlingPollingTimoutModal.TimeoutMelding" /></BodyShort>
-      </Column>
-    </Row>
-    <Row>
-      <Column xs="7" />
-      <Column xs="5">
-        <Button
-          className={styles.submitButton}
-          size="small"
-          variant="secondary"
-          onClick={() => window.location.reload()}
-          autoFocus
-          type="button"
-        >
-          {intl.formatMessage({ id: 'BehandlingPollingTimoutModal.Oppfrisk' })}
-        </Button>
-      </Column>
-    </Row>
+    <FlexContainer>
+      <FlexRow>
+        <FlexColumn>
+          <Image
+            className={styles.image}
+            alt={intl.formatMessage({ id: 'BehandlingPollingTimoutModal.TimeoutMelding' })}
+            src={advarselImageUrl}
+          />
+        </FlexColumn>
+        <FlexColumn className={styles.text}>
+          <Label size="small"><FormattedMessage id="BehandlingPollingTimoutModal.TimeoutMelding" /></Label>
+        </FlexColumn>
+      </FlexRow>
+    </FlexContainer>
+    <VerticalSpacer sixteenPx />
+    <FloatRight>
+      <Button
+        className={styles.submitButton}
+        size="small"
+        variant="secondary"
+        onClick={() => window.location.reload()}
+        autoFocus
+        type="button"
+      >
+        {intl.formatMessage({ id: 'BehandlingPollingTimoutModal.Oppfrisk' })}
+      </Button>
+      <VerticalSpacer sixteenPx />
+    </FloatRight>
   </Modal>
 );
 

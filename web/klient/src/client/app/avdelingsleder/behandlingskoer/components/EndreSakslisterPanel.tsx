@@ -1,8 +1,9 @@
 import React, { FunctionComponent, useCallback, useEffect } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
-import { Row, Column } from 'nav-frontend-grid';
 
-import { Image, VerticalSpacer } from '@navikt/ft-ui-komponenter';
+import {
+  FlexColumn, FlexContainer, FlexRow, Image, VerticalSpacer,
+} from '@navikt/ft-ui-komponenter';
 import { restApiHooks, RestApiPathsKeys } from 'data/fplosRestApi';
 import pilNedUrl from 'images/pil-ned.svg';
 import Saksliste from 'types/avdelingsleder/sakslisteAvdelingTsType';
@@ -79,18 +80,20 @@ const EndreSakslisterPanel: FunctionComponent<OwnProps> = ({
             hentAvdelingensSakslister={hentAvdelingensSakslister}
             hentOppgaverForAvdelingAntall={hentOppgaverForAvdelingAntall}
           />
-          <Row>
-            <Column xs="5" />
-            <Column xs="1">
-              <Image
-                alt={intl.formatMessage({ id: 'EndreSakslisterPanel.Saksbehandlere' })}
-                src={pilNedUrl}
-              />
-            </Column>
-            <Column xs="5" className={styles.text}>
-              <FormattedMessage id="EndreSakslisterPanel.KnyttetMotSaksbehandlere" />
-            </Column>
-          </Row>
+          <FlexContainer>
+            <FlexRow>
+              <FlexColumn className={styles.leftCol} />
+              <FlexColumn>
+                <Image
+                  alt={intl.formatMessage({ id: 'EndreSakslisterPanel.Saksbehandlere' })}
+                  src={pilNedUrl}
+                />
+              </FlexColumn>
+              <FlexColumn className={styles.text}>
+                <FormattedMessage id="EndreSakslisterPanel.KnyttetMotSaksbehandlere" />
+              </FlexColumn>
+            </FlexRow>
+          </FlexContainer>
           <SaksbehandlereForSakslisteForm
             valgtSaksliste={valgtSaksliste}
             valgtAvdelingEnhet={valgtAvdelingEnhet}

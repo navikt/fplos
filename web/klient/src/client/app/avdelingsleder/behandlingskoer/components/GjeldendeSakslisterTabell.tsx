@@ -5,13 +5,12 @@ import { FormattedMessage } from 'react-intl';
 import {
   BodyShort, Detail, Label, Heading,
 } from '@navikt/ds-react';
-import { Column, Row } from 'nav-frontend-grid';
 
 import { KodeverkMedNavn } from '@navikt/ft-types';
 import Saksliste from 'types/avdelingsleder/sakslisteAvdelingTsType';
 import KodeverkType from 'kodeverk/kodeverkTyper';
 import {
-  Image, VerticalSpacer, Table, TableRow, TableColumn, DateLabel,
+  Image, VerticalSpacer, Table, TableRow, TableColumn, DateLabel, FlexContainer, FlexRow, FlexColumn,
 } from '@navikt/ft-ui-komponenter';
 import addCircleIcon from 'images/add-circle.svg';
 import removeIcon from 'images/remove.svg';
@@ -134,21 +133,23 @@ export const GjeldendeSakslisterTabell: FunctionComponent<OwnProps> = ({
 
   return (
     <>
-      <Row>
-        <Column xs="9">
-          <Label size="small">
-            <FormattedMessage id="GjeldendeSakslisterTabell.GjeldendeLister" />
-          </Label>
-        </Column>
-        <Column xs="3">
-          <div className={styles.grayBox}>
-            <BodyShort size="small">
-              <FormattedMessage id="GjeldendeSakslisterTabell.OppgaverForAvdeling" />
-            </BodyShort>
-            <Heading size="small">{oppgaverForAvdelingAntall || '0'}</Heading>
-          </div>
-        </Column>
-      </Row>
+      <FlexContainer>
+        <FlexRow>
+          <FlexColumn>
+            <Label size="small">
+              <FormattedMessage id="GjeldendeSakslisterTabell.GjeldendeLister" />
+            </Label>
+          </FlexColumn>
+          <FlexColumn className={styles.margin}>
+            <div className={styles.grayBox}>
+              <BodyShort size="small">
+                <FormattedMessage id="GjeldendeSakslisterTabell.OppgaverForAvdeling" />
+              </BodyShort>
+              <Heading size="small">{oppgaverForAvdelingAntall || '0'}</Heading>
+            </div>
+          </FlexColumn>
+        </FlexRow>
+      </FlexContainer>
       {sakslister.length === 0 && (
         <>
           <VerticalSpacer eightPx />
