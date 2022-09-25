@@ -25,7 +25,15 @@
       ]
     },
     {
-      "app": "fp-frontend-azure",
+      "app": "fp-swagger",
+      "namespace": "teamforeldrepenger",
+      "cluster": "dev-gcp",
+      "scopes": [
+        "swagger"
+      ]
+    },
+    {
+      "app": "fp-frontend",
       "namespace": "teamforeldrepenger",
       "cluster": "dev-gcp"
     }
