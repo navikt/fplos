@@ -28,11 +28,6 @@
       "app": "fp-frontend",
       "namespace": "teamforeldrepenger",
       "cluster": "dev-gcp"
-    },
-    {
-      "app": "fp-frontend",
-      "namespace": "teamforeldrepenger",
-      "cluster": "dev-fss"
     }
   ]
 }
