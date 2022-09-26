@@ -8,29 +8,23 @@ import java.util.Optional;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import no.nav.foreldrepenger.konfig.KonfigVerdi;
 import no.nav.vedtak.felles.integrasjon.rest.RestClient;
 import no.nav.vedtak.felles.integrasjon.rest.RestClientConfig;
+import no.nav.vedtak.felles.integrasjon.rest.RestConfig;
 import no.nav.vedtak.felles.integrasjon.rest.RestRequest;
 import no.nav.vedtak.felles.integrasjon.rest.TokenFlow;
 
 @ApplicationScoped
 @RestClientConfig(tokenConfig = TokenFlow.CONTEXT, endpointProperty = "axsys.url", endpointDefault = "http://axsys.default")
 public class EnhetstilgangConnection {
-    private static final Logger LOG = LoggerFactory.getLogger(EnhetstilgangConnection.class);
-
     private static final String PATH = "/api/v1/tilgang/";
-    private String host;
     private RestClient httpClient;
     private boolean enabled;
 
     @Inject
     public EnhetstilgangConnection(RestClient httpClient,
                                    @KonfigVerdi(value = "axsys.enabled", defaultVerdi = "true") boolean enabled) {
-        this.host = host;
         this.httpClient = httpClient;
         this.enabled = enabled;
     }
@@ -52,7 +46,8 @@ public class EnhetstilgangConnection {
         return httpClient.send(request, EnhetstilgangResponse.class);
     }
 
-    private URI uri(String ident) {
+    private static URI uri(String ident) {
+        var host = RestConfig.endpointFromAnnotation(EnhetstilgangConnection.class);
         return URI.create(host + PATH + ident);
     }
 }
