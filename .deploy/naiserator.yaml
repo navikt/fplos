@@ -64,7 +64,6 @@ spec:
       enabled: true
       replyURLs:
         - "https://fplos.dev.intern.nav.no/fplos/cb"
-        - "https://app.adeo.no/fplos/cb"
       claims:
         extra:
           - "NAVident"
