@@ -11,6 +11,8 @@ import no.nav.foreldrepenger.los.domene.typer.Saksnummer;
 import no.nav.foreldrepenger.los.domene.typer.aktør.AktørId;
 import no.nav.foreldrepenger.los.klient.fpsak.dto.Kontrollresultat;
 import no.nav.foreldrepenger.los.klient.fpsak.dto.KontrollresultatDto;
+import no.nav.foreldrepenger.los.klient.fpsak.dto.ytelsefordeling.RettigheterAnnenForelderDto;
+import no.nav.foreldrepenger.los.klient.fpsak.dto.ytelsefordeling.YtelseFordelingDto;
 import no.nav.foreldrepenger.los.oppgave.BehandlingStatus;
 import no.nav.foreldrepenger.los.oppgave.BehandlingType;
 import no.nav.foreldrepenger.los.oppgave.FagsakYtelseType;
@@ -22,7 +24,6 @@ public class BehandlingFpsak {
     private String ansvarligSaksbehandler;
     private Lazy<List<Aksjonspunkt>> aksjonspunkter;
     private LocalDate behandlingstidFrist;
-    private Lazy<LocalDate> førsteUttaksdag;
     private Lazy<Boolean> harRefusjonskravFraArbeidsgiver;
     private Lazy<UttakEgenskaper> uttakEgenskaper;
     private Lazy<KontrollresultatDto> kontrollresultat;
@@ -34,6 +35,8 @@ public class BehandlingFpsak {
     private LocalDateTime behandlingOpprettet;
     private Saksnummer saksnummer;
     private String aktørId;
+
+    private Lazy<YtelseFordelingDto> ytelseFordelingDto;
 
     public BehandlingId getBehandlingId() {
         return behandlingId;
@@ -90,6 +93,21 @@ public class BehandlingFpsak {
         return svar.vurderSykdom();
     }
 
+    public LocalDate getFørsteUttaksdag() {
+        var svar = Lazy.get(ytelseFordelingDto);
+        if (svar == null) {
+            return null;
+        }
+        return svar.førsteUttaksdato();
+    }
+
+    public boolean skalVurdereEøsOpptjening() {
+        return Optional.ofNullable(Lazy.get(ytelseFordelingDto))
+                .map(YtelseFordelingDto::rettigheterAnnenforelder)
+                .map(RettigheterAnnenForelderDto::skalAvklareAnnenForelderRettEØS)
+                .orElse(false);
+    }
+
     public boolean erRevurderingPgaPleiepenger() {
         return erPleiepengerBehandling;
     }
@@ -104,10 +122,6 @@ public class BehandlingFpsak {
 
     public LocalDateTime getBehandlingstidFrist() {
         return behandlingstidFrist != null ? behandlingstidFrist.atStartOfDay() : null;
-    }
-
-    public LocalDate getFørsteUttaksdag() {
-        return førsteUttaksdag.get();
     }
 
     public BehandlingType getBehandlingType() {
@@ -153,7 +167,6 @@ public class BehandlingFpsak {
         private String ansvarligSaksbehandler;
         private Lazy<List<Aksjonspunkt>> aksjonspunkter;
         private LocalDate behandlingstidFrist;
-        private Lazy<LocalDate> førsteUttaksdag;
         private Lazy<Boolean> harRefusjonskravFraArbeidsgiver;
         private boolean erBerørtBehandling = false;
         private boolean erEndringssøknad = false;
@@ -165,6 +178,7 @@ public class BehandlingFpsak {
         private Lazy<KontrollresultatDto> kontrollresultat;
         private AktørId aktørId;
         private Saksnummer saksnummer;
+        private Lazy<YtelseFordelingDto> ytelseFordeling;
 
         private Builder() {
         }
@@ -206,11 +220,6 @@ public class BehandlingFpsak {
 
         public Builder medBehandlingstidFrist(LocalDate behandlingstidFrist) {
             this.behandlingstidFrist = behandlingstidFrist;
-            return this;
-        }
-
-        public Builder medFørsteUttaksdag(Lazy<LocalDate> førsteUttaksdag) {
-            this.førsteUttaksdag = førsteUttaksdag;
             return this;
         }
 
@@ -259,6 +268,11 @@ public class BehandlingFpsak {
             return this;
         }
 
+        public Builder medYtelseFordeling(Lazy<YtelseFordelingDto> optionalLazy) {
+            this.ytelseFordeling = optionalLazy;
+            return this;
+        }
+
         public BehandlingFpsak build() {
             var behandlingFpsak = new BehandlingFpsak();
             behandlingFpsak.ansvarligSaksbehandler = this.ansvarligSaksbehandler;
@@ -270,7 +284,6 @@ public class BehandlingFpsak {
             behandlingFpsak.uttakEgenskaper = this.uttakEgenskaper;
             behandlingFpsak.behandlingstidFrist = this.behandlingstidFrist;
             behandlingFpsak.behandlingOpprettet = this.behandlingOpprettet;
-            behandlingFpsak.førsteUttaksdag = this.førsteUttaksdag;
             behandlingFpsak.erBerørtBehandling = this.erBerørtBehandling;
             behandlingFpsak.erPleiepengerBehandling = this.erPleiepengerBehandling;
             behandlingFpsak.erEndringssøknad = this.erEndringssøknad;
@@ -281,6 +294,7 @@ public class BehandlingFpsak {
                     .map(AktørId::getId)
                     .orElse(null);
             behandlingFpsak.saksnummer = this.saksnummer;
+            behandlingFpsak.ytelseFordelingDto = this.ytelseFordeling;
             return behandlingFpsak;
         }
     }
