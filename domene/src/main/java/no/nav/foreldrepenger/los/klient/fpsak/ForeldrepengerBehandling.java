@@ -54,7 +54,7 @@ public interface ForeldrepengerBehandling {
                 .medHarRefusjonskravFraArbeidsgiver(new Lazy<>(() -> hentHarRefusjonskrav(links)))
                 .medAksjonspunkter(new Lazy<>(() -> hentAksjonspunkter(links)))
                 .medBehandlingstidFrist(behandlingDto.behandlingsfristTid())
-                .medFørsteUttaksdag(new Lazy<>(() -> hentFørsteUttaksdato(links)))
+                .medYtelseFordeling(new Lazy<>(() -> hentYtelseFordeling(links)))
                 .medErBerørtBehandling(harBehandlingÅrsakType(behandlingDto, BehandlingÅrsakType.BERØRT_BEHANDLING))
                 .medErPleiepengerBehandling(harBehandlingÅrsakType(behandlingDto, BehandlingÅrsakType.RE_VEDTAK_PLEIEPENGER))
                 .medErEndringssøknad(harBehandlingÅrsakType(behandlingDto, BehandlingÅrsakType.RE_ENDRING_FRA_BRUKER))
@@ -78,10 +78,8 @@ public interface ForeldrepengerBehandling {
                 .orElse(Collections.emptyList());
     }
 
-    private LocalDate hentFørsteUttaksdato(List<ResourceLink> links) {
-        return velgLink(links, YTELSEFORDELING_LINK)
-                .flatMap(yf -> hentFraResourceLink(yf, YtelseFordelingDto.class))
-                .map(YtelseFordelingDto::førsteUttaksdato)
+    private YtelseFordelingDto hentYtelseFordeling(List<ResourceLink> links) {
+        return velgLink(links, YTELSEFORDELING_LINK).flatMap(yf -> hentFraResourceLink(yf, YtelseFordelingDto.class))
                 .orElse(null);
     }
 

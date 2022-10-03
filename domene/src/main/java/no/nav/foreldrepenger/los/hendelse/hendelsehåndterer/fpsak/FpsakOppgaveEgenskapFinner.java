@@ -37,6 +37,9 @@ public class FpsakOppgaveEgenskapFinner implements OppgaveEgenskapFinner {
         if (behandling.harFareSignaler()) {
             this.andreKriterier.add(AndreKriterierType.VURDER_FARESIGNALER);
         }
+        if (behandling.skalVurdereEøsBosatt()) {
+            this.andreKriterier.add(AndreKriterierType.VURDER_EØS_BOSATT);
+        }
 
         var fpsakAksjonspunktWrapper = new FpsakAksjonspunktWrapper(behandling.getAksjonspunkter());
         andreKriterier.addAll(fpsakAksjonspunktWrapper.getKriterier());
