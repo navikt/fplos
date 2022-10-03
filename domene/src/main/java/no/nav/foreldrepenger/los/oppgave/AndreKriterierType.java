@@ -23,7 +23,7 @@ public enum AndreKriterierType implements Kodeverdi {
     BERØRT_BEHANDLING("BERØRT_BEHANDLING", "Berørt behandling"),
     ENDRINGSSØKNAD("ENDRINGSSOKNAD", "Endringssøknad"),
     VURDER_FORMKRAV("VURDER_FORMKRAV", "Vurder formkrav"),
-    VURDER_EØS_BOSATT("VURDER_EØS_BOSATT", "Vurder EØS-bosatt");
+    VURDER_EØS_OPPTJENING("VURDER_EØS_OPPTJENING", "Vurder EØS-opptjening");
     //SELVSTENDIG_FRILANSER("SELVSTENDIG_FRILANSER", "Selvstendig næringsdrivende eller frilanser")
 
     @JsonValue

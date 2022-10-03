@@ -101,7 +101,7 @@ public class BehandlingFpsak {
         return svar.førsteUttaksdato();
     }
 
-    public boolean skalVurdereEøsBosatt() {
+    public boolean skalVurdereEøsOpptjening() {
         return Optional.ofNullable(Lazy.get(ytelseFordelingDto))
                 .map(YtelseFordelingDto::rettigheterAnnenforelder)
                 .map(RettigheterAnnenForelderDto::skalAvklareAnnenForelderRettEØS)
