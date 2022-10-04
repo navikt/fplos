@@ -23,7 +23,6 @@ import no.nav.foreldrepenger.los.hendelse.hendelseoppretter.hendelse.Hendelse;
 import no.nav.foreldrepenger.los.klient.fpsak.BehandlingFpsak;
 import no.nav.foreldrepenger.los.klient.fpsak.ForeldrepengerBehandling;
 import no.nav.foreldrepenger.los.oppgave.OppgaveRepository;
-import no.nav.vedtak.felles.integrasjon.rest.NativeClient;
 
 @ApplicationScoped
 public class FpsakOppgaveHendelseHåndterer {
@@ -36,7 +35,7 @@ public class FpsakOppgaveHendelseHåndterer {
     @Inject
     public FpsakOppgaveHendelseHåndterer(OppgaveRepository oppgaveRepository,
                                          @Any Instance<FpsakOppgavetransisjonHåndterer> håndterere,
-                                         @NativeClient ForeldrepengerBehandling foreldrePengerBehandlingKlient) {
+                                         ForeldrepengerBehandling foreldrePengerBehandlingKlient) {
         this.oppgaveRepository = oppgaveRepository;
         this.håndterere = håndterere;
         this.foreldrePengerBehandlingKlient = foreldrePengerBehandlingKlient;

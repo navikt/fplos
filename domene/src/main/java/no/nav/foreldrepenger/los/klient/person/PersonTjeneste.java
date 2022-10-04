@@ -1,5 +1,6 @@
 package no.nav.foreldrepenger.los.klient.person;
 
+import java.net.HttpURLConnection;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -10,7 +11,6 @@ import java.util.concurrent.TimeUnit;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import org.apache.http.HttpStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,9 +41,8 @@ import no.nav.pdl.Navn;
 import no.nav.pdl.NavnResponseProjection;
 import no.nav.pdl.PersonResponseProjection;
 import no.nav.vedtak.exception.VLException;
-import no.nav.vedtak.felles.integrasjon.pdl.Pdl;
-import no.nav.vedtak.felles.integrasjon.pdl.PdlException;
-import no.nav.vedtak.felles.integrasjon.rest.NativeClient;
+import no.nav.vedtak.felles.integrasjon.person.PdlException;
+import no.nav.vedtak.felles.integrasjon.person.Persondata;
 import no.nav.vedtak.util.LRUCache;
 
 @ApplicationScoped
@@ -56,10 +55,10 @@ public class PersonTjeneste {
 
     private final LRUCache<AktørId, Person> cacheAktørIdTilPerson = new LRUCache<>(DEFAULT_CACHE_SIZE, DEFAULT_CACHE_TIMEOUT);
 
-    private Pdl pdl;
+    private Persondata pdl;
 
     @Inject
-    public PersonTjeneste(@NativeClient Pdl pdl) {
+    public PersonTjeneste(Persondata pdl) {
         this.pdl = pdl;
     }
 
@@ -79,7 +78,7 @@ public class PersonTjeneste {
         try {
             identliste = pdl.hentIdenter(request, projection);
         } catch (VLException v) {
-            if (Pdl.PDL_KLIENT_NOT_FOUND_KODE.equals(v.getKode())) {
+            if (Persondata.PDL_KLIENT_NOT_FOUND_KODE.equals(v.getKode())) {
                 return Optional.empty();
             }
             throw v;
@@ -101,7 +100,7 @@ public class PersonTjeneste {
         try {
             identliste = pdl.hentIdenter(request, projection);
         } catch (VLException v) {
-            if (Pdl.PDL_KLIENT_NOT_FOUND_KODE.equals(v.getKode())) {
+            if (Persondata.PDL_KLIENT_NOT_FOUND_KODE.equals(v.getKode())) {
                 return null;
             }
             throw v;
@@ -120,11 +119,11 @@ public class PersonTjeneste {
             cacheAktørIdTilPerson.put(aktørId, person);
             return Optional.of(person);
         } catch (PdlException e) {
-            if (e.getStatus() == HttpStatus.SC_NOT_FOUND) {
+            if (e.getStatus() == HttpURLConnection.HTTP_NOT_FOUND) {
                 return Optional.empty();
             }
             LOG.warn("PDL FPLOS hentPerson feil fra PDL ", e);
-            if (e.getStatus() == HttpStatus.SC_FORBIDDEN) {
+            if (e.getStatus() == HttpURLConnection.HTTP_FORBIDDEN) {
                 throw new IkkeTilgangPåPersonException(e);
             }
             throw e;

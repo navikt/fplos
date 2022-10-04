@@ -20,15 +20,15 @@ import no.nav.vedtak.felles.integrasjon.rest.TokenFlow;
 public class EnhetstilgangConnection {
     private static final String PATH = "/api/v1/tilgang/";
     private RestClient httpClient;
-    private URI host;
+    private RestConfig restConfig;
     private boolean enabled;
 
     @Inject
     public EnhetstilgangConnection(RestClient httpClient,
                                    @KonfigVerdi(value = "axsys.enabled", defaultVerdi = "true") boolean enabled) {
         this.httpClient = httpClient;
+        this.restConfig = RestConfig.forClient(this.getClass());
         this.enabled = enabled;
-        this.host = RestConfig.endpointFromAnnotation(EnhetstilgangConnection.class);
     }
 
     EnhetstilgangConnection() {
@@ -44,11 +44,11 @@ public class EnhetstilgangConnection {
     }
 
     private EnhetstilgangResponse hentEnhetstilganger(URI uri) {
-        var request = RestRequest.newGET(uri, TokenFlow.CONTEXT, null);
+        var request = RestRequest.newGET(uri, restConfig);
         return httpClient.send(request, EnhetstilgangResponse.class);
     }
 
     private URI uri(String ident) {
-        return URI.create(host + PATH + ident);
+        return URI.create(restConfig.endpoint() + PATH + ident);
     }
 }

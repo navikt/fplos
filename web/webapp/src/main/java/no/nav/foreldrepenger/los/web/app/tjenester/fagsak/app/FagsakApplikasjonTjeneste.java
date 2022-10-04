@@ -21,7 +21,6 @@ import no.nav.foreldrepenger.los.klient.person.PersonTjeneste;
 import no.nav.foreldrepenger.los.oppgave.FagsakYtelseType;
 import no.nav.vedtak.exception.IntegrasjonException;
 import no.nav.vedtak.exception.ManglerTilgangException;
-import no.nav.vedtak.felles.integrasjon.rest.NativeClient;
 
 @ApplicationScoped
 public class FagsakApplikasjonTjeneste {
@@ -31,7 +30,7 @@ public class FagsakApplikasjonTjeneste {
     private PersonTjeneste personTjeneste;
 
     @Inject
-    public FagsakApplikasjonTjeneste(@NativeClient ForeldrepengerFagsaker fagsakKlient, PersonTjeneste personTjeneste) {
+    public FagsakApplikasjonTjeneste(ForeldrepengerFagsaker fagsakKlient, PersonTjeneste personTjeneste) {
         this.fagsakKlient = fagsakKlient;
         this.personTjeneste = personTjeneste;
     }

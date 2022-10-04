@@ -6,13 +6,11 @@ import java.net.URI;
 import java.util.Optional;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
 import javax.ws.rs.core.UriBuilder;
 
 import no.nav.foreldrepenger.los.klient.fpsak.dto.behandling.BehandlingDto;
 import no.nav.foreldrepenger.los.klient.fpsak.dto.behandling.ResourceLink;
 import no.nav.vedtak.felles.integrasjon.rest.FpApplication;
-import no.nav.vedtak.felles.integrasjon.rest.NativeClient;
 import no.nav.vedtak.felles.integrasjon.rest.RestClient;
 import no.nav.vedtak.felles.integrasjon.rest.RestClientConfig;
 import no.nav.vedtak.felles.integrasjon.rest.RestConfig;
@@ -20,28 +18,24 @@ import no.nav.vedtak.felles.integrasjon.rest.RestRequest;
 import no.nav.vedtak.felles.integrasjon.rest.TokenFlow;
 
 @ApplicationScoped
-@NativeClient
 @RestClientConfig(tokenConfig = TokenFlow.ADAPTIVE, application = FpApplication.FPSAK)
 public class NativeForeldrepengerBehandling implements ForeldrepengerBehandling {
 
-    private RestClient klient;
-    private URI baseUri;
+    private final RestClient klient;
+    private final RestConfig restConfig;
+    private final URI baseUri;
 
-    NativeForeldrepengerBehandling() {
-        // CDI
-    }
-
-    @Inject
-    public NativeForeldrepengerBehandling(RestClient klient) {
-        this.klient = klient;
-        this.baseUri = RestConfig.contextPathFromAnnotation(NativeForeldrepengerBehandling.class);
+    public NativeForeldrepengerBehandling() {
+        this.klient = RestClient.client();
+        this.restConfig = RestConfig.forClient(this.getClass());
+        this.baseUri = restConfig.fpContextPath();
     }
 
     @Override
     public BehandlingDto hentUtvidetBehandlingDto(String id) {
         LOG.trace("Henter behandling for {}", id);
         var target = UriBuilder.fromUri(baseUri).path("/api/behandlinger").queryParam(BEHANDLING_ID, id).build();
-        var res = klient.send(RestRequest.newGET(target, NativeForeldrepengerBehandling.class), BehandlingDto.class);
+        var res = klient.send(RestRequest.newGET(target, restConfig), BehandlingDto.class);
         LOG.info("Hentet behandling for {} OK", id);
         return res;
     }
@@ -53,8 +47,8 @@ public class NativeForeldrepengerBehandling implements ForeldrepengerBehandling 
         var target = URI.create(baseUri + path);
 
         var request = POST.equals(link.getType()) ?
-                RestRequest.newPOSTJson(link.getRequestPayload(), target, NativeForeldrepengerBehandling.class) :
-                RestRequest.newGET(target, NativeForeldrepengerBehandling.class);
+                RestRequest.newPOSTJson(link.getRequestPayload(), target, restConfig) :
+                RestRequest.newGET(target, restConfig);
 
         return klient.sendReturnOptional(request, clazz);
     }

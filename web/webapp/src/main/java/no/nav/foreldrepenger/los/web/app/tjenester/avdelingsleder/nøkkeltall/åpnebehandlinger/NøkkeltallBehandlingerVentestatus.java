@@ -13,7 +13,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.nøkkeltall.åpnebehandlinger.dto.NøkkeltallBehandlingVentestatusDto;
-import no.nav.vedtak.felles.integrasjon.rest.NativeClient;
 
 @ApplicationScoped
 public class NøkkeltallBehandlingerVentestatus {
@@ -28,7 +27,7 @@ public class NøkkeltallBehandlingerVentestatus {
     }
 
     @Inject
-    public NøkkeltallBehandlingerVentestatus(@NativeClient FpsakKlient fpsakRestKlient) {
+    public NøkkeltallBehandlingerVentestatus(FpsakKlient fpsakRestKlient) {
         this.fpsakRestKlient = fpsakRestKlient;
     }
 
