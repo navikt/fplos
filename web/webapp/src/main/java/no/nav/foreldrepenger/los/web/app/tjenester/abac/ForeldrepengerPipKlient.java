@@ -1,9 +1,6 @@
 package no.nav.foreldrepenger.los.web.app.tjenester.abac;
 
-import java.net.URI;
-
 import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
 import javax.ws.rs.core.UriBuilder;
 
 import no.nav.foreldrepenger.los.domene.typer.BehandlingId;
@@ -25,20 +22,15 @@ public class ForeldrepengerPipKlient {
     private static final int PIP_CACHE_SIZE = 500;
     private static final int PIP_CACHE_TIMEOUT_MILLIS = 30000;
 
-    private RestClient restClient;
-    private URI fpsakBaseUrl;
+    private final RestClient restClient;
+    private final RestConfig restConfig;
 
     private LRUCache<BehandlingId, AbacPipDto> pipCache;
 
-    @Inject
-    public ForeldrepengerPipKlient(RestClient restClient) {
-        this.restClient = restClient;
-        this.fpsakBaseUrl = RestConfig.contextPathFromAnnotation(ForeldrepengerPipKlient.class);
+    public ForeldrepengerPipKlient() {
+        this.restClient = RestClient.client();
+        this.restConfig = RestConfig.forClient(this.getClass());
         this.pipCache = new LRUCache<>(PIP_CACHE_SIZE, PIP_CACHE_TIMEOUT_MILLIS);
-    }
-
-    ForeldrepengerPipKlient() {
-        //CDI
     }
 
     public AbacPipDto hentPipdataForBehandling(BehandlingId behandlingId) {
@@ -52,10 +44,10 @@ public class ForeldrepengerPipKlient {
     }
 
     private AbacPipDto hentFraFpsak(BehandlingId behandlingId) {
-        var pipUri = UriBuilder.fromUri(fpsakBaseUrl).path(FPSAK_PIP_ENDPOINT)
+        var pipUri = UriBuilder.fromUri(restConfig.fpContextPath()).path(FPSAK_PIP_ENDPOINT)
                 .queryParam("behandlingUuid", behandlingId.toString())
                 .build();
-        var request = RestRequest.newGET(pipUri, TokenFlow.STS_CC, null);
+        var request = RestRequest.newGET(pipUri, restConfig);
         return restClient.sendReturnOptional(request, AbacPipDto.class)
                 .orElseThrow(IllegalStateException::new);
 
