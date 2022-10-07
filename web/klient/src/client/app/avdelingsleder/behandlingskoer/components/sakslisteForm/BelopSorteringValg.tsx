@@ -1,9 +1,9 @@
+import React, { FunctionComponent } from 'react';
 import { Detail } from '@navikt/ds-react';
 import { FormattedMessage } from 'react-intl';
 import {
   FlexColumn, FlexContainer, FlexRow, ArrowBox, VerticalSpacer,
 } from '@navikt/ft-ui-komponenter';
-import React, { FunctionComponent } from 'react';
 import { hasValidPosOrNegInteger } from '@navikt/ft-form-validators';
 import { InputField, formHooks } from '@navikt/ft-form-hooks';
 import useDebounce from 'data/useDebounce';
