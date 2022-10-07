@@ -165,20 +165,19 @@ public class OppgaveRepository {
                 }
                 if (queryDto.getFiltrerTil() != null) {
                     query.setParameter("filterTomDager",
-                            KøSortering.FØRSTE_STØNADSDAG.equals(queryDto.getSortering()) ? LocalDate.now()
-                                    .plusDays(queryDto.getFiltrerTil()) : LocalDateTime.now()
-                                    .plusDays(queryDto.getFiltrerTil())
-                                    .with(LocalTime.MAX));
+                            KøSortering.FØRSTE_STØNADSDAG.equals(queryDto.getSortering())
+                                    ? LocalDate.now().plusDays(queryDto.getFiltrerTil())
+                                    : LocalDateTime.now().plusDays(queryDto.getFiltrerTil()).with(LocalTime.MAX));
                 }
                 if (queryDto.getFiltrerFomDato() != null) {
-                    query.setParameter("filterFomDato", KøSortering.FØRSTE_STØNADSDAG.equals(
-                            queryDto.getSortering()) ? queryDto.getFiltrerFomDato() : queryDto.getFiltrerFomDato()
-                            .atTime(LocalTime.MIN));
+                    query.setParameter("filterFomDato", KøSortering.FØRSTE_STØNADSDAG.equals(queryDto.getSortering())
+                            ? queryDto.getFiltrerFomDato()
+                            : queryDto.getFiltrerFomDato().atTime(LocalTime.MIN));
                 }
                 if (queryDto.getFiltrerTomDato() != null) {
-                    query.setParameter("filterTomDato", KøSortering.FØRSTE_STØNADSDAG.equals(
-                            queryDto.getSortering()) ? queryDto.getFiltrerTomDato() : queryDto.getFiltrerTomDato()
-                            .atTime(LocalTime.MAX));
+                    query.setParameter("filterTomDato", KøSortering.FØRSTE_STØNADSDAG.equals(queryDto.getSortering())
+                            ? queryDto.getFiltrerTomDato()
+                            : queryDto.getFiltrerTomDato().atTime(LocalTime.MAX));
                 }
             }
         }
@@ -456,6 +455,8 @@ public class OppgaveRepository {
     public void settSorteringTidsintervallDato(Long oppgaveFiltreringId, LocalDate fomDato, LocalDate tomDato) {
         entityManager.persist(entityManager.find(OppgaveFiltreringOppdaterer.class, oppgaveFiltreringId)
                 .endreErDynamiskPeriode(false)
+                .endreFraVerdi(null)
+                .endreTilVerdi(null)
                 .endreFomDato(fomDato)
                 .endreTomDato(tomDato));
         entityManager.flush();
@@ -463,8 +464,10 @@ public class OppgaveRepository {
 
     public void settSorteringNumeriskIntervall(Long oppgaveFiltreringId, Long fra, Long til) {
         entityManager.persist(entityManager.find(OppgaveFiltreringOppdaterer.class, oppgaveFiltreringId)
-                .endreFraVerdi(fra)
                 .endreErDynamiskPeriode(true)
+                .endreFomDato(null)
+                .endreTomDato(null)
+                .endreFraVerdi(fra)
                 .endreTilVerdi(til));
         entityManager.flush();
     }
