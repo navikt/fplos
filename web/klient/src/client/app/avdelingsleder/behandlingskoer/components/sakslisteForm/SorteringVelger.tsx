@@ -6,7 +6,7 @@ import KodeverkType from 'kodeverk/kodeverkTyper';
 import BehandlingType from 'kodeverk/behandlingType';
 import useKodeverk from 'data/useKodeverk';
 import KoSorteringType from 'types/avdelingsleder/koSorteringTsType';
-import { RadioGroupPanel } from '@navikt/ft-form-hooks';
+import { formHooks, RadioGroupPanel } from '@navikt/ft-form-hooks';
 
 import DatoSorteringValg from './DatoSorteringValg';
 import BelopSorteringValg from './BelopSorteringValg';
@@ -36,6 +36,8 @@ const SorteringVelger: FunctionComponent<OwnProps> = ({
   hentAvdelingensSakslister,
   hentAntallOppgaver,
 }) => {
+  const { resetField } = formHooks.useFormContext();
+
   const { startRequest: lagreSakslisteSortering } = restApiHooks.useRestApiRunner(RestApiPathsKeys.LAGRE_SAKSLISTE_SORTERING);
   const { startRequest: lagreSakslisteSorteringNumeriskIntervall } = restApiHooks.useRestApiRunner(RestApiPathsKeys.LAGRE_SAKSLISTE_SORTERING_INTERVALL);
   const koSorteringer = useKodeverk<KoSorteringType>(KodeverkType.KO_SORTERING);
@@ -44,14 +46,22 @@ const SorteringVelger: FunctionComponent<OwnProps> = ({
     <RadioGroupPanel
       name="sortering"
       label={<FormattedMessage id="SorteringVelger.Sortering" />}
-      onChange={(sorteringType) => lagreSakslisteSortering({
-        sakslisteId: valgtSakslisteId,
-        sakslisteSorteringValg: sorteringType,
-        avdelingEnhet: valgtAvdelingEnhet,
-      }).then(() => {
-        hentAntallOppgaver(valgtSakslisteId, valgtAvdelingEnhet);
-        hentAvdelingensSakslister({ avdelingEnhet: valgtAvdelingEnhet });
-      })}
+      onChange={(sorteringType) => {
+        resetField('fra');
+        resetField('til');
+        resetField('fomDato');
+        resetField('tomDato');
+        resetField('erDynamiskPeriode');
+
+        return lagreSakslisteSortering({
+          sakslisteId: valgtSakslisteId,
+          sakslisteSorteringValg: sorteringType,
+          avdelingEnhet: valgtAvdelingEnhet,
+        }).then(() => {
+          hentAntallOppgaver(valgtSakslisteId, valgtAvdelingEnhet);
+          hentAvdelingensSakslister({ avdelingEnhet: valgtAvdelingEnhet });
+        });
+      }}
       radios={koSorteringer
         .filter((koSortering) => koSortering.feltkategori !== 'TILBAKEKREVING' || bareTilbakekrevingValgt(valgteBehandlingtyper))
         .map((koSortering) => ({
