@@ -55,14 +55,10 @@ public class PersonTjeneste {
 
     private final LRUCache<AktørId, Person> cacheAktørIdTilPerson = new LRUCache<>(DEFAULT_CACHE_SIZE, DEFAULT_CACHE_TIMEOUT);
 
-    private Persondata pdl;
-
-    @Inject
-    public PersonTjeneste(Persondata pdl) {
-        this.pdl = pdl;
-    }
+    private final Persondata pdl;
 
     public PersonTjeneste() {
+        this.pdl = new PdlKlient();
     }
 
     public Optional<AktørId> hentAktørIdForPersonIdent(String personIdent) {
