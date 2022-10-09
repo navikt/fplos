@@ -20,15 +20,15 @@ import no.nav.vedtak.felles.integrasjon.rest.TokenFlow;
 
 @ApplicationScoped
 @RestClientConfig(tokenConfig = TokenFlow.ADAPTIVE, application = FpApplication.FPSAK)
-public class NativeFpsakKlient implements FpsakKlient {
+public class FpsakKlientImpl implements FpsakKlient {
     private static final String ÅPNE_BEHANDLING_PATH = "/api/los-nokkeltall/behandlinger-ventestatus";
-    private static final Logger LOG = LoggerFactory.getLogger(NativeFpsakKlient.class);
+    private static final Logger LOG = LoggerFactory.getLogger(FpsakKlientImpl.class);
 
     private final RestClient klient;
     private final RestConfig restConfig;
     private final URI baseUri;
 
-    public NativeFpsakKlient() {
+    public FpsakKlientImpl() {
         this.klient = RestClient.client();
         this.restConfig = RestConfig.forClient(this.getClass());
         this.baseUri = UriBuilder.fromUri(restConfig.fpContextPath()).path(ÅPNE_BEHANDLING_PATH).build();

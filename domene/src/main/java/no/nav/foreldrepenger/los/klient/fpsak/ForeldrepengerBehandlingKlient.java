@@ -19,13 +19,13 @@ import no.nav.vedtak.felles.integrasjon.rest.TokenFlow;
 
 @ApplicationScoped
 @RestClientConfig(tokenConfig = TokenFlow.ADAPTIVE, application = FpApplication.FPSAK)
-public class NativeForeldrepengerBehandling implements ForeldrepengerBehandling {
+public class ForeldrepengerBehandlingKlient implements ForeldrepengerBehandling {
 
     private final RestClient klient;
     private final RestConfig restConfig;
     private final URI baseUri;
 
-    public NativeForeldrepengerBehandling() {
+    public ForeldrepengerBehandlingKlient() {
         this.klient = RestClient.client();
         this.restConfig = RestConfig.forClient(this.getClass());
         this.baseUri = restConfig.fpContextPath();

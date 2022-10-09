@@ -20,16 +20,16 @@ import no.nav.vedtak.felles.integrasjon.rest.TokenFlow;
 
 @ApplicationScoped
 @RestClientConfig(tokenConfig = TokenFlow.ADAPTIVE, application = FpApplication.FPSAK)
-public class NativeForeldrepengerFagsaker implements ForeldrepengerFagsaker {
+public class ForeldrepengerFagsakerKlient implements ForeldrepengerFagsaker {
 
-    private static final Logger LOG = LoggerFactory.getLogger(NativeForeldrepengerFagsaker.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ForeldrepengerFagsakerKlient.class);
 
     private final RestClient klient;
     private final RestConfig restConfig;
     private final URI baseUri;
     private final URI søkURI;
 
-    public NativeForeldrepengerFagsaker() {
+    public ForeldrepengerFagsakerKlient() {
         this.klient = RestClient.client();
         this.restConfig = RestConfig.forClient(this.getClass());
         this.baseUri = restConfig.fpContextPath();
