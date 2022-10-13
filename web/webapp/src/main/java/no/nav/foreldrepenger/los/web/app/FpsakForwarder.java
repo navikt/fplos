@@ -6,10 +6,8 @@ import org.slf4j.LoggerFactory;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
-import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 
 import java.net.URI;
@@ -31,7 +29,7 @@ public class FpsakForwarder {
     }
 
     @GET
-    public Response forwardFpsak(@Context HttpServletRequest request) {
+    public Response forwardFpsak() {
         LOG.info("Treff på /fplos, redirecter til {}", fpsakUrl);
         return Response.seeOther(fpsakUrl).build();
     }
