@@ -9,7 +9,6 @@ import javax.inject.Inject;
 import no.nav.foreldrepenger.los.domene.typer.aktør.OrganisasjonsEnhet;
 import no.nav.foreldrepenger.los.organisasjon.Avdeling;
 import no.nav.foreldrepenger.los.organisasjon.OrganisasjonRepository;
-import no.nav.vedtak.felles.integrasjon.ldap.LdapBrukeroppslag;
 
 @ApplicationScoped
 public class AnsattTjeneste {
@@ -30,8 +29,7 @@ public class AnsattTjeneste {
     }
 
     public String hentAnsattNavn(String ident) {
-        var ldapBruker = new LdapBrukeroppslag().hentBrukerinformasjon(ident);
-        return ldapBruker.displayName();
+        return new LdapBrukeroppslag().hentBrukersNavn(ident);
     }
 
     public List<String> hentAvdelingerNavnForAnsatt(String ident) {

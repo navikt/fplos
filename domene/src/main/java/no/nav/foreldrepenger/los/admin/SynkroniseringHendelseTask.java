@@ -8,10 +8,6 @@ import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.FpsakOppgaveH
 import no.nav.foreldrepenger.los.hendelse.hendelseoppretter.hendelse.Fagsystem;
 import no.nav.foreldrepenger.los.hendelse.hendelseoppretter.hendelse.Hendelse;
 import no.nav.foreldrepenger.los.klient.fpsak.ForeldrepengerBehandling;
-import no.nav.foreldrepenger.los.klient.fpsak.ForeldrepengerFagsaker;
-import no.nav.foreldrepenger.los.klient.fpsak.dto.behandling.BehandlingDto;
-import no.nav.foreldrepenger.los.klient.fpsak.dto.behandling.ResourceLink;
-import no.nav.foreldrepenger.los.klient.fpsak.dto.fagsak.FagsakDto;
 import no.nav.vedtak.felles.prosesstask.api.ProsessTask;
 import no.nav.vedtak.felles.prosesstask.api.ProsessTaskData;
 import no.nav.vedtak.felles.prosesstask.api.ProsessTaskHandler;
@@ -24,15 +20,12 @@ public class SynkroniseringHendelseTask implements ProsessTaskHandler {
     public static final String BEHANDLING_ID_TASK_KEY = "behandlingId";
 
     private ForeldrepengerBehandling behandlingKlient;
-    private ForeldrepengerFagsaker fagsakKlient;
     private FpsakOppgaveHendelseHåndterer fpsakOppgaveHendelseHåndterer;
 
     @Inject
     public SynkroniseringHendelseTask(ForeldrepengerBehandling behandlingKlient,
-            ForeldrepengerFagsaker fagsakKlient,
             FpsakOppgaveHendelseHåndterer fpsakOppgaveHendelseHåndterer) {
         this.behandlingKlient = behandlingKlient;
-        this.fagsakKlient = fagsakKlient;
         this.fpsakOppgaveHendelseHåndterer = fpsakOppgaveHendelseHåndterer;
     }
 
@@ -44,7 +37,7 @@ public class SynkroniseringHendelseTask implements ProsessTaskHandler {
     public void doTask(ProsessTaskData prosessTaskData) {
         var behandlingId = prosessTaskData.getPropertyValue(BEHANDLING_ID_TASK_KEY);
         var behandlingDto = behandlingKlient.hentUtvidetBehandlingDto(behandlingId);
-        var fagsakDto = hentFagsakDto(behandlingDto);
+        var fagsakDto = behandlingKlient.hentFagsak(behandlingDto.links());
 
         var hendelse = new Hendelse();
         hendelse.setFagsystem(Fagsystem.FPSAK);
@@ -57,14 +50,5 @@ public class SynkroniseringHendelseTask implements ProsessTaskHandler {
         hendelse.setYtelseType(fagsakDto.fagsakYtelseType());
 
         fpsakOppgaveHendelseHåndterer.håndter(hendelse);
-    }
-
-    private FagsakDto hentFagsakDto(BehandlingDto behandlingdto) {
-        return behandlingdto.links().stream()
-                .filter(rl -> rl.getRel().equals("fagsak"))
-                .findFirst()
-                .map(ResourceLink::getHref)
-                .map(href -> fagsakKlient.get(href, FagsakDto.class))
-                .orElseThrow(() -> new IllegalStateException("Fikk ikke hentet FagsakBackendDto"));
     }
 }

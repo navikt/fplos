@@ -34,10 +34,8 @@ import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.oppgave.Avdeli
 import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.reservasjoner.AvdelingReservasjonerRestTjeneste;
 import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.saksbehandler.AvdelingslederSaksbehandlerRestTjeneste;
 import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.saksliste.AvdelingslederSakslisteRestTjeneste;
-import no.nav.foreldrepenger.los.web.app.tjenester.fagsak.FagsakRestTjeneste;
 import no.nav.foreldrepenger.los.web.app.tjenester.kodeverk.KodeverkRestTjeneste;
 import no.nav.foreldrepenger.los.web.app.tjenester.konfig.KonfigRestTjeneste;
-import no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.NavAnsattRestTjeneste;
 import no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.nøkkeltall.SaksbehandlerNøkkeltallRestTjeneste;
 import no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.oppgave.OppgaveRestTjeneste;
 import no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.saksliste.SaksbehandlerSakslisteRestTjeneste;
@@ -78,8 +76,6 @@ public class ApplicationConfig extends Application {
     public Set<Class<?>> getClasses() {
         Set<Class<?>> classes = new HashSet<>();
         // eksponert grensesnitt
-        classes.add(FagsakRestTjeneste.class);
-        classes.add(NavAnsattRestTjeneste.class);
         classes.add(KonfigRestTjeneste.class);
         classes.add(KodeverkRestTjeneste.class);
         classes.add(DriftsmeldingerRestTjeneste.class);
