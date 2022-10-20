@@ -35,7 +35,6 @@ import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.reservasjoner.
 import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.saksbehandler.AvdelingslederSaksbehandlerRestTjeneste;
 import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.saksliste.AvdelingslederSakslisteRestTjeneste;
 import no.nav.foreldrepenger.los.web.app.tjenester.kodeverk.KodeverkRestTjeneste;
-import no.nav.foreldrepenger.los.web.app.tjenester.konfig.KonfigRestTjeneste;
 import no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.nøkkeltall.SaksbehandlerNøkkeltallRestTjeneste;
 import no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.oppgave.OppgaveRestTjeneste;
 import no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.saksliste.SaksbehandlerSakslisteRestTjeneste;
@@ -76,7 +75,6 @@ public class ApplicationConfig extends Application {
     public Set<Class<?>> getClasses() {
         Set<Class<?>> classes = new HashSet<>();
         // eksponert grensesnitt
-        classes.add(KonfigRestTjeneste.class);
         classes.add(KodeverkRestTjeneste.class);
         classes.add(DriftsmeldingerRestTjeneste.class);
         classes.add(SaksbehandlerSakslisteRestTjeneste.class);
