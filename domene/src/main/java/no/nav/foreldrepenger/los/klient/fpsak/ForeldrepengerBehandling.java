@@ -3,7 +3,6 @@ package no.nav.foreldrepenger.los.klient.fpsak;
 import static no.nav.foreldrepenger.los.klient.fpsak.Aksjonspunkt.aksjonspunktFra;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -22,6 +21,7 @@ import no.nav.foreldrepenger.los.klient.fpsak.dto.behandling.BehandlingDto;
 import no.nav.foreldrepenger.los.klient.fpsak.dto.behandling.BehandlingÅrsakDto;
 import no.nav.foreldrepenger.los.klient.fpsak.dto.behandling.BehandlingÅrsakType;
 import no.nav.foreldrepenger.los.klient.fpsak.dto.behandling.ResourceLink;
+import no.nav.foreldrepenger.los.klient.fpsak.dto.fagsak.FagsakDto;
 import no.nav.foreldrepenger.los.klient.fpsak.dto.inntektarbeidytelse.Beløp;
 import no.nav.foreldrepenger.los.klient.fpsak.dto.inntektarbeidytelse.InntektsmeldingDto;
 import no.nav.foreldrepenger.los.klient.fpsak.dto.inntektarbeidytelse.InntektsmeldingerDto;
@@ -36,6 +36,7 @@ public interface ForeldrepengerBehandling {
     String UTTAK_KONTROLLER_FAKTA_PERIODER_LINK = "uttak-kontroller-fakta-perioder";
     String KONTROLLRESULTAT = "kontrollresultat";
     String YTELSEFORDELING_LINK = "ytelsefordeling";
+    String FAGSAK_LINK = "fagsak";
 
     <T> Optional<T> hentFraResourceLink(ResourceLink resourceLink, Class<T> clazz);
 
@@ -61,6 +62,11 @@ public interface ForeldrepengerBehandling {
                 .medKontrollresultat(new Lazy<>(() -> hentKontrollresultat(links)))
                 .medUttakEgenskaper(new Lazy<>(() -> hentUttakEgenskaper(behandlingId, links)));
         return builder.build();
+    }
+
+    default FagsakDto hentFagsak(List<ResourceLink> links) {
+        return velgLink(links, FAGSAK_LINK).flatMap(f -> hentFraResourceLink(f, FagsakDto.class))
+                .orElse(null);
     }
 
     private static boolean harBehandlingÅrsakType(BehandlingDto dto, BehandlingÅrsakType type) {
