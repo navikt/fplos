@@ -3,6 +3,11 @@ on:
   schedule:
     - cron:  '0 0 * * *'
   workflow_dispatch:
+  push:
+    branches:
+      - master
+    paths:
+      - '.github/workflows/snyk.yml'
 
 jobs:
   snyk:
@@ -14,13 +19,6 @@ jobs:
           java-version: 17
           distribution: temurin
 
-      - name: Sette opp Node
-        uses: actions/setup-node@v3
-        with:
-          node-version: 18.8.0
-          registry-url: https://npm.pkg.github.com/
-          scope: '@navikt'
-
       - uses: snyk/actions/setup@master
 
       - name: Setup maven
@@ -30,27 +28,11 @@ jobs:
           servers: '[{ "id": "github", "username": "${{ github.actor }}", "password": "${{ secrets.READER_TOKEN }}" }]'
           output_file: settings.xml
 
-      - name: Login to GitHub Packages Docker Registry
-        uses: docker/login-action@f4ef78c080cd8ba55a85445d5b36e214a81df20a # Use commit-sha1 instead of tag for security concerns
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Hent og start Oracle image
-        run: |
-          echo "Henter og starter Oracle image"
-          cd .oracle
-          docker-compose up --quiet-pull > nohup.out 2>&1 &
-          sh -c 'tail -n +0 -f nohup.out | { sed "/Database opened./q" && kill $$; }' || true
-
       - name: Build
         run: |
           echo "Building snyk-snapshot"
           mvn -B -s settings.xml versions:set -DnewVersion=snyk-snapshot
           mvn install -q -B -s settings.xml -DskipTests
-        env:
-          READER_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Run Snyk monitor
         run: >
