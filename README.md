@@ -23,11 +23,7 @@ docker run -d --env-file=docker.list --name fplos fplos
 ```
 
 
-
-
 ## Kjøring lokalt
-
-`yarn dev` i mappend `web/klient/` for å starte frontend
 
 
 `no.nav.foreldrepenger.los.web.server.jetty.JettyDevServer` started i Intellij. Lokalt så går den mot Virtuell Tjenesteplattform. Denne må selvsagt kjøre på 
