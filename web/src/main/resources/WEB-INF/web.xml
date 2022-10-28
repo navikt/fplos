@@ -30,11 +30,18 @@
     </servlet>
     <servlet-mapping>
         <servlet-name>no.nav.foreldrepenger.los.web.app.ApplicationConfig</servlet-name>
-        <url-pattern>/fplos/api</url-pattern>
-        <url-pattern>/api</url-pattern>
+        <url-pattern>/fplos/api/*</url-pattern>
+        <url-pattern>/api/*</url-pattern>
     </servlet-mapping>
-
-
+    <servlet>
+        <servlet-name>no.nav.foreldrepenger.los.web.app.ForwarderApplication</servlet-name>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>no.nav.foreldrepenger.los.web.app.ForwarderApplication</servlet-name>
+        <url-pattern>/fplos</url-pattern>
+        <url-pattern>/fplos/</url-pattern>
+        <url-pattern>/fplos/avdelingsleder/*</url-pattern>
+    </servlet-mapping>
 
     <security-constraint>
         <web-resource-collection>

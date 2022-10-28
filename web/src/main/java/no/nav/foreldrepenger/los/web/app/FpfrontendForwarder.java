@@ -19,24 +19,24 @@ import java.net.URI;
 
 @ApplicationScoped
 @Path("/")
-public class FpsakForwarder {
+public class FpfrontendForwarder {
 
-    private static final Logger LOG = LoggerFactory.getLogger(FpsakForwarder.class);
+    private static final Logger LOG = LoggerFactory.getLogger(FpfrontendForwarder.class);
     private URI avdelingslederFpsakUri;
     private URI fpsakUri;
 
 
-    public FpsakForwarder() {
+    public FpfrontendForwarder() {
     }
 
     @Inject
-    public FpsakForwarder(@KonfigVerdi("fpsak.frontend.url") URI fpsakUri) {
+    public FpfrontendForwarder(@KonfigVerdi("fpsak.frontend.url") URI fpsakUri) {
         this.fpsakUri = fpsakUri;
         this.avdelingslederFpsakUri = URI.create(fpsakUri.toString() + "/avdelingsleder");
     }
 
     @GET
-    public Response forwardFpsak(@Context HttpServletRequest request) {
+    public Response forwardFpfrontend(@Context HttpServletRequest request) {
         var rawUri = ((Request) request).getMetaData().getURIString();
         if (rawUri.contains("avdelingsleder")) {
             LOG.info("Treff på /fplos/avdelingsleder, redirecter til {}", avdelingslederFpsakUri);
