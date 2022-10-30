@@ -15,7 +15,6 @@
     "APPDYNAMICS_AGENT_ACCOUNT_NAME": "NON-PROD",
     "APPD_ENABLED": "false"
   },
-  "azureCallback": "https://fplos.dev.intern.nav.no/fplos/cb",
   "AZURE_IAC_RULES": [
     {
       "app": "fp-swagger",
