@@ -1,24 +1,11 @@
 package no.nav.foreldrepenger.los.klient.fpsak.dto.fagsak;
 
-import java.time.LocalDate;
-
-import no.nav.foreldrepenger.los.oppgave.FagsakStatus;
 import no.nav.foreldrepenger.los.oppgave.FagsakYtelseType;
 
-public record FagsakDto(String aktoerId, String aktørId, String saksnummer, FagsakYtelseType fagsakYtelseType,
-                        FagsakStatus status, LocalDate barnFodt, LocalDate barnFødt) {
-
-    public String aktørId() {
-        return aktørId == null ? aktoerId : aktørId;
-    }
-
-    public LocalDate barnFødt() {
-        return barnFødt == null ? barnFodt : barnFødt;
-    }
+public record FagsakDto(String saksnummer, FagsakYtelseType fagsakYtelseType, String aktørId) {
 
     @Override
     public String toString() {
-        return "FagsakDto{" + "saksnummer='" + saksnummer + '\'' + ", fagsakYtelseType=" + fagsakYtelseType
-                + ", status=" + status + ", barnFodt=" + barnFodt + ", barnFødt=" + barnFødt + '}';
+        return "FagsakDto{" + "saksnummer='" + saksnummer + '\'' + ", fagsakYtelseType=" + fagsakYtelseType + '}';
     }
 }
