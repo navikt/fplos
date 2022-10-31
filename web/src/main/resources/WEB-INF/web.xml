@@ -25,17 +25,6 @@
         <listener-class>no.nav.foreldrepenger.los.web.app.tjenester.ApplicationContextListener</listener-class>
     </listener>
 
-    <servlet>
-        <servlet-name>no.nav.foreldrepenger.los.web.app.ApplicationConfig</servlet-name>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>no.nav.foreldrepenger.los.web.app.ApplicationConfig</servlet-name>
-        <url-pattern>/fplos/api</url-pattern>
-        <url-pattern>/api</url-pattern>
-    </servlet-mapping>
-
-
-
     <security-constraint>
         <web-resource-collection>
             <web-resource-name>Ubeskyttet</web-resource-name>

@@ -7,7 +7,7 @@ import java.util.Map;
 import java.util.Set;
 
 
-@ApplicationPath("/fplos")
+@ApplicationPath("/")
 public class ForwarderApplication extends Application {
 
     @Override
