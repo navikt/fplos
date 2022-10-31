@@ -23,7 +23,6 @@
     <properties>
         <revision>2.8.2-SNAPSHOT</revision>
         <java.version>17</java.version>
-
         <fp-kontrakter.version>6.1.27</fp-kontrakter.version>
         <felles.version>4.2.8</felles.version>
         <prosesstask.version>3.1.13</prosesstask.version>
@@ -67,14 +66,8 @@
             </dependency>
             <dependency>
                 <groupId>no.nav.foreldrepenger.los</groupId>
-                <artifactId>webapp</artifactId>
+                <artifactId>web</artifactId>
                 <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>no.nav.foreldrepenger.los</groupId>
-                <artifactId>klient</artifactId>
-                <version>${project.version}</version>
-                <type>war</type>
             </dependency>
 
             <!-- Felles biblioteker -->
