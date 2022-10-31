@@ -54,7 +54,7 @@ public class JettyServer {
     private static final Environment ENV = Environment.current();
     private static final Logger LOG = LoggerFactory.getLogger(JettyServer.class);
 
-    private static final String CONTEXT_PATH = ENV.getProperty("context.path", "/fplos");
+    private static final String CONTEXT_PATH = ENV.getProperty("context.path", "/");
 
     /**
      * Legges først slik at alltid resetter context før prosesserer nye requests.

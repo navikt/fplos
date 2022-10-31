@@ -1,14 +1,11 @@
 package no.nav.foreldrepenger.los.web.app;
 
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
 
 import org.glassfish.jersey.server.ServerProperties;
@@ -40,7 +37,8 @@ import no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.oppgave.Oppgave
 import no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.saksliste.SaksbehandlerSakslisteRestTjeneste;
 import no.nav.vedtak.felles.prosesstask.rest.ProsessTaskRestTjeneste;
 
-@ApplicationPath(ApplicationConfig.API_URI)
+//@ApplicationPath(ApplicationConfig.API_URI)
+// TODO: ApplicationPath konfiges midlertidig via web.xml pga behov for to paths (/fplos/api og /api) ifb med overgang contextpath fra /fplos til /
 public class ApplicationConfig extends Application {
 
     static final String API_URI = "/api";
@@ -73,38 +71,27 @@ public class ApplicationConfig extends Application {
 
     @Override
     public Set<Class<?>> getClasses() {
-        Set<Class<?>> classes = new HashSet<>();
-        // eksponert grensesnitt
-        classes.add(KodeverkRestTjeneste.class);
-        classes.add(DriftsmeldingerRestTjeneste.class);
-        classes.add(SaksbehandlerSakslisteRestTjeneste.class);
-        classes.add(OppgaveRestTjeneste.class);
-        classes.add(AvdelingslederSakslisteRestTjeneste.class);
-        classes.add(AvdelingslederSaksbehandlerRestTjeneste.class);
-        classes.add(AvdelingReservasjonerRestTjeneste.class);
-        classes.add(NøkkeltallRestTjeneste.class);
-        classes.add(NøkkeltallÅpneBehandlingerRestTjeneste.class);
-        classes.add(AvdelingslederRestTjeneste.class);
-        classes.add(AvdelingslederOppgaveRestTjeneste.class);
-        classes.add(AdminRestTjeneste.class);
-        classes.add(SaksbehandlerNøkkeltallRestTjeneste.class);
-        classes.add(ProsessTaskRestTjeneste.class);
-
-        // swagger
-        classes.add(OpenApiResource.class);
-
-        // Applikasjonsoppsett
-        classes.add(JacksonJsonConfig.class);
-
-        // ExceptionMappers pga de som finnes i Jackson+Jersey-media
-        classes.add(ConstraintViolationMapper.class);
-        classes.add(JsonMappingExceptionMapper.class);
-        classes.add(JsonParseExceptionMapper.class);
-
-        // Generell exceptionmapper m/logging for øvrige tilfelle
-        classes.add(GeneralRestExceptionMapper.class);
-
-        return Collections.unmodifiableSet(classes);
+        return Set.of(KodeverkRestTjeneste.class,
+                DriftsmeldingerRestTjeneste.class,
+                SaksbehandlerSakslisteRestTjeneste.class,
+                OppgaveRestTjeneste.class,
+                AvdelingslederSakslisteRestTjeneste.class,
+                AvdelingslederSaksbehandlerRestTjeneste.class,
+                AvdelingReservasjonerRestTjeneste.class,
+                NøkkeltallRestTjeneste.class,
+                NøkkeltallÅpneBehandlingerRestTjeneste.class,
+                AvdelingslederRestTjeneste.class,
+                AvdelingslederOppgaveRestTjeneste.class,
+                AdminRestTjeneste.class,
+                SaksbehandlerNøkkeltallRestTjeneste.class,
+                ProsessTaskRestTjeneste.class,
+                OpenApiResource.class,
+                JacksonJsonConfig.class,
+                GeneralRestExceptionMapper.class,
+                // ExceptionMappers pga de som finnes i Jackson+Jersey-media
+                ConstraintViolationMapper.class,
+                JsonMappingExceptionMapper.class,
+                JsonParseExceptionMapper.class);
     }
 
     @Override
