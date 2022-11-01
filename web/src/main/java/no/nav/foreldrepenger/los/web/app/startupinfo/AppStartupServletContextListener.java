@@ -3,10 +3,12 @@ package no.nav.foreldrepenger.los.web.app.startupinfo;
 import javax.enterprise.inject.spi.CDI;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
+import javax.servlet.annotation.WebListener;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@WebListener
 public class AppStartupServletContextListener implements ServletContextListener {
 
     private static final Logger LOG = LoggerFactory.getLogger(AppStartupServletContextListener.class);

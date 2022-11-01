@@ -10,20 +10,6 @@
         <tracking-mode>COOKIE</tracking-mode>
     </session-config>
 
-    <!-- Listeners her slik at vi kan styre rekkefølgen de kjøres i: -->
-    <listener>
-        <listener-class>org.jboss.weld.environment.servlet.BeanManagerResourceBindingListener</listener-class>
-    </listener>
-    <listener>
-        <listener-class>org.jboss.weld.environment.servlet.Listener</listener-class>
-    </listener>
-    <listener>
-        <listener-class>no.nav.foreldrepenger.los.web.app.startupinfo.AppStartupServletContextListener</listener-class>
-    </listener>
-    <listener>
-        <listener-class>no.nav.foreldrepenger.los.web.app.tjenester.ApplicationContextListener</listener-class>
-    </listener>
-
     <security-constraint>
         <web-resource-collection>
             <web-resource-name>Ubeskyttet</web-resource-name>

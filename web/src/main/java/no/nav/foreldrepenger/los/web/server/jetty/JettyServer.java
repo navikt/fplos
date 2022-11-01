@@ -174,8 +174,14 @@ public class JettyServer {
         ctx.setResourceBase(".");
         ctx.setInitParameter("org.eclipse.jetty.servlet.Default.dirAllowed", "false");
         ctx.setAttribute("org.eclipse.jetty.server.webapp.WebInfIncludeJarPattern",
-                "^.*jersey-.*.jar$|^.*felles-.*.jar$");
+                "^.*jersey-.*.jar$|^.*felles-.*.jar$"); // Dette virker ikke siden WEB-INF/lib ikke finnes - derfor hack i linje 194 med updateMetadata(...)
+        //ctx.setAttribute(CONTAINER_JAR_PATTERN, "^.*/target/classes/|^.*jersey-.*\\.jar$|^.*felles-.*\\.jar$|^.*/app\\.jar$"); // Bør virker mye bedre...
+
         ctx.setAttribute("org.eclipse.jetty.annotations.multiThreaded", false);
+
+        ctx.addEventListener(new org.jboss.weld.environment.servlet.BeanManagerResourceBindingListener());
+        ctx.addEventListener(new org.jboss.weld.environment.servlet.Listener());
+
         ctx.setSecurityHandler(createSecurityHandler());
         updateMetaData(ctx.getMetaData());
         ctx.setThrowUnavailableOnStartupException(true);
