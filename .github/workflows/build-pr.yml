@@ -1,0 +1,4 @@
+
+      - name: Bygg docker image
+        run: |
+          docker build --pull .
