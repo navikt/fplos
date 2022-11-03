@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import no.nav.foreldrepenger.los.klient.fpsak.dto.aksjonspunkt.AksjonspunktDto;
 import no.nav.foreldrepenger.los.oppgave.BehandlingStatus;
 import no.nav.foreldrepenger.los.oppgave.BehandlingType;
 
@@ -16,6 +17,7 @@ public record BehandlingDto(UUID uuid,
                             LocalDateTime opprettet,
                             String behandlendeEnhetId,
                             LocalDate behandlingsfristTid,
+                            List<AksjonspunktDto> aksjonspunktene,
                             List<BehandlingÅrsakDto> behandlingÅrsaker,
                             List<ResourceLink> links,
                             String ansvarligSaksbehandler) {

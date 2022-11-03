@@ -3,7 +3,6 @@ package no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 import no.nav.foreldrepenger.los.domene.typer.BehandlingId;
 import no.nav.foreldrepenger.los.domene.typer.Saksnummer;
@@ -40,7 +39,7 @@ public class OppgaveTestUtil {
                 .medErBerørtBehandling(false)
                 .medErEndringssøknad(false)
                 .medBehandlingstidFrist(behandlingstidFrist)
-                .medAksjonspunkter(new Lazy<>(OppgaveTestUtil::aksjonspunkter))
+                .medAksjonspunktene(OppgaveTestUtil.aksjonspunkter())
                 .medStatus(BehandlingStatus.OPPRETTET)
                 .medAnsvarligSaksbehandler("saksbehandler")
                 .medAktørId(aktørId)

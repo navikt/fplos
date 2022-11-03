@@ -22,7 +22,7 @@ public class BehandlingFpsak {
     private BehandlingStatus status;
     private String behandlendeEnhetId;
     private String ansvarligSaksbehandler;
-    private Lazy<List<Aksjonspunkt>> aksjonspunkter;
+    private List<Aksjonspunkt> aksjonspunktene;
     private LocalDate behandlingstidFrist;
     private Lazy<Boolean> harRefusjonskravFraArbeidsgiver;
     private Lazy<UttakEgenskaper> uttakEgenskaper;
@@ -66,12 +66,8 @@ public class BehandlingFpsak {
         return Lazy.get(harRefusjonskravFraArbeidsgiver);
     }
 
-    public List<Aksjonspunkt> getAksjonspunkter() {
-        var svar = Lazy.get(aksjonspunkter);
-        if (svar == null) {
-            return List.of();
-        }
-        return svar;
+    public List<Aksjonspunkt> getAksjonspunktene() {
+        return aksjonspunktene;
     }
 
     public boolean harGradering() {
@@ -165,7 +161,7 @@ public class BehandlingFpsak {
         private BehandlingStatus status;
         private String behandlendeEnhetId;
         private String ansvarligSaksbehandler;
-        private Lazy<List<Aksjonspunkt>> aksjonspunkter;
+        private List<Aksjonspunkt> aksjonspunktene;
         private LocalDate behandlingstidFrist;
         private Lazy<Boolean> harRefusjonskravFraArbeidsgiver;
         private boolean erBerørtBehandling = false;
@@ -203,8 +199,8 @@ public class BehandlingFpsak {
             return this;
         }
 
-        public Builder medAksjonspunkter(Lazy<List<Aksjonspunkt>> aksjonspunkter) {
-            this.aksjonspunkter = aksjonspunkter;
+        public Builder medAksjonspunktene(List<Aksjonspunkt> aksjonspunktene) {
+            this.aksjonspunktene = aksjonspunktene;
             return this;
         }
 
@@ -277,7 +273,7 @@ public class BehandlingFpsak {
             var behandlingFpsak = new BehandlingFpsak();
             behandlingFpsak.ansvarligSaksbehandler = this.ansvarligSaksbehandler;
             behandlingFpsak.harRefusjonskravFraArbeidsgiver = this.harRefusjonskravFraArbeidsgiver;
-            behandlingFpsak.aksjonspunkter = this.aksjonspunkter;
+            behandlingFpsak.aksjonspunktene = this.aksjonspunktene;
             behandlingFpsak.status = this.status;
             behandlingFpsak.behandlendeEnhetId = this.behandlendeEnhetId;
             behandlingFpsak.behandlingId = this.behandlingId;
