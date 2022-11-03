@@ -1,10 +1,6 @@
 package no.nav.foreldrepenger.los.klient.fpsak;
 
-import static no.nav.foreldrepenger.los.klient.fpsak.Aksjonspunkt.aksjonspunktFra;
-
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -31,7 +27,6 @@ public interface ForeldrepengerBehandling {
 
     Logger LOG = LoggerFactory.getLogger(ForeldrepengerBehandling.class);
     String BEHANDLING_ID = "behandlingId";
-    String AKSJONSPUNKTER_LINK = "aksjonspunkter";
     String INNTEKTSMELDINGER_LINK = "inntektsmeldinger";
     String UTTAK_KONTROLLER_FAKTA_PERIODER_LINK = "uttak-kontroller-fakta-perioder";
     String KONTROLLRESULTAT = "kontrollresultat";
@@ -53,7 +48,7 @@ public interface ForeldrepengerBehandling {
                 .medStatus(behandlingDto.status())
                 .medAnsvarligSaksbehandler(behandlingDto.ansvarligSaksbehandler())
                 .medHarRefusjonskravFraArbeidsgiver(new Lazy<>(() -> hentHarRefusjonskrav(links)))
-                .medAksjonspunkter(new Lazy<>(() -> hentAksjonspunkter(links)))
+                .medAksjonspunktene(aksjonspunktFraDto(behandlingDto.aksjonspunktene()))
                 .medBehandlingstidFrist(behandlingDto.behandlingsfristTid())
                 .medYtelseFordeling(new Lazy<>(() -> hentYtelseFordeling(links)))
                 .medErBerørtBehandling(harBehandlingÅrsakType(behandlingDto, BehandlingÅrsakType.BERØRT_BEHANDLING))
@@ -75,13 +70,6 @@ public interface ForeldrepengerBehandling {
                 .map(BehandlingÅrsakDto::behandlingÅrsakType)
                 .filter(Objects::nonNull)
                 .anyMatch(t -> t.equals(type));
-    }
-
-    private List<Aksjonspunkt> hentAksjonspunkter(List<ResourceLink> links) {
-        return velgLink(links, AKSJONSPUNKTER_LINK)
-                .flatMap(ap -> hentFraResourceLink(ap, AksjonspunktDto[].class))
-                .map(ForeldrepengerBehandling::aksjonspunktFraDto)
-                .orElse(Collections.emptyList());
     }
 
     private YtelseFordelingDto hentYtelseFordeling(List<ResourceLink> links) {
@@ -135,12 +123,8 @@ public interface ForeldrepengerBehandling {
                 .anyMatch(refusjonsbeløp -> refusjonsbeløp.compareTo(Beløp.ZERO) > 0);
     }
 
-    private static List<Aksjonspunkt> aksjonspunktFraDto(AksjonspunktDto[] aksjonspunktDtos) {
-        List<Aksjonspunkt> liste = new ArrayList<>();
-        for (var dto : aksjonspunktDtos) {
-            liste.add(aksjonspunktFra(dto));
-        }
-        return liste;
+    private static List<Aksjonspunkt> aksjonspunktFraDto(List<AksjonspunktDto> aksjonspunktDtos) {
+        return aksjonspunktDtos.stream().map(Aksjonspunkt::aksjonspunktFra).toList();
     }
 
     private static Optional<ResourceLink> velgLink(List<ResourceLink> links, String typeLink) {

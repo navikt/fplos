@@ -1,6 +1,14 @@
 package no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak;
 
-import static no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.FpsakOppgavetransisjonHåndterer.Oppgavetransisjon.*;
+import static no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.FpsakOppgavetransisjonHåndterer.Oppgavetransisjon.GJENÅPNE_OPPGAVE;
+import static no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.FpsakOppgavetransisjonHåndterer.Oppgavetransisjon.IKKE_RELEVANT;
+import static no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.FpsakOppgavetransisjonHåndterer.Oppgavetransisjon.LUKK_OPPGAVE;
+import static no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.FpsakOppgavetransisjonHåndterer.Oppgavetransisjon.OPPDATER_OPPGAVE;
+import static no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.FpsakOppgavetransisjonHåndterer.Oppgavetransisjon.OPPRETT_BESLUTTEROPPGAVE;
+import static no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.FpsakOppgavetransisjonHåndterer.Oppgavetransisjon.OPPRETT_OPPGAVE;
+import static no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.FpsakOppgavetransisjonHåndterer.Oppgavetransisjon.OPPRETT_PAPIRSØKNADOPPGAVE;
+import static no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.FpsakOppgavetransisjonHåndterer.Oppgavetransisjon.RETUR_FRA_BESLUTTER_OPPGAVE;
+import static no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.FpsakOppgavetransisjonHåndterer.Oppgavetransisjon.SETT_PÅ_VENT;
 
 import java.util.List;
 import java.util.function.Predicate;
@@ -22,7 +30,7 @@ public final class TransisjonUtleder {
     static Oppgavetransisjon utledAktuellTransisjon(BehandlingFpsak behandlingFpsak, OppgaveHistorikk oppgaveHistorikk) {
         LOG.info("Utleder aktuell oppgavetransisjon for behandlingId {}, oppgavehistorikk {}", behandlingFpsak.getBehandlingId(),
                 oppgaveHistorikk);
-        var aksjonspunkter = behandlingFpsak.getAksjonspunkter();
+        var aksjonspunkter = behandlingFpsak.getAksjonspunktene();
 
         if (erIngenÅpne(aksjonspunkter)) {
             if (oppgaveHistorikk.erUtenHistorikk() || oppgaveHistorikk.erIngenÅpenOppgave()) {

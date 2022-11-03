@@ -4,10 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.OppgaveEgenskapFinner;
+import no.nav.foreldrepenger.los.klient.fpsak.BehandlingFpsak;
 import no.nav.foreldrepenger.los.oppgave.AndreKriterierType;
 import no.nav.foreldrepenger.los.oppgave.BehandlingType;
 import no.nav.foreldrepenger.los.oppgave.FagsakYtelseType;
-import no.nav.foreldrepenger.los.klient.fpsak.BehandlingFpsak;
 
 public class FpsakOppgaveEgenskapFinner implements OppgaveEgenskapFinner {
     private final List<AndreKriterierType> andreKriterier = new ArrayList<>();
@@ -41,7 +41,7 @@ public class FpsakOppgaveEgenskapFinner implements OppgaveEgenskapFinner {
             this.andreKriterier.add(AndreKriterierType.VURDER_EØS_OPPTJENING);
         }
 
-        var fpsakAksjonspunktWrapper = new FpsakAksjonspunktWrapper(behandling.getAksjonspunkter());
+        var fpsakAksjonspunktWrapper = new FpsakAksjonspunktWrapper(behandling.getAksjonspunktene());
         andreKriterier.addAll(fpsakAksjonspunktWrapper.getKriterier());
     }
 

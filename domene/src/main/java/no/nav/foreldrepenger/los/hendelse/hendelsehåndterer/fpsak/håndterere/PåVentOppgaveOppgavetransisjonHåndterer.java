@@ -7,21 +7,21 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.Predicate;
 
-import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.FpsakOppgavetransisjonHåndterer;
-import no.nav.foreldrepenger.los.oppgave.OppgaveTjeneste;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.FpsakOppgavetransisjonHåndterer;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveEventLogg;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveEventType;
 import no.nav.foreldrepenger.los.klient.fpsak.Aksjonspunkt;
 import no.nav.foreldrepenger.los.klient.fpsak.BehandlingFpsak;
 import no.nav.foreldrepenger.los.oppgave.Oppgave;
+import no.nav.foreldrepenger.los.oppgave.OppgaveTjeneste;
 import no.nav.foreldrepenger.los.statistikk.kø.KøOppgaveHendelse;
 import no.nav.foreldrepenger.los.statistikk.kø.KøStatistikkTjeneste;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
 
 @ApplicationScoped
 public class PåVentOppgaveOppgavetransisjonHåndterer implements FpsakOppgavetransisjonHåndterer {
@@ -44,7 +44,7 @@ public class PåVentOppgaveOppgavetransisjonHåndterer implements FpsakOppgavetr
     public void håndter(BehandlingFpsak behandlingFpsak) {
         var behandlingId = behandlingFpsak.getBehandlingId();
         var behandlendeEnhet = behandlingFpsak.getBehandlendeEnhetId();
-        var aksjonspunkter = behandlingFpsak.getAksjonspunkter();
+        var aksjonspunkter = behandlingFpsak.getAksjonspunktene();
         var venteType = manueltSattPåVent(aksjonspunkter) ? OppgaveEventType.MANU_VENT : OppgaveEventType.VENT;
         var aksjonspunktFrist = aksjonspunktFrist(aksjonspunkter, venteType);
         oppgaveTjeneste.hentAktivOppgave(behandlingId)
