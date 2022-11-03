@@ -39,7 +39,7 @@ public class OppgaveTestUtil {
                 .medErBerørtBehandling(false)
                 .medErEndringssøknad(false)
                 .medBehandlingstidFrist(behandlingstidFrist)
-                .medAksjonspunktene(OppgaveTestUtil.aksjonspunkter())
+                .medAksjonspunkt(OppgaveTestUtil.aksjonspunkter())
                 .medStatus(BehandlingStatus.OPPRETTET)
                 .medAnsvarligSaksbehandler("saksbehandler")
                 .medAktørId(aktørId)

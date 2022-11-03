@@ -41,7 +41,7 @@ public class FpsakOppgaveEgenskapFinner implements OppgaveEgenskapFinner {
             this.andreKriterier.add(AndreKriterierType.VURDER_EØS_OPPTJENING);
         }
 
-        var fpsakAksjonspunktWrapper = new FpsakAksjonspunktWrapper(behandling.getAksjonspunktene());
+        var fpsakAksjonspunktWrapper = new FpsakAksjonspunktWrapper(behandling.getAksjonspunkt());
         andreKriterier.addAll(fpsakAksjonspunktWrapper.getKriterier());
     }
 

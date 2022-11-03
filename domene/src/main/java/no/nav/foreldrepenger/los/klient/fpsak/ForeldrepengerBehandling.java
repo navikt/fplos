@@ -48,7 +48,7 @@ public interface ForeldrepengerBehandling {
                 .medStatus(behandlingDto.status())
                 .medAnsvarligSaksbehandler(behandlingDto.ansvarligSaksbehandler())
                 .medHarRefusjonskravFraArbeidsgiver(new Lazy<>(() -> hentHarRefusjonskrav(links)))
-                .medAksjonspunktene(aksjonspunktFraDto(behandlingDto.aksjonspunktene()))
+                .medAksjonspunkt(aksjonspunktFraDto(behandlingDto.aksjonspunkt()))
                 .medBehandlingstidFrist(behandlingDto.behandlingsfristTid())
                 .medYtelseFordeling(new Lazy<>(() -> hentYtelseFordeling(links)))
                 .medErBerørtBehandling(harBehandlingÅrsakType(behandlingDto, BehandlingÅrsakType.BERØRT_BEHANDLING))

@@ -22,7 +22,7 @@ public class BehandlingFpsak {
     private BehandlingStatus status;
     private String behandlendeEnhetId;
     private String ansvarligSaksbehandler;
-    private List<Aksjonspunkt> aksjonspunktene;
+    private List<Aksjonspunkt> aksjonspunkt;
     private LocalDate behandlingstidFrist;
     private Lazy<Boolean> harRefusjonskravFraArbeidsgiver;
     private Lazy<UttakEgenskaper> uttakEgenskaper;
@@ -66,8 +66,8 @@ public class BehandlingFpsak {
         return Lazy.get(harRefusjonskravFraArbeidsgiver);
     }
 
-    public List<Aksjonspunkt> getAksjonspunktene() {
-        return aksjonspunktene;
+    public List<Aksjonspunkt> getAksjonspunkt() {
+        return aksjonspunkt;
     }
 
     public boolean harGradering() {
@@ -161,7 +161,7 @@ public class BehandlingFpsak {
         private BehandlingStatus status;
         private String behandlendeEnhetId;
         private String ansvarligSaksbehandler;
-        private List<Aksjonspunkt> aksjonspunktene;
+        private List<Aksjonspunkt> aksjonspunkt;
         private LocalDate behandlingstidFrist;
         private Lazy<Boolean> harRefusjonskravFraArbeidsgiver;
         private boolean erBerørtBehandling = false;
@@ -199,8 +199,8 @@ public class BehandlingFpsak {
             return this;
         }
 
-        public Builder medAksjonspunktene(List<Aksjonspunkt> aksjonspunktene) {
-            this.aksjonspunktene = aksjonspunktene;
+        public Builder medAksjonspunkt(List<Aksjonspunkt> aksjonspunkt) {
+            this.aksjonspunkt = aksjonspunkt;
             return this;
         }
 
@@ -273,7 +273,7 @@ public class BehandlingFpsak {
             var behandlingFpsak = new BehandlingFpsak();
             behandlingFpsak.ansvarligSaksbehandler = this.ansvarligSaksbehandler;
             behandlingFpsak.harRefusjonskravFraArbeidsgiver = this.harRefusjonskravFraArbeidsgiver;
-            behandlingFpsak.aksjonspunktene = this.aksjonspunktene;
+            behandlingFpsak.aksjonspunkt = this.aksjonspunkt;
             behandlingFpsak.status = this.status;
             behandlingFpsak.behandlendeEnhetId = this.behandlendeEnhetId;
             behandlingFpsak.behandlingId = this.behandlingId;

@@ -17,7 +17,7 @@ public record BehandlingDto(UUID uuid,
                             LocalDateTime opprettet,
                             String behandlendeEnhetId,
                             LocalDate behandlingsfristTid,
-                            List<AksjonspunktDto> aksjonspunktene,
+                            List<AksjonspunktDto> aksjonspunkt,
                             List<BehandlingÅrsakDto> behandlingÅrsaker,
                             List<ResourceLink> links,
                             String ansvarligSaksbehandler) {

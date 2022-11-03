@@ -44,7 +44,7 @@ public class PåVentOppgaveOppgavetransisjonHåndterer implements FpsakOppgavetr
     public void håndter(BehandlingFpsak behandlingFpsak) {
         var behandlingId = behandlingFpsak.getBehandlingId();
         var behandlendeEnhet = behandlingFpsak.getBehandlendeEnhetId();
-        var aksjonspunkter = behandlingFpsak.getAksjonspunktene();
+        var aksjonspunkter = behandlingFpsak.getAksjonspunkt();
         var venteType = manueltSattPåVent(aksjonspunkter) ? OppgaveEventType.MANU_VENT : OppgaveEventType.VENT;
         var aksjonspunktFrist = aksjonspunktFrist(aksjonspunkter, venteType);
         oppgaveTjeneste.hentAktivOppgave(behandlingId)

@@ -30,7 +30,7 @@ public final class TransisjonUtleder {
     static Oppgavetransisjon utledAktuellTransisjon(BehandlingFpsak behandlingFpsak, OppgaveHistorikk oppgaveHistorikk) {
         LOG.info("Utleder aktuell oppgavetransisjon for behandlingId {}, oppgavehistorikk {}", behandlingFpsak.getBehandlingId(),
                 oppgaveHistorikk);
-        var aksjonspunkter = behandlingFpsak.getAksjonspunktene();
+        var aksjonspunkter = behandlingFpsak.getAksjonspunkt();
 
         if (erIngenÅpne(aksjonspunkter)) {
             if (oppgaveHistorikk.erUtenHistorikk() || oppgaveHistorikk.erIngenÅpenOppgave()) {
