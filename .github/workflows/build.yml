@@ -31,14 +31,14 @@ jobs:
       build-version: ${{ needs.build-app.outputs.build-version }}
     secrets: inherit
 
-  trigger-autotest:
-    name: Autotest
+  promote:
+    name: Deploy dev
     if: github.ref_name == 'master'
     needs: [ build-app, create-issue ]
-    uses: navikt/fp-gha-workflows/.github/workflows/autotest.yml@main
+    uses: navikt/fp-gha-workflows/.github/workflows/promote.yml@main
     with:
-      build-version: ${{ needs.build-app.outputs.build-version }}
       issue-number: ${{ needs.create-issue.outputs.issue-number }}
+      cluster: dev-fss
     secrets: inherit
 
   snyk:
