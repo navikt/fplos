@@ -13,8 +13,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
 
-import no.nav.foreldrepenger.los.web.app.ForwarderApplication;
-
 import org.eclipse.jetty.jaas.JAASLoginService;
 import org.eclipse.jetty.plus.jndi.EnvEntry;
 import org.eclipse.jetty.security.ConstraintSecurityHandler;
@@ -163,7 +161,7 @@ public class JettyServer {
     private static HttpConfiguration createHttpConfiguration() {
         var httpConfig = new HttpConfiguration();
         // Add support for X-Forwarded headers
-        httpConfig.addCustomizer( new org.eclipse.jetty.server.ForwardedRequestCustomizer() );
+        httpConfig.addCustomizer(new org.eclipse.jetty.server.ForwardedRequestCustomizer());
         httpConfig.setRequestHeaderSize(16384); // øker for å unngå 431 error code TODO: fjern etter overgang til kun gcp for frontend
         return httpConfig;
     }
@@ -187,7 +185,6 @@ public class JettyServer {
         ctx.setSecurityHandler(createSecurityHandler());
         updateMetaData(ctx.getMetaData());
         ctx.setThrowUnavailableOnStartupException(true);
-        addFilters(ctx);
         return ctx;
     }
 
@@ -217,17 +214,8 @@ public class JettyServer {
         metaData.setWebInfClassesResources(resources);
     }
 
-    private static void addFilters(WebAppContext ctx) {
-        var dispatcherType = EnumSet.of(DispatcherType.REQUEST);
-        var corsFilter = ctx.addFilter(CrossOriginFilter.class, "/*", dispatcherType);
-
-        corsFilter.setInitParameter(CrossOriginFilter.ALLOWED_ORIGINS_PARAM, ENV.getProperty("cors.allowed.origins", "*"));
-        corsFilter.setInitParameter(CrossOriginFilter.ALLOWED_HEADERS_PARAM, ENV.getProperty("cors.allowed.headers", "*"));
-        corsFilter.setInitParameter(CrossOriginFilter.ALLOWED_METHODS_PARAM, ENV.getProperty("cors.allowed.methods", "*"));
-    }
-
     private static List<Class<?>> getWebInfClasses() {
-        return List.of(ApplicationConfig.class, IssoApplication.class, ForwarderApplication.class);
+        return List.of(ApplicationConfig.class, IssoApplication.class);
     }
 
     private Integer getServerPort() {
