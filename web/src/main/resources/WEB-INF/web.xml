@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xmlns.jcp.org/xml/ns/javaee"
          xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee
-                 http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd" version="3.1"
-         metadata-complete="false">
+                 http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd" version="3.1">
 
     <session-config>
         <cookie-config>
@@ -29,9 +28,7 @@
         <web-resource-collection>
             <web-resource-name>Ubeskyttet</web-resource-name>
             <url-pattern>/cb</url-pattern>
-            <url-pattern>/internal/health/isAlive</url-pattern>
-            <url-pattern>/internal/health/isReady</url-pattern>
-            <url-pattern>/internal/metrics/prometheus</url-pattern>
+            <url-pattern>/internal/*</url-pattern>
             <url-pattern>/api/openapi.yaml</url-pattern>
             <url-pattern>/api/openapi.json</url-pattern>
         </web-resource-collection>

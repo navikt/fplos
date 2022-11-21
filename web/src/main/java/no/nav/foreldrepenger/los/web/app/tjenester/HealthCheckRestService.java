@@ -2,8 +2,11 @@ package no.nav.foreldrepenger.los.web.app.tjenester;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -32,7 +35,7 @@ public class HealthCheckRestService {
      * Bruk annet svar enn 200 kun dersom man ønsker at Nais skal restarte pod
      */
     @GET
-    @Path("isAlive")
+    @Path("/isAlive")
     @Operation(description = "sjekker om poden lever", tags = "nais", hidden = true)
     public Response isAlive() {
         if (selftests.isKafkaAlive()) {
@@ -49,7 +52,7 @@ public class HealthCheckRestService {
      * Bruk annet svar enn 200 dersom man ønsker trafikk dirigert vekk (eller få nais til å oppskalere)
      */
     @GET
-    @Path("isReady")
+    @Path("/isReady")
     @Operation(description = "sjekker om poden er klar", tags = "nais", hidden = true)
     public Response isReady() {
         if (selftests.isReady()) {
