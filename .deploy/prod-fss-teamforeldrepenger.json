@@ -5,7 +5,6 @@
   "serviceuserkv": "/serviceuser/data/prod/srvfplos",
   "ldapuserkv": "/serviceuser/data/prod/srvssolinux",
   "ingresses":  [
-    "https://app.adeo.no/fplos",
     "https://fplos.intern.nav.no",
     "https://fplos.prod-fss-pub.nais.io"
   ],
