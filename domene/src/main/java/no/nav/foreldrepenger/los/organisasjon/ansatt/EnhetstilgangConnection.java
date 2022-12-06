@@ -37,7 +37,7 @@ public class EnhetstilgangConnection {
     }
 
     public Optional<EnhetstilgangResponse> hentEnhetstilganger(String ident) {
-        return tryOrEmpty(() -> hentEnhetstilganger(uri(ident)));
+        return tryOrEmpty(() -> hentEnhetstilganger(uri(ident)), "axsys");
     }
 
     private EnhetstilgangResponse hentEnhetstilganger(URI uri) {

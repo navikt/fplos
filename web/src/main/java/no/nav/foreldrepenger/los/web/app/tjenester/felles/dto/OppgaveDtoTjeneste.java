@@ -145,7 +145,7 @@ public class OppgaveDtoTjeneste {
     public List<OppgaveDto> getSaksbehandlersSisteReserverteOppgaver() {
         return reservasjonTjeneste.hentSaksbehandlersSisteReserverteOppgaver()
                 .stream()
-                .map(o -> tryOrEmpty(() -> lagDtoFor(o, true)))
+                .map(o -> tryOrEmpty(() -> lagDtoFor(o, true), "oppgavedto"))
                 .flatMap(Optional::stream)
                 .limit(10)
                 .collect(Collectors.toList());
