@@ -16,7 +16,7 @@ import no.nav.vedtak.felles.integrasjon.rest.RestRequest;
 import no.nav.vedtak.felles.integrasjon.rest.TokenFlow;
 
 @Dependent
-@RestClientConfig(tokenConfig = TokenFlow.CONTEXT, endpointProperty = "axsys.url", endpointDefault = "http://axsys.default")
+@RestClientConfig(tokenConfig = TokenFlow.STS_CC, endpointProperty = "axsys.url", endpointDefault = "http://axsys.default")
 public class EnhetstilgangConnection {
 
     private static final String PATH = "/api/v1/tilgang/";
