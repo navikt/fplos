@@ -40,8 +40,6 @@ import org.slf4j.MDC;
 import no.nav.foreldrepenger.konfig.Environment;
 import no.nav.foreldrepenger.los.web.app.ApplicationConfig;
 import no.nav.foreldrepenger.los.web.server.jetty.db.DataSourceUtil;
-import no.nav.vedtak.isso.IssoApplication;
-import no.nav.vedtak.sikkerhet.ContextPathHolder;
 import no.nav.vedtak.sikkerhet.jaspic.OidcAuthModule;
 
 public class JettyServer {
@@ -77,7 +75,6 @@ public class JettyServer {
 
     protected JettyServer(int serverPort) {
         this.serverPort = serverPort;
-        ContextPathHolder.instance(CONTEXT_PATH);
     }
 
     protected void bootStrap() throws Exception {
@@ -212,7 +209,7 @@ public class JettyServer {
     }
 
     private static List<Class<?>> getWebInfClasses() {
-        return List.of(ApplicationConfig.class, IssoApplication.class);
+        return List.of(ApplicationConfig.class);
     }
 
     private Integer getServerPort() {
