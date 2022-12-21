@@ -1,5 +1,6 @@
 {
   "environment": "dev",
+  "kafkaPool": "nav-dev",
   "oracleconfigkv":  "/oracle/data/dev/config/fplos_q1",
   "oraclecredskv": "/oracle/data/dev/creds/fplos_q1-fplos_q1",
   "serviceuserkv": "/serviceuser/data/dev/srvfplos",
