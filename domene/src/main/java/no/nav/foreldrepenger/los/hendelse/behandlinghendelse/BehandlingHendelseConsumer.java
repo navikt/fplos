@@ -45,7 +45,7 @@ public class BehandlingHendelseConsumer implements LivenessAware, ReadinessAware
     @Override
     public void start() {
         if (!isDeployment) return;
-        addShutdownHooks();
+        //addShutdownHooks();
         stream.start();
         LOG.info("Starter konsumering av topic={}, tilstand={}", getTopicName(), stream.state());
     }
