@@ -68,7 +68,7 @@ public class KafkaConsumerStarter {
                 foreldrepengerEventHåndterer, prosessTaskTjeneste, hendelseRepository);
         var tilbakekrevingConsumer = new KafkaConsumer<>(tilbakekrevingConsumerProperties, entityManager,
                 tilbakekrevingEventHåndterer, prosessTaskTjeneste, hendelseRepository);
-        destroy();
+        //destroy();
         behandlingHendelseConsumer.start();
         consumers.add(foreldrepengerConsumer);
         consumers.add(tilbakekrevingConsumer);
