@@ -41,6 +41,8 @@ spec:
     requests:
       cpu: 500m
       memory: 1536Mi
+  kafka:
+      pool: {{kafkaPool}}
   vault:
     enabled: true
     paths:
