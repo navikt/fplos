@@ -69,10 +69,10 @@ public class KafkaConsumerStarter {
         var tilbakekrevingConsumer = new KafkaConsumer<>(tilbakekrevingConsumerProperties, entityManager,
                 tilbakekrevingEventHåndterer, prosessTaskTjeneste, hendelseRepository);
         destroy();
+        behandlingHendelseConsumer.start();
         consumers.add(foreldrepengerConsumer);
         consumers.add(tilbakekrevingConsumer);
         consumers.forEach(KafkaConsumer::start);
-        behandlingHendelseConsumer.start();
     }
 
     public void destroy() {
