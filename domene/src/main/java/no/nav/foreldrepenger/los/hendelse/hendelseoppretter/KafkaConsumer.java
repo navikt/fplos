@@ -4,6 +4,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.Optional;
 import java.util.Properties;
+import java.util.UUID;
 
 import javax.enterprise.inject.spi.CDI;
 import javax.persistence.EntityManager;
@@ -27,14 +28,13 @@ import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import no.nav.foreldrepenger.konfig.Environment;
+import no.nav.foreldrepenger.los.hendelse.behandlinghendelse.BehandlingHendelseTask;
 import no.nav.foreldrepenger.los.hendelse.hendelseoppretter.hendelse.Hendelse;
 import no.nav.vedtak.felles.integrasjon.kafka.BehandlingProsessEventDto;
 import no.nav.vedtak.felles.jpa.TransactionHandler;
 import no.nav.vedtak.felles.prosesstask.api.ProsessTaskData;
 import no.nav.vedtak.felles.prosesstask.api.ProsessTaskTjeneste;
 import no.nav.vedtak.log.mdc.MDCOperations;
-
-import static no.nav.vedtak.log.util.ConfidentialMarkerFilter.CONFIDENTIAL;
 
 public final class KafkaConsumer<T extends BehandlingProsessEventDto> {
 
@@ -185,6 +185,7 @@ public final class KafkaConsumer<T extends BehandlingProsessEventDto> {
                 var hendelse = hendelseOppretter.opprett((T) dto);
                 hendelseRepository.lagre(hendelse);
                 prosessTaskTjeneste.lagre(opprettTask(hendelse));
+                prosessTaskTjeneste.lagre(debuggNyType(hendelse));
             }
             return null;
         }
@@ -199,6 +200,18 @@ public final class KafkaConsumer<T extends BehandlingProsessEventDto> {
         prosessTaskData.setGruppe(hendelse.getBehandlingId().toString());
         prosessTaskData.setSekvens(String.valueOf(Instant.now().toEpochMilli()));
         return prosessTaskData;
+    }
+
+    private ProsessTaskData debuggNyType(Hendelse hendelse) {
+        var prosessTaskData = ProsessTaskData.forProsessTask(BehandlingHendelseTask.class);
+        prosessTaskData.setProperty(BehandlingHendelseTask.HENDELSE_UUID, UUID.randomUUID().toString());
+        prosessTaskData.setProperty(BehandlingHendelseTask.BEHANDLING_UUID, hendelse.getBehandlingId().toString());
+        prosessTaskData.setProperty(BehandlingHendelseTask.KILDE, hendelse.getFagsystem().name());
+        prosessTaskData.setPrioritet(50);
+        prosessTaskData.setCallId(MDCOperations.getCallId());
+        //setter gruppe og sekvens for rekkefølge
+        return prosessTaskData;
+
     }
 
     private class MyProcessor implements Processor<Object, Object> {

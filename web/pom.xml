@@ -99,14 +99,7 @@
             <artifactId>weld-servlet-core</artifactId>
         </dependency>
 
-        <!-- For Status side -->
-        <dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpclient</artifactId>
-        </dependency>
-
         <!-- Server -->
-
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-plus</artifactId>

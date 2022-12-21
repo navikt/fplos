@@ -23,6 +23,7 @@ import no.nav.foreldrepenger.los.hendelse.hendelseoppretter.hendelse.Hendelse;
 import no.nav.foreldrepenger.los.klient.fpsak.BehandlingFpsak;
 import no.nav.foreldrepenger.los.klient.fpsak.ForeldrepengerBehandling;
 import no.nav.foreldrepenger.los.oppgave.OppgaveRepository;
+import no.nav.vedtak.hendelser.behandling.los.LosBehandlingDto;
 
 @ApplicationScoped
 public class FpsakOppgaveHendelseHåndterer {
@@ -44,18 +45,26 @@ public class FpsakOppgaveHendelseHåndterer {
     public FpsakOppgaveHendelseHåndterer() {
     }
 
+    public void håndterBehandling(LosBehandlingDto behandlingDto) {
+        var behandlingId = BehandlingId.fromUUID(behandlingDto.behandlingUuid());
+        var oppgaveHistorikk = oppgavehistorikk(behandlingId);
+        var transisjonHåndterer = håndtererForTransisjon(utledAktuellTransisjon(behandlingId, behandlingDto, oppgaveHistorikk));
+        LOG.info("Utledet hendelsehåndterer er av type {}", transisjonHåndterer.getClass().getSimpleName());
+        transisjonHåndterer.håndter(behandlingId, behandlingDto);
+    }
+
     public void håndter(Hendelse hendelse) {
         var behandlingId = hendelse.getBehandlingId();
         var behandlingFpsak = behandlingFpsak(hendelse);
-        var oppgaveHistorikk = oppgavehistorikk(hendelse, behandlingId);
+        var oppgaveHistorikk = oppgavehistorikk(behandlingId);
         var transisjonHåndterer = håndtererForTransisjon(utledAktuellTransisjon(behandlingFpsak, oppgaveHistorikk));
         LOG.info("Utledet hendelsehåndterer er av type {}", transisjonHåndterer.getClass().getSimpleName());
         transisjonHåndterer.håndter(behandlingFpsak);
     }
 
-    private OppgaveHistorikk oppgavehistorikk(Hendelse hendelse, BehandlingId behandlingId) {
+    private OppgaveHistorikk oppgavehistorikk(BehandlingId behandlingId) {
         var oppgaveEventer = oppgaveRepository.hentOppgaveEventer(behandlingId);
-        LOG.info("Henter tidigere oppgaveeventer for behandling {} {}", hendelse.getBehandlingId(), inlinetEventHistorikk(oppgaveEventer));
+        LOG.info("Henter tidigere oppgaveeventer for behandling {} {}", behandlingId, inlinetEventHistorikk(oppgaveEventer));
         return new OppgaveHistorikk(oppgaveEventer);
     }
 

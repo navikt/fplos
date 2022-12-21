@@ -6,10 +6,13 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import no.nav.foreldrepenger.los.klient.fpsak.dto.aksjonspunkt.AksjonspunktDto;
+import no.nav.vedtak.hendelser.behandling.Aksjonspunktstatus;
+import no.nav.vedtak.hendelser.behandling.los.LosBehandlingDto;
 
 public class Aksjonspunkt {
     public static final String STATUSKODE_AKTIV = "OPPR";
     public static final String STATUSKODE_AVBRUTT = "AVBR";
+    public static final String STATUSKODE_UTFØRT = "UTFO";
 
     public static final String MANUELT_SATT_PÅ_VENT_KODE = "7001";
     public static final String PÅ_VENT_KODEGRUPPE_STARTS_WITH = "7";
@@ -86,6 +89,23 @@ public class Aksjonspunkt {
                 .medBegrunnelse(aksjonspunktDto.begrunnelse())
                 .medFristTid(aksjonspunktDto.fristTid())
                 .build();
+    }
+
+    public static Aksjonspunkt aksjonspunktFra(LosBehandlingDto.LosAksjonspunktDto aksjonspunktDto) {
+        return Aksjonspunkt.builder()
+                .medDefinisjon(aksjonspunktDto.definisjon())
+                .medStatus(SmapAksjonspunktstatus(aksjonspunktDto.status()))
+                .medBegrunnelse(aksjonspunktDto.begrunnelse())
+                .medFristTid(aksjonspunktDto.fristTid())
+                .build();
+    }
+
+    private static String SmapAksjonspunktstatus(Aksjonspunktstatus status) {
+        return switch (status) {
+            case OPPRETTET -> STATUSKODE_AKTIV;
+            case AVBRUTT -> STATUSKODE_AVBRUTT;
+            case UTFØRT -> STATUSKODE_UTFØRT;
+        };
     }
 
     public static Aksjonspunkt.Builder builder() {
