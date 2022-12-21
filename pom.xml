@@ -23,7 +23,7 @@
     <properties>
         <revision>2.8.2-SNAPSHOT</revision>
         <java.version>17</java.version>
-        <fp-kontrakter.version>6.1.31</fp-kontrakter.version>
+        <fp-kontrakter.version>6.2.5</fp-kontrakter.version>
         <felles.version>4.2.16</felles.version>
         <prosesstask.version>3.1.14</prosesstask.version>
     </properties>
@@ -115,6 +115,11 @@
             <dependency>
                 <groupId>no.nav.foreldrepenger.kontrakter.topics</groupId>
                 <artifactId>fp-topics-behandlingsprosess</artifactId>
+                <version>${fp-kontrakter.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>no.nav.foreldrepenger.kontrakter.topics</groupId>
+                <artifactId>hendelser-behandling</artifactId>
                 <version>${fp-kontrakter.version}</version>
             </dependency>
         </dependencies>

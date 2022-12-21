@@ -1,18 +1,20 @@
 package no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.håndterere;
 
-import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.FpsakOppgavetransisjonHåndterer;
-import no.nav.foreldrepenger.los.oppgave.OppgaveTjeneste;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import no.nav.foreldrepenger.los.domene.typer.BehandlingId;
+import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.FpsakOppgavetransisjonHåndterer;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveEventLogg;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveEventType;
 import no.nav.foreldrepenger.los.klient.fpsak.BehandlingFpsak;
+import no.nav.foreldrepenger.los.oppgave.OppgaveTjeneste;
 import no.nav.foreldrepenger.los.statistikk.kø.KøOppgaveHendelse;
 import no.nav.foreldrepenger.los.statistikk.kø.KøStatistikkTjeneste;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
+import no.nav.vedtak.hendelser.behandling.los.LosBehandlingDto;
 
 @ApplicationScoped
 public class LukkOppgaveOppgavetransisjonHåndterer implements FpsakOppgavetransisjonHåndterer {
@@ -39,6 +41,19 @@ public class LukkOppgaveOppgavetransisjonHåndterer implements FpsakOppgavetrans
         oppgaveTjeneste.avsluttOppgaveUtenEventLoggAvsluttTilknyttetReservasjon(behandlingId);
         var oel = OppgaveEventLogg.builder()
                 .behandlendeEnhet(behandlingFpsak.getBehandlendeEnhetId())
+                .type(OppgaveEventType.LUKKET)
+                .behandlingId(behandlingId)
+                .build();
+        oppgaveTjeneste.lagre(oel);
+    }
+
+    @Override
+    public void håndter(BehandlingId behandlingId, LosBehandlingDto behandling) {
+        LOG.info("Håndterer hendelse for å lukke oppgave, behandling {}, system {}", behandlingId,  SYSTEM);
+        køStatistikk.lagre(behandlingId, KøOppgaveHendelse.LUKKET_OPPGAVE);
+        oppgaveTjeneste.avsluttOppgaveUtenEventLoggAvsluttTilknyttetReservasjon(behandlingId);
+        var oel = OppgaveEventLogg.builder()
+                .behandlendeEnhet(behandling.behandlendeEnhetId())
                 .type(OppgaveEventType.LUKKET)
                 .behandlingId(behandlingId)
                 .build();

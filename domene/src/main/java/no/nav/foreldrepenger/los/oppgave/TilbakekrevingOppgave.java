@@ -103,6 +103,11 @@ public class TilbakekrevingOppgave extends Oppgave {
             return this;
         }
 
+        public Builder medBehandlingStatus(BehandlingStatus behandlingStatus){
+            tempOppgave.behandlingStatus = behandlingStatus;
+            return this;
+        }
+
         public Builder medSystem(String system){
             tempOppgave.system = system;
             return this;

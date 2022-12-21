@@ -1,12 +1,14 @@
 package no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.håndterere;
 
-import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.FpsakOppgavetransisjonHåndterer;
-import no.nav.foreldrepenger.los.klient.fpsak.BehandlingFpsak;
+import javax.enterprise.context.ApplicationScoped;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.enterprise.context.ApplicationScoped;
+import no.nav.foreldrepenger.los.domene.typer.BehandlingId;
+import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.FpsakOppgavetransisjonHåndterer;
+import no.nav.foreldrepenger.los.klient.fpsak.BehandlingFpsak;
+import no.nav.vedtak.hendelser.behandling.los.LosBehandlingDto;
 
 @ApplicationScoped
 public class IkkeRelevantForOppgaveOppgavetransisjonHåndterer implements FpsakOppgavetransisjonHåndterer {
@@ -18,6 +20,11 @@ public class IkkeRelevantForOppgaveOppgavetransisjonHåndterer implements FpsakO
 
     @Override
     public void håndter(BehandlingFpsak behandlingFpsak) {
+        LOG.info("Ikke relevant for oppgaver");
+    }
+
+    @Override
+    public void håndter(BehandlingId behandlingId, LosBehandlingDto behandling) {
         LOG.info("Ikke relevant for oppgaver");
     }
 

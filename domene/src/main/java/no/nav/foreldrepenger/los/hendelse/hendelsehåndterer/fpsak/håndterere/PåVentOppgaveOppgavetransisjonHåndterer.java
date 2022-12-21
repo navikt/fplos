@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -13,6 +14,7 @@ import javax.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import no.nav.foreldrepenger.los.domene.typer.BehandlingId;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.FpsakOppgavetransisjonHåndterer;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveEventLogg;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveEventType;
@@ -22,6 +24,7 @@ import no.nav.foreldrepenger.los.oppgave.Oppgave;
 import no.nav.foreldrepenger.los.oppgave.OppgaveTjeneste;
 import no.nav.foreldrepenger.los.statistikk.kø.KøOppgaveHendelse;
 import no.nav.foreldrepenger.los.statistikk.kø.KøStatistikkTjeneste;
+import no.nav.vedtak.hendelser.behandling.los.LosBehandlingDto;
 
 @ApplicationScoped
 public class PåVentOppgaveOppgavetransisjonHåndterer implements FpsakOppgavetransisjonHåndterer {
@@ -45,6 +48,24 @@ public class PåVentOppgaveOppgavetransisjonHåndterer implements FpsakOppgavetr
         var behandlingId = behandlingFpsak.getBehandlingId();
         var behandlendeEnhet = behandlingFpsak.getBehandlendeEnhetId();
         var aksjonspunkter = behandlingFpsak.getAksjonspunkt();
+        var venteType = manueltSattPåVent(aksjonspunkter) ? OppgaveEventType.MANU_VENT : OppgaveEventType.VENT;
+        var aksjonspunktFrist = aksjonspunktFrist(aksjonspunkter, venteType);
+        oppgaveTjeneste.hentAktivOppgave(behandlingId)
+                .filter(Oppgave::getAktiv)
+                .ifPresentOrElse(o -> {
+                            LOG.info("{} behandling er satt på vent, type {}. Lukker oppgave.", SYSTEM, venteType);
+                            køStatistikk.lagre(behandlingId, KøOppgaveHendelse.OPPGAVE_SATT_PÅ_VENT);
+                            oppgaveTjeneste.avsluttOppgaveUtenEventLoggAvsluttTilknyttetReservasjon(behandlingId);
+                        },
+                        () -> LOG.info("{} behandling er satt på vent, type {}", SYSTEM, venteType));
+        var oel = new OppgaveEventLogg(behandlingId, venteType, null, behandlendeEnhet, aksjonspunktFrist);
+        oppgaveTjeneste.lagre(oel);
+    }
+
+    @Override
+    public void håndter(BehandlingId behandlingId, LosBehandlingDto behandling) {
+        var behandlendeEnhet = behandling.behandlendeEnhetId();
+        var aksjonspunkter = behandling.aksjonspunkt().stream().map(Aksjonspunkt::aksjonspunktFra).collect(Collectors.toList());
         var venteType = manueltSattPåVent(aksjonspunkter) ? OppgaveEventType.MANU_VENT : OppgaveEventType.VENT;
         var aksjonspunktFrist = aksjonspunktFrist(aksjonspunkter, venteType);
         oppgaveTjeneste.hentAktivOppgave(behandlingId)

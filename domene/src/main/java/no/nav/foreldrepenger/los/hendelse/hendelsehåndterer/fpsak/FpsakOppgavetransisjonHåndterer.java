@@ -1,13 +1,17 @@
 package no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak;
 
+import no.nav.foreldrepenger.los.domene.typer.BehandlingId;
 import no.nav.foreldrepenger.los.hendelse.hendelseoppretter.hendelse.Fagsystem;
 import no.nav.foreldrepenger.los.klient.fpsak.BehandlingFpsak;
+import no.nav.vedtak.hendelser.behandling.los.LosBehandlingDto;
 
 public interface FpsakOppgavetransisjonHåndterer {
 
     String SYSTEM = Fagsystem.FPSAK.name();
 
     void håndter(BehandlingFpsak behandlingFpsak);
+
+    void håndter(BehandlingId behandlingId, LosBehandlingDto behandling);
 
     Oppgavetransisjon kanHåndtere();
 
