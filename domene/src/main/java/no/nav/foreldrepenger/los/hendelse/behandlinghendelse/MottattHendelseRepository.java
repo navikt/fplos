@@ -1,4 +1,4 @@
-package no.nav.foreldrepenger.behandlingslager.hendelser;
+package no.nav.foreldrepenger.los.hendelse.behandlinghendelse;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -7,16 +7,16 @@ import javax.persistence.EntityManager;
 import org.hibernate.jpa.QueryHints;
 
 @ApplicationScoped
-public class HendelsemottakRepository {
+public class MottattHendelseRepository {
 
     private EntityManager entityManager;
 
-    HendelsemottakRepository() {
+    MottattHendelseRepository() {
         // CDI
     }
 
     @Inject
-    public HendelsemottakRepository( EntityManager entityManager) {
+    public MottattHendelseRepository(EntityManager entityManager) {
         this.entityManager = entityManager;
     }
 
@@ -32,10 +32,6 @@ public class HendelsemottakRepository {
             .setParameter("hendelse_uid", hendelseUid)
             .executeUpdate();
         entityManager.flush();
-    }
-
-    public void registrerMottattVedtak(MottattVedtak mottattVedtak) {
-        entityManager.persist(mottattVedtak);
     }
 
 }

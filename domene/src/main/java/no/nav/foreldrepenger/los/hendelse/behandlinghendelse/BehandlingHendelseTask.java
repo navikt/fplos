@@ -52,10 +52,10 @@ public class BehandlingHendelseTask implements ProsessTaskHandler {
         try {
             if (Kildesystem.FPSAK.equals(kilde)) {
                 LOG.info("FPLOS FPSAK {}", fpsakKlient.hentLosBehandlingDto(behandlingUuid));
-                //fpsakOppgaveHendelseHåndterer.håndterBehandling(fpsakKlient.hentLosBehandlingDto(behandlingUuid));
+                fpsakOppgaveHendelseHåndterer.håndterBehandling(fpsakKlient.hentLosBehandlingDto(behandlingUuid));
             } else {
                 LOG.info("FPLOS FPSAK {}", fptilbakeKlient.hentLosBehandlingDto(behandlingUuid));
-                //tilbakekrevingHendelseHåndterer.håndterBehandling(fptilbakeKlient.hentLosBehandlingDto(behandlingUuid));
+                tilbakekrevingHendelseHåndterer.håndterBehandling(fptilbakeKlient.hentLosBehandlingDto(behandlingUuid));
             }
         } catch (Exception e) {
             LOG.info("Noe gikk feil", e);

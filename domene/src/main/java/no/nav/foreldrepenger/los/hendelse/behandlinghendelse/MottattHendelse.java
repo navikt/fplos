@@ -1,4 +1,4 @@
-package no.nav.foreldrepenger.behandlingslager.hendelser;
+package no.nav.foreldrepenger.los.hendelse.behandlinghendelse;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -7,7 +7,8 @@ import javax.persistence.Table;
 
 import org.hibernate.annotations.NaturalId;
 
-import no.nav.foreldrepenger.behandlingslager.BaseEntitet;
+import no.nav.foreldrepenger.los.felles.BaseEntitet;
+
 
 @Entity(name = "MottattHendelse")
 @Table(name = "MOTTATT_HENDELSE")

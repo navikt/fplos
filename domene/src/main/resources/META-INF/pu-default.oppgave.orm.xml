@@ -29,4 +29,5 @@
     <entity class="no.nav.foreldrepenger.los.hendelse.hendelseoppretter.hendelse.Aksjonspunkt"/>
     <entity class="no.nav.foreldrepenger.los.organisasjon.Avdeling"/>
     <entity class="no.nav.foreldrepenger.los.organisasjon.Saksbehandler"/>
+    <entity class="no.nav.foreldrepenger.los.hendelse.behandlinghendelse.MottattHendelse" />
 </entity-mappings>
