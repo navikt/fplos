@@ -40,7 +40,7 @@ public class MottattHendelseRepository {
     }
 
     public List<MottattHendelse> hentTilfelleMedFeilUUID() {
-        return entityManager.createQuery("FROM MottattHendelse where opprettetTid < :tid", MottattHendelse.class)
+        return entityManager.createQuery("FROM MottattHendelse where opprettetTidspunkt < :tid", MottattHendelse.class)
                 .setParameter("tid", TID)
                 .getResultList();
     }
