@@ -1,5 +1,7 @@
 package no.nav.foreldrepenger.los.oppgave;
 
+import static no.nav.foreldrepenger.los.reservasjon.ReservasjonKonstanter.OPPGAVE_AVSLUTTET;
+
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Comparator;
@@ -14,8 +16,6 @@ import no.nav.foreldrepenger.los.felles.BaseEntitet;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveEventLogg;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveEventType;
 import no.nav.foreldrepenger.los.reservasjon.ReservasjonTjeneste;
-
-import static no.nav.foreldrepenger.los.reservasjon.ReservasjonKonstanter.OPPGAVE_AVSLUTTET;
 
 @ApplicationScoped
 public class OppgaveTjeneste {
@@ -50,6 +50,10 @@ public class OppgaveTjeneste {
                 .min((o1, o2) -> aktuellDato(o2).compareTo(aktuellDato(o1)));
     }
 
+    public boolean harOppgave(BehandlingId behandlingId) {
+        return !oppgaveRepository.hentOppgaver(behandlingId).isEmpty();
+    }
+
     public Optional<Oppgave> hentAktivOppgave(BehandlingId behandlingId) {
         return oppgaveRepository.hentAktivOppgave(behandlingId);
     }
@@ -65,6 +69,26 @@ public class OppgaveTjeneste {
         oppgaver.stream()
                 .filter(Oppgave::getAktiv)
                 .max(Comparator.comparing(Oppgave::getOpprettetTidspunkt))
+                .ifPresent(oppgave -> {
+                    reservasjonTjeneste.slettReservasjonMedEventLogg(oppgave.getReservasjon(), OPPGAVE_AVSLUTTET);
+                    oppgave.setAktiv(false);
+                    oppgave.setOppgaveAvsluttet(LocalDateTime.now());
+                    oppgaveRepository.lagre(oppgave);
+                    oppgaveRepository.refresh(oppgave);
+                });
+    }
+
+    public void adminAvsluttOppgaveUtenEventLoggAvsluttTilknyttetReservasjon(BehandlingId behandlingId) {
+        var oppgaver = oppgaveRepository.hentOppgaver(behandlingId);
+        var antallAktive = oppgaver.stream().filter(Oppgave::getAktiv).count();
+        if (antallAktive <= 1) {
+            throw new IllegalStateException(
+                    String.format("Forventet mer enn én aktiv oppgave for behandlingId %s, fant %s", behandlingId,
+                            antallAktive));
+        }
+        oppgaver.stream()
+                .filter(Oppgave::getAktiv)
+                .min(Comparator.comparing(Oppgave::getOpprettetTidspunkt))
                 .ifPresent(oppgave -> {
                     reservasjonTjeneste.slettReservasjonMedEventLogg(oppgave.getReservasjon(), OPPGAVE_AVSLUTTET);
                     oppgave.setAktiv(false);
