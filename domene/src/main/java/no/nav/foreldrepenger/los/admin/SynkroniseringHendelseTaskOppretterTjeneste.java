@@ -34,10 +34,6 @@ public class SynkroniseringHendelseTaskOppretterTjeneste {
         // for CDI proxy
     }
 
-    public int opprettOppgaveEgenskapOppdatererTask(List<BehandlingId> behandlinger) {
-        return opprettOppgaveEgenskapOppdatererTasks(behandlinger.stream().map(b -> new KildeBehandlingId(Kildesystem.FPSAK, b)).toList());
-    }
-
     public int opprettOppgaveEgenskapOppdatererTasks(List<KildeBehandlingId> behandlinger) {
         if (behandlinger.size() > 1000) {
             throw new IllegalArgumentException("Støtter ikke så mange behandlinger, send under 1000");
