@@ -8,20 +8,27 @@ import static org.mockito.Mockito.mock;
 
 import javax.persistence.EntityManager;
 
-import no.nav.foreldrepenger.los.oppgave.*;
-import no.nav.foreldrepenger.los.reservasjon.ReservasjonTjeneste;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import no.nav.foreldrepenger.los.DBTestUtil;
 import no.nav.foreldrepenger.extensions.JpaExtension;
+import no.nav.foreldrepenger.los.DBTestUtil;
+import no.nav.foreldrepenger.los.domene.typer.BehandlingId;
+import no.nav.foreldrepenger.los.domene.typer.Saksnummer;
 import no.nav.foreldrepenger.los.domene.typer.aktør.AktørId;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.OppgaveEgenskapHåndterer;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.håndterere.GenerellOpprettOppgaveOppgavetransisjonHåndterer;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveEventLogg;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveEventType;
+import no.nav.foreldrepenger.los.oppgave.BehandlingStatus;
+import no.nav.foreldrepenger.los.oppgave.BehandlingType;
+import no.nav.foreldrepenger.los.oppgave.FagsakYtelseType;
+import no.nav.foreldrepenger.los.oppgave.Oppgave;
+import no.nav.foreldrepenger.los.oppgave.OppgaveRepository;
+import no.nav.foreldrepenger.los.oppgave.OppgaveTjeneste;
+import no.nav.foreldrepenger.los.reservasjon.ReservasjonTjeneste;
 import no.nav.foreldrepenger.los.statistikk.kø.KøStatistikkTjeneste;
 
 
@@ -46,34 +53,35 @@ class GenerellOpprettOppgaveHendelseHåndtererTest {
     @Test
     public void skalLagreOppgaveMedFelterFraBehandling() {
         var behandlingFpsak = behandlingFpsak();
-        opprettOppgaveHåndterer.håndter(behandlingFpsak);
+        var behandlingId = new BehandlingId(behandlingFpsak.behandlingUuid());
+        opprettOppgaveHåndterer.håndter(behandlingId, behandlingFpsak);
         var oppgave = DBTestUtil.hentUnik(entityManager, Oppgave.class);
         assertThatOppgave(oppgave)
-                .harBehandlingOpprettet(behandlingFpsak.getBehandlingOpprettet())
+                .harBehandlingOpprettet(behandlingFpsak.opprettetTidspunkt())
                 .harAktiv(true)
-                .harBehandlingId(behandlingFpsak.getBehandlingId())
+                .harBehandlingId(behandlingId)
                 .harBehandlingType(BehandlingType.FØRSTEGANGSSØKNAD)
-                .harBehandlingsfrist(behandlingFpsak.getBehandlingstidFrist())
-                .harAktørId(new AktørId(behandlingFpsak.getAktørId()))
+                .harAktørId(new AktørId(behandlingFpsak.aktørId().getAktørId()))
                 .harFørsteStønadsdag(førsteUttaksDag())
                 .harHref(null)
-                .harSaksnummer(behandlingFpsak.getSaksnummer())
+                .harSaksnummer(new Saksnummer(behandlingFpsak.saksnummer()))
                 .harOppgaveAvsluttet(null)
-                .harBehandlingStatus(behandlingFpsak.getStatus())
-                .harBehandlendeEnhet(behandlingFpsak.getBehandlendeEnhetId())
+                .harBehandlingStatus(BehandlingStatus.OPPRETTET)
+                .harBehandlendeEnhet(behandlingFpsak.behandlendeEnhetId())
                 .harSystem("FPSAK")
-                .harFagsakYtelseType(behandlingFpsak.getYtelseType());
+                .harFagsakYtelseType(FagsakYtelseType.FORELDREPENGER);
     }
 
     @Test
     public void skalOppretteOppgaveEventLogg() {
         var behandlingFpsak = behandlingFpsak();
-        opprettOppgaveHåndterer.håndter(behandlingFpsak);
+        var behandlingId = new BehandlingId(behandlingFpsak.behandlingUuid());
+        opprettOppgaveHåndterer.håndter(behandlingId, behandlingFpsak);
 
         var oppgaveEventLogg = DBTestUtil.hentUnik(entityManager, OppgaveEventLogg.class);
         assertThat(oppgaveEventLogg.getEventType()).isEqualTo(OppgaveEventType.OPPRETTET);
-        assertThat(oppgaveEventLogg.getBehandlendeEnhet()).isEqualTo(behandlingFpsak.getBehandlendeEnhetId());
-        assertThat(oppgaveEventLogg.getBehandlingId()).isEqualTo(behandlingFpsak.getBehandlingId());
+        assertThat(oppgaveEventLogg.getBehandlendeEnhet()).isEqualTo(behandlingFpsak.behandlendeEnhetId());
+        assertThat(oppgaveEventLogg.getBehandlingId().toUUID()).isEqualTo(behandlingFpsak.behandlingUuid());
         assertThat(oppgaveEventLogg.getAndreKriterierType()).isNull();
         assertThat(oppgaveEventLogg.getFristTid()).isNull();
     }

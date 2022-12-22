@@ -5,7 +5,6 @@ import static java.util.Arrays.asList;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import no.nav.foreldrepenger.los.klient.fpsak.dto.aksjonspunkt.AksjonspunktDto;
 import no.nav.vedtak.hendelser.behandling.Aksjonspunktstatus;
 import no.nav.vedtak.hendelser.behandling.los.LosBehandlingDto;
 
@@ -39,6 +38,14 @@ public class Aksjonspunkt {
 
     public LocalDateTime getFristTid() {
         return fristTid;
+    }
+
+    public String getDefinisjonKode() {
+        return definisjonKode;
+    }
+
+    public String getStatusKode() {
+        return statusKode;
     }
 
     public boolean erPåVent() {
@@ -82,25 +89,16 @@ public class Aksjonspunkt {
         return erAktiv() && VURDER_FORMKRAV_GRUPPE.contains(definisjonKode);
     }
 
-    public static Aksjonspunkt aksjonspunktFra(AksjonspunktDto aksjonspunktDto) {
-        return Aksjonspunkt.builder()
-                .medDefinisjon(aksjonspunktDto.definisjon())
-                .medStatus(aksjonspunktDto.status())
-                .medBegrunnelse(aksjonspunktDto.begrunnelse())
-                .medFristTid(aksjonspunktDto.fristTid())
-                .build();
-    }
-
     public static Aksjonspunkt aksjonspunktFra(LosBehandlingDto.LosAksjonspunktDto aksjonspunktDto) {
         return Aksjonspunkt.builder()
                 .medDefinisjon(aksjonspunktDto.definisjon())
-                .medStatus(SmapAksjonspunktstatus(aksjonspunktDto.status()))
+                .medStatus(mapAksjonspunktstatus(aksjonspunktDto.status()))
                 .medBegrunnelse(aksjonspunktDto.begrunnelse())
                 .medFristTid(aksjonspunktDto.fristTid())
                 .build();
     }
 
-    private static String SmapAksjonspunktstatus(Aksjonspunktstatus status) {
+    private static String mapAksjonspunktstatus(Aksjonspunktstatus status) {
         return switch (status) {
             case OPPRETTET -> STATUSKODE_AKTIV;
             case AVBRUTT -> STATUSKODE_AVBRUTT;

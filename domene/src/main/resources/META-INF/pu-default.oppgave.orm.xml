@@ -24,9 +24,6 @@
     <entity class="no.nav.foreldrepenger.los.oppgavekø.FiltreringBehandlingType"/>
     <entity class="no.nav.foreldrepenger.los.oppgavekø.FiltreringYtelseType"/>
     <entity class="no.nav.foreldrepenger.los.oppgavekø.FiltreringAndreKriterierType"/>
-    <entity class="no.nav.foreldrepenger.los.hendelse.hendelseoppretter.hendelse.Hendelse"/>
-    <entity class="no.nav.foreldrepenger.los.hendelse.hendelseoppretter.hendelse.TilbakekrevingHendelse"/>
-    <entity class="no.nav.foreldrepenger.los.hendelse.hendelseoppretter.hendelse.Aksjonspunkt"/>
     <entity class="no.nav.foreldrepenger.los.organisasjon.Avdeling"/>
     <entity class="no.nav.foreldrepenger.los.organisasjon.Saksbehandler"/>
     <entity class="no.nav.foreldrepenger.los.hendelse.behandlinghendelse.MottattHendelse" />

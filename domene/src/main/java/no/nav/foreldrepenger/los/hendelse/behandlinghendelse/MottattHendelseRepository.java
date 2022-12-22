@@ -1,5 +1,8 @@
 package no.nav.foreldrepenger.los.hendelse.behandlinghendelse;
 
+import java.time.LocalDateTime;
+import java.util.List;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
@@ -8,6 +11,8 @@ import org.hibernate.jpa.QueryHints;
 
 @ApplicationScoped
 public class MottattHendelseRepository {
+
+    private static final LocalDateTime TID = LocalDateTime.of(2022,12,22, 15, 18);
 
     private EntityManager entityManager;
 
@@ -31,6 +36,26 @@ public class MottattHendelseRepository {
         entityManager.createNativeQuery("INSERT INTO MOTTATT_HENDELSE (hendelse_uid) VALUES (:hendelse_uid)")
             .setParameter("hendelse_uid", hendelseUid)
             .executeUpdate();
+        entityManager.flush();
+    }
+
+    public List<MottattHendelse> hentTilfelleMedFeilUUID() {
+        return entityManager.createQuery("FROM MottattHendelse where opprettetTidspunkt < :tid", MottattHendelse.class)
+                .setParameter("tid", TID)
+                .getResultList();
+    }
+
+    public void slettFørFeilTID() {
+        entityManager.createNativeQuery("DELETE FROM MOTTATT_HENDELSE WHERE opprettet_tid < :foer")
+                .setParameter("foer", TID)
+                .executeUpdate();
+        entityManager.flush();
+    }
+
+    public void slettMånedsGamle() {
+        entityManager.createNativeQuery("DELETE FROM MOTTATT_HENDELSE WHERE opprettet_tid < :foer")
+                .setParameter("foer", LocalDateTime.now().minusWeeks(4))
+                .executeUpdate();
         entityManager.flush();
     }
 

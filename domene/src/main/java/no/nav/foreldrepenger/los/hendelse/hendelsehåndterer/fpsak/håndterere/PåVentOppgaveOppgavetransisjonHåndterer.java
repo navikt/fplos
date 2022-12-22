@@ -19,7 +19,6 @@ import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.FpsakOppgavet
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveEventLogg;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveEventType;
 import no.nav.foreldrepenger.los.klient.fpsak.Aksjonspunkt;
-import no.nav.foreldrepenger.los.klient.fpsak.BehandlingFpsak;
 import no.nav.foreldrepenger.los.oppgave.Oppgave;
 import no.nav.foreldrepenger.los.oppgave.OppgaveTjeneste;
 import no.nav.foreldrepenger.los.statistikk.kø.KøOppgaveHendelse;
@@ -41,25 +40,6 @@ public class PåVentOppgaveOppgavetransisjonHåndterer implements FpsakOppgavetr
     }
 
     public PåVentOppgaveOppgavetransisjonHåndterer() {
-    }
-
-    @Override
-    public void håndter(BehandlingFpsak behandlingFpsak) {
-        var behandlingId = behandlingFpsak.getBehandlingId();
-        var behandlendeEnhet = behandlingFpsak.getBehandlendeEnhetId();
-        var aksjonspunkter = behandlingFpsak.getAksjonspunkt();
-        var venteType = manueltSattPåVent(aksjonspunkter) ? OppgaveEventType.MANU_VENT : OppgaveEventType.VENT;
-        var aksjonspunktFrist = aksjonspunktFrist(aksjonspunkter, venteType);
-        oppgaveTjeneste.hentAktivOppgave(behandlingId)
-                .filter(Oppgave::getAktiv)
-                .ifPresentOrElse(o -> {
-                            LOG.info("{} behandling er satt på vent, type {}. Lukker oppgave.", SYSTEM, venteType);
-                            køStatistikk.lagre(behandlingId, KøOppgaveHendelse.OPPGAVE_SATT_PÅ_VENT);
-                            oppgaveTjeneste.avsluttOppgaveUtenEventLoggAvsluttTilknyttetReservasjon(behandlingId);
-                        },
-                        () -> LOG.info("{} behandling er satt på vent, type {}", SYSTEM, venteType));
-        var oel = new OppgaveEventLogg(behandlingId, venteType, null, behandlendeEnhet, aksjonspunktFrist);
-        oppgaveTjeneste.lagre(oel);
     }
 
     @Override

@@ -30,13 +30,15 @@ public class BehandlingHendelseHåndterer {
     private static final Set<Hendelse> IGNORER = Set.of(Hendelse.BRUKEROPPGAVE, Hendelse.OPPRETTET, Hendelse.MANGLERSØKNAD);
 
     private ProsessTaskTjeneste taskTjeneste;
+    private MottattHendelseRepository hendelseRepository;
 
     public BehandlingHendelseHåndterer() {
     }
 
     @Inject
-    public BehandlingHendelseHåndterer(ProsessTaskTjeneste taskTjeneste) {
+    public BehandlingHendelseHåndterer(ProsessTaskTjeneste taskTjeneste, MottattHendelseRepository hendelseRepository) {
         this.taskTjeneste = taskTjeneste;
+        this.hendelseRepository = hendelseRepository;
     }
 
     void handleMessage(String key, String payload) {
@@ -54,6 +56,13 @@ public class BehandlingHendelseHåndterer {
     }
 
     void handleMessageIntern(BehandlingHendelseV1 behandlingHendelse) {
+        var hendelseId = behandlingHendelse.getKildesystem().name() + behandlingHendelse.getHendelseUuid().toString();
+        if (!hendelseRepository.hendelseErNy(hendelseId)) {
+            LOG.info("FPLOS Mottatt behandlinghendelse på nytt hendelse={}", hendelseId);
+            return;
+        }
+        hendelseRepository.registrerMottattHendelse(hendelseId);
+
         var prosessTaskData = ProsessTaskData.forProsessTask(BehandlingHendelseTask.class);
         prosessTaskData.setNesteKjøringEtter(LocalDateTime.now().plusSeconds(10));
         prosessTaskData.setCallId(behandlingHendelse.getHendelseUuid().toString());

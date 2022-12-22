@@ -1,7 +1,5 @@
 package no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.håndterere;
 
-import static no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.OppgaveUtil.oppgave;
-
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Comparator;
@@ -17,9 +15,9 @@ import no.nav.foreldrepenger.los.domene.typer.BehandlingId;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.OppgaveEgenskapHåndterer;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.FpsakOppgaveEgenskapFinner;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.FpsakOppgavetransisjonHåndterer;
+import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.OppgaveUtil;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveEventLogg;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveEventType;
-import no.nav.foreldrepenger.los.klient.fpsak.BehandlingFpsak;
 import no.nav.foreldrepenger.los.oppgave.Oppgave;
 import no.nav.foreldrepenger.los.oppgave.OppgaveRepository;
 import no.nav.foreldrepenger.los.reservasjon.ReservasjonTjeneste;
@@ -51,24 +49,10 @@ public class GjenåpneOppgaveOppgavetransisjonHåndterer implements FpsakOppgave
     }
 
     @Override
-    public void håndter(BehandlingFpsak behandlingFpsak) {
-        var behandlingId = behandlingFpsak.getBehandlingId();
-        var oppgaveHistorikk = oppgaveRepository.hentOppgaver(behandlingId);
-        sjekkForAktivOppgave(oppgaveHistorikk);
-        var nyOppgave = oppgave(behandlingFpsak);
-        oppgaveRepository.lagre(nyOppgave);
-        opprettOppgaveEgenskaper(nyOppgave, behandlingFpsak);
-        oppdaterOppgaveEventLogg(behandlingFpsak);
-        videreførNyligUtløptReservasjon(oppgaveHistorikk, nyOppgave, behandlingFpsak.getBehandlendeEnhetId());
-        køStatistikk.lagre(nyOppgave, KøOppgaveHendelse.ÅPNET_OPPGAVE);
-        LOG.info("Gjenåpnet {} oppgaveId {}", SYSTEM, nyOppgave.getId());
-    }
-
-    @Override
     public void håndter(BehandlingId behandlingId, LosBehandlingDto behandling) {
         var oppgaveHistorikk = oppgaveRepository.hentOppgaver(behandlingId);
         sjekkForAktivOppgave(oppgaveHistorikk);
-        var nyOppgave = oppgave(behandlingId, behandling);
+        var nyOppgave = OppgaveUtil.oppgave(behandlingId, behandling);
         oppgaveRepository.lagre(nyOppgave);
         opprettOppgaveEgenskaper(nyOppgave, behandling);
         oppdaterOppgaveEventLogg(behandlingId, behandling);
@@ -97,23 +81,9 @@ public class GjenåpneOppgaveOppgavetransisjonHåndterer implements FpsakOppgave
                 });
     }
 
-    private void opprettOppgaveEgenskaper(Oppgave oppgave, BehandlingFpsak behandlingFpsak) {
-        var egenskapFinner = new FpsakOppgaveEgenskapFinner(behandlingFpsak);
-        oppgaveEgenskapHåndterer.håndterOppgaveEgenskaper(oppgave, egenskapFinner);
-    }
-
     private void opprettOppgaveEgenskaper(Oppgave oppgave, LosBehandlingDto behandlingFpsak) {
         var egenskapFinner = new FpsakOppgaveEgenskapFinner(behandlingFpsak);
         oppgaveEgenskapHåndterer.håndterOppgaveEgenskaper(oppgave, egenskapFinner);
-    }
-
-    private void oppdaterOppgaveEventLogg(BehandlingFpsak behandlingFpsak) {
-        var oel = OppgaveEventLogg.builder()
-                .behandlingId(behandlingFpsak.getBehandlingId())
-                .behandlendeEnhet(behandlingFpsak.getBehandlendeEnhetId())
-                .type(OppgaveEventType.GJENAPNET)
-                .build();
-        oppgaveRepository.lagre(oel);
     }
 
     private void oppdaterOppgaveEventLogg(BehandlingId behandlingId, LosBehandlingDto behandlingFpsak) {
