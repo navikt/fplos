@@ -181,7 +181,6 @@ public class TilbakekrevingHendelseHåndterer {
         return TilbakekrevingOppgave.tbuilder()
                 .medBeløp(Optional.ofNullable(hendelse.tilbakeDto()).map(LosBehandlingDto.LosTilbakeDto::feilutbetaltBeløp).orElse(BigDecimal.ZERO))
                 .medFeilutbetalingStart(feilutbetalingStart(hendelse))
-                .medHref(String.format("/fpsak/fagsak/%s/behandling/%s/?punkt=default&fakta=default", hendelse.saksnummer(), behandlingId.toString()))
                 .medSystem(Fagsystem.FPTILBAKE.name())
                 .medFagsakSaksnummer(Long.valueOf(hendelse.saksnummer()))
                 .medAktorId(new AktørId(hendelse.aktørId().getAktørId()))

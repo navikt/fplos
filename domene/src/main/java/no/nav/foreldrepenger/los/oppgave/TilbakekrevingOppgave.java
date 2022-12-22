@@ -33,7 +33,6 @@ public class TilbakekrevingOppgave extends Oppgave {
 
     public void avstemMed(TilbakekrevingOppgave other) {
         this.behandlingOpprettet = other.behandlingOpprettet;
-        this.href = other.href;
         this.aktørId = other.aktørId;
         this.behandlendeEnhet = other.behandlendeEnhet;
         this.behandlingsfrist = other.behandlingsfrist;
@@ -43,7 +42,6 @@ public class TilbakekrevingOppgave extends Oppgave {
         this.behandlingType = other.behandlingType;
         this.fagsakYtelseType = other.fagsakYtelseType;
         this.system = other.system;
-        this.href = other.href;
         this.reservasjon = other.reservasjon;
         this.feilutbetalingstart = other.feilutbetalingstart;
         this.beløp = other.beløp;
@@ -128,11 +126,6 @@ public class TilbakekrevingOppgave extends Oppgave {
             return this;
         }
 
-        public Builder medHref(String href){
-            tempOppgave.href = href;
-            return this;
-        }
-
         public TilbakekrevingOppgave build() {
             return this.tempOppgave;
         }
@@ -158,7 +151,6 @@ public class TilbakekrevingOppgave extends Oppgave {
                 ", oppgaveAvsluttet=" + oppgaveAvsluttet +
                 ", utfortFraAdmin=" + utfortFraAdmin +
                 ", behandlingId=" + behandlingId +
-                ", href='" + href + '\'' +
                 ", reservasjon=" + reservasjon +
                 '}';
     }

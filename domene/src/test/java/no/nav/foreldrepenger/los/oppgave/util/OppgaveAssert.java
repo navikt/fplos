@@ -108,15 +108,6 @@ public class OppgaveAssert extends AbstractAssert<OppgaveAssert, Oppgave> {
         return this;
     }
 
-    public OppgaveAssert harHref(String href) {
-        isNotNull();
-        assertThat(actual.getHref())
-                .overridingErrorMessage("Forventet href <%s> men fikk <%s>",
-                        href, actual.getHref())
-                .isEqualTo(href);
-        return this;
-    }
-
     public OppgaveAssert harOppgaveAvsluttet(LocalDateTime oppgaveAvsluttet) {
         isNotNull();
         assertThat(actual.getOppgaveAvsluttet())
