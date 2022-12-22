@@ -38,6 +38,7 @@ import no.nav.vedtak.log.mdc.MDCOperations;
 
 public final class KafkaConsumer<T extends BehandlingProsessEventDto> {
 
+    private static final boolean IS_PROD = Environment.current().isProd();
     private static final boolean IS_DEV = Environment.current().isDev();
     private static final Logger LOG = LoggerFactory.getLogger(KafkaConsumer.class);
 
@@ -183,9 +184,12 @@ public final class KafkaConsumer<T extends BehandlingProsessEventDto> {
                         dto.getBehandlingSteg(),
                         dto.getAksjonspunktKoderMedStatusListe());
                 var hendelse = hendelseOppretter.opprett((T) dto);
-                hendelseRepository.lagre(hendelse);
-                prosessTaskTjeneste.lagre(opprettTask(hendelse));
-                prosessTaskTjeneste.lagre(debuggNyType(hendelse));
+                if (IS_PROD) {
+                    hendelseRepository.lagre(hendelse);
+                    prosessTaskTjeneste.lagre(opprettTask(hendelse));
+                } else {
+                    prosessTaskTjeneste.lagre(debuggNyType(hendelse));
+                }
             }
             return null;
         }
