@@ -12,8 +12,6 @@
     <sequence-generator name="SEQ_FILTRERING_YTELSE_TYPE" allocation-size="50" sequence-name="SEQ_FILTRERING_YTELSE_TYPE"/>
     <sequence-generator name="SEQ_AVDELING" allocation-size="50" sequence-name="SEQ_AVDELING"/>
     <sequence-generator name="SEQ_SAKSBEHANDLER" allocation-size="50" sequence-name="SEQ_SAKSBEHANDLER"/>
-    <sequence-generator name="SEQ_HENDELSE" allocation-size="50" sequence-name="SEQ_HENDELSE"/>
-    <sequence-generator name="SEQ_HENDELSE_TK_AKSJONSPUNKT" allocation-size="50" sequence-name="SEQ_HENDELSE_TK_AKSJONSPUNKT"/>
     <entity class="no.nav.foreldrepenger.los.oppgave.Oppgave"/>
     <entity class="no.nav.foreldrepenger.los.oppgave.OppgaveEgenskap"/>
     <entity class="no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveEventLogg"/>

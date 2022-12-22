@@ -24,7 +24,6 @@ public class OppgaveDto {
     private LocalDateTime opprettetTidspunkt;
     private LocalDateTime behandlingsfrist;
     private BehandlingId behandlingId;
-    private String href;
 
     OppgaveDto(Oppgave oppgave, Person personDto, OppgaveStatusDto oppgaveStatus){
         leggTilOppgaveInformasjon(oppgave, oppgaveStatus);
@@ -43,7 +42,6 @@ public class OppgaveDto {
         this.erTilSaksbehandling = oppgave.getAktiv();
         this.opprettetTidspunkt = oppgave.getBehandlingOpprettet();
         this.behandlingsfrist = oppgave.getBehandlingsfrist();
-        this.href = oppgave.getHref();
     }
 
     private void leggTilPersonInformasjon(Person person) {
@@ -102,10 +100,6 @@ public class OppgaveDto {
 
     public Boolean getErTilSaksbehandling() {
         return erTilSaksbehandling;
-    }
-
-    public String getHref() {
-        return href;
     }
 
     @Override

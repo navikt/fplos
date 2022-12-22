@@ -63,7 +63,6 @@ class GenerellOpprettOppgaveHendelseHåndtererTest {
                 .harBehandlingType(BehandlingType.FØRSTEGANGSSØKNAD)
                 .harAktørId(new AktørId(behandlingFpsak.aktørId().getAktørId()))
                 .harFørsteStønadsdag(førsteUttaksDag())
-                .harHref(null)
                 .harSaksnummer(new Saksnummer(behandlingFpsak.saksnummer()))
                 .harOppgaveAvsluttet(null)
                 .harBehandlingStatus(BehandlingStatus.OPPRETTET)

@@ -85,9 +85,6 @@ public class Oppgave extends BaseEntitet {
     @Embedded
     protected BehandlingId behandlingId;
 
-    @Column(name = "HREF")
-    protected String href;
-
     @OneToOne(mappedBy = "oppgave", fetch = FetchType.LAZY)
     protected Reservasjon reservasjon;
 
@@ -149,10 +146,6 @@ public class Oppgave extends BaseEntitet {
 
     public Reservasjon getReservasjon() {
         return reservasjon;
-    }
-
-    public String getHref() {
-        return href;
     }
 
     public Set<OppgaveEgenskap> getOppgaveEgenskaper() {
@@ -265,11 +258,6 @@ public class Oppgave extends BaseEntitet {
 
         public Builder medFagsakYtelseType(FagsakYtelseType fagsakYtelseType){
             tempOppgave.fagsakYtelseType = fagsakYtelseType;
-            return this;
-        }
-
-        public Builder medHref(String href){
-            tempOppgave.href = href;
             return this;
         }
 
