@@ -1,11 +1,28 @@
 package no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.håndterere;
 
-import no.nav.foreldrepenger.los.DBTestUtil;
-import no.nav.foreldrepenger.extensions.JpaExtension;
+import static no.nav.foreldrepenger.los.DBTestUtil.hentAlle;
+import static no.nav.foreldrepenger.los.oppgave.util.OppgaveAssert.assertThatOppgave;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
+import java.time.LocalDateTime;
+import java.util.List;
+
+import javax.persistence.EntityManager;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+import no.nav.foreldrepenger.extensions.JpaExtension;
+import no.nav.foreldrepenger.los.DBTestUtil;
+import no.nav.foreldrepenger.los.domene.typer.BehandlingId;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.OppgaveEgenskapHåndterer;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.OppgaveTestUtil;
-import no.nav.foreldrepenger.los.klient.fpsak.BehandlingFpsak;
+import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.OppgaveUtil;
 import no.nav.foreldrepenger.los.oppgave.BehandlingType;
 import no.nav.foreldrepenger.los.oppgave.Oppgave;
 import no.nav.foreldrepenger.los.oppgave.OppgaveEgenskap;
@@ -15,26 +32,8 @@ import no.nav.foreldrepenger.los.oppgavekø.OppgaveFiltreringKnytning;
 import no.nav.foreldrepenger.los.reservasjon.Reservasjon;
 import no.nav.foreldrepenger.los.reservasjon.ReservasjonRepository;
 import no.nav.foreldrepenger.los.reservasjon.ReservasjonTjeneste;
-
 import no.nav.foreldrepenger.los.statistikk.kø.KøStatistikkTjeneste;
-
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
-
-import javax.persistence.EntityManager;
-
-import java.time.LocalDateTime;
-import java.util.List;
-
-import static no.nav.foreldrepenger.los.DBTestUtil.hentAlle;
-import static no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.OppgaveUtil.oppgave;
-import static no.nav.foreldrepenger.los.oppgave.util.OppgaveAssert.assertThatOppgave;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import no.nav.vedtak.hendelser.behandling.los.LosBehandlingDto;
 
 @ExtendWith(MockitoExtension.class)
 @ExtendWith(JpaExtension.class)
@@ -42,8 +41,8 @@ class OppdaterOppgaveHendelseHåndtererTest {
 
     private EntityManager entityManager;
     private ReservasjonTjeneste reservasjonTjeneste;
-    private BehandlingFpsak.Builder behandlingFpsakBuilder = OppgaveTestUtil.behandlingFpsakBuilder().medErBerørtBehandling(true);
-    private BehandlingFpsak behandlingFpsak = behandlingFpsakBuilder.build();
+    private LosBehandlingDto behandlingFpsak = OppgaveTestUtil.behandlingFpsak(true);
+    private BehandlingId behandlingId;
     private OppgaveTjeneste oppgaveTjeneste;
     private OppgaveEgenskapHåndterer oppgaveEgenskapHåndterer;
     private OppdaterOppgaveOppgavetransisjonHåndterer oppgaveOppdaterer;
@@ -56,7 +55,8 @@ class OppdaterOppgaveHendelseHåndtererTest {
         reservasjonTjeneste = new ReservasjonTjeneste(oppgaveRepository, new ReservasjonRepository(entityManager));
         oppgaveTjeneste = new OppgaveTjeneste(oppgaveRepository, reservasjonTjeneste);
         oppgaveEgenskapHåndterer = new OppgaveEgenskapHåndterer(oppgaveRepository);
-        oppgaveRepository.lagre(oppgave(behandlingFpsak));
+        behandlingId = new BehandlingId(behandlingFpsak.behandlingUuid());
+        oppgaveRepository.lagre(OppgaveUtil.oppgave(behandlingId, behandlingFpsak));
         this.køStatistikkTjeneste = mock(KøStatistikkTjeneste.class);
         oppgaveOppdaterer = new OppdaterOppgaveOppgavetransisjonHåndterer(oppgaveTjeneste, reservasjonTjeneste, oppgaveEgenskapHåndterer, køStatistikkTjeneste);
 
@@ -68,7 +68,7 @@ class OppdaterOppgaveHendelseHåndtererTest {
 
     @Test
     public void skalErstatteGammelOppgaveMedNy() {
-        oppgaveOppdaterer.håndter(behandlingFpsak);
+        oppgaveOppdaterer.håndter(behandlingId, behandlingFpsak);
         var oppgaver = hentAlle(entityManager, Oppgave.class);
         assertThat(oppgaver.size()).isEqualTo(2);
         var gammelOppgave = oppgaver.get(0);
@@ -81,8 +81,8 @@ class OppdaterOppgaveHendelseHåndtererTest {
     @Test
     public void gammelReservasjonVidereføresPåNyOppgave() {
         reservasjonTjeneste.reserverOppgave(DBTestUtil.hentUnik(entityManager, Oppgave.class));
-        oppgaveOppdaterer.håndter(behandlingFpsak);
-        oppgaveOppdaterer.håndter(behandlingFpsak);
+        oppgaveOppdaterer.håndter(behandlingId, behandlingFpsak);
+        oppgaveOppdaterer.håndter(behandlingId, behandlingFpsak);
         var oppgaver = hentAlle(entityManager, Oppgave.class);
         assertThatOppgave(oppgaver.get(0)).harAktiv(false);
         assertThatOppgave(oppgaver.get(1)).harAktiv(false);
@@ -97,7 +97,7 @@ class OppdaterOppgaveHendelseHåndtererTest {
     public void skalIkkeFlytteInaktivReservasjon() {
         reservasjonTjeneste.reserverOppgave(DBTestUtil.hentUnik(entityManager, Oppgave.class));
         reservasjonTjeneste.slettReservasjonMedEventLogg(DBTestUtil.hentUnik(entityManager, Reservasjon.class), "slettet");
-        oppgaveOppdaterer.håndter(behandlingFpsak);
+        oppgaveOppdaterer.håndter(behandlingId, behandlingFpsak);
         var oppgaver = hentAlle(entityManager, Oppgave.class);
         var gammelOppgave = oppgaver.get(0);
         var nyOppgave = oppgaver.get(1);
@@ -105,22 +105,10 @@ class OppdaterOppgaveHendelseHåndtererTest {
         assertThat(nyOppgave.getReservasjon()).isNull();
     }
 
-    @Test
-    public void skalIkkeFlytteReservasjonVedNyEnhet() {
-        var nyEnhetBehandlingFpsak = behandlingFpsakBuilder.medBehandlendeEnhetId("0000").build();
-        assertThat(nyEnhetBehandlingFpsak.getBehandlendeEnhetId()).isNotEqualTo(behandlingFpsak.getBehandlendeEnhetId());
-
-        reservasjonTjeneste.reserverOppgave(DBTestUtil.hentUnik(entityManager, Oppgave.class));
-        oppgaveOppdaterer.håndter(nyEnhetBehandlingFpsak);
-
-        var oppgaver = hentAlle(entityManager, Oppgave.class);
-        assertThat(oppgaver.get(0).getReservasjon().erAktiv()).isFalse();
-        assertThat(oppgaver.get(1).getReservasjon()).isNull();
-    }
 
     @Test
     public void oppgaveSkalFåOppgaveegenskaperSatt() {
-        oppgaveOppdaterer.håndter(behandlingFpsak);
+        oppgaveOppdaterer.håndter(behandlingId, behandlingFpsak);
         var oppgave = hentAlle(entityManager, Oppgave.class).get(1);
         var oe = hentAlle(entityManager, OppgaveEgenskap.class);
         assertThat(oppgave.getOppgaveEgenskaper().isEmpty()).isFalse();

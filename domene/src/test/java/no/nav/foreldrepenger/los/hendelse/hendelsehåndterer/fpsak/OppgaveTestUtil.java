@@ -5,65 +5,48 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import no.nav.foreldrepenger.los.domene.typer.BehandlingId;
-import no.nav.foreldrepenger.los.domene.typer.Saksnummer;
 import no.nav.foreldrepenger.los.domene.typer.aktør.AktørId;
 import no.nav.foreldrepenger.los.klient.fpsak.Aksjonspunkt;
-import no.nav.foreldrepenger.los.klient.fpsak.BehandlingFpsak;
-import no.nav.foreldrepenger.los.klient.fpsak.Lazy;
-import no.nav.foreldrepenger.los.klient.fpsak.dto.ytelsefordeling.RettigheterAnnenForelderDto;
-import no.nav.foreldrepenger.los.klient.fpsak.dto.ytelsefordeling.YtelseFordelingDto;
-import no.nav.foreldrepenger.los.oppgave.BehandlingStatus;
-import no.nav.foreldrepenger.los.oppgave.BehandlingType;
-import no.nav.foreldrepenger.los.oppgave.FagsakYtelseType;
+import no.nav.vedtak.hendelser.behandling.Aksjonspunktstatus;
+import no.nav.vedtak.hendelser.behandling.Behandlingsstatus;
+import no.nav.vedtak.hendelser.behandling.Behandlingstype;
+import no.nav.vedtak.hendelser.behandling.Behandlingsårsak;
+import no.nav.vedtak.hendelser.behandling.Kildesystem;
+import no.nav.vedtak.hendelser.behandling.Ytelse;
+import no.nav.vedtak.hendelser.behandling.los.LosBehandlingDto;
 
 public class OppgaveTestUtil {
 
     private OppgaveTestUtil() {
     }
 
-    public static BehandlingFpsak behandlingFpsak() {
-        return behandlingFpsakBuilder().build();
+    public static LosBehandlingDto behandlingFpsak() {
+        return behandlingFpsak(false);
     }
 
-    public static BehandlingFpsak.Builder behandlingFpsakBuilder() {
+    public static LosBehandlingDto behandlingFpsak(boolean berørt) {
         var behandlingId = BehandlingId.random();
         var behandlingstidFrist = LocalDate.now().plusDays(10);
         var behandlingOpprettet = LocalDateTime.now();
         var aktørId = AktørId.dummy();
-        var behandlingFpsak = BehandlingFpsak.builder()
-                .medBehandlingOpprettet(behandlingOpprettet)
-                .medBehandlendeEnhetId("4406")
-                .medBehandlingId(behandlingId)
-                .medBehandlingType(BehandlingType.FØRSTEGANGSSØKNAD)
-                .medYtelseFordeling(ytelsefordeling())
-                .medErBerørtBehandling(false)
-                .medErEndringssøknad(false)
-                .medBehandlingstidFrist(behandlingstidFrist)
-                .medAksjonspunkt(OppgaveTestUtil.aksjonspunkter())
-                .medStatus(BehandlingStatus.OPPRETTET)
-                .medAnsvarligSaksbehandler("saksbehandler")
-                .medAktørId(aktørId)
-                .medYtelseType(FagsakYtelseType.FORELDREPENGER)
-                .medSaksnummer(new Saksnummer("1234"));
-        return behandlingFpsak;
-    }
-
-    private static Lazy<YtelseFordelingDto> ytelsefordeling() {
-        return new Lazy<>(() -> new YtelseFordelingDto(førsteUttaksDag(),
-                new RettigheterAnnenForelderDto(true)));
+        return new LosBehandlingDto(behandlingId.toUUID(), Kildesystem.FPSAK, "1234", Ytelse.FORELDREPENGER,
+                new no.nav.vedtak.hendelser.behandling.AktørId(aktørId.getId()), Behandlingstype.FØRSTEGANGS,
+                Behandlingsstatus.OPPRETTET, behandlingOpprettet, "4406", behandlingstidFrist, "saksbehandler",
+                OppgaveTestUtil.aksjonspunkter(), berørt ? List.of(Behandlingsårsak.BERØRT) : List.of(), false, false,
+                new LosBehandlingDto.LosForeldrepengerDto(førsteUttaksDag(), true, false,false), null);
     }
 
     public static LocalDate førsteUttaksDag() {
         return LocalDate.of(2021, 3, 1);
     }
 
-    public static List<Aksjonspunkt> aksjonspunkter() {
+    public static List<LosBehandlingDto.LosAksjonspunktDto> aksjonspunkter() {
         var aksjonspunkt = Aksjonspunkt.builder()
                 .medDefinisjon("1111")
                 .medBegrunnelse("Testbegrunnelse")
                 .medFristTid(null)
                 .medStatus("OPPR")
                 .build();
-        return List.of(aksjonspunkt);
+        return List.of(new LosBehandlingDto.LosAksjonspunktDto("1111",Aksjonspunktstatus.OPPRETTET, null, null));
     }
 }

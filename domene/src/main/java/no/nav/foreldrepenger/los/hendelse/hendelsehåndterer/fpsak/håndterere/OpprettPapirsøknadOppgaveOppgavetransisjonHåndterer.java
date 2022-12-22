@@ -1,7 +1,5 @@
 package no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.håndterere;
 
-import static no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.OppgaveUtil.oppgave;
-
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
@@ -12,9 +10,9 @@ import no.nav.foreldrepenger.los.domene.typer.BehandlingId;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.OppgaveEgenskapHåndterer;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.FpsakOppgaveEgenskapFinner;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.FpsakOppgavetransisjonHåndterer;
+import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.OppgaveUtil;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveEventLogg;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveEventType;
-import no.nav.foreldrepenger.los.klient.fpsak.BehandlingFpsak;
 import no.nav.foreldrepenger.los.oppgave.AndreKriterierType;
 import no.nav.foreldrepenger.los.oppgave.Oppgave;
 import no.nav.foreldrepenger.los.oppgave.OppgaveTjeneste;
@@ -59,15 +57,6 @@ public class OpprettPapirsøknadOppgaveOppgavetransisjonHåndterer implements Fp
     }
 
     @Override
-    public void håndter(BehandlingFpsak behandlingFpsak) {
-        håndterEksisterendeOppgave(behandlingFpsak.getBehandlingId());
-        var oppgave = opprettOppgave(behandlingFpsak);
-        opprettOppgaveEgenskaper(oppgave, behandlingFpsak);
-        opprettOppgaveEventLogg(oppgave);
-        køStatistikk.lagre(oppgave, KøOppgaveHendelse.ÅPNET_OPPGAVE);
-    }
-
-    @Override
     public void håndter(BehandlingId behandlingId, LosBehandlingDto behandling) {
         håndterEksisterendeOppgave(behandlingId);
         var oppgave = opprettOppgave(behandlingId, behandling);
@@ -81,19 +70,8 @@ public class OpprettPapirsøknadOppgaveOppgavetransisjonHåndterer implements Fp
         return Oppgavetransisjon.OPPRETT_PAPIRSØKNADOPPGAVE;
     }
 
-    private Oppgave opprettOppgave(BehandlingFpsak behandlingFpsak) {
-        var oppgave = oppgave(behandlingFpsak);
-        oppgaveTjeneste.lagre(oppgave);
-        return oppgave;
-    }
-
-    private void opprettOppgaveEgenskaper(Oppgave oppgave, BehandlingFpsak behandlingFpsak) {
-        var egenskapFinner = new FpsakOppgaveEgenskapFinner(behandlingFpsak);
-        oppgaveEgenskapHåndterer.håndterOppgaveEgenskaper(oppgave, egenskapFinner);
-    }
-
     private Oppgave opprettOppgave(BehandlingId behandlingId, LosBehandlingDto behandlingFpsak) {
-        var oppgave = oppgave(behandlingId, behandlingFpsak);
+        var oppgave = OppgaveUtil.oppgave(behandlingId, behandlingFpsak);
         oppgaveTjeneste.lagre(oppgave);
         return oppgave;
     }
