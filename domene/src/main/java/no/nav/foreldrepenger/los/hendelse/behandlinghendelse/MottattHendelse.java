@@ -26,4 +26,8 @@ public class MottattHendelse extends BaseEntitet {
     public MottattHendelse(String hendelseUid) {
         this.hendelseUid = hendelseUid;
     }
+
+    public String getHendelseUid() {
+        return hendelseUid;
+    }
 }

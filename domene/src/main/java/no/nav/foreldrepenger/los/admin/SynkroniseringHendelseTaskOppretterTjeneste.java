@@ -35,6 +35,10 @@ public class SynkroniseringHendelseTaskOppretterTjeneste {
     }
 
     public int opprettOppgaveEgenskapOppdatererTask(List<BehandlingId> behandlinger) {
+        return opprettOppgaveEgenskapOppdatererTasks(behandlinger.stream().map(b -> new KildeBehandlingId(Kildesystem.FPSAK, b)).toList());
+    }
+
+    public int opprettOppgaveEgenskapOppdatererTasks(List<KildeBehandlingId> behandlinger) {
         if (behandlinger.size() > 1000) {
             throw new IllegalArgumentException("Støtter ikke så mange behandlinger, send under 1000");
         }
@@ -51,14 +55,16 @@ public class SynkroniseringHendelseTaskOppretterTjeneste {
         return behandlinger.size();
     }
 
-    private void opprettSynkroniseringTask(BehandlingId behandlingId, String callId, LocalDateTime kjøretidspunkt) {
+    public record KildeBehandlingId(Kildesystem kildesystem, BehandlingId behandlingId) {}
+
+    private void opprettSynkroniseringTask(KildeBehandlingId kildeBehandlingId, String callId, LocalDateTime kjøretidspunkt) {
         var prosessTaskData = ProsessTaskData.forProsessTask(BehandlingHendelseTask.class);
-        prosessTaskData.setCallId(callId + behandlingId.toString());
+        prosessTaskData.setCallId(callId + kildeBehandlingId.behandlingId.toString());
         prosessTaskData.setPrioritet(999);
         prosessTaskData.setNesteKjøringEtter(kjøretidspunkt);
         prosessTaskData.setProperty(BehandlingHendelseTask.HENDELSE_UUID, UUID.randomUUID().toString());
-        prosessTaskData.setProperty(BehandlingHendelseTask.BEHANDLING_UUID, behandlingId.toString());
-        prosessTaskData.setProperty(BehandlingHendelseTask.KILDE, Kildesystem.FPSAK.name());
+        prosessTaskData.setProperty(BehandlingHendelseTask.BEHANDLING_UUID, kildeBehandlingId.behandlingId.toString());
+        prosessTaskData.setProperty(BehandlingHendelseTask.KILDE, kildeBehandlingId.kildesystem.name());
         prosessTaskTjeneste.lagre(prosessTaskData);
     }
 }
