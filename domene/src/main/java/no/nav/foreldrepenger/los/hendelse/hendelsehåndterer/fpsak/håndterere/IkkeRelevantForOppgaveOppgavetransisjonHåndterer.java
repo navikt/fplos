@@ -7,7 +7,6 @@ import org.slf4j.LoggerFactory;
 
 import no.nav.foreldrepenger.los.domene.typer.BehandlingId;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.FpsakOppgavetransisjonHåndterer;
-import no.nav.foreldrepenger.los.klient.fpsak.BehandlingFpsak;
 import no.nav.vedtak.hendelser.behandling.los.LosBehandlingDto;
 
 @ApplicationScoped
@@ -16,11 +15,6 @@ public class IkkeRelevantForOppgaveOppgavetransisjonHåndterer implements FpsakO
 
     public IkkeRelevantForOppgaveOppgavetransisjonHåndterer() {
         // Cdi proxy. Gjør denne applicationscoped fremfor statisk for at den skal bli injisert som øvrige.
-    }
-
-    @Override
-    public void håndter(BehandlingFpsak behandlingFpsak) {
-        LOG.info("Ikke relevant for oppgaver");
     }
 
     @Override

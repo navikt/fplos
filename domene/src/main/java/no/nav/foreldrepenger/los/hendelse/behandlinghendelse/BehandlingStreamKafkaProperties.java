@@ -98,8 +98,4 @@ public class BehandlingStreamKafkaProperties {
         return topicName;
     }
 
-    public boolean isDeployment() {
-        return isDeployment;
-    }
-
 }

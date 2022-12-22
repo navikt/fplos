@@ -1,7 +1,5 @@
 package no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak;
 
-import static no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.TransisjonUtleder.utledAktuellTransisjon;
-
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -15,13 +13,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import no.nav.foreldrepenger.los.domene.typer.BehandlingId;
-import no.nav.foreldrepenger.los.domene.typer.Saksnummer;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.FpsakOppgavetransisjonHåndterer.Oppgavetransisjon;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveEventLogg;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveHistorikk;
-import no.nav.foreldrepenger.los.hendelse.hendelseoppretter.hendelse.Hendelse;
-import no.nav.foreldrepenger.los.klient.fpsak.BehandlingFpsak;
-import no.nav.foreldrepenger.los.klient.fpsak.ForeldrepengerBehandling;
 import no.nav.foreldrepenger.los.oppgave.OppgaveRepository;
 import no.nav.vedtak.hendelser.behandling.los.LosBehandlingDto;
 
@@ -31,15 +25,12 @@ public class FpsakOppgaveHendelseHåndterer {
     private static final Logger LOG = LoggerFactory.getLogger(FpsakOppgaveHendelseHåndterer.class);
     private OppgaveRepository oppgaveRepository;
     private Instance<FpsakOppgavetransisjonHåndterer> håndterere;
-    private ForeldrepengerBehandling foreldrePengerBehandlingKlient;
 
     @Inject
     public FpsakOppgaveHendelseHåndterer(OppgaveRepository oppgaveRepository,
-                                         @Any Instance<FpsakOppgavetransisjonHåndterer> håndterere,
-                                         ForeldrepengerBehandling foreldrePengerBehandlingKlient) {
+                                         @Any Instance<FpsakOppgavetransisjonHåndterer> håndterere) {
         this.oppgaveRepository = oppgaveRepository;
         this.håndterere = håndterere;
-        this.foreldrePengerBehandlingKlient = foreldrePengerBehandlingKlient;
     }
 
     public FpsakOppgaveHendelseHåndterer() {
@@ -48,32 +39,15 @@ public class FpsakOppgaveHendelseHåndterer {
     public void håndterBehandling(LosBehandlingDto behandlingDto) {
         var behandlingId = BehandlingId.fromUUID(behandlingDto.behandlingUuid());
         var oppgaveHistorikk = oppgavehistorikk(behandlingId);
-        var transisjonHåndterer = håndtererForTransisjon(utledAktuellTransisjon(behandlingId, behandlingDto, oppgaveHistorikk));
+        var transisjonHåndterer = håndtererForTransisjon(TransisjonUtleder.utledAktuellTransisjon(behandlingId, behandlingDto, oppgaveHistorikk));
         LOG.info("Utledet hendelsehåndterer er av type {}", transisjonHåndterer.getClass().getSimpleName());
         transisjonHåndterer.håndter(behandlingId, behandlingDto);
-    }
-
-    public void håndter(Hendelse hendelse) {
-        var behandlingId = hendelse.getBehandlingId();
-        var behandlingFpsak = behandlingFpsak(hendelse);
-        var oppgaveHistorikk = oppgavehistorikk(behandlingId);
-        var transisjonHåndterer = håndtererForTransisjon(utledAktuellTransisjon(behandlingFpsak, oppgaveHistorikk));
-        LOG.info("Utledet hendelsehåndterer er av type {}", transisjonHåndterer.getClass().getSimpleName());
-        transisjonHåndterer.håndter(behandlingFpsak);
     }
 
     private OppgaveHistorikk oppgavehistorikk(BehandlingId behandlingId) {
         var oppgaveEventer = oppgaveRepository.hentOppgaveEventer(behandlingId);
         LOG.info("Henter tidigere oppgaveeventer for behandling {} {}", behandlingId, inlinetEventHistorikk(oppgaveEventer));
         return new OppgaveHistorikk(oppgaveEventer);
-    }
-
-    private BehandlingFpsak behandlingFpsak(Hendelse hendelse) {
-        var behandlingFpsak = foreldrePengerBehandlingKlient.getBehandling(hendelse.getBehandlingId());
-        behandlingFpsak.setYtelseType(hendelse.getYtelseType());
-        behandlingFpsak.setSaksnummer(new Saksnummer(hendelse.getSaksnummer()));
-        behandlingFpsak.setAktørId(hendelse.getAktørId());
-        return behandlingFpsak;
     }
 
     private FpsakOppgavetransisjonHåndterer håndtererForTransisjon(Oppgavetransisjon type) {

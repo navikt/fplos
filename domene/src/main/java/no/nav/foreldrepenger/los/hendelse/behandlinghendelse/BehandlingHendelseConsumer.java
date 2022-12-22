@@ -22,7 +22,6 @@ public class BehandlingHendelseConsumer implements LivenessAware, ReadinessAware
     private static final Logger LOG = LoggerFactory.getLogger(BehandlingHendelseConsumer.class);
     private String topicName;
     private KafkaStreams stream;
-    private boolean isDeployment;
 
     public BehandlingHendelseConsumer() {
     }
@@ -31,7 +30,6 @@ public class BehandlingHendelseConsumer implements LivenessAware, ReadinessAware
     public BehandlingHendelseConsumer(BehandlingStreamKafkaProperties behandlingStreamKafkaProperties,
                                       BehandlingHendelseHåndterer behandlingHendelseHåndterer) {
         this.topicName = behandlingStreamKafkaProperties.getTopicName();
-        this.isDeployment = behandlingStreamKafkaProperties.isDeployment();
 
         final Consumed<String, String> consumed = Consumed.with(Topology.AutoOffsetReset.EARLIEST);
 
@@ -44,7 +42,6 @@ public class BehandlingHendelseConsumer implements LivenessAware, ReadinessAware
 
     @Override
     public void start() {
-        if (!isDeployment) return;
         addShutdownHooks();
         stream.start();
         LOG.info("Starter konsumering av topic={}, tilstand={}", getTopicName(), stream.state());
@@ -52,7 +49,6 @@ public class BehandlingHendelseConsumer implements LivenessAware, ReadinessAware
 
     @Override
     public void stop() {
-        if (!isDeployment) return;
         LOG.info("Starter shutdown av topic={}, tilstand={} med 15 sekunder timeout", getTopicName(), stream.state());
         stream.close(Duration.ofSeconds(15));
         LOG.info("Shutdown av topic={}, tilstand={} med 15 sekunder timeout", getTopicName(), stream.state());
@@ -60,7 +56,7 @@ public class BehandlingHendelseConsumer implements LivenessAware, ReadinessAware
 
     @Override
     public boolean isAlive() {
-        return !isDeployment || (stream != null && stream.state().isRunningOrRebalancing());
+        return (stream != null && stream.state().isRunningOrRebalancing());
     }
 
     @Override

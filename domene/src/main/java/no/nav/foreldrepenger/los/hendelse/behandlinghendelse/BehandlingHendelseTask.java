@@ -44,21 +44,18 @@ public class BehandlingHendelseTask implements ProsessTaskHandler {
 
     @Override
     public void doTask(ProsessTaskData prosessTaskData) {
+        var hendelseUuidString = prosessTaskData.getPropertyValue(HENDELSE_UUID);
         var behandlingUuid = UUID.fromString(prosessTaskData.getPropertyValue(BEHANDLING_UUID));
         var kilde = Kildesystem.valueOf(prosessTaskData.getPropertyValue(KILDE));
 
         LOG.info("Håndterer hendelse for behandling {}", behandlingUuid);
 
-        try {
-            if (Kildesystem.FPSAK.equals(kilde)) {
-                LOG.info("FPLOS FPSAK {}", fpsakKlient.hentLosBehandlingDto(behandlingUuid));
-                fpsakOppgaveHendelseHåndterer.håndterBehandling(fpsakKlient.hentLosBehandlingDto(behandlingUuid));
-            } else {
-                LOG.info("FPLOS FPSAK {}", fptilbakeKlient.hentLosBehandlingDto(behandlingUuid));
-                tilbakekrevingHendelseHåndterer.håndterBehandling(fptilbakeKlient.hentLosBehandlingDto(behandlingUuid));
-            }
-        } catch (Exception e) {
-            LOG.info("Noe gikk feil", e);
+        if (Kildesystem.FPSAK.equals(kilde)) {
+            LOG.info("FPLOS FPSAK hendelse {} behandling {}", hendelseUuidString, behandlingUuid);
+            fpsakOppgaveHendelseHåndterer.håndterBehandling(fpsakKlient.hentLosBehandlingDto(behandlingUuid));
+        } else {
+            LOG.info("FPLOS FPTILBAKE hendelse {} behandling {}", hendelseUuidString, behandlingUuid);
+            tilbakekrevingHendelseHåndterer.håndterBehandling(fptilbakeKlient.hentLosBehandlingDto(behandlingUuid));
         }
 
     }

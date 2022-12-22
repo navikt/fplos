@@ -3,6 +3,7 @@ package no.nav.foreldrepenger.los.admin;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
+import java.util.UUID;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -11,8 +12,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import no.nav.foreldrepenger.los.domene.typer.BehandlingId;
+import no.nav.foreldrepenger.los.hendelse.behandlinghendelse.BehandlingHendelseTask;
 import no.nav.vedtak.felles.prosesstask.api.ProsessTaskData;
 import no.nav.vedtak.felles.prosesstask.api.ProsessTaskTjeneste;
+import no.nav.vedtak.hendelser.behandling.Kildesystem;
 import no.nav.vedtak.log.mdc.MDCOperations;
 
 @ApplicationScoped
@@ -49,11 +52,13 @@ public class SynkroniseringHendelseTaskOppretterTjeneste {
     }
 
     private void opprettSynkroniseringTask(BehandlingId behandlingId, String callId, LocalDateTime kjøretidspunkt) {
-        var prosessTaskData = ProsessTaskData.forProsessTask(SynkroniseringHendelseTask.class);
+        var prosessTaskData = ProsessTaskData.forProsessTask(BehandlingHendelseTask.class);
         prosessTaskData.setCallId(callId + behandlingId.toString());
         prosessTaskData.setPrioritet(999);
         prosessTaskData.setNesteKjøringEtter(kjøretidspunkt);
-        prosessTaskData.setProperty(SynkroniseringHendelseTask.BEHANDLING_ID_TASK_KEY, behandlingId.toString());
+        prosessTaskData.setProperty(BehandlingHendelseTask.HENDELSE_UUID, UUID.randomUUID().toString());
+        prosessTaskData.setProperty(BehandlingHendelseTask.BEHANDLING_UUID, behandlingId.toString());
+        prosessTaskData.setProperty(BehandlingHendelseTask.KILDE, Kildesystem.FPSAK.name());
         prosessTaskTjeneste.lagre(prosessTaskData);
     }
 }

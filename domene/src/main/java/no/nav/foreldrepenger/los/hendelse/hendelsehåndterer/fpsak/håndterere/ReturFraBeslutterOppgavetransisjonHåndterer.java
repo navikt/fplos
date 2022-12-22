@@ -1,7 +1,5 @@
 package no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.håndterere;
 
-import static no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.OppgaveUtil.oppgave;
-
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
@@ -12,9 +10,9 @@ import no.nav.foreldrepenger.los.domene.typer.BehandlingId;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.OppgaveEgenskapHåndterer;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.FpsakOppgaveEgenskapFinner;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.FpsakOppgavetransisjonHåndterer;
+import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.OppgaveUtil;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveEventLogg;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveEventType;
-import no.nav.foreldrepenger.los.klient.fpsak.BehandlingFpsak;
 import no.nav.foreldrepenger.los.oppgave.Oppgave;
 import no.nav.foreldrepenger.los.oppgave.OppgaveTjeneste;
 import no.nav.foreldrepenger.los.reservasjon.ReservasjonTjeneste;
@@ -44,14 +42,6 @@ public class ReturFraBeslutterOppgavetransisjonHåndterer implements FpsakOppgav
     public ReturFraBeslutterOppgavetransisjonHåndterer() {
     }
 
-    public void håndter(BehandlingFpsak behandlingFpsak) {
-        håndterEksisterendeOppgave(behandlingFpsak.getBehandlingId(), behandlingFpsak.getBehandlendeEnhetId());
-        var oppgave = opprettOppgave(behandlingFpsak);
-        opprettOppgaveEgenskaper(oppgave, behandlingFpsak);
-        opprettOppgaveEventLogg(oppgave, behandlingFpsak.getBehandlendeEnhetId());
-        køStatistikk.lagre(oppgave, KøOppgaveHendelse.ÅPNET_OPPGAVE);
-    }
-
     @Override
     public void håndter(BehandlingId behandlingId, LosBehandlingDto behandling) {
         håndterEksisterendeOppgave(behandlingId, behandling.behandlendeEnhetId());
@@ -79,16 +69,8 @@ public class ReturFraBeslutterOppgavetransisjonHåndterer implements FpsakOppgav
         LOG.info("Avslutter {} beslutteroppgave", SYSTEM);
     }
 
-    private Oppgave opprettOppgave(BehandlingFpsak behandlingFpsak) {
-        var oppgave = oppgave(behandlingFpsak);
-        oppgaveTjeneste.lagre(oppgave);
-        reservasjonTjeneste.opprettReservasjon(oppgave, behandlingFpsak.getAnsvarligSaksbehandler(), "Retur fra beslutter");
-        LOG.info("Retur fra beslutter, oppretter oppgave og flytter reservasjon til ansvarlig saksbehandler");
-        return oppgave;
-    }
-
     private Oppgave opprettOppgave(BehandlingId behandlingId, LosBehandlingDto behandlingFpsak) {
-        var oppgave = oppgave(behandlingId, behandlingFpsak);
+        var oppgave = OppgaveUtil.oppgave(behandlingId, behandlingFpsak);
         oppgaveTjeneste.lagre(oppgave);
         reservasjonTjeneste.opprettReservasjon(oppgave, behandlingFpsak.ansvarligSaksbehandlerIdent(), "Retur fra beslutter");
         LOG.info("Retur fra beslutter, oppretter oppgave og flytter reservasjon til ansvarlig saksbehandler");
@@ -103,12 +85,6 @@ public class ReturFraBeslutterOppgavetransisjonHåndterer implements FpsakOppgav
                 .build();
         oppgaveTjeneste.lagre(oel);
         LOG.info("Retur fra beslutter, oppretter {} saksbehandler-oppgave med oppgaveId {}", SYSTEM, oppgave.getId());
-    }
-
-
-    private void opprettOppgaveEgenskaper(Oppgave oppgave, BehandlingFpsak behandlingFpsak) {
-        var egenskapFinner = new FpsakOppgaveEgenskapFinner(behandlingFpsak);
-        oppgaveEgenskapHåndterer.håndterOppgaveEgenskaper(oppgave, egenskapFinner);
     }
 
     private void opprettOppgaveEgenskaper(Oppgave oppgave, LosBehandlingDto behandlingFpsak) {

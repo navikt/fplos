@@ -21,7 +21,6 @@ import no.nav.foreldrepenger.los.domene.typer.BehandlingId;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.FpsakOppgavetransisjonHåndterer.Oppgavetransisjon;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveHistorikk;
 import no.nav.foreldrepenger.los.klient.fpsak.Aksjonspunkt;
-import no.nav.foreldrepenger.los.klient.fpsak.BehandlingFpsak;
 import no.nav.vedtak.hendelser.behandling.los.LosBehandlingDto;
 
 public final class TransisjonUtleder {
@@ -33,49 +32,6 @@ public final class TransisjonUtleder {
     static Oppgavetransisjon utledAktuellTransisjon(BehandlingId behandlingId, LosBehandlingDto behandlingFpsak, OppgaveHistorikk oppgaveHistorikk) {
         LOG.info("Utleder aktuell oppgavetransisjon for behandlingId {}, oppgavehistorikk {}", behandlingId, oppgaveHistorikk);
         var aksjonspunkter = behandlingFpsak.aksjonspunkt().stream().map(Aksjonspunkt::aksjonspunktFra).collect(Collectors.toList());
-
-        if (erIngenÅpne(aksjonspunkter)) {
-            if (oppgaveHistorikk.erUtenHistorikk() || oppgaveHistorikk.erIngenÅpenOppgave()) {
-                return IKKE_RELEVANT;
-            }
-            return LUKK_OPPGAVE;
-        }
-
-        if (finn(Aksjonspunkt::erPåVent, aksjonspunkter)) {
-            if (oppgaveHistorikk.erPåVent()) {
-                return IKKE_RELEVANT;
-            }
-            return SETT_PÅ_VENT;
-        }
-
-        if (finn(Aksjonspunkt::erTilBeslutter, aksjonspunkter)) {
-            return oppgaveHistorikk.erÅpenOppgave() && oppgaveHistorikk.erSisteOpprettedeOppgaveTilBeslutter()
-                    ? OPPDATER_OPPGAVE
-                    : OPPRETT_BESLUTTEROPPGAVE;
-        }
-
-        if (finn(Aksjonspunkt::erRegistrerPapirSøknad, aksjonspunkter)) {
-            return oppgaveHistorikk.erÅpenOppgave() && oppgaveHistorikk.erSisteOpprettedeOppgavePapirsøknad()
-                    ? OPPDATER_OPPGAVE
-                    : OPPRETT_PAPIRSØKNADOPPGAVE;
-        }
-
-        if (oppgaveHistorikk.harEksistertOppgave()) {
-            if (oppgaveHistorikk.erÅpenOppgave()) {
-                return oppgaveHistorikk.erSisteOpprettedeOppgaveTilBeslutter()
-                        ? RETUR_FRA_BESLUTTER_OPPGAVE
-                        : OPPDATER_OPPGAVE;
-            }
-            return GJENÅPNE_OPPGAVE;
-        }
-
-        return OPPRETT_OPPGAVE;
-    }
-
-    static Oppgavetransisjon utledAktuellTransisjon(BehandlingFpsak behandlingFpsak, OppgaveHistorikk oppgaveHistorikk) {
-        LOG.info("Utleder aktuell oppgavetransisjon for behandlingId {}, oppgavehistorikk {}", behandlingFpsak.getBehandlingId(),
-                oppgaveHistorikk);
-        var aksjonspunkter = behandlingFpsak.getAksjonspunkt();
 
         if (erIngenÅpne(aksjonspunkter)) {
             if (oppgaveHistorikk.erUtenHistorikk() || oppgaveHistorikk.erIngenÅpenOppgave()) {
