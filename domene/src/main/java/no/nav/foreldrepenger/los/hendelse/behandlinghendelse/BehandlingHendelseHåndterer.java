@@ -56,7 +56,7 @@ public class BehandlingHendelseHåndterer {
     }
 
     void handleMessageIntern(BehandlingHendelseV1 behandlingHendelse) {
-        var hendelseId = behandlingHendelse.getKildesystem().name() + behandlingHendelse.getBehandlingUuid().toString();
+        var hendelseId = behandlingHendelse.getKildesystem().name() + behandlingHendelse.getHendelseUuid().toString();
         if (!hendelseRepository.hendelseErNy(hendelseId)) {
             LOG.info("FPLOS Mottatt behandlinghendelse på nytt hendelse={}", hendelseId);
             return;
