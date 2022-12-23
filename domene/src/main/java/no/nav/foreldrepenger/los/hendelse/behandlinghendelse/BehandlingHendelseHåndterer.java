@@ -63,10 +63,14 @@ public class BehandlingHendelseHåndterer {
         }
         hendelseRepository.registrerMottattHendelse(hendelseId);
 
+        LOG.info("Mottatt hendelse med id {} kilde {} behandling {} hendelse {}", behandlingHendelse.getHendelseUuid(),
+                behandlingHendelse.getKildesystem(), behandlingHendelse.getBehandlingUuid(), behandlingHendelse.getHendelse());
+
+        // TODO: Vurder å sende med type videre. Bør gjennomgå fptilbake-typer først
         var prosessTaskData = ProsessTaskData.forProsessTask(BehandlingHendelseTask.class);
         prosessTaskData.setNesteKjøringEtter(LocalDateTime.now().plusSeconds(10));
         prosessTaskData.setCallId(behandlingHendelse.getHendelseUuid().toString());
-        prosessTaskData.setProperty(BehandlingHendelseTask.HENDELSE_UUID, behandlingHendelse.getBehandlingUuid().toString());
+        prosessTaskData.setProperty(BehandlingHendelseTask.HENDELSE_UUID, behandlingHendelse.getHendelseUuid().toString());
         prosessTaskData.setProperty(BehandlingHendelseTask.BEHANDLING_UUID, behandlingHendelse.getBehandlingUuid().toString());
         prosessTaskData.setProperty(BehandlingHendelseTask.KILDE, behandlingHendelse.getKildesystem().name());
         taskTjeneste.lagre(prosessTaskData);
