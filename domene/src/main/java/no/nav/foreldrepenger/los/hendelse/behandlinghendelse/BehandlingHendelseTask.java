@@ -23,6 +23,7 @@ public class BehandlingHendelseTask implements ProsessTaskHandler {
 
     public static final String HENDELSE_UUID = "hendelseUuid";
     public static final String BEHANDLING_UUID = "behandlingUuid";
+    public static final String HENDELSE_TYPE = "hendelseType";
     public static final String KILDE = "kildesystem";
 
     private final BehandlingKlient fpsakKlient;
