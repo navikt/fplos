@@ -23,6 +23,7 @@ public class BehandlingHendelseTask implements ProsessTaskHandler {
 
     public static final String HENDELSE_UUID = "hendelseUuid";
     public static final String BEHANDLING_UUID = "behandlingUuid";
+    public static final String HENDELSE_TYPE = "hendelseType";
     public static final String KILDE = "kildesystem";
 
     private final BehandlingKlient fpsakKlient;
@@ -47,8 +48,6 @@ public class BehandlingHendelseTask implements ProsessTaskHandler {
         var hendelseUuidString = prosessTaskData.getPropertyValue(HENDELSE_UUID);
         var behandlingUuid = UUID.fromString(prosessTaskData.getPropertyValue(BEHANDLING_UUID));
         var kilde = Kildesystem.valueOf(prosessTaskData.getPropertyValue(KILDE));
-
-        LOG.info("Håndterer hendelse for behandling {}", behandlingUuid);
 
         if (Kildesystem.FPSAK.equals(kilde)) {
             LOG.info("FPLOS FPSAK hendelse {} behandling {}", hendelseUuidString, behandlingUuid);
