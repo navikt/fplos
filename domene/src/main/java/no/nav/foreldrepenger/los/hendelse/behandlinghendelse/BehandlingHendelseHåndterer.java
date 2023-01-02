@@ -1,9 +1,7 @@
 package no.nav.foreldrepenger.los.hendelse.behandlinghendelse;
 
-import java.time.LocalDateTime;
-import java.util.Comparator;
+import java.time.Instant;
 import java.util.Set;
-import java.util.UUID;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.control.ActivateRequestContext;
@@ -15,7 +13,6 @@ import org.slf4j.LoggerFactory;
 
 import no.nav.vedtak.exception.VLException;
 import no.nav.vedtak.felles.prosesstask.api.ProsessTaskData;
-import no.nav.vedtak.felles.prosesstask.api.ProsessTaskStatus;
 import no.nav.vedtak.felles.prosesstask.api.ProsessTaskTjeneste;
 import no.nav.vedtak.hendelser.behandling.BehandlingHendelse;
 import no.nav.vedtak.hendelser.behandling.Hendelse;
@@ -66,27 +63,17 @@ public class BehandlingHendelseHåndterer {
         }
         hendelseRepository.registrerMottattHendelse(hendelseId);
 
-        LOG.info("Mottatt hendelse med id {} kilde {} behandling {} hendelse {}", behandlingHendelse.getHendelseUuid(),
-                behandlingHendelse.getKildesystem(), behandlingHendelse.getBehandlingUuid(), behandlingHendelse.getHendelse());
-
         var prosessTaskData = ProsessTaskData.forProsessTask(BehandlingHendelseTask.class);
-        prosessTaskData.setNesteKjøringEtter(utledNesteKjøring(behandlingHendelse.getBehandlingUuid()));
         prosessTaskData.setCallId(behandlingHendelse.getHendelseUuid().toString());
         prosessTaskData.setProperty(BehandlingHendelseTask.KILDE, behandlingHendelse.getKildesystem().name());
         prosessTaskData.setProperty(BehandlingHendelseTask.HENDELSE_UUID, behandlingHendelse.getHendelseUuid().toString());
         prosessTaskData.setProperty(BehandlingHendelseTask.HENDELSE_TYPE, behandlingHendelse.getHendelse().name());
         prosessTaskData.setProperty(BehandlingHendelseTask.BEHANDLING_UUID, behandlingHendelse.getBehandlingUuid().toString());
+        //setter gruppe og sekvens for rekkefølge
+        prosessTaskData.setGruppe(behandlingHendelse.getBehandlingUuid().toString());
+        prosessTaskData.setSekvens(String.valueOf(Instant.now().toEpochMilli()));
         taskTjeneste.lagre(prosessTaskData);
     }
 
-    // Håndtere tette sekvenser av hendelser for en behandling. Regn med at en task tar 1-2s på kjøring+commit.
-    private LocalDateTime utledNesteKjøring(UUID behandlingUuid) {
-        return taskTjeneste.finnAlle(ProsessTaskStatus.KLAR).stream()
-                .filter(t -> behandlingUuid.toString().equals(t.getPropertyValue(BehandlingHendelseTask.BEHANDLING_UUID)))
-                .map(ProsessTaskData::getNesteKjøringEtter)
-                .max(Comparator.naturalOrder())
-                .map(tid -> tid.plusSeconds(4))
-                .orElseGet(() -> LocalDateTime.now().plusSeconds(5));
-    }
 
 }
