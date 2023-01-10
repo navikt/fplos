@@ -26,8 +26,6 @@ import no.nav.vedtak.sikkerhet.abac.pdp.AppRessursData;
 @Priority(2)
 public class PdpRequestBuilderImpl implements PdpRequestBuilder {
 
-    public static final String ABAC_DOMAIN = "foreldrepenger";
-
     private ForeldrepengerPipKlient foreldrepengerPipKlient;
     private OppgaveTjeneste oppgaveTjeneste;
 
