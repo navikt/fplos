@@ -38,7 +38,7 @@ import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 
 import no.nav.foreldrepenger.konfig.Environment;
-import no.nav.foreldrepenger.los.web.app.ApplicationConfig;
+import no.nav.foreldrepenger.los.web.app.konfig.ApiConfig;
 import no.nav.foreldrepenger.los.web.server.jetty.db.DataSourceUtil;
 import no.nav.vedtak.sikkerhet.jaspic.OidcAuthModule;
 
@@ -209,7 +209,7 @@ public class JettyServer {
     }
 
     private static List<Class<?>> getWebInfClasses() {
-        return List.of(ApplicationConfig.class);
+        return List.of(ApiConfig.class);
     }
 
     private Integer getServerPort() {

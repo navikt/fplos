@@ -1,4 +1,4 @@
-package no.nav.foreldrepenger.los.web.app;
+package no.nav.foreldrepenger.los.web.app.konfig;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -40,12 +40,12 @@ import no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.oppgave.Oppgave
 import no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.saksliste.SaksbehandlerSakslisteRestTjeneste;
 import no.nav.vedtak.felles.prosesstask.rest.ProsessTaskRestTjeneste;
 
-@ApplicationPath(ApplicationConfig.API_URI)
-public class ApplicationConfig extends Application {
+@ApplicationPath(ApiConfig.API_URI)
+public class ApiConfig extends Application {
 
     static final String API_URI = "/api";
 
-    public ApplicationConfig() {
+    public ApiConfig() {
 
         var oas = new OpenAPI();
         var info = new Info()
