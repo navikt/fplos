@@ -1,12 +1,12 @@
-package no.nav.foreldrepenger.los.web.app;
+package no.nav.foreldrepenger.los.web.app.konfig;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
@@ -38,14 +38,15 @@ import no.nav.foreldrepenger.los.web.app.tjenester.kodeverk.KodeverkRestTjeneste
 import no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.nøkkeltall.SaksbehandlerNøkkeltallRestTjeneste;
 import no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.oppgave.OppgaveRestTjeneste;
 import no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.saksliste.SaksbehandlerSakslisteRestTjeneste;
+import no.nav.vedtak.exception.TekniskException;
 import no.nav.vedtak.felles.prosesstask.rest.ProsessTaskRestTjeneste;
 
-@ApplicationPath(ApplicationConfig.API_URI)
-public class ApplicationConfig extends Application {
+@ApplicationPath(ApiConfig.API_URI)
+public class ApiConfig extends Application {
 
     static final String API_URI = "/api";
 
-    public ApplicationConfig() {
+    public ApiConfig() {
 
         var oas = new OpenAPI();
         var info = new Info()
@@ -58,37 +59,21 @@ public class ApplicationConfig extends Application {
         var oasConfig = new SwaggerConfiguration()
                 .openAPI(oas)
                 .prettyPrint(true)
-                .scannerClass("io.swagger.v3.jaxrs2.integration.JaxrsAnnotationScanner")
-                .resourcePackages(Stream.of("no.nav")
-                        .collect(Collectors.toSet()));
+                .resourceClasses(ApiConfig.getAllClasses().stream().map(Class::getName).collect(Collectors.toSet()));
         try {
             new GenericOpenApiContextBuilder<>()
                     .openApiConfiguration(oasConfig)
                     .buildContext(true)
                     .read();
         } catch (OpenApiConfigurationException e) {
-            throw new RuntimeException(e.getMessage(), e);
+            throw new TekniskException("OPENAPI", e.getMessage(), e);
         }
     }
 
     @Override
     public Set<Class<?>> getClasses() {
-        Set<Class<?>> classes = new HashSet<>();
         // eksponert grensesnitt
-        classes.add(KodeverkRestTjeneste.class);
-        classes.add(DriftsmeldingerRestTjeneste.class);
-        classes.add(SaksbehandlerSakslisteRestTjeneste.class);
-        classes.add(OppgaveRestTjeneste.class);
-        classes.add(AvdelingslederSakslisteRestTjeneste.class);
-        classes.add(AvdelingslederSaksbehandlerRestTjeneste.class);
-        classes.add(AvdelingReservasjonerRestTjeneste.class);
-        classes.add(NøkkeltallRestTjeneste.class);
-        classes.add(NøkkeltallÅpneBehandlingerRestTjeneste.class);
-        classes.add(AvdelingslederRestTjeneste.class);
-        classes.add(AvdelingslederOppgaveRestTjeneste.class);
-        classes.add(AdminRestTjeneste.class);
-        classes.add(SaksbehandlerNøkkeltallRestTjeneste.class);
-        classes.add(ProsessTaskRestTjeneste.class);
+        Set<Class<?>> classes = new HashSet<>(getAllClasses());
 
         // swagger
         classes.add(OpenApiResource.class);
@@ -105,6 +90,25 @@ public class ApplicationConfig extends Application {
         classes.add(GeneralRestExceptionMapper.class);
 
         return Collections.unmodifiableSet(classes);
+    }
+
+    private static Collection<Class<?>> getAllClasses() {
+        Set<Class<?>> classes = new HashSet<>();
+        classes.add(KodeverkRestTjeneste.class);
+        classes.add(DriftsmeldingerRestTjeneste.class);
+        classes.add(SaksbehandlerSakslisteRestTjeneste.class);
+        classes.add(OppgaveRestTjeneste.class);
+        classes.add(AvdelingslederSakslisteRestTjeneste.class);
+        classes.add(AvdelingslederSaksbehandlerRestTjeneste.class);
+        classes.add(AvdelingReservasjonerRestTjeneste.class);
+        classes.add(NøkkeltallRestTjeneste.class);
+        classes.add(NøkkeltallÅpneBehandlingerRestTjeneste.class);
+        classes.add(AvdelingslederRestTjeneste.class);
+        classes.add(AvdelingslederOppgaveRestTjeneste.class);
+        classes.add(AdminRestTjeneste.class);
+        classes.add(SaksbehandlerNøkkeltallRestTjeneste.class);
+        classes.add(ProsessTaskRestTjeneste.class);
+        return classes;
     }
 
     @Override
