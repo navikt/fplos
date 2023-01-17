@@ -60,6 +60,21 @@ public class AdminRestTjeneste {
     }
 
     @POST
+    @Path("/synkroniser-behandling-fptilbake")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Operation(description = "Oppretter task for synkronisering av behandling med fptilbake", tags = "admin")
+    @BeskyttetRessurs(actionType = ActionType.CREATE, resourceType = ResourceType.DRIFT)
+    public Response synkroniserHendelserTilbake(@NotNull @Valid List<EnkelBehandlingIdDto> behandlingIdListe) {
+        var behandlinger = behandlingIdListe.stream()
+                .map(EnkelBehandlingIdDto::getBehandlingId)
+                .map(b -> new SynkroniseringHendelseTaskOppretterTjeneste.KildeBehandlingId(Kildesystem.FPTILBAKE, b))
+                .collect(toList());
+        var opprettedeTasker = synkroniseringHendelseTaskOppretterTjeneste.opprettOppgaveEgenskapOppdatererTasks(behandlinger);
+        return Response.ok(opprettedeTasker).build();
+    }
+
+    @POST
     @Path("/behold-kun-en-aktiv")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
