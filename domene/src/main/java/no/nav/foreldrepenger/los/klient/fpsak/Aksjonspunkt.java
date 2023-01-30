@@ -23,6 +23,7 @@ public class Aksjonspunkt {
     public static final String MANUELL_MARKERING_SOM_UTLAND = "6068";
     public static final String EØS_BOSATT_NORGE = "EØS_BOSATT_NORGE";
     public static final String BOSATT_UTLAND = "BOSATT_UTLAND";
+    public static final String NASJONAL = "NASJONAL";
 
     private String definisjonKode;
     private String statusKode;
@@ -72,17 +73,20 @@ public class Aksjonspunkt {
         return REGISTRER_PAPIRSØKNAD_KODE.contains(definisjonKode) && erAktiv();
     }
 
-    private boolean erAutomatiskMarkertSomUtenlandssak() {
-        return AUTOMATISK_MARKERING_SOM_UTLAND.equals(definisjonKode) && !erAvbrutt();
+    public boolean skalVurdereInnhentingAvSED() {
+        return !erAvbrutt() && AUTOMATISK_MARKERING_SOM_UTLAND.equals(definisjonKode);
     }
 
-    private boolean erManueltMarkertSomUtenlandssak() {
-        return MANUELL_MARKERING_SOM_UTLAND.equals(definisjonKode)
+    public boolean erManueltOverstyrtTilUtenlandssak() {
+        return !erAvbrutt()
+                && MANUELL_MARKERING_SOM_UTLAND.equals(definisjonKode)
                 && (EØS_BOSATT_NORGE.equals(begrunnelse) || BOSATT_UTLAND.equals(begrunnelse));
     }
 
-    public boolean erUtenlandssak() {
-        return erAutomatiskMarkertSomUtenlandssak() || erManueltMarkertSomUtenlandssak();
+    public boolean erManueltOverstyrtTilNasjonalSak() {
+        if (erAvbrutt()) return false;
+        var erManueltOverstyrtUtland = MANUELL_MARKERING_SOM_UTLAND.equals(definisjonKode);
+        return erManueltOverstyrtUtland && NASJONAL.equals(begrunnelse);
     }
 
     public boolean erVurderFormkrav() {

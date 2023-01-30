@@ -1,9 +1,5 @@
 package no.nav.foreldrepenger.los.hendelse.hendelsehåndterer;
 
-import static no.nav.foreldrepenger.los.oppgave.AndreKriterierType.PAPIRSØKNAD;
-import static no.nav.foreldrepenger.los.oppgave.AndreKriterierType.TIL_BESLUTTER;
-import static no.nav.foreldrepenger.los.oppgave.AndreKriterierType.UTLANDSSAK;
-import static no.nav.foreldrepenger.los.oppgave.AndreKriterierType.VURDER_FORMKRAV;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.HashMap;
@@ -17,35 +13,62 @@ import no.nav.foreldrepenger.los.oppgave.AndreKriterierType;
 
 class FpsakAksjonspunktWrapperTest {
 
+    private final Aksjonspunkt apOverstyrtTilNasjonal = Aksjonspunkt.builder().medStatus("OPPR").medDefinisjon("6068").medBegrunnelse("NASJONAL").build();
+    private final Aksjonspunkt apOverstyrtTilBosattUtland = Aksjonspunkt.builder().medStatus("OPPR").medDefinisjon("6068").medBegrunnelse("BOSATT_UTLAND").build();
+    private final Aksjonspunkt apOverstyrtTilEØSBosattNorge = Aksjonspunkt.builder().medStatus("OPPR").medDefinisjon("6068").medBegrunnelse("EØS_BOSATT_NORGE").build();
+    private final Aksjonspunkt apVurderSed = Aksjonspunkt.builder().medStatus("OPPR").medDefinisjon("5068").medBegrunnelse("").build();
+
     @Test
     public void skalMappeKoderTilAndreKriterierTyper() {
         var cases = new HashMap<String, AndreKriterierType>();
-        cases.put("5083", VURDER_FORMKRAV);
-        cases.put("5082", VURDER_FORMKRAV);
-        cases.put("5016", TIL_BESLUTTER);
-        cases.put("5012", PAPIRSØKNAD); // finnes flere i gruppen
-        cases.put("5068", UTLANDSSAK); // finnes flere i gruppen
+        cases.put("5083", AndreKriterierType.VURDER_FORMKRAV);
+        cases.put("5082", AndreKriterierType.VURDER_FORMKRAV);
+        cases.put("5016", AndreKriterierType.TIL_BESLUTTER);
+        cases.put("5012", AndreKriterierType.PAPIRSØKNAD); // finnes flere i gruppen
+        cases.put("5068", AndreKriterierType.UTLANDSSAK); // finnes flere i gruppen
 
         cases.forEach((k, v) -> {
             var ap = åpentAksjonspunkt(k);
-            var result = new FpsakAksjonspunktWrapper(List.of(ap)).getKriterier();
+            var result = result(ap);
             assertThat(result).isEqualTo(List.of(v));
         });
     }
 
     @Test
     public void skalIkkeReturnereDuplikateAndreKriterierTyper() {
-        var sammeGruppeAksjonspunkter = List.of(åpentAksjonspunkt("5082"),
-                åpentAksjonspunkt("5083"));
-        var result = new FpsakAksjonspunktWrapper(sammeGruppeAksjonspunkter).getKriterier();
-        assertThat(result).isEqualTo(List.of(VURDER_FORMKRAV));
+        var ap = åpentAksjonspunkt("5082");
+        var apISammeGruppe = åpentAksjonspunkt("5083");
+        var result = result(ap, apISammeGruppe);
+        assertThat(result).isEqualTo(List.of(AndreKriterierType.VURDER_FORMKRAV));
     }
 
     @Test
     public void skalIkkeMappeInaktiveAksjonspunktTilAndreKriterierTyper() {
         var ap = Aksjonspunkt.builder().medStatus("AVBR").medDefinisjon("5082").medBegrunnelse("").build();
-        var result = new FpsakAksjonspunktWrapper(List.of(ap)).getKriterier();
+        var result = result(ap);
         assertThat(result).isEmpty();
+    }
+
+    @Test
+    public void overstyrtTilIkkeUtlandSkalIkkeGiUtlandOppgaveegenskap() {
+        var result = result(apOverstyrtTilNasjonal, apVurderSed);
+        assertThat(result).isEmpty();
+    }
+
+    @Test
+    public void overstyrtTilBosattUtlandSkalGiUtlandOppgaveegenskap() {
+        var result = result(apOverstyrtTilBosattUtland);
+        assertThat(result).contains(AndreKriterierType.UTLANDSSAK);
+    }
+
+    @Test
+    public void overstyrtTilEøsBosattNorgeSkalGiUtlandOppgaveegenskap() {
+        var result = result(apOverstyrtTilEØSBosattNorge);
+        assertThat(result).contains(AndreKriterierType.UTLANDSSAK);
+    }
+
+    private static List<AndreKriterierType> result(Aksjonspunkt... aksjonspunkt) {
+        return new FpsakAksjonspunktWrapper(List.of(aksjonspunkt)).getKriterier();
     }
 
     private static Aksjonspunkt åpentAksjonspunkt(String definisjonKode) {
