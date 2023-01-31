@@ -22,7 +22,7 @@ public class FpsakAksjonspunktWrapper {
         if (finn(Aksjonspunkt::erRegistrerPapirSøknad)) {
             kriterier.add(AndreKriterierType.PAPIRSØKNAD);
         }
-        if (finn(Aksjonspunkt::erUtenlandssak)) {
+        if (erUtenlandssak()) {
             kriterier.add(AndreKriterierType.UTLANDSSAK);
         }
         if (finn(Aksjonspunkt::erVurderFormkrav)) {
@@ -34,7 +34,19 @@ public class FpsakAksjonspunktWrapper {
         return kriterier;
     }
 
+    private boolean erUtenlandssak() {
+        var overstyrtTilNasjonalsak = finn(Aksjonspunkt::erManueltOverstyrtTilNasjonalSak);
+        var overstyrtTilUtenlandssak = finn(Aksjonspunkt::erManueltOverstyrtTilUtenlandssak);
+        var skalVurdereInnhentingAvSED = finn(Aksjonspunkt::skalVurdereInnhentingAvSED);
+        if (overstyrtTilNasjonalsak) {
+            return false;
+        } else if (overstyrtTilUtenlandssak) {
+            return true;
+        } else return skalVurdereInnhentingAvSED;
+    }
+
     private boolean finn(Predicate<Aksjonspunkt> predicate) {
         return safeStream(aksjonspunkt).anyMatch(predicate);
     }
+
 }
