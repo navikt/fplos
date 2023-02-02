@@ -12,7 +12,10 @@ import org.apache.kafka.streams.kstream.Consumed;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import no.nav.foreldrepenger.konfig.Environment;
+import no.nav.foreldrepenger.konfig.KonfigVerdi;
 import no.nav.vedtak.apptjeneste.AppServiceHandler;
+import no.nav.vedtak.felles.integrasjon.kafka.KafkaProperties;
 import no.nav.vedtak.log.metrics.LivenessAware;
 import no.nav.vedtak.log.metrics.ReadinessAware;
 
@@ -20,6 +23,10 @@ import no.nav.vedtak.log.metrics.ReadinessAware;
 public class BehandlingHendelseConsumer implements LivenessAware, ReadinessAware, AppServiceHandler {
 
     private static final Logger LOG = LoggerFactory.getLogger(BehandlingHendelseConsumer.class);
+    private static final Environment ENV = Environment.current();
+
+    private static final String PROD_APP_ID = "fplos-behandling"; // Hold konstant pga offset commit !!
+
     private String topicName;
     private KafkaStreams stream;
 
@@ -27,9 +34,9 @@ public class BehandlingHendelseConsumer implements LivenessAware, ReadinessAware
     }
 
     @Inject
-    public BehandlingHendelseConsumer(BehandlingStreamKafkaProperties behandlingStreamKafkaProperties,
+    public BehandlingHendelseConsumer(@KonfigVerdi(value = "kafka.behandlinghendelse.topic", defaultVerdi = "teamforeldrepenger.behandling-hendelse-v1") String topicName,
                                       BehandlingHendelseHåndterer behandlingHendelseHåndterer) {
-        this.topicName = behandlingStreamKafkaProperties.getTopicName();
+        this.topicName = topicName;
 
         final Consumed<String, String> consumed = Consumed.with(Topology.AutoOffsetReset.EARLIEST);
 
@@ -37,7 +44,7 @@ public class BehandlingHendelseConsumer implements LivenessAware, ReadinessAware
         builder.stream(topicName, consumed)
             .foreach(behandlingHendelseHåndterer::handleMessage);
 
-        this.stream = new KafkaStreams(builder.build(), behandlingStreamKafkaProperties.getProperties());
+        this.stream = new KafkaStreams(builder.build(), KafkaProperties.forStreamsStringValue(getApplicationId()));
     }
 
     @Override
@@ -82,5 +89,12 @@ public class BehandlingHendelseConsumer implements LivenessAware, ReadinessAware
 
     private String getTopicName() {
         return topicName;
+    }
+
+    private static String getApplicationId() {
+        if (!ENV.isProd()) {
+            return PROD_APP_ID + (ENV.isDev() ? "-dev" : "-vtp");
+        }
+        return PROD_APP_ID;
     }
 }
