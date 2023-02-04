@@ -22,10 +22,18 @@ docker build -t fplos .
 docker run -d --env-file=docker.list --name fplos fplos
 ```
 
-
 ## Kjøring lokalt
-
 
 `no.nav.foreldrepenger.los.web.server.jetty.JettyDevServer` started i Intellij. Lokalt så går den mot Virtuell Tjenesteplattform. Denne må selvsagt kjøre på 
 standard porter. Merk du trenger trolig sertifikater om applikasjonen bruker tjenester
 på soap. Dette er pga WS-secure, etc.
+
+### Sikkerhet
+Det er mulig å kalle tjenesten med bruk av følgende tokens
+- Azure CC
+- Azure OBO med følgende rettigheter:
+    - fpsak-saksbehandler
+    - fpsak-veileder
+    - fpsak-oppgavestyrer
+    - fpsak-drift
+- STS (fases ut)
