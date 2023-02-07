@@ -45,6 +45,9 @@ public class FpsakOppgaveEgenskapFinner implements OppgaveEgenskapFinner {
         if (Optional.ofNullable(behandling.foreldrepengerDto()).filter(LosBehandlingDto.LosForeldrepengerDto::annenForelderRettEØS).isPresent()) {
             this.andreKriterier.add(AndreKriterierType.VURDER_EØS_OPPTJENING);
         }
+        if (behandling.behandlingsårsaker().stream().anyMatch(Behandlingsårsak.KLAGE_TILBAKEBETALING::equals)) {
+            this.andreKriterier.add(AndreKriterierType.KLAGE_PÅ_TILBAKEBETALING);
+        }
         var aksjonspunkter = behandling.aksjonspunkt().stream().map(Aksjonspunkt::aksjonspunktFra).collect(Collectors.toList());
         var fpsakAksjonspunktWrapper = new FpsakAksjonspunktWrapper(aksjonspunkter);
         andreKriterier.addAll(fpsakAksjonspunktWrapper.getKriterier());
