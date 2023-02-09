@@ -11,6 +11,8 @@ import java.util.stream.Collectors;
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
 
+import no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.enhet.SaksbehandlerEnhetRestTjeneste;
+
 import org.glassfish.jersey.server.ServerProperties;
 
 import io.swagger.v3.jaxrs2.integration.resources.OpenApiResource;
@@ -107,6 +109,7 @@ public class ApiConfig extends Application {
         classes.add(AvdelingslederOppgaveRestTjeneste.class);
         classes.add(AdminRestTjeneste.class);
         classes.add(SaksbehandlerNøkkeltallRestTjeneste.class);
+        classes.add(SaksbehandlerEnhetRestTjeneste.class);
         classes.add(ProsessTaskRestTjeneste.class);
         return classes;
     }

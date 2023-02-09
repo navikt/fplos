@@ -33,6 +33,11 @@
       "app": "fp-frontend",
       "namespace": "teamforeldrepenger",
       "cluster": "prod-gcp"
+    },
+    {
+      "app": "fpfordel",
+      "namespace": "teamforeldrepenger",
+      "cluster": "prod-fss"
     }
   ]
 }
