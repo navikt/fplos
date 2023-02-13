@@ -108,8 +108,8 @@ public class ApiConfig extends Application {
         classes.add(AvdelingslederRestTjeneste.class);
         classes.add(AvdelingslederOppgaveRestTjeneste.class);
         classes.add(AdminRestTjeneste.class);
-        classes.add(SaksbehandlerNøkkeltallRestTjeneste.class);
         classes.add(SaksbehandlerEnhetRestTjeneste.class);
+        classes.add(SaksbehandlerNøkkeltallRestTjeneste.class);
         classes.add(ProsessTaskRestTjeneste.class);
         return classes;
     }
