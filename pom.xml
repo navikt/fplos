@@ -5,7 +5,7 @@
     <parent>
         <groupId>no.nav.foreldrepenger.felles</groupId>
         <artifactId>fp-bom</artifactId>
-        <version>0.4.1</version>
+        <version>0.4.3</version>
     </parent>
 
     <groupId>no.nav.foreldrepenger.los</groupId>
@@ -51,7 +51,7 @@
             <dependency>
                 <groupId>no.nav.foreldrepenger.felles</groupId>
                 <artifactId>fp-bom</artifactId>
-                <version>0.4.1</version>
+                <version>0.4.3</version>
                 <scope>import</scope>
                 <type>pom</type>
             </dependency>
@@ -131,24 +131,6 @@
     <build>
         <plugins>
             <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>flatten-maven-plugin</artifactId>
-                <configuration>
-                    <flattenMode>bom</flattenMode>
-                    <flattenedPomFilename>.flattened</flattenedPomFilename>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>flatten.clean</id>
-                        <phase>clean</phase>
-                        <goals>
-                            <goal>clean</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-
-            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-enforcer-plugin</artifactId>
                 <executions>
@@ -193,6 +175,5 @@
             <url>https://maven.pkg.github.com/navikt/fplos</url>
         </repository>
     </distributionManagement>
-
 
 </project>

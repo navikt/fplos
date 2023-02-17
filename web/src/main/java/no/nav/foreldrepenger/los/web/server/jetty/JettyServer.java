@@ -1,5 +1,7 @@
 package no.nav.foreldrepenger.los.web.server.jetty;
 
+import static org.eclipse.jetty.webapp.MetaInfConfiguration.CONTAINER_JAR_PATTERN;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -20,6 +22,7 @@ import org.eclipse.jetty.security.jaspi.DefaultAuthConfigFactory;
 import org.eclipse.jetty.security.jaspi.JaspiAuthenticatorFactory;
 import org.eclipse.jetty.security.jaspi.provider.JaspiAuthConfigProvider;
 import org.eclipse.jetty.server.Connector;
+import org.eclipse.jetty.server.ForwardedRequestCustomizer;
 import org.eclipse.jetty.server.HttpConfiguration;
 import org.eclipse.jetty.server.HttpConnectionFactory;
 import org.eclipse.jetty.server.Request;
@@ -28,8 +31,6 @@ import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.server.handler.AbstractHandler;
 import org.eclipse.jetty.server.handler.HandlerList;
 import org.eclipse.jetty.util.resource.Resource;
-import org.eclipse.jetty.util.resource.ResourceCollection;
-import org.eclipse.jetty.webapp.MetaData;
 import org.eclipse.jetty.webapp.WebAppContext;
 import org.flywaydb.core.Flyway;
 import org.flywaydb.core.api.FlywayException;
@@ -38,7 +39,6 @@ import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 
 import no.nav.foreldrepenger.konfig.Environment;
-import no.nav.foreldrepenger.los.web.app.konfig.ApiConfig;
 import no.nav.foreldrepenger.los.web.server.jetty.db.DataSourceUtil;
 import no.nav.vedtak.sikkerhet.jaspic.OidcAuthModule;
 
@@ -48,17 +48,9 @@ public class JettyServer {
     private static final Logger LOG = LoggerFactory.getLogger(JettyServer.class);
 
     private static final String CONTEXT_PATH = ENV.getProperty("context.path", "/fplos");
+    private static final String JETTY_SCAN_LOCATIONS = "^.*jersey-.*\\.jar$|^.*felles-.*\\.jar$|^.*/app\\.jar$";
+    private static final String JETTY_LOCAL_CLASSES = "^.*/target/classes/|";
 
-    /**
-     * Legges først slik at alltid resetter context før prosesserer nye requests.
-     * Kjøres først så ikke risikerer andre har satt Request#setHandled(true).
-     */
-    static final class ResetLogContextHandler extends AbstractHandler {
-        @Override
-        public void handle(String target, Request baseRequest, HttpServletRequest request, HttpServletResponse response) {
-            MDC.clear();
-        }
-    }
 
     private final Integer serverPort;
 
@@ -104,8 +96,8 @@ public class JettyServer {
     }
 
     private static void initTrustStore() {
-        final String trustStorePathProp = "javax.net.ssl.trustStore";
-        final String trustStorePasswordProp = "javax.net.ssl.trustStorePassword";
+        final var trustStorePathProp = "javax.net.ssl.trustStore";
+        final var trustStorePasswordProp = "javax.net.ssl.trustStorePassword";
 
         var defaultLocation = ENV.getProperty("user.home", ".") + "/.modig/truststore.jks";
         var storePath = ENV.getProperty(trustStorePathProp, defaultLocation);
@@ -155,8 +147,7 @@ public class JettyServer {
     private static HttpConfiguration createHttpConfiguration() {
         var httpConfig = new HttpConfiguration();
         // Add support for X-Forwarded headers
-        httpConfig.addCustomizer(new org.eclipse.jetty.server.ForwardedRequestCustomizer());
-        httpConfig.setRequestHeaderSize(16384); // øker for å unngå 431 error code TODO: fjern etter overgang til kun gcp for frontend
+        httpConfig.addCustomizer(new ForwardedRequestCustomizer());
         return httpConfig;
     }
 
@@ -170,21 +161,21 @@ public class JettyServer {
             descriptor = resource.getURI().toURL().toExternalForm();
         }
         ctx.setDescriptor(descriptor);
+
         ctx.setContextPath(CONTEXT_PATH);
         ctx.setResourceBase(".");
         ctx.setInitParameter("org.eclipse.jetty.servlet.Default.dirAllowed", "false");
-        ctx.setAttribute("org.eclipse.jetty.server.webapp.WebInfIncludeJarPattern",
-                "^.*jersey-.*.jar$|^.*felles-.*.jar$"); // Dette virker ikke siden WEB-INF/lib ikke finnes - derfor hack i linje 194 med updateMetadata(...)
-        //ctx.setAttribute(CONTAINER_JAR_PATTERN, "^.*/target/classes/|^.*jersey-.*\\.jar$|^.*felles-.*\\.jar$|^.*/app\\.jar$"); // Bør virker mye bedre...
 
-        ctx.setAttribute("org.eclipse.jetty.annotations.multiThreaded", false);
+        // Scanns the CLASSPATH for classes and jars.
+        ctx.setAttribute(CONTAINER_JAR_PATTERN, String.format("%s%s", ENV.isLocal() ? JETTY_LOCAL_CLASSES : "", JETTY_SCAN_LOCATIONS));
+
 
         ctx.addEventListener(new org.jboss.weld.environment.servlet.BeanManagerResourceBindingListener());
         ctx.addEventListener(new org.jboss.weld.environment.servlet.Listener());
 
         ctx.setSecurityHandler(createSecurityHandler());
-        updateMetaData(ctx.getMetaData());
         ctx.setThrowUnavailableOnStartupException(true);
+
         return ctx;
     }
 
@@ -199,20 +190,18 @@ public class JettyServer {
         return securityHandler;
     }
 
-    private static void updateMetaData(MetaData metaData) {
-        // Find path to class-files while starting jetty from development environment.
-        var resources = getWebInfClasses().stream()
-                .map(c -> Resource.newResource(c.getProtectionDomain().getCodeSource().getLocation()))
-                .distinct()
-                .toList();
-        metaData.setWebInfClassesResources(resources);
-    }
-
-    private static List<Class<?>> getWebInfClasses() {
-        return List.of(ApiConfig.class);
-    }
-
     private Integer getServerPort() {
         return this.serverPort;
+    }
+
+    /**
+     * Legges først slik at alltid resetter context før prosesserer nye requests.
+     * Kjøres først så ikke risikerer andre har satt Request#setHandled(true).
+     */
+    static final class ResetLogContextHandler extends AbstractHandler {
+        @Override
+        public void handle(String target, Request baseRequest, HttpServletRequest request, HttpServletResponse response) {
+            MDC.clear();
+        }
     }
 }
