@@ -5,14 +5,14 @@
     <parent>
         <groupId>no.nav.foreldrepenger.felles</groupId>
         <artifactId>fp-bom</artifactId>
-        <version>0.4.1</version>
+        <version>0.4.3</version>
     </parent>
 
     <groupId>no.nav.foreldrepenger.los</groupId>
     <artifactId>fplos</artifactId>
     <version>${revision}</version>
     <packaging>pom</packaging>
-    <name>FPLOS :: Root</name>
+    <name>Fplos :: Root</name>
 
     <modules>
         <module>migreringer</module>
@@ -22,7 +22,10 @@
 
     <properties>
         <revision>2.8.2-SNAPSHOT</revision>
-        <java.version>17</java.version>
+
+        <sonar.moduleKey>${project.artifactId}</sonar.moduleKey>
+        <sonar.projectKey>navikt_fplos</sonar.projectKey>
+
         <fp-kontrakter.version>6.2.9</fp-kontrakter.version>
         <felles.version>4.2.23</felles.version>
         <prosesstask.version>3.1.17</prosesstask.version>
@@ -51,7 +54,7 @@
             <dependency>
                 <groupId>no.nav.foreldrepenger.felles</groupId>
                 <artifactId>fp-bom</artifactId>
-                <version>0.4.1</version>
+                <version>0.4.3</version>
                 <scope>import</scope>
                 <type>pom</type>
             </dependency>
@@ -131,24 +134,6 @@
     <build>
         <plugins>
             <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>flatten-maven-plugin</artifactId>
-                <configuration>
-                    <flattenMode>bom</flattenMode>
-                    <flattenedPomFilename>.flattened</flattenedPomFilename>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>flatten.clean</id>
-                        <phase>clean</phase>
-                        <goals>
-                            <goal>clean</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-
-            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-enforcer-plugin</artifactId>
                 <executions>
@@ -193,6 +178,5 @@
             <url>https://maven.pkg.github.com/navikt/fplos</url>
         </repository>
     </distributionManagement>
-
 
 </project>
