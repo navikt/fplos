@@ -30,7 +30,8 @@ import no.nav.vedtak.sikkerhet.abac.Token;
 import no.nav.vedtak.sikkerhet.abac.beskyttet.ActionType;
 import no.nav.vedtak.sikkerhet.abac.beskyttet.ResourceType;
 import no.nav.vedtak.sikkerhet.abac.internal.BeskyttetRessursAttributter;
-import no.nav.vedtak.sikkerhet.context.SubjectHandler;
+import no.nav.vedtak.sikkerhet.kontekst.KontekstHolder;
+import no.nav.vedtak.sikkerhet.kontekst.RequestKontekst;
 
 @ApplicationScoped
 public class OppgaveDtoTjeneste {
@@ -104,11 +105,14 @@ public class OppgaveDtoTjeneste {
     }
 
     private boolean harTilgang(Oppgave oppgave) {
-        var token = Token.withOidcToken(SubjectHandler.getSubjectHandler().getOpenIDToken());
+        var token = KontekstHolder.getKontekst() instanceof RequestKontekst rk ? Token.withOidcToken(rk.getToken()) : null;
+        if (token == null) {
+            return false;
+        }
         var dataAttributter = AbacDataAttributter.opprett().leggTil(FplosAbacAttributtType.OPPGAVE_ID, oppgave.getId());
         var brRequest = BeskyttetRessursAttributter.builder()
                 .medActionType(ActionType.READ)
-                .medUserId(SubjectHandler.getSubjectHandler().getUid())
+                .medUserId(KontekstHolder.getKontekst().getUid())
                 .medToken(token)
                 .medResourceType(ResourceType.FAGSAK)
                 .medPepId(APPNAVN)
