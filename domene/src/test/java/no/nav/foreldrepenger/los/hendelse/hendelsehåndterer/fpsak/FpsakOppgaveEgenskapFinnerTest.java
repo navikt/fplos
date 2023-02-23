@@ -1,6 +1,7 @@
 package no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak;
 
 import no.nav.foreldrepenger.los.oppgave.AndreKriterierType;
+import no.nav.vedtak.hendelser.behandling.Aksjonspunktstatus;
 import no.nav.vedtak.hendelser.behandling.AktørId;
 import no.nav.vedtak.hendelser.behandling.Behandlingsstatus;
 import no.nav.vedtak.hendelser.behandling.Behandlingstype;
@@ -8,6 +9,8 @@ import no.nav.vedtak.hendelser.behandling.Behandlingsårsak;
 import no.nav.vedtak.hendelser.behandling.Kildesystem;
 import no.nav.vedtak.hendelser.behandling.Ytelse;
 import no.nav.vedtak.hendelser.behandling.los.LosBehandlingDto;
+
+import no.nav.vedtak.hendelser.behandling.los.LosBehandlingDto.LosAksjonspunktDto;
 
 import org.junit.jupiter.api.Test;
 
@@ -24,10 +27,18 @@ class FpsakOppgaveEgenskapFinnerTest {
     void skalHaKlagePåTilbakebetalingEgenskapVedÅrsakKlageTilbakebetaling() {
         var dto = lagLosBehandlingDto();
         var fpsakEgenskaper = new FpsakOppgaveEgenskapFinner(dto);
-        assertThat(fpsakEgenskaper.getAndreKriterier()).containsExactly(AndreKriterierType.KLAGE_PÅ_TILBAKEBETALING);
+        assertThat(fpsakEgenskaper.getAndreKriterier()).contains(AndreKriterierType.KLAGE_PÅ_TILBAKEBETALING);
     }
 
-    public static LosBehandlingDto lagLosBehandlingDto() {
+    @Test
+    void skalIkkeFåVurderEøsOpptjeningEgenskapNårOverstyrtTilNasjonal() {
+        var overstyrtNasjonalAp = new LosAksjonspunktDto("6068", Aksjonspunktstatus.UTFØRT, "NASJONAL", null);
+        var dto = lagLosBehandlingDto(overstyrtNasjonalAp);
+        var fpsakEgenskaper = new FpsakOppgaveEgenskapFinner(dto);
+        assertThat(fpsakEgenskaper.getAndreKriterier()).doesNotContain(AndreKriterierType.VURDER_EØS_OPPTJENING);
+    }
+
+    public static LosBehandlingDto lagLosBehandlingDto(LosAksjonspunktDto... dto) {
         return new LosBehandlingDto(UUID.randomUUID(),
                 Kildesystem.FPSAK,
                 "42",
@@ -39,11 +50,11 @@ class FpsakOppgaveEgenskapFinnerTest {
                 "0001",
                 LocalDate.now(),
                 "z999999",
-                List.of(),
+                List.of(dto),
                 List.of(Behandlingsårsak.KLAGE_TILBAKEBETALING),
                 false,
                 true,
-                null,
+                new LosBehandlingDto.LosForeldrepengerDto(LocalDate.now(), true, false, false),
                 null);
     }
 

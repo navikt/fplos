@@ -34,8 +34,12 @@ public class FpsakAksjonspunktWrapper {
         return kriterier;
     }
 
+    public boolean erManueltOverstyrtTilNasjonalSak() {
+        return finn(Aksjonspunkt::erManueltOverstyrtTilNasjonalSak);
+    }
+
     private boolean erUtenlandssak() {
-        var overstyrtTilNasjonalsak = finn(Aksjonspunkt::erManueltOverstyrtTilNasjonalSak);
+        var overstyrtTilNasjonalsak = erManueltOverstyrtTilNasjonalSak();
         var overstyrtTilUtenlandssak = finn(Aksjonspunkt::erManueltOverstyrtTilUtenlandssak);
         var skalVurdereInnhentingAvSED = finn(Aksjonspunkt::skalVurdereInnhentingAvSED);
         if (overstyrtTilNasjonalsak) {
