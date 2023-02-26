@@ -130,15 +130,15 @@ public class OppgaveDtoTjeneste {
     }
 
     public List<OppgaveDto> getOppgaverTilBehandling(Long sakslisteId) {
-        var nesteOppgaver = oppgaveKøTjeneste.hentOppgaver(sakslisteId, ANTALL_OPPGAVER_SOM_VISES_TIL_SAKSBEHANDLER);
-        var oppgaveDtos = map(nesteOppgaver);
+        var nesteOppgaver = oppgaveKøTjeneste.hentOppgaver(sakslisteId, ANTALL_OPPGAVER_SOM_VISES_TIL_SAKSBEHANDLER * 10);
+        var oppgaveDtos = map(nesteOppgaver, ANTALL_OPPGAVER_SOM_VISES_TIL_SAKSBEHANDLER, true);
         //Noen oppgave filteres bort i mappingen pga at saksbehandler ikke har tilgang til behandlingen
         if (nesteOppgaver.size() == oppgaveDtos.size()) {
             return oppgaveDtos;
         }
         LOG.info("{} behandlinger filtrert bort for saksliste {}", nesteOppgaver.size() - oppgaveDtos.size(), sakslisteId);
         var alleOppgaver = oppgaveKøTjeneste.hentOppgaver(sakslisteId);
-        return map(alleOppgaver, ANTALL_OPPGAVER_SOM_VISES_TIL_SAKSBEHANDLER);
+        return map(alleOppgaver, ANTALL_OPPGAVER_SOM_VISES_TIL_SAKSBEHANDLER, false);
     }
 
     public List<OppgaveDto> getSaksbehandlersReserverteAktiveOppgaver() {
@@ -161,14 +161,16 @@ public class OppgaveDtoTjeneste {
     }
 
     private List<OppgaveDto> map(List<Oppgave> oppgaver) {
-        return map(oppgaver, oppgaver.size());
+        return map(oppgaver, oppgaver.size(), false);
     }
 
 
-    private List<OppgaveDto> map(List<Oppgave> oppgaver, int maksAntall) {
+    private List<OppgaveDto> map(List<Oppgave> oppgaver, int maksAntall, boolean randomiser) {
         List<OppgaveDto> dtoList = new ArrayList<>();
+        var antallOppgaver = oppgaver.size();
+        int start = randomiser ? Math.abs((int) (System.nanoTime() % antallOppgaver)) : 0;
         for (var i = 0; i < oppgaver.size() && dtoList.size() < maksAntall; i++) {
-            var oppgave = oppgaver.get(i);
+            var oppgave = oppgaver.get((start + i) % antallOppgaver);
             try {
                 dtoList.add(lagDtoFor(oppgave, true));
             } catch (IkkeTilgangPåBehandlingException e) {
