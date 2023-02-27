@@ -168,7 +168,7 @@ public class OppgaveDtoTjeneste {
     private List<OppgaveDto> map(List<Oppgave> oppgaver, int maksAntall, boolean randomiser) {
         List<OppgaveDto> dtoList = new ArrayList<>();
         var antallOppgaver = oppgaver.size();
-        int start = randomiser ? Math.abs((int) (System.nanoTime() % antallOppgaver)) : 0;
+        int start = randomiser ? Math.abs(KontekstHolder.getKontekst().getUid().chars().sum() % antallOppgaver) : 0;
         for (var i = 0; i < oppgaver.size() && dtoList.size() < maksAntall; i++) {
             var oppgave = oppgaver.get((start + i) % antallOppgaver);
             try {
