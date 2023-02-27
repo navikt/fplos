@@ -166,6 +166,9 @@ public class OppgaveDtoTjeneste {
 
 
     private List<OppgaveDto> map(List<Oppgave> oppgaver, int maksAntall, boolean randomiser) {
+        if (oppgaver.isEmpty()) {
+            return List.of();
+        }
         List<OppgaveDto> dtoList = new ArrayList<>();
         var antallOppgaver = oppgaver.size();
         int start = randomiser ? Math.abs(KontekstHolder.getKontekst().getUid().chars().sum() % antallOppgaver) : 0;
