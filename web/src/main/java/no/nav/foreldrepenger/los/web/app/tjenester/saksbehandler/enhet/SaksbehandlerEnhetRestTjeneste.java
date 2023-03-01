@@ -40,12 +40,13 @@ public class SaksbehandlerEnhetRestTjeneste {
     @Operation(description = "Hent informasjon om tilhørende enhet for saksbehandler")
     @BeskyttetRessurs(actionType = ActionType.READ, resourceType = ResourceType.FAGSAK)
     public List<SaksbehandlerEnhetDto> hentTilhørendeEnhet(@NotNull @Valid @QueryParam("ident") SaksbehandlerBrukerIdentDto saksbehandlerBrukerIdentDto) {
-        var saksbehandler = organisasjonRepository.hentSaksbehandler(saksbehandlerBrukerIdentDto.getVerdi());
-        if (saksbehandler == null || saksbehandler.getAvdelinger() == null) {
+        var saksbehandler = organisasjonRepository.hentSaksbehandlerHvisEksisterer(saksbehandlerBrukerIdentDto.getVerdi());
+        if (saksbehandler.isEmpty()) {
             return List.of();
         }
-        return saksbehandler.getAvdelinger().stream()
-                .map(avdeling -> new SaksbehandlerEnhetDto(avdeling.getAvdelingEnhet(), avdeling.getNavn()))
-                .toList();
+        return saksbehandler.stream()
+            .flatMap(sbh -> sbh.getAvdelinger().stream())
+            .map(avdeling -> new SaksbehandlerEnhetDto(avdeling.getAvdelingEnhet(), avdeling.getNavn()))
+            .toList();
     }
 }
