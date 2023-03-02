@@ -26,7 +26,7 @@ import no.nav.foreldrepenger.los.statistikk.oppgavebeholdning.OppgaveBeholdningS
 
 @ExtendWith(JpaExtension.class)
 @ExtendWith(MockitoExtension.class)
-public class OppgaveBeholdningStatistikkTjenesteTest {
+class OppgaveBeholdningStatistikkTjenesteTest {
 
     private final Oppgave førstegangOppgave = Oppgave.builder()
             .dummyOppgave(AVDELING_DRAMMEN_ENHET)
@@ -91,7 +91,7 @@ public class OppgaveBeholdningStatistikkTjenesteTest {
     }
 
     @Test
-    public void hentAlleOppgaverForAvdelingTest() {
+    void hentAlleOppgaverForAvdelingTest() {
         leggInnEttSettMedOppgaver();
         var resultater = oppgaveBeholdningStatistikkTjeneste.hentAlleOppgaverForAvdeling(AVDELING_DRAMMEN_ENHET);
 
@@ -118,7 +118,7 @@ public class OppgaveBeholdningStatistikkTjenesteTest {
      * Expected size: 3 but was: 0 in:
      * []
      */
-    public void hentAntallOppgaverForAvdelingPerDatoTest() {
+    void hentAntallOppgaverForAvdelingPerDatoTest() {
         leggInnEttSettMedOppgaver();
         var resultater = oppgaveBeholdningStatistikkTjeneste.hentAntallOppgaverForAvdelingPerDato(AVDELING_DRAMMEN_ENHET);
         assertThat(resultater).hasSize(3);
@@ -137,7 +137,7 @@ public class OppgaveBeholdningStatistikkTjenesteTest {
      * expected: 2022-04-05 (java.time.LocalDate)
      *  but was: 2022-04-04 (java.time.LocalDate)
      */
-    public void hentAntallOppgaverForAvdelingPerDatoTest2() {
+    void hentAntallOppgaverForAvdelingPerDatoTest2() {
         leggTilOppgave(førstegangOppgave, 27, 27);
         leggTilOppgave(førstegangOppgave2, 28, 28);//skal ikke komme i resultatssettet
         leggTilOppgave(annenAvdeling, 10, 4);//skal ikke komme i resultatssettet
@@ -151,7 +151,7 @@ public class OppgaveBeholdningStatistikkTjenesteTest {
     }
 
     @Test
-    public void hentHentStatistikkForManueltPåVent() {
+    void hentHentStatistikkForManueltPåVent() {
         leggInnEttSettMedOppgaveEventer();
         var resultater = oppgaveBeholdningStatistikkTjeneste.hentAntallOppgaverForAvdelingSattManueltPåVent(AVDELING_DRAMMEN_ENHET);
         assertThat(resultater).hasSize(2);
@@ -163,7 +163,7 @@ public class OppgaveBeholdningStatistikkTjenesteTest {
 
 
     @Test
-    public void hentOppgaverPerFørsteStønadsdag() {
+    void hentOppgaverPerFørsteStønadsdag() {
         leggInnEttSettMedOppgaver();
         var resultater = oppgaveBeholdningStatistikkTjeneste.hentOppgaverPerFørsteStønadsdag(AVDELING_DRAMMEN_ENHET);
         assertThat(resultater).hasSize(1);

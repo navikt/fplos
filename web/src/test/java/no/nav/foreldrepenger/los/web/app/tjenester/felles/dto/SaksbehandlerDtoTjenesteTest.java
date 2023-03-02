@@ -24,7 +24,7 @@ import no.nav.foreldrepenger.los.organisasjon.Saksbehandler;
 import no.nav.foreldrepenger.los.organisasjon.ansatt.AnsattTjeneste;
 
 @ExtendWith(JpaExtension.class)
-public class SaksbehandlerDtoTjenesteTest {
+class SaksbehandlerDtoTjenesteTest {
 
     private AvdelingslederTjeneste avdelingslederTjeneste;
     private SaksbehandlerDtoTjeneste saksbehandlerDtoTjeneste;
@@ -39,7 +39,7 @@ public class SaksbehandlerDtoTjenesteTest {
     }
 
     @Test
-    public void testHentSaksbehandlerNavnOgAvdelinger(EntityManager entityManager){
+    void testHentSaksbehandlerNavnOgAvdelinger(EntityManager entityManager){
         var saksbehandler1Ident = "1234567";
         var saksbehandler2Ident = "9876543";
         var saksbehandler3Ident = "1234";

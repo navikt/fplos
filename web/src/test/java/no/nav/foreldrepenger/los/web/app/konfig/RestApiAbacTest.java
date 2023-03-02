@@ -20,13 +20,13 @@ import no.nav.vedtak.sikkerhet.abac.TilpassetAbacAttributt;
 import no.nav.vedtak.sikkerhet.abac.beskyttet.ActionType;
 import no.nav.vedtak.sikkerhet.abac.beskyttet.ResourceType;
 
-public class RestApiAbacTest {
+class RestApiAbacTest {
 
     /**
      * IKKE ignorer denne testen, sikrer at REST-endepunkter får tilgangskontroll
      */
     @Test
-    public void alle_restmetoder_er_annotert_med_BeskyttetRessurs() {
+    void alle_restmetoder_er_annotert_med_BeskyttetRessurs() {
         var manglerAnnotering = RestApiTester.finnAlleRestMetoder().stream()
                 .filter(m -> m.getAnnotation(BeskyttetRessurs.class) == null)
                 .map(m -> m.getDeclaringClass().getName() + "." + m.getName())
@@ -37,12 +37,12 @@ public class RestApiAbacTest {
     }
 
     @Test
-    public void sjekk_at_ingen_metoder_er_annotert_med_dummy_verdier() {
+    void sjekk_at_ingen_metoder_er_annotert_med_dummy_verdier() {
         RestApiTester.finnAlleRestMetoder().forEach(RestApiAbacTest::assertAtIngenBrukerDummyVerdierPåBeskyttetRessurs);
     }
 
     @Test
-    public void alle_input_parametre_til_restmetoder_implementer_AbacDto_eller_spesifiserer_AbacDataSupplier() {
+    void alle_input_parametre_til_restmetoder_implementer_AbacDto_eller_spesifiserer_AbacDataSupplier() {
         var feilmelding = "Parameter på %s.%s av type %s må implementere " + AbacDto.class.getSimpleName() + ", eller være annotatert med @TilpassetAbacAttributt.\n";
         var feilmeldinger = new StringBuilder();
 

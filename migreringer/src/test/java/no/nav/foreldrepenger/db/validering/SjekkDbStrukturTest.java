@@ -14,7 +14,7 @@ import no.nav.foreldrepenger.dbstøtte.Databaseskjemainitialisering;
 
 
 /** Tester at alle migreringer følger standarder for navn og god praksis. */
-public class SjekkDbStrukturTest {
+class SjekkDbStrukturTest {
 
     private static final String HJELP = "\n\nDu har nylig lagt til en ny tabell eller kolonne som ikke er dokumentert ihht. gjeldende regler for dokumentasjon."
             + "\nVennligst gå over sql scriptene og dokumenter tabellene på korrekt måte.";
@@ -23,13 +23,13 @@ public class SjekkDbStrukturTest {
     private static String schema;
 
     @BeforeAll
-    public static void setup() {
+    static void setup() {
         ds = Databaseskjemainitialisering.initUnitTestDataSource();
         schema = Databaseskjemainitialisering.USER;
     }
 
     @Test
-    public void sjekk_at_alle_tabeller_er_dokumentert() throws Exception {
+    void sjekk_at_alle_tabeller_er_dokumentert() throws Exception {
         var sql = "SELECT table_name FROM all_tab_comments WHERE (comments IS NULL OR comments in ('', 'MISSING COLUMN COMMENT')) "
                 + "AND owner=sys_context('userenv', 'current_schema') AND table_name NOT LIKE 'schema_%' AND table_name not like 'HT_%'";
         List<String> avvik = new ArrayList<>();
@@ -45,27 +45,27 @@ public class SjekkDbStrukturTest {
     }
 
     @Test
-    public void sjekk_at_alle_relevant_kolonner_er_dokumentert() throws Exception {
+    void sjekk_at_alle_relevant_kolonner_er_dokumentert() throws Exception {
         List<String> avvik = new ArrayList<>();
 
         var sql = """
-                SELECT t.table_name||'.'||t.column_name 
-                  FROM all_col_comments t 
-                 WHERE (t.comments IS NULL OR t.comments = '') 
-                   AND t.owner = sys_context('userenv','current_schema') 
-                   AND ( upper(t.table_name) NOT LIKE 'SCHEMA_%' AND upper(t.table_name) NOT LIKE 'HT_%') 
-                   AND NOT EXISTS (SELECT 1 FROM all_constraints a, all_cons_columns b 
-                                    WHERE a.table_name = b.table_name 
-                                      AND b.table_name = t.table_name 
-                                      AND a.constraint_name = b.constraint_name 
-                                      AND b.column_name = t.column_name 
-                                      AND constraint_type IN ('P','R') 
-                                      AND a.owner = t.owner 
-                                      AND b.owner = a.owner) 
+                SELECT t.table_name||'.'||t.column_name
+                  FROM all_col_comments t
+                 WHERE (t.comments IS NULL OR t.comments = '')
+                   AND t.owner = sys_context('userenv','current_schema')
+                   AND ( upper(t.table_name) NOT LIKE 'SCHEMA_%' AND upper(t.table_name) NOT LIKE 'HT_%')
+                   AND NOT EXISTS (SELECT 1 FROM all_constraints a, all_cons_columns b
+                                    WHERE a.table_name = b.table_name
+                                      AND b.table_name = t.table_name
+                                      AND a.constraint_name = b.constraint_name
+                                      AND b.column_name = t.column_name
+                                      AND constraint_type IN ('P','R')
+                                      AND a.owner = t.owner
+                                      AND b.owner = a.owner)
                    AND upper(t.column_name) NOT IN ('OPPRETTET_TID','ENDRET_TID','OPPRETTET_AV','ENDRET_AV','VERSJON',
-                'BESKRIVELSE','NAVN','FOM', 'TOM', 'LANDKODE', 'KL_LANDKODE', 'AKTIV') 
+                'BESKRIVELSE','NAVN','FOM', 'TOM', 'LANDKODE', 'KL_LANDKODE', 'AKTIV')
                    AND upper(t.column_name) NOT LIKE 'KLx_%' ESCAPE 'x'
-                 ORDER BY t.table_name, t.column_name 
+                 ORDER BY t.table_name, t.column_name
                 """;
 
         try (var conn = ds.getConnection(); var stmt = conn.prepareStatement(sql); var rs = stmt.executeQuery()) {
@@ -80,9 +80,9 @@ public class SjekkDbStrukturTest {
     }
 
     @Test
-    public void sjekk_at_alle_FK_kolonner_har_fornuftig_indekser() throws Exception {
+    void sjekk_at_alle_FK_kolonner_har_fornuftig_indekser() throws Exception {
         var sql = """
-                SELECT 
+                SELECT
                   uc.table_name, uc.constraint_name, LISTAGG(dcc.column_name, ',') WITHIN GROUP (ORDER BY dcc.position) as columns
                 FROM all_Constraints Uc
                   INNER JOIN all_cons_columns dcc ON dcc.constraint_name  =uc.constraint_name AND dcc.owner=uc.owner
@@ -129,16 +129,16 @@ public class SjekkDbStrukturTest {
     }
 
     @Test
-    public void skal_ha_KL_prefiks_for_kodeverk_kolonne_i_source_tabell() throws Exception {
+    void skal_ha_KL_prefiks_for_kodeverk_kolonne_i_source_tabell() throws Exception {
         var sql = """
-                Select cola.table_name, cola.column_name From All_Constraints Uc 
+                Select cola.table_name, cola.column_name From All_Constraints Uc
                 Inner Join All_Cons_Columns Cola On Cola.Constraint_Name=Uc.Constraint_Name And Cola.Owner=Uc.Owner
                 Inner Join All_Cons_Columns Colb On Colb.Constraint_Name=Uc.r_Constraint_Name And Colb.Owner=Uc.Owner
                 Where Uc.Constraint_Type='R' And Uc.Owner= upper(?)
                 And Colb.Column_Name='KODEVERK' And Colb.Table_Name='KODELISTE'
                 And Colb.Position=Cola.Position
                 And Cola.Table_Name Not Like 'KODELI%'
-                and cola.column_name not like 'KL_%' 
+                and cola.column_name not like 'KL_%'
                 """;
 
         List<String> avvik = new ArrayList<>();
@@ -166,7 +166,7 @@ public class SjekkDbStrukturTest {
     }
 
     @Test
-    public void skal_ha_primary_key_i_hver_tabell_som_begynner_med_PK() throws Exception {
+    void skal_ha_primary_key_i_hver_tabell_som_begynner_med_PK() throws Exception {
         var sql = """
                 SELECT table_name FROM all_tables at
                 WHERE table_name
@@ -200,7 +200,7 @@ public class SjekkDbStrukturTest {
     }
 
     @Test
-    public void skal_ha_alle_foreign_keys_begynne_med_FK() throws Exception {
+    void skal_ha_alle_foreign_keys_begynne_med_FK() throws Exception {
         var sql = "SELECT ac.table_name, ac.constraint_name FROM all_constraints ac"
                 + " WHERE ac.constraint_type ='R' and ac.owner=upper(?) and constraint_name NOT LIKE 'FK_%'";
 
@@ -229,7 +229,7 @@ public class SjekkDbStrukturTest {
     }
 
     @Test
-    public void skal_ha_korrekt_index_navn() throws Exception {
+    void skal_ha_korrekt_index_navn() throws Exception {
         var sql = """
                 select table_name, index_name, column_name
                 from all_ind_columns
@@ -263,20 +263,20 @@ public class SjekkDbStrukturTest {
     }
 
     @Test
-    public void skal_ha_samme_data_type_for_begge_sider_av_en_FK() throws Exception {
+    void skal_ha_samme_data_type_for_begge_sider_av_en_FK() throws Exception {
         var sql = """
                 SELECT T.TABLE_NAME
                 , TCC.COLUMN_NAME AS KOL_A
                 , ATT.DATA_TYPE AS KOL_A_DATA_TYPE
                 , ATT.CHAR_LENGTH AS KOL_A_CHAR_LENGTH
                 , ATT.CHAR_USED AS KOL_A_CHAR_USED
-                , RCC.COLUMN_NAME AS KOL_B 
+                , RCC.COLUMN_NAME AS KOL_B
                 , ATR.DATA_TYPE AS KOL_B_DATA_TYPE
                 , ATR.CHAR_LENGTH AS KOL_B_CHAR_LENGTH
                 , atr.CHAR_USED as KOL_B_CHAR_USED
-                FROM ALL_CONSTRAINTS T 
+                FROM ALL_CONSTRAINTS T
                 INNER JOIN ALL_CONSTRAINTS R ON R.OWNER=T.OWNER AND R.CONSTRAINT_NAME = T.R_CONSTRAINT_NAME
-                INNER JOIN ALL_CONS_COLUMNS TCC ON TCC.TABLE_NAME=T.TABLE_NAME AND TCC.OWNER=T.OWNER AND TCC.CONSTRAINT_NAME=T.CONSTRAINT_NAME 
+                INNER JOIN ALL_CONS_COLUMNS TCC ON TCC.TABLE_NAME=T.TABLE_NAME AND TCC.OWNER=T.OWNER AND TCC.CONSTRAINT_NAME=T.CONSTRAINT_NAME
                 INNER JOIN ALL_CONS_COLUMNS RCC ON RCC.TABLE_NAME = R.TABLE_NAME AND RCC.OWNER=R.OWNER AND RCC.CONSTRAINT_NAME=R.CONSTRAINT_NAME
                 INNER JOIN ALL_TAB_COLS ATT ON ATT.COLUMN_NAME=TCC.COLUMN_NAME AND ATT.OWNER=TCC.OWNER AND Att.TABLE_NAME=TCC.TABLE_NAME
                 inner join all_tab_cols atr on atr.column_name=rcc.column_name and atr.owner=rcc.owner and atr.table_name=rcc.table_name
@@ -314,7 +314,7 @@ public class SjekkDbStrukturTest {
     }
 
     @Test
-    public void skal_deklarere_VARCHAR2_kolonner_som_CHAR_ikke_BYTE_semantikk() throws Exception {
+    void skal_deklarere_VARCHAR2_kolonner_som_CHAR_ikke_BYTE_semantikk() throws Exception {
         var sql = """
                 SELECT TABLE_NAME, COLUMN_NAME, DATA_TYPE, CHAR_USED, CHAR_LENGTH
                 FROM ALL_TAB_COLS
@@ -349,7 +349,7 @@ public class SjekkDbStrukturTest {
     }
 
     @Test
-    public void skal_ikke_bruke_FLOAT_eller_DOUBLE() throws Exception {
+    void skal_ikke_bruke_FLOAT_eller_DOUBLE() throws Exception {
         var sql = "select table_name, column_name, data_type from all_tab_cols where owner=upper(?) and data_type in ('FLOAT', 'DOUBLE') order by 1, 2";
 
         List<String> avvik = new ArrayList<>();
@@ -377,7 +377,7 @@ public class SjekkDbStrukturTest {
     }
 
     @Test
-    public void sjekk_at_status_verdiene_i_prosess_task_tabellen_er_også_i_pollingSQL() throws Exception {
+    void sjekk_at_status_verdiene_i_prosess_task_tabellen_er_også_i_pollingSQL() throws Exception {
         var sql = """
                 SELECT SEARCH_CONDITION
                 FROM all_constraints

@@ -35,7 +35,7 @@ class FpsakOppgaveEgenskapFinnerTest {
         var overstyrtNasjonalAp = new LosAksjonspunktDto("6068", Aksjonspunktstatus.UTFØRT, "NASJONAL", null);
         var dto = lagLosBehandlingDto(overstyrtNasjonalAp);
         var fpsakEgenskaper = new FpsakOppgaveEgenskapFinner(dto);
-        assertThat(fpsakEgenskaper.getAndreKriterier()).doesNotContain(AndreKriterierType.VURDER_EØS_OPPTJENING);
+        assertThat(fpsakEgenskaper.getAndreKriterier()).isNotEmpty().doesNotContain(AndreKriterierType.VURDER_EØS_OPPTJENING);
     }
 
     public static LosBehandlingDto lagLosBehandlingDto(LosAksjonspunktDto... dto) {
