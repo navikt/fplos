@@ -1,4 +1,16 @@
 # FPLOS
+===============
+[![Bygg og deploy](https://github.com/navikt/fplos/actions/workflows/build.yml/badge.svg?branch=master)](https://github.com/navikt/fplos/actions/workflows/build.yml)
+[![Promote](https://github.com/navikt/fplos/actions/workflows/promote.yml/badge.svg?branch=master)](https://github.com/navikt/fplos/actions/workflows/promote.yml)
+[![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=navikt_fplos&metric=ncloc)](https://sonarcloud.io/summary/new_code?id=navikt_fplos)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=navikt_fplos&metric=coverage)](https://sonarcloud.io/summary/new_code?id=navikt_fplos)
+
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=navikt_fplos&metric=alert_status)](https://sonarcloud.io/dashboard?id=navikt_fplos)
+[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=navikt_fplos&metric=bugs)](https://sonarcloud.io/dashboard?id=navikt_fplos)
+[![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=navikt_fplos&metric=code_smells)](https://sonarcloud.io/summary/new_code?id=navikt_fplos)
+[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=navikt_fplos&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=navikt_fplos)
+[![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=navikt_fplos&metric=vulnerabilities)](https://sonarcloud.io/summary/new_code?id=navikt_fplos)
+[![Technical Debt](https://sonarcloud.io/api/project_badges/measure?project=navikt_fplos&metric=sqale_index)](https://sonarcloud.io/dashboard?id=navikt_fplos)
 
 FPLOS håndterer oppgave- og ledelsesstyring på foreldrepengeområdet. Fp-sak og fp-tilbake produserer hendelser som representerer tilstand i behandlingsprosessen. FPLOS lytter til hendelsene for å dekke behovet for oppgavestyring og statistikk. 
 

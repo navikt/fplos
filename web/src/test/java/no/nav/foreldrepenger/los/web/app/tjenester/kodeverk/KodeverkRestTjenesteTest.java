@@ -13,17 +13,17 @@ import no.nav.foreldrepenger.los.oppgavekø.KøSortering;
 import no.nav.foreldrepenger.los.web.app.jackson.JacksonJsonConfig;
 
 
-public class KodeverkRestTjenesteTest {
+class KodeverkRestTjenesteTest {
 
     private HentKodeverkTjeneste hentKodeverkTjeneste;
 
     @BeforeEach
-    public void before() {
+    void before() {
         hentKodeverkTjeneste = new HentKodeverkTjeneste();
     }
 
     @Test
-    public void skal_hente_kodeverk_og_gruppere_på_kodeverknavn() throws IOException {
+    void skal_hente_kodeverk_og_gruppere_på_kodeverknavn() throws IOException {
 
         var tjeneste = new KodeverkRestTjeneste(hentKodeverkTjeneste);
         var response = tjeneste.hentGruppertKodeliste();
@@ -39,7 +39,7 @@ public class KodeverkRestTjenesteTest {
     }
 
     @Test
-    public void serialize_kodeverdi_uttak() throws Exception {
+    void serialize_kodeverdi_uttak() throws Exception {
 
         var jsonConfig = new JacksonJsonConfig();
 
@@ -51,7 +51,7 @@ public class KodeverkRestTjenesteTest {
     }
 
     @Test
-    public void serialize_kodeverdi_uttak_full() throws Exception {
+    void serialize_kodeverdi_uttak_full() throws Exception {
 
         var jsonConfig = new JacksonJsonConfig(true);
 

@@ -11,19 +11,19 @@ import org.junit.jupiter.api.Test;
 
 import no.nav.foreldrepenger.los.web.app.selftest.Selftests;
 
-public class HealthCheckRestServiceTest {
+class HealthCheckRestServiceTest {
 
     private HealthCheckRestService restTjeneste;
 
     private final Selftests selftests = mock(Selftests.class);
 
     @BeforeEach
-    public void setup() {
+    void setup() {
         restTjeneste = new HealthCheckRestService(selftests);
     }
 
     @Test
-    public void isAlive_skal_returnere_status_200() {
+    void isAlive_skal_returnere_status_200() {
         when(selftests.isKafkaAlive()).thenReturn(true);
         when(selftests.isReady()).thenReturn(true);
 
@@ -33,7 +33,7 @@ public class HealthCheckRestServiceTest {
     }
 
     @Test
-    public void isReady_skal_returnere_service_unavailable_når_selftester_feiler() {
+    void isReady_skal_returnere_service_unavailable_når_selftester_feiler() {
         when(selftests.isKafkaAlive()).thenReturn(false);
         when(selftests.isReady()).thenReturn(false);
 
@@ -46,7 +46,7 @@ public class HealthCheckRestServiceTest {
     }
 
     @Test
-    public void isReady_skal_returnere_status_delvis_når_db_feiler() {
+    void isReady_skal_returnere_status_delvis_når_db_feiler() {
         when(selftests.isKafkaAlive()).thenReturn(true);
         when(selftests.isReady()).thenReturn(false);
 
@@ -58,7 +58,7 @@ public class HealthCheckRestServiceTest {
     }
 
     @Test
-    public void isReady_skal_returnere_status_ok_når_selftester_er_ok() {
+    void isReady_skal_returnere_status_ok_når_selftester_er_ok() {
         when(selftests.isKafkaAlive()).thenReturn(true);
         when(selftests.isReady()).thenReturn(true);
 

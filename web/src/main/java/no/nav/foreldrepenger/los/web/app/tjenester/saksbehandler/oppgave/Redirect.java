@@ -19,6 +19,7 @@ public final class Redirect {
     private static final Logger log = LoggerFactory.getLogger(Redirect.class);
 
     private static final int POLL_INTERVAL_MILLIS = 1000;
+    private static final String SAKSLISTE_ID = "sakslisteId";
 
     private Redirect() {
         // no ctor
@@ -27,7 +28,7 @@ public final class Redirect {
     public static Response sendTilPolling(HttpServletRequest request, SakslisteIdDto sakslisteId, OppgaveIderDto oppgaveIder) throws URISyntaxException {
         var uriBuilder = getUriBuilder(request)
                 .path(OppgaveRestTjeneste.OPPGAVER_BASE_PATH + OppgaveRestTjeneste.OPPGAVER_STATUS_PATH)
-                .queryParam("sakslisteId", sakslisteId.getVerdi());
+                .queryParam(SAKSLISTE_ID, sakslisteId.getVerdi());
         Optional.ofNullable(oppgaveIder).map(OppgaveIderDto::getVerdi).ifPresent(o -> uriBuilder.queryParam("oppgaveIder", o));
         var uri = honorXForwardedProto(request, uriBuilder.build());
         var status = new AsyncPollingStatus(AsyncPollingStatus.Status.PENDING, "", POLL_INTERVAL_MILLIS);
@@ -40,7 +41,7 @@ public final class Redirect {
     public static Response sendTilResultat(HttpServletRequest request, SakslisteIdDto sakslisteId) throws URISyntaxException {
         var uriBuilder = getUriBuilder(request)
                 .path(OppgaveRestTjeneste.OPPGAVER_BASE_PATH + OppgaveRestTjeneste.OPPGAVER_RESULTAT_PATH)
-                .queryParam("sakslisteId", sakslisteId.getVerdi());
+                .queryParam(SAKSLISTE_ID, sakslisteId.getVerdi());
         var uri = honorXForwardedProto(request, uriBuilder.build());
         return Response.seeOther(uri).build();
     }
@@ -48,15 +49,15 @@ public final class Redirect {
     public static Response sendTilStatus(HttpServletRequest request, SakslisteIdDto sakslisteId, OppgaveIderDto oppgaveIder) throws URISyntaxException {
         var uriBuilder = getUriBuilder(request)
                 .path(OppgaveRestTjeneste.OPPGAVER_BASE_PATH + OppgaveRestTjeneste.OPPGAVER_STATUS_PATH)
-                .queryParam("sakslisteId", sakslisteId.getVerdi());
+                .queryParam(SAKSLISTE_ID, sakslisteId.getVerdi());
         Optional.ofNullable(oppgaveIder).map(OppgaveIderDto::getVerdi).ifPresent(o -> uriBuilder.queryParam("oppgaveIder", o));
         var uri = honorXForwardedProto(request, uriBuilder.build());
         return Response.accepted().location(uri).build();
     }
 
     private static UriBuilder getUriBuilder(HttpServletRequest request) {
-        UriBuilder uriBuilder = request == null || request.getContextPath() == null ? UriBuilder.fromUri("") : UriBuilder.fromUri(URI.create(request.getContextPath()));
-        Optional.ofNullable(request.getServletPath()).ifPresent(c -> uriBuilder.path(c));
+        var uriBuilder = request == null || request.getContextPath() == null ? UriBuilder.fromUri("") : UriBuilder.fromUri(URI.create(request.getContextPath()));
+        Optional.ofNullable(request).map(HttpServletRequest::getServletPath).ifPresent(uriBuilder::path);
         return uriBuilder;
     }
 
@@ -95,7 +96,7 @@ public final class Redirect {
      * @return http, https or null
      */
     private static String getXForwardedProtoHeader(HttpServletRequest httpRequest) {
-        String xForwardedProto = httpRequest.getHeader("X-Forwarded-Proto");
+        var xForwardedProto = httpRequest.getHeader("X-Forwarded-Proto");
         if ("https".equalsIgnoreCase(xForwardedProto) ||
             "http".equalsIgnoreCase(xForwardedProto)) {
             return xForwardedProto;
@@ -111,7 +112,7 @@ public final class Redirect {
     @SuppressWarnings("resource")
     private static URI leggTilBaseUri(URI resultatUri) {
         // tvinger resultatUri til å være en absolutt URI (passer med Location Header og Location felt når kommer i payload)
-        Response response = Response.noContent().location(resultatUri).build();
+        var response = Response.noContent().location(resultatUri).build();
         return response.getLocation();
     }
 }

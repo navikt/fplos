@@ -22,14 +22,14 @@ class DriftsmeldingerRestTjenesteTest {
     private DriftsmeldingerRestTjeneste driftsmeldinger;
 
     @BeforeEach
-    public void setUp(EntityManager entityManager) {
+    void setUp(EntityManager entityManager) {
         var driftsmeldingRepository = new DriftsmeldingRepository(entityManager);
         var driftsmeldingTjeneste = new DriftsmeldingTjeneste(driftsmeldingRepository);
         driftsmeldinger = new DriftsmeldingerRestTjeneste(driftsmeldingTjeneste);
     }
 
     @Test
-    public void opprettDriftsmelding() {
+    void opprettDriftsmelding() {
         var response = opprettMelding();
         assertThat(response.getStatus()).isEqualTo(200);
         var driftsmeldingerFraTjeneste = driftsmeldinger.hentAktiveDriftsmeldinger();
@@ -42,7 +42,7 @@ class DriftsmeldingerRestTjenesteTest {
     }
 
     @Test
-    public void deaktiverMeldinger() {
+    void deaktiverMeldinger() {
         opprettMelding();
         driftsmeldinger.deaktiverDriftsmeldinger();
         assertThat(driftsmeldinger.hentAktiveDriftsmeldinger()).isEmpty();

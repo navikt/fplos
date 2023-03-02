@@ -54,7 +54,7 @@ import no.nav.foreldrepenger.los.felles.Kodeverdi;
 import no.nav.foreldrepenger.los.felles.util.validering.ValidKodeverk;
 import no.nav.foreldrepenger.los.web.app.IndexClasses;
 
-public class RestApiInputValideringDtoTest extends RestApiTester {
+class RestApiInputValideringDtoTest extends RestApiTester {
 
     private final Set<Class<?>> validerteKlasser = new HashSet<>(); // trengs for å unngå løkker og unngå å validere samme klasse flere ganger dobbelt
 
@@ -65,7 +65,7 @@ public class RestApiInputValideringDtoTest extends RestApiTester {
      */
     @ParameterizedTest
     @MethodSource("finnAlleDtoTyper")
-    public void alle_felter_i_objekter_som_brukes_som_inputDTO_skal_enten_ha_valideringsannotering_eller_være_av_godkjent_type(Class<?> dto) throws Exception {
+    void alle_felter_i_objekter_som_brukes_som_inputDTO_skal_enten_ha_valideringsannotering_eller_være_av_godkjent_type(Class<?> dto) throws Exception {
         validerRekursivt(validerteKlasser, dto, null);
     }
 
