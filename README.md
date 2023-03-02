@@ -1,5 +1,6 @@
 # FPLOS
 ===============
+
 [![Bygg og deploy](https://github.com/navikt/fplos/actions/workflows/build.yml/badge.svg?branch=master)](https://github.com/navikt/fplos/actions/workflows/build.yml)
 [![Promote](https://github.com/navikt/fplos/actions/workflows/promote.yml/badge.svg?branch=master)](https://github.com/navikt/fplos/actions/workflows/promote.yml)
 [![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=navikt_fplos&metric=ncloc)](https://sonarcloud.io/summary/new_code?id=navikt_fplos)
