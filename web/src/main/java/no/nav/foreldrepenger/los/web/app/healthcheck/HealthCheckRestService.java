@@ -85,7 +85,6 @@ public class HealthCheckRestService {
     @Operation(description = "Kalles på før stopp", tags = "nais", hidden = true)
     public Response preStop() {
         LOG.info("/preStop endepunkt kalt.");
-        LOG.info("/preStop endepunkt kalt.");
         starter.stopServices();
         return Response.ok(RESPONSE_OK).build();
     }
