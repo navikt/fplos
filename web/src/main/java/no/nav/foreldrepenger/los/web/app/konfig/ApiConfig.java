@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
 
+import no.nav.foreldrepenger.konfig.Environment;
 import no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.enhet.SaksbehandlerEnhetRestTjeneste;
 
 import org.glassfish.jersey.server.ServerProperties;
@@ -46,6 +47,8 @@ import no.nav.vedtak.felles.prosesstask.rest.ProsessTaskRestTjeneste;
 @ApplicationPath(ApiConfig.API_URI)
 public class ApiConfig extends Application {
 
+    private static final Environment ENV = Environment.current();
+
     static final String API_URI = "/api";
 
     public ApiConfig() {
@@ -57,7 +60,7 @@ public class ApiConfig extends Application {
                 .description("REST grensesnitt for fplos.");
         oas.info(info)
                 .addServersItem(new Server()
-                        .url("/fplos"));
+                        .url(ENV.getProperty("context.path", "/fplos")));
         var oasConfig = new SwaggerConfiguration()
                 .openAPI(oas)
                 .prettyPrint(true)

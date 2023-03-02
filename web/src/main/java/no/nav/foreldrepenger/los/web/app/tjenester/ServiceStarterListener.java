@@ -5,22 +5,20 @@ import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.servlet.annotation.WebListener;
 
-/**
- * Starter interne applikasjontjenester
- */
 @WebListener
-public class ApplicationContextListener implements ServletContextListener {
+public class ServiceStarterListener implements ServletContextListener {
 
     @Inject
-    private KafkaConsumerStarter kafkaConsumerStarter; //vil ikke fungere med constructor innjection
+    private ApplicationServiceStarter applicationServiceStarter; // NOSONAR - vil ikke fungere med constructor innjection
 
     @Override
     public void contextInitialized(ServletContextEvent sce) {
-        kafkaConsumerStarter.start();
+        applicationServiceStarter.startServices();
     }
 
     @Override
     public void contextDestroyed(ServletContextEvent sce) {
-        kafkaConsumerStarter.destroy();
+        applicationServiceStarter.stopServices();
     }
+
 }
