@@ -14,13 +14,14 @@ import org.slf4j.LoggerFactory;
 
 import no.nav.foreldrepenger.konfig.Environment;
 import no.nav.foreldrepenger.konfig.KonfigVerdi;
-import no.nav.vedtak.apptjeneste.AppServiceHandler;
 import no.nav.vedtak.felles.integrasjon.kafka.KafkaProperties;
-import no.nav.vedtak.log.metrics.LivenessAware;
-import no.nav.vedtak.log.metrics.ReadinessAware;
+import no.nav.vedtak.log.metrics.Controllable;
+import no.nav.vedtak.log.metrics.LiveAndReadinessAware;
+
+import static org.apache.kafka.streams.errors.StreamsUncaughtExceptionHandler.StreamThreadExceptionResponse.SHUTDOWN_CLIENT;
 
 @ApplicationScoped
-public class BehandlingHendelseConsumer implements LivenessAware, ReadinessAware, AppServiceHandler {
+public class BehandlingHendelseConsumer implements LiveAndReadinessAware, Controllable {
 
     private static final Logger LOG = LoggerFactory.getLogger(BehandlingHendelseConsumer.class);
     private static final Environment ENV = Environment.current();
@@ -81,9 +82,9 @@ public class BehandlingHendelseConsumer implements LivenessAware, ReadinessAware
                 stop();
             }
         });
-        stream.setUncaughtExceptionHandler((t, e) -> {
-            LOG.error("{} :: Caught exception in stream, exiting", getTopicName(), e);
-            stop();
+        stream.setUncaughtExceptionHandler(ex -> {
+            LOG.error("{} :: Caught exception in stream, exiting", getTopicName(), ex);
+            return SHUTDOWN_CLIENT;
         });
     }
 

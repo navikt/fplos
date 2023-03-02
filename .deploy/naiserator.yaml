@@ -7,26 +7,26 @@ metadata:
     team: teamforeldrepenger
 spec:
   image: {{image}}
+  port: 8080
   ingresses:
 {{#each ingresses as |url|}}
    - {{url}}
 {{/each}}
   liveness:
     path: /fplos/internal/health/isAlive
-    port: 8080
-    initialDelay: 20
+    initialDelay: 10
     periodSeconds: 10
-    failureThreshold: 27
-    timeout: 5
-  port: 8080
-  preStopHookPath: /fplos/internal/health/preStop
+    failureThreshold: 20
+    timeout: 3
   readiness:
     path: /fplos/internal/health/isReady
-    port: 8080
-    initialDelay: 20
+    initialDelay: 10
     periodSeconds: 10
-    failureThreshold: 27
-    timeout: 5
+    failureThreshold: 20
+    timeout: 3
+  preStopHook:
+    http:
+      path: /fplos/internal/health/preStop
   prometheus:
     enabled: true
     path: /fplos/internal/metrics/prometheus
