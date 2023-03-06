@@ -1,9 +1,9 @@
 package no.nav.foreldrepenger.los.statistikk.kø;
 
-import no.nav.foreldrepenger.los.oppgavekø.OppgaveFiltreringKnytning;
-
 import java.util.List;
 import java.util.stream.Collectors;
+
+import no.nav.foreldrepenger.los.oppgavekø.OppgaveFiltreringKnytning;
 
 public class OppgaveknytningerFørEtterOppdatering {
     private List<OppgaveFiltreringKnytning> knytningerFørOppdatering;

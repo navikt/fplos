@@ -1,13 +1,13 @@
 package no.nav.foreldrepenger.los.organisasjon.ansatt;
 
-import no.nav.foreldrepenger.los.domene.typer.aktør.OrganisasjonsEnhet;
-import no.nav.foreldrepenger.los.organisasjon.Avdeling;
-import no.nav.foreldrepenger.los.organisasjon.OrganisasjonRepository;
+import java.util.List;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import java.util.List;
+import no.nav.foreldrepenger.los.domene.typer.aktør.OrganisasjonsEnhet;
+import no.nav.foreldrepenger.los.organisasjon.Avdeling;
+import no.nav.foreldrepenger.los.organisasjon.OrganisasjonRepository;
 
 @ApplicationScoped
 public class AnsattTjeneste {
