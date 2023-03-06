@@ -10,6 +10,7 @@ public class OppgaveknytningerFørEtterOppdatering {
     private List<OppgaveFiltreringKnytning> knytningerEtterOppdatering;
 
     public OppgaveknytningerFørEtterOppdatering() {
+        // Hibernate
     }
 
     public void setKnytningerFørOppdatering(List<OppgaveFiltreringKnytning> knytningerFørOppdatering) {

@@ -3,7 +3,6 @@ package no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.OppgaveEgenskapFinner;
 import no.nav.foreldrepenger.los.klient.fpsak.Aksjonspunkt;
@@ -45,7 +44,7 @@ public class FpsakOppgaveEgenskapFinner implements OppgaveEgenskapFinner {
         if (behandling.behandlingsårsaker().stream().anyMatch(Behandlingsårsak.KLAGE_TILBAKEBETALING::equals)) {
             this.andreKriterier.add(AndreKriterierType.KLAGE_PÅ_TILBAKEBETALING);
         }
-        var aksjonspunkter = behandling.aksjonspunkt().stream().map(Aksjonspunkt::aksjonspunktFra).collect(Collectors.toList());
+        var aksjonspunkter = behandling.aksjonspunkt().stream().map(Aksjonspunkt::aksjonspunktFra).toList();
         var fpsakAksjonspunktWrapper = new FpsakAksjonspunktWrapper(aksjonspunkter);
         andreKriterier.addAll(fpsakAksjonspunktWrapper.getKriterier());
 

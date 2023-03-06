@@ -1,21 +1,20 @@
 package no.nav.foreldrepenger.los.organisasjon.ansatt;
 
-import java.util.List;
-import java.util.stream.Collectors;
+import no.nav.foreldrepenger.los.domene.typer.aktør.OrganisasjonsEnhet;
+import no.nav.foreldrepenger.los.organisasjon.Avdeling;
+import no.nav.foreldrepenger.los.organisasjon.OrganisasjonRepository;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import no.nav.foreldrepenger.los.domene.typer.aktør.OrganisasjonsEnhet;
-import no.nav.foreldrepenger.los.organisasjon.Avdeling;
-import no.nav.foreldrepenger.los.organisasjon.OrganisasjonRepository;
+import java.util.List;
 
 @ApplicationScoped
 public class AnsattTjeneste {
 
     private EnhetstilgangTjeneste enhetstilgangTjeneste;
     private OrganisasjonRepository organisasjonRepository;
-    private static List<String> aktuelleEnhetIder;
+    private List<String> aktuelleEnhetIder;
 
     AnsattTjeneste() {
         // for CDI proxy
@@ -36,13 +35,13 @@ public class AnsattTjeneste {
         if (aktuelleEnhetIder == null) {
             aktuelleEnhetIder = organisasjonRepository.hentAvdelinger().stream()
                     .map(Avdeling::getAvdelingEnhet)
-                    .collect(Collectors.toList());
+                    .toList();
         }
         return enhetstilgangTjeneste.hentEnhetstilganger(ident)
                 .stream()
                 .filter(oe -> aktuelleEnhetIder.contains(oe.id()))
                 .map(OrganisasjonsEnhet::navn)
-                .collect(Collectors.toList());
+                .toList();
     }
 
 }

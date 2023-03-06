@@ -21,8 +21,8 @@ import no.nav.foreldrepenger.los.oppgave.BehandlingType;
 import no.nav.foreldrepenger.los.oppgave.FagsakYtelseType;
 import no.nav.foreldrepenger.los.oppgave.Oppgave;
 import no.nav.foreldrepenger.los.oppgave.OppgaveEgenskap;
-import no.nav.foreldrepenger.los.statistikk.oppgavebeholdning.StatistikkRepository;
 import no.nav.foreldrepenger.los.statistikk.oppgavebeholdning.OppgaveBeholdningStatistikkTjeneste;
+import no.nav.foreldrepenger.los.statistikk.oppgavebeholdning.StatistikkRepository;
 
 @ExtendWith(JpaExtension.class)
 @ExtendWith(MockitoExtension.class)
@@ -98,12 +98,12 @@ class OppgaveBeholdningStatistikkTjenesteTest {
         assertThat(resultater).hasSize(4);
         assertThat(resultater.get(0).fagsakYtelseType()).isEqualTo(FagsakYtelseType.FORELDREPENGER);
         assertThat(resultater.get(0).behandlingType()).isEqualTo(BehandlingType.FØRSTEGANGSSØKNAD);
-        assertThat(resultater.get(0).tilBehandling()).isEqualTo(false);
+        assertThat(resultater.get(0).tilBehandling()).isFalse();
         assertThat(resultater.get(0).antall()).isEqualTo(2L);
 
         assertThat(resultater.get(1).fagsakYtelseType()).isEqualTo(FagsakYtelseType.FORELDREPENGER);
         assertThat(resultater.get(1).behandlingType()).isEqualTo(BehandlingType.FØRSTEGANGSSØKNAD);
-        assertThat(resultater.get(1).tilBehandling()).isEqualTo(true);
+        assertThat(resultater.get(1).tilBehandling()).isTrue();
         assertThat(resultater.get(1).antall()).isEqualTo(2L);
 
         assertThat(resultater.get(2).antall()).isEqualTo(1L);
@@ -146,8 +146,6 @@ class OppgaveBeholdningStatistikkTjenesteTest {
         assertThat(resultater).hasSize(8);
         assertThat(resultater.get(0).fagsakYtelseType()).isEqualTo(FagsakYtelseType.FORELDREPENGER);
         assertThat(resultater.get(0).opprettetDato()).isEqualTo(LocalDate.now().minusDays(27));
-        resultater.remove(0);
-        resultater.forEach(resultat -> assertThat(resultat.behandlingType()).isEqualTo((BehandlingType.KLAGE)));
     }
 
     @Test

@@ -16,8 +16,8 @@ import javax.persistence.Table;
 
 import no.nav.foreldrepenger.los.domene.typer.BehandlingId;
 import no.nav.foreldrepenger.los.felles.BaseEntitet;
-import no.nav.foreldrepenger.los.oppgave.Oppgave;
 import no.nav.foreldrepenger.los.oppgave.AndreKriterierType;
+import no.nav.foreldrepenger.los.oppgave.Oppgave;
 
 
 @Entity(name = "oppgaveEventLogg")

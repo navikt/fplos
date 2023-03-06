@@ -2,7 +2,7 @@ package no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.håndterere;
 
 import static no.nav.foreldrepenger.los.DBTestUtil.hentAlle;
 import static no.nav.foreldrepenger.los.oppgave.util.OppgaveAssert.assertThatOppgave;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -67,10 +67,10 @@ class OppdaterOppgaveHendelseHåndtererTest {
     }
 
     @Test
-    public void skalErstatteGammelOppgaveMedNy() {
+    void skalErstatteGammelOppgaveMedNy() {
         oppgaveOppdaterer.håndter(behandlingId, behandlingFpsak);
         var oppgaver = hentAlle(entityManager, Oppgave.class);
-        assertThat(oppgaver.size()).isEqualTo(2);
+        assertThat(oppgaver).hasSize(2);
         var gammelOppgave = oppgaver.get(0);
         var nyOppgave = oppgaver.get(1);
         assertThatOppgave(gammelOppgave).harAktiv(false);
@@ -79,7 +79,7 @@ class OppdaterOppgaveHendelseHåndtererTest {
     }
 
     @Test
-    public void gammelReservasjonVidereføresPåNyOppgave() {
+    void gammelReservasjonVidereføresPåNyOppgave() {
         reservasjonTjeneste.reserverOppgave(DBTestUtil.hentUnik(entityManager, Oppgave.class));
         oppgaveOppdaterer.håndter(behandlingId, behandlingFpsak);
         oppgaveOppdaterer.håndter(behandlingId, behandlingFpsak);
@@ -94,7 +94,7 @@ class OppdaterOppgaveHendelseHåndtererTest {
     }
 
     @Test
-    public void skalIkkeFlytteInaktivReservasjon() {
+    void skalIkkeFlytteInaktivReservasjon() {
         reservasjonTjeneste.reserverOppgave(DBTestUtil.hentUnik(entityManager, Oppgave.class));
         reservasjonTjeneste.slettReservasjonMedEventLogg(DBTestUtil.hentUnik(entityManager, Reservasjon.class), "slettet");
         oppgaveOppdaterer.håndter(behandlingId, behandlingFpsak);
@@ -107,11 +107,11 @@ class OppdaterOppgaveHendelseHåndtererTest {
 
 
     @Test
-    public void oppgaveSkalFåOppgaveegenskaperSatt() {
+    void oppgaveSkalFåOppgaveegenskaperSatt() {
         oppgaveOppdaterer.håndter(behandlingId, behandlingFpsak);
         var oppgave = hentAlle(entityManager, Oppgave.class).get(1);
         var oe = hentAlle(entityManager, OppgaveEgenskap.class);
-        assertThat(oppgave.getOppgaveEgenskaper().isEmpty()).isFalse();
+        assertThat(oppgave.getOppgaveEgenskaper()).isNotEmpty();
     }
 
 }

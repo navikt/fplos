@@ -4,7 +4,6 @@ import java.math.BigDecimal;
 import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -35,70 +34,67 @@ public class StatistikkRepository {
 
     @SuppressWarnings("unchecked")
     public List<OppgaverForAvdeling> hentAlleOppgaverForAvdeling(String avdelingEnhet) {
-        return (List<OppgaverForAvdeling>) entityManager.createNativeQuery("""
-                Select o.FAGSAK_YTELSE_TYPE, o.BEHANDLING_TYPE, nvl2(oe.ANDRE_KRITERIER_TYPE,'J','N') AS BESLUTTER_JN, Count(o.ID) AS ANTALL 
-                FROM OPPGAVE o INNER JOIN avdeling a ON a.AVDELING_ENHET = o.BEHANDLENDE_ENHET  
-                LEFT JOIN OPPGAVE_EGENSKAP oe ON oe.OPPGAVE_ID = o.ID AND oe.ANDRE_KRITERIER_TYPE = :tilBeslutter 
-                WHERE a.AVDELING_ENHET =:avdelingEnhet AND o.AKTIV='J' 
-                GROUP BY o.FAGSAK_YTELSE_TYPE, o.BEHANDLING_TYPE, oe.ANDRE_KRITERIER_TYPE 
+        return entityManager.createNativeQuery("""
+                Select o.FAGSAK_YTELSE_TYPE, o.BEHANDLING_TYPE, nvl2(oe.ANDRE_KRITERIER_TYPE,'J','N') AS BESLUTTER_JN, Count(o.ID) AS ANTALL
+                FROM OPPGAVE o INNER JOIN avdeling a ON a.AVDELING_ENHET = o.BEHANDLENDE_ENHET
+                LEFT JOIN OPPGAVE_EGENSKAP oe ON oe.OPPGAVE_ID = o.ID AND oe.ANDRE_KRITERIER_TYPE = :tilBeslutter
+                WHERE a.AVDELING_ENHET =:avdelingEnhet AND o.AKTIV='J'
+                GROUP BY o.FAGSAK_YTELSE_TYPE, o.BEHANDLING_TYPE, oe.ANDRE_KRITERIER_TYPE
                 ORDER BY o.FAGSAK_YTELSE_TYPE, o.BEHANDLING_TYPE, oe.ANDRE_KRITERIER_TYPE
                 """)
                 .setParameter(AVDELING_ENHET, avdelingEnhet)
                 .setParameter(TIL_BESLUTTER, AndreKriterierType.TIL_BESLUTTER.getKode())
                 .getResultStream()
                 .map(row -> mapOppgaverForAvdeling((Object[]) row))
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @SuppressWarnings("unchecked")
     public List<OppgaverForAvdelingPerDato> hentAlleOppgaverForAvdelingPerDato(String avdelingEnhet) {
-        return (List<OppgaverForAvdelingPerDato>) entityManager.createNativeQuery("""
-                Select o.FAGSAK_YTELSE_TYPE, o.BEHANDLING_TYPE, datoer.dato, Count(1) AS ANTALL 
-                FROM (select trunc(sysdate) + rownum -28 as dato from all_objects where rownum <= (trunc(sysdate) - trunc(sysdate-28) )) datoer, 
-                OPPGAVE o INNER JOIN avdeling a ON a.AVDELING_ENHET = o.BEHANDLENDE_ENHET 
-                WHERE a.AVDELING_ENHET =:avdelingEnhet 
-                AND trunc(datoer.dato) >= trunc(o.OPPRETTET_TID) 
-                AND NOT (o.AKTIV='N' AND trunc(datoer.dato) > trunc(o.ENDRET_TID)) 
-                GROUP BY datoer.dato, o.BEHANDLING_TYPE, o.FAGSAK_YTELSE_TYPE 
-                ORDER BY datoer.dato, o.FAGSAK_YTELSE_TYPE, o.BEHANDLING_TYPE
-                """).setParameter(AVDELING_ENHET, avdelingEnhet)
-                .getResultStream()
-                .map(row -> mapOppgaverForAvdelingPerDato((Object[]) row))
-                .collect(Collectors.toList());
+        return entityManager.createNativeQuery("""
+            Select o.FAGSAK_YTELSE_TYPE, o.BEHANDLING_TYPE, datoer.dato, Count(1) AS ANTALL
+            FROM (select trunc(sysdate) + rownum -28 as dato from all_objects where rownum <= (trunc(sysdate) - trunc(sysdate-28) )) datoer,
+            OPPGAVE o INNER JOIN avdeling a ON a.AVDELING_ENHET = o.BEHANDLENDE_ENHET
+            WHERE a.AVDELING_ENHET =:avdelingEnhet
+            AND trunc(datoer.dato) >= trunc(o.OPPRETTET_TID)
+            AND NOT (o.AKTIV='N' AND trunc(datoer.dato) > trunc(o.ENDRET_TID))
+            GROUP BY datoer.dato, o.BEHANDLING_TYPE, o.FAGSAK_YTELSE_TYPE
+            ORDER BY datoer.dato, o.FAGSAK_YTELSE_TYPE, o.BEHANDLING_TYPE
+            """).setParameter(AVDELING_ENHET, avdelingEnhet).getResultStream().map(row -> mapOppgaverForAvdelingPerDato((Object[]) row)).toList();
     }
 
     @SuppressWarnings("unchecked")
     public List<OppgaverForAvdelingSattManueltPåVent> hentAntallOppgaverForAvdelingSattManueltPåVent(String avdelingEnhet) {
-        return (List<OppgaverForAvdelingSattManueltPåVent>) entityManager.createNativeQuery("""
-                SELECT COALESCE(trunc(oel.FRIST_TID), trunc(oel.OPPRETTET_TID + 28)) ESTIMERT_FRIST, o.FAGSAK_YTELSE_TYPE, 
-                Count(distinct oel.BEHANDLING_ID) as ANTALL 
-                FROM OPPGAVE_EVENT_LOGG oel 
-                INNER JOIN OPPGAVE o ON o.BEHANDLING_ID = oel.BEHANDLING_ID AND o.behandlende_enhet = :behandlendeEnhet 
-                WHERE oel.EVENT_TYPE = :eventType  AND oel.OPPRETTET_TID = (SELECT MAX(oel2.OPPRETTET_TID) 
-                                 FROM OPPGAVE_EVENT_LOGG oel2 
-                                 WHERE oel2.BEHANDLING_ID = oel.BEHANDLING_ID) 
-                GROUP BY COALESCE(trunc(oel.FRIST_TID), trunc(oel.OPPRETTET_TID + 28)),o.FAGSAK_YTELSE_TYPE 
-                ORDER BY COALESCE(trunc(oel.FRIST_TID), trunc(oel.OPPRETTET_TID + 28)),o.FAGSAK_YTELSE_TYPE 
+        return entityManager.createNativeQuery("""
+                SELECT COALESCE(trunc(oel.FRIST_TID), trunc(oel.OPPRETTET_TID + 28)) ESTIMERT_FRIST, o.FAGSAK_YTELSE_TYPE,
+                Count(distinct oel.BEHANDLING_ID) as ANTALL
+                FROM OPPGAVE_EVENT_LOGG oel
+                INNER JOIN OPPGAVE o ON o.BEHANDLING_ID = oel.BEHANDLING_ID AND o.behandlende_enhet = :behandlendeEnhet
+                WHERE oel.EVENT_TYPE = :eventType  AND oel.OPPRETTET_TID = (SELECT MAX(oel2.OPPRETTET_TID)
+                                 FROM OPPGAVE_EVENT_LOGG oel2
+                                 WHERE oel2.BEHANDLING_ID = oel.BEHANDLING_ID)
+                GROUP BY COALESCE(trunc(oel.FRIST_TID), trunc(oel.OPPRETTET_TID + 28)),o.FAGSAK_YTELSE_TYPE
+                ORDER BY COALESCE(trunc(oel.FRIST_TID), trunc(oel.OPPRETTET_TID + 28)),o.FAGSAK_YTELSE_TYPE
                 """)
                 .setParameter("behandlendeEnhet", avdelingEnhet)
                 .setParameter("eventType", OppgaveEventType.MANU_VENT.name())
                 .getResultStream()
                 .map(row -> mapOppgaverForAvdelingSattManueltPåVent((Object[]) row))
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @SuppressWarnings("unchecked")
     public List<OppgaverForFørsteStønadsdag> hentOppgaverPerFørsteStønadsdag(String avdeling) {
-        return (List<OppgaverForFørsteStønadsdag>) entityManager.createNativeQuery("""
-                Select trunc(o.FORSTE_STONADSDAG) as DATO, Count(1) AS ANTALL 
-                FROM OPPGAVE o INNER JOIN avdeling a ON a.AVDELING_ENHET = o.BEHANDLENDE_ENHET 
-                WHERE a.AVDELING_ENHET =:avdelingEnhet AND NOT o.AKTIV='N' AND o.FORSTE_STONADSDAG IS NOT NULL 
+        return entityManager.createNativeQuery("""
+                Select trunc(o.FORSTE_STONADSDAG) as DATO, Count(1) AS ANTALL
+                FROM OPPGAVE o INNER JOIN avdeling a ON a.AVDELING_ENHET = o.BEHANDLENDE_ENHET
+                WHERE a.AVDELING_ENHET =:avdelingEnhet AND NOT o.AKTIV='N' AND o.FORSTE_STONADSDAG IS NOT NULL
                 GROUP BY trunc(o.FORSTE_STONADSDAG) ORDER BY trunc(o.FORSTE_STONADSDAG)
                 """)
                 .setParameter(AVDELING_ENHET, avdeling)
                 .getResultStream()
                 .map(row -> mapOppgaverForFørsteStønadsdag((Object[]) row))
-                .collect(Collectors.toList());
+                .toList();
     }
 
     private static OppgaverForFørsteStønadsdag mapOppgaverForFørsteStønadsdag(Object[] row) {

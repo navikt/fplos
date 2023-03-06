@@ -63,7 +63,7 @@ class ReturFraBeslutterHendelseHåndtererTest {
     }
 
     @Test
-    public void skalAvslutteBeslutterOppgave() {
+    void skalAvslutteBeslutterOppgave() {
         returFraBeslutterHåndterer.håndter(behandlingId, behandlingFpsak);
         var oppgaver = DBTestUtil.hentAlle(entityManager, Oppgave.class);
         var inaktivOppgave = oppgaver.stream().filter(o -> !o.getAktiv()).findFirst().orElseThrow();
@@ -74,21 +74,21 @@ class ReturFraBeslutterHendelseHåndtererTest {
     }
 
     @Test
-    public void skalOppretteOppgaveStatistikkForBeggeOppgaver() {
+    void skalOppretteOppgaveStatistikkForBeggeOppgaver() {
         returFraBeslutterHåndterer.håndter(behandlingId, behandlingFpsak);
         verify(køStatistikk).lagre(any(BehandlingId.class), eq(KøOppgaveHendelse.LUKKET_OPPGAVE));
         verify(køStatistikk).lagre(any(Oppgave.class), eq(KøOppgaveHendelse.ÅPNET_OPPGAVE));
     }
 
     @Test
-    public void skalOppretteOppgaveEventLoggForBeggeOppgaver() {
+    void skalOppretteOppgaveEventLoggForBeggeOppgaver() {
         returFraBeslutterHåndterer.håndter(behandlingId, behandlingFpsak);
         var oel = DBTestUtil.hentAlle(entityManager, OppgaveEventLogg.class);
         assertThat(oel).hasSize(2);
     }
 
     @Test
-    public void skalOppretteReservasjonTilSaksbehandler() {
+    void skalOppretteReservasjonTilSaksbehandler() {
         returFraBeslutterHåndterer.håndter(behandlingId, behandlingFpsak);
         var reservasjoner = DBTestUtil.hentAlle(entityManager, Reservasjon.class);
         assertThat(reservasjoner).hasSize(1);

@@ -39,7 +39,6 @@ public class NøkkeltallÅpneBehandlingerRestTjeneste {
     @Produces("application/json")
     @Operation(description = "Åpne behandlinger", tags = "AvdelingslederTall")
     @BeskyttetRessurs(actionType = ActionType.READ, resourceType = ResourceType.OPPGAVESTYRING_AVDELINGENHET)
-    @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
     public List<NøkkeltallBehandlingVentestatusDto> getAlleOppgaverForAvdeling(@NotNull @QueryParam("avdelingEnhet") @Valid AvdelingEnhetDto avdelingEnhet) {
         return nøkkeltallBehandlingerVentestatus.hentBehandlingVentestatusNøkkeltall(avdelingEnhet.getAvdelingEnhet());
     }

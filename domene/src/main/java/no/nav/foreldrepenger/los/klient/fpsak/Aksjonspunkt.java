@@ -16,8 +16,8 @@ public class Aksjonspunkt {
     public static final String MANUELT_SATT_PÅ_VENT_KODE = "7001";
     public static final String PÅ_VENT_KODEGRUPPE_STARTS_WITH = "7";
     public static final String TIL_BESLUTTER_KODE = "5016";
-    public static final List<String> REGISTRER_PAPIRSØKNAD_KODE = asList("5012", "5040", "5057", "5096");
-    public static final List<String> VURDER_FORMKRAV_GRUPPE = asList("5082", "5083");
+    protected static final List<String> REGISTRER_PAPIRSØKNAD_KODE = asList("5012", "5040", "5057", "5096");
+    protected static final List<String> VURDER_FORMKRAV_GRUPPE = asList("5082", "5083");
 
     public static final String AUTOMATISK_MARKERING_SOM_UTLAND = "5068";
     public static final String MANUELL_MARKERING_SOM_UTLAND = "6068";
@@ -31,6 +31,7 @@ public class Aksjonspunkt {
     private LocalDateTime fristTid;
 
     public Aksjonspunkt() {
+        // Jackson
     }
 
     public String getBegrunnelse() {

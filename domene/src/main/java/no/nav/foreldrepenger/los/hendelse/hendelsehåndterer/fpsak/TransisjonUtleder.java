@@ -12,7 +12,6 @@ import static no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.FpsakO
 
 import java.util.List;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,7 +30,7 @@ public final class TransisjonUtleder {
 
     static Oppgavetransisjon utledAktuellTransisjon(BehandlingId behandlingId, LosBehandlingDto behandlingFpsak, OppgaveHistorikk oppgaveHistorikk) {
         LOG.info("Utleder aktuell oppgavetransisjon for behandlingId {}, oppgavehistorikk {}", behandlingId, oppgaveHistorikk);
-        var aksjonspunkter = behandlingFpsak.aksjonspunkt().stream().map(Aksjonspunkt::aksjonspunktFra).collect(Collectors.toList());
+        var aksjonspunkter = behandlingFpsak.aksjonspunkt().stream().map(Aksjonspunkt::aksjonspunktFra).toList();
 
         if (erIngenÅpne(aksjonspunkter)) {
             if (oppgaveHistorikk.erUtenHistorikk() || oppgaveHistorikk.erIngenÅpenOppgave()) {

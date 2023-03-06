@@ -60,7 +60,7 @@ public class AvdelingslederTjeneste {
     }
 
     public void slettOppgaveFiltrering(Long oppgavefiltreringId) {
-        LOG.info("Sletter oppgavefilter " + oppgavefiltreringId);
+        LOG.info("Sletter oppgavefilter {}", oppgavefiltreringId);
         oppgaveRepository.slettListe(oppgavefiltreringId);
     }
 
@@ -89,8 +89,7 @@ public class AvdelingslederTjeneste {
         // fjern gamle filtre
         filter.getFiltreringYtelseTyper().stream()
                 .map(FiltreringYtelseType::getFagsakYtelseType)
-                .forEach(yt -> {
-                    oppgaveRepository.slettFiltreringYtelseType(oppgavefiltreringId, yt);});
+                .forEach(yt -> oppgaveRepository.slettFiltreringYtelseType(oppgavefiltreringId, yt));
         if (fagsakYtelseType != null) {
             // legg på eventuelle nye
             oppgaveRepository.lagre(new FiltreringYtelseType(filter, fagsakYtelseType));

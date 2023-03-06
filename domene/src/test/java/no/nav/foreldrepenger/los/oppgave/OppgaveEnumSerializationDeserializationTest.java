@@ -11,26 +11,26 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
-public class OppgaveEnumSerializationDeserializationTest {
+class OppgaveEnumSerializationDeserializationTest {
     private static final ObjectMapper mapper = getObjectMapper();
 
     @Test
-    public void fagsakStatus() throws Exception {
+    void fagsakStatus() throws Exception {
         testRoundtrip(FagsakStatus.LØPENDE);
     }
 
     @Test
-    public void andreKriterierType() throws Exception {
+    void andreKriterierType() throws Exception {
         testRoundtrip(AndreKriterierType.TIL_BESLUTTER);
     }
 
     @Test
-    public void behandlingStatus() throws Exception {
+    void behandlingStatus() throws Exception {
         testRoundtrip(BehandlingStatus.AVSLUTTET);
     }
 
     @Test
-    public void behandlingType() throws Exception {
+    void behandlingType() throws Exception {
         testRoundtrip(BehandlingType.FØRSTEGANGSSØKNAD);
     }
 

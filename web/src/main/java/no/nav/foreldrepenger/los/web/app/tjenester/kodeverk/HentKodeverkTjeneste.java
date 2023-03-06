@@ -17,7 +17,7 @@ import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.nøkkeltall.å
 @ApplicationScoped
 class HentKodeverkTjeneste {
 
-    private final static Map<String, Collection<? extends Kodeverdi>> KODEVERK = Map.of(
+    private static final Map<String, Collection<Kodeverdi>> KODEVERK = Map.of(
             BehandlingType.class.getSimpleName(), List.of(BehandlingType.values()),
             FagsakYtelseType.class.getSimpleName(), List.of(FagsakYtelseType.values()),
             KøSortering.class.getSimpleName(), List.of(KøSortering.values()),
@@ -30,7 +30,7 @@ class HentKodeverkTjeneste {
         // cdi
     }
 
-    Map<String, Collection<? extends Kodeverdi>> hentGruppertKodeliste() {
+    Map<String, Collection<Kodeverdi>> hentGruppertKodeliste() {
         return KODEVERK;
     }
 }

@@ -11,7 +11,7 @@ public enum BehandlingVenteStatus implements Kodeverdi {
     @JsonValue
     private String kode;
     private final String navn;
-    public static final String kodeverk = "BEHANDLING_VENTE_STATUS";
+    public static final String KODEVERK = "BEHANDLING_VENTE_STATUS";
 
     BehandlingVenteStatus(String kode, String navn) {
         this.kode = kode;
@@ -30,6 +30,6 @@ public enum BehandlingVenteStatus implements Kodeverdi {
 
     @Override
     public String getKodeverk() {
-        return kodeverk;
+        return KODEVERK;
     }
 }

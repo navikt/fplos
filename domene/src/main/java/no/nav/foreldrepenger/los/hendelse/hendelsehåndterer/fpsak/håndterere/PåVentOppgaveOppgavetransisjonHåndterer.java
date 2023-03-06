@@ -6,7 +6,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -45,7 +44,7 @@ public class PåVentOppgaveOppgavetransisjonHåndterer implements FpsakOppgavetr
     @Override
     public void håndter(BehandlingId behandlingId, LosBehandlingDto behandling) {
         var behandlendeEnhet = behandling.behandlendeEnhetId();
-        var aksjonspunkter = behandling.aksjonspunkt().stream().map(Aksjonspunkt::aksjonspunktFra).collect(Collectors.toList());
+        var aksjonspunkter = behandling.aksjonspunkt().stream().map(Aksjonspunkt::aksjonspunktFra).toList();
         var venteType = manueltSattPåVent(aksjonspunkter) ? OppgaveEventType.MANU_VENT : OppgaveEventType.VENT;
         var aksjonspunktFrist = aksjonspunktFrist(aksjonspunkter, venteType);
         oppgaveTjeneste.hentAktivOppgave(behandlingId)

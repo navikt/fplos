@@ -3,7 +3,6 @@ package no.nav.foreldrepenger.los.oppgave;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import no.nav.foreldrepenger.los.oppgavekø.FiltreringAndreKriterierType;
 import no.nav.foreldrepenger.los.oppgavekø.FiltreringBehandlingType;
@@ -139,7 +138,7 @@ public class Oppgavespørring {
                 .stream()
                 .filter(FiltreringAndreKriterierType::isEkskluder)
                 .map(FiltreringAndreKriterierType::getAndreKriterierType)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     private List<AndreKriterierType> inkluderAndreKriterierTyperFra(OppgaveFiltrering oppgaveFiltrering) {
@@ -147,21 +146,21 @@ public class Oppgavespørring {
                 .stream()
                 .filter(FiltreringAndreKriterierType::isInkluder)
                 .map(FiltreringAndreKriterierType::getAndreKriterierType)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     private List<FagsakYtelseType> ytelseType(OppgaveFiltrering oppgaveFiltrering) {
         return oppgaveFiltrering.getFiltreringYtelseTyper()
                 .stream()
                 .map(FiltreringYtelseType::getFagsakYtelseType)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     private List<BehandlingType> behandlingTypeFra(OppgaveFiltrering oppgaveFiltrering) {
         return oppgaveFiltrering.getFiltreringBehandlingTyper()
                 .stream()
                 .map(FiltreringBehandlingType::getBehandlingType)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override

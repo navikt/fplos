@@ -38,8 +38,10 @@ public class NøkkeltallBehandlingerVentestatus {
                     .collect(Collectors.groupingBy(NøkkeltallBehandlingVentestatusDto::behandlendeEnhet,
                             Collectors.toUnmodifiableList()));
             nesteOppdateringEtter = LocalDateTime.now().plusMinutes(45);
-            LOG.info("Hentet statistikk fra fpsak, neste hentes etter {}. Antall unike uttaksmåneder per enhet: {}", nesteOppdateringEtter,
-                    antallFørsteUttakMånederPerEnhet());
+            if (LOG.isInfoEnabled()) {
+                LOG.info("Hentet statistikk fra fpsak, neste hentes etter {}. Antall unike uttaksmåneder per enhet: {}", nesteOppdateringEtter,
+                        antallFørsteUttakMånederPerEnhet());
+            }
         }
         var resultat = enhetStatistikkMap.get(avdeling);
         return resultat != null ? resultat : Collections.emptyList();

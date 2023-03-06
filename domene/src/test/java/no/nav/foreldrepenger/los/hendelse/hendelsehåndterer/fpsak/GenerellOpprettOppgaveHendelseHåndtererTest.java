@@ -51,7 +51,7 @@ class GenerellOpprettOppgaveHendelseHåndtererTest {
     }
 
     @Test
-    public void skalLagreOppgaveMedFelterFraBehandling() {
+    void skalLagreOppgaveMedFelterFraBehandling() {
         var behandlingFpsak = behandlingFpsak();
         var behandlingId = new BehandlingId(behandlingFpsak.behandlingUuid());
         opprettOppgaveHåndterer.håndter(behandlingId, behandlingFpsak);
@@ -72,7 +72,7 @@ class GenerellOpprettOppgaveHendelseHåndtererTest {
     }
 
     @Test
-    public void skalOppretteOppgaveEventLogg() {
+    void skalOppretteOppgaveEventLogg() {
         var behandlingFpsak = behandlingFpsak();
         var behandlingId = new BehandlingId(behandlingFpsak.behandlingUuid());
         opprettOppgaveHåndterer.håndter(behandlingId, behandlingFpsak);

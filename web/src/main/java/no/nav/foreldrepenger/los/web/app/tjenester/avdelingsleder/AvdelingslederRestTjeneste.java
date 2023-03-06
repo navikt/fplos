@@ -1,7 +1,6 @@
 package no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -38,11 +37,10 @@ public class AvdelingslederRestTjeneste {
     @Produces("application/json")
     @Operation(description = "Henter alle avdelinger", tags = "AvdelingslederTopp")
     @BeskyttetRessurs(actionType = ActionType.READ, resourceType = ResourceType.OPPGAVESTYRING, sporingslogg = false)
-    @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
     public List<AvdelingDto> hentAvdelinger() {
         return avdelingslederTjeneste.hentAvdelinger()
                 .stream()
                 .map(avdeling -> new AvdelingDto(avdeling.getId(), avdeling.getAvdelingEnhet(), avdeling.getNavn(), avdeling.getKreverKode6()))
-                .collect(Collectors.toList());
+                .toList();
     }
 }

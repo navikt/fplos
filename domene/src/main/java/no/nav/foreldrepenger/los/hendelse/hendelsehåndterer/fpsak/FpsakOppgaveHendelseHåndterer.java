@@ -46,7 +46,9 @@ public class FpsakOppgaveHendelseHåndterer {
 
     private OppgaveHistorikk oppgavehistorikk(BehandlingId behandlingId) {
         var oppgaveEventer = oppgaveRepository.hentOppgaveEventer(behandlingId);
-        LOG.info("Henter tidigere oppgaveeventer for behandling {} {}", behandlingId, inlinetEventHistorikk(oppgaveEventer));
+        if (LOG.isInfoEnabled()) {
+            LOG.info("Henter tidigere oppgaveeventer for behandling {} {}", behandlingId, inlinetEventHistorikk(oppgaveEventer));
+        }
         return new OppgaveHistorikk(oppgaveEventer);
     }
 

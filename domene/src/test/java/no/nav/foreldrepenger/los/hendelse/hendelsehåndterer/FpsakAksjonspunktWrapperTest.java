@@ -19,7 +19,7 @@ class FpsakAksjonspunktWrapperTest {
     private final Aksjonspunkt apVurderSed = Aksjonspunkt.builder().medStatus("OPPR").medDefinisjon("5068").medBegrunnelse("").build();
 
     @Test
-    public void skalMappeKoderTilAndreKriterierTyper() {
+    void skalMappeKoderTilAndreKriterierTyper() {
         var cases = new HashMap<String, AndreKriterierType>();
         cases.put("5083", AndreKriterierType.VURDER_FORMKRAV);
         cases.put("5082", AndreKriterierType.VURDER_FORMKRAV);
@@ -35,7 +35,7 @@ class FpsakAksjonspunktWrapperTest {
     }
 
     @Test
-    public void skalIkkeReturnereDuplikateAndreKriterierTyper() {
+    void skalIkkeReturnereDuplikateAndreKriterierTyper() {
         var ap = åpentAksjonspunkt("5082");
         var apISammeGruppe = åpentAksjonspunkt("5083");
         var result = result(ap, apISammeGruppe);
@@ -43,26 +43,26 @@ class FpsakAksjonspunktWrapperTest {
     }
 
     @Test
-    public void skalIkkeMappeInaktiveAksjonspunktTilAndreKriterierTyper() {
+    void skalIkkeMappeInaktiveAksjonspunktTilAndreKriterierTyper() {
         var ap = Aksjonspunkt.builder().medStatus("AVBR").medDefinisjon("5082").medBegrunnelse("").build();
         var result = result(ap);
         assertThat(result).isEmpty();
     }
 
     @Test
-    public void overstyrtTilIkkeUtlandSkalIkkeGiUtlandOppgaveegenskap() {
+    void overstyrtTilIkkeUtlandSkalIkkeGiUtlandOppgaveegenskap() {
         var result = result(apOverstyrtTilNasjonal, apVurderSed);
         assertThat(result).isEmpty();
     }
 
     @Test
-    public void overstyrtTilBosattUtlandSkalGiUtlandOppgaveegenskap() {
+    void overstyrtTilBosattUtlandSkalGiUtlandOppgaveegenskap() {
         var result = result(apOverstyrtTilBosattUtland);
         assertThat(result).contains(AndreKriterierType.UTLANDSSAK);
     }
 
     @Test
-    public void overstyrtTilEøsBosattNorgeSkalGiUtlandOppgaveegenskap() {
+    void overstyrtTilEøsBosattNorgeSkalGiUtlandOppgaveegenskap() {
         var result = result(apOverstyrtTilEØSBosattNorge);
         assertThat(result).contains(AndreKriterierType.UTLANDSSAK);
     }

@@ -44,7 +44,6 @@ public class NøkkeltallRestTjeneste {
     @Produces("application/json")
     @Operation(description = "UnderArbeid", tags = "AvdelingslederTall")
     @BeskyttetRessurs(actionType = ActionType.READ, resourceType = ResourceType.OPPGAVESTYRING_AVDELINGENHET)
-    @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
     public List<OppgaverForAvdeling> getAlleOppgaverForAvdeling(@NotNull @QueryParam("avdelingEnhet") @Valid AvdelingEnhetDto avdelingEnhet) {
         return oppgaveBeholdningStatistikkTjeneste.hentAlleOppgaverForAvdeling(avdelingEnhet.getAvdelingEnhet());
     }
@@ -54,7 +53,6 @@ public class NøkkeltallRestTjeneste {
     @Produces("application/json")
     @Operation(description = "UA Historikk", tags = "AvdelingslederTall")
     @BeskyttetRessurs(actionType = ActionType.READ, resourceType = ResourceType.OPPGAVESTYRING_AVDELINGENHET)
-    @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
     public List<OppgaverForAvdelingPerDato> getAntallOppgaverForAvdelingPerDato(@NotNull @QueryParam("avdelingEnhet") @Valid AvdelingEnhetDto avdelingEnhet) {
         return oppgaveBeholdningStatistikkTjeneste.hentAntallOppgaverForAvdelingPerDato(avdelingEnhet.getAvdelingEnhet());
     }
@@ -64,7 +62,6 @@ public class NøkkeltallRestTjeneste {
     @Produces("application/json")
     @Operation(description = "ManueltVent Historikk", tags = "AvdelingslederTall")
     @BeskyttetRessurs(actionType = ActionType.READ, resourceType = ResourceType.OPPGAVESTYRING_AVDELINGENHET)
-    @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
     public List<OppgaverForAvdelingSattManueltPåVent> getAntallOppgaverSattPåManuellVentForAvdeling(@NotNull @QueryParam("avdelingEnhet") @Valid AvdelingEnhetDto avdelingEnhet) {
         return oppgaveBeholdningStatistikkTjeneste.hentAntallOppgaverForAvdelingSattManueltPåVent(avdelingEnhet.getAvdelingEnhet());
     }
@@ -74,7 +71,6 @@ public class NøkkeltallRestTjeneste {
     @Produces("application/json")
     @Operation(description = "Første stønadsdag", tags = "AvdelingslederTall")
     @BeskyttetRessurs(actionType = ActionType.READ, resourceType = ResourceType.OPPGAVESTYRING_AVDELINGENHET)
-    @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
     public List<OppgaverForFørsteStønadsdag> getOppgaverPerFørsteStønadsdag(@NotNull @QueryParam("avdelingEnhet") @Valid AvdelingEnhetDto avdelingEnhet) {
         return oppgaveBeholdningStatistikkTjeneste.hentOppgaverPerFørsteStønadsdag(avdelingEnhet.getAvdelingEnhet());
     }

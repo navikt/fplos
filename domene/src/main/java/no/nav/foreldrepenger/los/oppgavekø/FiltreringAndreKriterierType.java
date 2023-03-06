@@ -1,9 +1,5 @@
 package no.nav.foreldrepenger.los.oppgavekø;
 
-import no.nav.foreldrepenger.los.felles.BaseEntitet;
-import no.nav.foreldrepenger.los.oppgave.AndreKriterierType;
-import no.nav.vedtak.felles.jpa.converters.BooleanToStringConverter;
-
 import javax.persistence.Column;
 import javax.persistence.Convert;
 import javax.persistence.Entity;
@@ -13,6 +9,10 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+
+import no.nav.foreldrepenger.los.felles.BaseEntitet;
+import no.nav.foreldrepenger.los.oppgave.AndreKriterierType;
+import no.nav.vedtak.felles.jpa.converters.BooleanToStringConverter;
 
 @Entity(name = "FiltreringAndreKriterier")
 @Table(name = "FILTRERING_ANDRE_KRITERIER")

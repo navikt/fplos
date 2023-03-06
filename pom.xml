@@ -24,6 +24,7 @@
         <revision>2.8.2-SNAPSHOT</revision>
 
         <sonar.moduleKey>${project.artifactId}</sonar.moduleKey>
+        <sonar.projectName>fp-los</sonar.projectName>
         <sonar.projectKey>navikt_fplos</sonar.projectKey>
 
         <fp-kontrakter.version>6.2.11</fp-kontrakter.version>

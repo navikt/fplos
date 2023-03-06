@@ -1,15 +1,16 @@
 package no.nav.foreldrepenger.los.web.app.tjenester.admin.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import no.nav.vedtak.sikkerhet.abac.AbacDataAttributter;
-import no.nav.vedtak.sikkerhet.abac.AbacDto;
-import no.nav.vedtak.util.InputValideringRegex;
-
+import java.time.LocalDateTime;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
-import java.time.LocalDateTime;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import no.nav.vedtak.sikkerhet.abac.AbacDataAttributter;
+import no.nav.vedtak.sikkerhet.abac.AbacDto;
+import no.nav.vedtak.util.InputValideringRegex;
 
 
 public class DriftsmeldingOpprettelseDto implements AbacDto {
@@ -24,6 +25,7 @@ public class DriftsmeldingOpprettelseDto implements AbacDto {
     private LocalDateTime aktivTil;
 
     public DriftsmeldingOpprettelseDto() {
+        // Jackson
     }
 
     public void setMelding(String melding) {

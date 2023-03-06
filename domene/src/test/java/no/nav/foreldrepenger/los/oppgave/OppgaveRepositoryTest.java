@@ -17,23 +17,23 @@ import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 
-import no.nav.foreldrepenger.los.domene.typer.aktør.AktørId;
-import no.nav.foreldrepenger.los.reservasjon.ReservasjonTjeneste;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-import no.nav.foreldrepenger.los.DBTestUtil;
 import no.nav.foreldrepenger.extensions.JpaExtension;
+import no.nav.foreldrepenger.los.DBTestUtil;
 import no.nav.foreldrepenger.los.domene.typer.BehandlingId;
+import no.nav.foreldrepenger.los.domene.typer.aktør.AktørId;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveEventLogg;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveEventType;
 import no.nav.foreldrepenger.los.oppgavekø.KøSortering;
 import no.nav.foreldrepenger.los.oppgavekø.OppgaveFiltrering;
 import no.nav.foreldrepenger.los.organisasjon.Avdeling;
+import no.nav.foreldrepenger.los.reservasjon.ReservasjonTjeneste;
 
 @ExtendWith(JpaExtension.class)
-public class OppgaveRepositoryTest {
+class OppgaveRepositoryTest {
 
     private static final BehandlingId behandlingId1 = new BehandlingId(UUID.nameUUIDFromBytes("uuid_1".getBytes()));
     private static final BehandlingId behandlingId2 = new BehandlingId(UUID.nameUUIDFromBytes("uuid_2".getBytes()));
@@ -46,14 +46,14 @@ public class OppgaveRepositoryTest {
 
 
     @BeforeEach
-    public void setup(EntityManager entityManager) {
+    void setup(EntityManager entityManager) {
         this.entityManager = entityManager;
         oppgaveRepository = new OppgaveRepository(entityManager);
         oppgaveTjeneste = new OppgaveTjeneste(oppgaveRepository, mock(ReservasjonTjeneste.class));
     }
 
     @Test
-    public void testHentingAvOppgaver() {
+    void testHentingAvOppgaver() {
         lagStandardSettMedOppgaver();
         var oppgaves = oppgaveRepository.hentOppgaver(oppgaverForDrammenSpørring());
         assertThat(oppgaves).hasSize(4);
@@ -78,10 +78,10 @@ public class OppgaveRepositoryTest {
     }
 
     @Test
-    public void testHentingAvEventerVedBehandlingId() {
+    void testHentingAvEventerVedBehandlingId() {
         lagStandardSettMedOppgaver();
         var event = oppgaveRepository.hentOppgaveEventer(behandlingId1).get(0);
-        assertThat(behandlingId1).isEqualTo(event.getBehandlingId());
+        assertThat(event.getBehandlingId()).isEqualTo(behandlingId1);
     }
 
     private Long setupOppgaveMedEgenskaper(AndreKriterierType... kriterier) {
@@ -96,7 +96,7 @@ public class OppgaveRepositoryTest {
     }
 
     @Test
-    public void testLagringAvOppgaveEgenskaper() {
+    void testLagringAvOppgaveEgenskaper() {
         var saksnummerOppgaveEn = setupOppgaveMedEgenskaper(AndreKriterierType.UTLANDSSAK, AndreKriterierType.PAPIRSØKNAD);
         var lagredeOppgaver = oppgaveRepository.hentAktiveOppgaverForSaksnummer(List.of(saksnummerOppgaveEn));
         var lagredeEgenskaper = oppgaveRepository.hentOppgaveEgenskaper(lagredeOppgaver.get(0).getId());
@@ -108,7 +108,7 @@ public class OppgaveRepositoryTest {
     }
 
     @Test
-    public void testOppgaveSpørringMedEgenskaperfiltrering() {
+    void testOppgaveSpørringMedEgenskaperfiltrering() {
         var saksnummerHit = setupOppgaveMedEgenskaper(AndreKriterierType.UTLANDSSAK, AndreKriterierType.UTBETALING_TIL_BRUKER);
         var oppgaveQuery = new Oppgavespørring(avdelingIdForDrammen(),
                 BEHANDLINGSFRIST,
@@ -127,7 +127,7 @@ public class OppgaveRepositoryTest {
     }
 
     @Test
-    public void testEkskluderingOgInkluderingAvOppgaver() {
+    void testEkskluderingOgInkluderingAvOppgaver() {
         lagStandardSettMedOppgaver();
         var oppgaver = oppgaveRepository.hentOppgaver(new Oppgavespørring(avdelingIdForDrammen(), null,
                 new ArrayList<>(), new ArrayList<>(), List.of(AndreKriterierType.TIL_BESLUTTER, AndreKriterierType.PAPIRSØKNAD),
@@ -164,16 +164,16 @@ public class OppgaveRepositoryTest {
     }
 
     @Test
-    public void testAntallOppgaverForAvdeling() {
+    void testAntallOppgaverForAvdeling() {
         var antallOppgaverForAvdeling = oppgaveRepository.hentAntallOppgaverForAvdeling(avdelingIdForDrammen());
-        assertThat(antallOppgaverForAvdeling).isEqualTo(0);
+        assertThat(antallOppgaverForAvdeling).isZero();
         lagStandardSettMedOppgaver();
         antallOppgaverForAvdeling = oppgaveRepository.hentAntallOppgaverForAvdeling(avdelingIdForDrammen());
         assertThat(antallOppgaverForAvdeling).isEqualTo(4);
     }
 
     @Test
-    public void testFiltreringDynamiskAvOppgaverIntervall() {
+    void testFiltreringDynamiskAvOppgaverIntervall() {
         lagStandardSettMedOppgaver();
         var oppgaves = oppgaveRepository.hentOppgaver(new Oppgavespørring(avdelingIdForDrammen(), BEHANDLINGSFRIST,
                 new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), true, null, null, 1L, 10L));
@@ -181,7 +181,7 @@ public class OppgaveRepositoryTest {
     }
 
     @Test
-    public void testFiltreringDynamiskAvOppgaverBareFomDato() {
+    void testFiltreringDynamiskAvOppgaverBareFomDato() {
         lagStandardSettMedOppgaver();
         var oppgaves = oppgaveRepository.hentOppgaver(new Oppgavespørring(avdelingIdForDrammen(), BEHANDLINGSFRIST,
                 new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), true, null, null, 15L, null));
@@ -189,7 +189,7 @@ public class OppgaveRepositoryTest {
     }
 
     @Test
-    public void testFiltreringDynamiskAvOppgaverBareTomDato() {
+    void testFiltreringDynamiskAvOppgaverBareTomDato() {
         lagStandardSettMedOppgaver();
         var oppgaves = oppgaveRepository.hentOppgaver(new Oppgavespørring(avdelingIdForDrammen(), BEHANDLINGSFRIST,
                 new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), true, null, null, null, 15L));
@@ -242,7 +242,7 @@ public class OppgaveRepositoryTest {
     }
 
     @Test
-    public void testReservering() {
+    void testReservering() {
         var oppgave = Oppgave.builder().dummyOppgave(AVDELING_DRAMMEN_ENHET).medBehandlingOpprettet(LocalDateTime.now().minusDays(10)).build();
         entityManager.persist(oppgave);
         entityManager.flush();
@@ -251,7 +251,7 @@ public class OppgaveRepositoryTest {
     }
 
     @Test
-    public void hentAlleLister() {
+    void hentAlleLister() {
         var avdeling = avdelingForDrammen();
         var førsteOppgaveFiltrering = OppgaveFiltrering.builder().medNavn("OPPRETTET")
                 .medSortering(KøSortering.OPPRETT_BEHANDLING)
@@ -272,7 +272,7 @@ public class OppgaveRepositoryTest {
     }
 
     @Test
-    public void lagreOppgaveHvisForskjelligEnhet() {
+    void lagreOppgaveHvisForskjelligEnhet() {
         var oppgave = lagOppgave(AVDELING_DRAMMEN_ENHET);
         var AVDELING_ANNET_ENHET = "4000";
         var oppgaveKommerPåNytt = lagOppgave(AVDELING_ANNET_ENHET);
@@ -283,7 +283,7 @@ public class OppgaveRepositoryTest {
     }
 
     @Test
-    public void lagreOppgaveHvisAvsluttetFraFør() {
+    void lagreOppgaveHvisAvsluttetFraFør() {
         var oppgave = lagOppgave(AVDELING_DRAMMEN_ENHET);
         var oppgaveKommerPåNytt = lagOppgave(AVDELING_DRAMMEN_ENHET);
         oppgaveRepository.opprettOppgave(oppgave);
@@ -294,7 +294,7 @@ public class OppgaveRepositoryTest {
     }
 
     @Test
-    public void skalKasteExceptionVedLukkingAvOppgaveDerDetFinnesFlereAktiveOppgaver() {
+    void skalKasteExceptionVedLukkingAvOppgaveDerDetFinnesFlereAktiveOppgaver() {
         var første = lagOppgave(AVDELING_DRAMMEN_ENHET);
         oppgaveRepository.opprettOppgave(første);
         var siste = lagOppgave(AVDELING_DRAMMEN_ENHET);
@@ -303,11 +303,12 @@ public class OppgaveRepositoryTest {
         assertThat(første()).isEqualTo(første);
         assertThat(siste().getAktiv()).isTrue();
         assertThat(første().getOpprettetTidspunkt()).isBefore(siste().getOpprettetTidspunkt());
-        assertThrows(IllegalStateException.class, () -> oppgaveTjeneste.avsluttOppgaveUtenEventLoggAvsluttTilknyttetReservasjon(første.getBehandlingId()));
+        var behandlingId = første.getBehandlingId();
+        assertThrows(IllegalStateException.class, () -> oppgaveTjeneste.avsluttOppgaveUtenEventLoggAvsluttTilknyttetReservasjon(behandlingId));
     }
 
     @Test
-    public void filtrerPåOpprettetDatoTomDato() {
+    void filtrerPåOpprettetDatoTomDato() {
         var aktuellOppgave = lagOppgave(LocalDate.now().minusDays(2));
         var uaktuellOppgave = lagOppgave(LocalDate.now());
         oppgaveRepository.lagre(uaktuellOppgave);
@@ -329,7 +330,7 @@ public class OppgaveRepositoryTest {
     }
 
     @Test
-    public void filtrerPåFørsteStønadsdag() {
+    void filtrerPåFørsteStønadsdag() {
         var oppgave1 = basicOppgaveBuilder()
                 .medFørsteStønadsdag(LocalDate.now().minusDays(1))
                 .build();
@@ -364,7 +365,7 @@ public class OppgaveRepositoryTest {
     }
 
     @Test
-    public void nullSistVedFeilutbetalingStartSomSorteringsKriterium() {
+    void nullSistVedFeilutbetalingStartSomSorteringsKriterium() {
         // dersom oppdrag ikke leverer grunnlag innen frist, gir fptilbake opp og
         // lager hendelse som fører til oppgave. Formålet er at saksbehandler skal avklare
         // status på grunnlaget. Funksjonelt kan det variere om filtrene som brukes i enhetene
@@ -400,7 +401,7 @@ public class OppgaveRepositoryTest {
     }
 
     @Test
-    public void fårTomtSvarFraOppgaveFiltrering() {
+    void fårTomtSvarFraOppgaveFiltrering() {
         var filtrering = oppgaveRepository.hentOppgaveFilterSett(0L);
         assertThat(filtrering).isEmpty();
     }

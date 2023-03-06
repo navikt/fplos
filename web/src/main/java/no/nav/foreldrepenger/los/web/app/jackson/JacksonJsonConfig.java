@@ -31,16 +31,15 @@ public class JacksonJsonConfig implements ContextResolver<ObjectMapper> {
     }
 
     private ObjectMapper createbjectMapper(SimpleModule simpleModule) {
-        final ObjectMapper objectMapper;
-        objectMapper = new ObjectMapper();
-        objectMapper.registerModule(new Jdk8Module());
-        objectMapper.registerModule(new JavaTimeModule());
-        objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        objectMapper.registerModule(simpleModule);
+        final var mapper = new ObjectMapper();
+        mapper.registerModule(new Jdk8Module());
+        mapper.registerModule(new JavaTimeModule());
+        mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        mapper.registerModule(simpleModule);
 
-        objectMapper.registerSubtypes(getJsonTypeNameClasses());
-        return objectMapper;
+        mapper.registerSubtypes(getJsonTypeNameClasses());
+        return mapper;
     }
 
     @Override

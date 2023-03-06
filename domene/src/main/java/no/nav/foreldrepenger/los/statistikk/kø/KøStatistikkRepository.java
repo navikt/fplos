@@ -8,7 +8,6 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -49,7 +48,7 @@ public class KøStatistikkRepository {
 
     public List<NyeOgFerdigstilteOppgaver> hentStatistikk(Long oppgaveFilterSettId) {
         final var tellesSomFerdigstilt = Stream.of(LUKKET_OPPGAVE, UT_TIL_ANNEN_KØ, OPPGAVE_SATT_PÅ_VENT)
-                .map(KøOppgaveHendelse::name).collect(Collectors.toList());
+                .map(KøOppgaveHendelse::name).toList();
         var query = entityManager.createNativeQuery("""
                 with cte as (
                     select distinct
@@ -74,14 +73,14 @@ public class KøStatistikkRepository {
                 .setParameter("oppgaveFilterSettId", oppgaveFilterSettId)
                 .setParameter("tellesSomFerdigstilt", tellesSomFerdigstilt);
         @SuppressWarnings("unchecked")
-        var result = (List<NyeOgFerdigstilteOppgaver>) query.getResultStream()
+        var result = query.getResultStream()
                 .map(KøStatistikkRepository::map)
-                .collect(Collectors.toList());
+                .toList();
         return result;
     }
 
-    private static NyeOgFerdigstilteOppgaver map(Object record) {
-        var objects = (Object[]) record;
+    private static NyeOgFerdigstilteOppgaver map(Object objectArray) {
+        var objects = (Object[]) objectArray;
         var datoFra = localDate(objects[0]);
         var behandlingType = BehandlingType.fraKode((String)objects[1]);
         var antallNye = ((BigDecimal)objects[2]).longValue();

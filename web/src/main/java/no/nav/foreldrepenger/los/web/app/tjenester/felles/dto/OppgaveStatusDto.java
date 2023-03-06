@@ -1,10 +1,10 @@
 package no.nav.foreldrepenger.los.web.app.tjenester.felles.dto;
 
+import static no.nav.foreldrepenger.los.felles.util.BrukerIdent.brukerIdent;
+
 import java.time.LocalDateTime;
 
 import no.nav.foreldrepenger.los.reservasjon.Reservasjon;
-
-import static no.nav.foreldrepenger.los.felles.util.BrukerIdent.brukerIdent;
 
 public class OppgaveStatusDto {
 

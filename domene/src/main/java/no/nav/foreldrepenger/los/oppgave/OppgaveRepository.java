@@ -1,21 +1,9 @@
 package no.nav.foreldrepenger.los.oppgave;
 
 
-import no.nav.foreldrepenger.los.domene.typer.BehandlingId;
-import no.nav.foreldrepenger.los.felles.BaseEntitet;
-import no.nav.foreldrepenger.los.oppgavekø.KøSortering;
-import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveEventLogg;
-import no.nav.foreldrepenger.los.oppgavekø.OppgaveFiltrering;
-import no.nav.foreldrepenger.los.oppgavekø.OppgaveFiltreringOppdaterer;
-import no.nav.foreldrepenger.los.reservasjon.Reservasjon;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.TypedQuery;
+import static no.nav.foreldrepenger.los.felles.util.BrukerIdent.brukerIdent;
+import static no.nav.foreldrepenger.los.oppgavekø.KøSortering.FT_DATO;
+import static no.nav.foreldrepenger.los.oppgavekø.KøSortering.FT_HELTALL;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -31,9 +19,21 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static no.nav.foreldrepenger.los.felles.util.BrukerIdent.brukerIdent;
-import static no.nav.foreldrepenger.los.oppgavekø.KøSortering.FT_DATO;
-import static no.nav.foreldrepenger.los.oppgavekø.KøSortering.FT_HELTALL;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import no.nav.foreldrepenger.los.domene.typer.BehandlingId;
+import no.nav.foreldrepenger.los.felles.BaseEntitet;
+import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveEventLogg;
+import no.nav.foreldrepenger.los.oppgavekø.KøSortering;
+import no.nav.foreldrepenger.los.oppgavekø.OppgaveFiltrering;
+import no.nav.foreldrepenger.los.oppgavekø.OppgaveFiltreringOppdaterer;
+import no.nav.foreldrepenger.los.reservasjon.Reservasjon;
 
 @ApplicationScoped
 public class OppgaveRepository {
@@ -67,10 +67,10 @@ public class OppgaveRepository {
     public int hentAntallOppgaver(Oppgavespørring oppgavespørring) {
         var selection = COUNT_FRA_OPPGAVE;
         if (oppgavespørring.getSortering() != null) {
-            switch (oppgavespørring.getSortering().getFeltkategori()) {
-                case KøSortering.FK_TILBAKEKREVING -> selection = COUNT_FRA_TILBAKEKREVING_OPPGAVE;
-                case KøSortering.FK_UNIVERSAL -> selection = COUNT_FRA_OPPGAVE;
-            }
+            selection = switch (oppgavespørring.getSortering().getFeltkategori()) {
+                case KøSortering.FK_TILBAKEKREVING -> COUNT_FRA_TILBAKEKREVING_OPPGAVE;
+                default -> COUNT_FRA_OPPGAVE;
+            };
         }
         var oppgaveTypedQuery = lagOppgavespørring(selection, Long.class, oppgavespørring);
         return oppgaveTypedQuery.getSingleResult().intValue();
@@ -90,10 +90,10 @@ public class OppgaveRepository {
     public List<Oppgave> hentOppgaver(Oppgavespørring oppgavespørring, int maksAntall) {
         var selection = SELECT_FRA_OPPGAVE;
         if (oppgavespørring.getSortering() != null) {
-            switch (oppgavespørring.getSortering().getFeltkategori()) {
-                case KøSortering.FK_TILBAKEKREVING -> selection = SELECT_FRA_TILBAKEKREVING_OPPGAVE;
-                case KøSortering.FK_UNIVERSAL -> selection = SELECT_FRA_OPPGAVE;
-            }
+            selection = switch (oppgavespørring.getSortering().getFeltkategori()) {
+                case KøSortering.FK_TILBAKEKREVING -> SELECT_FRA_TILBAKEKREVING_OPPGAVE;
+                default -> SELECT_FRA_OPPGAVE;
+            };
         }
         var oppgaveTypedQuery = lagOppgavespørring(selection, Oppgave.class, oppgavespørring);
         if (maksAntall > 0) {
@@ -436,7 +436,7 @@ public class OppgaveRepository {
 
     protected <T> List<T> hentOppgaver(BehandlingId behandlingId, Class<T> cls) {
         var select = cls.equals(TilbakekrevingOppgave.class) ? SELECT_FRA_TILBAKEKREVING_OPPGAVE : SELECT_FRA_OPPGAVE;
-        return entityManager.createQuery(select + "WHERE o.behandlingId = :behandlingId ", cls)
+        return entityManager.createQuery(select + "WHERE o.behandlingId = :behandlingId", cls)
                 .setParameter("behandlingId", behandlingId)
                 .getResultList();
     }

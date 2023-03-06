@@ -13,8 +13,6 @@ public final class DateAndTimeUtil {
                 : d;
     });
 
-    public DateAndTimeUtil() {
+    private DateAndTimeUtil() {
     }
-
-
 }

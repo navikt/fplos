@@ -1,7 +1,6 @@
 package no.nav.foreldrepenger.los.web.app.tjenester.admin;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -43,24 +42,22 @@ public class DriftsmeldingerRestTjeneste {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Operation(description = "Driftsmeldinger", tags = "admin")
-    @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
     @BeskyttetRessurs(actionType = ActionType.READ, resourceType = ResourceType.APPLIKASJON, sporingslogg = false)
     public List<DriftsmeldingDto> hentAktiveDriftsmeldinger() {
         return driftsmeldingTjeneste.hentAktiveDriftsmeldinger().stream()
                 .map(DriftsmeldingerRestTjeneste::tilDto)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @GET
     @Path("/alle-driftsmeldinger")
     @Produces(MediaType.APPLICATION_JSON)
     @Operation(description = "Driftsmeldinger", tags = "admin")
-    @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
     @BeskyttetRessurs(actionType = ActionType.READ, resourceType = ResourceType.APPLIKASJON, sporingslogg = false)
     public List<DriftsmeldingDto> hentAlleDriftsmeldinger() {
         return driftsmeldingTjeneste.hentAlleDriftsmeldinger().stream()
                 .map(DriftsmeldingerRestTjeneste::tilDto)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @POST
@@ -68,7 +65,6 @@ public class DriftsmeldingerRestTjeneste {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Operation(description = "Driftsmeldinger", tags = "admin")
-    @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
     @BeskyttetRessurs(actionType = ActionType.CREATE, resourceType = ResourceType.DRIFT, sporingslogg = false)
     public Response opprettDriftsmelding(@Parameter(description = "jepp") @NotNull @Valid DriftsmeldingOpprettelseDto dto) {
         var melding = tilDriftsmelding(dto);
@@ -80,7 +76,6 @@ public class DriftsmeldingerRestTjeneste {
     @Path("/deaktiver")
     @Consumes(MediaType.APPLICATION_JSON)
     @Operation(description = "Driftsmeldinger", tags = "admin")
-    @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
     @BeskyttetRessurs(actionType = ActionType.CREATE, resourceType = ResourceType.DRIFT, sporingslogg = false)
     public Response deaktiverDriftsmeldinger() {
         driftsmeldingTjeneste.deaktiverDriftsmeldinger();

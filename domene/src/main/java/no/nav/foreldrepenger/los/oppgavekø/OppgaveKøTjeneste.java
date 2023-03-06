@@ -5,7 +5,6 @@ import static no.nav.foreldrepenger.los.felles.util.BrukerIdent.brukerIdent;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -59,7 +58,7 @@ public class OppgaveKøTjeneste {
                 .map(pk -> finnOppgaveFiltreringKnytning(oppgave, pk))
                 .filter(Optional::isPresent)
                 .map(Optional::get)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     public Integer hentAntallOppgaver(Long behandlingsKø, boolean forAvdelingsleder) {

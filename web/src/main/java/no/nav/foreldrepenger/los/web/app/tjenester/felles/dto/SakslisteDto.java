@@ -1,17 +1,16 @@
 package no.nav.foreldrepenger.los.web.app.tjenester.felles.dto;
 
-import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.saksliste.dto.SorteringDto;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+
 import no.nav.foreldrepenger.los.oppgave.BehandlingType;
 import no.nav.foreldrepenger.los.oppgave.FagsakYtelseType;
 import no.nav.foreldrepenger.los.oppgavekø.FiltreringBehandlingType;
 import no.nav.foreldrepenger.los.oppgavekø.FiltreringYtelseType;
 import no.nav.foreldrepenger.los.oppgavekø.OppgaveFiltrering;
 import no.nav.foreldrepenger.los.organisasjon.Saksbehandler;
-
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
+import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.saksliste.dto.SorteringDto;
 
 public class SakslisteDto {
 
@@ -34,22 +33,22 @@ public class SakslisteDto {
         if (!o.getFiltreringBehandlingTyper().isEmpty()) {
             behandlingTyper = o.getFiltreringBehandlingTyper().stream()
                     .map(FiltreringBehandlingType::getBehandlingType)
-                    .collect(Collectors.toList());
+                    .toList();
         }
         if (!o.getFiltreringYtelseTyper().isEmpty()) {
             fagsakYtelseTyper = o.getFiltreringYtelseTyper().stream()
                     .map(FiltreringYtelseType::getFagsakYtelseType)
-                    .collect(Collectors.toList());
+                    .toList();
         }
         if (!o.getFiltreringAndreKriterierTyper().isEmpty()) {
             andreKriterier = o.getFiltreringAndreKriterierTyper().stream()
                     .map(AndreKriterierDto::new)
-                    .collect(Collectors.toList());
+                    .toList();
         }
         this.sortering = new SorteringDto(o.getSortering(), o.getFra(), o.getTil(), o.getFomDato(), o.getTomDato(), o.getErDynamiskPeriode());
         saksbehandlerIdenter = o.getSaksbehandlere().stream()
                 .map(Saksbehandler::getSaksbehandlerIdent)
-                .collect(Collectors.toList());
+                .toList();
 
         this.antallBehandlinger = antallBehandlinger;
     }

@@ -45,7 +45,6 @@ public class KodeverkRestTjeneste {
     @Produces(MediaType.APPLICATION_JSON)
     @Operation(description = "Henter kodeliste", tags = "Kodeverk")
     @BeskyttetRessurs(actionType = ActionType.READ, resourceType = ResourceType.APPLIKASJON, sporingslogg = false)
-    @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
     public Response hentGruppertKodeliste() throws IOException {
         var kodelisteJson = getKodeverkRawJson();
         return Response.ok()

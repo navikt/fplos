@@ -12,12 +12,14 @@ class ReservasjonTidspunktUtilTest {
 
     @Test
     void testEndreOppgaveReservasjonFeilerUtenforPeriode(){
-        assertThrows(IllegalArgumentException.class, () -> ReservasjonTidspunktUtil.utledReservasjonTidspunkt(LocalDate.now().plusDays(35)));
+        var date = LocalDate.now().plusDays(35);
+        assertThrows(IllegalArgumentException.class, () -> ReservasjonTidspunktUtil.utledReservasjonTidspunkt(date));
     }
 
     @Test
     void testEndreOppgaveReservasjonFeilerTilbakeITid(){
-        assertThrows(IllegalArgumentException.class, () -> ReservasjonTidspunktUtil.utledReservasjonTidspunkt(LocalDate.now().minusDays(1)));
+        var date = LocalDate.now().minusDays(1);
+        assertThrows(IllegalArgumentException.class, () -> ReservasjonTidspunktUtil.utledReservasjonTidspunkt(date));
     }
 
     @Test

@@ -1,14 +1,15 @@
 package no.nav.foreldrepenger.los.oppgavekø;
 
-import no.nav.foreldrepenger.los.felles.BaseEntitet;
-import no.nav.vedtak.felles.jpa.converters.BooleanToStringConverter;
+import java.time.LocalDate;
 
 import javax.persistence.Column;
 import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import java.time.LocalDate;
+
+import no.nav.foreldrepenger.los.felles.BaseEntitet;
+import no.nav.vedtak.felles.jpa.converters.BooleanToStringConverter;
 
 @Entity(name = "OppgaveFiltreringOppdaterer")
 @Table(name = "OPPGAVE_FILTRERING")

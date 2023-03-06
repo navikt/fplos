@@ -2,7 +2,6 @@ package no.nav.foreldrepenger.los.organisasjon.ansatt;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -37,7 +36,7 @@ public class EnhetstilgangTjeneste {
                 .orElse(Collections.emptyList())
                 .stream()
                 .filter(OrganisasjonsEnhet::kanBehandleForeldrepenger)
-                .collect(Collectors.toList());
+                .toList();
     }
 
 }

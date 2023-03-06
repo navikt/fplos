@@ -1,8 +1,8 @@
 package no.nav.foreldrepenger.los.statistikk.oppgavebeholdning;
 
-import no.nav.foreldrepenger.los.oppgave.BehandlingType;
-
 import java.time.LocalDate;
+
+import no.nav.foreldrepenger.los.oppgave.BehandlingType;
 
 public record NyeOgFerdigstilteOppgaver(LocalDate dato,
                                         BehandlingType behandlingType,

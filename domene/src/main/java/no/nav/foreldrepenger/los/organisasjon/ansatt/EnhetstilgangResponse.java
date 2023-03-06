@@ -1,8 +1,8 @@
 package no.nav.foreldrepenger.los.organisasjon.ansatt;
 
-import no.nav.foreldrepenger.los.domene.typer.aktør.OrganisasjonsEnhet;
-
 import java.util.List;
+
+import no.nav.foreldrepenger.los.domene.typer.aktør.OrganisasjonsEnhet;
 
 class EnhetstilgangResponse {
     private List<OrganisasjonsEnhet> enheter;

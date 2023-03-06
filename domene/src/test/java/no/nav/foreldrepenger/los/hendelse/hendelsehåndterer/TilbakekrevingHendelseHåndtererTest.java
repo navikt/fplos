@@ -43,7 +43,7 @@ import no.nav.vedtak.hendelser.behandling.los.LosBehandlingDto;
 
 @ExtendWith(JpaExtension.class)
 @ExtendWith(MockitoExtension.class)
-public class TilbakekrevingHendelseHåndtererTest {
+class TilbakekrevingHendelseHåndtererTest {
 
     private EntityManager entityManager;
     private TilbakekrevingHendelseHåndterer handler;
@@ -67,7 +67,7 @@ public class TilbakekrevingHendelseHåndtererTest {
     }
 
     @Test
-    public void skalOppretteOppgave() {
+    void skalOppretteOppgave() {
         var event = hendelse(åpentAksjonspunkt, BehandlingId.random());
         handler.håndterBehandling(event);
         sjekkAntallOppgaver(1);
@@ -76,7 +76,7 @@ public class TilbakekrevingHendelseHåndtererTest {
     }
 
     @Test
-    public void skalVidereføreOppgaveVedNyAktivEvent() {
+    void skalVidereføreOppgaveVedNyAktivEvent() {
         var behandlingId = BehandlingId.random();
         var førsteEvent = hendelse(åpentAksjonspunkt, behandlingId);
         handler.håndterBehandling(førsteEvent);
@@ -90,7 +90,7 @@ public class TilbakekrevingHendelseHåndtererTest {
     }
 
     @Test
-    public void skalLukkeGamleOppgaverVedOvergangMellomBeslutterOgSaksbehandlerOppgaver() {
+    void skalLukkeGamleOppgaverVedOvergangMellomBeslutterOgSaksbehandlerOppgaver() {
         var behandlingId = BehandlingId.random();
         var førsteEventOppgave = hendelse(åpentAksjonspunkt, behandlingId);
         handler.håndterBehandling(førsteEventOppgave);
@@ -107,7 +107,7 @@ public class TilbakekrevingHendelseHåndtererTest {
     }
 
     @Test
-    public void skalAvslutteOppgaveVedAvsluttedeAksjonspunkt() {
+    void skalAvslutteOppgaveVedAvsluttedeAksjonspunkt() {
         var behandlingId = BehandlingId.random();
         var førsteEvent = hendelse(åpentAksjonspunkt, behandlingId);
         var andreEvent = hendelse(avsluttetAksjonspunkt, behandlingId);
@@ -119,7 +119,7 @@ public class TilbakekrevingHendelseHåndtererTest {
     }
 
     @Test
-    public void skalLukkeOppgaveVedÅpentManueltTilVentAksjonspunkt() {
+    void skalLukkeOppgaveVedÅpentManueltTilVentAksjonspunkt() {
         var behandlingId = BehandlingId.random();
         var førsteEvent = hendelse(åpentAksjonspunkt, behandlingId);
         var andreEvent = hendelse(manueltPåVentAksjonspunkt, behandlingId);
@@ -131,7 +131,7 @@ public class TilbakekrevingHendelseHåndtererTest {
     }
 
     @Test
-    public void skalOppretteTilBeslutterEgenskapVedAksjonspunkt5005() {
+    void skalOppretteTilBeslutterEgenskapVedAksjonspunkt5005() {
         var behandlingId = BehandlingId.random();
         var førsteEvent = hendelse(åpentBeslutter, behandlingId);
         var andreEventUtenBeslutter = hendelse(åpentAksjonspunkt, behandlingId);
@@ -145,7 +145,7 @@ public class TilbakekrevingHendelseHåndtererTest {
     }
 
     @Test
-    public void skalLukkeOppgaveVedReturFraTilBehandler() {
+    void skalLukkeOppgaveVedReturFraTilBehandler() {
         var behandlingId = BehandlingId.random();
         var saksbehandler = hendelse(åpentAksjonspunkt, behandlingId);
         var tilBeslutter = hendelse(åpentBeslutter, behandlingId);

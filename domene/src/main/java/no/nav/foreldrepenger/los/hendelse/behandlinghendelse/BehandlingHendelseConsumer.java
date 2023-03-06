@@ -1,5 +1,7 @@
 package no.nav.foreldrepenger.los.hendelse.behandlinghendelse;
 
+import static org.apache.kafka.streams.errors.StreamsUncaughtExceptionHandler.StreamThreadExceptionResponse.SHUTDOWN_CLIENT;
+
 import java.time.Duration;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -17,8 +19,6 @@ import no.nav.foreldrepenger.konfig.KonfigVerdi;
 import no.nav.vedtak.felles.integrasjon.kafka.KafkaProperties;
 import no.nav.vedtak.log.metrics.Controllable;
 import no.nav.vedtak.log.metrics.LiveAndReadinessAware;
-
-import static org.apache.kafka.streams.errors.StreamsUncaughtExceptionHandler.StreamThreadExceptionResponse.SHUTDOWN_CLIENT;
 
 @ApplicationScoped
 public class BehandlingHendelseConsumer implements LiveAndReadinessAware, Controllable {

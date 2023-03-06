@@ -41,7 +41,6 @@ public class SaksbehandlerNøkkeltallRestTjeneste {
     @Produces("application/json")
     @Operation(description = "Henter en oversikt over hvor mange oppgaver som er opprettet og ferdigstilt de siste syv dagene", tags = "Nøkkeltall")
     @BeskyttetRessurs(actionType = ActionType.READ, resourceType = ResourceType.FAGSAK)
-    @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
     public List<NyeOgFerdigstilteOppgaver> getNyeOgFerdigstilteOppgaver(@NotNull @QueryParam("sakslisteId") @Valid SakslisteIdDto sakslisteId) {
         return køStatistikk.hentStatistikk(sakslisteId.getVerdi());
     }

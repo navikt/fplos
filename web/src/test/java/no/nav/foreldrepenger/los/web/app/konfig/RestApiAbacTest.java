@@ -32,7 +32,7 @@ class RestApiAbacTest {
                 .map(m -> m.getDeclaringClass().getName() + "." + m.getName())
                 .toList();
         if (!manglerAnnotering.isEmpty()) {
-            throw new AssertionError("Mangler @" + BeskyttetRessurs.class.getSimpleName() + "-annotering på " + manglerAnnotering);
+            fail("Mangler @" + BeskyttetRessurs.class.getSimpleName() + "-annotering på " + manglerAnnotering);
         }
     }
 
@@ -65,7 +65,7 @@ class RestApiAbacTest {
             }
         }
         if (feilmeldinger.length() > 0) {
-            throw new AssertionError("Følgende inputparametre til REST-tjenester mangler AbacDto-impl\n" + feilmeldinger);
+            fail("Følgende inputparametre til REST-tjenester mangler AbacDto-impl\n" + feilmeldinger);
         }
     }
 

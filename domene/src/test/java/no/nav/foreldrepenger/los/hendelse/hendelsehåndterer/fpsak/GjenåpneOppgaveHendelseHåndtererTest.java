@@ -67,7 +67,7 @@ class GjenåpneOppgaveHendelseHåndtererTest {
     }
 
     @Test
-    public void skalVidereføreNyligUtløptReservasjon() {
+    void skalVidereføreNyligUtløptReservasjon() {
         // arrange
         reservasjonTjeneste.reserverOppgave(eksisterendeOppgave);
         var behandling = behandlingFpsak;
@@ -85,7 +85,7 @@ class GjenåpneOppgaveHendelseHåndtererTest {
     }
 
     @Test
-    public void skalIkkeVidereReservasjonVedNyEnhet() {
+    void skalIkkeVidereReservasjonVedNyEnhet() {
         // arrange
         reservasjonTjeneste.reserverOppgave(eksisterendeOppgave);
         eksisterendeOppgave.setAktiv(true);
@@ -107,7 +107,7 @@ class GjenåpneOppgaveHendelseHåndtererTest {
     }
 
     @Test
-    public void skalOppretteNyOppgave() {
+    void skalOppretteNyOppgave() {
         var behandlingFpsakBygget = behandlingFpsak;
         oppgaveTjeneste.avsluttOppgaveUtenEventLoggAvsluttTilknyttetReservasjon(behandlingId);
 
@@ -123,14 +123,14 @@ class GjenåpneOppgaveHendelseHåndtererTest {
     }
 
     @Test
-    public void skalKasteExceptionVedEksisterendeOppgave() {
+    void skalKasteExceptionVedEksisterendeOppgave() {
         assertThatThrownBy(() -> gjenåpneOppgaveHåndterer.håndter(behandlingId, behandlingFpsak))
                 .isInstanceOf(IllegalStateException.class)
                 .hasMessageStartingWith("Fant eksisterende oppgave");
     }
 
     @Test
-    public void skalOppretteOppgaveEventLogg() {
+    void skalOppretteOppgaveEventLogg() {
         var behandlingFpsakBygget = behandlingFpsak;
         oppgaveTjeneste.avsluttOppgaveUtenEventLoggAvsluttTilknyttetReservasjon(behandlingId);
 

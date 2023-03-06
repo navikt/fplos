@@ -7,7 +7,6 @@ import static no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.oppgave.
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -152,7 +151,7 @@ public class OppgaveDtoTjeneste {
                 .map(o -> tryOrEmpty(() -> lagDtoFor(o, true), "oppgavedto"))
                 .flatMap(Optional::stream)
                 .limit(10)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     public List<OppgaveDto> hentOppgaverForFagsaker(List<Long> saksnummerListe) {

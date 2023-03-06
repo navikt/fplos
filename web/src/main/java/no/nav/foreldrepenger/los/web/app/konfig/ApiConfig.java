@@ -11,9 +11,6 @@ import java.util.stream.Collectors;
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
 
-import no.nav.foreldrepenger.konfig.Environment;
-import no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.enhet.SaksbehandlerEnhetRestTjeneste;
-
 import org.glassfish.jersey.server.ServerProperties;
 
 import io.swagger.v3.jaxrs2.integration.resources.OpenApiResource;
@@ -23,6 +20,7 @@ import io.swagger.v3.oas.integration.SwaggerConfiguration;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.servers.Server;
+import no.nav.foreldrepenger.konfig.Environment;
 import no.nav.foreldrepenger.los.web.app.exceptions.ConstraintViolationMapper;
 import no.nav.foreldrepenger.los.web.app.exceptions.GeneralRestExceptionMapper;
 import no.nav.foreldrepenger.los.web.app.exceptions.JsonMappingExceptionMapper;
@@ -38,6 +36,7 @@ import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.reservasjoner.
 import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.saksbehandler.AvdelingslederSaksbehandlerRestTjeneste;
 import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.saksliste.AvdelingslederSakslisteRestTjeneste;
 import no.nav.foreldrepenger.los.web.app.tjenester.kodeverk.KodeverkRestTjeneste;
+import no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.enhet.SaksbehandlerEnhetRestTjeneste;
 import no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.nøkkeltall.SaksbehandlerNøkkeltallRestTjeneste;
 import no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.oppgave.OppgaveRestTjeneste;
 import no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.saksliste.SaksbehandlerSakslisteRestTjeneste;

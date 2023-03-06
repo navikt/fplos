@@ -23,7 +23,7 @@ public enum BehandlingType implements Kodeverdi {
     @JsonValue
     private String kode;
     private final String navn;
-    public static final String kodeverk = "BEHANDLING_TYPE";
+    public static final String KODEVERK = "BEHANDLING_TYPE";
 
     BehandlingType(String kode, String navn) {
         this.kode = kode;
@@ -37,7 +37,7 @@ public enum BehandlingType implements Kodeverdi {
     public String getKode() { return kode; }
 
     public String getKodeverk() {
-        return kodeverk;
+        return KODEVERK;
     }
 
     public boolean gjelderTilbakebetaling() {

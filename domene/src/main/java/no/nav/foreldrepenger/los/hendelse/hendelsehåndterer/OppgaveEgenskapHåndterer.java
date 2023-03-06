@@ -3,7 +3,6 @@ package no.nav.foreldrepenger.los.hendelse.hendelsehåndterer;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -88,7 +87,7 @@ public class OppgaveEgenskapHåndterer {
     private static List<AndreKriterierType> typer(List<OppgaveEgenskap> eksisterendeOppgaveEgenskaper) {
         return eksisterendeOppgaveEgenskaper.stream()
                 .map(OppgaveEgenskap::getAndreKriterierType)
-                .collect(Collectors.toList());
+                .toList();
     }
 
 }

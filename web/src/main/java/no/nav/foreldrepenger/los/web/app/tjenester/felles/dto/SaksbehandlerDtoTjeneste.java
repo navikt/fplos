@@ -3,7 +3,6 @@ package no.nav.foreldrepenger.los.web.app.tjenester.felles.dto;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -50,7 +49,7 @@ public class SaksbehandlerDtoTjeneste {
         return filtrering.getSaksbehandlere().stream()
                 .map(this::tilSaksbehandlerDto)
                 .flatMap(Optional::stream)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     public Optional<SaksbehandlerMedAvdelingerDto> hentSaksbehandlerTilknyttetMinstEnKø(String ident) {

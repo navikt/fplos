@@ -26,14 +26,14 @@ class AnsattTjenesteTest {
     private EnhetstilgangTjeneste enhetstilgangTjeneste;
 
     @BeforeEach
-    public void setup(EntityManager entityManager) {
+    void setup(EntityManager entityManager) {
         var organisasjonRepository = new OrganisasjonRepository(entityManager);
         enhetstilgangTjeneste = Mockito.mock(EnhetstilgangTjeneste.class);
         ansattTjeneste = new AnsattTjeneste(enhetstilgangTjeneste, organisasjonRepository);
     }
 
     @Test
-    public void henter_kun_relevante_avdelingsnavn() {
+    void henter_kun_relevante_avdelingsnavn() {
         var aktuellEnhet = new OrganisasjonsEnhet(Avdeling.AVDELING_DRAMMEN_ENHET, "NAV Enhet 1", Set.of("FOR"));
         var uaktuellEnhet = new OrganisasjonsEnhet("0001", "NAV Uaktuell enhet", Set.of("FOR"));
         var organisasjonsEnheter = List.of(aktuellEnhet, uaktuellEnhet);

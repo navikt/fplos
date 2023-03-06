@@ -48,6 +48,7 @@ public class TilbakekrevingOppgave extends Oppgave {
     }
 
     public TilbakekrevingOppgave() {
+        // Hibernate
     }
 
     public static TilbakekrevingOppgave.Builder tbuilder() {

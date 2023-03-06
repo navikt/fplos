@@ -3,7 +3,6 @@ package no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.oppgave.dto;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javax.validation.constraints.NotNull;
@@ -46,7 +45,7 @@ public class SaknummerIderDto implements AbacDto {
             return new ArrayList<>();
         }
 
-        return Stream.of(saksnummerListe.split(",")).map(s -> Long.valueOf(s.trim())).collect(Collectors.toList());
+        return Stream.of(saksnummerListe.split(",")).map(s -> Long.valueOf(s.trim())).toList();
     }
 
     @Override

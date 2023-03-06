@@ -3,7 +3,6 @@ package no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.reservasjoner
 import static no.nav.foreldrepenger.los.reservasjon.ReservasjonKonstanter.RESERVASJON_AVSLUTTET_AVDELINGSLEDER;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -19,15 +18,11 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import no.nav.foreldrepenger.los.reservasjon.Reservasjon;
 import no.nav.foreldrepenger.los.reservasjon.ReservasjonTjeneste;
 import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.dto.AvdelingEnhetDto;
-import no.nav.foreldrepenger.los.web.app.tjenester.felles.dto.OppgaveDtoTjeneste;
 import no.nav.foreldrepenger.los.web.app.tjenester.felles.dto.ReservasjonDto;
 import no.nav.foreldrepenger.los.web.app.tjenester.felles.dto.SaksbehandlerDtoTjeneste;
 import no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.oppgave.dto.OppgaveIdDto;
@@ -41,18 +36,13 @@ import no.nav.vedtak.sikkerhet.abac.beskyttet.ResourceType;
 @Transactional
 public class AvdelingReservasjonerRestTjeneste {
 
-    private static final Logger LOG = LoggerFactory.getLogger(AvdelingReservasjonerRestTjeneste.class);
-
     private ReservasjonTjeneste reservasjonTjeneste;
-    private OppgaveDtoTjeneste oppgaveDtoTjeneste;
     private SaksbehandlerDtoTjeneste saksbehandlerDtoTjeneste;
 
     @Inject
     public AvdelingReservasjonerRestTjeneste(ReservasjonTjeneste reservasjonTjeneste,
-                                             OppgaveDtoTjeneste oppgaveDtoTjeneste,
                                              SaksbehandlerDtoTjeneste saksbehandlerDtoTjeneste) {
         this.reservasjonTjeneste = reservasjonTjeneste;
-        this.oppgaveDtoTjeneste = oppgaveDtoTjeneste;
         this.saksbehandlerDtoTjeneste = saksbehandlerDtoTjeneste;
     }
 
@@ -63,7 +53,6 @@ public class AvdelingReservasjonerRestTjeneste {
     @Produces("application/json")
     @Operation(description = "Henter alle saksbehandlere", tags = "AvdelingslederReservasjoner")
     @BeskyttetRessurs(actionType = ActionType.READ, resourceType = ResourceType.OPPGAVESTYRING_AVDELINGENHET, sporingslogg = false)
-    @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
     public List<ReservasjonDto> hentAvdelingensReservasjoner(@NotNull @QueryParam("avdelingEnhet") @Valid AvdelingEnhetDto avdelingEnhetDto) {
         var reservasjoner = reservasjonTjeneste.hentReservasjonerForAvdeling(avdelingEnhetDto.getAvdelingEnhet());
         return tilReservasjonDtoListe(reservasjoner);
@@ -76,7 +65,7 @@ public class AvdelingReservasjonerRestTjeneste {
                             .orElseGet(() -> "Ukjent saksbehandler " + reservasjon.getReservertAv());
                     return new ReservasjonDto(reservasjon, reservertAvNavn, null);
                 })
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @POST
@@ -84,7 +73,6 @@ public class AvdelingReservasjonerRestTjeneste {
     @Consumes(MediaType.APPLICATION_JSON)
     @Operation(description = "Opphev reservasjon av oppgave", tags = "AvdelingslederReservasjoner")
     @BeskyttetRessurs(actionType = ActionType.CREATE, resourceType = ResourceType.OPPGAVESTYRING_AVDELINGENHET)
-    @SuppressWarnings("findsecbugs:JAXRS_ENDPOINT")
     public Response opphevOppgaveReservasjon(@NotNull @Parameter(description = "Id for oppgave som reservasjonen er tilknyttet") @Valid OppgaveIdDto oppgaveId) {
         var reservasjon = reservasjonTjeneste.slettReservasjonMedEventLogg(oppgaveId.getVerdi(), RESERVASJON_AVSLUTTET_AVDELINGSLEDER);
         if (reservasjon.isEmpty()) {

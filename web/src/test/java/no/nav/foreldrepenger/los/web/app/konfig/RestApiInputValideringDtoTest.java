@@ -3,6 +3,7 @@ package no.nav.foreldrepenger.los.web.app.konfig;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
+import static org.assertj.core.api.Fail.fail;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedParameterizedType;
@@ -171,7 +172,7 @@ class RestApiInputValideringDtoTest extends RestApiTester {
 
         besøkteKlasser.add(klasse);
         if (klasse.getAnnotation(Entity.class) != null || klasse.getAnnotation(MappedSuperclass.class) != null) {
-            throw new AssertionError("Klassen " + klasse + " er en entitet, kan ikke brukes som DTO. Brukes i " + forrigeKlasse);
+            fail("Klassen " + klasse + " er en entitet, kan ikke brukes som DTO. Brukes i " + forrigeKlasse);
         }
 
         var klasseLocation = codeSource.getLocation();
@@ -191,7 +192,7 @@ class RestApiInputValideringDtoTest extends RestApiTester {
             } else if (getVurderingsalternativer(field) != null) {
                 validerRiktigAnnotert(field); // har konfigurert opp spesifikk validering
             } else if (field.getType().getName().startsWith("java")) {
-                throw new AssertionError(
+                fail(
                         "Feltet " + field + " har ikke påkrevde annoteringer. Trenger evt. utvidelse av denne testen for å akseptere denne typen.");
             } else {
                 validerHarValidAnnotering(field);
@@ -208,7 +209,7 @@ class RestApiInputValideringDtoTest extends RestApiTester {
 
     private static void validerHarValidkodelisteAnnotering(Field field) {
         if (field.getAnnotation(ValidKodeverk.class) == null) {
-            throw new AssertionError("Feltet " + field + " er et kodeverk, og må ha @ValidKodeverk-annotering");
+            fail("Feltet " + field + " er et kodeverk, og må ha @ValidKodeverk-annotering");
         }
     }
 
@@ -217,16 +218,16 @@ class RestApiInputValideringDtoTest extends RestApiTester {
             validerRiktigAnnotert(field);
         }
         var illegal = Arrays.stream(field.getAnnotations()).filter(a -> !ALLOWED_ENUM_ANNOTATIONS.contains(a.annotationType()))
-                .collect(Collectors.toList());
+                .toList();
         if (!illegal.isEmpty()) {
-            throw new AssertionError("Ugyldige annotasjoner funnet på [" + field + "]: " + illegal);
+            fail("Ugyldige annotasjoner funnet på [" + field + "]: " + illegal);
         }
 
     }
 
     private static void validerHarValidAnnotering(Field field) {
         if (field.getAnnotation(Valid.class) == null) {
-            throw new AssertionError("Feltet " + field + " må ha @Valid-annotering.");
+            fail("Feltet " + field + " må ha @Valid-annotering.");
         }
     }
 

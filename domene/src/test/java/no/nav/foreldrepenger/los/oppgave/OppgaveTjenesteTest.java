@@ -11,24 +11,24 @@ import java.util.Arrays;
 
 import javax.persistence.EntityManager;
 
-import no.nav.foreldrepenger.los.reservasjon.ReservasjonRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-import no.nav.foreldrepenger.los.DBTestUtil;
 import no.nav.foreldrepenger.extensions.JpaExtension;
+import no.nav.foreldrepenger.los.DBTestUtil;
 import no.nav.foreldrepenger.los.avdelingsleder.AvdelingslederTjeneste;
 import no.nav.foreldrepenger.los.oppgavekø.KøSortering;
 import no.nav.foreldrepenger.los.oppgavekø.OppgaveFiltrering;
 import no.nav.foreldrepenger.los.oppgavekø.OppgaveKøTjeneste;
 import no.nav.foreldrepenger.los.organisasjon.Avdeling;
 import no.nav.foreldrepenger.los.organisasjon.OrganisasjonRepository;
+import no.nav.foreldrepenger.los.reservasjon.ReservasjonRepository;
 import no.nav.foreldrepenger.los.reservasjon.ReservasjonTjeneste;
 
 
 @ExtendWith(JpaExtension.class)
-public class OppgaveTjenesteTest {
+class OppgaveTjenesteTest {
 
     private static final String AVDELING_BERGEN_ENHET = "4812";
 
@@ -50,7 +50,7 @@ public class OppgaveTjenesteTest {
             .medBehandlingType(BehandlingType.FØRSTEGANGSSØKNAD).build();
 
     @BeforeEach
-    public void setup(EntityManager entityManager) {
+    void setup(EntityManager entityManager) {
         oppgaveRepository = new OppgaveRepository(entityManager);
         var organisasjonRepository = new OrganisasjonRepository(entityManager);
         avdelingslederTjeneste = new AvdelingslederTjeneste(oppgaveRepository, organisasjonRepository);
@@ -82,7 +82,7 @@ public class OppgaveTjenesteTest {
     }
 
     @Test
-    public void testEnFiltreringpåBehandlingstype() {
+    void testEnFiltreringpåBehandlingstype() {
         var listeId = leggeInnEtSettMedOppgaver();
         avdelingslederTjeneste.endreFiltreringBehandlingType(listeId, BehandlingType.FØRSTEGANGSSØKNAD, true);
         var oppgaver = oppgaveKøTjeneste.hentOppgaver(listeId);
@@ -90,7 +90,7 @@ public class OppgaveTjenesteTest {
     }
 
     @Test
-    public void hentOppgaverSortertPåOpprettet() {
+    void hentOppgaverSortertPåOpprettet() {
         var andreOppgave = opprettOgLargeOppgaveTilSortering(9, 8, 10);
         var førsteOppgave = opprettOgLargeOppgaveTilSortering(10, 0, 9);
         var tredjeOppgave = opprettOgLargeOppgaveTilSortering(8, 9, 8);
@@ -106,7 +106,7 @@ public class OppgaveTjenesteTest {
     }
 
     @Test
-    public void hentOppgaverSortertPåFrist() {
+    void hentOppgaverSortertPåFrist() {
         var andreOppgave = opprettOgLargeOppgaveTilSortering(8, 9, 8);
         var førsteOppgave = opprettOgLargeOppgaveTilSortering(0, 10, 0);
         var tredjeOppgave = opprettOgLargeOppgaveTilSortering(9, 8, 10);
@@ -122,7 +122,7 @@ public class OppgaveTjenesteTest {
     }
 
     @Test
-    public void hentOppgaverSortertPåFørsteStønadsdag() {
+    void hentOppgaverSortertPåFørsteStønadsdag() {
         var fjerdeOppgave = opprettOgLargeOppgaveTilSortering(10, 0, 0);
         var førsteOppgave = opprettOgLargeOppgaveTilSortering(8, 9, 10);
         var tredjeOppgave = opprettOgLargeOppgaveTilSortering(9, 8, 8);
@@ -149,18 +149,18 @@ public class OppgaveTjenesteTest {
     }
 
     @Test
-    public void testReservasjon() {
+    void testReservasjon() {
         var oppgaveFiltreringId = leggeInnEtSettMedOppgaver();
         assertThat(oppgaveKøTjeneste.hentOppgaver(oppgaveFiltreringId)).hasSize(3);
-        assertThat(reservasjonTjeneste.hentSaksbehandlersReserverteAktiveOppgaver()).hasSize(0);
-        assertThat(reservasjonTjeneste.hentReservasjonerForAvdeling(AVDELING_DRAMMEN_ENHET)).hasSize(0);
-        assertThat(reservasjonTjeneste.hentSaksbehandlersSisteReserverteOppgaver()).hasSize(0);
+        assertThat(reservasjonTjeneste.hentSaksbehandlersReserverteAktiveOppgaver()).isEmpty();
+        assertThat(reservasjonTjeneste.hentReservasjonerForAvdeling(AVDELING_DRAMMEN_ENHET)).isEmpty();
+        assertThat(reservasjonTjeneste.hentSaksbehandlersSisteReserverteOppgaver()).isEmpty();
 
         reservasjonTjeneste.reserverOppgave(førstegangOppgave);
         assertThat(oppgaveKøTjeneste.hentOppgaver(oppgaveFiltreringId)).hasSize(2);
         assertThat(reservasjonTjeneste.hentSaksbehandlersReserverteAktiveOppgaver()).hasSize(1);
         assertThat(reservasjonTjeneste.hentReservasjonerForAvdeling(AVDELING_DRAMMEN_ENHET)).hasSize(1);
-        assertThat(reservasjonTjeneste.hentReservasjonerForAvdeling(AVDELING_BERGEN_ENHET)).hasSize(0);
+        assertThat(reservasjonTjeneste.hentReservasjonerForAvdeling(AVDELING_BERGEN_ENHET)).isEmpty();
         var reservasjon = reservasjonTjeneste.hentSaksbehandlersReserverteAktiveOppgaver().stream()
                 .map(Oppgave::getReservasjon)
                 .findAny()
@@ -178,13 +178,13 @@ public class OppgaveTjenesteTest {
         var begrunnelse = "Test";
         reservasjonTjeneste.slettReservasjonMedEventLogg(førstegangOppgave.getReservasjon(), begrunnelse);
         assertThat(oppgaveKøTjeneste.hentOppgaver(oppgaveFiltreringId)).hasSize(3);
-        assertThat(reservasjonTjeneste.hentSaksbehandlersReserverteAktiveOppgaver()).hasSize(0);
-        assertThat(reservasjonTjeneste.hentReservasjonerForAvdeling(AVDELING_DRAMMEN_ENHET)).hasSize(0);
+        assertThat(reservasjonTjeneste.hentSaksbehandlersReserverteAktiveOppgaver()).isEmpty();
+        assertThat(reservasjonTjeneste.hentReservasjonerForAvdeling(AVDELING_DRAMMEN_ENHET)).isEmpty();
         assertThat(reservasjonTjeneste.hentSaksbehandlersSisteReserverteOppgaver()).hasSize(1);
     }
 
     @Test
-    public void testOppgaverForandret() {
+    void testOppgaverForandret() {
         var andreOppgave = opprettOgLargeOppgaveTilSortering(8, 9, 10);
         var førsteOppgave = opprettOgLargeOppgaveTilSortering(0, 10, 10);
         var oppgaveIder = Arrays.asList(førsteOppgave.getId(), andreOppgave.getId());

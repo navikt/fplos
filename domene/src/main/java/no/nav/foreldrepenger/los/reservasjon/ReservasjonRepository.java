@@ -1,14 +1,15 @@
 package no.nav.foreldrepenger.los.reservasjon;
 
-import no.nav.foreldrepenger.los.felles.BaseEntitet;
-import no.nav.foreldrepenger.los.oppgave.Oppgave;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Optional;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
+
+import no.nav.foreldrepenger.los.felles.BaseEntitet;
+import no.nav.foreldrepenger.los.oppgave.Oppgave;
 
 @ApplicationScoped
 public class ReservasjonRepository {

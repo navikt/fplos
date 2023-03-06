@@ -5,6 +5,9 @@ import java.time.LocalDateTime;
 
 final class ReservasjonTidspunktUtil {
 
+    private ReservasjonTidspunktUtil() {
+    }
+
     static LocalDateTime utledReservasjonTidspunkt(LocalDate date) {
         var localDateTime = date.atTime(23, 59);
         sjekkGrenseverdier(localDateTime);

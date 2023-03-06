@@ -1,7 +1,5 @@
 package no.nav.foreldrepenger.los.web.app.tjenester.admin;
 
-import static java.util.stream.Collectors.toList;
-
 import java.util.List;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -54,7 +52,7 @@ public class AdminRestTjeneste {
         var behandlinger = behandlingIdListe.stream()
                 .map(EnkelBehandlingIdDto::getBehandlingId)
                 .map(b -> new SynkroniseringHendelseTaskOppretterTjeneste.KildeBehandlingId(Kildesystem.FPSAK, b))
-                .collect(toList());
+                .toList();
         var opprettedeTasker = synkroniseringHendelseTaskOppretterTjeneste.opprettOppgaveEgenskapOppdatererTasks(behandlinger);
         return Response.ok(opprettedeTasker).build();
     }
@@ -69,7 +67,7 @@ public class AdminRestTjeneste {
         var behandlinger = behandlingIdListe.stream()
                 .map(EnkelBehandlingIdDto::getBehandlingId)
                 .map(b -> new SynkroniseringHendelseTaskOppretterTjeneste.KildeBehandlingId(Kildesystem.FPTILBAKE, b))
-                .collect(toList());
+                .toList();
         var opprettedeTasker = synkroniseringHendelseTaskOppretterTjeneste.opprettOppgaveEgenskapOppdatererTasks(behandlinger);
         return Response.ok(opprettedeTasker).build();
     }

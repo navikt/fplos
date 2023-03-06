@@ -14,10 +14,6 @@ import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 
-import no.nav.foreldrepenger.los.domene.typer.BehandlingId;
-import no.nav.foreldrepenger.los.domene.typer.aktør.AktørId;
-import no.nav.foreldrepenger.los.oppgave.OppgaveRepository;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -25,16 +21,19 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import no.nav.foreldrepenger.extensions.JpaExtension;
+import no.nav.foreldrepenger.los.domene.typer.BehandlingId;
+import no.nav.foreldrepenger.los.domene.typer.aktør.AktørId;
 import no.nav.foreldrepenger.los.oppgave.AndreKriterierType;
 import no.nav.foreldrepenger.los.oppgave.BehandlingStatus;
 import no.nav.foreldrepenger.los.oppgave.BehandlingType;
 import no.nav.foreldrepenger.los.oppgave.FagsakYtelseType;
 import no.nav.foreldrepenger.los.oppgave.Oppgave;
 import no.nav.foreldrepenger.los.oppgave.OppgaveEgenskap;
+import no.nav.foreldrepenger.los.oppgave.OppgaveRepository;
 
 @ExtendWith(JpaExtension.class)
 @ExtendWith(MockitoExtension.class)
-public class OppgaveEgenskapHåndtererTest {
+class OppgaveEgenskapHåndtererTest {
 
     private static final BehandlingId BEHANDLING_ID = BehandlingId.random();
 
@@ -51,7 +50,7 @@ public class OppgaveEgenskapHåndtererTest {
     }
 
     @Test
-    public void opprettOppgaveEgenskaperTest() {
+    void opprettOppgaveEgenskaperTest() {
         // arrange
         var ønskedeEgenskaper = kriterieArrayOf(UTLANDSSAK, PAPIRSØKNAD);
         when(oppgaveEgenskapFinner.getSaksbehandlerForTotrinn()).thenReturn("T12345");
@@ -65,7 +64,7 @@ public class OppgaveEgenskapHåndtererTest {
     }
 
     @Test
-    public void deaktiverUaktuelleEksisterendeOppgaveEgenskaper() {
+    void deaktiverUaktuelleEksisterendeOppgaveEgenskaper() {
         var oppgave = lagOppgave();
         oppgaveRepository.lagre(new OppgaveEgenskap(oppgave, PAPIRSØKNAD));
         when(oppgaveEgenskapFinner.getAndreKriterier()).thenReturn(emptyList());
@@ -75,7 +74,7 @@ public class OppgaveEgenskapHåndtererTest {
     }
 
     @Test
-    public void kunEttAktivtTilfelleAvHverEgenskap() {
+    void kunEttAktivtTilfelleAvHverEgenskap() {
         var oppgave = lagOppgave();
         oppgaveRepository.lagre(new OppgaveEgenskap(oppgave, UTLANDSSAK));
         when(oppgaveEgenskapFinner.getAndreKriterier()).thenReturn(List.of(UTLANDSSAK));
@@ -85,7 +84,7 @@ public class OppgaveEgenskapHåndtererTest {
     }
 
     @Test
-    public void deaktiveringHåndtererDuplikateOppgaveEgenskaper() {
+    void deaktiveringHåndtererDuplikateOppgaveEgenskaper() {
         // Bug i prod har opprettet dubletter. Tester deaktivering av samtlige dubletter.
         var oppgave = lagOppgave();
         oppgaveRepository.lagre(new OppgaveEgenskap(oppgave, PAPIRSØKNAD));
