@@ -1,4 +1,4 @@
-# FPLOS
+# FP-LOS
 ===============
 
 [![Bygg og deploy](https://github.com/navikt/fplos/actions/workflows/build.yml/badge.svg?branch=master)](https://github.com/navikt/fplos/actions/workflows/build.yml)

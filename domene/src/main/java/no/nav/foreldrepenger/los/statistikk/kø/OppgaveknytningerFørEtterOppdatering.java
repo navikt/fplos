@@ -1,7 +1,6 @@
 package no.nav.foreldrepenger.los.statistikk.kø;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import no.nav.foreldrepenger.los.oppgavekø.OppgaveFiltreringKnytning;
 
@@ -22,11 +21,11 @@ public class OppgaveknytningerFørEtterOppdatering {
     }
 
     public List<OppgaveFiltreringKnytning> getUtAvKø() {
-        return knytningerFørOppdatering.stream().filter(ok -> !knytningerEtterOppdatering.contains(ok)).collect(Collectors.toList());
+        return knytningerFørOppdatering.stream().filter(ok -> !knytningerEtterOppdatering.contains(ok)).toList();
     }
 
     public List<OppgaveFiltreringKnytning> getInnPåKø() {
-        return knytningerEtterOppdatering.stream().filter(ok -> !knytningerFørOppdatering.contains(ok)).collect(Collectors.toList());
+        return knytningerEtterOppdatering.stream().filter(ok -> !knytningerFørOppdatering.contains(ok)).toList();
     }
 
 }
