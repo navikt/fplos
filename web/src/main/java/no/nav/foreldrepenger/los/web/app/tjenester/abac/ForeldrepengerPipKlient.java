@@ -9,7 +9,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.ws.rs.core.UriBuilder;
 
 @ApplicationScoped
-@RestClientConfig(tokenConfig = TokenFlow.ADAPTIVE, application = FpApplication.FPSAK)
+@RestClientConfig(tokenConfig = TokenFlow.STS_CC, application = FpApplication.FPSAK)
 public class ForeldrepengerPipKlient {
 
     private static final String FPSAK_PIP_ENDPOINT = "/api/pip/pipdata-for-behandling-appintern";
