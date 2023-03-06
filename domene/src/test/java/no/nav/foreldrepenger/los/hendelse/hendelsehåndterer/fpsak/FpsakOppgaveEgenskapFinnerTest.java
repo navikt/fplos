@@ -40,7 +40,7 @@ class FpsakOppgaveEgenskapFinnerTest {
     static LosBehandlingDto lagLosBehandlingDto(LosAksjonspunktDto... dto) {
         return new LosBehandlingDto(UUID.randomUUID(), Kildesystem.FPSAK, "42", Ytelse.FORELDREPENGER, new AktørId("1234"), Behandlingstype.KLAGE,
             Behandlingsstatus.UTREDES, LocalDateTime.now(), "0001", LocalDate.now(), "z999999", List.of(dto),
-            List.of(Behandlingsårsak.KLAGE_TILBAKEBETALING), false, true,
+            List.of(Behandlingsårsak.KLAGE_TILBAKEBETALING), false, true, null,
             new LosBehandlingDto.LosForeldrepengerDto(LocalDate.now(), true, false, false), null);
     }
 
