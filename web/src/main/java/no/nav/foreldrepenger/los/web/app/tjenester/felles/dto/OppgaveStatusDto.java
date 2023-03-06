@@ -1,10 +1,10 @@
 package no.nav.foreldrepenger.los.web.app.tjenester.felles.dto;
 
+import static no.nav.foreldrepenger.los.felles.util.BrukerIdent.brukerIdent;
+
 import java.time.LocalDateTime;
 
 import no.nav.foreldrepenger.los.reservasjon.Reservasjon;
-
-import static no.nav.foreldrepenger.los.felles.util.BrukerIdent.brukerIdent;
 
 public class OppgaveStatusDto {
 
@@ -40,11 +40,8 @@ public class OppgaveStatusDto {
             if (flyttetReservasjonDto != null) {
                 flyttetReservasjon = flyttetReservasjonDto;
             } else {
-                flyttetReservasjon = new FlyttetReservasjonDto(
-                        reservasjonDto.flyttetTidspunkt(),
-                        reservasjonDto.flyttetAv(),
-                        reservasjonDto.flyttetAvNavn(),
-                        reservasjonDto.begrunnelse());
+                flyttetReservasjon = new FlyttetReservasjonDto(reservasjonDto.flyttetTidspunkt(), reservasjonDto.flyttetAv(),
+                    reservasjonDto.flyttetAvNavn(), reservasjonDto.begrunnelse());
             }
         }
     }

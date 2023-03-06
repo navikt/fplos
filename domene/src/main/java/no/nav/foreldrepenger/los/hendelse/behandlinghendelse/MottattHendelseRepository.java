@@ -11,8 +11,6 @@ import org.hibernate.jpa.QueryHints;
 @ApplicationScoped
 public class MottattHendelseRepository {
 
-    private static final LocalDateTime TID = LocalDateTime.of(2022,12,22, 15, 18);
-
     private EntityManager entityManager;
 
     MottattHendelseRepository() {
@@ -40,8 +38,8 @@ public class MottattHendelseRepository {
 
     public void slettMånedsGamle() {
         entityManager.createNativeQuery("DELETE FROM MOTTATT_HENDELSE WHERE opprettet_tid < :foer")
-                .setParameter("foer", LocalDateTime.now().minusWeeks(4))
-                .executeUpdate();
+            .setParameter("foer", LocalDateTime.now().minusWeeks(4))
+            .executeUpdate();
         entityManager.flush();
     }
 

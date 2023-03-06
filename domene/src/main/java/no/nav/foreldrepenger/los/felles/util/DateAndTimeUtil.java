@@ -8,13 +8,9 @@ public final class DateAndTimeUtil {
 
     public static final TemporalAdjuster justerTilNesteUkedag = TemporalAdjusters.ofDateAdjuster(d -> {
         var day = d.getDayOfWeek();
-        return day == DayOfWeek.SATURDAY || day == DayOfWeek.SUNDAY
-                ? d.with(TemporalAdjusters.next(DayOfWeek.MONDAY))
-                : d;
+        return day == DayOfWeek.SATURDAY || day == DayOfWeek.SUNDAY ? d.with(TemporalAdjusters.next(DayOfWeek.MONDAY)) : d;
     });
 
-    public DateAndTimeUtil() {
+    private DateAndTimeUtil() {
     }
-
-
 }

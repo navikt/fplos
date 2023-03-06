@@ -1,14 +1,15 @@
 package no.nav.foreldrepenger.los.oppgavekø;
 
-import no.nav.foreldrepenger.los.felles.BaseEntitet;
-import no.nav.vedtak.felles.jpa.converters.BooleanToStringConverter;
+import java.time.LocalDate;
 
 import javax.persistence.Column;
 import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import java.time.LocalDate;
+
+import no.nav.foreldrepenger.los.felles.BaseEntitet;
+import no.nav.vedtak.felles.jpa.converters.BooleanToStringConverter;
 
 @Entity(name = "OppgaveFiltreringOppdaterer")
 @Table(name = "OPPGAVE_FILTRERING")
@@ -44,31 +45,31 @@ public class OppgaveFiltreringOppdaterer extends BaseEntitet {
     }
 
     public OppgaveFiltreringOppdaterer endreSortering(String sorteringskode) {
-        sortering =  sorteringskode;
+        sortering = sorteringskode;
         return this;
     }
 
-    public OppgaveFiltreringOppdaterer endreErDynamiskPeriode(boolean erDynamiskPeriode){
+    public OppgaveFiltreringOppdaterer endreErDynamiskPeriode(boolean erDynamiskPeriode) {
         this.erDynamiskPeriode = erDynamiskPeriode;
         return this;
     }
 
-    public OppgaveFiltreringOppdaterer endreFomDato(LocalDate fomDato){
+    public OppgaveFiltreringOppdaterer endreFomDato(LocalDate fomDato) {
         this.fomDato = fomDato;
         return this;
     }
 
-    public OppgaveFiltreringOppdaterer endreTomDato(LocalDate tomDato){
+    public OppgaveFiltreringOppdaterer endreTomDato(LocalDate tomDato) {
         this.tomDato = tomDato;
         return this;
     }
 
-    public OppgaveFiltreringOppdaterer endreFraVerdi(Long fra){
+    public OppgaveFiltreringOppdaterer endreFraVerdi(Long fra) {
         this.fra = fra;
         return this;
     }
 
-    public OppgaveFiltreringOppdaterer endreTilVerdi(Long til){
+    public OppgaveFiltreringOppdaterer endreTilVerdi(Long til) {
         this.til = til;
         return this;
     }

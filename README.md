@@ -1,4 +1,4 @@
-# FPLOS
+# FP-LOS
 ===============
 
 [![Bygg og deploy](https://github.com/navikt/fplos/actions/workflows/build.yml/badge.svg?branch=master)](https://github.com/navikt/fplos/actions/workflows/build.yml)
@@ -21,7 +21,7 @@ https://confluence.adeo.no/display/TVF/FP-LOS
 
 ## Skisse
 
-![Skisse av løsning](skisse-løsning-v19.png)
+![Skisse av løsning](docs/skisse-løsning-v19.png)
 
 ## Bygge og kjøre docker lokalt
 Greit for å undersøke om containerne fungerer. Har lagt med noen variabler i `docker.list` denne er ikke 100% og bør

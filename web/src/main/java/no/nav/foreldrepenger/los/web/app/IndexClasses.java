@@ -14,7 +14,6 @@ import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 import org.jboss.jandex.AnnotationTarget.Kind;
 import org.jboss.jandex.ClassInfo;
@@ -24,7 +23,9 @@ import org.jboss.jandex.IndexReader;
 import org.jboss.jandex.Indexer;
 import org.slf4j.Logger;
 
-/** Henter persistert index (hvis generert) eller genererer index for angitt location (typisk matcher en jar/war fil). */
+/**
+ * Henter persistert index (hvis generert) eller genererer index for angitt location (typisk matcher en jar/war fil).
+ */
 public class IndexClasses {
     private static final Logger LOG = org.slf4j.LoggerFactory.getLogger(IndexClasses.class);
 
@@ -90,24 +91,19 @@ public class IndexClasses {
         var uriString = location.toString();
         var classLoaders = Arrays.asList(getClass().getClassLoader(), Thread.currentThread().getContextClassLoader());
 
-        return classLoaders
-            .stream()
-            .flatMap(cl -> {
-                try {
-                    return Collections.list(cl.getResources("META-INF/" + jandexIndexFileName)).stream();
-                } catch (IOException e2) {
-                    throw new IllegalArgumentException("Kan ikke lese jandex index fil", e2);
-                }
-            })
-            .filter(url -> {
-                try {
-                    return String.valueOf(url.toURI()).startsWith(uriString);
-                } catch (URISyntaxException e1) {
-                    throw new IllegalArgumentException("Kan ikke scanne URI", e1);
-                }
-            })
-            .findFirst()
-            .orElseThrow(() -> new IllegalStateException("Fant ikke jandex index for location=" + location));
+        return classLoaders.stream().flatMap(cl -> {
+            try {
+                return Collections.list(cl.getResources("META-INF/" + jandexIndexFileName)).stream();
+            } catch (IOException e2) {
+                throw new IllegalArgumentException("Kan ikke lese jandex index fil", e2);
+            }
+        }).filter(url -> {
+            try {
+                return String.valueOf(url.toURI()).startsWith(uriString);
+            } catch (URISyntaxException e1) {
+                throw new IllegalArgumentException("Kan ikke scanne URI", e1);
+            }
+        }).findFirst().orElseThrow(() -> new IllegalStateException("Fant ikke jandex index for location=" + location));
     }
 
     public List<Class<?>> getClassesWithAnnotation(Class<?> annotationClass) {
@@ -132,7 +128,7 @@ public class IndexClasses {
 
     public List<Class<?>> getSubClassesWithAnnotation(Class<?> klasse, Class<?> annotationClass) {
         var classesWithAnnotation = getClassesWithAnnotation(annotationClass);
-        return classesWithAnnotation.stream().filter(c -> klasse.isAssignableFrom(c)).collect(Collectors.toList());
+        return classesWithAnnotation.stream().filter(klasse::isAssignableFrom).toList();
     }
 
     public List<Class<?>> getClasses(Predicate<ClassInfo> predicate, Predicate<Class<?>> classPredicate) {
@@ -156,6 +152,6 @@ public class IndexClasses {
     }
 
     public static IndexClasses getIndexFor(final URI location) {
-        return INDEXES.computeIfAbsent(location, uri -> new IndexClasses(uri));
+        return INDEXES.computeIfAbsent(location, IndexClasses::new);
     }
 }

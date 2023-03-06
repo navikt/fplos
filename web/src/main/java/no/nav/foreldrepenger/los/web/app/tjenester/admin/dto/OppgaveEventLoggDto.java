@@ -7,14 +7,10 @@ import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.Op
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveEventType;
 import no.nav.foreldrepenger.los.oppgave.AndreKriterierType;
 
-public record OppgaveEventLoggDto(BehandlingId behandlingId,
-                                  OppgaveEventType eventType,
-                                  AndreKriterierType andreKriterierType,
-                                  String behandlendeEnhet,
-                                  LocalDateTime opprettetTidspunkt) {
+public record OppgaveEventLoggDto(BehandlingId behandlingId, OppgaveEventType eventType, AndreKriterierType andreKriterierType,
+                                  String behandlendeEnhet, LocalDateTime opprettetTidspunkt) {
 
     public OppgaveEventLoggDto(OppgaveEventLogg o) {
-        this(o.getBehandlingId(), o.getEventType(), o.getAndreKriterierType(), o.getBehandlendeEnhet(),
-                o.getOpprettetTidspunkt());
+        this(o.getBehandlingId(), o.getEventType(), o.getAndreKriterierType(), o.getBehandlendeEnhet(), o.getOpprettetTidspunkt());
     }
 }

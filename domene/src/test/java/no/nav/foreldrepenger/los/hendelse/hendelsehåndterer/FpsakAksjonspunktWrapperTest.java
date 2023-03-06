@@ -13,13 +13,25 @@ import no.nav.foreldrepenger.los.oppgave.AndreKriterierType;
 
 class FpsakAksjonspunktWrapperTest {
 
-    private final Aksjonspunkt apOverstyrtTilNasjonal = Aksjonspunkt.builder().medStatus("OPPR").medDefinisjon("6068").medBegrunnelse("NASJONAL").build();
-    private final Aksjonspunkt apOverstyrtTilBosattUtland = Aksjonspunkt.builder().medStatus("OPPR").medDefinisjon("6068").medBegrunnelse("BOSATT_UTLAND").build();
-    private final Aksjonspunkt apOverstyrtTilEØSBosattNorge = Aksjonspunkt.builder().medStatus("OPPR").medDefinisjon("6068").medBegrunnelse("EØS_BOSATT_NORGE").build();
+    private final Aksjonspunkt apOverstyrtTilNasjonal = Aksjonspunkt.builder()
+        .medStatus("OPPR")
+        .medDefinisjon("6068")
+        .medBegrunnelse("NASJONAL")
+        .build();
+    private final Aksjonspunkt apOverstyrtTilBosattUtland = Aksjonspunkt.builder()
+        .medStatus("OPPR")
+        .medDefinisjon("6068")
+        .medBegrunnelse("BOSATT_UTLAND")
+        .build();
+    private final Aksjonspunkt apOverstyrtTilEØSBosattNorge = Aksjonspunkt.builder()
+        .medStatus("OPPR")
+        .medDefinisjon("6068")
+        .medBegrunnelse("EØS_BOSATT_NORGE")
+        .build();
     private final Aksjonspunkt apVurderSed = Aksjonspunkt.builder().medStatus("OPPR").medDefinisjon("5068").medBegrunnelse("").build();
 
     @Test
-    public void skalMappeKoderTilAndreKriterierTyper() {
+    void skalMappeKoderTilAndreKriterierTyper() {
         var cases = new HashMap<String, AndreKriterierType>();
         cases.put("5083", AndreKriterierType.VURDER_FORMKRAV);
         cases.put("5082", AndreKriterierType.VURDER_FORMKRAV);
@@ -35,7 +47,7 @@ class FpsakAksjonspunktWrapperTest {
     }
 
     @Test
-    public void skalIkkeReturnereDuplikateAndreKriterierTyper() {
+    void skalIkkeReturnereDuplikateAndreKriterierTyper() {
         var ap = åpentAksjonspunkt("5082");
         var apISammeGruppe = åpentAksjonspunkt("5083");
         var result = result(ap, apISammeGruppe);
@@ -43,26 +55,26 @@ class FpsakAksjonspunktWrapperTest {
     }
 
     @Test
-    public void skalIkkeMappeInaktiveAksjonspunktTilAndreKriterierTyper() {
+    void skalIkkeMappeInaktiveAksjonspunktTilAndreKriterierTyper() {
         var ap = Aksjonspunkt.builder().medStatus("AVBR").medDefinisjon("5082").medBegrunnelse("").build();
         var result = result(ap);
         assertThat(result).isEmpty();
     }
 
     @Test
-    public void overstyrtTilIkkeUtlandSkalIkkeGiUtlandOppgaveegenskap() {
+    void overstyrtTilIkkeUtlandSkalIkkeGiUtlandOppgaveegenskap() {
         var result = result(apOverstyrtTilNasjonal, apVurderSed);
         assertThat(result).isEmpty();
     }
 
     @Test
-    public void overstyrtTilBosattUtlandSkalGiUtlandOppgaveegenskap() {
+    void overstyrtTilBosattUtlandSkalGiUtlandOppgaveegenskap() {
         var result = result(apOverstyrtTilBosattUtland);
         assertThat(result).contains(AndreKriterierType.UTLANDSSAK);
     }
 
     @Test
-    public void overstyrtTilEøsBosattNorgeSkalGiUtlandOppgaveegenskap() {
+    void overstyrtTilEøsBosattNorgeSkalGiUtlandOppgaveegenskap() {
         var result = result(apOverstyrtTilEØSBosattNorge);
         assertThat(result).contains(AndreKriterierType.UTLANDSSAK);
     }
@@ -72,11 +84,7 @@ class FpsakAksjonspunktWrapperTest {
     }
 
     private static Aksjonspunkt åpentAksjonspunkt(String definisjonKode) {
-        return Aksjonspunkt.builder()
-                .medBegrunnelse("begrunnelse")
-                .medDefinisjon(definisjonKode)
-                .medStatus("OPPR")
-                .build();
+        return Aksjonspunkt.builder().medBegrunnelse("begrunnelse").medDefinisjon(definisjonKode).medStatus("OPPR").build();
     }
 
 }

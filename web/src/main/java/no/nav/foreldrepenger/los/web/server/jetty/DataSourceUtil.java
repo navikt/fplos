@@ -1,14 +1,14 @@
 package no.nav.foreldrepenger.los.web.server.jetty;
 
-import java.util.Properties;
-
-import javax.sql.DataSource;
-
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 
 import io.micrometer.core.instrument.Metrics;
 import no.nav.foreldrepenger.konfig.Environment;
+
+import javax.sql.DataSource;
+
+import java.util.Properties;
 
 class DataSourceUtil {
     private static final Environment ENV = Environment.current();

@@ -16,8 +16,8 @@ public class Aksjonspunkt {
     public static final String MANUELT_SATT_PÅ_VENT_KODE = "7001";
     public static final String PÅ_VENT_KODEGRUPPE_STARTS_WITH = "7";
     public static final String TIL_BESLUTTER_KODE = "5016";
-    public static final List<String> REGISTRER_PAPIRSØKNAD_KODE = asList("5012", "5040", "5057", "5096");
-    public static final List<String> VURDER_FORMKRAV_GRUPPE = asList("5082", "5083");
+    protected static final List<String> REGISTRER_PAPIRSØKNAD_KODE = asList("5012", "5040", "5057", "5096");
+    protected static final List<String> VURDER_FORMKRAV_GRUPPE = asList("5082", "5083");
 
     public static final String AUTOMATISK_MARKERING_SOM_UTLAND = "5068";
     public static final String MANUELL_MARKERING_SOM_UTLAND = "6068";
@@ -31,6 +31,7 @@ public class Aksjonspunkt {
     private LocalDateTime fristTid;
 
     public Aksjonspunkt() {
+        // Jackson
     }
 
     public String getBegrunnelse() {
@@ -78,13 +79,14 @@ public class Aksjonspunkt {
     }
 
     public boolean erManueltOverstyrtTilUtenlandssak() {
-        return !erAvbrutt()
-                && MANUELL_MARKERING_SOM_UTLAND.equals(definisjonKode)
-                && (EØS_BOSATT_NORGE.equals(begrunnelse) || BOSATT_UTLAND.equals(begrunnelse));
+        return !erAvbrutt() && MANUELL_MARKERING_SOM_UTLAND.equals(definisjonKode) && (EØS_BOSATT_NORGE.equals(begrunnelse) || BOSATT_UTLAND.equals(
+            begrunnelse));
     }
 
     public boolean erManueltOverstyrtTilNasjonalSak() {
-        if (erAvbrutt()) return false;
+        if (erAvbrutt()) {
+            return false;
+        }
         var erManueltOverstyrtUtland = MANUELL_MARKERING_SOM_UTLAND.equals(definisjonKode);
         return erManueltOverstyrtUtland && NASJONAL.equals(begrunnelse);
     }
@@ -95,11 +97,11 @@ public class Aksjonspunkt {
 
     public static Aksjonspunkt aksjonspunktFra(LosBehandlingDto.LosAksjonspunktDto aksjonspunktDto) {
         return Aksjonspunkt.builder()
-                .medDefinisjon(aksjonspunktDto.definisjon())
-                .medStatus(mapAksjonspunktstatus(aksjonspunktDto.status()))
-                .medBegrunnelse(aksjonspunktDto.begrunnelse())
-                .medFristTid(aksjonspunktDto.fristTid())
-                .build();
+            .medDefinisjon(aksjonspunktDto.definisjon())
+            .medStatus(mapAksjonspunktstatus(aksjonspunktDto.status()))
+            .medBegrunnelse(aksjonspunktDto.begrunnelse())
+            .medFristTid(aksjonspunktDto.fristTid())
+            .build();
     }
 
     private static String mapAksjonspunktstatus(Aksjonspunktstatus status) {
@@ -117,26 +119,26 @@ public class Aksjonspunkt {
     public static class Builder {
         private final Aksjonspunkt aksjonspunkt;
 
-        public Builder(){
+        public Builder() {
             aksjonspunkt = new Aksjonspunkt();
         }
 
-        public Aksjonspunkt.Builder medDefinisjon(String definisjonKode){
+        public Aksjonspunkt.Builder medDefinisjon(String definisjonKode) {
             aksjonspunkt.definisjonKode = definisjonKode;
             return this;
         }
 
-        public Aksjonspunkt.Builder medStatus(String statusKode){
+        public Aksjonspunkt.Builder medStatus(String statusKode) {
             aksjonspunkt.statusKode = statusKode;
             return this;
         }
 
-        public Aksjonspunkt.Builder medBegrunnelse(String begrunnelse){
+        public Aksjonspunkt.Builder medBegrunnelse(String begrunnelse) {
             aksjonspunkt.begrunnelse = begrunnelse;
             return this;
         }
 
-        public Aksjonspunkt.Builder medFristTid(LocalDateTime fristTid){
+        public Aksjonspunkt.Builder medFristTid(LocalDateTime fristTid) {
             aksjonspunkt.fristTid = fristTid;
             return this;
         }

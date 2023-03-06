@@ -17,20 +17,17 @@ import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.nøkkeltall.å
 @ApplicationScoped
 class HentKodeverkTjeneste {
 
-    private final static Map<String, Collection<? extends Kodeverdi>> KODEVERK = Map.of(
-            BehandlingType.class.getSimpleName(), List.of(BehandlingType.values()),
-            FagsakYtelseType.class.getSimpleName(), List.of(FagsakYtelseType.values()),
-            KøSortering.class.getSimpleName(), List.of(KøSortering.values()),
-            FagsakStatus.class.getSimpleName(), List.of(FagsakStatus.values()),
-            AndreKriterierType.class.getSimpleName(), List.of(AndreKriterierType.values()),
-            BehandlingVenteStatus.class.getSimpleName(), List.of(BehandlingVenteStatus.values()));
+    private static final Map<String, Collection<Kodeverdi>> KODEVERK = Map.of(BehandlingType.class.getSimpleName(), List.of(BehandlingType.values()),
+        FagsakYtelseType.class.getSimpleName(), List.of(FagsakYtelseType.values()), KøSortering.class.getSimpleName(), List.of(KøSortering.values()),
+        FagsakStatus.class.getSimpleName(), List.of(FagsakStatus.values()), AndreKriterierType.class.getSimpleName(),
+        List.of(AndreKriterierType.values()), BehandlingVenteStatus.class.getSimpleName(), List.of(BehandlingVenteStatus.values()));
 
 
     HentKodeverkTjeneste() {
         // cdi
     }
 
-    Map<String, Collection<? extends Kodeverdi>> hentGruppertKodeliste() {
+    Map<String, Collection<Kodeverdi>> hentGruppertKodeliste() {
         return KODEVERK;
     }
 }

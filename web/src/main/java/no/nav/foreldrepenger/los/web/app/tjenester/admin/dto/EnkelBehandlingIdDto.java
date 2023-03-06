@@ -8,6 +8,7 @@ import no.nav.vedtak.sikkerhet.abac.AbacDataAttributter;
 import no.nav.vedtak.sikkerhet.abac.AbacDto;
 
 import javax.validation.Valid;
+
 import java.util.UUID;
 
 public class EnkelBehandlingIdDto implements AbacDto {

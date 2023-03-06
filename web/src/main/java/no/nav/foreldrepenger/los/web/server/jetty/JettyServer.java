@@ -82,10 +82,8 @@ public class JettyServer {
         }
 
         var factory = new DefaultAuthConfigFactory();
-        factory.registerConfigProvider(new JaspiAuthConfigProvider(new OidcAuthModule()),
-                "HttpServlet",
-                "server " + CONTEXT_PATH,
-                "OIDC Authentication");
+        factory.registerConfigProvider(new JaspiAuthConfigProvider(new OidcAuthModule()), "HttpServlet", "server " + CONTEXT_PATH,
+            "OIDC Authentication");
 
         AuthConfigFactory.setFactory(factory);
     }
@@ -102,9 +100,9 @@ public class JettyServer {
         var storePath = ENV.getProperty(trustStorePathProp, defaultLocation);
         var storeFile = new File(storePath);
         if (!storeFile.exists()) {
-            throw new IllegalStateException("Finner ikke truststore i " + storePath
-                    + "\n\tKonfigurer enten som System property '" + trustStorePathProp + "' eller environment variabel '"
-                    + trustStorePathProp.toUpperCase().replace('.', '_') + "'");
+            throw new IllegalStateException(
+                "Finner ikke truststore i " + storePath + "\n\tKonfigurer enten som System property '" + trustStorePathProp
+                    + "' eller environment variabel '" + trustStorePathProp.toUpperCase().replace('.', '_') + "'");
         }
         var password = ENV.getProperty(trustStorePasswordProp, "changeit");
         System.setProperty(trustStorePathProp, storeFile.getAbsolutePath());
@@ -114,12 +112,12 @@ public class JettyServer {
     private static void migrerDatabase(DataSource dataSource) {
         try {
             Flyway.configure()
-                    .dataSource(dataSource)
-                    .locations("classpath:/db/migration/defaultDS")
-                    .table("schema_version")
-                    .baselineOnMigrate(true)
-                    .load()
-                    .migrate();
+                .dataSource(dataSource)
+                .locations("classpath:/db/migration/defaultDS")
+                .table("schema_version")
+                .baselineOnMigrate(true)
+                .load()
+                .migrate();
         } catch (FlywayException e) {
             LOG.error("Feil under migrering av databasen.");
             throw e;

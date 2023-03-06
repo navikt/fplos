@@ -12,8 +12,9 @@ public class TilbakekrevingOppgaveEgenskapFinner implements OppgaveEgenskapFinne
     private final String saksbehandlerForTotrinn;
 
     public TilbakekrevingOppgaveEgenskapFinner(List<LosBehandlingDto.LosAksjonspunktDto> aksjonspunkter, String saksbehandler) {
-        this.andreKriterier = aksjonspunkter.stream().anyMatch(a -> a.definisjon().equals("5005") && Aksjonspunktstatus.OPPRETTET.equals(a.status())) ?
-            List.of(AndreKriterierType.TIL_BESLUTTER) : List.of();
+        this.andreKriterier = aksjonspunkter.stream()
+            .anyMatch(a -> a.definisjon().equals("5005") && Aksjonspunktstatus.OPPRETTET.equals(a.status())) ? List.of(
+            AndreKriterierType.TIL_BESLUTTER) : List.of();
         this.saksbehandlerForTotrinn = saksbehandler;
     }
 

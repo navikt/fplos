@@ -31,14 +31,13 @@ public class SakslisteOgAvdelingDto implements AbacDto {
         return sakslisteId;
     }
 
-    public AvdelingEnhetDto getAvdelingEnhet() { return avdelingEnhet; }
+    public AvdelingEnhetDto getAvdelingEnhet() {
+        return avdelingEnhet;
+    }
 
     @Override
     public String toString() {
-        return "SakslisteOgAvdelingDto{" +
-                "sakslisteId='" + sakslisteId + '\'' +
-                "avdelingEnhet='" + avdelingEnhet + '\'' +
-                '}';
+        return "SakslisteOgAvdelingDto{" + "sakslisteId='" + sakslisteId + '\'' + "avdelingEnhet='" + avdelingEnhet + '\'' + '}';
     }
 
     @Override

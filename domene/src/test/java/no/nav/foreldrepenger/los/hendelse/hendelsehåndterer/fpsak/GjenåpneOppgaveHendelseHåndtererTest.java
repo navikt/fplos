@@ -63,11 +63,12 @@ class GjenåpneOppgaveHendelseHåndtererTest {
         oppgaveRepository.lagre(eksisterendeOppgave);
 
         reservasjonTjeneste.reserverOppgave(eksisterendeOppgave);
-        gjenåpneOppgaveHåndterer = new GjenåpneOppgaveOppgavetransisjonHåndterer(oppgaveRepository, oppgaveEgenskapHåndterer, køStatistikk, reservasjonTjeneste);
+        gjenåpneOppgaveHåndterer = new GjenåpneOppgaveOppgavetransisjonHåndterer(oppgaveRepository, oppgaveEgenskapHåndterer, køStatistikk,
+            reservasjonTjeneste);
     }
 
     @Test
-    public void skalVidereføreNyligUtløptReservasjon() {
+    void skalVidereføreNyligUtløptReservasjon() {
         // arrange
         reservasjonTjeneste.reserverOppgave(eksisterendeOppgave);
         var behandling = behandlingFpsak;
@@ -85,17 +86,16 @@ class GjenåpneOppgaveHendelseHåndtererTest {
     }
 
     @Test
-    public void skalIkkeVidereReservasjonVedNyEnhet() {
+    void skalIkkeVidereReservasjonVedNyEnhet() {
         // arrange
         reservasjonTjeneste.reserverOppgave(eksisterendeOppgave);
         eksisterendeOppgave.setAktiv(true);
         oppgaveRepository.lagre(eksisterendeOppgave);
         var b = behandlingFpsak;
         new OppgaveTjeneste(oppgaveRepository, reservasjonTjeneste).avsluttOppgaveUtenEventLoggAvsluttTilknyttetReservasjon(behandlingId);
-        var nyEnhetBehandlingFpsak = new LosBehandlingDto(b.behandlingUuid(), b.kildesystem(), b.saksnummer(), b.ytelse(),
-                b.aktørId(), b.behandlingstype(), b.behandlingsstatus(), b.opprettetTidspunkt(), "1000",
-                b.behandlingsfrist(), b.ansvarligSaksbehandlerIdent(), b.aksjonspunkt(), b.behandlingsårsaker(),
-                b.faresignaler(), b.refusjonskrav(), b.foreldrepengerDto(), b.tilbakeDto());
+        var nyEnhetBehandlingFpsak = new LosBehandlingDto(b.behandlingUuid(), b.kildesystem(), b.saksnummer(), b.ytelse(), b.aktørId(),
+            b.behandlingstype(), b.behandlingsstatus(), b.opprettetTidspunkt(), "1000", b.behandlingsfrist(), b.ansvarligSaksbehandlerIdent(),
+            b.aksjonspunkt(), b.behandlingsårsaker(), b.faresignaler(), b.refusjonskrav(), b.foreldrepengerDto(), b.tilbakeDto());
 
         // act
         gjenåpneOppgaveHåndterer.håndter(behandlingId, nyEnhetBehandlingFpsak);
@@ -107,30 +107,27 @@ class GjenåpneOppgaveHendelseHåndtererTest {
     }
 
     @Test
-    public void skalOppretteNyOppgave() {
+    void skalOppretteNyOppgave() {
         var behandlingFpsakBygget = behandlingFpsak;
         oppgaveTjeneste.avsluttOppgaveUtenEventLoggAvsluttTilknyttetReservasjon(behandlingId);
 
         gjenåpneOppgaveHåndterer.håndter(behandlingId, behandlingFpsakBygget);
 
         var oppgave = DBTestUtil.hentAlle(entityManager, Oppgave.class);
-        var sisteOppgave = oppgave.stream().max(Comparator.comparing(BaseEntitet::getOpprettetTidspunkt))
-                .orElseGet(() -> fail("Fant ikke oppgave"));
-        assertThatOppgave(sisteOppgave)
-                .harAktiv(true)
-                .harBehandlingId(behandlingId)
-                .harBehandlendeEnhet(kopiAvEksisterendeOppgave.getBehandlendeEnhet());
+        var sisteOppgave = oppgave.stream().max(Comparator.comparing(BaseEntitet::getOpprettetTidspunkt)).orElseGet(() -> fail("Fant ikke oppgave"));
+        assertThatOppgave(sisteOppgave).harAktiv(true)
+            .harBehandlingId(behandlingId)
+            .harBehandlendeEnhet(kopiAvEksisterendeOppgave.getBehandlendeEnhet());
     }
 
     @Test
-    public void skalKasteExceptionVedEksisterendeOppgave() {
-        assertThatThrownBy(() -> gjenåpneOppgaveHåndterer.håndter(behandlingId, behandlingFpsak))
-                .isInstanceOf(IllegalStateException.class)
-                .hasMessageStartingWith("Fant eksisterende oppgave");
+    void skalKasteExceptionVedEksisterendeOppgave() {
+        assertThatThrownBy(() -> gjenåpneOppgaveHåndterer.håndter(behandlingId, behandlingFpsak)).isInstanceOf(IllegalStateException.class)
+            .hasMessageStartingWith("Fant eksisterende oppgave");
     }
 
     @Test
-    public void skalOppretteOppgaveEventLogg() {
+    void skalOppretteOppgaveEventLogg() {
         var behandlingFpsakBygget = behandlingFpsak;
         oppgaveTjeneste.avsluttOppgaveUtenEventLoggAvsluttTilknyttetReservasjon(behandlingId);
 

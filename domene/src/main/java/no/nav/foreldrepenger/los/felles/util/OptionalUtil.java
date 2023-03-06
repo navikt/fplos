@@ -1,14 +1,14 @@
 package no.nav.foreldrepenger.los.felles.util;
 
-import io.micrometer.core.instrument.Counter;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import static no.nav.vedtak.log.metrics.MetricsUtil.REGISTRY;
 
 import java.util.Optional;
 import java.util.function.Supplier;
 
-import static no.nav.vedtak.log.metrics.MetricsUtil.REGISTRY;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import io.micrometer.core.instrument.Counter;
 
 public final class OptionalUtil {
 
@@ -16,7 +16,7 @@ public final class OptionalUtil {
     private static final String SUCCESS = "success";
     private static final String FAILURE = "failure";
 
-    public OptionalUtil() {
+    private OptionalUtil() {
     }
 
     public static <T> Optional<T> tryOrEmpty(Supplier<T> supplier, String identifikator) {
@@ -34,10 +34,10 @@ public final class OptionalUtil {
 
     private static Counter counter(String status, String identifikator) {
         return Counter.builder("foreldrepenger.fplos.tryorempty")
-                .tag("status", status)
-                .tag("identifikator", identifikator)
-                .description("TryOrEmpty best effort result")
-                .register(REGISTRY);
+            .tag("status", status)
+            .tag("identifikator", identifikator)
+            .description("TryOrEmpty best effort result")
+            .register(REGISTRY);
     }
 
 }

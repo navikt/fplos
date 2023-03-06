@@ -44,16 +44,16 @@ public class SakslisteNavnDto implements AbacDto {
         return navn;
     }
 
-    public AvdelingEnhetDto getAvdelingEnhet(){
+    public AvdelingEnhetDto getAvdelingEnhet() {
         return avdelingEnhet;
     }
 
     @Override
     public String toString() {
         return "<id=" + sakslisteId + //$NON-NLS-1$
-                ", navn=" + navn + //$NON-NLS-1$
-                ", avdelingEnhet=" + avdelingEnhet + //$NON-NLS-1$
-                ">";
+            ", navn=" + navn + //$NON-NLS-1$
+            ", avdelingEnhet=" + avdelingEnhet + //$NON-NLS-1$
+            ">";
     }
 
     @Override

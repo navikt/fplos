@@ -12,7 +12,6 @@ import static no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.FpsakO
 
 import java.util.List;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,7 +30,7 @@ public final class TransisjonUtleder {
 
     static Oppgavetransisjon utledAktuellTransisjon(BehandlingId behandlingId, LosBehandlingDto behandlingFpsak, OppgaveHistorikk oppgaveHistorikk) {
         LOG.info("Utleder aktuell oppgavetransisjon for behandlingId {}, oppgavehistorikk {}", behandlingId, oppgaveHistorikk);
-        var aksjonspunkter = behandlingFpsak.aksjonspunkt().stream().map(Aksjonspunkt::aksjonspunktFra).collect(Collectors.toList());
+        var aksjonspunkter = behandlingFpsak.aksjonspunkt().stream().map(Aksjonspunkt::aksjonspunktFra).toList();
 
         if (erIngenÅpne(aksjonspunkter)) {
             if (oppgaveHistorikk.erUtenHistorikk() || oppgaveHistorikk.erIngenÅpenOppgave()) {
@@ -48,22 +47,18 @@ public final class TransisjonUtleder {
         }
 
         if (finn(Aksjonspunkt::erTilBeslutter, aksjonspunkter)) {
-            return oppgaveHistorikk.erÅpenOppgave() && oppgaveHistorikk.erSisteOpprettedeOppgaveTilBeslutter()
-                    ? OPPDATER_OPPGAVE
-                    : OPPRETT_BESLUTTEROPPGAVE;
+            return oppgaveHistorikk.erÅpenOppgave()
+                && oppgaveHistorikk.erSisteOpprettedeOppgaveTilBeslutter() ? OPPDATER_OPPGAVE : OPPRETT_BESLUTTEROPPGAVE;
         }
 
         if (finn(Aksjonspunkt::erRegistrerPapirSøknad, aksjonspunkter)) {
-            return oppgaveHistorikk.erÅpenOppgave() && oppgaveHistorikk.erSisteOpprettedeOppgavePapirsøknad()
-                    ? OPPDATER_OPPGAVE
-                    : OPPRETT_PAPIRSØKNADOPPGAVE;
+            return oppgaveHistorikk.erÅpenOppgave()
+                && oppgaveHistorikk.erSisteOpprettedeOppgavePapirsøknad() ? OPPDATER_OPPGAVE : OPPRETT_PAPIRSØKNADOPPGAVE;
         }
 
         if (oppgaveHistorikk.harEksistertOppgave()) {
             if (oppgaveHistorikk.erÅpenOppgave()) {
-                return oppgaveHistorikk.erSisteOpprettedeOppgaveTilBeslutter()
-                        ? RETUR_FRA_BESLUTTER_OPPGAVE
-                        : OPPDATER_OPPGAVE;
+                return oppgaveHistorikk.erSisteOpprettedeOppgaveTilBeslutter() ? RETUR_FRA_BESLUTTER_OPPGAVE : OPPDATER_OPPGAVE;
             }
             return GJENÅPNE_OPPGAVE;
         }

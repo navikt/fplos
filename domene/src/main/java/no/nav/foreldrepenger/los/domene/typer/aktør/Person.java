@@ -50,8 +50,7 @@ public class Person {
             return false;
         }
         var person = (Person) o;
-        return navn.equals(person.navn) &&
-                fødselsnummer.equals(person.fødselsnummer);
+        return navn.equals(person.navn) && fødselsnummer.equals(person.fødselsnummer);
     }
 
     @Override
@@ -62,6 +61,7 @@ public class Person {
     public static class Builder {
 
         private final Person personMal;
+
         public Builder() {
             personMal = new Person();
         }

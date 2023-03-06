@@ -1,13 +1,13 @@
 package no.nav.foreldrepenger.los.web.app.tjenester.felles.dto;
 
-import no.nav.foreldrepenger.los.oppgave.Oppgave;
-import no.nav.foreldrepenger.los.organisasjon.ansatt.AnsattTjeneste;
-import no.nav.foreldrepenger.los.reservasjon.Reservasjon;
+import static no.nav.foreldrepenger.los.felles.util.OptionalUtil.tryOrEmpty;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import static no.nav.foreldrepenger.los.felles.util.OptionalUtil.tryOrEmpty;
+import no.nav.foreldrepenger.los.oppgave.Oppgave;
+import no.nav.foreldrepenger.los.organisasjon.ansatt.AnsattTjeneste;
+import no.nav.foreldrepenger.los.reservasjon.Reservasjon;
 
 @ApplicationScoped
 public class OppgaveStatusDtoTjeneste {
@@ -32,9 +32,8 @@ public class OppgaveStatusDtoTjeneste {
             }
             var flyttetAvIdent = reservasjon.getFlyttetAv();
             var flyttetAvNavn = hentNavn(reservasjon.getFlyttetAv());
-            var reservertAvNavn = reservasjon.getReservertAv().equalsIgnoreCase(flyttetAvIdent)
-                    ? flyttetAvNavn
-                    : hentNavn(reservasjon.getReservertAv());
+            var reservertAvNavn = reservasjon.getReservertAv().equalsIgnoreCase(flyttetAvIdent) ? flyttetAvNavn : hentNavn(
+                reservasjon.getReservertAv());
             return OppgaveStatusDto.reservert(reservasjon, reservertAvNavn, flyttetAvNavn);
         }
         return OppgaveStatusDto.ikkeReservert();
@@ -44,14 +43,13 @@ public class OppgaveStatusDtoTjeneste {
         if (ident == null) {
             return null;
         }
-        return tryOrEmpty(() -> ansattTjeneste.hentAnsattNavn(ident), "ldap")
-                .orElse("Ukjent");
+        return tryOrEmpty(() -> ansattTjeneste.hentAnsattNavn(ident), "ldap").orElse("Ukjent");
     }
 
     private OppgaveStatusDto systembrukerSpesialTilfelle(Reservasjon reservasjon) {
         // hack for å forskjønne visning av systembrukers navn i frontend
-        var flyttetReservasjonDto = new FlyttetReservasjonDto(reservasjon.getFlyttetTidspunkt(),
-                "Fplos", "oppgavesystem", reservasjon.getBegrunnelse());
+        var flyttetReservasjonDto = new FlyttetReservasjonDto(reservasjon.getFlyttetTidspunkt(), "Fplos", "oppgavesystem",
+            reservasjon.getBegrunnelse());
         return OppgaveStatusDto.reservert(reservasjon, hentNavn(reservasjon.getReservertAv()), flyttetReservasjonDto);
     }
 }

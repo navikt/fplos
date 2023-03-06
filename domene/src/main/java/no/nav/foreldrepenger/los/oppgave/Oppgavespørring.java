@@ -3,7 +3,6 @@ package no.nav.foreldrepenger.los.oppgave;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import no.nav.foreldrepenger.los.oppgavekø.FiltreringAndreKriterierType;
 import no.nav.foreldrepenger.los.oppgavekø.FiltreringBehandlingType;
@@ -136,41 +135,34 @@ public class Oppgavespørring {
 
     private List<AndreKriterierType> ekskluderAndreKriterierTyperFra(OppgaveFiltrering oppgaveFiltrering) {
         return oppgaveFiltrering.getFiltreringAndreKriterierTyper()
-                .stream()
-                .filter(FiltreringAndreKriterierType::isEkskluder)
-                .map(FiltreringAndreKriterierType::getAndreKriterierType)
-                .collect(Collectors.toList());
+            .stream()
+            .filter(FiltreringAndreKriterierType::isEkskluder)
+            .map(FiltreringAndreKriterierType::getAndreKriterierType)
+            .toList();
     }
 
     private List<AndreKriterierType> inkluderAndreKriterierTyperFra(OppgaveFiltrering oppgaveFiltrering) {
         return oppgaveFiltrering.getFiltreringAndreKriterierTyper()
-                .stream()
-                .filter(FiltreringAndreKriterierType::isInkluder)
-                .map(FiltreringAndreKriterierType::getAndreKriterierType)
-                .collect(Collectors.toList());
+            .stream()
+            .filter(FiltreringAndreKriterierType::isInkluder)
+            .map(FiltreringAndreKriterierType::getAndreKriterierType)
+            .toList();
     }
 
     private List<FagsakYtelseType> ytelseType(OppgaveFiltrering oppgaveFiltrering) {
-        return oppgaveFiltrering.getFiltreringYtelseTyper()
-                .stream()
-                .map(FiltreringYtelseType::getFagsakYtelseType)
-                .collect(Collectors.toList());
+        return oppgaveFiltrering.getFiltreringYtelseTyper().stream().map(FiltreringYtelseType::getFagsakYtelseType).toList();
     }
 
     private List<BehandlingType> behandlingTypeFra(OppgaveFiltrering oppgaveFiltrering) {
-        return oppgaveFiltrering.getFiltreringBehandlingTyper()
-                .stream()
-                .map(FiltreringBehandlingType::getBehandlingType)
-                .collect(Collectors.toList());
+        return oppgaveFiltrering.getFiltreringBehandlingTyper().stream().map(FiltreringBehandlingType::getBehandlingType).toList();
     }
 
     @Override
     public String toString() {
-        return "Oppgavespørring{" + "sortering=" + sortering + ", enhetId=" + enhetId + ", behandlingTyper="
-                + behandlingTyper + ", ytelseTyper=" + ytelseTyper + ", inkluderAndreKriterierTyper="
-                + inkluderAndreKriterierTyper + ", ekskluderAndreKriterierTyper=" + ekskluderAndreKriterierTyper
-                + ", erDynamiskPeriode=" + erDynamiskPeriode + ", filtrerFomDato=" + filtrerFomDato
-                + ", filtrerTomDato=" + filtrerTomDato + ", filtrerFra=" + filtrerFra + ", filtrerTil=" + filtrerTil
-                + ", forAvdelingsleder=" + forAvdelingsleder + ", avgrenseTilOppgaveId=" + avgrenseTilOppgaveId + '}';
+        return "Oppgavespørring{" + "sortering=" + sortering + ", enhetId=" + enhetId + ", behandlingTyper=" + behandlingTyper + ", ytelseTyper="
+            + ytelseTyper + ", inkluderAndreKriterierTyper=" + inkluderAndreKriterierTyper + ", ekskluderAndreKriterierTyper="
+            + ekskluderAndreKriterierTyper + ", erDynamiskPeriode=" + erDynamiskPeriode + ", filtrerFomDato=" + filtrerFomDato + ", filtrerTomDato="
+            + filtrerTomDato + ", filtrerFra=" + filtrerFra + ", filtrerTil=" + filtrerTil + ", forAvdelingsleder=" + forAvdelingsleder
+            + ", avgrenseTilOppgaveId=" + avgrenseTilOppgaveId + '}';
     }
 }

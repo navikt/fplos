@@ -7,7 +7,6 @@ import static no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.oppgave.
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -83,7 +82,7 @@ public class OppgaveDtoTjeneste {
             sjekkTilgang(oppgave);
         }
         var person = personTjeneste.hentPerson(oppgave.getAktørId(), String.valueOf(oppgave.getFagsakSaksnummer()))
-                .orElseThrow(() -> new LagOppgaveDtoFeil("Finner ikke person tilknyttet oppgaveId " + oppgave.getId()));
+            .orElseThrow(() -> new LagOppgaveDtoFeil("Finner ikke person tilknyttet oppgaveId " + oppgave.getId()));
         var oppgaveStatus = oppgaveStatusDtoTjeneste.lagStatusFor(oppgave);
         return new OppgaveDto(oppgave, person, oppgaveStatus);
     }
@@ -99,9 +98,7 @@ public class OppgaveDtoTjeneste {
     }
 
     public boolean finnesTilgjengeligeOppgaver(SakslisteIdDto sakslisteId) {
-        return oppgaveKøTjeneste.hentOppgaver(sakslisteId.getVerdi())
-                .stream()
-                .anyMatch(this::harTilgang);
+        return oppgaveKøTjeneste.hentOppgaver(sakslisteId.getVerdi()).stream().anyMatch(this::harTilgang);
     }
 
     private boolean harTilgang(Oppgave oppgave) {
@@ -111,13 +108,13 @@ public class OppgaveDtoTjeneste {
         }
         var dataAttributter = AbacDataAttributter.opprett().leggTil(FplosAbacAttributtType.OPPGAVE_ID, oppgave.getId());
         var brRequest = BeskyttetRessursAttributter.builder()
-                .medActionType(ActionType.READ)
-                .medUserId(KontekstHolder.getKontekst().getUid())
-                .medToken(token)
-                .medResourceType(ResourceType.FAGSAK)
-                .medPepId(APPNAVN)
-                .medServicePath(OPPGAVER_BASE_PATH + OPPGAVER_STATUS_PATH)
-                .medDataAttributter(dataAttributter);
+            .medActionType(ActionType.READ)
+            .medUserId(KontekstHolder.getKontekst().getUid())
+            .medToken(token)
+            .medResourceType(ResourceType.FAGSAK)
+            .medPepId(APPNAVN)
+            .medServicePath(OPPGAVER_BASE_PATH + OPPGAVER_STATUS_PATH)
+            .medDataAttributter(dataAttributter);
         var pdpRequest = pdpRequestBuilder.lagAppRessursData(dataAttributter);
         var tilgangsbeslutning = pdpKlient.forespørTilgang(brRequest.build(), pdpRequestBuilder.abacDomene(), pdpRequest);
         return tilgangsbeslutning.fikkTilgang();
@@ -148,11 +145,11 @@ public class OppgaveDtoTjeneste {
 
     public List<OppgaveDto> getSaksbehandlersSisteReserverteOppgaver() {
         return reservasjonTjeneste.hentSaksbehandlersSisteReserverteOppgaver()
-                .stream()
-                .map(o -> tryOrEmpty(() -> lagDtoFor(o, true), "oppgavedto"))
-                .flatMap(Optional::stream)
-                .limit(10)
-                .collect(Collectors.toList());
+            .stream()
+            .map(o -> tryOrEmpty(() -> lagDtoFor(o, true), "oppgavedto"))
+            .flatMap(Optional::stream)
+            .limit(10)
+            .toList();
     }
 
     public List<OppgaveDto> hentOppgaverForFagsaker(List<Long> saksnummerListe) {

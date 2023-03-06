@@ -125,17 +125,15 @@ public class TilbakekrevingHendelseHåndterer {
                 return EventResultat.OPPRETT_BESLUTTER_OPPGAVE;
             }
             if (erTilBeslutter) {
-                return oppgaveHistorikk.erSisteOppgaveRegistrertPåEnhet(behandlendeEnhet)
-                        ? EventResultat.OPPDATER_ÅPEN_OPPGAVE
-                        : EventResultat.OPPRETT_OPPGAVE;
+                return oppgaveHistorikk.erSisteOppgaveRegistrertPåEnhet(
+                    behandlendeEnhet) ? EventResultat.OPPDATER_ÅPEN_OPPGAVE : EventResultat.OPPRETT_OPPGAVE;
             }
             if (oppgaveHistorikk.erSisteOpprettedeOppgaveTilBeslutter()) {
                 // ikke til beslutter pt, dermed retur fra beslutter
                 return EventResultat.OPPRETT_OPPGAVE;
             }
-            return oppgaveHistorikk.erSisteOppgaveRegistrertPåEnhet(behandlendeEnhet)
-                    ? EventResultat.OPPDATER_ÅPEN_OPPGAVE
-                    : EventResultat.OPPRETT_OPPGAVE;
+            return oppgaveHistorikk.erSisteOppgaveRegistrertPåEnhet(
+                behandlendeEnhet) ? EventResultat.OPPDATER_ÅPEN_OPPGAVE : EventResultat.OPPRETT_OPPGAVE;
         }
         if (harAktiveLosAksjonspunkt(aksjonspunkter)) {
             return EventResultat.OPPRETT_OPPGAVE;
@@ -148,10 +146,14 @@ public class TilbakekrevingHendelseHåndterer {
     }
 
     private static boolean aktivLosManuellVent(List<LosBehandlingDto.LosAksjonspunktDto> aksjonspunkter) {
-        return aksjonspunkter.stream().anyMatch(a -> List.of("7001", "7002").contains(a.definisjon()) && Aksjonspunktstatus.OPPRETTET.equals(a.status()));
+        return aksjonspunkter.stream()
+            .anyMatch(a -> List.of("7001", "7002").contains(a.definisjon()) && Aksjonspunktstatus.OPPRETTET.equals(a.status()));
     }
 
-    protected void loggEvent(BehandlingId behandlingId, OppgaveEventType oppgaveEventType, AndreKriterierType andreKriterierType, String behandlendeEnhet) {
+    protected void loggEvent(BehandlingId behandlingId,
+                             OppgaveEventType oppgaveEventType,
+                             AndreKriterierType andreKriterierType,
+                             String behandlendeEnhet) {
         oppgaveRepository.lagre(new OppgaveEventLogg(behandlingId, oppgaveEventType, andreKriterierType, behandlendeEnhet));
     }
 
@@ -179,27 +181,27 @@ public class TilbakekrevingHendelseHåndterer {
 
     private TilbakekrevingOppgave oppgaveFra(BehandlingId behandlingId, LosBehandlingDto hendelse) {
         return TilbakekrevingOppgave.tbuilder()
-                .medBeløp(Optional.ofNullable(hendelse.tilbakeDto()).map(LosBehandlingDto.LosTilbakeDto::feilutbetaltBeløp).orElse(BigDecimal.ZERO))
-                .medFeilutbetalingStart(feilutbetalingStart(hendelse))
-                .medSystem(Fagsystem.FPTILBAKE.name())
-                .medFagsakSaksnummer(Long.valueOf(hendelse.saksnummer()))
-                .medAktorId(new AktørId(hendelse.aktørId().getAktørId()))
-                .medBehandlendeEnhet(hendelse.behandlendeEnhetId())
-                .medBehandlingType(OppgaveUtil.mapBehandlingstype(hendelse.behandlingstype()))
-                .medBehandlingStatus(OppgaveUtil.mapBehandlingsstatus(hendelse.behandlingsstatus()))
-                .medFagsakYtelseType(OppgaveUtil.mapYtelse(hendelse.ytelse()))
-                .medAktiv(true)
-                .medBehandlingOpprettet(hendelse.opprettetTidspunkt())
-                .medUtfortFraAdmin(false)
-                .medBehandlingId(behandlingId)
-                .build();
+            .medBeløp(Optional.ofNullable(hendelse.tilbakeDto()).map(LosBehandlingDto.LosTilbakeDto::feilutbetaltBeløp).orElse(BigDecimal.ZERO))
+            .medFeilutbetalingStart(feilutbetalingStart(hendelse))
+            .medSystem(Fagsystem.FPTILBAKE.name())
+            .medFagsakSaksnummer(Long.valueOf(hendelse.saksnummer()))
+            .medAktorId(new AktørId(hendelse.aktørId().getAktørId()))
+            .medBehandlendeEnhet(hendelse.behandlendeEnhetId())
+            .medBehandlingType(OppgaveUtil.mapBehandlingstype(hendelse.behandlingstype()))
+            .medBehandlingStatus(OppgaveUtil.mapBehandlingsstatus(hendelse.behandlingsstatus()))
+            .medFagsakYtelseType(OppgaveUtil.mapYtelse(hendelse.ytelse()))
+            .medAktiv(true)
+            .medBehandlingOpprettet(hendelse.opprettetTidspunkt())
+            .medUtfortFraAdmin(false)
+            .medBehandlingId(behandlingId)
+            .build();
     }
 
     private static LocalDateTime feilutbetalingStart(LosBehandlingDto hendelse) {
         return Optional.ofNullable(hendelse.tilbakeDto())
-                .map(LosBehandlingDto.LosTilbakeDto::førsteFeilutbetalingDato)
-                .map(LocalDate::atStartOfDay)
-                .orElse(null);
+            .map(LosBehandlingDto.LosTilbakeDto::førsteFeilutbetalingDato)
+            .map(LocalDate::atStartOfDay)
+            .orElse(null);
     }
 
     private void avsluttOppgaveForBehandling(BehandlingId behandlingId) {

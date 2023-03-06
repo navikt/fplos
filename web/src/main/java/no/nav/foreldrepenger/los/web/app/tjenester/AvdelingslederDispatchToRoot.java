@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@WebServlet(urlPatterns = { "/avdelingsleder", "/avdelingsleder/", "/avdelingsleder/*" })
+@WebServlet(urlPatterns = {"/avdelingsleder", "/avdelingsleder/", "/avdelingsleder/*"})
 public class AvdelingslederDispatchToRoot extends HttpServlet {
 
     private static final Logger LOG = LoggerFactory.getLogger(AvdelingslederDispatchToRoot.class);

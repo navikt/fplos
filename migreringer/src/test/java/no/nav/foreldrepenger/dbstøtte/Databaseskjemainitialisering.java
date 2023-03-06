@@ -1,21 +1,21 @@
 package no.nav.foreldrepenger.dbstøtte;
 
-import static java.lang.Runtime.getRuntime;
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
 
-import java.util.Objects;
-import java.util.concurrent.atomic.AtomicBoolean;
-
-import javax.naming.NamingException;
-import javax.sql.DataSource;
+import no.nav.foreldrepenger.konfig.Environment;
 
 import org.eclipse.jetty.plus.jndi.EnvEntry;
 import org.flywaydb.core.Flyway;
 import org.flywaydb.core.api.FlywayException;
 
-import com.zaxxer.hikari.HikariConfig;
-import com.zaxxer.hikari.HikariDataSource;
+import javax.naming.NamingException;
+import javax.sql.DataSource;
 
-import no.nav.foreldrepenger.konfig.Environment;
+import java.util.Objects;
+import java.util.concurrent.atomic.AtomicBoolean;
+
+import static java.lang.Runtime.getRuntime;
 
 
 /**
@@ -51,11 +51,11 @@ public final class Databaseskjemainitialisering {
     public static void migrerUnittestSkjemaer() {
         if (GUARD_UNIT_TEST_SKJEMAER.compareAndSet(false, true)) {
             var flyway = Flyway.configure()
-                    .dataSource(createDs(USER))
-                    .locations(DB_SCRIPT_LOCATION + SCHEMA)
-                    .table("schema_version")
-                    .baselineOnMigrate(true)
-                    .load();
+                .dataSource(createDs(USER))
+                .locations(DB_SCRIPT_LOCATION + SCHEMA)
+                .table("schema_version")
+                .baselineOnMigrate(true)
+                .load();
             try {
                 if (!ENV.isLocal()) {
                     throw new IllegalStateException("Forventer at denne migreringen bare kjøres lokalt");

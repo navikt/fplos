@@ -8,7 +8,7 @@ public class FlyttetReservasjonDto {
     private String navn;
     private String begrunnelse;
 
-    public FlyttetReservasjonDto(LocalDateTime tidspunkt,  String uid, String navn, String begrunnelse) {
+    public FlyttetReservasjonDto(LocalDateTime tidspunkt, String uid, String navn, String begrunnelse) {
         this.tidspunkt = tidspunkt;
         this.uid = uid;
         this.navn = navn;

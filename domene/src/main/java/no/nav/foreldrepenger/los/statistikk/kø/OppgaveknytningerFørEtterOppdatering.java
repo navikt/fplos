@@ -1,15 +1,15 @@
 package no.nav.foreldrepenger.los.statistikk.kø;
 
-import no.nav.foreldrepenger.los.oppgavekø.OppgaveFiltreringKnytning;
-
 import java.util.List;
-import java.util.stream.Collectors;
+
+import no.nav.foreldrepenger.los.oppgavekø.OppgaveFiltreringKnytning;
 
 public class OppgaveknytningerFørEtterOppdatering {
     private List<OppgaveFiltreringKnytning> knytningerFørOppdatering;
     private List<OppgaveFiltreringKnytning> knytningerEtterOppdatering;
 
     public OppgaveknytningerFørEtterOppdatering() {
+        // Hibernate
     }
 
     public void setKnytningerFørOppdatering(List<OppgaveFiltreringKnytning> knytningerFørOppdatering) {
@@ -21,13 +21,11 @@ public class OppgaveknytningerFørEtterOppdatering {
     }
 
     public List<OppgaveFiltreringKnytning> getUtAvKø() {
-        return knytningerFørOppdatering.stream().filter(ok -> !knytningerEtterOppdatering.contains(ok))
-                .collect(Collectors.toList());
+        return knytningerFørOppdatering.stream().filter(ok -> !knytningerEtterOppdatering.contains(ok)).toList();
     }
 
     public List<OppgaveFiltreringKnytning> getInnPåKø() {
-        return knytningerEtterOppdatering.stream().filter(ok -> !knytningerFørOppdatering.contains(ok))
-                .collect(Collectors.toList());
+        return knytningerEtterOppdatering.stream().filter(ok -> !knytningerFørOppdatering.contains(ok)).toList();
     }
 
 }

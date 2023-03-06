@@ -56,7 +56,7 @@ public class OppdaterOppgaveOppgavetransisjonHåndterer implements FpsakOppgavet
     @Override
     public void håndter(BehandlingId behandlingId, LosBehandlingDto behandling) {
         var eksisterendeOppgave = oppgaveTjeneste.hentAktivOppgave(behandlingId)
-                .orElseThrow(() -> new IllegalStateException("Fant ikke eksisterende oppgave"));
+            .orElseThrow(() -> new IllegalStateException("Fant ikke eksisterende oppgave"));
         var nyOppgave = lagOppgave(behandlingId, behandling);
         vedlikeholdKøStatistikk(eksisterendeOppgave, nyOppgave);
         flyttReservasjon(eksisterendeOppgave, nyOppgave);
@@ -68,8 +68,8 @@ public class OppdaterOppgaveOppgavetransisjonHåndterer implements FpsakOppgavet
         var køKnytningerGammelOppgave = køStatistikkTjeneste.hentOppgaveFiltreringKnytningerForOppgave(eksisterendeOppgave);
         var køKnytningerNyOppgave = køStatistikkTjeneste.hentOppgaveFiltreringKnytningerForOppgave(nyOppgave);
         var knytninger = Stream.concat(køKnytningerGammelOppgave.stream(), køKnytningerNyOppgave.stream())
-                .collect(Collectors.groupingBy(OppgaveFiltreringKnytning::oppgaveId,
-                        Collectors.mapping(OppgaveFiltreringKnytning::oppgaveFiltreringId, Collectors.toList())));
+            .collect(Collectors.groupingBy(OppgaveFiltreringKnytning::oppgaveId,
+                Collectors.mapping(OppgaveFiltreringKnytning::oppgaveFiltreringId, Collectors.toList())));
         var utAvKø = Optional.ofNullable(knytninger.get(eksisterendeOppgave.getId())).orElse(List.of());
         var innPåKø = Optional.ofNullable(knytninger.get(nyOppgave.getId())).orElse(List.of());
         if (!utAvKø.isEmpty() || !innPåKø.isEmpty()) {
@@ -78,8 +78,8 @@ public class OppdaterOppgaveOppgavetransisjonHåndterer implements FpsakOppgavet
             utAvKø.removeAll(innPåKø);
             innPåKø.removeAll(Optional.ofNullable(knytninger.get(eksisterendeOppgave.getId())).orElse(List.of()));
         }
-        LOG.info("Køstatistikk-knytninger mellom oppgaveId og oppgaveFiltreringId: {}. På vei ut av køer {}, på vei inn i køer {}",
-                knytninger, utAvKø, innPåKø);
+        LOG.info("Køstatistikk-knytninger mellom oppgaveId og oppgaveFiltreringId: {}. På vei ut av køer {}, på vei inn i køer {}", knytninger,
+            utAvKø, innPåKø);
         innPåKø.forEach(i -> køStatistikkTjeneste.lagre(nyOppgave, i, KøOppgaveHendelse.INN_FRA_ANNEN_KØ));
         utAvKø.forEach(i -> køStatistikkTjeneste.lagre(nyOppgave, i, KøOppgaveHendelse.UT_TIL_ANNEN_KØ));
     }
@@ -96,13 +96,10 @@ public class OppdaterOppgaveOppgavetransisjonHåndterer implements FpsakOppgavet
         if (!erNyEnhet && aktivReservasjon) {
             var eksisterendeVarighetTil = gammelReservasjon.getReservertTil();
             var kandidatVarighetTil = LocalDateTime.now().plusHours(2);
-            var nyVarighetTil = kandidatVarighetTil.isAfter(eksisterendeVarighetTil)
-                    ? kandidatVarighetTil
-                    : eksisterendeVarighetTil;
-            var reservasjon = reservasjonTjeneste.reserverOppgaveBasertPåEksisterendeReservasjon(nyOppgave,
-                    gammelReservasjon, nyVarighetTil);
-            LOG.info("Oppretter ny forlenget reservasjonId {} varighet til {} reservert_av {}",
-                    reservasjon.getId(), reservasjon.getReservertTil(), reservasjon.getReservertAv());
+            var nyVarighetTil = kandidatVarighetTil.isAfter(eksisterendeVarighetTil) ? kandidatVarighetTil : eksisterendeVarighetTil;
+            var reservasjon = reservasjonTjeneste.reserverOppgaveBasertPåEksisterendeReservasjon(nyOppgave, gammelReservasjon, nyVarighetTil);
+            LOG.info("Oppretter ny forlenget reservasjonId {} varighet til {} reservert_av {}", reservasjon.getId(), reservasjon.getReservertTil(),
+                reservasjon.getReservertAv());
         } else if (erNyEnhet && aktivReservasjon) {
             reservasjonTjeneste.slettReservasjonMedEventLogg(gammelReservasjon, NY_ENHET);
             LOG.info("Overfører oppgave til ny enhet. Avslutter eksisterende reservasjon.");

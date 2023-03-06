@@ -1,14 +1,5 @@
 package no.nav.foreldrepenger.los.web.server.jetty.abac;
 
-import java.util.Optional;
-import java.util.Set;
-import java.util.UUID;
-
-import javax.annotation.Priority;
-import javax.enterprise.context.Dependent;
-import javax.enterprise.inject.Alternative;
-import javax.inject.Inject;
-
 import no.nav.foreldrepenger.los.domene.typer.BehandlingId;
 import no.nav.foreldrepenger.los.hendelse.hendelseoppretter.hendelse.Fagsystem;
 import no.nav.foreldrepenger.los.oppgave.Oppgave;
@@ -21,6 +12,15 @@ import no.nav.vedtak.sikkerhet.abac.PdpRequestBuilder;
 import no.nav.vedtak.sikkerhet.abac.StandardAbacAttributtType;
 import no.nav.vedtak.sikkerhet.abac.pdp.AppRessursData;
 
+import javax.annotation.Priority;
+import javax.enterprise.context.Dependent;
+import javax.enterprise.inject.Alternative;
+import javax.inject.Inject;
+
+import java.util.Optional;
+import java.util.Set;
+import java.util.UUID;
+
 @Dependent
 @Alternative
 @Priority(2)
@@ -30,8 +30,7 @@ public class PdpRequestBuilderImpl implements PdpRequestBuilder {
     private OppgaveTjeneste oppgaveTjeneste;
 
     @Inject
-    public PdpRequestBuilderImpl(ForeldrepengerPipKlient foreldrepengerPipKlient,
-                                 OppgaveTjeneste oppgaveTjeneste) {
+    public PdpRequestBuilderImpl(ForeldrepengerPipKlient foreldrepengerPipKlient, OppgaveTjeneste oppgaveTjeneste) {
         this.foreldrepengerPipKlient = foreldrepengerPipKlient;
         this.oppgaveTjeneste = oppgaveTjeneste;
     }
@@ -45,13 +44,13 @@ public class PdpRequestBuilderImpl implements PdpRequestBuilder {
             throw PdpRequestBuilderFeil.støtterIkkeBådeOppgaveIdOgBehandlingId();
         }
 
-        Oppgave oppgave  = null;
+        Oppgave oppgave = null;
         if (!oppgaveIdList.isEmpty()) {
             oppgave = oppgaveTjeneste.hentOppgave(oppgaveIdList.iterator().next());
         } else if (!behandlingIdList.isEmpty()) {
             var behandlingId = new BehandlingId(behandlingIdList.iterator().next());
-             oppgave = oppgaveTjeneste.hentNyesteOppgaveTilknyttet(behandlingId)
-                    .orElseThrow(() -> PdpRequestBuilderFeil.finnerIkkeOppgaveTilknyttetBehandling(behandlingId));
+            oppgave = oppgaveTjeneste.hentNyesteOppgaveTilknyttet(behandlingId)
+                .orElseThrow(() -> PdpRequestBuilderFeil.finnerIkkeOppgaveTilknyttetBehandling(behandlingId));
         }
 
         var ressursData = AppRessursData.builder();
@@ -73,7 +72,8 @@ public class PdpRequestBuilderImpl implements PdpRequestBuilder {
 
     private static class PdpRequestBuilderFeil {
         static TekniskException finnerIkkeOppgaveTilknyttetBehandling(BehandlingId behandlingId) {
-            return new TekniskException("FPLOS-00001", String.format("Kunne ikke lage PDP-request: finner ikke oppgave knyttet til behandling %s", behandlingId));
+            return new TekniskException("FPLOS-00001",
+                String.format("Kunne ikke lage PDP-request: finner ikke oppgave knyttet til behandling %s", behandlingId));
         }
 
         static TekniskException støtterIkkeBådeOppgaveIdOgBehandlingId() {

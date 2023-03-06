@@ -42,7 +42,7 @@ class LukkOppgaveHendelseHåndtererTest {
     }
 
     @Test
-    public void skalLukkeÅpenOppgave() {
+    void skalLukkeÅpenOppgave() {
         var behandlingFpsak = OppgaveTestUtil.behandlingFpsak();
         var behandlingId = new BehandlingId(behandlingFpsak.behandlingUuid());
         oppgaveTjeneste.lagre(OppgaveUtil.oppgave(behandlingId, behandlingFpsak));
@@ -55,7 +55,7 @@ class LukkOppgaveHendelseHåndtererTest {
     }
 
     @Test
-    public void skalOppdatereOppgavestatistikk() {
+    void skalOppdatereOppgavestatistikk() {
         var behandlingFpsak = OppgaveTestUtil.behandlingFpsak();
         var behandlingId = new BehandlingId(behandlingFpsak.behandlingUuid());
         oppgaveTjeneste.lagre(OppgaveUtil.oppgave(behandlingId, behandlingFpsak));

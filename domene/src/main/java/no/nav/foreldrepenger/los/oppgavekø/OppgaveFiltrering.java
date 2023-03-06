@@ -1,9 +1,9 @@
 package no.nav.foreldrepenger.los.oppgavekø;
 
-import no.nav.foreldrepenger.los.felles.BaseEntitet;
-import no.nav.foreldrepenger.los.organisasjon.Avdeling;
-import no.nav.foreldrepenger.los.organisasjon.Saksbehandler;
-import no.nav.vedtak.felles.jpa.converters.BooleanToStringConverter;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Convert;
@@ -18,16 +18,17 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+
+import no.nav.foreldrepenger.los.felles.BaseEntitet;
+import no.nav.foreldrepenger.los.organisasjon.Avdeling;
+import no.nav.foreldrepenger.los.organisasjon.Saksbehandler;
+import no.nav.vedtak.felles.jpa.converters.BooleanToStringConverter;
 
 @Entity(name = "OppgaveFiltrering")
 @Table(name = "OPPGAVE_FILTRERING")
 public class OppgaveFiltrering extends BaseEntitet {
     @Id
-    @SequenceGenerator(name="my_seq", sequenceName="SEQ_OPPGAVE_FILTRERING", allocationSize = 200)
+    @SequenceGenerator(name = "my_seq", sequenceName = "SEQ_OPPGAVE_FILTRERING", allocationSize = 200)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "my_seq")
     private Long id;
 
@@ -71,9 +72,7 @@ public class OppgaveFiltrering extends BaseEntitet {
     private Long til;
 
     @ManyToMany
-    @JoinTable(name = "FILTRERING_SAKSBEHANDLER",
-            joinColumns = {@JoinColumn(name = "OPPGAVE_FILTRERING_ID")},
-            inverseJoinColumns = {@JoinColumn(name = "SAKSBEHANDLER_ID")})
+    @JoinTable(name = "FILTRERING_SAKSBEHANDLER", joinColumns = {@JoinColumn(name = "OPPGAVE_FILTRERING_ID")}, inverseJoinColumns = {@JoinColumn(name = "SAKSBEHANDLER_ID")})
     private List<Saksbehandler> saksbehandlere = new ArrayList<>();
 
     public Long getId() {
@@ -124,15 +123,11 @@ public class OppgaveFiltrering extends BaseEntitet {
         return til;
     }
 
-    public static OppgaveFiltrering nyTomOppgaveFiltrering(Avdeling avdeling){
-        return new Builder()
-                .medAvdeling(avdeling)
-                .medNavn("Ny liste")
-                .medSortering(KøSortering.BEHANDLINGSFRIST)
-                .build();
+    public static OppgaveFiltrering nyTomOppgaveFiltrering(Avdeling avdeling) {
+        return new Builder().medAvdeling(avdeling).medNavn("Ny liste").medSortering(KøSortering.BEHANDLINGSFRIST).build();
     }
 
-    public static OppgaveFiltrering.Builder builder(){
+    public static OppgaveFiltrering.Builder builder() {
         return new OppgaveFiltrering.Builder();
     }
 
@@ -157,47 +152,47 @@ public class OppgaveFiltrering extends BaseEntitet {
             tempOppgaveFiltrering = new OppgaveFiltrering();
         }
 
-        public Builder medNavn(String navn){
+        public Builder medNavn(String navn) {
             tempOppgaveFiltrering.navn = navn;
             return this;
         }
 
-        public Builder medSortering(KøSortering køSortering){
+        public Builder medSortering(KøSortering køSortering) {
             tempOppgaveFiltrering.sortering = køSortering;
             return this;
         }
 
-        public Builder medAvdeling(Avdeling avdeling){
+        public Builder medAvdeling(Avdeling avdeling) {
             tempOppgaveFiltrering.avdeling = avdeling;
             return this;
         }
 
-        public Builder medErDynamiskPeriode(boolean erDynamiskPeriode){
+        public Builder medErDynamiskPeriode(boolean erDynamiskPeriode) {
             tempOppgaveFiltrering.erDynamiskPeriode = erDynamiskPeriode;
             return this;
         }
 
-        public Builder medFomDato(LocalDate fomDato){
+        public Builder medFomDato(LocalDate fomDato) {
             tempOppgaveFiltrering.fomDato = fomDato;
             return this;
         }
 
-        public Builder medTomDato(LocalDate tomDato){
+        public Builder medTomDato(LocalDate tomDato) {
             tempOppgaveFiltrering.tomDato = tomDato;
             return this;
         }
 
-        public Builder medFraVerdi(Long fra){
+        public Builder medFraVerdi(Long fra) {
             tempOppgaveFiltrering.fra = fra;
             return this;
         }
 
-        public Builder medTilVerdi(Long til){
+        public Builder medTilVerdi(Long til) {
             tempOppgaveFiltrering.til = til;
             return this;
         }
 
-        public OppgaveFiltrering build(){
+        public OppgaveFiltrering build() {
             var oppgaveFiltrering = tempOppgaveFiltrering;
             tempOppgaveFiltrering = new OppgaveFiltrering();
             return oppgaveFiltrering;

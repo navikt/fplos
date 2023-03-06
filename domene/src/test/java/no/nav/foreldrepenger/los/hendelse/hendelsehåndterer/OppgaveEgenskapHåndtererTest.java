@@ -14,10 +14,6 @@ import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 
-import no.nav.foreldrepenger.los.domene.typer.BehandlingId;
-import no.nav.foreldrepenger.los.domene.typer.aktør.AktørId;
-import no.nav.foreldrepenger.los.oppgave.OppgaveRepository;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -25,16 +21,19 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import no.nav.foreldrepenger.extensions.JpaExtension;
+import no.nav.foreldrepenger.los.domene.typer.BehandlingId;
+import no.nav.foreldrepenger.los.domene.typer.aktør.AktørId;
 import no.nav.foreldrepenger.los.oppgave.AndreKriterierType;
 import no.nav.foreldrepenger.los.oppgave.BehandlingStatus;
 import no.nav.foreldrepenger.los.oppgave.BehandlingType;
 import no.nav.foreldrepenger.los.oppgave.FagsakYtelseType;
 import no.nav.foreldrepenger.los.oppgave.Oppgave;
 import no.nav.foreldrepenger.los.oppgave.OppgaveEgenskap;
+import no.nav.foreldrepenger.los.oppgave.OppgaveRepository;
 
 @ExtendWith(JpaExtension.class)
 @ExtendWith(MockitoExtension.class)
-public class OppgaveEgenskapHåndtererTest {
+class OppgaveEgenskapHåndtererTest {
 
     private static final BehandlingId BEHANDLING_ID = BehandlingId.random();
 
@@ -51,7 +50,7 @@ public class OppgaveEgenskapHåndtererTest {
     }
 
     @Test
-    public void opprettOppgaveEgenskaperTest() {
+    void opprettOppgaveEgenskaperTest() {
         // arrange
         var ønskedeEgenskaper = kriterieArrayOf(UTLANDSSAK, PAPIRSØKNAD);
         when(oppgaveEgenskapFinner.getSaksbehandlerForTotrinn()).thenReturn("T12345");
@@ -65,7 +64,7 @@ public class OppgaveEgenskapHåndtererTest {
     }
 
     @Test
-    public void deaktiverUaktuelleEksisterendeOppgaveEgenskaper() {
+    void deaktiverUaktuelleEksisterendeOppgaveEgenskaper() {
         var oppgave = lagOppgave();
         oppgaveRepository.lagre(new OppgaveEgenskap(oppgave, PAPIRSØKNAD));
         when(oppgaveEgenskapFinner.getAndreKriterier()).thenReturn(emptyList());
@@ -75,7 +74,7 @@ public class OppgaveEgenskapHåndtererTest {
     }
 
     @Test
-    public void kunEttAktivtTilfelleAvHverEgenskap() {
+    void kunEttAktivtTilfelleAvHverEgenskap() {
         var oppgave = lagOppgave();
         oppgaveRepository.lagre(new OppgaveEgenskap(oppgave, UTLANDSSAK));
         when(oppgaveEgenskapFinner.getAndreKriterier()).thenReturn(List.of(UTLANDSSAK));
@@ -85,7 +84,7 @@ public class OppgaveEgenskapHåndtererTest {
     }
 
     @Test
-    public void deaktiveringHåndtererDuplikateOppgaveEgenskaper() {
+    void deaktiveringHåndtererDuplikateOppgaveEgenskaper() {
         // Bug i prod har opprettet dubletter. Tester deaktivering av samtlige dubletter.
         var oppgave = lagOppgave();
         oppgaveRepository.lagre(new OppgaveEgenskap(oppgave, PAPIRSØKNAD));
@@ -103,32 +102,30 @@ public class OppgaveEgenskapHåndtererTest {
     }
 
     private List<AndreKriterierType> hentAktiveKriterierPåOppgave(Long saksnummer) {
-        return oppgaveRepository.hentOppgaveEgenskaper(oppgaveId(saksnummer)).stream()
-                .filter(OppgaveEgenskap::getAktiv)
-                .map(OppgaveEgenskap::getAndreKriterierType)
-                .collect(Collectors.toList());
+        return oppgaveRepository.hentOppgaveEgenskaper(oppgaveId(saksnummer))
+            .stream()
+            .filter(OppgaveEgenskap::getAktiv)
+            .map(OppgaveEgenskap::getAndreKriterierType)
+            .collect(Collectors.toList());
     }
 
     private Long oppgaveId(Long saksnummer) {
-        return oppgaveRepository.hentAktiveOppgaverForSaksnummer(List.of(saksnummer)).stream()
-                .map(Oppgave::getId)
-                .findFirst()
-                .orElseThrow();
+        return oppgaveRepository.hentAktiveOppgaverForSaksnummer(List.of(saksnummer)).stream().map(Oppgave::getId).findFirst().orElseThrow();
     }
 
     private Oppgave lagOppgave() {
         var oppgave = Oppgave.builder()
-                .medFagsakSaksnummer(42L)
-                .medBehandlingId(BEHANDLING_ID)
-                .medAktørId(AktørId.dummy())
-                .medFagsakYtelseType(FagsakYtelseType.FORELDREPENGER)
-                .medBehandlingType(BehandlingType.FØRSTEGANGSSØKNAD)
-                .medBehandlendeEnhet("0000")
-                .medBehandlingsfrist(LocalDateTime.now())
-                .medBehandlingOpprettet(LocalDateTime.now())
-                .medFørsteStønadsdag(LocalDate.now().plusMonths(1))
-                .medBehandlingStatus(BehandlingStatus.UTREDES)
-                .build();
+            .medFagsakSaksnummer(42L)
+            .medBehandlingId(BEHANDLING_ID)
+            .medAktørId(AktørId.dummy())
+            .medFagsakYtelseType(FagsakYtelseType.FORELDREPENGER)
+            .medBehandlingType(BehandlingType.FØRSTEGANGSSØKNAD)
+            .medBehandlendeEnhet("0000")
+            .medBehandlingsfrist(LocalDateTime.now())
+            .medBehandlingOpprettet(LocalDateTime.now())
+            .medFørsteStønadsdag(LocalDate.now().plusMonths(1))
+            .medBehandlingStatus(BehandlingStatus.UTREDES)
+            .build();
         oppgaveRepository.lagre(oppgave);
         return oppgave;
     }

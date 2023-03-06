@@ -28,7 +28,7 @@ import no.nav.vedtak.felles.jpa.converters.BooleanToStringConverter;
 
 @Entity(name = "Oppgave")
 @Table(name = "OPPGAVE")
-@Inheritance(strategy= InheritanceType.JOINED)
+@Inheritance(strategy = InheritanceType.JOINED)
 public class Oppgave extends BaseEntitet {
 
     @Id
@@ -152,7 +152,7 @@ public class Oppgave extends BaseEntitet {
         return oppgaveEgenskaper == null ? Set.of() : oppgaveEgenskaper;
     }
 
-    public static Builder builder(){
+    public static Builder builder() {
         return new Builder();
     }
 
@@ -180,88 +180,88 @@ public class Oppgave extends BaseEntitet {
 
     @Override
     public String toString() {
-        return "Oppgave{" + "id=" + id + ", fagsakSaksnummer=" + fagsakSaksnummer + ", aktiv=" + aktiv + ", system='"
-                + system + '\'' + '}';
+        return "Oppgave{" + "id=" + id + ", fagsakSaksnummer=" + fagsakSaksnummer + ", aktiv=" + aktiv + ", system='" + system + '\'' + '}';
     }
 
     public static class Builder {
         private Oppgave tempOppgave;
 
-        private Builder(){
+        private Builder() {
             tempOppgave = new Oppgave();
         }
 
-        public Builder medBehandlingId(BehandlingId behandlingId){
+        public Builder medBehandlingId(BehandlingId behandlingId) {
             tempOppgave.behandlingId = behandlingId;
             return this;
         }
 
-        public Builder medFagsakSaksnummer(Long faksagSaksnummer){
+        public Builder medFagsakSaksnummer(Long faksagSaksnummer) {
             tempOppgave.fagsakSaksnummer = faksagSaksnummer;
             return this;
         }
 
-        public Builder medAktørId(AktørId aktørId){
+        public Builder medAktørId(AktørId aktørId) {
             tempOppgave.aktørId = aktørId;
             return this;
         }
 
-        public Builder medBehandlendeEnhet(String behandlendeEnhet){
+        public Builder medBehandlendeEnhet(String behandlendeEnhet) {
             tempOppgave.behandlendeEnhet = behandlendeEnhet;
             return this;
         }
 
-        public Builder medAktiv(Boolean aktiv){
+        public Builder medAktiv(Boolean aktiv) {
             tempOppgave.aktiv = aktiv;
             return this;
         }
 
-        public Builder medBehandlingType(BehandlingType behandlingType){
+        public Builder medBehandlingType(BehandlingType behandlingType) {
             tempOppgave.behandlingType = behandlingType;
             return this;
         }
 
-        public Builder medSystem(String system){
+        public Builder medSystem(String system) {
             tempOppgave.system = system;
             return this;
         }
 
-        public Builder medBehandlingsfrist(LocalDateTime behandlingsfrist){
+        public Builder medBehandlingsfrist(LocalDateTime behandlingsfrist) {
             tempOppgave.behandlingsfrist = behandlingsfrist;
             return this;
         }
 
-        public Builder medBehandlingOpprettet(LocalDateTime behandlingOpprettet){
+        public Builder medBehandlingOpprettet(LocalDateTime behandlingOpprettet) {
             tempOppgave.behandlingOpprettet = behandlingOpprettet;
             return this;
         }
 
-        public Builder medFørsteStønadsdag(LocalDate førsteStønadsdag){
+        public Builder medFørsteStønadsdag(LocalDate førsteStønadsdag) {
             tempOppgave.førsteStønadsdag = førsteStønadsdag;
             return this;
         }
-        public Builder medBehandlingStatus(BehandlingStatus behandlingStatus){
+
+        public Builder medBehandlingStatus(BehandlingStatus behandlingStatus) {
             tempOppgave.behandlingStatus = behandlingStatus;
             return this;
         }
 
 
-        public Builder medOppgaveAvsluttet(LocalDateTime oppgaveAvsluttet){
+        public Builder medOppgaveAvsluttet(LocalDateTime oppgaveAvsluttet) {
             tempOppgave.oppgaveAvsluttet = oppgaveAvsluttet;
             return this;
         }
 
-        public Builder medUtfortFraAdmin(Boolean utfortFraAdmin){
+        public Builder medUtfortFraAdmin(Boolean utfortFraAdmin) {
             tempOppgave.utfortFraAdmin = utfortFraAdmin;
             return this;
         }
 
-        public Builder medFagsakYtelseType(FagsakYtelseType fagsakYtelseType){
+        public Builder medFagsakYtelseType(FagsakYtelseType fagsakYtelseType) {
             tempOppgave.fagsakYtelseType = fagsakYtelseType;
             return this;
         }
 
-        public Builder dummyOppgave(String enhet){
+        public Builder dummyOppgave(String enhet) {
             tempOppgave.behandlingId = new BehandlingId(UUID.nameUUIDFromBytes("331133L".getBytes()));
             tempOppgave.fagsakSaksnummer = 3478293L;
             tempOppgave.aktørId = AktørId.dummy();
@@ -275,7 +275,7 @@ public class Oppgave extends BaseEntitet {
             return this;
         }
 
-        public Oppgave build(){
+        public Oppgave build() {
             var oppgave = tempOppgave;
             tempOppgave = new Oppgave();
             return oppgave;

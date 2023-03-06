@@ -9,8 +9,11 @@ on:
       - '.gitignore'
       - '.editorconfig'
       - '.java-version'
-      - 'LICENCE'
+      - 'LICENSE'
       - 'CODEOWNERS'
+      - 'docs/**'
+      - '.oracle/**'
+      - '.github/*.yml'
 
 jobs:
   build-app:

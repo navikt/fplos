@@ -38,7 +38,7 @@ public class OppgaveEgenskap extends BaseEntitet {
     @Column(name = "AKTIV")
     private Boolean aktiv = Boolean.TRUE;
 
-    public OppgaveEgenskap(){
+    public OppgaveEgenskap() {
         //CDI
     }
 

@@ -1,14 +1,14 @@
 package no.nav.foreldrepenger.los.oppgave;
 
-import java.util.Arrays;
-import java.util.Optional;
+import com.fasterxml.jackson.annotation.JsonValue;
+
+import no.nav.foreldrepenger.los.felles.Kodeverdi;
 
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;
 
-import com.fasterxml.jackson.annotation.JsonValue;
-
-import no.nav.foreldrepenger.los.felles.Kodeverdi;
+import java.util.Arrays;
+import java.util.Optional;
 
 public enum AndreKriterierType implements Kodeverdi {
 
@@ -64,16 +64,12 @@ public enum AndreKriterierType implements Kodeverdi {
     public static class KodeverdiConverter implements AttributeConverter<AndreKriterierType, String> {
         @Override
         public String convertToDatabaseColumn(AndreKriterierType attribute) {
-            return Optional.ofNullable(attribute)
-                    .map(AndreKriterierType::getKode)
-                    .orElse(null);
+            return Optional.ofNullable(attribute).map(AndreKriterierType::getKode).orElse(null);
         }
 
         @Override
         public AndreKriterierType convertToEntityAttribute(String dbData) {
-            return Optional.ofNullable(dbData)
-                    .map(AndreKriterierType::fraKode)
-                    .orElse(null);
+            return Optional.ofNullable(dbData).map(AndreKriterierType::fraKode).orElse(null);
         }
 
 

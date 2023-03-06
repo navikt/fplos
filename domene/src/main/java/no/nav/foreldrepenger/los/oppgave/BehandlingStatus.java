@@ -1,12 +1,12 @@
 package no.nav.foreldrepenger.los.oppgave;
 
-import java.util.Arrays;
-import java.util.Optional;
+import com.fasterxml.jackson.annotation.JsonValue;
 
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;
 
-import com.fasterxml.jackson.annotation.JsonValue;
+import java.util.Arrays;
+import java.util.Optional;
 
 public enum BehandlingStatus {
     AVSLUTTET("AVSLU"),
@@ -31,16 +31,12 @@ public enum BehandlingStatus {
     public static class KodeverdiConverter implements AttributeConverter<BehandlingStatus, String> {
         @Override
         public String convertToDatabaseColumn(BehandlingStatus attribute) {
-            return Optional.ofNullable(attribute)
-                    .map(BehandlingStatus::getKode)
-                    .orElse(null);
+            return Optional.ofNullable(attribute).map(BehandlingStatus::getKode).orElse(null);
         }
 
         @Override
         public BehandlingStatus convertToEntityAttribute(String dbData) {
-            return Optional.ofNullable(dbData)
-                    .map(KodeverdiConverter::fraKode)
-                    .orElse(null);
+            return Optional.ofNullable(dbData).map(KodeverdiConverter::fraKode).orElse(null);
         }
 
         private static BehandlingStatus fraKode(String kode) {

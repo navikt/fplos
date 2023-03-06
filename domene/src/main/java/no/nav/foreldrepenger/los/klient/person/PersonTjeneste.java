@@ -9,7 +9,6 @@ import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -66,8 +65,7 @@ public class PersonTjeneste {
         request.setIdent(personIdent);
         request.setGrupper(List.of(IdentGruppe.AKTORID));
         request.setHistorikk(Boolean.FALSE);
-        var projection = new IdentlisteResponseProjection()
-                .identer(new IdentInformasjonResponseProjection().ident());
+        var projection = new IdentlisteResponseProjection().identer(new IdentInformasjonResponseProjection().ident());
 
         final Identliste identliste;
 
@@ -88,8 +86,7 @@ public class PersonTjeneste {
         request.setIdent(aktørId.getId());
         request.setGrupper(List.of(IdentGruppe.FOLKEREGISTERIDENT, IdentGruppe.NPID));
         request.setHistorikk(Boolean.FALSE);
-        var projection = new IdentlisteResponseProjection()
-                .identer(new IdentInformasjonResponseProjection().ident());
+        var projection = new IdentlisteResponseProjection().identer(new IdentInformasjonResponseProjection().ident());
 
         final Identliste identliste;
 
@@ -129,41 +126,42 @@ public class PersonTjeneste {
     private no.nav.pdl.Person hentPdlPerson(AktørId aktørId) {
         var query = new HentPersonQueryRequest();
         query.setIdent(aktørId.getId());
-        var projection = new PersonResponseProjection()
-                .navn(new NavnResponseProjection().forkortetNavn().fornavn().mellomnavn().etternavn())
-                .adressebeskyttelse(new AdressebeskyttelseResponseProjection().gradering())
-                .folkeregisteridentifikator(new FolkeregisteridentifikatorResponseProjection().identifikasjonsnummer().status().type())
-                .foedsel(new FoedselResponseProjection().foedselsdato())
-                .doedsfall(new DoedsfallResponseProjection().doedsdato())
-                .kjoenn(new KjoennResponseProjection().kjoenn());
+        var projection = new PersonResponseProjection().navn(new NavnResponseProjection().forkortetNavn().fornavn().mellomnavn().etternavn())
+            .adressebeskyttelse(new AdressebeskyttelseResponseProjection().gradering())
+            .folkeregisteridentifikator(new FolkeregisteridentifikatorResponseProjection().identifikasjonsnummer().status().type())
+            .foedsel(new FoedselResponseProjection().foedselsdato())
+            .doedsfall(new DoedsfallResponseProjection().doedsdato())
+            .kjoenn(new KjoennResponseProjection().kjoenn());
         return pdl.hentPerson(query, projection);
     }
 
     private Person tilPerson(no.nav.pdl.Person person, AktørId aktørId, String saksnummer) {
         var fnr = fnr(person.getFolkeregisteridentifikator(), aktørId, saksnummer);
-        var fødselsdato = person.getFoedsel().stream()
-                .map(Foedsel::getFoedselsdato)
-                .filter(Objects::nonNull)
-                .findFirst().map(d -> LocalDate.parse(d, DateTimeFormatter.ISO_LOCAL_DATE)).orElse(null);
-        var dødsdato = person.getDoedsfall().stream()
-                .map(Doedsfall::getDoedsdato)
-                .filter(Objects::nonNull)
-                .findFirst().map(d -> LocalDate.parse(d, DateTimeFormatter.ISO_LOCAL_DATE)).orElse(null);
-        return new Person.Builder()
-                .medFnr(fnr)
-                .medNavn(navn(person.getNavn()))
-                .medFødselsdato(fødselsdato)
-                .medDødsdato(dødsdato)
-                .medKjønn(mapKjønn(person))
-                .medDiskresjonskode(getDiskresjonskode(person))
-                .build();
+        var fødselsdato = person.getFoedsel()
+            .stream()
+            .map(Foedsel::getFoedselsdato)
+            .filter(Objects::nonNull)
+            .findFirst()
+            .map(d -> LocalDate.parse(d, DateTimeFormatter.ISO_LOCAL_DATE))
+            .orElse(null);
+        var dødsdato = person.getDoedsfall()
+            .stream()
+            .map(Doedsfall::getDoedsdato)
+            .filter(Objects::nonNull)
+            .findFirst()
+            .map(d -> LocalDate.parse(d, DateTimeFormatter.ISO_LOCAL_DATE))
+            .orElse(null);
+        return new Person.Builder().medFnr(fnr)
+            .medNavn(navn(person.getNavn()))
+            .medFødselsdato(fødselsdato)
+            .medDødsdato(dødsdato)
+            .medKjønn(mapKjønn(person))
+            .medDiskresjonskode(getDiskresjonskode(person))
+            .build();
     }
 
     private static String navn(List<Navn> navn) {
-        return navn.stream()
-                .map(PersonTjeneste::navn)
-                .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("Fant ikke navn"));
+        return navn.stream().map(PersonTjeneste::navn).findFirst().orElseThrow(() -> new IllegalArgumentException("Fant ikke navn"));
     }
 
     private static String navn(Navn navn) {
@@ -175,10 +173,10 @@ public class PersonTjeneste {
 
     private Fødselsnummer fnr(List<Folkeregisteridentifikator> folkeregisteridentifikator, AktørId aktørId, String saksnummer) {
         var fraHentPerson = folkeregisteridentifikator.stream()
-                .filter(i -> i.getStatus().equals("I_BRUK"))
-                .map(Folkeregisteridentifikator::getIdentifikasjonsnummer)
-                .map(Fødselsnummer::new)
-                .findFirst();
+            .filter(i -> i.getStatus().equals("I_BRUK"))
+            .map(Folkeregisteridentifikator::getIdentifikasjonsnummer)
+            .map(Fødselsnummer::new)
+            .findFirst();
         if (fraHentPerson.isEmpty()) {
             var fnr = hentFødselsnummerForAktørId(aktørId);
             if (fnr != null) {
@@ -192,18 +190,17 @@ public class PersonTjeneste {
     }
 
     private static NavBrukerKjønn mapKjønn(no.nav.pdl.Person person) {
-        var kode = person.getKjoenn().stream()
-                .map(Kjoenn::getKjoenn)
-                .filter(Objects::nonNull)
-                .findFirst().orElse(KjoennType.UKJENT);
+        var kode = person.getKjoenn().stream().map(Kjoenn::getKjoenn).filter(Objects::nonNull).findFirst().orElse(KjoennType.UKJENT);
         return KjoennType.KVINNE.equals(kode) ? NavBrukerKjønn.K : NavBrukerKjønn.M;
     }
 
     private static String getDiskresjonskode(no.nav.pdl.Person person) {
-        var kode = person.getAdressebeskyttelse().stream()
-                .map(Adressebeskyttelse::getGradering)
-                .filter(g -> !AdressebeskyttelseGradering.UGRADERT.equals(g))
-                .findFirst().orElse(null);
+        var kode = person.getAdressebeskyttelse()
+            .stream()
+            .map(Adressebeskyttelse::getGradering)
+            .filter(g -> !AdressebeskyttelseGradering.UGRADERT.equals(g))
+            .findFirst()
+            .orElse(null);
 
         // TODO: lag kodeverk som passer med losfront sin diskresjonskodeType.ts - trenger bare disse 2
         if (AdressebeskyttelseGradering.STRENGT_FORTROLIG.equals(kode) || AdressebeskyttelseGradering.STRENGT_FORTROLIG_UTLAND.equals(kode)) {

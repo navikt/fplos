@@ -34,12 +34,12 @@ class SaksbehandlerDtoTjenesteTest {
         var oppgaveRepository = new OppgaveRepository(entityManager);
         var organisasjonRepository = new OrganisasjonRepository(entityManager);
         avdelingslederTjeneste = new AvdelingslederTjeneste(oppgaveRepository, organisasjonRepository);
-        saksbehandlerDtoTjeneste = new SaksbehandlerDtoTjeneste(organisasjonRepository, avdelingslederTjeneste,
-                mock(AnsattTjeneste.class), new OppgaveKøTjeneste(oppgaveRepository, organisasjonRepository));
+        saksbehandlerDtoTjeneste = new SaksbehandlerDtoTjeneste(organisasjonRepository, avdelingslederTjeneste, mock(AnsattTjeneste.class),
+            new OppgaveKøTjeneste(oppgaveRepository, organisasjonRepository));
     }
 
     @Test
-    void testHentSaksbehandlerNavnOgAvdelinger(EntityManager entityManager){
+    void testHentSaksbehandlerNavnOgAvdelinger(EntityManager entityManager) {
         var saksbehandler1Ident = "1234567";
         var saksbehandler2Ident = "9876543";
         var saksbehandler3Ident = "1234";
@@ -59,13 +59,20 @@ class SaksbehandlerDtoTjenesteTest {
         assertThat(saksbehandlerDtoTjeneste.hentSaksbehandlerTilknyttetMinstEnKø(saksbehandler2Ident)).isEmpty();
     }
 
-    private List<OppgaveFiltrering> leggInnEtSettMedLister(int antallLister, EntityManager entityManager){
+    private List<OppgaveFiltrering> leggInnEtSettMedLister(int antallLister, EntityManager entityManager) {
         List<OppgaveFiltrering> filtre = new ArrayList<>();
 
         var avdelings = avdelingslederTjeneste.hentAvdelinger();
-        var avdelingDrammen = avdelings.stream().filter(avdeling -> AVDELING_DRAMMEN_ENHET.equals(avdeling.getAvdelingEnhet())).findFirst().orElseThrow();
-        for(var i = 0; i< antallLister; i++) {
-            var oppgaveFiltrering = OppgaveFiltrering.builder().medNavn("Test " + i).medSortering(KøSortering.BEHANDLINGSFRIST).medAvdeling(avdelingDrammen).build();
+        var avdelingDrammen = avdelings.stream()
+            .filter(avdeling -> AVDELING_DRAMMEN_ENHET.equals(avdeling.getAvdelingEnhet()))
+            .findFirst()
+            .orElseThrow();
+        for (var i = 0; i < antallLister; i++) {
+            var oppgaveFiltrering = OppgaveFiltrering.builder()
+                .medNavn("Test " + i)
+                .medSortering(KøSortering.BEHANDLINGSFRIST)
+                .medAvdeling(avdelingDrammen)
+                .build();
             entityManager.persist(oppgaveFiltrering);
             filtre.add(oppgaveFiltrering);
         }

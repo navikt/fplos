@@ -3,7 +3,6 @@ package no.nav.foreldrepenger.los.web.app.tjenester.felles.dto;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -46,30 +45,23 @@ public class SaksbehandlerDtoTjeneste {
 
     public List<SaksbehandlerDto> hentAktiveSaksbehandlereTilknyttetSaksliste(Long sakslisteId) {
         var filtrering = avdelingslederTjeneste.hentOppgaveFiltering(sakslisteId)
-                .orElseThrow(() -> AvdelingslederTjenesteFeil.fantIkkeOppgavekø(sakslisteId));
-        return filtrering.getSaksbehandlere().stream()
-                .map(this::tilSaksbehandlerDto)
-                .flatMap(Optional::stream)
-                .collect(Collectors.toList());
+            .orElseThrow(() -> AvdelingslederTjenesteFeil.fantIkkeOppgavekø(sakslisteId));
+        return filtrering.getSaksbehandlere().stream().map(this::tilSaksbehandlerDto).flatMap(Optional::stream).toList();
     }
 
     public Optional<SaksbehandlerMedAvdelingerDto> hentSaksbehandlerTilknyttetMinstEnKø(String ident) {
         return organisasjonRepository.hentSaksbehandlerHvisEksisterer(ident)
-                .map(Saksbehandler::getSaksbehandlerIdent)
-                .filter(sb -> !oppgaveKøTjeneste.hentAlleOppgaveFiltrering(sb).isEmpty())
-                .flatMap(this::lagSaksbehandlerMedAvdelingerDto);
+            .map(Saksbehandler::getSaksbehandlerIdent)
+            .filter(sb -> !oppgaveKøTjeneste.hentAlleOppgaveFiltrering(sb).isEmpty())
+            .flatMap(this::lagSaksbehandlerMedAvdelingerDto);
     }
 
     public Optional<SaksbehandlerMedAvdelingerDto> lagSaksbehandlerMedAvdelingerDto(String ident) {
-        return Optional.ofNullable(ident)
-                .flatMap(this::tilSaksbehandlerDto)
-                .flatMap(sb -> tilSaksbehandlerMedAvdelingerDto(ident, sb));
+        return Optional.ofNullable(ident).flatMap(this::tilSaksbehandlerDto).flatMap(sb -> tilSaksbehandlerMedAvdelingerDto(ident, sb));
     }
 
     private Optional<SaksbehandlerMedAvdelingerDto> tilSaksbehandlerMedAvdelingerDto(String ident, SaksbehandlerDto saksbehandlerDto) {
-        return Optional.of(ident)
-                .map(ansattTjeneste::hentAvdelingerNavnForAnsatt)
-                .map(a -> new SaksbehandlerMedAvdelingerDto(saksbehandlerDto, a));
+        return Optional.of(ident).map(ansattTjeneste::hentAvdelingerNavnForAnsatt).map(a -> new SaksbehandlerMedAvdelingerDto(saksbehandlerDto, a));
     }
 
     public SaksbehandlerMedAvdelingerDto lagKjentOgUkjentSaksbehandlerMedAvdelingerDto(Saksbehandler saksbehandler) {
@@ -91,8 +83,7 @@ public class SaksbehandlerDtoTjeneste {
 
     private Optional<SaksbehandlerDto> tilSaksbehandlerDto(String ident) {
         var identDto = new SaksbehandlerBrukerIdentDto(ident);
-        return hentSaksbehandlerNavn(ident)
-                .map(navn -> new SaksbehandlerDto(identDto, navn));
+        return hentSaksbehandlerNavn(ident).map(navn -> new SaksbehandlerDto(identDto, navn));
     }
 
     public Optional<String> hentSaksbehandlerNavn(String ident) {

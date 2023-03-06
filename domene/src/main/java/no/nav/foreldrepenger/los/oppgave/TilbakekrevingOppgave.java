@@ -48,6 +48,7 @@ public class TilbakekrevingOppgave extends Oppgave {
     }
 
     public TilbakekrevingOppgave() {
+        // Hibernate
     }
 
     public static TilbakekrevingOppgave.Builder tbuilder() {
@@ -71,57 +72,57 @@ public class TilbakekrevingOppgave extends Oppgave {
             return this;
         }
 
-        public Builder medBehandlingId(BehandlingId behandlingId){
+        public Builder medBehandlingId(BehandlingId behandlingId) {
             tempOppgave.behandlingId = behandlingId;
             return this;
         }
 
-        public Builder medFagsakSaksnummer(Long faksagSaksnummer){
+        public Builder medFagsakSaksnummer(Long faksagSaksnummer) {
             tempOppgave.fagsakSaksnummer = faksagSaksnummer;
             return this;
         }
 
-        public Builder medAktorId(AktørId aktorId){
+        public Builder medAktorId(AktørId aktorId) {
             tempOppgave.aktørId = aktorId;
             return this;
         }
 
-        public Builder medBehandlendeEnhet(String behandlendeEnhet){
+        public Builder medBehandlendeEnhet(String behandlendeEnhet) {
             tempOppgave.behandlendeEnhet = behandlendeEnhet;
             return this;
         }
 
-        public Builder medAktiv(Boolean aktiv){
+        public Builder medAktiv(Boolean aktiv) {
             tempOppgave.aktiv = aktiv;
             return this;
         }
 
-        public Builder medBehandlingType(BehandlingType behandlingType){
+        public Builder medBehandlingType(BehandlingType behandlingType) {
             tempOppgave.behandlingType = behandlingType;
             return this;
         }
 
-        public Builder medBehandlingStatus(BehandlingStatus behandlingStatus){
+        public Builder medBehandlingStatus(BehandlingStatus behandlingStatus) {
             tempOppgave.behandlingStatus = behandlingStatus;
             return this;
         }
 
-        public Builder medSystem(String system){
+        public Builder medSystem(String system) {
             tempOppgave.system = system;
             return this;
         }
 
-        public Builder medBehandlingOpprettet(LocalDateTime behandlingOpprettet){
+        public Builder medBehandlingOpprettet(LocalDateTime behandlingOpprettet) {
             tempOppgave.behandlingOpprettet = behandlingOpprettet;
             return this;
         }
 
-        public Builder medUtfortFraAdmin(Boolean utfortFraAdmin){
+        public Builder medUtfortFraAdmin(Boolean utfortFraAdmin) {
             tempOppgave.utfortFraAdmin = utfortFraAdmin;
             return this;
         }
 
-        public Builder medFagsakYtelseType(FagsakYtelseType fagsakYtelseType){
+        public Builder medFagsakYtelseType(FagsakYtelseType fagsakYtelseType) {
             tempOppgave.fagsakYtelseType = fagsakYtelseType;
             return this;
         }
@@ -133,25 +134,11 @@ public class TilbakekrevingOppgave extends Oppgave {
 
     @Override
     public String toString() {
-        return "TilbakekrevingOppgave{" +
-                "beløp=" + beløp +
-                ", feilutbetalingstart=" + feilutbetalingstart +
-                ", id=" + id +
-                ", fagsakSaksnummer=" + fagsakSaksnummer +
-                ", aktørId=" + aktørId +
-                ", behandlendeEnhet='" + behandlendeEnhet + '\'' +
-                ", behandlingsfrist=" + behandlingsfrist +
-                ", behandlingOpprettet=" + behandlingOpprettet +
-                ", førsteStønadsdag=" + førsteStønadsdag +
-                ", behandlingStatus=" + behandlingStatus +
-                ", behandlingType=" + behandlingType +
-                ", fagsakYtelseType=" + fagsakYtelseType +
-                ", aktiv=" + aktiv +
-                ", system='" + system + '\'' +
-                ", oppgaveAvsluttet=" + oppgaveAvsluttet +
-                ", utfortFraAdmin=" + utfortFraAdmin +
-                ", behandlingId=" + behandlingId +
-                ", reservasjon=" + reservasjon +
-                '}';
+        return "TilbakekrevingOppgave{" + "beløp=" + beløp + ", feilutbetalingstart=" + feilutbetalingstart + ", id=" + id + ", fagsakSaksnummer="
+            + fagsakSaksnummer + ", aktørId=" + aktørId + ", behandlendeEnhet='" + behandlendeEnhet + '\'' + ", behandlingsfrist=" + behandlingsfrist
+            + ", behandlingOpprettet=" + behandlingOpprettet + ", førsteStønadsdag=" + førsteStønadsdag + ", behandlingStatus=" + behandlingStatus
+            + ", behandlingType=" + behandlingType + ", fagsakYtelseType=" + fagsakYtelseType + ", aktiv=" + aktiv + ", system='" + system + '\''
+            + ", oppgaveAvsluttet=" + oppgaveAvsluttet + ", utfortFraAdmin=" + utfortFraAdmin + ", behandlingId=" + behandlingId + ", reservasjon="
+            + reservasjon + '}';
     }
 }

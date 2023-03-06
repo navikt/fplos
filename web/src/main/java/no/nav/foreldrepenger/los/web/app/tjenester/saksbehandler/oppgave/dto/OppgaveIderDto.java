@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
@@ -19,10 +18,10 @@ public class OppgaveIderDto implements AbacDto {
     @JsonProperty("oppgaveIder")
     @NotNull
     @Pattern(regexp = "^[0-9,]+$")
-    private final String oppgaveIder;
+    private String oppgaveIder;
 
     public OppgaveIderDto() {
-        oppgaveIder = null; // NOSONAR
+        // Jackson
     }
 
     public OppgaveIderDto(String oppgaveIder) {
@@ -36,16 +35,14 @@ public class OppgaveIderDto implements AbacDto {
 
     @Override
     public String toString() {
-        return "OppgaveIderDto{" +
-                "oppgaveId='" + oppgaveIder + '\'' +
-                '}';
+        return "OppgaveIderDto{" + "oppgaveId='" + oppgaveIder + '\'' + '}';
     }
 
-    public List<Long> getOppgaveIdeer(){
-        if (null == oppgaveIder){
+    public List<Long> getOppgaveIdeer() {
+        if (null == oppgaveIder) {
             return new ArrayList<>();
         }
-        return Arrays.stream(oppgaveIder.trim().split(",")).map(opgid -> Long.valueOf(opgid)).collect(Collectors.toList());
+        return Arrays.stream(oppgaveIder.trim().split(",")).map(Long::valueOf).toList();
     }
 
     @Override

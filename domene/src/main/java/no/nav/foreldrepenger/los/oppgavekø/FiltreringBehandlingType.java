@@ -34,7 +34,7 @@ public class FiltreringBehandlingType extends BaseEntitet {
     @Column(name = "BEHANDLING_TYPE")
     private BehandlingType behandlingType;
 
-    public FiltreringBehandlingType(){
+    public FiltreringBehandlingType() {
         //CDI
     }
 

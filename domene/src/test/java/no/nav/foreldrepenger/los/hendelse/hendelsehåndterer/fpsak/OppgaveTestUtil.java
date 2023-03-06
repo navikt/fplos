@@ -30,10 +30,10 @@ public class OppgaveTestUtil {
         var behandlingOpprettet = LocalDateTime.now();
         var aktørId = AktørId.dummy();
         return new LosBehandlingDto(behandlingId.toUUID(), Kildesystem.FPSAK, "1234", Ytelse.FORELDREPENGER,
-                new no.nav.vedtak.hendelser.behandling.AktørId(aktørId.getId()), Behandlingstype.FØRSTEGANGS,
-                Behandlingsstatus.OPPRETTET, behandlingOpprettet, "4406", behandlingstidFrist, "saksbehandler",
-                OppgaveTestUtil.aksjonspunkter(), berørt ? List.of(Behandlingsårsak.BERØRT) : List.of(), false, false,
-                new LosBehandlingDto.LosForeldrepengerDto(førsteUttaksDag(), true, false,false), null);
+            new no.nav.vedtak.hendelser.behandling.AktørId(aktørId.getId()), Behandlingstype.FØRSTEGANGS, Behandlingsstatus.OPPRETTET,
+            behandlingOpprettet, "4406", behandlingstidFrist, "saksbehandler", OppgaveTestUtil.aksjonspunkter(),
+            berørt ? List.of(Behandlingsårsak.BERØRT) : List.of(), false, false,
+            new LosBehandlingDto.LosForeldrepengerDto(førsteUttaksDag(), true, false, false), null);
     }
 
     public static LocalDate førsteUttaksDag() {
@@ -41,12 +41,7 @@ public class OppgaveTestUtil {
     }
 
     public static List<LosBehandlingDto.LosAksjonspunktDto> aksjonspunkter() {
-        var aksjonspunkt = Aksjonspunkt.builder()
-                .medDefinisjon("1111")
-                .medBegrunnelse("Testbegrunnelse")
-                .medFristTid(null)
-                .medStatus("OPPR")
-                .build();
-        return List.of(new LosBehandlingDto.LosAksjonspunktDto("1111",Aksjonspunktstatus.OPPRETTET, null, null));
+        var aksjonspunkt = Aksjonspunkt.builder().medDefinisjon("1111").medBegrunnelse("Testbegrunnelse").medFristTid(null).medStatus("OPPR").build();
+        return List.of(new LosBehandlingDto.LosAksjonspunktDto("1111", Aksjonspunktstatus.OPPRETTET, null, null));
     }
 }

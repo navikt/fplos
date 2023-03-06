@@ -27,8 +27,7 @@ public class FpsakOppgaveHendelseHåndterer {
     private Instance<FpsakOppgavetransisjonHåndterer> håndterere;
 
     @Inject
-    public FpsakOppgaveHendelseHåndterer(OppgaveRepository oppgaveRepository,
-                                         @Any Instance<FpsakOppgavetransisjonHåndterer> håndterere) {
+    public FpsakOppgaveHendelseHåndterer(OppgaveRepository oppgaveRepository, @Any Instance<FpsakOppgavetransisjonHåndterer> håndterere) {
         this.oppgaveRepository = oppgaveRepository;
         this.håndterere = håndterere;
     }
@@ -46,24 +45,24 @@ public class FpsakOppgaveHendelseHåndterer {
 
     private OppgaveHistorikk oppgavehistorikk(BehandlingId behandlingId) {
         var oppgaveEventer = oppgaveRepository.hentOppgaveEventer(behandlingId);
-        LOG.info("Henter tidigere oppgaveeventer for behandling {} {}", behandlingId, inlinetEventHistorikk(oppgaveEventer));
+        if (LOG.isInfoEnabled()) {
+            LOG.info("Henter tidigere oppgaveeventer for behandling {} {}", behandlingId, inlinetEventHistorikk(oppgaveEventer));
+        }
         return new OppgaveHistorikk(oppgaveEventer);
     }
 
     private FpsakOppgavetransisjonHåndterer håndtererForTransisjon(Oppgavetransisjon type) {
         return håndterere.stream()
-                .filter(th -> th.kanHåndtere() == type)
-                .findFirst()
-                .orElseThrow(() -> new IllegalStateException("Fant ingen håndterer for type" + type));
+            .filter(th -> th.kanHåndtere() == type)
+            .findFirst()
+            .orElseThrow(() -> new IllegalStateException("Fant ingen håndterer for type" + type));
     }
 
     public static String inlinetEventHistorikk(List<OppgaveEventLogg> eventer) {
         return eventer.stream()
-                .sorted(Comparator.comparing(OppgaveEventLogg::getOpprettetTidspunkt))
-                .map(e -> e.getAndreKriterierType() == null
-                        ? e.getEventType().name()
-                        : e.getEventType().name() + " (" + e.getAndreKriterierType() + ")")
-                .collect(Collectors.joining(", "));
+            .sorted(Comparator.comparing(OppgaveEventLogg::getOpprettetTidspunkt))
+            .map(e -> e.getAndreKriterierType() == null ? e.getEventType().name() : e.getEventType().name() + " (" + e.getAndreKriterierType() + ")")
+            .collect(Collectors.joining(", "));
     }
 
 }

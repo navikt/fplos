@@ -60,11 +60,7 @@ public class ReturFraBeslutterOppgavetransisjonHåndterer implements FpsakOppgav
     private void håndterEksisterendeOppgave(BehandlingId behandlingId, String enhet) {
         køStatistikk.lagre(behandlingId, KøOppgaveHendelse.LUKKET_OPPGAVE);
         oppgaveTjeneste.avsluttOppgaveUtenEventLoggAvsluttTilknyttetReservasjon(behandlingId);
-        var oel = OppgaveEventLogg.builder()
-                .behandlingId(behandlingId)
-                .behandlendeEnhet(enhet)
-                .type(OppgaveEventType.LUKKET)
-                .build();
+        var oel = OppgaveEventLogg.builder().behandlingId(behandlingId).behandlendeEnhet(enhet).type(OppgaveEventType.LUKKET).build();
         oppgaveTjeneste.lagre(oel);
         LOG.info("Avslutter {} beslutteroppgave", SYSTEM);
     }
@@ -78,11 +74,7 @@ public class ReturFraBeslutterOppgavetransisjonHåndterer implements FpsakOppgav
     }
 
     private void opprettOppgaveEventLogg(Oppgave oppgave, String enhet) {
-        var oel = OppgaveEventLogg.builder()
-                .behandlingId(oppgave.getBehandlingId())
-                .behandlendeEnhet(enhet)
-                .type(OppgaveEventType.OPPRETTET)
-                .build();
+        var oel = OppgaveEventLogg.builder().behandlingId(oppgave.getBehandlingId()).behandlendeEnhet(enhet).type(OppgaveEventType.OPPRETTET).build();
         oppgaveTjeneste.lagre(oel);
         LOG.info("Retur fra beslutter, oppretter {} saksbehandler-oppgave med oppgaveId {}", SYSTEM, oppgave.getId());
     }

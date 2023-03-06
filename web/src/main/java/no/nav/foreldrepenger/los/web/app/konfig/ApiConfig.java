@@ -1,21 +1,5 @@
 package no.nav.foreldrepenger.los.web.app.konfig;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import javax.ws.rs.ApplicationPath;
-import javax.ws.rs.core.Application;
-
-import no.nav.foreldrepenger.konfig.Environment;
-import no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.enhet.SaksbehandlerEnhetRestTjeneste;
-
-import org.glassfish.jersey.server.ServerProperties;
-
 import io.swagger.v3.jaxrs2.integration.resources.OpenApiResource;
 import io.swagger.v3.oas.integration.GenericOpenApiContextBuilder;
 import io.swagger.v3.oas.integration.OpenApiConfigurationException;
@@ -23,6 +7,7 @@ import io.swagger.v3.oas.integration.SwaggerConfiguration;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.servers.Server;
+import no.nav.foreldrepenger.konfig.Environment;
 import no.nav.foreldrepenger.los.web.app.exceptions.ConstraintViolationMapper;
 import no.nav.foreldrepenger.los.web.app.exceptions.GeneralRestExceptionMapper;
 import no.nav.foreldrepenger.los.web.app.exceptions.JsonMappingExceptionMapper;
@@ -38,11 +23,20 @@ import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.reservasjoner.
 import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.saksbehandler.AvdelingslederSaksbehandlerRestTjeneste;
 import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.saksliste.AvdelingslederSakslisteRestTjeneste;
 import no.nav.foreldrepenger.los.web.app.tjenester.kodeverk.KodeverkRestTjeneste;
+import no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.enhet.SaksbehandlerEnhetRestTjeneste;
 import no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.nøkkeltall.SaksbehandlerNøkkeltallRestTjeneste;
 import no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.oppgave.OppgaveRestTjeneste;
 import no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.saksliste.SaksbehandlerSakslisteRestTjeneste;
 import no.nav.vedtak.exception.TekniskException;
 import no.nav.vedtak.felles.prosesstask.rest.ProsessTaskRestTjeneste;
+
+import org.glassfish.jersey.server.ServerProperties;
+
+import javax.ws.rs.ApplicationPath;
+import javax.ws.rs.core.Application;
+
+import java.util.*;
+import java.util.stream.Collectors;
 
 @ApplicationPath(ApiConfig.API_URI)
 public class ApiConfig extends Application {
@@ -54,22 +48,13 @@ public class ApiConfig extends Application {
     public ApiConfig() {
 
         var oas = new OpenAPI();
-        var info = new Info()
-                .title("FPLOS")
-                .version("1.0")
-                .description("REST grensesnitt for fplos.");
-        oas.info(info)
-                .addServersItem(new Server()
-                        .url(ENV.getProperty("context.path", "/fplos")));
-        var oasConfig = new SwaggerConfiguration()
-                .openAPI(oas)
-                .prettyPrint(true)
-                .resourceClasses(ApiConfig.getAllClasses().stream().map(Class::getName).collect(Collectors.toSet()));
+        var info = new Info().title("FPLOS").version("1.0").description("REST grensesnitt for fplos.");
+        oas.info(info).addServersItem(new Server().url(ENV.getProperty("context.path", "/fplos")));
+        var oasConfig = new SwaggerConfiguration().openAPI(oas)
+            .prettyPrint(true)
+            .resourceClasses(ApiConfig.getAllClasses().stream().map(Class::getName).collect(Collectors.toSet()));
         try {
-            new GenericOpenApiContextBuilder<>()
-                    .openApiConfiguration(oasConfig)
-                    .buildContext(true)
-                    .read();
+            new GenericOpenApiContextBuilder<>().openApiConfiguration(oasConfig).buildContext(true).read();
         } catch (OpenApiConfigurationException e) {
             throw new TekniskException("OPENAPI", e.getMessage(), e);
         }

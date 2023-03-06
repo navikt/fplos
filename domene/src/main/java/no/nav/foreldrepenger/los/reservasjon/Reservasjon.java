@@ -42,7 +42,7 @@ public class Reservasjon extends BaseEntitet {
     @Column(name = "BEGRUNNELSE")
     private String begrunnelse;
 
-    public Reservasjon(){
+    public Reservasjon() {
         //CDI
     }
 

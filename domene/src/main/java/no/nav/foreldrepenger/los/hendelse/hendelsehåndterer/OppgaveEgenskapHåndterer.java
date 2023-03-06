@@ -3,7 +3,6 @@ package no.nav.foreldrepenger.los.hendelse.hendelsehåndterer;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -40,21 +39,19 @@ public class OppgaveEgenskapHåndterer {
         var eksisterendeOppgaveEgenskaper = hentEksisterendeEgenskaper(oppgave);
 
         // deaktiver uaktuelle eksisterende
-        eksisterendeOppgaveEgenskaper.stream()
-                .filter(akt -> !andreKriterier.contains(akt.getAndreKriterierType()))
-                .forEach(this::deaktiver);
+        eksisterendeOppgaveEgenskaper.stream().filter(akt -> !andreKriterier.contains(akt.getAndreKriterierType())).forEach(this::deaktiver);
 
         // aktiver aktuelle eksisterende
         eksisterendeOppgaveEgenskaper.stream()
-                .filter(akt -> andreKriterier.contains(akt.getAndreKriterierType()))
-                .forEach(oe -> aktiver(oe, aktuelleEgenskaper.getSaksbehandlerForTotrinn()));
+            .filter(akt -> andreKriterier.contains(akt.getAndreKriterierType()))
+            .forEach(oe -> aktiver(oe, aktuelleEgenskaper.getSaksbehandlerForTotrinn()));
 
         var eksisterendeTyper = typer(eksisterendeOppgaveEgenskaper);
 
         // aktiver nye
         andreKriterier.stream()
-                .filter(akt -> !eksisterendeTyper.contains(akt))
-                .forEach(k -> opprettOppgaveEgenskap(oppgave, k, aktuelleEgenskaper.getSaksbehandlerForTotrinn()));
+            .filter(akt -> !eksisterendeTyper.contains(akt))
+            .forEach(k -> opprettOppgaveEgenskap(oppgave, k, aktuelleEgenskaper.getSaksbehandlerForTotrinn()));
     }
 
     private void opprettOppgaveEgenskap(Oppgave oppgave, AndreKriterierType kritere, String saksbehandler) {
@@ -81,14 +78,11 @@ public class OppgaveEgenskapHåndterer {
     }
 
     List<OppgaveEgenskap> hentEksisterendeEgenskaper(Oppgave oppgave) {
-        return Optional.ofNullable(repository.hentOppgaveEgenskaper(oppgave.getId()))
-                .orElse(Collections.emptyList());
+        return Optional.ofNullable(repository.hentOppgaveEgenskaper(oppgave.getId())).orElse(Collections.emptyList());
     }
 
     private static List<AndreKriterierType> typer(List<OppgaveEgenskap> eksisterendeOppgaveEgenskaper) {
-        return eksisterendeOppgaveEgenskaper.stream()
-                .map(OppgaveEgenskap::getAndreKriterierType)
-                .collect(Collectors.toList());
+        return eksisterendeOppgaveEgenskaper.stream().map(OppgaveEgenskap::getAndreKriterierType).toList();
     }
 
 }

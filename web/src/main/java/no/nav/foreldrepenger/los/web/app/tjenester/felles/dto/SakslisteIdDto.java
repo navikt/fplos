@@ -1,11 +1,13 @@
 package no.nav.foreldrepenger.los.web.app.tjenester.felles.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+
 import no.nav.vedtak.sikkerhet.abac.AbacDataAttributter;
 import no.nav.vedtak.sikkerhet.abac.AbacDto;
 
 import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotNull;
+
 import java.util.Objects;
 
 public class SakslisteIdDto implements AbacDto {
@@ -34,9 +36,7 @@ public class SakslisteIdDto implements AbacDto {
 
     @Override
     public String toString() {
-        return "SaksnummerDto{" +
-                "sakslisteId='" + sakslisteId + '\'' +
-                '}';
+        return "SaksnummerDto{" + "sakslisteId='" + sakslisteId + '\'' + '}';
     }
 
     @Override
@@ -46,8 +46,12 @@ public class SakslisteIdDto implements AbacDto {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         SakslisteIdDto that = (SakslisteIdDto) o;
         return sakslisteId.equals(that.sakslisteId) && abacAttributter().equals(that.abacAttributter());
     }

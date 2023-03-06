@@ -1,12 +1,10 @@
 package no.nav.foreldrepenger.los.web.app.exceptions;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-import javax.ws.rs.core.Response;
+import com.fasterxml.jackson.databind.exc.InvalidTypeIdException;
 
 import org.junit.jupiter.api.Test;
 
-import com.fasterxml.jackson.databind.exc.InvalidTypeIdException;
+import static org.assertj.core.api.Assertions.assertThat;
 
 class JsonMappingExceptionMapperTest {
 

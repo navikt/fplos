@@ -1,17 +1,16 @@
 package no.nav.foreldrepenger.los.web.app.tjenester.kodeverk;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-import java.io.IOException;
-import java.util.Map;
-
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
 import no.nav.foreldrepenger.los.oppgave.FagsakStatus;
 import no.nav.foreldrepenger.los.oppgavekø.KøSortering;
 import no.nav.foreldrepenger.los.web.app.jackson.JacksonJsonConfig;
 
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import java.io.IOException;
+import java.util.Map;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 class KodeverkRestTjenesteTest {
 
@@ -31,11 +30,9 @@ class KodeverkRestTjenesteTest {
         var rawJson = (String) response.getEntity();
         assertThat(rawJson).isNotNull();
 
-        Map<String, Object> gruppertKodeliste = new JacksonJsonConfig().getObjectMapper().readValue(rawJson, Map.class);
+        var gruppertKodeliste = new JacksonJsonConfig().getObjectMapper().readValue(rawJson, Map.class);
 
-        assertThat(gruppertKodeliste.keySet())
-                .contains(FagsakStatus.class.getSimpleName(), KøSortering.class.getSimpleName());
-        //System.out.println(gruppertKodeliste);
+        assertThat(gruppertKodeliste).containsKeys(FagsakStatus.class.getSimpleName(), KøSortering.class.getSimpleName());
     }
 
     @Test
@@ -59,10 +56,10 @@ class KodeverkRestTjenesteTest {
 
         var json = om.writer().withDefaultPrettyPrinter().writeValueAsString(new X(FagsakStatus.OPPRETTET));
 
-        assertThat(json).contains("\"kode\" : \"OPPR\"");
-        assertThat(json).contains("\"navn\" : \"Opprettet\"");
+        assertThat(json).contains("\"kode\" : \"OPPR\"").contains("\"navn\" : \"Opprettet\"");
     }
 
-    private static record X(FagsakStatus fagsakStatus) {}
+    private record X(FagsakStatus fagsakStatus) {
+    }
 
 }

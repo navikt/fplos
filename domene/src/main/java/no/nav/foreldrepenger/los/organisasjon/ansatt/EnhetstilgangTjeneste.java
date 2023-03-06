@@ -1,16 +1,15 @@
 package no.nav.foreldrepenger.los.organisasjon.ansatt;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
+import no.nav.foreldrepenger.los.domene.typer.aktør.OrganisasjonsEnhet;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import no.nav.foreldrepenger.los.domene.typer.aktør.OrganisasjonsEnhet;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+
+import java.util.Collections;
+import java.util.List;
 
 @ApplicationScoped
 public class EnhetstilgangTjeneste {
@@ -33,11 +32,11 @@ public class EnhetstilgangTjeneste {
             return Collections.emptyList();
         }
         return connection.hentEnhetstilganger(ident)
-                .map(EnhetstilgangResponse::getEnheter)
-                .orElse(Collections.emptyList())
-                .stream()
-                .filter(OrganisasjonsEnhet::kanBehandleForeldrepenger)
-                .collect(Collectors.toList());
+            .map(EnhetstilgangResponse::getEnheter)
+            .orElse(Collections.emptyList())
+            .stream()
+            .filter(OrganisasjonsEnhet::kanBehandleForeldrepenger)
+            .toList();
     }
 
 }

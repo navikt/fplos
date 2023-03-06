@@ -1,16 +1,16 @@
 package no.nav.foreldrepenger.los.organisasjon.ansatt;
 
-import static java.lang.String.format;
-
-import java.util.Hashtable;
+import no.nav.foreldrepenger.konfig.Environment;
+import no.nav.vedtak.exception.TekniskException;
 
 import javax.naming.Context;
 import javax.naming.NamingException;
 import javax.naming.ldap.InitialLdapContext;
 import javax.naming.ldap.LdapContext;
 
-import no.nav.foreldrepenger.konfig.Environment;
-import no.nav.vedtak.exception.TekniskException;
+import java.util.Hashtable;
+
+import static java.lang.String.format;
 
 public class LdapInnlogging {
 
@@ -49,6 +49,6 @@ public class LdapInnlogging {
 
     static String getRequiredProperty(String key) {
         return ENV.getRequiredProperty(key,
-                () -> new TekniskException("F-055498", format("Klarte ikke koble til LDAP da påkrevd prroperty %s ikke er satt", key)));
+            () -> new TekniskException("F-055498", format("Klarte ikke koble til LDAP da påkrevd prroperty %s ikke er satt", key)));
     }
 }

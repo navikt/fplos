@@ -13,8 +13,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-import no.nav.foreldrepenger.los.DBTestUtil;
 import no.nav.foreldrepenger.extensions.JpaExtension;
+import no.nav.foreldrepenger.los.DBTestUtil;
 import no.nav.foreldrepenger.los.avdelingsleder.AvdelingslederTjeneste;
 import no.nav.foreldrepenger.los.oppgave.AndreKriterierType;
 import no.nav.foreldrepenger.los.oppgave.BehandlingType;
@@ -29,7 +29,7 @@ import no.nav.foreldrepenger.los.organisasjon.OrganisasjonRepository;
 import no.nav.foreldrepenger.los.organisasjon.Saksbehandler;
 
 @ExtendWith(JpaExtension.class)
-public class OppgaveKøTjenesteTest {
+class OppgaveKøTjenesteTest {
 
     private static final String AVDELING_BERGEN_ENHET = "4812";
 
@@ -38,18 +38,20 @@ public class OppgaveKøTjenesteTest {
     private AvdelingslederTjeneste avdelingslederTjeneste;
     private OppgaveKøTjeneste oppgaveKøTjeneste;
 
-    private final Oppgave førstegangOppgave = Oppgave.builder().dummyOppgave(AVDELING_DRAMMEN_ENHET)
-            .medBehandlingType(BehandlingType.FØRSTEGANGSSØKNAD).build();
-    private final Oppgave klageOppgave = Oppgave.builder().dummyOppgave(AVDELING_DRAMMEN_ENHET)
-            .medBehandlingType(BehandlingType.KLAGE).build();
-    private final Oppgave innsynOppgave = Oppgave.builder().dummyOppgave(AVDELING_DRAMMEN_ENHET)
-            .medBehandlingType(BehandlingType.INNSYN).build();
-    private final Oppgave førstegangOppgaveBergen = Oppgave.builder().dummyOppgave(AVDELING_BERGEN_ENHET)
-            .medBehandlingType(BehandlingType.FØRSTEGANGSSØKNAD).build();
+    private final Oppgave førstegangOppgave = Oppgave.builder()
+        .dummyOppgave(AVDELING_DRAMMEN_ENHET)
+        .medBehandlingType(BehandlingType.FØRSTEGANGSSØKNAD)
+        .build();
+    private final Oppgave klageOppgave = Oppgave.builder().dummyOppgave(AVDELING_DRAMMEN_ENHET).medBehandlingType(BehandlingType.KLAGE).build();
+    private final Oppgave innsynOppgave = Oppgave.builder().dummyOppgave(AVDELING_DRAMMEN_ENHET).medBehandlingType(BehandlingType.INNSYN).build();
+    private final Oppgave førstegangOppgaveBergen = Oppgave.builder()
+        .dummyOppgave(AVDELING_BERGEN_ENHET)
+        .medBehandlingType(BehandlingType.FØRSTEGANGSSØKNAD)
+        .build();
     private EntityManager entityManager;
 
     @BeforeEach
-    public void setup(EntityManager entityManager) {
+    void setup(EntityManager entityManager) {
         oppgaveRepository = new OppgaveRepository(entityManager);
         var organisasjonRepository = new OrganisasjonRepository(entityManager);
         avdelingslederTjeneste = new AvdelingslederTjeneste(oppgaveRepository, organisasjonRepository);
@@ -58,7 +60,7 @@ public class OppgaveKøTjenesteTest {
     }
 
     @Test
-    public void testToFiltreringerpåBehandlingstype() {
+    void testToFiltreringerpåBehandlingstype() {
         var listeId = leggeInnEtSettMedOppgaver();
         avdelingslederTjeneste.endreFiltreringBehandlingType(listeId, BehandlingType.FØRSTEGANGSSØKNAD, true);
         avdelingslederTjeneste.endreFiltreringBehandlingType(listeId, BehandlingType.KLAGE, true);
@@ -67,7 +69,7 @@ public class OppgaveKøTjenesteTest {
     }
 
     @Test
-    public void testFiltreringerpåAndreKriteriertype() {
+    void testFiltreringerpåAndreKriteriertype() {
         var listeId = leggeInnEtSettMedAndreKriterierOppgaver();
         avdelingslederTjeneste.endreFiltreringAndreKriterierType(listeId, AndreKriterierType.TIL_BESLUTTER, true, true);
         avdelingslederTjeneste.endreFiltreringAndreKriterierType(listeId, AndreKriterierType.PAPIRSØKNAD, true, true);
@@ -76,14 +78,14 @@ public class OppgaveKøTjenesteTest {
     }
 
     @Test
-    public void testUtenFiltreringpåBehandlingstype() {
+    void testUtenFiltreringpåBehandlingstype() {
         var oppgaveFiltreringId = leggeInnEtSettMedOppgaver();
         var oppgaver = oppgaveKøTjeneste.hentOppgaver(oppgaveFiltreringId);
         assertThat(oppgaver).hasSize(3);
     }
 
     @Test
-    public void hentAlleOppgaveFiltrering() {
+    void hentAlleOppgaveFiltrering() {
         var lagtInnLister = leggInnEtSettMedLister(3);
         var saksbehandler = new Saksbehandler("1234567");
         entityManager.persist(saksbehandler);
@@ -94,19 +96,18 @@ public class OppgaveKøTjenesteTest {
         entityManager.refresh(saksbehandler);
 
         var oppgaveFiltrerings = oppgaveKøTjeneste.hentAlleOppgaveFiltrering(saksbehandler.getSaksbehandlerIdent());
-        assertThat(oppgaveFiltrerings).contains(lagtInnLister.get(0), lagtInnLister.get(2));
-        assertThat(oppgaveFiltrerings).doesNotContain(lagtInnLister.get(1));
+        assertThat(oppgaveFiltrerings).contains(lagtInnLister.get(0), lagtInnLister.get(2)).doesNotContain(lagtInnLister.get(1));
     }
 
     @Test
-    public void hentAntallOppgaver() {
+    void hentAntallOppgaver() {
         var oppgaveFiltreringId = leggeInnEtSettMedOppgaver();
         var antallOppgaver = oppgaveKøTjeneste.hentAntallOppgaver(oppgaveFiltreringId, false);
         assertThat(antallOppgaver).isEqualTo(3);
     }
 
     @Test
-    public void hentAntallOppgaverForAvdeling() {
+    void hentAntallOppgaverForAvdeling() {
         leggeInnEtSettMedOppgaver();
         var antallOppgaverDrammen = oppgaveKøTjeneste.hentAntallOppgaverForAvdeling(AVDELING_DRAMMEN_ENHET);
         assertThat(antallOppgaverDrammen).isEqualTo(3);
@@ -116,9 +117,11 @@ public class OppgaveKøTjenesteTest {
 
 
     private Long leggeInnEtSettMedAndreKriterierOppgaver() {
-        var oppgaveFiltrering = OppgaveFiltrering.builder().medNavn("OPPRETTET")
-                .medSortering(KøSortering.OPPRETT_BEHANDLING)
-                .medAvdeling(avdelingDrammen()).build();
+        var oppgaveFiltrering = OppgaveFiltrering.builder()
+            .medNavn("OPPRETTET")
+            .medSortering(KøSortering.OPPRETT_BEHANDLING)
+            .medAvdeling(avdelingDrammen())
+            .build();
         oppgaveRepository.lagre(oppgaveFiltrering);
         leggtilOppgaveMedEkstraEgenskaper(førstegangOppgave, AndreKriterierType.TIL_BESLUTTER);
         leggtilOppgaveMedEkstraEgenskaper(førstegangOppgave, AndreKriterierType.PAPIRSØKNAD);
@@ -139,8 +142,10 @@ public class OppgaveKøTjenesteTest {
         List<OppgaveFiltrering> filtre = new ArrayList<>();
         for (var i = 0; i < antallLister; i++) {
             var oppgaveFiltrering = OppgaveFiltrering.builder()
-                    .medNavn("Test " + i).medSortering(KøSortering.BEHANDLINGSFRIST)
-                    .medAvdeling(avdelingDrammen()).build();
+                .medNavn("Test " + i)
+                .medSortering(KøSortering.BEHANDLINGSFRIST)
+                .medAvdeling(avdelingDrammen())
+                .build();
             entityManager.persist(oppgaveFiltrering);
             filtre.add(oppgaveFiltrering);
         }
@@ -150,9 +155,11 @@ public class OppgaveKøTjenesteTest {
 
 
     private Long leggeInnEtSettMedOppgaver() {
-        var oppgaveFiltrering = OppgaveFiltrering.builder().medNavn("OPPRETTET")
-                .medSortering(KøSortering.OPPRETT_BEHANDLING)
-                .medAvdeling(avdelingDrammen()).build();
+        var oppgaveFiltrering = OppgaveFiltrering.builder()
+            .medNavn("OPPRETTET")
+            .medSortering(KøSortering.OPPRETT_BEHANDLING)
+            .medAvdeling(avdelingDrammen())
+            .build();
         oppgaveRepository.lagre(oppgaveFiltrering);
         oppgaveRepository.lagre(førstegangOppgave);
         oppgaveRepository.lagre(klageOppgave);
@@ -163,8 +170,10 @@ public class OppgaveKøTjenesteTest {
     }
 
     private Avdeling avdelingDrammen() {
-        return DBTestUtil.hentAlle(entityManager, Avdeling.class).stream()
-                .filter(a -> a.getAvdelingEnhet().equals(AVDELING_DRAMMEN_ENHET))
-                .findAny().orElseThrow();
+        return DBTestUtil.hentAlle(entityManager, Avdeling.class)
+            .stream()
+            .filter(a -> a.getAvdelingEnhet().equals(AVDELING_DRAMMEN_ENHET))
+            .findAny()
+            .orElseThrow();
     }
 }

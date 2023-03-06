@@ -25,7 +25,7 @@ public class OppgaveDto {
     private LocalDateTime behandlingsfrist;
     private BehandlingId behandlingId;
 
-    OppgaveDto(Oppgave oppgave, Person personDto, OppgaveStatusDto oppgaveStatus){
+    OppgaveDto(Oppgave oppgave, Person personDto, OppgaveStatusDto oppgaveStatus) {
         leggTilOppgaveInformasjon(oppgave, oppgaveStatus);
         leggTilPersonInformasjon(personDto);
     }
@@ -105,17 +105,17 @@ public class OppgaveDto {
     @Override
     public String toString() {
         return "<id=" + id + //$NON-NLS-1$
-                ", status=" + status.isErReservert() + //$NON-NLS-1$
-                ", saksnummer=" + saksnummer+ //$NON-NLS-1$
-                ", behandlingId=" + behandlingId + //$NON-NLS-1$
-                ", system=" + system + //$NON-NLS-1$
-                ", behandlingstype=" + behandlingstype + //$NON-NLS-1$
-                ", opprettetTidspunkt=" + opprettetTidspunkt + //$NON-NLS-1$
-                ", behandlingsfrist=" + behandlingsfrist + //$NON-NLS-1$
-                ", fagsakYtelseType=" + fagsakYtelseType + //$NON-NLS-1$
-                ", behandlingStatus=" + behandlingStatus + //$NON-NLS-1$
-                ", erTilSaksbehandling=" + erTilSaksbehandling + //$NON-NLS-1$
-                ">";
+            ", status=" + status.isErReservert() + //$NON-NLS-1$
+            ", saksnummer=" + saksnummer + //$NON-NLS-1$
+            ", behandlingId=" + behandlingId + //$NON-NLS-1$
+            ", system=" + system + //$NON-NLS-1$
+            ", behandlingstype=" + behandlingstype + //$NON-NLS-1$
+            ", opprettetTidspunkt=" + opprettetTidspunkt + //$NON-NLS-1$
+            ", behandlingsfrist=" + behandlingsfrist + //$NON-NLS-1$
+            ", fagsakYtelseType=" + fagsakYtelseType + //$NON-NLS-1$
+            ", behandlingStatus=" + behandlingStatus + //$NON-NLS-1$
+            ", erTilSaksbehandling=" + erTilSaksbehandling + //$NON-NLS-1$
+            ">";
     }
 
     @Override

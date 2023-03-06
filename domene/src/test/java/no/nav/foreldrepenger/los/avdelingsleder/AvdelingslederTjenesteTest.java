@@ -8,8 +8,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-import no.nav.foreldrepenger.los.DBTestUtil;
 import no.nav.foreldrepenger.extensions.JpaExtension;
+import no.nav.foreldrepenger.los.DBTestUtil;
 import no.nav.foreldrepenger.los.oppgave.AndreKriterierType;
 import no.nav.foreldrepenger.los.oppgave.BehandlingType;
 import no.nav.foreldrepenger.los.oppgave.FagsakYtelseType;
@@ -20,14 +20,14 @@ import no.nav.foreldrepenger.los.organisasjon.Avdeling;
 import no.nav.foreldrepenger.los.organisasjon.OrganisasjonRepository;
 
 @ExtendWith(JpaExtension.class)
-public class AvdelingslederTjenesteTest {
+class AvdelingslederTjenesteTest {
 
     private OppgaveRepository oppgaveRepository;
     private AvdelingslederTjeneste avdelingslederTjeneste;
     private EntityManager entityManager;
 
     @BeforeEach
-    public void setup(EntityManager entityManager){
+    void setup(EntityManager entityManager) {
         this.entityManager = entityManager;
         oppgaveRepository = new OppgaveRepository(entityManager);
         var organisasjonRepository = new OrganisasjonRepository(entityManager);
@@ -35,7 +35,7 @@ public class AvdelingslederTjenesteTest {
     }
 
     @Test
-    public void testLagNyListe(){
+    void testLagNyListe() {
         avdelingslederTjeneste.lagNyOppgaveFiltrering(Avdeling.AVDELING_DRAMMEN_ENHET);
         var oppgaveFiltreringer = oppgaveRepository.hentAlleOppgaveFilterSettTilknyttetAvdeling(avdelingDrammen().getId());
         assertThat(oppgaveFiltreringer).isNotNull();
@@ -45,13 +45,15 @@ public class AvdelingslederTjenesteTest {
     }
 
     private Avdeling avdelingDrammen() {
-        return DBTestUtil.hentAlle(entityManager, Avdeling.class).stream()
-                .filter(avdeling -> Avdeling.AVDELING_DRAMMEN_ENHET.equals(avdeling.getAvdelingEnhet())).findFirst()
-                .orElseThrow();
+        return DBTestUtil.hentAlle(entityManager, Avdeling.class)
+            .stream()
+            .filter(avdeling -> Avdeling.AVDELING_DRAMMEN_ENHET.equals(avdeling.getAvdelingEnhet()))
+            .findFirst()
+            .orElseThrow();
     }
 
     @Test
-    public void testSettNyttNavnPåListe(){
+    void testSettNyttNavnPåListe() {
         var oppgaveFiltrering = OppgaveFiltrering.nyTomOppgaveFiltrering(avdelingDrammen());
         persistAndFlush(oppgaveFiltrering);
         var NYTT_NAVN = "Nytt navn";
@@ -61,7 +63,7 @@ public class AvdelingslederTjenesteTest {
     }
 
     @Test
-    public void testSlettListe()throws IllegalArgumentException {
+    void testSlettListe() throws IllegalArgumentException {
         var liste = OppgaveFiltrering.nyTomOppgaveFiltrering(avdelingDrammen());
         persistAndFlush(liste);
         avdelingslederTjeneste.slettOppgaveFiltrering(liste.getId());
@@ -70,7 +72,7 @@ public class AvdelingslederTjenesteTest {
     }
 
     @Test
-    public void testSettSorteringPåListe() {
+    void testSettSorteringPåListe() {
         var liste = OppgaveFiltrering.nyTomOppgaveFiltrering(avdelingDrammen());
         persistAndFlush(liste);
         avdelingslederTjeneste.settSortering(liste.getId(), KøSortering.BEHANDLINGSFRIST);
@@ -79,7 +81,7 @@ public class AvdelingslederTjenesteTest {
     }
 
     @Test
-    public void leggTilBehandlingtypeFiltrering(){
+    void leggTilBehandlingtypeFiltrering() {
         var oppgaveFiltrering = OppgaveFiltrering.nyTomOppgaveFiltrering(avdelingDrammen());
         persistAndFlush(oppgaveFiltrering);
         avdelingslederTjeneste.endreFiltreringBehandlingType(oppgaveFiltrering.getId(), BehandlingType.FØRSTEGANGSSØKNAD, true);
@@ -92,7 +94,7 @@ public class AvdelingslederTjenesteTest {
     }
 
     @Test
-    public void leggTilYtelsetypeFiltrering(){
+    void leggTilYtelsetypeFiltrering() {
         var oppgaveFiltrering = OppgaveFiltrering.nyTomOppgaveFiltrering(avdelingDrammen());
         persistAndFlush(oppgaveFiltrering);
         avdelingslederTjeneste.endreFiltreringYtelseType(oppgaveFiltrering.getId(), FagsakYtelseType.ENGANGSTØNAD);
@@ -105,23 +107,22 @@ public class AvdelingslederTjenesteTest {
     }
 
     @Test
-    public void leggTilAndreKriterierFiltrering(){
+    void leggTilAndreKriterierFiltrering() {
         var oppgaveFiltrering = OppgaveFiltrering.nyTomOppgaveFiltrering(avdelingDrammen());
         persistAndFlush(oppgaveFiltrering);
         avdelingslederTjeneste.endreFiltreringAndreKriterierType(oppgaveFiltrering.getId(), AndreKriterierType.TIL_BESLUTTER, true, true);
         entityManager.refresh(oppgaveFiltrering);
         assertThat(oppgaveFiltrering.getFiltreringAndreKriterierTyper()).isNotEmpty();
         assertThat(oppgaveFiltrering.getFiltreringAndreKriterierTyper().get(0).getAndreKriterierType()).isEqualTo(AndreKriterierType.TIL_BESLUTTER);
-        avdelingslederTjeneste.endreFiltreringAndreKriterierType(oppgaveFiltrering.getId(), AndreKriterierType.TIL_BESLUTTER, false, true );
+        avdelingslederTjeneste.endreFiltreringAndreKriterierType(oppgaveFiltrering.getId(), AndreKriterierType.TIL_BESLUTTER, false, true);
         entityManager.refresh(oppgaveFiltrering);
         assertThat(oppgaveFiltrering.getFiltreringAndreKriterierTyper()).isEmpty();
     }
 
     @Test
-    public void testHentAvdelinger(){
+    void testHentAvdelinger() {
         var avdelinger = avdelingslederTjeneste.hentAvdelinger();
-        assertThat(avdelinger).isNotEmpty();
-        assertThat(avdelinger.size()).isGreaterThan(1);
+        assertThat(avdelinger).isNotEmpty().hasSizeGreaterThan(1);
     }
 
     private void persistAndFlush(OppgaveFiltrering oppgaveFiltrering) {

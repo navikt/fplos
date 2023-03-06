@@ -1,19 +1,19 @@
 package no.nav.foreldrepenger.los.hendelse.behandlinghendelse;
 
-import java.util.UUID;
-
-import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.FpsakOppgaveHendelseHåndterer;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.tilbakekreving.TilbakekrevingHendelseHåndterer;
 import no.nav.vedtak.felles.prosesstask.api.ProsessTask;
 import no.nav.vedtak.felles.prosesstask.api.ProsessTaskData;
 import no.nav.vedtak.felles.prosesstask.api.ProsessTaskHandler;
 import no.nav.vedtak.hendelser.behandling.Kildesystem;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
+
+import java.util.UUID;
 
 @Dependent
 @ProsessTask(value = "håndter.behandlinghendelse", firstDelay = 10, thenDelay = 10)

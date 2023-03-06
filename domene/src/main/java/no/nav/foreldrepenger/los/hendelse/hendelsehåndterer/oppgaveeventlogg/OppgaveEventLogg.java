@@ -16,8 +16,8 @@ import javax.persistence.Table;
 
 import no.nav.foreldrepenger.los.domene.typer.BehandlingId;
 import no.nav.foreldrepenger.los.felles.BaseEntitet;
-import no.nav.foreldrepenger.los.oppgave.Oppgave;
 import no.nav.foreldrepenger.los.oppgave.AndreKriterierType;
+import no.nav.foreldrepenger.los.oppgave.Oppgave;
 
 
 @Entity(name = "oppgaveEventLogg")
@@ -48,7 +48,11 @@ public class OppgaveEventLogg extends BaseEntitet {
         //For automatisk generering
     }
 
-    public OppgaveEventLogg(BehandlingId behandlingId, OppgaveEventType eventType, AndreKriterierType andreKriterierType, String behandlendeEnhet, LocalDateTime fristTid) {
+    public OppgaveEventLogg(BehandlingId behandlingId,
+                            OppgaveEventType eventType,
+                            AndreKriterierType andreKriterierType,
+                            String behandlendeEnhet,
+                            LocalDateTime fristTid) {
         this(behandlingId, eventType, andreKriterierType, behandlendeEnhet);
         this.fristTid = fristTid;
     }
@@ -92,9 +96,8 @@ public class OppgaveEventLogg extends BaseEntitet {
 
     @Override
     public String toString() {
-        return "OppgaveEventLogg{" + "id=" + id + ", eventType=" + eventType + ", andreKriterierType="
-                + andreKriterierType + ", behandlendeEnhet='" + behandlendeEnhet + '\'' + ", fristTid=" + fristTid
-                + ", behandlingId=" + behandlingId + '}';
+        return "OppgaveEventLogg{" + "id=" + id + ", eventType=" + eventType + ", andreKriterierType=" + andreKriterierType + ", behandlendeEnhet='"
+            + behandlendeEnhet + '\'' + ", fristTid=" + fristTid + ", behandlingId=" + behandlingId + '}';
     }
 
     public static class Builder {

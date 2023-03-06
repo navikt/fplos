@@ -43,7 +43,7 @@ import no.nav.vedtak.hendelser.behandling.los.LosBehandlingDto;
 
 @ExtendWith(JpaExtension.class)
 @ExtendWith(MockitoExtension.class)
-public class TilbakekrevingHendelseHåndtererTest {
+class TilbakekrevingHendelseHåndtererTest {
 
     private EntityManager entityManager;
     private TilbakekrevingHendelseHåndterer handler;
@@ -67,7 +67,7 @@ public class TilbakekrevingHendelseHåndtererTest {
     }
 
     @Test
-    public void skalOppretteOppgave() {
+    void skalOppretteOppgave() {
         var event = hendelse(åpentAksjonspunkt, BehandlingId.random());
         handler.håndterBehandling(event);
         sjekkAntallOppgaver(1);
@@ -76,7 +76,7 @@ public class TilbakekrevingHendelseHåndtererTest {
     }
 
     @Test
-    public void skalVidereføreOppgaveVedNyAktivEvent() {
+    void skalVidereføreOppgaveVedNyAktivEvent() {
         var behandlingId = BehandlingId.random();
         var førsteEvent = hendelse(åpentAksjonspunkt, behandlingId);
         handler.håndterBehandling(førsteEvent);
@@ -90,7 +90,7 @@ public class TilbakekrevingHendelseHåndtererTest {
     }
 
     @Test
-    public void skalLukkeGamleOppgaverVedOvergangMellomBeslutterOgSaksbehandlerOppgaver() {
+    void skalLukkeGamleOppgaverVedOvergangMellomBeslutterOgSaksbehandlerOppgaver() {
         var behandlingId = BehandlingId.random();
         var førsteEventOppgave = hendelse(åpentAksjonspunkt, behandlingId);
         handler.håndterBehandling(førsteEventOppgave);
@@ -107,7 +107,7 @@ public class TilbakekrevingHendelseHåndtererTest {
     }
 
     @Test
-    public void skalAvslutteOppgaveVedAvsluttedeAksjonspunkt() {
+    void skalAvslutteOppgaveVedAvsluttedeAksjonspunkt() {
         var behandlingId = BehandlingId.random();
         var førsteEvent = hendelse(åpentAksjonspunkt, behandlingId);
         var andreEvent = hendelse(avsluttetAksjonspunkt, behandlingId);
@@ -119,7 +119,7 @@ public class TilbakekrevingHendelseHåndtererTest {
     }
 
     @Test
-    public void skalLukkeOppgaveVedÅpentManueltTilVentAksjonspunkt() {
+    void skalLukkeOppgaveVedÅpentManueltTilVentAksjonspunkt() {
         var behandlingId = BehandlingId.random();
         var førsteEvent = hendelse(åpentAksjonspunkt, behandlingId);
         var andreEvent = hendelse(manueltPåVentAksjonspunkt, behandlingId);
@@ -131,7 +131,7 @@ public class TilbakekrevingHendelseHåndtererTest {
     }
 
     @Test
-    public void skalOppretteTilBeslutterEgenskapVedAksjonspunkt5005() {
+    void skalOppretteTilBeslutterEgenskapVedAksjonspunkt5005() {
         var behandlingId = BehandlingId.random();
         var førsteEvent = hendelse(åpentBeslutter, behandlingId);
         var andreEventUtenBeslutter = hendelse(åpentAksjonspunkt, behandlingId);
@@ -145,7 +145,7 @@ public class TilbakekrevingHendelseHåndtererTest {
     }
 
     @Test
-    public void skalLukkeOppgaveVedReturFraTilBehandler() {
+    void skalLukkeOppgaveVedReturFraTilBehandler() {
         var behandlingId = BehandlingId.random();
         var saksbehandler = hendelse(åpentAksjonspunkt, behandlingId);
         var tilBeslutter = hendelse(åpentBeslutter, behandlingId);
@@ -153,9 +153,10 @@ public class TilbakekrevingHendelseHåndtererTest {
         handler.håndterBehandling(tilBeslutter);
         handler.håndterBehandling(saksbehandler);
 
-        var oppgaveEventer = DBTestUtil.hentAlle(entityManager, OppgaveEventLogg.class).stream()
-                .sorted(Comparator.comparing(OppgaveEventLogg::getOpprettetTidspunkt))
-                .collect(Collectors.toList());
+        var oppgaveEventer = DBTestUtil.hentAlle(entityManager, OppgaveEventLogg.class)
+            .stream()
+            .sorted(Comparator.comparing(OppgaveEventLogg::getOpprettetTidspunkt))
+            .collect(Collectors.toList());
 
         verifiserOppgaveEvent(oppgaveEventer.get(0), OppgaveEventType.OPPRETTET, null);
         verifiserOppgaveEvent(oppgaveEventer.get(1), OppgaveEventType.LUKKET, null);
@@ -209,13 +210,13 @@ public class TilbakekrevingHendelseHåndtererTest {
 
     private static LosBehandlingDto hendelse(List<Aksjonspunkt> aksjonspunkter, BehandlingId behandlingId) {
         var ap = aksjonspunkter.stream()
-                .map(a -> new LosBehandlingDto.LosAksjonspunktDto(a.getDefinisjonKode(), "OPPR".equals(a.getStatusKode()) ? Aksjonspunktstatus.OPPRETTET : Aksjonspunktstatus.AVBRUTT, null, null))
-                .collect(Collectors.toList());
+            .map(a -> new LosBehandlingDto.LosAksjonspunktDto(a.getDefinisjonKode(),
+                "OPPR".equals(a.getStatusKode()) ? Aksjonspunktstatus.OPPRETTET : Aksjonspunktstatus.AVBRUTT, null, null))
+            .collect(Collectors.toList());
         return new LosBehandlingDto(behandlingId.toUUID(), Kildesystem.FPTILBAKE, "123", Ytelse.FORELDREPENGER,
-                new no.nav.vedtak.hendelser.behandling.AktørId(AktørId.dummy().getId()), Behandlingstype.TILBAKEBETALING,
-                Behandlingsstatus.OPPRETTET, LocalDateTime.now(), "0300", null, "saksbehandler",
-                ap, List.of(), false, false,
-                null, new LosBehandlingDto.LosTilbakeDto(BigDecimal.valueOf(500), LocalDate.now()));
+            new no.nav.vedtak.hendelser.behandling.AktørId(AktørId.dummy().getId()), Behandlingstype.TILBAKEBETALING, Behandlingsstatus.OPPRETTET,
+            LocalDateTime.now(), "0300", null, "saksbehandler", ap, List.of(), false, false, null,
+            new LosBehandlingDto.LosTilbakeDto(BigDecimal.valueOf(500), LocalDate.now()));
     }
 
 }

@@ -5,7 +5,8 @@ import javax.persistence.Converter;
 
 public enum Fagsystem {
 
-    FPSAK("FPSAK"), FPTILBAKE("FPTILBAKE");
+    FPSAK("FPSAK"),
+    FPTILBAKE("FPTILBAKE");
 
     private final String kode;
 
@@ -24,6 +25,7 @@ public enum Fagsystem {
         public String convertToDatabaseColumn(Fagsystem attribute) {
             return attribute == null ? null : attribute.getKode();
         }
+
         @Override
         public Fagsystem convertToEntityAttribute(String dbData) {
             return dbData == null ? null : Fagsystem.valueOf(dbData);

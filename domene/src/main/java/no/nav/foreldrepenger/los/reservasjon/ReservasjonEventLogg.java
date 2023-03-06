@@ -43,7 +43,7 @@ public class ReservasjonEventLogg extends BaseEntitet {
     @Column(name = "BEGRUNNELSE")
     private String begrunnelse;
 
-    public ReservasjonEventLogg(){
+    public ReservasjonEventLogg() {
         //For automatisk generering
     }
 
