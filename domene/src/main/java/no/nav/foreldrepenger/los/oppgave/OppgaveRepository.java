@@ -53,6 +53,7 @@ public class OppgaveRepository {
     private static final String BELØP = "o.beløp";
     private static final String FEILUTBETALINGSTART = "o.feilutbetalingstart";
     private static final String OPPGAVEFILTRERING_SORTERING_NAVN = "ORDER BY l.navn";
+    private static final String BEHANDLING_ID = "behandlingId";
 
     private EntityManager entityManager;
 
@@ -392,7 +393,7 @@ public class OppgaveRepository {
             from oppgaveEventLogg oel
             where oel.behandlingId = :behandlingId
             order by oel.opprettetTidspunkt desc
-            """, OppgaveEventLogg.class).setParameter("behandlingId", behandlingId).getResultList();
+            """, OppgaveEventLogg.class).setParameter(BEHANDLING_ID, behandlingId).getResultList();
     }
 
     public List<OppgaveEgenskap> hentOppgaveEgenskaper(Long oppgaveId) {
@@ -406,7 +407,7 @@ public class OppgaveRepository {
     protected <T> List<T> hentOppgaver(BehandlingId behandlingId, Class<T> cls) {
         var select = cls.equals(TilbakekrevingOppgave.class) ? SELECT_FRA_TILBAKEKREVING_OPPGAVE : SELECT_FRA_OPPGAVE;
         return entityManager.createQuery(select + "WHERE o.behandlingId = :behandlingId", cls)
-            .setParameter("behandlingId", behandlingId)
+            .setParameter(BEHANDLING_ID, behandlingId)
             .getResultList();
     }
 
@@ -457,7 +458,7 @@ public class OppgaveRepository {
 
     public List<Oppgave> hentOppgaver(BehandlingId behandlingId) {
         return entityManager.createQuery("FROM Oppgave o where o.behandlingId = :behandlingId", Oppgave.class)
-            .setParameter("behandlingId", behandlingId)
+            .setParameter(BEHANDLING_ID, behandlingId)
             .getResultList();
     }
 
@@ -466,7 +467,7 @@ public class OppgaveRepository {
             FROM Oppgave o
             where o.behandlingId = :behandlingId
             and o.aktiv = :aktiv
-            """, Oppgave.class).setParameter("behandlingId", behandlingId).setParameter("aktiv", true).getResultList();
+            """, Oppgave.class).setParameter(BEHANDLING_ID, behandlingId).setParameter("aktiv", true).getResultList();
         if (oppgaver.size() > 1) {
             LOG.warn("Flere enn én aktive oppgaver for behandlingId {}", behandlingId);
         }
