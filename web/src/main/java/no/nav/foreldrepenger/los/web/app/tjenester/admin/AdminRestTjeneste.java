@@ -50,9 +50,9 @@ public class AdminRestTjeneste {
     @BeskyttetRessurs(actionType = ActionType.CREATE, resourceType = ResourceType.DRIFT)
     public Response synkroniserHendelser(@NotNull @Valid List<EnkelBehandlingIdDto> behandlingIdListe) {
         var behandlinger = behandlingIdListe.stream()
-                .map(EnkelBehandlingIdDto::getBehandlingId)
-                .map(b -> new SynkroniseringHendelseTaskOppretterTjeneste.KildeBehandlingId(Kildesystem.FPSAK, b))
-                .toList();
+            .map(EnkelBehandlingIdDto::getBehandlingId)
+            .map(b -> new SynkroniseringHendelseTaskOppretterTjeneste.KildeBehandlingId(Kildesystem.FPSAK, b))
+            .toList();
         var opprettedeTasker = synkroniseringHendelseTaskOppretterTjeneste.opprettOppgaveEgenskapOppdatererTasks(behandlinger);
         return Response.ok(opprettedeTasker).build();
     }
@@ -65,9 +65,9 @@ public class AdminRestTjeneste {
     @BeskyttetRessurs(actionType = ActionType.CREATE, resourceType = ResourceType.DRIFT)
     public Response synkroniserHendelserTilbake(@NotNull @Valid List<EnkelBehandlingIdDto> behandlingIdListe) {
         var behandlinger = behandlingIdListe.stream()
-                .map(EnkelBehandlingIdDto::getBehandlingId)
-                .map(b -> new SynkroniseringHendelseTaskOppretterTjeneste.KildeBehandlingId(Kildesystem.FPTILBAKE, b))
-                .toList();
+            .map(EnkelBehandlingIdDto::getBehandlingId)
+            .map(b -> new SynkroniseringHendelseTaskOppretterTjeneste.KildeBehandlingId(Kildesystem.FPTILBAKE, b))
+            .toList();
         var opprettedeTasker = synkroniseringHendelseTaskOppretterTjeneste.opprettOppgaveEgenskapOppdatererTasks(behandlinger);
         return Response.ok(opprettedeTasker).build();
     }

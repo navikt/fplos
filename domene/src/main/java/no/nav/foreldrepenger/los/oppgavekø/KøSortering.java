@@ -1,14 +1,14 @@
 package no.nav.foreldrepenger.los.oppgavekø;
 
-import java.util.Arrays;
-import java.util.Optional;
+import com.fasterxml.jackson.annotation.JsonValue;
+
+import no.nav.foreldrepenger.los.felles.Kodeverdi;
 
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;
 
-import com.fasterxml.jackson.annotation.JsonValue;
-
-import no.nav.foreldrepenger.los.felles.Kodeverdi;
+import java.util.Arrays;
+import java.util.Optional;
 
 public enum KøSortering implements Kodeverdi {
 
@@ -70,16 +70,12 @@ public enum KøSortering implements Kodeverdi {
     public static class KodeverdiConverter implements AttributeConverter<KøSortering, String> {
         @Override
         public String convertToDatabaseColumn(KøSortering attribute) {
-            return Optional.ofNullable(attribute)
-                    .map(KøSortering::getKode)
-                    .orElse(null);
+            return Optional.ofNullable(attribute).map(KøSortering::getKode).orElse(null);
         }
 
         @Override
         public KøSortering convertToEntityAttribute(String dbData) {
-            return Optional.ofNullable(dbData)
-                    .map(KodeverdiConverter::fraKode)
-                    .orElse(null);
+            return Optional.ofNullable(dbData).map(KodeverdiConverter::fraKode).orElse(null);
         }
 
         private static KøSortering fraKode(String kode) {

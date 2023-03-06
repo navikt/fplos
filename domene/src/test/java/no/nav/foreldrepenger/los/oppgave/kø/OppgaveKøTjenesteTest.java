@@ -38,14 +38,16 @@ class OppgaveKøTjenesteTest {
     private AvdelingslederTjeneste avdelingslederTjeneste;
     private OppgaveKøTjeneste oppgaveKøTjeneste;
 
-    private final Oppgave førstegangOppgave = Oppgave.builder().dummyOppgave(AVDELING_DRAMMEN_ENHET)
-            .medBehandlingType(BehandlingType.FØRSTEGANGSSØKNAD).build();
-    private final Oppgave klageOppgave = Oppgave.builder().dummyOppgave(AVDELING_DRAMMEN_ENHET)
-            .medBehandlingType(BehandlingType.KLAGE).build();
-    private final Oppgave innsynOppgave = Oppgave.builder().dummyOppgave(AVDELING_DRAMMEN_ENHET)
-            .medBehandlingType(BehandlingType.INNSYN).build();
-    private final Oppgave førstegangOppgaveBergen = Oppgave.builder().dummyOppgave(AVDELING_BERGEN_ENHET)
-            .medBehandlingType(BehandlingType.FØRSTEGANGSSØKNAD).build();
+    private final Oppgave førstegangOppgave = Oppgave.builder()
+        .dummyOppgave(AVDELING_DRAMMEN_ENHET)
+        .medBehandlingType(BehandlingType.FØRSTEGANGSSØKNAD)
+        .build();
+    private final Oppgave klageOppgave = Oppgave.builder().dummyOppgave(AVDELING_DRAMMEN_ENHET).medBehandlingType(BehandlingType.KLAGE).build();
+    private final Oppgave innsynOppgave = Oppgave.builder().dummyOppgave(AVDELING_DRAMMEN_ENHET).medBehandlingType(BehandlingType.INNSYN).build();
+    private final Oppgave førstegangOppgaveBergen = Oppgave.builder()
+        .dummyOppgave(AVDELING_BERGEN_ENHET)
+        .medBehandlingType(BehandlingType.FØRSTEGANGSSØKNAD)
+        .build();
     private EntityManager entityManager;
 
     @BeforeEach
@@ -115,9 +117,11 @@ class OppgaveKøTjenesteTest {
 
 
     private Long leggeInnEtSettMedAndreKriterierOppgaver() {
-        var oppgaveFiltrering = OppgaveFiltrering.builder().medNavn("OPPRETTET")
-                .medSortering(KøSortering.OPPRETT_BEHANDLING)
-                .medAvdeling(avdelingDrammen()).build();
+        var oppgaveFiltrering = OppgaveFiltrering.builder()
+            .medNavn("OPPRETTET")
+            .medSortering(KøSortering.OPPRETT_BEHANDLING)
+            .medAvdeling(avdelingDrammen())
+            .build();
         oppgaveRepository.lagre(oppgaveFiltrering);
         leggtilOppgaveMedEkstraEgenskaper(førstegangOppgave, AndreKriterierType.TIL_BESLUTTER);
         leggtilOppgaveMedEkstraEgenskaper(førstegangOppgave, AndreKriterierType.PAPIRSØKNAD);
@@ -138,8 +142,10 @@ class OppgaveKøTjenesteTest {
         List<OppgaveFiltrering> filtre = new ArrayList<>();
         for (var i = 0; i < antallLister; i++) {
             var oppgaveFiltrering = OppgaveFiltrering.builder()
-                    .medNavn("Test " + i).medSortering(KøSortering.BEHANDLINGSFRIST)
-                    .medAvdeling(avdelingDrammen()).build();
+                .medNavn("Test " + i)
+                .medSortering(KøSortering.BEHANDLINGSFRIST)
+                .medAvdeling(avdelingDrammen())
+                .build();
             entityManager.persist(oppgaveFiltrering);
             filtre.add(oppgaveFiltrering);
         }
@@ -149,9 +155,11 @@ class OppgaveKøTjenesteTest {
 
 
     private Long leggeInnEtSettMedOppgaver() {
-        var oppgaveFiltrering = OppgaveFiltrering.builder().medNavn("OPPRETTET")
-                .medSortering(KøSortering.OPPRETT_BEHANDLING)
-                .medAvdeling(avdelingDrammen()).build();
+        var oppgaveFiltrering = OppgaveFiltrering.builder()
+            .medNavn("OPPRETTET")
+            .medSortering(KøSortering.OPPRETT_BEHANDLING)
+            .medAvdeling(avdelingDrammen())
+            .build();
         oppgaveRepository.lagre(oppgaveFiltrering);
         oppgaveRepository.lagre(førstegangOppgave);
         oppgaveRepository.lagre(klageOppgave);
@@ -162,8 +170,10 @@ class OppgaveKøTjenesteTest {
     }
 
     private Avdeling avdelingDrammen() {
-        return DBTestUtil.hentAlle(entityManager, Avdeling.class).stream()
-                .filter(a -> a.getAvdelingEnhet().equals(AVDELING_DRAMMEN_ENHET))
-                .findAny().orElseThrow();
+        return DBTestUtil.hentAlle(entityManager, Avdeling.class)
+            .stream()
+            .filter(a -> a.getAvdelingEnhet().equals(AVDELING_DRAMMEN_ENHET))
+            .findAny()
+            .orElseThrow();
     }
 }

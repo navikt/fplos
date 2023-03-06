@@ -42,8 +42,7 @@ public class BehandlingHendelseConsumer implements LiveAndReadinessAware, Contro
         final Consumed<String, String> consumed = Consumed.with(Topology.AutoOffsetReset.EARLIEST);
 
         final StreamsBuilder builder = new StreamsBuilder();
-        builder.stream(topicName, consumed)
-            .foreach(behandlingHendelseHåndterer::handleMessage);
+        builder.stream(topicName, consumed).foreach(behandlingHendelseHåndterer::handleMessage);
 
         this.stream = new KafkaStreams(builder.build(), KafkaProperties.forStreamsStringValue(getApplicationId()));
     }

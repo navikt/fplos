@@ -27,7 +27,7 @@ class AvdelingslederTjenesteTest {
     private EntityManager entityManager;
 
     @BeforeEach
-    void setup(EntityManager entityManager){
+    void setup(EntityManager entityManager) {
         this.entityManager = entityManager;
         oppgaveRepository = new OppgaveRepository(entityManager);
         var organisasjonRepository = new OrganisasjonRepository(entityManager);
@@ -35,7 +35,7 @@ class AvdelingslederTjenesteTest {
     }
 
     @Test
-    void testLagNyListe(){
+    void testLagNyListe() {
         avdelingslederTjeneste.lagNyOppgaveFiltrering(Avdeling.AVDELING_DRAMMEN_ENHET);
         var oppgaveFiltreringer = oppgaveRepository.hentAlleOppgaveFilterSettTilknyttetAvdeling(avdelingDrammen().getId());
         assertThat(oppgaveFiltreringer).isNotNull();
@@ -45,13 +45,15 @@ class AvdelingslederTjenesteTest {
     }
 
     private Avdeling avdelingDrammen() {
-        return DBTestUtil.hentAlle(entityManager, Avdeling.class).stream()
-                .filter(avdeling -> Avdeling.AVDELING_DRAMMEN_ENHET.equals(avdeling.getAvdelingEnhet())).findFirst()
-                .orElseThrow();
+        return DBTestUtil.hentAlle(entityManager, Avdeling.class)
+            .stream()
+            .filter(avdeling -> Avdeling.AVDELING_DRAMMEN_ENHET.equals(avdeling.getAvdelingEnhet()))
+            .findFirst()
+            .orElseThrow();
     }
 
     @Test
-    void testSettNyttNavnPåListe(){
+    void testSettNyttNavnPåListe() {
         var oppgaveFiltrering = OppgaveFiltrering.nyTomOppgaveFiltrering(avdelingDrammen());
         persistAndFlush(oppgaveFiltrering);
         var NYTT_NAVN = "Nytt navn";
@@ -61,7 +63,7 @@ class AvdelingslederTjenesteTest {
     }
 
     @Test
-    void testSlettListe()throws IllegalArgumentException {
+    void testSlettListe() throws IllegalArgumentException {
         var liste = OppgaveFiltrering.nyTomOppgaveFiltrering(avdelingDrammen());
         persistAndFlush(liste);
         avdelingslederTjeneste.slettOppgaveFiltrering(liste.getId());
@@ -79,7 +81,7 @@ class AvdelingslederTjenesteTest {
     }
 
     @Test
-    void leggTilBehandlingtypeFiltrering(){
+    void leggTilBehandlingtypeFiltrering() {
         var oppgaveFiltrering = OppgaveFiltrering.nyTomOppgaveFiltrering(avdelingDrammen());
         persistAndFlush(oppgaveFiltrering);
         avdelingslederTjeneste.endreFiltreringBehandlingType(oppgaveFiltrering.getId(), BehandlingType.FØRSTEGANGSSØKNAD, true);
@@ -92,7 +94,7 @@ class AvdelingslederTjenesteTest {
     }
 
     @Test
-    void leggTilYtelsetypeFiltrering(){
+    void leggTilYtelsetypeFiltrering() {
         var oppgaveFiltrering = OppgaveFiltrering.nyTomOppgaveFiltrering(avdelingDrammen());
         persistAndFlush(oppgaveFiltrering);
         avdelingslederTjeneste.endreFiltreringYtelseType(oppgaveFiltrering.getId(), FagsakYtelseType.ENGANGSTØNAD);
@@ -105,20 +107,20 @@ class AvdelingslederTjenesteTest {
     }
 
     @Test
-    void leggTilAndreKriterierFiltrering(){
+    void leggTilAndreKriterierFiltrering() {
         var oppgaveFiltrering = OppgaveFiltrering.nyTomOppgaveFiltrering(avdelingDrammen());
         persistAndFlush(oppgaveFiltrering);
         avdelingslederTjeneste.endreFiltreringAndreKriterierType(oppgaveFiltrering.getId(), AndreKriterierType.TIL_BESLUTTER, true, true);
         entityManager.refresh(oppgaveFiltrering);
         assertThat(oppgaveFiltrering.getFiltreringAndreKriterierTyper()).isNotEmpty();
         assertThat(oppgaveFiltrering.getFiltreringAndreKriterierTyper().get(0).getAndreKriterierType()).isEqualTo(AndreKriterierType.TIL_BESLUTTER);
-        avdelingslederTjeneste.endreFiltreringAndreKriterierType(oppgaveFiltrering.getId(), AndreKriterierType.TIL_BESLUTTER, false, true );
+        avdelingslederTjeneste.endreFiltreringAndreKriterierType(oppgaveFiltrering.getId(), AndreKriterierType.TIL_BESLUTTER, false, true);
         entityManager.refresh(oppgaveFiltrering);
         assertThat(oppgaveFiltrering.getFiltreringAndreKriterierTyper()).isEmpty();
     }
 
     @Test
-    void testHentAvdelinger(){
+    void testHentAvdelinger() {
         var avdelinger = avdelingslederTjeneste.hentAvdelinger();
         assertThat(avdelinger).isNotEmpty().hasSizeGreaterThan(1);
     }

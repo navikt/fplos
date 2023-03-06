@@ -1,17 +1,17 @@
 package no.nav.foreldrepenger.los.avdelingsleder;
 
-import static no.nav.foreldrepenger.los.organisasjon.Avdeling.AVDELING_DRAMMEN_ENHET;
-import static org.assertj.core.api.Assertions.assertThat;
-
-import javax.persistence.EntityManager;
+import no.nav.foreldrepenger.extensions.JpaExtension;
+import no.nav.foreldrepenger.los.oppgave.OppgaveRepository;
+import no.nav.foreldrepenger.los.organisasjon.OrganisasjonRepository;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-import no.nav.foreldrepenger.extensions.JpaExtension;
-import no.nav.foreldrepenger.los.oppgave.OppgaveRepository;
-import no.nav.foreldrepenger.los.organisasjon.OrganisasjonRepository;
+import javax.persistence.EntityManager;
+
+import static no.nav.foreldrepenger.los.organisasjon.Avdeling.AVDELING_DRAMMEN_ENHET;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(JpaExtension.class)
 class AvdelingslederSaksbehandlerTjenesteTest {
@@ -21,7 +21,7 @@ class AvdelingslederSaksbehandlerTjenesteTest {
     private AvdelingslederSaksbehandlerTjeneste avdelingslederSaksbehandlerTjeneste;
 
     @BeforeEach
-    void setup(EntityManager entityManager){
+    void setup(EntityManager entityManager) {
         var oppgaveRepository = new OppgaveRepository(entityManager);
         var organisasjonRepository = new OrganisasjonRepository(entityManager);
         avdelingslederSaksbehandlerTjeneste = new AvdelingslederSaksbehandlerTjeneste(oppgaveRepository, organisasjonRepository);

@@ -8,8 +8,7 @@ public class AvdelingDto {
     private String navn;
     private Boolean kreverKode6;
 
-    public AvdelingDto(Long id, String avdelingEnhet,
-                       String navn, Boolean kreverKode6) {
+    public AvdelingDto(Long id, String avdelingEnhet, String navn, Boolean kreverKode6) {
         this.id = Objects.requireNonNull(id, "id");
         this.avdelingEnhet = Objects.requireNonNull(avdelingEnhet, "avdelingEnhet");
         this.navn = Objects.requireNonNull(navn, "navn");

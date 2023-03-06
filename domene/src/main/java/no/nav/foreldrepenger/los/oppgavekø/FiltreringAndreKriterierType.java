@@ -1,18 +1,10 @@
 package no.nav.foreldrepenger.los.oppgavekø;
 
-import javax.persistence.Column;
-import javax.persistence.Convert;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
-
 import no.nav.foreldrepenger.los.felles.BaseEntitet;
 import no.nav.foreldrepenger.los.oppgave.AndreKriterierType;
 import no.nav.vedtak.felles.jpa.converters.BooleanToStringConverter;
+
+import javax.persistence.*;
 
 @Entity(name = "FiltreringAndreKriterier")
 @Table(name = "FILTRERING_ANDRE_KRITERIER")
@@ -40,11 +32,11 @@ public class FiltreringAndreKriterierType extends BaseEntitet {
     @Column(name = "INKLUDER")
     private boolean inkluder = true;
 
-    public FiltreringAndreKriterierType(){
+    public FiltreringAndreKriterierType() {
         //CDI
     }
 
-    public FiltreringAndreKriterierType(OppgaveFiltrering oppgaveFiltrering, AndreKriterierType andreKriterierType, boolean inkluder){
+    public FiltreringAndreKriterierType(OppgaveFiltrering oppgaveFiltrering, AndreKriterierType andreKriterierType, boolean inkluder) {
         this.oppgaveFiltrering = oppgaveFiltrering;
         this.andreKriterierType = andreKriterierType;
         this.inkluder = inkluder;

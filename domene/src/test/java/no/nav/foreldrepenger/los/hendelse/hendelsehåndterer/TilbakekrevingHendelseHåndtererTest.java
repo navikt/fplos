@@ -153,9 +153,10 @@ class TilbakekrevingHendelseHåndtererTest {
         handler.håndterBehandling(tilBeslutter);
         handler.håndterBehandling(saksbehandler);
 
-        var oppgaveEventer = DBTestUtil.hentAlle(entityManager, OppgaveEventLogg.class).stream()
-                .sorted(Comparator.comparing(OppgaveEventLogg::getOpprettetTidspunkt))
-                .collect(Collectors.toList());
+        var oppgaveEventer = DBTestUtil.hentAlle(entityManager, OppgaveEventLogg.class)
+            .stream()
+            .sorted(Comparator.comparing(OppgaveEventLogg::getOpprettetTidspunkt))
+            .collect(Collectors.toList());
 
         verifiserOppgaveEvent(oppgaveEventer.get(0), OppgaveEventType.OPPRETTET, null);
         verifiserOppgaveEvent(oppgaveEventer.get(1), OppgaveEventType.LUKKET, null);
@@ -209,13 +210,13 @@ class TilbakekrevingHendelseHåndtererTest {
 
     private static LosBehandlingDto hendelse(List<Aksjonspunkt> aksjonspunkter, BehandlingId behandlingId) {
         var ap = aksjonspunkter.stream()
-                .map(a -> new LosBehandlingDto.LosAksjonspunktDto(a.getDefinisjonKode(), "OPPR".equals(a.getStatusKode()) ? Aksjonspunktstatus.OPPRETTET : Aksjonspunktstatus.AVBRUTT, null, null))
-                .collect(Collectors.toList());
+            .map(a -> new LosBehandlingDto.LosAksjonspunktDto(a.getDefinisjonKode(),
+                "OPPR".equals(a.getStatusKode()) ? Aksjonspunktstatus.OPPRETTET : Aksjonspunktstatus.AVBRUTT, null, null))
+            .collect(Collectors.toList());
         return new LosBehandlingDto(behandlingId.toUUID(), Kildesystem.FPTILBAKE, "123", Ytelse.FORELDREPENGER,
-                new no.nav.vedtak.hendelser.behandling.AktørId(AktørId.dummy().getId()), Behandlingstype.TILBAKEBETALING,
-                Behandlingsstatus.OPPRETTET, LocalDateTime.now(), "0300", null, "saksbehandler",
-                ap, List.of(), false, false,
-                null, new LosBehandlingDto.LosTilbakeDto(BigDecimal.valueOf(500), LocalDate.now()));
+            new no.nav.vedtak.hendelser.behandling.AktørId(AktørId.dummy().getId()), Behandlingstype.TILBAKEBETALING, Behandlingsstatus.OPPRETTET,
+            LocalDateTime.now(), "0300", null, "saksbehandler", ap, List.of(), false, false, null,
+            new LosBehandlingDto.LosTilbakeDto(BigDecimal.valueOf(500), LocalDate.now()));
     }
 
 }

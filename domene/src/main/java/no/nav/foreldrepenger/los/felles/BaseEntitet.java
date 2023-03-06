@@ -64,7 +64,6 @@ public class BaseEntitet implements Serializable {
 
 
     protected static String finnBrukernavn() {
-        return Optional.ofNullable(KontekstHolder.getKontekst()).map(Kontekst::getKompaktUid)
-            .orElse(BRUKERNAVN_NÅR_SIKKERHETSKONTEKST_IKKE_FINNES);
+        return Optional.ofNullable(KontekstHolder.getKontekst()).map(Kontekst::getKompaktUid).orElse(BRUKERNAVN_NÅR_SIKKERHETSKONTEKST_IKKE_FINNES);
     }
 }

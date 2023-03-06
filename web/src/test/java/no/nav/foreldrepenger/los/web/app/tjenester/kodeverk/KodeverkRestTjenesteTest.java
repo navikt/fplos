@@ -1,16 +1,16 @@
 package no.nav.foreldrepenger.los.web.app.tjenester.kodeverk;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-import java.io.IOException;
-import java.util.Map;
+import no.nav.foreldrepenger.los.oppgave.FagsakStatus;
+import no.nav.foreldrepenger.los.oppgavekø.KøSortering;
+import no.nav.foreldrepenger.los.web.app.jackson.JacksonJsonConfig;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import no.nav.foreldrepenger.los.oppgave.FagsakStatus;
-import no.nav.foreldrepenger.los.oppgavekø.KøSortering;
-import no.nav.foreldrepenger.los.web.app.jackson.JacksonJsonConfig;
+import java.io.IOException;
+import java.util.Map;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 class KodeverkRestTjenesteTest {
 
@@ -59,6 +59,7 @@ class KodeverkRestTjenesteTest {
         assertThat(json).contains("\"kode\" : \"OPPR\"").contains("\"navn\" : \"Opprettet\"");
     }
 
-    private record X(FagsakStatus fagsakStatus) {}
+    private record X(FagsakStatus fagsakStatus) {
+    }
 
 }

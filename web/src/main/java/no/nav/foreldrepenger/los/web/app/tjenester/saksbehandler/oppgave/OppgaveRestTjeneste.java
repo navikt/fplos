@@ -59,9 +59,9 @@ public class OppgaveRestTjeneste {
 
     private static final Logger LOG = LoggerFactory.getLogger(OppgaveRestTjeneste.class);
 
-    public static final String OPPGAVER_BASE_PATH =  "/saksbehandler/oppgaver";
-    public static final String OPPGAVER_STATUS_PATH =  "/status";
-    public static final String OPPGAVER_RESULTAT_PATH =  "/resultat";
+    public static final String OPPGAVER_BASE_PATH = "/saksbehandler/oppgaver";
+    public static final String OPPGAVER_STATUS_PATH = "/status";
+    public static final String OPPGAVER_RESULTAT_PATH = "/resultat";
 
     private OppgaveTjeneste oppgaveTjeneste;
     private OppgaveKøTjeneste oppgaveKøTjeneste;
@@ -71,7 +71,8 @@ public class OppgaveRestTjeneste {
 
     @Inject
     public OppgaveRestTjeneste(OppgaveTjeneste oppgaveTjeneste,
-                               OppgaveKøTjeneste oppgaveKøTjeneste, ReservasjonTjeneste reservasjonTjeneste,
+                               OppgaveKøTjeneste oppgaveKøTjeneste,
+                               ReservasjonTjeneste reservasjonTjeneste,
                                OppgaveDtoTjeneste oppgaveDtoTjeneste,
                                SaksbehandlerDtoTjeneste saksbehandlerDtoTjeneste) {
         this.oppgaveTjeneste = oppgaveTjeneste;
@@ -88,11 +89,7 @@ public class OppgaveRestTjeneste {
     @GET
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @Operation(description = "Init hent oppgaver", tags = "Saksbehandler",
-            responses = {
-                    @ApiResponse(responseCode = "202", description = "Hent oppgaver initiert, Returnerer link til å polle etter nye oppgaver",
-                            headers = {@Header(name = "Location")})
-            })
+    @Operation(description = "Init hent oppgaver", tags = "Saksbehandler", responses = {@ApiResponse(responseCode = "202", description = "Hent oppgaver initiert, Returnerer link til å polle etter nye oppgaver", headers = {@Header(name = "Location")})})
     @BeskyttetRessurs(actionType = ActionType.READ, resourceType = ResourceType.FAGSAK)
     public Response hentOppgaver(@Context HttpServletRequest request,
                                  @NotNull @Valid @QueryParam("sakslisteId") SakslisteIdDto sakslisteId,
@@ -102,11 +99,7 @@ public class OppgaveRestTjeneste {
 
     @GET
     @Path(OPPGAVER_STATUS_PATH)
-    @Operation(description = "Url for å polle på oppgaver asynkront", tags = "Saksbehandler",
-            responses = {
-                    @ApiResponse(responseCode = "200", description = "Returnerer Status", content = @Content(schema = @Schema(implementation = AsyncPollingStatus.class))),
-                    @ApiResponse(responseCode = "303", description = "Nye oppgaver tilgjenglig", headers = {@Header(name = "Location")})
-            })
+    @Operation(description = "Url for å polle på oppgaver asynkront", tags = "Saksbehandler", responses = {@ApiResponse(responseCode = "200", description = "Returnerer Status", content = @Content(schema = @Schema(implementation = AsyncPollingStatus.class))), @ApiResponse(responseCode = "303", description = "Nye oppgaver tilgjenglig", headers = {@Header(name = "Location")})})
     @BeskyttetRessurs(actionType = ActionType.READ, resourceType = ResourceType.FAGSAK)
     public Response hentNesteOppgaverOgSjekkOmDisseErNye(@Context HttpServletRequest request,
                                                          @NotNull @Valid @QueryParam("sakslisteId") SakslisteIdDto sakslisteId,
@@ -128,10 +121,8 @@ public class OppgaveRestTjeneste {
     @GET
     @Path(OPPGAVER_RESULTAT_PATH)
     @Produces(MediaType.APPLICATION_JSON)
-    @Operation(description = "Hent " + ANTALL_OPPGAVER_SOM_VISES_TIL_SAKSBEHANDLER + " neste oppgaver", tags = "Saksbehandler",
-            responses = {
-                    @ApiResponse(responseCode = "200", description = "Returnerer Oppgaver", content = @Content(schema = @Schema(implementation = OppgaveDto.class))),
-            })
+    @Operation(description = "Hent " + ANTALL_OPPGAVER_SOM_VISES_TIL_SAKSBEHANDLER
+        + " neste oppgaver", tags = "Saksbehandler", responses = {@ApiResponse(responseCode = "200", description = "Returnerer Oppgaver", content = @Content(schema = @Schema(implementation = OppgaveDto.class))),})
     @BeskyttetRessurs(actionType = ActionType.READ, resourceType = ResourceType.FAGSAK)
     public List<OppgaveDto> getOppgaverTilBehandling(@NotNull @QueryParam("sakslisteId") @Valid SakslisteIdDto sakslisteId) {
         var oppgaverTilBehandling = oppgaveDtoTjeneste.getOppgaverTilBehandling(sakslisteId.getVerdi());
@@ -170,13 +161,10 @@ public class OppgaveRestTjeneste {
     @BeskyttetRessurs(actionType = ActionType.CREATE, resourceType = ResourceType.FAGSAK)
     public OppgaveStatusDto opphevReservasjonTilknyttetOppgave(@NotNull @Parameter(description = "Id og begrunnelse") @Valid OpphevTilknyttetReservasjonRequestDto request) {
         var reservasjon = reservasjonTjeneste.slettReservasjonMedEventLogg(request.getOppgaveId().getVerdi(), request.getBegrunnelse());
-        return reservasjon
-                .map(Reservasjon::getOppgave)
-                .map(oppgaveDtoTjeneste::lagOppgaveStatusUtenTilgangsjekk)
-                .orElseGet(() -> {
-                    LOG.info("Fant ikke reservasjon tilknyttet oppgaveId {} for sletting, returnerer null", request.getOppgaveId());
-                    return null;
-                });
+        return reservasjon.map(Reservasjon::getOppgave).map(oppgaveDtoTjeneste::lagOppgaveStatusUtenTilgangsjekk).orElseGet(() -> {
+            LOG.info("Fant ikke reservasjon tilknyttet oppgaveId {} for sletting, returnerer null", request.getOppgaveId());
+            return null;
+        });
     }
 
     @POST
@@ -240,8 +228,7 @@ public class OppgaveRestTjeneste {
     @BeskyttetRessurs(actionType = ActionType.CREATE, resourceType = ResourceType.FAGSAK)
     public OppgaveStatusDto flyttOppgaveReservasjon(@NotNull @Parameter(description = "id, begrunnelse og brukerident") @Valid OppgaveFlyttingDto oppgaveFlyttingDto) {
         var reservasjon = reservasjonTjeneste.flyttReservasjon(oppgaveFlyttingDto.getOppgaveId().getVerdi(),
-                oppgaveFlyttingDto.getBrukerIdent().getVerdi(),
-                oppgaveFlyttingDto.getBegrunnelse());
+            oppgaveFlyttingDto.getBrukerIdent().getVerdi(), oppgaveFlyttingDto.getBegrunnelse());
         LOG.info("Reservasjon flyttet: {}", oppgaveFlyttingDto);
         return oppgaveDtoTjeneste.lagDtoFor(reservasjon.getOppgave(), false).getStatus();
     }

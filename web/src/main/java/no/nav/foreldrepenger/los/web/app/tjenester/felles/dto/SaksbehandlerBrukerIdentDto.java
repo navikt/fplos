@@ -1,17 +1,17 @@
 package no.nav.foreldrepenger.los.web.app.tjenester.felles.dto;
 
-import java.util.Objects;
-
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import no.nav.vedtak.sikkerhet.abac.AbacDataAttributter;
 import no.nav.vedtak.sikkerhet.abac.AbacDto;
 import no.nav.vedtak.util.InputValideringRegex;
+
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
+
+import java.util.Objects;
 
 public class SaksbehandlerBrukerIdentDto implements AbacDto {
 
@@ -37,9 +37,7 @@ public class SaksbehandlerBrukerIdentDto implements AbacDto {
 
     @Override
     public String toString() {
-        return "SaksbehandlerBrukerIdentDto{" +
-                "brukerIdent='" + brukerIdent + '\'' +
-                '}';
+        return "SaksbehandlerBrukerIdentDto{" + "brukerIdent='" + brukerIdent + '\'' + '}';
     }
 
     @Override

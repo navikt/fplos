@@ -77,15 +77,15 @@ class KøStatistikkTjenesteTest {
     }
 
     private OppgaveFiltrering kø(Avdeling avdeling) {
-        return OppgaveFiltrering.builder().medNavn("OPPRETTET")
-                .medSortering(KøSortering.OPPRETT_BEHANDLING)
-                .medAvdeling(avdeling).build();
+        return OppgaveFiltrering.builder().medNavn("OPPRETTET").medSortering(KøSortering.OPPRETT_BEHANDLING).medAvdeling(avdeling).build();
     }
 
     private Avdeling avdelingForDrammen() {
-        return DBTestUtil.hentAlle(entityManager, Avdeling.class).stream()
-                .filter(a -> a.getAvdelingEnhet().equals(AVDELING_DRAMMEN_ENHET))
-                .findAny().orElseThrow();
+        return DBTestUtil.hentAlle(entityManager, Avdeling.class)
+            .stream()
+            .filter(a -> a.getAvdelingEnhet().equals(AVDELING_DRAMMEN_ENHET))
+            .findAny()
+            .orElseThrow();
     }
 
 }

@@ -16,7 +16,8 @@ public final class ReservasjonKonstanter {
 
 
     public static boolean tekstBlantReservasjonKonstanter(String kandidat) {
-        final var aktuelle = List.of(OPPGAVE_AVSLUTTET, RESERVASJON_AVSLUTTET_AVDELINGSLEDER, NY_ENHET, SLETTET_AV_ADMIN, RESERVASJON_VIDEREFØRT_NY_OPPGAVE);
+        final var aktuelle = List.of(OPPGAVE_AVSLUTTET, RESERVASJON_AVSLUTTET_AVDELINGSLEDER, NY_ENHET, SLETTET_AV_ADMIN,
+            RESERVASJON_VIDEREFØRT_NY_OPPGAVE);
         return kandidat != null && aktuelle.contains(kandidat);
     }
 

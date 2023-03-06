@@ -39,9 +39,7 @@ public class OppgaveIdDto implements AbacDto {
 
     @Override
     public String toString() {
-        return "OppgaveIdDto{" +
-                "oppgaveId=" + oppgaveId +
-                '}';
+        return "OppgaveIdDto{" + "oppgaveId=" + oppgaveId + '}';
     }
 
     @Override

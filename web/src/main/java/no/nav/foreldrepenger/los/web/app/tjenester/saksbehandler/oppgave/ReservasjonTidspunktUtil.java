@@ -20,7 +20,8 @@ final class ReservasjonTidspunktUtil {
             throw new IllegalArgumentException("Reserevasjon kan ikke avsluttes før dagens dato");
         }
         if (tidspunkt.isAfter(now.plusDays(31))) {
-            throw new IllegalArgumentException("Reserevasjon kan ikke være lenger enn 30 dager"); //Siden vi bruker LocalDateTime med 23:59 for sjekken så justeres der til påfølgende dag
+            throw new IllegalArgumentException(
+                "Reserevasjon kan ikke være lenger enn 30 dager"); //Siden vi bruker LocalDateTime med 23:59 for sjekken så justeres der til påfølgende dag
         }
     }
 }

@@ -55,8 +55,7 @@ class DriftsmeldingerRestTjenesteTest {
     }
 
     private static boolean omtrentSammeTid(LocalDateTime tid, LocalDateTime utgangspunkt) {
-        return tid.isAfter(utgangspunkt.minusSeconds(4))
-                && tid.isBefore(utgangspunkt.plusSeconds(4));
+        return tid.isAfter(utgangspunkt.minusSeconds(4)) && tid.isBefore(utgangspunkt.plusSeconds(4));
     }
 
 }

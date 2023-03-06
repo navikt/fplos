@@ -66,19 +66,17 @@ public class GjenåpneOppgaveOppgavetransisjonHåndterer implements FpsakOppgave
         return Oppgavetransisjon.GJENÅPNE_OPPGAVE;
     }
 
-    private void videreførNyligUtløptReservasjon(List<Oppgave> eksisterendeOppgaver,
-                                                 Oppgave nyOppgave,
-                                                 String behandlendeEnhetId) {
+    private void videreførNyligUtløptReservasjon(List<Oppgave> eksisterendeOppgaver, Oppgave nyOppgave, String behandlendeEnhetId) {
         eksisterendeOppgaver.stream()
-                .peek(o -> LOG.info("Ser på oppgave {}", o.getId()))
-                .max(Comparator.comparing(Oppgave::getOpprettetTidspunkt))
-                .filter(o -> o.getBehandlendeEnhet().equals(behandlendeEnhetId))
-                .map(Oppgave::getReservasjon)
-                .filter(r -> r.getReservertTil().isAfter(LocalDateTime.now().minus(15, ChronoUnit.MINUTES)))
-                .ifPresent(r -> {
-                    LOG.info("Viderefører reservasjon");
-                    reservasjonTjeneste.reserverBasertPåAvsluttetReservasjon(nyOppgave, r);
-                });
+            .peek(o -> LOG.info("Ser på oppgave {}", o.getId()))
+            .max(Comparator.comparing(Oppgave::getOpprettetTidspunkt))
+            .filter(o -> o.getBehandlendeEnhet().equals(behandlendeEnhetId))
+            .map(Oppgave::getReservasjon)
+            .filter(r -> r.getReservertTil().isAfter(LocalDateTime.now().minus(15, ChronoUnit.MINUTES)))
+            .ifPresent(r -> {
+                LOG.info("Viderefører reservasjon");
+                reservasjonTjeneste.reserverBasertPåAvsluttetReservasjon(nyOppgave, r);
+            });
     }
 
     private void opprettOppgaveEgenskaper(Oppgave oppgave, LosBehandlingDto behandlingFpsak) {
@@ -88,10 +86,10 @@ public class GjenåpneOppgaveOppgavetransisjonHåndterer implements FpsakOppgave
 
     private void oppdaterOppgaveEventLogg(BehandlingId behandlingId, LosBehandlingDto behandlingFpsak) {
         var oel = OppgaveEventLogg.builder()
-                .behandlingId(behandlingId)
-                .behandlendeEnhet(behandlingFpsak.behandlendeEnhetId())
-                .type(OppgaveEventType.GJENAPNET)
-                .build();
+            .behandlingId(behandlingId)
+            .behandlendeEnhet(behandlingFpsak.behandlendeEnhetId())
+            .type(OppgaveEventType.GJENAPNET)
+            .build();
         oppgaveRepository.lagre(oel);
     }
 

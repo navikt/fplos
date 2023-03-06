@@ -20,7 +20,7 @@ public class DriftsmeldingRepository {
     public DriftsmeldingRepository() {
     }
 
-    public void lagre(Driftsmelding driftsmelding){
+    public void lagre(Driftsmelding driftsmelding) {
         entityManager.persist(driftsmelding);
         entityManager.flush();
     }
@@ -29,13 +29,11 @@ public class DriftsmeldingRepository {
     public List<Driftsmelding> hentMeldinger() {
         var nå = LocalDateTime.now();
         return entityManager.createQuery("Select m FROM Driftsmelding m where m.aktivTil > :nå", Driftsmelding.class)
-                .setParameter("nå", nå)
-                .getResultList();
+            .setParameter("nå", nå)
+            .getResultList();
     }
 
     public void deaktiverDriftsmeldinger() {
-        hentMeldinger().stream()
-                .map(Driftsmelding::deaktiver)
-                .forEach(this::lagre);
+        hentMeldinger().stream().map(Driftsmelding::deaktiver).forEach(this::lagre);
     }
 }

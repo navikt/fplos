@@ -11,14 +11,14 @@ import com.fasterxml.jackson.annotation.JsonValue;
 import no.nav.foreldrepenger.los.felles.Kodeverdi;
 
 public enum BehandlingType implements Kodeverdi {
-    FØRSTEGANGSSØKNAD ("BT-002", "Førstegangsbehandling"),
+    FØRSTEGANGSSØKNAD("BT-002", "Førstegangsbehandling"),
     KLAGE("BT-003", "Klage"),
     REVURDERING("BT-004", "Revurdering"),
     SØKNAD("BT-005", "Søknad"),
     INNSYN("BT-006", "Innsyn"),
-    TILBAKEBETALING ("BT-007", "Tilbakebetaling"),
+    TILBAKEBETALING("BT-007", "Tilbakebetaling"),
     ANKE("BT-008", "Anke"),
-    TILBAKEBETALING_REVURDERING ("BT-009", "Tilbakebet-rev");
+    TILBAKEBETALING_REVURDERING("BT-009", "Tilbakebet-rev");
 
     @JsonValue
     private String kode;
@@ -34,7 +34,9 @@ public enum BehandlingType implements Kodeverdi {
         return navn;
     }
 
-    public String getKode() { return kode; }
+    public String getKode() {
+        return kode;
+    }
 
     public String getKodeverk() {
         return KODEVERK;
@@ -49,9 +51,9 @@ public enum BehandlingType implements Kodeverdi {
             return null;
         }
         return Arrays.stream(values())
-                .filter(v -> v.kode.equals(kode))
-                .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("Ukjent BehandlingType: " + kode));
+            .filter(v -> v.kode.equals(kode))
+            .findFirst()
+            .orElseThrow(() -> new IllegalArgumentException("Ukjent BehandlingType: " + kode));
     }
 
 
@@ -59,16 +61,12 @@ public enum BehandlingType implements Kodeverdi {
     public static class KodeverdiConverter implements AttributeConverter<BehandlingType, String> {
         @Override
         public String convertToDatabaseColumn(BehandlingType attribute) {
-            return Optional.ofNullable(attribute)
-                    .map(BehandlingType::getKode)
-                    .orElse(null);
+            return Optional.ofNullable(attribute).map(BehandlingType::getKode).orElse(null);
         }
 
         @Override
         public BehandlingType convertToEntityAttribute(String dbData) {
-            return Optional.ofNullable(dbData)
-                    .map(BehandlingType::fraKode)
-                    .orElse(null);
+            return Optional.ofNullable(dbData).map(BehandlingType::fraKode).orElse(null);
         }
     }
 }

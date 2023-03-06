@@ -41,12 +41,12 @@ public class AvdelingslederTjeneste {
         this.organisasjonRepository = organisasjonRepository;
     }
 
-    public List<OppgaveFiltrering> hentOppgaveFiltreringer(String avdelingsEnhet){
+    public List<OppgaveFiltrering> hentOppgaveFiltreringer(String avdelingsEnhet) {
         var avdeling = organisasjonRepository.hentAvdelingFraEnhet(avdelingsEnhet).orElseThrow();
         return oppgaveRepository.hentAlleOppgaveFilterSettTilknyttetAvdeling(avdeling.getId());
     }
 
-    public Optional<OppgaveFiltrering> hentOppgaveFiltering(Long oppgaveFiltrering){
+    public Optional<OppgaveFiltrering> hentOppgaveFiltering(Long oppgaveFiltrering) {
         return oppgaveRepository.hentOppgaveFilterSett(oppgaveFiltrering);
     }
 
@@ -87,9 +87,10 @@ public class AvdelingslederTjeneste {
     public void endreFiltreringYtelseType(Long oppgavefiltreringId, FagsakYtelseType fagsakYtelseType) {
         var filter = hentFiltrering(oppgavefiltreringId);
         // fjern gamle filtre
-        filter.getFiltreringYtelseTyper().stream()
-                .map(FiltreringYtelseType::getFagsakYtelseType)
-                .forEach(yt -> oppgaveRepository.slettFiltreringYtelseType(oppgavefiltreringId, yt));
+        filter.getFiltreringYtelseTyper()
+            .stream()
+            .map(FiltreringYtelseType::getFagsakYtelseType)
+            .forEach(yt -> oppgaveRepository.slettFiltreringYtelseType(oppgavefiltreringId, yt));
         if (fagsakYtelseType != null) {
             // legg på eventuelle nye
             oppgaveRepository.lagre(new FiltreringYtelseType(filter, fagsakYtelseType));
@@ -99,8 +100,11 @@ public class AvdelingslederTjeneste {
 
     public void endreFyt(Long oppgavefiltreringId, FagsakYtelseType fagsakYtelseType, boolean checked) {
         var filter = hentFiltrering(oppgavefiltreringId);
-        filter.getFiltreringYtelseTyper().stream().filter(fyt -> fyt.getFagsakYtelseType().equals(fagsakYtelseType)).findFirst()
-                .ifPresent(fyt -> oppgaveRepository.slettFiltreringYtelseType(oppgavefiltreringId, fagsakYtelseType));
+        filter.getFiltreringYtelseTyper()
+            .stream()
+            .filter(fyt -> fyt.getFagsakYtelseType().equals(fagsakYtelseType))
+            .findFirst()
+            .ifPresent(fyt -> oppgaveRepository.slettFiltreringYtelseType(oppgavefiltreringId, fagsakYtelseType));
         if (checked) {
             oppgaveRepository.lagre(new FiltreringYtelseType(filter, fagsakYtelseType));
         }
@@ -110,15 +114,17 @@ public class AvdelingslederTjeneste {
     public void endreFiltreringYtelseTyper(Long oppgavefiltreringId, List<FagsakYtelseType> fagsakYtelseType) {
         LOG.info("Henter oppgavefiltreringId {}", oppgavefiltreringId);
         var filter = hentFiltrering(oppgavefiltreringId);
-        filter.getFiltreringYtelseTyper().stream()
-                .map(FiltreringYtelseType::getFagsakYtelseType)
-                .forEach(yt -> oppgaveRepository.slettFiltreringYtelseType(oppgavefiltreringId, yt));
-        fagsakYtelseType.stream()
-                .map(yt -> new FiltreringYtelseType(filter, yt))
-                .forEach(oppgaveRepository::lagre);
+        filter.getFiltreringYtelseTyper()
+            .stream()
+            .map(FiltreringYtelseType::getFagsakYtelseType)
+            .forEach(yt -> oppgaveRepository.slettFiltreringYtelseType(oppgavefiltreringId, yt));
+        fagsakYtelseType.stream().map(yt -> new FiltreringYtelseType(filter, yt)).forEach(oppgaveRepository::lagre);
     }
 
-    public void endreFiltreringAndreKriterierType(Long oppgavefiltreringId, AndreKriterierType andreKriterierType, boolean checked, boolean inkluder) {
+    public void endreFiltreringAndreKriterierType(Long oppgavefiltreringId,
+                                                  AndreKriterierType andreKriterierType,
+                                                  boolean checked,
+                                                  boolean inkluder) {
         oppgaveRepository.slettFiltreringAndreKriterierType(oppgavefiltreringId, andreKriterierType);
         var filterSett = hentFiltrering(oppgavefiltreringId);
         if (checked) {
@@ -128,39 +134,36 @@ public class AvdelingslederTjeneste {
     }
 
     public void leggSaksbehandlerTilListe(Long oppgaveFiltreringId, String saksbehandlerIdent) {
-        var saksbehandler = organisasjonRepository.hentSaksbehandlerHvisEksisterer(saksbehandlerIdent)
-                .orElseThrow();
-        oppgaveRepository.hentOppgaveFilterSett(oppgaveFiltreringId)
-                .ifPresent(f -> {
-                    f.leggTilSaksbehandler(saksbehandler);
-                    oppgaveRepository.lagre(f);
-                });
+        var saksbehandler = organisasjonRepository.hentSaksbehandlerHvisEksisterer(saksbehandlerIdent).orElseThrow();
+        oppgaveRepository.hentOppgaveFilterSett(oppgaveFiltreringId).ifPresent(f -> {
+            f.leggTilSaksbehandler(saksbehandler);
+            oppgaveRepository.lagre(f);
+        });
         oppgaveRepository.refresh(saksbehandler);
     }
 
     public void fjernSaksbehandlerFraListe(Long oppgaveFiltreringId, String saksbehandlerIdent) {
         var saksbehandler = organisasjonRepository.hentSaksbehandler(saksbehandlerIdent);
-        oppgaveRepository.hentOppgaveFilterSett(oppgaveFiltreringId)
-                .ifPresent(f -> {
-                    f.fjernSaksbehandler(saksbehandler);
-                    oppgaveRepository.lagre(f);
-                });
+        oppgaveRepository.hentOppgaveFilterSett(oppgaveFiltreringId).ifPresent(f -> {
+            f.fjernSaksbehandler(saksbehandler);
+            oppgaveRepository.lagre(f);
+        });
         oppgaveRepository.refresh(saksbehandler);
     }
 
-    public List<Avdeling> hentAvdelinger(){
+    public List<Avdeling> hentAvdelinger() {
         return organisasjonRepository.hentAvdelinger();
     }
 
-    public void settSorteringTidsintervallDato(Long oppgaveFiltreringId, LocalDate fomDato, LocalDate tomDato){
+    public void settSorteringTidsintervallDato(Long oppgaveFiltreringId, LocalDate fomDato, LocalDate tomDato) {
         oppgaveRepository.settSorteringTidsintervallDato(oppgaveFiltreringId, fomDato, tomDato);
     }
 
-    public void settSorteringNumeriskIntervall(Long oppgaveFiltreringId, Long fra, Long til){
+    public void settSorteringNumeriskIntervall(Long oppgaveFiltreringId, Long fra, Long til) {
         oppgaveRepository.settSorteringNumeriskIntervall(oppgaveFiltreringId, fra, til);
     }
 
-    public void settSorteringTidsintervallValg(Long oppgaveFiltreringId, boolean erDynamiskPeriode){
+    public void settSorteringTidsintervallValg(Long oppgaveFiltreringId, boolean erDynamiskPeriode) {
         oppgaveRepository.settSorteringTidsintervallValg(oppgaveFiltreringId, erDynamiskPeriode);
     }
 
@@ -181,7 +184,7 @@ public class AvdelingslederTjeneste {
 
     private OppgaveFiltrering hentFiltrering(Long oppgavefiltreringId) {
         return oppgaveRepository.hentOppgaveFilterSett(oppgavefiltreringId)
-                .orElseThrow(() -> AvdelingslederTjenesteFeil.fantIkkeOppgavekø(oppgavefiltreringId));
+            .orElseThrow(() -> AvdelingslederTjenesteFeil.fantIkkeOppgavekø(oppgavefiltreringId));
     }
 
 }

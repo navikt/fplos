@@ -1,13 +1,13 @@
 package no.nav.foreldrepenger.los.web.app.exceptions;
 
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.ext.ExceptionMapper;
+import com.fasterxml.jackson.core.JsonParseException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.fasterxml.jackson.core.JsonParseException;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.ext.ExceptionMapper;
 
 public class JsonParseExceptionMapper implements ExceptionMapper<JsonParseException> {
 
@@ -17,11 +17,7 @@ public class JsonParseExceptionMapper implements ExceptionMapper<JsonParseExcept
     public Response toResponse(JsonParseException exception) {
         var feil = String.format("FPL-299955 JSON-parsing feil: %s", exception.getMessage());
         LOG.warn(feil, exception);
-        return Response
-            .status(Response.Status.BAD_REQUEST)
-            .entity(new FeilDto(feil))
-            .type(MediaType.APPLICATION_JSON)
-            .build();
+        return Response.status(Response.Status.BAD_REQUEST).entity(new FeilDto(feil)).type(MediaType.APPLICATION_JSON).build();
     }
 
 }

@@ -1,23 +1,5 @@
 package no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.reservasjoner;
 
-import static no.nav.foreldrepenger.los.reservasjon.ReservasjonKonstanter.RESERVASJON_AVSLUTTET_AVDELINGSLEDER;
-
-import java.util.List;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-import javax.transaction.Transactional;
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import no.nav.foreldrepenger.los.reservasjon.Reservasjon;
@@ -31,6 +13,19 @@ import no.nav.vedtak.sikkerhet.abac.BeskyttetRessurs;
 import no.nav.vedtak.sikkerhet.abac.beskyttet.ActionType;
 import no.nav.vedtak.sikkerhet.abac.beskyttet.ResourceType;
 
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import javax.transaction.Transactional;
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+import javax.ws.rs.*;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+
+import java.util.List;
+
+import static no.nav.foreldrepenger.los.reservasjon.ReservasjonKonstanter.RESERVASJON_AVSLUTTET_AVDELINGSLEDER;
+
 @Path("avdelingsleder/reservasjoner")
 @ApplicationScoped
 @Transactional
@@ -40,8 +35,7 @@ public class AvdelingReservasjonerRestTjeneste {
     private SaksbehandlerDtoTjeneste saksbehandlerDtoTjeneste;
 
     @Inject
-    public AvdelingReservasjonerRestTjeneste(ReservasjonTjeneste reservasjonTjeneste,
-                                             SaksbehandlerDtoTjeneste saksbehandlerDtoTjeneste) {
+    public AvdelingReservasjonerRestTjeneste(ReservasjonTjeneste reservasjonTjeneste, SaksbehandlerDtoTjeneste saksbehandlerDtoTjeneste) {
         this.reservasjonTjeneste = reservasjonTjeneste;
         this.saksbehandlerDtoTjeneste = saksbehandlerDtoTjeneste;
     }
@@ -49,6 +43,7 @@ public class AvdelingReservasjonerRestTjeneste {
     public AvdelingReservasjonerRestTjeneste() {
         //CDI
     }
+
     @GET
     @Produces("application/json")
     @Operation(description = "Henter alle saksbehandlere", tags = "AvdelingslederReservasjoner")
@@ -59,13 +54,11 @@ public class AvdelingReservasjonerRestTjeneste {
     }
 
     private List<ReservasjonDto> tilReservasjonDtoListe(List<Reservasjon> reservasjoner) {
-        return reservasjoner.stream()
-                .map(reservasjon -> {
-                    var reservertAvNavn = saksbehandlerDtoTjeneste.hentSaksbehandlerNavn(reservasjon.getReservertAv())
-                            .orElseGet(() -> "Ukjent saksbehandler " + reservasjon.getReservertAv());
-                    return new ReservasjonDto(reservasjon, reservertAvNavn, null);
-                })
-                .toList();
+        return reservasjoner.stream().map(reservasjon -> {
+            var reservertAvNavn = saksbehandlerDtoTjeneste.hentSaksbehandlerNavn(reservasjon.getReservertAv())
+                .orElseGet(() -> "Ukjent saksbehandler " + reservasjon.getReservertAv());
+            return new ReservasjonDto(reservasjon, reservertAvNavn, null);
+        }).toList();
     }
 
     @POST

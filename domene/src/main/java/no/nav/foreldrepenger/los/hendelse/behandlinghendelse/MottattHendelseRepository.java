@@ -38,8 +38,8 @@ public class MottattHendelseRepository {
 
     public void slettMånedsGamle() {
         entityManager.createNativeQuery("DELETE FROM MOTTATT_HENDELSE WHERE opprettet_tid < :foer")
-                .setParameter("foer", LocalDateTime.now().minusWeeks(4))
-                .executeUpdate();
+            .setParameter("foer", LocalDateTime.now().minusWeeks(4))
+            .executeUpdate();
         entityManager.flush();
     }
 

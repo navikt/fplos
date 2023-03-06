@@ -38,10 +38,7 @@ public class OpphevTilknyttetReservasjonRequestDto implements AbacDto {
 
     @Override
     public String toString() {
-        return "OppgaveOpphevingDto{" +
-                "oppgaveId=" + oppgaveId +
-                ", begrunnelse='***'" +
-                '}';
+        return "OppgaveOpphevingDto{" + "oppgaveId=" + oppgaveId + ", begrunnelse='***'" + '}';
     }
 
     @Override

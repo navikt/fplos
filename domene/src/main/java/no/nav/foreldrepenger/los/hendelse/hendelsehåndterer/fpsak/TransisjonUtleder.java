@@ -47,22 +47,18 @@ public final class TransisjonUtleder {
         }
 
         if (finn(Aksjonspunkt::erTilBeslutter, aksjonspunkter)) {
-            return oppgaveHistorikk.erÅpenOppgave() && oppgaveHistorikk.erSisteOpprettedeOppgaveTilBeslutter()
-                    ? OPPDATER_OPPGAVE
-                    : OPPRETT_BESLUTTEROPPGAVE;
+            return oppgaveHistorikk.erÅpenOppgave()
+                && oppgaveHistorikk.erSisteOpprettedeOppgaveTilBeslutter() ? OPPDATER_OPPGAVE : OPPRETT_BESLUTTEROPPGAVE;
         }
 
         if (finn(Aksjonspunkt::erRegistrerPapirSøknad, aksjonspunkter)) {
-            return oppgaveHistorikk.erÅpenOppgave() && oppgaveHistorikk.erSisteOpprettedeOppgavePapirsøknad()
-                    ? OPPDATER_OPPGAVE
-                    : OPPRETT_PAPIRSØKNADOPPGAVE;
+            return oppgaveHistorikk.erÅpenOppgave()
+                && oppgaveHistorikk.erSisteOpprettedeOppgavePapirsøknad() ? OPPDATER_OPPGAVE : OPPRETT_PAPIRSØKNADOPPGAVE;
         }
 
         if (oppgaveHistorikk.harEksistertOppgave()) {
             if (oppgaveHistorikk.erÅpenOppgave()) {
-                return oppgaveHistorikk.erSisteOpprettedeOppgaveTilBeslutter()
-                        ? RETUR_FRA_BESLUTTER_OPPGAVE
-                        : OPPDATER_OPPGAVE;
+                return oppgaveHistorikk.erSisteOpprettedeOppgaveTilBeslutter() ? RETUR_FRA_BESLUTTER_OPPGAVE : OPPDATER_OPPGAVE;
             }
             return GJENÅPNE_OPPGAVE;
         }

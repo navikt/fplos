@@ -67,15 +67,14 @@ public class SakslisteAndreKriterierDto implements AbacDto {
     @Override
     public String toString() {
         return "<id=" + sakslisteId + //$NON-NLS-1$
-                ", andreKriterierType=" + andreKriterierType + //$NON-NLS-1$
-                ", checked=" + checked + //$NON-NLS-1$
-                ">";
+            ", andreKriterierType=" + andreKriterierType + //$NON-NLS-1$
+            ", checked=" + checked + //$NON-NLS-1$
+            ">";
     }
 
     @Override
     public AbacDataAttributter abacAttributter() {
-        return AbacDataAttributter.opprett()
-                .leggTil(FplosAbacAttributtType.OPPGAVESTYRING_ENHET, avdelingEnhet.getAvdelingEnhet());
+        return AbacDataAttributter.opprett().leggTil(FplosAbacAttributtType.OPPGAVESTYRING_ENHET, avdelingEnhet.getAvdelingEnhet());
 
     }
 }

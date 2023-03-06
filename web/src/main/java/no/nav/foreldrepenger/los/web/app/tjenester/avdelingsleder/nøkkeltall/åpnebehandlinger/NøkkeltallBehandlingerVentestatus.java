@@ -1,18 +1,18 @@
 package no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.nøkkeltall.åpnebehandlinger;
 
+import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.nøkkeltall.åpnebehandlinger.dto.NøkkeltallBehandlingVentestatusDto;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.nøkkeltall.åpnebehandlinger.dto.NøkkeltallBehandlingVentestatusDto;
 
 @ApplicationScoped
 public class NøkkeltallBehandlingerVentestatus {
@@ -34,13 +34,12 @@ public class NøkkeltallBehandlingerVentestatus {
     public List<NøkkeltallBehandlingVentestatusDto> hentBehandlingVentestatusNøkkeltall(String avdeling) {
         if (enhetStatistikkMap == null || LocalDateTime.now().isAfter(nesteOppdateringEtter)) {
             enhetStatistikkMap = fpsakRestKlient.hentBehandlingVentestatusNøkkeltall()
-                    .stream()
-                    .collect(Collectors.groupingBy(NøkkeltallBehandlingVentestatusDto::behandlendeEnhet,
-                            Collectors.toUnmodifiableList()));
+                .stream()
+                .collect(Collectors.groupingBy(NøkkeltallBehandlingVentestatusDto::behandlendeEnhet, Collectors.toUnmodifiableList()));
             nesteOppdateringEtter = LocalDateTime.now().plusMinutes(45);
             if (LOG.isInfoEnabled()) {
                 LOG.info("Hentet statistikk fra fpsak, neste hentes etter {}. Antall unike uttaksmåneder per enhet: {}", nesteOppdateringEtter,
-                        antallFørsteUttakMånederPerEnhet());
+                    antallFørsteUttakMånederPerEnhet());
             }
         }
         var resultat = enhetStatistikkMap.get(avdeling);
@@ -48,11 +47,9 @@ public class NøkkeltallBehandlingerVentestatus {
     }
 
     private String antallFørsteUttakMånederPerEnhet() {
-        return enhetStatistikkMap.keySet().stream()
-                .map(key -> key + "=" + enhetStatistikkMap.get(key).stream()
-                        .map(NøkkeltallBehandlingVentestatusDto::førsteUttakMåned)
-                        .distinct()
-                        .count())
-                .collect(Collectors.joining(", ", "{", "}"));
+        return enhetStatistikkMap.keySet()
+            .stream()
+            .map(key -> key + "=" + enhetStatistikkMap.get(key).stream().map(NøkkeltallBehandlingVentestatusDto::førsteUttakMåned).distinct().count())
+            .collect(Collectors.joining(", ", "{", "}"));
     }
 }

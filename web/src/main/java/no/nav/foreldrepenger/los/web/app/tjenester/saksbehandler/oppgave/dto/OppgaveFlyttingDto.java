@@ -48,11 +48,7 @@ public class OppgaveFlyttingDto implements AbacDto {
 
     @Override
     public String toString() {
-        return "OppgaveFlyttingDto{" +
-                "oppgaveId=" + oppgaveId +
-                ", brukerIdent=" + brukerIdent +
-                ", begrunnelse='" + "*****" + '\'' +
-                '}';
+        return "OppgaveFlyttingDto{" + "oppgaveId=" + oppgaveId + ", brukerIdent=" + brukerIdent + ", begrunnelse='" + "*****" + '\'' + '}';
     }
 
     @Override

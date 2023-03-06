@@ -63,14 +63,15 @@ public class OpprettBeslutterOppgaveOppgavetransisjonHåndterer implements Fpsak
 
     private void håndterEksisterendeOppgave(BehandlingId behandlingId) {
         oppgaveTjeneste.hentAktivOppgave(behandlingId)
-                .stream().peek(o -> LOG.trace("HåndterEksisterendeOppgave, peek på oppgave {}", o))
-                .findFirst()
-                .filter(Oppgave::getAktiv)
-                .ifPresentOrElse(sbo -> {
-                    køStatistikk.lagre(sbo, KøOppgaveHendelse.LUKKET_OPPGAVE);
-                    oppgaveTjeneste.avsluttOppgaveMedEventLogg(sbo, OppgaveEventType.LUKKET, ReservasjonKonstanter.OPPGAVE_AVSLUTTET);
-                    LOG.info("Avslutter saksbehandler1 oppgave");
-                }, () -> LOG.info("Fant ingen aktiv saksbehandler1-oppgave"));
+            .stream()
+            .peek(o -> LOG.trace("HåndterEksisterendeOppgave, peek på oppgave {}", o))
+            .findFirst()
+            .filter(Oppgave::getAktiv)
+            .ifPresentOrElse(sbo -> {
+                køStatistikk.lagre(sbo, KøOppgaveHendelse.LUKKET_OPPGAVE);
+                oppgaveTjeneste.avsluttOppgaveMedEventLogg(sbo, OppgaveEventType.LUKKET, ReservasjonKonstanter.OPPGAVE_AVSLUTTET);
+                LOG.info("Avslutter saksbehandler1 oppgave");
+            }, () -> LOG.info("Fant ingen aktiv saksbehandler1-oppgave"));
     }
 
     private void opprettOppgaveEgenskaper(Oppgave oppgave, LosBehandlingDto behandlingFpsak) {
@@ -81,11 +82,11 @@ public class OpprettBeslutterOppgaveOppgavetransisjonHåndterer implements Fpsak
     private void opprettOppgaveEventLogg(BehandlingId behandlingId, String enhet) {
         LOG.info("Oppretter {} oppgave til beslutter", SYSTEM);
         var oel = OppgaveEventLogg.builder()
-                .type(OppgaveEventType.OPPRETTET)
-                .behandlingId(behandlingId)
-                .behandlendeEnhet(enhet)
-                .andreKriterierType(AndreKriterierType.TIL_BESLUTTER)
-                .build();
+            .type(OppgaveEventType.OPPRETTET)
+            .behandlingId(behandlingId)
+            .behandlendeEnhet(enhet)
+            .andreKriterierType(AndreKriterierType.TIL_BESLUTTER)
+            .build();
         oppgaveTjeneste.lagre(oel);
     }
 

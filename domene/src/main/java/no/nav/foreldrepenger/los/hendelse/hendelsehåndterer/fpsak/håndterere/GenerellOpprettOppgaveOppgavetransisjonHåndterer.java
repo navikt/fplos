@@ -1,11 +1,5 @@
 package no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.håndterere;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import no.nav.foreldrepenger.los.domene.typer.BehandlingId;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.OppgaveEgenskapHåndterer;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.FpsakOppgaveEgenskapFinner;
@@ -17,6 +11,12 @@ import no.nav.foreldrepenger.los.oppgave.OppgaveTjeneste;
 import no.nav.foreldrepenger.los.statistikk.kø.KøOppgaveHendelse;
 import no.nav.foreldrepenger.los.statistikk.kø.KøStatistikkTjeneste;
 import no.nav.vedtak.hendelser.behandling.los.LosBehandlingDto;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 
 @ApplicationScoped
 public class GenerellOpprettOppgaveOppgavetransisjonHåndterer implements FpsakOppgavetransisjonHåndterer {
@@ -64,13 +64,9 @@ public class GenerellOpprettOppgaveOppgavetransisjonHåndterer implements FpsakO
     }
 
     void håndterEksisterendeOppgave(BehandlingId behandlingId) {
-        oppgaveTjeneste.hentNyesteOppgaveTilknyttet(behandlingId)
-                .filter(Oppgave::getAktiv)
-                .ifPresent(o -> {
-                    throw new IllegalStateException(
-                            String.format("Finnes aktiv oppgave (oppgaveId %s) fra før, gir opp håndtering av hendelse",
-                                    o.getId()));
-                });
+        oppgaveTjeneste.hentNyesteOppgaveTilknyttet(behandlingId).filter(Oppgave::getAktiv).ifPresent(o -> {
+            throw new IllegalStateException(String.format("Finnes aktiv oppgave (oppgaveId %s) fra før, gir opp håndtering av hendelse", o.getId()));
+        });
     }
 
     void opprettOppgaveEventLogg(Oppgave oppgave) {

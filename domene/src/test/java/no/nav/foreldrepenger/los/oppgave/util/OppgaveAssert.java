@@ -28,119 +28,91 @@ public class OppgaveAssert extends AbstractAssert<OppgaveAssert, Oppgave> {
 
     public OppgaveAssert harSaksnummer(Saksnummer saksnummer) {
         isNotNull();
-        assertThat(actual.getFagsakSaksnummer())
-                .overridingErrorMessage("Forventet saksnummer <%s> men fikk <%s>",
-                        saksnummer, actual.getFagsakSaksnummer())
-                .isEqualTo(saksnummer.longValue());
+        assertThat(actual.getFagsakSaksnummer()).overridingErrorMessage("Forventet saksnummer <%s> men fikk <%s>", saksnummer,
+            actual.getFagsakSaksnummer()).isEqualTo(saksnummer.longValue());
         return this;
     }
 
     public OppgaveAssert harSystem(String system) {
         isNotNull();
-        assertThat(actual.getSystem())
-                .overridingErrorMessage("Forventet system <%s> men fikk <%s>",
-                        system, actual.getSystem())
-                .isEqualTo(system);
+        assertThat(actual.getSystem()).overridingErrorMessage("Forventet system <%s> men fikk <%s>", system, actual.getSystem()).isEqualTo(system);
         return this;
     }
 
     public OppgaveAssert harBehandlingOpprettet(LocalDateTime behandlingOpprettet) {
         isNotNull();
         var faktisk = actual.getBehandlingOpprettet().truncatedTo(ChronoUnit.SECONDS);
-        assertThat(faktisk)
-                .overridingErrorMessage("Forventet behandlingOpprettet <%s> men fikk <%s>",
-                        behandlingOpprettet, faktisk)
-                .isEqualTo(behandlingOpprettet.truncatedTo(ChronoUnit.SECONDS));
+        assertThat(faktisk).overridingErrorMessage("Forventet behandlingOpprettet <%s> men fikk <%s>", behandlingOpprettet, faktisk)
+            .isEqualTo(behandlingOpprettet.truncatedTo(ChronoUnit.SECONDS));
         return this;
     }
 
     public OppgaveAssert harAktiv(boolean aktiv) {
         isNotNull();
-        assertThat(actual.getAktiv())
-                .overridingErrorMessage("Forventet aktiv <%s> men fikk <%s>",
-                        aktiv, actual.getAktiv())
-                .isEqualTo(aktiv);
+        assertThat(actual.getAktiv()).overridingErrorMessage("Forventet aktiv <%s> men fikk <%s>", aktiv, actual.getAktiv()).isEqualTo(aktiv);
         return this;
     }
 
     public OppgaveAssert harBehandlingId(BehandlingId behandlingId) {
         isNotNull();
-        assertThat(actual.getBehandlingId())
-                .overridingErrorMessage("Forventet behandlingId <%s> men fikk <%s>",
-                        behandlingId, actual.getBehandlingId())
-                .isEqualTo(behandlingId);
+        assertThat(actual.getBehandlingId()).overridingErrorMessage("Forventet behandlingId <%s> men fikk <%s>", behandlingId,
+            actual.getBehandlingId()).isEqualTo(behandlingId);
         return this;
     }
 
     public OppgaveAssert harBehandlingType(BehandlingType behandlingType) {
         isNotNull();
-        assertThat(actual.getBehandlingType())
-                .overridingErrorMessage("Forventet behandlingType <%s> men fikk <%s>",
-                        behandlingType, actual.getBehandlingType())
-                .isEqualTo(behandlingType);
+        assertThat(actual.getBehandlingType()).overridingErrorMessage("Forventet behandlingType <%s> men fikk <%s>", behandlingType,
+            actual.getBehandlingType()).isEqualTo(behandlingType);
         return this;
     }
 
     public OppgaveAssert harBehandlingsfrist(LocalDateTime behandlingsFrist) {
         isNotNull();
-        assertThat(actual.getBehandlingsfrist())
-                .overridingErrorMessage("Forventet behandlingsFrist <%s> men fikk <%s>",
-                        behandlingsFrist, actual.getBehandlingsfrist())
-                .isEqualTo(behandlingsFrist);
+        assertThat(actual.getBehandlingsfrist()).overridingErrorMessage("Forventet behandlingsFrist <%s> men fikk <%s>", behandlingsFrist,
+            actual.getBehandlingsfrist()).isEqualTo(behandlingsFrist);
         return this;
     }
 
     public OppgaveAssert harAktørId(AktørId aktørId) {
         isNotNull();
-        assertThat(actual.getAktørId())
-                .overridingErrorMessage("Forventet aktørId <%s> men fikk <%s>",
-                        aktørId, actual.getAktørId())
-                .isEqualTo(aktørId);
+        assertThat(actual.getAktørId()).overridingErrorMessage("Forventet aktørId <%s> men fikk <%s>", aktørId, actual.getAktørId())
+            .isEqualTo(aktørId);
         return this;
     }
 
     public OppgaveAssert harFørsteStønadsdag(LocalDate førsteStønadsdag) {
         isNotNull();
-        assertThat(actual.getFørsteStønadsdag())
-                .overridingErrorMessage("Forventet førsteStønadsdag <%s> men fikk <%s>",
-                        førsteStønadsdag, actual.getFørsteStønadsdag())
-                .isEqualTo(førsteStønadsdag);
+        assertThat(actual.getFørsteStønadsdag()).overridingErrorMessage("Forventet førsteStønadsdag <%s> men fikk <%s>", førsteStønadsdag,
+            actual.getFørsteStønadsdag()).isEqualTo(førsteStønadsdag);
         return this;
     }
 
     public OppgaveAssert harOppgaveAvsluttet(LocalDateTime oppgaveAvsluttet) {
         isNotNull();
-        assertThat(actual.getOppgaveAvsluttet())
-                .overridingErrorMessage("Forventet oppgaveAvsluttet <%s> men fikk <%s>",
-                        oppgaveAvsluttet, actual.getOppgaveAvsluttet())
-                .isEqualTo(oppgaveAvsluttet);
+        assertThat(actual.getOppgaveAvsluttet()).overridingErrorMessage("Forventet oppgaveAvsluttet <%s> men fikk <%s>", oppgaveAvsluttet,
+            actual.getOppgaveAvsluttet()).isEqualTo(oppgaveAvsluttet);
         return this;
     }
 
     public OppgaveAssert harBehandlingStatus(BehandlingStatus behandlingStatus) {
         isNotNull();
-        assertThat(actual.getBehandlingStatus())
-                .overridingErrorMessage("Forventet behandlingStatus <%s> men fikk <%s>",
-                        behandlingStatus, actual.getBehandlingStatus())
-                .isEqualTo(behandlingStatus);
+        assertThat(actual.getBehandlingStatus()).overridingErrorMessage("Forventet behandlingStatus <%s> men fikk <%s>", behandlingStatus,
+            actual.getBehandlingStatus()).isEqualTo(behandlingStatus);
         return this;
     }
 
     public OppgaveAssert harBehandlendeEnhet(String behandlendeEnhet) {
         isNotNull();
-        assertThat(actual.getBehandlendeEnhet())
-                .overridingErrorMessage("Forventet behandlendeEnhet <%s> men fikk <%s>",
-                        behandlendeEnhet, actual.getBehandlendeEnhet())
-                .isEqualTo(behandlendeEnhet);
+        assertThat(actual.getBehandlendeEnhet()).overridingErrorMessage("Forventet behandlendeEnhet <%s> men fikk <%s>", behandlendeEnhet,
+            actual.getBehandlendeEnhet()).isEqualTo(behandlendeEnhet);
         return this;
     }
 
     public OppgaveAssert harFagsakYtelseType(FagsakYtelseType fagsakYtelseType) {
         isNotNull();
-        assertThat(actual.getFagsakYtelseType())
-                .overridingErrorMessage("Forventet fagsakYtelseType <%s> men fikk <%s>",
-                        fagsakYtelseType, actual.getFagsakYtelseType())
-                .isEqualTo(fagsakYtelseType);
+        assertThat(actual.getFagsakYtelseType()).overridingErrorMessage("Forventet fagsakYtelseType <%s> men fikk <%s>", fagsakYtelseType,
+            actual.getFagsakYtelseType()).isEqualTo(fagsakYtelseType);
         return this;
     }
 

@@ -58,12 +58,12 @@ class OppdaterOppgaveHendelseHåndtererTest {
         behandlingId = new BehandlingId(behandlingFpsak.behandlingUuid());
         oppgaveRepository.lagre(OppgaveUtil.oppgave(behandlingId, behandlingFpsak));
         this.køStatistikkTjeneste = mock(KøStatistikkTjeneste.class);
-        oppgaveOppdaterer = new OppdaterOppgaveOppgavetransisjonHåndterer(oppgaveTjeneste, reservasjonTjeneste, oppgaveEgenskapHåndterer, køStatistikkTjeneste);
+        oppgaveOppdaterer = new OppdaterOppgaveOppgavetransisjonHåndterer(oppgaveTjeneste, reservasjonTjeneste, oppgaveEgenskapHåndterer,
+            køStatistikkTjeneste);
 
         when(køStatistikkTjeneste.hentOppgaveFiltreringKnytningerForOppgave(any())).thenAnswer(
-                o -> List.of(new OppgaveFiltreringKnytning(o.getArgument(0, Oppgave.class).getId(), 1L, BehandlingType.ANKE),
-                        new OppgaveFiltreringKnytning(o.getArgument(0, Oppgave.class).getId(), 2L, BehandlingType.ANKE))
-        );
+            o -> List.of(new OppgaveFiltreringKnytning(o.getArgument(0, Oppgave.class).getId(), 1L, BehandlingType.ANKE),
+                new OppgaveFiltreringKnytning(o.getArgument(0, Oppgave.class).getId(), 2L, BehandlingType.ANKE)));
     }
 
     @Test

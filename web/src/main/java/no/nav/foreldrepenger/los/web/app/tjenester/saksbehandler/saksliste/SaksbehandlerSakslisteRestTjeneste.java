@@ -32,8 +32,7 @@ public class SaksbehandlerSakslisteRestTjeneste {
     private SaksbehandlerDtoTjeneste saksbehandlerDtoTjeneste;
 
     @Inject
-    public SaksbehandlerSakslisteRestTjeneste(OppgaveKøTjeneste oppgaveKøTjeneste,
-                                              SaksbehandlerDtoTjeneste saksbehandlerDtoTjeneste) {
+    public SaksbehandlerSakslisteRestTjeneste(OppgaveKøTjeneste oppgaveKøTjeneste, SaksbehandlerDtoTjeneste saksbehandlerDtoTjeneste) {
         this.oppgaveKøTjeneste = oppgaveKøTjeneste;
         this.saksbehandlerDtoTjeneste = saksbehandlerDtoTjeneste;
     }
@@ -48,9 +47,7 @@ public class SaksbehandlerSakslisteRestTjeneste {
     @BeskyttetRessurs(actionType = ActionType.READ, resourceType = ResourceType.FAGSAK, sporingslogg = false)
     public List<SakslisteDto> hentSakslister() {
         var filtre = oppgaveKøTjeneste.hentOppgaveFiltreringerForPåloggetBruker();
-        return filtre.stream()
-                .map(o -> new SakslisteDto(o, oppgaveKøTjeneste.hentAntallOppgaver(o.getId(), false)))
-                .toList();
+        return filtre.stream().map(o -> new SakslisteDto(o, oppgaveKøTjeneste.hentAntallOppgaver(o.getId(), false))).toList();
     }
 
     @GET

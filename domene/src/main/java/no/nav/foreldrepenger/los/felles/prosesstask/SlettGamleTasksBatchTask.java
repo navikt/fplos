@@ -22,8 +22,7 @@ public class SlettGamleTasksBatchTask implements ProsessTaskHandler {
     private final MottattHendelseRepository hendelseRepository;
 
     @Inject
-    public SlettGamleTasksBatchTask(ProsessTaskTjeneste prosessTaskTjeneste,
-                                    MottattHendelseRepository hendelseRepository) {
+    public SlettGamleTasksBatchTask(ProsessTaskTjeneste prosessTaskTjeneste, MottattHendelseRepository hendelseRepository) {
         this.prosessTaskTjeneste = prosessTaskTjeneste;
         this.hendelseRepository = hendelseRepository;
     }

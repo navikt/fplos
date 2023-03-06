@@ -46,7 +46,9 @@ public class FpsakAksjonspunktWrapper {
             return false;
         } else if (overstyrtTilUtenlandssak) {
             return true;
-        } else return skalVurdereInnhentingAvSED;
+        } else {
+            return skalVurdereInnhentingAvSED;
+        }
     }
 
     private boolean finn(Predicate<Aksjonspunkt> predicate) {

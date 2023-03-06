@@ -4,4 +4,5 @@ import java.time.LocalDate;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public record OppgaverForFørsteStønadsdag(@JsonProperty("forsteStonadsdag") LocalDate førsteStønadsdag, Long antall) { }
+public record OppgaverForFørsteStønadsdag(@JsonProperty("forsteStonadsdag") LocalDate førsteStønadsdag, Long antall) {
+}

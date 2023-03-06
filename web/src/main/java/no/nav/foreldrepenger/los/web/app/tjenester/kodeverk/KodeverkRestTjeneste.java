@@ -47,10 +47,7 @@ public class KodeverkRestTjeneste {
     @BeskyttetRessurs(actionType = ActionType.READ, resourceType = ResourceType.APPLIKASJON, sporingslogg = false)
     public Response hentGruppertKodeliste() throws IOException {
         var kodelisteJson = getKodeverkRawJson();
-        return Response.ok()
-            .entity(kodelisteJson)
-            .type(MediaType.APPLICATION_JSON)
-            .build();
+        return Response.ok().entity(kodelisteJson).type(MediaType.APPLICATION_JSON).build();
     }
 
     private String getKodeverkRawJson() throws JsonProcessingException {

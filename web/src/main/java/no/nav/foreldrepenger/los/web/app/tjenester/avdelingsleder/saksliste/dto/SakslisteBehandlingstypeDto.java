@@ -30,10 +30,7 @@ public class SakslisteBehandlingstypeDto implements AbacDto {
     public SakslisteBehandlingstypeDto() {
     }
 
-    public SakslisteBehandlingstypeDto(SakslisteIdDto sakslisteId,
-                                       BehandlingType behandlingType,
-                                       boolean checked,
-                                       AvdelingEnhetDto avdelingEnhet) {
+    public SakslisteBehandlingstypeDto(SakslisteIdDto sakslisteId, BehandlingType behandlingType, boolean checked, AvdelingEnhetDto avdelingEnhet) {
         this.sakslisteId = sakslisteId;
         this.behandlingType = behandlingType;
         this.checked = checked;
@@ -59,14 +56,13 @@ public class SakslisteBehandlingstypeDto implements AbacDto {
     @Override
     public String toString() {
         return "<id=" + sakslisteId + //$NON-NLS-1$
-                ", behandlingType=" + behandlingType + //$NON-NLS-1$
-                ", checked=" + checked + //$NON-NLS-1$
-                ">";
+            ", behandlingType=" + behandlingType + //$NON-NLS-1$
+            ", checked=" + checked + //$NON-NLS-1$
+            ">";
     }
 
     @Override
     public AbacDataAttributter abacAttributter() {
-        return AbacDataAttributter.opprett()
-                .leggTil(FplosAbacAttributtType.OPPGAVESTYRING_ENHET, avdelingEnhet.getAvdelingEnhet());
+        return AbacDataAttributter.opprett().leggTil(FplosAbacAttributtType.OPPGAVESTYRING_ENHET, avdelingEnhet.getAvdelingEnhet());
     }
 }

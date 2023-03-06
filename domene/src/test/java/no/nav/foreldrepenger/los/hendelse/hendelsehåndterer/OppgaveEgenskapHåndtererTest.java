@@ -102,32 +102,30 @@ class OppgaveEgenskapHåndtererTest {
     }
 
     private List<AndreKriterierType> hentAktiveKriterierPåOppgave(Long saksnummer) {
-        return oppgaveRepository.hentOppgaveEgenskaper(oppgaveId(saksnummer)).stream()
-                .filter(OppgaveEgenskap::getAktiv)
-                .map(OppgaveEgenskap::getAndreKriterierType)
-                .collect(Collectors.toList());
+        return oppgaveRepository.hentOppgaveEgenskaper(oppgaveId(saksnummer))
+            .stream()
+            .filter(OppgaveEgenskap::getAktiv)
+            .map(OppgaveEgenskap::getAndreKriterierType)
+            .collect(Collectors.toList());
     }
 
     private Long oppgaveId(Long saksnummer) {
-        return oppgaveRepository.hentAktiveOppgaverForSaksnummer(List.of(saksnummer)).stream()
-                .map(Oppgave::getId)
-                .findFirst()
-                .orElseThrow();
+        return oppgaveRepository.hentAktiveOppgaverForSaksnummer(List.of(saksnummer)).stream().map(Oppgave::getId).findFirst().orElseThrow();
     }
 
     private Oppgave lagOppgave() {
         var oppgave = Oppgave.builder()
-                .medFagsakSaksnummer(42L)
-                .medBehandlingId(BEHANDLING_ID)
-                .medAktørId(AktørId.dummy())
-                .medFagsakYtelseType(FagsakYtelseType.FORELDREPENGER)
-                .medBehandlingType(BehandlingType.FØRSTEGANGSSØKNAD)
-                .medBehandlendeEnhet("0000")
-                .medBehandlingsfrist(LocalDateTime.now())
-                .medBehandlingOpprettet(LocalDateTime.now())
-                .medFørsteStønadsdag(LocalDate.now().plusMonths(1))
-                .medBehandlingStatus(BehandlingStatus.UTREDES)
-                .build();
+            .medFagsakSaksnummer(42L)
+            .medBehandlingId(BEHANDLING_ID)
+            .medAktørId(AktørId.dummy())
+            .medFagsakYtelseType(FagsakYtelseType.FORELDREPENGER)
+            .medBehandlingType(BehandlingType.FØRSTEGANGSSØKNAD)
+            .medBehandlendeEnhet("0000")
+            .medBehandlingsfrist(LocalDateTime.now())
+            .medBehandlingOpprettet(LocalDateTime.now())
+            .medFørsteStønadsdag(LocalDate.now().plusMonths(1))
+            .medBehandlingStatus(BehandlingStatus.UTREDES)
+            .build();
         oppgaveRepository.lagre(oppgave);
         return oppgave;
     }

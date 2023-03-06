@@ -29,14 +29,12 @@ public class AvdelingslederSaksbehandlerTjeneste {
     }
 
     public List<Saksbehandler> hentAvdelingensSaksbehandlere(String avdelingEnhet) {
-        return organisasjonRepository.hentAvdelingFraEnhet(avdelingEnhet)
-                .map(Avdeling::getSaksbehandlere)
-                .orElse(Collections.emptyList());
+        return organisasjonRepository.hentAvdelingFraEnhet(avdelingEnhet).map(Avdeling::getSaksbehandlere).orElse(Collections.emptyList());
     }
 
     public void leggSaksbehandlerTilAvdeling(String saksbehandlerIdent, String avdelingEnhet) {
         var saksbehandler = organisasjonRepository.hentSaksbehandlerHvisEksisterer(saksbehandlerIdent)
-                .orElseGet(() -> opprettSaksbehandler(saksbehandlerIdent));
+            .orElseGet(() -> opprettSaksbehandler(saksbehandlerIdent));
         var avdeling = hentAvdeling(avdelingEnhet);
         saksbehandler.leggTilAvdeling(avdeling);
         organisasjonRepository.lagre(saksbehandler);
@@ -45,7 +43,7 @@ public class AvdelingslederSaksbehandlerTjeneste {
 
     public void fjernSaksbehandlerFraAvdeling(String saksbehandlerIdent, String avdelingEnhet) {
         var saksbehandler = organisasjonRepository.hentSaksbehandlerHvisEksisterer(saksbehandlerIdent)
-                .orElseThrow(() -> AvdelingSaksbehandlerTjenesteFeil.finnerIkkeSaksbehandler(saksbehandlerIdent));
+            .orElseThrow(() -> AvdelingSaksbehandlerTjenesteFeil.finnerIkkeSaksbehandler(saksbehandlerIdent));
         saksbehandler.fjernAvdeling(organisasjonRepository.hentAvdelingFraEnhet(avdelingEnhet).orElseThrow());
         organisasjonRepository.lagre(saksbehandler);
 
@@ -66,7 +64,7 @@ public class AvdelingslederSaksbehandlerTjeneste {
         var saksbehandler = new Saksbehandler(ident.toUpperCase());
         organisasjonRepository.lagre(saksbehandler);
         return organisasjonRepository.hentSaksbehandlerHvisEksisterer(ident)
-                .orElseThrow(() -> AvdelingSaksbehandlerTjenesteFeil.finnerIkkeSaksbehandler(ident));
+            .orElseThrow(() -> AvdelingSaksbehandlerTjenesteFeil.finnerIkkeSaksbehandler(ident));
     }
 
     private static final class AvdelingSaksbehandlerTjenesteFeil {

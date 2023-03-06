@@ -1,14 +1,14 @@
 package no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.saksliste.dto;
 
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
-
 import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.dto.AvdelingEnhetDto;
 import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.saksliste.FplosAbacAttributtType;
 import no.nav.foreldrepenger.los.web.app.tjenester.felles.dto.SaksbehandlerBrukerIdentDto;
 import no.nav.foreldrepenger.los.web.app.tjenester.felles.dto.SakslisteIdDto;
 import no.nav.vedtak.sikkerhet.abac.AbacDataAttributter;
 import no.nav.vedtak.sikkerhet.abac.AbacDto;
+
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 
 public class SakslisteSaksbehandlerDto implements AbacDto {
 
@@ -58,9 +58,9 @@ public class SakslisteSaksbehandlerDto implements AbacDto {
     @Override
     public String toString() {
         return "<id=" + sakslisteId + //$NON-NLS-1$
-                ", brukerIdent=" + brukerIdent + //$NON-NLS-1$
-                ", checked=" + checked + //$NON-NLS-1$
-                ">";
+            ", brukerIdent=" + brukerIdent + //$NON-NLS-1$
+            ", checked=" + checked + //$NON-NLS-1$
+            ">";
     }
 
     @Override
@@ -73,8 +73,8 @@ public class SakslisteSaksbehandlerDto implements AbacDto {
         }
 
         var sakslisteBehandlingstypeDto = (SakslisteSaksbehandlerDto) o;
-        return sakslisteId.getVerdi().equals(sakslisteBehandlingstypeDto.sakslisteId.getVerdi())
-                && brukerIdent.getVerdi().equals(sakslisteBehandlingstypeDto.brukerIdent.getVerdi());
+        return sakslisteId.getVerdi().equals(sakslisteBehandlingstypeDto.sakslisteId.getVerdi()) && brukerIdent.getVerdi()
+            .equals(sakslisteBehandlingstypeDto.brukerIdent.getVerdi());
     }
 
     @Override
@@ -84,8 +84,7 @@ public class SakslisteSaksbehandlerDto implements AbacDto {
 
     @Override
     public AbacDataAttributter abacAttributter() {
-        return AbacDataAttributter.opprett()
-                .leggTil(FplosAbacAttributtType.OPPGAVESTYRING_ENHET, avdelingEnhet.getAvdelingEnhet());
+        return AbacDataAttributter.opprett().leggTil(FplosAbacAttributtType.OPPGAVESTYRING_ENHET, avdelingEnhet.getAvdelingEnhet());
 
     }
 }

@@ -1,12 +1,9 @@
 package no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.nøkkeltall.åpnebehandlinger.dto;
 
-import java.time.LocalDate;
-
 import no.nav.foreldrepenger.los.oppgave.BehandlingType;
 
-public record NøkkeltallBehandlingVentestatusDto(String behandlendeEnhet,
-                                                 BehandlingType behandlingType,
-                                                 BehandlingVenteStatus behandlingVenteStatus,
-                                                 LocalDate førsteUttakMåned,
-                                                 int antall) {
+import java.time.LocalDate;
+
+public record NøkkeltallBehandlingVentestatusDto(String behandlendeEnhet, BehandlingType behandlingType, BehandlingVenteStatus behandlingVenteStatus,
+                                                 LocalDate førsteUttakMåned, int antall) {
 }

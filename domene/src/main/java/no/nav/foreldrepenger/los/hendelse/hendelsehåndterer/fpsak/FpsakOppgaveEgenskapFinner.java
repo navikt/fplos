@@ -34,8 +34,8 @@ public class FpsakOppgaveEgenskapFinner implements OppgaveEgenskapFinner {
         if (!behandling.refusjonskrav()) {
             this.andreKriterier.add(AndreKriterierType.UTBETALING_TIL_BRUKER);
         }
-        if (Ytelse.FORELDREPENGER.equals(behandling.ytelse()) && Behandlingstype.REVURDERING.equals(behandling.behandlingstype()) &&
-                behandling.behandlingsårsaker().stream().anyMatch(Behandlingsårsak.SØKNAD::equals)) {
+        if (Ytelse.FORELDREPENGER.equals(behandling.ytelse()) && Behandlingstype.REVURDERING.equals(behandling.behandlingstype())
+            && behandling.behandlingsårsaker().stream().anyMatch(Behandlingsårsak.SØKNAD::equals)) {
             this.andreKriterier.add(AndreKriterierType.ENDRINGSSØKNAD);
         }
         if (behandling.faresignaler()) {

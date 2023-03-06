@@ -1,13 +1,13 @@
 package no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.saksliste.dto;
 
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
-
 import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.dto.AvdelingEnhetDto;
 import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.saksliste.FplosAbacAttributtType;
 import no.nav.foreldrepenger.los.web.app.tjenester.felles.dto.SakslisteIdDto;
 import no.nav.vedtak.sikkerhet.abac.AbacDataAttributter;
 import no.nav.vedtak.sikkerhet.abac.AbacDto;
+
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 
 public class SakslisteOgAvdelingDto implements AbacDto {
 
@@ -31,14 +31,13 @@ public class SakslisteOgAvdelingDto implements AbacDto {
         return sakslisteId;
     }
 
-    public AvdelingEnhetDto getAvdelingEnhet() { return avdelingEnhet; }
+    public AvdelingEnhetDto getAvdelingEnhet() {
+        return avdelingEnhet;
+    }
 
     @Override
     public String toString() {
-        return "SakslisteOgAvdelingDto{" +
-                "sakslisteId='" + sakslisteId + '\'' +
-                "avdelingEnhet='" + avdelingEnhet + '\'' +
-                '}';
+        return "SakslisteOgAvdelingDto{" + "sakslisteId='" + sakslisteId + '\'' + "avdelingEnhet='" + avdelingEnhet + '\'' + '}';
     }
 
     @Override

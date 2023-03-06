@@ -42,25 +42,21 @@ public class GeneralRestExceptionMapper implements ExceptionMapper<Throwable> {
     }
 
     private static Response handleTomtResultatFeil(String feilmelding) {
-        return Response
-                .status(Response.Status.NOT_FOUND)
-                .entity(new FeilDto(FeilType.TOMT_RESULTAT_FEIL, feilmelding))
-                .type(MediaType.APPLICATION_JSON)
-                .build();
+        return Response.status(Response.Status.NOT_FOUND)
+            .entity(new FeilDto(FeilType.TOMT_RESULTAT_FEIL, feilmelding))
+            .type(MediaType.APPLICATION_JSON)
+            .build();
     }
 
     private static Response serverError(String feilmelding) {
-        return Response.serverError()
-                .entity(new FeilDto(FeilType.GENERELL_FEIL, feilmelding))
-                .type(MediaType.APPLICATION_JSON)
-                .build();
+        return Response.serverError().entity(new FeilDto(FeilType.GENERELL_FEIL, feilmelding)).type(MediaType.APPLICATION_JSON).build();
     }
 
     private static Response ikkeTilgang(String feilmelding) {
         return Response.status(Response.Status.FORBIDDEN)
-                .entity(new FeilDto(FeilType.MANGLER_TILGANG_FEIL, feilmelding))
-                .type(MediaType.APPLICATION_JSON)
-                .build();
+            .entity(new FeilDto(FeilType.MANGLER_TILGANG_FEIL, feilmelding))
+            .type(MediaType.APPLICATION_JSON)
+            .build();
     }
 
     private static void loggTilApplikasjonslogg(Throwable feil) {
@@ -76,8 +72,9 @@ public class GeneralRestExceptionMapper implements ExceptionMapper<Throwable> {
             return String.format("Det oppstod en feil: %s - %s. Referanse-id: %s", feilbeskrivelse, løsningsforslag, callId);
         } else if (feil instanceof ProcessingException) {
             return String.format("Det oppstod en feil mot eksternt system: %s. Meld til support med referanse-id: %s", feilbeskrivelse, callId);
-        } else
+        } else {
             return String.format("Det oppstod en serverfeil: %s. Meld til support med referanse-id: %s", feilbeskrivelse, callId);
+        }
     }
 
     private static String getExceptionMelding(Throwable feil) {

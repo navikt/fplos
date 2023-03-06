@@ -56,19 +56,18 @@ class GenerellOpprettOppgaveHendelseHåndtererTest {
         var behandlingId = new BehandlingId(behandlingFpsak.behandlingUuid());
         opprettOppgaveHåndterer.håndter(behandlingId, behandlingFpsak);
         var oppgave = DBTestUtil.hentUnik(entityManager, Oppgave.class);
-        assertThatOppgave(oppgave)
-                .harBehandlingOpprettet(behandlingFpsak.opprettetTidspunkt())
-                .harAktiv(true)
-                .harBehandlingId(behandlingId)
-                .harBehandlingType(BehandlingType.FØRSTEGANGSSØKNAD)
-                .harAktørId(new AktørId(behandlingFpsak.aktørId().getAktørId()))
-                .harFørsteStønadsdag(førsteUttaksDag())
-                .harSaksnummer(new Saksnummer(behandlingFpsak.saksnummer()))
-                .harOppgaveAvsluttet(null)
-                .harBehandlingStatus(BehandlingStatus.OPPRETTET)
-                .harBehandlendeEnhet(behandlingFpsak.behandlendeEnhetId())
-                .harSystem("FPSAK")
-                .harFagsakYtelseType(FagsakYtelseType.FORELDREPENGER);
+        assertThatOppgave(oppgave).harBehandlingOpprettet(behandlingFpsak.opprettetTidspunkt())
+            .harAktiv(true)
+            .harBehandlingId(behandlingId)
+            .harBehandlingType(BehandlingType.FØRSTEGANGSSØKNAD)
+            .harAktørId(new AktørId(behandlingFpsak.aktørId().getAktørId()))
+            .harFørsteStønadsdag(førsteUttaksDag())
+            .harSaksnummer(new Saksnummer(behandlingFpsak.saksnummer()))
+            .harOppgaveAvsluttet(null)
+            .harBehandlingStatus(BehandlingStatus.OPPRETTET)
+            .harBehandlendeEnhet(behandlingFpsak.behandlendeEnhetId())
+            .harSystem("FPSAK")
+            .harFagsakYtelseType(FagsakYtelseType.FORELDREPENGER);
     }
 
     @Test

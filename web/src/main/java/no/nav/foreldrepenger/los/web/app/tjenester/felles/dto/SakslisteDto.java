@@ -27,28 +27,18 @@ public class SakslisteDto {
     public SakslisteDto(OppgaveFiltrering o, Integer antallBehandlinger) {
         sakslisteId = new SakslisteIdDto(o.getId());
         navn = o.getNavn();
-        sistEndret = o.getEndretTidspunkt() == null
-                ? o.getOpprettetTidspunkt().toLocalDate()
-                : o.getEndretTidspunkt().toLocalDate();
+        sistEndret = o.getEndretTidspunkt() == null ? o.getOpprettetTidspunkt().toLocalDate() : o.getEndretTidspunkt().toLocalDate();
         if (!o.getFiltreringBehandlingTyper().isEmpty()) {
-            behandlingTyper = o.getFiltreringBehandlingTyper().stream()
-                    .map(FiltreringBehandlingType::getBehandlingType)
-                    .toList();
+            behandlingTyper = o.getFiltreringBehandlingTyper().stream().map(FiltreringBehandlingType::getBehandlingType).toList();
         }
         if (!o.getFiltreringYtelseTyper().isEmpty()) {
-            fagsakYtelseTyper = o.getFiltreringYtelseTyper().stream()
-                    .map(FiltreringYtelseType::getFagsakYtelseType)
-                    .toList();
+            fagsakYtelseTyper = o.getFiltreringYtelseTyper().stream().map(FiltreringYtelseType::getFagsakYtelseType).toList();
         }
         if (!o.getFiltreringAndreKriterierTyper().isEmpty()) {
-            andreKriterier = o.getFiltreringAndreKriterierTyper().stream()
-                    .map(AndreKriterierDto::new)
-                    .toList();
+            andreKriterier = o.getFiltreringAndreKriterierTyper().stream().map(AndreKriterierDto::new).toList();
         }
         this.sortering = new SorteringDto(o.getSortering(), o.getFra(), o.getTil(), o.getFomDato(), o.getTomDato(), o.getErDynamiskPeriode());
-        saksbehandlerIdenter = o.getSaksbehandlere().stream()
-                .map(Saksbehandler::getSaksbehandlerIdent)
-                .toList();
+        saksbehandlerIdenter = o.getSaksbehandlere().stream().map(Saksbehandler::getSaksbehandlerIdent).toList();
 
         this.antallBehandlinger = antallBehandlinger;
     }

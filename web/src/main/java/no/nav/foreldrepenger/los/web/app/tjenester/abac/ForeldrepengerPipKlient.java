@@ -1,17 +1,12 @@
 package no.nav.foreldrepenger.los.web.app.tjenester.abac;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.ws.rs.core.UriBuilder;
-
 import no.nav.foreldrepenger.los.domene.typer.BehandlingId;
-import no.nav.vedtak.felles.integrasjon.rest.FpApplication;
-import no.nav.vedtak.felles.integrasjon.rest.RestClient;
-import no.nav.vedtak.felles.integrasjon.rest.RestClientConfig;
-import no.nav.vedtak.felles.integrasjon.rest.RestConfig;
-import no.nav.vedtak.felles.integrasjon.rest.RestRequest;
-import no.nav.vedtak.felles.integrasjon.rest.TokenFlow;
+import no.nav.vedtak.felles.integrasjon.rest.*;
 import no.nav.vedtak.sikkerhet.abac.pipdata.AbacPipDto;
 import no.nav.vedtak.util.LRUCache;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.ws.rs.core.UriBuilder;
 
 @ApplicationScoped
 @RestClientConfig(tokenConfig = TokenFlow.STS_CC, application = FpApplication.FPSAK)
@@ -44,12 +39,12 @@ public class ForeldrepengerPipKlient {
     }
 
     private AbacPipDto hentFraFpsak(BehandlingId behandlingId) {
-        var pipUri = UriBuilder.fromUri(restConfig.fpContextPath()).path(FPSAK_PIP_ENDPOINT)
-                .queryParam("behandlingUuid", behandlingId.toString())
-                .build();
+        var pipUri = UriBuilder.fromUri(restConfig.fpContextPath())
+            .path(FPSAK_PIP_ENDPOINT)
+            .queryParam("behandlingUuid", behandlingId.toString())
+            .build();
         var request = RestRequest.newGET(pipUri, restConfig);
-        return restClient.sendReturnOptional(request, AbacPipDto.class)
-                .orElseThrow(IllegalStateException::new);
+        return restClient.sendReturnOptional(request, AbacPipDto.class).orElseThrow(IllegalStateException::new);
 
     }
 }

@@ -16,24 +16,26 @@ import no.nav.vedtak.hendelser.behandling.los.LosBehandlingDto;
 
 public class OppgaveUtil {
 
-    private OppgaveUtil() {}
+    private OppgaveUtil() {
+    }
 
     public static Oppgave oppgave(BehandlingId behandlingId, LosBehandlingDto behandlingFpsak) {
         return Oppgave.builder()
-                .medSystem(Fagsystem.FPSAK.name())
-                .medFagsakSaksnummer(Long.valueOf(behandlingFpsak.saksnummer()))
-                .medAktørId(new AktørId(behandlingFpsak.aktørId().getAktørId()))
-                .medBehandlendeEnhet(behandlingFpsak.behandlendeEnhetId())
-                .medBehandlingType(mapBehandlingstype(behandlingFpsak.behandlingstype()))
-                .medFagsakYtelseType(mapYtelse(behandlingFpsak.ytelse()))
-                .medAktiv(true)
-                .medBehandlingOpprettet(behandlingFpsak.opprettetTidspunkt())
-                .medUtfortFraAdmin(false)
-                .medBehandlingStatus(mapBehandlingsstatus(behandlingFpsak.behandlingsstatus()))
-                .medBehandlingId(behandlingId)
-                .medFørsteStønadsdag(Optional.ofNullable(behandlingFpsak.foreldrepengerDto()).map(LosBehandlingDto.LosForeldrepengerDto::førsteUttakDato).orElse(null))
-                .medBehandlingsfrist(behandlingFpsak.behandlingsfrist() != null ? behandlingFpsak.behandlingsfrist().atStartOfDay() : null)
-                .build();
+            .medSystem(Fagsystem.FPSAK.name())
+            .medFagsakSaksnummer(Long.valueOf(behandlingFpsak.saksnummer()))
+            .medAktørId(new AktørId(behandlingFpsak.aktørId().getAktørId()))
+            .medBehandlendeEnhet(behandlingFpsak.behandlendeEnhetId())
+            .medBehandlingType(mapBehandlingstype(behandlingFpsak.behandlingstype()))
+            .medFagsakYtelseType(mapYtelse(behandlingFpsak.ytelse()))
+            .medAktiv(true)
+            .medBehandlingOpprettet(behandlingFpsak.opprettetTidspunkt())
+            .medUtfortFraAdmin(false)
+            .medBehandlingStatus(mapBehandlingsstatus(behandlingFpsak.behandlingsstatus()))
+            .medBehandlingId(behandlingId)
+            .medFørsteStønadsdag(
+                Optional.ofNullable(behandlingFpsak.foreldrepengerDto()).map(LosBehandlingDto.LosForeldrepengerDto::førsteUttakDato).orElse(null))
+            .medBehandlingsfrist(behandlingFpsak.behandlingsfrist() != null ? behandlingFpsak.behandlingsfrist().atStartOfDay() : null)
+            .build();
     }
 
     public static BehandlingType mapBehandlingstype(Behandlingstype behandlingstype) {

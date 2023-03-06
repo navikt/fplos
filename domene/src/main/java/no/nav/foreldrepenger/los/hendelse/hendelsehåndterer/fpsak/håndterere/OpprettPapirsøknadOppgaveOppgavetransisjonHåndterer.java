@@ -1,11 +1,5 @@
 package no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.håndterere;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import no.nav.foreldrepenger.los.domene.typer.BehandlingId;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.OppgaveEgenskapHåndterer;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.FpsakOppgaveEgenskapFinner;
@@ -19,6 +13,12 @@ import no.nav.foreldrepenger.los.oppgave.OppgaveTjeneste;
 import no.nav.foreldrepenger.los.statistikk.kø.KøOppgaveHendelse;
 import no.nav.foreldrepenger.los.statistikk.kø.KøStatistikkTjeneste;
 import no.nav.vedtak.hendelser.behandling.los.LosBehandlingDto;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 
 @ApplicationScoped
 public class OpprettPapirsøknadOppgaveOppgavetransisjonHåndterer implements FpsakOppgavetransisjonHåndterer {
@@ -46,14 +46,13 @@ public class OpprettPapirsøknadOppgaveOppgavetransisjonHåndterer implements Fp
 
     private void opprettOppgaveEventLogg(Oppgave oppgave) {
         var oel = OppgaveEventLogg.builder()
-                .type(OppgaveEventType.OPPRETTET)
-                .andreKriterierType(AndreKriterierType.PAPIRSØKNAD)
-                .behandlendeEnhet(oppgave.getBehandlendeEnhet())
-                .behandlingId(oppgave.getBehandlingId())
-                .build();
+            .type(OppgaveEventType.OPPRETTET)
+            .andreKriterierType(AndreKriterierType.PAPIRSØKNAD)
+            .behandlendeEnhet(oppgave.getBehandlendeEnhet())
+            .behandlingId(oppgave.getBehandlingId())
+            .build();
         oppgaveTjeneste.lagre(oel);
-        LOG.info("Oppretter {}-oppgave med id {} og av type {}", SYSTEM, oppgave.getId(),
-                AndreKriterierType.PAPIRSØKNAD.getKode());
+        LOG.info("Oppretter {}-oppgave med id {} og av type {}", SYSTEM, oppgave.getId(), AndreKriterierType.PAPIRSØKNAD.getKode());
     }
 
     @Override

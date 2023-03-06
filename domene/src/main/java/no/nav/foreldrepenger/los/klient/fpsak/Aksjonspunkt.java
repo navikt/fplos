@@ -79,13 +79,14 @@ public class Aksjonspunkt {
     }
 
     public boolean erManueltOverstyrtTilUtenlandssak() {
-        return !erAvbrutt()
-                && MANUELL_MARKERING_SOM_UTLAND.equals(definisjonKode)
-                && (EØS_BOSATT_NORGE.equals(begrunnelse) || BOSATT_UTLAND.equals(begrunnelse));
+        return !erAvbrutt() && MANUELL_MARKERING_SOM_UTLAND.equals(definisjonKode) && (EØS_BOSATT_NORGE.equals(begrunnelse) || BOSATT_UTLAND.equals(
+            begrunnelse));
     }
 
     public boolean erManueltOverstyrtTilNasjonalSak() {
-        if (erAvbrutt()) return false;
+        if (erAvbrutt()) {
+            return false;
+        }
         var erManueltOverstyrtUtland = MANUELL_MARKERING_SOM_UTLAND.equals(definisjonKode);
         return erManueltOverstyrtUtland && NASJONAL.equals(begrunnelse);
     }
@@ -96,11 +97,11 @@ public class Aksjonspunkt {
 
     public static Aksjonspunkt aksjonspunktFra(LosBehandlingDto.LosAksjonspunktDto aksjonspunktDto) {
         return Aksjonspunkt.builder()
-                .medDefinisjon(aksjonspunktDto.definisjon())
-                .medStatus(mapAksjonspunktstatus(aksjonspunktDto.status()))
-                .medBegrunnelse(aksjonspunktDto.begrunnelse())
-                .medFristTid(aksjonspunktDto.fristTid())
-                .build();
+            .medDefinisjon(aksjonspunktDto.definisjon())
+            .medStatus(mapAksjonspunktstatus(aksjonspunktDto.status()))
+            .medBegrunnelse(aksjonspunktDto.begrunnelse())
+            .medFristTid(aksjonspunktDto.fristTid())
+            .build();
     }
 
     private static String mapAksjonspunktstatus(Aksjonspunktstatus status) {
@@ -118,26 +119,26 @@ public class Aksjonspunkt {
     public static class Builder {
         private final Aksjonspunkt aksjonspunkt;
 
-        public Builder(){
+        public Builder() {
             aksjonspunkt = new Aksjonspunkt();
         }
 
-        public Aksjonspunkt.Builder medDefinisjon(String definisjonKode){
+        public Aksjonspunkt.Builder medDefinisjon(String definisjonKode) {
             aksjonspunkt.definisjonKode = definisjonKode;
             return this;
         }
 
-        public Aksjonspunkt.Builder medStatus(String statusKode){
+        public Aksjonspunkt.Builder medStatus(String statusKode) {
             aksjonspunkt.statusKode = statusKode;
             return this;
         }
 
-        public Aksjonspunkt.Builder medBegrunnelse(String begrunnelse){
+        public Aksjonspunkt.Builder medBegrunnelse(String begrunnelse) {
             aksjonspunkt.begrunnelse = begrunnelse;
             return this;
         }
 
-        public Aksjonspunkt.Builder medFristTid(LocalDateTime fristTid){
+        public Aksjonspunkt.Builder medFristTid(LocalDateTime fristTid) {
             aksjonspunkt.fristTid = fristTid;
             return this;
         }

@@ -58,7 +58,7 @@ public class LdapBrukeroppslag {
             throw new IntegrasjonException("F-418891", String.format("Fikk ingen treff på søk mot LDAP etter ident %s", ident));
         } catch (LimitExceededException lee) {
             throw new IntegrasjonException("F-137440",
-            String.format("Forventet ett unikt resultat på søk mot LDAP etter ident %s, men fikk flere treff", ident), lee);
+                String.format("Forventet ett unikt resultat på søk mot LDAP etter ident %s, men fikk flere treff", ident), lee);
         } catch (NamingException e) {
             throw new IntegrasjonException("F-690609", String.format("Uventet feil ved LDAP-søk %s", søkestreng), e);
         }

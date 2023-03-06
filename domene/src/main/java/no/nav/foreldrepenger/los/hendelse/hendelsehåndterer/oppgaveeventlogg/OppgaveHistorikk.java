@@ -23,9 +23,8 @@ public class OppgaveHistorikk {
     }
 
     public boolean erIngenÅpenOppgave() {
-        return Objects.equals(sisteEventType, OppgaveEventType.LUKKET)
-                || Objects.equals(sisteEventType, OppgaveEventType.MANU_VENT)
-                || Objects.equals(sisteEventType, OppgaveEventType.VENT);
+        return Objects.equals(sisteEventType, OppgaveEventType.LUKKET) || Objects.equals(sisteEventType, OppgaveEventType.MANU_VENT)
+            || Objects.equals(sisteEventType, OppgaveEventType.VENT);
     }
 
     public boolean harEksistertOppgave() {
@@ -42,33 +41,32 @@ public class OppgaveHistorikk {
 
     public boolean erSisteOpprettedeOppgaveTilBeslutter() {
         return Optional.ofNullable(sisteOpprettetEvent)
-                .map(OppgaveEventLogg::getAndreKriterierType)
-                .map(AndreKriterierType::erTilBeslutter)
-                .orElse(false);
+            .map(OppgaveEventLogg::getAndreKriterierType)
+            .map(AndreKriterierType::erTilBeslutter)
+            .orElse(false);
     }
 
     public boolean erSisteOpprettedeOppgavePapirsøknad() {
         return Optional.ofNullable(sisteOpprettetEvent)
-                .map(OppgaveEventLogg::getAndreKriterierType)
-                .map(l -> l.equals(AndreKriterierType.PAPIRSØKNAD))
-                .orElse(false);
+            .map(OppgaveEventLogg::getAndreKriterierType)
+            .map(l -> l.equals(AndreKriterierType.PAPIRSØKNAD))
+            .orElse(false);
     }
 
     public boolean erSisteOppgaveRegistrertPåEnhet(String enhet) {
-        return sisteOpprettetEvent != null
-                && sisteOpprettetEvent.getBehandlendeEnhet().equals(enhet);
+        return sisteOpprettetEvent != null && sisteOpprettetEvent.getBehandlendeEnhet().equals(enhet);
     }
 
     private static OppgaveEventLogg sisteÅpningsEventFra(List<OppgaveEventLogg> oppgaveEventLogg) {
         return oppgaveEventLogg.stream()
-                .filter(e -> e.getEventType().equals(OppgaveEventType.OPPRETTET))
-                .max(Comparator.comparing(OppgaveEventLogg::getOpprettetTidspunkt))
-                .orElse(null);
+            .filter(e -> e.getEventType().equals(OppgaveEventType.OPPRETTET))
+            .max(Comparator.comparing(OppgaveEventLogg::getOpprettetTidspunkt))
+            .orElse(null);
     }
 
     @Override
     public String toString() {
-        return "OppgaveHistorikk{" + "erUtenHistorikk=" + erUtenHistorikk + ", sisteOpprettetEvent="
-                + sisteOpprettetEvent + ", sisteEventType=" + sisteEventType + '}';
+        return "OppgaveHistorikk{" + "erUtenHistorikk=" + erUtenHistorikk + ", sisteOpprettetEvent=" + sisteOpprettetEvent + ", sisteEventType="
+            + sisteEventType + '}';
     }
 }

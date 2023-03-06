@@ -1,7 +1,5 @@
 package no.nav.foreldrepenger.los.web.app.jackson;
 
-import java.io.IOException;
-
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
@@ -9,11 +7,13 @@ import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 import no.nav.foreldrepenger.los.felles.Kodeverdi;
 import no.nav.foreldrepenger.los.oppgavekø.KøSortering;
 
+import java.io.IOException;
+
 
 /**
  * Enkel serialisering av KodeverkTabell klasser, uten at disse trenger @JsonIgnore eller lignende.
  * Deserialisering går av seg selv normalt (får null for andre felter).
- *
+ * <p>
  * TODO: Flytt til web kodeverk KodeverRestTjeneste når all normal (De)Ser av Kodeverdi skjer med JsonValue
  */
 public class KodeverdiSerializer extends StdSerializer<Kodeverdi> {

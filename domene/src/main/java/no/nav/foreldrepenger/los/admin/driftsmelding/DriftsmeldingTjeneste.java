@@ -1,9 +1,9 @@
 package no.nav.foreldrepenger.los.admin.driftsmelding;
 
-import java.util.List;
-
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+
+import java.util.List;
 
 @ApplicationScoped
 public class DriftsmeldingTjeneste {
@@ -28,9 +28,7 @@ public class DriftsmeldingTjeneste {
     }
 
     public List<Driftsmelding> hentAktiveDriftsmeldinger() {
-        return hentAlleDriftsmeldinger().stream()
-                .filter(Driftsmelding::erAktiv)
-                .toList();
+        return hentAlleDriftsmeldinger().stream().filter(Driftsmelding::erAktiv).toList();
     }
 
     public void deaktiverDriftsmeldinger() {

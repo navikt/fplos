@@ -28,15 +28,13 @@ public class AvdelingEnhetDto implements AbacDto {
         this.avdelingEnhet = avdelingEnhet;
     }
 
-    public String getAvdelingEnhet(){
+    public String getAvdelingEnhet() {
         return avdelingEnhet;
     }
 
     @Override
     public String toString() {
-        return "AvdelingEnhetDto{" +
-                "avdelingEnhet='" + avdelingEnhet + '\'' +
-                '}';
+        return "AvdelingEnhetDto{" + "avdelingEnhet='" + avdelingEnhet + '\'' + '}';
     }
 
     @Override

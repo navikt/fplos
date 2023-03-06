@@ -35,13 +35,11 @@ public class OppgaveIderDto implements AbacDto {
 
     @Override
     public String toString() {
-        return "OppgaveIderDto{" +
-                "oppgaveId='" + oppgaveIder + '\'' +
-                '}';
+        return "OppgaveIderDto{" + "oppgaveId='" + oppgaveIder + '\'' + '}';
     }
 
-    public List<Long> getOppgaveIdeer(){
-        if (null == oppgaveIder){
+    public List<Long> getOppgaveIdeer() {
+        if (null == oppgaveIder) {
             return new ArrayList<>();
         }
         return Arrays.stream(oppgaveIder.trim().split(",")).map(Long::valueOf).toList();

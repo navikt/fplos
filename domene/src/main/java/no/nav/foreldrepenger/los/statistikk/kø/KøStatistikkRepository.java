@@ -37,54 +37,48 @@ public class KøStatistikkRepository {
 
     public void lagre(Long oppgaveId, Long oppgaveFilterSettId, BehandlingType behandlingType, KøOppgaveHendelse køOppgaveHendelse) {
         LOG.info("Lagrer knytning mellom oppgaveId {} og oppgaveFilterSettId {} for statistikk", oppgaveId, oppgaveFilterSettId);
-        entityManager.createNativeQuery("INSERT INTO STATISTIKK_KO (ID, OPPGAVE_ID, OPPGAVE_FILTRERING_ID, BEHANDLING_TYPE, HENDELSE) " +
-                "VALUES (SEQ_STATISTIKK_KO.nextval, :oppgaveId, :oppgaveFilterSettId, :behandlingType, :hendelse)")
-                .setParameter("oppgaveId", oppgaveId)
-                .setParameter("oppgaveFilterSettId", oppgaveFilterSettId)
-                .setParameter("behandlingType", behandlingType.getKode())
-                .setParameter("hendelse", køOppgaveHendelse.name())
-                .executeUpdate();
+        entityManager.createNativeQuery("INSERT INTO STATISTIKK_KO (ID, OPPGAVE_ID, OPPGAVE_FILTRERING_ID, BEHANDLING_TYPE, HENDELSE) "
+                + "VALUES (SEQ_STATISTIKK_KO.nextval, :oppgaveId, :oppgaveFilterSettId, :behandlingType, :hendelse)")
+            .setParameter("oppgaveId", oppgaveId)
+            .setParameter("oppgaveFilterSettId", oppgaveFilterSettId)
+            .setParameter("behandlingType", behandlingType.getKode())
+            .setParameter("hendelse", køOppgaveHendelse.name())
+            .executeUpdate();
     }
 
     public List<NyeOgFerdigstilteOppgaver> hentStatistikk(Long oppgaveFilterSettId) {
-        final var tellesSomFerdigstilt = Stream.of(LUKKET_OPPGAVE, UT_TIL_ANNEN_KØ, OPPGAVE_SATT_PÅ_VENT)
-                .map(KøOppgaveHendelse::name).toList();
+        final var tellesSomFerdigstilt = Stream.of(LUKKET_OPPGAVE, UT_TIL_ANNEN_KØ, OPPGAVE_SATT_PÅ_VENT).map(KøOppgaveHendelse::name).toList();
         var query = entityManager.createNativeQuery("""
-                with cte as (
-                    select distinct
-                    trunc(kø.opprettet_tid) as dato,
-                    kø.behandling_type,
-                    case when kø.hendelse in :tellesSomFerdigstilt
-                        then 'ferdigstilte'
-                        else 'nye'
-                    end as res,
-                    o.behandling_id as behandling_id
-                    FROM STATISTIKK_KO kø
-                    join oppgave o on o.id = kø.oppgave_id
-                    WHERE kø.OPPGAVE_FILTRERING_ID = :oppgaveFilterSettId
-                    AND kø.OPPRETTET_TID >= to_timestamp(current_date - interval '7' day)
-                )
-                select dato, behandling_type,
-                count(case when res = 'nye' then 1 end) nye,
-                count(case when res = 'ferdigstilte' then 1 end) ferdigstilte
-                from cte
-                group by dato, behandling_type
-                """)
-                .setParameter("oppgaveFilterSettId", oppgaveFilterSettId)
-                .setParameter("tellesSomFerdigstilt", tellesSomFerdigstilt);
-        @SuppressWarnings("unchecked")
-        var result = query.getResultStream()
-                .map(KøStatistikkRepository::map)
-                .toList();
+            with cte as (
+                select distinct
+                trunc(kø.opprettet_tid) as dato,
+                kø.behandling_type,
+                case when kø.hendelse in :tellesSomFerdigstilt
+                    then 'ferdigstilte'
+                    else 'nye'
+                end as res,
+                o.behandling_id as behandling_id
+                FROM STATISTIKK_KO kø
+                join oppgave o on o.id = kø.oppgave_id
+                WHERE kø.OPPGAVE_FILTRERING_ID = :oppgaveFilterSettId
+                AND kø.OPPRETTET_TID >= to_timestamp(current_date - interval '7' day)
+            )
+            select dato, behandling_type,
+            count(case when res = 'nye' then 1 end) nye,
+            count(case when res = 'ferdigstilte' then 1 end) ferdigstilte
+            from cte
+            group by dato, behandling_type
+            """).setParameter("oppgaveFilterSettId", oppgaveFilterSettId).setParameter("tellesSomFerdigstilt", tellesSomFerdigstilt);
+        @SuppressWarnings("unchecked") var result = query.getResultStream().map(KøStatistikkRepository::map).toList();
         return result;
     }
 
     private static NyeOgFerdigstilteOppgaver map(Object objectArray) {
         var objects = (Object[]) objectArray;
         var datoFra = localDate(objects[0]);
-        var behandlingType = BehandlingType.fraKode((String)objects[1]);
-        var antallNye = ((BigDecimal)objects[2]).longValue();
-        var antallFerdigstilte = ((BigDecimal)objects[3]).longValue();
+        var behandlingType = BehandlingType.fraKode((String) objects[1]);
+        var antallNye = ((BigDecimal) objects[2]).longValue();
+        var antallFerdigstilte = ((BigDecimal) objects[3]).longValue();
         return new NyeOgFerdigstilteOppgaver(datoFra, behandlingType, antallNye, antallFerdigstilte);
     }
 

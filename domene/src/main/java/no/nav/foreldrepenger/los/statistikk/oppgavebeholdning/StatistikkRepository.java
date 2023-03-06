@@ -1,19 +1,19 @@
 package no.nav.foreldrepenger.los.statistikk.oppgavebeholdning;
 
-import java.math.BigDecimal;
-import java.time.ZoneId;
-import java.util.Date;
-import java.util.List;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-import javax.persistence.EntityManager;
-
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveEventType;
 import no.nav.foreldrepenger.los.oppgave.AndreKriterierType;
 import no.nav.foreldrepenger.los.oppgave.BehandlingType;
 import no.nav.foreldrepenger.los.oppgave.FagsakYtelseType;
 import no.nav.vedtak.felles.jpa.converters.BooleanToStringConverter;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import javax.persistence.EntityManager;
+
+import java.math.BigDecimal;
+import java.time.ZoneId;
+import java.util.Date;
+import java.util.List;
 
 @ApplicationScoped
 public class StatistikkRepository {
@@ -42,11 +42,11 @@ public class StatistikkRepository {
                 GROUP BY o.FAGSAK_YTELSE_TYPE, o.BEHANDLING_TYPE, oe.ANDRE_KRITERIER_TYPE
                 ORDER BY o.FAGSAK_YTELSE_TYPE, o.BEHANDLING_TYPE, oe.ANDRE_KRITERIER_TYPE
                 """)
-                .setParameter(AVDELING_ENHET, avdelingEnhet)
-                .setParameter(TIL_BESLUTTER, AndreKriterierType.TIL_BESLUTTER.getKode())
-                .getResultStream()
-                .map(row -> mapOppgaverForAvdeling((Object[]) row))
-                .toList();
+            .setParameter(AVDELING_ENHET, avdelingEnhet)
+            .setParameter(TIL_BESLUTTER, AndreKriterierType.TIL_BESLUTTER.getKode())
+            .getResultStream()
+            .map(row -> mapOppgaverForAvdeling((Object[]) row))
+            .toList();
     }
 
     @SuppressWarnings("unchecked")
@@ -76,25 +76,21 @@ public class StatistikkRepository {
                 GROUP BY COALESCE(trunc(oel.FRIST_TID), trunc(oel.OPPRETTET_TID + 28)),o.FAGSAK_YTELSE_TYPE
                 ORDER BY COALESCE(trunc(oel.FRIST_TID), trunc(oel.OPPRETTET_TID + 28)),o.FAGSAK_YTELSE_TYPE
                 """)
-                .setParameter("behandlendeEnhet", avdelingEnhet)
-                .setParameter("eventType", OppgaveEventType.MANU_VENT.name())
-                .getResultStream()
-                .map(row -> mapOppgaverForAvdelingSattManueltPåVent((Object[]) row))
-                .toList();
+            .setParameter("behandlendeEnhet", avdelingEnhet)
+            .setParameter("eventType", OppgaveEventType.MANU_VENT.name())
+            .getResultStream()
+            .map(row -> mapOppgaverForAvdelingSattManueltPåVent((Object[]) row))
+            .toList();
     }
 
     @SuppressWarnings("unchecked")
     public List<OppgaverForFørsteStønadsdag> hentOppgaverPerFørsteStønadsdag(String avdeling) {
         return entityManager.createNativeQuery("""
-                Select trunc(o.FORSTE_STONADSDAG) as DATO, Count(1) AS ANTALL
-                FROM OPPGAVE o INNER JOIN avdeling a ON a.AVDELING_ENHET = o.BEHANDLENDE_ENHET
-                WHERE a.AVDELING_ENHET =:avdelingEnhet AND NOT o.AKTIV='N' AND o.FORSTE_STONADSDAG IS NOT NULL
-                GROUP BY trunc(o.FORSTE_STONADSDAG) ORDER BY trunc(o.FORSTE_STONADSDAG)
-                """)
-                .setParameter(AVDELING_ENHET, avdeling)
-                .getResultStream()
-                .map(row -> mapOppgaverForFørsteStønadsdag((Object[]) row))
-                .toList();
+            Select trunc(o.FORSTE_STONADSDAG) as DATO, Count(1) AS ANTALL
+            FROM OPPGAVE o INNER JOIN avdeling a ON a.AVDELING_ENHET = o.BEHANDLENDE_ENHET
+            WHERE a.AVDELING_ENHET =:avdelingEnhet AND NOT o.AKTIV='N' AND o.FORSTE_STONADSDAG IS NOT NULL
+            GROUP BY trunc(o.FORSTE_STONADSDAG) ORDER BY trunc(o.FORSTE_STONADSDAG)
+            """).setParameter(AVDELING_ENHET, avdeling).getResultStream().map(row -> mapOppgaverForFørsteStønadsdag((Object[]) row)).toList();
     }
 
     private static OppgaverForFørsteStønadsdag mapOppgaverForFørsteStønadsdag(Object[] row) {

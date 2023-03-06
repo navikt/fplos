@@ -1,21 +1,13 @@
 package no.nav.foreldrepenger.los.organisasjon;
 
+import no.nav.foreldrepenger.los.felles.BaseEntitet;
+import no.nav.foreldrepenger.los.oppgavekø.OppgaveFiltrering;
+
+import javax.persistence.*;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.Table;
-
-import no.nav.foreldrepenger.los.felles.BaseEntitet;
-import no.nav.foreldrepenger.los.oppgavekø.OppgaveFiltrering;
 
 @Entity(name = "saksbehandler")
 @Table(name = "SAKSBEHANDLER")
@@ -28,19 +20,17 @@ public class Saksbehandler extends BaseEntitet {
     private String saksbehandlerIdent;
 
     @ManyToMany
-    @JoinTable(name = "AVDELING_SAKSBEHANDLER",
-            joinColumns = {@JoinColumn(name = "SAKSBEHANDLER_ID")},
-            inverseJoinColumns = {@JoinColumn(name = "AVDELING_ID")})
+    @JoinTable(name = "AVDELING_SAKSBEHANDLER", joinColumns = {@JoinColumn(name = "SAKSBEHANDLER_ID")}, inverseJoinColumns = {@JoinColumn(name = "AVDELING_ID")})
     private List<Avdeling> avdelinger = new ArrayList<>();
 
     @ManyToMany(mappedBy = "saksbehandlere")
     private List<OppgaveFiltrering> oppgaveFiltreringer = new ArrayList<>();
 
-    public Saksbehandler(){
+    public Saksbehandler() {
         //CDI
     }
 
-    public Saksbehandler(String saksbehandlerIdent){
+    public Saksbehandler(String saksbehandlerIdent) {
         this.saksbehandlerIdent = saksbehandlerIdent;
     }
 
@@ -56,11 +46,11 @@ public class Saksbehandler extends BaseEntitet {
         return avdelinger;
     }
 
-    public void leggTilAvdeling(Avdeling avdeling){
+    public void leggTilAvdeling(Avdeling avdeling) {
         avdelinger.add(avdeling);
     }
 
-    public void fjernAvdeling(Avdeling avdeling){
+    public void fjernAvdeling(Avdeling avdeling) {
         avdelinger.remove(avdeling);
     }
 

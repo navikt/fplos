@@ -34,7 +34,7 @@ public class FiltreringYtelseType extends BaseEntitet {
     @Column(name = "FAGSAK_YTELSE_TYPE")
     private FagsakYtelseType fagsakYtelseType;
 
-    public FiltreringYtelseType(){
+    public FiltreringYtelseType() {
         //Hibernate
     }
 

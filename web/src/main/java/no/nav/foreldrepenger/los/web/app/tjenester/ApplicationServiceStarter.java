@@ -1,22 +1,22 @@
 package no.nav.foreldrepenger.los.web.app.tjenester;
 
-import static java.util.concurrent.CompletableFuture.runAsync;
+import io.prometheus.client.hotspot.DefaultExports;
+import no.nav.vedtak.log.metrics.Controllable;
 
-import java.util.Set;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.Set;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
-import io.prometheus.client.hotspot.DefaultExports;
-import no.nav.vedtak.log.metrics.Controllable;
+import static java.util.concurrent.CompletableFuture.runAsync;
 
 @ApplicationScoped
 public class ApplicationServiceStarter {
@@ -61,8 +61,7 @@ public class ApplicationServiceStarter {
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + " [services=" + services
-            .stream()
+        return getClass().getSimpleName() + " [services=" + services.stream()
             .map(Object::getClass)
             .map(Class::getSimpleName)
             .collect(Collectors.joining(", ")) + "]";

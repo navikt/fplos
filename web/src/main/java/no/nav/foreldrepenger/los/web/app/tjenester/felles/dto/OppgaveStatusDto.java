@@ -40,11 +40,8 @@ public class OppgaveStatusDto {
             if (flyttetReservasjonDto != null) {
                 flyttetReservasjon = flyttetReservasjonDto;
             } else {
-                flyttetReservasjon = new FlyttetReservasjonDto(
-                        reservasjonDto.flyttetTidspunkt(),
-                        reservasjonDto.flyttetAv(),
-                        reservasjonDto.flyttetAvNavn(),
-                        reservasjonDto.begrunnelse());
+                flyttetReservasjon = new FlyttetReservasjonDto(reservasjonDto.flyttetTidspunkt(), reservasjonDto.flyttetAv(),
+                    reservasjonDto.flyttetAvNavn(), reservasjonDto.begrunnelse());
             }
         }
     }

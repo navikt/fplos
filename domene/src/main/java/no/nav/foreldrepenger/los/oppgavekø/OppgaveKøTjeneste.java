@@ -29,8 +29,7 @@ public class OppgaveKøTjeneste {
     private OrganisasjonRepository organisasjonRepository;
 
     @Inject
-    public OppgaveKøTjeneste(OppgaveRepository oppgaveRepository,
-                             OrganisasjonRepository organisasjonRepository) {
+    public OppgaveKøTjeneste(OppgaveRepository oppgaveRepository, OrganisasjonRepository organisasjonRepository) {
         this.oppgaveRepository = oppgaveRepository;
         this.organisasjonRepository = organisasjonRepository;
     }
@@ -40,8 +39,8 @@ public class OppgaveKøTjeneste {
 
     public List<OppgaveFiltrering> hentAlleOppgaveFiltrering(String brukerIdent) {
         return organisasjonRepository.hentSaksbehandlerHvisEksisterer(brukerIdent)
-                .map(Saksbehandler::getOppgaveFiltreringer)
-                .orElse(Collections.emptyList());
+            .map(Saksbehandler::getOppgaveFiltreringer)
+            .orElse(Collections.emptyList());
     }
 
     public List<OppgaveFiltrering> hentOppgaveFiltreringerForPåloggetBruker() {
@@ -51,20 +50,16 @@ public class OppgaveKøTjeneste {
     public List<OppgaveFiltreringKnytning> finnOppgaveFiltreringKnytninger(Oppgave oppgave) {
         var enhet = oppgave.getBehandlendeEnhet();
         var avdelingId = organisasjonRepository.hentAvdelingFraEnhet(enhet)
-                .map(Avdeling::getId)
-                .orElseThrow(() -> new IllegalStateException("Finner ikke avdeling fra enhet " + enhet + ". OppgaveId " + oppgave.getId()));
+            .map(Avdeling::getId)
+            .orElseThrow(() -> new IllegalStateException("Finner ikke avdeling fra enhet " + enhet + ". OppgaveId " + oppgave.getId()));
         var potensielleKøer = oppgaveRepository.hentAlleOppgaveFilterSettTilknyttetAvdeling(avdelingId);
-        return potensielleKøer.stream()
-                .map(pk -> finnOppgaveFiltreringKnytning(oppgave, pk))
-                .filter(Optional::isPresent)
-                .map(Optional::get)
-                .toList();
+        return potensielleKøer.stream().map(pk -> finnOppgaveFiltreringKnytning(oppgave, pk)).filter(Optional::isPresent).map(Optional::get).toList();
     }
 
     public Integer hentAntallOppgaver(Long behandlingsKø, boolean forAvdelingsleder) {
         var queryDto = oppgaveRepository.hentOppgaveFilterSett(behandlingsKø)
-                .map(Oppgavespørring::new)
-                .orElseThrow(() -> new FunksjonellException("FP-164687", "Fant ikke oppgavekø med id " + behandlingsKø));
+            .map(Oppgavespørring::new)
+            .orElseThrow(() -> new FunksjonellException("FP-164687", "Fant ikke oppgavekø med id " + behandlingsKø));
         queryDto.setForAvdelingsleder(forAvdelingsleder);
         return oppgaveRepository.hentAntallOppgaver(queryDto);
     }
@@ -80,9 +75,9 @@ public class OppgaveKøTjeneste {
 
     public List<Oppgave> hentOppgaver(Long sakslisteId, int maksAntall) {
         return oppgaveRepository.hentOppgaveFilterSett(sakslisteId)
-                .map(Oppgavespørring::new)
-                .map(os -> oppgaveRepository.hentOppgaver(os, maksAntall))
-                .orElse(Collections.emptyList());
+            .map(Oppgavespørring::new)
+            .map(os -> oppgaveRepository.hentOppgaver(os, maksAntall))
+            .orElse(Collections.emptyList());
     }
 
     private Optional<OppgaveFiltreringKnytning> finnOppgaveFiltreringKnytning(Oppgave oppgave, OppgaveFiltrering oppgaveFiltrering) {
@@ -99,7 +94,7 @@ public class OppgaveKøTjeneste {
         oppgavespørring.setIgnorerReserversjoner(true);
         var antall = oppgaveRepository.hentAntallOppgaver(oppgavespørring);
         LOG.debug("Sjekker om oppgave {} tilfredstiller filtrering {}. Spørring {}. Resultat {}", oppgave.getId(), oppgaveFiltrering.getId(),
-                oppgavespørring, antall > 0);
+            oppgavespørring, antall > 0);
         return antall > 0;
     }
 }

@@ -21,8 +21,7 @@ public class AnsattTjeneste {
     }
 
     @Inject
-    public AnsattTjeneste(EnhetstilgangTjeneste enhetstilgangTjeneste,
-                          OrganisasjonRepository organisasjonRepository) {
+    public AnsattTjeneste(EnhetstilgangTjeneste enhetstilgangTjeneste, OrganisasjonRepository organisasjonRepository) {
         this.enhetstilgangTjeneste = enhetstilgangTjeneste;
         this.organisasjonRepository = organisasjonRepository;
     }
@@ -33,15 +32,13 @@ public class AnsattTjeneste {
 
     public List<String> hentAvdelingerNavnForAnsatt(String ident) {
         if (aktuelleEnhetIder == null) {
-            aktuelleEnhetIder = organisasjonRepository.hentAvdelinger().stream()
-                    .map(Avdeling::getAvdelingEnhet)
-                    .toList();
+            aktuelleEnhetIder = organisasjonRepository.hentAvdelinger().stream().map(Avdeling::getAvdelingEnhet).toList();
         }
         return enhetstilgangTjeneste.hentEnhetstilganger(ident)
-                .stream()
-                .filter(oe -> aktuelleEnhetIder.contains(oe.id()))
-                .map(OrganisasjonsEnhet::navn)
-                .toList();
+            .stream()
+            .filter(oe -> aktuelleEnhetIder.contains(oe.id()))
+            .map(OrganisasjonsEnhet::navn)
+            .toList();
     }
 
 }

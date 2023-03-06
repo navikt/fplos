@@ -39,8 +39,7 @@ public class SynkroniseringHendelseTaskOppretterTjeneste {
             throw new IllegalArgumentException("Støtter ikke så mange behandlinger, send under 1000");
         }
 
-        final var callId =
-                (MDCOperations.getCallId() == null ? MDCOperations.generateCallId() : MDCOperations.getCallId()) + "_";
+        final var callId = (MDCOperations.getCallId() == null ? MDCOperations.generateCallId() : MDCOperations.getCallId()) + "_";
 
         LOG.info("Oppretter tasker for synkronisering av {} hendelser", behandlinger.size());
         var kjøres = LocalDateTime.now();
@@ -51,7 +50,8 @@ public class SynkroniseringHendelseTaskOppretterTjeneste {
         return behandlinger.size();
     }
 
-    public record KildeBehandlingId(Kildesystem kildesystem, BehandlingId behandlingId) {}
+    public record KildeBehandlingId(Kildesystem kildesystem, BehandlingId behandlingId) {
+    }
 
     private void opprettSynkroniseringTask(KildeBehandlingId kildeBehandlingId, String callId, LocalDateTime kjøretidspunkt) {
         var prosessTaskData = ProsessTaskData.forProsessTask(BehandlingHendelseTask.class);

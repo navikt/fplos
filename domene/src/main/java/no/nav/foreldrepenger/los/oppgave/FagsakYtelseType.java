@@ -16,11 +16,8 @@ public enum FagsakYtelseType implements Kodeverdi {
     SVANGERSKAPSPENGER("SVP", "Svangerskapspenger");
 
     public static final String KODEVERK = "FAGSAK_YTELSE_TYPE";
-    private static final Map<String, FagsakYtelseType> KODEVERDI_MAP = Map.of(
-            ENGANGSTØNAD.getKode(), ENGANGSTØNAD,
-            FORELDREPENGER.getKode(), FORELDREPENGER,
-            SVANGERSKAPSPENGER.getKode(), SVANGERSKAPSPENGER
-    );
+    private static final Map<String, FagsakYtelseType> KODEVERDI_MAP = Map.of(ENGANGSTØNAD.getKode(), ENGANGSTØNAD, FORELDREPENGER.getKode(),
+        FORELDREPENGER, SVANGERSKAPSPENGER.getKode(), SVANGERSKAPSPENGER);
     @JsonValue
     private final String kode;
     private final String navn;
@@ -34,12 +31,12 @@ public enum FagsakYtelseType implements Kodeverdi {
         if (kode == null) {
             return null;
         }
-        return Optional.ofNullable(kode)
-                .map(KODEVERDI_MAP::get)
-                .orElseThrow(() -> new IllegalArgumentException("Ukjent FagsakYtelseType: " + kode));
+        return Optional.ofNullable(kode).map(KODEVERDI_MAP::get).orElseThrow(() -> new IllegalArgumentException("Ukjent FagsakYtelseType: " + kode));
     }
 
-    public String getKode() { return kode; }
+    public String getKode() {
+        return kode;
+    }
 
     public String getNavn() {
         return navn;
@@ -53,16 +50,12 @@ public enum FagsakYtelseType implements Kodeverdi {
     public static class KodeverdiConverter implements AttributeConverter<FagsakYtelseType, String> {
         @Override
         public String convertToDatabaseColumn(FagsakYtelseType attribute) {
-            return Optional.ofNullable(attribute)
-                .map(FagsakYtelseType::getKode)
-                .orElse(null);
+            return Optional.ofNullable(attribute).map(FagsakYtelseType::getKode).orElse(null);
         }
 
         @Override
         public FagsakYtelseType convertToEntityAttribute(String dbData) {
-            return Optional.ofNullable(dbData)
-                    .map(FagsakYtelseType::fraKode)
-                    .orElse(null);
+            return Optional.ofNullable(dbData).map(FagsakYtelseType::fraKode).orElse(null);
         }
     }
 

@@ -34,10 +34,10 @@ public final class OptionalUtil {
 
     private static Counter counter(String status, String identifikator) {
         return Counter.builder("foreldrepenger.fplos.tryorempty")
-                .tag("status", status)
-                .tag("identifikator", identifikator)
-                .description("TryOrEmpty best effort result")
-                .register(REGISTRY);
+            .tag("status", status)
+            .tag("identifikator", identifikator)
+            .description("TryOrEmpty best effort result")
+            .register(REGISTRY);
     }
 
 }

@@ -40,14 +40,16 @@ class OppgaveTjenesteTest {
     private ReservasjonTjeneste reservasjonTjeneste;
     private AvdelingslederTjeneste avdelingslederTjeneste;
 
-    private final Oppgave førstegangOppgave = Oppgave.builder().dummyOppgave(AVDELING_DRAMMEN_ENHET)
-            .medBehandlingType(BehandlingType.FØRSTEGANGSSØKNAD).build();
-    private final Oppgave klageOppgave = Oppgave.builder().dummyOppgave(AVDELING_DRAMMEN_ENHET)
-            .medBehandlingType(BehandlingType.KLAGE).build();
-    private final Oppgave innsynOppgave = Oppgave.builder().dummyOppgave(AVDELING_DRAMMEN_ENHET)
-            .medBehandlingType(BehandlingType.INNSYN).build();
-    private final Oppgave førstegangOppgaveBergen = Oppgave.builder().dummyOppgave(AVDELING_BERGEN_ENHET)
-            .medBehandlingType(BehandlingType.FØRSTEGANGSSØKNAD).build();
+    private final Oppgave førstegangOppgave = Oppgave.builder()
+        .dummyOppgave(AVDELING_DRAMMEN_ENHET)
+        .medBehandlingType(BehandlingType.FØRSTEGANGSSØKNAD)
+        .build();
+    private final Oppgave klageOppgave = Oppgave.builder().dummyOppgave(AVDELING_DRAMMEN_ENHET).medBehandlingType(BehandlingType.KLAGE).build();
+    private final Oppgave innsynOppgave = Oppgave.builder().dummyOppgave(AVDELING_DRAMMEN_ENHET).medBehandlingType(BehandlingType.INNSYN).build();
+    private final Oppgave førstegangOppgaveBergen = Oppgave.builder()
+        .dummyOppgave(AVDELING_BERGEN_ENHET)
+        .medBehandlingType(BehandlingType.FØRSTEGANGSSØKNAD)
+        .build();
 
     @BeforeEach
     void setup(EntityManager entityManager) {
@@ -63,9 +65,11 @@ class OppgaveTjenesteTest {
 
 
     private Long leggeInnEtSettMedOppgaver() {
-        var oppgaveFiltrering = OppgaveFiltrering.builder().medNavn("OPPRETTET")
-                .medSortering(KøSortering.OPPRETT_BEHANDLING)
-                .medAvdeling(avdelingDrammen()).build();
+        var oppgaveFiltrering = OppgaveFiltrering.builder()
+            .medNavn("OPPRETTET")
+            .medSortering(KøSortering.OPPRETT_BEHANDLING)
+            .medAvdeling(avdelingDrammen())
+            .build();
         oppgaveRepository.lagre(oppgaveFiltrering);
         oppgaveRepository.lagre(førstegangOppgave);
         oppgaveRepository.lagre(klageOppgave);
@@ -76,9 +80,11 @@ class OppgaveTjenesteTest {
     }
 
     private Avdeling avdelingDrammen() {
-        return DBTestUtil.hentAlle(entityManager, Avdeling.class).stream()
-                .filter(a -> a.getAvdelingEnhet().equals(AVDELING_DRAMMEN_ENHET))
-                .findAny().orElseThrow();
+        return DBTestUtil.hentAlle(entityManager, Avdeling.class)
+            .stream()
+            .filter(a -> a.getAvdelingEnhet().equals(AVDELING_DRAMMEN_ENHET))
+            .findAny()
+            .orElseThrow();
     }
 
     @Test
@@ -96,9 +102,11 @@ class OppgaveTjenesteTest {
         var tredjeOppgave = opprettOgLargeOppgaveTilSortering(8, 9, 8);
         var fjerdeOppgave = opprettOgLargeOppgaveTilSortering(0, 10, 0);
 
-        var opprettet = OppgaveFiltrering.builder().medNavn("OPPRETTET")
-                .medSortering(KøSortering.OPPRETT_BEHANDLING)
-                .medAvdeling(avdelingDrammen()).build();
+        var opprettet = OppgaveFiltrering.builder()
+            .medNavn("OPPRETTET")
+            .medSortering(KøSortering.OPPRETT_BEHANDLING)
+            .medAvdeling(avdelingDrammen())
+            .build();
         oppgaveRepository.lagre(opprettet);
 
         var oppgaves = oppgaveKøTjeneste.hentOppgaver(opprettet.getId());
@@ -112,9 +120,7 @@ class OppgaveTjenesteTest {
         var tredjeOppgave = opprettOgLargeOppgaveTilSortering(9, 8, 10);
         var fjerdeOppgave = opprettOgLargeOppgaveTilSortering(10, 0, 9);
 
-        var frist = OppgaveFiltrering.builder().medNavn("FRIST")
-                .medSortering(KøSortering.BEHANDLINGSFRIST)
-                .medAvdeling(avdelingDrammen()).build();
+        var frist = OppgaveFiltrering.builder().medNavn("FRIST").medSortering(KøSortering.BEHANDLINGSFRIST).medAvdeling(avdelingDrammen()).build();
         oppgaveRepository.lagre(frist);
 
         var oppgaves = oppgaveKøTjeneste.hentOppgaver(frist.getId());
@@ -128,9 +134,11 @@ class OppgaveTjenesteTest {
         var tredjeOppgave = opprettOgLargeOppgaveTilSortering(9, 8, 8);
         var andreOppgave = opprettOgLargeOppgaveTilSortering(0, 10, 9);
 
-        var førsteStønadsdag = OppgaveFiltrering.builder().medNavn("STØNADSDAG")
-                .medSortering(KøSortering.FØRSTE_STØNADSDAG)
-                .medAvdeling(avdelingDrammen()).build();
+        var førsteStønadsdag = OppgaveFiltrering.builder()
+            .medNavn("STØNADSDAG")
+            .medSortering(KøSortering.FØRSTE_STØNADSDAG)
+            .medAvdeling(avdelingDrammen())
+            .build();
         oppgaveRepository.lagre(førsteStønadsdag);
 
         var oppgaves = oppgaveKøTjeneste.hentOppgaver(førsteStønadsdag.getId());
@@ -139,11 +147,12 @@ class OppgaveTjenesteTest {
 
 
     private Oppgave opprettOgLargeOppgaveTilSortering(int dagerSidenOpprettet, int dagersidenBehandlingsFristGikkUt, int førsteStønadsdag) {
-        var oppgave = Oppgave.builder().dummyOppgave(AVDELING_DRAMMEN_ENHET)
-                .medBehandlingOpprettet(LocalDateTime.now().minusDays(dagerSidenOpprettet))
-                .medBehandlingsfrist(LocalDateTime.now().minusDays(dagersidenBehandlingsFristGikkUt))
-                .medFørsteStønadsdag(LocalDate.now().minusDays(førsteStønadsdag))
-                .build();
+        var oppgave = Oppgave.builder()
+            .dummyOppgave(AVDELING_DRAMMEN_ENHET)
+            .medBehandlingOpprettet(LocalDateTime.now().minusDays(dagerSidenOpprettet))
+            .medBehandlingsfrist(LocalDateTime.now().minusDays(dagersidenBehandlingsFristGikkUt))
+            .medFørsteStønadsdag(LocalDate.now().minusDays(førsteStønadsdag))
+            .build();
         oppgaveRepository.lagre(oppgave);
         return oppgave;
     }
@@ -161,10 +170,11 @@ class OppgaveTjenesteTest {
         assertThat(reservasjonTjeneste.hentSaksbehandlersReserverteAktiveOppgaver()).hasSize(1);
         assertThat(reservasjonTjeneste.hentReservasjonerForAvdeling(AVDELING_DRAMMEN_ENHET)).hasSize(1);
         assertThat(reservasjonTjeneste.hentReservasjonerForAvdeling(AVDELING_BERGEN_ENHET)).isEmpty();
-        var reservasjon = reservasjonTjeneste.hentSaksbehandlersReserverteAktiveOppgaver().stream()
-                .map(Oppgave::getReservasjon)
-                .findAny()
-                .orElseGet(() -> fail("Ingen oppgave"));
+        var reservasjon = reservasjonTjeneste.hentSaksbehandlersReserverteAktiveOppgaver()
+            .stream()
+            .map(Oppgave::getReservasjon)
+            .findAny()
+            .orElseGet(() -> fail("Ingen oppgave"));
         assertThat(reservasjon.getReservertTil().until(LocalDateTime.now().plusHours(2), MINUTES)).isLessThan(2);
         assertThat(reservasjonTjeneste.hentSaksbehandlersSisteReserverteOppgaver()).hasSize(1);
 

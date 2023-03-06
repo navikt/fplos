@@ -1,8 +1,10 @@
 package no.nav.foreldrepenger.los.web.app.exceptions;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-import javax.ws.rs.core.Response;
+import ch.qos.logback.classic.Level;
+import no.nav.vedtak.exception.FunksjonellException;
+import no.nav.vedtak.exception.ManglerTilgangException;
+import no.nav.vedtak.exception.TekniskException;
+import no.nav.vedtak.log.util.MemoryAppender;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -10,11 +12,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
 
-import ch.qos.logback.classic.Level;
-import no.nav.vedtak.exception.FunksjonellException;
-import no.nav.vedtak.exception.ManglerTilgangException;
-import no.nav.vedtak.exception.TekniskException;
-import no.nav.vedtak.log.util.MemoryAppender;
+import javax.ws.rs.core.Response;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 @Execution(ExecutionMode.SAME_THREAD)
 class GeneralRestExceptionMapperTest {
@@ -125,7 +125,7 @@ class GeneralRestExceptionMapperTest {
     }
 
     private static ManglerTilgangException manglerTilgangFeil() {
-        return new ManglerTilgangException("MANGLER_TILGANG_FEIL","ManglerTilgangFeilmeldingKode");
+        return new ManglerTilgangException("MANGLER_TILGANG_FEIL", "ManglerTilgangFeilmeldingKode");
     }
 
 }

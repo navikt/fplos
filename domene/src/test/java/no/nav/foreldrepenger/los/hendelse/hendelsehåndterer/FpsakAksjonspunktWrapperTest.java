@@ -13,9 +13,21 @@ import no.nav.foreldrepenger.los.oppgave.AndreKriterierType;
 
 class FpsakAksjonspunktWrapperTest {
 
-    private final Aksjonspunkt apOverstyrtTilNasjonal = Aksjonspunkt.builder().medStatus("OPPR").medDefinisjon("6068").medBegrunnelse("NASJONAL").build();
-    private final Aksjonspunkt apOverstyrtTilBosattUtland = Aksjonspunkt.builder().medStatus("OPPR").medDefinisjon("6068").medBegrunnelse("BOSATT_UTLAND").build();
-    private final Aksjonspunkt apOverstyrtTilEØSBosattNorge = Aksjonspunkt.builder().medStatus("OPPR").medDefinisjon("6068").medBegrunnelse("EØS_BOSATT_NORGE").build();
+    private final Aksjonspunkt apOverstyrtTilNasjonal = Aksjonspunkt.builder()
+        .medStatus("OPPR")
+        .medDefinisjon("6068")
+        .medBegrunnelse("NASJONAL")
+        .build();
+    private final Aksjonspunkt apOverstyrtTilBosattUtland = Aksjonspunkt.builder()
+        .medStatus("OPPR")
+        .medDefinisjon("6068")
+        .medBegrunnelse("BOSATT_UTLAND")
+        .build();
+    private final Aksjonspunkt apOverstyrtTilEØSBosattNorge = Aksjonspunkt.builder()
+        .medStatus("OPPR")
+        .medDefinisjon("6068")
+        .medBegrunnelse("EØS_BOSATT_NORGE")
+        .build();
     private final Aksjonspunkt apVurderSed = Aksjonspunkt.builder().medStatus("OPPR").medDefinisjon("5068").medBegrunnelse("").build();
 
     @Test
@@ -72,11 +84,7 @@ class FpsakAksjonspunktWrapperTest {
     }
 
     private static Aksjonspunkt åpentAksjonspunkt(String definisjonKode) {
-        return Aksjonspunkt.builder()
-                .medBegrunnelse("begrunnelse")
-                .medDefinisjon(definisjonKode)
-                .medStatus("OPPR")
-                .build();
+        return Aksjonspunkt.builder().medBegrunnelse("begrunnelse").medDefinisjon(definisjonKode).medStatus("OPPR").build();
     }
 
 }

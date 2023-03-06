@@ -1,13 +1,6 @@
 package no.nav.foreldrepenger.los.oppgave;
 
-import no.nav.foreldrepenger.los.domene.typer.BehandlingId;
-import no.nav.foreldrepenger.los.felles.BaseEntitet;
-import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveEventLogg;
-import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveEventType;
-import no.nav.foreldrepenger.los.reservasjon.ReservasjonTjeneste;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
+import static no.nav.foreldrepenger.los.reservasjon.ReservasjonKonstanter.OPPGAVE_AVSLUTTET;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
@@ -15,7 +8,14 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
-import static no.nav.foreldrepenger.los.reservasjon.ReservasjonKonstanter.OPPGAVE_AVSLUTTET;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+
+import no.nav.foreldrepenger.los.domene.typer.BehandlingId;
+import no.nav.foreldrepenger.los.felles.BaseEntitet;
+import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveEventLogg;
+import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveEventType;
+import no.nav.foreldrepenger.los.reservasjon.ReservasjonTjeneste;
 
 @ApplicationScoped
 public class OppgaveTjeneste {
@@ -46,8 +46,7 @@ public class OppgaveTjeneste {
     }
 
     public Optional<Oppgave> hentNyesteOppgaveTilknyttet(BehandlingId behandlingId) {
-        return oppgaveRepository.hentOppgaver(behandlingId).stream()
-                .min((o1, o2) -> aktuellDato(o2).compareTo(aktuellDato(o1)));
+        return oppgaveRepository.hentOppgaver(behandlingId).stream().min((o1, o2) -> aktuellDato(o2).compareTo(aktuellDato(o1)));
     }
 
     public Optional<Oppgave> hentAktivOppgave(BehandlingId behandlingId) {
@@ -58,20 +57,15 @@ public class OppgaveTjeneste {
         var oppgaver = oppgaveRepository.hentOppgaver(behandlingId);
         var antallAktive = oppgaver.stream().filter(Oppgave::getAktiv).count();
         if (antallAktive > 1) {
-            throw new IllegalStateException(
-                    String.format("Forventet kun én aktiv oppgave for behandlingId %s, fant %s", behandlingId,
-                            antallAktive));
+            throw new IllegalStateException(String.format("Forventet kun én aktiv oppgave for behandlingId %s, fant %s", behandlingId, antallAktive));
         }
-        oppgaver.stream()
-                .filter(Oppgave::getAktiv)
-                .max(Comparator.comparing(Oppgave::getOpprettetTidspunkt))
-                .ifPresent(oppgave -> {
-                    reservasjonTjeneste.slettReservasjonMedEventLogg(oppgave.getReservasjon(), OPPGAVE_AVSLUTTET);
-                    oppgave.setAktiv(false);
-                    oppgave.setOppgaveAvsluttet(LocalDateTime.now());
-                    oppgaveRepository.lagre(oppgave);
-                    oppgaveRepository.refresh(oppgave);
-                });
+        oppgaver.stream().filter(Oppgave::getAktiv).max(Comparator.comparing(Oppgave::getOpprettetTidspunkt)).ifPresent(oppgave -> {
+            reservasjonTjeneste.slettReservasjonMedEventLogg(oppgave.getReservasjon(), OPPGAVE_AVSLUTTET);
+            oppgave.setAktiv(false);
+            oppgave.setOppgaveAvsluttet(LocalDateTime.now());
+            oppgaveRepository.lagre(oppgave);
+            oppgaveRepository.refresh(oppgave);
+        });
     }
 
     public void adminAvsluttMultiOppgaveUtenEventLoggAvsluttTilknyttetReservasjon(BehandlingId behandlingId) {
@@ -79,19 +73,15 @@ public class OppgaveTjeneste {
         var antallAktive = oppgaver.stream().filter(Oppgave::getAktiv).count();
         if (antallAktive <= 1) {
             throw new IllegalStateException(
-                    String.format("Forventet mer enn én aktiv oppgave for behandlingId %s, fant %s", behandlingId,
-                            antallAktive));
+                String.format("Forventet mer enn én aktiv oppgave for behandlingId %s, fant %s", behandlingId, antallAktive));
         }
-        oppgaver.stream()
-                .filter(Oppgave::getAktiv)
-                .min(Comparator.comparing(Oppgave::getOpprettetTidspunkt))
-                .ifPresent(oppgave -> {
-                    reservasjonTjeneste.slettReservasjonMedEventLogg(oppgave.getReservasjon(), OPPGAVE_AVSLUTTET);
-                    oppgave.setAktiv(false);
-                    oppgave.setOppgaveAvsluttet(LocalDateTime.now());
-                    oppgaveRepository.lagre(oppgave);
-                    oppgaveRepository.refresh(oppgave);
-                });
+        oppgaver.stream().filter(Oppgave::getAktiv).min(Comparator.comparing(Oppgave::getOpprettetTidspunkt)).ifPresent(oppgave -> {
+            reservasjonTjeneste.slettReservasjonMedEventLogg(oppgave.getReservasjon(), OPPGAVE_AVSLUTTET);
+            oppgave.setAktiv(false);
+            oppgave.setOppgaveAvsluttet(LocalDateTime.now());
+            oppgaveRepository.lagre(oppgave);
+            oppgaveRepository.refresh(oppgave);
+        });
     }
 
     public void avsluttOppgaveMedEventLogg(Oppgave oppgave, OppgaveEventType oppgaveEventType, String begrunnelseReservasjonEvent) {
@@ -99,11 +89,10 @@ public class OppgaveTjeneste {
         oppgave.setOppgaveAvsluttet(LocalDateTime.now());
         reservasjonTjeneste.slettReservasjonMedEventLogg(oppgave.getReservasjon(), begrunnelseReservasjonEvent);
         oppgaveRepository.lagre(oppgave);
-        var oel = new OppgaveEventLogg.Builder()
-                .behandlingId(oppgave.getBehandlingId())
-                .behandlendeEnhet(oppgave.getBehandlendeEnhet())
-                .type(oppgaveEventType)
-                .build();
+        var oel = new OppgaveEventLogg.Builder().behandlingId(oppgave.getBehandlingId())
+            .behandlendeEnhet(oppgave.getBehandlendeEnhet())
+            .type(oppgaveEventType)
+            .build();
         oppgaveRepository.lagre(oel);
     }
 
@@ -119,8 +108,7 @@ public class OppgaveTjeneste {
     }
 
     public Optional<TilbakekrevingOppgave> hentAktivTilbakekrevingOppgave(BehandlingId behandlingId) {
-        return oppgaveRepository.hentOppgaver(behandlingId, TilbakekrevingOppgave.class).stream()
-                .filter(Oppgave::getAktiv).findFirst();
+        return oppgaveRepository.hentOppgaver(behandlingId, TilbakekrevingOppgave.class).stream().filter(Oppgave::getAktiv).findFirst();
     }
 
     public <U extends BaseEntitet> void lagre(U entitet) {

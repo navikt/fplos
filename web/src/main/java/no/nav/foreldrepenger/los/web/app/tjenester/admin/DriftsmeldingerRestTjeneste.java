@@ -44,9 +44,7 @@ public class DriftsmeldingerRestTjeneste {
     @Operation(description = "Driftsmeldinger", tags = "admin")
     @BeskyttetRessurs(actionType = ActionType.READ, resourceType = ResourceType.APPLIKASJON, sporingslogg = false)
     public List<DriftsmeldingDto> hentAktiveDriftsmeldinger() {
-        return driftsmeldingTjeneste.hentAktiveDriftsmeldinger().stream()
-                .map(DriftsmeldingerRestTjeneste::tilDto)
-                .toList();
+        return driftsmeldingTjeneste.hentAktiveDriftsmeldinger().stream().map(DriftsmeldingerRestTjeneste::tilDto).toList();
     }
 
     @GET
@@ -55,9 +53,7 @@ public class DriftsmeldingerRestTjeneste {
     @Operation(description = "Driftsmeldinger", tags = "admin")
     @BeskyttetRessurs(actionType = ActionType.READ, resourceType = ResourceType.APPLIKASJON, sporingslogg = false)
     public List<DriftsmeldingDto> hentAlleDriftsmeldinger() {
-        return driftsmeldingTjeneste.hentAlleDriftsmeldinger().stream()
-                .map(DriftsmeldingerRestTjeneste::tilDto)
-                .toList();
+        return driftsmeldingTjeneste.hentAlleDriftsmeldinger().stream().map(DriftsmeldingerRestTjeneste::tilDto).toList();
     }
 
     @POST
@@ -83,16 +79,12 @@ public class DriftsmeldingerRestTjeneste {
     }
 
     private static DriftsmeldingDto tilDto(Driftsmelding driftsmelding) {
-        return new DriftsmeldingDto(String.valueOf(driftsmelding.getId()),
-                driftsmelding.getMelding(), driftsmelding.getAktivFra(), driftsmelding.getAktivTil());
+        return new DriftsmeldingDto(String.valueOf(driftsmelding.getId()), driftsmelding.getMelding(), driftsmelding.getAktivFra(),
+            driftsmelding.getAktivTil());
     }
 
     private Driftsmelding tilDriftsmelding(DriftsmeldingOpprettelseDto dto) {
-        return Driftsmelding.Builder.builder()
-                .medMelding(dto.getMelding())
-                .medAktivFra(dto.getAktivFra())
-                .medAktivTil(dto.getAktivTil())
-                .build();
+        return Driftsmelding.Builder.builder().medMelding(dto.getMelding()).medAktivFra(dto.getAktivFra()).medAktivTil(dto.getAktivTil()).build();
     }
 }
 

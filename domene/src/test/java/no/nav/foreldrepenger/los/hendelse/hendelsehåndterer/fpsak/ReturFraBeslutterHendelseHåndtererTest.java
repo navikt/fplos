@@ -53,13 +53,10 @@ class ReturFraBeslutterHendelseHåndtererTest {
         oppgaveEgenskapHåndterer = new OppgaveEgenskapHåndterer(oppgaveRepository);
         behandlingFpsak = behandlingFpsak();
         behandlingId = new BehandlingId(behandlingFpsak.behandlingUuid());
-        var eksisterendeOppgave = Oppgave.builder()
-                .dummyOppgave("1111")
-                .medAktiv(true)
-                .medBehandlingId(behandlingId)
-                .build();
+        var eksisterendeOppgave = Oppgave.builder().dummyOppgave("1111").medAktiv(true).medBehandlingId(behandlingId).build();
         oppgaveRepository.lagre(eksisterendeOppgave);
-        returFraBeslutterHåndterer = new ReturFraBeslutterOppgavetransisjonHåndterer(oppgaveTjeneste, oppgaveEgenskapHåndterer, reservasjonTjeneste, køStatistikk);
+        returFraBeslutterHåndterer = new ReturFraBeslutterOppgavetransisjonHåndterer(oppgaveTjeneste, oppgaveEgenskapHåndterer, reservasjonTjeneste,
+            køStatistikk);
     }
 
     @Test

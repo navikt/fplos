@@ -1,15 +1,15 @@
 package no.nav.foreldrepenger.los.web.app.tjenester.admin.dto;
 
-import java.util.UUID;
-
-import javax.validation.Valid;
-
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import no.nav.foreldrepenger.los.domene.typer.BehandlingId;
 import no.nav.vedtak.sikkerhet.abac.AbacDataAttributter;
 import no.nav.vedtak.sikkerhet.abac.AbacDto;
+
+import javax.validation.Valid;
+
+import java.util.UUID;
 
 public class EnkelBehandlingIdDto implements AbacDto {
     @Valid
