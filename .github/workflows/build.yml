@@ -12,7 +12,7 @@ on:
       - 'LICENSE'
       - 'CODEOWNERS'
       - 'docs/**'
-      - 'lokalutvikling/**'
+      - '.oracle/**'
       - '.github/*.yml'
 
 jobs:
