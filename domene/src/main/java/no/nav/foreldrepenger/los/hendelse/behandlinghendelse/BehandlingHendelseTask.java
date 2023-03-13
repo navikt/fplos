@@ -1,19 +1,20 @@
 package no.nav.foreldrepenger.los.hendelse.behandlinghendelse;
 
+import java.util.UUID;
+
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import no.nav.foreldrepenger.los.domene.typer.Saksnummer;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.FpsakOppgaveHendelseHåndterer;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.tilbakekreving.TilbakekrevingHendelseHåndterer;
 import no.nav.vedtak.felles.prosesstask.api.ProsessTask;
 import no.nav.vedtak.felles.prosesstask.api.ProsessTaskData;
 import no.nav.vedtak.felles.prosesstask.api.ProsessTaskHandler;
 import no.nav.vedtak.hendelser.behandling.Kildesystem;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
-
-import java.util.UUID;
 
 @Dependent
 @ProsessTask(value = "håndter.behandlinghendelse", firstDelay = 10, thenDelay = 10)
@@ -54,7 +55,9 @@ public class BehandlingHendelseTask implements ProsessTaskHandler {
             fpsakOppgaveHendelseHåndterer.håndterBehandling(fpsakKlient.hentLosBehandlingDto(behandlingUuid));
         } else {
             LOG.info("FPLOS FPTILBAKE hendelse {} behandling {}", hendelseUuidString, behandlingUuid);
-            tilbakekrevingHendelseHåndterer.håndterBehandling(fptilbakeKlient.hentLosBehandlingDto(behandlingUuid));
+            var behandling = fptilbakeKlient.hentLosBehandlingDto(behandlingUuid);
+            var egenskaper = fpsakKlient.hentLosFagsakEgenskaperDto(new Saksnummer(behandling.saksnummer()));
+            tilbakekrevingHendelseHåndterer.håndterBehandling(behandling, egenskaper);
         }
 
     }

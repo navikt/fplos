@@ -32,6 +32,7 @@ import no.nav.foreldrepenger.los.statistikk.kø.KøOppgaveHendelse;
 import no.nav.foreldrepenger.los.statistikk.kø.KøStatistikkTjeneste;
 import no.nav.vedtak.hendelser.behandling.Aksjonspunktstatus;
 import no.nav.vedtak.hendelser.behandling.los.LosBehandlingDto;
+import no.nav.vedtak.hendelser.behandling.los.LosFagsakEgenskaperDto;
 
 @ApplicationScoped
 public class TilbakekrevingHendelseHåndterer {
@@ -58,10 +59,14 @@ public class TilbakekrevingHendelseHåndterer {
     }
 
     public void håndterBehandling(LosBehandlingDto behandlingDto) {
+        håndterBehandling(behandlingDto, null);
+    }
+
+    public void håndterBehandling(LosBehandlingDto behandlingDto, LosFagsakEgenskaperDto egenskaperDto) {
         var behandlingId = BehandlingId.fromUUID(behandlingDto.behandlingUuid());
         var oppgaveHistorikk = new OppgaveHistorikk(oppgaveRepository.hentOppgaveEventer(behandlingId));
         var aksjonspunkter = behandlingDto.aksjonspunkt();
-        var egenskapFinner = new TilbakekrevingOppgaveEgenskapFinner(aksjonspunkter, behandlingDto.ansvarligSaksbehandlerIdent());
+        var egenskapFinner = new TilbakekrevingOppgaveEgenskapFinner(aksjonspunkter, behandlingDto.ansvarligSaksbehandlerIdent(), egenskaperDto);
         var behandlendeEnhet = behandlingDto.behandlendeEnhetId();
         var event = eventFra(aksjonspunkter, oppgaveHistorikk, egenskapFinner, behandlendeEnhet);
 

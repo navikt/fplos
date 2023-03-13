@@ -80,7 +80,7 @@ class FpsakAksjonspunktWrapperTest {
     }
 
     private static List<AndreKriterierType> result(Aksjonspunkt... aksjonspunkt) {
-        return new FpsakAksjonspunktWrapper(List.of(aksjonspunkt)).getKriterier();
+        return FpsakAksjonspunktWrapper.getKriterier(List.of(aksjonspunkt), null);
     }
 
     private static Aksjonspunkt åpentAksjonspunkt(String definisjonKode) {

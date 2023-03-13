@@ -45,13 +45,16 @@ public class FpsakOppgaveEgenskapFinner implements OppgaveEgenskapFinner {
             this.andreKriterier.add(AndreKriterierType.KLAGE_PÅ_TILBAKEBETALING);
         }
         var aksjonspunkter = behandling.aksjonspunkt().stream().map(Aksjonspunkt::aksjonspunktFra).toList();
-        var fpsakAksjonspunktWrapper = new FpsakAksjonspunktWrapper(aksjonspunkter);
-        andreKriterier.addAll(fpsakAksjonspunktWrapper.getKriterier());
+        this.andreKriterier.addAll(FpsakAksjonspunktWrapper.getKriterier(aksjonspunkter, behandling.fagsakEgenskaper()));
 
-        if (Optional.ofNullable(behandling.foreldrepengerDto()).filter(LosBehandlingDto.LosForeldrepengerDto::annenForelderRettEØS).isPresent()
-            && !fpsakAksjonspunktWrapper.erManueltOverstyrtTilNasjonalSak()) {
+        if (skalVurdereEøs(behandling) && !this.andreKriterier.contains(AndreKriterierType.VURDER_EØS_OPPTJENING)) {
             this.andreKriterier.add(AndreKriterierType.VURDER_EØS_OPPTJENING);
         }
+    }
+
+    private boolean skalVurdereEøs(LosBehandlingDto dto) {
+        return !FpsakAksjonspunktWrapper.erValgtNasjonal(dto.aksjonspunkt().stream().map(Aksjonspunkt::aksjonspunktFra).toList(), dto.fagsakEgenskaper()) &&
+            Optional.ofNullable(dto.foreldrepengerDto()).filter(LosBehandlingDto.LosForeldrepengerDto::annenForelderRettEØS).isPresent();
     }
 
     @Override
