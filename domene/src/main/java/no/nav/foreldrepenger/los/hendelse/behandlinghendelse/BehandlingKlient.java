@@ -11,6 +11,6 @@ public interface BehandlingKlient {
     LosBehandlingDto hentLosBehandlingDto(UUID uuid);
 
     default LosFagsakEgenskaperDto hentLosFagsakEgenskaperDto(Saksnummer saksnummer) {
-        return null;
+        throw new IllegalStateException("Utviklerfeil - kall på metode som ikke er implementert");
     }
 }

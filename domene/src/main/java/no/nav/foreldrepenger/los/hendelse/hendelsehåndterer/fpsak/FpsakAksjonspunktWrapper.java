@@ -39,8 +39,9 @@ public class FpsakAksjonspunktWrapper {
 
     private static boolean skalVurdereEøs(List<Aksjonspunkt> aksjonspunkt, LosFagsakEgenskaperDto dto) {
         var skalVurdereInnhentingAvSED = finn(aksjonspunkt, Aksjonspunkt::skalVurdereInnhentingAvSED);
-        var egenskapSkalInnhente = Optional.ofNullable(dto.skalInnhenteSED()).isPresent();
-        var ikkeNasjonal = Optional.ofNullable(dto.utlandMarkering()).filter(m -> !LosFagsakEgenskaperDto.UtlandMarkering.NASJONAL.equals(m)).isPresent();
+        var egenskapSkalInnhente = Optional.ofNullable(dto).map(LosFagsakEgenskaperDto::skalInnhenteSED)
+            .filter(s -> Objects.equals(s, Boolean.FALSE)).isEmpty();
+        var ikkeNasjonal = Optional.ofNullable(dto).map(LosFagsakEgenskaperDto::utlandMarkering).filter(m -> !LosFagsakEgenskaperDto.UtlandMarkering.NASJONAL.equals(m)).isPresent();
         return skalVurdereInnhentingAvSED && ikkeNasjonal && egenskapSkalInnhente;
     }
 
