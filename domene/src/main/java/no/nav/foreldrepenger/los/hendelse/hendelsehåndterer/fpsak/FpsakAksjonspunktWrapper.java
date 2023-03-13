@@ -63,6 +63,11 @@ public class FpsakAksjonspunktWrapper {
         }
     }
 
+    public static boolean erValgtNasjonal(List<Aksjonspunkt> aksjonspunkt, LosFagsakEgenskaperDto sakDto) {
+        return Optional.ofNullable(sakDto).map(LosFagsakEgenskaperDto::utlandMarkering).filter(LosFagsakEgenskaperDto.UtlandMarkering.NASJONAL::equals).isPresent() ||
+            finn(aksjonspunkt, Aksjonspunkt::erManueltOverstyrtTilNasjonalSak);
+    }
+
     private static boolean finn(List<Aksjonspunkt> aksjonspunkt, Predicate<Aksjonspunkt> predicate) {
         return safeStream(aksjonspunkt).anyMatch(predicate);
     }

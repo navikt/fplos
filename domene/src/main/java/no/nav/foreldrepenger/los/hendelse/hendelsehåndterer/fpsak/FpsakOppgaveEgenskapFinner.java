@@ -53,7 +53,8 @@ public class FpsakOppgaveEgenskapFinner implements OppgaveEgenskapFinner {
     }
 
     private boolean skalVurdereEøs(LosBehandlingDto dto) {
-        return Optional.ofNullable(dto.foreldrepengerDto()).filter(LosBehandlingDto.LosForeldrepengerDto::annenForelderRettEØS).isPresent();
+        return !FpsakAksjonspunktWrapper.erValgtNasjonal(dto.aksjonspunkt().stream().map(Aksjonspunkt::aksjonspunktFra).toList(), dto.fagsakEgenskaper()) &&
+            Optional.ofNullable(dto.foreldrepengerDto()).filter(LosBehandlingDto.LosForeldrepengerDto::annenForelderRettEØS).isPresent();
     }
 
     @Override
