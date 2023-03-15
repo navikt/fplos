@@ -102,7 +102,7 @@ public class OppgaveDtoTjeneste {
     }
 
     private boolean harTilgang(Oppgave oppgave) {
-        var token = KontekstHolder.getKontekst() instanceof RequestKontekst rk ? Token.withOidcToken(rk.getToken()) : null;
+        var token = KontekstHolder.getKontekst() instanceof RequestKontekst rk ? Token.withOidcToken(rk.getToken(), rk.getUid(), rk.getIdentType()) : null;
         if (token == null) {
             return false;
         }
