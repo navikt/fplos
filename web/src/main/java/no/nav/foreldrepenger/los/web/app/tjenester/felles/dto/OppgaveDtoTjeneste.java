@@ -127,7 +127,7 @@ public class OppgaveDtoTjeneste {
     }
 
     public List<OppgaveDto> getOppgaverTilBehandling(Long sakslisteId) {
-        var nesteOppgaver = oppgaveKøTjeneste.hentOppgaver(sakslisteId, ANTALL_OPPGAVER_SOM_VISES_TIL_SAKSBEHANDLER * 10);
+        var nesteOppgaver = oppgaveKøTjeneste.hentOppgaver(sakslisteId, ANTALL_OPPGAVER_SOM_VISES_TIL_SAKSBEHANDLER * 7);
         var oppgaveDtos = map(nesteOppgaver, ANTALL_OPPGAVER_SOM_VISES_TIL_SAKSBEHANDLER, true);
         //Noen oppgave filteres bort i mappingen pga at saksbehandler ikke har tilgang til behandlingen
         if (nesteOppgaver.size() == oppgaveDtos.size()) {

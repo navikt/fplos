@@ -215,7 +215,8 @@ class TilbakekrevingHendelseHåndtererTest {
             .collect(Collectors.toList());
         return new LosBehandlingDto(behandlingId.toUUID(), Kildesystem.FPTILBAKE, "123", Ytelse.FORELDREPENGER,
             new no.nav.vedtak.hendelser.behandling.AktørId(AktørId.dummy().getId()), Behandlingstype.TILBAKEBETALING, Behandlingsstatus.OPPRETTET,
-            LocalDateTime.now(), "0300", null, "saksbehandler", ap, List.of(), false, false, null,
+            LocalDateTime.now(), "0300", null, "saksbehandler", ap, List.of(),
+            false, false, null, null,
             new LosBehandlingDto.LosTilbakeDto(BigDecimal.valueOf(500), LocalDate.now()));
     }
 

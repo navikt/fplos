@@ -6,6 +6,7 @@ import java.util.UUID;
 import javax.enterprise.context.ApplicationScoped;
 import javax.ws.rs.core.UriBuilder;
 
+import no.nav.foreldrepenger.los.domene.typer.Saksnummer;
 import no.nav.vedtak.felles.integrasjon.rest.FpApplication;
 import no.nav.vedtak.felles.integrasjon.rest.RestClient;
 import no.nav.vedtak.felles.integrasjon.rest.RestClientConfig;
@@ -13,6 +14,7 @@ import no.nav.vedtak.felles.integrasjon.rest.RestConfig;
 import no.nav.vedtak.felles.integrasjon.rest.RestRequest;
 import no.nav.vedtak.felles.integrasjon.rest.TokenFlow;
 import no.nav.vedtak.hendelser.behandling.los.LosBehandlingDto;
+import no.nav.vedtak.hendelser.behandling.los.LosFagsakEgenskaperDto;
 
 @ApplicationScoped
 @RestClientConfig(tokenConfig = TokenFlow.ADAPTIVE, application = FpApplication.FPSAK)
@@ -33,6 +35,13 @@ public class FpsakBehandlingKlient implements BehandlingKlient {
         var target = UriBuilder.fromUri(baseUri).path("/api/los/los-behandling").queryParam("uuid", uuid.toString()).build();
         return klient.send(RestRequest.newGET(target, restConfig), LosBehandlingDto.class);
     }
+
+    @Override
+    public LosFagsakEgenskaperDto hentLosFagsakEgenskaperDto(Saksnummer saksnummer) {
+        var target = UriBuilder.fromUri(baseUri).path("/api/los/los-egenskap").queryParam("saksnummer", saksnummer.value()).build();
+        return klient.send(RestRequest.newGET(target, restConfig), LosFagsakEgenskaperDto.class);
+    }
+
 
     @Override
     public String toString() {

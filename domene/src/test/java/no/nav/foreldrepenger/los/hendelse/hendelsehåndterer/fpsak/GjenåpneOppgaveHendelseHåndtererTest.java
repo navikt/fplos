@@ -95,7 +95,7 @@ class GjenåpneOppgaveHendelseHåndtererTest {
         new OppgaveTjeneste(oppgaveRepository, reservasjonTjeneste).avsluttOppgaveUtenEventLoggAvsluttTilknyttetReservasjon(behandlingId);
         var nyEnhetBehandlingFpsak = new LosBehandlingDto(b.behandlingUuid(), b.kildesystem(), b.saksnummer(), b.ytelse(), b.aktørId(),
             b.behandlingstype(), b.behandlingsstatus(), b.opprettetTidspunkt(), "1000", b.behandlingsfrist(), b.ansvarligSaksbehandlerIdent(),
-            b.aksjonspunkt(), b.behandlingsårsaker(), b.faresignaler(), b.refusjonskrav(), b.foreldrepengerDto(), b.tilbakeDto());
+            b.aksjonspunkt(), b.behandlingsårsaker(), b.faresignaler(), b.refusjonskrav(), null, b.foreldrepengerDto(), b.tilbakeDto());
 
         // act
         gjenåpneOppgaveHåndterer.håndter(behandlingId, nyEnhetBehandlingFpsak);
