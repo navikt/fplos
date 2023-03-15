@@ -34,6 +34,17 @@ public class Aksjonspunkt {
         // Jackson
     }
 
+    public Aksjonspunkt(String definisjonKode, String statusKode, String begrunnelse) {
+        this(definisjonKode, statusKode, begrunnelse, null);
+    }
+
+    public Aksjonspunkt(String definisjonKode, String statusKode, String begrunnelse, LocalDateTime fristTid) {
+        this.definisjonKode = definisjonKode;
+        this.statusKode = statusKode;
+        this.begrunnelse = begrunnelse;
+        this.fristTid = fristTid;
+    }
+
     public String getBegrunnelse() {
         return begrunnelse;
     }
@@ -75,7 +86,7 @@ public class Aksjonspunkt {
     }
 
     public boolean skalVurdereInnhentingAvSED() {
-        return !erAvbrutt() && AUTOMATISK_MARKERING_SOM_UTLAND.equals(definisjonKode);
+        return erAktiv() && AUTOMATISK_MARKERING_SOM_UTLAND.equals(definisjonKode);
     }
 
     public boolean erManueltOverstyrtTilUtenlandssak() {

@@ -5,6 +5,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.util.HashMap;
 import java.util.List;
 
+import no.nav.vedtak.hendelser.behandling.los.LosFagsakEgenskaperDto;
+
 import org.junit.jupiter.api.Test;
 
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.FpsakAksjonspunktWrapper;
@@ -28,6 +30,7 @@ class FpsakAksjonspunktWrapperTest {
         .medDefinisjon("6068")
         .medBegrunnelse("EØS_BOSATT_NORGE")
         .build();
+
     private final Aksjonspunkt apVurderSed = Aksjonspunkt.builder().medStatus("OPPR").medDefinisjon("5068").medBegrunnelse("").build();
 
     @Test
@@ -37,11 +40,10 @@ class FpsakAksjonspunktWrapperTest {
         cases.put("5082", AndreKriterierType.VURDER_FORMKRAV);
         cases.put("5016", AndreKriterierType.TIL_BESLUTTER);
         cases.put("5012", AndreKriterierType.PAPIRSØKNAD); // finnes flere i gruppen
-        cases.put("5068", AndreKriterierType.UTLANDSSAK); // finnes flere i gruppen
 
         cases.forEach((k, v) -> {
             var ap = åpentAksjonspunkt(k);
-            var result = result(ap);
+            var result = utledKriterier(ap);
             assertThat(result).isEqualTo(List.of(v));
         });
     }
@@ -50,37 +52,69 @@ class FpsakAksjonspunktWrapperTest {
     void skalIkkeReturnereDuplikateAndreKriterierTyper() {
         var ap = åpentAksjonspunkt("5082");
         var apISammeGruppe = åpentAksjonspunkt("5083");
-        var result = result(ap, apISammeGruppe);
+        var result = utledKriterier(ap, apISammeGruppe);
         assertThat(result).isEqualTo(List.of(AndreKriterierType.VURDER_FORMKRAV));
     }
 
     @Test
     void skalIkkeMappeInaktiveAksjonspunktTilAndreKriterierTyper() {
         var ap = Aksjonspunkt.builder().medStatus("AVBR").medDefinisjon("5082").medBegrunnelse("").build();
-        var result = result(ap);
+        var result = utledKriterier(ap);
         assertThat(result).isEmpty();
     }
 
     @Test
     void overstyrtTilIkkeUtlandSkalIkkeGiUtlandOppgaveegenskap() {
-        var result = result(apOverstyrtTilNasjonal, apVurderSed);
+        var result = utledKriterier(apOverstyrtTilNasjonal, apVurderSed);
         assertThat(result).isEmpty();
     }
 
     @Test
     void overstyrtTilBosattUtlandSkalGiUtlandOppgaveegenskap() {
-        var result = result(apOverstyrtTilBosattUtland);
+        var result = utledKriterier(apOverstyrtTilBosattUtland);
         assertThat(result).contains(AndreKriterierType.UTLANDSSAK);
     }
 
     @Test
     void overstyrtTilEøsBosattNorgeSkalGiUtlandOppgaveegenskap() {
-        var result = result(apOverstyrtTilEØSBosattNorge);
+        var result = utledKriterier(apOverstyrtTilEØSBosattNorge);
         assertThat(result).contains(AndreKriterierType.UTLANDSSAK);
     }
 
-    private static List<AndreKriterierType> result(Aksjonspunkt... aksjonspunkt) {
-        return FpsakAksjonspunktWrapper.getKriterier(List.of(aksjonspunkt), null);
+    @Test
+    void aktiv5068GirVurderSed() {
+        var aktiv5068 = åpentAksjonspunkt("5068");
+        var fagsakEgenskaper = new LosFagsakEgenskaperDto(Boolean.TRUE, null);
+        var result = utledKriterier(fagsakEgenskaper, aktiv5068);
+        assertThat(result).contains(AndreKriterierType.VURDER_EØS_OPPTJENING);
+    }
+
+    @Test
+    void utførtEllerAvbrutt5068GirIkkeVurderSed() {
+        var fagsakEgenskaper = new LosFagsakEgenskaperDto(Boolean.TRUE, LosFagsakEgenskaperDto.UtlandMarkering.EØS_BOSATT_NORGE);
+        var uført5068 = new Aksjonspunkt("5068", "UTFO", "");
+        var utført5068Resultat = utledKriterier(fagsakEgenskaper, uført5068);
+        assertThat(utført5068Resultat).doesNotContain(AndreKriterierType.VURDER_EØS_OPPTJENING);
+
+        var avbrutt5068 = new Aksjonspunkt("5068", "AVBR", "");
+        var avbrutt5068Resultat = utledKriterier(fagsakEgenskaper, avbrutt5068);
+        assertThat(avbrutt5068Resultat).doesNotContain(AndreKriterierType.VURDER_EØS_OPPTJENING);
+    }
+
+    @Test
+    void skalIkkeHaEgenskapVurderSedNårNasjonalSak() {
+        var fagsakEgenskaper = new LosFagsakEgenskaperDto(Boolean.TRUE, LosFagsakEgenskaperDto.UtlandMarkering.NASJONAL);
+        var aktiv5068 = new Aksjonspunkt("5068", "OPPR", "");
+        var resultat = utledKriterier(fagsakEgenskaper, aktiv5068);
+        assertThat(resultat).doesNotContain(AndreKriterierType.VURDER_EØS_OPPTJENING);
+    }
+
+    private static List<AndreKriterierType> utledKriterier(Aksjonspunkt... aksjonspunkt) {
+        return utledKriterier(null, aksjonspunkt);
+    }
+
+    private static List<AndreKriterierType> utledKriterier(LosFagsakEgenskaperDto sakDto, Aksjonspunkt... aksjonspunkter) {
+        return FpsakAksjonspunktWrapper.getKriterier(List.of(aksjonspunkter), sakDto);
     }
 
     private static Aksjonspunkt åpentAksjonspunkt(String definisjonKode) {
