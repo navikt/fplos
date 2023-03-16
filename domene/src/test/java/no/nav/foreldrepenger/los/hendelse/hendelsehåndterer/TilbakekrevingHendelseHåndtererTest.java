@@ -40,6 +40,8 @@ import no.nav.vedtak.hendelser.behandling.Behandlingstype;
 import no.nav.vedtak.hendelser.behandling.Kildesystem;
 import no.nav.vedtak.hendelser.behandling.Ytelse;
 import no.nav.vedtak.hendelser.behandling.los.LosBehandlingDto;
+import no.nav.vedtak.hendelser.behandling.los.LosFagsakEgenskaperDto;
+import no.nav.vedtak.hendelser.behandling.los.LosFagsakEgenskaperDto.UtlandMarkering;
 
 @ExtendWith(JpaExtension.class)
 @ExtendWith(MockitoExtension.class)
@@ -156,13 +158,45 @@ class TilbakekrevingHendelseHåndtererTest {
         var oppgaveEventer = DBTestUtil.hentAlle(entityManager, OppgaveEventLogg.class)
             .stream()
             .sorted(Comparator.comparing(OppgaveEventLogg::getOpprettetTidspunkt))
-            .collect(Collectors.toList());
+            .toList();
 
         verifiserOppgaveEvent(oppgaveEventer.get(0), OppgaveEventType.OPPRETTET, null);
         verifiserOppgaveEvent(oppgaveEventer.get(1), OppgaveEventType.LUKKET, null);
         verifiserOppgaveEvent(oppgaveEventer.get(2), OppgaveEventType.OPPRETTET, AndreKriterierType.TIL_BESLUTTER);
         verifiserOppgaveEvent(oppgaveEventer.get(3), OppgaveEventType.LUKKET, null);
         verifiserOppgaveEvent(oppgaveEventer.get(4), OppgaveEventType.OPPRETTET, null);
+    }
+
+    @Test
+    void skalHaEgenskapUtlandVedUtlandmarkering() {
+        var behandlingId = BehandlingId.random();
+        var fagsakEgenskaper = new LosFagsakEgenskaperDto(Boolean.TRUE, UtlandMarkering.BOSATT_UTLAND);
+        var hendelse = hendelse(åpentAksjonspunkt, behandlingId, fagsakEgenskaper);
+        handler.håndterBehandling(hendelse, fagsakEgenskaper);
+        var oppgaveEgenskaper = DBTestUtil.hentUnik(entityManager, OppgaveEgenskap.class);
+        assertThat(oppgaveEgenskaper.getAndreKriterierType()).isEqualTo(AndreKriterierType.UTLANDSSAK);
+    }
+
+    @Test
+    void skalFåEgenskapEøsSakNårMarkertSomEøs() {
+        var behandlingId = BehandlingId.random();
+        var fpsakEgenskaper = new LosFagsakEgenskaperDto(Boolean.TRUE, UtlandMarkering.EØS_BOSATT_NORGE);
+        var hendelse = hendelse(åpentAksjonspunkt, behandlingId, fpsakEgenskaper);
+        handler.håndterBehandling(hendelse, fpsakEgenskaper);
+        var oppgaveEgenskaper = DBTestUtil.hentAlle(entityManager, OppgaveEgenskap.class);
+        var kriterieTyper = oppgaveEgenskaper.stream().map(OppgaveEgenskap::getAndreKriterierType);
+        assertThat(kriterieTyper).contains(AndreKriterierType.EØS_SAK);
+    }
+
+    @Test
+    void skalIkkeFåEgenskapEøsSakNårIkkeEøsMarkert() {
+        var behandlingId = BehandlingId.random();
+        var fpsakEgenskaper = new LosFagsakEgenskaperDto(Boolean.TRUE, UtlandMarkering.BOSATT_UTLAND);
+        var hendelse = hendelse(åpentAksjonspunkt, behandlingId, fpsakEgenskaper);
+        handler.håndterBehandling(hendelse, fpsakEgenskaper);
+        var oppgaveEgenskaper = DBTestUtil.hentAlle(entityManager, OppgaveEgenskap.class);
+        var kriterieTyper = oppgaveEgenskaper.stream().map(OppgaveEgenskap::getAndreKriterierType);
+        assertThat(kriterieTyper).doesNotContain(AndreKriterierType.EØS_SAK);
     }
 
     private void verifiserOppgaveEvent(OppgaveEventLogg event, OppgaveEventType type, AndreKriterierType kriterierType) {
@@ -209,14 +243,22 @@ class TilbakekrevingHendelseHåndtererTest {
     }
 
     private static LosBehandlingDto hendelse(List<Aksjonspunkt> aksjonspunkter, BehandlingId behandlingId) {
+        return hendelse(aksjonspunkter, behandlingId, null);
+    }
+
+    private static LosBehandlingDto hendelse(List<Aksjonspunkt> aksjonspunkter, BehandlingId behandlingId, LosFagsakEgenskaperDto fagsakEgenskaperDto) {
         var ap = aksjonspunkter.stream()
-            .map(a -> new LosBehandlingDto.LosAksjonspunktDto(a.getDefinisjonKode(),
-                "OPPR".equals(a.getStatusKode()) ? Aksjonspunktstatus.OPPRETTET : Aksjonspunktstatus.AVBRUTT, null, null))
+            .map(a -> new LosBehandlingDto.LosAksjonspunktDto(
+                a.getDefinisjonKode(),
+                "OPPR".equals(a.getStatusKode())
+                    ? Aksjonspunktstatus.OPPRETTET
+                    : Aksjonspunktstatus.AVBRUTT,
+                null, null))
             .collect(Collectors.toList());
         return new LosBehandlingDto(behandlingId.toUUID(), Kildesystem.FPTILBAKE, "123", Ytelse.FORELDREPENGER,
             new no.nav.vedtak.hendelser.behandling.AktørId(AktørId.dummy().getId()), Behandlingstype.TILBAKEBETALING, Behandlingsstatus.OPPRETTET,
             LocalDateTime.now(), "0300", null, "saksbehandler", ap, List.of(),
-            false, false, null, null,
+            false, false, fagsakEgenskaperDto, null,
             new LosBehandlingDto.LosTilbakeDto(BigDecimal.valueOf(500), LocalDate.now()));
     }
 

@@ -11,6 +11,8 @@ import no.nav.vedtak.hendelser.behandling.Behandlingstype;
 import no.nav.vedtak.hendelser.behandling.Behandlingsårsak;
 import no.nav.vedtak.hendelser.behandling.Ytelse;
 import no.nav.vedtak.hendelser.behandling.los.LosBehandlingDto;
+import no.nav.vedtak.hendelser.behandling.los.LosFagsakEgenskaperDto;
+import no.nav.vedtak.hendelser.behandling.los.LosFagsakEgenskaperDto.UtlandMarkering;
 
 public class FpsakOppgaveEgenskapFinner implements OppgaveEgenskapFinner {
     private final List<AndreKriterierType> andreKriterier = new ArrayList<>();
@@ -44,6 +46,9 @@ public class FpsakOppgaveEgenskapFinner implements OppgaveEgenskapFinner {
         if (behandling.behandlingsårsaker().stream().anyMatch(Behandlingsårsak.KLAGE_TILBAKEBETALING::equals)) {
             this.andreKriterier.add(AndreKriterierType.KLAGE_PÅ_TILBAKEBETALING);
         }
+        if (fagsakHarEøsMarkering(behandling)) {
+            this.andreKriterier.add(AndreKriterierType.EØS_SAK);
+        }
         var aksjonspunkter = behandling.aksjonspunkt().stream().map(Aksjonspunkt::aksjonspunktFra).toList();
         this.andreKriterier.addAll(FpsakAksjonspunktWrapper.getKriterier(aksjonspunkter, behandling.fagsakEgenskaper()));
     }
@@ -56,6 +61,14 @@ public class FpsakOppgaveEgenskapFinner implements OppgaveEgenskapFinner {
     @Override
     public String getSaksbehandlerForTotrinn() {
         return saksbehandlerForTotrinn;
+    }
+
+    private static boolean fagsakHarEøsMarkering(LosBehandlingDto behandling) {
+        return Optional.of(behandling)
+            .map(LosBehandlingDto::fagsakEgenskaper)
+            .map(LosFagsakEgenskaperDto::utlandMarkering)
+            .map(UtlandMarkering.EØS_BOSATT_NORGE::equals)
+            .orElse(false);
     }
 
 }
