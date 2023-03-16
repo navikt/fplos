@@ -5,7 +5,7 @@
     <parent>
         <groupId>no.nav.foreldrepenger.felles</groupId>
         <artifactId>fp-bom</artifactId>
-        <version>0.4.5</version>
+        <version>0.4.6</version>
     </parent>
 
     <groupId>no.nav.foreldrepenger.los</groupId>
@@ -28,8 +28,8 @@
         <sonar.projectKey>navikt_fplos</sonar.projectKey>
 
         <fp-kontrakter.version>6.2.13</fp-kontrakter.version>
-        <felles.version>4.2.35</felles.version>
-        <prosesstask.version>3.1.24</prosesstask.version>
+        <felles.version>4.2.36</felles.version>
+        <prosesstask.version>3.1.25</prosesstask.version>
     </properties>
 
     <dependencies>
@@ -55,7 +55,7 @@
             <dependency>
                 <groupId>no.nav.foreldrepenger.felles</groupId>
                 <artifactId>fp-bom</artifactId>
-                <version>0.4.3</version>
+                <version>0.4.6</version>
                 <scope>import</scope>
                 <type>pom</type>
             </dependency>
@@ -114,13 +114,6 @@
                 <groupId>no.nav.vedtak.prosesstask</groupId>
                 <artifactId>prosesstask-root</artifactId>
                 <version>${prosesstask.version}</version>
-                <scope>import</scope>
-                <type>pom</type>
-            </dependency>
-            <dependency>
-                <groupId>no.nav.foreldrepenger.kontrakter.topics</groupId>
-                <artifactId>fp-topics</artifactId>
-                <version>${fp-kontrakter.version}</version>
                 <scope>import</scope>
                 <type>pom</type>
             </dependency>
