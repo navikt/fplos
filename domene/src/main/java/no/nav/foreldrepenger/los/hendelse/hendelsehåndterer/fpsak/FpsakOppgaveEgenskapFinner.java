@@ -46,15 +46,6 @@ public class FpsakOppgaveEgenskapFinner implements OppgaveEgenskapFinner {
         }
         var aksjonspunkter = behandling.aksjonspunkt().stream().map(Aksjonspunkt::aksjonspunktFra).toList();
         this.andreKriterier.addAll(FpsakAksjonspunktWrapper.getKriterier(aksjonspunkter, behandling.fagsakEgenskaper()));
-
-        if (skalVurdereEøs(behandling) && !this.andreKriterier.contains(AndreKriterierType.VURDER_EØS_OPPTJENING)) {
-            this.andreKriterier.add(AndreKriterierType.VURDER_EØS_OPPTJENING);
-        }
-    }
-
-    private boolean skalVurdereEøs(LosBehandlingDto dto) {
-        return !FpsakAksjonspunktWrapper.erValgtNasjonal(dto.aksjonspunkt().stream().map(Aksjonspunkt::aksjonspunktFra).toList(), dto.fagsakEgenskaper()) &&
-            Optional.ofNullable(dto.foreldrepengerDto()).filter(LosBehandlingDto.LosForeldrepengerDto::annenForelderRettEØS).isPresent();
     }
 
     @Override

@@ -10,7 +10,6 @@ import java.util.UUID;
 import org.junit.jupiter.api.Test;
 
 import no.nav.foreldrepenger.los.oppgave.AndreKriterierType;
-import no.nav.vedtak.hendelser.behandling.Aksjonspunktstatus;
 import no.nav.vedtak.hendelser.behandling.AktørId;
 import no.nav.vedtak.hendelser.behandling.Behandlingsstatus;
 import no.nav.vedtak.hendelser.behandling.Behandlingstype;
@@ -29,13 +28,7 @@ class FpsakOppgaveEgenskapFinnerTest {
         assertThat(fpsakEgenskaper.getAndreKriterier()).contains(AndreKriterierType.KLAGE_PÅ_TILBAKEBETALING);
     }
 
-    @Test
-    void skalIkkeFåVurderEøsOpptjeningEgenskapNårOverstyrtTilNasjonal() {
-        var overstyrtNasjonalAp = new LosAksjonspunktDto("6068", Aksjonspunktstatus.UTFØRT, "NASJONAL", null);
-        var dto = lagLosBehandlingDto(overstyrtNasjonalAp);
-        var fpsakEgenskaper = new FpsakOppgaveEgenskapFinner(dto);
-        assertThat(fpsakEgenskaper.getAndreKriterier()).isNotEmpty().doesNotContain(AndreKriterierType.VURDER_EØS_OPPTJENING);
-    }
+
 
     static LosBehandlingDto lagLosBehandlingDto(LosAksjonspunktDto... dto) {
         return new LosBehandlingDto(UUID.randomUUID(), Kildesystem.FPSAK, "42", Ytelse.FORELDREPENGER, new AktørId("1234"), Behandlingstype.KLAGE,
