@@ -11,6 +11,7 @@ import java.util.function.Predicate;
 import no.nav.foreldrepenger.los.klient.fpsak.Aksjonspunkt;
 import no.nav.foreldrepenger.los.oppgave.AndreKriterierType;
 import no.nav.vedtak.hendelser.behandling.los.LosFagsakEgenskaperDto;
+import no.nav.vedtak.hendelser.behandling.los.LosFagsakEgenskaperDto.UtlandMarkering;
 
 public class FpsakAksjonspunktWrapper {
 
@@ -39,16 +40,18 @@ public class FpsakAksjonspunktWrapper {
 
     private static boolean skalVurdereEøs(List<Aksjonspunkt> aksjonspunkt, LosFagsakEgenskaperDto dto) {
         var skalVurdereInnhentingAvSED = finn(aksjonspunkt, Aksjonspunkt::skalVurdereInnhentingAvSED);
-        var egenskapSkalInnhente = Optional.ofNullable(dto).map(LosFagsakEgenskaperDto::skalInnhenteSED)
-            .filter(s -> Objects.equals(s, Boolean.FALSE)).isEmpty();
-        var ikkeNasjonal = Optional.ofNullable(dto).map(LosFagsakEgenskaperDto::utlandMarkering).filter(m -> !LosFagsakEgenskaperDto.UtlandMarkering.NASJONAL.equals(m)).isPresent();
-        return skalVurdereInnhentingAvSED && ikkeNasjonal && egenskapSkalInnhente;
+        var markertNasjonalFagsakEgenskap = Optional.ofNullable(dto)
+            .map(LosFagsakEgenskaperDto::utlandMarkering)
+            .filter(UtlandMarkering.NASJONAL::equals)
+            .isPresent();
+        var markertNasjonalAksjonspunkt = finn(aksjonspunkt, Aksjonspunkt::erManueltOverstyrtTilNasjonalSak);
+        return skalVurdereInnhentingAvSED && !markertNasjonalFagsakEgenskap && !markertNasjonalAksjonspunkt;
     }
 
     private static boolean erUtenlandssak(List<Aksjonspunkt> aksjonspunkt, LosFagsakEgenskaperDto sakDto) {
         var skalVurdereInnhentingAvSED = finn(aksjonspunkt, Aksjonspunkt::skalVurdereInnhentingAvSED);
         if (Optional.ofNullable(sakDto).map(LosFagsakEgenskaperDto::utlandMarkering).isPresent()) {
-            return !LosFagsakEgenskaperDto.UtlandMarkering.NASJONAL.equals(sakDto.utlandMarkering()) ||
+            return !UtlandMarkering.NASJONAL.equals(sakDto.utlandMarkering()) ||
                 (Objects.equals(Boolean.TRUE, sakDto.skalInnhenteSED()) && skalVurdereInnhentingAvSED);
         }
         var overstyrtTilNasjonalsak = finn(aksjonspunkt, Aksjonspunkt::erManueltOverstyrtTilNasjonalSak);
@@ -64,7 +67,7 @@ public class FpsakAksjonspunktWrapper {
     }
 
     public static boolean erValgtNasjonal(List<Aksjonspunkt> aksjonspunkt, LosFagsakEgenskaperDto sakDto) {
-        return Optional.ofNullable(sakDto).map(LosFagsakEgenskaperDto::utlandMarkering).filter(LosFagsakEgenskaperDto.UtlandMarkering.NASJONAL::equals).isPresent() ||
+        return Optional.ofNullable(sakDto).map(LosFagsakEgenskaperDto::utlandMarkering).filter(UtlandMarkering.NASJONAL::equals).isPresent() ||
             finn(aksjonspunkt, Aksjonspunkt::erManueltOverstyrtTilNasjonalSak);
     }
 
