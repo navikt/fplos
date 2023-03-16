@@ -41,7 +41,7 @@ class FpsakOppgaveEgenskapFinnerTest {
         var ikkeEøsFagsakEgenskaperDto = new LosFagsakEgenskaperDto(Boolean.TRUE, UtlandMarkering.BOSATT_UTLAND);
         var ikkeEøsBehandlingDto = lagLosBehandlingDto(ikkeEøsFagsakEgenskaperDto);
         var ikkeEøsFpsakEgenskaper = new FpsakOppgaveEgenskapFinner(ikkeEøsBehandlingDto);
-        assertThat(ikkeEøsFpsakEgenskaper.getAndreKriterier()).isNotNull().doesNotContain(AndreKriterierType.EØS_SAK);
+        assertThat(ikkeEøsFpsakEgenskaper.getAndreKriterier()).isNotEmpty().doesNotContain(AndreKriterierType.EØS_SAK);
     }
 
     static LosBehandlingDto lagLosBehandlingDto(LosFagsakEgenskaperDto fagsakEgenskaperDto, LosAksjonspunktDto... dto) {

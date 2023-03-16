@@ -196,7 +196,7 @@ class TilbakekrevingHendelseHåndtererTest {
         handler.håndterBehandling(hendelse, fpsakEgenskaper);
         var oppgaveEgenskaper = DBTestUtil.hentAlle(entityManager, OppgaveEgenskap.class);
         var kriterieTyper = oppgaveEgenskaper.stream().map(OppgaveEgenskap::getAndreKriterierType);
-        assertThat(kriterieTyper).doesNotContain(AndreKriterierType.EØS_SAK);
+        assertThat(kriterieTyper).isNotEmpty().doesNotContain(AndreKriterierType.EØS_SAK);
     }
 
     private void verifiserOppgaveEvent(OppgaveEventLogg event, OppgaveEventType type, AndreKriterierType kriterierType) {
