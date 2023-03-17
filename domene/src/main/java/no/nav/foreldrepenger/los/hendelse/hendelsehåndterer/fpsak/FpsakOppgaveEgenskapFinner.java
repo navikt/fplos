@@ -3,6 +3,7 @@ package no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Predicate;
 
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.OppgaveEgenskapFinner;
 import no.nav.foreldrepenger.los.klient.fpsak.Aksjonspunkt;
@@ -13,6 +14,9 @@ import no.nav.vedtak.hendelser.behandling.Ytelse;
 import no.nav.vedtak.hendelser.behandling.los.LosBehandlingDto;
 import no.nav.vedtak.hendelser.behandling.los.LosFagsakEgenskaperDto;
 import no.nav.vedtak.hendelser.behandling.los.LosFagsakEgenskaperDto.UtlandMarkering;
+
+import static java.util.function.Predicate.not;
+import static no.nav.foreldrepenger.los.felles.util.StreamUtil.safeStream;
 
 public class FpsakOppgaveEgenskapFinner implements OppgaveEgenskapFinner {
     private final List<AndreKriterierType> andreKriterier = new ArrayList<>();
@@ -46,11 +50,27 @@ public class FpsakOppgaveEgenskapFinner implements OppgaveEgenskapFinner {
         if (behandling.behandlingsårsaker().stream().anyMatch(Behandlingsårsak.KLAGE_TILBAKEBETALING::equals)) {
             this.andreKriterier.add(AndreKriterierType.KLAGE_PÅ_TILBAKEBETALING);
         }
-        if (fagsakHarEøsMarkering(behandling)) {
+        if (fagsakErMarkertEØS(behandling)) {
             this.andreKriterier.add(AndreKriterierType.EØS_SAK);
         }
+
         var aksjonspunkter = behandling.aksjonspunkt().stream().map(Aksjonspunkt::aksjonspunktFra).toList();
-        this.andreKriterier.addAll(FpsakAksjonspunktWrapper.getKriterier(aksjonspunkter, behandling.fagsakEgenskaper()));
+
+        if (matchAksjonspunkt(aksjonspunkter, Aksjonspunkt::erTilBeslutter)) {
+            this.andreKriterier.add(AndreKriterierType.TIL_BESLUTTER);
+        }
+        if (matchAksjonspunkt(aksjonspunkter, Aksjonspunkt::erRegistrerPapirSøknad)) {
+            this.andreKriterier.add(AndreKriterierType.PAPIRSØKNAD);
+        }
+        if (skalVurdereBehovForSED(aksjonspunkter, behandling.fagsakEgenskaper())) {
+            this.andreKriterier.add(AndreKriterierType.VURDER_EØS_OPPTJENING);
+        }
+        if (matchAksjonspunkt(aksjonspunkter, Aksjonspunkt::erVurderFormkrav)) {
+            this.andreKriterier.add(AndreKriterierType.VURDER_FORMKRAV);
+        }
+        if (fagsakErMarkertUtland(behandling) || this.andreKriterier.contains(AndreKriterierType.VURDER_EØS_OPPTJENING)) {
+            this.andreKriterier.add(AndreKriterierType.UTLANDSSAK);
+        }
     }
 
     @Override
@@ -63,12 +83,33 @@ public class FpsakOppgaveEgenskapFinner implements OppgaveEgenskapFinner {
         return saksbehandlerForTotrinn;
     }
 
-    private static boolean fagsakHarEøsMarkering(LosBehandlingDto behandling) {
+    private static boolean skalVurdereBehovForSED(List<Aksjonspunkt> aksjonspunkt, LosFagsakEgenskaperDto dto) {
+        var skalVurdereInnhentingAvSED = matchAksjonspunkt(aksjonspunkt, Aksjonspunkt::skalVurdereInnhentingAvSED);
+        var fagsakErMarkertNasjonal = Optional.ofNullable(dto)
+            .map(LosFagsakEgenskaperDto::utlandMarkering)
+            .filter(UtlandMarkering.NASJONAL::equals)
+            .isPresent();
+        return skalVurdereInnhentingAvSED && !fagsakErMarkertNasjonal;
+    }
+
+    private static boolean matchAksjonspunkt(List<Aksjonspunkt> aksjonspunkt, Predicate<Aksjonspunkt> predicate) {
+        return safeStream(aksjonspunkt).anyMatch(predicate);
+    }
+
+    private static boolean fagsakErMarkertEØS(LosBehandlingDto behandling) {
         return Optional.of(behandling)
             .map(LosBehandlingDto::fagsakEgenskaper)
             .map(LosFagsakEgenskaperDto::utlandMarkering)
             .map(UtlandMarkering.EØS_BOSATT_NORGE::equals)
             .orElse(false);
+    }
+
+    private static boolean fagsakErMarkertUtland(LosBehandlingDto behandlingDto) {
+        return Optional.ofNullable(behandlingDto)
+            .map(LosBehandlingDto::fagsakEgenskaper)
+            .map(LosFagsakEgenskaperDto::utlandMarkering)
+            .filter(not(UtlandMarkering.NASJONAL::equals))
+            .isPresent();
     }
 
 }
