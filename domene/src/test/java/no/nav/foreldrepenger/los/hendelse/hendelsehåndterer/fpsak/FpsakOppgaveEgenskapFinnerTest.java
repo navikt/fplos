@@ -48,11 +48,13 @@ class FpsakOppgaveEgenskapFinnerTest {
     }
 
     @Test
-    void skalFåEgenskapUtlandVedUtlandtilsnitt() {
+    void skalFåEgenskapUtlandVedBosattUtland() {
         var eøsFagsakEgenskaper = new LosFagsakEgenskaperDto(Boolean.TRUE, UtlandMarkering.EØS_BOSATT_NORGE);
         var eøsBehandling = lagLosBehandlingDto(eøsFagsakEgenskaper, null);
         var eøsOppgaveKriterier = new FpsakOppgaveEgenskapFinner(eøsBehandling).getAndreKriterier();
-        assertThat(eøsOppgaveKriterier).contains(AndreKriterierType.UTLANDSSAK);
+        assertThat(eøsOppgaveKriterier)
+            .isNotEmpty()
+            .doesNotContain(AndreKriterierType.UTLANDSSAK);
 
         var bosattUtlandFagsakEgenskaper = new LosFagsakEgenskaperDto(Boolean.FALSE, UtlandMarkering.BOSATT_UTLAND);
         var bosattUtlandOppgaveKriterier = new FpsakOppgaveEgenskapFinner(lagLosBehandlingDto(bosattUtlandFagsakEgenskaper, null)).getAndreKriterier();
@@ -61,16 +63,6 @@ class FpsakOppgaveEgenskapFinnerTest {
         var nasjonalFagsakEgenskaper = new LosFagsakEgenskaperDto(null, UtlandMarkering.NASJONAL);
         var nasjonalOppgaveKriterier = new FpsakOppgaveEgenskapFinner(lagLosBehandlingDto(nasjonalFagsakEgenskaper, null)).getAndreKriterier();
         assertThat(nasjonalOppgaveKriterier).isEmpty();
-    }
-
-    @Test
-    void skalFåEgenskapUtlandVedAktivVurderInnhenteSED() {
-        var aktivtInnhentSEDAksjonspunkt = new LosAksjonspunktDto("5068", Aksjonspunktstatus.OPPRETTET, null, null);
-        var behandling = lagLosBehandlingDto(null, null, aktivtInnhentSEDAksjonspunkt);
-        var oppgaveKriterier = new FpsakOppgaveEgenskapFinner(behandling).getAndreKriterier();
-        assertThat(oppgaveKriterier)
-            .contains(AndreKriterierType.VURDER_EØS_OPPTJENING)
-            .contains(AndreKriterierType.UTLANDSSAK);
     }
 
     @Test

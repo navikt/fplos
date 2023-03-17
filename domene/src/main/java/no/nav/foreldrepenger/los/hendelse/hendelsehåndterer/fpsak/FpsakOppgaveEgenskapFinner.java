@@ -68,7 +68,7 @@ public class FpsakOppgaveEgenskapFinner implements OppgaveEgenskapFinner {
         if (matchAksjonspunkt(aksjonspunkter, Aksjonspunkt::erVurderFormkrav)) {
             this.andreKriterier.add(AndreKriterierType.VURDER_FORMKRAV);
         }
-        if (fagsakErMarkertUtland(behandling) || this.andreKriterier.contains(AndreKriterierType.VURDER_EØS_OPPTJENING)) {
+        if (fagsakErMarkertBosattUtland(behandling)) {
             this.andreKriterier.add(AndreKriterierType.UTLANDSSAK);
         }
     }
@@ -100,15 +100,15 @@ public class FpsakOppgaveEgenskapFinner implements OppgaveEgenskapFinner {
         return Optional.of(behandling)
             .map(LosBehandlingDto::fagsakEgenskaper)
             .map(LosFagsakEgenskaperDto::utlandMarkering)
-            .map(UtlandMarkering.EØS_BOSATT_NORGE::equals)
-            .orElse(false);
+            .filter(UtlandMarkering.EØS_BOSATT_NORGE::equals)
+            .isPresent();
     }
 
-    private static boolean fagsakErMarkertUtland(LosBehandlingDto behandlingDto) {
+    private static boolean fagsakErMarkertBosattUtland(LosBehandlingDto behandlingDto) {
         return Optional.ofNullable(behandlingDto)
             .map(LosBehandlingDto::fagsakEgenskaper)
             .map(LosFagsakEgenskaperDto::utlandMarkering)
-            .filter(not(UtlandMarkering.NASJONAL::equals))
+            .filter(UtlandMarkering.BOSATT_UTLAND::equals)
             .isPresent();
     }
 
