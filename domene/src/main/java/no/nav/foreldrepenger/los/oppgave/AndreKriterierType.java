@@ -15,7 +15,7 @@ public enum AndreKriterierType implements Kodeverdi {
     TIL_BESLUTTER("TIL_BESLUTTER", "Til beslutter"),
     PAPIRSØKNAD("PAPIRSOKNAD", "Registrer papirsøknad"),
     UTBETALING_TIL_BRUKER("UTBETALING_TIL_BRUKER", "Utbetaling til bruker"),
-    UTLANDSSAK("UTLANDSSAK", "Utland"),
+    UTLANDSSAK("UTLANDSSAK", "Bosatt utland"),
     SØKT_GRADERING("SOKT_GRADERING", "Søkt gradering"),
     VURDER_SYKDOM("VURDER_SYKDOM", "Vurder sykdom"),
     PLEIEPENGER("PLEIEPENGER", "Pleiepenger"),
