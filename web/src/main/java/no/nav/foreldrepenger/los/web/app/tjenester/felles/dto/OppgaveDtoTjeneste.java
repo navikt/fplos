@@ -130,7 +130,7 @@ public class OppgaveDtoTjeneste {
         var nesteOppgaver = oppgaveKøTjeneste.hentOppgaver(sakslisteId, ANTALL_OPPGAVER_SOM_VISES_TIL_SAKSBEHANDLER * 7);
         var oppgaveDtos = map(nesteOppgaver, ANTALL_OPPGAVER_SOM_VISES_TIL_SAKSBEHANDLER, true);
         //Noen oppgave filteres bort i mappingen pga at saksbehandler ikke har tilgang til behandlingen
-        if (nesteOppgaver.size() == oppgaveDtos.size()) {
+        if (oppgaveDtos.size() == Math.min(ANTALL_OPPGAVER_SOM_VISES_TIL_SAKSBEHANDLER, nesteOppgaver.size())) {
             return oppgaveDtos;
         }
         LOG.info("{} behandlinger filtrert bort for saksliste {}", nesteOppgaver.size() - oppgaveDtos.size(), sakslisteId);
@@ -168,7 +168,7 @@ public class OppgaveDtoTjeneste {
         }
         List<OppgaveDto> dtoList = new ArrayList<>();
         var antallOppgaver = oppgaver.size();
-        int start = randomiser ? Math.abs(KontekstHolder.getKontekst().getUid().chars().sum() % antallOppgaver) : 0;
+        int start = randomiser ? (int)(System.currentTimeMillis() % antallOppgaver) : 0;
         for (var i = 0; i < oppgaver.size() && dtoList.size() < maksAntall; i++) {
             var oppgave = oppgaver.get((start + i) % antallOppgaver);
             try {
