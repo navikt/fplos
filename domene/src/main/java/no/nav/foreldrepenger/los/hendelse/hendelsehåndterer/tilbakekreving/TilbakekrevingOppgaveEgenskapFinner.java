@@ -2,14 +2,13 @@ package no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.tilbakekreving;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
+import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.FagsakEgenskaper;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.OppgaveEgenskapFinner;
 import no.nav.foreldrepenger.los.oppgave.AndreKriterierType;
 import no.nav.vedtak.hendelser.behandling.Aksjonspunktstatus;
 import no.nav.vedtak.hendelser.behandling.los.LosBehandlingDto;
 import no.nav.vedtak.hendelser.behandling.los.LosFagsakEgenskaperDto;
-import no.nav.vedtak.hendelser.behandling.los.LosFagsakEgenskaperDto.UtlandMarkering;
 
 public class TilbakekrevingOppgaveEgenskapFinner implements OppgaveEgenskapFinner {
     private final List<AndreKriterierType> andreKriterier;
@@ -19,11 +18,14 @@ public class TilbakekrevingOppgaveEgenskapFinner implements OppgaveEgenskapFinne
                                                String saksbehandler,
                                                LosFagsakEgenskaperDto egenskaperDto) {
         this.andreKriterier = new ArrayList<>();
-        if (fagsakErMarkertUtland(egenskaperDto)) {
+        if (FagsakEgenskaper.fagsakErMarkertBosattUtland(egenskaperDto)) {
             this.andreKriterier.add(AndreKriterierType.UTLANDSSAK);
         }
-        if (fagsakErMarkertEØSBosattNorge(egenskaperDto)) {
+        if (FagsakEgenskaper.fagsakErMarkertEØSBosattNorge(egenskaperDto)) {
             this.andreKriterier.add(AndreKriterierType.EØS_SAK);
+        }
+        if (FagsakEgenskaper.fagsakErMarkertSammensattKontroll(egenskaperDto)) {
+            this.andreKriterier.add(AndreKriterierType.SAMMENSATT_KONTROLL);
         }
         if (aksjonspunkter.stream().anyMatch(a -> a.definisjon().equals("5005") && Aksjonspunktstatus.OPPRETTET.equals(a.status()))) {
             this.andreKriterier.add(AndreKriterierType.TIL_BESLUTTER);
@@ -41,17 +43,4 @@ public class TilbakekrevingOppgaveEgenskapFinner implements OppgaveEgenskapFinne
         return saksbehandlerForTotrinn;
     }
 
-    private static boolean fagsakErMarkertEØSBosattNorge(LosFagsakEgenskaperDto egenskaperDto) {
-        return Optional.ofNullable(egenskaperDto)
-            .map(LosFagsakEgenskaperDto::utlandMarkering)
-            .filter(UtlandMarkering.EØS_BOSATT_NORGE::equals)
-            .isPresent();
-    }
-
-    private static boolean fagsakErMarkertUtland(LosFagsakEgenskaperDto egenskaperDto) {
-        return Optional.ofNullable(egenskaperDto)
-            .map(LosFagsakEgenskaperDto::utlandMarkering)
-            .filter(UtlandMarkering.BOSATT_UTLAND::equals)
-            .isPresent();
-    }
 }
