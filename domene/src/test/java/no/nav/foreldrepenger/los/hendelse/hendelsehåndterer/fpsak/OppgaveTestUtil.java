@@ -6,7 +6,6 @@ import java.util.List;
 
 import no.nav.foreldrepenger.los.domene.typer.BehandlingId;
 import no.nav.foreldrepenger.los.domene.typer.aktør.AktørId;
-import no.nav.foreldrepenger.los.klient.fpsak.Aksjonspunkt;
 import no.nav.vedtak.hendelser.behandling.Aksjonspunktstatus;
 import no.nav.vedtak.hendelser.behandling.Behandlingsstatus;
 import no.nav.vedtak.hendelser.behandling.Behandlingstype;
@@ -33,7 +32,7 @@ public class OppgaveTestUtil {
             new no.nav.vedtak.hendelser.behandling.AktørId(aktørId.getId()), Behandlingstype.FØRSTEGANGS, Behandlingsstatus.OPPRETTET,
             behandlingOpprettet, "4406", behandlingstidFrist, "saksbehandler", OppgaveTestUtil.aksjonspunkter(),
             berørt ? List.of(Behandlingsårsak.BERØRT) : List.of(), false, false, null,
-            new LosBehandlingDto.LosForeldrepengerDto(førsteUttaksDag(), true, false, false), null);
+            new LosBehandlingDto.LosForeldrepengerDto(førsteUttaksDag(), false, false), null);
     }
 
     public static LocalDate førsteUttaksDag() {
@@ -41,7 +40,6 @@ public class OppgaveTestUtil {
     }
 
     public static List<LosBehandlingDto.LosAksjonspunktDto> aksjonspunkter() {
-        var aksjonspunkt = Aksjonspunkt.builder().medDefinisjon("1111").medBegrunnelse("Testbegrunnelse").medFristTid(null).medStatus("OPPR").build();
-        return List.of(new LosBehandlingDto.LosAksjonspunktDto("1111", Aksjonspunktstatus.OPPRETTET, null, null));
+        return List.of(new LosBehandlingDto.LosAksjonspunktDto("1111", Aksjonspunktstatus.OPPRETTET, null));
     }
 }

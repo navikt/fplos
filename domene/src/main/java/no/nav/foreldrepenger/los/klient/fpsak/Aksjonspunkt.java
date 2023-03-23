@@ -23,26 +23,20 @@ public class Aksjonspunkt {
 
     private String definisjonKode;
     private String statusKode;
-    private String begrunnelse;
     private LocalDateTime fristTid;
 
     public Aksjonspunkt() {
         // Jackson
     }
 
-    public Aksjonspunkt(String definisjonKode, String statusKode, String begrunnelse) {
-        this(definisjonKode, statusKode, begrunnelse, null);
+    public Aksjonspunkt(String definisjonKode, String statusKode) {
+        this(definisjonKode, statusKode, null);
     }
 
-    public Aksjonspunkt(String definisjonKode, String statusKode, String begrunnelse, LocalDateTime fristTid) {
+    public Aksjonspunkt(String definisjonKode, String statusKode, LocalDateTime fristTid) {
         this.definisjonKode = definisjonKode;
         this.statusKode = statusKode;
-        this.begrunnelse = begrunnelse;
         this.fristTid = fristTid;
-    }
-
-    public String getBegrunnelse() {
-        return begrunnelse;
     }
 
     public LocalDateTime getFristTid() {
@@ -93,7 +87,6 @@ public class Aksjonspunkt {
         return Aksjonspunkt.builder()
             .medDefinisjon(aksjonspunktDto.definisjon())
             .medStatus(mapAksjonspunktstatus(aksjonspunktDto.status()))
-            .medBegrunnelse(aksjonspunktDto.begrunnelse())
             .medFristTid(aksjonspunktDto.fristTid())
             .build();
     }
@@ -124,11 +117,6 @@ public class Aksjonspunkt {
 
         public Aksjonspunkt.Builder medStatus(String statusKode) {
             aksjonspunkt.statusKode = statusKode;
-            return this;
-        }
-
-        public Aksjonspunkt.Builder medBegrunnelse(String begrunnelse) {
-            aksjonspunkt.begrunnelse = begrunnelse;
             return this;
         }
 
