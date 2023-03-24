@@ -37,8 +37,7 @@ public class OppgaveTjeneste {
     }
 
     public boolean erAlleOppgaverFortsattTilgjengelig(List<Long> oppgaveIder) {
-        var oppgaver = oppgaveRepository.sjekkOmOppgaverFortsattErTilgjengelige(oppgaveIder);
-        return oppgaver.size() == oppgaveIder.size();
+        return oppgaveRepository.sjekkOmOppgaverFortsattErTilgjengelige(oppgaveIder);
     }
 
     public Oppgave hentOppgave(Long oppgaveId) {

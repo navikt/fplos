@@ -353,9 +353,9 @@ public class OppgaveRepository {
         return oppgave;
     }
 
-    public List<Oppgave> sjekkOmOppgaverFortsattErTilgjengelige(List<Long> oppgaveIder) {
-        return entityManager.createQuery("""
-            select o from Oppgave o
+    public boolean sjekkOmOppgaverFortsattErTilgjengelige(List<Long> oppgaveIder) {
+        var fortsattTilgjengelige = entityManager.createQuery("""
+            select count(o.id) from Oppgave o
             where not exists (
                 select 1
                 from Reservasjon r
@@ -364,7 +364,11 @@ public class OppgaveRepository {
             )
             and o.id in ( :oppgaveId )
             and o.aktiv = true
-            """, Oppgave.class).setParameter("nå", LocalDateTime.now()).setParameter("oppgaveId", oppgaveIder).getResultList();
+            """, Long.class)
+            .setParameter("nå", LocalDateTime.now())
+            .setParameter("oppgaveId", oppgaveIder)
+            .getSingleResult();
+        return oppgaveIder.size() == fortsattTilgjengelige.intValue();
     }
 
     public TilbakekrevingOppgave opprettTilbakekrevingOppgave(TilbakekrevingOppgave oppgave) {
