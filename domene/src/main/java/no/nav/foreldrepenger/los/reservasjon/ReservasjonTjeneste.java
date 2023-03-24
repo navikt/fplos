@@ -69,8 +69,9 @@ public class ReservasjonTjeneste {
                 oppgaveRepository.lagre(new ReservasjonEventLogg(reservasjon));
             } catch (PersistenceException e) {
                 // ignorerer feil ettersom ReservasjonDto til frontend vil vise at reservasjon tilhører annen
-                LOG.info("Antatt kollisjon på reservasjon", e);
-                oppgaveRepository.refresh(reservasjon.getOppgave());
+                oppgaveRepository.refresh(reservasjon);
+                LOG.info("Antatt kollisjon på reservasjon med type exception {}, saksbehandler {}, reservert av saksbehandler {}",
+                    e.getClass().getSimpleName(), brukerIdent(), reservasjon.getReservertAv());
             }
         }
         return reservasjon;
