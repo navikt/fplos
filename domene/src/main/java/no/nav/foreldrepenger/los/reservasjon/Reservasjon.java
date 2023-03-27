@@ -11,6 +11,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.persistence.Version;
 
 import no.nav.foreldrepenger.los.felles.BaseEntitet;
 import no.nav.foreldrepenger.los.oppgave.Oppgave;
@@ -41,6 +42,10 @@ public class Reservasjon extends BaseEntitet {
 
     @Column(name = "BEGRUNNELSE")
     private String begrunnelse;
+
+    @Version
+    @Column(name = "versjon", nullable = false)
+    private long versjon;
 
     public Reservasjon() {
         //CDI
