@@ -1,14 +1,14 @@
 package no.nav.foreldrepenger.los.oppgave;
 
-import com.fasterxml.jackson.annotation.JsonValue;
-
-import no.nav.foreldrepenger.los.felles.Kodeverdi;
+import java.util.Arrays;
+import java.util.Optional;
 
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;
 
-import java.util.Arrays;
-import java.util.Optional;
+import com.fasterxml.jackson.annotation.JsonValue;
+
+import no.nav.foreldrepenger.los.felles.Kodeverdi;
 
 public enum AndreKriterierType implements Kodeverdi {
 
@@ -25,7 +25,8 @@ public enum AndreKriterierType implements Kodeverdi {
     VURDER_FORMKRAV("VURDER_FORMKRAV", "Vurder formkrav"),
     VURDER_EØS_OPPTJENING("VURDER_EØS_OPPTJENING", "Vurder behov for SED"),
     KLAGE_PÅ_TILBAKEBETALING("KLAGE_PÅ_TILBAKEBETALING", "Klage på tilbakebetaling"),
-    EØS_SAK("EØS_SAK", "EØS (bosatt Norge)");
+    EØS_SAK("EØS_SAK", "EØS (bosatt Norge)"),
+    SAMMENSATT_KONTROLL("SAMMENSATT_KONTROLL", "Sammensatt kontroll");
     //SELVSTENDIG_FRILANSER("SELVSTENDIG_FRILANSER", "Selvstendig næringsdrivende eller frilanser")
 
     @JsonValue

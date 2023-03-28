@@ -41,7 +41,7 @@ import no.nav.vedtak.hendelser.behandling.Kildesystem;
 import no.nav.vedtak.hendelser.behandling.Ytelse;
 import no.nav.vedtak.hendelser.behandling.los.LosBehandlingDto;
 import no.nav.vedtak.hendelser.behandling.los.LosFagsakEgenskaperDto;
-import no.nav.vedtak.hendelser.behandling.los.LosFagsakEgenskaperDto.UtlandMarkering;
+import no.nav.vedtak.hendelser.behandling.los.LosFagsakEgenskaperDto.FagsakMarkering;
 
 @ExtendWith(JpaExtension.class)
 @ExtendWith(MockitoExtension.class)
@@ -168,9 +168,9 @@ class TilbakekrevingHendelseHåndtererTest {
     }
 
     @Test
-    void skalHaEgenskapUtlandVedUtlandmarkering() {
+    void skalHaEgenskapUtlandVedFagsakMarkering() {
         var behandlingId = BehandlingId.random();
-        var fagsakEgenskaper = new LosFagsakEgenskaperDto(Boolean.TRUE, UtlandMarkering.BOSATT_UTLAND);
+        var fagsakEgenskaper = new LosFagsakEgenskaperDto(FagsakMarkering.BOSATT_UTLAND);
         var hendelse = hendelse(åpentAksjonspunkt, behandlingId, fagsakEgenskaper);
         handler.håndterBehandling(hendelse, fagsakEgenskaper);
         var oppgaveEgenskaper = DBTestUtil.hentUnik(entityManager, OppgaveEgenskap.class);
@@ -180,7 +180,7 @@ class TilbakekrevingHendelseHåndtererTest {
     @Test
     void skalFåEgenskapEøsSakNårMarkertSomEøs() {
         var behandlingId = BehandlingId.random();
-        var fpsakEgenskaper = new LosFagsakEgenskaperDto(Boolean.TRUE, UtlandMarkering.EØS_BOSATT_NORGE);
+        var fpsakEgenskaper = new LosFagsakEgenskaperDto(FagsakMarkering.EØS_BOSATT_NORGE);
         var hendelse = hendelse(åpentAksjonspunkt, behandlingId, fpsakEgenskaper);
         handler.håndterBehandling(hendelse, fpsakEgenskaper);
         var oppgaveEgenskaper = DBTestUtil.hentAlle(entityManager, OppgaveEgenskap.class);
@@ -191,7 +191,7 @@ class TilbakekrevingHendelseHåndtererTest {
     @Test
     void skalIkkeFåEgenskapEøsSakNårIkkeEøsMarkert() {
         var behandlingId = BehandlingId.random();
-        var fpsakEgenskaper = new LosFagsakEgenskaperDto(Boolean.TRUE, UtlandMarkering.BOSATT_UTLAND);
+        var fpsakEgenskaper = new LosFagsakEgenskaperDto(FagsakMarkering.BOSATT_UTLAND);
         var hendelse = hendelse(åpentAksjonspunkt, behandlingId, fpsakEgenskaper);
         handler.håndterBehandling(hendelse, fpsakEgenskaper);
         var oppgaveEgenskaper = DBTestUtil.hentAlle(entityManager, OppgaveEgenskap.class);
@@ -253,7 +253,7 @@ class TilbakekrevingHendelseHåndtererTest {
                 "OPPR".equals(a.getStatusKode())
                     ? Aksjonspunktstatus.OPPRETTET
                     : Aksjonspunktstatus.AVBRUTT,
-                null, null))
+                null))
             .collect(Collectors.toList());
         return new LosBehandlingDto(behandlingId.toUUID(), Kildesystem.FPTILBAKE, "123", Ytelse.FORELDREPENGER,
             new no.nav.vedtak.hendelser.behandling.AktørId(AktørId.dummy().getId()), Behandlingstype.TILBAKEBETALING, Behandlingsstatus.OPPRETTET,

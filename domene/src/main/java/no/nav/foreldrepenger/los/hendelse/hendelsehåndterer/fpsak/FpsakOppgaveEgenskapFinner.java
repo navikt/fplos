@@ -1,10 +1,13 @@
 package no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak;
 
+import static no.nav.foreldrepenger.los.felles.util.StreamUtil.safeStream;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
 
+import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.FagsakEgenskaper;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.OppgaveEgenskapFinner;
 import no.nav.foreldrepenger.los.klient.fpsak.Aksjonspunkt;
 import no.nav.foreldrepenger.los.oppgave.AndreKriterierType;
@@ -13,10 +16,7 @@ import no.nav.vedtak.hendelser.behandling.Behandlingsårsak;
 import no.nav.vedtak.hendelser.behandling.Ytelse;
 import no.nav.vedtak.hendelser.behandling.los.LosBehandlingDto;
 import no.nav.vedtak.hendelser.behandling.los.LosFagsakEgenskaperDto;
-import no.nav.vedtak.hendelser.behandling.los.LosFagsakEgenskaperDto.UtlandMarkering;
-
-import static java.util.function.Predicate.not;
-import static no.nav.foreldrepenger.los.felles.util.StreamUtil.safeStream;
+import no.nav.vedtak.hendelser.behandling.los.LosFagsakEgenskaperDto.FagsakMarkering;
 
 public class FpsakOppgaveEgenskapFinner implements OppgaveEgenskapFinner {
     private final List<AndreKriterierType> andreKriterier = new ArrayList<>();
@@ -50,8 +50,14 @@ public class FpsakOppgaveEgenskapFinner implements OppgaveEgenskapFinner {
         if (behandling.behandlingsårsaker().stream().anyMatch(Behandlingsårsak.KLAGE_TILBAKEBETALING::equals)) {
             this.andreKriterier.add(AndreKriterierType.KLAGE_PÅ_TILBAKEBETALING);
         }
-        if (fagsakErMarkertEØS(behandling)) {
+        if (FagsakEgenskaper.fagsakErMarkertEØSBosattNorge(behandling)) {
             this.andreKriterier.add(AndreKriterierType.EØS_SAK);
+        }
+        if (FagsakEgenskaper.fagsakErMarkertBosattUtland(behandling)) {
+            this.andreKriterier.add(AndreKriterierType.UTLANDSSAK);
+        }
+        if (FagsakEgenskaper.fagsakErMarkertSammensattKontroll(behandling)) {
+            this.andreKriterier.add(AndreKriterierType.SAMMENSATT_KONTROLL);
         }
 
         var aksjonspunkter = behandling.aksjonspunkt().stream().map(Aksjonspunkt::aksjonspunktFra).toList();
@@ -68,9 +74,6 @@ public class FpsakOppgaveEgenskapFinner implements OppgaveEgenskapFinner {
         if (matchAksjonspunkt(aksjonspunkter, Aksjonspunkt::erVurderFormkrav)) {
             this.andreKriterier.add(AndreKriterierType.VURDER_FORMKRAV);
         }
-        if (fagsakErMarkertBosattUtland(behandling)) {
-            this.andreKriterier.add(AndreKriterierType.UTLANDSSAK);
-        }
     }
 
     @Override
@@ -86,8 +89,8 @@ public class FpsakOppgaveEgenskapFinner implements OppgaveEgenskapFinner {
     private static boolean skalVurdereBehovForSED(List<Aksjonspunkt> aksjonspunkt, LosFagsakEgenskaperDto dto) {
         var skalVurdereInnhentingAvSED = matchAksjonspunkt(aksjonspunkt, Aksjonspunkt::skalVurdereInnhentingAvSED);
         var fagsakErMarkertNasjonal = Optional.ofNullable(dto)
-            .map(LosFagsakEgenskaperDto::utlandMarkering)
-            .filter(UtlandMarkering.NASJONAL::equals)
+            .map(LosFagsakEgenskaperDto::fagsakMarkering)
+            .filter(FagsakMarkering.NASJONAL::equals)
             .isPresent();
         return skalVurdereInnhentingAvSED && !fagsakErMarkertNasjonal;
     }
@@ -95,21 +98,4 @@ public class FpsakOppgaveEgenskapFinner implements OppgaveEgenskapFinner {
     private static boolean matchAksjonspunkt(List<Aksjonspunkt> aksjonspunkt, Predicate<Aksjonspunkt> predicate) {
         return safeStream(aksjonspunkt).anyMatch(predicate);
     }
-
-    private static boolean fagsakErMarkertEØS(LosBehandlingDto behandling) {
-        return Optional.of(behandling)
-            .map(LosBehandlingDto::fagsakEgenskaper)
-            .map(LosFagsakEgenskaperDto::utlandMarkering)
-            .filter(UtlandMarkering.EØS_BOSATT_NORGE::equals)
-            .isPresent();
-    }
-
-    private static boolean fagsakErMarkertBosattUtland(LosBehandlingDto behandlingDto) {
-        return Optional.ofNullable(behandlingDto)
-            .map(LosBehandlingDto::fagsakEgenskaper)
-            .map(LosFagsakEgenskaperDto::utlandMarkering)
-            .filter(UtlandMarkering.BOSATT_UTLAND::equals)
-            .isPresent();
-    }
-
 }

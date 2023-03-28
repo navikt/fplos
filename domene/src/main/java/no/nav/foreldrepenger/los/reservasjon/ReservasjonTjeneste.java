@@ -10,6 +10,7 @@ import java.util.Optional;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import javax.persistence.OptimisticLockException;
 import javax.persistence.PersistenceException;
 
 import org.slf4j.Logger;
@@ -67,10 +68,16 @@ public class ReservasjonTjeneste {
                 oppgaveRepository.lagre(reservasjon);
                 oppgaveRepository.refresh(reservasjon.getOppgave());
                 oppgaveRepository.lagre(new ReservasjonEventLogg(reservasjon));
+            } catch (OptimisticLockException e) {
+                // Annen saksbehandler har oppdatert reservasjonen – refresher reservasjonen og returnerer den som om reservasjon ellers var vellykket
+                // Frontend vil vise modal om at annen saksbehandler holder reservasjonen.
+                oppgaveRepository.refresh(reservasjon);
+                LOG.info("Reservasjon feilet: annen saksbehandler {} har oppdatert reservasjon", reservasjon.getReservertAv());
             } catch (PersistenceException e) {
-                // ignorerer feil ettersom ReservasjonDto til frontend vil vise at reservasjon tilhører annen
-                LOG.info("Antatt kollisjon på reservasjon", e);
-                oppgaveRepository.refresh(reservasjon.getOppgave());
+                // Sannsynligvis har annen saksbehandler laget ny reservasjon.
+                // Ignorerer feil ettersom ReservasjonDto til frontend vil vise modal
+                oppgaveRepository.refresh(oppgave);
+                LOG.info("Reservasjon feilet", e);
             }
         }
         return reservasjon;
