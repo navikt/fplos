@@ -1,12 +1,12 @@
 package no.nav.foreldrepenger.los.klient.person;
 
 import java.net.HttpURLConnection;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
+import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 import javax.enterprise.context.ApplicationScoped;
 
@@ -15,27 +15,22 @@ import org.slf4j.LoggerFactory;
 
 import no.nav.foreldrepenger.los.domene.typer.aktør.AktørId;
 import no.nav.foreldrepenger.los.domene.typer.aktør.Fødselsnummer;
-import no.nav.foreldrepenger.los.domene.typer.aktør.NavBrukerKjønn;
 import no.nav.foreldrepenger.los.domene.typer.aktør.Person;
 import no.nav.pdl.Adressebeskyttelse;
 import no.nav.pdl.AdressebeskyttelseGradering;
 import no.nav.pdl.AdressebeskyttelseResponseProjection;
-import no.nav.pdl.Doedsfall;
-import no.nav.pdl.DoedsfallResponseProjection;
-import no.nav.pdl.Foedsel;
-import no.nav.pdl.FoedselResponseProjection;
 import no.nav.pdl.Folkeregisteridentifikator;
 import no.nav.pdl.FolkeregisteridentifikatorResponseProjection;
 import no.nav.pdl.HentIdenterQueryRequest;
+import no.nav.pdl.HentPersonBolkQueryRequest;
+import no.nav.pdl.HentPersonBolkResult;
+import no.nav.pdl.HentPersonBolkResultResponseProjection;
 import no.nav.pdl.HentPersonQueryRequest;
 import no.nav.pdl.IdentGruppe;
 import no.nav.pdl.IdentInformasjon;
 import no.nav.pdl.IdentInformasjonResponseProjection;
 import no.nav.pdl.Identliste;
 import no.nav.pdl.IdentlisteResponseProjection;
-import no.nav.pdl.Kjoenn;
-import no.nav.pdl.KjoennResponseProjection;
-import no.nav.pdl.KjoennType;
 import no.nav.pdl.Navn;
 import no.nav.pdl.NavnResponseProjection;
 import no.nav.pdl.PersonResponseProjection;
@@ -107,8 +102,7 @@ public class PersonTjeneste {
             return Optional.of(cacheAktørIdTilPerson.get(aktørId));
         }
         try {
-            var pdlperson = hentPdlPerson(aktørId);
-            var person = tilPerson(pdlperson, aktørId, saksnummer);
+            var person = hentPdlPerson(aktørId, saksnummer);
             cacheAktørIdTilPerson.put(aktørId, person);
             return Optional.of(person);
         } catch (PdlException e) {
@@ -123,40 +117,16 @@ public class PersonTjeneste {
         }
     }
 
-    private no.nav.pdl.Person hentPdlPerson(AktørId aktørId) {
+    private Person hentPdlPerson(AktørId aktørId, String saksnummer) {
         var query = new HentPersonQueryRequest();
         query.setIdent(aktørId.getId());
         var projection = new PersonResponseProjection().navn(new NavnResponseProjection().forkortetNavn().fornavn().mellomnavn().etternavn())
             .adressebeskyttelse(new AdressebeskyttelseResponseProjection().gradering())
-            .folkeregisteridentifikator(new FolkeregisteridentifikatorResponseProjection().identifikasjonsnummer().status().type())
-            .foedsel(new FoedselResponseProjection().foedselsdato())
-            .doedsfall(new DoedsfallResponseProjection().doedsdato())
-            .kjoenn(new KjoennResponseProjection().kjoenn());
-        return pdl.hentPerson(query, projection);
-    }
-
-    private Person tilPerson(no.nav.pdl.Person person, AktørId aktørId, String saksnummer) {
+            .folkeregisteridentifikator(new FolkeregisteridentifikatorResponseProjection().identifikasjonsnummer().status().type());
+        var person = pdl.hentPerson(query, projection);
         var fnr = fnr(person.getFolkeregisteridentifikator(), aktørId, saksnummer);
-        var fødselsdato = person.getFoedsel()
-            .stream()
-            .map(Foedsel::getFoedselsdato)
-            .filter(Objects::nonNull)
-            .findFirst()
-            .map(d -> LocalDate.parse(d, DateTimeFormatter.ISO_LOCAL_DATE))
-            .orElse(null);
-        var dødsdato = person.getDoedsfall()
-            .stream()
-            .map(Doedsfall::getDoedsdato)
-            .filter(Objects::nonNull)
-            .findFirst()
-            .map(d -> LocalDate.parse(d, DateTimeFormatter.ISO_LOCAL_DATE))
-            .orElse(null);
         return new Person.Builder().medFnr(fnr)
             .medNavn(navn(person.getNavn()))
-            .medFødselsdato(fødselsdato)
-            .medDødsdato(dødsdato)
-            .medKjønn(mapKjønn(person))
-            .medDiskresjonskode(getDiskresjonskode(person))
             .build();
     }
 
@@ -189,23 +159,21 @@ public class PersonTjeneste {
         return fraHentPerson.orElseThrow(() -> new IllegalArgumentException("Fant ikke fødselsnummer"));
     }
 
-    private static NavBrukerKjønn mapKjønn(no.nav.pdl.Person person) {
-        var kode = person.getKjoenn().stream().map(Kjoenn::getKjoenn).filter(Objects::nonNull).findFirst().orElse(KjoennType.UKJENT);
-        return KjoennType.KVINNE.equals(kode) ? NavBrukerKjønn.K : NavBrukerKjønn.M;
-    }
-
-    private static String getDiskresjonskode(no.nav.pdl.Person person) {
-        var kode = person.getAdressebeskyttelse()
-            .stream()
+    public boolean harNoenKode7MenIngenHarKode6(List<String> aktørIds) {
+        var query = new HentPersonBolkQueryRequest();
+        query.setIdenter(aktørIds);
+        var projection = new HentPersonBolkResultResponseProjection()
+            .person(new PersonResponseProjection()
+                .adressebeskyttelse(new AdressebeskyttelseResponseProjection().gradering()));
+        var personer = pdl.hentPersonBolk(query, projection);
+        var adresseBeskyttelser = personer.stream().map(HentPersonBolkResult::getPerson)
+            .map(no.nav.pdl.Person::getAdressebeskyttelse)
+            .flatMap(Collection::stream)
             .map(Adressebeskyttelse::getGradering)
-            .filter(g -> !AdressebeskyttelseGradering.UGRADERT.equals(g))
-            .findFirst()
-            .orElse(null);
-
-        // TODO: lag kodeverk som passer med losfront sin diskresjonskodeType.ts - trenger bare disse 2
-        if (AdressebeskyttelseGradering.STRENGT_FORTROLIG.equals(kode) || AdressebeskyttelseGradering.STRENGT_FORTROLIG_UTLAND.equals(kode)) {
-            return "SPSF";
-        }
-        return AdressebeskyttelseGradering.FORTROLIG.equals(kode) ? "SPFO" : null;
+            .collect(Collectors.toSet());
+        var harNoenKode6 = adresseBeskyttelser.contains(AdressebeskyttelseGradering.STRENGT_FORTROLIG)
+            || adresseBeskyttelser.contains(AdressebeskyttelseGradering.STRENGT_FORTROLIG_UTLAND);
+        var harNoenKode7 = adresseBeskyttelser.contains(AdressebeskyttelseGradering.FORTROLIG);
+        return harNoenKode7 && !harNoenKode6;
     }
 }
