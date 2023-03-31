@@ -20,6 +20,7 @@ import no.nav.foreldrepenger.extensions.JpaExtension;
 import no.nav.foreldrepenger.los.DBTestUtil;
 import no.nav.foreldrepenger.los.domene.typer.BehandlingId;
 import no.nav.foreldrepenger.los.felles.BaseEntitet;
+import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.Beskyttelsesbehov;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.OppgaveEgenskapHåndterer;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.håndterere.GjenåpneOppgaveOppgavetransisjonHåndterer;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveEventLogg;
@@ -52,7 +53,7 @@ class GjenåpneOppgaveHendelseHåndtererTest {
     void setUp(EntityManager entityManager) {
         this.entityManager = entityManager;
         oppgaveRepository = new OppgaveRepository(entityManager);
-        oppgaveEgenskapHåndterer = new OppgaveEgenskapHåndterer(oppgaveRepository);
+        oppgaveEgenskapHåndterer = new OppgaveEgenskapHåndterer(oppgaveRepository, mock(Beskyttelsesbehov.class));
         reservasjonTjeneste = new ReservasjonTjeneste(oppgaveRepository, new ReservasjonRepository(entityManager));
         oppgaveTjeneste = new OppgaveTjeneste(oppgaveRepository, reservasjonTjeneste);
 

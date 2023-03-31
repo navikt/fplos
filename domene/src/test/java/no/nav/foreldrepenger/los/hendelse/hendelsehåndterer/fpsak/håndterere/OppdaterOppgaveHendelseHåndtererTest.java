@@ -20,6 +20,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import no.nav.foreldrepenger.extensions.JpaExtension;
 import no.nav.foreldrepenger.los.DBTestUtil;
 import no.nav.foreldrepenger.los.domene.typer.BehandlingId;
+import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.Beskyttelsesbehov;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.OppgaveEgenskapHåndterer;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.OppgaveTestUtil;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.OppgaveUtil;
@@ -54,7 +55,7 @@ class OppdaterOppgaveHendelseHåndtererTest {
         var oppgaveRepository = new OppgaveRepository(entityManager);
         reservasjonTjeneste = new ReservasjonTjeneste(oppgaveRepository, new ReservasjonRepository(entityManager));
         oppgaveTjeneste = new OppgaveTjeneste(oppgaveRepository, reservasjonTjeneste);
-        oppgaveEgenskapHåndterer = new OppgaveEgenskapHåndterer(oppgaveRepository);
+        oppgaveEgenskapHåndterer = new OppgaveEgenskapHåndterer(oppgaveRepository, mock(Beskyttelsesbehov.class));
         behandlingId = new BehandlingId(behandlingFpsak.behandlingUuid());
         oppgaveRepository.lagre(OppgaveUtil.oppgave(behandlingId, behandlingFpsak));
         this.køStatistikkTjeneste = mock(KøStatistikkTjeneste.class);

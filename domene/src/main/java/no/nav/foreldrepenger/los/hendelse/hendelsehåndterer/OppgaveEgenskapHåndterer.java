@@ -1,5 +1,6 @@
 package no.nav.foreldrepenger.los.hendelse.hendelsehåndterer;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -23,18 +24,22 @@ public class OppgaveEgenskapHåndterer {
     private static final Logger LOG = LoggerFactory.getLogger(OppgaveEgenskapHåndterer.class);
 
     private OppgaveRepository repository;
+    private Beskyttelsesbehov beskyttelsesbehov;
 
     public OppgaveEgenskapHåndterer() {
         // for cdi
     }
 
     @Inject
-    public OppgaveEgenskapHåndterer(OppgaveRepository oppgaveRepository) {
+    public OppgaveEgenskapHåndterer(OppgaveRepository oppgaveRepository,
+                                    Beskyttelsesbehov beskyttelsesbehov) {
         this.repository = oppgaveRepository;
+        this.beskyttelsesbehov = beskyttelsesbehov;
     }
 
     public void håndterOppgaveEgenskaper(Oppgave oppgave, OppgaveEgenskapFinner aktuelleEgenskaper) {
-        var andreKriterier = aktuelleEgenskaper.getAndreKriterier();
+        var andreKriterier = new ArrayList<>(aktuelleEgenskaper.getAndreKriterier());
+        andreKriterier.addAll(beskyttelsesbehov.getBeskyttelsesKriterier(oppgave));
         LOG.info("Legger på oppgaveegenskaper {}", andreKriterier);
         var eksisterendeOppgaveEgenskaper = hentEksisterendeEgenskaper(oppgave);
 

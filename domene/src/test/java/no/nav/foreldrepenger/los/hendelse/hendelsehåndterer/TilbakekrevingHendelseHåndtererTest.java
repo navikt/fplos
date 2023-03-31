@@ -63,7 +63,7 @@ class TilbakekrevingHendelseHåndtererTest {
     void setUp(EntityManager entityManager) {
         this.entityManager = entityManager;
         var oppgaveRepository = new OppgaveRepository(entityManager);
-        var oppgaveEgenskapHandler = new OppgaveEgenskapHåndterer(oppgaveRepository);
+        var oppgaveEgenskapHandler = new OppgaveEgenskapHåndterer(oppgaveRepository, mock(Beskyttelsesbehov.class));
         var oppgaveTjeneste = new OppgaveTjeneste(oppgaveRepository, mock(ReservasjonTjeneste.class));
         handler = new TilbakekrevingHendelseHåndterer(oppgaveEgenskapHandler, oppgaveRepository, oppgaveTjeneste, mock(KøStatistikkTjeneste.class));
     }

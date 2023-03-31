@@ -4,12 +4,14 @@ import static java.util.Collections.emptyList;
 import static no.nav.foreldrepenger.los.oppgave.AndreKriterierType.PAPIRSØKNAD;
 import static no.nav.foreldrepenger.los.oppgave.AndreKriterierType.UTLANDSSAK;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
@@ -42,11 +44,13 @@ class OppgaveEgenskapHåndtererTest {
 
     @Mock
     private OppgaveEgenskapFinner oppgaveEgenskapFinner;
+    @Mock
+    private Beskyttelsesbehov beskyttelsesbehov;
 
     @BeforeEach
     void setUp(EntityManager entityManager) {
         oppgaveRepository = new OppgaveRepository(entityManager);
-        egenskapHandler = new OppgaveEgenskapHåndterer(oppgaveRepository);
+        egenskapHandler = new OppgaveEgenskapHåndterer(oppgaveRepository, beskyttelsesbehov);
     }
 
     @Test
@@ -61,6 +65,21 @@ class OppgaveEgenskapHåndtererTest {
 
         // assert
         assertThat(hentAktiveKriterierPåOppgave(42L)).containsExactlyInAnyOrder(ønskedeEgenskaper);
+    }
+
+    @Test
+    void opprettOppgaveEgenskaperMedKode7Test() {
+        // arrange
+        var ønskedeEgenskaper = kriterieArrayOf(UTLANDSSAK, PAPIRSØKNAD);
+        when(oppgaveEgenskapFinner.getSaksbehandlerForTotrinn()).thenReturn("T12345");
+        when(oppgaveEgenskapFinner.getAndreKriterier()).thenReturn(Arrays.asList(ønskedeEgenskaper));
+        when(beskyttelsesbehov.getBeskyttelsesKriterier(any())).thenReturn(Set.of(AndreKriterierType.KODE7_SAK));
+
+        // act
+        egenskapHandler.håndterOppgaveEgenskaper(lagOppgave(), oppgaveEgenskapFinner);
+
+        // assert
+        assertThat(hentAktiveKriterierPåOppgave(42L)).contains(AndreKriterierType.KODE7_SAK);
     }
 
     @Test
