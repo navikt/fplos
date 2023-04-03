@@ -14,6 +14,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
+import java.util.Comparator;
 import java.util.List;
 
 @Path("/avdelingsleder")
@@ -41,6 +42,7 @@ public class AvdelingslederRestTjeneste {
         return avdelingslederTjeneste.hentAvdelinger()
             .stream()
             .map(avdeling -> new AvdelingDto(avdeling.getId(), avdeling.getAvdelingEnhet(), avdeling.getNavn(), avdeling.getKreverKode6()))
+            .sorted(Comparator.comparing(AvdelingDto::getKreverKode6).thenComparing(a -> Long.valueOf(a.getAvdelingEnhet())))
             .toList();
     }
 }
