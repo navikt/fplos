@@ -51,6 +51,10 @@ public class ReservasjonTjeneste {
     }
 
     public Reservasjon reserverOppgave(Oppgave oppgave) {
+        return reserverOppgave(oppgave, brukerIdent());
+    }
+
+    public Reservasjon reserverOppgave(Oppgave oppgave, String reservertAv) {
         LOG.info("Reserverer oppgave {}", oppgave.getId());
         var reservasjon = oppgaveRepository.hentReservasjon(oppgave.getId()).map((r -> {
             r.setFlyttetTidspunkt(null);
@@ -63,7 +67,7 @@ public class ReservasjonTjeneste {
         } else {
             LOG.info("Fant ikke aktiv reservasjon for oppgave {}", oppgave.getId());
             reservasjon.setReservertTil(standardReservasjon());
-            reservasjon.setReservertAv(brukerIdent());
+            reservasjon.setReservertAv(reservertAv);
             try {
                 oppgaveRepository.lagre(reservasjon);
                 oppgaveRepository.refresh(reservasjon.getOppgave());
