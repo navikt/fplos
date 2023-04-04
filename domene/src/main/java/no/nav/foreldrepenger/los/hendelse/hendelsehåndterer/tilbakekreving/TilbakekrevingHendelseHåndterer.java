@@ -28,9 +28,11 @@ import no.nav.foreldrepenger.los.oppgave.Oppgave;
 import no.nav.foreldrepenger.los.oppgave.OppgaveRepository;
 import no.nav.foreldrepenger.los.oppgave.OppgaveTjeneste;
 import no.nav.foreldrepenger.los.oppgave.TilbakekrevingOppgave;
+import no.nav.foreldrepenger.los.reservasjon.ReservasjonTjeneste;
 import no.nav.foreldrepenger.los.statistikk.kø.KøOppgaveHendelse;
 import no.nav.foreldrepenger.los.statistikk.kø.KøStatistikkTjeneste;
 import no.nav.vedtak.hendelser.behandling.Aksjonspunktstatus;
+import no.nav.vedtak.hendelser.behandling.Behandlingstype;
 import no.nav.vedtak.hendelser.behandling.los.LosBehandlingDto;
 import no.nav.vedtak.hendelser.behandling.los.LosFagsakEgenskaperDto;
 
@@ -42,16 +44,19 @@ public class TilbakekrevingHendelseHåndterer {
     private OppgaveEgenskapHåndterer oppgaveEgenskapHåndterer;
     private OppgaveRepository oppgaveRepository;
     private KøStatistikkTjeneste køStatistikk;
+    private ReservasjonTjeneste reservasjonTjeneste;
 
     @Inject
     public TilbakekrevingHendelseHåndterer(OppgaveEgenskapHåndterer oppgaveEgenskapHåndterer,
                                            OppgaveRepository oppgaveRepository,
                                            OppgaveTjeneste oppgaveTjeneste,
-                                           KøStatistikkTjeneste køStatistikk) {
+                                           KøStatistikkTjeneste køStatistikk,
+                                           ReservasjonTjeneste reservasjonTjeneste) {
         this.oppgaveEgenskapHåndterer = oppgaveEgenskapHåndterer;
         this.oppgaveRepository = oppgaveRepository;
         this.køStatistikk = køStatistikk;
         this.oppgaveTjeneste = oppgaveTjeneste;
+        this.reservasjonTjeneste = reservasjonTjeneste;
     }
 
     TilbakekrevingHendelseHåndterer() {
@@ -87,6 +92,9 @@ public class TilbakekrevingHendelseHåndterer {
                 Oppgave oppgave = opprettTilbakekrevingOppgave(behandlingId, behandlingDto);
                 LOG.info("TBK Oppretter oppgave {} for behandlingId {}.", oppgave.getId(), behandlingId);
                 oppgaveEgenskapHåndterer.håndterOppgaveEgenskaper(oppgave, egenskapFinner);
+                if (Behandlingstype.TILBAKEBETALING_REVURDERING.equals(behandlingDto.behandlingstype()) && behandlingDto.ansvarligSaksbehandlerIdent() != null) {
+                    reservasjonTjeneste.reserverOppgave(oppgave, behandlingDto.ansvarligSaksbehandlerIdent());
+                }
                 køStatistikk.lagre(oppgave, KøOppgaveHendelse.ÅPNET_OPPGAVE);
                 loggEvent(oppgave.getBehandlingId(), OppgaveEventType.OPPRETTET, null, behandlendeEnhet);
             }

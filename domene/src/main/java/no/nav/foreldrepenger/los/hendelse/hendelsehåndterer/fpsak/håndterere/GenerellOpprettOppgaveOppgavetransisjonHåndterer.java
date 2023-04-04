@@ -1,5 +1,11 @@
 package no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.håndterere;
 
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import no.nav.foreldrepenger.los.domene.typer.BehandlingId;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.OppgaveEgenskapHåndterer;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.FpsakOppgaveEgenskapFinner;
@@ -8,15 +14,12 @@ import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.OppgaveUtil;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveEventLogg;
 import no.nav.foreldrepenger.los.oppgave.Oppgave;
 import no.nav.foreldrepenger.los.oppgave.OppgaveTjeneste;
+import no.nav.foreldrepenger.los.reservasjon.ReservasjonTjeneste;
 import no.nav.foreldrepenger.los.statistikk.kø.KøOppgaveHendelse;
 import no.nav.foreldrepenger.los.statistikk.kø.KøStatistikkTjeneste;
+import no.nav.vedtak.hendelser.behandling.Behandlingstype;
+import no.nav.vedtak.hendelser.behandling.Behandlingsårsak;
 import no.nav.vedtak.hendelser.behandling.los.LosBehandlingDto;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
 
 @ApplicationScoped
 public class GenerellOpprettOppgaveOppgavetransisjonHåndterer implements FpsakOppgavetransisjonHåndterer {
@@ -25,14 +28,17 @@ public class GenerellOpprettOppgaveOppgavetransisjonHåndterer implements FpsakO
     private OppgaveTjeneste oppgaveTjeneste;
     private KøStatistikkTjeneste køStatistikk;
     private OppgaveEgenskapHåndterer oppgaveEgenskapHåndterer;
+    private ReservasjonTjeneste reservasjonTjeneste;
 
     @Inject
     public GenerellOpprettOppgaveOppgavetransisjonHåndterer(OppgaveTjeneste oppgaveTjeneste,
                                                             OppgaveEgenskapHåndterer oppgaveEgenskapHåndterer,
-                                                            KøStatistikkTjeneste køStatistikk) {
+                                                            KøStatistikkTjeneste køStatistikk,
+                                                            ReservasjonTjeneste reservasjonTjeneste) {
         this.oppgaveTjeneste = oppgaveTjeneste;
         this.oppgaveEgenskapHåndterer = oppgaveEgenskapHåndterer;
         this.køStatistikk = køStatistikk;
+        this.reservasjonTjeneste = reservasjonTjeneste;
     }
 
     public GenerellOpprettOppgaveOppgavetransisjonHåndterer() {
@@ -44,6 +50,7 @@ public class GenerellOpprettOppgaveOppgavetransisjonHåndterer implements FpsakO
         var oppgave = opprettOppgave(behandlingId, behandling);
         opprettOppgaveEgenskaper(oppgave, behandling);
         opprettOppgaveEventLogg(oppgave);
+        reserverOppgaveForManuellRevurdering(oppgave, behandling);
         køStatistikk.lagre(oppgave, KøOppgaveHendelse.ÅPNET_OPPGAVE);
     }
 
@@ -73,5 +80,12 @@ public class GenerellOpprettOppgaveOppgavetransisjonHåndterer implements FpsakO
         var oel = OppgaveEventLogg.opprettetOppgaveEvent(oppgave);
         oppgaveTjeneste.lagre(oel);
         LOG.info("Oppretter {}-oppgave med id {}", SYSTEM, oppgave.getId());
+    }
+
+    private void reserverOppgaveForManuellRevurdering(Oppgave oppgave, LosBehandlingDto losBehandlingDto) {
+        if (Behandlingstype.REVURDERING.equals(losBehandlingDto.behandlingstype()) && losBehandlingDto.ansvarligSaksbehandlerIdent() != null
+            && losBehandlingDto.behandlingsårsaker().stream().anyMatch(Behandlingsårsak.MANUELL::equals)) {
+            reservasjonTjeneste.reserverOppgave(oppgave, losBehandlingDto.ansvarligSaksbehandlerIdent());
+        }
     }
 }
