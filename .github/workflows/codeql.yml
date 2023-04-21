@@ -1,24 +1,19 @@
-name: Deploy manuelt
+name: "CodeQL"
+
 on:
-  workflow_dispatch:
-    inputs:
-      image:
-        required: true
-        type: string
-        description: 'Image tag to deploy (example 2023.03.10.080433-f821119)'
-      environment:
-        required: true
-        type: choice
-        description: 'The environment to deployed to (dev|prod)'
-        options:
-          - dev
-          - prod
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+  schedule:
+    - cron: '0 0 * * 0,4'
 
 jobs:
-  deploy:
-    name: Deploy dev
-    uses: navikt/fp-gha-workflows/.github/workflows/deploy.yml@main
-    with:
-      image: ghcr.io/${{ github.repository }}:${{ inputs.image }}
-      cluster: ${{ inputs.environment }}-fss
-    secrets: inherit
+  codeql:
+   name: CodeQl
+   permissions:
+     actions: read
+     contents: read
+     security-events: write
+   uses: navikt/fp-gha-workflows/.github/workflows/codeql.yml@main
+   secrets: inherit
