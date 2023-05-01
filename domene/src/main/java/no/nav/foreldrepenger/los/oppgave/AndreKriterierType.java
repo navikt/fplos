@@ -27,7 +27,9 @@ public enum AndreKriterierType implements Kodeverdi {
     KLAGE_PÅ_TILBAKEBETALING("KLAGE_PÅ_TILBAKEBETALING", "Klage på tilbakebetaling"),
     EØS_SAK("EØS_SAK", "EØS (bosatt Norge)"),
     KODE7_SAK("KODE7_SAK", "Kode 7"),
-    SAMMENSATT_KONTROLL("SAMMENSATT_KONTROLL", "Sammensatt kontroll");
+    SAMMENSATT_KONTROLL("SAMMENSATT_KONTROLL", "Sammensatt kontroll"),
+    ARBEID_INNTEKT("ARBEID_INNTEKT", "Arbeid og inntekt(melding)")
+    ;
     //SELVSTENDIG_FRILANSER("SELVSTENDIG_FRILANSER", "Selvstendig næringsdrivende eller frilanser")
 
     @JsonValue
