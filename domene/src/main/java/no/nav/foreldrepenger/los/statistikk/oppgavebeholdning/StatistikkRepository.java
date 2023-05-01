@@ -1,19 +1,19 @@
 package no.nav.foreldrepenger.los.statistikk.oppgavebeholdning;
 
-import java.math.BigDecimal;
-import java.time.ZoneId;
-import java.util.Date;
-import java.util.List;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-import javax.persistence.EntityManager;
-
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveEventType;
 import no.nav.foreldrepenger.los.oppgave.AndreKriterierType;
 import no.nav.foreldrepenger.los.oppgave.BehandlingType;
 import no.nav.foreldrepenger.los.oppgave.FagsakYtelseType;
 import no.nav.vedtak.felles.jpa.converters.BooleanToStringConverter;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import javax.persistence.EntityManager;
+
+import java.math.BigDecimal;
+import java.time.ZoneId;
+import java.util.Date;
+import java.util.List;
 
 @ApplicationScoped
 public class StatistikkRepository {
@@ -70,9 +70,9 @@ public class StatistikkRepository {
                 Count(distinct oel.BEHANDLING_ID) as ANTALL
                 FROM OPPGAVE_EVENT_LOGG oel
                 INNER JOIN OPPGAVE o ON o.BEHANDLING_ID = oel.BEHANDLING_ID AND o.behandlende_enhet = :behandlendeEnhet
-                JOIN (select behandling_id bid, max(opprettet_tid) maxopp FROM OPPGAVE_EVENT_LOGG where EVENT_TYPE = :eventType
-                      group by behandling_id) oel2 on (oel2.bid = oel.behandling_id and oel.opprettet_tid = oel2.maxopp)
-                WHERE oel.EVENT_TYPE = :eventType
+                WHERE oel.EVENT_TYPE = :eventType  AND oel.OPPRETTET_TID = (SELECT MAX(oel2.OPPRETTET_TID)
+                                 FROM OPPGAVE_EVENT_LOGG oel2
+                                 WHERE oel2.BEHANDLING_ID = oel.BEHANDLING_ID)
                 GROUP BY COALESCE(trunc(oel.FRIST_TID), trunc(oel.OPPRETTET_TID + 28)),o.FAGSAK_YTELSE_TYPE
                 ORDER BY COALESCE(trunc(oel.FRIST_TID), trunc(oel.OPPRETTET_TID + 28)),o.FAGSAK_YTELSE_TYPE
                 """)
