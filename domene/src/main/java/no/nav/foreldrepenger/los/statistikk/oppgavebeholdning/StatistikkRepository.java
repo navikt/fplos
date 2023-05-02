@@ -83,7 +83,7 @@ public class StatistikkRepository {
                     and oel_nyere.opprettet_tid > oel.opprettet_tid
                     and oel_nyere.opprettet_tid > systimestamp - 90
                 )
-                group by COALESCE(trunc(oel.FRIST_TID), trunc(oel.OPPRETTET_TID + 28)), o.fagsak_ytelse_type;
+                group by COALESCE(trunc(oel.FRIST_TID), trunc(oel.OPPRETTET_TID + 28)), o.fagsak_ytelse_type
                 """)
             .setParameter("behandlendeEnhet", avdelingEnhet)
             .setParameter("eventType", OppgaveEventType.MANU_VENT.name())
