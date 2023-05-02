@@ -28,6 +28,7 @@ public class OppgaveBeholdningStatistikkTjeneste {
     }
 
     public List<OppgaverForAvdelingSattManueltPåVent> hentAntallOppgaverForAvdelingSattManueltPåVent(String avdeling) {
+        statisikkRepository.hentAntallOppgaverForAvdelingSattManueltPåVent("9999"); // hack for ytelse
         return statisikkRepository.hentAntallOppgaverForAvdelingSattManueltPåVent(avdeling);
     }
 
