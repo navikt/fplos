@@ -28,7 +28,7 @@ public enum AndreKriterierType implements Kodeverdi {
     EØS_SAK("EØS_SAK", "EØS (bosatt Norge)"),
     KODE7_SAK("KODE7_SAK", "Kode 7"),
     SAMMENSATT_KONTROLL("SAMMENSATT_KONTROLL", "Sammensatt kontroll"),
-    ARBEID_INNTEKT("ARBEID_INNTEKT", "Arbeid og inntekt(melding)")
+    ARBEID_INNTEKT("ARBEID_INNTEKT", "Arbeid og inntekt")
     ;
     //SELVSTENDIG_FRILANSER("SELVSTENDIG_FRILANSER", "Selvstendig næringsdrivende eller frilanser")
 
