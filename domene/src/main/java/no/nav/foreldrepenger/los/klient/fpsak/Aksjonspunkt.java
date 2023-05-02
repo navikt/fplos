@@ -20,6 +20,7 @@ public class Aksjonspunkt {
     protected static final List<String> VURDER_FORMKRAV_GRUPPE = asList("5082", "5083");
 
     public static final String AUTOMATISK_MARKERING_SOM_UTLAND = "5068";
+    public static final String ARBEID_INNTEKT = "5085";
 
     private String definisjonKode;
     private String statusKode;
@@ -77,6 +78,10 @@ public class Aksjonspunkt {
 
     public boolean skalVurdereInnhentingAvSED() {
         return erAktiv() && AUTOMATISK_MARKERING_SOM_UTLAND.equals(definisjonKode);
+    }
+
+    public boolean skalVurdereArbeidInntekt() {
+        return erAktiv() && ARBEID_INNTEKT.equals(definisjonKode);
     }
 
     public boolean erVurderFormkrav() {
