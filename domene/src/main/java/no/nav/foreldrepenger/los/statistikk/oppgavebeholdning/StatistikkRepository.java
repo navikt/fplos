@@ -75,13 +75,13 @@ public class StatistikkRepository {
                     group by behandling_id, fagsak_ytelse_type
                     ) o on o.behandling_id = oel.behandling_id
                 where oel.event_type = :eventType
-                and oel.opprettet_tid > current_timestamp - 90
+                and oel.opprettet_tid > systimestamp - 90
                 and not exists (
                     select 1
                     from oppgave_event_logg oel_nyere
                     where oel_nyere.behandling_id = oel.behandling_id
                     and oel_nyere.opprettet_tid > oel.opprettet_tid
-                    and oel_nyere.opprettet_tid > current_timestamp - 90
+                    and oel_nyere.opprettet_tid > systimestamp - 90
                 )
                 group by COALESCE(trunc(oel.FRIST_TID), trunc(oel.OPPRETTET_TID + 28)), o.fagsak_ytelse_type
                 """)

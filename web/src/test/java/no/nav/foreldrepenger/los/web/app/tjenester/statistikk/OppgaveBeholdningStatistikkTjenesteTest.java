@@ -191,7 +191,7 @@ class OppgaveBeholdningStatistikkTjenesteTest {
 
         //for å ungå samtidighetsproblemer med opprettettidspunkt
         entityManager.flush();
-        entityManager.createNativeQuery("UPDATE OPPGAVE_EVENT_LOGG oel SET oel.OPPRETTET_TID = CURRENT_DATE - 1").executeUpdate();
+        entityManager.createNativeQuery("UPDATE OPPGAVE_EVENT_LOGG oel SET oel.OPPRETTET_TID = SYSDATE-1").executeUpdate();
         entityManager.flush();
 
         entityManager.persist(new OppgaveEventLogg(behandlingId1, OppgaveEventType.LUKKET, null, AVDELING_DRAMMEN_ENHET));
@@ -208,7 +208,7 @@ class OppgaveBeholdningStatistikkTjenesteTest {
         entityManager.persist(oppgave);
         entityManager.flush();
         entityManager.createNativeQuery(
-            "UPDATE OPPGAVE " + "SET OPPRETTET_TID = (CURRENT_DATE - " + startTilbakeITid + "), " + "ENDRET_TID = (CURRENT_DATE - " + sluttTilbakeITid + "), "
+            "UPDATE OPPGAVE " + "SET OPPRETTET_TID = (sysdate - " + startTilbakeITid + "), " + "ENDRET_TID = (sysdate - " + sluttTilbakeITid + "), "
                 + "AKTIV = 'N' " + "WHERE ID = " + oppgave.getId()).executeUpdate();
     }
 }
