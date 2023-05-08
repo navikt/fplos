@@ -59,6 +59,12 @@ public class FpsakOppgaveEgenskapFinner implements OppgaveEgenskapFinner {
         if (FagsakEgenskaper.fagsakErMarkertSammensattKontroll(behandling)) {
             this.andreKriterier.add(AndreKriterierType.SAMMENSATT_KONTROLL);
         }
+        if (FagsakEgenskaper.fagsakErMarkertDød(behandling)) {
+            this.andreKriterier.add(AndreKriterierType.DØD);
+        }
+        if (FagsakEgenskaper.fagsakErMarkertNæring(behandling)) {
+            this.andreKriterier.add(AndreKriterierType.NÆRING);
+        }
 
         var aksjonspunkter = behandling.aksjonspunkt().stream().map(Aksjonspunkt::aksjonspunktFra).toList();
 

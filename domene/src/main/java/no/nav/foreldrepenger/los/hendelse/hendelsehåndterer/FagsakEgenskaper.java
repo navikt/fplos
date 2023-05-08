@@ -45,4 +45,28 @@ public final class FagsakEgenskaper {
             .isPresent();
     }
 
+    public static boolean fagsakErMarkertDød(LosBehandlingDto behandlingDto) {
+        return Optional.ofNullable(behandlingDto).map(LosBehandlingDto::fagsakEgenskaper)
+            .filter(FagsakEgenskaper::fagsakErMarkertDød).isPresent();
+    }
+
+    public static boolean fagsakErMarkertDød(LosFagsakEgenskaperDto egenskaperDto) {
+        return Optional.ofNullable(egenskaperDto)
+            .map(LosFagsakEgenskaperDto::fagsakMarkering)
+            .filter(LosFagsakEgenskaperDto.FagsakMarkering.DØD::equals)
+            .isPresent();
+    }
+
+    public static boolean fagsakErMarkertNæring(LosBehandlingDto behandlingDto) {
+        return Optional.ofNullable(behandlingDto).map(LosBehandlingDto::fagsakEgenskaper)
+            .filter(FagsakEgenskaper::fagsakErMarkertNæring).isPresent();
+    }
+
+    public static boolean fagsakErMarkertNæring(LosFagsakEgenskaperDto egenskaperDto) {
+        return Optional.ofNullable(egenskaperDto)
+            .map(LosFagsakEgenskaperDto::fagsakMarkering)
+            .filter(LosFagsakEgenskaperDto.FagsakMarkering.NÆRING::equals)
+            .isPresent();
+    }
+
 }

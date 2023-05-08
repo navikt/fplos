@@ -27,6 +27,12 @@ public class TilbakekrevingOppgaveEgenskapFinner implements OppgaveEgenskapFinne
         if (FagsakEgenskaper.fagsakErMarkertSammensattKontroll(egenskaperDto)) {
             this.andreKriterier.add(AndreKriterierType.SAMMENSATT_KONTROLL);
         }
+        if (FagsakEgenskaper.fagsakErMarkertDød(egenskaperDto)) {
+            this.andreKriterier.add(AndreKriterierType.DØD);
+        }
+        if (FagsakEgenskaper.fagsakErMarkertNæring(egenskaperDto)) {
+            this.andreKriterier.add(AndreKriterierType.NÆRING);
+        }
         if (aksjonspunkter.stream().anyMatch(a -> a.definisjon().equals("5005") && Aksjonspunktstatus.OPPRETTET.equals(a.status()))) {
             this.andreKriterier.add(AndreKriterierType.TIL_BESLUTTER);
         }
