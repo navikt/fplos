@@ -27,7 +27,7 @@ public class BehandlingHendelseHåndterer {
 
     private static final Logger LOG = LoggerFactory.getLogger(BehandlingHendelseHåndterer.class);
 
-    private static final Set<Hendelse> IGNORER = Set.of(Hendelse.BRUKEROPPGAVE, Hendelse.OPPRETTET, Hendelse.MANGLERSØKNAD);
+    private static final Set<Hendelse> IGNORER = Set.of(Hendelse.BRUKEROPPGAVE, Hendelse.OPPRETTET, Hendelse.MANGLERSØKNAD, Hendelse.MIGRERING);
 
     private ProsessTaskTjeneste taskTjeneste;
     private MottattHendelseRepository hendelseRepository;
