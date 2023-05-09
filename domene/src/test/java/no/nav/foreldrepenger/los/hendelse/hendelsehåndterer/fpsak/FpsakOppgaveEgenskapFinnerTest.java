@@ -67,7 +67,6 @@ class FpsakOppgaveEgenskapFinnerTest {
     @Test
     void testAksjonspunkterTilAndreKriterierTyperMapping() {
         var cases = new HashMap<String, AndreKriterierType>();
-        cases.put("5083", AndreKriterierType.VURDER_FORMKRAV);
         cases.put("5082", AndreKriterierType.VURDER_FORMKRAV);
         cases.put("5016", AndreKriterierType.TIL_BESLUTTER);
         cases.put("5012", AndreKriterierType.PAPIRSØKNAD);
