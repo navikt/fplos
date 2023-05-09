@@ -22,6 +22,8 @@ public class Aksjonspunkt {
     public static final String AUTOMATISK_MARKERING_SOM_UTLAND = "5068";
     public static final String ARBEID_INNTEKT = "5085";
 
+    public static final List<String> RELEVANT_NÆRING = List.of("5039", "5049", "5058", "5046", "5051", "5089");
+
     private String definisjonKode;
     private String statusKode;
     private LocalDateTime fristTid;
@@ -82,6 +84,10 @@ public class Aksjonspunkt {
 
     public boolean skalVurdereArbeidInntekt() {
         return erAktiv() && ARBEID_INNTEKT.equals(definisjonKode);
+    }
+
+    public boolean skalVurdereNæring() {
+        return erAktiv() && RELEVANT_NÆRING.contains(definisjonKode);
     }
 
     public boolean erVurderFormkrav() {

@@ -62,10 +62,6 @@ public class FpsakOppgaveEgenskapFinner implements OppgaveEgenskapFinner {
         if (FagsakEgenskaper.fagsakErMarkertDød(behandling)) {
             this.andreKriterier.add(AndreKriterierType.DØD);
         }
-        if (FagsakEgenskaper.fagsakErMarkertNæring(behandling)) {
-            this.andreKriterier.add(AndreKriterierType.NÆRING);
-        }
-
         var aksjonspunkter = behandling.aksjonspunkt().stream().map(Aksjonspunkt::aksjonspunktFra).toList();
 
         if (matchAksjonspunkt(aksjonspunkter, Aksjonspunkt::erTilBeslutter)) {
@@ -82,6 +78,10 @@ public class FpsakOppgaveEgenskapFinner implements OppgaveEgenskapFinner {
         }
         if (matchAksjonspunkt(aksjonspunkter, Aksjonspunkt::erVurderFormkrav)) {
             this.andreKriterier.add(AndreKriterierType.VURDER_FORMKRAV);
+        }
+        // Legger på egenskap næring kun for aksjonspunkt i Opptjening og Beregning for det som er har oppgitt egen næring.
+        if (FagsakEgenskaper.fagsakErMarkertNæring(behandling) && matchAksjonspunkt(aksjonspunkter, Aksjonspunkt::skalVurdereNæring)) {
+            this.andreKriterier.add(AndreKriterierType.NÆRING);
         }
     }
 
