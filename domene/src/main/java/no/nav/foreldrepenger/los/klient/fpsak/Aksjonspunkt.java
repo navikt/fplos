@@ -17,12 +17,12 @@ public class Aksjonspunkt {
     public static final String PÅ_VENT_KODEGRUPPE_STARTS_WITH = "7";
     public static final String TIL_BESLUTTER_KODE = "5016";
     protected static final List<String> REGISTRER_PAPIRSØKNAD_KODE = asList("5012", "5040", "5057", "5096");
-    protected static final List<String> VURDER_FORMKRAV_GRUPPE = asList("5082", "5083");
+    protected static final List<String> VURDER_FORMKRAV_GRUPPE = List.of("5082");
 
     public static final String AUTOMATISK_MARKERING_SOM_UTLAND = "5068";
     public static final String ARBEID_INNTEKT = "5085";
 
-    public static final List<String> RELEVANT_NÆRING = List.of("5039", "5049", "5058", "5046", "5051", "5089");
+    public static final List<String> RELEVANT_NÆRING = List.of("5039", "5049", "5058", "5046", "5051", "5089", "5082", "5035");
 
     private String definisjonKode;
     private String statusKode;
