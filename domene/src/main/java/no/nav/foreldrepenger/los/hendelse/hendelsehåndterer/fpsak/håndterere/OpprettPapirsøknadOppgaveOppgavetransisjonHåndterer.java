@@ -1,5 +1,11 @@
 package no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.håndterere;
 
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import no.nav.foreldrepenger.los.domene.typer.BehandlingId;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.OppgaveEgenskapHåndterer;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.FpsakOppgaveEgenskapFinner;
@@ -7,18 +13,13 @@ import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.FpsakOppgavet
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.OppgaveUtil;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveEventLogg;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveEventType;
+import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveHistorikk;
 import no.nav.foreldrepenger.los.oppgave.AndreKriterierType;
 import no.nav.foreldrepenger.los.oppgave.Oppgave;
 import no.nav.foreldrepenger.los.oppgave.OppgaveTjeneste;
 import no.nav.foreldrepenger.los.statistikk.kø.KøOppgaveHendelse;
 import no.nav.foreldrepenger.los.statistikk.kø.KøStatistikkTjeneste;
 import no.nav.vedtak.hendelser.behandling.los.LosBehandlingDto;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
 
 @ApplicationScoped
 public class OpprettPapirsøknadOppgaveOppgavetransisjonHåndterer implements FpsakOppgavetransisjonHåndterer {
@@ -56,7 +57,7 @@ public class OpprettPapirsøknadOppgaveOppgavetransisjonHåndterer implements Fp
     }
 
     @Override
-    public void håndter(BehandlingId behandlingId, LosBehandlingDto behandling) {
+    public void håndter(BehandlingId behandlingId, LosBehandlingDto behandling, OppgaveHistorikk eventHistorikk) {
         håndterEksisterendeOppgave(behandlingId);
         var oppgave = opprettOppgave(behandlingId, behandling);
         opprettOppgaveEgenskaper(oppgave, behandling);

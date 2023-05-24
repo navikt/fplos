@@ -12,6 +12,7 @@ import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.FpsakOppgaveE
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.FpsakOppgavetransisjonHåndterer;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.OppgaveUtil;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveEventLogg;
+import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveHistorikk;
 import no.nav.foreldrepenger.los.oppgave.Oppgave;
 import no.nav.foreldrepenger.los.oppgave.OppgaveTjeneste;
 import no.nav.foreldrepenger.los.reservasjon.ReservasjonTjeneste;
@@ -45,12 +46,12 @@ public class GenerellOpprettOppgaveOppgavetransisjonHåndterer implements FpsakO
     }
 
     @Override
-    public void håndter(BehandlingId behandlingId, LosBehandlingDto behandling) {
+    public void håndter(BehandlingId behandlingId, LosBehandlingDto behandling, OppgaveHistorikk eventHistorikk) {
         håndterEksisterendeOppgave(behandlingId);
         var oppgave = opprettOppgave(behandlingId, behandling);
         opprettOppgaveEgenskaper(oppgave, behandling);
+        reserverDersomAnsvarligSatt(behandling, eventHistorikk, oppgave);
         opprettOppgaveEventLogg(oppgave);
-        reserverOppgaveForManuellRevurdering(oppgave, behandling);
         køStatistikk.lagre(oppgave, KøOppgaveHendelse.ÅPNET_OPPGAVE);
     }
 
@@ -82,10 +83,15 @@ public class GenerellOpprettOppgaveOppgavetransisjonHåndterer implements FpsakO
         LOG.info("Oppretter {}-oppgave med id {}", SYSTEM, oppgave.getId());
     }
 
-    private void reserverOppgaveForManuellRevurdering(Oppgave oppgave, LosBehandlingDto losBehandlingDto) {
-        if (Behandlingstype.REVURDERING.equals(losBehandlingDto.behandlingstype()) && losBehandlingDto.ansvarligSaksbehandlerIdent() != null
-            && losBehandlingDto.behandlingsårsaker().stream().anyMatch(Behandlingsårsak.MANUELL::equals)) {
-            reservasjonTjeneste.reserverOppgave(oppgave, losBehandlingDto.ansvarligSaksbehandlerIdent());
+    private void reserverDersomAnsvarligSatt(LosBehandlingDto behandling, OppgaveHistorikk eventHistorikk, Oppgave oppgave) {
+        if (behandling.ansvarligSaksbehandlerIdent() != null
+            && (eventHistorikk.erUtenHistorikk() || eventHistorikk.erPåVent() || erManuellRevurdering(behandling))) {
+            reservasjonTjeneste.reserverOppgave(oppgave, behandling.ansvarligSaksbehandlerIdent());
         }
+    }
+
+    private boolean erManuellRevurdering(LosBehandlingDto losBehandlingDto) {
+        return Behandlingstype.REVURDERING.equals(losBehandlingDto.behandlingstype())
+            && losBehandlingDto.behandlingsårsaker().stream().anyMatch(Behandlingsårsak.MANUELL::equals);
     }
 }

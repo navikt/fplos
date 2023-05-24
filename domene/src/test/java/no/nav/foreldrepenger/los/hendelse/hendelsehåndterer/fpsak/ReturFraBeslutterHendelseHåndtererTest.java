@@ -7,6 +7,8 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
+import java.util.List;
+
 import javax.persistence.EntityManager;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -21,6 +23,7 @@ import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.Beskyttelsesbehov;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.OppgaveEgenskapHåndterer;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.håndterere.ReturFraBeslutterOppgavetransisjonHåndterer;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveEventLogg;
+import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveHistorikk;
 import no.nav.foreldrepenger.los.oppgave.Oppgave;
 import no.nav.foreldrepenger.los.oppgave.OppgaveRepository;
 import no.nav.foreldrepenger.los.oppgave.OppgaveTjeneste;
@@ -62,7 +65,7 @@ class ReturFraBeslutterHendelseHåndtererTest {
 
     @Test
     void skalAvslutteBeslutterOppgave() {
-        returFraBeslutterHåndterer.håndter(behandlingId, behandlingFpsak);
+        returFraBeslutterHåndterer.håndter(behandlingId, behandlingFpsak, new OppgaveHistorikk(List.of()));
         var oppgaver = DBTestUtil.hentAlle(entityManager, Oppgave.class);
         var inaktivOppgave = oppgaver.stream().filter(o -> !o.getAktiv()).findFirst().orElseThrow();
         var aktivOppgave = oppgaver.stream().filter(Oppgave::getAktiv).findFirst().orElseThrow();
@@ -73,21 +76,21 @@ class ReturFraBeslutterHendelseHåndtererTest {
 
     @Test
     void skalOppretteOppgaveStatistikkForBeggeOppgaver() {
-        returFraBeslutterHåndterer.håndter(behandlingId, behandlingFpsak);
+        returFraBeslutterHåndterer.håndter(behandlingId, behandlingFpsak, new OppgaveHistorikk(List.of()));
         verify(køStatistikk).lagre(any(BehandlingId.class), eq(KøOppgaveHendelse.LUKKET_OPPGAVE));
         verify(køStatistikk).lagre(any(Oppgave.class), eq(KøOppgaveHendelse.ÅPNET_OPPGAVE));
     }
 
     @Test
     void skalOppretteOppgaveEventLoggForBeggeOppgaver() {
-        returFraBeslutterHåndterer.håndter(behandlingId, behandlingFpsak);
+        returFraBeslutterHåndterer.håndter(behandlingId, behandlingFpsak, new OppgaveHistorikk(List.of()));
         var oel = DBTestUtil.hentAlle(entityManager, OppgaveEventLogg.class);
         assertThat(oel).hasSize(2);
     }
 
     @Test
     void skalOppretteReservasjonTilSaksbehandler() {
-        returFraBeslutterHåndterer.håndter(behandlingId, behandlingFpsak);
+        returFraBeslutterHåndterer.håndter(behandlingId, behandlingFpsak, new OppgaveHistorikk(List.of()));
         var reservasjoner = DBTestUtil.hentAlle(entityManager, Reservasjon.class);
         assertThat(reservasjoner).hasSize(1);
 

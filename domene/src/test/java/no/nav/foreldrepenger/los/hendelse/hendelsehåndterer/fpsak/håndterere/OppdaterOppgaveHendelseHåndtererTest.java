@@ -24,6 +24,7 @@ import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.Beskyttelsesbehov;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.OppgaveEgenskapHåndterer;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.OppgaveTestUtil;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.OppgaveUtil;
+import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveHistorikk;
 import no.nav.foreldrepenger.los.oppgave.BehandlingType;
 import no.nav.foreldrepenger.los.oppgave.Oppgave;
 import no.nav.foreldrepenger.los.oppgave.OppgaveEgenskap;
@@ -69,7 +70,7 @@ class OppdaterOppgaveHendelseHåndtererTest {
 
     @Test
     void skalErstatteGammelOppgaveMedNy() {
-        oppgaveOppdaterer.håndter(behandlingId, behandlingFpsak);
+        oppgaveOppdaterer.håndter(behandlingId, behandlingFpsak, new OppgaveHistorikk(List.of()));
         var oppgaver = hentAlle(entityManager, Oppgave.class);
         assertThat(oppgaver).hasSize(2);
         var gammelOppgave = oppgaver.get(0);
@@ -82,8 +83,8 @@ class OppdaterOppgaveHendelseHåndtererTest {
     @Test
     void gammelReservasjonVidereføresPåNyOppgave() {
         reservasjonTjeneste.reserverOppgave(DBTestUtil.hentUnik(entityManager, Oppgave.class));
-        oppgaveOppdaterer.håndter(behandlingId, behandlingFpsak);
-        oppgaveOppdaterer.håndter(behandlingId, behandlingFpsak);
+        oppgaveOppdaterer.håndter(behandlingId, behandlingFpsak, new OppgaveHistorikk(List.of()));
+        oppgaveOppdaterer.håndter(behandlingId, behandlingFpsak, new OppgaveHistorikk(List.of()));
         var oppgaver = hentAlle(entityManager, Oppgave.class);
         assertThatOppgave(oppgaver.get(0)).harAktiv(false);
         assertThatOppgave(oppgaver.get(1)).harAktiv(false);
@@ -98,7 +99,7 @@ class OppdaterOppgaveHendelseHåndtererTest {
     void skalIkkeFlytteInaktivReservasjon() {
         reservasjonTjeneste.reserverOppgave(DBTestUtil.hentUnik(entityManager, Oppgave.class));
         reservasjonTjeneste.slettReservasjonMedEventLogg(DBTestUtil.hentUnik(entityManager, Reservasjon.class), "slettet");
-        oppgaveOppdaterer.håndter(behandlingId, behandlingFpsak);
+        oppgaveOppdaterer.håndter(behandlingId, behandlingFpsak, new OppgaveHistorikk(List.of()));
         var oppgaver = hentAlle(entityManager, Oppgave.class);
         var gammelOppgave = oppgaver.get(0);
         var nyOppgave = oppgaver.get(1);
@@ -109,7 +110,7 @@ class OppdaterOppgaveHendelseHåndtererTest {
 
     @Test
     void oppgaveSkalFåOppgaveegenskaperSatt() {
-        oppgaveOppdaterer.håndter(behandlingId, behandlingFpsak);
+        oppgaveOppdaterer.håndter(behandlingId, behandlingFpsak, new OppgaveHistorikk(List.of()));
         var oppgave = hentAlle(entityManager, Oppgave.class).get(1);
         var oe = hentAlle(entityManager, OppgaveEgenskap.class);
         assertThat(oppgave.getOppgaveEgenskaper()).isNotEmpty();

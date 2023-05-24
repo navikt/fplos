@@ -92,9 +92,7 @@ public class TilbakekrevingHendelseHåndterer {
                 Oppgave oppgave = opprettTilbakekrevingOppgave(behandlingId, behandlingDto);
                 LOG.info("TBK Oppretter oppgave {} for behandlingId {}.", oppgave.getId(), behandlingId);
                 oppgaveEgenskapHåndterer.håndterOppgaveEgenskaper(oppgave, egenskapFinner);
-                if (Behandlingstype.TILBAKEBETALING_REVURDERING.equals(behandlingDto.behandlingstype()) && behandlingDto.ansvarligSaksbehandlerIdent() != null) {
-                    reservasjonTjeneste.reserverOppgave(oppgave, behandlingDto.ansvarligSaksbehandlerIdent());
-                }
+                reserverForOpprettOppgave(behandlingDto, oppgaveHistorikk, oppgave);
                 køStatistikk.lagre(oppgave, KøOppgaveHendelse.ÅPNET_OPPGAVE);
                 loggEvent(oppgave.getBehandlingId(), OppgaveEventType.OPPRETTET, null, behandlendeEnhet);
             }
@@ -111,6 +109,9 @@ public class TilbakekrevingHendelseHåndterer {
                 LOG.info("TBK Gjenåpner oppgave for behandlingId {}.", behandlingId);
                 oppdaterOppgaveInformasjon(gjenåpnetOppgave, behandlingId, behandlingDto);
                 oppgaveEgenskapHåndterer.håndterOppgaveEgenskaper(gjenåpnetOppgave, egenskapFinner);
+                if (behandlingDto.ansvarligSaksbehandlerIdent() != null && oppgaveHistorikk.erPåVent()) {
+                    reservasjonTjeneste.reserverOppgave(gjenåpnetOppgave, behandlingDto.ansvarligSaksbehandlerIdent());
+                }
                 køStatistikk.lagre(gjenåpnetOppgave, KøOppgaveHendelse.ÅPNET_OPPGAVE);
                 loggEvent(gjenåpnetOppgave.getBehandlingId(), OppgaveEventType.GJENAPNET, null, behandlendeEnhet);
             }
@@ -121,6 +122,13 @@ public class TilbakekrevingHendelseHåndterer {
                 oppgaveEgenskapHåndterer.håndterOppgaveEgenskaper(oppdaterOppgave, egenskapFinner);
             }
             default -> throw new IllegalStateException(String.format("Ukjent event %s", event));
+        }
+    }
+
+    private void reserverForOpprettOppgave(LosBehandlingDto behandlingDto, OppgaveHistorikk oppgaveHistorikk, Oppgave oppgave) {
+        var erRevurdering = Behandlingstype.TILBAKEBETALING_REVURDERING.equals(behandlingDto.behandlingstype());
+        if (behandlingDto.ansvarligSaksbehandlerIdent() != null && (erRevurdering || oppgaveHistorikk.erPåVent() || oppgaveHistorikk.erUtenHistorikk() )) {
+            reservasjonTjeneste.reserverOppgave(oppgave, behandlingDto.ansvarligSaksbehandlerIdent());
         }
     }
 

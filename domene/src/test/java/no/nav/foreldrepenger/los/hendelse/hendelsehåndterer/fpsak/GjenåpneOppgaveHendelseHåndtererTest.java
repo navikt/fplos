@@ -8,6 +8,7 @@ import static org.mockito.Mockito.mock;
 
 import java.time.LocalDateTime;
 import java.util.Comparator;
+import java.util.List;
 
 import javax.persistence.EntityManager;
 
@@ -25,6 +26,7 @@ import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.OppgaveEgenskapHån
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.håndterere.GjenåpneOppgaveOppgavetransisjonHåndterer;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveEventLogg;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveEventType;
+import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveHistorikk;
 import no.nav.foreldrepenger.los.oppgave.Oppgave;
 import no.nav.foreldrepenger.los.oppgave.OppgaveRepository;
 import no.nav.foreldrepenger.los.oppgave.OppgaveTjeneste;
@@ -76,7 +78,7 @@ class GjenåpneOppgaveHendelseHåndtererTest {
         oppgaveTjeneste.avsluttOppgaveUtenEventLoggAvsluttTilknyttetReservasjon(behandlingId);
 
         // act
-        gjenåpneOppgaveHåndterer.håndter(behandlingId, behandling);
+        gjenåpneOppgaveHåndterer.håndter(behandlingId, behandling, new OppgaveHistorikk(List.of()));
 
         // assert
         var oppgaver = DBTestUtil.hentAlle(entityManager, Oppgave.class);
@@ -99,7 +101,7 @@ class GjenåpneOppgaveHendelseHåndtererTest {
             b.aksjonspunkt(), b.behandlingsårsaker(), b.faresignaler(), b.refusjonskrav(), null, b.foreldrepengerDto(), b.tilbakeDto());
 
         // act
-        gjenåpneOppgaveHåndterer.håndter(behandlingId, nyEnhetBehandlingFpsak);
+        gjenåpneOppgaveHåndterer.håndter(behandlingId, nyEnhetBehandlingFpsak, new OppgaveHistorikk(List.of()));
 
         // assert
         var oppgaver = DBTestUtil.hentAlle(entityManager, Oppgave.class);
@@ -112,7 +114,7 @@ class GjenåpneOppgaveHendelseHåndtererTest {
         var behandlingFpsakBygget = behandlingFpsak;
         oppgaveTjeneste.avsluttOppgaveUtenEventLoggAvsluttTilknyttetReservasjon(behandlingId);
 
-        gjenåpneOppgaveHåndterer.håndter(behandlingId, behandlingFpsakBygget);
+        gjenåpneOppgaveHåndterer.håndter(behandlingId, behandlingFpsakBygget, new OppgaveHistorikk(List.of()));
 
         var oppgave = DBTestUtil.hentAlle(entityManager, Oppgave.class);
         var sisteOppgave = oppgave.stream().max(Comparator.comparing(BaseEntitet::getOpprettetTidspunkt)).orElseGet(() -> fail("Fant ikke oppgave"));
@@ -123,7 +125,7 @@ class GjenåpneOppgaveHendelseHåndtererTest {
 
     @Test
     void skalKasteExceptionVedEksisterendeOppgave() {
-        assertThatThrownBy(() -> gjenåpneOppgaveHåndterer.håndter(behandlingId, behandlingFpsak)).isInstanceOf(IllegalStateException.class)
+        assertThatThrownBy(() -> gjenåpneOppgaveHåndterer.håndter(behandlingId, behandlingFpsak, new OppgaveHistorikk(List.of()))).isInstanceOf(IllegalStateException.class)
             .hasMessageStartingWith("Fant eksisterende oppgave");
     }
 
@@ -132,7 +134,7 @@ class GjenåpneOppgaveHendelseHåndtererTest {
         var behandlingFpsakBygget = behandlingFpsak;
         oppgaveTjeneste.avsluttOppgaveUtenEventLoggAvsluttTilknyttetReservasjon(behandlingId);
 
-        gjenåpneOppgaveHåndterer.håndter(behandlingId, behandlingFpsakBygget);
+        gjenåpneOppgaveHåndterer.håndter(behandlingId, behandlingFpsakBygget, new OppgaveHistorikk(List.of()));
 
         var oel = DBTestUtil.hentUnik(entityManager, OppgaveEventLogg.class);
         assertThat(oel.getBehandlingId().toUUID()).isEqualTo(behandlingFpsakBygget.behandlingUuid());
