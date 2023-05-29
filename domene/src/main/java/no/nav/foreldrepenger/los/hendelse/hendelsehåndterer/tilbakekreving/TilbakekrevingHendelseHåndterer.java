@@ -92,7 +92,7 @@ public class TilbakekrevingHendelseHåndterer {
                 Oppgave oppgave = opprettTilbakekrevingOppgave(behandlingId, behandlingDto);
                 LOG.info("TBK Oppretter oppgave {} for behandlingId {}.", oppgave.getId(), behandlingId);
                 oppgaveEgenskapHåndterer.håndterOppgaveEgenskaper(oppgave, egenskapFinner);
-                reserverForOpprettOppgave(behandlingDto, oppgaveHistorikk, oppgave);
+                reserverForOpprettOppgave(oppgave, oppgaveHistorikk, behandlingDto, true);
                 køStatistikk.lagre(oppgave, KøOppgaveHendelse.ÅPNET_OPPGAVE);
                 loggEvent(oppgave.getBehandlingId(), OppgaveEventType.OPPRETTET, null, behandlendeEnhet);
             }
@@ -104,14 +104,12 @@ public class TilbakekrevingHendelseHåndterer {
                 køStatistikk.lagre(beslutterOppgave, KøOppgaveHendelse.ÅPNET_OPPGAVE);
                 loggEvent(behandlingId, OppgaveEventType.OPPRETTET, TIL_BESLUTTER, behandlendeEnhet);
             }
-            case GJENÅPNE_OPPGAVE -> {
+            case GJENÅPNE_OPPGAVE -> { // Blir ikke utledet .... fjernes ?
                 var gjenåpnetOppgave = oppgaveTjeneste.gjenåpneTilbakekrevingOppgave(behandlingId);
                 LOG.info("TBK Gjenåpner oppgave for behandlingId {}.", behandlingId);
                 oppdaterOppgaveInformasjon(gjenåpnetOppgave, behandlingId, behandlingDto);
                 oppgaveEgenskapHåndterer.håndterOppgaveEgenskaper(gjenåpnetOppgave, egenskapFinner);
-                if (behandlingDto.ansvarligSaksbehandlerIdent() != null && oppgaveHistorikk.erPåVent()) {
-                    reservasjonTjeneste.reserverOppgave(gjenåpnetOppgave, behandlingDto.ansvarligSaksbehandlerIdent());
-                }
+                reserverForOpprettOppgave(gjenåpnetOppgave, oppgaveHistorikk, behandlingDto, false);
                 køStatistikk.lagre(gjenåpnetOppgave, KøOppgaveHendelse.ÅPNET_OPPGAVE);
                 loggEvent(gjenåpnetOppgave.getBehandlingId(), OppgaveEventType.GJENAPNET, null, behandlendeEnhet);
             }
@@ -125,8 +123,8 @@ public class TilbakekrevingHendelseHåndterer {
         }
     }
 
-    private void reserverForOpprettOppgave(LosBehandlingDto behandlingDto, OppgaveHistorikk oppgaveHistorikk, Oppgave oppgave) {
-        var erRevurdering = Behandlingstype.TILBAKEBETALING_REVURDERING.equals(behandlingDto.behandlingstype());
+    private void reserverForOpprettOppgave(Oppgave oppgave, OppgaveHistorikk oppgaveHistorikk, LosBehandlingDto behandlingDto, boolean erOpprett) {
+        var erRevurdering = erOpprett && Behandlingstype.TILBAKEBETALING_REVURDERING.equals(behandlingDto.behandlingstype());
         if (behandlingDto.ansvarligSaksbehandlerIdent() != null && (erRevurdering || oppgaveHistorikk.erPåVent() || oppgaveHistorikk.erUtenHistorikk() )) {
             reservasjonTjeneste.reserverOppgave(oppgave, behandlingDto.ansvarligSaksbehandlerIdent());
         }
@@ -146,15 +144,15 @@ public class TilbakekrevingHendelseHåndterer {
                 return EventResultat.OPPRETT_BESLUTTER_OPPGAVE;
             }
             if (erTilBeslutter) {
-                return oppgaveHistorikk.erSisteOppgaveRegistrertPåEnhet(
-                    behandlendeEnhet) ? EventResultat.OPPDATER_ÅPEN_OPPGAVE : EventResultat.OPPRETT_OPPGAVE;
+                return oppgaveHistorikk.erSisteOppgaveRegistrertPåEnhet(behandlendeEnhet) ?
+                    EventResultat.OPPDATER_ÅPEN_OPPGAVE : EventResultat.OPPRETT_OPPGAVE;
             }
             if (oppgaveHistorikk.erSisteOpprettedeOppgaveTilBeslutter()) {
                 // ikke til beslutter pt, dermed retur fra beslutter
                 return EventResultat.OPPRETT_OPPGAVE;
             }
-            return oppgaveHistorikk.erSisteOppgaveRegistrertPåEnhet(
-                behandlendeEnhet) ? EventResultat.OPPDATER_ÅPEN_OPPGAVE : EventResultat.OPPRETT_OPPGAVE;
+            return oppgaveHistorikk.erSisteOppgaveRegistrertPåEnhet(behandlendeEnhet) ?
+                EventResultat.OPPDATER_ÅPEN_OPPGAVE : EventResultat.OPPRETT_OPPGAVE;
         }
         if (harAktiveLosAksjonspunkt(aksjonspunkter)) {
             return EventResultat.OPPRETT_OPPGAVE;
