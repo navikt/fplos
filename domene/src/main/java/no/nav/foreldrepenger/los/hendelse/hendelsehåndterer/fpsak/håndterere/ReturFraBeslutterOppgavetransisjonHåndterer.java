@@ -13,6 +13,7 @@ import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.FpsakOppgavet
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.OppgaveUtil;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveEventLogg;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveEventType;
+import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveHistorikk;
 import no.nav.foreldrepenger.los.oppgave.Oppgave;
 import no.nav.foreldrepenger.los.oppgave.OppgaveTjeneste;
 import no.nav.foreldrepenger.los.reservasjon.ReservasjonTjeneste;
@@ -43,7 +44,7 @@ public class ReturFraBeslutterOppgavetransisjonHåndterer implements FpsakOppgav
     }
 
     @Override
-    public void håndter(BehandlingId behandlingId, LosBehandlingDto behandling) {
+    public void håndter(BehandlingId behandlingId, LosBehandlingDto behandling, OppgaveHistorikk eventHistorikk) {
         håndterEksisterendeOppgave(behandlingId, behandling.behandlendeEnhetId());
         var oppgave = opprettOppgave(behandlingId, behandling);
         opprettOppgaveEgenskaper(oppgave, behandling);

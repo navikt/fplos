@@ -22,6 +22,7 @@ import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.FpsakOppgaveE
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.FpsakOppgavetransisjonHåndterer;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.OppgaveUtil;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveEventType;
+import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveHistorikk;
 import no.nav.foreldrepenger.los.oppgave.Oppgave;
 import no.nav.foreldrepenger.los.oppgave.OppgaveTjeneste;
 import no.nav.foreldrepenger.los.oppgavekø.OppgaveFiltreringKnytning;
@@ -54,7 +55,7 @@ public class OppdaterOppgaveOppgavetransisjonHåndterer implements FpsakOppgavet
     }
 
     @Override
-    public void håndter(BehandlingId behandlingId, LosBehandlingDto behandling) {
+    public void håndter(BehandlingId behandlingId, LosBehandlingDto behandling, OppgaveHistorikk eventHistorikk) {
         var eksisterendeOppgave = oppgaveTjeneste.hentAktivOppgave(behandlingId)
             .orElseThrow(() -> new IllegalStateException("Fant ikke eksisterende oppgave"));
         var nyOppgave = lagOppgave(behandlingId, behandling);

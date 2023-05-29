@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 
 import no.nav.foreldrepenger.los.domene.typer.BehandlingId;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.FpsakOppgavetransisjonHåndterer;
+import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveHistorikk;
 import no.nav.vedtak.hendelser.behandling.los.LosBehandlingDto;
 
 @ApplicationScoped
@@ -18,7 +19,7 @@ public class IkkeRelevantForOppgaveOppgavetransisjonHåndterer implements FpsakO
     }
 
     @Override
-    public void håndter(BehandlingId behandlingId, LosBehandlingDto behandling) {
+    public void håndter(BehandlingId behandlingId, LosBehandlingDto behandling, OppgaveHistorikk eventHistorikk) {
         LOG.info("Ikke relevant for oppgaver");
     }
 

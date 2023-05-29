@@ -40,7 +40,7 @@ public class FpsakOppgaveHendelseHåndterer {
         var oppgaveHistorikk = oppgavehistorikk(behandlingId);
         var transisjonHåndterer = håndtererForTransisjon(TransisjonUtleder.utledAktuellTransisjon(behandlingId, behandlingDto, oppgaveHistorikk));
         LOG.info("Utledet hendelsehåndterer er av type {}", transisjonHåndterer.getClass().getSimpleName());
-        transisjonHåndterer.håndter(behandlingId, behandlingDto);
+        transisjonHåndterer.håndter(behandlingId, behandlingDto, oppgaveHistorikk);
     }
 
     private OppgaveHistorikk oppgavehistorikk(BehandlingId behandlingId) {

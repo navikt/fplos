@@ -18,6 +18,7 @@ import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.FpsakOppgavet
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.OppgaveUtil;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveEventLogg;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveEventType;
+import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveHistorikk;
 import no.nav.foreldrepenger.los.oppgave.Oppgave;
 import no.nav.foreldrepenger.los.oppgave.OppgaveRepository;
 import no.nav.foreldrepenger.los.reservasjon.ReservasjonTjeneste;
@@ -49,14 +50,14 @@ public class GjenåpneOppgaveOppgavetransisjonHåndterer implements FpsakOppgave
     }
 
     @Override
-    public void håndter(BehandlingId behandlingId, LosBehandlingDto behandling) {
+    public void håndter(BehandlingId behandlingId, LosBehandlingDto behandling, OppgaveHistorikk eventHistorikk) {
         var oppgaveHistorikk = oppgaveRepository.hentOppgaver(behandlingId);
         sjekkForAktivOppgave(oppgaveHistorikk);
         var nyOppgave = OppgaveUtil.oppgave(behandlingId, behandling);
         oppgaveRepository.lagre(nyOppgave);
         opprettOppgaveEgenskaper(nyOppgave, behandling);
+        videreførNyligUtløptReservasjon(oppgaveHistorikk, nyOppgave, behandling, eventHistorikk);
         oppdaterOppgaveEventLogg(behandlingId, behandling);
-        videreførNyligUtløptReservasjon(oppgaveHistorikk, nyOppgave, behandling.behandlendeEnhetId());
         køStatistikk.lagre(nyOppgave, KøOppgaveHendelse.ÅPNET_OPPGAVE);
         LOG.info("Gjenåpnet {} oppgaveId {}", SYSTEM, nyOppgave.getId());
     }
@@ -66,17 +67,20 @@ public class GjenåpneOppgaveOppgavetransisjonHåndterer implements FpsakOppgave
         return Oppgavetransisjon.GJENÅPNE_OPPGAVE;
     }
 
-    private void videreførNyligUtløptReservasjon(List<Oppgave> eksisterendeOppgaver, Oppgave nyOppgave, String behandlendeEnhetId) {
-        eksisterendeOppgaver.stream()
-            .peek(o -> LOG.info("Ser på oppgave {}", o.getId()))
+    private void videreførNyligUtløptReservasjon(List<Oppgave> eksisterendeOppgaver, Oppgave nyOppgave, LosBehandlingDto behandling,
+                                                 OppgaveHistorikk eventHistorikk) {
+        var finnesreservasjon = eksisterendeOppgaver.stream()
             .max(Comparator.comparing(Oppgave::getOpprettetTidspunkt))
-            .filter(o -> o.getBehandlendeEnhet().equals(behandlendeEnhetId))
+            .filter(o -> o.getBehandlendeEnhet().equals(behandling.behandlendeEnhetId()))
             .map(Oppgave::getReservasjon)
-            .filter(r -> r.getReservertTil().isAfter(LocalDateTime.now().minus(15, ChronoUnit.MINUTES)))
-            .ifPresent(r -> {
-                LOG.info("Viderefører reservasjon");
-                reservasjonTjeneste.reserverBasertPåAvsluttetReservasjon(nyOppgave, r);
-            });
+            .filter(r -> r.getReservertTil().isAfter(LocalDateTime.now().minus(15, ChronoUnit.MINUTES)));
+        finnesreservasjon.ifPresent(r -> {
+            LOG.info("Viderefører reservasjon");
+            reservasjonTjeneste.reserverBasertPåAvsluttetReservasjon(nyOppgave, r);
+        });
+        if (finnesreservasjon.isEmpty() && behandling.ansvarligSaksbehandlerIdent() != null && eventHistorikk.erPåVent()) {
+            reservasjonTjeneste.reserverOppgave(nyOppgave, behandling.ansvarligSaksbehandlerIdent());
+        }
     }
 
     private void opprettOppgaveEgenskaper(Oppgave oppgave, LosBehandlingDto behandlingFpsak) {

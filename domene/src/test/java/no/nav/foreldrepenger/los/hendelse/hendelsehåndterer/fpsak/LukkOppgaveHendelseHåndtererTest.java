@@ -6,6 +6,8 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
+import java.util.List;
+
 import javax.persistence.EntityManager;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -17,6 +19,7 @@ import no.nav.foreldrepenger.extensions.JpaExtension;
 import no.nav.foreldrepenger.los.DBTestUtil;
 import no.nav.foreldrepenger.los.domene.typer.BehandlingId;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.håndterere.LukkOppgaveOppgavetransisjonHåndterer;
+import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveHistorikk;
 import no.nav.foreldrepenger.los.oppgave.Oppgave;
 import no.nav.foreldrepenger.los.oppgave.OppgaveRepository;
 import no.nav.foreldrepenger.los.oppgave.OppgaveTjeneste;
@@ -47,7 +50,7 @@ class LukkOppgaveHendelseHåndtererTest {
         var behandlingId = new BehandlingId(behandlingFpsak.behandlingUuid());
         oppgaveTjeneste.lagre(OppgaveUtil.oppgave(behandlingId, behandlingFpsak));
 
-        lukkOppgave.håndter(behandlingId, behandlingFpsak);
+        lukkOppgave.håndter(behandlingId, behandlingFpsak, new OppgaveHistorikk(List.of()));
 
 
         var oppgave = DBTestUtil.hentUnik(entityManager, Oppgave.class);
@@ -60,7 +63,7 @@ class LukkOppgaveHendelseHåndtererTest {
         var behandlingId = new BehandlingId(behandlingFpsak.behandlingUuid());
         oppgaveTjeneste.lagre(OppgaveUtil.oppgave(behandlingId, behandlingFpsak));
 
-        lukkOppgave.håndter(behandlingId, behandlingFpsak);
+        lukkOppgave.håndter(behandlingId, behandlingFpsak, new OppgaveHistorikk(List.of()));
 
         // NB tester ikke rekkefølge på kall
         verify(køStatistikk).lagre(any(BehandlingId.class), eq(KøOppgaveHendelse.LUKKET_OPPGAVE));

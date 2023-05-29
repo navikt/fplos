@@ -6,6 +6,8 @@ import static no.nav.foreldrepenger.los.oppgave.util.OppgaveAssert.assertThatOpp
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 
+import java.util.List;
+
 import javax.persistence.EntityManager;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -23,6 +25,7 @@ import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.OppgaveEgenskapHån
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.håndterere.GenerellOpprettOppgaveOppgavetransisjonHåndterer;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveEventLogg;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveEventType;
+import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveHistorikk;
 import no.nav.foreldrepenger.los.oppgave.BehandlingStatus;
 import no.nav.foreldrepenger.los.oppgave.BehandlingType;
 import no.nav.foreldrepenger.los.oppgave.FagsakYtelseType;
@@ -55,7 +58,7 @@ class GenerellOpprettOppgaveHendelseHåndtererTest {
     void skalLagreOppgaveMedFelterFraBehandling() {
         var behandlingFpsak = behandlingFpsak();
         var behandlingId = new BehandlingId(behandlingFpsak.behandlingUuid());
-        opprettOppgaveHåndterer.håndter(behandlingId, behandlingFpsak);
+        opprettOppgaveHåndterer.håndter(behandlingId, behandlingFpsak, new OppgaveHistorikk(List.of()));
         var oppgave = DBTestUtil.hentUnik(entityManager, Oppgave.class);
         assertThatOppgave(oppgave).harBehandlingOpprettet(behandlingFpsak.opprettetTidspunkt())
             .harAktiv(true)
@@ -75,7 +78,7 @@ class GenerellOpprettOppgaveHendelseHåndtererTest {
     void skalOppretteOppgaveEventLogg() {
         var behandlingFpsak = behandlingFpsak();
         var behandlingId = new BehandlingId(behandlingFpsak.behandlingUuid());
-        opprettOppgaveHåndterer.håndter(behandlingId, behandlingFpsak);
+        opprettOppgaveHåndterer.håndter(behandlingId, behandlingFpsak, new OppgaveHistorikk(List.of()));
 
         var oppgaveEventLogg = DBTestUtil.hentUnik(entityManager, OppgaveEventLogg.class);
         assertThat(oppgaveEventLogg.getEventType()).isEqualTo(OppgaveEventType.OPPRETTET);
