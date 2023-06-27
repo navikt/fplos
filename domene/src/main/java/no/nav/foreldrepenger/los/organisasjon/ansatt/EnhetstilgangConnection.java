@@ -16,10 +16,11 @@ import no.nav.vedtak.felles.integrasjon.rest.RestRequest;
 import no.nav.vedtak.felles.integrasjon.rest.TokenFlow;
 
 @Dependent
-@RestClientConfig(tokenConfig = TokenFlow.STS_CC, endpointProperty = "axsys.url", endpointDefault = "http://axsys.default")
+@RestClientConfig(tokenConfig = TokenFlow.ADAPTIVE, endpointProperty = "axsys.url", endpointDefault = "http://axsys.org",
+    scopesProperty = "axsys.scopes", scopesDefault = "api://prod-fss.org.axsys/.default")
 public class EnhetstilgangConnection {
 
-    private static final String PATH = "/api/v1/tilgang/";
+    private static final String PATH = "/api/v2/tilgang/";
 
     private final RestClient httpClient;
     private final RestConfig restConfig;
