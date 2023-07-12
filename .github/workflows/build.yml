@@ -18,6 +18,9 @@ on:
 jobs:
   build-app:
     name: Build
+    permissions:
+      contents: read
+      packages: write
     uses: navikt/fp-gha-workflows/.github/workflows/build-app.yml@main
     with:
       build-image: ${{ github.ref_name == 'master' }} # default: true
