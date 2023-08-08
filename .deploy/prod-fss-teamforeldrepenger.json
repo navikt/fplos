@@ -9,8 +9,8 @@
     "https://fplos.intern.nav.no",
     "https://fplos.prod-fss-pub.nais.io"
   ],
-  "minReplica": "6",
-  "maxReplica": "6",
+  "minReplica": "2",
+  "maxReplica": "3",
   "env": {
     "APPD_ENABLED": "true"
   },
