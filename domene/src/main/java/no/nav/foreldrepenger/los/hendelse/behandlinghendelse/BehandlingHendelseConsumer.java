@@ -27,7 +27,6 @@ public class BehandlingHendelseConsumer implements LiveAndReadinessAware, Contro
     private static final Environment ENV = Environment.current();
 
     private static final String PROD_APP_ID = "fplos-behandling"; // Hold konstant pga offset commit !!
-    private static final int HANDLE_MESSAGE_INTERVAL_MILLIS = 20;
 
     private String topicName;
     private KafkaStreams stream;
@@ -43,21 +42,9 @@ public class BehandlingHendelseConsumer implements LiveAndReadinessAware, Contro
         final Consumed<String, String> consumed = Consumed.with(Topology.AutoOffsetReset.EARLIEST);
 
         final StreamsBuilder builder = new StreamsBuilder();
-        builder.stream(topicName, consumed).foreach((key, payload) -> {
-            behandlingHendelseHåndterer.handleMessage(key, payload);
-            sleep();
-        });
+        builder.stream(topicName, consumed).foreach(behandlingHendelseHåndterer::handleMessage);
 
         this.stream = new KafkaStreams(builder.build(), KafkaProperties.forStreamsStringValue(getApplicationId()));
-    }
-
-    private static void sleep() {
-        try {
-            Thread.sleep(HANDLE_MESSAGE_INTERVAL_MILLIS);
-        } catch (InterruptedException e) {
-            LOG.warn("Interrupt!", e);
-            Thread.currentThread().interrupt();
-        }
     }
 
     @Override
