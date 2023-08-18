@@ -28,7 +28,7 @@
         <sonar.projectKey>navikt_fplos</sonar.projectKey>
 
         <fp-kontrakter.version>6.3.2</fp-kontrakter.version>
-        <felles.version>4.4.4</felles.version>
+        <felles.version>4.4.4-ee9</felles.version>
         <prosesstask.version>3.2.6</prosesstask.version>
     </properties>
 
