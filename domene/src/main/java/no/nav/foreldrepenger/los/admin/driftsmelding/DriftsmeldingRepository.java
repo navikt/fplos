@@ -3,9 +3,9 @@ package no.nav.foreldrepenger.los.admin.driftsmelding;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-import javax.persistence.EntityManager;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
+import jakarta.persistence.EntityManager;
 
 @ApplicationScoped
 public class DriftsmeldingRepository {

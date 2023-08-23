@@ -3,7 +3,7 @@ package no.nav.foreldrepenger.los.organisasjon;
 import no.nav.foreldrepenger.los.felles.BaseEntitet;
 import no.nav.foreldrepenger.los.oppgavekø.OppgaveFiltrering;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 
 import java.util.ArrayList;
 import java.util.Collections;

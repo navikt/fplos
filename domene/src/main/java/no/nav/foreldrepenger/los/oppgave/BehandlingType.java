@@ -3,8 +3,8 @@ package no.nav.foreldrepenger.los.oppgave;
 import java.util.Arrays;
 import java.util.Optional;
 
-import javax.persistence.AttributeConverter;
-import javax.persistence.Converter;
+import jakarta.persistence.AttributeConverter;
+import jakarta.persistence.Converter;
 
 import com.fasterxml.jackson.annotation.JsonValue;
 
@@ -18,7 +18,7 @@ public enum BehandlingType implements Kodeverdi {
     INNSYN("BT-006", "Innsyn"),
     TILBAKEBETALING("BT-007", "Tilbakebetaling"),
     ANKE("BT-008", "Anke"),
-    TILBAKEBETALING_REVURDERING("BT-009", "Tilbakebet-rev");
+    TILBAKEBETALING_REVURDERING("BT-009", "Tilbakebetaling revurdering");
 
     @JsonValue
     private String kode;

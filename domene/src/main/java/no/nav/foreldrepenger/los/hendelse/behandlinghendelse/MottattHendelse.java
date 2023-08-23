@@ -1,13 +1,16 @@
 package no.nav.foreldrepenger.los.hendelse.behandlinghendelse;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
+import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.annotations.NaturalId;
 
 import no.nav.foreldrepenger.los.felles.BaseEntitet;
+
+import java.sql.Types;
 
 
 @Entity(name = "MottattHendelse")
@@ -16,6 +19,7 @@ public class MottattHendelse extends BaseEntitet {
 
     @Id
     @NaturalId
+    @JdbcTypeCode(Types.VARCHAR)
     @Column(name = "hendelse_uid")
     private String hendelseUid;
 

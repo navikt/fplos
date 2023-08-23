@@ -5,8 +5,8 @@ import no.nav.vedtak.felles.integrasjon.rest.*;
 import no.nav.vedtak.sikkerhet.abac.pipdata.AbacPipDto;
 import no.nav.vedtak.util.LRUCache;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.ws.rs.core.UriBuilder;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.ws.rs.core.UriBuilder;
 
 @ApplicationScoped
 @RestClientConfig(tokenConfig = TokenFlow.AZUREAD_CC, application = FpApplication.FPSAK)

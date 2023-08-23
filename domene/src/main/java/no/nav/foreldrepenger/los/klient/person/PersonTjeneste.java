@@ -8,7 +8,7 @@ import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
-import javax.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.ApplicationScoped;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,27 +53,6 @@ public class PersonTjeneste {
 
     public PersonTjeneste() {
         this.pdl = new PdlKlient();
-    }
-
-    public Optional<AktørId> hentAktørIdForPersonIdent(String personIdent) {
-        var request = new HentIdenterQueryRequest();
-        request.setIdent(personIdent);
-        request.setGrupper(List.of(IdentGruppe.AKTORID));
-        request.setHistorikk(Boolean.FALSE);
-        var projection = new IdentlisteResponseProjection().identer(new IdentInformasjonResponseProjection().ident());
-
-        final Identliste identliste;
-
-        try {
-            identliste = pdl.hentIdenter(request, projection);
-        } catch (VLException v) {
-            if (Persondata.PDL_KLIENT_NOT_FOUND_KODE.equals(v.getKode())) {
-                return Optional.empty();
-            }
-            throw v;
-        }
-
-        return identliste.getIdenter().stream().findFirst().map(IdentInformasjon::getIdent).map(AktørId::new);
     }
 
     private Fødselsnummer hentFødselsnummerForAktørId(AktørId aktørId) {
@@ -166,7 +145,8 @@ public class PersonTjeneste {
             .person(new PersonResponseProjection()
                 .adressebeskyttelse(new AdressebeskyttelseResponseProjection().gradering()));
         var personer = pdl.hentPersonBolk(query, projection);
-        var adresseBeskyttelser = personer.stream().map(HentPersonBolkResult::getPerson)
+        var adresseBeskyttelser = personer.stream()
+            .map(HentPersonBolkResult::getPerson)
             .map(no.nav.pdl.Person::getAdressebeskyttelse)
             .flatMap(Collection::stream)
             .map(Adressebeskyttelse::getGradering)

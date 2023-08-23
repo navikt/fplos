@@ -4,7 +4,7 @@ import no.nav.foreldrepenger.los.felles.BaseEntitet;
 import no.nav.foreldrepenger.los.oppgave.AndreKriterierType;
 import no.nav.vedtak.felles.jpa.converters.BooleanToStringConverter;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 
 @Entity(name = "FiltreringAndreKriterier")
 @Table(name = "FILTRERING_ANDRE_KRITERIER")

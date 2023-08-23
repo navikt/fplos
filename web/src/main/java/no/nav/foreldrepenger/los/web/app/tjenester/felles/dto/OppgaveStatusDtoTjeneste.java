@@ -2,8 +2,8 @@ package no.nav.foreldrepenger.los.web.app.tjenester.felles.dto;
 
 import static no.nav.foreldrepenger.los.felles.util.OptionalUtil.tryOrEmpty;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 
 import no.nav.foreldrepenger.los.oppgave.Oppgave;
 import no.nav.foreldrepenger.los.organisasjon.ansatt.AnsattTjeneste;

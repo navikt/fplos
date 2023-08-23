@@ -6,9 +6,9 @@ import no.nav.foreldrepenger.los.oppgave.BehandlingType;
 import no.nav.foreldrepenger.los.oppgave.FagsakYtelseType;
 import no.nav.vedtak.felles.jpa.converters.BooleanToStringConverter;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-import javax.persistence.EntityManager;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
+import jakarta.persistence.EntityManager;
 
 import java.math.BigDecimal;
 import java.time.ZoneId;
@@ -118,7 +118,7 @@ public class StatistikkRepository {
     private static OppgaverForAvdeling mapOppgaverForAvdeling(Object[] row) {
         var fagsakYtelseType = FagsakYtelseType.fraKode((String) row[0]); // NOSONAR
         var behandlingType = BehandlingType.fraKode((String) row[1]); // NOSONAR
-        var tilBeslutter = new BooleanToStringConverter().convertToEntityAttribute((String) row[2]); // NOSONAR
+        var tilBeslutter = new BooleanToStringConverter().convertToEntityAttribute(Character.toString((Character) row[2])); // NOSONAR
         var antall = ((BigDecimal) row[3]).longValue(); // NOSONAR
         return new OppgaverForAvdeling(fagsakYtelseType, behandlingType, !tilBeslutter, antall);
     }

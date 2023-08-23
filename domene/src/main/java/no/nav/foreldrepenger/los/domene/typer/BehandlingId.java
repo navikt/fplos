@@ -3,8 +3,8 @@ package no.nav.foreldrepenger.los.domene.typer;
 import java.util.Objects;
 import java.util.UUID;
 
-import javax.persistence.Column;
-import javax.persistence.Embeddable;
+import jakarta.persistence.Column;
+import jakarta.persistence.Embeddable;
 
 @Embeddable
 public class BehandlingId implements Comparable<UUID> {

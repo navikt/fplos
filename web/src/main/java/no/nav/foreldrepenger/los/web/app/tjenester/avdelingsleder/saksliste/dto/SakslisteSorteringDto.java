@@ -1,7 +1,7 @@
 package no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.saksliste.dto;
 
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 
 import no.nav.foreldrepenger.los.felles.util.validering.ValidKodeverk;
 import no.nav.foreldrepenger.los.oppgavekø.KøSortering;

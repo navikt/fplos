@@ -2,8 +2,8 @@ package no.nav.foreldrepenger.los.hendelse.hendelsehåndterer;
 
 import java.util.Set;
 
-import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
+import jakarta.enterprise.context.Dependent;
+import jakarta.inject.Inject;
 
 import no.nav.foreldrepenger.los.domene.typer.Saksnummer;
 import no.nav.foreldrepenger.los.hendelse.behandlinghendelse.AktørPipKlient;

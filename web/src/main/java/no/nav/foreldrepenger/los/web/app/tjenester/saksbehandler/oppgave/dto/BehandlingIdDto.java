@@ -1,7 +1,7 @@
 package no.nav.foreldrepenger.los.web.app.tjenester.saksbehandler.oppgave.dto;
 
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;

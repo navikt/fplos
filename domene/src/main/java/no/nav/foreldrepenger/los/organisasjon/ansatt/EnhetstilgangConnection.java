@@ -5,8 +5,8 @@ import static no.nav.foreldrepenger.los.felles.util.OptionalUtil.tryOrEmpty;
 import java.net.URI;
 import java.util.Optional;
 
-import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
+import jakarta.enterprise.context.Dependent;
+import jakarta.inject.Inject;
 
 import no.nav.foreldrepenger.konfig.KonfigVerdi;
 import no.nav.vedtak.felles.integrasjon.rest.RestClient;
