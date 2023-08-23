@@ -3,8 +3,8 @@ package no.nav.foreldrepenger.los.oppgave;
 import java.util.Map;
 import java.util.Optional;
 
-import javax.persistence.AttributeConverter;
-import javax.persistence.Converter;
+import jakarta.persistence.AttributeConverter;
+import jakarta.persistence.Converter;
 
 import com.fasterxml.jackson.annotation.JsonValue;
 

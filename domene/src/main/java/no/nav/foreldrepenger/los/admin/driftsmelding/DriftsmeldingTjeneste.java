@@ -1,7 +1,7 @@
 package no.nav.foreldrepenger.los.admin.driftsmelding;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 
 import java.util.List;
 

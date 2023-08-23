@@ -238,7 +238,7 @@ class SjekkDbStrukturTest {
             from all_ind_columns
             where table_owner=upper(?)
             and index_name not like 'PK_%' and index_name not like 'IDX_%' and index_name not like 'UIDX_%'
-            and table_name not like 'schema_%'
+            and table_name not like 'schema_%' and table_name not like 'HTE_%'
             """;
 
         List<String> avvik = new ArrayList<>();

@@ -2,8 +2,8 @@ package no.nav.foreldrepenger.los.hendelse.behandlinghendelse;
 
 import java.util.List;
 
-import javax.enterprise.context.Dependent;
-import javax.ws.rs.core.UriBuilder;
+import jakarta.enterprise.context.Dependent;
+import jakarta.ws.rs.core.UriBuilder;
 
 import no.nav.foreldrepenger.los.domene.typer.Saksnummer;
 import no.nav.vedtak.felles.integrasjon.rest.FpApplication;

@@ -3,7 +3,7 @@ package no.nav.foreldrepenger.los.felles.util.validering;
 
 import java.util.Objects;
 
-import javax.validation.ConstraintValidatorContext;
+import jakarta.validation.ConstraintValidatorContext;
 
 import no.nav.foreldrepenger.los.felles.Kodeverdi;
 

@@ -7,7 +7,7 @@ import no.nav.foreldrepenger.los.domene.typer.BehandlingId;
 import no.nav.vedtak.sikkerhet.abac.AbacDataAttributter;
 import no.nav.vedtak.sikkerhet.abac.AbacDto;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 
 import java.util.UUID;
 
