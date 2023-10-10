@@ -4,7 +4,6 @@ import static java.util.Arrays.asList;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Set;
 
 import no.nav.vedtak.hendelser.behandling.Aksjonspunktstatus;
 import no.nav.vedtak.hendelser.behandling.los.LosBehandlingDto;
