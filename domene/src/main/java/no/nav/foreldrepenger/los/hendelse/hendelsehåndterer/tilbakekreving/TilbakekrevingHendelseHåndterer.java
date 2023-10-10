@@ -8,12 +8,11 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
-import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.inject.Inject;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 import no.nav.foreldrepenger.los.domene.typer.BehandlingId;
 import no.nav.foreldrepenger.los.domene.typer.aktør.AktørId;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.OppgaveEgenskapFinner;
@@ -73,10 +72,13 @@ public class TilbakekrevingHendelseHåndterer {
         var aksjonspunkter = behandlingDto.aksjonspunkt();
         var egenskapFinner = new TilbakekrevingOppgaveEgenskapFinner(aksjonspunkter, behandlingDto.ansvarligSaksbehandlerIdent(), egenskaperDto);
         var behandlendeEnhet = behandlingDto.behandlendeEnhetId();
-        var event = eventFra(aksjonspunkter, oppgaveHistorikk, egenskapFinner, behandlendeEnhet);
+        var event = eventFra(aksjonspunkter, oppgaveHistorikk, egenskapFinner);
 
 
         switch (event) {
+            case IKKE_RELEVANT -> {
+                // NOOP
+            }
             case LUKK_OPPGAVE_MANUELT_VENT -> {
                 LOG.info("TBK Lukker oppgave, satt manuelt på vent.");
                 avsluttOppgaveForBehandling(behandlingId);
@@ -104,7 +106,7 @@ public class TilbakekrevingHendelseHåndterer {
                 køStatistikk.lagre(beslutterOppgave, KøOppgaveHendelse.ÅPNET_OPPGAVE);
                 loggEvent(behandlingId, OppgaveEventType.OPPRETTET, TIL_BESLUTTER, behandlendeEnhet);
             }
-            case GJENÅPNE_OPPGAVE -> { // Blir ikke utledet .... fjernes ?
+            case GJENÅPNE_OPPGAVE -> {
                 var gjenåpnetOppgave = oppgaveTjeneste.gjenåpneTilbakekrevingOppgave(behandlingId);
                 LOG.info("TBK Gjenåpner oppgave for behandlingId {}.", behandlingId);
                 oppdaterOppgaveInformasjon(gjenåpnetOppgave, behandlingId, behandlingDto);
@@ -132,32 +134,26 @@ public class TilbakekrevingHendelseHåndterer {
 
     private EventResultat eventFra(List<LosBehandlingDto.LosAksjonspunktDto> aksjonspunkter,
                                    OppgaveHistorikk oppgaveHistorikk,
-                                   OppgaveEgenskapFinner egenskaper,
-                                   String behandlendeEnhet) {
+                                   OppgaveEgenskapFinner egenskaper) {
         var erTilBeslutter = egenskaper.getAndreKriterier().contains(TIL_BESLUTTER);
 
         if (aktivLosManuellVent(aksjonspunkter)) {
-            return EventResultat.LUKK_OPPGAVE_MANUELT_VENT;
+            return oppgaveHistorikk.erPåVent() ? EventResultat.IKKE_RELEVANT : EventResultat.LUKK_OPPGAVE_MANUELT_VENT;
         }
-        if (harAktiveLosAksjonspunkt(aksjonspunkter) && oppgaveHistorikk.erÅpenOppgave()) {
-            if (erTilBeslutter && !oppgaveHistorikk.erSisteOpprettedeOppgaveTilBeslutter()) {
-                return EventResultat.OPPRETT_BESLUTTER_OPPGAVE;
-            }
-            if (erTilBeslutter) {
-                return oppgaveHistorikk.erSisteOppgaveRegistrertPåEnhet(behandlendeEnhet) ?
-                    EventResultat.OPPDATER_ÅPEN_OPPGAVE : EventResultat.OPPRETT_OPPGAVE;
-            }
-            if (oppgaveHistorikk.erSisteOpprettedeOppgaveTilBeslutter()) {
-                // ikke til beslutter pt, dermed retur fra beslutter
-                return EventResultat.OPPRETT_OPPGAVE;
-            }
-            return oppgaveHistorikk.erSisteOppgaveRegistrertPåEnhet(behandlendeEnhet) ?
-                EventResultat.OPPDATER_ÅPEN_OPPGAVE : EventResultat.OPPRETT_OPPGAVE;
+        if (!harAktiveLosAksjonspunkt(aksjonspunkter)) {
+            return oppgaveHistorikk.erUtenHistorikk() || oppgaveHistorikk.erIngenÅpenOppgave() ? EventResultat.IKKE_RELEVANT : EventResultat.LUKK_OPPGAVE;
         }
-        if (harAktiveLosAksjonspunkt(aksjonspunkter)) {
-            return EventResultat.OPPRETT_OPPGAVE;
+        if (erTilBeslutter) {
+            return oppgaveHistorikk.erÅpenOppgave() && oppgaveHistorikk.erSisteOpprettedeOppgaveTilBeslutter() ?
+                EventResultat.OPPDATER_ÅPEN_OPPGAVE : EventResultat.OPPRETT_BESLUTTER_OPPGAVE;
         }
-        return EventResultat.LUKK_OPPGAVE;
+        if (oppgaveHistorikk.harEksistertOppgave()) {
+            if (oppgaveHistorikk.erÅpenOppgave()) {
+                return oppgaveHistorikk.erSisteOpprettedeOppgaveTilBeslutter() ? EventResultat.OPPRETT_OPPGAVE : EventResultat.OPPDATER_ÅPEN_OPPGAVE;
+            }
+            return EventResultat.GJENÅPNE_OPPGAVE;
+        }
+        return EventResultat.OPPRETT_OPPGAVE;
     }
 
     private static boolean harAktiveLosAksjonspunkt(List<LosBehandlingDto.LosAksjonspunktDto> aksjonspunkter) {

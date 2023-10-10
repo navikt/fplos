@@ -11,13 +11,12 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import jakarta.persistence.EntityManager;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import jakarta.persistence.EntityManager;
 import no.nav.foreldrepenger.extensions.JpaExtension;
 import no.nav.foreldrepenger.los.DBTestUtil;
 import no.nav.foreldrepenger.los.domene.typer.BehandlingId;
@@ -140,10 +139,29 @@ class TilbakekrevingHendelseHåndtererTest {
         handler.håndterBehandling(førsteEvent);
 
         sjekkAktivOppgaveEksisterer(true);
-        verifiserAktivBeslutterEgenskap();
+        sjekkBeslutterEgenskapMedAktivstatus(true);
 
         handler.håndterBehandling(andreEventUtenBeslutter);
-        verifiserInaktivBeslutterEgenskap();
+        sjekkBeslutterEgenskapMedAktivstatus(false);
+    }
+
+    @Test
+    void skalOppretteTilBeslutterEgenskapVedReturTilForeslå() {
+        var behandlingId = BehandlingId.random();
+        var førsteEvent = hendelse(åpentAksjonspunkt, behandlingId);
+        var andreEventBeslutter = hendelse(åpentBeslutter, behandlingId);
+        var tredjeAp = List.of(lagAp("5005", "OPPR"), lagAp("5004", "OPPR"));
+        var tredjeEventReturTilForeslå = hendelse(tredjeAp, behandlingId);
+        handler.håndterBehandling(førsteEvent);
+
+        sjekkAktivOppgaveEksisterer(true);
+        sjekkBeslutterEgenskapMedAktivstatus(false);
+
+        handler.håndterBehandling(andreEventBeslutter);
+        sjekkBeslutterEgenskapMedAktivstatus(true);
+
+        handler.håndterBehandling(tredjeEventReturTilForeslå);
+        sjekkBeslutterEgenskapMedAktivstatus(false);
     }
 
     @Test
@@ -204,18 +222,16 @@ class TilbakekrevingHendelseHåndtererTest {
         assertThat(event.getAndreKriterierType()).isEqualTo(kriterierType);
     }
 
-    private void verifiserAktivBeslutterEgenskap() {
-        sjekkBeslutterEgenskapMedAktivstatus(true);
-    }
-
-    private void verifiserInaktivBeslutterEgenskap() {
-        sjekkBeslutterEgenskapMedAktivstatus(false);
-    }
-
     private void sjekkBeslutterEgenskapMedAktivstatus(boolean status) {
-        var egenskaper = DBTestUtil.hentUnik(entityManager, OppgaveEgenskap.class);
-        assertThat(egenskaper.getAndreKriterierType()).isEqualTo(AndreKriterierType.TIL_BESLUTTER);
-        assertThat(egenskaper.getAktiv()).isEqualTo(status);
+        var oppgaver = DBTestUtil.hentAlle(entityManager, Oppgave.class);
+        var aktivOppgave = oppgaver.stream().filter(Oppgave::getAktiv).findFirst().orElse(null);
+        assertThat(aktivOppgave).isNotNull();
+        var egenskaper = aktivOppgave.getOppgaveEgenskaper();
+        if (status) {
+            assertThat(egenskaper.stream().map(OppgaveEgenskap::getAndreKriterierType).collect(Collectors.toSet())).contains(AndreKriterierType.TIL_BESLUTTER);
+        } else {
+            assertThat(egenskaper.stream().map(OppgaveEgenskap::getAndreKriterierType).collect(Collectors.toSet())).doesNotContain(AndreKriterierType.TIL_BESLUTTER);
+        }
     }
 
     private void sjekkAntallOppgaver(int antall) {

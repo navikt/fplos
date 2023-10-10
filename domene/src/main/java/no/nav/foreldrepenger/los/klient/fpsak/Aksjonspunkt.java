@@ -4,6 +4,7 @@ import static java.util.Arrays.asList;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 import no.nav.vedtak.hendelser.behandling.Aksjonspunktstatus;
 import no.nav.vedtak.hendelser.behandling.los.LosBehandlingDto;
@@ -15,6 +16,7 @@ public class Aksjonspunkt {
 
     public static final String MANUELT_SATT_PÅ_VENT_KODE = "7001";
     public static final String PÅ_VENT_KODEGRUPPE_STARTS_WITH = "7";
+    public static final Set<String> FORESLÅ_VEDTAK_KODE = Set.of("5015", "5018", "5028");
     public static final String TIL_BESLUTTER_KODE = "5016";
     protected static final List<String> REGISTRER_PAPIRSØKNAD_KODE = asList("5012", "5040", "5057", "5096");
     protected static final List<String> VURDER_FORMKRAV_GRUPPE = List.of("5082");
@@ -72,6 +74,10 @@ public class Aksjonspunkt {
 
     public boolean erTilBeslutter() {
         return TIL_BESLUTTER_KODE.equals(definisjonKode) && erAktiv();
+    }
+
+    public boolean erForeslåVedtak() {
+        return FORESLÅ_VEDTAK_KODE.contains(definisjonKode) && erAktiv();
     }
 
     public boolean erRegistrerPapirSøknad() {
