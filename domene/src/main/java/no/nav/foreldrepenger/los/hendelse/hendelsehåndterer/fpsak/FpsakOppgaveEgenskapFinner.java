@@ -64,7 +64,6 @@ public class FpsakOppgaveEgenskapFinner implements OppgaveEgenskapFinner {
         }
         var aksjonspunkter = behandling.aksjonspunkt().stream().map(Aksjonspunkt::aksjonspunktFra).toList();
 
-        // Ved behov ta med  && !matchAksjonspunkt(aksjonspunkter, Aksjonspunkt::erForeslåVedtak)
         if (matchAksjonspunkt(aksjonspunkter, Aksjonspunkt::erTilBeslutter)) {
             this.andreKriterier.add(AndreKriterierType.TIL_BESLUTTER);
         }
