@@ -23,8 +23,7 @@ public class OppgaveHistorikk {
     }
 
     public boolean erIngenÅpenOppgave() {
-        return Objects.equals(sisteEventType, OppgaveEventType.LUKKET) || Objects.equals(sisteEventType, OppgaveEventType.MANU_VENT)
-            || Objects.equals(sisteEventType, OppgaveEventType.VENT);
+        return Objects.equals(sisteEventType, OppgaveEventType.LUKKET) || erPåVent();
     }
 
     public boolean harEksistertOppgave() {

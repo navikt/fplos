@@ -79,8 +79,8 @@ public class TilbakekrevingHendelseHåndterer {
             case IKKE_RELEVANT -> {
                 // NOOP
             }
-            case LUKK_OPPGAVE_MANUELT_VENT -> {
-                LOG.info("TBK Lukker oppgave, satt manuelt på vent.");
+            case LUKK_OPPGAVE_VENT -> {
+                LOG.info("TBK Lukker oppgave, satt på vent.");
                 avsluttOppgaveForBehandling(behandlingId);
                 loggEvent(behandlingId, OppgaveEventType.MANU_VENT, behandlendeEnhet);
             }
@@ -138,7 +138,8 @@ public class TilbakekrevingHendelseHåndterer {
         var erTilBeslutter = egenskaper.getAndreKriterier().contains(TIL_BESLUTTER);
 
         if (aktivLosManuellVent(aksjonspunkter)) {
-            return oppgaveHistorikk.erPåVent() ? EventResultat.IKKE_RELEVANT : EventResultat.LUKK_OPPGAVE_MANUELT_VENT;
+            return oppgaveHistorikk.erUtenHistorikk() || oppgaveHistorikk.erIngenÅpenOppgave() ?
+                EventResultat.IKKE_RELEVANT : EventResultat.LUKK_OPPGAVE_VENT;
         }
         if (!harAktiveLosAksjonspunkt(aksjonspunkter)) {
             return oppgaveHistorikk.erUtenHistorikk() || oppgaveHistorikk.erIngenÅpenOppgave() ? EventResultat.IKKE_RELEVANT : EventResultat.LUKK_OPPGAVE;
@@ -222,5 +223,15 @@ public class TilbakekrevingHendelseHåndterer {
     private void avsluttOppgaveForBehandling(BehandlingId behandlingId) {
         køStatistikk.lagre(behandlingId, KøOppgaveHendelse.LUKKET_OPPGAVE);
         oppgaveTjeneste.avsluttOppgaveUtenEventLoggAvsluttTilknyttetReservasjon(behandlingId);
+    }
+
+    enum EventResultat {
+        IKKE_RELEVANT,
+        LUKK_OPPGAVE,
+        LUKK_OPPGAVE_VENT,
+        GJENÅPNE_OPPGAVE,
+        OPPDATER_ÅPEN_OPPGAVE,
+        OPPRETT_BESLUTTER_OPPGAVE,
+        OPPRETT_OPPGAVE
     }
 }
