@@ -94,12 +94,27 @@ public class StatistikkRepository {
 
     @SuppressWarnings("unchecked")
     public List<OppgaverForFørsteStønadsdag> hentOppgaverPerFørsteStønadsdag(String avdeling) {
+        // Sortert pr uke i tilfelle det ser bedre ut
+        //             select ytre.DATO as DATO, sum(ytre.ANTALL) as ANTALL from (
+        //               select case when indre.fstonad < sysdate - 180 then trunc(sysdate-180, 'IW')
+        //                           when indre.fstonad > sysdate + 300 then trunc(sysdate+300, 'IW')
+        //                           else indre.fstonad end as DATO, Count(1) AS ANTALL from (
+        //                  select trunc(o.FORSTE_STONADSDAG, 'IW') as fstonad FROM OPPGAVE o INNER JOIN avdeling a ON a.AVDELING_ENHET = o.BEHANDLENDE_ENHET
+        //                  WHERE a.AVDELING_ENHET = :avdelingEnhet AND NOT o.AKTIV='N' AND o.FORSTE_STONADSDAG IS NOT NULL and o.behandling_type = :behandlingType
+        //               ) indre GROUP BY indre.fstonad
+        //            ) ytre group by dato order by dato
         return entityManager.createNativeQuery("""
-            Select trunc(o.FORSTE_STONADSDAG) as DATO, Count(1) AS ANTALL
-            FROM OPPGAVE o INNER JOIN avdeling a ON a.AVDELING_ENHET = o.BEHANDLENDE_ENHET
-            WHERE a.AVDELING_ENHET =:avdelingEnhet AND NOT o.AKTIV='N' AND o.FORSTE_STONADSDAG IS NOT NULL
-            GROUP BY trunc(o.FORSTE_STONADSDAG) ORDER BY trunc(o.FORSTE_STONADSDAG)
-            """).setParameter(AVDELING_ENHET, avdeling).getResultStream().map(row -> mapOppgaverForFørsteStønadsdag((Object[]) row)).toList();
+            select ytre.DATO as DATO, sum(ytre.ANTALL) as ANTALL from (
+               select case when indre.fstonad < sysdate - 180 then sysdate-180
+                           when indre.fstonad > sysdate + 300 then sysdate+300
+                           else indre.fstonad end as DATO, Count(1) AS ANTALL from (
+                  select o.FORSTE_STONADSDAG as fstonad FROM OPPGAVE o INNER JOIN avdeling a ON a.AVDELING_ENHET = o.BEHANDLENDE_ENHET
+                  WHERE a.AVDELING_ENHET = :avdelingEnhet AND NOT o.AKTIV='N' AND o.FORSTE_STONADSDAG IS NOT NULL and o.behandling_type = :behandlingType
+               ) indre GROUP BY indre.fstonad
+            ) ytre group by dato order by dato
+            """).setParameter(AVDELING_ENHET, avdeling)
+            .setParameter("behandlingType", BehandlingType.FØRSTEGANGSSØKNAD.getKode())
+            .getResultStream().map(row -> mapOppgaverForFørsteStønadsdag((Object[]) row)).toList();
     }
 
     private static OppgaverForFørsteStønadsdag mapOppgaverForFørsteStønadsdag(Object[] row) {
