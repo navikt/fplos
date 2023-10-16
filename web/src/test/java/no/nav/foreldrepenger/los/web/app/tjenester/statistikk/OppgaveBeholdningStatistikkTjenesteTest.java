@@ -155,48 +155,7 @@ class OppgaveBeholdningStatistikkTjenesteTest {
         var resultater = oppgaveBeholdningStatistikkTjeneste.hentOppgaverPerFørsteStønadsdag(AVDELING_DRAMMEN_ENHET);
         assertThat(resultater).hasSize(1);
         assertThat(resultater.get(0).førsteStønadsdag()).isEqualTo(LocalDate.now().plusMonths(1));
-        assertThat(resultater.get(0).antall()).isEqualTo(6L);
-    }
-
-    private void leggInnEttSettMedOppgaveEventer() {
-        var behandlingId1 = BehandlingId.random();
-        var behandlingId2 = BehandlingId.random();
-        var behandlingId3 = BehandlingId.random();
-        var behandlingId4 = BehandlingId.random();
-        var behandlingId5 = BehandlingId.random();
-        var behandlingId6 = BehandlingId.random();
-
-        entityManager.persist(Oppgave.builder().dummyOppgave(AVDELING_DRAMMEN_ENHET).medSystem("FPSAK").medBehandlingId(behandlingId1).build());
-        entityManager.persist(Oppgave.builder().dummyOppgave(AVDELING_DRAMMEN_ENHET).medSystem("FPSAK").medBehandlingId(behandlingId2).build());
-        entityManager.persist(Oppgave.builder().dummyOppgave(AVDELING_DRAMMEN_ENHET).medSystem("FPSAK").medBehandlingId(behandlingId3).build());
-        entityManager.persist(Oppgave.builder().dummyOppgave(AVDELING_DRAMMEN_ENHET).medSystem("FPSAK").medBehandlingId(behandlingId4).build());
-        entityManager.persist(Oppgave.builder().dummyOppgave(AVDELING_DRAMMEN_ENHET).medSystem("FPSAK").medBehandlingId(behandlingId5).build());
-        entityManager.persist(Oppgave.builder()
-            .dummyOppgave(AVDELING_DRAMMEN_ENHET)
-            .medFagsakYtelseType(FagsakYtelseType.ENGANGSTØNAD)
-            .medSystem("FPSAK")
-            .medBehandlingId(behandlingId6)
-            .build());
-
-        entityManager.persist(new OppgaveEventLogg(behandlingId1, OppgaveEventType.OPPRETTET, null, AVDELING_DRAMMEN_ENHET));
-        entityManager.persist(new OppgaveEventLogg(behandlingId2, OppgaveEventType.OPPRETTET, null, AVDELING_DRAMMEN_ENHET));
-        entityManager.persist(new OppgaveEventLogg(behandlingId3, OppgaveEventType.OPPRETTET, null, AVDELING_DRAMMEN_ENHET));
-        entityManager.persist(new OppgaveEventLogg(behandlingId4, OppgaveEventType.MANU_VENT, null, AVDELING_DRAMMEN_ENHET));
-        entityManager.persist(new OppgaveEventLogg(behandlingId5, OppgaveEventType.GJENAPNET, null, AVDELING_DRAMMEN_ENHET));
-
-        //for å ungå samtidighetsproblemer med opprettettidspunkt
-        entityManager.flush();
-        entityManager.createNativeQuery("UPDATE OPPGAVE_EVENT_LOGG oel SET oel.OPPRETTET_TID = SYSDATE-1").executeUpdate();
-        entityManager.flush();
-
-        entityManager.persist(new OppgaveEventLogg(behandlingId1, OppgaveEventType.LUKKET, null, AVDELING_DRAMMEN_ENHET));
-        entityManager.persist(new OppgaveEventLogg(behandlingId2, OppgaveEventType.MANU_VENT, null, AVDELING_DRAMMEN_ENHET));
-        entityManager.persist(new OppgaveEventLogg(behandlingId3, OppgaveEventType.VENT, null, AVDELING_DRAMMEN_ENHET));
-        entityManager.persist(new OppgaveEventLogg(behandlingId4, OppgaveEventType.OPPRETTET, null, AVDELING_DRAMMEN_ENHET));
-        entityManager.persist(new OppgaveEventLogg(behandlingId5, OppgaveEventType.MANU_VENT, null, AVDELING_DRAMMEN_ENHET));
-        entityManager.persist(new OppgaveEventLogg(behandlingId6, OppgaveEventType.MANU_VENT, null, AVDELING_DRAMMEN_ENHET));
-
-        entityManager.flush();
+        assertThat(resultater.get(0).antall()).isEqualTo(4L);
     }
 
     private void leggTilOppgave(Oppgave oppgave, int startTilbakeITid, int sluttTilbakeITid) {
