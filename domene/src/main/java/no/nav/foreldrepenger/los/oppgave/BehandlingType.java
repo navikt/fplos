@@ -14,7 +14,6 @@ public enum BehandlingType implements Kodeverdi {
     FØRSTEGANGSSØKNAD("BT-002", "Førstegangsbehandling"),
     KLAGE("BT-003", "Klage"),
     REVURDERING("BT-004", "Revurdering"),
-    SØKNAD("BT-005", "Søknad"),
     INNSYN("BT-006", "Innsyn"),
     TILBAKEBETALING("BT-007", "Tilbakebetaling"),
     ANKE("BT-008", "Anke"),
