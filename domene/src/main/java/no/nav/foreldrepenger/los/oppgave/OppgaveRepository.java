@@ -465,15 +465,6 @@ public class OppgaveRepository {
             .getResultList();
     }
 
-
-    public List<Oppgave> hentAktiveRevurderingOppgaverMedStønadsdatoFør(LocalDate fom) {
-        return entityManager.createQuery("FROM Oppgave o where o.aktiv = :aktiv and o.behandlingType = :bt and o.førsteStønadsdag is not null and o.førsteStønadsdag >= :frist", Oppgave.class)
-            .setParameter("aktiv", true)
-            .setParameter("bt", BehandlingType.REVURDERING)
-            .setParameter("frist", fom)
-            .getResultList();
-    }
-
     public Optional<Oppgave> hentAktivOppgave(BehandlingId behandlingId) {
         var oppgaver = entityManager.createQuery("""
             FROM Oppgave o
