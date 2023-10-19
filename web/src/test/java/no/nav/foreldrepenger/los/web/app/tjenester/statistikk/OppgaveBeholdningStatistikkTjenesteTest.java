@@ -4,19 +4,16 @@ import static no.nav.foreldrepenger.los.organisasjon.Avdeling.AVDELING_DRAMMEN_E
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatNoException;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
-
-import jakarta.persistence.EntityManager;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import jakarta.persistence.EntityManager;
 import no.nav.foreldrepenger.extensions.JpaExtension;
-import no.nav.foreldrepenger.los.domene.typer.BehandlingId;
-import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveEventLogg;
-import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveEventType;
 import no.nav.foreldrepenger.los.oppgave.AndreKriterierType;
 import no.nav.foreldrepenger.los.oppgave.BehandlingType;
 import no.nav.foreldrepenger.los.oppgave.FagsakYtelseType;
@@ -154,7 +151,7 @@ class OppgaveBeholdningStatistikkTjenesteTest {
         leggInnEttSettMedOppgaver();
         var resultater = oppgaveBeholdningStatistikkTjeneste.hentOppgaverPerFørsteStønadsdag(AVDELING_DRAMMEN_ENHET);
         assertThat(resultater).hasSize(1);
-        assertThat(resultater.get(0).førsteStønadsdag()).isEqualTo(LocalDate.now().plusMonths(1));
+        assertThat(resultater.get(0).førsteStønadsdag()).isEqualTo(LocalDate.now().plusMonths(1).with(DayOfWeek.FRIDAY));
         assertThat(resultater.get(0).antall()).isEqualTo(4L);
     }
 
