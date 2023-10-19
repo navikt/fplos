@@ -151,7 +151,7 @@ class OppgaveBeholdningStatistikkTjenesteTest {
         leggInnEttSettMedOppgaver();
         var resultater = oppgaveBeholdningStatistikkTjeneste.hentOppgaverPerFørsteStønadsdag(AVDELING_DRAMMEN_ENHET);
         assertThat(resultater).hasSize(1);
-        assertThat(resultater.get(0).førsteStønadsdag()).isEqualTo(LocalDate.now().plusMonths(1).with(DayOfWeek.FRIDAY));
+        assertThat(resultater.get(0).førsteStønadsdag()).isEqualTo(LocalDate.now().plusMonths(1));
         assertThat(resultater.get(0).antall()).isEqualTo(4L);
     }
 

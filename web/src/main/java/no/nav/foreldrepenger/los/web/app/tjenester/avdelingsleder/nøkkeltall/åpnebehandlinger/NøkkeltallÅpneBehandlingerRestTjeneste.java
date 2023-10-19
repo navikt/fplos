@@ -46,7 +46,7 @@ public class NøkkeltallÅpneBehandlingerRestTjeneste {
     @GET
     @Path("/frist-utløp")
     @Produces("application/json")
-    @Operation(description = "Ventetilstand frister pr uke", tags = "AvdelingslederTall")
+    @Operation(description = "Førstegangsbehandlinger på vent pr enhet, ytelse og ventefrist", tags = "AvdelingslederTall")
     @BeskyttetRessurs(actionType = ActionType.READ, resourceType = ResourceType.OPPGAVESTYRING_AVDELINGENHET)
     public List<NøkkeltallBehandlingVentefristUtløperDto> getAlleVentefristerForAvdeling(@NotNull @QueryParam("avdelingEnhet") @Valid AvdelingEnhetDto avdelingEnhet) {
         return nøkkeltallBehandlingerVentestatus.hentVentefristNøkkeltall(avdelingEnhet.getAvdelingEnhet());
