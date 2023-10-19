@@ -83,7 +83,7 @@ public class AdminRestTjeneste {
     @Operation(description = "Oppretter task for synkronisering av behandling med fpsak", tags = "admin")
     @BeskyttetRessurs(actionType = ActionType.CREATE, resourceType = ResourceType.DRIFT)
     public Response synkroniserAapneRevurderinger() {
-        var behandlinger = oppgaveRepository.hentAktiveRevurderingOppgaverMedStønadsdatoFør(LocalDate.now().minusMonths(3)).stream()
+        var behandlinger = oppgaveRepository.hentAktiveRevurderingOppgaverMedStønadsdatoFør(LocalDate.now().minusMonths(4)).stream()
             .map(Oppgave::getBehandlingId)
             .map(b -> new SynkroniseringHendelseTaskOppretterTjeneste.KildeBehandlingId(Kildesystem.FPSAK, b))
             .toList();
