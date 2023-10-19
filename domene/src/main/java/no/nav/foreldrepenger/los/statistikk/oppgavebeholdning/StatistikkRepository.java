@@ -93,12 +93,13 @@ public class StatistikkRepository {
 
     @SuppressWarnings("unchecked")
     public List<OppgaverForFørsteStønadsdag> hentOppgaverPerFørsteStønadsdag(String avdeling) {
+        // Tilpass til tidligste dato før termin - 18u = 1296. Vurder trunc('IW') + 4 (=fredag) for evt ukesvisning
         return entityManager.createNativeQuery("""
             select ytre.DATO as DATO, sum(ytre.ANTALL) as ANTALL from (
-               select case when indre.fstonad < sysdate - 180 then trunc(sysdate-180, 'IW') + 4
-                           when indre.fstonad > sysdate + 300 then trunc(sysdate+300, 'IW') + 4
+               select case when indre.fstonad < sysdate - 120 then trunc(sysdate-120)
+                           when indre.fstonad > sysdate + 126 then trunc(sysdate+126)
                            else indre.fstonad end as DATO, Count(1) AS ANTALL from (
-                  select trunc(o.FORSTE_STONADSDAG, 'IW') + 4 as fstonad FROM OPPGAVE o INNER JOIN avdeling a ON a.AVDELING_ENHET = o.BEHANDLENDE_ENHET
+                  select trunc(o.FORSTE_STONADSDAG) as fstonad FROM OPPGAVE o INNER JOIN avdeling a ON a.AVDELING_ENHET = o.BEHANDLENDE_ENHET
                   WHERE a.AVDELING_ENHET = :avdelingEnhet AND NOT o.AKTIV='N' AND o.FORSTE_STONADSDAG IS NOT NULL and o.behandling_type = :behandlingType
                ) indre GROUP BY indre.fstonad
             ) ytre group by dato order by dato
