@@ -19,14 +19,13 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import no.nav.foreldrepenger.los.domene.typer.BehandlingId;
 import no.nav.foreldrepenger.los.felles.BaseEntitet;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveEventLogg;
@@ -463,6 +462,15 @@ public class OppgaveRepository {
     public List<Oppgave> hentOppgaver(BehandlingId behandlingId) {
         return entityManager.createQuery("FROM Oppgave o where o.behandlingId = :behandlingId", Oppgave.class)
             .setParameter(BEHANDLING_ID, behandlingId)
+            .getResultList();
+    }
+
+
+    public List<Oppgave> hentAktiveRevurderingOppgaverMedStønadsdatoFør(LocalDate fom) {
+        return entityManager.createQuery("FROM Oppgave o where o.aktiv = :aktiv and o.behandlingType = :bt and o.førsteStønadsdag is not null and o.førsteStønadsdag >= :frist", Oppgave.class)
+            .setParameter("aktiv", true)
+            .setParameter("bt", BehandlingType.REVURDERING)
+            .setParameter("frist", fom)
             .getResultList();
     }
 
