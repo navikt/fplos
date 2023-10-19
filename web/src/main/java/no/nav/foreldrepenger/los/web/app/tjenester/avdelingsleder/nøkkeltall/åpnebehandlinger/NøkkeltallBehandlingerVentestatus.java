@@ -54,7 +54,7 @@ public class NøkkeltallBehandlingerVentestatus {
             enhetStatistikkMapVentefrist = fpsakRestKlient.hentVentefristerNøkkeltall()
                 .stream()
                 .collect(Collectors.groupingBy(NøkkeltallBehandlingVentefristUtløperDto::behandlendeEnhet, Collectors.toUnmodifiableList()));
-            nesteVentefristOppdateringEtter = LocalDateTime.now().plusHours(8);
+            nesteVentefristOppdateringEtter = LocalDateTime.now().plusMinutes(30);
             if (LOG.isInfoEnabled()) {
                 LOG.info("Hentet friststatistikk fra fpsak, neste hentes etter {}.", nesteVentefristOppdateringEtter);
             }
