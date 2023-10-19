@@ -22,7 +22,8 @@ public class NøkkeltallBehandlingerVentestatus {
     private FpsakKlient fpsakRestKlient;
     private Map<String, List<NøkkeltallBehandlingFørsteUttakDto>> enhetStatistikkMapUttaksdato;
     private Map<String, List<NøkkeltallBehandlingVentefristUtløperDto>> enhetStatistikkMapVentefrist;
-    private LocalDateTime nesteOppdateringEtter;
+    private LocalDateTime nesteFørsteUttakOppdateringEtter;
+    private LocalDateTime nesteVentefristOppdateringEtter;
 
     public NøkkeltallBehandlingerVentestatus() {
     }
@@ -33,13 +34,14 @@ public class NøkkeltallBehandlingerVentestatus {
     }
 
     public List<NøkkeltallBehandlingFørsteUttakDto> hentBehandlingVentestatusNøkkeltall(String avdeling) {
-        if (enhetStatistikkMapUttaksdato == null || LocalDateTime.now().isAfter(nesteOppdateringEtter)) {
+        if (enhetStatistikkMapUttaksdato == null || LocalDateTime.now().isAfter(nesteFørsteUttakOppdateringEtter)) {
             enhetStatistikkMapUttaksdato = fpsakRestKlient.hentBehandlingFørsteUttakNøkkeltall()
                 .stream()
                 .collect(Collectors.groupingBy(NøkkeltallBehandlingFørsteUttakDto::behandlendeEnhet, Collectors.toUnmodifiableList()));
-            nesteOppdateringEtter = LocalDateTime.now().plusMinutes(45);
+            nesteFørsteUttakOppdateringEtter = LocalDateTime.now().plusMinutes(45);
             if (LOG.isInfoEnabled()) {
-                LOG.info("Hentet statistikk fra fpsak, neste hentes etter {}. Antall unike uttaksmåneder per enhet: {}", nesteOppdateringEtter,
+                LOG.info("Hentet statistikk fra fpsak, neste hentes etter {}. Antall unike uttaksmåneder per enhet: {}",
+                    nesteFørsteUttakOppdateringEtter,
                     antallFørsteUttakMånederPerEnhet());
             }
         }
@@ -48,13 +50,13 @@ public class NøkkeltallBehandlingerVentestatus {
     }
 
     public List<NøkkeltallBehandlingVentefristUtløperDto> hentVentefristNøkkeltall(String avdeling) {
-        if (enhetStatistikkMapVentefrist == null || LocalDateTime.now().isAfter(nesteOppdateringEtter)) {
+        if (enhetStatistikkMapVentefrist == null || LocalDateTime.now().isAfter(nesteVentefristOppdateringEtter)) {
             enhetStatistikkMapVentefrist = fpsakRestKlient.hentVentefristerNøkkeltall()
                 .stream()
                 .collect(Collectors.groupingBy(NøkkeltallBehandlingVentefristUtløperDto::behandlendeEnhet, Collectors.toUnmodifiableList()));
-            nesteOppdateringEtter = LocalDateTime.now().plusMinutes(45);
+            nesteVentefristOppdateringEtter = LocalDateTime.now().plusHours(8);
             if (LOG.isInfoEnabled()) {
-                LOG.info("Hentet friststatistikk fra fpsak, neste hentes etter {}.", nesteOppdateringEtter);
+                LOG.info("Hentet friststatistikk fra fpsak, neste hentes etter {}.", nesteVentefristOppdateringEtter);
             }
         }
         var resultat = enhetStatistikkMapVentefrist.get(avdeling);
