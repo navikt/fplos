@@ -1,6 +1,5 @@
 package no.nav.foreldrepenger.los.web.app.tjenester.admin;
 
-import java.time.LocalDate;
 import java.util.List;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -16,8 +15,6 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import no.nav.foreldrepenger.los.admin.SynkroniseringHendelseTaskOppretterTjeneste;
-import no.nav.foreldrepenger.los.oppgave.Oppgave;
-import no.nav.foreldrepenger.los.oppgave.OppgaveRepository;
 import no.nav.foreldrepenger.los.oppgave.OppgaveTjeneste;
 import no.nav.foreldrepenger.los.web.app.tjenester.admin.dto.EnkelBehandlingIdDto;
 import no.nav.vedtak.hendelser.behandling.Kildesystem;
@@ -32,14 +29,12 @@ public class AdminRestTjeneste {
 
     private SynkroniseringHendelseTaskOppretterTjeneste synkroniseringHendelseTaskOppretterTjeneste;
     private OppgaveTjeneste oppgaveTjeneste;
-    private OppgaveRepository oppgaveRepository;
 
     @Inject
     public AdminRestTjeneste(SynkroniseringHendelseTaskOppretterTjeneste synkroniseringHendelseTaskOppretterTjeneste,
-                             OppgaveTjeneste oppgaveTjeneste, OppgaveRepository oppgaveRepository) {
+                             OppgaveTjeneste oppgaveTjeneste) {
         this.synkroniseringHendelseTaskOppretterTjeneste = synkroniseringHendelseTaskOppretterTjeneste;
         this.oppgaveTjeneste = oppgaveTjeneste;
-        this.oppgaveRepository = oppgaveRepository;
     }
 
     public AdminRestTjeneste() {
@@ -71,21 +66,6 @@ public class AdminRestTjeneste {
         var behandlinger = behandlingIdListe.stream()
             .map(EnkelBehandlingIdDto::getBehandlingId)
             .map(b -> new SynkroniseringHendelseTaskOppretterTjeneste.KildeBehandlingId(Kildesystem.FPTILBAKE, b))
-            .toList();
-        var opprettedeTasker = synkroniseringHendelseTaskOppretterTjeneste.opprettOppgaveEgenskapOppdatererTasks(behandlinger);
-        return Response.ok(opprettedeTasker).build();
-    }
-
-    @POST
-    @Path("/synkroniser-aapne-revurderinger")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    @Operation(description = "Oppretter task for synkronisering av behandling med fpsak", tags = "admin")
-    @BeskyttetRessurs(actionType = ActionType.CREATE, resourceType = ResourceType.DRIFT)
-    public Response synkroniserAapneRevurderinger() {
-        var behandlinger = oppgaveRepository.hentAktiveRevurderingOppgaverMedStønadsdatoFør(LocalDate.now().minusMonths(4)).stream()
-            .map(Oppgave::getBehandlingId)
-            .map(b -> new SynkroniseringHendelseTaskOppretterTjeneste.KildeBehandlingId(Kildesystem.FPSAK, b))
             .toList();
         var opprettedeTasker = synkroniseringHendelseTaskOppretterTjeneste.opprettOppgaveEgenskapOppdatererTasks(behandlinger);
         return Response.ok(opprettedeTasker).build();
