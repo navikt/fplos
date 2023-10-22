@@ -8,7 +8,6 @@ import java.util.List;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
-import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveEventType;
 import no.nav.foreldrepenger.los.oppgave.AndreKriterierType;
 import no.nav.foreldrepenger.los.oppgave.BehandlingType;
 import no.nav.foreldrepenger.los.oppgave.FagsakYtelseType;
@@ -63,35 +62,6 @@ public class StatistikkRepository {
     }
 
     @SuppressWarnings("unchecked")
-    public List<OppgaverForAvdelingSattManueltPåVent> hentAntallOppgaverForAvdelingSattManueltPåVent(String avdelingEnhet) {
-        return entityManager.createNativeQuery("""
-                select COALESCE(trunc(oel.FRIST_TID), trunc(oel.OPPRETTET_TID + 28)) ESTIMERT_FRIST, o.FAGSAK_YTELSE_TYPE, count(1) as ANTALL
-                from oppgave_event_logg oel
-                join (
-                    select behandling_id, fagsak_ytelse_type
-                    from oppgave
-                    where BEHANDLENDE_ENHET = :behandlendeEnhet
-                    group by behandling_id, fagsak_ytelse_type
-                    ) o on o.behandling_id = oel.behandling_id
-                where oel.event_type = :eventType
-                and oel.opprettet_tid > systimestamp - 90
-                and not exists (
-                    select 1
-                    from oppgave_event_logg oel_nyere
-                    where oel_nyere.behandling_id = oel.behandling_id
-                    and oel_nyere.opprettet_tid > oel.opprettet_tid
-                    and oel_nyere.opprettet_tid > systimestamp - 90
-                )
-                group by COALESCE(trunc(oel.FRIST_TID), trunc(oel.OPPRETTET_TID + 28)), o.fagsak_ytelse_type
-                """)
-            .setParameter("behandlendeEnhet", avdelingEnhet)
-            .setParameter("eventType", OppgaveEventType.MANU_VENT.name())
-            .getResultStream()
-            .map(row -> mapOppgaverForAvdelingSattManueltPåVent((Object[]) row))
-            .toList();
-    }
-
-    @SuppressWarnings("unchecked")
     public List<OppgaverForFørsteStønadsdag> hentOppgaverPerFørsteStønadsdag(String avdeling) {
         // Tilpass til tidligste dato før termin - 18u = 1296. Vurder trunc('IW') + 4 (=fredag) for evt ukesvisning
         return entityManager.createNativeQuery("""
@@ -112,13 +82,6 @@ public class StatistikkRepository {
         var date = ((Date) row[0]).toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
         var resultat = ((BigDecimal) row[1]).longValue();
         return new OppgaverForFørsteStønadsdag(date, resultat);
-    }
-
-    private static OppgaverForAvdelingSattManueltPåVent mapOppgaverForAvdelingSattManueltPåVent(Object[] row) {
-        var fagsakYtelseType = FagsakYtelseType.fraKode((String) row[1]);  // NOSONAR
-        var estimertFrist = ((Date) row[0]).toInstant().atZone(ZoneId.systemDefault()).toLocalDate();  // NOSONAR
-        var antall = ((BigDecimal) row[2]).longValue();  // NOSONAR
-        return new OppgaverForAvdelingSattManueltPåVent(fagsakYtelseType, estimertFrist, antall);
     }
 
     private static OppgaverForAvdeling mapOppgaverForAvdeling(Object[] row) {
