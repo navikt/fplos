@@ -2,9 +2,7 @@ package no.nav.foreldrepenger.los.web.app.tjenester.statistikk;
 
 import static no.nav.foreldrepenger.los.organisasjon.Avdeling.AVDELING_DRAMMEN_ENHET;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatNoException;
 
-import java.time.DayOfWeek;
 import java.time.LocalDate;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -139,12 +137,6 @@ class OppgaveBeholdningStatistikkTjenesteTest {
         assertThat(resultater.get(0).fagsakYtelseType()).isEqualTo(FagsakYtelseType.FORELDREPENGER);
         assertThat(resultater.get(0).opprettetDato()).isEqualTo(LocalDate.now().minusDays(27));
     }
-
-    @Test
-    void hentHentStatistikkForManueltPåVent() {
-        assertThatNoException().isThrownBy(() -> oppgaveBeholdningStatistikkTjeneste.hentAntallOppgaverForAvdelingSattManueltPåVent(AVDELING_DRAMMEN_ENHET));
-    }
-
 
     @Test
     void hentOppgaverPerFørsteStønadsdag() {

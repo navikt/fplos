@@ -1,9 +1,9 @@
 package no.nav.foreldrepenger.los.statistikk.oppgavebeholdning;
 
+import java.util.List;
+
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-
-import java.util.List;
 
 @ApplicationScoped
 public class OppgaveBeholdningStatistikkTjeneste {
@@ -25,10 +25,6 @@ public class OppgaveBeholdningStatistikkTjeneste {
 
     public List<OppgaverForAvdelingPerDato> hentAntallOppgaverForAvdelingPerDato(String avdeling) {
         return statisikkRepository.hentAlleOppgaverForAvdelingPerDato(avdeling);
-    }
-
-    public List<OppgaverForAvdelingSattManueltPåVent> hentAntallOppgaverForAvdelingSattManueltPåVent(String avdeling) {
-        return statisikkRepository.hentAntallOppgaverForAvdelingSattManueltPåVent(avdeling);
     }
 
     public List<OppgaverForFørsteStønadsdag> hentOppgaverPerFørsteStønadsdag(String avdeling) {
