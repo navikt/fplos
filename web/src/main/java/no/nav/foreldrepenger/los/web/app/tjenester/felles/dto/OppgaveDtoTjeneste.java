@@ -8,12 +8,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.inject.Inject;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 import no.nav.foreldrepenger.konfig.Environment;
 import no.nav.foreldrepenger.los.klient.person.IkkeTilgangPåPersonException;
 import no.nav.foreldrepenger.los.klient.person.PersonTjeneste;
@@ -81,7 +80,7 @@ public class OppgaveDtoTjeneste {
         if (sjekkTilgangPåBehandling) {
             sjekkTilgang(oppgave);
         }
-        var person = personTjeneste.hentPerson(oppgave.getAktørId(), String.valueOf(oppgave.getFagsakSaksnummer()))
+        var person = personTjeneste.hentPerson(oppgave.getFagsakYtelseType(), oppgave.getAktørId(), String.valueOf(oppgave.getFagsakSaksnummer()))
             .orElseThrow(() -> new LagOppgaveDtoFeil("Finner ikke person tilknyttet oppgaveId " + oppgave.getId()));
         var oppgaveStatus = oppgaveStatusDtoTjeneste.lagStatusFor(oppgave);
         return new OppgaveDto(oppgave, person, oppgaveStatus);

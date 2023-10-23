@@ -8,14 +8,14 @@ import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
-import jakarta.enterprise.context.ApplicationScoped;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import jakarta.enterprise.context.ApplicationScoped;
 import no.nav.foreldrepenger.los.domene.typer.aktør.AktørId;
 import no.nav.foreldrepenger.los.domene.typer.aktør.Fødselsnummer;
 import no.nav.foreldrepenger.los.domene.typer.aktør.Person;
+import no.nav.foreldrepenger.los.oppgave.FagsakYtelseType;
 import no.nav.pdl.Adressebeskyttelse;
 import no.nav.pdl.AdressebeskyttelseGradering;
 import no.nav.pdl.AdressebeskyttelseResponseProjection;
@@ -75,13 +75,13 @@ public class PersonTjeneste {
         return identliste.getIdenter().stream().findFirst().map(IdentInformasjon::getIdent).map(Fødselsnummer::new).orElse(null);
     }
 
-    public Optional<Person> hentPerson(AktørId aktørId, String saksnummer) {
+    public Optional<Person> hentPerson(FagsakYtelseType ytelseType, AktørId aktørId, String saksnummer) {
         Objects.requireNonNull(aktørId, "aktørId");
         if (cacheAktørIdTilPerson.get(aktørId) != null) {
             return Optional.of(cacheAktørIdTilPerson.get(aktørId));
         }
         try {
-            var person = hentPdlPerson(aktørId, saksnummer);
+            var person = hentPdlPerson(ytelseType, aktørId, saksnummer);
             cacheAktørIdTilPerson.put(aktørId, person);
             return Optional.of(person);
         } catch (PdlException e) {
@@ -96,13 +96,14 @@ public class PersonTjeneste {
         }
     }
 
-    private Person hentPdlPerson(AktørId aktørId, String saksnummer) {
+    private Person hentPdlPerson(FagsakYtelseType ytelseType, AktørId aktørId, String saksnummer) {
         var query = new HentPersonQueryRequest();
         query.setIdent(aktørId.getId());
         var projection = new PersonResponseProjection().navn(new NavnResponseProjection().forkortetNavn().fornavn().mellomnavn().etternavn())
             .adressebeskyttelse(new AdressebeskyttelseResponseProjection().gradering())
             .folkeregisteridentifikator(new FolkeregisteridentifikatorResponseProjection().identifikasjonsnummer().status().type());
-        var person = pdl.hentPerson(query, projection);
+        var ytelse = utledYtelse(ytelseType);
+        var person = pdl.hentPerson(ytelse, query, projection);
         var fnr = fnr(person.getFolkeregisteridentifikator(), aktørId, saksnummer);
         return new Person.Builder().medFnr(fnr)
             .medNavn(navn(person.getNavn()))
@@ -138,13 +139,14 @@ public class PersonTjeneste {
         return fraHentPerson.orElseThrow(() -> new IllegalArgumentException("Fant ikke fødselsnummer"));
     }
 
-    public boolean harNoenKode7MenIngenHarKode6(List<String> aktørIds) {
+    public boolean harNoenKode7MenIngenHarKode6(FagsakYtelseType ytelseType, List<String> aktørIds) {
         var query = new HentPersonBolkQueryRequest();
         query.setIdenter(aktørIds);
         var projection = new HentPersonBolkResultResponseProjection()
             .person(new PersonResponseProjection()
                 .adressebeskyttelse(new AdressebeskyttelseResponseProjection().gradering()));
-        var personer = pdl.hentPersonBolk(query, projection);
+        var ytelse = utledYtelse(ytelseType);
+        var personer = pdl.hentPersonBolk(ytelse, query, projection);
         var adresseBeskyttelser = personer.stream()
             .map(HentPersonBolkResult::getPerson)
             .map(no.nav.pdl.Person::getAdressebeskyttelse)
@@ -155,5 +157,15 @@ public class PersonTjeneste {
             || adresseBeskyttelser.contains(AdressebeskyttelseGradering.STRENGT_FORTROLIG_UTLAND);
         var harNoenKode7 = adresseBeskyttelser.contains(AdressebeskyttelseGradering.FORTROLIG);
         return harNoenKode7 && !harNoenKode6;
+    }
+
+    private static Persondata.Ytelse utledYtelse(FagsakYtelseType ytelseType) {
+        if (FagsakYtelseType.ENGANGSTØNAD.equals(ytelseType)) {
+            return Persondata.Ytelse.ENGANGSSTØNAD;
+        } else if (FagsakYtelseType.SVANGERSKAPSPENGER.equals(ytelseType)) {
+            return Persondata.Ytelse.SVANGERSKAPSPENGER;
+        } else {
+            return Persondata.Ytelse.FORELDREPENGER;
+        }
     }
 }
