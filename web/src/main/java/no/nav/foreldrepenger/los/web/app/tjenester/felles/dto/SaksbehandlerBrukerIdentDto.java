@@ -19,10 +19,9 @@ public class SaksbehandlerBrukerIdentDto implements AbacDto {
     @NotNull
     @Size(max = 100)
     @Pattern(regexp = InputValideringRegex.FRITEKST)
-    private final String brukerIdent;
+    private String brukerIdent;
 
     public SaksbehandlerBrukerIdentDto() {
-        brukerIdent = null; // NOSONAR
     }
 
     public SaksbehandlerBrukerIdentDto(String brukerIdent) {

@@ -10,6 +10,7 @@ import no.nav.foreldrepenger.los.oppgave.OppgaveRepository;
 import no.nav.foreldrepenger.los.organisasjon.Avdeling;
 import no.nav.foreldrepenger.los.organisasjon.OrganisasjonRepository;
 import no.nav.foreldrepenger.los.organisasjon.Saksbehandler;
+import no.nav.foreldrepenger.los.organisasjon.SaksbehandlerGruppe;
 import no.nav.vedtak.exception.TekniskException;
 
 @ApplicationScoped
@@ -37,7 +38,7 @@ public class AvdelingslederSaksbehandlerTjeneste {
             .orElseGet(() -> opprettSaksbehandler(saksbehandlerIdent));
         var avdeling = hentAvdeling(avdelingEnhet);
         saksbehandler.leggTilAvdeling(avdeling);
-        organisasjonRepository.lagre(saksbehandler);
+        organisasjonRepository.persistFlush(saksbehandler);
         organisasjonRepository.refresh(avdeling);
     }
 
@@ -45,7 +46,7 @@ public class AvdelingslederSaksbehandlerTjeneste {
         var saksbehandler = organisasjonRepository.hentSaksbehandlerHvisEksisterer(saksbehandlerIdent)
             .orElseThrow(() -> AvdelingSaksbehandlerTjenesteFeil.finnerIkkeSaksbehandler(saksbehandlerIdent));
         saksbehandler.fjernAvdeling(organisasjonRepository.hentAvdelingFraEnhet(avdelingEnhet).orElseThrow());
-        organisasjonRepository.lagre(saksbehandler);
+        organisasjonRepository.persistFlush(saksbehandler);
 
         var avdeling = hentAvdeling(avdelingEnhet);
         var oppgaveFiltreringList = avdeling.getOppgaveFiltrering();
@@ -62,9 +63,38 @@ public class AvdelingslederSaksbehandlerTjeneste {
 
     private Saksbehandler opprettSaksbehandler(String ident) {
         var saksbehandler = new Saksbehandler(ident.toUpperCase());
-        organisasjonRepository.lagre(saksbehandler);
+        organisasjonRepository.persistFlush(saksbehandler);
         return organisasjonRepository.hentSaksbehandlerHvisEksisterer(ident)
             .orElseThrow(() -> AvdelingSaksbehandlerTjenesteFeil.finnerIkkeSaksbehandler(ident));
+    }
+
+    public List<SaksbehandlerGruppe> hentAvdelingensSaksbehandlereOgGrupper(String avdelingEnhet) {
+        return organisasjonRepository.hentSaksbehandlerGrupper(avdelingEnhet);
+    }
+
+    public void leggSaksbehandlerTilGruppe(String saksbehandlerId, int gruppeId, String avdelingEnhet) {
+        organisasjonRepository.leggSaksbehandlerTilGruppe(saksbehandlerId, gruppeId, avdelingEnhet);
+    }
+
+    public void fjernSaksbehandlerFraGruppe(String saksbehandlerId, int gruppeId) {
+        organisasjonRepository.fjernSaksbehandlerFraGruppe(saksbehandlerId, gruppeId);
+    }
+
+    public SaksbehandlerGruppe opprettSaksbehandlerGruppe(String avdelingEnhet) {
+        var gruppe = new SaksbehandlerGruppe();
+        var avdeling = hentAvdeling(avdelingEnhet);
+        gruppe.setGruppeNavn("Ny saksbehandlergruppe");
+        gruppe.setAvdeling(avdeling);
+        organisasjonRepository.persistFlush(gruppe);
+        return gruppe;
+    }
+
+    public void endreSaksbehandlerGruppeNavn(long gruppeId, String gruppeNavn) {
+        organisasjonRepository.updateSaksbehandlerGruppeNavn(gruppeId, gruppeNavn);
+    }
+
+    public void slettSaksbehandlerGruppe(long gruppeId, String avdelingEnhet) {
+        organisasjonRepository.slettSaksbehandlerGruppe(gruppeId, avdelingEnhet);
     }
 
     private static final class AvdelingSaksbehandlerTjenesteFeil {

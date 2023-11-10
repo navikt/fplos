@@ -10,6 +10,8 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
+import no.nav.foreldrepenger.los.felles.BaseEntitet;
+import no.nav.vedtak.exception.FunksjonellException;
 
 
 @ApplicationScoped
@@ -25,7 +27,7 @@ public class OrganisasjonRepository {
     OrganisasjonRepository() {
     }
 
-    public void lagre(Saksbehandler saksbehandler) {
+    public <T extends BaseEntitet> void persistFlush(T saksbehandler) {
         entityManager.persist(saksbehandler);
         entityManager.flush();
     }
@@ -58,5 +60,57 @@ public class OrganisasjonRepository {
     public List<Avdeling> hentAvdelinger() {
         var listeTypedQuery = entityManager.createQuery("FROM avdeling ", Avdeling.class);
         return listeTypedQuery.getResultList();
+    }
+
+    public List<SaksbehandlerGruppe> hentSaksbehandlerGrupper(String avdelingEnhet) {
+        return entityManager.createQuery("FROM saksbehandlerGruppe g where g.avdeling.avdelingEnhet = :avdelingEnhet", SaksbehandlerGruppe.class)
+            .setParameter("avdelingEnhet", avdelingEnhet)
+            .getResultList();
+    }
+
+    public void leggSaksbehandlerTilGruppe(String saksbehandlerId, int gruppeId, String avdelingEnhet) {
+        var gruppe = entityManager.find(SaksbehandlerGruppe.class, gruppeId);
+        if (gruppe == null || !gruppe.getAvdeling().getAvdelingEnhet().equals(avdelingEnhet)) {
+            throw new FunksjonellException("FP-164687", String.format("Fant ikke gruppe %s for avdeling %s", gruppeId, avdelingEnhet),
+                "Kontroller logisk sammenheng mellom gruppe og enhet");
+        }
+        var saksbehandler = hentSaksbehandlerHvisEksisterer(saksbehandlerId).filter(sb -> sb.getAvdelinger().contains(gruppe.getAvdeling()));
+        saksbehandler.ifPresentOrElse(sb -> {
+            gruppe.getSaksbehandlere().add(sb);
+            entityManager.persist(gruppe);
+        }, () -> {
+            throw new FunksjonellException("FP-164687",
+                String.format("Fant ikke saksbehandler %s tilknyttet avdeling %s", saksbehandlerId, avdelingEnhet),
+                "Kontroller logisk sammenheng mellom saksbehandler, gruppe og enhet");
+        });
+    }
+
+    public void fjernSaksbehandlerFraGruppe(String saksbehandlerIdent, int gruppeId) {
+        var gruppe = entityManager.find(SaksbehandlerGruppe.class, gruppeId);
+        if (gruppe == null) {
+            throw new IllegalArgumentException("Fant ikke gruppe");
+        }
+        gruppe.getSaksbehandlere().removeIf(s -> s.getSaksbehandlerIdent().equals(saksbehandlerIdent));
+        entityManager.persist(gruppe);
+    }
+
+    public void updateSaksbehandlerGruppeNavn(long gruppeId, String gruppeNavn) {
+        entityManager.createQuery("UPDATE saksbehandlerGruppe g SET g.gruppeNavn = :gruppeNavn WHERE g.id = :gruppeId")
+            .setParameter("gruppeNavn", gruppeNavn)
+            .setParameter("gruppeId", gruppeId)
+            .executeUpdate();
+    }
+
+    public void slettSaksbehandlerGruppe(long gruppeId, String avdelingEnhet) {
+        var gruppe = entityManager.find(SaksbehandlerGruppe.class, gruppeId);
+        if (gruppe == null || !gruppe.getAvdeling().getAvdelingEnhet().equals(avdelingEnhet)) {
+            throw new FunksjonellException("FP-164687", String.format("Fant ikke gruppe %s for avdeling %s", gruppeId, avdelingEnhet),
+                "Kontroller logisk sammenheng mellom gruppe og enhet");
+        }
+        gruppe.getSaksbehandlere().clear();
+        entityManager.persist(gruppe);
+        entityManager.createQuery("DELETE FROM saksbehandlerGruppe g WHERE g.id = :gruppeId")
+            .setParameter("gruppeId", gruppeId)
+            .executeUpdate();
     }
 }
