@@ -10,6 +10,8 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
+import no.nav.foreldrepenger.los.felles.BaseEntitet;
+import no.nav.vedtak.felles.jpa.TomtResultatException;
 
 
 @ApplicationScoped
@@ -25,7 +27,7 @@ public class OrganisasjonRepository {
     OrganisasjonRepository() {
     }
 
-    public void lagre(Saksbehandler saksbehandler) {
+    public <T extends BaseEntitet> void persistFlush(T saksbehandler) {
         entityManager.persist(saksbehandler);
         entityManager.flush();
     }
@@ -59,4 +61,62 @@ public class OrganisasjonRepository {
         var listeTypedQuery = entityManager.createQuery("FROM avdeling ", Avdeling.class);
         return listeTypedQuery.getResultList();
     }
+
+    public List<SaksbehandlerGruppe> hentSaksbehandlerGrupper(String avdelingEnhet) {
+        return entityManager.createQuery("FROM saksbehandlerGruppe g where g.avdeling.avdelingEnhet = :avdelingEnhet", SaksbehandlerGruppe.class)
+            .setParameter("avdelingEnhet", avdelingEnhet)
+            .getResultList();
+    }
+
+    public void leggSaksbehandlerTilGruppe(String saksbehandlerId, long gruppeId, String avdelingEnhet) {
+        var gruppe = entityManager.find(SaksbehandlerGruppe.class, gruppeId);
+        sjekkGruppeEnhetTilknytning(gruppeId, avdelingEnhet, gruppe);
+        var saksbehandler = hentSaksbehandlerHvisEksisterer(saksbehandlerId).filter(sb -> sb.getAvdelinger().contains(gruppe.getAvdeling()));
+        saksbehandler.ifPresentOrElse(sb -> {
+            gruppe.getSaksbehandlere().add(sb);
+            entityManager.persist(gruppe);
+        }, () -> {
+            throw fantIkkeSaksbehandlerException(saksbehandlerId, avdelingEnhet);
+        });
+    }
+
+    public void fjernSaksbehandlerFraGruppe(String saksbehandlerIdent, long gruppeId, String avdelingEnhet) {
+        var gruppe = entityManager.find(SaksbehandlerGruppe.class, gruppeId);
+        sjekkGruppeEnhetTilknytning(gruppeId, avdelingEnhet, gruppe);
+        gruppe.getSaksbehandlere().removeIf(s -> s.getSaksbehandlerIdent().equals(saksbehandlerIdent));
+        entityManager.persist(gruppe);
+    }
+
+    public void updateSaksbehandlerGruppeNavn(long gruppeId, String gruppeNavn) {
+        entityManager.createQuery("UPDATE saksbehandlerGruppe g SET g.gruppeNavn = :gruppeNavn WHERE g.id = :gruppeId")
+            .setParameter("gruppeNavn", gruppeNavn)
+            .setParameter("gruppeId", gruppeId)
+            .executeUpdate();
+    }
+
+    public void slettSaksbehandlerGruppe(long gruppeId, String avdelingEnhet) {
+        var gruppe = entityManager.find(SaksbehandlerGruppe.class, gruppeId);
+        sjekkGruppeEnhetTilknytning(gruppeId, avdelingEnhet, gruppe);
+        gruppe.getSaksbehandlere().clear();
+        entityManager.merge(gruppe);
+        entityManager.remove(gruppe);
+        entityManager.flush();
+    }
+
+    private static void sjekkGruppeEnhetTilknytning(long gruppeId, String avdelingEnhet, SaksbehandlerGruppe gruppe) {
+        if (gruppe == null || !gruppe.getAvdeling().getAvdelingEnhet().equals(avdelingEnhet)) {
+            throw fantIkkeGruppeException(gruppeId, avdelingEnhet);
+        }
+    }
+
+    private static TomtResultatException fantIkkeGruppeException(long gruppeId, String avdelingEnhet) {
+        return new TomtResultatException("FP-164688", String.format("Fant ikke gruppe %s for avdeling %s", gruppeId, avdelingEnhet));
+    }
+
+    private static TomtResultatException fantIkkeSaksbehandlerException(String saksbehandlerIdent, String avdelingEnhet) {
+        return new TomtResultatException("FP-164689",
+            String.format("Fant ikke saksbehandler %s tilknyttet avdeling %s", saksbehandlerIdent, avdelingEnhet));
+    }
+
+
 }

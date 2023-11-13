@@ -9,7 +9,7 @@ public class SaksbehandlerMedAvdelingerDto {
     private SaksbehandlerDto saksbehandlerDto;
     private List<String> avdelingsnavn;
 
-    SaksbehandlerMedAvdelingerDto(SaksbehandlerDto saksbehandlerDto, List<String> avdelingsnavn) {
+    public SaksbehandlerMedAvdelingerDto(SaksbehandlerDto saksbehandlerDto, List<String> avdelingsnavn) {
         this.saksbehandlerDto = saksbehandlerDto;
         this.avdelingsnavn = avdelingsnavn;
     }
