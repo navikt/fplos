@@ -109,11 +109,11 @@ public class AvdelingslederSaksbehandlerRestTjeneste {
     }
 
     @POST
-    @Path("/grupper/endre-gruppe")
+    @Path("/grupper/endre-gruppenavn")
     @Operation(description = "Gir nytt navn til gruppe", tags = "AvdelingslederSaksbehandlergrupper")
     @BeskyttetRessurs(actionType = ActionType.UPDATE, resourceType = ResourceType.OPPGAVESTYRING_AVDELINGENHET)
     public void endreSaksbehandlerGruppe(@Valid SaksbehandlerGruppeNavneEndringDto dto) {
-        avdelingslederSaksbehandlerTjeneste.endreSaksbehandlerGruppeNavn(dto.gruppeId(), dto.gruppeNavn());
+        avdelingslederSaksbehandlerTjeneste.endreSaksbehandlerGruppeNavn(dto.gruppeId(), dto.gruppeNavn(), dto.avdelingEnhet().getAvdelingEnhet());
     }
 
     @POST

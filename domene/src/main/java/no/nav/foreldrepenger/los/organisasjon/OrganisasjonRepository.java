@@ -84,14 +84,14 @@ public class OrganisasjonRepository {
         var gruppe = entityManager.find(SaksbehandlerGruppe.class, gruppeId);
         sjekkGruppeEnhetTilknytning(gruppeId, avdelingEnhet, gruppe);
         gruppe.getSaksbehandlere().removeIf(s -> s.getSaksbehandlerIdent().equals(saksbehandlerIdent));
-        entityManager.persist(gruppe);
+        entityManager.merge(gruppe);
     }
 
-    public void updateSaksbehandlerGruppeNavn(long gruppeId, String gruppeNavn) {
-        entityManager.createQuery("UPDATE saksbehandlerGruppe g SET g.gruppeNavn = :gruppeNavn WHERE g.id = :gruppeId")
-            .setParameter("gruppeNavn", gruppeNavn)
-            .setParameter("gruppeId", gruppeId)
-            .executeUpdate();
+    public void updateSaksbehandlerGruppeNavn(long gruppeId, String gruppeNavn, String avdelingEnhet) {
+        var gruppe = entityManager.find(SaksbehandlerGruppe.class, gruppeId);
+        sjekkGruppeEnhetTilknytning(gruppeId, avdelingEnhet, gruppe);
+        gruppe.setGruppeNavn(gruppeNavn);
+        entityManager.merge(gruppe);
     }
 
     public void slettSaksbehandlerGruppe(long gruppeId, String avdelingEnhet) {
