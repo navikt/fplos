@@ -15,8 +15,6 @@ import no.nav.foreldrepenger.los.web.app.tjenester.felles.dto.SaksbehandlerDtoTj
 
 import no.nav.foreldrepenger.los.web.app.tjenester.felles.dto.SaksbehandlerMedAvdelingerDto;
 
-import no.nav.vedtak.exception.FunksjonellException;
-
 import no.nav.vedtak.felles.jpa.TomtResultatException;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -71,7 +69,7 @@ class AvdelingslederSaksbehandlerRestTjenesteTest {
     @Test
     void kan_slette_gruppe() {
         var gruppe = restTjeneste.opprettSaksbehandlerGruppe(avdelingDto);
-        restTjeneste.slettSaksbehandlerGruppe(new SaksbehandlerGruppeSletteRequestDto((int) gruppe.gruppeId(), avdelingDto));
+        restTjeneste.slettSaksbehandlerGruppe(new SaksbehandlerGruppeSletteRequestDto(gruppe.gruppeId(), avdelingDto));
         var etterSletting = restTjeneste.hentSaksbehandlerGrupper(avdelingDto);
         assertThat(etterSletting.saksbehandlerGrupper()).isEmpty();
     }
@@ -96,11 +94,11 @@ class AvdelingslederSaksbehandlerRestTjenesteTest {
         setupMockForMappingAvSaksbehandlerDto();
         var gruppe = restTjeneste.opprettSaksbehandlerGruppe(avdelingDto);
         restTjeneste.leggTilNySaksbehandler(new SaksbehandlerOgAvdelingDto(brukerIdentDto, avdelingDto));
-        restTjeneste.leggSaksbehandlerTilGruppe(new SaksbehandlerOgGruppeDto(brukerIdentDto, avdelingDto, (int) gruppe.gruppeId()));
+        restTjeneste.leggSaksbehandlerTilGruppe(new SaksbehandlerOgGruppeDto(brukerIdentDto, avdelingDto, gruppe.gruppeId()));
         var hentetGrupper = restTjeneste.hentSaksbehandlerGrupper(avdelingDto);
         assertThat(hentetGrupper.saksbehandlerGrupper().get(0).saksbehandlere()).hasSize(1);
 
-        restTjeneste.fjernSaksbehandlerFraGruppe(new SaksbehandlerOgGruppeDto(brukerIdentDto, avdelingDto, (int) gruppe.gruppeId()));
+        restTjeneste.fjernSaksbehandlerFraGruppe(new SaksbehandlerOgGruppeDto(brukerIdentDto, avdelingDto, gruppe.gruppeId()));
         var etterSletting = restTjeneste.hentSaksbehandlerGrupper(avdelingDto);
         assertThat(etterSletting.saksbehandlerGrupper().get(0).saksbehandlere()).isEmpty();
     }
@@ -109,8 +107,8 @@ class AvdelingslederSaksbehandlerRestTjenesteTest {
     void kan_gi_grupper_nytt_navn() {
         var gruppe = restTjeneste.opprettSaksbehandlerGruppe(avdelingDto);
         assertThat(gruppe.gruppeNavn()).isNotEqualTo("Nytt navn");
-        restTjeneste.endreSaksbehandlerGruppe(new SaksbehandlerGruppeNavneEndringDto((int) gruppe.gruppeId(), "Nytt navn", avdelingDto));
-        entityManager.clear(); // simulerer ny transaksjon
+        restTjeneste.endreSaksbehandlerGruppe(new SaksbehandlerGruppeNavneEndringDto(gruppe.gruppeId(), "Nytt navn", avdelingDto));
+        entityManager.clear(); // glem eksisterende entiteter for å hente nytt fra databasen
         var hentetGrupper = restTjeneste.hentSaksbehandlerGrupper(avdelingDto);
         var oppdatertGruppe = hentetGrupper.saksbehandlerGrupper().get(0);
         assertThat(oppdatertGruppe.gruppeNavn()).isEqualTo("Nytt navn");
@@ -136,9 +134,9 @@ class AvdelingslederSaksbehandlerRestTjenesteTest {
         setupMockForMappingAvSaksbehandlerDto();
         var førsteGruppe = restTjeneste.opprettSaksbehandlerGruppe(avdelingDto);
         restTjeneste.leggTilNySaksbehandler(new SaksbehandlerOgAvdelingDto(brukerIdentDto, avdelingDto));
-        restTjeneste.leggSaksbehandlerTilGruppe(new SaksbehandlerOgGruppeDto(brukerIdentDto, avdelingDto, (int) førsteGruppe.gruppeId()));
+        restTjeneste.leggSaksbehandlerTilGruppe(new SaksbehandlerOgGruppeDto(brukerIdentDto, avdelingDto, førsteGruppe.gruppeId()));
         var andreGruppe = restTjeneste.opprettSaksbehandlerGruppe(avdelingDto);
-        var saksbehandlerOgGruppeDto = new SaksbehandlerOgGruppeDto(brukerIdentDto, avdelingDto, (int) andreGruppe.gruppeId());
+        var saksbehandlerOgGruppeDto = new SaksbehandlerOgGruppeDto(brukerIdentDto, avdelingDto, andreGruppe.gruppeId());
         restTjeneste.leggSaksbehandlerTilGruppe(saksbehandlerOgGruppeDto);
         restTjeneste.fjernSaksbehandlerFraGruppe(saksbehandlerOgGruppeDto);
 

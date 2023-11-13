@@ -35,8 +35,12 @@ public class SaksbehandlerGruppe extends BaseEntitet {
     @JoinTable(name = "gruppe_tilknytning", joinColumns = @JoinColumn(name = "gruppe_id"), inverseJoinColumns = @JoinColumn(name = "saksbehandler_id"))
     private Set<Saksbehandler> saksbehandlere = new HashSet<>();
 
-    public SaksbehandlerGruppe() {
+    SaksbehandlerGruppe() {
+        // hibernate
+    }
 
+    public SaksbehandlerGruppe(String gruppeNavn) {
+        this.gruppeNavn = gruppeNavn;
     }
 
     public Long getId() {

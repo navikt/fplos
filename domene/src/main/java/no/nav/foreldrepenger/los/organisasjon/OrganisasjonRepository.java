@@ -98,10 +98,9 @@ public class OrganisasjonRepository {
         var gruppe = entityManager.find(SaksbehandlerGruppe.class, gruppeId);
         sjekkGruppeEnhetTilknytning(gruppeId, avdelingEnhet, gruppe);
         gruppe.getSaksbehandlere().clear();
-        entityManager.persist(gruppe);
-        entityManager.createQuery("DELETE FROM saksbehandlerGruppe g WHERE g.id = :gruppeId")
-            .setParameter("gruppeId", gruppeId)
-            .executeUpdate();
+        entityManager.merge(gruppe);
+        entityManager.remove(gruppe);
+        entityManager.flush();
     }
 
     private static void sjekkGruppeEnhetTilknytning(long gruppeId, String avdelingEnhet, SaksbehandlerGruppe gruppe) {
