@@ -48,11 +48,9 @@ class AvdelingslederSaksbehandlerRestTjenesteTest {
 
     @Mock
     private OppgaveRepository oppgaveRepository;
-    private EntityManager entityManager;
 
     @BeforeEach
     public void setUp(EntityManager entityManager) {
-        this.entityManager = entityManager;
         var organisasjonRepository = new OrganisasjonRepository(entityManager);
         avdelingslederSaksbehandlerTjeneste = new AvdelingslederSaksbehandlerTjeneste(oppgaveRepository, organisasjonRepository);
         restTjeneste = new AvdelingslederSaksbehandlerRestTjeneste(avdelingslederSaksbehandlerTjeneste, saksbehandlerDtoTjeneste);
@@ -99,6 +97,7 @@ class AvdelingslederSaksbehandlerRestTjenesteTest {
         assertThat(hentetGrupper.saksbehandlerGrupper().get(0).saksbehandlere()).hasSize(1);
 
         restTjeneste.fjernSaksbehandlerFraGruppe(new SaksbehandlerOgGruppeDto(brukerIdentDto, avdelingDto, gruppe.gruppeId()));
+
         var etterSletting = restTjeneste.hentSaksbehandlerGrupper(avdelingDto);
         assertThat(etterSletting.saksbehandlerGrupper().get(0).saksbehandlere()).isEmpty();
     }
@@ -108,7 +107,6 @@ class AvdelingslederSaksbehandlerRestTjenesteTest {
         var gruppe = restTjeneste.opprettSaksbehandlerGruppe(avdelingDto);
         assertThat(gruppe.gruppeNavn()).isNotEqualTo("Nytt navn");
         restTjeneste.endreSaksbehandlerGruppe(new SaksbehandlerGruppeNavneEndringDto(gruppe.gruppeId(), "Nytt navn", avdelingDto));
-        entityManager.clear(); // glem eksisterende entiteter for å hente nytt fra databasen
         var hentetGrupper = restTjeneste.hentSaksbehandlerGrupper(avdelingDto);
         var oppdatertGruppe = hentetGrupper.saksbehandlerGrupper().get(0);
         assertThat(oppdatertGruppe.gruppeNavn()).isEqualTo("Nytt navn");

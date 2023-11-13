@@ -88,8 +88,8 @@ public class AvdelingslederSaksbehandlerTjeneste {
         return gruppe;
     }
 
-    public void endreSaksbehandlerGruppeNavn(long gruppeId, String gruppeNavn) {
-        organisasjonRepository.updateSaksbehandlerGruppeNavn(gruppeId, gruppeNavn);
+    public void endreSaksbehandlerGruppeNavn(long gruppeId, String gruppeNavn, String avdelingEnhet) {
+        organisasjonRepository.updateSaksbehandlerGruppeNavn(gruppeId, gruppeNavn, avdelingEnhet);
     }
 
     public void slettSaksbehandlerGruppe(long gruppeId, String avdelingEnhet) {
