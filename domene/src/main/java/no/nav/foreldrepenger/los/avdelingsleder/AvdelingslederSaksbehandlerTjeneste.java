@@ -72,12 +72,12 @@ public class AvdelingslederSaksbehandlerTjeneste {
         return organisasjonRepository.hentSaksbehandlerGrupper(avdelingEnhet);
     }
 
-    public void leggSaksbehandlerTilGruppe(String saksbehandlerId, int gruppeId, String avdelingEnhet) {
+    public void leggSaksbehandlerTilGruppe(String saksbehandlerId, long gruppeId, String avdelingEnhet) {
         organisasjonRepository.leggSaksbehandlerTilGruppe(saksbehandlerId, gruppeId, avdelingEnhet);
     }
 
-    public void fjernSaksbehandlerFraGruppe(String saksbehandlerId, int gruppeId) {
-        organisasjonRepository.fjernSaksbehandlerFraGruppe(saksbehandlerId, gruppeId);
+    public void fjernSaksbehandlerFraGruppe(String saksbehandlerId, long gruppeId, String avdelingEnhet) {
+        organisasjonRepository.fjernSaksbehandlerFraGruppe(saksbehandlerId, gruppeId, avdelingEnhet);
     }
 
     public SaksbehandlerGruppe opprettSaksbehandlerGruppe(String avdelingEnhet) {

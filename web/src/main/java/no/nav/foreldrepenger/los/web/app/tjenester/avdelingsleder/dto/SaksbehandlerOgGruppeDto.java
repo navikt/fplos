@@ -11,7 +11,7 @@ import no.nav.vedtak.sikkerhet.abac.AbacDto;
 
 public record SaksbehandlerOgGruppeDto(@NotNull @Valid SaksbehandlerBrukerIdentDto brukerIdent,
                                        @NotNull @Valid AvdelingEnhetDto avdelingEnhet,
-                                       @Min(1) @Max(Integer.MAX_VALUE) int gruppeId) implements AbacDto {
+                                       @Min(1) @Max(Integer.MAX_VALUE) long gruppeId) implements AbacDto {
 
     @Override
     public AbacDataAttributter abacAttributter() {

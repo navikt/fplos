@@ -15,14 +15,21 @@ import no.nav.foreldrepenger.los.web.app.tjenester.felles.dto.SaksbehandlerDtoTj
 
 import no.nav.foreldrepenger.los.web.app.tjenester.felles.dto.SaksbehandlerMedAvdelingerDto;
 
+import no.nav.vedtak.exception.FunksjonellException;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.Objects;
+
 import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatNoException;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.fail;
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.when;
 
@@ -64,7 +71,7 @@ class AvdelingslederSaksbehandlerRestTjenesteTest {
         var gruppe = restTjeneste.opprettSaksbehandlerGruppe(avdelingDto);
         restTjeneste.slettSaksbehandlerGruppe(new SaksbehandlerGruppeSletteRequestDto((int) gruppe.gruppeId(), avdelingDto));
         var etterSletting = restTjeneste.hentSaksbehandlerGrupper(avdelingDto);
-        assertThat(etterSletting.saksbehandlerGrupper()).hasSize(0);
+        assertThat(etterSletting.saksbehandlerGrupper()).isEmpty();
     }
 
     @Test
@@ -93,7 +100,7 @@ class AvdelingslederSaksbehandlerRestTjenesteTest {
 
         restTjeneste.fjernSaksbehandlerFraGruppe(new SaksbehandlerOgGruppeDto(brukerIdentDto, avdelingDto, (int) gruppe.gruppeId()));
         var etterSletting = restTjeneste.hentSaksbehandlerGrupper(avdelingDto);
-        assertThat(etterSletting.saksbehandlerGrupper().get(0).saksbehandlere()).hasSize(0);
+        assertThat(etterSletting.saksbehandlerGrupper().get(0).saksbehandlere()).isEmpty();
     }
 
     @Test
@@ -107,11 +114,50 @@ class AvdelingslederSaksbehandlerRestTjenesteTest {
         assertThat(oppdatertGruppe.gruppeNavn()).isEqualTo("Nytt navn");
     }
 
+    @Test
+    void skal_gi_feilmelding_når_gruppe_ikke_finnes() {
+        var dto = new SaksbehandlerGruppeSletteRequestDto(1, avdelingDto);
+        assertThatThrownBy(() -> restTjeneste.slettSaksbehandlerGruppe(dto)).isInstanceOf(FunksjonellException.class)
+            .extracting(Throwable::getMessage)
+            .matches(s -> s.contains("Fant ikke gruppe " + dto.gruppeId() + " for avdeling " + avdelingDto.getAvdelingEnhet()));
+    }
+
+    @Test
+    void skal_håndtere_at_saksbehandler_ikke_er_tilknyttet_gruppe() {
+        var gruppe = restTjeneste.opprettSaksbehandlerGruppe(avdelingDto);
+        var dto = new SaksbehandlerOgGruppeDto(brukerIdentDto, avdelingDto, gruppe.gruppeId());
+        assertThatNoException().isThrownBy(() -> restTjeneste.fjernSaksbehandlerFraGruppe(dto));
+    }
+
+    @Test
+    void skal_kunne_fjerne_saksbehandler_fra_individuelle_grupper() {
+        setupMockForMappingAvSaksbehandlerDto();
+        var førsteGruppe = restTjeneste.opprettSaksbehandlerGruppe(avdelingDto);
+        restTjeneste.leggTilNySaksbehandler(new SaksbehandlerOgAvdelingDto(brukerIdentDto, avdelingDto));
+        restTjeneste.leggSaksbehandlerTilGruppe(new SaksbehandlerOgGruppeDto(brukerIdentDto, avdelingDto, (int) førsteGruppe.gruppeId()));
+        var andreGruppe = restTjeneste.opprettSaksbehandlerGruppe(avdelingDto);
+        var saksbehandlerOgGruppeDto = new SaksbehandlerOgGruppeDto(brukerIdentDto, avdelingDto, (int) andreGruppe.gruppeId());
+        restTjeneste.leggSaksbehandlerTilGruppe(saksbehandlerOgGruppeDto);
+        restTjeneste.fjernSaksbehandlerFraGruppe(saksbehandlerOgGruppeDto);
+
+        var hentetGrupper = restTjeneste.hentSaksbehandlerGrupper(avdelingDto);
+        var hentetGrupperListe = hentetGrupper.saksbehandlerGrupper();
+        assertThat(hentetGrupperListe).hasSize(2);
+        for (var res : hentetGrupperListe) {
+            if (Objects.equals(res.gruppeId(), førsteGruppe.gruppeId())) {
+                assertThat(res.saksbehandlere()).hasSize(1);
+            } else if (Objects.equals(res.gruppeId(), andreGruppe.gruppeId())) {
+                assertThat(res.saksbehandlere()).isEmpty();
+            }
+            else {
+                fail("Ukjent gruppe");
+            }
+        }
+    }
+
     private void setupMockForMappingAvSaksbehandlerDto() {
         when(saksbehandlerDtoTjeneste.lagKjentOgUkjentSaksbehandlerMedAvdelingerDto(argThat(sb -> sb.getSaksbehandlerIdent().equals("Z999999"))))
             .thenReturn(new SaksbehandlerMedAvdelingerDto(saksbehandlerDto, singletonList(avdelingDto.getAvdelingEnhet())));
     }
-
-
 
 }

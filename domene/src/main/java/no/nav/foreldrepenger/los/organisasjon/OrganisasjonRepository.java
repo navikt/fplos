@@ -11,7 +11,7 @@ import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
 import no.nav.foreldrepenger.los.felles.BaseEntitet;
-import no.nav.vedtak.exception.FunksjonellException;
+import no.nav.vedtak.felles.jpa.TomtResultatException;
 
 
 @ApplicationScoped
@@ -68,28 +68,21 @@ public class OrganisasjonRepository {
             .getResultList();
     }
 
-    public void leggSaksbehandlerTilGruppe(String saksbehandlerId, int gruppeId, String avdelingEnhet) {
+    public void leggSaksbehandlerTilGruppe(String saksbehandlerId, long gruppeId, String avdelingEnhet) {
         var gruppe = entityManager.find(SaksbehandlerGruppe.class, gruppeId);
-        if (gruppe == null || !gruppe.getAvdeling().getAvdelingEnhet().equals(avdelingEnhet)) {
-            throw new FunksjonellException("FP-164687", String.format("Fant ikke gruppe %s for avdeling %s", gruppeId, avdelingEnhet),
-                "Kontroller logisk sammenheng mellom gruppe og enhet");
-        }
+        sjekkGruppeEnhetTilknytning(gruppeId, avdelingEnhet, gruppe);
         var saksbehandler = hentSaksbehandlerHvisEksisterer(saksbehandlerId).filter(sb -> sb.getAvdelinger().contains(gruppe.getAvdeling()));
         saksbehandler.ifPresentOrElse(sb -> {
             gruppe.getSaksbehandlere().add(sb);
             entityManager.persist(gruppe);
         }, () -> {
-            throw new FunksjonellException("FP-164687",
-                String.format("Fant ikke saksbehandler %s tilknyttet avdeling %s", saksbehandlerId, avdelingEnhet),
-                "Kontroller logisk sammenheng mellom saksbehandler, gruppe og enhet");
+            throw fantIkkeSaksbehandlerException(saksbehandlerId, avdelingEnhet);
         });
     }
 
-    public void fjernSaksbehandlerFraGruppe(String saksbehandlerIdent, int gruppeId) {
+    public void fjernSaksbehandlerFraGruppe(String saksbehandlerIdent, long gruppeId, String avdelingEnhet) {
         var gruppe = entityManager.find(SaksbehandlerGruppe.class, gruppeId);
-        if (gruppe == null) {
-            throw new IllegalArgumentException("Fant ikke gruppe");
-        }
+        sjekkGruppeEnhetTilknytning(gruppeId, avdelingEnhet, gruppe);
         gruppe.getSaksbehandlere().removeIf(s -> s.getSaksbehandlerIdent().equals(saksbehandlerIdent));
         entityManager.persist(gruppe);
     }
@@ -103,14 +96,28 @@ public class OrganisasjonRepository {
 
     public void slettSaksbehandlerGruppe(long gruppeId, String avdelingEnhet) {
         var gruppe = entityManager.find(SaksbehandlerGruppe.class, gruppeId);
-        if (gruppe == null || !gruppe.getAvdeling().getAvdelingEnhet().equals(avdelingEnhet)) {
-            throw new FunksjonellException("FP-164687", String.format("Fant ikke gruppe %s for avdeling %s", gruppeId, avdelingEnhet),
-                "Kontroller logisk sammenheng mellom gruppe og enhet");
-        }
+        sjekkGruppeEnhetTilknytning(gruppeId, avdelingEnhet, gruppe);
         gruppe.getSaksbehandlere().clear();
         entityManager.persist(gruppe);
         entityManager.createQuery("DELETE FROM saksbehandlerGruppe g WHERE g.id = :gruppeId")
             .setParameter("gruppeId", gruppeId)
             .executeUpdate();
     }
+
+    private static void sjekkGruppeEnhetTilknytning(long gruppeId, String avdelingEnhet, SaksbehandlerGruppe gruppe) {
+        if (gruppe == null || !gruppe.getAvdeling().getAvdelingEnhet().equals(avdelingEnhet)) {
+            throw fantIkkeGruppeException(gruppeId, avdelingEnhet);
+        }
+    }
+
+    private static TomtResultatException fantIkkeGruppeException(long gruppeId, String avdelingEnhet) {
+        return new TomtResultatException("FP-164688", String.format("Fant ikke gruppe %s for avdeling %s", gruppeId, avdelingEnhet));
+    }
+
+    private static TomtResultatException fantIkkeSaksbehandlerException(String saksbehandlerIdent, String avdelingEnhet) {
+        return new TomtResultatException("FP-164689",
+            String.format("Fant ikke saksbehandler %s tilknyttet avdeling %s", saksbehandlerIdent, avdelingEnhet));
+    }
+
+
 }
