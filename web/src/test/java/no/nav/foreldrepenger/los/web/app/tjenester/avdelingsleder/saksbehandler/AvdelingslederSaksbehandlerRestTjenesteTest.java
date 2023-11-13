@@ -17,6 +17,8 @@ import no.nav.foreldrepenger.los.web.app.tjenester.felles.dto.SaksbehandlerMedAv
 
 import no.nav.vedtak.exception.FunksjonellException;
 
+import no.nav.vedtak.felles.jpa.TomtResultatException;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -117,7 +119,7 @@ class AvdelingslederSaksbehandlerRestTjenesteTest {
     @Test
     void skal_gi_feilmelding_når_gruppe_ikke_finnes() {
         var dto = new SaksbehandlerGruppeSletteRequestDto(1, avdelingDto);
-        assertThatThrownBy(() -> restTjeneste.slettSaksbehandlerGruppe(dto)).isInstanceOf(FunksjonellException.class)
+        assertThatThrownBy(() -> restTjeneste.slettSaksbehandlerGruppe(dto)).isInstanceOf(TomtResultatException.class)
             .extracting(Throwable::getMessage)
             .matches(s -> s.contains("Fant ikke gruppe " + dto.gruppeId() + " for avdeling " + avdelingDto.getAvdelingEnhet()));
     }
