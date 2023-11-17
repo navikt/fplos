@@ -33,7 +33,9 @@ spec:
   replicas:
     min: {{minReplica}}
     max: {{maxReplica}}
-    cpuThresholdPercentage: 80
+    scalingStrategy:
+      cpu:
+        thresholdPercentage: 80
   resources:
     limits:
       cpu: 2000m
@@ -54,8 +56,6 @@ spec:
         mountPath: /var/run/secrets/nais.io/serviceuser
       - kvPath: {{ldapuserkv}}
         mountPath: /var/run/secrets/nais.io/ldap
-      - kvPath: /apikey/appdynamics/{{environment}}
-        mountPath: /var/run/secrets/nais.io/appdynamics
   env:
   {{#each env}}
    - name: {{@key}}
