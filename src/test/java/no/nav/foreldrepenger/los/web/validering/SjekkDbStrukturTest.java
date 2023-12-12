@@ -28,6 +28,7 @@ class SjekkDbStrukturTest {
     @BeforeAll
     static void setup() {
         ds = Databaseskjemainitialisering.initUnitTestDataSource();
+        Databaseskjemainitialisering.migrerUnittestSkjemaer();
         schema = Databaseskjemainitialisering.USER;
     }
 
