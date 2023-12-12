@@ -34,10 +34,6 @@ public final class Databaseskjemainitialisering {
 
     public static final String SCHEMA = "defaultDS";
 
-    public static void main(String[] args) {
-        //brukes i mvn clean install
-        migrerUnittestSkjemaer();
-    }
 
     public static DataSource initUnitTestDataSource() {
         if (DS != null) {
@@ -46,7 +42,6 @@ public final class Databaseskjemainitialisering {
         settJdniOppslag(USER);
         return DS;
     }
-
 
     public static void migrerUnittestSkjemaer() {
         if (GUARD_UNIT_TEST_SKJEMAER.compareAndSet(false, true)) {
