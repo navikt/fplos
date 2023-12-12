@@ -11,6 +11,14 @@
   ],
   "minReplica": "2",
   "maxReplica": "3",
+  "limits": {
+    "cpu": "2",
+    "mem": "3072Mi"
+  },
+  "requests": {
+    "cpu": "500m",
+    "mem": "1536Mi"
+  },
   "env": {
     "APPD_ENABLED": "true"
   },
