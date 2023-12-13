@@ -4,6 +4,7 @@ import io.swagger.v3.jaxrs2.integration.resources.OpenApiResource;
 
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.core.Application;
+import no.nav.foreldrepenger.los.konfig.ApiConfig;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -16,10 +17,10 @@ public class RestApiTester {
 
     static Collection<Method> finnAlleRestMetoder() {
         return finnAktuelleRestTjenester(new ApiConfig()).stream()
-            .map(Class::getDeclaredMethods)
-            .flatMap(Arrays::stream)
-            .filter(m -> Modifier.isPublic(m.getModifiers()))
-            .collect(Collectors.toList());
+                                                         .map(Class::getDeclaredMethods)
+                                                         .flatMap(Arrays::stream)
+                                                         .filter(m -> Modifier.isPublic(m.getModifiers()))
+                                                         .collect(Collectors.toList());
     }
 
     private static Collection<Class<?>> finnAktuelleRestTjenester(Application config) {

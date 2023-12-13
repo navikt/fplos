@@ -1,4 +1,4 @@
-package no.nav.foreldrepenger.los.web.app.konfig;
+package no.nav.foreldrepenger.los.konfig;
 
 import io.swagger.v3.jaxrs2.integration.resources.OpenApiResource;
 import io.swagger.v3.oas.integration.GenericOpenApiContextBuilder;
@@ -12,7 +12,6 @@ import no.nav.foreldrepenger.los.web.app.exceptions.ConstraintViolationMapper;
 import no.nav.foreldrepenger.los.web.app.exceptions.GeneralRestExceptionMapper;
 import no.nav.foreldrepenger.los.web.app.exceptions.JsonMappingExceptionMapper;
 import no.nav.foreldrepenger.los.web.app.exceptions.JsonParseExceptionMapper;
-import no.nav.foreldrepenger.los.web.app.jackson.JacksonJsonConfig;
 import no.nav.foreldrepenger.los.web.app.tjenester.admin.AdminRestTjeneste;
 import no.nav.foreldrepenger.los.web.app.tjenester.admin.DriftsmeldingerRestTjeneste;
 import no.nav.foreldrepenger.los.web.app.tjenester.avdelingsleder.AvdelingslederRestTjeneste;

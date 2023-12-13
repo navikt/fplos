@@ -1,4 +1,4 @@
-package no.nav.foreldrepenger.los.web.app.jackson;
+package no.nav.foreldrepenger.los.konfig;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
@@ -16,11 +16,11 @@ import java.io.IOException;
  * <p>
  * TODO: Flytt til web kodeverk KodeverRestTjeneste når all normal (De)Ser av Kodeverdi skjer med JsonValue
  */
-public class KodeverdiSerializer extends StdSerializer<Kodeverdi> {
+public class JacksonKodeverdiSerializer extends StdSerializer<Kodeverdi> {
 
     private boolean serialiserKodelisteNavn;
 
-    public KodeverdiSerializer(boolean serialiserKodelisteNavn) {
+    public JacksonKodeverdiSerializer(boolean serialiserKodelisteNavn) {
         super(Kodeverdi.class);
         this.serialiserKodelisteNavn = serialiserKodelisteNavn;
     }

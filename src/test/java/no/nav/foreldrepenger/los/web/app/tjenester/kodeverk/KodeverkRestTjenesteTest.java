@@ -2,7 +2,7 @@ package no.nav.foreldrepenger.los.web.app.tjenester.kodeverk;
 
 import no.nav.foreldrepenger.los.oppgave.FagsakStatus;
 import no.nav.foreldrepenger.los.oppgavekø.KøSortering;
-import no.nav.foreldrepenger.los.web.app.jackson.JacksonJsonConfig;
+import no.nav.foreldrepenger.los.konfig.JacksonJsonConfig;
 
 import org.junit.jupiter.api.Test;
 
