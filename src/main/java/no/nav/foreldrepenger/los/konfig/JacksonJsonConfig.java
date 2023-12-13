@@ -1,4 +1,4 @@
-package no.nav.foreldrepenger.los.web.app.jackson;
+package no.nav.foreldrepenger.los.konfig;
 
 import java.net.URISyntaxException;
 import java.util.List;
@@ -50,7 +50,7 @@ public class JacksonJsonConfig implements ContextResolver<ObjectMapper> {
     private static SimpleModule createModule(boolean serialiserKodeverdiSomObjekt) {
         var module = new SimpleModule("VL-REST", new Version(1, 0, 0, null, null, null));
 
-        module.addSerializer(new KodeverdiSerializer(serialiserKodeverdiSomObjekt));
+        module.addSerializer(new JacksonKodeverdiSerializer(serialiserKodeverdiSomObjekt));
 
         return module;
     }

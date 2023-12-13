@@ -2,9 +2,8 @@ package no.nav.foreldrepenger.los.web.app.tjenester.kodeverk;
 
 import no.nav.foreldrepenger.los.oppgave.FagsakStatus;
 import no.nav.foreldrepenger.los.oppgavekø.KøSortering;
-import no.nav.foreldrepenger.los.web.app.jackson.JacksonJsonConfig;
+import no.nav.foreldrepenger.los.konfig.JacksonJsonConfig;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -14,17 +13,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class KodeverkRestTjenesteTest {
 
-    private HentKodeverkTjeneste hentKodeverkTjeneste;
-
-    @BeforeEach
-    void before() {
-        hentKodeverkTjeneste = new HentKodeverkTjeneste();
-    }
-
     @Test
     void skal_hente_kodeverk_og_gruppere_på_kodeverknavn() throws IOException {
 
-        var tjeneste = new KodeverkRestTjeneste(hentKodeverkTjeneste);
+        var tjeneste = new KodeverkRestTjeneste();
         var response = tjeneste.hentGruppertKodeliste();
 
         var rawJson = (String) response.getEntity();

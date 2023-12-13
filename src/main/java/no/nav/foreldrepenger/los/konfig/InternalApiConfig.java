@@ -1,4 +1,4 @@
-package no.nav.foreldrepenger.los.web.app.konfig;
+package no.nav.foreldrepenger.los.konfig;
 
 import java.util.Set;
 
