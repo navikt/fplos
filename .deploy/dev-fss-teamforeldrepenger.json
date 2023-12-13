@@ -6,7 +6,6 @@
   "serviceuserkv": "/serviceuser/data/dev/srvfplos",
   "ldapuserkv": "/serviceuser/data/dev/srvssolinux",
   "ingresses":  [
-    "https://fplos.dev.intern.nav.no",
     "https://fplos.dev-fss-pub.nais.io"
   ],
   "minReplica": "2",
