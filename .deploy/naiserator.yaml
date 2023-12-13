@@ -56,11 +56,6 @@ spec:
         mountPath: /var/run/secrets/nais.io/serviceuser
       - kvPath: {{ldapuserkv}}
         mountPath: /var/run/secrets/nais.io/ldap
-  env:
-  {{#each env}}
-   - name: {{@key}}
-     value: "{{this}}"
-  {{/each}}
   azure:
     application:
       enabled: true

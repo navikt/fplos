@@ -8,7 +8,7 @@
   "ingresses":  [
     "https://fplos.dev-fss-pub.nais.io"
   ],
-  "minReplica": "2",
+  "minReplica": "1",
   "maxReplica": "2",
   "limits": {
     "cpu": "1",
@@ -16,10 +16,7 @@
   },
   "requests": {
     "cpu": "200m",
-    "mem": "1024Mi"
-  },
-  "env": {
-    "APPD_ENABLED": "false"
+    "mem": "512Mi"
   },
   "groups": [
     "27e77109-fef2-48ce-a174-269074490353",
