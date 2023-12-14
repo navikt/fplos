@@ -8,7 +8,6 @@ import java.util.function.Predicate;
 import no.nav.foreldrepenger.los.felles.util.StreamUtil;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.FagsakEgenskaper;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.OppgaveEgenskapFinner;
-import no.nav.foreldrepenger.los.klient.fpsak.Aksjonspunkt;
 import no.nav.foreldrepenger.los.oppgave.AndreKriterierType;
 import no.nav.vedtak.hendelser.behandling.Behandlingstype;
 import no.nav.vedtak.hendelser.behandling.Behandlingsårsak;

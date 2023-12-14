@@ -1,6 +1,6 @@
 package no.nav.foreldrepenger.los.avdelingsleder;
 
-import no.nav.foreldrepenger.los.web.extensions.JpaExtension;
+import no.nav.foreldrepenger.los.JpaExtension;
 import no.nav.foreldrepenger.los.oppgave.OppgaveRepository;
 import no.nav.foreldrepenger.los.organisasjon.OrganisasjonRepository;
 
