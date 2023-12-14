@@ -7,7 +7,7 @@ import jakarta.inject.Inject;
 import no.nav.foreldrepenger.los.domene.typer.Saksnummer;
 import no.nav.foreldrepenger.los.oppgave.AndreKriterierType;
 import no.nav.foreldrepenger.los.hendelse.behandlinghendelse.AktørPipKlient;
-import no.nav.foreldrepenger.los.klient.person.PersonTjeneste;
+import no.nav.foreldrepenger.los.persontjeneste.PersonTjeneste;
 import no.nav.foreldrepenger.los.oppgave.Oppgave;
 
 @Dependent

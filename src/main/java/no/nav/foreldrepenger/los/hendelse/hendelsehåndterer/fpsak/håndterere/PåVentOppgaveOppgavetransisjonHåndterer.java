@@ -10,7 +10,7 @@ import jakarta.inject.Inject;
 
 import no.nav.foreldrepenger.los.domene.typer.BehandlingId;
 import no.nav.foreldrepenger.los.felles.util.StreamUtil;
-import no.nav.foreldrepenger.los.klient.fpsak.Aksjonspunkt;
+import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.Aksjonspunkt;
 import no.nav.foreldrepenger.los.oppgave.OppgaveTjeneste;
 
 import org.slf4j.Logger;

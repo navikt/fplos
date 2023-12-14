@@ -14,7 +14,6 @@ import java.util.List;
 import java.util.function.Predicate;
 
 import no.nav.foreldrepenger.los.domene.typer.BehandlingId;
-import no.nav.foreldrepenger.los.klient.fpsak.Aksjonspunkt;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

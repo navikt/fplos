@@ -5,7 +5,7 @@ import no.nav.foreldrepenger.los.oppgave.OppgaveTjeneste;
 import no.nav.foreldrepenger.los.oppgave.Oppgave;
 import no.nav.foreldrepenger.los.oppgavekø.OppgaveFiltreringKnytning;
 import no.nav.foreldrepenger.los.oppgavekø.OppgaveKøTjeneste;
-import no.nav.foreldrepenger.los.statistikk.oppgavebeholdning.NyeOgFerdigstilteOppgaver;
+import no.nav.foreldrepenger.los.tjenester.avdelingsleder.nøkkeltall.dto.NyeOgFerdigstilteOppgaver;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -36,7 +36,7 @@ docker run -d --env-file=docker.list --name fplos fplos
 
 ## Kjøring lokalt
 
-`no.nav.foreldrepenger.los.web.server.jetty.JettyDevServer` started i Intellij. Lokalt så går den mot Virtuell Tjenesteplattform. Denne må selvsagt kjøre på 
+`no.nav.foreldrepenger.los.JettyDevServer` started i Intellij. Lokalt så går den mot Virtuell Tjenesteplattform. Denne må selvsagt kjøre på 
 standard porter. Merk du trenger trolig sertifikater om applikasjonen bruker tjenester
 på soap. Dette er pga WS-secure, etc.
 

@@ -377,20 +377,6 @@ public class OppgaveRepository {
         return oppgave;
     }
 
-
-    public Optional<Oppgave> gjenåpneOppgaveForBehandling(BehandlingId behandlingId) {
-        var sisteOppgave = hentOppgaver(behandlingId, Oppgave.class).stream().max(Comparator.comparing(Oppgave::getOpprettetTidspunkt));
-        sisteOppgave.ifPresent(o -> {
-            if (o.getAktiv()) {
-                LOG.info(String.format("Forsøker gjenåpning av allerede aktiv oppgaveId %s", o.getId()));
-            }
-            o.gjenåpneOppgave();
-            lagre(o);
-            entityManager.refresh(o);
-        });
-        return sisteOppgave;
-    }
-
     public List<OppgaveEventLogg> hentOppgaveEventer(BehandlingId behandlingId) {
         Objects.requireNonNull(behandlingId, "behandlingId kan ikke være null");
         return entityManager.createQuery("""

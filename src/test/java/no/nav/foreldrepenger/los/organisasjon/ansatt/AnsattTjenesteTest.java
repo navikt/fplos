@@ -14,7 +14,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 
-import no.nav.foreldrepenger.los.web.extensions.JpaExtension;
+import no.nav.foreldrepenger.los.JpaExtension;
 import no.nav.foreldrepenger.los.domene.typer.aktør.OrganisasjonsEnhet;
 import no.nav.foreldrepenger.los.organisasjon.Avdeling;
 import no.nav.foreldrepenger.los.organisasjon.OrganisasjonRepository;

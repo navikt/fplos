@@ -336,7 +336,7 @@
                         <manifest>
                             <addClasspath>true</addClasspath>
                             <classpathPrefix>lib/</classpathPrefix>
-                            <mainClass>no.nav.foreldrepenger.los.web.server.jetty.JettyServer</mainClass>
+                            <mainClass>no.nav.foreldrepenger.los.server.JettyServer</mainClass>
                         </manifest>
                     </archive>
                 </configuration>

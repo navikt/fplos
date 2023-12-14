@@ -6,8 +6,8 @@ import jakarta.ws.rs.ApplicationPath;
 import jakarta.ws.rs.core.Application;
 
 import io.prometheus.client.hotspot.DefaultExports;
-import no.nav.foreldrepenger.los.web.app.healthcheck.HealthCheckRestService;
-import no.nav.foreldrepenger.los.web.app.metrics.PrometheusRestService;
+import no.nav.foreldrepenger.los.server.healthcheck.HealthCheckRestService;
+import no.nav.foreldrepenger.los.server.PrometheusRestService;
 
 @ApplicationPath(InternalApiConfig.API_URL)
 public class InternalApiConfig extends Application {

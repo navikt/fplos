@@ -1,7 +1,6 @@
 package no.nav.foreldrepenger.los.statistikk.kø;
 
 import static no.nav.foreldrepenger.los.organisasjon.Avdeling.AVDELING_DRAMMEN_ENHET;
-import static org.assertj.core.api.Assertions.assertThat;
 
 import java.time.LocalDate;
 
@@ -14,7 +13,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-import no.nav.foreldrepenger.los.web.extensions.JpaExtension;
+import no.nav.foreldrepenger.los.JpaExtension;
 import no.nav.foreldrepenger.los.avdelingsleder.AvdelingslederTjeneste;
 import no.nav.foreldrepenger.los.oppgave.AndreKriterierType;
 import no.nav.foreldrepenger.los.oppgave.Oppgave;
@@ -28,7 +27,7 @@ import no.nav.foreldrepenger.los.organisasjon.Avdeling;
 import no.nav.foreldrepenger.los.organisasjon.OrganisasjonRepository;
 import no.nav.foreldrepenger.los.reservasjon.ReservasjonRepository;
 import no.nav.foreldrepenger.los.reservasjon.ReservasjonTjeneste;
-import no.nav.foreldrepenger.los.statistikk.oppgavebeholdning.NyeOgFerdigstilteOppgaver;
+import no.nav.foreldrepenger.los.tjenester.avdelingsleder.nøkkeltall.dto.NyeOgFerdigstilteOppgaver;
 
 
 @ExtendWith(JpaExtension.class)

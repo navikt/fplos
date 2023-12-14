@@ -15,7 +15,7 @@ import no.nav.foreldrepenger.los.oppgave.BehandlingType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import no.nav.foreldrepenger.los.statistikk.oppgavebeholdning.NyeOgFerdigstilteOppgaver;
+import no.nav.foreldrepenger.los.tjenester.avdelingsleder.nøkkeltall.dto.NyeOgFerdigstilteOppgaver;
 
 @ApplicationScoped
 public class KøStatistikkRepository {
