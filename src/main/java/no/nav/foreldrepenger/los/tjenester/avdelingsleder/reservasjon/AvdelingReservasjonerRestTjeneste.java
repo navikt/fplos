@@ -1,4 +1,4 @@
-package no.nav.foreldrepenger.los.tjenester.avdelingsleder.reservasjoner;
+package no.nav.foreldrepenger.los.tjenester.avdelingsleder.reservasjon;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;

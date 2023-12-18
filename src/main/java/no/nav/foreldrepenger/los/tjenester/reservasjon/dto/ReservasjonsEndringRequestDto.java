@@ -1,17 +1,17 @@
-package no.nav.foreldrepenger.los.tjenester.saksbehandler.oppgave.dto;
+package no.nav.foreldrepenger.los.tjenester.reservasjon.dto;
 
 import java.time.LocalDate;
-import java.util.Objects;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import no.nav.foreldrepenger.los.tjenester.saksbehandler.oppgave.dto.OppgaveIdDto;
 import no.nav.vedtak.sikkerhet.abac.AbacDataAttributter;
 import no.nav.vedtak.sikkerhet.abac.AbacDto;
 
-public class ReservasjonsEndringDto implements AbacDto {
+public class ReservasjonsEndringRequestDto implements AbacDto {
 
     @JsonProperty("oppgaveId")
     @NotNull
@@ -22,14 +22,7 @@ public class ReservasjonsEndringDto implements AbacDto {
     @NotNull
     private LocalDate reserverTil;
 
-    public ReservasjonsEndringDto() {
-    }
-
-    public ReservasjonsEndringDto(OppgaveIdDto oppgaveId, LocalDate reserverTil) {
-        Objects.requireNonNull(oppgaveId, "oppgaveId");
-        Objects.requireNonNull(reserverTil, "reserverTil");
-        this.oppgaveId = oppgaveId;
-        this.reserverTil = reserverTil;
+    public ReservasjonsEndringRequestDto() {
     }
 
     public OppgaveIdDto getOppgaveId() {

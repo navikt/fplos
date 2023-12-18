@@ -1,6 +1,7 @@
-package no.nav.foreldrepenger.los.tjenester.saksbehandler.oppgave;
+package no.nav.foreldrepenger.los.tjenester.reservasjon;
 
 
+import no.nav.foreldrepenger.los.tjenester.reservasjon.ReservasjonTidspunktUtil;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
