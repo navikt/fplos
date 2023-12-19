@@ -22,7 +22,6 @@ import no.nav.foreldrepenger.los.oppgavekø.OppgaveKøTjeneste;
 import no.nav.foreldrepenger.los.tjenester.avdelingsleder.dto.AvdelingEnhetDto;
 import no.nav.foreldrepenger.los.tjenester.avdelingsleder.saksliste.dto.SakslisteAndreKriterierDto;
 import no.nav.foreldrepenger.los.tjenester.avdelingsleder.saksliste.dto.SakslisteBehandlingstypeDto;
-import no.nav.foreldrepenger.los.tjenester.avdelingsleder.saksliste.dto.SakslisteFagsakYtelseTypeDto;
 import no.nav.foreldrepenger.los.tjenester.avdelingsleder.saksliste.dto.SakslisteFagsakYtelseTyperDto;
 import no.nav.foreldrepenger.los.tjenester.avdelingsleder.saksliste.dto.SakslisteNavnDto;
 import no.nav.foreldrepenger.los.tjenester.avdelingsleder.saksliste.dto.SakslisteOgAvdelingDto;
@@ -96,16 +95,6 @@ public class AvdelingslederSakslisteRestTjeneste {
         avdelingslederTjeneste.endreFiltreringBehandlingType(sakslisteBehandlingstype.getSakslisteId(), sakslisteBehandlingstype.getBehandlingType(),
             sakslisteBehandlingstype.isChecked());
     }
-
-    @POST
-    @Path("/ytelsetype")
-    @Operation(description = "Lagre sakslistens behandlingstype", tags = AVDELINGSLEDER_SAKSLISTER)
-    @BeskyttetRessurs(actionType = ActionType.CREATE, resourceType = ResourceType.OPPGAVESTYRING_AVDELINGENHET)
-    public void lagreFagsakYtelseType(@NotNull @Parameter(description = "Sakslistens ytelsetype") @Valid SakslisteFagsakYtelseTypeDto sakslisteFagsakYtelseTypeDto) {
-        avdelingslederTjeneste.endreFiltreringYtelseType(sakslisteFagsakYtelseTypeDto.getSakslisteId(),
-            sakslisteFagsakYtelseTypeDto.getFagsakYtelseType());
-    }
-
 
     @POST
     @Path("/ytelsetyper")
