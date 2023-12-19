@@ -1,8 +1,8 @@
 package no.nav.foreldrepenger.los.tjenester.reservasjon;
 
 
-import java.util.List;
-
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
@@ -15,12 +15,6 @@ import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
 import no.nav.foreldrepenger.los.oppgave.OppgaveTjeneste;
 import no.nav.foreldrepenger.los.reservasjon.Reservasjon;
 import no.nav.foreldrepenger.los.reservasjon.ReservasjonTjeneste;
@@ -30,20 +24,25 @@ import no.nav.foreldrepenger.los.tjenester.felles.dto.OppgaveStatusDto;
 import no.nav.foreldrepenger.los.tjenester.felles.dto.SaksbehandlerBrukerIdentDto;
 import no.nav.foreldrepenger.los.tjenester.felles.dto.SaksbehandlerDtoTjeneste;
 import no.nav.foreldrepenger.los.tjenester.felles.dto.SaksbehandlerMedAvdelingerDto;
+import no.nav.foreldrepenger.los.tjenester.reservasjon.dto.ReservasjonsEndringRequestDto;
 import no.nav.foreldrepenger.los.tjenester.saksbehandler.oppgave.dto.OppgaveFlyttingDto;
 import no.nav.foreldrepenger.los.tjenester.saksbehandler.oppgave.dto.OppgaveIdDto;
 import no.nav.foreldrepenger.los.tjenester.saksbehandler.oppgave.dto.OpphevTilknyttetReservasjonRequestDto;
-import no.nav.foreldrepenger.los.tjenester.reservasjon.dto.ReservasjonsEndringRequestDto;
 import no.nav.vedtak.sikkerhet.abac.BeskyttetRessurs;
 import no.nav.vedtak.sikkerhet.abac.beskyttet.ActionType;
 import no.nav.vedtak.sikkerhet.abac.beskyttet.ResourceType;
 
-@Path("/reservasjon")
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.List;
+
+@Path(no.nav.foreldrepenger.los.tjenester.saksbehandler.oppgave.OppgaveRestTjeneste.OPPGAVER_BASE_PATH)
 @ApplicationScoped
 @Transactional
-public class ReservasjonRestTjeneste {
+public class TempReservasjonRestTjeneste {
 
-    private static final Logger LOG = LoggerFactory.getLogger(ReservasjonRestTjeneste.class);
+    private static final Logger LOG = LoggerFactory.getLogger(TempReservasjonRestTjeneste.class);
 
     private OppgaveTjeneste oppgaveTjeneste;
     private ReservasjonTjeneste reservasjonTjeneste;
@@ -51,17 +50,17 @@ public class ReservasjonRestTjeneste {
     private SaksbehandlerDtoTjeneste saksbehandlerDtoTjeneste;
 
     @Inject
-    public ReservasjonRestTjeneste(OppgaveTjeneste oppgaveTjeneste,
-                               ReservasjonTjeneste reservasjonTjeneste,
-                               OppgaveDtoTjeneste oppgaveDtoTjeneste,
-                               SaksbehandlerDtoTjeneste saksbehandlerDtoTjeneste) {
+    public TempReservasjonRestTjeneste(OppgaveTjeneste oppgaveTjeneste,
+                                       ReservasjonTjeneste reservasjonTjeneste,
+                                       OppgaveDtoTjeneste oppgaveDtoTjeneste,
+                                       SaksbehandlerDtoTjeneste saksbehandlerDtoTjeneste) {
         this.oppgaveTjeneste = oppgaveTjeneste;
         this.reservasjonTjeneste = reservasjonTjeneste;
         this.oppgaveDtoTjeneste = oppgaveDtoTjeneste;
         this.saksbehandlerDtoTjeneste = saksbehandlerDtoTjeneste;
     }
 
-    public ReservasjonRestTjeneste() {
+    public TempReservasjonRestTjeneste() {
         // For Rest-CDI
     }
 

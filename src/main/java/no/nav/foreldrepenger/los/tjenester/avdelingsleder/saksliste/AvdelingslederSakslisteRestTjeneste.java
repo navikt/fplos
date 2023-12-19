@@ -72,7 +72,6 @@ public class AvdelingslederSakslisteRestTjeneste {
         return new SakslisteIdDto(avdelingslederTjeneste.lagNyOppgaveFiltrering(avdelingEnhetDto.getAvdelingEnhet()));
     }
 
-    //FIXME (TOR) burde ein heller brukt @DELETE her?
     @POST
     @Path("/slett")
     @Operation(description = "Fjern saksliste", tags = AVDELINGSLEDER_SAKSLISTER)
@@ -141,14 +140,6 @@ public class AvdelingslederSakslisteRestTjeneste {
     public void lagreSorteringTidsintervallDato(@NotNull @Parameter(description = "Sakslistens sorteringsintervall gitt datoer") @Valid SakslisteSorteringIntervallDatoDto sakslisteSorteringIntervallDato) {
         avdelingslederTjeneste.settSorteringTidsintervallDato(sakslisteSorteringIntervallDato.getSakslisteId(),
             sakslisteSorteringIntervallDato.getFomDato(), sakslisteSorteringIntervallDato.getTomDato());
-    }
-
-    @POST
-    @Path("/sortering-tidsintervall-dager") //Bruker ikke bare til intervall på dager
-    @Operation(description = "Sett sakslistens sorteringsintervall", tags = AVDELINGSLEDER_SAKSLISTER)
-    @BeskyttetRessurs(actionType = ActionType.CREATE, resourceType = ResourceType.OPPGAVESTYRING_AVDELINGENHET)
-    public void lagreSorteringTidsintervallDager(@NotNull @Parameter(description = "Sakslistens sortering") @Valid SakslisteSorteringIntervallDto intervall) {
-        lagreSorteringTidsintervall(intervall);
     }
 
     @POST
