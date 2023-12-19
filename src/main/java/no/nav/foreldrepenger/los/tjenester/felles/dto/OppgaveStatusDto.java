@@ -8,7 +8,7 @@ import no.nav.foreldrepenger.los.reservasjon.Reservasjon;
 
 public class OppgaveStatusDto {
 
-    private boolean erReservert;
+    private final boolean erReservert;
     private LocalDateTime reservertTilTidspunkt;
     private Boolean erReservertAvInnloggetBruker;
     private String reservertAvUid;

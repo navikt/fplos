@@ -18,10 +18,11 @@ import no.nav.foreldrepenger.los.tjenester.avdelingsleder.AvdelingslederRestTjen
 import no.nav.foreldrepenger.los.tjenester.avdelingsleder.nøkkeltall.NøkkeltallRestTjeneste;
 import no.nav.foreldrepenger.los.tjenester.avdelingsleder.nøkkeltall.NøkkeltallÅpneBehandlingerRestTjeneste;
 import no.nav.foreldrepenger.los.tjenester.avdelingsleder.oppgave.AvdelingslederOppgaveRestTjeneste;
-import no.nav.foreldrepenger.los.tjenester.avdelingsleder.reservasjoner.AvdelingReservasjonerRestTjeneste;
+import no.nav.foreldrepenger.los.tjenester.avdelingsleder.reservasjon.AvdelingReservasjonerRestTjeneste;
 import no.nav.foreldrepenger.los.tjenester.avdelingsleder.saksbehandler.AvdelingslederSaksbehandlerRestTjeneste;
 import no.nav.foreldrepenger.los.tjenester.avdelingsleder.saksliste.AvdelingslederSakslisteRestTjeneste;
 import no.nav.foreldrepenger.los.tjenester.kodeverk.KodeverkRestTjeneste;
+import no.nav.foreldrepenger.los.tjenester.reservasjon.ReservasjonRestTjeneste;
 import no.nav.foreldrepenger.los.tjenester.saksbehandler.enhet.SaksbehandlerEnhetRestTjeneste;
 import no.nav.foreldrepenger.los.tjenester.saksbehandler.nøkkeltall.SaksbehandlerNøkkeltallRestTjeneste;
 import no.nav.foreldrepenger.los.tjenester.saksbehandler.oppgave.OppgaveRestTjeneste;
@@ -90,6 +91,7 @@ public class ApiConfig extends Application {
         classes.add(AvdelingslederSakslisteRestTjeneste.class);
         classes.add(AvdelingslederSaksbehandlerRestTjeneste.class);
         classes.add(AvdelingReservasjonerRestTjeneste.class);
+        classes.add(ReservasjonRestTjeneste.class);
         classes.add(NøkkeltallRestTjeneste.class);
         classes.add(NøkkeltallÅpneBehandlingerRestTjeneste.class);
         classes.add(AvdelingslederRestTjeneste.class);
