@@ -1,8 +1,8 @@
 package no.nav.foreldrepenger.los.domene.typer.aktør;
 
 import static java.util.Objects.requireNonNull;
+import static no.nav.foreldrepenger.los.felles.util.StringUtils.formaterMedStoreOgSmåBokstaver;
 
-import java.util.Locale;
 import java.util.Objects;
 
 public class Person {
@@ -59,22 +59,5 @@ public class Person {
             return personMal;
         }
 
-    }
-
-    private static String formaterMedStoreOgSmåBokstaver(String tekst) {
-        if (tekst == null || (tekst = tekst.trim()).isEmpty()) { // NOSONAR
-            return null;
-        }
-        var skilletegnPattern = "(\\s|[()\\-_.,/])";
-        var tegn = tekst.toLowerCase(Locale.getDefault()).toCharArray();
-        var nesteSkalHaStorBokstav = true;
-        for (var i = 0; i < tegn.length; i++) {
-            var erSkilletegn = String.valueOf(tegn[i]).matches(skilletegnPattern);
-            if (!erSkilletegn && nesteSkalHaStorBokstav) {
-                tegn[i] = Character.toTitleCase(tegn[i]);
-            }
-            nesteSkalHaStorBokstav = erSkilletegn;
-        }
-        return new String(tegn);
     }
 }

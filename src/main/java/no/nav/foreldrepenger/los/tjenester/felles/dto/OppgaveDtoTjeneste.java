@@ -44,7 +44,7 @@ public class OppgaveDtoTjeneste {
     private OppgaveTjeneste oppgaveTjeneste;
     private ReservasjonTjeneste reservasjonTjeneste;
     private PersonTjeneste personTjeneste;
-    private OppgaveStatusDtoTjeneste oppgaveStatusDtoTjeneste;
+    private ReservasjonStatusDtoTjeneste reservasjonStatusDtoTjeneste;
     private PdpKlient pdpKlient;
     private PdpRequestBuilder pdpRequestBuilder;
     private OppgaveKøTjeneste oppgaveKøTjeneste;
@@ -53,14 +53,14 @@ public class OppgaveDtoTjeneste {
     public OppgaveDtoTjeneste(OppgaveTjeneste oppgaveTjeneste,
                               ReservasjonTjeneste reservasjonTjeneste,
                               PersonTjeneste personTjeneste,
-                              OppgaveStatusDtoTjeneste oppgaveStatusDtoTjeneste,
+                              ReservasjonStatusDtoTjeneste reservasjonStatusDtoTjeneste,
                               PdpKlient pdpKlient,
                               PdpRequestBuilder pdpRequestBuilder,
                               OppgaveKøTjeneste oppgaveKøTjeneste) {
         this.oppgaveTjeneste = oppgaveTjeneste;
         this.reservasjonTjeneste = reservasjonTjeneste;
         this.personTjeneste = personTjeneste;
-        this.oppgaveStatusDtoTjeneste = oppgaveStatusDtoTjeneste;
+        this.reservasjonStatusDtoTjeneste = reservasjonStatusDtoTjeneste;
         this.pdpKlient = pdpKlient;
         this.pdpRequestBuilder = pdpRequestBuilder;
         this.oppgaveKøTjeneste = oppgaveKøTjeneste;
@@ -83,7 +83,7 @@ public class OppgaveDtoTjeneste {
         }
         var person = personTjeneste.hentPerson(oppgave.getFagsakYtelseType(), oppgave.getAktørId(), String.valueOf(oppgave.getFagsakSaksnummer()))
             .orElseThrow(() -> new LagOppgaveDtoFeil("Finner ikke person tilknyttet oppgaveId " + oppgave.getId()));
-        var oppgaveStatus = oppgaveStatusDtoTjeneste.lagStatusFor(oppgave);
+        var oppgaveStatus = reservasjonStatusDtoTjeneste.lagStatusFor(oppgave);
         return new OppgaveDto(oppgave, person, oppgaveStatus);
     }
 
@@ -93,8 +93,8 @@ public class OppgaveDtoTjeneste {
      *                {@link no.nav.vedtak.sikkerhet.abac.BeskyttetRessursInterceptor}.
      * @return
      */
-    public OppgaveStatusDto lagOppgaveStatusUtenTilgangsjekk(Oppgave oppgave) {
-        return oppgaveStatusDtoTjeneste.lagStatusFor(oppgave);
+    public ReservasjonStatusDto lagOppgaveStatusUtenTilgangsjekk(Oppgave oppgave) {
+        return reservasjonStatusDtoTjeneste.lagStatusFor(oppgave);
     }
 
     public boolean finnesTilgjengeligeOppgaver(SakslisteIdDto sakslisteId) {
