@@ -14,7 +14,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.function.Function;
+import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -104,7 +104,7 @@ public class OppgaveRepository {
     }
 
     private static String andreKriterierSubquery(Oppgavespørring queryDto) {
-        final Function<String, String> template = kode -> String.format(
+        final UnaryOperator<String> template = kode -> String.format(
             "( SELECT 1 FROM OppgaveEgenskap oe WHERE o = oe.oppgave AND oe.aktiv = true AND oe.andreKriterierType = '%s') ", kode);
         var inkluderKriterier = queryDto.getInkluderAndreKriterierTyper()
             .stream()
