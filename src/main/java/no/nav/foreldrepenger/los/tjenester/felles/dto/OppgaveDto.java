@@ -12,7 +12,7 @@ import no.nav.foreldrepenger.los.oppgave.Oppgave;
 
 public class OppgaveDto {
     private Long id;
-    private OppgaveStatusDto status;
+    private ReservasjonStatusDto status;
     private Long saksnummer;
     private String navn;
     private String system;
@@ -25,12 +25,12 @@ public class OppgaveDto {
     private LocalDateTime behandlingsfrist;
     private BehandlingId behandlingId;
 
-    OppgaveDto(Oppgave oppgave, Person personDto, OppgaveStatusDto oppgaveStatus) {
+    OppgaveDto(Oppgave oppgave, Person personDto, ReservasjonStatusDto oppgaveStatus) {
         leggTilOppgaveInformasjon(oppgave, oppgaveStatus);
         leggTilPersonInformasjon(personDto);
     }
 
-    private void leggTilOppgaveInformasjon(Oppgave oppgave, OppgaveStatusDto status) {
+    private void leggTilOppgaveInformasjon(Oppgave oppgave, ReservasjonStatusDto status) {
         this.id = oppgave.getId();
         this.status = status;
         this.saksnummer = oppgave.getFagsakSaksnummer();
@@ -53,7 +53,7 @@ public class OppgaveDto {
         return id;
     }
 
-    public OppgaveStatusDto getStatus() {
+    public ReservasjonStatusDto getStatus() {
         return status;
     }
 

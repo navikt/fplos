@@ -6,7 +6,7 @@ import java.time.LocalDateTime;
 
 import no.nav.foreldrepenger.los.reservasjon.Reservasjon;
 
-public class OppgaveStatusDto {
+public class ReservasjonStatusDto {
 
     private final boolean erReservert;
     private LocalDateTime reservertTilTidspunkt;
@@ -15,21 +15,21 @@ public class OppgaveStatusDto {
     private String reservertAvNavn;
     private FlyttetReservasjonDto flyttetReservasjon;
 
-    static OppgaveStatusDto reservert(Reservasjon reservasjon, String reservertAvNavn, String navnFlyttetAv) {
+    static ReservasjonStatusDto reservert(Reservasjon reservasjon, String reservertAvNavn, String navnFlyttetAv) {
         var reservasjonDto = new ReservasjonDto(reservasjon, reservertAvNavn, navnFlyttetAv);
-        return new OppgaveStatusDto(true, reservasjonDto, null);
+        return new ReservasjonStatusDto(true, reservasjonDto, null);
     }
 
-    static OppgaveStatusDto reservert(Reservasjon reservasjon, String reservertAvNavn, FlyttetReservasjonDto flyttetReservasjonDto) {
+    static ReservasjonStatusDto reservert(Reservasjon reservasjon, String reservertAvNavn, FlyttetReservasjonDto flyttetReservasjonDto) {
         var reservasjonDto = new ReservasjonDto(reservasjon, reservertAvNavn, flyttetReservasjonDto.getNavn());
-        return new OppgaveStatusDto(true, reservasjonDto, flyttetReservasjonDto);
+        return new ReservasjonStatusDto(true, reservasjonDto, flyttetReservasjonDto);
     }
 
-    static OppgaveStatusDto ikkeReservert() {
-        return new OppgaveStatusDto(false);
+    static ReservasjonStatusDto ikkeReservert() {
+        return new ReservasjonStatusDto(false);
     }
 
-    private OppgaveStatusDto(boolean erReservert, ReservasjonDto reservasjonDto, FlyttetReservasjonDto flyttetReservasjonDto) {
+    private ReservasjonStatusDto(boolean erReservert, ReservasjonDto reservasjonDto, FlyttetReservasjonDto flyttetReservasjonDto) {
         this.erReservert = erReservert;
         this.reservertTilTidspunkt = reservasjonDto.reservertTilTidspunkt();
         this.reservertAvUid = reservasjonDto.reservertAvUid();
@@ -46,7 +46,7 @@ public class OppgaveStatusDto {
         }
     }
 
-    private OppgaveStatusDto(boolean erReservert) {
+    private ReservasjonStatusDto(boolean erReservert) {
         this.erReservert = erReservert;
     }
 

@@ -20,11 +20,11 @@ import no.nav.foreldrepenger.los.reservasjon.Reservasjon;
 import no.nav.foreldrepenger.los.reservasjon.ReservasjonTjeneste;
 import no.nav.foreldrepenger.los.tjenester.felles.dto.OppgaveDto;
 import no.nav.foreldrepenger.los.tjenester.felles.dto.OppgaveDtoTjeneste;
-import no.nav.foreldrepenger.los.tjenester.felles.dto.OppgaveStatusDto;
+import no.nav.foreldrepenger.los.tjenester.felles.dto.ReservasjonStatusDto;
 import no.nav.foreldrepenger.los.tjenester.felles.dto.SaksbehandlerBrukerIdentDto;
 import no.nav.foreldrepenger.los.tjenester.felles.dto.SaksbehandlerDtoTjeneste;
 import no.nav.foreldrepenger.los.tjenester.felles.dto.SaksbehandlerMedAvdelingerDto;
-import no.nav.foreldrepenger.los.tjenester.reservasjon.dto.ReservasjonsEndringRequestDto;
+import no.nav.foreldrepenger.los.tjenester.reservasjon.dto.ReservasjonEndringRequestDto;
 import no.nav.foreldrepenger.los.tjenester.saksbehandler.oppgave.dto.OppgaveFlyttingDto;
 import no.nav.foreldrepenger.los.tjenester.saksbehandler.oppgave.dto.OppgaveIdDto;
 import no.nav.foreldrepenger.los.tjenester.saksbehandler.oppgave.dto.OpphevTilknyttetReservasjonRequestDto;
@@ -71,7 +71,7 @@ public class TempReservasjonRestTjeneste {
     @Produces(MediaType.APPLICATION_JSON)
     @Operation(description = "Reserver oppgave", tags = "Saksbehandler")
     @BeskyttetRessurs(actionType = ActionType.CREATE, resourceType = ResourceType.FAGSAK)
-    public OppgaveStatusDto reserverOppgave(@NotNull @Parameter(description = "id til oppgaven") @Valid OppgaveIdDto oppgaveId) {
+    public ReservasjonStatusDto reserverOppgave(@NotNull @Parameter(description = "id til oppgaven") @Valid OppgaveIdDto oppgaveId) {
         var reservasjon = reservasjonTjeneste.reserverOppgave(oppgaveId.getVerdi());
         return oppgaveDtoTjeneste.lagDtoFor(reservasjon.getOppgave(), false).getStatus();
     }
@@ -81,7 +81,7 @@ public class TempReservasjonRestTjeneste {
     @Produces(MediaType.APPLICATION_JSON)
     @Operation(description = "Hent reservasjonsstatus", tags = "Saksbehandler")
     @BeskyttetRessurs(actionType = ActionType.READ, resourceType = ResourceType.FAGSAK)
-    public OppgaveStatusDto hentReservasjon(@NotNull @Parameter(description = "id til oppgaven") @QueryParam("oppgaveId") @Valid OppgaveIdDto oppgaveId) {
+    public ReservasjonStatusDto hentReservasjon(@NotNull @Parameter(description = "id til oppgaven") @QueryParam("oppgaveId") @Valid OppgaveIdDto oppgaveId) {
         var oppgave = oppgaveTjeneste.hentOppgave(oppgaveId.getVerdi());
         var oppgaveDto = oppgaveDtoTjeneste.lagDtoFor(oppgave, false);
         return oppgaveDto.getStatus();
@@ -94,7 +94,7 @@ public class TempReservasjonRestTjeneste {
     @Produces(MediaType.APPLICATION_JSON)
     @Operation(description = "Opphev reservasjon av oppgave", tags = "Saksbehandler")
     @BeskyttetRessurs(actionType = ActionType.CREATE, resourceType = ResourceType.FAGSAK)
-    public OppgaveStatusDto opphevReservasjonTilknyttetOppgave(@NotNull @Parameter(description = "Id og begrunnelse") @Valid OpphevTilknyttetReservasjonRequestDto request) {
+    public ReservasjonStatusDto opphevReservasjonTilknyttetOppgave(@NotNull @Parameter(description = "Id og begrunnelse") @Valid OpphevTilknyttetReservasjonRequestDto request) {
         var reservasjon = reservasjonTjeneste.slettReservasjonMedEventLogg(request.getOppgaveId().getVerdi(), request.getBegrunnelse());
         return reservasjon.map(Reservasjon::getOppgave).map(oppgaveDtoTjeneste::lagOppgaveStatusUtenTilgangsjekk).orElseGet(() -> {
             LOG.info("Fant ikke reservasjon tilknyttet oppgaveId {} for sletting, returnerer null", request.getOppgaveId());
@@ -108,7 +108,7 @@ public class TempReservasjonRestTjeneste {
     @Produces(MediaType.APPLICATION_JSON)
     @Operation(description = "Forleng reservasjon av oppgave", tags = "Saksbehandler")
     @BeskyttetRessurs(actionType = ActionType.CREATE, resourceType = ResourceType.FAGSAK)
-    public OppgaveStatusDto forlengOppgaveReservasjon(@NotNull @Parameter(description = "id til oppgaven") @Valid OppgaveIdDto oppgaveId) {
+    public ReservasjonStatusDto forlengOppgaveReservasjon(@NotNull @Parameter(description = "id til oppgaven") @Valid OppgaveIdDto oppgaveId) {
         var reservasjon = reservasjonTjeneste.forlengReservasjonPåOppgave(oppgaveId.getVerdi());
         return oppgaveDtoTjeneste.lagDtoFor(reservasjon.getOppgave(), false).getStatus();
     }
@@ -119,9 +119,9 @@ public class TempReservasjonRestTjeneste {
     @Produces(MediaType.APPLICATION_JSON)
     @Operation(description = "Endre reservasjon av oppgave", tags = "Saksbehandler")
     @BeskyttetRessurs(actionType = ActionType.CREATE, resourceType = ResourceType.FAGSAK)
-    public OppgaveStatusDto endreOppgaveReservasjon(@NotNull @Parameter(description = "forleng til dato") @Valid ReservasjonsEndringRequestDto reservasjonsEndring) {
-        var tidspunkt = ReservasjonTidspunktUtil.utledReservasjonTidspunkt(reservasjonsEndring.getReserverTil());
-        var reservasjon = reservasjonTjeneste.endreReservasjonPåOppgave(reservasjonsEndring.getOppgaveId().getVerdi(), tidspunkt);
+    public ReservasjonStatusDto endreOppgaveReservasjon(@NotNull @Parameter(description = "forleng til dato") @Valid ReservasjonEndringRequestDto reservasjonsEndring) {
+        var tidspunkt = ReservasjonTidspunktUtil.utledReservasjonTidspunkt(reservasjonsEndring.reserverTil());
+        var reservasjon = reservasjonTjeneste.endreReservasjonPåOppgave(reservasjonsEndring.oppgaveId().getVerdi(), tidspunkt);
         return oppgaveDtoTjeneste.lagDtoFor(reservasjon.getOppgave(), false).getStatus();
     }
 
@@ -152,7 +152,7 @@ public class TempReservasjonRestTjeneste {
     @Produces(MediaType.APPLICATION_JSON)
     @Operation(description = "Flytt reservasjon av oppgave", tags = "Saksbehandler")
     @BeskyttetRessurs(actionType = ActionType.CREATE, resourceType = ResourceType.FAGSAK)
-    public OppgaveStatusDto flyttOppgaveReservasjon(@NotNull @Parameter(description = "id, begrunnelse og brukerident") @Valid OppgaveFlyttingDto oppgaveFlyttingDto) {
+    public ReservasjonStatusDto flyttOppgaveReservasjon(@NotNull @Parameter(description = "id, begrunnelse og brukerident") @Valid OppgaveFlyttingDto oppgaveFlyttingDto) {
         var reservasjon = reservasjonTjeneste.flyttReservasjon(oppgaveFlyttingDto.getOppgaveId().getVerdi(),
             oppgaveFlyttingDto.getBrukerIdent().getVerdi(), oppgaveFlyttingDto.getBegrunnelse());
         LOG.info("Reservasjon flyttet: {}", oppgaveFlyttingDto);

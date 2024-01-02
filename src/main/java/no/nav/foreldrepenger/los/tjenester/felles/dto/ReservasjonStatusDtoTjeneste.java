@@ -10,21 +10,21 @@ import no.nav.foreldrepenger.los.organisasjon.ansatt.AnsattTjeneste;
 import no.nav.foreldrepenger.los.reservasjon.Reservasjon;
 
 @ApplicationScoped
-public class OppgaveStatusDtoTjeneste {
+public class ReservasjonStatusDtoTjeneste {
 
     private static final String SYSTEMBRUKER = "SRVFPLOS";
     private AnsattTjeneste ansattTjeneste;
 
     @Inject
-    public OppgaveStatusDtoTjeneste(AnsattTjeneste ansattTjeneste) {
+    public ReservasjonStatusDtoTjeneste(AnsattTjeneste ansattTjeneste) {
         this.ansattTjeneste = ansattTjeneste;
     }
 
-    OppgaveStatusDtoTjeneste() {
+    ReservasjonStatusDtoTjeneste() {
         //CDI
     }
 
-    OppgaveStatusDto lagStatusFor(Oppgave oppgave) {
+    ReservasjonStatusDto lagStatusFor(Oppgave oppgave) {
         if (oppgave.harAktivReservasjon()) {
             var reservasjon = oppgave.getReservasjon();
             if (SYSTEMBRUKER.equalsIgnoreCase(reservasjon.getFlyttetAv())) {
@@ -34,9 +34,9 @@ public class OppgaveStatusDtoTjeneste {
             var flyttetAvNavn = hentNavn(reservasjon.getFlyttetAv());
             var reservertAvNavn = reservasjon.getReservertAv().equalsIgnoreCase(flyttetAvIdent) ? flyttetAvNavn : hentNavn(
                 reservasjon.getReservertAv());
-            return OppgaveStatusDto.reservert(reservasjon, reservertAvNavn, flyttetAvNavn);
+            return ReservasjonStatusDto.reservert(reservasjon, reservertAvNavn, flyttetAvNavn);
         }
-        return OppgaveStatusDto.ikkeReservert();
+        return ReservasjonStatusDto.ikkeReservert();
     }
 
     private String hentNavn(String ident) {
@@ -46,10 +46,10 @@ public class OppgaveStatusDtoTjeneste {
         return tryOrEmpty(() -> ansattTjeneste.hentAnsattNavn(ident), "ldap").orElse("Ukjent");
     }
 
-    private OppgaveStatusDto systembrukerSpesialTilfelle(Reservasjon reservasjon) {
-        // hack for å forskjønne visning av systembrukers navn i frontend
+    private ReservasjonStatusDto systembrukerSpesialTilfelle(Reservasjon reservasjon) {
+        // forskjønne visning av systembrukers navn i frontend
         var flyttetReservasjonDto = new FlyttetReservasjonDto(reservasjon.getFlyttetTidspunkt(), "Fplos", "oppgavesystem",
             reservasjon.getBegrunnelse());
-        return OppgaveStatusDto.reservert(reservasjon, hentNavn(reservasjon.getReservertAv()), flyttetReservasjonDto);
+        return ReservasjonStatusDto.reservert(reservasjon, hentNavn(reservasjon.getReservertAv()), flyttetReservasjonDto);
     }
 }
