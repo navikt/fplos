@@ -15,6 +15,8 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import no.nav.foreldrepenger.los.oppgave.OppgaveTjeneste;
+import no.nav.foreldrepenger.los.organisasjon.OrganisasjonRepository;
+import no.nav.foreldrepenger.los.tjenester.admin.dto.DriftAvdelingEnhetDto;
 import no.nav.foreldrepenger.los.tjenester.admin.dto.EnkelBehandlingIdDto;
 import no.nav.vedtak.hendelser.behandling.Kildesystem;
 import no.nav.vedtak.sikkerhet.abac.BeskyttetRessurs;
@@ -28,12 +30,15 @@ public class AdminRestTjeneste {
 
     private SynkroniseringHendelseTaskOppretterTjeneste synkroniseringHendelseTaskOppretterTjeneste;
     private OppgaveTjeneste oppgaveTjeneste;
+    private OrganisasjonRepository organisasjonRepository;
 
     @Inject
     public AdminRestTjeneste(SynkroniseringHendelseTaskOppretterTjeneste synkroniseringHendelseTaskOppretterTjeneste,
-                             OppgaveTjeneste oppgaveTjeneste) {
+                             OppgaveTjeneste oppgaveTjeneste,
+                             OrganisasjonRepository organisasjonRepository) {
         this.synkroniseringHendelseTaskOppretterTjeneste = synkroniseringHendelseTaskOppretterTjeneste;
         this.oppgaveTjeneste = oppgaveTjeneste;
+        this.organisasjonRepository = organisasjonRepository;
     }
 
     public AdminRestTjeneste() {
@@ -79,6 +84,16 @@ public class AdminRestTjeneste {
     public Response slettTidligsteMultiAktiv(@NotNull @Valid EnkelBehandlingIdDto behandlingId) {
         var behandlinger = behandlingId.getBehandlingId();
         oppgaveTjeneste.adminAvsluttMultiOppgaveUtenEventLoggAvsluttTilknyttetReservasjon(behandlinger);
+        return Response.ok().build();
+    }
+
+    @POST
+    @Path("/deaktiver-avdeling")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Operation(description = "Deaktiverer avdeling", tags = "admin")
+    @BeskyttetRessurs(actionType = ActionType.CREATE, resourceType = ResourceType.DRIFT)
+    public Response deaktiverAvdeling(@NotNull @Valid DriftAvdelingEnhetDto avdelingEnhetDto) {
+        organisasjonRepository.deaktiverAvdeling(avdelingEnhetDto.getAvdelingEnhet());
         return Response.ok().build();
     }
 

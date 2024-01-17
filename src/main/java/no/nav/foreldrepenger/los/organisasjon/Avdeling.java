@@ -39,9 +39,13 @@ public class Avdeling extends BaseEntitet {
     @OneToMany(mappedBy = "avdeling", fetch = FetchType.LAZY)
     private List<OppgaveFiltrering> oppgaveFiltrering;
 
-    @Convert(converter = BooleanToStringConverter.class)
     @Column(name = "KREVER_KODE_6")
+    @Convert(converter = BooleanToStringConverter.class)
     private Boolean kreverKode6 = Boolean.FALSE;
+
+    @Column(name = "AKTIV")
+    @Convert(converter = BooleanToStringConverter.class)
+    private Boolean erAktiv = Boolean.TRUE;
 
     public Avdeling() {
     }
@@ -74,5 +78,13 @@ public class Avdeling extends BaseEntitet {
 
     public Boolean getKreverKode6() {
         return kreverKode6;
+    }
+
+    public Boolean getErAktiv() {
+        return erAktiv;
+    }
+
+    public void setErAktiv(boolean erAktiv) {
+        this.erAktiv = erAktiv;
     }
 }

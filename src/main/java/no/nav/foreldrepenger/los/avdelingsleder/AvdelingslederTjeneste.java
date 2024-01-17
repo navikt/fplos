@@ -152,7 +152,7 @@ public class AvdelingslederTjeneste {
     }
 
     public List<Avdeling> hentAvdelinger() {
-        return organisasjonRepository.hentAvdelinger();
+        return organisasjonRepository.hentAktiveAvdelinger();
     }
 
     public void settSorteringTidsintervallDato(Long oppgaveFiltreringId, LocalDate fomDato, LocalDate tomDato) {
