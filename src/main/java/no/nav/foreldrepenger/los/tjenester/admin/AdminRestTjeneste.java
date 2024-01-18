@@ -93,7 +93,7 @@ public class AdminRestTjeneste {
     @Operation(description = "Deaktiverer avdeling", tags = "admin")
     @BeskyttetRessurs(actionType = ActionType.CREATE, resourceType = ResourceType.DRIFT)
     public Response deaktiverAvdeling(@NotNull @Valid DriftAvdelingEnhetDto avdelingEnhetDto) {
-        organisasjonRepository.deaktiverAvdeling(avdelingEnhetDto.getAvdelingEnhet());
+        organisasjonRepository.deaktiverAvdeling(avdelingEnhetDto.avdelingEnhet());
         return Response.ok().build();
     }
 
