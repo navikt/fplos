@@ -3,6 +3,7 @@ package no.nav.foreldrepenger.los.statistikk.kø;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -69,6 +70,14 @@ public class KøStatistikkRepository {
             """).setParameter("oppgaveFilterSettId", oppgaveFilterSettId).setParameter("tellesSomFerdigstilt", tellesSomFerdigstilt);
         @SuppressWarnings("unchecked") var result = query.getResultStream().map(KøStatistikkRepository::map).toList();
         return result;
+    }
+
+    int slettUtdaterte() {
+        var query = entityManager.createNativeQuery("delete from STATISTIKK_KO where opprettet_tid < :ts")
+            .setParameter("ts", LocalDateTime.now().minusDays(30));
+        int deletedRows = query.executeUpdate();
+        entityManager.flush();
+        return deletedRows;
     }
 
     private static NyeOgFerdigstilteOppgaver map(Object objectArray) {
