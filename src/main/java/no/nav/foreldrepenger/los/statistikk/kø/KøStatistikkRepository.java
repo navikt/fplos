@@ -3,6 +3,7 @@ package no.nav.foreldrepenger.los.statistikk.kø;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -44,31 +45,42 @@ public class KøStatistikkRepository {
     }
 
     public List<NyeOgFerdigstilteOppgaver> hentStatistikk(Long oppgaveFilterSettId) {
-        final var tellesSomFerdigstilt = Stream.of(
-            KøOppgaveHendelse.LUKKET_OPPGAVE, KøOppgaveHendelse.UT_TIL_ANNEN_KØ, KøOppgaveHendelse.OPPGAVE_SATT_PÅ_VENT).map(KøOppgaveHendelse::name).toList();
+        final var tellesSomFerdigstilt = Stream.of(KøOppgaveHendelse.LUKKET_OPPGAVE, KøOppgaveHendelse.UT_TIL_ANNEN_KØ,
+            KøOppgaveHendelse.OPPGAVE_SATT_PÅ_VENT).map(KøOppgaveHendelse::name).toList();
         var query = entityManager.createNativeQuery("""
-            with cte as (
-                select distinct
-                trunc(kø.opprettet_tid) as dato,
-                kø.behandling_type,
-                case when kø.hendelse in :tellesSomFerdigstilt
-                    then 'ferdigstilte'
-                    else 'nye'
-                end as res,
-                o.behandling_id as behandling_id
-                FROM STATISTIKK_KO kø
-                join oppgave o on o.id = kø.oppgave_id
-                WHERE kø.OPPGAVE_FILTRERING_ID = :oppgaveFilterSettId
-                AND kø.OPPRETTET_TID >= to_timestamp(current_date - interval '7' day)
-            )
-            select dato, behandling_type,
-            count(case when res = 'nye' then 1 end) nye,
-            count(case when res = 'ferdigstilte' then 1 end) ferdigstilte
-            from cte
-            group by dato, behandling_type
-            """).setParameter("oppgaveFilterSettId", oppgaveFilterSettId).setParameter("tellesSomFerdigstilt", tellesSomFerdigstilt);
+                with cte as (
+                    select distinct
+                    trunc(kø.opprettet_tid) as dato,
+                    kø.behandling_type,
+                    case when kø.hendelse in :tellesSomFerdigstilt
+                        then 'ferdigstilte'
+                        else 'nye'
+                    end as res,
+                    o.behandling_id as behandling_id
+                    FROM STATISTIKK_KO kø
+                    join oppgave o on o.id = kø.oppgave_id
+                    WHERE kø.OPPGAVE_FILTRERING_ID = :oppgaveFilterSettId
+                    AND kø.OPPRETTET_TID >= :opprettetEtter
+                )
+                select dato, behandling_type,
+                count(case when res = 'nye' then 1 end) nye,
+                count(case when res = 'ferdigstilte' then 1 end) ferdigstilte
+                from cte
+                group by dato, behandling_type
+                """)
+            .setParameter("oppgaveFilterSettId", oppgaveFilterSettId)
+            .setParameter("tellesSomFerdigstilt", tellesSomFerdigstilt)
+            .setParameter("opprettetEtter", LocalDate.now().minusDays(7).atStartOfDay());
         @SuppressWarnings("unchecked") var result = query.getResultStream().map(KøStatistikkRepository::map).toList();
         return result;
+    }
+
+    int slettUtdaterte() {
+        var query = entityManager.createNativeQuery("delete from STATISTIKK_KO where opprettet_tid < :opprettetForutFor")
+            .setParameter("opprettetForutFor", LocalDate.now().minusDays(7).atStartOfDay());
+        int deletedRows = query.executeUpdate();
+        entityManager.flush();
+        return deletedRows;
     }
 
     private static NyeOgFerdigstilteOppgaver map(Object objectArray) {
