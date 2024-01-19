@@ -32,7 +32,7 @@ public class AnsattTjeneste {
 
     public List<String> hentAvdelingerNavnForAnsatt(String ident) {
         if (aktuelleEnhetIder == null) {
-            aktuelleEnhetIder = organisasjonRepository.hentAvdelinger().stream().map(Avdeling::getAvdelingEnhet).toList();
+            aktuelleEnhetIder = organisasjonRepository.hentAktiveAvdelinger().stream().map(Avdeling::getAvdelingEnhet).toList();
         }
         return enhetstilgangTjeneste.hentEnhetstilganger(ident)
             .stream()
