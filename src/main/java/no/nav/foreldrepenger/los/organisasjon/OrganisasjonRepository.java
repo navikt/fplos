@@ -57,9 +57,10 @@ public class OrganisasjonRepository {
         return hentUniktResultat(query);
     }
 
-    public List<Avdeling> hentAvdelinger() {
-        var listeTypedQuery = entityManager.createQuery("FROM avdeling ", Avdeling.class);
-        return listeTypedQuery.getResultList();
+    public List<Avdeling> hentAktiveAvdelinger() {
+        var query = entityManager.createQuery("FROM avdeling WHERE erAktiv = :erAktiv", Avdeling.class);
+        query.setParameter("erAktiv", true);
+        return query.getResultList();
     }
 
     public List<SaksbehandlerGruppe> hentSaksbehandlerGrupper(String avdelingEnhet) {
@@ -103,6 +104,12 @@ public class OrganisasjonRepository {
         entityManager.flush();
     }
 
+    public void deaktiverAvdeling(String avdelingEnhet) {
+        var avdeling = hentAvdelingFraEnhet(avdelingEnhet).orElseThrow(() -> new IllegalStateException("Fant ikke avdeling"));
+        avdeling.setErAktiv(false);
+        entityManager.persist(avdeling);
+    }
+
     private static void sjekkGruppeEnhetTilknytning(long gruppeId, String avdelingEnhet, SaksbehandlerGruppe gruppe) {
         if (gruppe == null || !gruppe.getAvdeling().getAvdelingEnhet().equals(avdelingEnhet)) {
             throw fantIkkeGruppeException(gruppeId, avdelingEnhet);
@@ -117,6 +124,5 @@ public class OrganisasjonRepository {
         return new TomtResultatException("FP-164689",
             String.format("Fant ikke saksbehandler %s tilknyttet avdeling %s", saksbehandlerIdent, avdelingEnhet));
     }
-
 
 }
