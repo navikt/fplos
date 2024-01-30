@@ -56,6 +56,23 @@ public class OrganisasjonRepository {
             """, Saksbehandler.class).setParameter("ident", saksbehandlerIdent.toUpperCase());
     }
 
+    public void slettSaksbehandlereUtenKnytninger() {
+        int slettedeRader = entityManager.createQuery("""
+                delete from saksbehandler s
+                where not exists (
+                    select ofil
+                    from OppgaveFiltrering ofil
+                    where s member of ofil.saksbehandlere
+                )
+                and not exists (
+                    select avd
+                    from avdeling avd
+                    where s member of avd.saksbehandlere
+                )""")
+            .executeUpdate();
+        LOG.info("Slettet {} saksbehandlere uten knytninger til køer", slettedeRader);
+    }
+
     public Optional<Avdeling> hentAvdelingFraEnhet(String avdelingEnhet) {
         var query = entityManager.createQuery("FROM avdeling a WHERE a.avdelingEnhet = :avdelingEnhet", Avdeling.class)
             .setParameter("avdelingEnhet", avdelingEnhet);

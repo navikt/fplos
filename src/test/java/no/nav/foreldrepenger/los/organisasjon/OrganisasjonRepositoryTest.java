@@ -8,6 +8,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import static no.nav.foreldrepenger.los.DBTestUtil.avdelingDrammen;
+import static no.nav.foreldrepenger.los.DBTestUtil.hentAlle;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(MockitoExtension.class)
@@ -35,4 +37,23 @@ class OrganisasjonRepositoryTest {
         assertThat(avdelinger).contains(enhetsNummer);
         assertThat(etterDeaktiver).isNotEmpty().doesNotContain(enhetsNummer);
     }
+
+    @Test
+    void skalSletteSaksbehandlereUtenKnytninger() {
+        var saksbehandlerUtenKnytning = new Saksbehandler("ikke-knyttet");
+        entityManager.persist(saksbehandlerUtenKnytning);
+
+        var saksbehandlerMedKnytning = new Saksbehandler("knyttet");
+        saksbehandlerMedKnytning.leggTilAvdeling(avdelingDrammen(entityManager));
+        entityManager.persist(saksbehandlerMedKnytning);
+        entityManager.flush();
+
+        repository.slettSaksbehandlereUtenKnytninger();
+
+        var saksbehandlereEtterSletting = hentAlle(entityManager, Saksbehandler.class);
+        assertThat(saksbehandlereEtterSletting)
+            .hasSize(1)
+            .first().extracting(Saksbehandler::getSaksbehandlerIdent).isEqualTo("knyttet");
+    }
+
 }
