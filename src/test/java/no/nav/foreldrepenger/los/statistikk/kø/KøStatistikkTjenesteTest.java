@@ -1,5 +1,6 @@
 package no.nav.foreldrepenger.los.statistikk.kø;
 
+import static no.nav.foreldrepenger.los.DBTestUtil.avdelingDrammen;
 import static no.nav.foreldrepenger.los.organisasjon.Avdeling.AVDELING_DRAMMEN_ENHET;
 
 import java.time.LocalDate;
@@ -53,7 +54,7 @@ class KøStatistikkTjenesteTest {
 
     @Test
     void skalFinneStatistikkPåKøerSomMatcherOppgave() {
-        var avdeling = avdelingForDrammen();
+        var avdeling = avdelingDrammen(entityManager);
         var oppgave = Oppgave.builder().dummyOppgave(avdeling.getAvdelingEnhet()).build();
         var egenskap = new OppgaveEgenskap(oppgave, AndreKriterierType.BERØRT_BEHANDLING);
         var køMedTreff = kø(avdeling);
@@ -79,14 +80,6 @@ class KøStatistikkTjenesteTest {
 
     private OppgaveFiltrering kø(Avdeling avdeling) {
         return OppgaveFiltrering.builder().medNavn("OPPRETTET").medSortering(KøSortering.OPPRETT_BEHANDLING).medAvdeling(avdeling).build();
-    }
-
-    private Avdeling avdelingForDrammen() {
-        return DBTestUtil.hentAlle(entityManager, Avdeling.class)
-                         .stream()
-                         .filter(a -> a.getAvdelingEnhet().equals(AVDELING_DRAMMEN_ENHET))
-                         .findAny()
-                         .orElseThrow();
     }
 
 }

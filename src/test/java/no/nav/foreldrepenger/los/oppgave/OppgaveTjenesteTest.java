@@ -1,6 +1,7 @@
 package no.nav.foreldrepenger.los.oppgave;
 
 import static java.time.temporal.ChronoUnit.MINUTES;
+import static no.nav.foreldrepenger.los.DBTestUtil.avdelingDrammen;
 import static no.nav.foreldrepenger.los.organisasjon.Avdeling.AVDELING_DRAMMEN_ENHET;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
@@ -16,12 +17,10 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import no.nav.foreldrepenger.los.JpaExtension;
-import no.nav.foreldrepenger.los.DBTestUtil;
 import no.nav.foreldrepenger.los.avdelingsleder.AvdelingslederTjeneste;
 import no.nav.foreldrepenger.los.oppgavekø.KøSortering;
 import no.nav.foreldrepenger.los.oppgavekø.OppgaveFiltrering;
 import no.nav.foreldrepenger.los.oppgavekø.OppgaveKøTjeneste;
-import no.nav.foreldrepenger.los.organisasjon.Avdeling;
 import no.nav.foreldrepenger.los.organisasjon.OrganisasjonRepository;
 import no.nav.foreldrepenger.los.reservasjon.ReservasjonRepository;
 import no.nav.foreldrepenger.los.reservasjon.ReservasjonTjeneste;
@@ -68,7 +67,7 @@ class OppgaveTjenesteTest {
         var oppgaveFiltrering = OppgaveFiltrering.builder()
             .medNavn("OPPRETTET")
             .medSortering(KøSortering.OPPRETT_BEHANDLING)
-            .medAvdeling(avdelingDrammen())
+            .medAvdeling(avdelingDrammen(entityManager))
             .build();
         oppgaveRepository.lagre(oppgaveFiltrering);
         oppgaveRepository.lagre(førstegangOppgave);
@@ -77,14 +76,6 @@ class OppgaveTjenesteTest {
         oppgaveRepository.lagre(førstegangOppgaveBergen);
         entityManager.refresh(oppgaveFiltrering);
         return oppgaveFiltrering.getId();
-    }
-
-    private Avdeling avdelingDrammen() {
-        return DBTestUtil.hentAlle(entityManager, Avdeling.class)
-            .stream()
-            .filter(a -> a.getAvdelingEnhet().equals(AVDELING_DRAMMEN_ENHET))
-            .findAny()
-            .orElseThrow();
     }
 
     @Test
@@ -105,7 +96,7 @@ class OppgaveTjenesteTest {
         var opprettet = OppgaveFiltrering.builder()
             .medNavn("OPPRETTET")
             .medSortering(KøSortering.OPPRETT_BEHANDLING)
-            .medAvdeling(avdelingDrammen())
+            .medAvdeling(avdelingDrammen(entityManager))
             .build();
         oppgaveRepository.lagre(opprettet);
 
@@ -120,7 +111,7 @@ class OppgaveTjenesteTest {
         var tredjeOppgave = opprettOgLargeOppgaveTilSortering(9, 8, 10);
         var fjerdeOppgave = opprettOgLargeOppgaveTilSortering(10, 0, 9);
 
-        var frist = OppgaveFiltrering.builder().medNavn("FRIST").medSortering(KøSortering.BEHANDLINGSFRIST).medAvdeling(avdelingDrammen()).build();
+        var frist = OppgaveFiltrering.builder().medNavn("FRIST").medSortering(KøSortering.BEHANDLINGSFRIST).medAvdeling(avdelingDrammen(entityManager)).build();
         oppgaveRepository.lagre(frist);
 
         var oppgaves = oppgaveKøTjeneste.hentOppgaver(frist.getId());
@@ -137,7 +128,7 @@ class OppgaveTjenesteTest {
         var førsteStønadsdag = OppgaveFiltrering.builder()
             .medNavn("STØNADSDAG")
             .medSortering(KøSortering.FØRSTE_STØNADSDAG)
-            .medAvdeling(avdelingDrammen())
+            .medAvdeling(avdelingDrammen(entityManager))
             .build();
         oppgaveRepository.lagre(førsteStønadsdag);
 
