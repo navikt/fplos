@@ -13,9 +13,14 @@ import jakarta.persistence.TypedQuery;
 import no.nav.foreldrepenger.los.felles.BaseEntitet;
 import no.nav.vedtak.felles.jpa.TomtResultatException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 @ApplicationScoped
 public class OrganisasjonRepository {
+
+    private static final Logger LOG = LoggerFactory.getLogger(OrganisasjonRepository.class);
 
     private EntityManager entityManager;
 
@@ -49,6 +54,23 @@ public class OrganisasjonRepository {
             FROM saksbehandler s
             WHERE upper(s.saksbehandlerIdent) = upper( :ident )
             """, Saksbehandler.class).setParameter("ident", saksbehandlerIdent.toUpperCase());
+    }
+
+    public void slettSaksbehandlereUtenKnytninger() {
+        int slettedeRader = entityManager.createQuery("""
+                delete from saksbehandler s
+                where not exists (
+                    select ofil
+                    from OppgaveFiltrering ofil
+                    where s member of ofil.saksbehandlere
+                )
+                and not exists (
+                    select avd
+                    from avdeling avd
+                    where s member of avd.saksbehandlere
+                )""")
+            .executeUpdate();
+        LOG.info("Slettet {} saksbehandlere uten knytninger til køer", slettedeRader);
     }
 
     public Optional<Avdeling> hentAvdelingFraEnhet(String avdelingEnhet) {
@@ -108,6 +130,16 @@ public class OrganisasjonRepository {
         var avdeling = hentAvdelingFraEnhet(avdelingEnhet).orElseThrow(() -> new IllegalStateException("Fant ikke avdeling"));
         avdeling.setErAktiv(false);
         entityManager.persist(avdeling);
+    }
+
+    public void slettAvdeling(Avdeling avdeling) {
+        var saksbehandlere = avdeling.getSaksbehandlere();
+        LOG.info("{} saksbehandlere har tilknytning til avdeling {}, fjerner tilknytning(er).", saksbehandlere.size(), avdeling.getAvdelingEnhet());
+        saksbehandlere.forEach(sb -> {
+            sb.fjernAvdeling(avdeling);
+            entityManager.persist(sb);
+        });
+        entityManager.remove(avdeling);
     }
 
     private static void sjekkGruppeEnhetTilknytning(long gruppeId, String avdelingEnhet, SaksbehandlerGruppe gruppe) {

@@ -9,6 +9,7 @@ import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
@@ -94,6 +95,15 @@ public class AdminRestTjeneste {
     @BeskyttetRessurs(actionType = ActionType.CREATE, resourceType = ResourceType.DRIFT)
     public Response deaktiverAvdeling(@NotNull @Valid DriftAvdelingEnhetDto avdelingEnhetDto) {
         organisasjonRepository.deaktiverAvdeling(avdelingEnhetDto.avdelingEnhet());
+        return Response.ok().build();
+    }
+
+    @DELETE
+    @Path("/slett-saksbehandlere")
+    @Operation(description = "Sletter saksbehandlere uten knytning til køer eller avdeling", tags = "admin")
+    @BeskyttetRessurs(actionType = ActionType.DELETE, resourceType = ResourceType.DRIFT)
+    public Response slettSaksbehandlereUtenKnytninger() {
+        organisasjonRepository.slettSaksbehandlereUtenKnytninger();
         return Response.ok().build();
     }
 

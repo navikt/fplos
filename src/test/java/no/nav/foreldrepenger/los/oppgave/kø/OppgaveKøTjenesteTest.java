@@ -1,6 +1,7 @@
 package no.nav.foreldrepenger.los.oppgave.kø;
 
 
+import static no.nav.foreldrepenger.los.DBTestUtil.avdelingDrammen;
 import static no.nav.foreldrepenger.los.organisasjon.Avdeling.AVDELING_DRAMMEN_ENHET;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -9,7 +10,6 @@ import java.util.List;
 
 import jakarta.persistence.EntityManager;
 
-import no.nav.foreldrepenger.los.DBTestUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -24,7 +24,6 @@ import no.nav.foreldrepenger.los.oppgave.OppgaveRepository;
 import no.nav.foreldrepenger.los.oppgavekø.KøSortering;
 import no.nav.foreldrepenger.los.oppgavekø.OppgaveFiltrering;
 import no.nav.foreldrepenger.los.oppgavekø.OppgaveKøTjeneste;
-import no.nav.foreldrepenger.los.organisasjon.Avdeling;
 import no.nav.foreldrepenger.los.organisasjon.OrganisasjonRepository;
 import no.nav.foreldrepenger.los.organisasjon.Saksbehandler;
 
@@ -120,7 +119,7 @@ class OppgaveKøTjenesteTest {
         var oppgaveFiltrering = OppgaveFiltrering.builder()
             .medNavn("OPPRETTET")
             .medSortering(KøSortering.OPPRETT_BEHANDLING)
-            .medAvdeling(avdelingDrammen())
+            .medAvdeling(avdelingDrammen(entityManager))
             .build();
         oppgaveRepository.lagre(oppgaveFiltrering);
         leggtilOppgaveMedEkstraEgenskaper(førstegangOppgave, AndreKriterierType.TIL_BESLUTTER);
@@ -144,7 +143,7 @@ class OppgaveKøTjenesteTest {
             var oppgaveFiltrering = OppgaveFiltrering.builder()
                 .medNavn("Test " + i)
                 .medSortering(KøSortering.BEHANDLINGSFRIST)
-                .medAvdeling(avdelingDrammen())
+                .medAvdeling(avdelingDrammen(entityManager))
                 .build();
             entityManager.persist(oppgaveFiltrering);
             filtre.add(oppgaveFiltrering);
@@ -158,7 +157,7 @@ class OppgaveKøTjenesteTest {
         var oppgaveFiltrering = OppgaveFiltrering.builder()
             .medNavn("OPPRETTET")
             .medSortering(KøSortering.OPPRETT_BEHANDLING)
-            .medAvdeling(avdelingDrammen())
+            .medAvdeling(avdelingDrammen(entityManager))
             .build();
         oppgaveRepository.lagre(oppgaveFiltrering);
         oppgaveRepository.lagre(førstegangOppgave);
@@ -169,11 +168,5 @@ class OppgaveKøTjenesteTest {
         return oppgaveFiltrering.getId();
     }
 
-    private Avdeling avdelingDrammen() {
-        return DBTestUtil.hentAlle(entityManager, Avdeling.class)
-                         .stream()
-                         .filter(a -> a.getAvdelingEnhet().equals(AVDELING_DRAMMEN_ENHET))
-                         .findAny()
-                         .orElseThrow();
-    }
+
 }

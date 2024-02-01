@@ -1,5 +1,6 @@
 package no.nav.foreldrepenger.los.oppgave;
 
+import static no.nav.foreldrepenger.los.DBTestUtil.avdelingDrammen;
 import static no.nav.foreldrepenger.los.oppgavekø.KøSortering.BEHANDLINGSFRIST;
 import static no.nav.foreldrepenger.los.oppgavekø.KøSortering.FEILUTBETALINGSTART;
 import static no.nav.foreldrepenger.los.organisasjon.Avdeling.AVDELING_DRAMMEN_ENHET;
@@ -30,7 +31,6 @@ import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.Op
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveEventType;
 import no.nav.foreldrepenger.los.oppgavekø.KøSortering;
 import no.nav.foreldrepenger.los.oppgavekø.OppgaveFiltrering;
-import no.nav.foreldrepenger.los.organisasjon.Avdeling;
 import no.nav.foreldrepenger.los.reservasjon.ReservasjonTjeneste;
 
 @ExtendWith(JpaExtension.class)
@@ -68,15 +68,7 @@ class OppgaveRepositoryTest {
     }
 
     private Long avdelingIdForDrammen() {
-        return avdelingForDrammen().getId();
-    }
-
-    private Avdeling avdelingForDrammen() {
-        return DBTestUtil.hentAlle(entityManager, Avdeling.class)
-                         .stream()
-                         .filter(a -> a.getAvdelingEnhet().equals(AVDELING_DRAMMEN_ENHET))
-                         .findAny()
-                         .orElseThrow();
+        return avdelingDrammen(entityManager).getId();
     }
 
     @Test
@@ -253,7 +245,7 @@ class OppgaveRepositoryTest {
 
     @Test
     void hentAlleLister() {
-        var avdeling = avdelingForDrammen();
+        var avdeling = avdelingDrammen(entityManager);
         var førsteOppgaveFiltrering = OppgaveFiltrering.builder()
             .medNavn("OPPRETTET")
             .medSortering(KøSortering.OPPRETT_BEHANDLING)
