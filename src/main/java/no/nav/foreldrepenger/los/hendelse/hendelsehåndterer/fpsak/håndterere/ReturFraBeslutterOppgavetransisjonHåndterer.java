@@ -70,7 +70,7 @@ public class ReturFraBeslutterOppgavetransisjonHåndterer implements FpsakOppgav
     private Oppgave opprettOppgave(BehandlingId behandlingId, LosBehandlingDto behandlingFpsak) {
         var oppgave = OppgaveUtil.oppgave(behandlingId, behandlingFpsak);
         oppgaveTjeneste.lagre(oppgave);
-        reservasjonTjeneste.opprettReservasjon(oppgave, behandlingFpsak.ansvarligSaksbehandlerIdent(), "Retur fra beslutter");
+        Optional.ofNullable(behandlingFpsak.ansvarligSaksbehandlerIdent()).ifPresent(sbh -> reservasjonTjeneste.opprettReservasjon(oppgave, sbh, "Retur fra beslutter"));
         LOG.info("Retur fra beslutter, oppretter oppgave og flytter reservasjon til ansvarlig saksbehandler");
         return oppgave;
     }
