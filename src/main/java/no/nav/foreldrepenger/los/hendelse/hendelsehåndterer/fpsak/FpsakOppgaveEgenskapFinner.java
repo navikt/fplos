@@ -81,6 +81,9 @@ public class FpsakOppgaveEgenskapFinner implements OppgaveEgenskapFinner {
         if (FagsakEgenskaper.fagsakErMarkertNæring(behandling) && matchAksjonspunkt(aksjonspunkter, Aksjonspunkt::skalVurdereNæring)) {
             this.andreKriterier.add(AndreKriterierType.NÆRING);
         }
+        if (FagsakEgenskaper.fagsakErMarkertUtsettelse(behandling)) {
+            this.andreKriterier.add(AndreKriterierType.PRAKSIS_UTSETTELSE);
+        }
     }
 
     @Override

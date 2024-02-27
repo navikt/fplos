@@ -69,4 +69,16 @@ public final class FagsakEgenskaper {
             .isPresent();
     }
 
+    public static boolean fagsakErMarkertUtsettelse(LosBehandlingDto behandlingDto) {
+        return Optional.ofNullable(behandlingDto).map(LosBehandlingDto::fagsakEgenskaper)
+            .filter(FagsakEgenskaper::fagsakErMarkertUtsettelse).isPresent();
+    }
+
+    public static boolean fagsakErMarkertUtsettelse(LosFagsakEgenskaperDto egenskaperDto) {
+        return Optional.ofNullable(egenskaperDto)
+            .map(LosFagsakEgenskaperDto::fagsakMarkering)
+            .filter(LosFagsakEgenskaperDto.FagsakMarkering.PRAKSIS_UTSETTELSE::equals)
+            .isPresent();
+    }
+
 }

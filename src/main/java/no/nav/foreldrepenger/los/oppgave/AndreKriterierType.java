@@ -3,11 +3,10 @@ package no.nav.foreldrepenger.los.oppgave;
 import java.util.Arrays;
 import java.util.Optional;
 
-import jakarta.persistence.AttributeConverter;
-import jakarta.persistence.Converter;
-
 import com.fasterxml.jackson.annotation.JsonValue;
 
+import jakarta.persistence.AttributeConverter;
+import jakarta.persistence.Converter;
 import no.nav.foreldrepenger.los.felles.Kodeverdi;
 
 public enum AndreKriterierType implements Kodeverdi {
@@ -30,7 +29,8 @@ public enum AndreKriterierType implements Kodeverdi {
     SAMMENSATT_KONTROLL("SAMMENSATT_KONTROLL", "Sammensatt kontroll"),
     ARBEID_INNTEKT("ARBEID_INNTEKT", "Arbeid og inntekt"),
     DØD("DØD", "Død eller dødfødsel"),
-    NÆRING("NÆRING", "Selvstendig næringsdrivende")
+    NÆRING("NÆRING", "Selvstendig næringsdrivende"),
+    PRAKSIS_UTSETTELSE("PRAKSIS_UTSETTELSE", "Praksis utsettelse")
     ;
 
     @JsonValue
