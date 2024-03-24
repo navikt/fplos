@@ -23,7 +23,7 @@ public class BehandlingHendelseConsumer implements LiveAndReadinessAware, Contro
 
     @Inject
     public BehandlingHendelseConsumer(BehandlingHendelseHåndterer behandlingHendelseHåndterer) {
-        this.kcm = new KafkaConsumerManager<>(List.of(behandlingHendelseHåndterer));
+        this.kcm = new KafkaConsumerManager<>(behandlingHendelseHåndterer);
     }
 
     @Override

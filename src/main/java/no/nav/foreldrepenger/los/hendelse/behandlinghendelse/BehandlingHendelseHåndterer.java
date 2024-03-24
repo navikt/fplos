@@ -10,7 +10,6 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.context.control.ActivateRequestContext;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
-import no.nav.foreldrepenger.konfig.Environment;
 import no.nav.foreldrepenger.konfig.KonfigVerdi;
 import no.nav.vedtak.exception.VLException;
 import no.nav.vedtak.felles.integrasjon.kafka.KafkaMessageHandler;
@@ -28,8 +27,7 @@ import no.nav.vedtak.mapper.json.DefaultJsonMapper;
 public class BehandlingHendelseHåndterer implements KafkaMessageHandler.KafkaStringMessageHandler {
 
     private static final Logger LOG = LoggerFactory.getLogger(BehandlingHendelseHåndterer.class);
-    private static final Environment ENV = Environment.current();
-    private static final String PROD_APP_ID = "fplos-behandling"; // Hold konstant pga offset commit !!
+    private static final String GROUP_ID = "fplos-behandling"; // Hold konstant pga offset commit !!
     private static final Set<Hendelse> IGNORER = Set.of(Hendelse.BRUKEROPPGAVE, Hendelse.OPPRETTET, Hendelse.MANGLERSØKNAD, Hendelse.MIGRERING);
 
     private ProsessTaskTjeneste taskTjeneste;
@@ -50,20 +48,16 @@ public class BehandlingHendelseHåndterer implements KafkaMessageHandler.KafkaSt
 
     @Override
     public void handleRecord(String key, String value) {
-        handleMessage(key, value);
-    }
-
-    void handleMessage(String key, String payload) {
         // enhver exception ut fra denne metoden medfører at tråden som leser fra kafka gir opp og dør på seg.
         try {
-            var behandlingHendelse = DefaultJsonMapper.fromJson(payload, BehandlingHendelse.class);
+            var behandlingHendelse = DefaultJsonMapper.fromJson(value, BehandlingHendelse.class);
             if (behandlingHendelse != null && !IGNORER.contains(behandlingHendelse.getHendelse())) {
                 handleMessageIntern((BehandlingHendelseV1) behandlingHendelse);
             }
         } catch (VLException e) {
-            LOG.warn("FP-328773 Vedtatt-Ytelse Feil under parsing av vedtak. key={} payload={}", key, payload, e);
+            LOG.warn("FP-328773 Vedtatt-Ytelse Feil under parsing av vedtak. key={} payload={}", key, value, e);
         } catch (Exception e) {
-            LOG.warn("Vedtatt-Ytelse exception ved håndtering av vedtaksmelding, ignorerer key={}", LoggerUtils.removeLineBreaks(payload), e);
+            LOG.warn("Vedtatt-Ytelse exception ved håndtering av vedtaksmelding, ignorerer key={}", LoggerUtils.removeLineBreaks(value), e);
         }
     }
 
@@ -73,11 +67,8 @@ public class BehandlingHendelseHåndterer implements KafkaMessageHandler.KafkaSt
     }
 
     @Override
-    public String groupId() { // Keep stable (or it will read from autoOffsetReset()
-        if (!ENV.isProd()) {
-            return PROD_APP_ID + (ENV.isDev() ? "-dev" : "-vtp");
-        }
-        return PROD_APP_ID;
+    public String groupId() {
+        return GROUP_ID; // Keep stable (or it will read from autoOffsetReset()
     }
 
 
