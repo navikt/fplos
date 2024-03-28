@@ -2,17 +2,16 @@ package no.nav.foreldrepenger.los.konfig;
 
 import java.util.Set;
 
+import io.prometheus.client.hotspot.DefaultExports;
 import jakarta.ws.rs.ApplicationPath;
 import jakarta.ws.rs.core.Application;
-
-import io.prometheus.client.hotspot.DefaultExports;
-import no.nav.foreldrepenger.los.server.healthcheck.HealthCheckRestService;
 import no.nav.foreldrepenger.los.server.PrometheusRestService;
+import no.nav.foreldrepenger.los.server.healthcheck.HealthCheckRestService;
 
-@ApplicationPath(InternalApiConfig.API_URL)
+@ApplicationPath(InternalApiConfig.API_URI)
 public class InternalApiConfig extends Application {
 
-    public static final String API_URL = "/internal";
+    public static final String API_URI = "/internal";
 
     public InternalApiConfig() {
         // CDI
