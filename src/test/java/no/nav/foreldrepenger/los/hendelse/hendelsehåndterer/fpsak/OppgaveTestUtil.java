@@ -31,8 +31,8 @@ public class OppgaveTestUtil {
         return new LosBehandlingDto(behandlingId.toUUID(), Kildesystem.FPSAK, "1234", Ytelse.FORELDREPENGER,
             new no.nav.vedtak.hendelser.behandling.AktørId(aktørId.getId()), Behandlingstype.FØRSTEGANGS, Behandlingsstatus.OPPRETTET,
             behandlingOpprettet, "4406", behandlingstidFrist, "saksbehandler", OppgaveTestUtil.aksjonspunkter(),
-            berørt ? List.of(Behandlingsårsak.BERØRT) : List.of(), false, false, null,
-            new LosBehandlingDto.LosForeldrepengerDto(førsteUttaksDag(), false, false), null);
+            berørt ? List.of(Behandlingsårsak.BERØRT) : List.of(), false, false, List.of(),null,
+            new LosBehandlingDto.LosForeldrepengerDto(førsteUttaksDag(), false, false), List.of(), null);
     }
 
     public static LocalDate førsteUttaksDag() {

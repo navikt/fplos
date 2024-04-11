@@ -25,5 +25,7 @@ public class SlettUtdatertKoStatistikkTask implements ProsessTaskHandler {
     public void doTask(ProsessTaskData prosessTaskData) {
         var slettet = køStatistikkRepository.slettUtdaterte();
         LOG.info("Slettet {} rader i køstatistikk-tabellen", slettet);
+        var utdatert = køStatistikkRepository.slettLøseKriterier();
+        LOG.info("Slettet {} løse kriterier i filtrering-kriterier-tabellen", utdatert);
     }
 }
