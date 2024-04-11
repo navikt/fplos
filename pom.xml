@@ -5,7 +5,7 @@
     <parent>
         <groupId>no.nav.foreldrepenger.felles</groupId>
         <artifactId>fp-bom</artifactId>
-        <version>3.1.2</version>
+        <version>3.2.0</version>
     </parent>
 
     <groupId>no.nav.foreldrepenger.los</groupId>
@@ -17,9 +17,9 @@
         <sonar.projectName>fp-los</sonar.projectName>
         <sonar.projectKey>navikt_fplos</sonar.projectKey>
 
-        <fp-kontrakter.version>9.1.8</fp-kontrakter.version>
-        <felles.version>7.0.10</felles.version>
-        <prosesstask.version>5.0.5</prosesstask.version>
+        <fp-kontrakter.version>9.1.12</fp-kontrakter.version>
+        <felles.version>7.1.2</felles.version>
+        <prosesstask.version>5.0.8</prosesstask.version>
     </properties>
 
     <dependencies>
@@ -172,23 +172,6 @@
             <artifactId>jetty-ee10-cdi</artifactId>
         </dependency>
 
-        <dependency>
-            <groupId>io.prometheus</groupId>
-            <artifactId>simpleclient_dropwizard</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>io.prometheus</groupId>
-            <artifactId>simpleclient_hotspot</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>io.prometheus</groupId>
-            <artifactId>simpleclient</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>io.prometheus</groupId>
-            <artifactId>simpleclient_common</artifactId>
-        </dependency>
-
         <!-- Annet -->
         <dependency>
             <groupId>ch.qos.logback</groupId>
@@ -220,8 +203,8 @@
             <artifactId>hibernate-validator</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.glassfish</groupId>
-            <artifactId>jakarta.el</artifactId>
+            <groupId>org.glassfish.expressly</groupId>
+            <artifactId>expressly</artifactId>
         </dependency>
         <dependency>
             <groupId>jakarta.validation</groupId>
@@ -253,7 +236,7 @@
             <dependency>
                 <groupId>no.nav.foreldrepenger.felles</groupId>
                 <artifactId>fp-bom</artifactId>
-                <version>3.1.2</version>
+                <version>3.2.0</version>
                 <scope>import</scope>
                 <type>pom</type>
             </dependency>

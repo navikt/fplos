@@ -104,7 +104,7 @@ class OppgaveRepositoryTest {
         var saksnummerHit = setupOppgaveMedEgenskaper(AndreKriterierType.UTLANDSSAK, AndreKriterierType.UTBETALING_TIL_BRUKER);
         var oppgaveQuery = new Oppgavespørring(avdelingIdForDrammen(), BEHANDLINGSFRIST, List.of(), List.of(), List.of(AndreKriterierType.UTLANDSSAK),
             // inkluderes
-            List.of(AndreKriterierType.SØKT_GRADERING), // ekskluderes
+            List.of(AndreKriterierType.VURDER_SYKDOM), // ekskluderes
             false, null, null, null, null);
         var oppgaver = oppgaveRepository.hentOppgaver(oppgaveQuery);
         assertThat(oppgaver).hasSize(1);

@@ -83,6 +83,13 @@ public class KøStatistikkRepository {
         return deletedRows;
     }
 
+    int slettLøseKriterier() {
+        var query = entityManager.createNativeQuery("delete from FILTRERING_ANDRE_KRITERIER where oppgave_filtrering_id not in (select id from OPPGAVE_FILTRERING)");
+        int deletedRows = query.executeUpdate();
+        entityManager.flush();
+        return deletedRows;
+    }
+
     private static NyeOgFerdigstilteOppgaver map(Object objectArray) {
         var objects = (Object[]) objectArray;
         var datoFra = localDate(objects[0]);

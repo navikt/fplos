@@ -2,7 +2,6 @@ package no.nav.foreldrepenger.los.konfig;
 
 import java.util.Set;
 
-import io.prometheus.client.hotspot.DefaultExports;
 import jakarta.ws.rs.ApplicationPath;
 import jakarta.ws.rs.core.Application;
 import no.nav.foreldrepenger.los.server.PrometheusRestService;
@@ -14,8 +13,6 @@ public class InternalApiConfig extends Application {
     public static final String API_URI = "/internal";
 
     public InternalApiConfig() {
-        // CDI
-        DefaultExports.initialize();
     }
 
     @Override
