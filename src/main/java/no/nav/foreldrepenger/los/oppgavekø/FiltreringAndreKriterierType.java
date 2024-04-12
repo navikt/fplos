@@ -17,12 +17,6 @@ public class FiltreringAndreKriterierType extends BaseEntitet {
     @JoinColumn(name = "OPPGAVE_FILTRERING_ID", nullable = false)
     private OppgaveFiltrering oppgaveFiltrering;
 
-    @Column(name = "OPPGAVE_FILTRERING_ID", updatable = false, insertable = false)
-    private Long oppgaveFiltreringId;
-
-    @Column(name = "ANDRE_KRITERIER_TYPE", updatable = false, insertable = false)
-    private String andreKriterier;
-
     @Column(name = "ANDRE_KRITERIER_TYPE", nullable = false)
     @Convert(converter = AndreKriterierType.KodeverdiConverter.class)
     private AndreKriterierType andreKriterierType;
@@ -33,17 +27,13 @@ public class FiltreringAndreKriterierType extends BaseEntitet {
     private boolean inkluder = true;
 
     public FiltreringAndreKriterierType() {
-        //CDI
+        //hibernate
     }
 
     public FiltreringAndreKriterierType(OppgaveFiltrering oppgaveFiltrering, AndreKriterierType andreKriterierType, boolean inkluder) {
         this.oppgaveFiltrering = oppgaveFiltrering;
         this.andreKriterierType = andreKriterierType;
         this.inkluder = inkluder;
-    }
-
-    public OppgaveFiltrering getOppgaveFiltrering() {
-        return oppgaveFiltrering;
     }
 
     public AndreKriterierType getAndreKriterierType() {
@@ -54,7 +44,4 @@ public class FiltreringAndreKriterierType extends BaseEntitet {
         return inkluder;
     }
 
-    public boolean isEkskluder() {
-        return !inkluder;
-    }
 }

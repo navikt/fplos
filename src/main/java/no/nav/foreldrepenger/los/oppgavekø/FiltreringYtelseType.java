@@ -24,12 +24,6 @@ public class FiltreringYtelseType extends BaseEntitet {
     @JoinColumn(name = "OPPGAVE_FILTRERING_ID", nullable = false)
     private OppgaveFiltrering oppgaveFiltrering;
 
-    @Column(name = "OPPGAVE_FILTRERING_ID", updatable = false, insertable = false)
-    private Long oppgaveFiltreringId;
-
-    @Column(name = "FAGSAK_YTELSE_TYPE", updatable = false, insertable = false)
-    private String fagsakYtelseTypeKode;
-
     @Convert(converter = FagsakYtelseType.KodeverdiConverter.class)
     @Column(name = "FAGSAK_YTELSE_TYPE")
     private FagsakYtelseType fagsakYtelseType;
@@ -41,10 +35,6 @@ public class FiltreringYtelseType extends BaseEntitet {
     public FiltreringYtelseType(OppgaveFiltrering oppgaveFiltrering, FagsakYtelseType fagsakYtelseTypeKode) {
         this.oppgaveFiltrering = oppgaveFiltrering;
         this.fagsakYtelseType = fagsakYtelseTypeKode;
-    }
-
-    public OppgaveFiltrering getOppgaveFiltrering() {
-        return oppgaveFiltrering;
     }
 
     public FagsakYtelseType getFagsakYtelseType() {
