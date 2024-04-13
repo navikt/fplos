@@ -101,7 +101,7 @@ public class AvdelingslederSakslisteRestTjeneste {
     @Operation(description = "Lagre behandlingstyper", tags = AVDELINGSLEDER_SAKSLISTER)
     @BeskyttetRessurs(actionType = ActionType.CREATE, resourceType = ResourceType.OPPGAVESTYRING_AVDELINGENHET)
     public void lagreFagsakYtelseTyper(@NotNull @Parameter(description = "Ytelsestyper") @Valid SakslisteFagsakYtelseTyperDto dto) {
-        avdelingslederTjeneste.endreFyt(dto.getSakslisteId(), dto.getFagsakYtelseType(), dto.isChecked());
+        avdelingslederTjeneste.endreFagsakYtelseType(dto.getSakslisteId(), dto.getFagsakYtelseType(), dto.isChecked());
     }
 
 

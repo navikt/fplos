@@ -13,7 +13,6 @@ import no.nav.foreldrepenger.los.oppgave.FagsakYtelseType;
 import no.nav.foreldrepenger.los.oppgave.OppgaveRepository;
 import no.nav.foreldrepenger.los.oppgavekø.FiltreringAndreKriterierType;
 import no.nav.foreldrepenger.los.oppgavekø.FiltreringBehandlingType;
-import no.nav.foreldrepenger.los.oppgavekø.FiltreringYtelseType;
 import no.nav.foreldrepenger.los.oppgavekø.KøSortering;
 import no.nav.foreldrepenger.los.oppgavekø.OppgaveFiltrering;
 import no.nav.foreldrepenger.los.organisasjon.Avdeling;
@@ -84,53 +83,26 @@ public class AvdelingslederTjeneste {
         oppgaveRepository.refresh(filtre);
     }
 
-    public void endreFiltreringYtelseType(Long oppgavefiltreringId, FagsakYtelseType fagsakYtelseType) {
+    public void endreFagsakYtelseType(Long oppgavefiltreringId, FagsakYtelseType fagsakYtelseType, boolean checked) {
         var filter = hentFiltrering(oppgavefiltreringId);
-        // fjern gamle filtre
-        filter.getFiltreringYtelseTyper()
-            .stream()
-            .map(FiltreringYtelseType::getFagsakYtelseType)
-            .forEach(yt -> oppgaveRepository.slettFiltreringYtelseType(oppgavefiltreringId, yt));
-        if (fagsakYtelseType != null) {
-            // legg på eventuelle nye
-            oppgaveRepository.lagre(new FiltreringYtelseType(filter, fagsakYtelseType));
-        }
-        oppgaveRepository.refresh(filter);
-    }
-
-    public void endreFyt(Long oppgavefiltreringId, FagsakYtelseType fagsakYtelseType, boolean checked) {
-        var filter = hentFiltrering(oppgavefiltreringId);
-        filter.getFiltreringYtelseTyper()
-            .stream()
-            .filter(fyt -> fyt.getFagsakYtelseType().equals(fagsakYtelseType))
-            .findFirst()
-            .ifPresent(fyt -> oppgaveRepository.slettFiltreringYtelseType(oppgavefiltreringId, fagsakYtelseType));
+        filter.fjernFagsakYtelseType(fagsakYtelseType);
         if (checked) {
-            oppgaveRepository.lagre(new FiltreringYtelseType(filter, fagsakYtelseType));
+            filter.leggTilFagsakYtelseType(fagsakYtelseType);
         }
-        oppgaveRepository.refresh(filter);
-    }
-
-    public void endreFiltreringYtelseTyper(Long oppgavefiltreringId, List<FagsakYtelseType> fagsakYtelseType) {
-        LOG.info("Henter oppgavefiltreringId {}", oppgavefiltreringId);
-        var filter = hentFiltrering(oppgavefiltreringId);
-        filter.getFiltreringYtelseTyper()
-            .stream()
-            .map(FiltreringYtelseType::getFagsakYtelseType)
-            .forEach(yt -> oppgaveRepository.slettFiltreringYtelseType(oppgavefiltreringId, yt));
-        fagsakYtelseType.stream().map(yt -> new FiltreringYtelseType(filter, yt)).forEach(oppgaveRepository::lagre);
+        oppgaveRepository.lagre(filter);
     }
 
     public void endreFiltreringAndreKriterierType(Long oppgavefiltreringId,
                                                   AndreKriterierType andreKriterierType,
                                                   boolean checked,
                                                   boolean inkluder) {
-        oppgaveRepository.slettFiltreringAndreKriterierType(oppgavefiltreringId, andreKriterierType);
         var filterSett = hentFiltrering(oppgavefiltreringId);
+        filterSett.fjernAndreKriterierType(andreKriterierType);
         if (checked) {
-            oppgaveRepository.lagre(new FiltreringAndreKriterierType(filterSett, andreKriterierType, inkluder));
+            var kriterie = new FiltreringAndreKriterierType(filterSett, andreKriterierType, inkluder);
+            filterSett.leggTilAndreKriterierType(kriterie);
         }
-        oppgaveRepository.refresh(filterSett);
+        oppgaveRepository.lagre(filterSett);
     }
 
     public void leggSaksbehandlerTilListe(Long oppgaveFiltreringId, String saksbehandlerIdent) {

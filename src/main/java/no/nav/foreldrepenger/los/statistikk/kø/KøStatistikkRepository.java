@@ -3,7 +3,6 @@ package no.nav.foreldrepenger.los.statistikk.kø;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -85,6 +84,20 @@ public class KøStatistikkRepository {
 
     int slettLøseKriterier() {
         var query = entityManager.createNativeQuery("delete from FILTRERING_ANDRE_KRITERIER where oppgave_filtrering_id not in (select id from OPPGAVE_FILTRERING)");
+        int deletedRows = query.executeUpdate();
+        entityManager.flush();
+        return deletedRows;
+    }
+
+    int slettLøseYtelseTyper() {
+        var query = entityManager.createNativeQuery("delete from FILTRERING_YTELSE_TYPE where oppgave_filtrering_id not in (select id from OPPGAVE_FILTRERING)");
+        int deletedRows = query.executeUpdate();
+        entityManager.flush();
+        return deletedRows;
+    }
+
+    int slettLøseBehandlingsTyper() {
+        var query = entityManager.createNativeQuery("delete from FILTRERING_BEHANDLING_TYPE where oppgave_filtrering_id not in (select id from OPPGAVE_FILTRERING)");
         int deletedRows = query.executeUpdate();
         entityManager.flush();
         return deletedRows;

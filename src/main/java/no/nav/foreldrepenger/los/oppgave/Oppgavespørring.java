@@ -5,10 +5,10 @@ import java.util.List;
 import java.util.Optional;
 
 import no.nav.foreldrepenger.los.oppgavekø.FiltreringAndreKriterierType;
-import no.nav.foreldrepenger.los.oppgavekø.FiltreringBehandlingType;
-import no.nav.foreldrepenger.los.oppgavekø.FiltreringYtelseType;
 import no.nav.foreldrepenger.los.oppgavekø.KøSortering;
 import no.nav.foreldrepenger.los.oppgavekø.OppgaveFiltrering;
+
+import static java.util.function.Predicate.not;
 
 public class Oppgavespørring {
     private final KøSortering sortering;
@@ -29,8 +29,8 @@ public class Oppgavespørring {
     public Oppgavespørring(OppgaveFiltrering oppgaveFiltrering) {
         sortering = oppgaveFiltrering.getSortering();
         enhetId = oppgaveFiltrering.getAvdeling().getId();
-        behandlingTyper = behandlingTypeFra(oppgaveFiltrering);
-        ytelseTyper = ytelseType(oppgaveFiltrering);
+        behandlingTyper = oppgaveFiltrering.getBehandlingTyper();
+        ytelseTyper = oppgaveFiltrering.getFagsakYtelseTyper();
         inkluderAndreKriterierTyper = inkluderAndreKriterierTyperFra(oppgaveFiltrering);
         ekskluderAndreKriterierTyper = ekskluderAndreKriterierTyperFra(oppgaveFiltrering);
         erDynamiskPeriode = oppgaveFiltrering.getErDynamiskPeriode();
@@ -136,7 +136,7 @@ public class Oppgavespørring {
     private List<AndreKriterierType> ekskluderAndreKriterierTyperFra(OppgaveFiltrering oppgaveFiltrering) {
         return oppgaveFiltrering.getFiltreringAndreKriterierTyper()
             .stream()
-            .filter(FiltreringAndreKriterierType::isEkskluder)
+            .filter(not(FiltreringAndreKriterierType::isInkluder))
             .map(FiltreringAndreKriterierType::getAndreKriterierType)
             .toList();
     }
@@ -147,14 +147,6 @@ public class Oppgavespørring {
             .filter(FiltreringAndreKriterierType::isInkluder)
             .map(FiltreringAndreKriterierType::getAndreKriterierType)
             .toList();
-    }
-
-    private List<FagsakYtelseType> ytelseType(OppgaveFiltrering oppgaveFiltrering) {
-        return oppgaveFiltrering.getFiltreringYtelseTyper().stream().map(FiltreringYtelseType::getFagsakYtelseType).toList();
-    }
-
-    private List<BehandlingType> behandlingTypeFra(OppgaveFiltrering oppgaveFiltrering) {
-        return oppgaveFiltrering.getFiltreringBehandlingTyper().stream().map(FiltreringBehandlingType::getBehandlingType).toList();
     }
 
     @Override

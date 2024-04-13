@@ -313,8 +313,11 @@ public class OppgaveRepository {
     }
 
     public void slettListe(Long listeId) {
-        entityManager.remove(entityManager.find(OppgaveFiltrering.class, listeId));
+        var filtersett = entityManager.find(OppgaveFiltrering.class, listeId);
+        filtersett.tilbakestill();
+        entityManager.merge(filtersett);
         entityManager.flush();
+        entityManager.remove(filtersett);
     }
 
     public void slettFiltreringBehandlingType(Long sakslisteId, BehandlingType behandlingType) {
@@ -323,22 +326,6 @@ public class OppgaveRepository {
                 WHERE f.OPPGAVE_FILTRERING_ID = :oppgaveFiltreringId and f.behandling_type = :behandlingType
                 """).setParameter("oppgaveFiltreringId", sakslisteId)//$NON-NLS-1$ // NOSONAR
             .setParameter("behandlingType", behandlingType.getKode()).executeUpdate();
-    }
-
-    public void slettFiltreringYtelseType(Long sakslisteId, FagsakYtelseType fagsakYtelseType) {
-        entityManager.createNativeQuery("""
-                DELETE FROM FILTRERING_YTELSE_TYPE f
-                WHERE f.OPPGAVE_FILTRERING_ID = :oppgaveFiltreringId and f.FAGSAK_YTELSE_TYPE = :fagsakYtelseType
-                """).setParameter("oppgaveFiltreringId", sakslisteId)//$NON-NLS-1$ // NOSONAR
-            .setParameter("fagsakYtelseType", fagsakYtelseType.getKode()).executeUpdate();
-    }
-
-    public void slettFiltreringAndreKriterierType(Long oppgavefiltreringId, AndreKriterierType andreKriterierType) {
-        entityManager.createNativeQuery("""
-                DELETE FROM FILTRERING_ANDRE_KRITERIER f
-                WHERE f.OPPGAVE_FILTRERING_ID = :oppgaveFiltreringId and f.ANDRE_KRITERIER_TYPE = :andreKriterierType
-                """).setParameter("oppgaveFiltreringId", oppgavefiltreringId)//$NON-NLS-1$ // NOSONAR
-            .setParameter("andreKriterierType", andreKriterierType.getKode()).executeUpdate();
     }
 
     public <U extends BaseEntitet> void refresh(U entitet) {

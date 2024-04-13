@@ -6,6 +6,9 @@ import jakarta.persistence.EntityManager;
 
 import no.nav.foreldrepenger.los.DBTestUtil;
 
+import no.nav.foreldrepenger.los.oppgave.FagsakYtelseType;
+import no.nav.foreldrepenger.los.oppgavekø.FiltreringAndreKriterierType;
+
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -14,7 +17,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import no.nav.foreldrepenger.los.JpaExtension;
 import no.nav.foreldrepenger.los.oppgave.AndreKriterierType;
 import no.nav.foreldrepenger.los.oppgave.BehandlingType;
-import no.nav.foreldrepenger.los.oppgave.FagsakYtelseType;
 import no.nav.foreldrepenger.los.oppgave.OppgaveRepository;
 import no.nav.foreldrepenger.los.oppgavekø.KøSortering;
 import no.nav.foreldrepenger.los.oppgavekø.OppgaveFiltrering;
@@ -99,13 +101,13 @@ class AvdelingslederTjenesteTest {
     void leggTilYtelsetypeFiltrering() {
         var oppgaveFiltrering = OppgaveFiltrering.nyTomOppgaveFiltrering(avdelingDrammen());
         persistAndFlush(oppgaveFiltrering);
-        avdelingslederTjeneste.endreFiltreringYtelseType(oppgaveFiltrering.getId(), FagsakYtelseType.ENGANGSTØNAD);
+        avdelingslederTjeneste.endreFagsakYtelseType(oppgaveFiltrering.getId(), FagsakYtelseType.ENGANGSTØNAD, true);
         entityManager.refresh(oppgaveFiltrering);
-        assertThat(oppgaveFiltrering.getFiltreringYtelseTyper()).isNotEmpty();
-        assertThat(oppgaveFiltrering.getFiltreringYtelseTyper().get(0).getFagsakYtelseType()).isEqualTo(FagsakYtelseType.ENGANGSTØNAD);
-        avdelingslederTjeneste.endreFiltreringYtelseType(oppgaveFiltrering.getId(), null);
+        assertThat(oppgaveFiltrering.getFagsakYtelseTyper()).isNotEmpty();
+        assertThat(oppgaveFiltrering.getFagsakYtelseTyper()).first().isEqualTo(FagsakYtelseType.ENGANGSTØNAD);
+        avdelingslederTjeneste.endreFagsakYtelseType(oppgaveFiltrering.getId(), FagsakYtelseType.ENGANGSTØNAD, false);
         entityManager.refresh(oppgaveFiltrering);
-        assertThat(oppgaveFiltrering.getFiltreringYtelseTyper()).isEmpty();
+        assertThat(oppgaveFiltrering.getFagsakYtelseTyper()).isEmpty();
     }
 
     @Test
@@ -115,7 +117,8 @@ class AvdelingslederTjenesteTest {
         avdelingslederTjeneste.endreFiltreringAndreKriterierType(oppgaveFiltrering.getId(), AndreKriterierType.TIL_BESLUTTER, true, true);
         entityManager.refresh(oppgaveFiltrering);
         assertThat(oppgaveFiltrering.getFiltreringAndreKriterierTyper()).isNotEmpty();
-        assertThat(oppgaveFiltrering.getFiltreringAndreKriterierTyper().get(0).getAndreKriterierType()).isEqualTo(AndreKriterierType.TIL_BESLUTTER);
+        assertThat(oppgaveFiltrering.getFiltreringAndreKriterierTyper()).first()
+            .extracting(FiltreringAndreKriterierType::getAndreKriterierType).isEqualTo(AndreKriterierType.TIL_BESLUTTER);
         avdelingslederTjeneste.endreFiltreringAndreKriterierType(oppgaveFiltrering.getId(), AndreKriterierType.TIL_BESLUTTER, false, true);
         entityManager.refresh(oppgaveFiltrering);
         assertThat(oppgaveFiltrering.getFiltreringAndreKriterierTyper()).isEmpty();
