@@ -79,9 +79,33 @@ class AvdelingslederTjenesteTest {
     void testSettSorteringPåListe() {
         var liste = OppgaveFiltrering.nyTomOppgaveFiltrering(avdelingDrammen());
         persistAndFlush(liste);
-        avdelingslederTjeneste.settSortering(liste.getId(), KøSortering.BEHANDLINGSFRIST);
+        avdelingslederTjeneste.settSortering(liste.getId(), KøSortering.FØRSTE_STØNADSDAG);
         entityManager.refresh(liste);
-        assertThat(liste.getSortering()).isEqualTo(KøSortering.BEHANDLINGSFRIST);
+        assertThat(liste.getSortering()).isEqualTo(KøSortering.FØRSTE_STØNADSDAG);
+    }
+
+    @Test
+    void settStandardSorteringNårTilbakebetalingfilterIkkeAktivt() {
+        var liste = OppgaveFiltrering.nyTomOppgaveFiltrering(avdelingDrammen());
+        liste.leggTilFilter(BehandlingType.TILBAKEBETALING);
+        persistAndFlush(liste);
+        avdelingslederTjeneste.settSortering(liste.getId(), KøSortering.BELØP);
+        avdelingslederTjeneste.settSorteringNumeriskIntervall(liste.getId(), 100L, 200L);
+        entityManager.refresh(liste);
+        assertThat(liste)
+            .matches(d -> d.getFra().equals(100L))
+            .matches(d -> d.getTil().equals(200L))
+            .matches(OppgaveFiltrering::getErDynamiskPeriode)
+            .matches(d -> d.getSortering() == KøSortering.BELØP);
+
+        // sett standard sortering når det ikke lenger er filter på behandlingtype tilbakebetaling
+        avdelingslederTjeneste.endreFiltreringBehandlingType(liste.getId(), BehandlingType.TILBAKEBETALING, false);
+        entityManager.refresh(liste);
+        assertThat(liste)
+            .matches(d -> d.getFra() == null)
+            .matches(d -> d.getTil() == null)
+            .matches(d -> !d.getErDynamiskPeriode())
+            .matches(d -> d.getSortering() == KøSortering.BEHANDLINGSFRIST);
     }
 
     @Test

@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -46,7 +47,7 @@ public class OppgaveFiltrering extends BaseEntitet {
     @Convert(converter = KøSortering.KodeverdiConverter.class)
     private KøSortering sortering;
 
-    @OneToMany(mappedBy = "oppgaveFiltrering")
+    @OneToMany(mappedBy = "oppgaveFiltrering", cascade = CascadeType.PERSIST, orphanRemoval = true)
     private Set<FiltreringBehandlingType> filtreringBehandlingTyper = new HashSet<>();
 
     @OneToMany(mappedBy = "oppgaveFiltrering", cascade = CascadeType.PERSIST, orphanRemoval = true)
@@ -110,6 +111,10 @@ public class OppgaveFiltrering extends BaseEntitet {
         return andreKriterierTyper.stream().toList();
     }
 
+    public Set<FiltreringAndreKriterierType> getSet() {
+        return andreKriterierTyper;
+    }
+
     public Avdeling getAvdeling() {
         return avdeling;
     }
@@ -148,17 +153,35 @@ public class OppgaveFiltrering extends BaseEntitet {
         }
     }
 
-    public void leggTilAndreKriterierType(FiltreringAndreKriterierType filtreringAndreKriterierType) {
-        fjernAndreKriterierType(filtreringAndreKriterierType.getAndreKriterierType());
+    public void fjernSaksbehandler(Saksbehandler saksbehandler) {
+        this.saksbehandlere.remove(saksbehandler);
+    }
+
+    public void leggTilFilter(FiltreringAndreKriterierType filtreringAndreKriterierType) {
+        fjernFilter(filtreringAndreKriterierType.getAndreKriterierType());
         this.andreKriterierTyper.add(filtreringAndreKriterierType);
     }
 
-    public void fjernAndreKriterierType(AndreKriterierType andreKriterierType) {
+    public void leggTilFilter(FagsakYtelseType fagsakYtelseType) {
+        fjernFilter(fagsakYtelseType);
+        this.filtreringYtelseTyper.add(new FiltreringYtelseType(this, fagsakYtelseType));
+    }
+
+    public void leggTilFilter(BehandlingType behandlingType) {
+        fjernFilter(behandlingType);
+        this.filtreringBehandlingTyper.add(new FiltreringBehandlingType(this, behandlingType));
+    }
+
+    public void fjernFilter(AndreKriterierType andreKriterierType) {
         this.andreKriterierTyper.removeIf(akt -> akt.getAndreKriterierType() == andreKriterierType);
     }
 
-    public void fjernSaksbehandler(Saksbehandler saksbehandler) {
-        this.saksbehandlere.remove(saksbehandler);
+    public void fjernFilter(FagsakYtelseType fagsakYtelseType) {
+        this.filtreringYtelseTyper.removeIf(yt -> yt.getFagsakYtelseType() == fagsakYtelseType);
+    }
+
+    public void fjernFilter(BehandlingType behandlingType) {
+        this.filtreringBehandlingTyper.removeIf(fbt -> fbt.getBehandlingType() == behandlingType);
     }
 
     public void tilbakestill() {
@@ -170,14 +193,6 @@ public class OppgaveFiltrering extends BaseEntitet {
 
     public static OppgaveFiltrering.Builder builder() {
         return new OppgaveFiltrering.Builder();
-    }
-
-    public void fjernFagsakYtelseType(FagsakYtelseType fagsakYtelseType) {
-        this.filtreringYtelseTyper.removeIf(yt -> yt.getFagsakYtelseType() == fagsakYtelseType);
-    }
-
-    public void leggTilFagsakYtelseType(FagsakYtelseType fagsakYtelseType) {
-        this.filtreringYtelseTyper.add(new FiltreringYtelseType(this, fagsakYtelseType));
     }
 
     public static class Builder {
