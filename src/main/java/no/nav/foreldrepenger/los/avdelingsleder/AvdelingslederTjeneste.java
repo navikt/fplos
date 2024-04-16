@@ -12,7 +12,6 @@ import no.nav.foreldrepenger.los.oppgave.BehandlingType;
 import no.nav.foreldrepenger.los.oppgave.FagsakYtelseType;
 import no.nav.foreldrepenger.los.oppgave.OppgaveRepository;
 import no.nav.foreldrepenger.los.oppgavekø.FiltreringAndreKriterierType;
-import no.nav.foreldrepenger.los.oppgavekø.FiltreringBehandlingType;
 import no.nav.foreldrepenger.los.oppgavekø.KøSortering;
 import no.nav.foreldrepenger.los.oppgavekø.OppgaveFiltrering;
 import no.nav.foreldrepenger.los.organisasjon.Avdeling;
@@ -20,6 +19,8 @@ import no.nav.foreldrepenger.los.organisasjon.OrganisasjonRepository;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static java.util.function.Predicate.not;
 
 
 @ApplicationScoped
@@ -70,24 +71,24 @@ public class AvdelingslederTjeneste {
     public void endreFiltreringBehandlingType(Long oppgavefiltreringId, BehandlingType behandlingType, boolean checked) {
         var filtre = oppgaveRepository.hentOppgaveFilterSett(oppgavefiltreringId).orElseThrow();
         if (checked) {
-            if (!behandlingType.gjelderTilbakebetaling()) {
-                settStandardSorteringHvisTidligereTilbakebetaling(oppgavefiltreringId);
-            }
-            oppgaveRepository.lagre(new FiltreringBehandlingType(filtre, behandlingType));
+            filtre.leggTilFilter(behandlingType);
         } else {
-            oppgaveRepository.slettFiltreringBehandlingType(oppgavefiltreringId, behandlingType);
-            if (ingenBehandlingsTypeErValgtEtterAtTilbakekrevingErValgtBort(behandlingType, oppgavefiltreringId)) {
-                settStandardSorteringHvisTidligereTilbakebetaling(oppgavefiltreringId);
-            }
+            filtre.fjernFilter(behandlingType);
         }
-        oppgaveRepository.refresh(filtre);
+        boolean gammelSorteringGjelderTilbakebetaling = filtre.getSortering().getFeltkategori().equals(KøSortering.FK_TILBAKEKREVING);
+        boolean tilbakekrevingSorteringIkkeAktuell =
+            filtre.getBehandlingTyper().isEmpty() || filtre.getBehandlingTyper().stream().anyMatch(not(BehandlingType::gjelderTilbakebetaling));
+        if (gammelSorteringGjelderTilbakebetaling && tilbakekrevingSorteringIkkeAktuell) {
+            settSortering(filtre.getId(), KøSortering.BEHANDLINGSFRIST);
+        }
+        oppgaveRepository.lagre(filtre);
     }
 
     public void endreFagsakYtelseType(Long oppgavefiltreringId, FagsakYtelseType fagsakYtelseType, boolean checked) {
         var filter = hentFiltrering(oppgavefiltreringId);
-        filter.fjernFagsakYtelseType(fagsakYtelseType);
+        filter.fjernFilter(fagsakYtelseType);
         if (checked) {
-            filter.leggTilFagsakYtelseType(fagsakYtelseType);
+            filter.leggTilFilter(fagsakYtelseType);
         }
         oppgaveRepository.lagre(filter);
     }
@@ -97,10 +98,10 @@ public class AvdelingslederTjeneste {
                                                   boolean checked,
                                                   boolean inkluder) {
         var filterSett = hentFiltrering(oppgavefiltreringId);
-        filterSett.fjernAndreKriterierType(andreKriterierType);
+        filterSett.fjernFilter(andreKriterierType);
         if (checked) {
             var kriterie = new FiltreringAndreKriterierType(filterSett, andreKriterierType, inkluder);
-            filterSett.leggTilAndreKriterierType(kriterie);
+            filterSett.leggTilFilter(kriterie);
         }
         oppgaveRepository.lagre(filterSett);
     }
@@ -137,21 +138,6 @@ public class AvdelingslederTjeneste {
 
     public void settSorteringTidsintervallValg(Long oppgaveFiltreringId, boolean erDynamiskPeriode) {
         oppgaveRepository.settSorteringTidsintervallValg(oppgaveFiltreringId, erDynamiskPeriode);
-    }
-
-    private boolean ingenBehandlingsTypeErValgtEtterAtTilbakekrevingErValgtBort(BehandlingType behandlingType, Long oppgavefiltreringId) {
-        if (!behandlingType.gjelderTilbakebetaling()) {
-            return false;
-        }
-        var filter = hentFiltrering(oppgavefiltreringId);
-        return filter.getFiltreringBehandlingTyper().isEmpty();
-    }
-
-    private void settStandardSorteringHvisTidligereTilbakebetaling(Long oppgavefiltreringId) {
-        var sortering = oppgaveRepository.hentSorteringForListe(oppgavefiltreringId);
-        if (sortering != null && sortering.getFeltkategori().equals(KøSortering.FK_TILBAKEKREVING)) {
-            settSortering(oppgavefiltreringId, KøSortering.BEHANDLINGSFRIST);
-        }
     }
 
     private OppgaveFiltrering hentFiltrering(Long oppgavefiltreringId) {
