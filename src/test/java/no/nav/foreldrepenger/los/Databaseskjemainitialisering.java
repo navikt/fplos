@@ -2,6 +2,7 @@ package no.nav.foreldrepenger.los;
 
 import static java.lang.Runtime.getRuntime;
 
+import java.sql.SQLException;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -10,7 +11,6 @@ import javax.sql.DataSource;
 
 import org.eclipse.jetty.plus.jndi.EnvEntry;
 import org.flywaydb.core.Flyway;
-import org.flywaydb.core.api.FlywayException;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
@@ -56,14 +56,12 @@ public final class Databaseskjemainitialisering {
                     throw new IllegalStateException("Forventer at denne migreringen bare kjøres lokalt");
                 }
                 flyway.migrate();
-            } catch (FlywayException fwe) {
-                try {
-                    // prøver igjen
-                    flyway.clean();
-                    flyway.migrate();
-                } catch (FlywayException fwe2) {
-                    throw new IllegalStateException("Migrering feiler", fwe2);
+                var connection = flyway.getConfiguration().getDataSource().getConnection();
+                if (!connection.isClosed()) {
+                    connection.close();
                 }
+            } catch (SQLException sqlex) {
+                // nothing to do here
             }
         }
     }
