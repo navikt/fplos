@@ -109,26 +109,4 @@ public class AdminRestTjeneste {
         return Response.ok().build();
     }
 
-    @POST
-    @Path("/slett-mer-enhetsdata")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    @Operation(description = "Sletter oppgaver, reservasjoner mm som har referanse til enhet", tags = "admin")
-    @BeskyttetRessurs(actionType = ActionType.CREATE, resourceType = ResourceType.DRIFT)
-    public Response slettResterendeEnhetsdata(@NotNull @Valid DriftAvdelingEnhetDto avdelingEnhetDto) {
-        organisasjonRepository.slettØvrigeEnhetsdata(avdelingEnhetDto.avdelingEnhet());
-        return Response.ok().build();
-    }
-
-    @POST
-    @Path("/slett-gradering")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    @Operation(description = "Sletter søkt gradering", tags = "admin")
-    @BeskyttetRessurs(actionType = ActionType.CREATE, resourceType = ResourceType.DRIFT)
-    public Response slettSøktGradering() {
-        organisasjonRepository.fjernSøktGradering();
-        return Response.ok().build();
-    }
-
 }

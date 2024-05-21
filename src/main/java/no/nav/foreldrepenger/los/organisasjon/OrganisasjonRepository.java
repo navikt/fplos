@@ -96,14 +96,6 @@ public class OrganisasjonRepository {
         entityManager.flush();
     }
 
-    public void fjernSøktGradering() {
-        entityManager.createNativeQuery("DELETE FROM OPPGAVE_EVENT_LOGG where ANDRE_KRITERIER_TYPE = 'SOKT_GRADERING'").executeUpdate();;
-        entityManager.createNativeQuery("DELETE FROM OPPGAVE_EGENSKAP where ANDRE_KRITERIER_TYPE = 'SOKT_GRADERING'").executeUpdate();;
-        entityManager.createNativeQuery("DELETE FROM FILTRERING_ANDRE_KRITERIER where ANDRE_KRITERIER_TYPE = 'SOKT_GRADERING'").executeUpdate();;
-        entityManager.flush();
-    }
-
-
     public Optional<Avdeling> hentAvdelingFraEnhet(String avdelingEnhet) {
         var query = entityManager.createQuery("FROM avdeling a WHERE a.avdelingEnhet = :avdelingEnhet", Avdeling.class)
             .setParameter("avdelingEnhet", avdelingEnhet);
