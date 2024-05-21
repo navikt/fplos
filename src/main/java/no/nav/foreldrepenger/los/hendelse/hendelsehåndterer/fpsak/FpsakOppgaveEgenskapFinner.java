@@ -28,6 +28,9 @@ public class FpsakOppgaveEgenskapFinner implements OppgaveEgenskapFinner {
         if (harBehandlingsegenskap(behandling, LokalBehandlingEgenskap.SYKDOMSVURDERING)) {
             this.andreKriterier.add(AndreKriterierType.VURDER_SYKDOM);
         }
+        if (harBehandlingsegenskap(behandling, LokalBehandlingEgenskap.BARE_FAR_RETT)) {
+            this.andreKriterier.add(AndreKriterierType.BARE_FAR_RETT);
+        }
         if (Optional.ofNullable(behandling.foreldrepengerDto()).filter(LosBehandlingDto.LosForeldrepengerDto::sykdomsvurdering).isPresent()) {
             this.andreKriterier.add(AndreKriterierType.VURDER_SYKDOM);
         }
