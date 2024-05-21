@@ -9,7 +9,6 @@ import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import jakarta.ws.rs.Consumes;
-import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
@@ -98,12 +97,30 @@ public class AdminRestTjeneste {
         return Response.ok().build();
     }
 
-    @DELETE
+    @POST
     @Path("/slett-saksbehandlere")
     @Operation(description = "Sletter saksbehandlere uten knytning til køer eller avdeling", tags = "admin")
-    @BeskyttetRessurs(actionType = ActionType.DELETE, resourceType = ResourceType.DRIFT)
+    @BeskyttetRessurs(actionType = ActionType.CREATE, resourceType = ResourceType.DRIFT)
     public Response slettSaksbehandlereUtenKnytninger() {
         organisasjonRepository.slettSaksbehandlereUtenKnytninger();
+        return Response.ok().build();
+    }
+
+    @POST
+    @Path("/slett-mer-enhetsdata")
+    @Operation(description = "Sletter oppgaver, reservasjoner mm som har referanse til enhet", tags = "admin")
+    @BeskyttetRessurs(actionType = ActionType.CREATE, resourceType = ResourceType.DRIFT)
+    public Response slettResterendeEnhetsdata(@NotNull @Valid DriftAvdelingEnhetDto avdelingEnhetDto) {
+        organisasjonRepository.slettØvrigeEnhetsdata(avdelingEnhetDto.avdelingEnhet());
+        return Response.ok().build();
+    }
+
+    @POST
+    @Path("/slett-gradering")
+    @Operation(description = "Sletter søkt gradering", tags = "admin")
+    @BeskyttetRessurs(actionType = ActionType.CREATE, resourceType = ResourceType.DRIFT)
+    public Response slettSøktGradering() {
+        organisasjonRepository.fjernSøktGradering();
         return Response.ok().build();
     }
 
