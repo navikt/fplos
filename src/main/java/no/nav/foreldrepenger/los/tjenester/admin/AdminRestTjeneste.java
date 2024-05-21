@@ -90,6 +90,7 @@ public class AdminRestTjeneste {
     @POST
     @Path("/deaktiver-avdeling")
     @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
     @Operation(description = "Deaktiverer avdeling", tags = "admin")
     @BeskyttetRessurs(actionType = ActionType.CREATE, resourceType = ResourceType.DRIFT)
     public Response deaktiverAvdeling(@NotNull @Valid DriftAvdelingEnhetDto avdelingEnhetDto) {
@@ -99,6 +100,8 @@ public class AdminRestTjeneste {
 
     @POST
     @Path("/slett-saksbehandlere")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
     @Operation(description = "Sletter saksbehandlere uten knytning til køer eller avdeling", tags = "admin")
     @BeskyttetRessurs(actionType = ActionType.CREATE, resourceType = ResourceType.DRIFT)
     public Response slettSaksbehandlereUtenKnytninger() {
@@ -108,6 +111,8 @@ public class AdminRestTjeneste {
 
     @POST
     @Path("/slett-mer-enhetsdata")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
     @Operation(description = "Sletter oppgaver, reservasjoner mm som har referanse til enhet", tags = "admin")
     @BeskyttetRessurs(actionType = ActionType.CREATE, resourceType = ResourceType.DRIFT)
     public Response slettResterendeEnhetsdata(@NotNull @Valid DriftAvdelingEnhetDto avdelingEnhetDto) {
@@ -117,6 +122,8 @@ public class AdminRestTjeneste {
 
     @POST
     @Path("/slett-gradering")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
     @Operation(description = "Sletter søkt gradering", tags = "admin")
     @BeskyttetRessurs(actionType = ActionType.CREATE, resourceType = ResourceType.DRIFT)
     public Response slettSøktGradering() {
