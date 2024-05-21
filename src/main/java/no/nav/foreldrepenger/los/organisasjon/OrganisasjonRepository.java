@@ -69,6 +69,11 @@ public class OrganisasjonRepository {
                     select avd
                     from avdeling avd
                     where s member of avd.saksbehandlere
+                )
+                and not exists (
+                   select gruppe
+                   from saksbehandlerGruppe gruppe
+                   where s member of gruppe.saksbehandlere
                 )""")
             .executeUpdate();
         LOG.info("Slettet {} saksbehandlere uten knytninger til køer", slettedeRader);
