@@ -62,6 +62,7 @@ public class SlettDeaktiverteAvdelingerTask implements ProsessTaskHandler {
         køer.forEach(avdelingslederTjeneste::slettOppgaveFiltrering);
 
         organisasjonsRepository.slettAvdeling(avdeling);
+        organisasjonsRepository.slettØvrigeEnhetsdata(enhetsnummer);
         LOG.info("Slettet enhet {}", enhetsnummer);
     }
 }

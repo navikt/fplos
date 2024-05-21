@@ -15,7 +15,6 @@ public enum AndreKriterierType implements Kodeverdi {
     PAPIRSØKNAD("PAPIRSOKNAD", "Registrer papirsøknad"),
     UTBETALING_TIL_BRUKER("UTBETALING_TIL_BRUKER", "Utbetaling til bruker"),
     UTLANDSSAK("UTLANDSSAK", "Bosatt utland"),
-    SØKT_GRADERING("SOKT_GRADERING", "Søkt gradering"),
     VURDER_SYKDOM("VURDER_SYKDOM", "Vurder sykdom"),
     PLEIEPENGER("PLEIEPENGER", "Pleiepenger"),
     VURDER_FARESIGNALER("VURDER_FARESIGNALER", "Vurder faresignaler"),
@@ -30,7 +29,8 @@ public enum AndreKriterierType implements Kodeverdi {
     ARBEID_INNTEKT("ARBEID_INNTEKT", "Arbeid og inntekt"),
     DØD("DØD", "Død eller dødfødsel"),
     NÆRING("NÆRING", "Selvstendig næringsdrivende"),
-    PRAKSIS_UTSETTELSE("PRAKSIS_UTSETTELSE", "Praksis utsettelse")
+    PRAKSIS_UTSETTELSE("PRAKSIS_UTSETTELSE", "Praksis utsettelse"),
+    BARE_FAR_RETT("BARE_FAR_RETT", "Bare far har rett")
     ;
 
     @JsonValue

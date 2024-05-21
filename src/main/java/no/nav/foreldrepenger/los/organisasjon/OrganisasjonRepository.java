@@ -9,6 +9,7 @@ import java.util.Optional;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.Query;
 import jakarta.persistence.TypedQuery;
 import no.nav.foreldrepenger.los.felles.BaseEntitet;
 import no.nav.vedtak.felles.jpa.TomtResultatException;
@@ -72,6 +73,31 @@ public class OrganisasjonRepository {
             .executeUpdate();
         LOG.info("Slettet {} saksbehandlere uten knytninger til køer", slettedeRader);
     }
+
+
+    public void slettØvrigeEnhetsdata(String avdelingEnhet) {
+        var avdeling = hentAvdelingFraEnhet(avdelingEnhet).orElse(null);
+        if (avdeling != null && avdeling.getErAktiv()) {
+            LOG.info("Enhet er aktiv {}, avslutter.", avdelingEnhet);
+            return;
+        }
+        entityManager.createNativeQuery("DELETE FROM STATISTIKK_KO where OPPGAVE_ID in (select id from oppgave where behandlende_enhet = :enhet)").setParameter("enhet", avdelingEnhet).executeUpdate();;
+        entityManager.createNativeQuery("DELETE FROM RESERVASJON_EVENT_LOGG where OPPGAVE_ID in (select id from oppgave where behandlende_enhet = :enhet)").setParameter("enhet", avdelingEnhet).executeUpdate();;
+        entityManager.createNativeQuery("DELETE FROM RESERVASJON where OPPGAVE_ID in (select id from oppgave where behandlende_enhet = :enhet)").setParameter("enhet", avdelingEnhet).executeUpdate();;
+        entityManager.createNativeQuery("DELETE FROM TILBAKEKREVING_EGENSKAPER where OPPGAVE_ID in (select id from oppgave where behandlende_enhet = :enhet)").setParameter("enhet", avdelingEnhet).executeUpdate();;
+        entityManager.createNativeQuery("DELETE FROM OPPGAVE_EGENSKAP where OPPGAVE_ID in (select id from oppgave where behandlende_enhet = :enhet)").setParameter("enhet", avdelingEnhet).executeUpdate();;
+        entityManager.createNativeQuery("DELETE FROM OPPGAVE_EVENT_LOGG where behandlende_enhet = :enhet").setParameter("enhet", avdelingEnhet).executeUpdate();;
+        entityManager.createNativeQuery("DELETE FROM OPPGAVE where behandlende_enhet = :enhet").setParameter("enhet", avdelingEnhet).executeUpdate();;
+        entityManager.flush();
+    }
+
+    public void fjernSøktGradering() {
+        entityManager.createNativeQuery("DELETE FROM OPPGAVE_EVENT_LOGG where ANDRE_KRITERIER_TYPE = 'SOKT_GRADERING'").executeUpdate();;
+        entityManager.createNativeQuery("DELETE FROM OPPGAVE_EGENSKAP where ANDRE_KRITERIER_TYPE = 'SOKT_GRADERING'").executeUpdate();;
+        entityManager.createNativeQuery("DELETE FROM FILTRERING_ANDRE_KRITERIER where ANDRE_KRITERIER_TYPE = 'SOKT_GRADERING'").executeUpdate();;
+        entityManager.flush();
+    }
+
 
     public Optional<Avdeling> hentAvdelingFraEnhet(String avdelingEnhet) {
         var query = entityManager.createQuery("FROM avdeling a WHERE a.avdelingEnhet = :avdelingEnhet", Avdeling.class)
