@@ -33,7 +33,7 @@ public class LdapBrukeroppslag {
     }
 
     public String hentBrukersNavn(String ident) {
-        var result = ldapSearch(ident);
+        var result = ldapSearch(ident.trim());
         return getDisplayName(result);
     }
 
