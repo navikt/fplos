@@ -56,7 +56,7 @@ public class SynkroniseringHendelseTaskOppretterTjeneste {
     private void opprettSynkroniseringTask(KildeBehandlingId kildeBehandlingId, String callId, LocalDateTime kjøretidspunkt) {
         var prosessTaskData = ProsessTaskData.forProsessTask(BehandlingHendelseTask.class);
         prosessTaskData.setCallId(callId + kildeBehandlingId.behandlingId.toString());
-        prosessTaskData.setPrioritet(999);
+        prosessTaskData.setPrioritet(4);
         prosessTaskData.setNesteKjøringEtter(kjøretidspunkt);
         prosessTaskData.setProperty(BehandlingHendelseTask.HENDELSE_UUID, UUID.randomUUID().toString());
         prosessTaskData.setProperty(BehandlingHendelseTask.BEHANDLING_UUID, kildeBehandlingId.behandlingId.toString());
