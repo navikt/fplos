@@ -32,7 +32,7 @@ public class OppgaveTestUtil {
             new no.nav.vedtak.hendelser.behandling.AktørId(aktørId.getId()), Behandlingstype.FØRSTEGANGS, Behandlingsstatus.OPPRETTET,
             behandlingOpprettet, "4406", behandlingstidFrist, "saksbehandler", OppgaveTestUtil.aksjonspunkter(),
             berørt ? List.of(Behandlingsårsak.BERØRT) : List.of(), false, false, List.of(),null,
-            new LosBehandlingDto.LosForeldrepengerDto(førsteUttaksDag(), false, false), List.of(), null);
+            new LosBehandlingDto.LosForeldrepengerDto(førsteUttaksDag()), List.of(), null);
     }
 
     public static LocalDate førsteUttaksDag() {
