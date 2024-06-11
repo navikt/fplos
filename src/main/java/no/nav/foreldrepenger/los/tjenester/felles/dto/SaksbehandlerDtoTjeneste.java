@@ -7,6 +7,8 @@ import java.util.Optional;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 
+import no.nav.foreldrepenger.los.organisasjon.ansatt.BrukerProfil;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -72,7 +74,7 @@ public class SaksbehandlerDtoTjeneste {
             var avdelinger = ansattTjeneste.hentAvdelingerNavnForAnsatt(ident);
             return new SaksbehandlerMedAvdelingerDto(saksbehandlerDto.get(), avdelinger);
         }
-        var ukjent = new SaksbehandlerDto(new SaksbehandlerBrukerIdentDto(ident), "Ukjent saksbehandler " + ident);
+        var ukjent = new SaksbehandlerDto(new SaksbehandlerBrukerIdentDto(ident), "Ukjent saksbehandler " + ident, null);
         return new SaksbehandlerMedAvdelingerDto(ukjent, Collections.emptyList());
     }
 
@@ -83,12 +85,12 @@ public class SaksbehandlerDtoTjeneste {
 
     private Optional<SaksbehandlerDto> tilSaksbehandlerDto(String ident) {
         var identDto = new SaksbehandlerBrukerIdentDto(ident);
-        return hentSaksbehandlerNavn(ident).map(navn -> new SaksbehandlerDto(identDto, navn));
+        return hentBrukerProfil(ident).map(bp -> new SaksbehandlerDto(identDto, bp.navn(), bp.epostAdresse()));
     }
 
-    public Optional<String> hentSaksbehandlerNavn(String ident) {
+    public Optional<BrukerProfil> hentBrukerProfil(String ident) {
         try {
-            return Optional.of(ansattTjeneste.hentAnsattNavn(ident));
+            return Optional.of(ansattTjeneste.hentBrukerProfil(ident));
         } catch (IntegrasjonException e) {
             LOG.info("Henting av ansattnavn feilet, fortsetter med empty.", e);
             return Optional.empty();

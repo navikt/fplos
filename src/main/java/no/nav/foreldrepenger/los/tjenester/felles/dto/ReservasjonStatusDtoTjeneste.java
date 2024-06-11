@@ -7,6 +7,7 @@ import jakarta.inject.Inject;
 
 import no.nav.foreldrepenger.los.oppgave.Oppgave;
 import no.nav.foreldrepenger.los.organisasjon.ansatt.AnsattTjeneste;
+import no.nav.foreldrepenger.los.organisasjon.ansatt.BrukerProfil;
 import no.nav.foreldrepenger.los.reservasjon.Reservasjon;
 
 @ApplicationScoped
@@ -43,7 +44,9 @@ public class ReservasjonStatusDtoTjeneste {
         if (ident == null) {
             return null;
         }
-        return tryOrEmpty(() -> ansattTjeneste.hentAnsattNavn(ident), "ldap").orElse("Ukjent");
+        return tryOrEmpty(() -> ansattTjeneste.hentBrukerProfil(ident), "ldap")
+            .map(BrukerProfil::navn)
+            .orElse("Ukjent");
     }
 
     private ReservasjonStatusDto systembrukerSpesialTilfelle(Reservasjon reservasjon) {
