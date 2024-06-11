@@ -13,7 +13,7 @@ import no.nav.vedtak.util.LRUCache;
 @ApplicationScoped
 public class AnsattTjeneste {
 
-    private static final LRUCache<String, String> ANSATT_PROFIL = new LRUCache<>(1000, TimeUnit.MILLISECONDS.convert(24 * 7, TimeUnit.HOURS));
+    private static final LRUCache<String, BrukerProfil> ANSATT_PROFIL = new LRUCache<>(1000, TimeUnit.MILLISECONDS.convert(24 * 7, TimeUnit.HOURS));
     private static final LRUCache<String, List<String>> ANSATT_ENHETER = new LRUCache<>(1000, TimeUnit.MILLISECONDS.convert(25, TimeUnit.HOURS));
 
     private EnhetstilgangTjeneste enhetstilgangTjeneste;
