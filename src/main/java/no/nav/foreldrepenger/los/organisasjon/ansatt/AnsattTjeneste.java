@@ -13,7 +13,7 @@ import no.nav.vedtak.util.LRUCache;
 @ApplicationScoped
 public class AnsattTjeneste {
 
-    private static final LRUCache<String, String> ANSATT_NAVN = new LRUCache<>(1000, TimeUnit.MILLISECONDS.convert(24 * 7, TimeUnit.HOURS));
+    private static final LRUCache<String, BrukerProfil> ANSATT_PROFIL = new LRUCache<>(1000, TimeUnit.MILLISECONDS.convert(24 * 7, TimeUnit.HOURS));
     private static final LRUCache<String, List<String>> ANSATT_ENHETER = new LRUCache<>(1000, TimeUnit.MILLISECONDS.convert(25, TimeUnit.HOURS));
 
     private EnhetstilgangTjeneste enhetstilgangTjeneste;
@@ -30,13 +30,13 @@ public class AnsattTjeneste {
         this.organisasjonRepository = organisasjonRepository;
     }
 
-    public String hentAnsattNavn(String ident) {
-        if (ANSATT_NAVN.get(ident) == null) {
+    public BrukerProfil hentBrukerProfil(String ident) {
+        if (ANSATT_PROFIL.get(ident) == null) {
             // TODO: Erstatt med MS Graph API
-            var navn = new LdapBrukeroppslag().hentBrukersNavn(ident);
-            ANSATT_NAVN.put(ident, navn);
+            var brukerProfil = new LdapBrukeroppslag().hentBrukerProfil(ident);
+            ANSATT_PROFIL.put(ident, brukerProfil);
         }
-        return ANSATT_NAVN.get(ident);
+        return ANSATT_PROFIL.get(ident);
     }
 
     public List<String> hentAvdelingerNavnForAnsatt(String ident) {
@@ -44,7 +44,7 @@ public class AnsattTjeneste {
             aktuelleEnhetIder = organisasjonRepository.hentAktiveAvdelinger().stream().map(Avdeling::getAvdelingEnhet).toList();
         }
         if (ANSATT_ENHETER.get(ident) == null) {
-            // TODO: Fjerne axsys og bruk orgrepo.hentSaksbehandler og returner enheter
+            // TODO: Fjerne axsys. Alternativt vise kun epost
             var enheter = enhetstilgangTjeneste.hentEnhetstilganger(ident)
                 .stream()
                 .filter(oe -> aktuelleEnhetIder.contains(oe.enhetId()))

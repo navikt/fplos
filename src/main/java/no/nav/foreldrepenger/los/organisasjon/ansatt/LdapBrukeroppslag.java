@@ -1,6 +1,5 @@
 package no.nav.foreldrepenger.los.organisasjon.ansatt;
 
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.naming.InvalidNameException;
@@ -15,13 +14,19 @@ import javax.naming.ldap.LdapName;
 import no.nav.vedtak.exception.IntegrasjonException;
 import no.nav.vedtak.exception.TekniskException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 public class LdapBrukeroppslag {
 
+    private static final Logger LOG = LoggerFactory.getLogger(LdapBrukeroppslag.class);
+    private static final Pattern IDENT_PATTERN = Pattern.compile("^\\p{LD}+$");
+    private static final String DISPLAY_NAME_ATTR = "displayName";
+    private static final String USER_PRINCIPAL_NAME_ATTR = "userPrincipalName";
+
     private final LdapContext context;
     private final LdapName searchBase;
-
-    private static final Pattern IDENT_PATTERN = Pattern.compile("^\\p{LD}+$");
 
     public LdapBrukeroppslag() {
         this(LdapInnlogging.lagLdapContext(), lagLdapSearchBase());
@@ -32,24 +37,36 @@ public class LdapBrukeroppslag {
         this.searchBase = searcBase;
     }
 
-    public String hentBrukersNavn(String ident) {
+    public BrukerProfil hentBrukerProfil(String ident) {
         var result = ldapSearch(ident.trim());
-        return getDisplayName(result);
+        var displayName = find(result, DISPLAY_NAME_ATTR);
+        var upn = find(result, USER_PRINCIPAL_NAME_ATTR);
+        try {
+            var navn = displayName.get().toString();
+            var epostAdresse = upn.get().toString();
+            if (!epostAdresse.contains("@nav.no")) {
+                LOG.info("LDAP: fant ikke gyldig epostadresse for bruker {}", ident);
+            }
+            return new BrukerProfil(ident, navn, epostAdresse);
+        } catch (NamingException e) {
+            throw new TekniskException("F-314006", String.format("Kunne ikke hente ut attributtverdi for ident %s", ident), e);
+        }
     }
 
     private SearchResult ldapSearch(String ident) {
         if (ident == null || ident.isEmpty()) {
             throw new TekniskException("F-344885", "Kan ikke slå opp brukernavn uten å ha ident");
         }
-        Matcher matcher = IDENT_PATTERN.matcher(ident);
+        var matcher = IDENT_PATTERN.matcher(ident);
         if (!matcher.matches()) {
             throw new TekniskException("F-271934", String.format("Mulig LDAP-injection forsøk. Søkte med ugyldig ident '%s'", ident));
         }
 
-        SearchControls controls = new SearchControls();
+        var controls = new SearchControls();
         controls.setSearchScope(SearchControls.SUBTREE_SCOPE);
         controls.setCountLimit(1);
-        String søkestreng = String.format("(cn=%s)", ident);
+        controls.setReturningAttributes(new String[]{DISPLAY_NAME_ATTR, USER_PRINCIPAL_NAME_ATTR});
+        var søkestreng = String.format("(cn=%s)", ident);
         try {
             var result = context.search(searchBase, søkestreng, controls); // NOSONAR
             if (result.hasMoreElements()) {
@@ -64,18 +81,8 @@ public class LdapBrukeroppslag {
         }
     }
 
-    protected String getDisplayName(SearchResult result) {
-        String attributeName = "displayName";
-        Attribute displayName = find(result, attributeName);
-        try {
-            return displayName.get().toString();
-        } catch (NamingException e) {
-            throw new TekniskException("F-314006", String.format("Kunne ikke hente ut attributtverdi %s fra %s", attributeName, attributeName), e);
-        }
-    }
-
     private static Attribute find(SearchResult element, String attributeName) {
-        Attribute attribute = element.getAttributes().get(attributeName);
+        var attribute = element.getAttributes().get(attributeName);
         if (attribute == null) {
             throw new IntegrasjonException("F-828846", String.format("Resultat fra LDAP manglet påkrevet attributtnavn %s", attributeName));
         }
@@ -83,11 +90,12 @@ public class LdapBrukeroppslag {
     }
 
     private static LdapName lagLdapSearchBase() {
-        String userBaseDn = LdapInnlogging.getRequiredProperty("ldap.user.basedn");
+        var userBaseDn = LdapInnlogging.getRequiredProperty("ldap.user.basedn");
         try {
             return new LdapName(userBaseDn); // NOSONAR
         } catch (InvalidNameException e) {
             throw new IntegrasjonException("F-703197", String.format("Kunne ikke definere base-søk mot LDAP %s", userBaseDn), e);
         }
     }
+
 }

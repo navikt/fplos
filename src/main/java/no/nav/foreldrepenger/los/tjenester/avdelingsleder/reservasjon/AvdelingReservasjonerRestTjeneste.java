@@ -2,6 +2,7 @@ package no.nav.foreldrepenger.los.tjenester.avdelingsleder.reservasjon;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import no.nav.foreldrepenger.los.organisasjon.ansatt.BrukerProfil;
 import no.nav.foreldrepenger.los.reservasjon.Reservasjon;
 import no.nav.foreldrepenger.los.reservasjon.ReservasjonTjeneste;
 import no.nav.foreldrepenger.los.tjenester.avdelingsleder.dto.AvdelingEnhetDto;
@@ -55,7 +56,8 @@ public class AvdelingReservasjonerRestTjeneste {
 
     private List<ReservasjonDto> tilReservasjonDtoListe(List<Reservasjon> reservasjoner) {
         return reservasjoner.stream().map(reservasjon -> {
-            var reservertAvNavn = saksbehandlerDtoTjeneste.hentSaksbehandlerNavn(reservasjon.getReservertAv())
+            var reservertAvNavn = saksbehandlerDtoTjeneste.hentBrukerProfil(reservasjon.getReservertAv())
+                .map(BrukerProfil::navn)
                 .orElseGet(() -> "Ukjent saksbehandler " + reservasjon.getReservertAv());
             return new ReservasjonDto(reservasjon, reservertAvNavn, null);
         }).toList();
