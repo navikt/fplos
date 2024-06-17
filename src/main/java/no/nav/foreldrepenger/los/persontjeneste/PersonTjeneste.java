@@ -100,7 +100,7 @@ public class PersonTjeneste {
     private Person hentPdlPerson(FagsakYtelseType ytelseType, AktørId aktørId, String saksnummer) {
         var query = new HentPersonQueryRequest();
         query.setIdent(aktørId.getId());
-        var projection = new PersonResponseProjection().navn(new NavnResponseProjection().forkortetNavn().fornavn().mellomnavn().etternavn())
+        var projection = new PersonResponseProjection().navn(new NavnResponseProjection().fornavn().mellomnavn().etternavn())
             .adressebeskyttelse(new AdressebeskyttelseResponseProjection().gradering())
             .folkeregisteridentifikator(new FolkeregisteridentifikatorResponseProjection().identifikasjonsnummer().status().type());
         var ytelse = utledYtelse(ytelseType);
@@ -116,10 +116,11 @@ public class PersonTjeneste {
     }
 
     private static String navn(Navn navn) {
-        if (navn.getForkortetNavn() != null) {
-            return navn.getForkortetNavn();
-        }
-        return navn.getEtternavn() + " " + navn.getFornavn() + (navn.getMellomnavn() == null ? "" : " " + navn.getMellomnavn());
+        return navn.getFornavn() + leftPad(navn.getMellomnavn()) + leftPad(navn.getEtternavn());
+    }
+
+    private static String leftPad(String navn) {
+        return Optional.ofNullable(navn).map(n -> " " + navn).orElse("");
     }
 
     private Fødselsnummer fnr(List<Folkeregisteridentifikator> folkeregisteridentifikator, AktørId aktørId, String saksnummer) {
