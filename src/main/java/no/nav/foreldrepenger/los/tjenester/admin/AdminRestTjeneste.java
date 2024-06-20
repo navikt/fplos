@@ -17,6 +17,7 @@ import jakarta.ws.rs.core.Response;
 import no.nav.foreldrepenger.los.oppgave.OppgaveTjeneste;
 import no.nav.foreldrepenger.los.organisasjon.OrganisasjonRepository;
 import no.nav.foreldrepenger.los.tjenester.admin.dto.DriftAvdelingEnhetDto;
+import no.nav.foreldrepenger.los.tjenester.admin.dto.DriftOpprettAvdelingEnhetDto;
 import no.nav.foreldrepenger.los.tjenester.admin.dto.EnkelBehandlingIdDto;
 import no.nav.vedtak.hendelser.behandling.Kildesystem;
 import no.nav.vedtak.sikkerhet.abac.BeskyttetRessurs;
@@ -84,6 +85,17 @@ public class AdminRestTjeneste {
     public Response slettTidligsteMultiAktiv(@NotNull @Valid EnkelBehandlingIdDto behandlingId) {
         var behandlinger = behandlingId.getBehandlingId();
         oppgaveTjeneste.adminAvsluttMultiOppgaveUtenEventLoggAvsluttTilknyttetReservasjon(behandlinger);
+        return Response.ok().build();
+    }
+
+    @POST
+    @Path("/opprett-avdeling")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Operation(description = "Opprett avdeling", tags = "admin")
+    @BeskyttetRessurs(actionType = ActionType.CREATE, resourceType = ResourceType.DRIFT)
+    public Response opprettAvdeling(@NotNull @Valid DriftOpprettAvdelingEnhetDto avdelingEnhetDto) {
+        organisasjonRepository.opprettEllerReaktiverAvdeling(avdelingEnhetDto.enhetsnummer(), avdelingEnhetDto.enhetsnavn());
         return Response.ok().build();
     }
 

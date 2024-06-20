@@ -30,7 +30,8 @@ public enum AndreKriterierType implements Kodeverdi {
     DØD("DØD", "Død eller dødfødsel"),
     NÆRING("NÆRING", "Selvstendig næringsdrivende"),
     PRAKSIS_UTSETTELSE("PRAKSIS_UTSETTELSE", "Praksis utsettelse"),
-    BARE_FAR_RETT("BARE_FAR_RETT", "Bare far har rett")
+    BARE_FAR_RETT("BARE_FAR_RETT", "Bare far har rett"),
+    REVURDERING_INNTEKTSMELDING("REVURDERING_INNTEKTSMELDING", "Revurdering inntektsmelding")
     ;
 
     @JsonValue
