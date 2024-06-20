@@ -44,6 +44,11 @@ public class FpsakOppgaveEgenskapFinner implements OppgaveEgenskapFinner {
             && behandling.behandlingsårsaker().stream().anyMatch(Behandlingsårsak.SØKNAD::equals)) {
             this.andreKriterier.add(AndreKriterierType.ENDRINGSSØKNAD);
         }
+        if (Behandlingstype.REVURDERING.equals(behandling.behandlingstype())
+            && behandling.behandlingsårsaker().stream().anyMatch(Behandlingsårsak.INNTEKTSMELDING::equals)
+            && behandling.behandlingsårsaker().stream().allMatch(Behandlingsårsak.INNTEKTSMELDING::equals)) {
+            this.andreKriterier.add(AndreKriterierType.REVURDERING_INNTEKTSMELDING);
+        }
         if (behandling.faresignaler() || harBehandlingsegenskap(behandling, LokalBehandlingEgenskap.FARESIGNALER)) {
             this.andreKriterier.add(AndreKriterierType.VURDER_FARESIGNALER);
         }

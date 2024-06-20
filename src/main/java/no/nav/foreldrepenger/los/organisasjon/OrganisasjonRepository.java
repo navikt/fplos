@@ -6,16 +6,15 @@ import static no.nav.vedtak.felles.jpa.HibernateVerktøy.hentUniktResultat;
 import java.util.List;
 import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.Query;
 import jakarta.persistence.TypedQuery;
 import no.nav.foreldrepenger.los.felles.BaseEntitet;
 import no.nav.vedtak.felles.jpa.TomtResultatException;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 
 @ApplicationScoped
@@ -147,6 +146,18 @@ public class OrganisasjonRepository {
         entityManager.merge(gruppe);
         entityManager.remove(gruppe);
         entityManager.flush();
+    }
+
+    public void opprettEllerReaktiverAvdeling(String avdelingEnhet, String avdelingNavn) {
+        var avdeling = hentAvdelingFraEnhet(avdelingEnhet);
+        if (avdeling.isPresent()) {
+            avdeling.get().setErAktiv(true);
+            entityManager.persist(avdeling.get());
+            return;
+        } else {
+            var nyAvdeling = new Avdeling(avdelingEnhet, avdelingNavn, false);
+            entityManager.persist(nyAvdeling);
+        }
     }
 
     public void deaktiverAvdeling(String avdelingEnhet) {

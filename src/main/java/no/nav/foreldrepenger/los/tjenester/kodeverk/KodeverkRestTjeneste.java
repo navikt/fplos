@@ -1,29 +1,30 @@
 package no.nav.foreldrepenger.los.tjenester.kodeverk;
 
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Map;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
-
-import io.swagger.v3.oas.annotations.Operation;
 import no.nav.foreldrepenger.los.felles.Kodeverdi;
+import no.nav.foreldrepenger.los.konfig.JacksonJsonConfig;
 import no.nav.foreldrepenger.los.oppgave.AndreKriterierType;
 import no.nav.foreldrepenger.los.oppgave.BehandlingType;
 import no.nav.foreldrepenger.los.oppgave.FagsakStatus;
 import no.nav.foreldrepenger.los.oppgave.FagsakYtelseType;
 import no.nav.foreldrepenger.los.oppgavekø.KøSortering;
-import no.nav.foreldrepenger.los.konfig.JacksonJsonConfig;
 import no.nav.foreldrepenger.los.tjenester.avdelingsleder.nøkkeltall.dto.BehandlingVenteStatus;
 import no.nav.vedtak.sikkerhet.abac.BeskyttetRessurs;
 import no.nav.vedtak.sikkerhet.abac.beskyttet.ActionType;
 import no.nav.vedtak.sikkerhet.abac.beskyttet.ResourceType;
-
-import java.util.HashMap;
-import java.util.Map;
 
 @Path("/kodeverk")
 @ApplicationScoped
@@ -59,7 +60,8 @@ public class KodeverkRestTjeneste {
         map.put(FagsakYtelseType.class.getSimpleName(), FagsakYtelseType.values());
         map.put(KøSortering.class.getSimpleName(), KøSortering.values());
         map.put(FagsakStatus.class.getSimpleName(), FagsakStatus.values());
-        map.put(AndreKriterierType.class.getSimpleName(), AndreKriterierType.values());
+        map.put(AndreKriterierType.class.getSimpleName(), Arrays.stream(AndreKriterierType.values())
+            .sorted(Comparator.comparing(AndreKriterierType::getNavn)).toArray(AndreKriterierType[]::new));
         map.put(BehandlingVenteStatus.class.getSimpleName(), BehandlingVenteStatus.values());
         return map;
     }
