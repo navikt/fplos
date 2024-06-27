@@ -8,15 +8,13 @@ import java.util.Set;
 import java.util.function.Predicate;
 
 import no.nav.foreldrepenger.los.felles.util.StreamUtil;
-import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.FagsakEgenskaper;
+import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.LokalFagsakEgenskap;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.OppgaveEgenskapFinner;
 import no.nav.foreldrepenger.los.oppgave.AndreKriterierType;
 import no.nav.vedtak.hendelser.behandling.Behandlingstype;
 import no.nav.vedtak.hendelser.behandling.Behandlingsårsak;
 import no.nav.vedtak.hendelser.behandling.Ytelse;
 import no.nav.vedtak.hendelser.behandling.los.LosBehandlingDto;
-import no.nav.vedtak.hendelser.behandling.los.LosFagsakEgenskaperDto;
-import no.nav.vedtak.hendelser.behandling.los.LosFagsakEgenskaperDto.FagsakMarkering;
 
 public class FpsakOppgaveEgenskapFinner implements OppgaveEgenskapFinner {
     private final Set<AndreKriterierType> andreKriterier = new LinkedHashSet<>();
@@ -24,6 +22,7 @@ public class FpsakOppgaveEgenskapFinner implements OppgaveEgenskapFinner {
 
     public FpsakOppgaveEgenskapFinner(LosBehandlingDto behandling) {
         this.saksbehandlerForTotrinn = behandling.ansvarligSaksbehandlerIdent();
+        var saksegenskaper = Optional.ofNullable(behandling.saksegenskaper()).orElse(List.of());
 
         if (harBehandlingsegenskap(behandling, LokalBehandlingEgenskap.SYKDOMSVURDERING)) {
             this.andreKriterier.add(AndreKriterierType.VURDER_SYKDOM);
@@ -55,16 +54,16 @@ public class FpsakOppgaveEgenskapFinner implements OppgaveEgenskapFinner {
         if (behandling.behandlingsårsaker().stream().anyMatch(Behandlingsårsak.KLAGE_TILBAKEBETALING::equals)) {
             this.andreKriterier.add(AndreKriterierType.KLAGE_PÅ_TILBAKEBETALING);
         }
-        if (FagsakEgenskaper.fagsakErMarkertEØSBosattNorge(behandling) || harSaksegenskap(behandling, LokalFagsakEgenskap.EØS_BOSATT_NORGE)) {
+        if (harSaksegenskap(saksegenskaper, LokalFagsakEgenskap.EØS_BOSATT_NORGE)) {
             this.andreKriterier.add(AndreKriterierType.EØS_SAK);
         }
-        if (FagsakEgenskaper.fagsakErMarkertBosattUtland(behandling) || harSaksegenskap(behandling, LokalFagsakEgenskap.BOSATT_UTLAND)) {
+        if (harSaksegenskap(saksegenskaper, LokalFagsakEgenskap.BOSATT_UTLAND)) {
             this.andreKriterier.add(AndreKriterierType.UTLANDSSAK);
         }
-        if (FagsakEgenskaper.fagsakErMarkertSammensattKontroll(behandling)  || harSaksegenskap(behandling, LokalFagsakEgenskap.SAMMENSATT_KONTROLL)) {
+        if (harSaksegenskap(saksegenskaper, LokalFagsakEgenskap.SAMMENSATT_KONTROLL)) {
             this.andreKriterier.add(AndreKriterierType.SAMMENSATT_KONTROLL);
         }
-        if (FagsakEgenskaper.fagsakErMarkertDød(behandling)  || harSaksegenskap(behandling, LokalFagsakEgenskap.DØD)) {
+        if (harSaksegenskap(saksegenskaper, LokalFagsakEgenskap.DØD)) {
             this.andreKriterier.add(AndreKriterierType.DØD);
         }
         var aksjonspunkter = behandling.aksjonspunkt().stream().map(Aksjonspunkt::aksjonspunktFra).toList();
@@ -75,7 +74,7 @@ public class FpsakOppgaveEgenskapFinner implements OppgaveEgenskapFinner {
         if (matchAksjonspunkt(aksjonspunkter, Aksjonspunkt::erRegistrerPapirSøknad)) {
             this.andreKriterier.add(AndreKriterierType.PAPIRSØKNAD);
         }
-        if (skalVurdereBehovForSED(aksjonspunkter, behandling)) {
+        if (skalVurdereBehovForSED(aksjonspunkter, saksegenskaper)) {
             this.andreKriterier.add(AndreKriterierType.VURDER_EØS_OPPTJENING);
         }
         if (matchAksjonspunkt(aksjonspunkter, Aksjonspunkt::skalVurdereArbeidInntekt)) {
@@ -85,19 +84,12 @@ public class FpsakOppgaveEgenskapFinner implements OppgaveEgenskapFinner {
             this.andreKriterier.add(AndreKriterierType.VURDER_FORMKRAV);
         }
         // Legger på egenskap næring kun for aksjonspunkt i Opptjening og Beregning for det som er har oppgitt egen næring.
-        if (FagsakEgenskaper.fagsakErMarkertNæring(behandling) && matchAksjonspunkt(aksjonspunkter, Aksjonspunkt::skalVurdereNæring)) {
+        if (harSaksegenskap(saksegenskaper, LokalFagsakEgenskap.NÆRING) && matchAksjonspunkt(aksjonspunkter, Aksjonspunkt::skalVurdereNæring)) {
             this.andreKriterier.add(AndreKriterierType.NÆRING);
         }
-        if (harSaksegenskap(behandling, LokalFagsakEgenskap.PRAKSIS_UTSETTELSE) && matchAksjonspunkt(aksjonspunkter, Aksjonspunkt::skalVurdereNæring)) {
-            this.andreKriterier.add(AndreKriterierType.NÆRING);
-        }
-        if (FagsakEgenskaper.fagsakErMarkertUtsettelse(behandling)  || harSaksegenskap(behandling, LokalFagsakEgenskap.PRAKSIS_UTSETTELSE)) {
+        if (harSaksegenskap(saksegenskaper, LokalFagsakEgenskap.PRAKSIS_UTSETTELSE)) {
             this.andreKriterier.add(AndreKriterierType.PRAKSIS_UTSETTELSE);
         }
-    }
-
-    public enum LokalFagsakEgenskap {
-        NASJONAL, EØS_BOSATT_NORGE, BOSATT_UTLAND, SAMMENSATT_KONTROLL, DØD, NÆRING, PRAKSIS_UTSETTELSE
     }
 
     public enum LokalBehandlingEgenskap {
@@ -114,23 +106,23 @@ public class FpsakOppgaveEgenskapFinner implements OppgaveEgenskapFinner {
         return saksbehandlerForTotrinn;
     }
 
-    private static boolean skalVurdereBehovForSED(List<Aksjonspunkt> aksjonspunkt, LosBehandlingDto dto) {
-        var skalVurdereInnhentingAvSED = matchAksjonspunkt(aksjonspunkt, Aksjonspunkt::skalVurdereInnhentingAvSED);
-        var fagsakErMarkertNasjonal = Optional.ofNullable(dto).map(LosBehandlingDto::fagsakEgenskaper)
-            .map(LosFagsakEgenskaperDto::fagsakMarkering)
-            .filter(FagsakMarkering.NASJONAL::equals)
-            .isPresent() || harSaksegenskap(dto, LokalFagsakEgenskap.NASJONAL);
-        return skalVurdereInnhentingAvSED && !fagsakErMarkertNasjonal;
+    private static boolean skalVurdereBehovForSED(List<Aksjonspunkt> aksjonspunkt, List<String> saksegenskaper) {
+        if (matchAksjonspunkt(aksjonspunkt, Aksjonspunkt::skalVurdereInnhentingAvSED)) {
+            return harSaksegenskap(saksegenskaper, LokalFagsakEgenskap.EØS_BOSATT_NORGE) ||
+                harSaksegenskap(saksegenskaper, LokalFagsakEgenskap.BOSATT_UTLAND);
+        } else {
+            return false;
+        }
+    }
+
+    private static boolean harSaksegenskap(List<String> saksegenskaper, LokalFagsakEgenskap egenskap) {
+        return saksegenskaper.stream().anyMatch(s -> s.equalsIgnoreCase(egenskap.name()));
     }
 
     private static boolean matchAksjonspunkt(List<Aksjonspunkt> aksjonspunkt, Predicate<Aksjonspunkt> predicate) {
         return StreamUtil.safeStream(aksjonspunkt).anyMatch(predicate);
     }
 
-    private static boolean harSaksegenskap(LosBehandlingDto dto, LokalFagsakEgenskap egenskap) {
-        return Optional.ofNullable(dto).map(LosBehandlingDto::saksegenskaper).orElse(List.of()).stream()
-            .anyMatch(s -> s.equalsIgnoreCase(egenskap.name()));
-    }
 
     private static boolean harBehandlingsegenskap(LosBehandlingDto dto, LokalBehandlingEgenskap egenskap) {
         return Optional.ofNullable(dto).map(LosBehandlingDto::behandlingsegenskaper).orElse(List.of()).stream()

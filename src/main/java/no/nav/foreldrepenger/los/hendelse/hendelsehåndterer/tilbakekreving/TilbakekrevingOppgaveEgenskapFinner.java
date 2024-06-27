@@ -2,9 +2,10 @@ package no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.tilbakekreving;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
-import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.FagsakEgenskaper;
+import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.LokalFagsakEgenskap;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.OppgaveEgenskapFinner;
 import no.nav.foreldrepenger.los.oppgave.AndreKriterierType;
 import no.nav.vedtak.hendelser.behandling.Aksjonspunktstatus;
@@ -18,23 +19,24 @@ public class TilbakekrevingOppgaveEgenskapFinner implements OppgaveEgenskapFinne
     public TilbakekrevingOppgaveEgenskapFinner(List<LosBehandlingDto.LosAksjonspunktDto> aksjonspunkter,
                                                String saksbehandler,
                                                LosFagsakEgenskaperDto egenskaperDto) {
+        var saksegenskaper = Optional.ofNullable(egenskaperDto).map(LosFagsakEgenskaperDto::saksegenskaper).orElse(List.of());
         this.andreKriterier = new ArrayList<>();
-        if (FagsakEgenskaper.fagsakErMarkertBosattUtland(egenskaperDto)) {
+        if (harSaksegenskap(saksegenskaper, LokalFagsakEgenskap.BOSATT_UTLAND)) {
             this.andreKriterier.add(AndreKriterierType.UTLANDSSAK);
         }
-        if (FagsakEgenskaper.fagsakErMarkertEØSBosattNorge(egenskaperDto)) {
+        if (harSaksegenskap(saksegenskaper, LokalFagsakEgenskap.EØS_BOSATT_NORGE)) {
             this.andreKriterier.add(AndreKriterierType.EØS_SAK);
         }
-        if (FagsakEgenskaper.fagsakErMarkertSammensattKontroll(egenskaperDto)) {
+        if (harSaksegenskap(saksegenskaper, LokalFagsakEgenskap.SAMMENSATT_KONTROLL)) {
             this.andreKriterier.add(AndreKriterierType.SAMMENSATT_KONTROLL);
         }
-        if (FagsakEgenskaper.fagsakErMarkertDød(egenskaperDto)) {
+        if (harSaksegenskap(saksegenskaper, LokalFagsakEgenskap.DØD)) {
             this.andreKriterier.add(AndreKriterierType.DØD);
         }
-        if (FagsakEgenskaper.fagsakErMarkertNæring(egenskaperDto)) {
+        if (harSaksegenskap(saksegenskaper, LokalFagsakEgenskap.NÆRING)) {
             this.andreKriterier.add(AndreKriterierType.NÆRING);
         }
-        if (FagsakEgenskaper.fagsakErMarkertUtsettelse(egenskaperDto)) {
+        if (harSaksegenskap(saksegenskaper, LokalFagsakEgenskap.PRAKSIS_UTSETTELSE)) {
             this.andreKriterier.add(AndreKriterierType.PRAKSIS_UTSETTELSE);
         }
         if (aksjonspunkter.stream().anyMatch(a -> a.definisjon().equals("5005") && Aksjonspunktstatus.OPPRETTET.equals(a.status())) &&
@@ -42,6 +44,10 @@ public class TilbakekrevingOppgaveEgenskapFinner implements OppgaveEgenskapFinne
             this.andreKriterier.add(AndreKriterierType.TIL_BESLUTTER);
         }
         this.saksbehandlerForTotrinn = saksbehandler;
+    }
+
+    private static boolean harSaksegenskap(List<String> saksegenskaper, LokalFagsakEgenskap egenskap) {
+        return saksegenskaper.stream().anyMatch(s -> s.equalsIgnoreCase(egenskap.name()));
     }
 
     @Override
