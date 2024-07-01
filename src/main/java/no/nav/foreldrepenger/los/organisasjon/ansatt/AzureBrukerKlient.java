@@ -25,10 +25,12 @@ public class AzureBrukerKlient {
         this.uri = UriBuilder.fromUri(restConfig.fpContextPath()).path("/api/bruker/profil").build();
     }
 
-    public BrukerProfil brukerProfil(String ident) {
+    public BrukerProfilResponse brukerProfil(String ident) {
         var request = RestRequest.newPOSTJson(new BrukerProfilRequest(ident.trim()), UriBuilder.fromUri(uri).build(), restConfig);
-        return restClient.send(request, BrukerProfil.class);
+        return restClient.send(request, BrukerProfilResponse.class);
     }
 
     record BrukerProfilRequest(@NotNull String ident) {}
+
+    public record BrukerProfilResponse(String ident, String navn, String epostAdresse) {}
 }

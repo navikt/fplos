@@ -48,7 +48,7 @@ public class AnsattTjeneste {
     private static void sammenlignMedAzureGraphFailSoft(String ident, BrukerProfil ldapBrukerInfo) {
         LOG.info("PROFIL Azure. Henter fra azure.");
         try {
-            var azureBrukerProfil = new AzureBrukerKlient().brukerProfil(ident);
+            BrukerProfil azureBrukerProfil = mapTilDomene(new AzureBrukerKlient().brukerProfil(ident));
             if (!ldapBrukerInfo.equals(azureBrukerProfil)) {
                 LOG.info("PROFIL Azure. Profiler fra ldap og azure er ikke like. Azure: {} != LDAP: {}", azureBrukerProfil, ldapBrukerInfo);
             } else {
@@ -57,6 +57,10 @@ public class AnsattTjeneste {
         } catch (Exception ex) {
             LOG.info("PROFIL Azure. Klienten feilet med exception: {}", ex.getMessage());
         }
+    }
+
+    private static BrukerProfil mapTilDomene(AzureBrukerKlient.BrukerProfilResponse klientResponse) {
+        return new BrukerProfil(klientResponse.ident(), klientResponse.navn(), klientResponse.epostAdresse());
     }
 
     public List<String> hentAvdelingerNavnForAnsatt(String ident) {
