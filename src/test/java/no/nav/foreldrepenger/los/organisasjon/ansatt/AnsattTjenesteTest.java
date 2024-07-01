@@ -37,7 +37,7 @@ class AnsattTjenesteTest {
         var aktuellEnhet = new OrganisasjonsEnhet(Avdeling.AVDELING_DRAMMEN_ENHET, "NAV Enhet 1", Set.of("FOR"));
         var uaktuellEnhet = new OrganisasjonsEnhet("0001", "NAV Uaktuell enhet", Set.of("FOR"));
         var organisasjonsEnheter = List.of(aktuellEnhet, uaktuellEnhet);
-        when(enhetstilgangTjeneste.hentEnhetsPROFIL(any())).thenReturn(organisasjonsEnheter);
+        when(enhetstilgangTjeneste.hentEnhetstilganger(any())).thenReturn(organisasjonsEnheter);
         var avdelingerNavn = ansattTjeneste.hentAvdelingerNavnForAnsatt("12345");
         assertThat(avdelingerNavn).containsExactly(aktuellEnhet.navn());
     }
