@@ -10,8 +10,13 @@ import no.nav.foreldrepenger.los.organisasjon.Avdeling;
 import no.nav.foreldrepenger.los.organisasjon.OrganisasjonRepository;
 import no.nav.vedtak.util.LRUCache;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 @ApplicationScoped
 public class AnsattTjeneste {
+
+    private static final Logger LOG = LoggerFactory.getLogger(AnsattTjeneste.class);
 
     private static final LRUCache<String, BrukerProfil> ANSATT_PROFIL = new LRUCache<>(1000, TimeUnit.MILLISECONDS.convert(24 * 7, TimeUnit.HOURS));
     private static final LRUCache<String, List<String>> ANSATT_ENHETER = new LRUCache<>(1000, TimeUnit.MILLISECONDS.convert(25, TimeUnit.HOURS));
@@ -25,18 +30,37 @@ public class AnsattTjeneste {
     }
 
     @Inject
-    public AnsattTjeneste(EnhetstilgangTjeneste enhetstilgangTjeneste, OrganisasjonRepository organisasjonRepository) {
+    public AnsattTjeneste(EnhetstilgangTjeneste enhetstilgangTjeneste,
+                          OrganisasjonRepository organisasjonRepository) {
         this.enhetstilgangTjeneste = enhetstilgangTjeneste;
         this.organisasjonRepository = organisasjonRepository;
     }
 
     public BrukerProfil hentBrukerProfil(String ident) {
         if (ANSATT_PROFIL.get(ident) == null) {
-            // TODO: Erstatt med MS Graph API
             var brukerProfil = new LdapBrukeroppslag().hentBrukerProfil(ident);
+            sammenlignMedAzureGraphFailSoft(ident, brukerProfil);
             ANSATT_PROFIL.put(ident, brukerProfil);
         }
         return ANSATT_PROFIL.get(ident);
+    }
+
+    private static void sammenlignMedAzureGraphFailSoft(String ident, BrukerProfil ldapBrukerInfo) {
+        LOG.info("PROFIL Azure. Henter fra azure.");
+        try {
+            BrukerProfil azureBrukerProfil = mapTilDomene(new AzureBrukerKlient().brukerProfil(ident));
+            if (!ldapBrukerInfo.equals(azureBrukerProfil)) {
+                LOG.info("PROFIL Azure. Profiler fra ldap og azure er ikke like. Azure: {} != LDAP: {}", azureBrukerProfil, ldapBrukerInfo);
+            } else {
+                LOG.info("PROFIL Azure. Azure == LDAP :)");
+            }
+        } catch (Exception ex) {
+            LOG.info("PROFIL Azure. Klienten feilet med exception: {}", ex.getMessage());
+        }
+    }
+
+    private static BrukerProfil mapTilDomene(AzureBrukerKlient.BrukerProfilResponse klientResponse) {
+        return new BrukerProfil(klientResponse.ident(), klientResponse.navn(), klientResponse.epostAdresse());
     }
 
     public List<String> hentAvdelingerNavnForAnsatt(String ident) {
