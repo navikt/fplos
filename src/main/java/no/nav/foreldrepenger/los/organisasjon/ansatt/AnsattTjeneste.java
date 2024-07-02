@@ -3,15 +3,15 @@ package no.nav.foreldrepenger.los.organisasjon.ansatt;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import no.nav.foreldrepenger.los.domene.typer.aktør.OrganisasjonsEnhet;
 import no.nav.foreldrepenger.los.organisasjon.Avdeling;
 import no.nav.foreldrepenger.los.organisasjon.OrganisasjonRepository;
 import no.nav.vedtak.util.LRUCache;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 @ApplicationScoped
 public class AnsattTjeneste {
@@ -38,8 +38,14 @@ public class AnsattTjeneste {
 
     public BrukerProfil hentBrukerProfil(String ident) {
         if (ANSATT_PROFIL.get(ident) == null) {
+            //TODO:  Her bør vi egentlig tenke om NOM er ikke riktigere å bruke - bør være raskere å slå opp navn og epost.
+            // Jeg har sjekket med NOM (01.07.2024) og de støtter en så lenge ikke Z-identer i dev. Men prod brukere er tilgjengelig.
             var brukerProfil = new LdapBrukeroppslag().hentBrukerProfil(ident);
-            sammenlignMedAzureGraphFailSoft(ident, brukerProfil);
+            if (brukerProfil == null) {
+                LOG.warn("Kunne ikke hente Bruker profil fra LDAP for {}", ident);
+            } else {
+                sammenlignMedAzureGraphFailSoft(ident, brukerProfil);
+            }
             ANSATT_PROFIL.put(ident, brukerProfil);
         }
         return ANSATT_PROFIL.get(ident);
@@ -48,7 +54,7 @@ public class AnsattTjeneste {
     private static void sammenlignMedAzureGraphFailSoft(String ident, BrukerProfil ldapBrukerInfo) {
         LOG.info("PROFIL Azure. Henter fra azure.");
         try {
-            BrukerProfil azureBrukerProfil = mapTilDomene(new AzureBrukerKlient().brukerProfil(ident));
+            var azureBrukerProfil = mapTilDomene(new AzureBrukerKlient().brukerProfil(ident));
             if (!ldapBrukerInfo.equals(azureBrukerProfil)) {
                 LOG.info("PROFIL Azure. Profiler fra ldap og azure er ikke like. Azure: {} != LDAP: {}", azureBrukerProfil, ldapBrukerInfo);
             } else {
@@ -60,7 +66,7 @@ public class AnsattTjeneste {
     }
 
     private static BrukerProfil mapTilDomene(AzureBrukerKlient.BrukerProfilResponse klientResponse) {
-        return new BrukerProfil(klientResponse.ident(), klientResponse.navn(), klientResponse.epostAdresse());
+        return new BrukerProfil(klientResponse.ident(), klientResponse.navn(), klientResponse.epost());
     }
 
     public List<String> hentAvdelingerNavnForAnsatt(String ident) {
