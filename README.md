@@ -48,4 +48,3 @@ Det er mulig å kalle tjenesten med bruk av følgende tokens
     - fpsak-veileder
     - fpsak-oppgavestyrer
     - fpsak-drift
-- STS (fases ut)
