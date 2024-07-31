@@ -32,5 +32,5 @@ public class AzureBrukerKlient {
 
     record BrukerProfilRequest(@NotNull String ident) {}
 
-    public record BrukerProfilResponse(String ident, String navn, String epost) {}
+    public record BrukerProfilResponse(String ident, String fornavnEtternavn, String epost, String ansattVedEnhetId) {}
 }
