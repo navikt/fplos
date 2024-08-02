@@ -79,7 +79,7 @@ class OppgaveRepositoryTest {
     }
 
     private Long setupOppgaveMedEgenskaper(AndreKriterierType... kriterier) {
-        Long saksnummer = (long) (Math.random() * 10000);
+        var saksnummer = (long) (Math.random() * 10000);
         var oppgave = Oppgave.builder().dummyOppgave(AVDELING_DRAMMEN_ENHET).medFagsakSaksnummer(saksnummer).build();
         entityManager.persist(oppgave);
         for (var kriterie : kriterier) {
