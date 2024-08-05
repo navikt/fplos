@@ -1,7 +1,9 @@
 package no.nav.foreldrepenger.los.organisasjon.ansatt;
 
 import java.time.Duration;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
@@ -26,6 +28,9 @@ public class AnsattTjeneste {
     private OrganisasjonRepository organisasjonRepository;
     private List<String> aktuelleEnhetIder;
 
+    private final Map<String, String> kodeAvdelingsnavnMap = new HashMap<>();
+
+
     AnsattTjeneste() {
         // for CDI proxy
     }
@@ -35,6 +40,7 @@ public class AnsattTjeneste {
                           OrganisasjonRepository organisasjonRepository) {
         this.enhetstilgangTjeneste = enhetstilgangTjeneste;
         this.organisasjonRepository = organisasjonRepository;
+        organisasjonRepository.hentAktiveAvdelinger().forEach(a -> kodeAvdelingsnavnMap.put(a.getAvdelingEnhet(), a.getNavn()));
     }
 
     public BrukerProfil hentBrukerProfil(String ident) {
@@ -42,13 +48,14 @@ public class AnsattTjeneste {
             //TODO:  Her bør vi egentlig tenke om NOM er ikke riktigere å bruke - bør være raskere å slå opp navn og epost.
             // Jeg har sjekket med NOM (01.07.2024) og de støtter en så lenge ikke Z-identer i dev. Men prod brukere er tilgjengelig.
             var før = System.nanoTime();
-            var brukerProfil = new LdapBrukeroppslag().hentBrukerProfil(ident);
+            var ldapRespons = new LdapBrukeroppslag().hentBrukerProfil(ident);
             LOG.info("LDAP bruker profil oppslag: {}ms. ", Duration.ofNanos(System.nanoTime() - før).toMillis());
-            if (brukerProfil == null) {
-                LOG.warn("Kunne ikke hente Bruker profil fra LDAP for {}", ident);
-            } else {
-                sammenlignMedAzureGraphFailSoft(ident, brukerProfil);
+            var ansattEnhet = kodeAvdelingsnavnMap.get(ldapRespons.ansattEnhet());
+            if (ansattEnhet == null) {
+                LOG.info("PROFIL LDAP: brukers enhet {} ikke blant saksbehandlingsenhetene", ldapRespons.ansattEnhet());
             }
+            var brukerProfil = new BrukerProfil(ldapRespons.ident(), ldapRespons.navn(), ldapRespons.epostAdresse(), ansattEnhet);
+            sammenlignMedAzureGraphFailSoft(ident, brukerProfil);
             ANSATT_PROFIL.put(ident, brukerProfil);
         }
         return ANSATT_PROFIL.get(ident);
@@ -71,7 +78,7 @@ public class AnsattTjeneste {
     }
 
     private static BrukerProfil mapTilDomene(AzureBrukerKlient.BrukerProfilResponse klientResponse) {
-        return new BrukerProfil(klientResponse.ident(), klientResponse.navn(), klientResponse.epost());
+        return new BrukerProfil(klientResponse.ident(), klientResponse.fornavnEtternavn(), klientResponse.epost(), klientResponse.ansattVedEnhetId());
     }
 
     public List<String> hentAvdelingerNavnForAnsatt(String ident) {

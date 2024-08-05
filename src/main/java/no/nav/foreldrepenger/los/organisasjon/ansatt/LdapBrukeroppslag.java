@@ -22,11 +22,13 @@ public class LdapBrukeroppslag {
 
     private static final Logger LOG = LoggerFactory.getLogger(LdapBrukeroppslag.class);
     private static final Pattern IDENT_PATTERN = Pattern.compile("^\\p{LD}+$");
-    private static final String DISPLAY_NAME_ATTR = "displayName";
-    private static final String USER_PRINCIPAL_NAME_ATTR = "userPrincipalName";
 
     private final LdapContext context;
     private final LdapName searchBase;
+    private static final String GIVEN_NAME = "givenName";
+    private static final String SURNAME = "sn";
+    private static final String USER_PRINCIPAL_NAME = "userPrincipalName";
+    private static final String STREET_ADDRESS = "streetAddress";
 
     public LdapBrukeroppslag() {
         this(LdapInnlogging.lagLdapContext(), lagLdapSearchBase());
@@ -37,17 +39,22 @@ public class LdapBrukeroppslag {
         this.searchBase = searcBase;
     }
 
-    public BrukerProfil hentBrukerProfil(String ident) {
+    public BrukerProfilRespons hentBrukerProfil(String ident) {
         var result = ldapSearch(ident.trim());
-        var displayName = find(result, DISPLAY_NAME_ATTR);
-        var upn = find(result, USER_PRINCIPAL_NAME_ATTR);
+        var givenName = find(result, GIVEN_NAME);
+        var surname = find(result, SURNAME);
+        var upn = find(result, USER_PRINCIPAL_NAME);
+        var addressCode = find(result, STREET_ADDRESS);
         try {
-            var navn = displayName.get().toString();
+            var fornavn = givenName.get().toString();
+            var etternavn = surname.get().toString();
+            var navn = fornavn + " " + etternavn;
             var epostAdresse = upn.get().toString();
+            var ansattKontornummer = addressCode.get().toString();
             if (!epostAdresse.contains("@nav.no")) {
                 LOG.info("LDAP: fant ikke gyldig epostadresse for bruker {}", ident);
             }
-            return new BrukerProfil(ident, navn, epostAdresse);
+            return new BrukerProfilRespons(ident, navn, epostAdresse, ansattKontornummer);
         } catch (NamingException e) {
             throw new TekniskException("F-314006", String.format("Kunne ikke hente ut attributtverdi for ident %s", ident), e);
         }
@@ -65,7 +72,7 @@ public class LdapBrukeroppslag {
         var controls = new SearchControls();
         controls.setSearchScope(SearchControls.SUBTREE_SCOPE);
         controls.setCountLimit(1);
-        controls.setReturningAttributes(new String[]{DISPLAY_NAME_ATTR, USER_PRINCIPAL_NAME_ATTR});
+        controls.setReturningAttributes(new String[]{GIVEN_NAME, SURNAME, USER_PRINCIPAL_NAME, STREET_ADDRESS});
         var søkestreng = String.format("(cn=%s)", ident);
         try {
             var result = context.search(searchBase, søkestreng, controls); // NOSONAR
@@ -97,5 +104,7 @@ public class LdapBrukeroppslag {
             throw new IntegrasjonException("F-703197", String.format("Kunne ikke definere base-søk mot LDAP %s", userBaseDn), e);
         }
     }
+
+    public record BrukerProfilRespons(String ident, String navn, String epostAdresse, String ansattEnhet) { }
 
 }

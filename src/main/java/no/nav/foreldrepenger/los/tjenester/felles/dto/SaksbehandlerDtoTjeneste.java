@@ -74,7 +74,7 @@ public class SaksbehandlerDtoTjeneste {
             var avdelinger = ansattTjeneste.hentAvdelingerNavnForAnsatt(ident);
             return new SaksbehandlerMedAvdelingerDto(saksbehandlerDto.get(), avdelinger);
         }
-        var ukjent = new SaksbehandlerDto(new SaksbehandlerBrukerIdentDto(ident), "Ukjent saksbehandler " + ident, null);
+        var ukjent = new SaksbehandlerDto(new SaksbehandlerBrukerIdentDto(ident), "Ukjent saksbehandler " + ident, null, null);
         return new SaksbehandlerMedAvdelingerDto(ukjent, Collections.emptyList());
     }
 
@@ -85,7 +85,7 @@ public class SaksbehandlerDtoTjeneste {
 
     private Optional<SaksbehandlerDto> tilSaksbehandlerDto(String ident) {
         var identDto = new SaksbehandlerBrukerIdentDto(ident);
-        return hentBrukerProfil(ident).map(bp -> new SaksbehandlerDto(identDto, bp.navn(), bp.epostAdresse()));
+        return hentBrukerProfil(ident).map(bp -> new SaksbehandlerDto(identDto, bp.navn(), bp.epostAdresse(), bp.ansattAvdeling()));
     }
 
     public Optional<BrukerProfil> hentBrukerProfil(String ident) {
