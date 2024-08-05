@@ -75,7 +75,7 @@ public class LdapBrukeroppslag {
         var controls = new SearchControls();
         controls.setSearchScope(SearchControls.SUBTREE_SCOPE);
         controls.setCountLimit(1);
-        controls.setReturningAttributes(new String[]{GIVEN_NAME, SURNAME, USER_PRINCIPAL_NAME, STREET_ADDRESS});
+        controls.setReturningAttributes(new String[]{DISPLAY_NAME_ATTR, GIVEN_NAME, SURNAME, USER_PRINCIPAL_NAME, STREET_ADDRESS});
         var søkestreng = String.format("(cn=%s)", ident);
         try {
             var result = context.search(searchBase, søkestreng, controls); // NOSONAR
