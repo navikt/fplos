@@ -23,12 +23,13 @@ public class AnsattTjeneste {
 
     private static final LRUCache<String, BrukerProfil> ANSATT_PROFIL = new LRUCache<>(1000, TimeUnit.MILLISECONDS.convert(24 * 7, TimeUnit.HOURS));
     private static final LRUCache<String, List<String>> ANSATT_ENHETER = new LRUCache<>(1000, TimeUnit.MILLISECONDS.convert(25, TimeUnit.HOURS));
+    private static final Map<String, String> ENHETSNUMMER_AVDELINGSNAVN_MAP = new HashMap<>();
 
     private EnhetstilgangTjeneste enhetstilgangTjeneste;
     private OrganisasjonRepository organisasjonRepository;
     private List<String> aktuelleEnhetIder;
 
-    private final Map<String, String> kodeAvdelingsnavnMap = new HashMap<>();
+
 
 
     AnsattTjeneste() {
@@ -40,7 +41,7 @@ public class AnsattTjeneste {
                           OrganisasjonRepository organisasjonRepository) {
         this.enhetstilgangTjeneste = enhetstilgangTjeneste;
         this.organisasjonRepository = organisasjonRepository;
-        organisasjonRepository.hentAktiveAvdelinger().forEach(a -> kodeAvdelingsnavnMap.put(a.getAvdelingEnhet(), a.getNavn()));
+        organisasjonRepository.hentAktiveAvdelinger().forEach(a -> ENHETSNUMMER_AVDELINGSNAVN_MAP.put(a.getAvdelingEnhet(), a.getNavn()));
     }
 
     public BrukerProfil hentBrukerProfil(String ident) {
@@ -50,11 +51,12 @@ public class AnsattTjeneste {
             var før = System.nanoTime();
             var ldapRespons = new LdapBrukeroppslag().hentBrukerProfil(ident);
             LOG.info("LDAP bruker profil oppslag: {}ms. ", Duration.ofNanos(System.nanoTime() - før).toMillis());
-            var ansattEnhet = kodeAvdelingsnavnMap.get(ldapRespons.ansattEnhet());
+            var ansattEnhet = avdeling(ldapRespons.ansattEnhet());
             if (ansattEnhet == null) {
                 LOG.info("PROFIL LDAP: brukers enhet {} ikke blant saksbehandlingsenhetene", ldapRespons.ansattEnhet());
             }
-            var brukerProfil = new BrukerProfil(ldapRespons.ident(), ldapRespons.navn(), ldapRespons.epostAdresse(), ansattEnhet);
+            var brukerProfil = new BrukerProfil(ldapRespons.ident(), ldapRespons.navn(), ldapRespons.fornavnEtternavn(), ldapRespons.epostAdresse(),
+                ansattEnhet);
             sammenlignMedAzureGraphFailSoft(ident, brukerProfil);
             ANSATT_PROFIL.put(ident, brukerProfil);
         }
@@ -77,10 +79,6 @@ public class AnsattTjeneste {
         }
     }
 
-    private static BrukerProfil mapTilDomene(AzureBrukerKlient.BrukerProfilResponse klientResponse) {
-        return new BrukerProfil(klientResponse.ident(), klientResponse.fornavnEtternavn(), klientResponse.epost(), klientResponse.ansattVedEnhetId());
-    }
-
     public List<String> hentAvdelingerNavnForAnsatt(String ident) {
         if (aktuelleEnhetIder == null) {
             aktuelleEnhetIder = organisasjonRepository.hentAktiveAvdelinger().stream().map(Avdeling::getAvdelingEnhet).toList();
@@ -95,6 +93,16 @@ public class AnsattTjeneste {
             ANSATT_ENHETER.put(ident, enheter);
         }
         return ANSATT_ENHETER.get(ident);
+    }
+
+    private static BrukerProfil mapTilDomene(AzureBrukerKlient.BrukerProfilResponse klientResponse) {
+        return new BrukerProfil(klientResponse.ident(), klientResponse.navn(), klientResponse.fornavnEtternavn(), klientResponse.epost(),
+            avdeling(klientResponse.ansattVedEnhetId()));
+    }
+
+    private static String avdeling(String avdelingsNummer) {
+        var avdelingsNavn = ENHETSNUMMER_AVDELINGSNAVN_MAP.get(avdelingsNummer);
+        return avdelingsNavn != null ? avdelingsNavn : avdelingsNummer;
     }
 
 }

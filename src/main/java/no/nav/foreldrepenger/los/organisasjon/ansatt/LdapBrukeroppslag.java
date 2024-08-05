@@ -29,6 +29,7 @@ public class LdapBrukeroppslag {
     private static final String SURNAME = "sn";
     private static final String USER_PRINCIPAL_NAME = "userPrincipalName";
     private static final String STREET_ADDRESS = "streetAddress";
+    private static final String DISPLAY_NAME_ATTR = "displayName";
 
     public LdapBrukeroppslag() {
         this(LdapInnlogging.lagLdapContext(), lagLdapSearchBase());
@@ -41,6 +42,7 @@ public class LdapBrukeroppslag {
 
     public BrukerProfilRespons hentBrukerProfil(String ident) {
         var result = ldapSearch(ident.trim());
+        var displayName = find(result, DISPLAY_NAME_ATTR);
         var givenName = find(result, GIVEN_NAME);
         var surname = find(result, SURNAME);
         var upn = find(result, USER_PRINCIPAL_NAME);
@@ -48,13 +50,14 @@ public class LdapBrukeroppslag {
         try {
             var fornavn = givenName.get().toString();
             var etternavn = surname.get().toString();
-            var navn = fornavn + " " + etternavn;
+            var fornavnEtternavn = fornavn + " " + etternavn;
+            var navn = displayName.get().toString();
             var epostAdresse = upn.get().toString();
             var ansattKontornummer = addressCode.get().toString();
             if (!epostAdresse.contains("@nav.no")) {
                 LOG.info("LDAP: fant ikke gyldig epostadresse for bruker {}", ident);
             }
-            return new BrukerProfilRespons(ident, navn, epostAdresse, ansattKontornummer);
+            return new BrukerProfilRespons(ident, navn, fornavnEtternavn,  epostAdresse, ansattKontornummer);
         } catch (NamingException e) {
             throw new TekniskException("F-314006", String.format("Kunne ikke hente ut attributtverdi for ident %s", ident), e);
         }
@@ -105,6 +108,6 @@ public class LdapBrukeroppslag {
         }
     }
 
-    public record BrukerProfilRespons(String ident, String navn, String epostAdresse, String ansattEnhet) { }
+    public record BrukerProfilRespons(String ident, String navn, String fornavnEtternavn, String epostAdresse, String ansattEnhet) { }
 
 }
