@@ -128,7 +128,7 @@ public class OrganisasjonRepository {
     public void fjernSaksbehandlerFraGruppe(String saksbehandlerIdent, long gruppeId, String avdelingEnhet) {
         var gruppe = entityManager.find(SaksbehandlerGruppe.class, gruppeId);
         sjekkGruppeEnhetTilknytning(gruppeId, avdelingEnhet, gruppe);
-        gruppe.getSaksbehandlere().removeIf(s -> s.getSaksbehandlerIdent().equals(saksbehandlerIdent));
+        gruppe.getSaksbehandlere().removeIf(s -> s.getSaksbehandlerIdent().equalsIgnoreCase(saksbehandlerIdent));
         entityManager.merge(gruppe);
     }
 
