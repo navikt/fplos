@@ -24,13 +24,13 @@ public class SaksbehandlerMedAvdelingerDto {
         return saksbehandlerDto.navn();
     }
 
-    @JsonProperty("epostAdresse")
-    public String getEpostAdresse() {
-        return saksbehandlerDto.epostAdresse();
-    }
-
     @JsonProperty("avdelingsnavn")
     public List<String> getAvdelingsnavn() {
         return avdelingsnavn;
+    }
+
+    @JsonProperty("ansattAvdeling")
+    public String getAnsattAvdeling() {
+        return saksbehandlerDto.ansattAvdeling();
     }
 }
