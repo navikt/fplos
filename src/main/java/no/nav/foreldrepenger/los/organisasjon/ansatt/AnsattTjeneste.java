@@ -5,9 +5,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import no.nav.foreldrepenger.los.domene.typer.aktør.OrganisasjonsEnhet;
@@ -17,8 +14,6 @@ import no.nav.vedtak.util.LRUCache;
 
 @ApplicationScoped
 public class AnsattTjeneste {
-
-    private static final Logger LOG = LoggerFactory.getLogger(AnsattTjeneste.class);
 
     private static final LRUCache<String, BrukerProfil> ANSATT_PROFIL = new LRUCache<>(1000, TimeUnit.MILLISECONDS.convert(24 * 7, TimeUnit.HOURS));
     private static final LRUCache<String, List<String>> ANSATT_ENHETER = new LRUCache<>(1000, TimeUnit.MILLISECONDS.convert(25, TimeUnit.HOURS));
