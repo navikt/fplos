@@ -1,6 +1,5 @@
 package no.nav.foreldrepenger.los.organisasjon.ansatt;
 
-import java.time.Duration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,8 +29,6 @@ public class AnsattTjeneste {
     private List<String> aktuelleEnhetIder;
 
 
-
-
     AnsattTjeneste() {
         // for CDI proxy
     }
@@ -48,35 +45,10 @@ public class AnsattTjeneste {
         if (ANSATT_PROFIL.get(ident) == null) {
             //TODO:  Her bør vi egentlig tenke om NOM er ikke riktigere å bruke - bør være raskere å slå opp navn og epost.
             // Jeg har sjekket med NOM (01.07.2024) og de støtter en så lenge ikke Z-identer i dev. Men prod brukere er tilgjengelig.
-            var før = System.nanoTime();
-            var ldapRespons = new LdapBrukeroppslag().hentBrukerProfil(ident);
-            LOG.info("LDAP bruker profil oppslag: {}ms. ", Duration.ofNanos(System.nanoTime() - før).toMillis());
-            var ansattEnhet = avdeling(ldapRespons.ansattEnhet());
-            if (ansattEnhet == null) {
-                LOG.info("PROFIL LDAP: brukers enhet {} ikke blant saksbehandlingsenhetene", ldapRespons.ansattEnhet());
-            }
-            var brukerProfil = new BrukerProfil(ldapRespons.ident(), ldapRespons.navn(), ldapRespons.fornavnEtternavn(), ldapRespons.epostAdresse(),
-                ansattEnhet);
-            sammenlignMedAzureGraphFailSoft(ident, brukerProfil);
+            var brukerProfil = mapTilDomene(new AzureBrukerKlient().brukerProfil(ident));
             ANSATT_PROFIL.put(ident, brukerProfil);
         }
         return ANSATT_PROFIL.get(ident);
-    }
-
-    private static void sammenlignMedAzureGraphFailSoft(String ident, BrukerProfil ldapBrukerInfo) {
-        LOG.info("PROFIL Azure. Henter fra azure.");
-        try {
-            var før = System.nanoTime();
-            var azureBrukerProfil = mapTilDomene(new AzureBrukerKlient().brukerProfil(ident));
-            if (!ldapBrukerInfo.equals(azureBrukerProfil)) {
-                LOG.info("PROFIL Azure. Profiler fra ldap og azure er ikke like. Azure: {} != LDAP: {}", azureBrukerProfil, ldapBrukerInfo);
-            } else {
-                LOG.info("PROFIL Azure. Azure == LDAP :)");
-            }
-            LOG.info("Azure bruker profil oppslag: {}ms. ", Duration.ofNanos(System.nanoTime() - før).toMillis());
-        } catch (Exception ex) {
-            LOG.info("PROFIL Azure. Klienten feilet med exception: {}", ex.getMessage());
-        }
     }
 
     public List<String> hentAvdelingerNavnForAnsatt(String ident) {

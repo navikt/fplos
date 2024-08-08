@@ -54,8 +54,6 @@ spec:
         mountPath: /var/run/secrets/nais.io/defaultDSconfig
       - kvPath: {{serviceuserkv}}
         mountPath: /var/run/secrets/nais.io/serviceuser
-      - kvPath: {{ldapuserkv}}
-        mountPath: /var/run/secrets/nais.io/ldap
   azure:
     application:
       enabled: true

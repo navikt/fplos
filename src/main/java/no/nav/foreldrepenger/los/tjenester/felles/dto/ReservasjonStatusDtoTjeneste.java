@@ -44,7 +44,7 @@ public class ReservasjonStatusDtoTjeneste {
         if (ident == null) {
             return null;
         }
-        return tryOrEmpty(() -> ansattTjeneste.hentBrukerProfil(ident), "ldap")
+        return tryOrEmpty(() -> ansattTjeneste.hentBrukerProfil(ident), "brukerprofil")
             .map(BrukerProfil::navn)
             .orElse("Ukjent");
     }

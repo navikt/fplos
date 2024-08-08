@@ -67,7 +67,7 @@ public class SaksbehandlerDtoTjeneste {
     }
 
     public SaksbehandlerMedAvdelingerDto lagKjentOgUkjentSaksbehandlerMedAvdelingerDto(Saksbehandler saksbehandler) {
-        // saksbehandler kan eksistere i basen men være ukjent i ldap
+        // saksbehandler kan eksistere i basen men være ukjent i azuread
         var ident = saksbehandler.getSaksbehandlerIdent();
         var saksbehandlerDto = tilSaksbehandlerDto(ident);
         if (saksbehandlerDto.isPresent()) {
