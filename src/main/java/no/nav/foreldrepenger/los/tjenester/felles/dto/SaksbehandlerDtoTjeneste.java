@@ -69,7 +69,7 @@ public class SaksbehandlerDtoTjeneste {
     public SaksbehandlerMedAvdelingerDto lagKjentOgUkjentSaksbehandlerMedAvdelingerDto(Saksbehandler saksbehandler) {
         // saksbehandler kan eksistere i basen men være ukjent i azuread
         var ident = saksbehandler.getSaksbehandlerIdent();
-        var saksbehandlerDto = tilSaksbehandlerDto(ident.toLowerCase());
+        var saksbehandlerDto = tilSaksbehandlerDto(ident);
         if (saksbehandlerDto.isPresent()) {
             var avdelinger = ansattTjeneste.hentAvdelingerNavnForAnsatt(ident);
             return new SaksbehandlerMedAvdelingerDto(saksbehandlerDto.get(), avdelinger);
@@ -91,7 +91,7 @@ public class SaksbehandlerDtoTjeneste {
 
     public Optional<BrukerProfil> hentBrukerProfil(String ident) {
         try {
-            return Optional.of(ansattTjeneste.hentBrukerProfil(ident));
+            return Optional.of(ansattTjeneste.hentBrukerProfil(ident.toLowerCase()));
         } catch (IntegrasjonException e) {
             LOG.info("Henting av ansattnavn feilet, fortsetter med empty.", e);
             return Optional.empty();
