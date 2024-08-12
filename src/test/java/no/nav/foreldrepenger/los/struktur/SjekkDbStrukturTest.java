@@ -235,12 +235,14 @@ class SjekkDbStrukturTest {
     @Test
     void skal_ha_korrekt_index_navn() throws Exception {
         var sql = """
-            select table_name, index_name, column_name
-            from all_ind_columns
-            where table_owner=upper(?)
-            and index_name not like 'PK_%' and index_name not like 'IDX_%' and index_name not like 'UIDX_%'
-            and table_name not like 'schema_%' and table_name not like 'HTE_%'
-            """;
+                select table_name, index_name, column_name
+                 from all_ind_columns
+                 where table_owner=upper(?)
+                 and index_name not like 'PK_%' and index_name not like 'IDX_%' and index_name not like 'UIDX_%'
+                 and table_name not like 'schema_%'
+                 and table_name not like 'HTE_%'
+                 and table_name not like 'BIN$%'
+                """;
 
         List<String> avvik = new ArrayList<>();
         var tekst = new StringBuilder();
