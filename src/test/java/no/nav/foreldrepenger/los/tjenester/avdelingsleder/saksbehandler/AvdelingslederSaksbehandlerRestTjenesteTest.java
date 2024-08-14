@@ -16,8 +16,6 @@ import no.nav.foreldrepenger.los.tjenester.felles.dto.SaksbehandlerBrukerIdentDt
 import no.nav.foreldrepenger.los.tjenester.felles.dto.SaksbehandlerDto;
 import no.nav.foreldrepenger.los.tjenester.felles.dto.SaksbehandlerDtoTjeneste;
 
-import no.nav.foreldrepenger.los.tjenester.felles.dto.SaksbehandlerMedAvdelingerDto;
-
 import no.nav.vedtak.felles.jpa.TomtResultatException;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -28,7 +26,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Objects;
 
-import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -87,7 +84,7 @@ class AvdelingslederSaksbehandlerRestTjenesteTest {
         assertThat(hentetGrupper.saksbehandlerGrupper()).hasSize(1);
         var saksbehandlere = hentetGrupper.saksbehandlerGrupper().get(0).saksbehandlere();
         assertThat(saksbehandlere).hasSize(1);
-        assertThat(saksbehandlere.get(0).getBrukerIdent()).isEqualTo("Z999999");
+        assertThat(saksbehandlere.get(0).brukerIdent().getVerdi()).isEqualTo("Z999999");
     }
 
     @Test
@@ -157,8 +154,8 @@ class AvdelingslederSaksbehandlerRestTjenesteTest {
     }
 
     private void setupMockForMappingAvSaksbehandlerDto() {
-        when(saksbehandlerDtoTjeneste.lagKjentOgUkjentSaksbehandlerMedAvdelingerDto(argThat(sb -> sb.getSaksbehandlerIdent().equals("Z999999"))))
-            .thenReturn(new SaksbehandlerMedAvdelingerDto(saksbehandlerDto, singletonList(avdelingDto.getAvdelingEnhet())));
+        when(saksbehandlerDtoTjeneste.lagKjentOgUkjentSaksbehandler(argThat(sb -> sb.getSaksbehandlerIdent().equals("Z999999"))))
+            .thenReturn(saksbehandlerDto);
     }
 
 }
