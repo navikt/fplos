@@ -67,7 +67,7 @@ public class SaksbehandlerDtoTjeneste {
     public Optional<SaksbehandlerDto> saksbehandlerDto(String ident) {
         var identDto = new SaksbehandlerBrukerIdentDto(ident);
         return hentBrukerProfil(ident)
-            .map(bp -> new SaksbehandlerDto(identDto, bp.fornavnEtternavn(), bp.ansattAvdeling()));
+            .map(bp -> new SaksbehandlerDto(identDto, bp.navn(), bp.ansattAvdeling()));
     }
 
     public Optional<BrukerProfil> hentBrukerProfil(String ident) {
