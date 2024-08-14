@@ -22,8 +22,8 @@ import no.nav.foreldrepenger.los.tjenester.felles.dto.OppgaveDto;
 import no.nav.foreldrepenger.los.tjenester.felles.dto.OppgaveDtoTjeneste;
 import no.nav.foreldrepenger.los.tjenester.felles.dto.ReservasjonStatusDto;
 import no.nav.foreldrepenger.los.tjenester.felles.dto.SaksbehandlerBrukerIdentDto;
+import no.nav.foreldrepenger.los.tjenester.felles.dto.SaksbehandlerDto;
 import no.nav.foreldrepenger.los.tjenester.felles.dto.SaksbehandlerDtoTjeneste;
-import no.nav.foreldrepenger.los.tjenester.felles.dto.SaksbehandlerMedAvdelingerDto;
 import no.nav.foreldrepenger.los.tjenester.reservasjon.dto.ReservasjonEndringRequestDto;
 import no.nav.foreldrepenger.los.tjenester.saksbehandler.oppgave.dto.OppgaveFlyttingDto;
 import no.nav.foreldrepenger.los.tjenester.saksbehandler.oppgave.dto.OppgaveIdDto;
@@ -140,7 +140,7 @@ public class TempReservasjonRestTjeneste {
     @Produces(MediaType.APPLICATION_JSON)
     @Operation(description = "Søk etter saksbehandler som er tilknyttet behandlingskø", tags = "Saksbehandler")
     @BeskyttetRessurs(actionType = ActionType.READ, resourceType = ResourceType.FAGSAK)
-    public SaksbehandlerMedAvdelingerDto søkAvdelingensSaksbehandlere(@NotNull @Parameter(description = "Brukeridentifikasjon") @Valid SaksbehandlerBrukerIdentDto brukerIdent) {
+    public SaksbehandlerDto søkAvdelingensSaksbehandlere(@NotNull @Parameter(description = "Brukeridentifikasjon") @Valid SaksbehandlerBrukerIdentDto brukerIdent) {
         var ident = brukerIdent.getVerdi().toUpperCase();
         var saksbehandler = saksbehandlerDtoTjeneste.hentSaksbehandlerTilknyttetMinstEnKø(ident);
         return saksbehandler.orElse(null);

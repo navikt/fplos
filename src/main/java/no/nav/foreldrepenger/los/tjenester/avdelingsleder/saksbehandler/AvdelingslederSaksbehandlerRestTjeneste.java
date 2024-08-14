@@ -26,8 +26,8 @@ import no.nav.foreldrepenger.los.tjenester.avdelingsleder.saksbehandler.dto.Saks
 import no.nav.foreldrepenger.los.tjenester.avdelingsleder.saksbehandler.dto.SaksbehandlerGruppeSletteRequestDto;
 import no.nav.foreldrepenger.los.tjenester.avdelingsleder.saksbehandler.dto.SaksbehandlereOgSaksbehandlerGrupper;
 import no.nav.foreldrepenger.los.tjenester.felles.dto.SaksbehandlerBrukerIdentDto;
+import no.nav.foreldrepenger.los.tjenester.felles.dto.SaksbehandlerDto;
 import no.nav.foreldrepenger.los.tjenester.felles.dto.SaksbehandlerDtoTjeneste;
-import no.nav.foreldrepenger.los.tjenester.felles.dto.SaksbehandlerMedAvdelingerDto;
 import no.nav.vedtak.sikkerhet.abac.BeskyttetRessurs;
 import no.nav.vedtak.sikkerhet.abac.beskyttet.ActionType;
 import no.nav.vedtak.sikkerhet.abac.beskyttet.ResourceType;
@@ -56,10 +56,10 @@ public class AvdelingslederSaksbehandlerRestTjeneste {
     @GET
     @Operation(description = "Henter alle saksbehandlere", tags = "AvdelingslederSaksbehandlere")
     @BeskyttetRessurs(actionType = ActionType.READ, resourceType = ResourceType.OPPGAVESTYRING_AVDELINGENHET, sporingslogg = false)
-    public List<SaksbehandlerMedAvdelingerDto> hentAvdelingensSaksbehandlere(@NotNull @QueryParam("avdelingEnhet") @Valid AvdelingEnhetDto avdelingEnhetDto) {
+    public List<SaksbehandlerDto> hentAvdelingensSaksbehandlere(@NotNull @QueryParam("avdelingEnhet") @Valid AvdelingEnhetDto avdelingEnhetDto) {
         return avdelingslederSaksbehandlerTjeneste.hentAvdelingensSaksbehandlere(avdelingEnhetDto.getAvdelingEnhet())
             .stream()
-            .map(saksbehandlerDtoTjeneste::lagKjentOgUkjentSaksbehandlerMedAvdelingerDto)
+            .map(saksbehandlerDtoTjeneste::lagKjentOgUkjentSaksbehandler)
             .toList();
     }
 
@@ -67,8 +67,8 @@ public class AvdelingslederSaksbehandlerRestTjeneste {
     @Path("/søk")
     @Operation(description = "Søk etter saksbehandler", tags = "AvdelingslederSaksbehandlere")
     @BeskyttetRessurs(actionType = ActionType.READ, resourceType = ResourceType.OPPGAVESTYRING_AVDELINGENHET)
-    public SaksbehandlerMedAvdelingerDto søkAvdelingensSaksbehandlere(@NotNull @Parameter(description = "Brukeridentifikasjon") @Valid SaksbehandlerBrukerIdentDto brukerIdent) {
-        return saksbehandlerDtoTjeneste.lagSaksbehandlerMedAvdelingerDto(brukerIdent.getVerdi()).orElse(null);
+    public SaksbehandlerDto søkAvdelingensSaksbehandlere(@NotNull @Parameter(description = "Brukeridentifikasjon") @Valid SaksbehandlerBrukerIdentDto brukerIdent) {
+        return saksbehandlerDtoTjeneste.saksbehandlerDto(brukerIdent.getVerdi()).orElse(null);
     }
 
     @POST
@@ -95,11 +95,11 @@ public class AvdelingslederSaksbehandlerRestTjeneste {
     public SaksbehandlereOgSaksbehandlerGrupper hentSaksbehandlerGrupper(@NotNull @QueryParam("avdelingEnhet") @Valid AvdelingEnhetDto avdelingEnhetDto) {
         var avdelingensSaksbehandlere = avdelingslederSaksbehandlerTjeneste.hentAvdelingensSaksbehandlere(avdelingEnhetDto.getAvdelingEnhet())
             .stream()
-            .map(saksbehandlerDtoTjeneste::lagKjentOgUkjentSaksbehandlerMedAvdelingerDto)
+            .map(saksbehandlerDtoTjeneste::lagKjentOgUkjentSaksbehandler)
             .toList();
         // Litt dobbeltarbeid her i overgangsfase - vi henter saksbehandlere og mapper som før i tillegg til å gjøre samme med gruppene
         var saksbehandlereGruppe =  avdelingslederSaksbehandlerTjeneste.hentAvdelingensSaksbehandlereOgGrupper(avdelingEnhetDto.getAvdelingEnhet())
-            .stream().map(g -> new SaksbehandlerGruppeDto(g.getId(), g.getGruppeNavn(), g.getSaksbehandlere().stream().map(saksbehandlerDtoTjeneste::lagKjentOgUkjentSaksbehandlerMedAvdelingerDto).toList())).toList();
+            .stream().map(g -> new SaksbehandlerGruppeDto(g.getId(), g.getGruppeNavn(), g.getSaksbehandlere().stream().map(saksbehandlerDtoTjeneste::lagKjentOgUkjentSaksbehandler).toList())).toList();
         return new SaksbehandlereOgSaksbehandlerGrupper(avdelingensSaksbehandlere, saksbehandlereGruppe);
     }
 

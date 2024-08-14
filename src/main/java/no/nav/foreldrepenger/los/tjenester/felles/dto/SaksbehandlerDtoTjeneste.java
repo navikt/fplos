@@ -1,6 +1,5 @@
 package no.nav.foreldrepenger.los.tjenester.felles.dto;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -48,42 +47,24 @@ public class SaksbehandlerDtoTjeneste {
     public List<SaksbehandlerDto> hentAktiveSaksbehandlereTilknyttetSaksliste(Long sakslisteId) {
         var filtrering = avdelingslederTjeneste.hentOppgaveFiltering(sakslisteId)
             .orElseThrow(() -> AvdelingslederTjenesteFeil.fantIkkeOppgavekø(sakslisteId));
-        return filtrering.getSaksbehandlere().stream().map(this::tilSaksbehandlerDto).flatMap(Optional::stream).toList();
+        return filtrering.getSaksbehandlere().stream().map(sb -> saksbehandlerDto(sb.getSaksbehandlerIdent())).flatMap(Optional::stream).toList();
     }
 
-    public Optional<SaksbehandlerMedAvdelingerDto> hentSaksbehandlerTilknyttetMinstEnKø(String ident) {
+    public Optional<SaksbehandlerDto> hentSaksbehandlerTilknyttetMinstEnKø(String ident) {
         return organisasjonRepository.hentSaksbehandlerHvisEksisterer(ident)
             .map(Saksbehandler::getSaksbehandlerIdent)
             .filter(sb -> !oppgaveKøTjeneste.hentAlleOppgaveFiltrering(sb).isEmpty())
-            .flatMap(this::lagSaksbehandlerMedAvdelingerDto);
+            .flatMap(this::saksbehandlerDto);
     }
 
-    public Optional<SaksbehandlerMedAvdelingerDto> lagSaksbehandlerMedAvdelingerDto(String ident) {
-        return Optional.ofNullable(ident).flatMap(this::tilSaksbehandlerDto).flatMap(sb -> tilSaksbehandlerMedAvdelingerDto(ident, sb));
-    }
-
-    private Optional<SaksbehandlerMedAvdelingerDto> tilSaksbehandlerMedAvdelingerDto(String ident, SaksbehandlerDto saksbehandlerDto) {
-        return Optional.of(ident).map(ansattTjeneste::hentAvdelingerNavnForAnsatt).map(a -> new SaksbehandlerMedAvdelingerDto(saksbehandlerDto, a));
-    }
-
-    public SaksbehandlerMedAvdelingerDto lagKjentOgUkjentSaksbehandlerMedAvdelingerDto(Saksbehandler saksbehandler) {
+    public SaksbehandlerDto lagKjentOgUkjentSaksbehandler(Saksbehandler saksbehandler) {
         // saksbehandler kan eksistere i basen men være ukjent i azuread
         var ident = saksbehandler.getSaksbehandlerIdent();
-        var saksbehandlerDto = tilSaksbehandlerDto(ident);
-        if (saksbehandlerDto.isPresent()) {
-            var avdelinger = ansattTjeneste.hentAvdelingerNavnForAnsatt(ident);
-            return new SaksbehandlerMedAvdelingerDto(saksbehandlerDto.get(), avdelinger);
-        }
-        var ukjent = new SaksbehandlerDto(new SaksbehandlerBrukerIdentDto(ident), "Ukjent saksbehandler " + ident, null);
-        return new SaksbehandlerMedAvdelingerDto(ukjent, Collections.emptyList());
+        var saksbehandlerDto = saksbehandlerDto(ident);
+        return saksbehandlerDto.orElseGet(() -> SaksbehandlerDto.ukjentSaksbehandler(ident));
     }
 
-    public Optional<SaksbehandlerDto> tilSaksbehandlerDto(Saksbehandler saksbehandler) {
-        var ident = saksbehandler.getSaksbehandlerIdent();
-        return tilSaksbehandlerDto(ident);
-    }
-
-    private Optional<SaksbehandlerDto> tilSaksbehandlerDto(String ident) {
+    public Optional<SaksbehandlerDto> saksbehandlerDto(String ident) {
         var identDto = new SaksbehandlerBrukerIdentDto(ident);
         return hentBrukerProfil(ident)
             .map(bp -> new SaksbehandlerDto(identDto, bp.fornavnEtternavn(), bp.ansattAvdeling()));

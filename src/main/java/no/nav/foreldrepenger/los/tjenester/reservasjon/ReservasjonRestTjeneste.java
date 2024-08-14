@@ -16,6 +16,8 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
 
+import no.nav.foreldrepenger.los.tjenester.felles.dto.SaksbehandlerDto;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,7 +31,6 @@ import no.nav.foreldrepenger.los.tjenester.felles.dto.OppgaveDtoTjeneste;
 import no.nav.foreldrepenger.los.tjenester.felles.dto.ReservasjonStatusDto;
 import no.nav.foreldrepenger.los.tjenester.felles.dto.SaksbehandlerBrukerIdentDto;
 import no.nav.foreldrepenger.los.tjenester.felles.dto.SaksbehandlerDtoTjeneste;
-import no.nav.foreldrepenger.los.tjenester.felles.dto.SaksbehandlerMedAvdelingerDto;
 import no.nav.foreldrepenger.los.tjenester.saksbehandler.oppgave.dto.OppgaveFlyttingDto;
 import no.nav.foreldrepenger.los.tjenester.saksbehandler.oppgave.dto.OppgaveIdDto;
 import no.nav.foreldrepenger.los.tjenester.saksbehandler.oppgave.dto.OpphevTilknyttetReservasjonRequestDto;
@@ -141,7 +142,7 @@ public class ReservasjonRestTjeneste {
     @Produces(MediaType.APPLICATION_JSON)
     @Operation(description = "Søk etter saksbehandler som er tilknyttet behandlingskø", tags = "Saksbehandler")
     @BeskyttetRessurs(actionType = ActionType.READ, resourceType = ResourceType.FAGSAK)
-    public SaksbehandlerMedAvdelingerDto søkAvdelingensSaksbehandlere(@NotNull @Parameter(description = "Brukeridentifikasjon") @Valid SaksbehandlerBrukerIdentDto brukerIdent) {
+    public SaksbehandlerDto søkAvdelingensSaksbehandlere(@NotNull @Parameter(description = "Brukeridentifikasjon") @Valid SaksbehandlerBrukerIdentDto brukerIdent) {
         var ident = brukerIdent.getVerdi().toUpperCase();
         var saksbehandler = saksbehandlerDtoTjeneste.hentSaksbehandlerTilknyttetMinstEnKø(ident);
         return saksbehandler.orElse(null);
