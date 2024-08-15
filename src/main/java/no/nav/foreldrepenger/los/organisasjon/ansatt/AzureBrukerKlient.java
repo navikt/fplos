@@ -26,11 +26,12 @@ public class AzureBrukerKlient {
     }
 
     public BrukerProfilResponse brukerProfil(String ident) {
-        var request = RestRequest.newPOSTJson(new BrukerProfilRequest(ident.trim()), UriBuilder.fromUri(uri).build(), restConfig);
+        var lowercasedIdent = ident.trim().toLowerCase();
+        var request = RestRequest.newPOSTJson(new BrukerProfilRequest(lowercasedIdent), UriBuilder.fromUri(uri).build(), restConfig);
         return restClient.send(request, BrukerProfilResponse.class);
     }
 
     record BrukerProfilRequest(@NotNull String ident) {}
 
-    public record BrukerProfilResponse(String ident, String navn, String fornavnEtternavn, String epost, String ansattVedEnhetId) {}
+    public record BrukerProfilResponse(String ident, String fornavnEtternavn, String ansattVedEnhetId) {}
 }
