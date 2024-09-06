@@ -26,8 +26,7 @@ public class AzureBrukerKlient {
     }
 
     public BrukerProfilResponse brukerProfil(String ident) {
-        var lowercasedIdent = ident.trim().toLowerCase();
-        var request = RestRequest.newPOSTJson(new BrukerProfilRequest(lowercasedIdent), UriBuilder.fromUri(uri).build(), restConfig);
+        var request = RestRequest.newPOSTJson(new BrukerProfilRequest(ident), UriBuilder.fromUri(uri).build(), restConfig);
         return restClient.send(request, BrukerProfilResponse.class);
     }
 
