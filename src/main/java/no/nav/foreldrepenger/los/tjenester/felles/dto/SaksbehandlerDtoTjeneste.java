@@ -72,7 +72,7 @@ public class SaksbehandlerDtoTjeneste {
 
     public Optional<BrukerProfil> hentBrukerProfil(String ident) {
         try {
-            return Optional.of(ansattTjeneste.hentBrukerProfil(ident.toLowerCase()));
+            return Optional.of(ansattTjeneste.hentBrukerProfil(ident));
         } catch (IntegrasjonException e) {
             LOG.info("Henting av ansattnavn feilet, fortsetter med empty.", e);
             return Optional.empty();
