@@ -26,13 +26,13 @@ public class AnsattTjeneste {
     }
 
     public BrukerProfil hentBrukerProfil(String ident) {
-        if (ANSATT_PROFIL.get(ident.toUpperCase()) == null) {
+        if (ANSATT_PROFIL.get(ident.trim().toUpperCase()) == null) {
             //TODO:  Her bør vi egentlig tenke om NOM er ikke riktigere å bruke - bør være raskere å slå opp navn og epost.
             // Jeg har sjekket med NOM (01.07.2024) og de støtter en så lenge ikke Z-identer i dev. Men prod brukere er tilgjengelig.
-            var brukerProfil = mapTilDomene(new AzureBrukerKlient().brukerProfil(ident.toUpperCase()));
-            ANSATT_PROFIL.put(ident, brukerProfil);
+            var brukerProfil = mapTilDomene(new AzureBrukerKlient().brukerProfil(ident.trim().toUpperCase()));
+            ANSATT_PROFIL.put(ident.trim().toUpperCase(), brukerProfil);
         }
-        return ANSATT_PROFIL.get(ident);
+        return ANSATT_PROFIL.get(ident.trim().toUpperCase());
     }
 
     private static BrukerProfil mapTilDomene(AzureBrukerKlient.BrukerProfilResponse klientResponse) {
