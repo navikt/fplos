@@ -30,18 +30,18 @@ public class ReservasjonRepository {
                 select o from Oppgave o
                 inner join Reservasjon r on r.oppgave = o
                 where r.opprettetTidspunkt > :fom
-                and upper(r.reservertAv) = upper(:uid)
+                and r.reservertAv = :uid
                 and not exists(
                     select 1
                     from Oppgave o2
                     inner join Reservasjon r2 on r2.oppgave = o2
                     where o2.behandlingId = o.behandlingId
                     and o2.opprettetTidspunkt > o.opprettetTidspunkt
-                    and upper(r2.reservertAv) = upper(:uid)
+                    and r2.reservertAv = :uid
                 )
                 order by coalesce(r.endretTidspunkt, r.opprettetTidspunkt) desc
                 """, Oppgave.class) //$NON-NLS-1$
-            .setParameter("uid", uid)
+            .setParameter("uid", uid.toUpperCase())
             .setParameter("fom", fom)
             .setMaxResults(15)
             .getResultList();
