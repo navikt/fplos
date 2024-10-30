@@ -1,5 +1,6 @@
 package no.nav.foreldrepenger.los.reservasjon;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -24,21 +25,26 @@ public class ReservasjonRepository {
     }
 
     public List<Oppgave> hentSaksbehandlersSisteReserverteOppgaver(String uid) {
+        var fom = LocalDate.now().minusWeeks(3).atStartOfDay();
         return entityManager.createQuery("""
                 select o from Oppgave o
                 inner join Reservasjon r on r.oppgave = o
-                where upper(r.reservertAv) = upper( :uid )
+                where r.opprettetTidspunkt > :fom
+                and r.reservertAv = :uid
                 and not exists(
                     select 1
                     from Oppgave o2
                     inner join Reservasjon r2 on r2.oppgave = o2
                     where o2.behandlingId = o.behandlingId
                     and o2.opprettetTidspunkt > o.opprettetTidspunkt
-                    and upper(r2.reservertAv) = upper( :uid )
+                    and r2.reservertAv = :uid
                 )
                 order by coalesce(r.endretTidspunkt, r.opprettetTidspunkt) desc
                 """, Oppgave.class) //$NON-NLS-1$
-            .setParameter("uid", uid).setMaxResults(15).getResultList();
+            .setParameter("uid", uid.toUpperCase())
+            .setParameter("fom", fom)
+            .setMaxResults(15)
+            .getResultList();
     }
 
     public List<Oppgave> hentSaksbehandlersReserverteAktiveOppgaver(String uid) {
