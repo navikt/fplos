@@ -6,13 +6,13 @@ import static org.mockito.Mockito.mock;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import jakarta.persistence.EntityManager;
+import java.util.UUID;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
+import jakarta.persistence.EntityManager;
 import no.nav.foreldrepenger.los.JpaExtension;
 import no.nav.foreldrepenger.los.avdelingsleder.AvdelingslederTjeneste;
 import no.nav.foreldrepenger.los.oppgave.OppgaveRepository;
@@ -44,8 +44,8 @@ class SaksbehandlerDtoTjenesteTest {
         var saksbehandler2Ident = "9876543";
         var saksbehandler3Ident = "1234";
 
-        var saksbehandler1 = new Saksbehandler(saksbehandler1Ident);
-        var saksbehandler2 = new Saksbehandler(saksbehandler2Ident);
+        var saksbehandler1 = new Saksbehandler(saksbehandler1Ident, UUID.randomUUID());
+        var saksbehandler2 = new Saksbehandler(saksbehandler2Ident, UUID.randomUUID());
         entityManager.persist(saksbehandler1);
         entityManager.persist(saksbehandler2);
         entityManager.flush();

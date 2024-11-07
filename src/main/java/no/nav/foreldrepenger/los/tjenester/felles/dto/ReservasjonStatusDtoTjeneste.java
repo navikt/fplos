@@ -1,10 +1,7 @@
 package no.nav.foreldrepenger.los.tjenester.felles.dto;
 
-import static no.nav.foreldrepenger.los.felles.util.OptionalUtil.tryOrEmpty;
-
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-
 import no.nav.foreldrepenger.los.oppgave.Oppgave;
 import no.nav.foreldrepenger.los.organisasjon.ansatt.AnsattTjeneste;
 import no.nav.foreldrepenger.los.organisasjon.ansatt.BrukerProfil;
@@ -44,9 +41,12 @@ public class ReservasjonStatusDtoTjeneste {
         if (ident == null) {
             return null;
         }
-        return tryOrEmpty(() -> ansattTjeneste.hentBrukerProfil(ident), "brukerprofil")
-            .map(BrukerProfil::navn)
-            .orElse("Ukjent");
+        try {
+            return ansattTjeneste.hentBrukerProfilHvisIdentFinnes(ident)
+                .map(BrukerProfil::navn).orElse("Ukjent");
+        } catch (Exception e) {
+            return "Ukjent";
+        }
     }
 
     private ReservasjonStatusDto systembrukerSpesialTilfelle(Reservasjon reservasjon) {

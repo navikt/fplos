@@ -1,11 +1,30 @@
 package no.nav.foreldrepenger.los.tjenester.avdelingsleder.saksbehandler;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatNoException;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.fail;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.argThat;
+import static org.mockito.Mockito.lenient;
+import static org.mockito.Mockito.when;
+
+import java.util.Objects;
+import java.util.UUID;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+
 import jakarta.persistence.EntityManager;
 import no.nav.foreldrepenger.los.JpaExtension;
-
 import no.nav.foreldrepenger.los.avdelingsleder.AvdelingslederSaksbehandlerTjeneste;
 import no.nav.foreldrepenger.los.oppgave.OppgaveRepository;
 import no.nav.foreldrepenger.los.organisasjon.OrganisasjonRepository;
+import no.nav.foreldrepenger.los.organisasjon.ansatt.AnsattTjeneste;
+import no.nav.foreldrepenger.los.organisasjon.ansatt.BrukerProfil;
 import no.nav.foreldrepenger.los.tjenester.avdelingsleder.dto.AvdelingEnhetDto;
 import no.nav.foreldrepenger.los.tjenester.avdelingsleder.dto.SaksbehandlerOgAvdelingDto;
 import no.nav.foreldrepenger.los.tjenester.avdelingsleder.dto.SaksbehandlerOgGruppeDto;
@@ -15,23 +34,7 @@ import no.nav.foreldrepenger.los.tjenester.avdelingsleder.saksbehandler.dto.Saks
 import no.nav.foreldrepenger.los.tjenester.felles.dto.SaksbehandlerBrukerIdentDto;
 import no.nav.foreldrepenger.los.tjenester.felles.dto.SaksbehandlerDto;
 import no.nav.foreldrepenger.los.tjenester.felles.dto.SaksbehandlerDtoTjeneste;
-
 import no.nav.vedtak.felles.jpa.TomtResultatException;
-
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-
-import java.util.Objects;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatNoException;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.assertj.core.api.Assertions.fail;
-import static org.mockito.ArgumentMatchers.argThat;
-import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 @ExtendWith(JpaExtension.class)
@@ -39,7 +42,7 @@ class AvdelingslederSaksbehandlerRestTjenesteTest {
 
     private static final AvdelingEnhetDto avdelingDto = new AvdelingEnhetDto("4817");
     private static final SaksbehandlerBrukerIdentDto brukerIdentDto = new SaksbehandlerBrukerIdentDto("Z999999");
-    private static final SaksbehandlerDto saksbehandlerDto = new SaksbehandlerDto(brukerIdentDto, "Navnesen, Navn", "NAV Drammen");
+    private static final SaksbehandlerDto saksbehandlerDto = new SaksbehandlerDto(brukerIdentDto, "Navnesen, Navn", "Nav Drammen");
     private AvdelingslederSaksbehandlerTjeneste avdelingslederSaksbehandlerTjeneste;
     @Mock
     private SaksbehandlerDtoTjeneste saksbehandlerDtoTjeneste;
@@ -48,11 +51,14 @@ class AvdelingslederSaksbehandlerRestTjenesteTest {
 
     @Mock
     private OppgaveRepository oppgaveRepository;
+    @Mock
+    private AnsattTjeneste ansattTjeneste;
 
     @BeforeEach
     public void setUp(EntityManager entityManager) {
         var organisasjonRepository = new OrganisasjonRepository(entityManager);
-        avdelingslederSaksbehandlerTjeneste = new AvdelingslederSaksbehandlerTjeneste(oppgaveRepository, organisasjonRepository);
+        lenient().when(ansattTjeneste.hentBrukerProfil(anyString())).thenReturn(new BrukerProfil(UUID.randomUUID(), "A000001", "Ansatt Navn", "4867"));
+        avdelingslederSaksbehandlerTjeneste = new AvdelingslederSaksbehandlerTjeneste(oppgaveRepository, organisasjonRepository, ansattTjeneste);
         restTjeneste = new AvdelingslederSaksbehandlerRestTjeneste(avdelingslederSaksbehandlerTjeneste, saksbehandlerDtoTjeneste);
     }
 

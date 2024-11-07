@@ -1,4 +1,6 @@
 package no.nav.foreldrepenger.los.organisasjon.ansatt;
 
-public record BrukerProfil(String ident, String navn, String ansattAvdeling) {
+import java.util.UUID;
+
+public record BrukerProfil(UUID uid, String ident, String navn, String ansattAvdeling) {
 }

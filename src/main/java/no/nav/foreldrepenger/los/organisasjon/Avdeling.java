@@ -13,7 +13,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-
 import no.nav.foreldrepenger.los.felles.BaseEntitet;
 import no.nav.foreldrepenger.los.oppgavekø.OppgaveFiltrering;
 import no.nav.vedtak.felles.jpa.converters.BooleanToStringConverter;
@@ -66,6 +65,10 @@ public class Avdeling extends BaseEntitet {
 
     public String getNavn() {
         return navn;
+    }
+
+    public void setNavn(String navn) {
+        this.navn = navn;
     }
 
     public List<Saksbehandler> getSaksbehandlere() {

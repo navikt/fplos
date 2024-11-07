@@ -1,8 +1,21 @@
 package no.nav.foreldrepenger.los.tjenester.admin;
 
+import static no.nav.foreldrepenger.los.DBTestUtil.avdelingDrammen;
+import static no.nav.foreldrepenger.los.DBTestUtil.hentAlle;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.lenient;
+
+import java.util.UUID;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+
 import jakarta.persistence.EntityManager;
 import no.nav.foreldrepenger.los.JpaExtension;
-
 import no.nav.foreldrepenger.los.avdelingsleder.AvdelingslederSaksbehandlerTjeneste;
 import no.nav.foreldrepenger.los.avdelingsleder.AvdelingslederTjeneste;
 import no.nav.foreldrepenger.los.oppgave.OppgaveRepository;
@@ -10,23 +23,19 @@ import no.nav.foreldrepenger.los.oppgavekø.KøSortering;
 import no.nav.foreldrepenger.los.oppgavekø.OppgaveFiltrering;
 import no.nav.foreldrepenger.los.organisasjon.Avdeling;
 import no.nav.foreldrepenger.los.organisasjon.OrganisasjonRepository;
-
 import no.nav.foreldrepenger.los.organisasjon.Saksbehandler;
+import no.nav.foreldrepenger.los.organisasjon.ansatt.AnsattTjeneste;
+import no.nav.foreldrepenger.los.organisasjon.ansatt.BrukerProfil;
 import no.nav.vedtak.felles.prosesstask.api.ProsessTaskData;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-
-import static no.nav.foreldrepenger.los.DBTestUtil.avdelingDrammen;
-import static no.nav.foreldrepenger.los.DBTestUtil.hentAlle;
-import static org.assertj.core.api.Assertions.assertThat;
-
+@ExtendWith(MockitoExtension.class)
 @ExtendWith(JpaExtension.class)
 class SlettDeaktiverteAvdelingerTaskTest {
     private EntityManager entityManager;
     private SlettDeaktiverteAvdelingerTask task;
     private AvdelingslederSaksbehandlerTjeneste avdelingslederSaksbehandlerTjeneste;
+    @Mock
+    private AnsattTjeneste ansattTjeneste;
 
     @BeforeEach
     void setup(EntityManager entityManager) {
@@ -34,7 +43,8 @@ class SlettDeaktiverteAvdelingerTaskTest {
         var organisasjonRepository = new OrganisasjonRepository(entityManager);
         var oppgaveRepository = new OppgaveRepository(entityManager);
         var avdelingslederTjeneste = new AvdelingslederTjeneste(oppgaveRepository, organisasjonRepository);
-        this.avdelingslederSaksbehandlerTjeneste = new AvdelingslederSaksbehandlerTjeneste(oppgaveRepository, organisasjonRepository);
+        lenient().when(ansattTjeneste.hentBrukerProfil(anyString())).thenReturn(new BrukerProfil(UUID.randomUUID(), "A000001", "Ansatt Navn", "4867"));
+        this.avdelingslederSaksbehandlerTjeneste = new AvdelingslederSaksbehandlerTjeneste(oppgaveRepository, organisasjonRepository, ansattTjeneste);
         task = new SlettDeaktiverteAvdelingerTask(oppgaveRepository, organisasjonRepository, avdelingslederTjeneste,
             avdelingslederSaksbehandlerTjeneste);
     }
