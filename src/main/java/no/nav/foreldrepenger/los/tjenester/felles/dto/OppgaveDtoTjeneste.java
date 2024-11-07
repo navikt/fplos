@@ -1,27 +1,25 @@
 package no.nav.foreldrepenger.los.tjenester.felles.dto;
 
-import static no.nav.foreldrepenger.los.felles.util.OptionalUtil.tryOrEmpty;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import no.nav.foreldrepenger.los.tjenester.avdelingsleder.saksliste.FplosAbacAttributtType;
-import no.nav.foreldrepenger.los.tjenester.saksbehandler.oppgave.OppgaveRestTjeneste;
-import no.nav.foreldrepenger.los.tjenester.saksbehandler.oppgave.dto.BehandlingIdDto;
-import no.nav.foreldrepenger.los.tjenester.saksbehandler.oppgave.dto.OppgaveIdDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import no.nav.foreldrepenger.konfig.Environment;
-import no.nav.foreldrepenger.los.persontjeneste.IkkeTilgangPåPersonException;
-import no.nav.foreldrepenger.los.persontjeneste.PersonTjeneste;
 import no.nav.foreldrepenger.los.oppgave.Oppgave;
 import no.nav.foreldrepenger.los.oppgave.OppgaveTjeneste;
 import no.nav.foreldrepenger.los.oppgavekø.OppgaveKøTjeneste;
+import no.nav.foreldrepenger.los.persontjeneste.IkkeTilgangPåPersonException;
+import no.nav.foreldrepenger.los.persontjeneste.PersonTjeneste;
 import no.nav.foreldrepenger.los.reservasjon.ReservasjonTjeneste;
+import no.nav.foreldrepenger.los.tjenester.avdelingsleder.saksliste.FplosAbacAttributtType;
+import no.nav.foreldrepenger.los.tjenester.saksbehandler.oppgave.OppgaveRestTjeneste;
+import no.nav.foreldrepenger.los.tjenester.saksbehandler.oppgave.dto.BehandlingIdDto;
+import no.nav.foreldrepenger.los.tjenester.saksbehandler.oppgave.dto.OppgaveIdDto;
 import no.nav.vedtak.sikkerhet.abac.AbacDataAttributter;
 import no.nav.vedtak.sikkerhet.abac.PdpKlient;
 import no.nav.vedtak.sikkerhet.abac.PdpRequestBuilder;
@@ -146,10 +144,18 @@ public class OppgaveDtoTjeneste {
     public List<OppgaveDto> getSaksbehandlersSisteReserverteOppgaver() {
         return reservasjonTjeneste.hentSaksbehandlersSisteReserverteOppgaver()
             .stream()
-            .map(o -> tryOrEmpty(() -> lagDtoFor(o, true), "oppgavedto"))
+            .map(o -> safeLagDtoFor(o, true))
             .flatMap(Optional::stream)
             .limit(10)
             .toList();
+    }
+
+    private Optional<OppgaveDto> safeLagDtoFor(Oppgave oppgave, boolean sjekkTilgangPåBehandling) {
+        try {
+            return Optional.of(lagDtoFor(oppgave, sjekkTilgangPåBehandling));
+        } catch (Exception e) {
+            return Optional.empty();
+        }
     }
 
     public List<OppgaveDto> hentOppgaverForFagsaker(List<Long> saksnummerListe) {

@@ -7,13 +7,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import jakarta.persistence.EntityManager;
+import java.util.UUID;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
+import jakarta.persistence.EntityManager;
 import no.nav.foreldrepenger.los.JpaExtension;
 import no.nav.foreldrepenger.los.avdelingsleder.AvdelingslederTjeneste;
 import no.nav.foreldrepenger.los.oppgave.AndreKriterierType;
@@ -86,7 +86,7 @@ class OppgaveKøTjenesteTest {
     @Test
     void hentAlleOppgaveFiltrering() {
         var lagtInnLister = leggInnEtSettMedLister(3);
-        var saksbehandler = new Saksbehandler("1234567");
+        var saksbehandler = new Saksbehandler("1234567", UUID.randomUUID());
         entityManager.persist(saksbehandler);
         entityManager.flush();
 
