@@ -1,5 +1,7 @@
 package no.nav.foreldrepenger.los.organisasjon;
 
+import java.util.Objects;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,8 +38,10 @@ public class PopulerUidTask implements ProsessTaskHandler {
         var uid = ansattTjeneste.hentBrukerProfil(ident).uid();
 
         var saksbehandler = organisasjonsRepository.hentSaksbehandler(ident);
-        saksbehandler.setSaksbehandlerUuid(uid);
-        entityManager.persist(saksbehandler);
-        entityManager.flush();
+        if (!Objects.equals(uid, saksbehandler.getSaksbehandlerUuid())) {
+            saksbehandler.setSaksbehandlerUuid(uid);
+            entityManager.persist(saksbehandler);
+            entityManager.flush();
+        }
     }
 }
