@@ -2,6 +2,7 @@ package no.nav.foreldrepenger.los.organisasjon.ansatt;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
@@ -39,8 +40,13 @@ public class AnsattTjeneste {
     }
 
     public BrukerProfil hentBrukerProfil(Saksbehandler saksbehandler) {
-        return saksbehandler.getSaksbehandlerUuidHvisFinnes().map(this::hentBrukerProfil)
+        var profil = saksbehandler.getSaksbehandlerUuidHvisFinnes().flatMap(this::hentBrukerProfil)
             .orElseGet(() -> hentBrukerProfil(saksbehandler.getSaksbehandlerIdent()));
+        if (!Objects.equals(profil.uid(), saksbehandler.getSaksbehandlerUuid())) {
+            saksbehandler.setSaksbehandlerUuid(profil.uid());
+            organisasjonRepository.persistFlush(saksbehandler);
+        }
+        return profil;
     }
 
     public BrukerProfil hentBrukerProfil(String ident) {
@@ -54,13 +60,18 @@ public class AnsattTjeneste {
         return ANSATT_PROFIL.get(ident.trim().toUpperCase());
     }
 
-    public BrukerProfil hentBrukerProfil(UUID uid) {
-        if (ANSATT_UID_PROFIL.get(uid) == null) {
-            var brukerProfil = mapTilDomene(brukerKlient.brukerProfil(uid));
-            ANSATT_PROFIL.put(brukerProfil.ident().trim().toUpperCase(), brukerProfil);
-            ANSATT_UID_PROFIL.put(uid, brukerProfil);
+    private Optional<BrukerProfil> hentBrukerProfil(UUID uid) {
+        // For det spennende tilfelle at NAVident evt skulle bytte oid (slutter, reansatt?)
+        try {
+            if (ANSATT_UID_PROFIL.get(uid) == null) {
+                var brukerProfil = mapTilDomene(brukerKlient.brukerProfil(uid));
+                ANSATT_PROFIL.put(brukerProfil.ident().trim().toUpperCase(), brukerProfil);
+                ANSATT_UID_PROFIL.put(uid, brukerProfil);
+            }
+            return Optional.ofNullable(ANSATT_UID_PROFIL.get(uid));
+        } catch (Exception e) {
+            return Optional.empty();
         }
-        return ANSATT_UID_PROFIL.get(uid);
     }
 
     private static BrukerProfil mapTilDomene(AzureBrukerKlient.BrukerProfilResponse klientResponse) {
