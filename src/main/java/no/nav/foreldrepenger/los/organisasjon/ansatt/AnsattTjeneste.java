@@ -42,7 +42,7 @@ public class AnsattTjeneste {
     public BrukerProfil hentBrukerProfil(Saksbehandler saksbehandler) {
         var profil = saksbehandler.getSaksbehandlerUuidHvisFinnes().flatMap(this::hentBrukerProfil)
             .orElseGet(() -> hentBrukerProfil(saksbehandler.getSaksbehandlerIdent()));
-        if (!Objects.equals(profil.uid(), saksbehandler.getSaksbehandlerUuid())) {
+        if (profil.uid() != null && !Objects.equals(profil.uid(), saksbehandler.getSaksbehandlerUuid())) {
             saksbehandler.setSaksbehandlerUuid(profil.uid());
             organisasjonRepository.persistFlush(saksbehandler);
         }
