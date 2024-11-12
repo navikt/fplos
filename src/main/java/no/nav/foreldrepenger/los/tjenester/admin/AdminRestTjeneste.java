@@ -16,12 +16,9 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import no.nav.foreldrepenger.los.oppgave.OppgaveTjeneste;
 import no.nav.foreldrepenger.los.organisasjon.OrganisasjonRepository;
-import no.nav.foreldrepenger.los.organisasjon.PopulerUidTask;
 import no.nav.foreldrepenger.los.tjenester.admin.dto.DriftAvdelingEnhetDto;
 import no.nav.foreldrepenger.los.tjenester.admin.dto.DriftOpprettAvdelingEnhetDto;
 import no.nav.foreldrepenger.los.tjenester.admin.dto.EnkelBehandlingIdDto;
-import no.nav.vedtak.felles.prosesstask.api.ProsessTaskData;
-import no.nav.vedtak.felles.prosesstask.api.ProsessTaskTjeneste;
 import no.nav.vedtak.hendelser.behandling.Kildesystem;
 import no.nav.vedtak.sikkerhet.abac.BeskyttetRessurs;
 import no.nav.vedtak.sikkerhet.abac.beskyttet.ActionType;
@@ -35,16 +32,14 @@ public class AdminRestTjeneste {
     private SynkroniseringHendelseTaskOppretterTjeneste synkroniseringHendelseTaskOppretterTjeneste;
     private OppgaveTjeneste oppgaveTjeneste;
     private OrganisasjonRepository organisasjonRepository;
-    private ProsessTaskTjeneste prosessTaskTjeneste;
 
     @Inject
     public AdminRestTjeneste(SynkroniseringHendelseTaskOppretterTjeneste synkroniseringHendelseTaskOppretterTjeneste,
                              OppgaveTjeneste oppgaveTjeneste,
-                             OrganisasjonRepository organisasjonRepository, ProsessTaskTjeneste prosessTaskTjeneste) {
+                             OrganisasjonRepository organisasjonRepository) {
         this.synkroniseringHendelseTaskOppretterTjeneste = synkroniseringHendelseTaskOppretterTjeneste;
         this.oppgaveTjeneste = oppgaveTjeneste;
         this.organisasjonRepository = organisasjonRepository;
-        this.prosessTaskTjeneste = prosessTaskTjeneste;
     }
 
     public AdminRestTjeneste() {
@@ -123,33 +118,6 @@ public class AdminRestTjeneste {
     @BeskyttetRessurs(actionType = ActionType.CREATE, resourceType = ResourceType.DRIFT)
     public Response slettSaksbehandlereUtenKnytninger() {
         organisasjonRepository.slettSaksbehandlereUtenKnytninger();
-        return Response.ok().build();
-    }
-
-    @POST
-    @Path("/byttTilNav")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    @Operation(description = "Sletter saksbehandlere uten knytning til køer eller avdeling", tags = "admin")
-    @BeskyttetRessurs(actionType = ActionType.CREATE, resourceType = ResourceType.DRIFT)
-    public Response byttTilNav() {
-        organisasjonRepository.nySkrivemåteNav();
-        return Response.ok().build();
-    }
-
-    @POST
-    @Path("/populerUid")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    @Operation(description = "Sletter saksbehandlere uten knytning til køer eller avdeling", tags = "admin")
-    @BeskyttetRessurs(actionType = ActionType.CREATE, resourceType = ResourceType.DRIFT)
-    public Response populerUid() {
-        organisasjonRepository.hentAlleSaksbehandlere()
-            .forEach(s -> {
-                var task = ProsessTaskData.forProsessTask(PopulerUidTask.class);
-                task.setProperty(PopulerUidTask.SBH_IDENT_KEY, s.getSaksbehandlerIdent());
-                prosessTaskTjeneste.lagre(task);
-            });
         return Response.ok().build();
     }
 

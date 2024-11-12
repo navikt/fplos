@@ -49,11 +49,6 @@ public class OrganisasjonRepository {
         entityManager.refresh(avdeling);
     }
 
-    public List<Saksbehandler> hentAlleSaksbehandlere() {
-        var query = entityManager.createQuery("FROM saksbehandler s", Saksbehandler.class);
-        return query.getResultList();
-    }
-
     private TypedQuery<Saksbehandler> hentSaksbehandlerQuery(String saksbehandlerIdent) {
         return entityManager.createQuery("""
             FROM saksbehandler s
@@ -178,18 +173,6 @@ public class OrganisasjonRepository {
             entityManager.persist(sb);
         });
         entityManager.remove(avdeling);
-    }
-
-    public void nySkrivemåteNav() {
-        hentAktiveAvdelinger().forEach(a -> {
-            var navn = a.getNavn();
-            var nyttNavn = navn.replace("NAV ", "Nav ")
-                .replace("Familie-", "familie-")
-                .replace(" Foreldrepenger", " foreldrepenger")
-                .replace(" Egne ansatte", " egne ansatte");
-            a.setNavn(nyttNavn);
-            entityManager.persist(a);
-        });
     }
 
     private static void sjekkGruppeEnhetTilknytning(long gruppeId, String avdelingEnhet, SaksbehandlerGruppe gruppe) {
