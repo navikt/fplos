@@ -68,7 +68,7 @@ public class AvdelingslederSaksbehandlerRestTjeneste {
     @Operation(description = "Søk etter saksbehandler", tags = "AvdelingslederSaksbehandlere")
     @BeskyttetRessurs(actionType = ActionType.READ, resourceType = ResourceType.OPPGAVESTYRING_AVDELINGENHET)
     public SaksbehandlerDto søkAvdelingensSaksbehandlere(@NotNull @Parameter(description = "Brukeridentifikasjon") @Valid SaksbehandlerBrukerIdentDto brukerIdent) {
-        return saksbehandlerDtoTjeneste.saksbehandlerDto(brukerIdent.getVerdi()).orElse(null);
+        return saksbehandlerDtoTjeneste.saksbehandlerDtoForNavIdent(brukerIdent.getVerdi()).orElse(null);
     }
 
     @POST

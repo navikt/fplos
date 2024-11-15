@@ -56,7 +56,7 @@ public class AvdelingReservasjonerRestTjeneste {
 
     private List<ReservasjonDto> tilReservasjonDtoListe(List<Reservasjon> reservasjoner) {
         return reservasjoner.stream().map(reservasjon -> {
-            var reservertAvNavn = saksbehandlerDtoTjeneste.hentBrukerProfil(reservasjon.getReservertAv())
+            var reservertAvNavn = saksbehandlerDtoTjeneste.hentBrukerProfilForLosLagretNavIdent(reservasjon.getReservertAv())
                 .map(BrukerProfil::navn)
                 .orElseGet(() -> "Ukjent saksbehandler " + reservasjon.getReservertAv());
             return new ReservasjonDto(reservasjon, reservertAvNavn, null);
