@@ -67,11 +67,18 @@ public class SaksbehandlerDtoTjeneste {
             .map(bp -> new SaksbehandlerDto(identDto, bp.navn(), bp.ansattAvdeling()));
     }
 
-    public Optional<SaksbehandlerDto> saksbehandlerDto(String saksbehandlerIdent) {
-        return organisasjonRepository.hentSaksbehandlerHvisEksisterer(saksbehandlerIdent).flatMap(this::saksbehandlerDto);
+    public Optional<SaksbehandlerDto> saksbehandlerDtoForNavIdent(String saksbehandlerIdent) {
+        try {
+            var brukerProfil = Optional.ofNullable(ansattTjeneste.hentBrukerProfil(saksbehandlerIdent));
+            var identDto = new SaksbehandlerBrukerIdentDto(saksbehandlerIdent);
+            return brukerProfil.map(bp -> new SaksbehandlerDto(identDto, bp.navn(), bp.ansattAvdeling()));
+        } catch (IntegrasjonException e) {
+            return Optional.empty();
+        }
+
     }
 
-    public Optional<BrukerProfil> hentBrukerProfil(String ident) {
+    public Optional<BrukerProfil> hentBrukerProfilForLosLagretNavIdent(String ident) {
         return organisasjonRepository.hentSaksbehandlerHvisEksisterer(ident).flatMap(this::hentBrukerProfil);
     }
 
