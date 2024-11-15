@@ -68,9 +68,14 @@ public class SaksbehandlerDtoTjeneste {
     }
 
     public Optional<SaksbehandlerDto> saksbehandlerDtoForNavIdent(String saksbehandlerIdent) {
-        var brukerProfil = Optional.ofNullable(ansattTjeneste.hentBrukerProfil(saksbehandlerIdent));
-        var identDto = new SaksbehandlerBrukerIdentDto(saksbehandlerIdent);
-        return brukerProfil.map(bp -> new SaksbehandlerDto(identDto, bp.navn(), bp.ansattAvdeling()));
+        try {
+            var brukerProfil = Optional.ofNullable(ansattTjeneste.hentBrukerProfil(saksbehandlerIdent));
+            var identDto = new SaksbehandlerBrukerIdentDto(saksbehandlerIdent);
+            return brukerProfil.map(bp -> new SaksbehandlerDto(identDto, bp.navn(), bp.ansattAvdeling()));
+        } catch (IntegrasjonException e) {
+            return Optional.empty();
+        }
+
     }
 
     public Optional<BrukerProfil> hentBrukerProfilForLosLagretNavIdent(String ident) {
