@@ -71,7 +71,7 @@ class SlettDeaktiverteAvdelingerTaskTest {
         entityManager.flush();
 
         var parametre = ProsessTaskData.forProsessTask(SlettDeaktiverteAvdelingerTask.class);
-        parametre.setProperty("enhetsnummer", avdelingEnhetsnummer);
+        parametre.setProperty(SlettDeaktiverteAvdelingerTask.ENHETSNR, avdelingEnhetsnummer);
         task.doTask(parametre);
         entityManager.flush();
 
@@ -90,7 +90,7 @@ class SlettDeaktiverteAvdelingerTaskTest {
         var avdelingEnhetsnummer = avdeling.getAvdelingEnhet();
 
         var parametre = ProsessTaskData.forProsessTask(SlettDeaktiverteAvdelingerTask.class);
-        parametre.setProperty("enhetsnummer", avdelingEnhetsnummer);
+        parametre.setProperty(SlettDeaktiverteAvdelingerTask.ENHETSNR, avdelingEnhetsnummer);
         task.doTask(parametre);
         entityManager.flush();
 

@@ -1,5 +1,7 @@
 package no.nav.foreldrepenger.los.tjenester.felles.dto;
 
+import java.util.Optional;
+
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import no.nav.foreldrepenger.los.oppgave.Oppgave;
@@ -38,15 +40,9 @@ public class ReservasjonStatusDtoTjeneste {
     }
 
     private String hentNavn(String ident) {
-        if (ident == null) {
-            return null;
-        }
-        try {
-            return ansattTjeneste.hentBrukerProfilHvisIdentFinnes(ident)
-                .map(BrukerProfil::navn).orElse("Ukjent");
-        } catch (Exception e) {
-            return "Ukjent";
-        }
+        return Optional.ofNullable(ident)
+            .flatMap(ansattTjeneste::hentBrukerProfilForLagretSaksbehandler)
+            .map(BrukerProfil::navn).orElse("Ukjent");
     }
 
     private ReservasjonStatusDto systembrukerSpesialTilfelle(Reservasjon reservasjon) {

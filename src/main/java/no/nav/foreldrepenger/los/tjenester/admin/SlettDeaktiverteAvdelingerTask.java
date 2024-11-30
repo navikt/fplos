@@ -19,6 +19,8 @@ import no.nav.vedtak.felles.prosesstask.api.ProsessTaskHandler;
 @ProsessTask(value = "vedlikehold.slettavdeling", maxFailedRuns = 1)
 public class SlettDeaktiverteAvdelingerTask implements ProsessTaskHandler {
 
+    static final String ENHETSNR = "enhetsnummer";
+
     private static final Logger LOG = LoggerFactory.getLogger(SlettDeaktiverteAvdelingerTask.class);
     private final OrganisasjonRepository organisasjonsRepository;
     private final AvdelingslederTjeneste avdelingslederTjeneste;
@@ -38,7 +40,7 @@ public class SlettDeaktiverteAvdelingerTask implements ProsessTaskHandler {
 
     @Override
     public void doTask(ProsessTaskData prosessTaskData) {
-        var enhetsnummer = prosessTaskData.getPropertyValue("enhetsnummer");
+        var enhetsnummer = prosessTaskData.getPropertyValue(ENHETSNR);
 
         var avdeling = organisasjonsRepository.hentAvdelingFraEnhet(enhetsnummer).orElse(null);
         if (avdeling == null || avdeling.getErAktiv()) {
