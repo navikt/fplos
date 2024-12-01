@@ -1,31 +1,35 @@
 package no.nav.foreldrepenger.los.tjenester.avdelingsleder.reservasjon;
 
+import static no.nav.foreldrepenger.los.reservasjon.ReservasjonKonstanter.RESERVASJON_AVSLUTTET_AVDELINGSLEDER;
+
+import java.util.List;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import no.nav.foreldrepenger.los.organisasjon.ansatt.BrukerProfil;
-import no.nav.foreldrepenger.los.reservasjon.Reservasjon;
-import no.nav.foreldrepenger.los.reservasjon.ReservasjonTjeneste;
-import no.nav.foreldrepenger.los.tjenester.avdelingsleder.dto.AvdelingEnhetDto;
-import no.nav.foreldrepenger.los.tjenester.felles.dto.ReservasjonDto;
-import no.nav.foreldrepenger.los.tjenester.felles.dto.SaksbehandlerDtoTjeneste;
-import no.nav.foreldrepenger.los.tjenester.saksbehandler.oppgave.dto.OppgaveIdDto;
-import no.nav.vedtak.felles.jpa.TomtResultatException;
-import no.nav.vedtak.sikkerhet.abac.BeskyttetRessurs;
-import no.nav.vedtak.sikkerhet.abac.beskyttet.ActionType;
-import no.nav.vedtak.sikkerhet.abac.beskyttet.ResourceType;
-
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
-import jakarta.ws.rs.*;
+import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.POST;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
-
-import java.util.List;
-
-import static no.nav.foreldrepenger.los.reservasjon.ReservasjonKonstanter.RESERVASJON_AVSLUTTET_AVDELINGSLEDER;
+import no.nav.foreldrepenger.los.organisasjon.ansatt.AnsattTjeneste;
+import no.nav.foreldrepenger.los.organisasjon.ansatt.BrukerProfil;
+import no.nav.foreldrepenger.los.reservasjon.Reservasjon;
+import no.nav.foreldrepenger.los.reservasjon.ReservasjonTjeneste;
+import no.nav.foreldrepenger.los.tjenester.avdelingsleder.dto.AvdelingEnhetDto;
+import no.nav.foreldrepenger.los.tjenester.felles.dto.ReservasjonDto;
+import no.nav.foreldrepenger.los.tjenester.saksbehandler.oppgave.dto.OppgaveIdDto;
+import no.nav.vedtak.felles.jpa.TomtResultatException;
+import no.nav.vedtak.sikkerhet.abac.BeskyttetRessurs;
+import no.nav.vedtak.sikkerhet.abac.beskyttet.ActionType;
+import no.nav.vedtak.sikkerhet.abac.beskyttet.ResourceType;
 
 @Path("avdelingsleder/reservasjoner")
 @ApplicationScoped
@@ -33,12 +37,12 @@ import static no.nav.foreldrepenger.los.reservasjon.ReservasjonKonstanter.RESERV
 public class AvdelingReservasjonerRestTjeneste {
 
     private ReservasjonTjeneste reservasjonTjeneste;
-    private SaksbehandlerDtoTjeneste saksbehandlerDtoTjeneste;
+    private AnsattTjeneste ansattTjeneste;
 
     @Inject
-    public AvdelingReservasjonerRestTjeneste(ReservasjonTjeneste reservasjonTjeneste, SaksbehandlerDtoTjeneste saksbehandlerDtoTjeneste) {
+    public AvdelingReservasjonerRestTjeneste(ReservasjonTjeneste reservasjonTjeneste, AnsattTjeneste ansattTjeneste) {
         this.reservasjonTjeneste = reservasjonTjeneste;
-        this.saksbehandlerDtoTjeneste = saksbehandlerDtoTjeneste;
+        this.ansattTjeneste = ansattTjeneste;
     }
 
     public AvdelingReservasjonerRestTjeneste() {
@@ -56,7 +60,7 @@ public class AvdelingReservasjonerRestTjeneste {
 
     private List<ReservasjonDto> tilReservasjonDtoListe(List<Reservasjon> reservasjoner) {
         return reservasjoner.stream().map(reservasjon -> {
-            var reservertAvNavn = saksbehandlerDtoTjeneste.hentBrukerProfilForLosLagretNavIdent(reservasjon.getReservertAv())
+            var reservertAvNavn = ansattTjeneste.hentBrukerProfilForLagretSaksbehandler(reservasjon.getReservertAv())
                 .map(BrukerProfil::navn)
                 .orElseGet(() -> "Ukjent saksbehandler " + reservasjon.getReservertAv());
             return new ReservasjonDto(reservasjon, reservertAvNavn, null);

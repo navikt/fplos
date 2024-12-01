@@ -1,6 +1,7 @@
 package no.nav.foreldrepenger.los.hendelse.behandlinghendelse;
 
 import java.time.Instant;
+import java.util.Optional;
 import java.util.Set;
 
 import org.slf4j.Logger;
@@ -82,6 +83,7 @@ public class BehandlingHendelseHåndterer implements KafkaMessageHandler.KafkaSt
 
         var prosessTaskData = ProsessTaskData.forProsessTask(BehandlingHendelseTask.class);
         prosessTaskData.setCallId(behandlingHendelse.getHendelseUuid().toString());
+        Optional.ofNullable(behandlingHendelse.getSaksnummer()).ifPresent(prosessTaskData::setSaksnummer);
         prosessTaskData.setProperty(BehandlingHendelseTask.KILDE, behandlingHendelse.getKildesystem().name());
         prosessTaskData.setProperty(BehandlingHendelseTask.HENDELSE_UUID, behandlingHendelse.getHendelseUuid().toString());
         prosessTaskData.setProperty(BehandlingHendelseTask.HENDELSE_TYPE, behandlingHendelse.getHendelse().name());

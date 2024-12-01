@@ -35,8 +35,13 @@ public class AnsattTjeneste {
         organisasjonRepository.hentAktiveAvdelinger().forEach(a -> ENHETSNUMMER_AVDELINGSNAVN_MAP.put(a.getAvdelingEnhet(), a.getNavn()));
     }
 
-    public Optional<BrukerProfil> hentBrukerProfilHvisIdentFinnes(String saksbehandlerIdent) {
-        return organisasjonRepository.hentSaksbehandlerHvisEksisterer(saksbehandlerIdent).map(this::hentBrukerProfil);
+    public Optional<BrukerProfil> hentBrukerProfilForLagretSaksbehandler(String saksbehandlerIdent) {
+        try {
+            return organisasjonRepository.hentSaksbehandlerHvisEksisterer(saksbehandlerIdent).map(this::hentBrukerProfil);
+        } catch (Exception e) {
+            return Optional.empty();
+        }
+
     }
 
     public BrukerProfil hentBrukerProfil(Saksbehandler saksbehandler) {
@@ -49,26 +54,27 @@ public class AnsattTjeneste {
         return profil;
     }
 
+    // TODO:  Her bør vi egentlig tenke om NOM er ikke riktigere å bruke - bør være raskere å slå opp navn og epost.
+    // Jeg har sjekket med NOM (01.07.2024) og de støtter enn så lenge ikke Z-identer i dev. Men prod brukere er tilgjengelig.
     public BrukerProfil hentBrukerProfil(String ident) {
-        if (ANSATT_PROFIL.get(ident.trim().toUpperCase()) == null) {
-            //TODO:  Her bør vi egentlig tenke om NOM er ikke riktigere å bruke - bør være raskere å slå opp navn og epost.
-            // Jeg har sjekket med NOM (01.07.2024) og de støtter en så lenge ikke Z-identer i dev. Men prod brukere er tilgjengelig.
-            var brukerProfil = mapTilDomene(brukerKlient.brukerProfil(ident.trim().toUpperCase()));
-            ANSATT_PROFIL.put(ident.trim().toUpperCase(), brukerProfil);
-            ANSATT_UID_PROFIL.put(brukerProfil.uid(), brukerProfil);
-        }
-        return ANSATT_PROFIL.get(ident.trim().toUpperCase());
+        var trimmed = ident.trim().toUpperCase();
+        var brukerProfil = Optional.ofNullable(ANSATT_PROFIL.get(trimmed))
+            .orElseGet(() -> mapTilDomene(brukerKlient.brukerProfil(trimmed)));
+        // Alltid put for å extende levetid
+        ANSATT_PROFIL.put(trimmed, brukerProfil);
+        ANSATT_UID_PROFIL.put(brukerProfil.uid(), brukerProfil);
+        return brukerProfil;
     }
 
     private Optional<BrukerProfil> hentBrukerProfil(UUID uid) {
         // For det spennende tilfelle at NAVident evt skulle bytte oid (slutter, reansatt?)
         try {
-            if (ANSATT_UID_PROFIL.get(uid) == null) {
-                var brukerProfil = mapTilDomene(brukerKlient.brukerProfil(uid));
-                ANSATT_PROFIL.put(brukerProfil.ident().trim().toUpperCase(), brukerProfil);
-                ANSATT_UID_PROFIL.put(uid, brukerProfil);
-            }
-            return Optional.ofNullable(ANSATT_UID_PROFIL.get(uid));
+            var brukerProfil = Optional.ofNullable(ANSATT_UID_PROFIL.get(uid))
+                .orElseGet(() -> mapTilDomene(brukerKlient.brukerProfil(uid)));
+            // Alltid put for å extende levetid
+            ANSATT_PROFIL.put(brukerProfil.ident().trim().toUpperCase(), brukerProfil);
+            ANSATT_UID_PROFIL.put(uid, brukerProfil);
+            return Optional.of(brukerProfil);
         } catch (Exception e) {
             return Optional.empty();
         }

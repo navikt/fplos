@@ -53,7 +53,7 @@ public class OrganisasjonRepository {
         return entityManager.createQuery("""
             FROM saksbehandler s
             WHERE upper(s.saksbehandlerIdent) = upper( :ident )
-            """, Saksbehandler.class).setParameter("ident", saksbehandlerIdent.toUpperCase());
+            """, Saksbehandler.class).setParameter("ident", saksbehandlerIdent.trim().toUpperCase());
     }
 
     public void slettSaksbehandlereUtenKnytninger() {
