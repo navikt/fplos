@@ -7,6 +7,7 @@ import no.nav.foreldrepenger.los.oppgave.Oppgave;
 import no.nav.foreldrepenger.los.oppgave.OppgaveTjeneste;
 import no.nav.foreldrepenger.los.tjenester.avdelingsleder.saksliste.FplosAbacAttributtType;
 import no.nav.vedtak.exception.TekniskException;
+import no.nav.vedtak.log.mdc.MdcExtendedLogContext;
 import no.nav.vedtak.sikkerhet.abac.AbacDataAttributter;
 import no.nav.vedtak.sikkerhet.abac.PdpRequestBuilder;
 import no.nav.vedtak.sikkerhet.abac.StandardAbacAttributtType;
@@ -24,6 +25,8 @@ import java.util.UUID;
 @Alternative
 @Priority(2)
 public class PdpRequestBuilderImpl implements PdpRequestBuilder {
+
+    private static final MdcExtendedLogContext MDC_EXTENDED_LOG_CONTEXT = MdcExtendedLogContext.getContext("prosess");
 
     private ForeldrepengerPipKlient foreldrepengerPipKlient;
     private OppgaveTjeneste oppgaveTjeneste;
@@ -54,6 +57,10 @@ public class PdpRequestBuilderImpl implements PdpRequestBuilder {
 
         var ressursData = AppRessursData.builder();
         if (oppgave != null) {
+            // Set loggkontekst
+            MDC_EXTENDED_LOG_CONTEXT.add("fagsak", oppgave.getFagsakSaksnummer());
+            MDC_EXTENDED_LOG_CONTEXT.add("behandling", oppgave.getBehandlingId().getValue());
+
             var system = oppgave.getSystem();
             if (Fagsystem.FPSAK.name().equals(system)) {
                 var dto = foreldrepengerPipKlient.hentPipdataForBehandling(oppgave.getBehandlingId());

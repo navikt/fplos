@@ -16,6 +16,10 @@ public class BehandlingId implements Comparable<UUID> {
         this.value = Objects.requireNonNull(value);
     }
 
+    public UUID getValue() {
+        return value;
+    }
+
     public static BehandlingId fromUUID(UUID uuid) {
         return new BehandlingId(uuid);
     }

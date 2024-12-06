@@ -59,7 +59,7 @@ public class SynkroniseringHendelseTaskOppretterTjeneste {
         prosessTaskData.setPrioritet(4);
         prosessTaskData.setNesteKjøringEtter(kjøretidspunkt);
         prosessTaskData.setProperty(BehandlingHendelseTask.HENDELSE_UUID, UUID.randomUUID().toString());
-        prosessTaskData.setProperty(BehandlingHendelseTask.BEHANDLING_UUID, kildeBehandlingId.behandlingId.toString());
+        prosessTaskData.setBehandlingUUid(kildeBehandlingId.behandlingId.getValue());
         prosessTaskData.setProperty(BehandlingHendelseTask.KILDE, kildeBehandlingId.kildesystem.name());
         prosessTaskTjeneste.lagre(prosessTaskData);
     }
