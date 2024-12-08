@@ -26,8 +26,8 @@ public class AzureBrukerKlient {
     public AzureBrukerKlient() {
         this.restClient = RestClient.client();
         this.restConfig = RestConfig.forClient(this.getClass());
-        this.identUri = UriBuilder.fromUri(restConfig.fpContextPath()).path("/api/bruker/profil/navident").build();
-        this.uuidUri = UriBuilder.fromUri(restConfig.fpContextPath()).path("/api/bruker/profil/uid").build();
+        this.identUri = UriBuilder.fromUri(restConfig.fpContextPath()).path("/api/ansatt/basis/navident").build();
+        this.uuidUri = UriBuilder.fromUri(restConfig.fpContextPath()).path("/api/ansatt/basis/uid").build();
     }
 
     public BrukerProfilResponse brukerProfil(String ident) {
@@ -44,5 +44,5 @@ public class AzureBrukerKlient {
 
     public record ProfilIdentRequest(@NotNull String ident) { }
 
-    public record BrukerProfilResponse(UUID uid, String ident, String fornavnEtternavn, String ansattVedEnhetId) {}
+    public record BrukerProfilResponse(UUID uid, String ident, String navn, String ansattVedEnhetId) {}
 }
