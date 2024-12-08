@@ -81,7 +81,7 @@ public class AnsattTjeneste {
     }
 
     private static BrukerProfil mapTilDomene(AzureBrukerKlient.BrukerProfilResponse klientResponse) {
-        return new BrukerProfil(klientResponse.uid(), klientResponse.ident(), klientResponse.fornavnEtternavn(), avdeling(klientResponse.ansattVedEnhetId()));
+        return new BrukerProfil(klientResponse.uid(), klientResponse.ident(), klientResponse.navn(), avdeling(klientResponse.ansattVedEnhetId()));
     }
 
     private static String avdeling(String avdelingsNummer) {
