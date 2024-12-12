@@ -1,15 +1,13 @@
 package no.nav.foreldrepenger.los.hendelse.behandlinghendelse;
 
-import java.util.List;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import no.nav.vedtak.felles.integrasjon.kafka.KafkaConsumerManager;
-import no.nav.vedtak.log.metrics.Controllable;
-import no.nav.vedtak.log.metrics.LiveAndReadinessAware;
+import no.nav.vedtak.server.Controllable;
+import no.nav.vedtak.server.LiveAndReadinessAware;
 
 @ApplicationScoped
 public class BehandlingHendelseConsumer implements LiveAndReadinessAware, Controllable {
