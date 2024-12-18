@@ -6,5 +6,6 @@ public enum LokalFagsakEgenskap {
     SAMMENSATT_KONTROLL,
     DØD,
     NÆRING,
+    BARE_FAR_RETT,
     PRAKSIS_UTSETTELSE
 }
