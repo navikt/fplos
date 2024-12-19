@@ -30,6 +30,9 @@ public class FpsakOppgaveEgenskapFinner implements OppgaveEgenskapFinner {
         if (harBehandlingsegenskap(behandling, LokalBehandlingEgenskap.BARE_FAR_RETT) || harSaksegenskap(saksegenskaper, LokalFagsakEgenskap.BARE_FAR_RETT)) {
             this.andreKriterier.add(AndreKriterierType.BARE_FAR_RETT);
         }
+        if (harBehandlingsegenskap(behandling, LokalBehandlingEgenskap.MOR_UKJENT_UTLAND)) {
+            this.andreKriterier.add(AndreKriterierType.MOR_UKJENT_UTLAND);
+        }
         if (behandling.behandlingsårsaker().stream().anyMatch(Behandlingsårsak.PLEIEPENGER::equals)) {
             this.andreKriterier.add(AndreKriterierType.PLEIEPENGER);
         }
