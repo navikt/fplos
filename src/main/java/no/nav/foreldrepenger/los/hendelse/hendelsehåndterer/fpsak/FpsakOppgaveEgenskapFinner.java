@@ -93,7 +93,7 @@ public class FpsakOppgaveEgenskapFinner implements OppgaveEgenskapFinner {
     }
 
     public enum LokalBehandlingEgenskap {
-        SYKDOMSVURDERING, BARE_FAR_RETT, GRUPPE2, FARESIGNALER, DIREKTE_UTBETALING
+        SYKDOMSVURDERING, BARE_FAR_RETT, MOR_UKJENT_UTLAND, FARESIGNALER, DIREKTE_UTBETALING
     }
 
     @Override
