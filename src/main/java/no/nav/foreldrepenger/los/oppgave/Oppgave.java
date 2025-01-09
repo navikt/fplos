@@ -61,7 +61,7 @@ public class Oppgave extends BaseEntitet {
     @Column(name = "BEHANDLING_TYPE")
     protected BehandlingType behandlingType = BehandlingType.INNSYN;
 
-    @OneToMany(mappedBy = "oppgave", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "oppgave")
     protected Set<OppgaveEgenskap> oppgaveEgenskaper;
 
     @Convert(converter = FagsakYtelseType.KodeverdiConverter.class)
