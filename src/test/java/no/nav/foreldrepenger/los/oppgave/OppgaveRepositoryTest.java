@@ -63,7 +63,7 @@ class OppgaveRepositoryTest {
     }
 
     private Oppgavespørring oppgaverForDrammenSpørring() {
-        return new Oppgavespørring(avdelingIdForDrammen(), null, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), false,
+        return new Oppgavespørring(avdelingIdForDrammen(), KøSortering.BEHANDLINGSFRIST, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), false,
             null, null, null, null);
     }
 
@@ -114,33 +114,33 @@ class OppgaveRepositoryTest {
     @Test
     void testEkskluderingOgInkluderingAvOppgaver() {
         lagStandardSettMedOppgaver();
-        var oppgaver = oppgaveRepository.hentOppgaver(new Oppgavespørring(avdelingIdForDrammen(), null, new ArrayList<>(), new ArrayList<>(),
+        var oppgaver = oppgaveRepository.hentOppgaver(new Oppgavespørring(avdelingIdForDrammen(), KøSortering.BEHANDLINGSFRIST, new ArrayList<>(), new ArrayList<>(),
             List.of(AndreKriterierType.TIL_BESLUTTER, AndreKriterierType.PAPIRSØKNAD), new ArrayList<>(), false, null, null, null, null));
         assertThat(oppgaver).hasSize(1);
 
         oppgaver = oppgaveRepository.hentOppgaver(
-            new Oppgavespørring(avdelingIdForDrammen(), null, new ArrayList<>(), new ArrayList<>(), List.of(AndreKriterierType.TIL_BESLUTTER),
+            new Oppgavespørring(avdelingIdForDrammen(), KøSortering.BEHANDLINGSFRIST, new ArrayList<>(), new ArrayList<>(), List.of(AndreKriterierType.TIL_BESLUTTER),
                 new ArrayList<>(), false, null, null, null, null));
         assertThat(oppgaver).hasSize(2);
 
         oppgaver = oppgaveRepository.hentOppgaver(
-            new Oppgavespørring(avdelingIdForDrammen(), null, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(),
+            new Oppgavespørring(avdelingIdForDrammen(), KøSortering.BEHANDLINGSFRIST, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(),
                 List.of(AndreKriterierType.TIL_BESLUTTER, AndreKriterierType.PAPIRSØKNAD), // ekskluder andreKriterierType
                 false, null, null, null, null));
         assertThat(oppgaver).hasSize(1);
 
         oppgaver = oppgaveRepository.hentOppgaver(
-            new Oppgavespørring(avdelingIdForDrammen(), null, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(),
+            new Oppgavespørring(avdelingIdForDrammen(), KøSortering.BEHANDLINGSFRIST, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(),
                 List.of(AndreKriterierType.TIL_BESLUTTER),  // ekskluderAndreKriterierType
                 false, null, null, null, null));
         assertThat(oppgaver).hasSize(2);
 
         oppgaver = oppgaveRepository.hentOppgaver(
-            new Oppgavespørring(avdelingIdForDrammen(), null, new ArrayList<>(), new ArrayList<>(), List.of(AndreKriterierType.PAPIRSØKNAD),
+            new Oppgavespørring(avdelingIdForDrammen(), KøSortering.BEHANDLINGSFRIST, new ArrayList<>(), new ArrayList<>(), List.of(AndreKriterierType.PAPIRSØKNAD),
                 List.of(AndreKriterierType.TIL_BESLUTTER), false, null, null, null, null));
         assertThat(oppgaver).hasSize(1);
         var antallOppgaver = oppgaveRepository.hentAntallOppgaver(
-            new Oppgavespørring(avdelingIdForDrammen(), null, new ArrayList<>(), new ArrayList<>(), List.of(AndreKriterierType.PAPIRSØKNAD),
+            new Oppgavespørring(avdelingIdForDrammen(), KøSortering.BEHANDLINGSFRIST, new ArrayList<>(), new ArrayList<>(), List.of(AndreKriterierType.PAPIRSØKNAD),
                 List.of(AndreKriterierType.TIL_BESLUTTER), false, null, null, null, null));
         assertThat(antallOppgaver).isEqualTo(1);
 
