@@ -10,7 +10,6 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -85,7 +84,7 @@ public class Oppgave extends BaseEntitet {
     @Embedded
     protected BehandlingId behandlingId;
 
-    @OneToOne(mappedBy = "oppgave", fetch = FetchType.LAZY)
+    @OneToOne(mappedBy = "oppgave")
     protected Reservasjon reservasjon;
 
     public Long getId() {
