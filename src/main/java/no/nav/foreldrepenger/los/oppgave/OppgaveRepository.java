@@ -67,11 +67,8 @@ public class OppgaveRepository {
 
     public int hentAntallOppgaver(Oppgavespørring oppgavespørring) {
         var selection = COUNT_FRA_OPPGAVE;
-        if (oppgavespørring.getSortering() != null) {
-            selection = switch (oppgavespørring.getSortering().getFeltkategori()) {
-                case KøSortering.FK_TILBAKEKREVING -> COUNT_FRA_TILBAKEKREVING_OPPGAVE;
-                default -> COUNT_FRA_OPPGAVE;
-            };
+        if (KøSortering.FK_TILBAKEKREVING.equalsIgnoreCase(oppgavespørring.getSortering().getFeltkategori())) {
+            selection = COUNT_FRA_TILBAKEKREVING_OPPGAVE;
         }
         var oppgaveTypedQuery = lagOppgavespørring(selection, Long.class, oppgavespørring);
         return oppgaveTypedQuery.getSingleResult().intValue();
@@ -90,11 +87,8 @@ public class OppgaveRepository {
 
     public List<Oppgave> hentOppgaver(Oppgavespørring oppgavespørring, int maksAntall) {
         var selection = SELECT_FRA_OPPGAVE;
-        if (oppgavespørring.getSortering() != null) {
-            selection = switch (oppgavespørring.getSortering().getFeltkategori()) {
-                case KøSortering.FK_TILBAKEKREVING -> SELECT_FRA_TILBAKEKREVING_OPPGAVE;
-                default -> SELECT_FRA_OPPGAVE;
-            };
+        if (KøSortering.FK_TILBAKEKREVING.equalsIgnoreCase(oppgavespørring.getSortering().getFeltkategori())) {
+            selection = SELECT_FRA_TILBAKEKREVING_OPPGAVE;
         }
         var oppgaveTypedQuery = lagOppgavespørring(selection, Oppgave.class, oppgavespørring);
         if (maksAntall > 0) {
@@ -144,33 +138,32 @@ public class OppgaveRepository {
         if (!queryDto.getYtelseTyper().isEmpty()) {
             query.setParameter("fagsakYtelseType", queryDto.getYtelseTyper());
         }
-        if (queryDto.getSortering() != null) {
-            if (FT_HELTALL.equalsIgnoreCase(queryDto.getSortering().getFelttype())) {
-                if (queryDto.getFiltrerFra() != null) {
-                    query.setParameter("filterFra", BigDecimal.valueOf(queryDto.getFiltrerFra()));
-                }
-                if (queryDto.getFiltrerTil() != null) {
-                    query.setParameter("filterTil", BigDecimal.valueOf(queryDto.getFiltrerTil()));
-                }
-            } else if (FT_DATO.equalsIgnoreCase(queryDto.getSortering().getFelttype())) {
-                if (queryDto.getFiltrerFra() != null) {
-                    query.setParameter("filterFomDager", KøSortering.FØRSTE_STØNADSDAG.equals(queryDto.getSortering()) ? LocalDate.now()
-                        .plusDays(queryDto.getFiltrerFra()) : LocalDateTime.now().plusDays(queryDto.getFiltrerFra()).with(LocalTime.MIN));
-                }
-                if (queryDto.getFiltrerTil() != null) {
-                    query.setParameter("filterTomDager", KøSortering.FØRSTE_STØNADSDAG.equals(queryDto.getSortering()) ? LocalDate.now()
-                        .plusDays(queryDto.getFiltrerTil()) : LocalDateTime.now().plusDays(queryDto.getFiltrerTil()).with(LocalTime.MAX));
-                }
-                if (queryDto.getFiltrerFomDato() != null) {
-                    query.setParameter("filterFomDato",
-                        KøSortering.FØRSTE_STØNADSDAG.equals(queryDto.getSortering()) ? queryDto.getFiltrerFomDato() : queryDto.getFiltrerFomDato()
-                            .atTime(LocalTime.MIN));
-                }
-                if (queryDto.getFiltrerTomDato() != null) {
-                    query.setParameter("filterTomDato",
-                        KøSortering.FØRSTE_STØNADSDAG.equals(queryDto.getSortering()) ? queryDto.getFiltrerTomDato() : queryDto.getFiltrerTomDato()
-                            .atTime(LocalTime.MAX));
-                }
+
+        if (FT_HELTALL.equalsIgnoreCase(queryDto.getSortering().getFelttype())) {
+            if (queryDto.getFiltrerFra() != null) {
+                query.setParameter("filterFra", BigDecimal.valueOf(queryDto.getFiltrerFra()));
+            }
+            if (queryDto.getFiltrerTil() != null) {
+                query.setParameter("filterTil", BigDecimal.valueOf(queryDto.getFiltrerTil()));
+            }
+        } else if (FT_DATO.equalsIgnoreCase(queryDto.getSortering().getFelttype())) {
+            if (queryDto.getFiltrerFra() != null) {
+                query.setParameter("filterFomDager", KøSortering.FØRSTE_STØNADSDAG.equals(queryDto.getSortering()) ? LocalDate.now()
+                    .plusDays(queryDto.getFiltrerFra()) : LocalDateTime.now().plusDays(queryDto.getFiltrerFra()).with(LocalTime.MIN));
+            }
+            if (queryDto.getFiltrerTil() != null) {
+                query.setParameter("filterTomDager", KøSortering.FØRSTE_STØNADSDAG.equals(queryDto.getSortering()) ? LocalDate.now()
+                    .plusDays(queryDto.getFiltrerTil()) : LocalDateTime.now().plusDays(queryDto.getFiltrerTil()).with(LocalTime.MAX));
+            }
+            if (queryDto.getFiltrerFomDato() != null) {
+                query.setParameter("filterFomDato",
+                    KøSortering.FØRSTE_STØNADSDAG.equals(queryDto.getSortering()) ? queryDto.getFiltrerFomDato() : queryDto.getFiltrerFomDato()
+                        .atTime(LocalTime.MIN));
+            }
+            if (queryDto.getFiltrerTomDato() != null) {
+                query.setParameter("filterTomDato",
+                    KøSortering.FØRSTE_STØNADSDAG.equals(queryDto.getSortering()) ? queryDto.getFiltrerTomDato() : queryDto.getFiltrerTomDato()
+                        .atTime(LocalTime.MAX));
             }
         }
 
