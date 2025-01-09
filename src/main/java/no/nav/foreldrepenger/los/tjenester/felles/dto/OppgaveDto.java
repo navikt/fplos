@@ -1,14 +1,18 @@
 package no.nav.foreldrepenger.los.tjenester.felles.dto;
 
 import java.time.LocalDateTime;
+import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import no.nav.foreldrepenger.los.domene.typer.BehandlingId;
 import no.nav.foreldrepenger.los.domene.typer.aktør.Person;
+import no.nav.foreldrepenger.los.oppgave.AndreKriterierType;
 import no.nav.foreldrepenger.los.oppgave.BehandlingStatus;
 import no.nav.foreldrepenger.los.oppgave.BehandlingType;
 import no.nav.foreldrepenger.los.oppgave.FagsakYtelseType;
 import no.nav.foreldrepenger.los.oppgave.Oppgave;
+import no.nav.foreldrepenger.los.oppgave.OppgaveEgenskap;
 
 public class OppgaveDto {
     private Long id;
@@ -24,6 +28,7 @@ public class OppgaveDto {
     private LocalDateTime opprettetTidspunkt;
     private LocalDateTime behandlingsfrist;
     private BehandlingId behandlingId;
+    private Set<AndreKriterierType> andreKriterier;
 
     OppgaveDto(Oppgave oppgave, Person personDto, ReservasjonStatusDto oppgaveStatus) {
         leggTilOppgaveInformasjon(oppgave, oppgaveStatus);
@@ -42,6 +47,10 @@ public class OppgaveDto {
         this.erTilSaksbehandling = oppgave.getAktiv();
         this.opprettetTidspunkt = oppgave.getBehandlingOpprettet();
         this.behandlingsfrist = oppgave.getBehandlingsfrist();
+        this.andreKriterier = oppgave.getOppgaveEgenskaper().stream()
+            .filter(OppgaveEgenskap::getAktiv)
+            .map(OppgaveEgenskap::getAndreKriterierType)
+            .collect(Collectors.toSet());
     }
 
     private void leggTilPersonInformasjon(Person person) {
@@ -97,24 +106,28 @@ public class OppgaveDto {
         return behandlingStatus;
     }
 
-
     public Boolean getErTilSaksbehandling() {
         return erTilSaksbehandling;
     }
 
+    public Set<AndreKriterierType> getAndreKriterier() {
+        return andreKriterier;
+    }
+
     @Override
     public String toString() {
-        return "<id=" + id + //$NON-NLS-1$
-            ", status=" + status.isErReservert() + //$NON-NLS-1$
-            ", saksnummer=" + saksnummer + //$NON-NLS-1$
-            ", behandlingId=" + behandlingId + //$NON-NLS-1$
-            ", system=" + system + //$NON-NLS-1$
-            ", behandlingstype=" + behandlingstype + //$NON-NLS-1$
-            ", opprettetTidspunkt=" + opprettetTidspunkt + //$NON-NLS-1$
-            ", behandlingsfrist=" + behandlingsfrist + //$NON-NLS-1$
-            ", fagsakYtelseType=" + fagsakYtelseType + //$NON-NLS-1$
-            ", behandlingStatus=" + behandlingStatus + //$NON-NLS-1$
-            ", erTilSaksbehandling=" + erTilSaksbehandling + //$NON-NLS-1$
+        return "<id=" + id +
+            ", status=" + status.isErReservert() +
+            ", saksnummer=" + saksnummer +
+            ", behandlingId=" + behandlingId +
+            ", system=" + system +
+            ", behandlingstype=" + behandlingstype +
+            ", opprettetTidspunkt=" + opprettetTidspunkt +
+            ", behandlingsfrist=" + behandlingsfrist +
+            ", fagsakYtelseType=" + fagsakYtelseType +
+            ", behandlingStatus=" + behandlingStatus +
+            ", erTilSaksbehandling=" + erTilSaksbehandling +
+            ", andreKriterier=" + andreKriterier +
             ">";
     }
 
@@ -123,11 +136,9 @@ public class OppgaveDto {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof OppgaveDto)) {
+        if (!(o instanceof OppgaveDto oppgaveDto)) {
             return false;
         }
-
-        var oppgaveDto = (OppgaveDto) o;
         if (saksnummer.equals(oppgaveDto.saksnummer)) {
             return true;
         }
