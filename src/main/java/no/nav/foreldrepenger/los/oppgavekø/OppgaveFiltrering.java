@@ -43,7 +43,7 @@ public class OppgaveFiltrering extends BaseEntitet {
     @Column(name = "navn", updatable = false)
     private String navn;
 
-    @Column(name = "sortering", updatable = false)
+    @Column(name = "sortering", updatable = false, nullable = false)
     @Convert(converter = KøSortering.KodeverdiConverter.class)
     private KøSortering sortering;
 
