@@ -56,7 +56,7 @@ jobs:
     permissions:
       id-token: write
     if: github.ref_name == 'master'
-    needs: build-app
+    needs: [ build-app, fplos-tester ]
     uses: navikt/fp-gha-workflows/.github/workflows/deploy.yml@main
     with:
       gar: true
@@ -69,7 +69,7 @@ jobs:
     permissions:
       id-token: write
     if: github.ref_name == 'master'
-    needs: [build-app, deploy-dev]
+    needs: [build-app, fplos-tester, deploy-dev]
     uses: navikt/fp-gha-workflows/.github/workflows/deploy.yml@main
     with:
       gar: true
