@@ -28,6 +28,29 @@ jobs:
       push-image: ${{ github.ref_name == 'master' }} # default: false
     secrets: inherit
 
+  fplos-tester:
+    name: Fplos-tester
+    permissions:
+      contents: read
+      id-token: write
+    if: github.ref_name == 'master'
+    needs: build-app
+    uses: navikt/fp-autotest/.github/workflows/autotest.yml@master
+    with:
+      build-version: ${{ needs.build-app.outputs.build-version }}
+      test-suite: fplos
+    secrets: inherit
+
+  notify:
+    name: Notify
+    if: github.ref_name == 'master' && (success() || failure()) && !contains(needs.*.result, 'skipped')
+    needs: [ build-app, fplos-tester ]
+    uses: navikt/fp-autotest/.github/workflows/report-and-notify.yml@master
+    with:
+      fplos: ${{ needs.fplos-tester.outputs.resultat }}
+      build-version: ${{ needs.build-app.outputs.build-version }}
+    secrets: inherit
+
   deploy-dev:
     name: Deploy dev
     permissions:
