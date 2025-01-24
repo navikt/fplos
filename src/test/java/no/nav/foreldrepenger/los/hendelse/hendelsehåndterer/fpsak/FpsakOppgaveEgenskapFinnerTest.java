@@ -113,7 +113,7 @@ class FpsakOppgaveEgenskapFinnerTest {
     void aktiv5001GirKontrollerTerminbekreftelse() {
         var aktiv5001 = new LosAksjonspunktDto("5001", Aksjonspunktstatus.OPPRETTET, null);
         var result = new FpsakOppgaveEgenskapFinner(lagLosBehandlingDto(List.of(), null, aktiv5001));
-        Assertions.assertThat(result.getAndreKriterier()).contains(AndreKriterierType.KONTROLLER_TERMINBEKREFTELSE);
+        Assertions.assertThat(result.getAndreKriterier()).contains(AndreKriterierType.TERMINBEKREFTELSE);
     }
 
     @Test
