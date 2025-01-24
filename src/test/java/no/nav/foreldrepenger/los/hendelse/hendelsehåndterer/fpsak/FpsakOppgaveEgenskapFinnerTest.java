@@ -110,6 +110,13 @@ class FpsakOppgaveEgenskapFinnerTest {
     }
 
     @Test
+    void aktiv5001GirKontrollerTerminbekreftelse() {
+        var aktiv5001 = new LosAksjonspunktDto("5001", Aksjonspunktstatus.OPPRETTET, null);
+        var result = new FpsakOppgaveEgenskapFinner(lagLosBehandlingDto(List.of(), null, aktiv5001));
+        Assertions.assertThat(result.getAndreKriterier()).contains(AndreKriterierType.KONTROLLER_TERMINBEKREFTELSE);
+    }
+
+    @Test
     void skalIkkeHaEgenskapVurderSedNårNasjonalSak() {
         var aktiv5068 = new LosAksjonspunktDto("5068", Aksjonspunktstatus.OPPRETTET, null);
         var resultat = new FpsakOppgaveEgenskapFinner(lagLosBehandlingDto(List.of(), null, aktiv5068));

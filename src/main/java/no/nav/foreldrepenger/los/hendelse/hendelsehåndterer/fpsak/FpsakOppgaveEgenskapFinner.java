@@ -80,6 +80,9 @@ public class FpsakOppgaveEgenskapFinner implements OppgaveEgenskapFinner {
         if (skalVurdereBehovForSED(aksjonspunkter, saksegenskaper)) {
             this.andreKriterier.add(AndreKriterierType.VURDER_EØS_OPPTJENING);
         }
+        if (matchAksjonspunkt(aksjonspunkter, Aksjonspunkt::skalKontrollereTerminbekreftelse)) {
+            this.andreKriterier.add(AndreKriterierType.KONTROLLER_TERMINBEKREFTELSE);
+        }
         if (matchAksjonspunkt(aksjonspunkter, Aksjonspunkt::skalVurdereArbeidInntekt)) {
             this.andreKriterier.add(AndreKriterierType.ARBEID_INNTEKT);
         }
