@@ -32,8 +32,8 @@ public enum AndreKriterierType implements Kodeverdi {
     PRAKSIS_UTSETTELSE("PRAKSIS_UTSETTELSE", "Praksis utsettelse"),
     BARE_FAR_RETT("BARE_FAR_RETT", "Bare far har rett"),
     MOR_UKJENT_UTLAND("MOR_UKJENT_UTLAND", "Gruppe 2"),
-    REVURDERING_INNTEKTSMELDING("REVURDERING_INNTEKTSMELDING", "Revurdering inntektsmelding")
-    ;
+    REVURDERING_INNTEKTSMELDING("REVURDERING_INNTEKTSMELDING", "Revurdering inntektsmelding"),
+    TERMINBEKREFTELSE("TERMINBEKREFTELSE", "Terminbekreftelse");
 
     @JsonValue
     private String kode;
@@ -79,7 +79,5 @@ public enum AndreKriterierType implements Kodeverdi {
         public AndreKriterierType convertToEntityAttribute(String dbData) {
             return Optional.ofNullable(dbData).map(AndreKriterierType::fraKode).orElse(null);
         }
-
-
     }
 }
