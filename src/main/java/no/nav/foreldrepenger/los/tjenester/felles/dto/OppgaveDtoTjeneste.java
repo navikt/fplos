@@ -100,14 +100,14 @@ public class OppgaveDtoTjeneste {
     }
 
     private boolean harTilgang(Oppgave oppgave) {
-        var token = KontekstHolder.getKontekst() instanceof RequestKontekst rk ? Token.withOidcToken(rk.getToken(), rk.getUid(), rk.getIdentType()) : null;
+        var token = KontekstHolder.getKontekst() instanceof RequestKontekst rk ? Token.withOidcToken(rk.getToken()) : null;
         if (token == null) {
             return false;
         }
         var dataAttributter = AbacDataAttributter.opprett().leggTil(FplosAbacAttributtType.OPPGAVE_ID, oppgave.getId());
         var brRequest = BeskyttetRessursAttributter.builder()
             .medActionType(ActionType.READ)
-            .medUserId(KontekstHolder.getKontekst().getUid())
+            .medBrukerId(KontekstHolder.getKontekst().getUid())
             .medToken(token)
             .medResourceType(ResourceType.FAGSAK)
             .medPepId(APPNAVN)
