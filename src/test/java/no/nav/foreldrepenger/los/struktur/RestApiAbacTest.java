@@ -85,7 +85,7 @@ class RestApiAbacTest {
         var annotation = metode.getAnnotation(BeskyttetRessurs.class);
         if (annotation != null && annotation.actionType() == ActionType.DUMMY) {
             fail(klasse.getSimpleName() + "." + metode.getName() + " Ikke bruk DUMMY-verdi for " + ActionType.class.getSimpleName());
-        } else if (annotation != null && annotation.property().isEmpty() && !Set.of(ResourceType.FAGSAK, ResourceType.OPPGAVESTYRING_AVDELINGENHET,
+        } else if (annotation != null && !Set.of(ResourceType.FAGSAK, ResourceType.OPPGAVESTYRING_AVDELINGENHET,
             ResourceType.OPPGAVESTYRING, ResourceType.APPLIKASJON, ResourceType.DRIFT).contains(annotation.resourceType())) {
             fail(klasse.getSimpleName() + "." + metode.getName() + " Resource ligger ikke i AbacAttributter");
         }

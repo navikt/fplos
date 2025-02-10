@@ -1,8 +1,11 @@
 package no.nav.foreldrepenger.los.tjenester.felles.dto;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,13 +23,16 @@ import no.nav.foreldrepenger.los.tjenester.avdelingsleder.saksliste.FplosAbacAtt
 import no.nav.foreldrepenger.los.tjenester.saksbehandler.oppgave.OppgaveRestTjeneste;
 import no.nav.foreldrepenger.los.tjenester.saksbehandler.oppgave.dto.BehandlingIdDto;
 import no.nav.foreldrepenger.los.tjenester.saksbehandler.oppgave.dto.OppgaveIdDto;
+import no.nav.foreldrepenger.sikkerhet.populasjon.TilgangKlient;
 import no.nav.vedtak.sikkerhet.abac.AbacDataAttributter;
-import no.nav.vedtak.sikkerhet.abac.PdpKlient;
 import no.nav.vedtak.sikkerhet.abac.PdpRequestBuilder;
 import no.nav.vedtak.sikkerhet.abac.Token;
 import no.nav.vedtak.sikkerhet.abac.beskyttet.ActionType;
+import no.nav.vedtak.sikkerhet.abac.beskyttet.AvailabilityType;
 import no.nav.vedtak.sikkerhet.abac.beskyttet.ResourceType;
 import no.nav.vedtak.sikkerhet.abac.internal.BeskyttetRessursAttributter;
+import no.nav.vedtak.sikkerhet.abac.policy.InternBrukerPolicies;
+import no.nav.vedtak.sikkerhet.kontekst.AnsattGruppe;
 import no.nav.vedtak.sikkerhet.kontekst.KontekstHolder;
 import no.nav.vedtak.sikkerhet.kontekst.RequestKontekst;
 
@@ -43,7 +49,7 @@ public class OppgaveDtoTjeneste {
     private ReservasjonTjeneste reservasjonTjeneste;
     private PersonTjeneste personTjeneste;
     private ReservasjonStatusDtoTjeneste reservasjonStatusDtoTjeneste;
-    private PdpKlient pdpKlient;
+    private TilgangKlient tilgangKlient;
     private PdpRequestBuilder pdpRequestBuilder;
     private OppgaveKøTjeneste oppgaveKøTjeneste;
 
@@ -52,14 +58,14 @@ public class OppgaveDtoTjeneste {
                               ReservasjonTjeneste reservasjonTjeneste,
                               PersonTjeneste personTjeneste,
                               ReservasjonStatusDtoTjeneste reservasjonStatusDtoTjeneste,
-                              PdpKlient pdpKlient,
+                              TilgangKlient tilgangKlient,
                               PdpRequestBuilder pdpRequestBuilder,
                               OppgaveKøTjeneste oppgaveKøTjeneste) {
         this.oppgaveTjeneste = oppgaveTjeneste;
         this.reservasjonTjeneste = reservasjonTjeneste;
         this.personTjeneste = personTjeneste;
         this.reservasjonStatusDtoTjeneste = reservasjonStatusDtoTjeneste;
-        this.pdpKlient = pdpKlient;
+        this.tilgangKlient = tilgangKlient;
         this.pdpRequestBuilder = pdpRequestBuilder;
         this.oppgaveKøTjeneste = oppgaveKøTjeneste;
     }
@@ -100,22 +106,38 @@ public class OppgaveDtoTjeneste {
     }
 
     private boolean harTilgang(Oppgave oppgave) {
-        var token = KontekstHolder.getKontekst() instanceof RequestKontekst rk ? Token.withOidcToken(rk.getToken()) : null;
-        if (token == null) {
+        var kontekst = KontekstHolder.getKontekst() instanceof RequestKontekst rk ? rk : null;
+        if (kontekst == null) {
             return false;
         }
         var dataAttributter = AbacDataAttributter.opprett().leggTil(FplosAbacAttributtType.OPPGAVE_ID, oppgave.getId());
         var brRequest = BeskyttetRessursAttributter.builder()
             .medActionType(ActionType.READ)
-            .medBrukerId(KontekstHolder.getKontekst().getUid())
-            .medToken(token)
+            .medBrukerId(kontekst.getUid())
+            .medBrukerOid(kontekst.getOid())
+            .medIdentType(kontekst.getIdentType())
+            .medAnsattGrupper(kontekst.getGrupper())
+            .medAvailabilityType(AvailabilityType.INTERNAL)
+            .medSporingslogg(false)
+            .medToken(Token.withOidcToken(kontekst.getToken()))
             .medResourceType(ResourceType.FAGSAK)
             .medPepId(APPNAVN)
             .medServicePath(OppgaveRestTjeneste.OPPGAVER_BASE_PATH + OppgaveRestTjeneste.OPPGAVER_STATUS_PATH)
-            .medDataAttributter(dataAttributter);
+            .medDataAttributter(dataAttributter)
+            .build();
         var pdpRequest = pdpRequestBuilder.lagAppRessursData(dataAttributter);
-        var tilgangsbeslutning = pdpKlient.forespørTilgang(brRequest.build(), pdpRequestBuilder.abacDomene(), pdpRequest);
-        return tilgangsbeslutning.fikkTilgang();
+        // Vurdering av populasjonstilgang
+        if (pdpRequest.getFødselsnumre().isEmpty() && pdpRequest.getAktørIdSet().isEmpty()) {
+            // Ikke noe å sjekke for populasjonstilgang
+            return true;
+        }
+        var popTilgang = tilgangKlient.vurderTilgangInternBruker(brRequest.getBrukerOid(),
+            pdpRequest.getFødselsnumre(), pdpRequest.getAktørIdSet());
+        return popTilgang != null && popTilgang.fikkTilgang();
+    }
+
+    private static boolean harGruppe(BeskyttetRessursAttributter beskyttetRessursAttributter, AnsattGruppe gruppe) {
+        return beskyttetRessursAttributter.getAnsattGrupper().stream().anyMatch(gruppe::equals);
     }
 
     private void sjekkTilgang(Oppgave oppgave) {
