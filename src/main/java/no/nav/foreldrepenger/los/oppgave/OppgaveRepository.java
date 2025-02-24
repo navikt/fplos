@@ -18,10 +18,6 @@ import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import no.nav.foreldrepenger.los.domene.typer.BehandlingId;
-import no.nav.foreldrepenger.los.felles.BaseEntitet;
-import no.nav.foreldrepenger.los.felles.util.BrukerIdent;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,6 +25,9 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
+import no.nav.foreldrepenger.los.domene.typer.BehandlingId;
+import no.nav.foreldrepenger.los.felles.BaseEntitet;
+import no.nav.foreldrepenger.los.felles.util.BrukerIdent;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveEventLogg;
 import no.nav.foreldrepenger.los.oppgavekø.KøSortering;
 import no.nav.foreldrepenger.los.oppgavekø.OppgaveFiltrering;
@@ -307,10 +306,12 @@ public class OppgaveRepository {
 
     public void slettListe(Long listeId) {
         var filtersett = entityManager.find(OppgaveFiltrering.class, listeId);
-        filtersett.tilbakestill();
-        entityManager.merge(filtersett);
-        entityManager.flush();
-        entityManager.remove(filtersett);
+        if (filtersett != null) {
+            filtersett.tilbakestill();
+            entityManager.merge(filtersett);
+            entityManager.flush();
+            entityManager.remove(filtersett);
+        }
     }
 
     public void slettFiltreringBehandlingType(Long sakslisteId, BehandlingType behandlingType) {
