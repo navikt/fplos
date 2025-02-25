@@ -6,15 +6,13 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Stream;
 
-import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.inject.Inject;
-import jakarta.persistence.EntityManager;
-
-import no.nav.foreldrepenger.los.oppgave.BehandlingType;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
+import jakarta.persistence.EntityManager;
+import no.nav.foreldrepenger.los.oppgave.BehandlingType;
 import no.nav.foreldrepenger.los.tjenester.avdelingsleder.nøkkeltall.dto.NyeOgFerdigstilteOppgaver;
 
 @ApplicationScoped
@@ -77,6 +75,13 @@ public class KøStatistikkRepository {
     int slettUtdaterte() {
         var query = entityManager.createNativeQuery("delete from STATISTIKK_KO where opprettet_tid < :opprettetForutFor")
             .setParameter("opprettetForutFor", LocalDate.now().minusDays(7).atStartOfDay());
+        int deletedRows = query.executeUpdate();
+        entityManager.flush();
+        return deletedRows;
+    }
+
+    int slettLøsStatistikk() {
+        var query = entityManager.createNativeQuery("delete from STATISTIKK_KO where oppgave_filtrering_id not in (select id from OPPGAVE_FILTRERING)");
         int deletedRows = query.executeUpdate();
         entityManager.flush();
         return deletedRows;

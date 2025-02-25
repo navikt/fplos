@@ -1,6 +1,12 @@
 package no.nav.foreldrepenger.los.server.abac;
 
+import java.util.Set;
+import java.util.UUID;
+
 import jakarta.annotation.Priority;
+import jakarta.enterprise.context.Dependent;
+import jakarta.enterprise.inject.Alternative;
+import jakarta.inject.Inject;
 import no.nav.foreldrepenger.los.domene.typer.BehandlingId;
 import no.nav.foreldrepenger.los.hendelse.hendelseoppretter.hendelse.Fagsystem;
 import no.nav.foreldrepenger.los.oppgave.Oppgave;
@@ -12,14 +18,8 @@ import no.nav.vedtak.sikkerhet.abac.AbacDataAttributter;
 import no.nav.vedtak.sikkerhet.abac.PdpRequestBuilder;
 import no.nav.vedtak.sikkerhet.abac.StandardAbacAttributtType;
 import no.nav.vedtak.sikkerhet.abac.pdp.AppRessursData;
-
-import jakarta.enterprise.context.Dependent;
-import jakarta.enterprise.inject.Alternative;
-import jakarta.inject.Inject;
-
-import java.util.Optional;
-import java.util.Set;
-import java.util.UUID;
+import no.nav.vedtak.sikkerhet.abac.pipdata.PipBehandlingStatus;
+import no.nav.vedtak.sikkerhet.abac.pipdata.PipFagsakStatus;
 
 @Dependent
 @Alternative
@@ -64,9 +64,9 @@ public class PdpRequestBuilderImpl implements PdpRequestBuilder {
             var system = oppgave.getSystem();
             if (Fagsystem.FPSAK.name().equals(system)) {
                 var dto = foreldrepengerPipKlient.hentPipdataForBehandling(oppgave.getBehandlingId());
-                ressursData.leggTilAbacAktørIdSet(dto.aktørIder());
-                Optional.ofNullable(dto.fagsakStatus()).ifPresent(ressursData::medFagsakStatus);
-                Optional.ofNullable(dto.behandlingStatus()).ifPresent(ressursData::medBehandlingStatus);
+                ressursData.leggTilAbacAktørIdSet(dto)
+                    .medFagsakStatus(PipFagsakStatus.UNDER_BEHANDLING)
+                    .medBehandlingStatus(PipBehandlingStatus.UTREDES);
             } else if (Fagsystem.FPTILBAKE.name().equals(system)) {
                 ressursData.leggTilAktørId(oppgave.getAktørId().getId());
             } else {
