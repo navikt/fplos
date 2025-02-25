@@ -20,7 +20,7 @@ import no.nav.vedtak.util.LRUCache;
 @RestClientConfig(tokenConfig = TokenFlow.AZUREAD_CC, application = FpApplication.FPSAK)
 public class ForeldrepengerPipKlient {
 
-    private static final String FPSAK_PIP_ENDPOINT = "/aktoer-for-behandling";
+    private static final String FPSAK_PIP_ENDPOINT = "/api/pip/aktoer-for-behandling";
 
     private static final int PIP_CACHE_SIZE = 500;
     private static final int PIP_CACHE_TIMEOUT_MILLIS = 30000;
