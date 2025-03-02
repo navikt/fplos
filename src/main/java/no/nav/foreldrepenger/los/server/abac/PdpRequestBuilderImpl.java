@@ -65,6 +65,7 @@ public class PdpRequestBuilderImpl implements PdpRequestBuilder {
             if (Fagsystem.FPSAK.name().equals(system)) {
                 var dto = foreldrepengerPipKlient.hentPipdataForBehandling(oppgave.getBehandlingId());
                 ressursData.leggTilAbacAktørIdSet(dto)
+                    .medAuditAktørId(oppgave.getAktørId().getId())
                     .medFagsakStatus(PipFagsakStatus.UNDER_BEHANDLING)
                     .medBehandlingStatus(PipBehandlingStatus.UTREDES);
             } else if (Fagsystem.FPTILBAKE.name().equals(system)) {

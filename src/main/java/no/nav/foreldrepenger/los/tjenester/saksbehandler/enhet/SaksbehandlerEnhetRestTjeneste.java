@@ -2,6 +2,7 @@ package no.nav.foreldrepenger.los.tjenester.saksbehandler.enhet;
 
 import java.util.List;
 
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
@@ -11,8 +12,6 @@ import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.QueryParam;
-
-import io.swagger.v3.oas.annotations.Operation;
 import no.nav.foreldrepenger.los.organisasjon.OrganisasjonRepository;
 import no.nav.foreldrepenger.los.tjenester.felles.dto.SaksbehandlerBrukerIdentDto;
 import no.nav.vedtak.sikkerhet.abac.BeskyttetRessurs;
@@ -38,7 +37,7 @@ public class SaksbehandlerEnhetRestTjeneste {
     @GET
     @Produces("application/json")
     @Operation(description = "Hent informasjon om tilhørende enhet for saksbehandler")
-    @BeskyttetRessurs(actionType = ActionType.READ, resourceType = ResourceType.FAGSAK)
+    @BeskyttetRessurs(actionType = ActionType.READ, resourceType = ResourceType.FAGSAK, sporingslogg = false)
     public List<SaksbehandlerEnhetDto> hentTilhørendeEnhet(@NotNull @Valid @QueryParam("ident") SaksbehandlerBrukerIdentDto saksbehandlerBrukerIdentDto) {
         return organisasjonRepository.hentSaksbehandlerHvisEksisterer(saksbehandlerBrukerIdentDto.getVerdi())
             .stream()

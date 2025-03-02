@@ -71,7 +71,7 @@ public class AvdelingReservasjonerRestTjeneste {
     @Path("/opphev")
     @Consumes(MediaType.APPLICATION_JSON)
     @Operation(description = "Opphev reservasjon av oppgave", tags = "AvdelingslederReservasjoner")
-    @BeskyttetRessurs(actionType = ActionType.CREATE, resourceType = ResourceType.OPPGAVESTYRING_AVDELINGENHET)
+    @BeskyttetRessurs(actionType = ActionType.CREATE, resourceType = ResourceType.OPPGAVESTYRING_AVDELINGENHET, sporingslogg = false)
     public Response opphevOppgaveReservasjon(@NotNull @Parameter(description = "Id for oppgave som reservasjonen er tilknyttet") @Valid OppgaveIdDto oppgaveId) {
         var reservasjon = reservasjonTjeneste.slettReservasjonMedEventLogg(oppgaveId.getVerdi(), RESERVASJON_AVSLUTTET_AVDELINGSLEDER);
         if (reservasjon.isEmpty()) {
