@@ -72,7 +72,7 @@ public class OppgaveRestTjeneste {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Operation(description = "Init hent oppgaver", tags = "Saksbehandler", responses = {@ApiResponse(responseCode = "202", description = "Hent oppgaver initiert, Returnerer link til å polle etter nye oppgaver", headers = {@Header(name = "Location")})})
-    @BeskyttetRessurs(actionType = ActionType.READ, resourceType = ResourceType.FAGSAK)
+    @BeskyttetRessurs(actionType = ActionType.READ, resourceType = ResourceType.FAGSAK, sporingslogg = false)
     public Response hentOppgaver(@Context HttpServletRequest request,
                                  @NotNull @Valid @QueryParam("sakslisteId") SakslisteIdDto sakslisteId,
                                  @Valid @QueryParam("oppgaveIder") OppgaveIderDto oppgaveIder) throws URISyntaxException {
@@ -82,7 +82,7 @@ public class OppgaveRestTjeneste {
     @GET
     @Path(OPPGAVER_STATUS_PATH)
     @Operation(description = "Url for å polle på oppgaver asynkront", tags = "Saksbehandler", responses = {@ApiResponse(responseCode = "200", description = "Returnerer Status", content = @Content(schema = @Schema(implementation = AsyncPollingStatus.class))), @ApiResponse(responseCode = "303", description = "Nye oppgaver tilgjenglig", headers = {@Header(name = "Location")})})
-    @BeskyttetRessurs(actionType = ActionType.READ, resourceType = ResourceType.FAGSAK)
+    @BeskyttetRessurs(actionType = ActionType.READ, resourceType = ResourceType.FAGSAK, sporingslogg = false)
     public Response hentNesteOppgaverOgSjekkOmDisseErNye(@Context HttpServletRequest request,
                                                          @NotNull @Valid @QueryParam("sakslisteId") SakslisteIdDto sakslisteId,
                                                          @Valid @QueryParam("oppgaveIder") OppgaveIderDto oppgaverIder) throws URISyntaxException {
@@ -105,7 +105,7 @@ public class OppgaveRestTjeneste {
     @Produces(MediaType.APPLICATION_JSON)
     @Operation(description = "Hent " + ANTALL_OPPGAVER_SOM_VISES_TIL_SAKSBEHANDLER
         + " neste oppgaver", tags = "Saksbehandler", responses = {@ApiResponse(responseCode = "200", description = "Returnerer Oppgaver", content = @Content(schema = @Schema(implementation = OppgaveDto.class))),})
-    @BeskyttetRessurs(actionType = ActionType.READ, resourceType = ResourceType.FAGSAK)
+    @BeskyttetRessurs(actionType = ActionType.READ, resourceType = ResourceType.FAGSAK, sporingslogg = false)
     public List<OppgaveDto> getOppgaverTilBehandling(@NotNull @QueryParam("sakslisteId") @Valid SakslisteIdDto sakslisteId) {
         var oppgaverTilBehandling = oppgaveDtoTjeneste.getOppgaverTilBehandling(sakslisteId.getVerdi());
         LOG.debug("Oppgaver til behandling for saksliste {}: {}", sakslisteId.getVerdi(), oppgaverTilBehandling);

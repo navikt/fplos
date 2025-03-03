@@ -40,7 +40,7 @@ public class NøkkeltallRestTjeneste {
     @Path("/behandlinger-under-arbeid")
     @Produces("application/json")
     @Operation(description = "UnderArbeid", tags = "AvdelingslederTall")
-    @BeskyttetRessurs(actionType = ActionType.READ, resourceType = ResourceType.OPPGAVESTYRING_AVDELINGENHET)
+    @BeskyttetRessurs(actionType = ActionType.READ, resourceType = ResourceType.OPPGAVESTYRING_AVDELINGENHET, sporingslogg = false)
     public List<OppgaverForAvdeling> getAlleOppgaverForAvdeling(@NotNull @QueryParam("avdelingEnhet") @Valid AvdelingEnhetDto avdelingEnhet) {
         return nøkkeltallRepository.hentAlleOppgaverForAvdeling(avdelingEnhet.getAvdelingEnhet());
     }
@@ -49,7 +49,7 @@ public class NøkkeltallRestTjeneste {
     @Path("/behandlinger-under-arbeid-historikk")
     @Produces("application/json")
     @Operation(description = "UA Historikk", tags = "AvdelingslederTall")
-    @BeskyttetRessurs(actionType = ActionType.READ, resourceType = ResourceType.OPPGAVESTYRING_AVDELINGENHET)
+    @BeskyttetRessurs(actionType = ActionType.READ, resourceType = ResourceType.OPPGAVESTYRING_AVDELINGENHET, sporingslogg = false)
     public List<OppgaverForAvdelingPerDato> getAntallOppgaverForAvdelingPerDato(@NotNull @QueryParam("avdelingEnhet") @Valid AvdelingEnhetDto avdelingEnhet) {
         return nøkkeltallRepository.hentAlleOppgaverForAvdelingPerDato(avdelingEnhet.getAvdelingEnhet());
     }
@@ -58,7 +58,7 @@ public class NøkkeltallRestTjeneste {
     @Path("/behandlinger-første-stønadsdag")
     @Produces("application/json")
     @Operation(description = "Første stønadsdag", tags = "AvdelingslederTall")
-    @BeskyttetRessurs(actionType = ActionType.READ, resourceType = ResourceType.OPPGAVESTYRING_AVDELINGENHET)
+    @BeskyttetRessurs(actionType = ActionType.READ, resourceType = ResourceType.OPPGAVESTYRING_AVDELINGENHET, sporingslogg = false)
     public List<OppgaverForFørsteStønadsdag> getOppgaverPerFørsteStønadsdag(@NotNull @QueryParam("avdelingEnhet") @Valid AvdelingEnhetDto avdelingEnhet) {
         return nøkkeltallRepository.hentOppgaverPerFørsteStønadsdag(avdelingEnhet.getAvdelingEnhet());
     }

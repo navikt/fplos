@@ -51,7 +51,7 @@ public class AdminRestTjeneste {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Operation(description = "Oppretter task for synkronisering av behandling med fpsak", tags = "admin")
-    @BeskyttetRessurs(actionType = ActionType.CREATE, resourceType = ResourceType.DRIFT)
+    @BeskyttetRessurs(actionType = ActionType.CREATE, resourceType = ResourceType.DRIFT, sporingslogg = false)
     public Response synkroniserHendelser(@NotNull @Valid List<EnkelBehandlingIdDto> behandlingIdListe) {
         var behandlinger = behandlingIdListe.stream()
             .map(EnkelBehandlingIdDto::getBehandlingId)
@@ -66,7 +66,7 @@ public class AdminRestTjeneste {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Operation(description = "Oppretter task for synkronisering av behandling med fptilbake", tags = "admin")
-    @BeskyttetRessurs(actionType = ActionType.CREATE, resourceType = ResourceType.DRIFT)
+    @BeskyttetRessurs(actionType = ActionType.CREATE, resourceType = ResourceType.DRIFT, sporingslogg = false)
     public Response synkroniserHendelserTilbake(@NotNull @Valid List<EnkelBehandlingIdDto> behandlingIdListe) {
         var behandlinger = behandlingIdListe.stream()
             .map(EnkelBehandlingIdDto::getBehandlingId)
@@ -81,7 +81,7 @@ public class AdminRestTjeneste {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Operation(description = "Setter tidligste inaktiv der flere aktive", tags = "admin")
-    @BeskyttetRessurs(actionType = ActionType.CREATE, resourceType = ResourceType.DRIFT)
+    @BeskyttetRessurs(actionType = ActionType.CREATE, resourceType = ResourceType.DRIFT, sporingslogg = false)
     public Response slettTidligsteMultiAktiv(@NotNull @Valid EnkelBehandlingIdDto behandlingId) {
         var behandlinger = behandlingId.getBehandlingId();
         oppgaveTjeneste.adminAvsluttMultiOppgaveUtenEventLoggAvsluttTilknyttetReservasjon(behandlinger);
@@ -93,7 +93,7 @@ public class AdminRestTjeneste {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Operation(description = "Opprett avdeling", tags = "admin")
-    @BeskyttetRessurs(actionType = ActionType.CREATE, resourceType = ResourceType.DRIFT)
+    @BeskyttetRessurs(actionType = ActionType.CREATE, resourceType = ResourceType.DRIFT, sporingslogg = false)
     public Response opprettAvdeling(@NotNull @Valid DriftOpprettAvdelingEnhetDto avdelingEnhetDto) {
         organisasjonRepository.opprettEllerReaktiverAvdeling(avdelingEnhetDto.enhetsnummer(), avdelingEnhetDto.enhetsnavn());
         return Response.ok().build();
@@ -104,7 +104,7 @@ public class AdminRestTjeneste {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Operation(description = "Deaktiverer avdeling", tags = "admin")
-    @BeskyttetRessurs(actionType = ActionType.CREATE, resourceType = ResourceType.DRIFT)
+    @BeskyttetRessurs(actionType = ActionType.CREATE, resourceType = ResourceType.DRIFT, sporingslogg = false)
     public Response deaktiverAvdeling(@NotNull @Valid DriftAvdelingEnhetDto avdelingEnhetDto) {
         organisasjonRepository.deaktiverAvdeling(avdelingEnhetDto.avdelingEnhet());
         return Response.ok().build();
@@ -115,7 +115,7 @@ public class AdminRestTjeneste {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Operation(description = "Sletter saksbehandlere uten knytning til køer eller avdeling", tags = "admin")
-    @BeskyttetRessurs(actionType = ActionType.CREATE, resourceType = ResourceType.DRIFT)
+    @BeskyttetRessurs(actionType = ActionType.CREATE, resourceType = ResourceType.DRIFT, sporingslogg = false)
     public Response slettSaksbehandlereUtenKnytninger() {
         organisasjonRepository.slettSaksbehandlereUtenKnytninger();
         return Response.ok().build();

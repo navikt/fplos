@@ -1,18 +1,14 @@
 package no.nav.foreldrepenger.los.tjenester.felles.dto;
 
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-import no.nav.foreldrepenger.konfig.Environment;
 import no.nav.foreldrepenger.los.oppgave.Oppgave;
 import no.nav.foreldrepenger.los.oppgave.OppgaveTjeneste;
 import no.nav.foreldrepenger.los.oppgavekø.OppgaveKøTjeneste;
@@ -26,13 +22,10 @@ import no.nav.foreldrepenger.los.tjenester.saksbehandler.oppgave.dto.OppgaveIdDt
 import no.nav.foreldrepenger.sikkerhet.populasjon.TilgangKlient;
 import no.nav.vedtak.sikkerhet.abac.AbacDataAttributter;
 import no.nav.vedtak.sikkerhet.abac.PdpRequestBuilder;
-import no.nav.vedtak.sikkerhet.abac.Token;
 import no.nav.vedtak.sikkerhet.abac.beskyttet.ActionType;
 import no.nav.vedtak.sikkerhet.abac.beskyttet.AvailabilityType;
 import no.nav.vedtak.sikkerhet.abac.beskyttet.ResourceType;
 import no.nav.vedtak.sikkerhet.abac.internal.BeskyttetRessursAttributter;
-import no.nav.vedtak.sikkerhet.abac.policy.InternBrukerPolicies;
-import no.nav.vedtak.sikkerhet.kontekst.AnsattGruppe;
 import no.nav.vedtak.sikkerhet.kontekst.KontekstHolder;
 import no.nav.vedtak.sikkerhet.kontekst.RequestKontekst;
 
@@ -42,8 +35,6 @@ public class OppgaveDtoTjeneste {
     public static final int ANTALL_OPPGAVER_SOM_VISES_TIL_SAKSBEHANDLER = 3;
 
     private static final Logger LOG = LoggerFactory.getLogger(OppgaveDtoTjeneste.class);
-
-    private static final String APPNAVN = Environment.current().getNaisAppName();
 
     private OppgaveTjeneste oppgaveTjeneste;
     private ReservasjonTjeneste reservasjonTjeneste;
@@ -119,9 +110,7 @@ public class OppgaveDtoTjeneste {
             .medAnsattGrupper(kontekst.getGrupper())
             .medAvailabilityType(AvailabilityType.INTERNAL)
             .medSporingslogg(false)
-            .medToken(Token.withOidcToken(kontekst.getToken()))
             .medResourceType(ResourceType.FAGSAK)
-            .medPepId(APPNAVN)
             .medServicePath(OppgaveRestTjeneste.OPPGAVER_BASE_PATH + OppgaveRestTjeneste.OPPGAVER_STATUS_PATH)
             .medDataAttributter(dataAttributter)
             .build();
@@ -134,10 +123,6 @@ public class OppgaveDtoTjeneste {
         var popTilgang = tilgangKlient.vurderTilgangInternBruker(brRequest.getBrukerOid(),
             pdpRequest.getFødselsnumre(), pdpRequest.getAktørIdSet());
         return popTilgang != null && popTilgang.fikkTilgang();
-    }
-
-    private static boolean harGruppe(BeskyttetRessursAttributter beskyttetRessursAttributter, AnsattGruppe gruppe) {
-        return beskyttetRessursAttributter.getAnsattGrupper().stream().anyMatch(gruppe::equals);
     }
 
     private void sjekkTilgang(Oppgave oppgave) {
