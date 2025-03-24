@@ -29,7 +29,8 @@ public class BehandlingHendelseHåndterer implements KafkaMessageHandler.KafkaSt
 
     private static final Logger LOG = LoggerFactory.getLogger(BehandlingHendelseHåndterer.class);
     private static final String GROUP_ID = "fplos-behandling"; // Hold konstant pga offset commit !!
-    private static final Set<Hendelse> IGNORER = Set.of(Hendelse.BRUKEROPPGAVE, Hendelse.OPPRETTET, Hendelse.MANGLERSØKNAD, Hendelse.MIGRERING);
+    private static final Set<Hendelse> RELEVENATE_TYPER = Set.of(Hendelse.AVSLUTTET, Hendelse.PAPIRSØKNAD, Hendelse.AKSJONSPUNKT,
+        Hendelse.VENTETILSTAND, Hendelse.ENHET);
 
     private ProsessTaskTjeneste taskTjeneste;
     private MottattHendelseRepository hendelseRepository;
@@ -52,7 +53,7 @@ public class BehandlingHendelseHåndterer implements KafkaMessageHandler.KafkaSt
         // enhver exception ut fra denne metoden medfører at tråden som leser fra kafka gir opp og dør på seg.
         try {
             var behandlingHendelse = DefaultJsonMapper.fromJson(value, BehandlingHendelse.class);
-            if (behandlingHendelse != null && !IGNORER.contains(behandlingHendelse.getHendelse())) {
+            if (behandlingHendelse != null && RELEVENATE_TYPER.contains(behandlingHendelse.getHendelse())) {
                 handleMessageIntern((BehandlingHendelseV1) behandlingHendelse);
             }
         } catch (VLException e) {
