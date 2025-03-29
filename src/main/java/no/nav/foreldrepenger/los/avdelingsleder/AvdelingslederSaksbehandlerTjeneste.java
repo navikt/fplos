@@ -2,6 +2,7 @@ package no.nav.foreldrepenger.los.avdelingsleder;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -51,6 +52,11 @@ public class AvdelingslederSaksbehandlerTjeneste {
             .orElseThrow(() -> AvdelingSaksbehandlerTjenesteFeil.finnerIkkeSaksbehandler(saksbehandlerIdent));
         saksbehandler.fjernAvdeling(organisasjonRepository.hentAvdelingFraEnhet(avdelingEnhet).orElseThrow());
         organisasjonRepository.persistFlush(saksbehandler);
+
+        var grupper =  organisasjonRepository.hentSaksbehandlerGrupper(avdelingEnhet);
+        grupper.stream()
+            .filter(g -> g.getSaksbehandlere().stream().anyMatch(s -> Objects.equals(saksbehandlerIdent, s.getSaksbehandlerIdent())))
+            .forEach(g -> organisasjonRepository.fjernSaksbehandlerFraGruppe(saksbehandlerIdent, g.getId(), avdelingEnhet));
 
         var avdeling = hentAvdeling(avdelingEnhet);
         var oppgaveFiltreringList = avdeling.getOppgaveFiltrering();
