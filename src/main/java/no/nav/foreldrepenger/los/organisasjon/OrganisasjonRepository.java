@@ -78,6 +78,17 @@ public class OrganisasjonRepository {
         LOG.info("Slettet {} saksbehandlere uten knytninger til køer", slettedeRader);
     }
 
+    public void slettLøseGruppeKnytninger() {
+        int slettedeRader = entityManager.createNativeQuery("""
+                delete from gruppe_tilknytning gt
+                where not exists (select *
+                                  from avdeling_saksbehandler avd join SAKSBEHANDLER_GRUPPE sg on sg.avdeling_id = avd.avdeling_id
+                                  where avd.saksbehandler_id = gt.saksbehandler_id)
+                """)
+            .executeUpdate();
+        LOG.info("Slettet {} løse gruppe-knytninger", slettedeRader);
+    }
+
 
     public void slettØvrigeEnhetsdata(String avdelingEnhet) {
         var avdeling = hentAvdelingFraEnhet(avdelingEnhet).orElse(null);

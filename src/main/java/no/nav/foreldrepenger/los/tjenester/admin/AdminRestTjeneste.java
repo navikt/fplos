@@ -121,4 +121,15 @@ public class AdminRestTjeneste {
         return Response.ok().build();
     }
 
+    @POST
+    @Path("/slett-lose-gruppe-knytninger")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Operation(description = "Fjerne saksbehandlere fra grupper når saksbehandler mangler i avdeling", tags = "admin")
+    @BeskyttetRessurs(actionType = ActionType.CREATE, resourceType = ResourceType.DRIFT, sporingslogg = false)
+    public Response slettLøseGruppeKnytninger() {
+        organisasjonRepository.slettLøseGruppeKnytninger();
+        return Response.ok().build();
+    }
+
 }
