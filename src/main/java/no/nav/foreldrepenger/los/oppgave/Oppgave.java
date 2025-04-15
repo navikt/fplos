@@ -18,7 +18,6 @@ import jakarta.persistence.InheritanceType;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
-
 import no.nav.foreldrepenger.los.domene.typer.BehandlingId;
 import no.nav.foreldrepenger.los.domene.typer.aktør.AktørId;
 import no.nav.foreldrepenger.los.felles.BaseEntitet;
@@ -93,6 +92,10 @@ public class Oppgave extends BaseEntitet {
 
     public Long getFagsakSaksnummer() {
         return fagsakSaksnummer;
+    }
+
+    public String getSaksnummer() {
+        return String.valueOf(fagsakSaksnummer);
     }
 
     public AktørId getAktørId() {
