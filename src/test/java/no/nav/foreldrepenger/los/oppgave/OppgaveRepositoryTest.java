@@ -16,14 +16,13 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import jakarta.persistence.EntityManager;
-
-import no.nav.foreldrepenger.los.DBTestUtil;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
+import jakarta.persistence.EntityManager;
+import no.nav.foreldrepenger.los.DBTestUtil;
 import no.nav.foreldrepenger.los.JpaExtension;
 import no.nav.foreldrepenger.los.domene.typer.BehandlingId;
 import no.nav.foreldrepenger.los.domene.typer.aktør.AktørId;
@@ -108,7 +107,7 @@ class OppgaveRepositoryTest {
             false, null, null, null, null);
         var oppgaver = oppgaveRepository.hentOppgaver(oppgaveQuery);
         assertThat(oppgaver).hasSize(1);
-        assertThat(oppgaver.get(0).getFagsakSaksnummer()).isEqualTo(saksnummerHit);
+        assertThat(oppgaver.getFirst().getSaksnummer()).isEqualTo(saksnummerHit.toString());
     }
 
     @Test

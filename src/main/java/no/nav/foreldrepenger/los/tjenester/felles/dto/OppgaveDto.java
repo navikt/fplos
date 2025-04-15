@@ -18,6 +18,7 @@ public class OppgaveDto {
     private Long id;
     private ReservasjonStatusDto status;
     private Long saksnummer;
+    private String saksnummerString;
     private String navn;
     private String system;
     private String personnummer;
@@ -39,6 +40,7 @@ public class OppgaveDto {
         this.id = oppgave.getId();
         this.status = status;
         this.saksnummer = oppgave.getFagsakSaksnummer();
+        this.saksnummerString = oppgave.getSaksnummer();
         this.behandlingId = oppgave.getBehandlingId();
         this.system = oppgave.getSystem();
         this.behandlingStatus = oppgave.getBehandlingStatus();
@@ -72,6 +74,10 @@ public class OppgaveDto {
 
     public Long getSaksnummer() {
         return saksnummer;
+    }
+
+    public String getSaksnummerString() {
+        return saksnummerString;
     }
 
     public String getNavn() {

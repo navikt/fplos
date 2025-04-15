@@ -3,6 +3,8 @@ package no.nav.foreldrepenger.los.tjenester.felles.dto;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,17 +17,8 @@ import no.nav.foreldrepenger.los.oppgavekø.OppgaveKøTjeneste;
 import no.nav.foreldrepenger.los.persontjeneste.IkkeTilgangPåPersonException;
 import no.nav.foreldrepenger.los.persontjeneste.PersonTjeneste;
 import no.nav.foreldrepenger.los.reservasjon.ReservasjonTjeneste;
-import no.nav.foreldrepenger.los.tjenester.avdelingsleder.saksliste.FplosAbacAttributtType;
-import no.nav.foreldrepenger.los.tjenester.saksbehandler.oppgave.OppgaveRestTjeneste;
-import no.nav.foreldrepenger.los.tjenester.saksbehandler.oppgave.dto.BehandlingIdDto;
+import no.nav.foreldrepenger.los.server.abac.TilgangFilterKlient;
 import no.nav.foreldrepenger.los.tjenester.saksbehandler.oppgave.dto.OppgaveIdDto;
-import no.nav.foreldrepenger.sikkerhet.populasjon.TilgangKlient;
-import no.nav.vedtak.sikkerhet.abac.AbacDataAttributter;
-import no.nav.vedtak.sikkerhet.abac.PdpRequestBuilder;
-import no.nav.vedtak.sikkerhet.abac.beskyttet.ActionType;
-import no.nav.vedtak.sikkerhet.abac.beskyttet.AvailabilityType;
-import no.nav.vedtak.sikkerhet.abac.beskyttet.ResourceType;
-import no.nav.vedtak.sikkerhet.abac.internal.BeskyttetRessursAttributter;
 import no.nav.vedtak.sikkerhet.kontekst.KontekstHolder;
 import no.nav.vedtak.sikkerhet.kontekst.RequestKontekst;
 
@@ -40,25 +33,22 @@ public class OppgaveDtoTjeneste {
     private ReservasjonTjeneste reservasjonTjeneste;
     private PersonTjeneste personTjeneste;
     private ReservasjonStatusDtoTjeneste reservasjonStatusDtoTjeneste;
-    private TilgangKlient tilgangKlient;
-    private PdpRequestBuilder pdpRequestBuilder;
     private OppgaveKøTjeneste oppgaveKøTjeneste;
+    private TilgangFilterKlient filterKlient;
 
     @Inject
     public OppgaveDtoTjeneste(OppgaveTjeneste oppgaveTjeneste,
                               ReservasjonTjeneste reservasjonTjeneste,
                               PersonTjeneste personTjeneste,
                               ReservasjonStatusDtoTjeneste reservasjonStatusDtoTjeneste,
-                              TilgangKlient tilgangKlient,
-                              PdpRequestBuilder pdpRequestBuilder,
-                              OppgaveKøTjeneste oppgaveKøTjeneste) {
+                              OppgaveKøTjeneste oppgaveKøTjeneste,
+                              TilgangFilterKlient filterKlient) {
         this.oppgaveTjeneste = oppgaveTjeneste;
         this.reservasjonTjeneste = reservasjonTjeneste;
         this.personTjeneste = personTjeneste;
         this.reservasjonStatusDtoTjeneste = reservasjonStatusDtoTjeneste;
-        this.tilgangKlient = tilgangKlient;
-        this.pdpRequestBuilder = pdpRequestBuilder;
         this.oppgaveKøTjeneste = oppgaveKøTjeneste;
+        this.filterKlient = filterKlient;
     }
 
     OppgaveDtoTjeneste() {
@@ -66,26 +56,18 @@ public class OppgaveDtoTjeneste {
     }
 
     /**
-     * @param sjekkTilgangPåBehandling Ved alle kall som tar i mot {@link BehandlingIdDto}
-     *                                 eller {@link OppgaveIdDto}
-     *                                 sjekkes tilgangen til behandlingen/oppgaven ved mottaket av restkallet gjennom {@link no.nav.vedtak.sikkerhet.abac.BeskyttetRessursInterceptor}.
-     *                                 Applikasjonen har noen kall som ikke går rett på en behandling/oppgave, men som returnerer oppgaver,
-     *                                 i disse tilfellene må sjekkTilgangPåBehandling være true.
+     *
      */
-    public OppgaveDto lagDtoFor(Oppgave oppgave, boolean sjekkTilgangPåBehandling) throws IkkeTilgangPåBehandlingException {
-        if (sjekkTilgangPåBehandling) {
-            sjekkTilgang(oppgave);
-        }
-        var person = personTjeneste.hentPerson(oppgave.getFagsakYtelseType(), oppgave.getAktørId(), String.valueOf(oppgave.getFagsakSaksnummer()))
+    public OppgaveDto lagDtoFor(Oppgave oppgave) {
+        var person = personTjeneste.hentPerson(oppgave.getFagsakYtelseType(), oppgave.getAktørId(), oppgave.getSaksnummer())
             .orElseThrow(() -> new LagOppgaveDtoFeil("Finner ikke person tilknyttet oppgaveId " + oppgave.getId()));
         var oppgaveStatus = reservasjonStatusDtoTjeneste.lagStatusFor(oppgave);
         return new OppgaveDto(oppgave, person, oppgaveStatus);
     }
 
     /**
-     * @param oppgave Metoden skal kun brukes ved kall fra endepunkt som tar inn {@link BehandlingIdDto}
-     *                eller {@link OppgaveIdDto}. Tilgangssjekk dekkes for slike endepunkt gjennom
-     *                {@link no.nav.vedtak.sikkerhet.abac.BeskyttetRessursInterceptor}.
+     * @param oppgave Metoden skal kun brukes ved kall fra endepunkt som tar inn {@link OppgaveIdDto}.
+     *                Tilgangssjekk dekkes for slike endepunkt gjennom {@link no.nav.vedtak.sikkerhet.abac.BeskyttetRessursInterceptor}.
      * @return
      */
     public ReservasjonStatusDto lagOppgaveStatusUtenTilgangsjekk(Oppgave oppgave) {
@@ -93,42 +75,20 @@ public class OppgaveDtoTjeneste {
     }
 
     public boolean finnesTilgjengeligeOppgaver(SakslisteIdDto sakslisteId) {
-        return oppgaveKøTjeneste.hentOppgaver(sakslisteId.getVerdi()).stream().anyMatch(this::harTilgang);
-    }
-
-    private boolean harTilgang(Oppgave oppgave) {
-        var kontekst = KontekstHolder.getKontekst() instanceof RequestKontekst rk ? rk : null;
-        if (kontekst == null) {
+        var oppgaverForSaksliste = oppgaveKøTjeneste.hentOppgaver(sakslisteId.getVerdi());
+        if (oppgaverForSaksliste.isEmpty()) {
             return false;
         }
-        var dataAttributter = AbacDataAttributter.opprett().leggTil(FplosAbacAttributtType.OPPGAVE_ID, oppgave.getId());
-        var brRequest = BeskyttetRessursAttributter.builder()
-            .medActionType(ActionType.READ)
-            .medBrukerId(kontekst.getUid())
-            .medBrukerOid(kontekst.getOid())
-            .medIdentType(kontekst.getIdentType())
-            .medAnsattGrupper(kontekst.getGrupper())
-            .medAvailabilityType(AvailabilityType.INTERNAL)
-            .medSporingslogg(false)
-            .medResourceType(ResourceType.FAGSAK)
-            .medServicePath(OppgaveRestTjeneste.OPPGAVER_BASE_PATH + OppgaveRestTjeneste.OPPGAVER_STATUS_PATH)
-            .medDataAttributter(dataAttributter)
-            .build();
-        var pdpRequest = pdpRequestBuilder.lagAppRessursData(dataAttributter);
-        // Vurdering av populasjonstilgang
-        if (pdpRequest.getFødselsnumre().isEmpty() && pdpRequest.getAktørIdSet().isEmpty()) {
-            // Ikke noe å sjekke for populasjonstilgang
-            return true;
-        }
-        var popTilgang = tilgangKlient.vurderTilgangInternBruker(brRequest.getBrukerOid(),
-            pdpRequest.getFødselsnumre(), pdpRequest.getAktørIdSet());
-        return popTilgang != null && popTilgang.fikkTilgang();
+        return !filterHarTilgang(oppgaverForSaksliste).isEmpty();
     }
 
-    private void sjekkTilgang(Oppgave oppgave) {
-        if (!harTilgang(oppgave)) {
-            throw new IkkeTilgangPåBehandlingException(oppgave.getBehandlingId());
+    private Set<String> filterHarTilgang(List<Oppgave> oppgaver) {
+        var kontekst = KontekstHolder.getKontekst() instanceof RequestKontekst rk ? rk : null;
+        if (kontekst == null || oppgaver.isEmpty()) {
+            return Set.of();
         }
+        var saksnummer = oppgaver.stream().map(Oppgave::getSaksnummer).collect(Collectors.toSet());
+        return filterKlient.tilgangFilterSaker(kontekst.getOid(), saksnummer);
     }
 
     public List<OppgaveDto> getOppgaverTilBehandling(Long sakslisteId) {
@@ -149,17 +109,21 @@ public class OppgaveDtoTjeneste {
     }
 
     public List<OppgaveDto> getSaksbehandlersSisteReserverteOppgaver() {
-        return reservasjonTjeneste.hentSaksbehandlersSisteReserverteOppgaver()
-            .stream()
-            .map(o -> safeLagDtoFor(o, true))
+        var oppgaver = reservasjonTjeneste.hentSaksbehandlersSisteReserverteOppgaver();
+        var saksnummerMedTilgang = filterHarTilgang(oppgaver);
+        var oppgaverMedTilgang = oppgaver.stream()
+            .filter(oppgave -> saksnummerMedTilgang.contains(oppgave.getSaksnummer()))
+            .toList();
+        return oppgaverMedTilgang.stream()
+            .map(this::safeLagDtoFor)
             .flatMap(Optional::stream)
             .limit(10)
             .toList();
     }
 
-    private Optional<OppgaveDto> safeLagDtoFor(Oppgave oppgave, boolean sjekkTilgangPåBehandling) {
+    private Optional<OppgaveDto> safeLagDtoFor(Oppgave oppgave) {
         try {
-            return Optional.of(lagDtoFor(oppgave, sjekkTilgangPåBehandling));
+            return Optional.of(lagDtoFor(oppgave));
         } catch (Exception e) {
             return Optional.empty();
         }
@@ -179,15 +143,17 @@ public class OppgaveDtoTjeneste {
         if (oppgaver.isEmpty()) {
             return List.of();
         }
+        var saksnummerMedTilgang = filterHarTilgang(oppgaver);
+        var oppgaverMedTilgang = oppgaver.stream()
+            .filter(oppgave -> saksnummerMedTilgang.contains(oppgave.getSaksnummer()))
+            .toList();
         List<OppgaveDto> dtoList = new ArrayList<>();
-        var antallOppgaver = oppgaver.size();
+        var antallOppgaver = oppgaverMedTilgang.size();
         int start = randomiser ? (int)(System.currentTimeMillis() % antallOppgaver) : 0;
-        for (var i = 0; i < oppgaver.size() && dtoList.size() < maksAntall; i++) {
-            var oppgave = oppgaver.get((start + i) % antallOppgaver);
+        for (var i = 0; i < oppgaverMedTilgang.size() && dtoList.size() < maksAntall; i++) {
+            var oppgave = oppgaverMedTilgang.get((start + i) % antallOppgaver);
             try {
-                dtoList.add(lagDtoFor(oppgave, true));
-            } catch (IkkeTilgangPåBehandlingException e) {
-                logBegrensning(oppgave);
+                dtoList.add(lagDtoFor(oppgave));
             } catch (IkkeTilgangPåPersonException e) {
                 LOG.warn("Kunne ikke lage OppgaveDto for oppgaveId {}, oppslag PDL feiler på grunn av manglende tilgang", oppgave.getId(), e);
             } catch (LagOppgaveDtoFeil e) {
@@ -195,10 +161,6 @@ public class OppgaveDtoTjeneste {
             }
         }
         return dtoList;
-    }
-
-    private void logBegrensning(Oppgave oppgave) {
-        LOG.info("Prøver å slå opp oppgave uten å ha tilgang. Ignorerer oppgave {}", oppgave.getId());
     }
 
     public static final class LagOppgaveDtoFeil extends RuntimeException {

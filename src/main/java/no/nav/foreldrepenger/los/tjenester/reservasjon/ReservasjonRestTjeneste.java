@@ -73,7 +73,7 @@ public class ReservasjonRestTjeneste {
     @BeskyttetRessurs(actionType = ActionType.CREATE, resourceType = ResourceType.FAGSAK, sporingslogg = false)
     public ReservasjonStatusDto reserverOppgave(@NotNull @Parameter(description = "id til oppgaven") @Valid OppgaveIdDto oppgaveId) {
         var reservasjon = reservasjonTjeneste.reserverOppgave(oppgaveId.getVerdi());
-        return oppgaveDtoTjeneste.lagDtoFor(reservasjon.getOppgave(), false).getStatus();
+        return oppgaveDtoTjeneste.lagDtoFor(reservasjon.getOppgave()).getStatus();
     }
 
     @GET
@@ -83,7 +83,7 @@ public class ReservasjonRestTjeneste {
     @BeskyttetRessurs(actionType = ActionType.READ, resourceType = ResourceType.FAGSAK, sporingslogg = false)
     public ReservasjonStatusDto hentReservasjon(@NotNull @Parameter(description = "id til oppgaven") @QueryParam("oppgaveId") @Valid OppgaveIdDto oppgaveId) {
         var oppgave = oppgaveTjeneste.hentOppgave(oppgaveId.getVerdi());
-        var oppgaveDto = oppgaveDtoTjeneste.lagDtoFor(oppgave, false);
+        var oppgaveDto = oppgaveDtoTjeneste.lagDtoFor(oppgave);
         return oppgaveDto.getStatus();
     }
 
@@ -110,7 +110,7 @@ public class ReservasjonRestTjeneste {
     @BeskyttetRessurs(actionType = ActionType.CREATE, resourceType = ResourceType.FAGSAK, sporingslogg = false)
     public ReservasjonStatusDto forlengOppgaveReservasjon(@NotNull @Parameter(description = "id til oppgaven") @Valid OppgaveIdDto oppgaveId) {
         var reservasjon = reservasjonTjeneste.forlengReservasjonPåOppgave(oppgaveId.getVerdi());
-        return oppgaveDtoTjeneste.lagDtoFor(reservasjon.getOppgave(), false).getStatus();
+        return oppgaveDtoTjeneste.lagDtoFor(reservasjon.getOppgave()).getStatus();
     }
 
     @POST
@@ -122,7 +122,7 @@ public class ReservasjonRestTjeneste {
     public ReservasjonStatusDto endreOppgaveReservasjon(@NotNull @Parameter(description = "forleng til dato") @Valid ReservasjonEndringRequestDto reservasjonsEndring) {
         var tidspunkt = ReservasjonTidspunktUtil.utledReservasjonTidspunkt(reservasjonsEndring.reserverTil());
         var reservasjon = reservasjonTjeneste.endreReservasjonPåOppgave(reservasjonsEndring.oppgaveId().getVerdi(), tidspunkt);
-        return oppgaveDtoTjeneste.lagDtoFor(reservasjon.getOppgave(), false).getStatus();
+        return oppgaveDtoTjeneste.lagDtoFor(reservasjon.getOppgave()).getStatus();
     }
 
     @GET
@@ -156,7 +156,7 @@ public class ReservasjonRestTjeneste {
         var reservasjon = reservasjonTjeneste.flyttReservasjon(oppgaveFlyttingDto.getOppgaveId().getVerdi(),
             oppgaveFlyttingDto.getBrukerIdent().getVerdi(), oppgaveFlyttingDto.getBegrunnelse());
         LOG.info("Reservasjon flyttet: {}", oppgaveFlyttingDto);
-        return oppgaveDtoTjeneste.lagDtoFor(reservasjon.getOppgave(), false).getStatus();
+        return oppgaveDtoTjeneste.lagDtoFor(reservasjon.getOppgave()).getStatus();
     }
 
     @GET
