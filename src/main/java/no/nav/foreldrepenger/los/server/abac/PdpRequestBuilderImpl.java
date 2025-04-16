@@ -6,11 +6,9 @@ import jakarta.annotation.Priority;
 import jakarta.enterprise.context.Dependent;
 import jakarta.enterprise.inject.Alternative;
 import jakarta.inject.Inject;
-import no.nav.foreldrepenger.los.hendelse.hendelseoppretter.hendelse.Fagsystem;
 import no.nav.foreldrepenger.los.oppgave.Oppgave;
 import no.nav.foreldrepenger.los.oppgave.OppgaveTjeneste;
 import no.nav.foreldrepenger.los.tjenester.avdelingsleder.saksliste.FplosAbacAttributtType;
-import no.nav.vedtak.exception.TekniskException;
 import no.nav.vedtak.log.mdc.MdcExtendedLogContext;
 import no.nav.vedtak.sikkerhet.abac.AbacDataAttributter;
 import no.nav.vedtak.sikkerhet.abac.PdpRequestBuilder;
@@ -25,12 +23,10 @@ public class PdpRequestBuilderImpl implements PdpRequestBuilder {
 
     private static final MdcExtendedLogContext MDC_EXTENDED_LOG_CONTEXT = MdcExtendedLogContext.getContext("prosess");
 
-    private final ForeldrepengerPipKlient foreldrepengerPipKlient;
     private final OppgaveTjeneste oppgaveTjeneste;
 
     @Inject
-    public PdpRequestBuilderImpl(ForeldrepengerPipKlient foreldrepengerPipKlient, OppgaveTjeneste oppgaveTjeneste) {
-        this.foreldrepengerPipKlient = foreldrepengerPipKlient;
+    public PdpRequestBuilderImpl(OppgaveTjeneste oppgaveTjeneste) {
         this.oppgaveTjeneste = oppgaveTjeneste;
     }
 
@@ -43,20 +39,10 @@ public class PdpRequestBuilderImpl implements PdpRequestBuilder {
         }
 
         setLogContext(oppgave);
-
-        var ressursData = minimalbuilder()
-            .medAuditIdent(oppgave.getAktørId().getId());
-        var system = oppgave.getSystem();
-        if (Fagsystem.FPSAK.name().equals(system)) {
-            var dto = foreldrepengerPipKlient.hentPipdataForSak(oppgave.getSaksnummer());
-            ressursData.leggTilAktørIdSet(dto);
-        } else if (Fagsystem.FPTILBAKE.name().equals(system)) {
-            ressursData.leggTilAktørId(oppgave.getAktørId().getId());
-        } else {
-            throw new TekniskException("FPLOS-0003", String.format("Kunne ikke lage PDP-request: ukjent system %s", system));
-        }
-
-        return ressursData.build();
+        return minimalbuilder()
+            .medAuditIdent(oppgave.getAktørId().getId())
+            .medSaksnummer(oppgave.getSaksnummer())
+            .build();
     }
 
     @Override

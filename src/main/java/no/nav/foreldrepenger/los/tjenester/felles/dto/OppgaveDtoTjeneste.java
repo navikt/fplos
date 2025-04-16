@@ -57,42 +57,16 @@ public class OppgaveDtoTjeneste {
     }
 
     /**
-     *
-     */
-    public OppgaveDto lagDtoFor(Oppgave oppgave) {
-        var person = personTjeneste.hentPerson(oppgave.getFagsakYtelseType(), oppgave.getAktørId(), oppgave.getSaksnummer())
-            .orElseThrow(() -> new LagOppgaveDtoFeil("Finner ikke person tilknyttet oppgaveId " + oppgave.getId()));
-        var oppgaveStatus = reservasjonStatusDtoTjeneste.lagStatusFor(oppgave);
-        return new OppgaveDto(oppgave, person, oppgaveStatus);
-    }
-
-    /**
      * @param oppgave Metoden skal kun brukes ved kall fra endepunkt som tar inn {@link OppgaveIdDto}.
-     *                Tilgangssjekk dekkes for slike endepunkt gjennom {@link no.nav.vedtak.sikkerhet.abac.BeskyttetRessursInterceptor}.
-     * @return
+     *                Det er ordinær tilgangssjekk, men ikke videre oppslag i PDL
+     * @return ReservasjonStatusDto
      */
-    public ReservasjonStatusDto lagOppgaveStatusUtenTilgangsjekk(Oppgave oppgave) {
+    public ReservasjonStatusDto lagOppgaveStatusUtenPersonoppslag(Oppgave oppgave) {
         return reservasjonStatusDtoTjeneste.lagStatusFor(oppgave);
     }
 
     public boolean finnesTilgjengeligeOppgaver(SakslisteIdDto sakslisteId) {
-        var oppgaver = oppgaveKøTjeneste.hentOppgaver(sakslisteId.getVerdi());
-        for (int i = 0; i < oppgaver.size(); i += ANTALL_OPPGAVER_SOM_VISES_TIL_SAKSBEHANDLER) {
-            var sjekkOppgaver = oppgaver.subList(i, Math.min(i + ANTALL_OPPGAVER_SOM_VISES_TIL_SAKSBEHANDLER, oppgaver.size()));
-            if (!filterHarTilgang(sjekkOppgaver).isEmpty()) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private Set<String> filterHarTilgang(List<Oppgave> oppgaver) {
-        var kontekst = KontekstHolder.getKontekst() instanceof RequestKontekst rk ? rk : null;
-        if (kontekst == null || oppgaver.isEmpty()) {
-            return Set.of();
-        }
-        var saksnummer = oppgaver.stream().map(Oppgave::getSaksnummer).collect(Collectors.toSet());
-        return filterKlient.tilgangFilterSaker(kontekst.getOid(), saksnummer);
+        return !oppgaveKøTjeneste.hentOppgaver(sakslisteId.getVerdi()).isEmpty();
     }
 
     public List<OppgaveDto> getOppgaverTilBehandling(Long sakslisteId) {
@@ -142,7 +116,6 @@ public class OppgaveDtoTjeneste {
         return map(oppgaver, oppgaver.size(), false);
     }
 
-
     private List<OppgaveDto> map(List<Oppgave> oppgaver, int maksAntall, boolean randomiser) {
         if (oppgaver.isEmpty()) {
             return List.of();
@@ -186,8 +159,26 @@ public class OppgaveDtoTjeneste {
             LOG.warn("Kunne ikke lage OppgaveDto for oppgaveId {}, oppslag PDL feiler på grunn av manglende tilgang", oppgave.getId(), e);
         } catch (LagOppgaveDtoFeil e) {
             LOG.warn("Kunne ikke lage OppgaveDto for oppgaveId {}, hopper over", oppgave.getId(), e);
+        } catch (Exception e) {
+            LOG.warn("Kunne ikke lage OppgaveDto for oppgaveId {}, annen feil", oppgave.getId(), e);
         }
         return List.of();
+    }
+
+    private OppgaveDto lagDtoFor(Oppgave oppgave) {
+        var person = personTjeneste.hentPerson(oppgave.getFagsakYtelseType(), oppgave.getAktørId(), oppgave.getSaksnummer())
+            .orElseThrow(() -> new LagOppgaveDtoFeil("Finner ikke person tilknyttet oppgaveId " + oppgave.getId()));
+        var oppgaveStatus = reservasjonStatusDtoTjeneste.lagStatusFor(oppgave);
+        return new OppgaveDto(oppgave, person, oppgaveStatus);
+    }
+
+    private Set<String> filterHarTilgang(List<Oppgave> oppgaver) {
+        var kontekst = KontekstHolder.getKontekst() instanceof RequestKontekst rk ? rk : null;
+        if (kontekst == null || oppgaver.isEmpty()) {
+            return Set.of();
+        }
+        var saksnummer = oppgaver.stream().map(Oppgave::getSaksnummer).collect(Collectors.toSet());
+        return filterKlient.tilgangFilterSaker(kontekst.getOid(), saksnummer);
     }
 
     public static final class LagOppgaveDtoFeil extends RuntimeException {
