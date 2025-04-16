@@ -1,6 +1,7 @@
 package no.nav.foreldrepenger.los.tjenester.felles.dto;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -75,11 +76,14 @@ public class OppgaveDtoTjeneste {
     }
 
     public boolean finnesTilgjengeligeOppgaver(SakslisteIdDto sakslisteId) {
-        var oppgaverForSaksliste = oppgaveKøTjeneste.hentOppgaver(sakslisteId.getVerdi());
-        if (oppgaverForSaksliste.isEmpty()) {
-            return false;
+        var oppgaver = oppgaveKøTjeneste.hentOppgaver(sakslisteId.getVerdi());
+        for (int i = 0; i < oppgaver.size(); i += ANTALL_OPPGAVER_SOM_VISES_TIL_SAKSBEHANDLER) {
+            var sjekkOppgaver = oppgaver.subList(i, Math.min(i + ANTALL_OPPGAVER_SOM_VISES_TIL_SAKSBEHANDLER, oppgaver.size()));
+            if (!filterHarTilgang(sjekkOppgaver).isEmpty()) {
+                return true;
+            }
         }
-        return !filterHarTilgang(oppgaverForSaksliste).isEmpty();
+        return false;
     }
 
     private Set<String> filterHarTilgang(List<Oppgave> oppgaver) {
@@ -142,25 +146,48 @@ public class OppgaveDtoTjeneste {
     private List<OppgaveDto> map(List<Oppgave> oppgaver, int maksAntall, boolean randomiser) {
         if (oppgaver.isEmpty()) {
             return List.of();
-        }
-        var saksnummerMedTilgang = filterHarTilgang(oppgaver);
-        var oppgaverMedTilgang = oppgaver.stream()
-            .filter(oppgave -> saksnummerMedTilgang.contains(oppgave.getSaksnummer()))
-            .toList();
-        List<OppgaveDto> dtoList = new ArrayList<>();
-        var antallOppgaver = oppgaverMedTilgang.size();
-        int start = randomiser ? (int)(System.currentTimeMillis() % antallOppgaver) : 0;
-        for (var i = 0; i < oppgaverMedTilgang.size() && dtoList.size() < maksAntall; i++) {
-            var oppgave = oppgaverMedTilgang.get((start + i) % antallOppgaver);
-            try {
-                dtoList.add(lagDtoFor(oppgave));
-            } catch (IkkeTilgangPåPersonException e) {
-                LOG.warn("Kunne ikke lage OppgaveDto for oppgaveId {}, oppslag PDL feiler på grunn av manglende tilgang", oppgave.getId(), e);
-            } catch (LagOppgaveDtoFeil e) {
-                LOG.warn("Kunne ikke lage OppgaveDto for oppgaveId {}, hopper over", oppgave.getId(), e);
+        } else if (oppgaver.size() <= maksAntall) {
+            return lagDtoForFilterTilgang(oppgaver);
+        } else {
+            List<OppgaveDto> dtoList = new ArrayList<>();
+            var antallOppgaver = oppgaver.size();
+            var permutert = randomiser ? shuffleList(oppgaver, antallOppgaver) : oppgaver;
+            var inkrement = Math.min(ANTALL_OPPGAVER_SOM_VISES_TIL_SAKSBEHANDLER, maksAntall);
+            for (int i = 0; i < antallOppgaver && dtoList.size() < maksAntall; i += inkrement) {
+                var sjekkOppgaver = permutert.subList(i, Math.min(i + inkrement, antallOppgaver));
+                dtoList.addAll(lagDtoForFilterTilgang(sjekkOppgaver));
             }
+            return dtoList.stream().limit(maksAntall).toList();
         }
-        return dtoList;
+    }
+
+    private List<Oppgave> shuffleList(List<Oppgave> oppgaver, int antallOppgaver) {
+        int start = (int)(System.currentTimeMillis() % antallOppgaver);
+        List<Oppgave> permutert = new ArrayList<>();
+        for (int i = 0; i < antallOppgaver; i++) {
+            permutert.add(oppgaver.get((start + i) % antallOppgaver));
+        }
+        return permutert;
+    }
+
+    private List<OppgaveDto> lagDtoForFilterTilgang(List<Oppgave> oppgaver) {
+        var saksnummerMedTilgang = filterHarTilgang(oppgaver);
+        return oppgaver.stream()
+            .filter(oppgave -> saksnummerMedTilgang.contains(oppgave.getSaksnummer()))
+            .map(this::lagEnkelDto)
+            .flatMap(Collection::stream)
+            .toList();
+    }
+
+    private List<OppgaveDto> lagEnkelDto(Oppgave oppgave) {
+        try {
+            return List.of(lagDtoFor(oppgave));
+        } catch (IkkeTilgangPåPersonException e) {
+            LOG.warn("Kunne ikke lage OppgaveDto for oppgaveId {}, oppslag PDL feiler på grunn av manglende tilgang", oppgave.getId(), e);
+        } catch (LagOppgaveDtoFeil e) {
+            LOG.warn("Kunne ikke lage OppgaveDto for oppgaveId {}, hopper over", oppgave.getId(), e);
+        }
+        return List.of();
     }
 
     public static final class LagOppgaveDtoFeil extends RuntimeException {
