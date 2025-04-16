@@ -33,7 +33,7 @@ public class Oppgave extends BaseEntitet {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_OPPGAVE")
     protected Long id;
 
-    @Column(name = "FAGSAK_SAKSNR")
+    @Column(name = "FAGSAK_SAKSNR", nullable = false)
     protected Long fagsakSaksnummer;
 
     @Embedded
