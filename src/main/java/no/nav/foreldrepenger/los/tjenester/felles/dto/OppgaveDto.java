@@ -17,7 +17,7 @@ import no.nav.foreldrepenger.los.oppgave.OppgaveEgenskap;
 public class OppgaveDto {
     private Long id;
     private ReservasjonStatusDto status;
-    private Long saksnummer;
+    private String saksnummer;
     private String saksnummerString;
     private String navn;
     private String system;
@@ -39,7 +39,7 @@ public class OppgaveDto {
     private void leggTilOppgaveInformasjon(Oppgave oppgave, ReservasjonStatusDto status) {
         this.id = oppgave.getId();
         this.status = status;
-        this.saksnummer = oppgave.getFagsakSaksnummer();
+        this.saksnummer = oppgave.getSaksnummer();
         this.saksnummerString = oppgave.getSaksnummer();
         this.behandlingId = oppgave.getBehandlingId();
         this.system = oppgave.getSystem();
@@ -72,7 +72,7 @@ public class OppgaveDto {
         return behandlingId.toUUID();
     }
 
-    public Long getSaksnummer() {
+    public String getSaksnummer() {
         return saksnummer;
     }
 
