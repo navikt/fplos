@@ -19,6 +19,7 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import no.nav.foreldrepenger.los.domene.typer.BehandlingId;
+import no.nav.foreldrepenger.los.domene.typer.Saksnummer;
 import no.nav.foreldrepenger.los.domene.typer.aktør.AktørId;
 import no.nav.foreldrepenger.los.felles.BaseEntitet;
 import no.nav.foreldrepenger.los.reservasjon.Reservasjon;
@@ -35,6 +36,9 @@ public class Oppgave extends BaseEntitet {
 
     @Column(name = "FAGSAK_SAKSNR", nullable = false)
     protected Long fagsakSaksnummer;
+
+    @Embedded
+    protected Saksnummer saksnummer;
 
     @Embedded
     protected AktørId aktørId;
@@ -90,7 +94,7 @@ public class Oppgave extends BaseEntitet {
         return id;
     }
 
-    public Long getFagsakSaksnummer() {
+    public Long getFagsakSaksnummer() { // Ikke bruk denne - hold Long isolert til DB
         return fagsakSaksnummer;
     }
 
@@ -199,6 +203,7 @@ public class Oppgave extends BaseEntitet {
 
         public Builder medFagsakSaksnummer(Long faksagSaksnummer) {
             tempOppgave.fagsakSaksnummer = faksagSaksnummer;
+            tempOppgave.saksnummer = new Saksnummer(String.valueOf(faksagSaksnummer));
             return this;
         }
 
@@ -266,6 +271,7 @@ public class Oppgave extends BaseEntitet {
         public Builder dummyOppgave(String enhet) {
             tempOppgave.behandlingId = new BehandlingId(UUID.nameUUIDFromBytes("331133L".getBytes()));
             tempOppgave.fagsakSaksnummer = 3478293L;
+            tempOppgave.saksnummer = new Saksnummer("3478293");
             tempOppgave.aktørId = AktørId.dummy();
             tempOppgave.fagsakYtelseType = FagsakYtelseType.FORELDREPENGER;
             tempOppgave.behandlingType = BehandlingType.FØRSTEGANGSSØKNAD;

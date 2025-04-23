@@ -10,7 +10,6 @@ import java.util.Optional;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-
 import no.nav.foreldrepenger.los.domene.typer.BehandlingId;
 import no.nav.foreldrepenger.los.felles.BaseEntitet;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveEventLogg;
@@ -117,5 +116,9 @@ public class OppgaveTjeneste {
 
     private static LocalDateTime aktuellDato(Oppgave oppgave) {
         return oppgave.getOppgaveAvsluttet() == null ? oppgave.getOpprettetTidspunkt() : oppgave.getOppgaveAvsluttet();
+    }
+
+    public void populerSaksnummer() {
+        oppgaveRepository.populerSaksnummer();
     }
 }

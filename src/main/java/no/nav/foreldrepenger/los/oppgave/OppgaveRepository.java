@@ -445,4 +445,9 @@ public class OppgaveRepository {
         return oppgaver.stream().max(Comparator.comparing(Oppgave::getOpprettetTidspunkt));
     }
 
+    public void populerSaksnummer() {
+        entityManager.createNativeQuery("UPDATE Oppgave o set o.saksnummer = to_char(o.FAGSAK_SAKSNR)")
+            .executeUpdate();
+    }
+
 }
