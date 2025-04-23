@@ -7,8 +7,8 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.PrimaryKeyJoinColumn;
 import jakarta.persistence.Table;
-
 import no.nav.foreldrepenger.los.domene.typer.BehandlingId;
+import no.nav.foreldrepenger.los.domene.typer.Saksnummer;
 import no.nav.foreldrepenger.los.domene.typer.aktør.AktørId;
 
 
@@ -37,6 +37,7 @@ public class TilbakekrevingOppgave extends Oppgave {
         this.behandlendeEnhet = other.behandlendeEnhet;
         this.behandlingsfrist = other.behandlingsfrist;
         this.fagsakSaksnummer = other.fagsakSaksnummer;
+        this.saksnummer = other.saksnummer;
         this.førsteStønadsdag = other.førsteStønadsdag;
         this.behandlingStatus = other.behandlingStatus;
         this.behandlingType = other.behandlingType;
@@ -79,6 +80,7 @@ public class TilbakekrevingOppgave extends Oppgave {
 
         public Builder medFagsakSaksnummer(Long faksagSaksnummer) {
             tempOppgave.fagsakSaksnummer = faksagSaksnummer;
+            tempOppgave.saksnummer = new Saksnummer(String.valueOf(faksagSaksnummer));
             return this;
         }
 

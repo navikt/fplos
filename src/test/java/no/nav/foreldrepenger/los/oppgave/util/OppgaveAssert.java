@@ -29,7 +29,7 @@ public class OppgaveAssert extends AbstractAssert<OppgaveAssert, Oppgave> {
     public OppgaveAssert harSaksnummer(Saksnummer saksnummer) {
         isNotNull();
         assertThat(actual.getSaksnummer()).overridingErrorMessage("Forventet saksnummer <%s> men fikk <%s>", saksnummer,
-            actual.getSaksnummer()).isEqualTo(saksnummer.value());
+            actual.getSaksnummer()).isEqualTo(saksnummer.getVerdi());
         return this;
     }
 

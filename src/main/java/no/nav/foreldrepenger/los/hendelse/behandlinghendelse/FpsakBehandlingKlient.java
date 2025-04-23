@@ -5,7 +5,6 @@ import java.util.UUID;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.ws.rs.core.UriBuilder;
-
 import no.nav.foreldrepenger.los.domene.typer.Saksnummer;
 import no.nav.vedtak.felles.integrasjon.rest.FpApplication;
 import no.nav.vedtak.felles.integrasjon.rest.RestClient;
@@ -38,7 +37,7 @@ public class FpsakBehandlingKlient implements BehandlingKlient {
 
     @Override
     public LosFagsakEgenskaperDto hentLosFagsakEgenskaperDto(Saksnummer saksnummer) {
-        var target = UriBuilder.fromUri(baseUri).path("/api/los/los-egenskap").queryParam("saksnummer", saksnummer.value()).build();
+        var target = UriBuilder.fromUri(baseUri).path("/api/los/los-egenskap").queryParam("saksnummer", saksnummer.getVerdi()).build();
         return klient.send(RestRequest.newGET(target, restConfig), LosFagsakEgenskaperDto.class);
     }
 

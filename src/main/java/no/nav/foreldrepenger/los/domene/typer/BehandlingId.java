@@ -7,7 +7,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 
 @Embeddable
-public class BehandlingId implements Comparable<UUID> {
+public class BehandlingId {
 
     @Column(name = "behandling_id")
     private UUID value;
@@ -48,11 +48,7 @@ public class BehandlingId implements Comparable<UUID> {
         if (this == o) {
             return true;
         }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        var that = (BehandlingId) o;
-        return value.equals(that.value);
+        return o instanceof BehandlingId that && value.equals(that.value);
     }
 
     @Override
@@ -63,10 +59,5 @@ public class BehandlingId implements Comparable<UUID> {
     @Override
     public String toString() {
         return value.toString();
-    }
-
-    @Override
-    public int compareTo(UUID uuid) {
-        return value.compareTo(uuid);
     }
 }
