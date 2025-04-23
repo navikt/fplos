@@ -3,6 +3,7 @@ package no.nav.foreldrepenger.los.oppgave;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 
@@ -34,11 +35,8 @@ public class Oppgave extends BaseEntitet {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_OPPGAVE")
     protected Long id;
 
-    @Column(name = "FAGSAK_SAKSNR", nullable = false)
-    protected Long fagsakSaksnummer;
-
     @Embedded
-    protected Saksnummer saksnummer;
+    protected Saksnummer saksnummer; // Denne er de-facto non-null
 
     @Embedded
     protected AktørId aktørId;
@@ -94,12 +92,8 @@ public class Oppgave extends BaseEntitet {
         return id;
     }
 
-    public Long getFagsakSaksnummer() { // Ikke bruk denne - hold Long isolert til DB
-        return fagsakSaksnummer;
-    }
-
-    public String getSaksnummer() {
-        return String.valueOf(fagsakSaksnummer);
+    public Saksnummer getSaksnummer() {
+        return saksnummer;
     }
 
     public AktørId getAktørId() {
@@ -186,7 +180,7 @@ public class Oppgave extends BaseEntitet {
 
     @Override
     public String toString() {
-        return "Oppgave{" + "id=" + id + ", fagsakSaksnummer=" + fagsakSaksnummer + ", aktiv=" + aktiv + ", system='" + system + '\'' + '}';
+        return "Oppgave{" + "id=" + id + ", saksnummer=" + saksnummer + ", aktiv=" + aktiv + ", system='" + system + '\'' + '}';
     }
 
     public static class Builder {
@@ -201,9 +195,8 @@ public class Oppgave extends BaseEntitet {
             return this;
         }
 
-        public Builder medFagsakSaksnummer(Long faksagSaksnummer) {
-            tempOppgave.fagsakSaksnummer = faksagSaksnummer;
-            tempOppgave.saksnummer = new Saksnummer(String.valueOf(faksagSaksnummer));
+        public Builder medSaksnummer(Saksnummer saksnummer) {
+            tempOppgave.saksnummer = saksnummer;
             return this;
         }
 
@@ -270,7 +263,6 @@ public class Oppgave extends BaseEntitet {
 
         public Builder dummyOppgave(String enhet) {
             tempOppgave.behandlingId = new BehandlingId(UUID.nameUUIDFromBytes("331133L".getBytes()));
-            tempOppgave.fagsakSaksnummer = 3478293L;
             tempOppgave.saksnummer = new Saksnummer("3478293");
             tempOppgave.aktørId = AktørId.dummy();
             tempOppgave.fagsakYtelseType = FagsakYtelseType.FORELDREPENGER;
@@ -284,6 +276,7 @@ public class Oppgave extends BaseEntitet {
         }
 
         public Oppgave build() {
+            Objects.requireNonNull(tempOppgave.saksnummer, "saksnummer");
             var oppgave = tempOppgave;
             tempOppgave = new Oppgave();
             return oppgave;

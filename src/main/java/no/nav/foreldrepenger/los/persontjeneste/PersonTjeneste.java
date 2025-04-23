@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import jakarta.enterprise.context.ApplicationScoped;
+import no.nav.foreldrepenger.los.domene.typer.Saksnummer;
 import no.nav.foreldrepenger.los.domene.typer.aktør.AktørId;
 import no.nav.foreldrepenger.los.domene.typer.aktør.Fødselsnummer;
 import no.nav.foreldrepenger.los.domene.typer.aktør.Person;
@@ -48,7 +49,7 @@ public class PersonTjeneste {
         this.pdl = new PdlKlient();
     }
 
-    public Optional<Person> hentPerson(FagsakYtelseType ytelseType, AktørId aktørId, String saksnummer) {
+    public Optional<Person> hentPerson(FagsakYtelseType ytelseType, AktørId aktørId, Saksnummer saksnummer) {
         Objects.requireNonNull(aktørId, "aktørId");
         var cachedPerson = cacheAktørIdTilPerson.get(aktørId);
         if (cachedPerson != null) {
@@ -71,7 +72,7 @@ public class PersonTjeneste {
         }
     }
 
-    private Person hentPdlPerson(FagsakYtelseType ytelseType, AktørId aktørId, String saksnummer) {
+    private Person hentPdlPerson(FagsakYtelseType ytelseType, AktørId aktørId, Saksnummer saksnummer) {
         var query = new HentPersonQueryRequest();
         query.setIdent(aktørId.getId());
         var projection = new PersonResponseProjection().navn(new NavnResponseProjection().fornavn().mellomnavn().etternavn())
@@ -97,7 +98,7 @@ public class PersonTjeneste {
         return Optional.ofNullable(navn).map(n -> " " + navn).orElse("");
     }
 
-    private Fødselsnummer fnr(List<Folkeregisteridentifikator> folkeregisteridentifikator, AktørId aktørId, String saksnummer) {
+    private Fødselsnummer fnr(List<Folkeregisteridentifikator> folkeregisteridentifikator, AktørId aktørId, Saksnummer saksnummer) {
         var fraHentPerson = folkeregisteridentifikator.stream()
             .filter(i -> i.getStatus().equals("I_BRUK"))
             .map(Folkeregisteridentifikator::getIdentifikasjonsnummer)

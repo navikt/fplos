@@ -12,7 +12,7 @@ public record ReservasjonDto(LocalDateTime reservertTilTidspunkt, String reserve
     public ReservasjonDto(Reservasjon reservasjon, String reservertAvNavn, String navnFlyttetAv) {
         this(reservasjon.getReservertTil(), reservasjon.getReservertAv(), reservertAvNavn,
             reservasjon.getFlyttetTidspunkt(), reservasjon.getFlyttetAv(), navnFlyttetAv, reservasjon.getBegrunnelse(),
-            reservasjon.getOppgave().getId(), reservasjon.getOppgave().getSaksnummer(), reservasjon.getOppgave().getBehandlingType());
+            reservasjon.getOppgave().getId(), reservasjon.getOppgave().getSaksnummer().getVerdi(), reservasjon.getOppgave().getBehandlingType());
     }
 
     @Override

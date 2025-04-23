@@ -38,7 +38,7 @@ public class OppgaveDto {
     private void leggTilOppgaveInformasjon(Oppgave oppgave, ReservasjonStatusDto status) {
         this.id = oppgave.getId();
         this.status = status;
-        this.saksnummer = oppgave.getSaksnummer();
+        this.saksnummer = oppgave.getSaksnummer().getVerdi();
         this.behandlingId = oppgave.getBehandlingId();
         this.system = oppgave.getSystem();
         this.behandlingStatus = oppgave.getBehandlingStatus();

@@ -3,7 +3,6 @@ package no.nav.foreldrepenger.los.hendelse.hendelsehåndterer;
 import static java.util.Collections.emptyList;
 import static no.nav.foreldrepenger.los.oppgave.AndreKriterierType.PAPIRSØKNAD;
 import static no.nav.foreldrepenger.los.oppgave.AndreKriterierType.UTLANDSSAK;
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -14,8 +13,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import jakarta.persistence.EntityManager;
-
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -23,8 +20,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import jakarta.persistence.EntityManager;
 import no.nav.foreldrepenger.los.JpaExtension;
 import no.nav.foreldrepenger.los.domene.typer.BehandlingId;
+import no.nav.foreldrepenger.los.domene.typer.Saksnummer;
 import no.nav.foreldrepenger.los.domene.typer.aktør.AktørId;
 import no.nav.foreldrepenger.los.oppgave.AndreKriterierType;
 import no.nav.foreldrepenger.los.oppgave.BehandlingStatus;
@@ -65,7 +64,7 @@ class OppgaveEgenskapHåndtererTest {
         egenskapHandler.håndterOppgaveEgenskaper(lagOppgave(), oppgaveEgenskapFinner);
 
         // assert
-        Assertions.assertThat(hentAktiveKriterierPåOppgave(42L)).containsExactlyInAnyOrder(ønskedeEgenskaper);
+        Assertions.assertThat(hentAktiveKriterierPåOppgave(new Saksnummer("42"))).containsExactlyInAnyOrder(ønskedeEgenskaper);
     }
 
     @Test
@@ -80,7 +79,7 @@ class OppgaveEgenskapHåndtererTest {
         egenskapHandler.håndterOppgaveEgenskaper(lagOppgave(), oppgaveEgenskapFinner);
 
         // assert
-        Assertions.assertThat(hentAktiveKriterierPåOppgave(42L)).contains(AndreKriterierType.KODE7_SAK);
+        Assertions.assertThat(hentAktiveKriterierPåOppgave(new Saksnummer("42"))).contains(AndreKriterierType.KODE7_SAK);
     }
 
     @Test
@@ -90,7 +89,7 @@ class OppgaveEgenskapHåndtererTest {
         when(oppgaveEgenskapFinner.getAndreKriterier()).thenReturn(emptyList());
         egenskapHandler.håndterOppgaveEgenskaper(oppgave, oppgaveEgenskapFinner);
 
-        Assertions.assertThat(hentAktiveKriterierPåOppgave(42L)).isEmpty();
+        Assertions.assertThat(hentAktiveKriterierPåOppgave(new Saksnummer("42"))).isEmpty();
     }
 
     @Test
@@ -100,7 +99,7 @@ class OppgaveEgenskapHåndtererTest {
         when(oppgaveEgenskapFinner.getAndreKriterier()).thenReturn(List.of(UTLANDSSAK));
         egenskapHandler.håndterOppgaveEgenskaper(oppgave, oppgaveEgenskapFinner);
 
-        Assertions.assertThat(hentAktiveKriterierPåOppgave(42L)).containsExactly(UTLANDSSAK);
+        Assertions.assertThat(hentAktiveKriterierPåOppgave(new Saksnummer("42"))).containsExactly(UTLANDSSAK);
     }
 
     @Test
@@ -114,14 +113,14 @@ class OppgaveEgenskapHåndtererTest {
         when(oppgaveEgenskapFinner.getAndreKriterier()).thenReturn(emptyList());
         egenskapHandler.håndterOppgaveEgenskaper(oppgave, oppgaveEgenskapFinner);
 
-        Assertions.assertThat(hentAktiveKriterierPåOppgave(42L)).isEmpty();
+        Assertions.assertThat(hentAktiveKriterierPåOppgave(new Saksnummer("42"))).isEmpty();
     }
 
     private static AndreKriterierType[] kriterieArrayOf(AndreKriterierType... kriterier) {
         return kriterier; // ble hakket penere enn å ha AndreKriterierType[] overalt.
     }
 
-    private List<AndreKriterierType> hentAktiveKriterierPåOppgave(Long saksnummer) {
+    private List<AndreKriterierType> hentAktiveKriterierPåOppgave(Saksnummer saksnummer) {
         return oppgaveRepository.hentOppgaveEgenskaper(oppgaveId(saksnummer))
             .stream()
             .filter(OppgaveEgenskap::getAktiv)
@@ -129,13 +128,13 @@ class OppgaveEgenskapHåndtererTest {
             .collect(Collectors.toList());
     }
 
-    private Long oppgaveId(Long saksnummer) {
+    private Long oppgaveId(Saksnummer saksnummer) {
         return oppgaveRepository.hentAktiveOppgaverForSaksnummer(List.of(saksnummer)).stream().map(Oppgave::getId).findFirst().orElseThrow();
     }
 
     private Oppgave lagOppgave() {
         var oppgave = Oppgave.builder()
-            .medFagsakSaksnummer(42L)
+            .medSaksnummer(new Saksnummer("42"))
             .medBehandlingId(BEHANDLING_ID)
             .medAktørId(AktørId.dummy())
             .medFagsakYtelseType(FagsakYtelseType.FORELDREPENGER)
