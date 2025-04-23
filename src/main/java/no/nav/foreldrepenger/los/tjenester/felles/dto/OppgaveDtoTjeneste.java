@@ -173,13 +173,12 @@ public class OppgaveDtoTjeneste {
         return new OppgaveDto(oppgave, person, oppgaveStatus);
     }
 
-    private Set<String> filterHarTilgang(List<Oppgave> oppgaver) {
+    private Set<Saksnummer> filterHarTilgang(List<Oppgave> oppgaver) {
         var kontekst = KontekstHolder.getKontekst() instanceof RequestKontekst rk ? rk : null;
         if (kontekst == null || oppgaver.isEmpty()) {
             return Set.of();
         }
-        var saksnummer = oppgaver.stream().map(Oppgave::getSaksnummer).map(Saksnummer::getVerdi).collect(Collectors.toSet());
-        return filterKlient.tilgangFilterSaker(kontekst.getOid(), saksnummer);
+        return filterKlient.tilgangFilterSaker(kontekst.getOid(), oppgaver);
     }
 
     public static final class LagOppgaveDtoFeil extends RuntimeException {
