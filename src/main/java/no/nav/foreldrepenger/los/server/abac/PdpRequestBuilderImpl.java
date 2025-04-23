@@ -55,7 +55,7 @@ public class PdpRequestBuilderImpl implements PdpRequestBuilder {
         if (oppgave == null) {
             return;
         }
-        MDC_EXTENDED_LOG_CONTEXT.add("fagsak", oppgave.getSaksnummer());
+        MDC_EXTENDED_LOG_CONTEXT.add("fagsak", oppgave.getSaksnummer().getVerdi());
         MDC_EXTENDED_LOG_CONTEXT.add("behandling", oppgave.getBehandlingId().getValue());
     }
 
