@@ -6,25 +6,25 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 import no.nav.foreldrepenger.los.domene.typer.BehandlingId;
+import no.nav.foreldrepenger.los.domene.typer.Saksnummer;
 import no.nav.foreldrepenger.los.domene.typer.aktør.AktørId;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.OppgaveEgenskapFinner;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.OppgaveEgenskapHåndterer;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.OppgaveUtil;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveEventLogg;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveEventType;
-import no.nav.foreldrepenger.los.oppgave.AndreKriterierType;
-import no.nav.foreldrepenger.los.oppgave.OppgaveRepository;
-import no.nav.foreldrepenger.los.oppgave.OppgaveTjeneste;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.inject.Inject;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveHistorikk;
 import no.nav.foreldrepenger.los.hendelse.hendelseoppretter.hendelse.Fagsystem;
+import no.nav.foreldrepenger.los.oppgave.AndreKriterierType;
 import no.nav.foreldrepenger.los.oppgave.Oppgave;
+import no.nav.foreldrepenger.los.oppgave.OppgaveRepository;
+import no.nav.foreldrepenger.los.oppgave.OppgaveTjeneste;
 import no.nav.foreldrepenger.los.oppgave.TilbakekrevingOppgave;
 import no.nav.foreldrepenger.los.reservasjon.ReservasjonTjeneste;
 import no.nav.foreldrepenger.los.statistikk.kø.KøOppgaveHendelse;
@@ -199,7 +199,7 @@ public class TilbakekrevingHendelseHåndterer {
             .medBeløp(Optional.ofNullable(hendelse.tilbakeDto()).map(LosBehandlingDto.LosTilbakeDto::feilutbetaltBeløp).orElse(BigDecimal.ZERO))
             .medFeilutbetalingStart(feilutbetalingStart(hendelse))
             .medSystem(Fagsystem.FPTILBAKE.name())
-            .medFagsakSaksnummer(Long.valueOf(hendelse.saksnummer()))
+            .medSaksnummer(new Saksnummer(hendelse.saksnummer()))
             .medAktorId(new AktørId(hendelse.aktørId().getAktørId()))
             .medBehandlendeEnhet(hendelse.behandlendeEnhetId())
             .medBehandlingType(OppgaveUtil.mapBehandlingstype(hendelse.behandlingstype()))

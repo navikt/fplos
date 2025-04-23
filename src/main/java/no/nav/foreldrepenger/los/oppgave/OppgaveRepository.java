@@ -26,6 +26,7 @@ import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
 import no.nav.foreldrepenger.los.domene.typer.BehandlingId;
+import no.nav.foreldrepenger.los.domene.typer.Saksnummer;
 import no.nav.foreldrepenger.los.felles.BaseEntitet;
 import no.nav.foreldrepenger.los.felles.util.BrukerIdent;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveEventLogg;
@@ -252,10 +253,10 @@ public class OppgaveRepository {
         return datoFiltrering + SORTERING + sortering;
     }
 
-    public List<Oppgave> hentAktiveOppgaverForSaksnummer(Collection<Long> fagsakSaksnummerListe) {
+    public List<Oppgave> hentAktiveOppgaverForSaksnummer(Collection<Saksnummer> saksnummerListe) {
         return entityManager.createQuery(
-            SELECT_FRA_OPPGAVE + "WHERE o.fagsakSaksnummer in :fagsakSaksnummerListe " + "AND o.aktiv = true " + "ORDER BY o.fagsakSaksnummer desc ",
-            Oppgave.class).setParameter("fagsakSaksnummerListe", fagsakSaksnummerListe).getResultList();
+            SELECT_FRA_OPPGAVE + "WHERE o.saksnummer in :saksnummerListe " + "AND o.aktiv = true " + "ORDER BY o.saksnummer desc ",
+            Oppgave.class).setParameter("saksnummerListe", saksnummerListe).getResultList();
     }
 
     public Optional<Reservasjon> hentReservasjon(Long oppgaveId) {
@@ -443,11 +444,6 @@ public class OppgaveRepository {
             LOG.warn("Flere enn én aktive oppgaver for behandlingId {}", behandlingId);
         }
         return oppgaver.stream().max(Comparator.comparing(Oppgave::getOpprettetTidspunkt));
-    }
-
-    public void populerSaksnummer() {
-        entityManager.createNativeQuery("UPDATE Oppgave o set o.saksnummer = to_char(o.FAGSAK_SAKSNR)")
-            .executeUpdate();
     }
 
 }

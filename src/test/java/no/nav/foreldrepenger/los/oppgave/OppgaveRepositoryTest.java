@@ -13,6 +13,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -25,6 +26,7 @@ import jakarta.persistence.EntityManager;
 import no.nav.foreldrepenger.los.DBTestUtil;
 import no.nav.foreldrepenger.los.JpaExtension;
 import no.nav.foreldrepenger.los.domene.typer.BehandlingId;
+import no.nav.foreldrepenger.los.domene.typer.Saksnummer;
 import no.nav.foreldrepenger.los.domene.typer.aktør.AktørId;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveEventLogg;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveEventType;
@@ -77,9 +79,9 @@ class OppgaveRepositoryTest {
         assertThat(event.getBehandlingId()).isEqualTo(behandlingId1);
     }
 
-    private Long setupOppgaveMedEgenskaper(AndreKriterierType... kriterier) {
-        Long saksnummer = (long) (Math.random() * 10000);
-        var oppgave = Oppgave.builder().dummyOppgave(AVDELING_DRAMMEN_ENHET).medFagsakSaksnummer(saksnummer).build();
+    private Saksnummer setupOppgaveMedEgenskaper(AndreKriterierType... kriterier) {
+        var saksnummer = new Saksnummer(String.valueOf (Math.abs(new Random().nextLong() % 999999999)));
+        var oppgave = Oppgave.builder().dummyOppgave(AVDELING_DRAMMEN_ENHET).medSaksnummer(saksnummer).build();
         entityManager.persist(oppgave);
         for (var kriterie : kriterier) {
             entityManager.persist(new OppgaveEgenskap(oppgave, kriterie));
@@ -107,7 +109,7 @@ class OppgaveRepositoryTest {
             false, null, null, null, null);
         var oppgaver = oppgaveRepository.hentOppgaver(oppgaveQuery);
         assertThat(oppgaver).hasSize(1);
-        assertThat(oppgaver.getFirst().getSaksnummer()).isEqualTo(saksnummerHit.toString());
+        assertThat(oppgaver.getFirst().getSaksnummer()).isEqualTo(saksnummerHit);
     }
 
     @Test
@@ -189,28 +191,28 @@ class OppgaveRepositoryTest {
         var førsteOppgave = Oppgave.builder()
             .dummyOppgave(AVDELING_DRAMMEN_ENHET)
             .medBehandlingId(behandlingId1)
-            .medFagsakSaksnummer(111L)
+            .medSaksnummer(new Saksnummer("111"))
             .medBehandlingOpprettet(LocalDateTime.now().minusDays(10))
             .medBehandlingsfrist(LocalDateTime.now().plusDays(10))
             .build();
         var andreOppgave = Oppgave.builder()
             .dummyOppgave(AVDELING_DRAMMEN_ENHET)
             .medBehandlingId(behandlingId2)
-            .medFagsakSaksnummer(222L)
+            .medSaksnummer(new Saksnummer("222"))
             .medBehandlingOpprettet(LocalDateTime.now().minusDays(9))
             .medBehandlingsfrist(LocalDateTime.now().plusDays(5))
             .build();
         var tredjeOppgave = Oppgave.builder()
             .dummyOppgave(AVDELING_DRAMMEN_ENHET)
             .medBehandlingId(behandlingId3)
-            .medFagsakSaksnummer(333L)
+            .medSaksnummer(new Saksnummer("333"))
             .medBehandlingOpprettet(LocalDateTime.now().minusDays(8))
             .medBehandlingsfrist(LocalDateTime.now().plusDays(15))
             .build();
         var fjerdeOppgave = Oppgave.builder()
             .dummyOppgave(AVDELING_DRAMMEN_ENHET)
             .medBehandlingId(behandlingId4)
-            .medFagsakSaksnummer(444L)
+            .medSaksnummer(new Saksnummer("444"))
             .medBehandlingOpprettet(LocalDateTime.now())
             .medBehandlingsfrist(LocalDateTime.now())
             .build();
@@ -388,7 +390,7 @@ class OppgaveRepositoryTest {
 
     private Oppgave.Builder basicOppgaveBuilder(LocalDate opprettetDato) {
         return Oppgave.builder()
-            .medFagsakSaksnummer(1337L)
+            .medSaksnummer(new Saksnummer("1337"))
             .medBehandlingId(behandlingId1)
             .medAktørId(AktørId.dummy())
             .medBehandlingType(BehandlingType.FØRSTEGANGSSØKNAD)
@@ -401,7 +403,7 @@ class OppgaveRepositoryTest {
 
     private Oppgave lagOppgave(String behandlendeEnhet) {
         return Oppgave.builder()
-            .medFagsakSaksnummer(1337L)
+            .medSaksnummer(new Saksnummer("1337"))
             .medBehandlingId(behandlingId1)
             .medAktørId(AktørId.dummy())
             .medBehandlendeEnhet(behandlendeEnhet)
@@ -414,7 +416,7 @@ class OppgaveRepositoryTest {
 
     private TilbakekrevingOppgave.Builder tilbakekrevingOppgaveBuilder() {
         return TilbakekrevingOppgave.tbuilder()
-            .medFagsakSaksnummer(42L)
+            .medSaksnummer(new Saksnummer("42"))
             .medFagsakYtelseType(FagsakYtelseType.FORELDREPENGER)
             .medSystem("FPTILBAKE")
             .medBehandlingType(BehandlingType.TILBAKEBETALING)

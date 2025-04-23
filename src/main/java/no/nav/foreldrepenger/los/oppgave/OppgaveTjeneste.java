@@ -11,6 +11,7 @@ import java.util.Optional;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import no.nav.foreldrepenger.los.domene.typer.BehandlingId;
+import no.nav.foreldrepenger.los.domene.typer.Saksnummer;
 import no.nav.foreldrepenger.los.felles.BaseEntitet;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveEventLogg;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveEventType;
@@ -31,8 +32,8 @@ public class OppgaveTjeneste {
     OppgaveTjeneste() {
     }
 
-    public List<Oppgave> hentAktiveOppgaverForSaksnummer(Collection<Long> fagsakSaksnummerListe) {
-        return oppgaveRepository.hentAktiveOppgaverForSaksnummer(fagsakSaksnummerListe);
+    public List<Oppgave> hentAktiveOppgaverForSaksnummer(Collection<Saksnummer> saksnummerListe) {
+        return oppgaveRepository.hentAktiveOppgaverForSaksnummer(saksnummerListe);
     }
 
     public boolean erAlleOppgaverFortsattTilgjengelig(List<Long> oppgaveIder) {
@@ -118,7 +119,4 @@ public class OppgaveTjeneste {
         return oppgave.getOppgaveAvsluttet() == null ? oppgave.getOpprettetTidspunkt() : oppgave.getOppgaveAvsluttet();
     }
 
-    public void populerSaksnummer() {
-        oppgaveRepository.populerSaksnummer();
-    }
 }

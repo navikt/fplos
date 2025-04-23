@@ -8,7 +8,7 @@ import jakarta.persistence.Embeddable;
 
 
 @Embeddable
-public class Saksnummer  {
+public class Saksnummer implements Comparable<Saksnummer> {
     private static final String CHARS = "a-z0-9_:-";
 
     private static final Pattern VALID = Pattern.compile("^(-?[1-9]|[a-z0])[" + CHARS + "]*$", Pattern.CASE_INSENSITIVE);
@@ -51,5 +51,10 @@ public class Saksnummer  {
     @Override
     public String toString() {
         return getClass().getSimpleName() + "<" + saksnummer + ">";
+    }
+
+    @Override
+    public int compareTo(Saksnummer o) {
+        return saksnummer.compareTo(o.saksnummer);
     }
 }

@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import no.nav.foreldrepenger.los.domene.typer.Saksnummer;
 import no.nav.foreldrepenger.los.oppgave.Oppgave;
 import no.nav.foreldrepenger.los.oppgave.OppgaveTjeneste;
 import no.nav.foreldrepenger.los.oppgavekø.OppgaveKøTjeneste;
@@ -107,7 +108,7 @@ public class OppgaveDtoTjeneste {
         }
     }
 
-    public List<OppgaveDto> hentOppgaverForFagsaker(List<Long> saksnummerListe) {
+    public List<OppgaveDto> hentOppgaverForFagsaker(Collection<Saksnummer> saksnummerListe) {
         var oppgaver = oppgaveTjeneste.hentAktiveOppgaverForSaksnummer(saksnummerListe);
         return map(oppgaver);
     }
@@ -177,7 +178,7 @@ public class OppgaveDtoTjeneste {
         if (kontekst == null || oppgaver.isEmpty()) {
             return Set.of();
         }
-        var saksnummer = oppgaver.stream().map(Oppgave::getSaksnummer).collect(Collectors.toSet());
+        var saksnummer = oppgaver.stream().map(Oppgave::getSaksnummer).map(Saksnummer::getVerdi).collect(Collectors.toSet());
         return filterKlient.tilgangFilterSaker(kontekst.getOid(), saksnummer);
     }
 

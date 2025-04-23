@@ -36,7 +36,6 @@ public class TilbakekrevingOppgave extends Oppgave {
         this.aktørId = other.aktørId;
         this.behandlendeEnhet = other.behandlendeEnhet;
         this.behandlingsfrist = other.behandlingsfrist;
-        this.fagsakSaksnummer = other.fagsakSaksnummer;
         this.saksnummer = other.saksnummer;
         this.førsteStønadsdag = other.førsteStønadsdag;
         this.behandlingStatus = other.behandlingStatus;
@@ -78,9 +77,8 @@ public class TilbakekrevingOppgave extends Oppgave {
             return this;
         }
 
-        public Builder medFagsakSaksnummer(Long faksagSaksnummer) {
-            tempOppgave.fagsakSaksnummer = faksagSaksnummer;
-            tempOppgave.saksnummer = new Saksnummer(String.valueOf(faksagSaksnummer));
+        public Builder medSaksnummer(Saksnummer saksnummer) {
+            tempOppgave.saksnummer = saksnummer;
             return this;
         }
 
@@ -136,8 +134,8 @@ public class TilbakekrevingOppgave extends Oppgave {
 
     @Override
     public String toString() {
-        return "TilbakekrevingOppgave{" + "beløp=" + beløp + ", feilutbetalingstart=" + feilutbetalingstart + ", id=" + id + ", fagsakSaksnummer="
-            + fagsakSaksnummer + ", aktørId=" + aktørId + ", behandlendeEnhet='" + behandlendeEnhet + '\'' + ", behandlingsfrist=" + behandlingsfrist
+        return "TilbakekrevingOppgave{" + "beløp=" + beløp + ", feilutbetalingstart=" + feilutbetalingstart + ", id=" + id + ", saksnummer="
+            + saksnummer + ", aktørId=" + aktørId + ", behandlendeEnhet='" + behandlendeEnhet + '\'' + ", behandlingsfrist=" + behandlingsfrist
             + ", behandlingOpprettet=" + behandlingOpprettet + ", førsteStønadsdag=" + førsteStønadsdag + ", behandlingStatus=" + behandlingStatus
             + ", behandlingType=" + behandlingType + ", fagsakYtelseType=" + fagsakYtelseType + ", aktiv=" + aktiv + ", system='" + system + '\''
             + ", oppgaveAvsluttet=" + oppgaveAvsluttet + ", utfortFraAdmin=" + utfortFraAdmin + ", behandlingId=" + behandlingId + ", reservasjon="

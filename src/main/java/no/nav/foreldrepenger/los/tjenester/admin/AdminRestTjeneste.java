@@ -132,15 +132,4 @@ public class AdminRestTjeneste {
         return Response.ok().build();
     }
 
-    @POST
-    @Path("/populer-saksnummer")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    @Operation(description = "Populere saksnummer i oppgavetabell", tags = "admin")
-    @BeskyttetRessurs(actionType = ActionType.CREATE, resourceType = ResourceType.DRIFT, sporingslogg = false)
-    public Response populerSaksnummer() {
-        oppgaveTjeneste.populerSaksnummer();
-        return Response.ok().build();
-    }
-
 }
