@@ -7,6 +7,9 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import jakarta.enterprise.event.Event;
+import no.nav.foreldrepenger.los.oppgave.tilbudtoppgave.TilbudtOppgave;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,6 +40,7 @@ public class OppgaveDtoTjeneste {
     private ReservasjonStatusDtoTjeneste reservasjonStatusDtoTjeneste;
     private OppgaveKøTjeneste oppgaveKøTjeneste;
     private TilgangFilterKlient filterKlient;
+    private Event<TilbudtOppgave> tilbudtOppgaveEvent;
 
     @Inject
     public OppgaveDtoTjeneste(OppgaveTjeneste oppgaveTjeneste,
@@ -44,13 +48,15 @@ public class OppgaveDtoTjeneste {
                               PersonTjeneste personTjeneste,
                               ReservasjonStatusDtoTjeneste reservasjonStatusDtoTjeneste,
                               OppgaveKøTjeneste oppgaveKøTjeneste,
-                              TilgangFilterKlient filterKlient) {
+                              TilgangFilterKlient filterKlient,
+                              Event<TilbudtOppgave> tilbudtOppgaveEvent) {
         this.oppgaveTjeneste = oppgaveTjeneste;
         this.reservasjonTjeneste = reservasjonTjeneste;
         this.personTjeneste = personTjeneste;
         this.reservasjonStatusDtoTjeneste = reservasjonStatusDtoTjeneste;
         this.oppgaveKøTjeneste = oppgaveKøTjeneste;
         this.filterKlient = filterKlient;
+        this.tilbudtOppgaveEvent = tilbudtOppgaveEvent;
     }
 
     OppgaveDtoTjeneste() {
@@ -71,6 +77,13 @@ public class OppgaveDtoTjeneste {
     }
 
     public List<OppgaveDto> getOppgaverTilBehandling(Long sakslisteId) {
+        var oppgaveDtoListe = getOppgaver(sakslisteId);
+        var oppgaveIdListe = oppgaveDtoListe.stream().map(OppgaveDto::getId).toList();
+        tilbudtOppgaveEvent.fire(new TilbudtOppgave(oppgaveIdListe));
+        return oppgaveDtoListe;
+    }
+
+    private List<OppgaveDto> getOppgaver(Long sakslisteId) {
         var nesteOppgaver = oppgaveKøTjeneste.hentOppgaver(sakslisteId, ANTALL_OPPGAVER_SOM_VISES_TIL_SAKSBEHANDLER * 7);
         var oppgaveDtos = map(nesteOppgaver, ANTALL_OPPGAVER_SOM_VISES_TIL_SAKSBEHANDLER, nesteOppgaver.size() == ANTALL_OPPGAVER_SOM_VISES_TIL_SAKSBEHANDLER * 7);
         //Noen oppgave filteres bort i mappingen pga at saksbehandler ikke har tilgang til behandlingen
