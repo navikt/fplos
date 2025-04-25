@@ -15,7 +15,6 @@ public class OpphevTilknyttetReservasjonRequestDto implements AbacDto {
     @Valid
     private OppgaveIdDto oppgaveId;
 
-    @NotNull
     @Size(max = 500)
     @Pattern(regexp = InputValideringRegex.FRITEKST)
     private String begrunnelse;
