@@ -18,7 +18,7 @@
         <sonar.projectKey>navikt_fplos</sonar.projectKey>
 
         <fp-kontrakter.version>9.2.7</fp-kontrakter.version>
-        <felles.version>7.4.15</felles.version>
+        <felles.version>7.5.1</felles.version>
         <prosesstask.version>5.1.5</prosesstask.version>
     </properties>
 
@@ -70,7 +70,7 @@
         </dependency>
         <dependency>
             <groupId>no.nav.foreldrepenger.felles.integrasjon</groupId>
-            <artifactId>pip-klient</artifactId>
+            <artifactId>tilgang-klient</artifactId>
         </dependency>
 
         <dependency>
@@ -274,7 +274,7 @@
             </dependency>
             <dependency>
                 <groupId>no.nav.foreldrepenger.felles.integrasjon</groupId>
-                <artifactId>pip-klient</artifactId>
+                <artifactId>tilgang-klient</artifactId>
                 <version>${felles.version}</version>
             </dependency>
             <dependency>

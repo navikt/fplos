@@ -40,7 +40,6 @@ public class PdpRequestBuilderImpl implements PdpRequestBuilder {
 
         setLogContext(oppgave);
         return minimalbuilder()
-            .medAuditIdent(oppgave.getAktørId().getId())
             .medSaksnummer(oppgave.getSaksnummer().getVerdi())
             .build();
     }
