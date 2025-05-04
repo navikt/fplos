@@ -20,7 +20,7 @@ public class AnsattTjeneste {
     private static final LRUCache<UUID, BrukerProfil> ANSATT_UID_PROFIL = new LRUCache<>(1000, TimeUnit.MILLISECONDS.convert(24 * 7, TimeUnit.HOURS));
     private static final Map<String, String> ENHETSNUMMER_AVDELINGSNAVN_MAP = new HashMap<>();
 
-    private AzureBrukerKlient brukerKlient;
+    private AnsattInfoKlient brukerKlient;
     private OrganisasjonRepository organisasjonRepository;
 
 
@@ -29,7 +29,7 @@ public class AnsattTjeneste {
     }
 
     @Inject
-    public AnsattTjeneste(OrganisasjonRepository organisasjonRepository, AzureBrukerKlient brukerKlient) {
+    public AnsattTjeneste(OrganisasjonRepository organisasjonRepository, AnsattInfoKlient brukerKlient) {
         this.brukerKlient = brukerKlient;
         this.organisasjonRepository = organisasjonRepository;
         organisasjonRepository.hentAktiveAvdelinger().forEach(a -> ENHETSNUMMER_AVDELINGSNAVN_MAP.put(a.getAvdelingEnhet(), a.getNavn()));
@@ -59,7 +59,7 @@ public class AnsattTjeneste {
     public BrukerProfil hentBrukerProfil(String ident) {
         var trimmed = ident.trim().toUpperCase();
         var brukerProfil = Optional.ofNullable(ANSATT_PROFIL.get(trimmed))
-            .orElseGet(() -> mapTilDomene(brukerKlient.brukerProfil(trimmed)));
+            .orElseGet(() -> brukerKlient.brukerProfil(trimmed));
         // Alltid put for å extende levetid
         ANSATT_PROFIL.put(trimmed, brukerProfil);
         ANSATT_UID_PROFIL.put(brukerProfil.uid(), brukerProfil);
@@ -70,7 +70,7 @@ public class AnsattTjeneste {
         // For det spennende tilfelle at NAVident evt skulle bytte oid (slutter, reansatt?)
         try {
             var brukerProfil = Optional.ofNullable(ANSATT_UID_PROFIL.get(uid))
-                .orElseGet(() -> mapTilDomene(brukerKlient.brukerProfil(uid)));
+                .orElseGet(() -> brukerKlient.brukerProfil(uid));
             // Alltid put for å extende levetid
             ANSATT_PROFIL.put(brukerProfil.ident().trim().toUpperCase(), brukerProfil);
             ANSATT_UID_PROFIL.put(uid, brukerProfil);
@@ -78,10 +78,6 @@ public class AnsattTjeneste {
         } catch (Exception e) {
             return Optional.empty();
         }
-    }
-
-    private static BrukerProfil mapTilDomene(AzureBrukerKlient.BrukerProfilResponse klientResponse) {
-        return new BrukerProfil(klientResponse.uid(), klientResponse.ident(), klientResponse.navn(), avdeling(klientResponse.ansattVedEnhetId()));
     }
 
     private static String avdeling(String avdelingsNummer) {
