@@ -1,6 +1,7 @@
 package no.nav.foreldrepenger.los.tjenester.admin;
 
 import java.util.List;
+import java.util.Map;
 
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -9,12 +10,15 @@ import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import no.nav.foreldrepenger.los.domene.typer.BehandlingId;
 import no.nav.foreldrepenger.los.oppgave.OppgaveTjeneste;
+import no.nav.foreldrepenger.los.oppgave.tilbudtoppgave.TilbudtOppgaveRepository;
 import no.nav.foreldrepenger.los.organisasjon.OrganisasjonRepository;
 import no.nav.foreldrepenger.los.tjenester.admin.dto.DriftAvdelingEnhetDto;
 import no.nav.foreldrepenger.los.tjenester.admin.dto.DriftOpprettAvdelingEnhetDto;
@@ -32,14 +36,17 @@ public class AdminRestTjeneste {
     private SynkroniseringHendelseTaskOppretterTjeneste synkroniseringHendelseTaskOppretterTjeneste;
     private OppgaveTjeneste oppgaveTjeneste;
     private OrganisasjonRepository organisasjonRepository;
+    private TilbudtOppgaveRepository tilbudtOppgaveRepository;
 
     @Inject
     public AdminRestTjeneste(SynkroniseringHendelseTaskOppretterTjeneste synkroniseringHendelseTaskOppretterTjeneste,
                              OppgaveTjeneste oppgaveTjeneste,
-                             OrganisasjonRepository organisasjonRepository) {
+                             OrganisasjonRepository organisasjonRepository,
+                             TilbudtOppgaveRepository tilbudtOppgaveRepository) {
         this.synkroniseringHendelseTaskOppretterTjeneste = synkroniseringHendelseTaskOppretterTjeneste;
         this.oppgaveTjeneste = oppgaveTjeneste;
         this.organisasjonRepository = organisasjonRepository;
+        this.tilbudtOppgaveRepository = tilbudtOppgaveRepository;
     }
 
     public AdminRestTjeneste() {
@@ -130,6 +137,15 @@ public class AdminRestTjeneste {
     public Response slettLøseGruppeKnytninger() {
         organisasjonRepository.slettLøseGruppeKnytninger();
         return Response.ok().build();
+    }
+
+    @GET
+    @Path("/ofte-tilbudte-behandlinger")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Operation(description = "Lister ut behandlinger som ofte er tilbudt saksbehandlere", tags = "admin")
+    @BeskyttetRessurs(actionType = ActionType.READ, resourceType = ResourceType.DRIFT, sporingslogg = false)
+    public Map<BehandlingId, Integer> hentUpoppeBehandler() {
+        return tilbudtOppgaveRepository.toppUplukkedeBehandlinger();
     }
 
 }

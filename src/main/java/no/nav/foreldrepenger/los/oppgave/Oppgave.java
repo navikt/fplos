@@ -6,7 +6,6 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
 import jakarta.persistence.Embedded;
@@ -81,6 +80,9 @@ public class Oppgave extends BaseEntitet {
     @Convert(converter = BooleanToStringConverter.class)
     @Column(name = "UTFORT_FRA_ADMIN")
     protected Boolean utfortFraAdmin = Boolean.FALSE;
+
+    @Column(name = "TILBUDT_COUNT")
+    protected Integer tilbudtCount = 0;
 
     @Embedded
     protected BehandlingId behandlingId;
@@ -162,6 +164,10 @@ public class Oppgave extends BaseEntitet {
 
     public void setOppgaveAvsluttet(LocalDateTime avsluttet) {
         this.oppgaveAvsluttet = avsluttet;
+    }
+
+    public Integer getTilbudtCount() {
+        return tilbudtCount;
     }
 
     public void avsluttOppgave() {
