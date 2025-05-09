@@ -1,11 +1,11 @@
 package no.nav.foreldrepenger.los.tjenester.felles.dto;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,6 +28,8 @@ import no.nav.vedtak.sikkerhet.kontekst.RequestKontekst;
 public class OppgaveDtoTjeneste {
 
     public static final int ANTALL_OPPGAVER_SOM_VISES_TIL_SAKSBEHANDLER = 3;
+    public static final int ANTALL_OPPGAVER_UTVALG = 19;
+
 
     private static final Logger LOG = LoggerFactory.getLogger(OppgaveDtoTjeneste.class);
 
@@ -71,8 +73,8 @@ public class OppgaveDtoTjeneste {
     }
 
     public List<OppgaveDto> getOppgaverTilBehandling(Long sakslisteId) {
-        var nesteOppgaver = oppgaveKøTjeneste.hentOppgaver(sakslisteId, ANTALL_OPPGAVER_SOM_VISES_TIL_SAKSBEHANDLER * 7);
-        var oppgaveDtos = map(nesteOppgaver, ANTALL_OPPGAVER_SOM_VISES_TIL_SAKSBEHANDLER, nesteOppgaver.size() == ANTALL_OPPGAVER_SOM_VISES_TIL_SAKSBEHANDLER * 7);
+        var nesteOppgaver = oppgaveKøTjeneste.hentOppgaver(sakslisteId, ANTALL_OPPGAVER_UTVALG);
+        var oppgaveDtos = map(nesteOppgaver, ANTALL_OPPGAVER_SOM_VISES_TIL_SAKSBEHANDLER, nesteOppgaver.size() == ANTALL_OPPGAVER_UTVALG);
         //Noen oppgave filteres bort i mappingen pga at saksbehandler ikke har tilgang til behandlingen
         if (oppgaveDtos.size() == Math.min(ANTALL_OPPGAVER_SOM_VISES_TIL_SAKSBEHANDLER, nesteOppgaver.size())) {
             return oppgaveDtos;
@@ -136,7 +138,9 @@ public class OppgaveDtoTjeneste {
     }
 
     private List<Oppgave> shuffleList(List<Oppgave> oppgaver, int antallOppgaver) {
-        int start = (int)(System.currentTimeMillis() % antallOppgaver);
+        var start = KontekstHolder.getKontekst() instanceof RequestKontekst rk
+            ? (rk.getUid().hashCode() + LocalDate.now().getDayOfMonth()) % antallOppgaver
+            : (int)(System.currentTimeMillis() % antallOppgaver);
         List<Oppgave> permutert = new ArrayList<>();
         for (int i = 0; i < antallOppgaver; i++) {
             permutert.add(oppgaver.get((start + i) % antallOppgaver));
