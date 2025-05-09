@@ -139,7 +139,7 @@ public class OppgaveDtoTjeneste {
 
     private List<Oppgave> shuffleList(List<Oppgave> oppgaver, int antallOppgaver) {
         var start = KontekstHolder.getKontekst() instanceof RequestKontekst rk
-            ? (rk.getUid().hashCode() + LocalDate.now().getDayOfMonth()) % antallOppgaver
+            ? Math.abs(rk.getUid().hashCode() + LocalDate.now().getDayOfMonth()) % antallOppgaver
             : (int)(System.currentTimeMillis() % antallOppgaver);
         List<Oppgave> permutert = new ArrayList<>();
         for (int i = 0; i < antallOppgaver; i++) {
