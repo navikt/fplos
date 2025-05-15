@@ -22,6 +22,7 @@ import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
 import no.nav.foreldrepenger.los.oppgave.OppgaveTjeneste;
 import no.nav.foreldrepenger.los.reservasjon.Reservasjon;
+import no.nav.foreldrepenger.los.reservasjon.ReservasjonKonstanter;
 import no.nav.foreldrepenger.los.reservasjon.ReservasjonTjeneste;
 import no.nav.foreldrepenger.los.tjenester.felles.dto.OppgaveDto;
 import no.nav.foreldrepenger.los.tjenester.felles.dto.OppgaveDtoTjeneste;
@@ -32,7 +33,6 @@ import no.nav.foreldrepenger.los.tjenester.felles.dto.SaksbehandlerDtoTjeneste;
 import no.nav.foreldrepenger.los.tjenester.reservasjon.dto.ReservasjonEndringRequestDto;
 import no.nav.foreldrepenger.los.tjenester.saksbehandler.oppgave.dto.OppgaveFlyttingDto;
 import no.nav.foreldrepenger.los.tjenester.saksbehandler.oppgave.dto.OppgaveIdDto;
-import no.nav.foreldrepenger.los.tjenester.saksbehandler.oppgave.dto.OpphevTilknyttetReservasjonRequestDto;
 import no.nav.vedtak.sikkerhet.abac.BeskyttetRessurs;
 import no.nav.vedtak.sikkerhet.abac.beskyttet.ActionType;
 import no.nav.vedtak.sikkerhet.abac.beskyttet.ResourceType;
@@ -93,10 +93,10 @@ public class ReservasjonRestTjeneste {
     @Produces(MediaType.APPLICATION_JSON)
     @Operation(description = "Opphev reservasjon av oppgave", tags = "Saksbehandler")
     @BeskyttetRessurs(actionType = ActionType.CREATE, resourceType = ResourceType.FAGSAK, sporingslogg = false)
-    public ReservasjonStatusDto opphevReservasjonTilknyttetOppgave(@NotNull @Parameter(description = "Id og begrunnelse") @Valid OpphevTilknyttetReservasjonRequestDto request) {
-        var reservasjon = reservasjonTjeneste.slettReservasjonMedEventLogg(request.getOppgaveId().getVerdi(), request.getBegrunnelse());
+    public ReservasjonStatusDto opphevReservasjonTilknyttetOppgave(@NotNull @Parameter(description = "Id og begrunnelse") @Valid OppgaveIdDto oppgaveId) {
+        var reservasjon = reservasjonTjeneste.slettReservasjonMedEventLogg(oppgaveId.getVerdi(), ReservasjonKonstanter.RESERVASJON_AVSLUTTET_SAKSBEHANDLER);
         return reservasjon.map(Reservasjon::getOppgave).map(oppgaveDtoTjeneste::lagOppgaveStatusUtenPersonoppslag).orElseGet(() -> {
-            LOG.info("Fant ikke reservasjon tilknyttet oppgaveId {} for sletting, returnerer null", request.getOppgaveId());
+            LOG.info("Fant ikke reservasjon tilknyttet oppgaveId {} for sletting, returnerer null", oppgaveId.getVerdi());
             return null;
         });
     }
