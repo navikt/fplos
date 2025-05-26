@@ -80,6 +80,9 @@ public class FpsakOppgaveEgenskapFinner implements OppgaveEgenskapFinner {
         if (matchAksjonspunkt(aksjonspunkter, Aksjonspunkt::erTilBeslutter)) {
             this.andreKriterier.add(AndreKriterierType.TIL_BESLUTTER);
         }
+        if (matchAksjonspunkt(aksjonspunkter, Aksjonspunkt::erReturnertFraBeslutter)) {
+            this.andreKriterier.add(AndreKriterierType.RETURNERT_FRA_BESLUTTER);
+        }
         if (matchAksjonspunkt(aksjonspunkter, Aksjonspunkt::erRegistrerPapirSøknad)) {
             this.andreKriterier.add(AndreKriterierType.PAPIRSØKNAD);
         }

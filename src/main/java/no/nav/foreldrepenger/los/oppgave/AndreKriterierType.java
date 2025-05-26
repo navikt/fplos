@@ -12,6 +12,7 @@ import no.nav.foreldrepenger.los.felles.Kodeverdi;
 public enum AndreKriterierType implements Kodeverdi {
 
     TIL_BESLUTTER("TIL_BESLUTTER", "Til beslutter"),
+    RETURNERT_FRA_BESLUTTER("RETURNERT_FRA_BESLUTTER", "Returnert fra beslutter"),
     PAPIRSØKNAD("PAPIRSOKNAD", "Registrer papirsøknad"),
     UTBETALING_TIL_BRUKER("UTBETALING_TIL_BRUKER", "Utbetaling til bruker"),
     UTLANDSSAK("UTLANDSSAK", "Bosatt utland"),

@@ -110,6 +110,13 @@ class FpsakOppgaveEgenskapFinnerTest {
     }
 
     @Test
+    void avbrutt5016GirReturnertFraBeslutterEgenskap() {
+        var avbrutt5016 = new LosAksjonspunktDto("5016", Aksjonspunktstatus.AVBRUTT, null);
+        var result = new FpsakOppgaveEgenskapFinner(lagLosBehandlingDto(List.of(), null, avbrutt5016));
+        Assertions.assertThat(result.getAndreKriterier()).contains(AndreKriterierType.RETURNERT_FRA_BESLUTTER);
+    }
+
+    @Test
     void aktiv5001GirKontrollerTerminbekreftelse() {
         var aktiv5001 = new LosAksjonspunktDto("5001", Aksjonspunktstatus.OPPRETTET, null);
         var result = new FpsakOppgaveEgenskapFinner(lagLosBehandlingDto(List.of(), null, aktiv5001));
