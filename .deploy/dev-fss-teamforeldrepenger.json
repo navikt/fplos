@@ -12,7 +12,7 @@
     "mem": "2048Mi"
   },
   "requests": {
-    "cpu": "200m",
+    "cpu": "100m",
     "mem": "512Mi"
   },
   "groups": [
