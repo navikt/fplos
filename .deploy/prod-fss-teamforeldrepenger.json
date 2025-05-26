@@ -1,9 +1,7 @@
 {
-  "environment": "prod",
   "kafkaPool": "nav-prod",
   "oracleconfigkv":  "/oracle/data/prod/config/fplos_p",
   "oraclecredskv": "/oracle/data/prod/creds/fplos_p-fplos_p",
-  "serviceuserkv": "/serviceuser/data/prod/srvfplos",
   "ingresses":  [
     "https://fplos.prod-fss-pub.nais.io"
   ],
