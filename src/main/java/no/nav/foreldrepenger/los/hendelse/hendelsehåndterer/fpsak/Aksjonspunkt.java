@@ -67,11 +67,15 @@ public class Aksjonspunkt {
     }
 
     public boolean erAvbrutt() {
-        return STATUSKODE_AVBRUTT.equals(definisjonKode);
+        return STATUSKODE_AVBRUTT.equals(statusKode);
     }
 
     public boolean erTilBeslutter() {
         return TIL_BESLUTTER_KODE.equals(definisjonKode) && erAktiv();
+    }
+
+    public boolean erReturnertFraBeslutter() {
+        return TIL_BESLUTTER_KODE.equals(definisjonKode) && erAvbrutt();
     }
 
     public boolean erRegistrerPapirSøknad() {
