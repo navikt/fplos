@@ -11,6 +11,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -61,7 +62,7 @@ public class Oppgave extends BaseEntitet {
     @Column(name = "BEHANDLING_TYPE")
     protected BehandlingType behandlingType = BehandlingType.INNSYN;
 
-    @OneToMany(mappedBy = "oppgave")
+    @OneToMany(mappedBy = "oppgave", fetch = FetchType.EAGER)
     protected Set<OppgaveEgenskap> oppgaveEgenskaper;
 
     @Convert(converter = FagsakYtelseType.KodeverdiConverter.class)
@@ -85,7 +86,7 @@ public class Oppgave extends BaseEntitet {
     @Embedded
     protected BehandlingId behandlingId;
 
-    @OneToOne(mappedBy = "oppgave")
+    @OneToOne(mappedBy = "oppgave", fetch = FetchType.EAGER)
     protected Reservasjon reservasjon;
 
     public Long getId() {
