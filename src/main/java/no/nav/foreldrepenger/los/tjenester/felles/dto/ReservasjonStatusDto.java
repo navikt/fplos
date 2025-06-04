@@ -77,4 +77,11 @@ public class ReservasjonStatusDto {
     public FlyttetReservasjonDto getFlyttetReservasjon() {
         return flyttetReservasjon;
     }
+
+    @Override
+    public String toString() {
+        return "ReservasjonStatusDto{" + "erReservert=" + erReservert + ", reservertTilTidspunkt=" + reservertTilTidspunkt
+            + ", erReservertAvInnloggetBruker=" + erReservertAvInnloggetBruker + ", reservertAvUid='" + reservertAvUid + '\''
+            + ", reservertAvNavn='***'" + ", flyttetReservasjon=" + flyttetReservasjon + '}';
+    }
 }

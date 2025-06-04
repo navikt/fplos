@@ -3,6 +3,7 @@ package no.nav.foreldrepenger.los.reservasjon;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -11,7 +12,11 @@ import jakarta.persistence.PersistenceException;
 
 import no.nav.foreldrepenger.los.felles.util.BrukerIdent;
 import no.nav.foreldrepenger.los.felles.util.DateAndTimeUtil;
+import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveEventType;
+import no.nav.foreldrepenger.los.oppgave.AndreKriterierType;
 import no.nav.foreldrepenger.los.oppgave.OppgaveRepository;
+
+import no.nav.foreldrepenger.los.tjenester.felles.dto.OppgaveBehandlingsstatus;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -142,6 +147,39 @@ public class ReservasjonTjeneste {
 
     public List<Oppgave> hentSaksbehandlersSisteReserverteOppgaver() {
         return reservasjonRepository.hentSaksbehandlersSisteReserverteOppgaver(BrukerIdent.brukerIdent());
+    }
+
+    public List<OppgaveBehandlingsstatusWrapper> hentSaksbehandlersSisteBehandlingerMedStatus() {
+        var sisteReserverteMetadata = reservasjonRepository.hentSisteReserverteMetadata(BrukerIdent.brukerIdent(), 15);
+
+        var oppgaveIder = sisteReserverteMetadata.stream().map(SisteReserverteMetadata::oppgaveId).toList();
+        var oppgaveListe = oppgaveRepository.hentOppgaver(oppgaveIder);
+        var oppgaveMap = oppgaveListe.stream().collect(Collectors.toMap(Oppgave::getId, oppgave -> oppgave));
+
+        return sisteReserverteMetadata.stream().map(mr -> {
+            var oppgave = oppgaveMap.get(mr.oppgaveId());
+            var status = mapStatus(oppgave, mr.sisteEventType());
+            return new OppgaveBehandlingsstatusWrapper(oppgave, status);
+        }).toList();
+
+    }
+
+    private static OppgaveBehandlingsstatus mapStatus(Oppgave oppgave, OppgaveEventType sisteEventType) {
+        var erTilBeslutter = oppgave.getOppgaveEgenskaper().stream()
+            .anyMatch(egenskap -> AndreKriterierType.TIL_BESLUTTER.equals(egenskap.getAndreKriterierType()));
+        var erReturnertFraBeslutter = oppgave.getOppgaveEgenskaper().stream()
+            .anyMatch(egenskap -> AndreKriterierType.RETURNERT_FRA_BESLUTTER.equals(egenskap.getAndreKriterierType()));
+        if (sisteEventType.erVenteEvent()) {
+            return OppgaveBehandlingsstatus.PÅ_VENT;
+        } else if (!oppgave.getAktiv()) {
+            return OppgaveBehandlingsstatus.FERDIG;
+        } else if (erTilBeslutter) {
+            return OppgaveBehandlingsstatus.TIL_BESLUTTER;
+        } else if (erReturnertFraBeslutter) {
+            return OppgaveBehandlingsstatus.RETURNERT_FRA_BESLUTTER;
+        } else {
+            return OppgaveBehandlingsstatus.UNDER_ARBEID;
+        }
     }
 
     public void opprettReservasjon(Oppgave oppgave, String saksbehandler, String begrunnelse) {
