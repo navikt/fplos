@@ -427,6 +427,15 @@ public class OppgaveRepository {
         return entityManager.createQuery("FROM Oppgave o where o.id = :id", Oppgave.class).setParameter("id", oppgaveId).getSingleResult();
     }
 
+    public List<Oppgave> hentOppgaver(List<Long> oppgaveIder) {
+        if (oppgaveIder == null || oppgaveIder.isEmpty()) {
+            return List.of();
+        }
+        return entityManager.createQuery("FROM Oppgave o where o.id IN (:oppgaveIder)", Oppgave.class)
+            .setParameter("oppgaveIder", oppgaveIder)
+            .getResultList();
+    }
+
     public List<Oppgave> hentOppgaver(BehandlingId behandlingId) {
         return entityManager.createQuery("FROM Oppgave o where o.behandlingId = :behandlingId", Oppgave.class)
             .setParameter(BEHANDLING_ID, behandlingId)

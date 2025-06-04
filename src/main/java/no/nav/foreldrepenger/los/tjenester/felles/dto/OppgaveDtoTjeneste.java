@@ -6,6 +6,10 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
+
+import no.nav.foreldrepenger.los.reservasjon.OppgaveBehandlingsstatusWrapper;
+import no.nav.foreldrepenger.los.reservasjon.ReservasjonRepository;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,6 +43,7 @@ public class OppgaveDtoTjeneste {
     private ReservasjonStatusDtoTjeneste reservasjonStatusDtoTjeneste;
     private OppgaveKøTjeneste oppgaveKøTjeneste;
     private TilgangFilterKlient filterKlient;
+    private ReservasjonRepository reservasjonRepository;
 
     @Inject
     public OppgaveDtoTjeneste(OppgaveTjeneste oppgaveTjeneste,
@@ -46,13 +51,14 @@ public class OppgaveDtoTjeneste {
                               PersonTjeneste personTjeneste,
                               ReservasjonStatusDtoTjeneste reservasjonStatusDtoTjeneste,
                               OppgaveKøTjeneste oppgaveKøTjeneste,
-                              TilgangFilterKlient filterKlient) {
+                              TilgangFilterKlient filterKlient, ReservasjonRepository reservasjonRepository) {
         this.oppgaveTjeneste = oppgaveTjeneste;
         this.reservasjonTjeneste = reservasjonTjeneste;
         this.personTjeneste = personTjeneste;
         this.reservasjonStatusDtoTjeneste = reservasjonStatusDtoTjeneste;
         this.oppgaveKøTjeneste = oppgaveKøTjeneste;
         this.filterKlient = filterKlient;
+        this.reservasjonRepository = reservasjonRepository;
     }
 
     OppgaveDtoTjeneste() {
@@ -89,8 +95,10 @@ public class OppgaveDtoTjeneste {
         return map(oppgaver);
     }
 
-    public List<OppgaveDto> getSaksbehandlersSisteReserverteOppgaver() {
-        var oppgaver = reservasjonTjeneste.hentSaksbehandlersSisteReserverteOppgaver();
+    public List<OppgaveDtoMedStatus> getSaksbehandlersSisteReserverteOppgaver() {
+        var oppgaverMedStatus = reservasjonTjeneste.hentSaksbehandlersSisteBehandlingerMedStatus();
+        var oppgaver = oppgaverMedStatus.stream().map(OppgaveBehandlingsstatusWrapper::oppgave).toList();
+        sjekkDiff(oppgaver);
         var saksnummerMedTilgang = filterHarTilgang(oppgaver);
         var oppgaverMedTilgang = oppgaver.stream()
             .filter(oppgave -> saksnummerMedTilgang.contains(oppgave.getSaksnummer()))
@@ -98,8 +106,32 @@ public class OppgaveDtoTjeneste {
         return oppgaverMedTilgang.stream()
             .map(this::safeLagDtoFor)
             .flatMap(Optional::stream)
-            .limit(10)
+            .map(dto -> {
+                var status = oppgaverMedStatus.stream()
+                    .filter(oppgaveStatus -> oppgaveStatus.oppgave().getId().equals(dto.getId()))
+                    .findFirst()
+                    .map(OppgaveBehandlingsstatusWrapper::status)
+                    .orElseThrow();
+                return new OppgaveDtoMedStatus(dto, status);
+            })
+            .limit(15)
             .toList();
+    }
+
+    private void sjekkDiff(List<Oppgave> oppgaver) {
+        var behandlinger = oppgaver.stream().map(Oppgave::getBehandlingId).collect(Collectors.toSet());
+        var behandlingerLegacy = reservasjonTjeneste.hentSaksbehandlersSisteReserverteOppgaver().stream()
+            .map(Oppgave::getBehandlingId).collect(Collectors.toSet());
+        if (!behandlingerLegacy.equals(behandlinger)) {
+            var behandlingerIkkeILegacy = behandlinger.stream()
+                .filter(b -> !behandlingerLegacy.contains(b))
+                .collect(Collectors.toSet());
+            var legacyBehandlingerIkkeINye = behandlingerLegacy.stream()
+                .filter(b -> !behandlinger.contains(b))
+                .collect(Collectors.toSet());
+            LOG.info("LOS siste reserverte kall gir diff. I ny men ikke gammel: {}, I gammel men ikke ny: {}",
+                behandlingerIkkeILegacy, legacyBehandlingerIkkeINye);
+        }
     }
 
     private Optional<OppgaveDto> safeLagDtoFor(Oppgave oppgave) {
