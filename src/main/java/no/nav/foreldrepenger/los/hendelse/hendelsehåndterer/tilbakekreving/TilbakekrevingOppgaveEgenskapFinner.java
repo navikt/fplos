@@ -53,7 +53,7 @@ public class TilbakekrevingOppgaveEgenskapFinner implements OppgaveEgenskapFinne
         if (harBehandlingsegenskap(behandlingsegenskaper, LokalBehandlingEgenskap.OVER_FIRE_RETTSGEBYR)) {
             this.andreKriterier.add(AndreKriterierType.OVER_FIRE_RETTSGEBYR);
         }
-        if (!harBehandlingsegenskap(behandlingsegenskaper, LokalBehandlingEgenskap.VARSLET)) {
+        if (!behandlingsegenskaper.isEmpty() && !harBehandlingsegenskap(behandlingsegenskaper, LokalBehandlingEgenskap.VARSLET)) {
             this.andreKriterier.add(AndreKriterierType.IKKE_VARSLET);
         }
         this.saksbehandlerForTotrinn = saksbehandler;
