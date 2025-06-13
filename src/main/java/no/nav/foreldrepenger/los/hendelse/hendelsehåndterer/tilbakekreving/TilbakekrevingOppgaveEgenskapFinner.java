@@ -1,6 +1,7 @@
 package no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.tilbakekreving;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -18,7 +19,8 @@ public class TilbakekrevingOppgaveEgenskapFinner implements OppgaveEgenskapFinne
 
     public TilbakekrevingOppgaveEgenskapFinner(List<LosBehandlingDto.LosAksjonspunktDto> aksjonspunkter,
                                                String saksbehandler,
-                                               LosFagsakEgenskaperDto egenskaperDto) {
+                                               LosFagsakEgenskaperDto egenskaperDto,
+                                               Collection<String> behandlingsegenskaper) {
         var saksegenskaper = Optional.ofNullable(egenskaperDto).map(LosFagsakEgenskaperDto::saksegenskaper).orElse(List.of());
         this.andreKriterier = new ArrayList<>();
         if (harSaksegenskap(saksegenskaper, LokalFagsakEgenskap.BOSATT_UTLAND)) {
@@ -48,7 +50,17 @@ public class TilbakekrevingOppgaveEgenskapFinner implements OppgaveEgenskapFinne
         if (avbruttBeslutterAp(aksjonspunkter)) {
             this.andreKriterier.add(AndreKriterierType.RETURNERT_FRA_BESLUTTER);
         }
+        if (harBehandlingsegenskap(behandlingsegenskaper, LokalBehandlingEgenskap.OVER_FIRE_RETTSGEBYR)) {
+            this.andreKriterier.add(AndreKriterierType.OVER_FIRE_RETTSGEBYR);
+        }
+        if (!behandlingsegenskaper.isEmpty() && !harBehandlingsegenskap(behandlingsegenskaper, LokalBehandlingEgenskap.VARSLET)) {
+            this.andreKriterier.add(AndreKriterierType.IKKE_VARSLET);
+        }
         this.saksbehandlerForTotrinn = saksbehandler;
+    }
+
+    public enum LokalBehandlingEgenskap {
+        VARSLET, OVER_FIRE_RETTSGEBYR
     }
 
     private static boolean aktivtBeslutterAp(List<LosBehandlingDto.LosAksjonspunktDto> aksjonspunkter) {
@@ -68,6 +80,10 @@ public class TilbakekrevingOppgaveEgenskapFinner implements OppgaveEgenskapFinne
 
     private static boolean harSaksegenskap(List<String> saksegenskaper, LokalFagsakEgenskap egenskap) {
         return saksegenskaper.stream().anyMatch(s -> s.equalsIgnoreCase(egenskap.name()));
+    }
+
+    private static boolean harBehandlingsegenskap(Collection<String> behandlingsegenskaper, LokalBehandlingEgenskap egenskap) {
+        return behandlingsegenskaper.stream().anyMatch(s -> s.equalsIgnoreCase(egenskap.name()));
     }
 
     @Override
