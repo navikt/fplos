@@ -36,7 +36,10 @@ public enum AndreKriterierType implements Kodeverdi {
     REVURDERING_INNTEKTSMELDING("REVURDERING_INNTEKTSMELDING", "Revurdering inntektsmelding"),
     TERMINBEKREFTELSE("TERMINBEKREFTELSE", "Terminbekreftelse"),
     NYTT_VEDTAK("NYTT_VEDTAK", "Ny stønadsperiode"),
-    UTSATT_START("UTSATT_START", "Utsatt start");
+    UTSATT_START("UTSATT_START", "Utsatt start"),
+    IKKE_VARSLET("IKKE_VARSLET", "Ikke varslet"),
+    OVER_FIRE_RETTSGEBYR("OVER_FIRE_RETTSGEBYR", "Over 4 rettsgebyr")
+    ;
 
     @JsonValue
     private String kode;

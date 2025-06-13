@@ -69,7 +69,8 @@ public class TilbakekrevingHendelseHåndterer {
         var behandlingId = BehandlingId.fromUUID(behandlingDto.behandlingUuid());
         var oppgaveHistorikk = new OppgaveHistorikk(oppgaveRepository.hentOppgaveEventer(behandlingId));
         var aksjonspunkter = behandlingDto.aksjonspunkt();
-        var egenskapFinner = new TilbakekrevingOppgaveEgenskapFinner(aksjonspunkter, behandlingDto.ansvarligSaksbehandlerIdent(), egenskaperDto);
+        var egenskapFinner = new TilbakekrevingOppgaveEgenskapFinner(aksjonspunkter, behandlingDto.ansvarligSaksbehandlerIdent(),
+            egenskaperDto, Optional.ofNullable(behandlingDto.behandlingsegenskaper()).orElse(List.of()));
         var behandlendeEnhet = behandlingDto.behandlendeEnhetId();
         var event = eventFra(aksjonspunkter, oppgaveHistorikk, egenskapFinner);
 
