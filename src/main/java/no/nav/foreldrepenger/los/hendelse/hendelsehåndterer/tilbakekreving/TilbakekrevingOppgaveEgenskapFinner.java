@@ -38,6 +38,9 @@ public class TilbakekrevingOppgaveEgenskapFinner implements OppgaveEgenskapFinne
         if (harSaksegenskap(saksegenskaper, LokalFagsakEgenskap.BARE_FAR_RETT)) {
             this.andreKriterier.add(AndreKriterierType.BARE_FAR_RETT);
         }
+        if (harSaksegenskap(saksegenskaper, LokalFagsakEgenskap.HASTER)) {
+            this.andreKriterier.add(AndreKriterierType.HASTER);
+        }
         if (harSaksegenskap(saksegenskaper, LokalFagsakEgenskap.NÆRING)) {
             this.andreKriterier.add(AndreKriterierType.NÆRING);
         }

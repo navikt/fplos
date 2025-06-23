@@ -7,5 +7,6 @@ public enum LokalFagsakEgenskap {
     DØD,
     NÆRING,
     BARE_FAR_RETT,
-    PRAKSIS_UTSETTELSE
+    PRAKSIS_UTSETTELSE,
+    HASTER
 }

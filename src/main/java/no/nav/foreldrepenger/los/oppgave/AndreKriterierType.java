@@ -38,7 +38,8 @@ public enum AndreKriterierType implements Kodeverdi {
     NYTT_VEDTAK("NYTT_VEDTAK", "Ny stønadsperiode"),
     UTSATT_START("UTSATT_START", "Utsatt start"),
     IKKE_VARSLET("IKKE_VARSLET", "Ikke varslet"),
-    OVER_FIRE_RETTSGEBYR("OVER_FIRE_RETTSGEBYR", "Over 4 rettsgebyr")
+    OVER_FIRE_RETTSGEBYR("OVER_FIRE_RETTSGEBYR", "Over 4 rettsgebyr"),
+    HASTER("HASTER", "Haster")
     ;
 
     @JsonValue
