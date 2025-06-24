@@ -26,7 +26,6 @@ public class OppgaveDto {
     private LocalDateTime behandlingsfrist;
     private BehandlingId behandlingId;
     private Set<AndreKriterierType> andreKriterier;
-    private ReservasjonStatusDto status;
     private ReservasjonStatusDto reservasjonStatus;
 
     OppgaveDto(Oppgave oppgave, Person personDto, ReservasjonStatusDto reservasjonStatus) {
@@ -49,7 +48,6 @@ public class OppgaveDto {
             .map(OppgaveEgenskap::getAndreKriterierType)
             .collect(Collectors.toSet());
         this.reservasjonStatus = reservasjonStatus;
-        this.status = reservasjonStatus;
     }
 
     private void leggTilPersonInformasjon(Person person) {
@@ -63,10 +61,6 @@ public class OppgaveDto {
 
     public ReservasjonStatusDto getReservasjonStatus() {
         return reservasjonStatus;
-    }
-
-    public ReservasjonStatusDto getStatus() {
-        return status;
     }
 
     public UUID getBehandlingId() {
@@ -117,7 +111,6 @@ public class OppgaveDto {
     public String toString() {
         return "OppgaveDto{"
             + "id=" + id
-            + ", reservasjonStatus=" + reservasjonStatus
             + ", saksnummer='" + saksnummer + '\''
             + ", navn='" + navn + '\''
             + ", system='" + system + '\''
@@ -128,7 +121,8 @@ public class OppgaveDto {
             + ", opprettetTidspunkt=" + opprettetTidspunkt
             + ", behandlingsfrist=" + behandlingsfrist
             + ", behandlingId=" + behandlingId
-            + ", andreKriterier=" + andreKriterier + '}';
+            + ", andreKriterier=" + andreKriterier
+            + ", reservasjonStatus=" + reservasjonStatus + '}';
     }
 
     @Override
