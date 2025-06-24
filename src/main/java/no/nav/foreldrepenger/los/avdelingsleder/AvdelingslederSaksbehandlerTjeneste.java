@@ -72,7 +72,7 @@ public class AvdelingslederSaksbehandlerTjeneste {
     }
 
     private Saksbehandler opprettSaksbehandler(String ident) {
-        var ansattProfil = ansattTjeneste.hentBrukerProfil(ident);
+        var ansattProfil = ansattTjeneste.hentBrukerProfil(ident).orElseThrow();
         var saksbehandler = new Saksbehandler(ident.trim().toUpperCase(), ansattProfil.uid());
         organisasjonRepository.persistFlush(saksbehandler);
         return organisasjonRepository.hentSaksbehandlerHvisEksisterer(ident)

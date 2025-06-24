@@ -72,7 +72,7 @@ public class SaksbehandlerDtoTjeneste {
         try {
             var identDto = new SaksbehandlerBrukerIdentDto(saksbehandlerIdent);
             return organisasjonRepository.hentSaksbehandlerHvisEksisterer(saksbehandlerIdent).flatMap(this::hentBrukerProfil)
-                .or(() -> Optional.ofNullable(ansattTjeneste.hentBrukerProfil(saksbehandlerIdent)))
+                .or(() -> ansattTjeneste.hentBrukerProfil(saksbehandlerIdent))
                 .map(bp -> new SaksbehandlerDto(identDto, bp.navn(), bp.ansattAvdeling()));
         } catch (IntegrasjonException e) {
             return Optional.empty();
@@ -81,7 +81,7 @@ public class SaksbehandlerDtoTjeneste {
     }
     public Optional<BrukerProfil> hentBrukerProfil(Saksbehandler saksbehandler) {
         try {
-            return Optional.of(ansattTjeneste.hentBrukerProfil(saksbehandler));
+            return ansattTjeneste.hentBrukerProfil(saksbehandler);
         } catch (IntegrasjonException e) {
             LOG.info("Henting av ansattnavn feilet, fortsetter med empty.", e);
             return Optional.empty();

@@ -6,6 +6,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.lenient;
 
+import java.util.Optional;
 import java.util.UUID;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -43,7 +44,7 @@ class SlettDeaktiverteAvdelingerTaskTest {
         var organisasjonRepository = new OrganisasjonRepository(entityManager);
         var oppgaveRepository = new OppgaveRepository(entityManager);
         var avdelingslederTjeneste = new AvdelingslederTjeneste(oppgaveRepository, organisasjonRepository);
-        lenient().when(ansattTjeneste.hentBrukerProfil(anyString())).thenReturn(new BrukerProfil(UUID.randomUUID(), "A000001", "Ansatt Navn", "4867"));
+        lenient().when(ansattTjeneste.hentBrukerProfil(anyString())).thenReturn(Optional.of(new BrukerProfil(UUID.randomUUID(), "A000001", "Ansatt Navn", "4867")));
         this.avdelingslederSaksbehandlerTjeneste = new AvdelingslederSaksbehandlerTjeneste(oppgaveRepository, organisasjonRepository, ansattTjeneste);
         task = new SlettDeaktiverteAvdelingerTask(oppgaveRepository, organisasjonRepository, avdelingslederTjeneste,
             avdelingslederSaksbehandlerTjeneste);
