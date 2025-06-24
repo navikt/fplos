@@ -7,9 +7,8 @@ import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
-
-import no.nav.foreldrepenger.los.organisasjon.ansatt.BrukerProfil;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -25,6 +24,7 @@ import no.nav.foreldrepenger.los.oppgavekø.OppgaveKøTjeneste;
 import no.nav.foreldrepenger.los.organisasjon.OrganisasjonRepository;
 import no.nav.foreldrepenger.los.organisasjon.Saksbehandler;
 import no.nav.foreldrepenger.los.organisasjon.ansatt.AnsattTjeneste;
+import no.nav.foreldrepenger.los.organisasjon.ansatt.BrukerProfil;
 
 @ExtendWith(JpaExtension.class)
 class SaksbehandlerDtoTjenesteTest {
@@ -68,8 +68,8 @@ class SaksbehandlerDtoTjenesteTest {
     void testHentSaksbehandlerSomIkkeFinnesILos(EntityManager entityManager) {
         var saksbehandler1Ident = "Z999999";
 
-        when(ansattTjeneste.hentBrukerProfil(saksbehandler1Ident)).thenReturn(
-            new BrukerProfil(UUID.randomUUID(), saksbehandler1Ident, "Navn Navnesen", "Avdelingsnavnet"));
+        when(ansattTjeneste.hentBrukerProfil(saksbehandler1Ident))
+            .thenReturn(Optional.of(new BrukerProfil(UUID.randomUUID(), saksbehandler1Ident, "Navn Navnesen", "Avdelingsnavnet")));
         var saksbehandlerDto = saksbehandlerDtoTjeneste.saksbehandlerDtoForNavIdent(saksbehandler1Ident);
 
         assertThat(saksbehandlerDto)
