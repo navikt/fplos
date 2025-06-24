@@ -8,7 +8,6 @@ import java.util.stream.Collectors;
 import no.nav.foreldrepenger.los.domene.typer.BehandlingId;
 import no.nav.foreldrepenger.los.domene.typer.aktør.Person;
 import no.nav.foreldrepenger.los.oppgave.AndreKriterierType;
-import no.nav.foreldrepenger.los.oppgave.BehandlingStatus;
 import no.nav.foreldrepenger.los.oppgave.BehandlingType;
 import no.nav.foreldrepenger.los.oppgave.FagsakYtelseType;
 import no.nav.foreldrepenger.los.oppgave.Oppgave;
@@ -16,32 +15,30 @@ import no.nav.foreldrepenger.los.oppgave.OppgaveEgenskap;
 
 public class OppgaveDto {
     private Long id;
-    private ReservasjonStatusDto status;
     private String saksnummer;
     private String navn;
     private String system;
     private String personnummer;
     private BehandlingType behandlingstype;
     private FagsakYtelseType fagsakYtelseType;
-    private BehandlingStatus behandlingStatus;
     private Boolean erTilSaksbehandling;
     private LocalDateTime opprettetTidspunkt;
     private LocalDateTime behandlingsfrist;
     private BehandlingId behandlingId;
     private Set<AndreKriterierType> andreKriterier;
+    private ReservasjonStatusDto status;
+    private ReservasjonStatusDto reservasjonStatus;
 
-    OppgaveDto(Oppgave oppgave, Person personDto, ReservasjonStatusDto oppgaveStatus) {
-        leggTilOppgaveInformasjon(oppgave, oppgaveStatus);
+    OppgaveDto(Oppgave oppgave, Person personDto, ReservasjonStatusDto reservasjonStatus) {
+        leggTilOppgaveInformasjon(oppgave, reservasjonStatus);
         leggTilPersonInformasjon(personDto);
     }
 
-    private void leggTilOppgaveInformasjon(Oppgave oppgave, ReservasjonStatusDto status) {
+    private void leggTilOppgaveInformasjon(Oppgave oppgave, ReservasjonStatusDto reservasjonStatus) {
         this.id = oppgave.getId();
-        this.status = status;
         this.saksnummer = oppgave.getSaksnummer().getVerdi();
         this.behandlingId = oppgave.getBehandlingId();
         this.system = oppgave.getSystem();
-        this.behandlingStatus = oppgave.getBehandlingStatus();
         this.fagsakYtelseType = oppgave.getFagsakYtelseType();
         this.behandlingstype = oppgave.getBehandlingType();
         this.erTilSaksbehandling = oppgave.getAktiv();
@@ -51,6 +48,8 @@ public class OppgaveDto {
             .filter(OppgaveEgenskap::getAktiv)
             .map(OppgaveEgenskap::getAndreKriterierType)
             .collect(Collectors.toSet());
+        this.reservasjonStatus = reservasjonStatus;
+        this.status = reservasjonStatus;
     }
 
     private void leggTilPersonInformasjon(Person person) {
@@ -60,6 +59,10 @@ public class OppgaveDto {
 
     public Long getId() {
         return id;
+    }
+
+    public ReservasjonStatusDto getReservasjonStatus() {
+        return reservasjonStatus;
     }
 
     public ReservasjonStatusDto getStatus() {
@@ -102,10 +105,6 @@ public class OppgaveDto {
         return fagsakYtelseType;
     }
 
-    public BehandlingStatus getBehandlingStatus() {
-        return behandlingStatus;
-    }
-
     public Boolean getErTilSaksbehandling() {
         return erTilSaksbehandling;
     }
@@ -116,19 +115,20 @@ public class OppgaveDto {
 
     @Override
     public String toString() {
-        return "<id=" + id +
-            ", status=" + status.isErReservert() +
-            ", saksnummer=" + saksnummer +
-            ", behandlingId=" + behandlingId +
-            ", system=" + system +
-            ", behandlingstype=" + behandlingstype +
-            ", opprettetTidspunkt=" + opprettetTidspunkt +
-            ", behandlingsfrist=" + behandlingsfrist +
-            ", fagsakYtelseType=" + fagsakYtelseType +
-            ", behandlingStatus=" + behandlingStatus +
-            ", erTilSaksbehandling=" + erTilSaksbehandling +
-            ", andreKriterier=" + andreKriterier +
-            ">";
+        return "OppgaveDto{"
+            + "id=" + id
+            + ", reservasjonStatus=" + reservasjonStatus
+            + ", saksnummer='" + saksnummer + '\''
+            + ", navn='" + navn + '\''
+            + ", system='" + system + '\''
+            + ", personnummer='***'"
+            + ", behandlingstype=" + behandlingstype
+            + ", fagsakYtelseType=" + fagsakYtelseType
+            + ", erTilSaksbehandling=" + erTilSaksbehandling
+            + ", opprettetTidspunkt=" + opprettetTidspunkt
+            + ", behandlingsfrist=" + behandlingsfrist
+            + ", behandlingId=" + behandlingId
+            + ", andreKriterier=" + andreKriterier + '}';
     }
 
     @Override
