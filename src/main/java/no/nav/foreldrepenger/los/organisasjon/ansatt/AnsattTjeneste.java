@@ -37,18 +37,18 @@ public class AnsattTjeneste {
 
     public Optional<BrukerProfil> hentBrukerProfilForLagretSaksbehandler(String saksbehandlerIdent) {
         try {
-            return organisasjonRepository.hentSaksbehandlerHvisEksisterer(saksbehandlerIdent).map(this::hentBrukerProfil);
+            return organisasjonRepository.hentSaksbehandlerHvisEksisterer(saksbehandlerIdent).flatMap(this::hentBrukerProfil);
         } catch (Exception e) {
             return Optional.empty();
         }
 
     }
 
-    public BrukerProfil hentBrukerProfil(Saksbehandler saksbehandler) {
+    public Optional<BrukerProfil> hentBrukerProfil(Saksbehandler saksbehandler) {
         var profil = saksbehandler.getSaksbehandlerUuidHvisFinnes().flatMap(this::hentBrukerProfil)
-            .orElseGet(() -> hentBrukerProfil(saksbehandler.getSaksbehandlerIdent()));
-        if (profil.uid() != null && !Objects.equals(profil.uid(), saksbehandler.getSaksbehandlerUuid())) {
-            saksbehandler.setSaksbehandlerUuid(profil.uid());
+            .or(() -> hentBrukerProfil(saksbehandler.getSaksbehandlerIdent()));
+        if (profil.isPresent() && profil.get().uid() != null && !Objects.equals(profil.get().uid(), saksbehandler.getSaksbehandlerUuid())) {
+            saksbehandler.setSaksbehandlerUuid(profil.get().uid());
             organisasjonRepository.persistFlush(saksbehandler);
         }
         return profil;
@@ -56,13 +56,13 @@ public class AnsattTjeneste {
 
     // TODO:  Her bør vi egentlig tenke om NOM er ikke riktigere å bruke - bør være raskere å slå opp navn og epost.
     // Jeg har sjekket med NOM (01.07.2024) og de støtter enn så lenge ikke Z-identer i dev. Men prod brukere er tilgjengelig.
-    public BrukerProfil hentBrukerProfil(String ident) {
+    public Optional<BrukerProfil> hentBrukerProfil(String ident) {
         var trimmed = ident.trim().toUpperCase();
         var brukerProfil = Optional.ofNullable(ANSATT_PROFIL.get(trimmed))
-            .orElseGet(() -> brukerKlient.brukerProfil(trimmed));
+            .or(() -> brukerKlient.brukerProfil(trimmed));
         // Alltid put for å extende levetid
-        ANSATT_PROFIL.put(trimmed, brukerProfil);
-        ANSATT_UID_PROFIL.put(brukerProfil.uid(), brukerProfil);
+        brukerProfil.ifPresent(p -> ANSATT_PROFIL.put(trimmed, p));
+        brukerProfil.ifPresent(p -> ANSATT_UID_PROFIL.put(p.uid(), p));
         return brukerProfil;
     }
 
@@ -70,11 +70,11 @@ public class AnsattTjeneste {
         // For det spennende tilfelle at NAVident evt skulle bytte oid (slutter, reansatt?)
         try {
             var brukerProfil = Optional.ofNullable(ANSATT_UID_PROFIL.get(uid))
-                .orElseGet(() -> brukerKlient.brukerProfil(uid));
+                .or(() -> brukerKlient.brukerProfil(uid));
             // Alltid put for å extende levetid
-            ANSATT_PROFIL.put(brukerProfil.ident().trim().toUpperCase(), brukerProfil);
-            ANSATT_UID_PROFIL.put(uid, brukerProfil);
-            return Optional.of(brukerProfil);
+            brukerProfil.ifPresent(p -> ANSATT_PROFIL.put(p.ident().trim().toUpperCase(), p));
+            brukerProfil.ifPresent(p -> ANSATT_UID_PROFIL.put(uid, p));
+            return brukerProfil;
         } catch (Exception e) {
             return Optional.empty();
         }

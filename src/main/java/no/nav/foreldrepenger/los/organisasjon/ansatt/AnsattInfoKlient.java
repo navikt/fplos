@@ -1,5 +1,6 @@
 package no.nav.foreldrepenger.los.organisasjon.ansatt;
 
+import java.util.Optional;
 import java.util.UUID;
 
 import jakarta.enterprise.context.Dependent;
@@ -16,13 +17,13 @@ public class AnsattInfoKlient extends AbstractAnsattInfoKlient {
         super();
     }
 
-    public BrukerProfil brukerProfil(String ident) {
+    public Optional<BrukerProfil> brukerProfil(String ident) {
         var profil = super.hentAnsattInfoForIdent(ident);
-        return profil != null ? new BrukerProfil(profil.ansattOid(), profil.ansattIdent(), profil.navn(), profil.ansattVedEnhetId()) : null;
+        return Optional.ofNullable(profil).map(p -> new BrukerProfil(p.ansattOid(), p.ansattIdent(), p.navn(), p.ansattVedEnhetId()));
     }
 
-    public BrukerProfil brukerProfil(UUID saksbehandler) {
+    public Optional<BrukerProfil> brukerProfil(UUID saksbehandler) {
         var profil = super.hentAnsattInfoForOid(saksbehandler);
-        return profil != null ? new BrukerProfil(profil.ansattOid(), profil.ansattIdent(), profil.navn(), profil.ansattVedEnhetId()) : null;
+        return Optional.ofNullable(profil).map(p -> new BrukerProfil(p.ansattOid(), p.ansattIdent(), p.navn(), p.ansattVedEnhetId()));
     }
 }
