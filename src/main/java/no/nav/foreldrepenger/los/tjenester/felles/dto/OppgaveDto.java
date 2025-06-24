@@ -5,8 +5,6 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 import no.nav.foreldrepenger.los.domene.typer.BehandlingId;
 import no.nav.foreldrepenger.los.domene.typer.aktør.Person;
 import no.nav.foreldrepenger.los.oppgave.AndreKriterierType;
@@ -17,7 +15,6 @@ import no.nav.foreldrepenger.los.oppgave.OppgaveEgenskap;
 
 public class OppgaveDto {
     private Long id;
-    private ReservasjonStatusDto reservasjonStatus;
     private String saksnummer;
     private String navn;
     private String system;
@@ -29,6 +26,8 @@ public class OppgaveDto {
     private LocalDateTime behandlingsfrist;
     private BehandlingId behandlingId;
     private Set<AndreKriterierType> andreKriterier;
+    private ReservasjonStatusDto status;
+    private ReservasjonStatusDto reservasjonStatus;
 
     OppgaveDto(Oppgave oppgave, Person personDto, ReservasjonStatusDto reservasjonStatus) {
         leggTilOppgaveInformasjon(oppgave, reservasjonStatus);
@@ -37,7 +36,6 @@ public class OppgaveDto {
 
     private void leggTilOppgaveInformasjon(Oppgave oppgave, ReservasjonStatusDto reservasjonStatus) {
         this.id = oppgave.getId();
-        this.reservasjonStatus = reservasjonStatus;
         this.saksnummer = oppgave.getSaksnummer().getVerdi();
         this.behandlingId = oppgave.getBehandlingId();
         this.system = oppgave.getSystem();
@@ -50,6 +48,8 @@ public class OppgaveDto {
             .filter(OppgaveEgenskap::getAktiv)
             .map(OppgaveEgenskap::getAndreKriterierType)
             .collect(Collectors.toSet());
+        this.reservasjonStatus = reservasjonStatus;
+        this.status = reservasjonStatus;
     }
 
     private void leggTilPersonInformasjon(Person person) {
@@ -65,9 +65,8 @@ public class OppgaveDto {
         return reservasjonStatus;
     }
 
-    @JsonProperty("status")
     public ReservasjonStatusDto getStatus() {
-        return reservasjonStatus;
+        return status;
     }
 
     public UUID getBehandlingId() {
