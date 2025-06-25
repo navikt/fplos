@@ -49,16 +49,16 @@ public class ReservasjonRepository {
             .getResultList();
     }
 
-    public List<SisteReserverteMetadata> hentSisteReserverteMetadata(String uid, int limit) {
+    public List<SisteReserverteMetadata> hentSisteReserverteMetadata(String uid) {
         /*
         * Første derived table henter de siste behandlingene reservert på bruker, og lager en aktuell_tid for sortering.
         *   (Prinsippet for aktuell_tid er omtrent når saksbehandler sist tok i behandlingen, og dette er sorteringen som benyttes i visning.)
         *   Svakhet:
         *       1-1 relasjon mellom oppgave og reservasjon. Dersom saksbehandler ikke har skapt aktivitet (i.e løst AP) som gir ferske oppgaver
-        *       vil ev. nye reservasjoner overskrive. Kanskje uforutsigbart for bruker. Alternativet pt er å bruke reservasjon_event_logg.
+        *       vil ev. nye reservasjoner overskrive. Alternativet pt er å bruke reservasjon_event_logg.
         * Neste join med en derived table henter event_type fra oppgave_event_logg (pt. nødvendig for ventestatus)
         * Siste join henter siste oppgave tilkyttet behandlingen, uavhengig av "eier" av denne.
-         */
+        */
         var query = entityManager.createNativeQuery("""
             select
                 o.id as oppgave_id,
@@ -70,7 +70,7 @@ public class ReservasjonRepository {
                 row_number() over (partition by o.behandling_id order by o.opprettet_tid desc) as rn
                 from Oppgave o
                 inner join Reservasjon r on r.oppgave_id = o.id
-                where r.opprettet_tid > trunc(current_timestamp) - interval '21' day
+                where r.opprettet_tid > :fom
                 and r.reservert_av = :uid
             ) sb_res on sb_res.behandling_id = o.behandling_id and sb_res.rn = 1
             join (
@@ -87,10 +87,11 @@ public class ReservasjonRepository {
             )
             order by sb_res.aktuell_tid desc
             """)
-            .setParameter("uid", uid);
+            .setParameter("uid", uid)
+            .setParameter("fom", LocalDate.now().minusWeeks(3).atStartOfDay());
 
         @SuppressWarnings("unchecked")
-        Stream<Object[]> result = query.getResultStream().limit(limit);
+        Stream<Object[]> result = query.getResultStream().limit(15);
 
         return result.map(row -> {
             var oppgaveId = ((Number) row[0]).longValue();

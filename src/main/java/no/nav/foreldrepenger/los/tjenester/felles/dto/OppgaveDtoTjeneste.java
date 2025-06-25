@@ -96,9 +96,8 @@ public class OppgaveDtoTjeneste {
     }
 
     public List<OppgaveDtoMedStatus> getSaksbehandlersSisteReserverteOppgaver() {
-        var oppgaverMedStatus = reservasjonTjeneste.hentSaksbehandlersSisteBehandlingerMedStatus();
+        var oppgaverMedStatus = reservasjonTjeneste.hentSaksbehandlersSisteReserverteMedStatus();
         var oppgaver = oppgaverMedStatus.stream().map(OppgaveBehandlingsstatusWrapper::oppgave).toList();
-        sjekkDiff(oppgaver);
         var saksnummerMedTilgang = filterHarTilgang(oppgaver);
         var oppgaverMedTilgang = oppgaver.stream()
             .filter(oppgave -> saksnummerMedTilgang.contains(oppgave.getSaksnummer()))
@@ -114,24 +113,7 @@ public class OppgaveDtoTjeneste {
                     .orElseThrow();
                 return new OppgaveDtoMedStatus(dto, status);
             })
-            .limit(15)
             .toList();
-    }
-
-    private void sjekkDiff(List<Oppgave> oppgaver) {
-        var behandlinger = oppgaver.stream().map(Oppgave::getBehandlingId).collect(Collectors.toSet());
-        var behandlingerLegacy = reservasjonTjeneste.hentSaksbehandlersSisteReserverteOppgaver().stream()
-            .map(Oppgave::getBehandlingId).collect(Collectors.toSet());
-        if (!behandlingerLegacy.equals(behandlinger)) {
-            var behandlingerIkkeILegacy = behandlinger.stream()
-                .filter(b -> !behandlingerLegacy.contains(b))
-                .collect(Collectors.toSet());
-            var legacyBehandlingerIkkeINye = behandlingerLegacy.stream()
-                .filter(b -> !behandlinger.contains(b))
-                .collect(Collectors.toSet());
-            LOG.info("LOS siste reserverte kall gir diff. I ny men ikke gammel: {}, I gammel men ikke ny: {}",
-                behandlingerIkkeILegacy, legacyBehandlingerIkkeINye);
-        }
     }
 
     private Optional<OppgaveDto> safeLagDtoFor(Oppgave oppgave) {

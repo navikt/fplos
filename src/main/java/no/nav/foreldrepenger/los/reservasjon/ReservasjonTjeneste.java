@@ -145,12 +145,8 @@ public class ReservasjonTjeneste {
         return reservasjon;
     }
 
-    public List<Oppgave> hentSaksbehandlersSisteReserverteOppgaver() {
-        return reservasjonRepository.hentSaksbehandlersSisteReserverteOppgaver(BrukerIdent.brukerIdent());
-    }
-
-    public List<OppgaveBehandlingsstatusWrapper> hentSaksbehandlersSisteBehandlingerMedStatus() {
-        var sisteReserverteMetadata = reservasjonRepository.hentSisteReserverteMetadata(BrukerIdent.brukerIdent(), 15);
+    public List<OppgaveBehandlingsstatusWrapper> hentSaksbehandlersSisteReserverteMedStatus() {
+        var sisteReserverteMetadata = reservasjonRepository.hentSisteReserverteMetadata(BrukerIdent.brukerIdent());
 
         var oppgaveIder = sisteReserverteMetadata.stream().map(SisteReserverteMetadata::oppgaveId).toList();
         var oppgaveListe = oppgaveRepository.hentOppgaver(oppgaveIder);
