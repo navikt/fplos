@@ -149,7 +149,7 @@ public class ReservasjonTjeneste {
         var sisteReserverteMetadata = reservasjonRepository.hentSisteReserverteMetadata(BrukerIdent.brukerIdent());
 
         var oppgaveIder = sisteReserverteMetadata.stream().map(SisteReserverteMetadata::oppgaveId).toList();
-        var oppgaveListe = oppgaveRepository.hentOppgaver(oppgaveIder);
+        var oppgaveListe = oppgaveRepository.hentOppgaverReadOnly(oppgaveIder);
         var oppgaveMap = oppgaveListe.stream().collect(Collectors.toMap(Oppgave::getId, oppgave -> oppgave));
 
         return sisteReserverteMetadata.stream().map(mr -> {

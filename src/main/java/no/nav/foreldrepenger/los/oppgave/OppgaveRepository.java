@@ -18,6 +18,7 @@ import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.hibernate.jpa.HibernateHints;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -427,12 +428,13 @@ public class OppgaveRepository {
         return entityManager.createQuery("FROM Oppgave o where o.id = :id", Oppgave.class).setParameter("id", oppgaveId).getSingleResult();
     }
 
-    public List<Oppgave> hentOppgaver(List<Long> oppgaveIder) {
+    public List<Oppgave> hentOppgaverReadOnly(List<Long> oppgaveIder) {
         if (oppgaveIder == null || oppgaveIder.isEmpty()) {
             return List.of();
         }
         return entityManager.createQuery("FROM Oppgave o where o.id IN (:oppgaveIder)", Oppgave.class)
             .setParameter("oppgaveIder", oppgaveIder)
+            .setHint(HibernateHints.HINT_READ_ONLY, "true")
             .getResultList();
     }
 
