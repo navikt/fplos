@@ -196,13 +196,15 @@ class OppgaveTjenesteTest {
 
         reservasjonTjeneste.reserverOppgave(førstegangOppgave);
         var sisteReserverteEtterReservasjon = reservasjonTjeneste.hentSaksbehandlersSisteReserverteMedStatus();
-        assertThat(sisteReserverteEtterReservasjon).hasSize(1);
-        assertThat(sisteReserverteEtterReservasjon).first().matches(sr -> sr.status() == OppgaveBehandlingStatus.UNDER_ARBEID);
+        assertThat(sisteReserverteEtterReservasjon)
+            .hasSize(1)
+            .first().matches(sr -> sr.status() == OppgaveBehandlingStatus.UNDER_ARBEID);
 
         oppgaveTjeneste.avsluttOppgaveMedEventLogg(førstegangOppgave, OppgaveEventType.LUKKET, "Avsluttet oppgave");
         var sisteReserverte = reservasjonTjeneste.hentSaksbehandlersSisteReserverteMedStatus();
-        assertThat(sisteReserverte).hasSize(1);
-        assertThat(sisteReserverte).first().matches(sr -> sr.status() == OppgaveBehandlingStatus.FERDIG);
+        assertThat(sisteReserverte)
+            .hasSize(1)
+            .first().matches(sr -> sr.status() == OppgaveBehandlingStatus.FERDIG);
     }
 
     @Test

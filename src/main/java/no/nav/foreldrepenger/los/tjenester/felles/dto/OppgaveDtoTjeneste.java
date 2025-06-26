@@ -8,7 +8,6 @@ import java.util.Optional;
 import java.util.Set;
 
 import no.nav.foreldrepenger.los.reservasjon.OppgaveBehandlingStatusWrapper;
-import no.nav.foreldrepenger.los.reservasjon.ReservasjonRepository;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,7 +41,6 @@ public class OppgaveDtoTjeneste {
     private ReservasjonStatusDtoTjeneste reservasjonStatusDtoTjeneste;
     private OppgaveKøTjeneste oppgaveKøTjeneste;
     private TilgangFilterKlient filterKlient;
-    private ReservasjonRepository reservasjonRepository;
 
     @Inject
     public OppgaveDtoTjeneste(OppgaveTjeneste oppgaveTjeneste,
@@ -50,14 +48,13 @@ public class OppgaveDtoTjeneste {
                               PersonTjeneste personTjeneste,
                               ReservasjonStatusDtoTjeneste reservasjonStatusDtoTjeneste,
                               OppgaveKøTjeneste oppgaveKøTjeneste,
-                              TilgangFilterKlient filterKlient, ReservasjonRepository reservasjonRepository) {
+                              TilgangFilterKlient filterKlient) {
         this.oppgaveTjeneste = oppgaveTjeneste;
         this.reservasjonTjeneste = reservasjonTjeneste;
         this.personTjeneste = personTjeneste;
         this.reservasjonStatusDtoTjeneste = reservasjonStatusDtoTjeneste;
         this.oppgaveKøTjeneste = oppgaveKøTjeneste;
         this.filterKlient = filterKlient;
-        this.reservasjonRepository = reservasjonRepository;
     }
 
     OppgaveDtoTjeneste() {
