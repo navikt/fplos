@@ -22,6 +22,7 @@ import no.nav.foreldrepenger.los.oppgave.FagsakStatus;
 import no.nav.foreldrepenger.los.oppgave.FagsakYtelseType;
 import no.nav.foreldrepenger.los.oppgavekø.KøSortering;
 import no.nav.foreldrepenger.los.tjenester.avdelingsleder.nøkkeltall.dto.BehandlingVenteStatus;
+import no.nav.foreldrepenger.los.tjenester.felles.dto.OppgaveBehandlingStatus;
 import no.nav.vedtak.sikkerhet.abac.BeskyttetRessurs;
 import no.nav.vedtak.sikkerhet.abac.beskyttet.ActionType;
 import no.nav.vedtak.sikkerhet.abac.beskyttet.ResourceType;
@@ -59,10 +60,11 @@ public class KodeverkRestTjeneste {
         map.put(BehandlingType.class.getSimpleName(), BehandlingType.values());
         map.put(FagsakYtelseType.class.getSimpleName(), FagsakYtelseType.values());
         map.put(KøSortering.class.getSimpleName(), KøSortering.values());
-        map.put(FagsakStatus.class.getSimpleName(), FagsakStatus.values());
+        map.put(FagsakStatus.class.getSimpleName(), FagsakStatus.values()); // brukes kun i fagsaksøk mot fpsak, frontend bør gå over til fpsak-kodeverk
         map.put(AndreKriterierType.class.getSimpleName(), Arrays.stream(AndreKriterierType.values())
             .sorted(Comparator.comparing(AndreKriterierType::getNavn)).toArray(AndreKriterierType[]::new));
         map.put(BehandlingVenteStatus.class.getSimpleName(), BehandlingVenteStatus.values());
+        map.put(OppgaveBehandlingStatus.class.getSimpleName(), OppgaveBehandlingStatus.values());
         return map;
     }
 

@@ -28,6 +28,22 @@ public class OppgaveDto {
     private Set<AndreKriterierType> andreKriterier;
     private ReservasjonStatusDto reservasjonStatus;
 
+    OppgaveDto(OppgaveDto other) {
+        this.id = other.getId();
+        this.reservasjonStatus = other.getReservasjonStatus();
+        this.saksnummer = other.getSaksnummer();
+        this.navn = other.getNavn();
+        this.system = other.getSystem();
+        this.personnummer = other.getPersonnummer();
+        this.behandlingstype = other.getBehandlingstype();
+        this.fagsakYtelseType = other.getFagsakYtelseType();
+        this.erTilSaksbehandling = other.getErTilSaksbehandling();
+        this.opprettetTidspunkt = other.getOpprettetTidspunkt();
+        this.behandlingsfrist = other.getBehandlingsfrist();
+        this.behandlingId = BehandlingId.fromUUID(other.getBehandlingId());
+        this.andreKriterier = other.getAndreKriterier();
+    }
+
     OppgaveDto(Oppgave oppgave, Person personDto, ReservasjonStatusDto reservasjonStatus) {
         leggTilOppgaveInformasjon(oppgave, reservasjonStatus);
         leggTilPersonInformasjon(personDto);

@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import no.nav.foreldrepenger.los.reservasjon.OppgaveBehandlingStatusWrapper;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -89,8 +91,9 @@ public class OppgaveDtoTjeneste {
         return map(oppgaver);
     }
 
-    public List<OppgaveDto> getSaksbehandlersSisteReserverteOppgaver() {
-        var oppgaver = reservasjonTjeneste.hentSaksbehandlersSisteReserverteOppgaver();
+    public List<OppgaveDtoMedStatus> getSaksbehandlersSisteReserverteOppgaver() {
+        var oppgaverMedStatus = reservasjonTjeneste.hentSaksbehandlersSisteReserverteMedStatus();
+        var oppgaver = oppgaverMedStatus.stream().map(OppgaveBehandlingStatusWrapper::oppgave).toList();
         var saksnummerMedTilgang = filterHarTilgang(oppgaver);
         var oppgaverMedTilgang = oppgaver.stream()
             .filter(oppgave -> saksnummerMedTilgang.contains(oppgave.getSaksnummer()))
@@ -98,7 +101,14 @@ public class OppgaveDtoTjeneste {
         return oppgaverMedTilgang.stream()
             .map(this::safeLagDtoFor)
             .flatMap(Optional::stream)
-            .limit(10)
+            .map(dto -> {
+                var status = oppgaverMedStatus.stream()
+                    .filter(oppgaveStatus -> oppgaveStatus.oppgave().getId().equals(dto.getId()))
+                    .findFirst()
+                    .map(OppgaveBehandlingStatusWrapper::status)
+                    .orElseThrow();
+                return new OppgaveDtoMedStatus(dto, status);
+            })
             .toList();
     }
 
