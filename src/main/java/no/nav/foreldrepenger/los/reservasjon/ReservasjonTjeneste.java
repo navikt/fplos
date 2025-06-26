@@ -16,7 +16,7 @@ import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.Op
 import no.nav.foreldrepenger.los.oppgave.AndreKriterierType;
 import no.nav.foreldrepenger.los.oppgave.OppgaveRepository;
 
-import no.nav.foreldrepenger.los.tjenester.felles.dto.OppgaveBehandlingsstatus;
+import no.nav.foreldrepenger.los.tjenester.felles.dto.OppgaveBehandlingStatus;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -145,7 +145,7 @@ public class ReservasjonTjeneste {
         return reservasjon;
     }
 
-    public List<OppgaveBehandlingsstatusWrapper> hentSaksbehandlersSisteReserverteMedStatus() {
+    public List<OppgaveBehandlingStatusWrapper> hentSaksbehandlersSisteReserverteMedStatus() {
         var sisteReserverteMetadata = reservasjonRepository.hentSisteReserverteMetadata(BrukerIdent.brukerIdent());
 
         var oppgaveIder = sisteReserverteMetadata.stream().map(SisteReserverteMetadata::oppgaveId).toList();
@@ -155,26 +155,26 @@ public class ReservasjonTjeneste {
         return sisteReserverteMetadata.stream().map(mr -> {
             var oppgave = oppgaveMap.get(mr.oppgaveId());
             var status = mapStatus(oppgave, mr.sisteEventType());
-            return new OppgaveBehandlingsstatusWrapper(oppgave, status);
+            return new OppgaveBehandlingStatusWrapper(oppgave, status);
         }).toList();
 
     }
 
-    private static OppgaveBehandlingsstatus mapStatus(Oppgave oppgave, OppgaveEventType sisteEventType) {
+    private static OppgaveBehandlingStatus mapStatus(Oppgave oppgave, OppgaveEventType sisteEventType) {
         var erTilBeslutter = oppgave.getOppgaveEgenskaper().stream()
             .anyMatch(egenskap -> AndreKriterierType.TIL_BESLUTTER.equals(egenskap.getAndreKriterierType()));
         var erReturnertFraBeslutter = oppgave.getOppgaveEgenskaper().stream()
             .anyMatch(egenskap -> AndreKriterierType.RETURNERT_FRA_BESLUTTER.equals(egenskap.getAndreKriterierType()));
         if (sisteEventType.erVenteEvent()) {
-            return OppgaveBehandlingsstatus.PÅ_VENT;
+            return OppgaveBehandlingStatus.PÅ_VENT;
         } else if (!oppgave.getAktiv()) {
-            return OppgaveBehandlingsstatus.FERDIG;
+            return OppgaveBehandlingStatus.FERDIG;
         } else if (erTilBeslutter) {
-            return OppgaveBehandlingsstatus.TIL_BESLUTTER;
+            return OppgaveBehandlingStatus.TIL_BESLUTTER;
         } else if (erReturnertFraBeslutter) {
-            return OppgaveBehandlingsstatus.RETURNERT_FRA_BESLUTTER;
+            return OppgaveBehandlingStatus.RETURNERT_FRA_BESLUTTER;
         } else {
-            return OppgaveBehandlingsstatus.UNDER_ARBEID;
+            return OppgaveBehandlingStatus.UNDER_ARBEID;
         }
     }
 

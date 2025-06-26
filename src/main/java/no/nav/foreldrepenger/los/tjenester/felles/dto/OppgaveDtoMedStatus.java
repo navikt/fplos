@@ -3,15 +3,15 @@ package no.nav.foreldrepenger.los.tjenester.felles.dto;
 import java.util.Objects;
 
 public class OppgaveDtoMedStatus extends OppgaveDto {
-    private final OppgaveBehandlingsstatus behandlingsstatus;
+    private final OppgaveBehandlingStatus oppgaveBehandlingStatus;
 
-    public OppgaveDtoMedStatus(OppgaveDto oppgaveDto, OppgaveBehandlingsstatus status) {
+    public OppgaveDtoMedStatus(OppgaveDto oppgaveDto, OppgaveBehandlingStatus status) {
         super(oppgaveDto);
-        this.behandlingsstatus = status;
+        this.oppgaveBehandlingStatus = status;
     }
 
-    public OppgaveBehandlingsstatus getBehandlingsstatus() {
-        return behandlingsstatus;
+    public OppgaveBehandlingStatus getOppgaveBehandlingStatus() {
+        return oppgaveBehandlingStatus;
     }
 
     @Override
@@ -20,11 +20,11 @@ public class OppgaveDtoMedStatus extends OppgaveDto {
             return false;
         if (!super.equals(o))
             return false;
-        return Objects.equals(behandlingsstatus, that.behandlingsstatus);
+        return Objects.equals(oppgaveBehandlingStatus, that.oppgaveBehandlingStatus);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), behandlingsstatus);
+        return Objects.hash(super.hashCode(), oppgaveBehandlingStatus);
     }
 }
