@@ -17,7 +17,6 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
 import no.nav.foreldrepenger.los.avdelingsleder.AvdelingslederTjeneste;
-import no.nav.foreldrepenger.los.oppgavekø.OppgaveKøTjeneste;
 import no.nav.foreldrepenger.los.tjenester.avdelingsleder.dto.AvdelingEnhetDto;
 import no.nav.foreldrepenger.los.tjenester.avdelingsleder.saksliste.dto.SakslisteAndreKriterierDto;
 import no.nav.foreldrepenger.los.tjenester.avdelingsleder.saksliste.dto.SakslisteBehandlingstypeDto;
@@ -43,12 +42,10 @@ public class AvdelingslederSakslisteRestTjeneste {
 
     public static final String AVDELINGSLEDER_SAKSLISTER = "AvdelingslederSakslister";
     private AvdelingslederTjeneste avdelingslederTjeneste;
-    private OppgaveKøTjeneste oppgaveKøTjeneste;
 
     @Inject
-    public AvdelingslederSakslisteRestTjeneste(AvdelingslederTjeneste avdelingslederTjeneste, OppgaveKøTjeneste oppgaveKøTjeneste) {
+    public AvdelingslederSakslisteRestTjeneste(AvdelingslederTjeneste avdelingslederTjeneste) {
         this.avdelingslederTjeneste = avdelingslederTjeneste;
-        this.oppgaveKøTjeneste = oppgaveKøTjeneste;
     }
 
     AvdelingslederSakslisteRestTjeneste() {
@@ -60,7 +57,7 @@ public class AvdelingslederSakslisteRestTjeneste {
     @BeskyttetRessurs(actionType = ActionType.READ, resourceType = ResourceType.OPPGAVESTYRING_AVDELINGENHET, sporingslogg = false)
     public List<SakslisteDto> hentAvdelingensSakslister(@NotNull @QueryParam("avdelingEnhet") @Valid AvdelingEnhetDto avdelingEnhet) {
         var filtersett = avdelingslederTjeneste.hentOppgaveFiltreringer(avdelingEnhet.getAvdelingEnhet());
-        return filtersett.stream().map(o -> new SakslisteDto(o, oppgaveKøTjeneste.hentAntallOppgaver(o.getId(), true))).toList();
+        return filtersett.stream().map(SakslisteDto::new).toList();
     }
 
     @POST

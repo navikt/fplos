@@ -19,9 +19,8 @@ public class SakslisteDto {
     private List<FagsakYtelseType> fagsakYtelseTyper;
     private List<AndreKriterierDto> andreKriterier;
     private List<String> saksbehandlerIdenter;
-    private Integer antallBehandlinger;
 
-    public SakslisteDto(OppgaveFiltrering o, Integer antallBehandlinger) {
+    public SakslisteDto(OppgaveFiltrering o) {
         sakslisteId = new SakslisteIdDto(o.getId());
         navn = o.getNavn();
         sistEndret = o.getEndretTidspunkt() == null ? o.getOpprettetTidspunkt().toLocalDate() : o.getEndretTidspunkt().toLocalDate();
@@ -30,7 +29,6 @@ public class SakslisteDto {
         andreKriterier = o.getFiltreringAndreKriterierTyper().stream().map(AndreKriterierDto::new).toList();
         sortering = new SorteringDto(o.getSortering(), o.getFra(), o.getTil(), o.getFomDato(), o.getTomDato(), o.getErDynamiskPeriode());
         saksbehandlerIdenter = o.getSaksbehandlere().stream().map(Saksbehandler::getSaksbehandlerIdent).toList();
-        this.antallBehandlinger = antallBehandlinger;
     }
 
     public Long getSakslisteId() {
@@ -63,9 +61,5 @@ public class SakslisteDto {
 
     public List<String> getSaksbehandlerIdenter() {
         return saksbehandlerIdenter;
-    }
-
-    public Integer getAntallBehandlinger() {
-        return antallBehandlinger;
     }
 }
