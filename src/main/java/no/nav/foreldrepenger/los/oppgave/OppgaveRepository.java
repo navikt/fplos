@@ -276,20 +276,6 @@ public class OppgaveRepository {
         return listeTypedQuery.getResultList();
     }
 
-    public List<OppgaveFiltrering> hentAlleOppgaveFilterSettTilknyttetAvdelingEagerly(String avdelingEnhet) {
-        var listeTypedQuery = entityManager.createQuery("""
-                select of from OppgaveFiltrering of
-                inner join of.avdeling av
-                left join fetch of.filtreringBehandlingTyper bt
-                left join fetch of.filtreringYtelseTyper yt
-                left join fetch of.andreKriterierTyper andreKriterier
-                left join fetch of.saksbehandlere sb
-                where av.avdelingEnhet = :avdelingEnhet
-                """, OppgaveFiltrering.class)
-            .setParameter("avdelingEnhet", avdelingEnhet);
-        return listeTypedQuery.getResultList();
-    }
-
     public Optional<OppgaveFiltrering> hentOppgaveFilterSett(Long listeId) {
         var listeTypedQuery = entityManager.createQuery("FROM OppgaveFiltrering l WHERE l.id = :id ", OppgaveFiltrering.class)
             .setParameter("id", listeId);
