@@ -8,7 +8,7 @@ import no.nav.foreldrepenger.los.oppgavekø.OppgaveFiltrering;
 import no.nav.foreldrepenger.los.organisasjon.Saksbehandler;
 import no.nav.foreldrepenger.los.tjenester.avdelingsleder.saksliste.dto.SorteringDto;
 
-public record SakslisteDto(SakslisteIdDto sakslisteId,
+public record SakslisteDto(Long sakslisteId,
                            String navn,
                            SorteringDto sortering,
                            List<BehandlingType> behandlingTyper,
@@ -17,7 +17,7 @@ public record SakslisteDto(SakslisteIdDto sakslisteId,
                            List<String> saksbehandlerIdenter) {
 
     public SakslisteDto(OppgaveFiltrering of) {
-        this(new SakslisteIdDto(of.getId()), of.getNavn(), new SorteringDto(of), of.getBehandlingTyper(), of.getFagsakYtelseTyper(),
+        this(of.getId(), of.getNavn(), new SorteringDto(of), of.getBehandlingTyper(), of.getFagsakYtelseTyper(),
             AndreKriterierDto.listeFra(of.getFiltreringAndreKriterierTyper()), saksbehandlerIdenter(of.getSaksbehandlere()));
     }
 

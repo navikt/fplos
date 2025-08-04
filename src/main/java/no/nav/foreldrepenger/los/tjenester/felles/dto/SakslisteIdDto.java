@@ -1,7 +1,6 @@
 package no.nav.foreldrepenger.los.tjenester.felles.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonValue;
 
 import no.nav.vedtak.sikkerhet.abac.AbacDataAttributter;
 import no.nav.vedtak.sikkerhet.abac.AbacDto;
@@ -31,7 +30,6 @@ public class SakslisteIdDto implements AbacDto {
         this.sakslisteId = Long.valueOf(sakslisteId);
     }
 
-    @JsonValue
     public Long getVerdi() {
         return sakslisteId;
     }
@@ -47,20 +45,15 @@ public class SakslisteIdDto implements AbacDto {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
+    public final boolean equals(Object o) {
+        if (!(o instanceof SakslisteIdDto that)) {
             return false;
         }
-        SakslisteIdDto that = (SakslisteIdDto) o;
-        return sakslisteId.equals(that.sakslisteId) && abacAttributter().equals(that.abacAttributter());
+        return sakslisteId.equals(that.sakslisteId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(sakslisteId);
+        return sakslisteId.hashCode();
     }
-
 }
