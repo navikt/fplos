@@ -41,11 +41,11 @@ class AvdelingslederTjenesteTest {
     @Test
     void testLagNyListe() {
         avdelingslederTjeneste.lagNyOppgaveFiltrering(Avdeling.AVDELING_DRAMMEN_ENHET);
-        var oppgaveFiltreringer = oppgaveRepository.hentAlleOppgaveFilterSettTilknyttetAvdeling(avdelingDrammen().getId());
+        var oppgaveFiltreringer = oppgaveRepository.hentAlleOppgaveFilterSettTilknyttetEnhet(Avdeling.AVDELING_DRAMMEN_ENHET);
         assertThat(oppgaveFiltreringer).isNotNull();
-        assertThat(oppgaveFiltreringer.get(0).getId()).isNotNull();
-        assertThat(oppgaveFiltreringer.get(0).getNavn()).isEqualTo("Ny liste");
-        assertThat(oppgaveFiltreringer.get(0).getAvdeling()).isEqualTo(avdelingDrammen());
+        assertThat(oppgaveFiltreringer.getFirst().getId()).isNotNull();
+        assertThat(oppgaveFiltreringer.getFirst().getNavn()).isEqualTo("Ny liste");
+        assertThat(oppgaveFiltreringer.getFirst().getAvdeling()).isEqualTo(avdelingDrammen());
     }
 
     private Avdeling avdelingDrammen() {
@@ -72,7 +72,7 @@ class AvdelingslederTjenesteTest {
         persistAndFlush(liste);
         avdelingslederTjeneste.slettOppgaveFiltrering(liste.getId());
         entityManager.flush();
-        assertThat(oppgaveRepository.hentAlleOppgaveFilterSettTilknyttetAvdeling(avdelingDrammen().getId())).isEmpty();
+        assertThat(oppgaveRepository.hentAlleOppgaveFilterSettTilknyttetEnhet(Avdeling.AVDELING_DRAMMEN_ENHET)).isEmpty();
     }
 
     @Test

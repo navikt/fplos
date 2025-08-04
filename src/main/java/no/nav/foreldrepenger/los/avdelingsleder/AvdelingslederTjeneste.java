@@ -41,9 +41,8 @@ public class AvdelingslederTjeneste {
         this.organisasjonRepository = organisasjonRepository;
     }
 
-    public List<OppgaveFiltrering> hentOppgaveFiltreringer(String avdelingsEnhet) {
-        var avdeling = organisasjonRepository.hentAvdelingFraEnhet(avdelingsEnhet).orElseThrow();
-        return oppgaveRepository.hentAlleOppgaveFilterSettTilknyttetAvdeling(avdeling.getId());
+    public List<OppgaveFiltrering> hentOppgaveFiltreringer(String avdelingEnhet) {
+        return oppgaveRepository.hentAlleOppgaveFilterSettTilknyttetEnhet(avdelingEnhet);
     }
 
     public Optional<OppgaveFiltrering> hentOppgaveFiltering(Long oppgaveFiltrering) {

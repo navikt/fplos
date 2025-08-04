@@ -1,6 +1,7 @@
 package no.nav.foreldrepenger.los.tjenester.felles.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonValue;
 
 import no.nav.vedtak.sikkerhet.abac.AbacDataAttributter;
 import no.nav.vedtak.sikkerhet.abac.AbacDto;
@@ -30,6 +31,7 @@ public class SakslisteIdDto implements AbacDto {
         this.sakslisteId = Long.valueOf(sakslisteId);
     }
 
+    @JsonValue
     public Long getVerdi() {
         return sakslisteId;
     }
