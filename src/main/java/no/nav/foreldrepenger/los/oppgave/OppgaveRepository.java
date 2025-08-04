@@ -266,12 +266,7 @@ public class OppgaveRepository {
     }
 
     public List<OppgaveFiltrering> hentAlleOppgaveFilterSettTilknyttetEnhet(String avdelingEnhet) {
-        var listeTypedQuery = entityManager.createQuery("""
-            from OppgaveFiltrering l
-            join l.avdeling av
-            where av.avdelingEnhet = :avdelingEnhet
-            order by l.navn
-            """,
+        var listeTypedQuery = entityManager.createQuery("from OppgaveFiltrering l where l.avdeling.avdelingEnhet = :avdelingEnhet order by l.navn",
             OppgaveFiltrering.class).setParameter("avdelingEnhet", avdelingEnhet);//$NON-NLS-1$
         return listeTypedQuery.getResultList();
     }
