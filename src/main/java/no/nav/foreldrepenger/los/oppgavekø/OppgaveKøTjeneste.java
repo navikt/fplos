@@ -10,7 +10,6 @@ import jakarta.inject.Inject;
 import no.nav.foreldrepenger.los.felles.util.BrukerIdent;
 import no.nav.foreldrepenger.los.oppgave.OppgaveRepository;
 import no.nav.foreldrepenger.los.oppgave.Oppgavespørring;
-import no.nav.foreldrepenger.los.organisasjon.Avdeling;
 import no.nav.foreldrepenger.los.organisasjon.Saksbehandler;
 
 import org.slf4j.Logger;
@@ -49,10 +48,7 @@ public class OppgaveKøTjeneste {
 
     public List<OppgaveFiltreringKnytning> finnOppgaveFiltreringKnytninger(Oppgave oppgave) {
         var enhet = oppgave.getBehandlendeEnhet();
-        var avdelingId = organisasjonRepository.hentAvdelingFraEnhet(enhet)
-            .map(Avdeling::getId)
-            .orElseThrow(() -> new IllegalStateException("Finner ikke avdeling fra enhet " + enhet + ". OppgaveId " + oppgave.getId()));
-        var potensielleKøer = oppgaveRepository.hentAlleOppgaveFilterSettTilknyttetAvdeling(avdelingId);
+        var potensielleKøer = oppgaveRepository.hentAlleOppgaveFilterSettTilknyttetEnhet(enhet);
         return potensielleKøer.stream().map(pk -> finnOppgaveFiltreringKnytning(oppgave, pk)).filter(Optional::isPresent).map(Optional::get).toList();
     }
 

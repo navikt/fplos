@@ -17,6 +17,8 @@ import java.util.Random;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import no.nav.foreldrepenger.los.organisasjon.Avdeling;
+
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -262,7 +264,7 @@ class OppgaveRepositoryTest {
         entityManager.persist(andreOppgaveFiltrering);
         entityManager.flush();
 
-        var lister = oppgaveRepository.hentAlleOppgaveFilterSettTilknyttetAvdeling(avdelingIdForDrammen());
+        var lister = oppgaveRepository.hentAlleOppgaveFilterSettTilknyttetEnhet(Avdeling.AVDELING_DRAMMEN_ENHET);
 
         assertThat(lister).extracting(OppgaveFiltrering::getNavn).contains("OPPRETTET", "BEHANDLINGSFRIST");
         assertThat(lister).extracting(OppgaveFiltrering::getAvdeling).contains(avdeling);

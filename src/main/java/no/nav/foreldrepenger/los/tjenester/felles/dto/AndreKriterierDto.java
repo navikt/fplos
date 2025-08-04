@@ -3,21 +3,17 @@ package no.nav.foreldrepenger.los.tjenester.felles.dto;
 import no.nav.foreldrepenger.los.oppgave.AndreKriterierType;
 import no.nav.foreldrepenger.los.oppgavekø.FiltreringAndreKriterierType;
 
-public class AndreKriterierDto {
+import java.util.List;
 
-    private AndreKriterierType andreKriterierType;
-    private boolean inkluder;
+public record AndreKriterierDto(AndreKriterierType andreKriterierType, boolean inkluder) {
 
-    public AndreKriterierDto(FiltreringAndreKriterierType filtreringandrekrit) {
-        this.andreKriterierType = filtreringandrekrit.getAndreKriterierType();
-        this.inkluder = filtreringandrekrit.isInkluder();
+    public AndreKriterierDto(FiltreringAndreKriterierType fakt) {
+        this(fakt.getAndreKriterierType(), fakt.isInkluder());
     }
 
-    public AndreKriterierType getAndreKriterierType() {
-        return andreKriterierType;
-    }
-
-    public boolean isInkluder() {
-        return inkluder;
+    public static List<AndreKriterierDto> listeFra(List<FiltreringAndreKriterierType> filtreringAndreKriterierTyper) {
+        return filtreringAndreKriterierTyper.stream()
+            .map(AndreKriterierDto::new)
+            .toList();
     }
 }

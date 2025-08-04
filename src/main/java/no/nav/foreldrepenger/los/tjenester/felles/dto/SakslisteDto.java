@@ -1,6 +1,5 @@
 package no.nav.foreldrepenger.los.tjenester.felles.dto;
 
-import java.time.LocalDate;
 import java.util.List;
 
 import no.nav.foreldrepenger.los.oppgave.BehandlingType;
@@ -9,57 +8,21 @@ import no.nav.foreldrepenger.los.oppgavekø.OppgaveFiltrering;
 import no.nav.foreldrepenger.los.organisasjon.Saksbehandler;
 import no.nav.foreldrepenger.los.tjenester.avdelingsleder.saksliste.dto.SorteringDto;
 
-public class SakslisteDto {
+public record SakslisteDto(Long sakslisteId,
+                           String navn,
+                           SorteringDto sortering,
+                           List<BehandlingType> behandlingTyper,
+                           List<FagsakYtelseType> fagsakYtelseTyper,
+                           List<AndreKriterierDto> andreKriterier,
+                           List<String> saksbehandlerIdenter) {
 
-    private SakslisteIdDto sakslisteId;
-    private String navn;
-    private LocalDate sistEndret;
-    private SorteringDto sortering;
-    private List<BehandlingType> behandlingTyper;
-    private List<FagsakYtelseType> fagsakYtelseTyper;
-    private List<AndreKriterierDto> andreKriterier;
-    private List<String> saksbehandlerIdenter;
-
-    public SakslisteDto(OppgaveFiltrering o) {
-        sakslisteId = new SakslisteIdDto(o.getId());
-        navn = o.getNavn();
-        sistEndret = o.getEndretTidspunkt() == null ? o.getOpprettetTidspunkt().toLocalDate() : o.getEndretTidspunkt().toLocalDate();
-        behandlingTyper = o.getBehandlingTyper();
-        fagsakYtelseTyper = o.getFagsakYtelseTyper();
-        andreKriterier = o.getFiltreringAndreKriterierTyper().stream().map(AndreKriterierDto::new).toList();
-        sortering = new SorteringDto(o.getSortering(), o.getFra(), o.getTil(), o.getFomDato(), o.getTomDato(), o.getErDynamiskPeriode());
-        saksbehandlerIdenter = o.getSaksbehandlere().stream().map(Saksbehandler::getSaksbehandlerIdent).toList();
+    public SakslisteDto(OppgaveFiltrering of) {
+        this(of.getId(), of.getNavn(), new SorteringDto(of), of.getBehandlingTyper(), of.getFagsakYtelseTyper(),
+            AndreKriterierDto.listeFra(of.getFiltreringAndreKriterierTyper()), saksbehandlerIdenter(of.getSaksbehandlere()));
     }
 
-    public Long getSakslisteId() {
-        return sakslisteId.getVerdi();
+    private static List<String> saksbehandlerIdenter(List<Saksbehandler> saksbehandlere) {
+        return saksbehandlere.stream().map(Saksbehandler::getSaksbehandlerIdent).toList();
     }
 
-    public String getNavn() {
-        return navn;
-    }
-
-    public List<BehandlingType> getBehandlingTyper() {
-        return behandlingTyper;
-    }
-
-    public LocalDate getSistEndret() {
-        return sistEndret;
-    }
-
-    public SorteringDto getSortering() {
-        return sortering;
-    }
-
-    public List<FagsakYtelseType> getFagsakYtelseTyper() {
-        return fagsakYtelseTyper;
-    }
-
-    public List<AndreKriterierDto> getAndreKriterier() {
-        return andreKriterier;
-    }
-
-    public List<String> getSaksbehandlerIdenter() {
-        return saksbehandlerIdenter;
-    }
 }

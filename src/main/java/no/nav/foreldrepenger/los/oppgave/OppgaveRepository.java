@@ -52,7 +52,6 @@ public class OppgaveRepository {
     private static final String FØRSTE_STØNADSDAG = "o.førsteStønadsdag";
     private static final String BELØP = "o.beløp";
     private static final String FEILUTBETALINGSTART = "o.feilutbetalingstart";
-    private static final String OPPGAVEFILTRERING_SORTERING_NAVN = "ORDER BY l.navn";
     private static final String BEHANDLING_ID = "behandlingId";
 
     private EntityManager entityManager;
@@ -266,15 +265,15 @@ public class OppgaveRepository {
             .findFirst();
     }
 
-    public List<OppgaveFiltrering> hentAlleOppgaveFilterSettTilknyttetAvdeling(Long avdelingsId) {
-        var listeTypedQuery = entityManager.createQuery("FROM OppgaveFiltrering l WHERE l.avdeling.id = :id " + OPPGAVEFILTRERING_SORTERING_NAVN,
-            OppgaveFiltrering.class).setParameter("id", avdelingsId);//$NON-NLS-1$
+    public List<OppgaveFiltrering> hentAlleOppgaveFilterSettTilknyttetEnhet(String avdelingEnhet) {
+        var listeTypedQuery = entityManager.createQuery("from OppgaveFiltrering l where l.avdeling.avdelingEnhet = :avdelingEnhet order by l.navn",
+            OppgaveFiltrering.class).setParameter("avdelingEnhet", avdelingEnhet);//$NON-NLS-1$
         return listeTypedQuery.getResultList();
     }
 
     public Optional<OppgaveFiltrering> hentOppgaveFilterSett(Long listeId) {
-        var listeTypedQuery = entityManager.createQuery("FROM OppgaveFiltrering l WHERE l.id = :id " + OPPGAVEFILTRERING_SORTERING_NAVN,
-            OppgaveFiltrering.class).setParameter("id", listeId);
+        var listeTypedQuery = entityManager.createQuery("FROM OppgaveFiltrering l WHERE l.id = :id ", OppgaveFiltrering.class)
+            .setParameter("id", listeId);
         return listeTypedQuery.getResultStream().findFirst();
     }
 
