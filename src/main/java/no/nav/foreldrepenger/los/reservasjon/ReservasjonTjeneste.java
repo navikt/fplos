@@ -3,6 +3,7 @@ package no.nav.foreldrepenger.los.reservasjon;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import jakarta.enterprise.context.ApplicationScoped;
@@ -147,11 +148,9 @@ public class ReservasjonTjeneste {
 
     public List<OppgaveBehandlingStatusWrapper> hentSaksbehandlersSisteReserverteMedStatus() {
         var sisteReserverteMetadata = reservasjonRepository.hentSisteReserverteMetadata(BrukerIdent.brukerIdent());
-
         var oppgaveIder = sisteReserverteMetadata.stream().map(SisteReserverteMetadata::oppgaveId).toList();
         var oppgaveListe = oppgaveRepository.hentOppgaverReadOnly(oppgaveIder);
-        var oppgaveMap = oppgaveListe.stream().collect(Collectors.toMap(Oppgave::getId, oppgave -> oppgave));
-
+        var oppgaveMap = oppgaveListe.stream().collect(Collectors.toMap(Oppgave::getId, Function.identity()));
         return sisteReserverteMetadata.stream().map(mr -> {
             var oppgave = oppgaveMap.get(mr.oppgaveId());
             var status = mapStatus(oppgave, mr.sisteEventType());

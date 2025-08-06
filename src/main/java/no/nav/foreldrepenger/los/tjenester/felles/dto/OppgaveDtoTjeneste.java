@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 import no.nav.foreldrepenger.los.reservasjon.OppgaveBehandlingStatusWrapper;
 
@@ -94,7 +93,7 @@ public class OppgaveDtoTjeneste {
     public List<OppgaveDtoMedStatus> getSaksbehandlersSisteReserverteOppgaver() {
         var oppgaverMedStatus = reservasjonTjeneste.hentSaksbehandlersSisteReserverteMedStatus();
         var oppgaver = oppgaverMedStatus.stream().map(OppgaveBehandlingStatusWrapper::oppgave).toList();
-        var saksnummerMedTilgang = filterHarTilgang(oppgaver);
+        var saksnummerMedTilgang = filterKlient.tilgangFilterSaker(oppgaver);
         var oppgaverMedTilgang = oppgaver.stream()
             .filter(oppgave -> saksnummerMedTilgang.contains(oppgave.getSaksnummer()))
             .toList();
@@ -159,7 +158,7 @@ public class OppgaveDtoTjeneste {
     }
 
     private List<OppgaveDto> lagDtoForFilterTilgang(List<Oppgave> oppgaver) {
-        var saksnummerMedTilgang = filterHarTilgang(oppgaver);
+        var saksnummerMedTilgang = filterKlient.tilgangFilterSaker(oppgaver);
         return oppgaver.stream()
             .filter(oppgave -> saksnummerMedTilgang.contains(oppgave.getSaksnummer()))
             .map(this::lagEnkelDto)
@@ -185,14 +184,6 @@ public class OppgaveDtoTjeneste {
             .orElseThrow(() -> new LagOppgaveDtoFeil("Finner ikke person tilknyttet oppgaveId " + oppgave.getId()));
         var oppgaveStatus = reservasjonStatusDtoTjeneste.lagStatusFor(oppgave);
         return new OppgaveDto(oppgave, person, oppgaveStatus);
-    }
-
-    private Set<Saksnummer> filterHarTilgang(List<Oppgave> oppgaver) {
-        var kontekst = KontekstHolder.getKontekst() instanceof RequestKontekst rk ? rk : null;
-        if (kontekst == null || oppgaver.isEmpty()) {
-            return Set.of();
-        }
-        return filterKlient.tilgangFilterSaker(kontekst.getOid(), oppgaver);
     }
 
     public static final class LagOppgaveDtoFeil extends RuntimeException {
