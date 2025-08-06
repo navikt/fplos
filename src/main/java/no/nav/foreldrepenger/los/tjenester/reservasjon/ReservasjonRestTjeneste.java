@@ -3,6 +3,8 @@ package no.nav.foreldrepenger.los.tjenester.reservasjon;
 
 import java.util.List;
 
+import no.nav.foreldrepenger.los.tjenester.felles.dto.OppgaveDtoMedStatus;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -163,7 +165,7 @@ public class ReservasjonRestTjeneste {
     @Produces("application/json")
     @Operation(description = "Behandlede", tags = "Saksbehandler")
     @BeskyttetRessurs(actionType = ActionType.READ, resourceType = ResourceType.FAGSAK, sporingslogg = false)
-    public List<OppgaveDto> sisteReserverte() {
+    public List<OppgaveDtoMedStatus> sisteReserverte() {
         return oppgaveDtoTjeneste.getSaksbehandlersSisteReserverteOppgaver();
     }
 

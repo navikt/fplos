@@ -10,14 +10,17 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 
-import jakarta.persistence.EntityManager;
+import no.nav.foreldrepenger.los.tjenester.felles.dto.OppgaveBehandlingStatus;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
+import jakarta.persistence.EntityManager;
 import no.nav.foreldrepenger.los.JpaExtension;
 import no.nav.foreldrepenger.los.avdelingsleder.AvdelingslederTjeneste;
+import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveEventLogg;
+import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveEventType;
 import no.nav.foreldrepenger.los.oppgavekø.KøSortering;
 import no.nav.foreldrepenger.los.oppgavekø.OppgaveFiltrering;
 import no.nav.foreldrepenger.los.oppgavekø.OppgaveKøTjeneste;
@@ -52,13 +55,13 @@ class OppgaveTjenesteTest {
 
     @BeforeEach
     void setup(EntityManager entityManager) {
-        oppgaveRepository = new OppgaveRepository(entityManager);
         var organisasjonRepository = new OrganisasjonRepository(entityManager);
+        oppgaveRepository = new OppgaveRepository(entityManager);
         avdelingslederTjeneste = new AvdelingslederTjeneste(oppgaveRepository, organisasjonRepository);
         oppgaveKøTjeneste = new OppgaveKøTjeneste(oppgaveRepository, organisasjonRepository);
-        oppgaveTjeneste = new OppgaveTjeneste(oppgaveRepository, reservasjonTjeneste);
         reservasjonRepository = new ReservasjonRepository(entityManager);
         reservasjonTjeneste = new ReservasjonTjeneste(oppgaveRepository, reservasjonRepository);
+        oppgaveTjeneste = new OppgaveTjeneste(oppgaveRepository, reservasjonTjeneste);
         this.entityManager = entityManager;
     }
 
@@ -76,6 +79,11 @@ class OppgaveTjenesteTest {
         oppgaveRepository.lagre(førstegangOppgaveBergen);
         entityManager.refresh(oppgaveFiltrering);
         return oppgaveFiltrering.getId();
+    }
+
+    private static OppgaveEventLogg opprettOppgaveEventLogg(Oppgave oppgave) {
+        return new OppgaveEventLogg(oppgave.behandlingId, OppgaveEventType.OPPRETTET,
+            null, oppgave.getBehandlendeEnhet());
     }
 
     @Test
@@ -154,7 +162,7 @@ class OppgaveTjenesteTest {
         assertThat(oppgaveKøTjeneste.hentOppgaver(oppgaveFiltreringId)).hasSize(3);
         assertThat(reservasjonTjeneste.hentSaksbehandlersReserverteAktiveOppgaver()).isEmpty();
         assertThat(reservasjonTjeneste.hentReservasjonerForAvdeling(AVDELING_DRAMMEN_ENHET)).isEmpty();
-        assertThat(reservasjonTjeneste.hentSaksbehandlersSisteReserverteOppgaver()).isEmpty();
+        assertThat(reservasjonTjeneste.hentSaksbehandlersSisteReserverteMedStatus()).isEmpty();
 
         reservasjonTjeneste.reserverOppgave(førstegangOppgave);
         assertThat(oppgaveKøTjeneste.hentOppgaver(oppgaveFiltreringId)).hasSize(2);
@@ -167,7 +175,6 @@ class OppgaveTjenesteTest {
             .findAny()
             .orElseGet(() -> fail("Ingen oppgave"));
         assertThat(reservasjon.getReservertTil().until(LocalDateTime.now().plusHours(2), MINUTES)).isLessThan(2);
-        assertThat(reservasjonTjeneste.hentSaksbehandlersSisteReserverteOppgaver()).hasSize(1);
 
         reservasjonTjeneste.forlengReservasjonPåOppgave(førstegangOppgave.getId());
         assertThat(reservasjon.getReservertTil().until(LocalDateTime.now().plusHours(26), MINUTES)).isLessThan(2);
@@ -176,12 +183,28 @@ class OppgaveTjenesteTest {
         reservasjonTjeneste.endreReservasjonPåOppgave(førstegangOppgave.getId(), LocalDateTime.now().plusDays(3));
         assertThat(reservasjon.getReservertTil().until(LocalDateTime.now().plusDays(3), MINUTES)).isLessThan(2);
 
-        var begrunnelse = "Test";
-        reservasjonTjeneste.slettReservasjonMedEventLogg(førstegangOppgave.getReservasjon(), begrunnelse);
+        reservasjonTjeneste.slettReservasjonMedEventLogg(førstegangOppgave.getReservasjon(), "begrunnelse");
         assertThat(oppgaveKøTjeneste.hentOppgaver(oppgaveFiltreringId)).hasSize(3);
         assertThat(reservasjonTjeneste.hentSaksbehandlersReserverteAktiveOppgaver()).isEmpty();
         assertThat(reservasjonTjeneste.hentReservasjonerForAvdeling(AVDELING_DRAMMEN_ENHET)).isEmpty();
-        assertThat(reservasjonTjeneste.hentSaksbehandlersSisteReserverteOppgaver()).hasSize(1);
+    }
+
+    @Test
+    void testSisteReserverte() {
+        oppgaveRepository.lagre(førstegangOppgave);
+        oppgaveRepository.lagre(opprettOppgaveEventLogg(førstegangOppgave));
+
+        reservasjonTjeneste.reserverOppgave(førstegangOppgave);
+        var sisteReserverteEtterReservasjon = reservasjonTjeneste.hentSaksbehandlersSisteReserverteMedStatus();
+        assertThat(sisteReserverteEtterReservasjon)
+            .hasSize(1)
+            .first().matches(sr -> sr.status() == OppgaveBehandlingStatus.UNDER_ARBEID);
+
+        oppgaveTjeneste.avsluttOppgaveMedEventLogg(førstegangOppgave, OppgaveEventType.LUKKET, "Avsluttet oppgave");
+        var sisteReserverte = reservasjonTjeneste.hentSaksbehandlersSisteReserverteMedStatus();
+        assertThat(sisteReserverte)
+            .hasSize(1)
+            .first().matches(sr -> sr.status() == OppgaveBehandlingStatus.FERDIG);
     }
 
     @Test
