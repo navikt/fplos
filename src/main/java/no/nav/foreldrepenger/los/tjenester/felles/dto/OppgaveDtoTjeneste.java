@@ -31,7 +31,6 @@ public class OppgaveDtoTjeneste {
     public static final int ANTALL_OPPGAVER_SOM_VISES_TIL_SAKSBEHANDLER = 3;
     public static final int ANTALL_OPPGAVER_UTVALG = 19;
 
-
     private static final Logger LOG = LoggerFactory.getLogger(OppgaveDtoTjeneste.class);
 
     private OppgaveTjeneste oppgaveTjeneste;
@@ -87,19 +86,13 @@ public class OppgaveDtoTjeneste {
 
     public List<OppgaveDto> getSaksbehandlersReserverteAktiveOppgaver() {
         var oppgaver = reservasjonTjeneste.hentSaksbehandlersReserverteAktiveOppgaver();
-        return map(oppgaver);
+        return lagDtoMedTilgangskontroll(oppgaver);
     }
 
     public List<OppgaveDtoMedStatus> getSaksbehandlersSisteReserverteOppgaver() {
         var oppgaverMedStatus = reservasjonTjeneste.hentSaksbehandlersSisteReserverteMedStatus();
         var oppgaver = oppgaverMedStatus.stream().map(OppgaveBehandlingStatusWrapper::oppgave).toList();
-        var saksnummerMedTilgang = filterKlient.tilgangFilterSaker(oppgaver);
-        var oppgaverMedTilgang = oppgaver.stream()
-            .filter(oppgave -> saksnummerMedTilgang.contains(oppgave.getSaksnummer()))
-            .toList();
-        return oppgaverMedTilgang.stream()
-            .map(this::safeLagDtoFor)
-            .flatMap(Optional::stream)
+        return lagDtoMedTilgangskontroll(oppgaver).stream()
             .map(dto -> {
                 var status = oppgaverMedStatus.stream()
                     .filter(oppgaveStatus -> oppgaveStatus.oppgave().getId().equals(dto.getId()))
@@ -111,28 +104,16 @@ public class OppgaveDtoTjeneste {
             .toList();
     }
 
-    private Optional<OppgaveDto> safeLagDtoFor(Oppgave oppgave) {
-        try {
-            return Optional.of(lagDtoFor(oppgave));
-        } catch (Exception e) {
-            return Optional.empty();
-        }
-    }
-
     public List<OppgaveDto> hentOppgaverForFagsaker(Collection<Saksnummer> saksnummerListe) {
         var oppgaver = oppgaveTjeneste.hentAktiveOppgaverForSaksnummer(saksnummerListe);
-        return map(oppgaver);
-    }
-
-    private List<OppgaveDto> map(List<Oppgave> oppgaver) {
-        return map(oppgaver, oppgaver.size(), false);
+        return lagDtoMedTilgangskontroll(oppgaver);
     }
 
     private List<OppgaveDto> map(List<Oppgave> oppgaver, int maksAntall, boolean randomiser) {
         if (oppgaver.isEmpty()) {
             return List.of();
         } else if (oppgaver.size() <= maksAntall) {
-            return lagDtoForFilterTilgang(oppgaver);
+            return lagDtoMedTilgangskontroll(oppgaver);
         } else {
             List<OppgaveDto> dtoList = new ArrayList<>();
             var antallOppgaver = oppgaver.size();
@@ -140,7 +121,7 @@ public class OppgaveDtoTjeneste {
             var inkrement = Math.min(ANTALL_OPPGAVER_SOM_VISES_TIL_SAKSBEHANDLER, maksAntall);
             for (int i = 0; i < antallOppgaver && dtoList.size() < maksAntall; i += inkrement) {
                 var sjekkOppgaver = permutert.subList(i, Math.min(i + inkrement, antallOppgaver));
-                dtoList.addAll(lagDtoForFilterTilgang(sjekkOppgaver));
+                dtoList.addAll(lagDtoMedTilgangskontroll(sjekkOppgaver));
             }
             return dtoList.stream().limit(maksAntall).toList();
         }
@@ -157,18 +138,21 @@ public class OppgaveDtoTjeneste {
         return permutert;
     }
 
-    private List<OppgaveDto> lagDtoForFilterTilgang(List<Oppgave> oppgaver) {
+    private List<OppgaveDto> lagDtoMedTilgangskontroll(List<Oppgave> oppgaver) {
         var saksnummerMedTilgang = filterKlient.tilgangFilterSaker(oppgaver);
         return oppgaver.stream()
             .filter(oppgave -> saksnummerMedTilgang.contains(oppgave.getSaksnummer()))
-            .map(this::lagEnkelDto)
-            .flatMap(Collection::stream)
+            .map(this::lagDto)
+            .flatMap(Optional::stream)
             .toList();
     }
 
-    private List<OppgaveDto> lagEnkelDto(Oppgave oppgave) {
+    private Optional<OppgaveDto> lagDto(Oppgave oppgave) {
         try {
-            return List.of(lagDtoFor(oppgave));
+            var person = personTjeneste.hentPerson(oppgave.getFagsakYtelseType(), oppgave.getAktørId(), oppgave.getSaksnummer())
+                .orElseThrow(() -> new LagOppgaveDtoFeil("Finner ikke person tilknyttet oppgaveId " + oppgave.getId()));
+            var oppgaveStatus = reservasjonStatusDtoTjeneste.lagStatusFor(oppgave);
+            return Optional.of(new OppgaveDto(oppgave, person, oppgaveStatus));
         } catch (IkkeTilgangPåPersonException e) {
             LOG.warn("Kunne ikke lage OppgaveDto for oppgaveId {}, oppslag PDL feiler på grunn av manglende tilgang", oppgave.getId(), e);
         } catch (LagOppgaveDtoFeil e) {
@@ -176,14 +160,7 @@ public class OppgaveDtoTjeneste {
         } catch (Exception e) {
             LOG.warn("Kunne ikke lage OppgaveDto for oppgaveId {}, annen feil", oppgave.getId(), e);
         }
-        return List.of();
-    }
-
-    private OppgaveDto lagDtoFor(Oppgave oppgave) {
-        var person = personTjeneste.hentPerson(oppgave.getFagsakYtelseType(), oppgave.getAktørId(), oppgave.getSaksnummer())
-            .orElseThrow(() -> new LagOppgaveDtoFeil("Finner ikke person tilknyttet oppgaveId " + oppgave.getId()));
-        var oppgaveStatus = reservasjonStatusDtoTjeneste.lagStatusFor(oppgave);
-        return new OppgaveDto(oppgave, person, oppgaveStatus);
+        return Optional.empty();
     }
 
     public static final class LagOppgaveDtoFeil extends RuntimeException {
