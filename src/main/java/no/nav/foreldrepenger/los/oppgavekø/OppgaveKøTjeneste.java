@@ -65,15 +65,14 @@ public class OppgaveKøTjeneste {
         return oppgaveRepository.hentAntallOppgaverForAvdeling(avdeling.getId());
     }
 
-    public List<Oppgave> hentOppgaver(Long sakslisteId) {
-        return hentOppgaver(sakslisteId, 0);
-    }
-
     public List<Oppgave> hentOppgaver(Long sakslisteId, int maksAntall) {
-        return oppgaveRepository.hentOppgaveFilterSett(sakslisteId)
-            .map(Oppgavespørring::new)
-            .map(os -> oppgaveRepository.hentOppgaver(os, maksAntall))
-            .orElse(Collections.emptyList());
+        var oppgaveFilter = oppgaveRepository.hentOppgaveFilterSett(sakslisteId);
+        if (oppgaveFilter.isEmpty()) {
+            return Collections.emptyList();
+        }
+        var oppgavespørring = new Oppgavespørring(oppgaveFilter.get());
+        oppgavespørring.setMaksAntall(maksAntall);
+        return oppgaveRepository.hentOppgaver(oppgavespørring);
     }
 
     private Optional<OppgaveFiltreringKnytning> finnOppgaveFiltreringKnytning(Oppgave oppgave, OppgaveFiltrering oppgaveFiltrering) {

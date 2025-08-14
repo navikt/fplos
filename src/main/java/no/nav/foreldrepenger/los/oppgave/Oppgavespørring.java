@@ -23,8 +23,9 @@ public class Oppgavespørring {
     private final Long filtrerFra;
     private final Long filtrerTil;
     private boolean forAvdelingsleder;
-    private Long avgrenseTilOppgaveId;
     private boolean ignorerReserversjoner;
+    private Long avgrenseTilOppgaveId;
+    private Long maxAntallOppgaver;
 
     public Oppgavespørring(OppgaveFiltrering oppgaveFiltrering) {
         sortering = oppgaveFiltrering.getSortering();
@@ -76,9 +77,12 @@ public class Oppgavespørring {
         this.forAvdelingsleder = forAvdelingsleder;
     }
 
-    public Oppgavespørring setAvgrensTilOppgaveId(Long oppgaveId) {
+    public void setAvgrensTilOppgaveId(Long oppgaveId) {
         this.avgrenseTilOppgaveId = oppgaveId;
-        return this;
+    }
+
+    public void setMaksAntall(int maksAntall) {
+        this.maxAntallOppgaver = (long) maksAntall;
     }
 
     public boolean getForAvdelingsleder() {
@@ -131,6 +135,10 @@ public class Oppgavespørring {
 
     public Optional<Long> getAvgrenseTilOppgaveId() {
         return Optional.ofNullable(avgrenseTilOppgaveId);
+    }
+
+    public Optional<Long> getMaxAntallOppgaver() {
+        return Optional.ofNullable(maxAntallOppgaver);
     }
 
     private List<AndreKriterierType> ekskluderAndreKriterierTyperFra(OppgaveFiltrering oppgaveFiltrering) {

@@ -63,7 +63,7 @@ class OppgaveKøTjenesteTest {
         var listeId = leggeInnEtSettMedOppgaver();
         avdelingslederTjeneste.endreFiltreringBehandlingType(listeId, BehandlingType.FØRSTEGANGSSØKNAD, true);
         avdelingslederTjeneste.endreFiltreringBehandlingType(listeId, BehandlingType.KLAGE, true);
-        var oppgaver = oppgaveKøTjeneste.hentOppgaver(listeId);
+        var oppgaver = oppgaveKøTjeneste.hentOppgaver(listeId, 100);
         assertThat(oppgaver).hasSize(2);
     }
 
@@ -72,14 +72,14 @@ class OppgaveKøTjenesteTest {
         var listeId = leggeInnEtSettMedAndreKriterierOppgaver();
         avdelingslederTjeneste.endreFiltreringAndreKriterierType(listeId, AndreKriterierType.TIL_BESLUTTER, true, true);
         avdelingslederTjeneste.endreFiltreringAndreKriterierType(listeId, AndreKriterierType.PAPIRSØKNAD, true, true);
-        var oppgaver = oppgaveKøTjeneste.hentOppgaver(listeId);
+        var oppgaver = oppgaveKøTjeneste.hentOppgaver(listeId, 100);
         assertThat(oppgaver).hasSize(1);
     }
 
     @Test
     void testUtenFiltreringpåBehandlingstype() {
         var oppgaveFiltreringId = leggeInnEtSettMedOppgaver();
-        var oppgaver = oppgaveKøTjeneste.hentOppgaver(oppgaveFiltreringId);
+        var oppgaver = oppgaveKøTjeneste.hentOppgaver(oppgaveFiltreringId, 100);
         assertThat(oppgaver).hasSize(3);
     }
 

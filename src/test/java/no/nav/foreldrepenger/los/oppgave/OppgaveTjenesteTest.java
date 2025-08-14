@@ -90,7 +90,7 @@ class OppgaveTjenesteTest {
     void testEnFiltreringpåBehandlingstype() {
         var listeId = leggeInnEtSettMedOppgaver();
         avdelingslederTjeneste.endreFiltreringBehandlingType(listeId, BehandlingType.FØRSTEGANGSSØKNAD, true);
-        var oppgaver = oppgaveKøTjeneste.hentOppgaver(listeId);
+        var oppgaver = oppgaveKøTjeneste.hentOppgaver(listeId, 100);
         assertThat(oppgaver).hasSize(1);
     }
 
@@ -108,7 +108,7 @@ class OppgaveTjenesteTest {
             .build();
         oppgaveRepository.lagre(opprettet);
 
-        var oppgaves = oppgaveKøTjeneste.hentOppgaver(opprettet.getId());
+        var oppgaves = oppgaveKøTjeneste.hentOppgaver(opprettet.getId(), 100);
         assertThat(oppgaves).containsSequence(førsteOppgave, andreOppgave, tredjeOppgave, fjerdeOppgave);
     }
 
@@ -122,7 +122,7 @@ class OppgaveTjenesteTest {
         var frist = OppgaveFiltrering.builder().medNavn("FRIST").medSortering(KøSortering.BEHANDLINGSFRIST).medAvdeling(avdelingDrammen(entityManager)).build();
         oppgaveRepository.lagre(frist);
 
-        var oppgaves = oppgaveKøTjeneste.hentOppgaver(frist.getId());
+        var oppgaves = oppgaveKøTjeneste.hentOppgaver(frist.getId(), 100);
         assertThat(oppgaves).containsSequence(førsteOppgave, andreOppgave, tredjeOppgave, fjerdeOppgave);
     }
 
@@ -140,7 +140,7 @@ class OppgaveTjenesteTest {
             .build();
         oppgaveRepository.lagre(førsteStønadsdag);
 
-        var oppgaves = oppgaveKøTjeneste.hentOppgaver(førsteStønadsdag.getId());
+        var oppgaves = oppgaveKøTjeneste.hentOppgaver(førsteStønadsdag.getId(), 100);
         assertThat(oppgaves).containsSequence(førsteOppgave, andreOppgave, tredjeOppgave, fjerdeOppgave);
     }
 
@@ -159,13 +159,13 @@ class OppgaveTjenesteTest {
     @Test
     void testReservasjon() {
         var oppgaveFiltreringId = leggeInnEtSettMedOppgaver();
-        assertThat(oppgaveKøTjeneste.hentOppgaver(oppgaveFiltreringId)).hasSize(3);
+        assertThat(oppgaveKøTjeneste.hentOppgaver(oppgaveFiltreringId, 100)).hasSize(3);
         assertThat(reservasjonTjeneste.hentSaksbehandlersReserverteAktiveOppgaver()).isEmpty();
         assertThat(reservasjonTjeneste.hentReservasjonerForAvdeling(AVDELING_DRAMMEN_ENHET)).isEmpty();
         assertThat(reservasjonTjeneste.hentSaksbehandlersSisteReserverteMedStatus()).isEmpty();
 
         reservasjonTjeneste.reserverOppgave(førstegangOppgave);
-        assertThat(oppgaveKøTjeneste.hentOppgaver(oppgaveFiltreringId)).hasSize(2);
+        assertThat(oppgaveKøTjeneste.hentOppgaver(oppgaveFiltreringId, 100)).hasSize(2);
         assertThat(reservasjonTjeneste.hentSaksbehandlersReserverteAktiveOppgaver()).hasSize(1);
         assertThat(reservasjonTjeneste.hentReservasjonerForAvdeling(AVDELING_DRAMMEN_ENHET)).hasSize(1);
         assertThat(reservasjonTjeneste.hentReservasjonerForAvdeling(AVDELING_BERGEN_ENHET)).isEmpty();
@@ -184,7 +184,7 @@ class OppgaveTjenesteTest {
         assertThat(reservasjon.getReservertTil().until(LocalDateTime.now().plusDays(3), MINUTES)).isLessThan(2);
 
         reservasjonTjeneste.slettReservasjonMedEventLogg(førstegangOppgave.getReservasjon(), "begrunnelse");
-        assertThat(oppgaveKøTjeneste.hentOppgaver(oppgaveFiltreringId)).hasSize(3);
+        assertThat(oppgaveKøTjeneste.hentOppgaver(oppgaveFiltreringId, 100)).hasSize(3);
         assertThat(reservasjonTjeneste.hentSaksbehandlersReserverteAktiveOppgaver()).isEmpty();
         assertThat(reservasjonTjeneste.hentReservasjonerForAvdeling(AVDELING_DRAMMEN_ENHET)).isEmpty();
     }
