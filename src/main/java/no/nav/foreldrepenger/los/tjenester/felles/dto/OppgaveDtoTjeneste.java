@@ -76,8 +76,8 @@ public class OppgaveDtoTjeneste {
             return oppgaveDtos;
         }
         LOG.info("{} behandlinger filtrert bort for saksliste {}", nesteOppgaver.size() - oppgaveDtos.size(), sakslisteId);
-        var alleOppgaver = oppgaveKøTjeneste.hentOppgaver(sakslisteId, 150);
-        return map(alleOppgaver, ANTALL_OPPGAVER_SOM_VISES_TIL_SAKSBEHANDLER, false);
+        var flereOppgaver = oppgaveKøTjeneste.hentOppgaver(sakslisteId, ANTALL_OPPGAVER_UTVALG * 4);
+        return map(flereOppgaver, ANTALL_OPPGAVER_SOM_VISES_TIL_SAKSBEHANDLER, false);
     }
 
     public List<OppgaveDto> getSaksbehandlersReserverteAktiveOppgaver() {
