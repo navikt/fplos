@@ -68,10 +68,6 @@ public class OppgaveDtoTjeneste {
         return reservasjonStatusDtoTjeneste.lagStatusFor(oppgave);
     }
 
-    public boolean finnesTilgjengeligeOppgaver(SakslisteIdDto sakslisteId) {
-        return !oppgaveKøTjeneste.hentOppgaver(sakslisteId.getVerdi()).isEmpty();
-    }
-
     public List<OppgaveDto> getOppgaverTilBehandling(Long sakslisteId) {
         var nesteOppgaver = oppgaveKøTjeneste.hentOppgaver(sakslisteId, ANTALL_OPPGAVER_UTVALG);
         var oppgaveDtos = map(nesteOppgaver, ANTALL_OPPGAVER_SOM_VISES_TIL_SAKSBEHANDLER, nesteOppgaver.size() == ANTALL_OPPGAVER_UTVALG);
@@ -80,7 +76,7 @@ public class OppgaveDtoTjeneste {
             return oppgaveDtos;
         }
         LOG.info("{} behandlinger filtrert bort for saksliste {}", nesteOppgaver.size() - oppgaveDtos.size(), sakslisteId);
-        var alleOppgaver = oppgaveKøTjeneste.hentOppgaver(sakslisteId);
+        var alleOppgaver = oppgaveKøTjeneste.hentOppgaver(sakslisteId, 150);
         return map(alleOppgaver, ANTALL_OPPGAVER_SOM_VISES_TIL_SAKSBEHANDLER, false);
     }
 

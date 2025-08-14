@@ -82,19 +82,13 @@ public class OppgaveRepository {
     }
 
     public List<Oppgave> hentOppgaver(Oppgavespørring oppgavespørring) {
-        return hentOppgaver(oppgavespørring, 0);
-    }
-
-    public List<Oppgave> hentOppgaver(Oppgavespørring oppgavespørring, int maksAntall) {
         var selection = SELECT_FRA_OPPGAVE;
         if (KøSortering.FK_TILBAKEKREVING.equalsIgnoreCase(oppgavespørring.getSortering().getFeltkategori())) {
             selection = SELECT_FRA_TILBAKEKREVING_OPPGAVE;
         }
-        var oppgaveTypedQuery = lagOppgavespørring(selection, Oppgave.class, oppgavespørring);
-        if (maksAntall > 0) {
-            oppgaveTypedQuery.setMaxResults(maksAntall);
-        }
-        return oppgaveTypedQuery.getResultList();
+        var query = lagOppgavespørring(selection, Oppgave.class, oppgavespørring);
+        oppgavespørring.getMaxAntallOppgaver().ifPresent(max -> query.setMaxResults(max.intValue()));
+        return query.getResultList();
     }
 
     private static String andreKriterierSubquery(Oppgavespørring queryDto) {

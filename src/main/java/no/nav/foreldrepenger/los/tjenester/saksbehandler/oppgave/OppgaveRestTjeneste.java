@@ -45,8 +45,6 @@ import no.nav.vedtak.sikkerhet.abac.beskyttet.ResourceType;
 @Transactional
 public class OppgaveRestTjeneste {
 
-    private static final Logger LOG = LoggerFactory.getLogger(OppgaveRestTjeneste.class);
-
     public static final String OPPGAVER_BASE_PATH = "/saksbehandler/oppgaver";
     public static final String OPPGAVER_STATUS_PATH = "/status";
     public static final String OPPGAVER_RESULTAT_PATH = "/resultat";
@@ -88,13 +86,13 @@ public class OppgaveRestTjeneste {
                                                          @Valid @QueryParam("oppgaveIder") OppgaveIderDto oppgaverIder) throws URISyntaxException {
         List<Long> oppgaveIderSomVises = oppgaverIder == null ? List.of() : oppgaverIder.getOppgaveIdeer();
         if (oppgaveIderSomVises.isEmpty()) {
-            if (!oppgaveDtoTjeneste.finnesTilgjengeligeOppgaver(sakslisteId)) {
+            var finnesOppgaver = oppgaveKøTjeneste.hentAntallOppgaver(sakslisteId.getVerdi(), false) > 0;
+            if (!finnesOppgaver) {
                 return Redirect.sendTilPolling(request, sakslisteId, oppgaverIder);
             }
             return Redirect.sendTilResultat(request, sakslisteId);
         }
         if (oppgaveTjeneste.erAlleOppgaverFortsattTilgjengelig(oppgaveIderSomVises)) {
-            LOG.debug("Alle oppgaver fortsatt tilgjengelig for sakliste {}: {}", sakslisteId.getVerdi(), oppgaveIderSomVises);
             return Redirect.sendTilPolling(request, sakslisteId, oppgaverIder);
         }
         return Redirect.sendTilResultat(request, sakslisteId);
@@ -107,9 +105,7 @@ public class OppgaveRestTjeneste {
         + " neste oppgaver", tags = "Saksbehandler", responses = {@ApiResponse(responseCode = "200", description = "Returnerer Oppgaver", content = @Content(schema = @Schema(implementation = OppgaveDto.class))),})
     @BeskyttetRessurs(actionType = ActionType.READ, resourceType = ResourceType.FAGSAK, sporingslogg = false)
     public List<OppgaveDto> getOppgaverTilBehandling(@NotNull @QueryParam("sakslisteId") @Valid SakslisteIdDto sakslisteId) {
-        var oppgaverTilBehandling = oppgaveDtoTjeneste.getOppgaverTilBehandling(sakslisteId.getVerdi());
-        LOG.debug("Oppgaver til behandling for saksliste {}: {}", sakslisteId.getVerdi(), oppgaverTilBehandling);
-        return oppgaverTilBehandling;
+        return oppgaveDtoTjeneste.getOppgaverTilBehandling(sakslisteId.getVerdi());
     }
 
     @GET

@@ -373,7 +373,6 @@ class OppgaveRepositoryTest {
         assertThat(filtrering).isEmpty();
     }
 
-
     private Oppgave første() {
         return DBTestUtil.hentAlle(entityManager, Oppgave.class).get(0);
     }
