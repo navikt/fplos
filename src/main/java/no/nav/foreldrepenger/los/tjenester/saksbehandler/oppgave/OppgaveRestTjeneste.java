@@ -5,9 +5,6 @@ import static no.nav.foreldrepenger.los.tjenester.felles.dto.OppgaveDtoTjeneste.
 import java.net.URISyntaxException;
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.headers.Header;
