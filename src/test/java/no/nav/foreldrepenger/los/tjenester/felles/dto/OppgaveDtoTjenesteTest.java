@@ -82,14 +82,14 @@ class OppgaveDtoTjenesteTest {
             AndreKriterierType.TIL_BESLUTTER, oppgave.getBehandlendeEnhet()));
         reservasjonTjeneste.reserverOppgave(oppgave);
 
-        var sisteReserverteEtterReservasjon = oppgaveDtoTjeneste.getSaksbehandlersSisteReserverteOppgaver();
+        var sisteReserverteEtterReservasjon = oppgaveDtoTjeneste.getSaksbehandlersSisteReserverteOppgaver(false);
         assertThat(sisteReserverteEtterReservasjon)
             .hasSize(1)
             .first().matches(dto -> dto.getOppgaveBehandlingStatus() == OppgaveBehandlingStatus.TIL_BESLUTTER);
 
         oppgaveTjeneste.avsluttOppgaveMedEventLogg(oppgave, OppgaveEventType.LUKKET, "Avsluttet oppgave");
 
-        var sisteReserverte = oppgaveDtoTjeneste.getSaksbehandlersSisteReserverteOppgaver();
+        var sisteReserverte = oppgaveDtoTjeneste.getSaksbehandlersSisteReserverteOppgaver(false);
         assertThat(sisteReserverte)
             .hasSize(1)
             .first().matches(dto -> dto.getOppgaveBehandlingStatus() == OppgaveBehandlingStatus.FERDIG);

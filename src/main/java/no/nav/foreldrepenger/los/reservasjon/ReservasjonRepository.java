@@ -26,30 +26,7 @@ public class ReservasjonRepository {
         this.entityManager = entityManager;
     }
 
-    public List<Oppgave> hentSaksbehandlersSisteReserverteOppgaver(String uid) {
-        var fom = LocalDate.now().minusWeeks(3).atStartOfDay();
-        return entityManager.createQuery("""
-                select o from Oppgave o
-                inner join Reservasjon r on r.oppgave = o
-                where r.opprettetTidspunkt > :fom
-                and r.reservertAv = :uid
-                and not exists(
-                    select 1
-                    from Oppgave o2
-                    inner join Reservasjon r2 on r2.oppgave = o2
-                    where o2.behandlingId = o.behandlingId
-                    and o2.opprettetTidspunkt > o.opprettetTidspunkt
-                    and r2.reservertAv = :uid
-                )
-                order by coalesce(r.endretTidspunkt, r.opprettetTidspunkt) desc
-                """, Oppgave.class) //$NON-NLS-1$
-            .setParameter("uid", uid.toUpperCase())
-            .setParameter("fom", fom)
-            .setMaxResults(15)
-            .getResultList();
-    }
-
-    public List<SisteReserverteMetadata> hentSisteReserverteMetadata(String uid) {
+    public List<SisteReserverteMetadata> hentSisteReserverteMetadata(String uid, boolean kunAktive) {
         /*
         * Første derived table henter de siste behandlingene reservert på bruker, og lager en aktuell_tid for sortering.
         *   (Prinsippet for aktuell_tid er omtrent når saksbehandler sist tok i behandlingen, og dette er sorteringen som benyttes i visning.)
@@ -59,6 +36,7 @@ public class ReservasjonRepository {
         * Neste join med en derived table henter event_type fra oppgave_event_logg (pt. nødvendig for ventestatus)
         * Siste join henter siste oppgave tilkyttet behandlingen, uavhengig av "eier" av denne.
         */
+        var kunAktiveValue = kunAktive ? List.of("J") : List.of("J", "N");
         var query = entityManager.createNativeQuery("""
             select
                 o.id as oppgave_id,
@@ -85,10 +63,12 @@ public class ReservasjonRepository {
                 from oppgave o2
                 where o2.behandling_id = o.behandling_id
             )
+            and o.aktiv in ( :kunAktiveValue )
             order by sb_res.aktuell_tid desc
             """)
             .setParameter("uid", uid)
-            .setParameter("fom", LocalDate.now().minusWeeks(3).atStartOfDay());
+            .setParameter("fom", LocalDate.now().minusWeeks(3).atStartOfDay())
+            .setParameter("kunAktiveValue", kunAktiveValue);
 
         @SuppressWarnings("unchecked")
         Stream<Object[]> result = query.getResultStream().limit(15);

@@ -85,8 +85,8 @@ public class OppgaveDtoTjeneste {
         return lagDtoMedTilgangskontroll(oppgaver);
     }
 
-    public List<OppgaveDtoMedStatus> getSaksbehandlersSisteReserverteOppgaver() {
-        var oppgaverMedStatus = reservasjonTjeneste.hentSaksbehandlersSisteReserverteMedStatus();
+    public List<OppgaveDtoMedStatus> getSaksbehandlersSisteReserverteOppgaver(boolean kunAktive) {
+        var oppgaverMedStatus = reservasjonTjeneste.hentSaksbehandlersSisteReserverteMedStatus(kunAktive);
         var oppgaver = oppgaverMedStatus.stream().map(OppgaveBehandlingStatusWrapper::oppgave).toList();
         return lagDtoMedTilgangskontroll(oppgaver).stream()
             .map(dto -> {
