@@ -205,6 +205,9 @@ class OppgaveTjenesteTest {
         assertThat(sisteReserverte)
             .hasSize(1)
             .first().matches(sr -> sr.status() == OppgaveBehandlingStatus.FERDIG);
+
+        var sisteReserverteAktive = reservasjonTjeneste.hentSaksbehandlersSisteReserverteMedStatus(true);
+        assertThat(sisteReserverteAktive).isEmpty();
     }
 
     @Test
