@@ -53,10 +53,6 @@ public class Oppgave extends BaseEntitet {
     @Column(name = "FORSTE_STONADSDAG")
     protected LocalDate førsteStønadsdag;
 
-    @Convert(converter = BehandlingStatus.KodeverdiConverter.class)
-    @Column(name = "BEHANDLING_STATUS")
-    protected BehandlingStatus behandlingStatus;
-
     @Convert(converter = BehandlingType.KodeverdiConverter.class)
     @Column(name = "BEHANDLING_TYPE")
     protected BehandlingType behandlingType = BehandlingType.INNSYN;
@@ -134,10 +130,6 @@ public class Oppgave extends BaseEntitet {
 
     public LocalDate getFørsteStønadsdag() {
         return førsteStønadsdag;
-    }
-
-    public BehandlingStatus getBehandlingStatus() {
-        return behandlingStatus;
     }
 
     public LocalDateTime getOppgaveAvsluttet() {
@@ -240,11 +232,6 @@ public class Oppgave extends BaseEntitet {
             return this;
         }
 
-        public Builder medBehandlingStatus(BehandlingStatus behandlingStatus) {
-            tempOppgave.behandlingStatus = behandlingStatus;
-            return this;
-        }
-
 
         public Builder medOppgaveAvsluttet(LocalDateTime oppgaveAvsluttet) {
             tempOppgave.oppgaveAvsluttet = oppgaveAvsluttet;
@@ -271,7 +258,6 @@ public class Oppgave extends BaseEntitet {
             tempOppgave.behandlingsfrist = LocalDateTime.now();
             tempOppgave.behandlingOpprettet = LocalDateTime.now();
             tempOppgave.førsteStønadsdag = LocalDate.now().plusMonths(1);
-            tempOppgave.behandlingStatus = BehandlingStatus.UTREDES;
             return this;
         }
 

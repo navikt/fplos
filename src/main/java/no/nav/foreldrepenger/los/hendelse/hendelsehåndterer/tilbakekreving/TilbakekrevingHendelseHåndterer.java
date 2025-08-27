@@ -204,7 +204,6 @@ public class TilbakekrevingHendelseHåndterer {
             .medAktorId(new AktørId(hendelse.aktørId().getAktørId()))
             .medBehandlendeEnhet(hendelse.behandlendeEnhetId())
             .medBehandlingType(OppgaveUtil.mapBehandlingstype(hendelse.behandlingstype()))
-            .medBehandlingStatus(OppgaveUtil.mapBehandlingsstatus(hendelse.behandlingsstatus()))
             .medFagsakYtelseType(OppgaveUtil.mapYtelse(hendelse.ytelse()))
             .medAktiv(true)
             .medBehandlingOpprettet(hendelse.opprettetTidspunkt())
