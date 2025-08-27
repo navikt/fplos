@@ -146,8 +146,8 @@ public class ReservasjonTjeneste {
         return reservasjon;
     }
 
-    public List<OppgaveBehandlingStatusWrapper> hentSaksbehandlersSisteReserverteMedStatus() {
-        var sisteReserverteMetadata = reservasjonRepository.hentSisteReserverteMetadata(BrukerIdent.brukerIdent());
+    public List<OppgaveBehandlingStatusWrapper> hentSaksbehandlersSisteReserverteMedStatus(boolean kunAktive) {
+        var sisteReserverteMetadata = reservasjonRepository.hentSisteReserverteMetadata(BrukerIdent.brukerIdent(), kunAktive);
         var oppgaveIder = sisteReserverteMetadata.stream().map(SisteReserverteMetadata::oppgaveId).toList();
         var oppgaveListe = oppgaveRepository.hentOppgaverReadOnly(oppgaveIder);
         var oppgaveMap = oppgaveListe.stream().collect(Collectors.toMap(Oppgave::getId, Function.identity()));

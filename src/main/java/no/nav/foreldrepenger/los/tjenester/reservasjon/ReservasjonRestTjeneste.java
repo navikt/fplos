@@ -165,8 +165,9 @@ public class ReservasjonRestTjeneste {
     @Produces("application/json")
     @Operation(description = "Behandlede", tags = "Saksbehandler")
     @BeskyttetRessurs(actionType = ActionType.READ, resourceType = ResourceType.FAGSAK, sporingslogg = false)
-    public List<OppgaveDtoMedStatus> sisteReserverte() {
-        return oppgaveDtoTjeneste.getSaksbehandlersSisteReserverteOppgaver();
+    public List<OppgaveDtoMedStatus> sisteReserverte(@Parameter(description = "vise kun aktive") @QueryParam("kunAktive") @Valid Boolean kunAktive) {
+        boolean kunAktiveValue = kunAktive != null && kunAktive;
+        return oppgaveDtoTjeneste.getSaksbehandlersSisteReserverteOppgaver(kunAktiveValue);
     }
 
 
