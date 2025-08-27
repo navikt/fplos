@@ -162,7 +162,7 @@ class OppgaveTjenesteTest {
         assertThat(oppgaveKøTjeneste.hentOppgaver(oppgaveFiltreringId, 100)).hasSize(3);
         assertThat(reservasjonTjeneste.hentSaksbehandlersReserverteAktiveOppgaver()).isEmpty();
         assertThat(reservasjonTjeneste.hentReservasjonerForAvdeling(AVDELING_DRAMMEN_ENHET)).isEmpty();
-        assertThat(reservasjonTjeneste.hentSaksbehandlersSisteReserverteMedStatus()).isEmpty();
+        assertThat(reservasjonTjeneste.hentSaksbehandlersSisteReserverteMedStatus(false)).isEmpty();
 
         reservasjonTjeneste.reserverOppgave(førstegangOppgave);
         assertThat(oppgaveKøTjeneste.hentOppgaver(oppgaveFiltreringId, 100)).hasSize(2);
@@ -195,16 +195,19 @@ class OppgaveTjenesteTest {
         oppgaveRepository.lagre(opprettOppgaveEventLogg(førstegangOppgave));
 
         reservasjonTjeneste.reserverOppgave(førstegangOppgave);
-        var sisteReserverteEtterReservasjon = reservasjonTjeneste.hentSaksbehandlersSisteReserverteMedStatus();
+        var sisteReserverteEtterReservasjon = reservasjonTjeneste.hentSaksbehandlersSisteReserverteMedStatus(false);
         assertThat(sisteReserverteEtterReservasjon)
             .hasSize(1)
             .first().matches(sr -> sr.status() == OppgaveBehandlingStatus.UNDER_ARBEID);
 
         oppgaveTjeneste.avsluttOppgaveMedEventLogg(førstegangOppgave, OppgaveEventType.LUKKET, "Avsluttet oppgave");
-        var sisteReserverte = reservasjonTjeneste.hentSaksbehandlersSisteReserverteMedStatus();
+        var sisteReserverte = reservasjonTjeneste.hentSaksbehandlersSisteReserverteMedStatus(false);
         assertThat(sisteReserverte)
             .hasSize(1)
             .first().matches(sr -> sr.status() == OppgaveBehandlingStatus.FERDIG);
+
+        var sisteReserverteAktive = reservasjonTjeneste.hentSaksbehandlersSisteReserverteMedStatus(true);
+        assertThat(sisteReserverteAktive).isEmpty();
     }
 
     @Test
