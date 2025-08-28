@@ -6,11 +6,9 @@ import no.nav.foreldrepenger.los.domene.typer.BehandlingId;
 import no.nav.foreldrepenger.los.domene.typer.Saksnummer;
 import no.nav.foreldrepenger.los.domene.typer.aktør.AktørId;
 import no.nav.foreldrepenger.los.hendelse.hendelseoppretter.hendelse.Fagsystem;
-import no.nav.foreldrepenger.los.oppgave.BehandlingStatus;
 import no.nav.foreldrepenger.los.oppgave.BehandlingType;
 import no.nav.foreldrepenger.los.oppgave.FagsakYtelseType;
 import no.nav.foreldrepenger.los.oppgave.Oppgave;
-import no.nav.vedtak.hendelser.behandling.Behandlingsstatus;
 import no.nav.vedtak.hendelser.behandling.Behandlingstype;
 import no.nav.vedtak.hendelser.behandling.Ytelse;
 import no.nav.vedtak.hendelser.behandling.los.LosBehandlingDto;
@@ -31,7 +29,6 @@ public class OppgaveUtil {
             .medAktiv(true)
             .medBehandlingOpprettet(behandlingFpsak.opprettetTidspunkt())
             .medUtfortFraAdmin(false)
-            .medBehandlingStatus(mapBehandlingsstatus(behandlingFpsak.behandlingsstatus()))
             .medBehandlingId(behandlingId)
             .medFørsteStønadsdag(
                 Optional.ofNullable(behandlingFpsak.foreldrepengerDto()).map(LosBehandlingDto.LosForeldrepengerDto::førsteUttakDato).orElse(null))
@@ -48,16 +45,6 @@ public class OppgaveUtil {
             case KLAGE -> BehandlingType.KLAGE;
             case ANKE -> BehandlingType.ANKE;
             case INNSYN -> BehandlingType.INNSYN;
-        };
-    }
-
-    public static BehandlingStatus mapBehandlingsstatus(Behandlingsstatus behandlingsstatus) {
-        return switch (behandlingsstatus) {
-            case OPPRETTET -> BehandlingStatus.OPPRETTET;
-            case UTREDES -> BehandlingStatus.UTREDES;
-            case FATTER_VEDTAK -> BehandlingStatus.FATTER_VEDTAK;
-            case IVERKSETTER_VEDTAK -> BehandlingStatus.IVERKSETTER_VEDTAK;
-            case AVSLUTTET -> BehandlingStatus.AVSLUTTET;
         };
     }
 

@@ -26,7 +26,6 @@ import no.nav.foreldrepenger.los.domene.typer.BehandlingId;
 import no.nav.foreldrepenger.los.domene.typer.Saksnummer;
 import no.nav.foreldrepenger.los.domene.typer.aktør.AktørId;
 import no.nav.foreldrepenger.los.oppgave.AndreKriterierType;
-import no.nav.foreldrepenger.los.oppgave.BehandlingStatus;
 import no.nav.foreldrepenger.los.oppgave.BehandlingType;
 import no.nav.foreldrepenger.los.oppgave.FagsakYtelseType;
 import no.nav.foreldrepenger.los.oppgave.Oppgave;
@@ -143,7 +142,6 @@ class OppgaveEgenskapHåndtererTest {
             .medBehandlingsfrist(LocalDateTime.now())
             .medBehandlingOpprettet(LocalDateTime.now())
             .medFørsteStønadsdag(LocalDate.now().plusMonths(1))
-            .medBehandlingStatus(BehandlingStatus.UTREDES)
             .build();
         oppgaveRepository.lagre(oppgave);
         return oppgave;
