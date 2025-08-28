@@ -11,7 +11,6 @@ import org.assertj.core.api.AbstractAssert;
 import no.nav.foreldrepenger.los.domene.typer.BehandlingId;
 import no.nav.foreldrepenger.los.domene.typer.Saksnummer;
 import no.nav.foreldrepenger.los.domene.typer.aktør.AktørId;
-import no.nav.foreldrepenger.los.oppgave.BehandlingStatus;
 import no.nav.foreldrepenger.los.oppgave.BehandlingType;
 import no.nav.foreldrepenger.los.oppgave.FagsakYtelseType;
 import no.nav.foreldrepenger.los.oppgave.Oppgave;
@@ -92,13 +91,6 @@ public class OppgaveAssert extends AbstractAssert<OppgaveAssert, Oppgave> {
         isNotNull();
         assertThat(actual.getOppgaveAvsluttet()).overridingErrorMessage("Forventet oppgaveAvsluttet <%s> men fikk <%s>", oppgaveAvsluttet,
             actual.getOppgaveAvsluttet()).isEqualTo(oppgaveAvsluttet);
-        return this;
-    }
-
-    public OppgaveAssert harBehandlingStatus(BehandlingStatus behandlingStatus) {
-        isNotNull();
-        assertThat(actual.getBehandlingStatus()).overridingErrorMessage("Forventet behandlingStatus <%s> men fikk <%s>", behandlingStatus,
-            actual.getBehandlingStatus()).isEqualTo(behandlingStatus);
         return this;
     }
 

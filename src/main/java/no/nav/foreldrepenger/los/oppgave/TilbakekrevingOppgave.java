@@ -38,7 +38,6 @@ public class TilbakekrevingOppgave extends Oppgave {
         this.behandlingsfrist = other.behandlingsfrist;
         this.saksnummer = other.saksnummer;
         this.førsteStønadsdag = other.førsteStønadsdag;
-        this.behandlingStatus = other.behandlingStatus;
         this.behandlingType = other.behandlingType;
         this.fagsakYtelseType = other.fagsakYtelseType;
         this.system = other.system;
@@ -102,11 +101,6 @@ public class TilbakekrevingOppgave extends Oppgave {
             return this;
         }
 
-        public Builder medBehandlingStatus(BehandlingStatus behandlingStatus) {
-            tempOppgave.behandlingStatus = behandlingStatus;
-            return this;
-        }
-
         public Builder medSystem(String system) {
             tempOppgave.system = system;
             return this;
@@ -136,7 +130,7 @@ public class TilbakekrevingOppgave extends Oppgave {
     public String toString() {
         return "TilbakekrevingOppgave{" + "beløp=" + beløp + ", feilutbetalingstart=" + feilutbetalingstart + ", id=" + id + ", saksnummer="
             + saksnummer + ", aktørId=" + aktørId + ", behandlendeEnhet='" + behandlendeEnhet + '\'' + ", behandlingsfrist=" + behandlingsfrist
-            + ", behandlingOpprettet=" + behandlingOpprettet + ", førsteStønadsdag=" + førsteStønadsdag + ", behandlingStatus=" + behandlingStatus
+            + ", behandlingOpprettet=" + behandlingOpprettet + ", førsteStønadsdag=" + førsteStønadsdag + ", "
             + ", behandlingType=" + behandlingType + ", fagsakYtelseType=" + fagsakYtelseType + ", aktiv=" + aktiv + ", system='" + system + '\''
             + ", oppgaveAvsluttet=" + oppgaveAvsluttet + ", utfortFraAdmin=" + utfortFraAdmin + ", behandlingId=" + behandlingId + ", reservasjon="
             + reservasjon + '}';

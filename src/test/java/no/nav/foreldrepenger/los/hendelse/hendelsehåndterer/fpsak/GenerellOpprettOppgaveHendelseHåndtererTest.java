@@ -28,7 +28,6 @@ import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.håndterere.G
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveEventLogg;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveEventType;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveHistorikk;
-import no.nav.foreldrepenger.los.oppgave.BehandlingStatus;
 import no.nav.foreldrepenger.los.oppgave.BehandlingType;
 import no.nav.foreldrepenger.los.oppgave.FagsakYtelseType;
 import no.nav.foreldrepenger.los.oppgave.Oppgave;
@@ -70,7 +69,6 @@ class GenerellOpprettOppgaveHendelseHåndtererTest {
                      .harFørsteStønadsdag(førsteUttaksDag())
                      .harSaksnummer(new Saksnummer(behandlingFpsak.saksnummer()))
                      .harOppgaveAvsluttet(null)
-                     .harBehandlingStatus(BehandlingStatus.OPPRETTET)
                      .harBehandlendeEnhet(behandlingFpsak.behandlendeEnhetId())
                      .harSystem("FPSAK")
                      .harFagsakYtelseType(FagsakYtelseType.FORELDREPENGER);

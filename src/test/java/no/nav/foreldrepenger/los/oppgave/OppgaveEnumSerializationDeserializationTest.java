@@ -25,11 +25,6 @@ class OppgaveEnumSerializationDeserializationTest {
     }
 
     @Test
-    void behandlingStatus() throws Exception {
-        testRoundtrip(BehandlingStatus.AVSLUTTET);
-    }
-
-    @Test
     void behandlingType() throws Exception {
         testRoundtrip(BehandlingType.FØRSTEGANGSSØKNAD);
     }
