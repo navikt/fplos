@@ -22,10 +22,10 @@ public class SlettDeaktiverteAvdelingerTask implements ProsessTaskHandler {
     static final String ENHETSNR = "enhetsnummer";
 
     private static final Logger LOG = LoggerFactory.getLogger(SlettDeaktiverteAvdelingerTask.class);
+    private final OppgaveRepository oppgaveRepository;
     private final OrganisasjonRepository organisasjonsRepository;
     private final AvdelingslederTjeneste avdelingslederTjeneste;
     private final AvdelingslederSaksbehandlerTjeneste avdelingslederSaksbehandlerTjeneste;
-    private OppgaveRepository oppgaveRepository;
 
     @Inject
     public SlettDeaktiverteAvdelingerTask(OppgaveRepository oppgaveRepository,

@@ -4,32 +4,22 @@ import static no.nav.foreldrepenger.los.reservasjon.ReservasjonKonstanter.NY_ENH
 import static no.nav.foreldrepenger.los.reservasjon.ReservasjonKonstanter.RESERVASJON_VIDEREFØRT_NY_OPPGAVE;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
-import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.inject.Inject;
-
-import no.nav.foreldrepenger.los.domene.typer.BehandlingId;
-import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.OppgaveEgenskapHåndterer;
-import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.FpsakOppgavetransisjonHåndterer;
-import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.OppgaveUtil;
-import no.nav.foreldrepenger.los.oppgave.OppgaveTjeneste;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
+import no.nav.foreldrepenger.los.domene.typer.BehandlingId;
+import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.OppgaveEgenskapHåndterer;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.FpsakOppgaveEgenskapFinner;
+import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.FpsakOppgavetransisjonHåndterer;
+import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.OppgaveUtil;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveEventType;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveHistorikk;
 import no.nav.foreldrepenger.los.oppgave.Oppgave;
-import no.nav.foreldrepenger.los.oppgavekø.OppgaveFiltreringKnytning;
+import no.nav.foreldrepenger.los.oppgave.OppgaveTjeneste;
 import no.nav.foreldrepenger.los.reservasjon.ReservasjonTjeneste;
-import no.nav.foreldrepenger.los.statistikk.kø.KøOppgaveHendelse;
-import no.nav.foreldrepenger.los.statistikk.kø.KøStatistikkTjeneste;
 import no.nav.vedtak.hendelser.behandling.los.LosBehandlingDto;
 
 @ApplicationScoped
@@ -39,17 +29,13 @@ public class OppdaterOppgaveOppgavetransisjonHåndterer implements FpsakOppgavet
     private ReservasjonTjeneste reservasjonTjeneste;
     private OppgaveEgenskapHåndterer oppgaveEgenskapHåndterer;
     private OppgaveTjeneste oppgaveTjeneste;
-    private KøStatistikkTjeneste køStatistikkTjeneste;
-
     @Inject
     public OppdaterOppgaveOppgavetransisjonHåndterer(OppgaveTjeneste oppgaveTjeneste,
                                                      ReservasjonTjeneste reservasjonTjeneste,
-                                                     OppgaveEgenskapHåndterer oppgaveEgenskapHåndterer,
-                                                     KøStatistikkTjeneste køStatistikkTjeneste) {
+                                                     OppgaveEgenskapHåndterer oppgaveEgenskapHåndterer) {
         this.reservasjonTjeneste = reservasjonTjeneste;
         this.oppgaveEgenskapHåndterer = oppgaveEgenskapHåndterer;
         this.oppgaveTjeneste = oppgaveTjeneste;
-        this.køStatistikkTjeneste = køStatistikkTjeneste;
     }
 
     public OppdaterOppgaveOppgavetransisjonHåndterer() {
@@ -60,30 +46,8 @@ public class OppdaterOppgaveOppgavetransisjonHåndterer implements FpsakOppgavet
         var eksisterendeOppgave = oppgaveTjeneste.hentAktivOppgave(behandlingId)
             .orElseThrow(() -> new IllegalStateException("Fant ikke eksisterende oppgave"));
         var nyOppgave = lagOppgave(behandlingId, behandling);
-        vedlikeholdKøStatistikk(eksisterendeOppgave, nyOppgave);
         flyttReservasjon(eksisterendeOppgave, nyOppgave);
         oppgaveTjeneste.avsluttOppgaveMedEventLogg(eksisterendeOppgave, OppgaveEventType.GJENAPNET, RESERVASJON_VIDEREFØRT_NY_OPPGAVE);
-    }
-
-    private void vedlikeholdKøStatistikk(Oppgave eksisterendeOppgave, Oppgave nyOppgave) {
-        // kan erstattes med query basert på oppgavebeholdning når beholdningen er bygget opp for tilbakekreving og fpsak-oppgaver
-        var køKnytningerGammelOppgave = køStatistikkTjeneste.hentOppgaveFiltreringKnytningerForOppgave(eksisterendeOppgave);
-        var køKnytningerNyOppgave = køStatistikkTjeneste.hentOppgaveFiltreringKnytningerForOppgave(nyOppgave);
-        var knytninger = Stream.concat(køKnytningerGammelOppgave.stream(), køKnytningerNyOppgave.stream())
-            .collect(Collectors.groupingBy(OppgaveFiltreringKnytning::oppgaveId,
-                Collectors.mapping(OppgaveFiltreringKnytning::oppgaveFiltreringId, Collectors.toList())));
-        var utAvKø = Optional.ofNullable(knytninger.get(eksisterendeOppgave.getId())).orElse(List.of());
-        var innPåKø = Optional.ofNullable(knytninger.get(nyOppgave.getId())).orElse(List.of());
-        if (!utAvKø.isEmpty() || !innPåKø.isEmpty()) {
-            utAvKø = new ArrayList<>(utAvKø);
-            innPåKø = new ArrayList<>(innPåKø);
-            utAvKø.removeAll(innPåKø);
-            innPåKø.removeAll(Optional.ofNullable(knytninger.get(eksisterendeOppgave.getId())).orElse(List.of()));
-        }
-        LOG.info("Køstatistikk-knytninger mellom oppgaveId og oppgaveFiltreringId: {}. På vei ut av køer {}, på vei inn i køer {}", knytninger,
-            utAvKø, innPåKø);
-        innPåKø.forEach(i -> køStatistikkTjeneste.lagre(nyOppgave, i, KøOppgaveHendelse.INN_FRA_ANNEN_KØ));
-        utAvKø.forEach(i -> køStatistikkTjeneste.lagre(nyOppgave, i, KøOppgaveHendelse.UT_TIL_ANNEN_KØ));
     }
 
     @Override

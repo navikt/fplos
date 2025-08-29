@@ -2,7 +2,6 @@ package no.nav.foreldrepenger.los.oppgavekø;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -46,12 +45,6 @@ public class OppgaveKøTjeneste {
         return hentAlleOppgaveFiltrering(BrukerIdent.brukerIdent());
     }
 
-    public List<OppgaveFiltreringKnytning> finnOppgaveFiltreringKnytninger(Oppgave oppgave) {
-        var enhet = oppgave.getBehandlendeEnhet();
-        var potensielleKøer = oppgaveRepository.hentAlleOppgaveFilterSettTilknyttetEnhet(enhet);
-        return potensielleKøer.stream().map(pk -> finnOppgaveFiltreringKnytning(oppgave, pk)).filter(Optional::isPresent).map(Optional::get).toList();
-    }
-
     public Integer hentAntallOppgaver(Long behandlingsKø, boolean forAvdelingsleder) {
         var queryDto = oppgaveRepository.hentOppgaveFilterSett(behandlingsKø)
             .map(Oppgavespørring::new)
@@ -75,21 +68,4 @@ public class OppgaveKøTjeneste {
         return oppgaveRepository.hentOppgaver(oppgavespørring);
     }
 
-    private Optional<OppgaveFiltreringKnytning> finnOppgaveFiltreringKnytning(Oppgave oppgave, OppgaveFiltrering oppgaveFiltrering) {
-        if (oppgaveTilfredstillerOppgaveFiltreringSett(oppgave, oppgaveFiltrering)) {
-            var knytning = new OppgaveFiltreringKnytning(oppgave.getId(), oppgaveFiltrering.getId(), oppgave.getBehandlingType());
-            return Optional.of(knytning);
-        }
-        return Optional.empty();
-    }
-
-    private boolean oppgaveTilfredstillerOppgaveFiltreringSett(Oppgave oppgave, OppgaveFiltrering oppgaveFiltrering) {
-        var oppgavespørring = new Oppgavespørring(oppgaveFiltrering);
-        oppgavespørring.setAvgrensTilOppgaveId(oppgave.getId());
-        oppgavespørring.setIgnorerReserversjoner(true);
-        var antall = oppgaveRepository.hentAntallOppgaver(oppgavespørring);
-        LOG.debug("Sjekker om oppgave {} tilfredstiller filtrering {}. Spørring {}. Resultat {}", oppgave.getId(), oppgaveFiltrering.getId(),
-            oppgavespørring, antall > 0);
-        return antall > 0;
-    }
 }

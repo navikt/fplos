@@ -18,26 +18,21 @@ import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.Op
 import no.nav.foreldrepenger.los.oppgave.Oppgave;
 import no.nav.foreldrepenger.los.oppgave.OppgaveTjeneste;
 import no.nav.foreldrepenger.los.reservasjon.ReservasjonTjeneste;
-import no.nav.foreldrepenger.los.statistikk.kø.KøOppgaveHendelse;
-import no.nav.foreldrepenger.los.statistikk.kø.KøStatistikkTjeneste;
 import no.nav.vedtak.hendelser.behandling.los.LosBehandlingDto;
 
 @ApplicationScoped
 public class ReturFraBeslutterOppgavetransisjonHåndterer implements FpsakOppgavetransisjonHåndterer {
     private static final Logger LOG = LoggerFactory.getLogger(ReturFraBeslutterOppgavetransisjonHåndterer.class);
     private OppgaveTjeneste oppgaveTjeneste;
-    private KøStatistikkTjeneste køStatistikk;
     private ReservasjonTjeneste reservasjonTjeneste;
     private OppgaveEgenskapHåndterer oppgaveEgenskapHåndterer;
 
     @Inject
     public ReturFraBeslutterOppgavetransisjonHåndterer(OppgaveTjeneste oppgaveTjeneste,
                                                        OppgaveEgenskapHåndterer oppgaveEgenskapHåndterer,
-                                                       ReservasjonTjeneste reservasjonTjeneste,
-                                                       KøStatistikkTjeneste køStatistikk) {
+                                                       ReservasjonTjeneste reservasjonTjeneste) {
         this.oppgaveTjeneste = oppgaveTjeneste;
         this.reservasjonTjeneste = reservasjonTjeneste;
-        this.køStatistikk = køStatistikk;
         this.oppgaveEgenskapHåndterer = oppgaveEgenskapHåndterer;
     }
 
@@ -50,7 +45,6 @@ public class ReturFraBeslutterOppgavetransisjonHåndterer implements FpsakOppgav
         var oppgave = opprettOppgave(behandlingId, behandling);
         opprettOppgaveEgenskaper(oppgave, behandling);
         opprettOppgaveEventLogg(oppgave, behandling.behandlendeEnhetId());
-        køStatistikk.lagre(oppgave, KøOppgaveHendelse.ÅPNET_OPPGAVE);
     }
 
 
@@ -60,7 +54,6 @@ public class ReturFraBeslutterOppgavetransisjonHåndterer implements FpsakOppgav
     }
 
     private void håndterEksisterendeOppgave(BehandlingId behandlingId, String enhet) {
-        køStatistikk.lagre(behandlingId, KøOppgaveHendelse.LUKKET_OPPGAVE);
         oppgaveTjeneste.avsluttOppgaveUtenEventLoggAvsluttTilknyttetReservasjon(behandlingId);
         var oel = OppgaveEventLogg.builder().behandlingId(behandlingId).behandlendeEnhet(enhet).type(OppgaveEventType.LUKKET).build();
         oppgaveTjeneste.lagre(oel);

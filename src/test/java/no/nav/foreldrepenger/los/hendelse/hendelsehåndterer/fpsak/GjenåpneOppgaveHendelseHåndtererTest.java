@@ -31,14 +31,12 @@ import no.nav.foreldrepenger.los.oppgave.OppgaveTjeneste;
 import no.nav.foreldrepenger.los.oppgave.util.OppgaveAssert;
 import no.nav.foreldrepenger.los.reservasjon.ReservasjonRepository;
 import no.nav.foreldrepenger.los.reservasjon.ReservasjonTjeneste;
-import no.nav.foreldrepenger.los.statistikk.kø.KøStatistikkTjeneste;
 import no.nav.vedtak.hendelser.behandling.los.LosBehandlingDto;
 
 
 @ExtendWith(MockitoExtension.class)
 @ExtendWith(JpaExtension.class)
 class GjenåpneOppgaveHendelseHåndtererTest {
-    private final KøStatistikkTjeneste køStatistikk = Mockito.mock(KøStatistikkTjeneste.class);
     private EntityManager entityManager;
     private OppgaveRepository oppgaveRepository;
     private OppgaveEgenskapHåndterer oppgaveEgenskapHåndterer;
@@ -65,8 +63,7 @@ class GjenåpneOppgaveHendelseHåndtererTest {
         oppgaveRepository.lagre(eksisterendeOppgave);
 
         reservasjonTjeneste.reserverOppgave(eksisterendeOppgave);
-        gjenåpneOppgaveHåndterer = new GjenåpneOppgaveOppgavetransisjonHåndterer(oppgaveRepository, oppgaveEgenskapHåndterer, køStatistikk,
-            reservasjonTjeneste);
+        gjenåpneOppgaveHåndterer = new GjenåpneOppgaveOppgavetransisjonHåndterer(oppgaveRepository, oppgaveEgenskapHåndterer, reservasjonTjeneste);
     }
 
     @Test

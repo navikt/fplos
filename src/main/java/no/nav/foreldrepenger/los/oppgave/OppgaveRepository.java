@@ -272,12 +272,6 @@ public class OppgaveRepository {
         return listeTypedQuery.getResultStream().findFirst();
     }
 
-    public KøSortering hentSorteringForListe(Long listeId) {
-        var listeTypedQuery = entityManager.createQuery("SELECT l.sortering FROM OppgaveFiltrering l WHERE l.id = :id ", KøSortering.class)
-            .setParameter("id", listeId);
-        return listeTypedQuery.getResultStream().findFirst().orElse(null);
-    }
-
     public <U extends BaseEntitet> void lagre(U entitet) {
         entityManager.persist(entitet);
         entityManager.flush();
@@ -291,7 +285,7 @@ public class OppgaveRepository {
     public void lagre(OppgaveEgenskap oppgaveEgenskap) {
         entityManager.persist(oppgaveEgenskap);
         entityManager.flush();
-        refresh(oppgaveEgenskap.getOppgave()); // todo: behov for denne?
+        refresh(oppgaveEgenskap.getOppgave());
     }
 
     public void oppdaterNavn(Long sakslisteId, String navn) {
@@ -309,20 +303,11 @@ public class OppgaveRepository {
         }
     }
 
-    public void slettFiltreringBehandlingType(Long sakslisteId, BehandlingType behandlingType) {
-        entityManager.createNativeQuery("""
-                DELETE FROM FILTRERING_BEHANDLING_TYPE f
-                WHERE f.OPPGAVE_FILTRERING_ID = :oppgaveFiltreringId and f.behandling_type = :behandlingType
-                """).setParameter("oppgaveFiltreringId", sakslisteId)//$NON-NLS-1$ // NOSONAR
-            .setParameter("behandlingType", behandlingType.getKode()).executeUpdate();
-    }
-
     public <U extends BaseEntitet> void refresh(U entitet) {
-        // todo: unødvendig? managed objects vil antakelig refreshes?
         entityManager.refresh(entitet);
     }
 
-    public Oppgave opprettOppgave(Oppgave oppgave) {
+    Oppgave opprettOppgave(Oppgave oppgave) {
         // todo: brukes bare i test, vurder om nødvendig
         lagre(oppgave);
         entityManager.refresh(oppgave);

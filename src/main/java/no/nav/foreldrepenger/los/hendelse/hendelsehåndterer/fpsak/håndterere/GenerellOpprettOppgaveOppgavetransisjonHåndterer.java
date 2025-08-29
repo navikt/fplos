@@ -17,8 +17,6 @@ import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.Op
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveHistorikk;
 import no.nav.foreldrepenger.los.oppgave.Oppgave;
 import no.nav.foreldrepenger.los.reservasjon.ReservasjonTjeneste;
-import no.nav.foreldrepenger.los.statistikk.kø.KøOppgaveHendelse;
-import no.nav.foreldrepenger.los.statistikk.kø.KøStatistikkTjeneste;
 import no.nav.vedtak.hendelser.behandling.Behandlingstype;
 import no.nav.vedtak.hendelser.behandling.Behandlingsårsak;
 import no.nav.vedtak.hendelser.behandling.los.LosBehandlingDto;
@@ -28,18 +26,15 @@ public class GenerellOpprettOppgaveOppgavetransisjonHåndterer implements FpsakO
     private static final Logger LOG = LoggerFactory.getLogger(GenerellOpprettOppgaveOppgavetransisjonHåndterer.class);
 
     private OppgaveTjeneste oppgaveTjeneste;
-    private KøStatistikkTjeneste køStatistikk;
     private OppgaveEgenskapHåndterer oppgaveEgenskapHåndterer;
     private ReservasjonTjeneste reservasjonTjeneste;
 
     @Inject
     public GenerellOpprettOppgaveOppgavetransisjonHåndterer(OppgaveTjeneste oppgaveTjeneste,
                                                             OppgaveEgenskapHåndterer oppgaveEgenskapHåndterer,
-                                                            KøStatistikkTjeneste køStatistikk,
                                                             ReservasjonTjeneste reservasjonTjeneste) {
         this.oppgaveTjeneste = oppgaveTjeneste;
         this.oppgaveEgenskapHåndterer = oppgaveEgenskapHåndterer;
-        this.køStatistikk = køStatistikk;
         this.reservasjonTjeneste = reservasjonTjeneste;
     }
 
@@ -53,7 +48,6 @@ public class GenerellOpprettOppgaveOppgavetransisjonHåndterer implements FpsakO
         opprettOppgaveEgenskaper(oppgave, behandling);
         reserverDersomAnsvarligSatt(behandling, eventHistorikk, oppgave);
         opprettOppgaveEventLogg(oppgave);
-        køStatistikk.lagre(oppgave, KøOppgaveHendelse.ÅPNET_OPPGAVE);
     }
 
     @Override

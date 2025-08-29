@@ -1,42 +1,35 @@
 package no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.håndterere;
 
-import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.inject.Inject;
-
-import no.nav.foreldrepenger.los.domene.typer.BehandlingId;
-import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.OppgaveEgenskapHåndterer;
-import no.nav.foreldrepenger.los.oppgave.AndreKriterierType;
-import no.nav.foreldrepenger.los.oppgave.OppgaveTjeneste;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
+import no.nav.foreldrepenger.los.domene.typer.BehandlingId;
+import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.OppgaveEgenskapHåndterer;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.FpsakOppgaveEgenskapFinner;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.FpsakOppgavetransisjonHåndterer;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.OppgaveUtil;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveEventLogg;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveEventType;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveHistorikk;
+import no.nav.foreldrepenger.los.oppgave.AndreKriterierType;
 import no.nav.foreldrepenger.los.oppgave.Oppgave;
+import no.nav.foreldrepenger.los.oppgave.OppgaveTjeneste;
 import no.nav.foreldrepenger.los.reservasjon.ReservasjonKonstanter;
-import no.nav.foreldrepenger.los.statistikk.kø.KøOppgaveHendelse;
-import no.nav.foreldrepenger.los.statistikk.kø.KøStatistikkTjeneste;
 import no.nav.vedtak.hendelser.behandling.los.LosBehandlingDto;
 
 @ApplicationScoped
 public class OpprettBeslutterOppgaveOppgavetransisjonHåndterer implements FpsakOppgavetransisjonHåndterer {
     private static final Logger LOG = LoggerFactory.getLogger(OpprettBeslutterOppgaveOppgavetransisjonHåndterer.class);
     private OppgaveTjeneste oppgaveTjeneste;
-    private KøStatistikkTjeneste køStatistikk;
     private OppgaveEgenskapHåndterer oppgaveEgenskapHåndterer;
 
 
     @Inject
     public OpprettBeslutterOppgaveOppgavetransisjonHåndterer(OppgaveTjeneste oppgaveTjeneste,
-                                                             OppgaveEgenskapHåndterer oppgaveEgenskapHåndterer,
-                                                             KøStatistikkTjeneste køStatistikk) {
+                                                             OppgaveEgenskapHåndterer oppgaveEgenskapHåndterer) {
         this.oppgaveTjeneste = oppgaveTjeneste;
-        this.køStatistikk = køStatistikk;
         this.oppgaveEgenskapHåndterer = oppgaveEgenskapHåndterer;
     }
 
@@ -49,7 +42,6 @@ public class OpprettBeslutterOppgaveOppgavetransisjonHåndterer implements Fpsak
         var oppgave = opprettOppgave(behandlingId, behandling);
         opprettOppgaveEgenskaper(oppgave, behandling);
         opprettOppgaveEventLogg(behandlingId, behandling.behandlendeEnhetId());
-        køStatistikk.lagre(oppgave, KøOppgaveHendelse.ÅPNET_OPPGAVE);
     }
 
     @Override
@@ -70,7 +62,6 @@ public class OpprettBeslutterOppgaveOppgavetransisjonHåndterer implements Fpsak
             .findFirst()
             .filter(Oppgave::getAktiv)
             .ifPresentOrElse(sbo -> {
-                køStatistikk.lagre(sbo, KøOppgaveHendelse.LUKKET_OPPGAVE);
                 oppgaveTjeneste.avsluttOppgaveMedEventLogg(sbo, OppgaveEventType.LUKKET, ReservasjonKonstanter.OPPGAVE_AVSLUTTET);
                 LOG.info("Avslutter saksbehandler1 oppgave");
             }, () -> LOG.info("Fant ingen aktiv saksbehandler1-oppgave"));

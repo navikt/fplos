@@ -27,8 +27,6 @@ import no.nav.foreldrepenger.los.oppgave.OppgaveRepository;
 import no.nav.foreldrepenger.los.oppgave.OppgaveTjeneste;
 import no.nav.foreldrepenger.los.oppgave.TilbakekrevingOppgave;
 import no.nav.foreldrepenger.los.reservasjon.ReservasjonTjeneste;
-import no.nav.foreldrepenger.los.statistikk.kø.KøOppgaveHendelse;
-import no.nav.foreldrepenger.los.statistikk.kø.KøStatistikkTjeneste;
 import no.nav.vedtak.hendelser.behandling.Aksjonspunktstatus;
 import no.nav.vedtak.hendelser.behandling.Behandlingstype;
 import no.nav.vedtak.hendelser.behandling.los.LosBehandlingDto;
@@ -41,18 +39,15 @@ public class TilbakekrevingHendelseHåndterer {
     private OppgaveTjeneste oppgaveTjeneste;
     private OppgaveEgenskapHåndterer oppgaveEgenskapHåndterer;
     private OppgaveRepository oppgaveRepository;
-    private KøStatistikkTjeneste køStatistikk;
     private ReservasjonTjeneste reservasjonTjeneste;
 
     @Inject
     public TilbakekrevingHendelseHåndterer(OppgaveEgenskapHåndterer oppgaveEgenskapHåndterer,
                                            OppgaveRepository oppgaveRepository,
                                            OppgaveTjeneste oppgaveTjeneste,
-                                           KøStatistikkTjeneste køStatistikk,
                                            ReservasjonTjeneste reservasjonTjeneste) {
         this.oppgaveEgenskapHåndterer = oppgaveEgenskapHåndterer;
         this.oppgaveRepository = oppgaveRepository;
-        this.køStatistikk = køStatistikk;
         this.oppgaveTjeneste = oppgaveTjeneste;
         this.reservasjonTjeneste = reservasjonTjeneste;
     }
@@ -81,12 +76,12 @@ public class TilbakekrevingHendelseHåndterer {
             }
             case LUKK_OPPGAVE_VENT -> {
                 LOG.info("TBK Lukker oppgave, satt på vent.");
-                avsluttOppgaveForBehandling(behandlingId);
+                oppgaveTjeneste.avsluttOppgaveUtenEventLoggAvsluttTilknyttetReservasjon(behandlingId);
                 loggEvent(behandlingId, OppgaveEventType.MANU_VENT, behandlendeEnhet);
             }
             case LUKK_OPPGAVE -> {
                 LOG.info("TBK Lukker oppgave med behandlingId {}.", behandlingId);
-                avsluttOppgaveForBehandling(behandlingId);
+                oppgaveTjeneste.avsluttOppgaveUtenEventLoggAvsluttTilknyttetReservasjon(behandlingId);
                 loggEvent(behandlingId, OppgaveEventType.LUKKET, behandlendeEnhet);
             }
             case OPPRETT_OPPGAVE -> {
@@ -95,7 +90,6 @@ public class TilbakekrevingHendelseHåndterer {
                 LOG.info("TBK Oppretter oppgave {} for behandlingId {}.", oppgave.getId(), behandlingId);
                 oppgaveEgenskapHåndterer.håndterOppgaveEgenskaper(oppgave, egenskapFinner);
                 reserverForOpprettOppgave(oppgave, oppgaveHistorikk, behandlingDto, true);
-                køStatistikk.lagre(oppgave, KøOppgaveHendelse.ÅPNET_OPPGAVE);
                 loggEvent(oppgave.getBehandlingId(), OppgaveEventType.OPPRETTET, null, behandlendeEnhet);
             }
             case OPPRETT_BESLUTTER_OPPGAVE -> {
@@ -103,7 +97,6 @@ public class TilbakekrevingHendelseHåndterer {
                 Oppgave beslutterOppgave = opprettTilbakekrevingOppgave(behandlingId, behandlingDto);
                 LOG.info("TBK Oppretter beslutteroppgave.");
                 oppgaveEgenskapHåndterer.håndterOppgaveEgenskaper(beslutterOppgave, egenskapFinner);
-                køStatistikk.lagre(beslutterOppgave, KøOppgaveHendelse.ÅPNET_OPPGAVE);
                 loggEvent(behandlingId, OppgaveEventType.OPPRETTET, AndreKriterierType.TIL_BESLUTTER, behandlendeEnhet);
             }
             case GJENÅPNE_OPPGAVE -> {
@@ -112,7 +105,6 @@ public class TilbakekrevingHendelseHåndterer {
                 oppdaterOppgaveInformasjon(gjenåpnetOppgave, behandlingId, behandlingDto);
                 oppgaveEgenskapHåndterer.håndterOppgaveEgenskaper(gjenåpnetOppgave, egenskapFinner);
                 reserverForOpprettOppgave(gjenåpnetOppgave, oppgaveHistorikk, behandlingDto, false);
-                køStatistikk.lagre(gjenåpnetOppgave, KøOppgaveHendelse.ÅPNET_OPPGAVE);
                 loggEvent(gjenåpnetOppgave.getBehandlingId(), OppgaveEventType.GJENAPNET, null, behandlendeEnhet);
             }
             case OPPDATER_ÅPEN_OPPGAVE -> {
@@ -181,7 +173,7 @@ public class TilbakekrevingHendelseHåndterer {
     private void avsluttOppgaveHvisÅpen(BehandlingId behandlingId, OppgaveHistorikk oppgaveHistorikk, String behandlendeEnhet) {
         if (oppgaveHistorikk.erÅpenOppgave()) {
             loggEvent(behandlingId, OppgaveEventType.LUKKET, null, behandlendeEnhet);
-            avsluttOppgaveForBehandling(behandlingId);
+            oppgaveTjeneste.avsluttOppgaveUtenEventLoggAvsluttTilknyttetReservasjon(behandlingId);
         }
     }
 
@@ -217,11 +209,6 @@ public class TilbakekrevingHendelseHåndterer {
             .map(LosBehandlingDto.LosTilbakeDto::førsteFeilutbetalingDato)
             .map(LocalDate::atStartOfDay)
             .orElse(null);
-    }
-
-    private void avsluttOppgaveForBehandling(BehandlingId behandlingId) {
-        køStatistikk.lagre(behandlingId, KøOppgaveHendelse.LUKKET_OPPGAVE);
-        oppgaveTjeneste.avsluttOppgaveUtenEventLoggAvsluttTilknyttetReservasjon(behandlingId);
     }
 
     enum EventResultat {
