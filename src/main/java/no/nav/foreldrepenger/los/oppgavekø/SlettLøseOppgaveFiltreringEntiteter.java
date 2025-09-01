@@ -1,4 +1,4 @@
-package no.nav.foreldrepenger.los.statistikk.kø;
+package no.nav.foreldrepenger.los.oppgavekø;
 
 import jakarta.persistence.EntityManager;
 
