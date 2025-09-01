@@ -13,13 +13,13 @@ import no.nav.vedtak.felles.prosesstask.api.ProsessTaskHandler;
 
 @Dependent
 @ProsessTask(value = "vedlikehold.kostatistikk", cronExpression = "0 16 1 * * *", maxFailedRuns = 1)
-public class SlettLøseOppgaveFiltreringEntiteter implements ProsessTaskHandler {
+public class SlettLøseOppgaveFiltreringEntiteterTask implements ProsessTaskHandler {
 
-    private static final Logger LOG = LoggerFactory.getLogger(SlettLøseOppgaveFiltreringEntiteter.class);
+    private static final Logger LOG = LoggerFactory.getLogger(SlettLøseOppgaveFiltreringEntiteterTask.class);
     private final EntityManager entityManager;
 
     @Inject
-    public SlettLøseOppgaveFiltreringEntiteter(EntityManager entityManager) {
+    public SlettLøseOppgaveFiltreringEntiteterTask(EntityManager entityManager) {
         this.entityManager = entityManager;
     }
 
