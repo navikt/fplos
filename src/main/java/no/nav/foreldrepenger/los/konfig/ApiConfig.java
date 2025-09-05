@@ -8,6 +8,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import no.nav.foreldrepenger.los.tjenester.saksbehandler.nøkkeltall.DummyNøkkeltallRestTjeneste;
+
 import org.glassfish.jersey.server.ServerProperties;
 
 import io.swagger.v3.jaxrs2.integration.resources.OpenApiResource;
@@ -35,7 +37,6 @@ import no.nav.foreldrepenger.los.tjenester.avdelingsleder.saksbehandler.Avdeling
 import no.nav.foreldrepenger.los.tjenester.avdelingsleder.saksliste.AvdelingslederSakslisteRestTjeneste;
 import no.nav.foreldrepenger.los.tjenester.kodeverk.KodeverkRestTjeneste;
 import no.nav.foreldrepenger.los.tjenester.reservasjon.ReservasjonRestTjeneste;
-import no.nav.foreldrepenger.los.tjenester.saksbehandler.nøkkeltall.SaksbehandlerNøkkeltallRestTjeneste;
 import no.nav.foreldrepenger.los.tjenester.saksbehandler.oppgave.OppgaveRestTjeneste;
 import no.nav.foreldrepenger.los.tjenester.saksbehandler.saksliste.SaksbehandlerSakslisteRestTjeneste;
 import no.nav.vedtak.exception.TekniskException;
@@ -103,8 +104,8 @@ public class ApiConfig extends Application {
         classes.add(AvdelingslederRestTjeneste.class);
         classes.add(AvdelingslederOppgaveRestTjeneste.class);
         classes.add(AdminRestTjeneste.class);
-        classes.add(SaksbehandlerNøkkeltallRestTjeneste.class);
         classes.add(ProsessTaskRestTjeneste.class);
+        classes.add(DummyNøkkeltallRestTjeneste.class);
         return classes;
     }
 

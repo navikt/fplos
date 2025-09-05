@@ -96,13 +96,12 @@ public class OrganisasjonRepository {
             LOG.info("Enhet er aktiv {}, avslutter.", avdelingEnhet);
             return;
         }
-        entityManager.createNativeQuery("DELETE FROM STATISTIKK_KO where OPPGAVE_ID in (select id from oppgave where behandlende_enhet = :enhet)").setParameter("enhet", avdelingEnhet).executeUpdate();;
-        entityManager.createNativeQuery("DELETE FROM RESERVASJON_EVENT_LOGG where OPPGAVE_ID in (select id from oppgave where behandlende_enhet = :enhet)").setParameter("enhet", avdelingEnhet).executeUpdate();;
-        entityManager.createNativeQuery("DELETE FROM RESERVASJON where OPPGAVE_ID in (select id from oppgave where behandlende_enhet = :enhet)").setParameter("enhet", avdelingEnhet).executeUpdate();;
-        entityManager.createNativeQuery("DELETE FROM TILBAKEKREVING_EGENSKAPER where OPPGAVE_ID in (select id from oppgave where behandlende_enhet = :enhet)").setParameter("enhet", avdelingEnhet).executeUpdate();;
-        entityManager.createNativeQuery("DELETE FROM OPPGAVE_EGENSKAP where OPPGAVE_ID in (select id from oppgave where behandlende_enhet = :enhet)").setParameter("enhet", avdelingEnhet).executeUpdate();;
-        entityManager.createNativeQuery("DELETE FROM OPPGAVE_EVENT_LOGG where behandlende_enhet = :enhet").setParameter("enhet", avdelingEnhet).executeUpdate();;
-        entityManager.createNativeQuery("DELETE FROM OPPGAVE where behandlende_enhet = :enhet").setParameter("enhet", avdelingEnhet).executeUpdate();;
+        entityManager.createNativeQuery("DELETE FROM RESERVASJON_EVENT_LOGG where OPPGAVE_ID in (select id from oppgave where behandlende_enhet = :enhet)").setParameter("enhet", avdelingEnhet).executeUpdate();
+        entityManager.createNativeQuery("DELETE FROM RESERVASJON where OPPGAVE_ID in (select id from oppgave where behandlende_enhet = :enhet)").setParameter("enhet", avdelingEnhet).executeUpdate();
+        entityManager.createNativeQuery("DELETE FROM TILBAKEKREVING_EGENSKAPER where OPPGAVE_ID in (select id from oppgave where behandlende_enhet = :enhet)").setParameter("enhet", avdelingEnhet).executeUpdate();
+        entityManager.createNativeQuery("DELETE FROM OPPGAVE_EGENSKAP where OPPGAVE_ID in (select id from oppgave where behandlende_enhet = :enhet)").setParameter("enhet", avdelingEnhet).executeUpdate();
+        entityManager.createNativeQuery("DELETE FROM OPPGAVE_EVENT_LOGG where behandlende_enhet = :enhet").setParameter("enhet", avdelingEnhet).executeUpdate();
+        entityManager.createNativeQuery("DELETE FROM OPPGAVE where behandlende_enhet = :enhet").setParameter("enhet", avdelingEnhet).executeUpdate();
         entityManager.flush();
     }
 

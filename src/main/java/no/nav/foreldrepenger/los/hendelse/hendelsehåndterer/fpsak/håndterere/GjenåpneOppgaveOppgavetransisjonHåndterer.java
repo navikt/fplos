@@ -23,8 +23,7 @@ import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.Op
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveHistorikk;
 import no.nav.foreldrepenger.los.oppgave.Oppgave;
 import no.nav.foreldrepenger.los.reservasjon.ReservasjonTjeneste;
-import no.nav.foreldrepenger.los.statistikk.kø.KøOppgaveHendelse;
-import no.nav.foreldrepenger.los.statistikk.kø.KøStatistikkTjeneste;
+
 import no.nav.vedtak.hendelser.behandling.los.LosBehandlingDto;
 
 @ApplicationScoped
@@ -33,17 +32,14 @@ public class GjenåpneOppgaveOppgavetransisjonHåndterer implements FpsakOppgave
 
     private OppgaveRepository oppgaveRepository;
     private OppgaveEgenskapHåndterer oppgaveEgenskapHåndterer;
-    private KøStatistikkTjeneste køStatistikk;
     private ReservasjonTjeneste reservasjonTjeneste;
 
     @Inject
     public GjenåpneOppgaveOppgavetransisjonHåndterer(OppgaveRepository oppgaveRepository,
                                                      OppgaveEgenskapHåndterer oppgaveEgenskapHåndterer,
-                                                     KøStatistikkTjeneste køStatistikk,
                                                      ReservasjonTjeneste reservasjonTjeneste) {
         this.oppgaveRepository = oppgaveRepository;
         this.oppgaveEgenskapHåndterer = oppgaveEgenskapHåndterer;
-        this.køStatistikk = køStatistikk;
         this.reservasjonTjeneste = reservasjonTjeneste;
     }
 
@@ -59,7 +55,6 @@ public class GjenåpneOppgaveOppgavetransisjonHåndterer implements FpsakOppgave
         opprettOppgaveEgenskaper(nyOppgave, behandling);
         videreførNyligUtløptReservasjon(oppgaveHistorikk, nyOppgave, behandling, eventHistorikk);
         oppdaterOppgaveEventLogg(behandlingId, behandling);
-        køStatistikk.lagre(nyOppgave, KøOppgaveHendelse.ÅPNET_OPPGAVE);
         LOG.info("Gjenåpnet {} oppgaveId {}", SYSTEM, nyOppgave.getId());
     }
 
