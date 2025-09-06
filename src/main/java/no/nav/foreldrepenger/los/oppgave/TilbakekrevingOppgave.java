@@ -18,17 +18,25 @@ import no.nav.foreldrepenger.los.domene.typer.aktør.AktørId;
 public class TilbakekrevingOppgave extends Oppgave {
 
     @Column(name = "BELOP")
-    private BigDecimal beløp;
+    private BigDecimal belop;
 
     @Column(name = "FEILUTBETALINGSTART")
     protected LocalDateTime feilutbetalingstart;
 
-    public BigDecimal getBeløp() {
-        return beløp;
+    public BigDecimal getBelop() {
+        return belop;
     }
 
     public LocalDateTime getFeilutbetalingstart() {
         return feilutbetalingstart;
+    }
+
+    public void setBelop(BigDecimal beløp) {
+        this.belop = beløp;
+    }
+
+    public void setFeilutbetalingstart(LocalDateTime feilutbetalingstart) {
+        this.feilutbetalingstart = feilutbetalingstart;
     }
 
     public void avstemMed(TilbakekrevingOppgave other) {
@@ -43,7 +51,7 @@ public class TilbakekrevingOppgave extends Oppgave {
         this.system = other.system;
         this.reservasjon = other.reservasjon;
         this.feilutbetalingstart = other.feilutbetalingstart;
-        this.beløp = other.beløp;
+        this.belop = other.belop;
     }
 
     public TilbakekrevingOppgave() {
@@ -62,7 +70,7 @@ public class TilbakekrevingOppgave extends Oppgave {
         }
 
         public TilbakekrevingOppgave.Builder medBeløp(BigDecimal beløp) {
-            this.tempOppgave.beløp = beløp;
+            this.tempOppgave.belop = beløp;
             return this;
         }
 
@@ -128,7 +136,7 @@ public class TilbakekrevingOppgave extends Oppgave {
 
     @Override
     public String toString() {
-        return "TilbakekrevingOppgave{" + "beløp=" + beløp + ", feilutbetalingstart=" + feilutbetalingstart + ", id=" + id + ", saksnummer="
+        return "TilbakekrevingOppgave{" + "beløp=" + belop + ", feilutbetalingstart=" + feilutbetalingstart + ", id=" + id + ", saksnummer="
             + saksnummer + ", aktørId=" + aktørId + ", behandlendeEnhet='" + behandlendeEnhet + '\'' + ", behandlingsfrist=" + behandlingsfrist
             + ", behandlingOpprettet=" + behandlingOpprettet + ", førsteStønadsdag=" + førsteStønadsdag + ", "
             + ", behandlingType=" + behandlingType + ", fagsakYtelseType=" + fagsakYtelseType + ", aktiv=" + aktiv + ", system='" + system + '\''
