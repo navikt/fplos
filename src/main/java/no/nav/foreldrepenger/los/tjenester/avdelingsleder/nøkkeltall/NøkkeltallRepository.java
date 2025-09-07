@@ -1,8 +1,7 @@
 package no.nav.foreldrepenger.los.tjenester.avdelingsleder.nøkkeltall;
 
 import java.math.BigDecimal;
-import java.time.ZoneId;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import jakarta.enterprise.context.ApplicationScoped;
@@ -82,7 +81,7 @@ public class NøkkeltallRepository {
     }
 
     private static OppgaverForFørsteStønadsdag mapOppgaverForFørsteStønadsdag(Object[] row) {
-        var date = ((Date) row[0]).toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        var date = ((LocalDateTime) row[0]).toLocalDate();
         var resultat = ((BigDecimal) row[1]).longValue();
         return new OppgaverForFørsteStønadsdag(date, resultat);
     }
@@ -98,7 +97,7 @@ public class NøkkeltallRepository {
     private static OppgaverForAvdelingPerDato mapOppgaverForAvdelingPerDato(Object[] row) {
         var fagsakYtelseType = FagsakYtelseType.fraKode((String) row[0]);  // NOSONAR
         var behandlingType = BehandlingType.fraKode((String) row[1]);  // NOSONAR
-        var opprettetDato = ((Date) row[2]).toInstant().atZone(ZoneId.systemDefault()).toLocalDate();  // NOSONAR
+        var opprettetDato = ((LocalDateTime) row[2]).toLocalDate();  // NOSONAR
         var antall = ((BigDecimal) row[3]).longValue();  // NOSONAR
         return new OppgaverForAvdelingPerDato(fagsakYtelseType, behandlingType, opprettetDato, antall);
     }
