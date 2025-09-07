@@ -9,7 +9,6 @@ import java.util.stream.Stream;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
-
 import no.nav.foreldrepenger.los.felles.BaseEntitet;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveEventType;
 import no.nav.foreldrepenger.los.oppgave.Oppgave;
@@ -76,7 +75,7 @@ public class ReservasjonRepository {
         return result.map(row -> {
             var oppgaveId = ((Number) row[0]).longValue();
             var sisteEventType = OppgaveEventType.valueOf((String) row[1]);
-            var aktuellTid = ((java.sql.Timestamp) row[2]).toLocalDateTime();
+            var aktuellTid = ((LocalDateTime) row[2]);
             return new SisteReserverteMetadata(oppgaveId, sisteEventType, aktuellTid);
         }).toList();
     }
