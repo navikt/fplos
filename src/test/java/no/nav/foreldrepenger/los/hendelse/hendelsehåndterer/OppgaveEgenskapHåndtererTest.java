@@ -56,7 +56,6 @@ class OppgaveEgenskapHåndtererTest {
     void opprettOppgaveEgenskaperTest() {
         // arrange
         var ønskedeEgenskaper = kriterieArrayOf(UTLANDSSAK, PAPIRSØKNAD);
-        when(oppgaveEgenskapFinner.getSaksbehandlerForTotrinn()).thenReturn("T12345");
         when(oppgaveEgenskapFinner.getAndreKriterier()).thenReturn(Arrays.asList(ønskedeEgenskaper));
 
         // act
@@ -70,7 +69,6 @@ class OppgaveEgenskapHåndtererTest {
     void opprettOppgaveEgenskaperMedKode7Test() {
         // arrange
         var ønskedeEgenskaper = kriterieArrayOf(UTLANDSSAK, PAPIRSØKNAD);
-        when(oppgaveEgenskapFinner.getSaksbehandlerForTotrinn()).thenReturn("T12345");
         when(oppgaveEgenskapFinner.getAndreKriterier()).thenReturn(Arrays.asList(ønskedeEgenskaper));
         when(beskyttelsesbehov.getBeskyttelsesKriterier(any())).thenReturn(Set.of(AndreKriterierType.KODE7_SAK));
 
@@ -84,7 +82,7 @@ class OppgaveEgenskapHåndtererTest {
     @Test
     void deaktiverUaktuelleEksisterendeOppgaveEgenskaper() {
         var oppgave = lagOppgave();
-        oppgaveRepository.lagre(new OppgaveEgenskap(oppgave, PAPIRSØKNAD));
+        oppgaveRepository.lagre(OppgaveEgenskap.builder().medOppgave(oppgave).medAndreKriterierType(PAPIRSØKNAD).build());
         when(oppgaveEgenskapFinner.getAndreKriterier()).thenReturn(emptyList());
         egenskapHandler.håndterOppgaveEgenskaper(oppgave, oppgaveEgenskapFinner);
 
@@ -94,7 +92,7 @@ class OppgaveEgenskapHåndtererTest {
     @Test
     void kunEttAktivtTilfelleAvHverEgenskap() {
         var oppgave = lagOppgave();
-        oppgaveRepository.lagre(new OppgaveEgenskap(oppgave, UTLANDSSAK));
+        oppgaveRepository.lagre(OppgaveEgenskap.builder().medOppgave(oppgave).medAndreKriterierType(UTLANDSSAK).build());
         when(oppgaveEgenskapFinner.getAndreKriterier()).thenReturn(List.of(UTLANDSSAK));
         egenskapHandler.håndterOppgaveEgenskaper(oppgave, oppgaveEgenskapFinner);
 
@@ -105,10 +103,10 @@ class OppgaveEgenskapHåndtererTest {
     void deaktiveringHåndtererDuplikateOppgaveEgenskaper() {
         // Bug i prod har opprettet dubletter. Tester deaktivering av samtlige dubletter.
         var oppgave = lagOppgave();
-        oppgaveRepository.lagre(new OppgaveEgenskap(oppgave, PAPIRSØKNAD));
-        oppgaveRepository.lagre(new OppgaveEgenskap(oppgave, PAPIRSØKNAD));
-        oppgaveRepository.lagre(new OppgaveEgenskap(oppgave, PAPIRSØKNAD));
-        oppgaveRepository.lagre(new OppgaveEgenskap(oppgave, UTLANDSSAK));
+        oppgaveRepository.lagre(OppgaveEgenskap.builder().medOppgave(oppgave).medAndreKriterierType(PAPIRSØKNAD).build());
+        oppgaveRepository.lagre(OppgaveEgenskap.builder().medOppgave(oppgave).medAndreKriterierType(PAPIRSØKNAD).build());
+        oppgaveRepository.lagre(OppgaveEgenskap.builder().medOppgave(oppgave).medAndreKriterierType(PAPIRSØKNAD).build());
+        oppgaveRepository.lagre(OppgaveEgenskap.builder().medOppgave(oppgave).medAndreKriterierType(PAPIRSØKNAD).build());
         when(oppgaveEgenskapFinner.getAndreKriterier()).thenReturn(emptyList());
         egenskapHandler.håndterOppgaveEgenskaper(oppgave, oppgaveEgenskapFinner);
 

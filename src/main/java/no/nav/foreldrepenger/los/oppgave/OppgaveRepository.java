@@ -288,6 +288,11 @@ public class OppgaveRepository {
         refresh(oppgaveEgenskap.getOppgave());
     }
 
+    public <U extends BaseEntitet> void slett(U entitet) {
+        entityManager.remove(entitet);
+        entityManager.flush();
+    }
+
     public void oppdaterNavn(Long sakslisteId, String navn) {
         entityManager.persist(entityManager.find(OppgaveFiltreringOppdaterer.class, sakslisteId).endreNavn(navn));
         entityManager.flush();

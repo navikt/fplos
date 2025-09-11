@@ -75,7 +75,11 @@ class OppgaveDtoTjenesteTest {
             .dummyOppgave(AVDELING_DRAMMEN_ENHET)
             .medBehandlingType(BehandlingType.FØRSTEGANGSSØKNAD)
             .build();
-        var oppgaveEgenskaper = new OppgaveEgenskap(oppgave, AndreKriterierType.TIL_BESLUTTER, "IDENT");
+        var oppgaveEgenskaper = OppgaveEgenskap.builder()
+            .medOppgave(oppgave)
+            .medAndreKriterierType(AndreKriterierType.TIL_BESLUTTER)
+            .medSisteSaksbehandlerForTotrinn("IDENT")
+            .build();
         oppgaveRepository.lagre(oppgave);
         oppgaveRepository.lagre(oppgaveEgenskaper);
         oppgaveRepository.lagre(new OppgaveEventLogg(oppgave.getBehandlingId(), OppgaveEventType.OPPRETTET,
