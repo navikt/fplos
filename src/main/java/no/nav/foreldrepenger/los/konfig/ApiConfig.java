@@ -8,8 +8,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import no.nav.foreldrepenger.los.tjenester.saksbehandler.nøkkeltall.DummyNøkkeltallRestTjeneste;
-
 import org.glassfish.jersey.server.ServerProperties;
 
 import io.swagger.v3.jaxrs2.integration.resources.OpenApiResource;
@@ -105,7 +103,6 @@ public class ApiConfig extends Application {
         classes.add(AvdelingslederOppgaveRestTjeneste.class);
         classes.add(AdminRestTjeneste.class);
         classes.add(ProsessTaskRestTjeneste.class);
-        classes.add(DummyNøkkeltallRestTjeneste.class);
         return classes;
     }
 
