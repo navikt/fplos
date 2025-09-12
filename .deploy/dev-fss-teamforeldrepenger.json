@@ -43,7 +43,7 @@
     {
       "app": "fp-avdelingsleder",
       "namespace": "teamforeldrepenger",
-      "cluster": "dev-fss"
+      "cluster": "dev-gcp"
     }
   ]
 }
