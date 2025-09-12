@@ -45,7 +45,7 @@ class AvdelingslederRestTjenesteTest {
         entityManager.persist(new Avdeling("4321", "Ordinær avdeling", false));
         entityManager.persist(new Avdeling("1234", "Strengt fortrolig avdeling", true));
         entityManager.flush();
-        var innloggetBruker = new InnloggetNavAnsattDto("L123456", "Test Bruker", true, LocalDateTime.now());
+        var innloggetBruker = new InnloggetNavAnsattDto("L123456", "Test Bruker", true);
 
         // innlogget avdelingsleder har tilgang til strengt fortrolig avdeling
         when(ansattInfoKlient.medlemAvAnsattGruppe(AnsattGruppe.STRENGTFORTROLIG)).thenReturn(true);
