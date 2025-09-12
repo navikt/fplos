@@ -39,6 +39,11 @@
       "app": "fpfordel",
       "namespace": "teamforeldrepenger",
       "cluster": "dev-fss"
+    },
+    {
+      "app": "fp-avdelingsleder",
+      "namespace": "teamforeldrepenger",
+      "cluster": "dev-fss"
     }
   ]
 }
