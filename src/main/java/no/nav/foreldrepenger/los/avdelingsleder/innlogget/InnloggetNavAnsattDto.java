@@ -1,27 +1,23 @@
 package no.nav.foreldrepenger.los.avdelingsleder.innlogget;
 
-import java.time.LocalDateTime;
 import java.util.Objects;
 
 public record InnloggetNavAnsattDto(String brukernavn,
                                     String navn,
-                                    boolean kanOppgavestyre,
-                                    LocalDateTime funksjonellTid) {
+                                    boolean kanOppgavestyre) {
 
     private InnloggetNavAnsattDto(Builder builder) {
-        this(builder.brukernavn, builder.navn, builder.kanOppgavestyre, LocalDateTime.now());
+        this(builder.brukernavn, builder.navn, builder.kanOppgavestyre);
     }
 
     public static InnloggetNavAnsattDto ukjentNavAnsatt(String brukernavn, String navn) {
-        return new InnloggetNavAnsattDto(brukernavn, navn,false, LocalDateTime.now());
+        return new InnloggetNavAnsattDto(brukernavn, navn, false);
     }
 
 
     @Override
     public String toString() {
-        return "InnloggetNavAnsattDto{" +
-            "kanOppgavestyre=" + kanOppgavestyre +
-            ", funksjonellTid=" + funksjonellTid + '}';
+        return "InnloggetNavAnsattDto{" + "kanOppgavestyre=" + kanOppgavestyre + '}';
     }
 
     public static class Builder {
