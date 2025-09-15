@@ -68,10 +68,20 @@ class OppgaveBeholdningStatistikkTjenesteTest {
         entityManager.persist(innsynOppgave);
 
         entityManager.persist(beslutterOppgave);
-        entityManager.persist(new OppgaveEgenskap(beslutterOppgave, AndreKriterierType.TIL_BESLUTTER));
+        var oppgaveEgenskapBeslutterOppgave1 = OppgaveEgenskap.builder()
+            .medOppgave(beslutterOppgave)
+            .medAndreKriterierType(AndreKriterierType.TIL_BESLUTTER)
+            .medSisteSaksbehandlerForTotrinn("IDENT")
+            .build();
+        entityManager.persist(oppgaveEgenskapBeslutterOppgave1);
 
         entityManager.persist(beslutterOppgave2);
-        entityManager.persist(new OppgaveEgenskap(beslutterOppgave2, AndreKriterierType.TIL_BESLUTTER));
+        var oppgaveEgenskapBeslutterOppgave2 = OppgaveEgenskap.builder()
+            .medOppgave(beslutterOppgave2)
+            .medAndreKriterierType(AndreKriterierType.TIL_BESLUTTER)
+            .medSisteSaksbehandlerForTotrinn("IDENT")
+            .build();
+        entityManager.persist(oppgaveEgenskapBeslutterOppgave2);
 
         entityManager.persist(lukketOppgave);
 

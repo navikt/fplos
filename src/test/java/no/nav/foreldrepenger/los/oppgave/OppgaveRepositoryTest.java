@@ -86,7 +86,11 @@ class OppgaveRepositoryTest {
         var oppgave = Oppgave.builder().dummyOppgave(AVDELING_DRAMMEN_ENHET).medSaksnummer(saksnummer).build();
         entityManager.persist(oppgave);
         for (var kriterie : kriterier) {
-            entityManager.persist(new OppgaveEgenskap(oppgave, kriterie));
+            var oppgaveEgenskapBuilder = OppgaveEgenskap.builder().medOppgave(oppgave).medAndreKriterierType(kriterie);
+            if (kriterie.erTilBeslutter()) {
+                oppgaveEgenskapBuilder.medSisteSaksbehandlerForTotrinn("IDENT");
+            }
+            entityManager.persist(oppgaveEgenskapBuilder.build());
         }
         entityManager.flush();
         return saksnummer;
@@ -222,10 +226,18 @@ class OppgaveRepositoryTest {
         entityManager.persist(andreOppgave);
         entityManager.persist(tredjeOppgave);
         entityManager.persist(fjerdeOppgave);
-        entityManager.persist(new OppgaveEgenskap(førsteOppgave, AndreKriterierType.PAPIRSØKNAD));
-        entityManager.persist(new OppgaveEgenskap(andreOppgave, AndreKriterierType.TIL_BESLUTTER, "Jodajoda"));
-        entityManager.persist(new OppgaveEgenskap(tredjeOppgave, AndreKriterierType.PAPIRSØKNAD));
-        entityManager.persist(new OppgaveEgenskap(tredjeOppgave, AndreKriterierType.TIL_BESLUTTER));
+        entityManager.persist(OppgaveEgenskap.builder().medOppgave(førsteOppgave).medAndreKriterierType(AndreKriterierType.PAPIRSØKNAD).build());
+        entityManager.persist(OppgaveEgenskap.builder()
+            .medOppgave(andreOppgave)
+            .medAndreKriterierType(AndreKriterierType.TIL_BESLUTTER)
+            .medSisteSaksbehandlerForTotrinn("IDENT")
+            .build());
+        entityManager.persist(OppgaveEgenskap.builder().medOppgave(tredjeOppgave).medAndreKriterierType(AndreKriterierType.PAPIRSØKNAD).build());
+        entityManager.persist(OppgaveEgenskap.builder()
+            .medOppgave(førsteOppgave)
+            .medAndreKriterierType(AndreKriterierType.TIL_BESLUTTER)
+            .medSisteSaksbehandlerForTotrinn("IDENT")
+            .build());
         entityManager.persist(
             new OppgaveEventLogg(behandlingId1, OppgaveEventType.OPPRETTET, AndreKriterierType.PAPIRSØKNAD, AVDELING_DRAMMEN_ENHET));
         entityManager.persist(

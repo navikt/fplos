@@ -31,6 +31,7 @@ public class OppgaveEgenskap extends BaseEntitet {
     @Column(name = "ANDRE_KRITERIER_TYPE", nullable = false)
     private AndreKriterierType andreKriterierType;
 
+    // feltet brukes i query for å ekskludere egne oppgaver i beslutterkøer
     @Column(name = "SISTE_SAKSBEHANDLER_FOR_TOTR")
     private String sisteSaksbehandlerForTotrinn;
 
@@ -42,21 +43,6 @@ public class OppgaveEgenskap extends BaseEntitet {
         //CDI
     }
 
-    public OppgaveEgenskap(Oppgave oppgave, AndreKriterierType andreKriterierType) {
-        this.oppgave = oppgave;
-        this.andreKriterierType = andreKriterierType;
-    }
-
-    public OppgaveEgenskap(Oppgave oppgave, AndreKriterierType type, String sisteSaksbehandlerForTotrinn) {
-        this.oppgave = oppgave;
-        this.andreKriterierType = type;
-        this.sisteSaksbehandlerForTotrinn = sisteSaksbehandlerForTotrinn;
-    }
-
-    public OppgaveEgenskap beslutterEgenskapFra(Oppgave oppgave, String sisteSaksbehandlerForTotrinn) {
-        return new OppgaveEgenskap(oppgave, AndreKriterierType.TIL_BESLUTTER, sisteSaksbehandlerForTotrinn);
-    }
-
     public Oppgave getOppgave() {
         return oppgave;
     }
@@ -65,23 +51,51 @@ public class OppgaveEgenskap extends BaseEntitet {
         return andreKriterierType;
     }
 
-    public String getSisteSaksbehandlerForTotrinn() {
-        return sisteSaksbehandlerForTotrinn;
-    }
-
     public Boolean getAktiv() {
         return aktiv;
     }
 
-    public void deaktiverOppgaveEgenskap() {
-        aktiv = false;
+    public static Builder builder() {
+        return new Builder();
     }
 
-    public void aktiverOppgaveEgenskap() {
-        aktiv = true;
-    }
+    public static class Builder {
+        private Oppgave oppgave;
+        private AndreKriterierType andreKriterierType;
+        private String sisteSaksbehandlerForTotrinn;
 
-    public void setSisteSaksbehandlerForTotrinn(String sisteSaksbehandlerForTotrinn) {
-        this.sisteSaksbehandlerForTotrinn = sisteSaksbehandlerForTotrinn;
+        public Builder medOppgave(Oppgave oppgave) {
+            this.oppgave = oppgave;
+            return this;
+        }
+
+        public Builder medAndreKriterierType(AndreKriterierType andreKriterierType) {
+            this.andreKriterierType = andreKriterierType;
+            return this;
+        }
+
+        public Builder medSisteSaksbehandlerForTotrinn(String sisteSaksbehandler) {
+            if (sisteSaksbehandler == null || sisteSaksbehandler.isBlank()) {
+                throw new IllegalArgumentException("sisteSaksbehandlerForTotrinn kan ikke være null eller blank");
+            }
+            this.sisteSaksbehandlerForTotrinn = sisteSaksbehandler.toUpperCase();
+            return this;
+        }
+
+        public OppgaveEgenskap build() {
+            if (oppgave == null || andreKriterierType == null) {
+                throw new IllegalStateException("Oppgave og/eller AndreKriterierType kan ikke være null");
+            }
+
+            if (andreKriterierType.erTilBeslutter() && sisteSaksbehandlerForTotrinn == null) {
+                throw new IllegalStateException("Mangler sisteSaksbehandlerForTotrinn for AndreKriterierType " + AndreKriterierType.TIL_BESLUTTER);
+            }
+
+            var oppgaveEgenskap = new OppgaveEgenskap();
+            oppgaveEgenskap.oppgave = oppgave;
+            oppgaveEgenskap.andreKriterierType = andreKriterierType;
+            oppgaveEgenskap.sisteSaksbehandlerForTotrinn = sisteSaksbehandlerForTotrinn;
+            return oppgaveEgenskap;
+        }
     }
 }
