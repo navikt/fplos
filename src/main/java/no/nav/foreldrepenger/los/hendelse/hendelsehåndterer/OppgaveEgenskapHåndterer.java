@@ -1,6 +1,7 @@
 package no.nav.foreldrepenger.los.hendelse.hendelsehåndterer;
 
 import java.util.ArrayList;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,7 +43,7 @@ public class OppgaveEgenskapHåndterer {
             .filter(akt -> !andreKriterier.contains(akt.getAndreKriterierType()) || !akt.getAktiv())
             .forEach(repository::slett);
 
-        var eksisterendeTyper = eksisterendeOppgaveEgenskaper.stream().map(OppgaveEgenskap::getAndreKriterierType).toList();
+        var eksisterendeTyper = eksisterendeOppgaveEgenskaper.stream().map(OppgaveEgenskap::getAndreKriterierType).collect(Collectors.toSet());
         for (var type : andreKriterier) {
             if (!eksisterendeTyper.contains(type)) {
                 var builder = OppgaveEgenskap.builder().medOppgave(oppgave).medAndreKriterierType(type);
