@@ -1,7 +1,5 @@
 package no.nav.foreldrepenger.los.tjenester.avdelingsleder.reservasjon;
 
-import static no.nav.foreldrepenger.los.reservasjon.ReservasjonKonstanter.RESERVASJON_AVSLUTTET_AVDELINGSLEDER;
-
 import java.util.List;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -58,6 +56,19 @@ public class AvdelingReservasjonerRestTjeneste {
         return tilReservasjonDtoListe(reservasjoner);
     }
 
+    @POST
+    @Path("/opphev")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Operation(description = "Opphev reservasjon av oppgave", tags = "AvdelingslederReservasjoner")
+    @BeskyttetRessurs(actionType = ActionType.CREATE, resourceType = ResourceType.OPPGAVESTYRING_AVDELINGENHET, sporingslogg = false)
+    public Response opphevOppgaveReservasjon(@NotNull @Parameter(description = "Id for oppgave som reservasjonen er tilknyttet") @Valid OppgaveIdDto oppgaveId) {
+        var reservasjon = reservasjonTjeneste.slettReservasjon(oppgaveId.getVerdi());
+        if (reservasjon.isEmpty()) {
+            throw new TomtResultatException("FPLOS-AVDL1", "Fant ikke reservasjon (eller reservasjon utløpt)");
+        }
+        return Response.noContent().build();
+    }
+
     private List<ReservasjonDto> tilReservasjonDtoListe(List<Reservasjon> reservasjoner) {
         return reservasjoner.stream().map(reservasjon -> {
             var reservertAvNavn = ansattTjeneste.hentBrukerProfilForLagretSaksbehandler(reservasjon.getReservertAv())
@@ -65,18 +76,5 @@ public class AvdelingReservasjonerRestTjeneste {
                 .orElseGet(() -> "Ukjent saksbehandler " + reservasjon.getReservertAv());
             return new ReservasjonDto(reservasjon, reservertAvNavn, null);
         }).toList();
-    }
-
-    @POST
-    @Path("/opphev")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Operation(description = "Opphev reservasjon av oppgave", tags = "AvdelingslederReservasjoner")
-    @BeskyttetRessurs(actionType = ActionType.CREATE, resourceType = ResourceType.OPPGAVESTYRING_AVDELINGENHET, sporingslogg = false)
-    public Response opphevOppgaveReservasjon(@NotNull @Parameter(description = "Id for oppgave som reservasjonen er tilknyttet") @Valid OppgaveIdDto oppgaveId) {
-        var reservasjon = reservasjonTjeneste.slettReservasjonMedEventLogg(oppgaveId.getVerdi(), RESERVASJON_AVSLUTTET_AVDELINGSLEDER);
-        if (reservasjon.isEmpty()) {
-            throw new TomtResultatException("FPLOS-AVDL1", "Fant ikke reservasjon (eller reservasjon utløpt)");
-        }
-        return Response.noContent().build();
     }
 }

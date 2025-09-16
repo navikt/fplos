@@ -1,7 +1,5 @@
 package no.nav.foreldrepenger.los.oppgave;
 
-import static no.nav.foreldrepenger.los.reservasjon.ReservasjonKonstanter.OPPGAVE_AVSLUTTET;
-
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Comparator;
@@ -59,9 +57,8 @@ public class OppgaveTjeneste {
             throw new IllegalStateException(String.format("Forventet kun én aktiv oppgave for behandlingId %s, fant %s", behandlingId, antallAktive));
         }
         oppgaver.stream().filter(Oppgave::getAktiv).max(Comparator.comparing(Oppgave::getOpprettetTidspunkt)).ifPresent(oppgave -> {
-            reservasjonTjeneste.slettReservasjonMedEventLogg(oppgave.getReservasjon(), OPPGAVE_AVSLUTTET);
-            oppgave.setAktiv(false);
-            oppgave.setOppgaveAvsluttet(LocalDateTime.now());
+            reservasjonTjeneste.slettReservasjon(oppgave.getReservasjon());
+            oppgave.avsluttOppgave();
             oppgaveRepository.lagre(oppgave);
             oppgaveRepository.refresh(oppgave);
         });
@@ -75,18 +72,16 @@ public class OppgaveTjeneste {
                 String.format("Forventet mer enn én aktiv oppgave for behandlingId %s, fant %s", behandlingId, antallAktive));
         }
         oppgaver.stream().filter(Oppgave::getAktiv).min(Comparator.comparing(Oppgave::getOpprettetTidspunkt)).ifPresent(oppgave -> {
-            reservasjonTjeneste.slettReservasjonMedEventLogg(oppgave.getReservasjon(), OPPGAVE_AVSLUTTET);
-            oppgave.setAktiv(false);
-            oppgave.setOppgaveAvsluttet(LocalDateTime.now());
+            reservasjonTjeneste.slettReservasjon(oppgave.getReservasjon());
+            oppgave.avsluttOppgave();
             oppgaveRepository.lagre(oppgave);
             oppgaveRepository.refresh(oppgave);
         });
     }
 
-    public void avsluttOppgaveMedEventLogg(Oppgave oppgave, OppgaveEventType oppgaveEventType, String begrunnelseReservasjonEvent) {
-        oppgave.setAktiv(false);
-        oppgave.setOppgaveAvsluttet(LocalDateTime.now());
-        reservasjonTjeneste.slettReservasjonMedEventLogg(oppgave.getReservasjon(), begrunnelseReservasjonEvent);
+    public void avsluttOppgaveMedEventLogg(Oppgave oppgave, OppgaveEventType oppgaveEventType) {
+        oppgave.avsluttOppgave();
+        reservasjonTjeneste.slettReservasjon(oppgave.getReservasjon());
         oppgaveRepository.lagre(oppgave);
         var oel = new OppgaveEventLogg.Builder().behandlingId(oppgave.getBehandlingId())
             .behandlendeEnhet(oppgave.getBehandlendeEnhet())

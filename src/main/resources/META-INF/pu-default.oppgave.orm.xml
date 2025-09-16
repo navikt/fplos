@@ -19,7 +19,6 @@
     <entity class="no.nav.foreldrepenger.los.oppgave.TilbakekrevingOppgave"/>
     <entity class="no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveEventLogg"/>
     <entity class="no.nav.foreldrepenger.los.reservasjon.Reservasjon"/>
-    <entity class="no.nav.foreldrepenger.los.reservasjon.ReservasjonEventLogg"/>
     <entity class="no.nav.foreldrepenger.los.oppgavekø.OppgaveFiltrering"/>
     <entity class="no.nav.foreldrepenger.los.oppgavekø.OppgaveFiltreringOppdaterer"/>
     <entity class="no.nav.foreldrepenger.los.oppgavekø.FiltreringBehandlingType"/>

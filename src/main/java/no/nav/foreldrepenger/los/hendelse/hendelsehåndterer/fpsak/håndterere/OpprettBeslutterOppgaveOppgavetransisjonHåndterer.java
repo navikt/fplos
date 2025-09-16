@@ -16,7 +16,6 @@ import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.Op
 import no.nav.foreldrepenger.los.oppgave.AndreKriterierType;
 import no.nav.foreldrepenger.los.oppgave.Oppgave;
 import no.nav.foreldrepenger.los.oppgave.OppgaveTjeneste;
-import no.nav.foreldrepenger.los.reservasjon.ReservasjonKonstanter;
 import no.nav.vedtak.hendelser.behandling.los.LosBehandlingDto;
 
 @ApplicationScoped
@@ -57,12 +56,9 @@ public class OpprettBeslutterOppgaveOppgavetransisjonHåndterer implements Fpsak
 
     private void håndterEksisterendeOppgave(BehandlingId behandlingId) {
         oppgaveTjeneste.hentAktivOppgave(behandlingId)
-            .stream()
-            .peek(o -> LOG.trace("HåndterEksisterendeOppgave, peek på oppgave {}", o))
-            .findFirst()
             .filter(Oppgave::getAktiv)
             .ifPresentOrElse(sbo -> {
-                oppgaveTjeneste.avsluttOppgaveMedEventLogg(sbo, OppgaveEventType.LUKKET, ReservasjonKonstanter.OPPGAVE_AVSLUTTET);
+                oppgaveTjeneste.avsluttOppgaveMedEventLogg(sbo, OppgaveEventType.LUKKET);
                 LOG.info("Avslutter saksbehandler1 oppgave");
             }, () -> LOG.info("Fant ingen aktiv saksbehandler1-oppgave"));
     }

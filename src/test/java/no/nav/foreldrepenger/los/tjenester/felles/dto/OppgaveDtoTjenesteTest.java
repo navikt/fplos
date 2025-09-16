@@ -91,7 +91,7 @@ class OppgaveDtoTjenesteTest {
             .hasSize(1)
             .first().matches(dto -> dto.getOppgaveBehandlingStatus() == OppgaveBehandlingStatus.TIL_BESLUTTER);
 
-        oppgaveTjeneste.avsluttOppgaveMedEventLogg(oppgave, OppgaveEventType.LUKKET, "Avsluttet oppgave");
+        oppgaveTjeneste.avsluttOppgaveMedEventLogg(oppgave, OppgaveEventType.LUKKET);
 
         var sisteReserverte = oppgaveDtoTjeneste.getSaksbehandlersSisteReserverteOppgaver(false);
         assertThat(sisteReserverte)

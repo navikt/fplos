@@ -84,7 +84,7 @@ class OppdaterOppgaveHendelseHåndtererTest {
     @Test
     void skalIkkeFlytteInaktivReservasjon() {
         reservasjonTjeneste.reserverOppgave(DBTestUtil.hentUnik(entityManager, Oppgave.class));
-        reservasjonTjeneste.slettReservasjonMedEventLogg(DBTestUtil.hentUnik(entityManager, Reservasjon.class), "slettet");
+        reservasjonTjeneste.slettReservasjon(DBTestUtil.hentUnik(entityManager, Reservasjon.class));
         oppgaveOppdaterer.håndter(behandlingId, behandlingFpsak, new OppgaveHistorikk(List.of()));
         var oppgaver = DBTestUtil.hentAlle(entityManager, Oppgave.class);
         var gammelOppgave = oppgaver.get(0);

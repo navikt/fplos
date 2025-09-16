@@ -24,7 +24,6 @@ import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
 import no.nav.foreldrepenger.los.oppgave.OppgaveTjeneste;
 import no.nav.foreldrepenger.los.reservasjon.Reservasjon;
-import no.nav.foreldrepenger.los.reservasjon.ReservasjonKonstanter;
 import no.nav.foreldrepenger.los.reservasjon.ReservasjonTjeneste;
 import no.nav.foreldrepenger.los.tjenester.felles.dto.OppgaveDto;
 import no.nav.foreldrepenger.los.tjenester.felles.dto.OppgaveDtoTjeneste;
@@ -96,7 +95,7 @@ public class ReservasjonRestTjeneste {
     @Operation(description = "Opphev reservasjon av oppgave", tags = "Saksbehandler")
     @BeskyttetRessurs(actionType = ActionType.CREATE, resourceType = ResourceType.FAGSAK, sporingslogg = false)
     public ReservasjonStatusDto opphevReservasjonTilknyttetOppgave(@NotNull @Parameter(description = "Id og begrunnelse") @Valid OppgaveIdDto oppgaveId) {
-        var reservasjon = reservasjonTjeneste.slettReservasjonMedEventLogg(oppgaveId.getVerdi(), ReservasjonKonstanter.RESERVASJON_AVSLUTTET_SAKSBEHANDLER);
+        var reservasjon = reservasjonTjeneste.slettReservasjon(oppgaveId.getVerdi());
         return reservasjon.map(Reservasjon::getOppgave).map(oppgaveDtoTjeneste::lagOppgaveStatusUtenPersonoppslag).orElseGet(() -> {
             LOG.info("Fant ikke reservasjon tilknyttet oppgaveId {} for sletting, returnerer null", oppgaveId.getVerdi());
             return null;

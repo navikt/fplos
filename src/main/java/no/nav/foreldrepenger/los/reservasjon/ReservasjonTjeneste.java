@@ -76,7 +76,6 @@ public class ReservasjonTjeneste {
             try {
                 oppgaveRepository.lagre(reservasjon);
                 oppgaveRepository.refresh(reservasjon.getOppgave());
-                oppgaveRepository.lagre(new ReservasjonEventLogg(reservasjon));
             } catch (OptimisticLockException e) {
                 // Annen saksbehandler har oppdatert reservasjonen – refresher reservasjonen og returnerer den som om reservasjon ellers var vellykket
                 // Frontend vil vise modal om at annen saksbehandler holder reservasjonen.
@@ -92,25 +91,15 @@ public class ReservasjonTjeneste {
         return reservasjon;
     }
 
-    public Optional<Reservasjon> slettReservasjonMedEventLogg(Long oppgaveId, String begrunnelse) {
+    public Optional<Reservasjon> slettReservasjon(Long oppgaveId) {
         var reservasjon = reservasjonRepository.hentAktivReservasjon(oppgaveId);
-        reservasjon.ifPresentOrElse(res -> slettReservasjonMedEventLogg(res, begrunnelse),
+        reservasjon.ifPresentOrElse(this::slettReservasjon,
             () -> LOG.info("Forsøker slette reservasjon, men fant ingen for oppgaveId {}", oppgaveId));
         return reservasjon;
     }
 
-    public void slettReservasjonMedEventLogg(Reservasjon reservasjon, String begrunnelse) {
+    public void slettReservasjon(Reservasjon reservasjon) {
         if (reservasjon != null && reservasjon.erAktiv()) {
-            var rel = ReservasjonEventLogg.Builder.builder()
-                .reservasjonId(reservasjon.getId())
-                .oppgaveId(reservasjon.getOppgave().getId())
-                .reservertAv(reservasjon.getReservertAv())
-                .reservertTil(reservasjon.getReservertTil())
-                .flyttetAv(reservasjon.getFlyttetAv())
-                .flyttetTidspunkt(reservasjon.getFlyttetTidspunkt())
-                .begrunnelse(begrunnelse)
-                .build();
-            reservasjonRepository.lagre(rel);
             reservasjon.setReservertTil(LocalDateTime.now().minusSeconds(1));
             reservasjonRepository.lagre(reservasjon);
         }
@@ -125,7 +114,6 @@ public class ReservasjonTjeneste {
             res.setBegrunnelse(begrunnelse);
             oppgaveRepository.lagre(res);
             oppgaveRepository.refresh(res.getOppgave());
-            oppgaveRepository.lagre(new ReservasjonEventLogg(res));
             return res;
         }).orElseThrow(() -> new IllegalStateException(FANT_IKKE_RESERVASJON_TILKNYTTET_OPPGAVE_ID + oppgaveId));
     }
@@ -134,7 +122,7 @@ public class ReservasjonTjeneste {
         var reservasjon = oppgaveRepository.hentReservasjon(oppgaveId)
             .orElseThrow(() -> new IllegalStateException(FANT_IKKE_RESERVASJON_TILKNYTTET_OPPGAVE_ID + oppgaveId));
         reservasjon.setReservertTil(utvidetReservasjon(reservasjon.getReservertTil()));
-        lagreMedEventLogg(reservasjon);
+        reservasjonRepository.lagre(reservasjon);
         return reservasjon;
     }
 
@@ -142,7 +130,7 @@ public class ReservasjonTjeneste {
         var reservasjon = oppgaveRepository.hentReservasjon(oppgaveId)
             .orElseThrow(() -> new IllegalStateException(FANT_IKKE_RESERVASJON_TILKNYTTET_OPPGAVE_ID + oppgaveId));
         reservasjon.setReservertTil(reservertTil);
-        lagreMedEventLogg(reservasjon);
+        reservasjonRepository.lagre(reservasjon);
         return reservasjon;
     }
 
@@ -186,8 +174,6 @@ public class ReservasjonTjeneste {
         reservasjon.setFlyttetAv(BrukerIdent.brukerIdent());
         reservasjon.setFlyttetTidspunkt(LocalDateTime.now());
         reservasjonRepository.lagre(reservasjon);
-        var rel = new ReservasjonEventLogg(reservasjon);
-        reservasjonRepository.lagre(rel);
     }
 
 
@@ -200,7 +186,7 @@ public class ReservasjonTjeneste {
             reservasjon.setBegrunnelse(gammelReservasjon.getBegrunnelse());
             LOG.info("Kopierer flyttebegrunnelse til ny reservasjon");
         }
-        lagreMedEventLogg(reservasjon);
+        reservasjonRepository.lagre(reservasjon);
     }
 
     public Reservasjon reserverOppgaveBasertPåEksisterendeReservasjon(Oppgave oppgave, Reservasjon reservasjon, LocalDateTime nyVarighetTil) {
@@ -210,14 +196,9 @@ public class ReservasjonTjeneste {
         nyReservasjon.setFlyttetTidspunkt(reservasjon.getFlyttetTidspunkt());
         nyReservasjon.setFlyttetAv(reservasjon.getFlyttetAv());
         nyReservasjon.setBegrunnelse(reservasjon.getBegrunnelse());
-        lagreMedEventLogg(nyReservasjon);
+        reservasjonRepository.lagre(nyReservasjon);
         reservasjonRepository.refresh(oppgave);
         return nyReservasjon;
-    }
-
-    private void lagreMedEventLogg(Reservasjon reservasjon) {
-        oppgaveRepository.lagre(reservasjon);
-        oppgaveRepository.lagre(new ReservasjonEventLogg(reservasjon));
     }
 
     private static LocalDateTime utvidetReservasjon(LocalDateTime eksisterende) {

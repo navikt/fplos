@@ -88,7 +88,6 @@ class GjenåpneOppgaveHendelseHåndtererTest {
     void skalIkkeVidereReservasjonVedNyEnhet() {
         // arrange
         reservasjonTjeneste.reserverOppgave(eksisterendeOppgave);
-        eksisterendeOppgave.setAktiv(true);
         oppgaveRepository.lagre(eksisterendeOppgave);
         var b = behandlingFpsak;
         new OppgaveTjeneste(oppgaveRepository, reservasjonTjeneste).avsluttOppgaveUtenEventLoggAvsluttTilknyttetReservasjon(behandlingId);
