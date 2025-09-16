@@ -181,11 +181,7 @@ public class ReservasjonTjeneste {
         var reservasjon = new Reservasjon(oppgave);
         reservasjon.setReservertTil(standardReservasjon());
         reservasjon.setReservertAv(gammelReservasjon.getReservertAv());
-        if (!ReservasjonKonstanter.tekstBlantReservasjonKonstanter(gammelReservasjon.getBegrunnelse())) {
-            // ønskelig å flytte manuell begrunnelse til ny reservasjon
-            reservasjon.setBegrunnelse(gammelReservasjon.getBegrunnelse());
-            LOG.info("Kopierer flyttebegrunnelse til ny reservasjon");
-        }
+        reservasjon.setBegrunnelse(gammelReservasjon.getBegrunnelse());
         reservasjonRepository.lagre(reservasjon);
     }
 
