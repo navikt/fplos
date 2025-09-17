@@ -93,7 +93,7 @@ public class OppgaveRepository {
 
     private static String andreKriterierSubquery(Oppgavespørring queryDto) {
         final UnaryOperator<String> template = kode -> String.format(
-            "( SELECT 1 FROM OppgaveEgenskap oe WHERE o = oe.oppgave AND oe.aktiv = true AND oe.andreKriterierType = '%s') ", kode);
+            "( SELECT 1 FROM OppgaveEgenskap oe WHERE o = oe.oppgave AND oe.andreKriterierType = '%s') ", kode);
         var inkluderKriterier = queryDto.getInkluderAndreKriterierTyper()
             .stream()
             .map(AndreKriterierType::getKode)
