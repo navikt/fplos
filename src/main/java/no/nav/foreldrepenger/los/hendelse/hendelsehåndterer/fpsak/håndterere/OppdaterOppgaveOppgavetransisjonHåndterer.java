@@ -1,8 +1,5 @@
 package no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.håndterere;
 
-import static no.nav.foreldrepenger.los.reservasjon.ReservasjonKonstanter.NY_ENHET;
-import static no.nav.foreldrepenger.los.reservasjon.ReservasjonKonstanter.RESERVASJON_VIDEREFØRT_NY_OPPGAVE;
-
 import java.time.LocalDateTime;
 
 import org.slf4j.Logger;
@@ -47,7 +44,7 @@ public class OppdaterOppgaveOppgavetransisjonHåndterer implements FpsakOppgavet
             .orElseThrow(() -> new IllegalStateException("Fant ikke eksisterende oppgave"));
         var nyOppgave = lagOppgave(behandlingId, behandling);
         flyttReservasjon(eksisterendeOppgave, nyOppgave);
-        oppgaveTjeneste.avsluttOppgaveMedEventLogg(eksisterendeOppgave, OppgaveEventType.GJENAPNET, RESERVASJON_VIDEREFØRT_NY_OPPGAVE);
+        oppgaveTjeneste.avsluttOppgaveMedEventLogg(eksisterendeOppgave, OppgaveEventType.GJENAPNET);
     }
 
     @Override
@@ -67,7 +64,7 @@ public class OppdaterOppgaveOppgavetransisjonHåndterer implements FpsakOppgavet
             LOG.info("Oppretter ny forlenget reservasjonId {} varighet til {} reservert_av {}", reservasjon.getId(), reservasjon.getReservertTil(),
                 reservasjon.getReservertAv());
         } else if (erNyEnhet && aktivReservasjon) {
-            reservasjonTjeneste.slettReservasjonMedEventLogg(gammelReservasjon, NY_ENHET);
+            reservasjonTjeneste.slettReservasjon(gammelReservasjon);
             LOG.info("Overfører oppgave til ny enhet. Avslutter eksisterende reservasjon.");
         }
     }

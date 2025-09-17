@@ -183,7 +183,7 @@ class OppgaveTjenesteTest {
         reservasjonTjeneste.endreReservasjonPåOppgave(førstegangOppgave.getId(), LocalDateTime.now().plusDays(3));
         assertThat(reservasjon.getReservertTil().until(LocalDateTime.now().plusDays(3), MINUTES)).isLessThan(2);
 
-        reservasjonTjeneste.slettReservasjonMedEventLogg(førstegangOppgave.getReservasjon(), "begrunnelse");
+        reservasjonTjeneste.slettReservasjon(førstegangOppgave.getReservasjon());
         assertThat(oppgaveKøTjeneste.hentOppgaver(oppgaveFiltreringId, 100)).hasSize(3);
         assertThat(reservasjonTjeneste.hentSaksbehandlersReserverteAktiveOppgaver()).isEmpty();
         assertThat(reservasjonTjeneste.hentReservasjonerForAvdeling(AVDELING_DRAMMEN_ENHET)).isEmpty();
@@ -200,7 +200,7 @@ class OppgaveTjenesteTest {
             .hasSize(1)
             .first().matches(sr -> sr.status() == OppgaveBehandlingStatus.UNDER_ARBEID);
 
-        oppgaveTjeneste.avsluttOppgaveMedEventLogg(førstegangOppgave, OppgaveEventType.LUKKET, "Avsluttet oppgave");
+        oppgaveTjeneste.avsluttOppgaveMedEventLogg(førstegangOppgave, OppgaveEventType.LUKKET);
         var sisteReserverte = reservasjonTjeneste.hentSaksbehandlersSisteReserverteMedStatus(false);
         assertThat(sisteReserverte)
             .hasSize(1)

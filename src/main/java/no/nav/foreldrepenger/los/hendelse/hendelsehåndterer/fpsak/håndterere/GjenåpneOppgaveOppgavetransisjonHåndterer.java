@@ -69,7 +69,7 @@ public class GjenåpneOppgaveOppgavetransisjonHåndterer implements FpsakOppgave
             .max(Comparator.comparing(Oppgave::getOpprettetTidspunkt))
             .filter(o -> o.getBehandlendeEnhet().equals(behandling.behandlendeEnhetId()))
             .map(Oppgave::getReservasjon)
-            .filter(r -> r.getReservertTil().isAfter(LocalDateTime.now().minus(15, ChronoUnit.MINUTES)));
+            .filter(r -> r.getReservertTil().isAfter(LocalDateTime.now().minusMinutes(15)));
         finnesreservasjon.ifPresent(r -> {
             LOG.info("Viderefører reservasjon");
             reservasjonTjeneste.reserverBasertPåAvsluttetReservasjon(nyOppgave, r);

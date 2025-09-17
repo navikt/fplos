@@ -2,6 +2,8 @@ package no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.håndterere;
 
 import java.util.Optional;
 
+import no.nav.foreldrepenger.los.reservasjon.ReservasjonKonstanter;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -64,7 +66,7 @@ public class ReturFraBeslutterOppgavetransisjonHåndterer implements FpsakOppgav
         var oppgave = OppgaveUtil.oppgave(behandlingId, behandlingFpsak);
         oppgaveTjeneste.lagre(oppgave);
         Optional.ofNullable(behandlingFpsak.ansvarligSaksbehandlerIdent())
-            .ifPresent(sbh -> reservasjonTjeneste.opprettReservasjon(oppgave, sbh, "Retur fra beslutter"));
+            .ifPresent(sbh -> reservasjonTjeneste.opprettReservasjon(oppgave, sbh, ReservasjonKonstanter.RETUR_FRA_BESLUTTER));
         LOG.info("Retur fra beslutter, oppretter oppgave og flytter reservasjon til ansvarlig saksbehandler");
         return oppgave;
     }
