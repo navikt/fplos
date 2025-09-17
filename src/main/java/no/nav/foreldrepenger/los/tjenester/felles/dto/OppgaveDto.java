@@ -60,7 +60,6 @@ public class OppgaveDto {
         this.opprettetTidspunkt = oppgave.getBehandlingOpprettet();
         this.behandlingsfrist = oppgave.getBehandlingsfrist();
         this.andreKriterier = oppgave.getOppgaveEgenskaper().stream()
-            .filter(OppgaveEgenskap::getAktiv)
             .map(OppgaveEgenskap::getAndreKriterierType)
             .collect(Collectors.toSet());
         this.reservasjonStatus = reservasjonStatus;

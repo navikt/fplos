@@ -11,7 +11,6 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -62,7 +61,7 @@ class OppgaveEgenskapHåndtererTest {
         egenskapHandler.håndterOppgaveEgenskaper(lagOppgave(), oppgaveEgenskapFinner);
 
         // assert
-        Assertions.assertThat(hentAktiveKriterierPåOppgave(new Saksnummer("42"))).containsExactlyInAnyOrder(ønskedeEgenskaper);
+        Assertions.assertThat(hentAndreKriterierTypeListe(new Saksnummer("42"))).containsExactlyInAnyOrder(ønskedeEgenskaper);
     }
 
     @Test
@@ -76,7 +75,7 @@ class OppgaveEgenskapHåndtererTest {
         egenskapHandler.håndterOppgaveEgenskaper(lagOppgave(), oppgaveEgenskapFinner);
 
         // assert
-        Assertions.assertThat(hentAktiveKriterierPåOppgave(new Saksnummer("42"))).contains(AndreKriterierType.KODE7_SAK);
+        Assertions.assertThat(hentAndreKriterierTypeListe(new Saksnummer("42"))).contains(AndreKriterierType.KODE7_SAK);
     }
 
     @Test
@@ -86,7 +85,7 @@ class OppgaveEgenskapHåndtererTest {
         when(oppgaveEgenskapFinner.getAndreKriterier()).thenReturn(emptyList());
         egenskapHandler.håndterOppgaveEgenskaper(oppgave, oppgaveEgenskapFinner);
 
-        Assertions.assertThat(hentAktiveKriterierPåOppgave(new Saksnummer("42"))).isEmpty();
+        Assertions.assertThat(hentAndreKriterierTypeListe(new Saksnummer("42"))).isEmpty();
     }
 
     @Test
@@ -96,7 +95,7 @@ class OppgaveEgenskapHåndtererTest {
         when(oppgaveEgenskapFinner.getAndreKriterier()).thenReturn(List.of(UTLANDSSAK));
         egenskapHandler.håndterOppgaveEgenskaper(oppgave, oppgaveEgenskapFinner);
 
-        Assertions.assertThat(hentAktiveKriterierPåOppgave(new Saksnummer("42"))).containsExactly(UTLANDSSAK);
+        Assertions.assertThat(hentAndreKriterierTypeListe(new Saksnummer("42"))).containsExactly(UTLANDSSAK);
     }
 
     @Test
@@ -110,19 +109,18 @@ class OppgaveEgenskapHåndtererTest {
         when(oppgaveEgenskapFinner.getAndreKriterier()).thenReturn(emptyList());
         egenskapHandler.håndterOppgaveEgenskaper(oppgave, oppgaveEgenskapFinner);
 
-        Assertions.assertThat(hentAktiveKriterierPåOppgave(new Saksnummer("42"))).isEmpty();
+        Assertions.assertThat(hentAndreKriterierTypeListe(new Saksnummer("42"))).isEmpty();
     }
 
     private static AndreKriterierType[] kriterieArrayOf(AndreKriterierType... kriterier) {
         return kriterier; // ble hakket penere enn å ha AndreKriterierType[] overalt.
     }
 
-    private List<AndreKriterierType> hentAktiveKriterierPåOppgave(Saksnummer saksnummer) {
+    private List<AndreKriterierType> hentAndreKriterierTypeListe(Saksnummer saksnummer) {
         return oppgaveRepository.hentOppgaveEgenskaper(oppgaveId(saksnummer))
             .stream()
-            .filter(OppgaveEgenskap::getAktiv)
             .map(OppgaveEgenskap::getAndreKriterierType)
-            .collect(Collectors.toList());
+            .toList();
     }
 
     private Long oppgaveId(Saksnummer saksnummer) {

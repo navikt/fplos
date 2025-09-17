@@ -11,7 +11,6 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 import no.nav.foreldrepenger.los.felles.BaseEntitet;
-import no.nav.vedtak.felles.jpa.converters.BooleanToStringConverter;
 
 @Entity(name = "OppgaveEgenskap")
 @Table(name = "OPPGAVE_EGENSKAP")
@@ -35,10 +34,6 @@ public class OppgaveEgenskap extends BaseEntitet {
     @Column(name = "SISTE_SAKSBEHANDLER_FOR_TOTR")
     private String sisteSaksbehandlerForTotrinn;
 
-    @Convert(converter = BooleanToStringConverter.class)
-    @Column(name = "AKTIV")
-    private Boolean aktiv = Boolean.TRUE;
-
     public OppgaveEgenskap() {
         //CDI
     }
@@ -49,10 +44,6 @@ public class OppgaveEgenskap extends BaseEntitet {
 
     public AndreKriterierType getAndreKriterierType() {
         return andreKriterierType;
-    }
-
-    public Boolean getAktiv() {
-        return aktiv;
     }
 
     public static Builder builder() {

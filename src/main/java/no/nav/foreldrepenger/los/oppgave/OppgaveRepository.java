@@ -177,7 +177,6 @@ public class OppgaveRepository {
             AND NOT EXISTS (
                 select oetilbesl.oppgave from OppgaveEgenskap oetilbesl
                 where oetilbesl.oppgave = o
-                    AND oetilbesl.aktiv = true
                     AND oetilbesl.andreKriterierType = :tilbeslutter
                     AND upper(oetilbesl.sisteSaksbehandlerForTotrinn) = upper(:uid)
             )""";
