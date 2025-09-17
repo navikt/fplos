@@ -40,7 +40,7 @@ public class OppgaveEgenskapHåndterer {
 
         // slett uaktuelle eksisterende
         eksisterendeOppgaveEgenskaper.stream()
-            .filter(akt -> !andreKriterier.contains(akt.getAndreKriterierType()) || !akt.getAktiv())
+            .filter(akt -> !andreKriterier.contains(akt.getAndreKriterierType()))
             .forEach(repository::slett);
 
         var eksisterendeTyper = eksisterendeOppgaveEgenskaper.stream().map(OppgaveEgenskap::getAndreKriterierType).collect(Collectors.toSet());
