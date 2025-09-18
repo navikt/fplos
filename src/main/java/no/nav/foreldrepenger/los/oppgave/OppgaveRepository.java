@@ -14,9 +14,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.hibernate.jpa.HibernateHints;
 import org.slf4j.Logger;
@@ -92,17 +90,28 @@ public class OppgaveRepository {
     }
 
     private static String andreKriterierSubquery(Oppgavespørring queryDto) {
-        final UnaryOperator<String> template = kode -> String.format(
-            "( SELECT 1 FROM OppgaveEgenskap oe WHERE o = oe.oppgave AND oe.andreKriterierType = '%s') ", kode);
-        var inkluderKriterier = queryDto.getInkluderAndreKriterierTyper()
-            .stream()
-            .map(AndreKriterierType::getKode)
-            .map(k -> "AND EXISTS " + template.apply(k));
-        var ekskluderKriterier = queryDto.getEkskluderAndreKriterierTyper()
-            .stream()
-            .map(AndreKriterierType::getKode)
-            .map(k -> "AND NOT EXISTS " + template.apply(k));
-        return Stream.concat(inkluderKriterier, ekskluderKriterier).collect(Collectors.joining("\n"));
+        var inkluderAktKode = queryDto.getInkluderAndreKriterierTyper().stream().map(AndreKriterierType::getKode).toList();
+        var ekskluderAktKode = queryDto.getEkskluderAndreKriterierTyper().stream().map(AndreKriterierType::getKode).toList();
+
+        var sb = new StringBuilder();
+        if (!inkluderAktKode.isEmpty()) {
+            var inList = inkluderAktKode.stream().map(k -> "'" + k + "'").collect(Collectors.joining(", "));
+            sb.append("AND EXISTS (")
+                .append("SELECT 1 FROM OppgaveEgenskap oe ")
+                .append("WHERE oe.oppgave = o AND oe.andreKriterierType IN (").append(inList).append(") ")
+                .append("GROUP BY oe.oppgave ")
+                .append("HAVING COUNT(DISTINCT oe.andreKriterierType) = ").append(inkluderAktKode.size())
+                .append(") ");
+        }
+        if (!ekskluderAktKode.isEmpty()) {
+            var notInList = ekskluderAktKode.stream().map(k -> "'" + k + "'").collect(Collectors.joining(", "));
+            sb.append("AND NOT EXISTS ( ")
+                .append("SELECT 1 FROM OppgaveEgenskap oe ")
+                .append("WHERE oe.oppgave = o AND oe.andreKriterierType IN (").append(notInList).append(") ")
+                .append(") ");
+        }
+
+        return sb.toString();
     }
 
     private static String filtrerBehandlingType(Oppgavespørring queryDto) {
