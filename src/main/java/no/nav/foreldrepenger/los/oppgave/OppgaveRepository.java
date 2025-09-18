@@ -14,9 +14,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.hibernate.jpa.HibernateHints;
 import org.slf4j.Logger;
@@ -92,17 +90,28 @@ public class OppgaveRepository {
     }
 
     private static String andreKriterierSubquery(Oppgavespørring queryDto) {
-        final UnaryOperator<String> template = kode -> String.format(
-            "( SELECT 1 FROM OppgaveEgenskap oe WHERE o = oe.oppgave AND oe.andreKriterierType = '%s') ", kode);
-        var inkluderKriterier = queryDto.getInkluderAndreKriterierTyper()
-            .stream()
-            .map(AndreKriterierType::getKode)
-            .map(k -> "AND EXISTS " + template.apply(k));
-        var ekskluderKriterier = queryDto.getEkskluderAndreKriterierTyper()
-            .stream()
-            .map(AndreKriterierType::getKode)
-            .map(k -> "AND NOT EXISTS " + template.apply(k));
-        return Stream.concat(inkluderKriterier, ekskluderKriterier).collect(Collectors.joining("\n"));
+        var inkluderAktKode = queryDto.getInkluderAndreKriterierTyper().stream().map(AndreKriterierType::getKode).toList();
+        var ekskluderAktKode = queryDto.getEkskluderAndreKriterierTyper().stream().map(AndreKriterierType::getKode).toList();
+
+        var sb = new StringBuilder();
+        if (!inkluderAktKode.isEmpty()) {
+            var inList = inkluderAktKode.stream().map(k -> "'" + k + "'").collect(Collectors.joining(", "));
+            sb.append("AND EXISTS (")
+                .append("SELECT 1 FROM OppgaveEgenskap oe ")
+                .append("WHERE oe.oppgave = o AND oe.andreKriterierType IN (").append(inList).append(") ")
+                .append("GROUP BY oe.oppgave ")
+                .append("HAVING COUNT(1) = ").append(inkluderAktKode.size())
+                .append(") ");
+        }
+        if (!ekskluderAktKode.isEmpty()) {
+            var notInList = ekskluderAktKode.stream().map(k -> "'" + k + "'").collect(Collectors.joining(", "));
+            sb.append("AND NOT EXISTS ( ")
+                .append("SELECT 1 FROM OppgaveEgenskap oe ")
+                .append("WHERE oe.oppgave = o AND oe.andreKriterierType IN (").append(notInList).append(") ")
+                .append(") ");
+        }
+
+        return sb.toString();
     }
 
     private static String filtrerBehandlingType(Oppgavespørring queryDto) {
@@ -116,14 +125,14 @@ public class OppgaveRepository {
     private <T> TypedQuery<T> lagOppgavespørring(String selection, Class<T> oppgaveClass, Oppgavespørring queryDto) {
         var query = entityManager.createQuery(selection + //$NON-NLS-1$ // NOSONAR
             "INNER JOIN avdeling a ON a.avdelingEnhet = o.behandlendeEnhet WHERE 1=1 " + filtrerBehandlingType(queryDto) + filtrerYtelseType(queryDto)
-            + andreKriterierSubquery(queryDto) + reserverteSubquery(queryDto) + tilBeslutter(queryDto) + avgrenseTilOppgaveId(queryDto)
+            + andreKriterierSubquery(queryDto) + reserverteSubquery(queryDto) + tilBeslutter(queryDto)
             + "AND a.id = :enhet " + "AND o.aktiv = true " + sortering(queryDto), oppgaveClass);
 
         query.setParameter("enhet", queryDto.getEnhetId());
         if (!queryDto.ignorerReserversjoner()) {
             query.setParameter("nå", LocalDateTime.now());
         }
-        if (!queryDto.getForAvdelingsleder()) {
+        if (!queryDto.getForAvdelingsleder() && queryDto.getInkluderAndreKriterierTyper().contains(AndreKriterierType.TIL_BESLUTTER)) {
             query.setParameter("tilbeslutter", AndreKriterierType.TIL_BESLUTTER).setParameter("uid", BrukerIdent.brukerIdent());
         }
         if (!queryDto.getBehandlingTyper().isEmpty()) {
@@ -165,20 +174,20 @@ public class OppgaveRepository {
     }
 
     private static String reserverteSubquery(Oppgavespørring queryDto) {
-        return queryDto.ignorerReserversjoner() ? "" : "AND NOT EXISTS (select r from Reservasjon r where r.oppgave = o and r.reservertTil > :nå) ";
-    }
-
-    private static String avgrenseTilOppgaveId(Oppgavespørring queryDto) {
-        return queryDto.getAvgrenseTilOppgaveId().map(oppgaveId -> String.format("AND o.id = %s ", oppgaveId)).orElse("");
+        if (queryDto.ignorerReserversjoner()) {
+            return "";
+        }
+        return "AND NOT EXISTS (select r from Reservasjon r where r.oppgave = o and r.reservertTil > cast(:nå as timestamp(3))) ";
     }
 
     private static String tilBeslutter(Oppgavespørring dto) {
-        return dto.getForAvdelingsleder() ? "" : """
+        var tilBeslutterKø = dto.getInkluderAndreKriterierTyper().contains(AndreKriterierType.TIL_BESLUTTER);
+        return dto.getForAvdelingsleder() || !tilBeslutterKø ? "" : """
             AND NOT EXISTS (
                 select oetilbesl.oppgave from OppgaveEgenskap oetilbesl
                 where oetilbesl.oppgave = o
                     AND oetilbesl.andreKriterierType = :tilbeslutter
-                    AND upper(oetilbesl.sisteSaksbehandlerForTotrinn) = upper(:uid)
+                    AND upper(oetilbesl.sisteSaksbehandlerForTotrinn) = :uid
             )""";
     }
 
@@ -309,13 +318,6 @@ public class OppgaveRepository {
 
     public <U extends BaseEntitet> void refresh(U entitet) {
         entityManager.refresh(entitet);
-    }
-
-    Oppgave opprettOppgave(Oppgave oppgave) {
-        // todo: brukes bare i test, vurder om nødvendig
-        lagre(oppgave);
-        entityManager.refresh(oppgave);
-        return oppgave;
     }
 
     public boolean sjekkOmOppgaverFortsattErTilgjengelige(List<Long> oppgaveIder) {
