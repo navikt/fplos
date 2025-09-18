@@ -174,7 +174,10 @@ public class OppgaveRepository {
     }
 
     private static String reserverteSubquery(Oppgavespørring queryDto) {
-        return queryDto.ignorerReserversjoner() ? "" : "AND NOT EXISTS (select r from Reservasjon r where r.oppgave = o and r.reservertTil > :nå) ";
+        if (queryDto.ignorerReserversjoner()) {
+            return "";
+        }
+        return "AND NOT EXISTS (select r from Reservasjon r where r.oppgave = o and r.reservertTil > cast(:nå as timestamp(3))) ";
     }
 
     private static String tilBeslutter(Oppgavespørring dto) {
