@@ -123,7 +123,7 @@ public class OppgaveRepository {
         if (!queryDto.ignorerReserversjoner()) {
             query.setParameter("nå", LocalDateTime.now());
         }
-        if (!queryDto.getForAvdelingsleder()) {
+        if (!queryDto.getForAvdelingsleder() && queryDto.getInkluderAndreKriterierTyper().contains(AndreKriterierType.TIL_BESLUTTER)) {
             query.setParameter("tilbeslutter", AndreKriterierType.TIL_BESLUTTER).setParameter("uid", BrukerIdent.brukerIdent());
         }
         if (!queryDto.getBehandlingTyper().isEmpty()) {
@@ -173,7 +173,8 @@ public class OppgaveRepository {
     }
 
     private static String tilBeslutter(Oppgavespørring dto) {
-        return dto.getForAvdelingsleder() ? "" : """
+        var tilBeslutterKø = dto.getInkluderAndreKriterierTyper().contains(AndreKriterierType.TIL_BESLUTTER);
+        return dto.getForAvdelingsleder() || !tilBeslutterKø ? "" : """
             AND NOT EXISTS (
                 select oetilbesl.oppgave from OppgaveEgenskap oetilbesl
                 where oetilbesl.oppgave = o
