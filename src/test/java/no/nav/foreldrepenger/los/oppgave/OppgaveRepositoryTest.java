@@ -288,9 +288,9 @@ class OppgaveRepositoryTest {
         var oppgave = lagOppgave(AVDELING_DRAMMEN_ENHET);
         var AVDELING_ANNET_ENHET = "4000";
         var oppgaveKommerPåNytt = lagOppgave(AVDELING_ANNET_ENHET);
-        oppgaveRepository.opprettOppgave(oppgave);
+        persistFlush(oppgave);
         assertThat(DBTestUtil.hentAlle(entityManager, Oppgave.class)).hasSize(1);
-        oppgaveRepository.opprettOppgave(oppgaveKommerPåNytt);
+        persistFlush(oppgaveKommerPåNytt);
         assertThat(DBTestUtil.hentAlle(entityManager, Oppgave.class)).hasSize(2);
     }
 
@@ -298,19 +298,19 @@ class OppgaveRepositoryTest {
     void lagreOppgaveHvisAvsluttetFraFør() {
         var oppgave = lagOppgave(AVDELING_DRAMMEN_ENHET);
         var oppgaveKommerPåNytt = lagOppgave(AVDELING_DRAMMEN_ENHET);
-        oppgaveRepository.opprettOppgave(oppgave);
+        persistFlush(oppgave);
         assertThat(DBTestUtil.hentAlle(entityManager, Oppgave.class)).hasSize(1);
         oppgaveTjeneste.avsluttOppgaveUtenEventLoggAvsluttTilknyttetReservasjon(oppgave.getBehandlingId());
-        oppgaveRepository.opprettOppgave(oppgaveKommerPåNytt);
+        persistFlush(oppgaveKommerPåNytt);
         assertThat(DBTestUtil.hentAlle(entityManager, Oppgave.class)).hasSize(2);
     }
 
     @Test
     void skalKasteExceptionVedLukkingAvOppgaveDerDetFinnesFlereAktiveOppgaver() {
         var første = lagOppgave(AVDELING_DRAMMEN_ENHET);
-        oppgaveRepository.opprettOppgave(første);
+        persistFlush(første);
         var siste = lagOppgave(AVDELING_DRAMMEN_ENHET);
-        oppgaveRepository.opprettOppgave(siste);
+        persistFlush(siste);
         assertThat(DBTestUtil.hentAlle(entityManager, Oppgave.class)).hasSize(2);
         assertThat(første()).isEqualTo(første);
         assertThat(siste().getAktiv()).isTrue();
@@ -436,5 +436,10 @@ class OppgaveRepositoryTest {
             .medAktiv(true)
             .medAktorId(AktørId.dummy())
             .medBehandlendeEnhet(AVDELING_DRAMMEN_ENHET);
+    }
+
+    private void persistFlush(Oppgave oppgave) {
+        entityManager.persist(oppgave);
+        entityManager.flush();
     }
 }

@@ -308,13 +308,6 @@ public class OppgaveRepository {
         entityManager.refresh(entitet);
     }
 
-    Oppgave opprettOppgave(Oppgave oppgave) {
-        // todo: brukes bare i test, vurder om nødvendig
-        lagre(oppgave);
-        entityManager.refresh(oppgave);
-        return oppgave;
-    }
-
     public boolean sjekkOmOppgaverFortsattErTilgjengelige(List<Long> oppgaveIder) {
         var fortsattTilgjengelige = entityManager.createQuery("""
             select count(o.id) from Oppgave o
