@@ -100,7 +100,7 @@ public class OppgaveRepository {
                 .append("SELECT 1 FROM OppgaveEgenskap oe ")
                 .append("WHERE oe.oppgave = o AND oe.andreKriterierType IN (").append(inList).append(") ")
                 .append("GROUP BY oe.oppgave ")
-                .append("HAVING COUNT(DISTINCT oe.andreKriterierType) = ").append(inkluderAktKode.size())
+                .append("HAVING COUNT(1) = ").append(inkluderAktKode.size())
                 .append(") ");
         }
         if (!ekskluderAktKode.isEmpty()) {
