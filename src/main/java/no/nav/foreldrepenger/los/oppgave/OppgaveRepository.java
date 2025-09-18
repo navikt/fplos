@@ -116,7 +116,7 @@ public class OppgaveRepository {
     private <T> TypedQuery<T> lagOppgavespørring(String selection, Class<T> oppgaveClass, Oppgavespørring queryDto) {
         var query = entityManager.createQuery(selection + //$NON-NLS-1$ // NOSONAR
             "INNER JOIN avdeling a ON a.avdelingEnhet = o.behandlendeEnhet WHERE 1=1 " + filtrerBehandlingType(queryDto) + filtrerYtelseType(queryDto)
-            + andreKriterierSubquery(queryDto) + reserverteSubquery(queryDto) + tilBeslutter(queryDto) + avgrenseTilOppgaveId(queryDto)
+            + andreKriterierSubquery(queryDto) + reserverteSubquery(queryDto) + tilBeslutter(queryDto)
             + "AND a.id = :enhet " + "AND o.aktiv = true " + sortering(queryDto), oppgaveClass);
 
         query.setParameter("enhet", queryDto.getEnhetId());
@@ -166,10 +166,6 @@ public class OppgaveRepository {
 
     private static String reserverteSubquery(Oppgavespørring queryDto) {
         return queryDto.ignorerReserversjoner() ? "" : "AND NOT EXISTS (select r from Reservasjon r where r.oppgave = o and r.reservertTil > :nå) ";
-    }
-
-    private static String avgrenseTilOppgaveId(Oppgavespørring queryDto) {
-        return queryDto.getAvgrenseTilOppgaveId().map(oppgaveId -> String.format("AND o.id = %s ", oppgaveId)).orElse("");
     }
 
     private static String tilBeslutter(Oppgavespørring dto) {

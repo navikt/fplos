@@ -24,7 +24,6 @@ public class Oppgavespørring {
     private final Long filtrerTil;
     private boolean forAvdelingsleder;
     private boolean ignorerReserversjoner;
-    private Long avgrenseTilOppgaveId;
     private Long maxAntallOppgaver;
 
     public Oppgavespørring(OppgaveFiltrering oppgaveFiltrering) {
@@ -75,10 +74,6 @@ public class Oppgavespørring {
 
     public void setForAvdelingsleder(boolean forAvdelingsleder) {
         this.forAvdelingsleder = forAvdelingsleder;
-    }
-
-    public void setAvgrensTilOppgaveId(Long oppgaveId) {
-        this.avgrenseTilOppgaveId = oppgaveId;
     }
 
     public void setMaksAntall(int maksAntall) {
@@ -133,10 +128,6 @@ public class Oppgavespørring {
         return filtrerTil;
     }
 
-    public Optional<Long> getAvgrenseTilOppgaveId() {
-        return Optional.ofNullable(avgrenseTilOppgaveId);
-    }
-
     public Optional<Long> getMaxAntallOppgaver() {
         return Optional.ofNullable(maxAntallOppgaver);
     }
@@ -163,6 +154,6 @@ public class Oppgavespørring {
             + ytelseTyper + ", inkluderAndreKriterierTyper=" + inkluderAndreKriterierTyper + ", ekskluderAndreKriterierTyper="
             + ekskluderAndreKriterierTyper + ", erDynamiskPeriode=" + erDynamiskPeriode + ", filtrerFomDato=" + filtrerFomDato + ", filtrerTomDato="
             + filtrerTomDato + ", filtrerFra=" + filtrerFra + ", filtrerTil=" + filtrerTil + ", forAvdelingsleder=" + forAvdelingsleder
-            + ", avgrenseTilOppgaveId=" + avgrenseTilOppgaveId + '}';
+            + ", avgrenseTilOppgaveId=" + '}';
     }
 }
