@@ -11,10 +11,10 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import org.hibernate.jpa.HibernateHints;
 import org.slf4j.Logger;
@@ -72,8 +72,8 @@ public class OppgaveRepository {
         return oppgaveTypedQuery.getSingleResult().intValue();
     }
 
-    public int hentAntallOppgaverForAvdeling(Long avdelingsId) {
-        var oppgavespørring = new Oppgavespørring(avdelingsId, KøSortering.BEHANDLINGSFRIST, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(),
+    public int hentAntallOppgaverForAvdeling(String enhetsNummer) {
+        var oppgavespørring = new Oppgavespørring(enhetsNummer, KøSortering.BEHANDLINGSFRIST, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(),
             new ArrayList<>(), false, null, null, null, null);
         var oppgaveTypedQuery = lagOppgavespørring(COUNT_FRA_OPPGAVE, Long.class, oppgavespørring);
         return oppgaveTypedQuery.getSingleResult().intValue();
@@ -89,110 +89,105 @@ public class OppgaveRepository {
         return query.getResultList();
     }
 
-    private static String andreKriterierSubquery(Oppgavespørring queryDto) {
-        var inkluderAktKode = queryDto.getInkluderAndreKriterierTyper().stream().map(AndreKriterierType::getKode).toList();
-        var ekskluderAktKode = queryDto.getEkskluderAndreKriterierTyper().stream().map(AndreKriterierType::getKode).toList();
+    private static String andreKriterierSubquery(Oppgavespørring queryDto, HashMap<String, Object> parameters) {
+        var inkluderAkt = queryDto.getInkluderAndreKriterierTyper();
+        var ekskluderAkt = queryDto.getEkskluderAndreKriterierTyper();
 
         var sb = new StringBuilder();
-        if (!inkluderAktKode.isEmpty()) {
-            var inList = inkluderAktKode.stream().map(k -> "'" + k + "'").collect(Collectors.joining(", "));
-            sb.append("AND EXISTS (")
-                .append("SELECT 1 FROM OppgaveEgenskap oe ")
-                .append("WHERE oe.oppgave = o AND oe.andreKriterierType IN (").append(inList).append(") ")
-                .append("GROUP BY oe.oppgave ")
-                .append("HAVING COUNT(1) = ").append(inkluderAktKode.size())
-                .append(") ");
+        if (!inkluderAkt.isEmpty()) {
+            parameters.put("inkluderAktKoder", inkluderAkt);
+            parameters.put("inkluderAktAntall", inkluderAkt.size());
+            sb.append(" AND :inkluderAktAntall = (")
+                .append("   SELECT COUNT(oe.andreKriterierType) ")
+                .append("   FROM OppgaveEgenskap oe ")
+                .append("   WHERE oe.oppgave = o ")
+                .append("     AND oe.andreKriterierType IN (:inkluderAktKoder)")
+                .append(" ) ");
         }
-        if (!ekskluderAktKode.isEmpty()) {
-            var notInList = ekskluderAktKode.stream().map(k -> "'" + k + "'").collect(Collectors.joining(", "));
+        if (!ekskluderAkt.isEmpty()) {
+            parameters.put("ekskluderAktKoder", ekskluderAkt);
             sb.append("AND NOT EXISTS ( ")
                 .append("SELECT 1 FROM OppgaveEgenskap oe ")
-                .append("WHERE oe.oppgave = o AND oe.andreKriterierType IN (").append(notInList).append(") ")
+                .append("WHERE oe.oppgave = o AND oe.andreKriterierType IN (:ekskluderAktKoder)")
                 .append(") ");
         }
 
         return sb.toString();
     }
 
-    private static String filtrerBehandlingType(Oppgavespørring queryDto) {
-        return queryDto.getBehandlingTyper().isEmpty() ? "" : "AND o.behandlingType in :behtyper ";
+    private static String filtrerBehandlingType(Oppgavespørring queryDto, HashMap<String, Object> parameters) {
+        if (queryDto.getBehandlingTyper().isEmpty()) {
+            return "";
+        }
+        parameters.put("behtyper", queryDto.getBehandlingTyper());
+        return "AND o.behandlingType in :behtyper ";
     }
 
-    private static String filtrerYtelseType(Oppgavespørring queryDto) {
-        return queryDto.getYtelseTyper().isEmpty() ? "" : "AND o.fagsakYtelseType in :fagsakYtelseType ";
+    private static String filtrerYtelseType(Oppgavespørring queryDto, HashMap<String, Object> parameters) {
+        if (queryDto.getYtelseTyper().isEmpty()) {
+            return "";
+        }
+        parameters.put("fagsakYtelseType", queryDto.getYtelseTyper());
+        return "AND o.fagsakYtelseType in :fagsakYtelseType ";
     }
 
-    private <T> TypedQuery<T> lagOppgavespørring(String selection, Class<T> oppgaveClass, Oppgavespørring queryDto) {
-        var query = entityManager.createQuery(selection + //$NON-NLS-1$ // NOSONAR
-            "INNER JOIN avdeling a ON a.avdelingEnhet = o.behandlendeEnhet WHERE 1=1 " + filtrerBehandlingType(queryDto) + filtrerYtelseType(queryDto)
-            + andreKriterierSubquery(queryDto) + reserverteSubquery(queryDto) + tilBeslutter(queryDto)
-            + "AND a.id = :enhet " + "AND o.aktiv = true " + sortering(queryDto), oppgaveClass);
+    private <T> TypedQuery<T> lagOppgavespørring(String selection, Class<T> resultClass, Oppgavespørring queryDto) {
+        var parameters = new HashMap<String, Object>();
+        parameters.put("enhetsnummer", queryDto.getEnhetsnummer());
+        var sb = new StringBuilder();
+        sb.append(selection);
+        sb.append(" WHERE o.behandlendeEnhet = :enhetsnummer ");
+        sb.append(filtrerBehandlingType(queryDto, parameters));
+        sb.append(filtrerYtelseType(queryDto, parameters));
+        sb.append(andreKriterierSubquery(queryDto, parameters));
+        sb.append(reserverteSubquery(parameters));
+        sb.append(tilBeslutter(queryDto, parameters));
+        sb.append(" AND o.aktiv = true ");
+        sb.append(sortering(selection, queryDto, parameters));
 
-        query.setParameter("enhet", queryDto.getEnhetId());
-        if (!queryDto.ignorerReserversjoner()) {
-            query.setParameter("nå", LocalDateTime.now());
-        }
-        if (!queryDto.getForAvdelingsleder() && queryDto.getInkluderAndreKriterierTyper().contains(AndreKriterierType.TIL_BESLUTTER)) {
-            query.setParameter("tilbeslutter", AndreKriterierType.TIL_BESLUTTER).setParameter("uid", BrukerIdent.brukerIdent());
-        }
-        if (!queryDto.getBehandlingTyper().isEmpty()) {
-            query.setParameter("behtyper", queryDto.getBehandlingTyper());
-        }
-        if (!queryDto.getYtelseTyper().isEmpty()) {
-            query.setParameter("fagsakYtelseType", queryDto.getYtelseTyper());
-        }
-
-        if (FT_HELTALL.equalsIgnoreCase(queryDto.getSortering().getFelttype())) {
-            if (queryDto.getFiltrerFra() != null) {
-                query.setParameter("filterFra", BigDecimal.valueOf(queryDto.getFiltrerFra()));
-            }
-            if (queryDto.getFiltrerTil() != null) {
-                query.setParameter("filterTil", BigDecimal.valueOf(queryDto.getFiltrerTil()));
-            }
-        } else if (FT_DATO.equalsIgnoreCase(queryDto.getSortering().getFelttype())) {
-            if (queryDto.getFiltrerFra() != null) {
-                query.setParameter("filterFomDager", KøSortering.FØRSTE_STØNADSDAG.equals(queryDto.getSortering()) ? LocalDate.now()
-                    .plusDays(queryDto.getFiltrerFra()) : LocalDateTime.now().plusDays(queryDto.getFiltrerFra()).with(LocalTime.MIN));
-            }
-            if (queryDto.getFiltrerTil() != null) {
-                query.setParameter("filterTomDager", KøSortering.FØRSTE_STØNADSDAG.equals(queryDto.getSortering()) ? LocalDate.now()
-                    .plusDays(queryDto.getFiltrerTil()) : LocalDateTime.now().plusDays(queryDto.getFiltrerTil()).with(LocalTime.MAX));
-            }
-            if (queryDto.getFiltrerFomDato() != null) {
-                query.setParameter("filterFomDato",
-                    KøSortering.FØRSTE_STØNADSDAG.equals(queryDto.getSortering()) ? queryDto.getFiltrerFomDato() : queryDto.getFiltrerFomDato()
-                        .atTime(LocalTime.MIN));
-            }
-            if (queryDto.getFiltrerTomDato() != null) {
-                query.setParameter("filterTomDato",
-                    KøSortering.FØRSTE_STØNADSDAG.equals(queryDto.getSortering()) ? queryDto.getFiltrerTomDato() : queryDto.getFiltrerTomDato()
-                        .atTime(LocalTime.MAX));
-            }
-        }
+        //var query = entityManager.createQuery(selection + //$NON-NLS-1$ // NOSONAR
+       //     " WHERE o.behandlendeEnhet = :enhetsnummer " + filtrerBehandlingType(queryDto) + filtrerYtelseType(queryDto)
+       //     + andreKriterierSubquery(queryDto) + reserverteSubquery(queryDto) + tilBeslutter(queryDto)
+       //     + "AND o.aktiv = true " + sortering(selection, queryDto), oppgaveClass);
+        var query = entityManager.createQuery(sb.toString(), resultClass);
+        parameters.forEach(query::setParameter);
 
         return query;
     }
 
-    private static String reserverteSubquery(Oppgavespørring queryDto) {
-        if (queryDto.ignorerReserversjoner()) {
+    private String sortering(String selection, Oppgavespørring oppgavespørring, HashMap<String, Object> parameters) {
+        if (selection.equals(COUNT_FRA_OPPGAVE) || selection.equals(COUNT_FRA_TILBAKEKREVING_OPPGAVE)) {
             return "";
         }
-        return "AND NOT EXISTS (select r from Reservasjon r where r.oppgave = o and r.reservertTil > cast(:nå as timestamp(3))) ";
-    }
-
-    private static String tilBeslutter(Oppgavespørring dto) {
-        var tilBeslutterKø = dto.getInkluderAndreKriterierTyper().contains(AndreKriterierType.TIL_BESLUTTER);
-        return dto.getForAvdelingsleder() || !tilBeslutterKø ? "" : """
-            AND NOT EXISTS (
-                select oetilbesl.oppgave from OppgaveEgenskap oetilbesl
-                where oetilbesl.oppgave = o
-                    AND oetilbesl.andreKriterierType = :tilbeslutter
-                    AND upper(oetilbesl.sisteSaksbehandlerForTotrinn) = :uid
-            )""";
-    }
-
-    private String sortering(Oppgavespørring oppgavespørring) {
         var sortering = oppgavespørring.getSortering();
+        if (FT_HELTALL.equalsIgnoreCase(oppgavespørring.getSortering().getFelttype())) {
+            if (oppgavespørring.getFiltrerFra() != null) {
+                parameters.put("filterFra", BigDecimal.valueOf(oppgavespørring.getFiltrerFra()));
+            }
+            if (oppgavespørring.getFiltrerTil() != null) {
+                parameters.put("filterTil", BigDecimal.valueOf(oppgavespørring.getFiltrerTil()));
+            }
+        } else if (FT_DATO.equalsIgnoreCase(oppgavespørring.getSortering().getFelttype())) {
+            if (oppgavespørring.getFiltrerFra() != null) {
+                parameters.put("filterFomDager", KøSortering.FØRSTE_STØNADSDAG.equals(oppgavespørring.getSortering()) ? LocalDate.now()
+                    .plusDays(oppgavespørring.getFiltrerFra()) : LocalDateTime.now().plusDays(oppgavespørring.getFiltrerFra()).with(LocalTime.MIN));
+            }
+            if (oppgavespørring.getFiltrerTil() != null) {
+                parameters.put("filterTomDager", KøSortering.FØRSTE_STØNADSDAG.equals(oppgavespørring.getSortering()) ? LocalDate.now()
+                    .plusDays(oppgavespørring.getFiltrerTil()) : LocalDateTime.now().plusDays(oppgavespørring.getFiltrerTil()).with(LocalTime.MAX));
+            }
+            if (oppgavespørring.getFiltrerFomDato() != null) {
+                parameters.put("filterFomDato", KøSortering.FØRSTE_STØNADSDAG.equals(
+                    oppgavespørring.getSortering()) ? oppgavespørring.getFiltrerFomDato() : oppgavespørring.getFiltrerFomDato()
+                    .atTime(LocalTime.MIN));
+            }
+            if (oppgavespørring.getFiltrerTomDato() != null) {
+                parameters.put("filterTomDato", KøSortering.FØRSTE_STØNADSDAG.equals(
+                    oppgavespørring.getSortering()) ? oppgavespørring.getFiltrerTomDato() : oppgavespørring.getFiltrerTomDato()
+                    .atTime(LocalTime.MAX));
+            }
+        }
+
         if (KøSortering.BEHANDLINGSFRIST.equals(sortering)) {
             return oppgavespørring.isErDynamiskPeriode() ? filtrerDynamisk(BEHANDLINGSFRIST, oppgavespørring.getFiltrerFra(),
                 oppgavespørring.getFiltrerTil()) : filtrerStatisk(BEHANDLINGSFRIST, oppgavespørring.getFiltrerFomDato(),
@@ -217,6 +212,27 @@ public class OppgaveRepository {
                 oppgavespørring.getFiltrerTomDato());
         }
         return SORTERING + BEHANDLINGOPPRETTET;
+    }
+
+    private static String reserverteSubquery(HashMap<String, Object> parameters) {
+        parameters.put("nå", LocalDateTime.now());
+        return "AND NOT EXISTS (select r from Reservasjon r where r.oppgave = o and r.reservertTil > :nå) ";
+    }
+
+    private static String tilBeslutter(Oppgavespørring dto, HashMap<String, Object> parameters) {
+        var tilBeslutterKø = dto.getInkluderAndreKriterierTyper().contains(AndreKriterierType.TIL_BESLUTTER);
+        if (dto.getForAvdelingsleder() || !tilBeslutterKø) {
+            return "";
+        }
+        parameters.put("tilbeslutter", AndreKriterierType.TIL_BESLUTTER);
+        parameters.put("uid", BrukerIdent.brukerIdent());
+        return """
+            AND NOT EXISTS (
+                select oetilbesl.oppgave from OppgaveEgenskap oetilbesl
+                where oetilbesl.oppgave = o
+                    AND oetilbesl.andreKriterierType = :tilbeslutter
+                    AND upper(oetilbesl.sisteSaksbehandlerForTotrinn) = :uid
+            )""";
     }
 
     private String filtrerNumerisk(String sortering, Long fra, Long til) {

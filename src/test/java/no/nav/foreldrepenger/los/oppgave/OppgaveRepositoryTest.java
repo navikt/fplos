@@ -66,7 +66,7 @@ class OppgaveRepositoryTest {
     }
 
     private Oppgavespørring oppgaverForDrammenSpørring() {
-        return new Oppgavespørring(avdelingIdForDrammen(), KøSortering.BEHANDLINGSFRIST, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), false,
+        return new Oppgavespørring(AVDELING_DRAMMEN_ENHET, KøSortering.BEHANDLINGSFRIST, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), false,
             null, null, null, null);
     }
 
@@ -109,7 +109,7 @@ class OppgaveRepositoryTest {
     @Test
     void testOppgaveSpørringMedEgenskaperfiltrering() {
         var saksnummerHit = setupOppgaveMedEgenskaper(AndreKriterierType.UTLANDSSAK, AndreKriterierType.UTBETALING_TIL_BRUKER);
-        var oppgaveQuery = new Oppgavespørring(avdelingIdForDrammen(), BEHANDLINGSFRIST, List.of(), List.of(), List.of(AndreKriterierType.UTLANDSSAK),
+        var oppgaveQuery = new Oppgavespørring(AVDELING_DRAMMEN_ENHET, BEHANDLINGSFRIST, List.of(), List.of(), List.of(AndreKriterierType.UTLANDSSAK),
             // inkluderes
             List.of(AndreKriterierType.VURDER_SYKDOM), // ekskluderes
             false, null, null, null, null);
@@ -121,47 +121,47 @@ class OppgaveRepositoryTest {
     @Test
     void testEkskluderingOgInkluderingAvOppgaver() {
         lagStandardSettMedOppgaver();
-        var oppgaver = oppgaveRepository.hentOppgaver(new Oppgavespørring(avdelingIdForDrammen(), KøSortering.BEHANDLINGSFRIST, new ArrayList<>(), new ArrayList<>(),
+        var oppgaver = oppgaveRepository.hentOppgaver(new Oppgavespørring(AVDELING_DRAMMEN_ENHET, KøSortering.BEHANDLINGSFRIST, new ArrayList<>(), new ArrayList<>(),
             List.of(AndreKriterierType.TIL_BESLUTTER, AndreKriterierType.PAPIRSØKNAD), new ArrayList<>(), false, null, null, null, null));
         assertThat(oppgaver).hasSize(1);
 
         oppgaver = oppgaveRepository.hentOppgaver(
-            new Oppgavespørring(avdelingIdForDrammen(), KøSortering.BEHANDLINGSFRIST, new ArrayList<>(), new ArrayList<>(), List.of(AndreKriterierType.TIL_BESLUTTER),
+            new Oppgavespørring(AVDELING_DRAMMEN_ENHET, KøSortering.BEHANDLINGSFRIST, new ArrayList<>(), new ArrayList<>(), List.of(AndreKriterierType.TIL_BESLUTTER),
                 new ArrayList<>(), false, null, null, null, null));
         assertThat(oppgaver).hasSize(2);
 
         oppgaver = oppgaveRepository.hentOppgaver(
-            new Oppgavespørring(avdelingIdForDrammen(), KøSortering.BEHANDLINGSFRIST, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(),
+            new Oppgavespørring(AVDELING_DRAMMEN_ENHET, KøSortering.BEHANDLINGSFRIST, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(),
                 List.of(AndreKriterierType.TIL_BESLUTTER, AndreKriterierType.PAPIRSØKNAD), // ekskluder andreKriterierType
                 false, null, null, null, null));
         assertThat(oppgaver).hasSize(1);
 
         oppgaver = oppgaveRepository.hentOppgaver(
-            new Oppgavespørring(avdelingIdForDrammen(), KøSortering.BEHANDLINGSFRIST, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(),
+            new Oppgavespørring(AVDELING_DRAMMEN_ENHET, KøSortering.BEHANDLINGSFRIST, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(),
                 List.of(AndreKriterierType.TIL_BESLUTTER),  // ekskluderAndreKriterierType
                 false, null, null, null, null));
         assertThat(oppgaver).hasSize(2);
 
         oppgaver = oppgaveRepository.hentOppgaver(
-            new Oppgavespørring(avdelingIdForDrammen(), KøSortering.BEHANDLINGSFRIST, new ArrayList<>(), new ArrayList<>(), List.of(AndreKriterierType.PAPIRSØKNAD),
+            new Oppgavespørring(AVDELING_DRAMMEN_ENHET, KøSortering.BEHANDLINGSFRIST, new ArrayList<>(), new ArrayList<>(), List.of(AndreKriterierType.PAPIRSØKNAD),
                 List.of(AndreKriterierType.TIL_BESLUTTER), false, null, null, null, null));
         assertThat(oppgaver).hasSize(1);
         var antallOppgaver = oppgaveRepository.hentAntallOppgaver(
-            new Oppgavespørring(avdelingIdForDrammen(), KøSortering.BEHANDLINGSFRIST, new ArrayList<>(), new ArrayList<>(), List.of(AndreKriterierType.PAPIRSØKNAD),
+            new Oppgavespørring(AVDELING_DRAMMEN_ENHET, KøSortering.BEHANDLINGSFRIST, new ArrayList<>(), new ArrayList<>(), List.of(AndreKriterierType.PAPIRSØKNAD),
                 List.of(AndreKriterierType.TIL_BESLUTTER), false, null, null, null, null));
         assertThat(antallOppgaver).isEqualTo(1);
 
-        var antallOppgaverForAvdeling = oppgaveRepository.hentAntallOppgaverForAvdeling(avdelingIdForDrammen());
+        var antallOppgaverForAvdeling = oppgaveRepository.hentAntallOppgaverForAvdeling(AVDELING_DRAMMEN_ENHET);
         assertThat(antallOppgaverForAvdeling).isEqualTo(4);
 
     }
 
     @Test
     void testAntallOppgaverForAvdeling() {
-        var antallOppgaverForAvdeling = oppgaveRepository.hentAntallOppgaverForAvdeling(avdelingIdForDrammen());
+        var antallOppgaverForAvdeling = oppgaveRepository.hentAntallOppgaverForAvdeling(AVDELING_DRAMMEN_ENHET);
         assertThat(antallOppgaverForAvdeling).isZero();
         lagStandardSettMedOppgaver();
-        antallOppgaverForAvdeling = oppgaveRepository.hentAntallOppgaverForAvdeling(avdelingIdForDrammen());
+        antallOppgaverForAvdeling = oppgaveRepository.hentAntallOppgaverForAvdeling(AVDELING_DRAMMEN_ENHET);
         assertThat(antallOppgaverForAvdeling).isEqualTo(4);
     }
 
@@ -169,7 +169,7 @@ class OppgaveRepositoryTest {
     void testFiltreringDynamiskAvOppgaverIntervall() {
         lagStandardSettMedOppgaver();
         var oppgaves = oppgaveRepository.hentOppgaver(
-            new Oppgavespørring(avdelingIdForDrammen(), BEHANDLINGSFRIST, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>(),
+            new Oppgavespørring(AVDELING_DRAMMEN_ENHET, BEHANDLINGSFRIST, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>(),
                 true, null, null, 1L, 10L));
         assertThat(oppgaves).hasSize(2);
     }
@@ -178,7 +178,7 @@ class OppgaveRepositoryTest {
     void testFiltreringDynamiskAvOppgaverBareFomDato() {
         lagStandardSettMedOppgaver();
         var oppgaves = oppgaveRepository.hentOppgaver(
-            new Oppgavespørring(avdelingIdForDrammen(), BEHANDLINGSFRIST, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>(),
+            new Oppgavespørring(AVDELING_DRAMMEN_ENHET, BEHANDLINGSFRIST, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>(),
                 true, null, null, 15L, null));
         assertThat(oppgaves).hasSize(1);
     }
@@ -187,7 +187,7 @@ class OppgaveRepositoryTest {
     void testFiltreringDynamiskAvOppgaverBareTomDato() {
         lagStandardSettMedOppgaver();
         var oppgaves = oppgaveRepository.hentOppgaver(
-            new Oppgavespørring(avdelingIdForDrammen(), BEHANDLINGSFRIST, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>(),
+            new Oppgavespørring(AVDELING_DRAMMEN_ENHET, BEHANDLINGSFRIST, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>(),
                 true, null, null, null, 15L));
         assertThat(oppgaves).hasSize(4);
     }
@@ -326,7 +326,7 @@ class OppgaveRepositoryTest {
         oppgaveRepository.lagre(uaktuellOppgave);
         oppgaveRepository.lagre(aktuellOppgave);
         var filtrerTomDato = LocalDate.now().minusDays(1);
-        var query = new Oppgavespørring(avdelingIdForDrammen(), KøSortering.OPPRETT_BEHANDLING, List.of(BehandlingType.FØRSTEGANGSSØKNAD),
+        var query = new Oppgavespørring(AVDELING_DRAMMEN_ENHET, KøSortering.OPPRETT_BEHANDLING, List.of(BehandlingType.FØRSTEGANGSSØKNAD),
             List.of(FagsakYtelseType.FORELDREPENGER), List.of(), List.of(), false, //erDynamiskPeriode
             null, filtrerTomDato, null, null);
         var oppgaveResultat = oppgaveRepository.hentOppgaver(query);
@@ -348,7 +348,7 @@ class OppgaveRepositoryTest {
     }
 
     private List<Oppgave> filterOppgaver(LocalDate filtrerFomDato, LocalDate filtrerTomDato) {
-        var query = new Oppgavespørring(avdelingIdForDrammen(), KøSortering.FØRSTE_STØNADSDAG, List.of(), List.of(), List.of(), List.of(), false,
+        var query = new Oppgavespørring(AVDELING_DRAMMEN_ENHET, KøSortering.FØRSTE_STØNADSDAG, List.of(), List.of(), List.of(), List.of(), false,
             filtrerFomDato, filtrerTomDato, null, null);
         return oppgaveRepository.hentOppgaver(query);
     }
@@ -372,7 +372,7 @@ class OppgaveRepositoryTest {
         oppgaveRepository.lagre(oppgaveUtenStartDato);
         oppgaveRepository.lagre(oppgaveMedStartDato);
 
-        var query = new Oppgavespørring(avdelingIdForDrammen(), FEILUTBETALINGSTART, List.of(), List.of(), List.of(), // inkluderes
+        var query = new Oppgavespørring(AVDELING_DRAMMEN_ENHET, FEILUTBETALINGSTART, List.of(), List.of(), List.of(), // inkluderes
             List.of(), //ekskluderes
             false, null, null, null, null);
         var oppgaver = oppgaveRepository.hentOppgaver(query);
