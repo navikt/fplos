@@ -23,7 +23,6 @@ public class Oppgavespørring {
     private final Long filtrerFra;
     private final Long filtrerTil;
     private boolean forAvdelingsleder;
-    private boolean ignorerReserversjoner;
     private Long maxAntallOppgaver;
 
     public Oppgavespørring(OppgaveFiltrering oppgaveFiltrering) {
@@ -62,15 +61,6 @@ public class Oppgavespørring {
         this.filtrerTomDato = filtrerTomDato;
         this.filtrerFra = filtrerFra;
         this.filtrerTil = filtrerTil;
-    }
-
-    // todo: fjern denne ubrukte greia
-    public boolean ignorerReserversjoner() {
-        return ignorerReserversjoner;
-    }
-
-    public void setIgnorerReserversjoner(boolean ignorerReserversjoner) {
-        this.ignorerReserversjoner = ignorerReserversjoner;
     }
 
     public void setForAvdelingsleder(boolean forAvdelingsleder) {
@@ -151,7 +141,7 @@ public class Oppgavespørring {
 
     @Override
     public String toString() {
-        return "Oppgavespørring{" + "sortering=" + sortering + ", enhetsnummer=" + enhetsnummer + ", behandlingTyper=" + behandlingTyper + ", ytelseTyper="
+        return "Oppgavespørring{" + "sortering=" + sortering + "enhetsnummer=" + enhetsnummer + ", behandlingTyper=" + behandlingTyper + ", ytelseTyper="
             + ytelseTyper + ", inkluderAndreKriterierTyper=" + inkluderAndreKriterierTyper + ", ekskluderAndreKriterierTyper="
             + ekskluderAndreKriterierTyper + ", erDynamiskPeriode=" + erDynamiskPeriode + ", filtrerFomDato=" + filtrerFomDato + ", filtrerTomDato="
             + filtrerTomDato + ", filtrerFra=" + filtrerFra + ", filtrerTil=" + filtrerTil + ", forAvdelingsleder=" + forAvdelingsleder
