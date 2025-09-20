@@ -3,7 +3,6 @@ package no.nav.foreldrepenger.los.oppgave;
 import static no.nav.foreldrepenger.los.oppgave.OppgaveRepository.COUNT_FRA_OPPGAVE;
 import static no.nav.foreldrepenger.los.oppgave.OppgaveRepository.COUNT_FRA_TILBAKEKREVING_OPPGAVE;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -19,10 +18,15 @@ public class OppgaveQueryMapper {
     private static final String ORDER_BY_SQL = "ORDER BY ";
     private static final String DESC_SQL = " DESC";
     private static final String BEHANDLINGSFRIST_FELT_SQL = "o.behandlingsfrist";
+    private static final String ORDER_BY_BEHANDLINGSFRIST_ASC = "ORDER BY o.behandlingsfrist ASC";
     private static final String BEHANDLINGOPPRETTET_FELT_SQL = "o.behandlingOpprettet";
+    private static final String ORDER_BY_BEHANDLINGOPPRETTET_ASC = "ORDER BY o.behandlingOpprettet ASC";
     private static final String FØRSTE_STØNADSDAG_FELT_SQL = "o.førsteStønadsdag";
+    private static final String ORDER_BY_FØRSTE_STØNADSDAG_ASC = "ORDER BY o.førsteStønadsdag ASC";
     private static final String BELØP_FELT_SQL = "o.belop";
+    private static final String ORDER_BY_BELØP_DESC = "ORDER BY o.belop DESC";
     private static final String FEILUTBETALINGSTART_FELT_SQL = "o.feilutbetalingstart";
+    private static final String ORDER_BY_FEILUTBETALINGSTART_ASC = "ORDER BY o.feilutbetalingstart ASC";
 
     private OppgaveQueryMapper() { }
 
@@ -39,12 +43,47 @@ public class OppgaveQueryMapper {
         sb.append(reserverteSubquery(parameters));
         sb.append(tilBeslutter(queryDto, parameters));
         sb.append(" AND o.aktiv = true ");
-        sb.append(sortering(selection, queryDto, parameters)); // TODO: skille order by og filter, hvis ikke blir det feil i antall query!
+        sb.append(beløpFilter(queryDto, parameters));
+        sb.append(datoFilter(queryDto, parameters));
+        sb.append(sortBy(selection, queryDto));
 
         var query = entityManager.createQuery(sb.toString(), resultClass);
         parameters.forEach(query::setParameter);
 
         return query;
+    }
+
+    private static String beløpFilter(Oppgavespørring oppgavespørring, HashMap<String, Object> parameters) {
+        if (!KøSortering.BELØP.equals(oppgavespørring.getSortering())) {
+            return "";
+        }
+        var fra = oppgavespørring.getFiltrerFra();
+        var til = oppgavespørring.getFiltrerTil();
+        // må kanskje gjøre en BigDecimal.valueOf() på filterverdiene?
+        var numeriskFiltrering = "";
+        if (fra != null) {
+            numeriskFiltrering = "AND o.belop >= :filterFra ";
+            parameters.put("filterFra", fra);
+        }
+        if (til != null) {
+            numeriskFiltrering += "AND o.belop <= :filterTil ";
+            parameters.put("filterTil", til);
+        }
+        return numeriskFiltrering;
+
+    }
+
+    private static String sortBy(String selection, Oppgavespørring queryDto) {
+        if (selection.equals(COUNT_FRA_OPPGAVE) || selection.equals(COUNT_FRA_TILBAKEKREVING_OPPGAVE)) {
+            return "";
+        }
+        return switch (queryDto.getSortering()) {
+            case BEHANDLINGSFRIST -> ORDER_BY_BEHANDLINGSFRIST_ASC;
+            case OPPRETT_BEHANDLING -> ORDER_BY_BEHANDLINGOPPRETTET_ASC;
+            case FØRSTE_STØNADSDAG -> ORDER_BY_FØRSTE_STØNADSDAG_ASC;
+            case BELØP -> ORDER_BY_BELØP_DESC;
+            case FEILUTBETALINGSTART -> ORDER_BY_FEILUTBETALINGSTART_ASC;
+        };
     }
 
     private static String andreKriterierSubquery(Oppgavespørring queryDto, HashMap<String, Object> parameters) {
@@ -110,127 +149,71 @@ public class OppgaveQueryMapper {
             )""";
     }
 
-    private static String sortering(String selection, Oppgavespørring oppgavespørring, HashMap<String, Object> parameters) {
-        if (selection.equals(COUNT_FRA_OPPGAVE) || selection.equals(COUNT_FRA_TILBAKEKREVING_OPPGAVE)) {
-            return "";
-        }
+    private static String datoFilter(Oppgavespørring oppgavespørring, HashMap<String, Object> parameters) {
         var sortering = oppgavespørring.getSortering();
-
-        // Oppsettet for sortering av køen inneholder også et de facto filter.
         // Filteret kan enten være feilutbetalt beløp eller dato (x antall dager relativt til dd eller absolutte datoer)
         // Spesielt for dynamisk filter: x kan også være negativ for å filtrere tilbake i tid.
-        if (KøSortering.FT_HELTALL.equalsIgnoreCase(oppgavespørring.getSortering().getFelttype())) {
-            // her er vi i beløpsvarianten
-            if (oppgavespørring.getFiltrerFra() != null) {
-                parameters.put("filterFra", BigDecimal.valueOf(oppgavespørring.getFiltrerFra()));
-            }
-            if (oppgavespørring.getFiltrerTil() != null) {
-                parameters.put("filterTil", BigDecimal.valueOf(oppgavespørring.getFiltrerTil()));
-            }
-        } else if (KøSortering.FT_DATO.equalsIgnoreCase(oppgavespørring.getSortering().getFelttype())) {
-            // her er vi i dato-varianten, først ut dynamisk variant relativt til i dag
-            if (oppgavespørring.getFiltrerFra() != null) {
-                // Hvorfor sjekk mot KøSortering.FØRSTE_STØNADSDAG? Første_stønadsdag er LocalDate, øvrige LocalDateTime.
-                // TODO: Vurdere å migrere feltet til LocalDateTime for å unngå slalåm, komplisert nok dette.
-                var filterFomDager = LocalDate.now().plusDays(oppgavespørring.getFiltrerFra());
-                if (Objects.equals(KøSortering.FØRSTE_STØNADSDAG, oppgavespørring.getSortering())) {
-                    parameters.put("filterFomDager", filterFomDager);
-                } else {
-                    // vi inkluderer hele dagen når vi er på LocalDateTime-varianten (dvs øvrige KøSorteringer)
-                    parameters.put("filterFomDager", filterFomDager.atStartOfDay());
-                }
-            }
-            if (oppgavespørring.getFiltrerTil() != null) {
-                var filterTomDager = LocalDate.now().plusDays(oppgavespørring.getFiltrerTil());
-                if (Objects.equals(KøSortering.FØRSTE_STØNADSDAG, oppgavespørring.getSortering())) {
-                    parameters.put("filterTomDager", filterTomDager);
-                } else {
-                    // det er til og med
-                    parameters.put("filterTomDager", filterTomDager.atTime(LocalTime.MAX));
-                }
-            }
 
-            // så den statiske varianten med absolutte datoer
-            if (oppgavespørring.getFiltrerFomDato() != null) {
-                var filterFomDato = oppgavespørring.getFiltrerFomDato();
-                if (Objects.equals(KøSortering.FØRSTE_STØNADSDAG, oppgavespørring.getSortering())) {
-                    parameters.put("filterFomDato", filterFomDato);
-                } else {
-                    parameters.put("filterFomDato", filterFomDato.atTime(LocalTime.MIN));
-                }
-            }
-            if (oppgavespørring.getFiltrerTomDato() != null) {
-                var filterTomDato = oppgavespørring.getFiltrerTomDato();
-                if (Objects.equals(KøSortering.FØRSTE_STØNADSDAG, oppgavespørring.getSortering())) {
-                    parameters.put("filterTomDato", filterTomDato);
-                } else {
-                    parameters.put("filterTomDato", filterTomDato.atTime(LocalTime.MIN));
-                }
-            }
-        }
-
-        // TODO: slå sammen oppsett her med parameteroppsett over
-        if (KøSortering.BEHANDLINGSFRIST.equals(sortering)) {
-            return oppgavespørring.isErDynamiskPeriode() ? filtrerDynamisk(BEHANDLINGSFRIST_FELT_SQL, oppgavespørring.getFiltrerFra(),
-                oppgavespørring.getFiltrerTil()) : filtrerStatisk(BEHANDLINGSFRIST_FELT_SQL, oppgavespørring.getFiltrerFomDato(),
-                oppgavespørring.getFiltrerTomDato());
-        }
-        if (KøSortering.OPPRETT_BEHANDLING.equals(sortering)) {
-            return oppgavespørring.isErDynamiskPeriode() ? filtrerDynamisk(BEHANDLINGOPPRETTET_FELT_SQL, oppgavespørring.getFiltrerFra(),
-                oppgavespørring.getFiltrerTil()) : filtrerStatisk(BEHANDLINGOPPRETTET_FELT_SQL, oppgavespørring.getFiltrerFomDato(),
-                oppgavespørring.getFiltrerTomDato());
-        }
-        if (KøSortering.FØRSTE_STØNADSDAG.equals(sortering)) {
-            return oppgavespørring.isErDynamiskPeriode() ? filtrerDynamisk(FØRSTE_STØNADSDAG_FELT_SQL, oppgavespørring.getFiltrerFra(),
-                oppgavespørring.getFiltrerTil()) : filtrerStatisk(FØRSTE_STØNADSDAG_FELT_SQL, oppgavespørring.getFiltrerFomDato(),
-                oppgavespørring.getFiltrerTomDato());
-        }
         if (KøSortering.BELØP.equals(sortering)) {
-            return filtrerNumerisk(BELØP_FELT_SQL, oppgavespørring.getFiltrerFra(), oppgavespørring.getFiltrerTil());
+            // håndteres i beløpFilter()
+            return "";
         }
-        if (KøSortering.FEILUTBETALINGSTART.equals(sortering)) {
-            if (oppgavespørring.isErDynamiskPeriode()) {
-                return filtrerDynamisk(FEILUTBETALINGSTART_FELT_SQL, oppgavespørring.getFiltrerFra(), oppgavespørring.getFiltrerTil());
-            } else {
-                return filtrerStatisk(FEILUTBETALINGSTART_FELT_SQL, oppgavespørring.getFiltrerFomDato(), oppgavespørring.getFiltrerTomDato());
+
+        var feltLiteral = switch (sortering) {
+            case BEHANDLINGSFRIST -> BEHANDLINGSFRIST_FELT_SQL;
+            case OPPRETT_BEHANDLING -> BEHANDLINGOPPRETTET_FELT_SQL;
+            case FØRSTE_STØNADSDAG -> FØRSTE_STØNADSDAG_FELT_SQL;
+            case FEILUTBETALINGSTART -> FEILUTBETALINGSTART_FELT_SQL;
+            case BELØP -> throw new IllegalArgumentException("Skal ikke komme hit med beløpssortering");
+        };
+
+        var filter = "";
+        if (oppgavespørring.isErDynamiskPeriode()) {
+            // Filtrerer på antall dager relativt til i dag.
+            // Perioden man ser på kan være i fortid eller fremtid, avhengig av positiv/negativ verdi på filtrerFra/Til
+            var fomAntallDagerFrem = oppgavespørring.getFiltrerFra();
+            if (fomAntallDagerFrem != null) {
+                var aktuellFomDato = LocalDate.now().plusDays(fomAntallDagerFrem);
+                if (Objects.equals(KøSortering.FØRSTE_STØNADSDAG, oppgavespørring.getSortering())) {
+                    // Første stønadsdag er en LocalDate i entiteten, mens øvrige er LocalDateTime
+                    parameters.put("filterFom", aktuellFomDato);
+                } else {
+                    parameters.put("filterFom", aktuellFomDato.atTime(LocalTime.MIN));
+                }
+                filter = "AND " + feltLiteral + " >= :filterFom ";
+            }
+            var tomAntallDagerFrem = oppgavespørring.getFiltrerTil();
+            if (tomAntallDagerFrem != null) {
+                var aktuellTomDato = LocalDate.now().plusDays(tomAntallDagerFrem);
+                if (Objects.equals(KøSortering.FØRSTE_STØNADSDAG, oppgavespørring.getSortering())) {
+                    parameters.put("filterTom", aktuellTomDato);
+                } else {
+                    parameters.put("filterTom", aktuellTomDato.atTime(LocalTime.MAX));
+                }
+                filter += "AND " + feltLiteral + " <= :filterTom ";
+            }
+        } else {
+            // Filtrerer på absolutte datoer
+            var fomDato = oppgavespørring.getFiltrerFomDato();
+            var tomDato = oppgavespørring.getFiltrerTomDato();
+            if (fomDato != null) {
+                if (Objects.equals(KøSortering.FØRSTE_STØNADSDAG, oppgavespørring.getSortering())) {
+                    parameters.put("filterFom", fomDato);
+                } else {
+                    parameters.put("filterFom", fomDato.atTime(LocalTime.MIN));
+                }
+                filter = "AND " + feltLiteral + " >= :filterFom ";
+            }
+            if (tomDato != null) {
+                if (Objects.equals(KøSortering.FØRSTE_STØNADSDAG, oppgavespørring.getSortering())) {
+                    parameters.put("filterTom", tomDato);
+                } else {
+                    parameters.put("filterTom", tomDato.atTime(LocalTime.MAX));
+                }
+                filter += "AND " + feltLiteral + " <= :filterTom ";
             }
         }
-        return ORDER_BY_SQL + BEHANDLINGOPPRETTET_FELT_SQL;
+        return filter;
     }
 
-    private static String filtrerNumerisk(String felt, Long fra, Long til) {
-        var numeriskFiltrering = "";
-        if (fra != null && til != null) {
-            numeriskFiltrering = "AND " + felt + " BETWEEN :filterFra AND :filterTil ";
-        } else if (fra != null) {
-            numeriskFiltrering = "AND " + felt + " >= :filterFra ";
-        } else if (til != null) {
-            numeriskFiltrering = "AND " + felt + " <= :filterTil ";
-        }
-        return numeriskFiltrering + ORDER_BY_SQL + felt + DESC_SQL;
-    }
-
-    private static String filtrerDynamisk(String felt, Long fomDager, Long tomDager) {
-        var datoFiltrering = "";
-        if (fomDager != null && tomDager != null) {
-            datoFiltrering = "AND " + felt + " BETWEEN :filterFomDager AND :filterTomDager ";
-        } else if (fomDager != null) {
-            datoFiltrering = "AND " + felt + " > :filterFomDager ";
-        } else if (tomDager != null) {
-            datoFiltrering = "AND " + felt + " < :filterTomDager ";
-        }
-        return datoFiltrering + ORDER_BY_SQL + felt;
-    }
-
-    private static String filtrerStatisk(String felt, LocalDate fomDato, LocalDate tomDato) {
-        var datoFiltrering = "";
-        if (fomDato != null && tomDato != null) {
-            datoFiltrering = "AND " + felt + " BETWEEN :filterFomDato AND :filterTomDato ";
-        }  if (fomDato != null) {
-            datoFiltrering += "AND " + felt + " >= :filterFomDato ";
-        }  if (tomDato != null) {
-            datoFiltrering += "AND " + felt + " <= :filterTomDato ";
-        }
-        return datoFiltrering + ORDER_BY_SQL + felt;
-    }
 }
