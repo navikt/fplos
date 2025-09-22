@@ -55,7 +55,7 @@ public class OppgaveKøTjeneste {
 
     public Integer hentAntallOppgaverForAvdeling(String avdelingsEnhet) {
         var avdeling = organisasjonRepository.hentAvdelingFraEnhet(avdelingsEnhet).orElseThrow();
-        return oppgaveRepository.hentAntallOppgaverForAvdeling(avdeling.getId());
+        return oppgaveRepository.hentAntallOppgaverForAvdeling(avdeling.getAvdelingEnhet());
     }
 
     public List<Oppgave> hentOppgaver(Long sakslisteId, int maksAntall) {

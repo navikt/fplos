@@ -48,7 +48,7 @@ public class SlettDeaktiverteAvdelingerTask implements ProsessTaskHandler {
             return;
         }
 
-        var antallÅpneOppgaver = oppgaveRepository.hentAntallOppgaverForAvdeling(avdeling.getId());
+        var antallÅpneOppgaver = oppgaveRepository.hentAntallOppgaverForAvdeling(avdeling.getAvdelingEnhet());
         if (antallÅpneOppgaver > 0) {
             LOG.warn("Fant {} aktive oppgaver tilknyttet enhetsnummer {}, avbryter avdelingssletting.", antallÅpneOppgaver, enhetsnummer);
             return;

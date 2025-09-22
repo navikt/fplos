@@ -12,7 +12,7 @@ import static java.util.function.Predicate.not;
 
 public class Oppgavespørring {
     private final KøSortering sortering;
-    private final Long enhetId;
+    private final String enhetsnummer;
     private final List<BehandlingType> behandlingTyper;
     private final List<FagsakYtelseType> ytelseTyper;
     private final List<AndreKriterierType> inkluderAndreKriterierTyper;
@@ -23,12 +23,11 @@ public class Oppgavespørring {
     private final Long filtrerFra;
     private final Long filtrerTil;
     private boolean forAvdelingsleder;
-    private boolean ignorerReserversjoner;
     private Long maxAntallOppgaver;
 
     public Oppgavespørring(OppgaveFiltrering oppgaveFiltrering) {
         sortering = oppgaveFiltrering.getSortering();
-        enhetId = oppgaveFiltrering.getAvdeling().getId();
+        enhetsnummer = oppgaveFiltrering.getAvdeling().getAvdelingEnhet();
         behandlingTyper = oppgaveFiltrering.getBehandlingTyper();
         ytelseTyper = oppgaveFiltrering.getFagsakYtelseTyper();
         inkluderAndreKriterierTyper = inkluderAndreKriterierTyperFra(oppgaveFiltrering);
@@ -40,7 +39,7 @@ public class Oppgavespørring {
         filtrerTil = oppgaveFiltrering.getTil();
     }
 
-    public Oppgavespørring(Long enhetId,
+    public Oppgavespørring(String enhetsnummer,
                            KøSortering sortering,
                            List<BehandlingType> behandlingTyper,
                            List<FagsakYtelseType> ytelseTyper,
@@ -52,7 +51,7 @@ public class Oppgavespørring {
                            Long filtrerFra,
                            Long filtrerTil) {
         this.sortering = sortering;
-        this.enhetId = enhetId;
+        this.enhetsnummer = enhetsnummer;
         this.behandlingTyper = behandlingTyper;
         this.ytelseTyper = ytelseTyper;
         this.inkluderAndreKriterierTyper = inkluderAndreKriterierTyper;
@@ -62,14 +61,6 @@ public class Oppgavespørring {
         this.filtrerTomDato = filtrerTomDato;
         this.filtrerFra = filtrerFra;
         this.filtrerTil = filtrerTil;
-    }
-
-    public boolean ignorerReserversjoner() {
-        return ignorerReserversjoner;
-    }
-
-    public void setIgnorerReserversjoner(boolean ignorerReserversjoner) {
-        this.ignorerReserversjoner = ignorerReserversjoner;
     }
 
     public void setForAvdelingsleder(boolean forAvdelingsleder) {
@@ -88,8 +79,8 @@ public class Oppgavespørring {
         return sortering;
     }
 
-    public Long getEnhetId() {
-        return enhetId;
+    public String getEnhetsnummer() {
+        return enhetsnummer;
     }
 
     public List<BehandlingType> getBehandlingTyper() {
@@ -150,7 +141,7 @@ public class Oppgavespørring {
 
     @Override
     public String toString() {
-        return "Oppgavespørring{" + "sortering=" + sortering + ", enhetId=" + enhetId + ", behandlingTyper=" + behandlingTyper + ", ytelseTyper="
+        return "Oppgavespørring{" + "sortering=" + sortering + "enhetsnummer=" + enhetsnummer + ", behandlingTyper=" + behandlingTyper + ", ytelseTyper="
             + ytelseTyper + ", inkluderAndreKriterierTyper=" + inkluderAndreKriterierTyper + ", ekskluderAndreKriterierTyper="
             + ekskluderAndreKriterierTyper + ", erDynamiskPeriode=" + erDynamiskPeriode + ", filtrerFomDato=" + filtrerFomDato + ", filtrerTomDato="
             + filtrerTomDato + ", filtrerFra=" + filtrerFra + ", filtrerTil=" + filtrerTil + ", forAvdelingsleder=" + forAvdelingsleder
