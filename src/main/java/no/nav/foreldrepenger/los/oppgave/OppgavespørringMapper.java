@@ -12,6 +12,8 @@ import jakarta.persistence.TypedQuery;
 import no.nav.foreldrepenger.los.felles.util.BrukerIdent;
 import no.nav.foreldrepenger.los.oppgavekø.KøSortering;
 
+import org.hibernate.jpa.HibernateHints;
+
 public class OppgavespørringMapper {
 
     private static final String BEHANDLINGSFRIST_FELT_SQL = "o.behandlingsfrist";
@@ -51,6 +53,7 @@ public class OppgavespørringMapper {
         var query = entityManager.createQuery(qlStringBuilder.toString(), resultClass);
         parameters.forEach(query::setParameter);
 
+        query.setHint(HibernateHints.HINT_READ_ONLY, "true");
         return query;
     }
 
