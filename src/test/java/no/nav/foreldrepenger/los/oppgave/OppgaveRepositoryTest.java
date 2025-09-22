@@ -17,6 +17,7 @@ import java.util.Random;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import no.nav.foreldrepenger.los.felles.util.BrukerIdent;
 import no.nav.foreldrepenger.los.organisasjon.Avdeling;
 
 import org.assertj.core.api.Assertions;
@@ -394,6 +395,31 @@ class OppgaveRepositoryTest {
     void fårTomtSvarFraOppgaveFiltrering() {
         var filtrering = oppgaveRepository.hentOppgaveFilterSett(0L);
         assertThat(filtrering).isEmpty();
+    }
+
+    @Test
+    void avdelingslederTellerMedEgneReservasjoner() {
+        var saksnummer = new Saksnummer(String.valueOf (Math.abs(new Random().nextLong() % 999999999)));
+        var oppgave = Oppgave.builder().dummyOppgave(AVDELING_DRAMMEN_ENHET).medSaksnummer(saksnummer).build();
+        var oeBuilder = OppgaveEgenskap.builder().medOppgave(oppgave).medAndreKriterierType(AndreKriterierType.TIL_BESLUTTER).medSisteSaksbehandlerForTotrinn(
+            BrukerIdent.brukerIdent());
+        entityManager.persist(oppgave);
+        entityManager.persist(oeBuilder.build());
+        entityManager.flush();
+
+        // saksbehandlere bør ikke få opp et antall som ikke stemmer med det de ser i køen (egne vedtak til beslutter filtreres bort fra beslutterkø)
+        var beslutterKøIkkeAvdelingsleder = new Oppgavespørring(AVDELING_DRAMMEN_ENHET, KøSortering.BEHANDLINGSFRIST, List.of(),
+            List.of(), List.of(AndreKriterierType.TIL_BESLUTTER), List.of(), false, null, null, null, null);
+        beslutterKøIkkeAvdelingsleder.setForAvdelingsleder(false);
+        var oppgaver = oppgaveRepository.hentAntallOppgaver(beslutterKøIkkeAvdelingsleder);
+        assertThat(oppgaver).isZero();
+
+        // avdelingsleder skal se antallet i avdelingslederkontekst, også eventuelle egne foreslåtte vedtak der avdelingsleder også er saksbehandler
+        var beslutterKøAvdelingsleder = new Oppgavespørring(AVDELING_DRAMMEN_ENHET, KøSortering.BEHANDLINGSFRIST, List.of(),
+            List.of(), List.of(AndreKriterierType.TIL_BESLUTTER), List.of(), false, null, null, null, null);
+        beslutterKøAvdelingsleder.setForAvdelingsleder(true);
+        var oppgaveAntallAdelingsleder = oppgaveRepository.hentAntallOppgaver(beslutterKøAvdelingsleder);
+        assertThat(oppgaveAntallAdelingsleder).isEqualTo(1);
     }
 
     private List<Oppgave> filterOppgaver(LocalDate filtrerFomDato, LocalDate filtrerTomDato) {
