@@ -7,9 +7,6 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.PrimaryKeyJoinColumn;
 import jakarta.persistence.Table;
-import no.nav.foreldrepenger.los.domene.typer.BehandlingId;
-import no.nav.foreldrepenger.los.domene.typer.Saksnummer;
-import no.nav.foreldrepenger.los.domene.typer.aktør.AktørId;
 
 
 @Entity(name = "TilbakekrevingOppgave")
@@ -52,95 +49,47 @@ public class TilbakekrevingOppgave extends Oppgave {
         this.reservasjon = other.reservasjon;
         this.feilutbetalingstart = other.feilutbetalingstart;
         this.belop = other.belop;
+        this.feilutbetalingStart = other.feilutbetalingstart; // expand: kopierer over til super
+        this.feilutbetalingBelop = other.belop; // expand: kopierer over til super
     }
 
     public TilbakekrevingOppgave() {
         // Hibernate
     }
 
-    public static TilbakekrevingOppgave.Builder tbuilder() {
-        return new TilbakekrevingOppgave.Builder();
+    public static TilbakekrevingOppgave.TbkBuilder tbuilder() {
+        return new TilbakekrevingOppgave.TbkBuilder();
     }
 
-    public static class Builder {
-        private TilbakekrevingOppgave tempOppgave;
-
-        private Builder() {
-            tempOppgave = new TilbakekrevingOppgave();
+    public static class TbkBuilder extends Oppgave.Builder<TbkBuilder> {
+        private TbkBuilder() {
+            this.tempOppgave = new TilbakekrevingOppgave();
         }
 
-        public TilbakekrevingOppgave.Builder medBeløp(BigDecimal beløp) {
-            this.tempOppgave.belop = beløp;
+        @Override
+        protected TbkBuilder self() {
             return this;
         }
 
-        public TilbakekrevingOppgave.Builder medFeilutbetalingStart(LocalDateTime feilutbetalingStart) {
-            this.tempOppgave.feilutbetalingstart = feilutbetalingStart;
-            return this;
-        }
-
-        public Builder medBehandlingId(BehandlingId behandlingId) {
-            tempOppgave.behandlingId = behandlingId;
-            return this;
-        }
-
-        public Builder medSaksnummer(Saksnummer saksnummer) {
-            tempOppgave.saksnummer = saksnummer;
-            return this;
-        }
-
-        public Builder medAktorId(AktørId aktorId) {
-            tempOppgave.aktørId = aktorId;
-            return this;
-        }
-
-        public Builder medBehandlendeEnhet(String behandlendeEnhet) {
-            tempOppgave.behandlendeEnhet = behandlendeEnhet;
-            return this;
-        }
-
-        public Builder medAktiv(Boolean aktiv) {
-            tempOppgave.aktiv = aktiv;
-            return this;
-        }
-
-        public Builder medBehandlingType(BehandlingType behandlingType) {
-            tempOppgave.behandlingType = behandlingType;
-            return this;
-        }
-
-        public Builder medSystem(String system) {
-            tempOppgave.system = system;
-            return this;
-        }
-
-        public Builder medBehandlingOpprettet(LocalDateTime behandlingOpprettet) {
-            tempOppgave.behandlingOpprettet = behandlingOpprettet;
-            return this;
-        }
-
-        public Builder medUtfortFraAdmin(Boolean utfortFraAdmin) {
-            tempOppgave.utfortFraAdmin = utfortFraAdmin;
-            return this;
-        }
-
-        public Builder medFagsakYtelseType(FagsakYtelseType fagsakYtelseType) {
-            tempOppgave.fagsakYtelseType = fagsakYtelseType;
-            return this;
-        }
-
+        @Override
         public TilbakekrevingOppgave build() {
-            return this.tempOppgave;
+            return (TilbakekrevingOppgave) tempOppgave;
+        }
+
+        public TbkBuilder medBeløp(BigDecimal beløp) {
+            ((TilbakekrevingOppgave) this.tempOppgave).belop = beløp;
+            this.tempOppgave.feilutbetalingBelop = beløp;
+            return this;
+        }
+
+        @Override
+        public TbkBuilder medFeilutbetalingStart(LocalDateTime feilutbetalingStart) {
+            ((TilbakekrevingOppgave) this.tempOppgave).feilutbetalingstart = feilutbetalingStart;
+            this.tempOppgave.feilutbetalingStart = feilutbetalingStart;
+            return this;
         }
     }
 
-    @Override
-    public String toString() {
-        return "TilbakekrevingOppgave{" + "beløp=" + belop + ", feilutbetalingstart=" + feilutbetalingstart + ", id=" + id + ", saksnummer="
-            + saksnummer + ", aktørId=" + aktørId + ", behandlendeEnhet='" + behandlendeEnhet + '\'' + ", behandlingsfrist=" + behandlingsfrist
-            + ", behandlingOpprettet=" + behandlingOpprettet + ", førsteStønadsdag=" + førsteStønadsdag + ", "
-            + ", behandlingType=" + behandlingType + ", fagsakYtelseType=" + fagsakYtelseType + ", aktiv=" + aktiv + ", system='" + system + '\''
-            + ", oppgaveAvsluttet=" + oppgaveAvsluttet + ", utfortFraAdmin=" + utfortFraAdmin + ", behandlingId=" + behandlingId + ", reservasjon="
-            + reservasjon + '}';
-    }
+
+
 }
