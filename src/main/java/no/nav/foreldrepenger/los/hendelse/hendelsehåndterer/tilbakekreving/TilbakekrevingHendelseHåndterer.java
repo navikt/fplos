@@ -188,12 +188,11 @@ public class TilbakekrevingHendelseHåndterer {
     }
 
     private TilbakekrevingOppgave oppgaveFra(BehandlingId behandlingId, LosBehandlingDto hendelse) {
+        var feilutbetaltBeløp = Optional.ofNullable(hendelse.tilbakeDto()).map(LosBehandlingDto.LosTilbakeDto::feilutbetaltBeløp).orElse(BigDecimal.ZERO);
         return TilbakekrevingOppgave.tbuilder()
-            .medBeløp(Optional.ofNullable(hendelse.tilbakeDto()).map(LosBehandlingDto.LosTilbakeDto::feilutbetaltBeløp).orElse(BigDecimal.ZERO))
-            .medFeilutbetalingStart(feilutbetalingStart(hendelse))
             .medSystem(Fagsystem.FPTILBAKE.name())
             .medSaksnummer(new Saksnummer(hendelse.saksnummer()))
-            .medAktorId(new AktørId(hendelse.aktørId().getAktørId()))
+            .medAktørId(new AktørId(hendelse.aktørId().getAktørId()))
             .medBehandlendeEnhet(hendelse.behandlendeEnhetId())
             .medBehandlingType(OppgaveUtil.mapBehandlingstype(hendelse.behandlingstype()))
             .medFagsakYtelseType(OppgaveUtil.mapYtelse(hendelse.ytelse()))
@@ -201,6 +200,8 @@ public class TilbakekrevingHendelseHåndterer {
             .medBehandlingOpprettet(hendelse.opprettetTidspunkt())
             .medUtfortFraAdmin(false)
             .medBehandlingId(behandlingId)
+            .medBeløp(feilutbetaltBeløp)
+            .medFeilutbetalingStart(feilutbetalingStart(hendelse))
             .build();
     }
 

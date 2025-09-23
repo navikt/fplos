@@ -1,6 +1,7 @@
 package no.nav.foreldrepenger.los.oppgave;
 
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Objects;
@@ -84,6 +85,12 @@ public class Oppgave extends BaseEntitet {
     @OneToOne(mappedBy = "oppgave")
     protected Reservasjon reservasjon;
 
+    @Column(name = "FEILUTBETALING_BELOP")
+    protected BigDecimal feilutbetalingBelop;
+
+    @Column(name = "FEILUTBETALING_START")
+    protected LocalDateTime feilutbetalingStart;
+
     public Long getId() {
         return id;
     }
@@ -144,8 +151,12 @@ public class Oppgave extends BaseEntitet {
         return oppgaveEgenskaper == null ? Set.of() : oppgaveEgenskaper;
     }
 
-    public static Builder builder() {
-        return new Builder();
+    public BigDecimal getFeilutbetalingBelop() {
+        return feilutbetalingBelop;
+    }
+
+    public LocalDateTime getFeilutbetalingStart() {
+        return feilutbetalingStart;
     }
 
     public void avsluttOppgave() {
@@ -162,85 +173,106 @@ public class Oppgave extends BaseEntitet {
         return reservasjon != null && reservasjon.erAktiv();
     }
 
+    public static <T extends Builder<T>> Builder<T> builder() {
+        return new Builder<>();
+    }
+
     @Override
     public String toString() {
         return "Oppgave{" + "id=" + id + ", saksnummer=" + saksnummer + ", aktiv=" + aktiv + ", system='" + system + '\'' + '}';
     }
 
-    public static class Builder {
-        private Oppgave tempOppgave;
+    public static class Builder<T extends Builder<T>> {
+        protected Oppgave tempOppgave;
 
-        private Builder() {
+        Builder() {
             tempOppgave = new Oppgave();
         }
 
-        public Builder medBehandlingId(BehandlingId behandlingId) {
+        @SuppressWarnings("unchecked")
+        protected T self() {
+            return (T) this;
+        }
+
+        public T medBehandlingId(BehandlingId behandlingId) {
             tempOppgave.behandlingId = behandlingId;
-            return this;
+            return self();
         }
 
-        public Builder medSaksnummer(Saksnummer saksnummer) {
+        public T medSaksnummer(Saksnummer saksnummer) {
             tempOppgave.saksnummer = saksnummer;
-            return this;
+            return self();
         }
 
-        public Builder medAktørId(AktørId aktørId) {
+        public T medAktørId(AktørId aktørId) {
             tempOppgave.aktørId = aktørId;
-            return this;
+            return self();
         }
 
-        public Builder medBehandlendeEnhet(String behandlendeEnhet) {
+        public T medBehandlendeEnhet(String behandlendeEnhet) {
             tempOppgave.behandlendeEnhet = behandlendeEnhet;
-            return this;
+            return self();
         }
 
-        public Builder medAktiv(Boolean aktiv) {
+        public T medAktiv(Boolean aktiv) {
             tempOppgave.aktiv = aktiv;
-            return this;
+            return self();
         }
 
-        public Builder medBehandlingType(BehandlingType behandlingType) {
+        public T medBehandlingType(BehandlingType behandlingType) {
             tempOppgave.behandlingType = behandlingType;
-            return this;
+            return self();
         }
 
-        public Builder medSystem(String system) {
+        public T medSystem(String system) {
             tempOppgave.system = system;
-            return this;
+            return self();
         }
 
-        public Builder medBehandlingsfrist(LocalDateTime behandlingsfrist) {
+        public T medBehandlingsfrist(LocalDateTime behandlingsfrist) {
             tempOppgave.behandlingsfrist = behandlingsfrist;
-            return this;
+            return self();
         }
 
-        public Builder medBehandlingOpprettet(LocalDateTime behandlingOpprettet) {
+        public T medBehandlingOpprettet(LocalDateTime behandlingOpprettet) {
             tempOppgave.behandlingOpprettet = behandlingOpprettet;
-            return this;
+            return self();
         }
 
-        public Builder medFørsteStønadsdag(LocalDate førsteStønadsdag) {
+        public T medFørsteStønadsdag(LocalDate førsteStønadsdag) {
             tempOppgave.førsteStønadsdag = førsteStønadsdag;
-            return this;
+            return self();
         }
 
 
-        public Builder medOppgaveAvsluttet(LocalDateTime oppgaveAvsluttet) {
+        public T medOppgaveAvsluttet(LocalDateTime oppgaveAvsluttet) {
             tempOppgave.oppgaveAvsluttet = oppgaveAvsluttet;
-            return this;
+            return self();
         }
 
-        public Builder medUtfortFraAdmin(Boolean utfortFraAdmin) {
+        public T medUtfortFraAdmin(Boolean utfortFraAdmin) {
             tempOppgave.utfortFraAdmin = utfortFraAdmin;
-            return this;
+            return self();
         }
 
-        public Builder medFagsakYtelseType(FagsakYtelseType fagsakYtelseType) {
+        public T medFagsakYtelseType(FagsakYtelseType fagsakYtelseType) {
             tempOppgave.fagsakYtelseType = fagsakYtelseType;
-            return this;
+            return self();
         }
 
-        public Builder dummyOppgave(String enhet) {
+        public T medFeilutbetalingBelop(BigDecimal feilutbetalingBelop) {
+            throw new IllegalStateException("Kan ikke benyttes direkte i expandfasen, ref TFP-6398");
+            //tempOppgave.feilutbetalingBelop = belop;
+            //return self();
+        }
+
+        public T medFeilutbetalingStart(LocalDateTime feilutbetalingStart) {
+            throw new IllegalStateException("Kan ikke benyttes direkte i expandfase, ref TFP-6398");
+            //tempOppgave.feilutbetalingStart = feilutbetalingstart;
+            //return self();
+        }
+
+        public T dummyOppgave(String enhet) {
             tempOppgave.behandlingId = new BehandlingId(UUID.nameUUIDFromBytes("331133L".getBytes()));
             tempOppgave.saksnummer = new Saksnummer("3478293");
             tempOppgave.aktørId = AktørId.dummy();
@@ -250,12 +282,17 @@ public class Oppgave extends BaseEntitet {
             tempOppgave.behandlingsfrist = LocalDateTime.now();
             tempOppgave.behandlingOpprettet = LocalDateTime.now();
             tempOppgave.førsteStønadsdag = LocalDate.now().plusMonths(1);
-            return this;
+            return self();
         }
 
         public Oppgave build() {
             Objects.requireNonNull(tempOppgave.saksnummer, "saksnummer");
             var oppgave = tempOppgave;
+            tempOppgave = new Oppgave();
+            if (!"FPTILBAKE".equals(tempOppgave.system) && (tempOppgave.feilutbetalingStart != null
+                || tempOppgave.feilutbetalingBelop != null)) {
+                throw new IllegalArgumentException("Utviklerfeil: Angitt tilbakebetalingsinformasjon i FPSAK-oppgave");
+            }
             tempOppgave = new Oppgave();
             return oppgave;
         }

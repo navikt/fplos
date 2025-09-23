@@ -344,7 +344,8 @@ class OppgaveRepositoryTest {
 
     @Test
     void filtrerSorterFeilutbetaltBeløp() {
-        var oppgave1 = tilbakekrevingOppgaveBuilder().medBehandlingOpprettet(LocalDateTime.now().minusDays(2L))
+        var oppgave1 = tilbakekrevingOppgaveBuilder()
+            .medBehandlingOpprettet(LocalDateTime.now().minusDays(2L))
             .medBehandlingId(behandlingId1)
             .medBeløp(BigDecimal.valueOf(100L))
             .build();
@@ -470,14 +471,14 @@ class OppgaveRepositoryTest {
             .build();
     }
 
-    private TilbakekrevingOppgave.Builder tilbakekrevingOppgaveBuilder() {
+    private TilbakekrevingOppgave.TbkBuilder tilbakekrevingOppgaveBuilder() {
         return TilbakekrevingOppgave.tbuilder()
             .medSaksnummer(new Saksnummer("42"))
             .medFagsakYtelseType(FagsakYtelseType.FORELDREPENGER)
             .medSystem("FPTILBAKE")
             .medBehandlingType(BehandlingType.TILBAKEBETALING)
             .medAktiv(true)
-            .medAktorId(AktørId.dummy())
+            .medAktørId(AktørId.dummy())
             .medBehandlendeEnhet(AVDELING_DRAMMEN_ENHET);
     }
 
