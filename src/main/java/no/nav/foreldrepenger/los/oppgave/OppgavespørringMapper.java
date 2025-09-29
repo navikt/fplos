@@ -167,7 +167,10 @@ public class OppgavespørringMapper {
             case BELØP -> throw new IllegalArgumentException("Utviklerfeil: beløpsfilter håndteres i annen metode");
         };
 
-        var gjelderKunDatoFelt = Objects.equals(KøSortering.FØRSTE_STØNADSDAG, sortering); // Første stønadsdag er LocalDate i entiteten, øvrige LocalDateTime
+        var gjelderKunDatoFelt =
+            Objects.equals(KøSortering.FØRSTE_STØNADSDAG, sortering) ||
+            Objects.equals(KøSortering.FØRSTE_STØNADSDAG_SYNKENDE, sortering); // Første stønadsdag er LocalDate i entiteten, øvrige LocalDateTime
+
         var sbuilder = new StringBuilder();
         if (oppgavespørring.isErDynamiskPeriode()) {
             // Filtrerer på antall dager relativt til i dag.
