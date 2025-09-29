@@ -24,6 +24,7 @@ import no.nav.foreldrepenger.los.domene.typer.BehandlingId;
 import no.nav.foreldrepenger.los.domene.typer.Saksnummer;
 import no.nav.foreldrepenger.los.domene.typer.aktør.AktørId;
 import no.nav.foreldrepenger.los.felles.BaseEntitet;
+import no.nav.foreldrepenger.los.hendelse.hendelseoppretter.hendelse.Fagsystem;
 import no.nav.foreldrepenger.los.reservasjon.Reservasjon;
 import no.nav.vedtak.felles.jpa.converters.BooleanToStringConverter;
 
@@ -69,8 +70,9 @@ public class Oppgave extends BaseEntitet {
     @Column(name = "AKTIV")
     protected Boolean aktiv = Boolean.TRUE;
 
+    @Convert(converter = Fagsystem.FagSystemConverter.class)
     @Column(name = "SYSTEM")
-    protected String system;
+    protected Fagsystem system;
 
     @Column(name = "OPPGAVE_AVSLUTTET")
     protected LocalDateTime oppgaveAvsluttet;
@@ -119,7 +121,7 @@ public class Oppgave extends BaseEntitet {
         return aktiv != null && aktiv;
     }
 
-    public String getSystem() {
+    public Fagsystem getSystem() {
         return system;
     }
 
@@ -224,8 +226,8 @@ public class Oppgave extends BaseEntitet {
             return self();
         }
 
-        public T medSystem(String system) {
-            tempOppgave.system = system;
+        public T medSystem(Fagsystem fagsystem) {
+            tempOppgave.system = fagsystem;
             return self();
         }
 

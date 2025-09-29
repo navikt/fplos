@@ -190,7 +190,7 @@ public class TilbakekrevingHendelseHåndterer {
     private TilbakekrevingOppgave oppgaveFra(BehandlingId behandlingId, LosBehandlingDto hendelse) {
         var feilutbetaltBeløp = Optional.ofNullable(hendelse.tilbakeDto()).map(LosBehandlingDto.LosTilbakeDto::feilutbetaltBeløp).orElse(BigDecimal.ZERO);
         return TilbakekrevingOppgave.tbuilder()
-            .medSystem(Fagsystem.FPTILBAKE.name())
+            .medSystem(Fagsystem.FPTILBAKE)
             .medSaksnummer(new Saksnummer(hendelse.saksnummer()))
             .medAktørId(new AktørId(hendelse.aktørId().getAktørId()))
             .medBehandlendeEnhet(hendelse.behandlendeEnhetId())

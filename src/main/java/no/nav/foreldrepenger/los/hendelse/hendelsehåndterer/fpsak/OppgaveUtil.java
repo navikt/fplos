@@ -20,7 +20,7 @@ public class OppgaveUtil {
 
     public static Oppgave oppgave(BehandlingId behandlingId, LosBehandlingDto behandlingFpsak) {
         return Oppgave.builder()
-            .medSystem(Fagsystem.FPSAK.name())
+            .medSystem(Fagsystem.FPSAK)
             .medSaksnummer(new Saksnummer(behandlingFpsak.saksnummer()))
             .medAktørId(new AktørId(behandlingFpsak.aktørId().getAktørId()))
             .medBehandlendeEnhet(behandlingFpsak.behandlendeEnhetId())

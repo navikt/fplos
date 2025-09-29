@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 
 import no.nav.foreldrepenger.los.domene.typer.BehandlingId;
 import no.nav.foreldrepenger.los.domene.typer.aktør.Person;
+import no.nav.foreldrepenger.los.hendelse.hendelseoppretter.hendelse.Fagsystem;
 import no.nav.foreldrepenger.los.oppgave.AndreKriterierType;
 import no.nav.foreldrepenger.los.oppgave.BehandlingType;
 import no.nav.foreldrepenger.los.oppgave.FagsakYtelseType;
@@ -17,7 +18,7 @@ public class OppgaveDto {
     private Long id;
     private String saksnummer;
     private String navn;
-    private String system;
+    private Fagsystem system;
     private String personnummer;
     private BehandlingType behandlingstype;
     private FagsakYtelseType fagsakYtelseType;
@@ -90,7 +91,7 @@ public class OppgaveDto {
         return navn;
     }
 
-    public String getSystem() {
+    public Fagsystem getSystem() {
         return system;
     }
 

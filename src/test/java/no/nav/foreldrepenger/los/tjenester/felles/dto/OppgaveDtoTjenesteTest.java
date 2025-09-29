@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import no.nav.foreldrepenger.los.hendelse.hendelseoppretter.hendelse.Fagsystem;
 import no.nav.foreldrepenger.los.oppgave.AndreKriterierType;
 import no.nav.foreldrepenger.los.oppgave.OppgaveEgenskap;
 
@@ -73,6 +74,7 @@ class OppgaveDtoTjenesteTest {
 
         var oppgave = Oppgave.builder()
             .dummyOppgave(AVDELING_DRAMMEN_ENHET)
+            .medSystem(Fagsystem.FPSAK)
             .medBehandlingType(BehandlingType.FØRSTEGANGSSØKNAD)
             .build();
         var oppgaveEgenskaper = OppgaveEgenskap.builder()

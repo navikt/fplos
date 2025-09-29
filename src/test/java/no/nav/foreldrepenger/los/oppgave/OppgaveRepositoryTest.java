@@ -18,6 +18,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import no.nav.foreldrepenger.los.felles.util.BrukerIdent;
+import no.nav.foreldrepenger.los.hendelse.hendelseoppretter.hendelse.Fagsystem;
 import no.nav.foreldrepenger.los.organisasjon.Avdeling;
 
 import org.assertj.core.api.Assertions;
@@ -497,7 +498,7 @@ class OppgaveRepositoryTest {
         return TilbakekrevingOppgave.tbuilder()
             .medSaksnummer(new Saksnummer("42"))
             .medFagsakYtelseType(FagsakYtelseType.FORELDREPENGER)
-            .medSystem("FPTILBAKE")
+            .medSystem(Fagsystem.FPTILBAKE)
             .medBehandlingType(BehandlingType.TILBAKEBETALING)
             .medAktiv(true)
             .medAktørId(AktørId.dummy())
