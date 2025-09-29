@@ -393,6 +393,28 @@ class OppgaveRepositoryTest {
     }
 
     @Test
+    void skalKunneSorterePåFørsteStønadsdagSynkende() {
+        var oppgave1 = basicOppgaveBuilder().medFørsteStønadsdag(LocalDate.now().minusDays(1)).build();
+        var oppgave2 = basicOppgaveBuilder().medFørsteStønadsdag(LocalDate.now()).build();
+        var oppgave3 = basicOppgaveBuilder().medFørsteStønadsdag(LocalDate.now().plusDays(5)).build();
+        var oppgave4 = basicOppgaveBuilder().medFørsteStønadsdag(null).build(); // verifiserer nulls last
+        oppgaveRepository.lagre(oppgave1);
+        oppgaveRepository.lagre(oppgave2);
+        oppgaveRepository.lagre(oppgave3);
+        oppgaveRepository.lagre(oppgave4);
+
+        var query = new Oppgavespørring(AVDELING_DRAMMEN_ENHET, KøSortering.FØRSTE_STØNADSDAG_SYNKENDE, List.of(), List.of(), List.of(), List.of(), false,
+            null, null, null, null);
+        var oppgaver = oppgaveRepository.hentOppgaver(query);
+        Assertions.assertThat(oppgaver).containsExactly(oppgave3, oppgave2, oppgave1, oppgave4);
+
+        var queryAvgrenset = new Oppgavespørring(AVDELING_DRAMMEN_ENHET, KøSortering.FØRSTE_STØNADSDAG_SYNKENDE, List.of(), List.of(), List.of(), List.of(), false,
+            oppgave2.getFørsteStønadsdag(), oppgave3.getFørsteStønadsdag(), null, null);
+        var oppgaverAvgrenset = oppgaveRepository.hentOppgaver(queryAvgrenset);
+        Assertions.assertThat(oppgaverAvgrenset).containsExactly(oppgave3, oppgave2);
+    }
+
+    @Test
     void fårTomtSvarFraOppgaveFiltrering() {
         var filtrering = oppgaveRepository.hentOppgaveFilterSett(0L);
         assertThat(filtrering).isEmpty();
