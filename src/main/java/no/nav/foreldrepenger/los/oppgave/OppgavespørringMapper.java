@@ -22,7 +22,7 @@ public class OppgavespørringMapper {
     private static final String ORDER_BY_BEHANDLINGOPPRETTET_ASC = "ORDER BY o.behandlingOpprettet ASC";
     private static final String FØRSTE_STØNADSDAG_FELT_SQL = "o.førsteStønadsdag";
     private static final String ORDER_BY_FØRSTE_STØNADSDAG_ASC = "ORDER BY o.førsteStønadsdag ASC";
-    private static final String ORDER_BY_FØRSTE_STØNADSDAG_DESC = "ORDER BY o.førsteStønadsdag DESC";
+    private static final String ORDER_BY_FØRSTE_STØNADSDAG_DESC = "ORDER BY o.førsteStønadsdag DESC NULLS LAST";
     private static final String ORDER_BY_BELØP_DESC = "ORDER BY o.belop DESC";
     private static final String FEILUTBETALINGSTART_FELT_SQL = "o.feilutbetalingstart";
     private static final String ORDER_BY_FEILUTBETALINGSTART_ASC = "ORDER BY o.feilutbetalingstart ASC";
@@ -167,7 +167,10 @@ public class OppgavespørringMapper {
             case BELØP -> throw new IllegalArgumentException("Utviklerfeil: beløpsfilter håndteres i annen metode");
         };
 
-        var gjelderKunDatoFelt = Objects.equals(KøSortering.FØRSTE_STØNADSDAG, sortering); // Første stønadsdag er LocalDate i entiteten, øvrige LocalDateTime
+        var gjelderKunDatoFelt =
+            Objects.equals(KøSortering.FØRSTE_STØNADSDAG, sortering) ||
+            Objects.equals(KøSortering.FØRSTE_STØNADSDAG_SYNKENDE, sortering); // Første stønadsdag er LocalDate i entiteten, øvrige LocalDateTime
+
         var sbuilder = new StringBuilder();
         if (oppgavespørring.isErDynamiskPeriode()) {
             // Filtrerer på antall dager relativt til i dag.
