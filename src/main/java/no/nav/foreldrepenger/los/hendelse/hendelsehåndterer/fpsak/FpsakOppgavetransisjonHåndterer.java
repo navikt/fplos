@@ -2,7 +2,7 @@ package no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak;
 
 import no.nav.foreldrepenger.los.domene.typer.BehandlingId;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveHistorikk;
-import no.nav.foreldrepenger.los.hendelse.hendelseoppretter.hendelse.Fagsystem;
+import no.nav.foreldrepenger.los.domene.typer.Fagsystem;
 import no.nav.vedtak.hendelser.behandling.los.LosBehandlingDto;
 
 public interface FpsakOppgavetransisjonHåndterer {

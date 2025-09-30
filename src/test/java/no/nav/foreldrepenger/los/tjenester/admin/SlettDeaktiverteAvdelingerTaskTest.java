@@ -9,6 +9,8 @@ import static org.mockito.Mockito.lenient;
 import java.util.Optional;
 import java.util.UUID;
 
+import no.nav.foreldrepenger.los.oppgave.OppgaveKøRepository;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -42,11 +44,12 @@ class SlettDeaktiverteAvdelingerTaskTest {
     void setup(EntityManager entityManager) {
         this.entityManager = entityManager;
         var organisasjonRepository = new OrganisasjonRepository(entityManager);
+        var oppgaveKøRepository = new OppgaveKøRepository(entityManager);
         var oppgaveRepository = new OppgaveRepository(entityManager);
         var avdelingslederTjeneste = new AvdelingslederTjeneste(oppgaveRepository, organisasjonRepository);
         lenient().when(ansattTjeneste.hentBrukerProfil(anyString())).thenReturn(Optional.of(new BrukerProfil(UUID.randomUUID(), "A000001", "Ansatt Navn", "4867")));
         this.avdelingslederSaksbehandlerTjeneste = new AvdelingslederSaksbehandlerTjeneste(oppgaveRepository, organisasjonRepository, ansattTjeneste);
-        task = new SlettDeaktiverteAvdelingerTask(oppgaveRepository, organisasjonRepository, avdelingslederTjeneste,
+        task = new SlettDeaktiverteAvdelingerTask(oppgaveKøRepository, organisasjonRepository, avdelingslederTjeneste,
             avdelingslederSaksbehandlerTjeneste);
     }
 

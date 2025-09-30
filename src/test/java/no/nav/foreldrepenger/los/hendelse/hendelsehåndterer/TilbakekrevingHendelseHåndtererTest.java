@@ -10,8 +10,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import no.nav.foreldrepenger.los.oppgave.TilbakekrevingOppgave;
-
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -197,38 +195,23 @@ class TilbakekrevingHendelseHåndtererTest {
     }
 
     @Test
-    void skalSetteTilbakekrevingsEgenskapPåOppgaveIExpandFaseTFP6398() {
-        // aktuell test for expand fase av TFP-6398
+    void skalSetteTilbakekrevingsfelter() {
         var behandlingId = BehandlingId.random();
         var saksbehandler = hendelse(åpentAksjonspunkt, behandlingId);
 
         handler.håndterBehandling(saksbehandler);
         var oppgave = DBTestUtil.hentUnik(entityManager, Oppgave.class);
 
-        // sjekker at vi setter tilbakebetalingsfeltene på både Oppgave og TilbakekrevingOppgave
         assertThat(oppgave)
-            .matches(o -> o.getFeilutbetalingBelop().equals(BigDecimal.valueOf(500)), "Oppgave har nytt felt feilutbetalingBelop satt")
-            .matches(o -> o.getFeilutbetalingStart() != null, "Oppgave har nytt felt feilutbetalingStart satt")
-            .matches(o -> o instanceof TilbakekrevingOppgave tbk
-                    && tbk.getBelop().equals(BigDecimal.valueOf(500)) && tbk.getFeilutbetalingstart() != null, "TilbakekrevingOppgave har fortsatt feltet satt");
+            .matches(o -> o.getFeilutbetalingBelop().equals(BigDecimal.valueOf(500)), "Oppgave har felt feilutbetalingBelop satt")
+            .matches(o -> o.getFeilutbetalingStart() != null, "Oppgave har felt feilutbetalingStart satt");
 
-
-        // simulerer eksisterende oppgaver opprettet før expand fase som ikke har disse feltene satt på Oppgave
-        entityManager.createNativeQuery("update oppgave set feilutbetaling_belop = null where id = :oppgaveId")
-            .setParameter("oppgaveId", oppgave.getId()).executeUpdate();
-        entityManager.createNativeQuery("update oppgave set feilutbetaling_start = null where id = :oppgaveId")
-            .setParameter("oppgaveId", oppgave.getId()).executeUpdate();
-        entityManager.flush();
-        entityManager.refresh(oppgave);
-        assertThat(oppgave.getFeilutbetalingStart()).isNull();
 
         handler.håndterBehandling(saksbehandler); // skal gjenåpne/oppdatere eksisterende oppgave
 
         var oppdatertOppgave = DBTestUtil.hentUnik(entityManager, Oppgave.class); // vi forventer oppdatert oppgave, henter på nytt
         assertThat(oppdatertOppgave).matches(o -> o.getFeilutbetalingBelop() != null && o.getFeilutbetalingStart() != null,
-                "Oppgave har nye felt satt etter ny hendelse")
-            .matches(o -> o instanceof TilbakekrevingOppgave tbk && tbk.getBelop().equals(BigDecimal.valueOf(500)) && tbk.getFeilutbetalingstart() != null,
-                "TilbakekrevingOppgave har fortsatt feltene");
+                "Oppgave har nye felt satt etter ny hendelse");
     }
 
     @Test

@@ -5,7 +5,7 @@ import java.util.Optional;
 import no.nav.foreldrepenger.los.domene.typer.BehandlingId;
 import no.nav.foreldrepenger.los.domene.typer.Saksnummer;
 import no.nav.foreldrepenger.los.domene.typer.aktør.AktørId;
-import no.nav.foreldrepenger.los.hendelse.hendelseoppretter.hendelse.Fagsystem;
+import no.nav.foreldrepenger.los.domene.typer.Fagsystem;
 import no.nav.foreldrepenger.los.oppgave.BehandlingType;
 import no.nav.foreldrepenger.los.oppgave.FagsakYtelseType;
 import no.nav.foreldrepenger.los.oppgave.Oppgave;
@@ -20,7 +20,7 @@ public class OppgaveUtil {
 
     public static Oppgave oppgave(BehandlingId behandlingId, LosBehandlingDto behandlingFpsak) {
         return Oppgave.builder()
-            .medSystem(Fagsystem.FPSAK.name())
+            .medSystem(Fagsystem.FPSAK)
             .medSaksnummer(new Saksnummer(behandlingFpsak.saksnummer()))
             .medAktørId(new AktørId(behandlingFpsak.aktørId().getAktørId()))
             .medBehandlendeEnhet(behandlingFpsak.behandlendeEnhetId())

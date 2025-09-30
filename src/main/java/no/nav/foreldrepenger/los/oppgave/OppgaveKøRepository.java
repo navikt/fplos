@@ -3,10 +3,14 @@ package no.nav.foreldrepenger.los.oppgave;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
 import no.nav.foreldrepenger.los.felles.util.BrukerIdent;
@@ -14,47 +18,78 @@ import no.nav.foreldrepenger.los.oppgavekø.KøSortering;
 
 import org.hibernate.jpa.HibernateHints;
 
-public class OppgavespørringMapper {
+@ApplicationScoped
+public class OppgaveKøRepository {
+
+    private static final String SELECT_FROM_OPPGAVE = "from Oppgave o ";
+    private static final String SELECT_COUNT_FROM_OPPGAVE = "SELECT count(1) from Oppgave o ";
 
     private static final String BEHANDLINGSFRIST_FELT_SQL = "o.behandlingsfrist";
-    private static final String ORDER_BY_BEHANDLINGSFRIST_ASC = "ORDER BY o.behandlingsfrist ASC";
     private static final String BEHANDLINGOPPRETTET_FELT_SQL = "o.behandlingOpprettet";
-    private static final String ORDER_BY_BEHANDLINGOPPRETTET_ASC = "ORDER BY o.behandlingOpprettet ASC";
     private static final String FØRSTE_STØNADSDAG_FELT_SQL = "o.førsteStønadsdag";
+    private static final String FEILUTBETALINGSTART_FELT_SQL = "o.feilutbetalingStart";
+    private static final String FEILUTBETALINGBELOP_FELT_SQL = "o.feilutbetalingBelop";
+
+    private static final String ORDER_BY_BEHANDLINGSFRIST_ASC = "ORDER BY o.behandlingsfrist ASC";
+    private static final String ORDER_BY_BEHANDLINGOPPRETTET_ASC = "ORDER BY o.behandlingOpprettet ASC";
     private static final String ORDER_BY_FØRSTE_STØNADSDAG_ASC = "ORDER BY o.førsteStønadsdag ASC";
     private static final String ORDER_BY_FØRSTE_STØNADSDAG_DESC = "ORDER BY o.førsteStønadsdag DESC NULLS LAST";
-    private static final String ORDER_BY_BELØP_DESC = "ORDER BY o.belop DESC";
-    private static final String FEILUTBETALINGSTART_FELT_SQL = "o.feilutbetalingstart";
-    private static final String ORDER_BY_FEILUTBETALINGSTART_ASC = "ORDER BY o.feilutbetalingstart ASC";
+    private static final String ORDER_BY_FEILUTBETALINGSTART_ASC = "ORDER BY o.feilutbetalingStart ASC";
+    private static final String ORDER_BY_FEILUTBETALINGBELOP_DESC = "ORDER BY o.feilutbetalingBelop DESC";
 
-    private OppgavespørringMapper() { }
+    private EntityManager entityManager;
 
-    public static <T> TypedQuery<T> lagOppgavespørring(EntityManager entityManager, String selection, Class<T> resultClass, Oppgavespørring queryDto) {
+    OppgaveKøRepository() { }
+
+    @Inject
+    public OppgaveKøRepository(EntityManager entityManager) {
+        this.entityManager = entityManager;
+    }
+
+
+    public int hentAntallOppgaver(Oppgavespørring oppgavespørring) {
+        return lagTypedQuery(oppgavespørring, true, Long.class).getSingleResult().intValue();
+    }
+
+    public int hentAntallOppgaverForAvdeling(String enhetsNummer) {
+        var oppgavespørring = new Oppgavespørring(enhetsNummer, KøSortering.BEHANDLINGSFRIST, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(),
+            new ArrayList<>(), false, null, null, null, null);
+        oppgavespørring.setForAvdelingsleder(true);
+        return lagTypedQuery(oppgavespørring, true, Long.class).getSingleResult().intValue();
+    }
+
+    public List<Oppgave> hentOppgaver(Oppgavespørring oppgavespørring) {
+        var query = lagTypedQuery(oppgavespørring, false, Oppgave.class);
+        return query.getResultList();
+    }
+
+    private <T> TypedQuery<T> lagTypedQuery(Oppgavespørring oppgavespørring, boolean kunCountQuery, Class<T> resultClass) {
         var parameters = new HashMap<String, Object>();
-        parameters.put("enhetsnummer", queryDto.getEnhetsnummer());
+        parameters.put("enhetsnummer", oppgavespørring.getEnhetsnummer());
 
+        var selection = kunCountQuery ? SELECT_COUNT_FROM_OPPGAVE : SELECT_FROM_OPPGAVE;
 
         var qlStringBuilder = new StringBuilder();
         qlStringBuilder.append(selection);
         qlStringBuilder.append(" WHERE o.behandlendeEnhet = :enhetsnummer ");
-        qlStringBuilder.append(filtrerBehandlingType(queryDto, parameters));
-        qlStringBuilder.append(filtrerYtelseType(queryDto, parameters));
-        qlStringBuilder.append(andreKriterierSubquery(queryDto, parameters));
+        qlStringBuilder.append(filtrerBehandlingType(oppgavespørring, parameters));
+        qlStringBuilder.append(filtrerYtelseType(oppgavespørring, parameters));
+        qlStringBuilder.append(andreKriterierSubquery(oppgavespørring, parameters));
         qlStringBuilder.append(reserverteSubquery(parameters));
-        qlStringBuilder.append(tilBeslutter(queryDto, parameters));
+        qlStringBuilder.append(tilBeslutter(oppgavespørring, parameters));
         qlStringBuilder.append(" AND o.aktiv = true ");
-        qlStringBuilder.append(beløpFilter(queryDto, parameters));
-        qlStringBuilder.append(datoFilter(queryDto, parameters));
+        qlStringBuilder.append(beløpFilter(oppgavespørring, parameters));
+        qlStringBuilder.append(datoFilter(oppgavespørring, parameters));
 
-        boolean erSelectCountSpørring = resultClass.equals(Long.class);
-        if (!erSelectCountSpørring) {
-            qlStringBuilder.append(orderBy(queryDto));
+        if (!kunCountQuery) {
+            qlStringBuilder.append(orderBy(oppgavespørring));
         }
 
         var query = entityManager.createQuery(qlStringBuilder.toString(), resultClass);
         parameters.forEach(query::setParameter);
 
         query.setHint(HibernateHints.HINT_READ_ONLY, "true");
+        oppgavespørring.getMaxAntallOppgaver().ifPresent(max -> query.setMaxResults(max.intValue()));
         return query;
     }
 
@@ -66,11 +101,11 @@ public class OppgavespørringMapper {
         var til = oppgavespørring.getFiltrerTil();
         var numeriskFiltrering = "";
         if (fra != null) {
-            numeriskFiltrering = "AND o.belop >= :filterFra ";
+            numeriskFiltrering = "AND " + FEILUTBETALINGBELOP_FELT_SQL + " >= :filterFra ";
             parameters.put("filterFra", fra);
         }
         if (til != null) {
-            numeriskFiltrering += "AND o.belop <= :filterTil ";
+            numeriskFiltrering += "AND "+ FEILUTBETALINGBELOP_FELT_SQL + " <= :filterTil ";
             parameters.put("filterTil", til);
         }
         return numeriskFiltrering;
@@ -83,7 +118,7 @@ public class OppgavespørringMapper {
             case OPPRETT_BEHANDLING -> ORDER_BY_BEHANDLINGOPPRETTET_ASC;
             case FØRSTE_STØNADSDAG -> ORDER_BY_FØRSTE_STØNADSDAG_ASC;
             case FØRSTE_STØNADSDAG_SYNKENDE -> ORDER_BY_FØRSTE_STØNADSDAG_DESC;
-            case BELØP -> ORDER_BY_BELØP_DESC;
+            case BELØP -> ORDER_BY_FEILUTBETALINGBELOP_DESC;
             case FEILUTBETALINGSTART -> ORDER_BY_FEILUTBETALINGSTART_ASC;
         };
     }

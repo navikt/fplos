@@ -1,4 +1,4 @@
-package no.nav.foreldrepenger.los.hendelse.hendelseoppretter.hendelse;
+package no.nav.foreldrepenger.los.domene.typer;
 
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;

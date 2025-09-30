@@ -6,6 +6,8 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
+import no.nav.foreldrepenger.los.domene.typer.Fagsystem;
+
 import org.assertj.core.api.AbstractAssert;
 
 import no.nav.foreldrepenger.los.domene.typer.BehandlingId;
@@ -32,7 +34,7 @@ public class OppgaveAssert extends AbstractAssert<OppgaveAssert, Oppgave> {
         return this;
     }
 
-    public OppgaveAssert harSystem(String system) {
+    public OppgaveAssert harSystem(Fagsystem system) {
         isNotNull();
         assertThat(actual.getSystem()).overridingErrorMessage("Forventet system <%s> men fikk <%s>", system, actual.getSystem()).isEqualTo(system);
         return this;

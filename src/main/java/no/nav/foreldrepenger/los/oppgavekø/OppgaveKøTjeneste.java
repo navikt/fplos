@@ -7,12 +7,10 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 
 import no.nav.foreldrepenger.los.felles.util.BrukerIdent;
+import no.nav.foreldrepenger.los.oppgave.OppgaveKøRepository;
 import no.nav.foreldrepenger.los.oppgave.OppgaveRepository;
 import no.nav.foreldrepenger.los.oppgave.Oppgavespørring;
 import no.nav.foreldrepenger.los.organisasjon.Saksbehandler;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import no.nav.foreldrepenger.los.oppgave.Oppgave;
 import no.nav.foreldrepenger.los.organisasjon.OrganisasjonRepository;
@@ -21,14 +19,16 @@ import no.nav.vedtak.exception.FunksjonellException;
 @ApplicationScoped
 public class OppgaveKøTjeneste {
 
-    private static final Logger LOG = LoggerFactory.getLogger(OppgaveKøTjeneste.class);
-
     private OppgaveRepository oppgaveRepository;
+    private OppgaveKøRepository oppgaveKøRepository;
     private OrganisasjonRepository organisasjonRepository;
 
     @Inject
-    public OppgaveKøTjeneste(OppgaveRepository oppgaveRepository, OrganisasjonRepository organisasjonRepository) {
+    public OppgaveKøTjeneste(OppgaveRepository oppgaveRepository,
+                             OppgaveKøRepository oppgaveKøRepository,
+                             OrganisasjonRepository organisasjonRepository) {
         this.oppgaveRepository = oppgaveRepository;
+        this.oppgaveKøRepository = oppgaveKøRepository;
         this.organisasjonRepository = organisasjonRepository;
     }
 
@@ -50,12 +50,12 @@ public class OppgaveKøTjeneste {
             .map(Oppgavespørring::new)
             .orElseThrow(() -> new FunksjonellException("FP-164687", "Fant ikke oppgavekø med id " + behandlingsKø));
         queryDto.setForAvdelingsleder(forAvdelingsleder);
-        return oppgaveRepository.hentAntallOppgaver(queryDto);
+        return oppgaveKøRepository.hentAntallOppgaver(queryDto);
     }
 
     public Integer hentAntallOppgaverForAvdeling(String avdelingsEnhet) {
         var avdeling = organisasjonRepository.hentAvdelingFraEnhet(avdelingsEnhet).orElseThrow();
-        return oppgaveRepository.hentAntallOppgaverForAvdeling(avdeling.getAvdelingEnhet());
+        return oppgaveKøRepository.hentAntallOppgaverForAvdeling(avdeling.getAvdelingEnhet());
     }
 
     public List<Oppgave> hentOppgaver(Long sakslisteId, int maksAntall) {
@@ -65,7 +65,7 @@ public class OppgaveKøTjeneste {
         }
         var oppgavespørring = new Oppgavespørring(oppgaveFilter.get());
         oppgavespørring.setMaksAntall(maksAntall);
-        return oppgaveRepository.hentOppgaver(oppgavespørring);
+        return oppgaveKøRepository.hentOppgaver(oppgavespørring);
     }
 
 }

@@ -6,6 +6,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
 
+import no.nav.foreldrepenger.los.domene.typer.Fagsystem;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -65,7 +67,7 @@ class GenerellOpprettOppgaveHendelseHåndtererTest {
                      .harSaksnummer(new Saksnummer(behandlingFpsak.saksnummer()))
                      .harOppgaveAvsluttet(null)
                      .harBehandlendeEnhet(behandlingFpsak.behandlendeEnhetId())
-                     .harSystem("FPSAK")
+                     .harSystem(Fagsystem.FPSAK)
                      .harFagsakYtelseType(FagsakYtelseType.FORELDREPENGER);
     }
 
