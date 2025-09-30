@@ -10,6 +10,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import no.nav.foreldrepenger.los.oppgave.OppgaveKøRepository;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -39,8 +41,9 @@ class SaksbehandlerDtoTjenesteTest {
         var organisasjonRepository = new OrganisasjonRepository(entityManager);
         avdelingslederTjeneste = new AvdelingslederTjeneste(oppgaveRepository, organisasjonRepository);
         ansattTjeneste = mock(AnsattTjeneste.class);
+        var oppgaveKøRepository = new OppgaveKøRepository(entityManager);
         saksbehandlerDtoTjeneste = new SaksbehandlerDtoTjeneste(organisasjonRepository, avdelingslederTjeneste, ansattTjeneste,
-            new OppgaveKøTjeneste(oppgaveRepository, organisasjonRepository));
+            new OppgaveKøTjeneste(oppgaveRepository, oppgaveKøRepository, organisasjonRepository));
     }
 
     @Test

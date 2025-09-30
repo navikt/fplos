@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import no.nav.foreldrepenger.los.oppgave.OppgaveKøRepository;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -52,9 +54,10 @@ class OppgaveKøTjenesteTest {
     @BeforeEach
     void setup(EntityManager entityManager) {
         oppgaveRepository = new OppgaveRepository(entityManager);
+        var oppgaveKøRepository = new OppgaveKøRepository(entityManager);
         var organisasjonRepository = new OrganisasjonRepository(entityManager);
         avdelingslederTjeneste = new AvdelingslederTjeneste(oppgaveRepository, organisasjonRepository);
-        oppgaveKøTjeneste = new OppgaveKøTjeneste(oppgaveRepository, organisasjonRepository);
+        oppgaveKøTjeneste = new OppgaveKøTjeneste(oppgaveRepository, oppgaveKøRepository, organisasjonRepository);
         this.entityManager = entityManager;
     }
 

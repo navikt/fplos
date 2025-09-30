@@ -13,6 +13,7 @@ import no.nav.foreldrepenger.los.domene.typer.Saksnummer;
 import no.nav.foreldrepenger.los.felles.BaseEntitet;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveEventLogg;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveEventType;
+import no.nav.foreldrepenger.los.hendelse.hendelseoppretter.hendelse.Fagsystem;
 import no.nav.foreldrepenger.los.reservasjon.ReservasjonTjeneste;
 
 @ApplicationScoped
@@ -92,12 +93,13 @@ public class OppgaveTjeneste {
 
     public Oppgave gjenåpneTilbakekrevingOppgave(BehandlingId behandlingId) {
         var oppgaver = oppgaveRepository.hentOppgaver(behandlingId);
-        var sisteOppgave = oppgaver.stream().max(Comparator.comparing(Oppgave::getOpprettetTidspunkt)).orElse(null);
-        if (sisteOppgave != null) {
-            sisteOppgave.gjenåpneOppgave();
-            oppgaveRepository.lagre(sisteOppgave);
-            oppgaveRepository.refresh(sisteOppgave);
+        var sisteOppgave = oppgaver.stream().max(Comparator.comparing(Oppgave::getOpprettetTidspunkt)).orElseThrow();
+        if (sisteOppgave.getSystem() != Fagsystem.FPTILBAKE) {
+            throw new IllegalStateException("Skal ikke gjenåpne oppgave for fpsak-behandlinger");
         }
+        sisteOppgave.gjenåpneOppgave();
+        oppgaveRepository.lagre(sisteOppgave);
+        oppgaveRepository.refresh(sisteOppgave);
         return sisteOppgave;
     }
 
@@ -108,7 +110,6 @@ public class OppgaveTjeneste {
     public <U extends BaseEntitet> void lagre(U entitet) {
         oppgaveRepository.lagre(entitet);
     }
-
 
     private static LocalDateTime aktuellDato(Oppgave oppgave) {
         return oppgave.getOppgaveAvsluttet() == null ? oppgave.getOpprettetTidspunkt() : oppgave.getOppgaveAvsluttet();

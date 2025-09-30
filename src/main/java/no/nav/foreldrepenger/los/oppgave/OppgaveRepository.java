@@ -3,7 +3,6 @@ package no.nav.foreldrepenger.los.oppgave;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
@@ -21,7 +20,6 @@ import no.nav.foreldrepenger.los.domene.typer.BehandlingId;
 import no.nav.foreldrepenger.los.domene.typer.Saksnummer;
 import no.nav.foreldrepenger.los.felles.BaseEntitet;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveEventLogg;
-import no.nav.foreldrepenger.los.oppgavekø.KøSortering;
 import no.nav.foreldrepenger.los.oppgavekø.OppgaveFiltrering;
 import no.nav.foreldrepenger.los.oppgavekø.OppgaveFiltreringOppdaterer;
 import no.nav.foreldrepenger.los.reservasjon.Reservasjon;
@@ -30,9 +28,6 @@ import no.nav.foreldrepenger.los.reservasjon.Reservasjon;
 public class OppgaveRepository {
 
     private static final Logger LOG = LoggerFactory.getLogger(OppgaveRepository.class);
-
-    private static final String SELECT_FROM_OPPGAVE = "SELECT o from Oppgave o ";
-    private static final String SELECT_COUNT_FROM_OPPGAVE = "SELECT count(1) from Oppgave o ";
 
     public static final String BEHANDLING_ID_FELT_SQL = "behandlingId";
 
@@ -46,28 +41,8 @@ public class OppgaveRepository {
     OppgaveRepository() {
     }
 
-    public int hentAntallOppgaver(Oppgavespørring oppgavespørring) {
-        var oppgaveTypedQuery = OppgavespørringMapper.lagOppgavespørring(entityManager, SELECT_COUNT_FROM_OPPGAVE, Long.class, oppgavespørring);
-        return oppgaveTypedQuery.getSingleResult().intValue();
-    }
-
-    public int hentAntallOppgaverForAvdeling(String enhetsNummer) {
-        var oppgavespørring = new Oppgavespørring(enhetsNummer, KøSortering.BEHANDLINGSFRIST, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(),
-            new ArrayList<>(), false, null, null, null, null);
-        oppgavespørring.setForAvdelingsleder(true);
-        var oppgaveTypedQuery = OppgavespørringMapper.lagOppgavespørring(entityManager, SELECT_COUNT_FROM_OPPGAVE, Long.class, oppgavespørring);
-        return oppgaveTypedQuery.getSingleResult().intValue();
-    }
-
-    public List<Oppgave> hentOppgaver(Oppgavespørring oppgavespørring) {
-        var query = OppgavespørringMapper.lagOppgavespørring(entityManager, SELECT_FROM_OPPGAVE, Oppgave.class, oppgavespørring);
-        oppgavespørring.getMaxAntallOppgaver().ifPresent(max -> query.setMaxResults(max.intValue()));
-        return query.getResultList();
-    }
-
     public List<Oppgave> hentAktiveOppgaverForSaksnummer(Collection<Saksnummer> saksnummerListe) {
-        return entityManager.createQuery(
-            SELECT_FROM_OPPGAVE + "WHERE o.saksnummer in :saksnummerListe " + "AND o.aktiv = true " + "ORDER BY o.saksnummer desc ",
+        return entityManager.createQuery("from Oppgave o where o.saksnummer in :saksnummerListe and o.aktiv = true order by o.saksnummer desc",
             Oppgave.class).setParameter("saksnummerListe", saksnummerListe).getResultList();
     }
 

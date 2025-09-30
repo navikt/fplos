@@ -36,7 +36,6 @@ class OppgaveTjenesteTest {
 
     private EntityManager entityManager;
     private OppgaveRepository oppgaveRepository;
-    private ReservasjonRepository reservasjonRepository;
     private OppgaveKøTjeneste oppgaveKøTjeneste;
     private OppgaveTjeneste oppgaveTjeneste;
     private ReservasjonTjeneste reservasjonTjeneste;
@@ -57,9 +56,10 @@ class OppgaveTjenesteTest {
     void setup(EntityManager entityManager) {
         var organisasjonRepository = new OrganisasjonRepository(entityManager);
         oppgaveRepository = new OppgaveRepository(entityManager);
+        var oppgaveKøRepository = new OppgaveKøRepository(entityManager);
         avdelingslederTjeneste = new AvdelingslederTjeneste(oppgaveRepository, organisasjonRepository);
-        oppgaveKøTjeneste = new OppgaveKøTjeneste(oppgaveRepository, organisasjonRepository);
-        reservasjonRepository = new ReservasjonRepository(entityManager);
+        oppgaveKøTjeneste = new OppgaveKøTjeneste(oppgaveRepository, oppgaveKøRepository, organisasjonRepository);
+        var reservasjonRepository = new ReservasjonRepository(entityManager);
         reservasjonTjeneste = new ReservasjonTjeneste(oppgaveRepository, reservasjonRepository);
         oppgaveTjeneste = new OppgaveTjeneste(oppgaveRepository, reservasjonTjeneste);
         this.entityManager = entityManager;
